@@ -69,7 +69,7 @@ CMMALVideoBuffer::~CMMALVideoBuffer()
 
 CMMALVideo::CMMALVideo(CProcessInfo &processInfo) : CDVDVideoCodec(processInfo)
 {
-  CLog::Log(LOGDEBUG, LOGVIDEO, "%s::%s %p", CLASSNAME, __func__, this);
+  CLog::Log(LOGDEBUG, LOGVIDEO, "%s::%s %p", CLASSNAME, __func__, static_cast<void*>(this));
 
   m_decoded_width = 0;
   m_decoded_height = 0;
@@ -104,7 +104,7 @@ CMMALVideo::CMMALVideo(CProcessInfo &processInfo) : CDVDVideoCodec(processInfo)
 
 CMMALVideo::~CMMALVideo()
 {
-  CLog::Log(LOGDEBUG, LOGVIDEO, "%s::%s %p", CLASSNAME, __func__, this);
+  CLog::Log(LOGDEBUG, LOGVIDEO, "%s::%s %p", CLASSNAME, __func__, static_cast<void*>(this));
   if (!m_finished)
     Dispose();
 
@@ -184,7 +184,8 @@ static void dec_control_port_cb_static(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *
 
 void CMMALVideo::dec_input_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer)
 {
-  CLog::Log(LOGDEBUG, LOGVIDEO, "%s::%s port:%p buffer %p, len %d cmd:%x", CLASSNAME, __func__, port, buffer, buffer->length, buffer->cmd);
+  CLog::Log(LOGDEBUG, LOGVIDEO, "%s::%s port:%p buffer %p, len %d cmd:%x", CLASSNAME, __func__,
+            static_cast<void*>(port), static_cast<void*>(buffer), buffer->length, buffer->cmd);
   mmal_buffer_header_release(buffer);
   CSingleLock output_lock(m_output_mutex);
   m_output_cond.notifyAll();
@@ -200,7 +201,11 @@ static void dec_input_port_cb_static(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *bu
 void CMMALVideo::dec_output_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer)
 {
   if (!(buffer->cmd == 0 && buffer->length > 0))
-    CLog::Log(LOGDEBUG, LOGVIDEO, "%s::%s port:%p buffer %p, len %d cmd:%x flags:%x", CLASSNAME, __func__, port, buffer, buffer->length, buffer->cmd, buffer->flags);
+    {
+      CLog::Log(LOGDEBUG, LOGVIDEO, "%s::%s port:%p buffer %p, len %d cmd:%x flags:%x", CLASSNAME,
+                __func__, static_cast<void*>(port), static_cast<void*>(buffer), buffer->length,
+                buffer->cmd, buffer->flags);
+    }
 
   bool kept = false;
   CMMALVideoBuffer *omvb = (CMMALVideoBuffer *)buffer->user_data;
@@ -225,10 +230,15 @@ void CMMALVideo::dec_output_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buf
       if (g_advancedSettings.m_omxDecodeStartWithValidFrame && (buffer->flags & MMAL_BUFFER_HEADER_FLAG_CORRUPTED))
         wanted = false;
       m_num_decoded++;
-      CLog::Log(LOGDEBUG, LOGVIDEO, "%s::%s - omvb:%p mmal:%p len:%u dts:%.3f pts:%.3f flags:%x:%x pool:%p %dx%d (%dx%d) %dx%d (%dx%d) enc:%.4s",
-          CLASSNAME, __func__, buffer, omvb, buffer->length, buffer->dts*1e-6, buffer->pts*1e-6, buffer->flags, buffer->type->video.flags,
-          omvb->Width(), omvb->Height(), omvb->AlignedWidth(), omvb->AlignedHeight(),
-          m_decoded_width, m_decoded_height, m_decoded_aligned_width, m_decoded_aligned_height, (char*)&omvb->Encoding());
+      CLog::Log(LOGDEBUG, LOGVIDEO,
+                "%s::%s - omvb:%p mmal:%p len:%u dts:%.3f pts:%.3f flags:%x:%x pool:%p %dx%d "
+                "(%dx%d) %dx%d (%dx%d) enc:%.4s",
+                CLASSNAME, __func__, static_cast<void*>(buffer), static_cast<void*>(omvb),
+                buffer->length, buffer->dts * 1e-6, buffer->pts * 1e-6, buffer->flags,
+                buffer->type->video.flags, static_cast<void*>(m_pool.get()), omvb->Width(),
+                omvb->Height(), omvb->AlignedWidth(), omvb->AlignedHeight(), m_decoded_width,
+                m_decoded_height, m_decoded_aligned_width, m_decoded_aligned_height,
+                (char*)&omvb->Encoding());
       if (wanted)
       {
         std::shared_ptr<CMMALPool> pool = std::dynamic_pointer_cast<CMMALPool>(m_pool);
@@ -323,7 +333,8 @@ bool CMMALVideo::SendCodecConfigData()
   buffer->length = std::min(m_hints.extrasize, buffer->alloc_size);
   memcpy(buffer->data, m_hints.extradata, buffer->length);
   buffer->flags = MMAL_BUFFER_HEADER_FLAG_FRAME_END | MMAL_BUFFER_HEADER_FLAG_CONFIG;
-  CLog::Log(LOGDEBUG, LOGVIDEO, "%s::%s - %-8p %-6d flags:%x", CLASSNAME, __func__, buffer, buffer->length, buffer->flags);
+  CLog::Log(LOGDEBUG, LOGVIDEO, "%s::%s - %-8p %-6d flags:%x", CLASSNAME, __func__, static_cast<void*>(buffer),
+            buffer->length, buffer->flags);
   status = mmal_port_send_buffer(m_dec_input, buffer);
   if (status != MMAL_SUCCESS)
   {
@@ -618,8 +629,12 @@ bool CMMALVideo::AddData(const DemuxPacket &packet)
       m_packet_num++;
       buffer->flags |= MMAL_BUFFER_HEADER_FLAG_FRAME_END;
     }
-    CLog::Log(LOGDEBUG, LOGVIDEO, "%s::%s - %-8p %-6d/%-6d dts:%.3f pts:%.3f flags:%x ready_queue(%d)",
-         CLASSNAME, __func__, buffer, buffer->length, iSize, packet.dts == DVD_NOPTS_VALUE ? 0.0 : packet.dts*1e-6, packet.pts == DVD_NOPTS_VALUE ? 0.0 : packet.pts*1e-6, buffer->flags, m_output_ready.size());
+    CLog::Log(LOGDEBUG, LOGVIDEO,
+              "%s::%s - %-8p %-6d/%-6d dts:%.3f pts:%.3f flags:%x ready_queue(%d)", CLASSNAME,
+              __func__, static_cast<void*>(buffer), buffer->length, iSize,
+              packet.dts == DVD_NOPTS_VALUE ? 0.0 : packet.dts * 1e-6,
+              packet.pts == DVD_NOPTS_VALUE ? 0.0 : packet.pts * 1e-6, buffer->flags,
+              m_output_ready.size());
     status = mmal_port_send_buffer(m_dec_input, buffer);
     if (status != MMAL_SUCCESS)
     {
@@ -808,9 +823,12 @@ CDVDVideoCodec::VCReturn CMMALVideo::GetPicture(VideoPicture* picture)
     picture->iFlags  = 0;
     if (buffer->mmal_buffer->flags & MMAL_BUFFER_HEADER_FLAG_USER3)
       picture->iFlags |= DVP_FLAG_DROPPED;
-    CLog::Log(LOGINFO, LOGVIDEO, "%s::%s dts:%.3f pts:%.3f flags:%x:%x MMALBuffer:%p mmal_buffer:%p", CLASSNAME, __func__,
-          picture->dts == DVD_NOPTS_VALUE ? 0.0 : picture->dts*1e-6, picture->pts == DVD_NOPTS_VALUE ? 0.0 : picture->pts*1e-6,
-          picture->iFlags, buffer->mmal_buffer->flags, buffer, buffer->mmal_buffer);
+    CLog::Log(LOGINFO, LOGVIDEO,
+              "%s::%s dts:%.3f pts:%.3f flags:%x:%x MMALBuffer:%p mmal_buffer:%p", CLASSNAME,
+              __func__, picture->dts == DVD_NOPTS_VALUE ? 0.0 : picture->dts * 1e-6,
+              picture->pts == DVD_NOPTS_VALUE ? 0.0 : picture->pts * 1e-6, picture->iFlags,
+              buffer->mmal_buffer->flags, static_cast<void*>(buffer),
+              static_cast<void*>(buffer->mmal_buffer));
     assert(!(buffer->mmal_buffer->flags & MMAL_BUFFER_HEADER_FLAG_DECODEONLY));
     buffer->mmal_buffer->flags &= ~MMAL_BUFFER_HEADER_FLAG_USER3;
     buffer->m_stills = m_hints.stills;

@@ -664,7 +664,7 @@ bool CRenderSystemDX::InitGUIShader()
   m_pGUIShader = new CGUIShaderDX();
   if (!m_pGUIShader->Initialize())
   {
-    CLog::Log(LOGERROR, __FUNCTION__ " - Failed to initialize GUI shader.");
+    CLog::LogF(LOGERROR, "Failed to initialize GUI shader.");
     return false;
   }
 

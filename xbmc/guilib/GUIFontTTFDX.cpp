@@ -195,7 +195,7 @@ CVertexBuffer CGUIFontTTFDX::CreateVertexBuffer(const std::vector<SVertex> &vert
   {
     buffer = new CD3DBuffer();
     if (!buffer->Create(D3D11_BIND_VERTEX_BUFFER, vertices.size(), sizeof(SVertex), DXGI_FORMAT_UNKNOWN, D3D11_USAGE_IMMUTABLE, &vertices[0]))
-      CLog::Log(LOGERROR, "%s - Failed to create vertex buffer.", __FUNCTION__);
+      CLog::LogF(LOGERROR, "Failed to create vertex buffer.");
     else
       AddReference((CGUIFontTTFDX*)this, buffer);
   }
@@ -312,7 +312,7 @@ bool CGUIFontTTFDX::UpdateDynamicVertexBuffer(const SVertex* pSysMem, unsigned i
 
     if (FAILED(pDevice->CreateBuffer(&bufferDesc, &initData, m_vertexBuffer.ReleaseAndGetAddressOf())))
     {
-      CLog::Log(LOGERROR, __FUNCTION__ " - Failed to create the vertex buffer.");
+      CLog::LogF(LOGERROR, "Failed to create the vertex buffer.");
       return false;
     }
 
@@ -323,7 +323,7 @@ bool CGUIFontTTFDX::UpdateDynamicVertexBuffer(const SVertex* pSysMem, unsigned i
     D3D11_MAPPED_SUBRESOURCE resource;
     if (FAILED(pContext->Map(m_vertexBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &resource)))
     {
-      CLog::Log(LOGERROR, __FUNCTION__ " - Failed to update the vertex buffer.");
+      CLog::LogF(LOGERROR, "Failed to update the vertex buffer.");
       return false;
     }
     memcpy(resource.pData, pSysMem, width);

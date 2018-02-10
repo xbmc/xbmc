@@ -19,12 +19,22 @@
  */
 
 #include "log.h"
+#include "CompileInfo.h"
 #include "settings/AdvancedSettings.h"
 #include "system.h"
+#include "threads/CriticalSection.h"
 #include "threads/SingleLock.h"
 #include "threads/Thread.h"
 #include "utils/StringUtils.h"
-#include "CompileInfo.h"
+
+#if defined(TARGET_POSIX)
+#include "posix/PosixInterfaceForCLog.h"
+typedef class CPosixInterfaceForCLog PlatformInterfaceForCLog;
+#elif defined(TARGET_WINDOWS)
+#include "win32/Win32InterfaceForCLog.h"
+typedef class CWin32InterfaceForCLog PlatformInterfaceForCLog;
+#endif
+
 
 static const char* const levelNames[] =
 {"DEBUG", "INFO", "NOTICE", "WARNING", "ERROR", "SEVERE", "FATAL", "NONE"};
@@ -33,8 +43,24 @@ static const char* const levelNames[] =
 static const char* const logLevelNames[] =
 { "LOG_LEVEL_NONE" /*-1*/, "LOG_LEVEL_NORMAL" /*0*/, "LOG_LEVEL_DEBUG" /*1*/, "LOG_LEVEL_DEBUG_FREEMEM" /*2*/ };
 
-// s_globals is used as static global with CLog global variables
-#define s_globals XBMC_GLOBAL_USE(CLog).m_globalInstance
+namespace
+{
+class CLogGlobals
+{
+public:
+  CLogGlobals(void) : m_repeatCount(0), m_repeatLogLevel(-1), m_logLevel(LOG_LEVEL_DEBUG), m_extraLogLevels(0) {}
+  ~CLogGlobals() = default;
+  PlatformInterfaceForCLog m_platform;
+  int         m_repeatCount;
+  int         m_repeatLogLevel;
+  std::string m_repeatLine;
+  int         m_logLevel;
+  int         m_extraLogLevels;
+  CCriticalSection critSec;
+};
+
+static CLogGlobals g_logState;
+}
 
 CLog::CLog() = default;
 
@@ -42,88 +68,34 @@ CLog::~CLog() = default;
 
 void CLog::Close()
 {
-  CSingleLock waitLock(s_globals.critSec);
-  s_globals.m_platform.CloseLogFile();
-  s_globals.m_repeatLine.clear();
+  CSingleLock waitLock(g_logState.critSec);
+  g_logState.m_platform.CloseLogFile();
+  g_logState.m_repeatLine.clear();
 }
 
-void CLog::Log(int loglevel, PRINTF_FORMAT_STRING const char *format, ...)
+void CLog::LogString(int logLevel, std::string&& logString)
 {
-  if (IsLogLevelLogged(loglevel))
-  {
-    va_list va;
-    va_start(va, format);
-    LogString(loglevel, StringUtils::FormatV(format, va));
-    va_end(va);
-  }
-}
-
-void CLog::Log(int loglevel, int component, PRINTF_FORMAT_STRING const char *format, ...)
-{
-  if (g_advancedSettings.CanLogComponent(component) && IsLogLevelLogged(loglevel))
-  {
-    va_list va;
-    va_start(va, format);
-    LogString(loglevel, StringUtils::FormatV(format, va));
-    va_end(va);
-  }
-}
-
-void CLog::LogFunction(int loglevel, const char* functionName, const char* format, ...)
-{
-  if (IsLogLevelLogged(loglevel))
-  {
-    std::string fNameStr;
-    if (functionName && functionName[0])
-      fNameStr.assign(functionName).append(": ");
-    va_list va;
-    va_start(va, format);
-    LogString(loglevel, fNameStr + StringUtils::FormatV(format, va));
-    va_end(va);
-  }
-}
-
-void CLog::LogFunction(int loglevel, const char* functionName, int component, const char* format, ...)
-{
-  if (g_advancedSettings.CanLogComponent(component))
-  {
-    va_list va;
-    va_start(va, format);
-    #if defined(__GNUC__)
-    #pragma GCC diagnostic push
-    #pragma GCC diagnostic ignored "-Wformat-security"
-    #endif
-    LogFunction(loglevel, functionName, StringUtils::FormatV(format, va).c_str());
-    #if defined(__GNUC__)
-    #pragma GCC diagnostic pop
-    #endif
-    va_end(va);
-  }
-}
-
-void CLog::LogString(int logLevel, const std::string& logString)
-{
-  CSingleLock waitLock(s_globals.critSec);
+  CSingleLock waitLock(g_logState.critSec);
   std::string strData(logString);
   StringUtils::TrimRight(strData);
   if (!strData.empty())
   {
-    if (s_globals.m_repeatLogLevel == logLevel && s_globals.m_repeatLine == strData)
+    if (g_logState.m_repeatLogLevel == logLevel && g_logState.m_repeatLine == strData)
     {
-      s_globals.m_repeatCount++;
+      g_logState.m_repeatCount++;
       return;
     }
-    else if (s_globals.m_repeatCount)
+    else if (g_logState.m_repeatCount)
     {
       std::string strData2 = StringUtils::Format("Previous line repeats %d times.",
-                                                s_globals.m_repeatCount);
+                                                g_logState.m_repeatCount);
       PrintDebugString(strData2);
-      WriteLogString(s_globals.m_repeatLogLevel, strData2);
-      s_globals.m_repeatCount = 0;
+      WriteLogString(g_logState.m_repeatLogLevel, strData2);
+      g_logState.m_repeatCount = 0;
     }
 
-    s_globals.m_repeatLine = strData;
-    s_globals.m_repeatLogLevel = logLevel;
+    g_logState.m_repeatLine = strData;
+    g_logState.m_repeatLogLevel = logLevel;
 
     PrintDebugString(strData);
 
@@ -131,16 +103,22 @@ void CLog::LogString(int logLevel, const std::string& logString)
   }
 }
 
+void CLog::LogString(int logLevel, int component, std::string&& logString)
+{
+  if (g_advancedSettings.CanLogComponent(component) && IsLogLevelLogged(logLevel))
+    LogString(logLevel, std::move(logString));
+}
+
 bool CLog::Init(const std::string& path)
 {
-  CSingleLock waitLock(s_globals.critSec);
+  CSingleLock waitLock(g_logState.critSec);
 
   // the log folder location is initialized in the CAdvancedSettings
   // constructor and changed in CApplication::Create()
 
   std::string appName = CCompileInfo::GetAppName();
   StringUtils::ToLower(appName);
-  return s_globals.m_platform.OpenLogFile(path + appName + ".log", path + appName + ".old.log");
+  return g_logState.m_platform.OpenLogFile(path + appName + ".log", path + appName + ".old.log");
 }
 
 void CLog::MemDump(char *pData, int length)
@@ -176,11 +154,11 @@ void CLog::MemDump(char *pData, int length)
 
 void CLog::SetLogLevel(int level)
 {
-  CSingleLock waitLock(s_globals.critSec);
+  CSingleLock waitLock(g_logState.critSec);
   if (level >= LOG_LEVEL_NONE && level <= LOG_LEVEL_MAX)
   {
-    s_globals.m_logLevel = level;
-    CLog::Log(LOGNOTICE, "Log level changed to \"%s\"", logLevelNames[s_globals.m_logLevel + 1]);
+    g_logState.m_logLevel = level;
+    CLog::Log(LOGNOTICE, "Log level changed to \"%s\"", logLevelNames[g_logState.m_logLevel + 1]);
   }
   else
     CLog::Log(LOGERROR, "%s: Invalid log level requested: %d", __FUNCTION__, level);
@@ -188,24 +166,24 @@ void CLog::SetLogLevel(int level)
 
 int CLog::GetLogLevel()
 {
-  return s_globals.m_logLevel;
+  return g_logState.m_logLevel;
 }
 
 void CLog::SetExtraLogLevels(int level)
 {
-  CSingleLock waitLock(s_globals.critSec);
-  s_globals.m_extraLogLevels = level;
+  CSingleLock waitLock(g_logState.critSec);
+  g_logState.m_extraLogLevels = level;
 }
 
 bool CLog::IsLogLevelLogged(int loglevel)
 {
   const int extras = (loglevel & ~LOGMASK);
-  if (extras != 0 && (s_globals.m_extraLogLevels & extras) == 0)
+  if (extras != 0 && (g_logState.m_extraLogLevels & extras) == 0)
     return false;
 
-  if (s_globals.m_logLevel >= LOG_LEVEL_DEBUG)
+  if (g_logState.m_logLevel >= LOG_LEVEL_DEBUG)
     return true;
-  if (s_globals.m_logLevel <= LOG_LEVEL_NONE)
+  if (g_logState.m_logLevel <= LOG_LEVEL_NONE)
     return false;
 
   // "m_logLevel" is "LOG_LEVEL_NORMAL"
@@ -216,7 +194,7 @@ bool CLog::IsLogLevelLogged(int loglevel)
 void CLog::PrintDebugString(const std::string& line)
 {
 #if defined(_DEBUG) || defined(PROFILE)
-  s_globals.m_platform.PrintDebugString(line);
+  g_logState.m_platform.PrintDebugString(line);
 #endif // defined(_DEBUG) || defined(PROFILE)
 }
 
@@ -230,7 +208,7 @@ bool CLog::WriteLogString(int logLevel, const std::string& logString)
 
   int hour, minute, second;
   double millisecond;
-  s_globals.m_platform.GetCurrentLocalTime(hour, minute, second, millisecond);
+  g_logState.m_platform.GetCurrentLocalTime(hour, minute, second, millisecond);
 
   strData = StringUtils::Format(prefixFormat,
                                   hour,
@@ -240,5 +218,5 @@ bool CLog::WriteLogString(int logLevel, const std::string& logString)
                                   (uint64_t)CThread::GetCurrentThreadId(),
                                   levelNames[logLevel]) + strData;
 
-  return s_globals.m_platform.WriteStringToLog(strData);
+  return g_logState.m_platform.WriteStringToLog(strData);
 }

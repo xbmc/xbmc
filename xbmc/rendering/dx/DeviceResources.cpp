@@ -20,11 +20,12 @@
 
 #include "DeviceResources.h"
 #include "DirectXHelper.h"
-#include "guilib/GraphicContext.h"
-#include "guilib/GUIWindowManager.h"
-#include "messaging/ApplicationMessenger.h"
-#include "utils/log.h"
 #include "RenderContext.h"
+#include "guilib/GUIWindowManager.h"
+#include "guilib/GraphicContext.h"
+#include "messaging/ApplicationMessenger.h"
+#include "platform/win32/CharsetConverter.h"
+#include "utils/log.h"
 
 using namespace DirectX;
 using namespace Microsoft::WRL;
@@ -194,7 +195,8 @@ bool DX::DeviceResources::SetFullScreen(bool fullscreen, RESOLUTION_INFO& res)
 
   critical_section::scoped_lock lock(m_criticalSection);
 
-  CLog::LogF(LOGDEBUG, "switching to/from fullscreen (%f x %f)", m_outputSize.Width, m_outputSize.Height);
+  CLog::LogF(LOGDEBUG, "switching to/from fullscreen (%f x %f)", m_outputSize.Width,
+             m_outputSize.Height);
 
   BOOL bFullScreen;
   bool recreate = m_stereoEnabled != (g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_HARDWAREBASED);
@@ -228,8 +230,8 @@ bool DX::DeviceResources::SetFullScreen(bool fullscreen, RESOLUTION_INFO& res)
         // some drivers unable to create stereo swapchain if mode does not match @23.976
         || g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_HARDWAREBASED)
       {
-        CLog::LogF(LOGDEBUG, "changing display mode to %dx%d@%0.3f%s", res.iWidth, res.iHeight, res.fRefreshRate,
-                             res.dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "");
+        CLog::Log(LOGDEBUG, __FUNCTION__": changing display mode to %dx%d@%0.3fs", res.iWidth, res.iHeight, res.fRefreshRate,
+                  res.dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "");
 
         int refresh = static_cast<int>(res.fRefreshRate);
         int i = (refresh + 1) % 24 == 0 || (refresh + 1) % 30 == 0 ? 1 : 0;
@@ -385,7 +387,8 @@ void DX::DeviceResources::CreateDeviceResources()
   DXGI_ADAPTER_DESC aDesc;
   m_adapter->GetDesc(&aDesc);
 
-  CLog::LogF(LOGDEBUG, "device is created on adapter '%S' with feature level %04x.", aDesc.Description, m_d3dFeatureLevel);
+  CLog::LogF(LOGDEBUG, "device is created on adapter '%s' with feature level %04x.",
+             KODI::PLATFORM::WINDOWS::FromW(aDesc.Description), m_d3dFeatureLevel);
 
   m_bDeviceCreated = true;
 }
@@ -894,7 +897,8 @@ void DX::DeviceResources::HandleOutputChange(const std::function<bool(DXGI_OUTPU
         {
           // adapter is changed
           m_adapter = adapter;
-          CLog::LogF(LOGDEBUG, "selected `%S` adapter on %S.", foundDesc.Description, outputDesc.DeviceName);
+          CLog::LogF(LOGDEBUG, "selected {} adapter. ",
+                     KODI::PLATFORM::WINDOWS::FromW(foundDesc.Description));
           // (re)init hooks into new driver
           Windowing().InitHooks(output.Get());
           // recreate d3d11 device on new adapter

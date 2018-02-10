@@ -171,7 +171,7 @@ extern "C" intptr_t (*__stdcall dllGetProcAddress(HMODULE hModule, const char* f
   {
     if( dll->ResolveOrdinal(LOW_WORD(function), &address) )
     {
-      CLog::Log(LOGDEBUG, "%s(%p(%s), %d) => %p", __FUNCTION__, hModule, dll->GetName(), LOW_WORD(function), address);
+      CLog::Log(LOGDEBUG, "%s(%p(%s), %d) => %p", __FUNCTION__, static_cast<void*>(hModule), dll->GetName(), LOW_WORD(function), address);
     }
     else if( dll->IsSystemDll() )
     {
@@ -189,14 +189,14 @@ extern "C" intptr_t (*__stdcall dllGetProcAddress(HMODULE hModule, const char* f
     else
     {
       address = NULL;
-      CLog::Log(LOGDEBUG, "%s(%p(%s), '%s') => %p",__FUNCTION__ , hModule, dll->GetName(), function, address);
+      CLog::Log(LOGDEBUG, "%s(%p(%s), '%s') => %p",__FUNCTION__ , static_cast<void*>(hModule), dll->GetName(), function, address);
     }
   }
   else
   {
     if( dll->ResolveExport(function, &address) )
     {
-      CLog::Log(LOGDEBUG, "%s(%p(%s), '%s') => %p",__FUNCTION__ , hModule, dll->GetName(), function, address);
+      CLog::Log(LOGDEBUG, "%s(%p(%s), '%s') => %p",__FUNCTION__ , static_cast<void*>(hModule), dll->GetName(), function, address);
     }
     else
     {
@@ -213,7 +213,7 @@ extern "C" intptr_t (*__stdcall dllGetProcAddress(HMODULE hModule, const char* f
       else
       {
         address = NULL;
-        CLog::Log(LOGDEBUG, "%s(%p(%s), '%s') => %p", __FUNCTION__, hModule, dll->GetName(), function, address);
+        CLog::Log(LOGDEBUG, "%s(%p(%s), '%s') => %p", __FUNCTION__, static_cast<void*>(hModule), dll->GetName(), function, address);
       }
     }
   }

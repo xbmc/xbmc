@@ -593,7 +593,12 @@ bool CAESinkXAudio::InitializeInternal(std::string deviceId, AEAudioFormat &form
   if (!pMasterVoice)
   {
     if (!bdefault)
-      CLog::Log(LOGINFO, __FUNCTION__": Could not locate the device named \"%s\" in the list of Xaudio endpoint devices. Trying the default device...", device.c_str());
+    {
+      CLog::Log(LOGINFO,
+                __FUNCTION__ ": Could not locate the device named \"%s\" in the list of Xaudio "
+                             "endpoint devices. Trying the default device...",
+                KODI::PLATFORM::WINDOWS::FromW(device));
+    }
 
     // smartphone issue: providing device ID (even default ID) causes E_NOINTERFACE result
     // workaround: device = nullptr will initialize default audio endpoint

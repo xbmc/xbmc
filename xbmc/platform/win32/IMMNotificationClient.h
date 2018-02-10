@@ -23,9 +23,12 @@
 #include "powermanagement/windows/Win32PowerSyscall.h"
 #include "ServiceBroker.h"
 #include "utils/log.h"
+#include "platform/win32/CharsetConverter.h"
 
 #include <mmdeviceapi.h>
 #include <wrl/client.h>
+
+using KODI::PLATFORM::WINDOWS::FromW;
 
 class CMMNotificationClient : public IMMNotificationClient
 {
@@ -116,14 +119,14 @@ public:
 
   HRESULT STDMETHODCALLTYPE OnDeviceAdded(LPCWSTR pwstrDeviceId)
   {
-    CLog::Log(LOGDEBUG, "%s: Added device: %s", __FUNCTION__, pwstrDeviceId);
+    CLog::Log(LOGDEBUG, "%s: Added device: %s", __FUNCTION__, FromW(pwstrDeviceId));
     NotifyAE();
     return S_OK;
   }
 
   HRESULT STDMETHODCALLTYPE OnDeviceRemoved(LPCWSTR pwstrDeviceId)
   {
-    CLog::Log(LOGDEBUG, "%s: Removed device: %s", __FUNCTION__, pwstrDeviceId);
+    CLog::Log(LOGDEBUG, "%s: Removed device: %s", __FUNCTION__, FromW(pwstrDeviceId));
     NotifyAE();
     return S_OK;
   }
@@ -154,8 +157,8 @@ public:
 
   HRESULT STDMETHODCALLTYPE OnPropertyValueChanged(LPCWSTR pwstrDeviceId, const PROPERTYKEY key)
   {
-    CLog::Log(LOGDEBUG, "%s: Changed device property of %S is {%8.8x-%4.4x-%4.4x-%2.2x%2.2x-%2.2x%2.2x%2.2x%2.2x%2.2x%2.2x}#%d", 
-              __FUNCTION__, pwstrDeviceId, key.fmtid.Data1, key.fmtid.Data2, key.fmtid.Data3,
+    CLog::Log(LOGDEBUG, "%s: Changed device property of %s is {%8.8x-%4.4x-%4.4x-%2.2x%2.2x-%2.2x%2.2x%2.2x%2.2x%2.2x%2.2x}#%d", 
+              __FUNCTION__, FromW(pwstrDeviceId), key.fmtid.Data1, key.fmtid.Data2, key.fmtid.Data3,
                                            key.fmtid.Data4[0], key.fmtid.Data4[1],
                                            key.fmtid.Data4[2], key.fmtid.Data4[3],
                                            key.fmtid.Data4[4], key.fmtid.Data4[5],

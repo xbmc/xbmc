@@ -58,8 +58,8 @@ public:
   CSettingsManager() = default;
   ~CSettingsManager() override;
 
-  static const uint32_t Version = 2;
-  static const uint32_t MinimumSupportedVersion = 0;
+  static const uint32_t Version;
+  static const uint32_t MinimumSupportedVersion;
 
   // implementation of ISettingCreator
   std::shared_ptr<CSetting> CreateSetting(const std::string &settingType, const std::string &settingId, CSettingsManager *settingsManager = nullptr) const override;

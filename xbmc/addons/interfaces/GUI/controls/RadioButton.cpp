@@ -55,8 +55,10 @@ void Interface_GUIControlRadioButton::set_visible(void* kodiBase, void* handle, 
   CGUIRadioButtonControl* control = static_cast<CGUIRadioButtonControl*>(handle);
   if (!addon || !control)
   {
-    CLog::Log(LOGERROR, "Interface_GUIControlRadioButton::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, addon, control, addon ? addon->ID().c_str() : "unknown");
+    CLog::Log(LOGERROR,
+              "Interface_GUIControlRadioButton::%s - invalid handler data (kodiBase='%p', "
+              "handle='%p') on addon '%s'",
+              __FUNCTION__, kodiBase, handle, addon ? addon->ID().c_str() : "unknown");
     return;
   }
 
@@ -69,8 +71,10 @@ void Interface_GUIControlRadioButton::set_enabled(void* kodiBase, void* handle, 
   CGUIRadioButtonControl* control = static_cast<CGUIRadioButtonControl*>(handle);
   if (!addon || !control)
   {
-    CLog::Log(LOGERROR, "Interface_GUIControlRadioButton::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, addon, control, addon ? addon->ID().c_str() : "unknown");
+    CLog::Log(LOGERROR,
+              "Interface_GUIControlRadioButton::%s - invalid handler data (kodiBase='%p', "
+              "handle='%p') on addon '%s'",
+              __FUNCTION__, kodiBase, handle, addon ? addon->ID().c_str() : "unknown");
     return;
   }
 
@@ -83,8 +87,10 @@ void Interface_GUIControlRadioButton::set_label(void* kodiBase, void* handle, co
   CGUIRadioButtonControl* control = static_cast<CGUIRadioButtonControl*>(handle);
   if (!addon || !control || !label)
   {
-    CLog::Log(LOGERROR, "Interface_GUIControlRadioButton::%s - invalid handler data (kodiBase='%p', handle='%p', label='%p') on addon '%s'",
-                          __FUNCTION__, addon, control, label, addon ? addon->ID().c_str() : "unknown");
+    CLog::Log(LOGERROR,
+              "Interface_GUIControlRadioButton::%s - invalid handler data (kodiBase='%p', "
+              "handle='%p', label='%p') on addon '%s'",
+              __FUNCTION__, kodiBase, handle, label, addon ? addon->ID().c_str() : "unknown");
     return;
   }
 
@@ -97,8 +103,10 @@ char* Interface_GUIControlRadioButton::get_label(void* kodiBase, void* handle)
   CGUIRadioButtonControl* control = static_cast<CGUIRadioButtonControl*>(handle);
   if (!addon || !control)
   {
-    CLog::Log(LOGERROR, "Interface_GUIControlRadioButton::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, addon, control, addon ? addon->ID().c_str() : "unknown");
+    CLog::Log(LOGERROR,
+              "Interface_GUIControlRadioButton::%s - invalid handler data (kodiBase='%p', "
+              "handle='%p') on addon '%s'",
+              __FUNCTION__, kodiBase, handle, addon ? addon->ID().c_str() : "unknown");
     return nullptr;
   }
 
@@ -111,8 +119,10 @@ void Interface_GUIControlRadioButton::set_selected(void* kodiBase, void* handle,
   CGUIRadioButtonControl* control = static_cast<CGUIRadioButtonControl*>(handle);
   if (!addon || !control)
   {
-    CLog::Log(LOGERROR, "Interface_GUIControlRadioButton::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, addon, control, addon ? addon->ID().c_str() : "unknown");
+    CLog::Log(LOGERROR,
+              "Interface_GUIControlRadioButton::%s - invalid handler data (kodiBase='%p', "
+              "handle='%p') on addon '%s'",
+              __FUNCTION__, kodiBase, handle, addon ? addon->ID().c_str() : "unknown");
     return;
   }
 
@@ -125,8 +135,10 @@ bool Interface_GUIControlRadioButton::is_selected(void* kodiBase, void* handle)
   CGUIRadioButtonControl* control = static_cast<CGUIRadioButtonControl*>(handle);
   if (!addon || !control)
   {
-    CLog::Log(LOGERROR, "Interface_GUIControlRadioButton::%s - invalid handler data (kodiBase='%p', handle='%p') on addon '%s'",
-                          __FUNCTION__, addon, control, addon ? addon->ID().c_str() : "unknown");
+    CLog::Log(LOGERROR,
+              "Interface_GUIControlRadioButton::%s - invalid handler data (kodiBase='%p', "
+              "handle='%p') on addon '%s'",
+              __FUNCTION__, kodiBase, handle, addon ? addon->ID().c_str() : "unknown");
     return false;
   }
 

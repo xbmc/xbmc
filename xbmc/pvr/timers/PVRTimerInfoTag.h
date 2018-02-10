@@ -47,7 +47,7 @@ namespace PVR
 {
   enum class TimerOperationResult
   {
-    OK,
+    OK = 0,
     FAILED,
     RECORDING // The timer was not deleted because it is currently recording (see DeleteTimer).
   };

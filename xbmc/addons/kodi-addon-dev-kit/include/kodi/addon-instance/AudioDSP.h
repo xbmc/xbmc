@@ -321,7 +321,7 @@ extern "C" {
      * @note about "iProcessSamplerate" and "iProcessFrames" is set from KODI after call of StreamCreate on input re sample add-on, if re-sampling
      * and processing is handled inside the same add-on, this value must be ignored!
      */
-  } ATTRIBUTE_PACKED AE_DSP_SETTINGS;
+  } AE_DSP_SETTINGS;
 
   /*!
    * @brief Stream profile properties
@@ -429,7 +429,7 @@ extern "C" {
     int               iChannels;                  /*!< @brief amount of basic channels */
     int               iSampleRate;                /*!< @brief sample rate */
     AE_DSP_PROFILE    Profile;                    /*!< @brief current running stream profile data */
-  } ATTRIBUTE_PACKED AE_DSP_STREAM_PROPERTIES;
+  } AE_DSP_STREAM_PROPERTIES;
 
   /*!
    * @brief Audio DSP mode categories

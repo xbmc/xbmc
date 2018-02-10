@@ -174,7 +174,7 @@ void CDXTexture::LoadToGPU()
     }
     else
     {
-      CLog::Log(LOGERROR, __FUNCTION__" - failed to lock texture.");
+      CLog::LogF(LOGERROR, "failed to lock texture.");
     }
     m_texture.UnlockRect(0);
     if (usage != D3D11_USAGE_STAGING && IsMipmapped())

@@ -61,7 +61,8 @@ CInputProcessorKeyboard::CInputProcessorKeyboard(wayland::keyboard_t const& keyb
 
     if (format != wayland::keyboard_keymap_format::xkb_v1)
     {
-      CLog::Log(LOGWARNING, "Wayland compositor sent keymap in format %u, but we only understand xkbv1 - keyboard input will not work", format);
+      CLog::Log(LOGWARNING, "Wayland compositor sent keymap in format %u, but we only understand xkbv1 - keyboard input will not work",
+        static_cast<unsigned int>(format));
       return;
     }
 

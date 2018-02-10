@@ -60,7 +60,7 @@ bool Interface_Network::wake_on_lan(void* kodiBase, const char* mac)
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (addon == nullptr || mac == nullptr)
   {
-    CLog::Log(LOGERROR, "Interface_Network::%s - invalid data (addon='%p', mac='%p')", __FUNCTION__, addon, mac);
+    CLog::Log(LOGERROR, "Interface_Network::%s - invalid data (addon='%p', mac='%p')", __FUNCTION__, kodiBase, mac);
     return false;
   }
 
@@ -72,7 +72,7 @@ char* Interface_Network::get_ip_address(void* kodiBase)
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (addon == nullptr)
   {
-    CLog::Log(LOGERROR, "Interface_Network::%s - invalid data (addon='%p')", __FUNCTION__, addon);
+    CLog::Log(LOGERROR, "Interface_Network::%s - invalid data (addon='%p')", __FUNCTION__, kodiBase);
     return nullptr;
   }
 
@@ -94,7 +94,8 @@ char* Interface_Network::dns_lookup(void* kodiBase, const char* url, bool* ret)
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (addon == nullptr || url == nullptr || ret == nullptr)
   {
-    CLog::Log(LOGERROR, "Interface_Network::%s - invalid data (addon='%p', url='%p', ret='%p')", __FUNCTION__, addon, url, ret);
+    CLog::Log(LOGERROR, "Interface_Network::%s - invalid data (addon='%p', url='%p', ret='%p')",
+              __FUNCTION__, kodiBase, url, static_cast<void*>(ret));
     return nullptr;
   }
 
@@ -111,7 +112,8 @@ char* Interface_Network::url_encode(void* kodiBase, const char* url)
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (addon == nullptr || url == nullptr)
   {
-    CLog::Log(LOGERROR, "Interface_Network::%s - invalid data (addon='%p', url='%p')", __FUNCTION__, addon, url);
+    CLog::Log(LOGERROR, "Interface_Network::%s - invalid data (addon='%p', url='%p')", __FUNCTION__,
+              kodiBase, url);
     return nullptr;
   }
 

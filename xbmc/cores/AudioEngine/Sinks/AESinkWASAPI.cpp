@@ -41,7 +41,7 @@ DEFINE_PROPERTYKEY(PKEY_Device_FriendlyName, 0xa45c254e, 0xdf1c, 0x4efd, 0x80, 0
 DEFINE_PROPERTYKEY(PKEY_Device_EnumeratorName, 0xa45c254e, 0xdf1c, 0x4efd, 0x80, 0x20, 0x67, 0xd1, 0x46, 0xa8, 0x50, 0xe0, 24);
 
 extern const char *WASAPIErrToStr(HRESULT err);
-#define EXIT_ON_FAILURE(hr, reason, ...) if(FAILED(hr)) {CLog::Log(LOGERROR, reason " - %s", __VA_ARGS__, WASAPIErrToStr(hr)); goto failed;}
+#define EXIT_ON_FAILURE(hr, reason) if(FAILED(hr)) {CLog::LogF(LOGERROR, reason " - HRESULT = %li ErrorMessage = %s", hr, WASAPIErrToStr(hr)); goto failed;}
 
 template<class T>
 inline void SafeRelease(T **ppT)
@@ -123,33 +123,38 @@ bool CAESinkWASAPI::Initialize(AEAudioFormat &format, std::string &device)
   if(!bdefault)
   {
     hr = CAESinkFactoryWin::ActivateWASAPIDevice(device, &m_pDevice);
-    EXIT_ON_FAILURE(hr, __FUNCTION__": Retrieval of WASAPI endpoint failed.")
+    EXIT_ON_FAILURE(hr, "Retrieval of WASAPI endpoint failed.")
   }
 
   if (!m_pDevice)
   {
     if(!bdefault)
-      CLog::Log(LOGINFO, __FUNCTION__": Could not locate the device named \"%s\" in the list of WASAPI endpoint devices.  Trying the default device...", device.c_str());
+    {
+      CLog::LogF(LOGINFO,
+                 "Could not locate the device named \"%s\" in the list of WASAPI endpoint devices. "
+                 " Trying the default device...",
+                 device);
+    }
 
     std::string defaultId = CAESinkFactoryWin::GetDefaultDeviceId();
     if (defaultId.empty())
     {
-      CLog::Log(LOGINFO, __FUNCTION__": Could not locate the default device id in the list of WASAPI endpoint devices.");
+      CLog::LogF(LOGINFO, "Could not locate the default device id in the list of WASAPI endpoint devices.");
       goto failed;
     }
 
     hr = CAESinkFactoryWin::ActivateWASAPIDevice(defaultId, &m_pDevice);
-    EXIT_ON_FAILURE(hr, __FUNCTION__": Could not retrieve the default WASAPI audio endpoint.")
+    EXIT_ON_FAILURE(hr, "Could not retrieve the default WASAPI audio endpoint.")
 
     device = defaultId;
   }
 
   hr = m_pDevice->Activate(m_pAudioClient.ReleaseAndGetAddressOf());
-  EXIT_ON_FAILURE(hr, __FUNCTION__": Activating the WASAPI endpoint device failed.")
+  EXIT_ON_FAILURE(hr, "Activating the WASAPI endpoint device failed.")
 
   if (!InitializeExclusive(format))
   {
-    CLog::Log(LOGINFO, __FUNCTION__": Could not Initialize Exclusive with that format");
+    CLog::LogF(LOGINFO, "Could not Initialize Exclusive with that format");
     goto failed;
   }
 
@@ -161,17 +166,17 @@ bool CAESinkWASAPI::Initialize(AEAudioFormat &format, std::string &device)
   sinkRetFormat         = format.m_dataFormat;
 
   hr = m_pAudioClient->GetService(IID_IAudioRenderClient, reinterpret_cast<void**>(m_pRenderClient.ReleaseAndGetAddressOf()));
-  EXIT_ON_FAILURE(hr, __FUNCTION__": Could not initialize the WASAPI render client interface.")
+  EXIT_ON_FAILURE(hr, "Could not initialize the WASAPI render client interface.")
 
   hr = m_pAudioClient->GetService(IID_IAudioClock, reinterpret_cast<void**>(m_pAudioClock.ReleaseAndGetAddressOf()));
-  EXIT_ON_FAILURE(hr, __FUNCTION__": Could not initialize the WASAPI audio clock interface.")
+  EXIT_ON_FAILURE(hr, "Could not initialize the WASAPI audio clock interface.")
 
   hr = m_pAudioClock->GetFrequency(&m_clockFreq);
-  EXIT_ON_FAILURE(hr, __FUNCTION__": Retrieval of IAudioClock::GetFrequency failed.")
+  EXIT_ON_FAILURE(hr, "Retrieval of IAudioClock::GetFrequency failed.")
 
   m_needDataEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
   hr = m_pAudioClient->SetEventHandle(m_needDataEvent);
-  EXIT_ON_FAILURE(hr, __FUNCTION__": Could not set the WASAPI event handler.");
+  EXIT_ON_FAILURE(hr, "Could not set the WASAPI event handler.");
 
   m_initialized = true;
   m_isDirty     = false;
@@ -187,7 +192,7 @@ bool CAESinkWASAPI::Initialize(AEAudioFormat &format, std::string &device)
   return true;
 
 failed:
-  CLog::Log(LOGERROR, __FUNCTION__": WASAPI initialization failed.");
+  CLog::LogF(LOGERROR, "WASAPI initialization failed.");
   SafeRelease(&m_pDevice);
   if(m_needDataEvent)
   {
@@ -213,7 +218,7 @@ void CAESinkWASAPI::Deinitialize()
     }
     catch (...)
     {
-      CLog::Log(LOGDEBUG, "%s: Invalidated AudioClient - Releasing", __FUNCTION__);
+      CLog::LogF(LOGDEBUG, "Invalidated AudioClient - Releasing");
     }
   }
   m_running = false;
@@ -252,7 +257,7 @@ void CAESinkWASAPI::GetDelay(AEDelayStatus& status)
   do {
     hr = m_pAudioClock->GetPosition(&pos, &tick);
   } while (hr != S_OK && ++retries < 100);
-  EXIT_ON_FAILURE(hr, __FUNCTION__": Retrieval of IAudioClock::GetPosition failed.")
+  EXIT_ON_FAILURE(hr, "Retrieval of IAudioClock::GetPosition failed.")
 
   status.delay = (double)(m_sinkFrames + m_bufferPtr) / m_format.m_sampleRate - (double)pos / m_clockFreq;
   status.tick  = rescale_u64(tick, CurrentHostFrequency(), 10000000); /* convert from 100ns back to qpc ticks */
@@ -300,14 +305,14 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t **data, unsigned int frames, unsi
     hr = m_pAudioClient->Reset();
     if (FAILED(hr))
     {
-      CLog::Log(LOGERROR, __FUNCTION__ " AudioClient reset failed due to %s", WASAPIErrToStr(hr));
+      CLog::LogF(LOGERROR, " AudioClient reset failed due to %s", WASAPIErrToStr(hr));
       return 0;
     }
     hr = m_pRenderClient->GetBuffer(NumFramesRequested, &buf);
     if (FAILED(hr))
     {
       #ifdef _DEBUG
-      CLog::Log(LOGERROR, __FUNCTION__": GetBuffer failed due to %s", WASAPIErrToStr(hr));
+      CLog::LogF(LOGERROR, "GetBuffer failed due to %s", WASAPIErrToStr(hr));
       #endif
       m_isDirty = true; //flag new device or re-init needed
       return INT_MAX;
@@ -319,7 +324,7 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t **data, unsigned int frames, unsi
     if (FAILED(hr))
     {
       #ifdef _DEBUG
-      CLog::Log(LOGDEBUG, __FUNCTION__": ReleaseBuffer failed due to %s.", WASAPIErrToStr(hr));
+      CLog::LogF(LOGDEBUG, "ReleaseBuffer failed due to %s.", WASAPIErrToStr(hr));
       #endif
       m_isDirty = true; //flag new device or re-init needed
       return INT_MAX;
@@ -328,7 +333,7 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t **data, unsigned int frames, unsi
 
     hr = m_pAudioClient->Start(); //start the audio driver running
     if (FAILED(hr))
-      CLog::Log(LOGERROR, __FUNCTION__": AudioClient Start Failed");
+      CLog::LogF(LOGERROR, "AudioClient Start Failed");
     m_running = true; //signal that we're processing frames
     return 0U;
   }
@@ -345,7 +350,7 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t **data, unsigned int frames, unsi
 
   if(eventAudioCallback != WAIT_OBJECT_0 || !&buf)
   {
-    CLog::Log(LOGERROR, __FUNCTION__": Endpoint Buffer timed out");
+    CLog::LogF(LOGERROR, "Endpoint Buffer timed out");
     return INT_MAX;
   }
 
@@ -360,7 +365,8 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t **data, unsigned int frames, unsi
 
   if (m_avgTimeWaiting < 3.0)
   {
-    CLog::Log(LOGDEBUG, __FUNCTION__": Possible AQ Loss: Avg. Time Waiting for Audio Driver callback : %dmsec", (int)m_avgTimeWaiting);
+    CLog::LogF(LOGDEBUG, "Possible AQ Loss: Avg. Time Waiting for Audio Driver callback : %dmsec",
+               (int)m_avgTimeWaiting);
   }
 #endif
 
@@ -368,7 +374,7 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t **data, unsigned int frames, unsi
   if (FAILED(hr))
   {
     #ifdef _DEBUG
-      CLog::Log(LOGERROR, __FUNCTION__": GetBuffer failed due to %s", WASAPIErrToStr(hr));
+      CLog::LogF(LOGERROR, "GetBuffer failed due to %s", WASAPIErrToStr(hr));
     #endif
     return INT_MAX;
   }
@@ -378,7 +384,7 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t **data, unsigned int frames, unsi
   if (FAILED(hr))
   {
     #ifdef _DEBUG
-    CLog::Log(LOGDEBUG, __FUNCTION__": ReleaseBuffer failed due to %s.", WASAPIErrToStr(hr));
+    CLog::LogF(LOGDEBUG, "ReleaseBuffer failed due to %s.", WASAPIErrToStr(hr));
     #endif
     return INT_MAX;
   }
@@ -419,7 +425,7 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
     hr = CAESinkFactoryWin::ActivateWASAPIDevice(details.strDeviceId, &pDevice);
     if (FAILED(hr))
     {
-      CLog::Log(LOGERROR, __FUNCTION__": Retrieval of WASAPI endpoint failed.");
+      CLog::LogF(LOGERROR, "Retrieval of WASAPI endpoint failed.");
       goto failed;
     }
 
@@ -441,14 +447,20 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
       hr = pClient->IsFormatSupported(AUDCLNT_SHAREMODE_EXCLUSIVE, &wfxex.Format, NULL);
       if (hr == AUDCLNT_E_EXCLUSIVE_MODE_NOT_ALLOWED)
       {
-        CLog::Log(LOGNOTICE, __FUNCTION__": Exclusive mode is not allowed on device \"%s\", check device settings.", details.strDescription.c_str());
+        CLog::LogF(LOGNOTICE,
+                   "Exclusive mode is not allowed on device \"%s\", check device settings.",
+                   details.strDescription);
         SafeRelease(&pDevice);
         continue; 
       }
       if (SUCCEEDED(hr) || details.eDeviceType == AE_DEVTYPE_HDMI)
       {
         if(FAILED(hr))
-          CLog::Log(LOGNOTICE, __FUNCTION__": stream type \"%s\" on device \"%s\" seems to be not supported.", CAEUtil::StreamTypeToStr(CAEStreamInfo::STREAM_TYPE_DTSHD), details.strDescription.c_str());
+        {
+          CLog::LogF(LOGNOTICE, "stream type \"%s\" on device \"%s\" seems to be not supported.",
+                     CAEUtil::StreamTypeToStr(CAEStreamInfo::STREAM_TYPE_DTSHD),
+                     details.strDescription);
+        }
 
         deviceInfo.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD);
         add192 = true;
@@ -460,7 +472,11 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
       if (SUCCEEDED(hr) || details.eDeviceType == AE_DEVTYPE_HDMI)
       {
         if(FAILED(hr))
-          CLog::Log(LOGNOTICE, __FUNCTION__": stream type \"%s\" on device \"%s\" seems to be not supported.", CAEUtil::StreamTypeToStr(CAEStreamInfo::STREAM_TYPE_TRUEHD), details.strDescription.c_str());
+        {
+          CLog::LogF(LOGNOTICE, "stream type \"%s\" on device \"%s\" seems to be not supported.",
+                    CAEUtil::StreamTypeToStr(CAEStreamInfo::STREAM_TYPE_TRUEHD),
+                    details.strDescription);
+        }
 
         deviceInfo.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_TRUEHD);
         add192 = true;
@@ -475,7 +491,12 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
       if (SUCCEEDED(hr) || details.eDeviceType == AE_DEVTYPE_HDMI)
       {
         if(FAILED(hr))
-          CLog::Log(LOGNOTICE, __FUNCTION__": stream type \"%s\" on device \"%s\" seems to be not supported.", CAEUtil::StreamTypeToStr(CAEStreamInfo::STREAM_TYPE_EAC3), details.strDescription.c_str());
+        {
+          CLog::LogF(LOGNOTICE,
+                    "stream type \"%s\" on device \"%s\" seems to be not supported.",
+                    CAEUtil::StreamTypeToStr(CAEStreamInfo::STREAM_TYPE_EAC3),
+                    details.strDescription);
+        }
 
         deviceInfo.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_EAC3);
         add192 = true;
@@ -491,7 +512,10 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
       if (SUCCEEDED(hr) || details.eDeviceType == AE_DEVTYPE_HDMI)
       {
         if(FAILED(hr))
-          CLog::Log(LOGNOTICE, __FUNCTION__": stream type \"%s\" on device \"%s\" seems to be not supported.", "STREAM_TYPE_DTS", details.strDescription.c_str());
+        {
+          CLog::LogF(LOGNOTICE, "stream type \"%s\" on device \"%s\" seems to be not supported.",
+                     "STREAM_TYPE_DTS", details.strDescription);
+        }
 
         deviceInfo.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD_CORE);
         deviceInfo.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_2048);
@@ -505,7 +529,11 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
       if (SUCCEEDED(hr) || details.eDeviceType == AE_DEVTYPE_HDMI)
       {
         if(FAILED(hr))
-          CLog::Log(LOGNOTICE, __FUNCTION__": stream type \"%s\" on device \"%s\" seems to be not supported.", CAEUtil::StreamTypeToStr(CAEStreamInfo::STREAM_TYPE_AC3), details.strDescription.c_str());
+        {
+          CLog::LogF(LOGNOTICE, "stream type \"%s\" on device \"%s\" seems to be not supported.",
+                     CAEUtil::StreamTypeToStr(CAEStreamInfo::STREAM_TYPE_AC3),
+                     details.strDescription);
+        }
 
         deviceInfo.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_AC3);
       }
@@ -563,14 +591,15 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
         else if (wfxex.Format.nSamplesPerSec == 192000 && add192)
         {
           deviceInfo.m_sampleRates.push_back(WASAPISampleRates[j]);
-          CLog::Log(LOGNOTICE, __FUNCTION__": sample rate 192khz on device \"%s\" seems to be not supported.", details.strDescription.c_str());
+          CLog::LogF(LOGNOTICE, "sample rate 192khz on device \"%s\" seems to be not supported.",
+                     details.strDescription);
         }
       }
       pClient = nullptr;
     }
     else
     {
-      CLog::Log(LOGDEBUG, __FUNCTION__": Failed to activate device for passthrough capability testing.");
+      CLog::LogF(LOGDEBUG, "Failed to activate device for passthrough capability testing.");
     }
 
     deviceInfo.m_deviceName       = details.strDeviceId;
@@ -603,7 +632,7 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
 failed:
 
   if (FAILED(hr))
-    CLog::Log(LOGERROR, __FUNCTION__": Failed to enumerate WASAPI endpoint devices (%s).", WASAPIErrToStr(hr));
+    CLog::LogF(LOGERROR, "Failed to enumerate WASAPI endpoint devices (%s).", WASAPIErrToStr(hr));
 }
 
 //Private utility functions////////////////////////////////////////////////////
@@ -663,18 +692,20 @@ bool CAESinkWASAPI::InitializeExclusive(AEAudioFormat &format)
 
   if (SUCCEEDED(hr))
   {
-    CLog::Log(LOGINFO, __FUNCTION__": Format is Supported - will attempt to Initialize");
+    CLog::LogF(LOGINFO, "Format is Supported - will attempt to Initialize");
     goto initialize;
   }
   else if (hr != AUDCLNT_E_UNSUPPORTED_FORMAT) //It failed for a reason unrelated to an unsupported format.
   {
-    CLog::Log(LOGERROR, __FUNCTION__": IsFormatSupported failed (%s)", WASAPIErrToStr(hr));
+    CLog::LogF(LOGERROR, "IsFormatSupported failed (%s)", WASAPIErrToStr(hr));
     return false;
   }
   else if (format.m_dataFormat == AE_FMT_RAW) //No sense in trying other formats for passthrough.
     return false;
 
-  CLog::Log(LOGDEBUG, LOGAUDIO, __FUNCTION__": IsFormatSupported failed (%s) - trying to find a compatible format", WASAPIErrToStr(hr));
+  CLog::LogF(LOGDEBUG, LOGAUDIO,
+             "IsFormatSupported failed (%s) - trying to find a compatible format",
+             WASAPIErrToStr(hr));
 
   int closestMatch;
   unsigned int requestedChannels = wfxex.Format.nChannels;
@@ -734,7 +765,7 @@ bool CAESinkWASAPI::InitializeExclusive(AEAudioFormat &format)
             closestMatch = i;
         }
         else if (hr != AUDCLNT_E_UNSUPPORTED_FORMAT)
-          CLog::Log(LOGERROR, __FUNCTION__": IsFormatSupported failed (%s)", WASAPIErrToStr(hr));
+          CLog::LogF(LOGERROR, "IsFormatSupported failed (%s)", WASAPIErrToStr(hr));
       }
 
       if (closestMatch >= 0)
@@ -746,7 +777,8 @@ bool CAESinkWASAPI::InitializeExclusive(AEAudioFormat &format)
     }
   }
 
-  CLog::Log(LOGERROR, __FUNCTION__": Unable to locate a supported output format for the device.  Check the speaker settings in the control panel.");
+  CLog::LogF(LOGERROR, "Unable to locate a supported output format for the device.  "
+                                   "Check the speaker settings in the control panel.");
 
   /* We couldn't find anything supported. This should never happen      */
   /* unless the user set the wrong speaker setting in the control panel */
@@ -790,7 +822,7 @@ initialize:
   audioSinkBufferDurationMsec = (REFERENCE_TIME)500000;
   if (IsUSBDevice())
   {
-    CLog::Log(LOGDEBUG, __FUNCTION__": detected USB device, increasing buffer size");
+    CLog::LogF(LOGDEBUG, "detected USB device, increasing buffer size");
     audioSinkBufferDurationMsec = (REFERENCE_TIME)1000000;
   }
   audioSinkBufferDurationMsec = (REFERENCE_TIME)((audioSinkBufferDurationMsec / format.m_frameSize) * format.m_frameSize); //even number of frames
@@ -808,7 +840,7 @@ initialize:
     hr = m_pAudioClient->GetBufferSize(&m_uiBufferLen);
     if (FAILED(hr))
     {
-      CLog::Log(LOGERROR, __FUNCTION__": GetBufferSize Failed : %s", WASAPIErrToStr(hr));
+      CLog::LogF(LOGERROR, "GetBufferSize Failed : %s", WASAPIErrToStr(hr));
       return false;
     }
 
@@ -819,7 +851,7 @@ initialize:
     hr = m_pDevice->Activate(m_pAudioClient.ReleaseAndGetAddressOf());
     if (FAILED(hr))
     {
-      CLog::Log(LOGERROR, __FUNCTION__": Device Activation Failed : %s", WASAPIErrToStr(hr));
+      CLog::LogF(LOGERROR, "Device Activation Failed : %s", WASAPIErrToStr(hr));
       return false;
     }
 
@@ -829,7 +861,7 @@ initialize:
   }
   if (FAILED(hr))
   {
-    CLog::Log(LOGERROR, __FUNCTION__": Failed to initialize WASAPI in exclusive mode %d - (%s).", HRESULT(hr), WASAPIErrToStr(hr));
+    CLog::LogF(LOGERROR, "Failed to initialize WASAPI in exclusive mode %d - (%s).", HRESULT(hr), WASAPIErrToStr(hr));
     CLog::Log(LOGDEBUG, "  Sample Rate     : %d", wfxex.Format.nSamplesPerSec);
     CLog::Log(LOGDEBUG, "  Sample Format   : %s", CAEUtil::DataFormatToStr(format.m_dataFormat));
     CLog::Log(LOGDEBUG, "  Bits Per Sample : %d", wfxex.Format.wBitsPerSample);
@@ -839,7 +871,7 @@ initialize:
     CLog::Log(LOGDEBUG, "  Avg. Bytes Sec  : %d", wfxex.Format.nAvgBytesPerSec);
     CLog::Log(LOGDEBUG, "  Samples/Block   : %d", wfxex.Samples.wSamplesPerBlock);
     CLog::Log(LOGDEBUG, "  Format cBSize   : %d", wfxex.Format.cbSize);
-    CLog::Log(LOGDEBUG, "  Channel Layout  : %s", ((std::string)format.m_channelLayout).c_str());
+    CLog::Log(LOGDEBUG, "  Channel Layout  : %s", ((std::string)format.m_channelLayout));
     CLog::Log(LOGDEBUG, "  Enc. Channels   : %d", wfxex_iec61937.dwEncodedChannelCount);
     CLog::Log(LOGDEBUG, "  Enc. Samples/Sec: %d", wfxex_iec61937.dwEncodedSamplesPerSec);
     CLog::Log(LOGDEBUG, "  Channel Mask    : %d", wfxex.dwChannelMask);
@@ -855,13 +887,13 @@ initialize:
   hr = m_pAudioClient->GetStreamLatency(&hnsLatency);
   if (FAILED(hr))
   {
-    CLog::Log(LOGERROR, __FUNCTION__": GetStreamLatency Failed : %s", WASAPIErrToStr(hr));
+    CLog::LogF(LOGERROR, "GetStreamLatency Failed : %s", WASAPIErrToStr(hr));
     return false;
   }
 
   m_sinkLatency = hnsLatency * 0.0000002;
 
-  CLog::Log(LOGINFO, __FUNCTION__": WASAPI Exclusive Mode Sink Initialized using: %s, %d, %d",
+  CLog::LogF(LOGINFO, "WASAPI Exclusive Mode Sink Initialized using: %s, %d, %d",
                                      CAEUtil::DataFormatToStr(format.m_dataFormat),
                                      wfxex.Format.nSamplesPerSec,
                                      wfxex.Format.nChannels);
@@ -888,7 +920,7 @@ void CAESinkWASAPI::Drain()
     }
     catch (...)
     {
-      CLog::Log(LOGDEBUG, "%s: Invalidated AudioClient - Releasing", __FUNCTION__);
+      CLog::LogF(LOGDEBUG, "Invalidated AudioClient - Releasing");
     }
   }
   m_running = false;

@@ -68,8 +68,8 @@ CWIN32Util::~CWIN32Util(void)
 int CWIN32Util::GetDriveStatus(const std::string &strPath, bool bStatusEx)
 {
 #ifdef TARGET_WINDOWS_STORE
-  CLog::Log(LOGDEBUG, "%s is not implemented", __FUNCTION__);
-  CLog::Log(LOGDEBUG, __FUNCTION__": Could not determine tray status %d", GetLastError());
+  CLog::LogF(LOGDEBUG, "is not implemented");
+  CLog::LogF(LOGDEBUG, "Could not determine tray status %d", GetLastError());
   return -1;
 #else
   using KODI::PLATFORM::WINDOWS::ToW;
@@ -82,7 +82,7 @@ int CWIN32Util::GetDriveStatus(const std::string &strPath, bool bStatusEx)
   T_SPDT_SBUF sptd_sb;  //SCSI Pass Through Direct variable.
   byte DataBuf[8];  //Buffer for holding data to/from drive.
 
-  CLog::Log(LOGDEBUG, __FUNCTION__": Requesting status for drive %s.", strPath.c_str());
+  CLog::LogF(LOGDEBUG, "Requesting status for drive %s.", strPath);
 
   hDevice = CreateFile( strPathW.c_str(),                  // drive
                         0,                                // no access to the drive
@@ -94,11 +94,11 @@ int CWIN32Util::GetDriveStatus(const std::string &strPath, bool bStatusEx)
 
   if (hDevice == INVALID_HANDLE_VALUE)                    // cannot open the drive
   {
-    CLog::Log(LOGERROR, __FUNCTION__": Failed to CreateFile for %s.", strPath.c_str());
+    CLog::LogF(LOGERROR, "Failed to CreateFile for %s.", strPath);
     return -1;
   }
 
-  CLog::Log(LOGDEBUG, __FUNCTION__": Requesting media status for drive %s.", strPath.c_str());
+  CLog::LogF(LOGDEBUG, "Requesting media status for drive %s.", strPath);
   iResult = DeviceIoControl((HANDLE) hDevice,             // handle to device
                              IOCTL_STORAGE_CHECK_VERIFY2, // dwIoControlCode
                              NULL,                        // lpInBuffer
@@ -127,7 +127,7 @@ int CWIN32Util::GetDriveStatus(const std::string &strPath, bool bStatusEx)
 
   if (hDevice == INVALID_HANDLE_VALUE)
   {
-    CLog::Log(LOGERROR, __FUNCTION__": Failed to CreateFile2 for %s.", strPath.c_str());
+    CLog::LogF(LOGERROR, "Failed to CreateFile2 for %s.", strPath);
     return -1;
   }
 
@@ -164,7 +164,7 @@ int CWIN32Util::GetDriveStatus(const std::string &strPath, bool bStatusEx)
   ZeroMemory(sptd_sb.SenseBuf, MAX_SENSE_LEN);
 
   //Send the command to drive
-  CLog::Log(LOGDEBUG, __FUNCTION__": Requesting tray status for drive %s.", strPath.c_str());
+  CLog::LogF(LOGDEBUG, "Requesting tray status for drive %s.", strPath);
   iResult = DeviceIoControl((HANDLE) hDevice,
                             IOCTL_SCSI_PASS_THROUGH_DIRECT,
                             (PVOID)&sptd_sb, (DWORD)sizeof(sptd_sb),
@@ -184,7 +184,7 @@ int CWIN32Util::GetDriveStatus(const std::string &strPath, bool bStatusEx)
     else
       return 2; // tray closed, media present
   }
-  CLog::Log(LOGERROR, __FUNCTION__": Could not determine tray status %d", GetLastError());
+  CLog::LogF(LOGERROR, "Could not determine tray status %d", GetLastError());
   return -1;
 #endif
 }
@@ -203,7 +203,7 @@ char CWIN32Util::FirstDriveFromMask (ULONG unitmask)
 bool CWIN32Util::XBMCShellExecute(const std::string &strPath, bool bWaitForScriptExit)
 {
 #ifdef TARGET_WINDOWS_STORE
-  CLog::Log(LOGDEBUG, "%s is not implemented", __FUNCTION__);
+  CLog::LogF(LOGDEBUG, "s not implemented");
   return false;
 #else
   std::string strCommand = strPath;
@@ -299,7 +299,7 @@ std::string CWIN32Util::GetResInfoString()
 int CWIN32Util::GetDesktopColorDepth()
 {
 #ifdef TARGET_WINDOWS_STORE
-  CLog::Log(LOGDEBUG, "%s is not implemented", __FUNCTION__);
+  CLog::LogF(LOGDEBUG, "s not implemented");
   return 32;
 #else
   DEVMODE devmode;
@@ -477,7 +477,7 @@ std::wstring CWIN32Util::ConvertPathToWin32Form(const CURL& url)
   else
     return std::wstring(); // unsupported protocol, return empty string
 
-  CLog::Log(LOGERROR, "%s: Error converting path \"%s\" to Win32 form", __FUNCTION__, url.Get().c_str());
+  CLog::LogF(LOGERROR, "Error converting path \"%s\" to Win32 form", url.Get());
   return std::wstring(); // empty string
 }
 
@@ -500,7 +500,7 @@ __time64_t CWIN32Util::fileTimeToTimeT(const LARGE_INTEGER& ftimeli)
 HRESULT CWIN32Util::ToggleTray(const char cDriveLetter)
 {
 #ifdef TARGET_WINDOWS_STORE
-  CLog::Log(LOGDEBUG, "%s is not implemented", __FUNCTION__);
+  CLog::LogF(LOGDEBUG, "s not implemented");
   return false;
 #else
   using namespace KODI::PLATFORM::WINDOWS;
