@@ -121,3 +121,7 @@ msgstr ""
 msgctxt "#30026"
 msgid "MusicBrainz Mirror"
 msgstr ""
+
+msgctxt "#30027"
+msgid "Enable Artist Clearlogo from fanart.tv"
+msgstr ""

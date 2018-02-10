@@ -1,3 +1,6 @@
+v0.3.256
+- Update version list
+
 v0.3.25
 - fix issue with the older python2.6
 

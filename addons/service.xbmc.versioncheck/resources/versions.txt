@@ -4,6 +4,15 @@
         "stable": [
             {
                 "major": "17",
+                "minor": "6",
+                "tag": "stable",
+                "tagversion":"",
+                "revision": "20171114-a9a7a20",
+                "extrainfo": "final",
+                "addon_support": "yes"
+            },
+            {
+                "major": "17",
                 "minor": "4",
                 "tag": "stable",
                 "tagversion":"",
