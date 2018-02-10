@@ -44,13 +44,13 @@ CVideoInfoDownloader::~CVideoInfoDownloader()
 }
 
 // return value: 0 = we failed, -1 = we failed and reported an error, 1 = success
-int CVideoInfoDownloader::InternalFindMovie(const std::string &strMovie,
+int CVideoInfoDownloader::InternalFindMovie(const std::string &movieTitle, int movieYear,
                                             MOVIELIST& movielist,
                                             bool cleanChars /* = true */)
 {
   try
   {
-    movielist = m_info->FindMovie(*m_http, strMovie, cleanChars);
+    movielist = m_info->FindMovie(*m_http, movieTitle, movieYear, cleanChars);
   }
   catch (const ADDON::CScraperError &sce)
   {
@@ -74,8 +74,8 @@ void CVideoInfoDownloader::Process()
   m_found = 0;
   if (m_state == FIND_MOVIE)
   {
-    if (!(m_found=FindMovie(m_strMovie, m_movieList)))
-      CLog::Log(LOGERROR, "%s: Error looking up item %s", __FUNCTION__, m_strMovie.c_str());
+    if (!(m_found=FindMovie(m_movieTitle, m_movieYear, m_movieList)))
+      CLog::Log(LOGERROR, "%s: Error looking up item %s (%d)", __FUNCTION__, m_movieTitle.c_str(), m_movieYear);
     m_state = DO_NOTHING;
     return;
   }
@@ -84,7 +84,7 @@ void CVideoInfoDownloader::Process()
   {
     // empty url when it's not supposed to be..
     // this might happen if the previously scraped item was removed from the site (see ticket #10537)
-    CLog::Log(LOGERROR, "%s: Error getting details for %s due to an empty url", __FUNCTION__, m_strMovie.c_str());
+    CLog::Log(LOGERROR, "%s: Error getting details for %s (%d) due to an empty url", __FUNCTION__, m_movieTitle.c_str(), m_movieYear);
   }
   else if (m_state == GET_DETAILS)
   {
@@ -105,7 +105,7 @@ void CVideoInfoDownloader::Process()
   m_state = DO_NOTHING;
 }
 
-int CVideoInfoDownloader::FindMovie(const std::string &strMovie,
+int CVideoInfoDownloader::FindMovie(const std::string &movieTitle, int movieYear,
                                     MOVIELIST& movieList,
                                     CGUIDialogProgress *pProgress /* = NULL */)
 {
@@ -114,7 +114,8 @@ int CVideoInfoDownloader::FindMovie(const std::string &strMovie,
   if (pProgress)
   { // threaded version
     m_state = FIND_MOVIE;
-    m_strMovie = strMovie;
+    m_movieTitle = movieTitle;
+    m_movieYear = movieYear;
     m_found = 0;
     if (IsRunning())
       StopThread();
@@ -137,11 +138,11 @@ int CVideoInfoDownloader::FindMovie(const std::string &strMovie,
   }
 
   // unthreaded
-  int success = InternalFindMovie(strMovie, movieList);
+  int success = InternalFindMovie(movieTitle, movieYear, movieList);
   // NOTE: this might be improved by rescraping if the match quality isn't high?
   if (success == 1 && movieList.empty())
   { // no results. try without cleaning chars like '.' and '_'
-    success = InternalFindMovie(strMovie, movieList, false);
+    success = InternalFindMovie(movieTitle, movieYear, movieList, false);
   }
   return success;
 }

@@ -201,7 +201,7 @@ CInfoScanner::INFO_TYPE CVideoTagLoaderFFmpeg::LoadMKV(CVideoInfoTag& tag,
     hastag = true;
   }
 
-  return hastag ? CInfoScanner::FULL_NFO : CInfoScanner::NO_NFO;
+  return hastag ? CInfoScanner::TITLE_NFO : CInfoScanner::NO_NFO;
 }
 
 CInfoScanner::INFO_TYPE CVideoTagLoaderFFmpeg::LoadMP4(CVideoInfoTag& tag,
@@ -244,5 +244,5 @@ CInfoScanner::INFO_TYPE CVideoTagLoaderFFmpeg::LoadMP4(CVideoInfoTag& tag,
       tag.m_coverArt.emplace_back(EmbeddedArtInfo(size, "image/png", type));
   }
 
-  return CInfoScanner::FULL_NFO;
+  return CInfoScanner::TITLE_NFO;
 }
