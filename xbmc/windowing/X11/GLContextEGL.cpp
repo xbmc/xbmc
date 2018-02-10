@@ -28,9 +28,9 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <GL/glext.h>
-
 #include "GLContextEGL.h"
 #include "utils/log.h"
+#include <EGL/eglext.h>
 
 #define EGL_NO_CONFIG (EGLConfig)0
 
@@ -177,7 +177,9 @@ bool CGLContextEGL::Refresh(bool force, int screen, Window glWindow, bool &newCo
 
     EGLint contextAttributes[] =
     {
-      EGL_CONTEXT_CLIENT_VERSION, 2,
+      EGL_CONTEXT_MAJOR_VERSION_KHR, 3,
+      EGL_CONTEXT_MINOR_VERSION_KHR, 2,
+      EGL_CONTEXT_OPENGL_PROFILE_MASK_KHR, EGL_CONTEXT_OPENGL_CORE_PROFILE_BIT_KHR,
       EGL_NONE
     };
     m_eglContext = eglCreateContext(m_eglDisplay, m_eglConfig, EGL_NO_CONTEXT, contextAttributes);
