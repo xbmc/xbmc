@@ -1232,7 +1232,7 @@ void* CWinSystemOSX::CreateWindowedContext(void* shareCtx)
   };
 
   NSOpenGLPixelFormat* pixFmt = [[NSOpenGLPixelFormat alloc] initWithAttributes:wattrs_gl3];
-  if (!getenv("KODI_GL_PROFILE_3_2"))
+  if (getenv("KODI_GL_PROFILE_LEGACY"))
     pixFmt = [[NSOpenGLPixelFormat alloc] initWithAttributes:wattrs];
 
   newContext = [[NSOpenGLContext alloc] initWithFormat:(NSOpenGLPixelFormat*)pixFmt
@@ -1291,7 +1291,7 @@ void* CWinSystemOSX::CreateFullScreenContext(int screen_index, void* shareCtx)
   };
 
   NSOpenGLPixelFormat* pixFmt = [[NSOpenGLPixelFormat alloc] initWithAttributes:fsattrs_gl3];
-  if (!getenv("KODI_GL_PROFILE_3_2"))
+  if (getenv("KODI_GL_PROFILE_LEGACY"))
     pixFmt = [[NSOpenGLPixelFormat alloc] initWithAttributes:fsattrs];
 
   if (!pixFmt)
