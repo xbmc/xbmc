@@ -416,7 +416,7 @@ bool CPVRClient::GetAddonProperties(void)
 
       size = 0;
       // manual one time
-      types_array[size] = {0};
+      memset(&types_array[size], 0, sizeof(types_array[size]));
       types_array[size].iId         = size + 1;
       types_array[size].iAttributes = PVR_TIMER_TYPE_IS_MANUAL               |
                                       PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE |
@@ -429,7 +429,7 @@ bool CPVRClient::GetAddonProperties(void)
       ++size;
 
       // manual timer rule
-      types_array[size] = {0};
+      memset(&types_array[size], 0, sizeof(types_array[size]));
       types_array[size].iId         = size + 1;
       types_array[size].iAttributes = PVR_TIMER_TYPE_IS_MANUAL               |
                                       PVR_TIMER_TYPE_IS_REPEATING            |
@@ -447,7 +447,7 @@ bool CPVRClient::GetAddonProperties(void)
       if (addonCapabilities.bSupportsEPG)
       {
         // One-shot epg-based
-        types_array[size] = {0};
+        memset(&types_array[size], 0, sizeof(types_array[size]));
         types_array[size].iId         = size + 1;
         types_array[size].iAttributes = PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE    |
                                         PVR_TIMER_TYPE_REQUIRES_EPG_TAG_ON_CREATE |
@@ -775,12 +775,13 @@ PVR_ERROR CPVRClient::FillEpgTagStreamFileItem(CFileItem &fileItem)
   return DoAddonCall(__FUNCTION__, [&fileItem](const AddonInstance* addon) {
     CAddonEpgTag addonTag(fileItem.GetEPGInfoTag());
 
-    PVR_NAMED_VALUE properties[PVR_STREAM_MAX_PROPERTIES] = {{{0}}};
     unsigned int iPropertyCount = PVR_STREAM_MAX_PROPERTIES;
+    std::unique_ptr<PVR_NAMED_VALUE[]> properties(new PVR_NAMED_VALUE[iPropertyCount]);
+    memset(properties.get(), 0, iPropertyCount * sizeof(PVR_NAMED_VALUE));
 
-    PVR_ERROR error = addon->GetEPGTagStreamProperties(&addonTag, properties, &iPropertyCount);
+    PVR_ERROR error = addon->GetEPGTagStreamProperties(&addonTag, properties.get(), &iPropertyCount);
     if (error ==  PVR_ERROR_NO_ERROR)
-      WriteFileItemProperties(properties, iPropertyCount, fileItem);
+      WriteFileItemProperties(properties.get(), iPropertyCount, fileItem);
 
     return error;
   });
@@ -1085,12 +1086,13 @@ PVR_ERROR CPVRClient::FillChannelStreamFileItem(CFileItem &fileItem)
     PVR_CHANNEL tag = {0};
     WriteClientChannelInfo(channel, tag);
 
-    PVR_NAMED_VALUE properties[PVR_STREAM_MAX_PROPERTIES] = {{{0}}};
     unsigned int iPropertyCount = PVR_STREAM_MAX_PROPERTIES;
+    std::unique_ptr<PVR_NAMED_VALUE[]> properties(new PVR_NAMED_VALUE[iPropertyCount]);
+    memset(properties.get(), 0, iPropertyCount * sizeof(PVR_NAMED_VALUE));
 
-    PVR_ERROR error = addon->GetChannelStreamProperties(&tag, properties, &iPropertyCount);
+    PVR_ERROR error = addon->GetChannelStreamProperties(&tag, properties.get(), &iPropertyCount);
     if (error == PVR_ERROR_NO_ERROR)
-      WriteFileItemProperties(properties, iPropertyCount, fileItem);
+      WriteFileItemProperties(properties.get(), iPropertyCount, fileItem);
 
     return error;
   });
@@ -1107,12 +1109,13 @@ PVR_ERROR CPVRClient::FillRecordingStreamFileItem(CFileItem &fileItem)
     PVR_RECORDING tag = {{0}};
     WriteClientRecordingInfo(*recording, tag);
 
-    PVR_NAMED_VALUE properties[PVR_STREAM_MAX_PROPERTIES] = {{{0}}};
     unsigned int iPropertyCount = PVR_STREAM_MAX_PROPERTIES;
+    std::unique_ptr<PVR_NAMED_VALUE[]> properties(new PVR_NAMED_VALUE[iPropertyCount]);
+    memset(properties.get(), 0, iPropertyCount * sizeof(PVR_NAMED_VALUE));
 
-    PVR_ERROR error = addon->GetRecordingStreamProperties(&tag, properties, &iPropertyCount);
+    PVR_ERROR error = addon->GetRecordingStreamProperties(&tag, properties.get(), &iPropertyCount);
     if (error == PVR_ERROR_NO_ERROR)
-      WriteFileItemProperties(properties, iPropertyCount, fileItem);
+      WriteFileItemProperties(properties.get(), iPropertyCount, fileItem);
 
     return error;
   });
@@ -1733,14 +1736,24 @@ xbmc_codec_t CPVRClient::cb_get_codec_by_name(const void* kodiInstance, const ch
   return CCodecIds::GetInstance().GetCodecByName(strCodecName);
 }
 
-CPVRClientCapabilities::CPVRClientCapabilities()
+CPVRClientCapabilities::CPVRClientCapabilities(const CPVRClientCapabilities& other)
 {
-  m_addonCapabilities = {0};
+  if (other.m_addonCapabilities)
+    m_addonCapabilities.reset(new PVR_ADDON_CAPABILITIES(*other.m_addonCapabilities));
+  InitRecordingsLifetimeValues();
+}
+
+const CPVRClientCapabilities& CPVRClientCapabilities::operator =(const CPVRClientCapabilities& other)
+{
+  if (other.m_addonCapabilities)
+    m_addonCapabilities.reset(new PVR_ADDON_CAPABILITIES(*other.m_addonCapabilities));
+  InitRecordingsLifetimeValues();
+  return *this;
 }
 
 const CPVRClientCapabilities& CPVRClientCapabilities::operator =(const PVR_ADDON_CAPABILITIES& addonCapabilities)
 {
-  m_addonCapabilities = addonCapabilities;
+  m_addonCapabilities.reset(new PVR_ADDON_CAPABILITIES(addonCapabilities));
   InitRecordingsLifetimeValues();
   return *this;
 }
@@ -1748,18 +1761,18 @@ const CPVRClientCapabilities& CPVRClientCapabilities::operator =(const PVR_ADDON
 void CPVRClientCapabilities::clear()
 {
   m_recordingsLifetimeValues.clear();
-  m_addonCapabilities = {0};
+  m_addonCapabilities.reset();
 }
 
 void CPVRClientCapabilities::InitRecordingsLifetimeValues()
 {
   m_recordingsLifetimeValues.clear();
-  if (m_addonCapabilities.iRecordingsLifetimesSize > 0)
+  if (m_addonCapabilities && m_addonCapabilities->iRecordingsLifetimesSize > 0)
   {
-    for (unsigned int i = 0; i < m_addonCapabilities.iRecordingsLifetimesSize; ++i)
+    for (unsigned int i = 0; i < m_addonCapabilities->iRecordingsLifetimesSize; ++i)
     {
-      int iValue = m_addonCapabilities.recordingsLifetimeValues[i].iValue;
-      std::string strDescr(m_addonCapabilities.recordingsLifetimeValues[i].strDescription);
+      int iValue = m_addonCapabilities->recordingsLifetimeValues[i].iValue;
+      std::string strDescr(m_addonCapabilities->recordingsLifetimeValues[i].strDescription);
       if (strDescr.empty())
       {
         // No description given by addon. Create one from value.
