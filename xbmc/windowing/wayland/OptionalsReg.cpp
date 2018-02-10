@@ -56,16 +56,16 @@ void WAYLAND::VaapiProxyConfig(CVaapiProxy *proxy, void *dpy, void *eglDpy)
   proxy->eglDisplay = eglDpy;
 }
 
-void WAYLAND::VAAPIRegister(CVaapiProxy *winSystem, bool hevc)
+void WAYLAND::VAAPIRegister(CVaapiProxy *winSystem, bool deepColor)
 {
-  VAAPI::CDecoder::Register(winSystem, hevc);
+  VAAPI::CDecoder::Register(winSystem, deepColor);
 }
 
-void WAYLAND::VAAPIRegisterRender(CVaapiProxy *winSystem, bool &general, bool &hevc)
+void WAYLAND::VAAPIRegisterRender(CVaapiProxy *winSystem, bool &general, bool &deepColor)
 {
   EGLDisplay eglDpy = winSystem->eglDisplay;
   VADisplay vaDpy = vaGetDisplayWl(winSystem->dpy);
-  CRendererVAAPI::Register(winSystem, vaDpy, eglDpy, general, hevc);
+  CRendererVAAPI::Register(winSystem, vaDpy, eglDpy, general, deepColor);
 }
 
 #else
@@ -88,12 +88,12 @@ void WAYLAND::VaapiProxyConfig(CVaapiProxy *proxy, void *dpy, void *eglDpy)
 
 }
 
-void WAYLAND::VAAPIRegister(CVaapiProxy *winSystem, bool hevc)
+void WAYLAND::VAAPIRegister(CVaapiProxy *winSystem, bool deepColor)
 {
 
 }
 
-void WAYLAND::VAAPIRegisterRender(CVaapiProxy *winSystem, bool &general, bool &hevc)
+void WAYLAND::VAAPIRegisterRender(CVaapiProxy *winSystem, bool &general, bool &deepColor)
 {
 
 }

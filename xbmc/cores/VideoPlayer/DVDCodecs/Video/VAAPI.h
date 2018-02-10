@@ -392,7 +392,7 @@ public:
   static int FFGetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags);
 
   static IHardwareDecoder* Create(CDVDStreamInfo &hint, CProcessInfo &processInfo, AVPixelFormat fmt);
-  static void Register(IVaapiWinSystem *winSystem, bool hevc);
+  static void Register(IVaapiWinSystem *winSystem, bool deepColor);
 
   static IVaapiWinSystem* m_pWinSystem;
 
@@ -431,7 +431,7 @@ protected:
   CProcessInfo& m_processInfo;
 
   static bool m_capGeneral;
-  static bool m_capHevc;
+  static bool m_capDeepColor;
 };
 
 //-----------------------------------------------------------------------------

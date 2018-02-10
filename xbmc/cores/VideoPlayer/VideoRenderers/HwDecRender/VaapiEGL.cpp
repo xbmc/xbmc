@@ -339,10 +339,10 @@ CSizeInt CVaapi1Texture::GetTextureSize()
   return {m_texWidth, m_texHeight};
 }
 
-void CVaapi1Texture::TestInterop(VADisplay vaDpy, EGLDisplay eglDisplay, bool &general, bool &hevc)
+void CVaapi1Texture::TestInterop(VADisplay vaDpy, EGLDisplay eglDisplay, bool &general, bool &deepColor)
 {
   general = false;
-  hevc = false;
+  deepColor = false;
 
   PFNEGLCREATEIMAGEKHRPROC eglCreateImageKHR = (PFNEGLCREATEIMAGEKHRPROC)eglGetProcAddress("eglCreateImageKHR");
   PFNEGLDESTROYIMAGEKHRPROC eglDestroyImageKHR = (PFNEGLDESTROYIMAGEKHRPROC)eglGetProcAddress("eglDestroyImageKHR");
@@ -403,11 +403,11 @@ void CVaapi1Texture::TestInterop(VADisplay vaDpy, EGLDisplay eglDisplay, bool &g
 
   if (general)
   {
-    hevc = TestInteropHevc(vaDpy, eglDisplay);
+    deepColor = TestInteropDeepColor(vaDpy, eglDisplay);
   }
 }
 
-bool CVaapi1Texture::TestInteropHevc(VADisplay vaDpy, EGLDisplay eglDisplay)
+bool CVaapi1Texture::TestInteropDeepColor(VADisplay vaDpy, EGLDisplay eglDisplay)
 {
   bool ret = false;
 
@@ -733,15 +733,15 @@ bool CVaapi2Texture::TestEsh(VADisplay vaDpy, EGLDisplay eglDisplay, std::uint32
 #endif
 }
 
-void CVaapi2Texture::TestInterop(VADisplay vaDpy, EGLDisplay eglDisplay, bool& general, bool& hevc)
+void CVaapi2Texture::TestInterop(VADisplay vaDpy, EGLDisplay eglDisplay, bool& general, bool& deepColor)
 {
   general = false;
-  hevc = false;
+  deepColor = false;
 
   general = TestInteropGeneral(vaDpy, eglDisplay);
   if (general)
   {
-    hevc = TestEsh(vaDpy, eglDisplay, VA_RT_FORMAT_YUV420_10BPP, VA_FOURCC_P010);
+    deepColor = TestEsh(vaDpy, eglDisplay, VA_RT_FORMAT_YUV420_10BPP, VA_FOURCC_P010);
   }
 }
 

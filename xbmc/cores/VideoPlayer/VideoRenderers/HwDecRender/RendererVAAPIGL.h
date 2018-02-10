@@ -37,7 +37,7 @@ public:
   ~CRendererVAAPI() override;
 
   static CBaseRenderer* Create(CVideoBuffer *buffer);
-  static void Register(VAAPI::IVaapiWinSystem *winSystem, VADisplay vaDpy, EGLDisplay eglDisplay, bool &general, bool &hevc);
+  static void Register(VAAPI::IVaapiWinSystem *winSystem, VADisplay vaDpy, EGLDisplay eglDisplay, bool &general, bool &deepColor);
 
   bool Configure(const VideoPicture &picture, float fps, unsigned int orientation) override;
 

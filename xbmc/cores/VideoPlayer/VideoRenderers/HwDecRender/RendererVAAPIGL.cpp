@@ -40,7 +40,7 @@ CBaseRenderer* CRendererVAAPI::Create(CVideoBuffer *buffer)
   return nullptr;
 }
 
-void CRendererVAAPI::Register(IVaapiWinSystem *winSystem, VADisplay vaDpy, EGLDisplay eglDisplay, bool &general, bool &hevc)
+void CRendererVAAPI::Register(IVaapiWinSystem *winSystem, VADisplay vaDpy, EGLDisplay eglDisplay, bool &general, bool &deepColor)
 {
   int major_version, minor_version;
   if (vaInitialize(vaDpy, &major_version, &minor_version) != VA_STATUS_SUCCESS)
@@ -49,13 +49,13 @@ void CRendererVAAPI::Register(IVaapiWinSystem *winSystem, VADisplay vaDpy, EGLDi
     return;
   }
 
-  general = hevc = false;
-  CVaapi2Texture::TestInterop(vaDpy, eglDisplay, general, hevc);
-  CLog::Log(LOGDEBUG, "Vaapi2 EGL interop test results: general %s, hevc %s", general ? "yes" : "no", hevc ? "yes" : "no");
+  general = deepColor = false;
+  CVaapi2Texture::TestInterop(vaDpy, eglDisplay, general, deepColor);
+  CLog::Log(LOGDEBUG, "Vaapi2 EGL interop test results: general %s, deepColor %s", general ? "yes" : "no", deepColor ? "yes" : "no");
   if (!general)
   {
-    CVaapi1Texture::TestInterop(vaDpy, eglDisplay, general, hevc);
-    CLog::Log(LOGDEBUG, "Vaapi1 EGL interop test results: general %s, hevc %s", general ? "yes" : "no", hevc ? "yes" : "no");
+    CVaapi1Texture::TestInterop(vaDpy, eglDisplay, general, deepColor);
+    CLog::Log(LOGDEBUG, "Vaapi1 EGL interop test results: general %s, deepColor %s", general ? "yes" : "no", deepColor ? "yes" : "no");
   }
 
   vaTerminate(vaDpy);

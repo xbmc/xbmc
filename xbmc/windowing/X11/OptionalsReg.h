@@ -33,8 +33,8 @@ namespace X11
 CVaapiProxy* VaapiProxyCreate();
 void VaapiProxyDelete(CVaapiProxy *proxy);
 void VaapiProxyConfig(CVaapiProxy *proxy, void *dpy, void *eglDpy);
-void VAAPIRegister(CVaapiProxy *winSystem, bool hevc);
-void VAAPIRegisterRender(CVaapiProxy *winSystem, bool &general, bool &hevc);
+void VAAPIRegister(CVaapiProxy *winSystem, bool deepColor);
+void VAAPIRegisterRender(CVaapiProxy *winSystem, bool &general, bool &deepColor);
 }
 
 //-----------------------------------------------------------------------------

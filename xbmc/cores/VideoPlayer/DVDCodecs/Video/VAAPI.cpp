@@ -461,7 +461,7 @@ bool CVideoSurfaces::HasRefs()
 //-----------------------------------------------------------------------------
 
 bool CDecoder::m_capGeneral = false;
-bool CDecoder::m_capHevc = false;
+bool CDecoder::m_capDeepColor = false;
 IVaapiWinSystem* CDecoder::m_pWinSystem = nullptr;
 
 CDecoder::CDecoder(CProcessInfo& processInfo) :
@@ -563,11 +563,13 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
     }
     case AV_CODEC_ID_HEVC:
     {
-      if (!m_capHevc)
-        return false;
-
       if (avctx->profile == FF_PROFILE_HEVC_MAIN_10)
+      {
+        if (!m_capDeepColor)
+          return false;
+
         profile = VAProfileHEVCMain10;
+      }
       else if (avctx->profile == FF_PROFILE_HEVC_MAIN)
         profile = VAProfileHEVCMain;
       else
@@ -1160,7 +1162,7 @@ IHardwareDecoder* CDecoder::Create(CDVDStreamInfo &hint, CProcessInfo &processIn
   return nullptr;
 }
 
-void CDecoder::Register(IVaapiWinSystem *winSystem, bool hevc)
+void CDecoder::Register(IVaapiWinSystem *winSystem, bool deepColor)
 {
   m_pWinSystem = winSystem;
 
@@ -1169,7 +1171,7 @@ void CDecoder::Register(IVaapiWinSystem *winSystem, bool hevc)
     return;
 
   m_capGeneral = true;
-  m_capHevc = hevc;
+  m_capDeepColor = deepColor;
   CDVDFactoryCodec::RegisterHWAccel("vaapi", CDecoder::Create);
   config.context->Release(nullptr);
 }
