@@ -12,6 +12,7 @@ set(SOURCES Addon.cpp
             AudioEncoder.cpp
             ContextMenuAddon.cpp
             ContextMenus.cpp
+            FontResource.cpp
             FilesystemInstaller.cpp
             GameResource.cpp
             GUIDialogAddonInfo.cpp
@@ -51,6 +52,7 @@ set(HEADERS Addon.h
             ContextMenus.h
             DllLibCPluff.h
             FilesystemInstaller.h
+            FontResource.h
             GameResource.h
             GUIDialogAddonInfo.h
             GUIViewStateAddonBrowser.h
