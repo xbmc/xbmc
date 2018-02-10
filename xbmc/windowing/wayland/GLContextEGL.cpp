@@ -124,7 +124,9 @@ bool CGLContextEGL::CreateSurface(wayland::surface_t const& surface, CSizeInt si
   }
 
   const EGLint context_atrribs[] = {
-    EGL_CONTEXT_CLIENT_VERSION, 2,
+    EGL_CONTEXT_MAJOR_VERSION_KHR, 3,
+    EGL_CONTEXT_MINOR_VERSION_KHR, 2,
+    EGL_CONTEXT_OPENGL_PROFILE_MASK_KHR, EGL_CONTEXT_OPENGL_CORE_PROFILE_BIT_KHR,
     EGL_NONE
   };
 
