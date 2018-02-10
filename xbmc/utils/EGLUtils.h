@@ -31,6 +31,8 @@ class CEGLUtils
 {
 public:
   static std::set<std::string> GetClientExtensions();
+  static std::set<std::string> GetExtensions(EGLDisplay eglDisplay);
+  static bool HasExtension(EGLDisplay eglDisplay, std::string const & name);
   static void LogError(std::string const & what);
   template<typename T>
   static T GetRequiredProcAddress(const char * procname)
@@ -45,4 +47,75 @@ public:
 
 private:
   CEGLUtils();
+};
+
+/**
+ * Convenience wrapper for stack-allocated EGL attribute arrays
+ *
+ * The wrapper makes sure that the key/value pairs are always written in actual
+ * pairs, that the array is always terminated with EGL_NONE, and that the bounds
+ * of the array are not exceeded (checked on runtime).
+ *
+ * \tparam AttributeCount maximum number of attributes that can be added.
+ *                        Determines the size of the storage array.
+ */
+template<std::size_t AttributeCount>
+class CEGLAttributes
+{
+public:
+  struct EGLAttribute
+  {
+    EGLint key;
+    EGLint value;
+  };
+
+  CEGLAttributes()
+  {
+    m_attributes[0] = EGL_NONE;
+  }
+
+  /**
+   * Add multiple attributes
+   *
+   * The array is automatically terminated with EGL_NONE
+   *
+   * \throws std::out_of_range if more than AttributeCount attributes are added
+   *                           in total
+   */
+  void Add(std::initializer_list<EGLAttribute> const& attributes)
+  {
+    if (m_writePosition + attributes.size() * 2 + 1 > m_attributes.size())
+    {
+      throw std::out_of_range("CEGLAttributes::Add");
+    }
+
+    for (auto const& attribute : attributes)
+    {
+      m_attributes[m_writePosition++] = attribute.key;
+      m_attributes[m_writePosition++] = attribute.value;
+    }
+    m_attributes[m_writePosition] = EGL_NONE;
+  }
+
+  /**
+   * Add one attribute
+   *
+   * The array is automatically terminated with EGL_NONE
+   *
+   * \throws std::out_of_range if more than AttributeCount attributes are added
+   *                           in total
+   */
+  void Add(EGLAttribute const& attribute)
+  {
+    Add({attribute});
+  }
+
+  EGLint const * Get() const
+  {
+    return m_attributes.data();
+  }
+
+private:
+  std::array<EGLint, AttributeCount * 2 + 1> m_attributes;
+  int m_writePosition{};
 };

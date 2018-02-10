@@ -33,6 +33,24 @@ std::set<std::string> CEGLUtils::GetClientExtensions()
   return result;
 }
 
+std::set<std::string> CEGLUtils::GetExtensions(EGLDisplay eglDisplay)
+{
+  const char* extensions = eglQueryString(eglDisplay, EGL_EXTENSIONS);
+  if (!extensions)
+  {
+    throw std::runtime_error("Could not query EGL for extensions");
+  }
+  std::set<std::string> result;
+  StringUtils::SplitTo(std::inserter(result, result.begin()), extensions, " ");
+  return result;
+}
+
+bool CEGLUtils::HasExtension(EGLDisplay eglDisplay, const std::string& name)
+{
+  auto exts = GetExtensions(eglDisplay);
+  return (exts.find(name) != exts.end());
+}
+
 void CEGLUtils::LogError(const std::string& what)
 {
   CLog::Log(LOGERROR, "%s (EGL error %d)", what.c_str(), eglGetError());
