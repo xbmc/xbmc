@@ -20,6 +20,8 @@
 
 #pragma once
 
+#include <memory>
+
 #include "cores/VideoPlayer/VideoRenderers/LinuxRendererGLES.h"
 #include "VaapiEGL.h"
 
@@ -61,7 +63,7 @@ protected:
   EShaderFormat GetShaderFormat() override;
 
   bool m_isVAAPIBuffer = true;
-  VAAPI::CVaapiTexture m_vaapiTextures[NUM_BUFFERS];
+  std::unique_ptr<VAAPI::CVaapiTexture> m_vaapiTextures[NUM_BUFFERS];
   GLsync m_fences[NUM_BUFFERS];
   static VAAPI::IVaapiWinSystem *m_pWinSystem;
 };

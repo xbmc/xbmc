@@ -42,7 +42,19 @@ CBaseRenderer* CRendererVAAPI::Create(CVideoBuffer *buffer)
 
 void CRendererVAAPI::Register(IVaapiWinSystem *winSystem, VADisplay vaDpy, EGLDisplay eglDisplay, bool &general, bool &hevc)
 {
-  CVaapiTexture::TestInterop(vaDpy, eglDisplay, general, hevc);
+  int major_version, minor_version;
+  if (vaInitialize(vaDpy, &major_version, &minor_version) != VA_STATUS_SUCCESS)
+  {
+    vaTerminate(vaDpy);
+    return;
+  }
+
+  general = hevc = false;
+  CVaapi1Texture::TestInterop(vaDpy, eglDisplay, general, hevc);
+  CLog::Log(LOGDEBUG, "Vaapi1 EGL interop test results: general %s, hevc %s", general ? "yes" : "no", hevc ? "yes" : "no");
+
+  vaTerminate(vaDpy);
+
   if (general)
   {
     VIDEOPLAYER::CRendererFactory::RegisterRenderer("vaapi", CRendererVAAPI::Create);
@@ -77,7 +89,8 @@ bool CRendererVAAPI::Configure(const VideoPicture &picture, float fps, unsigned 
 
   for (auto &tex : m_vaapiTextures)
   {
-    tex.Init(interop);
+    tex.reset(new VAAPI::CVaapi1Texture);
+    tex->Init(interop);
   }
   for (auto &fence : m_fences)
   {
@@ -185,14 +198,15 @@ bool CRendererVAAPI::UploadTexture(int index)
     return UploadNV12Texture(index);
   }
 
-  m_vaapiTextures[index].Map(pic);
-  m_buffers[index].m_srcTextureBits = m_vaapiTextures[index].GetBits();
+  m_vaapiTextures[index]->Map(pic);
+  m_buffers[index].m_srcTextureBits = m_vaapiTextures[index]->GetBits();
 
   YuvImage &im = buf.image;
   YUVPLANE (&planes)[3] = buf.fields[0];
 
-  planes[0].texwidth  = m_vaapiTextures[index].m_texWidth;
-  planes[0].texheight = m_vaapiTextures[index].m_texHeight;
+  auto size = m_vaapiTextures[index]->GetTextureSize();
+  planes[0].texwidth  = size.Width();
+  planes[0].texheight = size.Height();
 
   planes[1].texwidth  = planes[0].texwidth  >> im.cshift_x;
   planes[1].texheight = planes[0].texheight >> im.cshift_y;
@@ -206,9 +220,9 @@ bool CRendererVAAPI::UploadTexture(int index)
   }
 
   // set textures
-  planes[0].id = m_vaapiTextures[index].m_textureY;
-  planes[1].id = m_vaapiTextures[index].m_textureVU;
-  planes[2].id = m_vaapiTextures[index].m_textureVU;
+  planes[0].id = m_vaapiTextures[index]->GetTextureY();
+  planes[1].id = m_vaapiTextures[index]->GetTextureVU();
+  planes[2].id = m_vaapiTextures[index]->GetTextureVU();
 
   for (int p=0; p<2; p++)
   {
@@ -264,6 +278,6 @@ void CRendererVAAPI::ReleaseBuffer(int idx)
     glDeleteSync(m_fences[idx]);
     m_fences[idx] = GL_NONE;
   }
-  m_vaapiTextures[idx].Unmap();
+  m_vaapiTextures[idx]->Unmap();
   CLinuxRendererGL::ReleaseBuffer(idx);
 }

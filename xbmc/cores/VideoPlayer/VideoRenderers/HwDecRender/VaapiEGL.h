@@ -32,6 +32,8 @@
 #include <EGL/eglext.h>
 #include <va/va.h>
 
+#include "utils/Geometry.h"
+
 namespace VAAPI
 {
 
@@ -49,11 +51,34 @@ struct InteropInfo
 class CVaapiTexture
 {
 public:
-  bool Map(CVaapiRenderPicture *pic);
-  void Unmap();
-  void Init(InteropInfo &interop);
+  CVaapiTexture() = default;
+  virtual ~CVaapiTexture() = default;
+
+  virtual void Init(InteropInfo &interop) = 0;
+  virtual bool Map(CVaapiRenderPicture *pic) = 0;
+  virtual void Unmap() = 0;
+
+  virtual int GetBits() = 0;
+  virtual GLuint GetTextureY() = 0;
+  virtual GLuint GetTextureVU() = 0;
+  virtual CSizeInt GetTextureSize() = 0;
+};
+
+class CVaapi1Texture : public CVaapiTexture
+{
+public:
+  CVaapi1Texture();
+
+  bool Map(CVaapiRenderPicture *pic) override;
+  void Unmap() override;
+  void Init(InteropInfo &interop) override;
+
+  int GetBits() override;
+  GLuint GetTextureY() override;
+  GLuint GetTextureVU() override;
+  CSizeInt GetTextureSize() override;
+
   static void TestInterop(VADisplay vaDpy, EGLDisplay eglDisplay, bool &general, bool &hevc);
-  int GetBits();
 
   GLuint m_texture = 0;
   GLuint m_textureY = 0;
@@ -69,11 +94,12 @@ protected:
   CVaapiRenderPicture *m_vaapiPic = nullptr;
   struct GLSurface
   {
-    VAImage vaImage;
+    VAImage vaImage{VA_INVALID_ID};
     VABufferInfo vBufInfo;
     EGLImageKHR eglImage;
     EGLImageKHR eglImageY, eglImageVU;
   } m_glSurface;
 };
+
 }
 
