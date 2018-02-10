@@ -50,8 +50,13 @@ void CRendererVAAPI::Register(IVaapiWinSystem *winSystem, VADisplay vaDpy, EGLDi
   }
 
   general = hevc = false;
-  CVaapi1Texture::TestInterop(vaDpy, eglDisplay, general, hevc);
-  CLog::Log(LOGDEBUG, "Vaapi1 EGL interop test results: general %s, hevc %s", general ? "yes" : "no", hevc ? "yes" : "no");
+  CVaapi2Texture::TestInterop(vaDpy, eglDisplay, general, hevc);
+  CLog::Log(LOGDEBUG, "Vaapi2 EGL interop test results: general %s, hevc %s", general ? "yes" : "no", hevc ? "yes" : "no");
+  if (!general)
+  {
+    CVaapi1Texture::TestInterop(vaDpy, eglDisplay, general, hevc);
+    CLog::Log(LOGDEBUG, "Vaapi1 EGL interop test results: general %s, hevc %s", general ? "yes" : "no", hevc ? "yes" : "no");
+  }
 
   vaTerminate(vaDpy);
 
@@ -87,9 +92,18 @@ bool CRendererVAAPI::Configure(const VideoPicture &picture, float fps, unsigned 
   interop.glEGLImageTargetTexture2DOES = (PFNGLEGLIMAGETARGETTEXTURE2DOESPROC)eglGetProcAddress("glEGLImageTargetTexture2DOES");
   interop.eglDisplay = CRendererVAAPI::m_pWinSystem->GetEGLDisplay();
 
+  bool useVaapi2 = VAAPI::CVaapi2Texture::TestInteropGeneral(pic->vadsp, CRendererVAAPI::m_pWinSystem->GetEGLDisplay());
+
   for (auto &tex : m_vaapiTextures)
   {
-    tex.reset(new VAAPI::CVaapi1Texture);
+    if (useVaapi2)
+    {
+      tex.reset(new VAAPI::CVaapi2Texture);
+    }
+    else
+    {
+      tex.reset(new VAAPI::CVaapi1Texture);
+    }
     tex->Init(interop);
   }
   for (auto &fence : m_fences)

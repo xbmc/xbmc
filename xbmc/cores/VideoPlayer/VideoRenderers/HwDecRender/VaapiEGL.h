@@ -20,6 +20,8 @@
 
 #pragma once
 
+#include <array>
+
 #if defined(HAS_GL)
 #include <GL/gl.h>
 #elif defined(HAS_GLES)
@@ -33,6 +35,7 @@
 #include <va/va.h>
 
 #include "utils/Geometry.h"
+#include "utils/posix/FileHandle.h"
 
 namespace VAAPI
 {
@@ -99,6 +102,39 @@ protected:
     EGLImageKHR eglImage;
     EGLImageKHR eglImageY, eglImageVU;
   } m_glSurface;
+};
+
+class CVaapi2Texture : public CVaapiTexture
+{
+public:
+  bool Map(CVaapiRenderPicture *pic) override;
+  void Unmap() override;
+  void Init(InteropInfo &interop) override;
+
+  int GetBits() override;
+  GLuint GetTextureY() override;
+  GLuint GetTextureVU() override;
+  CSizeInt GetTextureSize() override;
+
+  static void TestInterop(VADisplay vaDpy, EGLDisplay eglDisplay, bool &general, bool &hevc);
+  static bool TestInteropGeneral(VADisplay vaDpy, EGLDisplay eglDisplay);
+
+private:
+  static bool TestEsh(VADisplay vaDpy, EGLDisplay eglDisplay, std::uint32_t rtFormat, std::int32_t pixelFormat);
+
+  struct MappedTexture
+  {
+    EGLImageKHR eglImage{EGL_NO_IMAGE_KHR};
+    GLuint glTexture{0};
+  };
+
+  InteropInfo m_interop;
+  CVaapiRenderPicture* m_vaapiPic{};
+  bool m_hasPlaneModifiers{false};
+  std::array<KODI::UTILS::POSIX::CFileHandle, 4> m_drmFDs;
+  int m_bits{0};
+  MappedTexture m_y, m_vu;
+  CSizeInt m_textureSize;
 };
 
 }
