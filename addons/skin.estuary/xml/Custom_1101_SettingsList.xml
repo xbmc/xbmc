@@ -33,6 +33,12 @@
 						<label>$LOCALIZE[13396]</label>
 						<onclick>ActivateWindow(osdaudiosettings)</onclick>
 					</control>
+					<control type="button" id="11106">
+						<width>700</width>
+						<include>DialogSettingButton</include>
+						<label>$LOCALIZE[24133]</label>
+						<onclick>ActivateWindow(osdsubtitlesettings)</onclick>
+					</control>
 					<control type="button" id="11102">
 						<width>700</width>
 						<include>DialogSettingButton</include>

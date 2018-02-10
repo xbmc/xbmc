@@ -6856,7 +6856,7 @@ msgstr ""
 #: addons/skin.estuary/xml/Custom_1106_VideoOSDSettings.xml
 #: addons/skin.estuary/xml/Variables.xml
 msgctxt "#13396"
-msgid "Audio and subtitle settings"
+msgid "Audio settings"
 msgstr ""
 
 msgctxt "#13397"
@@ -15466,7 +15466,15 @@ msgctxt "#24132"
 msgid "Would you like to switch to this language?"
 msgstr ""
 
-#empty strings from id 24133 to 24134
+#: xbmc/dialogs/GUIDialogSubtitles.cpp
+msgctxt "#24133"
+msgid "Subtitle settings"
+msgstr ""
+
+#: xbmc/dialogs/GUIDialogSubtitles.cpp
+msgctxt "#24134"
+msgid "Download subtitle..."
+msgstr ""
 
 #. Folder name in addon settings window
 #: xbmc/addons/addon.cpp
