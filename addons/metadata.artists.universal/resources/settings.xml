@@ -32,6 +32,7 @@
     <setting type="lsep" label="Fanart Sources"/>
     <setting label="30004" type="bool" id="fanarttvfanart" default="true"/>
     <setting label="30023" type="bool" id="tadbfanart" default="true"/>
+    <setting label="30027" type="bool" id="fanarttvartistcl" default="false"/>
   </category>
   
   <category label="30025">

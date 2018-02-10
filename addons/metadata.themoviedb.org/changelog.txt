@@ -1,3 +1,12 @@
+[B]5.1.1[/B]
+- changed: more cleanup and fixes
+
+[B]5.1.0[/B]
+- changed: major code clean-up of tmdb common scraper library
+
+[B]5.0.3[/B]
+- changed: made imdb uniqueid default when available
+
 [B]5.0.2[/B]
 - changed: made tmdb uniqueid consistent with documentation
 
