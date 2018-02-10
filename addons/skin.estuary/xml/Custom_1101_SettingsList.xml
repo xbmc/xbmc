@@ -74,50 +74,6 @@
 						<visible>Player.HasPrograms</visible>
 					</control>
 				</control>
-				<control type="grouplist" id="12100">
-					<visible>String.IsEqual(window(home).Property(settingslist_content),subtitle)</visible>
-					<width>700</width>
-					<height>360</height>
-					<itemgap>0</itemgap>
-					<onup>12100</onup>
-					<ondown>12100</ondown>
-					<orientation>vertical</orientation>
-					<control type="radiobutton" id="12104">
-						<width>700</width>
-						<include>DialogSettingButton</include>
-						<label>$LOCALIZE[449]</label>
-						<radioposx>590</radioposx>
-						<onclick>ShowSubtitles</onclick>
-						<selected>VideoPlayer.SubtitlesEnabled + VideoPlayer.HasSubtitles</selected>
-						<enable>VideoPlayer.HasSubtitles</enable>
-					</control>
-					<control type="button" id="12101">
-						<description>Download with Subtitles script</description>
-						<width>700</width>
-						<label>33003</label>
-						<include>DialogSettingButton</include>
-						<onclick>Close</onclick>
-						<onclick>Dialog.Close(VideoOSD)</onclick>
-						<onclick>ActivateWindow(SubtitleSearch)</onclick>
-						<enable>!VideoPlayer.Content(LiveTV)</enable>
-					</control>
-					<control type="button" id="12102">
-						<width>700</width>
-						<include>DialogSettingButton</include>
-						<label>$LOCALIZE[22006]</label>
-						<label2>$INFO[Player.SubtitleDelay,[B],[/B]]</label2>
-						<onclick>SubtitleDelay</onclick>
-						<enable>VideoPlayer.HasSubtitles + VideoPlayer.SubtitlesEnabled</enable>
-					</control>
-					<control type="button" id="12103">
-						<width>700</width>
-						<include>DialogSettingButton</include>
-						<label>$LOCALIZE[31051]</label>
-						<label2>$INFO[VideoPlayer.SubtitlesLanguage,[B],[/B]]</label2>
-						<onclick>CycleSubtitle</onclick>
-						<enable>VideoPlayer.HasSubtitles + VideoPlayer.SubtitlesEnabled</enable>
-					</control>
-				</control>
 				<control type="grouplist" id="13100">
 					<visible>String.IsEqual(window(home).Property(settingslist_content),3d)</visible>
 					<width>700</width>

@@ -259,10 +259,7 @@ msgctxt "#31050"
 msgid "Press [B]OK[/B] to stop"
 msgstr ""
 
-#: /xml/VideoOSD.xml
-msgctxt "#31051"
-msgid "Toggle language"
-msgstr ""
+#empty string with id 31051
 
 #: /xml/Includes.xml
 msgctxt "#31052"
