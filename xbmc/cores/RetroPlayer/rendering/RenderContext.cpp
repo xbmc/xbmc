@@ -70,6 +70,11 @@ void CRenderContext::ApplyStateBlock()
   m_rendering->ApplyStateBlock();
 }
 
+bool CRenderContext::IsExtSupported(const char* extension)
+{
+  return m_rendering->IsExtSupported(extension);
+}
+
 #if defined(HAS_GL) || defined(HAS_GLES)
 namespace
 {
