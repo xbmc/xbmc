@@ -277,6 +277,11 @@ public:
 
   int TranslateLircRemoteString(const std::string &szDevice, const std::string &szButton);
 
+  /*!
+   * \brief Queue an action to be processed on the next call to Process()
+   */
+  void QueueAction(const CAction& action);
+
   // implementation of ISettingCallback
   virtual void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
 
@@ -335,10 +340,6 @@ private:
   /*! \brief Dispatch actions queued since the last call to Process()
    */
   void ProcessQueuedActions();
-
-  /*! \brief Queue an action to be processed on the next call to Process()
-   */
-  void QueueAction(const CAction& action);
 
   CKeyboardStat m_Keyboard;
   CMouseStat m_Mouse;

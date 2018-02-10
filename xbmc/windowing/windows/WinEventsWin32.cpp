@@ -443,11 +443,31 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
     return(0);
     case WM_APPCOMMAND: // MULTIMEDIA keys are mapped to APPCOMMANDS
     {
-      CLog::LogF(LOGDEBUG, "APPCOMMAND %d", GET_APPCOMMAND_LPARAM(lParam));
-      newEvent.type = XBMC_APPCOMMAND;
-      newEvent.appcommand.action = GET_APPCOMMAND_LPARAM(lParam);
-      if (g_application.OnEvent(newEvent))
-        return TRUE;
+      const unsigned int appcmd = GET_APPCOMMAND_LPARAM(lParam);
+
+      CLog::LogF(LOGDEBUG, "APPCOMMAND %d", appcmd);
+
+      // Reset the screen saver
+      g_application.ResetScreenSaver();
+
+      // If we were currently in the screen saver wake up and don't process the
+      // appcommand
+      if (g_application.WakeUpScreenSaverAndDPMS())
+        return true;
+
+      // Retrieve the action associated with this appcommand from the mapping table
+      CKey key(appcmd | KEY_APPCOMMAND, 0U);
+      int iWin = g_windowManager.GetActiveWindowOrDialog();
+
+      CAction appcmdaction = CServiceBroker::GetInputManager().GetAction(iWin, key);
+      if (appcmdaction.GetID())
+      {
+        CLog::LogF(LOGDEBUG, "appcommand %d, action %s", appcmd, appcmdaction.GetName().c_str());
+        CServiceBroker::GetInputManager().QueueAction(appcmdaction);
+        return true;
+      }
+
+      CLog::LogF(LOGDEBUG, "unknown appcommand %d", appcmd);
       return DefWindowProc(hWnd, uMsg, wParam, lParam);
     }
     case WM_GESTURENOTIFY:
