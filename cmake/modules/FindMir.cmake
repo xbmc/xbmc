@@ -21,7 +21,7 @@ find_library(MIR_LIBRARY NAMES mirclient
                          PATHS ${PC_MIR_LIBRARIES} ${PC_MIR_LIBRARY_DIRS})
 
 include (FindPackageHandleStandardArgs)
-find_package_handle_standard_args (MIR
+find_package_handle_standard_args (Mir
                                    REQUIRED_VARS MIR_LIBRARY MIR_INCLUDE_DIR)
 
 if (MIR_FOUND)
