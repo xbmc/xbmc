@@ -17886,7 +17886,22 @@ msgctxt "#36046"
 msgid "Force AVR to wake up when Kodi is activated"
 msgstr ""
 
-#empty strings from id 36047 to 36098
+#: system/peripherals.xml
+msgctxt "#36047"
+msgid "Remote button press delay before repeating (ms)"
+msgstr ""
+
+#: system/peripherals.xml
+msgctxt "#36048"
+msgid "Remote button press repeat rate (ms)"
+msgstr ""
+
+#: system/peripherals.xml
+msgctxt "#36049"
+msgid "Remote button press release time (ms)"
+msgstr ""
+
+#empty strings from id 36050 to 36098
 
 #: system/settings/settings.xml
 msgctxt "#36099"
