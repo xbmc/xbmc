@@ -1937,7 +1937,7 @@ void COutput::InitCycle()
     if (!m_config.processInfo->Supports(method))
       method = VS_INTERLACEMETHOD_VAAPI_BOB;
 
-    if (m_pp && (method != m_currentDiMethod || !m_pp->Compatible(method)))
+    if (m_pp && !m_pp->UpdateDeintMethod(method))
     {
       delete m_pp;
       m_pp = NULL;
@@ -1960,7 +1960,6 @@ void COutput::InitCycle()
       if (m_pp->PreInit(m_config))
       {
         m_pp->Init(method);
-        m_currentDiMethod = method;
 
         if (method == VS_INTERLACEMETHOD_DEINTERLACE)
           m_config.processInfo->SetVideoDeintMethod("yadif");
@@ -1984,7 +1983,7 @@ void COutput::InitCycle()
   else
   {
     method = VS_INTERLACEMETHOD_NONE;
-    if (m_pp && !m_pp->Compatible(method))
+    if (m_pp && !m_pp->UpdateDeintMethod(method))
     {
       delete m_pp;
       m_pp = NULL;
@@ -2003,7 +2002,6 @@ void COutput::InitCycle()
       if (m_pp->PreInit(m_config))
       {
         m_pp->Init(method);
-        m_currentDiMethod = method;
         m_config.processInfo->SetVideoDeintMethod("none");
       }
       else
@@ -2226,7 +2224,7 @@ void CSkipPostproc::Flush()
 
 }
 
-bool CSkipPostproc::Compatible(EINTERLACEMETHOD method)
+bool CSkipPostproc::UpdateDeintMethod(EINTERLACEMETHOD method)
 {
   if (method == VS_INTERLACEMETHOD_NONE)
     return true;
@@ -2393,9 +2391,6 @@ bool CVppPostproc::Init(EINTERLACEMETHOD method)
   m_backwardRefs = 0;
   m_currentIdx = 0;
   m_frameCount = 0;
-
-//  if (method == VS_INTERLACEMETHOD_NONE)
-//    return true;
 
   VAProcFilterParameterBufferDeinterlacing filterparams;
   filterparams.type = VAProcFilterDeinterlacing;
@@ -2696,8 +2691,12 @@ void CVppPostproc::Flush()
   }
 }
 
-bool CVppPostproc::Compatible(EINTERLACEMETHOD method)
+bool CVppPostproc::UpdateDeintMethod(EINTERLACEMETHOD method)
 {
+  // could try to update method, for now trigger deinit/init
+  if (method != m_vppMethod)
+    return false;
+
   if (method == VS_INTERLACEMETHOD_VAAPI_BOB ||
       method == VS_INTERLACEMETHOD_VAAPI_MADI ||
       method == VS_INTERLACEMETHOD_VAAPI_MACI ||
@@ -3054,8 +3053,12 @@ void CFFmpegPostproc::Flush()
   m_lastOutPts = DVD_NOPTS_VALUE;
 }
 
-bool CFFmpegPostproc::Compatible(EINTERLACEMETHOD method)
+bool CFFmpegPostproc::UpdateDeintMethod(EINTERLACEMETHOD method)
 {
+  // switching between certain methods should be done without deinit/init
+  if (method != m_diMethod)
+    return false;
+
   if (method == VS_INTERLACEMETHOD_DEINTERLACE)
     return true;
   else if (method == VS_INTERLACEMETHOD_RENDER_BOB)

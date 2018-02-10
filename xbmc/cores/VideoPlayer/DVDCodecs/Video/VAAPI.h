@@ -291,7 +291,6 @@ protected:
   CVaapiDecodedPicture m_currentPicture;
   CPostproc *m_pp;
   SDiMethods m_diMethods;
-  EINTERLACEMETHOD m_currentDiMethod;
 };
 
 //-----------------------------------------------------------------------------
@@ -457,7 +456,7 @@ public:
   virtual bool Filter(CVaapiProcessedPicture &outPic) = 0;
   virtual void ClearRef(VASurfaceID surf) = 0;
   virtual void Flush() = 0;
-  virtual bool Compatible(EINTERLACEMETHOD method) = 0;
+  virtual bool UpdateDeintMethod(EINTERLACEMETHOD method) = 0;
   virtual bool DoesSync() = 0;
   virtual bool WantsPic() {return true;}
 protected:
@@ -477,7 +476,7 @@ public:
   bool Filter(CVaapiProcessedPicture &outPic) override;
   void ClearRef(VASurfaceID surf) override;
   void Flush() override;
-  bool Compatible(EINTERLACEMETHOD method) override;
+  bool UpdateDeintMethod(EINTERLACEMETHOD method) override;
   bool DoesSync() override;
 protected:
   CVaapiDecodedPicture m_pic;
@@ -497,7 +496,7 @@ public:
   bool Filter(CVaapiProcessedPicture &outPic) override;
   void ClearRef(VASurfaceID surf) override;
   void Flush() override;
-  bool Compatible(EINTERLACEMETHOD method) override;
+  bool UpdateDeintMethod(EINTERLACEMETHOD method) override;
   bool DoesSync() override;
   bool WantsPic() override;
 protected:
@@ -529,7 +528,7 @@ public:
   bool Filter(CVaapiProcessedPicture &outPic) override;
   void ClearRef(VASurfaceID surf) override;
   void Flush() override;
-  bool Compatible(EINTERLACEMETHOD method) override;
+  bool UpdateDeintMethod(EINTERLACEMETHOD method) override;
   bool DoesSync() override;
 protected:
   bool CheckSuccess(VAStatus status);
