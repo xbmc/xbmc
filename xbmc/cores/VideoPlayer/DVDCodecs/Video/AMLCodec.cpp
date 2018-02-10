@@ -346,18 +346,26 @@ typedef struct vframe_states
   int buf_avail_num;
 } vframe_states_t;
 
-static int aml_ioctl_get(CODEC_HANDLE h, int subcmd, unsigned long paramter)
+static int aml_ioctl_get(CODEC_HANDLE h, int subcmd, unsigned long parameter)
 {
+#ifdef AMSTREAM_IOC_GET
   struct am_ioctl_parm parm;
   memset(&parm, 0, sizeof(parm));
   parm.cmd = subcmd;
-  parm.data_32 = *(unsigned int *)paramter;
+  parm.data_32 = *(unsigned int *)parameter;
   if (ioctl(h, AMSTREAM_IOC_GET, (unsigned long)&parm) < 0)
   {
     CLog::Log(LOGERROR, "aml_ioctl_get failed: subcmd=%x, errno=%d", subcmd, errno);
     return -1;
   }
   *(unsigned int *)paramter = parm.data_32;
+#else
+  if (ioctl(h, subcmd, &parameter) < 0)
+  {
+    CLog::Log(LOGERROR, "aml_ioctl_get failed: subcmd=%x, errno=%d", subcmd, errno);
+    return -1;
+  }
+#endif
   return 0;
 }
 
