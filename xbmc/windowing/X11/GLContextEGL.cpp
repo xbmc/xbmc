@@ -185,8 +185,21 @@ bool CGLContextEGL::Refresh(bool force, int screen, Window glWindow, bool &newCo
     m_eglContext = eglCreateContext(m_eglDisplay, m_eglConfig, EGL_NO_CONTEXT, contextAttributes);
     if (m_eglContext == EGL_NO_CONTEXT)
     {
-      CLog::Log(LOGERROR, "failed to create EGL context\n");
-      return false;
+      EGLint contextAttributes[] =
+      {
+        EGL_CONTEXT_MAJOR_VERSION_KHR, 2,
+        EGL_NONE
+      };
+      m_eglContext = eglCreateContext(m_eglDisplay, m_eglConfig, EGL_NO_CONTEXT, contextAttributes);
+
+      if (m_eglContext == EGL_NO_CONTEXT)
+      {
+        CLog::Log(LOGERROR, "failed to create EGL context\n");
+        return false;
+      }
+
+      CLog::Log(LOGWARNING, "Failed to get an OpenGL context supporting core profile 3.2,  \
+                             using legacy mode with reduced feature set");
     }
 
     if (!eglMakeCurrent(m_eglDisplay, m_eglSurface, m_eglSurface, m_eglContext))
