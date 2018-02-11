@@ -28,7 +28,6 @@
 #include <atomic>
 
 class CAMLCodec;
-struct frame_queue;
 struct mpeg2_sequence;
 class CBitstreamParser;
 class CBitstreamConverter;
@@ -88,8 +87,6 @@ public:
 
 protected:
   void            Dispose(void);
-  void            FrameQueuePop(void);
-  void            FrameQueuePush(double dts, double pts);
   void            FrameRateTracking(uint8_t *pData, int iSize, double dts, double pts);
   //void            RemoveInfo(CDVDAmlogicInfo* info);
 
@@ -100,9 +97,6 @@ protected:
   bool            m_opened;
   int             m_codecControlFlags;
   CDVDStreamInfo  m_hints;
-  frame_queue    *m_frame_queue;
-  int32_t         m_queue_depth;
-  pthread_mutex_t m_queue_mutex;
   double          m_framerate;
   int             m_video_rate;
   float           m_aspect_ratio;
