@@ -60,6 +60,20 @@ bool CWinSystemWaylandEGLContextGLES::InitWindowSystem()
   return true;
 }
 
+bool CWinSystemWaylandEGLContextGLES::CreateContext()
+{
+  const EGLint contextAttribs[] = {
+    EGL_CONTEXT_CLIENT_VERSION, 2,
+    EGL_NONE
+  };
+  if (!m_eglContext.CreateContext(contextAttribs))
+  {
+    CLog::Log(LOGERROR, "EGL context creation failed");
+    return false;
+  }
+  return true;
+}
+
 void CWinSystemWaylandEGLContextGLES::SetContextSize(CSizeInt size)
 {
   CWinSystemWaylandEGLContext::SetContextSize(size);

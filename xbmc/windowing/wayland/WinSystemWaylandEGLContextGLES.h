@@ -36,6 +36,7 @@ class CWinSystemWaylandEGLContextGLES : public CWinSystemWaylandEGLContext, publ
 public:
   bool InitWindowSystem() override;
 protected:
+  bool CreateContext() override;
   void SetContextSize(CSizeInt size) override;
   void SetVSyncImpl(bool enable) override;
   void PresentRenderImpl(bool rendered) override;
