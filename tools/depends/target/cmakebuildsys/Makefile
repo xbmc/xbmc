@@ -10,10 +10,6 @@ ifeq ($(Configuration),)
   endif
 endif
 
-ifeq ($(ENABLE_WAYLAND),yes)
-  CMAKE_EXTRA_ARGUMENTS = -DCORE_PLATFORM_NAME=wayland -DWAYLAND_RENDER_SYSTEM=gl
-endif
-
 BUILD_DIR=$(CMAKE_SOURCE_DIR)/build
 
 all:

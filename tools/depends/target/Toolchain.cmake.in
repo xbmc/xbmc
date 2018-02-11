@@ -14,6 +14,13 @@ if(OS STREQUAL linux)
     # wrapping libdvd fails with gold on rbpi
     # todo: revisit after toolchain bump
     set(ENABLE_LDGOLD OFF CACHE BOOL "Disabling Gnu Gold Linker" FORCE)
+  elseif(NOT "@target_platform@" STREQUAL "")
+    set(CORE_PLATFORM_NAME @target_platform@)
+  endif()
+  if(NOT "@app_rendersystem@" STREQUAL "")
+    set(WAYLAND_RENDER_SYSTEM @app_rendersystem@ CACHE STRING "Render system to use with Wayland: \"gl\" or \"gles\"")
+  else()
+    set(WAYLAND_RENDER_SYSTEM gl CACHE STRING "Render system to use with Wayland: \"gl\" or \"gles\"")
   endif()
 elseif(OS STREQUAL android)
   set(CMAKE_SYSTEM_NAME Android)

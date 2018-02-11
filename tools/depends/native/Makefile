@@ -20,7 +20,7 @@ ifeq ($(OS),osx)
   NATIVE += xz-native tar-native
 endif
 
-ifeq ($(ENABLE_WAYLAND),yes)
+ifeq ($(TARGET_PLATFORM),wayland)
   NATIVE += expat-native wayland-scanner-native waylandpp-scanner-native
 endif
 

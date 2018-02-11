@@ -88,12 +88,6 @@ AC_ARG_ENABLE([gplv3],
   [use_gplv3=$enableval],
   [use_gplv3=yes])
 
-AC_ARG_ENABLE([wayland],
-  [AS_HELP_STRING([--enable-wayland],
-  [build libraries needed for Wayland. default is no])],
-  [enable_wayland=$enableval],
-  [enable_wayland=no])
-
 AC_ARG_WITH([rendersystem],
   [AS_HELP_STRING([--with-rendersystem],
   [render system to use])],
@@ -412,6 +406,17 @@ case $host in
 esac
 
 case $use_platform in
+  aml|gbm|mir|wayland)
+    if test "$platform_os" != "linux"; then
+      AC_MSG_ERROR([$use_platform is only supported on the Linux platform])
+    fi
+    if test "$use_platform" = "aml"; then
+      if test "$host_cpu" != "arm" && test "$host_cpu" != "aarch64"; then
+        AC_MSG_ERROR([$use_platform is only supported for arm and aarch64 architecture])
+      fi
+    fi
+    target_platform=$use_platform
+    ;;
   raspberry-pi)
      target_platform=raspberry-pi
      use_cpu=arm1176jzf-s
@@ -428,6 +433,10 @@ case $use_platform in
      platform_cxxflags="-fPIC -mcpu=cortex-a7 -mfloat-abi=hard -mfpu=neon-vfpv4"
      platform_ldflags="-lpthread"
      ;;
+  auto)
+    ;;
+  *)
+    AC_MSG_ERROR(unsupported platform ($use_platform))
 esac
 
 if test "$target_platform" = "raspberry-pi" ; then
@@ -510,12 +519,6 @@ fi
 
 if test -z $use_tarballs; then
   use_tarballs=$prefix/xbmc-tarballs
-fi
-
-if test "$platform_os" != "linux"; then
-  if test "x$enable_wayland" != "xno"; then
-    AC_MSG_ERROR([Wayland is only supported on the Linux platform])
-  fi
 fi
 
 if test -n "$app_rendersystem"; then
@@ -682,7 +685,6 @@ AC_SUBST(has_zlib)
 AC_SUBST(link_iconv)
 AC_SUBST(need_libiconv)
 AC_SUBST(use_gplv3)
-AC_SUBST(enable_wayland)
 AC_SUBST(use_xcode)
 AC_SUBST(use_ccache)
 AC_SUBST(native_platform_min_version)

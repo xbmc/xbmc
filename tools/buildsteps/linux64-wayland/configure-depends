@@ -5,5 +5,5 @@ XBMC_PLATFORM_DIR=linux64-wayland
 if [ "$(pathChanged $WORKSPACE/tools/depends)" == "1" ]
 then
   cd $WORKSPACE/tools/depends;./configure \
-    --with-toolchain=/usr --prefix=$XBMC_DEPENDS_ROOT --host=x86_64-linux-gnu --with-tarballs=$TARBALLS --enable-wayland $DEBUG_SWITCH
+    --with-toolchain=/usr --prefix=$XBMC_DEPENDS_ROOT --host=x86_64-linux-gnu --with-platform=wayland --with-tarballs=$TARBALLS $DEBUG_SWITCH
 fi

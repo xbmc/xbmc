@@ -75,7 +75,7 @@ ifeq ($(OS),linux)
   CROSSGUID_DEPS = libuuid
 endif
 
-ifeq ($(ENABLE_WAYLAND),yes)
+ifeq ($(TARGET_PLATFORM),wayland)
   DEPENDS += wayland waylandpp wayland-protocols
 endif
 
