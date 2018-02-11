@@ -88,12 +88,6 @@ AC_ARG_ENABLE([gplv3],
   [use_gplv3=$enableval],
   [use_gplv3=yes])
 
-AC_ARG_ENABLE([wayland],
-  [AS_HELP_STRING([--enable-wayland],
-  [build libraries needed for Wayland. default is no])],
-  [enable_wayland=$enableval],
-  [enable_wayland=no])
-
 AC_ARG_WITH([rendersystem],
   [AS_HELP_STRING([--with-rendersystem],
   [render system to use])],
@@ -239,17 +233,15 @@ case $host in
     cross_compiling="yes"
   ;;
   arm*-*-linux-gnu*|arm*-*-linux-uclibc*|aarch64*-*-linux-gnu*|aarch*-*-linux-be*)
-    if test "$use_platform" = "auto"; then
-      if test "x$use_cpu" = "xauto"; then
-        use_cpu=$host_cpu
-      fi
-      use_toolchain="${use_toolchain:-/usr}"
-      platform_cflags="-fPIC -DPIC"
-      optimize_flags="-Os"
-      platform_ldflags="-Wl,-rpath-link=$prefix/$deps_dir/lib"
-      platform_cxxflags="$platform_cflags"
-      platform_os="linux"
+    if test "x$use_cpu" = "xauto"; then
+      use_cpu=$host_cpu
     fi
+    use_toolchain="${use_toolchain:-/usr}"
+    platform_cflags="-fPIC -DPIC"
+    optimize_flags="-Os"
+    platform_ldflags="-Wl,-rpath-link=$prefix/$deps_dir/lib"
+    platform_cxxflags="$platform_cflags"
+    platform_os="linux"
   ;;
   *i686*-linux-gnu*|i*86*-*-linux-uclibc*|x86_64*-linux-gnu*|x86_64-*-linux-uclibc*)
     use_cpu=$host_cpu
@@ -414,13 +406,23 @@ case $host in
 esac
 
 case $use_platform in
+  aml|gbm|mir|wayland)
+    if test "$platform_os" != "linux"; then
+      AC_MSG_ERROR([$use_platform is only supported on the Linux platform])
+    fi
+    if test "$use_platform" = "aml"; then
+      if test "$host_cpu" != "arm" && test "$host_cpu" != "aarch64"; then
+        AC_MSG_ERROR([$use_platform is only supported for arm and aarch64 architecture])
+      fi
+    fi
+    target_platform=$use_platform
+    ;;
   raspberry-pi)
      target_platform=raspberry-pi
      use_cpu=arm1176jzf-s
      ffmpeg_options_default="--cpu=arm1176jzf-s"
      platform_cflags="-mcpu=arm1176jzf-s -mtune=arm1176jzf-s -mfloat-abi=hard -mfpu=vfp"
      platform_cxxflags="-mcpu=arm1176jzf-s -mtune=arm1176jzf-s -mfloat-abi=hard -mfpu=vfp"
-     optimize_flags="-Os"
      platform_ldflags=""
      ;;
   raspberry-pi2)
@@ -429,9 +431,12 @@ case $use_platform in
      ffmpeg_options_default="--cpu=cortex-a7"
      platform_cflags="-fPIC -mcpu=cortex-a7 -mfloat-abi=hard -mfpu=neon-vfpv4"
      platform_cxxflags="-fPIC -mcpu=cortex-a7 -mfloat-abi=hard -mfpu=neon-vfpv4"
-     optimize_flags="-Os"
      platform_ldflags="-lpthread"
      ;;
+  auto)
+    ;;
+  *)
+    AC_MSG_ERROR(unsupported platform ($use_platform))
 esac
 
 if test "$target_platform" = "raspberry-pi" ; then
@@ -443,7 +448,6 @@ if test "$target_platform" = "raspberry-pi" ; then
   use_arch="arm"
   use_hardcoded_tables="yes"
   ARCH="arm"
-  platform_os="linux"
   cross_compiling="yes"
   use_host="arm-linux-gnueabihf"
   deps_dir="$use_platform-$build_type"
@@ -515,12 +519,6 @@ fi
 
 if test -z $use_tarballs; then
   use_tarballs=$prefix/xbmc-tarballs
-fi
-
-if test "$platform_os" != "linux"; then
-  if test "x$enable_wayland" != "xno"; then
-    AC_MSG_ERROR([Wayland is only supported on the Linux platform])
-  fi
 fi
 
 if test -n "$app_rendersystem"; then
@@ -687,7 +685,6 @@ AC_SUBST(has_zlib)
 AC_SUBST(link_iconv)
 AC_SUBST(need_libiconv)
 AC_SUBST(use_gplv3)
-AC_SUBST(enable_wayland)
 AC_SUBST(use_xcode)
 AC_SUBST(use_ccache)
 AC_SUBST(native_platform_min_version)

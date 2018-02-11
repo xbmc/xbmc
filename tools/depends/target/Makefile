@@ -75,8 +75,10 @@ ifeq ($(OS),linux)
   CROSSGUID_DEPS = libuuid
 endif
 
-ifeq ($(ENABLE_WAYLAND),yes)
+ifeq ($(TARGET_PLATFORM),wayland)
   DEPENDS += wayland waylandpp wayland-protocols
+else ifeq ($(TARGET_PLATFORM),aml)
+  DEPENDS += libamcodec
 endif
 
 .PHONY: $(DEPENDS)

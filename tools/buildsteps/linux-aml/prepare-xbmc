@@ -1,0 +1,9 @@
+WORKSPACE=${WORKSPACE:-$( cd $(dirname $0)/../../.. ; pwd -P )}
+XBMC_PLATFORM_DIR=linux-aml
+. $WORKSPACE/tools/buildsteps/defaultenv
+
+#build binary addons before building xbmc...
+#make sure that binary_addons don't clean the native tools
+#here (e.x. on release builds where pathChanged always returns 1
+BINARY_ADDONS_CLEAN_NATIVETOOLS="0"
+. $WORKSPACE/tools/buildsteps/$XBMC_PLATFORM_DIR/make-binary-addons

@@ -1,0 +1,11 @@
+--- a/amcodec/Makefile
++++ b/amcodec/Makefile
+@@ -29,7 +29,7 @@
+ LIB_VERSION=
+ LIB_SUB_VERSION=.0.0
+ 
+-LDFLAGS+=  -O2  -L$(PREFIX)/lib  -lamadec -lm -lc  -shared -Wl,--shared -Wl,-soname,$(TARGET)$(LIB_VERSION)
++LDFLAGS+=  -O2  -L$(PREFIX)/lib  -lm -lc  -shared -Wl,--shared -Wl,-soname,$(TARGET)$(LIB_VERSION)
+ 
+ #INCLUDE=$(DIRS:%/=-I$(SRC)/%/include)
+ INCLUDE=${SRCTREE}/include/ 
