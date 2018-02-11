@@ -1,4 +1,4 @@
 LIBNAME=libdvdcss
 BASE_URL=https://github.com/xbmc/libdvdcss
-VERSION=kodi-deps-leia
+VERSION=1.4.1-Leia-Alpha-1
 

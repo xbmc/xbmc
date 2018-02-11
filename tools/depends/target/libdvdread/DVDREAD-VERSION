@@ -1,4 +1,4 @@
 LIBNAME=libdvdread
 BASE_URL=https://github.com/xbmc/libdvdread
-VERSION=kodi-deps-leia
+VERSION=6.0.0-Leia-Alpha-1
 
