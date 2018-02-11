@@ -77,6 +77,8 @@ endif
 
 ifeq ($(TARGET_PLATFORM),wayland)
   DEPENDS += wayland waylandpp wayland-protocols
+else ifeq ($(TARGET_PLATFORM),aml)
+  DEPENDS += libamcodec
 endif
 
 .PHONY: $(DEPENDS)

@@ -1,0 +1,22 @@
+--- a/amcodec/depends.mk
++++ b/amcodec/depends.mk
+@@ -5,7 +5,7 @@
+ include Makefile
+ 
+ %.o.depend:
+-	@$(CC) -M -I$(CFLAGS) $*.c >$*.o.d
++	@$(CC) -M -I$(CFLAGS) $(EXT_CFLAGS) $*.c >$*.o.d
+ 	@echo '	$$(call c_mk,$$<)'	>>$*.o.d
+ 
+ 
+--- a/amcodec/rules.mk
++++ b/amcodec/rules.mk
+@@ -21,7 +21,7 @@
+ 		$(CC) \
+ 		$(2:%-dir=%/build-in.o) \
+ 		$(3:%-dir=%/build-in.o) \
+-		$(LDFLAGS) -o $(1)
++		$(LDFLAGS) $(EXT_LDFLAGS) -o $(1)
+ 				
+ clr_mk=$(Q)echo "CLEAN  $(1)";\
+ 		$(MAKE) -C ${1} -f ${SRCTREE}/clean.mk
