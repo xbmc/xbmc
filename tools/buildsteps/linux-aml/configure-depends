@@ -1,0 +1,9 @@
+WORKSPACE=${WORKSPACE:-$( cd $(dirname $0)/../../.. ; pwd -P )}
+XBMC_PLATFORM_DIR=linux-aml
+. $WORKSPACE/tools/buildsteps/defaultenv
+
+if [ "$(pathChanged $WORKSPACE/tools/depends)" == "1" ]
+then
+  cd $WORKSPACE/tools/depends;./configure \
+    --with-toolchain=/usr --prefix=$XBMC_DEPENDS_ROOT --host=aarch64-linux-gnu --with-platform=aml --with-tarballs=$TARBALLS $DEBUG_SWITCH
+fi

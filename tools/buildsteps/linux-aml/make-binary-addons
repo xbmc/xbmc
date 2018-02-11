@@ -1,0 +1,28 @@
+WORKSPACE=${WORKSPACE:-$( cd $(dirname $0)/../../.. ; pwd -P )}
+XBMC_PLATFORM_DIR=linux-aml
+. $WORKSPACE/tools/buildsteps/defaultenv
+
+. $WORKSPACE/tools/buildsteps/$XBMC_PLATFORM_DIR/make-native-depends
+
+#clear the build failed file
+rm -f $WORKSPACE/cmake/$FAILED_BUILD_FILENAME
+
+ALL_BINARY_ADDONS_BUILT="1"
+#only build binary addons when requested by env/jenkins
+if [ "$BUILD_BINARY_ADDONS" == "true" ]
+then
+  for addon in $BINARY_ADDONS
+  do
+    echo "building $addon"
+    git clean -xffd $WORKSPACE/$BINARY_ADDONS_ROOT/$addon
+    cd $WORKSPACE/$BINARY_ADDONS_ROOT/$addon;make -j $BUILDTHREADS V=99 VERBOSE=1  || ALL_BINARY_ADDONS_BUILT="0"
+  done
+fi
+
+if [ "$ALL_BINARY_ADDONS_BUILT" == "1" ]
+then
+  tagSuccessFulBuild $WORKSPACE/cmake
+else
+  #mark the build failure in the filesystem but leave jenkins running
+  tagFailedBuild $WORKSPACE/cmake
+fi
