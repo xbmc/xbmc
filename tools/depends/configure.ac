@@ -239,17 +239,15 @@ case $host in
     cross_compiling="yes"
   ;;
   arm*-*-linux-gnu*|arm*-*-linux-uclibc*|aarch64*-*-linux-gnu*|aarch*-*-linux-be*)
-    if test "$use_platform" = "auto"; then
-      if test "x$use_cpu" = "xauto"; then
-        use_cpu=$host_cpu
-      fi
-      use_toolchain="${use_toolchain:-/usr}"
-      platform_cflags="-fPIC -DPIC"
-      optimize_flags="-Os"
-      platform_ldflags="-Wl,-rpath-link=$prefix/$deps_dir/lib"
-      platform_cxxflags="$platform_cflags"
-      platform_os="linux"
+    if test "x$use_cpu" = "xauto"; then
+      use_cpu=$host_cpu
     fi
+    use_toolchain="${use_toolchain:-/usr}"
+    platform_cflags="-fPIC -DPIC"
+    optimize_flags="-Os"
+    platform_ldflags="-Wl,-rpath-link=$prefix/$deps_dir/lib"
+    platform_cxxflags="$platform_cflags"
+    platform_os="linux"
   ;;
   *i686*-linux-gnu*|i*86*-*-linux-uclibc*|x86_64*-linux-gnu*|x86_64-*-linux-uclibc*)
     use_cpu=$host_cpu
@@ -420,7 +418,6 @@ case $use_platform in
      ffmpeg_options_default="--cpu=arm1176jzf-s"
      platform_cflags="-mcpu=arm1176jzf-s -mtune=arm1176jzf-s -mfloat-abi=hard -mfpu=vfp"
      platform_cxxflags="-mcpu=arm1176jzf-s -mtune=arm1176jzf-s -mfloat-abi=hard -mfpu=vfp"
-     optimize_flags="-Os"
      platform_ldflags=""
      ;;
   raspberry-pi2)
@@ -429,7 +426,6 @@ case $use_platform in
      ffmpeg_options_default="--cpu=cortex-a7"
      platform_cflags="-fPIC -mcpu=cortex-a7 -mfloat-abi=hard -mfpu=neon-vfpv4"
      platform_cxxflags="-fPIC -mcpu=cortex-a7 -mfloat-abi=hard -mfpu=neon-vfpv4"
-     optimize_flags="-Os"
      platform_ldflags="-lpthread"
      ;;
 esac
@@ -443,7 +439,6 @@ if test "$target_platform" = "raspberry-pi" ; then
   use_arch="arm"
   use_hardcoded_tables="yes"
   ARCH="arm"
-  platform_os="linux"
   cross_compiling="yes"
   use_host="arm-linux-gnueabihf"
   deps_dir="$use_platform-$build_type"
