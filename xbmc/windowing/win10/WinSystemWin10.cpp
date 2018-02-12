@@ -25,6 +25,7 @@
 #include "guilib/gui3d.h"
 #include "guilib/GraphicContext.h"
 #include "messaging/ApplicationMessenger.h"
+#include "platform/win10/input/RemoteControlXbox.h"
 #include "platform/win32/CharsetConverter.h"
 #include "powermanagement/win10/Win10PowerSyscall.h"
 #include "rendering/dx/DirectXHelper.h"
@@ -65,6 +66,10 @@ CWinSystemWin10::CWinSystemWin10()
   {
     CAESinkWASAPI::Register();
   }
+  else if (CSysInfo::GetWindowsDeviceFamily() == CSysInfo::WindowsDeviceFamily::Xbox)
+  {
+    CRemoteControlXbox::Register();
+  }
   CPowerSyscall::Register();
 }
 
@@ -74,6 +79,9 @@ CWinSystemWin10::~CWinSystemWin10()
 
 bool CWinSystemWin10::InitWindowSystem()
 {
+  m_coreWindow = Windows::UI::Core::CoreWindow::GetForCurrentThread();
+  dynamic_cast<CWinEventsWin10&>(*m_winEvents).InitEventHandlers(m_coreWindow.Get());
+
   if (!CWinSystemBase::InitWindowSystem())
     return false;
 
@@ -95,7 +103,6 @@ bool CWinSystemWin10::DestroyWindowSystem()
 void CWinSystemWin10::SetCoreWindow(Windows::UI::Core::CoreWindow^ window)
 {
   m_coreWindow = window;
-  dynamic_cast<CWinEventsWin10&>(*m_winEvents).InitEventHandlers(window);
 }
 
 bool CWinSystemWin10::CanDoWindowed()

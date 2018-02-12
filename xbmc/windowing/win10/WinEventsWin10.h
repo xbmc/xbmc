@@ -23,10 +23,12 @@
 
 #pragma once
 
+#include "interfaces/IAnnouncer.h"
 #include "windowing/WinEvents.h"
 #include <concurrent_queue.h>
 
 class CWinEventsWin10 : public IWinEvents
+                      , public ANNOUNCEMENT::IAnnouncer
 {
 public:
   void MessagePush(XBMC_Event *newEvent);
@@ -59,6 +61,8 @@ public:
   static void OnBackRequested(Platform::Object^ sender, Windows::UI::Core::BackRequestedEventArgs^ args);
   // system media handlers
   static void OnSystemMediaButtonPressed(Windows::Media::SystemMediaTransportControls^, Windows::Media::SystemMediaTransportControlsButtonPressedEventArgs^);
+  // IAnnouncer overrides
+  void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data) override;
 
 private:
   void UpdateWindowSize();

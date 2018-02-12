@@ -25,17 +25,18 @@
 #include "input/touch/generic/GenericTouchInputHandler.h"
 #include "input/Action.h"
 #include "input/ActionIDs.h"
+#include "interfaces/AnnouncementManager.h"
 #include "messaging/ApplicationMessenger.h"
+#include "platform/win10/input/RemoteControlXbox.h"
 #include "rendering/dx/DeviceResources.h"
 #include "rendering/dx/RenderContext.h"
 #include "utils/log.h"
 #include "utils/SystemInfo.h"
+#include "utils/Variant.h"
 #include "windowing/windows/WinKeyMap.h"
 #include "xbmc/GUIUserMessages.h"
 #include "WinEventsWin10.h"
 
-using namespace PERIPHERALS;
-using namespace KODI::MESSAGING;
 using namespace Windows::Devices::Input;
 using namespace Windows::Foundation;
 using namespace Windows::Graphics::Display;
@@ -43,6 +44,10 @@ using namespace Windows::Media;
 using namespace Windows::System;
 using namespace Windows::UI::Core;
 using namespace Windows::UI::Input;
+
+using namespace ANNOUNCEMENT;
+using namespace PERIPHERALS;
+using namespace KODI::MESSAGING;
 
 static Point GetScreenPoint(Point point)
 {
@@ -136,6 +141,7 @@ void CWinEventsWin10::InitEventHandlers(CoreWindow^ window)
   // system
   SystemNavigationManager^ sysNavManager = SystemNavigationManager::GetForCurrentView();
   sysNavManager->BackRequested += ref new EventHandler<BackRequestedEventArgs^>(CWinEventsWin10::OnBackRequested);
+
   // requirement for backgroup playback
   m_smtc = SystemMediaTransportControls::GetForCurrentView();
   if (m_smtc)
@@ -143,9 +149,20 @@ void CWinEventsWin10::InitEventHandlers(CoreWindow^ window)
     m_smtc->IsPlayEnabled = true;
     m_smtc->IsPauseEnabled = true;
     m_smtc->IsStopEnabled = true;
-    m_smtc->ButtonPressed += ref new TypedEventHandler<SystemMediaTransportControls^, SystemMediaTransportControlsButtonPressedEventArgs^>
-      (CWinEventsWin10::OnSystemMediaButtonPressed);
+    m_smtc->IsRecordEnabled = true;
+    m_smtc->IsNextEnabled = true;
+    m_smtc->IsPreviousEnabled = true;
+    m_smtc->IsFastForwardEnabled = true;
+    m_smtc->IsRewindEnabled = true;
+    m_smtc->IsChannelUpEnabled = true;
+    m_smtc->IsChannelDownEnabled = true;
+    if (CSysInfo::GetWindowsDeviceFamily() != CSysInfo::WindowsDeviceFamily::Xbox)
+    {
+      m_smtc->ButtonPressed += ref new TypedEventHandler<SystemMediaTransportControls^, SystemMediaTransportControlsButtonPressedEventArgs^>
+                               (CWinEventsWin10::OnSystemMediaButtonPressed);
+    }
     m_smtc->IsEnabled = true;
+    CAnnouncementManager::GetInstance().AddAnnouncer(this);
   }
 }
 
@@ -383,6 +400,10 @@ void CWinEventsWin10::OnAcceleratorKeyActivated(CoreDispatcher^ sender, Accelera
   static auto lockedState = CoreVirtualKeyStates::Locked;
   static VirtualKey keyStore = VirtualKey::None;
 
+  if ( CSysInfo::GetWindowsDeviceFamily() == CSysInfo::WindowsDeviceFamily::Xbox 
+    && CRemoteControlXbox::IsRemoteControlId(args->DeviceId->Data()))
+    return;
+
   bool isDown = false;
   unsigned keyCode = 0;
   unsigned vk = static_cast<unsigned>(args->VirtualKey);
@@ -473,7 +494,7 @@ void CWinEventsWin10::OnDisplayContentsInvalidated(DisplayInformation^ sender, P
 void CWinEventsWin10::OnBackRequested(Platform::Object^ sender, Windows::UI::Core::BackRequestedEventArgs^ args)
 {
   // handle this only on windows mobile
-  if (CSysInfo::GetWindowsDeviceFamily() == CSysInfo::Mobile)
+  if (CSysInfo::GetWindowsDeviceFamily() == CSysInfo::WindowsDeviceFamily::Mobile)
   {
     CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_NAV_BACK)));
   }
@@ -519,5 +540,53 @@ void CWinEventsWin10::OnSystemMediaButtonPressed(SystemMediaTransportControls^ s
   if (action != ACTION_NONE)
   {
     CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(action)));
+  }
+}
+
+void CWinEventsWin10::Announce(AnnouncementFlag flag, const char * sender, const char * message, const CVariant & data)
+{
+  if (flag & AnnouncementFlag::Player)
+  {
+    double speed = 1.0;
+    if (data.isMember("player") && data["player"].isMember("speed"))
+      speed = data["player"]["speed"].asDouble(1.0);
+
+    bool changed = false;
+    MediaPlaybackStatus status = MediaPlaybackStatus::Changing;
+
+    if (strcmp(message, "OnPlay") == 0)
+    {
+      changed = true;
+      status = MediaPlaybackStatus::Playing;
+    }
+    else if (strcmp(message, "OnStop") == 0)
+    {
+      changed = true;
+      status = MediaPlaybackStatus::Stopped;
+    }
+    else if (strcmp(message, "OnPause") == 0)
+    {
+      changed = true;
+      status = MediaPlaybackStatus::Paused;
+    }
+    else if (strcmp(message, "OnSpeedChanged") == 0)
+    {
+      changed = true;
+      status = speed != 0.0 ? MediaPlaybackStatus::Playing : MediaPlaybackStatus::Paused;
+    }
+
+    if (changed)
+    {
+      auto dispatcher = Windows::ApplicationModel::Core::CoreApplication::MainView->Dispatcher;
+      dispatcher->RunAsync(CoreDispatcherPriority::Normal, ref new DispatchedHandler([status, speed]
+      {
+        auto smtc = SystemMediaTransportControls::GetForCurrentView();
+        if (!smtc)
+          return;
+
+        smtc->PlaybackStatus = status;
+        smtc->PlaybackRate = speed;
+      }));
+    }
   }
 }

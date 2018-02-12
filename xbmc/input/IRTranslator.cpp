@@ -38,6 +38,9 @@ CIRTranslator::CIRTranslator(const CProfilesManager &profileManager) :
 
 void CIRTranslator::Load(const std::string &irMapName)
 {
+  if (irMapName.empty())
+    return;
+
   Clear();
 
   bool success = false;
