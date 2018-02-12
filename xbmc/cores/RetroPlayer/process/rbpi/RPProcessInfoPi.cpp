@@ -23,6 +23,11 @@
 using namespace KODI;
 using namespace RETRO;
 
+CRPProcessInfoPi::CRPProcessInfoPi() :
+  CRPProcessInfo("RPi")
+{
+}
+
 CRPProcessInfo* CRPProcessInfoPi::Create()
 {
   return new CRPProcessInfoPi();

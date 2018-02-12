@@ -39,6 +39,11 @@ using namespace RETRO;
 
 // --- CWinRendererFactory -----------------------------------------------------
 
+std::string CWinRendererFactory::RenderSystemName() const
+{
+  return "DirectX";
+}
+
 CRPBaseRenderer *CWinRendererFactory::CreateRenderer(const CRenderSettings &settings, CRenderContext &context, std::shared_ptr<IRenderBufferPool> bufferPool)
 {
   return new CRPWinRenderer(settings, context, std::move(bufferPool));

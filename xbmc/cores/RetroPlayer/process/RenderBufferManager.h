@@ -44,6 +44,8 @@ namespace RETRO
     std::vector<IRenderBufferPool*> GetBufferPools();
     void FlushPools();
 
+    std::string GetRenderSystemName(IRenderBufferPool *renderBufferPool) const;
+
     bool HasScalingMethod(ESCALINGMETHOD scalingMethod) const;
 
   protected:

@@ -31,6 +31,11 @@ using namespace RETRO;
 
 // --- CRendererFactoryOpenGLES ------------------------------------------------
 
+std::string CRendererFactoryOpenGLES::RenderSystemName() const
+{
+  return "OpenGLES";
+}
+
 CRPBaseRenderer *CRendererFactoryOpenGLES::CreateRenderer(const CRenderSettings &settings, CRenderContext &context, std::shared_ptr<IRenderBufferPool> bufferPool)
 {
   return new CRPRendererOpenGLES(settings, context, std::move(bufferPool));

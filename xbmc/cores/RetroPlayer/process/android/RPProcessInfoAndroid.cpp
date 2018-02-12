@@ -23,6 +23,11 @@
 using namespace KODI;
 using namespace RETRO;
 
+CRPProcessInfoAndroid::CRPProcessInfoAndroid() :
+  CRPProcessInfo("Android")
+{
+}
+
 CRPProcessInfo* CRPProcessInfoAndroid::Create()
 {
   return new CRPProcessInfoAndroid();

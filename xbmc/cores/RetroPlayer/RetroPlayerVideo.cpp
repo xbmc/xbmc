@@ -20,6 +20,7 @@
 
 #include "RetroPlayerVideo.h"
 #include "cores/RetroPlayer/process/RPProcessInfo.h"
+#include "cores/RetroPlayer/rendering/RenderTranslator.h"
 #include "cores/RetroPlayer/rendering/RPRenderManager.h"
 #include "utils/log.h"
 
@@ -30,18 +31,26 @@ CRetroPlayerVideo::CRetroPlayerVideo(CRPRenderManager& renderManager, CRPProcess
   m_renderManager(renderManager),
   m_processInfo(processInfo)
 {
+  CLog::Log(LOGDEBUG, "RetroPlayer[VIDEO]: Initializing video");
+
   m_renderManager.Initialize();
 }
 
 CRetroPlayerVideo::~CRetroPlayerVideo()
 {
+  CLog::Log(LOGDEBUG, "RetroPlayer[VIDEO]: Deinitializing video");
+
   CloseStream();
   m_renderManager.Deinitialize();
 }
 
 bool CRetroPlayerVideo::OpenPixelStream(AVPixelFormat pixfmt, unsigned int width, unsigned int height, unsigned int orientationDeg)
 {
-  CLog::Log(LOGINFO, "RetroPlayerVideo: Creating video stream with pixel format: %i, %dx%d", pixfmt, width, height);
+  CLog::Log(LOGDEBUG, "RetroPlayer[VIDEO]: Creating video stream - format %s, %ux%u, %u deg",
+      CRenderTranslator::TranslatePixelFormat(pixfmt),
+      width,
+      height,
+      orientationDeg);
 
   m_processInfo.SetVideoPixelFormat(pixfmt);
   m_processInfo.SetVideoDimensions(width, height);
@@ -51,6 +60,8 @@ bool CRetroPlayerVideo::OpenPixelStream(AVPixelFormat pixfmt, unsigned int width
 
 bool CRetroPlayerVideo::OpenEncodedStream(AVCodecID codec)
 {
+  CLog::Log(LOGERROR, "RetroPlayer[VIDEO]: Encoded video stream not supported");
+
   return false; //! @todo
 }
 
@@ -61,5 +72,7 @@ void CRetroPlayerVideo::AddData(const uint8_t* data, unsigned int size)
 
 void CRetroPlayerVideo::CloseStream()
 {
+  CLog::Log(LOGDEBUG, "RetroPlayer[VIDEO]: Closing video stream");
+
   m_renderManager.Flush();
 }

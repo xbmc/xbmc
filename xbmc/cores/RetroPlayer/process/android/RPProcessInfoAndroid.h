@@ -28,6 +28,8 @@ namespace RETRO
   class CRPProcessInfoAndroid : public CRPProcessInfo
   {
   public:
+    CRPProcessInfoAndroid();
+
     static CRPProcessInfo* Create();
     static void Register();
   };

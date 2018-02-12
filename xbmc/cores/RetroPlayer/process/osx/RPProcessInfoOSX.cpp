@@ -23,6 +23,11 @@
 using namespace KODI;
 using namespace RETRO;
 
+CRPProcessInfoOSX::CRPProcessInfoOSX() :
+  CRPProcessInfo("macOS")
+{
+}
+
 CRPProcessInfo* CRPProcessInfoOSX::Create()
 {
   return new CRPProcessInfoOSX();

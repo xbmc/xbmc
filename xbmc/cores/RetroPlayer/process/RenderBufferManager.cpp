@@ -20,6 +20,7 @@
 
 #include "RenderBufferManager.h"
 #include "IRenderBufferPool.h"
+#include "RPProcessInfo.h"
 #include "cores/RetroPlayer/rendering/RenderVideoSettings.h"
 #include "threads/SingleLock.h"
 
@@ -82,6 +83,22 @@ void CRenderBufferManager::FlushPools()
     for (const auto &pool : pools.pools)
       pool->Flush();
   }
+}
+
+std::string CRenderBufferManager::GetRenderSystemName(IRenderBufferPool *renderBufferPool) const
+{
+  CSingleLock lock(m_critSection);
+
+  for (const auto &pools : m_pools)
+  {
+    for (const auto &pool : pools.pools)
+    {
+      if (pool.get() == renderBufferPool)
+        return pools.factory->RenderSystemName();
+    }
+  }
+
+  return "";
 }
 
 bool CRenderBufferManager::HasScalingMethod(ESCALINGMETHOD scalingMethod) const

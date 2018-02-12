@@ -23,6 +23,7 @@
 #include "cores/RetroPlayer/process/IRenderBufferPool.h"
 #include "cores/RetroPlayer/rendering/RenderContext.h"
 #include "settings/Settings.h"
+#include "utils/log.h"
 #include "utils/MathUtils.h"
 #include "ServiceBroker.h"
 
@@ -76,7 +77,15 @@ bool CRPBaseRenderer::Configure(AVPixelFormat format, unsigned int width, unsign
   m_renderOrientation = orientation;
 
   if (!m_bufferPool->IsConfigured())
-    m_bufferPool->Configure(format, width, height);
+  {
+    CLog::Log(LOGDEBUG, "RetroPlayer[RENDER]: Configuring buffer pool");
+
+    if (!m_bufferPool->Configure(format, width, height))
+    {
+      CLog::Log(LOGERROR, "RetroPlayer[RENDER]: Failed to configure buffer pool");
+      return false;
+    }
+  }
 
   ManageRenderArea();
 

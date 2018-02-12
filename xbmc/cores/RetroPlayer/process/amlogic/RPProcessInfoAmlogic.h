@@ -28,6 +28,8 @@ namespace RETRO
   class CRPProcessInfoAmlogic : public CRPProcessInfo
   {
   public:
+    CRPProcessInfoAmlogic();
+
     static CRPProcessInfo* Create();
     static void Register();
   };
