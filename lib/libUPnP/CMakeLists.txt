@@ -96,9 +96,18 @@ else()
                       Neptune/Source/System/Win32/NptWin32Time.cpp)
 endif()
 
+if(CORE_SYSTEM_NAME STREQUAL "freebsd")
+  list(APPEND SOURCES Neptune/Source/System/Bsd/NptBsdResolver.cpp
+                      Neptune/Source/System/Bsd/NptBsdSockets.cpp)
+endif()
+
 
 add_library(upnp STATIC ${SOURCES} ${HEADERS})
 target_compile_definitions(upnp PUBLIC -DNPT_CONFIG_ENABLE_LOGGING)
+if(CORE_SYSTEM_NAME STREQUAL "freebsd")
+  target_compile_definitions(upnp PUBLIC -DNPT_CONFIG_HAVE_GETADDRINFO)
+endif()
+
 target_include_directories(upnp PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
                                        Platinum/Source/Core
                                        Platinum/Source/Platinum
