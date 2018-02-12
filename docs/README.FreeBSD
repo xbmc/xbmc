@@ -46,17 +46,17 @@ You will then need the required libraries. The following is the list of packages
 that are used to build Kodi packages on Debian/Ubuntu (with all supported
 external libraries enabled).
 
-$ pkg install taglib gstreamer1-vaapi libdvdnav libdvdcss ffmpeg hal libcapn \
+$ pkg install taglib gstreamer1-vaapi hal libcapn \
 enca gawk gperf cmake zip nasm swig30 libssh openjdk8 libtool gettext-tools \
 gmake pkgconf rapidjson mesa-libs doxygen glproto dri2proto dri3proto libass \
-flac libcdio libcrossguid curl dbus libdcadec fontconfig freetype2 fribidi \
-libgcrypt gmp libgpg-error gnutls libidn libinotify lzo2 libmodplug libmpeg2 \
+flac libcdio curl dbus fontconfig freetype2 fribidi \
+libgcrypt gmp libgpg-error gnutls libidn libinotify lzo2 \
 libogg sqlite3 tiff tinyxml e2fsprogs-libuuid git libvorbis libxslt libplist \
 shairplay avahi-app libcec libbluray samba46 libnfs librtmp libva libvdpau \
-jpeg-turbo glew sdl_image  xrandr libedit  inputproto giflib m4 encodings \
-font-util mysql57-client xf86vidmodeproto cups python2 p8-platform libbdplus \
-libaacs sdl libudev-devd sndio ccache xorg-server gcc6 binutils libmicrohttpd
-xorg-server xf86-input-mouse xf86-input-keyboard lirc.
+jpeg-turbo glew xrandr libedit inputproto giflib m4 encodings \
+font-util mysql57-client xf86vidmodeproto python2 p8-platform libbdplus \
+libaacs libudev-devd sndio ccache xorg-server binutils libmicrohttpd \
+xorg-server xf86-input-mouse xf86-input-keyboard lirc libfmt autoconf automake
 
 -----------------------------------------------------------------------------
 4. How to compile
