@@ -1,3 +1,39 @@
+[B]3.0.3[/B]
+- fixed: World-wide English title won't scraped correctly
+
+[B]3.0.2[/B]
+- Use TV certification in the absence of MPAA ones
+
+[B]3.0.1[/B]
+- fixed: USA Title won't scraped correctly under some circumstances, plot outline quirks, IMDB Posters
+
+[B]3.0.0[/B]
+- fixed: IMDb plot outline under some circumstances
+
+[B]2.9.9[/B]
+- fixed: Thumb for IMDb cast
+
+[B]2.9.8[/B]
+- fixed: IMDb outline for some movies
+
+[B]2.9.7[/B]
+- changed: attempt to scrape generic local title from IMDb if multiple are available
+
+[B]2.9.6[/B]
+- fixed: movie title issues after IMDb layout changes
+
+[B]2.9.5[/B]
+- fixed: IMDb Full credits after IMDb layout changes
+
+[B]2.9.4[/B]
+- fixed: USA certification rating due to IMDb changes
+
+[B]2.9.3[/B]
+- fixed: always get USA rating regardless of the country set
+
+[B]2.9.2[/B]
+- changed: simplify ratings code
+
 [B]2.9.1[/B]
 - changed: improved USA rating detection
 
@@ -49,7 +85,7 @@
 - fixed: MetaCritic Score
 
 [B]2.7.3[/B]
-- fixed: orginal title won't scrape in some cases
+- fixed: original title won't scrape in some cases
 
 [B]2.7.2[/B]
 - changed: make sure to parse the intended page
@@ -109,7 +145,7 @@
 - fixed: fetching directors and writers due to site changes
 
 [B]2.1.3[/B]
-- fixed: make sure IMDb rating is geting fetched in every region
+- fixed: make sure IMDb rating is getting fetched in every region
 
 [B]2.1.2[/B]
 - fixed: IMDb rating after another site change
@@ -139,10 +175,10 @@
 - reverted: fixchars removed from cast parsing, leads to Dharma Beta2 hanging, will be added back once next Beta is out
 
 [B]2.0.2[/B]
-- fixed: some more cast won't get scraped under certain circumtances
+- fixed: some more cast won't get scraped under certain circumstances
 
 [B]2.0.1[/B]
-- fixed: cast won't get scraped under certain circumtances
+- fixed: cast won't get scraped under certain circumstances
 
 [B]2.0.0[/B]
 - changed: adapted new IMDb layout

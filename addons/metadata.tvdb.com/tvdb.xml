@@ -159,8 +159,11 @@
 			<RegExp input="" output="" dest="14">
 				<expression clear="yes"/>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;id&gt;\1&lt;/id&gt;" dest="4">
+			<RegExp input="$$1" output="&lt;uniqueid type=&quot;tvdb&quot; default=&quot;true&quot;&gt;\1&lt;/uniqueid&gt;" dest="4">
 				<expression clear="yes">"id": (\d+),</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;uniqueid type=&quot;imdb&quot;&gt;\1&lt;/uniqueid&gt;" dest="4+">
+				<expression>"imdbId": "(tt\d+)",</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;title&gt;\1&lt;/title&gt;" dest="4+">
 				<expression fixchars="1">"seriesName": "(.*)",\s+"aliases"</expression>
@@ -210,24 +213,24 @@
 			<RegExp input="$$1" output="&lt;chain function=&quot;GetArt&quot;&gt;\1&lt;/chain&gt;" dest="4+">
 				<expression noclean="1">"id": (\d+),</expression>
 			</RegExp>
-			<RegExp input="$$5" output="\1" dest="4+">
-				<RegExp input="$$1" output="&lt;rating&gt;\1&lt;/rating&gt;" dest="5">
+			<RegExp input="$$6" output="\1" dest="4+">
+				<RegExp input="$$1" output="&lt;value&gt;\1&lt;/value&gt;" dest="5">
 					<expression clear="yes">"siteRating": (?:(\d+(?:\.\d)?)|null)</expression>
 				</RegExp>
 				<RegExp input="$$1" output="&lt;votes&gt;\1&lt;/votes&gt;" dest="5+">
 					<expression>"siteRatingCount": (?:(\d+)|null)\s+}</expression>
 				</RegExp>
-				<RegExp input="$INFO[RatingS]" output="$$6" dest="5">
-					<RegExp input="$$7" output="&lt;chain function=&quot;GetIMDBRatingById&quot;&gt;$$7&lt;/chain&gt;" dest="6">
-						<RegExp input="$$1" output="\1" dest="7">
-							<expression clear="yes">"imdbId": "(tt\d+)",</expression>
-						</RegExp>
-						<expression clear="yes">(?!^$)</expression>
-					</RegExp>
-					<RegExp conditional="fallback" input="$$7" output="$$5" dest="6">
-						<expression>^$</expression>
-					</RegExp>
-					<expression>IMDb</expression>
+				<RegExp input="$$1" output="\1" dest="8">
+					<expression clear="yes">"imdbId": "(tt\d+)",</expression>
+				</RegExp>
+				<RegExp input="$INFO[RatingS]" output="default=&quot;true&quot;" dest="9">
+					<expression>TheTVDB</expression>
+				</RegExp>
+				<RegExp input="$INFO[RatingS]|$INFO[fallback]" output="&lt;ratings&gt;&lt;rating name=&quot;tvdb&quot; $$9 &gt;$$5&lt;/rating&gt;&lt;/ratings&gt;" dest="6">
+					<expression>TheTVDB|true</expression>
+				</RegExp>
+				<RegExp input="$$8|$INFO[RatingS]|default|$INFO[alsoimdb]" output="&lt;chain function=&quot;GetIMDBRatingsById&quot;&gt;$$8\1&lt;/chain&gt;" dest="6+">
+					<expression>^tt\d+\|(?:IMDb(\|default)|.*true$)</expression>
 				</RegExp>
 				<expression noclean="1"/>
 			</RegExp>
@@ -515,7 +518,7 @@
 						</xsl:variable>
 						<xsl:call-template name="count-episodes">
 							<xsl:with-param name="season-list" select="$season-list"/>
-							<xsl:with-param name="count-list" select="'|S1|0'"/>
+							<xsl:with-param name="count-list" select="concat('|S', substring-before($season-list,'|'), '|0')"/>
 						</xsl:call-template>
 					</xsl:if>
 				</xsl:template>
@@ -524,7 +527,8 @@
 					<xsl:param name="count-list"/>
 					<xsl:variable name="first" select="substring-before($season-list,'|')"/>
 					<xsl:variable name="remaining" select="substring-after($season-list,'|')"/>
-					<xsl:variable name="currList" select="concat($count-list, '|S', string($first+1), '|', string(count(//Episode[SeasonNumber=$first])+substring-after($count-list,concat('|S',$first,'|'))))"/>
+					<xsl:variable name="next" select="substring-before($remaining,'|')"/>
+					<xsl:variable name="currList" select="concat($count-list, '|S', $next, '|', string(count(//Episode[SeasonNumber=$first])+substring-after($count-list,concat('|S',$first,'|'))))"/>
 					<xsl:choose>
 						<xsl:when test="substring-after($remaining,'|')!=''">
 							<xsl:call-template name="count-episodes">
@@ -862,7 +866,8 @@
 									</xsl:otherwise>
 								</xsl:choose>
 							</plot>
-							<uniqueid><xsl:value-of select="$FirstEpisode/id"/></uniqueid>
+							<uniqueid type="tvdb" default="true"><xsl:value-of select="$FirstEpisode/id"/></uniqueid>
+							<xsl:if test="$FirstEpisode/imdbId!=''"><uniqueid type="imdb"><xsl:value-of select="$FirstEpisode/imdbId"/></uniqueid></xsl:if>
 							<aired><xsl:value-of select="$FirstEpisode/firstAired"/></aired>
 							<xsl:choose>
 								<xsl:when test="'$INFO[dvdorder]'!='true'">
@@ -953,26 +958,30 @@
 									</xsl:otherwise>
 								</xsl:choose>
 							</xsl:if>
-							<xsl:choose>
-								<xsl:when test="('$INFO[RatingS]'='IMDb') and (($FirstEpisode/imdbId!='') or ('$INFO[fallback]'='false'))">
-									<xsl:if test="$FirstEpisode/imdbId!=''"><chain function="GetIMDBRatingById"><xsl:value-of select="$FirstEpisode/imdbId"/></chain></xsl:if>
-								</xsl:when>
-								<xsl:otherwise>
-									<xsl:choose>
-										<xsl:when test="$single-episode">
-											<rating><xsl:value-of select="$FirstEpisode/siteRating"/></rating>
-											<votes><xsl:value-of select="$FirstEpisode/siteRatingCount"/></votes>
-										</xsl:when>
-										<xsl:otherwise>
-											<xsl:call-template name="merge-rating">
-												<xsl:with-param name="list" select="$episode-list" />
-												<xsl:with-param name="rating" select="'0'" />
-												<xsl:with-param name="votes" select="'0'" />
-											</xsl:call-template>
-										</xsl:otherwise>
-									</xsl:choose>
-								</xsl:otherwise>
-							</xsl:choose>
+							<xsl:if test="('$INFO[RatingS]'='IMDb') or ('$INFO[alsoimdb]'='true')">
+								<xsl:if test="$FirstEpisode/imdbId!=''"><chain function="GetIMDBRatingsById"><xsl:value-of select="$FirstEpisode/imdbId"/><xsl:if test="'$INFO[RatingS]'='IMDb'">|default</xsl:if></chain></xsl:if>
+							</xsl:if>
+							<xsl:if test="('$INFO[RatingS]'='TheTVDB') or ('$INFO[fallback]'='true')">
+								<xsl:choose>
+									<xsl:when test="$single-episode">
+										<ratings>
+											<rating>
+												<xsl:attribute name="name">tvdb</xsl:attribute>
+												<xsl:if test="'$INFO[RatingS]'='TheTVDB'"><xsl:attribute name="default">true</xsl:attribute></xsl:if>
+												<value><xsl:value-of select="$FirstEpisode/siteRating"/></value>
+												<votes><xsl:value-of select="$FirstEpisode/siteRatingCount"/></votes>
+											</rating>
+										</ratings>
+									</xsl:when>
+									<xsl:otherwise>
+										<xsl:call-template name="merge-rating">
+											<xsl:with-param name="list" select="$episode-list" />
+											<xsl:with-param name="rating" select="'0'" />
+											<xsl:with-param name="votes" select="'0'" />
+										</xsl:call-template>
+									</xsl:otherwise>
+								</xsl:choose>
+							</xsl:if>
 							<xsl:call-template name="split-details">
 								<xsl:with-param name="list" select="$episode-list"/>
 							</xsl:call-template>
@@ -1041,10 +1050,16 @@
 								</xsl:call-template>
 							</xsl:when>
 							<xsl:otherwise>
-								<xsl:if test="$currVotes&gt;0">
-									<rating><xsl:value-of select="format-number($currRating div $currVotes,'#.#')"/></rating>
-								</xsl:if>
-								<votes><xsl:value-of select="$currVotes"/></votes>
+								<ratings>
+									<rating>
+										<xsl:attribute name="name">tvdb</xsl:attribute>
+										<xsl:if test="'$INFO[RatingS]'='TheTVDB'"><xsl:attribute name="default">true</xsl:attribute></xsl:if>
+										<xsl:if test="$currVotes&gt;0">
+											<value><xsl:value-of select="format-number($currRating div $currVotes,'#.#')"/></value>
+										</xsl:if>
+										<votes><xsl:value-of select="$currVotes"/></votes>
+									</rating>
+								</ratings>
 							</xsl:otherwise>
 						</xsl:choose>
 					</xsl:template>

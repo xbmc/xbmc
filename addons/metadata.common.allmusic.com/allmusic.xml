@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scraperfunctions>
 	<GetAMGDiscographyByAMGID dest="5" clearbuffers="no">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;am-\1-artist-discography.html&quot; function=&quot;ParseAMGDiscography&quot;&gt;http://www.allmusic.com/artist/\1/discography&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;am-\1-artist-discography.html&quot; function=&quot;ParseAMGDiscography&quot;&gt;https://www.allmusic.com/artist/\1/discography&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression clear="yes" noclean="1"/>
 		</RegExp>
 	</GetAMGDiscographyByAMGID>
@@ -17,54 +17,8 @@
 		</RegExp>
 	</ParseAMGDiscography>
 
-	<GetAMGBiographyByAMGID dest="5" clearbuffers="no">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;am-\1-artist.html&quot; function=&quot;ParseAMGBiography&quot;&gt;http://www.allmusic.com/artist/\1&lt;/url&gt;&lt;/details&gt;" dest="5">
-			<expression noclean="1"/>
-		</RegExp>
-	</GetAMGBiographyByAMGID>
-	<ParseAMGBiography dest="5" clearbuffers="no">
-		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
-			<RegExp input="" output="" dest="2">
-				<expression />
-			</RegExp>
-			<RegExp input="$$1" output="\1" dest="11">
-				<expression clear="yes">&quot; itemprop=&quot;description&quot;&gt;(.*?)div class=&quot;advertisement leaderboard&quot;&gt;</expression>
-			</RegExp>
-			<RegExp input="$$11" output="$$12" dest="2">
-				<RegExp input="$INFO[biogfbsource]" output="&lt;chain function=&quot;GetLastFMFallbackBiographyByMBID&quot;&gt;$$8&lt;/chain&gt;" dest="12">
-					<expression>last.fm</expression>
-				</RegExp>
-				<RegExp input="$INFO[biogfbsource]" output="&lt;chain function=&quot;GetTADBFMFallbackBiographyByMBID&quot;&gt;$$8&lt;/chain&gt;" dest="12">
-					<expression>TheAudioDb.com</expression>
-				</RegExp>
-				<expression>^$</expression>
-			</RegExp>
-			<RegExp input="$$11" output="&lt;biography&gt;\1&lt;/biography&gt;" dest="2">
-				<expression>(.+)</expression>
-			</RegExp>
-			<expression noclean="1"/>
-		</RegExp>
-	</ParseAMGBiography>
-
-	<GetAMGFallbackBiographyByAMGID dest="5" clearbuffers="no">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;am-\1-artist.html&quot; function=&quot;ParseAMGFallbackBiography&quot;&gt;http://www.allmusic.com/artist/\1&lt;/url&gt;&lt;/details&gt;" dest="5">
-			<expression noclean="1"/>
-		</RegExp>
-	</GetAMGFallbackBiographyByAMGID>
-	<ParseAMGFallbackBiography dest="5" clearbuffers="no">
-		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
-			<RegExp input="" output="" dest="2">
-				<expression />
-			</RegExp>
-			<RegExp input="$$1" output="&lt;biography&gt;\1&lt;/biography&gt;" dest="2">
-				<expression clear="yes">&quot; itemprop=&quot;description&quot;&gt;(.*?)div class=&quot;advertisement leaderboard&quot;&gt;</expression>
-			</RegExp>
-			<expression noclean="1"/>
-		</RegExp>
-	</ParseAMGFallbackBiography>
-
 	<GetAMGArtistLifeSpanByAMGID dest="5" clearbuffers="no">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;am-\1-artist.html&quot; function=&quot;ParseAMGArtistLifeSpan&quot;&gt;http://www.allmusic.com/artist/\1&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;am-\1-artist.html&quot; function=&quot;ParseAMGArtistLifeSpan&quot;&gt;https://www.allmusic.com/artist/\1&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1"/>
 		</RegExp>
 	</GetAMGArtistLifeSpanByAMGID>
@@ -76,17 +30,17 @@
 			<RegExp input="" output="" dest="11">
 				<expression />
 			</RegExp>
-			<RegExp input="$$1" output="&lt;born&gt;\1 \2&lt;/born&gt;" dest="11+">
-				<expression trim="1,2">&lt;h4&gt;\s*Born\s*&lt;/h4&gt;\s*&lt;div&gt;(.*?\d{4})\s*([^&lt;]*)?</expression>
+			<RegExp input="$$1" output="&lt;born&gt;\1 \3&lt;/born&gt;" dest="11+">
+				<expression trim="1,2">&lt;h4&gt;\s.+Born.*?birthdate/[^&quot;]+&quot;&gt;([^&lt;]*)(.*?"/birthplace/[^&quot;]+&quot;&gt;([^&lt;]*))?</expression>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;died&gt;\1 \2&lt;/died&gt;" dest="11+">
-				<expression trim="1,2">&lt;h4&gt;\s*Died\s*&lt;/h4&gt;\s*&lt;div&gt;(.*?\d{4})\s*([^&lt;]*)?</expression>
+			<RegExp input="$$1" output="&lt;died&gt;\1 \3&lt;/died&gt;" dest="11+">
+				<expression trim="1,2">&lt;h4&gt;\s.+Died.*?deathdate/[^&quot;]+&quot;&gt;([^&lt;]*)(.*?&quot;/deathplace/[^&quot;]+&quot;&gt;([^&lt;]*))?</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;formed&gt;\1&lt;/formed&gt;" dest="11+">
-				<expression trim="1,2">&lt;h4&gt;\s*Formed\s*&lt;/h4&gt;\s*&lt;div&gt;(.*?\d{4})\s*([^&lt;]*)?</expression>
+				<expression trim="1,2">&lt;h4&gt;\s.+Formed.*?birthdate/[^&quot;]+&quot;&gt;([^&lt;]*)</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;disbanded&gt;\1&lt;/disbanded&gt;" dest="11+">
-				<expression trim="1,2">&lt;h4&gt;\s*Disbanded\s*&lt;/h4&gt;\s*&lt;div&gt;(.*?\d{4})\s*([^&lt;]*)?</expression>
+				<expression trim="1,2">&lt;h4&gt;\s.+Disbanded.*?deathdate/[^&quot;]+[^&quot;]+&quot;&gt;([^&lt;]*)</expression>
 			</RegExp>
 			<RegExp input="$$11" output="$$12" dest="2">
 				<RegExp input="$INFO[lifespanfbsource]" output="&lt;chain function=&quot;GetMBFallbackLafeSpanByMBID&quot;&gt;$$8&lt;/chain&gt;" dest="12">
@@ -105,7 +59,7 @@
 	</ParseAMGArtistLifeSpan>
 
 	<GetAMGFallbackArtistLifeSpanByAMGID dest="5" clearbuffers="no">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;am-\1-artist.html&quot; function=&quot;ParseAMGFallbackArtistLifeSpan&quot;&gt;http://www.allmusic.com/artist/\1&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;am-\1-artist.html&quot; function=&quot;ParseAMGFallbackArtistLifeSpan&quot;&gt;https://www.allmusic.com/artist/\1&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1"/>
 		</RegExp>
 	</GetAMGFallbackArtistLifeSpanByAMGID>
@@ -131,7 +85,7 @@
 	</ParseAMGFallbackArtistLifeSpan>
 
 	<GetAMGArtistYearsActiveByAMGID dest="5" clearbuffers="no">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;am-\1-artist.html&quot; function=&quot;ParseAMGArtistYearsActive&quot;&gt;http://www.allmusic.com/artist/\1&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;am-\1-artist.html&quot; function=&quot;ParseAMGArtistYearsActive&quot;&gt;https://www.allmusic.com/artist/\1&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1"/>
 		</RegExp>
 	</GetAMGArtistYearsActiveByAMGID>
@@ -148,7 +102,7 @@
 	</ParseAMGArtistYearsActive>
 
 	<GetAMGArtistGenresByAMGID dest="5" clearbuffers="no">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;am-\1-artist.html&quot; function=&quot;ParseAMGArtistGenres&quot;&gt;http://www.allmusic.com/artist/\1&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;am-\1-artist.html&quot; function=&quot;ParseAMGArtistGenres&quot;&gt;https://www.allmusic.com/artist/\1&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1"/>
 		</RegExp>
 	</GetAMGArtistGenresByAMGID>
@@ -164,7 +118,7 @@
 				<expression noclean="1">&lt;h4&gt;Genre&lt;/h4&gt;\s*&lt;div&gt;(.*?)&lt;/div&gt;</expression>
 			</RegExp>
 			<RegExp input="$$6" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="11">
-				<expression repeat="yes" noclean="1">&lt;a\shref=&quot;http://www.allmusic.com/genre/[^&quot;]*&quot;&gt;([^&lt;]*)</expression>
+				<expression repeat="yes" noclean="1">&lt;a\shref=&quot;https://www.allmusic.com/genre/[^&quot;]*&quot;&gt;([^&lt;]*)</expression>
 			</RegExp>
 			<RegExp input="$$11" output="$$12" dest="2">
 				<RegExp input="$INFO[genresfbsource]" output="&lt;chain function=&quot;GetLastFMFallbackArtistGenresByMBID&quot;&gt;$$8&lt;/chain&gt;" dest="12">
@@ -183,7 +137,7 @@
 	</ParseAMGArtistGenres>
 
 	<GetAMGFallbackArtistGenresByAMGID dest="5" clearbuffers="no">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;am-\1-artist.html&quot; function=&quot;ParseAMGFallbackArtistGenres&quot;&gt;http://www.allmusic.com/artist/\1&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;am-\1-artist.html&quot; function=&quot;ParseAMGFallbackArtistGenres&quot;&gt;https://www.allmusic.com/artist/\1&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1"/>
 		</RegExp>
 	</GetAMGFallbackArtistGenresByAMGID>
@@ -199,14 +153,14 @@
 				<expression noclean="1">&lt;h4&gt;Genre&lt;/h4&gt;\s*&lt;div&gt;(.*?)&lt;/div&gt;</expression>
 			</RegExp>
 			<RegExp input="$$6" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="2">
-				<expression repeat="yes" noclean="1">&lt;a\shref=&quot;http://www.allmusic.com/genre/[^&quot;]*&quot;&gt;([^&lt;]*)</expression>
+				<expression repeat="yes" noclean="1">&lt;a\shref=&quot;https://www.allmusic.com/genre/[^&quot;]*&quot;&gt;([^&lt;]*)</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
 	</ParseAMGFallbackArtistGenres>
 
 	<GetAMGArtistStylesByAMGID dest="5" clearbuffers="no">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;am-\1-artist.html&quot; function=&quot;ParseAMGArtistStyles&quot;&gt;http://www.allmusic.com/artist/\1&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;am-\1-artist.html&quot; function=&quot;ParseAMGArtistStyles&quot;&gt;https://www.allmusic.com/artist/\1&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1"/>
 		</RegExp>
 	</GetAMGArtistStylesByAMGID>
@@ -222,7 +176,7 @@
 				<expression noclean="1">&lt;h4&gt;Styles&lt;/h4&gt;\s*&lt;div&gt;(.*?)&lt;/div&gt;</expression>
 			</RegExp>
 			<RegExp input="$$7" output="&lt;style&gt;\1&lt;/style&gt;" dest="11">
-				<expression repeat="yes" noclean="1">&lt;a\shref=&quot;http://www.allmusic.com/style/[^&quot;]*&quot;&gt;([^&lt;]*)</expression>
+				<expression repeat="yes" noclean="1">&lt;a\shref=&quot;https://www.allmusic.com/style/[^&quot;]*&quot;&gt;([^&lt;]*)</expression>
 			</RegExp>
 			<RegExp input="$$11" output="$$12" dest="2">
 				<RegExp input="$INFO[stylesfbsource]" output="&lt;chain function=&quot;GetLastFMFallbackArtistStylesByMBID&quot;&gt;$$8&lt;/chain&gt;" dest="12">
@@ -241,7 +195,7 @@
 	</ParseAMGArtistStyles>
 
 	<GetAMGFallbackArtistStylesByAMGID dest="5" clearbuffers="no">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;am-\1-artist.html&quot; function=&quot;ParseAMGFallbackArtistStyles&quot;&gt;http://www.allmusic.com/artist/\1&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;am-\1-artist.html&quot; function=&quot;ParseAMGFallbackArtistStyles&quot;&gt;https://www.allmusic.com/artist/\1&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1"/>
 		</RegExp>
 	</GetAMGFallbackArtistStylesByAMGID>
@@ -257,14 +211,14 @@
 				<expression noclean="1">&lt;h4&gt;Styles&lt;/h4&gt;\s*&lt;div&gt;(.*?)&lt;/div&gt;</expression>
 			</RegExp>
 			<RegExp input="$$7" output="&lt;style&gt;\1&lt;/style&gt;" dest="2">
-				<expression repeat="yes" noclean="1">&lt;a\shref=&quot;http://www.allmusic.com/style/[^&quot;]*&quot;&gt;([^&lt;]*)</expression>
+				<expression repeat="yes" noclean="1">&lt;a\shref=&quot;https://www.allmusic.com/style/[^&quot;]*&quot;&gt;([^&lt;]*)</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
 	</ParseAMGFallbackArtistStyles>
 
 	<GetAMGArtistMoodsByAMGID dest="5" clearbuffers="no">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;am-\1-artist.html&quot; function=&quot;ParseAMGArtistMoods&quot;&gt;http://www.allmusic.com/artist/\1&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;am-\1-artist.html&quot; function=&quot;ParseAMGArtistMoods&quot;&gt;https://www.allmusic.com/artist/\1&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1"/>
 		</RegExp>
 	</GetAMGArtistMoodsByAMGID>
@@ -296,7 +250,7 @@
 	</ParseAMGArtistMoods>
 
 	<GetAMGFallbackArtistMoodsByAMGID dest="5" clearbuffers="no">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;am-\1-artist.html&quot; function=&quot;ParseAMGFallbackArtistMoods&quot;&gt;http://www.allmusic.com/artist/\1&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;am-\1-artist.html&quot; function=&quot;ParseAMGFallbackArtistMoods&quot;&gt;https://www.allmusic.com/artist/\1&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1"/>
 		</RegExp>
 	</GetAMGFallbackArtistMoodsByAMGID>
@@ -318,74 +272,9 @@
 		</RegExp>
 	</ParseAMGFallbackArtistMoods>
 
-	<GetAMGArtistThumbsByAMGID dest="5" clearbuffers="no">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;am-\1-artist.html&quot; function=&quot;ParseAMGArtistThumbs&quot;&gt;http://www.allmusic.com/artist/\1&lt;/url&gt;&lt;/details&gt;" dest="5">
-			<expression noclean="1"/>
-		</RegExp>
-	</GetAMGArtistThumbsByAMGID>
-	<ParseAMGArtistThumbs dest="5" clearbuffers="no">
-		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
-			<RegExp input="" output="" dest="2">
-				<expression />
-			</RegExp>
-			<RegExp input="" output="" dest="4">
-				<expression />
-			</RegExp>
-			<RegExp input="$$1" output="\1" dest="4">
-				<expression noclean="1">&lt;h\d&gt;Photo\sGallery&lt;/h\d&gt;(.*?)&lt;h2\sclass=&quot;artist-name&quot;</expression>
-			</RegExp>
-			<RegExp input="$$4" output="&lt;thumb&gt;http://cps-static.rovicorp.com/3/JPG_1080/\1&lt;/thumb&gt;" dest="2">
-				<expression repeat="yes" noclean="1">&lt;img src=&quot;http://cps-static.rovicorp.com/3/JPG_[^/]*/([^&quot;]*)</expression>
-			</RegExp>
-			<expression noclean="1"/>
-		</RegExp>
-	</ParseAMGArtistThumbs>
-
-
-	<GetAMGAlbumReviewByAMGID dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;am-\1-album.html&quot; function=&quot;ParseAMGAlbumReview&quot;&gt;http://www.allmusic.com/album/\1&lt;/url&gt;&lt;/details&gt;" dest="5">
-			<expression noclean="1"/>
-		</RegExp>
-	</GetAMGAlbumReviewByAMGID>
-	<ParseAMGAlbumReview dest="5">
-		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
-			<RegExp input="$$1" output="&lt;review&gt;\1&lt;/review&gt;" dest="2">
-				<expression>&lt;span itemprop=&quot;description&quot;&gt;([^&lt;]*)</expression>
-			</RegExp>
-			<expression noclean="1" />
-		</RegExp>
-	</ParseAMGAlbumReview>
-
-	<GetAMGAlbumTitleByAMGID dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;am-\1-album.html&quot; function=&quot;ParseAMGAlbumTitle&quot;&gt;http://www.allmusic.com/album/\1&lt;/url&gt;&lt;/details&gt;" dest="5">
-			<expression noclean="1"/>
-		</RegExp>
-	</GetAMGAlbumTitleByAMGID>
-	<ParseAMGAlbumTitle dest="5">
-		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
-			<RegExp input="$$1" output="&lt;title&gt;\1&lt;/title&gt;" dest="2">
-				<expression trim="1" noclean="1">&lt;div class=&quot;album-title&quot;&gt;([^&lt;]*)</expression>
-			</RegExp>
-			<expression noclean="1" />
-		</RegExp>
-	</ParseAMGAlbumTitle>
-
-	<GetAMGAlbumArtistByAMGID dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;am-\1-album.html&quot; function=&quot;ParseAMGAlbumArtist&quot;&gt;http://www.allmusic.com/album/\1&lt;/url&gt;&lt;/details&gt;" dest="5">
-			<expression noclean="1"/>
-		</RegExp>
-	</GetAMGAlbumArtistByAMGID>
-	<ParseAMGAlbumArtist dest="5">
-		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
-			<RegExp input="$$1" output="&lt;artist&gt;\1&lt;/artist&gt;" dest="2">
-				<expression noclean="1">&lt;div class=&quot;album-artist&quot;&gt;[^&gt;]*&gt;([^&lt;]*)</expression>
-			</RegExp>
-			<expression noclean="1" />
-		</RegExp>
-	</ParseAMGAlbumArtist>
 
 	<GetAMGAlbumRatingByAMGID dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;am-\1-album.html&quot; function=&quot;ParseAMGAlbumRating&quot;&gt;http://www.allmusic.com/album/\1&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;am-\1-album.html&quot; function=&quot;ParseAMGAlbumRating&quot;&gt;https://www.allmusic.com/album/\1&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1"/>
 		</RegExp>
 	</GetAMGAlbumRatingByAMGID>
@@ -398,59 +287,42 @@
 		</RegExp>
 	</ParseAMGAlbumRating>
 
-	<GetAMGAlbumDateByAMGID dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;am-\1-album.html&quot; function=&quot;ParseAMGAlbumDate&quot;&gt;http://www.allmusic.com/album/\1&lt;/url&gt;&lt;/details&gt;" dest="5">
-			<expression noclean="1"/>
-		</RegExp>
-	</GetAMGAlbumDateByAMGID>
-	<ParseAMGAlbumDate dest="5">
-		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
-			<RegExp input="$$1" output="&lt;releasedate&gt;\1&lt;/releasedate&gt;" dest="2">
-				<expression noclean="1">&lt;dd class=&quot;release-date&quot;&gt;([^&lt;]*)</expression>
-			</RegExp>
-			<RegExp input="$$1" output="&lt;year&gt;\2&lt;/year&gt;" dest="2+">
-				<expression trim="1" noclean="1">&lt;dd class=&quot;release-date&quot;&gt;([^,]*,)?([^&lt;]*)</expression>
-			</RegExp>
-			<expression noclean="1" />
-		</RegExp>
-	</ParseAMGAlbumDate>
-
 	<GetAMGAlbumGenresByAMGID dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;am-\1-album.html&quot; function=&quot;ParseAMGAlbumGenres&quot;&gt;http://www.allmusic.com/album/\1&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;am-\1-album.html&quot; function=&quot;ParseAMGAlbumGenres&quot;&gt;https://www.allmusic.com/album/\1&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1"/>
 		</RegExp>
 	</GetAMGAlbumGenresByAMGID>
 	<ParseAMGAlbumGenres dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
 			<RegExp input="$$1" output="\1" dest="6">
-				<expression noclean="1">&lt;h4&gt;Genre&lt;/h4&gt;\s*&lt;div&gt;(.*?)&lt;/div&gt;</expression>
+				<expression noclean="1">class=&quot;genre&quot;&gt;(.*?)&lt;/div&gt;</expression>
 			</RegExp>
 			<RegExp input="$$6" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="2">
-				<expression repeat="yes" noclean="1">&lt;a\shref=&quot;http://www.allmusic.com/genre/[^&quot;]*&quot;&gt;([^&lt;]*)</expression>
+				<expression repeat="yes" noclean="1">&lt;a\shref=&quot;https://www.allmusic.com/genre/[^&quot;]*&quot;&gt;([^&lt;]*)</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
 	</ParseAMGAlbumGenres>
 
 	<GetAMGAlbumStylesByAMGID dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;am-\1-album.html&quot; function=&quot;ParseAMGAlbumStyles&quot;&gt;http://www.allmusic.com/album/\1&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;am-\1-album.html&quot; function=&quot;ParseAMGAlbumStyles&quot;&gt;https://www.allmusic.com/album/\1&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1"/>
 		</RegExp>
 	</GetAMGAlbumStylesByAMGID>
 	<ParseAMGAlbumStyles dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
 			<RegExp input="$$1" output="\1" dest="7">
-				<expression noclean="1">&lt;h4&gt;Styles&lt;/h4&gt;\s*&lt;div&gt;(.*?)&lt;/div&gt;</expression>
+				<expression noclean="1">class=&quot;styles&quot;&gt;(.*?)&lt;/div&gt;</expression>
 			</RegExp>
 			<RegExp input="$$7" output="&lt;style&gt;\1&lt;/style&gt;" dest="2">
-				<expression repeat="yes" noclean="1">&lt;a\shref=&quot;http://www.allmusic.com/style/[^&quot;]*&quot;&gt;([^&lt;]*)</expression>
+				<expression repeat="yes" noclean="1">&lt;a\shref=&quot;https://www.allmusic.com/style/[^&quot;]*&quot;&gt;([^&lt;]*)</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
 	</ParseAMGAlbumStyles>
 
 	<GetAMGAlbumMoodsByAMGID dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;am-\1-album.html&quot; function=&quot;ParseAMGAlbumMoods&quot;&gt;http://www.allmusic.com/album/\1&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;am-\1-album.html&quot; function=&quot;ParseAMGAlbumMoods&quot;&gt;https://www.allmusic.com/album/\1&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1"/>
 		</RegExp>
 	</GetAMGAlbumMoodsByAMGID>
@@ -460,84 +332,41 @@
 				<expression trim="1" noclean="1">&gt;\s*&lt;h4&gt;Album\sMoods&lt;/h4&gt;(.*?)&lt;/section&gt;</expression>
 			</RegExp>
 			<RegExp input="$$8" output="&lt;mood&gt;\1&lt;/mood&gt;" dest="2">
-				<expression repeat="yes" noclean="1">&lt;a\shref=&quot;http://www.allmusic.com/mood/[^&quot;]*&quot;&gt;([^&lt;]*)</expression>
+				<expression repeat="yes" noclean="1">&lt;a\shref=&quot;https://www.allmusic.com/mood/[^&quot;]*&quot;&gt;([^&lt;]*)</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
 	</ParseAMGAlbumMoods>
 
 	<GetAMGAlbumThemesByAMGID dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;am-\1-album.html&quot; function=&quot;ParseAMGAlbumThemes&quot;&gt;http://www.allmusic.com/album/\1&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;am-\1-album.html&quot; function=&quot;ParseAMGAlbumThemes&quot;&gt;https://www.allmusic.com/album/\1&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1"/>
 		</RegExp>
 	</GetAMGAlbumThemesByAMGID>
 	<ParseAMGAlbumThemes dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
 			<RegExp input="$$1" output="\1" dest="4">
-				<expression trim="1" noclean="1">&gt;\s*&lt;h4&gt;Themes&lt;/h4&gt;(.*?)&lt;/ul&gt;</expression>
+				<expression trim="1" noclean="1">&lt;section\sclass=&quot;themes&quot;&gt;(.*?)&lt;/section&gt;</expression>
 			</RegExp>
 			<RegExp input="$$4" output="&lt;theme&gt;\1&lt;/theme&gt;" dest="2">
-				<expression repeat="yes" noclean="1">&lt;a\shref=&quot;http://www.allmusic.com/theme/[^&quot;]*&quot;&gt;([^&lt;]*)</expression>
+				<expression repeat="yes" noclean="1">&lt;a\shref=&quot;https://www.allmusic.com/theme/[^&quot;]*&quot;&gt;([^&lt;]*)</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
 	</ParseAMGAlbumThemes>
 
-	<GetAMGAlbumTracksByAMGID dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;am-\1-album.html&quot; function=&quot;ParseAMGAlbumTracks&quot;&gt;http://www.allmusic.com/album/\1&lt;/url&gt;&lt;/details&gt;" dest="5">
-			<expression noclean="1"/>
-		</RegExp>
-	</GetAMGAlbumTracksByAMGID>
-	<ParseAMGAlbumTracks dest="5">
-		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
-			<RegExp input="$$1" output="&lt;track&gt;&lt;position&gt;\1&lt;/position&gt;&lt;title&gt;\2&lt;/title&gt;&lt;duration&gt;\3&lt;/duration&gt;&lt;/track&gt;" dest="2">
-				<expression repeat="yes" trim="1" noclean="1,2,3">&lt;td class=&quot;tracknum&quot;&gt;([0-9]*).*?&lt;div class=&quot;title&quot;&gt;[^&gt;]*&gt;([^&lt;]*).*?&lt;td class=&quot;time&quot;&gt;([^&lt;]*)</expression>
-			</RegExp>
-			<expression noclean="1" />
-		</RegExp>
-	</ParseAMGAlbumTracks>
-
 	<GetAMGAlbumThumbsByAMGID dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;am-\1-album.html&quot; function=&quot;ParseAMGAlbumThumbs&quot;&gt;http://www.allmusic.com/album/\1&lt;/url&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;am-\1-album.html&quot; function=&quot;ParseAMGAlbumThumbs&quot;&gt;https://www.allmusic.com/album/\1&lt;/url&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1"/>
 		</RegExp>
 	</GetAMGAlbumThumbsByAMGID>
 	<ParseAMGAlbumThumbs dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
-			<RegExp input="$$1" output="&lt;thumb&gt;http://cps-static.rovicorp.com/3/JPG_500/\1&lt;/thumb&gt;" dest="2">
-				<expression noclean="1">&quot;http://cps-static.rovicorp.com/3/JPG_[^/]*/([^&quot;]*)</expression>
+			<RegExp input="$$1" output="&lt;thumb&gt;https://cdn-s3.allmusic.com/release-covers/500/\1&lt;/thumb&gt;" dest="2">
+				<expression noclean="1">&lt;img src=&quot;https://cdn-s3.allmusic.com/release-covers/500/([^&quot;]*)</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
 	</ParseAMGAlbumThumbs>
-
-
-	<GetAMGFakeBiographyByAMGID dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;am-\1-artist.html&quot; function=&quot;ParseAMGFakeBiography&quot;&gt;http://www.allmusic.com/artist/\1&lt;/url&gt;&lt;/details&gt;" dest="5">
-			<expression noclean="1"/>
-		</RegExp>
-	</GetAMGFakeBiographyByAMGID>
-	<ParseAMGFakeBiography dest="5">
-		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
-			<RegExp input="$$1" output="&lt;biography&gt;Fetching artist biography from allmusic.com is not possible due to copyright reasons.&lt;/biography&gt;" dest="2">
-				<expression noclean="1" />
-			</RegExp>
-			<expression noclean="1"/>
-		</RegExp>
-	</ParseAMGFakeBiography>
-
-	<GetAMGFakeAlbumReviewByAMGID dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;am-\1-album.html&quot; function=&quot;ParseAMGFakeAlbumReview&quot;&gt;http://www.allmusic.com/album/\1&lt;/url&gt;&lt;/details&gt;" dest="5">
-			<expression noclean="1"/>
-		</RegExp>
-	</GetAMGFakeAlbumReviewByAMGID>
-	<ParseAMGFakeAlbumReview dest="5">
-		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
-			<RegExp input="$$1" output="&lt;review&gt;Fetching album review from allmusic.com is not possible due to copyright reasons.&lt;/review&gt;" dest="2">
-				<expression noclean="1"/>
-			</RegExp>
-			<expression noclean="1" />
-		</RegExp>
-	</ParseAMGFakeAlbumReview>
 
 </scraperfunctions>
