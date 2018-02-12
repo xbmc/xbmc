@@ -16,12 +16,35 @@
 			<RegExp input="$$1" output="\1" dest="16">
 				<expression noclean="1">&quot;artistthumb&quot;:\s\[(.*?)\}\s*\]</expression>
 			</RegExp>
-			<RegExp input="$$16" output="&lt;thumb preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13">
+			<RegExp input="$$16" output="&lt;thumb aspect=&quot;poster&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13">
 				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https://([^/]*)/fanart/([^&quot;]*)</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
 	</ParseFanartTvArtistThumbs>
+
+	<GetFanartTvArtistClearlogoByMBID dest="5" clearbuffers="no">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseFanartTvArtistClearlogo&quot; cache=&quot;fanarttv-artistimages-\1.json&quot;&gt;https://webservice.fanart.tv/v3/music/\1?api_key=ed4b784f97227358b31ca4dd966a04f1&lt;/url&gt;&lt;/details&gt;" dest="5">
+			<expression noclean="1" />
+		</RegExp>
+	</GetFanartTvArtistClearlogoByMBID>
+	<ParseFanartTvArtistClearlogo dest="5" clearbuffers="no">
+		<RegExp input="$$13" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="" output="" dest="13">
+				<expression />
+			</RegExp>
+			<RegExp input="" output="" dest="16">
+				<expression />
+			</RegExp>
+			<RegExp input="$$1" output="\1" dest="16">
+				<expression noclean="1">&quot;hdmusiclogo&quot;:\s\[(.*?)\}\s*\]</expression>
+			</RegExp>
+			<RegExp input="$$16" output="&lt;thumb aspect=&quot;clearlogo&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13">
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https://([^/]*)/fanart/([^&quot;]*)</expression>
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</ParseFanartTvArtistClearlogo>
 
 	<GetFanartTvArtistFanartsByMBID dest="5" clearbuffers="no">
 		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;ParseFanartTvArtistFanarts&quot; cache=&quot;fanarttv-artistimages-\1.json&quot;&gt;https://webservice.fanart.tv/v3/music/\1?api_key=ed4b784f97227358b31ca4dd966a04f1&lt;/url&gt;&lt;/details&gt;" dest="5">
@@ -109,13 +132,13 @@
 
 	<GetFanartTvThumbsByIdChain dest="4">
 		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="4">
-			<RegExp input="$$1" output="&lt;url function=&quot;ParseFanartTvThumbs&quot; cache=&quot;fanarttv-\1.json&quot;&gt;https://webservice.fanart.tv/v3/movies/\1?api_key=ed4b784f97227358b31ca4dd966a04f1&lt;/url&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;url function=&quot;ParseFanartTvMoviePoster&quot; cache=&quot;fanarttv-\1.json&quot;&gt;https://webservice.fanart.tv/v3/movies/\1?api_key=ed4b784f97227358b31ca4dd966a04f1&lt;/url&gt;" dest="5">
 				<expression />
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
 	</GetFanartTvThumbsByIdChain>
-	<ParseFanartTvThumbs dest="5">
+	<ParseFanartTvMoviePoster dest="5">
 		<RegExp input="$$13" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
 			<RegExp input="" output="" dest="13">
 				<expression />
@@ -126,11 +149,473 @@
 			<RegExp input="$$1" output="\1" dest="16">
 				<expression noclean="1">&quot;movieposter&quot;:\s\[(.*?)\}\s*\]</expression>
 			</RegExp>
-			<RegExp input="$$16" output="&lt;thumb preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13">
+			<RegExp input="$$16" output="&lt;thumb aspect=&quot;poster&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13">
 				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https://([^/]*)/fanart/([^&quot;]*)</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
-	</ParseFanartTvThumbs>
-	
+	</ParseFanartTvMoviePoster>
+
+	<GetFanartTvMovieClearlogoByIdChain dest="4">
+		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="4">
+			<RegExp input="$$1" output="&lt;url function=&quot;ParseFanartTvMovieClearlogo&quot; cache=&quot;fanarttv-\1.json&quot;&gt;https://webservice.fanart.tv/v3/movies/\1?api_key=ed4b784f97227358b31ca4dd966a04f1&lt;/url&gt;" dest="5">
+				<expression />
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</GetFanartTvMovieClearlogoByIdChain>
+	<ParseFanartTvMovieClearlogo dest="5">
+		<RegExp input="$$13" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="" output="" dest="13">
+				<expression />
+			</RegExp>
+			<RegExp input="" output="" dest="16">
+				<expression />
+			</RegExp>
+			<RegExp input="$$1" output="\1" dest="16">
+				<expression noclean="1">&quot;hdmovielogo&quot;:\s\[(.*?)\}\s*\]</expression>
+			</RegExp>
+			<RegExp input="$$16" output="&lt;thumb aspect=&quot;clearlogo&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https://([^/]*)/fanart/([^&quot;]*)</expression>
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</ParseFanartTvMovieClearlogo>
+
+	<GetFanartTvMovieClearartByIdChain dest="4">
+		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="4">
+			<RegExp input="$$1" output="&lt;url function=&quot;ParseFanartTvMovieClearart&quot; cache=&quot;fanarttv-\1.json&quot;&gt;https://webservice.fanart.tv/v3/movies/\1?api_key=ed4b784f97227358b31ca4dd966a04f1&lt;/url&gt;" dest="5">
+				<expression />
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</GetFanartTvMovieClearartByIdChain>
+	<ParseFanartTvMovieClearart dest="5">
+		<RegExp input="$$13" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="" output="" dest="13">
+				<expression />
+			</RegExp>
+			<RegExp input="" output="" dest="16">
+				<expression />
+			</RegExp>
+			<RegExp input="$$1" output="\1" dest="16">
+				<expression noclean="1">&quot;hdmovieclearart&quot;:\s\[(.*?)\}\s*\]</expression>
+			</RegExp>
+			<RegExp input="$$16" output="&lt;thumb aspect=&quot;clearart&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https://([^/]*)/fanart/([^&quot;]*)</expression>
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</ParseFanartTvMovieClearart>
+
+	<GetFanartTvMoviebannerByIdChain dest="4">
+		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="4">
+			<RegExp input="$$1" output="&lt;url function=&quot;ParseFanartTvMoviebanner&quot; cache=&quot;fanarttv-\1.json&quot;&gt;https://webservice.fanart.tv/v3/movies/\1?api_key=ed4b784f97227358b31ca4dd966a04f1&lt;/url&gt;" dest="5">
+				<expression />
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</GetFanartTvMoviebannerByIdChain>
+	<ParseFanartTvMoviebanner dest="5">
+		<RegExp input="$$13" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="" output="" dest="13">
+				<expression />
+			</RegExp>
+			<RegExp input="" output="" dest="16">
+				<expression />
+			</RegExp>
+			<RegExp input="$$1" output="\1" dest="16">
+				<expression noclean="1">&quot;moviebanner&quot;:\s\[(.*?)\}\s*\]</expression>
+			</RegExp>
+			<RegExp input="$$16" output="&lt;thumb aspect=&quot;banner&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https://([^/]*)/fanart/([^&quot;]*)</expression>
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</ParseFanartTvMoviebanner>
+
+	<GetFanartTvMovieLandscapeByIdChain dest="4">
+		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="4">
+			<RegExp input="$$1" output="&lt;url function=&quot;ParseFanartTvMovieLandscape&quot; cache=&quot;fanarttv-\1.json&quot;&gt;https://webservice.fanart.tv/v3/movies/\1?api_key=ed4b784f97227358b31ca4dd966a04f1&lt;/url&gt;" dest="5">
+				<expression />
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</GetFanartTvMovieLandscapeByIdChain>
+	<ParseFanartTvMovieLandscape dest="5">
+		<RegExp input="$$13" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="" output="" dest="13">
+				<expression />
+			</RegExp>
+			<RegExp input="" output="" dest="16">
+				<expression />
+			</RegExp>
+			<RegExp input="$$1" output="\1" dest="16">
+				<expression noclean="1">&quot;moviethumb&quot;:\s\[(.*?)\}\s*\]</expression>
+			</RegExp>
+			<RegExp input="$$16" output="&lt;thumb aspect=&quot;landscape&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https://([^/]*)/fanart/([^&quot;]*)</expression>
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</ParseFanartTvMovieLandscape>
+
+	<GetFanartTvMovieDiscartByIdChain dest="4">
+		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="4">
+			<RegExp input="$$1" output="&lt;url function=&quot;ParseFanartTvMovieDiscart&quot; cache=&quot;fanarttv-\1.json&quot;&gt;https://webservice.fanart.tv/v3/movies/\1?api_key=ed4b784f97227358b31ca4dd966a04f1&lt;/url&gt;" dest="5">
+				<expression />
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</GetFanartTvMovieDiscartByIdChain>
+	<ParseFanartTvMovieDiscart dest="5">
+		<RegExp input="$$13" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="" output="" dest="13">
+				<expression />
+			</RegExp>
+			<RegExp input="" output="" dest="16">
+				<expression />
+			</RegExp>
+			<RegExp input="$$1" output="\1" dest="16">
+				<expression noclean="1">&quot;moviedisc&quot;:\s\[(.*?)\}\s*\]</expression>
+			</RegExp>
+			<RegExp input="$$16" output="&lt;thumb aspect=&quot;discart&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https://([^/]*)/fanart/([^&quot;]*)</expression>
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</ParseFanartTvMovieDiscart>
+
+	<GetFanartTvTvShowPosterByIdChain dest="4">
+		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="4">
+			<RegExp input="$$1" output="\1" dest="18">
+				<expression encode="1">.+::(.+)</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;url function=&quot;ParseFanartTvTvShowPoster&quot; cache=&quot;fanarttv-\1.json&quot;&gt;https://webservice.fanart.tv/v3/tv/\1?api_key=ed4b784f97227358b31ca4dd966a04f1&lt;/url&gt;" dest="5">
+				<expression encode="1">(.+)::.+</expression>
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</GetFanartTvTvShowPosterByIdChain>
+	<ParseFanartTvTvShowPoster dest="5">
+		<RegExp input="$$13" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="" output="" dest="13">
+				<expression />
+			</RegExp>
+			<RegExp input="" output="" dest="16">
+				<expression />
+			</RegExp>
+			<RegExp input="$$1" output="\1" dest="16">
+				<expression noclean="1">&quot;tvposter&quot;:\s\[(.*?)\}\s*\]</expression>
+			</RegExp>
+			<RegExp input="$$16" output="&lt;thumb aspect=&quot;poster&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;$$18&quot;</expression>
+			</RegExp>
+			<RegExp input="$$16" output="&lt;thumb aspect=&quot;poster&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;en&quot;</expression>
+			</RegExp>
+			<RegExp input="$$16" output="&lt;thumb aspect=&quot;poster&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;!$$18|!en&quot;</expression>
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</ParseFanartTvTvShowPoster>
+
+	<GetFanartTvTvShowBannerByIdChain dest="4">
+		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="4">
+			<RegExp input="$$1" output="\1" dest="18">
+				<expression encode="1">.+::(.+)</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;url function=&quot;ParseFanartTvTvShowBanner&quot; cache=&quot;fanarttv-\1.json&quot;&gt;https://webservice.fanart.tv/v3/tv/\1?api_key=ed4b784f97227358b31ca4dd966a04f1&lt;/url&gt;" dest="5">
+				<expression encode="1">(.+)::.+</expression>
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</GetFanartTvTvShowBannerByIdChain>
+	<ParseFanartTvTvShowBanner dest="5">
+		<RegExp input="$$13" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="" output="" dest="13">
+				<expression />
+			</RegExp>
+			<RegExp input="" output="" dest="16">
+				<expression />
+			</RegExp>
+			<RegExp input="$$1" output="\1" dest="16">
+				<expression noclean="1">&quot;tvbanner&quot;:\s\[(.*?)\}\s*\]</expression>
+			</RegExp>
+			<RegExp input="$$16" output="&lt;thumb aspect=&quot;banner&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;$$18&quot;</expression>
+			</RegExp>
+			<RegExp input="$$16" output="&lt;thumb aspect=&quot;banner&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;en&quot;</expression>
+			</RegExp>
+			<RegExp input="$$16" output="&lt;thumb aspect=&quot;banner&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;!$$18|!en&quot;</expression>
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</ParseFanartTvTvShowBanner>
+
+	<GetFanartTvTvShowLandscapeByIdChain dest="4">
+		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="4">
+			<RegExp input="$$1" output="\1" dest="18">
+				<expression encode="1">.+::(.+)</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;url function=&quot;ParseFanartTvTvShowLandscape&quot; cache=&quot;fanarttv-\1.json&quot;&gt;https://webservice.fanart.tv/v3/tv/\1?api_key=ed4b784f97227358b31ca4dd966a04f1&lt;/url&gt;" dest="5">
+				<expression encode="1">(.+)::.+</expression>
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</GetFanartTvTvShowLandscapeByIdChain>
+	<ParseFanartTvTvShowLandscape dest="5">
+		<RegExp input="$$13" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="" output="" dest="13">
+				<expression />
+			</RegExp>
+			<RegExp input="" output="" dest="16">
+				<expression />
+			</RegExp>
+			<RegExp input="$$1" output="\1" dest="16">
+				<expression noclean="1">&quot;tvthumb&quot;:\s\[(.*?)\}\s*\]</expression>
+			</RegExp>
+			<RegExp input="$$16" output="&lt;thumb aspect=&quot;landscape&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;$$18&quot;</expression>
+			</RegExp>
+			<RegExp input="$$16" output="&lt;thumb aspect=&quot;landscape&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;en&quot;</expression>
+			</RegExp>
+			<RegExp input="$$16" output="&lt;thumb aspect=&quot;landscape&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;!$$18|!en&quot;</expression>
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</ParseFanartTvTvShowLandscape>
+
+	<GetFanartTvTvShowClearlogoByIdChain dest="4">
+		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="4">
+			<RegExp input="$$1" output="\1" dest="18">
+				<expression encode="1">.+::(.+)</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;url function=&quot;ParseFanartTvTvShowClearlogo&quot; cache=&quot;fanarttv-\1.json&quot;&gt;https://webservice.fanart.tv/v3/tv/\1?api_key=ed4b784f97227358b31ca4dd966a04f1&lt;/url&gt;" dest="5">
+				<expression encode="1">(.+)::.+</expression>
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</GetFanartTvTvShowClearlogoByIdChain>
+	<ParseFanartTvTvShowClearlogo dest="5">
+		<RegExp input="$$13" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="" output="" dest="13">
+				<expression />
+			</RegExp>
+			<RegExp input="" output="" dest="16">
+				<expression />
+			</RegExp>
+			<RegExp input="$$1" output="\1" dest="16">
+				<expression noclean="1">&quot;hdtvlogo&quot;:\s\[(.*?)\}\s*\]</expression>
+			</RegExp>
+			<RegExp input="$$16" output="&lt;thumb aspect=&quot;clearlogo&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;$$18&quot;</expression>
+			</RegExp>
+			<RegExp input="$$16" output="&lt;thumb aspect=&quot;clearlogo&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;en&quot;</expression>
+			</RegExp>
+			<RegExp input="$$16" output="&lt;thumb aspect=&quot;clearlogo&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;!$$18|!en&quot;</expression>
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</ParseFanartTvTvShowClearlogo>
+
+	<GetFanartTvTvShowClearartByIdChain dest="4">
+		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="4">
+			<RegExp input="$$1" output="\1" dest="18">
+				<expression encode="1">.+::(.+)</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;url function=&quot;ParseFanartTvTvShowClearart&quot; cache=&quot;fanarttv-\1.json&quot;&gt;https://webservice.fanart.tv/v3/tv/\1?api_key=ed4b784f97227358b31ca4dd966a04f1&lt;/url&gt;" dest="5">
+				<expression encode="1">(.+)::.+</expression>
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</GetFanartTvTvShowClearartByIdChain>
+	<ParseFanartTvTvShowClearart dest="5">
+		<RegExp input="$$13" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="" output="" dest="13">
+				<expression />
+			</RegExp>
+			<RegExp input="" output="" dest="16">
+				<expression />
+			</RegExp>
+			<RegExp input="$$1" output="\1" dest="16">
+				<expression noclean="1">&quot;hdclearart&quot;:\s\[(.*?)\}\s*\]</expression>
+			</RegExp>
+			<RegExp input="$$16" output="&lt;thumb aspect=&quot;clearart&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;$$18&quot;</expression>
+			</RegExp>
+			<RegExp input="$$16" output="&lt;thumb aspect=&quot;clearart&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;en&quot;</expression>
+			</RegExp>
+			<RegExp input="$$16" output="&lt;thumb aspect=&quot;clearart&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;!$$18|!en&quot;</expression>
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</ParseFanartTvTvShowClearart>
+
+	<GetFanartTvTvShowFanartByIdChain dest="4">
+		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="4">
+			<RegExp input="$$1" output="&lt;url function=&quot;ParseFanartTvTvShowFanart&quot; cache=&quot;fanarttv-\1.json&quot;&gt;https://webservice.fanart.tv/v3/tv/\1?api_key=ed4b784f97227358b31ca4dd966a04f1&lt;/url&gt;" dest="5">
+				<expression />
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</GetFanartTvTvShowFanartByIdChain>
+	<ParseFanartTvTvShowFanart dest="5">
+		<RegExp input="$$13" output="&lt;details&gt;&lt;fanart&gt;\1&lt;/fanart&gt;&lt;/details&gt;" dest="5">
+			<RegExp input="" output="" dest="13">
+				<expression />
+			</RegExp>
+			<RegExp input="" output="" dest="16">
+				<expression />
+			</RegExp>
+			<RegExp input="$$1" output="\1" dest="16">
+				<expression noclean="1">&quot;showbackground&quot;:\s\[(.*?)\}\s*\]</expression>
+			</RegExp>
+			<RegExp input="$$16" output="&lt;thumb preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https://([^/]*)/fanart/([^&quot;]*)</expression>
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</ParseFanartTvTvShowFanart>
+
+	<GetFanartTvTvShowCharacterartByIdChain dest="4">
+		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="4">
+			<RegExp input="$$1" output="&lt;url function=&quot;ParseFanartTvTvShowCharacterart&quot; cache=&quot;fanarttv-\1.json&quot;&gt;https://webservice.fanart.tv/v3/tv/\1?api_key=ed4b784f97227358b31ca4dd966a04f1&lt;/url&gt;" dest="5">
+				<expression />
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</GetFanartTvTvShowCharacterartByIdChain>
+	<ParseFanartTvTvShowCharacterart dest="5">
+		<RegExp input="$$13" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="" output="" dest="13">
+				<expression />
+			</RegExp>
+			<RegExp input="" output="" dest="16">
+				<expression />
+			</RegExp>
+			<RegExp input="$$1" output="\1" dest="16">
+				<expression noclean="1">&quot;characterart&quot;:\s\[(.*?)\}\s*\]</expression>
+			</RegExp>
+			<RegExp input="$$16" output="&lt;thumb aspect=&quot;characterart&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https://([^/]*)/fanart/([^&quot;]*)</expression>
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</ParseFanartTvTvShowCharacterart>
+
+	<GetFanartTvTvShowSeasonposterByIdChain clearbuffers="no" dest="4">
+		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="4">
+			<RegExp input="$$1" output="\1" dest="18">
+				<expression encode="1">.+::(.+)</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;url function=&quot;ParseFanartTvTvShowSeasonposter&quot; cache=&quot;fanarttv-\1.json&quot;&gt;https://webservice.fanart.tv/v3/tv/\1?api_key=ed4b784f97227358b31ca4dd966a04f1&lt;/url&gt;" dest="5">
+				<expression encode="1">(.+)::.+</expression>
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</GetFanartTvTvShowSeasonposterByIdChain>
+	<ParseFanartTvTvShowSeasonposter dest="5">
+		<RegExp input="$$13" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="" output="" dest="13">
+				<expression />
+			</RegExp>
+			<RegExp input="" output="" dest="16">
+				<expression />
+			</RegExp>
+			<RegExp input="$$1" output="\1" dest="16">
+				<expression noclean="1">&quot;seasonposter&quot;:\s\[(.*?)\}\s*\]</expression>
+			</RegExp>
+			<RegExp input="$$16" output="&lt;thumb aspect=&quot;poster&quot; type=&quot;season&quot; season=&quot;\3&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;$$18&quot;,\s*&quot;likes[^,]*,\s*&quot;season&quot;:\s&quot;([0-9,]+)</expression>
+			</RegExp>
+			<RegExp input="$$16" output="&lt;thumb aspect=&quot;poster&quot; type=&quot;season&quot; season=&quot;\3&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;en&quot;,\s*&quot;likes[^,]*,\s*&quot;season&quot;:\s&quot;([0-9,]+)</expression>
+			</RegExp>
+			<RegExp input="$$16" output="&lt;thumb aspect=&quot;poster&quot; type=&quot;season&quot; season=&quot;\3&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;!$$18|!en&quot;,\s*&quot;likes[^,]*,\s*&quot;season&quot;:\s&quot;([0-9,]+)</expression>
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</ParseFanartTvTvShowSeasonposter>
+
+	<GetFanartTvTvShowSeasonbannerByIdChain clearbuffers="no" dest="4">
+		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="4">
+			<RegExp input="$$1" output="\1" dest="18">
+				<expression encode="1">.+::(.+)</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;url function=&quot;ParseFanartTvTvShowSeasonbanner&quot; cache=&quot;fanarttv-\1.json&quot;&gt;https://webservice.fanart.tv/v3/tv/\1?api_key=ed4b784f97227358b31ca4dd966a04f1&lt;/url&gt;" dest="5">
+				<expression encode="1">(.+)::.+</expression>
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</GetFanartTvTvShowSeasonbannerByIdChain>
+	<ParseFanartTvTvShowSeasonbanner dest="5">
+		<RegExp input="$$13" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="" output="" dest="13">
+				<expression />
+			</RegExp>
+			<RegExp input="" output="" dest="16">
+				<expression />
+			</RegExp>
+			<RegExp input="$$1" output="\1" dest="16">
+				<expression noclean="1">&quot;seasonbanner&quot;:\s\[(.*?)\}\s*\]</expression>
+			</RegExp>
+			<RegExp input="$$16" output="&lt;thumb aspect=&quot;banner&quot; type=&quot;season&quot; season=&quot;\3&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;$$18&quot;,\s*&quot;likes[^,]*,\s*&quot;season&quot;:\s&quot;([0-9,]+)</expression>
+			</RegExp>
+			<RegExp input="$$16" output="&lt;thumb aspect=&quot;banner&quot; type=&quot;season&quot; season=&quot;\3&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;en&quot;,\s*&quot;likes[^,]*,\s*&quot;season&quot;:\s&quot;([0-9,]+)</expression>
+			</RegExp>
+			<RegExp input="$$16" output="&lt;thumb aspect=&quot;banner&quot; type=&quot;season&quot; season=&quot;\3&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;!$$18|!en&quot;,\s*&quot;likes[^,]*,\s*&quot;season&quot;:\s&quot;([0-9,]+)</expression>
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</ParseFanartTvTvShowSeasonbanner>
+
+	<GetFanartTvTvShowSeasonLandscapeByIdChain clearbuffers="no" dest="4">
+		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="4">
+			<RegExp input="$$1" output="\1" dest="18">
+				<expression encode="1">.+::(.+)</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;url function=&quot;ParseFanartTvTvShowSeasonLandscape&quot; cache=&quot;fanarttv-\1.json&quot;&gt;https://webservice.fanart.tv/v3/tv/\1?api_key=ed4b784f97227358b31ca4dd966a04f1&lt;/url&gt;" dest="5">
+				<expression encode="1">(.+)::.+</expression>
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</GetFanartTvTvShowSeasonLandscapeByIdChain>
+	<ParseFanartTvTvShowSeasonLandscape dest="5">
+		<RegExp input="$$13" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="" output="" dest="13">
+				<expression />
+			</RegExp>
+			<RegExp input="" output="" dest="16">
+				<expression />
+			</RegExp>
+			<RegExp input="$$1" output="\1" dest="16">
+				<expression noclean="1">&quot;seasonthumb&quot;:\s\[(.*?)\}\s*\]</expression>
+			</RegExp>
+			<RegExp input="$$16" output="&lt;thumb aspect=&quot;landscape&quot; type=&quot;season&quot; season=&quot;\3&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;$$18&quot;,\s*&quot;likes[^,]*,\s*&quot;season&quot;:\s&quot;([0-9,]+)</expression>
+			</RegExp>
+			<RegExp input="$$16" output="&lt;thumb aspect=&quot;landscape&quot; type=&quot;season&quot; season=&quot;\3&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;en&quot;,\s*&quot;likes[^,]*,\s*&quot;season&quot;:\s&quot;([0-9,]+)</expression>
+			</RegExp>
+			<RegExp input="$$16" output="&lt;thumb aspect=&quot;landscape&quot; type=&quot;season&quot; season=&quot;\3&quot; preview=&quot;https://\1/preview/\2&quot;&gt;https://\1/fanart/\2&lt;/thumb&gt;" dest="13+">
+				<expression repeat="yes" noclean="1">&quot;id&quot;:\s&quot;\d*&quot;,\s*&quot;url&quot;:\s&quot;https://([^/]*)/fanart/([^&quot;]*)&quot;,\s*&quot;lang&quot;:\s&quot;!$$18|!en&quot;,\s*&quot;likes[^,]*,\s*&quot;season&quot;:\s&quot;([0-9,]+)</expression>
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</ParseFanartTvTvShowSeasonLandscape>
+
 </scraperfunctions>

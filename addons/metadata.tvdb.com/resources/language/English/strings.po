@@ -37,11 +37,11 @@ msgid "Language"
 msgstr ""
 
 msgctxt "#30005"
-msgid "Get Rating from"
+msgid "Get Default Rating from"
 msgstr ""
 
 msgctxt "#30006"
-msgid "Use TheTVDB Ratings in case IMDb is missing"
+msgid "Also get ratings from TheTVDB"
 msgstr ""
 
 msgctxt "#30007"
@@ -52,3 +52,6 @@ msgctxt "#30008"
 msgid "Fallback language"
 msgstr ""
 
+msgctxt "#30009"
+msgid "Also get ratings from IMDb"
+msgstr ""
