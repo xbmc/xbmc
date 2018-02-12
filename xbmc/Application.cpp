@@ -3413,6 +3413,7 @@ void CApplication::OnPlayBackSeekChapter(int iChapter)
 
 void CApplication::OnAVChange()
 {
+  CStereoscopicsManager::GetInstance().OnStreamChange();
 }
 
 void CApplication::RequestVideoSettings(const CFileItem &fileItem)
