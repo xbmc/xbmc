@@ -737,7 +737,7 @@ bool CInputManager::HasBuiltin(const std::string& command)
 {
   if (HasRemoteControl())
     return command == "lirc.stop"  ||
-           command ==" lirc.start" ||
+           command == "lirc.start" ||
            command == "lirc.send";
   return false;
 }
