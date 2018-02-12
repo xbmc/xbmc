@@ -34,7 +34,7 @@
 #include "VideoSyncDRM.h"
 
 #include "cores/RetroPlayer/process/X11/RPProcessInfoX11.h"
-#include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererGuiTexture.h"
+#include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererOpenGL.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
 #include "cores/VideoPlayer/Process/X11/ProcessInfoX11.h"
 #include "cores/VideoPlayer/VideoRenderers/LinuxRendererGL.h"
@@ -257,7 +257,7 @@ bool CWinSystemX11GLContext::RefreshGLContext(bool force)
 
   VIDEOPLAYER::CProcessInfoX11::Register();
   RETRO::CRPProcessInfoX11::Register();
-  RETRO::CRPProcessInfoX11::RegisterRendererFactory(new RETRO::CRendererFactoryGuiTexture);
+  RETRO::CRPProcessInfoX11::RegisterRendererFactory(new RETRO::CRendererFactoryOpenGL);
   CDVDFactoryCodec::ClearHWAccels();
   VIDEOPLAYER::CRendererFactory::ClearRenderer();
   CLinuxRendererGL::Register();

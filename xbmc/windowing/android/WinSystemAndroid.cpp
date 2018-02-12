@@ -35,7 +35,7 @@
 #include "platform/android/activity/XBMCApp.h"
 
 #include "cores/RetroPlayer/process/android/RPProcessInfoAndroid.h"
-#include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererGuiTexture.h"
+#include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererOpenGLES.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodecAndroidMediaCodec.h"
 #include "cores/VideoPlayer/DVDCodecs/Audio/DVDAudioCodecAndroidMediaCodec.h"
 #include "cores/VideoPlayer/VideoRenderers/HwDecRender/RendererMediaCodec.h"
@@ -83,7 +83,7 @@ bool CWinSystemAndroid::InitWindowSystem()
 
   CLinuxRendererGLES::Register();
   RETRO::CRPProcessInfoAndroid::Register();
-  RETRO::CRPProcessInfoAndroid::RegisterRendererFactory(new RETRO::CRendererFactoryGuiTexture);
+  RETRO::CRPProcessInfoAndroid::RegisterRendererFactory(new RETRO::CRendererFactoryOpenGLES);
   CRendererMediaCodec::Register();
   CRendererMediaCodecSurface::Register();
 
