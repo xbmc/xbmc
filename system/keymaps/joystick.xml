@@ -148,7 +148,8 @@
       -->
       <!-- Merged -->
       <a hotkey="back">Screenshot</a>
-      <b hotkey="back">PlayerControl(Reset)</b>
+      <!-- Reset is disabled until player can undo a reset -->
+      <!--<b hotkey="back">PlayerControl(Reset)</b> -->
       <x hotkey="back">OSD</x>
       <y hotkey="back">FullScreen</y>
       <start hotkey="back">Stop</start>
