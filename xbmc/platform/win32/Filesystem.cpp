@@ -21,9 +21,6 @@
 #include "platform/Filesystem.h"
 #include "platform/win32/CharsetConverter.h"
 
-#if !defined(WIN32_LEAN_AND_MEAN)
-#define WIN32_LEAN_AND_MEAN
-#endif
 #include <Windows.h>
 
 namespace win = KODI::PLATFORM::WINDOWS;

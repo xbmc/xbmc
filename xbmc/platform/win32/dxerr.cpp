@@ -21,6 +21,7 @@
 #if !defined(WINAPI_FAMILY) || (WINAPI_FAMILY == WINAPI_FAMILY_DESKTOP_APP)
 #include <ddraw.h>
 #include <d3d9.h>
+#include <mmsystem.h>
 #include <dsound.h>
 
 #define DIRECTINPUT_VERSION 0x800

@@ -26,6 +26,8 @@
 #include "rendering/dx/DeviceResources.h"
 #include "rendering/dx/RenderContext.h"
 
+#include <d3dcompiler.h>
+
 using namespace DirectX;
 using namespace Microsoft::WRL;
 
