@@ -37,11 +37,6 @@
 #if defined(TARGET_WINDOWS_DESKTOP)
 #include "DSound.h"
 #endif
-#include "d3d11_1.h"
-#include "dxgi.h"
-#include "d3dcompiler.h"
-#include "directxmath.h"
-#include "directxcolors.h" 
 #include <memory>
 // anything below here should be headers that very rarely (hopefully never)
 // change yet are included almost everywhere.

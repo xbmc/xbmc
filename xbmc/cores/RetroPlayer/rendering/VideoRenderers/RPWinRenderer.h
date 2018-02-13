@@ -24,6 +24,7 @@
 #include "cores/RetroPlayer/process/RenderBufferSysMem.h"
 #include "cores/RetroPlayer/process/RPProcessInfo.h"
 
+#include <dxgi.h>
 #include <memory>
 #include <stdint.h>
 #include <vector>

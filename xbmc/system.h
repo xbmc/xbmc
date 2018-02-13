@@ -43,10 +43,6 @@
 #include "DSound.h"
 #endif
 #include "PlatformInclude.h"
-#include "d3d11_1.h"
-#include "dxgi.h"
-#include "d3dcompiler.h"
-#include "directxmath.h"
 #endif
 
 #if defined(TARGET_POSIX)

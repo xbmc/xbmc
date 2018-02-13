@@ -25,6 +25,8 @@
 #include "platform/win32/CharsetConverter.h"
 #include "ServiceBroker.h"
 
+#include <d3d11_1.h>
+
 namespace DX
 {
 #define RATIONAL_TO_FLOAT(rational) ((rational.Denominator != 0) ? \
