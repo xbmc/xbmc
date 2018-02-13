@@ -44,6 +44,10 @@
 #include "platform/linux/XTimeUtils.h"
 #endif
 
+#if defined(TARGET_FREEBSD)
+#include "freebsd/FreeBSDGNUReplacements.h"
+#endif
+
 #define AE_MIN_PERIODSIZE 256
 
 #define ALSA_CHMAP_KERNEL_BLACKLIST

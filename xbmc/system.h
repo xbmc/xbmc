@@ -32,14 +32,6 @@
 #define DECLARE_UNUSED(a,b) a b;
 #endif
 
-/*****************
- * FreeBSD Specific
- *****************/
-
-#ifdef TARGET_FREEBSD
-#include "freebsd/FreeBSDGNUReplacements.h"
-#endif
-
 /****************************************
  * Additional platform specific includes
  ****************************************/
