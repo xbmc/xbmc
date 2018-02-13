@@ -23,6 +23,7 @@
 #include "cores/VideoPlayer/VideoRenderers/HwDecRender/RendererDRMPRIMEGLES.h"
 
 #include "cores/RetroPlayer/process/gbm/RPProcessInfoGbm.h"
+#include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererGBM.h"
 #include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererOpenGLES.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
 #include "cores/VideoPlayer/VideoRenderers/LinuxRendererGLES.h"
@@ -44,6 +45,7 @@ bool CWinSystemGbmGLESContext::InitWindowSystem()
 {
   CLinuxRendererGLES::Register();
   RETRO::CRPProcessInfoGbm::Register();
+  RETRO::CRPProcessInfoGbm::RegisterRendererFactory(new RETRO::CRendererFactoryGBM);
   RETRO::CRPProcessInfoGbm::RegisterRendererFactory(new RETRO::CRendererFactoryOpenGLES);
 
   if (!CWinSystemGbm::InitWindowSystem())
