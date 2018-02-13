@@ -54,7 +54,7 @@
 #include "filesystem/File.h"
 #include "cores/VideoPlayer/DVDInputStreams/DVDInputStreamNavigator.h"
 
-#if defined(TARGET_POSIX) && !defined(TARGET_DARWIN)
+#if defined(TARGET_POSIX) && !defined(TARGET_DARWIN) && !defined(TARGET_FREEBSD)
 #include <sys/ioctl.h>
 #include <linux/cdrom.h>
 #endif

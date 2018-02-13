@@ -15,5 +15,10 @@ else()
   endif()
 endif()
 
+# Disable ALSA by default
+if(NOT ENABLE_ALSA)
+  option(ENABLE_ALSA "Enable alsa support?" OFF)
+endif()
+
 # Additional SYSTEM_DEFINES
 list(APPEND SYSTEM_DEFINES -DHAS_LINUX_NETWORK)

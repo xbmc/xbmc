@@ -263,8 +263,12 @@ if(NOT FFMPEG_FOUND)
                                     ${CMAKE_SOURCE_DIR}/tools/depends/target/ffmpeg/FindGnuTls.cmake
                                     <SOURCE_DIR>)
 
+  find_program(BASH_COMMAND bash)
+  if(NOT BASH_COMMAND)
+    message(FATAL_ERROR "Internal FFmpeg requires bash.")
+  endif()
   file(WRITE ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/ffmpeg/ffmpeg-link-wrapper
-"#!/bin/bash
+"#!${BASH_COMMAND}
 if [[ $@ == *${APP_NAME_LC}.bin* || $@ == *${APP_NAME_LC}${APP_BINARY_SUFFIX}* || $@ == *${APP_NAME_LC}.so* || $@ == *${APP_NAME_LC}-test* ]]
 then
   avformat=`PKG_CONFIG_PATH=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/lib/pkgconfig ${PKG_CONFIG_EXECUTABLE} --libs --static libavcodec`
