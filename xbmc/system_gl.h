@@ -33,6 +33,7 @@
     #include <GL/glext.h>
   #elif defined(TARGET_FREEBSD)
     #include <GL/gl.h>
+    #include <GL/glu.h>
   #elif defined(TARGET_DARWIN)
     #include <OpenGL/gl3.h>
     #include <OpenGL/glu.h>
