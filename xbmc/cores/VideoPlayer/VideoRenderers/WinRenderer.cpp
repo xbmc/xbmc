@@ -237,7 +237,8 @@ bool CWinRenderer::Configure(const VideoPicture &picture, float fps, unsigned in
   m_fps = fps;
   m_iFlags = GetFlagsChromaPosition(picture.chroma_position)
            | GetFlagsColorMatrix(picture.color_space, picture.iWidth, picture.iHeight)
-           | GetFlagsColorPrimaries(picture.color_primaries);
+           | GetFlagsColorPrimaries(picture.color_primaries)
+           | GetFlagsStereoMode(picture.stereoMode);
 
   m_srcPrimaries = GetSrcPrimaries(static_cast<AVColorPrimaries>(picture.color_primaries), picture.iWidth, picture.iHeight);
   m_format = picture.videoBuffer->GetFormat();
