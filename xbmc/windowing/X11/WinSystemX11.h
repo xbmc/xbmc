@@ -60,8 +60,8 @@ public:
   bool Restore() override;
   bool Hide() override;
   bool Show(bool raise = true) override;
-  virtual void Register(IDispResource *resource);
-  virtual void Unregister(IDispResource *resource);
+  void Register(IDispResource *resource) override;
+  void Unregister(IDispResource *resource) override;
   bool HasCalibration(const RESOLUTION_INFO &resInfo) override;
 
   // Local to WinSystemX11 only
