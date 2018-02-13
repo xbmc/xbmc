@@ -35,7 +35,8 @@ CGLContextEGL::CGLContextEGL()
   {
     throw std::runtime_error("EGL implementation does not support EGL_EXT_platform_base, cannot continue");
   }
-  if (m_clientExtensions.find("EGL_EXT_platform_wayland") == m_clientExtensions.end())
+  if (m_clientExtensions.find("EGL_EXT_platform_wayland") == m_clientExtensions.end() &&
+      m_clientExtensions.find("EGL_KHR_platform_wayland") == m_clientExtensions.end())
   {
     throw std::runtime_error("EGL implementation does not support EGL_EXT_platform_wayland, cannot continue");
   }
