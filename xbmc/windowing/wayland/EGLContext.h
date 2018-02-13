@@ -39,16 +39,30 @@ namespace WAYLAND
 /**
  * Class that handles EGL setup/teardown with Wayland native surfaces
  */
-class CGLContextEGL
+class CEGLContext
 {
 public:
-  CGLContextEGL();
-  ~CGLContextEGL() noexcept;
+  CEGLContext();
+  ~CEGLContext() noexcept;
 
   bool CreateDisplay(wayland::display_t& display, EGLint renderableType, EGLenum renderingApi);
+  /**
+   * Create EGL context. Call after \ref CreateDisplay.
+   */
+  bool CreateContext(const EGLint* contextAttribs);
+  /**
+   * Create EGL surface. Call after \ref CreateDisplay.
+   */
   bool CreateSurface(wayland::surface_t const& surface, CSizeInt size);
+  /**
+   * Activate EGL context. Call after \ref CreateDisplay, \ref CreateContext,
+   * and \ref CreateSurface.
+   */
+  bool MakeCurrent();
+
   CSizeInt GetAttachedSize();
   void Resize(CSizeInt size);
+  void DestroyContext();
   void DestroySurface();
   void Destroy();
   void SetVSync(bool enable);
@@ -60,8 +74,8 @@ public:
   }
 
 private:
-  CGLContextEGL(CGLContextEGL const& other) = delete;
-  CGLContextEGL& operator=(CGLContextEGL const& other) = delete;
+  CEGLContext(CEGLContext const& other) = delete;
+  CEGLContext& operator=(CEGLContext const& other) = delete;
 
   wayland::egl_window_t m_nativeWindow;
   EGLDisplay m_eglDisplay{EGL_NO_DISPLAY};

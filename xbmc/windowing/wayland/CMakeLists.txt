@@ -4,9 +4,9 @@ set_source_files_properties(${WAYLAND_EXTRA_PROTOCOL_GENERATED_DIR}/wayland-extr
                             PROPERTIES GENERATED TRUE)
 
 set(SOURCES Connection.cpp
+            EGLContext.cpp
             OptionalsReg.cpp
             Output.cpp
-            GLContextEGL.cpp
             InputProcessorKeyboard.h
             InputProcessorPointer.h
             InputProcessorTouch.h
@@ -28,9 +28,9 @@ set(SOURCES Connection.cpp
             XkbcommonKeymap.cpp)
 
 set(HEADERS Connection.h
+            EGLContext.h
             OptionalsReg.h
             Output.h
-            GLContextEGL.h
             InputProcessorKeyboard.cpp
             InputProcessorPointer.cpp
             InputProcessorTouch.cpp

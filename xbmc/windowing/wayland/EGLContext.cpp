@@ -18,14 +18,14 @@
  *
  */
 
-#include "GLContextEGL.h"
+#include "EGLContext.h"
 
 #include "utils/EGLUtils.h"
 #include "utils/log.h"
 
 using namespace KODI::WINDOWING::WAYLAND;
 
-CGLContextEGL::CGLContextEGL()
+CEGLContext::CEGLContext()
 {
   // EGL_EXT_platform_wayland requires EGL_EXT_client_extensions, so this should
   // be safe to use
@@ -48,15 +48,20 @@ CGLContextEGL::CGLContextEGL()
   m_eglCreatePlatformWindowSurfaceEXT = CEGLUtils::GetRequiredProcAddress<PFNEGLCREATEPLATFORMWINDOWSURFACEEXTPROC>("eglCreatePlatformWindowSurfaceEXT");
 }
 
-CGLContextEGL::~CGLContextEGL() noexcept
+CEGLContext::~CEGLContext() noexcept
 {
   Destroy();
 }
 
-bool CGLContextEGL::CreateDisplay(wayland::display_t& display,
+bool CEGLContext::CreateDisplay(wayland::display_t& display,
                                   EGLint renderableType,
                                   EGLenum renderingApi)
 {
+  if (m_eglDisplay != EGL_NO_DISPLAY)
+  {
+    throw std::logic_error("Do not call CreateDisplay when display has already been created");
+  }
+
   EGLint neglconfigs = 0;
   int major, minor;
 
@@ -70,10 +75,7 @@ bool CGLContextEGL::CreateDisplay(wayland::display_t& display,
     EGL_NONE,
   };
 
-  if (m_eglDisplay == EGL_NO_DISPLAY)
-  {
-    m_eglDisplay = m_eglGetPlatformDisplayEXT(EGL_PLATFORM_WAYLAND_EXT, display, nullptr);
-  }
+  m_eglDisplay = m_eglGetPlatformDisplayEXT(EGL_PLATFORM_WAYLAND_EXT, display, nullptr);
 
   if (m_eglDisplay == EGL_NO_DISPLAY)
   {
@@ -84,6 +86,7 @@ bool CGLContextEGL::CreateDisplay(wayland::display_t& display,
   if (eglInitialize(m_eglDisplay, &major, &minor) != EGL_TRUE)
   {
     CEGLUtils::LogError("Failed to initialize EGL display");
+    Destroy();
     return false;
   }
   CLog::Log(LOGINFO, "Got EGL v%d.%d", major, minor);
@@ -91,26 +94,54 @@ bool CGLContextEGL::CreateDisplay(wayland::display_t& display,
   if (eglBindAPI(renderingApi) != EGL_TRUE)
   {
     CEGLUtils::LogError("Failed to bind EGL API");
+    Destroy();
     return false;
   }
 
   if (eglChooseConfig(m_eglDisplay, attribs, &m_eglConfig, 1, &neglconfigs) != EGL_TRUE)
   {
     CEGLUtils::LogError("Failed to query number of EGL configs");
+    Destroy();
     return false;
   }
 
   if (neglconfigs <= 0)
   {
     CLog::Log(LOGERROR, "No suitable EGL configs found");
+    Destroy();
     return false;
   }
 
   return true;
 }
 
-bool CGLContextEGL::CreateSurface(wayland::surface_t const& surface, CSizeInt size)
+bool CEGLContext::CreateContext(const EGLint* contextAttribs)
 {
+  if (m_eglContext != EGL_NO_CONTEXT)
+  {
+    throw std::logic_error("Do not call CreateContext when context has already been created");
+  }
+
+  m_eglContext = eglCreateContext(m_eglDisplay, m_eglConfig,
+                                  EGL_NO_CONTEXT, contextAttribs);
+
+  if (m_eglContext == EGL_NO_CONTEXT)
+  {
+    // This is expected to fail under some circumstances, so log as debug
+    CLog::Log(LOGDEBUG, "Failed to create EGL context (EGL error %d)", eglGetError());
+    return false;
+  }
+
+  return true;
+}
+
+bool CEGLContext::CreateSurface(wayland::surface_t const& surface, CSizeInt size)
+{
+  if (m_eglSurface != EGL_NO_SURFACE)
+  {
+    throw std::logic_error("Do not call CreateSurface when surface has already been created");
+  }
+
   m_nativeWindow = wayland::egl_window_t(surface, size.Width(), size.Height());
 
   m_eglSurface = m_eglCreatePlatformWindowSurfaceEXT(m_eglDisplay,
@@ -120,23 +151,17 @@ bool CGLContextEGL::CreateSurface(wayland::surface_t const& surface, CSizeInt si
   if (m_eglSurface == EGL_NO_SURFACE)
   {
     CEGLUtils::LogError("Failed to create EGL platform window surface");
+    DestroySurface();
     return false;
   }
+  return true;
+}
 
-  const EGLint context_atrribs[] = {
-    EGL_CONTEXT_MAJOR_VERSION_KHR, 3,
-    EGL_CONTEXT_MINOR_VERSION_KHR, 2,
-    EGL_CONTEXT_OPENGL_PROFILE_MASK_KHR, EGL_CONTEXT_OPENGL_CORE_PROFILE_BIT_KHR,
-    EGL_NONE
-  };
-
-  m_eglContext = eglCreateContext(m_eglDisplay, m_eglConfig,
-                                  EGL_NO_CONTEXT, context_atrribs);
-
-  if (m_eglContext == EGL_NO_CONTEXT)
+bool CEGLContext::MakeCurrent()
+{
+  if (m_eglDisplay == EGL_NO_DISPLAY || m_eglSurface == EGL_NO_SURFACE || m_eglContext == EGL_NO_CONTEXT)
   {
-    CEGLUtils::LogError("Failed to create EGL context");
-    return false;
+    throw std::logic_error("Activating an EGLContext requires display, surface, and context");
   }
 
   if (eglMakeCurrent(m_eglDisplay, m_eglSurface, m_eglSurface, m_eglContext) != EGL_TRUE)
@@ -144,24 +169,24 @@ bool CGLContextEGL::CreateSurface(wayland::surface_t const& surface, CSizeInt si
     CEGLUtils::LogError("Failed to make context current");
     return false;
   }
-
   return true;
 }
 
-CSizeInt CGLContextEGL::GetAttachedSize()
+CSizeInt CEGLContext::GetAttachedSize()
 {
   int width, height;
   m_nativeWindow.get_attached_size(width, height);
   return {width, height};
 }
 
-void CGLContextEGL::Resize(CSizeInt size)
+void CEGLContext::Resize(CSizeInt size)
 {
   m_nativeWindow.resize(size.Width(), size.Height(), 0, 0);
 }
 
-void CGLContextEGL::Destroy()
+void CEGLContext::Destroy()
 {
+  DestroyContext();
   DestroySurface();
 
   if (m_eglDisplay != EGL_NO_DISPLAY)
@@ -171,17 +196,21 @@ void CGLContextEGL::Destroy()
   }
 }
 
-void CGLContextEGL::DestroySurface()
+void CEGLContext::DestroyContext()
 {
   if (m_eglContext != EGL_NO_CONTEXT)
   {
-    eglDestroyContext(m_eglDisplay, m_eglContext);
     eglMakeCurrent(m_eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
+    eglDestroyContext(m_eglDisplay, m_eglContext);
     m_eglContext = EGL_NO_CONTEXT;
   }
+}
 
+void CEGLContext::DestroySurface()
+{
   if (m_eglSurface != EGL_NO_SURFACE)
   {
+    eglMakeCurrent(m_eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
     eglDestroySurface(m_eglDisplay, m_eglSurface);
     m_eglSurface = EGL_NO_SURFACE;
   }
@@ -189,7 +218,7 @@ void CGLContextEGL::DestroySurface()
   m_nativeWindow = wayland::egl_window_t();
 }
 
-void CGLContextEGL::SetVSync(bool enable)
+void CEGLContext::SetVSync(bool enable)
 {
   if (eglSwapInterval(m_eglDisplay, enable) != EGL_TRUE)
   {
@@ -197,7 +226,7 @@ void CGLContextEGL::SetVSync(bool enable)
   }
 }
 
-void CGLContextEGL::SwapBuffers()
+void CEGLContext::SwapBuffers()
 {
   if (m_eglDisplay == EGL_NO_DISPLAY || m_eglSurface == EGL_NO_SURFACE)
     return;
