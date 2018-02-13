@@ -38,15 +38,10 @@
 
 #if defined(TARGET_WINDOWS)
 #include <windows.h>
-#define DIRECTINPUT_VERSION 0x0800
 #include "mmsystem.h"
-#include "DInput.h"
 #if defined(TARGET_WINDOWS_DESKTOP)
 #include "DSound.h"
 #endif
-#define DSSPEAKER_USE_DEFAULT DSSPEAKER_STEREO
-#define LPDIRECTSOUND8 LPDIRECTSOUND
-#undef GetFreeSpace
 #include "PlatformInclude.h"
 #include "d3d11_1.h"
 #include "dxgi.h"

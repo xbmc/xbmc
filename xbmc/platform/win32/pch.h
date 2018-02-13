@@ -34,8 +34,6 @@
 #include <TCHAR.H>
 #include <locale>
 #include <comdef.h>
-#define DIRECTINPUT_VERSION 0x0800
-#include "DInput.h"
 #if defined(TARGET_WINDOWS_DESKTOP)
 #include "DSound.h"
 #endif
