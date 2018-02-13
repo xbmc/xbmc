@@ -32,6 +32,7 @@
 
 #include <dbghelp.h>
 #include <shellapi.h>
+#include <WinSock2.h>
 
 
 // Minidump creation function

@@ -25,7 +25,6 @@
 #include "PowrProf.h"
 #include "WindowHelper.h"
 #include "Application.h"
-#include <shlobj.h>
 #include "my_ntddscsi.h"
 #include "storage/MediaManager.h"
 #include "guilib/LocalizeStrings.h"
@@ -40,6 +39,10 @@
 #include <cassert>
 #endif
 #include <locale.h>
+
+#include <shellapi.h>
+#include <shlobj.h>
+#include <winioctl.h>
 
 #ifdef TARGET_WINDOWS_DESKTOP
 extern HWND g_hWnd;

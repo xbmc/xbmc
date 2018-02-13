@@ -22,6 +22,10 @@
 
 #include "DynamicDll.h"
 
+#if defined(TARGET_WINDOWS)
+// libnfs.h needs timeval struct
+#include <WinSock2.h>
+#endif
 #ifdef __cplusplus
 extern "C" {
 #endif  

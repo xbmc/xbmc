@@ -28,6 +28,7 @@
 
 #include <SetupAPI.h>
 #include <ShlObj.h>
+#include <winioctl.h>
 
 bool CWin32StorageProvider::xbevent = false;
 
