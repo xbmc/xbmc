@@ -24,6 +24,8 @@
 #include "cores/AudioEngine/Utils/AEDeviceInfo.h"
 #include "threads/CriticalSection.h"
 
+#include <mmsystem.h>
+#include <DSound.h>
 #include <wrl/client.h>
 
 class CAESinkDirectSound : public IAESink

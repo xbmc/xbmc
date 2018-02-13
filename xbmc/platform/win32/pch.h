@@ -30,13 +30,9 @@
 #include <wrl.h>
 #include <wrl/client.h>
 #include <windows.h>
-#include <mmsystem.h>
 #include <TCHAR.H>
 #include <locale>
 #include <comdef.h>
-#if defined(TARGET_WINDOWS_DESKTOP)
-#include "DSound.h"
-#endif
 #include <memory>
 // anything below here should be headers that very rarely (hopefully never)
 // change yet are included almost everywhere.

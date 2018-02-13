@@ -38,10 +38,6 @@
 
 #if defined(TARGET_WINDOWS)
 #include <windows.h>
-#include "mmsystem.h"
-#if defined(TARGET_WINDOWS_DESKTOP)
-#include "DSound.h"
-#endif
 #include "PlatformInclude.h"
 #endif
 
