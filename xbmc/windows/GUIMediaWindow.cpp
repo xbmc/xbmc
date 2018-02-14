@@ -847,7 +847,8 @@ bool CGUIMediaWindow::Update(const std::string &strDirectory, bool updateFilterP
     pItem->SetLabel(strLabel);
     pItem->SetLabelPreformatted(true);
     pItem->m_bIsFolder = true;
-    pItem->SetSpecialSort(SortSpecialOnBottom);
+    pItem->SetSpecialSort(g_advancedSettings.m_addSourceOnTop ?
+                                             SortSpecialOnTop : SortSpecialOnBottom);
     m_vecItems->Add(pItem);
   }
   m_iLastControl = GetFocusedControlID();
