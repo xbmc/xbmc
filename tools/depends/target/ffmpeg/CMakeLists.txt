@@ -4,7 +4,22 @@ cmake_minimum_required(VERSION 2.8)
 
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR})
 
-set(ffmpeg_conf --cc=${CMAKE_C_COMPILER} --cxx=${CMAKE_CXX_COMPILER})
+# ENABLE_CCACHE can have the following values ON|OFF|AUTO
+# During initial kodi project generation the forwarded ENABLE_CCACHE is empty, if ENABLE_CCACHE wasn't explicitly set.
+# This happens as FindFFmpeg is called before core_optional_dep(CCache) which sets ENABLE_CCACHE to AUTO in that case.
+# Therefore treat empty ENABLE_CCACHE like ON and AUTO.
+if(ENABLE_CCACHE STREQUAL "" OR ENABLE_CCACHE)
+  find_program(CCACHE_PROGRAM ccache)
+  if(CCACHE_PROGRAM)
+    set(USE_CCACHE ON)
+  endif()
+endif()
+
+if(USE_CCACHE)
+  set(ffmpeg_conf "--cc=${CCACHE_PROGRAM} ${CMAKE_C_COMPILER}" "--cxx=${CCACHE_PROGRAM} ${CMAKE_CXX_COMPILER}")
+else()
+  set(ffmpeg_conf --cc=${CMAKE_C_COMPILER} --cxx=${CMAKE_CXX_COMPILER})
+endif()
 
 if(CROSSCOMPILING)
   set(pkgconf "PKG_CONFIG_LIBDIR=${DEPENDS_PATH}/lib/pkgconfig")
