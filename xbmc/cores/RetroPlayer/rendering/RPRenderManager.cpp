@@ -24,6 +24,7 @@
 #include "IGUIRenderSettings.h"
 #include "RenderContext.h"
 #include "RenderSettings.h"
+#include "RenderTranslator.h"
 #include "cores/RetroPlayer/process/IRenderBuffer.h"
 #include "cores/RetroPlayer/process/IRenderBufferPool.h"
 #include "cores/RetroPlayer/process/RenderBufferManager.h"
@@ -54,10 +55,13 @@ CRPRenderManager::CRPRenderManager(CRPProcessInfo &processInfo) :
 
 void CRPRenderManager::Initialize()
 {
+  CLog::Log(LOGDEBUG, "RetroPlayer[RENDER]: Initializing render manager");
 }
 
 void CRPRenderManager::Deinitialize()
 {
+  CLog::Log(LOGDEBUG, "RetroPlayer[RENDER]: Deinitializing render manager");
+
   for (auto &pixelScaler : m_scalers)
   {
     if (pixelScaler.second != nullptr)
@@ -80,6 +84,12 @@ bool CRPRenderManager::Configure(AVPixelFormat format, unsigned int width, unsig
   m_width = width;
   m_height = height;
   m_orientation = orientation;
+
+  CLog::Log(LOGINFO, "RetroPlayer[RENDER]: Configuring format %s, %ux%u, %u deg",
+            CRenderTranslator::TranslatePixelFormat(format),
+            width,
+            height,
+            orientation);
 
   CSingleLock lock(m_stateMutex);
 
@@ -158,6 +168,8 @@ void CRPRenderManager::FrameMove()
     {
       MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_SWITCHTOFULLSCREEN);
       m_state = RENDER_STATE::CONFIGURED;
+
+      CLog::Log(LOGINFO, "RetroPlayer[RENDER]: Renderer configured on first frame");
     }
 
     if (m_state == RENDER_STATE::CONFIGURED)
@@ -358,6 +370,9 @@ std::shared_ptr<CRPBaseRenderer> CRPRenderManager::GetRenderer(IRenderBufferPool
   // If buffer pool has no compatible renderers, create one now
   if (!renderer)
   {
+    CLog::Log(LOGERROR, "RetroPlayer[RENDER]: Creating renderer for %s",
+              m_processInfo.GetRenderSystemName(bufferPool).c_str());
+
     renderer.reset(m_processInfo.CreateRenderer(bufferPool, renderSettings));
     if (renderer && renderer->Configure(m_format, m_width, m_height, m_orientation))
     {
@@ -421,6 +436,8 @@ void CRPRenderManager::CreateRenderBuffer(IRenderBufferPool *bufferPool)
     std::vector<uint8_t> cachedFrame = std::move(m_cachedFrame);
     if (!cachedFrame.empty())
     {
+      CLog::Log(LOGERROR, "RetroPlayer[RENDER]: Creating render buffer for renderer");
+
       IRenderBuffer *renderBuffer = bufferPool->GetBuffer(cachedFrame.size());
       if (renderBuffer != nullptr)
       {
@@ -431,6 +448,10 @@ void CRPRenderManager::CreateRenderBuffer(IRenderBufferPool *bufferPool)
         m_renderBuffers.emplace_back(renderBuffer);
       }
       m_cachedFrame = std::move(cachedFrame);
+    }
+    else
+    {
+      CLog::Log(LOGERROR, "RetroPlayer[RENDER]: Failed to create render buffer, no cached frame");
     }
   }
 }

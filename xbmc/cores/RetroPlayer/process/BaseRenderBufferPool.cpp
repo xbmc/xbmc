@@ -22,6 +22,7 @@
 #include "IRenderBuffer.h"
 #include "cores/RetroPlayer/rendering/VideoRenderers/RPBaseRenderer.h"
 #include "threads/SingleLock.h"
+#include "utils/log.h"
 
 using namespace KODI;
 using namespace RETRO;
@@ -99,6 +100,8 @@ IRenderBuffer *CBaseRenderBufferPool::GetBuffer(size_t size)
     }
     else
     {
+      CLog::Log(LOGDEBUG, "RetroPlayer[RENDER]: Creating render buffer for buffer pool");
+
       std::unique_ptr<IRenderBuffer> renderBufferPtr(CreateRenderBuffer(header));
       if (renderBufferPtr->Allocate(m_format, m_width, m_height, m_frameSize))
         renderBuffer = renderBufferPtr.release();

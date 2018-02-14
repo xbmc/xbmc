@@ -23,6 +23,11 @@
 using namespace KODI;
 using namespace RETRO;
 
+CRPProcessInfoWayland::CRPProcessInfoWayland() :
+  CRPProcessInfo("Wayland")
+{
+}
+
 CRPProcessInfo* CRPProcessInfoWayland::Create()
 {
   return new CRPProcessInfoWayland();

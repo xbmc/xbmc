@@ -36,10 +36,13 @@ CRetroPlayerAudio::CRetroPlayerAudio(CRPProcessInfo& processInfo) :
   m_pAudioStream(nullptr),
   m_bAudioEnabled(true)
 {
+  CLog::Log(LOGDEBUG, "RetroPlayer[AUDIO]: Initializing audio");
 }
 
 CRetroPlayerAudio::~CRetroPlayerAudio()
 {
+  CLog::Log(LOGDEBUG, "RetroPlayer[AUDIO]: Deinitializing audio");
+
   CloseStream();
 }
 
@@ -74,12 +77,12 @@ bool CRetroPlayerAudio::OpenPCMStream(AEDataFormat format, unsigned int samplera
   if (m_pAudioStream != nullptr)
     CloseStream();
 
-  CLog::Log(LOGINFO, "RetroPlayerAudio: Creating audio stream, sample rate = %d", samplerate);
+  CLog::Log(LOGINFO, "RetroPlayer[AUDIO]: Creating audio stream, sample rate = %d", samplerate);
 
   // Resampling is not supported
   if (NormalizeSamplerate(samplerate) != samplerate)
   {
-    CLog::Log(LOGERROR, "RetroPlayerAudio: Resampling to %d not supported", NormalizeSamplerate(samplerate));
+    CLog::Log(LOGERROR, "RetroPlayer[AUDIO]: Resampling to %d not supported", NormalizeSamplerate(samplerate));
     return false;
   }
 
@@ -91,7 +94,7 @@ bool CRetroPlayerAudio::OpenPCMStream(AEDataFormat format, unsigned int samplera
 
   if (!m_pAudioStream)
   {
-    CLog::Log(LOGERROR, "RetroPlayerAudio: Failed to create audio stream");
+    CLog::Log(LOGERROR, "RetroPlayer[AUDIO]: Failed to create audio stream");
     return false;
   }
 
@@ -104,6 +107,8 @@ bool CRetroPlayerAudio::OpenPCMStream(AEDataFormat format, unsigned int samplera
 
 bool CRetroPlayerAudio::OpenEncodedStream(AVCodecID codec, unsigned int samplerate, const CAEChannelInfo& channelLayout)
 {
+  CLog::Log(LOGERROR, "RetroPlayer[AUDIO]: Encoded audio stream not supported");
+
   return true; //! @todo
 }
 
@@ -123,6 +128,8 @@ void CRetroPlayerAudio::CloseStream()
 {
   if (m_pAudioStream)
   {
+    CLog::Log(LOGDEBUG, "RetroPlayer[AUDIO]: Closing audio stream");
+
     CServiceBroker::GetActiveAE().FreeStream(m_pAudioStream);
     m_pAudioStream = nullptr;
   }

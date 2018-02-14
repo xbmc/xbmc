@@ -23,6 +23,11 @@
 using namespace KODI;
 using namespace RETRO;
 
+CRPProcessInfoGbm::CRPProcessInfoGbm() :
+  CRPProcessInfo("GBM")
+{
+}
+
 CRPProcessInfo* CRPProcessInfoGbm::Create()
 {
   return new CRPProcessInfoGbm();

@@ -28,6 +28,8 @@ namespace RETRO
   class CRPProcessInfoGbm : public CRPProcessInfo
   {
   public:
+    CRPProcessInfoGbm();
+
     static CRPProcessInfo* Create();
     static void Register();
   };

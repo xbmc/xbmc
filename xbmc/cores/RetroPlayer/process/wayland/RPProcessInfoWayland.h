@@ -28,6 +28,8 @@ namespace RETRO
   class CRPProcessInfoWayland : public CRPProcessInfo
   {
   public:
+    CRPProcessInfoWayland();
+
     static CRPProcessInfo* Create();
     static void Register();
   };

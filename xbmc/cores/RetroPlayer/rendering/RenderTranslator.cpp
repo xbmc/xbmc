@@ -23,6 +23,23 @@
 using namespace KODI;
 using namespace RETRO;
 
+const char *CRenderTranslator::TranslatePixelFormat(AVPixelFormat format)
+{
+  switch (format)
+  {
+  case AV_PIX_FMT_0RGB32:
+    return "0RGB32";
+  case AV_PIX_FMT_RGB565:
+    return "RGB565";
+  case AV_PIX_FMT_RGB555:
+    return "RGB555";
+  default:
+    break;
+  }
+
+  return "unknown";
+}
+
 const char *CRenderTranslator::TranslateScalingMethod(ESCALINGMETHOD scalingMethod)
 {
   switch (scalingMethod)

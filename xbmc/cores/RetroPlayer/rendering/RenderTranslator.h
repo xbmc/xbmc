@@ -21,6 +21,8 @@
 
 #include "cores/IPlayer.h"
 
+#include "libavutil/pixfmt.h"
+
 namespace KODI
 {
 namespace RETRO
@@ -28,6 +30,11 @@ namespace RETRO
   class CRenderTranslator
   {
   public:
+    /*!
+     * \brief Translate a pixel format to a string suitable for logging
+     */
+    static const char *TranslatePixelFormat(AVPixelFormat format);
+
     /*!
      * \brief Translate a scaling method to a string suitable for logging
      */

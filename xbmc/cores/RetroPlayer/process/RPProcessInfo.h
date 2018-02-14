@@ -49,6 +49,7 @@ namespace RETRO
   public:
     virtual ~IRendererFactory() = default;
 
+    virtual std::string RenderSystemName() const = 0;
     virtual CRPBaseRenderer *CreateRenderer(const CRenderSettings &settings, CRenderContext &context, std::shared_ptr<IRenderBufferPool> bufferPool) = 0;
     virtual RenderBufferPoolVector CreateBufferPools() = 0;
   };
@@ -61,6 +62,9 @@ namespace RETRO
     static void RegisterRendererFactory(IRendererFactory *factory);
 
     virtual ~CRPProcessInfo();
+
+    const std::string &GetPlatformName() const { return m_platformName; }
+    std::string GetRenderSystemName(IRenderBufferPool *renderBufferPool) const;
 
     CRPBaseRenderer *CreateRenderer(IRenderBufferPool *renderBufferPool, const CRenderSettings &renderSettings);
 
@@ -88,19 +92,26 @@ namespace RETRO
     void SetPlayTimes(time_t start, int64_t current, int64_t min, int64_t max);
 
   protected:
-    CRPProcessInfo();
+    CRPProcessInfo(std::string platformName);
 
     static std::vector<ESCALINGMETHOD> GetScalingMethods();
 
+    // Static factories
     static CreateRPProcessControl m_processControl;
     static std::vector<std::unique_ptr<IRendererFactory>> m_rendererFactories;
     static CCriticalSection m_createSection;
 
+    // Construction parameters
+    const std::string m_platformName;
+
+    // Process info parameters
     CDataCacheCore *m_dataCache = nullptr;
 
+    // Rendering parameters
     std::unique_ptr<CRenderBufferManager> m_renderBufferManager;
 
   private:
+    // Rendering parameters
     std::unique_ptr<CRenderContext> m_renderContext;
     ESCALINGMETHOD m_defaultScalingMethod = VS_SCALINGMETHOD_AUTO;
   };

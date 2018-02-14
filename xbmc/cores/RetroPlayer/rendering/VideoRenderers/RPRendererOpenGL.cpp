@@ -27,6 +27,11 @@ using namespace RETRO;
 
 // --- CRendererFactoryOpenGL --------------------------------------------------
 
+std::string CRendererFactoryOpenGL::RenderSystemName() const
+{
+  return "OpenGL";
+}
+
 CRPBaseRenderer *CRendererFactoryOpenGL::CreateRenderer(const CRenderSettings &settings, CRenderContext &context, std::shared_ptr<IRenderBufferPool> bufferPool)
 {
   return new CRPRendererOpenGL(settings, context, std::move(bufferPool));

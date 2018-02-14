@@ -33,16 +33,22 @@ CRetroPlayerAutoSave::CRetroPlayerAutoSave(GAME::CGameClient &gameClient) :
   CThread("CRetroPlayerAutoSave"),
   m_gameClient(gameClient)
 {
+  CLog::Log(LOGDEBUG, "RetroPlayer[SAVE]: Initializing autosave");
+
   Create(false);
 }
 
 CRetroPlayerAutoSave::~CRetroPlayerAutoSave()
 {
+  CLog::Log(LOGDEBUG, "RetroPlayer[SAVE]: Deinitializing autosave");
+
   StopThread();
 }
 
 void CRetroPlayerAutoSave::Process()
 {
+  CLog::Log(LOGDEBUG, "RetroPlayer[SAVE]: Autosave thread started");
+
   while (!m_bStop)
   {
     Sleep(AUTOSAVE_DURATION_SECS * 1000);
@@ -54,7 +60,9 @@ void CRetroPlayerAutoSave::Process()
     {
       std::string savePath = m_gameClient.GetPlayback()->CreateSavestate();
       if (!savePath.empty())
-        CLog::Log(LOGDEBUG, "Saved state to %s", CURL::GetRedacted(savePath).c_str());
+        CLog::Log(LOGDEBUG, "RetroPlayer[SAVE]: Saved state to %s", CURL::GetRedacted(savePath).c_str());
     }
   }
+
+  CLog::Log(LOGDEBUG, "RetroPlayer[SAVE]: Autosave thread ended");
 }
