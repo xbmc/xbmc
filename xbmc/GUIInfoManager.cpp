@@ -6285,7 +6285,7 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
     strLabel = m_audioInfo.language;
     break;
   case VIDEOPLAYER_STEREOSCOPIC_MODE:
-    strLabel = m_videoInfo.stereoMode;
+    strLabel = CServiceBroker::GetDataCacheCore().GetVideoStereoMode();
     break;
   case VIDEOPLAYER_SUBTITLES_LANG:
     if (g_application.GetAppPlayer().GetSubtitleVisible())
@@ -7431,7 +7431,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
           bReturn = (m_currentFile->GetPVRChannelInfoTag()->GetEPGNow().get() != NULL);
         break;
       case VIDEOPLAYER_IS_STEREOSCOPIC:
-        bReturn = !m_videoInfo.stereoMode.empty();
+        bReturn =  !CServiceBroker::GetDataCacheCore().GetVideoStereoMode().empty();
         break;
       case VIDEOPLAYER_CAN_RESUME_LIVE_TV:
         if (m_currentFile->HasPVRRecordingInfoTag())
