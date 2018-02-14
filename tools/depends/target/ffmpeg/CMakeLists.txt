@@ -3,8 +3,15 @@ project(ffmpeg)
 cmake_minimum_required(VERSION 2.8)
 
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR})
+if(CCACHE_FOUND)
+  set(cc "${CCACHE_PROGRAM} ${CMAKE_C_COMPILER}")
+  set(cxx" ${CCACHE_PROGRAM} ${CMAKE_CXX_COMPILER}")
+else()
+  set(cc ${CMAKE_C_COMPILER})
+  set(cxx ${CMAKE_CXX_COMPILER})
+endif()
 
-set(ffmpeg_conf --cc=${CMAKE_C_COMPILER} --cxx=${CMAKE_CXX_COMPILER})
+set(ffmpeg_conf --cc=${cc} --cxx=${cxx})
 
 if(CROSSCOMPILING)
   set(pkgconf "PKG_CONFIG_LIBDIR=${DEPENDS_PATH}/lib/pkgconfig")
