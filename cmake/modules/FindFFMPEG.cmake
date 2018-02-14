@@ -255,6 +255,7 @@ if(NOT FFMPEG_FOUND)
                                  -DCMAKE_C_FLAGS=${CMAKE_C_FLAGS}
                                  -DCMAKE_CXX_FLAGS=${CMAKE_CXX_FLAGS}
                                  -DCMAKE_EXE_LINKER_FLAGS=${CMAKE_EXE_LINKER_FLAGS}
+                                 -DCCACHE_PROGRAM=${CCACHE_PROGRAM}
                                  ${CROSS_ARGS}
                       PATCH_COMMAND ${CMAKE_COMMAND} -E copy
                                     ${CMAKE_SOURCE_DIR}/tools/depends/target/ffmpeg/CMakeLists.txt
