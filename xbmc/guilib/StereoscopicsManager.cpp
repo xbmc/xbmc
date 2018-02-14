@@ -46,6 +46,7 @@
 #include "utils/Variant.h"
 #include "rendering/RenderSystem.h"
 #include "guiinfo/GUIInfoLabels.h"
+#include "cores/DataCacheCore.h"
 
 using namespace KODI::MESSAGING;
 
@@ -394,9 +395,6 @@ bool CStereoscopicsManager::OnMessage(CGUIMessage &message)
 {
   switch (message.GetMessage())
   {
-  case GUI_MSG_PLAYBACK_STARTED:
-    OnPlaybackStarted();
-    break;
   case GUI_MSG_PLAYBACK_STOPPED:
   case GUI_MSG_PLAYLISTPLAYER_STOPPED:
     OnPlaybackStopped();
@@ -502,11 +500,7 @@ std::string CStereoscopicsManager::GetVideoStereoMode()
 {
   std::string playerMode;
   if (g_application.GetAppPlayer().IsPlaying())
-  {
-    VideoStreamInfo videoInfo;
-    g_application.GetAppPlayer().GetVideoStreamInfo(CURRENT_STREAM, videoInfo);
-    playerMode = videoInfo.stereoMode;
-  }
+    playerMode = CServiceBroker::GetDataCacheCore().GetVideoStereoMode();
   return playerMode;
 }
 
@@ -516,7 +510,7 @@ bool CStereoscopicsManager::IsVideoStereoscopic()
   return !mode.empty() && mode != "mono";
 }
 
-void CStereoscopicsManager::OnPlaybackStarted(void)
+void CStereoscopicsManager::OnStreamChange()
 {
   STEREOSCOPIC_PLAYBACK_MODE playbackMode = (STEREOSCOPIC_PLAYBACK_MODE) CServiceBroker::GetSettings().GetInt(CSettings::SETTING_VIDEOPLAYER_STEREOSCOPICPLAYBACKMODE);
   RENDER_STEREO_MODE mode = GetStereoMode();
