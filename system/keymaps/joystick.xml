@@ -147,8 +147,11 @@
       <leftstick direction="right" hotkey="back">SaveSlotIncrease</leftstick>
       -->
       <!-- Merged -->
-      <a hotkey="back">Screenshot</a>
-      <b hotkey="back">PlayerControl(Reset)</b>
+      <!-- Screenshot is disabled until it has been further automated
+           (currently pops up multiple annoying confusing dialogs) -->
+      <!-- <a hotkey="back">Screenshot</a> -->
+      <!-- Reset is disabled until player can undo a reset -->
+      <!--<b hotkey="back">PlayerControl(Reset)</b> -->
       <x hotkey="back">OSD</x>
       <y hotkey="back">FullScreen</y>
       <start hotkey="back">Stop</start>
