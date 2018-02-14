@@ -19,7 +19,7 @@
  */
 
 #include "DialogGameViewMode.h"
-#include "cores/RetroPlayer/rendering/GUIGameVideoHandle.h"
+#include "cores/RetroPlayer/guibridge/GUIGameVideoHandle.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
 #include "settings/GameSettings.h"

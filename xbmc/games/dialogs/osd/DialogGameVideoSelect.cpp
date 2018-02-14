@@ -19,8 +19,8 @@
  */
 
 #include "DialogGameVideoSelect.h"
-#include "cores/RetroPlayer/rendering/GUIGameVideoHandle.h"
-#include "cores/RetroPlayer/rendering/GUIGameRenderManager.h"
+#include "cores/RetroPlayer/guibridge/GUIGameVideoHandle.h"
+#include "cores/RetroPlayer/guibridge/GUIGameRenderManager.h"
 #include "guilib/GraphicContext.h"
 #include "guilib/GUIBaseContainer.h"
 #include "guilib/GUIMessage.h"
