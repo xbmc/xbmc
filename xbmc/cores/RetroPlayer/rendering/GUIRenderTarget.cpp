@@ -21,7 +21,7 @@
 #include "GUIRenderTarget.h"
 #include "IRenderManager.h"
 #include "cores/RetroPlayer/guicontrols/GUIGameControl.h"
-#include "cores/RetroPlayer/windows/GameWindowFullScreen.h"
+#include "cores/RetroPlayer/guiwindows/GameWindowFullScreen.h"
 
 using namespace KODI;
 using namespace RETRO;

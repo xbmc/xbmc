@@ -6,4 +6,4 @@ set(HEADERS GameWindowFullScreen.h
             GameWindowFullScreenText.h
 )
 
-core_add_library(retroplayer_windows)
+core_add_library(retroplayer_guiwindows)
