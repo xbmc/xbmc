@@ -32,11 +32,7 @@
 
 std::unique_ptr<CWinSystemBase> CWinSystemBase::CreateWinSystem()
 {
-  auto winSysDX = new CWinSystemWin10DX();
-  winSysDX->SetCoreWindow(DX::CoreWindowHolder::Get()->GetWindow());
-
-  std::unique_ptr<CWinSystemBase> winSystem(winSysDX);
-  return winSystem;
+  return std::make_unique<CWinSystemWin10DX>();
 }
 
 CWinSystemWin10DX::CWinSystemWin10DX() : CRenderSystemDX()
