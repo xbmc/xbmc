@@ -208,6 +208,20 @@ void COutputShader::ApplyEffectParameters(CD3DEffect &effect, unsigned sourceWid
     effect.SetResources("m_ditherMatrix", m_pDitherView.GetAddressOf(), 1);
     effect.SetFloatArray("m_ditherParams", ditherParams, 3);
   }
+  if (m_toneMapping)
+  {
+    float param = 0.5;
+    if (m_hasLightMetadata)
+      param = log10(100) / log10(m_lightMetadata.MaxCLL);
+    else if (m_hasDisplayMetadata && m_displayMetadata.has_luminance)
+      param = log10(100) / log10(m_displayMetadata.max_luminance.num / m_displayMetadata.max_luminance.den);
+
+    float coefs[3];
+    CConvertMatrix::GetRGBYuvCoefs(AVColorSpace::AVCOL_SPC_BT709, coefs);
+
+    effect.SetScalar("g_toneP1", param);
+    effect.SetFloatArray("g_coefsDst", coefs, 3);
+  }
 }
 
 void COutputShader::GetDefines(DefinesMap& map) const
@@ -220,12 +234,17 @@ void COutputShader::GetDefines(DefinesMap& map) const
   {
     map["KODI_DITHER"] = "";
   }
+  if (m_toneMapping)
+  {
+    map["KODI_TONE_MAPPING"] = "";
+  }
 }
 
-bool COutputShader::Create(bool useCLUT, bool useDithering, int ditherDepth)
+bool COutputShader::Create(bool useCLUT, bool useDithering, int ditherDepth, bool toneMapping)
 {
   m_useCLUT = useCLUT;
   m_ditherDepth = ditherDepth;
+  m_toneMapping = toneMapping;
 
   CWinShader::CreateVertexBuffer(4, sizeof(CUSTOMVERTEX));
 
@@ -278,6 +297,14 @@ void COutputShader::SetCLUT(int clutSize, ID3D11ShaderResourceView* pCLUTView)
 {
   m_clutSize = clutSize;
   m_pCLUTView = pCLUTView;
+}
+
+void COutputShader::SetDisplayMetadata(bool hasDisplayMetadata, AVMasteringDisplayMetadata displayMetadata, bool hasLightMetadata, AVContentLightMetadata lightMetadata)
+{
+  m_hasDisplayMetadata = hasDisplayMetadata;
+  m_displayMetadata = displayMetadata;
+  m_hasLightMetadata = hasLightMetadata;
+  m_lightMetadata = lightMetadata;
 }
 
 bool COutputShader::CreateCLUTView(int clutSize, uint16_t* clutData, bool isRGB, ID3D11ShaderResourceView** ppCLUTView)

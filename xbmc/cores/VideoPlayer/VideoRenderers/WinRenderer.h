@@ -106,6 +106,7 @@ protected:
   bool m_cmsOn;
   bool m_clutLoaded;
   bool m_useDithering;
+  bool m_toneMapping;
 
   unsigned int m_destWidth;
   unsigned int m_destHeight;

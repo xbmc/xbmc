@@ -77,7 +77,11 @@ public:
   AVColorTransferCharacteristic color_transfer;
   bool full_range;
   int bits;
-  DXGI_FORMAT dxva_format;
+
+  bool hasDisplayMetadata = false;
+  bool hasLightMetadata = false;
+  AVMasteringDisplayMetadata displayMetadata;
+  AVContentLightMetadata lightMetadata;
 
 private:
   bool CopyToD3D11();

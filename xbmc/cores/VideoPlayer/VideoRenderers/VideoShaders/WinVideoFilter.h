@@ -32,6 +32,7 @@
 
 extern "C" {
 #include "libavutil/pixfmt.h"
+#include "libavutil/mastering_display_metadata.h"
 }
 enum EBufferFormat;
 class CRenderBuffer;
@@ -74,12 +75,14 @@ public:
 
   void ApplyEffectParameters(CD3DEffect &effect, unsigned sourceWidth, unsigned sourceHeight);
   void GetDefines(DefinesMap &map) const;
-  bool Create(bool useCLUT, bool useDithering, int ditherDepth);
+  bool Create(bool useCLUT, bool useDithering, int ditherDepth, bool toneMapping);
   void Render(CD3DTexture &sourceTexture, unsigned sourceWidth, unsigned sourceHeight, CRect sourceRect, const CPoint points[4]
             , CD3DTexture *target, unsigned range = 0, float contrast = 0.5f, float brightness = 0.5f);
   void Render(CD3DTexture &sourceTexture, unsigned sourceWidth, unsigned sourceHeight, CRect sourceRect, CRect destRect
             , CD3DTexture *target, unsigned range = 0, float contrast = 0.5f, float brightness = 0.5f);
   void SetCLUT(int clutSize, ID3D11ShaderResourceView *pCLUTView);
+  void SetDisplayMetadata(bool hasDisplayMetadata, AVMasteringDisplayMetadata displayMetadata,
+                          bool hasLightMetadata, AVContentLightMetadata lightMetadata);
 
   static bool CreateCLUTView(int clutSize, uint16_t* clutData, bool isRGB, ID3D11ShaderResourceView** ppCLUTView);
 
@@ -110,6 +113,13 @@ private:
     FLOAT x, y, z;
     FLOAT tu, tv;
   };
+
+  // tone mapping
+  bool m_toneMapping{ false };
+  bool m_hasDisplayMetadata{ false };
+  bool m_hasLightMetadata{ false };
+  AVMasteringDisplayMetadata m_displayMetadata;
+  AVContentLightMetadata m_lightMetadata;
 };
 
 class CYUV2RGBShader : public CWinShader
