@@ -50,6 +50,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "GUIUserMessages.h"
 #include "utils/FileUtils.h"
+#include "TextureDatabase.h"
 
 NPT_SET_LOCAL_LOGGER("xbmc.upnp.server")
 
@@ -1198,9 +1199,10 @@ CUPnPServer::ServeFile(const NPT_HttpRequest&              request,
         return NPT_SUCCESS;
     }
 
-    if(URIUtils::IsURL((const char*)file_path))
+    if (URIUtils::IsURL(static_cast<const char*>(file_path)))
     {
-      std::string disp = "inline; filename=\"" + URIUtils::GetFileName((const char*)file_path) + "\"";
+      CURL url(CTextureUtils::UnwrapImageURL(static_cast<const char*>(file_path)));
+      std::string disp = "inline; filename=\"" + URIUtils::GetFileName(url) + "\"";
       response.GetHeaders().SetHeader("Content-Disposition", disp.c_str());
     }
 
