@@ -309,11 +309,11 @@ void CWinRenderer::PreInit()
 
   m_iRequestedMethod = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_VIDEOPLAYER_RENDERMETHOD);
 
-  m_processor = new DXVA::CProcessorHD();
+  m_processor = std::make_unique<DXVA::CProcessorHD>();
   if (!m_processor->PreInit())
   {
     CLog::Log(LOGNOTICE, "%: - could not init DXVA processor - skipping.", __FUNCTION__);
-    SAFE_DELETE(m_processor);
+    m_processor.reset();
   }
 }
 
@@ -324,8 +324,8 @@ void CWinRenderer::UnInit()
   if (m_IntermediateTarget.Get())
     m_IntermediateTarget.Release();
 
-  SAFE_DELETE(m_colorShader);
-  SAFE_DELETE(m_scalerShader);
+  m_colorShader.reset();
+  m_scalerShader.reset();
 
   m_bConfigured = false;
   m_bFilterInitialized = false;
@@ -344,7 +344,7 @@ void CWinRenderer::UnInit()
   if (m_processor)
   {
     m_processor->UnInit();
-    SAFE_DELETE(m_processor);
+    m_processor.reset();
   }
   m_pCLUTView = nullptr;
   m_outputShader.reset();
@@ -556,27 +556,27 @@ void CWinRenderer::SelectPSVideoFilter()
 
 void CWinRenderer::UpdatePSVideoFilter()
 {
-  SAFE_DELETE(m_scalerShader);
+  m_scalerShader.reset();
 
   if (m_bUseHQScaler)
   {
     // First try the more efficient two pass convolution scaler
-    m_scalerShader = new CConvolutionShaderSeparable();
+    m_scalerShader = std::make_unique<CConvolutionShaderSeparable>();
 
     if (!m_scalerShader->Create(m_scalingMethod, m_outputShader.get()))
     {
-      SAFE_DELETE(m_scalerShader);
+      m_scalerShader.reset();
       CLog::Log(LOGNOTICE, "%s: two pass convolution shader init problem, falling back to one pass.", __FUNCTION__);
     }
 
     // Fallback on the one pass version
-    if (m_scalerShader == nullptr)
+    if (!m_scalerShader)
     {
-      m_scalerShader = new CConvolutionShader1Pass();
+      m_scalerShader = std::make_unique<CConvolutionShader1Pass>();
 
       if (!m_scalerShader->Create(m_scalingMethod, m_outputShader.get()))
       {
-        SAFE_DELETE(m_scalerShader);
+        m_scalerShader.reset();
         CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(34400), g_localizeStrings.Get(34401));
         m_bUseHQScaler = false;
       }
@@ -585,11 +585,11 @@ void CWinRenderer::UpdatePSVideoFilter()
 
   if (m_bUseHQScaler && !CreateIntermediateRenderTarget(m_sourceWidth, m_sourceHeight, false))
   {
-    SAFE_DELETE(m_scalerShader);
+    m_scalerShader.reset();
     m_bUseHQScaler = false;
   }
 
-  SAFE_DELETE(m_colorShader);
+  m_colorShader.reset();
 
   if (m_renderMethod == RENDER_DXVA)
   {
@@ -600,15 +600,15 @@ void CWinRenderer::UpdatePSVideoFilter()
     return;
   }
 
-  m_colorShader = new CYUV2RGBShader();
+  m_colorShader = std::make_unique<CYUV2RGBShader>();
   if (!m_colorShader->Create(m_bufferFormat, AVColorPrimaries::AVCOL_PRI_BT709, m_srcPrimaries, m_bUseHQScaler ? nullptr : m_outputShader.get()))
   {
     if (m_bUseHQScaler)
     {
       m_IntermediateTarget.Release();
-      SAFE_DELETE(m_scalerShader);
+      m_scalerShader.reset();
     }
-    SAFE_DELETE(m_colorShader);
+    m_colorShader.reset();
     m_bUseHQScaler = false;
 
     // we're in big trouble - fallback to sw method
