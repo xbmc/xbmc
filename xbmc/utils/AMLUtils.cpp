@@ -54,22 +54,6 @@ bool aml_present()
   return has_aml == 1;
 }
 
-bool aml_hw3d_present()
-{
-  static int has_hw3d = -1;
-  if (has_hw3d == -1)
-  {
-    if (SysfsUtils::Has("/sys/class/ppmgr/ppmgr_3d_mode") ||
-        SysfsUtils::Has("/sys/class/amhdmitx/amhdmitx0/config"))
-      has_hw3d = 1;
-    else
-      has_hw3d = 0;
-    if (has_hw3d)
-      CLog::Log(LOGNOTICE, "AML 3D support detected");
-  }
-  return has_hw3d == 1;
-}
-
 bool aml_wired_present()
 {
   static int has_wired = -1;
@@ -137,10 +121,6 @@ bool aml_permissions()
     if (!SysfsUtils::HasRW("/sys/class/audiodsp/digital_raw"))
     {
       CLog::Log(LOGERROR, "AML: no rw on /sys/class/audiodsp/digital_raw");
-    }
-    if (!SysfsUtils::HasRW("/sys/class/ppmgr/ppmgr_3d_mode"))
-    {
-      CLog::Log(LOGERROR, "AML: no rw on /sys/class/ppmgr/ppmgr_3d_mode");
     }
     if (!SysfsUtils::HasRW("/sys/class/amhdmitx/amhdmitx0/config"))
     {
