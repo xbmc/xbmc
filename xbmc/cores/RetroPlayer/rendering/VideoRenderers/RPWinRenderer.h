@@ -47,7 +47,7 @@ namespace RETRO
     // implementation of IRendererFactory
     std::string RenderSystemName() const override;
     CRPBaseRenderer *CreateRenderer(const CRenderSettings &settings, CRenderContext &context, std::shared_ptr<IRenderBufferPool> bufferPool) override;
-    RenderBufferPoolVector CreateBufferPools() override;
+    RenderBufferPoolVector CreateBufferPools(CRenderContext &context) override;
   };
 
   class CWinRenderBuffer : public CRenderBufferSysMem

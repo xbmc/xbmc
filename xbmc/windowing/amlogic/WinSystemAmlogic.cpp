@@ -25,7 +25,7 @@
 
 #include "ServiceBroker.h"
 #include "cores/RetroPlayer/process/amlogic/RPProcessInfoAmlogic.h"
-#include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererGuiTexture.h"
+#include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererOpenGLES.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodecAmlogic.h"
 #include "cores/VideoPlayer/VideoRenderers/LinuxRendererGLES.h"
 #include "cores/VideoPlayer/VideoRenderers/HwDecRender/RendererAML.h"
@@ -97,7 +97,7 @@ bool CWinSystemAmlogic::InitWindowSystem()
   CDVDVideoCodecAmlogic::Register();
   CLinuxRendererGLES::Register();
   RETRO::CRPProcessInfoAmlogic::Register();
-  RETRO::CRPProcessInfoAmlogic::RegisterRendererFactory(new RETRO::CRendererFactoryGuiTexture);
+  RETRO::CRPProcessInfoAmlogic::RegisterRendererFactory(new RETRO::CRendererFactoryOpenGLES);
   CRendererAML::Register();
 
   aml_set_framebuffer_resolution(1920, 1080, m_framebuffer_name);

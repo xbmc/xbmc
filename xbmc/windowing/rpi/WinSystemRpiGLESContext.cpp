@@ -25,7 +25,7 @@
 #include "utils/log.h"
 #include "cores/RetroPlayer/process/rbpi/RPProcessInfoPi.h"
 #include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererMMAL.h"
-#include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererGuiTexture.h"
+#include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererOpenGLES.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/MMALFFmpeg.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/MMALCodec.h"
@@ -57,7 +57,7 @@ bool CWinSystemRpiGLESContext::InitWindowSystem()
   CProcessInfoPi::Register();
   RETRO::CRPProcessInfoPi::Register();
   //RETRO::CRPProcessInfoPi::RegisterRendererFactory(new RETRO::CRendererFactoryMMAL); //! @todo
-  RETRO::CRPProcessInfoPi::RegisterRendererFactory(new RETRO::CRendererFactoryGuiTexture);
+  RETRO::CRPProcessInfoPi::RegisterRendererFactory(new RETRO::CRendererFactoryOpenGLES);
   CDVDFactoryCodec::ClearHWAccels();
   MMAL::CDecoder::Register();
   CDVDFactoryCodec::ClearHWVideoCodecs();

@@ -61,6 +61,7 @@ namespace RETRO
     void GetViewPort(CRect &viewPort);
     void SetScissors(const CRect &rect);
     void ApplyStateBlock();
+    bool IsExtSupported(const char* extension);
 
     // OpenGL(ES) rendering functions
     void EnableGUIShader(GL_SHADER_METHOD method);
