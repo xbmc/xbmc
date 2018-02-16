@@ -80,7 +80,7 @@
 						<left>635</left>
 						<top>480</top>
 						<height>245</height>
-						<visible>ListItem.IsCollection</visible>
+						<visible>ListItem.IsCollection + String.IsEmpty(ListItem.Plot)</visible>
 						<include content="InfoList">
 							<param name="bottom" value="0" />
 							<param name="sortby" value="year" />

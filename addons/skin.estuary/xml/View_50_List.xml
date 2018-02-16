@@ -217,7 +217,7 @@
 				<control type="group">
 					<left>20</left>
 					<top>640</top>
-					<visible>ListItem.IsCollection</visible>
+					<visible>ListItem.IsCollection + String.IsEmpty(ListItem.Plot)</visible>
 					<include content="InfoList">
 						<param name="bottom" value="100" />
 						<param name="width" value="540" />
