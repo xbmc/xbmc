@@ -79,6 +79,7 @@ CWinRenderer::CWinRenderer() : CBaseRenderer()
   , m_bFilterInitialized(false)
   , m_cmsOn(false)
   , m_clutLoaded(true)
+  , m_toneMapping(false)
   , m_destWidth(0)
   , m_destHeight(0)
   , m_frameIdx(0)
@@ -308,11 +309,11 @@ void CWinRenderer::PreInit()
 
   m_iRequestedMethod = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_VIDEOPLAYER_RENDERMETHOD);
 
-  m_processor = new DXVA::CProcessorHD();
+  m_processor = std::make_unique<DXVA::CProcessorHD>();
   if (!m_processor->PreInit())
   {
     CLog::Log(LOGNOTICE, "%: - could not init DXVA processor - skipping.", __FUNCTION__);
-    SAFE_DELETE(m_processor);
+    m_processor.reset();
   }
 }
 
@@ -323,8 +324,8 @@ void CWinRenderer::UnInit()
   if (m_IntermediateTarget.Get())
     m_IntermediateTarget.Release();
 
-  SAFE_DELETE(m_colorShader);
-  SAFE_DELETE(m_scalerShader);
+  m_colorShader.reset();
+  m_scalerShader.reset();
 
   m_bConfigured = false;
   m_bFilterInitialized = false;
@@ -343,7 +344,7 @@ void CWinRenderer::UnInit()
   if (m_processor)
   {
     m_processor->UnInit();
-    SAFE_DELETE(m_processor);
+    m_processor.reset();
   }
   m_pCLUTView = nullptr;
   m_outputShader.reset();
@@ -555,27 +556,27 @@ void CWinRenderer::SelectPSVideoFilter()
 
 void CWinRenderer::UpdatePSVideoFilter()
 {
-  SAFE_DELETE(m_scalerShader);
+  m_scalerShader.reset();
 
   if (m_bUseHQScaler)
   {
     // First try the more efficient two pass convolution scaler
-    m_scalerShader = new CConvolutionShaderSeparable();
+    m_scalerShader = std::make_unique<CConvolutionShaderSeparable>();
 
     if (!m_scalerShader->Create(m_scalingMethod, m_outputShader.get()))
     {
-      SAFE_DELETE(m_scalerShader);
+      m_scalerShader.reset();
       CLog::Log(LOGNOTICE, "%s: two pass convolution shader init problem, falling back to one pass.", __FUNCTION__);
     }
 
     // Fallback on the one pass version
-    if (m_scalerShader == nullptr)
+    if (!m_scalerShader)
     {
-      m_scalerShader = new CConvolutionShader1Pass();
+      m_scalerShader = std::make_unique<CConvolutionShader1Pass>();
 
       if (!m_scalerShader->Create(m_scalingMethod, m_outputShader.get()))
       {
-        SAFE_DELETE(m_scalerShader);
+        m_scalerShader.reset();
         CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(34400), g_localizeStrings.Get(34401));
         m_bUseHQScaler = false;
       }
@@ -584,11 +585,11 @@ void CWinRenderer::UpdatePSVideoFilter()
 
   if (m_bUseHQScaler && !CreateIntermediateRenderTarget(m_sourceWidth, m_sourceHeight, false))
   {
-    SAFE_DELETE(m_scalerShader);
+    m_scalerShader.reset();
     m_bUseHQScaler = false;
   }
 
-  SAFE_DELETE(m_colorShader);
+  m_colorShader.reset();
 
   if (m_renderMethod == RENDER_DXVA)
   {
@@ -599,15 +600,15 @@ void CWinRenderer::UpdatePSVideoFilter()
     return;
   }
 
-  m_colorShader = new CYUV2RGBShader();
+  m_colorShader = std::make_unique<CYUV2RGBShader>();
   if (!m_colorShader->Create(m_bufferFormat, AVColorPrimaries::AVCOL_PRI_BT709, m_srcPrimaries, m_bUseHQScaler ? nullptr : m_outputShader.get()))
   {
     if (m_bUseHQScaler)
     {
       m_IntermediateTarget.Release();
-      SAFE_DELETE(m_scalerShader);
+      m_scalerShader.reset();
     }
-    SAFE_DELETE(m_colorShader);
+    m_colorShader.reset();
     m_bUseHQScaler = false;
 
     // we're in big trouble - fallback to sw method
@@ -649,7 +650,7 @@ void CWinRenderer::UpdateVideoFilter()
   if (cmsChanged || !m_outputShader)
   {
     m_outputShader = std::make_unique<COutputShader>();
-    if (!m_outputShader->Create(m_cmsOn, m_useDithering, m_ditherDepth))
+    if (!m_outputShader->Create(m_cmsOn, m_useDithering, m_ditherDepth, m_toneMapping))
     {
       CLog::Log(LOGDEBUG, "%s: Unable to create output shader.", __FUNCTION__);
       m_outputShader.reset();
@@ -697,6 +698,17 @@ void CWinRenderer::Render(DWORD flags, CD3DTexture* target)
     m_srcPrimaries = srcPrim;
     m_bFilterInitialized = false;
   }
+
+  bool toneMap = false;
+  if (buf.hasLightMetadata || (buf.hasDisplayMetadata && buf.displayMetadata.has_luminance))
+    toneMap = true;
+  if (toneMap != m_toneMapping)
+  {
+    m_outputShader.reset();
+    m_bFilterInitialized = false;
+  }
+  m_toneMapping = toneMap;
+
   UpdateVideoFilter();
 
   switch (m_renderMethod)
@@ -757,13 +769,13 @@ void CWinRenderer::RenderSW(CD3DTexture* target)
                                         m_sourceWidth, m_sourceHeight, AV_PIX_FMT_BGRA,
                                         SWS_FAST_BILINEAR, nullptr, nullptr, nullptr);
 
-  CRenderBuffer* buf = &m_renderBuffers[m_iYV12RenderBuffer];
+  CRenderBuffer& buf = m_renderBuffers[m_iYV12RenderBuffer];
 
   uint8_t* src[YuvImage::MAX_PLANES];
   int srcStride[YuvImage::MAX_PLANES];
 
-  for (unsigned int idx = 0; idx < buf->GetActivePlanes(); idx++)
-    buf->MapPlane(idx, reinterpret_cast<void**>(&src[idx]), &srcStride[idx]);
+  for (unsigned int idx = 0; idx < buf.GetActivePlanes(); idx++)
+    buf.MapPlane(idx, reinterpret_cast<void**>(&src[idx]), &srcStride[idx]);
 
   D3D11_MAPPED_SUBRESOURCE destlr;
   if (!m_IntermediateTarget.LockRect(0, &destlr, D3D11_MAP_WRITE_DISCARD))
@@ -774,14 +786,15 @@ void CWinRenderer::RenderSW(CD3DTexture* target)
 
   sws_scale(m_sw_scale_ctx, src, srcStride, 0, m_sourceHeight, dst, dstStride);
 
-  for (unsigned int idx = 0; idx < buf->GetActivePlanes(); idx++)
-    buf->UnmapPlane(idx);
+  for (unsigned int idx = 0; idx < buf.GetActivePlanes(); idx++)
+    buf.UnmapPlane(idx);
 
   if (!m_IntermediateTarget.UnlockRect(0))
     CLog::Log(LOGERROR, "%s: failed to unlock swtarget texture.", __FUNCTION__);
 
   // 2. output to display
 
+  m_outputShader->SetDisplayMetadata(buf.hasDisplayMetadata, buf.displayMetadata, buf.hasLightMetadata, buf.lightMetadata);
   m_outputShader->Render(m_IntermediateTarget, m_sourceWidth, m_sourceHeight, m_sourceRect, m_rotatedDestCoords, target,
                          DX::Windowing().UseLimitedColor(), m_videoSettings.m_Contrast * 0.01f, m_videoSettings.m_Brightness * 0.01f);
 }
@@ -815,13 +828,16 @@ void CWinRenderer::RenderPS(CD3DTexture* target)
     destPoints[3] = { destRect.x1, destRect.y2 };
   }
 
-  // render video frame
+  CRenderBuffer& buf = m_renderBuffers[m_iYV12RenderBuffer];
+
+  // set params
+  m_outputShader->SetDisplayMetadata(buf.hasDisplayMetadata, buf.displayMetadata, buf.hasLightMetadata, buf.lightMetadata);
+
   m_colorShader->SetParams(m_videoSettings.m_Contrast, m_videoSettings.m_Brightness, DX::Windowing().UseLimitedColor());
-  m_colorShader->SetColParams(m_renderBuffers[m_iYV12RenderBuffer].color_space
-                            , m_renderBuffers[m_iYV12RenderBuffer].bits
-                            , !m_renderBuffers[m_iYV12RenderBuffer].full_range
-                            , 8 /*TODO texBits depends on target*/);
-  m_colorShader->Render(m_sourceRect, destPoints, &m_renderBuffers[m_iYV12RenderBuffer], target);
+  m_colorShader->SetColParams(buf.color_space, buf.bits, !buf.full_range, 8 /*TODO depends on target*/);
+
+  // render video frame
+  m_colorShader->Render(m_sourceRect, destPoints, &buf, target);
   // Restore our view port.
   DX::Windowing().RestoreViewPort();
 }
@@ -835,14 +851,14 @@ void CWinRenderer::RenderHQ(CD3DTexture* target)
 
 void CWinRenderer::RenderHW(DWORD flags, CD3DTexture* target)
 {
-  CRenderBuffer *image = &m_renderBuffers[m_iYV12RenderBuffer];
-  if ( image->format != BUFFER_FMT_D3D11_BYPASS
-    && image->format != BUFFER_FMT_D3D11_NV12
-    && image->format != BUFFER_FMT_D3D11_P010
-    && image->format != BUFFER_FMT_D3D11_P016)
+  CRenderBuffer& buf = m_renderBuffers[m_iYV12RenderBuffer];
+  if ( buf.format != BUFFER_FMT_D3D11_BYPASS
+    && buf.format != BUFFER_FMT_D3D11_NV12
+    && buf.format != BUFFER_FMT_D3D11_P010
+    && buf.format != BUFFER_FMT_D3D11_P016)
     return;
 
-  if (!image->loaded)
+  if (!buf.loaded)
     return;
 
   int past = 0;
@@ -850,7 +866,7 @@ void CWinRenderer::RenderHW(DWORD flags, CD3DTexture* target)
 
   CRenderBuffer* views[8];
   memset(views, 0, 8 * sizeof(CRenderBuffer*));
-  views[2] = image;
+  views[2] = &buf;
 
   // set future frames
   while (future < 2)
@@ -858,7 +874,7 @@ void CWinRenderer::RenderHW(DWORD flags, CD3DTexture* target)
     bool found = false;
     for (int i = 0; i < m_NumYV12Buffers; i++)
     {
-      if (m_renderBuffers[i].frameIdx == image->frameIdx + (future*2 + 2))
+      if (m_renderBuffers[i].frameIdx == buf.frameIdx + (future*2 + 2))
       {
         // a future frame may not be loaded yet
         if (m_renderBuffers[i].loaded || m_renderBuffers[i].UploadBuffer())
@@ -879,7 +895,7 @@ void CWinRenderer::RenderHW(DWORD flags, CD3DTexture* target)
     bool found = false;
     for (int i = 0; i < m_NumYV12Buffers; i++)
     {
-      if (m_renderBuffers[i].frameIdx == image->frameIdx - (past*2 + 2))
+      if (m_renderBuffers[i].frameIdx == buf.frameIdx - (past*2 + 2))
       {
         if (m_renderBuffers[i].loaded)
         {
@@ -923,7 +939,7 @@ void CWinRenderer::RenderHW(DWORD flags, CD3DTexture* target)
   }
   CWIN32Util::CropSource(src, dst, targetRect, m_renderOrientation);
 
-  m_processor->Render(src, dst, m_IntermediateTarget.Get(), views, flags, image->frameIdx, m_renderOrientation,
+  m_processor->Render(src, dst, m_IntermediateTarget.Get(), views, flags, buf.frameIdx, m_renderOrientation,
                       m_videoSettings.m_Contrast, m_videoSettings.m_Brightness);
 
   if (!m_bUseHQScaler)
@@ -937,6 +953,7 @@ void CWinRenderer::RenderHW(DWORD flags, CD3DTexture* target)
     }
 
     // render frame
+    m_outputShader->SetDisplayMetadata(buf.hasDisplayMetadata, buf.displayMetadata, buf.hasLightMetadata, buf.lightMetadata);
     m_outputShader->Render(m_IntermediateTarget, m_destWidth, m_destHeight, dst, dst, target);
     DX::Windowing().RestoreViewPort();
   }

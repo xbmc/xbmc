@@ -41,9 +41,22 @@ SamplerState DitherSampler : IMMUTABLE
   Filter   = MIN_MAG_MIP_POINT;
 };
 #endif
+#if defined(KODI_TONE_MAPPING)
+float g_toneP1;
+float3 g_coefsDst;
+
+float tonemap(float val)
+{
+  return val * (1 + val/(g_toneP1*g_toneP1))/(1 + val);
+}
+#endif
 
 float4 output4(float4 color, float2 uv)
 {
+#if defined(KODI_TONE_MAPPING)
+  float luma = dot(color.rgb, g_coefsDst);
+  color.rgb *= tonemap(luma) / luma;
+#endif
 #if defined(KODI_3DLUT)
   half3 scale = m_CLUTParams.x;
   half3 offset = m_CLUTParams.y;
@@ -61,7 +74,7 @@ float4 output4(float4 color, float2 uv)
 
 float4 output(float3 color, float2 uv)
 {
-    return output4(float4(color, 1.0), uv);
+  return output4(float4(color, 1.0), uv);
 }
 
 #if defined(KODI_OUTPUT_T)

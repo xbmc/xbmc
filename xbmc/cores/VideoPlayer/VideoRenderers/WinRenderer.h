@@ -106,6 +106,7 @@ protected:
   bool m_cmsOn;
   bool m_clutLoaded;
   bool m_useDithering;
+  bool m_toneMapping;
 
   unsigned int m_destWidth;
   unsigned int m_destHeight;
@@ -126,12 +127,12 @@ protected:
   ESCALINGMETHOD m_scalingMethodGui;
   CRenderBuffer m_renderBuffers[NUM_BUFFERS];
 
-  DXVA::CProcessorHD *m_processor;
   struct SwsContext *m_sw_scale_ctx;
-  CYUV2RGBShader* m_colorShader;
-  CConvolutionShader* m_scalerShader;
-  std::unique_ptr<COutputShader> m_outputShader;
   CRenderCapture* m_capture;
+  std::unique_ptr<DXVA::CProcessorHD> m_processor;
+  std::unique_ptr<CYUV2RGBShader> m_colorShader;
+  std::unique_ptr<CConvolutionShader> m_scalerShader;
+  std::unique_ptr<COutputShader> m_outputShader;
   std::unique_ptr<CColorManager> m_colorManager;
   Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_pCLUTView;
 

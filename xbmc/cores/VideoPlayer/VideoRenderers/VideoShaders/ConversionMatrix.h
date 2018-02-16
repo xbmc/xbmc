@@ -123,7 +123,8 @@ public:
   bool GetPrimMat(float (&mat)[3][3]);
   float GetGammaSrc();
   float GetGammaDst();
-  bool GetRGBYuvCoefs(AVColorSpace colspace, float (&coefs)[3]);
+
+  static bool GetRGBYuvCoefs(AVColorSpace colspace, float (&coefs)[3]);
   
 protected:
   void GenMat();

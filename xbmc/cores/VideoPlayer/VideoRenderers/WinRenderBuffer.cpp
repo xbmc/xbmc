@@ -344,6 +344,11 @@ void CRenderBuffer::AppendPicture(const VideoPicture & picture)
   full_range = picture.color_range == 1;
   bits = picture.colorBits;
 
+  hasDisplayMetadata = picture.hasDisplayMetadata;
+  displayMetadata = picture.displayMetadata;
+  hasLightMetadata = picture.hasLightMetadata;
+  lightMetadata = picture.lightMetadata;
+
   if (picture.videoBuffer->GetFormat() == AV_PIX_FMT_D3D11VA_VLD)
     QueueCopyBuffer();
   loaded = false;
