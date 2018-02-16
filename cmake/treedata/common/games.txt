@@ -6,6 +6,7 @@ xbmc/games/addons/savestates       games/addons/savestates
 xbmc/games/controllers             games/controllers
 xbmc/games/controllers/dialogs     games/controllers/dialogs
 xbmc/games/controllers/guicontrols games/controllers/guicontrols
+xbmc/games/controllers/types       games/controllers/types
 xbmc/games/controllers/windows     games/controllers/windows
 xbmc/games/dialogs                 games/dialogs
 xbmc/games/dialogs/osd             games/dialogs/osd

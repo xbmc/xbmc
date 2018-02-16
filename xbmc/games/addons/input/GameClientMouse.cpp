@@ -68,8 +68,9 @@ bool CGameClientMouse::OnMotion(const std::string& relpointer, int dx, int dy)
   game_input_event event;
 
   event.type            = GAME_INPUT_EVENT_RELATIVE_POINTER;
-  event.port            = -1; //! @todo Remove in port refactor
   event.controller_id   = m_controllerId.c_str();
+  event.port_type       = GAME_PORT_MOUSE;
+  event.port_address    = ""; // Not used
   event.feature_name    = relpointer.c_str();
   event.rel_pointer.x   = dx;
   event.rel_pointer.y   = dy;
@@ -99,8 +100,9 @@ bool CGameClientMouse::OnButtonPress(const std::string& button)
   game_input_event event;
 
   event.type                   = GAME_INPUT_EVENT_DIGITAL_BUTTON;
-  event.port                   = -1; //! @todo Remove in port refactor
   event.controller_id          = m_controllerId.c_str();
+  event.port_type              = GAME_PORT_MOUSE;
+  event.port_address           = ""; // Not used
   event.feature_name           = button.c_str();
   event.digital_button.pressed = true;
 
@@ -121,8 +123,9 @@ void CGameClientMouse::OnButtonRelease(const std::string& button)
   game_input_event event;
 
   event.type                   = GAME_INPUT_EVENT_DIGITAL_BUTTON;
-  event.port                   = -1; //! @todo Remove in port refactor
   event.controller_id          = m_controllerId.c_str();
+  event.port_type              = GAME_PORT_MOUSE;
+  event.port_address           = ""; // Not used
   event.feature_name           = button.c_str();
   event.digital_button.pressed = false;
 

@@ -29,5 +29,16 @@ namespace GAME
   class CController;
   using ControllerPtr = std::shared_ptr<CController>;
   using ControllerVector = std::vector<ControllerPtr>;
+
+  /*!
+   * \brief Type of input provided by a hardware or controller port
+   */
+  enum class PORT_TYPE
+  {
+    UNKNOWN,
+    KEYBOARD,
+    MOUSE,
+    CONTROLLER,
+  };
 }
 }

@@ -20,6 +20,9 @@
 
 #include "GameClientSubsystem.h"
 #include "GameClient.h"
+#include "GameClientProperties.h"
+#include "addons/kodi-addon-dev-kit/include/kodi/kodi_game_types.h"
+#include "games/addons/input/GameClientInput.h"
 
 using namespace KODI;
 using namespace GAME;
@@ -33,4 +36,30 @@ CGameClientSubsystem::CGameClientSubsystem(CGameClient &gameClient,
 {
 }
 
-CGameClientInput &CGameClientSubsystem::Input() const { return m_gameClient.Input(); }
+CGameClientSubsystem::~CGameClientSubsystem() = default;
+
+GameClientSubsystems CGameClientSubsystem::CreateSubsystems(CGameClient &gameClient, AddonInstance_Game &gameStruct, CCriticalSection &clientAccess)
+{
+  GameClientSubsystems subsystems = {};
+
+  subsystems.Input.reset(new CGameClientInput(gameClient, gameStruct, clientAccess));
+  subsystems.AddonProperties.reset(new CGameClientProperties(gameClient, gameStruct.props));
+
+  return subsystems;
+}
+
+void CGameClientSubsystem::DestroySubsystems(GameClientSubsystems &subsystems)
+{
+  subsystems.Input.reset();
+  subsystems.AddonProperties.reset();
+}
+
+CGameClientInput &CGameClientSubsystem::Input() const
+{
+  return m_gameClient.Input();
+}
+
+CGameClientProperties &CGameClientSubsystem::AddonProperties() const
+{
+  return m_gameClient.AddonProperties();
+}

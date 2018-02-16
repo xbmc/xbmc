@@ -34,14 +34,12 @@ namespace JOYSTICK
 
 namespace GAME
 {
-  class CGameClient;
-
   class CPort : public JOYSTICK::IInputHandler,
                 public IKeymapEnvironment
   {
   public:
-    CPort(JOYSTICK::IInputHandler* gameInput, CGameClient& gameClient);
-    ~CPort();
+    CPort(JOYSTICK::IInputHandler* gameInput);
+    ~CPort() override;
 
     void RegisterInput(JOYSTICK::IInputProvider *provider);
     void UnregisterInput(JOYSTICK::IInputProvider *provider);
@@ -70,7 +68,6 @@ namespace GAME
   private:
     // Construction parameters
     JOYSTICK::IInputHandler* const m_gameInput;
-    CGameClient& m_gameClient;
 
     // Handles input to Kodi
     std::unique_ptr<JOYSTICK::CKeymapHandling> m_appInput;

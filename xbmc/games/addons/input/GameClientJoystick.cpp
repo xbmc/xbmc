@@ -22,6 +22,7 @@
 #include "GameClientInput.h"
 #include "games/addons/GameClient.h"
 #include "games/controllers/Controller.h"
+#include "games/ports/Port.h"
 #include "input/joysticks/interfaces/IInputReceiver.h"
 #include "utils/log.h"
 
@@ -31,15 +32,28 @@ using namespace KODI;
 using namespace GAME;
 
 CGameClientJoystick::CGameClientJoystick(const CGameClient &gameClient,
-                                         int port,
+                                         const std::string &portAddress,
                                          const ControllerPtr& controller,
                                          const KodiToAddonFuncTable_Game &dllStruct) :
   m_gameClient(gameClient),
-  m_port(port),
+  m_portAddress(portAddress),
   m_controller(controller),
-  m_dllStruct(dllStruct)
+  m_dllStruct(dllStruct),
+  m_port(new CPort(this))
 {
   assert(m_controller.get() != NULL);
+}
+
+CGameClientJoystick::~CGameClientJoystick() = default;
+
+void CGameClientJoystick::RegisterInput(JOYSTICK::IInputProvider *inputProvider)
+{
+  m_port->RegisterInput(inputProvider);
+}
+
+void CGameClientJoystick::UnregisterInput(JOYSTICK::IInputProvider *inputProvider)
+{
+  m_port->UnregisterInput(inputProvider);
 }
 
 std::string CGameClientJoystick::ControllerID(void) const
@@ -75,8 +89,9 @@ bool CGameClientJoystick::OnButtonPress(const std::string& feature, bool bPresse
   std::string controllerId = m_controller->ID();
 
   event.type                   = GAME_INPUT_EVENT_DIGITAL_BUTTON;
-  event.port                   = m_port;
   event.controller_id          = controllerId.c_str();
+  event.port_type              = GAME_PORT_CONTROLLER;
+  event.port_address           = m_portAddress.c_str();
   event.feature_name           = feature.c_str();
   event.digital_button.pressed = bPressed;
 
@@ -101,8 +116,9 @@ bool CGameClientJoystick::OnButtonMotion(const std::string& feature, float magni
   std::string controllerId = m_controller->ID();
 
   event.type                    = GAME_INPUT_EVENT_ANALOG_BUTTON;
-  event.port                    = m_port;
   event.controller_id           = controllerId.c_str();
+  event.port_type               = GAME_PORT_CONTROLLER;
+  event.port_address            = m_portAddress.c_str();
   event.feature_name            = feature.c_str();
   event.analog_button.magnitude = magnitude;
 
@@ -127,8 +143,9 @@ bool CGameClientJoystick::OnAnalogStickMotion(const std::string& feature, float 
   std::string controllerId = m_controller->ID();
 
   event.type           = GAME_INPUT_EVENT_ANALOG_STICK;
-  event.port           = m_port;
   event.controller_id  = controllerId.c_str();
+  event.port_type      = GAME_PORT_CONTROLLER;
+  event.port_address   = m_portAddress.c_str();
   event.feature_name   = feature.c_str();
   event.analog_stick.x = x;
   event.analog_stick.y = y;
@@ -154,8 +171,9 @@ bool CGameClientJoystick::OnAccelerometerMotion(const std::string& feature, floa
   std::string controllerId = m_controller->ID();
 
   event.type            = GAME_INPUT_EVENT_ACCELEROMETER;
-  event.port            = m_port;
   event.controller_id   = controllerId.c_str();
+  event.port_type       = GAME_PORT_CONTROLLER;
+  event.port_address    = m_portAddress.c_str();
   event.feature_name    = feature.c_str();
   event.accelerometer.x = x;
   event.accelerometer.y = y;
@@ -182,8 +200,9 @@ bool CGameClientJoystick::OnWheelMotion(const std::string& feature, float positi
   std::string controllerId = m_controller->ID();
 
   event.type                    = GAME_INPUT_EVENT_AXIS;
-  event.port                    = m_port;
   event.controller_id           = controllerId.c_str();
+  event.port_type               = GAME_PORT_CONTROLLER;
+  event.port_address            = m_portAddress.c_str();
   event.feature_name            = feature.c_str();
   event.axis.position           = position;
 
@@ -209,8 +228,9 @@ bool CGameClientJoystick::OnThrottleMotion(const std::string& feature, float pos
   std::string controllerId = m_controller->ID();
 
   event.type                    = GAME_INPUT_EVENT_AXIS;
-  event.port                    = m_port;
   event.controller_id           = controllerId.c_str();
+  event.port_type               = GAME_PORT_CONTROLLER;
+  event.port_address            = m_portAddress.c_str();
   event.feature_name            = feature.c_str();
   event.axis.position           = position;
 

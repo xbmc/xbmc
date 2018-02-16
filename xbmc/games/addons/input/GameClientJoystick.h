@@ -22,13 +22,21 @@
 #include "games/controllers/ControllerTypes.h"
 #include "input/joysticks/interfaces/IInputHandler.h"
 
+#include <memory>
+
 struct KodiToAddonFuncTable_Game;
 
 namespace KODI
 {
+namespace JOYSTICK
+{
+  class IInputProvider;
+}
+
 namespace GAME
 {
   class CGameClient;
+  class CPort;
 
   /*!
    * \ingroup games
@@ -47,11 +55,14 @@ namespace GAME
      * \param dllStruct The emulator or game to which the events are sent.
      */
     CGameClientJoystick(const CGameClient &addon,
-                        int port,
+                        const std::string &portAddress,
                         const ControllerPtr& controller,
                         const KodiToAddonFuncTable_Game &dllStruct);
 
-    virtual ~CGameClientJoystick() = default;
+    ~CGameClientJoystick() override;
+
+    void RegisterInput(JOYSTICK::IInputProvider *inputProvider);
+    void UnregisterInput(JOYSTICK::IInputProvider *inputProvider);
 
     // Implementation of IInputHandler
     virtual std::string ControllerID(void) const override;
@@ -68,10 +79,14 @@ namespace GAME
     bool SetRumble(const std::string& feature, float magnitude);
 
   private:
+    // Construction parameters
     const CGameClient &m_gameClient;
-    const int                 m_port;
+    const std::string m_portAddress;
     const ControllerPtr       m_controller;
     const KodiToAddonFuncTable_Game &m_dllStruct;
+
+    // Input parameters
+    std::unique_ptr<CPort> m_port;
   };
 }
 }

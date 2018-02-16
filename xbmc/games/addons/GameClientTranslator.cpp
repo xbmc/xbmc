@@ -166,3 +166,17 @@ const char* CGameClientTranslator::TranslateRegion(GAME_REGION region)
   }
   return "Unknown";
 }
+
+PORT_TYPE CGameClientTranslator::TranslatePortType(GAME_PORT_TYPE portType)
+{
+  switch (portType)
+  {
+    case GAME_PORT_KEYBOARD:    return PORT_TYPE::KEYBOARD;
+    case GAME_PORT_MOUSE:       return PORT_TYPE::MOUSE;
+    case GAME_PORT_CONTROLLER:  return PORT_TYPE::CONTROLLER;
+    default:
+      break;
+  }
+
+  return PORT_TYPE::UNKNOWN;
+}

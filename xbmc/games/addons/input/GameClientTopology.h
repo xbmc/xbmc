@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2015-2017 Team Kodi
+ *      Copyright (C) 2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,41 +19,31 @@
  */
 #pragma once
 
-#include "PortTypes.h"
-#include "peripherals/PeripheralTypes.h"
-#include "utils/Observer.h"
+#include "games/controllers/types/ControllerTree.h"
+#include "games/GameTypes.h"
 
-#include <map>
-
-namespace PERIPHERALS
-{
-  class CPeripherals;
-}
+#include <memory>
 
 namespace KODI
 {
 namespace GAME
 {
-  class CPortManager;
-
-  class CPortMapper : public Observer
+  class CGameClientTopology
   {
   public:
-    CPortMapper(PERIPHERALS::CPeripherals& peripheralManager, CPortManager& portManager);
+    CGameClientTopology(GameClientPortVec ports);
 
-    virtual ~CPortMapper();
-
-    virtual void Notify(const Observable& obs, const ObservableMessage msg) override;
+    CControllerTree GetControllerTree() const;
 
   private:
-    void ProcessPeripherals();
+    static CControllerTree GetControllerTree(const GameClientPortVec &ports);
+    static CControllerPortNode GetPortNode(const GameClientPortPtr &port, const std::string &address);
+    static CControllerNode GetControllerNode(const GameClientDevicePtr &device, const std::string &portAddress);
 
-    // Construction parameters
-    PERIPHERALS::CPeripherals &m_peripheralManager;
-    CPortManager &m_portManager;
+    // Utility function
+    static std::string MakeAddress(const std::string &baseAddress, const std::string &nodeId);
 
-    // Port paremters
-    std::map<PERIPHERALS::PeripheralPtr, PortPtr> m_portMap;
+    GameClientPortVec m_ports;
   };
 }
 }
