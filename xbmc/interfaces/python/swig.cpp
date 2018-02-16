@@ -176,6 +176,14 @@ namespace PythonBindings
     if (exc_type == NULL && exc_value == NULL && exc_traceback == NULL)
       return false;
 
+    // See https://docs.python.org/3/c-api/exceptions.html#c.PyErr_NormalizeException
+    PyErr_NormalizeException(&exc_type, &exc_value, &exc_traceback);
+#if PY_MAJOR_VERSION > 2
+    if (exc_traceback != NULL) {
+      PyException_SetTraceback(exc_value, exc_traceback);
+    }
+#endif
+
     exceptionType.clear();
     exceptionValue.clear();
     exceptionTraceback.clear();
