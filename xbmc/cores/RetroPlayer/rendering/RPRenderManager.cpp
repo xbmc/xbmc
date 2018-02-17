@@ -19,12 +19,12 @@
  */
 
 #include "RPRenderManager.h"
-#include "GUIGameSettings.h"
-#include "GUIRenderTargetFactory.h"
-#include "IGUIRenderSettings.h"
 #include "RenderContext.h"
 #include "RenderSettings.h"
 #include "RenderTranslator.h"
+#include "cores/RetroPlayer/guibridge/GUIGameSettings.h"
+#include "cores/RetroPlayer/guibridge/GUIRenderTargetFactory.h"
+#include "cores/RetroPlayer/guibridge/IGUIRenderSettings.h"
 #include "cores/RetroPlayer/process/IRenderBuffer.h"
 #include "cores/RetroPlayer/process/IRenderBufferPool.h"
 #include "cores/RetroPlayer/process/RenderBufferManager.h"

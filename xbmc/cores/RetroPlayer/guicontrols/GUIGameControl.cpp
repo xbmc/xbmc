@@ -20,8 +20,8 @@
 
 #include "GUIGameControl.h"
 #include "GUIRenderSettings.h"
-#include "cores/RetroPlayer/rendering/GUIGameRenderManager.h"
-#include "cores/RetroPlayer/rendering/GUIRenderHandle.h"
+#include "cores/RetroPlayer/guibridge/GUIGameRenderManager.h"
+#include "cores/RetroPlayer/guibridge/GUIRenderHandle.h"
 #include "cores/RetroPlayer/rendering/RenderGeometry.h"
 #include "cores/RetroPlayer/rendering/RenderSettings.h"
 #include "cores/RetroPlayer/rendering/RenderVideoSettings.h"

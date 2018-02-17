@@ -151,7 +151,7 @@
 #include "addons/interfaces/AddonInterfaces.h"
 
 /* Game related include files */
-#include "cores/RetroPlayer/windows/GameWindowFullScreen.h"
+#include "cores/RetroPlayer/guiwindows/GameWindowFullScreen.h"
 #include "games/controllers/windows/GUIControllerWindow.h"
 #include "games/windows/GUIWindowGames.h"
 #include "games/dialogs/osd/DialogGameOSD.h"

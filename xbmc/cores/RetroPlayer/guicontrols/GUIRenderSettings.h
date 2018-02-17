@@ -19,7 +19,7 @@
  */
 #pragma once
 
-#include "cores/RetroPlayer/rendering/IGUIRenderSettings.h"
+#include "cores/RetroPlayer/guibridge/IGUIRenderSettings.h"
 #include "cores/RetroPlayer/rendering/RenderGeometry.h"
 #include "cores/RetroPlayer/rendering/RenderSettings.h"
 #include "cores/IPlayer.h"

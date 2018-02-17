@@ -19,9 +19,9 @@
  */
 #pragma once
 
-#include "IRenderCallback.h"
 #include "IRenderManager.h"
 #include "RenderVideoSettings.h"
+#include "cores/RetroPlayer/guibridge/IRenderCallback.h"
 #include "threads/CriticalSection.h"
 
 extern "C" {

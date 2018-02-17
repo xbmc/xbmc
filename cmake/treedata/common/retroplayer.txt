@@ -1,7 +1,8 @@
 xbmc/cores/RetroPlayer                                          cores/RetroPlayer
+xbmc/cores/RetroPlayer/guibridge                                cores/RetroPlayer/guibridge
 xbmc/cores/RetroPlayer/guicontrols                              cores/RetroPlayer/guicontrols
+xbmc/cores/RetroPlayer/guiwindows                               cores/RetroPlayer/guiwindows
 xbmc/cores/RetroPlayer/process                                  cores/RetroPlayer/process
 xbmc/cores/RetroPlayer/rendering                                cores/RetroPlayer/rendering
 xbmc/cores/RetroPlayer/rendering/VideoRenderers                 cores/RetroPlayer/rendering/VideoRenderers
 xbmc/cores/RetroPlayer/rendering/VideoShaders                   cores/RetroPlayer/rendering/VideoShaders
-xbmc/cores/RetroPlayer/windows                                  cores/RetroPlayer/windows

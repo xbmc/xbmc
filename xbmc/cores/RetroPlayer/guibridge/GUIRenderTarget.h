@@ -29,6 +29,12 @@ namespace RETRO
 
   // --- CGUIRenderTarget ------------------------------------------------------
 
+  /*!
+   * \brief A target of rendering commands
+   *
+   * This class abstracts the destination of rendering commands. As a result,
+   * controls and windows are given a unified API.
+   */
   class CGUIRenderTarget
   {
   public:
@@ -36,12 +42,24 @@ namespace RETRO
 
     virtual ~CGUIRenderTarget() = default;
 
+    /*!
+     * \brief Draw the frame to the rendering area
+     */
     virtual void Render() = 0;
 
+    /*!
+     * \brief Draw the frame to the rendering area differently somehow
+     */
     virtual void RenderEx() = 0;
 
+    /*!
+     * \brief Clear the background of the rendering area
+     */
     virtual void ClearBackground() { } //! @todo
 
+    /*!
+     * \brief Check of the rendering area is dirty
+     */
     virtual bool IsDirty() { return true; } //! @todo
 
   protected:

@@ -33,12 +33,14 @@ CGUIGameRenderManager::~CGUIGameRenderManager() = default;
 
 void CGUIGameRenderManager::RegisterPlayer(CGUIRenderTargetFactory *factory, IRenderCallback *callback)
 {
+  // Set factory
   {
     CSingleLock lock(m_targetMutex);
     m_factory = factory;
     UpdateRenderTargets();
   }
 
+  // Set callback
   {
     CSingleLock lock(m_callbackMutex);
     m_callback = callback;
@@ -47,11 +49,13 @@ void CGUIGameRenderManager::RegisterPlayer(CGUIRenderTargetFactory *factory, IRe
 
 void CGUIGameRenderManager::UnregisterPlayer()
 {
+  // Reset callback
   {
     CSingleLock lock(m_callbackMutex);
     m_callback = nullptr;
   }
 
+  // Reset factory
   {
     CSingleLock lock(m_targetMutex);
     m_factory = nullptr;
@@ -63,6 +67,7 @@ std::shared_ptr<CGUIRenderHandle> CGUIGameRenderManager::RegisterControl(CGUIGam
 {
   CSingleLock lock(m_targetMutex);
 
+  // Create handle for game control
   std::shared_ptr<CGUIRenderHandle> renderHandle(new CGUIRenderControlHandle(*this, control));
 
   std::shared_ptr<CGUIRenderTarget> renderTarget;
@@ -78,6 +83,7 @@ std::shared_ptr<CGUIRenderHandle> CGUIGameRenderManager::RegisterWindow(CGameWin
 {
   CSingleLock lock(m_targetMutex);
 
+  // Create handle for game window
   std::shared_ptr<CGUIRenderHandle> renderHandle(new CGUIRenderFullScreenHandle(*this, window));
 
   std::shared_ptr<CGUIRenderTarget> renderTarget;

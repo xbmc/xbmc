@@ -19,7 +19,7 @@
  */
 #pragma once
 
-#include "RenderSettings.h"
+#include "cores/RetroPlayer/rendering/RenderSettings.h"
 
 namespace KODI
 {

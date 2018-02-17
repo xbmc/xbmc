@@ -26,7 +26,7 @@
 #include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
 #include "cores/DataCacheCore.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
-#include "cores/RetroPlayer/rendering/GUIGameRenderManager.h"
+#include "cores/RetroPlayer/guibridge/GUIGameRenderManager.h"
 #include "favourites/FavouritesService.h"
 #include "games/controllers/ControllerManager.h"
 #include "games/GameServices.h"

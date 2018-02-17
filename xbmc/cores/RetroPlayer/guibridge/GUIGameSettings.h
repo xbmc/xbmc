@@ -20,7 +20,7 @@
 #pragma once
 
 #include "IGUIRenderSettings.h"
-#include "RenderSettings.h"
+#include "cores/RetroPlayer/rendering/RenderSettings.h"
 #include "threads/CriticalSection.h"
 #include "utils/Observer.h"
 
