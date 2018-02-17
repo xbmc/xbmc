@@ -32,20 +32,5 @@
 #define DECLARE_UNUSED(a,b) a b;
 #endif
 
-/****************************************
- * Additional platform specific includes
- ****************************************/
-
-#if defined(TARGET_WINDOWS)
-#include <windows.h>
-#endif
-
-#if defined(TARGET_POSIX)
-#include <time.h>
-#include <sys/time.h>
-#include <sys/types.h>
-#include <errno.h>
-#endif
-
 #define SAFE_DELETE(p)       do { delete (p);     (p)=NULL; } while (0)
 #define SAFE_RELEASE(p)      do { if(p) { (p)->Release(); (p)=NULL; } } while (0)
