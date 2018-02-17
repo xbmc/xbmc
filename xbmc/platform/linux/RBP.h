@@ -29,10 +29,6 @@
 #define HAVE_VMCS_CONFIG
 #endif
 
-#if !defined(TARGET_WINDOWS)
-#define DECLARE_UNUSED(a,b) a __attribute__((unused)) b;
-#endif
-
 #include "DllBCM.h"
 #include "OMXCore.h"
 #include "xbmc/utils/CPUInfo.h"
