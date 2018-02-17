@@ -54,6 +54,7 @@
 #include "platform/android/activity/AndroidFeatures.h"
 #include "platform/android/activity/JNIXBMCSurfaceTextureOnFrameAvailableListener.h"
 #include "settings/Settings.h"
+#include "system.h"
 
 #include "utils/TimeUtils.h"
 

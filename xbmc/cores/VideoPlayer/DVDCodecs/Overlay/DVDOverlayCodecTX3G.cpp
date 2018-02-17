@@ -29,6 +29,7 @@
 #include "utils/StringUtils.h"
 #include "utils/auto_buffer.h"
 #include "utils/RegExp.h"
+#include "system.h"
 
 #include <cstddef>
 

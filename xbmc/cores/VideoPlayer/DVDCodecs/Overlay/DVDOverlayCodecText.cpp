@@ -25,6 +25,7 @@
 #include "cores/VideoPlayer/Interface/Addon/DemuxPacket.h"
 #include "utils/log.h"
 #include "cores/VideoPlayer/DVDSubtitles/DVDSubtitleTagSami.h"
+#include "system.h"
 
 CDVDOverlayCodecText::CDVDOverlayCodecText() : CDVDOverlayCodec("Text Subtitle Decoder")
 {

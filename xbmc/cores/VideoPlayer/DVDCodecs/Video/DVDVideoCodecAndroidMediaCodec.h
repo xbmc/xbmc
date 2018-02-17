@@ -20,8 +20,6 @@
  *
  */
 
-#include "system.h"
-
 #include <deque>
 #include <vector>
 #include <memory>
