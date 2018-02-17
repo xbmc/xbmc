@@ -2153,7 +2153,7 @@ CDVDVideoCodec::VCReturn CAMLCodec::GetPicture(VideoPicture *pVideoPicture)
     return CDVDVideoCodec::VC_ERROR;
 
   float timesize(GetTimeSize());
-  if(!m_drain && timesize < 1.0)
+  if(!m_drain && timesize < 0.2)
     return CDVDVideoCodec::VC_BUFFER;
 
   if (DequeueBuffer() == 0)
@@ -2184,7 +2184,11 @@ CDVDVideoCodec::VCReturn CAMLCodec::GetPicture(VideoPicture *pVideoPicture)
   else if (m_drain)
     return CDVDVideoCodec::VC_EOF;
   else
+  {
+    if (timesize < 1.0)
+      return CDVDVideoCodec::VC_BUFFER;
     usleep(5000);
+  }
 
   return CDVDVideoCodec::VC_NONE;
 }
