@@ -23,7 +23,7 @@
 #include <string.h>
 #include <sys/wait.h>
 #include "system.h"
-#include "PlatformInclude.h"
+#include "PlatformDefs.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/StringUtils.h"
 #include "../xbmc/utils/log.h"
