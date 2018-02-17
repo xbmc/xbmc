@@ -19,6 +19,7 @@
  */
 #pragma once
 
+#include "cores/RetroPlayer/guibridge/IGameCallback.h"
 #include "cores/IPlayer.h"
 #include "games/GameTypes.h"
 #include "guilib/DispResource.h"
@@ -41,7 +42,7 @@ namespace RETRO
   class CRPRenderManager;
   class CRPStreamManager;
 
-  class CRetroPlayer : public IPlayer, public IRenderLoop
+  class CRetroPlayer : public IPlayer, public IRenderLoop, public IGameCallback
   {
   public:
     explicit CRetroPlayer(IPlayerCallback& callback);
@@ -128,6 +129,9 @@ namespace RETRO
     //void RenderCaptureRelease(unsigned int captureId) override { }
     //void RenderCapture(unsigned int captureId, unsigned int width, unsigned int height, int flags) override { }
     //bool RenderCaptureGetPixels(unsigned int captureId, unsigned int millis, uint8_t *buffer, unsigned int size) override { return false; }
+
+    // Implementation of IGameCallback
+    std::string GameClientID() const override;
 
   private:
     void SetSpeedInternal(double speed);

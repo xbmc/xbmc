@@ -537,6 +537,14 @@ bool CRetroPlayer::IsRenderingVideo()
   return true;
 }
 
+std::string CRetroPlayer::GameClientID() const
+{
+  if (m_gameClient)
+    return m_gameClient->ID();
+
+  return "";
+}
+
 void CRetroPlayer::SetSpeedInternal(double speed)
 {
   OnSpeedChange(speed);
@@ -568,7 +576,8 @@ void CRetroPlayer::CloseOSD()
 void CRetroPlayer::RegisterWindowCallbacks()
 {
   m_gameServices.GameRenderManager().RegisterPlayer(m_renderManager->GetGUIRenderTargetFactory(),
-                                                    m_renderManager.get());
+                                                    m_renderManager.get(),
+                                                    this);
 }
 
 void CRetroPlayer::UnregisterWindowCallbacks()

@@ -17312,7 +17312,13 @@ msgctxt "#35225"
 msgid "Video filter"
 msgstr ""
 
-#empty strings from id 35226 to 35249
+#. Label of button in the in-game menu for advanced settings
+#: addons/skin.estuary/xml/Custom_1101_SettingsList.xml
+msgctxt "#35226"
+msgid "Advanced settings"
+msgstr ""
+
+#empty strings from id 35227 to 35249
 
 #: xbmc/windows/GUIMediaWindow.cpp
 msgctxt "#35250"
