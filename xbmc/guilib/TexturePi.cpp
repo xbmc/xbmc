@@ -18,7 +18,6 @@
  *
  */
 
-#include "system.h"
 #include "Texture.h"
 #include "utils/log.h"
 #include "utils/GLUtils.h"

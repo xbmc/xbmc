@@ -19,7 +19,6 @@
  */
 
 #include "platform/Filesystem.h"
-#include "system.h"
 #include "filesystem/SpecialProtocol.h"
 #include "utils/URIUtils.h"
 
@@ -34,6 +33,8 @@
 
 #include <cstdlib>
 #include <limits.h>
+#include <string.h>
+#include <unistd.h>
 
 namespace KODI
 {

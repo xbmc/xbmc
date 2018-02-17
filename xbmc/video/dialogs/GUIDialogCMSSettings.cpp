@@ -18,8 +18,6 @@
  *
  */
 
-#include "system.h"
-
 #include "cores/VideoPlayer/VideoRenderers/ColorManager.h"
 #include "FileItem.h"
 #include "GUIDialogCMSSettings.h"

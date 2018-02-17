@@ -35,7 +35,6 @@
 #include "filesystem/File.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
-#include "system.h"
 #include "threads/SystemClock.h"
 #include "URL.h"
 #include "utils/log.h"

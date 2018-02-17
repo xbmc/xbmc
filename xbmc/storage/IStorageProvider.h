@@ -22,7 +22,6 @@
 #include <string>
 #include <vector>
 
-#include "system.h"
 #include "MediaSource.h"
 #ifdef HAS_DVD_DRIVE
 #include "cdioSupport.h"

@@ -18,8 +18,6 @@
  *
  */
 
-#include "system.h"
-
 #include "GLUtils.h"
 #include "log.h"
 #include "ServiceBroker.h"

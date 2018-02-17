@@ -22,7 +22,6 @@
 #include <signal.h>
 #include <stdio.h>
 
-#include "system.h"
 #include "settings/AdvancedSettings.h"
 #include "Application.h"
 #include "messaging/ApplicationMessenger.h"

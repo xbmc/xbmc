@@ -18,7 +18,6 @@
  *
  */
 
-#include "system.h"
 #include "GUIListItemLayout.h"
 #include "FileItem.h"
 #include "GUIControlFactory.h"

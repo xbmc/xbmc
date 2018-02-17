@@ -18,8 +18,6 @@
  *
  */
 
-#include "system.h"
-
 #include "utils/log.h"
 #include "VideoSyncOsx.h"
 #include "ServiceBroker.h"

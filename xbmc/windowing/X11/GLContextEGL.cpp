@@ -17,7 +17,6 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#include "system.h"
 
 // always define GL_GLEXT_PROTOTYPES before include gl headers
 #if !defined(GL_GLEXT_PROTOTYPES)

@@ -19,7 +19,6 @@
  */
 
 #include "threads/SystemClock.h"
-#include "system.h"
 
 #include "EventClient.h"
 #include "EventPacket.h"

@@ -33,7 +33,6 @@
 #include "settings/lib/SettingsManager.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
-#include "system.h"
 #include "utils/log.h"
 #include "utils/Variant.h"
 #include "video/VideoDatabase.h"

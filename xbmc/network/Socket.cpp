@@ -20,8 +20,6 @@
  *
  */
 
-#include "system.h"
-
 #include "Socket.h"
 #include "utils/log.h"
 #include <vector>

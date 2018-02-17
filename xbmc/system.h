@@ -38,7 +38,6 @@
 
 #if defined(TARGET_WINDOWS)
 #include <windows.h>
-#include "PlatformInclude.h"
 #endif
 
 #if defined(TARGET_POSIX)
@@ -46,15 +45,8 @@
 #include <sys/time.h>
 #include <sys/types.h>
 #include <errno.h>
-#include "PlatformInclude.h"
 #endif
 
 #define SAFE_DELETE(p)       do { delete (p);     (p)=NULL; } while (0)
 #define SAFE_DELETE_ARRAY(p) do { delete[] (p);   (p)=NULL; } while (0)
 #define SAFE_RELEASE(p)      do { if(p) { (p)->Release(); (p)=NULL; } } while (0)
-
-// Useful pixel colour manipulation macros
-#define GET_A(color)            ((color >> 24) & 0xFF)
-#define GET_R(color)            ((color >> 16) & 0xFF)
-#define GET_G(color)            ((color >>  8) & 0xFF)
-#define GET_B(color)            ((color >>  0) & 0xFF)

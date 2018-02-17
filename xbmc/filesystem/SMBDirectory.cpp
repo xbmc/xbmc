@@ -29,8 +29,6 @@
 * debugging is set to a max of 10 for release builds (see local.h)
 */
 
-#include "system.h"
-
 #include "SMBDirectory.h"
 #include "Util.h"
 #include "guilib/LocalizeStrings.h"

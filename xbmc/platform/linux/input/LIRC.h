@@ -23,7 +23,6 @@
 #include <string>
 #include <atomic>
 
-#include "system.h"
 #include "input/remote/IRemoteControl.h"
 #include "threads/Thread.h"
 #include "threads/Event.h"

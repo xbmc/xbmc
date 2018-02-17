@@ -19,7 +19,6 @@
  */
 
 #include "network/Network.h"
-#include "system.h"
 #include "CompileInfo.h"
 #include "GUIInfoManager.h"
 #include "view/GUIViewState.h"

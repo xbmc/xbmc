@@ -23,7 +23,6 @@
 
 #include <string>
 
-#include "system.h"
 #ifdef TARGET_POSIX
 #include "PlatformDefs.h"
 #endif

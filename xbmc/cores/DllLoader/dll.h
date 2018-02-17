@@ -1,6 +1,6 @@
 #pragma once
 
-#include "system.h"
+#include "PlatformDefs.h"
 
 /*
  *      Copyright (C) 2005-2015 Team Kodi

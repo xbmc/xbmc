@@ -20,8 +20,6 @@
 
 #include "GUIWindowLoginScreen.h"
 
-#include "system.h"
-
 #include "Application.h"
 #include "ContextMenuManager.h"
 #include "FileItem.h"

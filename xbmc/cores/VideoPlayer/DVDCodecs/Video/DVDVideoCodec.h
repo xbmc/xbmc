@@ -20,7 +20,6 @@
  *
  */
 
-#include "system.h"
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
 #include "cores/VideoPlayer/Process/VideoBuffer.h"
 #include "cores/VideoPlayer/Interface/Addon/DemuxPacket.h"

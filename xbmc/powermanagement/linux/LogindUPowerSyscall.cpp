@@ -20,9 +20,11 @@
  *
  */
 
-#include "system.h"
 #include "LogindUPowerSyscall.h"
 #include "utils/log.h"
+
+#include <string.h>
+#include <unistd.h>
 
 // logind DBus interface specification:
 // http://www.freedesktop.org/wiki/Software/Logind/logind

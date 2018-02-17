@@ -21,7 +21,6 @@
 #include <limits.h>
 
 #include "threads/SystemClock.h"
-#include "system.h"
 #include "SystemInfo.h"
 #ifndef TARGET_POSIX
 #include <conio.h>

@@ -22,8 +22,6 @@
 #include <string>
 #include <vector>
 
-#include "system.h"
-
 #include "settings/lib/ISettingCallback.h"
 
 enum EncMode { ENC_NONE = 0, ENC_WEP = 1, ENC_WPA = 2, ENC_WPA2 = 3 };

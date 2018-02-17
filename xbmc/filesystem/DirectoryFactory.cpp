@@ -20,7 +20,6 @@
 
 #include <stdlib.h>
 #include "network/Network.h"
-#include "system.h"
 #include "DirectoryFactory.h"
 #include "SpecialProtocolDirectory.h"
 #include "MultiPathDirectory.h"

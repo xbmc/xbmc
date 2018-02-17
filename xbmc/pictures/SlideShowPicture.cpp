@@ -19,7 +19,6 @@
  */
 
 #include "SlideShowPicture.h"
-#include "system.h"
 #include "ServiceBroker.h"
 #include "guilib/GraphicContext.h"
 #include "guilib/Texture.h"

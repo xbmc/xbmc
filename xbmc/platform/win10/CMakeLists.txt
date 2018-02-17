@@ -22,7 +22,6 @@ set(HEADERS input/RemoteControlXbox.h
             ../win32/netdb.h
             ../win32/pch.h
             ../win32/PlatformDefs.h
-            ../win32/PlatformInclude.h
             ../win32/resource.h
             ../win32/unistd.h
             ../win32/WIN32Util.h)

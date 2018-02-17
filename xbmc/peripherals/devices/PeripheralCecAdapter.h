@@ -19,7 +19,6 @@
  *
  */
 
-#include "system.h"
 
 #if !defined(HAVE_LIBCEC)
 #include "Peripheral.h"

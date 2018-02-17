@@ -35,7 +35,6 @@
 #include "RepositoryUpdater.h"
 #include "settings/Settings.h"
 #include "ServiceBroker.h"
-#include "system.h"
 #include "URL.h"
 #include "Util.h"
 #include "utils/log.h"

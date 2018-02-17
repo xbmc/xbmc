@@ -18,7 +18,6 @@
  *
  */
 
-#include "system.h"
 #include "ServiceBroker.h"
 #include "Texture.h"
 #include "rendering/RenderSystem.h"

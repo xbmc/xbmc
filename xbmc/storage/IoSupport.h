@@ -27,7 +27,7 @@
 #if !defined(AFX_IOSUPPORT_H__F084A488_BD6E_49D5_8CD3_0BE62149DB40__INCLUDED_)
 #define AFX_IOSUPPORT_H__F084A488_BD6E_49D5_8CD3_0BE62149DB40__INCLUDED_
 
-#include "system.h" // for Win32 types
+#include "PlatformDefs.h" // for Win32 types
 
 #pragma once
 

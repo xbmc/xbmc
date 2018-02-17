@@ -18,7 +18,6 @@
  *
  */
 
-#include "system.h"
 #include "ConsoleUPowerSyscall.h"
 #include "utils/log.h"
 

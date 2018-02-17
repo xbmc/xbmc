@@ -24,7 +24,6 @@
 #include <algorithm>
 
 #include "utils/log.h"
-#include "system.h" // for GetLastError()
 #include "network/WakeOnAccess.h"
 #include "Util.h"
 #include "utils/StringUtils.h"

@@ -20,8 +20,6 @@
 
 #include "OpticalBuiltins.h"
 
-#include "system.h"
-
 #ifdef HAS_DVD_DRIVE
 #include "storage/MediaManager.h"
 #endif

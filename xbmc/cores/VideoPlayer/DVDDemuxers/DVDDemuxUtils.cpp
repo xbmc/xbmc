@@ -22,7 +22,6 @@
 #include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
 #include "cores/VideoPlayer/Interface/Addon/DemuxCrypto.h"
 #include "utils/log.h"
-#include "system.h"
 
 #ifdef TARGET_POSIX
 #include "platform/linux/XMemUtils.h"

@@ -21,7 +21,6 @@
 #include "TextureBundleXBT.h"
 
 #include "ServiceBroker.h"
-#include "system.h"
 #include "Texture.h"
 #include "GraphicContext.h"
 #include "utils/log.h"

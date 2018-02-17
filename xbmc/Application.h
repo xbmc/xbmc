@@ -20,7 +20,6 @@
  *
  */
 
-#include "system.h" // for HAS_DVD_DRIVE et. al.
 #include "XBApplicationEx.h"
 
 #include "addons/AddonSystemSettings.h"

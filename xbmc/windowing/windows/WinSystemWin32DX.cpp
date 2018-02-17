@@ -25,6 +25,7 @@
 #include "utils/log.h"
 #include "WinSystemWin32DX.h"
 #include "platform/win32/CharsetConverter.h"
+#include "system.h"
 
 #ifndef _M_X64
 #pragma comment(lib, "EasyHook32.lib")

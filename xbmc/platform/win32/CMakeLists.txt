@@ -17,7 +17,6 @@ set(HEADERS CharsetConverter.h
             netdb.h
             pch.h
             PlatformDefs.h
-            PlatformInclude.h
             resource.h
             unistd.h
             WIN32Util.h

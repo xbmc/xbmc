@@ -18,8 +18,6 @@
  *
  */
 
-#include "system.h"
-
 #include "utils/log.h"
 #include "VideoSyncIos.h"
 #include "utils/MathUtils.h"

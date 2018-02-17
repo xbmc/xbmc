@@ -36,7 +36,6 @@
 #include "settings/lib/Setting.h"
 #include "settings/Settings.h"
 #include "settings/SettingUtils.h"
-#include "system.h"
 #include "utils/LangCodeExpander.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"

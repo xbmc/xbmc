@@ -19,8 +19,6 @@
  *
  */
 
-#include "system.h"
-
 #if defined(TARGET_DARWIN_OSX)
 #include <list>
 #include <vector>

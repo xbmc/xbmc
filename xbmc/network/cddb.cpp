@@ -18,8 +18,6 @@
  *
  */
 
-#include "system.h"
-
 #include <taglib/id3v1genres.h>
 #include "cddb.h"
 #include "CompileInfo.h"

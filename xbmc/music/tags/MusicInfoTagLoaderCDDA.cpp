@@ -18,7 +18,6 @@
  *
  */
 
-#include "system.h" // for HAS_DVD_DRIVE
 #include "MusicInfoTagLoaderCDDA.h"
 #include "network/cddb.h"
 #include "MusicInfoTag.h"

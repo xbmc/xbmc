@@ -53,7 +53,6 @@
 #include "settings/Settings.h"
 #include "Song.h"
 #include "storage/MediaManager.h"
-#include "system.h"
 #include "TextureCache.h"
 #include "threads/SystemClock.h"
 #include "URL.h"

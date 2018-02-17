@@ -23,7 +23,6 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#include "system.h"
 #include "ShoutcastFile.h"
 #include "guilib/GUIWindowManager.h"
 #include "URL.h"

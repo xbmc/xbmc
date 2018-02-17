@@ -23,8 +23,6 @@
 #  include <windows.h>
 #endif
 
-#include "system.h"
-
 #ifdef HAS_WEB_SERVER
 %}
 

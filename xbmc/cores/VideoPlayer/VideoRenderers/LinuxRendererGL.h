@@ -20,8 +20,6 @@
 
 #pragma once
 
-#include "system.h"
-
 #include <vector>
 
 #include "system_gl.h"

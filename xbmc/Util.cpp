@@ -20,7 +20,6 @@
 
 #include "network/Network.h"
 #include "threads/SystemClock.h"
-#include "system.h"
 #if defined(TARGET_DARWIN)
 #include <sys/param.h>
 #include <mach-o/dyld.h>

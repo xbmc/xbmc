@@ -19,7 +19,6 @@
  */
 
 #include "network/Network.h"
-#include "system.h"
 #include "FileFactory.h"
 #ifdef TARGET_POSIX
 #include "posix/PosixFile.h"

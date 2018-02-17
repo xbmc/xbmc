@@ -18,7 +18,6 @@
  *
  */
 
-#include "system.h"
 
 #include "AMLCodec.h"
 #include "DynamicDll.h"

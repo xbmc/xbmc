@@ -19,11 +19,10 @@
  */
 
 #include <time.h>
-#include "system.h"
 #ifdef TARGET_ANDROID
 #include "platform/android/bionic_supplement/bionic_supplement.h"
 #endif
-#include "PlatformInclude.h"
+#include "PlatformDefs.h"
 #include "LinuxTimezone.h"
 #include "utils/SystemInfo.h"
 #if defined(TARGET_DARWIN)

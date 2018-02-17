@@ -22,7 +22,7 @@
  *
  */
 
-#include "system.h"
+#include "PlatformDefs.h"
 
 #include <string.h>
 #include <map>

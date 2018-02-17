@@ -33,7 +33,6 @@
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "storage/MediaManager.h"
-#include "system.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"

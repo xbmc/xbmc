@@ -21,7 +21,6 @@
 #include <math.h>
 #include <vector>
 
-#include "system.h"
 #include "ColorManager.h"
 #include "ServiceBroker.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFlags.h"

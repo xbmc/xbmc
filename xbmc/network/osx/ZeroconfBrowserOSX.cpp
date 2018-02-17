@@ -18,8 +18,6 @@
  *
  */
 
-#include "system.h"
-
 #include "ZeroconfBrowserOSX.h"
 #include "GUIUserMessages.h"
 #include "guilib/GUIWindowManager.h"

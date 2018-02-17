@@ -18,7 +18,6 @@
  *
  */
 
-#include "system.h"
 #include "XTimeUtils.h"
 #include "LinuxTimezone.h"
 

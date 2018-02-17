@@ -18,7 +18,6 @@
  *
  */
 
-#include "system.h"
 #include "CodecFactory.h"
 #include "URL.h"
 #include "VideoPlayerCodec.h"

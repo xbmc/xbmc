@@ -20,8 +20,6 @@
  *
  */
 
-#include "system.h"
-
 #include "utils/auto_buffer.h"
 
 #include <string>

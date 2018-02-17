@@ -18,7 +18,6 @@
  *
  */
 
-#include "system.h"
 #include "utils/log.h"
 
 #include "DVDFactoryCodec.h"

@@ -18,10 +18,6 @@
  *
  */
 
-#ifdef TARGET_WINDOWS
-#include "system.h"
-#endif
-
 #include "DllDvdNav.h"
 #include "utils/XBMCTinyXML.h"
 #include "DVDStateSerializer.h"

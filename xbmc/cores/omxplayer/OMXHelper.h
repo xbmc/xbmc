@@ -20,8 +20,6 @@
 
 #pragma once
 
-#include "system.h"
-
 #include <memory>
 
 bool OMXPlayerUnsuitable(bool m_HasVideo, bool m_HasAudio, CDVDDemux* m_pDemuxer, std::shared_ptr<CDVDInputStream> m_pInputStream, CSelectionStreams &m_SelectionStreams);

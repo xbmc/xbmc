@@ -19,7 +19,6 @@
  */
 
 #include "threads/SystemClock.h"
-#include "system.h"
 #include "GUIUserMessages.h"
 #include "GUIWindowMusicBase.h"
 #include "dialogs/GUIDialogMediaSource.h"

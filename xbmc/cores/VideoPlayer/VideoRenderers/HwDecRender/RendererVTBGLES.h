@@ -20,8 +20,6 @@
 
 #pragma once
 
-#include "system.h"
-
 #include "cores/VideoPlayer/VideoRenderers/LinuxRendererGLES.h"
 #include <CoreVideo/CVOpenGLESTextureCache.h>
 

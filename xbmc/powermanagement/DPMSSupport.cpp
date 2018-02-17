@@ -18,7 +18,6 @@
  *
  */
 
-#include "system.h"
 #include "DPMSSupport.h"
 #include "utils/log.h"
 #include <assert.h>

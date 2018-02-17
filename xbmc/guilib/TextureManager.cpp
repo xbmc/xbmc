@@ -26,7 +26,6 @@
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "GraphicContext.h"
-#include "system.h"
 #include "Texture.h"
 #include "threads/SingleLock.h"
 #include "threads/SystemClock.h"

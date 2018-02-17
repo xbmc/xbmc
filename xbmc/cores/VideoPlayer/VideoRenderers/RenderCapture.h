@@ -20,8 +20,6 @@
 
 #pragma once
 
-#include "system.h" //HAS_DX, HAS_GL, HAS_GLES, opengl headers, direct3d headers
-
 #ifdef HAS_DX
   #include "guilib/D3DResource.h"
   #include <wrl/client.h>

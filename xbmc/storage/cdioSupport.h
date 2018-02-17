@@ -27,7 +27,7 @@
 
 #pragma once
 
-#include "system.h" // for ssize_t typedef
+#include "PlatformDefs.h" // for ssize_t typedef
 
 #include <cdio/cdio.h>
 #include "threads/CriticalSection.h"

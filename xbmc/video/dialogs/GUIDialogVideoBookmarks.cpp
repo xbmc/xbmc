@@ -18,7 +18,6 @@
  *
  */
 
-#include "system.h"
 #include "GUIDialogVideoBookmarks.h"
 #include "video/VideoDatabase.h"
 #include "Application.h"

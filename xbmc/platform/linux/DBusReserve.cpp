@@ -17,7 +17,6 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#include "system.h"
 #include "DBusReserve.h"
 
 #include <dbus/dbus.h>

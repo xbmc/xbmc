@@ -18,7 +18,6 @@
  *
  */
 
-#include "system.h"
 #include "GraphicContext.h"
 #include "Application.h"
 #include "ServiceBroker.h"

@@ -21,7 +21,6 @@
 #include "log.h"
 #include "CompileInfo.h"
 #include "settings/AdvancedSettings.h"
-#include "system.h"
 #include "threads/CriticalSection.h"
 #include "threads/SingleLock.h"
 #include "threads/Thread.h"

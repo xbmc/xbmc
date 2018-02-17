@@ -31,7 +31,6 @@
 // if not it's just an empty inline stub, and thus won't affect performance
 // and will be optimized out.
 
-#include "system.h"
 #include "system_gl.h"
 
 void _VerifyGLState(const char* szfile, const char* szfunction, int lineno);

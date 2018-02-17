@@ -19,7 +19,6 @@
  */
 #include "AESinkFactoryWin.h"
 #include "platform/win32/CharsetConverter.h"
-#include "system.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 

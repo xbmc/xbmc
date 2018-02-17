@@ -21,7 +21,6 @@
 #include "filesystem/File.h"
 #include "D3DResource.h"
 #include "GUIShaderDX.h"
-#include "system.h"
 #include "utils/log.h"
 #include "rendering/dx/DeviceResources.h"
 #include "rendering/dx/RenderContext.h"

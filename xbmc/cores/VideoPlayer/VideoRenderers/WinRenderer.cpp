@@ -33,6 +33,7 @@
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "ServiceBroker.h"
+#include "system.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "VideoShaders/WinVideoFilter.h"

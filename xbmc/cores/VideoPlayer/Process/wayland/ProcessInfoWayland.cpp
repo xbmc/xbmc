@@ -20,7 +20,6 @@
 
 #include "ProcessInfoWayland.h"
 #include "threads/SingleLock.h"
-#include "system.h"
 
 using namespace VIDEOPLAYER;
 

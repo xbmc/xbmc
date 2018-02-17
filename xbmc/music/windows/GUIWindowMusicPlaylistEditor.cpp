@@ -18,7 +18,6 @@
  *
  */
 
-#include "system.h"
 #include "GUIWindowMusicPlaylistEditor.h"
 #include "ServiceBroker.h"
 #include "Util.h"

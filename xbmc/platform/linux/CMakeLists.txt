@@ -13,7 +13,6 @@ set(HEADERS ConvUtils.h
             LinuxTimezone.h
             PlatformConstants.h
             PlatformDefs.h
-            PlatformInclude.h
             PosixMountProvider.h
             stat_utf8.h
             stdio_utf8.h

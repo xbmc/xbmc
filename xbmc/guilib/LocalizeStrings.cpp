@@ -18,7 +18,6 @@
  *
  */
 
-#include "system.h"
 #include "LocalizeStrings.h"
 #include "addons/LanguageResource.h"
 #include "utils/CharsetConverter.h"

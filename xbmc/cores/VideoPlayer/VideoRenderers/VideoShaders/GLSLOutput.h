@@ -20,7 +20,6 @@
  */
 #pragma once
 
-#include "system.h"
 #include "utils/GLUtils.h"
 
 namespace Shaders

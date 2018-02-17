@@ -23,7 +23,6 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 
-#include "system.h"
 #include "network/Network.h"
 #include "Application.h"
 #include "ServiceBroker.h"

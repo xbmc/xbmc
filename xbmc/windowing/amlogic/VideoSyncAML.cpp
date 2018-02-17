@@ -18,8 +18,6 @@
  *
  */
 
-#include "system.h"
-
 #include "VideoSyncAML.h"
 #include "ServiceBroker.h"
 #include "guilib/GraphicContext.h"

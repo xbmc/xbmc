@@ -30,7 +30,6 @@
 
 #include "TextureManager.h"
 #include "utils/Geometry.h"
-#include "system.h" // HAS_GL, HAS_DX, etc
 #include "GUIInfoTypes.h"
 
 typedef uint32_t color_t;

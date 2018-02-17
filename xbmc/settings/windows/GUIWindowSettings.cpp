@@ -18,7 +18,6 @@
  *
  */
 
-#include "system.h"
 #include "GUIWindowSettings.h"
 #include "guilib/WindowIDs.h"
 

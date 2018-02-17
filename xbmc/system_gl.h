@@ -20,8 +20,6 @@
  *
  */
 
-#include "system.h"
-
 #ifdef HAS_GL
   // always define GL_GLEXT_PROTOTYPES before include gl headers
   #if !defined(GL_GLEXT_PROTOTYPES)
@@ -51,3 +49,9 @@
     #include <GLES3/gl3.h>
   #endif
 #endif
+
+// Useful pixel colour manipulation macros
+#define GET_A(color)            ((color >> 24) & 0xFF)
+#define GET_R(color)            ((color >> 16) & 0xFF)
+#define GET_G(color)            ((color >>  8) & 0xFF)
+#define GET_B(color)            ((color >>  0) & 0xFF)

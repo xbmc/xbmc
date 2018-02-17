@@ -18,7 +18,6 @@
  *
  */
 
-#include "system.h"
 #include "ServiceBroker.h"
 #include "windowing/WinSystem.h"
 #include "settings/AdvancedSettings.h"

@@ -19,7 +19,6 @@
  *
  */
 
-#include "system.h"
 #include "settings/lib/ISettingCallback.h"
 
 #ifdef HAS_WEB_SERVER

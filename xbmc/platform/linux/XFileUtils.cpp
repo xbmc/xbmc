@@ -18,8 +18,7 @@
  *
  */
 
-#include "system.h"
-#include "PlatformInclude.h"
+#include "PlatformDefs.h"
 #include "XFileUtils.h"
 #include "filesystem/SpecialProtocol.h"
 #include "utils/StringUtils.h"

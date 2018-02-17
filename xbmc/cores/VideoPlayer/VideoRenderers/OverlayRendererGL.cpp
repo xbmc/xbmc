@@ -19,7 +19,6 @@
  *
  */
 
-#include "system.h"
 #include "OverlayRenderer.h"
 #include "OverlayRendererUtil.h"
 #include "OverlayRendererGL.h"

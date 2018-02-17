@@ -18,8 +18,6 @@
  *
  */
 
-#include "system.h"
-
 #include "EventServer.h"
 #include "EventPacket.h"
 #include "EventClient.h"

@@ -18,8 +18,6 @@
  *
  */
 
-#include "system.h"
-
 #include "cdioSupport.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
