@@ -50,17 +50,18 @@ public:
 
 private:
   CAEStreamParser m_parser;
-  uint8_t* m_buffer;
-  unsigned int m_bufferSize;
+  uint8_t* m_buffer = nullptr;
+  unsigned int m_bufferSize = 0;
   unsigned int m_dataSize = 0;
   AEAudioFormat m_format;
-  uint8_t m_backlogBuffer[61440];
+  uint8_t *m_backlogBuffer = nullptr;
+  unsigned int m_backlogBufferSize = 0;
   unsigned int m_backlogSize = 0;
-  double m_currentPts;
-  double m_nextPts;
+  double m_currentPts = DVD_NOPTS_VALUE;
+  double m_nextPts = DVD_NOPTS_VALUE;
 
   // TrueHD specifics
   std::unique_ptr<uint8_t[]> m_trueHDBuffer;
-  unsigned int m_trueHDoffset;
+  unsigned int m_trueHDoffset = 0;
 };
 
