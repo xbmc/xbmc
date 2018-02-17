@@ -38,7 +38,6 @@
 
 #if defined(TARGET_WINDOWS)
 #include <windows.h>
-#include "PlatformDefs.h"
 #endif
 
 #if defined(TARGET_POSIX)
@@ -46,7 +45,6 @@
 #include <sys/time.h>
 #include <sys/types.h>
 #include <errno.h>
-#include "PlatformDefs.h"
 #endif
 
 #define SAFE_DELETE(p)       do { delete (p);     (p)=NULL; } while (0)

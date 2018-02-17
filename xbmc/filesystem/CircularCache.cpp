@@ -20,9 +20,10 @@
 
 #include <algorithm>
 #include "threads/SystemClock.h"
-#include "system.h"
 #include "threads/SingleLock.h"
 #include "CircularCache.h"
+
+#include <string.h>
 
 using namespace XFILE;
 

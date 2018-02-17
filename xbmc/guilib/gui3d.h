@@ -27,7 +27,7 @@
  *
  */
 
-#include "system.h" // for TARGET_WINDOWS types
+#include "PlatformDefs.h" // for TARGET_WINDOWS types
 
 #define GAMMA_RAMP_FLAG  D3DSGR_CALIBRATE
 

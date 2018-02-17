@@ -21,7 +21,7 @@
  */
 
 #include "utils/IArchivable.h"
-#include "system.h"
+#include "PlatformDefs.h"
 #include <string>
 
 /*! \brief TIME_FORMAT enum/bitmask used for formatting time strings

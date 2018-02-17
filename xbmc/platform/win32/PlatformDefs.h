@@ -22,6 +22,8 @@
 
 #ifdef TARGET_WINDOWS
 
+#include <windows.h>
+
 #define __STDC_FORMAT_MACROS
 #include <inttypes.h>
 

@@ -31,7 +31,7 @@
  **********************************************************************/
 
 #include "qry_dat.h"
-#include "system.h" // for PRId64
+#include "PlatformDefs.h" // for PRId64
 
 #include <stdio.h>
 #include <stdlib.h>

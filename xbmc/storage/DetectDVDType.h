@@ -25,7 +25,7 @@
 //
 // by Bobbin007 in 2003
 
-#include "system.h"
+#include "PlatformDefs.h"
 
 #ifdef HAS_DVD_DRIVE
 

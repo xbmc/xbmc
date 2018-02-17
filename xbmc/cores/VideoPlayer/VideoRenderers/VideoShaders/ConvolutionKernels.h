@@ -20,8 +20,9 @@
 
 #pragma once
 
-#include "system.h"
 #include "cores/VideoSettings.h"
+
+#include <stdint.h>
 
 class CConvolutionKernel
 {

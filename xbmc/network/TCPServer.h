@@ -22,7 +22,7 @@
 #include <vector>
 #include <sys/socket.h>
 
-#include "system.h"
+#include "PlatformDefs.h"
 #include "interfaces/json-rpc/IClient.h"
 #include "interfaces/json-rpc/IJSONRPCAnnouncer.h"
 #include "interfaces/json-rpc/ITransportLayer.h"
