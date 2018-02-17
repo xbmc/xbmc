@@ -707,7 +707,6 @@ bool CVideoPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options
   }
 
   m_item = file;
-  m_callback.OnPlayBackStarted(m_item);
 
   m_playerOptions = options;
   // Try to resolve the correct mime type
@@ -1359,6 +1358,10 @@ void CVideoPlayer::Prepare()
   UpdatePlayState(0);
 
   SetCaching(CACHESTATE_FLUSH);
+
+  m_outboundEvents->Submit([this]() {
+    m_callback.OnPlayBackStarted(m_item);
+  });
 }
 
 void CVideoPlayer::Process()
@@ -2531,10 +2534,6 @@ void CVideoPlayer::HandleMessages()
 
       m_item = msg.GetItem();
       m_playerOptions = msg.GetOptions();
-
-      m_outboundEvents->Submit([this]() {
-        m_callback.OnPlayBackStarted(m_item);
-      });
 
       FlushBuffers(DVD_NOPTS_VALUE, true, true);
       m_renderManager.Flush(false);
