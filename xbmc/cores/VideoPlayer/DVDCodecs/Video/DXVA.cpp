@@ -32,6 +32,7 @@
 #include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
+#include "system.h"
 #include "utils/Log.h"
 #include "utils/StringUtils.h"
 #include "utils/SystemInfo.h"

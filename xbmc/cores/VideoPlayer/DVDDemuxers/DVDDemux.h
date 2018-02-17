@@ -23,7 +23,6 @@
 #include <string>
 #include <vector>
 #include <memory>
-#include "system.h"
 #include "Interface/StreamInfo.h"
 
 struct DemuxPacket;

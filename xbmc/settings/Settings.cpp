@@ -18,8 +18,6 @@
  *
  */
 
-#include "system.h"
-
 #include "Settings.h"
 #include "Application.h"
 #include "Autorun.h"

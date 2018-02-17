@@ -34,7 +34,6 @@
 #include "log.h"
 #include "settings/lib/Setting.h"
 #include "settings/Settings.h"
-#include "system.h"
 #include "utils/StringUtils.h"
 #include "utils/Utf8Utils.h"
 

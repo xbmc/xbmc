@@ -17,7 +17,6 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#include "system.h" //HAS_ZEROCONF define
 #include "ZeroconfBrowser.h"
 #include <stdexcept>
 #include "utils/log.h"

@@ -21,8 +21,6 @@
 #ifndef XBIRREMOTE_H
 #define XBIRREMOTE_H
 
-#include "system.h"
-
 #define XINPUT_IR_REMOTE_DISPLAY      213
 #define XINPUT_IR_REMOTE_REVERSE      226
 #define XINPUT_IR_REMOTE_PLAY         234

@@ -18,9 +18,6 @@
  *
  */
 
-
-#include "system.h"
-
 #include "GLESShader.h"
 #include "xbmc/guilib/MatrixGLES.h"
 #include "ServiceBroker.h"

@@ -18,7 +18,6 @@
  *
  */
 
-#include "system.h"
 #include "GUITextureGL.h"
 #include "ServiceBroker.h"
 #include "Texture.h"

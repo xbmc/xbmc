@@ -26,7 +26,6 @@
 #if defined(TARGET_WINDOWS_STORE)
 #include <WinSock2.h>
 #endif
-#include "system.h" // for SOCKET
 #endif
 
 #include <list>

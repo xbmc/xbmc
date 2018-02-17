@@ -18,8 +18,6 @@
  *
  */
 
-#include "system.h"
-
 #include "DAVFile.h"
 
 #include "DAVCommon.h"

@@ -18,7 +18,6 @@
  *
  */
 
-#include "system.h"
 #include "HTTPFileHandler.h"
 #include "utils/Mime.h"
 #include "utils/StringUtils.h"

@@ -18,7 +18,6 @@
  *
  */
 
-#include "system.h"
 #include "Application.h"
 #include "DllPaths.h"
 #include "GUIUserMessages.h"

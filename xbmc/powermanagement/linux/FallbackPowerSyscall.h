@@ -19,7 +19,6 @@
  */
 #pragma once
 #include "powermanagement/IPowerSyscall.h"
-#include "system.h"
 
 class CFallbackPowerSyscall : public CPowerSyscallWithoutEvents
 {

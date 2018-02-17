@@ -18,8 +18,6 @@
  *
  */
 
-#include "system.h"
-
 #include "ZeroconfOSX.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"

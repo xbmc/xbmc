@@ -23,7 +23,6 @@
 #include <iterator>
 #include <osdefs.h>
 
-#include "system.h"
 #include "PythonInvoker.h"
 #include "Application.h"
 #include "messaging/ApplicationMessenger.h"

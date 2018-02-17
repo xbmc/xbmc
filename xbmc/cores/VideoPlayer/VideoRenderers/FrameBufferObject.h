@@ -20,8 +20,6 @@
  *
  */
 
-#include "system.h" // for HAS_GL
-
 #include "system_gl.h"
 
 //

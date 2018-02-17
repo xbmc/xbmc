@@ -18,8 +18,6 @@
  *
  */
 
-#include "system.h"
-
 #include <stdint.h>
 #include <limits.h>
 #include <cassert>

@@ -18,8 +18,6 @@
  *
  */
 
-#include "system.h"
-
 #include "WinSystemX11.h"
 #include "ServiceBroker.h"
 #include "settings/DisplaySettings.h"

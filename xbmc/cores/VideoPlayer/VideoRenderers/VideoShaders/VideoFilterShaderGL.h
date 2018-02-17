@@ -20,8 +20,6 @@
  *
  */
 
-#include "system.h"
-
 #include "system_gl.h"
 #include "guilib/Shader.h"
 #include "cores/VideoSettings.h"

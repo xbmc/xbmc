@@ -18,7 +18,6 @@
  *
  */
 
-#include "system.h"
 #if defined(HAVE_LIBCEC)
 #include "PeripheralBusCEC.h"
 #include "peripherals/Peripherals.h"

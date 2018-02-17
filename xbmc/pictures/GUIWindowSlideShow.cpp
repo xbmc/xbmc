@@ -19,7 +19,6 @@
  */
 
 #include "threads/SystemClock.h"
-#include "system.h"
 #include "GUIWindowSlideShow.h"
 #include "Application.h"
 #include "ServiceBroker.h"

@@ -18,8 +18,6 @@
  *
  */
 
-#include "system.h"
-
 #include <algorithm>
 
 #include "Picture.h"

@@ -17,7 +17,6 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#include "system.h"
 #include "SectionLoader.h"
 #include "GUILargeTextureManager.h"
 #include "guilib/TextureManager.h"

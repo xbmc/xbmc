@@ -18,7 +18,6 @@
  *
  */
 
-#include "system.h"
 #include "GUIWindow.h"
 #include "GUIWindowManager.h"
 #include "input/Key.h"

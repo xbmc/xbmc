@@ -22,7 +22,6 @@
 #include <Neptune/Source/Core/NptReferences.h>
 #include <Neptune/Source/Core/NptStrings.h>
 
-#include "system.h"
 #include "FileItem.h"
 #include <string>
 

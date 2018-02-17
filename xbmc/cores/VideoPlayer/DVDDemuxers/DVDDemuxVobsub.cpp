@@ -27,6 +27,7 @@
 #include "cores/VideoPlayer/Interface/Addon/DemuxPacket.h"
 #include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
 #include "DVDSubtitles/DVDSubtitleStream.h"
+#include "system.h"
 
 #include <string.h>
 

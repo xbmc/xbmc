@@ -20,7 +20,6 @@
 
 #pragma once
 
-#include "system.h"
 #include "system_gl.h"
 #include "GLShader.h"
 #include "rendering/RenderSystem.h"

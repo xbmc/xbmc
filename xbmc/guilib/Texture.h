@@ -20,7 +20,6 @@
 
 #pragma once
 
-#include "system.h"
 #include "XBTF.h"
 #include "guilib/imagefactory.h"
 #ifdef TARGET_POSIX

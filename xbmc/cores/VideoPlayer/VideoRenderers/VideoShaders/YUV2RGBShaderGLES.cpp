@@ -19,7 +19,6 @@
  *
  */
 
-#include "system.h"
 #include "../RenderFlags.h"
 #include "YUV2RGBShaderGLES.h"
 #include "YUVMatrix.h"

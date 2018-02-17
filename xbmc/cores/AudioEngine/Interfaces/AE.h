@@ -24,8 +24,6 @@
 #include <vector>
 #include <utility>
 
-#include "system.h"
-
 #include "cores/AudioEngine/Utils/AEAudioFormat.h"
 
 typedef std::pair<std::string, std::string> AEDevice;

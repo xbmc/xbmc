@@ -18,9 +18,6 @@
  *
  */
 
-
-#include "system.h"
-
 #include "RenderSystemGL.h"
 #include "filesystem/File.h"
 #include "guilib/GraphicContext.h"

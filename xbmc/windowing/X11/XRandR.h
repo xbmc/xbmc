@@ -20,8 +20,6 @@
  *
  */
 
-#include "system.h"
-
 #include <string>
 #include <vector>
 #include <map>

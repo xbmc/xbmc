@@ -18,8 +18,6 @@
  *
  */
 
-#include "system.h"
-
 #include <stdlib.h>
 #include <errno.h>
 

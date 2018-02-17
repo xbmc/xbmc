@@ -19,7 +19,6 @@
  */
 
 #if defined(TARGET_WINDOWS)
-#include "system.h"
 #endif
 
 #include <interface/mmal/util/mmal_util.h>

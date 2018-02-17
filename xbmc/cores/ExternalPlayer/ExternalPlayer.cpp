@@ -19,7 +19,6 @@
  */
 
 #include "threads/SystemClock.h"
-#include "system.h"
 #include "CompileInfo.h"
 #include "threads/SingleLock.h"
 #include "ExternalPlayer.h"

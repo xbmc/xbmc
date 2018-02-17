@@ -18,7 +18,6 @@
  *
  */
 
-#include "system.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"

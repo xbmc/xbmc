@@ -18,8 +18,6 @@
  *
  */
 
-#include "system.h"
-
 #include "utils/log.h"
 #include "Utils/TimeUtils.h"
 #include "Utils/MathUtils.h"

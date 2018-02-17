@@ -24,7 +24,6 @@
 #include <vector>
 
 #include "GUIFontTTF.h"
-#include "system.h"
 #include "system_gl.h"
 
 class CGUIFontTTFGL : public CGUIFontTTFBase

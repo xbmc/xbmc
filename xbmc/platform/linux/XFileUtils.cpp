@@ -18,7 +18,6 @@
  *
  */
 
-#include "system.h"
 #include "PlatformDefs.h"
 #include "XFileUtils.h"
 #include "filesystem/SpecialProtocol.h"

@@ -18,7 +18,6 @@
  *
  */
 
-#include "system.h"
 #include "OverlayRendererUtil.h"
 #include "ServiceBroker.h"
 #include "cores/VideoPlayer/DVDCodecs/Overlay/DVDOverlayImage.h"

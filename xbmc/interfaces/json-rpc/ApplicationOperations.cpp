@@ -27,7 +27,6 @@
 #include "input/Key.h"
 #include "utils/log.h"
 #include "GUIInfoManager.h"
-#include "system.h"
 #include "CompileInfo.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"

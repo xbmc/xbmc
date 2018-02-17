@@ -18,8 +18,6 @@
  *
  */
 
-#include "system.h"
-
 #include "VideoSyncDRM.h"
 #include "ServiceBroker.h"
 #include "xf86drm.h"

@@ -18,7 +18,6 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#include "system.h"
 #include <cstdint>
 #include <memory>
 #include <string>

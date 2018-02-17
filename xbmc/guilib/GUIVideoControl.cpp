@@ -18,7 +18,6 @@
  *
  */
 
-#include "system.h"
 #include "GUIVideoControl.h"
 #include "GUIWindowManager.h"
 #include "Application.h"

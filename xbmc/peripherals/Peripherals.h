@@ -27,7 +27,6 @@
 #include "interfaces/IAnnouncer.h"
 #include "messaging/IMessageTarget.h"
 #include "settings/lib/ISettingCallback.h"
-#include "system.h"
 #include "threads/CriticalSection.h"
 #include "threads/Thread.h"
 #include "utils/Observer.h"

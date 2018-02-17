@@ -20,8 +20,6 @@
 
 #pragma once
 
-#include "system.h"
-
 #include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodecDRMPRIME.h"
 #include "cores/VideoPlayer/VideoRenderers/BaseRenderer.h"
 #include "windowing/gbm/WinSystemGbmGLESContext.h"

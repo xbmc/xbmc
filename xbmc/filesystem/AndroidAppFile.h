@@ -19,8 +19,6 @@
  *
  */
 
-#include "system.h"
-
 #if defined(TARGET_ANDROID)
 #include "IFile.h"
 #include "URL.h"

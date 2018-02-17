@@ -22,7 +22,6 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#include "system.h"
 #include "SMBFile.h"
 #include "PasswordManager.h"
 #include "ServiceBroker.h"

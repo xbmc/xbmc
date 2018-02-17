@@ -19,7 +19,6 @@
  */
 
 #include <time.h>
-#include "system.h"
 #ifdef TARGET_ANDROID
 #include "platform/android/bionic_supplement/bionic_supplement.h"
 #endif

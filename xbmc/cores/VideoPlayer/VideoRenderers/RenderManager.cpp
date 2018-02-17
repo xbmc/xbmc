@@ -18,7 +18,6 @@
  *
  */
 
-#include "system.h"
 #include "RenderManager.h"
 #include "RenderFlags.h"
 #include "RenderFactory.h"

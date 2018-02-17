@@ -22,7 +22,6 @@
 #include <string>
 #include <vector>
 
-#include "system.h"
 #include "ProfilesManager.h"
 #include "Application.h"
 #include "DatabaseManager.h"

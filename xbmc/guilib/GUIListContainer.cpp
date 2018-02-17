@@ -18,7 +18,6 @@
  *
  */
 
-#include "system.h"
 #include "GUIListContainer.h"
 #include "input/Key.h"
 #include "utils/StringUtils.h"

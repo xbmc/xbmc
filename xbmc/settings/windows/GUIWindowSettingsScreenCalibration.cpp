@@ -18,7 +18,6 @@
  *
  */
 
-#include "system.h"
 #include "GUIWindowSettingsScreenCalibration.h"
 #include "guilib/GUIMoverControl.h"
 #include "guilib/GUIResizeControl.h"

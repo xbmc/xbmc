@@ -20,7 +20,6 @@
 
 #include "DllLibCurl.h"
 
-#include "system.h"
 #include "threads/SingleLock.h"
 #include "threads/SystemClock.h"
 #include "utils/log.h"

@@ -18,7 +18,6 @@
  *
  */
 
-#include "system.h"
 #include "GUIControlFactory.h"
 #include "LocalizeStrings.h"
 #include "GUIButtonControl.h"

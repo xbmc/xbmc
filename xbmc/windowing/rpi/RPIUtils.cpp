@@ -20,8 +20,6 @@
 
 #include "RPIUtils.h"
 
-#include "system.h"
-
 #include <math.h>
 #include "ServiceBroker.h"
 #include "utils/log.h"

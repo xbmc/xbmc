@@ -35,7 +35,6 @@
 
 #include "guilib/gui3d.h"
 #include "utils/log.h"
-#include "system.h"
 #include "settings/Settings.h"
 #include "ServiceBroker.h"
 #include "utils/StringUtils.h"

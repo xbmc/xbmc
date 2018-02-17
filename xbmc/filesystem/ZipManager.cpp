@@ -24,7 +24,6 @@
 #include <utility>
 
 #include "File.h"
-#include "system.h"
 #include "URL.h"
 #include "platform/linux/PlatformDefs.h"
 #include "utils/CharsetConverter.h"

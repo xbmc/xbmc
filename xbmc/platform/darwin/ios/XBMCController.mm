@@ -22,7 +22,6 @@
 #include <signal.h>
 
 #include "ServiceBroker.h"
-#include "system.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "FileItem.h"

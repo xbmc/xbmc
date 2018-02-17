@@ -18,9 +18,6 @@
  *
  */
 
-
-#include "system.h"
-
 #include "VideoSyncIos.h"
 #include "WinEventsIOS.h"
 #include "WinSystemIOS.h"

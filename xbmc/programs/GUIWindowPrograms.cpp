@@ -18,7 +18,6 @@
  *
  */
 
-#include "system.h"
 #include "GUIWindowPrograms.h"
 #include "Util.h"
 #include "addons/GUIDialogAddonInfo.h"

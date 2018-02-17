@@ -18,7 +18,6 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#include "system.h"
 #include "interfaces/json-rpc/ITransportLayer.h"
 #include "interfaces/json-rpc/JSONRPC.h"
 

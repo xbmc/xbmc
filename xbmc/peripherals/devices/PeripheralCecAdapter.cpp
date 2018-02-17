@@ -18,7 +18,6 @@
  *
  */
 
-#include "system.h"
 #if defined(HAVE_LIBCEC)
 #include "PeripheralCecAdapter.h"
 #include "input/remote/IRRemote.h"

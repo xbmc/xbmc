@@ -23,7 +23,6 @@
 
 #include "ServiceBroker.h"
 #include "settings/Settings.h"
-#include "system.h" //HAS_ZEROCONF define
 #include "threads/Atomics.h"
 #include "threads/CriticalSection.h"
 #include "threads/SingleLock.h"

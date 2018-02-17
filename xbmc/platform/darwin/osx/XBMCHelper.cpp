@@ -33,7 +33,6 @@
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "utils/log.h"
-#include "system.h"
 #include "settings/lib/Setting.h"
 #include "settings/Settings.h"
 #include "utils/SystemInfo.h"

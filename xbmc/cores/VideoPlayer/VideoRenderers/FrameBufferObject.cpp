@@ -18,8 +18,6 @@
  *
  */
 
-#include "system.h"
-
 #include "FrameBufferObject.h"
 #include "ServiceBroker.h"
 #include "rendering/RenderSystem.h"

@@ -18,8 +18,6 @@
  *
  */
 
-#include "system.h"
-
 #include "WinEventsAndroid.h"
 
 #include "Application.h"

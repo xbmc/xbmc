@@ -22,7 +22,6 @@
 // Basically the same format as zip.
 // We might want to refactor CFileZip someday...
 //////////////////////////////////////////////////////////////////////
-#include "system.h"
 
 #include "APKFile.h"
 #include "utils/log.h"

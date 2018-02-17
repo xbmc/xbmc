@@ -18,7 +18,6 @@
  *
  */
 
-#include "system.h"
 #include "GUIUserMessages.h"
 #include "Application.h"
 #include "ServiceBroker.h"

@@ -21,7 +21,6 @@
 #include "AddonManager.h"
 #include "ServiceBroker.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
-#include "system.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 

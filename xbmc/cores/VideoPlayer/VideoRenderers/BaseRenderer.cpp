@@ -18,8 +18,6 @@
  *
  */
 
-#include "system.h"
-
 #include <cstdlib> // std::abs(int) prototype
 #include <algorithm>
 #include "BaseRenderer.h"

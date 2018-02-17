@@ -18,7 +18,6 @@
  *
  */
 
-#include "system.h"
 #include "FileItem.h"
 #include "messaging/ApplicationMessenger.h"
 #include "PlayListPlayer.h"

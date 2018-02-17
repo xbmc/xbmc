@@ -17,7 +17,6 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#include "system.h"
 
 #include <stdint.h>
 #include <limits.h>

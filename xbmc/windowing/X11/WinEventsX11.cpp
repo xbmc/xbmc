@@ -19,8 +19,6 @@
 *
 */
 
-#include "system.h"
-
 #include "xbmc/windowing/WinEvents.h"
 #include "WinEventsX11.h"
 #include "Application.h"

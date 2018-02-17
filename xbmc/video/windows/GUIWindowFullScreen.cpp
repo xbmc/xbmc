@@ -19,7 +19,6 @@
  */
 
 #include "threads/SystemClock.h"
-#include "system.h"
 #include "GUIWindowFullScreen.h"
 #include "GUIWindowFullScreenDefines.h"
 #include "Application.h"

@@ -37,7 +37,6 @@
 #include "ServiceBroker.h"
 #include "settings/lib/Setting.h"
 #include "settings/Settings.h"
-#include "system.h"
 #include "utils/log.h"
 #include "weather/WeatherManager.h"
 #include "windowing/WinSystem.h"

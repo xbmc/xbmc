@@ -23,7 +23,6 @@
 
 #include <algorithm>
 
-#include "system.h"
 #include "cores/DllLoader/DllLoaderContainer.h"
 #include "GUIPassword.h"
 #include "XBPython.h"

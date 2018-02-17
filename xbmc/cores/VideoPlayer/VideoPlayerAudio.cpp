@@ -25,6 +25,7 @@
 #include "DVDCodecs/DVDFactoryCodec.h"
 #include "cores/VideoPlayer/Interface/Addon/DemuxPacket.h"
 #include "settings/Settings.h"
+#include "system.h"
 #include "utils/log.h"
 #include "utils/MathUtils.h"
 #include "cores/AudioEngine/Interfaces/AE.h"

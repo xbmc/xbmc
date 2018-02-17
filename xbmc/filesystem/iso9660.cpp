@@ -44,7 +44,6 @@ ISO9660
 #include "utils/CharsetConverter.h"
 #include "threads/SingleLock.h"
 #include "IFile.h"
-#include "system.h"
 #include "utils/log.h"
 
 #ifndef TARGET_WINDOWS

@@ -22,7 +22,6 @@
 #include <Python.h>
 #include <osdefs.h>
 
-#include "system.h"
 #include "ContextItemAddonInvoker.h"
 #include "utils/log.h"
 #include "interfaces/python/swig.h"

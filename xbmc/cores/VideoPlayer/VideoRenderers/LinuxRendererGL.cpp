@@ -20,7 +20,6 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#include "system.h"
 
 #include <locale.h>
 

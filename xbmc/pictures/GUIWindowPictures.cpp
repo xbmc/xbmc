@@ -19,7 +19,6 @@
  */
 
 #include "threads/SystemClock.h"
-#include "system.h"
 #include "GUIWindowPictures.h"
 #include "ServiceBroker.h"
 #include "URL.h"

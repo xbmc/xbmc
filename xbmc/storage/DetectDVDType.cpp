@@ -18,8 +18,6 @@
  *
  */
 
-#include "system.h"
-
 #include "DetectDVDType.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"

@@ -17,7 +17,6 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#include "system.h"
 
 #include <poll.h>
 #include <sys/eventfd.h>

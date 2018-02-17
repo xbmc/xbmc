@@ -19,7 +19,6 @@
  */
 
 
-#include "system.h"
 
 #include "GLShader.h"
 #include "ServiceBroker.h"

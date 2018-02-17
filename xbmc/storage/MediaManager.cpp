@@ -18,7 +18,6 @@
  *
  */
 
-#include "system.h"
 #include "MediaManager.h"
 #include "ServiceBroker.h"
 #include "guilib/LocalizeStrings.h"

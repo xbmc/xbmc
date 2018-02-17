@@ -22,7 +22,6 @@
 
 #include <vector>
 
-#include "system.h"
 #include "settings/lib/ISettingsHandler.h"
 #include "threads/CriticalSection.h"
 #include <string>

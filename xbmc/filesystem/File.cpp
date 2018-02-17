@@ -27,6 +27,7 @@
 #include "DirectoryCache.h"
 #include "Directory.h"
 #include "FileCache.h"
+#include "system.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "utils/BitstreamStats.h"

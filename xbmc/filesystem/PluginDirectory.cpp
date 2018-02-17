@@ -20,7 +20,6 @@
 
 #include "Application.h"
 #include "threads/SystemClock.h"
-#include "system.h"
 #include "PluginDirectory.h"
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"

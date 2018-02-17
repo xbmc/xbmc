@@ -18,9 +18,6 @@
  *
  */
 
-
-#include "system.h"
-
 #include "guilib/GraphicContext.h"
 #include "settings/AdvancedSettings.h"
 #include "RenderSystemGLES.h"

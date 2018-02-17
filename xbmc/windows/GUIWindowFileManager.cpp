@@ -18,7 +18,6 @@
  *
  */
 
-#include "system.h"
 #include "GUIWindowFileManager.h"
 #include "Application.h"
 #include "ServiceBroker.h"

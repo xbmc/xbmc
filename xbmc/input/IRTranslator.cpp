@@ -26,7 +26,6 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/XBMCTinyXML.h"
-#include "system.h"
 
 #include <stdlib.h>
 #include <vector>

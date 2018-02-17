@@ -18,7 +18,6 @@
  *
  */
 
-#include "system.h"
 #include <list>
 #include "WinEventsIOS.h"
 #include "input/InputManager.h"

@@ -21,7 +21,6 @@
 #include "PVRRecordingsPath.h"
 
 #include "URL.h"
-#include "system.h"
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"

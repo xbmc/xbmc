@@ -18,7 +18,6 @@
  *
  */
 
-#include "system.h"
 #include "GUIAudioManager.h"
 #include "ServiceBroker.h"
 #include "input/ActionIDs.h"

@@ -18,8 +18,6 @@
  *
  */
 
-#include "system.h"
-
 #include "VideoSyncGLX.h"
 #include <sstream>
 #include <X11/extensions/Xrandr.h>

@@ -18,8 +18,6 @@
  *
  */
 
-#include "system.h"
-
 #include "ServiceBroker.h"
 #include "Shader.h"
 #include "filesystem/File.h"

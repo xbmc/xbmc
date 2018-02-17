@@ -19,8 +19,6 @@
  *
  */
 
-#include "system.h"
-
 #include "cores/AudioEngine/Interfaces/AESink.h"
 #include "cores/AudioEngine/Utils/AEDeviceInfo.h"
 #include "cores/AudioEngine/Sinks/alsa/ALSADeviceMonitor.h"

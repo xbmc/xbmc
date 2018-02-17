@@ -22,7 +22,6 @@
 #include <Python.h>
 #include <osdefs.h>
 
-#include "system.h"
 #include "AddonPythonInvoker.h"
 
 #include <utility>

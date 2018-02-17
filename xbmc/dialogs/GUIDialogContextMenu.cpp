@@ -18,7 +18,6 @@
  *
  */
 
-#include "system.h"
 #include "GUIDialogContextMenu.h"
 #include "guilib/GUIButtonControl.h"
 #include "guilib/GUIControlGroupList.h"

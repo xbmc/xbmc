@@ -37,7 +37,6 @@
 #include "VideoPlayerRadioRDS.h"
 #include "Edl.h"
 #include "FileItem.h"
-#include "system.h"
 #include "threads/SystemClock.h"
 #include "threads/Thread.h"
 #include "utils/StreamDetails.h"

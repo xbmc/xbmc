@@ -24,7 +24,6 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#include "system.h"
 #include "IoSupport.h"
 #include "utils/log.h"
 #ifdef TARGET_WINDOWS

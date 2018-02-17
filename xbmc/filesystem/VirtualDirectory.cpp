@@ -18,7 +18,6 @@
  *
  */
 
-#include "system.h"
 #include "VirtualDirectory.h"
 #include "URL.h"
 #include "Util.h"

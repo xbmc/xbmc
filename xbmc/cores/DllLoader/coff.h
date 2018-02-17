@@ -1,7 +1,5 @@
 #pragma once
 
-#include "system.h"
-
 /*
  *      Copyright (C) 2005-2015 Team Kodi
  *      http://kodi.tv

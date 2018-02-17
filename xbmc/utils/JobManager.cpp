@@ -28,8 +28,6 @@
 #include "platform/linux/XTimeUtils.h"
 #endif
 
-#include "system.h"
-
 bool CJob::ShouldCancel(unsigned int progress, unsigned int total) const
 {
   if (m_callback)

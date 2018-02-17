@@ -18,8 +18,6 @@
  *
  */
 
-#include "system.h"
-
 #include "WinEventsSDL.h"
 #include "Application.h"
 #include "ServiceBroker.h"

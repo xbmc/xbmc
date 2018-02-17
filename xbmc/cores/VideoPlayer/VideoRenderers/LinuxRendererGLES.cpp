@@ -18,8 +18,6 @@
  *
  */
 
-#include "system.h"
-
 #include "system_gl.h"
 
 #include <locale.h>

@@ -18,7 +18,6 @@
  *
  */
 
-#include "system.h"
 #include <cassert>
 
 #include "cores/AudioEngine/Utils/AEUtil.h"

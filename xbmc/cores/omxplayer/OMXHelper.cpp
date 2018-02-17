@@ -18,8 +18,6 @@
  *
  */
 
-#include "system.h"
-
 #include "VideoPlayer.h"
 #include "ServiceBroker.h"
 #include "settings/Settings.h"

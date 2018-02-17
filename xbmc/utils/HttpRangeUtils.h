@@ -24,8 +24,6 @@
 #include <string>
 #include <vector>
 
-#include "system.h"
-
 class CHttpRange
 {
 public:

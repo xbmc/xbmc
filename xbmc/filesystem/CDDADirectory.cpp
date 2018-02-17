@@ -18,8 +18,6 @@
  *
  */
 
-#include "system.h"
-
 #include "CDDADirectory.h"
 #include "music/MusicDatabase.h"
 #include "FileItem.h"
