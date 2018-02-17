@@ -193,9 +193,9 @@ protected:
 
   struct SPresent
   {
-    double         pts;
-    EFIELDSYNC     presentfield;
-    EPRESENTMETHOD presentmethod;
+    double         pts = 0.0;
+    EFIELDSYNC     presentfield = FS_NONE;
+    EPRESENTMETHOD presentmethod = PRESENT_METHOD_SINGLE;
   } m_Queue[NUM_BUFFERS];
 
   std::deque<int> m_free;
