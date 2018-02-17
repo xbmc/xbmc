@@ -65,6 +65,8 @@ public:
   std::string GetModule() const { return m_DRM->GetModule(); }
   std::string GetDevicePath() const { return m_DRM->GetDevicePath(); }
 
+  gbm_device *GetGBMDevice() const { return m_GBM->m_device; }
+
   std::shared_ptr<CDRMUtils> m_DRM;
 
 protected:
