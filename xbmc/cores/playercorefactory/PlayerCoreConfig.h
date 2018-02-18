@@ -29,7 +29,6 @@
 #ifdef HAS_UPNP
 #include "network/upnp/UPnPPlayer.h"
 #endif
-#include "system.h"
 #include "utils/log.h"
 
 class CPlayerCoreConfig

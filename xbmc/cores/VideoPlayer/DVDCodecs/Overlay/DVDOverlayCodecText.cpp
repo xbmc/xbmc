@@ -25,7 +25,6 @@
 #include "cores/VideoPlayer/Interface/Addon/DemuxPacket.h"
 #include "utils/log.h"
 #include "cores/VideoPlayer/DVDSubtitles/DVDSubtitleTagSami.h"
-#include "system.h"
 
 CDVDOverlayCodecText::CDVDOverlayCodecText() : CDVDOverlayCodec("Text Subtitle Decoder")
 {
@@ -35,8 +34,11 @@ CDVDOverlayCodecText::CDVDOverlayCodecText() : CDVDOverlayCodec("Text Subtitle D
 
 CDVDOverlayCodecText::~CDVDOverlayCodecText()
 {
-  if(m_pOverlay)
-    SAFE_RELEASE(m_pOverlay);
+  if (m_pOverlay)
+  {
+    m_pOverlay->Release();
+    m_pOverlay = nullptr;
+  }
 }
 
 bool CDVDOverlayCodecText::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
@@ -51,21 +53,27 @@ bool CDVDOverlayCodecText::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 
 void CDVDOverlayCodecText::Dispose()
 {
-  if(m_pOverlay)
-    SAFE_RELEASE(m_pOverlay);
+  if (m_pOverlay)
+  {
+    m_pOverlay->Release();
+    m_pOverlay = nullptr;
+  }
 }
 
 int CDVDOverlayCodecText::Decode(DemuxPacket *pPacket)
 {
-  if(m_pOverlay)
-    SAFE_RELEASE(m_pOverlay);
+  if (m_pOverlay)
+  {
+    m_pOverlay->Release();
+    m_pOverlay = nullptr;
+  }
 
   if(!pPacket)
     return OC_ERROR;
-  
+
   uint8_t *data = pPacket->pData;
   int      size = pPacket->iSize;
-  
+
   m_pOverlay = new CDVDOverlayText();
   CDVDOverlayCodec::GetAbsoluteTimes(m_pOverlay->iPTSStartTime, m_pOverlay->iPTSStopTime, pPacket, m_pOverlay->replace);
 
@@ -132,14 +140,20 @@ int CDVDOverlayCodecText::Decode(DemuxPacket *pPacket)
 
 void CDVDOverlayCodecText::Reset()
 {
-  if(m_pOverlay)
-    SAFE_RELEASE(m_pOverlay);
+  if (m_pOverlay)
+  {
+    m_pOverlay->Release();
+    m_pOverlay = nullptr;
+  }
 }
 
 void CDVDOverlayCodecText::Flush()
 {
-  if(m_pOverlay)
-    SAFE_RELEASE(m_pOverlay);
+  if (m_pOverlay)
+  {
+    m_pOverlay->Release();
+    m_pOverlay = nullptr;
+  }
 }
 
 CDVDOverlay* CDVDOverlayCodecText::GetOverlay()

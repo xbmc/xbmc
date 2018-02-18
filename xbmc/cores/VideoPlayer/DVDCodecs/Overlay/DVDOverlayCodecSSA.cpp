@@ -58,18 +58,24 @@ bool CDVDOverlayCodecSSA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 
 void CDVDOverlayCodecSSA::Dispose()
 {
-  if(m_libass)
-    SAFE_RELEASE(m_libass);
+  if (m_libass)
+  {
+    m_libass->Release();
+    m_libass = nullptr;
+  }
 
-  if(m_pOverlay)
-    SAFE_RELEASE(m_pOverlay);
+  if (m_pOverlay)
+  {
+    m_pOverlay->Release();
+    m_pOverlay = nullptr;
+  }
 }
 
 int CDVDOverlayCodecSSA::Decode(DemuxPacket *pPacket)
 {
   if(!pPacket)
     return OC_ERROR;
-  
+
   double pts = pPacket->dts != DVD_NOPTS_VALUE ? pPacket->dts : pPacket->pts;
   if (pts == DVD_NOPTS_VALUE)
     pts = 0;
@@ -129,12 +135,16 @@ int CDVDOverlayCodecSSA::Decode(DemuxPacket *pPacket)
 
   if(m_pOverlay)
   {
-    /* there will only ever be one active, so we 
+    /* there will only ever be one active, so we
      * must always make sure any new one overlap
      * include the full duration of the old one */
     if(m_pOverlay->iPTSStopTime > pts + duration)
       duration = m_pOverlay->iPTSStopTime - pts;
-    SAFE_RELEASE(m_pOverlay);
+    if (m_pOverlay)
+    {
+      m_pOverlay->Release();
+      m_pOverlay = nullptr;
+    }
   }
 
   m_pOverlay = new CDVDOverlaySSA(m_libass);
