@@ -62,7 +62,7 @@ static void lock_callback(int mode, int type, const char* file, int line)
 
 static unsigned long thread_id()
 {
-  return (unsigned long)CThread::GetCurrentThreadId();
+  return (unsigned long)CThread::GetCurrentThreadNativeHandle();
 }
 #endif
 /* ========================================================================= */
@@ -94,7 +94,7 @@ CryptThreadingInitializer::CryptThreadingInitializer()
 
   if (!attemptedToSetSSLMTHook)
     CLog::Log(LOGWARNING, "Could not determine the libcurl security library to set the locking scheme. This may cause problem with multithreaded use of ssl or libraries that depend on it (libcurl).");
-  
+
 }
 
 CryptThreadingInitializer::~CryptThreadingInitializer()

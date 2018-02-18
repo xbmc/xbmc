@@ -93,12 +93,12 @@ public:
 
   void join()
   {
-    cthread->WaitForThreadExit((unsigned int)-1);
+    cthread->Join((unsigned int)-1);
   }
 
   bool timed_join(unsigned int millis)
   {
-    return cthread->WaitForThreadExit(millis);
+    return cthread->Join(millis);
   }
 };
 

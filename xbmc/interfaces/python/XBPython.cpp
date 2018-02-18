@@ -52,7 +52,6 @@ XBPython::XBPython()
 {
   m_bInitialized      = false;
   m_mainThreadState   = NULL;
-  m_ThreadId          = CThread::GetCurrentThreadId();
   m_iDllScriptCounter = 0;
   m_endtime           = 0;
   m_pDll              = NULL;

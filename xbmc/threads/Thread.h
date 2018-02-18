@@ -28,11 +28,13 @@
 #include <string>
 #include <stdint.h>
 #include "Event.h"
-#include "threads/ThreadImpl.h"
 
 #ifdef TARGET_DARWIN
 #include <mach/mach.h>
 #endif
+
+#include <thread>
+#include <future>
 
 class IRunnable
 {
@@ -40,9 +42,6 @@ public:
   virtual void Run()=0;
   virtual ~IRunnable() = default;
 };
-
-// minimum as mandated by XTL
-#define THREAD_MINSTACKSIZE 0x10000
 
 namespace XbmcThreads { class ThreadSettings; }
 
@@ -54,33 +53,47 @@ protected:
 public:
   CThread(IRunnable* pRunnable, const char* ThreadName);
   virtual ~CThread();
-  void Create(bool bAutoDelete = false, unsigned stacksize = 0);
+  void Create(bool bAutoDelete = false);
   void Sleep(unsigned int milliseconds);
-  int GetSchedRRPriority(void);
-  bool SetPrioritySched_RR(int iPriority);
   bool IsAutoDelete() const;
   virtual void StopThread(bool bWait = true);
   bool IsRunning() const;
 
+  bool IsCurrentThread() const;
+  bool Join(unsigned int milliseconds);
+
+  inline static const std::thread::id GetCurrentThreadId() {
+    CThread* cur = GetCurrentThread();
+    return cur == nullptr ? std::thread::id(0) :
+        (cur->m_thread == nullptr ? std::thread::id(0) : cur->m_thread->get_id());
+  }
+
+  inline static const std::thread::native_handle_type GetCurrentThreadNativeHandle() {
+    CThread* cur = GetCurrentThread();
+    return cur == nullptr ? 0 :
+        (cur->m_thread == nullptr ? 0 : cur->m_thread->native_handle());
+  }
+
   // -----------------------------------------------------------------------------------
   // These are platform specific and can be found in ./platform/[platform]/ThreadImpl.cpp
   // -----------------------------------------------------------------------------------
-  bool IsCurrentThread() const;
-  int GetMinPriority(void);
-  int GetMaxPriority(void);
-  int GetNormalPriority(void);
-  int GetPriority(void);
-  bool SetPriority(const int iPriority);
-  bool WaitForThreadExit(unsigned int milliseconds);
+  static int GetMinPriority(void);
+  static int GetMaxPriority(void);
+  static int GetNormalPriority(void);
+
+  // Get and set the CURRENT thread priority
+  static int GetPriority(void);
+  static bool SetPriority(const int iPriority);
+
   float GetRelativeUsage();  // returns the relative cpu usage of this thread since last call
   int64_t GetAbsoluteUsage();
   // -----------------------------------------------------------------------------------
 
-  static bool IsCurrentThread(const ThreadIdentifier tid);
-  static ThreadIdentifier GetCurrentThreadId();
   static CThread* GetCurrentThread();
 
   virtual void OnException(){} // signal termination handler
+
+  static const std::thread::id nullThreadId;
 protected:
   virtual void OnStartup(){};
   virtual void OnExit(){};
@@ -104,24 +117,19 @@ protected:
   }
 
 private:
-  static THREADFUNC staticThread(void *data);
   void Action();
 
   // -----------------------------------------------------------------------------------
   // These are platform specific and can be found in ./platform/[platform]/ThreadImpl.cpp
   // -----------------------------------------------------------------------------------
-  ThreadIdentifier ThreadId() const;
   void SetThreadInfo();
   void TermHandler();
   void SetSignalHandlers();
   void SpawnThread(unsigned stacksize);
   // -----------------------------------------------------------------------------------
 
-  ThreadIdentifier m_ThreadId;
-  ThreadOpaque m_ThreadOpaque = {};
   bool m_bAutoDelete;
   CEvent m_StopEvent;
-  CEvent m_TermEvent;
   CEvent m_StartEvent;
   CCriticalSection m_CriticalSection;
   IRunnable* m_pRunnable;
@@ -130,4 +138,6 @@ private:
   float m_fLastUsage;
 
   std::string m_ThreadName;
+  std::thread* m_thread;
+  std::future<bool> m_future;
 };

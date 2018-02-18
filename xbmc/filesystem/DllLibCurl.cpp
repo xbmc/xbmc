@@ -48,7 +48,7 @@ extern "C"
       m_sslLockArray[type]->unlock();
   }
 
-  unsigned long ssl_thread_id() { return (unsigned long) CThread::GetCurrentThreadId(); }
+  unsigned long ssl_thread_id() { return (unsigned long) CThread::GetCurrentThreadNativeHandle(); }
 
 #ifdef __cplusplus
 }

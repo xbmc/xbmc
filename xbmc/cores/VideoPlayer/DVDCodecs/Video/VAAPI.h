@@ -420,7 +420,6 @@ protected:
   CEvent m_DisplayEvent;
   int m_ErrorCount;
 
-  ThreadIdentifier m_decoderThread;
   bool m_vaapiConfigured;
   CVaapiConfig  m_vaapiConfig;
   CVideoSurfaces m_videoSurfaces;

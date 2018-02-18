@@ -116,6 +116,7 @@ CFileCache::CFileCache(CCacheStrategy *pCache, bool bDeleteCache /* = true */)
   , m_writeRate(0)
   , m_writeRateActual(0)
   , m_forwardCacheSize(0)
+  , m_flags(0)
 {
   m_pCache = pCache;
   m_bDeleteCache = bDeleteCache;
@@ -200,7 +201,7 @@ bool CFileCache::Open(const CURL& url)
 
       size_t back = cacheSize / 4;
       size_t front = cacheSize - back;
-      
+
       if (m_flags & READ_MULTI_STREAM)
       {
         // READ_MULTI_STREAM requires double buffering, so use half the amount of memory for each buffer
@@ -225,7 +226,7 @@ bool CFileCache::Open(const CURL& url)
     Close();
     return false;
   }
-  
+
   m_readPos = 0;
   m_writePos = 0;
   m_writeRate = 1024 * 1024;

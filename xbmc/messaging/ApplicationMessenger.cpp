@@ -106,12 +106,12 @@ int CApplicationMessenger::SendMsg(ThreadMessage&& message, bool wait)
   std::shared_ptr<int> result;
 
   if (wait)
-  { 
+  {
     //Initialize result here as it's not needed for posted messages
     message.result = std::make_shared<int>(-1);
     // check that we're not being called from our application thread, else we'll be waiting
     // forever!
-    if (!CThread::IsCurrentThread(m_guiThreadId))
+    if (m_guiThreadId != CThread::GetCurrentThreadId())
     {
       message.waitEvent.reset(new CEvent(true));
       waitEvent = message.waitEvent;
@@ -131,7 +131,7 @@ int CApplicationMessenger::SendMsg(ThreadMessage&& message, bool wait)
     return -1;
 
   ThreadMessage* msg = new ThreadMessage(std::move(message));
-  
+
   CSingleLock lock (m_critSection);
 
   if (msg->dwMessage == TMSG_GUI_MESSAGE)
@@ -146,7 +146,7 @@ int CApplicationMessenger::SendMsg(ThreadMessage&& message, bool wait)
                  //
   if (waitEvent) // ... it just so happens we have a spare reference to the
                  //  waitEvent ... just for such contingencies :)
-  { 
+  {
     // ensure the thread doesn't hold the graphics lock
     CSingleExit exit(g_graphicsContext);
     waitEvent->Wait();
@@ -213,7 +213,7 @@ void CApplicationMessenger::ProcessMessages()
     lock.Leave(); // <- see the large comment in SendMessage ^
 
     ProcessMessage(pMsg);
-    
+
     if (waitEvent)
       waitEvent->Set();
     delete pMsg;

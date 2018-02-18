@@ -38,53 +38,56 @@
 #include <signal.h>
 #include "utils/log.h"
 
-void CThread::SpawnThread(unsigned stacksize)
+// -----------------------------------------------------------------------------------
+// These are platform specific and can be found in ./platform/[platform]/ThreadSchedImpl.cpp
+// -----------------------------------------------------------------------------------
+static bool SetPrioritySched_RR(int iPriority)
 {
-  pthread_attr_t attr;
-  pthread_attr_init(&attr);
-#if !defined(TARGET_ANDROID) // http://code.google.com/p/android/issues/detail?id=7808
-  if (stacksize > PTHREAD_STACK_MIN)
-    pthread_attr_setstacksize(&attr, stacksize);
+#if defined(TARGET_DARWIN_IOS)
+  // Changing to SCHED_RR is safe under OSX, you don't need elevated privileges and the
+  // OSX scheduler will monitor SCHED_RR threads and drop to SCHED_OTHER if it detects
+  // the thread running away. OSX automatically does this with the CoreAudio audio
+  // device handler thread.
+  int32_t result;
+  thread_extended_policy_data_t theFixedPolicy;
+
+  // make thread fixed, set to 'true' for a non-fixed thread
+  theFixedPolicy.timeshare = false;
+  result = thread_policy_set(pthread_mach_thread_np(ThreadId()), THREAD_EXTENDED_POLICY,
+    (thread_policy_t)&theFixedPolicy, THREAD_EXTENDED_POLICY_COUNT);
+
+  int policy;
+  struct sched_param param;
+  result = pthread_getschedparam(ThreadId(), &policy, &param );
+  // change from default SCHED_OTHER to SCHED_RR
+  policy = SCHED_RR;
+  result = pthread_setschedparam(ThreadId(), policy, &param );
+  return result == 0;
+#else
+  return false;
 #endif
-  pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
-  if (pthread_create(&m_ThreadId, &attr, (void*(*)(void*))staticThread, this) != 0)
-  {
-    CLog::Log(LOGNOTICE, "%s - fatal error creating thread",__FUNCTION__);
-  }
-  pthread_attr_destroy(&attr);
 }
 
-void CThread::TermHandler() { }
-
-void CThread::SetThreadInfo()
+static pid_t getCurrentThreadPid()
 {
 #ifdef TARGET_FREEBSD
 #if __FreeBSD_version < 900031
   long lwpid;
   thr_self(&lwpid);
-  m_ThreadOpaque.LwpId = lwpid;
+  return lwpid;
 #else
-  m_ThreadOpaque.LwpId = pthread_getthreadid_np();
+  return pthread_getthreadid_np();
 #endif
 #elif defined(TARGET_ANDROID)
-  m_ThreadOpaque.LwpId = gettid();
+  return gettid();
 #else
-  m_ThreadOpaque.LwpId = syscall(SYS_gettid);
+  return syscall(SYS_gettid);
 #endif
 
-#if defined(HAVE_PTHREAD_SETNAME_NP)
-#ifdef TARGET_DARWIN
-#if(__MAC_OS_X_VERSION_MIN_REQUIRED >= 1060 || __IPHONE_OS_VERSION_MIN_REQUIRED >= 30200)
-  pthread_setname_np(m_ThreadName.c_str());
-#endif
-#else
-  pthread_setname_np(m_ThreadId, m_ThreadName.c_str());
-#endif
-#elif defined(HAVE_PTHREAD_SET_NAME_NP)
-  pthread_set_name_np(m_ThreadId, m_ThreadName.c_str());
-#endif
-    
+}
+
 #ifdef RLIMIT_NICE
+static int getUserMaxPriority(int maxPriority) {
   // get user max prio
   struct rlimit limit;
   int userMaxPrio;
@@ -98,7 +101,29 @@ void CThread::SetThreadInfo()
     userMaxPrio = 0;
 
   if (geteuid() == 0)
-    userMaxPrio = GetMaxPriority();
+    userMaxPrio = maxPriority;
+  return userMaxPrio;
+}
+#endif
+
+void CThread::SetThreadInfo()
+{
+
+#if defined(HAVE_PTHREAD_SETNAME_NP)
+#ifdef TARGET_DARWIN
+#if(__MAC_OS_X_VERSION_MIN_REQUIRED >= 1060 || __IPHONE_OS_VERSION_MIN_REQUIRED >= 30200)
+  pthread_setname_np(m_ThreadName.c_str());
+#endif
+#else
+  pthread_setname_np(m_ThreadId, m_ThreadName.c_str());
+#endif
+#elif defined(HAVE_PTHREAD_SET_NAME_NP)
+  pthread_set_name_np(m_ThreadId, m_ThreadName.c_str());
+#endif
+
+#ifdef RLIMIT_NICE
+  // get user max prio
+  int userMaxPrio = getUserMaxPriority(GetMaxPriority());
 
   // if the user does not have an entry in limits.conf the following
   // call will fail
@@ -106,20 +131,10 @@ void CThread::SetThreadInfo()
   {
     // start thread with nice level of application
     int appNice = getpriority(PRIO_PROCESS, getpid());
-    if (setpriority(PRIO_PROCESS, m_ThreadOpaque.LwpId, appNice) != 0)
+    if (setpriority(PRIO_PROCESS, getCurrentThreadPid(), appNice) != 0)
       CLog::Log(LOGERROR, "%s: error %s", __FUNCTION__, strerror(errno));
   }
 #endif
-}
-
-ThreadIdentifier CThread::GetCurrentThreadId()
-{
-  return pthread_self();
-}
-
-bool CThread::IsCurrentThread(const ThreadIdentifier tid)
-{
-  return pthread_equal(pthread_self(), tid);
 }
 
 int CThread::GetMinPriority(void)
@@ -145,14 +160,13 @@ bool CThread::SetPriority(const int iPriority)
   bool bReturn = false;
 
   // wait until thread is running, it needs to get its lwp id
-  m_StartEvent.Wait();
-  
-  CSingleLock lock(m_CriticalSection);
 
   // get min prio for SCHED_RR
   int minRR = GetMaxPriority() + 1;
 
-  if (!m_ThreadId)
+  pthread_t tid = static_cast<pthread_t>(GetCurrentThreadNativeHandle());
+
+  if (!tid)
     bReturn = false;
   else if (iPriority >= minRR)
     bReturn = SetPrioritySched_RR(iPriority);
@@ -160,20 +174,7 @@ bool CThread::SetPriority(const int iPriority)
   else
   {
     // get user max prio
-    struct rlimit limit;
-    int userMaxPrio;
-    if (getrlimit(RLIMIT_NICE, &limit) == 0)
-    {
-      userMaxPrio = limit.rlim_cur - 20;
-      // is a user has no entry in limits.conf rlim_cur is zero
-      if (userMaxPrio < 0)
-        userMaxPrio = 0;
-    }
-    else
-      userMaxPrio = 0;
-
-    if (geteuid() == 0)
-      userMaxPrio = GetMaxPriority();
+    int userMaxPrio = getUserMaxPriority(GetMaxPriority());
 
     // keep priority in bounds
     int prio = iPriority;
@@ -187,7 +188,7 @@ bool CThread::SetPriority(const int iPriority)
     if (prio)
       prio = prio > 0 ? appNice-1 : appNice+1;
 
-    if (setpriority(PRIO_PROCESS, m_ThreadOpaque.LwpId, prio) == 0)
+    if (setpriority(PRIO_PROCESS,getCurrentThreadPid(), prio) == 0)
       bReturn = true;
     else
       CLog::Log(LOGERROR, "%s: error %s", __FUNCTION__, strerror(errno));
@@ -202,31 +203,21 @@ int CThread::GetPriority()
   int iReturn;
 
   // lwp id is valid after start signal has fired
-  m_StartEvent.Wait();
 
-  CSingleLock lock(m_CriticalSection);
-  
   int appNice = getpriority(PRIO_PROCESS, getpid());
-  int prio = getpriority(PRIO_PROCESS, m_ThreadOpaque.LwpId);
+  int prio = getpriority(PRIO_PROCESS, getCurrentThreadPid());
   iReturn = appNice - prio;
 
   return iReturn;
 }
 
-bool CThread::WaitForThreadExit(unsigned int milliseconds)
-{
-  bool bReturn = m_TermEvent.WaitMSec(milliseconds);
-
-  return bReturn;
-}
-
 int64_t CThread::GetAbsoluteUsage()
 {
   CSingleLock lock(m_CriticalSection);
-  
-  if (!m_ThreadId)
-  return 0;
-  
+
+  if (!m_thread)
+    return 0;
+
   int64_t time = 0;
 #ifdef TARGET_DARWIN
   thread_basic_info threadInfo;
@@ -246,7 +237,7 @@ int64_t CThread::GetAbsoluteUsage()
 
 #else
   clockid_t clock;
-  if (pthread_getcpuclockid(m_ThreadId, &clock) == 0)
+  if (pthread_getcpuclockid(static_cast<pthread_t>(m_thread->native_handle()), &clock) == 0)
   {
     struct timespec tp;
     clock_gettime(clock, &tp);
@@ -255,25 +246,6 @@ int64_t CThread::GetAbsoluteUsage()
 #endif
 
   return time;
-}
-
-float CThread::GetRelativeUsage()
-{
-  unsigned int iTime = XbmcThreads::SystemClockMillis();
-  iTime *= 10000; // convert into 100ns tics
-
-  // only update every 1 second
-  if( iTime < m_iLastTime + 1000*10000 ) return m_fLastUsage;
-
-  int64_t iUsage = GetAbsoluteUsage();
-
-  if (m_iLastUsage > 0 && m_iLastTime > 0)
-    m_fLastUsage = (float)( iUsage - m_iLastUsage ) / (float)( iTime - m_iLastTime );
-
-  m_iLastUsage = iUsage;
-  m_iLastTime = iTime;
-
-  return m_fLastUsage;
 }
 
 void term_handler (int signum)
