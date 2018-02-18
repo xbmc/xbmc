@@ -23,7 +23,7 @@ if [ "${PLATFORM_NAME}" == "iphoneos" ] || [ "${PLATFORM_NAME}" == "appletvos" ]
 
   #do fake sign - needed for jailbroken ios5.1 devices for some reason
   if [ -f ${LDID} ]; then
-    ${LDID} -S ${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/${APP_NAME}
+    ${LDID} -S ${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}
   fi
 
   # pull the CFBundleIdentifier out of the built xxx.app
