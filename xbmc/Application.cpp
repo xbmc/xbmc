@@ -1255,7 +1255,7 @@ void CApplication::StartServices()
 #if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
   // Start Thread for DVD Mediatype detection
   CLog::Log(LOGNOTICE, "start dvd mediatype detection");
-  m_DetectDVDType.Create(false, THREAD_MINSTACKSIZE);
+  m_DetectDVDType.Create(false);
 #endif
 }
 
@@ -4746,7 +4746,7 @@ void CApplication::StartMusicCleanup(bool userInitiated /* = true */)
   if (userInitiated)
     /*
      CMusicLibraryQueue::GetInstance().CleanLibraryModal();
-     As cleaning is non-granular and does not offer many opportunities to update progress 
+     As cleaning is non-granular and does not offer many opportunities to update progress
      dialog rendering, do asynchronously with model dialog
     */
     CMusicLibraryQueue::GetInstance().CleanLibrary(true);
@@ -4825,7 +4825,7 @@ bool CApplication::ProcessAndStartPlaylist(const std::string& strPlayList, CPlay
 
 bool CApplication::IsCurrentThread() const
 {
-  return CThread::IsCurrentThread(m_threadID);
+  return m_threadID == CThread::GetCurrentThreadId();
 }
 
 void CApplication::SetRenderGUI(bool renderGUI)

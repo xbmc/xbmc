@@ -270,10 +270,39 @@ AEAudioFormat CEngineStats::GetCurrentSinkFormat()
   return m_sinkFormat;
 }
 
+enum AE_STATES
+{
+  AE_TOP = 0,                      // 0
+  AE_TOP_WAIT_PRECOND,             // 1
+  AE_TOP_ERROR,                    // 2
+  AE_TOP_UNCONFIGURED,             // 3
+  AE_TOP_RECONFIGURING,            // 4
+  AE_TOP_CONFIGURED,               // 5
+  AE_TOP_CONFIGURED_SUSPEND,       // 6
+  AE_TOP_CONFIGURED_IDLE,          // 6
+  AE_TOP_CONFIGURED_PLAY,          // 7
+};
+
+int AE_parentStates[] = {
+    -1,
+    0, //TOP_ERROR
+    0, //AE_TOP_WAIT_PRECOND
+    0, //TOP_UNCONFIGURED
+    0, //TOP_CONFIGURED
+    0, //TOP_RECONFIGURING
+    5, //TOP_CONFIGURED_SUSPEND
+    5, //TOP_CONFIGURED_IDLE
+    5, //TOP_CONFIGURED_PLAY
+};
+
 CActiveAE::CActiveAE() :
   CThread("ActiveAE"),
   m_controlPort("OutputControlPort", &m_inMsgEvent, &m_outMsgEvent),
   m_dataPort("OutputDataPort", &m_inMsgEvent, &m_outMsgEvent),
+  m_state(AE_TOP_WAIT_PRECOND),
+  m_extTimeout(0),
+  m_extKeepConfig(0),
+  m_extDeferData(false),
   m_sink(&m_outMsgEvent)
 {
   m_sinkBuffers = NULL;
@@ -319,31 +348,6 @@ void CActiveAE::Dispose()
 //-----------------------------------------------------------------------------
 // Behavior
 //-----------------------------------------------------------------------------
-
-enum AE_STATES
-{
-  AE_TOP = 0,                      // 0
-  AE_TOP_WAIT_PRECOND,             // 1
-  AE_TOP_ERROR,                    // 2
-  AE_TOP_UNCONFIGURED,             // 3
-  AE_TOP_RECONFIGURING,            // 4
-  AE_TOP_CONFIGURED,               // 5
-  AE_TOP_CONFIGURED_SUSPEND,       // 6
-  AE_TOP_CONFIGURED_IDLE,          // 6
-  AE_TOP_CONFIGURED_PLAY,          // 7
-};
-
-int AE_parentStates[] = {
-    -1,
-    0, //TOP_ERROR
-    0, //AE_TOP_WAIT_PRECOND
-    0, //TOP_UNCONFIGURED
-    0, //TOP_CONFIGURED
-    0, //TOP_RECONFIGURING
-    5, //TOP_CONFIGURED_SUSPEND
-    5, //TOP_CONFIGURED_IDLE
-    5, //TOP_CONFIGURED_PLAY
-};
 
 void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
 {
@@ -1380,7 +1384,7 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
   }
 
   // resample buffers for sink
-  if (m_sinkBuffers && 
+  if (m_sinkBuffers &&
      (!CompareFormat(m_sinkBuffers->m_format,m_sinkFormat) ||
       !CompareFormat(m_sinkBuffers->m_inputFormat, sinkInputFormat) ||
       m_sinkBuffers->m_format.m_frames != m_sinkFormat.m_frames))
@@ -2048,7 +2052,7 @@ bool CActiveAE::RunStages()
               fadingStep = delta / samples;
             }
 
-            // for stream amplification, 
+            // for stream amplification,
             // turned off downmix normalization,
             // or if sink format is float (in order to prevent from clipping)
             // we need to run on a per sample basis

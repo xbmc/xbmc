@@ -118,7 +118,6 @@ private:
   bool              FileExist(const char* strFile);
 
   void*             m_mainThreadState;
-  ThreadIdentifier  m_ThreadId;
   bool              m_bInitialized;
   int               m_iDllScriptCounter; // to keep track of the total scripts running that need the dll
   unsigned int      m_endtime;
