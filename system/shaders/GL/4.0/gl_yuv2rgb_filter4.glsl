@@ -112,7 +112,7 @@ vec4 process()
 
 #if defined(XBMC_COL_CONVERSION)
   rgb.rgb = pow(rgb.rgb, vec3(m_gammaSrc));
-  rgb.rgb = m_primMat * rgb.rgb;
+  rgb.rgb = max(vec3(0), m_primMat * rgb.rgb);
   rgb.rgb = pow(rgb.rgb, vec3(m_gammaDstInv));
 
 #if defined(XBMC_TONE_MAPPING)

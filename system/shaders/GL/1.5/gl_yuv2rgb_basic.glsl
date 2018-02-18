@@ -89,16 +89,12 @@ vec4 process()
 
 #endif
 
-#if defined(XBMC_TONE_MAPPING)
-  //float scale = tonemap(yuv.x) / yuv.x;
-#endif
-
   rgb = m_yuvmat * yuv;
   rgb.a = m_alpha;
 
 #if defined(XBMC_COL_CONVERSION)
   rgb.rgb = pow(rgb.rgb, vec3(m_gammaSrc));
-  rgb.rgb = m_primMat * rgb.rgb;
+  rgb.rgb = max(vec3(0), m_primMat * rgb.rgb);
   rgb.rgb = pow(rgb.rgb, vec3(m_gammaDstInv));
 
 #if defined(XBMC_TONE_MAPPING)
