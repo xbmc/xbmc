@@ -28,7 +28,6 @@
 #include "cores/VideoPlayer/Interface/Addon/DemuxPacket.h"
 #include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
 #include "utils/log.h"
-#include "system.h"
 #include "threads/SingleLock.h"
 
 CVideoPlayerSubtitle::CVideoPlayerSubtitle(CDVDOverlayContainer* pOverlayContainer, CProcessInfo &processInfo)
@@ -177,11 +176,20 @@ void CVideoPlayerSubtitle::CloseStream(bool bWaitForBuffers)
   CSingleLock lock(m_section);
 
   if(m_pSubtitleStream)
-    SAFE_DELETE(m_pSubtitleStream);
+  {
+    delete m_pSubtitleStream;
+    m_pSubtitleStream = nullptr;
+  }
   if(m_pSubtitleFileParser)
-    SAFE_DELETE(m_pSubtitleFileParser);
+  {
+    delete m_pSubtitleFileParser;
+    m_pSubtitleFileParser = nullptr;
+  }
   if(m_pOverlayCodec)
-    SAFE_DELETE(m_pOverlayCodec);
+  {
+    delete m_pOverlayCodec;
+    m_pOverlayCodec = nullptr;
+  }
 
   m_dvdspus.FlushCurrentPacket();
 

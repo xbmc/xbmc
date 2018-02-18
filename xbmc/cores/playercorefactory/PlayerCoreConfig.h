@@ -61,7 +61,8 @@ public:
 
   virtual ~CPlayerCoreConfig()
   {
-    SAFE_DELETE(m_config);
+    delete m_config;
+    m_config = nullptr;
   }
 
   const std::string& GetName() const
@@ -122,7 +123,8 @@ public:
     }
     else
     {
-      SAFE_DELETE(pPlayer);
+      delete pPlayer;
+      pPlayer = nullptr;
       return nullptr;
     }
   }

@@ -39,7 +39,6 @@
 #include "ServiceBroker.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
 #include "cores/DataCacheCore.h"
-#include "system.h"
 
 #include <algorithm>
 #include <iostream>
@@ -121,7 +120,8 @@ bool OMXPlayerAudio::OpenStream(CDVDStreamInfo hints)
 
 void OMXPlayerAudio::OpenStream(CDVDStreamInfo &hints, COMXAudioCodecOMX *codec)
 {
-  SAFE_DELETE(m_pAudioCodec);
+  delete m_pAudioCodec;
+  m_pAudioCodec = nullptr;
 
   m_hints           = hints;
   m_pAudioCodec     = codec;
