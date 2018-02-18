@@ -23,6 +23,8 @@
 #include "guilib/GUIWindow.h"
 #include "Window.h"
 
+#include "threads/ThreadLocal.h"
+
 namespace XBMCAddon
 {
   namespace xbmcgui
@@ -41,9 +43,9 @@ namespace XBMCAddon
     protected:
       AddonClass::Ref<Window> window;
       // This instance is in Window.cpp
-      static thread_local ref* upcallTls;
+      static XbmcThreads::ThreadLocal<ref> upcallTls;
 
-      InterceptorBase() : window(NULL) { upcallTls = NULL; }
+      InterceptorBase() : window(NULL) { upcallTls.set(NULL); }
 
       /**
        * Calling up ONCE resets the upcall to to false. The reason is that when
@@ -58,7 +60,7 @@ namespace XBMCAddon
        *  the call will wrongly proceed back to the xbmc core side rather than
        *  to the Addon API side.
        */  
-      static bool up() { bool ret = ((upcallTls) != NULL); upcallTls = NULL; return ret; }
+      static bool up() { bool ret = (upcallTls.get() != NULL); upcallTls.set(NULL); return ret; }
     public:
 
       virtual ~InterceptorBase() { if (window.isNotNull()) { window->interceptorClear(); } }
@@ -87,8 +89,8 @@ namespace XBMCAddon
     {
       InterceptorBase* w;
     public:
-      inline explicit ref(InterceptorBase* b) : w(b) { w->upcallTls = this; }
-      inline ~ref() { w->upcallTls = NULL; }
+      inline explicit ref(InterceptorBase* b) : w(b) { w->upcallTls.set(this); }
+      inline ~ref() { w->upcallTls.set(NULL); }
       inline CGUIWindow* operator->() { return w->get(); }
       inline CGUIWindow* get() { return w->get(); }
     };
