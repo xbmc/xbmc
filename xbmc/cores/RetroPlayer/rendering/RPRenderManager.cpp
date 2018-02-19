@@ -186,9 +186,6 @@ void CRPRenderManager::FrameMove()
 
 void CRPRenderManager::Flush()
 {
-  for (const auto &renderer : m_renderers)
-    renderer->Flush();
-
   m_processInfo.GetBufferManager().FlushPools();
 }
 
