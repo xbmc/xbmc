@@ -21,6 +21,7 @@
 #include "VideoInfoTagLoaderFactory.h"
 #include "VideoTagLoaderFFmpeg.h"
 #include "VideoTagLoaderNFO.h"
+#include "VideoTagLoaderPlugin.h"
 #include "FileItem.h"
 #include "ServiceBroker.h"
 #include "settings/Settings.h"
@@ -29,11 +30,21 @@ using namespace VIDEO;
 
 IVideoInfoTagLoader* CVideoInfoTagLoaderFactory::CreateLoader(const CFileItem& item,
                                                               ADDON::ScraperPtr info,
-                                                              bool lookInFolder)
+                                                              bool lookInFolder,
+                                                              bool forceRefresh)
 {
   // don't try to read tags for streams
   if (item.IsInternetStream())
     return nullptr;
+
+  if (item.IsPlugin() && info && info->ID() == "metadata.local")
+  {
+    // Direct loading from plugin source with metadata.local scraper
+    CVideoTagLoaderPlugin* plugin = new CVideoTagLoaderPlugin(item, forceRefresh);
+    if (plugin->HasInfo())
+      return plugin;
+    delete plugin;
+  }
 
   CVideoTagLoaderNFO* nfo = new CVideoTagLoaderNFO(item, info, lookInFolder);
   if (nfo->HasInfo())

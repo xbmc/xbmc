@@ -924,12 +924,16 @@ void CVideoDatabase::UpdateFileDateAdded(int idFile, const std::string& strFileN
 
     if (!finalDateAdded.IsValid())
     {
-      // 1 preferring to use the files mtime(if it's valid) and only using the file's ctime if the mtime isn't valid
-      if (g_advancedSettings.m_iVideoLibraryDateAdded == 1)
-        finalDateAdded = CFileUtils::GetModificationDate(strFileNameAndPath, false);
-      //2 using the newer datetime of the file's mtime and ctime
-      else if (g_advancedSettings.m_iVideoLibraryDateAdded == 2)
-        finalDateAdded = CFileUtils::GetModificationDate(strFileNameAndPath, true);
+      // Supress warnings if we have plugin source
+      if (!URIUtils::IsPlugin(strFileNameAndPath))
+      {
+        // 1 preferring to use the files mtime(if it's valid) and only using the file's ctime if the mtime isn't valid
+        if (g_advancedSettings.m_iVideoLibraryDateAdded == 1)
+          finalDateAdded = CFileUtils::GetModificationDate(strFileNameAndPath, false);
+        //2 using the newer datetime of the file's mtime and ctime
+        else if (g_advancedSettings.m_iVideoLibraryDateAdded == 2)
+          finalDateAdded = CFileUtils::GetModificationDate(strFileNameAndPath, true);
+      }
       //0 using the current datetime if non of the above matches or one returns an invalid datetime
       if (!finalDateAdded.IsValid())
         finalDateAdded = CDateTime::GetCurrentDateTime();
@@ -9572,7 +9576,9 @@ void CVideoDatabase::SplitPath(const std::string& strFileNameAndPath, std::strin
   else if (URIUtils::IsPlugin(strFileNameAndPath))
   {
     CURL url(strFileNameAndPath);
-    strPath = url.GetWithoutFilename();
+    strPath = url.GetWithoutOptions();
+    if (strPath == strFileNameAndPath)
+      strPath = url.GetWithoutFilename();
     strFileName = strFileNameAndPath;
   }
   else
@@ -9591,6 +9597,13 @@ void CVideoDatabase::InvalidatePathHash(const std::string& strPath)
   {
     if (info->Content() == CONTENT_TVSHOWS || settings.parent_name_root)
     {
+      if (URIUtils::IsPlugin(strPath))
+      {
+        // Check if we are already at plugin root
+        CURL url(strPath);
+        if (url.GetWithoutFilename() == strPath)
+          return;
+      }
       std::string strParent;
       URIUtils::GetParentPath(strPath,strParent);
       SetPathHash(strParent,"");

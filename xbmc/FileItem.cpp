@@ -3167,6 +3167,9 @@ std::string CFileItem::GetFolderThumb(const std::string &folderJPG /* = "folder.
 
 std::string CFileItem::GetMovieName(bool bUseFolderNames /* = false */) const
 {
+  if (IsPlugin() && HasVideoInfoTag() && !GetVideoInfoTag()->m_strTitle.empty())
+    return GetVideoInfoTag()->m_strTitle;
+
   if (IsLabelPreformatted())
     return GetLabel();
 

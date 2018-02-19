@@ -22,6 +22,7 @@
 #include <string>
 #include <vector>
 
+#include "FileItem.h"
 #include "utils/ScraperUrl.h"
 #include "XBDateTime.h"
 
@@ -38,6 +39,7 @@ namespace VIDEO
     std::string strTitle;
     CDateTime   cDate;
     CScraperUrl cScraperUrl;
+    CFileItemPtr item;
     EPISODE(int Season = -1, int Episode = -1, int Subepisode = 0, bool Folder = false)
     {
       iSeason     = Season;
