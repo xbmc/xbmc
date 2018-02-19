@@ -22,6 +22,7 @@
 
 #include "threads/SystemClock.h"
 #include "Thread.h"
+#include "threads/ThreadLocal.h"
 #include "threads/SingleLock.h"
 #include "commons/Exception.h"
 #include <stdlib.h>
@@ -30,7 +31,7 @@
 #define __STDC_FORMAT_MACROS
 #include <inttypes.h>
 
-static thread_local CThread* currentThread;
+static XbmcThreads::ThreadLocal<CThread> currentThread;
 
 #include "threads/platform/ThreadImpl.cpp"
 
@@ -121,7 +122,7 @@ THREADFUNC CThread::staticThread(void* data)
 
   CLog::Log(LOGDEBUG,"Thread %s start, auto delete: %s", name.c_str(), (autodelete ? "true" : "false"));
 
-  currentThread = pThread;
+  currentThread.set(pThread);
   pThread->m_StartEvent.Set();
 
   pThread->Action();
@@ -182,7 +183,7 @@ bool CThread::IsCurrentThread() const
 
 CThread* CThread::GetCurrentThread()
 {
-  return currentThread;
+  return currentThread.get();
 }
 
 void CThread::Sleep(unsigned int milliseconds)

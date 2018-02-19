@@ -27,19 +27,19 @@
 #include "URL.h"
 #include <map>
 
-static thread_local CFFmpegLog* CFFmpegLogTls;
+static XbmcThreads::ThreadLocal<CFFmpegLog> CFFmpegLogTls;
 
 void CFFmpegLog::SetLogLevel(int level)
 {
   CFFmpegLog::ClearLogLevel();
   CFFmpegLog *log = new CFFmpegLog();
   log->level = level;
-  CFFmpegLogTls = log;
+  CFFmpegLogTls.set(log);
 }
 
 int CFFmpegLog::GetLogLevel()
 {
-  CFFmpegLog* log = CFFmpegLogTls;
+  CFFmpegLog* log = CFFmpegLogTls.get();
   if (!log)
     return -1;
   return log->level;
@@ -47,8 +47,8 @@ int CFFmpegLog::GetLogLevel()
 
 void CFFmpegLog::ClearLogLevel()
 {
-  CFFmpegLog* log = CFFmpegLogTls;
-  CFFmpegLogTls = nullptr;
+  CFFmpegLog* log = CFFmpegLogTls.get();
+  CFFmpegLogTls.set(nullptr);
   if (log)
     delete log;
 }

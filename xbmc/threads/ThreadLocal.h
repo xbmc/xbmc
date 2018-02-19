@@ -20,4 +20,5 @@
 
 #pragma once
 
-#include "threads/platform/CriticalSection.h"
+#include "threads/platform/ThreadLocal.h"
+
