@@ -69,6 +69,7 @@
 #include "utils/JobManager.h"
 #include "utils/StringUtils.h"
 #include "video/Bookmark.h"
+#include "video/VideoInfoTag.h"
 #include "Util.h"
 #include "LangInfo.h"
 #include "URL.h"
@@ -646,6 +647,7 @@ CVideoPlayer::CVideoPlayer(IPlayerCallback& callback)
   m_caching = CACHESTATE_DONE;
   m_HasVideo = false;
   m_HasAudio = false;
+  m_UpdateStreamDetails = false;
 
   memset(&m_SpeedState, 0, sizeof(m_SpeedState));
 
@@ -720,6 +722,7 @@ bool CVideoPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options
   m_renderManager.PreInit();
 
   Create();
+  m_messenger.Init();
 
   m_callback.OnPlayBackStarted(m_item);
 
@@ -776,8 +779,6 @@ void CVideoPlayer::OnStartup()
   m_CurrentSubtitle.Clear();
   m_CurrentTeletext.Clear();
   m_CurrentRadioRDS.Clear();
-
-  m_messenger.Init();
 
   CUtil::ClearTempFonts();
 }
@@ -2446,6 +2447,9 @@ void CVideoPlayer::OnExit()
   if (!m_bAbortRequest)
     CLog::Log(LOGNOTICE, "VideoPlayer: eof, waiting for queues to empty");
 
+  CFileItem fileItem(m_item);
+  UpdateFileItemStreamDetails(fileItem);
+
   CloseStream(m_CurrentAudio, !m_bAbortRequest);
   CloseStream(m_CurrentVideo, !m_bAbortRequest);
   CloseStream(m_CurrentTeletext,!m_bAbortRequest);
@@ -2459,7 +2463,6 @@ void CVideoPlayer::OnExit()
   CServiceBroker::GetWinSystem().UnregisterRenderLoop(this);
 
   IPlayerCallback *cb = &m_callback;
-  CFileItem fileItem(m_item);
   CVideoSettings vs = m_processInfo->GetVideoSettings();
   m_outboundEvents->Submit([=]() {
     cb->StoreVideoSettings(fileItem, vs);
@@ -2522,6 +2525,7 @@ void CVideoPlayer::HandleMessages()
 
       IPlayerCallback *cb = &m_callback;
       CFileItem fileItem(m_item);
+      UpdateFileItemStreamDetails(fileItem);
       CVideoSettings vs = m_processInfo->GetVideoSettings();
       m_outboundEvents->Submit([=]() {
         cb->StoreVideoSettings(fileItem, vs);
@@ -2984,6 +2988,8 @@ void CVideoPlayer::HandleMessages()
       CLog::Log(LOGDEBUG, "CVideoPlayer - CDVDMsg::PLAYER_ABORT");
       m_bAbortRequest = true;
     }
+    else if (pMsg->IsType(CDVDMsg::PLAYER_SET_UPDATE_STREAM_DETAILS))
+      m_UpdateStreamDetails = true;
 
     pMsg->Release();
   }
@@ -4893,6 +4899,24 @@ void CVideoPlayer::OnResetDisplay()
   m_displayLost = false;
 }
 
+void CVideoPlayer::UpdateFileItemStreamDetails(CFileItem& item)
+{
+  if (!m_UpdateStreamDetails)
+    return;
+  m_UpdateStreamDetails = false;
+
+  CLog::Log(LOGDEBUG, "CVideoPlayer: updating file item stream details with current streams");
+
+  VideoStreamInfo videoInfo;
+  AudioStreamInfo audioInfo;
+  SubtitleStreamInfo subtitleInfo;
+  GetVideoStreamInfo(CURRENT_STREAM, videoInfo);
+  GetAudioStreamInfo(CURRENT_STREAM, audioInfo);
+  GetSubtitleStreamInfo(CURRENT_STREAM, subtitleInfo);
+
+  item.GetVideoInfoTag()->m_streamDetails.SetStreams(videoInfo, m_processInfo->GetMaxTime()/1000, audioInfo, subtitleInfo);
+}
+
 //------------------------------------------------------------------------------
 // content related methods
 //------------------------------------------------------------------------------
@@ -5069,3 +5093,7 @@ int CVideoPlayer::GetProgramsCount()
   return m_programs.size();
 }
 
+void CVideoPlayer::SetUpdateStreamDetails()
+{
+  m_messenger.Put(new CDVDMsg(CDVDMsg::PLAYER_SET_UPDATE_STREAM_DETAILS));
+}

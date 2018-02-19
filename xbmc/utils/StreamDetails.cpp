@@ -25,6 +25,7 @@
 #include "LangInfo.h"
 #include "utils/LangCodeExpander.h"
 #include "utils/Archive.h"
+#include "cores/VideoPlayer/Interface/StreamInfo.h"
 
 const float VIDEOASPECT_EPSILON = 0.025f;
 
@@ -39,6 +40,18 @@ void CStreamDetail::Serialize(CVariant &value) const
 
 CStreamDetailVideo::CStreamDetailVideo() :
   CStreamDetail(CStreamDetail::VIDEO), m_iWidth(0), m_iHeight(0), m_fAspect(0.0), m_iDuration(0)
+{
+}
+
+CStreamDetailVideo::CStreamDetailVideo(const VideoStreamInfo &info, int duration) :
+  CStreamDetail(CStreamDetail::VIDEO),
+  m_iWidth(info.width),
+  m_iHeight(info.height),
+  m_fAspect(info.videoAspectRatio),
+  m_iDuration(duration),
+  m_strCodec(info.codecName),
+  m_strStereoMode(info.stereoMode),
+  m_strLanguage(info.language)
 {
 }
 
@@ -92,6 +105,14 @@ CStreamDetailAudio::CStreamDetailAudio() :
 {
 }
 
+CStreamDetailAudio::CStreamDetailAudio(const AudioStreamInfo &info) :
+  CStreamDetail(CStreamDetail::AUDIO),
+  m_iChannels(info.channels),
+  m_strCodec(info.codecName),
+  m_strLanguage(info.language)
+{
+}
+
 void CStreamDetailAudio::Archive(CArchive& ar)
 {
   CStreamDetail::Archive(ar);
@@ -133,6 +154,12 @@ bool CStreamDetailAudio::IsWorseThan(CStreamDetail *that)
 
 CStreamDetailSubtitle::CStreamDetailSubtitle() :
   CStreamDetail(CStreamDetail::SUBTITLE)
+{
+}
+
+CStreamDetailSubtitle::CStreamDetailSubtitle(const SubtitleStreamInfo &info) :
+  CStreamDetail(CStreamDetail::SUBTITLE),
+  m_strLanguage(info.language)
 {
 }
 
@@ -610,4 +637,19 @@ std::string CStreamDetails::VideoAspectToAspectDescription(float fAspect)
   else if (fAspect < 2.6529f) // sqrt(2.55*2.76)
     return "2.55";
   return "2.76";
+}
+
+bool CStreamDetails::SetStreams(const VideoStreamInfo& videoInfo, int videoDuration, const AudioStreamInfo& audioInfo, const SubtitleStreamInfo& subtitleInfo)
+{
+  if (!videoInfo.valid && !audioInfo.valid && !subtitleInfo.valid)
+    return false;
+  Reset();
+  if (videoInfo.valid)
+    AddStream(new CStreamDetailVideo(videoInfo, videoDuration));
+  if (audioInfo.valid)
+    AddStream(new CStreamDetailAudio(audioInfo));
+  if (subtitleInfo.valid)
+    AddStream(new CStreamDetailSubtitle(subtitleInfo));
+  DetermineBestStreams();
+  return true;
 }
