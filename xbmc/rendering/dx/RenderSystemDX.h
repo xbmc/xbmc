@@ -71,6 +71,7 @@ public:
   bool SupportsStereo(RENDER_STEREO_MODE mode) const override;
   bool TestRender() override;
   void Project(float &x, float &y, float &z) override;
+  bool SupportsNPOT(bool dxt) const override;
 
   // IDeviceNotify overrides
   void OnDXDeviceLost() override;
