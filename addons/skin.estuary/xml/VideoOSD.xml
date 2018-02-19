@@ -161,9 +161,7 @@
 						<include content="OSDButton">
 							<param name="texture" value="osd/fullscreen/buttons/settings-subtitle.png"/>
 						</include>
-						<onclick>SetProperty(settingslist_content,subtitle,home)</onclick>
-						<onclick>SetProperty(settingslist_header,$LOCALIZE[24012],home)</onclick>
-						<onclick>ActivateWindow(1101)</onclick>
+						<onclick>ActivateWindow(osdsubtitlesettings)</onclick>
 						<visible>!VideoPlayer.Content(LiveTV) | VideoPlayer.HasSubtitles</visible>
 					</control>
 					<control type="radiobutton" id="255">

@@ -31,7 +31,7 @@
 #include "guilib/GUISliderControl.h"
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogKaiToast.h"
-#include "video/dialogs/GUIDialogAudioSubtitleSettings.h"
+#include "video/dialogs/GUIDialogAudioSettings.h"
 #include "cores/VideoPlayer/VideoRenderers/OverlayRendererGUI.h"
 #include "Application.h"
 #include "utils/LangCodeExpander.h"
@@ -486,9 +486,9 @@ void CPlayerController::OnSliderChange(void *data, CGUISliderControl *slider)
   else if (m_sliderAction == ACTION_VOLAMP_UP ||
           m_sliderAction == ACTION_VOLAMP_DOWN ||
           m_sliderAction == ACTION_VOLAMP)
-    slider->SetTextValue(CGUIDialogAudioSubtitleSettings::FormatDecibel(slider->GetFloatValue()));
+    slider->SetTextValue(CGUIDialogAudioSettings::FormatDecibel(slider->GetFloatValue()));
   else
-    slider->SetTextValue(CGUIDialogAudioSubtitleSettings::FormatDelay(slider->GetFloatValue(), 0.025f));
+    slider->SetTextValue(CGUIDialogAudioSettings::FormatDelay(slider->GetFloatValue(), 0.025f));
 
   if (g_application.GetAppPlayer().HasPlayer())
   {
