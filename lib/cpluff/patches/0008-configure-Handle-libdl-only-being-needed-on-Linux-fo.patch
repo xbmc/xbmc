@@ -1,0 +1,27 @@
+From 40e6a7d6aa122b99b65ad0f034ee2d90214779a9 Mon Sep 17 00:00:00 2001
+From: "h.udo" <hudokkow@gmail.com>
+Date: Thu, 20 Oct 2016 15:05:58 +0100
+Subject: [PATCH 08/12] [configure] Handle libdl only being needed on Linux for
+ dlopen
+
+---
+ configure.ac | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/configure.ac b/configure.ac
+index 0700af9..c391dfb 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -179,7 +179,8 @@ dlmechanism=none
+ if test "$with_dlopen" != no && test "$with_libltdl" != yes; then
+   AC_CHECK_HEADER([dlfcn.h],
+     AC_CHECK_LIB([dl], [dlopen],
+-      [LIBS_DL="-ldl $LIBS_DL"; dlmechanism=dlopen]))
++      [LIBS_DL="-ldl $LIBS_DL"; dlmechanism=dlopen],
++        AC_CHECK_LIB([c], [dlopen], [dlmechanism=dlopen])))
+ fi
+ if test "$dlmechanism" = none && test "$with_libltdl" != no && test "$with_dlopen" != yes; then  
+   AC_CHECK_HEADER([ltdl.h],
+-- 
+2.14.1
+

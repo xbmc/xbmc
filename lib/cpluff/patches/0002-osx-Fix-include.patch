@@ -1,0 +1,25 @@
+From 838c4364ee95eae2ef565406b89a8e62bbe969f1 Mon Sep 17 00:00:00 2001
+From: "h.udo" <hudokkow@gmail.com>
+Date: Thu, 20 Oct 2016 14:03:00 +0100
+Subject: [PATCH 02/12] [osx] Fix include
+
+---
+ libcpluff/cpluff.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/libcpluff/cpluff.h b/libcpluff/cpluff.h
+index 6b238bc..a798ee4 100644
+--- a/libcpluff/cpluff.h
++++ b/libcpluff/cpluff.h
+@@ -38,7 +38,7 @@
+  * Preprocessor defines.
+  */
+  
+-#include <cpluffdef.h>
++#include "cpluffdef.h"
+ 
+ #ifdef __cplusplus
+ extern "C" {
+-- 
+2.14.1
+

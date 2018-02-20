@@ -1,0 +1,28 @@
+From c16649382e3b89264aada598b07a3980aa7e42e4 Mon Sep 17 00:00:00 2001
+From: "h.udo" <hudokkow@gmail.com>
+Date: Fri, 2 Feb 2018 20:48:30 +0000
+Subject: [PATCH 12/12] Kill implicit-function-declaration warning
+
+---
+ console/cmdinput_basic.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/console/cmdinput_basic.c b/console/cmdinput_basic.c
+index 033c35d..71977fe 100644
+--- a/console/cmdinput_basic.c
++++ b/console/cmdinput_basic.c
+@@ -25,10 +25,10 @@
+ 
+ #include <stdio.h>
+ #include <string.h>
++#include "console.h"
+ #if defined(HAVE_ISATTY_FILENO)
+ #include <unistd.h>
+ #endif
+-#include "console.h"
+ 
+ #define CMDLINE_SIZE 256
+ 
+-- 
+2.14.1
+

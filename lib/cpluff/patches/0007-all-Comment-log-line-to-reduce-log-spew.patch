@@ -1,0 +1,25 @@
+From e06c8af2d8141b675f2719edf48af84e1445e1b5 Mon Sep 17 00:00:00 2001
+From: "h.udo" <hudokkow@gmail.com>
+Date: Thu, 20 Oct 2016 15:01:11 +0100
+Subject: [PATCH 07/12] [all] Comment log line to reduce log spew
+
+---
+ libcpluff/pinfo.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/libcpluff/pinfo.c b/libcpluff/pinfo.c
+index 29c629b..6262c74 100644
+--- a/libcpluff/pinfo.c
++++ b/libcpluff/pinfo.c
+@@ -198,7 +198,7 @@ CP_C_API cp_plugin_info_t * cp_get_plugin_info(cp_context_t *context, const char
+ 		// Lookup plug-in information
+ 		if (id != NULL) {
+ 			if ((node = hash_lookup(context->env->plugins, id)) == NULL) {
+-				cpi_warnf(context, N_("Could not return information about unknown plug-in %s."), id);
++				// cpi_warnf(context, N_("Could not return information about unknown plug-in %s."), id);
+ 				status = CP_ERR_UNKNOWN;
+ 				break;
+ 			}
+-- 
+2.14.1
+
