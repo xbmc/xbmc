@@ -122,6 +122,7 @@ bool CWinSystemWin10DX::ResizeWindow(int newWidth, int newHeight, int newLeft, i
 
 void CWinSystemWin10DX::OnMove(int x, int y)
 {
+  m_deviceResources->SetWindowPos(m_coreWindow->Bounds);
 }
 
 bool CWinSystemWin10DX::DPIChanged(WORD dpi, RECT windowRect) const
