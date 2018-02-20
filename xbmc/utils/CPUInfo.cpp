@@ -157,7 +157,11 @@ CCPUInfo::CCPUInfo(void)
     m_cores[core.m_id] = core;
   }
 #elif defined(TARGET_WINDOWS_STORE)
-  CLog::Log(LOGDEBUG, "%s is not implemented", __FUNCTION__);
+  SYSTEM_INFO siSysInfo;
+  GetNativeSystemInfo(&siSysInfo);
+  m_cpuCount = siSysInfo.dwNumberOfProcessors;
+  m_cpuModel = "Unknown";
+
 #elif defined(TARGET_WINDOWS_DESKTOP)
   using KODI::PLATFORM::WINDOWS::FromW;
 
@@ -688,18 +692,10 @@ const CoreInfo &CCPUInfo::GetCoreInfo(int nCoreId)
 bool CCPUInfo::readProcStat(unsigned long long& user, unsigned long long& nice,
     unsigned long long& system, unsigned long long& idle, unsigned long long& io)
 {
-#if defined(TARGET_WINDOWS_STORE)
-  // introduced in 10.0.15063.0
-  // auto diagnostic = Windows::System::Diagnostics::SystemDiagnosticInfo::GetForCurrentSystem();
-  // auto usage = diagnostic->CpuUsage;
- 
-  // user = report->UserTime.Duration;
-  // system = report->KernelTime.Duration;
-  // idle = report->IdleTime.Duration;
+#if defined(TARGET_WINDOWS)
   nice = 0;
   io = 0;
-  return false;
-#elif defined (TARGET_WINDOWS_DESKTOP) 
+#if defined (TARGET_WINDOWS_DESKTOP) 
   FILETIME idleTime;
   FILETIME kernelTime;
   FILETIME userTime;
@@ -710,8 +706,6 @@ bool CCPUInfo::readProcStat(unsigned long long& user, unsigned long long& nice,
   // returned "kernelTime" includes "idleTime"
   system = (uint64_t(kernelTime.dwHighDateTime) << 32) + uint64_t(kernelTime.dwLowDateTime) - idle;
   user = (uint64_t(userTime.dwHighDateTime) << 32) + uint64_t(userTime.dwLowDateTime);
-  nice = 0;
-  io = 0;
 
   if (m_cpuFreqCounter && PdhCollectQueryData(m_cpuQueryLoad) == ERROR_SUCCESS)
   {
@@ -744,6 +738,31 @@ bool CCPUInfo::readProcStat(unsigned long long& user, unsigned long long& nice,
   else
     for (std::map<int, CoreInfo>::iterator it = m_cores.begin(); it != m_cores.end(); ++it)
       it->second.m_fPct = double(m_lastUsedPercentage); // use CPU average as fallback
+#endif // TARGET_WINDOWS_DESKTOP
+#if defined(TARGET_WINDOWS_STORE) && defined(NTDDI_WIN10_RS2) && (NTDDI_VERSION >= NTDDI_WIN10_RS2)
+  // introduced in 10.0.15063.0
+  if (Windows::Foundation::Metadata::ApiInformation::IsTypePresent("Windows.System.Diagnostics.SystemDiagnosticInfo"))
+  {
+    try
+    {
+      auto diagnostic = Windows::System::Diagnostics::SystemDiagnosticInfo::GetForCurrentSystem();
+      auto usage = diagnostic->CpuUsage;
+      auto report = usage->GetReport();
+
+      user = report->UserTime.Duration;
+      idle = report->IdleTime.Duration;
+      system = report->KernelTime.Duration - idle;
+      return true;
+    }
+    catch (...)
+    {
+      // requires Win10 CU (10.0.15063) or later
+      return false;
+    }
+  }
+  else
+#endif // TARGET_WINDOWS_STORE
+    return false;
 #elif defined(TARGET_FREEBSD)
   long *cptimes;
   size_t len;
@@ -864,16 +883,22 @@ bool CCPUInfo::readProcStat(unsigned long long& user, unsigned long long& nice,
 std::string CCPUInfo::GetCoresUsageString() const
 {
   std::string strCores;
-  for (std::map<int, CoreInfo>::const_iterator it = m_cores.begin(); it != m_cores.end(); ++it)
+  if (!m_cores.empty())
   {
-    if (!strCores.empty())
-      strCores += ' ';
-    if (it->second.m_fPct < 10.0)
-      strCores += StringUtils::Format("CPU%d: %1.1f%%", it->first, it->second.m_fPct);
-    else
-      strCores += StringUtils::Format("CPU%d: %3.0f%%", it->first, it->second.m_fPct);
+    for (std::map<int, CoreInfo>::const_iterator it = m_cores.begin(); it != m_cores.end(); ++it)
+    {
+      if (!strCores.empty())
+        strCores += ' ';
+      if (it->second.m_fPct < 10.0)
+        strCores += StringUtils::Format("CPU%d: %1.1f%%", it->first, it->second.m_fPct);
+      else
+        strCores += StringUtils::Format("CPU%d: %3.0f%%", it->first, it->second.m_fPct);
+    }
   }
-
+  else 
+  {
+    strCores += StringUtils::Format("%3.0f%%", double(m_lastUsedPercentage));
+  }
   return strCores;
 }
 
