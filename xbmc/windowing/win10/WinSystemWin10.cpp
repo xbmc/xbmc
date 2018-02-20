@@ -29,13 +29,13 @@
 #include "platform/win32/CharsetConverter.h"
 #include "powermanagement/win10/Win10PowerSyscall.h"
 #include "rendering/dx/DirectXHelper.h"
+#include "rendering/dx/RenderContext.h"
 #include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
-#include "utils/CharsetConverter.h"
 #include "utils/SystemInfo.h"
 #include "windowing/windows/VideoSyncD3D.h"
 #include "WinEventsWin10.h"
@@ -45,6 +45,8 @@
 
 #include <tpcshrd.h>
 #include <ppltasks.h>
+
+using namespace Windows::UI::ViewManagement;
 
 CWinSystemWin10::CWinSystemWin10()
   : CWinSystemBase()
@@ -174,9 +176,12 @@ void CWinSystemWin10::FinishWindowResize(int newWidth, int newHeight)
   m_nWidth = newWidth;
   m_nHeight = newHeight;
 
-  auto appView = Windows::UI::ViewManagement::ApplicationView::GetForCurrentView();
-  appView->PreferredLaunchViewSize = Windows::Foundation::Size(m_nWidth, m_nHeight);
-  appView->PreferredLaunchWindowingMode = Windows::UI::ViewManagement::ApplicationViewWindowingMode::PreferredLaunchViewSize;
+  float dpi = DX::DeviceResources::Get()->GetDpi();
+  int dipsWidth = round(DX::ConvertPixelsToDips(m_nWidth, dpi));
+  int dipsHeight = round(DX::ConvertPixelsToDips(m_nHeight, dpi));
+
+  ApplicationView::PreferredLaunchViewSize = Windows::Foundation::Size(dipsWidth, dipsHeight);
+  ApplicationView::PreferredLaunchWindowingMode = ApplicationViewWindowingMode::PreferredLaunchViewSize;
 }
 
 void CWinSystemWin10::AdjustWindow(bool forceResize)
@@ -191,7 +196,7 @@ void CWinSystemWin10::AdjustWindow(bool forceResize)
     if (!isInFullscreen)
     {
       if (appView->TryEnterFullScreenMode())
-        appView->PreferredLaunchWindowingMode = Windows::UI::ViewManagement::ApplicationViewWindowingMode::FullScreen;
+        ApplicationView::PreferredLaunchWindowingMode = ApplicationViewWindowingMode::FullScreen;
     }
   }
   else // m_state == WINDOW_STATE_WINDOWED
@@ -203,16 +208,21 @@ void CWinSystemWin10::AdjustWindow(bool forceResize)
 
     int viewWidth = appView->VisibleBounds.Width;
     int viewHeight = appView->VisibleBounds.Height;
-    if (viewHeight != m_nHeight || viewWidth != m_nWidth)
+
+    float dpi = DX::DeviceResources::Get()->GetDpi();
+    int dipsWidth = round(DX::ConvertPixelsToDips(m_nWidth, dpi));
+    int dipsHeight = round(DX::ConvertPixelsToDips(m_nHeight, dpi));
+
+    if (viewHeight != dipsHeight || viewWidth != dipsWidth)
     {
-      if (!appView->TryResizeView(Windows::Foundation::Size(m_nWidth, m_nHeight)))
+      if (!appView->TryResizeView(Windows::Foundation::Size(dipsWidth, dipsHeight)))
       {
         CLog::LogF(LOGDEBUG, __FUNCTION__, "resizing ApplicationView failed.");
       }
     }
 
-    appView->PreferredLaunchViewSize = Windows::Foundation::Size(m_nWidth, m_nHeight);
-    appView->PreferredLaunchWindowingMode = Windows::UI::ViewManagement::ApplicationViewWindowingMode::PreferredLaunchViewSize;
+    ApplicationView::PreferredLaunchViewSize = Windows::Foundation::Size(dipsWidth, dipsHeight);
+    ApplicationView::PreferredLaunchWindowingMode = ApplicationViewWindowingMode::PreferredLaunchViewSize;
   }
 }
 
@@ -517,7 +527,7 @@ bool CWinSystemWin10::UpdateResolutionsInternal()
   if (dispatcher->HasThreadAccess)
     handler->Invoke();
   else
-    Concurrency::create_task(dispatcher->RunAsync(Windows::UI::Core::CoreDispatcherPriority::High, handler)).wait();
+    Wait(dispatcher->RunAsync(Windows::UI::Core::CoreDispatcherPriority::High, handler));
 
   return true;
 }
@@ -632,14 +642,11 @@ std::string CWinSystemWin10::GetClipboardText()
   auto contentView = Windows::ApplicationModel::DataTransfer::Clipboard::GetContent();
   if (contentView->Contains(Windows::ApplicationModel::DataTransfer::StandardDataFormats::Text))
   {
-    Concurrency::create_task(contentView->GetTextAsync()).then([&unicode_text](Platform::String^ str)
-    {
-      unicode_text.append(str->Data());
-    }).wait();
+    auto text = Wait(contentView->GetTextAsync());
+    unicode_text.append(text->Data());
   }
 
-  g_charsetConverter.wToUTF8(unicode_text, utf8_text);
-  return utf8_text;
+  return KODI::PLATFORM::WINDOWS::FromW(unicode_text);
 }
 
 void CWinSystemWin10::NotifyAppFocusChange(bool bGaining)
@@ -649,10 +656,6 @@ void CWinSystemWin10::NotifyAppFocusChange(bool bGaining)
 
 void CWinSystemWin10::UpdateStates(bool fullScreen)
 {
-  //m_fullscreenState = CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN)
-  //  ? WINDOW_FULLSCREEN_STATE_FULLSCREEN_WINDOW
-  //  : WINDOW_FULLSCREEN_STATE_FULLSCREEN;
-
   m_fullscreenState = WINDOW_FULLSCREEN_STATE_FULLSCREEN_WINDOW; // currently only this allowed
   m_windowState = WINDOW_WINDOW_STATE_WINDOWED; // currently only this allowed
 }
