@@ -84,7 +84,6 @@ void App::Initialize(CoreApplicationView^ applicationView)
 // Called when the CoreWindow object is created (or re-created).
 void App::SetWindow(CoreWindow^ window)
 {
-  DX::CoreWindowHolder::Get()->SetWindow(window);
 }
 
 // Initializes scene resources, or loads a previously saved app state.
