@@ -28,6 +28,7 @@
 #include "settings/AdvancedSettings.h"
 #include "platform/Environment.h"
 #include "utils/log.h"
+#include "utils/SystemInfo.h"
 #include "windowing/win10/WinEventsWin10.h"
 #include "Win10App.h"
 
@@ -105,6 +106,10 @@ void App::Run()
 
     CAppParamParser appParamParser;
     appParamParser.Parse(m_argv.data(), m_argv.size());
+
+    if (CSysInfo::GetWindowsDeviceFamily() == CSysInfo::Xbox)
+      g_application.SetStandAlone(true);
+
     // Create and run the app
     XBMC_Run(true, appParamParser);
   }
