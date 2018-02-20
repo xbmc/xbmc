@@ -25,6 +25,9 @@ namespace KODI
 {
 namespace RETRO
 {
+  /*!
+   * \brief Video settings provided by the rendering system
+   */
   class CRenderVideoSettings
   {
   public:

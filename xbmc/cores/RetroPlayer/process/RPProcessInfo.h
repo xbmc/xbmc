@@ -42,18 +42,46 @@ namespace RETRO
   class CRPProcessInfo;
   class IRenderBufferPool;
 
+  /*!
+   * \brief Process info factory
+   */
   using CreateRPProcessControl = CRPProcessInfo* (*)();
 
+  /*!
+   * \brief Rendering factory
+   */
   class IRendererFactory
   {
   public:
     virtual ~IRendererFactory() = default;
 
+    /*!
+     * \brief Get a description name of the rendering system
+     */
     virtual std::string RenderSystemName() const = 0;
+
+    /*!
+     * \brief Create a renderer
+     *
+     * \param settings The renderer's initial settings
+     * \param context The rendering context
+     * \param bufferPool The buffer pool to which buffers are returned
+     */
     virtual CRPBaseRenderer *CreateRenderer(const CRenderSettings &settings, CRenderContext &context, std::shared_ptr<IRenderBufferPool> bufferPool) = 0;
+
+    /*!
+     * \brief Create buffer pools to manager buffers
+     *
+     * \param context The rendering context shared with the buffer pools
+     *
+     * \return The buffer pools supported by the rendering system
+     */
     virtual RenderBufferPoolVector CreateBufferPools(CRenderContext &context) = 0;
   };
 
+  /*!
+   * \brief Player process info
+   */
   class CRPProcessInfo
   {
   public:
@@ -63,37 +91,97 @@ namespace RETRO
 
     virtual ~CRPProcessInfo();
 
+    /*!
+     * \brief Get the descriptive name of the platform
+     *
+     * \return The name of the platform as set by windowing
+     */
     const std::string &GetPlatformName() const { return m_platformName; }
+
+    /*!
+     * \brief Get the descriptive name of the rendering system
+     *
+     * \param renderBufferPool A pool belonging to the rendering system
+     *
+     * \return The name of the rendering system as set by windowing
+     */
     std::string GetRenderSystemName(IRenderBufferPool *renderBufferPool) const;
 
+    /*!
+     * \brief Create a renderer
+     *
+     * \param renderBufferPool The buffer pool used to return render buffers
+     * \param renderSettings The settings for this renderer
+     *
+     * \return The renderer, or nullptr on failure
+     */
     CRPBaseRenderer *CreateRenderer(IRenderBufferPool *renderBufferPool, const CRenderSettings &renderSettings);
 
+    /*!
+     * \brief Set data cache
+     */
     void SetDataCache(CDataCacheCore *cache);
+
+    /*!
+     * \brief Reset data cache info
+     */
     void ResetInfo();
 
-    // rendering info
-    CRenderContext &GetRenderContext() { return *m_renderContext; }
-    CRenderBufferManager &GetBufferManager() { return *m_renderBufferManager; }
-    bool HasScalingMethod(ESCALINGMETHOD scalingMethod) const;
-    ESCALINGMETHOD GetDefaultScalingMethod() const { return m_defaultScalingMethod; }
+    /// @name Rendering functions
+    ///{
 
-    // player video
+    /*!
+     * \brief Get the context shared by the rendering system
+     */
+    CRenderContext &GetRenderContext() { return *m_renderContext; }
+
+    /*!
+     * \brief Get the buffer manager that owns the buffer pools
+     */
+    CRenderBufferManager &GetBufferManager() { return *m_renderBufferManager; }
+
+    /*!
+     * \brief Check if a buffer pool supports the given scaling method
+     */
+    bool HasScalingMethod(ESCALINGMETHOD scalingMethod) const;
+
+    /*!
+     * \brief Get the default scaling method for this rendering system
+     */
+    ESCALINGMETHOD GetDefaultScalingMethod() const { return m_defaultScalingMethod; }
+    ///}
+
+    /// @name Player video info
+    ///{
     void SetVideoPixelFormat(AVPixelFormat pixFormat);
     void SetVideoDimensions(int width, int height);
     void SetVideoFps(float fps);
+    ///}
 
-    // player audio info
+    /// @name Player audio info
+    ///{
     void SetAudioChannels(const std::string &channels);
     void SetAudioSampleRate(int sampleRate);
     void SetAudioBitsPerSample(int bitsPerSample);
+    ///}
 
-    // player states
+    /// @name Player states
+    ///{
     void SetSpeed(float speed);
     void SetPlayTimes(time_t start, int64_t current, int64_t min, int64_t max);
+    ///}
 
   protected:
+    /*!
+     * \brief Constructor
+     *
+     * \param platformName A descriptive name of the platform
+     */
     CRPProcessInfo(std::string platformName);
 
+    /*!
+     * \brief Get all scaling methods available to the rendering system
+     */
     static std::vector<ESCALINGMETHOD> GetScalingMethods();
 
     // Static factories
@@ -104,7 +192,7 @@ namespace RETRO
     // Construction parameters
     const std::string m_platformName;
 
-    // Process info parameters
+    // Info parameters
     CDataCacheCore *m_dataCache = nullptr;
 
     // Rendering parameters
