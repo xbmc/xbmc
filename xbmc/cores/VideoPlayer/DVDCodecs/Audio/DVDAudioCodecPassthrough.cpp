@@ -145,7 +145,7 @@ bool CDVDAudioCodecPassthrough::AddData(const DemuxPacket &packet)
 
     if (used != iSize)
     {
-      if (m_backlogBufferSize < (iSize - used))
+      if (m_backlogBufferSize < static_cast<unsigned int>(iSize - used))
       {
         m_backlogBufferSize = std::max(61440, iSize - used);
         m_backlogBuffer = static_cast<uint8_t*>(realloc(m_backlogBuffer, m_backlogBufferSize));
