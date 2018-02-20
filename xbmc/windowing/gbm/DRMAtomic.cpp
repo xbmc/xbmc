@@ -190,6 +190,12 @@ void CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool video
     }
   }
 
+  if (flags & DRM_MODE_ATOMIC_ALLOW_MODESET)
+  {
+    if (drmModeDestroyPropertyBlob(m_fd, blob_id) != 0)
+      CLog::Log(LOGERROR, "CDRMAtomic::%s - failed to destroy property blob: %s", __FUNCTION__, strerror(errno));
+  }
+
   drmModeAtomicFree(m_req);
   m_req = drmModeAtomicAlloc();
 }
