@@ -25,6 +25,7 @@
 #include "guilib/gui3d.h"
 #include "guilib/GraphicContext.h"
 #include "messaging/ApplicationMessenger.h"
+#include "platform/win10/AsyncHelpers.h"
 #include "platform/win10/input/RemoteControlXbox.h"
 #include "platform/win32/CharsetConverter.h"
 #include "powermanagement/win10/Win10PowerSyscall.h"
@@ -43,9 +44,14 @@
 
 #pragma pack(push,8)
 
+#include <collection.h>
 #include <tpcshrd.h>
 #include <ppltasks.h>
 
+using namespace Windows::Graphics::Display;
+#if defined(NTDDI_WIN10_RS2) && (NTDDI_VERSION >= NTDDI_WIN10_RS2)
+using namespace Windows::Graphics::Display::Core;
+#endif
 using namespace Windows::UI::ViewManagement;
 
 CWinSystemWin10::CWinSystemWin10()
@@ -275,7 +281,7 @@ bool CWinSystemWin10::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool 
   }
 
   m_IsAlteringWindow = true;
-  //ReleaseBackBuffer();
+  ReleaseBackBuffer();
 
   if (changeScreen)
   {
@@ -332,7 +338,7 @@ bool CWinSystemWin10::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool 
   if (changeScreen)
     CenterCursor();
 
-  //CreateBackBuffer();
+  CreateBackBuffer();
   m_IsAlteringWindow = false;
   return true;
 }
@@ -405,9 +411,61 @@ bool CWinSystemWin10::ChangeResolution(const RESOLUTION_INFO& res, bool forceCha
   if (!details)
     return false;
 
-  CLog::Log(LOGDEBUG, "%s is not implemented", __FUNCTION__);
+#if defined(NTDDI_WIN10_RS2) && (NTDDI_VERSION >= NTDDI_WIN10_RS2)
+  if (Windows::Foundation::Metadata::ApiInformation::IsTypePresent("Windows.Graphics.Display.Core.HdmiDisplayInformation"))
+  {
+    bool changed = false;
+    auto hdmiInfo = HdmiDisplayInformation::GetForCurrentView();
+    if (hdmiInfo != nullptr)
+    {
+      // default mode not in list of supported display modes
+      if (res.iScreenWidth == details->ScreenWidth && res.iScreenHeight == details->ScreenHeight
+        && fabs(res.fRefreshRate - details->RefreshRate) <= 0.00001)
+      {
+        Wait(hdmiInfo->SetDefaultDisplayModeAsync());
+        changed = true;
+      }
+      else
+      {
+        bool needStereo = g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_HARDWAREBASED;
+        auto hdmiModes = hdmiInfo->GetSupportedDisplayModes();
 
-  return true;
+        HdmiDisplayMode^ selected = nullptr;
+        for (auto mode : Windows::Foundation::Collections::to_vector(hdmiModes))
+        {
+          if (res.iScreenWidth == mode->ResolutionWidthInRawPixels && res.iScreenHeight == mode->ResolutionHeightInRawPixels
+            && fabs(res.fRefreshRate - mode->RefreshRate) <= 0.00001)
+          {
+            selected = mode;
+            if (needStereo == mode->StereoEnabled)
+              break;
+          }
+        }
+
+        if (selected != nullptr)
+        {
+          changed = Wait(hdmiInfo->RequestSetCurrentDisplayModeAsync(selected));
+        }
+      }
+    }
+
+    // changing display mode doesn't cause OnResize event
+    // for CoreWindow, so we "emulate" it manually
+    if (changed)
+    {
+      float dpi = DisplayInformation::GetForCurrentView()->LogicalDpi;
+      float dipsW = DX::ConvertPixelsToDips(m_nWidth, dpi);
+      float dipsH = DX::ConvertPixelsToDips(m_nHeight, dpi);
+
+      DX::Windowing().OnResize(dipsW, dipsH);
+      dynamic_cast<CWinEventsWin10*>(m_winEvents.get())->UpdateWindowSize();
+    }
+    return changed;
+  }
+#endif
+
+  CLog::LogFunction(LOGDEBUG, __FUNCTION__, "Not supported.");
+  return false;
 }
 
 void CWinSystemWin10::UpdateResolutions()
@@ -437,6 +495,24 @@ void CWinSystemWin10::UpdateResolutions()
 
   UpdateDesktopResolution(CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP), 0, w, h, refreshRate, dwFlags);
   CLog::Log(LOGNOTICE, "Primary mode: %s", CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP).strMode.c_str());
+
+#if defined(NTDDI_WIN10_RS2) && (NTDDI_VERSION >= NTDDI_WIN10_RS2)
+  if (Windows::Foundation::Metadata::ApiInformation::IsTypePresent("Windows.Graphics.Display.Core.HdmiDisplayInformation"))
+  {
+    auto hdmiInfo = HdmiDisplayInformation::GetForCurrentView();
+    if (hdmiInfo != nullptr)
+    {
+      auto hdmiModes = hdmiInfo->GetSupportedDisplayModes();
+      for (auto mode : Windows::Foundation::Collections::to_vector(hdmiModes))
+      {
+        RESOLUTION_INFO res;
+        UpdateDesktopResolution(res, 0, mode->ResolutionWidthInRawPixels, mode->ResolutionHeightInRawPixels, mode->RefreshRate, 0);
+        AddResolution(res);
+        CLog::Log(LOGNOTICE, "Additional mode: %s %s", res.strMode.c_str(), mode->Is2086MetadataSupported ? "(HDR)" : "");
+      }
+    }
+  }
+#endif
 
   // Desktop resolution of the other screens
   if (m_MonitorsInfo.size() >= 2)
@@ -491,24 +567,24 @@ bool CWinSystemWin10::UpdateResolutionsInternal()
   {
     MONITOR_DETAILS md = {};
 
-    auto displayInfo = Windows::Graphics::Display::DisplayInformation::GetForCurrentView();
+    auto displayInfo = DisplayInformation::GetForCurrentView();
     bool flipResolution = false;
     switch (displayInfo->NativeOrientation)
     {
-    case Windows::Graphics::Display::DisplayOrientations::Landscape:
+    case DisplayOrientations::Landscape:
       switch (displayInfo->CurrentOrientation)
       {
-      case Windows::Graphics::Display::DisplayOrientations::Portrait:
-      case Windows::Graphics::Display::DisplayOrientations::PortraitFlipped:
+      case DisplayOrientations::Portrait:
+      case DisplayOrientations::PortraitFlipped:
         flipResolution = true;
         break;
       }
       break;
-    case Windows::Graphics::Display::DisplayOrientations::Portrait:
+    case DisplayOrientations::Portrait:
       switch (displayInfo->CurrentOrientation)
       {
-      case Windows::Graphics::Display::DisplayOrientations::Landscape:
-      case Windows::Graphics::Display::DisplayOrientations::LandscapeFlipped:
+      case DisplayOrientations::Landscape:
+      case DisplayOrientations::LandscapeFlipped:
         flipResolution = true;
         break;
       }
@@ -517,8 +593,29 @@ bool CWinSystemWin10::UpdateResolutionsInternal()
     md.ScreenWidth = flipResolution ? displayInfo->ScreenHeightInRawPixels : displayInfo->ScreenWidthInRawPixels;
     md.ScreenHeight = flipResolution ? displayInfo->ScreenWidthInRawPixels : displayInfo->ScreenHeightInRawPixels;
 
-    // note that refresh rate information is not available on Win10 UWP
-    md.RefreshRate = 60;
+    if (Windows::Foundation::Metadata::ApiInformation::IsTypePresent("Windows.Graphics.Display.Core.HdmiDisplayInformation"))
+    {
+#if defined(NTDDI_WIN10_RS2) && (NTDDI_VERSION >= NTDDI_WIN10_RS2)
+      auto hdmiInfo = HdmiDisplayInformation::GetForCurrentView();
+      if (hdmiInfo != nullptr)
+      {
+        auto currentMode = hdmiInfo->GetCurrentDisplayMode();
+        md.RefreshRate = currentMode->RefreshRate;
+        md.Bpp = currentMode->BitsPerPixel;
+      }
+      else
+#endif
+      {
+        md.RefreshRate = 60.0;
+        md.Bpp = 24;
+      }
+    }
+    else
+    {
+      // note that refresh rate information is not available on Win10 UWP
+      md.RefreshRate = 60.0;
+      md.Bpp = 24;
+    }
     md.Interlaced = false;
 
     m_MonitorsInfo.push_back(md);
