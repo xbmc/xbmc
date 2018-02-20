@@ -136,8 +136,18 @@ void App::OnActivated(CoreApplicationView^ applicationView, IActivatedEventArgs^
   m_argv.clear();
   push_back(m_argv, std::string("dummy"));
 
+  if (args->Kind == ActivationKind::Launch)
+  {
+    auto launchArgs = static_cast<LaunchActivatedEventArgs^>(args);
+    if (launchArgs->PrelaunchActivated)
+    {
+      // opt-out of Prelaunch
+      CoreApplication::Exit();
+      return;
+    }
+  }
   // Check for protocol activation
-  if (args->Kind == ActivationKind::Protocol)
+  else if (args->Kind == ActivationKind::Protocol)
   {
     auto protocolArgs = static_cast< ProtocolActivatedEventArgs^>(args);
     Platform::String^ argval = protocolArgs->Uri->ToString();
