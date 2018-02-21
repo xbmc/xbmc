@@ -75,7 +75,7 @@ void CProcessInfo::ResetVideoCodecInfo()
   m_videoDecoderName = "unknown";
   m_videoDeintMethod = "unknown";
   m_videoPixelFormat = "unknown";
-  m_videoStereoMode = "mono";
+  m_videoStereoMode.clear();
   m_videoWidth = 0;
   m_videoHeight = 0;
   m_videoFPS = 0.0;
@@ -94,6 +94,7 @@ void CProcessInfo::ResetVideoCodecInfo()
     m_dataCache->SetVideoFps(m_videoFPS);
     m_dataCache->SetVideoDAR(m_videoDAR);
     m_dataCache->SetStateSeeking(m_stateSeeking);
+    m_dataCache->SetVideoStereoMode(m_videoStereoMode);
   }
 }
 
