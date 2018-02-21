@@ -26,38 +26,38 @@
 namespace XbmcThreads
 {
   // forward declare in preparation for the friend declaration
-  class RecursiveMutex
+  class CRecursiveMutex
   {
-    pthread_mutex_t mutex;
+    pthread_mutex_t m_mutex;
 
     // implementation is in threads/platform/pthreads/ThreadImpl.cpp
     static pthread_mutexattr_t* getRecursiveAttr();
 
   public:
 
-    RecursiveMutex(const RecursiveMutex&) = delete;
-    RecursiveMutex& operator=(const RecursiveMutex&) = delete;
+    CRecursiveMutex(const CRecursiveMutex&) = delete;
+    CRecursiveMutex& operator=(const CRecursiveMutex&) = delete;
 
-    inline RecursiveMutex() { pthread_mutex_init(&mutex,getRecursiveAttr()); }
+    inline CRecursiveMutex() { pthread_mutex_init(&m_mutex,getRecursiveAttr()); }
 
-    inline ~RecursiveMutex() { pthread_mutex_destroy(&mutex); }
+    inline ~CRecursiveMutex() { pthread_mutex_destroy(&m_mutex); }
 
-    inline void lock() { pthread_mutex_lock(&mutex); }
+    inline void lock() { pthread_mutex_lock(&m_mutex); }
 
-    inline void unlock() { pthread_mutex_unlock(&mutex); }
+    inline void unlock() { pthread_mutex_unlock(&m_mutex); }
 
-    inline bool try_lock() { return (pthread_mutex_trylock(&mutex) == 0); }
+    inline bool try_lock() { return (pthread_mutex_trylock(&m_mutex) == 0); }
 
     inline std::recursive_mutex::native_handle_type  native_handle()
     {
-      return &mutex;
+      return &m_mutex;
     }
   };
 }
 #elif (defined TARGET_WINDOWS)
 namespace XbmcThreads
 {
-  typedef std::recursive_mutex RecursiveMutex;
+  typedef std::recursive_mutex CRecursiveMutex;
 }
 #endif
 

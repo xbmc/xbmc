@@ -50,7 +50,7 @@ namespace XbmcThreads
     {
       pthread_mutexattr_init(&recursiveAttr);
       pthread_mutexattr_settype(&recursiveAttr,PTHREAD_MUTEX_RECURSIVE);
-#if !defined(__arm__) && !defined(TARGET_ANDROID)
+#if !defined(TARGET_ANDROID)
       pthread_mutexattr_setprotocol(&recursiveAttr,PTHREAD_PRIO_INHERIT);
 #endif
       alreadyCalled = true;
@@ -60,7 +60,7 @@ namespace XbmcThreads
 
   static bool recursiveAttrSet = setRecursiveAttr();
 
-  pthread_mutexattr_t* RecursiveMutex::getRecursiveAttr()
+  pthread_mutexattr_t* CRecursiveMutex::getRecursiveAttr()
   {
     if (!recursiveAttrSet) // this is only possible in the single threaded startup code
       recursiveAttrSet = setRecursiveAttr();
