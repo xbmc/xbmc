@@ -1,0 +1,644 @@
+From e3c3cf0fa229c3568f6c06cd4b507b60cc1629be Mon Sep 17 00:00:00 2001
+From: "h.udo" <hudokkow@gmail.com>
+Date: Thu, 20 Oct 2016 14:14:50 +0100
+Subject: [PATCH 03/12] [win32] Fix compile. Missing cpluff.dll will crash Kodi
+
+---
+ kazlib/hash.h               |   4 +
+ kazlib/list.h               |   4 +
+ libcpluff/cpluff.h          |   6 +-
+ libcpluff/internal.h        |   8 +-
+ libcpluff/pcontrol.c        |   3 +
+ libcpluff/psymbol.c         |   3 +
+ libcpluff/win32/cpluffdef.h | 212 ++++++++++++++++++++++++++++++++++++++++
+ libcpluff/win32/dirent.c    | 233 ++++++++++++++++++++++++++++++++++++++++++++
+ libcpluff/win32/dirent.h    |  61 ++++++++++++
+ 9 files changed, 532 insertions(+), 2 deletions(-)
+ create mode 100644 libcpluff/win32/cpluffdef.h
+ create mode 100644 libcpluff/win32/dirent.c
+ create mode 100644 libcpluff/win32/dirent.h
+
+diff --git a/kazlib/hash.h b/kazlib/hash.h
+index 1fbd246..50297ee 100644
+--- a/kazlib/hash.h
++++ b/kazlib/hash.h
+@@ -27,7 +27,11 @@
+ #ifndef HASH_H
+ #define HASH_H
+ 
++#ifdef _WIN32
++#include "../libcpluff/win32/cpluffdef.h"
++#else
+ #include "../libcpluff/cpluffdef.h"
++#endif
+ 
+ #include <limits.h>
+ #ifdef KAZLIB_SIDEEFFECT_DEBUG
+diff --git a/kazlib/list.h b/kazlib/list.h
+index c449acb..ccad262 100644
+--- a/kazlib/list.h
++++ b/kazlib/list.h
+@@ -27,7 +27,11 @@
+ #ifndef LIST_H
+ #define LIST_H
+ 
++#ifdef _WIN32
++#include "../libcpluff/win32/cpluffdef.h"
++#else
+ #include "../libcpluff/cpluffdef.h"
++#endif
+ 
+ #include <limits.h>
+ 
+diff --git a/libcpluff/cpluff.h b/libcpluff/cpluff.h
+index a798ee4..d497af3 100644
+--- a/libcpluff/cpluff.h
++++ b/libcpluff/cpluff.h
+@@ -37,8 +37,12 @@
+  * @defgroup cDefines Defines
+  * Preprocessor defines.
+  */
+- 
++
++#ifdef _WIN32
++#include "win32/cpluffdef.h"
++#else
+ #include "cpluffdef.h"
++#endif
+ 
+ #ifdef __cplusplus
+ extern "C" {
+diff --git a/libcpluff/internal.h b/libcpluff/internal.h
+index 91989e8..161ba6d 100644
+--- a/libcpluff/internal.h
++++ b/libcpluff/internal.h
+@@ -83,7 +83,13 @@ extern "C" {
+  * Macros
+  * ----------------------------------------------------------------------*/
+ 
+-#if defined(DLOPEN_POSIX)
++#if defined(_WIN32)
++#define DLHANDLE void *
++#define DLOPEN(name) LoadLibraryA(name)
++#define DLSYM(handle, symbol) GetProcAddress(handle, symbol)
++#define DLCLOSE(handle) CloseHandle(handle)
++#define DLERROR() "WIN32 - TODO"
++#elif defined(DLOPEN_POSIX)
+ #define DLHANDLE void *
+ #define DLOPEN(name) dlopen((name), RTLD_LAZY | RTLD_GLOBAL)
+ #define DLSYM(handle, symbol) dlsym((handle), (symbol))
+diff --git a/libcpluff/pcontrol.c b/libcpluff/pcontrol.c
+index 78a425e..130a3a2 100644
+--- a/libcpluff/pcontrol.c
++++ b/libcpluff/pcontrol.c
+@@ -40,6 +40,9 @@
+ #include "defines.h"
+ #include "util.h"
+ #include "internal.h"
++#ifdef _WIN32
++#include <windows.h>
++#endif
+ 
+ 
+ /* ------------------------------------------------------------------------
+diff --git a/libcpluff/psymbol.c b/libcpluff/psymbol.c
+index 93c9f12..988d903 100644
+--- a/libcpluff/psymbol.c
++++ b/libcpluff/psymbol.c
+@@ -37,6 +37,9 @@
+ #include "defines.h"
+ #include "internal.h"
+ #include "util.h"
++#ifdef _WIN32
++#include <windows.h>
++#endif
+ 
+ 
+ /* ------------------------------------------------------------------------
+diff --git a/libcpluff/win32/cpluffdef.h b/libcpluff/win32/cpluffdef.h
+new file mode 100644
+index 0000000..891e95a
+--- /dev/null
++++ b/libcpluff/win32/cpluffdef.h
+@@ -0,0 +1,212 @@
++/*-------------------------------------------------------------------------
++ * C-Pluff, a plug-in framework for C
++ * Copyright 2007 Johannes Lehtinen
++ * 
++ * Permission is hereby granted, free of charge, to any person obtaining a
++ * copy of this software and associated documentation files (the "Software"),
++ * to deal in the Software without restriction, including without limitation
++ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
++ * and/or sell copies of the Software, and to permit persons to whom the
++ * Software is furnished to do so, subject to the following conditions:
++ *
++ * The above copyright notice and this permission notice shall be included
++ * in all copies or substantial portions of the Software.
++ *
++ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
++ * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
++ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
++ * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
++ * CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
++ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
++ * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
++ *-----------------------------------------------------------------------*/
++
++/** @file
++ * Common defines shared by C-Pluff C and C++ APIs.
++ * This file is automatically included by the top level C and C++
++ * API header files. There should be no need to include it explicitly.
++ */
++
++#ifndef CPLUFFDEF_H_
++#define CPLUFFDEF_H_
++
++
++/* ------------------------------------------------------------------------
++ * Version information
++ * ----------------------------------------------------------------------*/
++
++/**
++ * @defgroup versionInfo Version information
++ * @ingroup cDefines cxxDefines
++ *
++ * C-Pluff version information. Notice that this version information
++ * is static version information included in header files. The
++ * macros introduced here can be used for compile time checks.
++ */
++/*@{*/
++
++/**
++ * The C-Pluff release version string. This string identifies a specific
++ * version of the C-Pluff distribution. Compile time software compatibility
++ * checks should use #CP_VERSION_MAJOR and #CP_VERSION_MINOR instead.
++ */
++#define CP_VERSION "0.1.4"
++
++/**
++ * The major version number component of the release version. This is an
++ * integer.
++ */
++#define CP_VERSION_MAJOR 0
++
++/**
++ * The minor version number component of the release version. This is an
++ * integer.
++ */
++#define CP_VERSION_MINOR 1
++
++/*@}*/
++
++
++/* ------------------------------------------------------------------------
++ * Symbol visibility
++ * ----------------------------------------------------------------------*/
++
++/**
++ * @defgroup symbolVisibility Symbol visibility
++ * @ingroup cDefines cxxDefines
++ *
++ * Macros for controlling inter-module symbol visibility and linkage. These
++ * macros have platform specific values. #CP_EXPORT, #CP_IMPORT and #CP_HIDDEN
++ * can be reused by plug-in implementations for better portability. The
++ * complexity is mostly due to Windows DLL exports and imports.
++ *
++ * @anchor symbolVisibilityExample
++ * Each module should usually define its own macro to declare API symbols with
++ * #CP_EXPORT and #CP_IMPORT as necessary. For example, a mobule could define
++ * a macro @c MY_API in the API header file as follows.
++ *
++ * @code
++ * #ifndef MY_API
++ * #  define MY_API CP_IMPORT
++ * #endif
++ * @endcode
++ *
++ * By default the API symbols would then be marked for import which is correct
++ * when client modules are including the API header file. When compiling the
++ * module itself the option @c -DMY_API=CP_EXPORT would be passed to the compiler to
++ * override the API header file and to mark the API symbols for export.
++ * The overriding definition could also be included in module source files or
++ * in an internal header file before including the API header file.
++ */
++/*@{*/
++
++/**
++ * @def CP_EXPORT
++ *
++ * Declares a symbol to be exported for inter-module usage. When compiling the
++ * module which defines the symbol this macro should be placed
++ * at the start of the symbol declaration to ensure that the symbol is exported
++ * to other modules. However, when compiling other modules the declaration of
++ * the symbol should start with #CP_IMPORT.
++ * See @ref symbolVisibilityExample "the example" of how to do this.
++ */
++
++/**
++ * @def CP_IMPORT
++ *
++ * Declares a symbol to be imported from another module. When compiling a
++ * module which uses the symbol this macro should be placed at the start of
++ * the symbol declaration to ensure that the symbol is imported from the
++ * defining module. However, when compiling the defining module the declaration
++ * of the symbol should start with #CP_EXPORT.
++ * See @ref symbolVisibilityExample "the example" of how to do this.
++ */
++
++/**
++ * @def CP_HIDDEN
++ *
++ * Declares a symbol hidden from other modules. This macro should be
++ * placed at the start of the symbol declaration to hide the symbol from other
++ * modules (if supported by the platform). This macro is not intended to be
++ * used with symbols declared as "static" which are already internal to the
++ * object file. Some platforms do not support hiding of symbols and therefore
++ * unique prefixes should be used for global symbols internal to the module
++ * even when they are declared using this macro.
++ */
++
++#if defined(_WIN32)
++#  define CP_EXPORT __declspec(dllexport)
++#  define CP_IMPORT extern __declspec(dllimport)
++#  define CP_HIDDEN
++#elif defined(__GNUC__) && (__GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ >= 3))
++#  define CP_EXPORT
++#  define CP_IMPORT extern
++#  define CP_HIDDEN __attribute__ ((visibility ("hidden")))
++#else
++#  define CP_EXPORT
++#  define CP_IMPORT extern
++#  define CP_HIDDEN
++#endif
++
++/*@}*/
++
++
++/* ------------------------------------------------------------------------
++ * GCC attributes
++ * ----------------------------------------------------------------------*/
++
++/**
++ * @defgroup cDefinesGCCAttributes GCC attributes
++ * @ingroup cDefines cxxDefines
++ *
++ * These macros conditionally define GCC attributes for declarations.
++ * They are used in C-Pluff API declarations to enable better optimization
++ * and error checking when using GCC. In non-GCC platforms they have
++ * empty values.
++ */
++/*@{*/
++
++/**
++ * @def CP_GCC_PURE
++ *
++ * Declares a function as pure function having no side effects.
++ * This attribute is supported in GCC since version 2.96.
++ * Such functions can be subject to common subexpression elimination
++ * and loop optimization.
++ */
++
++/**
++ * @def CP_GCC_NONNULL
++ *
++ * Specifies that some pointer arguments to a function should have
++ * non-NULL values. Takes a variable length list of argument indexes as
++ * arguments. This attribute is supported in GCC since version 3.3.
++ * It can be used for enhanced error checking and some optimizations.
++ */
++
++#if __GNUC__ > 2 || (__GNUC__ == 2 && __GNUC_MINOR__ >= 96)
++#define CP_GCC_PURE __attribute__((pure))
++#else
++#define CP_GCC_PURE
++#endif
++#if __GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ >= 3)
++#define CP_GCC_NONNULL(...) __attribute__((nonnull (__VA_ARGS__)))
++#else
++#define CP_GCC_NONNULL(...)
++#endif
++
++/*@}*/
++
++#ifdef _WIN32
++#ifndef __func__
++#  define __func__ __FUNCTION__
++#endif
++#ifndef snprintf
++#define snprintf _snprintf
++#endif
++#define CP_HOST "win32"
++#define CP_SHREXT ".dll"
++#define CP_FNAMESEP_CHAR '\\' // If we switch back to special:// paths then this can be '/' instead
++#define CP_THREADS
++#endif
++#endif /*CPLUFFDEF_H_*/
+diff --git a/libcpluff/win32/dirent.c b/libcpluff/win32/dirent.c
+new file mode 100644
+index 0000000..3254b22
+--- /dev/null
++++ b/libcpluff/win32/dirent.c
+@@ -0,0 +1,233 @@
++/*
++
++    Implementation of POSIX directory browsing functions and types for Win32.
++
++    Author:  Kevlin Henney (kevlin@acm.org, kevlin@curbralan.com)
++    History: Created March 1997. Updated June 2003.
++    Rights:  See end of file.
++
++*/
++
++#include "dirent.h"
++#include <errno.h>
++#include <io.h> /* _findfirst and _findnext set errno iff they return -1 */
++#include <stdlib.h>
++#include <string.h>
++
++#ifdef __cplusplus
++extern "C"
++{
++#endif
++
++struct DIR
++{
++    long                handle; /* -1 for failed rewind */
++    struct _finddata_t  info;
++    struct dirent       result; /* d_name null iff first time */
++    char                *name;  /* null-terminated char string */
++};
++
++DIR *opendir(const char *name)
++{
++    DIR *dir = 0;
++
++    if(name && name[0])
++    {
++        size_t base_length = strlen(name);
++        const char *all = /* search pattern must end with suitable wildcard */
++            strchr("/\\", name[base_length - 1]) ? "*" : "/*";
++
++        if((dir = (DIR *) malloc(sizeof *dir)) != 0 &&
++           (dir->name = (char *) malloc(base_length + strlen(all) + 1)) != 0)
++        {
++            strcat(strcpy(dir->name, name), all);
++
++            if((dir->handle = (long) _findfirst(dir->name, &dir->info)) != -1)
++            {
++                dir->result.d_name = 0;
++            }
++            else /* rollback */
++            {
++                free(dir->name);
++                free(dir);
++                dir = 0;
++            }
++        }
++        else /* rollback */
++        {
++            free(dir);
++            dir   = 0;
++            errno = ENOMEM;
++        }
++    }
++    else
++    {
++        errno = EINVAL;
++    }
++
++    return dir;
++}
++
++int closedir(DIR *dir)
++{
++    int result = -1;
++
++    if(dir)
++    {
++        if(dir->handle != -1)
++        {
++            result = _findclose(dir->handle);
++        }
++
++        free(dir->name);
++        free(dir);
++    }
++
++    if(result == -1) /* map all errors to EBADF */
++    {
++        errno = EBADF;
++    }
++
++    return result;
++}
++
++struct dirent *readdir(DIR *dir)
++{
++    struct dirent *result = 0;
++
++    if(dir && dir->handle != -1)
++    {
++        if(!dir->result.d_name || _findnext(dir->handle, &dir->info) != -1)
++        {
++            result         = &dir->result;
++            result->d_name = dir->info.name;
++        }
++    }
++    else
++    {
++        errno = EBADF;
++    }
++
++    return result;
++}
++
++void rewinddir(DIR *dir)
++{
++    if(dir && dir->handle != -1)
++    {
++        _findclose(dir->handle);
++        dir->handle = (long) _findfirst(dir->name, &dir->info);
++        dir->result.d_name = 0;
++    }
++    else
++    {
++        errno = EBADF;
++    }
++}
++
++// helper for scandir below
++static void scandir_free_dir_entries(struct dirent*** namelist, int entries) {
++	int i;
++	if (!*namelist) return;
++	for (i = 0; i < entries; ++i) {
++		free((*namelist)[i]);
++	}
++	free(*namelist);
++	*namelist = 0;
++}
++
++// returns the number of directory entries select or -1 if an error occurs
++int scandir(
++	const char* dir,
++	struct dirent*** namelist,
++	int(*filter)(const struct dirent*),
++	int(*compar)(const void*, const void*)
++) {
++	int entries = 0;
++	int max_entries = 1024; // assume 2*512 = 1024 entries (used for allocation)
++	DIR* d;
++
++	*namelist = 0;
++
++	// open directory
++	d = opendir(dir);
++	if (!d) return -1;
++
++	// iterate
++	while (1) {
++		struct dirent* ent = readdir(d);
++		if (!ent) break;
++
++		// add if no filter or filter returns non-zero
++		if (filter && (0 == filter(ent))) continue;
++
++		// resize our buffer if there is not enough room
++		if (!*namelist || entries >= max_entries) {
++			struct dirent** new_entries;
++
++			max_entries *= 2;
++			new_entries = (struct dirent **)realloc(*namelist, max_entries);
++			if (!new_entries) {
++				scandir_free_dir_entries(namelist, entries);
++				closedir(d);
++				errno = ENOMEM;
++				return -1;
++			}
++
++			*namelist = new_entries;
++		}
++
++		// allocate new entry
++		(*namelist)[entries] = (struct dirent *)malloc(sizeof(struct dirent) + strlen(ent->d_name) + 1);
++		if (!(*namelist)[entries]) {
++			scandir_free_dir_entries(namelist, entries);
++			closedir(d);
++			errno = ENOMEM;
++			return -1;
++		}
++
++		// copy entry info
++		*(*namelist)[entries] = *ent;
++
++		// and then we tack the string onto the end
++		{
++			char* dest = (char*)((*namelist)[entries]) + sizeof(struct dirent);
++			strcpy(dest, ent->d_name);
++			(*namelist)[entries]->d_name = dest;
++		}
++
++		++entries;
++	}
++
++	closedir(d);
++
++	// sort
++	if (*namelist && compar) qsort(*namelist, entries, sizeof((*namelist)[0]), compar);
++
++	return entries;
++}
++
++int alphasort(const void* lhs, const void* rhs) {
++	const struct dirent* lhs_ent = *(struct dirent**)lhs;
++	const struct dirent* rhs_ent = *(struct dirent**)rhs;
++	return _strcmpi(lhs_ent->d_name, rhs_ent->d_name);
++}
++
++#ifdef __cplusplus
++}
++#endif
++
++/*
++
++    Copyright Kevlin Henney, 1997, 2003. All rights reserved.
++
++    Permission to use, copy, modify, and distribute this software and its
++    documentation for any purpose is hereby granted without fee, provided
++    that this copyright and permissions notice appear in all copies and
++    derivatives.
++
++    This software is supplied "as is" without express or implied warranty.
++
++    But that said, if there are any problems please get in touch.
++
++*/
+diff --git a/libcpluff/win32/dirent.h b/libcpluff/win32/dirent.h
+new file mode 100644
+index 0000000..b41998c
+--- /dev/null
++++ b/libcpluff/win32/dirent.h
+@@ -0,0 +1,61 @@
++
++#ifndef DIRENT_INCLUDED
++#define DIRENT_INCLUDED
++
++/*
++
++    Declaration of POSIX directory browsing functions and types for Win32.
++
++    Author:  Kevlin Henney (kevlin@acm.org, kevlin@curbralan.com)
++    History: Created March 1997. Updated June 2003.
++    Rights:  See end of file.
++
++*/
++
++#ifdef __cplusplus
++extern "C"
++{
++#endif
++
++typedef struct DIR DIR;
++
++#ifndef WIN32
++static int errno;
++#endif
++
++struct dirent
++{
++    char *d_name;
++};
++
++DIR           *opendir(const char *);
++int           closedir(DIR *);
++struct dirent *readdir(DIR *);
++void          rewinddir(DIR *);
++int scandir(
++	const char* dir,
++	struct dirent*** namelist,
++	int(*filter)(const struct dirent*),
++	int(*compar)(const void*, const void*) );
++int alphasort(const void* lhs, const void* rhs);
++
++/*
++
++    Copyright Kevlin Henney, 1997, 2003. All rights reserved.
++
++    Permission to use, copy, modify, and distribute this software and its
++    documentation for any purpose is hereby granted without fee, provided
++    that this copyright and permissions notice appear in all copies and
++    derivatives.
++
++    This software is supplied "as is" without express or implied warranty.
++
++    But that said, if there are any problems please get in touch.
++
++*/
++
++#ifdef __cplusplus
++}
++#endif
++
++#endif
+-- 
+2.14.1
+

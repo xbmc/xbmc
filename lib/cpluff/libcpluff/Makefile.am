@@ -60,4 +60,14 @@ dist-hook: refdoc
 clean-local:
 	rm -rf doc
 
+check-local:
+	rc=0; \
+		find '$(srcdir)' -name '*.c' -print | while read f; do \
+			if grep -q -E 'cpi_(debug|warn|error)f?\(.*[^N]_\(' "$$f"; then \
+				echo "invalid use of cpi_(debug|warn|error)f? macros in $$f."; \
+				rc=1; \
+			fi; \
+		done; \
+		exit $$rc
+
 .PHONY: doc refdoc impldoc

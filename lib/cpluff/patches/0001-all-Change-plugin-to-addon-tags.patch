@@ -1,0 +1,61 @@
+From ae1cfb84339c8247ac1705fa7f5e8556c6157314 Mon Sep 17 00:00:00 2001
+From: "h.udo" <hudokkow@gmail.com>
+Date: Thu, 20 Oct 2016 13:59:00 +0100
+Subject: [PATCH 01/12] [all] Change plugin to addon tags
+
+---
+ libcpluff/ploader.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/libcpluff/ploader.c b/libcpluff/ploader.c
+index cea541f..c4e251b 100644
+--- a/libcpluff/ploader.c
++++ b/libcpluff/ploader.c
+@@ -61,7 +61,7 @@
+ #define CP_CFG_ELEMENT_VALUE_INITSIZE 64
+ 
+ /// Plugin descriptor name 
+-#define CP_PLUGIN_DESCRIPTOR "plugin.xml"
++#define CP_PLUGIN_DESCRIPTOR "addon.xml"
+ 
+ 
+ /* ------------------------------------------------------------------------
+@@ -524,7 +524,7 @@ static void CP_XMLCALL start_element_handler(
+ 	static const XML_Char * const opt_bwcompatibility_atts[] = { "abi", "api", NULL };
+ 	static const XML_Char * const req_cpluff_atts[] = { "version", NULL };
+ 	static const XML_Char * const opt_cpluff_atts[] = { NULL };
+-	static const XML_Char * const req_import_atts[] = { "plugin", NULL };
++	static const XML_Char * const req_import_atts[] = { "addon", NULL };
+ 	static const XML_Char * const opt_import_atts[] = { "version", "optional", NULL };
+ 	static const XML_Char * const req_runtime_atts[] = { "library", NULL };
+ 	static const XML_Char * const opt_runtime_atts[] = { "funcs", NULL };
+@@ -539,7 +539,7 @@ static void CP_XMLCALL start_element_handler(
+ 	switch (plcontext->state) {
+ 
+ 		case PARSER_BEGIN:
+-			if (!strcmp(name, "plugin")) {
++			if (!strcmp(name, "addon")) {
+ 				plcontext->state = PARSER_PLUGIN;
+ 				if (!check_attributes(plcontext, name, atts,
+ 						req_plugin_atts, opt_plugin_atts)) {
+@@ -749,7 +749,7 @@ static void CP_XMLCALL start_element_handler(
+ 					import->plugin_id = NULL;
+ 					import->version = NULL;
+ 					for (i = 0; atts[i] != NULL; i += 2) {
+-						if (!strcmp(atts[i], "plugin")) {
++						if (!strcmp(atts[i], "addon")) {
+ 							import->plugin_id
+ 								= parser_strdup(plcontext, atts[i+1]);
+ 						} else if (!strcmp(atts[i], "version")) {
+@@ -832,7 +832,7 @@ static void CP_XMLCALL end_element_handler(
+ 	switch (plcontext->state) {
+ 
+ 		case PARSER_PLUGIN:
+-			if (!strcmp(name, "plugin")) {
++			if (!strcmp(name, "addon")) {
+ 				
+ 				// Readjust memory allocated for extension points, if necessary 
+ 				if (plcontext->ext_points_size != plcontext->plugin->num_ext_points) {
+-- 
+2.14.1
+

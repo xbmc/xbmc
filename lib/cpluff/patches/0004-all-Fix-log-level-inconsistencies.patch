@@ -1,0 +1,46 @@
+From ece6f7080c4613b2781f47e32479fb57dddd7494 Mon Sep 17 00:00:00 2001
+From: "h.udo" <hudokkow@gmail.com>
+Date: Thu, 20 Oct 2016 14:19:44 +0100
+Subject: [PATCH 04/12] [all] Fix log level inconsistencies
+
+---
+ libcpluff/ploader.c | 2 +-
+ libcpluff/pscan.c   | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/libcpluff/ploader.c b/libcpluff/ploader.c
+index c4e251b..5c01add 100644
+--- a/libcpluff/ploader.c
++++ b/libcpluff/ploader.c
+@@ -1081,7 +1081,7 @@ static void check_cleanup_descriptor_parsing(cp_status_t status, cp_context_t *c
+ 					N_("Plug-in descriptor in %s is invalid."), path);
+ 				break;
+ 			case CP_ERR_IO:
+-				cpi_errorf(context,
++				cpi_debugf(context,
+ 					N_("An I/O error occurred while loading a plug-in descriptor from %s."), path);
+ 				break;
+ 			case CP_ERR_RESOURCE:
+diff --git a/libcpluff/pscan.c b/libcpluff/pscan.c
+index 50dcff8..921c8e3 100644
+--- a/libcpluff/pscan.c
++++ b/libcpluff/pscan.c
+@@ -272,13 +272,13 @@ CP_C_API cp_status_t cp_scan_plugins(cp_context_t *context, int flags) {
+ 	// Report error
+ 	switch (status) {
+ 		case CP_OK:
+-			cpi_debug(context, N_("Plug-in scan has completed successfully."));
++			cpi_info(context, N_("Plug-in scan has completed successfully."));
+ 			break;
+ 		case CP_ERR_RESOURCE:
+ 			cpi_error(context, N_("Could not scan plug-ins due to insufficient system resources."));
+ 			break;
+ 		default:
+-			cpi_error(context, N_("Could not scan plug-ins."));
++			cpi_warn(context, N_("Not all directories were successfully scanned."));
+ 			break;
+ 	}
+ 	cpi_unlock_context(context);
+-- 
+2.14.1
+

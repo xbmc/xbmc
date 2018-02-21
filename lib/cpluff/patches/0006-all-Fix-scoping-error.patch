@@ -1,0 +1,33 @@
+From f4a0c37a69c62965f93a697ea3b8565bbabf5b9b Mon Sep 17 00:00:00 2001
+From: "h.udo" <hudokkow@gmail.com>
+Date: Thu, 20 Oct 2016 14:26:29 +0100
+Subject: [PATCH 06/12] [all] Fix scoping error
+
+---
+ libcpluff/util.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/libcpluff/util.c b/libcpluff/util.c
+index a5f437b..e5ff7cf 100644
+--- a/libcpluff/util.c
++++ b/libcpluff/util.c
+@@ -157,6 +157,7 @@ static int vercmp_num_value(const char *v, const char *vn) {
+ CP_HIDDEN int cpi_vercmp(const char *v1, const char *v2) {
+ 	const char *v1n;
+ 	const char *v2n;
++	int diff;
+ 	
+ 	// Check for NULL versions
+ 	if (v1 == NULL && v2 != NULL) {
+@@ -186,7 +187,7 @@ CP_HIDDEN int cpi_vercmp(const char *v1, const char *v2) {
+ 			if (v2 < v2n) {
+ 				c2 = *v2++;
+ 			}
+-			int diff = vercmp_char_value(c1) - vercmp_char_value(c2);
++			diff = vercmp_char_value(c1) - vercmp_char_value(c2);
+ 			if (diff != 0) {
+ 				return diff;
+ 			}
+-- 
+2.14.1
+

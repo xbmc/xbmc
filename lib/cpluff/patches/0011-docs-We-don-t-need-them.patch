@@ -1,0 +1,25 @@
+From c2e5e32cc956ab3bb58199f6d1606f3532b86519 Mon Sep 17 00:00:00 2001
+From: "h.udo" <hudokkow@gmail.com>
+Date: Mon, 29 Jan 2018 20:45:51 +0000
+Subject: [PATCH 11/12] [docs] We don't need them
+
+---
+ Makefile.am | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Makefile.am b/Makefile.am
+index 695448a..dcba780 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -6,7 +6,7 @@
+ 
+ ACLOCAL_AMFLAGS = -I m4
+ 
+-SUBDIRS = libcpluff loader console po test docsrc doc
++SUBDIRS = libcpluff loader console po test
+ DIST_SUBDIRS = $(SUBDIRS) examples
+ 
+ EXTRA_DIST = COPYRIGHT.txt INSTALL.txt ChangeLog.txt Roadmap.txt autogen.sh plugin.xsd
+-- 
+2.14.1
+
