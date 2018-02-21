@@ -23,7 +23,10 @@ if [ "${PLATFORM_NAME}" == "iphoneos" ] || [ "${PLATFORM_NAME}" == "appletvos" ]
 
   #do fake sign - needed for jailbroken ios5.1 devices for some reason
   if [ -f ${LDID} ]; then
-    ${LDID} -S ${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}
+    find ${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/ -name "*.dylib" | xargs ${LDID} -S
+    find ${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/ -name "*.so" | xargs ${LDID} -S
+    ${LDID} -S ${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/Kodi
+    ${LDID} -S ${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/PlugIns/TVOSTopShelf.appex/TVOSTopShelf
   fi
 
   # pull the CFBundleIdentifier out of the built xxx.app
