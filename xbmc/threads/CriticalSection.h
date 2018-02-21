@@ -20,7 +20,7 @@
 
 #pragma once
 
-#include <mutex>
+#include "platform/RecursiveMutex.h"
 #include "threads/Lockables.h"
 
-class CCriticalSection : public XbmcThreads::CountingLockable<std::recursive_mutex> {};
+class CCriticalSection : public XbmcThreads::CountingLockable<XbmcThreads::CRecursiveMutex> {};

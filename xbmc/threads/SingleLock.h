@@ -44,18 +44,6 @@ protected:
   inline CSingleLock(CCriticalSection& cs, bool dicrim) : XbmcThreads::UniqueLock<CCriticalSection>(cs,true) {}
 };
 
-/**
- * This implements a "guard" pattern for a CCriticalSection that
- *  works like a CSingleLock but only "try"s the lock and so
- *  it's possible it doesn't actually get it..
- */
-class CSingleTryLock : public CSingleLock
-{
-public:
-  inline explicit CSingleTryLock(CCriticalSection& cs) : CSingleLock(cs,true) {}
-
-  inline bool IsOwner() const { return owns_lock(); }
-};
 
 /**
  * This implements a "guard" pattern for exiting all locks
