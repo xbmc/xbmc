@@ -41,7 +41,7 @@ public:
   bool DestroyWindowSystem() override;
   bool DestroyWindow() override;
 
-  bool IsExtSupported(const char* extension) override;
+  bool IsExtSupported(const char* extension) const override;
 
   // videosync
   std::unique_ptr<CVideoSync> GetVideoSync(void *clock) override;

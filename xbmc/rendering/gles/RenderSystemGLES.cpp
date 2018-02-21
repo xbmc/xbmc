@@ -34,7 +34,6 @@
 CRenderSystemGLES::CRenderSystemGLES()
  : CRenderSystemBase()
 {
-  m_enumRenderingSystem = RENDERING_SYSTEM_OPENGLES;
   m_pShader.reset(new CGLESShader*[SM_MAX]);
 }
 
@@ -52,7 +51,6 @@ bool CRenderSystemGLES::InitRenderSystem()
   m_bVSync = false;
   m_iVSyncMode = 0;
   m_bVsyncInit = false;
-  m_renderCaps = 0;
   // Get the GLES version number
   m_RenderVersionMajor = 0;
   m_RenderVersionMinor = 0;
@@ -88,23 +86,6 @@ bool CRenderSystemGLES::InitRenderSystem()
   m_RenderExtensions += " ";
 
   LogGraphicsInfo();
-
-  m_renderCaps |= RENDER_CAPS_NPOT;
-
-  if (IsExtSupported("GL_EXT_texture_format_BGRA8888"))
-  {
-    m_renderCaps |= RENDER_CAPS_BGRA;
-  }
-
-  if (IsExtSupported("GL_IMG_texture_format_BGRA8888"))
-  {
-    m_renderCaps |= RENDER_CAPS_BGRA;
-  }
-
-  if (IsExtSupported("GL_APPLE_texture_format_BGRA8888"))
-  {
-    m_renderCaps |= RENDER_CAPS_BGRA_APPLE;
-  }
 
   m_bRenderCreated = true;
 
@@ -196,7 +177,7 @@ bool CRenderSystemGLES::ClearBuffers(color_t color)
   return true;
 }
 
-bool CRenderSystemGLES::IsExtSupported(const char* extension)
+bool CRenderSystemGLES::IsExtSupported(const char* extension) const
 {
   if (strcmp( extension, "GL_EXT_framebuffer_object" ) == 0)
   {

@@ -97,7 +97,7 @@ EGLConfig  CWinSystemMirGLESContext::GetEGLConfig() const
 }
 
 // FIXME Implement
-bool CWinSystemMirGLESContext::IsExtSupported(const char* extension)
+bool CWinSystemMirGLESContext::IsExtSupported(const char* extension) const
 {
   return false;
 }

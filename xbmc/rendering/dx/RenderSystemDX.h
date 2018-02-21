@@ -71,6 +71,7 @@ public:
   bool SupportsStereo(RENDER_STEREO_MODE mode) const override;
   bool TestRender() override;
   void Project(float &x, float &y, float &z) override;
+  bool SupportsNPOT(bool dxt) const override;
 
   // IDeviceNotify overrides
   void OnDXDeviceLost() override;
@@ -89,7 +90,7 @@ public:
   void SetAlphaBlendEnable(bool enable);
 
   // empty overrides
-  bool IsExtSupported(const char* extension) override { return false; };
+  bool IsExtSupported(const char* extension) const override { return false; };
   void ApplyHardwareTransform(const TransformMatrix &matrix) override {};
   void RestoreHardwareTransform() override {};
   bool ResetRenderSystem(int width, int height) override { return true; };

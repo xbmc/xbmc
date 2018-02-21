@@ -37,7 +37,7 @@ public:
                        RESOLUTION_INFO& res) override;
 
   bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays) override;
-  bool IsExtSupported(const char* extension) override;
+  bool IsExtSupported(const char* extension) const override;
   EGLDisplay GetEGLDisplay() const;
   EGLSurface GetEGLSurface() const;
   EGLContext GetEGLContext() const;

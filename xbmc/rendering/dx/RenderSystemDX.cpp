@@ -56,7 +56,6 @@ using namespace Microsoft::WRL;
 CRenderSystemDX::CRenderSystemDX() : CRenderSystemBase()
   , m_interlaced(false)
 {
-  m_enumRenderingSystem = RENDERING_SYSTEM_DIRECTX;
   m_bVSync = true;
 
   memset(&m_viewPort, 0, sizeof m_viewPort);
@@ -704,40 +703,6 @@ void CRenderSystemDX::CheckDeviceCaps()
     // 11_x and greater feature level. Limit this size to avoid memory overheads
     m_maxTextureSize = D3D11_REQ_TEXTURE2D_U_OR_V_DIMENSION >> 1;
 
-  m_renderCaps = 0;
-  unsigned int usage = D3D11_FORMAT_SUPPORT_TEXTURE2D | D3D11_FORMAT_SUPPORT_SHADER_SAMPLE;
-
-  if ( IsFormatSupport(DXGI_FORMAT_BC1_UNORM, usage)
-    && IsFormatSupport(DXGI_FORMAT_BC2_UNORM, usage)
-    && IsFormatSupport(DXGI_FORMAT_BC3_UNORM, usage))
-    m_renderCaps |= RENDER_CAPS_DXT;
-
-  // MSDN: At feature levels 9_1, 9_2 and 9_3, the display device supports the use of 2D textures with dimensions that are not powers of two under two conditions.
-  // First, only one MIP-map level for each texture can be created - we are using only 1 mip level)
-  // Second, no wrap sampler modes for textures are allowed - we are using clamp everywhere
-  // At feature levels 10_0, 10_1 and 11_0, the display device unconditionally supports the use of 2D textures with dimensions that are not powers of two.
-  // so, setup caps NPOT
-  m_renderCaps |= feature_level > D3D_FEATURE_LEVEL_9_3 ? RENDER_CAPS_NPOT : 0;
-  if ((m_renderCaps & RENDER_CAPS_DXT) != 0)
-  {
-    if (feature_level > D3D_FEATURE_LEVEL_9_3 ||
-      (!IsFormatSupport(DXGI_FORMAT_BC1_UNORM, D3D11_FORMAT_SUPPORT_MIP_AUTOGEN)
-        && !IsFormatSupport(DXGI_FORMAT_BC2_UNORM, D3D11_FORMAT_SUPPORT_MIP_AUTOGEN)
-        && !IsFormatSupport(DXGI_FORMAT_BC3_UNORM, D3D11_FORMAT_SUPPORT_MIP_AUTOGEN)))
-      m_renderCaps |= RENDER_CAPS_DXT_NPOT;
-  }
-
-  // Temporary - allow limiting the caps to debug a texture problem
-  if (g_advancedSettings.m_RestrictCapsMask != 0)
-    m_renderCaps &= ~g_advancedSettings.m_RestrictCapsMask;
-
-  if (m_renderCaps & RENDER_CAPS_DXT)
-    CLog::Log(LOGDEBUG, "%s - RENDER_CAPS_DXT", __FUNCTION__);
-  if (m_renderCaps & RENDER_CAPS_NPOT)
-    CLog::Log(LOGDEBUG, "%s - RENDER_CAPS_NPOT", __FUNCTION__);
-  if (m_renderCaps & RENDER_CAPS_DXT_NPOT)
-    CLog::Log(LOGDEBUG, "%s - RENDER_CAPS_DXT_NPOT", __FUNCTION__);
-
   m_processorFormats.clear();
   m_sharedFormats.clear();
   m_shaderFormats.clear();
@@ -827,4 +792,16 @@ void CRenderSystemDX::CheckDeviceCaps()
     m_shaderFormats.push_back(AV_PIX_FMT_YUYV422);
     m_shaderFormats.push_back(AV_PIX_FMT_UYVY422);
   }
+}
+
+bool CRenderSystemDX::SupportsNPOT(bool dxt) const
+{
+  // MSDN says: 
+  // At feature levels 9_1, 9_2 and 9_3, the display device supports the use
+  // of 2D textures with dimensions that are not powers of two under two conditions:
+  // 1) only one MIP-map level for each texture can be created - we are using both 1 and 0 mipmap levels
+  // 2) no wrap sampler modes for textures are allowed - we are using clamp everywhere
+  // At feature levels 10_0, 10_1 and 11_0, the display device unconditionally supports the use of 2D textures with dimensions that are not powers of two.
+  // taking in account first condition we setup caps NPOT for FE > 9.x only
+  return m_deviceResources->GetDeviceFeatureLevel() > D3D_FEATURE_LEVEL_9_3 ? true : false;
 }

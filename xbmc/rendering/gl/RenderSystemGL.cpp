@@ -36,73 +36,16 @@
 
 CRenderSystemGL::CRenderSystemGL() : CRenderSystemBase()
 {
-  m_enumRenderingSystem = RENDERING_SYSTEM_OPENGL;
   m_pShader.reset(new CGLShader*[SM_MAX]);
 }
 
 CRenderSystemGL::~CRenderSystemGL() = default;
-
-void CRenderSystemGL::CheckOpenGLQuirks()
-
-{
-#ifdef TARGET_DARWIN_OSX
-  if (m_RenderVendor.find("NVIDIA") != std::string::npos)
-  {
-    // Nvidia 7300 (AppleTV) and 7600 cannot do DXT with NPOT under OSX
-    // Nvidia 9400M is slow as a dog
-    if (m_renderCaps & RENDER_CAPS_DXT_NPOT)
-    {
-      const char *arr[3]= { "7300","7600","9400M" };
-      for(int j = 0; j < 3; j++)
-      {
-        if((int(m_RenderRenderer.find(arr[j])) > -1))
-        {
-          m_renderCaps &= ~ RENDER_CAPS_DXT_NPOT;
-          break;
-        }
-      }
-    }
-  }
-#ifdef __ppc__
-  // ATI Radeon 9600 on osx PPC cannot do NPOT
-  if (m_RenderRenderer.find("ATI Radeon 9600") != std::string::npos)
-  {
-    m_renderCaps &= ~ RENDER_CAPS_NPOT;
-    m_renderCaps &= ~ RENDER_CAPS_DXT_NPOT;
-  }
-#endif
-#endif
-  if (StringUtils::EqualsNoCase(m_RenderVendor, "nouveau"))
-    m_renderQuirks |= RENDER_QUIRKS_YV12_PREFERED;
-
-  if (StringUtils::EqualsNoCase(m_RenderVendor, "Tungsten Graphics, Inc.")
-  ||  StringUtils::EqualsNoCase(m_RenderVendor, "Tungsten Graphics, Inc"))
-  {
-    unsigned major, minor, micro;
-    if (sscanf(m_RenderVersion.c_str(), "%*s Mesa %u.%u.%u", &major, &minor, &micro) == 3)
-    {
-
-      if((major  < 7)
-      || (major == 7 && minor  < 7)
-      || (major == 7 && minor == 7 && micro < 1))
-        m_renderQuirks |= RENDER_QUIRKS_MAJORMEMLEAK_OVERLAYRENDERER;
-    }
-    else
-      CLog::Log(LOGNOTICE, "CRenderSystemGL::CheckOpenGLQuirks - unable to parse mesa version string");
-
-    if(m_RenderRenderer.find("Poulsbo") != std::string::npos)
-      m_renderCaps &= ~RENDER_CAPS_DXT_NPOT;
-
-    m_renderQuirks |= RENDER_QUIRKS_BROKEN_OCCLUSION_QUERY;
-  }
-}
 
 bool CRenderSystemGL::InitRenderSystem()
 {
   m_bVSync = false;
   m_bVsyncInit = false;
   m_maxTextureSize = 2048;
-  m_renderCaps = 0;
 
   // Get the GL version number
   m_RenderVersionMajor = 0;
@@ -160,19 +103,6 @@ bool CRenderSystemGL::InitRenderSystem()
   if (tmpRenderer != NULL)
     m_RenderRenderer = tmpRenderer;
 
-  // grab our capabilities
-  if (IsExtSupported("GL_EXT_texture_compression_s3tc"))
-    m_renderCaps |= RENDER_CAPS_DXT;
-
-  if (IsExtSupported("GL_ARB_texture_non_power_of_two"))
-  {
-    m_renderCaps |= RENDER_CAPS_NPOT;
-    if (m_renderCaps & RENDER_CAPS_DXT)
-      m_renderCaps |= RENDER_CAPS_DXT_NPOT;
-  }
-  //Check OpenGL quirks and revert m_renderCaps as needed
-  CheckOpenGLQuirks();
-
   m_bRenderCreated = true;
 
   if (m_RenderVersionMajor > 3 ||
@@ -183,6 +113,11 @@ bool CRenderSystemGL::InitRenderSystem()
   }
 
   InitialiseShader();
+
+  if (IsExtSupported("GL_ARB_texture_non_power_of_two"))
+    m_supportsNPOT = true;
+  else
+    m_supportsNPOT = false;
 
   return true;
 }
@@ -310,7 +245,7 @@ bool CRenderSystemGL::ClearBuffers(color_t color)
   return true;
 }
 
-bool CRenderSystemGL::IsExtSupported(const char* extension)
+bool CRenderSystemGL::IsExtSupported(const char* extension) const
 {
   if (m_RenderVersionMajor > 3 ||
       (m_RenderVersionMajor == 3 && m_RenderVersionMinor >= 2))
@@ -331,6 +266,11 @@ bool CRenderSystemGL::IsExtSupported(const char* extension)
   name += " ";
 
   return m_RenderExtensions.find(name) != std::string::npos;
+}
+
+bool CRenderSystemGL::SupportsNPOT(bool dxt) const
+{
+  return m_supportsNPOT;
 }
 
 void CRenderSystemGL::PresentRender(bool rendered, bool videoLayer)

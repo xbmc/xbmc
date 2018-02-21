@@ -56,17 +56,17 @@ public:
   bool Hide() override;
   bool Show(bool raise = true) override;
 
-  bool IsExtSupported(const char* extension) override;
+  bool IsExtSupported(const char* extension) const override;
 
   bool BeginRender() override;
   bool EndRender() override;
-  
+
   void Register(IDispResource *resource) override;
   void Unregister(IDispResource *resource) override;
-  
+
   int GetNumScreens() override;
   int GetCurrentScreen() override;
-  
+
   virtual std::unique_ptr<CVideoSync> GetVideoSync(void *clock) override;
 
   bool InitDisplayLink(CVideoSyncIos *syncImpl);
@@ -87,7 +87,7 @@ protected:
   CCriticalSection             m_resourceSection;
   std::vector<IDispResource*>  m_resources;
   bool         m_bIsBackgrounded;
-  
+
 private:
   bool GetScreenResolution(int* w, int* h, double* fps, int screenIdx);
   void FillInVideoModes();

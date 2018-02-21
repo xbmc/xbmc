@@ -40,7 +40,6 @@ class CRenderSystemGL : public CRenderSystemBase
 public:
   CRenderSystemGL();
   ~CRenderSystemGL() override;
-  void CheckOpenGLQuirks();
   bool InitRenderSystem() override;
   bool DestroyRenderSystem() override;
   bool ResetRenderSystem(int width, int height) override;
@@ -49,7 +48,7 @@ public:
   bool EndRender() override;
   void PresentRender(bool rendered, bool videoLayer) override;
   bool ClearBuffers(color_t color) override;
-  bool IsExtSupported(const char* extension) override;
+  bool IsExtSupported(const char* extension) const override;
 
   void SetVSync(bool vsync);
   void ResetVSync() { m_bVsyncInit = false; }
@@ -71,6 +70,7 @@ public:
   void RestoreHardwareTransform() override;
   void SetStereoMode(RENDER_STEREO_MODE mode, RENDER_STEREO_VIEW view) override;
   bool SupportsStereo(RENDER_STEREO_MODE mode) const override;
+  bool SupportsNPOT(bool dxt) const override;
 
   bool TestRender() override;
 
@@ -102,6 +102,7 @@ protected:
   bool m_bVsyncInit = false;
   int m_width;
   int m_height;
+  bool m_supportsNPOT = true;
 
   std::string m_RenderExtensions;
 
