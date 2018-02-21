@@ -51,6 +51,10 @@ extern "C" {
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
 
+#if VA_CHECK_VERSION(1, 0, 0)
+# include <va/va_str.h>
+#endif
+
 using namespace VAAPI;
 #define NUM_RENDER_PICS 7
 
@@ -221,7 +225,11 @@ void CVAAPIContext::QueryCaps()
 
   for(int i = 0; i < m_profileCount; i++)
   {
+#if VA_CHECK_VERSION(1, 0, 0)
+    CLog::Log(LOGDEBUG, LOGVIDEO, "VAAPI - profile %s", vaProfileStr(m_profiles[i]));
+#else
     CLog::Log(LOGDEBUG, LOGVIDEO, "VAAPI - profile %d", m_profiles[i]);
+#endif
   }
 }
 
