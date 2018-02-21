@@ -24,6 +24,7 @@
 #include <androidjni/AudioManager.h>
 #include <androidjni/AudioTrack.h>
 #include <androidjni/Build.h>
+#include "androidjni/System.h"
 
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/AudioEngine/AESinkFactory.h"
@@ -257,6 +258,7 @@ CAESinkAUDIOTRACK::CAESinkAUDIOTRACK()
   m_passthrough = false;
   m_min_buffer_size = 0;
   m_extTimer.SetExpired();
+  m_delayTimer.SetExpired();
 }
 
 CAESinkAUDIOTRACK::~CAESinkAUDIOTRACK()
@@ -316,6 +318,7 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
   m_headPos = 0;
   m_linearmovingaverage.clear();
   m_extTimer.SetExpired();
+  m_delayTimer.Set(5000);
   CLog::Log(LOGDEBUG, "CAESinkAUDIOTRACK::Initialize requested: sampleRate %u; format: %s; channels: %d", format.m_sampleRate, CAEUtil::DataFormatToStr(format.m_dataFormat), format.m_channelLayout.Count());
 
   int stream = CJNIAudioManager::STREAM_MUSIC;
@@ -587,6 +590,7 @@ void CAESinkAUDIOTRACK::Deinitialize()
   m_headPos = 0;
 
   m_extTimer.SetExpired();
+  m_delayTimer.SetExpired();
   m_linearmovingaverage.clear();
 
   delete m_at_jni;
@@ -663,7 +667,26 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
   if (delay < 0)
     delay = 0;
 
-  const double d = GetMovingAverageDelay(delay);
+  double d = GetMovingAverageDelay(delay);
+  if (m_delayTimer.IsTimePast())
+  {
+    CJNIAudioTimestamp ts;
+    double now = CJNISystem::nanoTime();
+    if (m_at_jni->getTimestamp(ts))
+    {
+      double api_time_delay = (now - ts.get_nanoTime()) / 1000000000.0;
+      uint64_t h_pos = ts.get_framePosition();
+      double g = h_pos / (double) m_sink_sampleRate;
+      // if something odd comes out, just use delay we have once more
+      double d_f = g > m_duration_written ? d : m_duration_written - g;
+      CLog::Log(LOGDEBUG, "Old delay: %lf Timestamp delay: %lf api_time_delay: %lf", d, d_f, api_time_delay);
+      d_f -= api_time_delay;
+      // update delay to report to audio engine
+      d = GetMovingAverageDelay(d_f);
+      CLog::Log(LOGDEBUG, "New delay: %lf", d);
+    }
+    m_delayTimer.Set(10000);
+  }
 
   status.SetDelay(d);
 }

@@ -78,6 +78,9 @@ private:
   // by the package duration. This is only used for non IEC passthrough
   XbmcThreads::EndTime  m_extTimer;
 
+  // We query getTimestamp for audio every some seconds
+  XbmcThreads::EndTime m_delayTimer;
+
   // We maintain our linear weighted average delay counter in here
   // The n-th value (timely oldest value) is weighted with 1/n
   // the newest value gets a weight of 1
