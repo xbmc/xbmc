@@ -2363,9 +2363,34 @@ bool CVppPostproc::PreInit(CVaapiConfig &config, SDiMethods *methods)
 
 bool CVppPostproc::Init(EINTERLACEMETHOD method)
 {
-  m_vppMethod = method;
+  m_forwardRefs = 0;
+  m_backwardRefs = 0;
+  m_currentIdx = 0;
+  m_frameCount = 0;
+  m_vppMethod = VS_INTERLACEMETHOD_NONE;
 
-  VAProcDeinterlacingType vppMethod = VAProcDeinterlacingNone;
+  return UpdateDeintMethod(method);
+}
+
+
+bool CVppPostproc::UpdateDeintMethod(EINTERLACEMETHOD method)
+{
+  if (method == m_vppMethod)
+  {
+    return true;
+  }
+
+  m_vppMethod = method;
+  m_forwardRefs = 0;
+  m_backwardRefs = 0;
+
+  if (m_filter != VA_INVALID_ID)
+  {
+    CheckSuccess(vaDestroyBuffer(m_config.dpy, m_filter));
+    m_filter = VA_INVALID_ID;
+  }
+
+  VAProcDeinterlacingType vppMethod;
   switch (method)
   {
   case VS_INTERLACEMETHOD_VAAPI_BOB:
@@ -2378,16 +2403,11 @@ bool CVppPostproc::Init(EINTERLACEMETHOD method)
     vppMethod = VAProcDeinterlacingMotionCompensated;
     break;
   case VS_INTERLACEMETHOD_NONE:
-    // vppMethod = VAProcDeinterlacingNone;
-    break;
+    // Early exit, filter parameter buffer not needed then
+    return true;
   default:
     return false;
   }
-
-  m_forwardRefs = 0;
-  m_backwardRefs = 0;
-  m_currentIdx = 0;
-  m_frameCount = 0;
 
   VAProcFilterParameterBufferDeinterlacing filterparams;
   filterparams.type = VAProcFilterDeinterlacing;
@@ -2691,21 +2711,6 @@ void CVppPostproc::Flush()
     m_config.videoSurfaces->ClearRender(it->videoSurface);
     it = m_decodedPics.erase(it);
   }
-}
-
-bool CVppPostproc::UpdateDeintMethod(EINTERLACEMETHOD method)
-{
-  // could try to update method, for now trigger deinit/init
-  if (method != m_vppMethod)
-    return false;
-
-  if (method == VS_INTERLACEMETHOD_VAAPI_BOB ||
-      method == VS_INTERLACEMETHOD_VAAPI_MADI ||
-      method == VS_INTERLACEMETHOD_VAAPI_MACI ||
-      method == VS_INTERLACEMETHOD_NONE)
-    return true;
-
-  return false;
 }
 
 bool CVppPostproc::DoesSync()
