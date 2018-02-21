@@ -73,7 +73,7 @@ void CGameClientReversiblePlayback::SeekTimeMs(unsigned int timeMs)
 
   if (offsetFrames > 0)
   {
-    const unsigned int frames = std::min(static_cast<unsigned int>(offsetFrames), m_futureFrameCount);
+    const uint64_t frames = std::min(static_cast<uint64_t>(offsetFrames), m_futureFrameCount);
     if (frames > 0)
     {
       m_gameLoop.SetSpeed(0.0);
@@ -83,7 +83,7 @@ void CGameClientReversiblePlayback::SeekTimeMs(unsigned int timeMs)
   }
   else if (offsetFrames < 0)
   {
-    const unsigned int frames = std::min(static_cast<unsigned int>(-offsetFrames), m_pastFrameCount);
+    const uint64_t frames = std::min(static_cast<uint64_t>(-offsetFrames), m_pastFrameCount);
     if (frames > 0)
     {
       m_gameLoop.SetSpeed(0.0);
@@ -243,7 +243,7 @@ void CGameClientReversiblePlayback::AddFrame()
   m_totalFrameCount++;
 }
 
-void CGameClientReversiblePlayback::RewindFrames(unsigned int frames)
+void CGameClientReversiblePlayback::RewindFrames(uint64_t frames)
 {
   CSingleLock lock(m_mutex);
 
@@ -257,7 +257,7 @@ void CGameClientReversiblePlayback::RewindFrames(unsigned int frames)
   m_totalFrameCount -= std::min(m_totalFrameCount, static_cast<uint64_t>(frames));
 }
 
-void CGameClientReversiblePlayback::AdvanceFrames(unsigned int frames)
+void CGameClientReversiblePlayback::AdvanceFrames(uint64_t frames)
 {
   CSingleLock lock(m_mutex);
 
@@ -276,9 +276,9 @@ void CGameClientReversiblePlayback::UpdatePlaybackStats()
   m_pastFrameCount = m_memoryStream->PastFramesAvailable();
   m_futureFrameCount = m_memoryStream->FutureFramesAvailable();
 
-  const unsigned int played = m_pastFrameCount + (m_memoryStream->CurrentFrame() ? 1 : 0);
-  const unsigned int total = m_memoryStream->MaxFrameCount();
-  const unsigned int cached = m_futureFrameCount;
+  const uint64_t played = m_pastFrameCount + (m_memoryStream->CurrentFrame() ? 1 : 0);
+  const uint64_t total = m_memoryStream->MaxFrameCount();
+  const uint64_t cached = m_futureFrameCount;
 
   m_playTimeMs = MathUtils::round_int(1000.0 * played / m_gameLoop.FPS());
   m_totalTimeMs = MathUtils::round_int(1000.0 * total / m_gameLoop.FPS());

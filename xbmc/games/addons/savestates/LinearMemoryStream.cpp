@@ -31,7 +31,7 @@ CLinearMemoryStream::CLinearMemoryStream()
   Reset();
 }
 
-void CLinearMemoryStream::Init(size_t frameSize, size_t maxFrameCount)
+void CLinearMemoryStream::Init(size_t frameSize, uint64_t maxFrameCount)
 {
   Reset();
 
@@ -52,7 +52,7 @@ void CLinearMemoryStream::Reset()
   m_currentFrameHistory = 0;
 }
 
-void CLinearMemoryStream::SetMaxFrameCount(size_t maxFrameCount)
+void CLinearMemoryStream::SetMaxFrameCount(uint64_t maxFrameCount)
 {
   if (maxFrameCount == 0)
   {
@@ -60,7 +60,7 @@ void CLinearMemoryStream::SetMaxFrameCount(size_t maxFrameCount)
   }
   else
   {
-    const unsigned int frameCount = BufferSize();
+    const uint64_t frameCount = BufferSize();
     if (maxFrameCount < frameCount)
       CullPastFrames(frameCount - maxFrameCount);
   }
@@ -110,7 +110,7 @@ void CLinearMemoryStream::SubmitFrame()
   }
 }
 
-unsigned int CLinearMemoryStream::BufferSize() const
+uint64_t CLinearMemoryStream::BufferSize() const
 {
   return PastFramesAvailable() + (m_bHasCurrentFrame ? 1 : 0);
 }

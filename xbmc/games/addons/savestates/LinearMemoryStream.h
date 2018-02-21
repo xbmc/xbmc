@@ -22,6 +22,7 @@
 #include "IMemoryStream.h"
 
 #include <memory>
+#include <stdint.h>
 
 namespace KODI
 {
@@ -35,30 +36,30 @@ namespace GAME
     virtual ~CLinearMemoryStream() = default;
 
     // partial implementation of IMemoryStream
-    virtual void           Init(size_t frameSize, size_t maxFrameCount) override;
+    virtual void Init(size_t frameSize, uint64_t maxFrameCount) override;
     virtual void           Reset() override;
     virtual size_t         FrameSize() const override                      { return m_frameSize; }
-    virtual unsigned int   MaxFrameCount() const override                  { return m_maxFrames; }
-    virtual void           SetMaxFrameCount(size_t maxFrameCount) override;
+    virtual uint64_t MaxFrameCount() const override { return m_maxFrames; }
+    virtual void SetMaxFrameCount(uint64_t maxFrameCount) override;
     virtual uint8_t*       BeginFrame() override;
     virtual void           SubmitFrame() override;
     virtual const uint8_t* CurrentFrame() const override;
-    virtual unsigned int   FutureFramesAvailable() const override          { return 0; }
-    virtual unsigned int   AdvanceFrames(unsigned int frameCount) override { return 0; }
-    virtual unsigned int   PastFramesAvailable() const override = 0;
-    virtual unsigned int   RewindFrames(unsigned int frameCount) override = 0;
+    virtual uint64_t FutureFramesAvailable() const override { return 0; }
+    virtual uint64_t AdvanceFrames(uint64_t frameCount) override { return 0; }
+    virtual uint64_t PastFramesAvailable() const override = 0;
+    virtual uint64_t RewindFrames(uint64_t frameCount) override = 0;
     virtual uint64_t       GetFrameCounter() const override                { return m_currentFrameHistory; }
     virtual void           SetFrameCounter(uint64_t frameCount) override   { m_currentFrameHistory = frameCount; }
 
   protected:
     virtual void SubmitFrameInternal() = 0;
-    virtual void CullPastFrames(unsigned int frameCount) = 0;
+    virtual void CullPastFrames(uint64_t frameCount) = 0;
 
     // Helper function
-    unsigned int BufferSize() const;
+    uint64_t BufferSize() const;
 
     size_t m_paddedFrameSize;
-    unsigned int m_maxFrames;
+    uint64_t m_maxFrames;
 
     /**
      * Simple double-buffering. After XORing the two states, the next becomes

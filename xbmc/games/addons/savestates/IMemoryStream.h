@@ -62,7 +62,7 @@ namespace GAME
      * \param frameSize The size of the serialized memory state
      * \param maxFrameCount The maximum number of frames this steam can hold
      */
-    virtual void Init(size_t frameSize, size_t maxFrameCount) = 0;
+    virtual void Init(size_t frameSize, uint64_t maxFrameCount) = 0;
 
     /*!
      * \brief Free any resources used by this stream
@@ -77,14 +77,14 @@ namespace GAME
     /*!
      * \brief Return the current max frame count
      */
-    virtual unsigned int MaxFrameCount() const = 0;
+    virtual uint64_t MaxFrameCount() const = 0;
 
     /*!
      * \brief Update the max frame count
      *
      * Old frames may be deleted if the max frame count is reduced.
      */
-    virtual void SetMaxFrameCount(size_t maxFrameCount) = 0;
+    virtual void SetMaxFrameCount(uint64_t maxFrameCount) = 0;
 
     /*!
      * \ brief Get a pointer to which FrameSize() bytes can be written
@@ -116,26 +116,26 @@ namespace GAME
      * If the stream supports forward seeking, frames that are passed over
      * during a "rewind" operation can be recovered again.
      */
-    virtual unsigned int FutureFramesAvailable() const = 0;
+    virtual uint64_t FutureFramesAvailable() const = 0;
 
     /*!
      * \brief Seek ahead the specified number of frames
      *
      * \return The number of frames advanced
      */
-    virtual unsigned int AdvanceFrames(unsigned int frameCount) = 0;
+    virtual uint64_t AdvanceFrames(uint64_t frameCount) = 0;
 
     /*!
      * \brief Return the number of frames behind the current frame
      */
-    virtual unsigned int PastFramesAvailable() const = 0;
+    virtual uint64_t PastFramesAvailable() const = 0;
 
     /*!
      * \brief Seek backwards the specified number of frames
      *
      * \return The number of frames rewound
      */
-    virtual unsigned int RewindFrames(unsigned int frameCount) = 0;
+    virtual uint64_t RewindFrames(uint64_t frameCount) = 0;
 
     /*!
      * \brief Get the total number of frames played until the current frame

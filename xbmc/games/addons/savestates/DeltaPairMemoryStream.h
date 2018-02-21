@@ -40,13 +40,13 @@ namespace GAME
 
     // implementation of IMemoryStream via CLinearMemoryStream
     virtual void         Reset() override;
-    virtual unsigned int PastFramesAvailable() const override;
-    virtual unsigned int RewindFrames(unsigned int frameCount) override;
+    virtual uint64_t PastFramesAvailable() const override;
+    virtual uint64_t RewindFrames(uint64_t frameCount) override;
 
   protected:
     // implementation of CLinearMemoryStream
     virtual void SubmitFrameInternal() override;
-    virtual void CullPastFrames(unsigned int frameCount) override;
+    virtual void CullPastFrames(uint64_t frameCount) override;
 
     /*!
      * Rewinding is implemented by applying XOR deltas on the specific parts of

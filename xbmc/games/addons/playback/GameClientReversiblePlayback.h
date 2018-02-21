@@ -68,8 +68,8 @@ namespace GAME
 
   private:
     void AddFrame();
-    void RewindFrames(unsigned int frames);
-    void AdvanceFrames(unsigned int frames);
+    void RewindFrames(uint64_t frames);
+    void AdvanceFrames(uint64_t frames);
     void UpdatePlaybackStats();
     void UpdateMemoryStream();
 
@@ -87,8 +87,8 @@ namespace GAME
 
     // Playback stats
     uint64_t     m_totalFrameCount;
-    unsigned int m_pastFrameCount;
-    unsigned int m_futureFrameCount;
+    uint64_t     m_pastFrameCount;
+    uint64_t     m_futureFrameCount;
     unsigned int m_playTimeMs;
     unsigned int m_totalTimeMs;
     unsigned int m_cacheTimeMs;
