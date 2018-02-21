@@ -520,6 +520,7 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
     return false;
   }
 
+  m_vaapiConfig.driverIsMesa = StringUtils::StartsWith(vaQueryVendorString(m_vaapiConfig.context->GetDisplay()), "Mesa");
   m_vaapiConfig.vidWidth = avctx->width;
   m_vaapiConfig.vidHeight = avctx->height;
   m_vaapiConfig.outWidth = avctx->width;
@@ -1941,6 +1942,7 @@ void COutput::InitCycle()
 
     if (m_pp && !m_pp->UpdateDeintMethod(method))
     {
+      CLog::Log(LOGDEBUG, LOGVIDEO, "VAAPI output: Current postproc does not want new deinterlace mode, removing");
       std::shared_ptr<CPostproc> pp(m_pp);
       m_discardedPostprocs.push_back(pp);
       m_pp->Discard(this, &COutput::ReadyForDisposal);
@@ -1952,33 +1954,25 @@ void COutput::InitCycle()
       if (method == VS_INTERLACEMETHOD_DEINTERLACE ||
           method == VS_INTERLACEMETHOD_RENDER_BOB)
       {
+        CLog::Log(LOGDEBUG, LOGVIDEO, "VAAPI output: Initializing ffmpeg postproc");
         m_pp = new CFFmpegPostproc();
         m_config.stats->SetVpp(false);
       }
       else
       {
+        CLog::Log(LOGDEBUG, LOGVIDEO, "VAAPI output: Initializing vaapi postproc");
         m_pp = new CVppPostproc();
         m_config.stats->SetVpp(true);
       }
       if (m_pp->PreInit(m_config))
       {
         m_pp->Init(method);
-
-        if (method == VS_INTERLACEMETHOD_DEINTERLACE)
-          m_config.processInfo->SetVideoDeintMethod("yadif");
-        else if (method == VS_INTERLACEMETHOD_RENDER_BOB)
-          m_config.processInfo->SetVideoDeintMethod("render-bob");
-        else if (method == VS_INTERLACEMETHOD_VAAPI_BOB)
-          m_config.processInfo->SetVideoDeintMethod("vaapi-bob");
-        else if (method == VS_INTERLACEMETHOD_VAAPI_MADI)
-          m_config.processInfo->SetVideoDeintMethod("vaapi-madi");
-        else if (method == VS_INTERLACEMETHOD_VAAPI_MACI)
-          m_config.processInfo->SetVideoDeintMethod("vaapi-mcdi");
       }
       else
       {
+        CLog::Log(LOGERROR, "VAAPI output: Postproc preinit failed");
         delete m_pp;
-        m_pp = NULL;
+        m_pp = nullptr;
       }
     }
   }
@@ -1986,38 +1980,60 @@ void COutput::InitCycle()
   else
   {
     method = VS_INTERLACEMETHOD_NONE;
+
     if (m_pp && !m_pp->UpdateDeintMethod(method))
     {
+      CLog::Log(LOGDEBUG, LOGVIDEO, "VAAPI output: Current postproc does not want new deinterlace mode, removing");
       std::shared_ptr<CPostproc> pp(m_pp);
       m_discardedPostprocs.push_back(pp);
       m_pp->Discard(this, &COutput::ReadyForDisposal);
       m_pp = nullptr;
+      m_config.processInfo->SetVideoDeintMethod("unknown");
     }
     if (!m_pp)
     {
+      const bool preferVaapiRender = CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_PREFERVAAPIRENDER);
+      // For 1080p/i or below, always use CVppPostproc even when not deinterlacing
+      // Reason is: mesa cannot dynamically switch surfaces between use for VAAPI post-processing
+      // and use for direct export, so we run into trouble if we or the user want to switch
+      // deinterlacing on/off mid-stream.
+      // See also: https://bugs.freedesktop.org/show_bug.cgi?id=105145
+      const bool alwaysInsertVpp = m_config.driverIsMesa && ((m_config.vidWidth * m_config.vidHeight) <= (1920 * 1080));
+
       m_config.stats->SetVpp(false);
-      if (!CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_PREFERVAAPIRENDER))
+      if (!preferVaapiRender)
+      {
+        CLog::Log(LOGDEBUG, LOGVIDEO, "VAAPI output: Initializing ffmpeg postproc");
         m_pp = new CFFmpegPostproc();
+      }
+      else if (alwaysInsertVpp)
+      {
+        CLog::Log(LOGDEBUG, LOGVIDEO, "VAAPI output: Initializing vaapi postproc");
+        m_pp = new CVppPostproc();
+        m_config.stats->SetVpp(true);
+      }
       else
       {
+        CLog::Log(LOGDEBUG, LOGVIDEO, "VAAPI output: Initializing skip postproc");
         m_pp = new CSkipPostproc();
-        m_config.stats->SetVpp(true);
       }
       if (m_pp->PreInit(m_config))
       {
         m_pp->Init(method);
-        m_config.processInfo->SetVideoDeintMethod("none");
       }
       else
       {
+        CLog::Log(LOGERROR, "VAAPI output: Postproc preinit failed");
         delete m_pp;
-        m_pp = NULL;
+        m_pp = nullptr;
       }
     }
   }
   if (!m_pp) // fallback
   {
+    CLog::Log(LOGDEBUG, LOGVIDEO, "VAAPI output: Initializing skip postproc as fallback");
     m_pp = new CSkipPostproc();
+    m_config.stats->SetVpp(false);
     if (m_pp->PreInit(m_config))
       m_pp->Init(method);
   }
@@ -2169,6 +2185,7 @@ bool CSkipPostproc::PreInit(CVaapiConfig &config, SDiMethods *methods)
 
 bool CSkipPostproc::Init(EINTERLACEMETHOD method)
 {
+  m_config.processInfo->SetVideoDeintMethod("none");
   return true;
 }
 
@@ -2367,7 +2384,7 @@ bool CVppPostproc::Init(EINTERLACEMETHOD method)
   m_backwardRefs = 0;
   m_currentIdx = 0;
   m_frameCount = 0;
-  m_vppMethod = VS_INTERLACEMETHOD_NONE;
+  m_vppMethod = VS_INTERLACEMETHOD_AUTO;
 
   return UpdateDeintMethod(method);
 }
@@ -2395,17 +2412,22 @@ bool CVppPostproc::UpdateDeintMethod(EINTERLACEMETHOD method)
   {
   case VS_INTERLACEMETHOD_VAAPI_BOB:
     vppMethod = VAProcDeinterlacingBob;
+    m_config.processInfo->SetVideoDeintMethod("vaapi-bob");
     break;
   case VS_INTERLACEMETHOD_VAAPI_MADI:
     vppMethod = VAProcDeinterlacingMotionAdaptive;
+    m_config.processInfo->SetVideoDeintMethod("vaapi-madi");
     break;
   case VS_INTERLACEMETHOD_VAAPI_MACI:
     vppMethod = VAProcDeinterlacingMotionCompensated;
+    m_config.processInfo->SetVideoDeintMethod("vaapi-mcdi");
     break;
   case VS_INTERLACEMETHOD_NONE:
     // Early exit, filter parameter buffer not needed then
+    m_config.processInfo->SetVideoDeintMethod("vaapi-none");
     return true;
   default:
+    m_config.processInfo->SetVideoDeintMethod("unknown");
     return false;
   }
 
@@ -2900,6 +2922,8 @@ bool CFFmpegPostproc::Init(EINTERLACEMETHOD method)
       CLog::Log(LOGERROR, "VAAPI::CFFmpegPostproc::Init  - avfilter_graph_config");
       return false;
     }
+
+    m_config.processInfo->SetVideoDeintMethod("yadif");
   }
   else if (method == VS_INTERLACEMETHOD_RENDER_BOB ||
            method == VS_INTERLACEMETHOD_NONE)
@@ -2907,11 +2931,13 @@ bool CFFmpegPostproc::Init(EINTERLACEMETHOD method)
     CLog::Log(LOGDEBUG, LOGVIDEO, "VAAPI::CFFmpegPostproc::Init  - skip deinterlacing");
     avfilter_inout_free(&outputs);
     avfilter_inout_free(&inputs);
+    m_config.processInfo->SetVideoDeintMethod("none");
   }
   else
   {
     avfilter_inout_free(&outputs);
     avfilter_inout_free(&inputs);
+    m_config.processInfo->SetVideoDeintMethod("unknown");
     return false;
   }
   m_diMethod = method;

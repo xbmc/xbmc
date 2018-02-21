@@ -118,6 +118,7 @@ struct CVaapiConfig
   VAProfile profile;
   VAConfigAttrib attrib;
   CProcessInfo *processInfo;
+  bool driverIsMesa;
 };
 
 /**
