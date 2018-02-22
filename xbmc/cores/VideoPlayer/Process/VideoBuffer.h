@@ -23,7 +23,9 @@
 #include <atomic>
 #include <deque>
 #include <list>
+#include <map>
 #include <memory>
+#include <string>
 #include <vector>
 
 extern "C" {
@@ -55,6 +57,8 @@ class CVideoBuffer;
 class IVideoBufferPool;
 class CVideoBufferManager;
 
+typedef void (CVideoBufferManager::*ReadyToDispose)(IVideoBufferPool *pool);
+
 class IVideoBufferPool : public std::enable_shared_from_this<IVideoBufferPool>
 {
 public:
@@ -80,6 +84,10 @@ public:
   // callback when BM releases buffer pool. i.e. before a new codec is created
   // clients can register a new pool on this callback
   virtual void Released(CVideoBufferManager &videoBufferManager) {};
+
+  // called by BM when buffer is discarded
+  // pool calls back when all buffers are back home
+  virtual void Discard(CVideoBufferManager *bm, ReadyToDispose cb) { (bm->*cb)(this); };
 
   // call on Get() before returning buffer to caller
   std::shared_ptr<IVideoBufferPool> GetPtr() { return shared_from_this(); };
@@ -141,11 +149,15 @@ protected:
 class CVideoBufferPoolSysMem : public IVideoBufferPool
 {
 public:
+  ~CVideoBufferPoolSysMem() override;
   CVideoBuffer* Get() override;
   void Return(int id) override;
   void Configure(AVPixelFormat format, int size) override;
   bool IsConfigured() override;
   bool IsCompatible(AVPixelFormat format, int size) override;
+  void Discard(CVideoBufferManager *bm, ReadyToDispose cb) override;
+
+  static std::shared_ptr<IVideoBufferPool> CreatePool();
 
 protected:
   int m_width = 0;
@@ -154,6 +166,8 @@ protected:
   AVPixelFormat m_pixFormat = AV_PIX_FMT_NONE;
   bool m_configured = false;
   CCriticalSection m_critSection;
+  CVideoBufferManager *m_bm = nullptr;
+  ReadyToDispose m_cbDispose;
 
   std::vector<CVideoBufferSysMem*> m_all;
   std::deque<int> m_used;
@@ -164,17 +178,24 @@ protected:
 //
 //-----------------------------------------------------------------------------
 
+typedef std::shared_ptr<IVideoBufferPool> (*CreatePoolFunc)();
+
 class CVideoBufferManager
 {
 public:
   CVideoBufferManager();
   void RegisterPool(std::shared_ptr<IVideoBufferPool> pool);
+  void RegisterPoolFactory(std::string id, CreatePoolFunc createFunc);
   void ReleasePools();
-  CVideoBuffer* Get(AVPixelFormat format, int size);
+  void ReleasePool(IVideoBufferPool *pool);
+  CVideoBuffer* Get(AVPixelFormat format, int size, IVideoBufferPool **pPool);
+  void ReadyForDisposal(IVideoBufferPool *pool);
 
 protected:
   CCriticalSection m_critSection;
   std::list<std::shared_ptr<IVideoBufferPool>> m_pools;
+  std::list<std::shared_ptr<IVideoBufferPool>> m_discardedPools;
+  std::map<std::string, CreatePoolFunc> m_poolFactories;
 
 private:
   CVideoBufferManager (const CVideoBufferManager&) = delete;
