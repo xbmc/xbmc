@@ -640,12 +640,16 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
   if (m_offset > 0)
     m_headPos -= m_offset;
 
+  bool old_aml_workaround = false;
   // this makes EAC3 working even when AML is not enabled
   if (aml_present() && m_info.m_wantsIECPassthrough &&
       (m_encoding == CJNIAudioFormat::ENCODING_DTS_HD ||
        m_encoding == CJNIAudioFormat::ENCODING_E_AC3 ||
        m_encoding == CJNIAudioFormat::ENCODING_DOLBY_TRUEHD))
+  {
     normHead_pos /= m_sink_frameSize;  // AML wants sink in 48k but returns pos in 192k
+    old_aml_workaround = true;
+  }
 
   if (m_passthrough && !m_info.m_wantsIECPassthrough)
   {
@@ -668,7 +672,7 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
     delay = 0;
 
   double d = GetMovingAverageDelay(delay);
-  if (m_delayTimer.IsTimePast())
+  if (!old_aml_workaround && m_delayTimer.IsTimePast())
   {
     CJNIAudioTimestamp ts;
     double now = CJNISystem::nanoTime();
