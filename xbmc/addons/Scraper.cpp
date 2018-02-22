@@ -898,8 +898,17 @@ std::vector<CScraperUrl> CScraper::FindMovie(XFILE::CCurlFile &fcurl,
                                              bool fFirst)
 {
   // prepare parameters for URL creation
-  std::string sTitle, sTitleYear, sYear;
-  CUtil::CleanString(movieTitle, sTitle, sTitleYear, sYear, true /*fRemoveExt*/, fFirst);
+  std::string sTitle, sYear;
+  if (movieYear < 0)
+  {
+    std::string sTitleYear;
+    CUtil::CleanString(movieTitle, sTitle, sTitleYear, sYear, true /*fRemoveExt*/, fFirst);
+  }
+  else
+  {
+    sTitle = movieTitle;
+    sYear = std::to_string( movieYear );
+  }
 
   CLog::Log(LOGDEBUG,
             "%s: Searching for '%s' using %s scraper "
