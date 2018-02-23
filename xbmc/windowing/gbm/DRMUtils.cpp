@@ -374,53 +374,60 @@ bool CDRMUtils::GetPlanes()
 
   CLog::Log(LOGDEBUG, "CDRMUtils::%s - primary plane format: %c%c%c%c", __FUNCTION__, fourcc, fourcc >> 8, fourcc >> 16, fourcc >> 24);
 
-  // overlay plane
-  m_overlay_plane->plane = drmModeGetPlane(m_fd, overlay_plane_id);
-  if (!m_overlay_plane->plane)
+  if (overlay_plane_id != 0)
   {
-    CLog::Log(LOGERROR, "CDRMUtils::%s - could not get overlay plane %u: %s", __FUNCTION__, overlay_plane_id, strerror(errno));
-    return false;
-  }
-
-  m_overlay_plane->props = drmModeObjectGetProperties(m_fd, overlay_plane_id, DRM_MODE_OBJECT_PLANE);
-  if (!m_overlay_plane->props)
-  {
-    CLog::Log(LOGERROR, "CDRMUtils::%s - could not get overlay plane %u properties: %s", __FUNCTION__, overlay_plane_id, strerror(errno));
-    return false;
-  }
-
-  m_overlay_plane->props_info = new drmModePropertyPtr[m_overlay_plane->props->count_props];
-  for (uint32_t i = 0; i < m_overlay_plane->props->count_props; i++)
-  {
-    m_overlay_plane->props_info[i] = drmModeGetProperty(m_fd, m_overlay_plane->props->props[i]);
-  }
-
-  fourcc = 0;
-
-  for (uint32_t i = 0; i < m_overlay_plane->plane->count_formats; i++)
-  {
-    /* we want an alpha layer so break if we find one */
-    if (m_overlay_plane->plane->formats[i] == DRM_FORMAT_XRGB8888)
+    // overlay plane
+    m_overlay_plane->plane = drmModeGetPlane(m_fd, overlay_plane_id);
+    if (!m_overlay_plane->plane)
     {
-      fourcc = DRM_FORMAT_XRGB8888;
-      m_overlay_plane->format = fourcc;
+      CLog::Log(LOGERROR, "CDRMUtils::%s - could not get overlay plane %u: %s", __FUNCTION__, overlay_plane_id, strerror(errno));
+      return false;
     }
-    else if(m_overlay_plane->plane->formats[i] == DRM_FORMAT_ARGB8888)
+
+    m_overlay_plane->props = drmModeObjectGetProperties(m_fd, overlay_plane_id, DRM_MODE_OBJECT_PLANE);
+    if (!m_overlay_plane->props)
     {
-      fourcc = DRM_FORMAT_ARGB8888;
-      m_overlay_plane->format = fourcc;
-      break;
+      CLog::Log(LOGERROR, "CDRMUtils::%s - could not get overlay plane %u properties: %s", __FUNCTION__, overlay_plane_id, strerror(errno));
+      return false;
     }
-  }
 
-  if (fourcc == 0)
+    m_overlay_plane->props_info = new drmModePropertyPtr[m_overlay_plane->props->count_props];
+    for (uint32_t i = 0; i < m_overlay_plane->props->count_props; i++)
+    {
+      m_overlay_plane->props_info[i] = drmModeGetProperty(m_fd, m_overlay_plane->props->props[i]);
+    }
+
+    fourcc = 0;
+
+    for (uint32_t i = 0; i < m_overlay_plane->plane->count_formats; i++)
+    {
+      /* we want an alpha layer so break if we find one */
+      if (m_overlay_plane->plane->formats[i] == DRM_FORMAT_XRGB8888)
+      {
+        fourcc = DRM_FORMAT_XRGB8888;
+        m_overlay_plane->format = fourcc;
+      }
+      else if(m_overlay_plane->plane->formats[i] == DRM_FORMAT_ARGB8888)
+      {
+        fourcc = DRM_FORMAT_ARGB8888;
+        m_overlay_plane->format = fourcc;
+        break;
+      }
+    }
+
+    if (fourcc == 0)
+    {
+      CLog::Log(LOGERROR, "CDRMUtils::%s - could not find a suitable overlay plane format", __FUNCTION__);
+      return false;
+    }
+
+    CLog::Log(LOGDEBUG, "CDRMUtils::%s - overlay plane format: %c%c%c%c", __FUNCTION__, fourcc, fourcc >> 8, fourcc >> 16, fourcc >> 24);
+  }
+  else
   {
-    CLog::Log(LOGERROR, "CDRMUtils::%s - could not find a suitable overlay plane format", __FUNCTION__);
-    return false;
+    delete m_overlay_plane;
+    m_overlay_plane = m_primary_plane;
   }
-
-  CLog::Log(LOGDEBUG, "CDRMUtils::%s - overlay plane format: %c%c%c%c", __FUNCTION__, fourcc, fourcc >> 8, fourcc >> 16, fourcc >> 24);
-
   return true;
 }
 
@@ -439,6 +446,7 @@ bool CDRMUtils::OpenDrm()
     "vc4",
     "virtio_gpu",
     "sun4i-drm",
+    "meson"
   };
 
   for(int i = 0; i < 10; ++i)
@@ -605,13 +613,16 @@ void CDRMUtils::DestroyDrm()
   drmModeFreeObjectProperties(m_primary_plane->props);
   delete [] m_primary_plane->props_info;
   delete m_primary_plane;
-  m_primary_plane = nullptr;
 
-  drmModeFreePlane(m_overlay_plane->plane);
-  drmModeFreeObjectProperties(m_overlay_plane->props);
-  delete [] m_overlay_plane->props_info;
-  delete m_overlay_plane;
+  if (m_overlay_plane != m_primary_plane)
+  {
+    drmModeFreePlane(m_overlay_plane->plane);
+    drmModeFreeObjectProperties(m_overlay_plane->props);
+    delete [] m_overlay_plane->props_info;
+    delete m_overlay_plane;
+  }
   m_overlay_plane = nullptr;
+  m_primary_plane = nullptr;
 }
 
 bool CDRMUtils::GetModes(std::vector<RESOLUTION_INFO> &resolutions)
