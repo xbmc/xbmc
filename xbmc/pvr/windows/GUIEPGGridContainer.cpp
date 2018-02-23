@@ -1674,6 +1674,62 @@ void CGUIEPGGridContainer::GoToDate(const CDateTime &date)
   SetBlock(offset);
 }
 
+void CGUIEPGGridContainer::GoToTop()
+{
+  if (m_orientation == VERTICAL)
+  {
+    if (m_gridModel->HasChannelItems())
+      GoToChannel(0);
+  }
+  else
+  {
+    if (m_gridModel->HasProgrammeItems())
+      GoToBlock(0);
+  }
+}
+
+void CGUIEPGGridContainer::GoToBottom()
+{
+  if (m_orientation == VERTICAL)
+  {
+    if (m_gridModel->HasChannelItems())
+      GoToChannel(m_gridModel->ChannelItemsSize() - 1);
+  }
+  else
+  {
+    if (m_gridModel->HasProgrammeItems())
+      GoToBlock(m_gridModel->ProgrammeItemsSize() - 1);
+  }
+}
+
+void CGUIEPGGridContainer::GoToMostLeft()
+{
+  if (m_orientation == VERTICAL)
+  {
+    if (m_gridModel->HasProgrammeItems())
+      GoToBlock(m_gridModel->ProgrammeItemsSize() - 1);
+  }
+  else
+  {
+    if (m_gridModel->HasChannelItems())
+      GoToChannel(m_gridModel->ChannelItemsSize() - 1);
+  }
+}
+
+void CGUIEPGGridContainer::GoToMostRight()
+{
+  if (m_orientation == VERTICAL)
+  {
+    if (m_gridModel->HasProgrammeItems())
+      GoToBlock(0);
+  }
+  else
+  {
+    if (m_gridModel->HasChannelItems())
+      GoToChannel(0);
+  }
+}
+
 void CGUIEPGGridContainer::SetTimelineItems(const std::unique_ptr<CFileItemList> &items, const CDateTime &gridStart, const CDateTime &gridEnd)
 {
   int iRulerUnit;

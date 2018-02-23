@@ -87,6 +87,10 @@ namespace PVR
     void GoToEnd();
     void GoToNow();
     void GoToDate(const CDateTime &date);
+    void GoToTop();
+    void GoToBottom();
+    void GoToMostLeft();
+    void GoToMostRight();
 
     void SetTimelineItems(const std::unique_ptr<CFileItemList> &items, const CDateTime &gridStart, const CDateTime &gridEnd);
     /*!
