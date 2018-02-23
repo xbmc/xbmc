@@ -127,6 +127,7 @@
 #include "peripherals/Peripherals.h"
 #include "peripherals/devices/PeripheralImon.h"
 #include "music/infoscanner/MusicInfoScanner.h"
+#include "music/MusicUtils.h"
 
 // Windows includes
 #include "guilib/GUIWindowManager.h"
@@ -1978,69 +1979,87 @@ bool CApplication::OnAction(const CAction &action)
     return true;
   }
 
-  if ((action.GetID() == ACTION_INCREASE_RATING || action.GetID() == ACTION_DECREASE_RATING) && m_appPlayer.IsPlayingAudio())
+  if ((action.GetID() == ACTION_SET_RATING) && m_appPlayer.IsPlayingAudio())
   {
-    const CMusicInfoTag *tag = g_infoManager.GetCurrentSongTag();
-    if (tag)
+    int userrating = MUSIC_UTILS::ShowSelectRatingDialog(m_itemCurrentFile->GetMusicInfoTag()->GetUserrating());
+    if (userrating < 0) // Nothing selected, so user rating unchanged
+      return true;
+    userrating = std::min(userrating, 10);
+    if (userrating != m_itemCurrentFile->GetMusicInfoTag()->GetUserrating())
     {
-      *m_itemCurrentFile->GetMusicInfoTag() = *tag;
-      int userrating = tag->GetUserrating();
-      bool needsUpdate(false);
-      if (userrating > 0 && action.GetID() == ACTION_DECREASE_RATING)
-      {
-        m_itemCurrentFile->GetMusicInfoTag()->SetUserrating(userrating - 1);
-        needsUpdate = true;
-      }
-      else if (userrating < 10 && action.GetID() == ACTION_INCREASE_RATING)
-      {
-        m_itemCurrentFile->GetMusicInfoTag()->SetUserrating(userrating + 1);
-        needsUpdate = true;
-      }
-      if (needsUpdate)
-      {
-        CMusicDatabase db;
-        if (db.Open())      // OpenForWrite() ?
-        {
-          db.SetSongUserrating(m_itemCurrentFile->GetPath(), m_itemCurrentFile->GetMusicInfoTag()->GetUserrating());
-          db.Close();
-        }
-        // send a message to all windows to tell them to update the fileitem (eg playlistplayer, media windows)
-        CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 0, m_itemCurrentFile);
-        g_windowManager.SendMessage(msg);
-      }
+      m_itemCurrentFile->GetMusicInfoTag()->SetUserrating(userrating);
+      // Mirror changes to GUI item
+      g_infoManager.SetCurrentItem(*m_itemCurrentFile);
+      
+      // Asynchronously update song userrating in music library
+      MUSIC_UTILS::UpdateSongRatingJob(m_itemCurrentFile, userrating);
+
+      // Tell all windows (e.g. playlistplayer, media windows) to update the fileitem 
+      CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 0, m_itemCurrentFile);
+      g_windowManager.SendMessage(msg);
+    }      
+    return true;
+  }
+
+  else if ((action.GetID() == ACTION_INCREASE_RATING || action.GetID() == ACTION_DECREASE_RATING) && m_appPlayer.IsPlayingAudio())
+  {
+    int userrating = m_itemCurrentFile->GetMusicInfoTag()->GetUserrating();
+    bool needsUpdate(false);
+    if (userrating > 0 && action.GetID() == ACTION_DECREASE_RATING)
+    {
+      m_itemCurrentFile->GetMusicInfoTag()->SetUserrating(userrating - 1);
+      needsUpdate = true;
     }
+    else if (userrating < 10 && action.GetID() == ACTION_INCREASE_RATING)
+    {
+      m_itemCurrentFile->GetMusicInfoTag()->SetUserrating(userrating + 1);
+      needsUpdate = true;
+    }
+    if (needsUpdate)
+    {
+      // Mirror changes to current GUI item
+      g_infoManager.SetCurrentItem(*m_itemCurrentFile);
+
+      // Asynchronously update song userrating in music library
+      MUSIC_UTILS::UpdateSongRatingJob(m_itemCurrentFile, m_itemCurrentFile->GetMusicInfoTag()->GetUserrating());
+
+      // send a message to all windows to tell them to update the fileitem (eg playlistplayer, media windows)
+      CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 0, m_itemCurrentFile);
+      g_windowManager.SendMessage(msg);
+    }
+    
     return true;
   }
   else if ((action.GetID() == ACTION_INCREASE_RATING || action.GetID() == ACTION_DECREASE_RATING) && m_appPlayer.IsPlayingVideo())
   {
-    const CVideoInfoTag *tag = g_infoManager.GetCurrentMovieTag();
-    if (tag)
+    int rating = m_itemCurrentFile->GetVideoInfoTag()->m_iUserRating;
+    bool needsUpdate(false);
+    if (rating > 1 && action.GetID() == ACTION_DECREASE_RATING)
     {
-      *m_itemCurrentFile->GetVideoInfoTag() = *tag;
-      int rating = tag->m_iUserRating;
-      bool needsUpdate(false);
-      if (rating > 1 && action.GetID() == ACTION_DECREASE_RATING)
+      m_itemCurrentFile->GetVideoInfoTag()->m_iUserRating = rating - 1;
+      needsUpdate = true;
+    }
+    else if (rating < 10 && action.GetID() == ACTION_INCREASE_RATING)
+    {
+      m_itemCurrentFile->GetVideoInfoTag()->m_iUserRating = rating + 1;
+      needsUpdate = true;
+    }
+    if (needsUpdate)
+    {
+      // Mirror changes to GUI item
+      g_infoManager.SetCurrentItem(*m_itemCurrentFile);
+
+      CVideoDatabase db;
+      if (db.Open())
       {
-        m_itemCurrentFile->GetVideoInfoTag()->m_iUserRating = rating - 1;
-        needsUpdate = true;
+        db.SetVideoUserRating(m_itemCurrentFile->GetVideoInfoTag()->m_iDbId, 
+                              m_itemCurrentFile->GetVideoInfoTag()->m_iUserRating, 
+                              m_itemCurrentFile->GetVideoInfoTag()->m_type);
+        db.Close();
       }
-      else if (rating < 10 && action.GetID() == ACTION_INCREASE_RATING)
-      {
-        m_itemCurrentFile->GetVideoInfoTag()->m_iUserRating = rating + 1;
-        needsUpdate = true;
-      }
-      if (needsUpdate)
-      {
-        CVideoDatabase db;
-        if (db.Open())
-        {
-          db.SetVideoUserRating(m_itemCurrentFile->GetVideoInfoTag()->m_iDbId, m_itemCurrentFile->GetVideoInfoTag()->m_iUserRating, m_itemCurrentFile->GetVideoInfoTag()->m_type);
-          db.Close();
-        }
-        // send a message to all windows to tell them to update the fileitem (eg playlistplayer, media windows)
-        CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 0, m_itemCurrentFile);
-        g_windowManager.SendMessage(msg);
-      }
+      // send a message to all windows to tell them to update the fileitem (eg playlistplayer, media windows)
+      CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 0, m_itemCurrentFile);
+      g_windowManager.SendMessage(msg);
     }
     return true;
   }
@@ -3849,6 +3868,15 @@ bool CApplication::OnMessage(CGUIMessage& message)
         ShowAppMigrationMessage();
 
         m_bInitializing = false;
+      }
+      else if (message.GetParam1() == GUI_MSG_UPDATE_ITEM && message.GetItem())
+      {
+        CFileItemPtr item = std::static_pointer_cast<CFileItem>(message.GetItem());
+        if (m_itemCurrentFile->IsSamePath(item.get()))
+        {
+          m_itemCurrentFile->UpdateInfo(*item);
+          g_infoManager.SetCurrentItem(*m_itemCurrentFile);
+        }
       }
     }
     break;
