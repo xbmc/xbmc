@@ -634,6 +634,7 @@ function(core_find_git_rev stamp)
   else()
     find_package(Git)
     if(GIT_FOUND AND EXISTS ${CMAKE_SOURCE_DIR}/.git)
+      # get tree status i.e. clean working tree vs dirty (uncommited or unstashed changes, etc.)
       execute_process(COMMAND ${GIT_EXECUTABLE} update-index --ignore-submodules -q --refresh
                       WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
       execute_process(COMMAND ${GIT_EXECUTABLE} diff-files --ignore-submodules --quiet --
@@ -644,21 +645,21 @@ function(core_find_git_rev stamp)
                         RESULT_VARIABLE status_code
                         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
         endif()
+        # get HEAD commit SHA-1
+        execute_process(COMMAND ${GIT_EXECUTABLE} log -n 1 --pretty=format:"%h" HEAD
+                        OUTPUT_VARIABLE HASH
+                        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+        string(REPLACE "\"" "" HASH ${HASH})
+
         if(status_code)
-          execute_process(COMMAND ${GIT_EXECUTABLE} log -n 1 --pretty=format:"%h-dirty" HEAD
-                          OUTPUT_VARIABLE HASH
-                          WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-          string(SUBSTRING ${HASH} 1 13 HASH)
-        else()
-          execute_process(COMMAND ${GIT_EXECUTABLE} log -n 1 --pretty=format:"%h" HEAD
-                          OUTPUT_VARIABLE HASH
-                          WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-          string(SUBSTRING ${HASH} 1 7 HASH)
+          string(CONCAT HASH ${HASH} "-dirty")
         endif()
+
+      # get HEAD commit date
       execute_process(COMMAND ${GIT_EXECUTABLE} log -1 --pretty=format:"%cd" --date=short HEAD
                       OUTPUT_VARIABLE DATE
                       WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-      string(SUBSTRING ${DATE} 1 10 DATE)
+      string(REPLACE "\"" "" DATE ${DATE})
       string(REPLACE "-" "" DATE ${DATE})
     else()
       string(TIMESTAMP DATE "%Y%m%d" UTC)
