@@ -119,37 +119,39 @@ bool CRendererMediaCodecSurface::Supports(ERENDERFEATURE feature)
 void CRendererMediaCodecSurface::RenderUpdate(int index, int index2, bool clear, unsigned int flags, unsigned int alpha)
 {
   CXBMCApp::get()->WaitVSync(100);
-  ManageRenderArea();
   m_bConfigured = true;
-}
-
-void CRendererMediaCodecSurface::ReorderDrawPoints()
-{
-  CBaseRenderer::ReorderDrawPoints();
 
   // this hack is needed to get the 2D mode of a 3D movie going
   RENDER_STEREO_MODE stereo_mode = g_graphicsContext.GetStereoMode();
   if (stereo_mode)
     g_graphicsContext.SetStereoView(RENDER_STEREO_VIEW_LEFT);
 
+  ManageRenderArea();
+
   if (stereo_mode)
     g_graphicsContext.SetStereoView(RENDER_STEREO_VIEW_OFF);
 
   m_surfDestRect = m_destRect;
-  CRect srcRect(m_sourceRect);
   switch (stereo_mode)
   {
     case RENDER_STEREO_MODE_SPLIT_HORIZONTAL:
       m_surfDestRect.y2 *= 2.0;
-      srcRect.y2 *= 2.0;
       break;
     case RENDER_STEREO_MODE_SPLIT_VERTICAL:
       m_surfDestRect.x2 *= 2.0;
-      srcRect.x2 *= 2.0;
+      break;
+    case RENDER_STEREO_MODE_MONO:
+      m_surfDestRect.y2 = m_surfDestRect.y2 * (m_surfDestRect.y2 / m_sourceRect.y2);
+      m_surfDestRect.x2 = m_surfDestRect.x2 * (m_surfDestRect.x2 / m_sourceRect.x2);
       break;
     default:
       break;
   }
+}
+
+void CRendererMediaCodecSurface::ReorderDrawPoints()
+{
+  CBaseRenderer::ReorderDrawPoints();
 
   // Handle orientation
   switch (m_renderOrientation)
