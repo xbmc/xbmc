@@ -104,6 +104,7 @@ bool CWinSystemWin10::InitWindowSystem()
 
 bool CWinSystemWin10::DestroyWindowSystem()
 {
+  m_bWindowCreated = false;
   RestoreDesktopResolution(m_nScreen);
   return true;
 }
@@ -451,7 +452,7 @@ bool CWinSystemWin10::ChangeResolution(const RESOLUTION_INFO& res, bool forceCha
 
     // changing display mode doesn't cause OnResize event
     // for CoreWindow, so we "emulate" it manually
-    if (changed)
+    if (changed && m_bWindowCreated)
     {
       float dpi = DisplayInformation::GetForCurrentView()->LogicalDpi;
       float dipsW = DX::ConvertPixelsToDips(m_nWidth, dpi);

@@ -157,6 +157,9 @@ bool CWinSystemWin10DX::IsStereoEnabled()
 
 void CWinSystemWin10DX::OnResize(int width, int height)
 {
+  if (!m_deviceResources)
+    return;
+
   if (!m_IsAlteringWindow)
     ReleaseBackBuffer();
 
