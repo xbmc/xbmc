@@ -126,6 +126,7 @@ public:
   static const std::string SETTING_VIDEOPLAYER_USEOMXPLAYER;
   static const std::string SETTING_VIDEOPLAYER_USEVTB;
   static const std::string SETTING_VIDEOPLAYER_USEMMAL;
+  static const std::string SETTING_VIDEOPLAYER_USEPRIMEDECODER;
   static const std::string SETTING_VIDEOPLAYER_USESTAGEFRIGHT;
   static const std::string SETTING_VIDEOPLAYER_LIMITGUIUPDATE;
   static const std::string SETTING_VIDEOPLAYER_SUPPORTMVC;

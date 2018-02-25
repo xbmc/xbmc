@@ -172,6 +172,7 @@ const std::string CSettings::SETTING_VIDEOPLAYER_USEDXVA2 = "videoplayer.usedxva
 const std::string CSettings::SETTING_VIDEOPLAYER_USEOMXPLAYER = "videoplayer.useomxplayer";
 const std::string CSettings::SETTING_VIDEOPLAYER_USEVTB = "videoplayer.usevtb";
 const std::string CSettings::SETTING_VIDEOPLAYER_USEMMAL = "videoplayer.usemmal";
+const std::string CSettings::SETTING_VIDEOPLAYER_USEPRIMEDECODER = "videoplayer.useprimedecoder";
 const std::string CSettings::SETTING_VIDEOPLAYER_USESTAGEFRIGHT = "videoplayer.usestagefright";
 const std::string CSettings::SETTING_VIDEOPLAYER_LIMITGUIUPDATE = "videoplayer.limitguiupdate";
 const std::string CSettings::SETTING_VIDEOPLAYER_SUPPORTMVC = "videoplayer.supportmvc";
@@ -586,6 +587,11 @@ bool CSettings::InitializeDefinitions()
   if (CFile::Exists(SETTINGS_XML_FOLDER "darwin_ios.xml") && !Initialize(SETTINGS_XML_FOLDER "darwin_ios.xml"))
     CLog::Log(LOGFATAL, "Unable to load ios-specific settings definitions");
 #endif
+#endif
+
+#if defined(PLATFORM_SETTINGS_FILE)
+  if (CFile::Exists(SETTINGS_XML_FOLDER DEF_TO_STR_VALUE(PLATFORM_SETTINGS_FILE)) && !Initialize(SETTINGS_XML_FOLDER DEF_TO_STR_VALUE(PLATFORM_SETTINGS_FILE)))
+    CLog::Log(LOGFATAL, "Unable to load platform-specific settings definitions (%s)", DEF_TO_STR_VALUE(PLATFORM_SETTINGS_FILE));
 #endif
 
   // load any custom visibility and default values before loading the special
