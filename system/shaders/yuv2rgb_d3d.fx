@@ -129,7 +129,9 @@ float4 YUV2RGB(VS_OUTPUT In) : SV_TARGET
 
   float4 rgb = mul(YUV, g_ColorMatrix);
 #if defined(XBMC_COL_CONVERSION)
-  rgb.rgb = pow(max(0.0, mul(pow(rgb, g_gammaSrc), g_primMat)), g_gammaDstInv).rgb;
+  rgb.rgb = pow(max(0.0, rgb.rgb), g_gammaSrc);
+  rgb.rgb = max(0.0, mul(rgb, g_primMat).rgb);
+  rgb.rgb = pow(rgb.rgb, g_gammaDstInv);
 #endif
   return output4(rgb, In.TextureY);
 }
