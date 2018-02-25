@@ -39,30 +39,5 @@ namespace DX
   {
     return dynamic_cast<CWinSystemWin10DX&>(CServiceBroker::GetRenderSystem());
   }
-
-  class CoreWindowHolder
-  {
-  public:
-    static std::shared_ptr<CoreWindowHolder> Get()
-    {
-      static std::shared_ptr<CoreWindowHolder> instance(new CoreWindowHolder());
-      return instance;
-    }
-
-    ~CoreWindowHolder() { m_coreWindow.Release(); }
-
-    void SetWindow(Windows::UI::Core::CoreWindow^ window)
-    {
-      m_coreWindow = window;
-    }
-
-    Windows::UI::Core::CoreWindow^ GetWindow()
-    {
-      return m_coreWindow.Get();
-    }
-
-  private:
-    Platform::Agile<Windows::UI::Core::CoreWindow^> m_coreWindow;
-  };
 #endif
 }

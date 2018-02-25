@@ -24,7 +24,7 @@ IF "%arch%"=="x86" (
 )
 
 IF "%vcstore%"=="store" (
-  SET sdkver=10.0.14393.0
+  SET sdkver=10.0.16299.0
   SET toolsdir="win10-%toolsdir%"
 )
 

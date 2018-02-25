@@ -28,6 +28,7 @@
 #include "settings/AdvancedSettings.h"
 #include "platform/Environment.h"
 #include "utils/log.h"
+#include "utils/SystemInfo.h"
 #include "windowing/win10/WinEventsWin10.h"
 #include "Win10App.h"
 
@@ -83,7 +84,6 @@ void App::Initialize(CoreApplicationView^ applicationView)
 // Called when the CoreWindow object is created (or re-created).
 void App::SetWindow(CoreWindow^ window)
 {
-  DX::CoreWindowHolder::Get()->SetWindow(window);
 }
 
 // Initializes scene resources, or loads a previously saved app state.
@@ -105,6 +105,10 @@ void App::Run()
 
     CAppParamParser appParamParser;
     appParamParser.Parse(m_argv.data(), m_argv.size());
+
+    if (CSysInfo::GetWindowsDeviceFamily() == CSysInfo::Xbox)
+      g_application.SetStandAlone(true);
+
     // Create and run the app
     XBMC_Run(true, appParamParser);
   }
@@ -136,8 +140,18 @@ void App::OnActivated(CoreApplicationView^ applicationView, IActivatedEventArgs^
   m_argv.clear();
   push_back(m_argv, std::string("dummy"));
 
+  if (args->Kind == ActivationKind::Launch)
+  {
+    auto launchArgs = static_cast<LaunchActivatedEventArgs^>(args);
+    if (launchArgs->PrelaunchActivated)
+    {
+      // opt-out of Prelaunch
+      CoreApplication::Exit();
+      return;
+    }
+  }
   // Check for protocol activation
-  if (args->Kind == ActivationKind::Protocol)
+  else if (args->Kind == ActivationKind::Protocol)
   {
     auto protocolArgs = static_cast< ProtocolActivatedEventArgs^>(args);
     Platform::String^ argval = protocolArgs->Uri->ToString();

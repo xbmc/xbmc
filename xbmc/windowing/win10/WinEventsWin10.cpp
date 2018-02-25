@@ -29,6 +29,7 @@
 #include "messaging/ApplicationMessenger.h"
 #include "platform/win10/input/RemoteControlXbox.h"
 #include "rendering/dx/DeviceResources.h"
+#include "platform/win10/AsyncHelpers.h"
 #include "rendering/dx/RenderContext.h"
 #include "utils/log.h"
 #include "utils/SystemInfo.h"
@@ -108,6 +109,21 @@ void CWinEventsWin10::InitEventHandlers(CoreWindow^ window)
   window->SizeChanged += ref new TypedEventHandler<CoreWindow^, WindowSizeChangedEventArgs^>([&](CoreWindow^ wnd, WindowSizeChangedEventArgs^ args) {
     OnWindowSizeChanged(wnd, args);
   });
+#if defined(NTDDI_WIN10_RS2) && (NTDDI_VERSION >= NTDDI_WIN10_RS2)
+  try
+  {
+    window->ResizeStarted += ref new TypedEventHandler<CoreWindow^, Platform::Object^>([&](CoreWindow^ wnd, Platform::Object^ args) {
+      OnWindowResizeStarted(wnd, args);
+    });
+    window->ResizeCompleted += ref new TypedEventHandler<CoreWindow^, Platform::Object^>([&](CoreWindow^ wnd, Platform::Object^ args) {
+      OnWindowResizeCompleted(wnd, args);
+    });
+  } 
+  catch (Platform::Exception^ ex)
+  {
+    // Win10 Creators Update is required
+  }
+#endif
   window->Closed += ref new TypedEventHandler<CoreWindow^, CoreWindowEventArgs^>([&](CoreWindow^ wnd, CoreWindowEventArgs^ args) {
     OnWindowClosed(wnd, args);
   });
@@ -191,8 +207,51 @@ void CWinEventsWin10::UpdateWindowSize()
 // Window event handlers.
 void CWinEventsWin10::OnWindowSizeChanged(CoreWindow^ sender, WindowSizeChangedEventArgs^ args)
 {
-  DX::Windowing().OnResize(args->Size.Width, args->Size.Height);
-  UpdateWindowSize();
+  CLog::Log(LOGDEBUG, __FUNCTION__": window size changed.");
+  m_logicalWidth = args->Size.Width;
+  m_logicalHeight = args->Size.Height;
+  m_bResized = true;
+
+  if (m_sizeChanging)
+    return;
+
+  HandleWindowSizeChanged();
+}
+
+void CWinEventsWin10::OnWindowResizeStarted(Windows::UI::Core::CoreWindow^ sender, Platform::Object ^ args)
+{
+  CLog::Log(LOGDEBUG, __FUNCTION__": window resize started.");
+  m_logicalPosX = sender->Bounds.X;
+  m_logicalPosY = sender->Bounds.Y;
+  m_sizeChanging = true;
+}
+
+void CWinEventsWin10::OnWindowResizeCompleted(Windows::UI::Core::CoreWindow^ sender, Platform::Object ^ args)
+{
+  CLog::Log(LOGDEBUG, __FUNCTION__": window resize completed.");
+  m_sizeChanging = false;
+
+  if (m_logicalPosX != sender->Bounds.X || m_logicalPosY != sender->Bounds.Y)
+    m_bMoved = true;
+
+  HandleWindowSizeChanged();
+}
+
+void CWinEventsWin10::HandleWindowSizeChanged()
+{
+  CLog::Log(LOGDEBUG, __FUNCTION__": window size/move handled.");
+  if (m_bMoved)
+  {
+    // it will get position from CoreWindow
+    DX::Windowing().OnMove(0, 0);
+  }
+  if (m_bResized)
+  {
+    DX::Windowing().OnResize(m_logicalWidth, m_logicalHeight);
+    UpdateWindowSize();
+  }
+  m_bResized = false;
+  m_bMoved = false;
 }
 
 void CWinEventsWin10::OnVisibilityChanged(CoreWindow^ sender, VisibilityChangedEventArgs^ args)
@@ -487,7 +546,7 @@ void CWinEventsWin10::OnOrientationChanged(DisplayInformation^ sender, Platform:
 
 void CWinEventsWin10::OnDisplayContentsInvalidated(DisplayInformation^ sender, Platform::Object^ args)
 {
-  //critical_section::scoped_lock lock(m_deviceResources->GetCriticalSection());
+  CLog::Log(LOGDEBUG, __FUNCTION__": onevent.");
   DX::DeviceResources::Get()->ValidateDevice();
 }
 

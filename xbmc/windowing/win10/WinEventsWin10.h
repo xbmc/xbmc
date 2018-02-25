@@ -26,6 +26,7 @@
 #include "interfaces/IAnnouncer.h"
 #include "windowing/WinEvents.h"
 #include <concurrent_queue.h>
+#include <cmath>
 
 class CWinEventsWin10 : public IWinEvents
                       , public ANNOUNCEMENT::IAnnouncer
@@ -41,6 +42,8 @@ public:
 
   // Window event handlers.
   void OnWindowSizeChanged(Windows::UI::Core::CoreWindow^ sender, Windows::UI::Core::WindowSizeChangedEventArgs^ args);
+  void OnWindowResizeStarted(Windows::UI::Core::CoreWindow^ sender, Platform::Object^ args);
+  void OnWindowResizeCompleted(Windows::UI::Core::CoreWindow^ sender, Platform::Object^ args);
   void OnWindowClosed(Windows::UI::Core::CoreWindow^ sender, Windows::UI::Core::CoreWindowEventArgs^ args);
   static void OnWindowActivationChanged(Windows::UI::Core::CoreWindow^ sender, Windows::UI::Core::WindowActivatedEventArgs^ args);
   static void OnVisibilityChanged(Windows::UI::Core::CoreWindow^ sender, Windows::UI::Core::VisibilityChangedEventArgs^ args);
@@ -65,10 +68,21 @@ public:
   void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data) override;
 
 private:
+  friend class CWinSystemWin10;
+
   void UpdateWindowSize();
   void Kodi_KeyEvent(unsigned int vkey, unsigned scancode, unsigned keycode, bool isDown);
+  void HandleWindowSizeChanged();
+
   Concurrency::concurrent_queue<XBMC_Event> m_events;
   Windows::Media::SystemMediaTransportControls^ m_smtc{ nullptr };
+  bool m_bResized{ false };
+  bool m_bMoved{ false };
+  bool m_sizeChanging{ false };
+  float m_logicalWidth{ 0 };
+  float m_logicalHeight{ 0 };
+  float m_logicalPosX{ 0 };
+  float m_logicalPosY{ 0 };
 };
 
 #endif // WINDOW_EVENTS_WIN10_H

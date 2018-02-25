@@ -46,7 +46,7 @@ namespace DX
     // games attempt to render at 60 frames per second at full fidelity.
     // The decision to render at full fidelity across all platforms and form factors
     // should be deliberate.
-    static const bool SupportHighResolutions = false;
+    static const bool SupportHighResolutions = true;
 
     // The default thresholds that define a "high resolution" display. If the thresholds
     // are exceeded and SupportHighResolutions is false, the dimensions will be scaled
