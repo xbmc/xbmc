@@ -4,7 +4,7 @@
 */
 #pragma once
 /*
- *      Copyright (C) 2005-2013 Team XBMC
+ *      Copyright (C) 2005-2018 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -96,10 +96,9 @@ protected:
   bool FindAlbumInfo(const CFileItem* album, MUSIC_GRABBER::CMusicAlbumInfo& albumInfo, ALLOW_SELECTION allowSelection);
   bool FindArtistInfo(const CFileItem* artist, MUSIC_GRABBER::CMusicArtistInfo& artistInfo, ALLOW_SELECTION allowSelection);
 
-  bool ShowAlbumInfo(const CFileItem *pItem, bool bShowInfo = true);
-  void ShowArtistInfo(const CFileItem *pItem, bool bShowInfo = true);
+  void ShowAlbumInfo(CFileItem* pItem);
+  void ShowArtistInfo(CFileItem* pItem);
   void ShowSongInfo(CFileItem* pItem);
-  void UpdateThumb(const CAlbum &album, const std::string &path);
 
   void OnRipTrack(int iItem);
   void OnSearch();

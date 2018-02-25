@@ -5456,20 +5456,6 @@ bool CMusicDatabase::GetAlbumPath(int idAlbum, std::string &basePath)
   return false;
 }
 
-bool CMusicDatabase::SaveAlbumThumb(int idAlbum, const std::string& strThumb)
-{
-  SetArtForItem(idAlbum, MediaTypeAlbum, "thumb", strThumb);
-  //! @todo We should prompt the user to update the art for songs
-  std::string sql = PrepareSQL("UPDATE art"
-                              " SET url='-'"
-                              " WHERE media_type='song'"
-                              " AND type='thumb'"
-                              " AND media_id IN"
-                              " (SELECT idSong FROM song WHERE idAlbum=%ld)", idAlbum);
-  ExecuteQuery(sql);
-  return true;
-}
-
 // Get old "artist path" - where artist.nfo and art was located v17 and below.
 // It is the path common to all albums by an (album) artist, but ensure it is unique 
 // to that artist and not shared with other artists. Previously this caused incorrect nfo 
@@ -5755,6 +5741,25 @@ bool CMusicDatabase::GetArtistFromSong(int idSong, CArtist &artist)
     CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
   }
   return false;
+}
+
+bool CMusicDatabase::IsSongArtist(int idSong, int idArtist)
+{
+  std::string strSQL = PrepareSQL(
+    "SELECT 1 FROM song_artist "
+    "WHERE song_artist.idSong= %i AND "
+    "song_artist.idArtist = %i AND song_artist.idRole = 1",
+    idSong, idArtist);
+  return GetSingleValue(strSQL).empty(); 
+}
+
+bool CMusicDatabase::IsSongAlbumArtist(int idSong, int idArtist)
+{
+  std::string strSQL = PrepareSQL(
+    "SELECT 1 FROM song JOIN album_artist ON song.idAlbum = album_artist.idAlbum "   
+    "WHERE song.idSong = %i AND album_artist.idArtist = %i",
+    idSong, idArtist);
+  return GetSingleValue(strSQL).empty();
 }
 
 int CMusicDatabase::GetAlbumByName(const std::string& strAlbum, const std::string& strArtist)

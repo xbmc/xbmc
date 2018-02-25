@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2013 Team XBMC
+ *      Copyright (C) 2005-2018 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -25,6 +25,7 @@
 #include "music/Artist.h"
 #include "music/Album.h"
 #include "FileItem.h"
+#include "threads/Event.h"
 
 class CFileItem;
 class CFileItemList;
@@ -37,16 +38,22 @@ public:
   ~CGUIDialogMusicInfo(void) override;
   bool OnMessage(CGUIMessage& message) override;
   bool OnAction(const CAction &action) override;
+  bool SetItem(CFileItem* item);
   void SetAlbum(const CAlbum& album, const std::string &path);
   void SetArtist(const CArtist& artist, const std::string &path);
   bool NeedRefresh() const { return m_bRefresh; };
-  bool NeedsUpdate() const { return m_needsUpdate; };
-  bool HasUpdatedThumb() const { return m_hasUpdatedThumb; };
+  bool HasUpdatedUserrating() const { return m_hasUpdatedUserrating; };
 
   bool HasListItems() const override { return true; };
   CFileItemPtr GetCurrentListItem(int offset = 0) override;
   const CFileItemList& CurrentDirectory() const { return *m_albumSongs; };
   static void AddItemPathToFileBrowserSources(VECSOURCES &sources, const CFileItem &item);
+  void SetDiscography() const;
+  void SetSongs(const VECSONGS &songs) const;
+  void SetArtTypeList(CFileItemList& artlist);
+  bool IsArtistInfo() const { return m_bArtistInfo; };
+  bool IsCancelled() const { return m_cancelled; };
+  void FetchComplete();
 
   static void ShowFor(CFileItem item);
 protected:
@@ -55,8 +62,7 @@ protected:
   void SetLabel(int iControl, const std::string& strLabel);
   void OnGetThumb();
   void OnGetFanart();
-  void SetSongs(const VECSONGS &songs) const;
-  void SetDiscography() const;
+  void OnGetArt();
   void OnSearch(const CFileItem* pItem);
   void OnSetUserrating() const;
   void SetUserrating(int userrating) const;
@@ -66,9 +72,12 @@ protected:
   int m_startUserrating;
   bool m_bViewReview;
   bool m_bRefresh;
-  bool m_needsUpdate;
-  bool m_hasUpdatedThumb;
+  bool m_hasUpdatedUserrating;
   bool m_bArtistInfo;
-  CFileItemPtr   m_albumItem;
+  bool m_cancelled;
   CFileItemList* m_albumSongs;
+  CFileItemPtr m_item;
+  CFileItemList m_artTypeList;
+  CEvent m_event;
+  std::string m_fallbackartpath;
 };
