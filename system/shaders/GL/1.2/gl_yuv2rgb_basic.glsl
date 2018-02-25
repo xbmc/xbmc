@@ -122,7 +122,7 @@ vec4 process()
 #endif
 
 #if defined(XBMC_COL_CONVERSION)
-  rgb.rgb = pow(rgb.rgb, vec3(m_gammaSrc));
+  rgb.rgb = pow(max(vec3(0), rgb.rgb), vec3(m_gammaSrc));
   rgb.rgb = max(vec3(0), m_primMat * rgb.rgb);
   rgb.rgb = pow(rgb.rgb, vec3(m_gammaDstInv));
 #endif
