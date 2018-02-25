@@ -54,7 +54,6 @@ enum AML_SUPPORT_H264_4K2K
 
 bool aml_present();
 bool aml_permissions();
-bool aml_hw3d_present();
 bool aml_wired_present();
 bool aml_support_hevc();
 bool aml_support_hevc_4k2k();

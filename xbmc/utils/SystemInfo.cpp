@@ -828,17 +828,6 @@ bool CSysInfo::IsAeroDisabled()
   return false;
 }
 
-bool CSysInfo::HasHW3DInterlaced()
-{
-#if defined(TARGET_ANDROID)
-#if defined(HAS_LIBAMCODEC)
-  if (aml_hw3d_present())
-    return true;
-#endif
-#endif
-  return false;
-}
-
 CSysInfo::WindowsVersion CSysInfo::m_WinVer = WindowsVersionUnknown;
 
 bool CSysInfo::IsWindowsVersion(WindowsVersion ver)

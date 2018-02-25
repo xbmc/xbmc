@@ -667,15 +667,7 @@ GLint CRenderSystemGLES::GUIShaderGetBrightness()
 
 bool CRenderSystemGLES::SupportsStereo(RENDER_STEREO_MODE mode) const
 {
-  switch(mode)
-  {
-    case RENDER_STEREO_MODE_INTERLACED:
-      if (g_sysinfo.HasHW3DInterlaced())
-        return true;
-
-    default:
-      return CRenderSystemBase::SupportsStereo(mode);
-  }
+  return CRenderSystemBase::SupportsStereo(mode);
 }
 
 GLint CRenderSystemGLES::GUIShaderGetModel()
