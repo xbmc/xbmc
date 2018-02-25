@@ -244,16 +244,18 @@ bool CGUIWindowPVRGuideBase::ShouldNavigateToGridContainer(int iAction)
       GetFocusedControlID() == control->GetID())
   {
     int iNavigationId = control->GetAction(iAction).GetNavigation();
-
-    control = epgGridContainer;
-    while (control != this) // navigation target could be the grid control or one of its parent controls.
+    if (iNavigationId > 0)
     {
-      if (iNavigationId == control->GetID())
+      control = epgGridContainer;
+      while (control != this) // navigation target could be the grid control or one of its parent controls.
       {
-        // channel group selector control's target for the action is the grid control
-        return true;
+        if (iNavigationId == control->GetID())
+        {
+          // channel group selector control's target for the action is the grid control
+          return true;
+        }
+        control = control->GetParentControl();
       }
-      control = control->GetParentControl();
     }
   }
   return false;
