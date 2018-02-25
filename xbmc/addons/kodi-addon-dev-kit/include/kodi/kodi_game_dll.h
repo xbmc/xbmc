@@ -40,7 +40,7 @@ GAME_ERROR LoadGame(const char* url);
 /*!
  * \brief Load a game that requires multiple files
  *
- * \param type The game stype
+ * \param type The game type
  * \param urls An array of urls
  * \param urlCount The number of urls in the array
  *
@@ -145,7 +145,7 @@ GAME_ERROR HwContextDestroy(void);
 bool HasFeature(const char* controller_id, const char* feature_name);
 
 /*!
- * \brief Get the input topolgy that specifies which controllers can be connected
+ * \brief Get the input topology that specifies which controllers can be connected
  *
  * \return The input topology, or null to use the default
  *
