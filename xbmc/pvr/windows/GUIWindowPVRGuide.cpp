@@ -236,10 +236,67 @@ bool CGUIWindowPVRGuideBase::GetDirectory(const std::string &strDirectory, CFile
   return true;
 }
 
+bool CGUIWindowPVRGuideBase::ShouldNavigateToGridContainer(int iAction)
+{
+  CGUIEPGGridContainer *epgGridContainer = GetGridControl();
+  CGUIControl* control = GetControl(CONTROL_LSTCHANNELGROUPS);
+  if (epgGridContainer && control &&
+      GetFocusedControlID() == control->GetID())
+  {
+    int iNavigationId = control->GetAction(iAction).GetNavigation();
+
+    control = epgGridContainer;
+    while (control != this) // navigation target could be the grid control or one of its parent controls.
+    {
+      if (iNavigationId == control->GetID())
+      {
+        // channel group selector control's target for the action is the grid control
+        return true;
+      }
+      control = control->GetParentControl();
+    }
+  }
+  return false;
+}
+
 bool CGUIWindowPVRGuideBase::OnAction(const CAction &action)
 {
   switch (action.GetID())
   {
+    case ACTION_MOVE_UP:
+    case ACTION_MOVE_DOWN:
+    case ACTION_MOVE_LEFT:
+    case ACTION_MOVE_RIGHT:
+    {
+      // Check whether grid container is configured as channel group selector's navigation target for the given action.
+      if (ShouldNavigateToGridContainer(action.GetID()))
+      {
+        CGUIEPGGridContainer *epgGridContainer = GetGridControl();
+        if (epgGridContainer)
+        {
+          CGUIWindowPVRBase::OnAction(action);
+
+          switch (action.GetID())
+          {
+            case ACTION_MOVE_UP:
+              epgGridContainer->GoToBottom();
+              return true;
+            case ACTION_MOVE_DOWN:
+              epgGridContainer->GoToTop();
+              return true;
+            case ACTION_MOVE_LEFT:
+              epgGridContainer->GoToMostRight();
+              return true;
+            case ACTION_MOVE_RIGHT:
+              epgGridContainer->GoToMostLeft();
+              return true;
+            default:
+              break;
+          }
+        }
+      }
+      break;
+    }
     case REMOTE_0:
       if (GetCurrentDigitCount() == 0)
       {

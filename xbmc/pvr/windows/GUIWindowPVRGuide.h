@@ -71,6 +71,8 @@ namespace PVR
     bool OnContextButtonNow();
     bool OnContextButtonDate();
 
+    bool ShouldNavigateToGridContainer(int iAction);
+
     void StartRefreshTimelineItemsThread();
     void StopRefreshTimelineItemsThread();
 

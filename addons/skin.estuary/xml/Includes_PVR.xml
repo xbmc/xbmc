@@ -267,8 +267,8 @@
 				<rulerunit>6</rulerunit>
 				<onleft>9000</onleft>
 				<onright>60</onright>
-				<onup>$PARAM[control_onup_id]</onup>
-				<ondown>$PARAM[control_id]</ondown>
+				<onup>$PARAM[control_onupdown_id]</onup>
+				<ondown>$PARAM[control_onupdown_id]</ondown>
 				<viewtype label="$PARAM[viewtype_label]">list</viewtype>
 				<progresstexture border="$PARAM[progress_texture_border]" colordiffuse="button_focus">$PARAM[progress_texture]</progresstexture>
 				<rulerdatelayout width="1700" height="45" condition="$PARAM[has_rulerdate_layout]">

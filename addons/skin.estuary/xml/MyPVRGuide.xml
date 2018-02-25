@@ -114,7 +114,7 @@
 							<param name="control_id" value="50"/>
 							<param name="control_orientation" value="vertical"/>
 							<param name="control_top" value="55"/>
-							<param name="control_onup_id" value="11"/>
+							<param name="control_onupdown_id" value="11"/>
 							<param name="viewtype_label" value="19298"/>
 							<param name="progress_texture_border" value="0,60,18,14"/>
 							<param name="progress_texture" value="windows/pvr/epg_progress_vertical.png"/>
@@ -128,7 +128,7 @@
 							<param name="control_id" value="51"/>
 							<param name="control_orientation" value="horizontal"/>
 							<param name="control_top" value="55"/>
-							<param name="control_onup_id" value="11"/>
+							<param name="control_onupdown_id" value="11"/>
 							<param name="viewtype_label" value="19297"/>
 							<param name="progress_texture_border" value="5,10,5,10"/>
 							<param name="progress_texture" value="windows/pvr/epg_progress_horizontal.png"/>
@@ -142,7 +142,7 @@
 							<param name="control_id" value="52"/>
 							<param name="control_orientation" value="vertical"/>
 							<param name="control_top" value="0"/>
-							<param name="control_onup_id" value="52"/>
+							<param name="control_onupdown_id" value="52"/>
 							<param name="viewtype_label" value="19301"/>
 							<param name="progress_texture_border" value="0,60,18,14"/>
 							<param name="progress_texture" value="windows/pvr/epg_progress_vertical.png"/>
@@ -156,7 +156,7 @@
 							<param name="control_id" value="53"/>
 							<param name="control_orientation" value="horizontal"/>
 							<param name="control_top" value="0"/>
-							<param name="control_onup_id" value="53"/>
+							<param name="control_onupdown_id" value="53"/>
 							<param name="viewtype_label" value="19300"/>
 							<param name="progress_texture_border" value="5,10,5,10"/>
 							<param name="progress_texture" value="windows/pvr/epg_progress_horizontal.png"/>
