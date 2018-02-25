@@ -1,3 +1,12 @@
+# Minimum SDK version we support
+set(VS_MINIMUM_SDK_VERSION 10.0.14393.0)
+
+if(CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION VERSION_LESS VS_MINIMUM_SDK_VERSION)
+  message(FATAL_ERROR "Detected Windows SDK version is ${CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION}.\n"
+    "Windows SDK ${VS_MINIMUM_SDK_VERSION} or higher is required.\n"
+    "INFO: Windows SDKs can be installed from the Visual Studio installer.")
+endif()
+
 # -------- Architecture settings ---------
 
 if(CMAKE_SIZEOF_VOID_P EQUAL 4)
