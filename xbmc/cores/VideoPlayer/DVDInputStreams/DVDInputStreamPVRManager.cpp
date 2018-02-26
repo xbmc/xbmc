@@ -354,7 +354,7 @@ bool CDVDInputStreamPVRManager::SeekTime(double timems, bool backwards, double *
   CPVRClientPtr client;
   if (CServiceBroker::GetPVRManager().Clients()->GetPlayingClient(client))
   {
-    return client->SeekTime(timems, backwards, startpts);
+    return client->SeekTime(timems, backwards, startpts) == PVR_ERROR_NO_ERROR;
   }
   return false;
 }
