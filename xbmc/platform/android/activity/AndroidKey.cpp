@@ -156,6 +156,8 @@ static KeyMap keyMap[] = {
   { AKEYCODE_PROG_GREEN      , XBMCK_GREEN },
   { AKEYCODE_PROG_YELLOW     , XBMCK_YELLOW },
   { AKEYCODE_PROG_BLUE       , XBMCK_BLUE },
+  { AKEYCODE_CHANNEL_UP      , XBMCK_PAGEUP },
+  { AKEYCODE_CHANNEL_DOWN    , XBMCK_PAGEDOWN },
 
   { AKEYCODE_F1              , XBMCK_F1 },
   { AKEYCODE_F2              , XBMCK_F2 },
