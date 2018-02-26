@@ -317,6 +317,7 @@ void CVideoPlayerVideo::Process()
   int iDropDirective;
   bool onlyPrioMsgs = false;
 
+  m_picture.Reset();
   m_videoStats.Start();
   m_droppingStats.Reset();
   m_iDroppedFrames = 0;
