@@ -103,16 +103,12 @@ CWebServer::CWebServer()
 
 static MHD_Response* create_response(size_t size, void* data, int free, int copy)
 {
-#if (MHD_VERSION >= 0x00094001)
   MHD_ResponseMemoryMode mode = MHD_RESPMEM_PERSISTENT;
   if (copy)
     mode = MHD_RESPMEM_MUST_COPY;
   else if (free)
     mode = MHD_RESPMEM_MUST_FREE;
   return MHD_create_response_from_buffer(size, data, mode);
-#else
-  return MHD_create_response_from_data(size, data, free, copy);
-#endif
 }
 
 int CWebServer::AskForAuthentication(const HTTPRequest& request) const
@@ -164,17 +160,10 @@ bool CWebServer::IsAuthenticated(const HTTPRequest& request) const
   return authenticated;
 }
 
-#if (MHD_VERSION >= 0x00040001)
 int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
                       const char *url, const char *method,
                       const char *version, const char *upload_data,
                       size_t *upload_data_size, void **con_cls)
-#else
-int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
-                      const char *url, const char *method,
-                      const char *version, const char *upload_data,
-                      unsigned int *upload_data_size, void **con_cls)
-#endif
 {
   if (cls == nullptr || con_cls == nullptr || *con_cls == nullptr)
   {
@@ -312,17 +301,10 @@ int CWebServer::HandlePartialRequest(struct MHD_Connection *connection, Connecti
   return SendErrorResponse(request, MHD_HTTP_NOT_FOUND, request.method);
 }
 
-#if (MHD_VERSION >= 0x00040001)
 int CWebServer::HandlePostField(void *cls, enum MHD_ValueKind kind, const char *key,
                                 const char *filename, const char *content_type,
                                 const char *transfer_encoding, const char *data, uint64_t off,
                                 size_t size)
-#else
-int CWebServer::HandlePostField(void *cls, enum MHD_ValueKind kind, const char *key,
-                                const char *filename, const char *content_type,
-                                const char *transfer_encoding, const char *data, uint64_t off,
-                                unsigned int size)
-#endif
 {
   ConnectionHandler *conHandler = (ConnectionHandler *)cls;
 
@@ -974,23 +956,13 @@ void CWebServer::LogRequest(const char* uri) const
   CLog::Log(LOGDEBUG, "CWebServer[%hu]: request received for %s", m_port, uri);
 }
 
-#if (MHD_VERSION >= 0x00090200)
 ssize_t CWebServer::ContentReaderCallback(void *cls, uint64_t pos, char *buf, size_t max)
-#elif (MHD_VERSION >= 0x00040001)
-int CWebServer::ContentReaderCallback(void *cls, uint64_t pos, char *buf, int max)
-#else   //libmicrohttpd < 0.4.0
-int CWebServer::ContentReaderCallback(void *cls, size_t pos, char *buf, int max)
-#endif
 {
   HttpFileDownloadContext *context = (HttpFileDownloadContext *)cls;
   if (context == nullptr || context->file == nullptr)
     return -1;
 
-#if (MHD_VERSION >= 0x00090200)
   CLog::Log(LOGDEBUG, LOGWEBSERVER, "CWebServer [OUT] write maximum %zu bytes from %" PRIu64 " (%" PRIu64 ")", max, context->writePosition, pos);
-#else
-  CLog::Log(LOGDEBUG, LOGWEBSERVER, "CWebServer [OUT] write maximum %d bytes from %" PRIu64 " (%" PRIu64 ")", max, context->writePosition, pos);
-#endif
 
   // check if we need to add the end-boundary
   if (context->rangeCountTotal > 1 && context->ranges.IsEmpty())
@@ -1153,31 +1125,21 @@ struct MHD_Daemon* CWebServer::StartMHD(unsigned int flags, int port)
   unsigned int timeout = 60 * 60 * 24;
   const char* ciphers = "NORMAL:-VERS-TLS1.0";
 
-#if MHD_VERSION >= 0x00040500
   MHD_set_panic_func(&panicHandlerForMHD, nullptr);
-#endif
 
   if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_SERVICES_WEBSERVERSSL) &&
       MHD_is_feature_supported(MHD_FEATURE_SSL) == MHD_YES &&
       LoadCert(m_key, m_cert))
     // SSL enabled
     return MHD_start_daemon(flags |
-#if (MHD_VERSION >= 0x00040002) && (MHD_VERSION < 0x00090B01)
-                          // use main thread for each connection, can only handle one request at a
-                          // time [unless you set the thread pool size]
-                          MHD_USE_SELECT_INTERNALLY
-#else
                           // one thread per connection
                           // WARNING: set MHD_OPTION_CONNECTION_TIMEOUT to something higher than 1
                           // otherwise on libmicrohttpd 0.4.4-1 it spins a busy loop
                           MHD_USE_THREAD_PER_CONNECTION
-#endif
 #if (MHD_VERSION >= 0x00095207)
                           | MHD_USE_INTERNAL_POLLING_THREAD /* MHD_USE_THREAD_PER_CONNECTION must be used only with MHD_USE_INTERNAL_POLLING_THREAD since 0.9.54 */
 #endif
-#if (MHD_VERSION >= 0x00040001)
                           | MHD_USE_DEBUG /* Print MHD error messages to log */
-#endif
                           | MHD_USE_SSL
                           ,
                           port,
@@ -1186,15 +1148,10 @@ struct MHD_Daemon* CWebServer::StartMHD(unsigned int flags, int port)
                           &CWebServer::AnswerToConnection,
                           this,
 
-#if (MHD_VERSION >= 0x00040002) && (MHD_VERSION < 0x00090B01)
-                          MHD_OPTION_THREAD_POOL_SIZE, 4,
-#endif
                           MHD_OPTION_CONNECTION_LIMIT, 512,
                           MHD_OPTION_CONNECTION_TIMEOUT, timeout,
                           MHD_OPTION_URI_LOG_CALLBACK, &CWebServer::UriRequestLogger, this,
-#if (MHD_VERSION >= 0x00040001)
                           MHD_OPTION_EXTERNAL_LOGGER, &logFromMHD, 0,
-#endif // MHD_VERSION >= 0x00040001
                           MHD_OPTION_THREAD_STACK_SIZE, m_thread_stacksize,
                           MHD_OPTION_HTTPS_MEM_KEY, m_key.c_str(),
                           MHD_OPTION_HTTPS_MEM_CERT, m_cert.c_str(),
@@ -1203,22 +1160,14 @@ struct MHD_Daemon* CWebServer::StartMHD(unsigned int flags, int port)
 
   // No SSL
   return MHD_start_daemon(flags |
-#if (MHD_VERSION >= 0x00040002) && (MHD_VERSION < 0x00090B01)
-                          // use main thread for each connection, can only handle one request at a
-                          // time [unless you set the thread pool size]
-                          MHD_USE_SELECT_INTERNALLY
-#else
                           // one thread per connection
                           // WARNING: set MHD_OPTION_CONNECTION_TIMEOUT to something higher than 1
                           // otherwise on libmicrohttpd 0.4.4-1 it spins a busy loop
                           MHD_USE_THREAD_PER_CONNECTION
-#endif
 #if (MHD_VERSION >= 0x00095207)
                           | MHD_USE_INTERNAL_POLLING_THREAD /* MHD_USE_THREAD_PER_CONNECTION must be used only with MHD_USE_INTERNAL_POLLING_THREAD since 0.9.54 */
 #endif
-#if (MHD_VERSION >= 0x00040001)
                           | MHD_USE_DEBUG /* Print MHD error messages to log */
-#endif
                           ,
                           port,
                           0,
@@ -1226,15 +1175,10 @@ struct MHD_Daemon* CWebServer::StartMHD(unsigned int flags, int port)
                           &CWebServer::AnswerToConnection,
                           this,
 
-#if (MHD_VERSION >= 0x00040002) && (MHD_VERSION < 0x00090B01)
-                          MHD_OPTION_THREAD_POOL_SIZE, 4,
-#endif
                           MHD_OPTION_CONNECTION_LIMIT, 512,
                           MHD_OPTION_CONNECTION_TIMEOUT, timeout,
                           MHD_OPTION_URI_LOG_CALLBACK, &CWebServer::UriRequestLogger, this,
-#if (MHD_VERSION >= 0x00040001)
                           MHD_OPTION_EXTERNAL_LOGGER, &logFromMHD, 0,
-#endif // MHD_VERSION >= 0x00040001
                           MHD_OPTION_THREAD_STACK_SIZE, m_thread_stacksize,
                           MHD_OPTION_END);
 }

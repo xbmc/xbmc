@@ -130,11 +130,7 @@ HttpResponseRanges CHTTPJsonRpcHandler::GetResponseData() const
   return ranges;
 }
 
-#if (MHD_VERSION >= 0x00040001)
 bool CHTTPJsonRpcHandler::appendPostData(const char *data, size_t size)
-#else
-bool CHTTPJsonRpcHandler::appendPostData(const char *data, unsigned int size)
-#endif
 {
   if (m_requestData.size() + size > MAX_HTTP_POST_SIZE)
   {

@@ -224,7 +224,6 @@ public:
    * \param value Value of the HTTP POST field
    */
   void AddPostField(const std::string &key, const std::string &value);
-#if (MHD_VERSION >= 0x00040001)
   /*!
   * \brief Adds the given raw HTTP POST data.
   *
@@ -232,19 +231,12 @@ public:
   * \param size Size of the raw HTTP POST data
   */
   bool AddPostData(const char *data, size_t size);
-#else
-  bool AddPostData(const char *data, unsigned int size);
-#endif
 
 protected:
   IHTTPRequestHandler();
   explicit IHTTPRequestHandler(const HTTPRequest &request);
 
-#if (MHD_VERSION >= 0x00040001)
   virtual bool appendPostData(const char *data, size_t size)
-#else
-  virtual bool appendPostData(const char *data, unsigned int size)
-#endif
   { return true; }
 
   bool GetRequestedRanges(uint64_t totalLength);
