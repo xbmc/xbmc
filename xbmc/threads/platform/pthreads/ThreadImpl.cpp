@@ -28,11 +28,7 @@
 #include <string.h>
 #ifdef TARGET_FREEBSD
 #include <sys/param.h>
-#if __FreeBSD_version < 900031
-#include <sys/thr.h>
-#else
 #include <pthread_np.h>
-#endif
 #endif
 
 #include <signal.h>
@@ -89,13 +85,7 @@ void CThread::TermHandler() { }
 void CThread::SetThreadInfo()
 {
 #ifdef TARGET_FREEBSD
-#if __FreeBSD_version < 900031
-  long lwpid;
-  thr_self(&lwpid);
-  m_ThreadOpaque.LwpId = lwpid;
-#else
   m_ThreadOpaque.LwpId = pthread_getthreadid_np();
-#endif
 #elif defined(TARGET_ANDROID)
   m_ThreadOpaque.LwpId = gettid();
 #else

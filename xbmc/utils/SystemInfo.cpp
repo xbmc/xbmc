@@ -1308,8 +1308,7 @@ std::string CSysInfo::GetBuildTargetPlatformVersionDecoded(void)
   static const int major = (__FreeBSD_version / 100000) % 100;
   static const int minor = (__FreeBSD_version / 1000) % 100;
   static const int Rxx = __FreeBSD_version % 1000;
-  if ((major < 9 && Rxx == 0) ||
-      __FreeBSD_version == 900044 || __FreeBSD_version == 901000)
+  if ((major < 9 && Rxx == 0))
     return StringUtils::Format("version %d.%d-RELEASE", major, minor);
   if (Rxx >= 500)
     return StringUtils::Format("version %d.%d-STABLE", major, minor);
