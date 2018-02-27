@@ -10882,18 +10882,6 @@ bool CGUIInfoManager::IsPlayerChannelPreviewActive() const
   return bReturn;
 }
 
-CPVREpgInfoTagPtr CGUIInfoManager::GetEpgInfoTag() const
-{
-  CPVREpgInfoTagPtr currentTag;
-  if (m_currentFile->HasEPGInfoTag())
-  {
-    currentTag = m_currentFile->GetEPGInfoTag();
-    while (currentTag && !currentTag->IsActive())
-      currentTag = currentTag->GetNextEvent();
-  }
-  return currentTag;
-}
-
 int CGUIInfoManager::GetMessageMask()
 {
   return TMSG_MASK_GUIINFOMANAGER;

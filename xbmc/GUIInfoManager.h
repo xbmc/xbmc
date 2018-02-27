@@ -285,12 +285,6 @@ protected:
   int AddMultiInfo(const GUIInfo &info);
   int AddListItemProp(const std::string &str, int offset=0);
 
-  /*!
-   * @brief Get the EPG tag that is currently active
-   * @return the currently active tag or NULL if no active tag was found
-   */
-  PVR::CPVREpgInfoTagPtr GetEpgInfoTag() const;
-
   void SetCurrentItemJob(const CFileItemPtr item);
 
   // Conditional string parameters are stored here
