@@ -112,11 +112,7 @@ void IHTTPRequestHandler::AddPostField(const std::string &key, const std::string
     m_postFields[key].append(value);
 }
 
-#if (MHD_VERSION >= 0x00040001)
 bool IHTTPRequestHandler::AddPostData(const char *data, size_t size)
-#else
-bool IHTTPRequestHandler::AddPostData(const char *data, unsigned int size)
-#endif
 {
   if (size > 0)
     return appendPostData(data, size);

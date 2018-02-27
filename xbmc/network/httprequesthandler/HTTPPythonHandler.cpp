@@ -240,11 +240,7 @@ bool CHTTPPythonHandler::GetLastModifiedDate(CDateTime &lastModified) const
   return true;
 }
 
-#if (MHD_VERSION >= 0x00040001)
 bool CHTTPPythonHandler::appendPostData(const char *data, size_t size)
-#else
-bool CHTTPPythonHandler::appendPostData(const char *data, unsigned int size)
-#endif
 {
   if (m_requestData.size() + size > MAX_STRING_POST_SIZE)
   {

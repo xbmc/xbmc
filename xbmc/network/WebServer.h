@@ -108,16 +108,9 @@ private:
   // MHD callback implementations
   static void* UriRequestLogger(void *cls, const char *uri);
 
-#if (MHD_VERSION >= 0x00090200)
   static ssize_t ContentReaderCallback (void *cls, uint64_t pos, char *buf, size_t max);
-#elif (MHD_VERSION >= 0x00040001)
-  static int ContentReaderCallback (void *cls, uint64_t pos, char *buf, int max);
-#else
-  static int ContentReaderCallback (void *cls, size_t pos, char *buf, int max);
-#endif
   static void ContentReaderFreeCallback(void *cls);
 
-#if (MHD_VERSION >= 0x00040001)
   static int AnswerToConnection (void *cls, struct MHD_Connection *connection,
                         const char *url, const char *method,
                         const char *version, const char *upload_data,
@@ -126,16 +119,6 @@ private:
                              const char *filename, const char *content_type,
                              const char *transfer_encoding, const char *data, uint64_t off,
                              size_t size);
-#else   //libmicrohttpd < 0.4.0
-  static int AnswerToConnection (void *cls, struct MHD_Connection *connection,
-                        const char *url, const char *method,
-                        const char *version, const char *upload_data,
-                        unsigned int *upload_data_size, void **con_cls);
-  static int HandlePostField(void *cls, enum MHD_ValueKind kind, const char *key,
-                             const char *filename, const char *content_type,
-                             const char *transfer_encoding, const char *data, uint64_t off,
-                             unsigned int size);
-#endif
 
   bool LoadCert(std::string &skey, std::string &scert);
 

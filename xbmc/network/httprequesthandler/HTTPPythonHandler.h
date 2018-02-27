@@ -47,11 +47,7 @@ public:
 protected:
   explicit CHTTPPythonHandler(const HTTPRequest &request);
 
-#if (MHD_VERSION >= 0x00040001)
   bool appendPostData(const char *data, size_t size) override;
-#else
-  bool appendPostData(const char *data, unsigned int size) override;
-#endif
 
 private:
   std::string m_scriptPath;
