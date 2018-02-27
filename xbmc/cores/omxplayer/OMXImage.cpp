@@ -620,7 +620,7 @@ OMX_IMAGE_CODINGTYPE COMXImageFile::GetCodingType(unsigned int &width, unsigned 
     unsigned short block_size = 0;
     bool nMarker = false;
 
-    while(p < q)
+    while(p < q && !progressive)
     {
       switch(marker)
       {
