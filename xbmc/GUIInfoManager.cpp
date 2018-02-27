@@ -9080,17 +9080,6 @@ void CGUIInfoManager::SetCurrentItemJob(const CFileItemPtr item)
   else
     SetCurrentMovie(*item);
 
-  if (item->HasPVRRadioRDSInfoTag())
-    m_currentFile->SetPVRRadioRDSInfoTag(item->GetPVRRadioRDSInfoTag());
-  if (item->HasEPGInfoTag())
-    m_currentFile->SetEPGInfoTag(item->GetEPGInfoTag());
-  else if (item->HasPVRChannelInfoTag())
-  {
-    CPVREpgInfoTagPtr tag(item->GetPVRChannelInfoTag()->GetEPGNow());
-    if (tag)
-      m_currentFile->SetEPGInfoTag(tag);
-  }
-
   SetChanged();
   NotifyObservers(ObservableMessageCurrentItem);
 }
