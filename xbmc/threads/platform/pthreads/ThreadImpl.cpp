@@ -28,11 +28,7 @@
 #include <string.h>
 #ifdef TARGET_FREEBSD
 #include <sys/param.h>
-#if __FreeBSD_version < 900031
-#include <sys/thr.h>
-#else
 #include <pthread_np.h>
-#endif
 #endif
 
 #include <signal.h>
@@ -89,13 +85,7 @@ void CThread::TermHandler() { }
 void CThread::SetThreadInfo()
 {
 #ifdef TARGET_FREEBSD
-#if __FreeBSD_version < 900031
-  long lwpid;
-  thr_self(&lwpid);
-  m_ThreadOpaque.LwpId = lwpid;
-#else
   m_ThreadOpaque.LwpId = pthread_getthreadid_np();
-#endif
 #elif defined(TARGET_ANDROID)
   m_ThreadOpaque.LwpId = gettid();
 #else
@@ -104,9 +94,7 @@ void CThread::SetThreadInfo()
 
 #if defined(HAVE_PTHREAD_SETNAME_NP)
 #ifdef TARGET_DARWIN
-#if(__MAC_OS_X_VERSION_MIN_REQUIRED >= 1060 || __IPHONE_OS_VERSION_MIN_REQUIRED >= 30200)
   pthread_setname_np(m_ThreadName.c_str());
-#endif
 #else
   pthread_setname_np(m_ThreadId, m_ThreadName.c_str());
 #endif

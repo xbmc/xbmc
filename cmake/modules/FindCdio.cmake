@@ -14,7 +14,7 @@
 #   CDIO::CDIO - The cdio library
 
 if(PKG_CONFIG_FOUND)
-  pkg_check_modules(PC_CDIO libcdio libiso9660 QUIET)
+  pkg_check_modules(PC_CDIO libcdio>=0.84 libiso9660 QUIET)
 endif()
 
 find_path(CDIO_INCLUDE_DIR NAMES cdio/cdio.h

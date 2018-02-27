@@ -28,12 +28,8 @@
  *
  */
 
-#include <linux/version.h>
-
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,16)
 typedef unsigned long kernel_ulong_t;
 #define BITS_PER_LONG    (sizeof(long)*8)
-#endif
 
 #include <linux/input.h>
 

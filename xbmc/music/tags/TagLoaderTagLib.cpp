@@ -1247,11 +1247,7 @@ bool CTagLoaderTagLib::Load(const std::string& strFileName, CMusicInfoTag& tag, 
   else if (aiffFile)
     id3v2 = aiffFile->tag();
   else if (wavFile)
-#if TAGLIB_MAJOR_VERSION > 1 || TAGLIB_MINOR_VERSION > 8
     id3v2 = wavFile->ID3v2Tag();
-#else
-    id3v2 = wavFile->tag();
-#endif
   else if (wvFile)
     ape = wvFile->APETag(false);
   else if (mpcFile)
