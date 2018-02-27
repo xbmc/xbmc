@@ -27,10 +27,8 @@
 #undef PRAGMA_PACK_END
 
 #if defined(__GNUC__)
-#if __GNUC__ > 2 || (__GNUC__ == 2 && __GNUC_MINOR__ >= 95)
 #define ATTRIBUTE_PACKED __attribute__ ((packed))
 #define PRAGMA_PACK 0
-#endif
 #endif
 
 #if !defined(ATTRIBUTE_PACKED)
