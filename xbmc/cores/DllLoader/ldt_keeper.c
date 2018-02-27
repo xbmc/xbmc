@@ -44,11 +44,6 @@
 #if defined( __linux__ ) && !defined(__powerpc__)
 #include <asm/unistd.h>
 #include <asm/ldt.h>
-/* 2.5.xx+ calls this user_desc: */
-#include <linux/version.h>
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,5,47)
-#define modify_ldt_ldt_s user_desc
-#endif
 /* prototype it here, so we won't depend on kernel headers */
 #ifdef  __cplusplus
 extern "C" {
@@ -100,7 +95,7 @@ int sysi86(int, void*);
 #define LDT_ENTRIES     8192
 #define LDT_ENTRY_SIZE  8
 #pragma pack(4)
-struct modify_ldt_ldt_s {
+struct user_desc {
   unsigned int  entry_number;
   unsigned long base_addr;
   unsigned int  limit;
@@ -152,7 +147,7 @@ void Setup_FS_Segment(void)
 }
 
 #if defined(__NetBSD__) || defined(TARGET_FREEBSD) || defined(__OpenBSD__) || defined(__DragonFly__) || defined(TARGET_DARWIN)
-static void LDT_EntryToBytes( unsigned long *buffer, const struct modify_ldt_ldt_s *content )
+static void LDT_EntryToBytes( unsigned long *buffer, const struct user_desc *content )
 {
   *buffer++ = ((content->base_addr & 0x0000ffff) << 16) |
 	  (content->limit & 0x0ffff);
@@ -171,7 +166,7 @@ void* fs_seg=0;
 
 ldt_fs_t* Setup_LDT_Keeper(void)
 {
-  struct modify_ldt_ldt_s array;
+  struct user_desc array;
   int ret;
   int sret;
   ldt_fs_t* ldt_fs = (ldt_fs_t*) malloc(sizeof(ldt_fs_t));
@@ -210,8 +205,8 @@ ldt_fs_t* Setup_LDT_Keeper(void)
   array.contents=MODIFY_LDT_CONTENTS_DATA;
   array.limit_in_pages = 0;
 #ifdef __linux__
-  /* ret=LDT_Modify(0x1, &array, sizeof(struct modify_ldt_ldt_s)); */
-  ret = modify_ldt(0x1, &array, sizeof(struct modify_ldt_ldt_s));
+  /* ret=LDT_Modify(0x1, &array, sizeof(struct user_desc)); */
+  ret = modify_ldt(0x1, &array, sizeof(struct user_desc));
   if (ret < 0)
   {
 	  perror("install_fs");
