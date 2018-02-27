@@ -33,12 +33,6 @@ using namespace MEDIA_DETECT;
 using namespace CDDB;
 #endif
 
-#if defined (LIBCDIO_VERSION_NUM) && (LIBCDIO_VERSION_NUM > 83)
-#define CDTEXT_TITLE CDTEXT_FIELD_TITLE
-#define CDTEXT_PERFORMER CDTEXT_FIELD_PERFORMER
-#define CDTEXT_GENRE CDTEXT_FIELD_GENRE
-#endif
-
 CMusicInfoTagLoaderCDDA::CMusicInfoTagLoaderCDDA(void) = default;
 
 CMusicInfoTagLoaderCDDA::~CMusicInfoTagLoaderCDDA() = default;
@@ -119,7 +113,7 @@ bool CMusicInfoTagLoaderCDDA::Load(const std::string& strFileName, CMusicInfoTag
       trackinfo ti = pCdInfo->GetTrackInformation(iTrack);
 
       // Fill the fileitems music tag with CD-Text information, if available
-      std::string strTitle = ti.cdtext[CDTEXT_TITLE];
+      std::string strTitle = ti.cdtext[CDTEXT_FIELD_TITLE];
       if (!strTitle.empty())
       {
         // Tracknumber
@@ -132,20 +126,20 @@ bool CMusicInfoTagLoaderCDDA::Load(const std::string& strFileName, CMusicInfoTag
         xbmc_cdtext_t discCDText = pCdInfo->GetDiscCDTextInformation();
 
         // Artist: Use track artist or disc artist
-        std::string strArtist = ti.cdtext[CDTEXT_PERFORMER];
+        std::string strArtist = ti.cdtext[CDTEXT_FIELD_PERFORMER];
         if (strArtist.empty())
-          strArtist = discCDText[CDTEXT_PERFORMER];
+          strArtist = discCDText[CDTEXT_FIELD_PERFORMER];
         tag.SetArtist(strArtist);
 
         // Album
         std::string strAlbum;
-        strAlbum = discCDText[CDTEXT_TITLE];
+        strAlbum = discCDText[CDTEXT_FIELD_TITLE];
         tag.SetAlbum(strAlbum);
 
         // Genre: use track or disc genre
-        std::string strGenre = ti.cdtext[CDTEXT_GENRE];
+        std::string strGenre = ti.cdtext[CDTEXT_FIELD_GENRE];
         if (strGenre.empty())
-          strGenre = discCDText[CDTEXT_GENRE];
+          strGenre = discCDText[CDTEXT_FIELD_GENRE];
         tag.SetGenre( strGenre );
 
         tag.SetLoaded(true);
