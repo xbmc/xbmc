@@ -360,7 +360,6 @@ bool CSFTPSession::Connect(const std::string &host, unsigned int port, const std
     return false;
   }
 
-#if LIBSSH_VERSION_INT >= SSH_VERSION_INT(0,4,0)
   if (ssh_options_set(m_session, SSH_OPTIONS_USER, username.c_str()) < 0)
   {
     CLog::Log(LOGERROR, "SFTPSession: Failed to set username '%s' for session", username.c_str());
@@ -389,33 +388,6 @@ bool CSFTPSession::Connect(const std::string &host, unsigned int port, const std
 #endif
   ssh_options_set(m_session, SSH_OPTIONS_LOG_VERBOSITY, 0);
   ssh_options_set(m_session, SSH_OPTIONS_TIMEOUT, &timeout);  
-#else
-  SSH_OPTIONS* options = ssh_options_new();
-
-  if (ssh_options_set_username(options, username.c_str()) < 0)
-  {
-    CLog::Log(LOGERROR, "SFTPSession: Failed to set username '%s' for session", username.c_str());
-    return false;
-  }
-
-  if (ssh_options_set_host(options, host.c_str()) < 0)
-  {
-    CLog::Log(LOGERROR, "SFTPSession: Failed to set host '%s' for session", host.c_str());
-    return false;
-  }
-
-  if (ssh_options_set_port(options, port) < 0)
-  {
-    CLog::Log(LOGERROR, "SFTPSession: Failed to set port '%d' for session", port);
-    return false;
-  }
-  
-  ssh_options_set_timeout(options, timeout, 0);
-
-  ssh_options_set_log_verbosity(options, 0);
-
-  ssh_set_options(m_session, options);
-#endif
 
   if(ssh_connect(m_session))
   {
@@ -437,19 +409,11 @@ bool CSFTPSession::Connect(const std::string &host, unsigned int port, const std
     return false;
   }
 
-#if LIBSSH_VERSION_MINOR >= 6
   int method = ssh_userauth_list(m_session, NULL);
-#else
-  int method = ssh_auth_list(m_session);
-#endif
 
   // Try to authenticate with public key first
   int publicKeyAuth = SSH_AUTH_DENIED;
-#if LIBSSH_VERSION_MINOR >= 6
   if (method & SSH_AUTH_METHOD_PUBLICKEY && (publicKeyAuth = ssh_userauth_publickey_auto(m_session, NULL, NULL)) == SSH_AUTH_ERROR)
-#else
-  if (method & SSH_AUTH_METHOD_PUBLICKEY && (publicKeyAuth = ssh_userauth_autopubkey(m_session, NULL)) == SSH_AUTH_ERROR)
-#endif
   {
     CLog::Log(LOGERROR, "SFTPSession: Failed to authenticate via publickey '%s'", ssh_get_error(m_session));
     return false;

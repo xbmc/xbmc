@@ -37,18 +37,6 @@
 
 class CURL;
 
-#if LIBSSH_VERSION_INT < SSH_VERSION_INT(0,3,2)
-#define ssh_session SSH_SESSION
-#endif
-
-#if LIBSSH_VERSION_INT < SSH_VERSION_INT(0,4,0)
-#define sftp_file SFTP_FILE*
-#define sftp_session SFTP_SESSION*
-#define sftp_attributes SFTP_ATTRIBUTES*
-#define sftp_dir SFTP_DIR*
-#define ssh_session ssh_session*
-#endif
-
 //five secs timeout for SFTP
 #define SFTP_TIMEOUT 5
 
