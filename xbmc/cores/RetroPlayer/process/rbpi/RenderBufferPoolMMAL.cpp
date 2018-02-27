@@ -66,7 +66,7 @@ bool CRenderBufferPoolMMAL::ConfigureInternal()
 
   m_alignedWidth = m_width;
   m_alignedHeight = m_height;
-  const unsigned int bpp = g_RBP.GetFrameGeometry(m_mmal_format, m_width, m_height).bytes_per_pixel;
+  const unsigned int bpp = g_RBP.GetFrameGeometry(m_mmal_format, m_width, m_height).getBytesPerPixel();
   m_frameSize = m_width * m_height * bpp;
 
   if (m_frameSize == 0)

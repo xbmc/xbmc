@@ -401,9 +401,12 @@ CGPUMEM::CGPUMEM(unsigned int numbytes, bool cached)
 
 CGPUMEM::~CGPUMEM()
 {
-  mem_unlock(g_RBP.GetMBox(), m_vc_handle);
-  vcsm_unlock_ptr(m_arm);
-  vcsm_free(m_vcsm_handle);
+  if (m_vc_handle)
+    mem_unlock(g_RBP.GetMBox(), m_vc_handle);
+  if (m_arm)
+    vcsm_unlock_ptr(m_arm);
+  if (m_vcsm_handle)
+    vcsm_free(m_vcsm_handle);
 }
 
 // Call this to clean and invalidate a region of memory
@@ -419,37 +422,46 @@ void CGPUMEM::Flush()
 
 AVRpiZcFrameGeometry CRBP::GetFrameGeometry(uint32_t encoding, unsigned short video_width, unsigned short video_height)
 {
-  AVRpiZcFrameGeometry geo = {};
-  geo.stripes = 1;
-  geo.bytes_per_pixel = 1;
+  AVRpiZcFrameGeometry geo;
+  geo.setStripes(1);
+  geo.setBitsPerPixel(8);
 
   switch (encoding)
   {
   case MMAL_ENCODING_RGBA: case MMAL_ENCODING_BGRA:
-    geo.bytes_per_pixel = 4;
-    geo.stride_y = video_width * geo.bytes_per_pixel;
-    geo.height_y = video_height;
+    geo.setBitsPerPixel(32);
+    geo.setStrideY(video_width * geo.getBytesPerPixel());
+    geo.setHeightY(video_height);
     break;
   case MMAL_ENCODING_RGB24: case MMAL_ENCODING_BGR24:
-    geo.bytes_per_pixel = 3;
-    geo.stride_y = video_width * geo.bytes_per_pixel;
-    geo.height_y = video_height;
+    geo.setBitsPerPixel(32);
+    geo.setStrideY(video_width * geo.getBytesPerPixel());
+    geo.setHeightY(video_height);
     break;
   case MMAL_ENCODING_RGB16: case MMAL_ENCODING_BGR16:
-    geo.bytes_per_pixel = 2;
-    geo.stride_y = video_width * geo.bytes_per_pixel;
-    geo.height_y = video_height;
+    geo.setBitsPerPixel(16);
+    geo.setStrideY(video_width * geo.getBytesPerPixel());
+    geo.setHeightY(video_height);
     break;
   case MMAL_ENCODING_I420:
-    geo.stride_y = (video_width + 31) & ~31;
-    geo.stride_c = geo.stride_y >> 1;
-    geo.height_y = (video_height + 15) & ~15;
-    geo.height_c = geo.height_y >> 1;
-    geo.planes_c = 2;
+  case MMAL_ENCODING_I420_S:
+    geo.setStrideY((video_width + 31) & ~31);
+    geo.setStrideC(geo.getStrideY() >> 1);
+    geo.setHeightY((video_height + 15) & ~15);
+    geo.setHeightC(geo.getHeightY() >> 1);
+    geo.setPlanesC(2);
+    break;
+  case MMAL_ENCODING_I420_16:
+    geo.setBitsPerPixel(10);
+    geo.setStrideY(((video_width + 31) & ~31) * geo.getBytesPerPixel());
+    geo.setStrideC(geo.getStrideY() >> 1);
+    geo.setHeightY((video_height + 15) & ~15);
+    geo.setHeightC(geo.getHeightY() >> 1);
+    geo.setPlanesC(2);
     break;
   case MMAL_ENCODING_OPAQUE:
-    geo.stride_y = video_width;
-    geo.height_y = video_height;
+    geo.setStrideY(video_width);
+    geo.setHeightY(video_height);
     break;
   case MMAL_ENCODING_YUVUV128:
   {
@@ -460,12 +472,30 @@ AVRpiZcFrameGeometry CRBP::GetFrameGeometry(uint32_t encoding, unsigned short vi
     int rc = get_image_params(GetMBox(), &img);
     assert(rc == 0);
     const unsigned int stripe_w = 128;
-    geo.stride_y = stripe_w;
-    geo.stride_c = stripe_w;
-    geo.height_y = ((intptr_t)img.extra.uv.u - (intptr_t)img.image_data) / stripe_w;
-    geo.height_c = img.pitch / stripe_w - geo.height_y;
-    geo.planes_c = 1;
-    geo.stripes = (video_width + stripe_w - 1) / stripe_w;
+    geo.setStrideY(stripe_w);
+    geo.setStrideC(stripe_w);
+    geo.setHeightY(((intptr_t)img.extra.uv.u - (intptr_t)img.image_data) / stripe_w);
+    geo.setHeightC(img.pitch / stripe_w - geo.getHeightY());
+    geo.setPlanesC(1);
+    geo.setStripes((video_width + stripe_w - 1) / stripe_w);
+    break;
+  }
+  case MMAL_ENCODING_YUVUV64_16:
+  {
+    VC_IMAGE_T img = {};
+    img.type = VC_IMAGE_YUV_UV_16;
+    img.width = video_width;
+    img.height = video_height;
+    int rc = get_image_params(GetMBox(), &img);
+    assert(rc == 0);
+    const unsigned int stripe_w = 128;
+    geo.setBitsPerPixel(10);
+    geo.setStrideY(stripe_w);
+    geo.setStrideC(stripe_w);
+    geo.setHeightY(((intptr_t)img.extra.uv.u - (intptr_t)img.image_data) / stripe_w);
+    geo.setHeightC(img.pitch / stripe_w - geo.getHeightY());
+    geo.setPlanesC(1);
+    geo.setStripes((video_width * 2 + stripe_w - 1) / stripe_w);
     break;
   }
   default: assert(0);

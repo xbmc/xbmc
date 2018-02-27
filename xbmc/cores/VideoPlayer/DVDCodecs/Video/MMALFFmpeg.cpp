@@ -64,22 +64,19 @@ void CMMALYUVBuffer::GetPlanes(uint8_t*(&planes)[YuvImage::MAX_PLANES])
 {
   for (int i = 0; i < YuvImage::MAX_PLANES; i++)
     planes[i] = nullptr;
-  if (!m_gmem)
-    return;
 
   std::shared_ptr<CMMALPool> pool = std::dynamic_pointer_cast<CMMALPool>(m_pool);
   assert(pool);
   AVRpiZcFrameGeometry geo = pool->GetGeometry();
-  const int size_y = geo.stride_y * geo.height_y;
-  const int size_c = geo.stride_c * geo.height_c;
 
-  CLog::Log(LOGDEBUG, LOGVIDEO, "%s::%s %dx%d %dx%d (%dx%d %dx%d)", CLASSNAME, __FUNCTION__, geo.stride_y, geo.height_y, geo.stride_c, geo.height_c, Width(), Height(), AlignedWidth(), AlignedHeight());
+  if (VERBOSE)
+    CLog::Log(LOGDEBUG, LOGVIDEO, "%s::%s %dx%d %dx%d (%dx%d %dx%d)", CLASSNAME, __FUNCTION__, geo.getStrideY(), geo.getHeightY(), geo.getStrideC(), geo.getHeightC(), Width(), Height(), AlignedWidth(), AlignedHeight());
 
-  planes[0] = static_cast<uint8_t *>(m_gmem->m_arm);
-  if (geo.planes_c >= 1)
-    planes[1] = planes[0] + size_y;
-  if (geo.planes_c >= 2)
-    planes[2] = planes[1] + size_c;
+  planes[0] = GetMemPtr();
+  if (planes[0] && geo.getPlanesC() >= 1)
+    planes[1] = planes[0] + geo.getSizeY();
+  if (planes[1] && geo.getPlanesC() >= 2)
+    planes[2] = planes[1] + geo.getSizeC();
 }
 
 void CMMALYUVBuffer::GetStrides(int(&strides)[YuvImage::MAX_PLANES])
@@ -89,17 +86,39 @@ void CMMALYUVBuffer::GetStrides(int(&strides)[YuvImage::MAX_PLANES])
   std::shared_ptr<CMMALPool> pool = std::dynamic_pointer_cast<CMMALPool>(m_pool);
   assert(pool);
   AVRpiZcFrameGeometry geo = pool->GetGeometry();
-  strides[0] = geo.stride_y;
-  strides[1] = geo.stride_c;
-  strides[2] = geo.stride_c;
+  strides[0] = geo.getStrideY();
+  strides[1] = geo.getStrideC();
+  strides[2] = geo.getStrideC();
+}
+
+void CMMALYUVBuffer::SetDimensions(int width, int height, const int (&strides)[YuvImage::MAX_PLANES], const int (&planeOffsets)[YuvImage::MAX_PLANES])
+{
+  std::shared_ptr<CMMALPool> pool = std::dynamic_pointer_cast<CMMALPool>(m_pool);
+  assert(pool);
+  pool->SetDimensions(width, height, strides, planeOffsets);
 }
 
 void CMMALYUVBuffer::SetDimensions(int width, int height, const int (&strides)[YuvImage::MAX_PLANES])
 {
-  std::shared_ptr<CMMALPool> pool = std::dynamic_pointer_cast<CMMALPool>(m_pool);
-  assert(pool);
-  pool->SetDimensions(width, height, strides[0], height);
+  const int (&planeOffsets)[YuvImage::MAX_PLANES] = {};
+  SetDimensions(width, height, strides, planeOffsets);
 }
+
+CGPUMEM *CMMALYUVBuffer::Allocate(int size, void *opaque)
+{
+  m_gmem = new CGPUMEM(size, true);
+  if (m_gmem && m_gmem->m_vc)
+  {
+    m_gmem->m_opaque = opaque;
+  }
+  else
+  {
+    delete m_gmem;
+    m_gmem = nullptr;
+  }
+  return m_gmem;
+}
+
 
 //-----------------------------------------------------------------------------
 // MMAL Decoder
@@ -181,18 +200,27 @@ int CDecoder::FFGetBuffer(AVCodecContext *avctx, AVFrame *frame, int flags)
   {
     int aligned_width = frame->width;
     int aligned_height = frame->height;
-    // ffmpeg requirements
-    AlignedSize(dec->m_avctx, aligned_width, aligned_height);
+    if (pool->Encoding() != MMAL_ENCODING_YUVUV128 && pool->Encoding() != MMAL_ENCODING_YUVUV64_16)
+    {
+      // ffmpeg requirements
+      AlignedSize(dec->m_avctx, aligned_width, aligned_height);
+      // GPU requirements
+      aligned_width = ALIGN_UP(aligned_width, 32);
+      aligned_height = ALIGN_UP(aligned_height, 16);
+    }
     pool->Configure(dec->m_fmt, frame->width, frame->height, aligned_width, aligned_height, 0);
   }
   CMMALYUVBuffer *YUVBuffer = dynamic_cast<CMMALYUVBuffer *>(pool->Get());
-  if (!YUVBuffer || !YUVBuffer->mmal_buffer || !YUVBuffer->GetMem())
+  if (!YUVBuffer)
   {
     CLog::Log(LOGERROR,"%s::%s Failed to allocated buffer in time", CLASSNAME, __FUNCTION__);
     return -1;
   }
+  assert(YUVBuffer->mmal_buffer);
 
   CGPUMEM *gmem = YUVBuffer->GetMem();
+  assert(gmem);
+
   AVBufferRef *buf = av_buffer_create((uint8_t *)gmem->m_arm, gmem->m_numbytes, CDecoder::FFReleaseBuffer, gmem, AV_BUFFER_FLAG_READONLY);
   if (!buf)
   {
@@ -267,7 +295,8 @@ CDVDVideoCodec::VCReturn CDecoder::Decode(AVCodecContext* avctx, AVFrame* frame)
 
   if (frame)
   {
-    if ((frame->format != AV_PIX_FMT_YUV420P && frame->format != AV_PIX_FMT_BGR0 && frame->format != AV_PIX_FMT_RGB565LE) ||
+    if ((frame->format != AV_PIX_FMT_YUV420P && frame->format != AV_PIX_FMT_YUV420P10 && frame->format != AV_PIX_FMT_YUV420P12 && frame->format != AV_PIX_FMT_YUV420P14 && frame->format != AV_PIX_FMT_YUV420P16 &&
+        frame->format != AV_PIX_FMT_BGR0 && frame->format != AV_PIX_FMT_RGB565LE) ||
         frame->buf[1] != nullptr || frame->buf[0] == nullptr)
     {
       CLog::Log(LOGERROR, "%s::%s frame format invalid format:%d buf:%p,%p", CLASSNAME, __func__,

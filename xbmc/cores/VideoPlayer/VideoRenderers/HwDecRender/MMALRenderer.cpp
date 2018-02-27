@@ -130,8 +130,6 @@ CMMALPool::CMMALPool(const char *component_name, bool input, uint32_t num_buffer
   CSingleLock lock(m_critSection);
   MMAL_STATUS_T status;
 
-  memset(&m_geo, 0, sizeof m_geo);
-
   status = mmal_component_create(component_name, &m_component);
   if (status != MMAL_SUCCESS)
     CLog::Log(LOGERROR, "%s::%s Failed to create component %s", CLASSNAME, __func__, component_name);
@@ -200,6 +198,11 @@ CMMALPool::~CMMALPool()
 std::vector<CMMALPool::MMALEncodingTable> CMMALPool::mmal_encoding_table =
 {
   { AV_PIX_FMT_YUV420P,  MMAL_ENCODING_I420 },
+  { AV_PIX_FMT_YUVJ420P, MMAL_ENCODING_I420 },
+  { AV_PIX_FMT_YUV420P10,MMAL_ENCODING_I420_16, },
+  { AV_PIX_FMT_YUV420P12,MMAL_ENCODING_I420_16, },
+  { AV_PIX_FMT_YUV420P14,MMAL_ENCODING_I420_16, },
+  { AV_PIX_FMT_YUV420P16,MMAL_ENCODING_I420_16, },
   { AV_PIX_FMT_RGBA,     MMAL_ENCODING_RGBA, },
   { AV_PIX_FMT_BGRA,     MMAL_ENCODING_BGRA },
   { AV_PIX_FMT_RGB0,     MMAL_ENCODING_RGBA },
@@ -227,7 +230,7 @@ uint32_t CMMALPool::TranslateFormat(AVPixelFormat pixfmt)
 void CMMALPool::Configure(AVPixelFormat format, int width, int height, int alignedWidth, int alignedHeight, int size)
 {
   CSingleLock lock(m_critSection);
-  if (m_mmal_format == MMAL_ENCODING_UNKNOWN)
+  if (format != AV_PIX_FMT_NONE)
     m_mmal_format = TranslateFormat(format);
   m_width = width;
   m_height = height;
@@ -238,26 +241,22 @@ void CMMALPool::Configure(AVPixelFormat format, int width, int height, int align
   if (m_mmal_format != MMAL_ENCODING_UNKNOWN)
   {
     m_geo = g_RBP.GetFrameGeometry(m_mmal_format, alignedWidth, alignedHeight);
-    if (m_mmal_format != MMAL_ENCODING_YUVUV128)
+    if (m_mmal_format != MMAL_ENCODING_YUVUV128 && m_mmal_format != MMAL_ENCODING_YUVUV64_16 )
     {
       if (alignedWidth)
       {
-        m_geo.stride_y = alignedWidth;
-        m_geo.stride_c = alignedWidth>>1;
+        m_geo.setStrideY(alignedWidth * m_geo.getBytesPerPixel());
+        m_geo.setStrideC(alignedWidth * m_geo.getBytesPerPixel() >> 1);
       }
       if (alignedHeight)
       {
-        m_geo.height_y = alignedHeight;
-        m_geo.height_c = alignedHeight>>1;
+        m_geo.setHeightY(alignedHeight);
+        m_geo.setHeightC(alignedHeight >> 1);
       }
     }
   }
   if (m_size == 0)
-  {
-    const unsigned int size_y = m_geo.stride_y * m_geo.height_y;
-    const unsigned int size_c = m_geo.stride_c * m_geo.height_c;
-    m_size = (size_y + size_c * m_geo.planes_c) * m_geo.stripes;
-  }
+    m_size = m_geo.getSize();
   CLog::Log(LOGDEBUG, "%s::%s pool:%p %dx%d (%dx%d) pix:%d size:%d fmt:%.4s", CLASSNAME, __func__,
             static_cast<void*>(m_mmal_pool), width, height, alignedWidth, alignedHeight, format, size,
             (char*)&m_mmal_format);
@@ -268,9 +267,15 @@ void CMMALPool::Configure(AVPixelFormat format, int size)
   Configure(format, 0, 0, 0, 0, size);
 }
 
-void CMMALPool::SetDimensions(int width, int height, int alignedWidth, int alignedHeight)
+void CMMALPool::SetDimensions(int width, int height, const int (&strides)[YuvImage::MAX_PLANES], const int (&planeOffsets)[YuvImage::MAX_PLANES])
 {
+  assert(m_geo.getBytesPerPixel());
+  int alignedWidth = strides[0] ? strides[0] / m_geo.getBytesPerPixel() : width;
+  int alignedHeight = planeOffsets[1] ? planeOffsets[1] / strides[0] : height;
   Configure(AV_PIX_FMT_NONE, width, height, alignedWidth, alignedHeight, 0);
+  // libwv side-by-side UV format
+  if (planeOffsets[2] - planeOffsets[1] == strides[1] >> 1)
+    m_mmal_format = MMAL_ENCODING_I420_S;
 }
 
 inline bool CMMALPool::IsConfigured()
@@ -283,6 +288,8 @@ bool CMMALPool::IsCompatible(AVPixelFormat format, int size)
 {
   CSingleLock lock(m_critSection);
   uint32_t mmal_format = TranslateFormat(format);
+  if (m_mmal_format == MMAL_ENCODING_I420_S && mmal_format == MMAL_ENCODING_I420)
+    return true;
   if (m_mmal_format == mmal_format &&
       m_size == size)
     return true;
@@ -596,6 +603,7 @@ CMMALRenderer::CMMALRenderer() : CThread("MMALRenderer"), m_processThread(this, 
   m_deint_aligned_height = 0;
   m_cachedSourceRect.SetRect(0, 0, 0, 0);
   m_cachedDestRect.SetRect(0, 0, 0, 0);
+  m_isPi1 = g_RBP.RaspberryPiVersion() == 1;
 
   m_queue_process = mmal_queue_create();
   m_processThread.Create();
@@ -731,13 +739,14 @@ void CMMALRenderer::Run()
     {
       if (buffer->length > 0)
       {
+        int yuv16 = omvb->Encoding() == MMAL_ENCODING_I420_16 || omvb->Encoding() == MMAL_ENCODING_YUVUV64_16;
         EINTERLACEMETHOD last_interlace_method = m_interlace_method;
         EINTERLACEMETHOD interlace_method = m_videoSettings.m_InterlaceMethod;
         if (interlace_method == VS_INTERLACEMETHOD_AUTO)
         {
           interlace_method = VS_INTERLACEMETHOD_MMAL_ADVANCED;
           // avoid advanced deinterlace when using software decode and HD resolution
-          if (omvb->m_state == MMALStateFFDec && omvb->Width() * omvb->Height() > 720*576)
+          if ((omvb->m_state == MMALStateFFDec || m_isPi1) && omvb->Width() * omvb->Height() > 720*576)
             interlace_method = VS_INTERLACEMETHOD_MMAL_BOB;
         }
         bool interlace = (omvb->mmal_buffer->flags & MMAL_BUFFER_HEADER_VIDEO_FLAG_INTERLACED) ? true:false;
@@ -760,13 +769,17 @@ void CMMALRenderer::Run()
             interlace_method = VS_INTERLACEMETHOD_MMAL_BOB_HALF;
         }
 
-        if (interlace_method == VS_INTERLACEMETHOD_NONE)
+        if (interlace_method == VS_INTERLACEMETHOD_NONE && !yuv16)
         {
           if (m_deint_input)
             DestroyDeinterlace();
         }
-        else if (m_deint_input || interlace)
-          CheckConfigurationDeint(omvb->Width(), omvb->Height(), omvb->AlignedWidth(), omvb->AlignedHeight(), omvb->Encoding(), interlace_method);
+
+        if (yuv16)
+          interlace_method = VS_INTERLACEMETHOD_NONE;
+
+        if (yuv16 || (interlace_method != VS_INTERLACEMETHOD_NONE && (m_deint_input || interlace)))
+          CheckConfigurationDeint(omvb->Width(), omvb->Height(), omvb->AlignedWidth(), omvb->AlignedHeight(), omvb->Encoding(), interlace_method, omvb->BitsPerPixel());
 
         if (!m_deint_input)
           m_interlace_method = VS_INTERLACEMETHOD_NONE;
@@ -1365,7 +1378,7 @@ void CMMALRenderer::DestroyDeinterlace()
   m_deint = nullptr;
 }
 
-bool CMMALRenderer::CheckConfigurationDeint(uint32_t width, uint32_t height, uint32_t aligned_width, uint32_t aligned_height, uint32_t encoding, EINTERLACEMETHOD interlace_method)
+bool CMMALRenderer::CheckConfigurationDeint(uint32_t width, uint32_t height, uint32_t aligned_width, uint32_t aligned_height, uint32_t encoding, EINTERLACEMETHOD interlace_method, int bitsPerPixel)
 {
   MMAL_STATUS_T status;
   bool sizeChanged = width != m_deint_width || height != m_deint_height || aligned_width != m_deint_aligned_width || aligned_height != m_deint_aligned_height;
@@ -1374,6 +1387,7 @@ bool CMMALRenderer::CheckConfigurationDeint(uint32_t width, uint32_t height, uin
   bool advanced_deinterlace = interlace_method == VS_INTERLACEMETHOD_MMAL_ADVANCED || interlace_method == VS_INTERLACEMETHOD_MMAL_ADVANCED_HALF;
   bool half_framerate = interlace_method == VS_INTERLACEMETHOD_MMAL_ADVANCED_HALF || interlace_method == VS_INTERLACEMETHOD_MMAL_BOB_HALF;
   uint32_t output_encoding = advanced_deinterlace ? MMAL_ENCODING_YUVUV128 : MMAL_ENCODING_I420;
+  const char *component = interlace_method == VS_INTERLACEMETHOD_NONE ? "vc.ril.isp" : "vc.ril.image_fx";
 
   if (!m_bConfigured)
   {
@@ -1386,7 +1400,7 @@ bool CMMALRenderer::CheckConfigurationDeint(uint32_t width, uint32_t height, uin
     CLog::Log(LOGDEBUG, LOGVIDEO, "%s::%s CreateDeinterlace", CLASSNAME, __func__);
 
     /* Create deinterlace component with attached pool */
-    m_deint_output_pool = std::make_shared<CMMALPool>("vc.ril.image_fx", false, 3, 0, output_encoding, MMALStateDeint);
+    m_deint_output_pool = std::make_shared<CMMALPool>(component, false, 3, 0, output_encoding, MMALStateDeint);
     if (!m_deint_output_pool)
     {
       CLog::Log(LOGERROR, "%s::%s Failed to create pool for deint output", CLASSNAME, __func__);
@@ -1405,10 +1419,10 @@ bool CMMALRenderer::CheckConfigurationDeint(uint32_t width, uint32_t height, uin
   if (m_deint_input && (sizeChanged || deinterlaceChanged || encodingChanged))
   {
     assert(m_deint_input != nullptr && m_deint_input->format != nullptr && m_deint_input->format->es != nullptr);
-    CLog::Log(LOGDEBUG, "%s::%s Changing Deint dimensions from %dx%d (%dx%d) to %dx%d (%dx%d) %.4s->%.4s mode %d->%d", CLASSNAME, __func__,
+    CLog::Log(LOGDEBUG, "%s::%s Changing Deint dimensions from %dx%d (%dx%d) to %dx%d (%dx%d) %.4s->%.4s mode %d->%d bpp:%d", CLASSNAME, __func__,
         m_deint_input->format->es->video.crop.width, m_deint_input->format->es->video.crop.height,
         m_deint_input->format->es->video.width, m_deint_input->format->es->video.height, width, height, aligned_width, aligned_height,
-        (char *)&m_deint_input->format->encoding, (char *)&encoding, m_interlace_method, interlace_method);
+        (char *)&m_deint_input->format->encoding, (char *)&encoding, m_interlace_method, interlace_method, bitsPerPixel);
 
     // we need to disable port when parameters change
     if (m_deint_input && m_deint_input->is_enabled)
@@ -1470,22 +1484,36 @@ bool CMMALRenderer::CheckConfigurationDeint(uint32_t width, uint32_t height, uin
     }
   }
 
+
   if (m_deint_output && (sizeChanged || deinterlaceChanged || encodingChanged))
   {
-    MMAL_PARAMETER_IMAGEFX_PARAMETERS_T imfx_param = {{MMAL_PARAMETER_IMAGE_EFFECT_PARAMETERS, sizeof(imfx_param)},
-          advanced_deinterlace ? MMAL_PARAM_IMAGEFX_DEINTERLACE_ADV : MMAL_PARAM_IMAGEFX_DEINTERLACE_FAST, 4, {5, 0, half_framerate, 1 }};
-
-    status = mmal_port_parameter_set(m_deint_output, &imfx_param.hdr);
-    if (status != MMAL_SUCCESS)
+    if (interlace_method != VS_INTERLACEMETHOD_NONE)
     {
-      CLog::Log(LOGERROR, "%s::%s Failed to set deinterlace parameters (status=%x %s)", CLASSNAME, __func__, status, mmal_status_to_string(status));
-      return false;
-    }
+      MMAL_PARAMETER_IMAGEFX_PARAMETERS_T imfx_param = {{MMAL_PARAMETER_IMAGE_EFFECT_PARAMETERS, sizeof(imfx_param)},
+            advanced_deinterlace ? MMAL_PARAM_IMAGEFX_DEINTERLACE_ADV : MMAL_PARAM_IMAGEFX_DEINTERLACE_FAST, 4, {5, 0, half_framerate, 1 }};
 
-    // Image_fx assumed 3 frames of context. simple deinterlace doesn't require this
-    status = mmal_port_parameter_set_uint32(m_deint_input, MMAL_PARAMETER_EXTRA_BUFFERS, 6 - 5 + advanced_deinterlace ? 2:0);
-    if (status != MMAL_SUCCESS)
-      CLog::Log(LOGERROR, "%s::%s Failed to enable extra buffers on %s (status=%x %s)", CLASSNAME, __func__, m_deint_input->name, status, mmal_status_to_string(status));
+      status = mmal_port_parameter_set(m_deint_output, &imfx_param.hdr);
+      if (status != MMAL_SUCCESS)
+      {
+        CLog::Log(LOGERROR, "%s::%s Failed to set deinterlace parameters (status=%x %s)", CLASSNAME, __func__, status, mmal_status_to_string(status));
+        return false;
+      }
+
+      // Image_fx assumed 3 frames of context. simple deinterlace doesn't require this
+      status = mmal_port_parameter_set_uint32(m_deint_input, MMAL_PARAMETER_EXTRA_BUFFERS, 6 - 5 + advanced_deinterlace ? 2:0);
+      if (status != MMAL_SUCCESS)
+        CLog::Log(LOGERROR, "%s::%s Failed to enable extra buffers on %s (status=%x %s)", CLASSNAME, __func__, m_deint_input->name, status, mmal_status_to_string(status));
+    }
+    else
+    {
+      // We need to scale the YUV to 16-bit
+      status = mmal_port_parameter_set_int32(m_deint_input, MMAL_PARAMETER_CCM_SHIFT, 16-bitsPerPixel-1);
+      if (status != MMAL_SUCCESS)
+        CLog::Log(LOGERROR, "%s::%s Failed to configure MMAL_PARAMETER_CCM_SHIFT on %s (status=%x %s)", CLASSNAME, __func__, m_deint_input->name, status, mmal_status_to_string(status));
+      status = mmal_port_parameter_set_uint32(m_deint_output, MMAL_PARAMETER_OUTPUT_SHIFT, 1);
+      if (status != MMAL_SUCCESS)
+        CLog::Log(LOGERROR, "%s::%s Failed to configure MMAL_PARAMETER_OUTPUT_SHIFT on %s (status=%x %s)", CLASSNAME, __func__, m_deint_output->name, status, mmal_status_to_string(status));
+    }
   }
 
   if (m_deint_output && (sizeChanged || deinterlaceChanged || encodingChanged))
