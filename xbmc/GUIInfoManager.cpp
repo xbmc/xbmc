@@ -8597,7 +8597,7 @@ std::string CGUIInfoManager::GetRadioRDSLabel(int item)
       CPVREpgInfoTagPtr epgNow(m_currentFile->GetPVRChannelInfoTag()->GetEPGNow());
       return epgNow ?
                 epgNow->Title() :
-                CServiceBroker::GetSettings().GetBool("epg.hidenoinfoavailable") ? "" : g_localizeStrings.Get(19055); // no information available
+                CServiceBroker::GetSettings().GetBool(CSettings::SETTING_EPG_HIDENOINFOAVAILABLE) ? "" : g_localizeStrings.Get(19055); // no information available
       break;
     }
 
@@ -8609,7 +8609,7 @@ std::string CGUIInfoManager::GetRadioRDSLabel(int item)
       CPVREpgInfoTagPtr epgNext(m_currentFile->GetPVRChannelInfoTag()->GetEPGNext());
       return epgNext ?
                 epgNext->Title() :
-                CServiceBroker::GetSettings().GetBool("epg.hidenoinfoavailable") ? "" : g_localizeStrings.Get(19055); // no information available
+                CServiceBroker::GetSettings().GetBool(CSettings::SETTING_EPG_HIDENOINFOAVAILABLE) ? "" : g_localizeStrings.Get(19055); // no information available
       break;
     }
 
