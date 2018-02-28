@@ -180,6 +180,7 @@ void CAdvancedSettings::Initialize()
   m_songInfoDuration = 10;
 
   m_cddbAddress = "freedb.freedb.org";
+  m_addSourceOnTop = false;
 
   m_handleMounting = g_application.IsStandAlone();
 
@@ -841,6 +842,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
   }
 
   XMLUtils::GetString(pRootElement, "cddbaddress", m_cddbAddress);
+  XMLUtils::GetBoolean(pRootElement, "addsourceontop", m_addSourceOnTop);
 
   //airtunes + airplay
   XMLUtils::GetInt(pRootElement,     "airtunesport", m_airTunesPort);

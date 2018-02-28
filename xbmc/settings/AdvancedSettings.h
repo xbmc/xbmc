@@ -205,6 +205,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     bool m_extraLogEnabled;
     int m_extraLogLevels;
     std::string m_cddbAddress;
+    bool m_addSourceOnTop; //!< True to put 'add source' buttons on top
 
     //airtunes + airplay
     int m_airTunesPort;
