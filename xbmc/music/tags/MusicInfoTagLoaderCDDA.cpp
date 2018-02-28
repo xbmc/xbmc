@@ -33,6 +33,13 @@ using namespace MEDIA_DETECT;
 using namespace CDDB;
 #endif
 
+//! @todo - remove after Ubuntu 16.04 (Xenial) is EOL
+#if !defined(LIBCDIO_VERSION_NUM) || (LIBCDIO_VERSION_NUM <= 83)
+#define CDTEXT_FIELD_TITLE CDTEXT_TITLE
+#define CDTEXT_FIELD_PERFORMER CDTEXT_PERFORMER
+#define CDTEXT_FIELD_GENRE CDTEXT_GENRE
+#endif
+
 CMusicInfoTagLoaderCDDA::CMusicInfoTagLoaderCDDA(void) = default;
 
 CMusicInfoTagLoaderCDDA::~CMusicInfoTagLoaderCDDA() = default;
