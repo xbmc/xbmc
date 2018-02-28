@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2012-2017 Team Kodi
+ *      Copyright (C) 2018 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,36 +19,35 @@
  */
 #pragma once
 
-#include "games/addons/GameClientCallbacks.h"
-
-#include <memory>
-
-class IAEStream;
+#include "IStreamManager.h"
 
 namespace KODI
 {
 namespace RETRO
 {
+  class CRetroPlayerAudio;
   class CRPProcessInfo;
+  class CRPRenderManager;
 
-  class CRetroPlayerAudio : public GAME::IGameAudioCallback
+  class CRPStreamManager : public IStreamManager
   {
   public:
-    explicit CRetroPlayerAudio(CRPProcessInfo& processInfo);
-    ~CRetroPlayerAudio() override;
+    CRPStreamManager(CRPRenderManager& renderManager, CRPProcessInfo& processInfo);
+    ~CRPStreamManager() override = default;
 
-    // implementation of IGameAudioCallback
-    bool OpenPCMStream(AEDataFormat format, unsigned int samplerate, const CAEChannelInfo& channelLayout) override;
-    bool OpenEncodedStream(AVCodecID codec, unsigned int samplerate, const CAEChannelInfo& channelLayout) override;
-    void AddData(const uint8_t* data, size_t size) override;
-    void CloseStream() override;
+    void EnableAudio(bool bEnable);
 
-    void Enable(bool bEnabled) { m_bAudioEnabled = bEnabled; }
+    // Implementation of IStreamManager
+    StreamPtr CreateStream(StreamType streamType) override;
+    void CloseStream(StreamPtr stream) override;
 
   private:
+    // Construction parameters
+    CRPRenderManager& m_renderManager;
     CRPProcessInfo& m_processInfo;
-    IAEStream* m_pAudioStream;
-    bool       m_bAudioEnabled;
+
+    // Stream parameters
+    CRetroPlayerAudio* m_audioStream = nullptr;
   };
 }
 }

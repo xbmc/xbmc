@@ -35,12 +35,11 @@ namespace GAME
 
 namespace RETRO
 {
-  class CRetroPlayerAudio;
   class CRetroPlayerAutoSave;
   class CRetroPlayerInput;
-  class CRetroPlayerVideo;
   class CRPProcessInfo;
   class CRPRenderManager;
+  class CRPStreamManager;
 
   class CRetroPlayer : public IPlayer, public IRenderLoop
   {
@@ -169,8 +168,7 @@ namespace RETRO
     double                             m_priorSpeed = 0.0f; // Speed of gameplay before entering OSD
     std::unique_ptr<CRPProcessInfo>    m_processInfo;
     std::unique_ptr<CRPRenderManager>  m_renderManager;
-    std::unique_ptr<CRetroPlayerAudio> m_audio;
-    std::unique_ptr<CRetroPlayerVideo> m_video;
+    std::unique_ptr<CRPStreamManager>  m_streamManager;
     std::unique_ptr<CRetroPlayerInput> m_input;
     std::unique_ptr<CRetroPlayerAutoSave> m_autoSave;
     GAME::GameClientPtr                m_gameClient;

@@ -31,11 +31,13 @@ namespace GAME
   class CGameClient;
   class CGameClientInput;
   class CGameClientProperties;
+  class CGameClientStreams;
 
   struct GameClientSubsystems
   {
     std::unique_ptr<CGameClientInput> Input;
     std::unique_ptr<CGameClientProperties> AddonProperties;
+    std::unique_ptr<CGameClientStreams> Streams;
   };
 
   /*!
@@ -73,6 +75,7 @@ namespace GAME
     // Subsystems
     CGameClientInput &Input() const;
     CGameClientProperties &AddonProperties() const;
+    CGameClientStreams &Streams() const;
 
     // Construction parameters
     CGameClient &m_gameClient;

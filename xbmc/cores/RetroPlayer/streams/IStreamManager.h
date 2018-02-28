@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2016-2017 Team Kodi
+ *      Copyright (C) 2018 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,16 +19,34 @@
  */
 #pragma once
 
+#include "RetroPlayerStreamTypes.h"
+
 namespace KODI
 {
-namespace GAME
+namespace RETRO
 {
-  class IGameInputCallback
-  {
-  public:
-    virtual ~IGameInputCallback() = default;
 
-    virtual void PollInput() = 0;
-  };
+class IStreamManager
+{
+public:
+  virtual ~IStreamManager() = default;
+
+  /*!
+   * \brief Create a stream for gameplay data
+   *
+   * \param streamType The stream type
+   *
+   * \return A stream handle, or empty on failure
+   */
+  virtual StreamPtr CreateStream(StreamType streamType) = 0;
+
+  /*!
+   * \brief Free the specified stream
+   *
+   * \param stream The stream to close
+   */
+  virtual void CloseStream(StreamPtr stream) = 0;
+};
+
 }
 }

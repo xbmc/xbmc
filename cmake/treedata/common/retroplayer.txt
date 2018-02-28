@@ -1,4 +1,5 @@
 xbmc/cores/RetroPlayer                                          cores/RetroPlayer
+xbmc/cores/RetroPlayer/audio                                    cores/RetroPlayer/audio
 xbmc/cores/RetroPlayer/buffers                                  cores/RetroPlayer/buffers
 xbmc/cores/RetroPlayer/buffers/video                            cores/RetroPlayer/buffers/video
 xbmc/cores/RetroPlayer/guibridge                                cores/RetroPlayer/guibridge
@@ -8,3 +9,4 @@ xbmc/cores/RetroPlayer/process                                  cores/RetroPlaye
 xbmc/cores/RetroPlayer/rendering                                cores/RetroPlayer/rendering
 xbmc/cores/RetroPlayer/rendering/VideoRenderers                 cores/RetroPlayer/rendering/VideoRenderers
 xbmc/cores/RetroPlayer/rendering/VideoShaders                   cores/RetroPlayer/rendering/VideoShaders
+xbmc/cores/RetroPlayer/streams                                  cores/RetroPlayer/streams

@@ -49,7 +49,7 @@ namespace RETRO
     IRenderBufferPool *GetBufferPool() { return m_bufferPool.get(); }
 
     // Player functions
-    bool Configure(AVPixelFormat format, unsigned int width, unsigned int height, unsigned int orientation);
+    bool Configure(AVPixelFormat format, unsigned int width, unsigned int height);
     void FrameMove();
     /*!
      * \brief Performs whatever necessary before rendering the frame

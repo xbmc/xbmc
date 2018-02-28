@@ -86,8 +86,8 @@ namespace RETRO
     CGUIRenderTargetFactory *GetGUIRenderTargetFactory() { return m_renderControlFactory.get(); }
 
     // Functions called from game loop
-    bool Configure(AVPixelFormat format, unsigned int width, unsigned int height, unsigned int orientation);
-    void AddFrame(const uint8_t* data, size_t size);
+    bool Configure(AVPixelFormat format, unsigned int nominalWidth, unsigned int nominalHeight, unsigned int maxWidth, unsigned int maxHeight);
+    void AddFrame(const uint8_t* data, size_t size, unsigned int width, unsigned int height, unsigned int orientationDegCW);
 
     // Functions called from the player
     void SetSpeed(double speed);
@@ -142,7 +142,7 @@ namespace RETRO
     /*!
      * \brief Utility function to copy a frame and rescale pixels if necessary
      */
-    void CopyFrame(IRenderBuffer *renderBuffer, const uint8_t *data, size_t size, AVPixelFormat format);
+    void CopyFrame(IRenderBuffer *renderBuffer, AVPixelFormat format, const uint8_t *data, size_t size, unsigned int width, unsigned int height);
 
     CRenderVideoSettings GetEffectiveSettings(const IGUIRenderSettings *settings) const;
 
@@ -152,9 +152,10 @@ namespace RETRO
 
     // Stream properties
     AVPixelFormat m_format = AV_PIX_FMT_NONE;
-    unsigned int m_width = 0;
-    unsigned int m_height = 0;
-    unsigned int m_orientation = 0; // Degrees counter-clockwise
+    unsigned int m_maxWidth = 0;
+    unsigned int m_maxHeight = 0;
+    unsigned int m_width = 0; //! @todo Remove me when dimension changing is implemented
+    unsigned int m_height = 0; //! @todo Remove me when dimension changing is implemented
 
     // Render properties
     enum class RENDER_STATE

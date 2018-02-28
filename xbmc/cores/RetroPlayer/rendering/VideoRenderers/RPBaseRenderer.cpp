@@ -68,13 +68,13 @@ bool CRPBaseRenderer::IsCompatible(const CRenderVideoSettings &settings) const
   return true;
 }
 
-bool CRPBaseRenderer::Configure(AVPixelFormat format, unsigned int width, unsigned int height, unsigned int orientation)
+bool CRPBaseRenderer::Configure(AVPixelFormat format, unsigned int width, unsigned int height)
 {
   m_format = format;
   m_sourceWidth = width;
   m_sourceHeight = height;
   m_sourceFrameRatio = static_cast<float>(width) / static_cast<float>(height);
-  m_renderOrientation = orientation;
+  m_renderOrientation = 0; //! @todo
 
   if (!m_bufferPool->IsConfigured())
   {

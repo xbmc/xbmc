@@ -65,72 +65,58 @@ public:
    */
   void CloseGame(void)
   {
-    return m_callbacks->toKodi.CloseGame(m_callbacks->toKodi.kodiInstance);
+    m_callbacks->toKodi.CloseGame(m_callbacks->toKodi.kodiInstance);
   }
 
   /*!
-   * \brief Create a video stream for pixel data
+   * \brief Create a stream for gameplay data
    *
-   * \param format The type of pixel data accepted by this stream
-   * \param width The frame width
-   * \param height The frame height
-   * \param rotation The rotation (counter-clockwise) of the video frames
+   * \param properties The stream properties
    *
-   * \return 0 on success or -1 if a video stream is already created
+   * \return A stream handle, or NULL on failure
    */
-  bool OpenPixelStream(GAME_PIXEL_FORMAT format, unsigned int width, unsigned int height, GAME_VIDEO_ROTATION rotation)
+  void* OpenStream(const game_stream_properties &properties)
   {
-    return m_callbacks->toKodi.OpenPixelStream(m_callbacks->toKodi.kodiInstance, format, width, height, rotation) == 0;
+    return m_callbacks->toKodi.OpenStream(m_callbacks->toKodi.kodiInstance, &properties);
   }
 
   /*!
-   * \brief Create a video stream for encoded video data
+   * \brief Get a buffer for zero-copy stream data
    *
-   * \param codec The video format accepted by this stream
+   * \param stream The stream handle
+   * \param width The framebuffer width, or 0 for no width specified
+   * \param height The framebuffer height, or 0 for no height specified
+   * \param[out] buffer The buffer, or unmodified if false is returned
    *
-   * \return 0 on success or -1 if a video stream is already created
+   * If this returns true, buffer must be freed using ReleaseStreamBuffer().
+   *
+   * \return True if buffer was set, false otherwise
    */
-  bool OpenVideoStream(GAME_VIDEO_CODEC codec)
+  bool GetStreamBuffer(void *stream, unsigned int width, unsigned int height, game_stream_buffer &buffer)
   {
-    return m_callbacks->toKodi.OpenVideoStream(m_callbacks->toKodi.kodiInstance, codec) == 0;
+    return m_callbacks->toKodi.GetStreamBuffer(m_callbacks->toKodi.kodiInstance, stream, width, height, &buffer);
   }
 
   /*!
-   * \brief Create an audio stream for PCM audio data
-   *
-   * \param format The type of audio data accepted by this stream
-   * \param channel_map The channel layout terminated by GAME_CH_NULL
-   *
-   * \return 0 on success or -1 if an audio stream is already created
-   */
-  bool OpenPCMStream(GAME_PCM_FORMAT format, const GAME_AUDIO_CHANNEL* channel_map)
-  {
-    return m_callbacks->toKodi.OpenPCMStream(m_callbacks->toKodi.kodiInstance, format, channel_map) == 0;
-  }
-
-  /*!
-  * \brief Create an audio stream for encoded audio data
-  *
-  * \param codec The audio format accepted by this stream
-  * \param channel_map The channel layout terminated by GAME_CH_NULL
-  *
-  * \return 0 on success or -1 if an audio stream is already created
-  */
-  bool OpenAudioStream(GAME_AUDIO_CODEC codec, const GAME_AUDIO_CHANNEL* channel_map)
-  {
-    return m_callbacks->toKodi.OpenAudioStream(m_callbacks->toKodi.kodiInstance, codec, channel_map) == 0;
-  }
-
-  /*!
-   * \brief Add a data packet to an audio or video stream
+   * \brief Add a data packet to a stream
    *
    * \param stream The target stream
-   * \param data The data packet
-   * \param size The size of the data
+   * \param packet The data packet
    */
-  void AddStreamData(GAME_STREAM_TYPE stream, const uint8_t* data, unsigned int size)
+  void AddStreamData(void *stream, const game_stream_packet &packet)
   {
-    m_callbacks->toKodi.AddStreamData(m_callbacks->toKodi.kodiInstance, stream, data, size);
+    m_callbacks->toKodi.AddStreamData(m_callbacks->toKodi.kodiInstance, stream, &packet);
+  }
+
+  /*!
+   * \brief Free an allocated buffer
+   *
+   * \param stream The stream handle
+   * \param buffer The buffer returned from GetStreamBuffer()
+   */
+  void ReleaseStreamBuffer(void *stream, game_stream_buffer &buffer)
+  {
+    m_callbacks->toKodi.ReleaseStreamBuffer(m_callbacks->toKodi.kodiInstance, stream, &buffer);
   }
 
   /*!
@@ -138,32 +124,12 @@ public:
    *
    * \param stream The stream to close
    */
-  void CloseStream(GAME_STREAM_TYPE stream)
+  void CloseStream(void *stream)
   {
     m_callbacks->toKodi.CloseStream(m_callbacks->toKodi.kodiInstance, stream);
   }
 
   // -- Hardware rendering callbacks -------------------------------------------
-
-  /*!
-   * \brief Enable hardware rendering
-   *
-   * \param hw_info A struct of properties for the hardware rendering system
-   */
-  void EnableHardwareRendering(const struct game_hw_info* hw_info)
-  {
-    return m_callbacks->toKodi.EnableHardwareRendering(m_callbacks->toKodi.kodiInstance, hw_info);
-  }
-
-  /*!
-   * \brief Get the framebuffer for rendering
-   *
-   * \return The framebuffer
-   */
-  uintptr_t HwGetCurrentFramebuffer(void)
-  {
-    return m_callbacks->toKodi.HwGetCurrentFramebuffer(m_callbacks->toKodi.kodiInstance);
-  }
 
   /*!
    * \brief Get a symbol from the hardware context
@@ -175,14 +141,6 @@ public:
   game_proc_address_t HwGetProcAddress(const char* sym)
   {
     return m_callbacks->toKodi.HwGetProcAddress(m_callbacks->toKodi.kodiInstance, sym);
-  }
-
-  /*!
-   * \brief Called when a frame is being rendered
-   */
-  void RenderFrame()
-  {
-    return m_callbacks->toKodi.RenderFrame(m_callbacks->toKodi.kodiInstance);
   }
 
   // --- Input callbacks -------------------------------------------------------

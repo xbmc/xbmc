@@ -23,6 +23,7 @@
 #include "GameClientProperties.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/kodi_game_types.h"
 #include "games/addons/input/GameClientInput.h"
+#include "games/addons/streams/GameClientStreams.h"
 
 using namespace KODI;
 using namespace GAME;
@@ -44,6 +45,7 @@ GameClientSubsystems CGameClientSubsystem::CreateSubsystems(CGameClient &gameCli
 
   subsystems.Input.reset(new CGameClientInput(gameClient, gameStruct, clientAccess));
   subsystems.AddonProperties.reset(new CGameClientProperties(gameClient, gameStruct.props));
+  subsystems.Streams.reset(new CGameClientStreams(gameClient));
 
   return subsystems;
 }
@@ -52,6 +54,7 @@ void CGameClientSubsystem::DestroySubsystems(GameClientSubsystems &subsystems)
 {
   subsystems.Input.reset();
   subsystems.AddonProperties.reset();
+  subsystems.Streams.reset();
 }
 
 CGameClientInput &CGameClientSubsystem::Input() const
@@ -62,4 +65,9 @@ CGameClientInput &CGameClientSubsystem::Input() const
 CGameClientProperties &CGameClientSubsystem::AddonProperties() const
 {
   return m_gameClient.AddonProperties();
+}
+
+CGameClientStreams &CGameClientSubsystem::Streams() const
+{
+  return m_gameClient.Streams();
 }

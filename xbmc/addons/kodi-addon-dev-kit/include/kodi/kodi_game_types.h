@@ -86,12 +86,6 @@ typedef enum GAME_PCM_FORMAT
   GAME_PCM_FORMAT_S16NE,
 } GAME_PCM_FORMAT;
 
-typedef enum GAME_AUDIO_CODEC
-{
-  GAME_AUDIO_CODEC_UNKNOWN,
-  GAME_AUDIO_CODEC_OPUS,
-} GAME_AUDIO_CODEC;
-
 typedef enum GAME_AUDIO_CHANNEL
 {
   GAME_CH_NULL, // Channel list terminator
@@ -116,6 +110,18 @@ typedef enum GAME_AUDIO_CHANNEL
   GAME_CH_BLOC,
   GAME_CH_BROC,
 } GAME_AUDIO_CHANNEL;
+
+typedef struct game_stream_audio_properties
+{
+  GAME_PCM_FORMAT format;
+  const GAME_AUDIO_CHANNEL* channel_map;
+} ATTRIBUTE_PACKED game_stream_audio_properties;
+
+typedef struct game_stream_audio_packet
+{
+  const uint8_t *data;
+  size_t size;
+} ATTRIBUTE_PACKED game_stream_audio_packet;
 ///}
 
 /// @name Video stream
@@ -123,26 +129,37 @@ typedef enum GAME_AUDIO_CHANNEL
 typedef enum GAME_PIXEL_FORMAT
 {
   GAME_PIXEL_FORMAT_UNKNOWN,
-  GAME_PIXEL_FORMAT_YUV420P,
   GAME_PIXEL_FORMAT_0RGB8888,
   GAME_PIXEL_FORMAT_RGB565,
   GAME_PIXEL_FORMAT_0RGB1555,
 } GAME_PIXEL_FORMAT;
 
-typedef enum GAME_VIDEO_CODEC
-{
-  GAME_VIDEO_CODEC_UNKNOWN,
-  GAME_VIDEO_CODEC_H264,
-  GAME_VIDEO_CODEC_THEORA,
-} GAME_VIDEO_CODEC;
-
-typedef enum GAME_VIDEO_ROTATION // Counter-clockwise
+typedef enum GAME_VIDEO_ROTATION
 {
   GAME_VIDEO_ROTATION_0,
-  GAME_VIDEO_ROTATION_90,
-  GAME_VIDEO_ROTATION_180,
-  GAME_VIDEO_ROTATION_270,
+  GAME_VIDEO_ROTATION_90_CCW,
+  GAME_VIDEO_ROTATION_180_CCW,
+  GAME_VIDEO_ROTATION_270_CCW,
 } GAME_VIDEO_ROTATION;
+
+typedef struct game_stream_video_properties
+{
+  GAME_PIXEL_FORMAT format;
+  unsigned int nominal_width;
+  unsigned int nominal_height;
+  unsigned int max_width;
+  unsigned int max_height;
+  float aspect_ratio; // If aspect_ratio is <= 0.0, an aspect ratio of nominal_width / nominal_height is assumed
+} ATTRIBUTE_PACKED game_stream_video_properties;
+
+typedef struct game_stream_video_packet
+{
+  unsigned int width;
+  unsigned int height;
+  GAME_VIDEO_ROTATION rotation;
+  const uint8_t *data;
+  size_t size;
+} ATTRIBUTE_PACKED game_stream_video_packet;
 ///}
 
 /// @name Hardware framebuffer stream
@@ -170,7 +187,7 @@ typedef enum GAME_HW_CONTEXT_TYPE
   GAME_HW_CONTEXT_VULKAN
 } GAME_HW_CONTEXT_TYPE;
 
-typedef struct game_hw_info
+typedef struct game_stream_hw_framebuffer_properties
 {
   /*!
    * The API to use.
@@ -229,9 +246,33 @@ typedef struct game_hw_info
    * Creates a debug context.
    */
   bool debug_context;
-} ATTRIBUTE_PACKED game_hw_info;
+} ATTRIBUTE_PACKED game_stream_hw_framebuffer_properties;
+
+typedef struct game_stream_hw_framebuffer_buffer
+{
+  uintptr_t framebuffer;
+} ATTRIBUTE_PACKED game_stream_hw_framebuffer_buffer;
+
+typedef struct game_stream_hw_framebuffer_packet
+{
+  uintptr_t framebuffer;
+} ATTRIBUTE_PACKED game_stream_hw_framebuffer_packet;
 
 typedef void (*game_proc_address_t)(void);
+///}
+
+/// @name Software framebuffer stream
+///{
+typedef game_stream_video_properties game_stream_sw_framebuffer_properties;
+
+typedef struct game_stream_sw_framebuffer_buffer
+{
+  GAME_PIXEL_FORMAT format;
+  uint8_t *data;
+  size_t size;
+} ATTRIBUTE_PACKED game_stream_sw_framebuffer_buffer;
+
+typedef game_stream_video_packet game_stream_sw_framebuffer_packet;
 ///}
 
 /// @name Stream types
@@ -244,6 +285,56 @@ typedef enum GAME_STREAM_TYPE
   GAME_STREAM_HW_FRAMEBUFFER,
   GAME_STREAM_SW_FRAMEBUFFER,
 } GAME_STREAM_TYPE;
+
+/*!
+ * \brief Immutable stream metadata
+ *
+ * This metadata is provided when the stream is opened. If any stream
+ * properties change, a new stream must be opened.
+ */
+typedef struct game_stream_properties
+{
+  GAME_STREAM_TYPE type;
+  union
+  {
+    game_stream_audio_properties audio;
+    game_stream_video_properties video;
+    game_stream_hw_framebuffer_properties hw_framebuffer;
+    game_stream_sw_framebuffer_properties sw_framebuffer;
+  };
+} ATTRIBUTE_PACKED game_stream_properties;
+
+/*!
+ * \brief Stream buffers for hardware rendering and zero-copy support
+ */
+typedef struct game_stream_buffer
+{
+  GAME_STREAM_TYPE type;
+  union
+  {
+    game_stream_hw_framebuffer_buffer hw_framebuffer;
+    game_stream_sw_framebuffer_buffer sw_framebuffer;
+  };
+} ATTRIBUTE_PACKED game_stream_buffer;
+
+/*!
+ * \brief Stream packet and ephemeral metadata
+ *
+ * This packet contains stream data and accompanying metadata. The metadata
+ * is ephemeral, meaning it only applies to the current packet and can change
+ * from packet to packet in the same stream.
+ */
+typedef struct game_stream_packet
+{
+  GAME_STREAM_TYPE type;
+  union
+  {
+    game_stream_audio_packet audio;
+    game_stream_video_packet video;
+    game_stream_hw_framebuffer_packet hw_framebuffer;
+    game_stream_sw_framebuffer_packet sw_framebuffer;
+  };
+} ATTRIBUTE_PACKED game_stream_packet;
 ///}
 
 /// @name Game types
@@ -575,16 +666,12 @@ typedef struct AddonToKodiFuncTable_Game
   KODI_HANDLE kodiInstance;
 
   void (*CloseGame)(void* kodiInstance);
-  int (*OpenPixelStream)(void* kodiInstance, GAME_PIXEL_FORMAT format, unsigned int width, unsigned int height, GAME_VIDEO_ROTATION rotation);
-  int (*OpenVideoStream)(void* kodiInstance, GAME_VIDEO_CODEC codec);
-  int (*OpenPCMStream)(void* kodiInstance, GAME_PCM_FORMAT format, const GAME_AUDIO_CHANNEL* channel_map);
-  int(*OpenAudioStream)(void* kodiInstance, GAME_AUDIO_CODEC codec, const GAME_AUDIO_CHANNEL* channel_map);
-  void (*AddStreamData)(void* kodiInstance, GAME_STREAM_TYPE stream, const uint8_t* data, unsigned int size);
-  void (*CloseStream)(void* kodiInstance, GAME_STREAM_TYPE stream);
-  void (*EnableHardwareRendering)(void* kodiInstance, const game_hw_info* hw_info);
-  uintptr_t (*HwGetCurrentFramebuffer)(void* kodiInstance);
+  void* (*OpenStream)(void*, const game_stream_properties*);
+  bool (*GetStreamBuffer)(void*, void*, unsigned int, unsigned int, game_stream_buffer*);
+  void (*AddStreamData)(void*, void*, const game_stream_packet*);
+  void (*ReleaseStreamBuffer)(void*, void*, game_stream_buffer*);
+  void (*CloseStream)(void*, void*);
   game_proc_address_t (*HwGetProcAddress)(void* kodiInstance, const char* symbol);
-  void (*RenderFrame)(void* kodiInstance);
   bool (*InputEvent)(void* kodiInstance, const game_input_event* event);
 
 } AddonToKodiFuncTable_Game;

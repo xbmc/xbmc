@@ -19,39 +19,49 @@
  */
 #pragma once
 
-#include "games/addons/GameClientCallbacks.h"
+#include "IRetroPlayerStream.h"
 
-class CPixelConverter;
+#include <memory>
+
+class IAEStream;
 
 namespace KODI
 {
 namespace RETRO
 {
   class CRPProcessInfo;
-  class CRPRenderManager;
 
-  /*!
-   * \brief Renders video frames provided by the game loop
-   *
-   * \sa CRPRenderManager
-   */
-  class CRetroPlayerVideo : public GAME::IGameVideoCallback
+  struct AudioStreamProperties
+  {
+    PCMFormat format;
+    double sampleRate;
+    AudioChannelMap channelMap;
+  };
+
+  struct AudioStreamPacket
+  {
+    const uint8_t* data;
+    size_t size;
+  };
+
+  class CRetroPlayerAudio : public IRetroPlayerStream
   {
   public:
-    CRetroPlayerVideo(CRPRenderManager& m_renderManager, CRPProcessInfo& m_processInfo);
+    explicit CRetroPlayerAudio(CRPProcessInfo& processInfo);
+    ~CRetroPlayerAudio() override;
 
-    ~CRetroPlayerVideo() override;
+    void Enable(bool bEnabled) { m_bAudioEnabled = bEnabled; }
 
-    // implementation of IGameVideoCallback
-    bool OpenPixelStream(AVPixelFormat pixfmt, unsigned int width, unsigned int height, unsigned int orientationDeg) override;
-    bool OpenEncodedStream(AVCodecID codec) override;
-    void AddData(const uint8_t* data, size_t size) override;
+    // implementation of IRetroPlayerStream
+    bool OpenStream(const StreamProperties& properties) override;
+    bool GetStreamBuffer(unsigned int width, unsigned int height, StreamBuffer& buffer) override { return false; }
+    void AddStreamData(const StreamPacket& packet) override;
     void CloseStream() override;
 
   private:
-    // Construction parameters
-    CRPRenderManager& m_renderManager;
-    CRPProcessInfo&   m_processInfo;
+    CRPProcessInfo& m_processInfo;
+    IAEStream* m_pAudioStream;
+    bool m_bAudioEnabled;
   };
 }
 }

@@ -18,15 +18,17 @@
  *
  */
 
-#include "ServiceBroker.h"
 #include "RetroPlayerAudio.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
 #include "cores/AudioEngine/Interfaces/AEStream.h"
 #include "cores/AudioEngine/Utils/AEChannelInfo.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
+#include "cores/RetroPlayer/audio/AudioTranslator.h"
 #include "cores/RetroPlayer/process/RPProcessInfo.h"
-#include "threads/Thread.h"
 #include "utils/log.h"
+#include "ServiceBroker.h"
+
+#include <cmath>
 
 using namespace KODI;
 using namespace RETRO;
@@ -46,20 +48,56 @@ CRetroPlayerAudio::~CRetroPlayerAudio()
   CloseStream();
 }
 
-bool CRetroPlayerAudio::OpenPCMStream(AEDataFormat format, unsigned int samplerate, const CAEChannelInfo& channelLayout)
+bool CRetroPlayerAudio::OpenStream(const StreamProperties& properties)
 {
+  const AudioStreamProperties& audioProperties = reinterpret_cast<const AudioStreamProperties&>(properties);
+
+  const AEDataFormat pcmFormat = CAudioTranslator::TranslatePCMFormat(audioProperties.format);
+  if (pcmFormat == AE_FMT_INVALID)
+  {
+    CLog::Log(LOGERROR, "RetroPlayer[AUDIO]: Unknown PCM format: %d", static_cast<int>(audioProperties.format));
+    return false;
+  }
+
+  unsigned int iSampleRate = static_cast<unsigned int>(std::round(audioProperties.sampleRate));
+  if (iSampleRate == 0)
+  {
+    CLog::Log(LOGERROR, "RetroPlayer[AUDIO]: Invalid samplerate: %f", audioProperties.sampleRate);
+    return false;
+  }
+
+  CAEChannelInfo channelLayout;
+  for (auto it = audioProperties.channelMap.begin(); it != audioProperties.channelMap.end(); ++it)
+  {
+    AEChannel channel = CAudioTranslator::TranslateAudioChannel(*it);
+    if (channel == AE_CH_NULL)
+      break;
+
+    channelLayout += channel;
+  }
+
+  if (!channelLayout.IsLayoutValid())
+  {
+    CLog::Log(LOGERROR, "RetroPlayer[AUDIO]: Empty channel layout");
+    return false;
+  }
+
   if (m_pAudioStream != nullptr)
     CloseStream();
 
-  CLog::Log(LOGINFO, "RetroPlayer[AUDIO]: Creating audio stream, sample rate = %d", samplerate);
+  CLog::Log(LOGINFO, "RetroPlayer[AUDIO]: Creating audio stream, sample rate = %d", iSampleRate);
+
+  IAE* audioEngine = CServiceBroker::GetActiveAE();
+  if (audioEngine == nullptr)
+    return false;
 
   AEAudioFormat audioFormat;
-  audioFormat.m_dataFormat = format;
-  audioFormat.m_sampleRate = samplerate;
+  audioFormat.m_dataFormat = pcmFormat;
+  audioFormat.m_sampleRate = iSampleRate;
   audioFormat.m_channelLayout = channelLayout;
-  m_pAudioStream = CServiceBroker::GetActiveAE()->MakeStream(audioFormat);
+  m_pAudioStream = audioEngine->MakeStream(audioFormat);
 
-  if (!m_pAudioStream)
+  if (m_pAudioStream == nullptr)
   {
     CLog::Log(LOGERROR, "RetroPlayer[AUDIO]: Failed to create audio stream");
     return false;
@@ -72,21 +110,16 @@ bool CRetroPlayerAudio::OpenPCMStream(AEDataFormat format, unsigned int samplera
   return true;
 }
 
-bool CRetroPlayerAudio::OpenEncodedStream(AVCodecID codec, unsigned int samplerate, const CAEChannelInfo& channelLayout)
+void CRetroPlayerAudio::AddStreamData(const StreamPacket &packet)
 {
-  CLog::Log(LOGERROR, "RetroPlayer[AUDIO]: Encoded audio stream not supported");
+  const AudioStreamPacket& audioPacket = reinterpret_cast<const AudioStreamPacket&>(packet);
 
-  return true; //! @todo
-}
-
-void CRetroPlayerAudio::AddData(const uint8_t* data, size_t size)
-{
   if (m_bAudioEnabled)
   {
     if (m_pAudioStream)
     {
       const size_t frameSize = m_pAudioStream->GetChannelCount() * (CAEUtil::DataFormatToBits(m_pAudioStream->GetDataFormat()) >> 3);
-      m_pAudioStream->AddData(&data, 0, static_cast<unsigned int>(size / frameSize));
+      m_pAudioStream->AddData(&audioPacket.data, 0, static_cast<unsigned int>(audioPacket.size / frameSize));
     }
   }
 }

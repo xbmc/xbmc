@@ -20,12 +20,13 @@
 #pragma once
 
 #include "addons/kodi-addon-dev-kit/include/kodi/kodi_game_types.h"
-#include "cores/AudioEngine/Utils/AEChannelData.h"
+#include "cores/RetroPlayer/streams/RetroPlayerStreamTypes.h"
 #include "games/controllers/ControllerTypes.h"
 #include "input/keyboard/KeyboardTypes.h"
 
-#include "libavcodec/avcodec.h"
+extern "C" {
 #include "libavutil/pixfmt.h"
+}
 
 namespace KODI
 {
@@ -57,39 +58,40 @@ namespace GAME
     static const char* ToString(GAME_MEMORY error);
 
     /*!
-     * \brief Translate pixel format (Game API to FFMPEG).
+     * \brief Translate stream type (Game API to RetroPlayer).
+     * \param gameType The stream type to translate.
+     * \param[out] retroType The translated stream type.
+     * \return True if the Game API type was translated to a valid RetroPlayer type
+     */
+    static bool TranslateStreamType(GAME_STREAM_TYPE gameType, RETRO::StreamType &retroType);
+
+    /*!
+     * \brief Translate pixel format (Game API to RetroPlayer/FFMPEG).
      * \param format The pixel format to translate.
      * \return Translated pixel format.
      */
     static AVPixelFormat TranslatePixelFormat(GAME_PIXEL_FORMAT format);
 
     /*!
-     * \brief Translate video codec (Game API to FFMPEG).
-     * \param format The video codec to translate.
-     * \return Translated video codec format.
-     */
-    static AVCodecID TranslateVideoCodec(GAME_VIDEO_CODEC codec);
-
-    /*!
-     * \brief Translate audio PCM format (Game API to AudioEngine).
+     * \brief Translate audio PCM format (Game API to RetroPlayer).
      * \param format The audio PCM format to translate.
      * \return Translated audio PCM format.
      */
-    static AEDataFormat TranslatePCMFormat(GAME_PCM_FORMAT format);
+    static RETRO::PCMFormat TranslatePCMFormat(GAME_PCM_FORMAT format);
 
     /*!
-     * \brief Translate audio channels (Game API to AudioEngine).
+     * \brief Translate audio channels (Game API to RetroPlayer).
      * \param format The audio channels to translate.
      * \return Translated audio channels.
      */
-    static AEChannel TranslateAudioChannel(GAME_AUDIO_CHANNEL channel);
+    static RETRO::AudioChannel TranslateAudioChannel(GAME_AUDIO_CHANNEL channel);
 
     /*!
-     * \brief Translate audio codec (Game API to FFMPEG).
-     * \param format The audio codec to translate.
-     * \return Translated audio codec format.
+     * \brief Translate video rotation (Game API to RetroPlayer).
+     * \param rotation The video rotation to translate.
+     * \return Translated video rotation.
      */
-    static AVCodecID TranslateAudioCodec(GAME_AUDIO_CODEC codec);
+    static RETRO::VideoRotation TranslateRotation(GAME_VIDEO_ROTATION rotation);
 
     /*!
      * \brief Translate key modifiers (Kodi to Game API).
