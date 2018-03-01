@@ -318,6 +318,7 @@ public:
   bool ClearArtistLastScrapedTime(int idArtist);
   int  AddArtistDiscography(int idArtist, const std::string& strAlbum, const std::string& strYear);
   bool DeleteArtistDiscography(int idArtist);
+  bool GetArtistDiscography(int idArtist, CFileItemList& items);
 
   std::string GetArtistById(int id);
   int GetArtistByName(const std::string& strArtist);

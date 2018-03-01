@@ -387,39 +387,16 @@ void CGUIDialogMusicInfo::SetDiscography() const
   m_albumSongs->Clear();
   CMusicDatabase database;
   database.Open();
-
-  std::vector<int> albumsByArtist;
-  database.GetAlbumsByArtist(m_artist.idArtist, albumsByArtist);
-
-  // Sort the discography by year
-  auto discography = m_artist.discography;
-  std::sort(discography.begin(), discography.end(), [](const std::pair<std::string, std::string> &left, const std::pair<std::string, std::string> &right) {
-    return left.second < right.second;
-  });
-
-  for (unsigned int i=0; i < discography.size(); ++i)
+  database.GetArtistDiscography(m_artist.idArtist, *m_albumSongs);
+  database.Close();
+  CMusicThumbLoader loader;
+  for (auto item : *m_albumSongs)
   {
-    CFileItemPtr item(new CFileItem(discography[i].first));
-    item->SetLabel2(discography[i].second);
-
-    CMusicThumbLoader loader;
-    int idAlbum = -1;
-    for (std::vector<int>::const_iterator album = albumsByArtist.begin(); album != albumsByArtist.end(); ++album)
-    {
-      if (StringUtils::EqualsNoCase(database.GetAlbumById(*album), item->GetLabel()))
-      {
-        idAlbum = *album;
-        item->GetMusicInfoTag()->SetDatabaseId(idAlbum, "album");
-        // Load all the album art and related artist(s) art (could be other collaborating artists)
-        loader.LoadItem(item.get());
-        break;
-      }
-    }
-    if (idAlbum == -1) 
+    // Load all the album art and related artist(s) art (could be other collaborating artists)
+    loader.LoadItem(item.get());
+    if (item->GetMusicInfoTag()->GetDatabaseId() == -1)
       item->SetArt("thumb", "DefaultAlbumCover.png");
-
-    m_albumSongs->Add(item);
-  }
+  } 
 }
 
 void CGUIDialogMusicInfo::Update()
@@ -866,6 +843,9 @@ void CGUIDialogMusicInfo::OnGetArt()
   }
   else
   {
+    // Art type is encoded into the scraper XML as optional "aspect=" field
+    // Type "thumb" returns URLs for all types of art including those without aspect.
+    // Those URL without aspect are also returned for all other type values.
     if (m_bArtistInfo)
       m_artist.thumbURL.GetThumbURLs(remotethumbs, type);
     else
