@@ -351,6 +351,7 @@ protected:
   CCriticalSection m_critInfo;
 
 private:
+  static std::string GetEpgEventTitle(const PVR::CPVREpgInfoTagPtr& epgTag);
   static std::string FormatRatingAndVotes(float rating, int votes);
   bool IsPlayerChannelPreviewActive() const;
 };

@@ -5942,6 +5942,16 @@ TIME_FORMAT CGUIInfoManager::TranslateTimeFormat(const std::string &format)
   return TIME_FORMAT_GUESS;
 }
 
+std::string CGUIInfoManager::GetEpgEventTitle(const CPVREpgInfoTagPtr& epgTag)
+{
+  if (epgTag)
+    return epgTag->Title();
+  else if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_EPG_HIDENOINFOAVAILABLE))
+    return std::string();
+  else
+    return g_localizeStrings.Get(19055); // no information available
+}
+
 std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *fallback)
 {
   if (info >= CONDITIONAL_LABEL_START && info <= CONDITIONAL_LABEL_END)
@@ -6138,13 +6148,7 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
           return g_application.GetAppPlayer().GetRadioText(0);
       }
       if (m_currentFile->HasPVRChannelInfoTag())
-      {
-        CPVREpgInfoTagPtr tag(m_currentFile->GetPVRChannelInfoTag()->GetEPGNow());
-        return tag ?
-                 tag->Title() :
-                 CServiceBroker::GetSettings().GetBool(CSettings::SETTING_EPG_HIDENOINFOAVAILABLE) ?
-                          "" : g_localizeStrings.Get(19055); // no information available
-      }
+        return GetEpgEventTitle(m_currentFile->GetPVRChannelInfoTag()->GetEPGNow());
       if (m_currentFile->HasVideoInfoTag() && !m_currentFile->GetVideoInfoTag()->m_strTitle.empty())
         return m_currentFile->GetVideoInfoTag()->m_strTitle;
       if (m_currentFile->HasMusicInfoTag() && !m_currentFile->GetMusicInfoTag()->GetTitle().empty())
@@ -8485,7 +8489,7 @@ std::string CGUIInfoManager::GetRadioRDSLabel(int item)
       !m_currentFile->HasPVRRadioRDSInfoTag())
     return "";
 
-  const PVR::CPVRRadioRDSInfoTag &tag = *m_currentFile->GetPVRRadioRDSInfoTag();
+  const CPVRRadioRDSInfoTag &tag = *m_currentFile->GetPVRRadioRDSInfoTag();
   switch (item)
   {
   case RDS_CHANNEL_COUNTRY:
@@ -8590,28 +8594,16 @@ std::string CGUIInfoManager::GetRadioRDSLabel(int item)
     }
 
   case RDS_PROG_NOW:
-    {
-      if (!tag.GetProgNow().empty())
-        return tag.GetProgNow();
+    if (!tag.GetProgNow().empty())
+      return tag.GetProgNow();
 
-      CPVREpgInfoTagPtr epgNow(m_currentFile->GetPVRChannelInfoTag()->GetEPGNow());
-      return epgNow ?
-                epgNow->Title() :
-                CServiceBroker::GetSettings().GetBool(CSettings::SETTING_EPG_HIDENOINFOAVAILABLE) ? "" : g_localizeStrings.Get(19055); // no information available
-      break;
-    }
+    return GetEpgEventTitle(m_currentFile->GetPVRChannelInfoTag()->GetEPGNow());
 
   case RDS_PROG_NEXT:
-    {
-      if (!tag.GetProgNext().empty())
-        return tag.GetProgNext();
+    if (!tag.GetProgNext().empty())
+      return tag.GetProgNext();
 
-      CPVREpgInfoTagPtr epgNext(m_currentFile->GetPVRChannelInfoTag()->GetEPGNext());
-      return epgNext ?
-                epgNext->Title() :
-                CServiceBroker::GetSettings().GetBool(CSettings::SETTING_EPG_HIDENOINFOAVAILABLE) ? "" : g_localizeStrings.Get(19055); // no information available
-      break;
-    }
+    return GetEpgEventTitle(m_currentFile->GetPVRChannelInfoTag()->GetEPGNext());
 
   case RDS_PROG_HOST:
     return tag.GetProgHost();
@@ -9518,15 +9510,7 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
     return item->GetLabel2();
   case LISTITEM_TITLE:
     if (item->IsPVRChannel() || item->IsEPG())
-    {
-      const CPVREpgInfoTagPtr epgTag = CPVRItem(item).GetEpgInfoTag();
-      if (epgTag)
-        return epgTag->Title();
-      else if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_EPG_HIDENOINFOAVAILABLE))
-        return std::string();
-      else
-        return g_localizeStrings.Get(19055); // no information available
-    }
+      return GetEpgEventTitle(CPVRItem(item).GetEpgInfoTag());
     if (item->HasPVRTimerInfoTag())
       return item->GetPVRTimerInfoTag()->Title();
     if (item->HasVideoInfoTag())
