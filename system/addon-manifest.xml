@@ -2,6 +2,10 @@
   <addon>audioencoder.kodi.builtin.aac</addon>
   <addon>audioencoder.kodi.builtin.wma</addon>
   <addon>game.controller.default</addon>
+  <!-- TODO: Remove game add-ons when no longer applicable -->
+  <addon optional="true">game.libretro</addon>
+  <addon optional="true">game.libretro.2048</addon>
+  <addon optional="true">game.libretro.mrboom</addon>
   <addon>kodi.binary.global.audioengine</addon>
   <addon>kodi.binary.global.main</addon>
   <addon>kodi.binary.global.general</addon>
