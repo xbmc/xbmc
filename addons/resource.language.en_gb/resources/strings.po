@@ -2589,6 +2589,7 @@ msgstr ""
 
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
 #: xbmc/playlists/SmartPlaylist.cpp
+#: xbmc/music/MusicUtils.cpp
 #: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
 #: addons/skin.estuary/xml/DialogVideoInfo.xml
 #: addons/skin.estuary/xml/DialogFullScreenInfo.xml
@@ -3955,7 +3956,6 @@ msgstr ""
 
 #: xbmc/dialogs/GUIDialogFavourites.cpp
 #: xbmc/music/dialogs/GUIDialogMusicInfo.cpp
-#: xbmc/music/dialogs/GUIDialogSongInfo.cpp
 msgctxt "#1030"
 msgid "Browse for image"
 msgstr ""
@@ -7171,11 +7171,13 @@ msgctxt "#13510"
 msgid "Sync playback to display"
 msgstr ""
 
+#: xbmc/music/dialogs/GUIDialogSongInfo.cpp
 #: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
 msgctxt "#13511"
 msgid "Choose art"
 msgstr ""
 
+#: xbmc/music/dialogs/GUIDialogSongInfo.cpp
 #: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
 msgctxt "#13512"
 msgid "Current art"
@@ -7191,14 +7193,17 @@ msgctxt "#13514"
 msgid "Local art"
 msgstr ""
 
+#: xbmc/music/dialogs/GUIDialogSongInfo.cpp
 #: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
 msgctxt "#13515"
 msgid "No art"
 msgstr ""
 
+#. Button to add a new type of art e.g. "thumb", "poster", "fanart" etc. 
+#: xbmc/music/MusicUtils.cpp
 #: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
 msgctxt "#13516"
-msgid "Add art"
+msgid "Add art type"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -7221,7 +7226,13 @@ msgctxt "#13520"
 msgid "Embedded fanart"
 msgstr ""
 
-#empty strings from id 13521 to 13549
+#. Heading for selection of a type of art e.g. "thumb", "poster", "fanart" etc. 
+#: xbmc/music/MusicUtils.cpp
+msgctxt "#13521"
+msgid "Choose art type"
+msgstr ""
+
+#empty strings from id 13522 to 13549
 
 #: system/settings/settings.xml
 msgctxt "#13550"
@@ -11804,7 +11815,6 @@ msgstr ""
 
 #: xbmc/dialogs/GUIDialogContextMenu.cpp
 #: xbmc/music/dialogs/GUIDialogMusicInfo.cpp
-#: xbmc/music/dialogs/GUIDialogSongInfo.cpp
 msgctxt "#20016"
 msgid "Current thumb"
 msgstr ""
@@ -11818,7 +11828,6 @@ msgstr ""
 
 #: xbmc/dialogs/GUIDialogContextMenu.cpp
 #: xbmc/music/dialogs/GUIDialogMusicInfo.cpp
-#: xbmc/music/dialogs/GUIDialogSongInfo.cpp
 msgctxt "#20018"
 msgid "No thumb"
 msgstr ""
@@ -11830,6 +11839,7 @@ msgid "Choose thumbnail"
 msgstr ""
 
 #. Name of an artwork type
+#: xbmc/music/MusicUtils.cpp
 #: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
 #: addons/skin.estuary/xml/View_501_Banner.xml
 msgctxt "#20020"
@@ -11837,6 +11847,7 @@ msgid "Banner"
 msgstr ""
 
 #. Name of an artwork type
+#: xbmc/music/MusicUtils.cpp
 #: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
 #: addons/skin.estuary/xml/View_51_Poster.xml
 msgctxt "#20021"
@@ -13397,6 +13408,8 @@ msgctxt "#20444"
 msgid "Add to library"
 msgstr ""
 
+#. Name of an artwork type
+#: xbmc/music/MusicUtils.cpp
 #: xbmc/music/dialogs/GUIDialogMusicInfo.cpp
 #: addons/skin.estuary/xml/View_502_FanArt.xml
 msgctxt "#20445"
@@ -13669,6 +13682,11 @@ msgctxt "#21370"
 msgid "Play GUI sounds during media playback"
 msgstr ""
 
+#. Name of an artwork type
+#: xbmc/music/MusicUtils.cpp
+#: xbmc/music/dialogs/GUIDialogSongInfo.cpp
+#: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
+#: xbmc/dialogs/GUIDialogFileBrowser.h
 msgctxt "#21371"
 msgid "Thumbnail"
 msgstr ""
@@ -20857,12 +20875,16 @@ msgstr ""
 
 #empty strings from id 38019 to 38021
 
-#. Used for the viewstate selection
+#. Used for the rating selection
+#: xbmc/music/MusicUtils.cpp
 #: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
 msgctxt "#38022"
 msgid "No rating"
 msgstr ""
 
+#. Used for the rating selection
+#: xbmc/music/MusicUtils.cpp
+#: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
 msgctxt "#38023"
 msgid "Set my rating"
 msgstr ""

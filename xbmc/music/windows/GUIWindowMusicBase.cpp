@@ -173,7 +173,7 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 
   // update the display
   case GUI_MSG_SCAN_FINISHED:
-  case GUI_MSG_REFRESH_THUMBS:
+  case GUI_MSG_REFRESH_THUMBS: // Never called as is secondary msg sent as GUI_MSG_NOTIFY_ALL
     Refresh();
     break;
 
@@ -528,10 +528,13 @@ void CGUIWindowMusicBase::ShowSongInfo(CFileItem* pItem)
     if (!pItem->HasMusicInfoTag())
       return;
 
-    dialog->SetSong(pItem);
-    dialog->Open();
-    if (dialog->NeedsUpdate())
-      Refresh(true); // update our file list
+    if (dialog->SetSong(pItem))  // Fetch full song info asynchronously
+    { 
+      dialog->Open();
+      if (dialog->HasUpdatedUserrating() && m_vecItems->GetSortMethod() == SortByUserRating)
+        // Refresh list to sort items and show new userrating sort label
+        Refresh();
+    }
   }
 }
 

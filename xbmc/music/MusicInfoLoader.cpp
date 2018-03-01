@@ -91,20 +91,36 @@ bool CMusicInfoLoader::LoadAdditionalTagInfo(CFileItem* pItem)
     return false; // already have the information
 
   std::string path(pItem->GetPath());
-  if (pItem->IsMusicDb())
+  // For songs in library set the (primary) song artist and album properties 
+  // Use song Id (not path) as called for items from either library or file view 
+  if (pItem->GetMusicInfoTag()->GetDatabaseId() > 0)
   {
-    // set the artist / album properties
-    XFILE::MUSICDATABASEDIRECTORY::CQueryParams param;
-    XFILE::MUSICDATABASEDIRECTORY::CDirectoryNode::GetDatabaseInfo(pItem->GetPath(),param);
-    CArtist artist;
     CMusicDatabase database;
     database.Open();
-    if (database.GetArtist(param.GetArtistId(), artist, false))
-      CMusicDatabase::SetPropertiesFromArtist(*pItem,artist);
+    // May already have song artist ids as item property, otherwise fetch from song id
+    CArtist artist;
+    bool artistfound = false;
+    if (pItem->HasProperty("artistid"))
+    {
+      CVariant::const_iterator_array varid = pItem->GetProperty("artistid").begin_array();
+      int idArtist = varid->asInteger();
+      artistfound = database.GetArtist(idArtist, artist, false);
+    }
+    else
+      artistfound = database.GetArtistFromSong(pItem->GetMusicInfoTag()->GetDatabaseId(), artist);
+    if (artistfound)
+      CMusicDatabase::SetPropertiesFromArtist(*pItem, artist);
 
+    // May already have album id, otherwise fetch album from song id
     CAlbum album;
-    if (database.GetAlbum(param.GetAlbumId(), album, false))
-      CMusicDatabase::SetPropertiesFromAlbum(*pItem,album);
+    bool albumfound = false;
+    int idAlbum = pItem->GetMusicInfoTag()->GetAlbumId();
+    if (idAlbum > 0)
+      albumfound = database.GetAlbum(idAlbum, album, false);
+    else
+      albumfound = database.GetAlbumFromSong(pItem->GetMusicInfoTag()->GetDatabaseId(), album);
+    if (albumfound)
+      CMusicDatabase::SetPropertiesFromAlbum(*pItem, album);
 
     path = pItem->GetMusicInfoTag()->GetURL();
   }
