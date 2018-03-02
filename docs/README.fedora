@@ -1,0 +1,162 @@
+TOC
+1. Introduction
+2. Getting the source code
+3. Installing the required libraries and headers
+4. How to compile
+5. How to run
+6. Uninstalling
+
+
+
+-----------------------------------------------------------------------------
+1. Introduction
+-----------------------------------------------------------------------------
+
+A graphics-adapter with OpenGL acceleration is highly recommended.
+24/32 bitdepth is required along with OpenGL.
+
+Note to new Linux users:
+All lines that are prefixed with the '$' character are commands,
+that need to be typed into a terminal window / console. The '$' equals the prompt.
+Note: The '$' character itself should NOT be typed as part of the command.
+
+-----------------------------------------------------------------------------
+2. Getting the source code
+-----------------------------------------------------------------------------
+
+You will have to grab the source code of course, here we use git as example.
+First install the git package provided by your distribution.
+Then from a terminal, type:
+
+.0  $ cd $HOME
+.1  $ git clone git://github.com/xbmc/xbmc.git kodi
+
+Note: You can clone any specific branch.
+
+.1  $ git clone -b <branch> git://github.com/xbmc/xbmc.git kodi
+
+-----------------------------------------------------------------------------
+3. Installing the required libraries and headers
+-----------------------------------------------------------------------------
+
+You will then need the required libraries. The following is the list of packages
+that are used to build Kodi packages on FEDORA (with all supported
+external libraries enabled).
+
+Build-Depends: autoconf, automake, gettext, cmake, curl
+jre, gawk, gpref, java-9-openjdk-headless, libao-devel, alsa-lib-devel,
+libass-devel (>= 0.9.8), libva-devel, avahi-devel, avahi-compat-lib, bluez-libs-devel,
+libbluray-devel (>= 0.9.3), bzip2-devel, libcap-devel, 
+libcdio-devel, libcec-devel, openssl-libs, 
+libcdio-devel, dbus-devel, mesa-libEGL-devel, fmt-devel, fontconfig-devel, freetype-devel
+fribidi-devel, giflib-devel (>= 4.1.6),
+libcdio-devel, libjpeg-turbo-devel, libtool-ltdl-devel, lzo-devel, libmicrohttpd-devel,
+libmpc-devel, mariadb-devel, libnfs-devel,
+pcre-devel, libplist-devel, libpng12-devel,
+libshairplay-devel, libsmbclient-devel, sqlite-devel, libssh-devel, openssl-devel, ffmpeg-devel,
+taglib-devel (>= 1.8), tinyxml-devel (>= 2.6.2), libtool-ltdl-devel, libudev-devel
+libusb-devel, libva-devel, libvdpau-devel, libxml2-devel,
+libxmu-devel, libxrandr-devel, libxslt-devel, libXt-devel, rapidjson-devel
+nasm [!amd64], python-devel, yasm, swig, uuid-devel, zlib-devel, pillow
+trousers-devel, libidn2-devel
+
+
+-----------------------------------------------------------------------------
+4. How to compile
+-----------------------------------------------------------------------------
+Create and change to build directory 
+    $ mkdir kodi-build && cd kodi-build
+
+
+Run CMake
+- for X11
+    $ cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local
+- for Wayland
+    $ cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local -DCORE_PLATFORM_NAME=wayland -DWAYLAND_RENDER_SYSTEM=gl
+    (You can use "gles" instead of "gl" if you want to build with GLES)
+
+Build
+    $ cmake --build . -- VERBOSE=1
+    
+Tip: By adding -j<number> to the make command, you describe how many
+     concurrent jobs will be used, it will speed up the build process.
+     So for quadcore the command is:
+    
+    $ cmake --build . -- VERBOSE=1 -j4 
+
+If the build process completes succesfully you would want to test if it is working.
+Still in the build directory type the following:
+
+    $ ./kodi-x11
+
+If everything was okay during your test you can now install the binaries to their place
+in this example "/usr/local".
+
+    $ sudo make install
+
+This will install Kodi in the prefix provided in 4.1 as well as a launcher script.
+
+Tip: By adding -j<number> to the make command, you describe how many
+     concurrent jobs will be used. So for dualcore the command is:
+
+    $ sudo make install -j2
+
+-----------------------------------------------------------------------------
+5. How to run
+-----------------------------------------------------------------------------
+
+How to run Kodi depends on the type of installation you have done.
+It is possible to run Kodi without the requirement to install Kodi anywhere else.
+In this case, type the following from the top source directory.
+
+    $ ./kodi.bin
+
+Or run in 'portable' mode
+
+    $ ./kodi.bin -p
+
+If you chose to install Kodi using '/usr' or '/usr/local' as the PREFIX,
+you can just issue 'kodi' in a terminal session.
+
+If you have overridden PREFIX to install Kodi into some non-standard location,
+you will have to run Kodi by directly running 'kodi.bin'.
+
+For example:
+
+    $ $HOME/kodi/usr/lib/kodi/kodi.bin
+
+You should still run the wrapper via
+    $ $PREFIX/bin/kodi
+
+If you wish to use VDPAU decoding you will now have to change the Render Method
+in Settings->Videos->Player from "Auto Detect" to "VDPAU".
+
+-----------------------------------------------------------------------------
+6. Uninstalling
+-----------------------------------------------------------------------------
+
+Prepend "sudo" to commands, if your user doesn't have write permission to the install directory.
+
+Note: If you have rerun configure with a different prefix,
+you will either need to rerun configure with the correct prefix for this step to work correctly.
+
+    $ make uninstall
+.0  $ sudo make uninstall
+
+If you would like to also remove any settings and 3rd party addons (skins, scripts, etc)
+you should also run:
+
+.1  $ rm -rf ~/.kodi
+
+EOF
+
+
+
+
+
+
+
+
+
+
+
