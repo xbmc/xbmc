@@ -563,7 +563,13 @@ int CPVRGUIInfo::TranslateIntInfo(const CFileItem &item, DWORD dwInfo) const
 
   if (dwInfo == PVR_EPG_EVENT_PROGRESS)
   {
-    const CPVREpgInfoTagPtr epgTag = item.GetEPGInfoTag();
+    CPVREpgInfoTagPtr epgTag;
+
+    const CPVRChannelPtr channel = item.GetPVRChannelInfoTag();
+    if (channel)
+      epgTag = channel->GetEPGNow();
+    if (!epgTag)
+      epgTag = item.GetEPGInfoTag();
     if (epgTag)
       iReturn = std::lrintf(epgTag->ProgressPercentage());
   }

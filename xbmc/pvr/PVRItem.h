@@ -31,7 +31,8 @@ namespace PVR
   class CPVRItem
   {
   public:
-    explicit CPVRItem(const CFileItemPtr &item) : m_item(item) {}
+    explicit CPVRItem(const CFileItemPtr &item) : m_item(item.get()) {}
+    explicit CPVRItem(const CFileItem *item) : m_item(item) {}
 
     CPVREpgInfoTagPtr GetEpgInfoTag() const;
     CPVRChannelPtr GetChannel() const;
@@ -41,7 +42,7 @@ namespace PVR
     bool IsRadio() const;
 
   private:
-    CFileItemPtr m_item;
+    const CFileItem* m_item;
   };
 
 } // namespace PVR

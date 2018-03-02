@@ -66,9 +66,7 @@ namespace PVR
     }
     else if (m_item->IsPVRTimer())
     {
-      const CPVREpgInfoTagPtr epgTag(m_item->GetPVRTimerInfoTag()->GetEpgInfoTag());
-      if (epgTag)
-        return epgTag->Channel();
+      return m_item->GetPVRTimerInfoTag()->Channel();
     }
     else
     {
