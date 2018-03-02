@@ -387,8 +387,7 @@ std::shared_ptr<IVideoBufferPool> CVideoBufferPoolSysMem::CreatePool()
 CVideoBufferManager::CVideoBufferManager()
 {
   CSingleLock lock(m_critSection);
-  std::shared_ptr<IVideoBufferPool> pool = std::make_shared<CVideoBufferPoolSysMem>();
-  RegisterPool(pool);
+  RegisterPoolFactory("SysMem", &CVideoBufferPoolSysMem::CreatePool);
 }
 
 void CVideoBufferManager::RegisterPool(std::shared_ptr<IVideoBufferPool> pool)
@@ -443,6 +442,7 @@ void CVideoBufferManager::ReadyForDisposal(IVideoBufferPool *pool)
     {
       pool->Released(*this);
       m_discardedPools.erase(it);
+      break;
     }
   }
 }
