@@ -92,16 +92,12 @@ void CThread::SetThreadInfo()
   m_ThreadOpaque.LwpId = syscall(SYS_gettid);
 #endif
 
-#if defined(HAVE_PTHREAD_SETNAME_NP)
-#ifdef TARGET_DARWIN
+#if defined(TARGET_DARWIN)
   pthread_setname_np(m_ThreadName.c_str());
-#else
+#elif defined(TARGET_LINUX) && defined(__GLIBC__)
   pthread_setname_np(m_ThreadId, m_ThreadName.c_str());
 #endif
-#elif defined(HAVE_PTHREAD_SET_NAME_NP)
-  pthread_set_name_np(m_ThreadId, m_ThreadName.c_str());
-#endif
-    
+
 #ifdef RLIMIT_NICE
   // get user max prio
   struct rlimit limit;
@@ -164,7 +160,7 @@ bool CThread::SetPriority(const int iPriority)
 
   // wait until thread is running, it needs to get its lwp id
   m_StartEvent.Wait();
-  
+
   CSingleLock lock(m_CriticalSection);
 
   // get min prio for SCHED_RR
@@ -223,7 +219,7 @@ int CThread::GetPriority()
   m_StartEvent.Wait();
 
   CSingleLock lock(m_CriticalSection);
-  
+
   int appNice = getpriority(PRIO_PROCESS, getpid());
   int prio = getpriority(PRIO_PROCESS, m_ThreadOpaque.LwpId);
   iReturn = appNice - prio;
@@ -241,10 +237,10 @@ bool CThread::WaitForThreadExit(unsigned int milliseconds)
 int64_t CThread::GetAbsoluteUsage()
 {
   CSingleLock lock(m_CriticalSection);
-  
+
   if (!m_ThreadId)
   return 0;
-  
+
   int64_t time = 0;
 #ifdef TARGET_DARWIN
   thread_basic_info threadInfo;
