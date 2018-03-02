@@ -37,7 +37,7 @@ bool CMusicInfo::IsVisible(const CFileItem& item) const
 
 bool CMusicInfo::Execute(const CFileItemPtr& item) const
 {
-  CGUIDialogMusicInfo::ShowFor(*item);
+  CGUIDialogMusicInfo::ShowFor(item.get());
   return true;
 }
 

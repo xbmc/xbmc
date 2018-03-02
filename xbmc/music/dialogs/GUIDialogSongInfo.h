@@ -39,10 +39,12 @@ public:
 
   bool HasListItems() const override { return true; };
   CFileItemPtr GetCurrentListItem(int offset = 0) override;
-  const CFileItemList& CurrentDirectory() const { return m_artTypeList; };
+  std::string GetContent();
+  //const CFileItemList& CurrentDirectory() const { return m_artTypeList; };
   bool IsCancelled() const { return m_cancelled; };
   void FetchComplete();
 
+  static void ShowFor(CFileItem* pItem);
 protected:
   void OnInitWindow() override;
   void Update();

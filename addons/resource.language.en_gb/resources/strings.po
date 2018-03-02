@@ -14189,6 +14189,7 @@ msgctxt "#21890"
 msgid "Select artist"
 msgstr ""
 
+#: xbmc/music/dialogs/GUIDialogMusicInfo.cpp
 #: xbmc/music/ContextMenus.h
 msgctxt "#21891"
 msgid "Artist information"
