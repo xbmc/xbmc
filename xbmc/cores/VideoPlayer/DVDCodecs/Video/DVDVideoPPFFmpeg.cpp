@@ -96,7 +96,7 @@ void CDVDVideoPPFFmpeg::SetType(const std::string& mType, bool deinterlace)
 void CDVDVideoPPFFmpeg::Process(VideoPicture* pPicture)
 {
   VideoPicture* pSource = pPicture;
-  VideoPicture target;
+  CVideoBuffer *videoBuffer;
 
   if (pSource->videoBuffer->GetFormat() != AV_PIX_FMT_YUV420P)
     return;
@@ -107,8 +107,9 @@ void CDVDVideoPPFFmpeg::Process(VideoPicture* pPicture)
     return;
   }
 
-  target.videoBuffer = m_processInfo.GetVideoBufferManager().Get(AV_PIX_FMT_YUV420P, pPicture->iWidth * pPicture->iHeight * 3/2);
-  if (!target.videoBuffer)
+  videoBuffer = m_processInfo.GetVideoBufferManager().Get(AV_PIX_FMT_YUV420P,
+                                                          pPicture->iWidth * pPicture->iHeight * 3/2, nullptr);
+  if (!videoBuffer)
   {
     return;
   }
@@ -117,8 +118,8 @@ void CDVDVideoPPFFmpeg::Process(VideoPicture* pPicture)
   int srcStrides[YuvImage::MAX_PLANES];
   pSource->videoBuffer->GetPlanes(srcPlanes);
   pSource->videoBuffer->GetStrides(srcStrides);
-  target.videoBuffer->SetDimensions(pPicture->iWidth, pPicture->iHeight, srcStrides);
-  target.videoBuffer->GetPlanes(dstPlanes);
+  videoBuffer->SetDimensions(pPicture->iWidth, pPicture->iHeight, srcStrides);
+  videoBuffer->GetPlanes(dstPlanes);
   pp_postprocess((const uint8_t **)srcPlanes, srcStrides,
                  dstPlanes, srcStrides,
                  pSource->iWidth, pSource->iHeight,
@@ -128,7 +129,9 @@ void CDVDVideoPPFFmpeg::Process(VideoPicture* pPicture)
 
 
   pPicture->SetParams(*pSource);
-  pPicture->videoBuffer = target.videoBuffer;
+  if (pPicture->videoBuffer)
+    pPicture->videoBuffer->Release();
+  pPicture->videoBuffer = videoBuffer;
 
   if (m_deinterlace)
     pPicture->iFlags &= ~DVP_FLAG_INTERLACED;

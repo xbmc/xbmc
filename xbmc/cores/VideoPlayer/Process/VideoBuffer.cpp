@@ -286,6 +286,16 @@ bool CVideoBufferSysMem::Alloc()
 // CVideoBufferPool
 //-----------------------------------------------------------------------------
 
+CVideoBufferPoolSysMem::~CVideoBufferPoolSysMem()
+{
+  CSingleLock lock(m_critSection);
+
+  for (auto buf : m_all)
+  {
+    delete buf;
+  }
+}
+
 CVideoBuffer* CVideoBufferPoolSysMem::Get()
 {
   CSingleLock lock(m_critSection);
@@ -327,6 +337,11 @@ void CVideoBufferPoolSysMem::Return(int id)
       ++it;
   }
   m_free.push_back(id);
+
+  if (m_bm && m_used.empty())
+  {
+    (m_bm->*m_cbDispose)(this);
+  }
 }
 
 void CVideoBufferPoolSysMem::Configure(AVPixelFormat format, int size)
@@ -350,6 +365,21 @@ bool CVideoBufferPoolSysMem::IsCompatible(AVPixelFormat format, int size)
   return false;
 }
 
+void CVideoBufferPoolSysMem::Discard(CVideoBufferManager *bm, ReadyToDispose cb)
+{
+  CSingleLock lock(m_critSection);
+  m_bm = bm;
+  m_cbDispose = cb;
+
+  if (m_used.empty())
+    (m_bm->*m_cbDispose)(this);
+}
+
+std::shared_ptr<IVideoBufferPool> CVideoBufferPoolSysMem::CreatePool()
+{
+  return std::make_shared<CVideoBufferPoolSysMem>();
+}
+
 //-----------------------------------------------------------------------------
 // CVideoBufferManager
 //-----------------------------------------------------------------------------
@@ -368,21 +398,56 @@ void CVideoBufferManager::RegisterPool(std::shared_ptr<IVideoBufferPool> pool)
   m_pools.push_front(pool);
 }
 
+void CVideoBufferManager::RegisterPoolFactory(std::string id, CreatePoolFunc createFunc)
+{
+  CSingleLock lock(m_critSection);
+  m_poolFactories[id] = createFunc;
+}
+
 void CVideoBufferManager::ReleasePools()
 {
   CSingleLock lock(m_critSection);
   std::list<std::shared_ptr<IVideoBufferPool>> pools = m_pools;
   m_pools.clear();
-  std::shared_ptr<IVideoBufferPool> pool = std::make_shared<CVideoBufferPoolSysMem>();
-  RegisterPool(pool);
+
+  m_discardedPools = pools;
 
   for (auto pool : pools)
   {
-    pool->Released(*this);
+    pool->Discard(this, &CVideoBufferManager::ReadyForDisposal);
   }
 }
 
-CVideoBuffer* CVideoBufferManager::Get(AVPixelFormat format, int size)
+void CVideoBufferManager::ReleasePool(IVideoBufferPool *pool)
+{
+  CSingleLock lock(m_critSection);
+
+  for (auto it = m_pools.begin(); it != m_pools.end(); ++it)
+  {
+    if ((*it).get() == pool)
+    {
+      m_discardedPools.push_back(*it);
+      m_pools.erase(it);
+      pool->Discard(this, &CVideoBufferManager::ReadyForDisposal);
+    }
+  }
+}
+
+void CVideoBufferManager::ReadyForDisposal(IVideoBufferPool *pool)
+{
+  CSingleLock lock(m_critSection);
+
+  for (auto it = m_discardedPools.begin(); it != m_discardedPools.end(); ++it)
+  {
+    if ((*it).get() == pool)
+    {
+      pool->Released(*this);
+      m_discardedPools.erase(it);
+    }
+  }
+}
+
+CVideoBuffer* CVideoBufferManager::Get(AVPixelFormat format, int size, IVideoBufferPool **pPool)
 {
   CSingleLock lock(m_critSection);
   for (auto pool: m_pools)
@@ -395,6 +460,16 @@ CVideoBuffer* CVideoBufferManager::Get(AVPixelFormat format, int size)
     {
       return pool->Get();
     }
+  }
+
+  for (auto fact : m_poolFactories)
+  {
+    std::shared_ptr<IVideoBufferPool> pool = fact.second();
+    m_pools.push_front(pool);
+    pool->Configure(format, size);
+    if (pPool)
+      *pPool = pool.get();
+    return pool->Get();
   }
   return nullptr;
 }
