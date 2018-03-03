@@ -32,6 +32,7 @@
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
+#include "input/InputManager.h"
 #include "input/Key.h"
 #include "messaging/ApplicationMessenger.h"
 #include "network/Network.h"
@@ -157,6 +158,7 @@ namespace PVR
       CSettings::SETTING_PVRMANAGER_PRESELECTPLAYINGCHANNEL,
       CSettings::SETTING_PVRRECORD_INSTANTRECORDTIME,
       CSettings::SETTING_PVRRECORD_INSTANTRECORDACTION,
+      CSettings::SETTING_PVRPLAYBACK_CONFIRMCHANNELSWITCH,
       CSettings::SETTING_PVRPLAYBACK_SWITCHTOFULLSCREEN,
       CSettings::SETTING_PVRPARENTAL_PIN,
       CSettings::SETTING_PVRPARENTAL_ENABLED,
@@ -1827,6 +1829,29 @@ namespace PVR
   CPVRGUIChannelNavigator &CPVRGUIActions::GetChannelNavigator()
   {
     return m_channelNavigator;
+  }
+
+  bool CPVRGUIActions::OnAction(const CAction &action)
+  {
+    // If the button that caused this action matches (global) action "Select" (OK)...
+    if (action.GetID() == ACTION_SELECT_ITEM ||
+        CServiceBroker::GetInputManager().GetGlobalAction(action.GetButtonCode()).GetID() == ACTION_SELECT_ITEM)
+    {
+      if (m_settings.GetBoolValue(CSettings::SETTING_PVRPLAYBACK_CONFIRMCHANNELSWITCH) &&
+          GetChannelNavigator().IsPreview())
+      {
+        // ... and if "confirm channel switch" setting is active and a channel
+        // preview is currently shown, switch to the currently previewed channel.
+        GetChannelNavigator().SwitchToCurrentChannel();
+        return true;
+      }
+      else if (GetChannelNumberInputHandler().CheckInputAndExecuteAction())
+      {
+        // ... and action was processed by direct channel number input, we're done.
+          return true;
+      }
+    }
+    return false;
   }
 
   void CPVRGUIActions::OnPlaybackStarted(const CFileItemPtr &item)

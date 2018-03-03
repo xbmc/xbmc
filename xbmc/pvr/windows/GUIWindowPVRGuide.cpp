@@ -335,6 +335,17 @@ bool CGUIWindowPVRGuideBase::OnMessage(CGUIMessage& message)
     {
       if (message.GetSenderId() == m_viewControl.GetCurrentControl())
       {
+        if (message.GetParam1() == ACTION_SELECT_ITEM ||
+            message.GetParam1() == ACTION_MOUSE_LEFT_CLICK)
+        {
+          // If direct channel number input is active, select the entered channel.
+          if (CServiceBroker::GetPVRManager().GUIActions()->GetChannelNumberInputHandler().CheckInputAndExecuteAction())
+          {
+            bReturn = true;
+            break;
+          }
+        }
+
         int iItem = m_viewControl.GetSelectedItem();
         if (iItem >= 0 && iItem < m_vecItems->Size())
         {

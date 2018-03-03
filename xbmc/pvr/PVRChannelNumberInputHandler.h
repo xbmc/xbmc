@@ -65,6 +65,12 @@ public:
    */
   std::string GetChannelNumberAsString() const;
 
+  /*!
+   * @brief If a number was entered, execute the associated action.
+   * @return True, if the action was executed, false otherwise.
+   */
+  bool CheckInputAndExecuteAction();
+
 protected:
   /*!
    * @brief Get the currently entered channel number.

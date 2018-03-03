@@ -29,6 +29,7 @@
 #include "pvr/PVRSettings.h"
 #include "pvr/PVRTypes.h"
 
+class CAction;
 class CFileItem;
 typedef std::shared_ptr<CFileItem> CFileItemPtr;
 
@@ -371,6 +372,12 @@ namespace PVR
      * @return the navigator.
      */
     CPVRGUIChannelNavigator &GetChannelNavigator();
+
+    /*!
+     * @brief Process an action.
+     * @return True if the action was processed, false otherwise.
+     */
+    bool OnAction(const CAction &action);
 
     /*!
      * @brief Inform GUI actions that playback of an item just started.

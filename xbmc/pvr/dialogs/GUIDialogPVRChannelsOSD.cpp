@@ -69,6 +69,10 @@ bool CGUIDialogPVRChannelsOSD::OnMessage(CGUIMessage& message)
 
         if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK)
         {
+          // If direct channel number input is active, select the entered channel.
+          if (CServiceBroker::GetPVRManager().GUIActions()->GetChannelNumberInputHandler().CheckInputAndExecuteAction())
+            return true;
+
           /* Switch to channel */
           GotoChannel(iItem);
           return true;
