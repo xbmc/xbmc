@@ -1121,11 +1121,6 @@ namespace PVR
 
   bool CPVRGUIActions::SwitchToChannel(const CFileItemPtr &item, bool bCheckResume) const
   {
-    return SwitchToChannel(item, bCheckResume, m_settings.GetBoolValue(CSettings::SETTING_PVRPLAYBACK_SWITCHTOFULLSCREEN));
-  }
-
-  bool CPVRGUIActions::SwitchToChannel(const CFileItemPtr &item, bool bCheckResume, bool bFullscreen) const
-  {
     if (item->m_bIsFolder)
       return false;
 
@@ -1163,7 +1158,7 @@ namespace PVR
         }
       }
 
-      StartPlayback(new CFileItem(channel), bFullscreen);
+      StartPlayback(new CFileItem(channel), m_settings.GetBoolValue(CSettings::SETTING_PVRPLAYBACK_SWITCHTOFULLSCREEN));
       return true;
     }
 
@@ -1266,7 +1261,7 @@ namespace PVR
 
     CLog::Log(LOGNOTICE, "PVRGUIActions - %s - start playback of channel '%s'", __FUNCTION__, item->GetPVRChannelInfoTag()->ChannelName().c_str());
     CServiceBroker::GetPVRManager().SetPlayingGroup(group);
-    return SwitchToChannel(item, true, m_settings.GetBoolValue(CSettings::SETTING_PVRPLAYBACK_SWITCHTOFULLSCREEN));
+    return SwitchToChannel(item, true);
   }
 
   bool CPVRGUIActions::PlayMedia(const CFileItemPtr &item) const
