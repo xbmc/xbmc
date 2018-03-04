@@ -32,6 +32,7 @@
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
+#include "input/InputManager.h"
 #include "input/Key.h"
 #include "messaging/ApplicationMessenger.h"
 #include "network/Network.h"
@@ -157,6 +158,7 @@ namespace PVR
       CSettings::SETTING_PVRMANAGER_PRESELECTPLAYINGCHANNEL,
       CSettings::SETTING_PVRRECORD_INSTANTRECORDTIME,
       CSettings::SETTING_PVRRECORD_INSTANTRECORDACTION,
+      CSettings::SETTING_PVRPLAYBACK_CONFIRMCHANNELSWITCH,
       CSettings::SETTING_PVRPLAYBACK_SWITCHTOFULLSCREEN,
       CSettings::SETTING_PVRPARENTAL_PIN,
       CSettings::SETTING_PVRPARENTAL_ENABLED,
@@ -1121,11 +1123,6 @@ namespace PVR
 
   bool CPVRGUIActions::SwitchToChannel(const CFileItemPtr &item, bool bCheckResume) const
   {
-    return SwitchToChannel(item, bCheckResume, m_settings.GetBoolValue(CSettings::SETTING_PVRPLAYBACK_SWITCHTOFULLSCREEN));
-  }
-
-  bool CPVRGUIActions::SwitchToChannel(const CFileItemPtr &item, bool bCheckResume, bool bFullscreen) const
-  {
     if (item->m_bIsFolder)
       return false;
 
@@ -1163,7 +1160,7 @@ namespace PVR
         }
       }
 
-      StartPlayback(new CFileItem(channel), bFullscreen);
+      StartPlayback(new CFileItem(channel), m_settings.GetBoolValue(CSettings::SETTING_PVRPLAYBACK_SWITCHTOFULLSCREEN));
       return true;
     }
 
@@ -1266,7 +1263,7 @@ namespace PVR
 
     CLog::Log(LOGNOTICE, "PVRGUIActions - %s - start playback of channel '%s'", __FUNCTION__, item->GetPVRChannelInfoTag()->ChannelName().c_str());
     CServiceBroker::GetPVRManager().SetPlayingGroup(group);
-    return SwitchToChannel(item, true, m_settings.GetBoolValue(CSettings::SETTING_PVRPLAYBACK_SWITCHTOFULLSCREEN));
+    return SwitchToChannel(item, true);
   }
 
   bool CPVRGUIActions::PlayMedia(const CFileItemPtr &item) const
@@ -1832,6 +1829,29 @@ namespace PVR
   CPVRGUIChannelNavigator &CPVRGUIActions::GetChannelNavigator()
   {
     return m_channelNavigator;
+  }
+
+  bool CPVRGUIActions::OnAction(const CAction &action)
+  {
+    // If the button that caused this action matches (global) action "Select" (OK)...
+    if (action.GetID() == ACTION_SELECT_ITEM ||
+        CServiceBroker::GetInputManager().GetGlobalAction(action.GetButtonCode()).GetID() == ACTION_SELECT_ITEM)
+    {
+      if (m_settings.GetBoolValue(CSettings::SETTING_PVRPLAYBACK_CONFIRMCHANNELSWITCH) &&
+          GetChannelNavigator().IsPreview())
+      {
+        // ... and if "confirm channel switch" setting is active and a channel
+        // preview is currently shown, switch to the currently previewed channel.
+        GetChannelNavigator().SwitchToCurrentChannel();
+        return true;
+      }
+      else if (GetChannelNumberInputHandler().CheckInputAndExecuteAction())
+      {
+        // ... and action was processed by direct channel number input, we're done.
+          return true;
+      }
+    }
+    return false;
   }
 
   void CPVRGUIActions::OnPlaybackStarted(const CFileItemPtr &item)

@@ -27,7 +27,6 @@
 #include "GUIUserMessages.h"
 #include "GUIInfoManager.h"
 #include "guilib/GUIWindowManager.h"
-#include "input/InputManager.h"
 #include "input/Key.h"
 #include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"
@@ -50,17 +49,9 @@ CGUIWindowVisualisation::CGUIWindowVisualisation(void)
 
 bool CGUIWindowVisualisation::OnAction(const CAction &action)
 {
-  if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_PVRPLAYBACK_CONFIRMCHANNELSWITCH) &&
-      CServiceBroker::GetPVRManager().GUIActions()->GetChannelNavigator().IsPreview() &&
-      (action.GetID() == ACTION_SELECT_ITEM ||
-       CServiceBroker::GetInputManager().GetGlobalAction(action.GetButtonCode()).GetID() == ACTION_SELECT_ITEM))
-  {
-    // If confirm channel switch is active, channel preview is currently shown
-    // and the button that caused this action matches (global) action "Select" (OK)
-    // switch to the channel currently displayed within the preview.
-    CServiceBroker::GetPVRManager().GUIActions()->GetChannelNavigator().SwitchToCurrentChannel();
+  // Handle some actions "overloaded" by PVR (e.g. channel preview, direct channel number input).
+  if (CServiceBroker::GetPVRManager().GUIActions()->OnAction(action))
     return true;
-  }
 
   bool passToVis = false;
   switch (action.GetID())
