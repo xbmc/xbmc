@@ -1832,8 +1832,18 @@ bool COutput::Uninit()
 {
   ProcessSyncPicture();
   ReleaseBufferPool();
-  delete m_pp;
-  m_pp = NULL;
+  if (m_pp)
+  {
+    std::shared_ptr<CPostproc> pp(m_pp);
+    m_discardedPostprocs.push_back(pp);
+    m_pp->Discard(this, &COutput::ReadyForDisposal);
+    m_pp = nullptr;
+  }
+
+  if (!m_discardedPostprocs.empty())
+  {
+    CLog::Log(LOGERROR, "VAAPI::COutput::Uninit - not all CPostprcs released");
+  }
   return true;
 }
 
@@ -1939,9 +1949,10 @@ void COutput::InitCycle()
 
     if (m_pp && !m_pp->UpdateDeintMethod(method))
     {
-      delete m_pp;
-      m_pp = NULL;
-      DropVppProcessedPictures();
+      std::shared_ptr<CPostproc> pp(m_pp);
+      m_discardedPostprocs.push_back(pp);
+      m_pp->Discard(this, &COutput::ReadyForDisposal);
+      m_pp = nullptr;
       m_config.processInfo->SetVideoDeintMethod("unknown");
     }
     if (!m_pp)
@@ -1985,9 +1996,10 @@ void COutput::InitCycle()
     method = VS_INTERLACEMETHOD_NONE;
     if (m_pp && !m_pp->UpdateDeintMethod(method))
     {
-      delete m_pp;
-      m_pp = NULL;
-      DropVppProcessedPictures();
+      std::shared_ptr<CPostproc> pp(m_pp);
+      m_discardedPostprocs.push_back(pp);
+      m_pp->Discard(this, &COutput::ReadyForDisposal);
+      m_pp = nullptr;
     }
     if (!m_pp)
     {
@@ -2025,8 +2037,14 @@ CVaapiRenderPicture* COutput::ProcessPicture(CVaapiProcessedPicture &pic)
   retPic = m_bufferPool->GetVaapi();
   retPic->DVDPic.SetParams(pic.DVDPic);
 
-  if (pic.source == CVaapiProcessedPicture::SKIP_SRC ||
-      pic.source == CVaapiProcessedPicture::VPP_SRC)
+  if (!pic.source)
+  {
+    CLog::Log(LOGERROR, "VAAPI::ProcessPicture - pic has no source");
+    retPic->Release();
+    return nullptr;
+  }
+
+  if (pic.source->UseVideoSurface())
   {
     vaSyncSurface(m_config.dpy, pic.videoSurface);
     pic.id = m_bufferPool->procPicId++;
@@ -2034,16 +2052,11 @@ CVaapiRenderPicture* COutput::ProcessPicture(CVaapiProcessedPicture &pic)
     retPic->procPic = pic;
     retPic->vadsp = m_config.dpy;
   }
-  else if (pic.source == CVaapiProcessedPicture::FFMPEG_SRC)
-  {
-    av_frame_move_ref(retPic->avFrame, pic.frame);
-    av_frame_free(&pic.frame);
-    retPic->procPic.videoSurface = VA_INVALID_ID;
-  }
   else
   {
-    retPic->Release();
-    return nullptr;
+    av_frame_move_ref(retPic->avFrame, pic.frame);
+    pic.source->ClearRef(pic);
+    retPic->procPic.videoSurface = VA_INVALID_ID;
   }
 
   retPic->DVDPic.dts = DVD_NOPTS_VALUE;
@@ -2057,50 +2070,12 @@ CVaapiRenderPicture* COutput::ProcessPicture(CVaapiProcessedPicture &pic)
 
 void COutput::ReleaseProcessedPicture(CVaapiProcessedPicture &pic)
 {
-  if (pic.source == CVaapiProcessedPicture::VPP_SRC && m_pp)
+  if (!pic.source)
   {
-    CVppPostproc *pp = dynamic_cast<CVppPostproc*>(m_pp);
-    if (pp)
-    {
-      pp->ClearRef(pic.videoSurface);
-    }
+    return;
   }
-  else if (pic.source == CVaapiProcessedPicture::SKIP_SRC)
-  {
-    m_config.videoSurfaces->ClearRender(pic.videoSurface);
-  }
-  else if (pic.source == CVaapiProcessedPicture::FFMPEG_SRC)
-  {
-    av_frame_free(&pic.frame);
-  }
-}
-
-void COutput::DropVppProcessedPictures()
-{
-  auto it = m_bufferPool->processedPics.begin();
-  while (it != m_bufferPool->processedPics.end())
-  {
-    if (it->source == CVaapiProcessedPicture::VPP_SRC)
-    {
-      it = m_bufferPool->processedPics.erase(it);
-      m_config.stats->DecProcessed();
-    }
-    else
-      ++it;
-  }
-
-  it = m_bufferPool->processedPicsAway.begin();
-  while (it != m_bufferPool->processedPicsAway.end())
-  {
-    if (it->source == CVaapiProcessedPicture::VPP_SRC)
-    {
-      it = m_bufferPool->processedPicsAway.erase(it);
-    }
-    else
-      ++it;
-  }
-
-  m_controlPort.SendInMessage(COutputControlProtocol::STATS);
+  pic.source->ClearRef(pic);
+  pic.source = nullptr;
 }
 
 void COutput::QueueReturnPicture(CVaapiRenderPicture *pic)
@@ -2167,6 +2142,18 @@ void COutput::ReleaseBufferPool(bool precleanup)
   m_bufferPool->processedPics.clear();
 }
 
+void COutput::ReadyForDisposal(CPostproc *pp)
+{
+  for (auto it = m_discardedPostprocs.begin(); it != m_discardedPostprocs.end(); ++it)
+  {
+    if ((*it).get() == pp)
+    {
+      m_discardedPostprocs.erase(it);
+      break;
+    }
+  }
+}
+
 bool COutput::CheckSuccess(VAStatus status)
 {
   if (status != VA_STATUS_SUCCESS)
@@ -2202,11 +2189,12 @@ bool CSkipPostproc::AddPicture(CVaapiDecodedPicture &inPic)
 
 bool CSkipPostproc::Filter(CVaapiProcessedPicture &outPic)
 {
-  if (m_step>0)
+  if (m_step > 0)
     return false;
   outPic.DVDPic.SetParams(m_pic.DVDPic);
   outPic.videoSurface = m_pic.videoSurface;
-  outPic.source = CVaapiProcessedPicture::SKIP_SRC;
+  m_refsToSurfaces++;
+  outPic.source = this;
   outPic.DVDPic.iFlags &= ~(DVP_FLAG_TOP_FIELD_FIRST |
                             DVP_FLAG_REPEAT_TOP_FIELD |
                             DVP_FLAG_INTERLACED);
@@ -2214,9 +2202,13 @@ bool CSkipPostproc::Filter(CVaapiProcessedPicture &outPic)
   return true;
 }
 
-void CSkipPostproc::ClearRef(VASurfaceID surf)
+void CSkipPostproc::ClearRef(CVaapiProcessedPicture &pic)
 {
+  m_config.videoSurfaces->ClearRender(pic.videoSurface);
+  m_refsToSurfaces--;
 
+  if (m_pOut && m_refsToSurfaces <= 0)
+    (m_pOut->*m_cbDispose)(this);
 }
 
 void CSkipPostproc::Flush()
@@ -2235,6 +2227,19 @@ bool CSkipPostproc::UpdateDeintMethod(EINTERLACEMETHOD method)
 bool CSkipPostproc::DoesSync()
 {
   return false;
+}
+
+bool CSkipPostproc::UseVideoSurface()
+{
+  return true;
+}
+
+void CSkipPostproc::Discard(COutput *output, ReadyToDispose cb)
+{
+  m_pOut = output;
+  m_cbDispose = cb;
+  if (m_refsToSurfaces <= 0)
+    (m_pOut->*m_cbDispose)(this);
 }
 
 //-----------------------------------------------------------------------------
@@ -2651,7 +2656,7 @@ bool CVppPostproc::Filter(CVaapiProcessedPicture &outPic)
 
   m_step++;
   outPic.videoSurface = m_videoSurfaces.GetFree(surf);
-  outPic.source = CVaapiProcessedPicture::VPP_SRC;
+  outPic.source = this;
   outPic.DVDPic.iFlags &= ~(DVP_FLAG_TOP_FIELD_FIRST |
                             DVP_FLAG_REPEAT_TOP_FIELD |
                             DVP_FLAG_INTERLACED);
@@ -2677,9 +2682,12 @@ void CVppPostproc::Advance()
   }
 }
 
-void CVppPostproc::ClearRef(VASurfaceID surf)
+void CVppPostproc::ClearRef(CVaapiProcessedPicture &pic)
 {
-  m_videoSurfaces.ClearReference(surf);
+  m_videoSurfaces.ClearReference(pic.videoSurface);
+
+  if (m_pOut && !m_videoSurfaces.HasRefs())
+    (m_pOut->*m_cbDispose)(this);
 }
 
 void CVppPostproc::Flush()
@@ -2720,6 +2728,19 @@ bool CVppPostproc::WantsPic()
     return true;
 
   return false;
+}
+
+bool CVppPostproc::UseVideoSurface()
+{
+  return true;
+}
+
+void CVppPostproc::Discard(COutput *output, ReadyToDispose cb)
+{
+  m_pOut = output;
+  m_cbDispose = cb;
+  if (!m_videoSurfaces.HasRefs())
+    (m_pOut->*m_cbDispose)(this);
 }
 
 bool CVppPostproc::CheckSuccess(VAStatus status)
@@ -2812,7 +2833,7 @@ bool CFFmpegPostproc::Init(EINTERLACEMETHOD method)
 {
   if (!(m_pFilterGraph = avfilter_graph_alloc()))
   {
-    CLog::Log(LOGERROR, "CFFmpegPostproc::Init - unable to alloc filter graph");
+    CLog::Log(LOGERROR, "VAAPI::CFFmpegPostproc::Init - unable to alloc filter graph");
     return false;
   }
 
@@ -2830,7 +2851,7 @@ bool CFFmpegPostproc::Init(EINTERLACEMETHOD method)
 
   if (avfilter_graph_create_filter(&m_pFilterIn, srcFilter, "src", args.c_str(), NULL, m_pFilterGraph) < 0)
   {
-    CLog::Log(LOGERROR, "CFFmpegPostproc::Init - avfilter_graph_create_filter: src");
+    CLog::Log(LOGERROR, "VAAPI::CFFmpegPostproc::Init - avfilter_graph_create_filter: src");
     return false;
   }
 
@@ -2843,7 +2864,7 @@ bool CFFmpegPostproc::Init(EINTERLACEMETHOD method)
   enum AVPixelFormat pix_fmts[] = { AV_PIX_FMT_NV12, AV_PIX_FMT_NONE };
   if (av_opt_set_int_list(m_pFilterOut, "pix_fmts", pix_fmts,  AV_PIX_FMT_NONE, AV_OPT_SEARCH_CHILDREN) < 0)
   {
-    CLog::Log(LOGERROR, "CFFmpegPostproc::Init  - failed settings pix formats");
+    CLog::Log(LOGERROR, "VAAPI::CFFmpegPostproc::Init  - failed settings pix formats");
     return false;
   }
 
@@ -2868,7 +2889,7 @@ bool CFFmpegPostproc::Init(EINTERLACEMETHOD method)
 
     if (avfilter_graph_parse_ptr(m_pFilterGraph, filter.c_str(), &inputs, &outputs, NULL) < 0)
     {
-      CLog::Log(LOGERROR, "CFFmpegPostproc::Init  - avfilter_graph_parse");
+      CLog::Log(LOGERROR, "VAAPI::CFFmpegPostproc::Init  - avfilter_graph_parse");
       avfilter_inout_free(&outputs);
       avfilter_inout_free(&inputs);
       return false;
@@ -2879,14 +2900,14 @@ bool CFFmpegPostproc::Init(EINTERLACEMETHOD method)
 
     if (avfilter_graph_config(m_pFilterGraph, NULL) < 0)
     {
-      CLog::Log(LOGERROR, "CFFmpegPostproc::Init  - avfilter_graph_config");
+      CLog::Log(LOGERROR, "VAAPI::CFFmpegPostproc::Init  - avfilter_graph_config");
       return false;
     }
   }
   else if (method == VS_INTERLACEMETHOD_RENDER_BOB ||
            method == VS_INTERLACEMETHOD_NONE)
   {
-    CLog::Log(LOGDEBUG, LOGVIDEO, "CFFmpegPostproc::Init  - skip deinterlacing");
+    CLog::Log(LOGDEBUG, LOGVIDEO, "VAAPI::CFFmpegPostproc::Init  - skip deinterlacing");
     avfilter_inout_free(&outputs);
     avfilter_inout_free(&inputs);
   }
@@ -3005,7 +3026,7 @@ bool CFFmpegPostproc::Filter(CVaapiProcessedPicture &outPic)
   else if (m_diMethod == VS_INTERLACEMETHOD_RENDER_BOB ||
            m_diMethod == VS_INTERLACEMETHOD_NONE)
   {
-    if (m_step>0)
+    if (m_step > 0)
       return false;
   }
 
@@ -3013,7 +3034,8 @@ bool CFFmpegPostproc::Filter(CVaapiProcessedPicture &outPic)
   outPic.frame = av_frame_clone(m_pFilterFrameOut);
   av_frame_unref(m_pFilterFrameOut);
 
-  outPic.source = CVaapiProcessedPicture::FFMPEG_SRC;
+  outPic.source = this;
+  m_refsToPics++;
 
   int64_t bpts = av_frame_get_best_effort_timestamp(outPic.frame);
   if(bpts != AV_NOPTS_VALUE)
@@ -3033,9 +3055,13 @@ bool CFFmpegPostproc::Filter(CVaapiProcessedPicture &outPic)
   return true;
 }
 
-void CFFmpegPostproc::ClearRef(VASurfaceID surf)
+void CFFmpegPostproc::ClearRef(CVaapiProcessedPicture &pic)
 {
+  av_frame_free(&pic.frame);
+  m_refsToPics--;
 
+  if (m_pOut && m_refsToPics <= 0)
+    (m_pOut->*m_cbDispose)(this);
 }
 
 void CFFmpegPostproc::Close()
@@ -3075,6 +3101,19 @@ bool CFFmpegPostproc::UpdateDeintMethod(EINTERLACEMETHOD method)
 bool CFFmpegPostproc::DoesSync()
 {
   return true;
+}
+
+bool CFFmpegPostproc::UseVideoSurface()
+{
+  return false;
+}
+
+void CFFmpegPostproc::Discard(COutput *output, ReadyToDispose cb)
+{
+  m_pOut = output;
+  m_cbDispose = cb;
+  if (m_refsToPics <= 0)
+    (m_pOut->*m_cbDispose)(this);
 }
 
 bool CFFmpegPostproc::CheckSuccess(VAStatus status)
