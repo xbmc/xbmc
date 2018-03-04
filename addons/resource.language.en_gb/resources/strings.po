@@ -7004,7 +7004,10 @@ msgctxt "#13429"
 msgid "Allow hardware acceleration - VTBDecoder"
 msgstr ""
 
-#empty string with id 13430
+#: system/settings/settings.xml
+msgctxt "#13430"
+msgid "Allow hardware acceleration - PRIME"
+msgstr ""
 
 #: system/settings/settings.xml
 #: xbmc/cores/VideoPlayer/VideoRenderers/BaseRenderer.cpp
@@ -18364,7 +18367,11 @@ msgctxt "#36171"
 msgid "Select the zoom level that 4:3 videos are shown on widescreen displays."
 msgstr ""
 
-#empty string with id 36172
+#. Description of setting with label #13430 "Allow hardware acceleration - PRIME"
+#: system/settings/settings.xml
+msgctxt "#36172"
+msgid "Enable PRIME hardware decoding of video files, used if ffmpeg PRIME hwaccel is available."
+msgstr ""
 
 #. Description of setting with label #14109 "Short date format"
 #: system/settings/settings.xml

@@ -46,6 +46,22 @@
 #include "XBDateTime.h"
 #include "utils/params_check_macros.h"
 
+/*! \brief  C-processor Token stringification
+
+The following macros can be used to stringify definitions to
+C style strings.
+
+Example:
+
+#define foo 4
+DEF_TO_STR_NAME(foo)  // outputs "foo"
+DEF_TO_STR_VALUE(foo) // outputs "4"
+
+*/
+
+#define DEF_TO_STR_NAME(x) #x
+#define DEF_TO_STR_VALUE(x) DEF_TO_STR_NAME(x)
+
 class StringUtils
 {
 public:

@@ -20,7 +20,9 @@
 
 #include "DVDVideoCodecDRMPRIME.h"
 
+#include "ServiceBroker.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
+#include "settings/Settings.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 
@@ -159,7 +161,9 @@ CDVDVideoCodecDRMPRIME::~CDVDVideoCodecDRMPRIME()
 
 CDVDVideoCodec* CDVDVideoCodecDRMPRIME::Create(CProcessInfo& processInfo)
 {
-  return new CDVDVideoCodecDRMPRIME(processInfo);
+  if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_USEPRIMEDECODER))
+    return new CDVDVideoCodecDRMPRIME(processInfo);
+  return nullptr;
 }
 
 void CDVDVideoCodecDRMPRIME::Register()
