@@ -174,6 +174,8 @@ private:
   void OnOutputDone(std::uint32_t name);
   void UpdateBufferScale();
   void ApplyBufferScale();
+  void ApplyOpaqueRegion();
+  void ApplyWindowGeometry();
   void UpdateTouchDpi();
   void ApplyShellSurfaceState(IShellSurface::StateBitset state);
 

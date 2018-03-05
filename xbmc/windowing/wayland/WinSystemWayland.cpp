@@ -340,6 +340,10 @@ bool CWinSystemWayland::CreateNewWindow(const std::string& name,
   // Apply window decorations if necessary
   m_windowDecorator->SetState(m_configuredSize, m_scale, m_shellSurfaceState);
 
+  // Set initial opaque region and window geometry
+  ApplyOpaqueRegion();
+  ApplyWindowGeometry();
+
   // Update resolution with real size as it could have changed due to configure()
   UpdateDesktopResolution(res, 0, m_bufferSize.Width(), m_bufferSize.Height(), res.fRefreshRate);
   res.bFullScreen = fullScreen;
@@ -644,23 +648,33 @@ void CWinSystemWayland::ApplySizeUpdate(SizeUpdateInformation update)
   }
   if (update.surfaceSizeChanged)
   {
-    // Mark everything opaque so the compositor can render it faster
-    // Do it here so size always matches the configured egl surface
-    CLog::LogF(LOGDEBUG, "Setting opaque region size %dx%d", m_surfaceSize.Width(), m_surfaceSize.Height());
-    wayland::region_t opaqueRegion{m_compositor.create_region()};
-    opaqueRegion.add(0, 0, m_surfaceSize.Width(), m_surfaceSize.Height());
-    m_surface.set_opaque_region(opaqueRegion);
+    // Update opaque region here so size always matches the configured egl surface
+    ApplyOpaqueRegion();
   }
   if (update.configuredSizeChanged)
   {
     // Update window decoration state
     m_windowDecorator->SetState(m_configuredSize, m_scale, m_shellSurfaceState);
-    m_shellSurface->SetWindowGeometry(m_windowDecorator->GetWindowGeometry());
+    ApplyWindowGeometry();
   }
   // Set always, because of initialization order GL context has to keep track of
   // whether the size changed. If we skip based on update.bufferSizeChanged here,
   // GL context will never get its initial size set.
   SetContextSize(m_bufferSize);
+}
+
+void CWinSystemWayland::ApplyOpaqueRegion()
+{
+  // Mark everything opaque so the compositor can render it faster
+  CLog::LogF(LOGDEBUG, "Setting opaque region size %dx%d", m_surfaceSize.Width(), m_surfaceSize.Height());
+  wayland::region_t opaqueRegion{m_compositor.create_region()};
+  opaqueRegion.add(0, 0, m_surfaceSize.Width(), m_surfaceSize.Height());
+  m_surface.set_opaque_region(opaqueRegion);
+}
+
+void CWinSystemWayland::ApplyWindowGeometry()
+{
+  m_shellSurface->SetWindowGeometry(m_windowDecorator->GetWindowGeometry());
 }
 
 void CWinSystemWayland::ProcessMessages()
