@@ -327,8 +327,9 @@ void CLinuxRendererGL::AddVideoPicture(const VideoPicture &picture, int index, d
 
   buf.hasDisplayMetadata = picture.hasDisplayMetadata;
   buf.displayMetadata = picture.displayMetadata;
-  buf.hasLightMetadata = picture.hasLightMetadata;
   buf.lightMetadata = picture.lightMetadata;
+  if (picture.hasLightMetadata && picture.lightMetadata.MaxCLL)
+    buf.hasLightMetadata = picture.hasLightMetadata;
 }
 
 void CLinuxRendererGL::ReleaseBuffer(int idx)
@@ -815,7 +816,7 @@ void CLinuxRendererGL::UpdateVideoFilter()
   case VS_SCALINGMETHOD_SPLINE36_FAST:
     {
       EShaderFormat fmt = GetShaderFormat();
-      if (fmt == SHADER_NV12 || fmt == SHADER_YV12)
+      if (fmt == SHADER_NV12 || (fmt >= SHADER_YV12 && fmt <= SHADER_YV12_16))
       {
         unsigned int major, minor;
         m_renderSystem->GetRenderVersion(major, minor);

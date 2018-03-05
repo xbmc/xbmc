@@ -143,7 +143,7 @@ void CRenderBuffer::Clear() const
     wmemset(static_cast<wchar_t*>(m_rects[PLANE_U].pData), 0x200, m_rects[PLANE_U].RowPitch * (m_heightTex >> 1) >> 1);
     wmemset(static_cast<wchar_t*>(m_rects[PLANE_V].pData), 0x200, m_rects[PLANE_V].RowPitch * (m_heightTex >> 1) >> 1);
     break;
-  case BUFFER_FMT_YUV420P16: 
+  case BUFFER_FMT_YUV420P16:
     wmemset(static_cast<wchar_t*>(m_rects[PLANE_Y].pData),      0, m_rects[PLANE_Y].RowPitch * m_heightTex >> 1);
     wmemset(static_cast<wchar_t*>(m_rects[PLANE_U].pData), 0x8000, m_rects[PLANE_U].RowPitch * (m_heightTex >> 1) >> 1);
     wmemset(static_cast<wchar_t*>(m_rects[PLANE_V].pData), 0x8000, m_rects[PLANE_V].RowPitch * (m_heightTex >> 1) >> 1);
@@ -168,7 +168,7 @@ void CRenderBuffer::Clear() const
     wmemset(uvData, 0x200, m_rects[PLANE_D3D11].RowPitch * (m_heightTex >> 1) >> 1);
     break;
   }
-  case BUFFER_FMT_D3D11_P016: 
+  case BUFFER_FMT_D3D11_P016:
   {
     wchar_t* uvData = static_cast<wchar_t*>(m_rects[PLANE_D3D11].pData) + m_rects[PLANE_D3D11].RowPitch * (m_heightTex >> 1);
     wmemset(static_cast<wchar_t*>(m_rects[PLANE_D3D11].pData), 0, m_rects[PLANE_D3D11].RowPitch * m_heightTex >> 1);
@@ -346,8 +346,9 @@ void CRenderBuffer::AppendPicture(const VideoPicture & picture)
 
   hasDisplayMetadata = picture.hasDisplayMetadata;
   displayMetadata = picture.displayMetadata;
-  hasLightMetadata = picture.hasLightMetadata;
   lightMetadata = picture.lightMetadata;
+  if (picture.hasLightMetadata && picture.lightMetadata.MaxCLL)
+    hasLightMetadata = true;
 
   if (picture.videoBuffer->GetFormat() == AV_PIX_FMT_D3D11VA_VLD)
     QueueCopyBuffer();
@@ -459,7 +460,7 @@ bool CRenderBuffer::CopyToD3D11()
   uint8_t* dst[] = {pData, pData + m_heightTex * rect.RowPitch};
   int dstStride[] = {rect.RowPitch, rect.RowPitch};
   // source
-  uint8_t* src[3]; 
+  uint8_t* src[3];
   videoBuffer->GetPlanes(src);
   int srcStrides[3];
   videoBuffer->GetStrides(srcStrides);
@@ -480,7 +481,7 @@ bool CRenderBuffer::CopyToD3D11()
         // copy UV
         copy_plane(src[1], srcStrides[1], height >> 1, width, dst[1], dstStride[1]);
       });
-    // copy cache size of UV line again to fix Intel cache issue 
+    // copy cache size of UV line again to fix Intel cache issue
     copy_plane(src[1], srcStrides[1], 1, 32, dst[1], dstStride[1]);
   }
   // convert 8bit
@@ -493,7 +494,7 @@ bool CRenderBuffer::CopyToD3D11()
         // convert U+V -> UV
         convert_yuv420_nv12_chrome(&src[1], &srcStrides[1], height, width, dst[1], dstStride[1]);
       });
-    // copy cache size of UV line again to fix Intel cache issue 
+    // copy cache size of UV line again to fix Intel cache issue
     // height and width multiplied by two because they will be divided by func
     convert_yuv420_nv12_chrome(&src[1], &srcStrides[1], 2, 64, dst[1], dstStride[1]);
   }
@@ -509,7 +510,7 @@ bool CRenderBuffer::CopyToD3D11()
         // convert U+V -> UV
         convert_yuv420_p01x_chrome(&src[1], &srcStrides[1], height, width, dst[1], dstStride[1], bpp);
       });
-    // copy cache size of UV line again to fix Intel cache issue 
+    // copy cache size of UV line again to fix Intel cache issue
     // height multiplied by two because it will be divided by func
     convert_yuv420_p01x_chrome(&src[1], &srcStrides[1], 2, 32, dst[1], dstStride[1], bpp);
   }
@@ -672,7 +673,7 @@ bool CRenderBuffer::CopyBuffer()
       tasks.push_back(task);
     }
 
-    // event based await is required on WinRT because 
+    // event based await is required on WinRT because
     // blocking WinRT STA threads with task.wait() isn't allowed
     auto sync = std::make_shared<Concurrency::event>();
     when_all(tasks.begin(), tasks.end()).then([&sync]() {
