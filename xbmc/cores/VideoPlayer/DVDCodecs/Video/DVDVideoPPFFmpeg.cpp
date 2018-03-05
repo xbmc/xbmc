@@ -107,17 +107,19 @@ void CDVDVideoPPFFmpeg::Process(VideoPicture* pPicture)
     return;
   }
 
+  uint8_t* srcPlanes[YuvImage::MAX_PLANES], *dstPlanes[YuvImage::MAX_PLANES];
+  int srcStrides[YuvImage::MAX_PLANES];
+  pSource->videoBuffer->GetPlanes(srcPlanes);
+  pSource->videoBuffer->GetStrides(srcStrides);
+
   videoBuffer = m_processInfo.GetVideoBufferManager().Get(AV_PIX_FMT_YUV420P,
-                                                          pPicture->iWidth * pPicture->iHeight * 3/2, nullptr);
+                                                          srcStrides[0] * pPicture->iHeight +
+                                                          srcStrides[1] * pPicture->iHeight, nullptr);
   if (!videoBuffer)
   {
     return;
   }
 
-  uint8_t* srcPlanes[YuvImage::MAX_PLANES], *dstPlanes[YuvImage::MAX_PLANES];
-  int srcStrides[YuvImage::MAX_PLANES];
-  pSource->videoBuffer->GetPlanes(srcPlanes);
-  pSource->videoBuffer->GetStrides(srcStrides);
   videoBuffer->SetDimensions(pPicture->iWidth, pPicture->iHeight, srcStrides);
   videoBuffer->GetPlanes(dstPlanes);
   pp_postprocess((const uint8_t **)srcPlanes, srcStrides,
