@@ -547,7 +547,12 @@ void CLinuxRendererGL::RenderUpdate(int index, int index2, bool clear, unsigned 
     m_iYV12RenderBuffer = index;
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
+
+    if (m_pYUVShader)
+      m_pYUVShader->SetAlpha(alpha/255/2);
+    if (m_pVideoFilterShader)
+      m_pVideoFilterShader->SetAlpha(alpha/255/2);
+
     Render(flags, m_iYV12RenderBuffer);
   }
 
