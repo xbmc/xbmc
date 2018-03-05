@@ -2802,11 +2802,6 @@ bool CFFmpegPostproc::PreInit(CVaapiConfig &config, SDiMethods *methods)
 {
   m_config = config;
   bool use_filter = true;
-  if (!m_dllSSE4.Load())
-  {
-    CLog::Log(LOGERROR,"VAAPI::SupportsFilter failed loading sse4 lib");
-    return false;
-  }
 
   // copying large surfaces via sse4 is a bit slow
   // we just return false here as the primary use case the
@@ -2820,7 +2815,7 @@ bool CFFmpegPostproc::PreInit(CVaapiConfig &config, SDiMethods *methods)
   VAStatus status = vaDeriveImage(config.dpy, surface, &image);
   if (status != VA_STATUS_SUCCESS)
   {
-    CLog::Log(LOGWARNING,"VAAPI::SupportsFilter vaDeriveImage not supported");
+    CLog::Log(LOGINFO, "VAAPI::SupportsFilter vaDeriveImage not supported by driver - ffmpeg postprocessing and CPU-copy rendering will not be available");
     use_filter = false;
   }
   if (use_filter && (image.format.fourcc != VA_FOURCC_NV12))
@@ -2835,6 +2830,12 @@ bool CFFmpegPostproc::PreInit(CVaapiConfig &config, SDiMethods *methods)
   }
   if (image.image_id != VA_INVALID_ID)
     CheckSuccess(vaDestroyImage(config.dpy,image.image_id));
+
+  if (use_filter && !m_dllSSE4.Load())
+  {
+    CLog::Log(LOGERROR,"VAAPI::SupportsFilter failed loading sse4 lib");
+    use_filter = false;
+  }
 
   if (use_filter)
   {
