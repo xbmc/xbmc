@@ -264,7 +264,7 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_monitor
-      /// @brief \python_func{ onNotification(sender, method, data }
+      /// @brief \python_func{ onNotification(sender, method, data) }
       ///-----------------------------------------------------------------------
       /// onNotification method.
       ///
