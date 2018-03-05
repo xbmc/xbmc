@@ -221,11 +221,6 @@ CAction CButtonTranslator::GetAction(int window, const CKey &key, bool fallback)
   return action;
 }
 
-CAction CButtonTranslator::GetGlobalAction(const CKey &key)
-{
-  return GetAction(-1, key, true);
-}
-
 bool CButtonTranslator::HasLongpressMapping(int window, const CKey &key)
 {
   // handle virtual windows

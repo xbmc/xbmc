@@ -147,8 +147,13 @@
 #define WINDOW_RADIO_TIMER_RULES          (WINDOW_PVR_ID_START+11)
 #define WINDOW_PVR_ID_END                 WINDOW_RADIO_TIMER_RULES
 
-#define WINDOW_FULLSCREEN_LIVETV          10800 // virtual window for PVR specific keymap bindings in fullscreen playback (which internally uses WINDOW_FULLSCREEN_VIDEO)
-#define WINDOW_FULLSCREEN_RADIO           10801 // virtual window for PVR radio specific keymaps with fallback to WINDOW_VISUALISATION
+// virtual windows for PVR specific keymap bindings in fullscreen playback
+#define WINDOW_FULLSCREEN_LIVETV          10800
+#define WINDOW_FULLSCREEN_RADIO           10801
+#define WINDOW_FULLSCREEN_LIVETV_PREVIEW  10802
+#define WINDOW_FULLSCREEN_RADIO_PREVIEW   10803
+#define WINDOW_FULLSCREEN_LIVETV_INPUT    10804
+#define WINDOW_FULLSCREEN_RADIO_INPUT     10805
 
 #define WINDOW_DIALOG_GAME_CONTROLLERS    10820
 #define WINDOW_GAMES                      10821

@@ -589,6 +589,26 @@
       <pageminus>ChannelDown</pageminus>
     </remote>
   </FullscreenRadio>
+  <FullscreenLiveTvPreview>
+    <remote>
+      <select>Select</select>
+    </remote>
+  </FullscreenLiveTvPreview>
+  <FullscreenRadioPreview>
+    <remote>
+      <select>Select</select>
+    </remote>
+  </FullscreenRadioPreview>
+  <FullscreenLiveTvInput>
+    <remote>
+      <select>Select</select>
+    </remote>
+  </FullscreenLiveTvInput>
+  <FullscreenRadioInput>
+    <remote>
+      <select>Select</select>
+    </remote>
+  </FullscreenRadioInput>
   <PVROSDChannels>
     <remote>
       <back>Close</back>

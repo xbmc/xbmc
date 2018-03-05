@@ -117,6 +117,11 @@ CPVRChannelNumber CPVRChannelNumberInputHandler::GetChannelNumber() const
   return CPVRChannelNumber(iChannelNumber, iSubChannelNumber);
 }
 
+bool CPVRChannelNumberInputHandler::HasChannelNumber() const
+{
+  return !m_inputBuffer.empty();
+}
+
 std::string CPVRChannelNumberInputHandler::GetChannelNumberAsString() const
 {
   CSingleLock lock(m_mutex);

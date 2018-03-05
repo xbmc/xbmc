@@ -157,6 +157,28 @@ bool CPVRActionListener::OnAction(const CAction &action)
       return true;
     }
 
+    case ACTION_SELECT_ITEM:
+    {
+      if (!bIsPlayingPVR)
+        return false;
+
+      // If the button that caused this action matches action "Select" ...
+      if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_PVRPLAYBACK_CONFIRMCHANNELSWITCH) &&
+          CServiceBroker::GetPVRManager().GUIActions()->GetChannelNavigator().IsPreview())
+      {
+        // ... and if "confirm channel switch" setting is active and a channel
+        // preview is currently shown, switch to the currently previewed channel.
+        CServiceBroker::GetPVRManager().GUIActions()->GetChannelNavigator().SwitchToCurrentChannel();
+        return true;
+      }
+      else if (CServiceBroker::GetPVRManager().GUIActions()->GetChannelNumberInputHandler().CheckInputAndExecuteAction())
+      {
+        // ... or if the action was processed by direct channel number input, we're done.
+        return true;
+      }
+      return false;
+    }
+
     case ACTION_MOVE_UP:
     case ACTION_NEXT_ITEM:
     case ACTION_CHANNEL_UP:

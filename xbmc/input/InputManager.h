@@ -261,14 +261,6 @@ public:
    */
   CAction GetAction(int window, const CKey &key, bool fallback = true);
 
-  /*! \brief Obtain the global action configured for a given key
-   *
-   * \param key the key to query the action for
-   *
-   * \return the global action
-   */
-  CAction GetGlobalAction(const CKey &key);
-
   bool TranslateCustomControllerString(int windowId, const std::string& controllerName, int buttonId, int& action, std::string& strAction);
 
   bool TranslateTouchAction(int windowId, int touchAction, int touchPointers, int &action, std::string &actionString);

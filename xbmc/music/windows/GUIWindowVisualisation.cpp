@@ -28,8 +28,6 @@
 #include "GUIInfoManager.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
-#include "pvr/PVRGUIActions.h"
-#include "pvr/PVRManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 
@@ -49,10 +47,6 @@ CGUIWindowVisualisation::CGUIWindowVisualisation(void)
 
 bool CGUIWindowVisualisation::OnAction(const CAction &action)
 {
-  // Handle some actions "overloaded" by PVR (e.g. channel preview, direct channel number input).
-  if (CServiceBroker::GetPVRManager().GUIActions()->OnAction(action))
-    return true;
-
   bool passToVis = false;
   switch (action.GetID())
   {

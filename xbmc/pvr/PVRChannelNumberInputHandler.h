@@ -60,6 +60,12 @@ public:
   virtual void AppendChannelNumberCharacter(char cCharacter);
 
   /*!
+   * @brief Check whether a channel number was entered.
+   * @return True if the handler currently holds a channel number, false otherwise.
+   */
+  bool HasChannelNumber() const;
+
+  /*!
    * @brief Get the currently entered channel number as a formatted string. Format is n digits with leading zeros, where n is the number of digits specified when calling the ctor.
    * @return the channel number string.
    */

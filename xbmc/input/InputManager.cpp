@@ -966,11 +966,6 @@ CAction CInputManager::GetAction(int window, const CKey &key, bool fallback /* =
   return m_buttonTranslator->GetAction(window, key, fallback);
 }
 
-CAction CInputManager::GetGlobalAction(const CKey &key)
-{
-  return m_buttonTranslator->GetGlobalAction(key);
-}
-
 bool CInputManager::TranslateCustomControllerString(int windowId, const std::string& controllerName, int buttonId, int& action, std::string& strAction)
 {
   return m_customControllerTranslator->TranslateCustomControllerString(windowId, controllerName, buttonId, action, strAction);
