@@ -883,24 +883,6 @@ CVideoPlayerVideo::EOutputState CVideoPlayerVideo::OutputPicture(const VideoPict
       return OUTPUT_DROPPED;
     }
   }
-  else if (m_speed > DVD_PLAYSPEED_NORMAL)
-  {
-    double renderPts;
-    int lateframes;
-    int bufferLevel, queued, discard;
-    m_renderManager.GetStats(lateframes, renderPts, queued, discard);
-    bufferLevel = queued + discard;
-
-    // estimate the time it will take for the next frame to get rendered
-    // drop the frame if it's late in regard to this estimation
-    double diff = pPicture->pts - renderPts;
-    double mindiff = DVD_SEC_TO_TIME(1/m_fFrameRate) * (bufferLevel + 1);
-    if (diff < mindiff)
-    {
-      m_droppingStats.AddOutputDropGain(pPicture->pts, 1);
-      return OUTPUT_DROPPED;
-    }
-  }
 
   if ((pPicture->iFlags & DVP_FLAG_DROPPED))
   {
