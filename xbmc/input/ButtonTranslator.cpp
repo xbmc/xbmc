@@ -203,22 +203,17 @@ CAction CButtonTranslator::GetAction(int window, const CKey &key, bool fallback)
   // try to get the action from the current window
   unsigned int actionID = GetActionCode(window, key, strAction);
 
-  // if it's invalid, try to get it from the global map
-  if (actionID == ACTION_NONE && fallback)
+  if (fallback)
   {
-    //! @todo Refactor fallback logic
-    int fallbackWindow = CWindowTranslator::GetFallbackWindow(window);
-    if (fallbackWindow > -1)
-      actionID = GetActionCode(fallbackWindow, key, strAction);
-
-    // still no valid action? use global map
-    if (actionID == ACTION_NONE)
-      actionID = GetActionCode(-1, key, strAction);
+    // if it's invalid, try to get it from fallback windows or the global map (window == -1)
+    while (actionID == ACTION_NONE && window > -1)
+    {
+      window = CWindowTranslator::GetFallbackWindow(window);
+      actionID = GetActionCode(window, key, strAction);
+    }
   }
 
-  // Now fill our action structure
-  CAction action(actionID, strAction, key);
-  return action;
+  return CAction(actionID, strAction, key);
 }
 
 bool CButtonTranslator::HasLongpressMapping(int window, const CKey &key)
