@@ -107,12 +107,6 @@ CAESinkALSA::CAESinkALSA() :
 
 CAESinkALSA::~CAESinkALSA()
 {
-  m_controlMonitor.Clear();
-
-#ifdef HAVE_LIBUDEV
-  m_deviceMonitor.Stop();
-#endif
-
   Deinitialize();
 }
 
