@@ -84,6 +84,16 @@ public:
 };
 
 /**
+ * Dummy implementation of IOSScreenSaver
+ */
+class CDummyOSScreenSaver : public IOSScreenSaver
+{
+public:
+  void Inhibit() override {}
+  void Uninhibit() override {}
+};
+
+/**
  * Manage the OS screen saver
  *
  * This class keeps track of a number of \ref COSScreenSaverInhibitor instances
