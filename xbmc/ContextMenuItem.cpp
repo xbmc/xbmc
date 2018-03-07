@@ -29,6 +29,7 @@
 #include "interfaces/python/ContextItemAddonInvoker.h"
 #include "interfaces/python/XBPython.h"
 #endif
+#include "ServiceBroker.h"
 #include "utils/StringUtils.h"
 
 
