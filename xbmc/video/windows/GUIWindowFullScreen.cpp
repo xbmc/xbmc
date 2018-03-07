@@ -31,8 +31,6 @@
 #include "video/dialogs/GUIDialogSubtitleSettings.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
-#include "pvr/PVRGUIActions.h"
-#include "pvr/PVRManager.h"
 #include "video/dialogs/GUIDialogFullScreenInfo.h"
 #include "settings/DisplaySettings.h"
 #include "settings/MediaSettings.h"
@@ -94,10 +92,6 @@ CGUIWindowFullScreen::~CGUIWindowFullScreen(void)
 
 bool CGUIWindowFullScreen::OnAction(const CAction &action)
 {
-  // Handle some actions "overloaded" by PVR (e.g. channel preview, direct channel number input).
-  if (CServiceBroker::GetPVRManager().GUIActions()->OnAction(action))
-    return true;
-
   switch (action.GetID())
   {
   case ACTION_SHOW_OSD:

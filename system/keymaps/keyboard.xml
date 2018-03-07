@@ -696,6 +696,32 @@
       <period mod="longpress">ChannelNumberSeparator</period>
     </keyboard>
   </FullscreenRadio>
+  <FullscreenLiveTvPreview>
+    <keyboard>
+      <return>Select</return>
+      <enter>Select</enter>
+    </keyboard>
+  </FullscreenLiveTvPreview>
+  <FullscreenRadioPreview>
+    <keyboard>
+      <return>Select</return>
+      <enter>Select</enter>
+    </keyboard>
+  </FullscreenRadioPreview>
+  <FullscreenLiveTvInput>
+    <keyboard>
+      <return>Select</return>
+      <enter>Select</enter>
+      <period>ChannelNumberSeparator</period>
+    </keyboard>
+  </FullscreenLiveTvInput>
+  <FullscreenRadioInput>
+    <keyboard>
+      <return>Select</return>
+      <enter>Select</enter>
+      <period>ChannelNumberSeparator</period>
+    </keyboard>
+  </FullscreenRadioInput>
   <PVROSDChannels>
     <keyboard>
       <period mod="longpress">ChannelNumberSeparator</period>

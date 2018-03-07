@@ -374,12 +374,6 @@ namespace PVR
     CPVRGUIChannelNavigator &GetChannelNavigator();
 
     /*!
-     * @brief Process an action.
-     * @return True if the action was processed, false otherwise.
-     */
-    bool OnAction(const CAction &action);
-
-    /*!
      * @brief Inform GUI actions that playback of an item just started.
      * @param item The item that started to play.
      */

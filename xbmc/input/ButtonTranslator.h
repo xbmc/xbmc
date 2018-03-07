@@ -71,12 +71,6 @@ public:
    */
   CAction GetAction(int window, const CKey &key, bool fallback = true);
 
-  /*! \brief Obtain the global action configured for a given key
-   \param key the key to query the action for
-   \return the global action
-   */
-  CAction GetGlobalAction(const CKey &key);
-
   void RegisterMapper(const std::string &device, IButtonMapper *mapper);
   void UnregisterMapper(IButtonMapper *mapper);
 

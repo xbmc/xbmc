@@ -108,12 +108,12 @@ bool CTouchTranslator::TranslateTouchAction(int window, int touchAction, int tou
 
   if (!TranslateAction(window, touchAction, touchPointers, actionId, actionString))
   {
-    int fallbackWindow = CWindowTranslator::GetFallbackWindow(window);
-    if (fallbackWindow > -1)
-      TranslateAction(fallbackWindow, touchAction, touchPointers, actionId, actionString);
-
-    if (actionId == ACTION_NONE)
-      TranslateAction(-1, touchAction, touchPointers, actionId, actionString);
+    // if it's invalid, try to get it from fallback windows or the global map (window == -1)
+    while (actionId == ACTION_NONE && window > -1)
+    {
+      window = CWindowTranslator::GetFallbackWindow(window);
+      TranslateAction(window, touchAction, touchPointers, actionId, actionString);
+    }
   }
 
   action = actionId;

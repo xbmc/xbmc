@@ -1831,29 +1831,6 @@ namespace PVR
     return m_channelNavigator;
   }
 
-  bool CPVRGUIActions::OnAction(const CAction &action)
-  {
-    // If the button that caused this action matches (global) action "Select" (OK)...
-    if (action.GetID() == ACTION_SELECT_ITEM ||
-        CServiceBroker::GetInputManager().GetGlobalAction(action.GetButtonCode()).GetID() == ACTION_SELECT_ITEM)
-    {
-      if (m_settings.GetBoolValue(CSettings::SETTING_PVRPLAYBACK_CONFIRMCHANNELSWITCH) &&
-          GetChannelNavigator().IsPreview())
-      {
-        // ... and if "confirm channel switch" setting is active and a channel
-        // preview is currently shown, switch to the currently previewed channel.
-        GetChannelNavigator().SwitchToCurrentChannel();
-        return true;
-      }
-      else if (GetChannelNumberInputHandler().CheckInputAndExecuteAction())
-      {
-        // ... and action was processed by direct channel number input, we're done.
-          return true;
-      }
-    }
-    return false;
-  }
-
   void CPVRGUIActions::OnPlaybackStarted(const CFileItemPtr &item)
   {
     if (item->HasPVRChannelInfoTag())
