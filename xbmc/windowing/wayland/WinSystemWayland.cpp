@@ -242,6 +242,7 @@ bool CWinSystemWayland::DestroyWindowSystem()
   m_cursorTheme = wayland::cursor_theme_t{};
   m_outputsInPreparation.clear();
   m_outputs.clear();
+  m_frameCallback = wayland::callback_t{};
 
   if (m_registry)
   {
@@ -339,6 +340,10 @@ bool CWinSystemWayland::CreateNewWindow(const std::string& name,
 
   // Apply window decorations if necessary
   m_windowDecorator->SetState(m_configuredSize, m_scale, m_shellSurfaceState);
+
+  // Set initial opaque region and window geometry
+  ApplyOpaqueRegion();
+  ApplyWindowGeometry();
 
   // Update resolution with real size as it could have changed due to configure()
   UpdateDesktopResolution(res, 0, m_bufferSize.Width(), m_bufferSize.Height(), res.fRefreshRate);
@@ -644,23 +649,33 @@ void CWinSystemWayland::ApplySizeUpdate(SizeUpdateInformation update)
   }
   if (update.surfaceSizeChanged)
   {
-    // Mark everything opaque so the compositor can render it faster
-    // Do it here so size always matches the configured egl surface
-    CLog::LogF(LOGDEBUG, "Setting opaque region size %dx%d", m_surfaceSize.Width(), m_surfaceSize.Height());
-    wayland::region_t opaqueRegion{m_compositor.create_region()};
-    opaqueRegion.add(0, 0, m_surfaceSize.Width(), m_surfaceSize.Height());
-    m_surface.set_opaque_region(opaqueRegion);
+    // Update opaque region here so size always matches the configured egl surface
+    ApplyOpaqueRegion();
   }
   if (update.configuredSizeChanged)
   {
     // Update window decoration state
     m_windowDecorator->SetState(m_configuredSize, m_scale, m_shellSurfaceState);
-    m_shellSurface->SetWindowGeometry(m_windowDecorator->GetWindowGeometry());
+    ApplyWindowGeometry();
   }
   // Set always, because of initialization order GL context has to keep track of
   // whether the size changed. If we skip based on update.bufferSizeChanged here,
   // GL context will never get its initial size set.
   SetContextSize(m_bufferSize);
+}
+
+void CWinSystemWayland::ApplyOpaqueRegion()
+{
+  // Mark everything opaque so the compositor can render it faster
+  CLog::LogF(LOGDEBUG, "Setting opaque region size %dx%d", m_surfaceSize.Width(), m_surfaceSize.Height());
+  wayland::region_t opaqueRegion{m_compositor.create_region()};
+  opaqueRegion.add(0, 0, m_surfaceSize.Width(), m_surfaceSize.Height());
+  m_surface.set_opaque_region(opaqueRegion);
+}
+
+void CWinSystemWayland::ApplyWindowGeometry()
+{
+  m_shellSurface->SetWindowGeometry(m_windowDecorator->GetWindowGeometry());
 }
 
 void CWinSystemWayland::ProcessMessages()
@@ -1342,6 +1357,43 @@ void CWinSystemWayland::PrepareFramePresentation()
       m_surfaceSubmissions.erase(iter);
     };
   }
+
+  // Now wait for the frame callback that tells us that it is a good time to start drawing
+  //
+  // To sum up, we:
+  // 1. wait until a frame() drawing hint from the compositor arrives,
+  // 2. request a new frame() hint for the next presentation
+  // 2. then commit the backbuffer to the surface and immediately
+  //    return, i.e. drawing can start again
+  // This means that rendering is optimized for maximum time available for
+  // our repaint and reliable timing rather than latency. With weston, latency
+  // will usually be on the order of two frames plus a few milliseconds.
+  // The frame timings become irregular though when nothing is rendered because
+  // kodi then sleeps for a fixed time without swapping buffers. This makes us
+  // immediately attach the next buffer because the frame callback has already arrived when
+  // this function is called and step 1. above is skipped. As we render with full
+  // FPS during video playback anyway and the timing is otherwise not relevant,
+  // this should not be a problem.
+  if (m_frameCallback)
+  {
+    // If the window is e.g. minimized, chances are that we will *never* get frame
+    // callbacks from the compositor for optimization reasons.
+    // Still, the app should remain functional, which means that we can't
+    // just block forever here - if the render thread is blocked, Kodi will not
+    // function normally. It would also be impossible to close the application
+    // while it is minimized (since the wait needs to be interrupted for that).
+    // -> Use Wait with timeout here so we can maintain a reasonable frame rate
+    //    even when the window is not visible and we do not get any frame callbacks.
+    m_frameCallbackEvent.WaitMSec(50);
+    m_frameCallbackEvent.Reset();
+  }
+
+  // Get frame callback event for checking in the next call to this function
+  m_frameCallback = m_surface.frame();
+  m_frameCallback.on_done() = [this](std::uint32_t)
+  {
+    m_frameCallbackEvent.Set();
+  };
 }
 
 void CWinSystemWayland::FinishFramePresentation()

@@ -37,6 +37,7 @@
 #include "Signals.h"
 #include "ShellSurface.h"
 #include "threads/CriticalSection.h"
+#include "threads/Event.h"
 #include "utils/ActorProtocol.h"
 #include "WindowDecorationHandler.h"
 #include "windowing/WinSystem.h"
@@ -174,6 +175,8 @@ private:
   void OnOutputDone(std::uint32_t name);
   void UpdateBufferScale();
   void ApplyBufferScale();
+  void ApplyOpaqueRegion();
+  void ApplyWindowGeometry();
   void UpdateTouchDpi();
   void ApplyShellSurfaceState(IShellSurface::StateBitset state);
 
@@ -198,6 +201,11 @@ private:
   wayland::presentation_t m_presentation;
 
   std::unique_ptr<IShellSurface> m_shellSurface;
+
+  // Frame callback handling
+  // -----------------------
+  wayland::callback_t m_frameCallback;
+  CEvent m_frameCallbackEvent;
 
   // Seat handling
   // -------------

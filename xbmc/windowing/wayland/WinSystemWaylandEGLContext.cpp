@@ -68,7 +68,16 @@ bool CWinSystemWaylandEGLContext::CreateNewWindow(const std::string& name,
     return false;
   }
 
-  return m_eglContext.MakeCurrent();
+  if (!m_eglContext.MakeCurrent())
+  {
+    return false;
+  }
+
+  // Never enable the vsync of the EGL implementation, we handle that ourselves
+  // in WinSystemWayland
+  m_eglContext.SetVSync(false);
+
+  return true;
 }
 
 bool CWinSystemWaylandEGLContext::DestroyWindow()
@@ -97,27 +106,6 @@ void CWinSystemWaylandEGLContext::SetContextSize(CSizeInt size)
 
 void CWinSystemWaylandEGLContext::PresentFrame(bool rendered)
 {
-  // We let the egl driver handle the specifics of frame synchronization/throttling.
-  // Currently, in eglSwapBuffers() mesa
-  // 1. waits until a frame() drawing hint from the compositor arrives,
-  // 2. then commits the backbuffer to the surface, and
-  // 3. finally requests a new frame() hint for the next presentation and immediately
-  //    returns, i.e. drawing can start again
-  // This means that rendering is optimized for maximum time available for
-  // our repaint and reliable timing rather than latency. With weston, latency
-  // will usually be on the order of two frames plus a few milliseconds.
-  //
-  // If it turns out that other egl drivers do things differently and we don't like
-  // it, it's always a possibility to set eglSwapInterval(0) and handle frame
-  // callbacks here ourselves.
-  //
-  // The frame timings become irregular though when nothing is rendered because
-  // kodi then sleeps for a fixed time without swapping buffers. This makes mesa
-  // immediately attach the next buffer because the frame callback has already arrived when
-  // eglSwapBuffers() is called and step 1. above is skipped. As we render with full
-  // FPS during video playback anyway and the timing is otherwise not relevant,
-  // this should not be a problem.
-
   PrepareFramePresentation();
 
   if (rendered)

@@ -88,7 +88,7 @@ void CWinSystemWaylandEGLContextGLES::SetContextSize(CSizeInt size)
 
 void CWinSystemWaylandEGLContextGLES::SetVSyncImpl(bool enable)
 {
-  m_eglContext.SetVSync(enable);
+  // Unsupported
 }
 
 void CWinSystemWaylandEGLContextGLES::PresentRenderImpl(bool rendered)
