@@ -14,7 +14,7 @@ macro(add_cpack_workaround target version ext)
     set(PACKAGE_DIR "${CMAKE_INSTALL_PREFIX}/zips")
   endif()
 
-  add_custom_command(TARGET addon-package PRE_BUILD
+  add_custom_command(TARGET addon-package POST_BUILD
                      COMMAND ${CMAKE_COMMAND} -E make_directory ${PACKAGE_DIR}
                      COMMAND ${CMAKE_COMMAND} -E copy ${CPACK_PACKAGE_DIRECTORY}/addon-${target}-${version}.${ext} ${PACKAGE_DIR}/${target}-${version}.${ext})
 endmacro()
@@ -194,7 +194,7 @@ macro (build_addon target prefix libs)
     endif()
 
     string(CONFIGURE "${addon_file}" addon_file_conf @ONLY)
-    file(GENERATE OUTPUT ${PROJECT_SOURCE_DIR}/${target}/addon.xml CONTENT "${addon_file_conf}")
+    file(GENERATE OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${target}/addon.xml CONTENT "${addon_file_conf}")
     if(${APP_NAME_UC}_BUILD_DIR)
       file(GENERATE OUTPUT ${${APP_NAME_UC}_BUILD_DIR}/addons/${target}/addon.xml CONTENT "${addon_file_conf}")
     endif()
@@ -207,7 +207,7 @@ macro (build_addon target prefix libs)
 
     file(READ ${PROJECT_SOURCE_DIR}/${target}/resources/settings.xml.in settings_file)
     string(CONFIGURE "${settings_file}" settings_file_conf @ONLY)
-    file(GENERATE OUTPUT ${PROJECT_SOURCE_DIR}/${target}/resources/settings.xml CONTENT "${settings_file_conf}")
+    file(GENERATE OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${target}/resources/settings.xml CONTENT "${settings_file_conf}")
     if(${APP_NAME_UC}_BUILD_DIR)
       file(GENERATE OUTPUT ${${APP_NAME_UC}_BUILD_DIR}/addons/${target}/resources/settings.xml CONTENT "${settings_file_conf}")
     endif()
@@ -230,7 +230,7 @@ macro (build_addon target prefix libs)
     set(CPACK_COMPONENTS_IGNORE_GROUPS 1)
     list(APPEND CPACK_COMPONENTS_ALL ${target}-${${prefix}_VERSION})
     # Pack files together to create an archive
-    install(DIRECTORY ${target} DESTINATION ./
+    install(DIRECTORY ${target} ${CMAKE_CURRENT_BINARY_DIR}/${target} DESTINATION ./
                                 COMPONENT ${target}-${${prefix}_VERSION}
                                 REGEX ".+\\.xml\\.in(clude)?$" EXCLUDE)
     if(WIN32)
@@ -325,7 +325,7 @@ macro (build_addon target prefix libs)
     if (${prefix}_CUSTOM_BINARY)
       install(FILES ${LIBRARY_LOCATION} DESTINATION ${CMAKE_INSTALL_LIBDIR}/addons/${target} RENAME ${LIBRARY_FILENAME})
     endif()
-    install(DIRECTORY ${target} DESTINATION ${CMAKE_INSTALL_DATADIR}/addons
+    install(DIRECTORY ${target} ${CMAKE_CURRENT_BINARY_DIR}/${target} DESTINATION ${CMAKE_INSTALL_DATADIR}/addons
                                 REGEX ".+\\.xml\\.in(clude)?$" EXCLUDE)
     if(${prefix}_CUSTOM_DATA)
       install(DIRECTORY ${${prefix}_CUSTOM_DATA} DESTINATION ${CMAKE_INSTALL_DATADIR}/addons/${target}/resources)
