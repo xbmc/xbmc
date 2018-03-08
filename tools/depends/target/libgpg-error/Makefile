@@ -28,6 +28,8 @@ $(LIBDYLIB): $(PLATFORM)
 ifeq ($(OS),android)
 ifeq ($(CPU),arm64-v8a)
 	cp lock-obj-pub.aarch64-unknown-linux-android.h $(PLATFORM)/src/syscfg/lock-obj-pub.linux-android.h
+else
+	cp $(PLATFORM)/src/syscfg/lock-obj-pub.arm-unknown-linux-androideabi.h $(PLATFORM)/src/syscfg/lock-obj-pub.linux-android.h
 endif
 endif
 	$(MAKE) -C $(PLATFORM)
