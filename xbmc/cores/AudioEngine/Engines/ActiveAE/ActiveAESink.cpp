@@ -82,6 +82,8 @@ void CActiveAESink::Dispose()
 
   delete m_packer;
   m_packer = nullptr;
+
+  CAESinkFactory::Cleanup();
 }
 
 AEDeviceType CActiveAESink::GetDeviceType(const std::string &device)

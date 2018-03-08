@@ -38,12 +38,14 @@ struct AESinkInfo
 
 typedef IAESink* (*CreateSink)(std::string &device, AEAudioFormat &desiredFormat);
 typedef void (*Enumerate)(AEDeviceInfoList &list, bool force);
+typedef void (*Cleanup)();
 
 struct AESinkRegEntry
 {
   std::string sinkName;
   CreateSink createFunc;
   Enumerate enumerateFunc;
+  Cleanup cleanupFunc;
 };
 
 class CAESinkFactory
@@ -55,6 +57,7 @@ public:
   static void ParseDevice(std::string &device, std::string &driver);
   static IAESink *Create(std::string &device, AEAudioFormat &desiredFormat);
   static void EnumerateEx(std::vector<AESinkInfo> &list, bool force);
+  static void Cleanup();
 
 protected:
   static std::map<std::string, AESinkRegEntry> m_AESinkRegEntry;
