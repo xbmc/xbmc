@@ -14,7 +14,7 @@ macro(add_cpack_workaround target version ext)
     set(PACKAGE_DIR "${CMAKE_INSTALL_PREFIX}/zips")
   endif()
 
-  add_custom_command(TARGET addon-package PRE_BUILD
+  add_custom_command(TARGET addon-package POST_BUILD
                      COMMAND ${CMAKE_COMMAND} -E make_directory ${PACKAGE_DIR}
                      COMMAND ${CMAKE_COMMAND} -E copy ${CPACK_PACKAGE_DIRECTORY}/addon-${target}-${version}.${ext} ${PACKAGE_DIR}/${target}-${version}.${ext})
 endmacro()
