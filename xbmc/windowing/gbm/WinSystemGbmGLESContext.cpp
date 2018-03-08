@@ -136,6 +136,14 @@ bool CWinSystemGbmGLESContext::SetFullScreen(bool fullScreen, RESOLUTION_INFO& r
   CWinSystemGbm::SetFullScreen(fullScreen, res, blankOtherDisplays);
   CRenderSystemGLES::ResetRenderSystem(res.iWidth, res.iHeight);
 
+  if (!m_delayDispReset)
+  {
+    CSingleLock lock(m_resourceSection);
+
+    for (std::vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); ++i)
+      (*i)->OnResetDisplay();
+  }
+
   return true;
 }
 
@@ -153,6 +161,15 @@ void CWinSystemGbmGLESContext::PresentRender(bool rendered, bool videoLayer)
   else
   {
     CWinSystemGbm::WaitVBlank();
+  }
+
+  if (m_delayDispReset && m_dispResetTimer.IsTimePast())
+  {
+    m_delayDispReset = false;
+    CSingleLock lock(m_resourceSection);
+
+    for (std::vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); ++i)
+      (*i)->OnResetDisplay();
   }
 }
 

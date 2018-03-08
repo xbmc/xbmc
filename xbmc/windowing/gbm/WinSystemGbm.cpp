@@ -19,7 +19,10 @@
  */
 
 #include "WinSystemGbm.h"
-
+#include "ServiceBroker.h"
+#include "settings/DisplaySettings.h"
+#include "settings/Settings.h"
+#include "settings/lib/Setting.h"
 #include <string.h>
 
 #include "OptionalsReg.h"
@@ -31,12 +34,15 @@
 #include "../WinEventsLinux.h"
 #include "DRMAtomic.h"
 #include "DRMLegacy.h"
+#include "messaging/ApplicationMessenger.h"
+
 
 CWinSystemGbm::CWinSystemGbm() :
   m_DRM(nullptr),
   m_GBM(new CGBMUtils),
   m_nativeDisplay(nullptr),
-  m_nativeWindow(nullptr)
+  m_nativeWindow(nullptr),
+  m_delayDispReset(false)
 {
   std::string envSink;
   if (getenv("AE_SINK"))
@@ -115,6 +121,9 @@ bool CWinSystemGbm::CreateNewWindow(const std::string& name,
                                     bool fullScreen,
                                     RESOLUTION_INFO& res)
 {
+  //Notify other subsystems that we change resolution
+  OnLostDevice();
+
   if(!m_DRM->SetMode(res))
   {
     CLog::Log(LOGERROR, "CWinSystemGbm::%s - failed to set DRM mode", __FUNCTION__);
@@ -188,6 +197,9 @@ bool CWinSystemGbm::ResizeWindow(int newWidth, int newHeight, int newLeft, int n
 
 bool CWinSystemGbm::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
 {
+  // Notify other subsystems that we will change resolution
+  OnLostDevice();
+
   if(!m_DRM->SetMode(res))
   {
     CLog::Log(LOGERROR, "CWinSystemGbm::%s - failed to set DRM mode", __FUNCTION__);
@@ -203,6 +215,13 @@ bool CWinSystemGbm::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
 
   auto result = m_DRM->SetVideoMode(res, bo);
   m_GBM->ReleaseBuffer();
+
+  int delay = CServiceBroker::GetSettings().GetInt("videoscreen.delayrefreshchange");
+  if (delay > 0)
+  {
+    m_delayDispReset = true;
+    m_dispResetTimer.Set(delay * 100);
+  }
 
   return result;
 }
@@ -245,4 +264,18 @@ void CWinSystemGbm::Unregister(IDispResource *resource)
   {
     m_resources.erase(i);
   }
+}
+
+void CWinSystemGbm::OnLostDevice()
+{
+  CLog::Log(LOGDEBUG, "%s - notify display change event", __FUNCTION__);
+
+  // make sure renderer has no invalid references
+  KODI::MESSAGING::CApplicationMessenger::GetInstance().SendMsg(TMSG_RENDERER_FLUSH);
+
+  { CSingleLock lock(m_resourceSection);
+    for (std::vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); ++i)
+      (*i)->OnLostDisplay();
+  }
+
 }
