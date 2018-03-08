@@ -116,6 +116,7 @@ void CAESinkALSA::Register()
   entry.sinkName = "ALSA";
   entry.createFunc = CAESinkALSA::Create;
   entry.enumerateFunc = CAESinkALSA::EnumerateDevicesEx;
+  entry.cleanupFunc = CAESinkALSA::Cleanup;
   AE::CAESinkFactory::RegisterSink(entry);
 }
 
@@ -1663,6 +1664,14 @@ void CAESinkALSA::sndLibErrorHandler(const char *file, int line, const char *fun
     free(errorStr);
   }
   va_end(arg);
+}
+
+void CAESinkALSA::Cleanup()
+{
+#if HAVE_LIBUDEV
+  m_deviceMonitor.Stop();
+#endif
+  m_controlMonitor.Clear();
 }
 
 #if HAVE_LIBUDEV
