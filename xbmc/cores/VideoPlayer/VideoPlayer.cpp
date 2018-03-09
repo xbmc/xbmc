@@ -710,17 +710,18 @@ bool CVideoPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options
   }
 
   m_item = file;
-  m_callback.OnPlayBackStarted(m_item);
-
   m_playerOptions = options;
   // Try to resolve the correct mime type
   m_item.SetMimeTypeForInternetFile();
 
+  m_processInfo->SetPlayTimes(0,0,0,0);
   m_bAbortRequest = false;
   m_error = false;
   m_renderManager.PreInit();
 
   Create();
+
+  m_callback.OnPlayBackStarted(m_item);
 
   return true;
 }
@@ -2534,6 +2535,8 @@ void CVideoPlayer::HandleMessages()
 
       m_item = msg.GetItem();
       m_playerOptions = msg.GetOptions();
+
+      m_processInfo->SetPlayTimes(0,0,0,0);
 
       m_outboundEvents->Submit([this]() {
         m_callback.OnPlayBackStarted(m_item);
