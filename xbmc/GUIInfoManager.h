@@ -1,11 +1,3 @@
-/*!
-\file GUIInfoManager.h
-\brief
-*/
-
-#ifndef GUIINFOMANAGER_H_
-#define GUIINFOMANAGER_H_
-
 /*
  *      Copyright (C) 2005-2013 Team XBMC
  *      http://kodi.tv
@@ -25,6 +17,7 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#pragma once
 
 #include "threads/CriticalSection.h"
 #include "guilib/IMsgTargetCallback.h"
@@ -88,8 +81,6 @@ private:
   int m_data2;
 };
 
-class CSetCurrentItemJob;
-
 /*!
  \ingroup strings
  \brief
@@ -97,8 +88,6 @@ class CSetCurrentItemJob;
 class CGUIInfoManager : public IMsgTargetCallback, public Observable,
                         public KODI::MESSAGING::IMessageTarget
 {
-friend CSetCurrentItemJob;
-
 public:
   CGUIInfoManager(void);
   ~CGUIInfoManager(void) override;
@@ -285,8 +274,6 @@ protected:
   int AddMultiInfo(const GUIInfo &info);
   int AddListItemProp(const std::string &str, int offset=0);
 
-  void SetCurrentItemJob(const CFileItemPtr item);
-
   // Conditional string parameters are stored here
   std::vector<std::string> m_stringParameters;
 
@@ -355,8 +342,4 @@ private:
  \brief
  */
 extern CGUIInfoManager g_infoManager;
-#endif
-
-
-
 
