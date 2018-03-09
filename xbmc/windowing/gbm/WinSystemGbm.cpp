@@ -270,12 +270,9 @@ void CWinSystemGbm::OnLostDevice()
 {
   CLog::Log(LOGDEBUG, "%s - notify display change event", __FUNCTION__);
 
-  // make sure renderer has no invalid references
-  KODI::MESSAGING::CApplicationMessenger::GetInstance().SendMsg(TMSG_RENDERER_FLUSH);
-
   { CSingleLock lock(m_resourceSection);
     for (std::vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); ++i)
       (*i)->OnLostDisplay();
   }
-
 }
+
