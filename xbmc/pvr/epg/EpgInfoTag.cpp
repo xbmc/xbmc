@@ -225,9 +225,12 @@ CDateTime CPVREpgInfoTag::GetCurrentPlayingTime() const
   if (CServiceBroker::GetPVRManager().GetPlayingChannel() == Channel() &&
       CServiceBroker::GetPVRManager().Clients()->IsTimeshifting())
   {
-    // timeshifting
-    return CDateTime(CServiceBroker::GetDataCacheCore().GetStartTime() +
-                     CServiceBroker::GetDataCacheCore().GetPlayTime() / 1000);
+    // timeshifting; start time valid?
+    time_t startTime = CServiceBroker::GetDataCacheCore().GetStartTime();
+    if (startTime > 0)
+    {
+      return CDateTime(startTime + CServiceBroker::GetDataCacheCore().GetPlayTime() / 1000);
+    }
   }
 
   // not timeshifting
