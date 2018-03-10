@@ -204,10 +204,13 @@ CInfoScanner::INFO_TYPE CVideoTagLoaderFFmpeg::LoadMKV(CVideoInfoTag& tag,
   return hastag ? CInfoScanner::TITLE_NFO : CInfoScanner::NO_NFO;
 }
 
+// https://wiki.multimedia.cx/index.php/FFmpeg_Metadata
 CInfoScanner::INFO_TYPE CVideoTagLoaderFFmpeg::LoadMP4(CVideoInfoTag& tag,
                                                        std::vector<EmbeddedArt>* art)
 {
+  bool hasfull = false;
   AVDictionaryEntry* avtag = nullptr;
+  // If either description or synopsis is found, assume user wants to use the tag info only
   while ((avtag = av_dict_get(m_fctx->metadata, "", avtag, AV_DICT_IGNORE_SUFFIX)))
   {
     if (strcmp(avtag->key, "title") == 0)
@@ -219,9 +222,15 @@ CInfoScanner::INFO_TYPE CVideoTagLoaderFFmpeg::LoadMP4(CVideoInfoTag& tag,
     else if (strcmp(avtag->key,"date") == 0)
       tag.SetYear(atoi(avtag->value));
     else if (strcmp(avtag->key, "description") == 0)
+    {
       tag.SetPlotOutline(avtag->value);
+      hasfull = true;
+    }
     else if (strcmp(avtag->key, "synopsis") == 0)
+    {
       tag.SetPlot(avtag->value);
+      hasfull = true;
+    }
     else if (strcmp(avtag->key, "track") == 0)
       tag.m_iTrack = std::stoi(avtag->value);
     else if (strcmp(avtag->key, "album") == 0)
@@ -244,5 +253,5 @@ CInfoScanner::INFO_TYPE CVideoTagLoaderFFmpeg::LoadMP4(CVideoInfoTag& tag,
       tag.m_coverArt.emplace_back(EmbeddedArtInfo(size, "image/png", type));
   }
 
-  return CInfoScanner::TITLE_NFO;
+  return hasfull ? CInfoScanner::FULL_NFO : CInfoScanner::TITLE_NFO;
 }
