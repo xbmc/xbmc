@@ -98,3 +98,12 @@ void CAESinkFactory::EnumerateEx(std::vector<AESinkInfo> &list, bool force)
       list.push_back(info);
   }
 }
+
+void CAESinkFactory::Cleanup()
+{
+  for (auto reg : m_AESinkRegEntry)
+  {
+    if (reg.second.cleanupFunc)
+      reg.second.cleanupFunc();
+  }
+}
