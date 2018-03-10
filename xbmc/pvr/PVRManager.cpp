@@ -937,11 +937,6 @@ bool CPVRManager::CreateChannelEpgs(void)
   return m_bEpgsCreated;
 }
 
-std::string CPVRManager::GetPlayingTVGroupName()
-{
-  return IsStarted() && m_guiInfo ? m_guiInfo->GetPlayingTVGroup() : "";
-}
-
 void CPVRManager::UpdateLastWatched(const CPVRChannelPtr &channel)
 {
   time_t tNow;

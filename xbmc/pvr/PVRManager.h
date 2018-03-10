@@ -459,12 +459,6 @@ namespace PVR
     bool CreateChannelEpgs(void);
 
     /*!
-    * @brief get the name of the channel group of the current playing channel
-    * @return name of channel if tv channel is playing
-    */
-    std::string GetPlayingTVGroupName();
-
-    /*!
      * @brief Signal a connection change of a client
      */
     void ConnectionStateChange(CPVRClient *client, std::string connectString, PVR_CONNECTION_STATE state, std::string message);

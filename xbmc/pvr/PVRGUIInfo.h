@@ -81,12 +81,6 @@ namespace PVR
      */
     CPVREpgInfoTagPtr GetPlayingTag() const;
 
-    /*!
-     * @brief Get playing TV group.
-     * @return The currently playing TV group or NULL if no TV group is playing.
-     */
-    std::string GetPlayingTVGroup();
-
   private:
     class TimerInfo
     {
@@ -253,6 +247,7 @@ namespace PVR
     bool                            m_bCanRecordPlayingChannel;
     bool                            m_bIsRecordingPlayingChannel;
     std::string                     m_strPlayingTVGroup;
+    std::string                     m_strPlayingRadioGroup;
 
     //@}
 

@@ -228,6 +228,7 @@ void CPVRGUIInfo::UpdateMisc(void)
   bool bCanRecordPlayingChannel        = bStarted && CServiceBroker::GetPVRManager().CanRecordOnPlayingChannel();
   bool bIsRecordingPlayingChannel      = bStarted && CServiceBroker::GetPVRManager().IsRecordingOnPlayingChannel();
   std::string strPlayingTVGroup        = (bStarted && bIsPlayingTV) ? CServiceBroker::GetPVRManager().GetPlayingGroup(false)->GroupName() : "";
+  std::string strPlayingRadioGroup     = (bStarted && bIsPlayingRadio) ? CServiceBroker::GetPVRManager().GetPlayingGroup(true)->GroupName() : "";
 
   CSingleLock lock(m_critSection);
   m_strPlayingClientName      = strPlayingClientName;
@@ -241,6 +242,7 @@ void CPVRGUIInfo::UpdateMisc(void)
   m_bHasTVChannels            = bHasTVChannels;
   m_bHasRadioChannels         = bHasRadioChannels;
   m_strPlayingTVGroup         = strPlayingTVGroup;
+  m_strPlayingRadioGroup      = strPlayingRadioGroup;
   m_bCanRecordPlayingChannel  = bCanRecordPlayingChannel;
   m_bIsRecordingPlayingChannel = bIsRecordingPlayingChannel;
 }
@@ -638,12 +640,8 @@ bool CPVRGUIInfo::GetVideoLabel(const CFileItem *item, int iLabel, std::string &
       }
       case VIDEOPLAYER_CHANNEL_GROUP:
       {
-        if (!recording->IsRadio())
-        {
-          strValue = CServiceBroker::GetPVRManager().GetPlayingTVGroupName();
-          return true;
-        }
-        break;
+        strValue = recording->IsRadio() ? m_strPlayingRadioGroup : m_strPlayingTVGroup;
+        return true;
       }
     }
     return false;
@@ -815,12 +813,8 @@ bool CPVRGUIInfo::GetVideoLabel(const CFileItem *item, int iLabel, std::string &
       }
       case VIDEOPLAYER_CHANNEL_GROUP:
       {
-        if (!channel->IsRadio())
-        {
-          strValue = CServiceBroker::GetPVRManager().GetPlayingTVGroupName();
-          return true;
-        }
-        return false;
+        strValue = channel->IsRadio() ? m_strPlayingRadioGroup : m_strPlayingTVGroup;
+        return true;
       }
     }
   }
@@ -1226,11 +1220,6 @@ void CPVRGUIInfo::UpdatePlayingTag(void)
       m_iDuration = recording->GetDuration() * 1000;
     }
   }
-}
-
-std::string CPVRGUIInfo::GetPlayingTVGroup()
-{
-  return m_strPlayingTVGroup;
 }
 
 CPVRGUIInfo::TimerInfo::TimerInfo(void)
