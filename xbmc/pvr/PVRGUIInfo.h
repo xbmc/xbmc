@@ -56,7 +56,7 @@ namespace PVR
      * @param strValue Will be filled with the requested label value.
      * @return True if the requested label value was set, false otherwise.
      */
-    bool GetVideoLabel(const CFileItem &item, int iLabel, std::string &strValue) const;
+    bool GetVideoLabel(const CFileItem *item, int iLabel, std::string &strValue) const;
 
     /*!
      * @brief Get the total duration of the currently playing LiveTV item.

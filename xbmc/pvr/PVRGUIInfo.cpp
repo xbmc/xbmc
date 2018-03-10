@@ -33,6 +33,7 @@
 #include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
 
+#include "pvr/PVRItem.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannel.h"
@@ -593,59 +594,9 @@ int CPVRGUIInfo::TranslateIntInfo(const CFileItem &item, DWORD dwInfo) const
   return iReturn;
 }
 
-#define GET_CURRENT_VIDEO_LABEL_WITH_CONDITION(value_getter_function, condition)  \
-  if (channel)                        \
-    epgTag = channel->GetEPGNow();    \
-                                      \
-  if (epgTag && condition)            \
-  {                                   \
-    strValue = value_getter_function; \
-    return true;                      \
-  }                                   \
-  return false;                       \
-
-#define GET_CURRENT_VIDEO_LABEL(value_getter_function)  \
-  GET_CURRENT_VIDEO_LABEL_WITH_CONDITION(value_getter_function, true)
-
-#define GET_CURRENT_VIDEO_LABEL_OR_DEFAULT(value_getter_function, default_value_getter_function) \
-  if (channel)                                \
-    epgTag = channel->GetEPGNow();            \
-                                              \
-  if (epgTag)                                 \
-    strValue = value_getter_function;         \
-  else                                        \
-    strValue = default_value_getter_function; \
-                                              \
-  return true;                                \
-
-#define GET_NEXT_VIDEO_LABEL_WITH_CONDITION(value_getter_function, condition)  \
-  if (channel)                        \
-    epgTag = channel->GetEPGNext();   \
-                                      \
-  if (epgTag && condition)            \
-  {                                   \
-    strValue = value_getter_function; \
-    return true;                      \
-  }                                   \
-  return false;                       \
-
-#define GET_NEXT_VIDEO_LABEL(value_getter_function)  \
-  GET_NEXT_VIDEO_LABEL_WITH_CONDITION(value_getter_function, true)
-
-#define GET_NEXT_VIDEO_LABEL_OR_DEFAULT(value_getter_function, default_value_getter_function) \
-  if (channel)                                \
-    epgTag = channel->GetEPGNext();           \
-                                              \
-  if (epgTag)                                 \
-    strValue = value_getter_function;         \
-  else                                        \
-    strValue = default_value_getter_function; \
-                                              \
-  return true;                                \
-
-bool CPVRGUIInfo::GetVideoLabel(const CFileItem &item, int iLabel, std::string &strValue) const
+bool CPVRGUIInfo::GetVideoLabel(const CFileItem *item, int iLabel, std::string &strValue) const
 {
-  const CPVRRecordingPtr recording(item.GetPVRRecordingInfoTag());
+  const CPVRRecordingPtr recording(item->GetPVRRecordingInfoTag());
   if (recording)
   {
     // Note: CPVRRecoding is derived from CVideoInfoTag. All base class properties will be handled
@@ -698,165 +649,195 @@ bool CPVRGUIInfo::GetVideoLabel(const CFileItem &item, int iLabel, std::string &
     return false;
   }
 
-  CPVRChannelPtr channel(item.GetPVRChannelInfoTag());
-  CPVREpgInfoTagPtr epgTag(item.GetEPGInfoTag());
-
-  if (channel || epgTag)
+  CPVREpgInfoTagPtr epgTag;
+  CPVRChannelPtr channel;
+  switch (iLabel)
   {
+    case VIDEOPLAYER_NEXT_TITLE:
+    case VIDEOPLAYER_NEXT_GENRE:
+    case VIDEOPLAYER_NEXT_PLOT:
+    case VIDEOPLAYER_NEXT_PLOT_OUTLINE:
+    case VIDEOPLAYER_NEXT_STARTTIME:
+    case VIDEOPLAYER_NEXT_ENDTIME:
+    case VIDEOPLAYER_NEXT_DURATION:
+    {
+      CPVRItem pvrItem(item);
+      epgTag = pvrItem.GetNextEpgInfoTag();
+      channel = pvrItem.GetChannel();
+      break;
+    }
+    default:
+    {
+      CPVRItem pvrItem(item);
+      epgTag = pvrItem.GetEpgInfoTag();
+      channel = pvrItem.GetChannel();
+      break;
+    }
+  }
+
+  if (epgTag)
+  {
+    // 'Now playing' / 'next playing' EPG infos
     switch (iLabel)
     {
-      // 'Now playing' infos
       case VIDEOPLAYER_TITLE:
+      case VIDEOPLAYER_NEXT_TITLE:
       {
-        GET_CURRENT_VIDEO_LABEL_OR_DEFAULT(epgTag->Title(),
-                                           CServiceBroker::GetSettings().GetBool(CSettings::SETTING_EPG_HIDENOINFOAVAILABLE)
-                                           ? ""
-                                           : g_localizeStrings.Get(19055)); // no information available
+        strValue = epgTag->Title();
+        return true;
       }
       case VIDEOPLAYER_GENRE:
+      case VIDEOPLAYER_NEXT_GENRE:
       {
-        GET_CURRENT_VIDEO_LABEL(epgTag->GetGenresLabel());
+        strValue = epgTag->GetGenresLabel();
+        return true;
       }
       case VIDEOPLAYER_PLOT:
+      case VIDEOPLAYER_NEXT_PLOT:
       {
-        GET_CURRENT_VIDEO_LABEL(epgTag->Plot());
+        strValue = epgTag->Plot();
+        return true;
       }
       case VIDEOPLAYER_PLOT_OUTLINE:
+      case VIDEOPLAYER_NEXT_PLOT_OUTLINE:
       {
-        GET_CURRENT_VIDEO_LABEL(epgTag->PlotOutline());
+        strValue = epgTag->PlotOutline();
+        return true;
       }
       case VIDEOPLAYER_STARTTIME:
+      case VIDEOPLAYER_NEXT_STARTTIME:
       {
-        GET_CURRENT_VIDEO_LABEL_OR_DEFAULT(epgTag->StartAsLocalTime().GetAsLocalizedTime("", false),
-                                           CDateTime::GetCurrentDateTime().GetAsLocalizedTime("", false)); // @todo: really current time?
+        strValue = epgTag->StartAsLocalTime().GetAsLocalizedTime("", false);
+        return true;
       }
       case VIDEOPLAYER_ENDTIME:
+      case VIDEOPLAYER_NEXT_ENDTIME:
       {
-        GET_CURRENT_VIDEO_LABEL_OR_DEFAULT(epgTag->EndAsLocalTime().GetAsLocalizedTime("", false),
-                                           CDateTime::GetCurrentDateTime().GetAsLocalizedTime("", false));  // @todo: really current time?
+        strValue = epgTag->EndAsLocalTime().GetAsLocalizedTime("", false);
+        return true;
+      }
+      // note: for some reason, there is no VIDEOPLAYER_DURATION
+      case VIDEOPLAYER_NEXT_DURATION:
+      {
+        if (epgTag->GetDuration() > 0)
+        {
+          strValue = StringUtils::SecondsToTimeString(epgTag->GetDuration());
+          return true;
+        }
+        return false;
       }
       case VIDEOPLAYER_IMDBNUMBER:
       {
-        GET_CURRENT_VIDEO_LABEL(epgTag->IMDBNumber());
+        strValue = epgTag->IMDBNumber();
+        return true;
       }
       case VIDEOPLAYER_ORIGINALTITLE:
       {
-        GET_CURRENT_VIDEO_LABEL(epgTag->OriginalTitle());
+        strValue = epgTag->OriginalTitle();
+        return true;
       }
       case VIDEOPLAYER_YEAR:
       {
-        GET_CURRENT_VIDEO_LABEL_WITH_CONDITION(StringUtils::Format("%i", epgTag->Year()), epgTag->Year() > 0);
+        if (epgTag->Year() > 0)
+        {
+          strValue = StringUtils::Format("%i", epgTag->Year());
+          return true;
+        }
+        return false;
       }
       case VIDEOPLAYER_EPISODE:
       {
-        if (channel)
-          epgTag = channel->GetEPGNow();
-
-        if (epgTag && epgTag->EpisodeNumber() > 0)
+        if (epgTag->EpisodeNumber() > 0)
         {
           if (epgTag->SeriesNumber() == 0) // prefix episode with 'S'
             strValue = StringUtils::Format("S%i", epgTag->EpisodeNumber());
           else
             strValue = StringUtils::Format("%i", epgTag->EpisodeNumber());
-
           return true;
         }
-        break;
+        return false;
       }
       case VIDEOPLAYER_SEASON:
       {
-        GET_CURRENT_VIDEO_LABEL_WITH_CONDITION(StringUtils::Format("%i", epgTag->SeriesNumber()), epgTag->SeriesNumber() > 0);
+        if (epgTag->SeriesNumber() > 0)
+        {
+          strValue = StringUtils::Format("%i", epgTag->SeriesNumber());
+          return true;
+        }
+        return false;
       }
       case VIDEOPLAYER_EPISODENAME:
       {
-        GET_CURRENT_VIDEO_LABEL(epgTag->EpisodeName());
+        strValue = epgTag->EpisodeName();
+        return true;
       }
       case VIDEOPLAYER_CAST:
       {
-        GET_CURRENT_VIDEO_LABEL(epgTag->GetCastLabel());
+        strValue = epgTag->GetCastLabel();
+        return true;
       }
       case VIDEOPLAYER_DIRECTOR:
       {
-        GET_CURRENT_VIDEO_LABEL(epgTag->GetDirectorsLabel());
+        strValue = epgTag->GetDirectorsLabel();
+        return true;
       }
       case VIDEOPLAYER_WRITER:
       {
-        GET_CURRENT_VIDEO_LABEL(epgTag->GetWritersLabel());
+        strValue = epgTag->GetWritersLabel();
+        return true;
       }
       case VIDEOPLAYER_PARENTAL_RATING:
       {
-        GET_CURRENT_VIDEO_LABEL_WITH_CONDITION(StringUtils::Format("%i", epgTag->ParentalRating()), epgTag->ParentalRating() > 0);
-      }
-
-      // 'Next playing' infos
-      case VIDEOPLAYER_NEXT_TITLE:
-      {
-        GET_NEXT_VIDEO_LABEL_OR_DEFAULT(epgTag->Title(),
-                                        CServiceBroker::GetSettings().GetBool(CSettings::SETTING_EPG_HIDENOINFOAVAILABLE)
-                                        ? ""
-                                        : g_localizeStrings.Get(19055)); // no information available
-      }
-      case VIDEOPLAYER_NEXT_GENRE:
-      {
-        GET_NEXT_VIDEO_LABEL(epgTag->GetGenresLabel());
-      }
-      case VIDEOPLAYER_NEXT_PLOT:
-      {
-        GET_NEXT_VIDEO_LABEL(epgTag->Plot());
-      }
-      case VIDEOPLAYER_NEXT_PLOT_OUTLINE:
-      {
-        GET_NEXT_VIDEO_LABEL(epgTag->PlotOutline());
-      }
-      case VIDEOPLAYER_NEXT_STARTTIME:
-      {
-        GET_NEXT_VIDEO_LABEL(epgTag->StartAsLocalTime().GetAsLocalizedTime("", false));
-      }
-      case VIDEOPLAYER_NEXT_ENDTIME:
-      {
-        GET_NEXT_VIDEO_LABEL(epgTag->EndAsLocalTime().GetAsLocalizedTime("", false));
-      }
-      case VIDEOPLAYER_NEXT_DURATION:
-      {
-        GET_NEXT_VIDEO_LABEL_WITH_CONDITION(StringUtils::SecondsToTimeString(epgTag->GetDuration()), epgTag->GetDuration() > 0);
-      }
-
-      // General channel infos
-      case VIDEOPLAYER_CHANNEL_NAME:
-      {
-        if (!channel && epgTag)
-          channel = epgTag->Channel();
-
-        if (channel)
+        if (epgTag->ParentalRating() > 0)
         {
-          strValue = channel->ChannelName();
+          strValue = StringUtils::Format("%i", epgTag->ParentalRating());
           return true;
         }
-        break;
+        return false;
+      }
+    }
+  }
+
+  if (channel)
+  {
+    // General channel infos
+    switch (iLabel)
+    {
+      case VIDEOPLAYER_CHANNEL_NAME:
+      {
+        strValue = channel->ChannelName();
+        return true;
       }
       case VIDEOPLAYER_CHANNEL_NUMBER:
       {
-        if (!channel && epgTag)
-          channel = epgTag->Channel();
-
-        if (channel)
-        {
-          strValue = channel->ChannelNumber().FormattedChannelNumber();
-          return true;
-        }
-        break;
+        strValue = channel->ChannelNumber().FormattedChannelNumber();
+        return true;
       }
       case VIDEOPLAYER_CHANNEL_GROUP:
       {
-        if (!channel && epgTag)
-          channel = epgTag->Channel();
-        
-        if (channel && !channel->IsRadio())
+        if (!channel->IsRadio())
         {
           strValue = CServiceBroker::GetPVRManager().GetPlayingTVGroupName();
           return true;
         }
-        break;
+        return false;
+      }
+    }
+  }
+
+  if (!epgTag)
+  {
+    // EPG fallback infos
+    switch (iLabel)
+    {
+      case VIDEOPLAYER_TITLE:
+      case VIDEOPLAYER_NEXT_TITLE:
+      {
+        if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_EPG_HIDENOINFOAVAILABLE))
+          strValue.clear();
+        else
+          strValue = g_localizeStrings.Get(19055); // no information available
+        return true;
       }
     }
   }

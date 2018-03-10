@@ -8794,7 +8794,7 @@ std::string CGUIInfoManager::GetVideoLabel(int item)
   if (m_currentFile->IsPVR())
   {
     std::string strValue;
-    if (CServiceBroker::GetPVRManager().GetVideoLabel(*m_currentFile, item, strValue))
+    if (CServiceBroker::GetPVRManager().GetVideoLabel(m_currentFile, item, strValue))
       return strValue;
   }
 

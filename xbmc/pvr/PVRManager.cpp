@@ -824,7 +824,7 @@ int CPVRManager::TranslateIntInfo(const CFileItem &item, DWORD dwInfo) const
   return IsStarted() && m_guiInfo ? m_guiInfo->TranslateIntInfo(item, dwInfo) : 0;
 }
 
-bool CPVRManager::GetVideoLabel(const CFileItem &item, int iLabel, std::string &strValue) const
+bool CPVRManager::GetVideoLabel(const CFileItem *item, int iLabel, std::string &strValue) const
 {
   return IsStarted() && m_guiInfo ? m_guiInfo->GetVideoLabel(item, iLabel, strValue) : false;
 }
