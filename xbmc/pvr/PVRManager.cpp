@@ -804,9 +804,9 @@ int CPVRManager::GetTotalTime(void) const
   return IsStarted() && m_guiInfo ? m_guiInfo->GetDuration() : 0;
 }
 
-int CPVRManager::GetStartTime(void) const
+int CPVRManager::GetElapsedTime(void) const
 {
-  return IsStarted() && m_guiInfo ? m_guiInfo->GetPlayingTime() : 0;
+  return IsStarted() && m_guiInfo ? m_guiInfo->GetElapsedTime() : 0;
 }
 
 bool CPVRManager::TranslateBoolInfo(DWORD dwInfo) const

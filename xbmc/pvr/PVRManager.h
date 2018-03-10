@@ -395,10 +395,11 @@ namespace PVR
     int GetTotalTime(void) const;
 
     /*!
-     * @brief Get the current position in milliseconds since the start of a LiveTV item.
-     * @return The position in milliseconds or NULL if no channel is playing.
+     * @brief Get the elapsed time since the start of the currently playing epg event or if
+     *        no epg is available since the start of the playback of a LiveTV item.
+     * @return The time in milliseconds or 0 if no channel is playing.
      */
-    int GetStartTime(void) const;
+    int GetElapsedTime(void) const;
 
     /*!
      * @brief Check whether names are still correct after the language settings changed.

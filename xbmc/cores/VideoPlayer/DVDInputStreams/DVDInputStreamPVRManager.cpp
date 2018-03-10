@@ -205,7 +205,7 @@ int CDVDInputStreamPVRManager::GetTotalTime()
 int CDVDInputStreamPVRManager::GetTime()
 {
   if (!m_isRecording)
-    return CServiceBroker::GetPVRManager().GetStartTime();
+    return CServiceBroker::GetPVRManager().GetElapsedTime();
   return 0;
 }
 

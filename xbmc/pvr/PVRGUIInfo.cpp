@@ -878,18 +878,18 @@ void CPVRGUIInfo::CharInfoTimeshiftOffset(std::string &strValue) const
 
 void CPVRGUIInfo::CharInfoEpgEventElapsedTime(std::string &strValue) const
 {
-  strValue = StringUtils::SecondsToTimeString(GetPlayingTime() / 1000, TIME_FORMAT_GUESS).c_str();
+  strValue = StringUtils::SecondsToTimeString(GetElapsedTime() / 1000, TIME_FORMAT_GUESS).c_str();
 }
 
 void CPVRGUIInfo::CharInfoEpgEventRemainingTime(std::string &strValue) const
 {
-  strValue = StringUtils::SecondsToTimeString((m_iDuration - GetPlayingTime()) / 1000, TIME_FORMAT_GUESS).c_str();
+  strValue = StringUtils::SecondsToTimeString((m_iDuration - GetElapsedTime()) / 1000, TIME_FORMAT_GUESS).c_str();
 }
 
 void CPVRGUIInfo::CharInfoEpgEventFinishTime(std::string &strValue) const
 {
   CDateTime finishTime = CDateTime::GetCurrentDateTime();
-  finishTime += CDateTimeSpan(0, 0, 0, (m_iDuration - GetPlayingTime()) / 1000);
+  finishTime += CDateTimeSpan(0, 0, 0, (m_iDuration - GetElapsedTime()) / 1000);
   strValue = finishTime.GetAsLocalizedTime("", false);
 }
 
@@ -1149,7 +1149,7 @@ int CPVRGUIInfo::GetDuration(void) const
   return m_iDuration;
 }
 
-int CPVRGUIInfo::GetPlayingTime(void) const
+int CPVRGUIInfo::GetElapsedTime(void) const
 {
   CSingleLock lock(m_critSection);
 
