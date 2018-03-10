@@ -4492,6 +4492,11 @@ const infomap playlist[] =       {{ "length",           PLAYLIST_LENGTH },
 ///                  _integer_,
 ///     Returns the position of currently timeshifted title on TV as integer
 ///   }
+///   \table_row3{   <b>`PVR.TimeShiftOffset`</b>,
+///                  \anchor PVR_TimeShiftOffset
+///                  _integer_,
+///     Returns the delta of timeshifted time to actual time
+///   }
 ///   \table_row3{   <b>`PVR.TVNowRecordingTitle`</b>,
 ///                  \anchor PVR_TVNowRecordingTitle
 ///                  _string_,
@@ -4674,6 +4679,7 @@ const infomap pvr[] =            {{ "isrecording",              PVR_IS_RECORDING
                                   { "timeshiftend",             PVR_TIMESHIFT_END_TIME },
                                   { "timeshiftcur",             PVR_TIMESHIFT_PLAY_TIME },
                                   { "timeshiftprogress",        PVR_TIMESHIFT_PROGRESS },
+                                  { "timeshiftoffset",          PVR_TIMESHIFT_OFFSET },
                                   { "nowrecordingtitle",        PVR_NOW_RECORDING_TITLE },
                                   { "nowrecordingdatetime",     PVR_NOW_RECORDING_DATETIME },
                                   { "nowrecordingchannel",      PVR_NOW_RECORDING_CHANNEL },
@@ -6028,6 +6034,7 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   case PVR_TIMESHIFT_START_TIME:
   case PVR_TIMESHIFT_END_TIME:
   case PVR_TIMESHIFT_PLAY_TIME:
+  case PVR_TIMESHIFT_OFFSET:
   case PVR_TV_NOW_RECORDING_TITLE:
   case PVR_TV_NOW_RECORDING_CHANNEL:
   case PVR_TV_NOW_RECORDING_CHAN_ICO:

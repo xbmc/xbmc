@@ -176,7 +176,7 @@
 					<align>center</align>
 					<aligny>center</aligny>
 					<font>font30</font>
-					<label>[B]$LOCALIZE[31026][/B] $INFO[PVR.timeshiftcur]</label>
+					<label>[B]$LOCALIZE[31026][/B] $INFO[PVR.TimeshiftCur] (-$INFO[PVR.TimeshiftOffset])</label>
 				</control>
 				<control type="progress">
 					<left>0</left>

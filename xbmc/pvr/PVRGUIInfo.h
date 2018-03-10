@@ -216,6 +216,7 @@ namespace PVR
     void CharInfoTimeshiftStartTime(std::string &strValue) const;
     void CharInfoTimeshiftEndTime(std::string &strValue) const;
     void CharInfoTimeshiftPlayTime(std::string &strValue) const;
+    void CharInfoTimeshiftOffset(std::string &strValue) const;
 
     /** @name GUIInfoManager data */
     //@{
@@ -258,10 +259,12 @@ namespace PVR
 
     bool                            m_bHasTimeshiftData;
     bool                            m_bIsTimeshifting;
+    time_t                          m_iLastTimeshiftUpdate;
     time_t                          m_iStartTime;
     time_t                          m_iTimeshiftStartTime;
     time_t                          m_iTimeshiftEndTime;
     time_t                          m_iTimeshiftPlayTime;
+    unsigned int                    m_iTimeshiftOffset;
     std::string                     m_strTimeshiftStartTime;
     std::string                     m_strTimeshiftEndTime;
     std::string                     m_strTimeshiftPlayTime;

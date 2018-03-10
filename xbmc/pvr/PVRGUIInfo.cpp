@@ -89,6 +89,7 @@ void CPVRGUIInfo::ResetProperties(void)
   m_iTimeshiftStartTime         = time_t(0);
   m_iTimeshiftEndTime           = time_t(0);
   m_iTimeshiftPlayTime          = time_t(0);
+  m_iTimeshiftOffset            = 0;
   m_strTimeshiftStartTime.clear();
   m_strTimeshiftEndTime.clear();
   m_strTimeshiftPlayTime.clear();
@@ -261,6 +262,8 @@ void CPVRGUIInfo::UpdateTimeshift(void)
       m_iTimeshiftStartTime = 0;
       m_iTimeshiftEndTime = 0;
       m_iTimeshiftPlayTime = 0;
+      m_iLastTimeshiftUpdate = 0;
+      m_iTimeshiftOffset = 0;
       m_strTimeshiftStartTime.clear();
       m_strTimeshiftEndTime.clear();
       m_strTimeshiftPlayTime.clear();
@@ -269,17 +272,21 @@ void CPVRGUIInfo::UpdateTimeshift(void)
   }
 
   bool bIsTimeshifting = CServiceBroker::GetPVRManager().Clients()->IsTimeshifting();
+  time_t now = std::time(nullptr);
   time_t iStartTime = CServiceBroker::GetDataCacheCore().GetStartTime();
   time_t iPlayTime = CServiceBroker::GetDataCacheCore().GetPlayTime() / 1000;
   time_t iMinTime = bIsTimeshifting ? CServiceBroker::GetDataCacheCore().GetMinTime() / 1000 : 0;
   time_t iMaxTime = bIsTimeshifting ? CServiceBroker::GetDataCacheCore().GetMaxTime() / 1000 : 0;
+  bool bPlaying = CServiceBroker::GetDataCacheCore().GetSpeed() == 1.0;
 
   CSingleLock lock(m_critSection);
+
+  m_iLastTimeshiftUpdate = now;
 
   if (!iStartTime)
   {
     if (m_iStartTime == 0)
-      iStartTime = std::time(nullptr);
+      iStartTime = now;
     else
       iStartTime = m_iStartTime;
   }
@@ -291,14 +298,16 @@ void CPVRGUIInfo::UpdateTimeshift(void)
 
   if (m_iTimeshiftEndTime > m_iTimeshiftStartTime)
   {
-    // getstreamtimes api
+    // timeshifting supported
     m_iTimeshiftPlayTime = iStartTime + iPlayTime;
   }
-  else
+  else if (bPlaying)
   {
-    // legacy api
-    m_iTimeshiftPlayTime = std::time(nullptr);
+    // timeshifting not supported
+    m_iTimeshiftPlayTime = now - m_iTimeshiftOffset;
   }
+
+  m_iTimeshiftOffset = now - m_iTimeshiftPlayTime;
 
   CDateTime tmp;
   tmp.SetFromUTCDateTime(m_iTimeshiftStartTime);
@@ -478,6 +487,9 @@ bool CPVRGUIInfo::TranslateCharInfo(DWORD dwInfo, std::string &strValue) const
     break;
   case PVR_TIMESHIFT_PLAY_TIME:
     CharInfoTimeshiftPlayTime(strValue);
+    break;
+  case PVR_TIMESHIFT_OFFSET:
+    CharInfoTimeshiftOffset(strValue);
     break;
   default:
     strValue.clear();
@@ -859,6 +871,11 @@ void CPVRGUIInfo::CharInfoTimeshiftPlayTime(std::string &strValue) const
   strValue = m_strTimeshiftPlayTime;
 }
 
+void CPVRGUIInfo::CharInfoTimeshiftOffset(std::string &strValue) const
+{
+  strValue = StringUtils::SecondsToTimeString(m_iTimeshiftOffset, TIME_FORMAT_GUESS).c_str();
+}
+
 void CPVRGUIInfo::CharInfoEpgEventElapsedTime(std::string &strValue) const
 {
   strValue = StringUtils::SecondsToTimeString(GetPlayingTime() / 1000, TIME_FORMAT_GUESS).c_str();
@@ -1152,10 +1169,7 @@ int CPVRGUIInfo::GetPlayingTime(void) const
     CDateTime start = m_playingEpgTag ? CDateTime(m_playingEpgTag->StartAsUTC())
                                       : CDateTime(m_iTimeshiftStartTime);
     CDateTimeSpan time = current > start ? current - start : CDateTimeSpan(0, 0, 0, 0);
-    return (time.GetDays()   * 60 * 60 * 24
-         + time.GetHours()   * 60 * 60
-         + time.GetMinutes() * 60
-         + time.GetSeconds()) * 1000;
+    return time.GetSecondsTotal() * 1000;
   }
   else
   {
