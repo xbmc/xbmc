@@ -1467,7 +1467,7 @@ std::unique_ptr<IOSScreenSaver> CWinSystemWayland::GetOSScreenSaverImpl()
 #endif
 
   CLog::LogF(LOGINFO, "No supported method for screen saver inhibition found");
-  return nullptr;
+  return std::unique_ptr<IOSScreenSaver>(new CDummyOSScreenSaver);
 }
 
 std::string CWinSystemWayland::GetClipboardText()
