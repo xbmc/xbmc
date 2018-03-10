@@ -566,6 +566,7 @@ bool CDVDDemuxFFmpeg::Open(std::shared_ptr<CDVDInputStream> pInput, bool streami
   m_newProgram = m_program;
   m_displayTime = 0;
   m_dtsAtDisplayTime = DVD_NOPTS_VALUE;
+  m_startTime = 0;
 
   // seems to be a bug in ffmpeg, hls jumps back to start after a couple of seconds
   // this cures the issue
@@ -866,9 +867,12 @@ double CDVDDemuxFFmpeg::ConvertTimestamp(int64_t pts, int den, int num)
   if (!menu && m_pFormatContext->start_time != (int64_t)AV_NOPTS_VALUE)
     starttime = (double)m_pFormatContext->start_time / AV_TIME_BASE;
 
+  if (!m_streaminfo)
+    starttime = m_startTime;
+
   if (!m_bSup)
   {
-    if (timestamp > starttime)
+    if (timestamp > starttime || !m_streaminfo)
       timestamp -= starttime;
     // allow for largest possible difference in pts and dts for a single packet
     else if (timestamp + 0.5f > starttime)
@@ -977,7 +981,7 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
 
       if (pPacket)
       {
-        if(m_bAVI && stream->codecpar && stream->codecpar->codec_type == AVMEDIA_TYPE_VIDEO)
+        if (m_bAVI && stream->codecpar && stream->codecpar->codec_type == AVMEDIA_TYPE_VIDEO)
         {
           // AVI's always have borked pts, specially if m_pFormatContext->flags includes
           // AVFMT_FLAG_GENPTS so always use dts
@@ -2054,7 +2058,10 @@ bool CDVDDemuxFFmpeg::IsVideoReady()
       if (st->codecpar->codec_type == AVMEDIA_TYPE_VIDEO)
       {
         if (st->codecpar->extradata)
+        {
+          m_startTime = av_rescale(st->cur_dts, st->time_base.num, st->time_base.den);
           return true;
+        }
         hasVideo = true;
       }
     }
@@ -2067,7 +2074,10 @@ bool CDVDDemuxFFmpeg::IsVideoReady()
       if (st->codecpar->codec_type == AVMEDIA_TYPE_VIDEO)
       {
         if (st->codecpar->extradata)
+        {
+          m_startTime = av_rescale(st->cur_dts, st->time_base.num, st->time_base.den);
           return true;
+        }
         hasVideo = true;
       }
     }
