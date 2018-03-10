@@ -59,6 +59,14 @@ namespace PVR
     bool GetVideoLabel(const CFileItem *item, int iLabel, std::string &strValue) const;
 
     /*!
+     * @brief Get a GUIInfoManager seek time label for the currently playing epg tag.
+     * @param iSeekSize The seconds to be seeked from the current playback position.
+     * @param strValue Will be filled with the requested label value.
+     * @return True if the label value was set, false otherwise.
+     */
+    bool GetSeekTimeLabel(int iSeekSize, std::string &strValue) const;
+
+    /*!
      * @brief Get the total duration of the currently playing LiveTV item.
      * @return The total duration in milliseconds or NULL if no channel is playing.
      */

@@ -851,6 +851,12 @@ bool CPVRGUIInfo::GetVideoLabel(const CFileItem *item, int iLabel, std::string &
   return false;
 }
 
+bool CPVRGUIInfo::GetSeekTimeLabel(int iSeekSize, std::string &strValue) const
+{
+  strValue = StringUtils::SecondsToTimeString(GetElapsedTime() / 1000 + iSeekSize, TIME_FORMAT_GUESS).c_str();
+  return true;
+}
+
 void CPVRGUIInfo::CharInfoEpgEventDuration(std::string &strValue) const
 {
   strValue = StringUtils::SecondsToTimeString(m_iDuration / 1000, TIME_FORMAT_GUESS).c_str();

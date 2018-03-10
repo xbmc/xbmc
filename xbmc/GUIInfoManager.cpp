@@ -4387,6 +4387,11 @@ const infomap playlist[] =       {{ "length",           PLAYLIST_LENGTH },
 ///                  _string_,
 ///     Returns the remaining time for currently playing epg event
 ///   }
+///   \table_row3{   <b>`PVR.EpgEventSeekTime`</b>,
+///                  \anchor PVR_EpgEventSeekTime
+///                  _string_,
+///     Returns the time the user is seeking within the currently playing epg event
+///   }
 ///   \table_row3{   <b>`PVR.EpgEventFinishTime`</b>,
 ///                  \anchor PVR_EpgEventFinishTime
 ///                  _string_,
@@ -4659,6 +4664,7 @@ const infomap pvr[] =            {{ "isrecording",              PVR_IS_RECORDING
                                   { "epgeventelapsedtime",      PVR_EPG_EVENT_ELAPSED_TIME },
                                   { "epgeventremainingtime",    PVR_EPG_EVENT_REMAINING_TIME },
                                   { "epgeventfinishtime",       PVR_EPG_EVENT_FINISH_TIME },
+                                  { "epgeventseektime",         PVR_EPG_EVENT_SEEK_TIME },
                                   { "epgeventprogress",         PVR_EPG_EVENT_PROGRESS },
                                   { "actstreamclient",          PVR_ACTUAL_STREAM_CLIENT },
                                   { "actstreamdevice",          PVR_ACTUAL_STREAM_DEVICE },
@@ -6052,6 +6058,9 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   case PVR_RADIO_NEXT_RECORDING_CHAN_ICO:
   case PVR_RADIO_NEXT_RECORDING_DATETIME:
     CServiceBroker::GetPVRManager().TranslateCharInfo(info, strLabel);
+    break;
+  case PVR_EPG_EVENT_SEEK_TIME:
+    CServiceBroker::GetPVRManager().GetSeekTimeLabel(g_application.GetAppPlayer().GetSeekHandler().GetSeekSize(), strLabel);
     break;
   case PVR_CHANNEL_NUMBER_INPUT:
     strLabel = CServiceBroker::GetPVRManager().GUIActions()->GetChannelNumberInputHandler().GetChannelNumberAsString();
