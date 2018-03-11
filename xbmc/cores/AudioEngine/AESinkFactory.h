@@ -43,9 +43,9 @@ typedef void (*Cleanup)();
 struct AESinkRegEntry
 {
   std::string sinkName;
-  CreateSink createFunc;
-  Enumerate enumerateFunc;
-  Cleanup cleanupFunc;
+  CreateSink createFunc = nullptr;
+  Enumerate enumerateFunc = nullptr;
+  Cleanup cleanupFunc = nullptr;
 };
 
 class CAESinkFactory
