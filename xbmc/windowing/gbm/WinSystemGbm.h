@@ -61,6 +61,8 @@ public:
   std::shared_ptr<CDRMUtils> m_DRM;
 
 protected:
+  void OnLostDevice();
+
   std::unique_ptr<CGBMUtils> m_GBM;
 
   EGLDisplay m_nativeDisplay;
@@ -68,4 +70,7 @@ protected:
 
   CCriticalSection m_resourceSection;
   std::vector<IDispResource*>  m_resources;
+
+  bool m_delayDispReset;
+  XbmcThreads::EndTime m_dispResetTimer;
 };
