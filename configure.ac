@@ -681,6 +681,11 @@ case $use_platform in
      use_neon=yes
      use_cpu=cortex-a7
      ;;
+  raspberry-pi3)
+     target_platform=target_raspberry_pi
+     use_neon=yes
+     use_cpu=cortex-a53
+     ;;
 esac
 
 if test "$target_platform" = "target_raspberry_pi" ; then
