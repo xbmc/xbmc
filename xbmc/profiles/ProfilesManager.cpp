@@ -23,7 +23,6 @@
 #include <vector>
 
 #include "ProfilesManager.h"
-#include "Application.h"
 #include "DatabaseManager.h"
 #include "FileItem.h"
 #include "GUIInfoManager.h"
@@ -54,6 +53,18 @@
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/XMLUtils.h"
+
+#include "addons/AddonManager.h" //! @todo Remove me
+#include "addons/Service.h" //! @todo Remove me
+#include "favourites/FavouritesService.h" //! @todo Remove me
+#include "guilib/StereoscopicsManager.h" //! @todo Remove me
+#include "interfaces/json-rpc/JSONRPC.h" //! @todo Remove me
+#include "network/Network.h" //! @todo Remove me
+#include "pvr/PVRManager.h" //! @todo Remove me
+#include "weather/WeatherManager.h" //! @todo Remove me
+#include "Application.h" //! @todo Remove me
+#include "ContextMenuManager.h" //! @todo Remove me
+#include "PlayListPlayer.h" //! @todo Remove me
 
 //! @todo
 //! eventually the profile should dictate where special://masterprofile/ is
@@ -244,6 +255,24 @@ void CProfilesManager::Clear()
   m_profiles.clear();
 }
 
+void CProfilesManager::PrepareLoadProfile(size_t profileIndex)
+{
+  CContextMenuManager &contextMenuManager = CServiceBroker::GetContextMenuManager();
+  ADDON::CServiceAddonManager &serviceAddons = CServiceBroker::GetServiceAddons();
+  PVR::CPVRManager &pvrManager = CServiceBroker::GetPVRManager();
+  CNetworkBase &networkManager = CServiceBroker::GetNetwork();
+
+  contextMenuManager.Deinit();
+
+  serviceAddons.Stop();
+
+  // stop PVR related services
+  pvrManager.Stop();
+
+  if (profileIndex != 0 || !IsMasterProfile())
+    networkManager.NetworkMessage(CNetwork::SERVICES_DOWN, 1);
+}
+
 bool CProfilesManager::LoadProfile(size_t index)
 {
   CSingleLock lock(m_critical);
@@ -315,6 +344,58 @@ bool CProfilesManager::LoadProfile(size_t index)
   g_directoryCache.Clear();
 
   return true;
+}
+
+void CProfilesManager::FinalizeLoadProfile()
+{
+  CContextMenuManager &contextMenuManager = CServiceBroker::GetContextMenuManager();
+  ADDON::CServiceAddonManager &serviceAddons = CServiceBroker::GetServiceAddons();
+  PVR::CPVRManager &pvrManager = CServiceBroker::GetPVRManager();
+  CNetworkBase &networkManager = CServiceBroker::GetNetwork();
+  ADDON::CAddonMgr &addonManager = CServiceBroker::GetAddonMgr();
+  CWeatherManager &weatherManager = CServiceBroker::GetWeatherManager();
+  CFavouritesService &favouritesManager = CServiceBroker::GetFavouritesService();
+  PLAYLIST::CPlayListPlayer &playlistManager = CServiceBroker::GetPlaylistPlayer();
+  CStereoscopicsManager &stereoscopicsManager = CServiceBroker::GetGUI()->GetStereoscopicsManager();
+
+  if (m_lastUsedProfile != m_currentProfile)
+  {
+    playlistManager.ClearPlaylist(PLAYLIST_VIDEO);
+    playlistManager.ClearPlaylist(PLAYLIST_MUSIC);
+    playlistManager.SetCurrentPlaylist(PLAYLIST_NONE);
+  }
+
+  networkManager.NetworkMessage(CNetworkBase::SERVICES_UP, 1);
+
+  // reload the add-ons, or we will first load all add-ons from the master account without checking disabled status
+  addonManager.ReInit();
+
+  // let CApplication know that we are logging into a new profile
+  g_application.SetLoggingIn(true);
+
+  if (!g_application.LoadLanguage(true))
+  {
+    CLog::Log(LOGFATAL, "CGUIWindowLoginScreen: unable to load language for profile \"%s\"", GetCurrentProfile().getName().c_str());
+    return;
+  }
+
+  weatherManager.Refresh();
+
+  JSONRPC::CJSONRPC::Initialize();
+
+  // Restart context menu manager
+  contextMenuManager.Init();
+
+  // restart PVR services
+  pvrManager.Init();
+
+  favouritesManager.ReInit(GetProfileUserDataFolder());
+
+  serviceAddons.Start();
+
+  g_application.UpdateLibraries();
+
+  stereoscopicsManager.Initialize();
 }
 
 bool CProfilesManager::DeleteProfile(size_t index)
