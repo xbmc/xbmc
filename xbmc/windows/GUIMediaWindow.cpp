@@ -1734,7 +1734,7 @@ bool CGUIMediaWindow::OnPopupMenu(int itemIdx)
   auto pluginMenuRange = std::make_pair(static_cast<size_t>(0), buttons.size());
 
   //Add the global menu
-  auto globalMenu = CContextMenuManager::GetInstance().GetItems(*item, CContextMenuManager::MAIN);
+  auto globalMenu = CServiceBroker::GetContextMenuManager().GetItems(*item, CContextMenuManager::MAIN);
   auto globalMenuRange = std::make_pair(buttons.size(), buttons.size() + globalMenu.size());
   for (const auto& menu : globalMenu)
     buttons.emplace_back(~buttons.size(), menu->GetLabel(*item));
@@ -1745,7 +1745,7 @@ bool CGUIMediaWindow::OnPopupMenu(int itemIdx)
   auto windowMenuRange = std::make_pair(buttonsSize, buttons.size());
 
   //Add addon menus
-  auto addonMenu = CContextMenuManager::GetInstance().GetAddonItems(*item, CContextMenuManager::MAIN);
+  auto addonMenu = CServiceBroker::GetContextMenuManager().GetAddonItems(*item, CContextMenuManager::MAIN);
   auto addonMenuRange = std::make_pair(buttons.size(), buttons.size() + addonMenu.size());
   for (const auto& menu : addonMenu)
     buttons.emplace_back(~buttons.size(), menu->GetLabel(*item));

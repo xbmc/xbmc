@@ -55,11 +55,6 @@ void CContextMenuManager::Deinit()
   m_items.clear();
 }
 
-CContextMenuManager& CContextMenuManager::GetInstance()
-{
-  return CServiceBroker::GetContextMenuManager();
-}
-
 void CContextMenuManager::Init()
 {
   m_addonMgr.Events().Subscribe(this, &CContextMenuManager::OnEvent);
@@ -208,8 +203,10 @@ bool CONTEXTMENU::ShowFor(const CFileItemPtr& fileItem, const CContextMenuItem& 
   if (!fileItem)
     return false;
 
-  auto menuItems = CContextMenuManager::GetInstance().GetItems(*fileItem, root);
-  for (auto&& item : CContextMenuManager::GetInstance().GetAddonItems(*fileItem, root))
+  const CContextMenuManager &contextMenuManager = CServiceBroker::GetContextMenuManager();
+
+  auto menuItems = contextMenuManager.GetItems(*fileItem, root);
+  for (auto&& item : contextMenuManager.GetAddonItems(*fileItem, root))
     menuItems.emplace_back(std::move(item));
 
   if (menuItems.empty())
