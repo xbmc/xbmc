@@ -131,8 +131,9 @@ class CSetCurrentItemJob : public CJob
   CFileItemPtr m_itemCurrentFile;
 public:
   explicit CSetCurrentItemJob(const CFileItem& item) : m_itemCurrentFile(std::make_shared<CFileItem>(item)) { }
-
   ~CSetCurrentItemJob(void) override = default;
+  const char *GetType() const override { return "CSetCurrentItemJob"; }
+  bool operator==(const CJob* job) const override { return this->GetType() == job->GetType(); }
 
   bool DoWork(void) override
   {
@@ -143,6 +144,22 @@ public:
   }
 };
 
+class CResetCurrentItemJob : public CJob
+{
+public:
+  explicit CResetCurrentItemJob() { }
+  ~CResetCurrentItemJob(void) override = default;
+  const char *GetType() const override { return "CResetCurrentItemJob"; }
+  bool operator==(const CJob* job) const override { return this->GetType() == job->GetType(); }
+  
+  bool DoWork(void) override
+  {
+    g_infoManager.ResetCurrentItemJob();
+    return true;
+  }
+};
+
+
 bool InfoBoolComparator(const InfoPtr &right, const InfoPtr &left)
 {
   return *right < *left;
@@ -151,6 +168,7 @@ bool InfoBoolComparator(const InfoPtr &right, const InfoPtr &left)
 
 CGUIInfoManager::CGUIInfoManager(void) :
     Observable(),
+    CJobQueue(false, 1, CJob::PRIORITY_NORMAL),
     m_bools(&InfoBoolComparator)
 {
   m_lastSysHeatInfoTime = -SYSHEATUPDATEINTERVAL;  // make sure we grab CPU temp on the first pass
@@ -9050,6 +9068,12 @@ std::string CGUIInfoManager::GetCurrentPlayTimeRemaining(TIME_FORMAT format) con
 
 void CGUIInfoManager::ResetCurrentItem()
 {
+  CResetCurrentItemJob *job = new CResetCurrentItemJob();
+  AddJob(job);
+}
+
+void CGUIInfoManager::ResetCurrentItemJob()
+{
   m_currentFile->Reset();
   m_currentMovieThumb = "";
   m_currentMovieDuration = "";
@@ -9058,12 +9082,12 @@ void CGUIInfoManager::ResetCurrentItem()
 void CGUIInfoManager::SetCurrentItem(const CFileItem &item)
 {
   CSetCurrentItemJob *job = new CSetCurrentItemJob(item);
-  CJobManager::GetInstance().AddJob(job, NULL);
+  AddJob(job);
 }
 
 void CGUIInfoManager::SetCurrentItemJob(const CFileItemPtr item)
 {
-  ResetCurrentItem();
+  ResetCurrentItemJob();
 
   if (item->IsAudio())
     SetCurrentSong(*item);

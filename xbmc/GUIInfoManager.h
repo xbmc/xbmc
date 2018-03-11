@@ -39,6 +39,7 @@
 #include "cores/IPlayer.h"
 #include "FileItem.h"
 #include "pvr/PVRTypes.h"
+#include "utils/JobManager.h"
 
 #include <atomic>
 #include <map>
@@ -95,7 +96,8 @@ class CSetCurrentItemJob;
  \brief
  */
 class CGUIInfoManager : public IMsgTargetCallback, public Observable,
-                        public KODI::MESSAGING::IMessageTarget
+                        public KODI::MESSAGING::IMessageTarget,
+                        public CJobQueue
 {
 friend CSetCurrentItemJob;
 
@@ -153,6 +155,7 @@ public:
    */
   void SetCurrentItem(const CFileItem &item);
   void ResetCurrentItem();
+  void ResetCurrentItemJob();
   // Current song stuff
   /// \brief Retrieves tag info (if necessary) and fills in our current song path.
   void SetCurrentSong(CFileItem &item);
