@@ -126,22 +126,6 @@ using namespace ADDON;
 using namespace PVR;
 using namespace INFO;
 
-class CSetCurrentItemJob : public CJob
-{
-  CFileItemPtr m_itemCurrentFile;
-public:
-  explicit CSetCurrentItemJob(const CFileItem& item) : m_itemCurrentFile(std::make_shared<CFileItem>(item)) { }
-
-  ~CSetCurrentItemJob(void) override = default;
-
-  bool DoWork(void) override
-  {
-    g_infoManager.SetCurrentItemJob(m_itemCurrentFile);
-    g_application.m_ServiceManager->GetAnnouncementManager().Announce(ANNOUNCEMENT::Info, "xbmc", "OnChanged");
-
-    return true;
-  }
-};
 
 bool InfoBoolComparator(const InfoPtr &right, const InfoPtr &left)
 {
@@ -9057,20 +9041,16 @@ void CGUIInfoManager::ResetCurrentItem()
 
 void CGUIInfoManager::SetCurrentItem(const CFileItem &item)
 {
-  CSetCurrentItemJob *job = new CSetCurrentItemJob(item);
-  CJobManager::GetInstance().AddJob(job, NULL);
-}
-
-void CGUIInfoManager::SetCurrentItemJob(const CFileItemPtr item)
-{
   ResetCurrentItem();
 
-  if (item->IsAudio())
-    SetCurrentSong(*item);
-  else if (item->IsGame())
-    SetCurrentGame(*item);
+  CFileItem newItem(item);
+
+  if (newItem.IsAudio())
+    SetCurrentSong(newItem);
+  else if (newItem.IsGame())
+    SetCurrentGame(newItem);
   else
-    SetCurrentMovie(*item);
+    SetCurrentMovie(newItem);
 
   SetChanged();
   NotifyObservers(ObservableMessageCurrentItem);
