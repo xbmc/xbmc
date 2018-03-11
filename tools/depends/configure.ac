@@ -408,6 +408,14 @@ case $use_platform in
      platform_cxxflags="-fPIC -mcpu=cortex-a7 -mfloat-abi=hard -mfpu=neon-vfpv4"
      platform_ldflags="-lpthread"
      ;;
+  raspberry-pi3)
+     target_platform=raspberry-pi
+     use_neon=yes
+     use_cpu=cortex-a53
+     platform_cflags="-fPIC -mcpu=cortex-a53 -mfloat-abi=hard -mfpu=neon-fp-armv8"
+     platform_cxxflags="-fPIC -mcpu=cortex-a53 -mfloat-abi=hard -mfpu=neon-fp-armv8"
+     platform_ldflags="-lpthread"
+     ;;
 esac
 
 if test "$target_platform" = "raspberry-pi" ; then
