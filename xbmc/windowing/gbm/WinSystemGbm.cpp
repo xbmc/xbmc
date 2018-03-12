@@ -136,7 +136,7 @@ bool CWinSystemGbm::CreateNewWindow(const std::string& name,
     return false;
   }
 
-  m_nativeWindow = m_GBM->m_surface;
+  m_nativeWindow = reinterpret_cast<EGLNativeWindowType>(m_GBM->m_surface);
 
   CLog::Log(LOGDEBUG, "CWinSystemGbm::%s - initialized GBM", __FUNCTION__);
   return true;
