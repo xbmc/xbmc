@@ -7202,7 +7202,7 @@ msgctxt "#13515"
 msgid "No art"
 msgstr ""
 
-#. Button to add a new type of art e.g. "thumb", "poster", "fanart" etc. 
+#. Button to add a new type of art e.g. "thumb", "poster", "fanart" etc.
 #: xbmc/music/MusicUtils.cpp
 #: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
 msgctxt "#13516"
@@ -7229,7 +7229,7 @@ msgctxt "#13520"
 msgid "Embedded fanart"
 msgstr ""
 
-#. Heading for selection of a type of art e.g. "thumb", "poster", "fanart" etc. 
+#. Heading for selection of a type of art e.g. "thumb", "poster", "fanart" etc.
 #: xbmc/music/MusicUtils.cpp
 msgctxt "#13521"
 msgid "Choose art type"
