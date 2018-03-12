@@ -200,10 +200,6 @@ msgctxt "#31050"
 msgid "Press [B]OK[/B] to stop"
 msgstr "Tryck på [B]OK[/B] för att stoppa"
 
-msgctxt "#31051"
-msgid "Toggle language"
-msgstr "Växla språk"
-
 msgctxt "#31052"
 msgid "filtered"
 msgstr "filtrerad"
@@ -447,6 +443,10 @@ msgstr "Huvudmeny-relaterade inställningar: Konfigurera startskärmen till ditt
 msgctxt "#31131"
 msgid "Choose skin fanart pack"
 msgstr "Välj skal-fanart paket"
+
+msgctxt "#31132"
+msgid "Select Program"
+msgstr "Välj program"
 
 msgctxt "#31134"
 msgid "Remaining"

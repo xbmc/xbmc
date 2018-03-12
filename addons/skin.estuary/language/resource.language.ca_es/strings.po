@@ -50,7 +50,7 @@ msgstr "Pel·lícules no vistes"
 
 msgctxt "#31008"
 msgid "Enable category widgets"
-msgstr "Habilita el giny de categories"
+msgstr "Habilita els ginys de categoria"
 
 msgctxt "#31009"
 msgid "Download icons"
@@ -195,10 +195,6 @@ msgstr "Disponible"
 msgctxt "#31050"
 msgid "Press [B]OK[/B] to stop"
 msgstr "Premeu [B]D'ACORD[/B] per aturar"
-
-msgctxt "#31051"
-msgid "Toggle language"
-msgstr "Commuta l'idioma"
 
 msgctxt "#31052"
 msgid "filtered"

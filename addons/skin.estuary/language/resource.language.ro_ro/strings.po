@@ -192,10 +192,6 @@ msgctxt "#31050"
 msgid "Press [B]OK[/B] to stop"
 msgstr "Apăsați [B]Bine[/B] pentru a opri"
 
-msgctxt "#31051"
-msgid "Toggle language"
-msgstr "Schimbă limba"
-
 msgctxt "#31052"
 msgid "filtered"
 msgstr "filtrat"
@@ -306,7 +302,7 @@ msgstr "Folosește animații de glisare"
 
 msgctxt "#31096"
 msgid "Local subtitle available"
-msgstr "Este disponibil o subtitrare locală"
+msgstr "Este disponibil un subtitlu local"
 
 msgctxt "#31097"
 msgid "Channel options"
@@ -439,6 +435,10 @@ msgstr "Setări conexe meniului principal: Configurați ecranul inițial cum vă
 msgctxt "#31131"
 msgid "Choose skin fanart pack"
 msgstr "Alegeți pachetul de decoruri pentru temă"
+
+msgctxt "#31132"
+msgid "Select Program"
+msgstr "Selectare program"
 
 msgctxt "#31134"
 msgid "Remaining"

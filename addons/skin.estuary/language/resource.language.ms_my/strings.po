@@ -200,10 +200,6 @@ msgctxt "#31050"
 msgid "Press [B]OK[/B] to stop"
 msgstr "Teka [B]OK[/B] untuk henti"
 
-msgctxt "#31051"
-msgid "Toggle language"
-msgstr "Togol bahasa"
-
 msgctxt "#31052"
 msgid "filtered"
 msgstr "ditapis"
@@ -447,6 +443,10 @@ msgstr "Tetapan berkaitan-menu utama: Konfigur skrin rumah mengikut citarasa and
 msgctxt "#31131"
 msgid "Choose skin fanart pack"
 msgstr "Pilih pek kulit seni peminat"
+
+msgctxt "#31132"
+msgid "Select Program"
+msgstr "Pilih Program"
 
 msgctxt "#31134"
 msgid "Remaining"

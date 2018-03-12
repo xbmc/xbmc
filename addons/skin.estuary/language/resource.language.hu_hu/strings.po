@@ -200,10 +200,6 @@ msgctxt "#31050"
 msgid "Press [B]OK[/B] to stop"
 msgstr "Nyomjon [B]OK[/B]-ot a leállításhoz"
 
-msgctxt "#31051"
-msgid "Toggle language"
-msgstr "Nyelv váltása"
-
 msgctxt "#31052"
 msgid "filtered"
 msgstr "szűrt"
@@ -447,6 +443,10 @@ msgstr "Főmenüvel kapcsolatos beállítások: állítsa be a főképernyőt az
 msgctxt "#31131"
 msgid "Choose skin fanart pack"
 msgstr "Válassz felszín-illusztráció csomagot"
+
+msgctxt "#31132"
+msgid "Select Program"
+msgstr "Műsor kiválasztása"
 
 msgctxt "#31134"
 msgid "Remaining"

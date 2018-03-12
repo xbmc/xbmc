@@ -200,10 +200,6 @@ msgctxt "#31050"
 msgid "Press [B]OK[/B] to stop"
 msgstr "Naciśnij [B]OK[/B], aby zatrzymać"
 
-msgctxt "#31051"
-msgid "Toggle language"
-msgstr "Przełącz język"
-
 msgctxt "#31052"
 msgid "filtered"
 msgstr "filtrowane"
@@ -447,6 +443,10 @@ msgstr "Umożliwia dostosowanie menu startowego do własnych upodobań."
 msgctxt "#31131"
 msgid "Choose skin fanart pack"
 msgstr "Wybierz pakiet fototapet skóry"
+
+msgctxt "#31132"
+msgid "Select Program"
+msgstr "Wybierz program"
 
 msgctxt "#31134"
 msgid "Remaining"

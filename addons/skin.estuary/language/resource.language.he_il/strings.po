@@ -200,10 +200,6 @@ msgctxt "#31050"
 msgid "Press [B]OK[/B] to stop"
 msgstr "לחץ על [B]אישור[/B] כדי לעצור"
 
-msgctxt "#31051"
-msgid "Toggle language"
-msgstr "החלף שפה"
-
 msgctxt "#31052"
 msgid "filtered"
 msgstr "מסונן"
@@ -447,6 +443,10 @@ msgstr "הגדרות הקשורות לתפריט הראשי: הגדר את מס�
 msgctxt "#31131"
 msgid "Choose skin fanart pack"
 msgstr "בחר חבילת פאנארט למעטפת"
+
+msgctxt "#31132"
+msgid "Select Program"
+msgstr "בחר תוכנית"
 
 msgctxt "#31134"
 msgid "Remaining"

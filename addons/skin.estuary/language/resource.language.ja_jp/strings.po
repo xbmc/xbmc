@@ -184,10 +184,6 @@ msgctxt "#31050"
 msgid "Press [B]OK[/B] to stop"
 msgstr "[B]決定[/B]を押して停止"
 
-msgctxt "#31051"
-msgid "Toggle language"
-msgstr "言語を切替"
-
 msgctxt "#31052"
 msgid "filtered"
 msgstr "フィルタ済"

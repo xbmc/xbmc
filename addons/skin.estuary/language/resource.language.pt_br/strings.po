@@ -200,10 +200,6 @@ msgctxt "#31050"
 msgid "Press [B]OK[/B] to stop"
 msgstr "Aperte [B]OK[/B] para parar"
 
-msgctxt "#31051"
-msgid "Toggle language"
-msgstr "Alterar língua"
-
 msgctxt "#31052"
 msgid "filtered"
 msgstr "filtrado"
@@ -447,6 +443,10 @@ msgstr "Ajustes relacionados ao menu principal: Configure a tela da home de acor
 msgctxt "#31131"
 msgid "Choose skin fanart pack"
 msgstr "Escolha o pacota de fanart da skin"
+
+msgctxt "#31132"
+msgid "Select Program"
+msgstr "Selecionar Programa"
 
 msgctxt "#31134"
 msgid "Remaining"

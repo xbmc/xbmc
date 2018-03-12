@@ -48,6 +48,10 @@ msgctxt "#31007"
 msgid "Unwatched movies"
 msgstr "Непереглянуті фільми"
 
+msgctxt "#31008"
+msgid "Enable category widgets"
+msgstr "Увімкнути віджети категорій"
+
 msgctxt "#31009"
 msgid "Download icons"
 msgstr "Завантажити значки"
@@ -108,9 +112,17 @@ msgctxt "#31023"
 msgid "Viewtype"
 msgstr "Вигляд"
 
+msgctxt "#31024"
+msgid "Choose rating to display for media items"
+msgstr "Виберіть рейтинг для відображення медіа-елементів"
+
 msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
 msgstr "Немає обраних. Ви можете додати до цього списку будь-який медіафайл за допомогою контекстного меню."
+
+msgctxt "#31026"
+msgid "Timeshift"
+msgstr "Зрушення в часі"
 
 msgctxt "#31028"
 msgid "Show fanart"
@@ -187,10 +199,6 @@ msgstr "Доступно"
 msgctxt "#31050"
 msgid "Press [B]OK[/B] to stop"
 msgstr "Натисніть [B]OK[/B] для зупинки"
-
-msgctxt "#31051"
-msgid "Toggle language"
-msgstr "Змінити мову"
 
 msgctxt "#31052"
 msgid "filtered"
@@ -436,6 +444,10 @@ msgctxt "#31131"
 msgid "Choose skin fanart pack"
 msgstr "Вибрати набір фанартів обкладинки"
 
+msgctxt "#31132"
+msgid "Select Program"
+msgstr "Вибрати програму"
+
 msgctxt "#31134"
 msgid "Remaining"
 msgstr "Залишилося"
@@ -535,3 +547,7 @@ msgstr "Інформаційні значки"
 msgctxt "#31161"
 msgid "Numeric pad"
 msgstr "Цифрова клавіатура"
+
+msgctxt "#31162"
+msgid "Play your personal games or download one of the many game add-ons from the official repository."
+msgstr "Грайте в свої персональні ігри, або завантажте одні з багатьох ігрових додатків з офіційного сховища."

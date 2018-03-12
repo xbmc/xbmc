@@ -200,10 +200,6 @@ msgctxt "#31050"
 msgid "Press [B]OK[/B] to stop"
 msgstr "按[B]OK[/B]停止"
 
-msgctxt "#31051"
-msgid "Toggle language"
-msgstr "切換語系"
-
 msgctxt "#31052"
 msgid "filtered"
 msgstr "經篩選過的"
@@ -447,6 +443,10 @@ msgstr "主選單相關設定：將首頁依照您的喜好做規劃"
 msgctxt "#31131"
 msgid "Choose skin fanart pack"
 msgstr "選擇佈景主題粉絲自製圖集"
+
+msgctxt "#31132"
+msgid "Select Program"
+msgstr "選擇程式"
 
 msgctxt "#31134"
 msgid "Remaining"

@@ -200,10 +200,6 @@ msgctxt "#31050"
 msgid "Press [B]OK[/B] to stop"
 msgstr "Durdurmak için [B]OK[/B] tuşuna basın"
 
-msgctxt "#31051"
-msgid "Toggle language"
-msgstr "Dili değiştir"
-
 msgctxt "#31052"
 msgid "filtered"
 msgstr "filtrelendi"
@@ -447,6 +443,10 @@ msgstr "Ana menü ile ilgili ayarlar: Ana ekranı kendi zevkinize göre yapılan
 msgctxt "#31131"
 msgid "Choose skin fanart pack"
 msgstr "Dış görünüm için fanart paketi seçin"
+
+msgctxt "#31132"
+msgid "Select Program"
+msgstr "Programı Seçiniz"
 
 msgctxt "#31134"
 msgid "Remaining"

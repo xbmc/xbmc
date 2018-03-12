@@ -80,6 +80,14 @@ msgctxt "#31053"
 msgid "Arial based"
 msgstr "berbasis Arial"
 
+msgctxt "#31066"
+msgid "Music playlist"
+msgstr "Daftar putar lagu"
+
+msgctxt "#31067"
+msgid "Event log"
+msgstr "Log event"
+
 msgctxt "#31069"
 msgid "Last Updated"
 msgstr "Terakhir diperbarui"
@@ -107,3 +115,11 @@ msgstr "Pilih profil pengguna Kodi Anda [CR] untuk login dan lanjutkan"
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Shift"
+
+msgctxt "#31106"
+msgid "Teletext"
+msgstr "Teleteks"
+
+msgctxt "#31138"
+msgid "Player process info"
+msgstr "Informasi proses player"

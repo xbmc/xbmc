@@ -200,10 +200,6 @@ msgctxt "#31050"
 msgid "Press [B]OK[/B] to stop"
 msgstr "Stlačte [B]OK[/B] pre zastavenie"
 
-msgctxt "#31051"
-msgid "Toggle language"
-msgstr "Prepnúť jazyk"
-
 msgctxt "#31052"
 msgid "filtered"
 msgstr "filtrované"
@@ -447,6 +443,10 @@ msgstr "Nastavenia týkajúce sa hlavnej ponuky: Nastavte si domovskú obrazovku
 msgctxt "#31131"
 msgid "Choose skin fanart pack"
 msgstr "Vyberte fanart balík pre vzhľad"
+
+msgctxt "#31132"
+msgid "Select Program"
+msgstr "Vybrať program"
 
 msgctxt "#31134"
 msgid "Remaining"

@@ -192,10 +192,6 @@ msgctxt "#31050"
 msgid "Press [B]OK[/B] to stop"
 msgstr "Πατήστε το [B]OK[/B] για να διακοπή"
 
-msgctxt "#31051"
-msgid "Toggle language"
-msgstr "Εναλλαγή γλώσσας"
-
 msgctxt "#31052"
 msgid "filtered"
 msgstr "φιλτραρισμένο"

@@ -134,7 +134,7 @@ msgstr "Dernière connexion "
 
 msgctxt "#31030"
 msgid "System memory usage"
-msgstr "Mémoire système utilisée"
+msgstr "Mémoire système utilisée "
 
 msgctxt "#31031"
 msgid "Version info"
@@ -198,11 +198,7 @@ msgstr "Disponible"
 
 msgctxt "#31050"
 msgid "Press [B]OK[/B] to stop"
-msgstr "Appuyer sur [B]OK[/B] pour stopper"
-
-msgctxt "#31051"
-msgid "Toggle language"
-msgstr "Changer de langue"
+msgstr "Appuyer sur [B]OK[/B] pour arrêter"
 
 msgctxt "#31052"
 msgid "filtered"
@@ -214,7 +210,7 @@ msgstr "Basée sur Arial"
 
 msgctxt "#31054"
 msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
-msgstr "Appuyer sur [B]Gauche[/B] pour le retour rapide, ou [B]Droite[/B] pour l'avance rapide"
+msgstr "Appui sur [B]Gauche[/B] pour retour rapide, ou [B]Droite[/B] pour avance rapide"
 
 msgctxt "#31056"
 msgid "Go to playlist"
@@ -278,7 +274,7 @@ msgstr "Casting non disponible"
 
 msgctxt "#31080"
 msgid "Ends at"
-msgstr "Termine à"
+msgstr "Fin à "
 
 msgctxt "#31082"
 msgid "Lyrics add-on"
@@ -448,6 +444,10 @@ msgctxt "#31131"
 msgid "Choose skin fanart pack"
 msgstr "Choisir le paquet de FanArts pour l'habillage"
 
+msgctxt "#31132"
+msgid "Select Program"
+msgstr "Sélectionner un programme"
+
 msgctxt "#31134"
 msgid "Remaining"
 msgstr "Restant"
@@ -498,11 +498,11 @@ msgstr "Catégories"
 
 msgctxt "#31149"
 msgid "Select genre fanart pack"
-msgstr "Sélectionner le type de paquet de FanArts"
+msgstr "Sélectionner le paquet de FanArts de genres…"
 
 msgctxt "#31150"
 msgid "Repository"
-msgstr "Dépôt"
+msgstr "Dépôt "
 
 msgctxt "#31151"
 msgid "Unwatched music videos"

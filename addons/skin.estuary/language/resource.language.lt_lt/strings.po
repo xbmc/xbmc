@@ -200,10 +200,6 @@ msgctxt "#31050"
 msgid "Press [B]OK[/B] to stop"
 msgstr "Paspauskite [B]OK[/B] norėdami sustabdyti"
 
-msgctxt "#31051"
-msgid "Toggle language"
-msgstr "Perjungti kalbą"
-
 msgctxt "#31052"
 msgid "filtered"
 msgstr "filtruota"
@@ -447,6 +443,10 @@ msgstr "Su pagrindiniu meniu susiję nustatymai: susikonfigūruokite pradinį ek
 msgctxt "#31131"
 msgid "Choose skin fanart pack"
 msgstr "Pasirinkti teminės išvaizdos Fanart paketą"
+
+msgctxt "#31132"
+msgid "Select Program"
+msgstr "Pasirinkite programą"
 
 msgctxt "#31134"
 msgid "Remaining"

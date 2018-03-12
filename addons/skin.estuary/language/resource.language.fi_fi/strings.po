@@ -200,10 +200,6 @@ msgctxt "#31050"
 msgid "Press [B]OK[/B] to stop"
 msgstr "Pysäytä painamalla [B]OK[/B]"
 
-msgctxt "#31051"
-msgid "Toggle language"
-msgstr "Tekstitysraita"
-
 msgctxt "#31052"
 msgid "filtered"
 msgstr "suodatetut"
@@ -447,6 +443,10 @@ msgstr "Tämä kategoria sisältää päävalikkoon liittyvät asetukset."
 msgctxt "#31131"
 msgid "Choose skin fanart pack"
 msgstr "Valitse ulkoasun taustakuvapaketti"
+
+msgctxt "#31132"
+msgid "Select Program"
+msgstr "Valitse ohjelma"
 
 msgctxt "#31134"
 msgid "Remaining"

@@ -36,6 +36,10 @@ msgctxt "#31053"
 msgid "Arial based"
 msgstr "Падобны на Arial"
 
+msgctxt "#31067"
+msgid "Event log"
+msgstr "Журнал падзей"
+
 msgctxt "#31069"
 msgid "Last Updated"
 msgstr "Апошняе абнаўленьне"

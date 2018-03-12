@@ -200,10 +200,6 @@ msgctxt "#31050"
 msgid "Press [B]OK[/B] to stop"
 msgstr "Press [B]OK[/B] to stop"
 
-msgctxt "#31051"
-msgid "Toggle language"
-msgstr "Toggle language"
-
 msgctxt "#31052"
 msgid "filtered"
 msgstr "filtered"
@@ -447,6 +443,10 @@ msgstr "Main menu-related settings: Configure the home screen to your likings."
 msgctxt "#31131"
 msgid "Choose skin fanart pack"
 msgstr "Choose skin fanart pack"
+
+msgctxt "#31132"
+msgid "Select Program"
+msgstr "Select Program"
 
 msgctxt "#31134"
 msgid "Remaining"

@@ -188,10 +188,6 @@ msgctxt "#31050"
 msgid "Press [B]OK[/B] to stop"
 msgstr "กด [B]ตกลง[/B] เพื่อหยุด"
 
-msgctxt "#31051"
-msgid "Toggle language"
-msgstr "สลับภาษา"
-
 msgctxt "#31052"
 msgid "filtered"
 msgstr "ที่กรองแล้ว"

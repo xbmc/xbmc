@@ -192,10 +192,6 @@ msgctxt "#31050"
 msgid "Press [B]OK[/B] to stop"
 msgstr "Carregue em [B]OK[/B] para parar"
 
-msgctxt "#31051"
-msgid "Toggle language"
-msgstr "Alternar idioma"
-
 msgctxt "#31052"
 msgid "filtered"
 msgstr "filtrados"

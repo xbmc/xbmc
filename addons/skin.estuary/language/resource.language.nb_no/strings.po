@@ -200,10 +200,6 @@ msgctxt "#31050"
 msgid "Press [B]OK[/B] to stop"
 msgstr "Trykk [B]OK[/B] for å stoppe"
 
-msgctxt "#31051"
-msgid "Toggle language"
-msgstr "Endre språk"
-
 msgctxt "#31052"
 msgid "filtered"
 msgstr "filtrert"
@@ -447,6 +443,10 @@ msgstr "Hovedmenyrelaterte innstillinger. Tilpass hjemmeskjermen slik du ønsker
 msgctxt "#31131"
 msgid "Choose skin fanart pack"
 msgstr "Velg brukerkunstbidragspakke for drakt"
+
+msgctxt "#31132"
+msgid "Select Program"
+msgstr "Velg Program"
 
 msgctxt "#31134"
 msgid "Remaining"

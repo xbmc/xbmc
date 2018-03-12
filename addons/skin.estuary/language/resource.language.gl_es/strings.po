@@ -200,10 +200,6 @@ msgctxt "#31050"
 msgid "Press [B]OK[/B] to stop"
 msgstr "Premer [B]Aceptar[/B] para deter"
 
-msgctxt "#31051"
-msgid "Toggle language"
-msgstr "Cambiar idioma"
-
 msgctxt "#31052"
 msgid "filtered"
 msgstr "filtrado"
@@ -447,6 +443,10 @@ msgstr "Axustes do menú principal: Configura a pantalla principal ao teu gusto.
 msgctxt "#31131"
 msgid "Choose skin fanart pack"
 msgstr "Seleccionar paquete fanart do tema"
+
+msgctxt "#31132"
+msgid "Select Program"
+msgstr "Seleccionar programa"
 
 msgctxt "#31134"
 msgid "Remaining"

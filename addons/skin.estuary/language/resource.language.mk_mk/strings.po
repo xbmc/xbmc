@@ -168,10 +168,6 @@ msgctxt "#31050"
 msgid "Press [B]OK[/B] to stop"
 msgstr "Притисни [B]OK[/B] за стоп"
 
-msgctxt "#31051"
-msgid "Toggle language"
-msgstr "Промени јазик"
-
 msgctxt "#31052"
 msgid "filtered"
 msgstr "филтрирани"
@@ -299,6 +295,10 @@ msgstr "Негледани ТВ шоуа"
 msgctxt "#31127"
 msgid "Show icons"
 msgstr "Прикажувај икони"
+
+msgctxt "#31132"
+msgid "Select Program"
+msgstr "Одбери програм"
 
 msgctxt "#31134"
 msgid "Remaining"

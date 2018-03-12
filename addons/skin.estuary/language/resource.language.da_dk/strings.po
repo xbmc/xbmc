@@ -320,6 +320,10 @@ msgctxt "#31128"
 msgid "Contributors"
 msgstr "Bidragsydere"
 
+msgctxt "#31132"
+msgid "Select Program"
+msgstr "Vælg program"
+
 msgctxt "#31134"
 msgid "Remaining"
 msgstr "Tilbage"
@@ -327,6 +331,10 @@ msgstr "Tilbage"
 msgctxt "#31137"
 msgid "PVR info"
 msgstr "PVR-information"
+
+msgctxt "#31138"
+msgid "Player process info"
+msgstr "Procesinformation for afspilning"
 
 msgctxt "#31140"
 msgid "Pixel format"

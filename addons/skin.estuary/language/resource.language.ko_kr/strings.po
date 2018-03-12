@@ -192,10 +192,6 @@ msgctxt "#31050"
 msgid "Press [B]OK[/B] to stop"
 msgstr "[B]OK[/B]: 중지"
 
-msgctxt "#31051"
-msgid "Toggle language"
-msgstr "언어 전환"
-
 msgctxt "#31052"
 msgid "filtered"
 msgstr "필터 설정됨"

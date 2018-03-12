@@ -200,10 +200,6 @@ msgctxt "#31050"
 msgid "Press [B]OK[/B] to stop"
 msgstr "Druk [B]Ok[/B] om te stoppen"
 
-msgctxt "#31051"
-msgid "Toggle language"
-msgstr "Verander taal"
-
 msgctxt "#31052"
 msgid "filtered"
 msgstr "gefilterd"
@@ -447,6 +443,10 @@ msgstr "Hoofdmenu gerelateerde instellingen: Configureer het homescreen naar wen
 msgctxt "#31131"
 msgid "Choose skin fanart pack"
 msgstr "Kies skinfanartpakket"
+
+msgctxt "#31132"
+msgid "Select Program"
+msgstr "Selecteer programma"
 
 msgctxt "#31134"
 msgid "Remaining"

@@ -126,7 +126,7 @@ msgstr "Časový posun"
 
 msgctxt "#31028"
 msgid "Show fanart"
-msgstr "Zobrazit fanart"
+msgstr "Zobrazit fanouškovské umění"
 
 msgctxt "#31029"
 msgid "Last logged in"
@@ -199,10 +199,6 @@ msgstr "Dostupné"
 msgctxt "#31050"
 msgid "Press [B]OK[/B] to stop"
 msgstr "Stiskněte [B]OK[/B] pro zastavení"
-
-msgctxt "#31051"
-msgid "Toggle language"
-msgstr "Přepnout jazyk"
 
 msgctxt "#31052"
 msgid "filtered"
@@ -342,7 +338,7 @@ msgstr "Zeď"
 
 msgctxt "#31103"
 msgid "Enter text here..."
-msgstr "Sem zadejte text..."
+msgstr "Sem zadejte text…"
 
 msgctxt "#31104"
 msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
@@ -448,6 +444,10 @@ msgctxt "#31131"
 msgid "Choose skin fanart pack"
 msgstr "Zvolte balíček fanatrů vzhledu"
 
+msgctxt "#31132"
+msgid "Select Program"
+msgstr "Vybrat program"
+
 msgctxt "#31134"
 msgid "Remaining"
 msgstr "Zbývá"
@@ -470,7 +470,7 @@ msgstr "Dekodér videa"
 
 msgctxt "#31140"
 msgid "Pixel format"
-msgstr "Formát pixelu"
+msgstr "Formát obrazového bodu"
 
 msgctxt "#31141"
 msgid "Changes for version"

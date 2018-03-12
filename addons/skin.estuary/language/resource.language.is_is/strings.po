@@ -200,10 +200,6 @@ msgctxt "#31050"
 msgid "Press [B]OK[/B] to stop"
 msgstr "Ýttu á [B]OK[/B] til að stoppa"
 
-msgctxt "#31051"
-msgid "Toggle language"
-msgstr "Víxla tungumáli"
-
 msgctxt "#31052"
 msgid "filtered"
 msgstr "síað"
@@ -447,6 +443,10 @@ msgstr "Stillingar sem tengjast aðalvalmynd: Stilltu upphafsskjáinn eins og þ
 msgctxt "#31131"
 msgid "Choose skin fanart pack"
 msgstr "Veldu pakka með aðdáendamyndum fyrir skinn"
+
+msgctxt "#31132"
+msgid "Select Program"
+msgstr "Veldu forrit"
 
 msgctxt "#31134"
 msgid "Remaining"
