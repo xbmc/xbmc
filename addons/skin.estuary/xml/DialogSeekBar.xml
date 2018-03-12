@@ -217,7 +217,7 @@
 				<info>Player.Progress</info>
 				<texturebg border="3" colordiffuse="60FFFFFF">colors/white50.png</texturebg>
 				<midtexture colordiffuse="button_focus">colors/white.png</midtexture>
-				<visible>!VideoPlayer.HasEpg</visible>
+				<visible>!VideoPlayer.HasEpg + !Player.ChannelPreviewActive</visible>
 			</control>
 			<control type="slider" id="401">
 				<left>5</left>
@@ -227,7 +227,17 @@
 				<texturesliderbar colordiffuse="00FFFFFF">osd/progress/nub_bar.png</texturesliderbar>
 				<textureslidernib colordiffuse="button_focus">osd/progress/nub_bar.png</textureslidernib>
 				<textureslidernibfocus colordiffuse="button_focus">colors/white.png</textureslidernibfocus>
-				<visible>!VideoPlayer.HasEpg</visible>
+				<visible>Player.SeekEnabled + !VideoPlayer.HasEpg + !Player.ChannelPreviewActive</visible>
+			</control>
+			<control type="slider" id="402">
+				<left>5</left>
+				<top>65</top>
+				<width>100%</width>
+				<height>25</height>
+				<texturesliderbar colordiffuse="00FFFFFF">osd/progress/nub_bar.png</texturesliderbar>
+				<textureslidernib colordiffuse="button_focus">osd/progress/nub_bar.png</textureslidernib>
+				<textureslidernibfocus colordiffuse="button_focus">colors/white.png</textureslidernibfocus>
+				<visible>Player.SeekEnabled + VideoPlayer.HasEpg + !Player.ChannelPreviewActive</visible>
 			</control>
 		</control>
 		<control type="group">

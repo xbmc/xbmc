@@ -9057,6 +9057,28 @@ std::string CGUIInfoManager::GetCurrentPlayTimeRemaining(TIME_FORMAT format) con
   return "";
 }
 
+int CGUIInfoManager::GetEpgEventProgress() const
+{
+  return std::lrintf(static_cast<float>(CServiceBroker::GetPVRManager().GetElapsedTime()) / CServiceBroker::GetPVRManager().GetTotalTime() * 100.0f);
+}
+
+int CGUIInfoManager::GetEpgEventSeekPercent() const
+{
+  int seekSize = g_application.GetAppPlayer().GetSeekHandler().GetSeekSize();
+  if (seekSize != 0)
+  {
+    float elapsedTime = static_cast<float>(CServiceBroker::GetPVRManager().GetElapsedTime() / 1000);
+    float totalTime = static_cast<float>(CServiceBroker::GetPVRManager().GetTotalTime() / 1000);
+    float percentPerSecond = 100.0f / totalTime;
+    float percent = elapsedTime / totalTime * 100.0f + percentPerSecond * seekSize;
+    return std::lrintf(percent);
+  }
+  else
+  {
+    return GetEpgEventProgress();
+  }
+}
+
 void CGUIInfoManager::ResetCurrentItem()
 {
   m_currentFile->Reset();

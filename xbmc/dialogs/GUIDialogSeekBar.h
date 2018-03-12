@@ -31,4 +31,5 @@ public:
   void FrameMove() override;
 private:
   unsigned int m_lastPercent = ~0U;
+  unsigned int m_lastEpgEventPercent = ~0U;
 };
