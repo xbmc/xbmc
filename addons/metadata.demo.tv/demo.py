@@ -46,156 +46,146 @@ elif action == 'getdetails':
     url=urllib.unquote_plus(params["url"])
     if url == '/path/to/show':
         liz=xbmcgui.ListItem('Demo show 1', offscreen=True)
-        liz.setProperty('video.original_title', 'Demo shåvv 1')
-        liz.setProperty('video.sort_title', '2')
-        liz.setProperty('video.ratings', '1')
-        liz.setProperty('video.rating1.value', '5')
-        liz.setProperty('video.rating1.votes', '100')
-        liz.setProperty('video.user_rating', '5')
-        liz.setProperty('video.unique_id', '123')
-        liz.setProperty('video.plot_outline', 'Outline yo')
-        liz.setProperty('video.plot', 'Plot yo')
-        liz.setProperty('video.tag_line', 'Tag yo')
-        liz.setProperty('video.duration_minutes', '110')
-        liz.setProperty('video.mpaa', 'T')
-        liz.setProperty('video.premiere_year', '2007')
-        liz.setProperty('video.status', 'Cancelled')
-        liz.setProperty('video.first_aired', '2007-01-01')
-        liz.setProperty('video.trailer', '/home/akva/Videos/porn/bukkake.mkv')
-        liz.setProperty('video.thumbs', '2')
-        liz.setProperty('video.thumb1.url', 'DefaultBackFanart.png')
-        liz.setProperty('video.thumb1.aspect', '1.78')
-        liz.setProperty('video.thumb2.url', '/home/akva/Pictures/hawaii-shirt.png')
-        liz.setProperty('video.thumb2.aspect', '2.35')
-        liz.setProperty('video.genre','Action / Comedy')
-        liz.setProperty('video.country', 'Norway / Sweden / China')
-        liz.setProperty('video.writing_credits', 'None / Want / To Admit It')
-        liz.setProperty('video.director', 'spiff / spiff2')
-        liz.setProperty('video.seasons', '2')
-        liz.setProperty('video.season1.name', 'Horrible')
-        liz.setProperty('video.season2.name', 'Crap')
-        liz.setProperty('video.actors', '2')
-        liz.setProperty('video.actor1.name', 'spiff')
-        liz.setProperty('video.actor1.role', 'himself')
-        liz.setProperty('video.actor1.sort_order', '2')
-        liz.setProperty('video.actor1.thumb', '/home/akva/Pictures/fish.jpg')
-        liz.setProperty('video.actor1.thumb_aspect', '1.33')
-        liz.setProperty('video.actor2.name', 'monkey')
-        liz.setProperty('video.actor2.role', 'orange')
-        liz.setProperty('video.actor2.sort_order', '1')
-        liz.setProperty('video.actor1.thumb_aspect', '1.78')
-        liz.setProperty('video.actor2.thumb', '/home/akva/Pictures/coffee.jpg')
-        liz.setProperty('video.tag', 'Porn / Umomz')
-        liz.setProperty('video.studio', 'Studio1 / Studio2')
-        liz.setProperty('video.episode_guide_url', '/path/to/show/guide')
-        liz.setProperty('video.fanarts', '2')
-        liz.setProperty('video.fanart1.url', 'DefaultBackFanart.png')
-        liz.setProperty('video.fanart1.preview', 'DefaultBackFanart.png')
-        liz.setProperty('video.fanart1.dim', '720')
-        liz.setProperty('video.fanart2.url', '/home/akva/Pictures/hawaii-shirt.png')
-        liz.setProperty('video.fanart2.preview', '/home/akva/Pictures/hawaii-shirt.png')
-        liz.setProperty('video.fanart2.dim', '1080')
-        liz.setProperty('video.date_added', '2016-01-01')
+        liz.setInfo('video',
+                    {'title': 'Demo show 1',
+                     'originaltitle': 'Demo shåvv 1',
+                     'sorttitle': '2',
+                     'userrating': 5,
+                     'plotoutline': 'Outline yo',
+                     'plot': 'Plot yo',
+                     'tagline': 'Tag yo',
+                     'duration': 110,
+                     'mpaa': 'T',
+                     'trailer': '/home/akva//porn/bukkake.mkv',
+                     'genre': ['Action', 'Comedy'],
+                     'country': ['Norway', 'Sweden', 'China'],
+                     'credits': ['None', 'Want', 'To Admit It'],
+                     'director': ['spiff', 'spiff2'],
+                     'studio': ['Studio1', 'Studio2'],
+                     'dateadded': '2016-01-01',
+                     'premiered': '2015-01-01',
+                     'aired': '2007-01-01',
+                     'status': 'Cancelled',
+                     'episodeguide': '/path/to/show/guide',
+                     'tag': ['Porn', 'Umomz']
+                    })
+        liz.setRating("imdb", 9, 100000, True )
+        liz.setRating("tvdb", 8.9, 1000)
+        liz.setUniqueIDs({ 'imdb': 'tt8938399', 'tvdb' : '9837493' }, 'tvdb')
+        liz.addSeason(1, 'Horrible')
+        liz.addSeason(2, 'Crap')
+        liz.setCast([{'name': 'spiff', 'role': 'himself', 'thumbnail': '/home/akva/Pictures/fish.jpg', 'order': 2},
+                    {'name': 'monkey', 'role': 'orange', 'thumbnail': '/home/akva/Pictures/coffee.jpg', 'order': 1}])
+        liz.addAvailableArtwork('DefaultBackFanart.png', 'banner')
+        liz.addAvailableArtwork('/home/akva/Pictures/hawaii-shirt.png', 'poster')
+        liz.setAvailableFanart([{'image': 'DefaultBackFanart.png', 'preview': 'DefaultBackFanart.png'}, 
+                                {'image': '/home/akva/Pictures/hawaii-shirt.png', 'preview': '/home/akva/Pictures/hawaii-shirt.png'}])
         xbmcplugin.setResolvedUrl(handle=int(sys.argv[1]), succeeded=True, listitem=liz)
 elif action == 'getepisodelist':
     url=urllib.unquote_plus(params["url"])
     print('in here yo ' + url)
     if url == '/path/to/show/guide':
         liz=xbmcgui.ListItem('Demo Episode 1x1', offscreen=True)
-        liz.setProperty('video.episode', '1')
-        liz.setProperty('video.season', '1')
-        liz.setProperty('video.aired', '2015-01-01')
-        liz.setProperty('video.id', '1')
-        liz.setProperty('video.url', '/path/to/episode1')
+        liz.setInfo('video',
+                    {'title': 'Demo Episode 1',
+                     'season': 1,
+                     'episode': 1,
+                     'aired': '2015-01-01'
+                     })
+        liz.addAvailableArtwork('/path/to/episode1','banner')
         xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url="/path/to/episode1", listitem=liz, isFolder=False)
         liz=xbmcgui.ListItem('Demo Episode 2x2', offscreen=True)
-        liz.setProperty('video.episode', '2')
+        liz.setInfo('video',
+                    {'title': 'Demo Episode 2',
+                     'season': 2,
+                     'episode': 2,
+                     'aired': '2014-01-01'
+                     })
+        liz.addAvailableArtwork('/path/to/episode2','banner')
         #liz.setProperty('video.sub_episode', '1')
-        liz.setProperty('video.season', '2')
-        liz.setProperty('video.aired', '2014-01-01')
-        liz.setProperty('video.id', '2')
-        liz.setProperty('video.url', '/path/to/episode2')
         xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url="/path/to/episode2", listitem=liz, isFolder=False)
 elif action == 'getepisodedetails':
     url=urllib.unquote_plus(params["url"])
     if url == '/path/to/episode1':
         liz=xbmcgui.ListItem('Demo Episode 1', offscreen=True)
-        liz.setProperty('video.original_title', 'Demo æpisod 1x1')
-        liz.setProperty('video.sort_title', '2')
-        liz.setProperty('video.episode', '1')
-        liz.setProperty('video.season', '1')
-        liz.setProperty('video.ratings', '1')
-        liz.setProperty('video.rating1.value', '5')
-        liz.setProperty('video.rating1.votes', '100')
-        liz.setProperty('video.user_rating', '5')
-        liz.setProperty('video.unique_id', '123')
-        liz.setProperty('video.plot_outline', 'Outline yo')
-        liz.setProperty('video.plot', 'Plot yo')
-        liz.setProperty('video.tag_line', 'Tag yo')
-        liz.setProperty('video.duration_minutes', '110')
-        liz.setProperty('video.mpaa', 'T')
-        liz.setProperty('video.first_aired', '2007-01-01')
-        liz.setProperty('video.thumbs', '2')
-        liz.setProperty('video.thumb1.url', 'DefaultBackFanart.png')
-        liz.setProperty('video.thumb1.aspect', '1.78')
-        liz.setProperty('video.thumb2.url', '/home/akva/Pictures/hawaii-shirt.png')
-        liz.setProperty('video.thumb2.aspect', '2.35')
-        liz.setProperty('video.genre','Action / Comedy')
-        liz.setProperty('video.country', 'Norway / Sweden / China')
-        liz.setProperty('video.writing_credits', 'None / Want / To Admit It')
-        liz.setProperty('video.director', 'spiff / spiff2')
-        liz.setProperty('video.actors', '2')
-        liz.setProperty('video.actor1.name', 'spiff')
-        liz.setProperty('video.actor1.role', 'himself')
-        liz.setProperty('video.actor1.sort_order', '2')
-        liz.setProperty('video.actor1.thumb', '/home/akva/Pictures/fish.jpg')
-        liz.setProperty('video.actor1.thumb_aspect', 'poster')
-        liz.setProperty('video.actor2.name', 'monkey')
-        liz.setProperty('video.actor2.role', 'orange')
-        liz.setProperty('video.actor2.sort_order', '1')
-        liz.setProperty('video.actor1.thumb_aspect', '1.78')
-        liz.setProperty('video.actor2.thumb', '/home/akva/Pictures/coffee.jpg')
-        liz.setProperty('video.date_added', '2016-01-01')
+        liz.setInfo('video',
+                    {'title': 'Demo Episode 1',
+                     'originaltitle': 'Demo æpisod 1x1',
+                     'sorttitle': '2',
+                     'episode': 1,
+                     'season': 1,
+                     'userrating': 5,
+                     'plotoutline': 'Outline yo',
+                     'plot': 'Plot yo',
+                     'tagline': 'Tag yo',
+                     'duration': 110,
+                     'mpaa': 'T',
+                     'trailer': '/home/akva//porn/bukkake.mkv',
+                     'genre': ['Action', 'Comedy'],
+                     'country': ['Norway', 'Sweden', 'China'],
+                     'credits': ['None', 'Want', 'To Admit It'],
+                     'director': ['spiff', 'spiff2'],
+                     'studio': ['Studio1', 'Studio2'],
+                     'dateadded': '2016-01-01',
+                     'premiered': '2015-01-01',
+                     'aired': '2007-01-01',
+                     'tag': ['Porn', 'Umomz']
+                    })
+        liz.setRating("imdb", 9, 100000, True )
+        liz.setRating("tvdb", 8.9, 1000)
+        liz.setUniqueIDs({ 'tvdb': '3894', 'imdb' : 'tt384940' }, 'tvdb')
+        liz.addSeason(1, 'Horrible')
+        liz.addSeason(2, 'Crap')
+        liz.setCast([{'name': 'spiff', 'role': 'himself', 'thumbnail': '/home/akva/Pictures/fish.jpg', 'order': 2},
+                    {'name': 'monkey', 'role': 'orange', 'thumbnail': '/home/akva/Pictures/coffee.jpg', 'order': 1}])
+        liz.addAvailableArtwork('DefaultBackFanart.png', 'banner')
+        liz.addAvailableArtwork('/home/akva/Pictures/hawaii-shirt.png', 'poster')
+        liz.setAvailableFanart([{'image': 'DefaultBackFanart.png', 'preview': 'DefaultBackFanart.png'}, 
+                                {'image': '/home/akva/Pictures/hawaii-shirt.png', 'preview': '/home/akva/Pictures/hawaii-shirt.png'}])
         xbmcplugin.setResolvedUrl(handle=int(sys.argv[1]), succeeded=True, listitem=liz)
     elif url == '/path/to/episode2':
         liz=xbmcgui.ListItem('Demo Episode 2', offscreen=True)
-        liz.setProperty('video.original_title', 'Demo æpisod 2x2')
-        liz.setProperty('video.sort_title', '1')
-        liz.setProperty('video.episode', '2')
-        liz.setProperty('video.season', '2')
-        liz.setProperty('video.ratings', '1')
-        liz.setProperty('video.rating1.value', '5')
-        liz.setProperty('video.rating1.votes', '100')
-        liz.setProperty('video.user_rating', '5')
-        liz.setProperty('video.unique_id', '123')
-        liz.setProperty('video.plot_outline', 'Outline yo')
-        liz.setProperty('video.plot', 'Plot yo')
-        liz.setProperty('video.tag_line', 'Tag yo')
-        liz.setProperty('video.duration_minutes', '110')
-        liz.setProperty('video.mpaa', 'T')
-        liz.setProperty('video.first_aired', '2007-01-01')
-        liz.setProperty('video.thumbs', '2')
-        liz.setProperty('video.thumb1.url', 'DefaultBackFanart.png')
-        liz.setProperty('video.thumb1.aspect', '1.78')
-        liz.setProperty('video.thumb2.url', '/home/akva/Pictures/hawaii-shirt.png')
-        liz.setProperty('video.thumb2.aspect', '2.35')
-        liz.setProperty('video.genre','Action / Comedy')
-        liz.setProperty('video.country', 'Norway / Sweden / China')
-        liz.setProperty('video.writing_credits', 'None / Want / To Admit It')
-        liz.setProperty('video.director', 'spiff / spiff2')
-        liz.setProperty('video.actors', '2')
-        liz.setProperty('video.actor1.name', 'spiff')
-        liz.setProperty('video.actor1.role', 'himself')
-        liz.setProperty('video.actor1.sort_order', '2')
-        liz.setProperty('video.actor1.thumb', '/home/akva/Pictures/fish.jpg')
-        liz.setProperty('video.actor1.thumb_aspect', 'poster')
-        liz.setProperty('video.actor2.name', 'monkey')
-        liz.setProperty('video.actor2.role', 'orange')
-        liz.setProperty('video.actor2.sort_order', '1')
-        liz.setProperty('video.actor1.thumb_aspect', '1.78')
-        liz.setProperty('video.actor2.thumb', '/home/akva/Pictures/coffee.jpg')
-        liz.setProperty('video.date_added', '2016-01-01')
+        liz.setInfo('video',
+                    {'title': 'Demo Episode 2',
+                     'originaltitle': 'Demo æpisod 2x2',
+                     'sorttitle': '1',
+                     'episode': 2,
+                     'season': 2,
+                     'userrating': 8,
+                     'plotoutline': 'Outline yo',
+                     'plot': 'Plot yo',
+                     'tagline': 'Tag yo',
+                     'duration': 110,
+                     'mpaa': 'T',
+                     'trailer': '/home/akva//porn/bukkake.mkv',
+                     'genre': ['Action', 'Comedy'],
+                     'country': ['Norway', 'Sweden', 'China'],
+                     'credits': ['None', 'Want', 'To Admit It'],
+                     'director': ['spiff', 'spiff2'],
+                     'studio': ['Studio1', 'Studio2'],
+                     'dateadded': '2016-01-01',
+                     'premiered': '2015-01-01',
+                     'aired': '2007-01-01',
+                     'tag': ['Porn', 'Umomz']
+                    })
+        liz.setRating("imdb", 7, 25457, True )
+        liz.setRating("tvdb", 8.1, 5478)
+        liz.setUniqueIDs({ 'tvdb': '3894', 'imdb' : 'tt384940' })
+        liz.addSeason(1, 'Horrible')
+        liz.addSeason(2, 'Crap')
+        liz.setCast([{'name': 'spiff', 'role': 'himself', 'thumbnail': '/home/akva/Pictures/fish.jpg', 'order': 2},
+                    {'name': 'monkey', 'role': 'orange', 'thumbnail': '/home/akva/Pictures/coffee.jpg', 'order': 1}])
+        liz.addAvailableArtwork('DefaultBackFanart.png','banner')
+        liz.addAvailableArtwork('/home/akva/Pictures/hawaii-shirt.png','poster')
+        liz.setAvailableFanart([{'image': 'DefaultBackFanart.png', 'preview': 'DefaultBackFanart.png'}, 
+                                {'image': '/home/akva/Pictures/hawaii-shirt.png', 'preview': '/home/akva/Pictures/hawaii-shirt.png'}])
         xbmcplugin.setResolvedUrl(handle=int(sys.argv[1]), succeeded=True, listitem=liz)
+elif action == 'nfourl': 
+    nfo=urllib.unquote_plus(params["nfo"]) 
+    print 'Find url from nfo file' 
+    liz=xbmcgui.ListItem('Demo show 1', offscreen=True) 
+    xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url="/path/to/show", listitem=liz, isFolder=True) 
+ 
 
 
 

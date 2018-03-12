@@ -804,13 +804,13 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_xbmcgui_listitem
-      /// @brief \python_func{ addAvailableThumb(images) }
+      /// @brief \python_func{ addAvailableArtwork(images) }
       ///-----------------------------------------------------------------------
-      /// @brief Add a thumb to available thumbs (needed for scrapers)
+      /// @brief Add an image to available artworks (needed for scrapers)
       ///
       /// @param url            string (image path url)
-      /// @param aspect         [opt] string (image type)
-      /// @param referrer       [opt] string (referr url)
+      /// @param art_type       string (image type)
+      /// @param referrer       [opt] string (referrer url)
       /// @param cache          [opt] string (filename in cache)
       /// @param post           [opt] bool (use post to retrieve the image, default false)
       /// @param isgz           [opt] bool (use gzip to retrieve the image, default false)
@@ -822,13 +822,13 @@ namespace XBMCAddon
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
       /// ...
-      /// listitem.addAvailableThumb(path_to_image_1, "1.77")
+      /// listitem.addAvailableArtwork(path_to_image_1, "thumb")
       /// ...
       /// ~~~~~~~~~~~~~
       ///
-      addAvailableThumb(...);
+      addAvailableArtwork(...);
 #else
-      void addAvailableThumb(std::string url, std::string aspect = "", std::string referrer = "", std::string cache = "", bool post = false, bool isgz = false, int season = -1);
+      void addAvailableArtwork(std::string url, std::string art_type = "", std::string referrer = "", std::string cache = "", bool post = false, bool isgz = false, int season = -1);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS

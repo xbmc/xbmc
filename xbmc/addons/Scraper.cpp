@@ -440,6 +440,27 @@ CScraperUrl CScraper::NfoUrl(const std::string &sNfoContent)
   if (IsNoop())
     return scurlRet;
 
+  if (m_isPython)
+  {
+    std::stringstream str;
+    str << "plugin://" << ID() << "?action=NfoUrl&nfo="
+      << CURL::Encode(sNfoContent);
+    CFileItemList items;
+    if (!XFILE::CDirectory::GetDirectory(str.str(), items))
+      return scurlRet;
+
+    if (items.Size() == 0)
+      return scurlRet;
+    if (items.Size() > 1)
+      CLog::Log(LOGWARNING, "%s: scraper returned multiple results; using first", __FUNCTION__);
+
+    CScraperUrl::SUrlEntry surl;
+    surl.m_type = CScraperUrl::URL_TYPE_GENERAL;
+    surl.m_url = items[0]->GetPath();
+    scurlRet.m_url.emplace_back(surl);
+    return scurlRet;
+  }
+    
   // scraper function takes contents of .nfo file, returns XML (see below)
   std::vector<std::string> vcsIn;
   vcsIn.push_back(sNfoContent);
@@ -791,85 +812,8 @@ void DetailsFromFileItem<CArtist>(const CFileItem &item, CArtist &artist)
 template<>
 void DetailsFromFileItem<CVideoInfoTag>(const CFileItem &item, CVideoInfoTag &tag)
 {
-  tag.SetTitle(item.GetLabel());
-  tag.SetOriginalTitle(FromString(item, "video.original_title"));
-  tag.SetShowTitle(FromString(item, "video.show_title"));
-  tag.SetSortTitle(FromString(item, "video.sort_title"));
-  int nRatings = item.GetProperty("video.ratings").asInteger32();
-  for (int i = 0; i < nRatings; ++i)
-  {
-    std::stringstream str;
-    str << "video.rating" << i + 1;
-    int votes = item.GetProperty(str.str() + ".votes").asInteger32();
-    float rating = item.GetProperty(str.str() + ".value").asFloat();
-    tag.SetRating(rating, votes, "default");
-  }
-  tag.m_iUserRating = item.GetProperty("video.user_rating").asInteger32();
-  tag.m_iTop250 = item.GetProperty("video.top250").asInteger32();
-  tag.m_iSeason = item.GetProperty("video.season").asInteger32();
-  tag.m_iEpisode = item.GetProperty("video.episode").asInteger32();
-  tag.m_iTrack = item.GetProperty("video.track").asInteger32();
-  tag.SetUniqueIDs({{"IMDB", FromString(item, "video.imdb_id")}});
-  tag.m_iSpecialSortSeason = item.GetProperty("video.display_season").asInteger32();
-  tag.m_iSpecialSortEpisode = item.GetProperty("video.display_episode").asInteger32();
-  tag.SetPlotOutline(FromString(item, "video.plot_outline"));
-  tag.SetPlot(FromString(item, "video.plot"));
-  tag.SetTagLine(FromString(item, "video.tag_line"));
-  tag.m_duration = item.GetProperty("video.duration_minutes").asInteger32();
-  tag.SetMPAARating(FromString(item, "video.mpaa"));
-  tag.SetYear(item.GetProperty("video.premiere_year").asInteger32());
-  tag.SetStatus(FromString(item, "video.status"));
-  tag.SetProductionCode(FromString(item, "video.production_code"));
-  tag.m_firstAired.SetFromDBDate(FromString(item, "video.first_aired"));
-  tag.SetAlbum(FromString(item, "video.album"));
-  tag.SetTrailer(FromString(item, "video.trailer"));
-  int nThumbs = item.GetProperty("video.thumbs").asInteger32();
-  ParseThumbs(tag.m_strPictureURL, item, nThumbs, "video.thumb");
-  tag.SetGenre(FromArray(item, "video.genre", 1));
-  tag.SetCountry(FromArray(item, "video.country", 1));
-  tag.SetWritingCredits(FromArray(item, "video.writing_credits", 1));
-  tag.SetDirector(FromArray(item, "video.director", 1));
-  tag.SetShowLink(FromArray(item, "video.tvshow_links", 1));
-  int nSeasons = item.GetProperty("video.seasons").asInteger32();
-  for (int i = 0; i < nSeasons; ++i)
-  {
-    std::stringstream str;
-    str << "video.season" << i + 1;
-    tag.m_namedSeasons.insert(std::make_pair(i + 1, FromString(item, str.str() + ".name")));
-  }
-  int nActors = item.GetProperty("video.actors").asInteger32();
-  for (int i = 0; i < nActors; ++i)
-  {
-    std::stringstream str;
-    str << "video.actor" << i + 1;
-    SActorInfo actor;
-    actor.strName = FromString(item, str.str() + ".name");
-    actor.strRole = FromString(item, str.str() + ".role");
-    actor.order = item.GetProperty(str.str() + ".sort_order").asInteger32();
-    std::string url = FromString(item, str.str() + ".thumb");
-    if (!url.empty())
-    {
-      auto aspect = item.GetProperty(str.str() + ".thumb_aspect").asInteger32();
-      TiXmlElement thumb("thumb");
-      thumb.SetAttribute("aspect", aspect);
-      TiXmlText text(url);
-      thumb.InsertEndChild(text);
-      actor.thumbUrl.ParseElement(&thumb);
-    }
-    tag.m_cast.push_back(actor);
-  }
-
-  tag.SetSet(FromString(item, "video.set_name"));
-  tag.SetSetOverview(FromString(item, "video.set_overview"));
-  tag.SetTags(FromArray(item, "video.tags", 1));
-  tag.SetStudio(FromArray(item, "video.studio", 1));
-  tag.SetArtist(FromArray(item, "video.artist", 1));
-  tag.m_strEpisodeGuide =
-      "<episodeguide>" + FromString(item, "video.episode_guide_url") + "</episodeguide>";
-  int nFanart = item.GetProperty("video.fanarts").asInteger32();
-  tag.m_fanart.m_xml = ParseFanart(item, nFanart, "video.fanart");
-  tag.m_fanart.Unpack();
-  tag.m_firstAired.SetFromDBDate(FromString(item, "video.date_added"));
+  if (item.HasVideoInfoTag())
+    tag = std::move(*item.GetVideoInfoTag());
 }
 
 template<class T>
@@ -1253,15 +1197,16 @@ EPISODELIST CScraper::GetEpisodeList(XFILE::CCurlFile &fcurl, const CScraperUrl 
     for (int i = 0; i < items.Size(); ++i)
     {
       EPISODE ep;
-      ep.strTitle = items[i]->GetLabel();
-      ep.iSeason = items[i]->GetProperty("video.season").asInteger32();
-      ep.iEpisode = items[i]->GetProperty("video.episode").asInteger32();
-      ep.iSubepisode = items[i]->GetProperty("video.sub_episode").asInteger32();
+      const auto& tag = *items[i]->GetVideoInfoTag();
+      ep.strTitle = tag.m_strTitle;
+      ep.iSeason = tag.m_iSeason;
+      ep.iEpisode = tag.m_iEpisode;
+      ep.cDate = tag.m_firstAired;
+      ep.iSubepisode = items[i]->GetProperty("video.sub_episode").asInteger();
       CScraperUrl::SUrlEntry surl;
       surl.m_type = CScraperUrl::URL_TYPE_GENERAL;
-      surl.m_url = FromString(*items[i], "video.url");
+      surl.m_url = items[i]->GetURL().Get();
       ep.cScraperUrl.m_url.push_back(surl);
-      ep.cScraperUrl.strId = FromString(*items[i], "video.unique_id");
       vcep.push_back(ep);
     }
 
@@ -1457,7 +1402,7 @@ bool CScraper::GetArtwork(XFILE::CCurlFile &fcurl, CVideoInfoTag &details)
             ADDON::TranslateContent(Content()).c_str(), Version().asString().c_str());
 
   if (m_isPython)
-    return PythonDetails(ID(), "id", details.GetUniqueID("IMDB"), "getartwork", details);
+    return PythonDetails(ID(), "id", details.GetUniqueID(), "getartwork", details);
 
   std::vector<std::string> vcsIn;
   CScraperUrl scurl;
