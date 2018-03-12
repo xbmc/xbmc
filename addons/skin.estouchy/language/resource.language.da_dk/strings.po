@@ -60,6 +60,10 @@ msgctxt "#31017"
 msgid "PVR info"
 msgstr "PVR-information"
 
+msgctxt "#31018"
+msgid "Player process info"
+msgstr "Procesinformation for afspilning"
+
 msgctxt "#31020"
 msgid "Pixel format"
 msgstr "Pixelformat"

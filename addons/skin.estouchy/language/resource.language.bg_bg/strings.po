@@ -42,7 +42,7 @@ msgstr "Контекстно меню"
 
 msgctxt "#31009"
 msgid "Working..."
-msgstr "Работи..."
+msgstr "В процес на работа…"
 
 msgctxt "#31011"
 msgid "Recent"
@@ -172,6 +172,14 @@ msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
 msgstr "Изберете облик · Задайте език и район · Променете настройките на списъците с файлове · Настройте скрийнсейвър"
 
+msgctxt "#31405"
+msgid "Configure & manage media sharing services · Configure & manage the weather service"
+msgstr "Настройки на услугите за споделяне · Настройки на услугата за метеорологична прогноза"
+
+msgctxt "#31406"
+msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
+msgstr "Настройка на екрана · Настройка на звука · Настройка на достъпа до Интернет · Настройка на пестенето на енергия · Настройка на журналите"
+
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "Изберете потребителски профил,[CR]за да продължите"
@@ -230,4 +238,4 @@ msgstr "При възпроизвеждане на видео или аудио 
 
 msgctxt "#31904"
 msgid "Now Playing Title..."
-msgstr "Сега се възпроизвежда..."
+msgstr "Възпроизвеждане…"

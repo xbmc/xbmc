@@ -78,7 +78,7 @@ msgstr "Format de pixel"
 
 msgctxt "#31021"
 msgid "System memory usage"
-msgstr "Mémoire système utilisée"
+msgstr "Mémoire système utilisée "
 
 msgctxt "#31024"
 msgid "Page"

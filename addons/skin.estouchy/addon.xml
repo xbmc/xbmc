@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="skin.estouchy" version="2.0.12" name="Estouchy" provider-name="Team Kodi">
+<addon id="skin.estouchy" version="2.0.13" name="Estouchy" provider-name="Team Kodi">
 	<requires>
 		<import addon="xbmc.gui" version="5.13.0"/>
 	</requires>
@@ -50,6 +50,7 @@
 		<summary lang="szl">Skōra dlŏ maszin z tykowym ekranym</summary>
 		<summary lang="th_TH">หน้าตาสำหรับอุปกรณ์สัมผัส</summary>
 		<summary lang="tr_TR">Dokunmatik ekranlı aygıtlar için dış görünüm</summary>
+		<summary lang="uk_UA">Скін для сенсорних пристроїв</summary>
 		<summary lang="zh_CN">针对触屏设备的皮肤</summary>
 		<summary lang="zh_TW">為具有觸控螢幕的裝置所製作的佈景主題</summary>
 		<description lang="af_ZA">Oortreksel ontwerp om op raakskerm toestelle soos tablette en slimfone te gebruik</description>
