@@ -579,14 +579,16 @@ int CPVRGUIInfo::TranslateIntInfo(const CFileItem &item, DWORD dwInfo) const
   if (dwInfo == PVR_EPG_EVENT_PROGRESS)
   {
     CPVREpgInfoTagPtr epgTag;
-
     const CPVRChannelPtr channel = item.GetPVRChannelInfoTag();
     if (channel)
       epgTag = channel->GetEPGNow();
     if (!epgTag)
       epgTag = item.GetEPGInfoTag();
-    if (epgTag)
+
+    if (epgTag && epgTag != GetPlayingTag())
       iReturn = std::lrintf(epgTag->ProgressPercentage());
+    else
+      iReturn = std::lrintf(static_cast<float>(GetElapsedTime()) / m_iDuration * 100);
   }
   else if (dwInfo == PVR_ACTUAL_STREAM_SIG_PROGR)
     iReturn = (int) ((float) m_qualityInfo.iSignal / 0xFFFF * 100);
