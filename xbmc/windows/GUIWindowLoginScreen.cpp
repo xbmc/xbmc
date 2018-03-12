@@ -338,11 +338,10 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
 
   JSONRPC::CJSONRPC::Initialize();
 
-  // Restart context menu manager
-  CServiceBroker::GetContextMenuManager().Init();
-
-  // restart PVR services
-  CServiceBroker::GetPVRManager().Init();
+  if (!g_application.m_ServiceManager->InitStageThree())
+  {
+    CLog::Log(LOGERROR, "CGUIWindowLoginScreen - Init3 failed");
+  }
 
   CServiceBroker::GetFavouritesService().ReInit(profileManager.GetProfileUserDataFolder());
 
