@@ -1314,6 +1314,11 @@ void CVideoInfoTag::SetTitle(std::string title)
   m_strTitle = Trim(std::move(title));
 }
 
+std::string const &CVideoInfoTag::GetTitle()
+{
+  return m_strTitle;
+}
+
 void CVideoInfoTag::SetSortTitle(std::string sortTitle)
 {
   m_strSortTitle = Trim(std::move(sortTitle));

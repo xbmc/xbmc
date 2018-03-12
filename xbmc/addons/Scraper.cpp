@@ -894,12 +894,21 @@ static bool PythonDetails(const std::string &ID,
 // fetch list of matching movies sorted by relevance (may be empty);
 // throws CScraperError on error; first called with fFirst set, then unset if first try fails
 std::vector<CScraperUrl> CScraper::FindMovie(XFILE::CCurlFile &fcurl,
-                                             const std::string &sMovie,
+                                             const std::string &movieTitle, int movieYear,
                                              bool fFirst)
 {
   // prepare parameters for URL creation
-  std::string sTitle, sTitleYear, sYear;
-  CUtil::CleanString(sMovie, sTitle, sTitleYear, sYear, true /*fRemoveExt*/, fFirst);
+  std::string sTitle, sYear;
+  if (movieYear < 0)
+  {
+    std::string sTitleYear;
+    CUtil::CleanString(movieTitle, sTitle, sTitleYear, sYear, true /*fRemoveExt*/, fFirst);
+  }
+  else
+  {
+    sTitle = movieTitle;
+    sYear = std::to_string( movieYear );
+  }
 
   CLog::Log(LOGDEBUG,
             "%s: Searching for '%s' using %s scraper "

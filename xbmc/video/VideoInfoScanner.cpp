@@ -563,9 +563,17 @@ namespace VIDEO
 
     CScraperUrl url;
     int retVal = 0;
+    std::string movieTitle = pItem->GetMovieName(bDirNames);
+    int movieYear = -1; // hint that movie title was not found
+    if (result == CInfoScanner::TITLE_NFO)
+    {
+      CVideoInfoTag* tag = pItem->GetVideoInfoTag();
+      movieTitle = tag->GetTitle();
+      movieYear = tag->GetYear(); // movieYear is expected to be >= 0
+    }
     if (pURL && !pURL->m_url.empty())
       url = *pURL;
-    else if ((retVal = FindVideo(pItem->GetMovieName(bDirNames), info2, url, pDlgProgress)) <= 0)
+    else if ((retVal = FindVideo(movieTitle, movieYear, info2, url, pDlgProgress)) <= 0)
       return retVal < 0 ? INFO_CANCELLED : INFO_NOT_FOUND;
 
     CLog::Log(LOGDEBUG,
@@ -639,9 +647,17 @@ namespace VIDEO
 
     CScraperUrl url;
     int retVal = 0;
+    std::string movieTitle = pItem->GetMovieName(bDirNames);
+    int movieYear = -1; // hint that movie title was not found
+    if (result == CInfoScanner::TITLE_NFO)
+    {
+      CVideoInfoTag* tag = pItem->GetVideoInfoTag();
+      movieTitle = tag->GetTitle();
+      movieYear = tag->GetYear(); // movieYear is expected to be >= 0
+    }
     if (pURL && !pURL->m_url.empty())
       url = *pURL;
-    else if ((retVal = FindVideo(pItem->GetMovieName(bDirNames), info2, url, pDlgProgress)) <= 0)
+    else if ((retVal = FindVideo(movieTitle, movieYear, info2, url, pDlgProgress)) <= 0)
       return retVal < 0 ? INFO_CANCELLED : INFO_NOT_FOUND;
 
     CLog::Log(LOGDEBUG,
@@ -709,9 +725,17 @@ namespace VIDEO
 
     CScraperUrl url;
     int retVal = 0;
+    std::string movieTitle = pItem->GetMovieName(bDirNames);
+    int movieYear = -1; // hint that movie title was not found
+    if (result == CInfoScanner::TITLE_NFO)
+    {
+      CVideoInfoTag* tag = pItem->GetVideoInfoTag();
+      movieTitle = tag->GetTitle();
+      movieYear = tag->GetYear(); // movieYear is expected to be >= 0
+    }
     if (pURL && !pURL->m_url.empty())
       url = *pURL;
-    else if ((retVal = FindVideo(pItem->GetMovieName(bDirNames), info2, url, pDlgProgress)) <= 0)
+    else if ((retVal = FindVideo(movieTitle, movieYear, info2, url, pDlgProgress)) <= 0)
       return retVal < 0 ? INFO_CANCELLED : INFO_NOT_FOUND;
 
     CLog::Log(LOGDEBUG,
@@ -1973,11 +1997,11 @@ namespace VIDEO
     return m_bStop;
   }
 
-  int CVideoInfoScanner::FindVideo(const std::string &videoName, const ScraperPtr &scraper, CScraperUrl &url, CGUIDialogProgress *progress)
+  int CVideoInfoScanner::FindVideo(const std::string &title, int year, const ScraperPtr &scraper, CScraperUrl &url, CGUIDialogProgress *progress)
   {
     MOVIELIST movielist;
     CVideoInfoDownloader imdb(scraper);
-    int returncode = imdb.FindMovie(videoName, movielist, progress);
+    int returncode = imdb.FindMovie(title, year, movielist, progress);
     if (returncode < 0 || (returncode == 0 && (m_bStop || !DownloadFailed(progress))))
     { // scraper reported an error, or we had an error and user wants to cancel the scan
       m_bStop = true;
@@ -1990,4 +2014,5 @@ namespace VIDEO
     }
     return 0;    // didn't find anything
   }
+
 }

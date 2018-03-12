@@ -131,13 +131,23 @@ namespace VIDEO
     bool ProgressCancelled(CGUIDialogProgress* progress, int heading, const std::string &line1);
 
     /*! \brief Find a url for the given video using the given scraper
-     \param videoName name of the video to lookup
+     \param title title of the video to lookup
+     \param year year of the video to lookup
      \param scraper scraper to use for the lookup
      \param url [out] returned url from the scraper
      \param progress CGUIDialogProgress bar
      \return >0 on success, <0 on failure (cancellation), and 0 on no info found
      */
-    int FindVideo(const std::string &videoName, const ADDON::ScraperPtr &scraper, CScraperUrl &url, CGUIDialogProgress *progress);
+    int FindVideo(const std::string &title, int year, const ADDON::ScraperPtr &scraper, CScraperUrl &url, CGUIDialogProgress *progress);
+
+    /*! \brief Find a url for the given video using the given scraper
+     \param item the video to lookup
+     \param scraper scraper to use for the lookup
+     \param url [out] returned url from the scraper
+     \param progress CGUIDialogProgress bar
+     \return >0 on success, <0 on failure (cancellation), and 0 on no info found
+     */
+    int FindVideoUsingTag(CFileItem& item, const ADDON::ScraperPtr &scraper, CScraperUrl &url, CGUIDialogProgress *progress);
 
     /*! \brief Retrieve detailed information for an item from an online source, optionally supplemented with local data
      @todo sort out some better return codes.

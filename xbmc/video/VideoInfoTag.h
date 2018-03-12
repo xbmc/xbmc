@@ -136,6 +136,7 @@ public:
   void SetPlotOutline(std::string plotOutline);
   void SetTrailer(std::string trailer);
   void SetPlot(std::string plot);
+  std::string const &GetTitle();
   void SetTitle(std::string title);
   void SetSortTitle(std::string sortTitle);
   void SetPictureURL(CScraperUrl &pictureURL);

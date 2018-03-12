@@ -155,7 +155,7 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
 
       // try to find a matching item
       MOVIELIST itemResultList;
-      int result = infoDownloader.FindMovie(itemTitle, itemResultList, GetProgressDialog());
+      int result = infoDownloader.FindMovie(itemTitle, -1, itemResultList, GetProgressDialog());
 
       // close the progress dialog
       MarkFinished();
