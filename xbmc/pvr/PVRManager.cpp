@@ -804,9 +804,9 @@ int CPVRManager::GetTotalTime(void) const
   return IsStarted() && m_guiInfo ? m_guiInfo->GetDuration() : 0;
 }
 
-int CPVRManager::GetStartTime(void) const
+int CPVRManager::GetElapsedTime(void) const
 {
-  return IsStarted() && m_guiInfo ? m_guiInfo->GetPlayingTime() : 0;
+  return IsStarted() && m_guiInfo ? m_guiInfo->GetElapsedTime() : 0;
 }
 
 bool CPVRManager::TranslateBoolInfo(DWORD dwInfo) const
@@ -824,9 +824,14 @@ int CPVRManager::TranslateIntInfo(const CFileItem &item, DWORD dwInfo) const
   return IsStarted() && m_guiInfo ? m_guiInfo->TranslateIntInfo(item, dwInfo) : 0;
 }
 
-bool CPVRManager::GetVideoLabel(const CFileItem &item, int iLabel, std::string &strValue) const
+bool CPVRManager::GetVideoLabel(const CFileItem *item, int iLabel, std::string &strValue) const
 {
   return IsStarted() && m_guiInfo ? m_guiInfo->GetVideoLabel(item, iLabel, strValue) : false;
+}
+
+bool CPVRManager::GetSeekTimeLabel(int iSeekSize, std::string &strValue) const
+{
+  return IsStarted() && m_guiInfo ? m_guiInfo->GetSeekTimeLabel(iSeekSize, strValue) : false;
 }
 
 bool CPVRManager::IsRecording(void) const
@@ -935,11 +940,6 @@ bool CPVRManager::CreateChannelEpgs(void)
   CSingleLock lock(m_critSection);
   m_bEpgsCreated = bEpgsCreated;
   return m_bEpgsCreated;
-}
-
-std::string CPVRManager::GetPlayingTVGroupName()
-{
-  return IsStarted() && m_guiInfo ? m_guiInfo->GetPlayingTVGroup() : "";
 }
 
 void CPVRManager::UpdateLastWatched(const CPVRChannelPtr &channel)

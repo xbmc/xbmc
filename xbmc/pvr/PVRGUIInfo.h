@@ -56,7 +56,15 @@ namespace PVR
      * @param strValue Will be filled with the requested label value.
      * @return True if the requested label value was set, false otherwise.
      */
-    bool GetVideoLabel(const CFileItem &item, int iLabel, std::string &strValue) const;
+    bool GetVideoLabel(const CFileItem *item, int iLabel, std::string &strValue) const;
+
+    /*!
+     * @brief Get a GUIInfoManager seek time label for the currently playing epg tag.
+     * @param iSeekSize The seconds to be seeked from the current playback position.
+     * @param strValue Will be filled with the requested label value.
+     * @return True if the label value was set, false otherwise.
+     */
+    bool GetSeekTimeLabel(int iSeekSize, std::string &strValue) const;
 
     /*!
      * @brief Get the total duration of the currently playing LiveTV item.
@@ -65,10 +73,11 @@ namespace PVR
     int GetDuration(void) const;
 
     /*!
-     * @brief Get the current position in milliseconds since the start of a LiveTV item.
-     * @return The position in milliseconds or NULL if no channel is playing.
+     * @brief Get the elapsed time since the start of the currently playing epg event or if
+     *        no epg is available since the start of the playback of a LiveTV item.
+     * @return The time in milliseconds or 0 if no channel is playing.
      */
-    int GetPlayingTime(void) const;
+    int GetElapsedTime(void) const;
 
     /*!
      * @brief Clear the playing EPG tag.
@@ -80,12 +89,6 @@ namespace PVR
      * @return The currently playing EPG tag or NULL if no EPG tag is playing.
      */
     CPVREpgInfoTagPtr GetPlayingTag() const;
-
-    /*!
-     * @brief Get playing TV group.
-     * @return The currently playing TV group or NULL if no TV group is playing.
-     */
-    std::string GetPlayingTVGroup();
 
   private:
     class TimerInfo
@@ -222,6 +225,7 @@ namespace PVR
     void CharInfoTimeshiftStartTime(std::string &strValue) const;
     void CharInfoTimeshiftEndTime(std::string &strValue) const;
     void CharInfoTimeshiftPlayTime(std::string &strValue) const;
+    void CharInfoTimeshiftOffset(std::string &strValue) const;
 
     /** @name GUIInfoManager data */
     //@{
@@ -253,6 +257,7 @@ namespace PVR
     bool                            m_bCanRecordPlayingChannel;
     bool                            m_bIsRecordingPlayingChannel;
     std::string                     m_strPlayingTVGroup;
+    std::string                     m_strPlayingRadioGroup;
 
     //@}
 
@@ -263,10 +268,12 @@ namespace PVR
 
     bool                            m_bHasTimeshiftData;
     bool                            m_bIsTimeshifting;
+    time_t                          m_iLastTimeshiftUpdate;
     time_t                          m_iStartTime;
     time_t                          m_iTimeshiftStartTime;
     time_t                          m_iTimeshiftEndTime;
     time_t                          m_iTimeshiftPlayTime;
+    unsigned int                    m_iTimeshiftOffset;
     std::string                     m_strTimeshiftStartTime;
     std::string                     m_strTimeshiftEndTime;
     std::string                     m_strTimeshiftPlayTime;

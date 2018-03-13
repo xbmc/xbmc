@@ -2011,10 +2011,15 @@ const infomap musicplayer[] =    {{ "title",            MUSICPLAYER_TITLE },
 ///     Returns the stereoscopic mode of the currently playing video (possible
 ///     values: see \ref ListItem_StereoscopicMode "ListItem.StereoscopicMode")
 ///   }
+///   \table_row3{   <b>`VideoPlayer.StartTime`</b>,
+///                  \anchor VideoPlayer_StartTime
+///                  _string_,
+///     Start date and time of the currently playing epg event or recording (PVR).
+///   }
 ///   \table_row3{   <b>`VideoPlayer.EndTime`</b>,
 ///                  \anchor VideoPlayer_EndTime
 ///                  _string_,
-///     End date of the currently playing programme (PVR).
+///     End date and time of the currently playing epg event or recording (PVR).
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.NextTitle`</b>,
 ///                  \anchor VideoPlayer_NextTitle
@@ -2122,6 +2127,7 @@ const infomap videoplayer[] =    {{ "title",            VIDEOPLAYER_TITLE },
                                   { "hassubtitles",     VIDEOPLAYER_HASSUBTITLES },
                                   { "subtitlesenabled", VIDEOPLAYER_SUBTITLESENABLED },
                                   { "subtitleslanguage",VIDEOPLAYER_SUBTITLES_LANG },
+                                  { "starttime",        VIDEOPLAYER_STARTTIME },
                                   { "endtime",          VIDEOPLAYER_ENDTIME },
                                   { "nexttitle",        VIDEOPLAYER_NEXT_TITLE },
                                   { "nextgenre",        VIDEOPLAYER_NEXT_GENRE },
@@ -4381,6 +4387,11 @@ const infomap playlist[] =       {{ "length",           PLAYLIST_LENGTH },
 ///                  _string_,
 ///     Returns the remaining time for currently playing epg event
 ///   }
+///   \table_row3{   <b>`PVR.EpgEventSeekTime`</b>,
+///                  \anchor PVR_EpgEventSeekTime
+///                  _string_,
+///     Returns the time the user is seeking within the currently playing epg event
+///   }
 ///   \table_row3{   <b>`PVR.EpgEventFinishTime`</b>,
 ///                  \anchor PVR_EpgEventFinishTime
 ///                  _string_,
@@ -4485,6 +4496,11 @@ const infomap playlist[] =       {{ "length",           PLAYLIST_LENGTH },
 ///                  \anchor PVR_TimeShiftProgress
 ///                  _integer_,
 ///     Returns the position of currently timeshifted title on TV as integer
+///   }
+///   \table_row3{   <b>`PVR.TimeShiftOffset`</b>,
+///                  \anchor PVR_TimeShiftOffset
+///                  _integer_,
+///     Returns the delta of timeshifted time to actual time
 ///   }
 ///   \table_row3{   <b>`PVR.TVNowRecordingTitle`</b>,
 ///                  \anchor PVR_TVNowRecordingTitle
@@ -4648,6 +4664,7 @@ const infomap pvr[] =            {{ "isrecording",              PVR_IS_RECORDING
                                   { "epgeventelapsedtime",      PVR_EPG_EVENT_ELAPSED_TIME },
                                   { "epgeventremainingtime",    PVR_EPG_EVENT_REMAINING_TIME },
                                   { "epgeventfinishtime",       PVR_EPG_EVENT_FINISH_TIME },
+                                  { "epgeventseektime",         PVR_EPG_EVENT_SEEK_TIME },
                                   { "epgeventprogress",         PVR_EPG_EVENT_PROGRESS },
                                   { "actstreamclient",          PVR_ACTUAL_STREAM_CLIENT },
                                   { "actstreamdevice",          PVR_ACTUAL_STREAM_DEVICE },
@@ -4668,6 +4685,7 @@ const infomap pvr[] =            {{ "isrecording",              PVR_IS_RECORDING
                                   { "timeshiftend",             PVR_TIMESHIFT_END_TIME },
                                   { "timeshiftcur",             PVR_TIMESHIFT_PLAY_TIME },
                                   { "timeshiftprogress",        PVR_TIMESHIFT_PROGRESS },
+                                  { "timeshiftoffset",          PVR_TIMESHIFT_OFFSET },
                                   { "nowrecordingtitle",        PVR_NOW_RECORDING_TITLE },
                                   { "nowrecordingdatetime",     PVR_NOW_RECORDING_DATETIME },
                                   { "nowrecordingchannel",      PVR_NOW_RECORDING_CHANNEL },
@@ -5574,10 +5592,13 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
     }
     else if (cat.name == "videoplayer")
     {
-      for (size_t i = 0; i < sizeof(player_times) / sizeof(infomap); i++) //! @todo remove these, they're repeats
+      if (prop.name != "starttime") // player.starttime is semantically different from videoplayer.starttime which has its own implementation!
       {
-        if (prop.name == player_times[i].str)
-          return AddMultiInfo(GUIInfo(player_times[i].val, TranslateTimeFormat(prop.param())));
+        for (size_t i = 0; i < sizeof(player_times) / sizeof(infomap); i++) //! @todo remove these, they're repeats
+        {
+          if (prop.name == player_times[i].str)
+            return AddMultiInfo(GUIInfo(player_times[i].val, TranslateTimeFormat(prop.param())));
+        }
       }
       if (prop.name == "content" && prop.num_params())
       {
@@ -6019,6 +6040,7 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   case PVR_TIMESHIFT_START_TIME:
   case PVR_TIMESHIFT_END_TIME:
   case PVR_TIMESHIFT_PLAY_TIME:
+  case PVR_TIMESHIFT_OFFSET:
   case PVR_TV_NOW_RECORDING_TITLE:
   case PVR_TV_NOW_RECORDING_CHANNEL:
   case PVR_TV_NOW_RECORDING_CHAN_ICO:
@@ -6036,6 +6058,9 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   case PVR_RADIO_NEXT_RECORDING_CHAN_ICO:
   case PVR_RADIO_NEXT_RECORDING_DATETIME:
     CServiceBroker::GetPVRManager().TranslateCharInfo(info, strLabel);
+    break;
+  case PVR_EPG_EVENT_SEEK_TIME:
+    CServiceBroker::GetPVRManager().GetSeekTimeLabel(g_application.GetAppPlayer().GetSeekHandler().GetSeekSize(), strLabel);
     break;
   case PVR_CHANNEL_NUMBER_INPUT:
     strLabel = CServiceBroker::GetPVRManager().GUIActions()->GetChannelNumberInputHandler().GetChannelNumberAsString();
@@ -8794,7 +8819,7 @@ std::string CGUIInfoManager::GetVideoLabel(int item)
   if (m_currentFile->IsPVR())
   {
     std::string strValue;
-    if (CServiceBroker::GetPVRManager().GetVideoLabel(*m_currentFile, item, strValue))
+    if (CServiceBroker::GetPVRManager().GetVideoLabel(m_currentFile, item, strValue))
       return strValue;
   }
 
@@ -9030,6 +9055,28 @@ std::string CGUIInfoManager::GetCurrentPlayTimeRemaining(TIME_FORMAT format) con
   if (timeRemaining)
     return StringUtils::SecondsToTimeString(timeRemaining, format);
   return "";
+}
+
+int CGUIInfoManager::GetEpgEventProgress() const
+{
+  return std::lrintf(static_cast<float>(CServiceBroker::GetPVRManager().GetElapsedTime()) / CServiceBroker::GetPVRManager().GetTotalTime() * 100.0f);
+}
+
+int CGUIInfoManager::GetEpgEventSeekPercent() const
+{
+  int seekSize = g_application.GetAppPlayer().GetSeekHandler().GetSeekSize();
+  if (seekSize != 0)
+  {
+    float elapsedTime = static_cast<float>(CServiceBroker::GetPVRManager().GetElapsedTime() / 1000);
+    float totalTime = static_cast<float>(CServiceBroker::GetPVRManager().GetTotalTime() / 1000);
+    float percentPerSecond = 100.0f / totalTime;
+    float percent = elapsedTime / totalTime * 100.0f + percentPerSecond * seekSize;
+    return std::lrintf(percent);
+  }
+  else
+  {
+    return GetEpgEventProgress();
+  }
 }
 
 void CGUIInfoManager::ResetCurrentItem()

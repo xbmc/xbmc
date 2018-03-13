@@ -25,7 +25,8 @@
 #include "GUIInfoManager.h"
 #include "SeekHandler.h"
 
-#define POPUP_SEEK_PROGRESS     401
+#define POPUP_SEEK_PROGRESS           401
+#define POPUP_SEEK_EPG_EVENT_PROGRESS 402
 
 CGUIDialogSeekBar::CGUIDialogSeekBar(void)
   : CGUIDialog(WINDOW_DIALOG_SEEK_BAR, "DialogSeekBar.xml", DialogModalityType::MODELESS)
@@ -43,7 +44,8 @@ bool CGUIDialogSeekBar::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_DEINIT:
     return CGUIDialog::OnMessage(message);
   case GUI_MSG_ITEM_SELECT:
-    if (message.GetSenderId() == GetID() && message.GetControlId() == POPUP_SEEK_PROGRESS)
+    if (message.GetSenderId() == GetID() &&
+        (message.GetControlId() == POPUP_SEEK_PROGRESS || message.GetControlId() == POPUP_SEEK_EPG_EVENT_PROGRESS))
       return CGUIDialog::OnMessage(message);
     break;
   case GUI_MSG_REFRESH_TIMER:
@@ -66,6 +68,13 @@ void CGUIDialogSeekBar::FrameMove()
 
   if (percent != m_lastPercent)
     CONTROL_SELECT_ITEM(POPUP_SEEK_PROGRESS, m_lastPercent = percent);
+
+  unsigned int epgEventPercent = g_application.GetAppPlayer().GetSeekHandler().InProgress()
+    ? g_infoManager.GetEpgEventSeekPercent()
+    : g_infoManager.GetEpgEventProgress();
+
+  if (epgEventPercent != m_lastEpgEventPercent)
+    CONTROL_SELECT_ITEM(POPUP_SEEK_EPG_EVENT_PROGRESS, m_lastEpgEventPercent = epgEventPercent);
 
   CGUIDialog::FrameMove();
 }

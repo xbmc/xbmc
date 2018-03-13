@@ -175,6 +175,8 @@ public:
   int GetTotalPlayTime() const;
   float GetSeekPercent() const;
   std::string GetCurrentPlayTimeRemaining(TIME_FORMAT format) const;
+  int GetEpgEventProgress() const;
+  int GetEpgEventSeekPercent() const;
 
   bool GetDisplayAfterSeek();
   void SetDisplayAfterSeek(unsigned int timeOut = 2500, int seekOffset = 0);

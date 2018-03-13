@@ -35,6 +35,7 @@ namespace PVR
     explicit CPVRItem(const CFileItem *item) : m_item(item) {}
 
     CPVREpgInfoTagPtr GetEpgInfoTag() const;
+    CPVREpgInfoTagPtr GetNextEpgInfoTag() const;
     CPVRChannelPtr GetChannel() const;
     CPVRTimerInfoTagPtr GetTimerInfoTag() const;
     CPVRRecordingPtr GetRecording() const;
