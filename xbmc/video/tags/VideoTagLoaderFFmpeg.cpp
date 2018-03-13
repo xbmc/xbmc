@@ -123,7 +123,7 @@ bool CVideoTagLoaderFFmpeg::HasInfo() const
       avtag = av_dict_get(m_fctx->metadata, "TMDBURL", nullptr, AV_DICT_IGNORE_SUFFIX);
     if (!avtag)
       avtag = av_dict_get(m_fctx->metadata, "TITLE", nullptr, AV_DICT_IGNORE_SUFFIX);
-  } else if (m_item.IsType(".mp4"))
+  } else if (m_item.IsType(".mp4") || m_item.IsType(".avi"))
     avtag = av_dict_get(m_fctx->metadata, "title", nullptr, AV_DICT_IGNORE_SUFFIX);
 
   return avtag != nullptr;
@@ -136,6 +136,8 @@ CInfoScanner::INFO_TYPE CVideoTagLoaderFFmpeg::Load(CVideoInfoTag& tag,
     return LoadMKV(tag, art);
   else if (m_item.IsType(".mp4"))
     return LoadMP4(tag, art);
+  else if (m_item.IsType(".avi"))
+    return LoadAVI(tag, art);
   else
     return CInfoScanner::NO_NFO;
 
@@ -254,4 +256,20 @@ CInfoScanner::INFO_TYPE CVideoTagLoaderFFmpeg::LoadMP4(CVideoInfoTag& tag,
   }
 
   return hasfull ? CInfoScanner::FULL_NFO : CInfoScanner::TITLE_NFO;
+}
+
+// https://wiki.multimedia.cx/index.php/FFmpeg_Metadata#AVI
+CInfoScanner::INFO_TYPE CVideoTagLoaderFFmpeg::LoadAVI(CVideoInfoTag& tag,
+                                                       std::vector<EmbeddedArt>* art)
+{
+  AVDictionaryEntry* avtag = nullptr;
+  while ((avtag = av_dict_get(m_fctx->metadata, "", avtag, AV_DICT_IGNORE_SUFFIX)))
+  {
+    if (strcmp(avtag->key, "title") == 0)
+      tag.SetTitle(avtag->value);
+    else if (strcmp(avtag->key,"date") == 0)
+      tag.SetYear(atoi(avtag->value));
+  }
+
+  return CInfoScanner::TITLE_NFO;
 }

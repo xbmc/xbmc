@@ -66,5 +66,8 @@ protected:
 
   //! \brief Load tags from MP4 file.
   CInfoScanner::INFO_TYPE LoadMP4(CVideoInfoTag& tag, std::vector<EmbeddedArt>* art);
+
+  //! \brief Load tags from AVI file.
+  CInfoScanner::INFO_TYPE LoadAVI(CVideoInfoTag& tag, std::vector<EmbeddedArt>* art);
 };
 
