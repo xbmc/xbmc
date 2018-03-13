@@ -1146,13 +1146,6 @@ void CPVRGUIInfo::UpdateNextTimer(void)
 
 int CPVRGUIInfo::GetDuration(void) const
 {
-  if (!m_bHasTimeshiftData)
-  {
-    // fetch data
-    const_cast<CPVRGUIInfo*>(this)->UpdateTimeshift();
-    const_cast<CPVRGUIInfo*>(this)->UpdatePlayingTag();
-  }
-
   CSingleLock lock(m_critSection);
   return m_iDuration;
 }
@@ -1160,13 +1153,6 @@ int CPVRGUIInfo::GetDuration(void) const
 int CPVRGUIInfo::GetElapsedTime(void) const
 {
   CSingleLock lock(m_critSection);
-
-  if (!m_bHasTimeshiftData)
-  {
-    // fetch data
-    const_cast<CPVRGUIInfo*>(this)->UpdateTimeshift();
-    const_cast<CPVRGUIInfo*>(this)->UpdatePlayingTag();
-  }
 
   if (m_playingEpgTag || m_iTimeshiftStartTime)
   {

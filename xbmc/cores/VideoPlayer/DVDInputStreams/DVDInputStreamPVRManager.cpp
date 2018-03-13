@@ -195,20 +195,6 @@ int64_t CDVDInputStreamPVRManager::GetLength()
   return CServiceBroker::GetPVRManager().Clients()->GetStreamLength();
 }
 
-int CDVDInputStreamPVRManager::GetTotalTime()
-{
-  if (!m_isRecording)
-    return CServiceBroker::GetPVRManager().GetTotalTime();
-  return 0;
-}
-
-int CDVDInputStreamPVRManager::GetTime()
-{
-  if (!m_isRecording)
-    return CServiceBroker::GetPVRManager().GetElapsedTime();
-  return 0;
-}
-
 bool CDVDInputStreamPVRManager::GetTimes(Times &times)
 {
   PVR_STREAM_TIMES streamTimes;
