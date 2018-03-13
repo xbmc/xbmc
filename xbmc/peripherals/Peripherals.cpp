@@ -106,6 +106,8 @@ CPeripherals::~CPeripherals()
 
 void CPeripherals::Initialise()
 {
+  Clear();
+
 #if !defined(TARGET_DARWIN_IOS)
   CDirectory::Create("special://profile/peripheral_data");
 
