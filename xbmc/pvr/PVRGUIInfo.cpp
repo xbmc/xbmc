@@ -571,24 +571,23 @@ bool CPVRGUIInfo::TranslateBoolInfo(DWORD dwInfo) const
   return bReturn;
 }
 
-int CPVRGUIInfo::TranslateIntInfo(const CFileItem &item, DWORD dwInfo) const
+int CPVRGUIInfo::TranslateIntInfo(const CFileItem *item, DWORD dwInfo) const
 {
   int iReturn(0);
   CSingleLock lock(m_critSection);
 
   if (dwInfo == PVR_EPG_EVENT_PROGRESS)
   {
-    CPVREpgInfoTagPtr epgTag;
-    const CPVRChannelPtr channel = item.GetPVRChannelInfoTag();
-    if (channel)
-      epgTag = channel->GetEPGNow();
-    if (!epgTag)
-      epgTag = item.GetEPGInfoTag();
-
-    if (epgTag && epgTag != GetPlayingTag())
+    CPVREpgInfoTagPtr epgTag = CPVRItem(item).GetEpgInfoTag();
+    if (epgTag && epgTag != m_playingEpgTag)
       iReturn = std::lrintf(epgTag->ProgressPercentage());
     else
       iReturn = std::lrintf(static_cast<float>(GetElapsedTime()) / m_iDuration * 100);
+  }
+  else if (dwInfo == PVR_TIMESHIFT_PROGRESS)
+  {
+    iReturn = std::lrintf(static_cast<float>(m_iTimeshiftPlayTime - m_iTimeshiftStartTime) /
+                          (m_iTimeshiftEndTime - m_iTimeshiftStartTime) * 100);
   }
   else if (dwInfo == PVR_ACTUAL_STREAM_SIG_PROGR)
     iReturn = (int) ((float) m_qualityInfo.iSignal / 0xFFFF * 100);
@@ -600,11 +599,6 @@ int CPVRGUIInfo::TranslateIntInfo(const CFileItem &item, DWORD dwInfo) const
       iReturn = static_cast<int>(100 * m_iBackendDiskUsed / m_iBackendDiskTotal);
     else
       iReturn = 0xFF;
-  }
-  else if (dwInfo == PVR_TIMESHIFT_PROGRESS)
-  {
-    iReturn = std::lrintf(static_cast<float>(m_iTimeshiftPlayTime - m_iTimeshiftStartTime) /
-                          (m_iTimeshiftEndTime - m_iTimeshiftStartTime) * 100);
   }
 
   return iReturn;
