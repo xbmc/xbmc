@@ -34,8 +34,7 @@ namespace XBMCAddon
     {
     public:
       WsgiInputStreamIterator();
-      //! @todo Switch to 'override' usage once 14.04 (Trusty) hits EOL. swig <3.0 doesn't understand C++11
-      virtual ~WsgiInputStreamIterator();
+      ~WsgiInputStreamIterator() override;
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
       /// \ingroup python_xbmcwsgi_WsgiInputStream
@@ -116,8 +115,7 @@ namespace XBMCAddon
     {
     public:
       WsgiInputStream();
-      //! @todo Switch to 'override' usage once 14.04 (Trusty) hits EOL. swig <3.0 doesn't understand C++11
-      virtual ~WsgiInputStream();
+      ~WsgiInputStream() override;
 
 #if !defined SWIG && !defined DOXYGEN_SHOULD_SKIP_THIS
       WsgiInputStreamIterator* begin();

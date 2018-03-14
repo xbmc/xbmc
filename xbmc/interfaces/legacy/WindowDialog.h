@@ -64,8 +64,7 @@ namespace XBMCAddon
     {
     public:
       WindowDialog();
-      //! @todo Switch to 'override' usage once 14.04 (Trusty) hits EOL. swig <3.0 doesn't understand C++11
-      virtual ~WindowDialog();
+      ~WindowDialog() override;
 
 #ifndef SWIG
       SWIGHIDDENVIRTUAL bool OnMessage(CGUIMessage& message) override;
