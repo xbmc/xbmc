@@ -179,10 +179,12 @@ namespace PVR
         m_iChannelInfoJobId = -1;
       }
 
-      m_currentChannel = m_playingChannel;
-
-      if (m_currentChannel)
-        item.reset(new CFileItem(m_playingChannel));
+      if (m_currentChannel != m_playingChannel)
+      {
+        m_currentChannel = m_playingChannel;
+        if (m_playingChannel)
+          item.reset(new CFileItem(m_playingChannel));
+      }
     }
 
     if (item)
@@ -206,9 +208,12 @@ namespace PVR
       CSingleLock lock(m_critSection);
 
       m_playingChannel = channel;
-      m_currentChannel = m_playingChannel;
-
-      item.reset(new CFileItem(m_playingChannel));
+      if (m_currentChannel != m_playingChannel)
+      {
+        m_currentChannel = m_playingChannel;
+        if (m_playingChannel)
+          item.reset(new CFileItem(m_playingChannel));
+      }
     }
 
     if (item)
