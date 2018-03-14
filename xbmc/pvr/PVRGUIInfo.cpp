@@ -855,13 +855,13 @@ bool CPVRGUIInfo::GetVideoLabel(const CFileItem *item, int iLabel, std::string &
 
 bool CPVRGUIInfo::GetSeekTimeLabel(int iSeekSize, std::string &strValue) const
 {
-  strValue = StringUtils::SecondsToTimeString(GetElapsedTime() / 1000 + iSeekSize, TIME_FORMAT_GUESS).c_str();
+  strValue = StringUtils::SecondsToTimeString(GetElapsedTime() + iSeekSize, TIME_FORMAT_GUESS).c_str();
   return true;
 }
 
 void CPVRGUIInfo::CharInfoEpgEventDuration(std::string &strValue) const
 {
-  strValue = StringUtils::SecondsToTimeString(m_iDuration / 1000, TIME_FORMAT_GUESS).c_str();
+  strValue = StringUtils::SecondsToTimeString(m_iDuration, TIME_FORMAT_GUESS).c_str();
 }
 
 void CPVRGUIInfo::CharInfoTimeshiftStartTime(std::string &strValue) const
@@ -886,18 +886,18 @@ void CPVRGUIInfo::CharInfoTimeshiftOffset(std::string &strValue) const
 
 void CPVRGUIInfo::CharInfoEpgEventElapsedTime(std::string &strValue) const
 {
-  strValue = StringUtils::SecondsToTimeString(GetElapsedTime() / 1000, TIME_FORMAT_GUESS).c_str();
+  strValue = StringUtils::SecondsToTimeString(GetElapsedTime(), TIME_FORMAT_GUESS).c_str();
 }
 
 void CPVRGUIInfo::CharInfoEpgEventRemainingTime(std::string &strValue) const
 {
-  strValue = StringUtils::SecondsToTimeString((m_iDuration - GetElapsedTime()) / 1000, TIME_FORMAT_GUESS).c_str();
+  strValue = StringUtils::SecondsToTimeString(m_iDuration - GetElapsedTime(), TIME_FORMAT_GUESS).c_str();
 }
 
 void CPVRGUIInfo::CharInfoEpgEventFinishTime(std::string &strValue) const
 {
   CDateTime finishTime = CDateTime::GetCurrentDateTime();
-  finishTime += CDateTimeSpan(0, 0, 0, (m_iDuration - GetElapsedTime()) / 1000);
+  finishTime += CDateTimeSpan(0, 0, 0, m_iDuration - GetElapsedTime());
   strValue = finishTime.GetAsLocalizedTime("", false);
 }
 
@@ -1146,13 +1146,6 @@ void CPVRGUIInfo::UpdateNextTimer(void)
 
 int CPVRGUIInfo::GetDuration(void) const
 {
-  if (!m_bHasTimeshiftData)
-  {
-    // fetch data
-    const_cast<CPVRGUIInfo*>(this)->UpdateTimeshift();
-    const_cast<CPVRGUIInfo*>(this)->UpdatePlayingTag();
-  }
-
   CSingleLock lock(m_critSection);
   return m_iDuration;
 }
@@ -1161,23 +1154,13 @@ int CPVRGUIInfo::GetElapsedTime(void) const
 {
   CSingleLock lock(m_critSection);
 
-  if (!m_bHasTimeshiftData)
-  {
-    // fetch data
-    const_cast<CPVRGUIInfo*>(this)->UpdateTimeshift();
-    const_cast<CPVRGUIInfo*>(this)->UpdatePlayingTag();
-  }
-
   if (m_playingEpgTag || m_iTimeshiftStartTime)
   {
-    /* Calculate here the position we have of the running live TV event.
-     * "position in ms" = ("current UTC" - "event start UTC") * 1000
-     */
     CDateTime current(m_iTimeshiftPlayTime);
     CDateTime start = m_playingEpgTag ? CDateTime(m_playingEpgTag->StartAsUTC())
                                       : CDateTime(m_iTimeshiftStartTime);
     CDateTimeSpan time = current > start ? current - start : CDateTimeSpan(0, 0, 0, 0);
-    return time.GetSecondsTotal() * 1000;
+    return time.GetSecondsTotal();
   }
   else
   {
@@ -1218,12 +1201,12 @@ void CPVRGUIInfo::UpdatePlayingTag(void)
       if (newTag)
       {
         m_playingEpgTag = newTag;
-        m_iDuration = m_playingEpgTag->GetDuration() * 1000;
+        m_iDuration = m_playingEpgTag->GetDuration();
       }
       else if (m_iTimeshiftEndTime > m_iTimeshiftStartTime)
       {
         m_playingEpgTag.reset();
-        m_iDuration = (m_iTimeshiftEndTime - m_iTimeshiftStartTime) * 1000;
+        m_iDuration = m_iTimeshiftEndTime - m_iTimeshiftStartTime;
       }
       else
       {
@@ -1239,7 +1222,7 @@ void CPVRGUIInfo::UpdatePlayingTag(void)
     {
       CSingleLock lock(m_critSection);
       m_playingEpgTag.reset();
-      m_iDuration = recording->GetDuration() * 1000;
+      m_iDuration = recording->GetDuration();
     }
   }
 }
