@@ -322,7 +322,7 @@ void CPVRGUIInfo::UpdateTimeshift(void)
   m_bHasTimeshiftData = true;
 }
 
-bool CPVRGUIInfo::TranslateCharInfo(DWORD dwInfo, std::string &strValue) const
+bool CPVRGUIInfo::TranslateCharInfo(const CFileItem *item, DWORD dwInfo, std::string &strValue) const
 {
   bool bReturn(true);
   CSingleLock lock(m_critSection);
@@ -402,16 +402,16 @@ bool CPVRGUIInfo::TranslateCharInfo(DWORD dwInfo, std::string &strValue) const
     m_radioTimersInfo.CharInfoNextTimerDateTime(strValue);
     break;
   case PVR_EPG_EVENT_DURATION:
-    CharInfoEpgEventDuration(strValue);
+    CharInfoEpgEventDuration(item, strValue);
     break;
   case PVR_EPG_EVENT_ELAPSED_TIME:
-    CharInfoEpgEventElapsedTime(strValue);
+    CharInfoEpgEventElapsedTime(item, strValue);
     break;
   case PVR_EPG_EVENT_REMAINING_TIME:
-    CharInfoEpgEventRemainingTime(strValue);
+    CharInfoEpgEventRemainingTime(item, strValue);
     break;
   case PVR_EPG_EVENT_FINISH_TIME:
-    CharInfoEpgEventFinishTime(strValue);
+    CharInfoEpgEventFinishTime(item, strValue);
     break;
   case PVR_NEXT_TIMER:
     m_anyTimersInfo.CharInfoNextTimer(strValue);
@@ -853,11 +853,6 @@ bool CPVRGUIInfo::GetSeekTimeLabel(int iSeekSize, std::string &strValue) const
   return true;
 }
 
-void CPVRGUIInfo::CharInfoEpgEventDuration(std::string &strValue) const
-{
-  strValue = StringUtils::SecondsToTimeString(m_iDuration, TIME_FORMAT_GUESS).c_str();
-}
-
 void CPVRGUIInfo::CharInfoTimeshiftStartTime(std::string &strValue) const
 {
   strValue = m_strTimeshiftStartTime;
@@ -878,20 +873,53 @@ void CPVRGUIInfo::CharInfoTimeshiftOffset(std::string &strValue) const
   strValue = StringUtils::SecondsToTimeString(m_iTimeshiftOffset, TIME_FORMAT_GUESS).c_str();
 }
 
-void CPVRGUIInfo::CharInfoEpgEventElapsedTime(std::string &strValue) const
+void CPVRGUIInfo::CharInfoEpgEventDuration(const CFileItem *item, std::string &strValue) const
 {
-  strValue = StringUtils::SecondsToTimeString(GetElapsedTime(), TIME_FORMAT_GUESS).c_str();
+  int iDuration = 0;
+  CPVREpgInfoTagPtr epgTag = CPVRItem(item).GetEpgInfoTag();
+  if (epgTag && epgTag != m_playingEpgTag)
+    iDuration = epgTag->GetDuration();
+  else
+    iDuration = m_iDuration;
+
+  strValue = StringUtils::SecondsToTimeString(iDuration, TIME_FORMAT_GUESS).c_str();
 }
 
-void CPVRGUIInfo::CharInfoEpgEventRemainingTime(std::string &strValue) const
+void CPVRGUIInfo::CharInfoEpgEventElapsedTime(const CFileItem *item, std::string &strValue) const
 {
-  strValue = StringUtils::SecondsToTimeString(m_iDuration - GetElapsedTime(), TIME_FORMAT_GUESS).c_str();
+  int iElapsed = 0;
+  CPVREpgInfoTagPtr epgTag = CPVRItem(item).GetEpgInfoTag();
+  if (epgTag && epgTag != m_playingEpgTag)
+    iElapsed = epgTag->Progress();
+  else
+    iElapsed = GetElapsedTime();
+
+  strValue = StringUtils::SecondsToTimeString(iElapsed, TIME_FORMAT_GUESS).c_str();
 }
 
-void CPVRGUIInfo::CharInfoEpgEventFinishTime(std::string &strValue) const
+void CPVRGUIInfo::CharInfoEpgEventRemainingTime(const CFileItem *item, std::string &strValue) const
 {
+  int iRemaining = 0;
+  CPVREpgInfoTagPtr epgTag = CPVRItem(item).GetEpgInfoTag();
+  if (epgTag && epgTag != m_playingEpgTag)
+    iRemaining = epgTag->GetDuration() - epgTag->Progress();
+  else
+    iRemaining = m_iDuration - GetElapsedTime();
+
+  strValue = StringUtils::SecondsToTimeString(iRemaining, TIME_FORMAT_GUESS).c_str();
+}
+
+void CPVRGUIInfo::CharInfoEpgEventFinishTime(const CFileItem *item, std::string &strValue) const
+{
+  int iFinish = 0;
+  CPVREpgInfoTagPtr epgTag = CPVRItem(item).GetEpgInfoTag();
+  if (epgTag && epgTag != m_playingEpgTag)
+    iFinish = epgTag->GetDuration() - epgTag->Progress();
+  else
+    iFinish = m_iDuration - GetElapsedTime();
+
   CDateTime finishTime = CDateTime::GetCurrentDateTime();
-  finishTime += CDateTimeSpan(0, 0, 0, m_iDuration - GetElapsedTime());
+  finishTime += CDateTimeSpan(0, 0, 0, iFinish);
   strValue = finishTime.GetAsLocalizedTime("", false);
 }
 

@@ -163,10 +163,11 @@ namespace PVR
 
     /*!
      * @brief Get a GUIInfoManager character string.
+     * @param item The item to get the value for.
      * @param dwInfo The string to get.
      * @return The requested string or an empty one if it wasn't found.
      */
-    bool TranslateCharInfo(DWORD dwInfo, std::string &strValue) const;
+    bool TranslateCharInfo(const CFileItem *item, DWORD dwInfo, std::string &strValue) const;
 
     /*!
      * @brief Get a GUIInfoManager integer.

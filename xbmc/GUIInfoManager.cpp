@@ -6057,7 +6057,7 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   case PVR_RADIO_NEXT_RECORDING_CHANNEL:
   case PVR_RADIO_NEXT_RECORDING_CHAN_ICO:
   case PVR_RADIO_NEXT_RECORDING_DATETIME:
-    CServiceBroker::GetPVRManager().TranslateCharInfo(info, strLabel);
+    CServiceBroker::GetPVRManager().TranslateCharInfo(m_currentFile, info, strLabel);
     break;
   case PVR_EPG_EVENT_SEEK_TIME:
     CServiceBroker::GetPVRManager().GetSeekTimeLabel(g_application.GetAppPlayer().GetSeekHandler().GetSeekSize(), strLabel);

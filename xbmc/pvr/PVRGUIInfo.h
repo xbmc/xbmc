@@ -46,7 +46,7 @@ namespace PVR
     void Notify(const Observable &obs, const ObservableMessage msg) override;
 
     bool TranslateBoolInfo(DWORD dwInfo) const;
-    bool TranslateCharInfo(DWORD dwInfo, std::string &strValue) const;
+    bool TranslateCharInfo(const CFileItem *item, DWORD dwInfo, std::string &strValue) const;
     int TranslateIntInfo(const CFileItem *item, DWORD dwInfo) const;
 
     /*!
@@ -198,10 +198,10 @@ namespace PVR
 
     void UpdateTimersToggle(void);
 
-    void CharInfoEpgEventDuration(std::string &strValue) const;
-    void CharInfoEpgEventElapsedTime(std::string &strValue) const;
-    void CharInfoEpgEventRemainingTime(std::string &strValue) const;
-    void CharInfoEpgEventFinishTime(std::string &strValue) const;
+    void CharInfoEpgEventDuration(const CFileItem *item, std::string &strValue) const;
+    void CharInfoEpgEventElapsedTime(const CFileItem *item, std::string &strValue) const;
+    void CharInfoEpgEventRemainingTime(const CFileItem *item, std::string &strValue) const;
+    void CharInfoEpgEventFinishTime(const CFileItem *item, std::string &strValue) const;
     void CharInfoBackendNumber(std::string &strValue) const;
     void CharInfoTotalDiskSpace(std::string &strValue) const;
     void CharInfoSignal(std::string &strValue) const;

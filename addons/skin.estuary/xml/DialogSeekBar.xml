@@ -131,8 +131,7 @@
 				<label>$VAR[SeekTimeLabelVar]</label>
 				<font>font45</font>
 				<shadowcolor>black</shadowcolor>
-				<visible>!Player.ChannelPreviewActive</visible>
-				<animation effect="fade" start="0" end="100" time="200" delay="1000">Visible</animation>
+				<visible>!Player.ChannelPreviewActive | VideoPlayer.HasEpg</visible>
 			</control>
 			<control type="label" id="40000">
 				<centerleft>50%</centerleft>

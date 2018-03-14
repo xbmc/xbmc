@@ -814,9 +814,9 @@ bool CPVRManager::TranslateBoolInfo(DWORD dwInfo) const
    return IsStarted() && m_guiInfo ? m_guiInfo->TranslateBoolInfo(dwInfo) : false;
 }
 
-bool CPVRManager::TranslateCharInfo(DWORD dwInfo, std::string &strValue) const
+bool CPVRManager::TranslateCharInfo(const CFileItem *item, DWORD dwInfo, std::string &strValue) const
 {
-  return IsStarted() && m_guiInfo ? m_guiInfo->TranslateCharInfo(dwInfo, strValue) : false;
+  return IsStarted() && m_guiInfo ? m_guiInfo->TranslateCharInfo(item, dwInfo, strValue) : false;
 }
 
 int CPVRManager::TranslateIntInfo(const CFileItem *item, DWORD dwInfo) const
