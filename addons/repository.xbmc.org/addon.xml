@@ -9,7 +9,7 @@
 	<extension point="xbmc.addon.repository">
 		<info>http://mirrors.kodi.tv/addons/leia/addons.xml.gz</info>
 		<checksum>http://mirrors.kodi.tv/addons/leia/addons.xml.gz.md5</checksum>
-		<datadir>http://mirrors.kodi.tv/addons/leia</datadir>
+		<datadir>https://mirrors.kodi.tv/addons/leia</datadir>
 		<hashes>true</hashes>
 	</extension>
 	<extension point="xbmc.addon.metadata">
