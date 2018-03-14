@@ -63,6 +63,13 @@ namespace ADDON
 
     FetchStatus FetchIfChanged(const std::string& oldChecksum, std::string& checksum, VECADDONS& addons) const;
 
+    struct ResolveResult
+    {
+      std::string location;
+      std::string hash;
+    };
+    ResolveResult ResolvePathAndHash(AddonPtr const& addon) const;
+
   private:
     static bool FetchChecksum(const std::string& url, std::string& checksum) noexcept;
     static bool FetchIndex(const DirInfo& repo, VECADDONS& addons) noexcept;
