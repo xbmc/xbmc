@@ -138,7 +138,6 @@ public:
   std::string GetDuration(TIME_FORMAT format = TIME_FORMAT_GUESS) const;
 
   /*! \brief Set currently playing file item
-   \param blocking whether to run in current thread (true) or background thread (false)
    */
   void SetCurrentItem(const CFileItem &item);
   void ResetCurrentItem();
