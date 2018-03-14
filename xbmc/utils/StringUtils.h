@@ -317,6 +317,13 @@ public:
   \return Converted string
   */
   static std::string BinaryStringToString(const std::string& in);
+  /**
+   * Convert each character in the string to its hexadecimal
+   * representation and return the concatenated result
+   *
+   * example: "abc\n" -> "6162630a"
+   */
+  static std::string ToHexadecimal(const std::string& in);
   /*! \brief Format the string with locale separators.
 
   Format the string with locale separators.

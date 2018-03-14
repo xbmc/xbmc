@@ -548,3 +548,15 @@ TEST(TestStringUtils, FileSizeFormat)
   //Last unit should overflow the 3 digit limit
   EXPECT_STREQ("5432PB", StringUtils::FormatFileSize(6115888293969133568).c_str());
 }
+
+TEST(TestStringUtils, ToHexadecimal)
+{
+  EXPECT_STREQ("", StringUtils::ToHexadecimal("").c_str());
+  EXPECT_STREQ("616263", StringUtils::ToHexadecimal("abc").c_str());
+  std::string a{"a\0b\n", 4};
+  EXPECT_STREQ("6100620a", StringUtils::ToHexadecimal(a).c_str());
+  std::string nul{"\0", 1};
+  EXPECT_STREQ("00", StringUtils::ToHexadecimal(nul).c_str());
+  std::string ff{"\xFF", 1};
+  EXPECT_STREQ("ff", StringUtils::ToHexadecimal(ff).c_str());
+}
