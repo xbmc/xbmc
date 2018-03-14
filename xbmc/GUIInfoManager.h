@@ -20,6 +20,7 @@
 #pragma once
 
 #include "threads/CriticalSection.h"
+#include "guiinfo/GUIInfo.h"
 #include "guilib/IMsgTargetCallback.h"
 #include "guilib/GUIControl.h"
 #include "messaging/IMessageTarget.h"
@@ -53,33 +54,6 @@ namespace INFO
 
 // forward
 class CGUIWindow;
-
-// structure to hold multiple integer data
-// for storage referenced from a single integer
-class GUIInfo
-{
-public:
-  GUIInfo(int info, uint32_t data1 = 0, int data2 = 0, uint32_t flag = 0)
-  {
-    m_info = info;
-    m_data1 = data1;
-    m_data2 = data2;
-    if (flag)
-      SetInfoFlag(flag);
-  }
-  bool operator ==(const GUIInfo &right) const
-  {
-    return (m_info == right.m_info && m_data1 == right.m_data1 && m_data2 == right.m_data2);
-  };
-  uint32_t GetInfoFlag() const;
-  uint32_t GetData1() const;
-  int GetData2() const;
-  int m_info;
-private:
-  void SetInfoFlag(uint32_t flag);
-  uint32_t m_data1;
-  int m_data2;
-};
 
 /*!
  \ingroup strings

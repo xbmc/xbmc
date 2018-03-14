@@ -42,6 +42,7 @@
 
 class CStopWatch;
 class CVariant;
+class GUIInfo;
 
 namespace PVR
 {
@@ -194,12 +195,22 @@ namespace PVR
     bool GetVideoLabel(const CFileItem *item, int iLabel, std::string &strValue) const;
 
     /*!
+     * @brief Get a GUIInfoManager multi info label.
+     * @param item The item to get the label for.
+     * @param info The GUI info (label id + additional data).
+     * @param strValue Will be filled with the requested label value.
+     * @return True if the requested label value was set, false otherwise.
+     */
+    bool GetMultiInfoLabel(const CFileItem *item, const GUIInfo &info, std::string &strValue) const;
+
+    /*!
      * @brief Get a GUIInfoManager seek time label for the currently playing epg tag.
      * @param iSeekSize The seconds to be seeked from the current playback position.
+     * @param format The time format for the label.
      * @param strValue Will be filled with the requested label value.
      * @return True if the label value was set, false otherwise.
      */
-    bool GetSeekTimeLabel(int iSeekSize, std::string &strValue) const;
+    bool GetSeekTimeLabel(int iSeekSize, TIME_FORMAT format, std::string &strValue) const;
 
     /*!
      * @brief Check if a TV channel, radio channel or recording is playing.

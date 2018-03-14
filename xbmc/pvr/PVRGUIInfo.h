@@ -31,6 +31,8 @@
 #include "pvr/PVRTypes.h"
 #include "pvr/addons/PVRClients.h"
 
+class GUIInfo;
+
 namespace PVR
 {
   class CPVRGUIInfo : private CThread,
@@ -59,12 +61,22 @@ namespace PVR
     bool GetVideoLabel(const CFileItem *item, int iLabel, std::string &strValue) const;
 
     /*!
+     * @brief Get a GUIInfoManager multi info label.
+     * @param item The item to get the label for.
+     * @param info The GUI info (label id + additional data).
+     * @param strValue Will be filled with the requested label value.
+     * @return True if the requested label value was set, false otherwise.
+     */
+    bool GetMultiInfoLabel(const CFileItem *item, const GUIInfo &info, std::string &strValue) const;
+
+    /*!
      * @brief Get a GUIInfoManager seek time label for the currently playing epg tag.
      * @param iSeekSize The seconds to be seeked from the current playback position.
+     * @param format The time format for the label.
      * @param strValue Will be filled with the requested label value.
      * @return True if the label value was set, false otherwise.
      */
-    bool GetSeekTimeLabel(int iSeekSize, std::string &strValue) const;
+    bool GetSeekTimeLabel(int iSeekSize, TIME_FORMAT format, std::string &strValue) const;
 
     /*!
      * @brief Get the total duration of the currently playing epg event or if no epg is
@@ -198,10 +210,10 @@ namespace PVR
 
     void UpdateTimersToggle(void);
 
-    void CharInfoEpgEventDuration(const CFileItem *item, std::string &strValue) const;
-    void CharInfoEpgEventElapsedTime(const CFileItem *item, std::string &strValue) const;
-    void CharInfoEpgEventRemainingTime(const CFileItem *item, std::string &strValue) const;
-    void CharInfoEpgEventFinishTime(const CFileItem *item, std::string &strValue) const;
+    void CharInfoEpgEventDuration(const CFileItem *item, TIME_FORMAT format, std::string &strValue) const;
+    void CharInfoEpgEventElapsedTime(const CFileItem *item, TIME_FORMAT format, std::string &strValue) const;
+    void CharInfoEpgEventRemainingTime(const CFileItem *item, TIME_FORMAT format, std::string &strValue) const;
+    void CharInfoEpgEventFinishTime(const CFileItem *item, TIME_FORMAT format, std::string &strValue) const;
     void CharInfoBackendNumber(std::string &strValue) const;
     void CharInfoTotalDiskSpace(std::string &strValue) const;
     void CharInfoSignal(std::string &strValue) const;
@@ -223,10 +235,12 @@ namespace PVR
     void CharInfoService(std::string &strValue) const;
     void CharInfoMux(std::string &strValue) const;
     void CharInfoProvider(std::string &strValue) const;
-    void CharInfoTimeshiftStartTime(std::string &strValue) const;
-    void CharInfoTimeshiftEndTime(std::string &strValue) const;
-    void CharInfoTimeshiftPlayTime(std::string &strValue) const;
-    void CharInfoTimeshiftOffset(std::string &strValue) const;
+    void CharInfoTimeshiftStartTime(TIME_FORMAT format, std::string &strValue) const;
+    void CharInfoTimeshiftEndTime(TIME_FORMAT format, std::string &strValue) const;
+    void CharInfoTimeshiftPlayTime(TIME_FORMAT format, std::string &strValue) const;
+    void CharInfoTimeshiftOffset(TIME_FORMAT format, std::string &strValue) const;
+
+    int GetRemainingTime(const CFileItem *item) const;
 
     /** @name GUIInfoManager data */
     //@{
@@ -275,9 +289,6 @@ namespace PVR
     time_t                          m_iTimeshiftEndTime;
     time_t                          m_iTimeshiftPlayTime;
     unsigned int                    m_iTimeshiftOffset;
-    std::string                     m_strTimeshiftStartTime;
-    std::string                     m_strTimeshiftEndTime;
-    std::string                     m_strTimeshiftPlayTime;
 
     CCriticalSection                m_critSection;
 

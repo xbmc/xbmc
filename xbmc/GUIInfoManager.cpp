@@ -4252,46 +4252,6 @@ const infomap playlist[] =       {{ "length",           PLAYLIST_LENGTH },
 ///                  _boolean_,
 ///     Returns true if there are timers present who currently not do recording
 ///   }
-///   \table_row3{   <b>`PVR.NowRecordingTitle`</b>,
-///                  \anchor PVR_NowRecordingTitle
-///                  _string_,
-///     Title of the programme being recorded
-///   }
-///   \table_row3{   <b>`PVR.NowRecordingDateTime`</b>,
-///                  \anchor PVR_NowRecordingDateTime
-///                  _Date/Time string_,
-///     Start date and time of the current recording
-///   }
-///   \table_row3{   <b>`PVR.NowRecordingChannel`</b>,
-///                  \anchor PVR_NowRecordingChannel
-///                  _string_,
-///     Channel name of the current recording
-///   }
-///   \table_row3{   <b>`PVR.NowRecordingChannelIcon`</b>,
-///                  \anchor PVR_NowRecordingChannelIcon
-///                  _string_,
-///     Icon of the current recording channel
-///   }
-///   \table_row3{   <b>`PVR.NextRecordingTitle`</b>,
-///                  \anchor PVR_NextRecordingTitle
-///                  _string_,
-///     Title of the next programme that will be recorded
-///   }
-///   \table_row3{   <b>`PVR.NextRecordingDateTime`</b>,
-///                  \anchor PVR_NextRecordingDateTime
-///                  _Date/Time string_,
-///     Start date and time of the next recording
-///   }
-///   \table_row3{   <b>`PVR.NextRecordingChannel`</b>,
-///                  \anchor PVR_NextRecordingChannel
-///                  _string_,
-///     Channel name of the next recording
-///   }
-///   \table_row3{   <b>`PVR.NextRecordingChannelIcon`</b>,
-///                  \anchor PVR_NextRecordingChannelIcon
-///                  _string_,
-///     Icon of the next recording channel
-///   }
 ///   \table_row3{   <b>`PVR.BackendName`</b>,
 ///                  \anchor PVR_BackendName
 ///                  _string_,
@@ -4371,31 +4331,6 @@ const infomap playlist[] =       {{ "length",           PLAYLIST_LENGTH },
 ///                  \anchor PVR_IsPlayingEpgTag
 ///                  _boolean_,
 ///     Returns true when an epg tag is being watched.
-///   }
-///   \table_row3{   <b>`PVR.EpgEventDuration`</b>,
-///                  \anchor PVR_EpgEventDuration
-///                  _string_,
-///     Returns the duration of the currently playing epg event
-///   }
-///   \table_row3{   <b>`PVR.EpgEventElapsedTime`</b>,
-///                  \anchor PVR_EpgEventElapsedTime
-///                  _string_,
-///     Returns the time of the current position of the currently playing epg event
-///   }
-///   \table_row3{   <b>`PVR.EpgEventRemainingTime`</b>,
-///                  \anchor PVR_EpgEventRemainingTime
-///                  _string_,
-///     Returns the remaining time for currently playing epg event
-///   }
-///   \table_row3{   <b>`PVR.EpgEventSeekTime`</b>,
-///                  \anchor PVR_EpgEventSeekTime
-///                  _string_,
-///     Returns the time the user is seeking within the currently playing epg event
-///   }
-///   \table_row3{   <b>`PVR.EpgEventFinishTime`</b>,
-///                  \anchor PVR_EpgEventFinishTime
-///                  _string_,
-///     Returns the time the currently playing epg event will end
 ///   }
 ///   \table_row3{   <b>`PVR.EpgEventProgress`</b>,
 ///                  \anchor PVR_EpgEventProgress
@@ -4477,30 +4412,50 @@ const infomap playlist[] =       {{ "length",           PLAYLIST_LENGTH },
 ///                  _boolean_,
 ///     Returns true when for channel is timeshift available
 ///   }
-///   \table_row3{   <b>`PVR.TimeShiftStart`</b>,
-///                  \anchor PVR_TimeShiftStart
-///                  _time string_,
-///     Start position of the timeshift
-///   }
-///   \table_row3{   <b>`PVR.TimeShiftEnd`</b>,
-///                  \anchor PVR_TimeShiftEnd
-///                  _time string_,
-///     End position of the timeshift
-///   }
-///   \table_row3{   <b>`PVR.TimeShiftCur`</b>,
-///                  \anchor PVR_TimeShiftCur
-///                  _time string_,
-///     Current position of the timeshift
-///   }
 ///   \table_row3{   <b>`PVR.TimeShiftProgress`</b>,
 ///                  \anchor PVR_TimeShiftProgress
 ///                  _integer_,
 ///     Returns the position of currently timeshifted title on TV as integer
 ///   }
-///   \table_row3{   <b>`PVR.TimeShiftOffset`</b>,
-///                  \anchor PVR_TimeShiftOffset
-///                  _integer_,
-///     Returns the delta of timeshifted time to actual time
+///   \table_row3{   <b>`PVR.NowRecordingTitle`</b>,
+///                  \anchor PVR_NowRecordingTitle
+///                  _string_,
+///     Title of the programme being recorded
+///   }
+///   \table_row3{   <b>`PVR.NowRecordingDateTime`</b>,
+///                  \anchor PVR_NowRecordingDateTime
+///                  _Date/Time string_,
+///     Start date and time of the current recording
+///   }
+///   \table_row3{   <b>`PVR.NowRecordingChannel`</b>,
+///                  \anchor PVR_NowRecordingChannel
+///                  _string_,
+///     Channel name of the current recording
+///   }
+///   \table_row3{   <b>`PVR.NowRecordingChannelIcon`</b>,
+///                  \anchor PVR_NowRecordingChannelIcon
+///                  _string_,
+///     Icon of the current recording channel
+///   }
+///   \table_row3{   <b>`PVR.NextRecordingTitle`</b>,
+///                  \anchor PVR_NextRecordingTitle
+///                  _string_,
+///     Title of the next programme that will be recorded
+///   }
+///   \table_row3{   <b>`PVR.NextRecordingDateTime`</b>,
+///                  \anchor PVR_NextRecordingDateTime
+///                  _Date/Time string_,
+///     Start date and time of the next recording
+///   }
+///   \table_row3{   <b>`PVR.NextRecordingChannel`</b>,
+///                  \anchor PVR_NextRecordingChannel
+///                  _string_,
+///     Channel name of the next recording
+///   }
+///   \table_row3{   <b>`PVR.NextRecordingChannelIcon`</b>,
+///                  \anchor PVR_NextRecordingChannelIcon
+///                  _string_,
+///     Icon of the next recording channel
 ///   }
 ///   \table_row3{   <b>`PVR.TVNowRecordingTitle`</b>,
 ///                  \anchor PVR_TVNowRecordingTitle
@@ -4636,14 +4591,6 @@ const infomap pvr[] =            {{ "isrecording",              PVR_IS_RECORDING
                                   { "hastvchannels",            PVR_HAS_TV_CHANNELS },
                                   { "hasradiochannels",         PVR_HAS_RADIO_CHANNELS },
                                   { "hasnonrecordingtimer",     PVR_HAS_NONRECORDING_TIMER },
-                                  { "nowrecordingtitle",        PVR_NOW_RECORDING_TITLE },
-                                  { "nowrecordingdatetime",     PVR_NOW_RECORDING_DATETIME },
-                                  { "nowrecordingchannel",      PVR_NOW_RECORDING_CHANNEL },
-                                  { "nowrecordingchannelicon",  PVR_NOW_RECORDING_CHAN_ICO },
-                                  { "nextrecordingtitle",       PVR_NEXT_RECORDING_TITLE },
-                                  { "nextrecordingdatetime",    PVR_NEXT_RECORDING_DATETIME },
-                                  { "nextrecordingchannel",     PVR_NEXT_RECORDING_CHANNEL },
-                                  { "nextrecordingchannelicon", PVR_NEXT_RECORDING_CHAN_ICO },
                                   { "backendname",              PVR_BACKEND_NAME },
                                   { "backendversion",           PVR_BACKEND_VERSION },
                                   { "backendhost",              PVR_BACKEND_HOST },
@@ -4660,11 +4607,6 @@ const infomap pvr[] =            {{ "isrecording",              PVR_IS_RECORDING
                                   { "isplayingradio",           PVR_IS_PLAYING_RADIO },
                                   { "isplayingrecording",       PVR_IS_PLAYING_RECORDING },
                                   { "isplayingepgtag",          PVR_IS_PLAYING_EPGTAG },
-                                  { "epgeventduration",         PVR_EPG_EVENT_DURATION },
-                                  { "epgeventelapsedtime",      PVR_EPG_EVENT_ELAPSED_TIME },
-                                  { "epgeventremainingtime",    PVR_EPG_EVENT_REMAINING_TIME },
-                                  { "epgeventfinishtime",       PVR_EPG_EVENT_FINISH_TIME },
-                                  { "epgeventseektime",         PVR_EPG_EVENT_SEEK_TIME },
                                   { "epgeventprogress",         PVR_EPG_EVENT_PROGRESS },
                                   { "actstreamclient",          PVR_ACTUAL_STREAM_CLIENT },
                                   { "actstreamdevice",          PVR_ACTUAL_STREAM_DEVICE },
@@ -4681,11 +4623,7 @@ const infomap pvr[] =            {{ "isrecording",              PVR_IS_RECORDING
                                   { "actstreammux",             PVR_ACTUAL_STREAM_MUX },
                                   { "actstreamprovidername",    PVR_ACTUAL_STREAM_PROVIDER },
                                   { "istimeshift",              PVR_IS_TIMESHIFTING },
-                                  { "timeshiftstart",           PVR_TIMESHIFT_START_TIME },
-                                  { "timeshiftend",             PVR_TIMESHIFT_END_TIME },
-                                  { "timeshiftcur",             PVR_TIMESHIFT_PLAY_TIME },
                                   { "timeshiftprogress",        PVR_TIMESHIFT_PROGRESS },
-                                  { "timeshiftoffset",          PVR_TIMESHIFT_OFFSET },
                                   { "nowrecordingtitle",        PVR_NOW_RECORDING_TITLE },
                                   { "nowrecordingdatetime",     PVR_NOW_RECORDING_DATETIME },
                                   { "nowrecordingchannel",      PVR_NOW_RECORDING_CHANNEL },
@@ -4719,6 +4657,142 @@ const infomap pvr[] =            {{ "isrecording",              PVR_IS_RECORDING
                                   { "channelnumberinput",         PVR_CHANNEL_NUMBER_INPUT },
                                   { "canrecordplayingchannel",    PVR_CAN_RECORD_PLAYING_CHANNEL },
                                   { "isrecordingplayingchannel",  PVR_IS_RECORDING_PLAYING_CHANNEL }};
+
+/// \page modules__General__List_of_gui_access
+/// \section modules__General__List_of_gui_access_PvrTimes PvrTimes
+/// @{
+/// \table_start
+///   \table_h3{ Labels, Type, Description }
+///   \table_row3{   <b>`PVR.EpgEventDuration`</b>,
+///                  \anchor PVR_EpgEventDuration
+///                  _string_,
+///     Returns the duration of the currently playing epg event in the
+///     format hh:mm:ss. hh: will be omitted if hours value is zero.
+///   }
+///   \table_row3{   <b>`PVR.EpgEventDuration(format)`</b>,
+///                  \anchor PVR_EpgEventDuration_format
+///                  _string_,
+///     Returns the duration of the currently playing epg event in different formats:
+///     Hours (hh)\, minutes (mm) or seconds (ss). When 12 hour clock is used (xx) will
+///     return AM/PM. Also supported: (hh:mm)\, (mm:ss)\, (hh:mm:ss)\, (hh:mm:ss).
+///   }
+///   \table_row3{   <b>`PVR.EpgEventElapsedTime`</b>,
+///                  \anchor PVR_EpgEventElapsedTime
+///                  _string_,
+///     Returns the time of the current position of the currently playing epg event in the
+///     format hh:mm:ss. hh: will be omitted if hours value is zero.
+///   }
+///   \table_row3{   <b>`PVR.EpgEventElapsedTime(format)`</b>,
+///                  \anchor PVR_EpgEventElapsedTime_format
+///                  _string_,
+///     Returns the time of the current position of the currently playing epg event in different formats:
+///     Hours (hh)\, minutes (mm) or seconds (ss). When 12 hour clock is used (xx) will
+///     return AM/PM. Also supported: (hh:mm)\, (mm:ss)\, (hh:mm:ss)\, (hh:mm:ss).
+///   }
+///   \table_row3{   <b>`PVR.EpgEventRemainingTime`</b>,
+///                  \anchor PVR_EpgEventRemainingTime
+///                  _string_,
+///     Returns the remaining time for currently playing epg event in the
+///     format hh:mm:ss. hh: will be omitted if hours value is zero.
+///   }
+///   \table_row3{   <b>`PVR.EpgEventRemainingTime(format)`</b>,
+///                  \anchor PVR_EpgEventRemainingTime_format
+///                  _string_,
+///     Returns the remaining time for currently playing epg event in different formats:
+///     Hours (hh)\, minutes (mm) or seconds (ss). When 12 hour clock is used (xx) will
+///     return AM/PM. Also supported: (hh:mm)\, (mm:ss)\, (hh:mm:ss)\, (hh:mm:ss).
+///   }
+///   \table_row3{   <b>`PVR.EpgEventSeekTime`</b>,
+///                  \anchor PVR_EpgEventSeekTime
+///                  _string_,
+///     Returns the time the user is seeking within the currently playing epg event in the
+///     format hh:mm:ss. hh: will be omitted if hours value is zero.
+///   }
+///   \table_row3{   <b>`PVR.EpgEventSeekTime(format)`</b>,
+///                  \anchor PVR_EpgEventSeekTime_format
+///                  _string_,
+///     Returns the time the user is seeking within the currently playing epg event in different formats:
+///     Hours (hh)\, minutes (mm) or seconds (ss). When 12 hour clock is used (xx) will
+///     return AM/PM. Also supported: (hh:mm)\, (mm:ss)\, (hh:mm:ss)\, (hh:mm:ss).
+///   }
+///   \table_row3{   <b>`PVR.EpgEventFinishTime`</b>,
+///                  \anchor PVR_EpgEventFinishTime
+///                  _string_,
+///     Returns the time the currently playing epg event will end in the
+///     format hh:mm:ss. hh: will be omitted if hours value is zero.
+///   }
+///   \table_row3{   <b>`PVR.EpgEventFinishTime(format)`</b>,
+///                  \anchor PVR_EpgEventFinishTime_format
+///                  _string_,
+///     Returns the time the currently playing epg event will end in different formats:
+///     Hours (hh)\, minutes (mm) or seconds (ss). When 12 hour clock is used (xx) will
+///     return AM/PM. Also supported: (hh:mm)\, (mm:ss)\, (hh:mm:ss)\, (hh:mm:ss).
+///   }
+///   \table_row3{   <b>`PVR.TimeShiftStart`</b>,
+///                  \anchor PVR_TimeShiftStart
+///                  _string_,
+///     Returns the start time of the timeshift buffer in the
+///     format hh:mm:ss. hh: will be omitted if hours value is zero.
+///   }
+///   \table_row3{   <b>`PVR.TimeShiftStart(format)`</b>,
+///                  \anchor PVR_TimeShiftStart_format
+///                  _string_,
+///     Returns the start time of the timeshift buffer in different formats:
+///     Hours (hh)\, minutes (mm) or seconds (ss). When 12 hour clock is used (xx) will
+///     return AM/PM. Also supported: (hh:mm)\, (mm:ss)\, (hh:mm:ss)\, (hh:mm:ss).
+///   }
+///   \table_row3{   <b>`PVR.TimeShiftEnd`</b>,
+///                  \anchor PVR_TimeShiftEnd
+///                  _string_,
+///     Returns the end time of the timeshift buffer in the
+///     format hh:mm:ss. hh: will be omitted if hours value is zero.
+///   }
+///   \table_row3{   <b>`PVR.TimeShiftEnd(format)`</b>,
+///                  \anchor PVR_TimeShiftEnd_format
+///                  _string_,
+///     Returns the end time of the timeshift buffer in different formats:
+///     Hours (hh)\, minutes (mm) or seconds (ss). When 12 hour clock is used (xx) will
+///     return AM/PM. Also supported: (hh:mm)\, (mm:ss)\, (hh:mm:ss)\, (hh:mm:ss).
+///   }
+///   \table_row3{   <b>`PVR.TimeShiftCur`</b>,
+///                  \anchor PVR_TimeShiftCur
+///                  _string_,
+///     Returns the current playback time within the timeshift buffer in the
+///     format hh:mm:ss. hh: will be omitted if hours value is zero.
+///   }
+///   \table_row3{   <b>`PVR.TimeShiftCur(format)`</b>,
+///                  \anchor PVR_TimeShiftCur_format
+///                  _string_,
+///     Returns the current playback time within the timeshift buffer in different formats:
+///     Hours (hh)\, minutes (mm) or seconds (ss). When 12 hour clock is used (xx) will
+///     return AM/PM. Also supported: (hh:mm)\, (mm:ss)\, (hh:mm:ss)\, (hh:mm:ss).
+///   }
+///   \table_row3{   <b>`PVR.TimeShiftOffset`</b>,
+///                  \anchor PVR_TimeShiftOffset
+///                  _string_,
+///     Returns the delta of timeshifted time to actual time in the
+///     format hh:mm:ss. hh: will be omitted if hours value is zero.
+///   }
+///   \table_row3{   <b>`PVR.TimeShiftOffset(format)`</b>,
+///                  \anchor PVR_TimeShiftOffset_format
+///                  _string_,
+///     Returns the delta of timeshifted time to actual time in different formats:
+///     Hours (hh)\, minutes (mm) or seconds (ss). When 12 hour clock is used (xx) will
+///     return AM/PM. Also supported: (hh:mm)\, (mm:ss)\, (hh:mm:ss)\, (hh:mm:ss).
+///   }
+/// \table_end
+///
+/// -----------------------------------------------------------------------------
+/// @}
+const infomap pvr_times[] =      {{ "epgeventduration",       PVR_EPG_EVENT_DURATION },
+                                  { "epgeventelapsedtime",    PVR_EPG_EVENT_ELAPSED_TIME },
+                                  { "epgeventremainingtime",  PVR_EPG_EVENT_REMAINING_TIME },
+                                  { "epgeventfinishtime",     PVR_EPG_EVENT_FINISH_TIME },
+                                  { "epgeventseektime",       PVR_EPG_EVENT_SEEK_TIME },
+                                  { "timeshiftstart",         PVR_TIMESHIFT_START_TIME },
+                                  { "timeshiftend",           PVR_TIMESHIFT_END_TIME },
+                                  { "timeshiftcur",           PVR_TIMESHIFT_PLAY_TIME },
+                                  { "timeshiftoffset",        PVR_TIMESHIFT_OFFSET }};
 
 /// \page modules__General__List_of_gui_access
 /// \section modules__General__List_of_gui_access_ADSP ADSP
@@ -5791,6 +5865,11 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
         if (prop.name == pvr[i].str)
           return pvr[i].val;
       }
+      for (size_t i = 0; i < sizeof(pvr_times) / sizeof(infomap); i++)
+      {
+        if (prop.name == pvr_times[i].str)
+          return AddMultiInfo(GUIInfo(pvr_times[i].val, TranslateTimeFormat(prop.param())));
+      }
     }
     else if (cat.name == "adsp")
     {
@@ -6000,14 +6079,6 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
 
   switch (info)
   {
-  case PVR_NEXT_RECORDING_CHANNEL:
-  case PVR_NEXT_RECORDING_CHAN_ICO:
-  case PVR_NEXT_RECORDING_DATETIME:
-  case PVR_NEXT_RECORDING_TITLE:
-  case PVR_NOW_RECORDING_CHANNEL:
-  case PVR_NOW_RECORDING_CHAN_ICO:
-  case PVR_NOW_RECORDING_DATETIME:
-  case PVR_NOW_RECORDING_TITLE:
   case PVR_BACKEND_NAME:
   case PVR_BACKEND_VERSION:
   case PVR_BACKEND_HOST:
@@ -6019,10 +6090,6 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   case PVR_BACKEND_NUMBER:
   case PVR_TOTAL_DISKSPACE:
   case PVR_NEXT_TIMER:
-  case PVR_EPG_EVENT_DURATION:
-  case PVR_EPG_EVENT_ELAPSED_TIME:
-  case PVR_EPG_EVENT_REMAINING_TIME:
-  case PVR_EPG_EVENT_FINISH_TIME:
   case PVR_EPG_EVENT_PROGRESS:
   case PVR_ACTUAL_STREAM_CLIENT:
   case PVR_ACTUAL_STREAM_DEVICE:
@@ -6037,10 +6104,14 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   case PVR_ACTUAL_STREAM_SERVICE:
   case PVR_ACTUAL_STREAM_MUX:
   case PVR_ACTUAL_STREAM_PROVIDER:
-  case PVR_TIMESHIFT_START_TIME:
-  case PVR_TIMESHIFT_END_TIME:
-  case PVR_TIMESHIFT_PLAY_TIME:
-  case PVR_TIMESHIFT_OFFSET:
+  case PVR_NOW_RECORDING_TITLE:
+  case PVR_NOW_RECORDING_CHANNEL:
+  case PVR_NOW_RECORDING_CHAN_ICO:
+  case PVR_NOW_RECORDING_DATETIME:
+  case PVR_NEXT_RECORDING_TITLE:
+  case PVR_NEXT_RECORDING_CHANNEL:
+  case PVR_NEXT_RECORDING_CHAN_ICO:
+  case PVR_NEXT_RECORDING_DATETIME:
   case PVR_TV_NOW_RECORDING_TITLE:
   case PVR_TV_NOW_RECORDING_CHANNEL:
   case PVR_TV_NOW_RECORDING_CHAN_ICO:
@@ -6058,9 +6129,6 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   case PVR_RADIO_NEXT_RECORDING_CHAN_ICO:
   case PVR_RADIO_NEXT_RECORDING_DATETIME:
     CServiceBroker::GetPVRManager().TranslateCharInfo(m_currentFile, info, strLabel);
-    break;
-  case PVR_EPG_EVENT_SEEK_TIME:
-    CServiceBroker::GetPVRManager().GetSeekTimeLabel(g_application.GetAppPlayer().GetSeekHandler().GetSeekSize(), strLabel);
     break;
   case PVR_CHANNEL_NUMBER_INPUT:
     strLabel = CServiceBroker::GetPVRManager().GUIActions()->GetChannelNumberInputHandler().GetChannelNumberAsString();
@@ -8025,6 +8093,10 @@ CGUIControl* CGUIInfoManager::GetActiveContainer(int containerId, int contextWin
 /// \brief Examines the multi information sent and returns the string as appropriate
 std::string CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextWindow, std::string *fallback)
 {
+  std::string strValue;
+  if (CServiceBroker::GetPVRManager().GetMultiInfoLabel(m_currentFile, info, strValue))
+    return strValue;
+
   if (info.m_info == SKIN_STRING)
   {
     return CSkinSettings::GetInstance().GetString(info.GetData1());
@@ -8086,6 +8158,14 @@ std::string CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextW
   else if (info.m_info == PLAYER_SEEKTIME)
   {
     return GetCurrentSeekTime((TIME_FORMAT)info.GetData1());
+  }
+  else if (info.m_info == PVR_EPG_EVENT_SEEK_TIME)
+  {
+    std::string strLabel;
+    CServiceBroker::GetPVRManager().GetSeekTimeLabel(g_application.GetAppPlayer().GetSeekHandler().GetSeekSize(),
+                                                     static_cast<TIME_FORMAT>(info.GetData1()),
+                                                     strLabel);
+    return strLabel;
   }
   else if (info.m_info == PLAYER_SEEKOFFSET)
   {

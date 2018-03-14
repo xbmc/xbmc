@@ -829,9 +829,14 @@ bool CPVRManager::GetVideoLabel(const CFileItem *item, int iLabel, std::string &
   return IsStarted() && m_guiInfo ? m_guiInfo->GetVideoLabel(item, iLabel, strValue) : false;
 }
 
-bool CPVRManager::GetSeekTimeLabel(int iSeekSize, std::string &strValue) const
+bool CPVRManager::GetMultiInfoLabel(const CFileItem *item, const GUIInfo &info, std::string &strValue) const
 {
-  return IsStarted() && m_guiInfo ? m_guiInfo->GetSeekTimeLabel(iSeekSize, strValue) : false;
+  return IsStarted() && m_guiInfo ? m_guiInfo->GetMultiInfoLabel(item, info, strValue) : false;
+}
+
+bool CPVRManager::GetSeekTimeLabel(int iSeekSize, TIME_FORMAT format, std::string &strValue) const
+{
+  return IsStarted() && m_guiInfo ? m_guiInfo->GetSeekTimeLabel(iSeekSize, format, strValue) : false;
 }
 
 bool CPVRManager::IsRecording(void) const
