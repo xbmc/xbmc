@@ -463,23 +463,39 @@ bool CPlayList::Expand(int position)
 {
   CFileItemPtr item = m_vecItems[position];
   std::unique_ptr<CPlayList> playlist (CPlayListFactory::Create(*item.get()));
-  if ( NULL == playlist.get())
+  if (playlist.get() == nullptr)
     return false;
 
-  if(!playlist->Load(item->GetPath()))
+  std::string path = item->GetDynPath();
+  if (path.empty())
+    path = item->GetPath();
+
+  if (!playlist->Load(path))
     return false;
 
   // remove any item that points back to itself
-  for(int i = 0;i<playlist->size();i++)
+  for (int i = 0;i<playlist->size();i++)
   {
-    if(StringUtils::EqualsNoCase((*playlist)[i]->GetPath(), item->GetPath()))
+    if (StringUtils::EqualsNoCase((*playlist)[i]->GetPath(), path))
     {
       playlist->Remove(i);
       i--;
     }
   }
 
-  if(playlist->size() <= 0)
+  // @todo
+  // never change original path (id) of a file item
+  // playlist items should be created with dynPath instead
+  if (!item->GetDynPath().empty())
+  {
+    for (int i = 0;i<playlist->size();i++)
+    {
+      (*playlist)[i]->SetDynPath((*playlist)[i]->GetPath());
+      (*playlist)[i]->SetPath(item->GetPath());
+    }
+  }
+
+  if (playlist->size() <= 0)
     return false;
 
   Remove(position);
