@@ -535,10 +535,6 @@ void CCurlFile::SetCommonOptions(CReadState* state)
     state->m_curlAliasList = g_curlInterface.slist_append(state->m_curlAliasList, "ICY 200 OK");
   g_curlInterface.easy_setopt(h, CURLOPT_HTTP200ALIASES, state->m_curlAliasList);
 
-  // never verify peer, we don't have any certificates to do this
-  g_curlInterface.easy_setopt(h, CURLOPT_SSL_VERIFYPEER, 0);
-  g_curlInterface.easy_setopt(h, CURLOPT_SSL_VERIFYHOST, 0);
-
   g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_URL, m_url.c_str());
   g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_TRANSFERTEXT, CURL_OFF);
 
