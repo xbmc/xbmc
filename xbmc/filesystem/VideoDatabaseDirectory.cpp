@@ -59,6 +59,10 @@ bool CVideoDatabaseDirectory::GetDirectory(const CURL& url, CFileItemList &items
       if (!strImage.empty() && g_TextureManager.HasTexture(strImage))
         item->SetIconImage(strImage);
     }
+    if (item->GetVideoInfoTag())
+    {
+      item->SetDynPath(item->GetVideoInfoTag()->GetPath());
+    }
   }
   items.SetLabel(pNode->GetLocalizedName());
 
