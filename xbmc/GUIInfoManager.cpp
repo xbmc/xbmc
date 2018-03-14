@@ -9086,6 +9086,11 @@ void CGUIInfoManager::ResetCurrentItem()
   m_currentMovieDuration = "";
 }
 
+void CGUIInfoManager::UpdateInfo(const CFileItem & item)
+{
+  m_currentFile->UpdateInfo(item);
+}
+
 void CGUIInfoManager::SetCurrentItem(const CFileItem &item)
 {
   ResetCurrentItem();

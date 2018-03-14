@@ -142,6 +142,7 @@ public:
    */
   void SetCurrentItem(const CFileItem &item);
   void ResetCurrentItem();
+  void UpdateInfo(const CFileItem &item);
   // Current song stuff
   /// \brief Retrieves tag info (if necessary) and fills in our current song path.
   void SetCurrentSong(CFileItem &item);
