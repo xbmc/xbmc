@@ -62,8 +62,7 @@ namespace XBMCAddon
       explicit InfoTagMusic(const MUSIC_INFO::CMusicInfoTag& tag);
 #endif
       InfoTagMusic();
-      //! @todo Switch to 'override' usage once 14.04 (Trusty) hits EOL. swig <3.0 doesn't understand C++11
-      virtual ~InfoTagMusic();
+      ~InfoTagMusic() override;
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///

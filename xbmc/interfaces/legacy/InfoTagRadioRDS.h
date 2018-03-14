@@ -64,8 +64,7 @@ namespace XBMCAddon
       explicit InfoTagRadioRDS(const PVR::CPVRRadioRDSInfoTagPtr tag);
 #endif
       InfoTagRadioRDS();
-      //! @todo Switch to 'override' usage once 14.04 (Trusty) hits EOL. swig <3.0 doesn't understand C++11
-      virtual ~InfoTagRadioRDS();
+      ~InfoTagRadioRDS() override;
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
