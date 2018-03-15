@@ -865,26 +865,35 @@ long StringUtils::TimeStringToSeconds(const std::string &timeString)
 
 std::string StringUtils::SecondsToTimeString(long lSeconds, TIME_FORMAT format)
 {
-  bool isNegative = lSeconds < 0;
-  lSeconds = std::abs(lSeconds);
-  int hh = lSeconds / 3600;
-  lSeconds = lSeconds % 3600;
-  int mm = lSeconds / 60;
-  int ss = lSeconds % 60;
-
-  if (format == TIME_FORMAT_GUESS)
-    format = (hh >= 1) ? TIME_FORMAT_HH_MM_SS : TIME_FORMAT_MM_SS;
   std::string strHMS;
-  if (format & TIME_FORMAT_HH)
-    strHMS += StringUtils::Format("%2.2i", hh);
-  else if (format & TIME_FORMAT_H)
-    strHMS += StringUtils::Format("%i", hh);
-  if (format & TIME_FORMAT_MM)
-    strHMS += StringUtils::Format(strHMS.empty() ? "%2.2i" : ":%2.2i", mm);
-  if (format & TIME_FORMAT_SS)
-    strHMS += StringUtils::Format(strHMS.empty() ? "%2.2i" : ":%2.2i", ss);
-  if (isNegative)
-    strHMS = "-" + strHMS;
+  if (format == TIME_FORMAT_SECS)
+    strHMS = StringUtils::Format("%i", lSeconds);
+  else if (format == TIME_FORMAT_MINS)
+    strHMS = StringUtils::Format("%i", lrintf(static_cast<float>(lSeconds) / 60.0f));
+  else if (format == TIME_FORMAT_HOURS)
+    strHMS = StringUtils::Format("%i", lrintf(static_cast<float>(lSeconds) / 3600.0f));
+  else
+  {
+    bool isNegative = lSeconds < 0;
+    lSeconds = std::abs(lSeconds);
+    int hh = lSeconds / 3600;
+    lSeconds = lSeconds % 3600;
+    int mm = lSeconds / 60;
+    int ss = lSeconds % 60;
+
+    if (format == TIME_FORMAT_GUESS)
+      format = (hh >= 1) ? TIME_FORMAT_HH_MM_SS : TIME_FORMAT_MM_SS;
+    if (format & TIME_FORMAT_HH)
+      strHMS += StringUtils::Format("%2.2i", hh);
+    else if (format & TIME_FORMAT_H)
+      strHMS += StringUtils::Format("%i", hh);
+    if (format & TIME_FORMAT_MM)
+      strHMS += StringUtils::Format(strHMS.empty() ? "%2.2i" : ":%2.2i", mm);
+    if (format & TIME_FORMAT_SS)
+      strHMS += StringUtils::Format(strHMS.empty() ? "%2.2i" : ":%2.2i", ss);
+    if (isNegative)
+      strHMS = "-" + strHMS;
+  }
   return strHMS;
 }
 
