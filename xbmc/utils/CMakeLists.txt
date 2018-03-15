@@ -13,6 +13,7 @@ set(SOURCES ActorProtocol.cpp
             CharsetDetection.cpp
             CPUInfo.cpp
             Crc32.cpp
+            CryptThreading.cpp
             DatabaseUtils.cpp
             EndianSwap.cpp
             EmbeddedArt.cpp
@@ -87,6 +88,7 @@ set(HEADERS ActorProtocol.h
             CharsetDetection.h
             CPUInfo.h
             Crc32.h
+            CryptThreading.h
             DatabaseUtils.h
             EndianSwap.h
             EventStream.h
@@ -174,10 +176,8 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL Clang)
 endif()
 
 if(NOT CORE_SYSTEM_NAME STREQUAL windows AND NOT CORE_SYSTEM_NAME STREQUAL windowsstore)
-  list(APPEND SOURCES CryptThreading.cpp
-                      GLUtils.cpp)
-  list(APPEND HEADERS CryptThreading.h
-                      GLUtils.h)
+  list(APPEND SOURCES GLUtils.cpp)
+  list(APPEND HEADERS GLUtils.h)
 endif()
 
 if(CORE_SYSTEM_NAME STREQUAL android OR AML_FOUND)

@@ -26,36 +26,6 @@
 
 #include <assert.h>
 
-#ifdef HAVE_OPENSSL
-#include "openssl/crypto.h"
-#include "threads/Thread.h"
-
-static CCriticalSection** m_sslLockArray = NULL;
-
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-
-  void ssl_lock_callback(int mode, int type, char* file, int line)
-  {
-    if (!m_sslLockArray)
-      return;
-
-    if (mode & CRYPTO_LOCK)
-      m_sslLockArray[type]->lock();
-    else
-      m_sslLockArray[type]->unlock();
-  }
-
-  unsigned long ssl_thread_id() { return (unsigned long) CThread::GetCurrentThreadId(); }
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif // HAVE_OPENSSL
-
 namespace XCURL
 {
 CURLcode DllLibCurl::global_init(long flags)
@@ -172,32 +142,12 @@ DllLibCurlGlobal::DllLibCurlGlobal()
   {
     CLog::Log(LOGERROR, "Error initializing libcurl");
   }
-
-#if defined(HAS_CURL_STATIC)
-  // Initialize ssl locking array
-  m_sslLockArray = new CCriticalSection*[CRYPTO_num_locks()];
-  for (int i = 0; i < CRYPTO_num_locks(); i++)
-    m_sslLockArray[i] = new CCriticalSection;
-
-  crypto_set_id_callback((unsigned long (*)())ssl_thread_id);
-  crypto_set_locking_callback((void (*)(int, int, const char*, int))ssl_lock_callback);
-#endif
 }
 
 DllLibCurlGlobal::~DllLibCurlGlobal()
 {
   // close libcurl
   curl_global_cleanup();
-
-#if defined(HAS_CURL_STATIC)
-  // Cleanup ssl locking array
-  crypto_set_id_callback(NULL);
-  crypto_set_locking_callback(NULL);
-  for (int i = 0; i < CRYPTO_num_locks(); i++)
-    delete m_sslLockArray[i];
-
-  delete[] m_sslLockArray;
-#endif
 }
 
 void DllLibCurlGlobal::CheckIdle()
