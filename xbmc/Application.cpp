@@ -1147,8 +1147,6 @@ bool CApplication::Initialize()
       // the startup window is considered part of the initialization as it most likely switches to the final window
       uiInitializationFinished = firstWindow != WINDOW_STARTUP_ANIM;
 
-      CStereoscopicsManager::GetInstance().Initialize();
-
       if (!m_ServiceManager->InitStageThree())
       {
         CLog::Log(LOGERROR, "Application - Init3 failed");
@@ -1627,7 +1625,6 @@ bool CApplication::LoadSkin(const std::string& skinID)
   CServiceBroker::GetGUI()->GetWindowManager().AddMsgTarget(&CServiceBroker::GetPlaylistPlayer());
   CServiceBroker::GetGUI()->GetWindowManager().AddMsgTarget(&g_infoManager);
   CServiceBroker::GetGUI()->GetWindowManager().AddMsgTarget(&g_fontManager);
-  CServiceBroker::GetGUI()->GetWindowManager().AddMsgTarget(&CStereoscopicsManager::GetInstance());
   CServiceBroker::GetGUI()->GetWindowManager().SetCallback(*this);
   //@todo should be done by GUIComponents
   CServiceBroker::GetGUI()->GetWindowManager().Initialize();
@@ -2129,7 +2126,7 @@ bool CApplication::OnAction(const CAction &action)
   }
 
   // forward action to graphic context and see if it can handle it
-  if (CStereoscopicsManager::GetInstance().OnAction(action))
+  if (CServiceBroker::GetGUI()->GetStereoscopicsManager().OnAction(action))
     return true;
 
   if (m_appPlayer.IsPlaying())
@@ -3518,7 +3515,7 @@ void CApplication::OnAVChange()
 {
   CLog::LogF(LOGDEBUG, "CApplication::OnAVChange");
 
-  CStereoscopicsManager::GetInstance().OnStreamChange();
+  CServiceBroker::GetGUI()->GetStereoscopicsManager().OnStreamChange();
 
   CGUIMessage msg(GUI_MSG_PLAYBACK_AVCHANGE, 0, 0);
   CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);

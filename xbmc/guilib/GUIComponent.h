@@ -26,6 +26,7 @@
 class CGUIWindowManager;
 class CGUITextureManager;
 class CGUILargeTextureManager;
+class CStereoscopicsManager;
 
 class CGUIComponent
 {
@@ -38,6 +39,7 @@ public:
   CGUIWindowManager& GetWindowManager();
   CGUITextureManager& GetTextureManager();
   CGUILargeTextureManager& GetLargeTextureManager();
+  CStereoscopicsManager &GetStereoscopicsManager();
 
   bool ConfirmDelete(std::string path);
 
@@ -46,4 +48,5 @@ protected:
   std::unique_ptr<CGUIWindowManager> m_pWindowManager;
   std::unique_ptr<CGUITextureManager> m_pTextureManager;
   std::unique_ptr<CGUILargeTextureManager> m_pLargeTextureManager;
+  std::unique_ptr<CStereoscopicsManager> m_stereoscopicsManager;
 };
