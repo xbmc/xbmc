@@ -48,9 +48,9 @@
 #include "threads/SystemClock.h"
 #include "URL.h"
 #include "Util.h"
+#include "utils/Digest.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/log.h"
-#include "utils/md5.h"
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -65,6 +65,7 @@ using namespace ADDON;
 using namespace KODI::MESSAGING;
 
 using KODI::MESSAGING::HELPERS::DialogResponse;
+using KODI::UTILITY::CDigest;
 
 namespace VIDEO
 {
@@ -281,7 +282,7 @@ namespace VIDEO
       if (g_advancedSettings.m_bVideoLibraryUseFastHash && !URIUtils::IsPlugin(strDirectory))
         fastHash = GetFastHash(strDirectory, regexps);
 
-      if (m_database.GetPathHash(strDirectory, dbHash) && !fastHash.empty() && fastHash == dbHash)
+      if (m_database.GetPathHash(strDirectory, dbHash) && !fastHash.empty() && StringUtils::EqualsNoCase(fastHash, dbHash))
       { // fast hashes match - no need to process anything
         hash = fastHash;
       }
@@ -297,7 +298,7 @@ namespace VIDEO
           hash = fastHash;
       }
 
-      if (hash == dbHash)
+      if (StringUtils::EqualsNoCase(hash, dbHash))
       { // hash matches - skipping
         CLog::Log(LOGDEBUG, "VideoInfoScanner: Skipping dir '%s' due to no change%s", CURL::GetRedacted(strDirectory).c_str(), !fastHash.empty() ? " (fasthash)" : "");
         bSkip = true;
@@ -329,7 +330,7 @@ namespace VIDEO
         items.SetPath(strDirectory);
         GetPathHash(items, hash);
         bSkip = true;
-        if (!m_database.GetPathHash(strDirectory, dbHash) || dbHash != hash)
+        if (!m_database.GetPathHash(strDirectory, dbHash) || !StringUtils::EqualsNoCase(dbHash, hash))
           bSkip = false;
         else
           items.Clear();
@@ -363,7 +364,7 @@ namespace VIDEO
         CLog::Log(LOGDEBUG, "VideoInfoScanner: No (new) information was found in dir %s", CURL::GetRedacted(strDirectory).c_str());
       }
     }
-    else if (hash != dbHash && (content == CONTENT_MOVIES || content == CONTENT_MUSICVIDEOS))
+    else if (!StringUtils::EqualsNoCase(hash, dbHash) && (content == CONTENT_MOVIES || content == CONTENT_MUSICVIDEOS))
     { // update the hash either way - we may have changed the hash to a fast version
       m_database.SetPathHash(strDirectory, hash);
     }
@@ -1805,31 +1806,31 @@ namespace VIDEO
   {
     // Create a hash based on the filenames, filesize and filedate.  Also count the number of files
     if (0 == items.Size()) return 0;
-    XBMC::XBMC_MD5 md5state;
+    CDigest digest{CDigest::Type::MD5};
     int count = 0;
     for (int i = 0; i < items.Size(); ++i)
     {
       const CFileItemPtr pItem = items[i];
-      md5state.append(pItem->GetPath());
+      digest.Update(pItem->GetPath());
       if (pItem->IsPlugin())
       {
         // allow plugin to calculate hash itself using strings rather than binary data for size and date
         // according to ListItem.setInfo() documentation date format should be "d.m.Y"
         if (pItem->m_dwSize)
-          md5state.append(std::to_string(pItem->m_dwSize));
+          digest.Update(std::to_string(pItem->m_dwSize));
         if (pItem->m_dateTime.IsValid())
-          md5state.append(StringUtils::Format("%02i.%02i.%04i", pItem->m_dateTime.GetDay(), pItem->m_dateTime.GetMonth(), pItem->m_dateTime.GetYear()));
+          digest.Update(StringUtils::Format("%02i.%02i.%04i", pItem->m_dateTime.GetDay(), pItem->m_dateTime.GetMonth(), pItem->m_dateTime.GetYear()));
       }
       else
       {
-        md5state.append((unsigned char *)&pItem->m_dwSize, sizeof(pItem->m_dwSize));
+        digest.Update(&pItem->m_dwSize, sizeof(pItem->m_dwSize));
         FILETIME time = pItem->m_dateTime;
-        md5state.append((unsigned char *)&time, sizeof(FILETIME));
+        digest.Update(&time, sizeof(FILETIME));
       }
       if (pItem->IsVideo() && !pItem->IsPlayList() && !pItem->IsNFO())
         count++;
     }
-    hash = md5state.getDigest();
+    hash = digest.Finalize();
     return count;
   }
 
@@ -1849,10 +1850,10 @@ namespace VIDEO
   std::string CVideoInfoScanner::GetFastHash(const std::string &directory,
       const std::vector<std::string> &excludes) const
   {
-    XBMC::XBMC_MD5 md5state;
+    CDigest digest{CDigest::Type::MD5};
 
     if (excludes.size())
-      md5state.append(StringUtils::Join(excludes, "|"));
+      digest.Update(StringUtils::Join(excludes, "|"));
 
     struct __stat64 buffer;
     if (XFILE::CFile::Stat(directory, &buffer) == 0)
@@ -1862,8 +1863,8 @@ namespace VIDEO
         time = buffer.st_ctime;
       if (time)
       {
-        md5state.append((unsigned char *)&time, sizeof(time));
-        return md5state.getDigest();
+        digest.Update((unsigned char *)&time, sizeof(time));
+        return digest.Finalize();
       }
     }
     return "";
@@ -1876,10 +1877,10 @@ namespace VIDEO
     items.Add(CFileItemPtr(new CFileItem(directory, true)));
     CUtil::GetRecursiveDirsListing(directory, items, DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_NO_FILE_INFO);
 
-    XBMC::XBMC_MD5 md5state;
+    CDigest digest{CDigest::Type::MD5};
 
     if (excludes.size())
-      md5state.append(StringUtils::Join(excludes, "|"));
+      digest.Update(StringUtils::Join(excludes, "|"));
 
     int64_t time = 0;
     for (int i=0; i < items.Size(); ++i)
@@ -1900,8 +1901,8 @@ namespace VIDEO
 
     if (time)
     {
-      md5state.append((unsigned char *)&time, sizeof(time));
-      return md5state.getDigest();
+      digest.Update((unsigned char *)&time, sizeof(time));
+      return digest.Finalize();
     }
     return "";
   }

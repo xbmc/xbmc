@@ -22,6 +22,7 @@
 #include "GUIWindowManager.h"
 #include "ServiceBroker.h"
 #include "utils/CharsetConverter.h"
+#include "utils/Digest.h"
 #include "utils/Variant.h"
 #include "GUIKeyboardFactory.h"
 #include "dialogs/GUIDialogNumeric.h"
@@ -30,12 +31,13 @@
 #include "LocalizeStrings.h"
 #include "XBDateTime.h"
 #include "windowing/WinSystem.h"
-#include "utils/md5.h"
 #include "GUIUserMessages.h"
 
 #if defined(TARGET_DARWIN)
 #include "platform/darwin/osx/CocoaInterface.h"
 #endif
+
+using KODI::UTILITY::CDigest;
 
 const char* CGUIEditControl::smsLetters[10] = { " !@#$%^&*()[]{}<>/\\|0", ".,;:\'\"-+_=?`~1", "abc2ABC", "def3DEF", "ghi4GHI", "jkl5JKL", "mno6MNO", "pqrs7PQRS", "tuv8TUV", "wxyz9WXYZ" };
 const unsigned int CGUIEditControl::smsDelay = 1000;
@@ -613,7 +615,7 @@ std::string CGUIEditControl::GetLabel2() const
   std::string text;
   g_charsetConverter.wToUTF8(m_text2, text);
   if (m_inputType == INPUT_TYPE_PASSWORD_MD5 && !m_isMD5)
-    return XBMC::XBMC_MD5::GetMD5(text);
+    return CDigest::Calculate(CDigest::Type::MD5, text);
   return text;
 }
 

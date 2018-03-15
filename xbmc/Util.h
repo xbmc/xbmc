@@ -25,6 +25,7 @@
 #include <string.h>
 #include <stdint.h>
 #include "MediaSource.h" // Definition of VECSOURCES
+#include "utils/Digest.h"
 
 #define ARRAY_SIZE(X)         (sizeof(X)/sizeof((X)[0]))
 
@@ -76,7 +77,7 @@ public:
    \param strPath - path to the file to MD5sum
    \return md5 sum of the file
    */
-  static std::string GetFileMD5(const std::string& strPath);
+  static std::string GetFileDigest(const std::string& strPath, KODI::UTILITY::CDigest::Type type);
   static bool GetDirectoryName(const std::string& strFileName, std::string& strDescription);
   static void GetDVDDriveIcon(const std::string& strPath, std::string& strIcon);
   static void RemoveTempFiles();

@@ -37,7 +37,7 @@
 #include "ServiceBroker.h"
 #include "messaging/ApplicationMessenger.h"
 #include "PlayListPlayer.h"
-#include "utils/md5.h"
+#include "utils/Digest.h"
 #include "utils/Variant.h"
 #include "settings/Settings.h"
 #include "input/Key.h"
@@ -50,6 +50,7 @@
 
 using namespace ANNOUNCEMENT;
 using namespace KODI::MESSAGING;
+using KODI::UTILITY::CDigest;
 
 #ifdef TARGET_WINDOWS
 #define close closesocket
@@ -611,7 +612,7 @@ void CAirPlayServer::CTCPClient::ComposeAuthRequestAnswer(std::string& responseH
 {
   int16_t random=rand();
   std::string randomStr = StringUtils::Format("%i", random);
-  m_authNonce=XBMC::XBMC_MD5::GetMD5(randomStr);
+  m_authNonce=CDigest::Calculate(CDigest::Type::MD5, randomStr);
   responseHeader = StringUtils::Format(AUTH_REQUIRED, m_authNonce.c_str());
   responseBody.clear();
 }
@@ -629,12 +630,9 @@ std::string calcResponse(const std::string& username,
   std::string HA1;
   std::string HA2;
 
-  HA1 = XBMC::XBMC_MD5::GetMD5(username + ":" + realm + ":" + password);
-  HA2 = XBMC::XBMC_MD5::GetMD5(method + ":" + digestUri);
-  StringUtils::ToLower(HA1);
-  StringUtils::ToLower(HA2);
-  response = XBMC::XBMC_MD5::GetMD5(HA1 + ":" + nonce + ":" + HA2);
-  StringUtils::ToLower(response);
+  HA1 = CDigest::Calculate(CDigest::Type::MD5, username + ":" + realm + ":" + password);
+  HA2 = CDigest::Calculate(CDigest::Type::MD5, method + ":" + digestUri);
+  response = CDigest::Calculate(CDigest::Type::MD5, HA1 + ":" + nonce + ":" + HA2);
   return response;
 }
 
