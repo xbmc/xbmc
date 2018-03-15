@@ -48,11 +48,6 @@ public:
   CStereoscopicsManager(void);
   ~CStereoscopicsManager(void) override;
 
-  /*!
-   * @return static instance of CStereoscopicsManager
-   */
-  static CStereoscopicsManager& GetInstance();
-
   void Initialize(void);
   RENDER_STEREO_MODE GetStereoMode(void);
   void SetStereoModeByUser(const RENDER_STEREO_MODE &mode);

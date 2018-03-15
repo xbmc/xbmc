@@ -106,12 +106,6 @@ CStereoscopicsManager::CStereoscopicsManager(void)
 
 CStereoscopicsManager::~CStereoscopicsManager(void) = default;
 
-CStereoscopicsManager& CStereoscopicsManager::GetInstance()
-{
-  static CStereoscopicsManager sStereoscopicsManager;
-  return sStereoscopicsManager;
-}
-
 void CStereoscopicsManager::Initialize(void)
 {
   // turn off stereo mode on XBMC startup
