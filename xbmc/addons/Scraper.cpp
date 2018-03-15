@@ -773,6 +773,13 @@ void DetailsFromFileItem<CAlbum>(const CFileItem &item, CAlbum &album)
 
   int nThumbs = item.GetProperty("album.thumbs").asInteger32();
   ParseThumbs(album.thumbURL, item, nThumbs, "album.thumb");
+
+  std::map<std::string, std::string> artwork;
+  std::string arttype = FromString(item, "album.cdart.url");
+  if (!arttype.empty())
+    artwork.insert(std::make_pair("cdart", arttype));
+  if (!artwork.empty())
+    album.art = artwork;
 }
 
 template<>
@@ -807,6 +814,16 @@ void DetailsFromFileItem<CArtist>(const CFileItem &item, CArtist &artist)
   int nFanart = item.GetProperty("artist.fanarts").asInteger32();
   artist.fanart.m_xml = ParseFanart(item, nFanart, "artist.fanart");
   artist.fanart.Unpack();
+
+  std::map<std::string, std::string> artwork;
+  std::string arttype = FromString(item, "artist.clearlogo.url");
+  if (!arttype.empty())
+    artwork.insert(std::make_pair("clearlogo", arttype));
+  arttype = FromString(item, "artist.banner.url");
+  if (!arttype.empty())
+    artwork.insert(std::make_pair("banner", arttype));
+  if (!artwork.empty())
+    artist.art = artwork;
 }
 
 template<>
