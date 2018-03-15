@@ -65,6 +65,7 @@ class CPlayerCoreFactory;
 class CDatabaseManager;
 class CProfilesManager;
 class CEventLog;
+class CStereoscopicsManager;
 
 namespace KODI
 {
@@ -120,4 +121,5 @@ public:
   static CDatabaseManager &GetDatabaseManager();
   static CProfilesManager &GetProfileManager();
   static CEventLog &GetEventLog();
+  static CStereoscopicsManager &GetStereoscopicsManager();
 };

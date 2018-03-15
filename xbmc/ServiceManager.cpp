@@ -30,6 +30,7 @@
 #include "favourites/FavouritesService.h"
 #include "games/controllers/ControllerManager.h"
 #include "games/GameServices.h"
+#include "guilib/StereoscopicsManager.h"
 #include "peripherals/Peripherals.h"
 #include "PlayListPlayer.h"
 #include "profiles/ProfilesManager.h"
@@ -495,4 +496,9 @@ CProfilesManager &CServiceManager::GetProfileManager()
 CEventLog &CServiceManager::GetEventLog()
 {
   return m_profileManager->GetEventLog();
+}
+
+CStereoscopicsManager &CServiceManager::GetStereoscopicsManager()
+{
+  return *m_stereoscopicsManager;
 }
