@@ -38,7 +38,6 @@ set(SOURCES ActorProtocol.cpp
             LegacyPathTranslation.cpp
             Locale.cpp
             log.cpp
-            md5.cpp
             Mime.cpp
             Observer.cpp
             POUtils.cpp
@@ -125,7 +124,6 @@ set(HEADERS ActorProtocol.h
             Locale.h
             log.h
             MathUtils.h
-            md5.h
             Mime.h
             Observer.h
             params_check_macros.h
