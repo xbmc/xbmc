@@ -15,6 +15,7 @@ set(SOURCES ActorProtocol.cpp
             Crc32.cpp
             CryptThreading.cpp
             DatabaseUtils.cpp
+            Digest.cpp
             EndianSwap.cpp
             EmbeddedArt.cpp
             FileExtensionProvider.cpp
@@ -90,6 +91,7 @@ set(HEADERS ActorProtocol.h
             Crc32.h
             CryptThreading.h
             DatabaseUtils.h
+            Digest.h
             EndianSwap.h
             EventStream.h
             EventStreamDetail.h
