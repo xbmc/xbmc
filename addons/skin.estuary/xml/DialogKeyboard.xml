@@ -523,7 +523,7 @@
 			<control type="grouplist" id="95200">
 				<bottom>0</bottom>
 				<height>460</height>
-				<centerleft>86%</centerleft>
+				<centerleft>88%</centerleft>
 				<itemgap>dialogbuttons_itemgap</itemgap>
 				<onup condition="!Integer.IsGreater(Container(9010).NumItems,0)">95200</onup>
 				<onup condition="Integer.IsGreater(Container(9010).NumItems,0)">9010</onup>
