@@ -3332,8 +3332,17 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///   \table_row3{   <b>`ListItem.Duration`</b>,
 ///                  \anchor ListItem_Duration
 ///                  _string_,
-///     Returns the song or movie duration of the currently selected movie in a
-///     container
+///     Returns the duration of the currently selected item in a container
+///     in the format hh:mm:ss. hh: will be omitted if hours value is zero.
+///   }
+///   \table_row3{   <b>`ListItem.Duration(format)`</b>,
+///                  \anchor ListItem.Duration_format
+///                  _string_,
+///     Returns the duration of the currently selected item in a container in
+///     different formats: hours (hh)\, minutes (mm) or seconds (ss).
+///     Also supported: (hh:mm)\, (mm:ss)\, (hh:mm:ss)\, (h:mm:ss).
+///     Added with Leia: (secs)\, (mins)\, (hours) for total time values.
+///     Example: 3661 seconds => hh=1\, mm=1\, ss=1\, hours=1\, mins=61\, secs=3661
 ///   }
 ///   \table_row3{   <b>`ListItem.DBTYPE`</b>,
 ///                  \anchor ListItem_DBTYPE
@@ -6016,6 +6025,8 @@ int CGUIInfoManager::TranslateListItem(const Property &info)
       return AddListItemProp(info.param(), LISTITEM_VOTES_OFFSET);
     if (info.name == "ratingandvotes")
       return AddListItemProp(info.param(), LISTITEM_RATING_AND_VOTES_OFFSET);
+    if (info.name == "duration")
+      return AddListItemProp(info.param(), LISTITEM_DURATION_OFFSET);
   }
 
   for (size_t i = 0; i < sizeof(listitem_labels) / sizeof(infomap); i++) // these ones don't have or need an id
@@ -9590,6 +9601,36 @@ bool CGUIInfoManager::GetItemInt(int &value, const CGUIListItem *item, int info)
   return false;
 }
 
+std::string CGUIInfoManager::GetItemDuration(const CFileItem *item, TIME_FORMAT format) const
+{
+  int iDuration = -1;
+  if (item->IsPVRChannel() || item->IsEPG() || item->IsPVRTimer())
+  {
+    const CPVREpgInfoTagPtr epgTag = CPVRItem(item).GetEpgInfoTag();
+    if (epgTag)
+      iDuration = epgTag->GetDuration();
+  }
+  else if (item->HasVideoInfoTag())
+  {
+    if (item->GetVideoInfoTag()->GetDuration() > 0)
+      iDuration = item->GetVideoInfoTag()->GetDuration();
+  }
+  else if (item->HasMusicInfoTag())
+  {
+    if (item->GetMusicInfoTag()->GetDuration() > 0)
+      iDuration = item->GetMusicInfoTag()->GetDuration();
+  }
+  else if (item->HasProperty(FILEITEM_PROPERTY_SAVESTATE_DURATION))
+  {
+    iDuration = static_cast<long>(item->GetProperty(FILEITEM_PROPERTY_SAVESTATE_DURATION).asInteger());
+  }
+
+  if (iDuration != -1)
+    return StringUtils::SecondsToTimeString(iDuration, format);
+
+  return std::string();
+}
+
 std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::string *fallback)
 {
   if (!item) return "";
@@ -9627,6 +9668,12 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
       return StringUtils::FormatNumber(rating.rating);
     else
       return FormatRatingAndVotes(rating.rating, rating.votes);
+  }
+
+  if (info >= LISTITEM_PROPERTY_START + LISTITEM_DURATION_OFFSET &&
+      info - (LISTITEM_PROPERTY_START + LISTITEM_DURATION_OFFSET) < static_cast<int>(m_listitemProperties.size()))
+  {
+    return GetItemDuration(item, TranslateTimeFormat(m_listitemProperties[info - (LISTITEM_PROPERTY_START + LISTITEM_DURATION_OFFSET)]));
   }
 
   if (info >= LISTITEM_PROPERTY_START && info - LISTITEM_PROPERTY_START < (int)m_listitemProperties.size())
@@ -9897,31 +9944,7 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
     }
   case LISTITEM_DURATION:
     {
-      std::string duration;
-      if (item->IsPVRChannel() || item->IsEPG() || item->IsPVRTimer())
-      {
-        const CPVREpgInfoTagPtr epgTag = CPVRItem(item).GetEpgInfoTag();
-        if (epgTag)
-          return StringUtils::SecondsToTimeString(epgTag->GetDuration());
-        else
-          return std::string();
-      }
-      else if (item->HasVideoInfoTag())
-      {
-        if (item->GetVideoInfoTag()->GetDuration() > 0)
-          duration = StringUtils::SecondsToTimeString(item->GetVideoInfoTag()->GetDuration());
-      }
-      else if (item->HasMusicInfoTag())
-      {
-        if (item->GetMusicInfoTag()->GetDuration() > 0)
-          duration = StringUtils::SecondsToTimeString(item->GetMusicInfoTag()->GetDuration());
-      }
-      else if (item->HasProperty(FILEITEM_PROPERTY_SAVESTATE_DURATION))
-      {
-        long iDuration = static_cast<long>(item->GetProperty(FILEITEM_PROPERTY_SAVESTATE_DURATION).asInteger());
-        duration = StringUtils::SecondsToTimeString(iDuration);
-      }
-      return duration;
+      return GetItemDuration(item, TIME_FORMAT_GUESS);
     }
   case LISTITEM_PLOT:
     if (item->IsPVRChannel() || item->IsEPG() || item->IsPVRTimer())

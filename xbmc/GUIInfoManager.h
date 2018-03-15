@@ -311,6 +311,7 @@ private:
   static std::string GetEpgEventTitle(const PVR::CPVREpgInfoTagPtr& epgTag);
   static std::string FormatRatingAndVotes(float rating, int votes);
   bool IsPlayerChannelPreviewActive() const;
+  std::string GetItemDuration(const CFileItem *item, TIME_FORMAT format) const;
 };
 
 /*!
