@@ -69,6 +69,7 @@ CAESinkXAudio::CAESinkXAudio() :
   m_dwChunkSize(0),
   m_dwFrameSize(0),
   m_dwBufferLen(0),
+  m_sinkFrames(0),
   m_running(false),
   m_initialized(false),
   m_isSuspended(false),
@@ -166,6 +167,7 @@ void CAESinkXAudio::Deinitialize()
     {
       m_sourceVoice->Stop();
       m_sourceVoice->FlushSourceBuffers();
+      m_sinkFrames = 0;
     }
     catch (...)
     {
@@ -198,10 +200,10 @@ void CAESinkXAudio::GetDelay(AEDelayStatus& status)
     goto failed;
 
   XAUDIO2_VOICE_STATE state;
-  m_sourceVoice->GetState(&state, XAUDIO2_VOICE_NOSAMPLESPLAYED);
+  m_sourceVoice->GetState(&state, 0);
   
-  uint64_t framesInQueue = state.BuffersQueued * m_format.m_frames;
-  status.SetDelay(framesInQueue / (double)m_format.m_sampleRate);
+  double delay = (double)(m_sinkFrames - state.SamplesPlayed) / m_format.m_sampleRate;
+  status.SetDelay(delay);
   return;
 
 failed:
@@ -251,6 +253,7 @@ unsigned int CAESinkXAudio::AddPackets(uint8_t **data, unsigned int frames, unsi
 
   if (!m_running) //first time called, pre-fill buffer then start voice
   {
+    m_sourceVoice->Stop();
     hr = m_sourceVoice->SubmitSourceBuffer(&xbuffer);
     if (FAILED(hr))
     {
@@ -266,6 +269,7 @@ unsigned int CAESinkXAudio::AddPackets(uint8_t **data, unsigned int frames, unsi
       delete[] buff;
       return INT_MAX;
     }
+    m_sinkFrames += frames;
     m_running = true; //signal that we're processing frames
     return frames;
   }
@@ -311,8 +315,11 @@ unsigned int CAESinkXAudio::AddPackets(uint8_t **data, unsigned int frames, unsi
     #ifdef _DEBUG
       CLog::Log(LOGERROR, __FUNCTION__": SubmitSourceBuffer failed due to %s", WASAPIErrToStr(hr));
     #endif
+    delete[] buff;
     return INT_MAX;
   }
+
+  m_sinkFrames += frames;
 
   return frames;
 }
