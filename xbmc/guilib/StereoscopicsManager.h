@@ -31,6 +31,7 @@
 #include "rendering/RenderSystem.h"
 
 class CAction;
+class CSettings;
 
 enum STEREOSCOPIC_PLAYBACK_MODE
 {
@@ -45,7 +46,7 @@ class CStereoscopicsManager : public ISettingCallback,
                               public IMsgTargetCallback
 {
 public:
-  CStereoscopicsManager(void);
+  CStereoscopicsManager(CSettings &settings);
   ~CStereoscopicsManager(void) override;
 
   void Initialize(void);
@@ -90,6 +91,10 @@ private:
   std::string GetVideoStereoMode();
   bool IsVideoStereoscopic();
 
+  // Construction parameters
+  CSettings &m_settings;
+
+  // Stereoscopic parameters
   RENDER_STEREO_MODE m_stereoModeSetByUser;
   RENDER_STEREO_MODE m_lastStereoModeSetByUser;
 };
