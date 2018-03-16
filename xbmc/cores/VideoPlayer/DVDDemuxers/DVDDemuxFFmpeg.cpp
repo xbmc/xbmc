@@ -1146,7 +1146,10 @@ bool CDVDDemuxFFmpeg::SeekTime(double time, bool backwards, double *startpts)
 
   int64_t seek_pts = (int64_t)time * (AV_TIME_BASE / 1000);
   bool ismp3 = m_pFormatContext->iformat && (strcmp(m_pFormatContext->iformat->name, "mp3") == 0);
-  if (m_pFormatContext->start_time != (int64_t)AV_NOPTS_VALUE && !ismp3 && !m_bSup)
+
+  if (!m_streaminfo)
+    seek_pts += m_startTime * AV_TIME_BASE;
+  else if (m_pFormatContext->start_time != (int64_t)AV_NOPTS_VALUE && !ismp3 && !m_bSup)
     seek_pts += m_pFormatContext->start_time;
 
   int ret;
@@ -1154,19 +1157,26 @@ bool CDVDDemuxFFmpeg::SeekTime(double time, bool backwards, double *startpts)
     CSingleLock lock(m_critSection);
     ret = av_seek_frame(m_pFormatContext, -1, seek_pts, backwards ? AVSEEK_FLAG_BACKWARD : 0);
 
-    // demuxer can return failure, if seeking behind eof
-    if (ret < 0 && m_pFormatContext->duration &&
-        seek_pts >= (m_pFormatContext->duration + m_pFormatContext->start_time))
+    if (ret < 0)
     {
-      // force eof
-      // files of realtime streams may grow
-      if (!m_pInput->IsRealtime())
-        m_pInput->Close();
-      else
+      int64_t starttime = m_pFormatContext->start_time;
+      if (!m_streaminfo)
+        starttime = m_startTime * AV_TIME_BASE;
+
+      // demuxer can return failure, if seeking behind eof
+      if (m_pFormatContext->duration &&
+          seek_pts >= (m_pFormatContext->duration + starttime))
+      {
+        // force eof
+        // files of realtime streams may grow
+        if (!m_pInput->IsRealtime())
+          m_pInput->Close();
+        else
+          ret = 0;
+      }
+      else if (m_pInput->IsEOF())
         ret = 0;
     }
-    else if (ret < 0 && m_pInput->IsEOF())
-      ret = 0;
 
     if (ret >= 0)
     {
