@@ -153,9 +153,8 @@ void CStereoscopicsManager::SetStereoMode(const RENDER_STEREO_MODE &mode)
 
   if (applyMode != currentMode && applyMode >= RENDER_STEREO_MODE_OFF)
   {
-    if (!CServiceBroker::GetRenderSystem().SupportsStereo(applyMode))
-      return;
-    m_settings.SetInt(CSettings::SETTING_VIDEOSCREEN_STEREOSCOPICMODE, applyMode);
+    if (CServiceBroker::GetRenderSystem().SupportsStereo(applyMode))
+      m_settings.SetInt(CSettings::SETTING_VIDEOSCREEN_STEREOSCOPICMODE, applyMode);
   }
 }
 
