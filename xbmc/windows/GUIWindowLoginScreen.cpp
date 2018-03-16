@@ -103,7 +103,7 @@ bool CGUIWindowLoginScreen::OnMessage(CGUIMessage& message)
           if (bOkay)
           {
             if (iItem >= 0)
-              LoadProfile((unsigned int)iItem);
+              CApplicationMessenger::GetInstance().PostMsg(TMSG_LOADPROFILE, iItem);
           }
           else
           {
@@ -276,39 +276,4 @@ CFileItemPtr CGUIWindowLoginScreen::GetCurrentListItem(int offset)
   item = (item + offset) % m_vecItems->Size();
   if (item < 0) item += m_vecItems->Size();
   return m_vecItems->Get(item);
-}
-
-void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
-{
-  CProfilesManager &profileManager = CServiceBroker::GetProfileManager();
-
-  profileManager.PrepareLoadProfile(profile);
-
-  if (profile != 0 || !profileManager.IsMasterProfile())
-  {
-    profileManager.LoadProfile(profile);
-  }
-  else
-  {
-    CGUIWindow* pWindow = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(WINDOW_HOME);
-    if (pWindow)
-      pWindow->ResetControlStates();
-  }
-
-  profileManager.UpdateCurrentProfileDate();
-  profileManager.Save();
-  profileManager.FinalizeLoadProfile();
-
-  int firstWindow = g_SkinInfo->GetFirstWindow();
-  // the startup window is considered part of the initialization as it most likely switches to the final window
-  bool uiInitializationFinished = firstWindow != WINDOW_STARTUP_ANIM;
-
-  CServiceBroker::GetGUI()->GetWindowManager().ChangeActiveWindow(firstWindow);
-
-  // if the user interfaces has been fully initialized let everyone know
-  if (uiInitializationFinished)
-  {
-    CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UI_READY);
-    CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
-  }
 }

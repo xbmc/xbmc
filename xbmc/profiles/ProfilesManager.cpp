@@ -278,6 +278,21 @@ void CProfilesManager::PrepareLoadProfile(size_t profileIndex)
 
 bool CProfilesManager::LoadProfile(size_t index)
 {
+  PrepareLoadProfile(index);
+
+  if (index == 0 && IsMasterProfile())
+  {
+    CGUIWindow* pWindow = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(WINDOW_HOME);
+    if (pWindow)
+      pWindow->ResetControlStates();
+
+    UpdateCurrentProfileDate();
+    Save();
+    FinalizeLoadProfile();
+
+    return true;
+  }
+
   CSingleLock lock(m_critical);
   // check if the index is valid or not
   if (index >= m_profiles.size())
@@ -346,6 +361,12 @@ bool CProfilesManager::LoadProfile(size_t index)
   CUtil::DeleteDirectoryCache();
   g_directoryCache.Clear();
 
+  lock.Leave();
+
+  UpdateCurrentProfileDate();
+  Save();
+  FinalizeLoadProfile();
+
   return true;
 }
 
@@ -378,7 +399,7 @@ void CProfilesManager::FinalizeLoadProfile()
 
   if (!g_application.LoadLanguage(true))
   {
-    CLog::Log(LOGFATAL, "CGUIWindowLoginScreen: unable to load language for profile \"%s\"", GetCurrentProfile().getName().c_str());
+    CLog::Log(LOGFATAL, "Unable to load language for profile \"%s\"", GetCurrentProfile().getName().c_str());
     return;
   }
 
@@ -399,6 +420,21 @@ void CProfilesManager::FinalizeLoadProfile()
   g_application.UpdateLibraries();
 
   stereoscopicsManager.Initialize();
+
+  // Load initial window
+  int firstWindow = g_SkinInfo->GetFirstWindow();
+
+  // the startup window is considered part of the initialization as it most likely switches to the final window
+  bool uiInitializationFinished = firstWindow != WINDOW_STARTUP_ANIM;
+
+  CServiceBroker::GetGUI()->GetWindowManager().ChangeActiveWindow(firstWindow);
+
+  // if the user interfaces has been fully initialized let everyone know
+  if (uiInitializationFinished)
+  {
+    CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UI_READY);
+    CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
+  }
 }
 
 void CProfilesManager::LogOff()
