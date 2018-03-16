@@ -45,9 +45,6 @@ typedef int64_t   off64_t;
 typedef off64_t   __off64_t;
 typedef fpos_t    fpos64_t;
 #define stat64    stat
-#if defined(TARGET_DARWIN) || defined(TARGET_ANDROID)
-#define _G_va_list va_list
-#endif
 #endif
 
 #ifdef TARGET_POSIX
@@ -485,7 +482,7 @@ int __wrap___printf_chk(int flag, const char *format, ...)
   return res;
 }
 
-int __wrap___vfprintf_chk(FILE* stream, int flag, const char *format, _G_va_list ap)
+int __wrap___vfprintf_chk(FILE* stream, int flag, const char *format, va_list ap)
 {
   return dll_vfprintf(stream, format, ap);
 }
