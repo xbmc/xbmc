@@ -64,13 +64,6 @@ public:
   RENDER_STEREO_MODE GetStereoModeOfPlayingVideo(void) const;
   std::string GetLabelForStereoMode(const RENDER_STEREO_MODE &mode) const;
   RENDER_STEREO_MODE GetPreferredPlaybackMode(void) const;
-  static int ConvertVideoToGuiStereoMode(const std::string &mode);
-  /**
-   * @brief will convert a string representation into a GUI stereo mode
-   * @param mode The string to convert
-   * @return -1 if not found, otherwise the according int of the RENDER_STEREO_MODE enum
-   */
-  static int ConvertStringToGuiStereoMode(const std::string &mode);
   static const char* ConvertGuiStereoModeToString(const RENDER_STEREO_MODE &mode);
 
   /**
@@ -97,6 +90,14 @@ private:
   void OnPlaybackStopped(void);
   std::string GetVideoStereoMode() const;
   bool IsVideoStereoscopic() const;
+
+  /**
+   * @brief will convert a string representation into a GUI stereo mode
+   * @param mode The string to convert
+   * @return -1 if not found, otherwise the according int of the RENDER_STEREO_MODE enum
+   */
+  static int ConvertStringToGuiStereoMode(const std::string &mode);
+  static int ConvertVideoToGuiStereoMode(const std::string &mode);
 
   // Construction parameters
   CSettings &m_settings;
