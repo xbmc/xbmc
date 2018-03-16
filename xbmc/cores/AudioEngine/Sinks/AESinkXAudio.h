@@ -115,6 +115,7 @@ private:
     unsigned int m_dwChunkSize;
     unsigned int m_dwFrameSize;
     unsigned int m_dwBufferLen;
+    uint64_t m_sinkFrames;
 
     double m_avgTimeWaiting;       /* time between next buffer of data from SoftAE and driver call for data */
 
