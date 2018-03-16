@@ -52,31 +52,36 @@ public:
   ~CStereoscopicsManager(void) override;
 
   void Initialize(void);
-  RENDER_STEREO_MODE GetStereoMode(void);
+
+  RENDER_STEREO_MODE GetStereoMode(void) const;
+
   void SetStereoModeByUser(const RENDER_STEREO_MODE &mode);
   void SetStereoMode(const RENDER_STEREO_MODE &mode);
-  RENDER_STEREO_MODE GetNextSupportedStereoMode(const RENDER_STEREO_MODE &currentMode, int step = 1);
-  std::string DetectStereoModeByString(const std::string &needle);
-  RENDER_STEREO_MODE GetStereoModeByUserChoice(const std::string &heading = "");
-  RENDER_STEREO_MODE GetStereoModeOfPlayingVideo(void);
-  const std::string &GetLabelForStereoMode(const RENDER_STEREO_MODE &mode) const;
-  RENDER_STEREO_MODE GetPreferredPlaybackMode(void);
-  int ConvertVideoToGuiStereoMode(const std::string &mode);
+
+  RENDER_STEREO_MODE GetNextSupportedStereoMode(const RENDER_STEREO_MODE &currentMode, int step = 1) const;
+  std::string DetectStereoModeByString(const std::string &needle) const;
+  RENDER_STEREO_MODE GetStereoModeByUserChoice(const std::string &heading = "") const;
+  RENDER_STEREO_MODE GetStereoModeOfPlayingVideo(void) const;
+  std::string GetLabelForStereoMode(const RENDER_STEREO_MODE &mode) const;
+  RENDER_STEREO_MODE GetPreferredPlaybackMode(void) const;
+  static int ConvertVideoToGuiStereoMode(const std::string &mode);
   /**
    * @brief will convert a string representation into a GUI stereo mode
    * @param mode The string to convert
    * @return -1 if not found, otherwise the according int of the RENDER_STEREO_MODE enum
    */
-  int ConvertStringToGuiStereoMode(const std::string &mode);
-  const char* ConvertGuiStereoModeToString(const RENDER_STEREO_MODE &mode);
+  static int ConvertStringToGuiStereoMode(const std::string &mode);
+  static const char* ConvertGuiStereoModeToString(const RENDER_STEREO_MODE &mode);
+
   /**
    * @brief Converts a stereoscopics related action/command from Builtins and JsonRPC into the according cAction ID.
    * @param command The command/action
    * @param parameter The parameter of the command
    * @return The integer of the according cAction or -1 if not valid
    */
-  CAction ConvertActionCommandToAction(const std::string &command, const std::string &parameter);
-  std::string NormalizeStereoMode(const std::string &mode);
+  static CAction ConvertActionCommandToAction(const std::string &command, const std::string &parameter);
+  static std::string NormalizeStereoMode(const std::string &mode);
+
   void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
   void OnStreamChange();
   bool OnMessage(CGUIMessage &message) override;
@@ -90,8 +95,8 @@ public:
 private:
   void ApplyStereoMode(const RENDER_STEREO_MODE &mode, bool notify = true);
   void OnPlaybackStopped(void);
-  std::string GetVideoStereoMode();
-  bool IsVideoStereoscopic();
+  std::string GetVideoStereoMode() const;
+  bool IsVideoStereoscopic() const;
 
   // Construction parameters
   CSettings &m_settings;
