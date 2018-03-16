@@ -170,7 +170,7 @@ bool CRPIUtils::SetNativeResolution(const RESOLUTION_INFO res, EGLSurface m_nati
     {
       CLog::Log(LOGDEBUG, "EGL set HDMI mode (%d,%d)=%d %s%s\n",
                           GETFLAGS_GROUP(res.dwFlags), GETFLAGS_MODE(res.dwFlags), success,
-                          CStereoscopicsManager::GetInstance().ConvertGuiStereoModeToString(stereo_mode),
+                          CStereoscopicsManager::ConvertGuiStereoModeToString(stereo_mode),
                           mode3d==HDMI_3D_FORMAT_FRAME_PACKING ? " FP" : mode3d==HDMI_3D_FORMAT_SBS_HALF ? " SBS" : mode3d==HDMI_3D_FORMAT_TB_HALF ? " TB" : "");
 
       sem_wait(&m_tv_synced);
@@ -179,7 +179,7 @@ bool CRPIUtils::SetNativeResolution(const RESOLUTION_INFO res, EGLSurface m_nati
     {
       CLog::Log(LOGERROR, "EGL failed to set HDMI mode (%d,%d)=%d %s%s\n",
                           GETFLAGS_GROUP(res.dwFlags), GETFLAGS_MODE(res.dwFlags), success,
-                          CStereoscopicsManager::GetInstance().ConvertGuiStereoModeToString(stereo_mode),
+                          CStereoscopicsManager::ConvertGuiStereoModeToString(stereo_mode),
                           mode3d==HDMI_3D_FORMAT_FRAME_PACKING ? " FP" : mode3d==HDMI_3D_FORMAT_SBS_HALF ? " SBS" : mode3d==HDMI_3D_FORMAT_TB_HALF ? " TB" : "");
     }
     m_DllBcmHost->vc_tv_unregister_callback(CallbackTvServiceCallback);

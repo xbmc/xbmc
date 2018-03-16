@@ -762,24 +762,28 @@ void CDisplaySettings::SettingOptionsScreensFiller(SettingConstPtr setting, std:
 
 void CDisplaySettings::SettingOptionsStereoscopicModesFiller(SettingConstPtr setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
 {
+  const CStereoscopicsManager &stereoscopicsManager = CServiceBroker::GetStereoscopicsManager();
+
   for (int i = RENDER_STEREO_MODE_OFF; i < RENDER_STEREO_MODE_COUNT; i++)
   {
     RENDER_STEREO_MODE mode = (RENDER_STEREO_MODE) i;
     if (CServiceBroker::GetRenderSystem().SupportsStereo(mode))
-      list.push_back(std::make_pair(CStereoscopicsManager::GetInstance().GetLabelForStereoMode(mode), mode));
+      list.push_back(std::make_pair(stereoscopicsManager.GetLabelForStereoMode(mode), mode));
   }
 }
 
 void CDisplaySettings::SettingOptionsPreferredStereoscopicViewModesFiller(SettingConstPtr setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
 {
-  list.push_back(std::make_pair(CStereoscopicsManager::GetInstance().GetLabelForStereoMode(RENDER_STEREO_MODE_AUTO), RENDER_STEREO_MODE_AUTO)); // option for autodetect
+  const CStereoscopicsManager &stereoscopicsManager = CServiceBroker::GetStereoscopicsManager();
+
+  list.push_back(std::make_pair(stereoscopicsManager.GetLabelForStereoMode(RENDER_STEREO_MODE_AUTO), RENDER_STEREO_MODE_AUTO)); // option for autodetect
   // don't add "off" to the list of preferred modes as this doesn't make sense
   for (int i = RENDER_STEREO_MODE_OFF +1; i < RENDER_STEREO_MODE_COUNT; i++)
   {
     RENDER_STEREO_MODE mode = (RENDER_STEREO_MODE) i;
     // also skip "mono" mode which is no real stereoscopic mode
     if (mode != RENDER_STEREO_MODE_MONO && CServiceBroker::GetRenderSystem().SupportsStereo(mode))
-      list.push_back(std::make_pair(CStereoscopicsManager::GetInstance().GetLabelForStereoMode(mode), mode));
+      list.push_back(std::make_pair(stereoscopicsManager.GetLabelForStereoMode(mode), mode));
   }
 }
 

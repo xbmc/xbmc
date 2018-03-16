@@ -2107,7 +2107,7 @@ bool CApplication::OnAction(const CAction &action)
   }
 
   // forward action to graphic context and see if it can handle it
-  if (CStereoscopicsManager::GetInstance().OnAction(action))
+  if (CServiceBroker::GetStereoscopicsManager().OnAction(action))
     return true;
 
   if (m_appPlayer.IsPlaying())
@@ -3485,7 +3485,7 @@ void CApplication::OnAVChange()
 {
   CLog::LogF(LOGDEBUG, "CApplication::OnAVChange");
 
-  CStereoscopicsManager::GetInstance().OnStreamChange();
+  CServiceBroker::GetStereoscopicsManager().OnStreamChange();
 
   CGUIMessage msg(GUI_MSG_PLAYBACK_AVCHANGE, 0, 0);
   g_windowManager.SendThreadMessage(msg);

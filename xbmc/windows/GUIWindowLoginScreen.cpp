@@ -354,7 +354,7 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
   g_windowManager.ChangeActiveWindow(firstWindow);
 
   g_application.UpdateLibraries();
-  CStereoscopicsManager::GetInstance().Initialize();
+  CServiceBroker::GetStereoscopicsManager().Initialize();
 
   // if the user interfaces has been fully initialized let everyone know
   if (uiInitializationFinished)
