@@ -38,7 +38,7 @@ CPlayList* CPlayListFactory::Create(const std::string& filename)
 
 CPlayList* CPlayListFactory::Create(const CFileItem& item)
 {
-  if( item.IsInternetStream() )
+  if (item.IsInternetStream())
   {
     // Ensure the MIME type has been retrieved for http:// and shout:// streams
     if (item.GetMimeType().empty())
@@ -72,7 +72,11 @@ CPlayList* CPlayListFactory::Create(const CFileItem& item)
       return new CPlayListWPL();
   }
 
-  std::string extension = URIUtils::GetExtension(item.GetPath());
+  std::string path = item.GetDynPath();
+  if (path.empty())
+    path = item.GetPath();
+
+  std::string extension = URIUtils::GetExtension(path);
   StringUtils::ToLower(extension);
 
   if (extension == ".m3u" || extension == ".strm")
