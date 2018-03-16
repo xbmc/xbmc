@@ -38,6 +38,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/lib/Setting.h"
+#include "settings/lib/SettingsManager.h"
 #include "settings/Settings.h"
 #include "rendering/RenderSystem.h"
 #include "utils/log.h"
@@ -105,9 +106,20 @@ CStereoscopicsManager::CStereoscopicsManager(CSettings &settings,
 {
   m_stereoModeSetByUser = RENDER_STEREO_MODE_UNDEFINED;
   m_lastStereoModeSetByUser = RENDER_STEREO_MODE_UNDEFINED;
+
+  std::set<std::string> settingSet{
+    CSettings::SETTING_VIDEOSCREEN_STEREOSCOPICMODE
+  };
+
+  m_settings.GetSettingsManager()->RegisterCallback(this, settingSet);
+
+  g_windowManager.AddMsgTarget(this);
 }
 
-CStereoscopicsManager::~CStereoscopicsManager(void) = default;
+CStereoscopicsManager::~CStereoscopicsManager(void)
+{
+  m_settings.GetSettingsManager()->UnregisterCallback(this);
+}
 
 void CStereoscopicsManager::Initialize(void)
 {

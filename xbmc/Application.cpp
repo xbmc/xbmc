@@ -1628,7 +1628,6 @@ bool CApplication::LoadSkin(const std::string& skinID)
   g_windowManager.AddMsgTarget(&CServiceBroker::GetPlaylistPlayer());
   g_windowManager.AddMsgTarget(&g_infoManager);
   g_windowManager.AddMsgTarget(&g_fontManager);
-  g_windowManager.AddMsgTarget(&CStereoscopicsManager::GetInstance());
   g_windowManager.SetCallback(*this);
   g_windowManager.Initialize();
   CTextureCache::GetInstance().Initialize();
