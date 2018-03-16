@@ -1,9 +1,5 @@
 # we always want to use GNU features if available, so set _GNU_SOURCE
 set(ARCH_DEFINES -D_LINUX -DTARGET_POSIX -DTARGET_LINUX -D_GNU_SOURCE)
-# temp until further cleanup is done
-if(CORE_PLATFORM_NAME_LC STREQUAL rbpi)
-  list(APPEND ARCH_DEFINES -D_ARMEL -DTARGET_RASPBERRY_PI)
-endif()
 set(SYSTEM_DEFINES -D__STDC_CONSTANT_MACROS -D_FILE_DEFINED
                    -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64)
 set(PLATFORM_DIR platform/linux)
