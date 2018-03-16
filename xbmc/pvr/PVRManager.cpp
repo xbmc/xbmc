@@ -814,12 +814,12 @@ bool CPVRManager::TranslateBoolInfo(DWORD dwInfo) const
    return IsStarted() && m_guiInfo ? m_guiInfo->TranslateBoolInfo(dwInfo) : false;
 }
 
-bool CPVRManager::TranslateCharInfo(DWORD dwInfo, std::string &strValue) const
+bool CPVRManager::TranslateCharInfo(const CFileItem *item, DWORD dwInfo, std::string &strValue) const
 {
-  return IsStarted() && m_guiInfo ? m_guiInfo->TranslateCharInfo(dwInfo, strValue) : false;
+  return IsStarted() && m_guiInfo ? m_guiInfo->TranslateCharInfo(item, dwInfo, strValue) : false;
 }
 
-int CPVRManager::TranslateIntInfo(const CFileItem &item, DWORD dwInfo) const
+int CPVRManager::TranslateIntInfo(const CFileItem *item, DWORD dwInfo) const
 {
   return IsStarted() && m_guiInfo ? m_guiInfo->TranslateIntInfo(item, dwInfo) : 0;
 }
@@ -829,9 +829,14 @@ bool CPVRManager::GetVideoLabel(const CFileItem *item, int iLabel, std::string &
   return IsStarted() && m_guiInfo ? m_guiInfo->GetVideoLabel(item, iLabel, strValue) : false;
 }
 
-bool CPVRManager::GetSeekTimeLabel(int iSeekSize, std::string &strValue) const
+bool CPVRManager::GetMultiInfoLabel(const CFileItem *item, const GUIInfo &info, std::string &strValue) const
 {
-  return IsStarted() && m_guiInfo ? m_guiInfo->GetSeekTimeLabel(iSeekSize, strValue) : false;
+  return IsStarted() && m_guiInfo ? m_guiInfo->GetMultiInfoLabel(item, info, strValue) : false;
+}
+
+bool CPVRManager::GetSeekTimeLabel(int iSeekSize, TIME_FORMAT format, std::string &strValue) const
+{
+  return IsStarted() && m_guiInfo ? m_guiInfo->GetSeekTimeLabel(iSeekSize, format, strValue) : false;
 }
 
 bool CPVRManager::IsRecording(void) const

@@ -42,7 +42,10 @@ enum TIME_FORMAT { TIME_FORMAT_GUESS       =  0,
                    TIME_FORMAT_HH_MM_SS_XX = 15,
                    TIME_FORMAT_H           = 16,
                    TIME_FORMAT_H_MM_SS     = 19,
-                   TIME_FORMAT_H_MM_SS_XX  = 27};
+                   TIME_FORMAT_H_MM_SS_XX  = 27,
+                   TIME_FORMAT_SECS        = 32,
+                   TIME_FORMAT_MINS        = 64,
+                   TIME_FORMAT_HOURS       = 128 };
 
 class CDateTime;
 
