@@ -742,7 +742,7 @@ void CRenderSystemDX::CheckDeviceCaps()
     texDesc.Format = DXGI_FORMAT_P016;
     if (SUCCEEDED(hr = d3d11Dev->CreateTexture2D(&texDesc, nullptr, nullptr)))
     {
-      //m_processorFormats.push_back(AV_PIX_FMT_P016);
+      m_processorFormats.push_back(AV_PIX_FMT_P016);
       if (isNotArm)
         m_processorFormats.push_back(AV_PIX_FMT_YUV420P16);
     }
@@ -766,7 +766,7 @@ void CRenderSystemDX::CheckDeviceCaps()
     texDesc.Format = DXGI_FORMAT_P016;
     if (SUCCEEDED(d3d11Dev->CreateTexture2D(&texDesc, nullptr, nullptr)))
     {
-      //m_sharedFormats.push_back(AV_PIX_FMT_P016);
+      m_sharedFormats.push_back(AV_PIX_FMT_P016);
       if (isNotArm)
         m_sharedFormats.push_back(AV_PIX_FMT_YUV420P16);
     }

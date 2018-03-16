@@ -835,7 +835,7 @@ void CWinRenderer::RenderPS(CD3DTexture* target)
   m_outputShader->SetDisplayMetadata(buf.hasDisplayMetadata, buf.displayMetadata, buf.hasLightMetadata, buf.lightMetadata);
 
   m_colorShader->SetParams(m_videoSettings.m_Contrast, m_videoSettings.m_Brightness, DX::Windowing().UseLimitedColor());
-  m_colorShader->SetColParams(buf.color_space, buf.bits, !buf.full_range, 8 /*TODO depends on target*/);
+  m_colorShader->SetColParams(buf.color_space, buf.bits, !buf.full_range, buf.texBits);
 
   // render video frame
   m_colorShader->Render(m_sourceRect, destPoints, &buf, target);
