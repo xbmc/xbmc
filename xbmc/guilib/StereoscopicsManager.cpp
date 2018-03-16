@@ -98,8 +98,10 @@ static const struct StereoModeMap StringToGuiModeMap[] =
 };
 
 
-CStereoscopicsManager::CStereoscopicsManager(CSettings &settings) :
-  m_settings(settings)
+CStereoscopicsManager::CStereoscopicsManager(CSettings &settings,
+                                             CDataCacheCore &dataCacheCore) :
+  m_settings(settings),
+  m_dataCacheCore(dataCacheCore)
 {
   m_stereoModeSetByUser = RENDER_STEREO_MODE_UNDEFINED;
   m_lastStereoModeSetByUser = RENDER_STEREO_MODE_UNDEFINED;
@@ -495,7 +497,7 @@ std::string CStereoscopicsManager::GetVideoStereoMode()
 {
   std::string playerMode;
   if (g_application.GetAppPlayer().IsPlaying())
-    playerMode = CServiceBroker::GetDataCacheCore().GetVideoStereoMode();
+    playerMode = m_dataCacheCore.GetVideoStereoMode();
   return playerMode;
 }
 

@@ -31,6 +31,7 @@
 #include "rendering/RenderSystem.h"
 
 class CAction;
+class CDataCacheCore;
 class CSettings;
 
 enum STEREOSCOPIC_PLAYBACK_MODE
@@ -46,7 +47,8 @@ class CStereoscopicsManager : public ISettingCallback,
                               public IMsgTargetCallback
 {
 public:
-  CStereoscopicsManager(CSettings &settings);
+  CStereoscopicsManager(CSettings &settings,
+                        CDataCacheCore &dataCacheCore);
   ~CStereoscopicsManager(void) override;
 
   void Initialize(void);
@@ -93,6 +95,7 @@ private:
 
   // Construction parameters
   CSettings &m_settings;
+  CDataCacheCore &m_dataCacheCore;
 
   // Stereoscopic parameters
   RENDER_STEREO_MODE m_stereoModeSetByUser;

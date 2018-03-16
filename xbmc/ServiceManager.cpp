@@ -230,7 +230,8 @@ bool CServiceManager::StartAudioEngine()
 // stage 3 is called after successful initialization of WindowManager
 bool CServiceManager::InitStageThree()
 {
-  m_stereoscopicsManager.reset(new CStereoscopicsManager(*m_settings));
+  m_stereoscopicsManager.reset(new CStereoscopicsManager(*m_settings,
+                                                         *m_dataCacheCore));
   m_stereoscopicsManager->Initialize();
 
   // Peripherals depends on strings being loaded before stage 3
