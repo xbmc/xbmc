@@ -77,6 +77,7 @@ public:
   AVColorTransferCharacteristic color_transfer;
   bool full_range;
   int bits;
+  uint8_t texBits;
 
   bool hasDisplayMetadata = false;
   bool hasLightMetadata = false;

@@ -50,6 +50,7 @@ CRenderBuffer::CRenderBuffer()
   , color_space(AVCOL_SPC_BT709)
   , full_range(false)
   , bits(8)
+  , texBits(8)
   , m_locked(false)
   , m_bPending(false)
   , m_soft(false)
@@ -77,7 +78,7 @@ void CRenderBuffer::Release()
     videoBuffer->Release();
     videoBuffer = nullptr;
   }
-  m_staging.Reset();
+  m_staging = nullptr;
   for (unsigned i = 0; i < m_activePlanes; i++)
   {
     // unlock before release
@@ -88,6 +89,8 @@ void CRenderBuffer::Release()
     memset(&m_rects[i], 0, sizeof(D3D11_MAPPED_SUBRESOURCE));
   }
   m_activePlanes = 0;
+  texBits = 8;
+  bits = 8;
 }
 
 void CRenderBuffer::Lock()
@@ -216,6 +219,7 @@ bool CRenderBuffer::CreateBuffer(EBufferFormat fmt, unsigned width, unsigned hei
       || !m_textures[PLANE_V].Create(m_widthTex >> 1, m_heightTex >> 1, 1, usage, DXGI_FORMAT_R16_UNORM))
       return false;
     m_activePlanes = 3;
+    texBits = BUFFER_FMT_YUV420P10 ? 10 : 16;
     break;
   }
   case BUFFER_FMT_YUV420P:
