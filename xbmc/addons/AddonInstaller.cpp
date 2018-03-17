@@ -524,11 +524,13 @@ bool CAddonInstallJob::DoWork()
     {
       std::string path{m_addon->Path()};
       std::string hash;
+      KODI::UTILITY::CDigest::Type hashType;
       if (m_repo)
       {
         CRepository::ResolveResult resolvedAddon = m_repo->ResolvePathAndHash(m_addon);
         path = resolvedAddon.location;
         hash = resolvedAddon.hash;
+        hashType = resolvedAddon.hashType;
         if (path.empty())
         {
           CLog::Log(LOGERROR, "CAddonInstallJob[%s]: failed to resolve addon install source path", m_addon->ID().c_str());
@@ -576,18 +578,18 @@ bool CAddonInstallJob::DoWork()
       SetText(g_localizeStrings.Get(24077));
       if (!hash.empty())
       {
-        md5 = CUtil::GetFileDigest(package, KODI::UTILITY::CDigest::Type::MD5);
-        if (!StringUtils::EqualsNoCase(md5, hash))
+        std::string actualHash = CUtil::GetFileDigest(package, hashType);
+        if (!StringUtils::EqualsNoCase(actualHash, hash))
         {
           CFile::Delete(package);
 
-          CLog::Log(LOGERROR, "CAddonInstallJob[%s]: MD5 mismatch after download. Expected %s, was %s",
-              m_addon->ID().c_str(), hash.c_str(), md5.c_str());
+          CLog::Log(LOGERROR, "CAddonInstallJob[%s]: Hash mismatch after download. Expected %s, was %s",
+              m_addon->ID().c_str(), hash.c_str(), actualHash.c_str());
           ReportInstallError(m_addon->ID(), URIUtils::GetFileName(package));
           return false;
         }
 
-        db.AddPackage(m_addon->ID(), package, md5);
+        db.AddPackage(m_addon->ID(), package, hash);
       }
 
       // check if the archive is valid

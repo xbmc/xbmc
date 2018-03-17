@@ -24,6 +24,7 @@
 #include <vector>
 
 #include "Addon.h"
+#include "utils/Digest.h"
 #include "utils/Job.h"
 #include "utils/ProgressJob.h"
 
@@ -36,13 +37,13 @@ namespace ADDON
   public:
     struct DirInfo
     {
-      DirInfo() : version("0.0.0"), hashes(false) {}
-      AddonVersion version;
+      AddonVersion version{""};
       std::string info;
       std::string checksum;
       std::string datadir;
       std::string artdir;
-      bool hashes;
+      bool hashes{false};
+      KODI::UTILITY::CDigest::Type hashType;
     };
 
     typedef std::vector<DirInfo> DirList;
@@ -70,6 +71,7 @@ namespace ADDON
     {
       std::string location;
       std::string hash;
+      KODI::UTILITY::CDigest::Type hashType;
     };
     ResolveResult ResolvePathAndHash(AddonPtr const& addon) const;
 

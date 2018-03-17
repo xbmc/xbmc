@@ -86,16 +86,18 @@ CRepository::ResolveResult CRepository::ResolvePathAndHash(const AddonPtr& addon
     return {};
   }
 
+  std::string hashTypeStr = CDigest::TypeToString(dirIt->hashType);
+
   // Return the location from the header so we don't have to look it up again
   // (saves one request per addon install)
   std::string location = file.GetRedirectURL();
   // content-* headers are base64, convert to base16
-  std::string hash = StringUtils::ToHexadecimal(Base64::Decode(file.GetHttpHeader().GetValue("content-md5")));
+  std::string hash = StringUtils::ToHexadecimal(Base64::Decode(file.GetHttpHeader().GetValue(std::string("content-") + hashTypeStr)));
 
   if (hash.empty())
   {
     // Expected hash, but none found -> fall back to old method
-    if (!FetchChecksum(path + ".md5", hash))
+    if (!FetchChecksum(path + "." + hashTypeStr, hash) || hash.empty())
     {
       CLog::Log(LOGERROR, "Failed to find hash for {} from HTTP header and in separate file", path);
       return {};
@@ -109,7 +111,7 @@ CRepository::ResolveResult CRepository::ResolvePathAndHash(const AddonPtr& addon
 
   CLog::Log(LOGDEBUG, "Resolved addon path {} to {} hash {}", path, location, hash);
 
-  return {location, hash};
+  return {location, hash, dirIt->hashType};
 }
 
 CRepository::DirInfo CRepository::ParseDirConfiguration(cp_cfg_element_t* configuration)
@@ -124,7 +126,24 @@ CRepository::DirInfo CRepository::ParseDirConfiguration(cp_cfg_element_t* config
   {
     dir.artdir = dir.datadir;
   }
-  dir.hashes = mgr.GetExtValue(configuration, "hashes") == "true";
+
+  std::string hashStr = mgr.GetExtValue(configuration, "hashes");
+  StringUtils::ToLower(hashStr);
+  if (hashStr == "true")
+  {
+    // Deprecated alias
+    hashStr = "md5";
+  }
+  if (!hashStr.empty() && hashStr != "false")
+  {
+    dir.hashes = true;
+    dir.hashType = CDigest::TypeFromString(hashStr);
+    if (dir.hashType == CDigest::Type::MD5)
+    {
+      CLog::Log(LOGWARNING, "Repository has MD5 hashes enabled - this hash function is broken and will only guard against unintentional data corruption");
+    }
+  }
+
   dir.version = AddonVersion{mgr.GetExtValue(configuration, "@minversion")};
   return dir;
 }
