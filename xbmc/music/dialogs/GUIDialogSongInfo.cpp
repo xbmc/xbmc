@@ -65,8 +65,10 @@ public:
       return false;
     CFileItemPtr m_song = dialog->GetCurrentListItem();
 
-    // Fetch tag data from library using filename, or scanning file (if item not already have this loaded)
-    m_song->LoadMusicTag();
+    // Fetch tag data from library using filename of item path, or scanning file
+    // (if item does not already have this loaded)
+    if (!m_song->LoadMusicTag())
+      return false;
     if (dialog->IsCancelled())
       return false;
     // Fetch album and primary song artist data from library as properties

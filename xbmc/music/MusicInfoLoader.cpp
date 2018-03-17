@@ -92,15 +92,20 @@ bool CMusicInfoLoader::LoadAdditionalTagInfo(CFileItem* pItem)
 
   std::string path(pItem->GetPath());
   // For songs in library set the (primary) song artist and album properties 
-  // Use song Id (not path) as called for items from either library or file view 
-  if (pItem->GetMusicInfoTag()->GetDatabaseId() > 0)
+  // Use song Id (not path) as called for items from either library or file view,
+  // but could also be listitem with tag loaded by a script
+  if (pItem->HasMusicInfoTag() && 
+      pItem->GetMusicInfoTag()->GetType() == MediaTypeSong && 
+      pItem->GetMusicInfoTag()->GetDatabaseId() > 0)
   {
     CMusicDatabase database;
     database.Open();
-    // May already have song artist ids as item property, otherwise fetch from song id
+    // May already have song artist ids as item property set when data read from
+    // db, but check property is valid array (scripts could set item properties 
+    // incorrectly), otherwise fetch artist using song id.
     CArtist artist;
     bool artistfound = false;
-    if (pItem->HasProperty("artistid"))
+    if (pItem->HasProperty("artistid") && pItem->GetProperty("artistid").isArray())
     {
       CVariant::const_iterator_array varid = pItem->GetProperty("artistid").begin_array();
       int idArtist = varid->asInteger();
