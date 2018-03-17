@@ -22,6 +22,7 @@
 #include <string>
 #include <vector>
 
+#include "guiinfo/MusicGUIInfo.h"
 #include "guiinfo/VideoGUIInfo.h"
 
 class CFileItem;
@@ -82,6 +83,7 @@ public:
 private:
   std::vector<IGUIInfoProvider *> m_providers;
 
+  CMusicGUIInfo m_musicGUIInfo;
   CVideoGUIInfo m_videoGUIInfo;
 };
 

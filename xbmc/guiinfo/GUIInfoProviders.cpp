@@ -28,12 +28,14 @@ namespace GUIINFO
 
 CGUIInfoProviders::CGUIInfoProviders()
 {
+  RegisterProvider(&m_musicGUIInfo);
   RegisterProvider(&m_videoGUIInfo);
 }
 
 CGUIInfoProviders::~CGUIInfoProviders()
 {
   UnregisterProvider(&m_videoGUIInfo);
+  UnregisterProvider(&m_musicGUIInfo);
 }
 
 void CGUIInfoProviders::RegisterProvider(IGUIInfoProvider *provider)

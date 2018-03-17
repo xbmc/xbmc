@@ -32,7 +32,6 @@
 #include "Util.h"
 #include "utils/URIUtils.h"
 #include "weather/WeatherManager.h"
-#include "PartyModeManager.h"
 #include "guilib/GUIVisualisationControl.h"
 #include "input/WindowTranslator.h"
 #include "utils/AlarmClock.h"
@@ -6061,12 +6060,8 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   case PLAYER_FILENAME:
   case PLAYER_FILEPATH:
     if (m_currentFile)
-    {
-      if (m_currentFile->HasMusicInfoTag())
-        strLabel = m_currentFile->GetMusicInfoTag()->GetURL();
-      if (strLabel.empty())
-        strLabel = m_currentFile->GetPath();
-    }
+      strLabel = m_currentFile->GetPath();
+
     if (info == PLAYER_PATH)
     {
       // do this twice since we want the path outside the archive if this
@@ -6081,47 +6076,25 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   case PLAYER_TITLE:
     if (m_currentFile)
     {
-      if (m_currentFile->HasMusicInfoTag() && !m_currentFile->GetMusicInfoTag()->GetTitle().empty())
-        return m_currentFile->GetMusicInfoTag()->GetTitle();
-      // don't have the title, so use label or drop down to title from path
+      // use label or drop down to title from path
       if (!m_currentFile->GetLabel().empty())
         return m_currentFile->GetLabel();
       return CUtil::GetTitleFromPath(m_currentFile->GetPath());
     }
     break;
   case PLAYER_PLAYSPEED:
-      {
-        float speed = g_application.GetAppPlayer().GetPlaySpeed();
-        if (speed == 1.0)
-          speed = g_application.GetAppPlayer().GetPlayTempo();
-        strLabel = StringUtils::Format("%.2f", speed);
-      }
-      break;
-  case MUSICPLAYER_TITLE:
-  case MUSICPLAYER_ALBUM:
-  case MUSICPLAYER_ARTIST:
-  case MUSICPLAYER_ALBUM_ARTIST:
-  case MUSICPLAYER_GENRE:
-  case MUSICPLAYER_YEAR:
-  case MUSICPLAYER_TRACK_NUMBER:
-  case MUSICPLAYER_BITRATE:
-  case MUSICPLAYER_PLAYLISTLEN:
-  case MUSICPLAYER_PLAYLISTPOS:
+    {
+      float speed = g_application.GetAppPlayer().GetPlaySpeed();
+      if (speed == 1.0)
+        speed = g_application.GetAppPlayer().GetPlayTempo();
+      strLabel = StringUtils::Format("%.2f", speed);
+    }
+    break;
   case MUSICPLAYER_CHANNELS:
   case MUSICPLAYER_BITSPERSAMPLE:
+  case MUSICPLAYER_BITRATE:
   case MUSICPLAYER_SAMPLERATE:
   case MUSICPLAYER_CODEC:
-  case MUSICPLAYER_DISC_NUMBER:
-  case MUSICPLAYER_RATING:
-  case MUSICPLAYER_RATING_AND_VOTES:
-  case MUSICPLAYER_USER_RATING:
-  case MUSICPLAYER_COMMENT:
-  case MUSICPLAYER_CONTRIBUTORS:
-  case MUSICPLAYER_CONTRIBUTOR_AND_ROLE:
-  case MUSICPLAYER_LYRICS:
-  case MUSICPLAYER_PLAYCOUNT:
-  case MUSICPLAYER_LASTPLAYED:
-  case MUSICPLAYER_DBID:
     strLabel = GetMusicLabel(info);
     break;
   case RETROPLAYER_VIEWMODE:
@@ -6190,15 +6163,6 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   case PLAYLIST_REPEAT:
     strLabel = CGUIInfoHelper::GetPlaylistLabel(info);
     break;
-  case MUSICPM_SONGSPLAYED:
-  case MUSICPM_MATCHINGSONGS:
-  case MUSICPM_MATCHINGSONGSPICKED:
-  case MUSICPM_MATCHINGSONGSLEFT:
-  case MUSICPM_RELAXEDSONGSPICKED:
-  case MUSICPM_RANDOMSONGSPICKED:
-    strLabel = GetMusicPartyModeLabel(info);
-  break;
-
   case SYSTEM_FREE_SPACE:
   case SYSTEM_USED_SPACE:
   case SYSTEM_TOTAL_SPACE:
@@ -7157,32 +7121,6 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
       case PLAYER_HAS_PROGRAMS:
         bReturn = (g_application.GetAppPlayer().GetProgramsCount() > 1) ? true : false;
         break;
-      case MUSICPM_ENABLED:
-        bReturn = g_partyModeManager.IsEnabled();
-        break;
-      case MUSICPLAYER_HASPREVIOUS:
-        {
-          // requires current playlist be PLAYLIST_MUSIC
-          bReturn = false;
-          if (CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST_MUSIC)
-            bReturn = (CServiceBroker::GetPlaylistPlayer().GetCurrentSong() > 0); // not first song
-        }
-        break;
-      case MUSICPLAYER_HASNEXT:
-        {
-          // requires current playlist be PLAYLIST_MUSIC
-          bReturn = false;
-          if (CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST_MUSIC)
-            bReturn = (CServiceBroker::GetPlaylistPlayer().GetCurrentSong() < (CServiceBroker::GetPlaylistPlayer().GetPlaylist(PLAYLIST_MUSIC).size() - 1)); // not last song
-        }
-        break;
-      case MUSICPLAYER_PLAYLISTPLAYING:
-        {
-          bReturn = false;
-          if (g_application.GetAppPlayer().IsPlayingAudio() && CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST_MUSIC)
-            bReturn = true;
-        }
-        break;
       case PLAYLIST_ISRANDOM:
         bReturn = CServiceBroker::GetPlaylistPlayer().IsShuffled(CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist());
         break;
@@ -7658,22 +7596,6 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
             bReturn = currentTime >= startTime && currentTime < stopTime;
         }
         break;
-      case MUSICPLAYER_EXISTS:
-        {
-          int index = info.GetData2();
-          if (info.GetData1() == 1)
-          { // relative index
-            if (CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() != PLAYLIST_MUSIC)
-            {
-              bReturn = false;
-              break;
-            }
-            index += CServiceBroker::GetPlaylistPlayer().GetCurrentSong();
-          }
-          bReturn = (index >= 0 && index < CServiceBroker::GetPlaylistPlayer().GetPlaylist(PLAYLIST_MUSIC).size());
-        }
-        break;
-
       case PLAYLIST_ISRANDOM:
         {
           int playlistid = info.GetData1();
@@ -7914,8 +7836,6 @@ std::string CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &constinfo, int con
     std::string strCpu = StringUtils::Format("%4.2f", g_cpuInfo.GetCoreInfo(atoi(m_stringParameters[info.GetData1()].c_str())).m_fPct);
     return strCpu;
   }
-  else if (info.m_info >= MUSICPLAYER_TITLE && info.m_info <= MUSICPLAYER_ALBUM_ARTIST)
-    return GetMusicPlaylistInfo(info);
   else if (info.m_info == CONTAINER_PROPERTY)
   {
     CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
@@ -8019,13 +7939,6 @@ std::string CGUIInfoManager::GetImage(int info, int contextWindow, std::string *
       thumb = "DefaultUser.png";
     return thumb;
   }
-  else if (info == MUSICPLAYER_COVER)
-  {
-    if (!g_application.GetAppPlayer().IsPlayingAudio()) return "";
-    if (fallback)
-      *fallback = "DefaultAlbumCover.png";
-    return m_currentFile->HasArt("thumb") ? m_currentFile->GetArt("thumb") : "DefaultAlbumCover.png";
-  }
   else if (info == LISTITEM_THUMB || info == LISTITEM_ICON || info == LISTITEM_ACTUAL_ICON ||
           info == LISTITEM_OVERLAY)
   {
@@ -8106,92 +8019,6 @@ std::string CGUIInfoManager::GetDuration(TIME_FORMAT format) const
   return "";
 }
 
-std::string CGUIInfoManager::GetMusicPartyModeLabel(int item)
-{
-  // get song counts
-  if (item >= MUSICPM_SONGSPLAYED && item <= MUSICPM_RANDOMSONGSPICKED)
-  {
-    int iSongs = -1;
-    switch (item)
-    {
-    case MUSICPM_SONGSPLAYED:
-      {
-        iSongs = g_partyModeManager.GetSongsPlayed();
-        break;
-      }
-    case MUSICPM_MATCHINGSONGS:
-      {
-        iSongs = g_partyModeManager.GetMatchingSongs();
-        break;
-      }
-    case MUSICPM_MATCHINGSONGSPICKED:
-      {
-        iSongs = g_partyModeManager.GetMatchingSongsPicked();
-        break;
-      }
-    case MUSICPM_MATCHINGSONGSLEFT:
-      {
-        iSongs = g_partyModeManager.GetMatchingSongsLeft();
-        break;
-      }
-    case MUSICPM_RELAXEDSONGSPICKED:
-      {
-        iSongs = g_partyModeManager.GetRelaxedSongs();
-        break;
-      }
-    case MUSICPM_RANDOMSONGSPICKED:
-      {
-        iSongs = g_partyModeManager.GetRandomSongs();
-        break;
-      }
-    }
-    if (iSongs < 0)
-      return "";
-    std::string strLabel = StringUtils::Format("%i", iSongs);
-    return strLabel;
-  }
-  return "";
-}
-
-const std::string CGUIInfoManager::GetMusicPlaylistInfo(const GUIInfo& info)
-{
-  PLAYLIST::CPlayList& playlist = CServiceBroker::GetPlaylistPlayer().GetPlaylist(PLAYLIST_MUSIC);
-  if (playlist.size() < 1)
-    return "";
-  int index = info.GetData2();
-  if (info.GetData1() == 1)
-  { // relative index (requires current playlist is PLAYLIST_MUSIC)
-    if (CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() != PLAYLIST_MUSIC)
-      return "";
-    index = CServiceBroker::GetPlaylistPlayer().GetNextSong(index);
-  }
-  if (index < 0 || index >= playlist.size())
-    return "";
-  CFileItemPtr playlistItem = playlist[index];
-  if (!playlistItem->GetMusicInfoTag()->Loaded())
-  {
-    playlistItem->LoadMusicTag();
-    playlistItem->GetMusicInfoTag()->SetLoaded();
-  }
-  // try to set a thumbnail
-  if (!playlistItem->HasArt("thumb"))
-  {
-    CMusicThumbLoader loader;
-    loader.LoadItem(playlistItem.get());
-    // still no thumb? then just the set the default cover
-    if (!playlistItem->HasArt("thumb"))
-      playlistItem->SetArt("thumb", "DefaultAlbumCover.png");
-  }
-  if (info.m_info == MUSICPLAYER_PLAYLISTPOS)
-  {
-    std::string strPosition = StringUtils::Format("%i", index + 1);
-    return strPosition;
-  }
-  else if (info.m_info == MUSICPLAYER_COVER)
-    return playlistItem->GetArt("thumb");
-  return GetMusicTagLabel(info.m_info, playlistItem.get());
-}
-
 std::string CGUIInfoManager::GetMusicLabel(int item)
 {
   if (!m_currentFile->HasMusicInfoTag())
@@ -8199,18 +8026,6 @@ std::string CGUIInfoManager::GetMusicLabel(int item)
 
   switch (item)
   {
-  case MUSICPLAYER_PLAYLISTLEN:
-    {
-      if (CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST_MUSIC)
-        return CGUIInfoHelper::GetPlaylistLabel(PLAYLIST_LENGTH);
-    }
-    break;
-  case MUSICPLAYER_PLAYLISTPOS:
-    {
-      if (CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST_MUSIC)
-        return CGUIInfoHelper::GetPlaylistLabel(PLAYLIST_POSITION);
-    }
-    break;
   case MUSICPLAYER_BITRATE:
     {
       std::string strBitrate = "";
@@ -8251,86 +8066,7 @@ std::string CGUIInfoManager::GetMusicLabel(int item)
     }
     break;
   }
-  return GetMusicTagLabel(item, m_currentFile);
-}
-
-std::string CGUIInfoManager::GetMusicTagLabel(int info, const CFileItem *item)
-{
-  if (!item->HasMusicInfoTag()) return "";
-  const CMusicInfoTag &tag = *item->GetMusicInfoTag();
-
-  switch (info)
-  {
-  case MUSICPLAYER_TITLE:
-    if (tag.GetTitle().size()) { return tag.GetTitle(); }
-    break;
-  case MUSICPLAYER_ALBUM:
-    if (tag.GetAlbum().size()) { return tag.GetAlbum(); }
-    break;
-  case MUSICPLAYER_ARTIST:
-    if (tag.GetArtistString().size()) { return tag.GetArtistString(); }
-    break;
-  case MUSICPLAYER_ALBUM_ARTIST:
-    if (tag.GetAlbumArtistString().size()) { return tag.GetAlbumArtistString(); }
-    break;
-  case MUSICPLAYER_YEAR:
-    if (tag.GetYear()) { return tag.GetYearString(); }
-    break;
-  case MUSICPLAYER_GENRE:
-    if (tag.GetGenre().size()) { return StringUtils::Join(tag.GetGenre(), g_advancedSettings.m_musicItemSeparator); }
-    break;
-  case MUSICPLAYER_LYRICS:
-    if (tag.GetLyrics().size()) { return tag.GetLyrics(); }
-  break;
-  case MUSICPLAYER_TRACK_NUMBER:
-    {
-      std::string strTrack;
-      if (tag.Loaded() && tag.GetTrackNumber() > 0)
-      {
-        return StringUtils::Format("%02i", tag.GetTrackNumber());
-      }
-    }
-    break;
-  case MUSICPLAYER_DISC_NUMBER:
-    return GetItemLabel(item, LISTITEM_DISC_NUMBER);
-  case MUSICPLAYER_RATING:
-    return GetItemLabel(item, LISTITEM_RATING);
-  case MUSICPLAYER_RATING_AND_VOTES:
-  {
-    std::string strRatingAndVotes;
-    if (m_currentFile->GetMusicInfoTag()->GetRating() > 0.f)
-    {
-      if (m_currentFile->GetMusicInfoTag()->GetRating() > 0)
-        strRatingAndVotes = StringUtils::FormatNumber(m_currentFile->GetMusicInfoTag()->GetRating());
-      else
-        strRatingAndVotes = FormatRatingAndVotes(m_currentFile->GetMusicInfoTag()->GetRating(),
-                                                 m_currentFile->GetMusicInfoTag()->GetVotes());
-    }
-    return strRatingAndVotes;
-  }
-  break;
-  case MUSICPLAYER_USER_RATING:
-    return GetItemLabel(item, LISTITEM_USER_RATING);
-  case MUSICPLAYER_COMMENT:
-    return GetItemLabel(item, LISTITEM_COMMENT);
-  case MUSICPLAYER_MOOD:
-    return GetItemLabel(item, LISTITEM_MOOD);
-  case MUSICPLAYER_CONTRIBUTORS:
-    return GetItemLabel(item, LISTITEM_CONTRIBUTORS);
-  case MUSICPLAYER_CONTRIBUTOR_AND_ROLE:
-    return GetItemLabel(item, LISTITEM_CONTRIBUTOR_AND_ROLE);
-  case MUSICPLAYER_DURATION:
-    return GetItemLabel(item, LISTITEM_DURATION);
-  case MUSICPLAYER_PLAYCOUNT:
-    return GetItemLabel(item, LISTITEM_PLAYCOUNT);
-  case MUSICPLAYER_LASTPLAYED:
-    return GetItemLabel(item, LISTITEM_LASTPLAYED);
-  case MUSICPLAYER_DBID:
-    if (m_currentFile->GetMusicInfoTag()->GetDatabaseId() > -1)
-      return StringUtils::Format("%i", m_currentFile->GetMusicInfoTag()->GetDatabaseId());
-    break;
-  }
-  return "";
+  return std::string();
 }
 
 std::string CGUIInfoManager::GetGameLabel(int item)
@@ -8796,15 +8532,8 @@ std::string CGUIInfoManager::GetListItemDuration(const CFileItem *item, TIME_FOR
 
   int iDuration = -1;
 
-  if (item->HasMusicInfoTag())
-  {
-    if (item->GetMusicInfoTag()->GetDuration() > 0)
-      iDuration = item->GetMusicInfoTag()->GetDuration();
-  }
-  else if (item->HasProperty(FILEITEM_PROPERTY_SAVESTATE_DURATION))
-  {
+  if (item->HasProperty(FILEITEM_PROPERTY_SAVESTATE_DURATION))
     iDuration = static_cast<long>(item->GetProperty(FILEITEM_PROPERTY_SAVESTATE_DURATION).asInteger());
-  }
 
   if (iDuration != -1)
     return StringUtils::SecondsToTimeString(iDuration, format);
@@ -8876,80 +8605,10 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
     return item->GetLabel();
   case LISTITEM_LABEL2:
     return item->GetLabel2();
-  case LISTITEM_TITLE:
-    if (item->HasMusicInfoTag())
-      return item->GetMusicInfoTag()->GetTitle();
-    break;
-  case LISTITEM_PLAYCOUNT:
-    {
-      if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetPlayCount() > 0)
-        return StringUtils::Format("%i", item->GetMusicInfoTag()->GetPlayCount());
-      break;
-    }
-  case LISTITEM_LASTPLAYED:
-    {
-      CDateTime dateTime;
-      if (item->HasMusicInfoTag())
-        dateTime = item->GetMusicInfoTag()->GetLastPlayed();
-
-      if (dateTime.IsValid())
-        return dateTime.GetAsLocalizedDate();
-      break;
-    }
-  case LISTITEM_TRACKNUMBER:
-    {
-      std::string track;
-      if (item->HasMusicInfoTag())
-        track = StringUtils::Format("%i", item->GetMusicInfoTag()->GetTrackNumber());
-      return track;
-    }
-  case LISTITEM_DISC_NUMBER:
-    {
-      std::string disc;
-      if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetDiscNumber() > 0)
-        disc = StringUtils::Format("%i", item->GetMusicInfoTag()->GetDiscNumber());
-      return disc;
-    }
-  case LISTITEM_ARTIST:
-    if (item->HasMusicInfoTag())
-      return item->GetMusicInfoTag()->GetArtistString();
-    break;
-  case LISTITEM_ALBUM_ARTIST:
-    if (item->HasMusicInfoTag())
-      return item->GetMusicInfoTag()->GetAlbumArtistString();
-    break;
-  case LISTITEM_CONTRIBUTORS:
-    if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->HasContributors())
-      return item->GetMusicInfoTag()->GetContributorsText();
-    break;
-  case LISTITEM_CONTRIBUTOR_AND_ROLE:
-    if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->HasContributors())
-      return item->GetMusicInfoTag()->GetContributorsAndRolesText();
-    break;
-  case LISTITEM_ALBUM:
-    if (item->HasMusicInfoTag())
-      return item->GetMusicInfoTag()->GetAlbum();
-    break;
-  case LISTITEM_YEAR:
-    {
-      std::string year;
-      if (item->HasMusicInfoTag())
-        year = item->GetMusicInfoTag()->GetYearString();
-      return year;
-    }
-  case LISTITEM_GENRE:
-    if (item->HasMusicInfoTag())
-      return StringUtils::Join(item->GetMusicInfoTag()->GetGenre(), g_advancedSettings.m_musicItemSeparator);
-    break;
   case LISTITEM_FILENAME:
   case LISTITEM_FILE_EXTENSION:
     {
-      std::string strFile;
-      if (item->IsMusicDb() && item->HasMusicInfoTag())
-        strFile = URIUtils::GetFileName(item->GetMusicInfoTag()->GetURL());
-      else
-        strFile = URIUtils::GetFileName(item->GetPath());
-
+      std::string strFile = URIUtils::GetFileName(item->GetPath());
       if (info == LISTITEM_FILE_EXTENSION)
       {
         std::string strExtension = URIUtils::GetExtension(strFile);
@@ -8970,55 +8629,10 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
     if (!item->m_bIsFolder || item->m_dwSize)
       return StringUtils::SizeToString(item->m_dwSize);
     break;
-  case LISTITEM_RATING:
-    {
-      std::string rating;
-      if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetRating() > 0.f) // song rating
-        rating = StringUtils::FormatNumber(item->GetMusicInfoTag()->GetRating());
-      return rating;
-    }
-  case LISTITEM_RATING_AND_VOTES:
-  {
-      if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetRating() > 0.f) // music rating & votes
-      {
-        std::string strRatingAndVotes;
-        if (item->GetMusicInfoTag()->GetVotes() <= 0)
-          strRatingAndVotes = StringUtils::FormatNumber(item->GetMusicInfoTag()->GetRating());
-        else
-          strRatingAndVotes = FormatRatingAndVotes(item->GetMusicInfoTag()->GetRating(),
-                                                   item->GetMusicInfoTag()->GetVotes());
-        return strRatingAndVotes;
-      }
-    }
-    break;
-  case LISTITEM_USER_RATING:
-    {
-      std::string strUserRating;
-      if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetUserrating() > 0)
-        strUserRating = StringUtils::Format("%i", item->GetMusicInfoTag()->GetUserrating());
-      return strUserRating;
-    }
-    break;
-  case LISTITEM_VOTES:
-    if (item->HasMusicInfoTag())
-      return StringUtils::FormatNumber(item->GetMusicInfoTag()->GetVotes());
-    break;
   case LISTITEM_PROGRAM_COUNT:
-    {
-      return StringUtils::Format("%i", item->m_iprogramCount);
-    }
+    return StringUtils::Format("%i", item->m_iprogramCount);
   case LISTITEM_DURATION:
-    {
-      return GetListItemDuration(item, TIME_FORMAT_GUESS);
-    }
-  case LISTITEM_COMMENT:
-    if (item->HasMusicInfoTag())
-      return item->GetMusicInfoTag()->GetComment();
-    break;
-  case LISTITEM_MOOD:
-    if (item->HasMusicInfoTag())
-      return item->GetMusicInfoTag()->GetMood();
-    break;
+    return GetListItemDuration(item, TIME_FORMAT_GUESS);
   case LISTITEM_ACTUAL_ICON:
     return item->GetIconImage();
   case LISTITEM_ICON:
@@ -9040,10 +8654,7 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
   case LISTITEM_PATH:
     {
       std::string path;
-      if (item->IsMusicDb() && item->HasMusicInfoTag())
-        path = URIUtils::GetDirectory(item->GetMusicInfoTag()->GetURL());
-      else
-        URIUtils::GetParentPath(item->GetPath(), path);
+      URIUtils::GetParentPath(item->GetPath(), path);
       path = CURL(path).GetWithoutUserDetails();
       if (info == LISTITEM_FOLDERNAME)
       {
@@ -9054,11 +8665,7 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
     }
   case LISTITEM_FILENAME_AND_PATH:
     {
-      std::string path;
-      if (item->IsMusicDb() && item->HasMusicInfoTag())
-        path = item->GetMusicInfoTag()->GetURL();
-      else
-        path = item->GetPath();
+      std::string path = item->GetPath();
       path = CURL(path).GetWithoutUserDetails();
       return path;
     }
@@ -9082,18 +8689,6 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
   case LISTITEM_STARTDATE:
     if (item->m_dateTime.IsValid())
       return item->m_dateTime.GetAsLocalizedDate(true);
-    break;
-  case LISTITEM_DBTYPE:
-    if (item->HasMusicInfoTag())
-      return item->GetMusicInfoTag()->GetType();
-    break;
-  case LISTITEM_DBID:
-    if (item->HasMusicInfoTag())
-    {
-      int dbId = item->GetMusicInfoTag()->GetDatabaseId();
-      if (dbId > -1)
-        return StringUtils::Format("%i", dbId);
-    }
     break;
   case LISTITEM_ADDON_NAME:
     if (item->HasAddonInfo())
@@ -9585,13 +9180,6 @@ void CGUIInfoManager::OnApplicationMessage(KODI::MESSAGING::ThreadMessage* pMsg)
   default:
     break;
   }
-}
-
-std::string CGUIInfoManager::FormatRatingAndVotes(float rating, int votes)
-{
-  return StringUtils::Format(g_localizeStrings.Get(20350).c_str(),
-                             StringUtils::FormatNumber(rating).c_str(),
-                             StringUtils::FormatNumber(votes).c_str());
 }
 
 void CGUIInfoManager::RegisterInfoProvider(IGUIInfoProvider *provider)

@@ -136,10 +136,7 @@ public:
   const CVideoInfoTag* GetCurrentMovieTag() const;
 
   std::string GetMusicLabel(int item);
-  std::string GetMusicTagLabel(int info, const CFileItem *item);
   std::string GetGameLabel(int item);
-  std::string GetMusicPartyModeLabel(int item);
-  const std::string GetMusicPlaylistInfo(const GUIINFO::GUIInfo& info);
   std::string GetPictureLabel(int item);
 
   int64_t GetPlayTime() const;  // in ms
@@ -322,7 +319,6 @@ protected:
   CCriticalSection m_critInfo;
 
 private:
-  static std::string FormatRatingAndVotes(float rating, int votes);
   bool IsPlayerChannelPreviewActive() const;
   std::string GetListItemDuration(const CFileItem *item, TIME_FORMAT format) const;
 
