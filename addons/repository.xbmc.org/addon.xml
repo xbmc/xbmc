@@ -10,6 +10,7 @@
 		<info>http://mirrors.kodi.tv/addons/leia/addons.xml.gz</info>
 		<checksum>http://mirrors.kodi.tv/addons/leia/addons.xml.gz.md5</checksum>
 		<datadir>https://mirrors.kodi.tv/addons/leia</datadir>
+		<artdir>http://mirrors.kodi.tv/addons/leia</artdir>
 		<hashes>true</hashes>
 	</extension>
 	<extension point="xbmc.addon.metadata">

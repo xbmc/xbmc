@@ -119,6 +119,11 @@ CRepository::DirInfo CRepository::ParseDirConfiguration(cp_cfg_element_t* config
   dir.checksum = mgr.GetExtValue(configuration, "checksum");
   dir.info = mgr.GetExtValue(configuration, "info");
   dir.datadir = mgr.GetExtValue(configuration, "datadir");
+  dir.artdir = mgr.GetExtValue(configuration, "artdir");
+  if (dir.artdir.empty())
+  {
+    dir.artdir = dir.datadir;
+  }
   dir.hashes = mgr.GetExtValue(configuration, "hashes") == "true";
   dir.version = AddonVersion{mgr.GetExtValue(configuration, "@minversion")};
   return dir;

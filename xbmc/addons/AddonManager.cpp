@@ -74,7 +74,7 @@ AddonPtr CAddonMgr::Factory(const cp_plugin_info_t* plugin, TYPE type)
   return nullptr;
 }
 
-bool CAddonMgr::Factory(const cp_plugin_info_t* plugin, TYPE type, CAddonBuilder& builder, bool ignoreExtensions/* = false*/)
+bool CAddonMgr::Factory(const cp_plugin_info_t* plugin, TYPE type, CAddonBuilder& builder, bool ignoreExtensions/* = false*/, std::string assetBasePath)
 {
   if (!plugin || !plugin->identifier)
     return false;
@@ -101,11 +101,17 @@ bool CAddonMgr::Factory(const cp_plugin_info_t* plugin, TYPE type, CAddonBuilder
     }
   }
 
-  FillCpluffMetadata(plugin, builder);
+  if (assetBasePath.empty() && plugin->plugin_path)
+  {
+    // Default for add-on information not loaded from repository
+    assetBasePath = plugin->plugin_path;
+  }
+
+  FillCpluffMetadata(plugin, builder, assetBasePath);
   return true;
 }
 
-void CAddonMgr::FillCpluffMetadata(const cp_plugin_info_t* plugin, CAddonBuilder& builder)
+void CAddonMgr::FillCpluffMetadata(const cp_plugin_info_t* plugin, CAddonBuilder& builder, std::string const& assetBasePath)
 {
   builder.SetId(plugin->identifier);
 
@@ -142,15 +148,15 @@ void CAddonMgr::FillCpluffMetadata(const cp_plugin_info_t* plugin, CAddonBuilder
   if (!metadata)
     metadata = CServiceBroker::GetAddonMgr().GetExtension(plugin, "kodi.addon.metadata");
 
-  if (plugin->plugin_path && strcmp(plugin->plugin_path, "") != 0)
+  if (!assetBasePath.empty())
   {
     //backwards compatibility
     std::string icon = metadata && CServiceBroker::GetAddonMgr().GetExtValue(metadata->configuration, "noicon") == "true" ? "" : "icon.png";
     std::string fanart = metadata && CServiceBroker::GetAddonMgr().GetExtValue(metadata->configuration, "nofanart") == "true" ? "" : "fanart.jpg";
     if (!icon.empty())
-      builder.SetIcon(URIUtils::AddFileToFolder(plugin->plugin_path, icon));
+      builder.SetIcon(URIUtils::AddFileToFolder(assetBasePath, icon));
     if (!fanart.empty())
-      builder.SetArt("fanart", URIUtils::AddFileToFolder(plugin->plugin_path, fanart));
+      builder.SetArt("fanart", URIUtils::AddFileToFolder(assetBasePath, fanart));
   }
 
   if (metadata)
@@ -172,7 +178,7 @@ void CAddonMgr::FillCpluffMetadata(const cp_plugin_info_t* plugin, CAddonBuilder
 
     builder.SetBroken(CServiceBroker::GetAddonMgr().GetExtValue(metadata->configuration, "broken"));
 
-    if (plugin->plugin_path && strcmp(plugin->plugin_path, "") != 0)
+    if (!assetBasePath.empty())
     {
       auto assets = CServiceBroker::GetAddonMgr().GetExtElement(metadata->configuration, "assets");
       if (assets)
@@ -181,7 +187,7 @@ void CAddonMgr::FillCpluffMetadata(const cp_plugin_info_t* plugin, CAddonBuilder
         builder.SetArt("fanart", "");
         std::string icon = CServiceBroker::GetAddonMgr().GetExtValue(assets, "icon");
         if (!icon.empty())
-          icon = URIUtils::AddFileToFolder(plugin->plugin_path, icon);
+          icon = URIUtils::AddFileToFolder(assetBasePath, icon);
         builder.SetIcon(icon);
 
         std::map<std::string, std::string> art;
@@ -191,7 +197,7 @@ void CAddonMgr::FillCpluffMetadata(const cp_plugin_info_t* plugin, CAddonBuilder
           auto value = CServiceBroker::GetAddonMgr().GetExtValue(assets, type.c_str());
           if (!value.empty())
           {
-            value = URIUtils::AddFileToFolder(plugin->plugin_path, value);
+            value = URIUtils::AddFileToFolder(assetBasePath, value);
             builder.SetArt(type, value);
           }
         }
@@ -203,7 +209,7 @@ void CAddonMgr::FillCpluffMetadata(const cp_plugin_info_t* plugin, CAddonBuilder
           for (const auto& elem : elements)
           {
             if (elem->value && strcmp(elem->value, "") != 0)
-              screenshots.emplace_back(URIUtils::AddFileToFolder(plugin->plugin_path, elem->value));
+              screenshots.emplace_back(URIUtils::AddFileToFolder(assetBasePath, elem->value));
           }
         }
         builder.SetScreenshots(std::move(screenshots));
@@ -1175,15 +1181,15 @@ bool CAddonMgr::AddonsFromRepoXML(const CRepository::DirInfo& repo, const std::s
     if (info)
     {
       CAddonBuilder builder;
-      auto basePath = URIUtils::AddFileToFolder(repo.datadir, std::string(info->identifier));
+      auto basePath = URIUtils::AddFileToFolder(repo.datadir, info->identifier);
       info->plugin_path = static_cast<char*>(malloc(basePath.length() + 1));
       strncpy(info->plugin_path, basePath.c_str(), basePath.length());
       info->plugin_path[basePath.length()] = '\0';
 
-      if (Factory(info, ADDON_UNKNOWN, builder))
+      if (Factory(info, ADDON_UNKNOWN, builder, false, URIUtils::AddFileToFolder(repo.artdir, info->identifier)))
       {
-        builder.SetPath(URIUtils::AddFileToFolder(repo.datadir, StringUtils::Format("%s/%s-%s.zip",
-            info->identifier, info->identifier, builder.GetVersion().asString().c_str())));
+        builder.SetPath(URIUtils::AddFileToFolder(repo.datadir, info->identifier,
+          StringUtils::Format("{}-{}.zip", info->identifier, builder.GetVersion().asString())));
         auto addon = builder.Build();
         if (addon)
           addons.push_back(std::move(addon));

@@ -41,6 +41,7 @@ namespace ADDON
       std::string info;
       std::string checksum;
       std::string datadir;
+      std::string artdir;
       bool hashes;
     };
 
