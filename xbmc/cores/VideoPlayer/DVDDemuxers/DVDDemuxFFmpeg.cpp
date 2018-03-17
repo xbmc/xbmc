@@ -2069,7 +2069,8 @@ bool CDVDDemuxFFmpeg::IsVideoReady()
       {
         if (st->codecpar->extradata)
         {
-          m_startTime = av_rescale(st->cur_dts, st->time_base.num, st->time_base.den);
+          if (!m_startTime)
+            m_startTime = av_rescale(st->cur_dts, st->time_base.num, st->time_base.den);
           return true;
         }
         hasVideo = true;
@@ -2085,7 +2086,8 @@ bool CDVDDemuxFFmpeg::IsVideoReady()
       {
         if (st->codecpar->extradata)
         {
-          m_startTime = av_rescale(st->cur_dts, st->time_base.num, st->time_base.den);
+          if (!m_startTime)
+            m_startTime = av_rescale(st->cur_dts, st->time_base.num, st->time_base.den);
           return true;
         }
         hasVideo = true;
