@@ -26,6 +26,16 @@
 namespace GUIINFO
 {
 
+CGUIInfoProviders::CGUIInfoProviders()
+{
+  RegisterProvider(&m_videoGUIInfo);
+}
+
+CGUIInfoProviders::~CGUIInfoProviders()
+{
+  UnregisterProvider(&m_videoGUIInfo);
+}
+
 void CGUIInfoProviders::RegisterProvider(IGUIInfoProvider *provider)
 {
   auto it = std::find(m_providers.begin(), m_providers.end(), provider);

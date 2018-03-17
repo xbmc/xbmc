@@ -20,6 +20,7 @@
 #pragma once
 
 #include <stdint.h>
+#include <string>
 
 namespace GUIINFO
 {
@@ -37,13 +38,24 @@ public:
     if (flag)
       SetInfoFlag(flag);
   }
+
+  GUIInfo(int info, const std::string& data3)
+  : m_info(info),
+    m_data1(0),
+    m_data2(0),
+    m_data3(data3)
+  {
+  }
+
   bool operator ==(const GUIInfo &right) const
   {
-    return (m_info == right.m_info && m_data1 == right.m_data1 && m_data2 == right.m_data2);
-  };
+    return (m_info == right.m_info && m_data1 == right.m_data1 && m_data2 == right.m_data2 && m_data3 == right.m_data3);
+  }
+
   uint32_t GetInfoFlag() const;
   uint32_t GetData1() const;
   int GetData2() const;
+  const std::string& GetData3() const { return m_data3; }
 
   int m_info;
 private:
@@ -51,6 +63,7 @@ private:
 
   uint32_t m_data1;
   int m_data2;
+  std::string m_data3;
 };
 
 } // namespace GUIINFO

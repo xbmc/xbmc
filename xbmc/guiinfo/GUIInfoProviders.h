@@ -22,6 +22,8 @@
 #include <string>
 #include <vector>
 
+#include "guiinfo/VideoGUIInfo.h"
+
 class CFileItem;
 class CGUIListItem;
 
@@ -34,8 +36,8 @@ class IGUIInfoProvider;
 class CGUIInfoProviders
 {
 public:
-  CGUIInfoProviders() = default;
-  virtual ~CGUIInfoProviders() = default;
+  CGUIInfoProviders();
+  virtual ~CGUIInfoProviders();
 
   /*!
    * @brief Register a guiinfo provider.
@@ -79,6 +81,8 @@ public:
 
 private:
   std::vector<IGUIInfoProvider *> m_providers;
+
+  CVideoGUIInfo m_videoGUIInfo;
 };
 
 } // namespace GUIINFO
