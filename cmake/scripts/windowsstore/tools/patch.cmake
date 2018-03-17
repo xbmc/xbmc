@@ -2,7 +2,7 @@ find_program(PATCH_FOUND NAMES patch patch.exe)
 if(PATCH_FOUND)
   message(STATUS "patch utility found at ${PATCH_FOUND}")
 else()
-  set(PATCH_ARCHIVE_NAME "patch-2.5.9-7-bin-3")
+  set(PATCH_ARCHIVE_NAME "patch-2.7.6-bin")
   set(PATCH_ARCHIVE "${PATCH_ARCHIVE_NAME}.zip")
   set(PATCH_URL "${KODI_MIRROR}/build-deps/win32/${PATCH_ARCHIVE}")
   set(PATCH_DOWNLOAD ${BUILD_DIR}/download/${PATCH_ARCHIVE})
@@ -28,6 +28,11 @@ else()
 
   # copy patch.exe into the output directory
   file(INSTALL ${PATCH_BINARY_PATH} DESTINATION ${ADDON_DEPENDS_PATH}/bin)
+  # copy patch depends
+  file(GLOB PATCH_BINARIES ${PATCH_PATH}/bin/*.dll)
+  if(NOT "${PATCH_BINARIES}" STREQUAL "")
+    file(INSTALL ${PATCH_BINARIES} DESTINATION ${ADDON_DEPENDS_PATH}/bin)
+  endif()
 
   # make sure that cmake can find the copied patch.exe
   find_program(PATCH_FOUND NAMES patch patch.exe)
