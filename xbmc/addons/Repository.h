@@ -27,6 +27,8 @@
 #include "utils/Job.h"
 #include "utils/ProgressJob.h"
 
+struct cp_cfg_element_t;
+
 namespace ADDON
 {
   class CRepository : public CAddon
@@ -73,6 +75,8 @@ namespace ADDON
   private:
     static bool FetchChecksum(const std::string& url, std::string& checksum) noexcept;
     static bool FetchIndex(const DirInfo& repo, VECADDONS& addons) noexcept;
+
+    static DirInfo ParseDirConfiguration(cp_cfg_element_t* configuration);
 
     DirList m_dirs;
   };

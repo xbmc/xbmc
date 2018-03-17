@@ -112,6 +112,18 @@ CRepository::ResolveResult CRepository::ResolvePathAndHash(const AddonPtr& addon
   return {location, hash};
 }
 
+CRepository::DirInfo CRepository::ParseDirConfiguration(cp_cfg_element_t* configuration)
+{
+  auto const& mgr = CServiceBroker::GetAddonMgr();
+  DirInfo dir;
+  dir.checksum = mgr.GetExtValue(configuration, "checksum");
+  dir.info = mgr.GetExtValue(configuration, "info");
+  dir.datadir = mgr.GetExtValue(configuration, "datadir");
+  dir.hashes = mgr.GetExtValue(configuration, "hashes") == "true";
+  dir.version = AddonVersion{mgr.GetExtValue(configuration, "@minversion")};
+  return dir;
+}
+
 std::unique_ptr<CRepository> CRepository::FromExtension(CAddonInfo addonInfo, const cp_extension_t* ext)
 {
   DirList dirs;
@@ -121,30 +133,19 @@ std::unique_ptr<CRepository> CRepository::FromExtension(CAddonInfo addonInfo, co
     version = addonver->Version();
   for (size_t i = 0; i < ext->configuration->num_children; ++i)
   {
-    if(ext->configuration->children[i].name &&
-       strcmp(ext->configuration->children[i].name, "dir") == 0)
+    cp_cfg_element_t* element = &ext->configuration->children[i];
+    if(element->name && strcmp(element->name, "dir") == 0)
     {
-      AddonVersion min_version(CServiceBroker::GetAddonMgr().GetExtValue(&ext->configuration->children[i], "@minversion"));
-      if (min_version <= version)
+      DirInfo dir = ParseDirConfiguration(element);
+      if (dir.version <= version)
       {
-        DirInfo dir;
-        dir.version = min_version;
-        dir.checksum = CServiceBroker::GetAddonMgr().GetExtValue(&ext->configuration->children[i], "checksum");
-        dir.info = CServiceBroker::GetAddonMgr().GetExtValue(&ext->configuration->children[i], "info");
-        dir.datadir = CServiceBroker::GetAddonMgr().GetExtValue(&ext->configuration->children[i], "datadir");
-        dir.hashes = CServiceBroker::GetAddonMgr().GetExtValue(&ext->configuration->children[i], "hashes") == "true";
         dirs.push_back(std::move(dir));
       }
     }
   }
   if (!CServiceBroker::GetAddonMgr().GetExtValue(ext->configuration, "info").empty())
   {
-    DirInfo info;
-    info.checksum = CServiceBroker::GetAddonMgr().GetExtValue(ext->configuration, "checksum");
-    info.info = CServiceBroker::GetAddonMgr().GetExtValue(ext->configuration, "info");
-    info.datadir = CServiceBroker::GetAddonMgr().GetExtValue(ext->configuration, "datadir");
-    info.hashes = CServiceBroker::GetAddonMgr().GetExtValue(ext->configuration, "hashes") == "true";
-    dirs.push_back(std::move(info));
+    dirs.push_back(ParseDirConfiguration(ext->configuration));
   }
   return std::unique_ptr<CRepository>(new CRepository(std::move(addonInfo), std::move(dirs)));
 }
