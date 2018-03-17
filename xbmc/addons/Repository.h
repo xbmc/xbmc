@@ -40,6 +40,8 @@ namespace ADDON
       AddonVersion version{""};
       std::string info;
       std::string checksum;
+      bool verifyChecksum{false};
+      KODI::UTILITY::CDigest::Type checksumType;
       std::string datadir;
       std::string artdir;
       bool hashes{false};
@@ -77,7 +79,7 @@ namespace ADDON
 
   private:
     static bool FetchChecksum(const std::string& url, std::string& checksum) noexcept;
-    static bool FetchIndex(const DirInfo& repo, VECADDONS& addons) noexcept;
+    static bool FetchIndex(const DirInfo& repo, std::string const& digest, VECADDONS& addons) noexcept;
 
     static DirInfo ParseDirConfiguration(cp_cfg_element_t* configuration);
 

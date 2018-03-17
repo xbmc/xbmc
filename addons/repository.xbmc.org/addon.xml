@@ -8,7 +8,7 @@
   </requires>
 	<extension point="xbmc.addon.repository">
 		<info>http://mirrors.kodi.tv/addons/leia/addons.xml.gz</info>
-		<checksum>http://mirrors.kodi.tv/addons/leia/addons.xml.gz?sha256</checksum>
+		<checksum verify="sha256">http://mirrors.kodi.tv/addons/leia/addons.xml.gz?sha256</checksum>
 		<datadir>https://mirrors.kodi.tv/addons/leia</datadir>
 		<artdir>http://mirrors.kodi.tv/addons/leia</artdir>
 		<hashes>sha256</hashes>

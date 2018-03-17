@@ -21,6 +21,7 @@
 #include "Repository.h"
 
 #include <iterator>
+#include <tuple>
 #include <utility>
 
 #include "ServiceBroker.h"
@@ -42,6 +43,7 @@
 #include "TextureDatabase.h"
 #include "URL.h"
 #include "utils/Base64.h"
+#include "utils/Digest.h"
 #include "utils/JobManager.h"
 #include "utils/log.h"
 #include "utils/Mime.h"
@@ -53,6 +55,7 @@
 using namespace XFILE;
 using namespace ADDON;
 using namespace KODI::MESSAGING;
+using KODI::UTILITY::CDigest;
 
 using KODI::MESSAGING::HELPERS::DialogResponse;
 
@@ -119,6 +122,12 @@ CRepository::DirInfo CRepository::ParseDirConfiguration(cp_cfg_element_t* config
   auto const& mgr = CServiceBroker::GetAddonMgr();
   DirInfo dir;
   dir.checksum = mgr.GetExtValue(configuration, "checksum");
+  std::string checksumStr = mgr.GetExtValue(configuration, "checksum@verify");
+  if (!checksumStr.empty())
+  {
+    dir.verifyChecksum = true;
+    dir.checksumType = CDigest::TypeFromString(checksumStr);
+  }
   dir.info = mgr.GetExtValue(configuration, "info");
   dir.datadir = mgr.GetExtValue(configuration, "datadir");
   dir.artdir = mgr.GetExtValue(configuration, "artdir");
@@ -210,7 +219,7 @@ bool CRepository::FetchChecksum(const std::string& url, std::string& checksum) n
   return true;
 }
 
-bool CRepository::FetchIndex(const DirInfo& repo, VECADDONS& addons) noexcept
+bool CRepository::FetchIndex(const DirInfo& repo, std::string const& digest, VECADDONS& addons) noexcept
 {
   XFILE::CCurlFile http;
   http.SetAcceptEncoding("gzip");
@@ -220,6 +229,16 @@ bool CRepository::FetchIndex(const DirInfo& repo, VECADDONS& addons) noexcept
   {
     CLog::Log(LOGERROR, "CRepository: failed to read %s", repo.info.c_str());
     return false;
+  }
+
+  if (repo.verifyChecksum)
+  {
+    std::string actualDigest = CDigest::Calculate(repo.checksumType, response);
+    if (!StringUtils::EqualsNoCase(digest, actualDigest))
+    {
+      CLog::Log(LOGERROR, "CRepository: {} index has wrong digest {}, expected: {}", repo.info, actualDigest, digest);
+      return false;
+    }
   }
 
   if (URIUtils::HasExtension(repo.info, ".gz")
@@ -242,6 +261,7 @@ CRepository::FetchStatus CRepository::FetchIfChanged(const std::string& oldCheck
     std::string& checksum, VECADDONS& addons) const
 {
   checksum = "";
+  std::vector<std::tuple<DirInfo const&, std::string>> dirChecksums;
   for (const auto& dir : m_dirs)
   {
     if (!dir.checksum.empty())
@@ -252,6 +272,7 @@ CRepository::FetchStatus CRepository::FetchIfChanged(const std::string& oldCheck
         CLog::Log(LOGERROR, "CRepository: failed read '%s'", dir.checksum.c_str());
         return STATUS_ERROR;
       }
+      dirChecksums.emplace_back(dir, part);
       checksum += part;
     }
   }
@@ -259,10 +280,10 @@ CRepository::FetchStatus CRepository::FetchIfChanged(const std::string& oldCheck
   if (oldChecksum == checksum && !oldChecksum.empty())
     return STATUS_NOT_MODIFIED;
 
-  for (const auto& dir : m_dirs)
+  for (const auto& dirTuple : dirChecksums)
   {
     VECADDONS tmp;
-    if (!FetchIndex(dir, tmp))
+    if (!FetchIndex(std::get<0>(dirTuple), std::get<1>(dirTuple), tmp))
       return STATUS_ERROR;
     addons.insert(addons.end(), tmp.begin(), tmp.end());
   }
