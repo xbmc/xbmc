@@ -75,7 +75,7 @@ public:
    * @param info The GUI info (label id + additional data).
    * @return True if the value was filled successfully by one of the providers, false otherwise.
    */
-  bool GetBool(bool& value, const CGUIListItem *item, const GUIINFO::GUIInfo &info) const;
+  bool GetBool(bool& value, const CGUIListItem *item, const GUIInfo &info) const;
 
 private:
   std::vector<IGUIInfoProvider *> m_providers;

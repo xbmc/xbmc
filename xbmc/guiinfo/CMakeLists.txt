@@ -1,10 +1,9 @@
-set(SOURCES GUIInfoProviders.cpp)
+set(SOURCES GUIInfo.cpp
+            GUIInfoProviders.cpp)
 
 set(HEADERS GUIInfo.h
             GUIInfoLabels.h
             GUIInfoProviders.h
             IGUIInfoProvider.h)
 
-if(NOT ENABLE_STATIC_LIBS)
-  core_add_library(guiinfo)
-endif()
+core_add_library(guiinfo)

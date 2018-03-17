@@ -21,6 +21,7 @@
 
 #include "threads/CriticalSection.h"
 #include "guiinfo/GUIInfo.h"
+#include "guiinfo/GUIInfoProviders.h"
 #include "guilib/IMsgTargetCallback.h"
 #include "guilib/GUIControl.h"
 #include "messaging/IMessageTarget.h"
@@ -32,7 +33,6 @@
 #include "interfaces/info/SkinVariable.h"
 #include "cores/IPlayer.h"
 #include "FileItem.h"
-#include "pvr/PVRTypes.h"
 
 #include <atomic>
 #include <map>
@@ -52,8 +52,12 @@ namespace INFO
   class InfoSingle;
 }
 
-// forward
 class CGUIWindow;
+
+namespace GUIINFO
+{
+  class IGUIInfoProvider;
+}
 
 /*!
  \ingroup strings
@@ -129,17 +133,15 @@ public:
   void SetCurrentVideoTag(const CVideoInfoTag &tag);
 
   const MUSIC_INFO::CMusicInfoTag *GetCurrentSongTag() const;
-  const PVR::CPVRRadioRDSInfoTagPtr GetCurrentRadioRDSInfoTag() const;
   const CVideoInfoTag* GetCurrentMovieTag() const;
 
-  std::string GetRadioRDSLabel(int item);
   std::string GetMusicLabel(int item);
   std::string GetMusicTagLabel(int info, const CFileItem *item);
   std::string GetVideoLabel(int item);
   std::string GetGameLabel(int item);
   std::string GetPlaylistLabel(int item, int playlistid = -1 /* PLAYLIST_NONE */) const;
   std::string GetMusicPartyModeLabel(int item);
-  const std::string GetMusicPlaylistInfo(const GUIInfo& info);
+  const std::string GetMusicPlaylistInfo(const GUIINFO::GUIInfo& info);
   std::string GetPictureLabel(int item);
 
   int64_t GetPlayTime() const;  // in ms
@@ -199,6 +201,21 @@ public:
   /// \brief iterates through boolean conditions and compares their stored values to current values. Returns true if any condition changed value.
   bool ConditionsChangedValues(const std::map<INFO::InfoPtr, bool>& map);
 
+  /*! \brief register a guiinfo provider
+   \param the guiinfo provider to register
+   */
+  void RegisterInfoProvider(GUIINFO::IGUIInfoProvider *provider);
+
+  /*! \brief unregister a guiinfo provider
+   \param the guiinfo provider to unregister
+   */
+  void UnregisterInfoProvider(GUIINFO::IGUIInfoProvider *provider);
+
+  /*! \brief get access to the registered guiinfo providers
+   \return the guiinfo providers
+   */
+  GUIINFO::CGUIInfoProviders& GetInfoProviders() { return m_infoProviders; }
+
 protected:
   friend class INFO::InfoSingle;
   bool GetBool(int condition, int contextWindow = 0, const CGUIListItem *item=NULL);
@@ -223,10 +240,10 @@ protected:
     std::vector<std::string> params;
   };
 
-  bool GetMultiInfoBool(const GUIInfo &info, int contextWindow = 0, const CGUIListItem *item = NULL);
-  bool GetMultiInfoInt(int &value, const GUIInfo &info, int contextWindow = 0) const;
+  bool GetMultiInfoBool(const GUIINFO::GUIInfo &info, int contextWindow = 0, const CGUIListItem *item = NULL);
+  bool GetMultiInfoInt(int &value, const GUIINFO::GUIInfo &info, int contextWindow = 0) const;
   CGUIControl * GetActiveContainer(int containerId, int contextWindow) const;
-  std::string GetMultiInfoLabel(const GUIInfo &info, int contextWindow = 0, std::string *fallback = NULL);
+  std::string GetMultiInfoLabel(const GUIINFO::GUIInfo &info, int contextWindow = 0, std::string *fallback = NULL);
   int TranslateListItem(const Property &info);
   int TranslateMusicPlayerString(const std::string &info) const;
   TIME_FORMAT TranslateTimeFormat(const std::string &format);
@@ -247,14 +264,14 @@ protected:
   // Conditional string parameters for testing are stored in a vector for later retrieval.
   // The offset into the string parameters array is returned.
   int ConditionalStringParameter(const std::string &strParameter, bool caseSensitive = false);
-  int AddMultiInfo(const GUIInfo &info);
+  int AddMultiInfo(const GUIINFO::GUIInfo &info);
   int AddListItemProp(const std::string &str, int offset=0);
 
   // Conditional string parameters are stored here
   std::vector<std::string> m_stringParameters;
 
   // Array of multiple information mapped to a single integer lookup
-  std::vector<GUIInfo> m_multiInfo;
+  std::vector<GUIINFO::GUIInfo> m_multiInfo;
   std::vector<std::string> m_listitemProperties;
 
   std::string m_currentMovieDuration;
@@ -308,10 +325,11 @@ protected:
   CCriticalSection m_critInfo;
 
 private:
-  static std::string GetEpgEventTitle(const PVR::CPVREpgInfoTagPtr& epgTag);
   static std::string FormatRatingAndVotes(float rating, int votes);
   bool IsPlayerChannelPreviewActive() const;
-  std::string GetItemDuration(const CFileItem *item, TIME_FORMAT format) const;
+  std::string GetListItemDuration(const CFileItem *item, TIME_FORMAT format) const;
+
+  GUIINFO::CGUIInfoProviders m_infoProviders;
 };
 
 /*!

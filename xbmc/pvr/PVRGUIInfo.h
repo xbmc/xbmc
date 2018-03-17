@@ -24,6 +24,7 @@
 #include <vector>
 
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
+#include "guiinfo/IGUIInfoProvider.h"
 #include "threads/CriticalSection.h"
 #include "threads/Thread.h"
 #include "utils/Observer.h"
@@ -31,12 +32,14 @@
 #include "pvr/PVRTypes.h"
 #include "pvr/addons/PVRClients.h"
 
-class GUIInfo;
+namespace GUIINFO
+{
+  class GUIInfo;
+}
 
 namespace PVR
 {
-  class CPVRGUIInfo : private CThread,
-                      private Observer
+  class CPVRGUIInfo : public GUIINFO::IGUIInfoProvider, private CThread, private Observer
   {
   public:
     CPVRGUIInfo(void);
@@ -47,36 +50,10 @@ namespace PVR
 
     void Notify(const Observable &obs, const ObservableMessage msg) override;
 
-    bool TranslateBoolInfo(DWORD dwInfo) const;
-    bool TranslateCharInfo(const CFileItem *item, DWORD dwInfo, std::string &strValue) const;
-    int TranslateIntInfo(const CFileItem *item, DWORD dwInfo) const;
-
-    /*!
-     * @brief Get a GUIInfoManager video label.
-     * @param item The item to get the label for.
-     * @param iLabel The id of the requested label.
-     * @param strValue Will be filled with the requested label value.
-     * @return True if the requested label value was set, false otherwise.
-     */
-    bool GetVideoLabel(const CFileItem *item, int iLabel, std::string &strValue) const;
-
-    /*!
-     * @brief Get a GUIInfoManager multi info label.
-     * @param item The item to get the label for.
-     * @param info The GUI info (label id + additional data).
-     * @param strValue Will be filled with the requested label value.
-     * @return True if the requested label value was set, false otherwise.
-     */
-    bool GetMultiInfoLabel(const CFileItem *item, const GUIInfo &info, std::string &strValue) const;
-
-    /*!
-     * @brief Get a GUIInfoManager seek time label for the currently playing epg tag.
-     * @param iSeekSize The seconds to be seeked from the current playback position.
-     * @param format The time format for the label.
-     * @param strValue Will be filled with the requested label value.
-     * @return True if the label value was set, false otherwise.
-     */
-    bool GetSeekTimeLabel(int iSeekSize, TIME_FORMAT format, std::string &strValue) const;
+    // GUIINFO::IGUIInfoProvider implementation
+    bool GetLabel(std::string& value, const CFileItem *item, const GUIINFO::GUIInfo &info, std::string *fallback) const override;
+    bool GetInt(int& value, const CGUIListItem *item, const GUIINFO::GUIInfo &info) const override;
+    bool GetBool(bool& value, const CGUIListItem *item, const GUIINFO::GUIInfo &info) const override;
 
     /*!
      * @brief Get the total duration of the currently playing epg event or if no epg is
@@ -209,6 +186,17 @@ namespace PVR
     void UpdateTimeshift(void);
 
     void UpdateTimersToggle(void);
+
+    bool GetListItemAndPlayerLabel(const CFileItem *item, const GUIINFO::GUIInfo &info, std::string &strValue) const;
+    bool GetPVRLabel(const CFileItem *item, const GUIINFO::GUIInfo &info, std::string &strValue) const;
+    bool GetRadioRDSLabel(const CFileItem *item, const GUIINFO::GUIInfo &info, std::string &strValue) const;
+
+    bool GetListItemAndPlayerInt(const CFileItem *item, const GUIINFO::GUIInfo &info, int &iValue) const;
+    bool GetPVRInt(const CFileItem *item, const GUIINFO::GUIInfo &info, int& iValue) const;
+
+    bool GetListItemAndPlayerBool(const CFileItem *item, const GUIINFO::GUIInfo &info, bool &bValue) const;
+    bool GetPVRBool(const CFileItem *item, const GUIINFO::GUIInfo &info, bool& bValue) const;
+    bool GetRadioRDSBool(const CFileItem *item, const GUIINFO::GUIInfo &info, bool &bValue) const;
 
     void CharInfoEpgEventDuration(const CFileItem *item, TIME_FORMAT format, std::string &strValue) const;
     void CharInfoEpgEventElapsedTime(const CFileItem *item, TIME_FORMAT format, std::string &strValue) const;

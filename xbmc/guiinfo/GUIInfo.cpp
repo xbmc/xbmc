@@ -17,40 +17,37 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#pragma once
 
-#include <stdint.h>
+#include "GUIInfo.h"
+
+#include <assert.h>
 
 namespace GUIINFO
 {
 
-// class to hold multiple integer data
-// for storage referenced from a single integer
-class GUIInfo
+void GUIInfo::SetInfoFlag(uint32_t flag)
 {
-public:
-  explicit GUIInfo(int info, uint32_t data1 = 0, int data2 = 0, uint32_t flag = 0)
-  : m_info(info),
-    m_data1(data1),
-    m_data2(data2)
-  {
-    if (flag)
-      SetInfoFlag(flag);
-  }
-  bool operator ==(const GUIInfo &right) const
-  {
-    return (m_info == right.m_info && m_data1 == right.m_data1 && m_data2 == right.m_data2);
-  };
-  uint32_t GetInfoFlag() const;
-  uint32_t GetData1() const;
-  int GetData2() const;
+  assert(flag >= (1 << 24));
+  m_data1 |= flag;
+}
 
-  int m_info;
-private:
-  void SetInfoFlag(uint32_t flag);
+uint32_t GUIInfo::GetInfoFlag() const
+{
+  // we strip out the bottom 24 bits, where we keep data
+  // and return the flag only
+  return m_data1 & 0xff000000;
+}
 
-  uint32_t m_data1;
-  int m_data2;
-};
+uint32_t GUIInfo::GetData1() const
+{
+  // we strip out the top 8 bits, where we keep flags
+  // and return the unflagged data
+  return m_data1 & ((1 << 24) -1);
+}
+
+int GUIInfo::GetData2() const
+{
+  return m_data2;
+}
 
 } // namespace GUIINFO

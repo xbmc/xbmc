@@ -60,7 +60,7 @@ bool CGUIInfoProviders::GetInt(int& value, const CGUIListItem *item, const GUIIn
   return false;
 }
 
-bool CGUIInfoProviders::GetBool(bool& value, const CGUIListItem *item, const GUIINFO::GUIInfo &info) const
+bool CGUIInfoProviders::GetBool(bool& value, const CGUIListItem *item, const GUIInfo &info) const
 {
   for (const auto& provider : m_providers)
   {
