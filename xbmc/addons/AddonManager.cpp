@@ -42,6 +42,11 @@ namespace ADDON
 void cp_fatalErrorHandler(const char *msg);
 void cp_logger(cp_log_severity_t level, const char *msg, const char *apid, void *user_data);
 
+namespace {
+// Note that all of these characters are url-safe
+const std::string VALID_ADDON_IDENTIFIER_CHARACTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.-_@!$";
+}
+
 /**********************************************************
  * CAddonMgr
  *
@@ -78,6 +83,15 @@ bool CAddonMgr::Factory(const cp_plugin_info_t* plugin, TYPE type, CAddonBuilder
 {
   if (!plugin || !plugin->identifier)
     return false;
+
+  // Check addon identifier for forbidden characters
+  // The identifier is used e.g. in URLs so we shouldn't allow just
+  // any character to go through.
+  if (std::string{plugin->identifier}.find_first_not_of(VALID_ADDON_IDENTIFIER_CHARACTERS) != std::string::npos)
+  {
+    CLog::Log(LOGERROR, "Plugin identifier {} is invalid", plugin->identifier);
+    return false;
+  }
 
   if (!PlatformSupportsAddon(plugin))
     return false;
