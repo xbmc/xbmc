@@ -133,7 +133,7 @@ bool CPlayListFactory::IsPlaylist(const CFileItem& item)
   || strMimeType == "audio/x-mpegurl")
     return true;
 
-  return IsPlaylist(item.GetPath());
+  return IsPlaylist(item.GetDynPath());
 }
 
 bool CPlayListFactory::IsPlaylist(const CURL& url)
