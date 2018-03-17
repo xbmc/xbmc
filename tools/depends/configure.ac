@@ -429,8 +429,16 @@ case $use_platform in
      target_platform=raspberry-pi
      use_cpu=cortex-a7
      ffmpeg_options_default="--cpu=cortex-a7"
-     platform_cflags="-fPIC -mcpu=cortex-a7 -mfloat-abi=hard -mfpu=neon-vfpv4"
-     platform_cxxflags="-fPIC -mcpu=cortex-a7 -mfloat-abi=hard -mfpu=neon-vfpv4"
+     platform_cflags="-fPIC -mcpu=cortex-a7 -mfloat-abi=hard -mfpu=neon-vfpv4 -mvectorize-with-neon-quad"
+     platform_cxxflags="-fPIC -mcpu=cortex-a7 -mfloat-abi=hard -mfpu=neon-vfpv4 -mvectorize-with-neon-quad"
+     platform_ldflags="-lpthread"
+     ;;
+  raspberry-pi3)
+     target_platform=raspberry-pi
+     use_cpu=cortex-a53
+     ffmpeg_options_default="--cpu=cortex-a53"
+     platform_cflags="-fPIC -mcpu=cortex-a53 -mfloat-abi=hard -mfpu=neon-fp-armv8 -mvectorize-with-neon-quad"
+     platform_cxxflags="-fPIC -mcpu=cortex-a53 -mfloat-abi=hard -mfpu=neon-fp-armv8 -mvectorize-with-neon-quad"
      platform_ldflags="-lpthread"
      ;;
   auto)
