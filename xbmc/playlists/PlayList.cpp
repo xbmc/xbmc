@@ -486,7 +486,7 @@ bool CPlayList::Expand(int position)
   // @todo
   // never change original path (id) of a file item
   // playlist items should be created with dynPath instead
-  if (!item->GetDynPath().empty())
+  if (item->GetDynPath() != item->GetPath())
   {
     for (int i = 0;i<playlist->size();i++)
     {
