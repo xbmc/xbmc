@@ -32,44 +32,6 @@
 #include <xapofx.h>
 #pragma comment(lib,"xaudio2.lib")
 
-struct VoiceCallback : public IXAudio2VoiceCallback
-{
-  VoiceCallback()
-  {
-    mBufferEnd.reset(CreateEventEx(nullptr, nullptr, 0, EVENT_MODIFY_STATE | SYNCHRONIZE));
-    if (!mBufferEnd)
-    {
-      throw std::exception("CreateEvent");
-    }
-  }
-  virtual ~VoiceCallback() { }
-
-  STDMETHOD_(void, OnVoiceProcessingPassStart) (UINT32) override {}
-  STDMETHOD_(void, OnVoiceProcessingPassEnd)() override {}
-  STDMETHOD_(void, OnStreamEnd)() override {}
-  STDMETHOD_(void, OnBufferStart)(void*) override {}
-  STDMETHOD_(void, OnBufferEnd)(void* context) override 
-  {
-    SetEvent(mBufferEnd.get());
-    uint8_t *buff = static_cast<uint8_t*>(context);
-    delete[] buff;
-  }
-
-  STDMETHOD_(void, OnLoopEnd)(void*) override {}
-  STDMETHOD_(void, OnVoiceError)(void*, HRESULT) override {}
-
-  struct handle_closer 
-  { 
-    void operator()(HANDLE h) 
-    { 
-      assert(h != INVALID_HANDLE_VALUE); 
-      if (h) 
-        CloseHandle(h); 
-    } 
-  };
-  std::unique_ptr<void, handle_closer> mBufferEnd;
-};
-
 class CAESinkXAudio : public IAESink
 {
 public:
@@ -93,6 +55,58 @@ public:
     static void EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool force = false);
 
 private:
+    struct buffer_ctx
+    {
+      uint8_t *data;
+      uint32_t frames;
+      CAESinkXAudio* sink;
+
+      ~buffer_ctx()
+      {
+        delete[] data;
+        sink->m_framesInBuffers -= frames;
+        sink = nullptr;
+      }
+    };
+
+    struct VoiceCallback : public IXAudio2VoiceCallback
+    {
+      VoiceCallback()
+      {
+        mBufferEnd.reset(CreateEventEx(nullptr, nullptr, 0, EVENT_MODIFY_STATE | SYNCHRONIZE));
+        if (!mBufferEnd)
+        {
+          throw std::exception("CreateEvent");
+        }
+      }
+      virtual ~VoiceCallback() { }
+
+      STDMETHOD_(void, OnVoiceProcessingPassStart) (UINT32) override {}
+      STDMETHOD_(void, OnVoiceProcessingPassEnd)() override {}
+      STDMETHOD_(void, OnStreamEnd)() override {}
+      STDMETHOD_(void, OnBufferStart)(void*) override {}
+      STDMETHOD_(void, OnBufferEnd)(void* context) override 
+      {
+        SetEvent(mBufferEnd.get());
+        struct buffer_ctx *ctx = static_cast<struct buffer_ctx*>(context);
+        delete ctx;
+      }
+
+      STDMETHOD_(void, OnLoopEnd)(void*) override {}
+      STDMETHOD_(void, OnVoiceError)(void*, HRESULT) override {}
+
+      struct handle_closer 
+      { 
+        void operator()(HANDLE h) 
+        { 
+          assert(h != INVALID_HANDLE_VALUE); 
+          if (h) 
+            CloseHandle(h); 
+        } 
+      };
+      std::unique_ptr<void, handle_closer> mBufferEnd;
+    };
+
     bool InitializeInternal(std::string deviceId, AEAudioFormat &format);
     bool IsUSBDevice();
 
@@ -116,6 +130,7 @@ private:
     unsigned int m_dwFrameSize;
     unsigned int m_dwBufferLen;
     uint64_t m_sinkFrames;
+    std::atomic<uint16_t> m_framesInBuffers;
 
     double m_avgTimeWaiting;       /* time between next buffer of data from SoftAE and driver call for data */
 
