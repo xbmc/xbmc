@@ -247,21 +247,15 @@ macro (build_addon target prefix libs)
         endif()
       endif()
 
-      # in case of a VC++ project the installation location contains a $(Configuration) VS variable
-      # we replace it with ${CMAKE_BUILD_TYPE} (which doesn't cover the case when the build configuration
-      # is changed within Visual Studio)
-      string(REPLACE "$(Configuration)" "${CMAKE_BUILD_TYPE}" LIBRARY_LOCATION "${LIBRARY_LOCATION}")
-
       if(${prefix}_SOURCES)
         # install the generated DLL file
         install(PROGRAMS ${LIBRARY_LOCATION} DESTINATION ${target}
                 COMPONENT ${target}-${${prefix}_VERSION})
 
-        if(CMAKE_BUILD_TYPE MATCHES Debug)
-          # for debug builds also install the PDB file
-          install(FILES $<TARGET_PDB_FILE:${target}> DESTINATION ${target}
-                  COMPONENT ${target}-${${prefix}_VERSION})
-        endif()
+        # for debug builds also install the PDB file
+        install(FILES $<TARGET_PDB_FILE:${target}> DESTINATION ${target}
+                CONFIGURATIONS Debug RelWithDebInfo
+                COMPONENT ${target}-${${prefix}_VERSION})
       endif()
       if(${prefix}_CUSTOM_BINARY)
         install(FILES ${LIBRARY_LOCATION} DESTINATION ${target} RENAME ${LIBRARY_FILENAME})
