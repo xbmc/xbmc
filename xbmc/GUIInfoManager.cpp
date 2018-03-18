@@ -140,7 +140,7 @@ CGUIInfoManager::CGUIInfoManager(void) :
   m_seekOffset = 0;
   m_nextWindowID = WINDOW_INVALID;
   m_prevWindowID = WINDOW_INVALID;
-  m_stringParameters.push_back("__ZZZZ__");   // to offset the string parameters by 1 to assure that all entries are non-zero
+  m_stringParameters.emplace_back("__ZZZZ__");   // to offset the string parameters by 1 to assure that all entries are non-zero
   m_currentFile = new CFileItem;
   m_currentSlide = new CFileItem;
   m_frameCounter = 0;
@@ -5317,7 +5317,7 @@ void CGUIInfoManager::SplitInfoString(const std::string &infoString, std::vector
       if (!property.empty()) // add our property and parameters
       {
         StringUtils::ToLower(property);
-        info.push_back(Property(property, param));
+        info.emplace_back(Property(property, param));
       }
       property.clear();
       param.clear();
@@ -5328,12 +5328,14 @@ void CGUIInfoManager::SplitInfoString(const std::string &infoString, std::vector
     else
       property += infoString[i];
   }
+
   if (parentheses)
     CLog::Log(LOGERROR, "unmatched parentheses in %s", infoString.c_str());
+
   if (!property.empty())
   {
     StringUtils::ToLower(property);
-    info.push_back(Property(property, param));
+    info.emplace_back(Property(property, param));
   }
 }
 
@@ -5381,7 +5383,7 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
       }
       else if (prop.num_params() == 2)
       {
-        for (size_t i = 0; i < sizeof(string_bools) / sizeof(infomap); i++)
+        for (size_t i = 0; i < sizeof(string_bools) / sizeof(infomap); ++i)
         {
           if (prop.name == string_bools[i].str)
           {
@@ -5403,7 +5405,7 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
     }
     if (cat.name == "integer")
     {
-      for (size_t i = 0; i < sizeof(integer_bools) / sizeof(infomap); i++)
+      for (size_t i = 0; i < sizeof(integer_bools) / sizeof(infomap); ++i)
       {
         if (prop.name == integer_bools[i].str)
         {
@@ -5415,19 +5417,19 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
     }
     else if (cat.name == "player")
     {
-      for (size_t i = 0; i < sizeof(player_labels) / sizeof(infomap); i++)
+      for (size_t i = 0; i < sizeof(player_labels) / sizeof(infomap); ++i)
       {
         if (prop.name == player_labels[i].str)
           return player_labels[i].val;
       }
-      for (size_t i = 0; i < sizeof(player_times) / sizeof(infomap); i++)
+      for (size_t i = 0; i < sizeof(player_times) / sizeof(infomap); ++i)
       {
         if (prop.name == player_times[i].str)
           return AddMultiInfo(GUIInfo(player_times[i].val, TranslateTimeFormat(prop.param())));
       }
       if (prop.name == "process" && prop.num_params())
       {
-        for (size_t i = 0; i < sizeof(player_process) / sizeof(infomap); i++)
+        for (size_t i = 0; i < sizeof(player_process) / sizeof(infomap); ++i)
         {
           if (StringUtils::EqualsNoCase(prop.param(), player_process[i].str))
             return player_process[i].val;
@@ -5435,7 +5437,7 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
       }
       if (prop.num_params() == 1)
       {
-        for (size_t i = 0; i < sizeof(player_param) / sizeof(infomap); i++)
+        for (size_t i = 0; i < sizeof(player_param) / sizeof(infomap); ++i)
         {
           if (prop.name == player_param[i].str)
             return AddMultiInfo(GUIInfo(player_param[i].val, ConditionalStringParameter(prop.param())));
@@ -5444,7 +5446,7 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
     }
     else if (cat.name == "weather")
     {
-      for (size_t i = 0; i < sizeof(weather) / sizeof(infomap); i++)
+      for (size_t i = 0; i < sizeof(weather) / sizeof(infomap); ++i)
       {
         if (prop.name == weather[i].str)
           return weather[i].val;
@@ -5452,7 +5454,7 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
     }
     else if (cat.name == "network")
     {
-      for (size_t i = 0; i < sizeof(network_labels) / sizeof(infomap); i++)
+      for (size_t i = 0; i < sizeof(network_labels) / sizeof(infomap); ++i)
       {
         if (prop.name == network_labels[i].str)
           return network_labels[i].val;
@@ -5460,7 +5462,7 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
     }
     else if (cat.name == "musicpartymode")
     {
-      for (size_t i = 0; i < sizeof(musicpartymode) / sizeof(infomap); i++)
+      for (size_t i = 0; i < sizeof(musicpartymode) / sizeof(infomap); ++i)
       {
         if (prop.name == musicpartymode[i].str)
           return musicpartymode[i].val;
@@ -5468,7 +5470,7 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
     }
     else if (cat.name == "system")
     {
-      for (size_t i = 0; i < sizeof(system_labels) / sizeof(infomap); i++)
+      for (size_t i = 0; i < sizeof(system_labels) / sizeof(infomap); ++i)
       {
         if (prop.name == system_labels[i].str)
           return system_labels[i].val;
@@ -5482,18 +5484,23 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
           StringUtils::ToLower(paramCopy);
           return AddMultiInfo(GUIInfo(SYSTEM_GET_BOOL, ConditionalStringParameter(paramCopy, true)));
         }
-        for (size_t i = 0; i < sizeof(system_param) / sizeof(infomap); i++)
+        for (size_t i = 0; i < sizeof(system_param) / sizeof(infomap); ++i)
         {
           if (prop.name == system_param[i].str)
             return AddMultiInfo(GUIInfo(system_param[i].val, ConditionalStringParameter(param)));
         }
         if (prop.name == "memory")
         {
-          if (param == "free") return SYSTEM_FREE_MEMORY;
-          else if (param == "free.percent") return SYSTEM_FREE_MEMORY_PERCENT;
-          else if (param == "used") return SYSTEM_USED_MEMORY;
-          else if (param == "used.percent") return SYSTEM_USED_MEMORY_PERCENT;
-          else if (param == "total") return SYSTEM_TOTAL_MEMORY;
+          if (param == "free")
+            return SYSTEM_FREE_MEMORY;
+          else if (param == "free.percent")
+            return SYSTEM_FREE_MEMORY_PERCENT;
+          else if (param == "used")
+            return SYSTEM_USED_MEMORY;
+          else if (param == "used.percent")
+            return SYSTEM_USED_MEMORY_PERCENT;
+          else if (param == "total")
+            return SYSTEM_TOTAL_MEMORY;
         }
         else if (prop.name == "addontitle")
         {
@@ -5558,28 +5565,39 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
     }
     else if (cat.name == "library")
     {
-      if (prop.name == "isscanning") return LIBRARY_IS_SCANNING;
-      else if (prop.name == "isscanningvideo") return LIBRARY_IS_SCANNING_VIDEO; //! @todo change to IsScanning(Video)
-      else if (prop.name == "isscanningmusic") return LIBRARY_IS_SCANNING_MUSIC;
+      if (prop.name == "isscanning")
+        return LIBRARY_IS_SCANNING;
+      else if (prop.name == "isscanningvideo")
+        return LIBRARY_IS_SCANNING_VIDEO; //! @todo change to IsScanning(Video)
+      else if (prop.name == "isscanningmusic")
+        return LIBRARY_IS_SCANNING_MUSIC;
       else if (prop.name == "hascontent" && prop.num_params())
       {
         std::string cat = prop.param(0);
         StringUtils::ToLower(cat);
-        if (cat == "music") return LIBRARY_HAS_MUSIC;
-        else if (cat == "video") return LIBRARY_HAS_VIDEO;
-        else if (cat == "movies") return LIBRARY_HAS_MOVIES;
-        else if (cat == "tvshows") return LIBRARY_HAS_TVSHOWS;
-        else if (cat == "musicvideos") return LIBRARY_HAS_MUSICVIDEOS;
-        else if (cat == "moviesets") return LIBRARY_HAS_MOVIE_SETS;
-        else if (cat == "singles") return LIBRARY_HAS_SINGLES;
-        else if (cat == "compilations") return LIBRARY_HAS_COMPILATIONS;
+        if (cat == "music")
+          return LIBRARY_HAS_MUSIC;
+        else if (cat == "video")
+          return LIBRARY_HAS_VIDEO;
+        else if (cat == "movies")
+          return LIBRARY_HAS_MOVIES;
+        else if (cat == "tvshows")
+          return LIBRARY_HAS_TVSHOWS;
+        else if (cat == "musicvideos")
+          return LIBRARY_HAS_MUSICVIDEOS;
+        else if (cat == "moviesets")
+          return LIBRARY_HAS_MOVIE_SETS;
+        else if (cat == "singles")
+          return LIBRARY_HAS_SINGLES;
+        else if (cat == "compilations")
+          return LIBRARY_HAS_COMPILATIONS;
         else if (cat == "role" && prop.num_params() > 1)
           return AddMultiInfo(GUIInfo(LIBRARY_HAS_ROLE, ConditionalStringParameter(prop.param(1)), 0));
       }
     }
     else if (cat.name == "musicplayer")
     {
-      for (size_t i = 0; i < sizeof(player_times) / sizeof(infomap); i++) //! @todo remove these, they're repeats
+      for (size_t i = 0; i < sizeof(player_times) / sizeof(infomap); ++i) //! @todo remove these, they're repeats
       {
         if (prop.name == player_times[i].str)
           return AddMultiInfo(GUIInfo(player_times[i].val, TranslateTimeFormat(prop.param())));
@@ -5599,7 +5617,7 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
     {
       if (prop.name != "starttime") // player.starttime is semantically different from videoplayer.starttime which has its own implementation!
       {
-        for (size_t i = 0; i < sizeof(player_times) / sizeof(infomap); i++) //! @todo remove these, they're repeats
+        for (size_t i = 0; i < sizeof(player_times) / sizeof(infomap); ++i) //! @todo remove these, they're repeats
         {
           if (prop.name == player_times[i].str)
             return AddMultiInfo(GUIInfo(player_times[i].val, TranslateTimeFormat(prop.param())));
@@ -5609,7 +5627,7 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
       {
         return AddMultiInfo(GUIInfo(VIDEOPLAYER_CONTENT, ConditionalStringParameter(prop.param()), 0));
       }
-      for (size_t i = 0; i < sizeof(videoplayer) / sizeof(infomap); i++)
+      for (size_t i = 0; i < sizeof(videoplayer) / sizeof(infomap); ++i)
       {
         if (prop.name == videoplayer[i].str)
           return videoplayer[i].val;
@@ -5617,7 +5635,7 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
     }
     else if (cat.name == "retroplayer")
     {
-      for (size_t i = 0; i < sizeof(retroplayer) / sizeof(infomap); i++)
+      for (size_t i = 0; i < sizeof(retroplayer) / sizeof(infomap); ++i)
       {
         if (prop.name == retroplayer[i].str)
           return retroplayer[i].val;
@@ -5625,7 +5643,7 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
     }
     else if (cat.name == "slideshow")
     {
-      for (size_t i = 0; i < sizeof(slideshow) / sizeof(infomap); i++)
+      for (size_t i = 0; i < sizeof(slideshow) / sizeof(infomap); ++i)
       {
         if (prop.name == slideshow[i].str)
           return slideshow[i].val;
@@ -5634,23 +5652,23 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
     }
     else if (cat.name == "container")
     {
-      for (size_t i = 0; i < sizeof(mediacontainer) / sizeof(infomap); i++) // these ones don't have or need an id
+      for (size_t i = 0; i < sizeof(mediacontainer) / sizeof(infomap); ++i) // these ones don't have or need an id
       {
         if (prop.name == mediacontainer[i].str)
           return mediacontainer[i].val;
       }
       int id = atoi(cat.param().c_str());
-      for (size_t i = 0; i < sizeof(container_bools) / sizeof(infomap); i++) // these ones can have an id (but don't need to?)
+      for (size_t i = 0; i < sizeof(container_bools) / sizeof(infomap); ++i) // these ones can have an id (but don't need to?)
       {
         if (prop.name == container_bools[i].str)
           return id ? AddMultiInfo(GUIInfo(container_bools[i].val, id)) : container_bools[i].val;
       }
-      for (size_t i = 0; i < sizeof(container_ints) / sizeof(infomap); i++) // these ones can have an int param on the property
+      for (size_t i = 0; i < sizeof(container_ints) / sizeof(infomap); ++i) // these ones can have an int param on the property
       {
         if (prop.name == container_ints[i].str)
           return AddMultiInfo(GUIInfo(container_ints[i].val, id, atoi(prop.param().c_str())));
       }
-      for (size_t i = 0; i < sizeof(container_str) / sizeof(infomap); i++) // these ones have a string param on the property
+      for (size_t i = 0; i < sizeof(container_str) / sizeof(infomap); ++i) // these ones have a string param on the property
       {
         if (prop.name == container_str[i].str)
           return AddMultiInfo(GUIInfo(container_str[i].val, id, ConditionalStringParameter(prop.param())));
@@ -5687,7 +5705,7 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
     }
     else if (cat.name == "visualisation")
     {
-      for (size_t i = 0; i < sizeof(visualisation) / sizeof(infomap); i++)
+      for (size_t i = 0; i < sizeof(visualisation) / sizeof(infomap); ++i)
       {
         if (prop.name == visualisation[i].str)
           return visualisation[i].val;
@@ -5695,7 +5713,7 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
     }
     else if (cat.name == "fanart")
     {
-      for (size_t i = 0; i < sizeof(fanart_labels) / sizeof(infomap); i++)
+      for (size_t i = 0; i < sizeof(fanart_labels) / sizeof(infomap); ++i)
       {
         if (prop.name == fanart_labels[i].str)
           return fanart_labels[i].val;
@@ -5703,7 +5721,7 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
     }
     else if (cat.name == "skin")
     {
-      for (size_t i = 0; i < sizeof(skin_labels) / sizeof(infomap); i++)
+      for (size_t i = 0; i < sizeof(skin_labels) / sizeof(infomap); ++i)
       {
         if (prop.name == skin_labels[i].str)
           return skin_labels[i].val;
@@ -5731,7 +5749,7 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
         if (winID != WINDOW_INVALID)
           return AddMultiInfo(GUIInfo(WINDOW_PROPERTY, winID, ConditionalStringParameter(prop.param())));
       }
-      for (size_t i = 0; i < sizeof(window_bools) / sizeof(infomap); i++)
+      for (size_t i = 0; i < sizeof(window_bools) / sizeof(infomap); ++i)
       {
         if (prop.name == window_bools[i].str)
         { //! @todo The parameter for these should really be on the first not the second property
@@ -5744,7 +5762,7 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
     }
     else if (cat.name == "control")
     {
-      for (size_t i = 0; i < sizeof(control_labels) / sizeof(infomap); i++)
+      for (size_t i = 0; i < sizeof(control_labels) / sizeof(infomap); ++i)
       {
         if (prop.name == control_labels[i].str)
         { //! @todo The parameter for these should really be on the first not the second property
@@ -5764,7 +5782,7 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
     else if (cat.name == "playlist")
     {
       int ret = -1;
-      for (size_t i = 0; i < sizeof(playlist) / sizeof(infomap); i++)
+      for (size_t i = 0; i < sizeof(playlist) / sizeof(infomap); ++i)
       {
         if (prop.name == playlist[i].str)
         {
@@ -5791,12 +5809,12 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
     }
     else if (cat.name == "pvr")
     {
-      for (size_t i = 0; i < sizeof(pvr) / sizeof(infomap); i++)
+      for (size_t i = 0; i < sizeof(pvr) / sizeof(infomap); ++i)
       {
         if (prop.name == pvr[i].str)
           return pvr[i].val;
       }
-      for (size_t i = 0; i < sizeof(pvr_times) / sizeof(infomap); i++)
+      for (size_t i = 0; i < sizeof(pvr_times) / sizeof(infomap); ++i)
       {
         if (prop.name == pvr_times[i].str)
           return AddMultiInfo(GUIInfo(pvr_times[i].val, TranslateTimeFormat(prop.param())));
@@ -5807,7 +5825,7 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
       if (prop.name == "getline")
         return AddMultiInfo(GUIInfo(RDS_GET_RADIOTEXT_LINE, atoi(prop.param(0).c_str())));
 
-      for (size_t i = 0; i < sizeof(rds) / sizeof(infomap); i++)
+      for (size_t i = 0; i < sizeof(rds) / sizeof(infomap); ++i)
       {
         if (prop.name == rds[i].str)
           return rds[i].val;
@@ -5824,15 +5842,21 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
         if (info.size() == 4)
         {
           std::string device = info[3].name;
-          if (device == "raspberrypi") return SYSTEM_PLATFORM_LINUX_RASPBERRY_PI;
+          if (device == "raspberrypi")
+            return SYSTEM_PLATFORM_LINUX_RASPBERRY_PI;
         }
         else return SYSTEM_PLATFORM_LINUX;
       }
-      else if (platform == "windows") return SYSTEM_PLATFORM_WINDOWS;
-      else if (platform == "darwin")  return SYSTEM_PLATFORM_DARWIN;
-      else if (platform == "osx")  return SYSTEM_PLATFORM_DARWIN_OSX;
-      else if (platform == "ios")  return SYSTEM_PLATFORM_DARWIN_IOS;
-      else if (platform == "android") return SYSTEM_PLATFORM_ANDROID;
+      else if (platform == "windows")
+        return SYSTEM_PLATFORM_WINDOWS;
+      else if (platform == "darwin")
+        return SYSTEM_PLATFORM_DARWIN;
+      else if (platform == "osx")
+        return SYSTEM_PLATFORM_DARWIN_OSX;
+      else if (platform == "ios")
+        return SYSTEM_PLATFORM_DARWIN_IOS;
+      else if (platform == "android")
+        return SYSTEM_PLATFORM_ANDROID;
     }
     if (info[0].name == "musicplayer")
     { //! @todo these two don't allow duration(foo) and also don't allow more than this number of levels...
@@ -5877,7 +5901,7 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
     else if (info[0].name == "control")
     {
       const Property &prop = info[1];
-      for (size_t i = 0; i < sizeof(control_labels) / sizeof(infomap); i++)
+      for (size_t i = 0; i < sizeof(control_labels) / sizeof(infomap); ++i)
       {
         if (prop.name == control_labels[i].str)
         { //! @todo The parameter for these should really be on the first not the second property
@@ -5916,7 +5940,7 @@ int CGUIInfoManager::TranslateListItem(const Property &info)
       return AddListItemProp(info.param(), LISTITEM_DURATION_OFFSET);
   }
 
-  for (size_t i = 0; i < sizeof(listitem_labels) / sizeof(infomap); i++) // these ones don't have or need an id
+  for (size_t i = 0; i < sizeof(listitem_labels) / sizeof(infomap); ++i) // these ones don't have or need an id
   {
     if (info.name == listitem_labels[i].str)
       return listitem_labels[i].val;
@@ -5926,7 +5950,7 @@ int CGUIInfoManager::TranslateListItem(const Property &info)
 
 int CGUIInfoManager::TranslateMusicPlayerString(const std::string &info) const
 {
-  for (size_t i = 0; i < sizeof(musicplayer) / sizeof(infomap); i++)
+  for (size_t i = 0; i < sizeof(musicplayer) / sizeof(infomap); ++i)
   {
     if (info == musicplayer[i].str)
       return musicplayer[i].val;
@@ -5936,21 +5960,36 @@ int CGUIInfoManager::TranslateMusicPlayerString(const std::string &info) const
 
 TIME_FORMAT CGUIInfoManager::TranslateTimeFormat(const std::string &format)
 {
-  if (format.empty()) return TIME_FORMAT_GUESS;
-  else if (StringUtils::EqualsNoCase(format, "hh")) return TIME_FORMAT_HH;
-  else if (StringUtils::EqualsNoCase(format, "mm")) return TIME_FORMAT_MM;
-  else if (StringUtils::EqualsNoCase(format, "ss")) return TIME_FORMAT_SS;
-  else if (StringUtils::EqualsNoCase(format, "hh:mm")) return TIME_FORMAT_HH_MM;
-  else if (StringUtils::EqualsNoCase(format, "mm:ss")) return TIME_FORMAT_MM_SS;
-  else if (StringUtils::EqualsNoCase(format, "hh:mm:ss")) return TIME_FORMAT_HH_MM_SS;
-  else if (StringUtils::EqualsNoCase(format, "hh:mm:ss xx")) return TIME_FORMAT_HH_MM_SS_XX;
-  else if (StringUtils::EqualsNoCase(format, "h")) return TIME_FORMAT_H;
-  else if (StringUtils::EqualsNoCase(format, "h:mm:ss")) return TIME_FORMAT_H_MM_SS;
-  else if (StringUtils::EqualsNoCase(format, "h:mm:ss xx")) return TIME_FORMAT_H_MM_SS_XX;
-  else if (StringUtils::EqualsNoCase(format, "xx")) return TIME_FORMAT_XX;
-  else if (StringUtils::EqualsNoCase(format, "secs")) return TIME_FORMAT_SECS;
-  else if (StringUtils::EqualsNoCase(format, "mins")) return TIME_FORMAT_MINS;
-  else if (StringUtils::EqualsNoCase(format, "hours")) return TIME_FORMAT_HOURS;
+  if (format.empty())
+    return TIME_FORMAT_GUESS;
+  else if (StringUtils::EqualsNoCase(format, "hh"))
+    return TIME_FORMAT_HH;
+  else if (StringUtils::EqualsNoCase(format, "mm"))
+    return TIME_FORMAT_MM;
+  else if (StringUtils::EqualsNoCase(format, "ss"))
+    return TIME_FORMAT_SS;
+  else if (StringUtils::EqualsNoCase(format, "hh:mm"))
+    return TIME_FORMAT_HH_MM;
+  else if (StringUtils::EqualsNoCase(format, "mm:ss"))
+    return TIME_FORMAT_MM_SS;
+  else if (StringUtils::EqualsNoCase(format, "hh:mm:ss"))
+    return TIME_FORMAT_HH_MM_SS;
+  else if (StringUtils::EqualsNoCase(format, "hh:mm:ss xx"))
+    return TIME_FORMAT_HH_MM_SS_XX;
+  else if (StringUtils::EqualsNoCase(format, "h"))
+    return TIME_FORMAT_H;
+  else if (StringUtils::EqualsNoCase(format, "h:mm:ss"))
+    return TIME_FORMAT_H_MM_SS;
+  else if (StringUtils::EqualsNoCase(format, "h:mm:ss xx"))
+    return TIME_FORMAT_H_MM_SS_XX;
+  else if (StringUtils::EqualsNoCase(format, "xx"))
+    return TIME_FORMAT_XX;
+  else if (StringUtils::EqualsNoCase(format, "secs"))
+    return TIME_FORMAT_SECS;
+  else if (StringUtils::EqualsNoCase(format, "mins"))
+    return TIME_FORMAT_MINS;
+  else if (StringUtils::EqualsNoCase(format, "hours"))
+    return TIME_FORMAT_HOURS;
   return TIME_FORMAT_GUESS;
 }
 
@@ -5966,13 +6005,13 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   if (info >= SLIDE_INFO_START && info <= SLIDE_INFO_END)
     return GetPictureLabel(info);
 
-  if (info >= LISTITEM_PROPERTY_START+MUSICPLAYER_PROPERTY_OFFSET &&
-      info - (LISTITEM_PROPERTY_START+MUSICPLAYER_PROPERTY_OFFSET) < (int)m_listitemProperties.size())
+  if (info >= LISTITEM_PROPERTY_START + MUSICPLAYER_PROPERTY_OFFSET &&
+      info - (LISTITEM_PROPERTY_START + MUSICPLAYER_PROPERTY_OFFSET) < static_cast<int>(m_listitemProperties.size()))
   { // grab the property
     if (!m_currentFile)
       return "";
 
-    std::string property = m_listitemProperties[info - LISTITEM_PROPERTY_START-MUSICPLAYER_PROPERTY_OFFSET];
+    std::string property = m_listitemProperties[info - LISTITEM_PROPERTY_START - MUSICPLAYER_PROPERTY_OFFSET];
     if (StringUtils::StartsWithNoCase(property, "Role.") && m_currentFile->HasMusicInfoTag())
     { // "Role.xxxx" properties are held in music tag
       property.erase(0, 5); //Remove Role.
@@ -5986,17 +6025,14 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
     CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_HAS_LIST_ITEMS); // true for has list items
     if (window)
     {
-      CFileItemPtr item = window->GetCurrentListItem();
+      const CFileItemPtr item = window->GetCurrentListItem();
       strLabel = GetItemLabel(item.get(), info, fallback);
     }
-
     return strLabel;
   }
 
   if (m_infoProviders.GetLabel(strLabel, m_currentFile, GUIInfo(info), fallback))
     return strLabel;
-
-  const CProfilesManager &profileManager = CServiceBroker::GetProfileManager();
 
   switch (info)
   {
@@ -6125,35 +6161,35 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
     strLabel = m_audioInfo.language;
     break;
   case PLAYER_PROCESS_VIDEODECODER:
-      strLabel = CServiceBroker::GetDataCacheCore().GetVideoDecoderName();
-      break;
+    strLabel = CServiceBroker::GetDataCacheCore().GetVideoDecoderName();
+    break;
   case PLAYER_PROCESS_DEINTMETHOD:
-      strLabel = CServiceBroker::GetDataCacheCore().GetVideoDeintMethod();
-      break;
+    strLabel = CServiceBroker::GetDataCacheCore().GetVideoDeintMethod();
+    break;
   case PLAYER_PROCESS_PIXELFORMAT:
-      strLabel = CServiceBroker::GetDataCacheCore().GetVideoPixelFormat();
-      break;
+    strLabel = CServiceBroker::GetDataCacheCore().GetVideoPixelFormat();
+    break;
   case PLAYER_PROCESS_VIDEOFPS:
-      strLabel = StringUtils::Format("%.3f", CServiceBroker::GetDataCacheCore().GetVideoFps());
-      break;
+    strLabel = StringUtils::Format("%.3f", CServiceBroker::GetDataCacheCore().GetVideoFps());
+    break;
   case PLAYER_PROCESS_VIDEODAR:
-      strLabel = StringUtils::Format("%.2f", CServiceBroker::GetDataCacheCore().GetVideoDAR());
-      break;
+    strLabel = StringUtils::Format("%.2f", CServiceBroker::GetDataCacheCore().GetVideoDAR());
+    break;
   case PLAYER_PROCESS_VIDEOWIDTH:
-      strLabel = StringUtils::FormatNumber(CServiceBroker::GetDataCacheCore().GetVideoWidth());
-      break;
+    strLabel = StringUtils::FormatNumber(CServiceBroker::GetDataCacheCore().GetVideoWidth());
+    break;
   case PLAYER_PROCESS_VIDEOHEIGHT:
-      strLabel = StringUtils::FormatNumber(CServiceBroker::GetDataCacheCore().GetVideoHeight());
-      break;
+    strLabel = StringUtils::FormatNumber(CServiceBroker::GetDataCacheCore().GetVideoHeight());
+    break;
   case PLAYER_PROCESS_AUDIODECODER:
-      strLabel = CServiceBroker::GetDataCacheCore().GetAudioDecoderName();
-      break;
+    strLabel = CServiceBroker::GetDataCacheCore().GetAudioDecoderName();
+    break;
   case PLAYER_PROCESS_AUDIOCHANNELS:
-      strLabel = CServiceBroker::GetDataCacheCore().GetAudioChannels();
-      break;
+    strLabel = CServiceBroker::GetDataCacheCore().GetAudioChannels();
+    break;
   case PLAYER_PROCESS_AUDIOSAMPLERATE:
-      strLabel = StringUtils::FormatNumber(CServiceBroker::GetDataCacheCore().GetAudioSampleRate());
-      break;
+    strLabel = StringUtils::FormatNumber(CServiceBroker::GetDataCacheCore().GetAudioSampleRate());
+    break;
   case PLAYER_PROCESS_AUDIOBITSPERSAMPLE:
       strLabel = StringUtils::FormatNumber(CServiceBroker::GetDataCacheCore().GetAudioBitsPerSample());
       break;
@@ -6169,15 +6205,11 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   case SYSTEM_FREE_SPACE_PERCENT:
   case SYSTEM_USED_SPACE_PERCENT:
     return g_sysinfo.GetHddSpaceInfo(info);
-  break;
-
   case SYSTEM_CPU_TEMPERATURE:
   case SYSTEM_GPU_TEMPERATURE:
   case SYSTEM_FAN_SPEED:
   case SYSTEM_CPU_USAGE:
     return GetSystemHeatInfo(info);
-    break;
-
   case SYSTEM_VIDEO_ENCODER_INFO:
   case NETWORK_MAC_ADDRESS:
   case SYSTEM_OS_VERSION_INFO:
@@ -6187,13 +6219,8 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   case SYSTEM_TOTALUPTIME:
   case SYSTEM_BATTERY_LEVEL:
     return g_sysinfo.GetInfo(info);
-    break;
-
-
   case SYSTEM_PRIVACY_POLICY:
     return g_sysinfo.GetPrivacyPolicy();
-    break;
-
   case SYSTEM_SCREEN_RESOLUTION:
     if(CServiceBroker::GetWinSystem()->IsFullScreen())
       strLabel = StringUtils::Format("%ix%i@%.2fHz - %s",
@@ -6207,7 +6234,6 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
         CDisplaySettings::GetInstance().GetCurrentResolutionInfo().iScreenHeight,
         g_localizeStrings.Get(242).c_str());
     return strLabel;
-    break;
 
   case CONTAINER_FOLDERPATH:
   case CONTAINER_FOLDERNAME:
@@ -6227,7 +6253,7 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
       CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
       if (window)
       {
-        CURL url(static_cast<CGUIMediaWindow*>(window)->CurrentDirectory().GetPath());
+        const CURL url(static_cast<CGUIMediaWindow*>(window)->CurrentDirectory().GetPath());
         if (url.IsProtocol("plugin"))
           strLabel = URIUtils::GetFileName(url.GetHostName());
       }
@@ -6274,7 +6300,6 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   case CONTAINER_CURRENT_ITEM:
   case CONTAINER_CURRENT_PAGE:
     return GetMultiInfoLabel(GUIInfo(info), contextWindow);
-    break;
   case CONTAINER_SHOWPLOT:
   case CONTAINER_SHOWTITLE:
   case CONTAINER_PLUGINCATEGORY:
@@ -6299,11 +6324,11 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
       if (window)
       {
         const CFileItemList& items=static_cast<CGUIMediaWindow*>(window)->CurrentDirectory();
-        int count=0;
-        for (int i=0;i<items.Size();++i)
+        int count = 0;
+        for (int i = 0; i < items.Size(); ++i)
         {
           // Iterate through container and count watched, unwatched and total duration.
-          CFileItemPtr item=items.Get(i);
+          const CFileItemPtr item = items.Get(i);
           if (info == CONTAINER_TOTALWATCHED && item->HasVideoInfoTag() && item->GetVideoInfoTag()->GetPlayCount() > 0)
             count += 1;
           else if (info == CONTAINER_TOTALUNWATCHED && item->HasVideoInfoTag() && item->GetVideoInfoTag()->GetPlayCount() == 0)
@@ -6338,19 +6363,19 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
       MEMORYSTATUSEX stat;
       stat.dwLength = sizeof(MEMORYSTATUSEX);
       GlobalMemoryStatusEx(&stat);
-      int iMemPercentFree = 100 - ((int)( 100.0f* (stat.ullTotalPhys - stat.ullAvailPhys)/stat.ullTotalPhys + 0.5f ));
+      int iMemPercentFree = 100 - static_cast<int>(100.0f * (stat.ullTotalPhys - stat.ullAvailPhys) / stat.ullTotalPhys + 0.5f);
       int iMemPercentUsed = 100 - iMemPercentFree;
 
       if (info == SYSTEM_FREE_MEMORY)
-        strLabel = StringUtils::Format("%uMB", (unsigned int)(stat.ullAvailPhys/MB));
+        strLabel = StringUtils::Format("%uMB", static_cast<unsigned int>(stat.ullAvailPhys / MB));
       else if (info == SYSTEM_FREE_MEMORY_PERCENT)
         strLabel = StringUtils::Format("%i%%", iMemPercentFree);
       else if (info == SYSTEM_USED_MEMORY)
-        strLabel = StringUtils::Format("%uMB", (unsigned int)((stat.ullTotalPhys - stat.ullAvailPhys)/MB));
+        strLabel = StringUtils::Format("%uMB", static_cast<unsigned int>((stat.ullTotalPhys - stat.ullAvailPhys) / MB));
       else if (info == SYSTEM_USED_MEMORY_PERCENT)
         strLabel = StringUtils::Format("%i%%", iMemPercentUsed);
       else if (info == SYSTEM_TOTAL_MEMORY)
-        strLabel = StringUtils::Format("%uMB", (unsigned int)(stat.ullTotalPhys/MB));
+        strLabel = StringUtils::Format("%uMB", static_cast<unsigned int>(stat.ullTotalPhys / MB));
     }
     break;
   case SYSTEM_SCREEN_MODE:
@@ -6402,15 +6427,15 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
     }
     break;
   case SYSTEM_PROFILENAME:
-    strLabel = profileManager.GetCurrentProfile().getName();
+    strLabel = CServiceBroker::GetProfileManager().GetCurrentProfile().getName();
     break;
   case SYSTEM_PROFILECOUNT:
-    strLabel = StringUtils::Format("{0}", profileManager.GetNumberOfProfiles());
+    strLabel = StringUtils::Format("{0}", CServiceBroker::GetProfileManager().GetNumberOfProfiles());
     break;
   case SYSTEM_PROFILEAUTOLOGIN:
     {
-      int profileId = profileManager.GetAutoLoginProfileId();
-      if ((profileId < 0) || (!profileManager.GetProfileName(profileId, strLabel)))
+      int profileId = CServiceBroker::GetProfileManager().GetAutoLoginProfileId();
+      if ((profileId < 0) || (!CServiceBroker::GetProfileManager().GetProfileName(profileId, strLabel)))
         strLabel = g_localizeStrings.Get(37014); // Last used profile
     }
     break;
@@ -6487,6 +6512,7 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
     break;
   case NETWORK_DHCP_ADDRESS:
     {
+      // wtf?
       std::string dhcpserver;
       return dhcpserver;
     }
@@ -6570,14 +6596,14 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
 }
 
 // tries to get a integer value for use in progressbars/sliders and such
-bool CGUIInfoManager::GetInt(int &value, int info, int contextWindow, const CGUIListItem *item /* = NULL */) const
+bool CGUIInfoManager::GetInt(int &value, int info, int contextWindow, const CGUIListItem *item /* = nullptr */) const
 {
   if (info >= MULTI_INFO_START && info <= MULTI_INFO_END)
     return GetMultiInfoInt(value, m_multiInfo[info - MULTI_INFO_START], contextWindow);
 
   if (info >= LISTITEM_START && info <= LISTITEM_END)
   {
-    if (item == NULL)
+    if (!item)
     {
       CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_HAS_LIST_ITEMS); // true for has list items
       if (window)
@@ -6626,7 +6652,7 @@ bool CGUIInfoManager::GetInt(int &value, int info, int contextWindow, const CGUI
         MEMORYSTATUSEX stat;
         stat.dwLength = sizeof(MEMORYSTATUSEX);
         GlobalMemoryStatusEx(&stat);
-        int memPercentUsed = (int)( 100.0f* (stat.ullTotalPhys - stat.ullAvailPhys)/stat.ullTotalPhys + 0.5f );
+        int memPercentUsed = static_cast<int>(100.0f * (stat.ullTotalPhys - stat.ullAvailPhys) / stat.ullTotalPhys + 0.5f);
         if (info == SYSTEM_FREE_MEMORY)
           value = 100 - memPercentUsed;
         else
@@ -6678,13 +6704,12 @@ INFO::InfoPtr CGUIInfoManager::Register(const std::string &expression, int conte
   return *(res.first);
 }
 
-bool CGUIInfoManager::EvaluateBool(const std::string &expression, int contextWindow /* = 0 */, const CGUIListItemPtr &item /* = NULL */)
+bool CGUIInfoManager::EvaluateBool(const std::string &expression, int contextWindow /* = 0 */, const CGUIListItemPtr &item /* = nullptr */)
 {
-  bool result = false;
   INFO::InfoPtr info = Register(expression, contextWindow);
   if (info)
-    result = info->Get(item.get());
-  return result;
+    return info->Get(item.get());
+  return false;
 }
 
 // checks the condition and returns it as necessary.  Currently used
@@ -6703,7 +6728,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
       CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_HAS_LIST_ITEMS); // true for has list items
       if (window)
       {
-        CFileItemPtr item = window->GetCurrentListItem();
+        const CFileItemPtr item = window->GetCurrentListItem();
         bReturn = GetItemBool(item.get(), condition);
       }
     }
@@ -6737,8 +6762,6 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
   {
     if (m_infoProviders.GetBool(bReturn, m_currentFile, GUIInfo(condition)))
       return bReturn;
-
-    const CProfilesManager &profileManager = CServiceBroker::GetProfileManager();
 
     switch (condition)
     {
@@ -6857,7 +6880,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
         bReturn = IsPlayerChannelPreviewActive();
         break;
       case SYSTEM_HASLOCKS:
-        bReturn = profileManager.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE;
+        bReturn = CServiceBroker::GetProfileManager().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE;
         break;
       case SYSTEM_HAS_PVR:
         bReturn = true;
@@ -6878,7 +6901,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
 #endif
         break;
       case SYSTEM_ISMASTER:
-        bReturn = profileManager.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && g_passwordManager.bMasterUser;
+        bReturn = CServiceBroker::GetProfileManager().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && g_passwordManager.bMasterUser;
         break;
       case SYSTEM_ISFULLSCREEN:
         bReturn = CServiceBroker::GetWinSystem()->IsFullScreen();
@@ -6899,7 +6922,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
         bReturn = g_advancedSettings.m_showExitButton;
         break;
       case SYSTEM_HAS_LOGINSCREEN:
-        bReturn = profileManager.UsingLoginScreen();
+        bReturn = CServiceBroker::GetProfileManager().UsingLoginScreen();
         break;
       case SYSTEM_HAS_ACTIVE_MODAL_DIALOG:
         bReturn = CServiceBroker::GetGUI()->GetWindowManager().HasModalDialog();
@@ -6934,17 +6957,17 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
           if (pWindow)
           {
             const CFileItemList& items=static_cast<CGUIMediaWindow*>(pWindow)->CurrentDirectory();
-            for (int i=0;i<items.Size();++i)
+            for (int i = 0; i < items.Size(); ++i)
             {
-              CFileItemPtr item=items.Get(i);
+              const CFileItemPtr item = items.Get(i);
               if (!item->m_bIsFolder && condition == CONTAINER_HASFILES)
               {
-                bReturn=true;
+                bReturn = true;
                 break;
               }
               else if (item->m_bIsFolder && !item->IsParentFolder() && condition == CONTAINER_HASFOLDERS)
               {
-                bReturn=true;
+                bReturn = true;
                 break;
               }
             }
@@ -7034,10 +7057,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
         bReturn = g_application.GetAppPlayer().IsPlayingGame();
         break;
       case PLAYER_PLAYING:
-        {
-          float speed = g_application.GetAppPlayer().GetPlaySpeed();
-          bReturn = (speed == 1.0);
-        }
+        bReturn = g_application.GetAppPlayer().GetPlaySpeed() == 1.0;
         break;
       case PLAYER_PAUSED:
         bReturn = g_application.GetAppPlayer().IsPausedPlayback();
@@ -7233,7 +7253,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
             else
               compare = GetImage(info2, contextWindow);
           }
-          else if (info.GetData2() < (int)m_stringParameters.size())
+          else if (info.GetData2() < static_cast<int>(m_stringParameters.size()))
           { // conditional string
             compare = m_stringParameters[info.GetData2()];
           }
@@ -7316,7 +7336,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
         }
         break;
       case SYSTEM_IDLE_TIME:
-        bReturn = g_application.GlobalIdleTime() >= (int)info.GetData1();
+        bReturn = g_application.GlobalIdleTime() >= static_cast<int>(info.GetData1());
         break;
       case CONTROL_GROUP_HAS_FOCUS:
         {
@@ -7353,12 +7373,12 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
         {
           CGUIWindow *window = GetWindowWithCondition(contextWindow, 0);
           if (window)
-            bReturn = (window->GetFocusedControlID() == (int)info.GetData1());
+            bReturn = (window->GetFocusedControlID() == static_cast<int>(info.GetData1()));
         }
         break;
       case WINDOW_NEXT:
         if (info.GetData1())
-          bReturn = ((int)info.GetData1() == m_nextWindowID);
+          bReturn = (static_cast<int>(info.GetData1()) == m_nextWindowID);
         else
         {
           CGUIWindow *window = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(m_nextWindowID);
@@ -7368,7 +7388,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
         break;
       case WINDOW_PREVIOUS:
         if (info.GetData1())
-          bReturn = ((int)info.GetData1() == m_prevWindowID);
+          bReturn = (static_cast<int>(info.GetData1()) == m_prevWindowID);
         else
         {
           CGUIWindow *window = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(m_prevWindowID);
@@ -7430,7 +7450,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
         break;
       case SYSTEM_SETTING:
         {
-          if ( StringUtils::EqualsNoCase(m_stringParameters[info.GetData1()], "hidewatched") )
+          if (StringUtils::EqualsNoCase(m_stringParameters[info.GetData1()], "hidewatched"))
           {
             CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
             if (window)
@@ -7493,17 +7513,17 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
         {
           if (info.GetData1())
           {
-            auto *window = GetWindowWithCondition(contextWindow, 0);
+            CGUIWindow *window = GetWindowWithCondition(contextWindow, 0);
             if (window)
             {
-              auto control = window->GetControl(info.GetData1());
+              const CGUIControl *control = window->GetControl(info.GetData1());
               if (control)
                 bReturn = control->GetCondition(condition, info.GetData2());
             }
           }
           else
           {
-            auto activeContainer = GetActiveContainer(0, contextWindow);
+            const CGUIControl *activeContainer = GetActiveContainer(0, contextWindow);
             if (activeContainer)
               bReturn = activeContainer->GetCondition(condition, info.GetData2());
           }
@@ -7517,7 +7537,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
             const CGUIControl *control = window->GetControl(info.GetData1());
             if (control && control->IsContainer())
             {
-              CFileItemPtr item = std::static_pointer_cast<CFileItem>(static_cast<const IGUIContainer*>(control)->GetListItem(0));
+              const CFileItemPtr item = std::static_pointer_cast<CFileItem>(static_cast<const IGUIContainer*>(control)->GetListItem(0));
               if (item && item->m_iprogramCount == info.GetData2())  // programcount used to store item id
                 bReturn = true;
             }
@@ -7553,7 +7573,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
         {
           const CGUIViewState *viewState = static_cast<CGUIMediaWindow*>(window)->GetViewState();
           if (viewState)
-            bReturn = ((unsigned int)viewState->GetSortMethod().sortBy == info.GetData1());
+            bReturn = (static_cast<unsigned int>(viewState->GetSortMethod().sortBy) == info.GetData1());
         }
         break;
       }
@@ -7564,7 +7584,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
         {
           const CGUIViewState *viewState = static_cast<CGUIMediaWindow*>(window)->GetViewState();
           if (viewState)
-            bReturn = ((unsigned int)viewState->GetSortOrder() == info.GetData1());
+            bReturn = (static_cast<unsigned int>(viewState->GetSortOrder()) == info.GetData1());
         }
         break;
       }
@@ -7572,8 +7592,8 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
         {
           if (info.GetData2() == -1) // info doesn't contain valid startDate
             return false;
-          CDateTime date = CDateTime::GetCurrentDateTime();
-          int currentDate = date.GetMonth()*100+date.GetDay();
+          const CDateTime date = CDateTime::GetCurrentDateTime();
+          int currentDate = date.GetMonth() * 100 + date.GetDay();
           int startDate = info.GetData1();
           int stopDate = info.GetData2();
 
@@ -7585,8 +7605,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
         break;
       case SYSTEM_TIME:
         {
-          CDateTime time=CDateTime::GetCurrentDateTime();
-          int currentTime = time.GetMinuteOfDay();
+          int currentTime = CDateTime::GetCurrentDateTime().GetMinuteOfDay();
           int startTime = info.GetData1();
           int stopTime = info.GetData2();
 
@@ -7640,7 +7659,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
           {
             artistcount = db.GetArtistCountForRole(strRole);
             db.Close();
-            m_libraryRoleCounts.push_back(std::make_pair(strRole, artistcount));
+            m_libraryRoleCounts.emplace_back(std::make_pair(strRole, artistcount));
           }
         }
         bReturn = artistcount > 0;
@@ -7722,11 +7741,11 @@ std::string CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &constinfo, int con
   }
   if (info.m_info == PLAYER_TIME)
   {
-    return GetCurrentPlayTime((TIME_FORMAT)info.GetData1());
+    return GetCurrentPlayTime(static_cast<TIME_FORMAT>(info.GetData1()));
   }
   else if (info.m_info == PLAYER_TIME_REMAINING)
   {
-    return GetCurrentPlayTimeRemaining((TIME_FORMAT)info.GetData1());
+    return GetCurrentPlayTimeRemaining(static_cast<TIME_FORMAT>(info.GetData1()));
   }
   else if (info.m_info == PLAYER_FINISH_TIME)
   {
@@ -7737,34 +7756,34 @@ std::string CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &constinfo, int con
     if (speed == 1.0)
       playTimeRemaining /= tempo;
     time += CDateTimeSpan(0, 0, 0, playTimeRemaining);
-    return LocalizeTime(time, (TIME_FORMAT)info.GetData1());
+    return LocalizeTime(time, static_cast<TIME_FORMAT>(info.GetData1()));
   }
   else if (info.m_info == PLAYER_START_TIME)
   {
-    CDateTime time(g_application.GetAppPlayer().GetStartTime());
-    return LocalizeTime(time, (TIME_FORMAT)info.GetData1());
+    const CDateTime time(g_application.GetAppPlayer().GetStartTime());
+    return LocalizeTime(time, static_cast<TIME_FORMAT>(info.GetData1()));
   }
   else if (info.m_info == PLAYER_TIME_SPEED)
   {
     std::string strTime;
     float speed = g_application.GetAppPlayer().GetPlaySpeed();
     if (speed != 1.0)
-      strTime = StringUtils::Format("%s (%ix)", GetCurrentPlayTime((TIME_FORMAT)info.GetData1()).c_str(), (int)speed);
+      strTime = StringUtils::Format("%s (%ix)", GetCurrentPlayTime(static_cast<TIME_FORMAT>(info.GetData1())).c_str(), static_cast<int>(speed));
     else
       strTime = GetCurrentPlayTime();
     return strTime;
   }
   else if (info.m_info == PLAYER_DURATION)
   {
-    return GetDuration((TIME_FORMAT)info.GetData1());
+    return GetDuration(static_cast<TIME_FORMAT>(info.GetData1()));
   }
   else if (info.m_info == PLAYER_SEEKTIME)
   {
-    return GetCurrentSeekTime((TIME_FORMAT)info.GetData1());
+    return GetCurrentSeekTime(static_cast<TIME_FORMAT>(info.GetData1()));
   }
   else if (info.m_info == PLAYER_SEEKOFFSET)
   {
-    std::string seekOffset = StringUtils::SecondsToTimeString(abs(m_seekOffset / 1000), (TIME_FORMAT)info.GetData1());
+    std::string seekOffset = StringUtils::SecondsToTimeString(abs(m_seekOffset / 1000), static_cast<TIME_FORMAT>(info.GetData1()));
     if (m_seekOffset < 0)
       return "-" + seekOffset;
     if (m_seekOffset > 0)
@@ -7773,7 +7792,7 @@ std::string CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &constinfo, int con
   else if (info.m_info == PLAYER_SEEKSTEPSIZE)
   {
     int seekSize = g_application.GetAppPlayer().GetSeekHandler().GetSeekSize();
-    std::string strSeekSize = StringUtils::SecondsToTimeString(abs(seekSize), (TIME_FORMAT)info.GetData1());
+    std::string strSeekSize = StringUtils::SecondsToTimeString(abs(seekSize), static_cast<TIME_FORMAT>(info.GetData1()));
     if (seekSize < 0)
       return "-" + strSeekSize;
     if (seekSize > 0)
@@ -7784,7 +7803,7 @@ std::string CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &constinfo, int con
     if (!g_application.GetAppPlayer().GetSeekHandler().HasTimeCode())
       return "";
     int seekTimeCode = g_application.GetAppPlayer().GetSeekHandler().GetTimeCodeSeconds();
-    TIME_FORMAT format = (TIME_FORMAT)info.GetData1();
+    TIME_FORMAT format = static_cast<TIME_FORMAT>(info.GetData1());
     if (format == TIME_FORMAT_GUESS && seekTimeCode >= 3600)
       format = TIME_FORMAT_HH_MM_SS;
     return StringUtils::SecondsToTimeString(seekTimeCode, format);
@@ -7808,7 +7827,7 @@ std::string CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &constinfo, int con
            info.m_info == CONTAINER_CURRENT_ITEM || info.m_info == CONTAINER_NUM_ALL_ITEMS ||
            info.m_info == CONTAINER_NUM_NONFOLDER_ITEMS)
   {
-    const CGUIControl *control = NULL;
+    const CGUIControl *control = nullptr;
     if (info.GetData1())
     { // container specified
       CGUIWindow *window = GetWindowWithCondition(contextWindow, 0);
@@ -7872,7 +7891,7 @@ std::string CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &constinfo, int con
   }
   else if (info.m_info == WINDOW_PROPERTY)
   {
-    CGUIWindow *window = NULL;
+    CGUIWindow *window = nullptr;
     if (info.GetData1())
     { // window specified
       window = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(info.GetData1());//GetWindowWithCondition(contextWindow, 0);
@@ -7929,15 +7948,13 @@ std::string CGUIInfoManager::GetImage(int info, int contextWindow, std::string *
     return GetMultiInfoLabel(m_multiInfo[info - MULTI_INFO_START], contextWindow, fallback);
   }
   else if (info == WEATHER_CONDITIONS)
+  {
     return CServiceBroker::GetWeatherManager().GetInfo(WEATHER_IMAGE_CURRENT_ICON);
+  }
   else if (info == SYSTEM_PROFILETHUMB)
   {
-    const CProfilesManager &profileManager = CServiceBroker::GetProfileManager();
-
-    std::string thumb = profileManager.GetCurrentProfile().getThumb();
-    if (thumb.empty())
-      thumb = "DefaultUser.png";
-    return thumb;
+    const std::string& thumb = CServiceBroker::GetProfileManager().GetCurrentProfile().getThumb();
+    return thumb.empty() ? "DefaultUser.png" : thumb;
   }
   else if (info == LISTITEM_THUMB || info == LISTITEM_ICON || info == LISTITEM_ACTUAL_ICON ||
           info == LISTITEM_OVERLAY)
@@ -7945,7 +7962,7 @@ std::string CGUIInfoManager::GetImage(int info, int contextWindow, std::string *
     CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_HAS_LIST_ITEMS);
     if (window)
     {
-      CFileItemPtr item = window->GetCurrentListItem();
+      const CFileItemPtr item = window->GetCurrentListItem();
       if (item)
         return GetItemImage(item.get(), info, fallback);
     }
@@ -7955,14 +7972,12 @@ std::string CGUIInfoManager::GetImage(int info, int contextWindow, std::string *
 
 std::string CGUIInfoManager::GetDate(bool bNumbersOnly)
 {
-  CDateTime time=CDateTime::GetCurrentDateTime();
-  return time.GetAsLocalizedDate(!bNumbersOnly);
+  return CDateTime::GetCurrentDateTime().GetAsLocalizedDate(!bNumbersOnly);
 }
 
 std::string CGUIInfoManager::GetTime(TIME_FORMAT format) const
 {
-  CDateTime time=CDateTime::GetCurrentDateTime();
-  return LocalizeTime(time, format);
+  return LocalizeTime(CDateTime::GetCurrentDateTime(), format);
 }
 
 std::string CGUIInfoManager::LocalizeTime(const CDateTime &time, TIME_FORMAT format) const
@@ -8027,44 +8042,23 @@ std::string CGUIInfoManager::GetMusicLabel(int item)
   switch (item)
   {
   case MUSICPLAYER_BITRATE:
-    {
-      std::string strBitrate = "";
-      if (m_audioInfo.bitrate > 0)
-        strBitrate = StringUtils::Format("%li", lrint(static_cast<double>(m_audioInfo.bitrate) / 1000.0));
-      return strBitrate;
-    }
+    if (m_audioInfo.bitrate > 0)
+      return StringUtils::Format("%li", lrint(static_cast<double>(m_audioInfo.bitrate) / 1000.0));
     break;
   case MUSICPLAYER_CHANNELS:
-    {
-      std::string strChannels = "";
-      if (m_audioInfo.channels > 0)
-      {
-        strChannels = StringUtils::Format("%i", m_audioInfo.channels);
-      }
-      return strChannels;
-    }
+    if (m_audioInfo.channels > 0)
+      return StringUtils::Format("%i", m_audioInfo.channels);
     break;
   case MUSICPLAYER_BITSPERSAMPLE:
-    {
-      std::string strBitsPerSample = "";
-      if (m_audioInfo.bitspersample > 0)
-        strBitsPerSample = StringUtils::Format("%i", m_audioInfo.bitspersample);
-      return strBitsPerSample;
-    }
+    if (m_audioInfo.bitspersample > 0)
+      return StringUtils::Format("%i", m_audioInfo.bitspersample);
     break;
   case MUSICPLAYER_SAMPLERATE:
-    {
-      std::string strSampleRate = "";
-      if (m_audioInfo.samplerate > 0)
-        strSampleRate = StringUtils::Format("%.5g", ((double)m_audioInfo.samplerate / 1000.0));
-      return strSampleRate;
-    }
+    if (m_audioInfo.samplerate > 0)
+      return StringUtils::Format("%.5g", static_cast<double>(m_audioInfo.samplerate) / 1000.0);
     break;
   case MUSICPLAYER_CODEC:
-    {
-      return StringUtils::Format("%s", m_audioInfo.codecName.c_str());
-    }
-    break;
+    return StringUtils::Format("%s", m_audioInfo.codecName.c_str());
   }
   return std::string();
 }
@@ -8086,15 +8080,14 @@ std::string CGUIInfoManager::GetGameLabel(int item)
 
 int64_t CGUIInfoManager::GetPlayTime() const
 {
-  int64_t ret = lrint(g_application.GetTime() * 1000);
-  return ret;
+  return lrint(g_application.GetTime() * 1000);
 }
 
 std::string CGUIInfoManager::GetCurrentPlayTime(TIME_FORMAT format) const
 {
   if (format == TIME_FORMAT_GUESS && GetTotalPlayTime() >= 3600)
     format = TIME_FORMAT_HH_MM_SS;
-  return StringUtils::SecondsToTimeString(lrint(GetPlayTime()/1000.0), format);
+  return StringUtils::SecondsToTimeString(lrint(GetPlayTime() / 1000.0), format);
 }
 
 std::string CGUIInfoManager::GetCurrentSeekTime(TIME_FORMAT format) const
@@ -8333,7 +8326,7 @@ std::string CGUIInfoManager::GetSystemHeatInfo(int info)
 
 CTemperature CGUIInfoManager::GetGPUTemperature()
 {
-  int  value = 0;
+  int value = 0;
   char scale = 0;
 
 #if defined(TARGET_DARWIN_OSX)
@@ -8342,9 +8335,9 @@ CTemperature CGUIInfoManager::GetGPUTemperature()
 #elif defined(TARGET_WINDOWS_STORE)
   return CTemperature::CreateFromCelsius(0);
 #else
-  std::string  cmd   = g_advancedSettings.m_gpuTempCmd;
-  int         ret   = 0;
-  FILE        *p    = NULL;
+  std::string cmd = g_advancedSettings.m_gpuTempCmd;
+  int ret = 0;
+  FILE* p = NULL;
 
   if (cmd.empty() || !(p = popen(cmd.c_str(), "r")))
     return CTemperature();
@@ -8366,7 +8359,7 @@ CTemperature CGUIInfoManager::GetGPUTemperature()
 
 void CGUIInfoManager::SetDisplayAfterSeek(unsigned int timeOut, int seekOffset)
 {
-  if (timeOut>0)
+  if (timeOut > 0)
   {
     m_AfterSeekTimeout = CTimeUtils::GetFrameTime() +  timeOut;
     if (seekOffset)
@@ -8425,7 +8418,7 @@ void CGUIInfoManager::UpdateFPS()
   m_frameCounter++;
   unsigned int curTime = CTimeUtils::GetFrameTime();
 
-  float fTimeSpan = (float)(curTime - m_lastFPSTime);
+  float fTimeSpan = static_cast<float>(curTime - m_lastFPSTime);
   if (fTimeSpan >= 1000.0f)
   {
     fTimeSpan /= 1000.0f;
@@ -8452,13 +8445,13 @@ void CGUIInfoManager::UpdateAVInfo()
 
 int CGUIInfoManager::AddListItemProp(const std::string &str, int offset)
 {
-  for (int i=0; i < (int)m_listitemProperties.size(); i++)
+  for (int i = 0; i < static_cast<int>(m_listitemProperties.size()); ++i)
     if (m_listitemProperties[i] == str)
-      return (LISTITEM_PROPERTY_START+offset + i);
+      return (LISTITEM_PROPERTY_START + offset + i);
 
   if (m_listitemProperties.size() < LISTITEM_PROPERTY_END - LISTITEM_PROPERTY_START)
   {
-    m_listitemProperties.push_back(str);
+    m_listitemProperties.emplace_back(str);
     return LISTITEM_PROPERTY_START + offset + m_listitemProperties.size() - 1;
   }
 
@@ -8469,12 +8462,12 @@ int CGUIInfoManager::AddListItemProp(const std::string &str, int offset)
 int CGUIInfoManager::AddMultiInfo(const GUIInfo &info)
 {
   // check to see if we have this info already
-  for (unsigned int i = 0; i < m_multiInfo.size(); i++)
+  for (unsigned int i = 0; i < m_multiInfo.size(); ++i)
     if (m_multiInfo[i] == info)
-      return (int)i + MULTI_INFO_START;
+      return static_cast<int>(i) + MULTI_INFO_START;
   // return the new offset
-  m_multiInfo.push_back(info);
-  int id = (int)m_multiInfo.size() + MULTI_INFO_START - 1;
+  m_multiInfo.emplace_back(info);
+  int id = static_cast<int>(m_multiInfo.size()) + MULTI_INFO_START - 1;
   if (id > MULTI_INFO_END)
     CLog::Log(LOGERROR, "%s - too many multiinfo bool/labels in this skin", __FUNCTION__);
   return id;
@@ -8487,18 +8480,18 @@ int CGUIInfoManager::ConditionalStringParameter(const std::string &parameter, bo
   {
     std::vector<std::string>::const_iterator i = std::find(m_stringParameters.begin(), m_stringParameters.end(), parameter);
     if (i != m_stringParameters.end())
-      return (int)std::distance<std::vector<std::string>::const_iterator>(m_stringParameters.begin(), i);
+      return static_cast<int>(std::distance<std::vector<std::string>::const_iterator>(m_stringParameters.begin(), i));
   }
   else
   {
-    for (unsigned int i = 0; i < m_stringParameters.size(); i++)
+    for (unsigned int i = 0; i < m_stringParameters.size(); ++i)
       if (StringUtils::EqualsNoCase(parameter, m_stringParameters[i]))
-        return (int)i;
+        return static_cast<int>(i);
   }
 
   // return the new offset
-  m_stringParameters.push_back(parameter);
-  return (int)m_stringParameters.size() - 1;
+  m_stringParameters.emplace_back(parameter);
+  return static_cast<int>(m_stringParameters.size()) - 1;
 }
 
 bool CGUIInfoManager::GetItemInt(int &value, const CGUIListItem *item, int info) const
@@ -8509,7 +8502,7 @@ bool CGUIInfoManager::GetItemInt(int &value, const CGUIListItem *item, int info)
     return false;
   }
 
-  if (info >= LISTITEM_PROPERTY_START && info - LISTITEM_PROPERTY_START < (int)m_listitemProperties.size())
+  if (info >= LISTITEM_PROPERTY_START && info - LISTITEM_PROPERTY_START < static_cast<int>(m_listitemProperties.size()))
   { // grab the property
     std::string property = m_listitemProperties[info - LISTITEM_PROPERTY_START];
     std::string val = item->GetProperty(property).asString();
@@ -8543,12 +8536,14 @@ std::string CGUIInfoManager::GetListItemDuration(const CFileItem *item, TIME_FOR
 
 std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::string *fallback)
 {
-  if (!item) return "";
+  if (!item)
+    return "";
 
   if (info >= CONDITIONAL_LABEL_START && info <= CONDITIONAL_LABEL_END)
     return GetSkinVariableString(info, false, item);
 
-  if (info >= LISTITEM_PROPERTY_START + LISTITEM_ART_OFFSET && info - (LISTITEM_PROPERTY_START + LISTITEM_ART_OFFSET) < (int)m_listitemProperties.size())
+  if (info >= LISTITEM_PROPERTY_START + LISTITEM_ART_OFFSET &&
+      info - (LISTITEM_PROPERTY_START + LISTITEM_ART_OFFSET) < static_cast<int>(m_listitemProperties.size()))
   { // grab the art
     std::string art = m_listitemProperties[info - (LISTITEM_PROPERTY_START + LISTITEM_ART_OFFSET)];
     return item->GetArt(art);
@@ -8580,7 +8575,7 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
     return GetListItemDuration(item, TranslateTimeFormat(m_listitemProperties[info - (LISTITEM_PROPERTY_START + LISTITEM_DURATION_OFFSET)]));
   }
 
-  if (info >= LISTITEM_PROPERTY_START && info - LISTITEM_PROPERTY_START < (int)m_listitemProperties.size())
+  if (info >= LISTITEM_PROPERTY_START && info - LISTITEM_PROPERTY_START < static_cast<int>(m_listitemProperties.size()))
   {
     std::string property = m_listitemProperties[info - LISTITEM_PROPERTY_START];
     if (StringUtils::StartsWithNoCase(property, "Role.") && item->HasMusicInfoTag())
@@ -8768,8 +8763,10 @@ std::string CGUIInfoManager::GetItemImage(const CFileItem *item, int info, std::
 
 bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
 {
-  if (!item) return false;
-  if (condition >= LISTITEM_PROPERTY_START && condition - LISTITEM_PROPERTY_START < (int)m_listitemProperties.size())
+  if (!item)
+    return false;
+
+  if (condition >= LISTITEM_PROPERTY_START && condition - LISTITEM_PROPERTY_START < static_cast<int>(m_listitemProperties.size()))
   { // grab the property
     std::string property = m_listitemProperties[condition - LISTITEM_PROPERTY_START];
     return item->GetProperty(property).asBoolean();
@@ -8782,7 +8779,8 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
   if (condition == LISTITEM_ISPLAYING)
   {
     if (item->HasProperty("playlistposition"))
-      return (int)item->GetProperty("playlisttype").asInteger() == CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() && (int)item->GetProperty("playlistposition").asInteger() == CServiceBroker::GetPlaylistPlayer().GetCurrentSong();
+      return static_cast<int>(item->GetProperty("playlisttype").asInteger()) == CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() &&
+             static_cast<int>(item->GetProperty("playlistposition").asInteger()) == CServiceBroker::GetPlaylistPlayer().GetCurrentSong();
     else if (item->IsFileItem() && !m_currentFile->GetPath().empty())
     {
       if (!g_application.m_strPlayListFile.empty())
@@ -8862,7 +8860,8 @@ void CGUIInfoManager::ResetCurrentSlide()
 bool CGUIInfoManager::CheckWindowCondition(CGUIWindow *window, int condition) const
 {
   // check if it satisfies our condition
-  if (!window) return false;
+  if (!window)
+    return false;
   if ((condition & WINDOW_CONDITION_HAS_LIST_ITEMS) && !window->HasListItems())
     return false;
   if ((condition & WINDOW_CONDITION_IS_MEDIA_WINDOW) && !window->IsMediaWindow())
@@ -8886,7 +8885,7 @@ CGUIWindow *CGUIInfoManager::GetWindowWithCondition(int contextWindow, int condi
   if (CheckWindowCondition(window, condition))
     return window;
 
-  return NULL;
+  return nullptr;
 }
 
 void CGUIInfoManager::SetCurrentVideoTag(const CVideoInfoTag &tag)
@@ -8912,7 +8911,7 @@ const MUSIC_INFO::CMusicInfoTag* CGUIInfoManager::GetCurrentSongTag() const
   if (m_currentFile->HasMusicInfoTag())
     return m_currentFile->GetMusicInfoTag();
 
-  return NULL;
+  return nullptr;
 }
 
 const CVideoInfoTag* CGUIInfoManager::GetCurrentMovieTag() const
@@ -8920,7 +8919,7 @@ const CVideoInfoTag* CGUIInfoManager::GetCurrentMovieTag() const
   if (m_currentFile->HasVideoInfoTag())
     return m_currentFile->GetVideoInfoTag();
 
-  return NULL;
+  return nullptr;
 }
 
 void CGUIInfoManager::SetLibraryBool(int condition, bool value)
@@ -9073,7 +9072,7 @@ int CGUIInfoManager::RegisterSkinVariableString(const CSkinVariableString* info)
     return 0;
 
   CSingleLock lock(m_critInfo);
-  m_skinVariableStrings.push_back(*info);
+  m_skinVariableStrings.emplace_back(*info);
   delete info;
   return CONDITIONAL_LABEL_START + m_skinVariableStrings.size() - 1;
 }
@@ -9090,11 +9089,11 @@ int CGUIInfoManager::TranslateSkinVariableString(const std::string& name, int co
 }
 
 std::string CGUIInfoManager::GetSkinVariableString(int info,
-                                                  bool preferImage /*= false*/,
-                                                  const CGUIListItem *item /*= NULL*/)
+                                                   bool preferImage /*= false*/,
+                                                   const CGUIListItem *item /*= nullptr*/)
 {
   info -= CONDITIONAL_LABEL_START;
-  if (info >= 0 && info < (int)m_skinVariableStrings.size())
+  if (info >= 0 && info < static_cast<int>(m_skinVariableStrings.size()))
     return m_skinVariableStrings[info].GetValue(preferImage, item);
 
   return "";
@@ -9144,7 +9143,7 @@ void CGUIInfoManager::OnApplicationMessage(KODI::MESSAGING::ThreadMessage* pMsg)
     {
       auto infoLabels = static_cast<std::vector<std::string>*>(pMsg->lpVoid);
       for (auto& param : pMsg->params)
-        infoLabels->push_back(GetLabel(TranslateString(param)));
+        infoLabels->emplace_back(GetLabel(TranslateString(param)));
     }
   }
   break;
