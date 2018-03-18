@@ -139,3 +139,5 @@
 
 // Send to RDS Radiotext handlers to inform about changed data
 #define GUI_MSG_UPDATE_RADIOTEXT      GUI_MSG_USER + 41
+
+#define GUI_MSG_PLAYBACK_ERROR        GUI_MSG_USER + 42
