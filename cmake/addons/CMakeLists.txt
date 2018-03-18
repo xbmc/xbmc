@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.5)
 project(kodi-addons)
 
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR})
@@ -403,8 +403,12 @@ foreach(addon ${addons})
           endif()
 
           # create a forwarding target to the addon-package target
+          get_property(_isMultiConfig GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
+          if(_isMultiConfig)
+            set(config --config $<CONFIG>)
+          endif()
           add_custom_target(package-${id}
-                    COMMAND ${CMAKE_COMMAND} --build ${id}-prefix/src/${id}-build --target addon-package
+                    COMMAND ${CMAKE_COMMAND} --build ${id}-prefix/src/${id}-build ${config} --target addon-package
                     DEPENDS ${id})
           add_dependencies(package-addons package-${id})
 

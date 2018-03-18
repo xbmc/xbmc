@@ -6,8 +6,13 @@
 # Sadly we cannot extend the 'package' target, as it is a builtin target, see 
 # http://public.kitware.com/Bug/view.php?id=8438
 # Thus, we have to add an 'addon-package' target.
-add_custom_target(addon-package
-                  COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target package)
+get_property(_isMultiConfig GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
+if(_isMultiConfig)
+  add_custom_target(addon-package DEPENDS PACKAGE)
+else()
+  add_custom_target(addon-package
+                    COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target package)
+endif()
 
 macro(add_cpack_workaround target version ext)
   if(NOT PACKAGE_DIR)
