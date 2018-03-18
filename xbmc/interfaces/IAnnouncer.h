@@ -69,6 +69,8 @@ namespace ANNOUNCEMENT
       return "PVR";
     case Other:
       return "Other";
+    case Info:
+      return "Info";
     default:
       return "Unknown";
     }
