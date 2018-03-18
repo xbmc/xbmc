@@ -28,6 +28,7 @@ CGUIFixedListContainer::CGUIFixedListContainer(int parentID, int controlID, floa
   m_type = VIEW_TYPE_LIST;
   m_fixedCursor = fixedPosition;
   m_cursorRange = std::max(0, cursorRange);
+  m_selectedFromMouse = false;
   SetCursor(m_fixedCursor);
 }
 
@@ -37,6 +38,7 @@ CGUIFixedListContainer::~CGUIFixedListContainer(void)
 
 bool CGUIFixedListContainer::OnAction(const CAction &action)
 {
+  m_selectedFromMouse = false;
   switch (action.GetID())
   {
   case ACTION_PAGE_UP:
@@ -84,6 +86,7 @@ bool CGUIFixedListContainer::OnAction(const CAction &action)
 
 bool CGUIFixedListContainer::MoveUp(bool wrapAround)
 {
+  m_selectedFromMouse = false;
   int item = GetSelectedItem();
   if (item > 0)
     SelectItem(item - 1);
@@ -202,8 +205,8 @@ bool CGUIFixedListContainer::SelectItemFromPoint(const CPoint &point)
   if (!m_focusedLayout || !m_layout)
     return false;
 
-  const float mouse_scroll_speed = 0.25f;
-  const float mouse_max_amount = 1.5f;
+  const float mouse_scroll_speed = 0.15f;
+  const float mouse_max_amount = 0.8f;
   float sizeOfItem = m_layout->Size(m_orientation);
   int minCursor, maxCursor;
   GetCursorRange(minCursor, maxCursor);
@@ -240,11 +243,15 @@ bool CGUIFixedListContainer::SelectItemFromPoint(const CPoint &point)
   }
   else
   { // select the appropriate item
-    int cursor = GetCursorFromPoint(point);
+    CPoint itemPoint;
+    int cursor = GetCursorFromPoint(point, &itemPoint);
     if (cursor < 0)
       return false;
-    // calling SelectItem() here will focus the item and scroll, which isn't really what we're after
+
     SetCursor(cursor);
+    CGUIListItemLayout *focusedLayout = GetFocusedLayout();
+    if (focusedLayout)
+      focusedLayout->SelectItemFromPoint(itemPoint);
     return true;
   }
 }
@@ -261,17 +268,38 @@ void CGUIFixedListContainer::SelectItem(int item)
     int minCursor, maxCursor;
     GetCursorRange(minCursor, maxCursor);
 
-    int cursor;
-    if ((int)m_items.size() - 1 - item <= maxCursor - m_fixedCursor)
-      cursor = std::max(m_fixedCursor, maxCursor + item - (int)m_items.size() + 1);
-    else if (item <= m_fixedCursor - minCursor)
-      cursor = std::min(m_fixedCursor, minCursor + item);
+    // if mouse is used, we work like a regular list
+    if (m_selectedFromMouse) {
+      // Select the item requested
+      if (item - GetOffset() > minCursor && item - GetOffset() < maxCursor)
+      { // the item is on the current page, so don't change it.
+        SetCursor(item - GetOffset());
+      }
+      else if (item - GetOffset() <= minCursor)
+      { // item is on a previous page - make it the first item on the page
+        SetCursor(minCursor);
+        ScrollToOffset(item - GetCursor());
+      }
+      else // (item >= GetOffset()+m_itemsPerPage)
+      { // item is on a later page - make it the last item on the page
+        SetCursor(maxCursor);
+        ScrollToOffset(item - GetCursor());
+      }
+    }
     else
-      cursor = m_fixedCursor;
-    if (cursor != GetCursor())
-      SetContainerMoving(cursor - GetCursor());
-    SetCursor(cursor);
-    ScrollToOffset(item - GetCursor());
+    {
+      int cursor;
+      if ((int)m_items.size() - 1 - item <= maxCursor - m_fixedCursor)
+        cursor = std::max(m_fixedCursor, maxCursor + item - (int)m_items.size() + 1);
+      else if (item <= m_fixedCursor - minCursor)
+        cursor = std::min(m_fixedCursor, minCursor + item);
+      else
+        cursor = m_fixedCursor;
+      if (cursor != GetCursor())
+        SetContainerMoving(cursor - GetCursor());
+      SetCursor(cursor);
+      ScrollToOffset(item - GetCursor());
+    }
   }
 }
 
@@ -312,5 +340,13 @@ void CGUIFixedListContainer::GetCursorRange(int &minCursor, int &maxCursor) cons
     else
       minCursor++;
   }
+}
+
+bool CGUIFixedListContainer::OnMouseOver(const CPoint &point)
+{
+  // select the item under the pointer
+  m_selectedFromMouse = true;
+  SelectItemFromPoint(point - CPoint(m_posX, m_posY));
+  return CGUIControl::OnMouseOver(point);
 }
 

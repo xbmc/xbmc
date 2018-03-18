@@ -38,6 +38,7 @@ public:
   virtual ~CGUIFixedListContainer(void);
   virtual CGUIFixedListContainer *Clone() const { return new CGUIFixedListContainer(*this); };
 
+  virtual bool OnMouseOver(const CPoint &point);
   virtual bool OnAction(const CAction &action);
 
 protected:
@@ -68,5 +69,6 @@ private:
 
   int m_fixedCursor;    ///< default position the skinner wishes to use for the focused item
   int m_cursorRange;    ///< range that the focused item can vary when at the ends of the list
+  bool m_selectedFromMouse; ///< the mouse was used to focus this item, temp disable fixed cursor
 };
 
