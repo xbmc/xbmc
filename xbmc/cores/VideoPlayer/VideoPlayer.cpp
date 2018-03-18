@@ -1344,7 +1344,10 @@ void CVideoPlayer::Prepare()
     if (m_pDemuxer)
     {
       if (m_pDemuxer->SeekTime(starttime, true, &startpts))
+      {
+        FlushBuffers(starttime / 1000 * AV_TIME_BASE, true, true);
         CLog::Log(LOGDEBUG, "%s - starting demuxer from: %d", __FUNCTION__, starttime);
+      }
       else
         CLog::Log(LOGDEBUG, "%s - failed to start demuxing from: %d", __FUNCTION__, starttime);
     }
