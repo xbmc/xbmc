@@ -9227,6 +9227,8 @@ void CGUIInfoManager::SetCurrentItem(const CFileItem &item)
 
   SetChanged();
   NotifyObservers(ObservableMessageCurrentItem);
+  // todo this should be handled by one of the observers above and forwarded
+  g_application.m_ServiceManager->GetAnnouncementManager().Announce(ANNOUNCEMENT::Info, "xbmc", "OnChanged");
 }
 
 void CGUIInfoManager::SetCurrentAlbumThumb(const std::string &thumbFileName)
