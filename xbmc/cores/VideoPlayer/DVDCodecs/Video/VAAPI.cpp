@@ -51,6 +51,10 @@ extern "C" {
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
 
+#if VA_CHECK_VERSION(1, 0, 0)
+# include <va/va_str.h>
+#endif
+
 using namespace VAAPI;
 #define NUM_RENDER_PICS 7
 
@@ -64,7 +68,6 @@ CVAAPIContext::CVAAPIContext()
 {
   m_context = 0;
   m_refCount = 0;
-  m_attributes = NULL;
   m_profiles = NULL;
   m_display = NULL;
 }
@@ -200,15 +203,11 @@ bool CVAAPIContext::CreateContext()
   if (!m_profileCount)
     return false;
 
-  if (!m_attributeCount)
-    CLog::Log(LOGWARNING, "VAAPI - driver did not return anything from vlVaQueryDisplayAttributes");
-
   return true;
 }
 
 void CVAAPIContext::DestroyContext()
 {
-  delete[] m_attributes;
   delete[] m_profiles;
   if (m_display)
     CheckSuccess(vaTerminate(m_display));
@@ -216,26 +215,7 @@ void CVAAPIContext::DestroyContext()
 
 void CVAAPIContext::QueryCaps()
 {
-  m_attributeCount = 0;
   m_profileCount = 0;
-
-  int max_attributes = vaMaxNumDisplayAttributes(m_display);
-  m_attributes = new VADisplayAttribute[max_attributes];
-
-  if (!CheckSuccess(vaQueryDisplayAttributes(m_display, m_attributes, &m_attributeCount)))
-    return;
-
-  for(int i = 0; i < m_attributeCount; i++)
-  {
-    VADisplayAttribute * const display_attr = &m_attributes[i];
-    CLog::Log(LOGDEBUG, LOGVIDEO, "VAAPI - attrib %d (%s/%s) min %d max %d value 0x%x\n"
-                         , display_attr->type
-                         ,(display_attr->flags & VA_DISPLAY_ATTRIB_GETTABLE) ? "get" : "---"
-                         ,(display_attr->flags & VA_DISPLAY_ATTRIB_SETTABLE) ? "set" : "---"
-                         , display_attr->min_value
-                         , display_attr->max_value
-                         , display_attr->value);
-  }
 
   int max_profiles = vaMaxNumProfiles(m_display);
   m_profiles = new VAProfile[max_profiles];
@@ -245,7 +225,11 @@ void CVAAPIContext::QueryCaps()
 
   for(int i = 0; i < m_profileCount; i++)
   {
+#if VA_CHECK_VERSION(1, 0, 0)
+    CLog::Log(LOGDEBUG, LOGVIDEO, "VAAPI - profile %s", vaProfileStr(m_profiles[i]));
+#else
     CLog::Log(LOGDEBUG, LOGVIDEO, "VAAPI - profile %d", m_profiles[i]);
+#endif
   }
 }
 
@@ -485,7 +469,7 @@ bool CVideoSurfaces::HasRefs()
 //-----------------------------------------------------------------------------
 
 bool CDecoder::m_capGeneral = false;
-bool CDecoder::m_capHevc = false;
+bool CDecoder::m_capDeepColor = false;
 IVaapiWinSystem* CDecoder::m_pWinSystem = nullptr;
 
 CDecoder::CDecoder(CProcessInfo& processInfo) :
@@ -536,6 +520,7 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
     return false;
   }
 
+  m_vaapiConfig.driverIsMesa = StringUtils::StartsWith(vaQueryVendorString(m_vaapiConfig.context->GetDisplay()), "Mesa");
   m_vaapiConfig.vidWidth = avctx->width;
   m_vaapiConfig.vidHeight = avctx->height;
   m_vaapiConfig.outWidth = avctx->width;
@@ -565,9 +550,9 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
       break;
     case AV_CODEC_ID_H264:
     {
-      if (avctx->profile == FF_PROFILE_H264_BASELINE)
+      if (avctx->profile == FF_PROFILE_H264_CONSTRAINED_BASELINE)
       {
-        profile = VAProfileH264Baseline;
+        profile = VAProfileH264ConstrainedBaseline;
         if (!m_vaapiConfig.context->SupportsProfile(profile))
           return false;
       }
@@ -587,11 +572,13 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
     }
     case AV_CODEC_ID_HEVC:
     {
-      if (!m_capHevc)
-        return false;
-
       if (avctx->profile == FF_PROFILE_HEVC_MAIN_10)
+      {
+        if (!m_capDeepColor)
+          return false;
+
         profile = VAProfileHEVCMain10;
+      }
       else if (avctx->profile == FF_PROFILE_HEVC_MAIN)
         profile = VAProfileHEVCMain;
       else
@@ -1078,17 +1065,23 @@ bool CDecoder::ConfigVAAPI()
     return false;
 
   // create surfaces
+  unsigned int format = VA_RT_FORMAT_YUV420;
+  std::int32_t pixelFormat = VA_FOURCC_NV12;
+
+  if (m_vaapiConfig.profile == VAProfileHEVCMain10)
+  {
+    format = VA_RT_FORMAT_YUV420_10BPP;
+    pixelFormat = VA_FOURCC_P010;
+  }
+
   VASurfaceAttrib attribs[1], *attrib;
   attrib = attribs;
   attrib->flags = VA_SURFACE_ATTRIB_SETTABLE;
   attrib->type = VASurfaceAttribPixelFormat;
   attrib->value.type = VAGenericValueTypeInteger;
-  attrib->value.value.i = VA_FOURCC_NV12;
+  attrib->value.value.i = pixelFormat;
 
   VASurfaceID surfaces[32];
-  unsigned int format = VA_RT_FORMAT_YUV420;
-  if (m_vaapiConfig.profile == VAProfileHEVCMain10)
-    format = VA_RT_FORMAT_YUV420_10BPP;
   int nb_surfaces = m_vaapiConfig.maxReferences;
   if (!CheckSuccess(vaCreateSurfaces(m_vaapiConfig.dpy,
                                      format,
@@ -1178,7 +1171,7 @@ IHardwareDecoder* CDecoder::Create(CDVDStreamInfo &hint, CProcessInfo &processIn
   return nullptr;
 }
 
-void CDecoder::Register(IVaapiWinSystem *winSystem, bool hevc)
+void CDecoder::Register(IVaapiWinSystem *winSystem, bool deepColor)
 {
   m_pWinSystem = winSystem;
 
@@ -1187,7 +1180,7 @@ void CDecoder::Register(IVaapiWinSystem *winSystem, bool hevc)
     return;
 
   m_capGeneral = true;
-  m_capHevc = hevc;
+  m_capDeepColor = deepColor;
   CDVDFactoryCodec::RegisterHWAccel("vaapi", CDecoder::Create);
   config.context->Release(nullptr);
 }
@@ -1949,6 +1942,7 @@ void COutput::InitCycle()
 
     if (m_pp && !m_pp->UpdateDeintMethod(method))
     {
+      CLog::Log(LOGDEBUG, LOGVIDEO, "VAAPI output: Current postproc does not want new deinterlace mode, removing");
       std::shared_ptr<CPostproc> pp(m_pp);
       m_discardedPostprocs.push_back(pp);
       m_pp->Discard(this, &COutput::ReadyForDisposal);
@@ -1960,33 +1954,25 @@ void COutput::InitCycle()
       if (method == VS_INTERLACEMETHOD_DEINTERLACE ||
           method == VS_INTERLACEMETHOD_RENDER_BOB)
       {
+        CLog::Log(LOGDEBUG, LOGVIDEO, "VAAPI output: Initializing ffmpeg postproc");
         m_pp = new CFFmpegPostproc();
         m_config.stats->SetVpp(false);
       }
       else
       {
+        CLog::Log(LOGDEBUG, LOGVIDEO, "VAAPI output: Initializing vaapi postproc");
         m_pp = new CVppPostproc();
         m_config.stats->SetVpp(true);
       }
       if (m_pp->PreInit(m_config))
       {
         m_pp->Init(method);
-
-        if (method == VS_INTERLACEMETHOD_DEINTERLACE)
-          m_config.processInfo->SetVideoDeintMethod("yadif");
-        else if (method == VS_INTERLACEMETHOD_RENDER_BOB)
-          m_config.processInfo->SetVideoDeintMethod("render-bob");
-        else if (method == VS_INTERLACEMETHOD_VAAPI_BOB)
-          m_config.processInfo->SetVideoDeintMethod("vaapi-bob");
-        else if (method == VS_INTERLACEMETHOD_VAAPI_MADI)
-          m_config.processInfo->SetVideoDeintMethod("vaapi-madi");
-        else if (method == VS_INTERLACEMETHOD_VAAPI_MACI)
-          m_config.processInfo->SetVideoDeintMethod("vaapi-mcdi");
       }
       else
       {
+        CLog::Log(LOGERROR, "VAAPI output: Postproc preinit failed");
         delete m_pp;
-        m_pp = NULL;
+        m_pp = nullptr;
       }
     }
   }
@@ -1994,38 +1980,60 @@ void COutput::InitCycle()
   else
   {
     method = VS_INTERLACEMETHOD_NONE;
+
     if (m_pp && !m_pp->UpdateDeintMethod(method))
     {
+      CLog::Log(LOGDEBUG, LOGVIDEO, "VAAPI output: Current postproc does not want new deinterlace mode, removing");
       std::shared_ptr<CPostproc> pp(m_pp);
       m_discardedPostprocs.push_back(pp);
       m_pp->Discard(this, &COutput::ReadyForDisposal);
       m_pp = nullptr;
+      m_config.processInfo->SetVideoDeintMethod("unknown");
     }
     if (!m_pp)
     {
+      const bool preferVaapiRender = CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_PREFERVAAPIRENDER);
+      // For 1080p/i or below, always use CVppPostproc even when not deinterlacing
+      // Reason is: mesa cannot dynamically switch surfaces between use for VAAPI post-processing
+      // and use for direct export, so we run into trouble if we or the user want to switch
+      // deinterlacing on/off mid-stream.
+      // See also: https://bugs.freedesktop.org/show_bug.cgi?id=105145
+      const bool alwaysInsertVpp = m_config.driverIsMesa && ((m_config.vidWidth * m_config.vidHeight) <= (1920 * 1080));
+
       m_config.stats->SetVpp(false);
-      if (!CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_PREFERVAAPIRENDER))
+      if (!preferVaapiRender)
+      {
+        CLog::Log(LOGDEBUG, LOGVIDEO, "VAAPI output: Initializing ffmpeg postproc");
         m_pp = new CFFmpegPostproc();
+      }
+      else if (alwaysInsertVpp)
+      {
+        CLog::Log(LOGDEBUG, LOGVIDEO, "VAAPI output: Initializing vaapi postproc");
+        m_pp = new CVppPostproc();
+        m_config.stats->SetVpp(true);
+      }
       else
       {
+        CLog::Log(LOGDEBUG, LOGVIDEO, "VAAPI output: Initializing skip postproc");
         m_pp = new CSkipPostproc();
-        m_config.stats->SetVpp(true);
       }
       if (m_pp->PreInit(m_config))
       {
         m_pp->Init(method);
-        m_config.processInfo->SetVideoDeintMethod("none");
       }
       else
       {
+        CLog::Log(LOGERROR, "VAAPI output: Postproc preinit failed");
         delete m_pp;
-        m_pp = NULL;
+        m_pp = nullptr;
       }
     }
   }
   if (!m_pp) // fallback
   {
+    CLog::Log(LOGDEBUG, LOGVIDEO, "VAAPI output: Initializing skip postproc as fallback");
     m_pp = new CSkipPostproc();
+    m_config.stats->SetVpp(false);
     if (m_pp->PreInit(m_config))
       m_pp->Init(method);
   }
@@ -2177,6 +2185,7 @@ bool CSkipPostproc::PreInit(CVaapiConfig &config, SDiMethods *methods)
 
 bool CSkipPostproc::Init(EINTERLACEMETHOD method)
 {
+  m_config.processInfo->SetVideoDeintMethod("none");
   return true;
 }
 
@@ -2265,7 +2274,7 @@ bool CVppPostproc::PreInit(CVaapiConfig &config, SDiMethods *methods)
   // create config
   if (!CheckSuccess(vaCreateConfig(m_config.dpy, VAProfileNone, VAEntrypointVideoProc, NULL, 0, &m_configId)))
   {
-    CLog::Log(LOGDEBUG, LOGVIDEO, "CVppPostproc::PreInit  - VPP init failed");
+    CLog::Log(LOGDEBUG, LOGVIDEO, "CVppPostproc::PreInit  - VPP init failed in vaCreateConfig");
 
     return false;
   }
@@ -2294,7 +2303,7 @@ bool CVppPostproc::PreInit(CVaapiConfig &config, SDiMethods *methods)
                                      nb_surfaces,
                                      attribs, 1)))
   {
-    CLog::Log(LOGDEBUG, LOGVIDEO, "CVppPostproc::PreInit  - VPP init failed");
+    CLog::Log(LOGDEBUG, LOGVIDEO, "CVppPostproc::PreInit  - VPP init failed in vaCreateSurfaces");
 
     return false;
   }
@@ -2306,15 +2315,15 @@ bool CVppPostproc::PreInit(CVaapiConfig &config, SDiMethods *methods)
   // create vaapi decoder context
   if (!CheckSuccess(vaCreateContext(m_config.dpy,
                                     m_configId,
-                                    0,
-                                    0,
+                                    m_config.surfaceWidth,
+                                    m_config.surfaceHeight,
                                     0,
                                     surfaces,
                                     nb_surfaces,
                                     &m_contextId)))
   {
     m_contextId = VA_INVALID_ID;
-    CLog::Log(LOGDEBUG, LOGVIDEO, "CVppPostproc::PreInit  - VPP init failed");
+    CLog::Log(LOGDEBUG, LOGVIDEO, "CVppPostproc::PreInit  - VPP init failed in vaCreateContext");
 
     return false;
   }
@@ -2326,7 +2335,7 @@ bool CVppPostproc::PreInit(CVaapiConfig &config, SDiMethods *methods)
 
   if (!CheckSuccess(vaQueryVideoProcFilters(m_config.dpy, m_contextId, filters, &numFilters)))
   {
-    CLog::Log(LOGDEBUG, LOGVIDEO, "CVppPostproc::PreInit  - VPP init failed");
+    CLog::Log(LOGDEBUG, LOGVIDEO, "CVppPostproc::PreInit  - VPP init failed in vaQueryVideoProcFilters");
 
     return false;
   }
@@ -2337,7 +2346,7 @@ bool CVppPostproc::PreInit(CVaapiConfig &config, SDiMethods *methods)
                                                deinterlacingCaps,
                                                &numDeinterlacingCaps)))
   {
-    CLog::Log(LOGDEBUG, LOGVIDEO, "CVppPostproc::PreInit  - VPP init failed");
+    CLog::Log(LOGDEBUG, LOGVIDEO, "CVppPostproc::PreInit  - VPP init failed in vaQueryVideoProcFilterCaps");
 
     return false;
   }
@@ -2371,31 +2380,56 @@ bool CVppPostproc::PreInit(CVaapiConfig &config, SDiMethods *methods)
 
 bool CVppPostproc::Init(EINTERLACEMETHOD method)
 {
-  m_vppMethod = method;
-
-  VAProcDeinterlacingType vppMethod = VAProcDeinterlacingNone;
-  switch (method)
-  {
-  case VS_INTERLACEMETHOD_VAAPI_BOB:
-    vppMethod = VAProcDeinterlacingBob;
-    break;
-  case VS_INTERLACEMETHOD_VAAPI_MADI:
-    vppMethod = VAProcDeinterlacingMotionAdaptive;
-    break;
-  case VS_INTERLACEMETHOD_VAAPI_MACI:
-    vppMethod = VAProcDeinterlacingMotionCompensated;
-    break;
-  case VS_INTERLACEMETHOD_NONE:
-    // vppMethod = VAProcDeinterlacingNone;
-    break;
-  default:
-    return false;
-  }
-
   m_forwardRefs = 0;
   m_backwardRefs = 0;
   m_currentIdx = 0;
   m_frameCount = 0;
+  m_vppMethod = VS_INTERLACEMETHOD_AUTO;
+
+  return UpdateDeintMethod(method);
+}
+
+
+bool CVppPostproc::UpdateDeintMethod(EINTERLACEMETHOD method)
+{
+  if (method == m_vppMethod)
+  {
+    return true;
+  }
+
+  m_vppMethod = method;
+  m_forwardRefs = 0;
+  m_backwardRefs = 0;
+
+  if (m_filter != VA_INVALID_ID)
+  {
+    CheckSuccess(vaDestroyBuffer(m_config.dpy, m_filter));
+    m_filter = VA_INVALID_ID;
+  }
+
+  VAProcDeinterlacingType vppMethod;
+  switch (method)
+  {
+  case VS_INTERLACEMETHOD_VAAPI_BOB:
+    vppMethod = VAProcDeinterlacingBob;
+    m_config.processInfo->SetVideoDeintMethod("vaapi-bob");
+    break;
+  case VS_INTERLACEMETHOD_VAAPI_MADI:
+    vppMethod = VAProcDeinterlacingMotionAdaptive;
+    m_config.processInfo->SetVideoDeintMethod("vaapi-madi");
+    break;
+  case VS_INTERLACEMETHOD_VAAPI_MACI:
+    vppMethod = VAProcDeinterlacingMotionCompensated;
+    m_config.processInfo->SetVideoDeintMethod("vaapi-mcdi");
+    break;
+  case VS_INTERLACEMETHOD_NONE:
+    // Early exit, filter parameter buffer not needed then
+    m_config.processInfo->SetVideoDeintMethod("vaapi-none");
+    return true;
+  default:
+    m_config.processInfo->SetVideoDeintMethod("unknown");
+    return false;
+  }
 
   VAProcFilterParameterBufferDeinterlacing filterparams;
   filterparams.type = VAProcFilterDeinterlacing;
@@ -2701,21 +2735,6 @@ void CVppPostproc::Flush()
   }
 }
 
-bool CVppPostproc::UpdateDeintMethod(EINTERLACEMETHOD method)
-{
-  // could try to update method, for now trigger deinit/init
-  if (method != m_vppMethod)
-    return false;
-
-  if (method == VS_INTERLACEMETHOD_VAAPI_BOB ||
-      method == VS_INTERLACEMETHOD_VAAPI_MADI ||
-      method == VS_INTERLACEMETHOD_VAAPI_MACI ||
-      method == VS_INTERLACEMETHOD_NONE)
-    return true;
-
-  return false;
-}
-
 bool CVppPostproc::DoesSync()
 {
   return false;
@@ -2783,11 +2802,6 @@ bool CFFmpegPostproc::PreInit(CVaapiConfig &config, SDiMethods *methods)
 {
   m_config = config;
   bool use_filter = true;
-  if (!m_dllSSE4.Load())
-  {
-    CLog::Log(LOGERROR,"VAAPI::SupportsFilter failed loading sse4 lib");
-    return false;
-  }
 
   // copying large surfaces via sse4 is a bit slow
   // we just return false here as the primary use case the
@@ -2801,7 +2815,7 @@ bool CFFmpegPostproc::PreInit(CVaapiConfig &config, SDiMethods *methods)
   VAStatus status = vaDeriveImage(config.dpy, surface, &image);
   if (status != VA_STATUS_SUCCESS)
   {
-    CLog::Log(LOGWARNING,"VAAPI::SupportsFilter vaDeriveImage not supported");
+    CLog::Log(LOGINFO, "VAAPI::SupportsFilter vaDeriveImage not supported by driver - ffmpeg postprocessing and CPU-copy rendering will not be available");
     use_filter = false;
   }
   if (use_filter && (image.format.fourcc != VA_FOURCC_NV12))
@@ -2816,6 +2830,12 @@ bool CFFmpegPostproc::PreInit(CVaapiConfig &config, SDiMethods *methods)
   }
   if (image.image_id != VA_INVALID_ID)
     CheckSuccess(vaDestroyImage(config.dpy,image.image_id));
+
+  if (use_filter && !m_dllSSE4.Load())
+  {
+    CLog::Log(LOGERROR,"VAAPI::SupportsFilter failed loading sse4 lib");
+    use_filter = false;
+  }
 
   if (use_filter)
   {
@@ -2903,6 +2923,8 @@ bool CFFmpegPostproc::Init(EINTERLACEMETHOD method)
       CLog::Log(LOGERROR, "VAAPI::CFFmpegPostproc::Init  - avfilter_graph_config");
       return false;
     }
+
+    m_config.processInfo->SetVideoDeintMethod("yadif");
   }
   else if (method == VS_INTERLACEMETHOD_RENDER_BOB ||
            method == VS_INTERLACEMETHOD_NONE)
@@ -2910,11 +2932,13 @@ bool CFFmpegPostproc::Init(EINTERLACEMETHOD method)
     CLog::Log(LOGDEBUG, LOGVIDEO, "VAAPI::CFFmpegPostproc::Init  - skip deinterlacing");
     avfilter_inout_free(&outputs);
     avfilter_inout_free(&inputs);
+    m_config.processInfo->SetVideoDeintMethod("none");
   }
   else
   {
     avfilter_inout_free(&outputs);
     avfilter_inout_free(&inputs);
+    m_config.processInfo->SetVideoDeintMethod("unknown");
     return false;
   }
   m_diMethod = method;

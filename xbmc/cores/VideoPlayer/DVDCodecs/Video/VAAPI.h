@@ -118,6 +118,7 @@ struct CVaapiConfig
   VAProfile profile;
   VAConfigAttrib attrib;
   CProcessInfo *processInfo;
+  bool driverIsMesa;
 };
 
 /**
@@ -344,8 +345,6 @@ private:
   static CCriticalSection m_section;
   VADisplay m_display;
   int m_refCount;
-  int m_attributeCount;
-  VADisplayAttribute *m_attributes;
   int m_profileCount;
   VAProfile *m_profiles;
   std::vector<CDecoder*> m_decoders;
@@ -394,7 +393,7 @@ public:
   static int FFGetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags);
 
   static IHardwareDecoder* Create(CDVDStreamInfo &hint, CProcessInfo &processInfo, AVPixelFormat fmt);
-  static void Register(IVaapiWinSystem *winSystem, bool hevc);
+  static void Register(IVaapiWinSystem *winSystem, bool deepColor);
 
   static IVaapiWinSystem* m_pWinSystem;
 
@@ -433,7 +432,7 @@ protected:
   CProcessInfo& m_processInfo;
 
   static bool m_capGeneral;
-  static bool m_capHevc;
+  static bool m_capDeepColor;
 };
 
 //-----------------------------------------------------------------------------

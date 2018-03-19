@@ -275,10 +275,10 @@ bool CWinSystemX11GLContext::RefreshGLContext(bool force)
       m_vaapiProxy.reset(X11::VaapiProxyCreate());
       X11::VaapiProxyConfig(m_vaapiProxy.get(), GetDisplay(),
                        static_cast<CGLContextEGL*>(m_pGLContext)->m_eglDisplay);
-      bool general, hevc;
-      X11::VAAPIRegisterRender(m_vaapiProxy.get(), general, hevc);
+      bool general, deepColor;
+      X11::VAAPIRegisterRender(m_vaapiProxy.get(), general, deepColor);
       if (general)
-        X11::VAAPIRegister(m_vaapiProxy.get(), hevc);
+        X11::VAAPIRegister(m_vaapiProxy.get(), deepColor);
       return success;
     }
   }

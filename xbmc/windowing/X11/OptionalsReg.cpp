@@ -58,16 +58,16 @@ void X11::VaapiProxyConfig(CVaapiProxy *proxy, void *dpy, void *eglDpy)
   proxy->eglDisplay = eglDpy;
 }
 
-void X11::VAAPIRegister(CVaapiProxy *winSystem, bool hevc)
+void X11::VAAPIRegister(CVaapiProxy *winSystem, bool deepColor)
 {
-  VAAPI::CDecoder::Register(winSystem, hevc);
+  VAAPI::CDecoder::Register(winSystem, deepColor);
 }
 
-void X11::VAAPIRegisterRender(CVaapiProxy *winSystem, bool &general, bool &hevc)
+void X11::VAAPIRegisterRender(CVaapiProxy *winSystem, bool &general, bool &deepColor)
 {
   EGLDisplay eglDpy = winSystem->eglDisplay;
   VADisplay vaDpy = vaGetDisplay(winSystem->dpy);
-  CRendererVAAPI::Register(winSystem, vaDpy, eglDpy, general, hevc);
+  CRendererVAAPI::Register(winSystem, vaDpy, eglDpy, general, deepColor);
 }
 
 #else
@@ -89,11 +89,11 @@ void X11::VaapiProxyConfig(CVaapiProxy *proxy, void *dpy, void *eglDpy)
 {
 }
 
-void X11::VAAPIRegister(CVaapiProxy *winSystem, bool hevc)
+void X11::VAAPIRegister(CVaapiProxy *winSystem, bool deepColor)
 {
 }
 
-void X11::VAAPIRegisterRender(CVaapiProxy *winSystem, bool &general, bool &hevc)
+void X11::VAAPIRegisterRender(CVaapiProxy *winSystem, bool &general, bool &deepColor)
 {
 }
 

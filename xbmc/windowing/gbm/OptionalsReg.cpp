@@ -85,14 +85,14 @@ void GBM::VaapiProxyConfig(CVaapiProxy *proxy, void *eglDpy)
   proxy->eglDisplay = eglDpy;
 }
 
-void GBM::VAAPIRegister(CVaapiProxy *winSystem, bool hevc)
+void GBM::VAAPIRegister(CVaapiProxy *winSystem, bool deepColor)
 {
-  VAAPI::CDecoder::Register(winSystem, hevc);
+  VAAPI::CDecoder::Register(winSystem, deepColor);
 }
 
-void GBM::VAAPIRegisterRender(CVaapiProxy *winSystem, bool &general, bool &hevc)
+void GBM::VAAPIRegisterRender(CVaapiProxy *winSystem, bool &general, bool &deepColor)
 {
-  CRendererVAAPI::Register(winSystem, winSystem->vaDpy, winSystem->eglDisplay, general, hevc);
+  CRendererVAAPI::Register(winSystem, winSystem->vaDpy, winSystem->eglDisplay, general, deepColor);
 }
 
 #else
@@ -115,12 +115,12 @@ void GBM::VaapiProxyConfig(CVaapiProxy *proxy, void *eglDpy)
 
 }
 
-void GBM::VAAPIRegister(CVaapiProxy *winSystem, bool hevc)
+void GBM::VAAPIRegister(CVaapiProxy *winSystem, bool deepColor)
 {
 
 }
 
-void GBM::VAAPIRegisterRender(CVaapiProxy *winSystem, bool &general, bool &hevc)
+void GBM::VAAPIRegisterRender(CVaapiProxy *winSystem, bool &general, bool &deepColor)
 {
 
 }

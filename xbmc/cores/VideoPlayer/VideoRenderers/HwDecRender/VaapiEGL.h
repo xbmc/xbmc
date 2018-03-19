@@ -20,6 +20,8 @@
 
 #pragma once
 
+#include <array>
+
 #if defined(HAS_GL)
 #include <GL/gl.h>
 #elif defined(HAS_GLES)
@@ -31,6 +33,9 @@
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
 #include <va/va.h>
+
+#include "utils/Geometry.h"
+#include "utils/posix/FileHandle.h"
 
 namespace VAAPI
 {
@@ -49,11 +54,34 @@ struct InteropInfo
 class CVaapiTexture
 {
 public:
-  bool Map(CVaapiRenderPicture *pic);
-  void Unmap();
-  void Init(InteropInfo &interop);
-  static void TestInterop(VADisplay vaDpy, EGLDisplay eglDisplay, bool &general, bool &hevc);
-  int GetBits();
+  CVaapiTexture() = default;
+  virtual ~CVaapiTexture() = default;
+
+  virtual void Init(InteropInfo &interop) = 0;
+  virtual bool Map(CVaapiRenderPicture *pic) = 0;
+  virtual void Unmap() = 0;
+
+  virtual int GetBits() = 0;
+  virtual GLuint GetTextureY() = 0;
+  virtual GLuint GetTextureVU() = 0;
+  virtual CSizeInt GetTextureSize() = 0;
+};
+
+class CVaapi1Texture : public CVaapiTexture
+{
+public:
+  CVaapi1Texture();
+
+  bool Map(CVaapiRenderPicture *pic) override;
+  void Unmap() override;
+  void Init(InteropInfo &interop) override;
+
+  int GetBits() override;
+  GLuint GetTextureY() override;
+  GLuint GetTextureVU() override;
+  CSizeInt GetTextureSize() override;
+
+  static void TestInterop(VADisplay vaDpy, EGLDisplay eglDisplay, bool &general, bool &deepColor);
 
   GLuint m_texture = 0;
   GLuint m_textureY = 0;
@@ -63,17 +91,51 @@ public:
   int m_bits = 0;
 
 protected:
-  static bool TestInteropHevc(VADisplay vaDpy, EGLDisplay eglDisplay);
+  static bool TestInteropDeepColor(VADisplay vaDpy, EGLDisplay eglDisplay);
 
   InteropInfo m_interop;
   CVaapiRenderPicture *m_vaapiPic = nullptr;
   struct GLSurface
   {
-    VAImage vaImage;
+    VAImage vaImage{VA_INVALID_ID};
     VABufferInfo vBufInfo;
     EGLImageKHR eglImage;
     EGLImageKHR eglImageY, eglImageVU;
   } m_glSurface;
 };
+
+class CVaapi2Texture : public CVaapiTexture
+{
+public:
+  bool Map(CVaapiRenderPicture *pic) override;
+  void Unmap() override;
+  void Init(InteropInfo &interop) override;
+
+  int GetBits() override;
+  GLuint GetTextureY() override;
+  GLuint GetTextureVU() override;
+  CSizeInt GetTextureSize() override;
+
+  static void TestInterop(VADisplay vaDpy, EGLDisplay eglDisplay, bool &general, bool &deepColor);
+  static bool TestInteropGeneral(VADisplay vaDpy, EGLDisplay eglDisplay);
+
+private:
+  static bool TestEsh(VADisplay vaDpy, EGLDisplay eglDisplay, std::uint32_t rtFormat, std::int32_t pixelFormat);
+
+  struct MappedTexture
+  {
+    EGLImageKHR eglImage{EGL_NO_IMAGE_KHR};
+    GLuint glTexture{0};
+  };
+
+  InteropInfo m_interop;
+  CVaapiRenderPicture* m_vaapiPic{};
+  bool m_hasPlaneModifiers{false};
+  std::array<KODI::UTILS::POSIX::CFileHandle, 4> m_drmFDs;
+  int m_bits{0};
+  MappedTexture m_y, m_vu;
+  CSizeInt m_textureSize;
+};
+
 }
 

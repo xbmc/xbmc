@@ -57,14 +57,14 @@ bool CWinSystemGbmGLESContext::InitWindowSystem()
     return false;
   }
 
-  bool general, hevc;
+  bool general, deepColor;
   m_vaapiProxy.reset(GBM::VaapiProxyCreate());
   GBM::VaapiProxyConfig(m_vaapiProxy.get(), m_pGLContext.m_eglDisplay);
-  GBM::VAAPIRegisterRender(m_vaapiProxy.get(), general, hevc);
+  GBM::VAAPIRegisterRender(m_vaapiProxy.get(), general, deepColor);
 
   if (general)
   {
-    GBM::VAAPIRegister(m_vaapiProxy.get(), hevc);
+    GBM::VAAPIRegister(m_vaapiProxy.get(), deepColor);
   }
 
   CRendererDRMPRIME::Register(this);

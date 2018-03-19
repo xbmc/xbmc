@@ -32,8 +32,8 @@ namespace GBM
 CVaapiProxy* VaapiProxyCreate();
 void VaapiProxyDelete(CVaapiProxy *proxy);
 void VaapiProxyConfig(CVaapiProxy *proxy, void *eglDpy);
-void VAAPIRegister(CVaapiProxy *winSystem, bool hevc);
-void VAAPIRegisterRender(CVaapiProxy *winSystem, bool &general, bool &hevc);
+void VAAPIRegister(CVaapiProxy *winSystem, bool deepColor);
+void VAAPIRegisterRender(CVaapiProxy *winSystem, bool &general, bool &deepColor);
 }
 
 //-----------------------------------------------------------------------------

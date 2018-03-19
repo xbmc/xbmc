@@ -47,14 +47,14 @@ bool CWinSystemWaylandEGLContextGLES::InitWindowSystem()
   CLinuxRendererGLES::Register();
   RETRO::CRPProcessInfo::RegisterRendererFactory(new RETRO::CRendererFactoryOpenGLES);
 
-  bool general, hevc;
+  bool general, deepColor;
   m_vaapiProxy.reset(::WAYLAND::VaapiProxyCreate());
   ::WAYLAND::VaapiProxyConfig(m_vaapiProxy.get(),GetConnection()->GetDisplay(),
                               m_eglContext.GetEGLDisplay());
-  ::WAYLAND::VAAPIRegisterRender(m_vaapiProxy.get(), general, hevc);
+  ::WAYLAND::VAAPIRegisterRender(m_vaapiProxy.get(), general, deepColor);
   if (general)
   {
-    ::WAYLAND::VAAPIRegister(m_vaapiProxy.get(), hevc);
+    ::WAYLAND::VAAPIRegister(m_vaapiProxy.get(), deepColor);
   }
 
   return true;
