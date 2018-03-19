@@ -6,8 +6,13 @@
 # Sadly we cannot extend the 'package' target, as it is a builtin target, see 
 # http://public.kitware.com/Bug/view.php?id=8438
 # Thus, we have to add an 'addon-package' target.
-add_custom_target(addon-package
-                  COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target package)
+get_property(_isMultiConfig GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
+if(_isMultiConfig)
+  add_custom_target(addon-package DEPENDS PACKAGE)
+else()
+  add_custom_target(addon-package
+                    COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target package)
+endif()
 
 macro(add_cpack_workaround target version ext)
   if(NOT PACKAGE_DIR)
@@ -247,21 +252,15 @@ macro (build_addon target prefix libs)
         endif()
       endif()
 
-      # in case of a VC++ project the installation location contains a $(Configuration) VS variable
-      # we replace it with ${CMAKE_BUILD_TYPE} (which doesn't cover the case when the build configuration
-      # is changed within Visual Studio)
-      string(REPLACE "$(Configuration)" "${CMAKE_BUILD_TYPE}" LIBRARY_LOCATION "${LIBRARY_LOCATION}")
-
       if(${prefix}_SOURCES)
         # install the generated DLL file
         install(PROGRAMS ${LIBRARY_LOCATION} DESTINATION ${target}
                 COMPONENT ${target}-${${prefix}_VERSION})
 
-        if(CMAKE_BUILD_TYPE MATCHES Debug)
-          # for debug builds also install the PDB file
-          install(FILES $<TARGET_PDB_FILE:${target}> DESTINATION ${target}
-                  COMPONENT ${target}-${${prefix}_VERSION})
-        endif()
+        # for debug builds also install the PDB file
+        install(FILES $<TARGET_PDB_FILE:${target}> DESTINATION ${target}
+                CONFIGURATIONS Debug RelWithDebInfo
+                COMPONENT ${target}-${${prefix}_VERSION})
       endif()
       if(${prefix}_CUSTOM_BINARY)
         install(FILES ${LIBRARY_LOCATION} DESTINATION ${target} RENAME ${LIBRARY_FILENAME})
