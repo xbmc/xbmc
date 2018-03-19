@@ -230,7 +230,7 @@ bool DX::DeviceResources::SetFullScreen(bool fullscreen, RESOLUTION_INFO& res)
         // some drivers unable to create stereo swapchain if mode does not match @23.976
         || g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_HARDWAREBASED)
       {
-        CLog::Log(LOGDEBUG, __FUNCTION__": changing display mode to %dx%d@%0.3fs", res.iWidth, res.iHeight, res.fRefreshRate,
+        CLog::Log(LOGDEBUG, __FUNCTION__": changing display mode to %dx%d@%0.3f", res.iWidth, res.iHeight, res.fRefreshRate,
                   res.dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "");
 
         int refresh = static_cast<int>(res.fRefreshRate);
@@ -244,6 +244,18 @@ bool DX::DeviceResources::SetFullScreen(bool fullscreen, RESOLUTION_INFO& res)
         {
           currentMode.RefreshRate.Numerator *= 2;
           currentMode.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UPPER_FIELD_FIRST; // guessing;
+        }
+        // sometimes the OS silently brings Kodi out of full screen mode
+        // in this case switching a resolution has no any effect and
+        // we have to enter into full screen mode before switching
+        if (!bFullScreen)
+        {
+          ComPtr<IDXGIOutput> pOutput;
+          GetOutput(pOutput.GetAddressOf());
+
+          CLog::LogF(LOGDEBUG, "fixup fullscreen mode before switching resolution");
+          recreate |= SUCCEEDED(m_swapChain->SetFullscreenState(true, pOutput.Get()));
+          m_swapChain->GetFullscreenState(&bFullScreen, nullptr);
         }
         recreate |= SUCCEEDED(m_swapChain->ResizeTarget(&currentMode));
       }
