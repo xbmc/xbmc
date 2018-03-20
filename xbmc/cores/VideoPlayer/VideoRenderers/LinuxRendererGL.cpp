@@ -1786,40 +1786,45 @@ bool CLinuxRendererGL::UploadTexture(int index)
   if (!m_buffers[index].videoBuffer)
     return false;
 
-  if (m_buffers[index].loaded)
-    return true;
+  bool ret = true;
 
-  bool ret = false;
-
-  YuvImage &dst = m_buffers[index].image;
-  YuvImage src;
-  m_buffers[index].videoBuffer->GetPlanes(src.plane);
-  m_buffers[index].videoBuffer->GetStrides(src.stride);
-
-  UnBindPbo(m_buffers[index]);
-
-  if (m_format == AV_PIX_FMT_NV12)
+  if (!m_buffers[index].loaded)
   {
-    CVideoBuffer::CopyNV12Picture(&dst, &src);
-    BindPbo(m_buffers[index]);
-    ret = UploadNV12Texture(index);
-  }
-  else if (m_format == AV_PIX_FMT_YUYV422 ||
-           m_format == AV_PIX_FMT_UYVY422)
-  {
-    CVideoBuffer::CopyYUV422PackedPicture(&dst, &src);
-    BindPbo(m_buffers[index]);
-    ret = UploadYUV422PackedTexture(index);
-  }
-  else
-  {
-    CVideoBuffer::CopyPicture(&dst, &src);
-    BindPbo(m_buffers[index]);
-    ret = UploadYV12Texture(index);
+    ret = false;
+
+    YuvImage &dst = m_buffers[index].image;
+    YuvImage src;
+    m_buffers[index].videoBuffer->GetPlanes(src.plane);
+    m_buffers[index].videoBuffer->GetStrides(src.stride);
+
+    UnBindPbo(m_buffers[index]);
+
+    if (m_format == AV_PIX_FMT_NV12)
+    {
+      CVideoBuffer::CopyNV12Picture(&dst, &src);
+      BindPbo(m_buffers[index]);
+      ret = UploadNV12Texture(index);
+    }
+    else if (m_format == AV_PIX_FMT_YUYV422 ||
+             m_format == AV_PIX_FMT_UYVY422)
+    {
+      CVideoBuffer::CopyYUV422PackedPicture(&dst, &src);
+      BindPbo(m_buffers[index]);
+      ret = UploadYUV422PackedTexture(index);
+    }
+    else
+    {
+      CVideoBuffer::CopyPicture(&dst, &src);
+      BindPbo(m_buffers[index]);
+      ret = UploadYV12Texture(index);
+    }
+
+    if (ret)
+      m_buffers[index].loaded = true;
   }
 
   if (ret)
-    m_buffers[index].loaded = true;
+    CalculateTextureSourceRects(index, 3);
 
   return ret;
 }
@@ -2040,8 +2045,6 @@ bool CLinuxRendererGL::UploadYV12Texture(int source)
 
   VerifyGLState();
 
-  CalculateTextureSourceRects(source, 3);
-
   return true;
 }
 
@@ -2147,8 +2150,6 @@ bool CLinuxRendererGL::UploadNV12Texture(int source)
   }
 
   VerifyGLState();
-
-  CalculateTextureSourceRects(source, 3);
 
   return true;
 }
@@ -2371,8 +2372,6 @@ bool CLinuxRendererGL::UploadYUV422PackedTexture(int source)
   }
 
   VerifyGLState();
-
-  CalculateTextureSourceRects(source, 3);
 
   return true;
 }
