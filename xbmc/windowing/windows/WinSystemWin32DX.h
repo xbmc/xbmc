@@ -85,6 +85,7 @@ protected:
   void ResizeDeviceBuffers() override;
   bool IsStereoEnabled() override;
   void OnScreenChange(int screen) override;
+  bool ChangeResolution(const RESOLUTION_INFO& res, bool forceChange = false) override;
 
   HMODULE m_hDriverModule;
   TRACED_HOOK_HANDLE m_hHook;

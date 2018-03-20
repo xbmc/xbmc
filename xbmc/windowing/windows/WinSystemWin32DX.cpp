@@ -180,6 +180,15 @@ void CWinSystemWin32DX::OnScreenChange(int screen)
   }
 }
 
+bool CWinSystemWin32DX::ChangeResolution(const RESOLUTION_INFO &res, bool forceChange)
+{
+  bool changed = CWinSystemWin32::ChangeResolution(res, forceChange);
+  // this is a try to fix FCU issue after changing resolution
+  if (m_deviceResources && changed)
+    m_deviceResources->ResizeBuffers();
+  return changed;
+}
+
 void CWinSystemWin32DX::OnResize(int width, int height)
 {
   if (!m_IsAlteringWindow)

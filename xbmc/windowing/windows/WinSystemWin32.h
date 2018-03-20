@@ -228,7 +228,7 @@ protected:
   virtual void Register(IDispResource *resource);
   virtual void Unregister(IDispResource *resource);
 
-  bool ChangeResolution(const RESOLUTION_INFO& res, bool forceChange = false);
+  virtual bool ChangeResolution(const RESOLUTION_INFO& res, bool forceChange = false);
   virtual bool UpdateResolutionsInternal();
   virtual bool CreateBlankWindows();
   virtual bool BlankNonActiveMonitors(bool bBlank);
