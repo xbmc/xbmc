@@ -34,7 +34,10 @@ namespace WAYLAND
 class CWinSystemWaylandEGLContextGLES : public CWinSystemWaylandEGLContext, public CRenderSystemGLES
 {
 public:
+  // Implementation of CWinSystemBase via CWinSystemWaylandEGLContext
+  CRenderSystemBase *GetRenderSystem() override { return this; }
   bool InitWindowSystem() override;
+
 protected:
   bool CreateContext() override;
   void SetContextSize(CSizeInt size) override;

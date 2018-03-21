@@ -20,7 +20,6 @@
 
 #include "ServiceBroker.h"
 #include "Application.h"
-#include "rendering/RenderSystem.h"
 #include "windowing/WinSystem.h"
 
 using namespace KODI;
@@ -154,8 +153,7 @@ CWinSystemBase& CServiceBroker::GetWinSystem()
 
 CRenderSystemBase& CServiceBroker::GetRenderSystem()
 {
-  CRenderSystemBase &renderSystem = dynamic_cast<CRenderSystemBase&>(g_application.m_ServiceManager->GetWinSystem());
-  return renderSystem;
+  return *g_application.m_ServiceManager->GetWinSystem().GetRenderSystem();
 }
 
 CPowerManager& CServiceBroker::GetPowerManager()

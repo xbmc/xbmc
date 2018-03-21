@@ -42,6 +42,7 @@ struct REFRESHRATE
   int   ResInfo_Index;
 };
 
+class CRenderSystemBase;
 class IRenderLoop;
 
 class CWinSystemBase
@@ -51,6 +52,9 @@ public:
   virtual ~CWinSystemBase();
 
   static std::unique_ptr<CWinSystemBase> CreateWinSystem();
+
+  // Access render system interface
+  virtual CRenderSystemBase *GetRenderSystem() { return nullptr; }
 
   // windowing interfaces
   virtual bool InitWindowSystem();
