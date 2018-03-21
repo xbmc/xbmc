@@ -50,7 +50,6 @@ set(HEADERS Addon.h
             AudioEncoder.h
             ContextMenuAddon.h
             ContextMenus.h
-            DllLibCPluff.h
             FilesystemInstaller.h
             FontResource.h
             GameResource.h

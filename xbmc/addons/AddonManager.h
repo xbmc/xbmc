@@ -25,7 +25,6 @@
 #include "threads/CriticalSection.h"
 #include "utils/EventStream.h"
 
-class DllLibCPluff;
 extern "C"
 {
 #include "lib/cpluff/libcpluff/cpluff.h"
@@ -295,7 +294,6 @@ namespace ADDON
     CAddonMgr& operator=(CAddonMgr const&) = delete;
     /* libcpluff */
     cp_context_t *m_cp_context;
-    std::unique_ptr<DllLibCPluff> m_cpluff;
     VECADDONS    m_updateableAddons;
 
     /*! \brief Check whether this addon is supported on the current platform
