@@ -10,6 +10,8 @@ LIBS = @LIBS_LIBCPLUFF@ @LTLIBINTL@ @LIBS@
 
 CPPFLAGS = @CPPFLAGS@
 CPPFLAGS += -I. -DCP_C_API=CP_EXPORT -DCP_HOST="\"$(host)\"" -DCP_DATADIR="\"$(datadir)\""
+# the following symbols are clashing with mariadb symbols
+CPPFLAGS += -Dhash_delete=kazlib_hash_delete -Dhash_free=kazlib_hash_free -Dhash_insert=kazlib_hash_insert -Dlist_delete=kazlib_list_delete
 
 DOXYGEN = doxygen
 DOXYGEN_SOURCE = cpluffdef.h $(srcdir)/cpluff.h $(srcdir)/docsrc/*.dox

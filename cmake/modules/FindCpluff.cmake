@@ -39,23 +39,23 @@ if(NOT WIN32)
                                      COMMAND PATH=${NATIVEPREFIX}/bin:$ENV{PATH} autoreconf -vif
                                      WORKING_DIRECTORY <SOURCE_DIR>)
 
-  set(ldflags "${ldflags};-lexpat")
-  core_link_library(${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/cpluff/lib/libcpluff.a
-                    system/libcpluff libcpluff extras "${ldflags}")
+  set(CPLUFF_LIBRARIES ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/cpluff/lib/libcpluff.a ${EXPAT_LIBRARIES})
   set(CPLUFF_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/cpluff/include)
   set(CPLUFF_FOUND 1)
-  mark_as_advanced(CPLUFF_INCLUDE_DIRS CPLUFF_FOUND)
+  mark_as_advanced(CPLUFF_INCLUDE_DIRS CPLUFF_LIBRARIES)
 else()
   find_path(CPLUFF_INCLUDE_DIR cpluff.h)
+  find_library(CPLUFF_LIBRARY NAMES cpluff)
 
   include(FindPackageHandleStandardArgs)
   find_package_handle_standard_args(Cpluff
-                                    REQUIRED_VARS CPLUFF_INCLUDE_DIR)
+                                    REQUIRED_VARS CPLUFF_INCLUDE_DIR CPLUFF_LIBRARY)
 
   if(CPLUFF_FOUND)
+    set(CPLUFF_LIBRARIES ${CPLUFF_LIBRARY})
     set(CPLUFF_INCLUDE_DIRS ${CPLUFF_INCLUDE_DIR})
   endif()
-  mark_as_advanced(CPLUFF_INCLUDE_DIRS CPLUFF_FOUND)
+  mark_as_advanced(CPLUFF_INCLUDE_DIRS CPLUFF_LIBRARY)
 
   add_custom_target(libcpluff)
 endif()
