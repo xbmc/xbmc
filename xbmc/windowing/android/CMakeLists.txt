@@ -1,11 +1,9 @@
-set(SOURCES GLContextEGL.cpp
-            WinEventsAndroid.cpp
+set(SOURCES WinEventsAndroid.cpp
             WinSystemAndroid.cpp
             AndroidUtils.cpp
             VideoSyncAndroid.cpp)
 
-set(HEADERS GLContextEGL.h
-            WinEventsAndroid.h
+set(HEADERS WinEventsAndroid.h
             WinSystemAndroid.h
             AndroidUtils.h
             VideoSyncAndroid.h)

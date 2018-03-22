@@ -20,7 +20,7 @@
 
 #pragma once
 
-#include "GLContextEGL.h"
+#include "utils/EGLUtils.h"
 #include "rendering/gles/RenderSystemGLES.h"
 #include "utils/GlobalsHandling.h"
 #include "WinSystemAndroid.h"
@@ -50,7 +50,7 @@ protected:
   void PresentRenderImpl(bool rendered) override;
 
 private:
-  CGLContextEGL m_pGLContext;
+  CEGLContextUtils m_pGLContext;
 
 };
 
