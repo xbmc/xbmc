@@ -31,7 +31,8 @@ if(NOT WIN32)
                                         --host=${ARCH}
                                         CFLAGS=${defines}
                                         CPPFLAGS=${cppflags}
-                                        LDFLAGS=${ldflags})
+                                        LDFLAGS=${ldflags}
+                      BUILD_BYPRODUCTS <INSTALL_DIR>/lib/libcpluff.a)
   ExternalProject_Add_Step(libcpluff autoreconf
                                      DEPENDEES download update patch
                                      DEPENDERS configure
