@@ -1,5 +1,4 @@
 set(SOURCES OptionalsReg.cpp
-            GLContextEGL.cpp
             WinSystemGbm.cpp
             GBMUtils.cpp
             DRMUtils.cpp
@@ -7,7 +6,6 @@ set(SOURCES OptionalsReg.cpp
             DRMAtomic.cpp)
 
 set(HEADERS OptionalsReg.h
-            GLContextEGL.h
             WinSystemGbm.h
             GBMUtils.h
             DRMUtils.h
