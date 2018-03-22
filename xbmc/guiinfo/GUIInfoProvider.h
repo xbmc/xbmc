@@ -1,6 +1,5 @@
-#pragma once
 /*
- *      Copyright (C) 2012-2013 Team XBMC
+ *      Copyright (C) 2005-2013 Team XBMC
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -18,29 +17,29 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#pragma once
 
-#include "guiinfo/GUIInfoProvider.h"
+#include "cores/VideoPlayer/Interface/StreamInfo.h"
 
-class CVideoInfoTag;
+#include "guiinfo/IGUIInfoProvider.h"
 
 namespace GUIINFO
 {
 
 class GUIInfo;
 
-class CVideoGUIInfo : public CGUIInfoProvider
+class CGUIInfoProvider : public IGUIInfoProvider
 {
 public:
-  CVideoGUIInfo() = default;
-  ~CVideoGUIInfo() override = default;
+  CGUIInfoProvider() = default;
+  virtual ~CGUIInfoProvider() = default;
 
-  // GUIINFO::IGUIInfoProvider implementation
-  bool GetLabel(std::string& value, const CFileItem *item, const GUIInfo &info, std::string *fallback) const override;
-  bool GetInt(int& value, const CGUIListItem *item, const GUIInfo &info) const override;
-  bool GetBool(bool& value, const CGUIListItem *item, const GUIInfo &info) const override;
+  void UpdateAVInfo(const AudioStreamInfo& audioInfo, const VideoStreamInfo& videoInfo) override
+  { m_audioInfo = audioInfo, m_videoInfo = videoInfo; }
 
-private:
-  int GetPercentPlayed(const CVideoInfoTag* tag) const;
+protected:
+  VideoStreamInfo m_videoInfo;
+  AudioStreamInfo m_audioInfo;
 };
 
 } // namespace GUIINFO

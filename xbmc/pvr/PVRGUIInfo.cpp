@@ -28,6 +28,7 @@
 #include "ServiceBroker.h"
 #include "cores/DataCacheCore.h"
 #include "guiinfo/GUIInfo.h"
+#include "guiinfo/GUIInfoHelper.h"
 #include "guiinfo/GUIInfoLabels.h"
 #include "guilib/LocalizeStrings.h"
 #include "settings/AdvancedSettings.h"
@@ -1234,6 +1235,22 @@ bool CPVRGUIInfo::GetListItemAndPlayerBool(const CFileItem *item, const GUIInfo 
         const CPVRRecordingPtr recording = item->GetPVRRecordingInfoTag();
         const CPVREpgInfoTagPtr epgTag = CServiceBroker::GetPVRManager().EpgContainer().GetTagById(recording->Channel(), recording->BroadcastUid());
         bValue = (epgTag && epgTag->IsActive() && epgTag->Channel());
+        return true;
+      }
+      break;
+    case PLAYER_IS_CHANNEL_PREVIEW_ACTIVE:
+      if (item->IsPVRChannel())
+      {
+        if (CServiceBroker::GetPVRManager().GUIActions()->GetChannelNavigator().IsPreviewAndShowInfo())
+        {
+          bValue = true;
+        }
+        else
+        {
+          bValue = !m_videoInfo.valid;
+          if (bValue && item->GetPVRChannelInfoTag()->IsRadio())
+            bValue = !m_audioInfo.valid;
+        }
         return true;
       }
       break;

@@ -505,6 +505,52 @@ bool CVideoGUIInfo::GetLabel(std::string& value, const CFileItem *item, const GU
       if (value.empty() && tag)
         value = CStereoscopicsManager::NormalizeStereoMode(tag->m_streamDetails.GetStereoMode());
       return true;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    // VIDEOPLAYER_*
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    case VIDEOPLAYER_VIDEO_CODEC:
+      value = m_videoInfo.codecName;
+      return true;
+    case VIDEOPLAYER_VIDEO_RESOLUTION:
+      value = CStreamDetails::VideoDimsToResolutionDescription(m_videoInfo.width, m_videoInfo.height);
+      return true;
+    case VIDEOPLAYER_AUDIO_CODEC:
+      value = m_audioInfo.codecName;
+      return true;
+    case VIDEOPLAYER_AUDIO_CHANNELS:
+    {
+      int iChannels = m_audioInfo.channels;
+      if (iChannels > 0)
+      {
+        value = StringUtils::Format("%i", iChannels);
+        return true;
+      }
+      break;
+    }
+    case VIDEOPLAYER_AUDIO_BITRATE:
+    {
+      int iBitrate = m_audioInfo.bitrate;
+      if (iBitrate > 0)
+      {
+        value = StringUtils::Format("%li", std::lrint(static_cast<double>(iBitrate) / 1000.0));
+        return true;
+      }
+      break;
+    }
+    case VIDEOPLAYER_VIDEO_BITRATE:
+    {
+      int iBitrate = m_videoInfo.bitrate;
+      if (iBitrate > 0)
+      {
+        value = StringUtils::Format("%li", std::lrint(static_cast<double>(iBitrate) / 1000.0));
+        return true;
+      }
+      break;
+    }
+    case VIDEOPLAYER_AUDIO_LANG:
+      value = m_audioInfo.language;
+      return true;
   }
 
   return false;

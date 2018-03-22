@@ -303,6 +303,49 @@ bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, const GU
         return true;
       }
       break;
+    case MUSICPLAYER_BITRATE:
+    {
+      int iBitrate = m_audioInfo.bitrate;
+      if (iBitrate > 0)
+      {
+        value = StringUtils::Format("%li", std::lrint(static_cast<double>(iBitrate) / 1000.0));
+        return true;
+      }
+      break;
+    }
+    case MUSICPLAYER_CHANNELS:
+    {
+      int iChannels = m_audioInfo.channels;
+      if (iChannels > 0)
+      {
+        value = StringUtils::Format("%i", iChannels);
+        return true;
+      }
+      break;
+    }
+    case MUSICPLAYER_BITSPERSAMPLE:
+    {
+      int iBPS = m_audioInfo.bitspersample;
+      if (iBPS > 0)
+      {
+        value = StringUtils::Format("%i", iBPS);
+        return true;
+      }
+      break;
+    }
+    case MUSICPLAYER_SAMPLERATE:
+    {
+      int iSamplerate = m_audioInfo.samplerate;
+      if (iSamplerate > 0)
+      {
+        value = StringUtils::Format("%.5g", static_cast<double>(iSamplerate) / 1000.0);
+        return true;
+      }
+      break;
+    }
+    case MUSICPLAYER_CODEC:
+      value = StringUtils::Format("%s", m_audioInfo.codecName.c_str());
+      return true;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // MUSICPM_*

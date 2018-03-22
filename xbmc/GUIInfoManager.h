@@ -135,7 +135,6 @@ public:
   const MUSIC_INFO::CMusicInfoTag *GetCurrentSongTag() const;
   const CVideoInfoTag* GetCurrentMovieTag() const;
 
-  std::string GetMusicLabel(int item);
   std::string GetGameLabel(int item);
   std::string GetPictureLabel(int item);
 
@@ -313,13 +312,9 @@ protected:
   //For checking visibility of custom nodes for a role.
   std::vector<std::pair<std::string, int>> m_libraryRoleCounts; 
 
-  VideoStreamInfo m_videoInfo;
-  AudioStreamInfo m_audioInfo;
-
   CCriticalSection m_critInfo;
 
 private:
-  bool IsPlayerChannelPreviewActive() const;
   std::string GetListItemDuration(const CFileItem *item, TIME_FORMAT format) const;
 
   GUIINFO::CGUIInfoProviders m_infoProviders;

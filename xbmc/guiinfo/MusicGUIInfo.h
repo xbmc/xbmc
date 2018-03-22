@@ -19,14 +19,14 @@
  *
  */
 
-#include "guiinfo/IGUIInfoProvider.h"
+#include "guiinfo/GUIInfoProvider.h"
 
 namespace GUIINFO
 {
 
 class GUIInfo;
 
-class CMusicGUIInfo : public IGUIInfoProvider
+class CMusicGUIInfo : public CGUIInfoProvider
 {
 public:
   CMusicGUIInfo() = default;

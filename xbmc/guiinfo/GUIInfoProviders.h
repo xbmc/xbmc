@@ -28,6 +28,9 @@
 class CFileItem;
 class CGUIListItem;
 
+struct AudioStreamInfo;
+struct VideoStreamInfo;
+
 namespace GUIINFO
 {
 
@@ -79,6 +82,13 @@ public:
    * @return True if the value was filled successfully by one of the providers, false otherwise.
    */
   bool GetBool(bool& value, const CGUIListItem *item, const GUIInfo &info) const;
+
+  /*!
+   * @brief Set new audio/video stream info data at all registered providers.
+   * @param audioInfo New audio stream info.
+   * @param videoInfo New video stream info.
+   */
+ void UpdateAVInfo(const AudioStreamInfo& audioInfo, const VideoStreamInfo& videoInfo);
 
 private:
   std::vector<IGUIInfoProvider *> m_providers;

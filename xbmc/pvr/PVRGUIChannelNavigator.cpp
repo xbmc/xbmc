@@ -135,6 +135,11 @@ namespace PVR
     return m_currentChannel != m_playingChannel;
   }
 
+  bool CPVRGUIChannelNavigator::IsPreviewAndShowInfo() const
+  {
+    return IsPreview() && g_infoManager.GetShowInfo();
+  }
+
   void CPVRGUIChannelNavigator::ShowInfo()
   {
     ShowInfo(true);

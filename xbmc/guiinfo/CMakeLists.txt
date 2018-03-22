@@ -7,6 +7,7 @@ set(SOURCES GUIInfo.cpp
 set(HEADERS GUIInfo.h
             GUIInfoHelper.h
             GUIInfoLabels.h
+            GUIInfoProvider.h
             GUIInfoProviders.h
             IGUIInfoProvider.h
             MusicGUIInfo.h

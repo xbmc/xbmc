@@ -60,6 +60,12 @@ namespace PVR
     bool IsPreview() const;
 
     /*!
+     * @brief Query the state of channel preview and channel info OSD.
+     * @return True, if the currently selected channel is different from the currently playing channel and channel info OSD is active, False otherwise.
+     */
+    bool IsPreviewAndShowInfo() const;
+
+    /*!
      * @brief Show the channel info OSD.
      */
     void ShowInfo();

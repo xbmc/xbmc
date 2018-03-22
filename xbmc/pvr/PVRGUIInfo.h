@@ -24,7 +24,7 @@
 #include <vector>
 
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
-#include "guiinfo/IGUIInfoProvider.h"
+#include "guiinfo/GUIInfoProvider.h"
 #include "threads/CriticalSection.h"
 #include "threads/Thread.h"
 #include "utils/Observer.h"
@@ -40,7 +40,7 @@ namespace GUIINFO
 
 namespace PVR
 {
-  class CPVRGUIInfo : public GUIINFO::IGUIInfoProvider, private CThread, private Observer
+  class CPVRGUIInfo : public GUIINFO::CGUIInfoProvider, private CThread, private Observer
   {
   public:
     CPVRGUIInfo(void);

@@ -82,4 +82,12 @@ bool CGUIInfoProviders::GetBool(bool& value, const CGUIListItem *item, const GUI
   return false;
 }
 
+void CGUIInfoProviders::UpdateAVInfo(const AudioStreamInfo& audioInfo, const VideoStreamInfo& videoInfo)
+{
+  for (const auto& provider : m_providers)
+  {
+    provider->UpdateAVInfo(audioInfo, videoInfo);
+  }
+}
+
 } // namespace GUIINFO

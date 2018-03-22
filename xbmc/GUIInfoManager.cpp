@@ -91,9 +91,6 @@
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 
-#include "pvr/PVRGUIActions.h"
-#include "pvr/PVRManager.h"
-
 #include "addons/AddonManager.h"
 #include "addons/BinaryAddonCache.h"
 #include "interfaces/info/InfoBool.h"
@@ -6126,39 +6123,8 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
       strLabel = StringUtils::Format("%.2f", speed);
     }
     break;
-  case MUSICPLAYER_CHANNELS:
-  case MUSICPLAYER_BITSPERSAMPLE:
-  case MUSICPLAYER_BITRATE:
-  case MUSICPLAYER_SAMPLERATE:
-  case MUSICPLAYER_CODEC:
-    strLabel = GetMusicLabel(info);
-    break;
   case RETROPLAYER_VIEWMODE:
     strLabel = GetGameLabel(info);
-    break;
-  case VIDEOPLAYER_VIDEO_CODEC:
-    strLabel = m_videoInfo.codecName;
-    break;
-  case VIDEOPLAYER_VIDEO_RESOLUTION:
-    strLabel = CStreamDetails::VideoDimsToResolutionDescription(m_videoInfo.width, m_videoInfo.height);
-    break;
-  case VIDEOPLAYER_AUDIO_CODEC:
-    strLabel = m_audioInfo.codecName;
-    break;
-  case VIDEOPLAYER_AUDIO_CHANNELS:
-    if (m_audioInfo.channels > 0)
-      strLabel = StringUtils::Format("%i", m_audioInfo.channels);
-    break;
-  case VIDEOPLAYER_AUDIO_BITRATE:
-    if (m_audioInfo.bitrate > 0)
-      strLabel = StringUtils::Format("%li", lrint(static_cast<double>(m_audioInfo.bitrate) / 1000.0));
-    break;
-  case VIDEOPLAYER_VIDEO_BITRATE:
-    if (m_videoInfo.bitrate > 0)
-      strLabel = StringUtils::Format("%li", lrint(static_cast<double>(m_videoInfo.bitrate) / 1000.0));
-    break;
-  case VIDEOPLAYER_AUDIO_LANG:
-    strLabel = m_audioInfo.language;
     break;
   case PLAYER_PROCESS_VIDEODECODER:
     strLabel = CServiceBroker::GetDataCacheCore().GetVideoDecoderName();
@@ -6875,9 +6841,6 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
         break;
       case PLAYER_SHOWINFO:
         bReturn = m_playerShowInfo;
-        break;
-      case PLAYER_IS_CHANNEL_PREVIEW_ACTIVE:
-        bReturn = IsPlayerChannelPreviewActive();
         break;
       case SYSTEM_HASLOCKS:
         bReturn = CServiceBroker::GetProfileManager().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE;
@@ -8034,35 +7997,6 @@ std::string CGUIInfoManager::GetDuration(TIME_FORMAT format) const
   return "";
 }
 
-std::string CGUIInfoManager::GetMusicLabel(int item)
-{
-  if (!m_currentFile->HasMusicInfoTag())
-    return "";
-
-  switch (item)
-  {
-  case MUSICPLAYER_BITRATE:
-    if (m_audioInfo.bitrate > 0)
-      return StringUtils::Format("%li", lrint(static_cast<double>(m_audioInfo.bitrate) / 1000.0));
-    break;
-  case MUSICPLAYER_CHANNELS:
-    if (m_audioInfo.channels > 0)
-      return StringUtils::Format("%i", m_audioInfo.channels);
-    break;
-  case MUSICPLAYER_BITSPERSAMPLE:
-    if (m_audioInfo.bitspersample > 0)
-      return StringUtils::Format("%i", m_audioInfo.bitspersample);
-    break;
-  case MUSICPLAYER_SAMPLERATE:
-    if (m_audioInfo.samplerate > 0)
-      return StringUtils::Format("%.5g", static_cast<double>(m_audioInfo.samplerate) / 1000.0);
-    break;
-  case MUSICPLAYER_CODEC:
-    return StringUtils::Format("%s", m_audioInfo.codecName.c_str());
-  }
-  return std::string();
-}
-
 std::string CGUIInfoManager::GetGameLabel(int item)
 {
   switch (item)
@@ -8438,8 +8372,7 @@ void CGUIInfoManager::UpdateAVInfo()
     g_application.GetAppPlayer().GetVideoStreamInfo(CURRENT_STREAM, video);
     g_application.GetAppPlayer().GetAudioStreamInfo(CURRENT_STREAM, audio);
 
-    m_videoInfo = video;
-    m_audioInfo = audio;
+    m_infoProviders.UpdateAVInfo(audio, video);
   }
 }
 
@@ -9107,25 +9040,6 @@ bool CGUIInfoManager::ConditionsChangedValues(const std::map<INFO::InfoPtr, bool
       return true;
   }
   return false;
-}
-
-bool CGUIInfoManager::IsPlayerChannelPreviewActive() const
-{
-  bool bReturn = false;
-  if (m_playerShowInfo && m_currentFile->HasPVRChannelInfoTag())
-  {
-    if (CServiceBroker::GetPVRManager().GUIActions()->GetChannelNavigator().IsPreview())
-    {
-      bReturn = true;
-    }
-    else
-    {
-      bReturn = !m_videoInfo.valid;
-      if (bReturn && m_currentFile->GetPVRChannelInfoTag()->IsRadio())
-        bReturn = !m_audioInfo.valid;
-    }
-  }
-  return bReturn;
 }
 
 int CGUIInfoManager::GetMessageMask()
