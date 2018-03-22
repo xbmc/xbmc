@@ -32,7 +32,7 @@ std::set<std::string> CEGLUtils::GetClientExtensions()
   const char* extensions = eglQueryString(EGL_NO_DISPLAY, EGL_EXTENSIONS);
   if (!extensions)
   {
-    throw std::runtime_error("Could not query EGL for client extensions, maybe EGL_EXT_client_extensions is not supported?");
+    return {};
   }
   std::set<std::string> result;
   StringUtils::SplitTo(std::inserter(result, result.begin()), extensions, " ");
