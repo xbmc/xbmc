@@ -561,11 +561,21 @@ void DX::DeviceResources::ResizeBuffers()
   else
   {
     // Otherwise, create a new one using the same adapter as the existing Direct3D device.
-    DXGI_SWAP_CHAIN_DESC1 swapChainDesc = { 0 };
 
+    DXGI_FORMAT backBufferFormat = DXGI_FORMAT_B8G8R8A8_UNORM;
+    uint32_t is10bitSupported;
+
+    if ( m_d3dFeatureLevel >= D3D_FEATURE_LEVEL_11_0
+      && SUCCEEDED(m_d3dDevice->CheckFormatSupport(DXGI_FORMAT_R10G10B10A2_UNORM, &is10bitSupported))
+      && (is10bitSupported & D3D11_FORMAT_SUPPORT_RENDER_TARGET))
+    {
+      backBufferFormat = DXGI_FORMAT_R10G10B10A2_UNORM;
+    }
+
+    DXGI_SWAP_CHAIN_DESC1 swapChainDesc = { 0 };
     swapChainDesc.Width = lround(m_outputSize.Width);
     swapChainDesc.Height = lround(m_outputSize.Height);
-    swapChainDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
+    swapChainDesc.Format = backBufferFormat;
     swapChainDesc.Stereo = bHWStereoEnabled;
     swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
     swapChainDesc.BufferCount = 3 * (1 + bHWStereoEnabled);
