@@ -108,12 +108,11 @@ ssize_t CWinLibraryFile::Write(const void * lpBuf, size_t uiBufSize)
   if (!m_fileStream || !m_allowWrite)
     return -1;
 
-  IBuffer^ buf = ref new Buffer(uiBufSize);
-  memcpy(GetUnderlyingBuffer(buf), lpBuf, uiBufSize);
+  auto arrByte = ref new Platform::Array<UCHAR>((PUCHAR)(lpBuf), uiBufSize);
+  IBuffer^ buf = Windows::Security::Cryptography::CryptographicBuffer::CreateFromByteArray(arrByte);
 
-  Wait(m_fileStream->WriteAsync(buf));
-
-  return buf->Length;
+  uint32_t result = Wait(m_fileStream->WriteAsync(buf));
+  return static_cast<ssize_t>(result);
 }
 
 int64_t CWinLibraryFile::Seek(int64_t iFilePosition, int iWhence)
@@ -161,7 +160,14 @@ bool CWinLibraryFile::Delete(const CURL & url)
   auto file = GetFile(url);
   if (file)
   {
-    Wait(file->DeleteAsync());
+    try
+    {
+      Wait(file->DeleteAsync());
+    }
+    catch(Platform::Exception^)
+    { 
+      return false;
+    }
     return true;
   }
   return false;
@@ -179,7 +185,14 @@ bool CWinLibraryFile::Rename(const CURL & urlCurrentName, const CURL & urlNewNam
     if (destFile)
     {
       // replace exiting
-      Wait(currFile->MoveAndReplaceAsync(destFile));
+      try
+      {
+        Wait(currFile->MoveAndReplaceAsync(destFile));
+      }
+      catch (Platform::Exception^)
+      {
+        return false;
+      }
       return true;
     }
 
@@ -188,7 +201,14 @@ bool CWinLibraryFile::Rename(const CURL & urlCurrentName, const CURL & urlNewNam
     StorageFolder^ destFolder = CWinLibraryDirectory::GetFolder(defFolder);
     if (destFolder)
     {
-      Wait(currFile->MoveAsync(destFolder));
+      try
+      {
+        Wait(currFile->MoveAsync(destFolder));
+      }
+      catch (Platform::Exception^)
+      {
+        return false;
+      }
       return true;
     }
   }
@@ -237,24 +257,23 @@ bool CWinLibraryFile::IsInAccessList(const CURL& url)
 
 bool CWinLibraryFile::OpenIntenal(const CURL &url, FileAccessMode mode)
 {
-  std::string filePath = URIUtils::FixSlashesAndDups(url.GetFileName(), '\\');
-  std::wstring wpath = ToW(filePath);
   try
   {
-    auto exitingFile = GetFile(url);
-    if (exitingFile)
-      m_sFile = exitingFile;
+    if (mode == FileAccessMode::Read)
+    {
+      m_sFile = GetFile(url);
+    }
     else if (mode == FileAccessMode::ReadWrite)
     { 
-      auto destFolder = CURL(url.GetWithoutFilename());
+      auto destFolder = CURL(URIUtils::GetParentPath(url.Get()));
       auto folder = CWinLibraryDirectory::GetFolder(destFolder);
       if (folder)
       {
         std::wstring fileNameW = ToW(url.GetFileNameWithoutPath());
         Platform::String^ strRT = ref new Platform::String(fileNameW.c_str());
-        auto newFile = Wait(folder->CreateFileAsync(strRT, CreationCollisionOption::ReplaceExisting));
-        if (newFile)
-          m_sFile = newFile;
+        m_sFile = Wait(folder->CreateFileAsync(strRT, CreationCollisionOption::ReplaceExisting));
+        if (m_sFile)
+          m_allowWrite = true;
       }
     }
 
@@ -263,7 +282,11 @@ bool CWinLibraryFile::OpenIntenal(const CURL &url, FileAccessMode mode)
   }
   catch (Platform::Exception^ ex)
   {
-    // TODO logging error
+    std::string error = FromW(std::wstring(ex->Message->Data()));
+    CLog::LogF(LOGERROR, "an exception occurs while openning a file '%s' (mode: %s) : %s"
+                       , url.GetRedacted().c_str()
+                       , mode == FileAccessMode::Read ? "r" : "rw"
+                       , error.c_str());
     return false;
   }
 
@@ -298,7 +321,9 @@ StorageFile^ CWinLibraryFile::GetFile(const CURL & url)
     catch (Platform::Exception^ ex)
     {
       std::string error = FromW(std::wstring(ex->Message->Data()));
-      CLog::LogF(LOGERROR, __FUNCTION__, "unable to get file '%s' with error", filePath.c_str(), error.c_str());
+      CLog::LogF(LOGERROR, "unable to get file '%s' with error %s"
+                         , url.GetRedacted().c_str()
+                         , error.c_str());
     }
   }
   else if (url.GetProtocol() == "file" || url.GetProtocol().empty())
