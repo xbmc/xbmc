@@ -40,8 +40,6 @@
 CWinSystemGbm::CWinSystemGbm() :
   m_DRM(nullptr),
   m_GBM(new CGBMUtils),
-  m_nativeDisplay(nullptr),
-  m_nativeWindow(nullptr),
   m_delayDispReset(false)
 {
   std::string envSink;
@@ -99,8 +97,6 @@ bool CWinSystemGbm::InitWindowSystem()
     return false;
   }
 
-  m_nativeDisplay = m_GBM->m_device;
-
   CLog::Log(LOGDEBUG, "CWinSystemGbm::%s - initialized DRM", __FUNCTION__);
   return CWinSystemBase::InitWindowSystem();
 }
@@ -108,10 +104,7 @@ bool CWinSystemGbm::InitWindowSystem()
 bool CWinSystemGbm::DestroyWindowSystem()
 {
   m_GBM->DestroySurface();
-  m_nativeWindow = nullptr;
-
   m_GBM->DestroyDevice();
-  m_nativeDisplay = nullptr;
 
   CLog::Log(LOGDEBUG, "CWinSystemGbm::%s - deinitialized DRM", __FUNCTION__);
   return true;
@@ -136,8 +129,6 @@ bool CWinSystemGbm::CreateNewWindow(const std::string& name,
     return false;
   }
 
-  m_nativeWindow = reinterpret_cast<EGLNativeWindowType>(m_GBM->m_surface);
-
   CLog::Log(LOGDEBUG, "CWinSystemGbm::%s - initialized GBM", __FUNCTION__);
   return true;
 }
@@ -145,7 +136,6 @@ bool CWinSystemGbm::CreateNewWindow(const std::string& name,
 bool CWinSystemGbm::DestroyWindow()
 {
   m_GBM->DestroySurface();
-  m_nativeWindow = nullptr;
 
   CLog::Log(LOGDEBUG, "CWinSystemGbm::%s - deinitialized GBM", __FUNCTION__);
   return true;
