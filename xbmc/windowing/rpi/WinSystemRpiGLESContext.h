@@ -30,6 +30,8 @@ public:
   CWinSystemRpiGLESContext() = default;
   virtual ~CWinSystemRpiGLESContext() = default;
 
+  // Implementation of CWinSystemBase via CWinSystemRpi
+  CRenderSystemBase *GetRenderSystem() override { return this; }
   bool InitWindowSystem() override;
   bool CreateNewWindow(const std::string& name,
                        bool fullScreen,

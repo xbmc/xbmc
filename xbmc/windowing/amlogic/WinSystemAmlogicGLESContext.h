@@ -31,6 +31,8 @@ public:
   CWinSystemAmlogicGLESContext() = default;
   virtual ~CWinSystemAmlogicGLESContext() = default;
 
+  // Implementation of CWinSystemBase via CWinSystemAmlogic
+  CRenderSystemBase *GetRenderSystem() override { return this; }
   bool InitWindowSystem() override;
   bool CreateNewWindow(const std::string& name,
                        bool fullScreen,

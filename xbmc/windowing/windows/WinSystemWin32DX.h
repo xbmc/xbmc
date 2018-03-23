@@ -36,6 +36,8 @@ public:
   CWinSystemWin32DX();
   ~CWinSystemWin32DX();
 
+  // Implementation of CWinSystemBase via CWinSystemWin32
+  CRenderSystemBase *GetRenderSystem() override { return this; }
   bool CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res) override;
   bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop) override;
   bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays) override;

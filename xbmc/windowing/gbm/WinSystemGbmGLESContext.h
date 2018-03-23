@@ -33,6 +33,8 @@ public:
   CWinSystemGbmGLESContext() = default;
   virtual ~CWinSystemGbmGLESContext() = default;
 
+  // Implementation of CWinSystemBase via CWinSystemGbm
+  CRenderSystemBase *GetRenderSystem() override { return this; }
   bool InitWindowSystem() override;
   bool DestroyWindowSystem() override;
   bool CreateNewWindow(const std::string& name,

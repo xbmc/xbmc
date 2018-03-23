@@ -32,6 +32,8 @@ public:
   CWinSystemMirGLESContext() = default;
   virtual ~CWinSystemMirGLESContext() = default;
 
+  // Implementation of CWinSystemBase via CWinSystemMir
+  CRenderSystemBase *GetRenderSystem() override { return this; }
   bool CreateNewWindow(const std::string& name,
                        bool fullScreen,
                        RESOLUTION_INFO& res) override;

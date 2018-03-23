@@ -31,6 +31,8 @@ public:
   CWinSystemAndroidGLESContext() = default;
   virtual ~CWinSystemAndroidGLESContext() = default;
 
+  // Implementation of CWinSystemBase via CWinSystemAndroid
+  CRenderSystemBase *GetRenderSystem() override { return this; }
   bool InitWindowSystem() override;
   bool CreateNewWindow(const std::string& name,
                        bool fullScreen,
