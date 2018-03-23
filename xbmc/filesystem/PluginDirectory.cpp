@@ -186,6 +186,7 @@ bool CPluginDirectory::GetPluginResult(const std::string& strPath, CFileItem &re
     if (!resultItem.HasProperty("original_listitem_url"))
       resultItem.SetProperty("original_listitem_url", resultItem.GetPath());
     resultItem.SetPath(newDir.m_fileResult->GetPath());
+    resultItem.SetDynPath(std::string());
     resultItem.SetMimeType(newDir.m_fileResult->GetMimeType());
     resultItem.SetContentLookup(newDir.m_fileResult->ContentLookup());
     resultItem.UpdateInfo(*newDir.m_fileResult);
