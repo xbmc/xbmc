@@ -71,10 +71,6 @@ public:
   struct curl_slist* slist_append(struct curl_slist* list, const char* to_append);
   void slist_free_all(struct curl_slist* list);
   const char* easy_strerror(CURLcode code);
-#if defined(HAS_CURL_STATIC)
-  void crypto_set_id_callback(unsigned long (*cb)(void));
-  void crypto_set_locking_callback(void (*cb)(int, int, const char*, int));
-#endif
 };
 
 class DllLibCurlGlobal : public DllLibCurl

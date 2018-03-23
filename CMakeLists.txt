@@ -57,7 +57,6 @@ if(UNIX)
   option(ENABLE_INTERNAL_CROSSGUID "Enable internal crossguid?" ON)
   option(ENABLE_INTERNAL_RapidJSON "Enable internal rapidjson?" OFF)
   option(ENABLE_INTERNAL_FMT "Enable internal fmt?" OFF)
-  option(ENABLE_OPENSSL     "Enable OpenSSL?" ON)
 endif()
 # System options
 if(NOT WIN32)
@@ -122,6 +121,7 @@ set(required_deps Cdio
                   Iconv
                   LibDvd
                   Lzo2
+                  OpenSSL
                   PCRE
                   RapidJSON
                   Sqlite3
@@ -191,11 +191,6 @@ endif()
 
 if(NOT UDEV_FOUND)
   core_optional_dep(LibUSB)
-endif()
-
-if(ENABLE_OPENSSL)
-  core_require_dep(OpenSSL)
-  list(APPEND DEP_DEFINES "-DHAVE_OPENSSL=1")
 endif()
 
 if(ENABLE_UPNP)
