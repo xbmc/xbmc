@@ -80,9 +80,9 @@ public:
   void SaveAuthenticatedURL(const CURL &url, bool saveToProfile = true);
 
   /*!
-   \brief Save an authenticated URL.
+   \brief Is an URL is supported (by the manager)
 
-   This routine chacks that an URL is supported by the manager
+   This routine checks that an URL is supported by the manager
 
    \param url the URL to check.
    \return true if the URL is supported
