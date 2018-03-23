@@ -18,9 +18,10 @@
  *
  */
 
+#include "GUITextureD3D.h"
+
 #include "D3DResource.h"
 #include "GUIShaderDX.h"
-#include "GUITextureD3D.h"
 #include "rendering/dx/RenderContext.h"
 #include "Texture.h"
 

@@ -1069,6 +1069,15 @@ namespace XBMCAddon
       return msg.GetLabel();
     }
 
+    void ControlEdit::setType(int type, const String& heading)
+    {
+      if (pGUIControl)
+      {
+        XBMCAddonUtils::GuiLock(languageHook, false);
+        static_cast<CGUIEditControl*>(pGUIControl)->SetInputType(static_cast<CGUIEditControl::INPUT_TYPE>(type), CVariant{heading});
+      }
+    }
+
     // ============================================================
     //  ControlList
     // ============================================================
