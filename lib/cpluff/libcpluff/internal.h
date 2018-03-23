@@ -85,7 +85,11 @@ extern "C" {
 
 #if defined(_WIN32)
 #define DLHANDLE void *
+#if defined(WINAPI_FAMILY) && (WINAPI_FAMILY != WINAPI_FAMILY_DESKTOP_APP)
+#define DLOPEN(name) LoadPackagedLibrary(name, 0)
+#else
 #define DLOPEN(name) LoadLibraryA(name)
+#endif
 #define DLSYM(handle, symbol) GetProcAddress(handle, symbol)
 #define DLCLOSE(handle) CloseHandle(handle)
 #define DLERROR() "WIN32 - TODO"

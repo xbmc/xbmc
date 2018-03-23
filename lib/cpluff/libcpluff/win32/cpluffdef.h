@@ -136,7 +136,11 @@
 
 #if defined(_WIN32)
 #  define CP_EXPORT __declspec(dllexport)
+#if defined(_WINDLL)
 #  define CP_IMPORT extern __declspec(dllimport)
+#else
+#  define CP_IMPORT
+#endif
 #  define CP_HIDDEN
 #elif defined(__GNUC__) && (__GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ >= 3))
 #  define CP_EXPORT
