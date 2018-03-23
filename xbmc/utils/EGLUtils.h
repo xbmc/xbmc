@@ -119,3 +119,28 @@ private:
   std::array<EGLint, AttributeCount * 2 + 1> m_attributes;
   int m_writePosition{};
 };
+
+class CEGLContextUtils
+{
+public:
+  CEGLContextUtils();
+  virtual ~CEGLContextUtils();
+
+  bool CreateDisplay(EGLDisplay display,
+                     EGLint renderable_type,
+                     EGLint rendering_api);
+
+  bool CreateSurface(EGLNativeWindowType surface);
+  bool CreateContext();
+  bool BindContext();
+  bool SurfaceAttrib();
+  void Destroy();
+  void Detach();
+  bool SetVSync(bool enable);
+  void SwapBuffers();
+
+  EGLDisplay m_eglDisplay;
+  EGLSurface m_eglSurface;
+  EGLContext m_eglContext;
+  EGLConfig m_eglConfig;
+};

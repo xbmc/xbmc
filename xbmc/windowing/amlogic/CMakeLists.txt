@@ -1,9 +1,7 @@
-set(SOURCES GLContextEGL.cpp
-            WinSystemAmlogic.cpp
+set(SOURCES WinSystemAmlogic.cpp
             VideoSyncAML.cpp)
 
-set(HEADERS GLContextEGL.h
-            WinSystemAmlogic.h
+set(HEADERS WinSystemAmlogic.h
             VideoSyncAML.h)
 
 if(OPENGLES_FOUND)

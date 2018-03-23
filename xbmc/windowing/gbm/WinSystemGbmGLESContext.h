@@ -20,7 +20,7 @@
 
 #pragma once
 
-#include "GLContextEGL.h"
+#include "utils/EGLUtils.h"
 #include "rendering/gles/RenderSystemGLES.h"
 #include "WinSystemGbm.h"
 #include <memory>
@@ -52,7 +52,7 @@ protected:
   void PresentRenderImpl(bool rendered) override {};
 
 private:
-  CGLContextEGL m_pGLContext;
+  CEGLContextUtils m_pGLContext;
   struct delete_CVaapiProxy
   {
     void operator()(CVaapiProxy *p) const;

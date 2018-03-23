@@ -1,10 +1,8 @@
-set(SOURCES GLContextEGL.cpp
-            WinSystemRpi.cpp
+set(SOURCES WinSystemRpi.cpp
             RPIUtils.cpp
             VideoSyncPi.cpp)
 
-set(HEADERS GLContextEGL.h
-            WinSystemRpi.h
+set(HEADERS WinSystemRpi.h
             RPIUtils.h
             VideoSyncPi.h)
 

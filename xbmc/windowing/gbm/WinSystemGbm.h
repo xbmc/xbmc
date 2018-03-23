@@ -26,7 +26,6 @@
 #include "threads/CriticalSection.h"
 #include "windowing/WinSystem.h"
 #include "DRMUtils.h"
-#include "GLContextEGL.h"
 
 class IDispResource;
 
@@ -64,9 +63,6 @@ protected:
   void OnLostDevice();
 
   std::unique_ptr<CGBMUtils> m_GBM;
-
-  EGLDisplay m_nativeDisplay;
-  EGLNativeWindowType m_nativeWindow;
 
   CCriticalSection m_resourceSection;
   std::vector<IDispResource*>  m_resources;
