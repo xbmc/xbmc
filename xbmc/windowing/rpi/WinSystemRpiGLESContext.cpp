@@ -89,7 +89,12 @@ bool CWinSystemRpiGLESContext::CreateNewWindow(const std::string& name,
     return false;
   }
 
-  if (!m_pGLContext.CreateContext())
+  const EGLint contextAttribs[] =
+  {
+    EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE
+  };
+
+  if (!m_pGLContext.CreateContext(contextAttribs))
   {
     return false;
   }
