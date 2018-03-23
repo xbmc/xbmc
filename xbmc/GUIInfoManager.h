@@ -34,7 +34,6 @@
 #include "cores/IPlayer.h"
 #include "FileItem.h"
 
-#include <atomic>
 #include <map>
 #include <string>
 #include <vector>
@@ -113,7 +112,6 @@ public:
 
   std::string GetTime(TIME_FORMAT format = TIME_FORMAT_GUESS) const;
   std::string GetDate(bool bNumbersOnly = false);
-  std::string GetDuration(TIME_FORMAT format = TIME_FORMAT_GUESS) const;
 
   /*! \brief Set currently playing file item
    */
@@ -138,22 +136,9 @@ public:
   std::string GetGameLabel(int item);
   std::string GetPictureLabel(int item);
 
-  int64_t GetPlayTime() const;  // in ms
-  std::string GetCurrentPlayTime(TIME_FORMAT format = TIME_FORMAT_GUESS) const;
-  std::string GetCurrentSeekTime(TIME_FORMAT format = TIME_FORMAT_GUESS) const;
-  int GetPlayTimeRemaining() const;
-  int GetTotalPlayTime() const;
   float GetSeekPercent() const;
-  std::string GetCurrentPlayTimeRemaining(TIME_FORMAT format) const;
   int GetEpgEventProgress() const;
   int GetEpgEventSeekPercent() const;
-
-  bool GetDisplayAfterSeek();
-  void SetDisplayAfterSeek(unsigned int timeOut = 2500, int seekOffset = 0);
-  void SetShowTime(bool showtime) { m_playerShowTime = showtime; };
-  void SetShowInfo(bool showinfo);
-  bool GetShowInfo() const { return m_playerShowInfo; }
-  bool ToggleShowInfo();
 
   std::string GetSystemHeatInfo(int info);
   CTemperature GetGPUTemperature();
@@ -167,8 +152,8 @@ public:
 
   void ResetCache();
   bool GetItemInt(int &value, const CGUIListItem *item, int info) const;
-  std::string GetItemLabel(const CFileItem *item, int info, std::string *fallback = NULL);
-  std::string GetItemImage(const CFileItem *item, int info, std::string *fallback = NULL);
+  std::string GetItemLabel(const CFileItem *item, int info, std::string *fallback = nullptr) const;
+  std::string GetItemImage(const CFileItem *item, int info, std::string *fallback = nullptr) const;
 
   /*! \brief containers call here to specify that the focus is changing
    \param id control id
@@ -184,13 +169,12 @@ public:
   void SetLibraryBool(int condition, bool value);
   bool GetLibraryBool(int condition);
   void ResetLibraryBools();
-  std::string LocalizeTime(const CDateTime &time, TIME_FORMAT format) const;
 
   int TranslateSingleString(const std::string &strCondition);
 
   int RegisterSkinVariableString(const INFO::CSkinVariableString* info);
   int TranslateSkinVariableString(const std::string& name, int context);
-  std::string GetSkinVariableString(int info, bool preferImage = false, const CGUIListItem *item=NULL);
+  std::string GetSkinVariableString(int info, bool preferImage = false, const CGUIListItem *item = nullptr) const;
 
   /// \brief iterates through boolean conditions and compares their stored values to current values. Returns true if any condition changed value.
   bool ConditionsChangedValues(const std::map<INFO::InfoPtr, bool>& map);
@@ -237,10 +221,10 @@ protected:
   bool GetMultiInfoBool(const GUIINFO::GUIInfo &info, int contextWindow = 0, const CGUIListItem *item = NULL);
   bool GetMultiInfoInt(int &value, const GUIINFO::GUIInfo &info, int contextWindow = 0) const;
   CGUIControl * GetActiveContainer(int containerId, int contextWindow) const;
-  std::string GetMultiInfoLabel(const GUIINFO::GUIInfo &info, int contextWindow = 0, std::string *fallback = NULL);
+  std::string GetMultiInfoLabel(const GUIINFO::GUIInfo &info, int contextWindow = 0, std::string *fallback = nullptr) const;
   int TranslateListItem(const Property &info);
   int TranslateMusicPlayerString(const std::string &info) const;
-  TIME_FORMAT TranslateTimeFormat(const std::string &format);
+  static TIME_FORMAT TranslateTimeFormat(const std::string &format);
   bool GetItemBool(const CGUIListItem *item, int condition) const;
 
   /*! \brief Split an info string into it's constituent parts and parameters
@@ -268,8 +252,6 @@ protected:
   std::vector<GUIINFO::GUIInfo> m_multiInfo;
   std::vector<std::string> m_listitemProperties;
 
-  std::string m_currentMovieDuration;
-
   // Current playing stuff
   CFileItem* m_currentFile;
   CFileItem* m_currentSlide;
@@ -279,12 +261,6 @@ protected:
   int m_fanSpeed;
   CTemperature m_gpuTemp;
   CTemperature m_cpuTemp;
-
-  //Fullscreen OSD Stuff
-  unsigned int m_AfterSeekTimeout;
-  int m_seekOffset;
-  std::atomic_bool m_playerShowTime;
-  std::atomic_bool m_playerShowInfo;
 
   // FPS counters
   float m_fps;

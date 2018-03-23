@@ -23,6 +23,7 @@
 #include <vector>
 
 #include "guiinfo/MusicGUIInfo.h"
+#include "guiinfo/PlayerGUIInfo.h"
 #include "guiinfo/VideoGUIInfo.h"
 
 class CFileItem;
@@ -88,13 +89,20 @@ public:
    * @param audioInfo New audio stream info.
    * @param videoInfo New video stream info.
    */
- void UpdateAVInfo(const AudioStreamInfo& audioInfo, const VideoStreamInfo& videoInfo);
+  void UpdateAVInfo(const AudioStreamInfo& audioInfo, const VideoStreamInfo& videoInfo);
+
+  /*!
+   * @brief Get the player guiinfo provider.
+   * @return The player guiinfo provider.
+   */
+  CPlayerGUIInfo& GetPlayerInfoProvider() { return m_playerGUIInfo; }
 
 private:
   std::vector<IGUIInfoProvider *> m_providers;
 
   CMusicGUIInfo m_musicGUIInfo;
   CVideoGUIInfo m_videoGUIInfo;
+  CPlayerGUIInfo m_playerGUIInfo;
 };
 
 } // namespace GUIINFO

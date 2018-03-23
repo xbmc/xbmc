@@ -195,13 +195,20 @@ bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, const GU
         }
         break;
       }
+      case PLAYER_DURATION:
+        if (!g_application.GetAppPlayer().IsPlayingAudio())
+          break;
+        // fall-thru is intended.
       case MUSICPLAYER_DURATION:
       case LISTITEM_DURATION:
       {
         int iDuration = tag->GetDuration();
         if (iDuration > 0)
         {
-          value = StringUtils::SecondsToTimeString(iDuration, static_cast<TIME_FORMAT>(info.GetData1()));
+          TIME_FORMAT format = static_cast<TIME_FORMAT>(info.GetData1());
+          if (format == TIME_FORMAT_GUESS)
+            format = TIME_FORMAT_HH_MM;
+          value = StringUtils::SecondsToTimeString(iDuration, format);
           return true;
         }
         break;

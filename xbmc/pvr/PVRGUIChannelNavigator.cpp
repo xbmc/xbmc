@@ -34,7 +34,7 @@ namespace PVR
 {
   void CPVRGUIChannelNavigator::SelectNextChannel(ChannelSwitchMode eSwitchMode)
   {
-    if (!g_infoManager.GetShowInfo() && eSwitchMode == ChannelSwitchMode::NO_SWITCH)
+    if (!g_infoManager.GetInfoProviders().GetPlayerInfoProvider().GetShowInfo() && eSwitchMode == ChannelSwitchMode::NO_SWITCH)
     {
       // show info for current channel on first next channel selection.
       ShowInfo(false);
@@ -48,7 +48,7 @@ namespace PVR
 
   void CPVRGUIChannelNavigator::SelectPreviousChannel(ChannelSwitchMode eSwitchMode)
   {
-    if (!g_infoManager.GetShowInfo() && eSwitchMode == ChannelSwitchMode::NO_SWITCH)
+    if (!g_infoManager.GetInfoProviders().GetPlayerInfoProvider().GetShowInfo() && eSwitchMode == ChannelSwitchMode::NO_SWITCH)
     {
       // show info for current channel on first previous channel selection.
       ShowInfo(false);
@@ -137,7 +137,7 @@ namespace PVR
 
   bool CPVRGUIChannelNavigator::IsPreviewAndShowInfo() const
   {
-    return IsPreview() && g_infoManager.GetShowInfo();
+    return IsPreview() && g_infoManager.GetInfoProviders().GetPlayerInfoProvider().GetShowInfo();
   }
 
   void CPVRGUIChannelNavigator::ShowInfo()
@@ -151,7 +151,7 @@ namespace PVR
 
     if (bForce || iTimeout > 0)
     {
-      g_infoManager.SetShowInfo(true);
+      g_infoManager.GetInfoProviders().GetPlayerInfoProvider().SetShowInfo(true);
 
       CSingleLock lock(m_critSection);
 
@@ -171,7 +171,7 @@ namespace PVR
 
   void CPVRGUIChannelNavigator::HideInfo()
   {
-    g_infoManager.SetShowInfo(false);
+    g_infoManager.GetInfoProviders().GetPlayerInfoProvider().SetShowInfo(false);
 
     CFileItemPtr item;
 
@@ -198,7 +198,7 @@ namespace PVR
 
   void CPVRGUIChannelNavigator::ToggleInfo()
   {
-    if (g_infoManager.GetShowInfo())
+    if (g_infoManager.GetInfoProviders().GetPlayerInfoProvider().GetShowInfo())
       HideInfo();
     else
       ShowInfo();

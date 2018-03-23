@@ -133,8 +133,6 @@ CGUIInfoManager::CGUIInfoManager(void) :
 {
   m_lastSysHeatInfoTime = -SYSHEATUPDATEINTERVAL;  // make sure we grab CPU temp on the first pass
   m_fanSpeed = 0;
-  m_AfterSeekTimeout = 0;
-  m_seekOffset = 0;
   m_nextWindowID = WINDOW_INVALID;
   m_prevWindowID = WINDOW_INVALID;
   m_stringParameters.emplace_back("__ZZZZ__");   // to offset the string parameters by 1 to assure that all entries are non-zero
@@ -142,8 +140,6 @@ CGUIInfoManager::CGUIInfoManager(void) :
   m_currentSlide = new CFileItem;
   m_frameCounter = 0;
   m_lastFPSTime = 0;
-  m_playerShowTime = false;
-  m_playerShowInfo = false;
   m_fps = 0.0f;
   m_refreshCounter = 0;
   ResetLibraryBools();
@@ -6058,107 +6054,9 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   case SYSTEM_FPS:
     strLabel = StringUtils::Format("%02.2f", m_fps);
     break;
-  case PLAYER_VOLUME:
-    strLabel = StringUtils::Format("%2.1f dB", CAEUtil::PercentToGain(g_application.GetVolume(false)));
-    break;
-  case PLAYER_SUBTITLE_DELAY:
-    strLabel = StringUtils::Format("%2.3f s", g_application.GetAppPlayer().GetVideoSettings().m_SubtitleDelay);
-    break;
-  case PLAYER_AUDIO_DELAY:
-    strLabel = StringUtils::Format("%2.3f s", g_application.GetAppPlayer().GetVideoSettings().m_AudioDelay);
-    break;
-  case PLAYER_CHAPTER:
-    strLabel = StringUtils::Format("%02d", g_application.GetAppPlayer().GetChapter());
-    break;
-  case PLAYER_CHAPTERCOUNT:
-    strLabel = StringUtils::Format("%02d", g_application.GetAppPlayer().GetChapterCount());
-    break;
-  case PLAYER_CHAPTERNAME:
-    g_application.GetAppPlayer().GetChapterName(strLabel);
-    break;
-  case PLAYER_CACHELEVEL:
-    {
-      int iLevel = 0;
-      if (GetInt(iLevel, PLAYER_CACHELEVEL) && iLevel >= 0)
-        strLabel = StringUtils::Format("%i", iLevel);
-    }
-    break;
-  case PLAYER_TIME:
-    strLabel = GetCurrentPlayTime(TIME_FORMAT_HH_MM);
-    break;
-  case PLAYER_DURATION:
-    strLabel = GetDuration(TIME_FORMAT_HH_MM);
-    break;
-  case PLAYER_PATH:
-  case PLAYER_FILENAME:
-  case PLAYER_FILEPATH:
-    if (m_currentFile)
-      strLabel = m_currentFile->GetPath();
-
-    if (info == PLAYER_PATH)
-    {
-      // do this twice since we want the path outside the archive if this
-      // is to be of use.
-      if (URIUtils::IsInArchive(strLabel))
-        strLabel = URIUtils::GetParentPath(strLabel);
-      strLabel = URIUtils::GetParentPath(strLabel);
-    }
-    else if (info == PLAYER_FILENAME)
-      strLabel = URIUtils::GetFileName(strLabel);
-    break;
-  case PLAYER_TITLE:
-    if (m_currentFile)
-    {
-      // use label or drop down to title from path
-      if (!m_currentFile->GetLabel().empty())
-        return m_currentFile->GetLabel();
-      return CUtil::GetTitleFromPath(m_currentFile->GetPath());
-    }
-    break;
-  case PLAYER_PLAYSPEED:
-    {
-      float speed = g_application.GetAppPlayer().GetPlaySpeed();
-      if (speed == 1.0)
-        speed = g_application.GetAppPlayer().GetPlayTempo();
-      strLabel = StringUtils::Format("%.2f", speed);
-    }
-    break;
   case RETROPLAYER_VIEWMODE:
     strLabel = GetGameLabel(info);
     break;
-  case PLAYER_PROCESS_VIDEODECODER:
-    strLabel = CServiceBroker::GetDataCacheCore().GetVideoDecoderName();
-    break;
-  case PLAYER_PROCESS_DEINTMETHOD:
-    strLabel = CServiceBroker::GetDataCacheCore().GetVideoDeintMethod();
-    break;
-  case PLAYER_PROCESS_PIXELFORMAT:
-    strLabel = CServiceBroker::GetDataCacheCore().GetVideoPixelFormat();
-    break;
-  case PLAYER_PROCESS_VIDEOFPS:
-    strLabel = StringUtils::Format("%.3f", CServiceBroker::GetDataCacheCore().GetVideoFps());
-    break;
-  case PLAYER_PROCESS_VIDEODAR:
-    strLabel = StringUtils::Format("%.2f", CServiceBroker::GetDataCacheCore().GetVideoDAR());
-    break;
-  case PLAYER_PROCESS_VIDEOWIDTH:
-    strLabel = StringUtils::FormatNumber(CServiceBroker::GetDataCacheCore().GetVideoWidth());
-    break;
-  case PLAYER_PROCESS_VIDEOHEIGHT:
-    strLabel = StringUtils::FormatNumber(CServiceBroker::GetDataCacheCore().GetVideoHeight());
-    break;
-  case PLAYER_PROCESS_AUDIODECODER:
-    strLabel = CServiceBroker::GetDataCacheCore().GetAudioDecoderName();
-    break;
-  case PLAYER_PROCESS_AUDIOCHANNELS:
-    strLabel = CServiceBroker::GetDataCacheCore().GetAudioChannels();
-    break;
-  case PLAYER_PROCESS_AUDIOSAMPLERATE:
-    strLabel = StringUtils::FormatNumber(CServiceBroker::GetDataCacheCore().GetAudioSampleRate());
-    break;
-  case PLAYER_PROCESS_AUDIOBITSPERSAMPLE:
-      strLabel = StringUtils::FormatNumber(CServiceBroker::GetDataCacheCore().GetAudioBitsPerSample());
-      break;
   case PLAYLIST_LENGTH:
   case PLAYLIST_POSITION:
   case PLAYLIST_RANDOM:
@@ -6585,33 +6483,6 @@ bool CGUIInfoManager::GetInt(int &value, int info, int contextWindow, const CGUI
 
   switch (info)
   {
-    case PLAYER_VOLUME:
-      value = static_cast<int>(g_application.GetVolume());
-      return true;
-    case PLAYER_SUBTITLE_DELAY:
-      value = g_application.GetSubtitleDelay();
-      return true;
-    case PLAYER_AUDIO_DELAY:
-      value = g_application.GetAudioDelay();
-      return true;
-    case PLAYER_PROGRESS:
-      value = lrintf(g_application.GetPercentage());
-      return true;
-    case PLAYER_PROGRESS_CACHE:
-      value = lrintf(g_application.GetCachePercentage());
-      return true;
-    case PLAYER_SEEKBAR:
-      value = lrintf(GetSeekPercent());
-      return true;
-    case PLAYER_CACHELEVEL:
-      value = g_application.GetAppPlayer().GetCacheLevel();
-      return true;
-    case PLAYER_CHAPTER:
-      value = g_application.GetAppPlayer().GetChapter();
-      return true;
-    case PLAYER_CHAPTERCOUNT:
-      value = g_application.GetAppPlayer().GetChapterCount();
-      return true;
     case SYSTEM_FREE_MEMORY:
     case SYSTEM_USED_MEMORY:
       {
@@ -6749,9 +6620,6 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
           bReturn = (pWindow && pWindow->IsMediaWindow());
         }
         break;
-      case PLAYER_MUTED:
-        bReturn = (g_application.IsMuted() || g_application.GetVolume(false) <= VOLUME_MINIMUM);
-        break;
       case LIBRARY_IS_SCANNING:
         bReturn = (g_application.IsMusicScanning() || g_application.IsVideoScanning());
         break;
@@ -6838,9 +6706,6 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
         break;
       case SYSTEM_DPMS_ACTIVE:
         bReturn = g_application.IsDPMSActive();
-        break;
-      case PLAYER_SHOWINFO:
-        bReturn = m_playerShowInfo;
         break;
       case SYSTEM_HASLOCKS:
         bReturn = CServiceBroker::GetProfileManager().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE;
@@ -7007,103 +6872,6 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
           bReturn = (slideShow && slideShow->GetCurrentSlide() && slideShow->GetCurrentSlide()->IsVideo());
         }
         break;
-      case PLAYER_HAS_MEDIA:
-        bReturn = g_application.GetAppPlayer().IsPlaying();
-        break;
-      case PLAYER_HAS_AUDIO:
-        bReturn = g_application.GetAppPlayer().IsPlayingAudio();
-        break;
-      case PLAYER_HAS_VIDEO:
-        bReturn = g_application.GetAppPlayer().IsPlayingVideo();
-        break;
-      case PLAYER_HAS_GAME:
-        bReturn = g_application.GetAppPlayer().IsPlayingGame();
-        break;
-      case PLAYER_PLAYING:
-        bReturn = g_application.GetAppPlayer().GetPlaySpeed() == 1.0;
-        break;
-      case PLAYER_PAUSED:
-        bReturn = g_application.GetAppPlayer().IsPausedPlayback();
-        break;
-      case PLAYER_REWINDING:
-        bReturn = g_application.GetAppPlayer().GetPlaySpeed() < 0;
-        break;
-      case PLAYER_FORWARDING:
-        bReturn = g_application.GetAppPlayer().GetPlaySpeed() > 1.5;
-        break;
-      case PLAYER_REWINDING_2x:
-        bReturn = g_application.GetAppPlayer().GetPlaySpeed() == -2;
-        break;
-      case PLAYER_REWINDING_4x:
-        bReturn = g_application.GetAppPlayer().GetPlaySpeed() == -4;
-        break;
-      case PLAYER_REWINDING_8x:
-        bReturn = g_application.GetAppPlayer().GetPlaySpeed() == -8;
-        break;
-      case PLAYER_REWINDING_16x:
-        bReturn = g_application.GetAppPlayer().GetPlaySpeed() == -16;
-        break;
-      case PLAYER_REWINDING_32x:
-        bReturn = g_application.GetAppPlayer().GetPlaySpeed() == -32;
-        break;
-      case PLAYER_FORWARDING_2x:
-        bReturn = g_application.GetAppPlayer().GetPlaySpeed() == 2;
-        break;
-      case PLAYER_FORWARDING_4x:
-        bReturn = g_application.GetAppPlayer().GetPlaySpeed() == 4;
-        break;
-      case PLAYER_FORWARDING_8x:
-        bReturn = g_application.GetAppPlayer().GetPlaySpeed() == 8;
-        break;
-      case PLAYER_FORWARDING_16x:
-        bReturn = g_application.GetAppPlayer().GetPlaySpeed() == 16;
-        break;
-      case PLAYER_FORWARDING_32x:
-        bReturn = g_application.GetAppPlayer().GetPlaySpeed() == 32;
-        break;
-      case PLAYER_CAN_PAUSE:
-        bReturn = g_application.GetAppPlayer().CanPause();
-        break;
-      case PLAYER_CAN_SEEK:
-        bReturn = g_application.GetAppPlayer().CanSeek();
-        break;
-      case PLAYER_SUPPORTS_TEMPO:
-        bReturn = g_application.GetAppPlayer().SupportsTempo();
-        break;
-      case PLAYER_IS_TEMPO:
-        {
-          float tempo = g_application.GetAppPlayer().GetPlayTempo();
-          float speed = g_application.GetAppPlayer().GetPlaySpeed();
-          bReturn = (speed == 1.0 && tempo != 1.0);
-        }
-        break;
-      case PLAYER_DISPLAY_AFTER_SEEK:
-        bReturn = GetDisplayAfterSeek();
-        break;
-      case PLAYER_CACHING:
-        bReturn = g_application.GetAppPlayer().IsCaching();
-        break;
-      case PLAYER_SEEKBAR:
-        {
-          CGUIDialog *seekBar = CServiceBroker::GetGUI()->GetWindowManager().GetDialog(WINDOW_DIALOG_SEEK_BAR);
-          bReturn = seekBar ? seekBar->IsDialogRunning() : false;
-        }
-        break;
-      case PLAYER_SEEKING:
-        bReturn = g_application.GetAppPlayer().GetSeekHandler().InProgress();
-        break;
-      case PLAYER_SHOWTIME:
-        bReturn = m_playerShowTime;
-        break;
-      case PLAYER_PASSTHROUGH:
-        bReturn = g_application.GetAppPlayer().IsPassthrough();
-        break;
-      case PLAYER_ISINTERNETSTREAM:
-        bReturn = m_currentFile && URIUtils::IsInternetStream(m_currentFile->GetPath());
-        break;
-      case PLAYER_HAS_PROGRAMS:
-        bReturn = (g_application.GetAppPlayer().GetProgramsCount() > 1) ? true : false;
-        break;
       case PLAYLIST_ISRANDOM:
         bReturn = CServiceBroker::GetPlaylistPlayer().IsShuffled(CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist());
         break;
@@ -7112,9 +6880,6 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
         break;
       case PLAYLIST_ISREPEATONE:
         bReturn = CServiceBroker::GetPlaylistPlayer().GetRepeat(CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist()) == PLAYLIST::REPEAT_ONE;
-        break;
-      case PLAYER_HASDURATION:
-        bReturn = g_application.GetTotalTime() > 0;
         break;
       case VISUALISATION_LOCKED:
         {
@@ -7140,9 +6905,6 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
             bReturn = (viz && viz->HasPresets());
           }
         }
-        break;
-      case PLAYER_PROCESS_VIDEOHWDECODER:
-        bReturn = CServiceBroker::GetDataCacheCore().IsVideoHwDecoder();
         break;
       default: // default, use integer value different from 0 as true
         {
@@ -7673,7 +7435,7 @@ CGUIControl* CGUIInfoManager::GetActiveContainer(int containerId, int contextWin
 }
 
 /// \brief Examines the multi information sent and returns the string as appropriate
-std::string CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &constinfo, int contextWindow, std::string *fallback)
+std::string CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &constinfo, int contextWindow, std::string *fallback) const
 {
   GUIInfo info(constinfo);
   std::string strValue;
@@ -7701,75 +7463,6 @@ std::string CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &constinfo, int con
   if (m_infoProviders.GetLabel(strValue, m_currentFile, info, fallback))
   {
     return strValue;
-  }
-  if (info.m_info == PLAYER_TIME)
-  {
-    return GetCurrentPlayTime(static_cast<TIME_FORMAT>(info.GetData1()));
-  }
-  else if (info.m_info == PLAYER_TIME_REMAINING)
-  {
-    return GetCurrentPlayTimeRemaining(static_cast<TIME_FORMAT>(info.GetData1()));
-  }
-  else if (info.m_info == PLAYER_FINISH_TIME)
-  {
-    CDateTime time(CDateTime::GetCurrentDateTime());
-    int playTimeRemaining = GetPlayTimeRemaining();
-    float speed = g_application.GetAppPlayer().GetPlaySpeed();
-    float tempo = g_application.GetAppPlayer().GetPlayTempo();
-    if (speed == 1.0)
-      playTimeRemaining /= tempo;
-    time += CDateTimeSpan(0, 0, 0, playTimeRemaining);
-    return LocalizeTime(time, static_cast<TIME_FORMAT>(info.GetData1()));
-  }
-  else if (info.m_info == PLAYER_START_TIME)
-  {
-    const CDateTime time(g_application.GetAppPlayer().GetStartTime());
-    return LocalizeTime(time, static_cast<TIME_FORMAT>(info.GetData1()));
-  }
-  else if (info.m_info == PLAYER_TIME_SPEED)
-  {
-    std::string strTime;
-    float speed = g_application.GetAppPlayer().GetPlaySpeed();
-    if (speed != 1.0)
-      strTime = StringUtils::Format("%s (%ix)", GetCurrentPlayTime(static_cast<TIME_FORMAT>(info.GetData1())).c_str(), static_cast<int>(speed));
-    else
-      strTime = GetCurrentPlayTime();
-    return strTime;
-  }
-  else if (info.m_info == PLAYER_DURATION)
-  {
-    return GetDuration(static_cast<TIME_FORMAT>(info.GetData1()));
-  }
-  else if (info.m_info == PLAYER_SEEKTIME)
-  {
-    return GetCurrentSeekTime(static_cast<TIME_FORMAT>(info.GetData1()));
-  }
-  else if (info.m_info == PLAYER_SEEKOFFSET)
-  {
-    std::string seekOffset = StringUtils::SecondsToTimeString(abs(m_seekOffset / 1000), static_cast<TIME_FORMAT>(info.GetData1()));
-    if (m_seekOffset < 0)
-      return "-" + seekOffset;
-    if (m_seekOffset > 0)
-      return "+" + seekOffset;
-  }
-  else if (info.m_info == PLAYER_SEEKSTEPSIZE)
-  {
-    int seekSize = g_application.GetAppPlayer().GetSeekHandler().GetSeekSize();
-    std::string strSeekSize = StringUtils::SecondsToTimeString(abs(seekSize), static_cast<TIME_FORMAT>(info.GetData1()));
-    if (seekSize < 0)
-      return "-" + strSeekSize;
-    if (seekSize > 0)
-      return "+" + strSeekSize;
-  }
-  else if (info.m_info == PLAYER_SEEKNUMERIC)
-  {
-    if (!g_application.GetAppPlayer().GetSeekHandler().HasTimeCode())
-      return "";
-    int seekTimeCode = g_application.GetAppPlayer().GetSeekHandler().GetTimeCodeSeconds();
-    TIME_FORMAT format = static_cast<TIME_FORMAT>(info.GetData1());
-    if (format == TIME_FORMAT_GUESS && seekTimeCode >= 3600)
-      format = TIME_FORMAT_HH_MM_SS;
-    return StringUtils::SecondsToTimeString(seekTimeCode, format);
   }
   else if (info.m_info == PLAYER_ITEM_ART)
   {
@@ -7940,61 +7633,7 @@ std::string CGUIInfoManager::GetDate(bool bNumbersOnly)
 
 std::string CGUIInfoManager::GetTime(TIME_FORMAT format) const
 {
-  return LocalizeTime(CDateTime::GetCurrentDateTime(), format);
-}
-
-std::string CGUIInfoManager::LocalizeTime(const CDateTime &time, TIME_FORMAT format) const
-{
-  const std::string timeFormat = g_langInfo.GetTimeFormat();
-  bool use12hourclock = timeFormat.find('h') != std::string::npos;
-  switch (format)
-  {
-  case TIME_FORMAT_GUESS:
-    return time.GetAsLocalizedTime("", false);
-  case TIME_FORMAT_SS:
-    return time.GetAsLocalizedTime("ss", true);
-  case TIME_FORMAT_MM:
-    return time.GetAsLocalizedTime("mm", true);
-  case TIME_FORMAT_MM_SS:
-    return time.GetAsLocalizedTime("mm:ss", true);
-  case TIME_FORMAT_HH:  // this forces it to a 12 hour clock
-    return time.GetAsLocalizedTime(use12hourclock ? "h" : "HH", false);
-  case TIME_FORMAT_HH_MM:
-    return time.GetAsLocalizedTime(use12hourclock ? "h:mm" : "HH:mm", false);
-  case TIME_FORMAT_HH_MM_XX:
-      return time.GetAsLocalizedTime(use12hourclock ? "h:mm xx" : "HH:mm", false);
-  case TIME_FORMAT_HH_MM_SS:
-    return time.GetAsLocalizedTime(use12hourclock ? "hh:mm:ss" : "HH:mm:ss", true);
-  case TIME_FORMAT_HH_MM_SS_XX:
-    return time.GetAsLocalizedTime(use12hourclock ? "hh:mm:ss xx" : "HH:mm:ss", true);
-  case TIME_FORMAT_H:
-    return time.GetAsLocalizedTime("h", false);
-  case TIME_FORMAT_H_MM_SS:
-    return time.GetAsLocalizedTime("h:mm:ss", true);
-  case TIME_FORMAT_H_MM_SS_XX:
-    return time.GetAsLocalizedTime("h:mm:ss xx", true);
-  case TIME_FORMAT_XX:
-    return use12hourclock ? time.GetAsLocalizedTime("xx", false) : "";
-  default:
-    break;
-  }
-  return time.GetAsLocalizedTime("", false);
-}
-
-std::string CGUIInfoManager::GetDuration(TIME_FORMAT format) const
-{
-  if (g_application.GetAppPlayer().IsPlayingAudio() && m_currentFile->HasMusicInfoTag())
-  {
-    const CMusicInfoTag& tag = *m_currentFile->GetMusicInfoTag();
-    if (tag.GetDuration() > 0)
-      return StringUtils::SecondsToTimeString(tag.GetDuration(), format);
-  }
-  if (g_application.GetAppPlayer().IsPlayingVideo() && !m_currentMovieDuration.empty())
-    return m_currentMovieDuration;
-  int iTotal = lrint(g_application.GetTotalTime());
-  if (iTotal > 0)
-    return StringUtils::SecondsToTimeString(iTotal, format);
-  return "";
+  return CDateTime::GetCurrentDateTime().GetAsLocalizedTime(format);
 }
 
 std::string CGUIInfoManager::GetGameLabel(int item)
@@ -8012,44 +7651,14 @@ std::string CGUIInfoManager::GetGameLabel(int item)
   return "";
 }
 
-int64_t CGUIInfoManager::GetPlayTime() const
-{
-  return lrint(g_application.GetTime() * 1000);
-}
-
-std::string CGUIInfoManager::GetCurrentPlayTime(TIME_FORMAT format) const
-{
-  if (format == TIME_FORMAT_GUESS && GetTotalPlayTime() >= 3600)
-    format = TIME_FORMAT_HH_MM_SS;
-  return StringUtils::SecondsToTimeString(lrint(GetPlayTime() / 1000.0), format);
-}
-
-std::string CGUIInfoManager::GetCurrentSeekTime(TIME_FORMAT format) const
-{
-  if (format == TIME_FORMAT_GUESS && GetTotalPlayTime() >= 3600)
-    format = TIME_FORMAT_HH_MM_SS;
-  return StringUtils::SecondsToTimeString(g_application.GetTime() + g_application.GetAppPlayer().GetSeekHandler().GetSeekSize(), format);
-}
-
-int CGUIInfoManager::GetTotalPlayTime() const
-{
-  int iTotalTime = lrint(g_application.GetTotalTime());
-  return iTotalTime;
-}
-
-int CGUIInfoManager::GetPlayTimeRemaining() const
-{
-  int iReverse = GetTotalPlayTime() - lrint(g_application.GetTime());
-  return iReverse > 0 ? iReverse : 0;
-}
-
 float CGUIInfoManager::GetSeekPercent() const
 {
-  if (GetTotalPlayTime() == 0)
+  int totaltime = std::lrint(g_application.GetTotalTime());
+  if (totaltime == 0)
     return 0.0f;
 
-  float percentPlayTime = static_cast<float>(GetPlayTime()) / GetTotalPlayTime() * 0.1f;
-  float percentPerSecond = 100.0f / static_cast<float>(GetTotalPlayTime());
+  float percentPlayTime = static_cast<float>(std::lrint(g_application.GetTime() * 1000)) / totaltime * 0.1f;
+  float percentPerSecond = 100.0f / static_cast<float>(totaltime);
   float percent = percentPlayTime + percentPerSecond * g_application.GetAppPlayer().GetSeekHandler().GetSeekSize();
 
   if (percent > 100.0f)
@@ -8058,16 +7667,6 @@ float CGUIInfoManager::GetSeekPercent() const
     percent = 0.0f;
 
   return percent;
-}
-
-std::string CGUIInfoManager::GetCurrentPlayTimeRemaining(TIME_FORMAT format) const
-{
-  if (format == TIME_FORMAT_GUESS && GetTotalPlayTime() >= 3600)
-    format = TIME_FORMAT_HH_MM_SS;
-  int timeRemaining = GetPlayTimeRemaining();
-  if (timeRemaining)
-    return StringUtils::SecondsToTimeString(timeRemaining, format);
-  return "";
 }
 
 int CGUIInfoManager::GetEpgEventProgress() const
@@ -8102,7 +7701,6 @@ int CGUIInfoManager::GetEpgEventSeekPercent() const
 void CGUIInfoManager::ResetCurrentItem()
 {
   m_currentFile->Reset();
-  m_currentMovieDuration = "";
 }
 
 void CGUIInfoManager::UpdateInfo(const CFileItem & item)
@@ -8290,38 +7888,6 @@ CTemperature CGUIInfoManager::GetGPUTemperature()
   return CTemperature();
 }
 
-
-void CGUIInfoManager::SetDisplayAfterSeek(unsigned int timeOut, int seekOffset)
-{
-  if (timeOut > 0)
-  {
-    m_AfterSeekTimeout = CTimeUtils::GetFrameTime() +  timeOut;
-    if (seekOffset)
-      m_seekOffset = seekOffset;
-  }
-  else
-    m_AfterSeekTimeout = 0;
-}
-
-bool CGUIInfoManager::GetDisplayAfterSeek()
-{
-  if (CTimeUtils::GetFrameTime() < m_AfterSeekTimeout)
-    return true;
-  m_seekOffset = 0;
-  return false;
-}
-
-void CGUIInfoManager::SetShowInfo(bool showinfo)
-{
-  m_playerShowInfo = showinfo;
-}
-
-bool CGUIInfoManager::ToggleShowInfo()
-{
-  SetShowInfo(!m_playerShowInfo);
-  return m_playerShowInfo;
-}
-
 void CGUIInfoManager::Clear()
 {
   CSingleLock lock(m_critInfo);
@@ -8467,7 +8033,7 @@ std::string CGUIInfoManager::GetListItemDuration(const CFileItem *item, TIME_FOR
   return std::string();
 }
 
-std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::string *fallback)
+std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::string *fallback) const
 {
   if (!item)
     return "";
@@ -8686,7 +8252,7 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
   return "";
 }
 
-std::string CGUIInfoManager::GetItemImage(const CFileItem *item, int info, std::string *fallback)
+std::string CGUIInfoManager::GetItemImage(const CFileItem *item, int info, std::string *fallback) const
 {
   if (info >= CONDITIONAL_LABEL_START && info <= CONDITIONAL_LABEL_END)
     return GetSkinVariableString(info, true, item);
@@ -9023,7 +8589,7 @@ int CGUIInfoManager::TranslateSkinVariableString(const std::string& name, int co
 
 std::string CGUIInfoManager::GetSkinVariableString(int info,
                                                    bool preferImage /*= false*/,
-                                                   const CGUIListItem *item /*= nullptr*/)
+                                                   const CGUIListItem *item /*= nullptr*/) const
 {
   info -= CONDITIONAL_LABEL_START;
   if (info >= 0 && info < static_cast<int>(m_skinVariableStrings.size()))

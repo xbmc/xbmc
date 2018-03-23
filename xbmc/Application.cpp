@@ -1967,7 +1967,7 @@ bool CApplication::OnAction(const CAction &action)
   // show info : Shows the current video or song information
   if (action.GetID() == ACTION_SHOW_INFO)
   {
-    g_infoManager.ToggleShowInfo();
+    g_infoManager.GetInfoProviders().GetPlayerInfoProvider().ToggleShowInfo();
     return true;
   }
 
@@ -3495,7 +3495,7 @@ void CApplication::OnPlayBackSeek(int64_t iTime, int64_t seekOffset)
   param["player"]["playerid"] = CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist();
   param["player"]["speed"] = (int)m_appPlayer.GetPlaySpeed();
   CAnnouncementManager::GetInstance().Announce(Player, "xbmc", "OnSeek", m_itemCurrentFile, param);
-  g_infoManager.SetDisplayAfterSeek(2500, static_cast<int>(seekOffset));
+  g_infoManager.GetInfoProviders().GetPlayerInfoProvider().SetDisplayAfterSeek(2500, static_cast<int>(seekOffset));
 }
 
 void CApplication::OnPlayBackSeekChapter(int iChapter)

@@ -2605,7 +2605,7 @@ void CVideoPlayer::HandleMessages()
 
       if (!msg.GetTrickPlay())
       {
-        g_infoManager.SetDisplayAfterSeek(100000);
+        g_infoManager.GetInfoProviders().GetPlayerInfoProvider().SetDisplayAfterSeek(100000);
         SetCaching(CACHESTATE_FLUSH);
       }
 
@@ -2662,7 +2662,7 @@ void CVideoPlayer::HandleMessages()
 
       // set flag to indicate we have finished a seeking request
       if(!msg.GetTrickPlay())
-        g_infoManager.SetDisplayAfterSeek();
+        g_infoManager.GetInfoProviders().GetPlayerInfoProvider().SetDisplayAfterSeek();
 
       // dvd's will issue a HOP_CHANNEL that we need to skip
       if(m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
@@ -2674,7 +2674,7 @@ void CVideoPlayer::HandleMessages()
              m_messenger.GetPacketCount(CDVDMsg::PLAYER_SEEK) == 0 &&
              m_messenger.GetPacketCount(CDVDMsg::PLAYER_SEEK_CHAPTER) == 0)
     {
-      g_infoManager.SetDisplayAfterSeek(100000);
+      g_infoManager.GetInfoProviders().GetPlayerInfoProvider().SetDisplayAfterSeek(100000);
       SetCaching(CACHESTATE_FLUSH);
 
       CDVDMsgPlayerSeekChapter &msg(*static_cast<CDVDMsgPlayerSeekChapter*>(pMsg));
@@ -2690,7 +2690,7 @@ void CVideoPlayer::HandleMessages()
         m_callback.OnPlayBackSeekChapter(msg.GetChapter());
       }
 
-      g_infoManager.SetDisplayAfterSeek(2500, offset);
+      g_infoManager.GetInfoProviders().GetPlayerInfoProvider().SetDisplayAfterSeek(2500, offset);
     }
     else if (pMsg->IsType(CDVDMsg::DEMUXER_RESET))
     {
@@ -2819,7 +2819,7 @@ void CVideoPlayer::HandleMessages()
     }
     else if (pMsg->IsType(CDVDMsg::PLAYER_SET_STATE))
     {
-      g_infoManager.SetDisplayAfterSeek(100000);
+      g_infoManager.GetInfoProviders().GetPlayerInfoProvider().SetDisplayAfterSeek(100000);
       SetCaching(CACHESTATE_FLUSH);
 
       CDVDMsgPlayerSetState* pMsgPlayerSetState = static_cast<CDVDMsgPlayerSetState*>(pMsg);
@@ -2834,7 +2834,7 @@ void CVideoPlayer::HandleMessages()
         }
       }
 
-      g_infoManager.SetDisplayAfterSeek();
+      g_infoManager.GetInfoProviders().GetPlayerInfoProvider().SetDisplayAfterSeek();
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_FLUSH))
     {
@@ -2863,7 +2863,7 @@ void CVideoPlayer::HandleMessages()
         m_callback.OnPlayBackSpeedChanged(speed / DVD_PLAYSPEED_NORMAL);
 
       // notify GUI, skins may want to show the seekbar
-      g_infoManager.SetDisplayAfterSeek();
+      g_infoManager.GetInfoProviders().GetPlayerInfoProvider().SetDisplayAfterSeek();
 
       if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER) && speed != m_playSpeed)
       {
@@ -4261,13 +4261,13 @@ bool CVideoPlayer::OnAction(const CAction &action)
         THREAD_ACTION(action);
         CLog::Log(LOGDEBUG, " - pushed next in menu, stream will decide");
         pMenus->OnNext();
-        g_infoManager.SetDisplayAfterSeek();
+        g_infoManager.GetInfoProviders().GetPlayerInfoProvider().SetDisplayAfterSeek();
         return true;
       case ACTION_PREV_ITEM:
         THREAD_ACTION(action);
         CLog::Log(LOGDEBUG, " - pushed prev in menu, stream will decide");
         pMenus->OnPrevious();
-        g_infoManager.SetDisplayAfterSeek();
+        g_infoManager.GetInfoProviders().GetPlayerInfoProvider().SetDisplayAfterSeek();
         return true;
       case ACTION_PREVIOUS_MENU:
       case ACTION_NAV_BACK:
@@ -4376,7 +4376,7 @@ bool CVideoPlayer::OnAction(const CAction &action)
       if (GetChapter() > 0 && GetChapter() < GetChapterCount())
       {
         m_messenger.Put(new CDVDMsgPlayerSeekChapter(GetChapter() + 1));
-        g_infoManager.SetDisplayAfterSeek();
+        g_infoManager.GetInfoProviders().GetPlayerInfoProvider().SetDisplayAfterSeek();
         return true;
       }
       else if (SeekScene(true))
@@ -4387,7 +4387,7 @@ bool CVideoPlayer::OnAction(const CAction &action)
       if (GetChapter() > 0)
       {
         m_messenger.Put(new CDVDMsgPlayerSeekChapter(GetChapter() - 1));
-        g_infoManager.SetDisplayAfterSeek();
+        g_infoManager.GetInfoProviders().GetPlayerInfoProvider().SetDisplayAfterSeek();
         return true;
       }
       else if (SeekScene(false))
