@@ -41,6 +41,9 @@
 #include "defines.h"
 #include "util.h"
 #include "internal.h"
+#if defined(_WIN32)
+#include "win32_utils.h"
+#endif
 
 // Use XMLCALL if available
 #ifdef XMLCALL
@@ -1159,11 +1162,22 @@ CP_C_API cp_plugin_info_t * cp_load_plugin_descriptor(cp_context_t *context, con
 		file[path_len] = CP_FNAMESEP_CHAR;
 		strcpy(file + path_len + 1, CP_PLUGIN_DESCRIPTOR);
 
+#if defined(_WIN32)
+	wchar_t* fileW = to_utf16(file, 0);
+	fh = _wfopen(fileW, L"rb");
+	free(fileW);
+	if (!fh)
+	{
+		status = CP_ERR_IO;
+		break;
+	}
+#else
 		// Open the file 
 		if ((fh = fopen(file, "rb")) == NULL) {
 			status = CP_ERR_IO;
 			break;
 		}
+#endif
 
 		// Initialize descriptor parsing
 		status = init_descriptor_parsing(context, &plcontext, &parser, file);

@@ -9,6 +9,7 @@
 */
 
 #include "dirent.h"
+#include "win32_utils.h"
 #include <errno.h>
 #include <io.h> /* _findfirst and _findnext set errno iff they return -1 */
 #include <stdlib.h>
@@ -21,10 +22,10 @@ extern "C"
 
 struct DIR
 {
-    long                handle; /* -1 for failed rewind */
-    struct _finddata_t  info;
+    HANDLE handle; /* -1 for failed rewind */
     struct dirent       result; /* d_name null iff first time */
-    char                *name;  /* null-terminated char string */
+    wchar_t* name;
+    WIN32_FIND_DATAW info;
 };
 
 DIR *opendir(const char *name)
@@ -33,16 +34,29 @@ DIR *opendir(const char *name)
 
     if(name && name[0])
     {
-        size_t base_length = strlen(name);
-        const char *all = /* search pattern must end with suitable wildcard */
-            strchr("/\\", name[base_length - 1]) ? "*" : "/*";
-
-        if((dir = (DIR *) malloc(sizeof *dir)) != 0 &&
-           (dir->name = (char *) malloc(base_length + strlen(all) + 1)) != 0)
+        if ((dir = (DIR *)malloc(sizeof *dir)) != 0)
         {
-            strcat(strcpy(dir->name, name), all);
+            dir->handle = INVALID_HANDLE_VALUE;
+            int len = strlen(name);
+            size_t newLength = len + 2; //add an extra for null and another for a * at the end
+            if (!(name[0] == '\\' && name[1] == '\\' && name[2] == '?' && name[3] == '\\'))
+                newLength += 4;
+            if (name[len - 1] != '\\')
+                newLength += 1;
 
-            if((dir->handle = (long) _findfirst(dir->name, &dir->info)) != -1)
+            char* newDir = (char*)malloc(newLength);
+            strcpy_s(newDir, newLength, "\\\\?\\");
+            strcat_s(newDir, newLength, name);
+            if (name[len - 1] != '\\')
+                strcat_s(newDir, newLength, "\\");
+            strcat_s(newDir, newLength, "*");
+            newDir[newLength - 1] = '\0';
+
+            dir->name = to_utf16(newDir, newLength);
+            free(newDir);
+
+            dir->handle = FindFirstFileW(dir->name, &dir->info);
+            if (dir->handle != INVALID_HANDLE_VALUE)
             {
                 dir->result.d_name = 0;
             }
@@ -55,6 +69,7 @@ DIR *opendir(const char *name)
         }
         else /* rollback */
         {
+            free(dir->name);
             free(dir);
             dir   = 0;
             errno = ENOMEM;
@@ -72,12 +87,9 @@ int closedir(DIR *dir)
 {
     int result = -1;
 
-    if(dir)
+    if(dir && dir->handle != INVALID_HANDLE_VALUE)
     {
-        if(dir->handle != -1)
-        {
-            result = _findclose(dir->handle);
-        }
+        FindClose(dir->handle);
 
         free(dir->name);
         free(dir);
@@ -95,12 +107,12 @@ struct dirent *readdir(DIR *dir)
 {
     struct dirent *result = 0;
 
-    if(dir && dir->handle != -1)
+    if(dir && dir->handle != INVALID_HANDLE_VALUE)
     {
-        if(!dir->result.d_name || _findnext(dir->handle, &dir->info) != -1)
+        if (FindNextFileW(dir->handle, &dir->info))
         {
             result         = &dir->result;
-            result->d_name = dir->info.name;
+            result->d_name = to_utf8(dir->info.cFileName, 0);
         }
     }
     else
@@ -109,20 +121,6 @@ struct dirent *readdir(DIR *dir)
     }
 
     return result;
-}
-
-void rewinddir(DIR *dir)
-{
-    if(dir && dir->handle != -1)
-    {
-        _findclose(dir->handle);
-        dir->handle = (long) _findfirst(dir->name, &dir->info);
-        dir->result.d_name = 0;
-    }
-    else
-    {
-        errno = EBADF;
-    }
 }
 
 // helper for scandir below
