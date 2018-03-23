@@ -105,6 +105,16 @@ void CPasswordManager::SaveAuthenticatedURL(const CURL &url, bool saveToProfile)
   m_temporaryCache[GetServerLookup(path)] = authenticatedPath;
 }
 
+bool CPasswordManager::IsURLSupported(const CURL &url)
+{
+  if ( url.IsProtocol("smb")
+    || url.IsProtocol("nfs")
+    || url.IsProtocol("sftp"))
+    return true;
+
+  return false;
+}
+
 void CPasswordManager::Clear()
 {
   m_temporaryCache.clear();
@@ -174,11 +184,14 @@ void CPasswordManager::Save() const
 
 std::string CPasswordManager::GetLookupPath(const CURL &url) const
 {
-  return "smb://" + url.GetHostName() + "/" + url.GetShareName();
+  if (url.IsProtocol("sftp"))
+    return GetServerLookup(url.Get());
+
+  return url.GetProtocol() + "://" + url.GetHostName() + "/" + url.GetShareName();
 }
 
 std::string CPasswordManager::GetServerLookup(const std::string &path) const
 {
   CURL url(path);
-  return "smb://" + url.GetHostName() + "/";
+  return url.GetProtocol() + "://" + url.GetHostName() + "/";
 }
