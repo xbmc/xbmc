@@ -29,7 +29,6 @@
  */
 
 #include "GUITexture.h"
-#include "D3DResource.h"
 
 class CGUITextureD3D : public CGUITextureBase
 {
