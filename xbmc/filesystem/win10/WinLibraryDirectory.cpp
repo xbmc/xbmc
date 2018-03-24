@@ -151,12 +151,24 @@ bool CWinLibraryDirectory::GetDirectory(const CURL &url, CFileItemList &items)
 
 bool CWinLibraryDirectory::Create(const CURL& url)
 {
-  // TODO implement
-  std::string folderPath = URIUtils::FixSlashesAndDups(url.GetFileName(), '\\');
-  std::wstring wStrPath = ToW(folderPath);
+  auto folder = GetFolder(url);
+  if (folder) // already exists
+    return true;
 
-  StorageFolder^ rootFolder = GetRootFolder(url);
-  Wait(rootFolder->CreateFolderAsync(ref new Platform::String(wStrPath.c_str())));
+  CURL parentUrl = CURL(URIUtils::GetParentPath(url.Get()));
+  folder = GetFolder(parentUrl);
+  if (!folder)
+    return false;
+
+  try
+  {
+    std::wstring wStrPath = ToW(url.GetFileNameWithoutPath());
+    Wait(folder->CreateFolderAsync(ref new Platform::String(wStrPath.c_str())));
+  }
+  catch (Platform::Exception^ ex)
+  {
+    return false;
+  }
 
   return true;
 }
@@ -194,18 +206,22 @@ StorageFolder^ CWinLibraryDirectory::GetFolder(const CURL& url)
   // find inner folder
   if (!folderPath.empty())
   {
-    std::wstring wStrPath = ToW(folderPath);
     if (url.GetHostName() == "removable")
     {
+      // return root folder for win-lib://removable/F
+      if (folderPath.length() == 1)
+        return rootFolder;
+
       // here path has the form e\path where first segment is drive letter
       // we should make path form like regular e:\path
-      auto index = wStrPath.find('\\');
-      if (index > 0 && wStrPath[index-1] != ':')
-        wStrPath = wStrPath.insert(index, 1, ':');
+      auto index = folderPath.find('\\');
+      if (index != std::string::npos && folderPath[index - 1] != ':')
+        folderPath = folderPath.insert(index, 1, ':');
     }
 
     try
     {
+      std::wstring wStrPath = ToW(folderPath);
       Platform::String^ pPath = ref new Platform::String(wStrPath.c_str());
       return Wait(rootFolder->GetFolderAsync(pPath));
     }
