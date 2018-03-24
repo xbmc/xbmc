@@ -261,25 +261,36 @@ bool CWinSystemX11GLContext::RefreshGLContext(bool force)
   VIDEOPLAYER::CRendererFactory::ClearRenderer();
   CLinuxRendererGL::Register();
 
-  m_pGLContext = new CGLContextEGL(m_dpy);
-  success = m_pGLContext->Refresh(force, m_nScreen, m_glWindow, m_newGlContext);
-  if (success)
+  std::string gpuvendor;
+  const char* vend = (const char*) glGetString(GL_VENDOR);
+  if (vend)
+    gpuvendor = vend;
+  std::transform(gpuvendor.begin(), gpuvendor.end(), gpuvendor.begin(), ::tolower);
+  bool isNvidia = (gpuvendor.compare(0, 6, "nvidia") == 0);
+  bool isIntel = (gpuvendor.compare(0, 5, "intel") == 0);
+  std::string gli = getenv("GL_INTERFACE");
+
+  if (gli != "GLX")
   {
-    std::string gpuvendor;
-    const char* vend = (const char*) glGetString(GL_VENDOR);
-    if (vend)
-      gpuvendor = vend;
-    std::transform(gpuvendor.begin(), gpuvendor.end(), gpuvendor.begin(), ::tolower);
-    if (gpuvendor.compare(0, 5, "intel") == 0)
+    m_pGLContext = new CGLContextEGL(m_dpy);
+    success = m_pGLContext->Refresh(force, m_nScreen, m_glWindow, m_newGlContext);
+    if (success)
     {
-      m_vaapiProxy.reset(X11::VaapiProxyCreate());
-      X11::VaapiProxyConfig(m_vaapiProxy.get(), GetDisplay(),
-                       static_cast<CGLContextEGL*>(m_pGLContext)->m_eglDisplay);
-      bool general, deepColor;
-      X11::VAAPIRegisterRender(m_vaapiProxy.get(), general, deepColor);
-      if (general)
-        X11::VAAPIRegister(m_vaapiProxy.get(), deepColor);
-      return success;
+      if (!isNvidia)
+      {
+        m_vaapiProxy.reset(X11::VaapiProxyCreate());
+        X11::VaapiProxyConfig(m_vaapiProxy.get(), GetDisplay(),
+                              static_cast<CGLContextEGL*>(m_pGLContext)->m_eglDisplay);
+        bool general, deepColor;
+        X11::VAAPIRegisterRender(m_vaapiProxy.get(), general, deepColor);
+        if (general)
+        {
+          X11::VAAPIRegister(m_vaapiProxy.get(), deepColor);
+          return true;
+        }
+        if (isIntel || gli == "EGL")
+          return true;
+      }
     }
   }
 
