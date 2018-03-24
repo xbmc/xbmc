@@ -19,43 +19,38 @@
  */
 #pragma once
 
-#include "threads/CriticalSection.h"
-#include "guiinfo/GUIInfo.h"
-#include "guiinfo/GUIInfoProviders.h"
-#include "guilib/IMsgTargetCallback.h"
-#include "guilib/GUIControl.h"
-#include "messaging/IMessageTarget.h"
-#include "inttypes.h"
-#include "XBDateTime.h"
-#include "utils/Observer.h"
-#include "utils/Temperature.h"
-#include "interfaces/info/InfoBool.h"
-#include "interfaces/info/SkinVariable.h"
-#include "cores/IPlayer.h"
-#include "FileItem.h"
-
 #include <map>
+#include <set>
 #include <string>
 #include <vector>
 
-namespace MUSIC_INFO
-{
-  class CMusicInfoTag;
-}
-class CVideoInfoTag;
+#include "XBDateTime.h"
+#include "guiinfo/GUIInfoProviders.h"
+#include "guilib/IMsgTargetCallback.h"
+#include "interfaces/info/InfoBool.h"
+#include "interfaces/info/SkinVariable.h"
+#include "messaging/IMessageTarget.h"
+#include "threads/CriticalSection.h"
+#include "utils/Observer.h"
+#include "utils/Temperature.h"
+
 class CFileItem;
-class CGUIListItem;
-class CDateTime;
+class CGUIControl;
+class CGUIWindow;
+class CVideoInfoTag;
+
+namespace GUIINFO
+{
+  class GUIInfo;
+  class IGUIInfoProvider;
+}
 namespace INFO
 {
   class InfoSingle;
 }
-
-class CGUIWindow;
-
-namespace GUIINFO
+namespace MUSIC_INFO
 {
-  class IGUIInfoProvider;
+  class CMusicInfoTag;
 }
 
 /*!

@@ -18,114 +18,99 @@
  *
  */
 
-#include "network/Network.h"
-#include "CompileInfo.h"
 #include "GUIInfoManager.h"
-#include "view/GUIViewState.h"
-#include "windows/GUIMediaWindow.h"
+
+#include <algorithm>
+#include <cmath>
+#include <functional>
+#include <iterator>
+#include <memory>
+
+#include "Application.h"
+#include "FileItem.h"
+#include "GUIUserMessages.h"
+#include "PlayListPlayer.h"
+#include "ServiceBroker.h"
+#include "URL.h"
+#include "Util.h"
+#include "addons/BinaryAddonCache.h"
+#include "cores/DataCacheCore.h"
+#include "cores/RetroPlayer/RetroPlayerUtils.h"
 #include "dialogs/GUIDialogKeyboardGeneric.h"
 #include "dialogs/GUIDialogNumeric.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "filesystem/File.h"
-#include "Application.h"
-#include "ServiceBroker.h"
-#include "Util.h"
-#include "utils/URIUtils.h"
-#include "weather/WeatherManager.h"
-#include "guilib/GUIVisualisationControl.h"
-#include "input/WindowTranslator.h"
-#include "utils/AlarmClock.h"
-#include "LangInfo.h"
-#include "utils/SystemInfo.h"
-#include "guilib/GUIComponent.h"
-#include "guilib/GUITextBox.h"
-#include "guilib/GUIControlGroupList.h"
-#include "pictures/GUIWindowSlideShow.h"
-#include "pictures/PictureInfoTag.h"
-#include "music/tags/MusicInfoTag.h"
 #include "games/addons/savestates/SavestateDefines.h"
 #include "games/tags/GameInfoTag.h"
-#include "guilib/IGUIContainer.h"
-#include "guilib/GUIWindowManager.h"
-#include "PlayListPlayer.h"
-#include "playlists/PlayList.h"
-#include "profiles/ProfilesManager.h"
-#include "windowing/WinSystem.h"
-#include "powermanagement/PowerManager.h"
-#include "SeekHandler.h"
-#include "settings/AdvancedSettings.h"
-#include "settings/DisplaySettings.h"
-#include "settings/GameSettings.h"
-#include "settings/MediaSettings.h"
-#include "settings/Settings.h"
-#include "settings/SkinSettings.h"
-#include "guilib/LocalizeStrings.h"
-#include "guilib/StereoscopicsManager.h"
-#include "utils/CharsetConverter.h"
-#include "utils/CPUInfo.h"
-#include "utils/SortUtils.h"
-#include "utils/StringUtils.h"
-#include "URL.h"
-#include "addons/Skin.h"
-#include <algorithm>
-#include <functional>
-#include <iterator>
-#include <memory>
-#include <math.h>
-#include "cores/DataCacheCore.h"
-#include "cores/RetroPlayer/RetroPlayerUtils.h"
+#include "guiinfo/GUIInfo.h"
 #include "guiinfo/GUIInfoHelper.h"
 #include "guiinfo/GUIInfoLabels.h"
-#include "guiinfo/IGUIInfoProvider.h"
+#include "guilib/GUIComponent.h"
+#include "guilib/GUIControlGroupList.h"
+#include "guilib/GUITextBox.h"
+#include "guilib/GUIVisualisationControl.h"
+#include "guilib/GUIWindow.h"
+#include "guilib/IGUIContainer.h"
+#include "guilib/LocalizeStrings.h"
+#include "guilib/WindowIDs.h"
+#include "guilib/GUIWindowManager.h"
+#include "input/WindowTranslator.h"
+#include "interfaces/AnnouncementManager.h"
+#include "interfaces/info/InfoExpression.h"
 #include "messaging/ApplicationMessenger.h"
-
-// stuff for current song
 #include "music/MusicInfoLoader.h"
-
-#include "GUIUserMessages.h"
-#include "video/dialogs/GUIDialogVideoInfo.h"
+#include "music/MusicThumbLoader.h"
 #include "music/dialogs/GUIDialogMusicInfo.h"
 #include "music/dialogs/GUIDialogSongInfo.h"
-#include "storage/MediaManager.h"
-#include "utils/TimeUtils.h"
-#include "threads/SingleLock.h"
-#include "utils/log.h"
-
-#include "addons/AddonManager.h"
-#include "addons/BinaryAddonCache.h"
-#include "interfaces/info/InfoBool.h"
-#include "interfaces/AnnouncementManager.h"
-#include "video/VideoThumbLoader.h"
-#include "music/MusicThumbLoader.h"
-#include "video/VideoDatabase.h"
-#include "cores/IPlayer.h"
-#include "cores/AudioEngine/Utils/AEUtil.h"
-#include "cores/VideoPlayer/VideoRenderers/BaseRenderer.h"
-#include "interfaces/info/InfoExpression.h"
-
+#include "music/tags/MusicInfoTag.h"
+#include "network/Network.h"
+#include "pictures/GUIWindowSlideShow.h"
+#include "pictures/PictureInfoTag.h"
 #if defined(TARGET_DARWIN_OSX)
 #include "platform/darwin/osx/smc.h"
 #endif
-
 #ifdef TARGET_POSIX
 #include "platform/linux/XMemUtils.h"
 #endif
+#include "powermanagement/PowerManager.h"
+#include "profiles/ProfilesManager.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/DisplaySettings.h"
+#include "settings/MediaSettings.h"
+#include "settings/Settings.h"
+#include "settings/SkinSettings.h"
+#include "storage/MediaManager.h"
+#include "utils/AlarmClock.h"
+#include "utils/CharsetConverter.h"
+#include "utils/CPUInfo.h"
+#include "utils/StringUtils.h"
+#include "utils/SystemInfo.h"
+#include "utils/TimeUtils.h"
+#include "utils/URIUtils.h"
+#include "utils/Variant.h"
+#include "utils/log.h"
+#include "video/VideoDatabase.h"
+#include "video/VideoInfoTag.h"
+#include "video/VideoThumbLoader.h"
+#include "video/dialogs/GUIDialogVideoInfo.h"
+#include "view/GUIViewState.h"
+#include "weather/WeatherManager.h"
+#include "windowing/WinSystem.h"
+#include "windows/GUIMediaWindow.h"
 
 #define SYSHEATUPDATEINTERVAL 60000
 
 using namespace KODI;
-using namespace XFILE;
-using namespace MUSIC_INFO;
 using namespace ADDON;
-using namespace PVR;
-using namespace INFO;
 using namespace GUIINFO;
+using namespace INFO;
+using namespace MUSIC_INFO;
+using namespace XFILE;
 
 bool InfoBoolComparator(const InfoPtr &right, const InfoPtr &left)
 {
   return *right < *left;
 }
-
 
 CGUIInfoManager::CGUIInfoManager(void) :
     Observable(),
