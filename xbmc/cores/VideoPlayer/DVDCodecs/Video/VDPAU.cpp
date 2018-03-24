@@ -30,6 +30,7 @@
 #include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
 #include "rendering/RenderSystem.h"
 #include "settings/Settings.h"
+#include "settings/lib/Setting.h"
 #include "settings/AdvancedSettings.h"
 #include "Application.h"
 #include "utils/MathUtils.h"
@@ -512,8 +513,14 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
       { AV_CODEC_ID_VC1, CSettings::SETTING_VIDEOPLAYER_USEVDPAUVC1 },
       { AV_CODEC_ID_MPEG2VIDEO, CSettings::SETTING_VIDEOPLAYER_USEVDPAUMPEG2 },
     };
-    if (CDVDVideoCodec::IsCodecDisabled(settings_map, avctx->codec_id))
-      return false;
+    auto entry = settings_map.find(avctx->codec_id);
+    if (entry != settings_map.end())
+    {
+      bool enabled = CServiceBroker::GetSettings().GetBool(entry->second) &&
+                     CServiceBroker::GetSettings().GetSetting(entry->second)->IsVisible();
+      if (!enabled)
+        return false;
+    }
   }
 
   if (!CServiceBroker::GetRenderSystem().IsExtSupported("GL_NV_vdpau_interop"))
@@ -1295,6 +1302,20 @@ void CDecoder::Register()
   m_capGeneral = true;
 
   CDVDFactoryCodec::RegisterHWAccel("vdpau", CDecoder::Create);
+
+  std::string gpuvendor = CServiceBroker::GetRenderSystem().GetRenderVendor();
+  std::transform(gpuvendor.begin(), gpuvendor.end(), gpuvendor.begin(), ::tolower);
+  bool isNvidia = (gpuvendor.compare(0, 6, "nvidia") == 0);
+
+  CServiceBroker::GetSettings().GetSetting(CSettings::SETTING_VIDEOPLAYER_USEVDPAU)->SetVisible(true);
+
+  if (!isNvidia)
+  {
+    CServiceBroker::GetSettings().GetSetting(CSettings::SETTING_VIDEOPLAYER_USEVDPAUMPEG4)->SetVisible(true);
+    CServiceBroker::GetSettings().GetSetting(CSettings::SETTING_VIDEOPLAYER_USEVDPAUVC1)->SetVisible(true);
+    CServiceBroker::GetSettings().GetSetting(CSettings::SETTING_VIDEOPLAYER_USEVDPAUMPEG2)->SetVisible(true);
+  }
+
 }
 
 //-----------------------------------------------------------------------------
