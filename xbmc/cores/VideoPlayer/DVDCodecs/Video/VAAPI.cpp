@@ -28,6 +28,7 @@
 #include "utils/StringUtils.h"
 #include "threads/SingleLock.h"
 #include "settings/Settings.h"
+#include "settings/lib/Setting.h"
 #include "guilib/GraphicContext.h"
 #include "settings/AdvancedSettings.h"
 #include <va/va_drm.h>
@@ -505,8 +506,15 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
     { AV_CODEC_ID_VC1, CSettings::SETTING_VIDEOPLAYER_USEVAAPIVC1 },
     { AV_CODEC_ID_MPEG2VIDEO, CSettings::SETTING_VIDEOPLAYER_USEVAAPIMPEG2 },
   };
-  if (CDVDVideoCodec::IsCodecDisabled(settings_map, avctx->codec_id))
-    return false;
+
+  auto entry = settings_map.find(avctx->codec_id);
+  if (entry != settings_map.end())
+  {
+    bool enabled = CServiceBroker::GetSettings().GetBool(entry->second) &&
+                   CServiceBroker::GetSettings().GetSetting(entry->second)->IsVisible();
+    if (!enabled)
+      return false;
+  }
 
   CLog::Log(LOGDEBUG, LOGVIDEO, "VAAPI - open decoder");
 
@@ -1183,6 +1191,11 @@ void CDecoder::Register(IVaapiWinSystem *winSystem, bool deepColor)
   m_capDeepColor = deepColor;
   CDVDFactoryCodec::RegisterHWAccel("vaapi", CDecoder::Create);
   config.context->Release(nullptr);
+
+  CServiceBroker::GetSettings().GetSetting(CSettings::SETTING_VIDEOPLAYER_USEVAAPI)->SetVisible(true);
+  CServiceBroker::GetSettings().GetSetting(CSettings::SETTING_VIDEOPLAYER_USEVAAPIMPEG4)->SetVisible(true);
+  CServiceBroker::GetSettings().GetSetting(CSettings::SETTING_VIDEOPLAYER_USEVAAPIVC1)->SetVisible(true);
+  CServiceBroker::GetSettings().GetSetting(CSettings::SETTING_VIDEOPLAYER_USEVAAPIMPEG2)->SetVisible(true);
 }
 
 //-----------------------------------------------------------------------------

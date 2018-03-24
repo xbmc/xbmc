@@ -197,16 +197,6 @@ public:
   virtual unsigned GetAllowedReferences() { return 0; }
 
   /**
-   * Hide or Show Settings depending on the currently running hardware
-   */
-  static bool IsSettingVisible(const std::string &condition, const std::string &value, std::shared_ptr<const CSetting> setting, void *data);
-
-  /**
-   * Interact with user settings so that user disabled codecs are disabled
-   */
-  static bool IsCodecDisabled(const std::map<AVCodecID, std::string> &map, AVCodecID id);
-
-  /**
    * For calculation of dropping requirements player asks for some information.
    * - pts : right after decoder, used to detect gaps (dropped frames in decoder)
    * - droppedFrames : indicates if decoder has dropped a frame
