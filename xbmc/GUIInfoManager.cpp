@@ -40,7 +40,6 @@
 #include "games/addons/savestates/SavestateDefines.h"
 #include "games/tags/GameInfoTag.h"
 #include "guiinfo/GUIInfo.h"
-#include "guiinfo/GUIInfoHelper.h"
 #include "guiinfo/GUIInfoLabels.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIControlGroupList.h"
@@ -5755,7 +5754,7 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
             playlistid = PLAYLIST_MUSIC;
 
           if (playlistid > PLAYLIST_NONE)
-            return AddMultiInfo(GUIInfo(ret, playlistid));
+            return AddMultiInfo(GUIInfo(ret, playlistid, 1));
         }
       }
     }
@@ -6009,12 +6008,6 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
     break;
   case RETROPLAYER_VIEWMODE:
     strLabel = GetGameLabel(info);
-    break;
-  case PLAYLIST_LENGTH:
-  case PLAYLIST_POSITION:
-  case PLAYLIST_RANDOM:
-  case PLAYLIST_REPEAT:
-    strLabel = CGUIInfoHelper::GetPlaylistLabel(info);
     break;
   case CONTAINER_FOLDERPATH:
   case CONTAINER_FOLDERNAME:
@@ -6412,15 +6405,6 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
           bReturn = (slideShow && slideShow->GetCurrentSlide() && slideShow->GetCurrentSlide()->IsVideo());
         }
         break;
-      case PLAYLIST_ISRANDOM:
-        bReturn = CServiceBroker::GetPlaylistPlayer().IsShuffled(CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist());
-        break;
-      case PLAYLIST_ISREPEAT:
-        bReturn = CServiceBroker::GetPlaylistPlayer().GetRepeat(CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist()) == PLAYLIST::REPEAT_ALL;
-        break;
-      case PLAYLIST_ISREPEATONE:
-        bReturn = CServiceBroker::GetPlaylistPlayer().GetRepeat(CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist()) == PLAYLIST::REPEAT_ONE;
-        break;
       case VISUALISATION_LOCKED:
         {
           CGUIMessage msg(GUI_MSG_GET_VISUALISATION, 0, 0);
@@ -6803,29 +6787,6 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
         }
         break;
       }
-      case PLAYLIST_ISRANDOM:
-        {
-          int playlistid = info.GetData1();
-          if (playlistid > PLAYLIST_NONE)
-            bReturn = CServiceBroker::GetPlaylistPlayer().IsShuffled(playlistid);
-        }
-        break;
-
-      case PLAYLIST_ISREPEAT:
-        {
-          int playlistid = info.GetData1();
-          if (playlistid > PLAYLIST_NONE)
-            bReturn = CServiceBroker::GetPlaylistPlayer().GetRepeat(playlistid) == PLAYLIST::REPEAT_ALL;
-        }
-        break;
-
-      case PLAYLIST_ISREPEATONE:
-        {
-          int playlistid = info.GetData1();
-          if (playlistid > PLAYLIST_NONE)
-            bReturn = CServiceBroker::GetPlaylistPlayer().GetRepeat(playlistid) == PLAYLIST::REPEAT_ONE;
-        }
-        break;
       case LIBRARY_HAS_ROLE:
       {
         std::string strRole = info.GetData3();
@@ -7024,15 +6985,6 @@ std::string CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &constinfo, int con
       return addon->Icon();
     if (addon && info.m_info == SYSTEM_ADDON_VERSION)
       return addon->Version().asString();
-  }
-  else if (info.m_info == PLAYLIST_LENGTH ||
-           info.m_info == PLAYLIST_POSITION ||
-           info.m_info == PLAYLIST_RANDOM ||
-           info.m_info == PLAYLIST_REPEAT)
-  {
-    int playlistid = info.GetData1();
-    if (playlistid > PLAYLIST_NONE)
-      return CGUIInfoHelper::GetPlaylistLabel(info.m_info, playlistid);
   }
 
   return "";

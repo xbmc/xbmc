@@ -35,30 +35,32 @@ std::string CGUIInfoHelper::GetPlaylistLabel(int item, int playlistid /* = PLAYL
   if (playlistid < PLAYLIST_NONE)
     return std::string();
 
-  int iPlaylist = playlistid == PLAYLIST_NONE ? CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() : playlistid;
+  PLAYLIST::CPlayListPlayer& player = CServiceBroker::GetPlaylistPlayer();
+
+  int iPlaylist = playlistid == PLAYLIST_NONE ? player.GetCurrentPlaylist() : playlistid;
   switch (item)
   {
     case PLAYLIST_LENGTH:
     {
-      return StringUtils::Format("%i", CServiceBroker::GetPlaylistPlayer().GetPlaylist(iPlaylist).size());
+      return StringUtils::Format("%i", player.GetPlaylist(iPlaylist).size());
     }
     case PLAYLIST_POSITION:
     {
-      int currentSong = CServiceBroker::GetPlaylistPlayer().GetCurrentSong();
+      int currentSong = player.GetCurrentSong();
       if (currentSong > -1)
         return StringUtils::Format("%i", currentSong + 1);
       break;
     }
     case PLAYLIST_RANDOM:
     {
-      if (CServiceBroker::GetPlaylistPlayer().IsShuffled(iPlaylist))
+      if (player.IsShuffled(iPlaylist))
         return g_localizeStrings.Get(16041); // 16041: On
       else
         return g_localizeStrings.Get(591); // 591: Off
     }
     case PLAYLIST_REPEAT:
     {
-      PLAYLIST::REPEAT_STATE state = CServiceBroker::GetPlaylistPlayer().GetRepeat(iPlaylist);
+      PLAYLIST::REPEAT_STATE state = player.GetRepeat(iPlaylist);
       if (state == PLAYLIST::REPEAT_ONE)
         return g_localizeStrings.Get(592); // 592: One
       else if (state == PLAYLIST::REPEAT_ALL)

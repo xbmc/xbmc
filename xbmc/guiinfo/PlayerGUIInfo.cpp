@@ -24,6 +24,7 @@
 
 #include "Application.h"
 #include "FileItem.h"
+#include "PlayListPlayer.h"
 #include "ServiceBroker.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/DataCacheCore.h"
@@ -35,6 +36,7 @@
 #include "utils/URIUtils.h"
 
 #include "guiinfo/GUIInfo.h"
+#include "guiinfo/GUIInfoHelper.h"
 #include "guiinfo/GUIInfoLabels.h"
 
 using namespace GUIINFO;
@@ -322,6 +324,16 @@ bool CPlayerGUIInfo::GetLabel(std::string& value, const CFileItem *item, const G
     case PLAYER_PROCESS_AUDIOBITSPERSAMPLE:
       value = StringUtils::FormatNumber(CServiceBroker::GetDataCacheCore().GetAudioBitsPerSample());
       return true;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    // PLAYLIST_*
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    case PLAYLIST_LENGTH:
+    case PLAYLIST_POSITION:
+    case PLAYLIST_RANDOM:
+    case PLAYLIST_REPEAT:
+      value = CGUIInfoHelper::GetPlaylistLabel(info.m_info, info.GetData1());
+      return true;
   }
 
   return false;
@@ -486,6 +498,40 @@ bool CPlayerGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, const GUIIn
     case PLAYER_HASDURATION:
       value = g_application.GetTotalTime() > 0;
       return true;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    // PLAYLIST_*
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    case PLAYLIST_ISRANDOM:
+    {
+      PLAYLIST::CPlayListPlayer& player = CServiceBroker::GetPlaylistPlayer();
+      int playlistid = info.GetData1();
+      if (info.GetData2() > 0 && playlistid > PLAYLIST_NONE)
+        value = player.IsShuffled(playlistid);
+      else
+        value = player.IsShuffled(player.GetCurrentPlaylist());
+      return true;
+    }
+    case PLAYLIST_ISREPEAT:
+    {
+      PLAYLIST::CPlayListPlayer& player = CServiceBroker::GetPlaylistPlayer();
+      int playlistid = info.GetData1();
+      if (info.GetData2() > 0 && playlistid > PLAYLIST_NONE)
+        value = (player.GetRepeat(playlistid) == PLAYLIST::REPEAT_ALL);
+      else
+        value = player.GetRepeat(player.GetCurrentPlaylist()) == PLAYLIST::REPEAT_ALL;
+      return true;
+    }
+    case PLAYLIST_ISREPEATONE:
+    {
+      PLAYLIST::CPlayListPlayer& player = CServiceBroker::GetPlaylistPlayer();
+      int playlistid = info.GetData1();
+      if (info.GetData2() > 0 && playlistid > PLAYLIST_NONE)
+        value = (player.GetRepeat(playlistid) == PLAYLIST::REPEAT_ONE);
+      else
+        value = player.GetRepeat(player.GetCurrentPlaylist()) == PLAYLIST::REPEAT_ONE;
+      return true;
+    }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // PLAYER_PROCESS_*
