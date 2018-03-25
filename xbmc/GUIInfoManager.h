@@ -24,7 +24,6 @@
 #include <string>
 #include <vector>
 
-#include "XBDateTime.h"
 #include "guiinfo/GUIInfoProviders.h"
 #include "guilib/IMsgTargetCallback.h"
 #include "interfaces/info/InfoBool.h"
@@ -103,9 +102,6 @@ public:
   std::string GetLabel(int info, int contextWindow = 0, std::string *fallback = NULL);
 
   std::string GetImage(int info, int contextWindow, std::string *fallback = NULL);
-
-  std::string GetTime(TIME_FORMAT format = TIME_FORMAT_GUESS) const;
-  std::string GetDate(bool bNumbersOnly = false);
 
   /*! \brief Set currently playing file item
    */
@@ -228,14 +224,8 @@ protected:
    */
   void SplitInfoString(const std::string &infoString, std::vector<Property> &info);
 
-  // Conditional string parameters for testing are stored in a vector for later retrieval.
-  // The offset into the string parameters array is returned.
-  int ConditionalStringParameter(const std::string &strParameter, bool caseSensitive = false);
   int AddMultiInfo(const GUIINFO::GUIInfo &info);
-  int AddListItemProp(const std::string &str, int offset=0);
-
-  // Conditional string parameters are stored here
-  std::vector<std::string> m_stringParameters;
+  int AddListItemProp(const std::string &str, int offset = 0);
 
   // Array of multiple information mapped to a single integer lookup
   std::vector<GUIINFO::GUIInfo> m_multiInfo;

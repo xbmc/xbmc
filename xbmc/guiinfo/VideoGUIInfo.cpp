@@ -614,6 +614,21 @@ bool CVideoGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, const GUIInf
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // VIDEOPLAYER_*
     ///////////////////////////////////////////////////////////////////////////////////////////////
+    case VIDEOPLAYER_CONTENT:
+    {
+      std::string strContent = "files";
+      if (tag)
+      {
+        if (tag->m_type == MediaTypeMovie)
+          strContent = "movies";
+        else if (tag->m_type == MediaTypeEpisode)
+          strContent = "episodes";
+        else if (tag->m_type == MediaTypeMusicVideo)
+          strContent = "musicvideos";
+      }
+      value = StringUtils::EqualsNoCase(info.GetData3(), strContent);
+      return value; // if no match for this provider, other providers shall be asked.
+    }
     case VIDEOPLAYER_USING_OVERLAYS:
       value = (CServiceBroker::GetSettings().GetInt(CSettings::SETTING_VIDEOPLAYER_RENDERMETHOD) == RENDER_OVERLAYS);
       return true;

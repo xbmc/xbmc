@@ -23,6 +23,7 @@
 #include "Application.h"
 #include "LangInfo.h"
 #include "ServiceBroker.h"
+#include "addons/AddonManager.h"
 #include "addons/BinaryAddonCache.h"
 #include "dialogs/GUIDialogKeyboardGeneric.h"
 #include "dialogs/GUIDialogNumeric.h"
@@ -149,8 +150,14 @@ bool CSystemGUIInfo::GetLabel(std::string& value, const CFileItem *item, const G
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // SYSTEM_*
     ///////////////////////////////////////////////////////////////////////////////////////////////
+    case SYSTEM_TIME:
+      value = CDateTime::GetCurrentDateTime().GetAsLocalizedTime(static_cast<TIME_FORMAT>(info.GetData1()));
+      return true;
     case SYSTEM_DATE:
-      value = CDateTime::GetCurrentDateTime().GetAsLocalizedDate(true);
+      if (info.GetData3().empty())
+        value = CDateTime::GetCurrentDateTime().GetAsLocalizedDate(true);
+      else
+        value = CDateTime::GetCurrentDateTime().GetAsLocalizedDate(info.GetData3());
       return true;
     case SYSTEM_FREE_SPACE:
     case SYSTEM_USED_SPACE:
@@ -317,6 +324,9 @@ bool CSystemGUIInfo::GetLabel(std::string& value, const CFileItem *item, const G
       value = StringUtils::Format("%i", iStereoMode);
       return true;
     }
+    case SYSTEM_GET_CORE_USAGE:
+      value = StringUtils::Format("%4.2f", g_cpuInfo.GetCoreInfo(std::atoi(info.GetData3().c_str())).m_fPct);
+      return true;
     case SYSTEM_RENDER_VENDOR:
       value = CServiceBroker::GetRenderSystem()->GetRenderVendor();
       return true;
@@ -569,6 +579,28 @@ bool CSystemGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, const GUIIn
         value = currentTime >= startTime || currentTime < stopTime;
       else
         value = currentTime >= startTime && currentTime < stopTime;
+      return true;
+    }
+    case SYSTEM_ALARM_LESS_OR_EQUAL:
+    {
+      int time = std::lrint(g_alarmClock.GetRemaining(info.GetData3()));
+      int timeCompare = info.GetData2();
+      if (time > 0)
+        value = timeCompare >= time;
+      else
+        value = false;
+      return true;
+    }
+    case SYSTEM_HAS_ALARM:
+      value = g_alarmClock.HasAlarm(info.GetData3());
+      return true;
+    case SYSTEM_GET_BOOL:
+      value = CServiceBroker::GetSettings().GetBool(info.GetData3());
+      return true;
+    case SYSTEM_HAS_ADDON:
+    {
+      ADDON::AddonPtr addon;
+      value = CServiceBroker::GetAddonMgr().GetAddon(info.GetData3(), addon) && addon;
       return true;
     }
   }

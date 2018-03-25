@@ -45,9 +45,4 @@ uint32_t GUIInfo::GetData1() const
   return m_data1 & ((1 << 24) -1);
 }
 
-int GUIInfo::GetData2() const
-{
-  return m_data2;
-}
-
 } // namespace GUIINFO

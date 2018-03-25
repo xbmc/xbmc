@@ -458,6 +458,9 @@ bool CMusicGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, const GUIInf
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // MUSICPLAYER_*
     ///////////////////////////////////////////////////////////////////////////////////////////////
+    case MUSICPLAYER_CONTENT:
+      value = StringUtils::EqualsNoCase(info.GetData3(), "files");
+      return value; // if no match for this provider, other providers shall be asked.
     case MUSICPLAYER_HASPREVIOUS:
       // requires current playlist be PLAYLIST_MUSIC
       if (CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST_MUSIC)

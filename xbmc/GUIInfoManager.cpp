@@ -33,6 +33,7 @@
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "Util.h"
+#include "addons/AddonManager.h"
 #include "cores/DataCacheCore.h"
 #include "cores/RetroPlayer/RetroPlayerUtils.h"
 #include "filesystem/File.h"
@@ -67,9 +68,7 @@
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "settings/SkinSettings.h"
-#include "utils/AlarmClock.h"
 #include "utils/CharsetConverter.h"
-#include "utils/CPUInfo.h"
 #include "utils/StringUtils.h"
 #include "utils/TimeUtils.h"
 #include "utils/URIUtils.h"
@@ -100,7 +99,6 @@ CGUIInfoManager::CGUIInfoManager(void) :
 {
   m_nextWindowID = WINDOW_INVALID;
   m_prevWindowID = WINDOW_INVALID;
-  m_stringParameters.emplace_back("__ZZZZ__");   // to offset the string parameters by 1 to assure that all entries are non-zero
   m_currentFile = new CFileItem;
   m_currentSlide = new CFileItem;
   m_refreshCounter = 0;
@@ -5353,7 +5351,7 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
               if (data2 > 0)
                 return AddMultiInfo(GUIInfo(string_bools[i].val, data1, -data2));
             }
-            return AddMultiInfo(GUIInfo(string_bools[i].val, data1, ConditionalStringParameter(label)));
+            return AddMultiInfo(GUIInfo(string_bools[i].val, data1, label));
           }
         }
       }
@@ -5395,7 +5393,7 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
         for (size_t i = 0; i < sizeof(player_param) / sizeof(infomap); ++i)
         {
           if (prop.name == player_param[i].str)
-            return AddMultiInfo(GUIInfo(player_param[i].val, ConditionalStringParameter(prop.param())));
+            return AddMultiInfo(GUIInfo(player_param[i].val, prop.param()));
         }
       }
     }
@@ -5437,12 +5435,12 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
         {
           std::string paramCopy = param;
           StringUtils::ToLower(paramCopy);
-          return AddMultiInfo(GUIInfo(SYSTEM_GET_BOOL, ConditionalStringParameter(paramCopy, true)));
+          return AddMultiInfo(GUIInfo(SYSTEM_GET_BOOL, paramCopy));
         }
         for (size_t i = 0; i < sizeof(system_param) / sizeof(infomap); ++i)
         {
           if (prop.name == system_param[i].str)
-            return AddMultiInfo(GUIInfo(system_param[i].val, ConditionalStringParameter(param)));
+            return AddMultiInfo(GUIInfo(system_param[i].val, param));
         }
         if (prop.name == "memory")
         {
@@ -5464,7 +5462,7 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
             return AddMultiInfo(GUIInfo(SYSTEM_ADDON_TITLE, infoLabel, 0));
           std::string label = CGUIInfoLabel::GetLabel(param);
           StringUtils::ToLower(label);
-          return AddMultiInfo(GUIInfo(SYSTEM_ADDON_TITLE, ConditionalStringParameter(label), 1));
+          return AddMultiInfo(GUIInfo(SYSTEM_ADDON_TITLE, label, 1));
         }
         else if (prop.name == "addonicon")
         {
@@ -5473,7 +5471,7 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
             return AddMultiInfo(GUIInfo(SYSTEM_ADDON_ICON, infoLabel, 0));
           std::string label = CGUIInfoLabel::GetLabel(param);
           StringUtils::ToLower(label);
-          return AddMultiInfo(GUIInfo(SYSTEM_ADDON_ICON, ConditionalStringParameter(label), 1));
+          return AddMultiInfo(GUIInfo(SYSTEM_ADDON_ICON, label, 1));
         }
         else if (prop.name == "addonversion")
         {
@@ -5482,13 +5480,13 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
             return AddMultiInfo(GUIInfo(SYSTEM_ADDON_VERSION, infoLabel, 0));
           std::string label = CGUIInfoLabel::GetLabel(param);
           StringUtils::ToLower(label);
-          return AddMultiInfo(GUIInfo(SYSTEM_ADDON_VERSION, ConditionalStringParameter(label), 1));
+          return AddMultiInfo(GUIInfo(SYSTEM_ADDON_VERSION, label, 1));
         }
         else if (prop.name == "idletime")
           return AddMultiInfo(GUIInfo(SYSTEM_IDLE_TIME, atoi(param.c_str())));
       }
       if (prop.name == "alarmlessorequal" && prop.num_params() == 2)
-        return AddMultiInfo(GUIInfo(SYSTEM_ALARM_LESS_OR_EQUAL, ConditionalStringParameter(prop.param(0)), ConditionalStringParameter(prop.param(1))));
+        return AddMultiInfo(GUIInfo(SYSTEM_ALARM_LESS_OR_EQUAL, prop.param(0), atoi(prop.param(1).c_str())));
       else if (prop.name == "date")
       {
         if (prop.num_params() == 2)
@@ -5497,7 +5495,7 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
         {
           int dateformat = StringUtils::DateStringToYYYYMMDD(prop.param(0));
           if (dateformat <= 0) // not concrete date
-            return AddMultiInfo(GUIInfo(SYSTEM_DATE, ConditionalStringParameter(prop.param(0), true), -1));
+            return AddMultiInfo(GUIInfo(SYSTEM_DATE, prop.param(0), -1));
           else
             return AddMultiInfo(GUIInfo(SYSTEM_DATE, dateformat % 10000));
         }
@@ -5547,7 +5545,7 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
         else if (cat == "compilations")
           return LIBRARY_HAS_COMPILATIONS;
         else if (cat == "role" && prop.num_params() > 1)
-          return AddMultiInfo(GUIInfo(LIBRARY_HAS_ROLE, ConditionalStringParameter(prop.param(1)), 0));
+          return AddMultiInfo(GUIInfo(LIBRARY_HAS_ROLE, prop.param(1), 0));
       }
     }
     else if (cat.name == "musicplayer")
@@ -5558,12 +5556,12 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
           return AddMultiInfo(GUIInfo(player_times[i].val, TranslateTimeFormat(prop.param())));
       }
       if (prop.name == "content" && prop.num_params())
-        return AddMultiInfo(GUIInfo(MUSICPLAYER_CONTENT, ConditionalStringParameter(prop.param()), 0));
+        return AddMultiInfo(GUIInfo(MUSICPLAYER_CONTENT, prop.param(), 0));
       else if (prop.name == "property")
       {
         // properties are stored case sensitive in m_listItemProperties, but lookup is insensitive in CGUIListItem::GetProperty
         if (StringUtils::EqualsNoCase(prop.param(), "fanart_image"))
-          return AddMultiInfo(GUIInfo(PLAYER_ITEM_ART, ConditionalStringParameter("fanart")));
+          return AddMultiInfo(GUIInfo(PLAYER_ITEM_ART, "fanart"));
         return AddListItemProp(prop.param(), MUSICPLAYER_PROPERTY_OFFSET);
       }
       return TranslateMusicPlayerString(prop.name);
@@ -5580,7 +5578,7 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
       }
       if (prop.name == "content" && prop.num_params())
       {
-        return AddMultiInfo(GUIInfo(VIDEOPLAYER_CONTENT, ConditionalStringParameter(prop.param()), 0));
+        return AddMultiInfo(GUIInfo(VIDEOPLAYER_CONTENT, prop.param(), 0));
       }
       for (size_t i = 0; i < sizeof(videoplayer) / sizeof(infomap); ++i)
       {
@@ -5626,7 +5624,7 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
       for (size_t i = 0; i < sizeof(container_str) / sizeof(infomap); ++i) // these ones have a string param on the property
       {
         if (prop.name == container_str[i].str)
-          return AddMultiInfo(GUIInfo(container_str[i].val, id, ConditionalStringParameter(prop.param())));
+          return AddMultiInfo(GUIInfo(container_str[i].val, id, prop.param()));
       }
       if (prop.name == "sortdirection")
       {
@@ -5686,14 +5684,14 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
         if (prop.name == "string")
         {
           if (prop.num_params() == 2)
-            return AddMultiInfo(GUIInfo(SKIN_STRING, CSkinSettings::GetInstance().TranslateString(prop.param(0)), ConditionalStringParameter(prop.param(1))));
+            return AddMultiInfo(GUIInfo(SKIN_STRING, CSkinSettings::GetInstance().TranslateString(prop.param(0)), prop.param(1)));
           else
             return AddMultiInfo(GUIInfo(SKIN_STRING, CSkinSettings::GetInstance().TranslateString(prop.param(0))));
         }
         if (prop.name == "hassetting")
           return AddMultiInfo(GUIInfo(SKIN_BOOL, CSkinSettings::GetInstance().TranslateBool(prop.param(0))));
         else if (prop.name == "hastheme")
-          return AddMultiInfo(GUIInfo(SKIN_HAS_THEME, ConditionalStringParameter(prop.param(0))));
+          return AddMultiInfo(GUIInfo(SKIN_HAS_THEME, prop.param(0)));
       }
     }
     else if (cat.name == "window")
@@ -5702,16 +5700,16 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
       { //! @todo this doesn't support foo.xml
         int winID = cat.param().empty() ? 0 : CWindowTranslator::TranslateWindow(cat.param());
         if (winID != WINDOW_INVALID)
-          return AddMultiInfo(GUIInfo(WINDOW_PROPERTY, winID, ConditionalStringParameter(prop.param())));
+          return AddMultiInfo(GUIInfo(WINDOW_PROPERTY, winID, prop.param()));
       }
       for (size_t i = 0; i < sizeof(window_bools) / sizeof(infomap); ++i)
       {
         if (prop.name == window_bools[i].str)
         { //! @todo The parameter for these should really be on the first not the second property
           if (prop.param().find("xml") != std::string::npos)
-            return AddMultiInfo(GUIInfo(window_bools[i].val, 0, ConditionalStringParameter(prop.param())));
+            return AddMultiInfo(GUIInfo(window_bools[i].val, 0, prop.param()));
           int winID = prop.param().empty() ? WINDOW_INVALID : CWindowTranslator::TranslateWindow(prop.param());
-          return winID != WINDOW_INVALID ? AddMultiInfo(GUIInfo(window_bools[i].val, winID, 0)) : window_bools[i].val;
+          return AddMultiInfo(GUIInfo(window_bools[i].val, winID, 0));
         }
       }
     }
@@ -6545,8 +6543,8 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
         break;
       case SKIN_STRING:
         {
-          if (info.GetData2())
-            bReturn = StringUtils::EqualsNoCase(CSkinSettings::GetInstance().GetString(info.GetData1()), m_stringParameters[info.GetData2()]);
+          if (!info.GetData3().empty())
+            bReturn = StringUtils::EqualsNoCase(CSkinSettings::GetInstance().GetString(info.GetData1()), info.GetData3());
           else
             bReturn = !CSkinSettings::GetInstance().GetString(info.GetData1()).empty();
         }
@@ -6555,7 +6553,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
         {
           std::string theme = CServiceBroker::GetSettings().GetString(CSettings::SETTING_LOOKANDFEEL_SKINTHEME);
           URIUtils::RemoveExtension(theme);
-          bReturn = StringUtils::EqualsNoCase(theme, m_stringParameters[info.GetData1()]);
+          bReturn = StringUtils::EqualsNoCase(theme, info.GetData3());
         }
         break;
       case STRING_IS_EMPTY:
@@ -6576,9 +6574,9 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
             else
               compare = GetImage(info2, contextWindow);
           }
-          else if (info.GetData2() < static_cast<int>(m_stringParameters.size()))
+          else if (!info.GetData3().empty())
           { // conditional string
-            compare = m_stringParameters[info.GetData2()];
+            compare = info.GetData3();
           }
           if (item && item->IsFileItem() && info.GetData1() >= LISTITEM_START && info.GetData1() < LISTITEM_END)
             bReturn = StringUtils::EqualsNoCase(GetItemImage(static_cast<const CFileItem *>(item), info.GetData1()), compare);
@@ -6626,7 +6624,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
       case STRING_ENDS_WITH:
       case STRING_CONTAINS:
         {
-          std::string compare = m_stringParameters[info.GetData2()];
+          std::string compare = info.GetData3();
           // our compare string is already in lowercase, so lower case our label as well
           // as std::string::Find() is case sensitive
           std::string label;
@@ -6646,16 +6644,6 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
             bReturn = StringUtils::EndsWith(label, compare);
           else
             bReturn = label.find(compare) != std::string::npos;
-        }
-        break;
-      case SYSTEM_ALARM_LESS_OR_EQUAL:
-        {
-          int time = lrint(g_alarmClock.GetRemaining(m_stringParameters[info.GetData1()]));
-          int timeCompare = atoi(m_stringParameters[info.GetData2()].c_str());
-          if (time > 0)
-            bReturn = timeCompare >= time;
-          else
-            bReturn = false;
         }
         break;
       case CONTROL_GROUP_HAS_FOCUS:
@@ -6702,7 +6690,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
         else
         {
           CGUIWindow *window = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(m_nextWindowID);
-          if (window && StringUtils::EqualsNoCase(URIUtils::GetFileName(window->GetProperty("xmlfile").asString()), m_stringParameters[info.GetData2()]))
+          if (window && StringUtils::EqualsNoCase(URIUtils::GetFileName(window->GetProperty("xmlfile").asString()), info.GetData3()))
             bReturn = true;
         }
         break;
@@ -6711,8 +6699,8 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
           bReturn = (static_cast<int>(info.GetData1()) == m_prevWindowID);
         else
         {
-          CGUIWindow *window = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(m_prevWindowID);
-          if (window && StringUtils::EqualsNoCase(URIUtils::GetFileName(window->GetProperty("xmlfile").asString()), m_stringParameters[info.GetData2()]))
+            CGUIWindow *window = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(m_prevWindowID);
+          if (window && StringUtils::EqualsNoCase(URIUtils::GetFileName(window->GetProperty("xmlfile").asString()), info.GetData3()))
             bReturn = true;
         }
         break;
@@ -6739,35 +6727,29 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
         if (info.GetData1())
           bReturn = CServiceBroker::GetGUI()->GetWindowManager().IsWindowVisible(info.GetData1());
         else
-          bReturn = CServiceBroker::GetGUI()->GetWindowManager().IsWindowVisible(m_stringParameters[info.GetData2()]);
+          bReturn = CServiceBroker::GetGUI()->GetWindowManager().IsWindowVisible(info.GetData3());
         break;
       case WINDOW_IS_ACTIVE:
         if (info.GetData1())
           bReturn = CServiceBroker::GetGUI()->GetWindowManager().IsWindowActive(info.GetData1());
         else
-          bReturn = CServiceBroker::GetGUI()->GetWindowManager().IsWindowActive(m_stringParameters[info.GetData2()]);
+          bReturn = CServiceBroker::GetGUI()->GetWindowManager().IsWindowActive(info.GetData3());
         break;
       case WINDOW_IS_DIALOG_TOPMOST:
         if (info.GetData1())
           bReturn = CServiceBroker::GetGUI()->GetWindowManager().IsDialogTopmost(info.GetData1());
         else
-          bReturn = CServiceBroker::GetGUI()->GetWindowManager().IsDialogTopmost(m_stringParameters[info.GetData2()]);
+          bReturn = CServiceBroker::GetGUI()->GetWindowManager().IsDialogTopmost(info.GetData3());
         break;
       case WINDOW_IS_MODAL_DIALOG_TOPMOST:
         if (info.GetData1())
           bReturn = CServiceBroker::GetGUI()->GetWindowManager().IsModalDialogTopmost(info.GetData1());
         else
-          bReturn = CServiceBroker::GetGUI()->GetWindowManager().IsModalDialogTopmost(m_stringParameters[info.GetData2()]);
-        break;
-      case SYSTEM_HAS_ALARM:
-        bReturn = g_alarmClock.HasAlarm(m_stringParameters[info.GetData1()]);
-        break;
-      case SYSTEM_GET_BOOL:
-        bReturn = CServiceBroker::GetSettings().GetBool(m_stringParameters[info.GetData1()]);
+          bReturn = CServiceBroker::GetGUI()->GetWindowManager().IsModalDialogTopmost(info.GetData3());
         break;
       case SYSTEM_SETTING:
         {
-          if (StringUtils::EqualsNoCase(m_stringParameters[info.GetData1()], "hidewatched"))
+          if (StringUtils::EqualsNoCase(info.GetData3(), "hidewatched"))
           {
             CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
             if (window)
@@ -6775,12 +6757,6 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
           }
         }
         break;
-      case SYSTEM_HAS_ADDON:
-      {
-        AddonPtr addon;
-        bReturn = CServiceBroker::GetAddonMgr().GetAddon(m_stringParameters[info.GetData1()], addon) && addon;
-        break;
-      }
       case CONTAINER_SCROLL_PREVIOUS:
       case CONTAINER_MOVE_PREVIOUS:
       case CONTAINER_MOVE_NEXT:
@@ -6815,7 +6791,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
             if (window)
               content = static_cast<CGUIMediaWindow*>(window)->CurrentDirectory().GetContent();
           }
-          bReturn = StringUtils::EqualsNoCase(m_stringParameters[info.GetData2()], content);
+          bReturn = StringUtils::EqualsNoCase(info.GetData3(), content);
         }
         break;
       case CONTAINER_ROW:
@@ -6861,28 +6837,6 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
           }
           break;
         }
-      case MUSICPLAYER_CONTENT:
-        {
-          std::string strContent = "files";
-          if (m_currentFile->HasPVRChannelInfoTag())
-            strContent = "livetv";
-          bReturn = StringUtils::EqualsNoCase(m_stringParameters[info.GetData1()], strContent);
-          break;
-        }
-      case VIDEOPLAYER_CONTENT:
-        {
-          std::string strContent="files";
-          if (m_currentFile->HasVideoInfoTag() && m_currentFile->GetVideoInfoTag()->m_type == MediaTypeMovie)
-            strContent = "movies";
-          if (m_currentFile->HasVideoInfoTag() && m_currentFile->GetVideoInfoTag()->m_type == MediaTypeEpisode)
-            strContent = "episodes";
-          if (m_currentFile->HasVideoInfoTag() && m_currentFile->GetVideoInfoTag()->m_type == MediaTypeMusicVideo)
-            strContent = "musicvideos";
-          if (m_currentFile->HasPVRChannelInfoTag())
-            strContent = "livetv";
-          bReturn = StringUtils::EqualsNoCase(m_stringParameters[info.GetData1()], strContent);
-        }
-        break;
       case CONTAINER_SORT_METHOD:
       {
         CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
@@ -6930,7 +6884,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
         break;
       case LIBRARY_HAS_ROLE:
       {
-        std::string strRole = m_stringParameters[info.GetData1()];
+        std::string strRole = info.GetData3();
         // Find value for role if already stored
         int artistcount = -1;
         for (const auto &role : m_libraryRoleCounts)
@@ -7029,19 +6983,6 @@ std::string CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &constinfo, int con
   {
     return strValue;
   }
-  else if (info.m_info == PLAYER_ITEM_ART)
-  {
-    return m_currentFile->GetArt(m_stringParameters[info.GetData1()]);
-  }
-  else if (info.m_info == SYSTEM_TIME)
-  {
-    return GetTime((TIME_FORMAT)info.GetData1());
-  }
-  else if (info.m_info == SYSTEM_DATE)
-  {
-    CDateTime time=CDateTime::GetCurrentDateTime();
-    return time.GetAsLocalizedDate(m_stringParameters[info.GetData1()]);
-  }
   else if (info.m_info == CONTAINER_NUM_PAGES || info.m_info == CONTAINER_CURRENT_PAGE ||
            info.m_info == CONTAINER_NUM_ITEMS || info.m_info == CONTAINER_POSITION ||
            info.m_info == CONTAINER_ROW || info.m_info == CONTAINER_COLUMN ||
@@ -7071,22 +7012,17 @@ std::string CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &constinfo, int con
         return static_cast<const CGUITextBox*>(control)->GetLabel(info.m_info);
     }
   }
-  else if (info.m_info == SYSTEM_GET_CORE_USAGE)
-  {
-    std::string strCpu = StringUtils::Format("%4.2f", g_cpuInfo.GetCoreInfo(atoi(m_stringParameters[info.GetData1()].c_str())).m_fPct);
-    return strCpu;
-  }
   else if (info.m_info == CONTAINER_PROPERTY)
   {
     CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
     if (window)
-      return static_cast<CGUIMediaWindow *>(window)->CurrentDirectory().GetProperty(m_stringParameters[info.GetData2()]).asString();
+      return static_cast<CGUIMediaWindow *>(window)->CurrentDirectory().GetProperty(info.GetData3()).asString();
   }
   else if (info.m_info == CONTAINER_ART)
   {
     CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
     if (window)
-      return static_cast<CGUIMediaWindow*>(window)->CurrentDirectory().GetArt(m_stringParameters[info.GetData2()]);
+      return static_cast<CGUIMediaWindow*>(window)->CurrentDirectory().GetArt(info.GetData3());
   }
   else if (info.m_info == CONTAINER_CONTENT)
   {
@@ -7123,7 +7059,7 @@ std::string CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &constinfo, int con
     }
 
     if (window)
-      return window->GetProperty(m_stringParameters[info.GetData2()]).asString();
+      return window->GetProperty(info.GetData3()).asString();
   }
   else if (info.m_info == SYSTEM_ADDON_TITLE ||
            info.m_info == SYSTEM_ADDON_ICON ||
@@ -7135,9 +7071,9 @@ std::string CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &constinfo, int con
     // in the future.
     AddonPtr addon;
     if (info.GetData2() == 0)
-      CServiceBroker::GetAddonMgr().GetAddon(const_cast<CGUIInfoManager*>(this)->GetLabel(info.GetData1(), contextWindow),addon,ADDON_UNKNOWN,false);
+      CServiceBroker::GetAddonMgr().GetAddon(const_cast<CGUIInfoManager*>(this)->GetLabel(info.GetData1(), contextWindow), addon, ADDON_UNKNOWN, false);
     else
-      CServiceBroker::GetAddonMgr().GetAddon(m_stringParameters[info.GetData1()],addon,ADDON_UNKNOWN,false);
+      CServiceBroker::GetAddonMgr().GetAddon(info.GetData3(), addon, ADDON_UNKNOWN, false);
     if (addon && info.m_info == SYSTEM_ADDON_TITLE)
       return addon->Name();
     if (addon && info.m_info == SYSTEM_ADDON_ICON)
@@ -7184,16 +7120,6 @@ std::string CGUIInfoManager::GetImage(int info, int contextWindow, std::string *
     }
   }
   return GetLabel(info, contextWindow, fallback);
-}
-
-std::string CGUIInfoManager::GetDate(bool bNumbersOnly)
-{
-  return CDateTime::GetCurrentDateTime().GetAsLocalizedDate(!bNumbersOnly);
-}
-
-std::string CGUIInfoManager::GetTime(TIME_FORMAT format) const
-{
-  return CDateTime::GetCurrentDateTime().GetAsLocalizedTime(format);
 }
 
 std::string CGUIInfoManager::GetGameLabel(int item)
@@ -7449,27 +7375,6 @@ int CGUIInfoManager::AddMultiInfo(const GUIInfo &info)
   if (id > MULTI_INFO_END)
     CLog::Log(LOGERROR, "%s - too many multiinfo bool/labels in this skin", __FUNCTION__);
   return id;
-}
-
-int CGUIInfoManager::ConditionalStringParameter(const std::string &parameter, bool caseSensitive /*= false*/)
-{
-  // check to see if we have this parameter already
-  if (caseSensitive)
-  {
-    std::vector<std::string>::const_iterator i = std::find(m_stringParameters.begin(), m_stringParameters.end(), parameter);
-    if (i != m_stringParameters.end())
-      return static_cast<int>(std::distance<std::vector<std::string>::const_iterator>(m_stringParameters.begin(), i));
-  }
-  else
-  {
-    for (unsigned int i = 0; i < m_stringParameters.size(); ++i)
-      if (StringUtils::EqualsNoCase(parameter, m_stringParameters[i]))
-        return static_cast<int>(i);
-  }
-
-  // return the new offset
-  m_stringParameters.emplace_back(parameter);
-  return static_cast<int>(m_stringParameters.size()) - 1;
 }
 
 bool CGUIInfoManager::GetItemInt(int &value, const CGUIListItem *item, int info) const

@@ -39,6 +39,14 @@ public:
       SetInfoFlag(flag);
   }
 
+  GUIInfo(int info, uint32_t data1, const std::string& data3)
+  : m_info(info),
+    m_data1(data1),
+    m_data2(0),
+    m_data3(data3)
+  {
+  }
+
   GUIInfo(int info, const std::string& data3)
   : m_info(info),
     m_data1(0),
@@ -47,14 +55,25 @@ public:
   {
   }
 
+  GUIInfo(int info, const std::string& data3, int data2)
+  : m_info(info),
+    m_data1(0),
+    m_data2(data2),
+    m_data3(data3)
+  {
+  }
+
   bool operator ==(const GUIInfo &right) const
   {
-    return (m_info == right.m_info && m_data1 == right.m_data1 && m_data2 == right.m_data2 && m_data3 == right.m_data3);
+    return (m_info == right.m_info &&
+            m_data1 == right.m_data1 &&
+            m_data2 == right.m_data2 &&
+            m_data3 == right.m_data3);
   }
 
   uint32_t GetInfoFlag() const;
   uint32_t GetData1() const;
-  int GetData2() const;
+  int GetData2() const { return m_data2; }
   const std::string& GetData3() const { return m_data3; }
 
   int m_info;

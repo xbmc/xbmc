@@ -1215,6 +1215,14 @@ bool CPVRGUIInfo::GetListItemAndPlayerBool(const CFileItem *item, const GUIInfo 
         return true;
       }
       break;
+    case MUSICPLAYER_CONTENT:
+    case VIDEOPLAYER_CONTENT:
+      if (item->IsPVRChannel())
+      {
+        bValue = StringUtils::EqualsNoCase(info.GetData3(), "livetv");
+        return bValue; // if no match for this provider, other providers shall be asked.
+      }
+      break;
     case VIDEOPLAYER_HAS_INFO:
       if (item->IsPVRChannel())
       {
