@@ -131,7 +131,7 @@ public:
                      EGLint rendering_api);
 
   bool CreateSurface(EGLNativeWindowType surface);
-  bool CreateContext();
+  bool CreateContext(const EGLint* contextAttribs);
   bool BindContext();
   bool SurfaceAttrib();
   void Destroy();

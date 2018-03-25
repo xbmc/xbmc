@@ -151,19 +151,12 @@ bool CEGLContextUtils::CreateDisplay(EGLDisplay display,
   return true;
 }
 
-bool CEGLContextUtils::CreateContext()
+bool CEGLContextUtils::CreateContext(const EGLint* contextAttribs)
 {
-  int client_version = 2;
-
-  const EGLint context_attribs[] =
-  {
-    EGL_CONTEXT_CLIENT_VERSION, client_version, EGL_NONE
-  };
-
   if (m_eglContext == EGL_NO_CONTEXT)
   {
     m_eglContext = eglCreateContext(m_eglDisplay, m_eglConfig,
-                                    EGL_NO_CONTEXT, context_attribs);
+                                    EGL_NO_CONTEXT, contextAttribs);
   }
 
   if (m_eglContext == EGL_NO_CONTEXT)
