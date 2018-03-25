@@ -836,13 +836,13 @@ CDVDVideoCodec::VCReturn CDecoder::Decode(AVCodecContext* avctx, AVFrame* pFrame
     m_videoSurfaces.MarkRender(surf);
 
     // send frame to output for processing
-    CVaapiDecodedPicture pic;
-    static_cast<ICallbackHWAccel*>(avctx->opaque)->GetPictureCommon(&pic.DVDPic);
-    pic.videoSurface = surf;
+    CVaapiDecodedPicture *pic = new CVaapiDecodedPicture();
+    static_cast<ICallbackHWAccel*>(avctx->opaque)->GetPictureCommon(&(pic->DVDPic));
+    m_codecControl = pic->DVDPic.iFlags & (DVD_CODEC_CTRL_HURRY | DVD_CODEC_CTRL_NO_POSTPROC);
+    pic->videoSurface = surf;
     m_bufferStats.IncDecoded();
-    m_vaapiOutput.m_dataPort.SendOutMessage(COutputDataProtocol::NEWFRAME, &pic, sizeof(pic));
-
-    m_codecControl = pic.DVDPic.iFlags & (DVD_CODEC_CTRL_HURRY | DVD_CODEC_CTRL_NO_POSTPROC);
+    CPayloadWrap<CVaapiDecodedPicture> *payload = new CPayloadWrap<CVaapiDecodedPicture>(pic);
+    m_vaapiOutput.m_dataPort.SendOutMessage(COutputDataProtocol::NEWFRAME, payload);
   }
 
   uint16_t decoded, processed, render;
@@ -1558,11 +1558,11 @@ void COutput::StateMachine(int signal, Protocol *port, Message *msg)
         switch (signal)
         {
         case COutputDataProtocol::NEWFRAME:
-          CVaapiDecodedPicture *frame;
-          frame = reinterpret_cast<CVaapiDecodedPicture*>(msg->data);
-          if (frame)
+          CPayloadWrap<CVaapiDecodedPicture> *payload;
+          payload = dynamic_cast<CPayloadWrap<CVaapiDecodedPicture>*>(msg->payloadObj.get());
+          if (payload)
           {
-            m_bufferPool->decodedPics.push_back(*frame);
+            m_bufferPool->decodedPics.push_back(*(payload->GetPlayload()));
             m_extTimeout = 0;
           }
           return;
