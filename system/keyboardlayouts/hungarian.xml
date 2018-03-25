@@ -6,16 +6,16 @@ Default font lacks support for all characters
 <keyboardlayouts>
   <layout language="Hungarian" layout="QWERTZ">
     <keyboard>
-      <row>0123456789öüó</row>
+      <row>0123456789öü</row>
       <row>qwertzuiopőú</row>
       <row>asdfghjkléáű</row>
-      <row>íyxcvbnm,.-</row>
+      <row>íyxcvbnm,.-ó</row>
     </keyboard>
     <keyboard modifiers="shift">
-      <row>0123456789ÖÜÓ</row>
+      <row>0123456789ÖÜ</row>
       <row>QWERTZUIOPŐÚ</row>
       <row>ASDFGHJKLÉÁŰ</row>
-      <row>ÍYXCVBNM,.-</row>
+      <row>ÍYXCVBNM,.-Ó</row>
     </keyboard>
     <keyboard modifiers="symbol,shift+symbol">
       <row>§'"+!/=()~</row>
