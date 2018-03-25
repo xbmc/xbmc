@@ -1869,7 +1869,7 @@ void CApplication::Render()
 
   if (hasRendered)
   {
-    g_infoManager.UpdateFPS();
+    g_infoManager.GetInfoProviders().GetSystemInfoProvider().UpdateFPS();
   }
 
   CServiceBroker::GetWinSystem()->GetGfxContext().Flip(hasRendered, m_appPlayer.IsRenderingVideoLayer());

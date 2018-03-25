@@ -32,7 +32,6 @@
 #include "messaging/IMessageTarget.h"
 #include "threads/CriticalSection.h"
 #include "utils/Observer.h"
-#include "utils/Temperature.h"
 
 class CFileItem;
 class CGUIControl;
@@ -135,12 +134,7 @@ public:
   int GetEpgEventProgress() const;
   int GetEpgEventSeekPercent() const;
 
-  std::string GetSystemHeatInfo(int info);
-  CTemperature GetGPUTemperature();
-
-  void UpdateFPS();
   void UpdateAVInfo();
-  inline float GetFPS() const { return m_fps; };
 
   void SetNextWindow(int windowID) { m_nextWindowID = windowID; };
   void SetPreviousWindow(int windowID) { m_prevWindowID = windowID; };
@@ -250,17 +244,6 @@ protected:
   // Current playing stuff
   CFileItem* m_currentFile;
   CFileItem* m_currentSlide;
-
-  // fan stuff
-  unsigned int m_lastSysHeatInfoTime;
-  int m_fanSpeed;
-  CTemperature m_gpuTemp;
-  CTemperature m_cpuTemp;
-
-  // FPS counters
-  float m_fps;
-  unsigned int m_frameCounter;
-  unsigned int m_lastFPSTime;
 
   std::map<int, int> m_containerMoves;  // direction of list moving
   int m_nextWindowID;

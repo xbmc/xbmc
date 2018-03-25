@@ -24,6 +24,7 @@
 
 #include "guiinfo/MusicGUIInfo.h"
 #include "guiinfo/PlayerGUIInfo.h"
+#include "guiinfo/SystemGUIInfo.h"
 #include "guiinfo/VideoGUIInfo.h"
 
 class CFileItem;
@@ -97,12 +98,19 @@ public:
    */
   CPlayerGUIInfo& GetPlayerInfoProvider() { return m_playerGUIInfo; }
 
+  /*!
+   * @brief Get the system guiinfo provider.
+   * @return The system guiinfo provider.
+   */
+  CSystemGUIInfo& GetSystemInfoProvider() { return m_systemGUIInfo; }
+
 private:
   std::vector<IGUIInfoProvider *> m_providers;
 
   CMusicGUIInfo m_musicGUIInfo;
   CVideoGUIInfo m_videoGUIInfo;
   CPlayerGUIInfo m_playerGUIInfo;
+  CSystemGUIInfo m_systemGUIInfo;
 };
 
 } // namespace GUIINFO

@@ -33,12 +33,8 @@
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "Util.h"
-#include "addons/BinaryAddonCache.h"
 #include "cores/DataCacheCore.h"
 #include "cores/RetroPlayer/RetroPlayerUtils.h"
-#include "dialogs/GUIDialogKeyboardGeneric.h"
-#include "dialogs/GUIDialogNumeric.h"
-#include "dialogs/GUIDialogProgress.h"
 #include "filesystem/File.h"
 #include "games/addons/savestates/SavestateDefines.h"
 #include "games/tags/GameInfoTag.h"
@@ -58,6 +54,7 @@
 #include "interfaces/AnnouncementManager.h"
 #include "interfaces/info/InfoExpression.h"
 #include "messaging/ApplicationMessenger.h"
+#include "music/MusicDatabase.h"
 #include "music/MusicInfoLoader.h"
 #include "music/MusicThumbLoader.h"
 #include "music/dialogs/GUIDialogMusicInfo.h"
@@ -66,25 +63,14 @@
 #include "network/Network.h"
 #include "pictures/GUIWindowSlideShow.h"
 #include "pictures/PictureInfoTag.h"
-#if defined(TARGET_DARWIN_OSX)
-#include "platform/darwin/osx/smc.h"
-#endif
-#ifdef TARGET_POSIX
-#include "platform/linux/XMemUtils.h"
-#endif
-#include "powermanagement/PowerManager.h"
 #include "profiles/ProfilesManager.h"
-#include "settings/AdvancedSettings.h"
-#include "settings/DisplaySettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "settings/SkinSettings.h"
-#include "storage/MediaManager.h"
 #include "utils/AlarmClock.h"
 #include "utils/CharsetConverter.h"
 #include "utils/CPUInfo.h"
 #include "utils/StringUtils.h"
-#include "utils/SystemInfo.h"
 #include "utils/TimeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
@@ -95,17 +81,13 @@
 #include "video/dialogs/GUIDialogVideoInfo.h"
 #include "view/GUIViewState.h"
 #include "weather/WeatherManager.h"
-#include "windowing/WinSystem.h"
 #include "windows/GUIMediaWindow.h"
-
-#define SYSHEATUPDATEINTERVAL 60000
 
 using namespace KODI;
 using namespace ADDON;
 using namespace GUIINFO;
 using namespace INFO;
 using namespace MUSIC_INFO;
-using namespace XFILE;
 
 bool InfoBoolComparator(const InfoPtr &right, const InfoPtr &left)
 {
@@ -116,16 +98,11 @@ CGUIInfoManager::CGUIInfoManager(void) :
     Observable(),
     m_bools(&InfoBoolComparator)
 {
-  m_lastSysHeatInfoTime = -SYSHEATUPDATEINTERVAL;  // make sure we grab CPU temp on the first pass
-  m_fanSpeed = 0;
   m_nextWindowID = WINDOW_INVALID;
   m_prevWindowID = WINDOW_INVALID;
   m_stringParameters.emplace_back("__ZZZZ__");   // to offset the string parameters by 1 to assure that all entries are non-zero
   m_currentFile = new CFileItem;
   m_currentSlide = new CFileItem;
-  m_frameCounter = 0;
-  m_lastFPSTime = 0;
-  m_fps = 0.0f;
   m_refreshCounter = 0;
   ResetLibraryBools();
 }
@@ -6033,12 +6010,6 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   case WEATHER_PLUGIN:
     strLabel = CServiceBroker::GetSettings().GetString(CSettings::SETTING_WEATHER_ADDON);
     break;
-  case SYSTEM_DATE:
-    strLabel = GetDate();
-    break;
-  case SYSTEM_FPS:
-    strLabel = StringUtils::Format("%02.2f", m_fps);
-    break;
   case RETROPLAYER_VIEWMODE:
     strLabel = GetGameLabel(info);
     break;
@@ -6048,49 +6019,13 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   case PLAYLIST_REPEAT:
     strLabel = CGUIInfoHelper::GetPlaylistLabel(info);
     break;
-  case SYSTEM_FREE_SPACE:
-  case SYSTEM_USED_SPACE:
-  case SYSTEM_TOTAL_SPACE:
-  case SYSTEM_FREE_SPACE_PERCENT:
-  case SYSTEM_USED_SPACE_PERCENT:
-    return g_sysinfo.GetHddSpaceInfo(info);
-  case SYSTEM_CPU_TEMPERATURE:
-  case SYSTEM_GPU_TEMPERATURE:
-  case SYSTEM_FAN_SPEED:
-  case SYSTEM_CPU_USAGE:
-    return GetSystemHeatInfo(info);
-  case SYSTEM_VIDEO_ENCODER_INFO:
-  case NETWORK_MAC_ADDRESS:
-  case SYSTEM_OS_VERSION_INFO:
-  case SYSTEM_CPUFREQUENCY:
-  case SYSTEM_INTERNET_STATE:
-  case SYSTEM_UPTIME:
-  case SYSTEM_TOTALUPTIME:
-  case SYSTEM_BATTERY_LEVEL:
-    return g_sysinfo.GetInfo(info);
-  case SYSTEM_PRIVACY_POLICY:
-    return g_sysinfo.GetPrivacyPolicy();
-  case SYSTEM_SCREEN_RESOLUTION:
-    if(CServiceBroker::GetWinSystem()->IsFullScreen())
-      strLabel = StringUtils::Format("%ix%i@%.2fHz - %s",
-        CDisplaySettings::GetInstance().GetCurrentResolutionInfo().iScreenWidth,
-        CDisplaySettings::GetInstance().GetCurrentResolutionInfo().iScreenHeight,
-        CDisplaySettings::GetInstance().GetCurrentResolutionInfo().fRefreshRate,
-        g_localizeStrings.Get(244).c_str());
-    else
-      strLabel = StringUtils::Format("%ix%i - %s",
-        CDisplaySettings::GetInstance().GetCurrentResolutionInfo().iScreenWidth,
-        CDisplaySettings::GetInstance().GetCurrentResolutionInfo().iScreenHeight,
-        g_localizeStrings.Get(242).c_str());
-    return strLabel;
-
   case CONTAINER_FOLDERPATH:
   case CONTAINER_FOLDERNAME:
     {
       CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
       if (window)
       {
-        if (info==CONTAINER_FOLDERNAME)
+        if (info == CONTAINER_FOLDERNAME)
           strLabel = static_cast<CGUIMediaWindow*>(window)->CurrentDirectory().GetLabel();
         else
           strLabel = CURL(static_cast<CGUIMediaWindow*>(window)->CurrentDirectory().GetPath()).GetWithoutUserDetails();
@@ -6194,123 +6129,6 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
       }
     }
     break;
-  case SYSTEM_BUILD_VERSION_SHORT:
-    strLabel = CSysInfo::GetVersionShort();
-    break;
-  case SYSTEM_BUILD_VERSION:
-    strLabel = CSysInfo::GetVersion();
-    break;
-  case SYSTEM_BUILD_DATE:
-    strLabel = CSysInfo::GetBuildDate();
-    break;
-  case SYSTEM_FREE_MEMORY:
-  case SYSTEM_FREE_MEMORY_PERCENT:
-  case SYSTEM_USED_MEMORY:
-  case SYSTEM_USED_MEMORY_PERCENT:
-  case SYSTEM_TOTAL_MEMORY:
-    {
-      MEMORYSTATUSEX stat;
-      stat.dwLength = sizeof(MEMORYSTATUSEX);
-      GlobalMemoryStatusEx(&stat);
-      int iMemPercentFree = 100 - static_cast<int>(100.0f * (stat.ullTotalPhys - stat.ullAvailPhys) / stat.ullTotalPhys + 0.5f);
-      int iMemPercentUsed = 100 - iMemPercentFree;
-
-      if (info == SYSTEM_FREE_MEMORY)
-        strLabel = StringUtils::Format("%uMB", static_cast<unsigned int>(stat.ullAvailPhys / MB));
-      else if (info == SYSTEM_FREE_MEMORY_PERCENT)
-        strLabel = StringUtils::Format("%i%%", iMemPercentFree);
-      else if (info == SYSTEM_USED_MEMORY)
-        strLabel = StringUtils::Format("%uMB", static_cast<unsigned int>((stat.ullTotalPhys - stat.ullAvailPhys) / MB));
-      else if (info == SYSTEM_USED_MEMORY_PERCENT)
-        strLabel = StringUtils::Format("%i%%", iMemPercentUsed);
-      else if (info == SYSTEM_TOTAL_MEMORY)
-        strLabel = StringUtils::Format("%uMB", static_cast<unsigned int>(stat.ullTotalPhys / MB));
-    }
-    break;
-  case SYSTEM_SCREEN_MODE:
-    strLabel = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo().strMode;
-    break;
-  case SYSTEM_SCREEN_WIDTH:
-    strLabel = StringUtils::Format("%i", CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo().iScreenWidth);
-    break;
-  case SYSTEM_SCREEN_HEIGHT:
-    strLabel = StringUtils::Format("%i", CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo().iScreenHeight);
-    break;
-  case SYSTEM_CURRENT_WINDOW:
-    return g_localizeStrings.Get(CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindowOrDialog());
-  case SYSTEM_STARTUP_WINDOW:
-    strLabel = StringUtils::Format("%i", CServiceBroker::GetSettings().GetInt(CSettings::SETTING_LOOKANDFEEL_STARTUPWINDOW));
-    break;
-  case SYSTEM_CURRENT_CONTROL:
-  case SYSTEM_CURRENT_CONTROL_ID:
-    {
-      CGUIWindow *window = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindowOrDialog());
-      if (window)
-      {
-        CGUIControl *control = window->GetFocusedControl();
-        if (control)
-        {
-          if (info == SYSTEM_CURRENT_CONTROL_ID)
-            strLabel = StringUtils::Format("%i", control->GetID());
-          else if (info == SYSTEM_CURRENT_CONTROL)
-            strLabel = control->GetDescription();
-        }
-      }
-    }
-    break;
-#ifdef HAS_DVD_DRIVE
-  case SYSTEM_DVD_LABEL:
-    strLabel = g_mediaManager.GetDiskLabel();
-    break;
-#endif
-  case SYSTEM_ALARM_POS:
-    if (g_alarmClock.GetRemaining("shutdowntimer") == 0.f)
-      strLabel = "";
-    else
-    {
-      double fTime = g_alarmClock.GetRemaining("shutdowntimer");
-      if (fTime > 60.f)
-        strLabel = StringUtils::Format(g_localizeStrings.Get(13213).c_str(), g_alarmClock.GetRemaining("shutdowntimer")/60.f);
-      else
-        strLabel = StringUtils::Format(g_localizeStrings.Get(13214).c_str(), g_alarmClock.GetRemaining("shutdowntimer"));
-    }
-    break;
-  case SYSTEM_PROFILENAME:
-    strLabel = CServiceBroker::GetProfileManager().GetCurrentProfile().getName();
-    break;
-  case SYSTEM_PROFILECOUNT:
-    strLabel = StringUtils::Format("{0}", CServiceBroker::GetProfileManager().GetNumberOfProfiles());
-    break;
-  case SYSTEM_PROFILEAUTOLOGIN:
-    {
-      int profileId = CServiceBroker::GetProfileManager().GetAutoLoginProfileId();
-      if ((profileId < 0) || (!CServiceBroker::GetProfileManager().GetProfileName(profileId, strLabel)))
-        strLabel = g_localizeStrings.Get(37014); // Last used profile
-    }
-    break;
-  case SYSTEM_LANGUAGE:
-    strLabel = g_langInfo.GetEnglishLanguageName();
-    break;
-  case SYSTEM_TEMPERATURE_UNITS:
-    strLabel = g_langInfo.GetTemperatureUnitString();
-    break;
-  case SYSTEM_PROGRESS_BAR:
-    {
-      int percent;
-      if (GetInt(percent, SYSTEM_PROGRESS_BAR) && percent > 0)
-        strLabel = StringUtils::Format("%i", percent);
-    }
-    break;
-  case SYSTEM_FRIENDLY_NAME:
-    strLabel = CSysInfo::GetDeviceName();
-    break;
-  case SYSTEM_STEREOSCOPIC_MODE:
-    {
-      int stereoMode = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_VIDEOSCREEN_STEREOSCOPICMODE);
-      strLabel = StringUtils::Format("%i", stereoMode);
-    }
-    break;
-
   case SKIN_THEME:
     strLabel = CServiceBroker::GetSettings().GetString(CSettings::SETTING_LOOKANDFEEL_SKINTHEME);
     break;
@@ -6430,15 +6248,6 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
         return static_cast<CGUIMediaWindow*>(window)->CurrentDirectory().GetArt("fanart");
     }
     break;
-  case SYSTEM_RENDER_VENDOR:
-    strLabel = CServiceBroker::GetRenderSystem()->GetRenderVendor();
-    break;
-  case SYSTEM_RENDER_RENDERER:
-    strLabel = CServiceBroker::GetRenderSystem()->GetRenderRenderer();
-    break;
-  case SYSTEM_RENDER_VERSION:
-    strLabel = CServiceBroker::GetRenderSystem()->GetRenderVersionString();
-    break;
   }
 
   return strLabel;
@@ -6463,45 +6272,7 @@ bool CGUIInfoManager::GetInt(int &value, int info, int contextWindow, const CGUI
   }
 
   value = 0;
-  if (m_infoProviders.GetInt(value, m_currentFile, GUIInfo(info)))
-    return true;
-
-  switch (info)
-  {
-    case SYSTEM_FREE_MEMORY:
-    case SYSTEM_USED_MEMORY:
-      {
-        MEMORYSTATUSEX stat;
-        stat.dwLength = sizeof(MEMORYSTATUSEX);
-        GlobalMemoryStatusEx(&stat);
-        int memPercentUsed = static_cast<int>(100.0f * (stat.ullTotalPhys - stat.ullAvailPhys) / stat.ullTotalPhys + 0.5f);
-        if (info == SYSTEM_FREE_MEMORY)
-          value = 100 - memPercentUsed;
-        else
-          value = memPercentUsed;
-        return true;
-      }
-    case SYSTEM_PROGRESS_BAR:
-      {
-        CGUIDialogProgress *bar = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogProgress>(WINDOW_DIALOG_PROGRESS);
-        if (bar && bar->IsDialogRunning())
-          value = bar->GetPercentage();
-        return true;
-      }
-    case SYSTEM_FREE_SPACE:
-    case SYSTEM_USED_SPACE:
-      {
-        g_sysinfo.GetHddSpaceInfo(value, info, true);
-        return true;
-      }
-    case SYSTEM_CPU_USAGE:
-      value = g_cpuInfo.getUsedPercentage();
-      return true;
-    case SYSTEM_BATTERY_LEVEL:
-      value = CServiceBroker::GetPowerManager().BatteryLevel();
-      return true;
-  }
-  return false;
+  return m_infoProviders.GetInt(value, m_currentFile, GUIInfo(info));
 }
 
 INFO::InfoPtr CGUIInfoManager::Register(const std::string &expression, int context)
@@ -6587,18 +6358,6 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
 
     switch (condition)
     {
-      // Ethernet Link state checking
-      // Will check if system has a Ethernet Link connection! [Cable in!]
-      // This can used for the skinner to switch off Network or Inter required functions
-      case SYSTEM_ALWAYS_TRUE:
-        bReturn = true;
-        break;
-      case SYSTEM_ALWAYS_FALSE:
-        bReturn = false;
-        break;
-      case SYSTEM_ETHERNET_LINK_ACTIVE:
-        bReturn = true;
-        break;
       case WINDOW_IS_MEDIA:
         { // note: This doesn't return true for dialogs (content, favourites, login, videoinfo)
           CGUIWindow *pWindow = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow());
@@ -6614,154 +6373,8 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
       case LIBRARY_IS_SCANNING_MUSIC:
         bReturn = g_application.IsMusicScanning();
         break;
-      case SYSTEM_PLATFORM_LINUX:
-#if defined(TARGET_LINUX) || defined(TARGET_FREEBSD)
-        bReturn = true;
-#else
-        bReturn = false;
-#endif
-        break;
-      case SYSTEM_PLATFORM_WINDOWS:
-#ifdef TARGET_WINDOWS
-        bReturn = true;
-#else
-        bReturn = false;
-#endif
-        break;
-      case SYSTEM_PLATFORM_DARWIN:
-#ifdef TARGET_DARWIN
-        bReturn = true;
-#else
-        bReturn = false;
-#endif
-        break;
-      case SYSTEM_PLATFORM_DARWIN_OSX:
-#ifdef TARGET_DARWIN_OSX
-        bReturn = true;
-#else
-        bReturn = false;
-#endif
-        break;
-      case SYSTEM_PLATFORM_DARWIN_IOS:
-#ifdef TARGET_DARWIN_IOS
-        bReturn = true;
-#else
-        bReturn = false;
-#endif
-        break;
-      case SYSTEM_PLATFORM_ANDROID:
-#if defined(TARGET_ANDROID)
-        bReturn = true;
-#else
-        bReturn = false;
-#endif
-        break;
-      case SYSTEM_PLATFORM_LINUX_RASPBERRY_PI:
-#if defined(TARGET_RASPBERRY_PI)
-        bReturn = true;
-#else
-        bReturn = false;
-#endif
-        break;
-      case SYSTEM_MEDIA_DVD:
-        bReturn = g_mediaManager.IsDiscInDrive();
-        break;
-#ifdef HAS_DVD_DRIVE
-      case SYSTEM_DVDREADY:
-        bReturn = g_mediaManager.GetDriveStatus() != DRIVE_NOT_READY;
-        break;
-      case SYSTEM_TRAYOPEN:
-        bReturn = g_mediaManager.GetDriveStatus() == DRIVE_OPEN;
-        break;
-#endif
-      case SYSTEM_CAN_POWERDOWN:
-        bReturn = CServiceBroker::GetPowerManager().CanPowerdown();
-        break;
-      case SYSTEM_CAN_SUSPEND:
-        bReturn = CServiceBroker::GetPowerManager().CanSuspend();
-        break;
-      case SYSTEM_CAN_HIBERNATE:
-        bReturn = CServiceBroker::GetPowerManager().CanHibernate();
-        break;
-      case SYSTEM_CAN_REBOOT:
-        bReturn = CServiceBroker::GetPowerManager().CanReboot();
-        break;
-      case SYSTEM_SCREENSAVER_ACTIVE:
-        bReturn = g_application.IsInScreenSaver();
-        break;
-      case SYSTEM_DPMS_ACTIVE:
-        bReturn = g_application.IsDPMSActive();
-        break;
-      case SYSTEM_HASLOCKS:
-        bReturn = CServiceBroker::GetProfileManager().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE;
-        break;
-      case SYSTEM_HAS_PVR:
-        bReturn = true;
-        break;
-      case SYSTEM_HAS_PVR_ADDON:
-        {
-          VECADDONS pvrAddons;
-          CBinaryAddonCache &addonCache = CServiceBroker::GetBinaryAddonCache();
-          addonCache.GetAddons(pvrAddons, ADDON::ADDON_PVRDLL);
-          bReturn = (pvrAddons.size() > 0);
-        }
-        break;
-      case SYSTEM_HAS_CMS:
-#if defined(HAS_GL) || defined(HAS_DX)
-        bReturn = true;
-#else
-        bReturn = false;
-#endif
-        break;
-      case SYSTEM_ISMASTER:
-        bReturn = CServiceBroker::GetProfileManager().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && g_passwordManager.bMasterUser;
-        break;
-      case SYSTEM_ISFULLSCREEN:
-        bReturn = CServiceBroker::GetWinSystem()->IsFullScreen();
-        break;
-      case SYSTEM_ISSTANDALONE:
-        bReturn = g_application.IsStandAlone();
-        break;
-      case SYSTEM_ISINHIBIT:
-        bReturn = g_application.IsIdleShutdownInhibited();
-        break;
-      case SYSTEM_HAS_SHUTDOWN:
-        bReturn = (CServiceBroker::GetSettings().GetInt(CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNTIME) > 0);
-        break;
-      case SYSTEM_LOGGEDON:
-        bReturn = !(CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_LOGIN_SCREEN);
-        break;
-      case SYSTEM_SHOW_EXIT_BUTTON:
-        bReturn = g_advancedSettings.m_showExitButton;
-        break;
-      case SYSTEM_HAS_LOGINSCREEN:
-        bReturn = CServiceBroker::GetProfileManager().UsingLoginScreen();
-        break;
-      case SYSTEM_HAS_ACTIVE_MODAL_DIALOG:
-        bReturn = CServiceBroker::GetGUI()->GetWindowManager().HasModalDialog();
-        break;
-      case SYSTEM_HAS_VISIBLE_MODAL_DIALOG:
-        bReturn = CServiceBroker::GetGUI()->GetWindowManager().HasVisibleModalDialog();
-        break;
       case WEATHER_IS_FETCHED:
         bReturn = CServiceBroker::GetWeatherManager().IsFetched();
-        break;
-      case SYSTEM_INTERNET_STATE:
-        {
-          g_sysinfo.GetInfo(condition);
-          bReturn = g_sysinfo.HasInternet();
-        }
-        break;
-      case SYSTEM_HAS_INPUT_HIDDEN:
-        {
-          CGUIDialogNumeric *pNumeric = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogNumeric>(WINDOW_DIALOG_NUMERIC);
-          CGUIDialogKeyboardGeneric *pKeyboard = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogKeyboardGeneric>(WINDOW_DIALOG_KEYBOARD);
-
-          if (pNumeric && pNumeric->IsActive())
-            bReturn = pNumeric->IsInputHidden();
-          else if (pKeyboard && pKeyboard->IsActive())
-            bReturn = pKeyboard->IsInputHidden();
-        }
         break;
       case CONTAINER_HASFILES:
       case CONTAINER_HASFOLDERS:
@@ -7045,9 +6658,6 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
             bReturn = false;
         }
         break;
-      case SYSTEM_IDLE_TIME:
-        bReturn = g_application.GlobalIdleTime() >= static_cast<int>(info.GetData1());
-        break;
       case CONTROL_GROUP_HAS_FOCUS:
         {
           CGUIWindow *window = GetWindowWithCondition(contextWindow, 0);
@@ -7155,9 +6765,6 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
       case SYSTEM_GET_BOOL:
         bReturn = CServiceBroker::GetSettings().GetBool(m_stringParameters[info.GetData1()]);
         break;
-      case SYSTEM_HAS_CORE_ID:
-        bReturn = g_cpuInfo.HasCoreId(info.GetData1());
-        break;
       case SYSTEM_SETTING:
         {
           if (StringUtils::EqualsNoCase(m_stringParameters[info.GetData1()], "hidewatched"))
@@ -7171,7 +6778,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
       case SYSTEM_HAS_ADDON:
       {
         AddonPtr addon;
-        bReturn = CServiceBroker::GetAddonMgr().GetAddon(m_stringParameters[info.GetData1()],addon) && addon;
+        bReturn = CServiceBroker::GetAddonMgr().GetAddon(m_stringParameters[info.GetData1()], addon) && addon;
         break;
       }
       case CONTAINER_SCROLL_PREVIOUS:
@@ -7298,33 +6905,6 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
         }
         break;
       }
-      case SYSTEM_DATE:
-        {
-          if (info.GetData2() == -1) // info doesn't contain valid startDate
-            return false;
-          const CDateTime date = CDateTime::GetCurrentDateTime();
-          int currentDate = date.GetMonth() * 100 + date.GetDay();
-          int startDate = info.GetData1();
-          int stopDate = info.GetData2();
-
-          if (stopDate < startDate)
-            bReturn = currentDate >= startDate || currentDate < stopDate;
-          else
-            bReturn = currentDate >= startDate && currentDate < stopDate;
-        }
-        break;
-      case SYSTEM_TIME:
-        {
-          int currentTime = CDateTime::GetCurrentDateTime().GetMinuteOfDay();
-          int startTime = info.GetData1();
-          int stopTime = info.GetData2();
-
-          if (stopTime < startTime)
-            bReturn = currentTime >= startTime || currentTime < stopTime;
-          else
-            bReturn = currentTime >= startTime && currentTime < stopTime;
-        }
-        break;
       case PLAYLIST_ISRANDOM:
         {
           int playlistid = info.GetData1();
@@ -7592,11 +7172,6 @@ std::string CGUIInfoManager::GetImage(int info, int contextWindow, std::string *
   {
     return CServiceBroker::GetWeatherManager().GetInfo(WEATHER_IMAGE_CURRENT_ICON);
   }
-  else if (info == SYSTEM_PROFILETHUMB)
-  {
-    const std::string& thumb = CServiceBroker::GetProfileManager().GetCurrentProfile().getThumb();
-    return thumb.empty() ? "DefaultUser.png" : thumb;
-  }
   else if (info == LISTITEM_THUMB || info == LISTITEM_ICON || info == LISTITEM_ACTUAL_ICON ||
           info == LISTITEM_OVERLAY)
   {
@@ -7717,7 +7292,7 @@ void CGUIInfoManager::SetCurrentItem(const CFileItem &item)
 
 void CGUIInfoManager::SetCurrentAlbumThumb(const std::string &thumbFileName)
 {
-  if (CFile::Exists(thumbFileName))
+  if (XFILE::CFile::Exists(thumbFileName))
     m_currentFile->SetArt("thumb", thumbFileName);
   else
   {
@@ -7807,72 +7382,6 @@ void CGUIInfoManager::SetCurrentGame(CFileItem &item)
   }
 }
 
-std::string CGUIInfoManager::GetSystemHeatInfo(int info)
-{
-  if (CTimeUtils::GetFrameTime() - m_lastSysHeatInfoTime >= SYSHEATUPDATEINTERVAL)
-  { // update our variables
-    m_lastSysHeatInfoTime = CTimeUtils::GetFrameTime();
-#if defined(TARGET_POSIX)
-    g_cpuInfo.getTemperature(m_cpuTemp);
-    m_gpuTemp = GetGPUTemperature();
-#endif
-  }
-
-  std::string text;
-  switch(info)
-  {
-    case SYSTEM_CPU_TEMPERATURE:
-      return m_cpuTemp.IsValid() ? g_langInfo.GetTemperatureAsString(m_cpuTemp) : "?";
-      break;
-    case SYSTEM_GPU_TEMPERATURE:
-      return m_gpuTemp.IsValid() ? g_langInfo.GetTemperatureAsString(m_gpuTemp) : "?";
-      break;
-    case SYSTEM_FAN_SPEED:
-      text = StringUtils::Format("%i%%", m_fanSpeed * 2);
-      break;
-    case SYSTEM_CPU_USAGE:
-#if defined(TARGET_DARWIN) || defined(TARGET_WINDOWS)
-      text = StringUtils::Format("%d%%", g_cpuInfo.getUsedPercentage());
-#else
-      text = StringUtils::Format("%s", g_cpuInfo.GetCoresUsageString().c_str());
-#endif
-      break;
-  }
-  return text;
-}
-
-CTemperature CGUIInfoManager::GetGPUTemperature()
-{
-  int value = 0;
-  char scale = 0;
-
-#if defined(TARGET_DARWIN_OSX)
-  value = SMCGetTemperature(SMC_KEY_GPU_TEMP);
-  return CTemperature::CreateFromCelsius(value);
-#elif defined(TARGET_WINDOWS_STORE)
-  return CTemperature::CreateFromCelsius(0);
-#else
-  std::string cmd = g_advancedSettings.m_gpuTempCmd;
-  int ret = 0;
-  FILE* p = NULL;
-
-  if (cmd.empty() || !(p = popen(cmd.c_str(), "r")))
-    return CTemperature();
-
-  ret = fscanf(p, "%d %c", &value, &scale);
-  pclose(p);
-
-  if (ret != 2)
-    return CTemperature();
-#endif
-
-  if (scale == 'C' || scale == 'c')
-    return CTemperature::CreateFromCelsius(value);
-  if (scale == 'F' || scale == 'f')
-    return CTemperature::CreateFromFahrenheit(value);
-  return CTemperature();
-}
-
 void CGUIInfoManager::Clear()
 {
   CSingleLock lock(m_critInfo);
@@ -7896,21 +7405,6 @@ void CGUIInfoManager::Clear()
   // log which ones are used - they should all be gone by now
   for (INFOBOOLTYPE::const_iterator i = m_bools.begin(); i != m_bools.end(); ++i)
     CLog::Log(LOGDEBUG, "Infobool '%s' still used by %u instances", (*i)->GetExpression().c_str(), (unsigned int) i->use_count());
-}
-
-void CGUIInfoManager::UpdateFPS()
-{
-  m_frameCounter++;
-  unsigned int curTime = CTimeUtils::GetFrameTime();
-
-  float fTimeSpan = static_cast<float>(curTime - m_lastFPSTime);
-  if (fTimeSpan >= 1000.0f)
-  {
-    fTimeSpan /= 1000.0f;
-    m_fps = m_frameCounter / fTimeSpan;
-    m_lastFPSTime = curTime;
-    m_frameCounter = 0;
-  }
 }
 
 void CGUIInfoManager::UpdateAVInfo()
