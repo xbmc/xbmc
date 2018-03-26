@@ -219,7 +219,7 @@ bool CRenderBuffer::CreateBuffer(EBufferFormat fmt, unsigned width, unsigned hei
       || !m_textures[PLANE_V].Create(m_widthTex >> 1, m_heightTex >> 1, 1, usage, DXGI_FORMAT_R16_UNORM))
       return false;
     m_activePlanes = 3;
-    texBits = BUFFER_FMT_YUV420P10 ? 10 : 16;
+    texBits = (format == BUFFER_FMT_YUV420P10) ? 10 : 16;
     break;
   }
   case BUFFER_FMT_YUV420P:
