@@ -277,7 +277,7 @@ namespace VIDEO
       }
 
       std::string fastHash;
-      if (g_advancedSettings.m_bVideoLibraryUseFastHash)
+      if (g_advancedSettings.m_bVideoLibraryUseFastHash && !URIUtils::IsPlugin(strDirectory))
         fastHash = GetFastHash(strDirectory, regexps);
 
       if (m_database.GetPathHash(strDirectory, dbHash) && !fastHash.empty() && fastHash == dbHash)
@@ -505,18 +505,28 @@ namespace VIDEO
                                            CGUIDialogProgress* pDlgProgress)
   {
     long idTvShow = -1;
+    std::string strPath = pItem->GetPath();
     if (pItem->m_bIsFolder)
-      idTvShow = m_database.GetTvShowId(pItem->GetPath());
+      idTvShow = m_database.GetTvShowId(strPath);
+    else if (pItem->IsPlugin() && pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iIdShow >= 0)
+    {
+      // for plugin source we cannot get idTvShow from episode path with URIUtils::GetDirectory() in all cases
+      // so use m_iIdShow from video info tag if possible
+      idTvShow = pItem->GetVideoInfoTag()->m_iIdShow;
+      CVideoInfoTag showInfo;
+      if (m_database.GetTvShowInfo(std::string(), showInfo, idTvShow, nullptr, 0))
+        strPath = showInfo.GetPath();
+    }
     else
     {
-      std::string strPath = URIUtils::GetDirectory(pItem->GetPath());
+      strPath = URIUtils::GetDirectory(strPath);
       idTvShow = m_database.GetTvShowId(strPath);
     }
     if (idTvShow > -1 && (fetchEpisodes || !pItem->m_bIsFolder))
     {
       INFO_RET ret = RetrieveInfoForEpisodes(pItem, idTvShow, info2, useLocal, pDlgProgress);
       if (ret == INFO_ADDED)
-        m_database.SetPathHash(pItem->GetPath(), pItem->GetProperty("hash").asString());
+        m_database.SetPathHash(strPath, pItem->GetProperty("hash").asString());
       return ret;
     }
 
@@ -679,7 +689,8 @@ namespace VIDEO
   }
 
   CInfoScanner::INFO_RET
-  CVideoInfoScanner::RetrieveInfoForMusicVideo(CFileItem *pItem,                                                                   bool bDirNames,
+  CVideoInfoScanner::RetrieveInfoForMusicVideo(CFileItem *pItem,
+                                               bool bDirNames,
                                                ScraperPtr &info2,
                                                bool useLocal,
                                                CScraperUrl* pURL,
@@ -796,7 +807,7 @@ namespace VIDEO
       {
         CVideoInfoDownloader loader(scraper);
         loader.GetArtwork(showInfo);
-        GetSeasonThumbs(showInfo, seasonArt, CVideoThumbLoader::GetArtTypes(MediaTypeSeason), useLocal);
+        GetSeasonThumbs(showInfo, seasonArt, CVideoThumbLoader::GetArtTypes(MediaTypeSeason), useLocal && !item->IsPlugin());
         for (std::map<int, std::map<std::string, std::string> >::const_iterator i = seasonArt.begin(); i != seasonArt.end(); ++i)
         {
           int seasonID = m_database.AddSeason(showID, i->first);
@@ -826,7 +837,14 @@ namespace VIDEO
         m_pathsToScan.erase(it);
 
       std::string hash, dbHash;
-      if (g_advancedSettings.m_bVideoLibraryUseFastHash)
+      if (item->IsPlugin())
+      {
+        // if plugin has already calculated a hash for directory contents - use it
+        // in this case we don't need to get directory listing from plugin for hash checking
+        if (item->HasProperty("hash"))
+          hash = item->GetProperty("hash").asString();
+      }
+      else if (g_advancedSettings.m_bVideoLibraryUseFastHash)
         hash = GetRecursiveFastHash(item->GetPath(), regexps);
 
       if (m_database.GetPathHash(item->GetPath(), dbHash) && !hash.empty() && dbHash == hash)
@@ -967,17 +985,28 @@ namespace VIDEO
       return false;
 
     const CVideoInfoTag* tag = item->GetVideoInfoTag();
+    bool isValid = false;
     /*
      * First check the season and episode number. This takes precedence over the original air
      * date and episode title. Must be a valid season and episode number combination.
      */
     if (tag->m_iSeason > -1 && tag->m_iEpisode > 0)
+      isValid = true;
+
+    // episode 0 with non-zero season is valid! (e.g. prequel episode)
+    if (item->IsPlugin() && tag->m_iSeason > 0 && tag->m_iEpisode >= 0)
+      isValid = true;
+
+    if (isValid)
     {
       EPISODE episode;
       episode.strPath = item->GetPath();
       episode.iSeason = tag->m_iSeason;
       episode.iEpisode = tag->m_iEpisode;
       episode.isFolder = false;
+      // save full item for plugin source
+      if (item->IsPlugin())
+        episode.item = std::make_shared<CFileItem>(*item);
       episodeList.push_back(episode);
       CLog::Log(LOGDEBUG, "%s - found match for: %s. Season %d, Episode %d", __FUNCTION__,
                 CURL::GetRedacted(episode.strPath).c_str(), episode.iSeason, episode.iEpisode);
@@ -1244,7 +1273,7 @@ namespace VIDEO
       return -1;
 
     if (!libraryImport)
-      GetArtwork(pItem, content, videoFolder, useLocal, showInfo ? showInfo->m_strPath : "");
+      GetArtwork(pItem, content, videoFolder, useLocal && !pItem->IsPlugin(), showInfo ? showInfo->m_strPath : "");
 
     // ensure the art map isn't completely empty by specifying an empty thumb
     std::map<std::string, std::string> art = pItem->GetArt();
@@ -1313,7 +1342,7 @@ namespace VIDEO
         std::map<int, std::map<std::string, std::string> > seasonArt;
 
         if (!libraryImport)
-          GetSeasonThumbs(movieDetails, seasonArt, CVideoThumbLoader::GetArtTypes(MediaTypeSeason), useLocal);
+          GetSeasonThumbs(movieDetails, seasonArt, CVideoThumbLoader::GetArtTypes(MediaTypeSeason), useLocal && !pItem->IsPlugin());
 
         lResult = m_database.SetDetailsForTvShow(paths, movieDetails, art, seasonArt);
         movieDetails.m_iDbId = lResult;
@@ -1345,12 +1374,15 @@ namespace VIDEO
       movieDetails.m_type = MediaTypeMusicVideo;
     }
 
-    if (g_advancedSettings.m_bVideoLibraryImportWatchedState || libraryImport)
-      m_database.SetPlayCount(*pItem, movieDetails.GetPlayCount(), movieDetails.m_lastPlayed);
+    if (!pItem->m_bIsFolder)
+    {
+      if (g_advancedSettings.m_bVideoLibraryImportWatchedState || libraryImport)
+        m_database.SetPlayCount(*pItem, movieDetails.GetPlayCount(), movieDetails.m_lastPlayed);
 
-    if ((g_advancedSettings.m_bVideoLibraryImportResumePoint || libraryImport) &&
-        movieDetails.GetResumePoint().IsSet())
-      m_database.AddBookMarkToFile(pItem->GetPath(), movieDetails.GetResumePoint(), CBookmark::RESUME);
+      if ((g_advancedSettings.m_bVideoLibraryImportResumePoint || libraryImport) &&
+          movieDetails.GetResumePoint().IsSet())
+        m_database.AddBookMarkToFile(pItem->GetPath(), movieDetails.GetResumePoint(), CBookmark::RESUME);
+    }
 
     m_database.Close();
 
@@ -1552,13 +1584,18 @@ namespace VIDEO
       }
 
       CFileItem item;
-      item.SetPath(file->strPath);
+      if (file->item)
+        item = *file->item;
+      else
+      {
+        item.SetPath(file->strPath);
+        item.GetVideoInfoTag()->m_iEpisode = file->iEpisode;
+      }
 
       // handle .nfo files
       CInfoScanner::INFO_TYPE result=CInfoScanner::NO_NFO;
       CScraperUrl scrUrl;
       ScraperPtr info(scraper);
-      item.GetVideoInfoTag()->m_iEpisode = file->iEpisode;
       std::unique_ptr<IVideoInfoTagLoader> loader;
       if (useLocal)
       {
@@ -1773,9 +1810,21 @@ namespace VIDEO
     {
       const CFileItemPtr pItem = items[i];
       md5state.append(pItem->GetPath());
-      md5state.append((unsigned char *)&pItem->m_dwSize, sizeof(pItem->m_dwSize));
-      FILETIME time = pItem->m_dateTime;
-      md5state.append((unsigned char *)&time, sizeof(FILETIME));
+      if (pItem->IsPlugin())
+      {
+        // allow plugin to calculate hash itself using strings rather than binary data for size and date
+        // according to ListItem.setInfo() documentation date format should be "d.m.Y"
+        if (pItem->m_dwSize)
+          md5state.append(std::to_string(pItem->m_dwSize));
+        if (pItem->m_dateTime.IsValid())
+          md5state.append(StringUtils::Format("%02i.%02i.%04i", pItem->m_dateTime.GetDay(), pItem->m_dateTime.GetMonth(), pItem->m_dateTime.GetYear()));
+      }
+      else
+      {
+        md5state.append((unsigned char *)&pItem->m_dwSize, sizeof(pItem->m_dwSize));
+        FILETIME time = pItem->m_dateTime;
+        md5state.append((unsigned char *)&time, sizeof(FILETIME));
+      }
       if (pItem->IsVideo() && !pItem->IsPlayList() && !pItem->IsNFO())
         count++;
     }
@@ -1785,7 +1834,7 @@ namespace VIDEO
 
   bool CVideoInfoScanner::CanFastHash(const CFileItemList &items, const std::vector<std::string> &excludes) const
   {
-    if (!g_advancedSettings.m_bVideoLibraryUseFastHash)
+    if (!g_advancedSettings.m_bVideoLibraryUseFastHash || items.IsPlugin())
       return false;
 
     for (int i = 0; i < items.Size(); ++i)
@@ -1943,10 +1992,14 @@ namespace VIDEO
   void CVideoInfoScanner::FetchActorThumbs(std::vector<SActorInfo>& actors, const std::string& strPath)
   {
     CFileItemList items;
-    std::string actorsDir = URIUtils::AddFileToFolder(strPath, ".actors");
-    if (CDirectory::Exists(actorsDir))
-      CDirectory::GetDirectory(actorsDir, items, ".png|.jpg|.tbn", DIR_FLAG_NO_FILE_DIRS |
-                               DIR_FLAG_NO_FILE_INFO);
+    // don't try to fetch anything local with plugin source
+    if (!URIUtils::IsPlugin(strPath))
+    {
+      std::string actorsDir = URIUtils::AddFileToFolder(strPath, ".actors");
+      if (CDirectory::Exists(actorsDir))
+        CDirectory::GetDirectory(actorsDir, items, ".png|.jpg|.tbn", DIR_FLAG_NO_FILE_DIRS |
+                                 DIR_FLAG_NO_FILE_INFO);
+    }
     for (std::vector<SActorInfo>::iterator i = actors.begin(); i != actors.end(); ++i)
     {
       if (i->thumb.empty())

@@ -36,7 +36,7 @@ bool CInfoScanner::IsExcluded(const std::string& strDirectory, const std::vector
   if (CUtil::ExcludeFileOrFolder(strDirectory, regexps))
     return true;
 
-  if (HasNoMedia(strDirectory))
+  if (!URIUtils::IsPlugin(strDirectory) && HasNoMedia(strDirectory))
   {
     CLog::Log(LOGWARNING, "Skipping item '%s' with '.nomedia' file in parent directory, it won't be added to the library.", CURL::GetRedacted(strDirectory).c_str());
     return true;

@@ -390,6 +390,8 @@ public:
   CVideoSettings GetVideoSettings() override;
   void SetVideoSettings(CVideoSettings& settings) override;
 
+  void SetUpdateStreamDetails();
+
 protected:
   friend class CSelectionStreams;
 
@@ -485,6 +487,8 @@ protected:
 
   void UpdateContent();
   void UpdateContentState();
+
+  void UpdateFileItemStreamDetails(CFileItem& item);
 
   bool m_players_created;
 
@@ -582,6 +586,8 @@ protected:
 
   bool m_HasVideo;
   bool m_HasAudio;
+
+  bool m_UpdateStreamDetails;
 
   std::atomic<bool> m_displayLost;
 

@@ -294,7 +294,8 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathI
   {
     TiXmlElement season("namedseason");
     season.SetAttribute("number", namedSeason.first);
-    season.SetValue(namedSeason.second);
+    TiXmlText value(namedSeason.second);
+    season.InsertEndChild(value);
     movie->InsertEndChild(season);
   }
  

@@ -26,6 +26,9 @@
 
 class CStreamDetails;
 class CVariant;
+struct VideoStreamInfo;
+struct AudioStreamInfo;
+struct SubtitleStreamInfo;
 
 class CStreamDetail : public IArchivable, public ISerializable
 {
@@ -52,6 +55,7 @@ class CStreamDetailVideo : public CStreamDetail
 {
 public:
   CStreamDetailVideo();
+  CStreamDetailVideo(const VideoStreamInfo &info, int duration = 0);
   void Archive(CArchive& ar) override;
   void Serialize(CVariant& value) const override;
   bool IsWorseThan(CStreamDetail *that) override;
@@ -69,6 +73,7 @@ class CStreamDetailAudio : public CStreamDetail
 {
 public:
   CStreamDetailAudio();
+  CStreamDetailAudio(const AudioStreamInfo &info);
   void Archive(CArchive& ar) override;
   void Serialize(CVariant& value) const override;
   bool IsWorseThan(CStreamDetail *that) override;
@@ -82,6 +87,7 @@ class CStreamDetailSubtitle : public CStreamDetail
 {
 public:
   CStreamDetailSubtitle();
+  CStreamDetailSubtitle(const SubtitleStreamInfo &info);
   CStreamDetailSubtitle& operator=(const CStreamDetailSubtitle &that);
   void Archive(CArchive& ar) override;
   void Serialize(CVariant& value) const override;
@@ -132,6 +138,7 @@ public:
   void Archive(CArchive& ar) override;
   void Serialize(CVariant& value) const override;
 
+  bool SetStreams(const VideoStreamInfo& videoInfo, int videoDuration, const AudioStreamInfo& audioInfo, const SubtitleStreamInfo& subtitleInfo);
 private:
   CStreamDetail *NewStream(CStreamDetail::StreamType type);
   std::vector<CStreamDetail *> m_vecItems;

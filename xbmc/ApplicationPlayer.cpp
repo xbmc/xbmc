@@ -22,6 +22,7 @@
 #include "cores/DataCacheCore.h"
 #include "cores/IPlayer.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
+#include "cores/VideoPlayer/VideoPlayer.h"
 #include "guilib/GUIWindowManager.h"
 #include "cores/DataCacheCore.h"
 #include "Application.h"
@@ -990,4 +991,12 @@ void CApplicationPlayer::SetVideoSettings(CVideoSettings& settings)
 CSeekHandler& CApplicationPlayer::GetSeekHandler()
 {
   return m_seekHandler;
+}
+
+void CApplicationPlayer::SetUpdateStreamDetails()
+{
+  std::shared_ptr<IPlayer> player = GetInternal();
+  CVideoPlayer* vp = dynamic_cast<CVideoPlayer*>(player.get());
+  if (vp)
+    vp->SetUpdateStreamDetails();
 }

@@ -74,6 +74,19 @@ void CSaveFileState::DoWork(CFileItem& item,
       }
       else
       {
+        if (URIUtils::IsPlugin(progressTrackingFile) && !(item.HasVideoInfoTag() && item.GetVideoInfoTag()->m_iDbId >= 0))
+        {
+          // FileItem from plugin can lack information, make sure all needed fields are set
+          CVideoInfoTag *tag = item.GetVideoInfoTag();
+          CStreamDetails streams = tag->m_streamDetails;
+          if (videodatabase.LoadVideoInfo(progressTrackingFile, *tag))
+          {
+            item.SetPath(progressTrackingFile);
+            item.ClearProperty("original_listitem_url");
+            tag->m_streamDetails = streams;
+          }
+        }
+
         bool updateListing = false;
         // No resume & watched status for livetv
         if (!item.IsLiveTV())

@@ -924,12 +924,16 @@ void CVideoDatabase::UpdateFileDateAdded(int idFile, const std::string& strFileN
 
     if (!finalDateAdded.IsValid())
     {
-      // 1 preferring to use the files mtime(if it's valid) and only using the file's ctime if the mtime isn't valid
-      if (g_advancedSettings.m_iVideoLibraryDateAdded == 1)
-        finalDateAdded = CFileUtils::GetModificationDate(strFileNameAndPath, false);
-      //2 using the newer datetime of the file's mtime and ctime
-      else if (g_advancedSettings.m_iVideoLibraryDateAdded == 2)
-        finalDateAdded = CFileUtils::GetModificationDate(strFileNameAndPath, true);
+      // Supress warnings if we have plugin source
+      if (!URIUtils::IsPlugin(strFileNameAndPath))
+      {
+        // 1 preferring to use the files mtime(if it's valid) and only using the file's ctime if the mtime isn't valid
+        if (g_advancedSettings.m_iVideoLibraryDateAdded == 1)
+          finalDateAdded = CFileUtils::GetModificationDate(strFileNameAndPath, false);
+        //2 using the newer datetime of the file's mtime and ctime
+        else if (g_advancedSettings.m_iVideoLibraryDateAdded == 2)
+          finalDateAdded = CFileUtils::GetModificationDate(strFileNameAndPath, true);
+      }
       //0 using the current datetime if non of the above matches or one returns an invalid datetime
       if (!finalDateAdded.IsValid())
         finalDateAdded = CDateTime::GetCurrentDateTime();
@@ -4456,6 +4460,33 @@ bool CVideoDatabase::GetTvShowSeasons(int showId, std::map<int, int> &seasons)
     while (!m_pDS2->eof())
     {
       seasons.insert(std::make_pair(m_pDS2->fv(1).get_asInt(), m_pDS2->fv(0).get_asInt()));
+      m_pDS2->next();
+    }
+    m_pDS2->close();
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s(%d) failed", __FUNCTION__, showId);
+  }
+  return false;
+}
+
+bool CVideoDatabase::GetTvShowNamedSeasons(int showId, std::map<int, std::string> &seasons)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS2.get()) return false; // using dataset 2 as we're likely called in loops on dataset 1
+
+    // get all named seasons for this show
+    std::string sql = PrepareSQL("select season, name from seasons where season > 0 and name is not null and name <> '' and idShow = %i", showId);
+    m_pDS2->query(sql);
+
+    seasons.clear();
+    while (!m_pDS2->eof())
+    {
+      seasons.insert(std::make_pair(m_pDS2->fv(0).get_asInt(), m_pDS2->fv(1).get_asString()));
       m_pDS2->next();
     }
     m_pDS2->close();
@@ -9100,6 +9131,7 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
     while (!m_pDS->eof())
     {
       CVideoInfoTag tvshow = GetDetailsForTvShow(m_pDS, VideoDbDetailsAll);
+      GetTvShowNamedSeasons(tvshow.m_iDbId, tvshow.m_namedSeasons);
 
       std::map<int, std::map<std::string, std::string> > seasonArt;
       GetTvShowSeasonArt(tvshow.m_iDbId, seasonArt);
@@ -9572,7 +9604,9 @@ void CVideoDatabase::SplitPath(const std::string& strFileNameAndPath, std::strin
   else if (URIUtils::IsPlugin(strFileNameAndPath))
   {
     CURL url(strFileNameAndPath);
-    strPath = url.GetWithoutFilename();
+    strPath = url.GetWithoutOptions();
+    if (strPath == strFileNameAndPath)
+      strPath = url.GetWithoutFilename();
     strFileName = strFileNameAndPath;
   }
   else
@@ -9591,6 +9625,13 @@ void CVideoDatabase::InvalidatePathHash(const std::string& strPath)
   {
     if (info->Content() == CONTENT_TVSHOWS || settings.parent_name_root)
     {
+      if (URIUtils::IsPlugin(strPath))
+      {
+        // Check if we are already at plugin root
+        CURL url(strPath);
+        if (url.GetWithoutFilename() == strPath)
+          return;
+      }
       std::string strParent;
       URIUtils::GetParentPath(strPath,strParent);
       SetPathHash(strParent,"");
