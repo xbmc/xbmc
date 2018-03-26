@@ -90,4 +90,11 @@ struct CPlay : IContextMenuItem
   bool IsVisible(const CFileItem& item) const override;
   bool Execute(const CFileItemPtr& _item) const override;
 };
+
+struct CFavorite : IContextMenuItem
+{
+  std::string GetLabel(const CFileItem& item) const override;
+  bool IsVisible(const CFileItem& item) const override;
+  bool Execute(const CFileItemPtr& _item) const override;
+};
 }
