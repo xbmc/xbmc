@@ -597,9 +597,10 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
     }
     case AV_CODEC_ID_VP9:
     {
-      // VAAPI currently only supports Profile 0
       if (avctx->profile == FF_PROFILE_VP9_0)
         profile = VAProfileVP9Profile0;
+      else if (avctx->profile == FF_PROFILE_VP9_2)
+        profile = VAProfileVP9Profile2;
       else
         profile = VAProfileNone;
       if (!m_vaapiConfig.context->SupportsProfile(profile))
