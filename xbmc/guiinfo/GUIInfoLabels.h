@@ -84,16 +84,17 @@
 #define PLAYER_HAS_GAME              62
 #define PLAYER_HAS_PROGRAMS          63
 
-#define WEATHER_CONDITIONS          100
+#define WEATHER_CONDITIONS_TEXT     100
 #define WEATHER_TEMPERATURE         101
 #define WEATHER_LOCATION            102
 #define WEATHER_IS_FETCHED          103
 #define WEATHER_FANART_CODE         104
 #define WEATHER_PLUGIN              105
+#define WEATHER_CONDITIONS_ICON     106
 
-#define SYSTEM_TEMPERATURE_UNITS    106
-#define SYSTEM_PROGRESS_BAR         107
-#define SYSTEM_LANGUAGE             108
+#define SYSTEM_TEMPERATURE_UNITS    107
+#define SYSTEM_PROGRESS_BAR         108
+#define SYSTEM_LANGUAGE             109
 #define SYSTEM_TIME                 110
 #define SYSTEM_DATE                 111
 #define SYSTEM_CPU_TEMPERATURE      112

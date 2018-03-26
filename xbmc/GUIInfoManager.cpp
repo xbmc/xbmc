@@ -77,7 +77,6 @@
 #include "video/VideoThumbLoader.h"
 #include "video/dialogs/GUIDialogVideoInfo.h"
 #include "view/GUIViewState.h"
-#include "weather/WeatherManager.h"
 #include "windows/GUIMediaWindow.h"
 
 using namespace KODI;
@@ -609,7 +608,12 @@ const infomap player_times[] =   {{ "seektime",         PLAYER_SEEKTIME },
 ///   \table_row3{   <b>`Weather.Conditions`</b>,
 ///                  \anchor Weather_Conditions
 ///                  _string_,
-///     Current weather conditions – this is looked up in a background process.
+///     Current weather conditions as textual description – this is looked up in a background process.
+///   }
+///   \table_row3{   <b>`Weather.ConditionsIcon`</b>,
+///                  \anchor Weather_ConditionsIcon
+///                  _string_,
+///     Current weather conditions as icon – this is looked up in a background process.
 ///   }
 ///   \table_row3{   <b>`Weather.Temperature`</b>,
 ///                  \anchor Weather_Temperature
@@ -636,11 +640,12 @@ const infomap player_times[] =   {{ "seektime",         PLAYER_SEEKTIME },
 /// -----------------------------------------------------------------------------
 /// @}
 const infomap weather[] =        {{ "isfetched",        WEATHER_IS_FETCHED },
-                                  { "conditions",       WEATHER_CONDITIONS },         // labels from here
+                                  { "conditions",       WEATHER_CONDITIONS_TEXT },         // labels from here
                                   { "temperature",      WEATHER_TEMPERATURE },
                                   { "location",         WEATHER_LOCATION },
                                   { "fanartcode",       WEATHER_FANART_CODE },
-                                  { "plugin",           WEATHER_PLUGIN }};
+                                  { "plugin",           WEATHER_PLUGIN },
+                                  { "conditionsicon",   WEATHER_CONDITIONS_ICON }};
 
 /// \page modules__General__List_of_gui_access
 /// \section modules__General__List_of_gui_access_System System
@@ -5987,25 +5992,6 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
 
   switch (info)
   {
-  case WEATHER_CONDITIONS:
-    strLabel = CServiceBroker::GetWeatherManager().GetInfo(WEATHER_LABEL_CURRENT_COND);
-    StringUtils::Trim(strLabel);
-    break;
-  case WEATHER_TEMPERATURE:
-    strLabel = StringUtils::Format("%s%s",
-                                   CServiceBroker::GetWeatherManager().GetInfo(WEATHER_LABEL_CURRENT_TEMP).c_str(),
-                                   g_langInfo.GetTemperatureUnitString().c_str());
-    break;
-  case WEATHER_LOCATION:
-    strLabel = CServiceBroker::GetWeatherManager().GetInfo(WEATHER_LABEL_LOCATION);
-    break;
-  case WEATHER_FANART_CODE:
-    strLabel = URIUtils::GetFileName(CServiceBroker::GetWeatherManager().GetInfo(WEATHER_IMAGE_CURRENT_ICON));
-    URIUtils::RemoveExtension(strLabel);
-    break;
-  case WEATHER_PLUGIN:
-    strLabel = CServiceBroker::GetSettings().GetString(CSettings::SETTING_WEATHER_ADDON);
-    break;
   case RETROPLAYER_VIEWMODE:
     strLabel = GetGameLabel(info);
     break;
@@ -6307,9 +6293,6 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
         break;
       case LIBRARY_IS_SCANNING_MUSIC:
         bReturn = g_application.IsMusicScanning();
-        break;
-      case WEATHER_IS_FETCHED:
-        bReturn = CServiceBroker::GetWeatherManager().IsFetched();
         break;
       case CONTAINER_HASFILES:
       case CONTAINER_HASFOLDERS:
@@ -6999,10 +6982,6 @@ std::string CGUIInfoManager::GetImage(int info, int contextWindow, std::string *
   if (info >= MULTI_INFO_START && info <= MULTI_INFO_END)
   {
     return GetMultiInfoLabel(m_multiInfo[info - MULTI_INFO_START], contextWindow, fallback);
-  }
-  else if (info == WEATHER_CONDITIONS)
-  {
-    return CServiceBroker::GetWeatherManager().GetInfo(WEATHER_IMAGE_CURRENT_ICON);
   }
   else if (info == LISTITEM_THUMB || info == LISTITEM_ICON || info == LISTITEM_ACTUAL_ICON ||
           info == LISTITEM_OVERLAY)

@@ -31,12 +31,14 @@ CGUIInfoProviders::CGUIInfoProviders()
   RegisterProvider(&m_musicGUIInfo);
   RegisterProvider(&m_videoGUIInfo);
   RegisterProvider(&m_playerGUIInfo);
+  RegisterProvider(&m_weatherGUIInfo);
   RegisterProvider(&m_systemGUIInfo);
 }
 
 CGUIInfoProviders::~CGUIInfoProviders()
 {
   UnregisterProvider(&m_systemGUIInfo);
+  UnregisterProvider(&m_weatherGUIInfo);
   UnregisterProvider(&m_playerGUIInfo);
   UnregisterProvider(&m_videoGUIInfo);
   UnregisterProvider(&m_musicGUIInfo);

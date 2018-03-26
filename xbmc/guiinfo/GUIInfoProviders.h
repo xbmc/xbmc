@@ -26,6 +26,7 @@
 #include "guiinfo/PlayerGUIInfo.h"
 #include "guiinfo/SystemGUIInfo.h"
 #include "guiinfo/VideoGUIInfo.h"
+#include "guiinfo/WeatherGUIInfo.h"
 
 class CFileItem;
 class CGUIListItem;
@@ -110,6 +111,7 @@ private:
   CMusicGUIInfo m_musicGUIInfo;
   CVideoGUIInfo m_videoGUIInfo;
   CPlayerGUIInfo m_playerGUIInfo;
+  CWeatherGUIInfo m_weatherGUIInfo;
   CSystemGUIInfo m_systemGUIInfo;
 };
 
