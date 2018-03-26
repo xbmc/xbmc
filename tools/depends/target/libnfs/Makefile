@@ -1,14 +1,14 @@
 include ../../Makefile.include
-DEPS= ../../Makefile.include Makefile vfstat_redefine.patch
+DEPS= ../../Makefile.include Makefile
 
 # lib name, version
 LIBNAME=libnfs
-VERSION=1.10.0
+VERSION=2.0.0
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
 # configuration settings
-CONFIGURE=CFLAGS="-DHAVE_NET_IF_H" ./configure --prefix=$(PREFIX)
+CONFIGURE=./configure --prefix=$(PREFIX) --disable-werror
 
 LIBDYLIB=$(PLATFORM)/lib/.libs/$(LIBNAME).a
 
@@ -21,7 +21,6 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	-rm -rf $(PLATFORM); mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); ./bootstrap
-	cd $(PLATFORM); patch -p1 < ../vfstat_redefine.patch
 	cd $(PLATFORM); $(CONFIGURE)
 
 $(LIBDYLIB): $(PLATFORM)
