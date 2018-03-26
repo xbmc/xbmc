@@ -2513,10 +2513,10 @@ void CVideoPlayer::OnExit()
   bool error = m_error;
   bool abort = m_bAbortRequest;
   m_outboundEvents->Submit([=]() {
-    if (error)
-      cb->OnPlayBackError();
-    else if (abort)
+    if (abort)
       cb->OnPlayBackStopped();
+    else if (error)
+      cb->OnPlayBackError();
     else
       cb->OnPlayBackEnded();
   });
