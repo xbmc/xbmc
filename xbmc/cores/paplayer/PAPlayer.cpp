@@ -264,6 +264,8 @@ bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
   m_isPlaying = true;
   m_startEvent.Set();
 
+  m_callback.OnPlayBackStarted(file);
+
   if (options.startpercent > 0.0)
   {
     Sleep(50);
@@ -339,6 +341,7 @@ bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn)
     delete si;
     // advance playlist
     m_callback.OnPlayBackStarted(file);
+    m_callback.OnAVStarted(file);
     m_callback.OnQueueNextItem();
     return false;
   }
@@ -357,6 +360,7 @@ bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn)
       si->m_decoder.Destroy();
       // advance playlist
       m_callback.OnPlayBackStarted(si->m_fileItem);
+      m_callback.OnAVStarted(si->m_fileItem);
       m_callback.OnQueueNextItem();
       delete si;
       return false;
@@ -420,6 +424,7 @@ bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn)
     si->m_decoder.Destroy();
     // advance playlist
     m_callback.OnPlayBackStarted(si->m_fileItem);
+    m_callback.OnAVStarted(file);
     m_callback.OnQueueNextItem();
     delete si;
     return false;
@@ -718,6 +723,7 @@ inline bool PAPlayer::ProcessStream(StreamInfo *si, double &freeBufferTime)
       si->m_stream->Resume();
     si->m_stream->FadeVolume(0.0f, 1.0f, m_upcomingCrossfadeMS);
     m_callback.OnPlayBackStarted(si->m_fileItem);
+    m_callback.OnAVStarted(si->m_fileItem);
   }
 
   /* if we have not started yet and the stream has been primed */
@@ -799,6 +805,7 @@ inline bool PAPlayer::ProcessStream(StreamInfo *si, double &freeBufferTime)
 
       UpdateGUIData(si);
       m_callback.OnPlayBackStarted(si->m_fileItem);
+      m_callback.OnAVStarted(si->m_fileItem);
     }
     else
     {

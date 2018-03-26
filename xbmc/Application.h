@@ -178,6 +178,7 @@ public:
   void OnPlayBackSeekChapter(int iChapter) override;
   void OnPlayBackSpeedChanged(int iSpeed) override;
   void OnAVChange() override;
+  void OnAVStarted(const CFileItem &file) override;
   void RequestVideoSettings(const CFileItem &fileItem) override;
   void StoreVideoSettings(const CFileItem &fileItem, CVideoSettings vs) override;
 
@@ -501,6 +502,7 @@ private:
   unsigned int m_ProcessedExternalCalls;          /*!< counts calls wich are processed during one "door open" cycle in FrameMove */
   unsigned int m_ProcessedExternalDecay = 0;      /*!< counts to close door after a few frames of no python activity */
   CApplicationPlayer m_appPlayer;
+  CEvent m_playerEvent;
   CApplicationStackHelper m_stackHelper;
 };
 

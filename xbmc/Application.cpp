@@ -22,6 +22,7 @@
 #include "network/Network.h"
 #include "threads/SystemClock.h"
 #include "Application.h"
+#include "dialogs/GUIDialogBusy.h"
 #include "events/EventLog.h"
 #include "events/NotificationEvent.h"
 #include "interfaces/builtins/Builtins.h"
@@ -3442,9 +3443,18 @@ void CApplication::OnPlayBackSeekChapter(int iChapter)
 #endif
 }
 
+void CApplication::OnAVStarted(const CFileItem &file)
+{
+  CGUIMessage msg(GUI_MSG_PLAYBACK_AVSTARTED, 0, 0);
+  g_windowManager.SendThreadMessage(msg);
+}
+
 void CApplication::OnAVChange()
 {
   CStereoscopicsManager::GetInstance().OnStreamChange();
+
+  CGUIMessage msg(GUI_MSG_PLAYBACK_AVCHANGE, 0, 0);
+  g_windowManager.SendThreadMessage(msg);
 }
 
 void CApplication::RequestVideoSettings(const CFileItem &fileItem)
@@ -3926,6 +3936,16 @@ bool CApplication::OnMessage(CGUIMessage& message)
       param["player"]["speed"] = 1;
       param["player"]["playerid"] = CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist();
       CAnnouncementManager::GetInstance().Announce(Player, "xbmc", "OnPlay", m_itemCurrentFile, param);
+
+      // we don't want a busy dialog when switching channels
+      if (!m_itemCurrentFile->IsPVR())
+      {
+        m_playerEvent.Reset();
+        CGUIDialogBusy* dialog = g_windowManager.GetWindow<CGUIDialogBusy>(WINDOW_DIALOG_BUSY);
+        if (dialog)
+          dialog->WaitOnEvent(m_playerEvent);
+      }
+
       return true;
     }
     break;
@@ -3984,6 +4004,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_PLAYBACK_STOPPED:
   case GUI_MSG_PLAYBACK_ENDED:
+    m_playerEvent.Set();
   case GUI_MSG_PLAYLISTPLAYER_STOPPED:
     {
 #ifdef TARGET_DARWIN_IOS
@@ -4056,6 +4077,13 @@ bool CApplication::OnMessage(CGUIMessage& message)
       return true;
     }
     break;
+
+  case GUI_MSG_PLAYBACK_AVSTARTED:
+    m_playerEvent.Set();
+    return true;
+
+  case GUI_MSG_PLAYBACK_AVCHANGE:
+      return true;
 
   case GUI_MSG_PLAYBACK_ERROR:
     HELPERS::ShowOKDialogText(CVariant{16026}, CVariant{16027});
