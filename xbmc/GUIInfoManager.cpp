@@ -11092,6 +11092,8 @@ void CGUIInfoManager::OnApplicationMessage(KODI::MESSAGING::ThreadMessage* pMsg)
       SetCurrentVideoTag(*item->GetVideoInfoTag());
     else
       SetCurrentItem(*item);
+
+    delete item;
   }
   break;
 
