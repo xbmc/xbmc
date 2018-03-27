@@ -99,7 +99,7 @@ std::string CAddonDll::GetDllPath(const std::string &libPath)
   // The usual soname requirements apply. no subdirs, and filename is ^lib.*\.so$
   if (!XFILE::CFile::Exists(strFileName))
   {
-    std::string tempbin = getenv("XBMC_ANDROID_LIBS");
+    std::string tempbin = getenv("KODI_ANDROID_LIBS");
     strFileName = tempbin + "/" + strLibName;
   }
 #endif

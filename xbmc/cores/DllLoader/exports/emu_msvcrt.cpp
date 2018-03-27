@@ -166,7 +166,7 @@ extern "C" void __stdcall init_emu_environ()
   }
 
 #if defined(TARGET_ANDROID)
-  std::string apkPath = getenv("XBMC_ANDROID_APK");
+  std::string apkPath = getenv("KODI_ANDROID_APK");
   apkPath += "/assets/python2.7";
   dll_putenv(std::string("PYTHONHOME=" + apkPath).c_str());
   dll_putenv("PYTHONOPTIMIZE=");
