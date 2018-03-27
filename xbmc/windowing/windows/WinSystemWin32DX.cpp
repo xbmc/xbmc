@@ -25,7 +25,6 @@
 #include "utils/log.h"
 #include "WinSystemWin32DX.h"
 #include "platform/win32/CharsetConverter.h"
-#include "system.h"
 
 #ifndef _M_X64
 #pragma comment(lib, "EasyHook32.lib")
@@ -213,7 +212,8 @@ void CWinSystemWin32DX::UninitHooks()
   LhUninstallAllHooks();
   // we need to wait for memory release
   LhWaitForPendingRemovals();
-  SAFE_DELETE(m_hHook);
+  delete m_hHook;
+  m_hHook = nullptr;
   if (m_hDriverModule)
   {
     FreeLibrary(m_hDriverModule);
@@ -302,7 +302,8 @@ void CWinSystemWin32DX::InitHooks(IDXGIOutput* pOutput)
           else
           {
             CLog::Log(LOGDEBUG, __FUNCTION__": Unable ot install and activate D3D11 hook.");
-            SAFE_DELETE(m_hHook);
+            delete m_hHook;
+            m_hHook = nullptr;
             FreeLibrary(m_hDriverModule);
             m_hDriverModule = nullptr;
           }

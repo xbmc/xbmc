@@ -29,7 +29,7 @@
 #endif
 
 // use real compiler defines in here as we want to
-// avoid including system.h or other magic includes.
+// avoid including magic includes.
 // use 'gcc -dM -E - < /dev/null' or similar to find them.
 
 #if defined(__ppc__) || \

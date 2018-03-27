@@ -55,10 +55,6 @@ using namespace XFILE;
 #define MOUSE_BUTTON_MAP_NAME     "Mouse"
 #define MOUSE_PROVIDER            "application"
 
-#ifndef SAFE_DELETE
-  #define SAFE_DELETE(p)  do { delete (p); (p) = NULL; } while (0)
-#endif
-
 CPeripheralAddon::CPeripheralAddon(const ADDON::BinaryAddonBasePtr& addonInfo, CPeripherals &manager)
   : IAddonInstanceHandler(ADDON_INSTANCE_PERIPHERAL, addonInfo),
     m_manager(manager),

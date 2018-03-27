@@ -33,7 +33,6 @@
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "ServiceBroker.h"
-#include "system.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "VideoShaders/WinVideoFilter.h"
@@ -1124,7 +1123,11 @@ CRenderInfo CWinRenderer::GetRenderInfo()
 
 void CWinRenderer::ReleaseBuffer(int idx)
 {
-  SAFE_RELEASE(m_renderBuffers[idx].videoBuffer);
+  if (m_renderBuffers[idx].videoBuffer)
+  {
+    m_renderBuffers[idx].videoBuffer->Release();
+    m_renderBuffers[idx].videoBuffer = nullptr;
+  }
 }
 
 bool CWinRenderer::NeedBuffer(int idx)

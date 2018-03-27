@@ -29,7 +29,6 @@
 #include "utils/StringUtils.h"
 #include "utils/auto_buffer.h"
 #include "utils/RegExp.h"
-#include "system.h"
 
 #include <cstddef>
 
@@ -50,7 +49,7 @@
                       (((uint32_t) str[1]) << 16) | \
                       (((uint32_t) str[2]) << 8) | \
                       (((uint32_t) str[3]) << 0))
-                      
+
 typedef enum {
  BOLD       = 0x1,
  ITALIC     = 0x2,
@@ -78,7 +77,10 @@ CDVDOverlayCodecTX3G::CDVDOverlayCodecTX3G() : CDVDOverlayCodec("TX3G Subtitle D
 CDVDOverlayCodecTX3G::~CDVDOverlayCodecTX3G()
 {
   if (m_pOverlay)
-    SAFE_RELEASE(m_pOverlay);
+  {
+    m_pOverlay->Release();
+    m_pOverlay = nullptr;
+  }
 }
 
 bool CDVDOverlayCodecTX3G::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
@@ -91,13 +93,19 @@ bool CDVDOverlayCodecTX3G::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 void CDVDOverlayCodecTX3G::Dispose()
 {
   if (m_pOverlay)
-    SAFE_RELEASE(m_pOverlay);
+  {
+    m_pOverlay->Release();
+    m_pOverlay = nullptr;
+  }
 }
 
 int CDVDOverlayCodecTX3G::Decode(DemuxPacket *pPacket)
 {
   if (m_pOverlay)
-    SAFE_RELEASE(m_pOverlay);
+  {
+    m_pOverlay->Release();
+    m_pOverlay = nullptr;
+  }
 
   m_pOverlay = new CDVDOverlayText();
   CDVDOverlayCodec::GetAbsoluteTimes(m_pOverlay->iPTSStartTime, m_pOverlay->iPTSStopTime, pPacket, m_pOverlay->replace);
@@ -107,7 +115,7 @@ int CDVDOverlayCodecTX3G::Decode(DemuxPacket *pPacket)
   uint8_t  *end = pPacket->pData + pPacket->iSize;
 
   // Parse the packet as a TX3G TextSample.
-  // Look for a single StyleBox ('styl') and 
+  // Look for a single StyleBox ('styl') and
   // read all contained StyleRecords.
   // Ignore all other box types.
   // NOTE: Buffer overflows on read are not checked.
@@ -244,7 +252,7 @@ int CDVDOverlayCodecTX3G::Decode(DemuxPacket *pPacket)
     // this is a char index, not a byte index.
     charIndex++;
   }
-  
+
   if (strUTF8.empty())
     return OC_BUFFER;
 
@@ -272,13 +280,19 @@ int CDVDOverlayCodecTX3G::Decode(DemuxPacket *pPacket)
 void CDVDOverlayCodecTX3G::Reset()
 {
   if (m_pOverlay)
-    SAFE_RELEASE(m_pOverlay);
+  {
+    m_pOverlay->Release();
+    m_pOverlay = nullptr;
+  }
 }
 
 void CDVDOverlayCodecTX3G::Flush()
 {
   if (m_pOverlay)
-    SAFE_RELEASE(m_pOverlay);
+  {
+    m_pOverlay->Release();
+    m_pOverlay = nullptr;
+  }
 }
 
 CDVDOverlay* CDVDOverlayCodecTX3G::GetOverlay()

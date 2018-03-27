@@ -18,7 +18,6 @@
  *
  */
 
-#include "system.h"
 #include "DVDVideoCodecFFmpeg.h"
 #include "DVDDemuxers/DVDDemux.h"
 #include "DVDStreamInfo.h"
@@ -304,7 +303,11 @@ enum AVPixelFormat CDVDVideoCodecFFmpeg::GetFormat(struct AVCodecContext * avctx
           return *cur;
         }
       }
-      SAFE_RELEASE(pDecoder);
+      if (pDecoder)
+      {
+        pDecoder->Release();
+        pDecoder = nullptr;
+      }
     }
     cur++;
   }
@@ -478,7 +481,11 @@ void CDVDVideoCodecFFmpeg::Dispose()
   av_frame_free(&m_pDecodedFrame);
   av_frame_free(&m_pFilterFrame);
   avcodec_free_context(&m_pCodecContext);
-  SAFE_RELEASE(m_pHardware);
+  if (m_pHardware)
+  {
+    m_pHardware->Release();
+    m_pHardware = nullptr;
+  }
 
   FilterClose();
 }
@@ -1296,7 +1303,11 @@ void CDVDVideoCodecFFmpeg::SetCodecControl(int flags)
 
 void CDVDVideoCodecFFmpeg::SetHardware(IHardwareDecoder* hardware)
 {
-  SAFE_RELEASE(m_pHardware);
+  if (m_pHardware)
+  {
+    m_pHardware->Release();
+    m_pHardware = nullptr;
+  }
   m_pHardware = hardware;
   UpdateName();
 }

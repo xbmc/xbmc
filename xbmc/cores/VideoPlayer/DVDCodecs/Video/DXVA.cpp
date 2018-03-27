@@ -32,7 +32,6 @@
 #include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
-#include "system.h"
 #include "utils/Log.h"
 #include "utils/StringUtils.h"
 #include "utils/SystemInfo.h"
@@ -1088,7 +1087,11 @@ CDVDVideoCodec::VCReturn CDecoder::Decode(AVCodecContext* avctx, AVFrame* frame)
   {
     if (m_bufferPool->IsValid(reinterpret_cast<ID3D11View*>(frame->data[3])))
     {
-      SAFE_RELEASE(m_videoBuffer);
+      if (m_videoBuffer)
+      {
+        m_videoBuffer->Release();
+        m_videoBuffer = nullptr;
+      }
       m_videoBuffer = reinterpret_cast<CDXVAOutputBuffer*>(m_bufferPool->Get());
       if (!m_videoBuffer)
       {
@@ -1110,7 +1113,11 @@ CDVDVideoCodec::VCReturn CDecoder::Decode(AVCodecContext* avctx, AVFrame* frame)
 
 bool CDecoder::GetPicture(AVCodecContext* avctx, VideoPicture* picture)
 {
-  SAFE_RELEASE(picture->videoBuffer);
+  if (picture->videoBuffer)
+  {
+    picture->videoBuffer->Release();
+    picture->videoBuffer=nullptr;
+  }
 
   static_cast<ICallbackHWAccel*>(avctx->opaque)->GetPictureCommon(picture);
   CSingleLock lock(m_section);
@@ -1134,7 +1141,11 @@ bool CDecoder::GetPicture(AVCodecContext* avctx, VideoPicture* picture)
 
 void CDecoder::Reset()
 {
-  SAFE_RELEASE(m_videoBuffer);
+  if (m_videoBuffer)
+  {
+    m_videoBuffer->Release();
+    m_videoBuffer = nullptr;
+  }
 }
 
 CDVDVideoCodec::VCReturn CDecoder::Check(AVCodecContext* avctx)

@@ -27,7 +27,6 @@
 #include "DirectoryCache.h"
 #include "Directory.h"
 #include "FileCache.h"
-#include "system.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "utils/BitstreamStats.h"
@@ -59,11 +58,20 @@ CFile::~CFile()
 {
   Close();
   if (m_pFile)
-    SAFE_DELETE(m_pFile);
+  {
+    delete m_pFile;
+    m_pFile = nullptr;
+  }
   if (m_pBuffer)
-    SAFE_DELETE(m_pBuffer);
+  {
+    delete m_pBuffer;
+    m_pBuffer = nullptr;
+  }
   if (m_bitStreamStats)
-    SAFE_DELETE(m_bitStreamStats);
+  {
+    delete m_bitStreamStats;
+    m_bitStreamStats = nullptr;
+  }
 }
 
 //*********************************************************************************************
@@ -268,7 +276,7 @@ bool CFile::Open(const CURL& file, const unsigned int flags)
     if ((flags & READ_REOPEN) == 0)
     {
       CLog::Log(LOGERROR, "File::Open - already open: %s", file.GetRedacted().c_str());
-      return false;      
+      return false;
     }
     else
     {
@@ -318,7 +326,8 @@ bool CFile::Open(const CURL& file, const unsigned int flags)
     {
       if (!m_pFile->Open(url))
       {
-        SAFE_DELETE(m_pFile);
+        delete m_pFile;
+        m_pFile = nullptr;
         return false;
       }
     }
@@ -327,26 +336,29 @@ bool CFile::Open(const CURL& file, const unsigned int flags)
       // the file implementation decided this item should use a different implementation.
       // the exception will contain the new implementation.
       CLog::Log(LOGDEBUG,"File::Open - redirecting implementation for %s", file.GetRedacted().c_str());
-      SAFE_DELETE(m_pFile);
+      delete m_pFile;
+      m_pFile = nullptr;
       if (pRedirectEx && pRedirectEx->m_pNewFileImp)
       {
         std::unique_ptr<CURL> pNewUrl(pRedirectEx->m_pNewUrl);
         m_pFile = pRedirectEx->m_pNewFileImp;
         delete pRedirectEx;
-        
+
         if (pNewUrl.get())
         {
           if (!m_pFile->Open(*pNewUrl))
           {
-            SAFE_DELETE(m_pFile);
+            delete m_pFile;
+            m_pFile = nullptr;
             return false;
           }
         }
         else
-        {        
+        {
           if (!m_pFile->Open(url))
           {
-            SAFE_DELETE(m_pFile);
+            delete m_pFile;
+            m_pFile = nullptr;
             return false;
           }
         }
@@ -355,7 +367,8 @@ bool CFile::Open(const CURL& file, const unsigned int flags)
     catch (...)
     {
       CLog::Log(LOGERROR, "File::Open - unknown exception when opening %s", file.GetRedacted().c_str());
-      SAFE_DELETE(m_pFile);
+      delete m_pFile;
+      m_pFile = nullptr;
       return false;
     }
 
@@ -525,7 +538,7 @@ int CFile::Stat(const CURL& file, struct __stat64* buffer)
       std::unique_ptr<IFile> pImp(pRedirectEx->m_pNewFileImp);
       std::unique_ptr<CURL> pNewUrl(pRedirectEx->m_pNewUrl);
       delete pRedirectEx;
-        
+
       if (pNewUrl.get())
       {
         if (pImp.get() && !pImp->Stat(*pNewUrl, buffer))
@@ -533,7 +546,7 @@ int CFile::Stat(const CURL& file, struct __stat64* buffer)
           return 0;
         }
       }
-      else     
+      else
       {
         if (pImp.get() && !pImp->Stat(url, buffer))
         {
@@ -635,8 +648,10 @@ void CFile::Close()
     if (m_pFile)
       m_pFile->Close();
 
-    SAFE_DELETE(m_pBuffer);
-    SAFE_DELETE(m_pFile);
+    delete m_pBuffer;
+    m_pBuffer = nullptr;
+    delete m_pFile;
+    m_pFile = nullptr;
   }
   XBMCCOMMONS_HANDLE_UNCHECKED
   catch(...)
@@ -694,7 +709,7 @@ int CFile::Truncate(int64_t iSize)
 {
   if (!m_pFile)
     return -1;
-  
+
   try
   {
     return m_pFile->Truncate(iSize);
@@ -1211,7 +1226,8 @@ void CFileStream::Close()
     return;
 
   m_buffer.Detach();
-  SAFE_DELETE(m_file);
+  delete m_file;
+  m_file = nullptr;
 }
 
 bool CFileStream::Open(const std::string& filename)
