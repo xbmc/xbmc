@@ -747,8 +747,10 @@ bool CAESinkALSA::InitializeHW(const ALSAConfig &inconfig, ALSAConfig &outconfig
       if (bits != fmtBits)
       {
         /* if we opened in 32bit and only have 24bits, signal it accordingly */
-        if (fmtBits == 32 && bits == 24)
+        if (fmt == SND_PCM_FORMAT_S32 && bits == 24)
           i = AE_FMT_S24NE4MSB;
+        else if (fmt == SND_PCM_FORMAT_S24 && bits == 24)
+          i = AE_FMT_S24NE4;
         else
           continue;
       }
