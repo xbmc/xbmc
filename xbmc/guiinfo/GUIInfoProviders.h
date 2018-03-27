@@ -22,6 +22,7 @@
 #include <string>
 #include <vector>
 
+#include "guiinfo/AddonsGUIInfo.h"
 #include "guiinfo/MusicGUIInfo.h"
 #include "guiinfo/PlayerGUIInfo.h"
 #include "guiinfo/SystemGUIInfo.h"
@@ -108,6 +109,7 @@ public:
 private:
   std::vector<IGUIInfoProvider *> m_providers;
 
+  CAddonsGUIInfo m_addonsGUIInfo;
   CMusicGUIInfo m_musicGUIInfo;
   CVideoGUIInfo m_videoGUIInfo;
   CPlayerGUIInfo m_playerGUIInfo;

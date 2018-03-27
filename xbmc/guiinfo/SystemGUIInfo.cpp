@@ -23,7 +23,6 @@
 #include "Application.h"
 #include "LangInfo.h"
 #include "ServiceBroker.h"
-#include "addons/AddonManager.h"
 #include "addons/BinaryAddonCache.h"
 #include "dialogs/GUIDialogKeyboardGeneric.h"
 #include "dialogs/GUIDialogNumeric.h"
@@ -671,12 +670,6 @@ bool CSystemGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, const GUIIn
     case SYSTEM_GET_BOOL:
       value = CServiceBroker::GetSettings().GetBool(info.GetData3());
       return true;
-    case SYSTEM_HAS_ADDON:
-    {
-      ADDON::AddonPtr addon;
-      value = CServiceBroker::GetAddonMgr().GetAddon(info.GetData3(), addon) && addon;
-      return true;
-    }
   }
 
   return false;

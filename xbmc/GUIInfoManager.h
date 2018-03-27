@@ -99,7 +99,7 @@ public:
    \sa GetItemInt, GetMultiInfoInt
    */
   bool GetInt(int &value, int info, int contextWindow = 0, const CGUIListItem *item = NULL) const;
-  std::string GetLabel(int info, int contextWindow = 0, std::string *fallback = NULL);
+  std::string GetLabel(int info, int contextWindow = 0, std::string *fallback = NULL) const;
 
   std::string GetImage(int info, int contextWindow, std::string *fallback = NULL);
 
@@ -123,8 +123,8 @@ public:
   const MUSIC_INFO::CMusicInfoTag *GetCurrentSongTag() const;
   const CVideoInfoTag* GetCurrentMovieTag() const;
 
-  std::string GetGameLabel(int item);
-  std::string GetPictureLabel(int item);
+  std::string GetGameLabel(int item) const;
+  std::string GetPictureLabel(int item) const;
 
   float GetSeekPercent() const;
   int GetEpgEventProgress() const;

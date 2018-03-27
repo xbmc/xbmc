@@ -1,6 +1,7 @@
 set(SOURCES GUIInfo.cpp
             GUIInfoHelper.cpp
             GUIInfoProviders.cpp
+            AddonsGUIInfo.cpp
             MusicGUIInfo.cpp
             PlayerGUIInfo.cpp
             SystemGUIInfo.cpp
@@ -13,6 +14,7 @@ set(HEADERS GUIInfo.h
             GUIInfoProvider.h
             GUIInfoProviders.h
             IGUIInfoProvider.h
+            AddonsGUIInfo.h
             MusicGUIInfo.h
             PlayerGUIInfo.h
             SystemGUIInfo.h

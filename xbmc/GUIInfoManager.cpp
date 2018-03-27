@@ -5460,6 +5460,7 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
         }
         else if (prop.name == "addontitle")
         {
+          // Example: System.AddonTitle(Skin.String(HomeVideosButton1)) => skin string HomeVideosButton1 holds an addon identifier string
           int infoLabel = TranslateSingleString(param, listItemDependent);
           if (infoLabel > 0)
             return AddMultiInfo(GUIInfo(SYSTEM_ADDON_TITLE, infoLabel, 0));
@@ -5949,7 +5950,7 @@ TIME_FORMAT CGUIInfoManager::TranslateTimeFormat(const std::string &format)
   return TIME_FORMAT_GUESS;
 }
 
-std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *fallback)
+std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *fallback) const
 {
   if (info >= CONDITIONAL_LABEL_START && info <= CONDITIONAL_LABEL_END)
     return GetSkinVariableString(info, false);
@@ -6867,6 +6868,17 @@ std::string CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &constinfo, int con
     if (item) // If we got a valid item, do the lookup
       return GetItemImage(item.get(), info.m_info, fallback); // Image prioritizes images over labels (in the case of music item ratings for instance)
   }
+  if (info.m_info == SYSTEM_ADDON_TITLE ||
+      info.m_info == SYSTEM_ADDON_ICON ||
+      info.m_info == SYSTEM_ADDON_VERSION)
+  {
+    if (info.GetData2() == 0)
+    {
+      // resolve the addon id
+      const std::string addonId = GetLabel(info.GetData1(), contextWindow);
+      info = GUIInfo(info.m_info, addonId);
+    }
+  }
   if (m_infoProviders.GetLabel(strValue, m_currentFile, info, fallback))
   {
     return strValue;
@@ -6949,26 +6961,6 @@ std::string CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &constinfo, int con
     if (window)
       return window->GetProperty(info.GetData3()).asString();
   }
-  else if (info.m_info == SYSTEM_ADDON_TITLE ||
-           info.m_info == SYSTEM_ADDON_ICON ||
-           info.m_info == SYSTEM_ADDON_VERSION)
-  {
-    // This logic does not check/care whether an addon has been disabled/marked as broken,
-    // it simply retrieves it's name or icon that means if an addon is placed on the home screen it
-    // will stay there even if it's disabled/marked as broken. This might need to be changed/fixed
-    // in the future.
-    AddonPtr addon;
-    if (info.GetData2() == 0)
-      CServiceBroker::GetAddonMgr().GetAddon(const_cast<CGUIInfoManager*>(this)->GetLabel(info.GetData1(), contextWindow), addon, ADDON_UNKNOWN, false);
-    else
-      CServiceBroker::GetAddonMgr().GetAddon(info.GetData3(), addon, ADDON_UNKNOWN, false);
-    if (addon && info.m_info == SYSTEM_ADDON_TITLE)
-      return addon->Name();
-    if (addon && info.m_info == SYSTEM_ADDON_ICON)
-      return addon->Icon();
-    if (addon && info.m_info == SYSTEM_ADDON_VERSION)
-      return addon->Version().asString();
-  }
 
   return "";
 }
@@ -6997,7 +6989,7 @@ std::string CGUIInfoManager::GetImage(int info, int contextWindow, std::string *
   return GetLabel(info, contextWindow, fallback);
 }
 
-std::string CGUIInfoManager::GetGameLabel(int item)
+std::string CGUIInfoManager::GetGameLabel(int item) const
 {
   switch (item)
   {
@@ -7443,69 +7435,6 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
     if (item->m_dateTime.IsValid())
       return item->m_dateTime.GetAsLocalizedDate(true);
     break;
-  case LISTITEM_ADDON_NAME:
-    if (item->HasAddonInfo())
-      return item->GetAddonInfo()->Name();
-    break;
-  case LISTITEM_ADDON_VERSION:
-    if (item->HasAddonInfo())
-      return item->GetAddonInfo()->Version().asString();
-    break;
-  case LISTITEM_ADDON_CREATOR:
-    if (item->HasAddonInfo())
-      return item->GetAddonInfo()->Author();
-    break;
-  case LISTITEM_ADDON_SUMMARY:
-    if (item->HasAddonInfo())
-      return item->GetAddonInfo()->Summary();
-    break;
-  case LISTITEM_ADDON_DESCRIPTION:
-    if (item->HasAddonInfo())
-      return item->GetAddonInfo()->Description();
-    break;
-  case LISTITEM_ADDON_DISCLAIMER:
-    if (item->HasAddonInfo())
-      return item->GetAddonInfo()->Disclaimer();
-    break;
-  case LISTITEM_ADDON_NEWS:
-    if (item->HasAddonInfo())
-      return item->GetAddonInfo()->ChangeLog();
-    break;
-  case LISTITEM_ADDON_BROKEN:
-    if (item->HasAddonInfo())
-      return item->GetAddonInfo()->Broken();
-    break;
-  case LISTITEM_ADDON_TYPE:
-    if (item->HasAddonInfo())
-      return ADDON::CAddonInfo::TranslateType(item->GetAddonInfo()->Type(),true);
-    break;
-  case LISTITEM_ADDON_INSTALL_DATE:
-    if (item->HasAddonInfo())
-      return item->GetAddonInfo()->InstallDate().GetAsLocalizedDateTime();
-    break;
-  case LISTITEM_ADDON_LAST_UPDATED:
-    if (item->HasAddonInfo() && item->GetAddonInfo()->LastUpdated().IsValid())
-      return item->GetAddonInfo()->LastUpdated().GetAsLocalizedDateTime();
-    break;
-  case LISTITEM_ADDON_LAST_USED:
-    if (item->HasAddonInfo() && item->GetAddonInfo()->LastUsed().IsValid())
-      return item->GetAddonInfo()->LastUsed().GetAsLocalizedDateTime();
-    break;
-  case LISTITEM_ADDON_ORIGIN:
-    if (item->HasAddonInfo())
-    {
-      if (item->GetAddonInfo()->Origin() == ORIGIN_SYSTEM)
-        return g_localizeStrings.Get(24992);
-      AddonPtr origin;
-      if (CServiceBroker::GetAddonMgr().GetAddon(item->GetAddonInfo()->Origin(), origin, ADDON_UNKNOWN, false))
-        return origin->Name();
-      return g_localizeStrings.Get(13205);
-    }
-    break;
-  case LISTITEM_ADDON_SIZE:
-    if (item->HasAddonInfo() && item->GetAddonInfo()->PackageSize() > 0)
-      return StringUtils::FormatFileSize(item->GetAddonInfo()->PackageSize());
-    break;
   }
 
   return "";
@@ -7574,7 +7503,7 @@ void CGUIInfoManager::ResetCache()
   ++m_refreshCounter;
 }
 
-std::string CGUIInfoManager::GetPictureLabel(int info)
+std::string CGUIInfoManager::GetPictureLabel(int info) const
 {
   if (info == SLIDE_FILE_NAME)
     return GetItemLabel(m_currentSlide, LISTITEM_FILENAME);
