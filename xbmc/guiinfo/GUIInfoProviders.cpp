@@ -33,12 +33,14 @@ CGUIInfoProviders::CGUIInfoProviders()
   RegisterProvider(&m_playerGUIInfo);
   RegisterProvider(&m_addonsGUIInfo);
   RegisterProvider(&m_weatherGUIInfo);
+  RegisterProvider(&m_gamesGUIInfo);
   RegisterProvider(&m_systemGUIInfo);
 }
 
 CGUIInfoProviders::~CGUIInfoProviders()
 {
   UnregisterProvider(&m_systemGUIInfo);
+  UnregisterProvider(&m_gamesGUIInfo);
   UnregisterProvider(&m_weatherGUIInfo);
   UnregisterProvider(&m_addonsGUIInfo);
   UnregisterProvider(&m_playerGUIInfo);

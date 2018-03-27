@@ -123,7 +123,6 @@ public:
   const MUSIC_INFO::CMusicInfoTag *GetCurrentSongTag() const;
   const CVideoInfoTag* GetCurrentMovieTag() const;
 
-  std::string GetGameLabel(int item) const;
   std::string GetPictureLabel(int item) const;
 
   float GetSeekPercent() const;
@@ -259,8 +258,6 @@ protected:
   CCriticalSection m_critInfo;
 
 private:
-  std::string GetListItemDuration(const CFileItem *item, TIME_FORMAT format) const;
-
   GUIINFO::CGUIInfoProviders m_infoProviders;
 };
 

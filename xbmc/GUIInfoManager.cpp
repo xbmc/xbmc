@@ -35,9 +35,7 @@
 #include "Util.h"
 #include "addons/AddonManager.h"
 #include "cores/DataCacheCore.h"
-#include "cores/RetroPlayer/RetroPlayerUtils.h"
 #include "filesystem/File.h"
-#include "games/addons/savestates/SavestateDefines.h"
 #include "games/tags/GameInfoTag.h"
 #include "guiinfo/GUIInfo.h"
 #include "guiinfo/GUIInfoLabels.h"
@@ -79,7 +77,6 @@
 #include "view/GUIViewState.h"
 #include "windows/GUIMediaWindow.h"
 
-using namespace KODI;
 using namespace ADDON;
 using namespace GUIINFO;
 using namespace INFO;
@@ -5993,9 +5990,6 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
 
   switch (info)
   {
-  case RETROPLAYER_VIEWMODE:
-    strLabel = GetGameLabel(info);
-    break;
   case CONTAINER_FOLDERPATH:
   case CONTAINER_FOLDERNAME:
     {
@@ -6989,21 +6983,6 @@ std::string CGUIInfoManager::GetImage(int info, int contextWindow, std::string *
   return GetLabel(info, contextWindow, fallback);
 }
 
-std::string CGUIInfoManager::GetGameLabel(int item) const
-{
-  switch (item)
-  {
-    case RETROPLAYER_VIEWMODE:
-    {
-      ViewMode viewMode = CMediaSettings::GetInstance().GetCurrentGameSettings().ViewMode();
-      return RETRO::CRetroPlayerUtils::ViewModeToDescription(viewMode);
-    }
-    default:
-      break;
-  }
-  return "";
-}
-
 float CGUIInfoManager::GetSeekPercent() const
 {
   int totaltime = std::lrint(g_application.GetTotalTime());
@@ -7267,23 +7246,6 @@ bool CGUIInfoManager::GetItemInt(int &value, const CGUIListItem *item, int info)
   return false;
 }
 
-std::string CGUIInfoManager::GetListItemDuration(const CFileItem *item, TIME_FORMAT format) const
-{
-  std::string strValue;
-  if (m_infoProviders.GetLabel(strValue, item, GUIInfo(LISTITEM_DURATION, format), nullptr))
-    return strValue;
-
-  int iDuration = -1;
-
-  if (item->HasProperty(FILEITEM_PROPERTY_SAVESTATE_DURATION))
-    iDuration = static_cast<long>(item->GetProperty(FILEITEM_PROPERTY_SAVESTATE_DURATION).asInteger());
-
-  if (iDuration != -1)
-    return StringUtils::SecondsToTimeString(iDuration, format);
-
-  return std::string();
-}
-
 std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::string *fallback) const
 {
   if (!item)
@@ -7322,7 +7284,7 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
   if (info >= LISTITEM_PROPERTY_START + LISTITEM_DURATION_OFFSET &&
       info - (LISTITEM_PROPERTY_START + LISTITEM_DURATION_OFFSET) < static_cast<int>(m_listitemProperties.size()))
   {
-    return GetListItemDuration(item, TranslateTimeFormat(m_listitemProperties[info - (LISTITEM_PROPERTY_START + LISTITEM_DURATION_OFFSET)]));
+    multiInfo = GUIInfo(LISTITEM_DURATION, TranslateTimeFormat(m_listitemProperties[info - (LISTITEM_PROPERTY_START + LISTITEM_DURATION_OFFSET)]));
   }
 
   if (info >= LISTITEM_PROPERTY_START && info - LISTITEM_PROPERTY_START < static_cast<int>(m_listitemProperties.size()))
@@ -7376,8 +7338,6 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
     break;
   case LISTITEM_PROGRAM_COUNT:
     return StringUtils::Format("%i", item->m_iprogramCount);
-  case LISTITEM_DURATION:
-    return GetListItemDuration(item, TIME_FORMAT_GUESS);
   case LISTITEM_ACTUAL_ICON:
     return item->GetIconImage();
   case LISTITEM_ICON:
