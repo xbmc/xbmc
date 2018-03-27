@@ -9210,21 +9210,20 @@ void CGUIInfoManager::ResetCurrentItem()
 void CGUIInfoManager::UpdateInfo(const CFileItem & item)
 {
   m_currentFile->UpdateInfo(item);
-  if (item.IsVideo())
-    m_currentMovieThumb = item.GetArt("thumb");
 }
 
 void CGUIInfoManager::SetCurrentItem(const CFileItem &item)
 {
   ResetCurrentItem();
 
-  *m_currentFile = item;
-
   CFileItem newItem(item);
+
   if (newItem.IsAudio())
     SetCurrentSong(newItem);
   else if (newItem.IsGame())
     SetCurrentGame(newItem);
+  else
+    SetCurrentMovie(newItem);
 
   SetChanged();
   NotifyObservers(ObservableMessageCurrentItem);
@@ -9246,6 +9245,7 @@ void CGUIInfoManager::SetCurrentAlbumThumb(const std::string &thumbFileName)
 void CGUIInfoManager::SetCurrentSong(CFileItem &item)
 {
   CLog::Log(LOGDEBUG,"CGUIInfoManager::SetCurrentSong(%s)",item.GetPath().c_str());
+  *m_currentFile = item;
 
   m_currentFile->LoadMusicTag();
   if (m_currentFile->GetMusicInfoTag()->GetTitle().empty())
@@ -9279,9 +9279,63 @@ void CGUIInfoManager::SetCurrentSong(CFileItem &item)
   CMusicInfoLoader::LoadAdditionalTagInfo(m_currentFile);
 }
 
+void CGUIInfoManager::SetCurrentMovie(CFileItem &item)
+{
+  CLog::Log(LOGDEBUG,"CGUIInfoManager::SetCurrentMovie(%s)", CURL::GetRedacted(item.GetPath()).c_str());
+  *m_currentFile = item;
+
+  /* also call GetMovieInfo() when a VideoInfoTag is already present or additional info won't be present in the tag */
+  if (!m_currentFile->HasPVRChannelInfoTag())
+  {
+    CVideoDatabase dbs;
+    if (dbs.Open())
+    {
+      std::string path = item.GetPath();
+      std::string videoInfoTagPath(item.GetVideoInfoTag()->m_strFileNameAndPath);
+      if (videoInfoTagPath.find("removable://") == 0)
+        path = videoInfoTagPath;
+      dbs.LoadVideoInfo(path, *m_currentFile->GetVideoInfoTag());
+      dbs.Close();
+    }
+  }
+
+  // Find a thumb for this file.
+  if (!item.HasArt("thumb"))
+  {
+    CVideoThumbLoader loader;
+    loader.LoadItem(m_currentFile);
+  }
+
+  // find a thumb for this stream
+  if (item.IsInternetStream())
+  {
+    // case where .strm is used to start an audio stream
+    if (g_application.GetAppPlayer().IsPlayingAudio())
+    {
+      SetCurrentSong(item);
+      return;
+    }
+
+    // else its a video
+    if (!g_application.m_strPlayListFile.empty())
+    {
+      CLog::Log(LOGDEBUG,"Streaming media detected... using %s to find a thumb", g_application.m_strPlayListFile.c_str());
+      CFileItem thumbItem(g_application.m_strPlayListFile,false);
+
+      CVideoThumbLoader loader;
+      if (loader.FillThumb(thumbItem))
+        item.SetArt("thumb", thumbItem.GetArt("thumb"));
+    }
+  }
+
+  item.FillInDefaultIcon();
+  m_currentMovieThumb = item.GetArt("thumb");
+}
+
 void CGUIInfoManager::SetCurrentGame(CFileItem &item)
 {
   CLog::Log(LOGDEBUG,"CGUIInfoManager::SetCurrentGame(%s)", item.GetPath().c_str());
+  *m_currentFile = item;
 
   m_currentFile->LoadGameTag();
   if (m_currentFile->GetGameInfoTag()->GetTitle().empty())
