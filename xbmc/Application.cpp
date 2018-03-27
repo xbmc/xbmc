@@ -128,6 +128,7 @@
 #include "peripherals/devices/PeripheralImon.h"
 #include "music/infoscanner/MusicInfoScanner.h"
 #include "music/MusicUtils.h"
+#include "music/MusicThumbLoader.h"
 
 // Windows includes
 #include "guilib/GUIWindowManager.h"
@@ -4824,6 +4825,18 @@ void CApplication::UpdateLibraries()
     CLog::LogF(LOGNOTICE, "Starting music library startup scan");
     StartMusicScan("", !m_ServiceManager->GetSettings().GetBool(CSettings::SETTING_MUSICLIBRARY_BACKGROUNDUPDATE));
   }
+}
+
+void CApplication::UpdateCurrentPlayArt()
+{
+  if (!m_appPlayer.IsPlayingAudio())
+    return;
+  //Clear and reload the art for the currenty playing item to show updated  art on OSD
+  m_itemCurrentFile->ClearArt();
+  CMusicThumbLoader loader;
+  loader.LoadItem(m_itemCurrentFile.get());
+  // Mirror changes to GUI item
+  g_infoManager.SetCurrentItem(*m_itemCurrentFile);
 }
 
 bool CApplication::IsVideoScanning() const

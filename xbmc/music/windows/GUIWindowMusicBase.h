@@ -49,7 +49,7 @@ public:
   bool OnBack(int actionID) override;
 
   void DoScan(const std::string &strPath, bool bRescan = false);
-  void RefreshContent(std::string strContent);
+  void RefreshContent(const std::string& strContent);
 
   /*! \brief Prompt the user if he wants to start a scan for this folder
   \param path the path to assign content for

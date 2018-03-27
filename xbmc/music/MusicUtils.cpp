@@ -19,7 +19,7 @@
  */
 
 #include "MusicUtils.h"
-#include "ServiceBroker.h"
+#include "Application.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIComponent.h"
@@ -28,11 +28,15 @@
 #include "input/Key.h"
 #include "music/MusicDatabase.h"
 #include "music/tags/MusicInfoTag.h"
+#include "PlayListPlayer.h"
+#include "playlists/PlayList.h"
+#include "ServiceBroker.h"
 #include "Util.h"
 #include "utils/JobManager.h"
 
 using namespace MUSIC_INFO;
 using namespace XFILE;
+using namespace PLAYLIST;
 
 namespace MUSIC_UTILS
 {
@@ -50,19 +54,95 @@ namespace MUSIC_UTILS
 
     ~CSetArtJob(void) override = default;
 
+    bool HasSongExtraArtChanged(const CFileItemPtr pSongItem, const std::string& type, const int itemID, CMusicDatabase& db)
+    {
+      if (!pSongItem->HasMusicInfoTag())
+        return false;
+      int idSong = pSongItem->GetMusicInfoTag()->GetDatabaseId();
+      if (idSong <= 0)
+        return false;
+      bool result = false;
+      if (type == MediaTypeAlbum)
+        // Update art when song is from album
+        result = (itemID == pSongItem->GetMusicInfoTag()->GetAlbumId());
+      else if (type == MediaTypeArtist)
+      {
+        // Update art when artist is song or album artist of the song
+        if (pSongItem->HasProperty("artistid"))
+        {
+          // Check artistid property when we have it
+          for (CVariant::const_iterator_array varid = pSongItem->GetProperty("artistid").begin_array();
+            varid != pSongItem->GetProperty("artistid").end_array(); varid++)
+          {
+            int idArtist = varid->asInteger();
+            result = (itemID == idArtist);
+            if (result)
+              break;
+          }
+        }
+        else
+        { // Check song artists in database
+          result = db.IsSongArtist(idSong, itemID);
+        }
+        if (!result)
+        {
+          // Check song album artists
+          result = db.IsSongAlbumArtist(idSong, itemID);
+        }
+      }      
+      return result;
+    }
+
     // Asynchronously update song, album or artist art in library
+    // and trigger update to album & artist art of the currently playing song 
+    // and songs queued in the current playlist
     bool DoWork(void) override
     {
-      CMusicInfoTag& tag = *pItem->GetMusicInfoTag();
+      int itemID = pItem->GetMusicInfoTag()->GetDatabaseId();
+      if (itemID <= 0)
+        return false;
+      std::string type = pItem->GetMusicInfoTag()->GetType();
       CMusicDatabase db;
-      if (db.Open())
+      if (!db.Open())
+        return false;
+      if (!m_newArt.empty())
+        db.SetArtForItem(itemID, type, m_artType, m_newArt);
+      else
+        db.RemoveArtForItem(itemID, type, m_artType);
+     
+      /* Update the art of the songs of the current music playlist.
+      Song thumb is often a fallback from the album and fanart is from the artist(s).
+      Clear the art if it is a song from the album or by the artist 
+      (as song or album artist) that has modified artwork. The new artwork gets
+      loaded when the playlist is shown.
+      */      
+      bool clearcache(false);
+      CPlayList& playlist = CServiceBroker::GetPlaylistPlayer().GetPlaylist(PLAYLIST_MUSIC);
+      for (int i = 0; i < playlist.size(); ++i)
       {
-        if (!m_newArt.empty())
-          db.SetArtForItem(tag.GetDatabaseId(), tag.GetType(), m_artType, m_newArt);
-        else
-          db.RemoveArtForItem(tag.GetDatabaseId(), tag.GetType(), m_artType);
-        db.Close();
+        CFileItemPtr songitem = playlist[i];
+        if (HasSongExtraArtChanged(songitem, type, itemID, db))
+        {
+          songitem->ClearArt(); // Art gets reloaded when the current playist is shown
+          clearcache = true;
+        }
       }
+      if (clearcache)
+      {
+        // Clear the music playlist from cache
+        CFileItemList items("playlistmusic://");
+        items.RemoveDiscCache(WINDOW_MUSIC_PLAYLIST);
+      }
+
+      // Similarly update the art of the currently playing song so it shows on OSD
+      if (g_application.GetAppPlayer().IsPlayingAudio() && g_application.CurrentFileItem().HasMusicInfoTag())
+      {
+        CFileItemPtr songitem = CFileItemPtr(new CFileItem(g_application.CurrentFileItem()));
+        if (HasSongExtraArtChanged(songitem, type, itemID, db))
+          g_application.UpdateCurrentPlayArt();
+      }
+      
+      db.Close();
       return true;
     }
   };

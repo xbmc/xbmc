@@ -301,7 +301,7 @@ void CGUIWindowMusicBase::OnItemInfo(int iItem)
   CGUIDialogMusicInfo::ShowFor(item.get());
 }
 
-void CGUIWindowMusicBase::RefreshContent(std::string strContent)
+void CGUIWindowMusicBase::RefreshContent(const std::string& strContent)
 {
   if ( CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_MUSIC_NAV &&
     m_vecItems->GetContent() == strContent &&

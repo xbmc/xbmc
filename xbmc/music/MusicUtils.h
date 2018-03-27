@@ -47,8 +47,10 @@ namespace MUSIC_UTILS
   bool FillArtTypesList(CFileItem& musicitem, CFileItemList& artlist);
 
   /*! \brief Helper function to asynchronously update art in the music database
+  and then refresh the album & artist art of the currently playing song.
   For the song, album or artist this adds a job to the queue to update the art table
-  modifying, adding or deleting that type of art,
+  modifying, adding or deleting that type of art. Changes to album or artist art are
+  then passed to the currently playing song (if there is one).
   \param item a shared pointer to a music CFileItem (song, album or artist)
   \param strType the type of art e.g. "fanart" or "thumb" etc.
   \param strArt art URL, when empty the entry for that type of art is deleted. 
