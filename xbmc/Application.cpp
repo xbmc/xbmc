@@ -3087,6 +3087,12 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
       CVideoDatabase dbs;
       dbs.Open();
 
+      std::string path = item.GetPath();
+      std::string videoInfoTagPath(item.GetVideoInfoTag()->m_strFileNameAndPath);
+      if (videoInfoTagPath.find("removable://") == 0)
+        path = videoInfoTagPath;
+      dbs.LoadVideoInfo(path, *item.GetVideoInfoTag());
+
       if (item.HasProperty("savedplayerstate"))
       {
         options.starttime = CUtil::ConvertMilliSecsToSecs(item.m_lStartOffset);
