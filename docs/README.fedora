@@ -21,8 +21,9 @@ Note: The '$' character itself should NOT be typed as part of the command.
 -----------------------------------------------------------------------------
 
 You will have to grab the source code of course, here we use git as example.
-First install the git package provided by your distribution.
-Then from a terminal, type:
+First install the git package using the command line
+
+  $ sudo dnf install git
 
 .0  $ cd $HOME
 .1  $ git clone git://github.com/xbmc/xbmc.git kodi
