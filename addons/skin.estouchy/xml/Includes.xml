@@ -943,7 +943,7 @@
 		</item>
 	</include>
 	<include name="KeyboardButton">
-		<width>84</width>
+		<width min="76">auto</width>
 		<height>76</height>
 		<texturenofocus colordiffuse="grey2">white.png</texturenofocus>
 		<texturefocus>list_focus.png</texturefocus>
