@@ -80,6 +80,17 @@ public:
   void SaveAuthenticatedURL(const CURL &url, bool saveToProfile = true);
 
   /*!
+   \brief Is an URL is supported (by the manager)
+
+   This routine checks that an URL is supported by the manager
+
+   \param url the URL to check.
+   \return true if the URL is supported
+   \sa CURL, IsURLSupported
+   */
+  bool IsURLSupported(const CURL &url);
+
+  /*!
    \brief Clear any previously cached passwords
    */
   void Clear();
