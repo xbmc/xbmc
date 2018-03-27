@@ -157,6 +157,20 @@
 						<ondown>131</ondown>
 						<include>KeyboardButton</include>
 					</control>
+					<control type="button" id="112">
+						<description>(0,12) key button</description>
+						<onup condition="!Integer.IsGreater(Container(9010).NumItems,0)">8</onup>
+						<onup condition="Integer.IsGreater(Container(9010).NumItems,0)">9010</onup>
+						<ondown>132</ondown>
+						<include>KeyboardButton</include>
+					</control>
+					<control type="button" id="112">
+						<description>(0,12) key button</description>
+						<onup condition="!Integer.IsGreater(Container(9010).NumItems,0)">8</onup>
+						<onup condition="Integer.IsGreater(Container(9010).NumItems,0)">9010</onup>
+						<ondown>132</ondown>
+						<include>KeyboardButton</include>
+					</control>
 				</control>
 				<!-- 2nd row -->
 				<control type="grouplist">
