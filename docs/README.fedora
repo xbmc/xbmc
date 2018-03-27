@@ -1,0 +1,76 @@
+TOC
+1. Introduction
+2. Getting the source code
+3. Installing the required libraries and headers
+4. How to compile
+5. Uninstalling
+
+-----------------------------------------------------------------------------
+1. Introduction
+-----------------------------------------------------------------------------
+
+A graphics-adapter with OpenGL or OpenGLES acceleration is required.
+
+Note to new Linux users:
+All lines that are prefixed with the '$' character are commands,
+that need to be typed into a terminal window / console. The '$' equals the prompt.
+Note: The '$' character itself should NOT be typed as part of the command.
+
+-----------------------------------------------------------------------------
+2. Getting the source code
+-----------------------------------------------------------------------------
+
+You will have to grab the source code of course, here we use git as example.
+First install the git package using the command line
+
+  $ sudo dnf install git
+
+.0  $ cd $HOME
+.1  $ git clone git://github.com/xbmc/xbmc.git kodi
+
+Note: You can clone any specific branch.
+
+.1  $ git clone -b <branch> git://github.com/xbmc/xbmc.git kodi
+
+-----------------------------------------------------------------------------
+3. Installing the required libraries and headers
+-----------------------------------------------------------------------------
+
+You will then need the required libraries. The following is the list of packages
+that are used to build Kodi packages on FEDORA (with all supported
+external libraries enabled).
+
+$ sudo dnf install autoconf automake gettext cmake curl \
+jre gawk gperf java-9-openjdk-headless libao-devel alsa-lib-devel \
+libass-devel libva-devel avahi-devel avahi-compat-libdns_sd-devel bluez-libs-devel \
+libbluray-devel bzip2-devel libcap-devel \
+libcdio-devel libcec-devel openssl-libs \
+dbus-devel mesa-libEGL-devel fmt-devel fontconfig-devel freetype-devel \
+fribidi-devel giflib-devel \
+libjpeg-turbo-devel libtool-ltdl-devel lzo-devel libmicrohttpd-devel \
+libmpc-devel mariadb-devel libnfs-devel \
+pcre-devel libplist-devel libpng12-devel \
+shairplay-devel libsmbclient-devel sqlite-devel libssh-devel openssl-devel ffmpeg-devel \
+taglib-devel tinyxml-devel libtool-ltdl-devel libudev-devel \
+libusb-devel libva-devel libvdpau-devel libxml2-devel \
+libXmu-devel libXrandr-devel libxslt-devel libXt-devel rapidjson-devel \
+nasm python-devel yasm swig uuid-devel zlib-devel python-pillow \
+trousers-devel libidn2-devel
+
+
+-----------------------------------------------------------------------------
+4. How to compile
+-----------------------------------------------------------------------------
+See README.linux
+
+-----------------------------------------------------------------------------
+4.1. Test Suite
+-----------------------------------------------------------------------------
+See README.linux
+
+-----------------------------------------------------------------------------
+5. Uninstalling
+-----------------------------------------------------------------------------
+See README.linux/Uninstalling for removing compiled versions of Kodi.
+
+EOF
