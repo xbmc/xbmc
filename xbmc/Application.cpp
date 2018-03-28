@@ -42,7 +42,6 @@
 #include "Autorun.h"
 #include "video/Bookmark.h"
 #include "video/VideoLibraryQueue.h"
-#include "video/jobs/VideoLibrarySetFileItem.h"
 #include "music/MusicLibraryQueue.h"
 #include "guilib/GUIControlProfiler.h"
 #include "utils/LangCodeExpander.h"
@@ -2555,21 +2554,6 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
     CGUIWindowLoginScreen::LoadProfile(pMsg->param1);
     break;
 
-  case TMSG_UPDATE_PLAYING_ITEM:
-    {
-      auto item = static_cast<CFileItem*>(pMsg->lpVoid);
-      if (item)
-      {
-        if (m_itemCurrentFile && m_itemCurrentFile->IsSamePath(item))
-        {
-          m_itemCurrentFile->UpdateInfo(*item);
-          g_infoManager.UpdateInfo(*item);
-        }
-        delete item;
-      }
-    }
-    break;
-
   default:
     CLog::Log(LOGERROR, "%s: Unhandled threadmessage sent, %u", __FUNCTION__, msg);
     break;
@@ -3102,6 +3086,12 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
       // open the d/b and retrieve the bookmarks for the current movie
       CVideoDatabase dbs;
       dbs.Open();
+
+      std::string path = item.GetPath();
+      std::string videoInfoTagPath(item.GetVideoInfoTag()->m_strFileNameAndPath);
+      if (videoInfoTagPath.find("removable://") == 0)
+        path = videoInfoTagPath;
+      dbs.LoadVideoInfo(path, *item.GetVideoInfoTag());
 
       if (item.HasProperty("savedplayerstate"))
       {
@@ -3931,11 +3921,6 @@ bool CApplication::OnMessage(CGUIMessage& message)
       }
       g_infoManager.SetCurrentItem(*m_itemCurrentFile);
       g_partyModeManager.OnSongChange(true);
-
-      if (m_itemCurrentFile->IsVideo())
-      {
-        CJobManager::GetInstance().AddJob(new CVideoLibrarySetFileItemJob(*m_itemCurrentFile), nullptr);
-      }
 
       CVariant param;
       param["player"]["speed"] = 1;

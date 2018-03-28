@@ -120,6 +120,7 @@ public:
   /// \brief Retrieves tag info (if necessary) and fills in our current song path.
   void SetCurrentSong(CFileItem &item);
   void SetCurrentAlbumThumb(const std::string &thumbFileName);
+  void SetCurrentMovie(CFileItem &item);
   void SetCurrentSlide(CFileItem &item);
   const CFileItem &GetCurrentSlide() const;
   void ResetCurrentSlide();

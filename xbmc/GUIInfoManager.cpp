@@ -9210,21 +9210,23 @@ void CGUIInfoManager::ResetCurrentItem()
 void CGUIInfoManager::UpdateInfo(const CFileItem & item)
 {
   m_currentFile->UpdateInfo(item);
-  if (item.IsVideo())
-    m_currentMovieThumb = item.GetArt("thumb");
 }
 
 void CGUIInfoManager::SetCurrentItem(const CFileItem &item)
 {
   ResetCurrentItem();
 
+  CFileItem newItem(item);
   *m_currentFile = item;
 
-  CFileItem newItem(item);
   if (newItem.IsAudio())
     SetCurrentSong(newItem);
   else if (newItem.IsGame())
     SetCurrentGame(newItem);
+  else
+    SetCurrentMovie(newItem);
+
+  m_currentFile->FillInDefaultIcon();
 
   SetChanged();
   NotifyObservers(ObservableMessageCurrentItem);
@@ -9274,9 +9276,44 @@ void CGUIInfoManager::SetCurrentSong(CFileItem &item)
     CMusicThumbLoader loader;
     loader.LoadItem(m_currentFile);
   }
-  m_currentFile->FillInDefaultIcon();
 
   CMusicInfoLoader::LoadAdditionalTagInfo(m_currentFile);
+}
+
+void CGUIInfoManager::SetCurrentMovie(CFileItem &item)
+{
+  CLog::Log(LOGDEBUG,"CGUIInfoManager::SetCurrentMovie(%s)", CURL::GetRedacted(item.GetPath()).c_str());
+
+  // Find a thumb for this file.
+  if (!item.HasArt("thumb"))
+  {
+    CVideoThumbLoader loader;
+    loader.LoadItem(m_currentFile);
+  }
+
+  // find a thumb for this stream
+  if (item.IsInternetStream())
+  {
+    // case where .strm is used to start an audio stream
+    if (g_application.GetAppPlayer().IsPlayingAudio())
+    {
+      SetCurrentSong(item);
+      return;
+    }
+
+    // else its a video
+    if (!g_application.m_strPlayListFile.empty())
+    {
+      CLog::Log(LOGDEBUG,"Streaming media detected... using %s to find a thumb", g_application.m_strPlayListFile.c_str());
+      CFileItem thumbItem(g_application.m_strPlayListFile,false);
+
+      CVideoThumbLoader loader;
+      if (loader.FillThumb(thumbItem))
+        item.SetArt("thumb", thumbItem.GetArt("thumb"));
+    }
+  }
+
+  m_currentMovieThumb = item.GetArt("thumb");
 }
 
 void CGUIInfoManager::SetCurrentGame(CFileItem &item)
@@ -9289,8 +9326,6 @@ void CGUIInfoManager::SetCurrentGame(CFileItem &item)
     // No title in tag, show filename only
     m_currentFile->GetGameInfoTag()->SetTitle(CUtil::GetTitleFromPath(m_currentFile->GetPath()));
   }
-
-  m_currentFile->FillInDefaultIcon();
 }
 
 std::string CGUIInfoManager::GetSystemHeatInfo(int info)
@@ -11038,6 +11073,8 @@ void CGUIInfoManager::OnApplicationMessage(KODI::MESSAGING::ThreadMessage* pMsg)
       SetCurrentVideoTag(*item->GetVideoInfoTag());
     else
       SetCurrentItem(*item);
+
+    delete item;
   }
   break;
 
