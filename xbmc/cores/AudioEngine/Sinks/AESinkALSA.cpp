@@ -751,7 +751,9 @@ bool CAESinkALSA::InitializeHW(const ALSAConfig &inconfig, ALSAConfig &outconfig
 
       int fmtBits = CAEUtil::DataFormatToBits(i);
       int bits    = snd_pcm_hw_params_get_sbits(hw_params);
-      if (bits != fmtBits)
+
+      // skip bits check when alsa reports invalid sbits value
+      if (bits > 0 && bits != fmtBits)
       {
         /* if we opened in 32bit and only have 24bits, signal it accordingly */
         if (fmt == SND_PCM_FORMAT_S32 && bits == 24)
