@@ -806,6 +806,9 @@ void CAESinkXAudio::Drain()
     try
     {
       m_sourceVoice->Stop();
+      m_sourceVoice->FlushSourceBuffers();
+      m_sinkFrames = 0;
+      m_framesInBuffers = 0;
     }
     catch (...)
     {
