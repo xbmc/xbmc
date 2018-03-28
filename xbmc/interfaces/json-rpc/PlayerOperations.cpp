@@ -76,6 +76,14 @@ JSONRPC_STATUS CPlayerOperations::GetActivePlayers(const std::string &method, IT
     picture["type"] = "picture";
     result.append(picture);
   }
+  if (activePlayers & Game)
+  {
+    CVariant game = CVariant(CVariant::VariantTypeObject);
+    game["playerid"] = PLAYLIST_NONE;
+    game["type"] = "game";
+    result.append(game);
+  }
+
 
   return OK;
 }
@@ -1078,6 +1086,8 @@ int CPlayerOperations::GetActivePlayers()
     activePlayers |= Audio;
   if (g_windowManager.IsWindowActive(WINDOW_SLIDESHOW))
     activePlayers |= Picture;
+  if (g_application.GetAppPlayer().IsPlayingGame())
+    activePlayers |= Game;
 
   return activePlayers;
 }
