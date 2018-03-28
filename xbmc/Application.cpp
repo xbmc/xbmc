@@ -2666,9 +2666,12 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
     {
       CSingleExit ex(g_graphicsContext);
       m_frameMoveGuard.unlock();
+
       // Calculate a window size between 2 and 10ms, 4 continuous requests let the window grow by 1ms
-      // WHen not playing video we allow it to increase to 80ms
-      unsigned int max_sleep = m_appPlayer.IsPlayingVideo() && !m_appPlayer.IsPausedPlayback() ? 10 : 80;
+      // When not playing video we allow it to increase to 80ms
+      unsigned int max_sleep = 10;
+      if (!m_appPlayer.IsPlayingVideo() || m_appPlayer.IsPausedPlayback())
+        max_sleep = 80;
       unsigned int sleepTime = std::max(static_cast<unsigned int>(2), std::min(m_ProcessedExternalCalls >> 2, max_sleep));
       Sleep(sleepTime);
       m_frameMoveGuard.lock();
