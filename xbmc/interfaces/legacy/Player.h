@@ -407,6 +407,20 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_Player
+      /// @brief \python_func{ isPlayingGame() }
+      ///-----------------------------------------------------------------------
+      /// Check for playing game.
+      ///
+      /// @return                    True if Kodi is playing a game.
+      ///
+      isPlayingGame();
+#else
+      bool isPlayingGame();
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_Player
       /// @brief \python_func{ isPlayingRDS() }
       ///-----------------------------------------------------------------------
       /// Check for playing radio data system (RDS).
