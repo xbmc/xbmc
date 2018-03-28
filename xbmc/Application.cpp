@@ -3757,20 +3757,37 @@ void CApplication::CheckOSScreenSaverInhibitionSetting()
 
 void CApplication::CheckScreenSaverAndDPMS()
 {
-  bool maybeScreensaver =
-      !m_dpmsIsActive && !m_screensaverActive
-      && !m_ServiceManager->GetSettings().GetString(CSettings::SETTING_SCREENSAVER_MODE).empty();
-  bool maybeDPMS =
-      !m_dpmsIsActive && m_dpms->IsSupported()
-      && m_ServiceManager->GetSettings().GetInt(CSettings::SETTING_POWERMANAGEMENT_DISPLAYSOFF) > 0;
+  bool maybeScreensaver = true;
+  if (m_dpmsIsActive)
+    maybeScreensaver = false;
+  else if (m_screensaverActive)
+    maybeScreensaver = false;
+  else if (m_ServiceManager->GetSettings().GetString(CSettings::SETTING_SCREENSAVER_MODE).empty())
+    maybeScreensaver = false;
+
+  bool maybeDPMS = true;
+  if (m_dpmsIsActive)
+    maybeDPMS = false;
+  else if (!m_dpms->IsSupported())
+    maybeDPMS = false;
+  else if (m_ServiceManager->GetSettings().GetInt(CSettings::SETTING_POWERMANAGEMENT_DISPLAYSOFF) <= 0)
+    maybeDPMS = false;
+
   // whether the current state of the application should be regarded as active even when there is no
   // explicit user activity such as input
-  bool haveIdleActivity =
-    // * Are we playing a video and it is not paused?
-    (m_appPlayer.IsPlayingVideo() && !m_appPlayer.IsPaused())
-    // * Are we playing some music in fullscreen vis?
-    || (m_appPlayer.IsPlayingAudio() && CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_VISUALISATION
-        && !m_ServiceManager->GetSettings().GetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION).empty());
+  bool haveIdleActivity = false;
+
+  // Are we playing a video and it is not paused?
+  if (m_appPlayer.IsPlayingVideo() && !m_appPlayer.IsPaused())
+    haveIdleActivity = true;
+
+  // Are we playing some music in fullscreen vis?
+  else if (m_appPlayer.IsPlayingAudio() &&
+           CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_VISUALISATION &&
+           !m_ServiceManager->GetSettings().GetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION).empty())
+  {
+    haveIdleActivity = true;
+  }
 
   // Handle OS screen saver state
   if (haveIdleActivity && CServiceBroker::GetWinSystem().GetOSScreenSaver())
