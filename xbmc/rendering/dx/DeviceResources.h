@@ -134,6 +134,7 @@ namespace DX
     void SetWindow(Windows::UI::Core::CoreWindow^ window);
     void SetWindowPos(Windows::Foundation::Rect rect);
 #endif // TARGET_WINDOWS_STORE
+    HANDLE GetContexMutex() const { return m_ctx_mutex; }
 
   private:
     class CBackBuffer : public CD3DTexture
@@ -190,5 +191,6 @@ namespace DX
     std::vector<ID3DResource*> m_resources;
     bool m_stereoEnabled;
     bool m_bDeviceCreated;
+    HANDLE m_ctx_mutex;
   };
 }
