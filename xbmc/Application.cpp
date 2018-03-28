@@ -3220,15 +3220,59 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
   return true;
 }
 
+void CApplication::PlaybackCleanup()
+{
+  if (!m_appPlayer.IsPlaying())
+  {
+    g_audioManager.Enable(true);
+    m_appPlayer.OpenNext(m_ServiceManager->GetPlayerCoreFactory());
+  }
+
+  if (!m_appPlayer.IsPlayingVideo())
+  {
+    if(g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO ||
+       g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_GAME)
+    {
+      g_windowManager.PreviousWindow();
+    }
+    else
+    {
+      //  resets to res_desktop or look&feel resolution (including refreshrate)
+      g_graphicsContext.SetFullScreenVideo(false);
+    }
+#ifdef TARGET_DARWIN_IOS
+    CDarwinUtils::SetScheduling(false);
+#endif
+  }
+
+  if (!m_appPlayer.IsPlayingAudio() && CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST_NONE && g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION)
+  {
+    m_ServiceManager->GetSettings().Save();  // save vis settings
+    WakeUpScreenSaverAndDPMS();
+    g_windowManager.PreviousWindow();
+  }
+
+  // DVD ejected while playing in vis ?
+  if (!m_appPlayer.IsPlayingAudio() && (m_itemCurrentFile->IsCDDA() || m_itemCurrentFile->IsOnDVD()) && !g_mediaManager.IsDiscInDrive() && g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION)
+  {
+    // yes, disable vis
+    m_ServiceManager->GetSettings().Save();    // save vis settings
+    WakeUpScreenSaverAndDPMS();
+    g_windowManager.PreviousWindow();
+  }
+
+  if (!m_appPlayer.IsPlaying())
+  {
+    m_stackHelper.Clear();
+  }
+
+  if (IsEnableTestMode())
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_QUIT);
+}
+
 void CApplication::OnPlayBackEnded()
 {
   CLog::LogF(LOGDEBUG ,"CApplication::OnPlayBackEnded");
-
-  // informs python script currently running playback has ended
-  // (does nothing if python is not loaded)
-#ifdef HAS_PYTHON
-  g_pythonParser.OnPlayBackEnded();
-#endif
 
   CServiceBroker::GetPVRManager().OnPlaybackEnded(m_itemCurrentFile);
 
@@ -3247,12 +3291,6 @@ void CApplication::OnPlayBackStarted(const CFileItem &file)
   // check if VideoPlayer should set file item stream details from its current streams
   if (file.GetProperty("get_stream_details_from_player").asBoolean())
     m_appPlayer.SetUpdateStreamDetails();
-
-#ifdef HAS_PYTHON
-  // informs python script currently running playback has started
-  // (does nothing if python is not loaded)
-  g_pythonParser.OnPlayBackStarted(file);
-#endif
 
   if (m_stackHelper.IsPlayingISOStack() || m_stackHelper.IsPlayingRegularStack())
     m_itemCurrentFile.reset(new CFileItem(*m_stackHelper.GetRegisteredStack(file)));
@@ -3350,11 +3388,6 @@ void CApplication::OnPlayBackStopped()
 {
   CLog::LogF(LOGDEBUG, "CApplication::OnPlayBackStopped");
 
-  // informs python script currently running playback has ended
-  // (does nothing if python is not loaded)
-#ifdef HAS_PYTHON
-  g_pythonParser.OnPlayBackStopped();
-#endif
 #if defined(TARGET_DARWIN_IOS)
   CDarwinUtils::EnableOSScreenSaver(true);
 #endif
@@ -3907,7 +3940,8 @@ bool CApplication::OnMessage(CGUIMessage& message)
   case GUI_MSG_PLAYBACK_STARTED:
     {
 #ifdef TARGET_DARWIN_IOS
-      CDarwinUtils::SetScheduling(message.GetMessage());
+      // @TODO move this away to platform code
+      CDarwinUtils::SetScheduling(m_appPlayer.IsPlayingVideo());
 #endif
       CPlayList playList = CServiceBroker::GetPlaylistPlayer().GetPlaylist(CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist());
 
@@ -3931,6 +3965,12 @@ bool CApplication::OnMessage(CGUIMessage& message)
       }
       g_infoManager.SetCurrentItem(*m_itemCurrentFile);
       g_partyModeManager.OnSongChange(true);
+
+#ifdef HAS_PYTHON
+      // informs python script currently running playback has started
+      // (does nothing if python is not loaded)
+      g_pythonParser.OnPlayBackStarted(*m_itemCurrentFile);
+#endif
 
       CVariant param;
       param["player"]["speed"] = 1;
@@ -4003,80 +4043,39 @@ bool CApplication::OnMessage(CGUIMessage& message)
     break;
 
   case GUI_MSG_PLAYBACK_STOPPED:
+    m_playerEvent.Set();
+    m_itemCurrentFile->Reset();
+    g_infoManager.ResetCurrentItem();
+    PlaybackCleanup();
+#ifdef HAS_PYTHON
+    g_pythonParser.OnPlayBackStopped();
+#endif
+     return true;
+
   case GUI_MSG_PLAYBACK_ENDED:
     m_playerEvent.Set();
-  case GUI_MSG_PLAYLISTPLAYER_STOPPED:
-    {
-#ifdef TARGET_DARWIN_IOS
-      CDarwinUtils::SetScheduling(message.GetMessage());
-#endif
-      // first check if we still have items in the stack to play
-      if (message.GetMessage() == GUI_MSG_PLAYBACK_ENDED)
-      {
-        if (m_stackHelper.IsPlayingRegularStack() && m_stackHelper.HasNextStackPartFileItem())
-        { // just play the next item in the stack
-          PlayFile(m_stackHelper.SetNextStackPartCurrentFileItem(), "", true);
-          return true;
-        }
-      }
-
-      // reset the current playing file
-      m_itemCurrentFile->Reset();
-      g_infoManager.ResetCurrentItem();
-
-      if (message.GetMessage() == GUI_MSG_PLAYBACK_ENDED)
-      {
-        if (!CServiceBroker::GetPlaylistPlayer().PlayNext(1, true))
-          m_appPlayer.ClosePlayer();
-      }
-
-      if (!m_appPlayer.IsPlaying())
-      {
-        g_audioManager.Enable(true);
-        m_appPlayer.OpenNext(m_ServiceManager->GetPlayerCoreFactory());
-      }
-
-      if (!m_appPlayer.IsPlayingVideo())
-      {
-        if(g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO ||
-           g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_GAME)
-        {
-          g_windowManager.PreviousWindow();
-        }
-        else
-        {
-          //  resets to res_desktop or look&feel resolution (including refreshrate)
-          g_graphicsContext.SetFullScreenVideo(false);
-        }
-      }
-
-      if (!m_appPlayer.IsPlayingAudio() && CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST_NONE && g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION)
-      {
-        m_ServiceManager->GetSettings().Save();  // save vis settings
-        WakeUpScreenSaverAndDPMS();
-        g_windowManager.PreviousWindow();
-      }
-
-      // DVD ejected while playing in vis ?
-      if (!m_appPlayer.IsPlayingAudio() && (m_itemCurrentFile->IsCDDA() || m_itemCurrentFile->IsOnDVD()) && !g_mediaManager.IsDiscInDrive() && g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION)
-      {
-        // yes, disable vis
-        m_ServiceManager->GetSettings().Save();    // save vis settings
-        WakeUpScreenSaverAndDPMS();
-        g_windowManager.PreviousWindow();
-      }
-
-      if (!m_appPlayer.IsPlaying())
-      {
-        m_itemCurrentFile.reset(new CFileItem());
-        m_stackHelper.Clear();
-      }
-
-      if (IsEnableTestMode())
-        CApplicationMessenger::GetInstance().PostMsg(TMSG_QUIT);
+    if (m_stackHelper.IsPlayingRegularStack() && m_stackHelper.HasNextStackPartFileItem())
+    { // just play the next item in the stack
+      PlayFile(m_stackHelper.SetNextStackPartCurrentFileItem(), "", true);
       return true;
     }
-    break;
+    m_itemCurrentFile->Reset();
+    g_infoManager.ResetCurrentItem();
+    if (!CServiceBroker::GetPlaylistPlayer().PlayNext(1, true))
+      m_appPlayer.ClosePlayer();
+
+    PlaybackCleanup();
+
+#ifdef HAS_PYTHON
+      g_pythonParser.OnPlayBackEnded();
+#endif
+    return true;
+
+  case GUI_MSG_PLAYLISTPLAYER_STOPPED:
+    m_itemCurrentFile->Reset();
+    g_infoManager.ResetCurrentItem();
+    PlaybackCleanup();
+    return true;
 
   case GUI_MSG_PLAYBACK_AVSTARTED:
     m_playerEvent.Set();

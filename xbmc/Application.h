@@ -384,10 +384,8 @@ public:
 
 protected:
   bool OnSettingsSaving() const override;
-
   bool Load(const TiXmlNode *settings) override;
   bool Save(TiXmlNode *settings) const override;
-
   void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
   void OnSettingAction(std::shared_ptr<const CSetting> setting) override;
   bool OnSettingUpdate(std::shared_ptr<CSetting> setting, const char *oldSettingId, const TiXmlNode *oldSettingNode) override;
@@ -395,6 +393,7 @@ protected:
   bool LoadSkin(const std::string& skinID);
 
   void CheckOSScreenSaverInhibitionSetting();
+  void PlaybackCleanup();
 
   /*!
    \brief Delegates the action to all registered action handlers.
