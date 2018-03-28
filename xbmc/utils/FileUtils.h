@@ -27,6 +27,7 @@ public:
   static bool DeleteItem(const CFileItemPtr &item, bool force=false);
   static bool DeleteItem(const std::string &strPath, bool force=false);
   static bool RenameFile(const std::string &strFile);
+  static bool RenameWithRetry(const std::string & source, const std::string & dest);
   static bool RemoteAccessAllowed(const std::string &strPath);
   static unsigned int LoadFile(const std::string &filename, void* &outputBuffer);
   /*! \brief Get the modified date of a file if its invalid it returns the creation date - this behavior changes when you set bUseLatestDate

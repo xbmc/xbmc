@@ -37,6 +37,10 @@
 #include "settings/Settings.h"
 #include "utils/Variant.h"
 
+#if defined(TARGET_POSIX)
+#include "XTimeUtils.h"
+#endif
+
 using namespace XFILE;
 
 bool CFileUtils::DeleteItem(const std::string &strPath, bool force)
@@ -106,6 +110,24 @@ bool CFileUtils::RenameFile(const std::string &strFile)
     return CFile::Rename(strFileAndPath, strPath);
   }
   return false;
+}
+
+bool CFileUtils::RenameWithRetry(const std::string & source, const std::string & dest)
+{
+  int count = 1;
+  bool result = false;
+  do
+  {
+    result = CFile::Rename(source, dest);
+    if (!result)
+    {
+      CLog::Log(LOGERROR, "Failed to move file(s) from '%s' to '%s', retrying in 500ms",
+			          source.c_str(), dest.c_str());
+      Sleep(500);
+    }
+  } while (!result && count++ < 4);
+
+  return result;
 }
 
 bool CFileUtils::RemoteAccessAllowed(const std::string &strPath)

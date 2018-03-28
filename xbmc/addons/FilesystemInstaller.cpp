@@ -23,6 +23,7 @@
 #include "filesystem/SpecialProtocol.h"
 #include "utils/log.h"
 #include "utils/FileOperationJob.h"
+#include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
@@ -53,17 +54,11 @@ bool CFilesystemInstaller::InstallToFilesystem(const std::string& archive, const
   if (hasOldData)
   {
     if (!CFile::Rename(addonFolder, oldAddonData))
-    {
-      CLog::Log(LOGERROR, "Failed to move old addon files from '%s' to '%s'", addonFolder.c_str(), oldAddonData.c_str());
       return false;
-    }
   }
 
-  if (!CFile::Rename(newAddonData, addonFolder))
-  {
-    CLog::Log(LOGERROR, "Failed to move new addon files from '%s' to '%s'", newAddonData.c_str(), addonFolder.c_str());
+  if (!CFileUtils::RenameWithRetry(newAddonData, addonFolder))
     return false;
-  }
 
   if (hasOldData)
   {
