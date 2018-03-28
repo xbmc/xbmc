@@ -645,7 +645,7 @@ void CGUIWindowFileManager::OnStart(CFileItem *pItem, const std::string &player)
     CGUIWindowSlideShow *pSlideShow = g_windowManager.GetWindow<CGUIWindowSlideShow>(WINDOW_SLIDESHOW);
     if (!pSlideShow)
       return ;
-    if (g_application.GetAppPlayer().IsPlayingVideo())
+    if (g_application.GetAppPlayer().IsPlayingVideo() || g_application.GetAppPlayer().IsPlayingGame())
       g_application.StopPlaying();
 
     pSlideShow->Reset();

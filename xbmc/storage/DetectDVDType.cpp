@@ -88,7 +88,8 @@ void CDetectDVDMedia::Process()
 
   while (( !m_bStop ))
   {
-    if (g_application.GetAppPlayer().IsPlayingVideo())
+    if (g_application.GetAppPlayer().IsPlayingVideo() ||
+        g_application.GetAppPlayer().IsPlayingGame())
     {
       Sleep(10000);
     }

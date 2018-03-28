@@ -252,12 +252,12 @@ bool CApplicationPlayer::IsPausedPlayback()
 
 bool CApplicationPlayer::IsPlayingAudio() const
 {
-  return (IsPlaying() && !HasVideo() && HasAudio());
+  return (IsPlaying() && !HasVideo() && !HasGame() && HasAudio());
 }
 
 bool CApplicationPlayer::IsPlayingVideo() const
 {
-  return (IsPlaying() && HasVideo());
+  return (IsPlaying() && !HasGame() && HasVideo());
 }
 
 bool CApplicationPlayer::IsPlayingGame() const
@@ -778,7 +778,7 @@ void CApplicationPlayer::SetPlaySpeed(float speed)
   if (!player)
     return;
 
-  if (!IsPlayingAudio() && !IsPlayingVideo())
+  if (!IsPlaying())
     return ;
 
   SetSpeed(speed);

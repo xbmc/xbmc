@@ -1546,7 +1546,7 @@ bool CApplication::LoadSkin(const std::string& skinID)
     GAME,
   } previousRenderingState = RENDERING_STATE::NONE;
 
-  if (m_appPlayer.IsPlayingVideo())
+  if (m_appPlayer.IsPlayingVideo() || m_appPlayer.IsPlayingGame())
   {
     bPreviousPlayingState = !m_appPlayer.IsPausedPlayback();
     if (bPreviousPlayingState)
@@ -1660,7 +1660,7 @@ bool CApplication::LoadSkin(const std::string& skinID)
   }
 
   // restore player and rendering state
-  if (m_appPlayer.IsPlayingVideo())
+  if (m_appPlayer.IsPlayingVideo() || m_appPlayer.IsPlayingGame())
   {
     if (bPreviousPlayingState)
       m_appPlayer.Pause();
@@ -2493,7 +2493,8 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
     if (!pSlideShow) return;
 
     // stop playing file
-    if (m_appPlayer.IsPlayingVideo()) StopPlaying();
+    if (m_appPlayer.IsPlayingVideo() || m_appPlayer.IsPlayingGame())
+      StopPlaying();
 
     if (g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
       g_windowManager.PreviousWindow();
@@ -2538,7 +2539,7 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
     CGUIWindowSlideShow *pSlideShow = g_windowManager.GetWindow<CGUIWindowSlideShow>(WINDOW_SLIDESHOW);
     if (!pSlideShow) return;
 
-    if (m_appPlayer.IsPlayingVideo())
+    if (m_appPlayer.IsPlayingVideo() || m_appPlayer.IsPlayingGame())
       StopPlaying();
 
     pSlideShow->Reset();
@@ -2668,9 +2669,9 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
       m_frameMoveGuard.unlock();
 
       // Calculate a window size between 2 and 10ms, 4 continuous requests let the window grow by 1ms
-      // When not playing video we allow it to increase to 80ms
+      // When not playing video or game we allow it to increase to 80ms
       unsigned int max_sleep = 10;
-      if (!m_appPlayer.IsPlayingVideo() || m_appPlayer.IsPausedPlayback())
+      if (!(m_appPlayer.IsPlayingVideo() || m_appPlayer.IsPlayingGame()) || m_appPlayer.IsPausedPlayback())
         max_sleep = 80;
       unsigned int sleepTime = std::max(static_cast<unsigned int>(2), std::min(m_ProcessedExternalCalls >> 2, max_sleep));
       Sleep(sleepTime);
@@ -3422,7 +3423,7 @@ void CApplication::OnPlayBackResumed()
   g_pythonParser.OnPlayBackResumed();
 #endif
 #if defined(TARGET_DARWIN_IOS)
-  if (m_appPlayer.IsPlayingVideo())
+  if (m_appPlayer.IsPlayingVideo() || m_appPlayer.IsPlayingGame())
     CDarwinUtils::EnableOSScreenSaver(false);
 #endif
 
@@ -3504,7 +3505,7 @@ void CApplication::StoreVideoSettings(const CFileItem &fileItem, CVideoSettings 
 
 bool CApplication::IsPlayingFullScreenVideo() const
 {
-  return m_appPlayer.IsPlayingVideo() && g_graphicsContext.IsFullScreenVideo();
+  return m_appPlayer.IsPlayingVideo() && g_graphicsContext.IsFullScreenVideo(); //! @todo
 }
 
 bool CApplication::IsFullScreen()
@@ -3734,6 +3735,10 @@ void CApplication::CheckScreenSaverAndDPMS()
   if (m_appPlayer.IsPlayingVideo() && !m_appPlayer.IsPaused())
     haveIdleActivity = true;
 
+  // Are we playing a game and it is not paused?
+  else if (m_appPlayer.IsPlayingGame() && !m_appPlayer.IsPaused())
+    haveIdleActivity = true;
+
   // Are we playing some music in fullscreen vis?
   else if (m_appPlayer.IsPlayingAudio() &&
            g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION &&
@@ -3760,10 +3765,19 @@ void CApplication::CheckScreenSaverAndDPMS()
     maybeScreensaver = false;
   }
 
-  if (m_screensaverActive && m_appPlayer.IsPlayingVideo() && !m_appPlayer.IsPaused())
+  if (m_screensaverActive)
   {
-    WakeUpScreenSaverAndDPMS();
-    return;
+    if (m_appPlayer.IsPlayingVideo() && !m_appPlayer.IsPaused())
+    {
+      WakeUpScreenSaverAndDPMS();
+      return;
+    }
+
+    if (m_appPlayer.IsPlayingGame() && !m_appPlayer.IsPaused())
+    {
+      WakeUpScreenSaverAndDPMS();
+      return;
+    }
   }
 
   if (!maybeScreensaver && !maybeDPMS) return;  // Nothing to do.
@@ -4072,7 +4086,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
         m_appPlayer.OpenNext(m_ServiceManager->GetPlayerCoreFactory());
       }
 
-      if (!m_appPlayer.IsPlayingVideo())
+      if (!m_appPlayer.IsPlayingVideo() && !m_appPlayer.IsPlayingGame())
       {
         if(g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO ||
            g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_GAME)
@@ -4306,7 +4320,7 @@ void CApplication::ProcessSlow()
   CheckDelayedPlayerRestart();
 
   //  check if we can unload any unreferenced dlls or sections
-  if (!m_appPlayer.IsPlayingVideo())
+  if (!m_appPlayer.IsPlayingVideo() && !m_appPlayer.IsPlayingGame())
     CSectionLoader::UnloadDelayed();
 
 #ifdef TARGET_ANDROID
@@ -4397,7 +4411,7 @@ void CApplication::Restart(bool bSamePosition)
   // and which means we gotta close & reopen the current playing file
 
   // first check if we're playing a file
-  if (!m_appPlayer.IsPlayingVideo() && !m_appPlayer.IsPlayingAudio())
+  if (!m_appPlayer.IsPlayingVideo() && !m_appPlayer.IsPlayingAudio() && !m_appPlayer.IsPlayingGame())
     return ;
 
   if (!m_appPlayer.HasPlayer())

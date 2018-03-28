@@ -68,8 +68,7 @@ void CAutorun::ExecuteAutorun(const std::string& path, bool bypassSettings, bool
 {
   if (!ignoreplaying)
   {
-    if (g_application.GetAppPlayer().IsPlayingAudio() ||
-        g_application.GetAppPlayer().IsPlayingVideo() ||
+    if (g_application.GetAppPlayer().IsPlaying() ||
         g_windowManager.HasModalDialog())
     {
       return;
