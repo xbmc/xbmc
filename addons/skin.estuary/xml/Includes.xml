@@ -1111,6 +1111,12 @@
 				<visible>Player.HasVideo</visible>
 				<visible>!Slideshow.IsActive</visible>
 			</control>
+			<control type="gamewindow">
+				<depth>DepthBackground</depth>
+				<include>FullScreenDimensions</include>
+				<visible>Player.HasGame</visible>
+				<visible>!Slideshow.IsActive</visible>
+			</control>
 			<control type="visualisation">
 				<include>FullScreenDimensions</include>
 				<visible>!Slideshow.IsActive</visible>
