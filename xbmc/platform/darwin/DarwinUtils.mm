@@ -550,10 +550,13 @@ void CDarwinUtils::SetScheduling(int message)
   policy = SCHED_OTHER;
   thread_extended_policy_data_t theFixedPolicy={true};
 
-  if (message == GUI_MSG_PLAYBACK_STARTED && g_application.GetAppPlayer().IsPlayingVideo())
+  if (message == GUI_MSG_PLAYBACK_STARTED)
   {
-    policy = SCHED_RR;
-    theFixedPolicy.timeshare = false;
+    if (g_application.GetAppPlayer().IsPlayingVideo() || g_application.GetAppPlayer().IsPlayingGame())
+    {
+      policy = SCHED_RR;
+      theFixedPolicy.timeshare = false;
+    }
   }
 
   thread_policy_set(pthread_mach_thread_np(this_pthread_self),

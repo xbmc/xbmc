@@ -314,6 +314,12 @@ namespace XBMCAddon
       return g_application.GetAppPlayer().IsPlayingVideo();
     }
 
+    bool Player::isPlayingGame()
+    {
+      XBMC_TRACE;
+      return g_application.GetAppPlayer().IsPlayingGame();
+    }
+
     bool Player::isPlayingRDS()
     {
       XBMC_TRACE;

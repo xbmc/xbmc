@@ -148,7 +148,7 @@
 					<label>$INFO[Player.Process(pixformat),[COLOR button_focus]$LOCALIZE[31140]:[/COLOR] ]</label>
 					<font>font14</font>
 					<shadowcolor>black</shadowcolor>
-					<visible>Player.HasVideo</visible>
+					<visible>Player.HasVideo | Player.HasGame</visible>
 				</control>
 				<control type="label">
 					<width>1600</width>
@@ -166,7 +166,7 @@
 					<label>$INFO[Player.Process(videowidth),[COLOR button_focus]$LOCALIZE[38031]:[/COLOR] ,x]$INFO[Player.Process(videoheight),, px]$INFO[Player.Process(videodar),$COMMA , AR]$INFO[Player.Process(videofps),$COMMA , FPS]</label>
 					<font>font14</font>
 					<shadowcolor>black</shadowcolor>
-					<visible>Player.HasVideo</visible>
+					<visible>Player.HasVideo | Player.HasGame</visible>
 				</control>
 				<control type="label">
 					<width>1600</width>

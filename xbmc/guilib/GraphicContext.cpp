@@ -359,8 +359,20 @@ void CGraphicContext::SetFullScreenVideo(bool bOnOff)
 
   if (m_bFullScreenRoot)
   {
-    bool allowDesktopRes = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) == ADJUST_REFRESHRATE_ALWAYS;
-    if (m_bFullScreenVideo || (!allowDesktopRes && g_application.GetAppPlayer().IsPlayingVideo()))
+    bool bTriggerUpdateRes = false;
+    if (m_bFullScreenVideo)
+      bTriggerUpdateRes = true;
+    else
+    {
+      bool allowDesktopRes = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) == ADJUST_REFRESHRATE_ALWAYS;
+      if (!allowDesktopRes)
+      {
+        if (g_application.GetAppPlayer().IsPlayingVideo() || g_application.GetAppPlayer().IsPlayingGame())
+          bTriggerUpdateRes = true;
+      }
+    }
+
+    if (bTriggerUpdateRes)
       g_application.GetAppPlayer().TriggerUpdateResolution();
     else if (CDisplaySettings::GetInstance().GetCurrentResolution() > RES_DESKTOP)
       SetVideoResolution(CDisplaySettings::GetInstance().GetCurrentResolution(), false);
