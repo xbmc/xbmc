@@ -2075,15 +2075,36 @@ bool CApplication::OnAction(const CAction &action)
   bool bIsPlayingPVRChannel = (CServiceBroker::GetPVRManager().IsStarted() &&
                                CurrentFileItem().IsPVRChannel());
 
-  if (g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO ||
-      g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_GAME ||
-      (g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION && bIsPlayingPVRChannel) ||
-      ((g_windowManager.GetActiveWindow() == WINDOW_DIALOG_VIDEO_OSD || (g_windowManager.GetActiveWindow() == WINDOW_DIALOG_MUSIC_OSD && bIsPlayingPVRChannel)) &&
-        (action.GetID() == ACTION_NEXT_ITEM || action.GetID() == ACTION_PREV_ITEM || action.GetID() == ACTION_CHANNEL_UP || action.GetID() == ACTION_CHANNEL_DOWN)) ||
-      action.GetID() == ACTION_STOP)
+  bool bNotifyPlayer = false;
+  if (g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
+    bNotifyPlayer = true;
+  else if (g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_GAME)
+    bNotifyPlayer = true;
+  else if (g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION && bIsPlayingPVRChannel)
+    bNotifyPlayer = true;
+  else if (g_windowManager.GetActiveWindow() == WINDOW_DIALOG_VIDEO_OSD ||
+          (g_windowManager.GetActiveWindow() == WINDOW_DIALOG_MUSIC_OSD && bIsPlayingPVRChannel))
+  {
+    switch (action.GetID())
+    {
+      case ACTION_NEXT_ITEM:
+      case ACTION_PREV_ITEM:
+      case ACTION_CHANNEL_UP:
+      case ACTION_CHANNEL_DOWN:
+        bNotifyPlayer = true;
+        break;
+      default:
+        break;
+    }
+  }
+  else if (action.GetID() == ACTION_STOP)
+    bNotifyPlayer = true;
+
+  if (bNotifyPlayer)
   {
     if (m_appPlayer.OnAction(action))
       return true;
+
     // Player ignored action; popup the OSD
     if ((action.GetID() == ACTION_MOUSE_MOVE && (action.GetAmount(2) || action.GetAmount(3)))  // filter "false" mouse move from touch
         || action.GetID() == ACTION_MOUSE_LEFT_CLICK)
