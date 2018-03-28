@@ -3855,10 +3855,20 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
 
   // disable screensaver lock from the login screen
   m_iScreenSaveLock = CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_LOGIN_SCREEN ? 1 : 0;
+
   // set to Dim in the case of a dialog on screen or playing video
-  if (!forceType && (CServiceBroker::GetGUI()->GetWindowManager().HasModalDialog() ||
-                     (m_appPlayer.IsPlayingVideo() && m_ServiceManager->GetSettings().GetBool(CSettings::SETTING_SCREENSAVER_USEDIMONPAUSE)) ||
-                     CServiceBroker::GetPVRManager().GUIActions()->IsRunningChannelScan()))
+  bool bUseDim = false;
+  if (!forceType)
+  {
+    if (CServiceBroker::GetGUI()->GetWindowManager().HasModalDialog())
+      bUseDim = true;
+    else if (m_appPlayer.IsPlayingVideo() && m_ServiceManager->GetSettings().GetBool(CSettings::SETTING_SCREENSAVER_USEDIMONPAUSE))
+      bUseDim = true;
+    else if (CServiceBroker::GetPVRManager().GUIActions()->IsRunningChannelScan())
+      bUseDim = true;
+  }
+
+  if (bUseDim)
     m_screensaverIdInUse = "screensaver.xbmc.builtin.dim";
   else // Get Screensaver Mode
     m_screensaverIdInUse = m_ServiceManager->GetSettings().GetString(CSettings::SETTING_SCREENSAVER_MODE);
