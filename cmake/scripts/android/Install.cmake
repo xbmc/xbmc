@@ -81,6 +81,7 @@ set(package_files strings.xml
                   src/interfaces/XBMCNsdManagerResolveListener.java
                   src/interfaces/XBMCNsdManagerRegistrationListener.java
                   src/interfaces/XBMCNsdManagerDiscoveryListener.java
+                  src/interfaces/XBMCMediaDrmOnEventListener.java
                   src/model/TVEpisode.java
                   src/model/Movie.java
                   src/model/TVShow.java
