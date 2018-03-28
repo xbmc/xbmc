@@ -721,6 +721,10 @@ bool CAESinkALSA::InitializeHW(const ALSAConfig &inconfig, ALSAConfig &outconfig
     outconfig.format = AE_FMT_FLOAT;
   }
 
+  snd_pcm_hw_params_t *hw_params_copy;
+  snd_pcm_hw_params_alloca(&hw_params_copy);
+  snd_pcm_hw_params_copy(hw_params_copy, hw_params); // copy what we have
+
   /* try the data format */
   if (snd_pcm_hw_params_set_format(m_pcm, hw_params, fmt) < 0)
   {
@@ -735,8 +739,11 @@ bool CAESinkALSA::InitializeHW(const ALSAConfig &inconfig, ALSAConfig &outconfig
 	continue;
 
       fmt = AEFormatToALSAFormat(i);
+      if (fmt == SND_PCM_FORMAT_UNKNOWN)
+        continue;
 
-      if (fmt == SND_PCM_FORMAT_UNKNOWN || snd_pcm_hw_params_set_format(m_pcm, hw_params, fmt) < 0)
+      snd_pcm_hw_params_copy(hw_params, hw_params_copy); // restore from copy
+      if (snd_pcm_hw_params_set_format(m_pcm, hw_params, fmt) < 0)
       {
         fmt = SND_PCM_FORMAT_UNKNOWN;
         continue;
@@ -790,8 +797,6 @@ bool CAESinkALSA::InitializeHW(const ALSAConfig &inconfig, ALSAConfig &outconfig
 
   CLog::Log(LOGDEBUG, "CAESinkALSA::InitializeHW - Request: periodSize %lu, bufferSize %lu", periodSize, bufferSize);
 
-  snd_pcm_hw_params_t *hw_params_copy;
-  snd_pcm_hw_params_alloca(&hw_params_copy);
   snd_pcm_hw_params_copy(hw_params_copy, hw_params); // copy what we have and is already working
 
   // Make sure to not initialize too large to not cause underruns
