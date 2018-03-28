@@ -631,7 +631,7 @@ std::string CURL::GetRedacted(const std::string& path)
 
 bool CURL::IsLocal() const
 {
-  return (m_strProtocol.empty() || IsLocalHost());
+  return (m_strProtocol.empty() || IsLocalHost() || IsProtocol("win-lib"));
 }
 
 bool CURL::IsLocalHost() const
