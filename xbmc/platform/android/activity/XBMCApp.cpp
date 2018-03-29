@@ -676,6 +676,9 @@ void CXBMCApp::UpdateSessionState()
 
 void CXBMCApp::OnPlayBackStarted()
 {
+  if (getPackageName() != CCompileInfo::GetPackage())
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_QUIT);
+
   CLog::Log(LOGDEBUG, "%s", __PRETTY_FUNCTION__);
 
   m_playback_state = PLAYBACK_STATE_PLAYING;
