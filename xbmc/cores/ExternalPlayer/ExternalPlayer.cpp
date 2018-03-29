@@ -315,6 +315,7 @@ void CExternalPlayer::Process()
   }
 
   m_callback.OnPlayBackStarted(m_file);
+  m_callback.OnAVStarted(m_file);
 
   bool ret = true;
 #if defined(TARGET_WINDOWS_DESKTOP)

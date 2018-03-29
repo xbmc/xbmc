@@ -178,6 +178,7 @@ public:
   void OnPlayBackSeekChapter(int iChapter) override;
   void OnPlayBackSpeedChanged(int iSpeed) override;
   void OnAVChange() override;
+  void OnAVStarted(const CFileItem &file) override;
   void RequestVideoSettings(const CFileItem &fileItem) override;
   void StoreVideoSettings(const CFileItem &fileItem, CVideoSettings vs) override;
 
@@ -383,10 +384,8 @@ public:
 
 protected:
   bool OnSettingsSaving() const override;
-
   bool Load(const TiXmlNode *settings) override;
   bool Save(TiXmlNode *settings) const override;
-
   void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
   void OnSettingAction(std::shared_ptr<const CSetting> setting) override;
   bool OnSettingUpdate(std::shared_ptr<CSetting> setting, const char *oldSettingId, const TiXmlNode *oldSettingNode) override;
@@ -394,6 +393,7 @@ protected:
   bool LoadSkin(const std::string& skinID);
 
   void CheckOSScreenSaverInhibitionSetting();
+  void PlaybackCleanup();
 
   /*!
    \brief Delegates the action to all registered action handlers.
@@ -501,6 +501,7 @@ private:
   unsigned int m_ProcessedExternalCalls;          /*!< counts calls wich are processed during one "door open" cycle in FrameMove */
   unsigned int m_ProcessedExternalDecay = 0;      /*!< counts to close door after a few frames of no python activity */
   CApplicationPlayer m_appPlayer;
+  CEvent m_playerEvent;
   CApplicationStackHelper m_stackHelper;
 };
 

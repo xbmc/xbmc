@@ -2061,6 +2061,16 @@ void CVideoPlayer::HandlePlaySpeed()
       UpdatePlayState(0);
 
       m_syncTimer.Set(3000);
+
+      if (!m_State.streamsReady)
+      {
+        IPlayerCallback *cb = &m_callback;
+        CFileItem fileItem = m_item;
+        m_outboundEvents->Submit([=]() {
+          cb->OnAVStarted(fileItem);
+        });
+        m_State.streamsReady = true;
+      }
     }
     else
     {
@@ -2503,10 +2513,10 @@ void CVideoPlayer::OnExit()
   bool error = m_error;
   bool abort = m_bAbortRequest;
   m_outboundEvents->Submit([=]() {
-    if (error)
-      cb->OnPlayBackError();
-    else if (abort)
+    if (abort)
       cb->OnPlayBackStopped();
+    else if (error)
+      cb->OnPlayBackError();
     else
       cb->OnPlayBackEnded();
   });

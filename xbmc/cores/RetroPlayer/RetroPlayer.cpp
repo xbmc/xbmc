@@ -187,6 +187,7 @@ bool CRetroPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options
     RegisterWindowCallbacks();
     SetSpeedInternal(1.0);
     m_callback.OnPlayBackStarted(fileCopy);
+    m_callback.OnAVStarted(fileCopy);
     if (!bStandalone)
       m_autoSave.reset(new CRetroPlayerAutoSave(*m_gameClient));
     m_processInfo->SetVideoFps(static_cast<float>(m_gameClient->Timing().GetFrameRate()));
