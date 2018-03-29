@@ -26,11 +26,13 @@
 #include "PlayListPlayer.h"
 #include "URL.h"
 #include "guilib/LocalizeStrings.h"
+#include "music/MusicInfoLoader.h"
 #include "music/MusicThumbLoader.h"
 #include "music/tags/MusicInfoTag.h"
 #include "playlists/PlayList.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/URIUtils.h"
+#include "utils/log.h"
 
 #include "guiinfo/GUIInfo.h"
 #include "guiinfo/GUIInfoHelper.h"
@@ -38,6 +40,48 @@
 
 using namespace GUIINFO;
 using namespace MUSIC_INFO;
+
+bool CMusicGUIInfo::InitCurrentItem(CFileItem *item)
+{
+  if (item && (item->IsAudio() || (item->IsInternetStream() && g_application.GetAppPlayer().IsPlayingAudio())))
+  {
+    CLog::Log(LOGDEBUG,"CMusicGUIInfo::InitCurrentItem(%s)", item->GetPath().c_str());
+
+    item->LoadMusicTag();
+
+    CMusicInfoTag* tag = item->GetMusicInfoTag(); // creates item if not yet set, so no nullptr checks needed
+    if (tag->GetTitle().empty())
+    {
+      // No title in tag, show filename only
+      tag->SetTitle(CUtil::GetTitleFromPath(item->GetPath()));
+    }
+    tag->SetLoaded(true);
+
+    // find a thumb for this file.
+    if (item->IsInternetStream())
+    {
+      if (!g_application.m_strPlayListFile.empty())
+      {
+        CLog::Log(LOGDEBUG,"Streaming media detected... using %s to find a thumb", g_application.m_strPlayListFile.c_str());
+        CFileItem streamingItem(g_application.m_strPlayListFile,false);
+
+        CMusicThumbLoader loader;
+        loader.FillThumb(streamingItem);
+        if (streamingItem.HasArt("thumb"))
+          item->SetArt("thumb", streamingItem.GetArt("thumb"));
+      }
+    }
+    else
+    {
+      CMusicThumbLoader loader;
+      loader.LoadItem(item);
+    }
+
+    CMusicInfoLoader::LoadAdditionalTagInfo(item);
+    return true;
+  }
+  return false;
+}
 
 bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, const GUIInfo &info, std::string *fallback) const
 {

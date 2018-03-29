@@ -143,6 +143,11 @@ void CSystemGUIInfo::UpdateFPS()
   }
 }
 
+bool CSystemGUIInfo::InitCurrentItem(CFileItem *item)
+{
+  return false;
+}
+
 bool CSystemGUIInfo::GetLabel(std::string& value, const CFileItem *item, const GUIInfo &info, std::string *fallback) const
 {
   switch (info.m_info)

@@ -62,6 +62,17 @@ void CGUIInfoProviders::UnregisterProvider(IGUIInfoProvider *provider)
     m_providers.erase(it);
 }
 
+bool CGUIInfoProviders::InitCurrentItem(CFileItem *item)
+{
+  bool bReturn = false;
+
+  for (const auto& provider : m_providers)
+  {
+    bReturn = provider->InitCurrentItem(item);
+  }
+  return bReturn;
+}
+
 bool CGUIInfoProviders::GetLabel(std::string& value, const CFileItem *item, const GUIInfo &info, std::string *fallback) const
 {
   for (const auto& provider : m_providers)

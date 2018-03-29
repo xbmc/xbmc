@@ -36,7 +36,6 @@
 #include "addons/AddonManager.h"
 #include "cores/DataCacheCore.h"
 #include "filesystem/File.h"
-#include "games/tags/GameInfoTag.h"
 #include "guiinfo/GUIInfo.h"
 #include "guiinfo/GUIInfoLabels.h"
 #include "guilib/GUIComponent.h"
@@ -53,8 +52,6 @@
 #include "interfaces/info/InfoExpression.h"
 #include "messaging/ApplicationMessenger.h"
 #include "music/MusicDatabase.h"
-#include "music/MusicInfoLoader.h"
-#include "music/MusicThumbLoader.h"
 #include "music/dialogs/GUIDialogMusicInfo.h"
 #include "music/dialogs/GUIDialogSongInfo.h"
 #include "music/tags/MusicInfoTag.h"
@@ -72,7 +69,6 @@
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
 #include "video/VideoInfoTag.h"
-#include "video/VideoThumbLoader.h"
 #include "video/dialogs/GUIDialogVideoInfo.h"
 #include "view/GUIViewState.h"
 #include "windows/GUIMediaWindow.h"
@@ -7044,15 +7040,9 @@ void CGUIInfoManager::SetCurrentItem(const CFileItem &item)
 {
   ResetCurrentItem();
 
-  CFileItem newItem(item);
   *m_currentFile = item;
 
-  if (newItem.IsAudio())
-    SetCurrentSong(newItem);
-  else if (newItem.IsGame())
-    SetCurrentGame(newItem);
-  else
-    SetCurrentMovie(newItem);
+  m_infoProviders.InitCurrentItem(m_currentFile);
 
   m_currentFile->FillInDefaultIcon();
 
@@ -7070,87 +7060,6 @@ void CGUIInfoManager::SetCurrentAlbumThumb(const std::string &thumbFileName)
   {
     m_currentFile->SetArt("thumb", "");
     m_currentFile->FillInDefaultIcon();
-  }
-}
-
-void CGUIInfoManager::SetCurrentSong(CFileItem &item)
-{
-  CLog::Log(LOGDEBUG,"CGUIInfoManager::SetCurrentSong(%s)",item.GetPath().c_str());
-
-  m_currentFile->LoadMusicTag();
-  if (m_currentFile->GetMusicInfoTag()->GetTitle().empty())
-  {
-    // No title in tag, show filename only
-    m_currentFile->GetMusicInfoTag()->SetTitle(CUtil::GetTitleFromPath(m_currentFile->GetPath()));
-  }
-  m_currentFile->GetMusicInfoTag()->SetLoaded(true);
-
-  // find a thumb for this file.
-  if (m_currentFile->IsInternetStream())
-  {
-    if (!g_application.m_strPlayListFile.empty())
-    {
-      CLog::Log(LOGDEBUG,"Streaming media detected... using %s to find a thumb", g_application.m_strPlayListFile.c_str());
-      CFileItem streamingItem(g_application.m_strPlayListFile,false);
-
-      CMusicThumbLoader loader;
-      loader.FillThumb(streamingItem);
-      if (streamingItem.HasArt("thumb"))
-        m_currentFile->SetArt("thumb", streamingItem.GetArt("thumb"));
-    }
-  }
-  else
-  {
-    CMusicThumbLoader loader;
-    loader.LoadItem(m_currentFile);
-  }
-
-  CMusicInfoLoader::LoadAdditionalTagInfo(m_currentFile);
-}
-
-void CGUIInfoManager::SetCurrentMovie(CFileItem &item)
-{
-  CLog::Log(LOGDEBUG,"CGUIInfoManager::SetCurrentMovie(%s)", CURL::GetRedacted(item.GetPath()).c_str());
-
-  // Find a thumb for this file.
-  if (!item.HasArt("thumb"))
-  {
-    CVideoThumbLoader loader;
-    loader.LoadItem(m_currentFile);
-  }
-
-  // find a thumb for this stream
-  if (item.IsInternetStream())
-  {
-    // case where .strm is used to start an audio stream
-    if (g_application.GetAppPlayer().IsPlayingAudio())
-    {
-      SetCurrentSong(item);
-      return;
-    }
-
-    // else its a video
-    if (!g_application.m_strPlayListFile.empty())
-    {
-      CLog::Log(LOGDEBUG,"Streaming media detected... using %s to find a thumb", g_application.m_strPlayListFile.c_str());
-      CFileItem thumbItem(g_application.m_strPlayListFile,false);
-
-      CVideoThumbLoader loader;
-      if (loader.FillThumb(thumbItem))
-        item.SetArt("thumb", thumbItem.GetArt("thumb"));
-    }
-  }
-}
-
-void CGUIInfoManager::SetCurrentGame(CFileItem &item)
-{
-  CLog::Log(LOGDEBUG,"CGUIInfoManager::SetCurrentGame(%s)", item.GetPath().c_str());
-
-  m_currentFile->LoadGameTag();
-  if (m_currentFile->GetGameInfoTag()->GetTitle().empty())
-  {
-    // No title in tag, show filename only
-    m_currentFile->GetGameInfoTag()->SetTitle(CUtil::GetTitleFromPath(m_currentFile->GetPath()));
   }
 }
 
@@ -7543,7 +7452,6 @@ void CGUIInfoManager::SetCurrentVideoTag(const CVideoInfoTag &tag)
 
 void CGUIInfoManager::SetCurrentSongTag(const MUSIC_INFO::CMusicInfoTag &tag)
 {
-  //CLog::Log(LOGDEBUG, "Asked to SetCurrentTag");
   *m_currentFile->GetMusicInfoTag() = tag;
   m_currentFile->m_lStartOffset = 0;
 }

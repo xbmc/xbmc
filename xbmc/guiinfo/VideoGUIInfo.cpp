@@ -37,7 +37,9 @@
 #include "settings/Settings.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/log.h"
 #include "video/VideoInfoTag.h"
+#include "video/VideoThumbLoader.h"
 
 #include "guiinfo/GUIInfo.h"
 #include "guiinfo/GUIInfoHelper.h"
@@ -52,6 +54,41 @@ int CVideoGUIInfo::GetPercentPlayed(const CVideoInfoTag* tag) const
     return std::lrintf(static_cast<float>(bookmark.timeInSeconds) / bookmark.totalTimeInSeconds * 100.0f);
   else
     return 0;
+}
+
+bool CVideoGUIInfo::InitCurrentItem(CFileItem *item)
+{
+  if (item && item->IsVideo())
+  {
+    // special case where .strm is used to start an audio stream
+    if (item->IsInternetStream() && g_application.GetAppPlayer().IsPlayingAudio())
+      return false;
+
+    CLog::Log(LOGDEBUG,"CVideoGUIInfo::InitCurrentItem(%s)", CURL::GetRedacted(item->GetPath()).c_str());
+
+    // Find a thumb for this file.
+    if (!item->HasArt("thumb"))
+    {
+      CVideoThumbLoader loader;
+      loader.LoadItem(item);
+    }
+
+    // find a thumb for this stream
+    if (item->IsInternetStream())
+    {
+      if (!g_application.m_strPlayListFile.empty())
+      {
+        CLog::Log(LOGDEBUG,"Streaming media detected... using %s to find a thumb", g_application.m_strPlayListFile.c_str());
+        CFileItem thumbItem(g_application.m_strPlayListFile,false);
+
+        CVideoThumbLoader loader;
+        if (loader.FillThumb(thumbItem))
+          item->SetArt("thumb", thumbItem.GetArt("thumb"));
+      }
+    }
+    return true;
+  }
+  return false;
 }
 
 bool CVideoGUIInfo::GetLabel(std::string& value, const CFileItem *item, const GUIInfo &info, std::string *fallback) const

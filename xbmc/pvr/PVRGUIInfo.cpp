@@ -314,6 +314,11 @@ void CPVRGUIInfo::UpdateTimeshift(void)
   m_bHasTimeshiftData = true;
 }
 
+bool CPVRGUIInfo::InitCurrentItem(CFileItem *item)
+{
+  return false;
+}
+
 bool CPVRGUIInfo::GetLabel(std::string& value, const CFileItem *item, const GUIInfo &info, std::string *fallback) const
 {
   return GetListItemAndPlayerLabel(item, info, value) ||

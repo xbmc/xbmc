@@ -33,6 +33,11 @@
 
 using namespace GUIINFO;
 
+bool CWeatherGUIInfo::InitCurrentItem(CFileItem *item)
+{
+  return false;
+}
+
 bool CWeatherGUIInfo::GetLabel(std::string& value, const CFileItem *item, const GUIInfo &info, std::string *fallback) const
 {
   switch (info.m_info)

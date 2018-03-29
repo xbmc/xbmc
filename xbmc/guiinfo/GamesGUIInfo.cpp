@@ -21,17 +21,40 @@
 #include "guiinfo/GamesGUIInfo.h"
 
 #include "FileItem.h"
+#include "Util.h"
 #include "cores/RetroPlayer/RetroPlayerUtils.h"
 #include "games/addons/savestates/SavestateDefines.h"
+#include "games/tags/GameInfoTag.h"
 #include "settings/MediaSettings.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
+#include "utils/log.h"
 
 #include "guiinfo/GUIInfo.h"
 #include "guiinfo/GUIInfoLabels.h"
 
 using namespace GUIINFO;
+using namespace KODI::GAME;
 using namespace KODI::RETRO;
+
+bool CGamesGUIInfo::InitCurrentItem(CFileItem *item)
+{
+  if (item && item->IsGame())
+  {
+    CLog::Log(LOGDEBUG, "CGamesGUIInfo::InitCurrentItem(%s)", item->GetPath().c_str());
+
+    item->LoadGameTag();
+    CGameInfoTag* tag = item->GetGameInfoTag(); // creates item if not yet set, so no nullptr checks needed
+
+    if (tag->GetTitle().empty())
+    {
+      // No title in tag, show filename only
+      tag->SetTitle(CUtil::GetTitleFromPath(item->GetPath()));
+    }
+    return true;
+  }
+  return false;
+}
 
 bool CGamesGUIInfo::GetLabel(std::string& value, const CFileItem *item, const GUIInfo &info, std::string *fallback) const
 {

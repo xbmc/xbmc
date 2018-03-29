@@ -32,6 +32,11 @@
 
 using namespace GUIINFO;
 
+bool CAddonsGUIInfo::InitCurrentItem(CFileItem *item)
+{
+  return false;
+}
+
 bool CAddonsGUIInfo::GetLabel(std::string& value, const CFileItem *item, const GUIInfo &info, std::string *fallback) const
 {
   const std::shared_ptr<const ADDON::IAddon> addonInfo = item->GetAddonInfo();

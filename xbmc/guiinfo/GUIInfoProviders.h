@@ -61,6 +61,13 @@ public:
   void UnregisterProvider(IGUIInfoProvider *provider);
 
   /*!
+   * @brief Init a new current guiinfo manager item. Gets called whenever the active guiinfo manager item changes.
+   * @param item The new item.
+   * @return True if the item was inited by one of the providers, false otherwise.
+   */
+  bool InitCurrentItem(CFileItem *item);
+
+  /*!
    * @brief Get a GUIInfoManager label string from one of the registered providers.
    * @param value Will be filled with the requested value.
    * @param item The item to get the value for.

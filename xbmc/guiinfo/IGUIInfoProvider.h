@@ -38,6 +38,13 @@ public:
   virtual ~IGUIInfoProvider() = default;
 
   /*!
+   * @brief Init a new current guiinfo manager item. Gets called whenever the active guiinfo manager item changes.
+   * @param item The new item.
+   * @return True if the item was inited by the provider, false otherwise.
+   */
+  virtual bool InitCurrentItem(CFileItem *item) = 0;
+
+  /*!
    * @brief Get a GUIInfoManager label string.
    * @param value Will be filled with the requested value.
    * @param item The item to get the value for.

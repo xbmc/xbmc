@@ -52,6 +52,7 @@ namespace PVR
     void Notify(const Observable &obs, const ObservableMessage msg) override;
 
     // GUIINFO::IGUIInfoProvider implementation
+    bool InitCurrentItem(CFileItem *item) override;
     bool GetLabel(std::string& value, const CFileItem *item, const GUIINFO::GUIInfo &info, std::string *fallback) const override;
     bool GetInt(int& value, const CGUIListItem *item, const GUIINFO::GUIInfo &info) const override;
     bool GetBool(bool& value, const CGUIListItem *item, const GUIINFO::GUIInfo &info) const override;

@@ -158,6 +158,11 @@ bool CPlayerGUIInfo::ToggleShowInfo()
   return m_playerShowInfo;
 }
 
+bool CPlayerGUIInfo::InitCurrentItem(CFileItem *item)
+{
+  return false;
+}
+
 bool CPlayerGUIInfo::GetLabel(std::string& value, const CFileItem *item, const GUIInfo &info, std::string *fallback) const
 {
   switch (info.m_info)
