@@ -85,9 +85,8 @@ public:
   CD3DTexture* GetBackBuffer();
 
   void FlushGPU() const;
-  void RequestDecodingTime();
-  void ReleaseDecodingTime();
   void SetAlphaBlendEnable(bool enable);
+  HANDLE GetContexMutex() const;
 
   // empty overrides
   bool IsExtSupported(const char* extension) const override { return false; };
@@ -126,9 +125,6 @@ protected:
   Microsoft::WRL::ComPtr<ID3D11RasterizerState> m_RSScissorEnable;
   // stereo interlaced/checkerboard intermediate target
   CD3DTexture m_rightEyeTex;
-
-  XbmcThreads::EndTime m_decodingTimer;
-  XbmcThreads::ConditionVariable m_decodingEvent;
 
   std::shared_ptr<DX::DeviceResources> m_deviceResources;
 };
