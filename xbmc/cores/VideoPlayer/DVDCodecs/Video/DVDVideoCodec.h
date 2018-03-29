@@ -122,6 +122,7 @@ public:
   {
     VC_NONE = 0,
     VC_ERROR,           //< an error occured, no other messages will be returned
+    VC_FATAL,           //< non recoverable error
     VC_BUFFER,          //< the decoder needs more data
     VC_PICTURE,         //< the decoder got a picture, call Decode(NULL, 0) again to parse the rest of the data
     VC_FLUSHED,         //< the decoder lost it's state, we need to restart decoding again
