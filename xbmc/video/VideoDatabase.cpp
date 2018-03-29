@@ -8574,13 +8574,26 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const st
     std::string strIds;
     while (!m_pDS->eof())
     {
-      auto pathsDeleteDecision = pathsDeleteDecisions.find(m_pDS->fv(0).get_asInt());
       // Check if we have a decision for the parent path
+      auto pathsDeleteDecision = pathsDeleteDecisions.find(m_pDS->fv(0).get_asInt());
       auto pathsDeleteDecisionByParent = pathsDeleteDecisions.find(m_pDS->fv(2).get_asInt());
-      if (((pathsDeleteDecision != pathsDeleteDecisions.end() && pathsDeleteDecision->second) ||
-           (pathsDeleteDecision == pathsDeleteDecisions.end() && !CDirectory::Exists(m_pDS->fv(1).get_asString(), false))) &&
-          ((pathsDeleteDecisionByParent != pathsDeleteDecisions.end() && pathsDeleteDecisionByParent->second) ||
-           (pathsDeleteDecisionByParent == pathsDeleteDecisions.end())))
+
+      bool hasDecision = pathsDeleteDecision != pathsDeleteDecisions.end();
+      bool hasDecisionForParent = pathsDeleteDecisionByParent != pathsDeleteDecisions.end();
+      
+      std::string itemPath = m_pDS->fv(1).get_asString();
+
+      // add the path to the list of paths to be deleted if
+      //   it has been handled before and should be deleted
+      //   OR
+      //   it hasn't been handled before and doesn't exist
+      // AND
+      //   its parent path has been handled before and should be deleted
+      //   OR
+      //   its parent path hasn't been handled before
+      if (((hasDecision && pathsDeleteDecision->second) || (!hasDecision && !CDirectory::Exists(itemPath, false)))
+          &&
+          ((hasDecisionForParent && pathsDeleteDecisionByParent->second) || !hasDecisionForParent))
         strIds += m_pDS->fv(0).get_asString() + ",";
 
       m_pDS->next();
@@ -8808,8 +8821,9 @@ std::vector<int> CVideoDatabase::CleanMediaType(const std::string &mediaType, co
                !sourcePathsDeleteDecision->second.second)
         del = false;
 
+      // delete parents folder (and all its items) only, if file needs to be deleted and folder does not exist
       if (scanSettings.parent_name)
-        pathsDeleteDecisions.insert(std::make_pair(m_pDS2->fv(2).get_asInt(), del));
+        pathsDeleteDecisions.insert(std::make_pair(m_pDS2->fv(2).get_asInt(), !CDirectory::Exists(parentPath, false) && del));
     }
 
     if (del)
