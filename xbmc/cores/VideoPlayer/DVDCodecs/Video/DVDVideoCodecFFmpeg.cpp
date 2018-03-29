@@ -796,6 +796,11 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecFFmpeg::GetPicture(VideoPicture* pVideoPi
       Reset();
       return ret;
     }
+    else if (ret == VC_FATAL)
+    {
+      m_decoderState = STATE_HW_FAILED;
+      return VC_REOPEN;
+    }
     else if (ret == VC_PICTURE)
     {
       if (m_pHardware->GetPicture(m_pCodecContext, pVideoPicture))
