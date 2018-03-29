@@ -35,6 +35,10 @@
 
 #include "utils/AMLUtils.h"
 
+#include <algorithm>
+#include <iostream>
+#include <sstream>
+
 //#define DEBUG_VERBOSE 1
 
 // This is an alternative to the linear weighted delay smoothing
@@ -58,6 +62,134 @@ static const AEChannel KnownChannels[] = { AE_CH_FL, AE_CH_FR, AE_CH_FC, AE_CH_L
 bool CAESinkAUDIOTRACK::HasAmlHD()
 {
   return ((CJNIAudioFormat::ENCODING_DOLBY_TRUEHD != -1) && (CJNIAudioFormat::ENCODING_DTS_HD != -1));
+}
+
+static void LogAudioDevices(const char* stage, const CJNIAudioDeviceInfos& devices)
+{
+  CLog::Log(LOGDEBUG, "--- Audio device list: %s", stage);
+  for (auto dev : devices)
+  {
+    CLog::Log(LOGDEBUG, "--- Found device: %s", dev.getProductName().toString().c_str());
+    std::string sType;
+    int iType = dev.getType();
+    if (iType == CJNIAudioDeviceInfo::TYPE_AUX_LINE)
+      sType = "AUX_LINE";
+    else if (iType == CJNIAudioDeviceInfo::TYPE_BLUETOOTH_A2DP)
+      sType = "BLUETOOTH_A2DP";
+    else if (iType == CJNIAudioDeviceInfo::TYPE_BLUETOOTH_SCO)
+      sType = "BLUETOOTH_SCO";
+    else if (iType == CJNIAudioDeviceInfo::TYPE_BUILTIN_EARPIECE)
+      sType = "BUILTIN_EARPIECE";
+    else if (iType == CJNIAudioDeviceInfo::TYPE_BUILTIN_MIC)
+      sType = "BUILTIN_MIC";
+    else if (iType == CJNIAudioDeviceInfo::TYPE_BUILTIN_SPEAKER)
+      sType = "BUILTIN_SPEAKER";
+    else if (iType == CJNIAudioDeviceInfo::TYPE_BUS)
+      sType = "BUS";
+    else if (iType == CJNIAudioDeviceInfo::TYPE_DOCK)
+      sType = "DOCK";
+    else if (iType == CJNIAudioDeviceInfo::TYPE_FM)
+      sType = "FM";
+    else if (iType == CJNIAudioDeviceInfo::TYPE_FM_TUNER)
+      sType = "FM_TUNER";
+    else if (iType == CJNIAudioDeviceInfo::TYPE_HDMI)
+      sType = "HDMI";
+    else if (iType == CJNIAudioDeviceInfo::TYPE_HDMI_ARC)
+      sType = "HDMI_ARC";
+    else if (iType == CJNIAudioDeviceInfo::TYPE_IP)
+      sType = "IP";
+    else if (iType == CJNIAudioDeviceInfo::TYPE_LINE_ANALOG)
+      sType = "LINE_ANALOG";
+    else if (iType == CJNIAudioDeviceInfo::TYPE_LINE_DIGITAL)
+      sType = "LINE_DIGITAL";
+    else if (iType == CJNIAudioDeviceInfo::TYPE_TELEPHONY)
+      sType = "TELEPHONY";
+    else if (iType == CJNIAudioDeviceInfo::TYPE_TV_TUNER)
+      sType = "TV_TUNER";
+    else if (iType == CJNIAudioDeviceInfo::TYPE_UNKNOWN)
+      sType = "UNKNOWN";
+    else if (iType == CJNIAudioDeviceInfo::TYPE_USB_ACCESSORY)
+      sType = "USB_ACCESSORY";
+    else if (iType == CJNIAudioDeviceInfo::TYPE_USB_DEVICE)
+      sType = "USB_DEVICE";
+    else if (iType == CJNIAudioDeviceInfo::TYPE_WIRED_HEADPHONES)
+      sType = "WIRED_HEADPHONES";
+    else if (iType == CJNIAudioDeviceInfo::TYPE_WIRED_HEADSET)
+      sType = "WIRED_HEADSET";
+    else
+      sType = iType;
+
+    CLog::Log(LOGDEBUG, "    id: %d, type: %s, isSink: %s, isSource: %s", dev.getId(), sType.c_str(), dev.isSink() ? "true" : "false", dev.isSource() ? "true" : "false");
+
+    std::ostringstream oss;
+    if (!dev.getChannelCounts().empty())
+    {
+      for (auto i : dev.getChannelCounts())
+        oss << i << " / ";
+      CLog::Log(LOGDEBUG, "    channel counts: %s", oss.str().c_str());
+    }
+    else
+      CLog::Log(LOGDEBUG, "    channel counts: any");
+
+    if (!dev.getChannelIndexMasks().empty())
+    {
+      oss.clear(); oss.str("");
+      for (auto i : dev.getChannelIndexMasks())
+        oss << i << " / ";
+      CLog::Log(LOGDEBUG, "    channel index masks: %s", oss.str().c_str());
+    }
+    else
+      CLog::Log(LOGDEBUG, "    channel index masks: any");
+
+    if (!dev.getChannelMasks().empty())
+    {
+      oss.clear(); oss.str("");
+      for (auto i : dev.getChannelMasks())
+        oss << i << " / ";
+      CLog::Log(LOGDEBUG, "    channel masks: %s", oss.str().c_str());
+    }
+    else
+      CLog::Log(LOGDEBUG, "    channel masks: any");
+
+    if (!dev.getEncodings().empty())
+    {
+      oss.clear(); oss.str("");
+      for (auto i : dev.getEncodings())
+      {
+        if (i == CJNIAudioFormat::ENCODING_PCM_16BIT)
+          oss << "PCM_16BIT" << " / ";
+        else if (i == CJNIAudioFormat::ENCODING_PCM_FLOAT)
+          oss << "PCM_FLOAT" << " / ";
+        else if (i == CJNIAudioFormat::ENCODING_AC3)
+          oss << "AC3" << " / ";
+        else if (i == CJNIAudioFormat::ENCODING_E_AC3)
+          oss << "E_AC3" << " / ";
+        else if (i == CJNIAudioFormat::ENCODING_DTS)
+          oss << "DTS" << " / ";
+        else if (i == CJNIAudioFormat::ENCODING_DTS_HD)
+          oss << "DTS_HD" << " / ";
+        else if (i == CJNIAudioFormat::ENCODING_DOLBY_TRUEHD)
+          oss << "DOLBY_TRUEHD" << " / ";
+        else if (i == CJNIAudioFormat::ENCODING_IEC61937)
+          oss << "IEC61937" << " / ";
+        else
+          oss << i << " / ";
+      }
+      CLog::Log(LOGDEBUG, "    encodings: %s", oss.str().c_str());
+    }
+    else
+      CLog::Log(LOGDEBUG, "    encodings: any");
+
+    if (!dev.getSampleRates().empty())
+    {
+      oss.clear(); oss.str("");
+      for (auto i : dev.getSampleRates())
+        oss << i << " / ";
+      CLog::Log(LOGDEBUG, "    sample rates: %s", oss.str().c_str());
+    }
+    else
+      CLog::Log(LOGDEBUG, "    sample rates: any");
+  }
 }
 
 static int AEStreamFormatToATFormat(const CAEStreamInfo::DataType& dt)
@@ -850,6 +982,14 @@ IAESink* CAESinkAUDIOTRACK::Create(std::string &device, AEAudioFormat& desiredFo
 
 void CAESinkAUDIOTRACK::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
 {
+  // Enumerate audio devices on API >= 23
+  if (CJNIAudioManager::GetSDKVersion() >= 23)
+  {
+    CJNIAudioManager audioManager(CJNIContext::getSystemService("audio"));
+    CJNIAudioDeviceInfos audiodevices = audioManager.getDevices(CJNIAudioManager::GET_DEVICES_OUTPUTS);
+    LogAudioDevices("EnumerateDevicesEx", audiodevices);
+  }
+
   // Clear everything
   m_info.m_channels.Reset();
   m_info.m_dataFormats.clear();
