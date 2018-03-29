@@ -110,16 +110,11 @@ public:
   void UpdateInfo(const CFileItem &item);
   // Current song stuff
   void SetCurrentAlbumThumb(const std::string &thumbFileName);
-  void SetCurrentSlide(CFileItem &item);
-  const CFileItem &GetCurrentSlide() const;
-  void ResetCurrentSlide();
   void SetCurrentSongTag(const MUSIC_INFO::CMusicInfoTag &tag);
   void SetCurrentVideoTag(const CVideoInfoTag &tag);
 
   const MUSIC_INFO::CMusicInfoTag *GetCurrentSongTag() const;
   const CVideoInfoTag* GetCurrentMovieTag() const;
-
-  std::string GetPictureLabel(int item) const;
 
   float GetSeekPercent() const;
   int GetEpgEventProgress() const;
@@ -228,7 +223,6 @@ protected:
 
   // Current playing stuff
   CFileItem* m_currentFile;
-  CFileItem* m_currentSlide;
 
   std::map<int, int> m_containerMoves;  // direction of list moving
   int m_nextWindowID;

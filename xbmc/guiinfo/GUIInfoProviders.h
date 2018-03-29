@@ -25,6 +25,7 @@
 #include "guiinfo/AddonsGUIInfo.h"
 #include "guiinfo/GamesGUIInfo.h"
 #include "guiinfo/MusicGUIInfo.h"
+#include "guiinfo/PicturesGUIInfo.h"
 #include "guiinfo/PlayerGUIInfo.h"
 #include "guiinfo/SystemGUIInfo.h"
 #include "guiinfo/VideoGUIInfo.h"
@@ -114,16 +115,23 @@ public:
    */
   CSystemGUIInfo& GetSystemInfoProvider() { return m_systemGUIInfo; }
 
+  /*!
+   * @brief Get the pictures guiinfo provider.
+   * @return The pictures guiinfo provider.
+   */
+  CPicturesGUIInfo& GetPicturesInfoProvider() { return m_picturesGUIInfo; }
+
 private:
   std::vector<IGUIInfoProvider *> m_providers;
 
   CAddonsGUIInfo m_addonsGUIInfo;
   CGamesGUIInfo m_gamesGUIInfo;
   CMusicGUIInfo m_musicGUIInfo;
-  CVideoGUIInfo m_videoGUIInfo;
+  CPicturesGUIInfo m_picturesGUIInfo;
   CPlayerGUIInfo m_playerGUIInfo;
-  CWeatherGUIInfo m_weatherGUIInfo;
   CSystemGUIInfo m_systemGUIInfo;
+  CVideoGUIInfo m_videoGUIInfo;
+  CWeatherGUIInfo m_weatherGUIInfo;
 };
 
 } // namespace GUIINFO

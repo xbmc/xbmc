@@ -55,8 +55,6 @@
 #include "music/dialogs/GUIDialogMusicInfo.h"
 #include "music/dialogs/GUIDialogSongInfo.h"
 #include "music/tags/MusicInfoTag.h"
-#include "pictures/GUIWindowSlideShow.h"
-#include "pictures/PictureInfoTag.h"
 #include "profiles/ProfilesManager.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
@@ -90,7 +88,6 @@ CGUIInfoManager::CGUIInfoManager(void) :
   m_nextWindowID = WINDOW_INVALID;
   m_prevWindowID = WINDOW_INVALID;
   m_currentFile = new CFileItem;
-  m_currentSlide = new CFileItem;
   m_refreshCounter = 0;
   ResetLibraryBools();
 }
@@ -98,7 +95,6 @@ CGUIInfoManager::CGUIInfoManager(void) :
 CGUIInfoManager::~CGUIInfoManager(void)
 {
   delete m_currentFile;
-  delete m_currentSlide;
 }
 
 bool CGUIInfoManager::OnMessage(CGUIMessage &message)
@@ -5156,70 +5152,472 @@ const infomap rds[] =            {{ "hasrds",                   RDS_HAS_RDS },
 ///                  _boolean_,
 ///     Returns true if the picture slideshow is playing a video
 ///   }
+///   \table_row3{   <b>`Slideshow.Altitude`</b>,
+///                  \anchor Slideshow_Altitude
+///                  _string_,
+///     Shows the altitude in meters where the current picture was taken. This
+///     is the value of the EXIF GPSInfo.GPSAltitude tag.
+///   }
+///   \table_row3{   <b>`Slideshow.Aperture`</b>,
+///                  \anchor Slideshow_Aperture
+///                  _string_,
+///     Shows the F-stop used to take the current picture. This is the value of
+///     the EXIF FNumber tag (hex code 0x829D).
+///   }
+///   \table_row3{   <b>`Slideshow.Author`</b>,
+///                  \anchor Slideshow_Author
+///                  _string_,
+///     Shows the name of the person involved in writing about the current
+///     picture. This is the value of the IPTC Writer tag (hex code 0x7A).
+///   }
+///   \table_row3{   <b>`Slideshow.Byline`</b>,
+///                  \anchor Slideshow_Byline
+///                  _string_,
+///     Shows the name of the person who created the current picture. This is
+///     the value of the IPTC Byline tag (hex code 0x50).
+///   }
+///   \table_row3{   <b>`Slideshow.BylineTitle`</b>,
+///                  \anchor Slideshow_BylineTitle
+///                  _string_,
+///     Shows the title of the person who created the current picture. This is
+///     the value of the IPTC BylineTitle tag (hex code 0x55).
+///   }
+///   \table_row3{   <b>`Slideshow.CameraMake`</b>,
+///                  \anchor Slideshow_CameraMake
+///                  _string_,
+///     Shows the manufacturer of the camera used to take the current picture.
+///     This is the value of the EXIF Make tag (hex code 0x010F).
+///   }
+///   \table_row3{   <b>`Slideshow.CameraModel`</b>,
+///                  \anchor Slideshow_CameraModel
+///                  _string_,
+///     Shows the manufacturer's model name or number of the camera used to take
+///     the current picture. This is the value of the EXIF Model tag (hex code
+///     0x0110).
+///   }
+///   \table_row3{   <b>`Slideshow.Caption`</b>,
+///                  \anchor Slideshow_Caption
+///                  _string_,
+///     Shows a description of the current picture. This is the value of the
+///     IPTC Caption tag (hex code 0x78).
+///   }
+///   \table_row3{   <b>`Slideshow.Category`</b>,
+///                  \anchor Slideshow_Category
+///                  _string_,
+///     Shows the subject of the current picture as a category code. This is the
+///     value of the IPTC Category tag (hex code 0x0F).
+///   }
+///   \table_row3{   <b>`Slideshow.CCDWidth`</b>,
+///                  \anchor Slideshow_CCDWidth
+///                  _string_,
+///     Shows the width of the CCD in the camera used to take the current
+///     picture. This is calculated from three EXIF tags (0xA002 * 0xA210 / 0xA20e).
+///   }
+///   \table_row3{   <b>`Slideshow.City`</b>,
+///                  \anchor Slideshow_City
+///                  _string_,
+///     Shows the city where the current picture was taken. This is the value of
+///     the IPTC City tag (hex code 0x5A).
+///   }
+///   \table_row3{   <b>`Slideshow.Colour`</b>,
+///                  \anchor Slideshow_Colour
+///                  _string_,
+///     Shows whether the current picture is "Colour" or "Black and White".
+///   }
+///   \table_row3{   <b>`Slideshow.CopyrightNotice`</b>,
+///                  \anchor Slideshow_CopyrightNotice
+///                  _string_,
+///     Shows the copyright notice of the current picture. This is the value of
+///     the IPTC Copyright tag (hex code 0x74).
+///   }
+///   \table_row3{   <b>`Slideshow.Country`</b>,
+///                  \anchor Slideshow_Country
+///                  _string_,
+///     Shows the full name of the country where the current picture was taken.
+///     This is the value of the IPTC CountryName tag (hex code 0x65).
+///   }
+///   \table_row3{   <b>`Slideshow.CountryCode`</b>,
+///                  \anchor Slideshow_CountryCode
+///                  _string_,
+///     Shows the country code of the country where the current picture was
+///     taken. This is the value of the IPTC CountryCode tag (hex code 0x64).
+///   }
+///   \table_row3{   <b>`Slideshow.Credit`</b>,
+///                  \anchor Slideshow_Credit
+///                  _string_,
+///     Shows who provided the current picture. This is the value of the IPTC
+///     Credit tag (hex code 0x6E).
+///   }
+///   \table_row3{   <b>`Slideshow.DigitalZoom`</b>,
+///                  \anchor Slideshow_DigitalZoom
+///                  _string_,
+///     Shows the digital zoom ratio when the current picture was taken. This is
+///     the value of the EXIF .DigitalZoomRatio tag (hex code 0xA404).
+///   }
+///   \table_row3{   <b>`Slideshow.EXIFComment`</b>,
+///                  \anchor Slideshow_EXIFComment
+///                  _string_,
+///     Shows a description of the current picture. This is the value of the
+///     EXIF User Comment tag (hex code 0x9286). This is the same value as
+///     Slideshow.SlideComment.
+///   }
+///   \table_row3{   <b>`Slideshow.EXIFDate`</b>,
+///                  \anchor Slideshow_EXIFDate
+///                  _string_,
+///     Shows the localized date of the current picture. The short form of the
+///     date is used. The value of the EXIF DateTimeOriginal tag (hex code
+///     0x9003) is preferred. If the DateTimeOriginal tag is not found\, the
+///     value of DateTimeDigitized (hex code 0x9004) or of DateTime (hex code
+///     0x0132) might be used.
+///   }
+///   \table_row3{   <b>`Slideshow.EXIFDescription`</b>,
+///                  \anchor Slideshow_EXIFDescription
+///                  _string_,
+///     Shows a short description of the current picture. The SlideComment\,
+///     EXIFComment or Caption values might contain a longer description. This
+///     is the value of the EXIF ImageDescription tag (hex code 0x010E).
+///   }
+///   \table_row3{   <b>`Slideshow.EXIFSoftware`</b>,
+///                  \anchor Slideshow_EXIFSoftware
+///                  _string_,
+///     Shows the name and version of the firmware used by the camera that took
+///     the current picture. This is the value of the EXIF Software tag (hex
+///     code 0x0131).
+///   }
+///   \table_row3{   <b>`Slideshow.EXIFTime`</b>,
+///                  \anchor Slideshow_EXIFTime
+///                  _string_,
+///     Shows the date/timestamp of the current picture. The localized short
+///     form of the date and time is used. The value of the EXIF
+///     DateTimeOriginal tag (hex code 0x9003) is preferred. If the
+///     DateTimeOriginal tag is not found\, the value of DateTimeDigitized (hex
+///     code 0x9004) or of DateTime (hex code 0x0132) might be used.
+///   }
+///   \table_row3{   <b>`Slideshow.Exposure`</b>,
+///                  \anchor Slideshow_Exposure
+///                  _string_,
+///     Shows the class of the program used by the camera to set exposure when
+///     the current picture was taken. Values include "Manual"\,
+///     "Program (Auto)"\, "Aperture priority (Semi-Auto)"\, "Shutter priority
+///     (semi-auto)"\, etc. This is the value of the EXIF ExposureProgram tag
+///     (hex code 0x8822).
+///   }
+///   \table_row3{   <b>`Slideshow.ExposureBias`</b>,
+///                  \anchor Slideshow_ExposureBias
+///                  _string_,
+///     Shows the exposure bias of the current picture. Typically this is a
+///     number between -99.99 and 99.99. This is the value of the EXIF
+///     ExposureBiasValue tag (hex code 0x9204).
+///   }
+///   \table_row3{   <b>`Slideshow.ExposureMode`</b>,
+///                  \anchor Slideshow_ExposureMode
+///                  _string_,
+///     Shows the exposure mode of the current picture. The possible values are
+///     "Automatic"\, "Manual"\, and "Auto bracketing". This is the value of the
+///     EXIF ExposureMode tag (hex code 0xA402).
+///   }
+///   \table_row3{   <b>`Slideshow.ExposureTime`</b>,
+///                  \anchor Slideshow_ExposureTime
+///                  _string_,
+///     Shows the exposure time of the current picture\, in seconds. This is the
+///     value of the EXIF ExposureTime tag (hex code 0x829A). If the
+///     ExposureTime tag is not found\, the ShutterSpeedValue tag (hex code
+///     0x9201) might be used.
+///   }
+///   \table_row3{   <b>`Slideshow.Filedate`</b>,
+///                  \anchor Slideshow_Filedate
+///                  _string_,
+///     Shows the file date of the current picture
+///   }
+///   \table_row3{   <b>`Slideshow.Filename`</b>,
+///                  \anchor Slideshow_Filename
+///                  _string_,
+///     Shows the file name of the current picture
+///   }
+///   \table_row3{   <b>`Slideshow.Filesize`</b>,
+///                  \anchor Slideshow_Filesize
+///                  _string_,
+///     Shows the file size of the current picture
+///   }
+///   \table_row3{   <b>`Slideshow.FlashUsed`</b>,
+///                  \anchor Slideshow_FlashUsed
+///                  _string_,
+///     Shows the status of flash when the current picture was taken. The value
+///     will be either "Yes" or "No"\, and might include additional information.
+///     This is the value of the EXIF Flash tag (hex code 0x9209).
+///   }
+///   \table_row3{   <b>`Slideshow.FocalLength`</b>,
+///                  \anchor Slideshow_FocalLength
+///                  _string_,
+///     Shows the focal length of the lens\, in mm. This is the value of the EXIF
+///     FocalLength tag (hex code 0x920A).
+///   }
+///   \table_row3{   <b>`Slideshow.FocusDistance`</b>,
+///                  \anchor Slideshow_FocusDistance
+///                  _string_,
+///     Shows the distance to the subject\, in meters. This is the value of the
+///     EXIF SubjectDistance tag (hex code 0x9206).
+///   }
+///   \table_row3{   <b>`Slideshow.Headline`</b>,
+///                  \anchor Slideshow_Headline
+///                  _string_,
+///     Shows a synopsis of the contents of the current picture. This is the
+///     value of the IPTC Headline tag (hex code 0x69).
+///   }
+///   \table_row3{   <b>`Slideshow.ImageType`</b>,
+///                  \anchor Slideshow_ImageType
+///                  _string_,
+///     Shows the color components of the current picture. This is the value of
+///     the IPTC ImageType tag (hex code 0x82).
+///   }
+///   \table_row3{   <b>`Slideshow.IPTCDate`</b>,
+///                  \anchor Slideshow_IPTCDate
+///                  _string_,
+///     Shows the date when the intellectual content of the current picture was
+///     created\, rather than when the picture was created. This is the value of
+///     the IPTC DateCreated tag (hex code 0x37).
+///   }
+///   \table_row3{   <b>`Slideshow.ISOEquivalence`</b>,
+///                  \anchor Slideshow_ISOEquivalence
+///                  _string_,
+///     Shows the ISO speed of the camera when the current picture was taken.
+///     This is the value of the EXIF ISOSpeedRatings tag (hex code 0x8827).
+///   }
+///   \table_row3{   <b>`Slideshow.Keywords`</b>,
+///                  \anchor Slideshow_Keywords
+///                  _string_,
+///     Shows keywords assigned to the current picture. This is the value of the
+///     IPTC Keywords tag (hex code 0x19).
+///   }
+///   \table_row3{   <b>`Slideshow.Latitude`</b>,
+///                  \anchor Slideshow_Latitude
+///                  _string_,
+///     Shows the latitude where the current picture was taken (degrees\,
+///     minutes\, seconds North or South). This is the value of the EXIF
+///     GPSInfo.GPSLatitude and GPSInfo.GPSLatitudeRef tags.
+///   }
+///   \table_row3{   <b>`Slideshow.LightSource`</b>,
+///                  \anchor Slideshow_LightSource
+///                  _string_,
+///     Shows the kind of light source when the picture was taken. Possible
+///     values include "Daylight"\, "Fluorescent"\, "Incandescent"\, etc. This is
+///     the value of the EXIF LightSource tag (hex code 0x9208).
+///   }
+///   \table_row3{   <b>`Slideshow.LongEXIFDate`</b>,
+///                  \anchor Slideshow_LongEXIFDate
+///                  _string_,
+///     Shows only the localized date of the current picture. The long form of
+///     the date is used. The value of the EXIF DateTimeOriginal tag (hex code
+///     0x9003) is preferred. If the DateTimeOriginal tag is not found\, the
+///     value of DateTimeDigitized (hex code 0x9004) or of DateTime (hex code
+///     0x0132) might be used.
+///   }
+///   \table_row3{   <b>`Slideshow.LongEXIFTime`</b>,
+///                  \anchor Slideshow_LongEXIFTime
+///                  _string_,
+///     Shows the date/timestamp of the current picture. The localized long form
+///     of the date and time is used. The value of the EXIF DateTimeOriginal tag
+///     (hex code 0x9003) is preferred. if the DateTimeOriginal tag is not found\,
+///     the value of DateTimeDigitized (hex code 0x9004) or of DateTime (hex
+///     code 0x0132) might be used.
+///   }
+///   \table_row3{   <b>`Slideshow.Longitude`</b>,
+///                  \anchor Slideshow_Longitude
+///                  _string_,
+///     Shows the longitude where the current picture was taken (degrees\,
+///     minutes\, seconds East or West). This is the value of the EXIF
+///     GPSInfo.GPSLongitude and GPSInfo.GPSLongitudeRef tags.
+///   }
+///   \table_row3{   <b>`Slideshow.MeteringMode`</b>,
+///                  \anchor Slideshow_MeteringMode
+///                  _string_,
+///     Shows the metering mode used when the current picture was taken. The
+///     possible values are "Center weight"\, "Spot"\, or "Matrix". This is the
+///     value of the EXIF MeteringMode tag (hex code 0x9207).
+///   }
+///   \table_row3{   <b>`Slideshow.ObjectName`</b>,
+///                  \anchor Slideshow_ObjectName
+///                  _string_,
+///     Shows a shorthand reference for the current picture. This is the value
+///     of the IPTC ObjectName tag (hex code 0x05).
+///   }
+///   \table_row3{   <b>`Slideshow.Orientation`</b>,
+///                  \anchor Slideshow_Orientation
+///                  _string_,
+///     Shows the orientation of the current picture. Possible values are "Top
+///     Left"\, "Top Right"\, "Left Top"\, "Right Bottom"\, etc. This is the value
+///     of the EXIF Orientation tag (hex code 0x0112).
+///   }
+///   \table_row3{   <b>`Slideshow.Path`</b>,
+///                  \anchor Slideshow_Path
+///                  _string_,
+///     Shows the file path of the current picture
+///   }
+///   \table_row3{   <b>`Slideshow.Process`</b>,
+///                  \anchor Slideshow_Process
+///                  _string_,
+///     Shows the process used to compress the current picture
+///   }
+///   \table_row3{   <b>`Slideshow.ReferenceService`</b>,
+///                  \anchor Slideshow_ReferenceService
+///                  _string_,
+///     Shows the Service Identifier of a prior envelope to which the current
+///     picture refers. This is the value of the IPTC ReferenceService tag (hex
+///     code 0x2D).
+///   }
+///   \table_row3{   <b>`Slideshow.Resolution`</b>,
+///                  \anchor Slideshow_Resolution
+///                  _string_,
+///     Shows the dimensions of the current picture (Width x Height)
+///   }
+///   \table_row3{   <b>`Slideshow.SlideComment`</b>,
+///                  \anchor Slideshow_SlideComment
+///                  _string_,
+///     Shows a description of the current picture. This is the value of the
+///     EXIF User Comment tag (hex code 0x9286). This is the same value as
+///     Slideshow.EXIFComment.
+///   }
+///   \table_row3{   <b>`Slideshow.SlideIndex`</b>,
+///                  \anchor Slideshow_SlideIndex
+///                  _string_,
+///     Shows the slide index of the current picture
+///   }
+///   \table_row3{   <b>`Slideshow.Source`</b>,
+///                  \anchor Slideshow_Source
+///                  _string_,
+///     Shows the original owner of the current picture. This is the value of
+///     the IPTC Source tag (hex code 0x73).
+///   }
+///   \table_row3{   <b>`Slideshow.SpecialInstructions`</b>,
+///                  \anchor Slideshow_SpecialInstructions
+///                  _string_,
+///     Shows other editorial instructions concerning the use of the current
+///     picture. This is the value of the IPTC SpecialInstructions tag (hex
+///     code 0x28).
+///   }
+///   \table_row3{   <b>`Slideshow.State`</b>,
+///                  \anchor Slideshow_State
+///                  _string_,
+///     Shows the State/Province where the current picture was taken. This is
+///     the value of the IPTC ProvinceState tag (hex code 0x5F).
+///   }
+///   \table_row3{   <b>`Slideshow.Sublocation`</b>,
+///                  \anchor Slideshow_Sublocation
+///                  _string_,
+///     Shows the location within a city where the current picture was taken -
+///     might indicate the nearest landmark. This is the value of the IPTC
+///     SubLocation tag (hex code 0x5C).
+///   }
+///   \table_row3{   <b>`Slideshow.SupplementalCategories`</b>,
+///                  \anchor Slideshow_SupplementalCategories
+///                  _string_,
+///     Shows supplemental category codes to further refine the subject of the
+///     current picture. This is the value of the IPTC SuppCategory tag (hex
+///     code 0x14).
+///   }
+///   \table_row3{   <b>`Slideshow.TimeCreated`</b>,
+///                  \anchor Slideshow_TimeCreated
+///                  _string_,
+///     Shows the time when the intellectual content of the current picture was
+///     created\, rather than when the picture was created. This is the value of
+///     the IPTC TimeCreated tag (hex code 0x3C).
+///   }
+///   \table_row3{   <b>`Slideshow.TransmissionReference`</b>,
+///                  \anchor Slideshow_TransmissionReference
+///                  _string_,
+///     Shows a code representing the location of original transmission of the
+///     current picture. This is the value of the IPTC TransmissionReference tag
+///     (hex code 0x67).
+///   }
+///   \table_row3{   <b>`Slideshow.Urgency`</b>,
+///                  \anchor Slideshow_Urgency
+///                  _string_,
+///     Shows the urgency of the current picture. Values are 1-9. The 1 is most
+///     urgent. Some image management programs use urgency to indicate picture
+///     rating\, where urgency 1 is 5 stars and urgency 5 is 1 star. Urgencies
+///     6-9 are not used for rating. This is the value of the IPTC Urgency tag
+///     (hex code 0x0A).
+///   }
+///   \table_row3{   <b>`Slideshow.WhiteBalance`</b>,
+///                  \anchor Slideshow_WhiteBalance
+///                  _string_,
+///     Shows the white balance mode set when the current picture was taken.
+///     The possible values are "Manual" and "Auto". This is the value of the
+///     EXIF WhiteBalance tag (hex code 0xA403).
+///   }
 /// \table_end
+///
+/// -----------------------------------------------------------------------------
 /// @}
-const infomap slideshow[] =      {{ "ispaused",         SLIDESHOW_ISPAUSED },
-                                  { "isactive",         SLIDESHOW_ISACTIVE },
-                                  { "isvideo",          SLIDESHOW_ISVIDEO },
-                                  { "israndom",         SLIDESHOW_ISRANDOM }};
+const infomap slideshow[] =      {{ "ispaused",               SLIDESHOW_ISPAUSED },
+                                  { "isactive",               SLIDESHOW_ISACTIVE },
+                                  { "isvideo",                SLIDESHOW_ISVIDEO },
+                                  { "israndom",               SLIDESHOW_ISRANDOM },
+                                  { "filename",               SLIDESHOW_FILE_NAME },
+                                  { "path",                   SLIDESHOW_FILE_PATH },
+                                  { "filesize",               SLIDESHOW_FILE_SIZE },
+                                  { "filedate",               SLIDESHOW_FILE_DATE },
+                                  { "slideindex",             SLIDESHOW_INDEX },
+                                  { "resolution",             SLIDESHOW_RESOLUTION },
+                                  { "slidecomment",           SLIDESHOW_COMMENT },
+                                  { "colour",                 SLIDESHOW_COLOUR },
+                                  { "process",                SLIDESHOW_PROCESS },
+                                  { "exiftime",               SLIDESHOW_EXIF_DATE_TIME },
+                                  { "exifdate",               SLIDESHOW_EXIF_DATE },
+                                  { "longexiftime",           SLIDESHOW_EXIF_LONG_DATE_TIME },
+                                  { "longexifdate",           SLIDESHOW_EXIF_LONG_DATE },
+                                  { "exifdescription",        SLIDESHOW_EXIF_DESCRIPTION },
+                                  { "cameramake",             SLIDESHOW_EXIF_CAMERA_MAKE },
+                                  { "cameramodel",            SLIDESHOW_EXIF_CAMERA_MODEL },
+                                  { "exifcomment",            SLIDESHOW_EXIF_COMMENT },
+                                  { "exifsoftware",           SLIDESHOW_EXIF_SOFTWARE },
+                                  { "aperture",               SLIDESHOW_EXIF_APERTURE },
+                                  { "focallength",            SLIDESHOW_EXIF_FOCAL_LENGTH },
+                                  { "focusdistance",          SLIDESHOW_EXIF_FOCUS_DIST },
+                                  { "exposure",               SLIDESHOW_EXIF_EXPOSURE },
+                                  { "exposuretime",           SLIDESHOW_EXIF_EXPOSURE_TIME },
+                                  { "exposurebias",           SLIDESHOW_EXIF_EXPOSURE_BIAS },
+                                  { "exposuremode",           SLIDESHOW_EXIF_EXPOSURE_MODE },
+                                  { "flashused",              SLIDESHOW_EXIF_FLASH_USED },
+                                  { "whitebalance",           SLIDESHOW_EXIF_WHITE_BALANCE },
+                                  { "lightsource",            SLIDESHOW_EXIF_LIGHT_SOURCE },
+                                  { "meteringmode",           SLIDESHOW_EXIF_METERING_MODE },
+                                  { "isoequivalence",         SLIDESHOW_EXIF_ISO_EQUIV },
+                                  { "digitalzoom",            SLIDESHOW_EXIF_DIGITAL_ZOOM },
+                                  { "ccdwidth",               SLIDESHOW_EXIF_CCD_WIDTH },
+                                  { "orientation",            SLIDESHOW_EXIF_ORIENTATION },
+                                  { "supplementalcategories", SLIDESHOW_IPTC_SUP_CATEGORIES },
+                                  { "keywords",               SLIDESHOW_IPTC_KEYWORDS },
+                                  { "caption",                SLIDESHOW_IPTC_CAPTION },
+                                  { "author",                 SLIDESHOW_IPTC_AUTHOR },
+                                  { "headline",               SLIDESHOW_IPTC_HEADLINE },
+                                  { "specialinstructions",    SLIDESHOW_IPTC_SPEC_INSTR },
+                                  { "category",               SLIDESHOW_IPTC_CATEGORY },
+                                  { "byline",                 SLIDESHOW_IPTC_BYLINE },
+                                  { "bylinetitle",            SLIDESHOW_IPTC_BYLINE_TITLE },
+                                  { "credit",                 SLIDESHOW_IPTC_CREDIT },
+                                  { "source",                 SLIDESHOW_IPTC_SOURCE },
+                                  { "copyrightnotice",        SLIDESHOW_IPTC_COPYRIGHT_NOTICE },
+                                  { "objectname",             SLIDESHOW_IPTC_OBJECT_NAME },
+                                  { "city",                   SLIDESHOW_IPTC_CITY },
+                                  { "state",                  SLIDESHOW_IPTC_STATE },
+                                  { "country",                SLIDESHOW_IPTC_COUNTRY },
+                                  { "transmissionreference",  SLIDESHOW_IPTC_TX_REFERENCE },
+                                  { "iptcdate",               SLIDESHOW_IPTC_DATE },
+                                  { "urgency",                SLIDESHOW_IPTC_URGENCY },
+                                  { "countrycode",            SLIDESHOW_IPTC_COUNTRY_CODE },
+                                  { "referenceservice",       SLIDESHOW_IPTC_REF_SERVICE },
+                                  { "latitude",               SLIDESHOW_EXIF_GPS_LATITUDE },
+                                  { "longitude",              SLIDESHOW_EXIF_GPS_LONGITUDE },
+                                  { "altitude",               SLIDESHOW_EXIF_GPS_ALTITUDE },
+                                  { "timecreated",            SLIDESHOW_IPTC_TIMECREATED },
+                                  { "sublocation",            SLIDESHOW_IPTC_SUBLOCATION },
+                                  { "imagetype",              SLIDESHOW_IPTC_IMAGETYPE },
+};
 
 // Crazy part, to use tableofcontents must it be on end
 /// \page modules__General__List_of_gui_access
 /// \tableofcontents
-
-const int picture_slide_map[]  = {/* LISTITEM_PICTURE_RESOLUTION => */ SLIDE_RESOLUTION,
-                                  /* LISTITEM_PICTURE_LONGDATE   => */ SLIDE_EXIF_LONG_DATE,
-                                  /* LISTITEM_PICTURE_LONGDATETIME => */ SLIDE_EXIF_LONG_DATE_TIME,
-                                  /* LISTITEM_PICTURE_DATE       => */ SLIDE_EXIF_DATE,
-                                  /* LISTITEM_PICTURE_DATETIME   => */ SLIDE_EXIF_DATE_TIME,
-                                  /* LISTITEM_PICTURE_COMMENT    => */ SLIDE_COMMENT,
-                                  /* LISTITEM_PICTURE_CAPTION    => */ SLIDE_IPTC_CAPTION,
-                                  /* LISTITEM_PICTURE_DESC       => */ SLIDE_EXIF_DESCRIPTION,
-                                  /* LISTITEM_PICTURE_KEYWORDS   => */ SLIDE_IPTC_KEYWORDS,
-                                  /* LISTITEM_PICTURE_CAM_MAKE   => */ SLIDE_EXIF_CAMERA_MAKE,
-                                  /* LISTITEM_PICTURE_CAM_MODEL  => */ SLIDE_EXIF_CAMERA_MODEL,
-                                  /* LISTITEM_PICTURE_APERTURE   => */ SLIDE_EXIF_APERTURE,
-                                  /* LISTITEM_PICTURE_FOCAL_LEN  => */ SLIDE_EXIF_FOCAL_LENGTH,
-                                  /* LISTITEM_PICTURE_FOCUS_DIST => */ SLIDE_EXIF_FOCUS_DIST,
-                                  /* LISTITEM_PICTURE_EXP_MODE   => */ SLIDE_EXIF_EXPOSURE_MODE,
-                                  /* LISTITEM_PICTURE_EXP_TIME   => */ SLIDE_EXIF_EXPOSURE_TIME,
-                                  /* LISTITEM_PICTURE_ISO        => */ SLIDE_EXIF_ISO_EQUIV,
-                                  /* LISTITEM_PICTURE_AUTHOR           => */ SLIDE_IPTC_AUTHOR,
-                                  /* LISTITEM_PICTURE_BYLINE           => */ SLIDE_IPTC_BYLINE,
-                                  /* LISTITEM_PICTURE_BYLINE_TITLE     => */ SLIDE_IPTC_BYLINE_TITLE,
-                                  /* LISTITEM_PICTURE_CATEGORY         => */ SLIDE_IPTC_CATEGORY,
-                                  /* LISTITEM_PICTURE_CCD_WIDTH        => */ SLIDE_EXIF_CCD_WIDTH,
-                                  /* LISTITEM_PICTURE_CITY             => */ SLIDE_IPTC_CITY,
-                                  /* LISTITEM_PICTURE_URGENCY          => */ SLIDE_IPTC_URGENCY,
-                                  /* LISTITEM_PICTURE_COPYRIGHT_NOTICE => */ SLIDE_IPTC_COPYRIGHT_NOTICE,
-                                  /* LISTITEM_PICTURE_COUNTRY          => */ SLIDE_IPTC_COUNTRY,
-                                  /* LISTITEM_PICTURE_COUNTRY_CODE     => */ SLIDE_IPTC_COUNTRY_CODE,
-                                  /* LISTITEM_PICTURE_CREDIT           => */ SLIDE_IPTC_CREDIT,
-                                  /* LISTITEM_PICTURE_IPTCDATE         => */ SLIDE_IPTC_DATE,
-                                  /* LISTITEM_PICTURE_DIGITAL_ZOOM     => */ SLIDE_EXIF_DIGITAL_ZOOM,
-                                  /* LISTITEM_PICTURE_EXPOSURE         => */ SLIDE_EXIF_EXPOSURE,
-                                  /* LISTITEM_PICTURE_EXPOSURE_BIAS    => */ SLIDE_EXIF_EXPOSURE_BIAS,
-                                  /* LISTITEM_PICTURE_FLASH_USED       => */ SLIDE_EXIF_FLASH_USED,
-                                  /* LISTITEM_PICTURE_HEADLINE         => */ SLIDE_IPTC_HEADLINE,
-                                  /* LISTITEM_PICTURE_COLOUR           => */ SLIDE_COLOUR,
-                                  /* LISTITEM_PICTURE_LIGHT_SOURCE     => */ SLIDE_EXIF_LIGHT_SOURCE,
-                                  /* LISTITEM_PICTURE_METERING_MODE    => */ SLIDE_EXIF_METERING_MODE,
-                                  /* LISTITEM_PICTURE_OBJECT_NAME      => */ SLIDE_IPTC_OBJECT_NAME,
-                                  /* LISTITEM_PICTURE_ORIENTATION      => */ SLIDE_EXIF_ORIENTATION,
-                                  /* LISTITEM_PICTURE_PROCESS          => */ SLIDE_PROCESS,
-                                  /* LISTITEM_PICTURE_REF_SERVICE      => */ SLIDE_IPTC_REF_SERVICE,
-                                  /* LISTITEM_PICTURE_SOURCE           => */ SLIDE_IPTC_SOURCE,
-                                  /* LISTITEM_PICTURE_SPEC_INSTR       => */ SLIDE_IPTC_SPEC_INSTR,
-                                  /* LISTITEM_PICTURE_STATE            => */ SLIDE_IPTC_STATE,
-                                  /* LISTITEM_PICTURE_SUP_CATEGORIES   => */ SLIDE_IPTC_SUP_CATEGORIES,
-                                  /* LISTITEM_PICTURE_TX_REFERENCE     => */ SLIDE_IPTC_TX_REFERENCE,
-                                  /* LISTITEM_PICTURE_WHITE_BALANCE    => */ SLIDE_EXIF_WHITE_BALANCE,
-                                  /* LISTITEM_PICTURE_IMAGETYPE        => */ SLIDE_IPTC_IMAGETYPE,
-                                  /* LISTITEM_PICTURE_SUBLOCATION      => */ SLIDE_IPTC_SUBLOCATION,
-                                  /* LISTITEM_PICTURE_TIMECREATED      => */ SLIDE_IPTC_TIMECREATED,
-                                  /* LISTITEM_PICTURE_GPS_LAT    => */ SLIDE_EXIF_GPS_LATITUDE,
-                                  /* LISTITEM_PICTURE_GPS_LON    => */ SLIDE_EXIF_GPS_LONGITUDE,
-                                  /* LISTITEM_PICTURE_GPS_ALT    => */ SLIDE_EXIF_GPS_ALTITUDE };
 
 CGUIInfoManager::Property::Property(const std::string &property, const std::string &parameters)
 : name(property)
@@ -5598,7 +5996,6 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
         if (prop.name == slideshow[i].str)
           return slideshow[i].val;
       }
-      return CPictureInfoTag::TranslateString(prop.name);
     }
     else if (cat.name == "container")
     {
@@ -5951,9 +6348,6 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   std::string strLabel;
   if (info >= MULTI_INFO_START && info <= MULTI_INFO_END)
     return GetMultiInfoLabel(m_multiInfo[info - MULTI_INFO_START], contextWindow);
-
-  if (info >= SLIDE_INFO_START && info <= SLIDE_INFO_END)
-    return GetPictureLabel(info);
 
   if (info >= LISTITEM_PROPERTY_START + MUSICPLAYER_PROPERTY_OFFSET &&
       info - (LISTITEM_PROPERTY_START + MUSICPLAYER_PROPERTY_OFFSET) < static_cast<int>(m_listitemProperties.size()))
@@ -6353,30 +6747,6 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
           CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
           if (window)
             bReturn = static_cast<CGUIMediaWindow*>(window)->IsFiltered();
-        }
-        break;
-      case SLIDESHOW_ISPAUSED:
-        {
-          CGUIWindowSlideShow *slideShow = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIWindowSlideShow>(WINDOW_SLIDESHOW);
-          bReturn = (slideShow && slideShow->IsPaused());
-        }
-        break;
-      case SLIDESHOW_ISRANDOM:
-        {
-          CGUIWindowSlideShow *slideShow = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIWindowSlideShow>(WINDOW_SLIDESHOW);
-          bReturn = (slideShow && slideShow->IsShuffled());
-        }
-        break;
-      case SLIDESHOW_ISACTIVE:
-        {
-          CGUIWindowSlideShow *slideShow = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIWindowSlideShow>(WINDOW_SLIDESHOW);
-          bReturn = (slideShow && slideShow->InSlideShow());
-        }
-        break;
-      case SLIDESHOW_ISVIDEO:
-        {
-          CGUIWindowSlideShow *slideShow = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIWindowSlideShow>(WINDOW_SLIDESHOW);
-          bReturn = (slideShow && slideShow->GetCurrentSlide() && slideShow->GetCurrentSlide()->IsVideo());
         }
         break;
       case VISUALISATION_LOCKED:
@@ -7208,9 +7578,6 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
     return item->GetProperty(property).asString();
   }
 
-  if (info >= LISTITEM_PICTURE_START && info <= LISTITEM_PICTURE_END && item->HasPictureInfoTag())
-    return item->GetPictureInfoTag()->GetInfo(picture_slide_map[info - LISTITEM_PICTURE_START]);
-
   std::string value;
   if (m_infoProviders.GetLabel(value, item, multiInfo, fallback))
     return value;
@@ -7283,10 +7650,6 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
       path = CURL(path).GetWithoutUserDetails();
       return path;
     }
-  case LISTITEM_PICTURE_PATH:
-    if (item->IsPicture() && (!item->IsZIP() || item->IsRAR() || item->IsCBZ() || item->IsCBR()))
-      return item->GetPath();
-    break;
   case LISTITEM_SORT_LETTER:
     {
       std::string letter;
@@ -7372,47 +7735,6 @@ void CGUIInfoManager::ResetCache()
   ++m_refreshCounter;
 }
 
-std::string CGUIInfoManager::GetPictureLabel(int info) const
-{
-  if (info == SLIDE_FILE_NAME)
-    return GetItemLabel(m_currentSlide, LISTITEM_FILENAME);
-  else if (info == SLIDE_FILE_PATH)
-  {
-    std::string path = URIUtils::GetDirectory(m_currentSlide->GetPath());
-    return CURL(path).GetWithoutUserDetails();
-  }
-  else if (info == SLIDE_FILE_SIZE)
-    return GetItemLabel(m_currentSlide, LISTITEM_SIZE);
-  else if (info == SLIDE_FILE_DATE)
-    return GetItemLabel(m_currentSlide, LISTITEM_DATE);
-  else if (info == SLIDE_INDEX)
-  {
-    CGUIWindowSlideShow *slideshow = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIWindowSlideShow>(WINDOW_SLIDESHOW);
-    if (slideshow && slideshow->NumSlides())
-    {
-      return StringUtils::Format("%d/%d", slideshow->CurrentSlide(), slideshow->NumSlides());
-    }
-  }
-  if (m_currentSlide->HasPictureInfoTag())
-    return m_currentSlide->GetPictureInfoTag()->GetInfo(info);
-  return "";
-}
-
-void CGUIInfoManager::SetCurrentSlide(CFileItem &item)
-{
-  if (m_currentSlide->GetPath() != item.GetPath())
-  {
-    if (!item.GetPictureInfoTag()->Loaded()) // If picture metadata has not been loaded yet, load it now
-      item.GetPictureInfoTag()->Load(item.GetPath());
-    *m_currentSlide = item;
-  }
-}
-
-void CGUIInfoManager::ResetCurrentSlide()
-{
-  m_currentSlide->Reset();
-}
-
 bool CGUIInfoManager::CheckWindowCondition(CGUIWindow *window, int condition) const
 {
   // check if it satisfies our condition
@@ -7454,11 +7776,6 @@ void CGUIInfoManager::SetCurrentSongTag(const MUSIC_INFO::CMusicInfoTag &tag)
 {
   *m_currentFile->GetMusicInfoTag() = tag;
   m_currentFile->m_lStartOffset = 0;
-}
-
-const CFileItem& CGUIInfoManager::GetCurrentSlide() const
-{
-  return *m_currentSlide;
 }
 
 const MUSIC_INFO::CMusicInfoTag* CGUIInfoManager::GetCurrentSongTag() const

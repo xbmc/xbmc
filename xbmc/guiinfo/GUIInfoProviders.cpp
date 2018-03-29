@@ -30,6 +30,7 @@ CGUIInfoProviders::CGUIInfoProviders()
 {
   RegisterProvider(&m_musicGUIInfo);
   RegisterProvider(&m_videoGUIInfo);
+  RegisterProvider(&m_picturesGUIInfo);
   RegisterProvider(&m_playerGUIInfo);
   RegisterProvider(&m_addonsGUIInfo);
   RegisterProvider(&m_weatherGUIInfo);
@@ -44,6 +45,7 @@ CGUIInfoProviders::~CGUIInfoProviders()
   UnregisterProvider(&m_weatherGUIInfo);
   UnregisterProvider(&m_addonsGUIInfo);
   UnregisterProvider(&m_playerGUIInfo);
+  UnregisterProvider(&m_picturesGUIInfo);
   UnregisterProvider(&m_videoGUIInfo);
   UnregisterProvider(&m_musicGUIInfo);
 }

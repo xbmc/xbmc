@@ -300,16 +300,16 @@ double CExifParse::ConvertAnyFormat(const void* const ValuePtr, int Format)
 //--------------------------------------------------------------------------
 /*void CExifParse::LocaliseDate (void)
 {
-    if (m_ExifInfo[SLIDE_EXIF_DATE_TIME][0] != ' ')
+    if (m_ExifInfo[SLIDESHOW_EXIF_DATE_TIME][0] != ' ')
     {
-        int year  = atoi(m_ExifInfo[SLIDE_EXIF_DATE_TIME].substr(0, 4).c_str());
-        int month = atoi(m_ExifInfo[SLIDE_EXIF_DATE_TIME].substr(5, 2).c_str());
-        int day   = atoi(m_ExifInfo[SLIDE_EXIF_DATE_TIME].substr(8, 2).c_str());
-        int hour  = atoi(m_ExifInfo[SLIDE_EXIF_DATE_TIME].substr(11,2).c_str());
-        int min   = atoi(m_ExifInfo[SLIDE_EXIF_DATE_TIME].substr(14,2).c_str());
-        int sec   = atoi(m_ExifInfo[SLIDE_EXIF_DATE_TIME].substr(17,2).c_str());
+        int year  = atoi(m_ExifInfo[SLIDESHOW_EXIF_DATE_TIME].substr(0, 4).c_str());
+        int month = atoi(m_ExifInfo[SLIDESHOW_EXIF_DATE_TIME].substr(5, 2).c_str());
+        int day   = atoi(m_ExifInfo[SLIDESHOW_EXIF_DATE_TIME].substr(8, 2).c_str());
+        int hour  = atoi(m_ExifInfo[SLIDESHOW_EXIF_DATE_TIME].substr(11,2).c_str());
+        int min   = atoi(m_ExifInfo[SLIDESHOW_EXIF_DATE_TIME].substr(14,2).c_str());
+        int sec   = atoi(m_ExifInfo[SLIDESHOW_EXIF_DATE_TIME].substr(17,2).c_str());
         CDateTime date(year, month, day, hour, min, sec);
-        m_ExifInfo[SLIDE_EXIF_DATE_TIME] = date.GetAsLocalizedDateTime();
+        m_ExifInfo[SLIDESHOW_EXIF_DATE_TIME] = date.GetAsLocalizedDateTime();
     }
 }*/
 

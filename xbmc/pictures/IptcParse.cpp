@@ -209,7 +209,7 @@ bool CIptcParse::Process (const unsigned char* const Data, const unsigned short 
           strncat(tag, pos, min(length, maxLen - 3));
         }
       }
-/*      if (id == SLIDE_IPTC_CAPTION)
+/*      if (id == SLIDESHOW_IPTC_CAPTION)
       {
         CExifParse::FixComment(m_IptcInfo[id]);     // Ensure comment is printable
       }*/

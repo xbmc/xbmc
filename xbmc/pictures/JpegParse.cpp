@@ -288,9 +288,9 @@ bool CJpegParse::Process (const char *picFileName)
   CURL url(picFileName);
   url.GetURLWithoutUserDetails(urlFName);
   CUtil::Split(urlFName, path, tmp);
-  m_JpegInfo[SLIDE_FILE_NAME] = tmp;
+  m_JpegInfo[SLIDESHOW_FILE_NAME] = tmp;
   // ...then path...
-  m_JpegInfo[SLIDE_FILE_PATH] = path;
+  m_JpegInfo[SLIDESHOW_FILE_PATH] = path;
 
   // ...then size...
   __stat64 fileStat;
@@ -313,12 +313,12 @@ bool CJpegParse::Process (const char *picFileName)
     tmp = "GB";
   }
   tmp.Format("%.2f %s", fileSize, tmp);
-  m_JpegInfo[SLIDE_FILE_SIZE] = tmp;
+  m_JpegInfo[SLIDESHOW_FILE_SIZE] = tmp;
 
   // ...then date and time...
   CDateTime date((time_t)fileStat.st_mtime);
   tmp.Format("%s %s", date.GetAsLocalizedDate(), date.GetAsLocalizedTime());
-  m_JpegInfo[SLIDE_FILE_DATE] = tmp;*/
+  m_JpegInfo[SLIDESHOW_FILE_DATE] = tmp;*/
 
   bool result = ExtractInfo(file);
   file.Close();

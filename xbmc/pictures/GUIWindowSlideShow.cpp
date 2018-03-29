@@ -265,7 +265,7 @@ void CGUIWindowSlideShow::OnDeinitWindow(int nextWindowID)
     m_Image[0].Close();
     m_Image[1].Close();
   }
-  g_infoManager.ResetCurrentSlide();
+  g_infoManager.GetInfoProviders().GetPicturesInfoProvider().SetCurrentSlide(nullptr);
   m_bSlideShow = false;
 
   CGUIDialog::OnDeinitWindow(nextWindowID);
@@ -622,7 +622,7 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
   }
 
   if (m_Image[m_iCurrentPic].IsLoaded())
-    g_infoManager.SetCurrentSlide(*m_slides.at(m_iCurrentSlide));
+    g_infoManager.GetInfoProviders().GetPicturesInfoProvider().SetCurrentSlide(m_slides.at(m_iCurrentSlide).get());
 
   RenderPause();
   if (m_slides.at(m_iCurrentSlide)->IsVideo() &&
