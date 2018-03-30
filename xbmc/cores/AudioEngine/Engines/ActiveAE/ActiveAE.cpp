@@ -481,7 +481,7 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
           Configure();
           if (!m_extError)
           {
-            m_state = AE_TOP_CONFIGURED_IDLE;
+            m_state = AE_TOP_CONFIGURED_PLAY;
             m_extTimeout = 0;
           }
           else
