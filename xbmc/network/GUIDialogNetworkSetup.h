@@ -71,6 +71,8 @@ protected:
   void UpdateButtons();
   void Reset();
 
+  void UpdateAvailableProtocols();
+
   int m_protocol; //!< Currently selected protocol
   std::vector<Protocol> m_protocols; //!< List of available protocols
   std::string m_server;
