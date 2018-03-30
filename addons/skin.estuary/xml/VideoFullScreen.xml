@@ -34,8 +34,6 @@
 		<control type="group" id="1">
 			<depth>DepthOSD+</depth>
 			<visible>Player.Caching</visible>
-			<animation delay="300" effect="fade" time="200">Visible</animation>
-			<animation effect="fade" delay="200" time="150">Hidden</animation>
 			<centerleft>50%</centerleft>
 			<width>110</width>
 			<centertop>50%</centertop>
@@ -63,6 +61,7 @@
 			</control>
 			<control type="label" id="1">
 				<description>buffering value</description>
+				<visible>Integer.IsGreater(Player.CacheLevel,0)</visible>
 				<label>$INFO[Player.CacheLevel]</label>
 				<centerleft>50%</centerleft>
 				<centertop>50%</centertop>
