@@ -165,12 +165,14 @@ bool CDirectory::GetDirectory(const CURL& url, CFileItemList &items, const CHint
       pDirectory->SetFlags(hints.flags);
 
       bool result = false, cancel = false;
+      CURL authUrl = CURL(realURL);
+
       while (!result && !cancel)
       {
         const std::string pathToUrl(url.Get());
 
-        CURL authUrl = CURL(realURL);
-        if (CPasswordManager::GetInstance().IsURLSupported(authUrl))
+        // don't change auth if it's set explicitly
+        if (CPasswordManager::GetInstance().IsURLSupported(authUrl) && authUrl.GetUserName().empty())
           CPasswordManager::GetInstance().AuthenticateURL(authUrl);
 
         if (g_application.IsCurrentThread() && allowThreads && !URIUtils::IsSpecial(pathToUrl))
@@ -195,8 +197,15 @@ bool CDirectory::GetDirectory(const CURL& url, CFileItemList &items, const CHint
 
         if (!result)
         {
-          if (!cancel && g_application.IsCurrentThread() && pDirectory->ProcessRequirements())
-            continue;
+          if (!cancel)
+          {
+            if (g_application.IsCurrentThread() && pDirectory->ProcessRequirements())
+            {
+              authUrl.SetUserName("");
+              authUrl.SetPassword("");
+              continue;
+            }
+          }
           CLog::Log(LOGERROR, "%s - Error getting %s", __FUNCTION__, url.GetRedacted().c_str());
           return false;
         }
@@ -288,7 +297,7 @@ bool CDirectory::Create(const CURL& url)
   {
     CURL realURL = URIUtils::SubstitutePath(url);
 
-    if (CPasswordManager::GetInstance().IsURLSupported(realURL))
+    if (CPasswordManager::GetInstance().IsURLSupported(realURL) && realURL.GetUserName().empty())
       CPasswordManager::GetInstance().AuthenticateURL(realURL);
 
     std::unique_ptr<IDirectory> pDirectory(CDirectoryFactory::Create(realURL));
@@ -327,7 +336,7 @@ bool CDirectory::Exists(const CURL& url, bool bUseCache /* = true */)
         return false;
     }
 
-    if (CPasswordManager::GetInstance().IsURLSupported(realURL))
+    if (CPasswordManager::GetInstance().IsURLSupported(realURL) && realURL.GetUserName().empty())
       CPasswordManager::GetInstance().AuthenticateURL(realURL);
 
     std::unique_ptr<IDirectory> pDirectory(CDirectoryFactory::Create(realURL));
@@ -360,7 +369,7 @@ bool CDirectory::Remove(const CURL& url)
   {
     CURL realURL = URIUtils::SubstitutePath(url);
     CURL authUrl = realURL;
-    if (CPasswordManager::GetInstance().IsURLSupported(authUrl))
+    if (CPasswordManager::GetInstance().IsURLSupported(authUrl) && authUrl.GetUserName().empty())
       CPasswordManager::GetInstance().AuthenticateURL(authUrl);
 
     std::unique_ptr<IDirectory> pDirectory(CDirectoryFactory::Create(realURL));
@@ -386,7 +395,7 @@ bool CDirectory::RemoveRecursive(const CURL& url)
   {
     CURL realURL = URIUtils::SubstitutePath(url);
     CURL authUrl = realURL;
-    if (CPasswordManager::GetInstance().IsURLSupported(authUrl))
+    if (CPasswordManager::GetInstance().IsURLSupported(authUrl) && authUrl.GetUserName().empty())
       CPasswordManager::GetInstance().AuthenticateURL(authUrl);
 
     std::unique_ptr<IDirectory> pDirectory(CDirectoryFactory::Create(realURL));
