@@ -421,8 +421,11 @@ void CNetworkLinux::queryInterfaceList()
        continue;
 
      GetMacAddress(cur->ifa_name, macAddrRaw);
-     // Add the interface.
-     m_interfaces.push_back(new CNetworkInterfaceLinux(this, cur->ifa_name, macAddrRaw));
+
+      // only add interfaces with non-zero mac addresses
+      if (macAddrRaw[0] || macAddrRaw[1] || macAddrRaw[2] || macAddrRaw[3] || macAddrRaw[4] || macAddrRaw[5])
+         // Add the interface.
+         m_interfaces.push_back(new CNetworkInterfaceLinux(this, cur->ifa_name, macAddrRaw));
    }
 
    freeifaddrs(list);
@@ -458,7 +461,10 @@ void CNetworkLinux::queryInterfaceList()
       // save the result
       std::string interfaceName = p;
       GetMacAddress(interfaceName, macAddrRaw);
-      m_interfaces.push_back(new CNetworkInterfaceLinux(this, interfaceName, macAddrRaw));
+
+      // only add interfaces with non-zero mac addresses
+      if (macAddrRaw[0] || macAddrRaw[1] || macAddrRaw[2] || macAddrRaw[3] || macAddrRaw[4] || macAddrRaw[5])
+          m_interfaces.push_back(new CNetworkInterfaceLinux(this, interfaceName, macAddrRaw));
    }
    free(line);
    fclose(fp);
