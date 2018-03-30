@@ -3478,12 +3478,16 @@ void CApplication::OnPlayBackSeekChapter(int iChapter)
 
 void CApplication::OnAVStarted(const CFileItem &file)
 {
+  CLog::LogF(LOGDEBUG, "CApplication::OnAVStarted");
+
   CGUIMessage msg(GUI_MSG_PLAYBACK_AVSTARTED, 0, 0);
   g_windowManager.SendThreadMessage(msg);
 }
 
 void CApplication::OnAVChange()
 {
+  CLog::LogF(LOGDEBUG, "CApplication::OnAVChange");
+
   CStereoscopicsManager::GetInstance().OnStreamChange();
 
   CGUIMessage msg(GUI_MSG_PLAYBACK_AVCHANGE, 0, 0);
@@ -4079,9 +4083,19 @@ bool CApplication::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_PLAYBACK_AVSTARTED:
     m_playerEvent.Set();
+#ifdef HAS_PYTHON
+    // informs python script currently running playback has started
+    // (does nothing if python is not loaded)
+    g_pythonParser.OnAVStarted(*m_itemCurrentFile);
+#endif
     return true;
 
   case GUI_MSG_PLAYBACK_AVCHANGE:
+#ifdef HAS_PYTHON
+    // informs python script currently running playback has started
+    // (does nothing if python is not loaded)
+    g_pythonParser.OnAVChange();
+#endif
       return true;
 
   case GUI_MSG_PLAYBACK_ERROR:
