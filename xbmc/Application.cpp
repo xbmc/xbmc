@@ -3982,7 +3982,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
       CAnnouncementManager::GetInstance().Announce(Player, "xbmc", "OnPlay", m_itemCurrentFile, param);
 
       // we don't want a busy dialog when switching channels
-      if (!m_itemCurrentFile->IsPVR())
+      if (!m_itemCurrentFile->IsLiveTV())
       {
         m_playerEvent.Reset();
         CGUIDialogBusy* dialog = g_windowManager.GetWindow<CGUIDialogBusy>(WINDOW_DIALOG_BUSY);
