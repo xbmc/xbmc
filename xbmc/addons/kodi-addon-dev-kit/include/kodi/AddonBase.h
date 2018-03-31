@@ -176,6 +176,8 @@ typedef struct AddonToKodiFuncTable_Addon
   AddonToKodiFuncTable_kodi_filesystem* kodi_filesystem;
   AddonToKodiFuncTable_kodi_gui* kodi_gui;
   AddonToKodiFuncTable_kodi_network *kodi_network;
+
+  void* (*get_interface)(void* kodiBase, const char *name, const char *version);
 } AddonToKodiFuncTable_Addon;
 
 /*
@@ -601,6 +603,33 @@ inline std::string TranslateAddonStatus(ADDON_STATUS status)
 } /* namespace kodi */
 //----------------------------------------------------------------------------
 
+//==============================================================================
+namespace kodi {
+///
+/// \ingroup cpp_kodi
+/// @brief Returns a function table to a named interface
+///
+/// @return pointer to struct containing interface functions
+///
+///
+/// ------------------------------------------------------------------------
+///
+/// **Example:**
+/// ~~~~~~~~~~~~~{.cpp}
+/// #include <kodi/General.h>
+/// #include <kodi/platform/foo.h>
+/// ...
+/// FuncTable_foo *table = kodi::GetPlatformInfo(foo_name, foo_version);
+/// ...
+/// ~~~~~~~~~~~~~
+///
+inline void* GetInterface(const std::string &name, const std::string &version)
+{
+  AddonToKodiFuncTable_Addon* toKodi = ::kodi::addon::CAddonBase::m_interface->toKodi;
+
+  return toKodi->get_interface(toKodi->kodiBase, name.c_str(), version.c_str());
+}
+} /* namespace kodi */
 
 /*! addon creation macro
  * @todo cleanup this stupid big macro

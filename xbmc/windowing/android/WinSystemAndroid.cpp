@@ -41,6 +41,7 @@
 #include "cores/VideoPlayer/VideoRenderers/HwDecRender/RendererMediaCodec.h"
 #include "cores/VideoPlayer/VideoRenderers/HwDecRender/RendererMediaCodecSurface.h"
 #include "powermanagement/android/AndroidPowerSyscall.h"
+#include "addons/interfaces/platform/android/System.h"
 
 #include <EGL/egl.h>
 #include <EGL/eglplatform.h>
@@ -86,7 +87,7 @@ bool CWinSystemAndroid::InitWindowSystem()
   RETRO::CRPProcessInfoAndroid::RegisterRendererFactory(new RETRO::CRendererFactoryOpenGLES);
   CRendererMediaCodec::Register();
   CRendererMediaCodecSurface::Register();
-
+  ADDON::Interface_Android::Register();
   return CWinSystemBase::InitWindowSystem();
 }
 

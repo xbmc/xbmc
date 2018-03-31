@@ -109,13 +109,14 @@ public:
   virtual void onAudioFocusChange(int focusChange);
   virtual void doFrame(int64_t frameTimeNanos) override;
   virtual void onVisibleBehindCanceled() override;
-  
+
   // implementation of CJNIInputManagerInputDeviceListener
   void onInputDeviceAdded(int deviceId) override;
   void onInputDeviceChanged(int deviceId) override;
   void onInputDeviceRemoved(int deviceId) override;
 
   bool isValid() { return m_activity != NULL; }
+  const ANativeActivity *getActivity() const { return m_activity; }
 
   void onStart() override;
   void onResume() override;
