@@ -28,6 +28,8 @@
 namespace ADDON
 {
 
+  typedef void* (*ADDON_GET_INTERFACE_FN)(const std::string &name, const std::string &version);
+
   class CAddonDll : public CAddon
   {
   public:
@@ -36,6 +38,8 @@ namespace ADDON
     ~CAddonDll() override;
 
     virtual ADDON_STATUS GetStatus();
+
+    static void RegisterInterface(ADDON_GET_INTERFACE_FN fn);
 
     // Implementation of IAddon via CAddon
     std::string LibPath() const override;
@@ -110,6 +114,8 @@ namespace ADDON
 
     bool UpdateSettingInActiveDialog(const char* id, const std::string& value);
 
+    static std::vector<ADDON_GET_INTERFACE_FN> s_registeredInterfaces;
+
     /// addon to kodi basic callbacks below
     //@{
 
@@ -137,6 +143,7 @@ namespace ADDON
     static bool set_setting_string(void* kodiBase, const char* id, const char* value);
     static void free_string(void* kodiBase, char* str);
     static void free_string_array(void* kodiBase, char** arr, int numElements);
+    static void* get_interface(void* kodiBase, const char* name, const char *version);
     //@}
   };
 

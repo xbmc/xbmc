@@ -52,6 +52,8 @@ using namespace KODI::MESSAGING;
 namespace ADDON
 {
 
+std::vector<ADDON_GET_INTERFACE_FN> CAddonDll::s_registeredInterfaces;
+
 CAddonDll::CAddonDll(CAddonInfo addonInfo, BinaryAddonBasePtr addonBase)
   : CAddon(std::move(addonInfo)),
     m_pHelpers(nullptr),
@@ -76,6 +78,11 @@ CAddonDll::~CAddonDll()
 {
   if (m_initialized)
     Destroy();
+}
+
+void CAddonDll::RegisterInterface(ADDON_GET_INTERFACE_FN fn)
+{
+  s_registeredInterfaces.push_back(fn);
 }
 
 std::string CAddonDll::GetDllPath(const std::string &libPath)
@@ -536,6 +543,8 @@ bool CAddonDll::InitInterface(KODI_HANDLE firstKodiInstance)
   Interface_Network::Init(&m_interface);
   Interface_GUIGeneral::Init(&m_interface);
 
+  m_interface.toKodi->get_interface = get_interface;
+
   return true;
 }
 
@@ -874,6 +883,19 @@ void CAddonDll::free_string_array(void* kodiBase, char** arr, int numElements)
   }
 }
 
+void* CAddonDll::get_interface(void* kodiBase, const char *name, const char *version)
+{
+  if (!name || !version)
+    return nullptr;
+
+  void *retval(nullptr);
+
+  for (auto fn : s_registeredInterfaces)
+    if ((retval = fn(name, version)))
+      break;
+
+  return retval;
+}
 
 //@}
 
