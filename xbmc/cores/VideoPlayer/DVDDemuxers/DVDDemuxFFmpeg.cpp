@@ -1597,8 +1597,10 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
         {
           CLog::Log(LOGDEBUG, "CDVDDemuxFFmpeg::AddStream - discarding unknown stream with id: %d", pStream->index);
           pStream->discard = AVDISCARD_ALL;
+          return nullptr;
         }
-        return nullptr;;
+        stream = new CDemuxStream();
+        stream->type = STREAM_NONE;
       }
     }
 
