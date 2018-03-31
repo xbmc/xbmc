@@ -19,11 +19,13 @@
  */
 
 #include "GUIDialogPlayEject.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "storage/MediaManager.h"
 #include "utils/log.h"
 #include "utils/Variant.h"
 #include "utils/XMLUtils.h"
+#include "ServiceBroker.h"
 
 #include <utility>
 
@@ -92,7 +94,7 @@ bool CGUIDialogPlayEject::ShowAndGetInput(const CFileItem & item,
     return false;
 
   // Create the dialog
-  CGUIDialogPlayEject * pDialog = (CGUIDialogPlayEject *)g_windowManager.
+  CGUIDialogPlayEject * pDialog = (CGUIDialogPlayEject *)CServiceBroker::GetGUI()->GetWindowManager().
     GetWindow(WINDOW_DIALOG_PLAY_EJECT);
   if (!pDialog)
     return false;

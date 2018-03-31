@@ -22,7 +22,9 @@
 
 #include "Application.h"
 #include "FileItem.h"
+#include "ServiceBroker.h"
 #include "addons/Addon.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/TextureManager.h"
 #include "input/Key.h"
@@ -323,7 +325,7 @@ void CGUIAddonWindowDialog::Show_Internal(bool show /* = true */)
   {
     m_bModal = true;
     m_bRunning = true;
-    g_windowManager.RegisterDialog(this);
+    CServiceBroker::GetGUI()->GetWindowManager().RegisterDialog(this);
 
     // active this window...
     CGUIMessage msg(GUI_MSG_WINDOW_INIT, 0, 0, WINDOW_INVALID, m_iWindowId);
@@ -344,7 +346,7 @@ void CGUIAddonWindowDialog::Show_Internal(bool show /* = true */)
     CGUIMessage msg(GUI_MSG_WINDOW_DEINIT,0,0);
     OnMessage(msg);
 
-    g_windowManager.RemoveDialog(GetID());
+    CServiceBroker::GetGUI()->GetWindowManager().RemoveDialog(GetID());
   }
 }
 

@@ -24,6 +24,7 @@
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
 #include "addons/ScreenSaver.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "settings/Settings.h"
 
@@ -56,7 +57,7 @@ void CGUIWindowScreensaver::Render()
 // called when the mouse is moved/clicked etc. etc.
 EVENT_RESULT CGUIWindowScreensaver::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
 {
-  g_windowManager.PreviousWindow();
+  CServiceBroker::GetGUI()->GetWindowManager().PreviousWindow();
   return EVENT_RESULT_HANDLED;
 }
 

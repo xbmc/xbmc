@@ -20,6 +20,7 @@
 
 #include "GUIDialogNewJoystick.h"
 #include "ServiceBroker.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/WindowIDs.h"
 #include "messaging/helpers/DialogHelper.h"
@@ -41,7 +42,7 @@ void CGUIDialogNewJoystick::ShowAsync()
     bShow = false;
   else if (!CServiceBroker::GetSettings().GetBool(CSettings::SETTING_INPUT_ASKNEWCONTROLLERS))
     bShow = false;
-  else if (g_windowManager.IsWindowActive(WINDOW_DIALOG_GAME_CONTROLLERS, false))
+  else if (CServiceBroker::GetGUI()->GetWindowManager().IsWindowActive(WINDOW_DIALOG_GAME_CONTROLLERS, false))
     bShow = false;
 
   if (bShow)
@@ -56,7 +57,7 @@ void CGUIDialogNewJoystick::Process()
   // "A new controller has been detected. Configuration can be done at any time in "Settings -> System Settings -> Input". Would you like to configure it now?"
   if (ShowYesNoDialogText(CVariant{ 35011 }, CVariant{ 35012 }) == DialogResponse::YES)
   {
-    g_windowManager.ActivateWindow(WINDOW_DIALOG_GAME_CONTROLLERS);
+    CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_DIALOG_GAME_CONTROLLERS);
   }
   else
   {

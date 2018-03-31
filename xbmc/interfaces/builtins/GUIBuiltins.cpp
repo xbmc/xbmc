@@ -21,6 +21,7 @@
 #include "GUIBuiltins.h"
 
 #include "Application.h"
+#include "ServiceBroker.h"
 #include "messaging/ApplicationMessenger.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogNumeric.h"
@@ -28,6 +29,7 @@
 #include "input/ActionTranslator.h"
 #include "input/Key.h"
 #include "input/WindowTranslator.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/StereoscopicsManager.h"
@@ -91,16 +93,16 @@ static int ActivateWindow(const std::vector<std::string>& params2)
     bool bIsSameStartFolder = true;
     if (!params.empty())
     {
-      CGUIWindow *activeWindow = g_windowManager.GetWindow(g_windowManager.GetActiveWindow());
+      CGUIWindow *activeWindow = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow());
       if (activeWindow && activeWindow->IsMediaWindow())
         bIsSameStartFolder = static_cast<CGUIMediaWindow*>(activeWindow)->IsSameStartFolder(params[0]);
     }
 
     // activate window only if window and path differ from the current active window
-    if (iWindow != g_windowManager.GetActiveWindow() || !bIsSameStartFolder)
+    if (iWindow != CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() || !bIsSameStartFolder)
     {
       g_application.WakeUpScreenSaverAndDPMS();
-      g_windowManager.ActivateWindow(iWindow, params, Replace);
+      CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(iWindow, params, Replace);
       return 0;
     }
   }
@@ -130,19 +132,19 @@ static int ActivateAndFocus(const std::vector<std::string>& params)
   int iWindow = CWindowTranslator::TranslateWindow(strWindow);
   if (iWindow != WINDOW_INVALID)
   {
-    if (iWindow != g_windowManager.GetActiveWindow())
+    if (iWindow != CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow())
     {
       // disable the screensaver
       g_application.WakeUpScreenSaverAndDPMS();
-      g_windowManager.ActivateWindow(iWindow, {}, Replace);
+      CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(iWindow, {}, Replace);
 
       unsigned int iPtr = 1;
       while (params.size() > iPtr + 1)
       {
-        CGUIMessage msg(GUI_MSG_SETFOCUS, g_windowManager.GetActiveWindowOrDialog(),
+        CGUIMessage msg(GUI_MSG_SETFOCUS, CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindowOrDialog(),
                         atol(params[iPtr].c_str()),
                         (params.size() >= iPtr + 2) ? atol(params[iPtr + 1].c_str())+1 : 0);
-        g_windowManager.SendMessage(msg);
+        CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
         iPtr += 2;
       }
       return 0;
@@ -229,7 +231,7 @@ static int CancelAlarm(const std::vector<std::string>& params)
  */
 static int ClearProperty(const std::vector<std::string>& params)
 {
-  CGUIWindow *window = g_windowManager.GetWindow(params.size() > 1 ? CWindowTranslator::TranslateWindow(params[1]) : g_windowManager.GetActiveWindowOrDialog());
+  CGUIWindow *window = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(params.size() > 1 ? CWindowTranslator::TranslateWindow(params[1]) : CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindowOrDialog());
   if (window)
     window->SetProperty(params[0],"");
 
@@ -248,12 +250,12 @@ static int CloseDialog(const std::vector<std::string>& params)
     bForce = true;
   if (StringUtils::EqualsNoCase(params[0], "all"))
   {
-    g_windowManager.CloseDialogs(bForce);
+    CServiceBroker::GetGUI()->GetWindowManager().CloseDialogs(bForce);
   }
   else
   {
     int id = CWindowTranslator::TranslateWindow(params[0]);
-    CGUIWindow *window = g_windowManager.GetWindow(id);
+    CGUIWindow *window = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(id);
     if (window && window->IsDialog())
       static_cast<CGUIDialog*>(window)->Close(bForce);
   }
@@ -379,7 +381,7 @@ static int SetResolution(const std::vector<std::string>& params)
  */
 static int SetProperty(const std::vector<std::string>& params)
 {
-  CGUIWindow *window = g_windowManager.GetWindow(params.size() > 2 ? CWindowTranslator::TranslateWindow(params[2]) : g_windowManager.GetActiveWindowOrDialog());
+  CGUIWindow *window = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(params.size() > 2 ? CWindowTranslator::TranslateWindow(params[2]) : CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindowOrDialog());
   if (window)
     window->SetProperty(params[0],params[1]);
 

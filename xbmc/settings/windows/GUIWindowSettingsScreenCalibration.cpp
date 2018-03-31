@@ -25,6 +25,7 @@
 #include "ServiceBroker.h"
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "input/Key.h"
@@ -71,7 +72,7 @@ bool CGUIWindowSettingsScreenCalibration::OnAction(const CAction &action)
 
   case ACTION_CALIBRATE_RESET:
     {
-      CGUIDialogYesNo* pDialog = g_windowManager.GetWindow<CGUIDialogYesNo>(WINDOW_DIALOG_YES_NO);
+      CGUIDialogYesNo* pDialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogYesNo>(WINDOW_DIALOG_YES_NO);
       pDialog->SetHeading(CVariant{20325});
       std::string strText = StringUtils::Format(g_localizeStrings.Get(20326).c_str(), g_graphicsContext.GetResInfo(m_Res[m_iCurRes]).strMode.c_str());
       pDialog->SetLine(0, CVariant{std::move(strText)});
@@ -141,7 +142,7 @@ bool CGUIWindowSettingsScreenCalibration::OnMessage(CGUIMessage& message)
       g_graphicsContext.SetCalibrating(false);
       // reset our screen resolution to what it was initially
       g_graphicsContext.SetVideoResolution(CDisplaySettings::GetInstance().GetCurrentResolution(), false);
-      g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_WINDOW_RESIZE);
+      CServiceBroker::GetGUI()->GetWindowManager().SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_WINDOW_RESIZE);
     }
     break;
 

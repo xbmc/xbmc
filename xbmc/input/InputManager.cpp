@@ -35,6 +35,7 @@
 #include "input/Key.h"
 #include "input/WindowTranslator.h"
 #include "messaging/ApplicationMessenger.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIAudioManager.h"
 #include "guilib/GUIControl.h"
 #include "guilib/GUIWindow.h"
@@ -424,7 +425,7 @@ bool CInputManager::OnEvent(XBMC_Event& newEvent)
     if (!handled)
     {
       m_Mouse.HandleEvent(newEvent);
-      ProcessMouse(g_windowManager.GetActiveWindowOrDialog());
+      ProcessMouse(CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindowOrDialog());
     }
     break;
   }
@@ -440,7 +441,7 @@ bool CInputManager::OnEvent(XBMC_Event& newEvent)
       actionId = newEvent.touch.action;
     else
     {
-      int iWin = g_windowManager.GetActiveWindowOrDialog();
+      int iWin = CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindowOrDialog();
       m_touchTranslator->TranslateTouchAction(iWin, newEvent.touch.action, newEvent.touch.pointers, actionId, actionString);
     }
 
@@ -504,7 +505,7 @@ bool CInputManager::OnKey(const CKey& key)
     }
     else
     {
-      if (!m_buttonTranslator->HasLongpressMapping(g_windowManager.GetActiveWindowOrDialog(), key))
+      if (!m_buttonTranslator->HasLongpressMapping(CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindowOrDialog(), key))
       {
         m_LastKey.Reset();
         bHandled = HandleKey(key);
@@ -531,7 +532,7 @@ bool CInputManager::HandleKey(const CKey& key)
   m_Mouse.SetActive(false);
 
   // get the current active window
-  int iWin = g_windowManager.GetActiveWindowOrDialog();
+  int iWin = CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindowOrDialog();
 
   // this will be checked for certain keycodes that need
   // special handling if the screensaver is active
@@ -578,7 +579,7 @@ bool CInputManager::HandleKey(const CKey& key)
 
     // first determine if we should use keyboard input directly
     bool useKeyboard = key.FromKeyboard() && (iWin == WINDOW_DIALOG_KEYBOARD || iWin == WINDOW_DIALOG_NUMERIC);
-    CGUIWindow *window = g_windowManager.GetWindow(iWin);
+    CGUIWindow *window = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(iWin);
     if (window)
     {
       CGUIControl *control = window->GetFocusedControl();

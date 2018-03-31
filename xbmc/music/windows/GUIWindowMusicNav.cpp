@@ -37,6 +37,7 @@
 #include "video/dialogs/GUIDialogVideoInfo.h"
 #include "video/windows/GUIWindowVideoNav.h"
 #include "music/tags/MusicInfoTag.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "view/GUIViewState.h"
@@ -769,7 +770,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       database.Open();
       strPath = StringUtils::Format("videodb://musicvideos/artists/%i/",
         database.GetMatchingMusicVideo(item->GetMusicInfoTag()->GetArtistString()));
-      g_windowManager.ActivateWindow(WINDOW_VIDEO_NAV,strPath);
+      CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_VIDEO_NAV,strPath);
       return true;
     }
 

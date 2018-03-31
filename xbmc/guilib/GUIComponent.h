@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2017 Team Kodi
+ *      Copyright (C) 2005-2013 Team XBMC
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -13,24 +13,25 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with this Program; see the file COPYING.  If not, see
+ *  along with XBMC; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
 
-#include "KeymapActionMap.h"
-#include "guilib/GUIComponent.h"
-#include "guilib/GUIWindowManager.h"
-#include "input/Action.h"
-#include "input/InputManager.h"
-#include "input/Key.h"
-#include "ServiceBroker.h"
+#pragma once
 
-using namespace KODI;
-using namespace KEYBOARD;
+#include <memory>
 
-unsigned int CKeymapActionMap::GetActionID(const CKey& key)
+class CGUIWindowManager;
+
+class CGUIComponent
 {
-  CAction action = CServiceBroker::GetInputManager().GetAction(CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindowOrDialog(), key);
-  return action.GetID();
-}
+public:
+  CGUIComponent();
+  virtual ~CGUIComponent();
+
+  CGUIWindowManager& GetWindowManager();
+
+protected:
+  std::unique_ptr<CGUIWindowManager> m_pWindowManager;
+};

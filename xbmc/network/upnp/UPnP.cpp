@@ -42,6 +42,7 @@
 #include "settings/Settings.h"
 #include "GUIUserMessages.h"
 #include "FileItem.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "utils/TimeUtils.h"
 #include "video/VideoInfoTag.h"
@@ -181,7 +182,7 @@ public:
     {
         CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);
         message.SetStringParam("upnp://");
-        g_windowManager.SendThreadMessage(message);
+        CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(message);
 
         return PLT_SyncMediaBrowser::OnMSAdded(device);
     }
@@ -191,7 +192,7 @@ public:
 
         CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);
         message.SetStringParam("upnp://");
-        g_windowManager.SendThreadMessage(message);
+        CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(message);
 
         PLT_SyncMediaBrowser::OnMSRemoved(device);
     }
@@ -211,7 +212,7 @@ public:
         CLog::Log(LOGDEBUG, "UPNP: notified container update %s", (const char*)path);
         CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);
         message.SetStringParam(path.GetChars());
-        g_windowManager.SendThreadMessage(message);
+        CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(message);
     }
 
     bool MarkWatched(const CFileItem& item, const bool watched)

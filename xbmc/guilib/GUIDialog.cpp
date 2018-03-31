@@ -19,12 +19,14 @@
  */
 
 #include "GUIDialog.h"
+#include "GUIComponent.h"
 #include "GUIWindowManager.h"
 #include "GUIControlFactory.h"
 #include "GUILabelControl.h"
 #include "threads/SingleLock.h"
 #include "utils/TimeUtils.h"
 #include "Application.h"
+#include "ServiceBroker.h"
 #include "messaging/ApplicationMessenger.h"
 #include "input/Key.h"
 
@@ -123,7 +125,7 @@ void CGUIDialog::OnDeinitWindow(int nextWindowID)
 {
   if (m_active)
   {
-    g_windowManager.RemoveDialog(GetID());
+    CServiceBroker::GetGUI()->GetWindowManager().RemoveDialog(GetID());
     m_autoClosing = false;
   }
   CGUIWindow::OnDeinitWindow(nextWindowID);
@@ -182,7 +184,7 @@ void CGUIDialog::Open_Internal(bool bProcessRenderLoop, const std::string &param
   // maybe we should have a critical section per window instead??
   CSingleLock lock(g_graphicsContext);
 
-  if (!g_windowManager.Initialized() ||
+  if (!CServiceBroker::GetGUI()->GetWindowManager().Initialized() ||
       (m_active && !m_closing && !IsAnimating(ANIM_TYPE_WINDOW_CLOSE)))
     return;
 
@@ -191,7 +193,7 @@ void CGUIDialog::Open_Internal(bool bProcessRenderLoop, const std::string &param
   // thread (this should really be handled via a thread message though IMO)
   m_active = true;
   m_closing = false;
-  g_windowManager.RegisterDialog(this);
+  CServiceBroker::GetGUI()->GetWindowManager().RegisterDialog(this);
 
   // active this window
   CGUIMessage msg(GUI_MSG_WINDOW_INIT, 0, 0);
@@ -208,7 +210,7 @@ void CGUIDialog::Open_Internal(bool bProcessRenderLoop, const std::string &param
 
     while (m_active && !g_application.m_bStop)
     {
-      g_windowManager.ProcessRenderLoop();
+      CServiceBroker::GetGUI()->GetWindowManager().ProcessRenderLoop();
     }
   }
 }
@@ -259,5 +261,5 @@ void CGUIDialog::CancelAutoClose(void)
 
 void CGUIDialog::ProcessRenderLoop(bool renderOnly)
 {
-  g_windowManager.ProcessRenderLoop(renderOnly);
+  CServiceBroker::GetGUI()->GetWindowManager().ProcessRenderLoop(renderOnly);
 }

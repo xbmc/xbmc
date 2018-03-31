@@ -22,6 +22,7 @@
 
 #include "addons/AddonManager.h"
 #include "addons/settings/GUIDialogAddonSettings.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/WindowIDs.h"
 #include "LangInfo.h"
@@ -93,7 +94,7 @@ std::string CWeatherManager::TranslateInfo(int info) const
  */
 std::string CWeatherManager::GetLocation(int iLocation)
 {
-  CGUIWindow* window = g_windowManager.GetWindow(WINDOW_WEATHER);
+  CGUIWindow* window = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(WINDOW_WEATHER);
   if (window)
   {
     std::string setting = StringUtils::Format("Location%i", iLocation);
@@ -159,7 +160,7 @@ void CWeatherManager::OnSettingChanged(std::shared_ptr<const CSetting> setting)
   if (settingId == CSettings::SETTING_WEATHER_ADDON)
   {
     // clear "WeatherProviderLogo" property that some weather addons set
-    CGUIWindow* window = g_windowManager.GetWindow(WINDOW_WEATHER);
+    CGUIWindow* window = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(WINDOW_WEATHER);
     if (window != nullptr)
       window->SetProperty("WeatherProviderLogo", "");
     Refresh();

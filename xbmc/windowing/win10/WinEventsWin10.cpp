@@ -19,6 +19,7 @@
  */
 
 #include "Application.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/mouse/MouseStat.h"
 #include "input/touch/generic/GenericTouchActionHandler.h"
@@ -31,6 +32,7 @@
 #include "rendering/dx/DeviceResources.h"
 #include "platform/win10/AsyncHelpers.h"
 #include "rendering/dx/RenderContext.h"
+#include "ServiceBroker.h"
 #include "utils/log.h"
 #include "utils/SystemInfo.h"
 #include "utils/Variant.h"
@@ -91,7 +93,7 @@ bool CWinEventsWin10::MessagePump()
     ret |= g_application.OnEvent(pumpEvent);
 
     if (pumpEvent.type == XBMC_MOUSEBUTTONUP)
-      g_windowManager.SendMessage(GUI_MSG_UNFOCUS_ALL, 0, 0, 0, 0);
+      CServiceBroker::GetGUI()->GetWindowManager().SendMessage(GUI_MSG_UNFOCUS_ALL, 0, 0, 0, 0);
   }
   return ret;
 }

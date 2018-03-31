@@ -29,6 +29,7 @@
 #include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "GUIUserMessages.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "utils/URIUtils.h"
 #include "URL.h"
@@ -109,7 +110,7 @@ bool CGUIWindowAddonBrowser::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_SETTINGS)
       {
-        g_windowManager.ActivateWindow(WINDOW_SETTINGS_SYSTEM, "addons");
+        CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_SETTINGS_SYSTEM, "addons");
         return true;
       }
       else if (m_viewControl.HasControl(iControl))  // list/thumb control
@@ -172,13 +173,13 @@ class UpdateAddons : public IRunnable
 void CGUIWindowAddonBrowser::OnEvent(const ADDON::CRepositoryUpdater::RepositoryUpdated& event)
 {
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE);
-  g_windowManager.SendThreadMessage(msg);
+  CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
 }
 
 void CGUIWindowAddonBrowser::OnEvent(const ADDON::AddonEvent& event)
 {
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE);
-  g_windowManager.SendThreadMessage(msg);
+  CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
 }
 
 bool CGUIWindowAddonBrowser::OnClick(int iItem, const std::string &player)
@@ -191,7 +192,7 @@ bool CGUIWindowAddonBrowser::OnClick(int iItem, const std::string &player)
     if (!CServiceBroker::GetSettings().GetBool(CSettings::SETTING_ADDONS_ALLOW_UNKNOWN_SOURCES))
     {
       if (ShowYesNoDialogText(13106, 36617, 186, 10004) == DialogResponse::YES)
-        g_windowManager.ActivateWindow(WINDOW_SETTINGS_SYSTEM, CSettings::SETTING_ADDONS_ALLOW_UNKNOWN_SOURCES);
+        CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_SETTINGS_SYSTEM, CSettings::SETTING_ADDONS_ALLOW_UNKNOWN_SOURCES);
     }
     else
     {
@@ -376,7 +377,7 @@ int CGUIWindowAddonBrowser::SelectAddonID(const std::vector<ADDON::TYPE> &types,
   if (showInstallable)
     showMore = false;
 
-  CGUIDialogSelect *dialog = g_windowManager.GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
+  CGUIDialogSelect *dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
   if (!dialog)
     return -1;
 

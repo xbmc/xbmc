@@ -19,10 +19,12 @@
  */
 
 #include "GUIDialogSlider.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUISliderControl.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
 #include "guilib/LocalizeStrings.h"
+#include "ServiceBroker.h"
 
 #define CONTROL_HEADING 10
 #define CONTROL_SLIDER  11
@@ -107,7 +109,7 @@ void CGUIDialogSlider::SetModalityType(DialogModalityType type)
 void CGUIDialogSlider::ShowAndGetInput(const std::string &label, float value, float min, float delta, float max, ISliderCallback *callback, void *callbackData)
 {
   // grab the slider dialog
-  CGUIDialogSlider *slider = g_windowManager.GetWindow<CGUIDialogSlider>(WINDOW_DIALOG_SLIDER);
+  CGUIDialogSlider *slider = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSlider>(WINDOW_DIALOG_SLIDER);
   if (!slider)
     return;
 
@@ -121,7 +123,7 @@ void CGUIDialogSlider::ShowAndGetInput(const std::string &label, float value, fl
 void CGUIDialogSlider::Display(int label, float value, float min, float delta, float max, ISliderCallback *callback)
 {
   // grab the slider dialog
-  CGUIDialogSlider *slider = g_windowManager.GetWindow<CGUIDialogSlider>(WINDOW_DIALOG_SLIDER);
+  CGUIDialogSlider *slider = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSlider>(WINDOW_DIALOG_SLIDER);
   if (!slider)
     return;
 

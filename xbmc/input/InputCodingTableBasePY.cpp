@@ -19,8 +19,10 @@
 */
 
 #include <stdlib.h>
+#include "ServiceBroker.h"
 #include "InputCodingTableBasePY.h"
 #include "utils/CharsetConverter.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"
 
@@ -462,6 +464,6 @@ bool CInputCodingTableBasePY::GetWordListPage(const std::string& strCode, bool i
   }
   CGUIMessage msg(GUI_MSG_CODINGTABLE_LOOKUP_COMPLETED, 0, 0, 0);
   msg.SetStringParam(strCode);
-  g_windowManager.SendThreadMessage(msg, g_windowManager.GetActiveWindowOrDialog());
+  CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg, CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindowOrDialog());
   return true;
 }

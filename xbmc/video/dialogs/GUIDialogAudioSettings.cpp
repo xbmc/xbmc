@@ -32,6 +32,7 @@
 #include "dialogs/GUIDialogYesNo.h"
 #include "FileItem.h"
 #include "filesystem/File.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "GUIPassword.h"
@@ -155,7 +156,7 @@ void CGUIDialogAudioSettings::OnSettingAction(std::shared_ptr<const CSetting> se
   const std::string &settingId = setting->GetId();
   if (settingId == SETTING_AUDIO_DSP)
   {
-    g_windowManager.ActivateWindow(WINDOW_DIALOG_AUDIO_DSP_OSD_SETTINGS);
+    CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_DIALOG_AUDIO_DSP_OSD_SETTINGS);
   }
   else if (settingId == SETTING_AUDIO_MAKE_DEFAULT)
     Save();

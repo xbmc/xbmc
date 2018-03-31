@@ -21,6 +21,7 @@
 #include "GUIVisualisationControl.h"
 
 #include "Application.h"
+#include "GUIComponent.h"
 #include "GUIInfoManager.h"
 #include "GUIUserMessages.h"
 #include "GUIWindowManager.h"
@@ -424,7 +425,7 @@ void CGUIVisualisationControl::DeInitVisualization()
   m_attemptedLoad = false;
 
   CGUIMessage msg(GUI_MSG_VISUALISATION_UNLOADING, m_controlID, 0);
-  g_windowManager.SendMessage(msg);
+  CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
 
   CLog::Log(LOGDEBUG, "FreeVisualisation() started");
 

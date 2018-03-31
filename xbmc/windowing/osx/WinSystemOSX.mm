@@ -145,7 +145,7 @@ using namespace WINDOWING;
       if (newEvent.resize.w * newEvent.resize.h)
       {
         g_application.OnEvent(newEvent);
-        g_windowManager.MarkDirty();
+        CServiceBroker::GetGUI()->GetWindowManager().MarkDirty();
       }
     }
   }

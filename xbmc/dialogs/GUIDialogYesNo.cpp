@@ -19,9 +19,11 @@
  */
 
 #include "GUIDialogYesNo.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
 #include "messaging/helpers/DialogHelper.h"
+#include "ServiceBroker.h"
 
 CGUIDialogYesNo::CGUIDialogYesNo(int overrideId /* = -1 */)
     : CGUIDialogBoxBase(overrideId == -1 ? WINDOW_DIALOG_YES_NO : overrideId, "DialogConfirm.xml")
@@ -102,7 +104,7 @@ bool CGUIDialogYesNo::ShowAndGetInput(CVariant heading, CVariant line0, CVariant
 
 bool CGUIDialogYesNo::ShowAndGetInput(CVariant heading, CVariant line0, CVariant line1, CVariant line2, bool &bCanceled, CVariant noLabel, CVariant yesLabel, unsigned int autoCloseTime)
 {
-  CGUIDialogYesNo *dialog = g_windowManager.GetWindow<CGUIDialogYesNo>(WINDOW_DIALOG_YES_NO);
+  CGUIDialogYesNo *dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogYesNo>(WINDOW_DIALOG_YES_NO);
   if (!dialog)
     return false;
 
@@ -138,7 +140,7 @@ bool CGUIDialogYesNo::ShowAndGetInput(CVariant heading, CVariant text, bool &bCa
 
 int CGUIDialogYesNo::ShowAndGetInput(CVariant heading, CVariant text, CVariant noLabel, CVariant yesLabel, CVariant customLabel, unsigned int autoCloseTime)
 {
-  CGUIDialogYesNo *dialog = g_windowManager.GetWindow<CGUIDialogYesNo>(WINDOW_DIALOG_YES_NO);
+  CGUIDialogYesNo *dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogYesNo>(WINDOW_DIALOG_YES_NO);
   if (!dialog)
     return false;
 

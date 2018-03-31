@@ -21,8 +21,10 @@
 #include "LibraryBuiltins.h"
 
 #include "Application.h"
+#include "ServiceBroker.h"
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "dialogs/GUIDialogYesNo.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/GUIWindowManager.h"
 #include "GUIUserMessages.h"
@@ -288,7 +290,7 @@ static int UpdateLibrary(const std::vector<std::string>& params)
 static int SearchVideoLibrary(const std::vector<std::string>& params)
 {
   CGUIMessage msg(GUI_MSG_SEARCH, 0, 0, 0);
-  g_windowManager.SendMessage(msg, WINDOW_VIDEO_NAV);
+  CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg, WINDOW_VIDEO_NAV);
 
   return 0;
 }

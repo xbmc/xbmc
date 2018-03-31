@@ -21,7 +21,9 @@
 #include "WindowDialogMixin.h"
 #include "WindowInterceptor.h"
 
+#include "ServiceBroker.h"
 #include "messaging/ApplicationMessenger.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 
 using namespace KODI::MESSAGING;
@@ -57,7 +59,7 @@ namespace XBMCAddon
       case HACK_CUSTOM_ACTION_OPENING:
         {
           // This is from the CGUIPythonWindowXMLDialog::Show_Internal
-          g_windowManager.RegisterDialog(w->window->get());
+          CServiceBroker::GetGUI()->GetWindowManager().RegisterDialog(w->window->get());
           // active this dialog...
           CGUIMessage msg(GUI_MSG_WINDOW_INIT,0,0);
           w->OnMessage(msg);

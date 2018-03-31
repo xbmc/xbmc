@@ -20,18 +20,20 @@
 
 #include "Window.h"
 #include "WindowInterceptor.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIButtonControl.h"
 #include "guilib/GUIEditControl.h"
 #include "guilib/GUIRadioButtonControl.h"
 #include "guilib/GUIWindowManager.h"
 #include "Application.h"
+#include "ServiceBroker.h"
 #include "messaging/ApplicationMessenger.h"
 #include "utils/Variant.h"
 #include "WindowException.h"
 
 using namespace KODI::MESSAGING;
 
-#define ACTIVE_WINDOW g_windowManager.GetActiveWindow()
+#define ACTIVE_WINDOW CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow()
 
 
 namespace XBMCAddon
@@ -117,7 +119,7 @@ namespace XBMCAddon
       {
         // user specified window id, use this one if it exists
         // It is not possible to capture key presses or button presses
-        CGUIWindow* pWindow = g_windowManager.GetWindow(existingWindowId);
+        CGUIWindow* pWindow = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(existingWindowId);
         if (!pWindow)
           throw WindowException("Window id does not exist");
 
@@ -163,12 +165,12 @@ namespace XBMCAddon
         {
           if (ACTIVE_WINDOW == iWindowId && !g_application.m_bStop)
           {
-            if(g_windowManager.GetWindow(iOldWindowId))
+            if(CServiceBroker::GetGUI()->GetWindowManager().GetWindow(iOldWindowId))
             {
-              g_windowManager.ActivateWindow(iOldWindowId);
+              CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(iOldWindowId);
             }
             // old window does not exist anymore, switch to home
-            else g_windowManager.ActivateWindow(WINDOW_HOME);
+            else CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_HOME);
           }
 
         }
@@ -199,13 +201,13 @@ namespace XBMCAddon
         {
           if (window)
           {
-            if (g_windowManager.IsWindowVisible(ref(window)->GetID()))
+            if (CServiceBroker::GetGUI()->GetWindowManager().IsWindowVisible(ref(window)->GetID()))
             {
               destroyAfterDeInit = true;
               close();
             }
             else
-              g_windowManager.Delete(ref(window)->GetID());
+              CServiceBroker::GetGUI()->GetWindowManager().Delete(ref(window)->GetID());
           }
         }
 
@@ -220,7 +222,7 @@ namespace XBMCAddon
       iWindowId = _window->get()->GetID(); 
 
       if (!existingWindow)
-        g_windowManager.Add(window->get());
+        CServiceBroker::GetGUI()->GetWindowManager().Add(window->get());
     }
 
     int Window::getNextAvailableWindowId()
@@ -230,10 +232,10 @@ namespace XBMCAddon
       // get first window id that is not in use
       int id = WINDOW_PYTHON_START;
       // if window 13099 is in use it means python can't create more windows
-      if (g_windowManager.GetWindow(WINDOW_PYTHON_END))
+      if (CServiceBroker::GetGUI()->GetWindowManager().GetWindow(WINDOW_PYTHON_END))
         throw WindowException("maximum number of windows reached");
 
-      while(id < WINDOW_PYTHON_END && g_windowManager.GetWindow(id) != NULL) id++;
+      while(id < WINDOW_PYTHON_END && CServiceBroker::GetGUI()->GetWindowManager().GetWindow(id) != NULL) id++;
       return id;
     }
 
@@ -433,7 +435,7 @@ namespace XBMCAddon
       // call the OnDeinitWindow on CGUIWindow
       ref(window)->OnDeinitWindow(nextWindowID);
       if (destroyAfterDeInit)
-        g_windowManager.Delete(window->get()->GetID());
+        CServiceBroker::GetGUI()->GetWindowManager().Delete(window->get()->GetID());
     }
 
     void Window::onAction(Action* action)
@@ -509,14 +511,14 @@ namespace XBMCAddon
         throw WindowException("Object should be of type Control");
 
       CGUIMessage msg = CGUIMessage(GUI_MSG_SETFOCUS,pControl->iParentId, pControl->iControlId);
-      g_windowManager.SendThreadMessage(msg, pControl->iParentId);
+      CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg, pControl->iParentId);
     }
 
     void Window::setFocusId(int iControlId)
     {
       XBMC_TRACE;
       CGUIMessage msg = CGUIMessage(GUI_MSG_SETFOCUS,iWindowId,iControlId);
-      g_windowManager.SendThreadMessage(msg, iWindowId);
+      CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg, iWindowId);
     }
 
     Control* Window::getFocus()

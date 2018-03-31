@@ -19,8 +19,10 @@
  */
 
 #include "GUIDialogGamepad.h"
+#include "ServiceBroker.h"
 #include "utils/md5.h"
 #include "utils/StringUtils.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIAudioManager.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
@@ -275,7 +277,7 @@ bool CGUIDialogGamepad::ShowAndVerifyInput(std::string& strToVerify, const std::
     const std::string& dlgLine2, bool bGetUserInput, bool bHideInputChars)
 {
   // Prompt user for password input
-  CGUIDialogGamepad *pDialog = g_windowManager.GetWindow<CGUIDialogGamepad>(WINDOW_DIALOG_GAMEPAD);
+  CGUIDialogGamepad *pDialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogGamepad>(WINDOW_DIALOG_GAMEPAD);
   pDialog->m_strPassword = strToVerify;
   pDialog->m_bUserInputCleanup = !bGetUserInput;
   pDialog->m_bHideInputChars = bHideInputChars;

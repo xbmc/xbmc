@@ -24,6 +24,7 @@
 #include "ServiceBroker.h"
 #include "utils/TimeUtils.h"
 #include "input/Key.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "windowing/WinSystem.h"
 
@@ -90,7 +91,7 @@ bool CInertialScrollingHandler::CheckForInertialScrolling(const CAction* action)
     //for making switching between multiple lists
     //possible
     CGUIMessage message(GUI_MSG_EXCLUSIVE_MOUSE, 0, 0);
-    g_windowManager.SendMessage(message);
+    CServiceBroker::GetGUI()->GetWindowManager().SendMessage(message);
     m_bScrolling = false;
     //wakeup screensaver on pan begin
     g_application.ResetScreenSaver();    
@@ -119,7 +120,7 @@ bool CInertialScrollingHandler::CheckForInertialScrolling(const CAction* action)
       CGUIMessage message(GUI_MSG_GESTURE_NOTIFY, 0, 0, static_cast<int> (velocityX), static_cast<int> (velocityY));
 
       //ask if the control wants inertial scrolling
-      if(g_windowManager.SendMessage(message))
+      if(CServiceBroker::GetGUI()->GetWindowManager().SendMessage(message))
       {
         int result = 0;
         if (message.GetPointer())

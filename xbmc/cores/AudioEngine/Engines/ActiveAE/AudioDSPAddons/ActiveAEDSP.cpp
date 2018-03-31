@@ -19,6 +19,7 @@
  */
 
 #include "ActiveAEDSP.h"
+#include "ServiceBroker.h"
 
 #include <utility>
 #include <functional>
@@ -39,6 +40,7 @@ extern "C" {
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "guiinfo/GUIInfoLabels.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "messaging/ApplicationMessenger.h"
@@ -245,7 +247,7 @@ void CActiveAEDSP::OnSettingAction(std::shared_ptr<const CSetting> setting)
 
   if (settingId == CSettings::SETTING_AUDIOOUTPUT_DSPSETTINGS)
   {
-    CGUIDialogAudioDSPManager *dialog = g_windowManager.GetWindow<CGUIDialogAudioDSPManager>(WINDOW_DIALOG_AUDIO_DSP_MANAGER);
+    CGUIDialogAudioDSPManager *dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogAudioDSPManager>(WINDOW_DIALOG_AUDIO_DSP_MANAGER);
 
     if (dialog)
       dialog->Open();

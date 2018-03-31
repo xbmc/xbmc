@@ -34,6 +34,7 @@
 #include "pictures/GUIWindowSlideShow.h"
 #include "playlists/PlayListFactory.h"
 #include "network/Network.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
 #include "dialogs/GUIDialogYesNo.h"
@@ -299,7 +300,7 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
           {
             //move to next item
             CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), iControl, iItem + 1);
-            g_windowManager.SendMessage(msg);
+            CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
           }
         }
         else if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_DOUBLE_CLICK)
@@ -366,7 +367,7 @@ void CGUIWindowFileManager::OnSort(int iList)
 void CGUIWindowFileManager::ClearFileItems(int iList)
 {
   CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), iList + CONTROL_LEFT_LIST);
-  g_windowManager.SendMessage(msg);
+  CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
 
   m_vecItems[iList]->Clear(); // will clean up everything
 }
@@ -642,7 +643,7 @@ void CGUIWindowFileManager::OnStart(CFileItem *pItem, const std::string &player)
 #endif
   if (pItem->IsPicture())
   {
-    CGUIWindowSlideShow *pSlideShow = g_windowManager.GetWindow<CGUIWindowSlideShow>(WINDOW_SLIDESHOW);
+    CGUIWindowSlideShow *pSlideShow = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIWindowSlideShow>(WINDOW_SLIDESHOW);
     if (!pSlideShow)
       return ;
     if (g_application.GetAppPlayer().IsPlayingVideo())
@@ -652,7 +653,7 @@ void CGUIWindowFileManager::OnStart(CFileItem *pItem, const std::string &player)
     pSlideShow->Add(pItem);
     pSlideShow->Select(pItem->GetPath());
 
-    g_windowManager.ActivateWindow(WINDOW_SLIDESHOW);
+    CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_SLIDESHOW);
     return;
   }
   if (pItem->IsType(".txt") || pItem->IsType(".xml"))
@@ -690,7 +691,7 @@ bool CGUIWindowFileManager::HaveDiscOrConnection( std::string& strPath, int iDri
 void CGUIWindowFileManager::UpdateControl(int iList, int item)
 {
   CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), iList + CONTROL_LEFT_LIST, item, 0, m_vecItems[iList]);
-  g_windowManager.SendMessage(msg);
+  CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
 }
 
 void CGUIWindowFileManager::OnMark(int iList, int iItem)
@@ -1077,7 +1078,7 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
   if (btnid == CONTROL_BTNCALCSIZE)
   {
     // setup the progress dialog, and show it
-    CGUIDialogProgress *progress = g_windowManager.GetWindow<CGUIDialogProgress>(WINDOW_DIALOG_PROGRESS);
+    CGUIDialogProgress *progress = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogProgress>(WINDOW_DIALOG_PROGRESS);
     if (progress)
     {
       progress->SetHeading(CVariant{13394});

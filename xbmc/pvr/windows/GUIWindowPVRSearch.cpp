@@ -23,6 +23,7 @@
 #include "ServiceBroker.h"
 #include "dialogs/GUIDialogBusy.h"
 #include "dialogs/GUIDialogProgress.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "input/Key.h"
@@ -205,7 +206,7 @@ bool CGUIWindowPVRSearchBase::OnContextButtonClear(CFileItem *item, CONTEXT_BUTT
 
 void CGUIWindowPVRSearchBase::OpenDialogSearch()
 {
-  CGUIDialogPVRGuideSearch* dlgSearch = g_windowManager.GetWindow<CGUIDialogPVRGuideSearch>(WINDOW_DIALOG_PVR_GUIDE_SEARCH);
+  CGUIDialogPVRGuideSearch* dlgSearch = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogPVRGuideSearch>(WINDOW_DIALOG_PVR_GUIDE_SEARCH);
 
   if (!dlgSearch)
     return;

@@ -25,6 +25,7 @@
 #include "ServiceBroker.h"
 #include "addons/Skin.h"
 #include "dialogs/GUIDialogYesNo.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "GUIPassword.h"
@@ -206,7 +207,7 @@ void CGUIDialogVideoSettings::OnSettingAction(std::shared_ptr<const CSetting> se
     if (profileManager.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE  &&
         g_passwordManager.CheckSettingLevelLock(CServiceBroker::GetSettings().GetSetting(CSettings::SETTING_VIDEOSCREEN_GUICALIBRATION)->GetLevel()))
       return;
-    g_windowManager.ForceActivateWindow(WINDOW_SCREEN_CALIBRATION);
+    CServiceBroker::GetGUI()->GetWindowManager().ForceActivateWindow(WINDOW_SCREEN_CALIBRATION);
   }
   //! @todo implement
   else if (settingId == SETTING_VIDEO_MAKE_DEFAULT)

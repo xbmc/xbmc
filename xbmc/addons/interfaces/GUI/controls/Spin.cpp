@@ -23,8 +23,10 @@
 
 #include "addons/binary-addons/AddonDll.h"
 #include "guilib/GUISpinControlEx.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "utils/log.h"
+#include "ServiceBroker.h"
 
 extern "C"
 {
@@ -103,7 +105,7 @@ void Interface_GUIControlSpin::set_text(void* kodiBase, void* handle, const char
 
   CGUIMessage msg(GUI_MSG_LABEL_SET, control->GetParentID(), control->GetID());
   msg.SetLabel(text);
-  g_windowManager.SendThreadMessage(msg, control->GetParentID());
+  CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg, control->GetParentID());
 }
 
 void Interface_GUIControlSpin::reset(void* kodiBase, void* handle)
@@ -118,7 +120,7 @@ void Interface_GUIControlSpin::reset(void* kodiBase, void* handle)
   }
 
   CGUIMessage msg(GUI_MSG_LABEL_RESET, control->GetParentID(), control->GetID());
-  g_windowManager.SendThreadMessage(msg, control->GetParentID());
+  CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg, control->GetParentID());
 }
 
 void Interface_GUIControlSpin::set_type(void* kodiBase, void* handle, int type)

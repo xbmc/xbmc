@@ -37,6 +37,7 @@
 #include "profiles/ProfilesManager.h"
 #include "settings/Settings.h"
 #include "playlists/PlayList.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "storage/MediaManager.h"
@@ -66,7 +67,7 @@ CAutorun::~CAutorun() = default;
 
 void CAutorun::ExecuteAutorun(const std::string& path, bool bypassSettings, bool ignoreplaying, bool startFromBeginning )
 {
-  if ((!ignoreplaying && (g_application.GetAppPlayer().IsPlayingAudio() || g_application.GetAppPlayer().IsPlayingVideo() || g_windowManager.HasModalDialog())) || g_windowManager.GetActiveWindow() == WINDOW_LOGIN_SCREEN)
+  if ((!ignoreplaying && (g_application.GetAppPlayer().IsPlayingAudio() || g_application.GetAppPlayer().IsPlayingVideo() || CServiceBroker::GetGUI()->GetWindowManager().HasModalDialog())) || CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_LOGIN_SCREEN)
     return ;
 
   CCdInfo* pInfo = g_mediaManager.GetCdInfo(path);
@@ -124,7 +125,7 @@ bool CAutorun::PlayDisc(const std::string& path, bool bypassSettings, bool start
   if ( !bPlaying && nAddedToPlaylist > 0 )
   {
     CGUIMessage msg( GUI_MSG_PLAYLIST_CHANGED, 0, 0 );
-    g_windowManager.SendMessage( msg );
+    CServiceBroker::GetGUI()->GetWindowManager().SendMessage( msg );
     CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(PLAYLIST_MUSIC);
     // Start playing the items we inserted
     return CServiceBroker::GetPlaylistPlayer().Play(nSize, "");

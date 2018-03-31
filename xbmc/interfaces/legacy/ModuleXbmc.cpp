@@ -348,8 +348,8 @@ namespace XBMCAddon
       {
         XBMCAddonUtils::GuiLock lock(nullptr, false);
 
-        int id = g_windowManager.GetTopmostModalDialog();
-        if (id == WINDOW_INVALID) id = g_windowManager.GetActiveWindow();
+        int id = CServiceBroker::GetGUI()->GetWindowManager().GetTopmostModalDialog();
+        if (id == WINDOW_INVALID) id = CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow();
         ret = g_infoManager.EvaluateBool(condition,id);
       }
 

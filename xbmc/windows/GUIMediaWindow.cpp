@@ -45,6 +45,7 @@
 #include "filesystem/MultiPathDirectory.h"
 #include "filesystem/PluginDirectory.h"
 #include "filesystem/SmartPlaylistDirectory.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIEditControl.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindowManager.h"
@@ -1065,7 +1066,7 @@ bool CGUIMediaWindow::OnClick(int iItem, const std::string &player)
     if (pItem->GetPath() == "newplaylist://")
     {
       m_vecItems->RemoveDiscCache(GetID());
-      g_windowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST_EDITOR,"newplaylist://");
+      CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_MUSIC_PLAYLIST_EDITOR,"newplaylist://");
       return true;
     }
     else if (StringUtils::StartsWithNoCase(pItem->GetPath(), "newsmartplaylist://"))
@@ -1600,7 +1601,7 @@ void CGUIMediaWindow::OnInitWindow()
   else
   {
     CGUIMessage msg(GUI_MSG_WINDOW_INIT, 0, 0, WINDOW_INVALID, PLUGIN_REFRESH_DELAY);
-    g_windowManager.SendThreadMessage(msg, GetID());
+    CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg, GetID());
   }
 
   if (updateStartDirectory)
@@ -1774,7 +1775,7 @@ bool CGUIMediaWindow::WaitForNetwork() const
   if (CServiceBroker::GetNetwork().IsAvailable())
     return true;
 
-  CGUIDialogProgress *progress = g_windowManager.GetWindow<CGUIDialogProgress>(WINDOW_DIALOG_PROGRESS);
+  CGUIDialogProgress *progress = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogProgress>(WINDOW_DIALOG_PROGRESS);
   if (!progress)
     return true;
 
@@ -2124,5 +2125,5 @@ std::string CGUIMediaWindow::RemoveParameterFromPath(const std::string &strDirec
 
 void CGUIMediaWindow::ProcessRenderLoop(bool renderOnly)
 {
-  g_windowManager.ProcessRenderLoop(renderOnly);
+  CServiceBroker::GetGUI()->GetWindowManager().ProcessRenderLoop(renderOnly);
 }

@@ -24,6 +24,7 @@
 #include "ServiceBroker.h"
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GraphicContext.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
@@ -574,7 +575,7 @@ void CBaseRenderer::SetViewMode(int viewMode)
 
 void CBaseRenderer::MarkDirty()
 {
-  g_windowManager.MarkDirty(m_destRect);
+  CServiceBroker::GetGUI()->GetWindowManager().MarkDirty(m_destRect);
 }
 
 void CBaseRenderer::SetVideoSettings(const CVideoSettings &settings)

@@ -28,6 +28,7 @@
 #include "games/tags/GameInfoTag.h"
 #include "games/addons/GameClient.h"
 #include "games/addons/savestates/SavestateDatabase.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/WindowIDs.h"
 #include "GUIPassword.h"
@@ -68,7 +69,7 @@ bool CGUIWindowGames::OnMessage(CGUIMessage& message)
         message.SetStringParam(CMediaSourceSettings::GetInstance().GetDefaultSource("games"));
 
       //! @todo
-      m_dlgProgress = g_windowManager.GetWindow<CGUIDialogProgress>(WINDOW_DIALOG_PROGRESS);
+      m_dlgProgress = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogProgress>(WINDOW_DIALOG_PROGRESS);
 
       break;
     }
@@ -324,7 +325,7 @@ void CGUIWindowGames::OnItemInfo(int itemNumber)
 
   //! @todo
   /*
-  CGUIDialogGameInfo* gameInfo = g_windowManager.GetWindow<CGUIDialogGameInfo>(WINDOW_DIALOG_PICTURE_INFO);
+  CGUIDialogGameInfo* gameInfo = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogGameInfo>(WINDOW_DIALOG_PICTURE_INFO);
   if (gameInfo)
   {
     gameInfo->SetGame(item);

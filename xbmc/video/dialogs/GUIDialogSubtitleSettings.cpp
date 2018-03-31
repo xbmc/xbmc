@@ -31,6 +31,7 @@
 #include "dialogs/GUIDialogYesNo.h"
 #include "FileItem.h"
 #include "filesystem/File.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "profiles/ProfilesManager.h"
@@ -160,7 +161,7 @@ void CGUIDialogSubtitleSettings::OnSettingAction(std::shared_ptr<const CSetting>
   }
   else if (settingId == SETTING_SUBTITLE_SEARCH)
   {
-    auto dialog = g_windowManager.GetWindow<CGUIDialogSubtitles>(WINDOW_DIALOG_SUBTITLES);
+    auto dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSubtitles>(WINDOW_DIALOG_SUBTITLES);
     if (dialog)
     {
       dialog->Open();

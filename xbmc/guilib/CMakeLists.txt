@@ -9,6 +9,7 @@ set(SOURCES DDSImage.cpp
             GUIBorderedImage.cpp
             GUIButtonControl.cpp
             GUIColorManager.cpp
+            GUIComponent.cpp
             GUIControl.cpp
             GUIControlFactory.cpp
             GUIControlGroup.cpp
@@ -86,6 +87,7 @@ set(HEADERS DDSImage.h
             GUIButtonControl.h
             GUICallback.h
             GUIColorManager.h
+            GUIComponent.h
             GUIControl.h
             GUIControlFactory.h
             GUIControlGroup.h

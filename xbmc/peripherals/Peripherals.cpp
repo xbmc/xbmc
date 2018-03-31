@@ -50,6 +50,7 @@
 #include "input/joysticks/interfaces/IButtonMapper.h"
 #include "interfaces/AnnouncementManager.h"
 #include "filesystem/Directory.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
@@ -416,7 +417,7 @@ void CPeripherals::OnDeviceChanged()
 {
   // refresh settings (peripherals manager could be enabled/disabled now)
   CGUIMessage msgSettings(GUI_MSG_UPDATE, WINDOW_SETTINGS_SYSTEM, 0);
-  g_windowManager.SendThreadMessage(msgSettings, WINDOW_SETTINGS_SYSTEM);
+  CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msgSettings, WINDOW_SETTINGS_SYSTEM);
 
   SetChanged();
 }
@@ -923,7 +924,7 @@ void CPeripherals::OnSettingAction(std::shared_ptr<const CSetting> setting)
   if (settingId == CSettings::SETTING_INPUT_PERIPHERALS)
     CGUIDialogPeripherals::Show(*this);
   else if (settingId == CSettings::SETTING_INPUT_CONTROLLERCONFIG)
-    g_windowManager.ActivateWindow(WINDOW_DIALOG_GAME_CONTROLLERS);
+    CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_DIALOG_GAME_CONTROLLERS);
   else if (settingId == CSettings::SETTING_INPUT_TESTRUMBLE)
     TestFeature(FEATURE_RUMBLE);
   else if (settingId == CSettings::SETTING_INPUT_PERIPHERALLIBRARIES)

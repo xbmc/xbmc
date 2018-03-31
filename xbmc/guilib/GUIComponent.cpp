@@ -18,32 +18,24 @@
  *
  */
 
-#include "GUIWindowStartup.h"
+#include "GUIComponent.h"
+#include "GUIWindowManager.h"
 #include "ServiceBroker.h"
-#include "input/Key.h"
-#include "guilib/GUIComponent.h"
-#include "guilib/GUIWindowManager.h"
-#include "guilib/WindowIDs.h"
 
-CGUIWindowStartup::CGUIWindowStartup(void)
-    : CGUIWindow(WINDOW_STARTUP_ANIM, "Startup.xml")
+CGUIComponent::CGUIComponent()
 {
+  m_pWindowManager.reset(new CGUIWindowManager());
+  m_pWindowManager->Initialize();
+  CServiceBroker::RegisterGUI(this);
 }
 
-CGUIWindowStartup::~CGUIWindowStartup(void) = default;
-
-bool CGUIWindowStartup::OnAction(const CAction &action)
+CGUIComponent::~CGUIComponent()
 {
-  if (action.IsMouse())
-    return true;
-  return CGUIWindow::OnAction(action);
+  CServiceBroker::UnregisterGUI();
+  m_pWindowManager->DeInitialize();
 }
 
-void CGUIWindowStartup::OnDeinitWindow(int nextWindowID)
+CGUIWindowManager& CGUIComponent::GetWindowManager()
 {
-  CGUIWindow::OnDeinitWindow(nextWindowID);
-
-  // let everyone know that the user interface is now ready for usage
-  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UI_READY);
-  CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
+  return *m_pWindowManager;
 }

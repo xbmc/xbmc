@@ -20,6 +20,8 @@
 
 #include "ModuleXbmcgui.h"
 #include "LanguageHook.h"
+#include "ServiceBroker.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GraphicContext.h"
 #include "guilib/GUIWindowManager.h"
 
@@ -35,14 +37,14 @@ namespace XBMCAddon
     {
       DelayedCallGuard dg;
       CSingleLock gl(g_graphicsContext);
-      return g_windowManager.GetActiveWindow();
+      return CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow();
     }
 
     long getCurrentWindowDialogId()
     {
       DelayedCallGuard dg;
       CSingleLock gl(g_graphicsContext);
-      return g_windowManager.GetTopmostModalDialog();
+      return CServiceBroker::GetGUI()->GetWindowManager().GetTopmostModalDialog();
     }
 
     long getScreenHeight()

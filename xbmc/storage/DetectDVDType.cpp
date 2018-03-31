@@ -37,10 +37,12 @@
 #include "settings/AdvancedSettings.h"
 #include "GUIUserMessages.h"
 #include "utils/URIUtils.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "FileItem.h"
 #include "Application.h"
 #include "IoSupport.h"
+#include "ServiceBroker.h"
 #include "storage/MediaManager.h"
 
 
@@ -131,7 +133,7 @@ void CDetectDVDMedia::UpdateDvdrom()
           SetNewDVDShareUrl("D:\\", false, g_localizeStrings.Get(502));
           m_isoReader.Reset();
           CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REMOVED_MEDIA);
-          g_windowManager.SendThreadMessage( msg );
+          CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage( msg );
           waitLock.Leave();
           m_DriveState = DRIVE_OPEN;
           return;
@@ -153,7 +155,7 @@ void CDetectDVDMedia::UpdateDvdrom()
           }
           waitLock.Leave();
           CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
-          g_windowManager.SendThreadMessage( msg );
+          CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage( msg );
           // Do we really need sleep here? This will fix: [ 1530771 ] "Open tray" problem
           // Sleep(6000);
           return ;
@@ -169,7 +171,7 @@ void CDetectDVDMedia::UpdateDvdrom()
           // Send Message to GUI that disc has changed
           CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
           waitLock.Leave();
-          g_windowManager.SendThreadMessage( msg );
+          CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage( msg );
           return ;
         }
         break;
@@ -186,7 +188,7 @@ void CDetectDVDMedia::UpdateDvdrom()
             DetectMediaType();
             CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
             waitLock.Leave();
-            g_windowManager.SendThreadMessage( msg );
+            CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage( msg );
             // Tell the application object that a new Cd is inserted
             // So autorun can be started.
             if ( !m_bStartup )

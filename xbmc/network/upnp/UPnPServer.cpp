@@ -32,6 +32,7 @@
 #include "filesystem/MusicDatabaseDirectory.h"
 #include "filesystem/SpecialProtocol.h"
 #include "filesystem/VideoDatabaseDirectory.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/WindowIDs.h"
 #include "guilib/LocalizeStrings.h"
 #include "music/tags/MusicInfoTag.h"
@@ -1123,8 +1124,8 @@ CUPnPServer::OnUpdateObject(PLT_ActionReference&             action,
              CUtil::DeleteMusicDatabaseDirectoryCache();
 
         CFileItemPtr msgItem(new CFileItem(updated));
-        CGUIMessage message(GUI_MSG_NOTIFY_ALL, g_windowManager.GetActiveWindow(), 0, GUI_MSG_UPDATE_ITEM, 1, msgItem);
-        g_windowManager.SendThreadMessage(message);
+        CGUIMessage message(GUI_MSG_NOTIFY_ALL, CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow(), 0, GUI_MSG_UPDATE_ITEM, 1, msgItem);
+        CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(message);
     }
 
     NPT_CHECK_LABEL(service->PauseEventing(false), error);

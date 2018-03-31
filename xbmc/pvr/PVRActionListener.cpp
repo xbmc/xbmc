@@ -23,6 +23,7 @@
 #include "Application.h"
 #include "ServiceBroker.h"
 #include "dialogs/GUIDialogNumeric.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
 #include "settings/Settings.h"
@@ -125,11 +126,11 @@ bool CPVRActionListener::OnAction(const CAction &action)
       if (!bIsPlayingPVR)
         return false;
 
-      if (g_windowManager.IsWindowActive(WINDOW_FULLSCREEN_VIDEO) || g_windowManager.IsWindowActive(WINDOW_VISUALISATION))
+      if (CServiceBroker::GetGUI()->GetWindowManager().IsWindowActive(WINDOW_FULLSCREEN_VIDEO) || CServiceBroker::GetGUI()->GetWindowManager().IsWindowActive(WINDOW_VISUALISATION))
       {
         // do not consume action if a python modal is the top most dialog
         // as a python modal can't return that it consumed the action.
-        if (g_windowManager.IsPythonWindow(g_windowManager.GetTopmostModalDialog()))
+        if (CServiceBroker::GetGUI()->GetWindowManager().IsPythonWindow(CServiceBroker::GetGUI()->GetWindowManager().GetTopmostModalDialog()))
           return false;
 
         char cCharacter;
@@ -272,7 +273,7 @@ void CPVRActionListener::OnSettingAction(std::shared_ptr<const CSetting> setting
   {
     if (CServiceBroker::GetPVRManager().IsStarted())
     {
-      CGUIDialog *dialog = g_windowManager.GetDialog(WINDOW_DIALOG_PVR_CLIENT_PRIORITIES);
+      CGUIDialog *dialog = CServiceBroker::GetGUI()->GetWindowManager().GetDialog(WINDOW_DIALOG_PVR_CLIENT_PRIORITIES);
       if (dialog)
       {
         dialog->Open();
@@ -284,7 +285,7 @@ void CPVRActionListener::OnSettingAction(std::shared_ptr<const CSetting> setting
   {
     if (CServiceBroker::GetPVRManager().IsStarted())
     {
-      CGUIDialog *dialog = g_windowManager.GetDialog(WINDOW_DIALOG_PVR_CHANNEL_MANAGER);
+      CGUIDialog *dialog = CServiceBroker::GetGUI()->GetWindowManager().GetDialog(WINDOW_DIALOG_PVR_CHANNEL_MANAGER);
       if (dialog)
         dialog->Open();
     }
@@ -293,7 +294,7 @@ void CPVRActionListener::OnSettingAction(std::shared_ptr<const CSetting> setting
   {
     if (CServiceBroker::GetPVRManager().IsStarted())
     {
-      CGUIDialog *dialog = g_windowManager.GetDialog(WINDOW_DIALOG_PVR_GROUP_MANAGER);
+      CGUIDialog *dialog = CServiceBroker::GetGUI()->GetWindowManager().GetDialog(WINDOW_DIALOG_PVR_GROUP_MANAGER);
       if (dialog)
         dialog->Open();
     }

@@ -21,6 +21,7 @@
 #include "ServiceBroker.h"
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogYesNo.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "utils/log.h"
 #include "guilib/LocalizeStrings.h"
@@ -53,7 +54,7 @@ bool CFileUtils::DeleteItem(const CFileItemPtr &item, bool force)
   if (!item || item->IsParentFolder())
     return false;
 
-  CGUIDialogYesNo* pDialog = g_windowManager.GetWindow<CGUIDialogYesNo>(WINDOW_DIALOG_YES_NO);
+  CGUIDialogYesNo* pDialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogYesNo>(WINDOW_DIALOG_YES_NO);
   if (!force && pDialog)
   {
     pDialog->SetHeading(CVariant{122});

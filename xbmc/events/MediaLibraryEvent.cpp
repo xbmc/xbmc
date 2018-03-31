@@ -19,6 +19,8 @@
  */
 
 #include "MediaLibraryEvent.h"
+#include "ServiceBroker.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
@@ -120,6 +122,6 @@ bool CMediaLibraryEvent::Execute() const
   std::vector<std::string> params;
   params.push_back(path);
   params.push_back("return");
-  g_windowManager.ActivateWindow(windowId, params);
+  CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(windowId, params);
   return true;
 }

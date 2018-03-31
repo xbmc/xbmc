@@ -19,7 +19,8 @@
  */
 
 #include "GUIControlBuiltins.h"
-
+#include "ServiceBroker.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/WindowTranslator.h"
 #include "utils/StringUtils.h"
@@ -31,9 +32,9 @@
  */
 static int ControlMove(const std::vector<std::string>& params)
 {
-  CGUIMessage message(GUI_MSG_MOVE_OFFSET, g_windowManager.GetActiveWindowOrDialog(),
+  CGUIMessage message(GUI_MSG_MOVE_OFFSET, CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindowOrDialog(),
                       atoi(params[0].c_str()), atoi(params[1].c_str()));
-  g_windowManager.SendMessage(message);
+  CServiceBroker::GetGUI()->GetWindowManager().SendMessage(message);
 
   return 0;
 }
@@ -50,12 +51,12 @@ static int SendClick(const std::vector<std::string>& params)
     // have a window - convert it
     int windowID = CWindowTranslator::TranslateWindow(params[0]);
     CGUIMessage message(GUI_MSG_CLICKED, atoi(params[1].c_str()), windowID);
-    g_windowManager.SendMessage(message);
+    CServiceBroker::GetGUI()->GetWindowManager().SendMessage(message);
   }
   else
   { // single param - assume you meant the focused window
-    CGUIMessage message(GUI_MSG_CLICKED, atoi(params[0].c_str()), g_windowManager.GetActiveWindowOrDialog());
-    g_windowManager.SendMessage(message);
+    CGUIMessage message(GUI_MSG_CLICKED, atoi(params[0].c_str()), CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindowOrDialog());
+    CServiceBroker::GetGUI()->GetWindowManager().SendMessage(message);
   }
 
   return 0;
@@ -70,17 +71,17 @@ static int SendClick(const std::vector<std::string>& params)
 static int SendMessage(const std::vector<std::string>& params)
 {
   int controlID = atoi(params[0].c_str());
-  int windowID = (params.size() == 3) ? CWindowTranslator::TranslateWindow(params[2]) : g_windowManager.GetActiveWindow();
+  int windowID = (params.size() == 3) ? CWindowTranslator::TranslateWindow(params[2]) : CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow();
   if (params[1] == "moveup")
-    g_windowManager.SendMessage(GUI_MSG_MOVE_OFFSET, windowID, controlID, 1);
+    CServiceBroker::GetGUI()->GetWindowManager().SendMessage(GUI_MSG_MOVE_OFFSET, windowID, controlID, 1);
   else if (params[1] == "movedown")
-    g_windowManager.SendMessage(GUI_MSG_MOVE_OFFSET, windowID, controlID, -1);
+    CServiceBroker::GetGUI()->GetWindowManager().SendMessage(GUI_MSG_MOVE_OFFSET, windowID, controlID, -1);
   else if (params[1] == "pageup")
-    g_windowManager.SendMessage(GUI_MSG_PAGE_UP, windowID, controlID);
+    CServiceBroker::GetGUI()->GetWindowManager().SendMessage(GUI_MSG_PAGE_UP, windowID, controlID);
   else if (params[1] == "pagedown")
-    g_windowManager.SendMessage(GUI_MSG_PAGE_DOWN, windowID, controlID);
+    CServiceBroker::GetGUI()->GetWindowManager().SendMessage(GUI_MSG_PAGE_DOWN, windowID, controlID);
   else if (params[1] == "click")
-    g_windowManager.SendMessage(GUI_MSG_CLICKED, controlID, windowID);
+    CServiceBroker::GetGUI()->GetWindowManager().SendMessage(GUI_MSG_CLICKED, controlID, windowID);
 
   return 0;
 }
@@ -98,8 +99,8 @@ static int SetFocus(const std::vector<std::string>& params)
   int absID = 0;
   if (params.size() > 2 && StringUtils::EqualsNoCase(params[2].c_str(), "absolute"))
     absID = 1;
-  CGUIMessage msg(GUI_MSG_SETFOCUS, g_windowManager.GetActiveWindowOrDialog(), controlID, subItem, absID);
-  g_windowManager.SendMessage(msg);
+  CGUIMessage msg(GUI_MSG_SETFOCUS, CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindowOrDialog(), controlID, subItem, absID);
+  CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
 
   return 0;
 }
@@ -114,8 +115,8 @@ static int SetFocus(const std::vector<std::string>& params)
 static int ShiftPage(const std::vector<std::string>& params)
 {
   int id = atoi(params[0].c_str());
-  CGUIMessage message(Message, g_windowManager.GetActiveWindowOrDialog(), id);
-  g_windowManager.SendMessage(message);
+  CGUIMessage message(Message, CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindowOrDialog(), id);
+  CServiceBroker::GetGUI()->GetWindowManager().SendMessage(message);
 
   return 0;
 }

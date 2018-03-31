@@ -30,6 +30,7 @@
 #include "games/controllers/Controller.h"
 #include "games/controllers/ControllerTopology.h"
 #include "games/GameServices.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/WindowIDs.h"
 #include "input/joysticks/JoystickTypes.h"
@@ -119,7 +120,7 @@ void CGameClientInput::Deinitialize()
 
 bool CGameClientInput::AcceptsInput() const
 {
-  return g_windowManager.GetActiveWindowOrDialog() == WINDOW_FULLSCREEN_GAME;
+  return CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindowOrDialog() == WINDOW_FULLSCREEN_GAME;
 }
 
 void CGameClientInput::LoadTopology()

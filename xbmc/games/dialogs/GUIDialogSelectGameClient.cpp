@@ -27,6 +27,7 @@
 #include "games/addons/savestates/SavestateDatabase.h"
 #include "games/addons/savestates/SavestateUtils.h"
 #include "games/addons/GameClient.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
@@ -161,7 +162,7 @@ bool CGUIDialogSelectGameClient::Enable(const std::string &gameClient)
 
 CGUIDialogSelect *CGUIDialogSelectGameClient::GetDialog(const std::string &title)
 {
-  CGUIDialogSelect *dialog = g_windowManager.GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
+  CGUIDialogSelect *dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
   if (dialog != nullptr)
   {
     dialog->Reset();

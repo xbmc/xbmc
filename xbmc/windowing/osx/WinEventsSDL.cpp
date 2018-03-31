@@ -24,6 +24,7 @@
 #include "messaging/ApplicationMessenger.h"
 #include "GUIUserMessages.h"
 #include "settings/DisplaySettings.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/mouse/MouseStat.h"
 #include "input/Key.h"
@@ -161,7 +162,7 @@ bool CWinEventsSDL::MessagePump()
         newEvent.resize.w = event.resize.w;
         newEvent.resize.h = event.resize.h;
         ret |= g_application.OnEvent(newEvent);
-        g_windowManager.MarkDirty();
+        CServiceBroker::GetGUI()->GetWindowManager().MarkDirty();
         break;
       }
       case SDL_USEREVENT:
@@ -173,7 +174,7 @@ bool CWinEventsSDL::MessagePump()
         break;
       }
       case SDL_VIDEOEXPOSE:
-        g_windowManager.MarkDirty();
+        CServiceBroker::GetGUI()->GetWindowManager().MarkDirty();
         break;
     }
     memset(&event, 0, sizeof(SDL_Event));

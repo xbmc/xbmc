@@ -21,8 +21,10 @@
 #include "ZeroconfBrowserAvahi.h"
 
 #include <utils/log.h>
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/GUIMessage.h"
+#include "ServiceBroker.h"
 #include "GUIUserMessages.h"
 #include <avahi-common/malloc.h>
 #include <avahi-common/error.h>
@@ -211,7 +213,7 @@ void CZeroconfBrowserAvahi::clientCallback ( AvahiClient* fp_client, AvahiClient
       p_instance->m_discovered_services.clear();
       CGUIMessage message ( GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH );
       message.SetStringParam ( "zeroconf://" );
-      g_windowManager.SendThreadMessage ( message );
+      CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage ( message );
       p_instance->createClient();
       break;
     }
@@ -282,7 +284,7 @@ void CZeroconfBrowserAvahi::browseCallback (
   {
     CGUIMessage message ( GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH );
     message.SetStringParam ( "zeroconf://" );
-    g_windowManager.SendThreadMessage ( message );
+    CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage ( message );
     CLog::Log ( LOGDEBUG, "CZeroconfBrowserAvahi::browseCallback sent gui update for path zeroconf://" );
   }
 }

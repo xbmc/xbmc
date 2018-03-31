@@ -40,6 +40,7 @@
 #include "games/tags/GameInfoTag.h"
 #include "games/GameServices.h"
 #include "games/GameUtils.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
@@ -461,7 +462,7 @@ void CRetroPlayer::FrameMove()
 
   if (m_gameClient)
   {
-    const int activeId = g_windowManager.GetActiveWindowOrDialog();
+    const int activeId = CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindowOrDialog();
     const bool bFullscreen = (activeId == WINDOW_FULLSCREEN_GAME);
 
     switch (m_state)
@@ -565,7 +566,7 @@ void CRetroPlayer::OnSpeedChange(double newSpeed)
 
 void CRetroPlayer::CloseOSD()
 {
-  g_windowManager.CloseDialogs(true);
+  CServiceBroker::GetGUI()->GetWindowManager().CloseDialogs(true);
 }
 
 void CRetroPlayer::RegisterWindowCallbacks()
