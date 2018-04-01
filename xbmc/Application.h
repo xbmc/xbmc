@@ -85,6 +85,7 @@ class DPMSSupport;
 class CSplash;
 class CBookmark;
 class IActionListener;
+class CGUIComponent;
 
 namespace VIDEO
 {
@@ -401,6 +402,8 @@ protected:
    \return true, if the action was taken by one of the action listener.
    */
   bool NotifyActionListeners(const CAction &action) const;
+
+  std::unique_ptr<CGUIComponent> m_pGUI;
 
   bool m_confirmSkinChange;
   bool m_ignoreSkinSettingChanges;

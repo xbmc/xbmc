@@ -30,6 +30,7 @@
 #include "X11/XF86keysym.h"
 #include "utils/log.h"
 #include "utils/CharsetConverter.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/mouse/MouseStat.h"
 #include "input/InputManager.h"
@@ -358,7 +359,7 @@ bool CWinEventsX11::MessagePump()
 
       case Expose:
       {
-        g_windowManager.MarkDirty();
+        CServiceBroker::GetGUI()->GetWindowManager().MarkDirty();
         break;
       }
 
@@ -374,7 +375,7 @@ bool CWinEventsX11::MessagePump()
         newEvent.resize.w = xevent.xconfigure.width;
         newEvent.resize.h = xevent.xconfigure.height;
         ret |= g_application.OnEvent(newEvent);
-        g_windowManager.MarkDirty();
+        CServiceBroker::GetGUI()->GetWindowManager().MarkDirty();
         break;
       }
 

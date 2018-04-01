@@ -38,6 +38,7 @@
 #include "utils/AlarmClock.h"
 #include "LangInfo.h"
 #include "utils/SystemInfo.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUITextBox.h"
 #include "guilib/GUIControlGroupList.h"
 #include "pictures/GUIWindowSlideShow.h"
@@ -6692,14 +6693,14 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
     strLabel = StringUtils::Format("%i", g_graphicsContext.GetResInfo().iScreenHeight);
     break;
   case SYSTEM_CURRENT_WINDOW:
-    return g_localizeStrings.Get(g_windowManager.GetActiveWindowOrDialog());
+    return g_localizeStrings.Get(CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindowOrDialog());
   case SYSTEM_STARTUP_WINDOW:
     strLabel = StringUtils::Format("%i", CServiceBroker::GetSettings().GetInt(CSettings::SETTING_LOOKANDFEEL_STARTUPWINDOW));
     break;
   case SYSTEM_CURRENT_CONTROL:
   case SYSTEM_CURRENT_CONTROL_ID:
     {
-      CGUIWindow *window = g_windowManager.GetWindow(g_windowManager.GetActiveWindowOrDialog());
+      CGUIWindow *window = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindowOrDialog());
       if (window)
       {
         CGUIControl *control = window->GetFocusedControl();
@@ -6836,7 +6837,7 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   case VISUALISATION_PRESET:
     {
       CGUIMessage msg(GUI_MSG_GET_VISUALISATION, 0, 0);
-      g_windowManager.SendMessage(msg);
+      CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
       if (msg.GetPointer())
       {
         CGUIVisualisationControl* viz = static_cast<CGUIVisualisationControl*>(msg.GetPointer());
@@ -6961,7 +6962,7 @@ bool CGUIInfoManager::GetInt(int &value, int info, int contextWindow, const CGUI
       }
     case SYSTEM_PROGRESS_BAR:
       {
-        CGUIDialogProgress *bar = g_windowManager.GetWindow<CGUIDialogProgress>(WINDOW_DIALOG_PROGRESS);
+        CGUIDialogProgress *bar = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogProgress>(WINDOW_DIALOG_PROGRESS);
         if (bar && bar->IsDialogRunning())
           value = bar->GetPercentage();
         return true;
@@ -7090,7 +7091,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
         break;
       case WINDOW_IS_MEDIA:
         { // note: This doesn't return true for dialogs (content, favourites, login, videoinfo)
-          CGUIWindow *pWindow = g_windowManager.GetWindow(g_windowManager.GetActiveWindow());
+          CGUIWindow *pWindow = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow());
           bReturn = (pWindow && pWindow->IsMediaWindow());
         }
         break;
@@ -7230,7 +7231,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
         bReturn = (CServiceBroker::GetSettings().GetInt(CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNTIME) > 0);
         break;
       case SYSTEM_LOGGEDON:
-        bReturn = !(g_windowManager.GetActiveWindow() == WINDOW_LOGIN_SCREEN);
+        bReturn = !(CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_LOGIN_SCREEN);
         break;
       case SYSTEM_SHOW_EXIT_BUTTON:
         bReturn = g_advancedSettings.m_showExitButton;
@@ -7239,10 +7240,10 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
         bReturn = profileManager.UsingLoginScreen();
         break;
       case SYSTEM_HAS_ACTIVE_MODAL_DIALOG:
-        bReturn = g_windowManager.HasModalDialog();
+        bReturn = CServiceBroker::GetGUI()->GetWindowManager().HasModalDialog();
         break;
       case SYSTEM_HAS_VISIBLE_MODAL_DIALOG:
-        bReturn = g_windowManager.HasVisibleModalDialog();
+        bReturn = CServiceBroker::GetGUI()->GetWindowManager().HasVisibleModalDialog();
         break;
       case WEATHER_IS_FETCHED:
         bReturn = CServiceBroker::GetWeatherManager().IsFetched();
@@ -7255,8 +7256,8 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
         break;
       case SYSTEM_HAS_INPUT_HIDDEN:
         {
-          CGUIDialogNumeric *pNumeric = g_windowManager.GetWindow<CGUIDialogNumeric>(WINDOW_DIALOG_NUMERIC);
-          CGUIDialogKeyboardGeneric *pKeyboard = g_windowManager.GetWindow<CGUIDialogKeyboardGeneric>(WINDOW_DIALOG_KEYBOARD);
+          CGUIDialogNumeric *pNumeric = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogNumeric>(WINDOW_DIALOG_NUMERIC);
+          CGUIDialogKeyboardGeneric *pKeyboard = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogKeyboardGeneric>(WINDOW_DIALOG_KEYBOARD);
 
           if (pNumeric && pNumeric->IsActive())
             bReturn = pNumeric->IsInputHidden();
@@ -7340,25 +7341,25 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
         break;
       case SLIDESHOW_ISPAUSED:
         {
-          CGUIWindowSlideShow *slideShow = g_windowManager.GetWindow<CGUIWindowSlideShow>(WINDOW_SLIDESHOW);
+          CGUIWindowSlideShow *slideShow = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIWindowSlideShow>(WINDOW_SLIDESHOW);
           bReturn = (slideShow && slideShow->IsPaused());
         }
         break;
       case SLIDESHOW_ISRANDOM:
         {
-          CGUIWindowSlideShow *slideShow = g_windowManager.GetWindow<CGUIWindowSlideShow>(WINDOW_SLIDESHOW);
+          CGUIWindowSlideShow *slideShow = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIWindowSlideShow>(WINDOW_SLIDESHOW);
           bReturn = (slideShow && slideShow->IsShuffled());
         }
         break;
       case SLIDESHOW_ISACTIVE:
         {
-          CGUIWindowSlideShow *slideShow = g_windowManager.GetWindow<CGUIWindowSlideShow>(WINDOW_SLIDESHOW);
+          CGUIWindowSlideShow *slideShow = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIWindowSlideShow>(WINDOW_SLIDESHOW);
           bReturn = (slideShow && slideShow->InSlideShow());
         }
         break;
       case SLIDESHOW_ISVIDEO:
         {
-          CGUIWindowSlideShow *slideShow = g_windowManager.GetWindow<CGUIWindowSlideShow>(WINDOW_SLIDESHOW);
+          CGUIWindowSlideShow *slideShow = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIWindowSlideShow>(WINDOW_SLIDESHOW);
           bReturn = (slideShow && slideShow->GetCurrentSlide() && slideShow->GetCurrentSlide()->IsVideo());
         }
         break;
@@ -7443,7 +7444,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
         break;
       case PLAYER_SEEKBAR:
         {
-          CGUIDialog *seekBar = g_windowManager.GetDialog(WINDOW_DIALOG_SEEK_BAR);
+          CGUIDialog *seekBar = CServiceBroker::GetGUI()->GetWindowManager().GetDialog(WINDOW_DIALOG_SEEK_BAR);
           bReturn = seekBar ? seekBar->IsDialogRunning() : false;
         }
         break;
@@ -7492,8 +7493,8 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
         bReturn = (CServiceBroker::GetSettings().GetInt(CSettings::SETTING_VIDEOPLAYER_RENDERMETHOD) == RENDER_OVERLAYS);
         break;
       case VIDEOPLAYER_ISFULLSCREEN:
-        bReturn = g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO ||
-                  g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_GAME;
+        bReturn = CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO ||
+                  CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_FULLSCREEN_GAME;
         break;
       case VIDEOPLAYER_HASMENU:
         bReturn = g_application.GetAppPlayer().HasMenu();
@@ -7523,7 +7524,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
       case VISUALISATION_LOCKED:
         {
           CGUIMessage msg(GUI_MSG_GET_VISUALISATION, 0, 0);
-          g_windowManager.SendMessage(msg);
+          CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
           if (msg.GetPointer())
           {
             CGUIVisualisationControl *pVis = static_cast<CGUIVisualisationControl*>(msg.GetPointer());
@@ -7552,7 +7553,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
       case VISUALISATION_HAS_PRESETS:
         {
           CGUIMessage msg(GUI_MSG_GET_VISUALISATION, 0, 0);
-          g_windowManager.SendMessage(msg);
+          CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
           if (msg.GetPointer())
           {
             CGUIVisualisationControl* viz = static_cast<CGUIVisualisationControl*>(msg.GetPointer());
@@ -7787,7 +7788,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
           bReturn = ((int)info.GetData1() == m_nextWindowID);
         else
         {
-          CGUIWindow *window = g_windowManager.GetWindow(m_nextWindowID);
+          CGUIWindow *window = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(m_nextWindowID);
           if (window && StringUtils::EqualsNoCase(URIUtils::GetFileName(window->GetProperty("xmlfile").asString()), m_stringParameters[info.GetData2()]))
             bReturn = true;
         }
@@ -7797,7 +7798,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
           bReturn = ((int)info.GetData1() == m_prevWindowID);
         else
         {
-          CGUIWindow *window = g_windowManager.GetWindow(m_prevWindowID);
+          CGUIWindow *window = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(m_prevWindowID);
           if (window && StringUtils::EqualsNoCase(URIUtils::GetFileName(window->GetProperty("xmlfile").asString()), m_stringParameters[info.GetData2()]))
             bReturn = true;
         }
@@ -7805,15 +7806,15 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
       case WINDOW_IS:
         if (info.GetData1())
         {
-          CGUIWindow *window = g_windowManager.GetWindow(contextWindow);
+          CGUIWindow *window = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(contextWindow);
           if (!window)
           {
             // try topmost dialog
-            window = g_windowManager.GetWindow(g_windowManager.GetTopmostModalDialog());
+            window = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(CServiceBroker::GetGUI()->GetWindowManager().GetTopmostModalDialog());
             if (!window)
             {
               // try active window
-              window = g_windowManager.GetWindow(g_windowManager.GetActiveWindow());
+              window = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow());
             }
           }
           bReturn = (window && window->GetID() == static_cast<int>(info.GetData1()));
@@ -7823,27 +7824,27 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
         break;
       case WINDOW_IS_VISIBLE:
         if (info.GetData1())
-          bReturn = g_windowManager.IsWindowVisible(info.GetData1());
+          bReturn = CServiceBroker::GetGUI()->GetWindowManager().IsWindowVisible(info.GetData1());
         else
-          bReturn = g_windowManager.IsWindowVisible(m_stringParameters[info.GetData2()]);
+          bReturn = CServiceBroker::GetGUI()->GetWindowManager().IsWindowVisible(m_stringParameters[info.GetData2()]);
         break;
       case WINDOW_IS_ACTIVE:
         if (info.GetData1())
-          bReturn = g_windowManager.IsWindowActive(info.GetData1());
+          bReturn = CServiceBroker::GetGUI()->GetWindowManager().IsWindowActive(info.GetData1());
         else
-          bReturn = g_windowManager.IsWindowActive(m_stringParameters[info.GetData2()]);
+          bReturn = CServiceBroker::GetGUI()->GetWindowManager().IsWindowActive(m_stringParameters[info.GetData2()]);
         break;
       case WINDOW_IS_DIALOG_TOPMOST:
         if (info.GetData1())
-          bReturn = g_windowManager.IsDialogTopmost(info.GetData1());
+          bReturn = CServiceBroker::GetGUI()->GetWindowManager().IsDialogTopmost(info.GetData1());
         else
-          bReturn = g_windowManager.IsDialogTopmost(m_stringParameters[info.GetData2()]);
+          bReturn = CServiceBroker::GetGUI()->GetWindowManager().IsDialogTopmost(m_stringParameters[info.GetData2()]);
         break;
       case WINDOW_IS_MODAL_DIALOG_TOPMOST:
         if (info.GetData1())
-          bReturn = g_windowManager.IsModalDialogTopmost(info.GetData1());
+          bReturn = CServiceBroker::GetGUI()->GetWindowManager().IsModalDialogTopmost(info.GetData1());
         else
-          bReturn = g_windowManager.IsModalDialogTopmost(m_stringParameters[info.GetData2()]);
+          bReturn = CServiceBroker::GetGUI()->GetWindowManager().IsModalDialogTopmost(m_stringParameters[info.GetData2()]);
         break;
       case SYSTEM_HAS_ALARM:
         bReturn = g_alarmClock.HasAlarm(m_stringParameters[info.GetData1()]);
@@ -8323,7 +8324,7 @@ std::string CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextW
     CGUIWindow *window = NULL;
     if (info.GetData1())
     { // window specified
-      window = g_windowManager.GetWindow(info.GetData1());//GetWindowWithCondition(contextWindow, 0);
+      window = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(info.GetData1());//GetWindowWithCondition(contextWindow, 0);
     }
     else
     { // no window specified - assume active
@@ -10700,7 +10701,7 @@ std::string CGUIInfoManager::GetPictureLabel(int info)
     return GetItemLabel(m_currentSlide, LISTITEM_DATE);
   else if (info == SLIDE_INDEX)
   {
-    CGUIWindowSlideShow *slideshow = g_windowManager.GetWindow<CGUIWindowSlideShow>(WINDOW_SLIDESHOW);
+    CGUIWindowSlideShow *slideshow = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIWindowSlideShow>(WINDOW_SLIDESHOW);
     if (slideshow && slideshow->NumSlides())
     {
       return StringUtils::Format("%d/%d", slideshow->CurrentSlide(), slideshow->NumSlides());
@@ -10739,17 +10740,17 @@ bool CGUIInfoManager::CheckWindowCondition(CGUIWindow *window, int condition) co
 
 CGUIWindow *CGUIInfoManager::GetWindowWithCondition(int contextWindow, int condition) const
 {
-  CGUIWindow *window = g_windowManager.GetWindow(contextWindow);
+  CGUIWindow *window = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(contextWindow);
   if (CheckWindowCondition(window, condition))
     return window;
 
   // try topmost dialog
-  window = g_windowManager.GetWindow(g_windowManager.GetTopmostModalDialog());
+  window = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(CServiceBroker::GetGUI()->GetWindowManager().GetTopmostModalDialog());
   if (CheckWindowCondition(window, condition))
     return window;
 
   // try active window
-  window = g_windowManager.GetWindow(g_windowManager.GetActiveWindow());
+  window = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow());
   if (CheckWindowCondition(window, condition))
     return window;
 

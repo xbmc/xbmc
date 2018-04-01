@@ -45,8 +45,10 @@
 #include "Window.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/gui/General.h"
 
+#include "ServiceBroker.h"
 #include "addons/binary-addons/AddonDll.h"
 #include "input/Key.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "utils/log.h"
 
@@ -208,7 +210,7 @@ int Interface_GUIGeneral::get_current_window_dialog_id(void* kodiBase)
   }
 
   CSingleLock gl(g_graphicsContext);
-  return g_windowManager.GetTopmostModalDialog();
+  return CServiceBroker::GetGUI()->GetWindowManager().GetTopmostModalDialog();
 }
 
 int Interface_GUIGeneral::get_current_window_id(void* kodiBase)
@@ -221,7 +223,7 @@ int Interface_GUIGeneral::get_current_window_id(void* kodiBase)
   }
 
   CSingleLock gl(g_graphicsContext);
-  return g_windowManager.GetActiveWindow();
+  return CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow();
 }
 
 //@}

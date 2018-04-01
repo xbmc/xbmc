@@ -34,6 +34,7 @@
 #include "filesystem/File.h"
 #include "filesystem/PipeFile.h"
 #include "GUIInfoManager.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
 #include "interfaces/AnnouncementManager.h"
@@ -149,7 +150,7 @@ void CAirTunesServer::RefreshCoverArt(const char *outputFilename/* = NULL*/)
   g_infoManager.SetCurrentAlbumThumb(coverArtFile);
   //update the ui
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_REFRESH_THUMBS);
-  g_windowManager.SendThreadMessage(msg);
+  CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
 }
 
 void CAirTunesServer::SetMetadataFromBuffer(const char *buffer, unsigned int size)

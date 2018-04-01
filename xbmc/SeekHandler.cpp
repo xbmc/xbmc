@@ -26,6 +26,7 @@
 #include "Application.h"
 #include "cores/DataCacheCore.h"
 #include "FileItem.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GraphicContext.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
@@ -239,7 +240,7 @@ void CSeekHandler::FrameMove()
   if (m_seekChanged)
   {
     m_seekChanged = false;
-    g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_STATE_CHANGED);
+    CServiceBroker::GetGUI()->GetWindowManager().SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_STATE_CHANGED);
   }
 }
 

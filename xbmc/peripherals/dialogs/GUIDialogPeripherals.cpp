@@ -20,6 +20,7 @@
 
 #include "GUIDialogPeripherals.h"
 #include "dialogs/GUIDialogSelect.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/WindowIDs.h"
 #include "messaging/helpers/DialogOKHelper.h"
@@ -29,6 +30,7 @@
 #include "threads/SingleLock.h"
 #include "utils/Variant.h"
 #include "FileItem.h"
+#include "ServiceBroker.h"
 
 using namespace KODI;
 using namespace PERIPHERALS;
@@ -76,7 +78,7 @@ CFileItemPtr CGUIDialogPeripherals::GetItem(unsigned int pos) const
 
 void CGUIDialogPeripherals::Show(CPeripherals &manager)
 {
-  CGUIDialogPeripherals* pDialog = g_windowManager.GetWindow<CGUIDialogPeripherals>(WINDOW_DIALOG_PERIPHERALS);
+  CGUIDialogPeripherals* pDialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogPeripherals>(WINDOW_DIALOG_PERIPHERALS);
   if (pDialog == nullptr)
     return;
 
@@ -108,7 +110,7 @@ void CGUIDialogPeripherals::Show(CPeripherals &manager)
         continue;
       }
 
-      CGUIDialogPeripheralSettings *pSettingsDialog = g_windowManager.GetWindow<CGUIDialogPeripheralSettings>(WINDOW_DIALOG_PERIPHERAL_SETTINGS);
+      CGUIDialogPeripheralSettings *pSettingsDialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogPeripheralSettings>(WINDOW_DIALOG_PERIPHERAL_SETTINGS);
       if (pItem && pSettingsDialog)
       {
         // Pass peripheral item properties to settings dialog so skin authors

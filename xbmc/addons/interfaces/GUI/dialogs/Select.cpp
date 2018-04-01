@@ -23,9 +23,11 @@
 
 #include "addons/binary-addons/AddonDll.h"
 #include "dialogs/GUIDialogSelect.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "utils/log.h"
 #include "utils/Variant.h"
+#include "ServiceBroker.h"
 
 namespace ADDON
 {
@@ -54,7 +56,7 @@ int Interface_GUIDialogSelect::open(void* kodiBase, const char *heading, const c
     return -1;
   }
 
-  CGUIDialogSelect* dialog = g_windowManager.GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
+  CGUIDialogSelect* dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
   if (!heading || !entries || !dialog)
   {
     CLog::Log(LOGERROR,
@@ -91,7 +93,7 @@ bool Interface_GUIDialogSelect::open_multi_select(void* kodiBase, const char *he
     return false;
   }
 
-  CGUIDialogSelect* dialog = g_windowManager.GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
+  CGUIDialogSelect* dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
   if (!heading || !entryIDs || !entryNames || !entriesSelected || !dialog)
   {
     CLog::Log(LOGERROR,

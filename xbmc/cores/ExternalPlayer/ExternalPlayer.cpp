@@ -24,6 +24,7 @@
 #include "ExternalPlayer.h"
 #include "windowing/WinSystem.h"
 #include "dialogs/GUIDialogOK.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "Application.h"
 #include "filesystem/MusicDatabaseFile.h"
@@ -336,7 +337,7 @@ void CExternalPlayer::Process()
     }
 
     {
-      m_dialog = g_windowManager.GetWindow<CGUIDialogOK>(WINDOW_DIALOG_OK);
+      m_dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogOK>(WINDOW_DIALOG_OK);
       m_dialog->SetHeading(CVariant{23100});
       m_dialog->SetLine(1, CVariant{23104});
       m_dialog->SetLine(2, CVariant{23105});

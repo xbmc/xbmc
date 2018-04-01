@@ -25,6 +25,7 @@
 #include "addons/AddonManager.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "dialogs/GUIDialogSelect.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
@@ -217,7 +218,7 @@ bool CGUIWindowPVRBase::OnBack(int actionID)
     // don't call CGUIMediaWindow as it will attempt to go to the parent folder which we don't want.
     if (GetPreviousWindow() != WINDOW_FULLSCREEN_VIDEO)
     {
-      g_windowManager.ActivateWindow(WINDOW_HOME);
+      CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_HOME);
       return true;
     }
     else
@@ -364,7 +365,7 @@ bool CGUIWindowPVRBase::CanBeActivated() const
 
 bool CGUIWindowPVRBase::OpenChannelGroupSelectionDialog(void)
 {
-  CGUIDialogSelect *dialog = g_windowManager.GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
+  CGUIDialogSelect *dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
   if (!dialog)
     return false;
 
@@ -484,7 +485,7 @@ void CGUIWindowPVRBase::ShowProgressDialog(const std::string &strText, int iProg
 {
   if (!m_progressHandle)
   {
-    CGUIDialogExtendedProgressBar *loadingProgressDialog = g_windowManager.GetWindow<CGUIDialogExtendedProgressBar>(WINDOW_DIALOG_EXT_PROGRESS);
+    CGUIDialogExtendedProgressBar *loadingProgressDialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogExtendedProgressBar>(WINDOW_DIALOG_EXT_PROGRESS);
     if (!loadingProgressDialog)
     {
       CLog::Log(LOGERROR, "CGUIWindowPVRBase - %s - unable to get WINDOW_DIALOG_EXT_PROGRESS!", __FUNCTION__);

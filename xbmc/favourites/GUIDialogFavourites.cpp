@@ -24,6 +24,7 @@
 #include "ServiceBroker.h"
 #include "favourites/FavouritesService.h"
 #include "filesystem/Directory.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "input/Key.h"
@@ -109,7 +110,7 @@ void CGUIDialogFavourites::OnClick(int item)
 
   CGUIMessage message(GUI_MSG_EXECUTE, 0, GetID());
   message.SetStringParam(m_favouritesService.GetExecutePath(*(*m_favourites)[item], GetID()));
-  g_windowManager.SendMessage(message);
+  CServiceBroker::GetGUI()->GetWindowManager().SendMessage(message);
 }
 
 void CGUIDialogFavourites::OnPopupMenu(int item)

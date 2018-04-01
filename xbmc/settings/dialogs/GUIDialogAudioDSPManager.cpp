@@ -22,10 +22,12 @@
 
 #include "FileItem.h"
 #include "Util.h"
+#include "ServiceBroker.h"
 #include "cores/AudioEngine/Engines/ActiveAE/AudioDSPAddons/ActiveAEDSP.h"
 #include "dialogs/GUIDialogTextViewer.h"
 #include "dialogs/GUIDialogBusy.h"
 #include "dialogs/GUIDialogYesNo.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/GUIListContainer.h"
@@ -646,7 +648,7 @@ bool CGUIDialogAudioDSPManager::OnContextButton(int itemNumber, CONTEXT_BUTTON b
 
 void CGUIDialogAudioDSPManager::Update()
 {
-  CGUIDialogBusy* pDlgBusy = g_windowManager.GetWindow<CGUIDialogBusy>(WINDOW_DIALOG_BUSY);
+  CGUIDialogBusy* pDlgBusy = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogBusy>(WINDOW_DIALOG_BUSY);
   if (!pDlgBusy)
   {
     helper_LogError(__FUNCTION__);
@@ -751,7 +753,7 @@ void CGUIDialogAudioDSPManager::SaveList(void)
    return;
 
   /* display the progress dialog */
-  CGUIDialogBusy* pDlgBusy = g_windowManager.GetWindow<CGUIDialogBusy>(WINDOW_DIALOG_BUSY);
+  CGUIDialogBusy* pDlgBusy = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogBusy>(WINDOW_DIALOG_BUSY);
   if (!pDlgBusy)
   {
     helper_LogError(__FUNCTION__);

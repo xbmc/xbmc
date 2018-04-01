@@ -24,9 +24,11 @@
 #include "PlayListPlayer.h"
 #include "settings/MediaSettings.h"
 #include "Application.h"
+#include "ServiceBroker.h"
 #include "messaging/ApplicationMessenger.h"
 #include "GUIInfoManager.h"
 #include "GUIUserMessages.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "AddonUtils.h"
 #include "utils/log.h"
@@ -390,7 +392,7 @@ namespace XBMCAddon
         throw PlayerException("Kodi is not playing any file");
 
       CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 0, item->item);
-      g_windowManager.SendMessage(msg);
+      CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
     }
 
     InfoTagRadioRDS* Player::getRadioRDSInfoTag()

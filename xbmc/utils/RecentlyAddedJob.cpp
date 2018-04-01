@@ -24,6 +24,7 @@
 #include "FileItem.h"
 #include "ServiceBroker.h"
 #include "RecentlyAddedJob.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindow.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/WindowIDs.h"
@@ -44,7 +45,7 @@ CRecentlyAddedJob::CRecentlyAddedJob(int flag)
 
 bool CRecentlyAddedJob::UpdateVideo()
 {
-  auto home = g_windowManager.GetWindow(WINDOW_HOME);
+  auto home = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(WINDOW_HOME);
 
   if ( home == nullptr )
     return false;
@@ -192,7 +193,7 @@ bool CRecentlyAddedJob::UpdateVideo()
 
 bool CRecentlyAddedJob::UpdateMusic()
 {
-  auto home = g_windowManager.GetWindow(WINDOW_HOME);
+  auto home = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(WINDOW_HOME);
   
   if ( home == nullptr )
     return false;
@@ -316,7 +317,7 @@ bool CRecentlyAddedJob::UpdateMusic()
 
 bool CRecentlyAddedJob::UpdateTotal()
 {
-  auto home = g_windowManager.GetWindow(WINDOW_HOME);
+  auto home = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(WINDOW_HOME);
   
   if ( home == nullptr )
     return false;

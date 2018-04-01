@@ -32,6 +32,8 @@
 #include "storage/MediaManager.h"
 #include "settings/MediaSourceSettings.h"
 #include "input/Key.h"
+#include "guilib/GUIComponent.h"
+#include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
@@ -126,7 +128,7 @@ bool CGUIDialogMusicInfo::OnMessage(CGUIMessage& message)
         if (m_bArtistInfo && (ACTION_SELECT_ITEM == iAction || ACTION_MOUSE_LEFT_CLICK == iAction))
         {
           CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControl);
-          g_windowManager.SendMessage(msg);
+          CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
           int iItem = msg.GetParam1();
           if (iItem < 0 || iItem >= static_cast<int>(m_albumSongs->Size()))
             break;
@@ -335,7 +337,7 @@ void CGUIDialogMusicInfo::SetUserrating(int userrating) const
     m_albumItem->GetMusicInfoTag()->SetUserrating(userrating);
     // send a message to all windows to tell them to update the fileitem (eg playlistplayer, media windows)
     CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 0, m_albumItem);
-    g_windowManager.SendMessage(msg);
+    CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
   }
 }
 
@@ -470,7 +472,7 @@ void CGUIDialogMusicInfo::OnGetThumb()
   // tell our GUI to completely reload all controls (as some of them
   // are likely to have had this image in use so will need refreshing)
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
-  g_windowManager.SendMessage(msg);
+  CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
   // Update our screen
   Update();
 }
@@ -589,7 +591,7 @@ void CGUIDialogMusicInfo::OnGetFanart()
   // tell our GUI to completely reload all controls (as some of them
   // are likely to have had this image in use so will need refreshing)
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
-  g_windowManager.SendMessage(msg);
+  CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
   // Update our screen
   Update();
 }
@@ -637,7 +639,7 @@ void CGUIDialogMusicInfo::AddItemPathToFileBrowserSources(VECSOURCES &sources, c
 
 void CGUIDialogMusicInfo::OnSetUserrating() const
 {
-  CGUIDialogSelect *dialog = g_windowManager.GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
+  CGUIDialogSelect *dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
   if (dialog)
   {
     // If we refresh and then try to set the rating there will be an items already here...
@@ -662,7 +664,7 @@ void CGUIDialogMusicInfo::OnSetUserrating() const
 
 void CGUIDialogMusicInfo::ShowFor(CFileItem item)
 {
-  auto window = g_windowManager.GetWindow<CGUIWindowMusicNav>(WINDOW_MUSIC_NAV);
+  auto window = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIWindowMusicNav>(WINDOW_MUSIC_NAV);
   if (window)
     window->OnItemInfo(&item);
 }

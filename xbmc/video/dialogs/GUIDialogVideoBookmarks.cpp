@@ -29,6 +29,7 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "settings/AdvancedSettings.h"
 #include "FileItem.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "utils/Crc32.h"
 #include "input/Key.h"
@@ -530,7 +531,7 @@ bool CGUIDialogVideoBookmarks::OnAddBookmark()
   
   if (CGUIDialogVideoBookmarks::AddBookmark()) 
   {
-    g_windowManager.SendMessage(GUI_MSG_REFRESH_LIST, 0, WINDOW_DIALOG_VIDEO_BOOKMARKS);
+    CServiceBroker::GetGUI()->GetWindowManager().SendMessage(GUI_MSG_REFRESH_LIST, 0, WINDOW_DIALOG_VIDEO_BOOKMARKS);
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info,
                                           g_localizeStrings.Get(298),   // "Bookmarks"
                                           g_localizeStrings.Get(21362));// "Bookmark created"
@@ -553,7 +554,7 @@ bool CGUIDialogVideoBookmarks::OnAddEpisodeBookmark()
       bReturn = CGUIDialogVideoBookmarks::AddEpisodeBookmark();
       if(bReturn)
       {
-        g_windowManager.SendMessage(GUI_MSG_REFRESH_LIST, 0, WINDOW_DIALOG_VIDEO_BOOKMARKS);
+        CServiceBroker::GetGUI()->GetWindowManager().SendMessage(GUI_MSG_REFRESH_LIST, 0, WINDOW_DIALOG_VIDEO_BOOKMARKS);
         CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, 
                                               g_localizeStrings.Get(298),   // "Bookmarks"
                                               g_localizeStrings.Get(21363));// "Episode Bookmark created"

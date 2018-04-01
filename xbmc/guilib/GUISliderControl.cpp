@@ -18,6 +18,8 @@
  *
  */
 
+#include "ServiceBroker.h"
+#include "GUIComponent.h"
 #include "GUISliderControl.h"
 #include "GUIInfoManager.h"
 #include "input/Key.h"
@@ -306,7 +308,7 @@ void CGUISliderControl::SendClick()
     std::string action = StringUtils::Format(m_action->formatString, percent);
     CGUIMessage message(GUI_MSG_EXECUTE, m_controlID, m_parentID);
     message.SetStringParam(action);
-    g_windowManager.SendMessage(message);    
+    CServiceBroker::GetGUI()->GetWindowManager().SendMessage(message);    
   }
 }
 

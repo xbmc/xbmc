@@ -28,6 +28,7 @@
 #include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogYesNo.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIEditControl.h"
 #include "guilib/GUIWindowManager.h"
@@ -240,7 +241,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonRadioTV(CGUIMessage &message)
 {
   if (m_bContainsChanges)
   {
-    CGUIDialogYesNo* pDialog = g_windowManager.GetWindow<CGUIDialogYesNo>(WINDOW_DIALOG_YES_NO);
+    CGUIDialogYesNo* pDialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogYesNo>(WINDOW_DIALOG_YES_NO);
     if (!pDialog)
       return true;
 
@@ -435,7 +436,7 @@ bool CGUIDialogPVRChannelManager::OnClickEPGSourceSpin(CGUIMessage &message)
 bool CGUIDialogPVRChannelManager::OnClickButtonGroupManager(CGUIMessage &message)
 {
   /* Load group manager dialog */
-  CGUIDialogPVRGroupManager* pDlgInfo = g_windowManager.GetWindow<CGUIDialogPVRGroupManager>(WINDOW_DIALOG_PVR_GROUP_MANAGER);
+  CGUIDialogPVRGroupManager* pDlgInfo = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogPVRGroupManager>(WINDOW_DIALOG_PVR_GROUP_MANAGER);
   if (!pDlgInfo)
     return false;
 
@@ -453,7 +454,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonNewChannel()
   int iSelection = 0;
   if (CServiceBroker::GetPVRManager().Clients()->CreatedClientAmount() > 1)
   {
-    CGUIDialogSelect* pDlgSelect = g_windowManager.GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
+    CGUIDialogSelect* pDlgSelect = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
     if (!pDlgSelect)
       return false;
 
@@ -615,7 +616,7 @@ bool CGUIDialogPVRChannelManager::OnContextButton(int itemNumber, CONTEXT_BUTTON
   }
   else if (button == CONTEXT_BUTTON_DELETE)
   {
-    CGUIDialogYesNo* pDialog = g_windowManager.GetWindow<CGUIDialogYesNo>(WINDOW_DIALOG_YES_NO);
+    CGUIDialogYesNo* pDialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogYesNo>(WINDOW_DIALOG_YES_NO);
     if (!pDialog)
       return true;
 
@@ -762,7 +763,7 @@ void CGUIDialogPVRChannelManager::SaveList(void)
    return;
 
   /* display the progress dialog */
-  CGUIDialogProgress* pDlgProgress = g_windowManager.GetWindow<CGUIDialogProgress>(WINDOW_DIALOG_PROGRESS);
+  CGUIDialogProgress* pDlgProgress = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogProgress>(WINDOW_DIALOG_PROGRESS);
   pDlgProgress->SetHeading(CVariant{190});
   pDlgProgress->SetLine(0, CVariant{""});
   pDlgProgress->SetLine(1, CVariant{328});

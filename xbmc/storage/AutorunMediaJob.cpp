@@ -19,7 +19,9 @@
  */
 #include "AutorunMediaJob.h"
 #include "Application.h"
+#include "ServiceBroker.h"
 #include "interfaces/builtins/Builtins.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "dialogs/GUIDialogSelect.h"
@@ -34,7 +36,7 @@ CAutorunMediaJob::CAutorunMediaJob(const std::string &label, const std::string &
 
 bool CAutorunMediaJob::DoWork()
 {
-  CGUIDialogSelect* pDialog= g_windowManager.GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
+  CGUIDialogSelect* pDialog= CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
 
   // wake up and turn off the screensaver if it's active
   g_application.WakeUpScreenSaverAndDPMS();

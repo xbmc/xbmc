@@ -23,8 +23,10 @@
 
 #include "addons/binary-addons/AddonDll.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "utils/log.h"
+#include "ServiceBroker.h"
 
 extern "C"
 {
@@ -63,7 +65,7 @@ void* Interface_GUIDialogExtendedProgress::new_dialog(void* kodiBase, const char
   }
 
   // setup the progress dialog
-  CGUIDialogExtendedProgressBar* dialog = g_windowManager.GetWindow<CGUIDialogExtendedProgressBar>(WINDOW_DIALOG_EXT_PROGRESS);
+  CGUIDialogExtendedProgressBar* dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogExtendedProgressBar>(WINDOW_DIALOG_EXT_PROGRESS);
   if (!title || !dialog)
   {
     CLog::Log(LOGERROR,

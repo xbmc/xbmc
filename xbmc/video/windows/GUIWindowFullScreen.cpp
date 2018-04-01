@@ -25,6 +25,7 @@
 #include "ServiceBroker.h"
 #include "messaging/ApplicationMessenger.h"
 #include "GUIInfoManager.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIProgressControl.h"
 #include "guilib/GUILabelControl.h"
 #include "video/dialogs/GUIDialogVideoOSD.h"
@@ -105,7 +106,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
   case ACTION_SHOW_GUI:
     {
       // switch back to the menu
-      g_windowManager.PreviousWindow();
+      CServiceBroker::GetGUI()->GetWindowManager().PreviousWindow();
       return true;
     }
     break;
@@ -118,7 +119,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
 
   case ACTION_SHOW_INFO:
     {
-      CGUIDialogFullScreenInfo* pDialog = g_windowManager.GetWindow<CGUIDialogFullScreenInfo>(WINDOW_DIALOG_FULLSCREEN_INFO);
+      CGUIDialogFullScreenInfo* pDialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogFullScreenInfo>(WINDOW_DIALOG_FULLSCREEN_INFO);
       if (pDialog)
       {
         CFileItem item(g_application.CurrentFileItem());
@@ -148,11 +149,11 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
     {
       CFileItem item(g_application.CurrentFileItem());
       if (item.HasPVRChannelInfoTag())
-        g_windowManager.ActivateWindow(WINDOW_DIALOG_PVR_OSD_CHANNELS);
+        CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_DIALOG_PVR_OSD_CHANNELS);
       else if (item.HasVideoInfoTag())
-        g_windowManager.ActivateWindow(WINDOW_VIDEO_PLAYLIST);
+        CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_VIDEO_PLAYLIST);
       else if (item.HasMusicInfoTag())
-        g_windowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);
+        CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_MUSIC_PLAYLIST);
     }
     return true;
     break;
@@ -219,7 +220,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       // stopped playing videos
       if (message.GetParam1() == WINDOW_INVALID && !g_application.GetAppPlayer().IsPlayingVideo())
       { // why are we here if nothing is playing???
-        g_windowManager.PreviousWindow();
+        CServiceBroker::GetGUI()->GetWindowManager().PreviousWindow();
         return true;
       }
       g_infoManager.SetShowInfo(false);
@@ -241,7 +242,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_DEINIT:
     {
       // close all active modal dialogs
-      g_windowManager.CloseInternalModalDialogs(true);
+      CServiceBroker::GetGUI()->GetWindowManager().CloseInternalModalDialogs(true);
 
       CGUIWindow::OnMessage(message);
 
@@ -447,5 +448,5 @@ bool CGUIWindowFullScreen::HasVisibleControls()
 
 CGUIDialog *CGUIWindowFullScreen::GetOSD()
 {
-  return g_windowManager.GetDialog(WINDOW_DIALOG_VIDEO_OSD);
+  return CServiceBroker::GetGUI()->GetWindowManager().GetDialog(WINDOW_DIALOG_VIDEO_OSD);
 }

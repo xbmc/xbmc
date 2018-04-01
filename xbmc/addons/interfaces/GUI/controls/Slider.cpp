@@ -23,8 +23,10 @@
 
 #include "addons/binary-addons/AddonDll.h"
 #include "guilib/GUISliderControl.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "utils/log.h"
+#include "ServiceBroker.h"
 
 extern "C"
 {
@@ -100,7 +102,7 @@ void Interface_GUIControlSlider::reset(void* kodiBase, void* handle)
   }
 
   CGUIMessage msg(GUI_MSG_LABEL_RESET, control->GetParentID(), control->GetID());
-  g_windowManager.SendThreadMessage(msg, control->GetParentID());
+  CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg, control->GetParentID());
 }
 
 char* Interface_GUIControlSlider::get_description(void* kodiBase, void* handle)

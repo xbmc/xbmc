@@ -25,6 +25,7 @@
 #include "guilib/GraphicContext.h" //! @todo Remove me
 #include "guilib/GUIDialog.h"
 #include "guilib/GUIControl.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h" //! @todo Remove me
 #include "guilib/WindowIDs.h"
 #include "input/Action.h"
@@ -100,7 +101,7 @@ bool CGameWindowFullScreen::OnAction(const CAction &action)
   case ACTION_SHOW_GUI:
   {
     // Switch back to the menu
-    g_windowManager.PreviousWindow();
+    CServiceBroker::GetGUI()->GetWindowManager().PreviousWindow();
     return true;
   }
   case ACTION_ASPECT_RATIO:
@@ -177,7 +178,7 @@ void CGameWindowFullScreen::OnInitWindow()
 void CGameWindowFullScreen::OnDeinitWindow(int nextWindowID)
 {
   // Close all active modal dialogs
-  g_windowManager.CloseInternalModalDialogs(true);
+  CServiceBroker::GetGUI()->GetWindowManager().CloseInternalModalDialogs(true);
 
   CGUIWindow::OnDeinitWindow(nextWindowID);
 
@@ -210,7 +211,7 @@ void CGameWindowFullScreen::TriggerOSD()
 
 CGUIDialog *CGameWindowFullScreen::GetOSD()
 {
-  return g_windowManager.GetDialog(WINDOW_DIALOG_GAME_OSD);
+  return CServiceBroker::GetGUI()->GetWindowManager().GetDialog(WINDOW_DIALOG_GAME_OSD);
 }
 
 void CGameWindowFullScreen::RegisterWindow()

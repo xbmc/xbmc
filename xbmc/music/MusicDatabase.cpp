@@ -37,6 +37,7 @@
 #include "filesystem/File.h"
 #include "filesystem/MusicDatabaseDirectory/DirectoryNode.h"
 #include "filesystem/MusicDatabaseDirectory/QueryParams.h"
+#include "guilib/GUIComponent.h"
 #include "guiinfo/GUIInfoLabels.h"
 #include "GUIInfoManager.h"
 #include "guilib/GUIWindowManager.h"
@@ -3396,8 +3397,8 @@ bool CMusicDatabase::LookupCDDBInfo(bool bRequery/*=false*/)
   // Do we have to look for cddb information
   if (pCdInfo->HasCDDBInfo() && !cddb.isCDCached(pCdInfo))
   {
-    CGUIDialogProgress* pDialogProgress = g_windowManager.GetWindow<CGUIDialogProgress>(WINDOW_DIALOG_PROGRESS);
-    CGUIDialogSelect *pDlgSelect = g_windowManager.GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
+    CGUIDialogProgress* pDialogProgress = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogProgress>(WINDOW_DIALOG_PROGRESS);
+    CGUIDialogSelect *pDlgSelect = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
 
     if (!pDialogProgress) return false;
     if (!pDlgSelect) return false;
@@ -3483,7 +3484,7 @@ void CMusicDatabase::DeleteCDDBInfo()
     return ;
   }
   // Show a selectdialog that the user can select the album to delete
-  CGUIDialogSelect *pDlg = g_windowManager.GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
+  CGUIDialogSelect *pDlg = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
   if (pDlg)
   {
     pDlg->SetHeading(CVariant{g_localizeStrings.Get(181)});
@@ -6921,7 +6922,7 @@ void CMusicDatabase::ExportToXML(const CLibExportSettings& settings,  CGUIDialog
 
 void CMusicDatabase::ImportFromXML(const std::string &xmlFile)
 {
-  CGUIDialogProgress *progress = g_windowManager.GetWindow<CGUIDialogProgress>(WINDOW_DIALOG_PROGRESS);
+  CGUIDialogProgress *progress = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogProgress>(WINDOW_DIALOG_PROGRESS);
   try
   {
     if (NULL == m_pDB.get()) return;

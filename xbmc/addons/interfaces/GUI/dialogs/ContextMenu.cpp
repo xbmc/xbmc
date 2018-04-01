@@ -23,9 +23,11 @@
 
 #include "addons/binary-addons/AddonDll.h"
 #include "dialogs/GUIDialogContextMenu.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "utils/log.h"
 #include "utils/Variant.h"
+#include "ServiceBroker.h"
 
 extern "C"
 {
@@ -53,7 +55,7 @@ int Interface_GUIDialogContextMenu::open(void* kodiBase, const char *heading, co
     return -1;
   }
 
-  CGUIDialogContextMenu* dialog = g_windowManager.GetWindow<CGUIDialogContextMenu>(WINDOW_DIALOG_CONTEXT_MENU);
+  CGUIDialogContextMenu* dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogContextMenu>(WINDOW_DIALOG_CONTEXT_MENU);
   if (!heading || !entries || !dialog)
   {
     CLog::Log(LOGERROR,

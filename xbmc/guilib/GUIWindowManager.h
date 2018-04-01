@@ -1,11 +1,3 @@
-/*!
-\file GUIWindowManager.h
-\brief
-*/
-
-#ifndef GUILIB_CGUIWindowManager_H
-#define GUILIB_CGUIWindowManager_H
-
 #pragma once
 
 /*
@@ -289,12 +281,3 @@ private:
   CDirtyRegionList m_dirtyregions;
   CDirtyRegionTracker m_tracker;
 };
-
-/*!
- \ingroup winman
- \brief
- */
-XBMC_GLOBAL_REF(CGUIWindowManager,g_windowManager);
-#define g_windowManager XBMC_GLOBAL_USE(CGUIWindowManager)
-#endif
-

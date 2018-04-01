@@ -18,8 +18,10 @@
  *
  */
 
+#include "ServiceBroker.h"
 #include "ZeroconfBrowserOSX.h"
 #include "GUIUserMessages.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/GUIMessage.h"
 #include "threads/SingleLock.h"
@@ -172,7 +174,7 @@ void CZeroconfBrowserOSX::BrowserCallback(CFNetServiceBrowserRef browser, CFOpti
     {
       CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);
       message.SetStringParam("zeroconf://");
-      g_windowManager.SendThreadMessage(message);
+      CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(message);
       CLog::Log(LOGDEBUG, "CZeroconfBrowserOSX::BrowserCallback sent gui update for path zeroconf://");
     }
   } else

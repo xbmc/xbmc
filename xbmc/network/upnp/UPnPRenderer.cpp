@@ -26,8 +26,10 @@
 #include "Application.h"
 #include "messaging/ApplicationMessenger.h"
 #include "FileItem.h"
+#include "ServiceBroker.h"
 #include "filesystem/SpecialProtocol.h"
 #include "GUIInfoManager.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
 #include "pictures/GUIWindowSlideShow.h"
@@ -331,14 +333,14 @@ CUPnPRenderer::UpdateState()
           avt->SetStateVariable("CurrentMediaDuration", "00:00:00");
         }
 
-    } else if (g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW) {
+    } else if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_SLIDESHOW) {
         avt->SetStateVariable("TransportState", "PLAYING");
 
         avt->SetStateVariable("AVTransportURI" , g_infoManager.GetPictureLabel(SLIDE_FILE_PATH).c_str());
         avt->SetStateVariable("CurrentTrackURI", g_infoManager.GetPictureLabel(SLIDE_FILE_PATH).c_str());
         avt->SetStateVariable("TransportPlaySpeed", "1");
 
-        CGUIWindowSlideShow *slideshow = g_windowManager.GetWindow<CGUIWindowSlideShow>(WINDOW_SLIDESHOW);
+        CGUIWindowSlideShow *slideshow = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIWindowSlideShow>(WINDOW_SLIDESHOW);
         if (slideshow)
         {
           std::string index;
@@ -449,7 +451,7 @@ CUPnPRenderer::GetMetadata(NPT_String& meta)
 NPT_Result
 CUPnPRenderer::OnNext(PLT_ActionReference& action)
 {
-    if (g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW) {
+    if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_SLIDESHOW) {
       CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_SLIDESHOW, -1, static_cast<void*>(new CAction(ACTION_NEXT_PICTURE)));
     } else {
       CApplicationMessenger::GetInstance().SendMsg(TMSG_PLAYLISTPLAYER_NEXT);
@@ -463,7 +465,7 @@ CUPnPRenderer::OnNext(PLT_ActionReference& action)
 NPT_Result
 CUPnPRenderer::OnPause(PLT_ActionReference& action)
 {
-    if (g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW) {
+    if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_SLIDESHOW) {
       CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_SLIDESHOW, -1, static_cast<void*>(new CAction(ACTION_NEXT_PICTURE)));
     } else if (!g_application.GetAppPlayer().IsPausedPlayback())
       CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_PAUSE);
@@ -476,7 +478,7 @@ CUPnPRenderer::OnPause(PLT_ActionReference& action)
 NPT_Result
 CUPnPRenderer::OnPlay(PLT_ActionReference& action)
 {
-    if (g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW) {
+    if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_SLIDESHOW) {
         return NPT_SUCCESS;
     } else if (g_application.GetAppPlayer().IsPausedPlayback()) {
       CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_PAUSE);
@@ -500,7 +502,7 @@ CUPnPRenderer::OnPlay(PLT_ActionReference& action)
 NPT_Result
 CUPnPRenderer::OnPrevious(PLT_ActionReference& action)
 {
-    if (g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW) {
+    if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_SLIDESHOW) {
       CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_SLIDESHOW, -1, static_cast<void*>(new CAction(ACTION_PREV_PICTURE)));
     } else {
       CApplicationMessenger::GetInstance().SendMsg(TMSG_PLAYLISTPLAYER_PREV);
@@ -514,7 +516,7 @@ CUPnPRenderer::OnPrevious(PLT_ActionReference& action)
 NPT_Result
 CUPnPRenderer::OnStop(PLT_ActionReference& action)
 {
-    if (g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW) {
+    if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_SLIDESHOW) {
       CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_SLIDESHOW, -1, static_cast<void*>(new CAction(ACTION_NEXT_PICTURE)));
     } else {
       CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_STOP);
@@ -537,7 +539,7 @@ CUPnPRenderer::OnSetAVTransportURI(PLT_ActionReference& action)
 
     // if not playing already, just keep around uri & metadata
     // and wait for play command
-    if (!g_application.GetAppPlayer().IsPlaying() && g_windowManager.GetActiveWindow() != WINDOW_SLIDESHOW) {
+    if (!g_application.GetAppPlayer().IsPlaying() && CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() != WINDOW_SLIDESHOW) {
         service->SetStateVariable("TransportState", "STOPPED");
         service->SetStateVariable("TransportStatus", "OK");
         service->SetStateVariable("TransportPlaySpeed", "1");
@@ -586,7 +588,7 @@ CUPnPRenderer::OnSetNextAVTransportURI(PLT_ActionReference& action)
         }
 
         CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0);
-        g_windowManager.SendThreadMessage(msg);
+        CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
 
 
         service->SetStateVariable("NextAVTransportURI", uri);
@@ -596,7 +598,7 @@ CUPnPRenderer::OnSetNextAVTransportURI(PLT_ActionReference& action)
 
         return NPT_SUCCESS;
 
-  } else if (g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW) {
+  } else if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_SLIDESHOW) {
         return NPT_FAILURE;
   } else {
         return NPT_FAILURE;

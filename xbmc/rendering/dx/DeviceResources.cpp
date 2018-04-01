@@ -21,10 +21,12 @@
 #include "DeviceResources.h"
 #include "DirectXHelper.h"
 #include "RenderContext.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/GraphicContext.h"
 #include "messaging/ApplicationMessenger.h"
 #include "platform/win32/CharsetConverter.h"
+#include "ServiceBroker.h"
 #include "utils/log.h"
 
 using namespace DirectX;
@@ -768,7 +770,7 @@ void DX::DeviceResources::ValidateDevice()
 
 void DX::DeviceResources::OnDeviceLost(bool removed)
 {
-  g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_RENDERER_LOST);
+  CServiceBroker::GetGUI()->GetWindowManager().SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_RENDERER_LOST);
 
   // tell any shared resources
   for (auto res : m_resources)
@@ -787,7 +789,7 @@ void DX::DeviceResources::OnDeviceRestored()
   for (auto res : m_resources)
     res->OnCreateDevice();
 
-  g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_RENDERER_RESET);
+  CServiceBroker::GetGUI()->GetWindowManager().SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_RENDERER_RESET);
 }
 
 // Recreate all device resources and set them back to the current state.

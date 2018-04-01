@@ -65,6 +65,7 @@ class CPlayerCoreFactory;
 class CDatabaseManager;
 class CProfilesManager;
 class CEventLog;
+class CGUIComponent;
 
 namespace KODI
 {
@@ -120,4 +121,11 @@ public:
   static CDatabaseManager &GetDatabaseManager();
   static CProfilesManager &GetProfileManager();
   static CEventLog &GetEventLog();
+
+  static CGUIComponent* GetGUI();
+  static void RegisterGUI(CGUIComponent *gui);
+  static void UnregisterGUI();
+
+private:
+  static CGUIComponent* m_pGUI;
 };

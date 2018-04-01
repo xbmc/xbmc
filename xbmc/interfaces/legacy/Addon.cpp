@@ -24,6 +24,7 @@
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
 #include "addons/settings/GUIDialogAddonSettings.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "GUIUserMessages.h"
@@ -42,10 +43,10 @@ namespace XBMCAddon
     bool Addon::UpdateSettingInActiveDialog(const char* id, const String& value)
     {
       ADDON::AddonPtr addon(pAddon);
-      if (!g_windowManager.IsWindowActive(WINDOW_DIALOG_ADDON_SETTINGS))
+      if (!CServiceBroker::GetGUI()->GetWindowManager().IsWindowActive(WINDOW_DIALOG_ADDON_SETTINGS))
         return false;
 
-      CGUIDialogAddonSettings* dialog = g_windowManager.GetWindow<CGUIDialogAddonSettings>(WINDOW_DIALOG_ADDON_SETTINGS);
+      CGUIDialogAddonSettings* dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogAddonSettings>(WINDOW_DIALOG_ADDON_SETTINGS);
       if (dialog->GetCurrentAddonID() != addon->ID())
         return false;
 
@@ -54,7 +55,7 @@ namespace XBMCAddon
       params.push_back(id);
       params.push_back(value);
       message.SetStringParams(params);
-      g_windowManager.SendThreadMessage(message, WINDOW_DIALOG_ADDON_SETTINGS);
+      CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(message, WINDOW_DIALOG_ADDON_SETTINGS);
 
       return true;
     }

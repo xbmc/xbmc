@@ -21,6 +21,7 @@
 #include "WeatherJob.h"
 
 #include "addons/AddonManager.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "GUIUserMessages.h"
@@ -88,7 +89,7 @@ bool CWeatherJob::DoWork()
 
     // and send a message that we're done
     CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_WEATHER_FETCHED);
-    g_windowManager.SendThreadMessage(msg);
+    CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
   }
   else
     CLog::Log(LOGERROR, "WEATHER: Weather download failed!");
@@ -232,7 +233,7 @@ void CWeatherJob::SetFromProperties()
   if (m_localizedTokens.empty())
     LoadLocalizedToken();
 
-  CGUIWindow* window = g_windowManager.GetWindow(WINDOW_WEATHER);
+  CGUIWindow* window = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(WINDOW_WEATHER);
   if (window)
   {
     CDateTime time = CDateTime::GetCurrentDateTime();

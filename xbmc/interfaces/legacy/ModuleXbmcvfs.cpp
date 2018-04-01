@@ -78,7 +78,11 @@ namespace XBMCAddon
     bool rmdir(const String& path, bool force)
     {
       DelayedCallGuard dg;
-      return (force ? CFileUtils::DeleteItem(path,force) : XFILE::CDirectory::Remove(path));
+
+      if (force)
+        return CFileUtils::DeleteItem(path);
+      else
+        return XFILE::CDirectory::Remove(path);
     }      
 
     Tuple<std::vector<String>, std::vector<String> > listdir(const String& path)

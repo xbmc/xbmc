@@ -543,7 +543,7 @@ void CRPBaseRenderer::ManageRenderArea()
 
 void CRPBaseRenderer::MarkDirty()
 {
-  //g_windowManager.MarkDirty(m_renderSettings.Geometry().Dimensions()); //! @todo
+  //CServiceBroker::GetGUI()->GetWindowManager().MarkDirty(m_renderSettings.Geometry().Dimensions()); //! @todo
 }
 
 float CRPBaseRenderer::GetAllowedErrorInAspect() const

@@ -23,6 +23,7 @@
 #include "ServiceBroker.h"
 #include "messaging/ApplicationMessenger.h"
 #include "dialogs/GUIDialogGamepad.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "dialogs/GUIDialogNumeric.h"
 #include "profiles/ProfilesManager.h"
@@ -364,7 +365,7 @@ bool CGUIPassword::CheckSettingLevelLock(const SettingLevel& level, bool enforce
     return true;
   
     //check if we are already in settings and in an level that needs unlocking
-  int windowID = g_windowManager.GetActiveWindow();
+  int windowID = CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow();
   if ((int)lockLevel-1 <= (short)CViewStateSettings::GetInstance().GetSettingLevel() && 
      (windowID == WINDOW_SETTINGS_MENU || 
          (windowID >= WINDOW_SCREEN_CALIBRATION &&
@@ -402,20 +403,20 @@ bool CGUIPassword::CheckMenuLock(int iWindowID)
   // check if a settings subcategory was called from other than settings window
   if (IsSettingsWindow(iWindowID))
   {
-    int iCWindowID = g_windowManager.GetActiveWindow();
+    int iCWindowID = CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow();
     if (iCWindowID != WINDOW_SETTINGS_MENU && !IsSettingsWindow(iCWindowID))
       iSwitch = WINDOW_SETTINGS_MENU;
   }
 
   if (iWindowID == WINDOW_MUSIC_NAV)
   {
-    if (g_windowManager.GetActiveWindow() == WINDOW_HOME)
+    if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_HOME)
       iSwitch = WINDOW_MUSIC_NAV;
   }
 
   if (iWindowID == WINDOW_VIDEO_NAV)
   {
-    if (g_windowManager.GetActiveWindow() == WINDOW_HOME)
+    if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_HOME)
       iSwitch = WINDOW_VIDEO_NAV;
   }
 
@@ -477,7 +478,7 @@ bool CGUIPassword::LockSource(const std::string& strType, const std::string& str
     }
   }
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
-  g_windowManager.SendThreadMessage(msg);
+  CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
 
   return bResult;
 }
@@ -494,7 +495,7 @@ void CGUIPassword::LockSources(bool lock)
         it->m_iHasLock = lock ? 2 : 1;
   }
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
-  g_windowManager.SendThreadMessage(msg);
+  CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
 }
 
 void CGUIPassword::RemoveSourceLocks()
@@ -514,7 +515,7 @@ void CGUIPassword::RemoveSourceLocks()
   }
   CMediaSourceSettings::GetInstance().Save();
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0, GUI_MSG_UPDATE_SOURCES);
-  g_windowManager.SendThreadMessage(msg);
+  CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
 }
 
 bool CGUIPassword::IsDatabasePathUnlocked(const std::string& strPath, VECSOURCES& vecSources)

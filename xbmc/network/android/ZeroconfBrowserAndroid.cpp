@@ -23,10 +23,12 @@
 #include <androidjni/jutils-details.hpp>
 #include <androidjni/Context.h>
 
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"
 #include "GUIUserMessages.h"
 #include "network/DNSNameCache.h"
+#include "ServiceBroker.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "threads/SingleLock.h"
@@ -252,7 +254,7 @@ void CZeroconfBrowserAndroidDiscover::onServiceFound(const jni::CJNINsdServiceIn
 
   CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);
   message.SetStringParam("zeroconf://");
-  g_windowManager.SendThreadMessage(message);
+  CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(message);
   CLog::Log(LOGDEBUG, "CZeroconfBrowserAndroidDiscover::onServiceFound sent gui update for path zeroconf://");
 }
 

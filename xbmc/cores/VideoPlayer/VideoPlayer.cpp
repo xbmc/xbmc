@@ -45,6 +45,7 @@
 #include "utils/URIUtils.h"
 #include "GUIInfoManager.h"
 #include "cores/DataCacheCore.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/StereoscopicsManager.h"
 #include "Application.h"
@@ -4237,7 +4238,7 @@ bool CVideoPlayer::OnAction(const CAction &action)
         }
         // send a message to everyone that we've gone to the menu
         CGUIMessage msg(GUI_MSG_VIDEO_MENU_STARTED, 0, 0);
-        g_windowManager.SendThreadMessage(msg);
+        CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
         return true;
       }
       break;
@@ -4394,9 +4395,9 @@ bool CVideoPlayer::OnAction(const CAction &action)
       break;
 
     case ACTION_PLAYER_PROCESS_INFO:
-      if (g_windowManager.GetActiveWindow() != WINDOW_DIALOG_PLAYER_PROCESS_INFO)
+      if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() != WINDOW_DIALOG_PLAYER_PROCESS_INFO)
       {
-        g_windowManager.ActivateWindow(WINDOW_DIALOG_PLAYER_PROCESS_INFO);
+        CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_DIALOG_PLAYER_PROCESS_INFO);
         return true;
       }
       break;

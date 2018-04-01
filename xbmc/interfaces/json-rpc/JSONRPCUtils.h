@@ -23,6 +23,8 @@
 #include "ITransportLayer.h"
 #include "FileItem.h"
 #include "GUIUserMessages.h"
+#include "ServiceBroker.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 
 class CVariant;
@@ -168,14 +170,14 @@ namespace JSONRPC
   public:
     static inline void NotifyItemUpdated()
     {
-      CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE, g_windowManager.GetActiveWindow());
-      g_windowManager.SendThreadMessage(message);
+      CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE, CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow());
+      CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(message);
     }
     static inline void NotifyItemUpdated(const CVideoInfoTag &info)
     {
       CFileItemPtr msgItem(new CFileItem(info));
-      CGUIMessage message(GUI_MSG_NOTIFY_ALL, g_windowManager.GetActiveWindow(), 0, GUI_MSG_UPDATE_ITEM, 0, msgItem);
-      g_windowManager.SendThreadMessage(message);
+      CGUIMessage message(GUI_MSG_NOTIFY_ALL, CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow(), 0, GUI_MSG_UPDATE_ITEM, 0, msgItem);
+      CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(message);
     }
   };
 }

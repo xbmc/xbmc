@@ -33,6 +33,7 @@
 #include "filesystem/MultiPathDirectory.h"
 #include "filesystem/StackDirectory.h"
 #include "GUIInfoManager.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "GUIUserMessages.h"
@@ -86,7 +87,7 @@ namespace VIDEO
       if (m_showDialog && !CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOLIBRARY_BACKGROUNDUPDATE))
       {
         CGUIDialogExtendedProgressBar* dialog =
-          g_windowManager.GetWindow<CGUIDialogExtendedProgressBar>(WINDOW_DIALOG_EXT_PROGRESS);
+          CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogExtendedProgressBar>(WINDOW_DIALOG_EXT_PROGRESS);
         if (dialog)
            m_handle = dialog->GetHandle(g_localizeStrings.Get(314));
       }
@@ -228,7 +229,7 @@ namespace VIDEO
   {
     CGUIMessage msg(GUI_MSG_DIRECTORY_SCANNED, 0, 0, 0);
     msg.SetStringParam(strDirectory);
-    g_windowManager.SendThreadMessage(msg);
+    CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
   }
 
   bool CVideoInfoScanner::DoScan(const std::string& strDirectory)

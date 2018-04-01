@@ -23,6 +23,7 @@
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "filesystem/File.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "GUIDialogMusicInfo.h"
@@ -36,6 +37,7 @@
 #include "settings/MediaSourceSettings.h"
 #include "storage/MediaManager.h"
 #include "Util.h"
+#include "ServiceBroker.h"
 
 using namespace XFILE;
 
@@ -58,7 +60,7 @@ public:
   // Fetch full song information including art types list
   bool DoWork() override
   {
-    CGUIDialogSongInfo *dialog = g_windowManager.GetWindow<CGUIDialogSongInfo>(WINDOW_DIALOG_SONG_INFO);
+    CGUIDialogSongInfo *dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSongInfo>(WINDOW_DIALOG_SONG_INFO);
     if (!dialog)
       return false; 
     if (dialog->IsCancelled())
@@ -148,7 +150,7 @@ bool CGUIDialogSongInfo::OnMessage(CGUIMessage& message)
         // The music lib window item is updated to but changes to the rating when it is the sort 
         // do not show on screen until refresh() that fetchs the list from scratch, sorts etc.
         CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 0, m_song);
-        g_windowManager.SendMessage(msg);
+        CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
       }
       CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_LIST);
       OnMessage(msg);
@@ -169,7 +171,7 @@ bool CGUIDialogSongInfo::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_ALBUMINFO)
       {
-        CGUIWindowMusicBase *window = g_windowManager.GetWindow<CGUIWindowMusicBase>(WINDOW_MUSIC_NAV);
+        CGUIWindowMusicBase *window = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIWindowMusicBase>(WINDOW_MUSIC_NAV);
         if (window)
         {
           CFileItem item(*m_song);
@@ -191,14 +193,14 @@ bool CGUIDialogSongInfo::OnMessage(CGUIMessage& message)
         if ((ACTION_SELECT_ITEM == iAction || ACTION_MOUSE_LEFT_CLICK == iAction))
         {
           CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControl);
-          g_windowManager.SendMessage(msg);
+          CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
           int iItem = msg.GetParam1();
           if (iItem < 0 || iItem >= static_cast<int>(m_song->GetMusicInfoTag()->GetContributors().size()))
             break;
           int idArtist = m_song->GetMusicInfoTag()->GetContributors()[iItem].GetArtistId();
           if (idArtist > 0)
           {
-              CGUIWindowMusicBase *window = g_windowManager.GetWindow<CGUIWindowMusicBase>(WINDOW_MUSIC_NAV);
+              CGUIWindowMusicBase *window = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIWindowMusicBase>(WINDOW_MUSIC_NAV);
               if (window)
               {
                 CFileItem item(*m_song);
@@ -466,7 +468,7 @@ void CGUIDialogSongInfo::OnGetArt()
     // Get new artwork to show in other places e.g. on music lib window, 
     // current playlist and player OSD.
     CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 0, m_song);
-    g_windowManager.SendMessage(msg);
+    CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
 
   }
 

@@ -23,6 +23,8 @@
 #include "GUIWindowManager.h"
 #include "GUIControl.h"
 #include "GUIInfoManager.h"
+#include "GUIComponent.h"
+#include "ServiceBroker.h"
 
 CGUIAction::CGUIAction()
 {
@@ -55,9 +57,9 @@ bool CGUIAction::ExecuteActions(int controlID, int parentID, const CGUIListItemP
     CGUIMessage msg(GUI_MSG_EXECUTE, controlID, parentID, 0, 0, item);
     msg.SetStringParam(*i);
     if (m_sendThreadMessages)
-      g_windowManager.SendThreadMessage(msg);
+      CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
     else
-      g_windowManager.SendMessage(msg);
+      CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
     retval = true;
   }
   return retval;

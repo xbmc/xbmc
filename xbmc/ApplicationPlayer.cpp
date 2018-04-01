@@ -23,6 +23,7 @@
 #include "cores/IPlayer.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "cores/VideoPlayer/VideoPlayer.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "cores/DataCacheCore.h"
 #include "Application.h"
@@ -822,7 +823,7 @@ void CApplicationPlayer::FrameMove()
   {
     if (CDataCacheCore::GetInstance().IsPlayerStateChanged())
       // CApplicationMessenger would be overhead because we are already in gui thread
-      g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_STATE_CHANGED);
+      CServiceBroker::GetGUI()->GetWindowManager().SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_STATE_CHANGED);
   }
 }
 

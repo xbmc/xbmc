@@ -21,7 +21,9 @@
 #include "Application.h"
 #include "VideoSyncPi.h"
 #include "WinSystemRpiGLESContext.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
+#include "ServiceBroker.h"
 #include "utils/log.h"
 #include "cores/RetroPlayer/process/rbpi/RPProcessInfoPi.h"
 #include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererMMAL.h"
@@ -145,7 +147,7 @@ void CWinSystemRpiGLESContext::SetVSyncImpl(bool enable)
 
 void CWinSystemRpiGLESContext::PresentRenderImpl(bool rendered)
 {
-  CWinSystemRpi::SetVisible(g_windowManager.HasVisibleControls() || g_application.GetAppPlayer().IsRenderingGuiLayer());
+  CWinSystemRpi::SetVisible(CServiceBroker::GetGUI()->GetWindowManager().HasVisibleControls() || g_application.GetAppPlayer().IsRenderingGuiLayer());
 
   if (m_delayDispReset && m_dispResetTimer.IsTimePast())
   {

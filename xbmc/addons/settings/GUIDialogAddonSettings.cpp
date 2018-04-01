@@ -21,7 +21,9 @@
 #include "GUIDialogAddonSettings.h"
 #include "GUIPassword.h"
 #include "GUIUserMessages.h"
+#include "ServiceBroker.h"
 #include "addons/settings/AddonSettings.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/WindowIDs.h"
 #include "guilib/LocalizeStrings.h"
@@ -87,7 +89,7 @@ bool CGUIDialogAddonSettings::ShowForAddon(const ADDON::AddonPtr &addon, bool sa
   }
 
   // Create the dialog
-  CGUIDialogAddonSettings* dialog = g_windowManager.GetWindow<CGUIDialogAddonSettings>(WINDOW_DIALOG_ADDON_SETTINGS);
+  CGUIDialogAddonSettings* dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogAddonSettings>(WINDOW_DIALOG_ADDON_SETTINGS);
   if (dialog == nullptr)
     return false;
 
@@ -110,7 +112,7 @@ void CGUIDialogAddonSettings::SaveAndClose()
     return;
 
   // get the dialog
-  CGUIDialogAddonSettings* dialog = g_windowManager.GetWindow<CGUIDialogAddonSettings>(WINDOW_DIALOG_ADDON_SETTINGS);
+  CGUIDialogAddonSettings* dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogAddonSettings>(WINDOW_DIALOG_ADDON_SETTINGS);
   if (dialog == nullptr || !dialog->IsActive())
     return;
 

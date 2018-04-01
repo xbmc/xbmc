@@ -25,6 +25,7 @@
 
 #include "Application.h"
 #include "FileItem.h"
+#include "ServiceBroker.h"
 #include "addons/Addon.h"
 #include "addons/Skin.h"
 #include "dialogs/GUIDialogNumeric.h"
@@ -32,6 +33,7 @@
 #include "dialogs/GUIDialogTextViewer.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "filesystem/File.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/GUISpinControlEx.h"
 #include "guilib/GUIRadioButtonControl.h"
@@ -301,13 +303,13 @@ GUIHANDLE CAddonCallbacksGUI::Window_New(void *addonData, const char *xmlFilenam
   int id = WINDOW_ADDON_START;
   // if window 14099 is in use it means addon can't create more windows
   Lock();
-  if (g_windowManager.GetWindow(WINDOW_ADDON_END))
+  if (CServiceBroker::GetGUI()->GetWindowManager().GetWindow(WINDOW_ADDON_END))
   {
     Unlock();
     CLog::Log(LOGERROR, "Window_New: %s/%s - maximum number of windows reached", CAddonInfo::TranslateType(guiHelper->m_addon->Type()).c_str(), guiHelper->m_addon->Name().c_str());
     return NULL;
   }
-  while(id < WINDOW_ADDON_END && g_windowManager.GetWindow(id) != NULL) id++;
+  while(id < WINDOW_ADDON_END && CServiceBroker::GetGUI()->GetWindowManager().GetWindow(id) != NULL) id++;
   Unlock();
 
   CGUIWindow *window;
@@ -317,7 +319,7 @@ GUIHANDLE CAddonCallbacksGUI::Window_New(void *addonData, const char *xmlFilenam
     window = new CGUIAddonWindowDialog(id, strSkinPath, guiHelper->m_addon);
 
   Lock();
-  g_windowManager.Add(window);
+  CServiceBroker::GetGUI()->GetWindowManager().Add(window);
   Unlock();
 
   window->SetCoordsRes(res);
@@ -340,25 +342,25 @@ void CAddonCallbacksGUI::Window_Delete(void *addonData, GUIHANDLE handle)
   }
 
   CGUIAddonWindow *pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
-  CGUIWindow      *pWindow      = g_windowManager.GetWindow(pAddonWindow->m_iWindowId);
+  CGUIWindow      *pWindow      = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(pAddonWindow->m_iWindowId);
   if (!pWindow)
     return;
 
   Lock();
   // first change to an existing window
-  if (g_windowManager.GetActiveWindow() == pAddonWindow->m_iWindowId && !g_application.m_bStop)
+  if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == pAddonWindow->m_iWindowId && !g_application.m_bStop)
   {
-    if(g_windowManager.GetWindow(pAddonWindow->m_iOldWindowId))
-      g_windowManager.ActivateWindow(pAddonWindow->m_iOldWindowId);
+    if(CServiceBroker::GetGUI()->GetWindowManager().GetWindow(pAddonWindow->m_iOldWindowId))
+      CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(pAddonWindow->m_iOldWindowId);
     else // old window does not exist anymore, switch to home
-      g_windowManager.ActivateWindow(WINDOW_HOME);
+      CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_HOME);
   }
   // Free any window properties
   pAddonWindow->ClearProperties();
   // free the window's resources and unload it (free all guicontrols)
   pAddonWindow->FreeResources(true);
 
-  g_windowManager.Remove(pAddonWindow->GetID());
+  CServiceBroker::GetGUI()->GetWindowManager().Remove(pAddonWindow->GetID());
   delete pAddonWindow;
   Unlock();
 }
@@ -395,18 +397,18 @@ bool CAddonCallbacksGUI::Window_Show(void *addonData, GUIHANDLE handle)
   }
 
   CGUIAddonWindow *pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
-  CGUIWindow      *pWindow      = g_windowManager.GetWindow(pAddonWindow->m_iWindowId);
+  CGUIWindow      *pWindow      = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(pAddonWindow->m_iWindowId);
   if (!pWindow)
     return false;
 
-  if (pAddonWindow->m_iOldWindowId != pAddonWindow->m_iWindowId && pAddonWindow->m_iWindowId != g_windowManager.GetActiveWindow())
-    pAddonWindow->m_iOldWindowId = g_windowManager.GetActiveWindow();
+  if (pAddonWindow->m_iOldWindowId != pAddonWindow->m_iWindowId && pAddonWindow->m_iWindowId != CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow())
+    pAddonWindow->m_iOldWindowId = CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow();
 
   Lock();
   if (pAddonWindow->IsDialog())
     static_cast<CGUIAddonWindowDialog*>(pAddonWindow)->Show();
   else
-    g_windowManager.ActivateWindow(pAddonWindow->m_iWindowId);
+    CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(pAddonWindow->m_iWindowId);
   Unlock();
 
   return true;
@@ -427,7 +429,7 @@ bool CAddonCallbacksGUI::Window_Close(void *addonData, GUIHANDLE handle)
   }
 
   CGUIAddonWindow *pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
-  CGUIWindow      *pWindow      = g_windowManager.GetWindow(pAddonWindow->m_iWindowId);
+  CGUIWindow      *pWindow      = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(pAddonWindow->m_iWindowId);
   if (!pWindow)
     return false;
 
@@ -442,7 +444,7 @@ bool CAddonCallbacksGUI::Window_Close(void *addonData, GUIHANDLE handle)
   if (pAddonWindow->IsDialog())
     static_cast<CGUIAddonWindowDialog*>(pAddonWindow)->Show(false);
   else
-    g_windowManager.ActivateWindow(pAddonWindow->m_iOldWindowId);
+    CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(pAddonWindow->m_iOldWindowId);
   pAddonWindow->m_iOldWindowId = 0;
 
   Unlock();
@@ -465,13 +467,13 @@ bool CAddonCallbacksGUI::Window_DoModal(void *addonData, GUIHANDLE handle)
   }
 
   CGUIAddonWindow *pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
-  CGUIWindow      *pWindow      = g_windowManager.GetWindow(pAddonWindow->m_iWindowId);
+  CGUIWindow      *pWindow      = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(pAddonWindow->m_iWindowId);
   if (!pWindow)
     return false;
 
   pAddonWindow->m_bModal = true;
 
-  if (pAddonWindow->m_iWindowId != g_windowManager.GetActiveWindow())
+  if (pAddonWindow->m_iWindowId != CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow())
     Window_Show(addonData, handle);
 
   return true;
@@ -492,7 +494,7 @@ bool CAddonCallbacksGUI::Window_SetFocusId(void *addonData, GUIHANDLE handle, in
   }
 
   CGUIAddonWindow *pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
-  CGUIWindow      *pWindow      = g_windowManager.GetWindow(pAddonWindow->m_iWindowId);
+  CGUIWindow      *pWindow      = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(pAddonWindow->m_iWindowId);
   if (!pWindow)
     return false;
 
@@ -527,7 +529,7 @@ int CAddonCallbacksGUI::Window_GetFocusId(void *addonData, GUIHANDLE handle)
   }
 
   CGUIAddonWindow *pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
-  CGUIWindow      *pWindow      = g_windowManager.GetWindow(pAddonWindow->m_iWindowId);
+  CGUIWindow      *pWindow      = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(pAddonWindow->m_iWindowId);
   if (!pWindow)
     return iControlId;
 
@@ -565,7 +567,7 @@ bool CAddonCallbacksGUI::Window_SetCoordinateResolution(void *addonData, GUIHAND
   }
 
   CGUIAddonWindow *pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
-  CGUIWindow      *pWindow      = g_windowManager.GetWindow(pAddonWindow->m_iWindowId);
+  CGUIWindow      *pWindow      = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(pAddonWindow->m_iWindowId);
   if (!pWindow)
     return false;
 
@@ -589,7 +591,7 @@ void CAddonCallbacksGUI::Window_SetProperty(void *addonData, GUIHANDLE handle, c
   }
 
   CGUIAddonWindow *pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
-  CGUIWindow      *pWindow      = g_windowManager.GetWindow(pAddonWindow->m_iWindowId);
+  CGUIWindow      *pWindow      = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(pAddonWindow->m_iWindowId);
   if (!pWindow)
     return;
 
@@ -616,7 +618,7 @@ void CAddonCallbacksGUI::Window_SetPropertyInt(void *addonData, GUIHANDLE handle
   }
 
   CGUIAddonWindow *pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
-  CGUIWindow      *pWindow      = g_windowManager.GetWindow(pAddonWindow->m_iWindowId);
+  CGUIWindow      *pWindow      = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(pAddonWindow->m_iWindowId);
   if (!pWindow)
     return;
 
@@ -643,7 +645,7 @@ void CAddonCallbacksGUI::Window_SetPropertyBool(void *addonData, GUIHANDLE handl
   }
 
   CGUIAddonWindow *pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
-  CGUIWindow      *pWindow      = g_windowManager.GetWindow(pAddonWindow->m_iWindowId);
+  CGUIWindow      *pWindow      = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(pAddonWindow->m_iWindowId);
   if (!pWindow)
     return;
 
@@ -670,7 +672,7 @@ void CAddonCallbacksGUI::Window_SetPropertyDouble(void *addonData, GUIHANDLE han
   }
 
   CGUIAddonWindow *pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
-  CGUIWindow      *pWindow      = g_windowManager.GetWindow(pAddonWindow->m_iWindowId);
+  CGUIWindow      *pWindow      = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(pAddonWindow->m_iWindowId);
   if (!pWindow)
     return;
 
@@ -697,7 +699,7 @@ const char* CAddonCallbacksGUI::Window_GetProperty(void *addonData, GUIHANDLE ha
   }
 
   CGUIAddonWindow *pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
-  CGUIWindow      *pWindow      = g_windowManager.GetWindow(pAddonWindow->m_iWindowId);
+  CGUIWindow      *pWindow      = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(pAddonWindow->m_iWindowId);
   if (!pWindow)
     return NULL;
 
@@ -726,7 +728,7 @@ int CAddonCallbacksGUI::Window_GetPropertyInt(void *addonData, GUIHANDLE handle,
   }
 
   CGUIAddonWindow *pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
-  CGUIWindow      *pWindow      = g_windowManager.GetWindow(pAddonWindow->m_iWindowId);
+  CGUIWindow      *pWindow      = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(pAddonWindow->m_iWindowId);
   if (!pWindow)
     return -1;
 
@@ -755,7 +757,7 @@ bool CAddonCallbacksGUI::Window_GetPropertyBool(void *addonData, GUIHANDLE handl
   }
 
   CGUIAddonWindow *pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
-  CGUIWindow      *pWindow      = g_windowManager.GetWindow(pAddonWindow->m_iWindowId);
+  CGUIWindow      *pWindow      = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(pAddonWindow->m_iWindowId);
   if (!pWindow)
     return false;
 
@@ -784,7 +786,7 @@ double CAddonCallbacksGUI::Window_GetPropertyDouble(void *addonData, GUIHANDLE h
   }
 
   CGUIAddonWindow *pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
-  CGUIWindow      *pWindow      = g_windowManager.GetWindow(pAddonWindow->m_iWindowId);
+  CGUIWindow      *pWindow      = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(pAddonWindow->m_iWindowId);
   if (!pWindow)
     return 0.0;
 
@@ -813,7 +815,7 @@ void CAddonCallbacksGUI::Window_ClearProperties(void *addonData, GUIHANDLE handl
   }
 
   CGUIAddonWindow *pAddonWindow = static_cast<CGUIAddonWindow*>(handle);
-  CGUIWindow      *pWindow      = g_windowManager.GetWindow(pAddonWindow->m_iWindowId);
+  CGUIWindow      *pWindow      = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(pAddonWindow->m_iWindowId);
   if (!pWindow)
     return;
 
@@ -1892,7 +1894,7 @@ bool CAddonCallbacksGUI::Dialog_YesNo_ShowAndGetInputLineButtonText(const char *
 //@{
 void CAddonCallbacksGUI::Dialog_TextViewer(const char *heading, const char *text)
 {
-  CGUIDialogTextViewer* pDialog = g_windowManager.GetWindow<CGUIDialogTextViewer>(WINDOW_DIALOG_TEXT_VIEWER);
+  CGUIDialogTextViewer* pDialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogTextViewer>(WINDOW_DIALOG_TEXT_VIEWER);
   pDialog->SetHeading(heading);
   pDialog->SetText(text);
   pDialog->Open();
@@ -1903,7 +1905,7 @@ void CAddonCallbacksGUI::Dialog_TextViewer(const char *heading, const char *text
 //@{
 int CAddonCallbacksGUI::Dialog_Select(const char *heading, const char *entries[], unsigned int size, int selected)
 {
-  CGUIDialogSelect* pDialog = g_windowManager.GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
+  CGUIDialogSelect* pDialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
   pDialog->Reset();
   pDialog->SetHeading(CVariant{heading});
 

@@ -185,3 +185,20 @@ CEventLog& CServiceBroker::GetEventLog()
 {
   return g_application.m_ServiceManager->GetEventLog();
 }
+
+CGUIComponent* CServiceBroker::m_pGUI = nullptr;
+
+CGUIComponent* CServiceBroker::GetGUI()
+{
+  return m_pGUI;
+}
+
+void CServiceBroker::RegisterGUI(CGUIComponent *gui)
+{
+  m_pGUI = gui;
+}
+
+void CServiceBroker::UnregisterGUI()
+{
+  m_pGUI = nullptr;
+}

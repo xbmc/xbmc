@@ -21,8 +21,10 @@
 #include <math.h>
 
 #include "ProgressJob.h"
+#include "ServiceBroker.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "utils/Variant.h"
 
@@ -69,7 +71,7 @@ bool CProgressJob::DoModal()
   // get a progress dialog if we don't already have one
   if (m_progressDialog == NULL)
   {
-    m_progressDialog = g_windowManager.GetWindow<CGUIDialogProgress>(WINDOW_DIALOG_PROGRESS);
+    m_progressDialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogProgress>(WINDOW_DIALOG_PROGRESS);
 
     if (m_progressDialog == NULL)
       return false;

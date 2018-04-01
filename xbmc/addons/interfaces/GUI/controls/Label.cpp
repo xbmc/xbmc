@@ -23,8 +23,10 @@
 
 #include "addons/binary-addons/AddonDll.h"
 #include "guilib/GUILabelControl.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "utils/log.h"
+#include "ServiceBroker.h"
 
 extern "C"
 {
@@ -72,7 +74,7 @@ void Interface_GUIControlLabel::set_label(void* kodiBase, void* handle, const ch
 
   CGUIMessage msg(GUI_MSG_LABEL_SET, control->GetParentID(), control->GetID());
   msg.SetLabel(label);
-  g_windowManager.SendThreadMessage(msg, control->GetParentID());
+  CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg, control->GetParentID());
 }
 
 char* Interface_GUIControlLabel::get_label(void* kodiBase, void* handle)

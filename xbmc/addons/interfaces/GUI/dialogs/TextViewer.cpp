@@ -23,8 +23,10 @@
 
 #include "addons/binary-addons/AddonDll.h"
 #include "dialogs/GUIDialogTextViewer.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "utils/log.h"
+#include "ServiceBroker.h"
 
 extern "C"
 {
@@ -52,7 +54,7 @@ void Interface_GUIDialogTextViewer::open(void* kodiBase, const char *heading, co
     return;
   }
 
-  CGUIDialogTextViewer* dialog = g_windowManager.GetWindow<CGUIDialogTextViewer>(WINDOW_DIALOG_TEXT_VIEWER);
+  CGUIDialogTextViewer* dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogTextViewer>(WINDOW_DIALOG_TEXT_VIEWER);
   if (!heading || !text || !dialog)
   {
     CLog::Log(LOGERROR,

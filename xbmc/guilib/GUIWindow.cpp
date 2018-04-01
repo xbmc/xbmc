@@ -19,6 +19,7 @@
  */
 
 #include "GUIWindow.h"
+#include "GUIComponent.h"
 #include "GUIWindowManager.h"
 #include "input/Key.h"
 #include "GUIControlFactory.h"
@@ -34,6 +35,7 @@
 #include "utils/XMLUtils.h"
 #include "GUIAudioManager.h"
 #include "Application.h"
+#include "ServiceBroker.h"
 #include "messaging/ApplicationMessenger.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/Variant.h"
@@ -839,7 +841,7 @@ void CGUIWindow::ClearAll()
 
 bool CGUIWindow::Initialize()
 {
-  if (!g_windowManager.Initialized())
+  if (!CServiceBroker::GetGUI()->GetWindowManager().Initialized())
     return false;
   if (!NeedLoad())
     return true;
@@ -864,7 +866,7 @@ void CGUIWindow::SetInitialVisibility()
 
 bool CGUIWindow::IsActive() const
 {
-  return g_windowManager.IsWindowActive(GetID());
+  return CServiceBroker::GetGUI()->GetWindowManager().IsWindowActive(GetID());
 }
 
 bool CGUIWindow::CheckAnimation(ANIMATION_TYPE animType)
@@ -960,7 +962,7 @@ void CGUIWindow::ResetControlStates()
 
 bool CGUIWindow::OnBack(int actionID)
 {
-  g_windowManager.PreviousWindow();
+  CServiceBroker::GetGUI()->GetWindowManager().PreviousWindow();
   return true;
 }
 

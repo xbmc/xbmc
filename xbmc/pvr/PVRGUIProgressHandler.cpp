@@ -23,7 +23,9 @@
 #include <algorithm>
 #include <cmath>
 
+#include "ServiceBroker.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/WindowIDs.h"
 
@@ -64,7 +66,7 @@ namespace PVR
 
   void CPVRGUIProgressHandler::Process()
   {
-    CGUIDialogExtendedProgressBar* progressBar = g_windowManager.GetWindow<CGUIDialogExtendedProgressBar>(WINDOW_DIALOG_EXT_PROGRESS);
+    CGUIDialogExtendedProgressBar* progressBar = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogExtendedProgressBar>(WINDOW_DIALOG_EXT_PROGRESS);
     if (m_bStop || !progressBar)
       return;
 

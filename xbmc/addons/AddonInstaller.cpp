@@ -40,6 +40,7 @@
 #include "utils/JobManager.h"
 #include "addons/AddonManager.h"
 #include "addons/Repository.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"      // for callback
 #include "GUIUserMessages.h"              // for callback
 #include "utils/StringUtils.h"
@@ -88,7 +89,7 @@ void CAddonInstaller::OnJobComplete(unsigned int jobID, bool success, CJob* job)
   PrunePackageCache();
 
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE);
-  g_windowManager.SendThreadMessage(msg);
+  CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
 }
 
 void CAddonInstaller::OnJobProgress(unsigned int jobID, unsigned int progress, unsigned int total, const CJob *job)
@@ -102,7 +103,7 @@ void CAddonInstaller::OnJobProgress(unsigned int jobID, unsigned int progress, u
     CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM);
     msg.SetStringParam(i->first);
     lock.Leave();
-    g_windowManager.SendThreadMessage(msg);
+    CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
   }
 }
 
@@ -396,7 +397,7 @@ void CAddonInstaller::PrunePackageCache()
   {
     size -= items[i]->m_dwSize;
     db.RemovePackage(items[i]->GetPath());
-    CFileUtils::DeleteItem(items[i++], true);
+    CFileUtils::DeleteItem(items[i++]);
   }
 
   if (size > limit)
@@ -415,7 +416,7 @@ void CAddonInstaller::PrunePackageCache()
     {
       size -= items[i]->m_dwSize;
       db.RemovePackage(items[i]->GetPath());
-      CFileUtils::DeleteItem(items[i++],true);
+      CFileUtils::DeleteItem(items[i++]);
     }
   }
 
@@ -856,7 +857,9 @@ bool CAddonUnInstallJob::DoWork()
 
   ClearFavourites();
   if (m_removeData)
-    CFileUtils::DeleteItem("special://profile/addon_data/"+m_addon->ID()+"/", true);
+  {
+    CFileUtils::DeleteItem("special://profile/addon_data/"+m_addon->ID()+"/");
+  }
 
   AddonPtr addon;
   CAddonDatabase database;

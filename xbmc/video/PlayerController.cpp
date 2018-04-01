@@ -27,6 +27,7 @@
 #include "settings/Settings.h"
 #include "cores/IPlayer.h"
 #include "input/Key.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/GUISliderControl.h"
 #include "guilib/GUIWindowManager.h"
@@ -432,7 +433,7 @@ bool CPlayerController::OnAction(const CAction &action)
       {
         std::vector<ProgramInfo> programs;
         g_application.GetAppPlayer().GetPrograms(programs);
-        CGUIDialogSelect *dialog = g_windowManager.GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
+        CGUIDialogSelect *dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
         if (dialog)
         {
           int playing = 0;

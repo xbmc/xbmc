@@ -24,6 +24,7 @@
 #include "guilib/GraphicContext.h"
 #include "guilib/GUIBaseContainer.h"
 #include "guilib/GUIMessage.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/WindowIDs.h"
 #include "input/ActionIDs.h"
@@ -218,7 +219,7 @@ void CDialogGameVideoSelect::OnDescriptionChange(const std::string &description)
 {
   CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), CONTROL_DESCRIPTION);
   msg.SetLabel(description);
-  g_windowManager.SendThreadMessage(msg, GetID());
+  CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg, GetID());
 }
 
 void CDialogGameVideoSelect::RegisterDialog()

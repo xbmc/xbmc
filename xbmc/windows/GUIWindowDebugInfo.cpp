@@ -26,12 +26,14 @@
 #include "CompileInfo.h"
 #include "filesystem/SpecialProtocol.h"
 #include "input/WindowTranslator.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIControlFactory.h"
 #include "guilib/GUIFontManager.h"
 #include "guilib/GUITextLayout.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/GUIControlProfiler.h"
 #include "GUIInfoManager.h"
+#include "ServiceBroker.h"
 #include "utils/Variant.h"
 #include "utils/StringUtils.h"
 
@@ -127,8 +129,8 @@ void CGUIWindowDebugInfo::Process(unsigned int currentTime, CDirtyRegionList &di
   {
     if (!info.empty())
       info += "\n";
-    CGUIWindow *window = g_windowManager.GetWindow(g_windowManager.GetActiveWindowOrDialog());
-    CGUIWindow *pointer = g_windowManager.GetWindow(WINDOW_DIALOG_POINTER);
+    CGUIWindow *window = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindowOrDialog());
+    CGUIWindow *pointer = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(WINDOW_DIALOG_POINTER);
     CPoint point;
     if (pointer)
       point = CPoint(pointer->GetXPosition(), pointer->GetYPosition());

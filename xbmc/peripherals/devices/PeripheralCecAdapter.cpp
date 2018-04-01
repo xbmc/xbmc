@@ -22,10 +22,12 @@
 #include "PeripheralCecAdapter.h"
 #include "input/remote/IRRemote.h"
 #include "Application.h"
+#include "ServiceBroker.h"
 #include "messaging/ApplicationMessenger.h"
 #include "DynamicDll.h"
 #include "threads/SingleLock.h"
 #include "dialogs/GUIDialogKaiToast.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
 #include "guilib/LocalizeStrings.h"
@@ -1196,8 +1198,8 @@ void CPeripheralCecAdapter::CecSourceActivated(void *cbParam, const CEC::cec_log
 
   if (adapter->GetSettingInt("pause_or_stop_playback_on_deactivate") != LOCALISED_ID_NONE)
   {
-    bool bShowingSlideshow = (g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW);
-    CGUIWindowSlideShow *pSlideShow = bShowingSlideshow ? g_windowManager.GetWindow<CGUIWindowSlideShow>(WINDOW_SLIDESHOW) : NULL;
+    bool bShowingSlideshow = (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_SLIDESHOW);
+    CGUIWindowSlideShow *pSlideShow = bShowingSlideshow ? CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIWindowSlideShow>(WINDOW_SLIDESHOW) : NULL;
     bool bPlayingAndDeactivated = activated == 0 && (
         (pSlideShow && pSlideShow->IsPlaying()) || !g_application.GetAppPlayer().IsPausedPlayback());
     bool bPausedAndActivated = activated == 1 && adapter->m_bPlaybackPaused && (

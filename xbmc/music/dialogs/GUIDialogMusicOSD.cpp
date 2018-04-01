@@ -20,6 +20,7 @@
 
 #include "GUIDialogMusicOSD.h"
 #include "addons/GUIWindowAddonBrowser.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "GUIUserMessages.h"
 #include "input/Key.h"
@@ -52,13 +53,13 @@ bool CGUIDialogMusicOSD::OnMessage(CGUIMessage &message)
         {
           CServiceBroker::GetSettings().SetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION, addonID);
           CServiceBroker::GetSettings().Save();
-          g_windowManager.SendMessage(GUI_MSG_VISUALISATION_RELOAD, 0, 0);
+          CServiceBroker::GetGUI()->GetWindowManager().SendMessage(GUI_MSG_VISUALISATION_RELOAD, 0, 0);
         }
       }
       else if (iControl == CONTROL_LOCK_BUTTON)
       {
         CGUIMessage msg(GUI_MSG_VISUALISATION_ACTION, 0, 0, ACTION_VIS_PRESET_LOCK);
-        g_windowManager.SendMessage(msg);
+        CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
       }
       return true;
     }
@@ -87,10 +88,10 @@ void CGUIDialogMusicOSD::FrameMove()
   {
     // check for movement of mouse or a submenu open
     if (CServiceBroker::GetInputManager().IsMouseActive() ||
-        g_windowManager.IsWindowActive(WINDOW_DIALOG_VIS_SETTINGS) ||
-        g_windowManager.IsWindowActive(WINDOW_DIALOG_VIS_PRESET_LIST) ||
-        g_windowManager.IsWindowActive(WINDOW_DIALOG_AUDIO_DSP_OSD_SETTINGS) ||
-        g_windowManager.IsWindowActive(WINDOW_DIALOG_PVR_RADIO_RDS_INFO))
+        CServiceBroker::GetGUI()->GetWindowManager().IsWindowActive(WINDOW_DIALOG_VIS_SETTINGS) ||
+        CServiceBroker::GetGUI()->GetWindowManager().IsWindowActive(WINDOW_DIALOG_VIS_PRESET_LIST) ||
+        CServiceBroker::GetGUI()->GetWindowManager().IsWindowActive(WINDOW_DIALOG_AUDIO_DSP_OSD_SETTINGS) ||
+        CServiceBroker::GetGUI()->GetWindowManager().IsWindowActive(WINDOW_DIALOG_PVR_RADIO_RDS_INFO))
       // extend show time by original value
       SetAutoClose(m_showDuration);
   }

@@ -23,9 +23,11 @@
 
 #include "addons/binary-addons/AddonDll.h"
 #include "dialogs/GUIDialogProgress.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "utils/log.h"
 #include "utils/Variant.h"
+#include "ServiceBroker.h"
 
 namespace ADDON
 {
@@ -65,7 +67,7 @@ void* Interface_GUIDialogProgress::new_dialog(void* kodiBase)
     return nullptr;
   }
 
-  CGUIDialogProgress *dialog = g_windowManager.GetWindow<CGUIDialogProgress>(WINDOW_DIALOG_PROGRESS);
+  CGUIDialogProgress *dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogProgress>(WINDOW_DIALOG_PROGRESS);
   if (!dialog)
   {
     CLog::Log(LOGERROR,

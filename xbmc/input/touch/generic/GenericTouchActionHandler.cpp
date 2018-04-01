@@ -23,7 +23,9 @@
 #include <cmath>
 
 #include "Application.h"
+#include "ServiceBroker.h"
 #include "messaging/ApplicationMessenger.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
 
@@ -152,7 +154,7 @@ void CGenericTouchActionHandler::OnRotate(float centerX, float centerY, float an
 int CGenericTouchActionHandler::QuerySupportedGestures(float x, float y)
 {
   CGUIMessage msg(GUI_MSG_GESTURE_NOTIFY, 0, 0, static_cast<int> (std::round(x)), static_cast<int> (std::round(y)));
-  if (!g_windowManager.SendMessage(msg))
+  if (!CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg))
     return 0;
 
   int result = 0;

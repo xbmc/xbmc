@@ -22,8 +22,10 @@
 #include "PlayListPlayer.h"
 #include "Application.h"
 #include "PartyModeManager.h"
+#include "ServiceManager.h"
 #include "settings/AdvancedSettings.h"
 #include "GUIUserMessages.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "playlists/PlayList.h"
 #include "utils/log.h"
@@ -102,7 +104,7 @@ bool CPlayListPlayer::OnMessage(CGUIMessage &message)
       if (m_iCurrentPlayList != PLAYLIST_NONE && m_bPlaybackStarted)
       {
         CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_STOPPED, 0, 0, m_iCurrentPlayList, m_iCurrentSong);
-        g_windowManager.SendThreadMessage(msg);
+        CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
         Reset();
         m_iCurrentPlayList = PLAYLIST_NONE;
         return true;
@@ -166,7 +168,7 @@ int CPlayListPlayer::GetNextSong()
     {
       CLog::Log(LOGERROR,"Playlist Player: RepeatOne stuck on unplayable item: %i, path [%s]", m_iCurrentSong, playlist[m_iCurrentSong]->GetPath().c_str());
       CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_STOPPED, 0, 0, m_iCurrentPlayList, m_iCurrentSong);
-      g_windowManager.SendThreadMessage(msg);
+      CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
       Reset();
       m_iCurrentPlayList = PLAYLIST_NONE;
       return -1;
@@ -194,7 +196,7 @@ bool CPlayListPlayer::PlayNext(int offset, bool bAutoPlay)
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(559), g_localizeStrings.Get(34201));
 
     CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_STOPPED, 0, 0, m_iCurrentPlayList, m_iCurrentSong);
-    g_windowManager.SendThreadMessage(msg);
+    CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
     Reset();
     m_iCurrentPlayList = PLAYLIST_NONE;
     return false;
@@ -333,7 +335,7 @@ bool CPlayListPlayer::Play(int iSong, std::string player, bool bAutoPlay /* = fa
       HELPERS::ShowOKDialogText(CVariant{16026}, CVariant{16027});
 
       CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_STOPPED, 0, 0, m_iCurrentPlayList, m_iCurrentSong);
-      g_windowManager.SendThreadMessage(msg);
+      CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
       Reset();
       GetPlaylist(m_iCurrentPlayList).Clear();
       m_iCurrentPlayList = PLAYLIST_NONE;
@@ -352,7 +354,7 @@ bool CPlayListPlayer::Play(int iSong, std::string player, bool bAutoPlay /* = fa
     {
       CLog::Log(LOGDEBUG,"Playlist Player: no more playable items... aborting playback");
       CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_STOPPED, 0, 0, m_iCurrentPlayList, m_iCurrentSong);
-      g_windowManager.SendThreadMessage(msg);
+      CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
       Reset();
       m_iCurrentPlayList = PLAYLIST_NONE;
       return false;
@@ -414,7 +416,7 @@ void CPlayListPlayer::ClearPlaylist(int iPlaylist)
 
   // its likely that the playlist changed
   CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0);
-  g_windowManager.SendMessage(msg);
+  CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
 }
 
 CPlayList& CPlayListPlayer::GetPlaylist(int iPlaylist)
@@ -467,7 +469,7 @@ void CPlayListPlayer::Reset()
 
   // its likely that the playlist changed
   CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0);
-  g_windowManager.SendMessage(msg);
+  CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
 }
 
 bool CPlayListPlayer::HasPlayedFirstFile() const
@@ -703,7 +705,7 @@ void CPlayListPlayer::Remove(int iPlaylist, int iPosition)
 
   // its likely that the playlist changed
   CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0);
-  g_windowManager.SendMessage(msg);
+  CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
 }
 
 void CPlayListPlayer::Clear()
@@ -732,7 +734,7 @@ void CPlayListPlayer::Swap(int iPlaylist, int indexItem1, int indexItem2)
 
   // its likely that the playlist changed
   CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0);
-  g_windowManager.SendMessage(msg);
+  CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
 }
 
 void CPlayListPlayer::AnnouncePropertyChanged(int iPlaylist, const std::string &strProperty, const CVariant &value)
@@ -850,11 +852,11 @@ void PLAYLIST::CPlayListPlayer::OnApplicationMessage(KODI::MESSAGING::ThreadMess
       return;
     }
     // restore to previous window if needed
-    if (g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW ||
-      g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO ||
-      g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_GAME ||
-      g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION)
-      g_windowManager.PreviousWindow();
+    if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_SLIDESHOW ||
+      CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO ||
+      CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_FULLSCREEN_GAME ||
+      CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_VISUALISATION)
+      CServiceBroker::GetGUI()->GetWindowManager().PreviousWindow();
 
     g_application.ResetScreenSaver();
     g_application.WakeUpScreenSaverAndDPMS();
@@ -930,11 +932,11 @@ void PLAYLIST::CPlayListPlayer::OnApplicationMessage(KODI::MESSAGING::ThreadMess
       stopMusic = (pMsg->param1 == PLAYLIST_MUSIC);
     }
 
-    if ((stopSlideshow && g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW) ||
-      (stopVideo && g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO) ||
-      (stopVideo && g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_GAME) ||
-      (stopMusic && g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION))
-      g_windowManager.PreviousWindow();
+    if ((stopSlideshow && CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_SLIDESHOW) ||
+      (stopVideo && CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO) ||
+      (stopVideo && CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_FULLSCREEN_GAME) ||
+      (stopMusic && CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_VISUALISATION))
+      CServiceBroker::GetGUI()->GetWindowManager().PreviousWindow();
 
     g_application.ResetScreenSaver();
     g_application.WakeUpScreenSaverAndDPMS();

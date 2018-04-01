@@ -20,6 +20,8 @@
 
 #include "DialogGameVolume.h"
 #include "dialogs/GUIDialogVolumeBar.h"
+#include "guilib/GUIComponent.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIDialog.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUISliderControl.h"
@@ -30,6 +32,7 @@
 #include "utils/log.h"
 #include "utils/Variant.h"
 #include "Application.h"
+#include "ServiceBroker.h"
 
 #include <cmath>
 
@@ -79,7 +82,7 @@ void CDialogGameVolume::OnInitWindow()
 
   SET_CONTROL_HIDDEN(CONTROL_LABEL);
 
-  CGUIDialogVolumeBar *dialogVolumeBar = dynamic_cast<CGUIDialogVolumeBar*>(g_windowManager.GetWindow(WINDOW_DIALOG_VOLUME_BAR));
+  CGUIDialogVolumeBar *dialogVolumeBar = dynamic_cast<CGUIDialogVolumeBar*>(CServiceBroker::GetGUI()->GetWindowManager().GetWindow(WINDOW_DIALOG_VOLUME_BAR));
   if (dialogVolumeBar != nullptr)
     dialogVolumeBar->RegisterCallback(this);
 
@@ -90,7 +93,7 @@ void CDialogGameVolume::OnDeinitWindow(int nextWindowID)
 {
   ANNOUNCEMENT::CAnnouncementManager::GetInstance().RemoveAnnouncer(this);
 
-  CGUIDialogVolumeBar *dialogVolumeBar = dynamic_cast<CGUIDialogVolumeBar*>(g_windowManager.GetWindow(WINDOW_DIALOG_VOLUME_BAR));
+  CGUIDialogVolumeBar *dialogVolumeBar = dynamic_cast<CGUIDialogVolumeBar*>(CServiceBroker::GetGUI()->GetWindowManager().GetWindow(WINDOW_DIALOG_VOLUME_BAR));
   if (dialogVolumeBar != nullptr)
     dialogVolumeBar->UnregisterCallback(this);
 
@@ -124,7 +127,7 @@ void CDialogGameVolume::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char
       m_volumePercent = volumePercent;
 
       CGUIMessage msg(GUI_MSG_STATE_CHANGED, GetID(), GetID());
-      g_windowManager.SendThreadMessage(msg);
+      CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
     }
   }
 }

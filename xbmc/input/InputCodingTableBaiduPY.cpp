@@ -23,9 +23,11 @@
 #include <stdlib.h>
 #include <utility>
 
+#include "ServiceBroker.h"
 #include "filesystem/CurlFile.h"
 #include "utils/StringUtils.h"
 #include "utils/RegExp.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"
 
@@ -99,7 +101,7 @@ void CInputCodingTableBaiduPY::HandleResponse(const std::string& strCode, const 
   CGUIMessage msg(GUI_MSG_CODINGTABLE_LOOKUP_COMPLETED, 0, 0, m_messageCounter);
   msg.SetStringParam(strCode);
   lock.Leave();
-  g_windowManager.SendThreadMessage(msg, g_windowManager.GetActiveWindowOrDialog());
+  CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg, CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindowOrDialog());
 }
 
 std::wstring CInputCodingTableBaiduPY::UnicodeToWString(const std::string& unicode)

@@ -21,7 +21,9 @@
 #include "Control.h"
 #include "LanguageHook.h"
 #include "AddonUtils.h"
+#include "ServiceBroker.h"
 
+#include "guilib/GUIComponent.h"
 #include "guilib/GUILabel.h"
 #include "guilib/GUIFontManager.h"
 #include "guilib/GUILabelControl.h"
@@ -75,7 +77,7 @@ namespace XBMCAddon
       CGUIMessage msg(GUI_MSG_LABEL_ADD, iParentId, iControlId);
       msg.SetLabel(label);
 
-      g_windowManager.SendThreadMessage(msg, iParentId);
+      CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg, iParentId);
     }
 
     void ControlFadeLabel::reset()
@@ -83,7 +85,7 @@ namespace XBMCAddon
       CGUIMessage msg(GUI_MSG_LABEL_RESET, iParentId, iControlId);
 
       vecLabels.clear();
-      g_windowManager.SendThreadMessage(msg, iParentId);
+      CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg, iParentId);
     }
 
     CGUIControl* ControlFadeLabel::Create()
@@ -143,7 +145,7 @@ namespace XBMCAddon
       msg.SetLabel(text);
 
       // send message
-      g_windowManager.SendThreadMessage(msg, iParentId);
+      CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg, iParentId);
     }
 
     String ControlTextBox::getText()
@@ -158,7 +160,7 @@ namespace XBMCAddon
     {
       // create message
       CGUIMessage msg(GUI_MSG_LABEL_RESET, iParentId, iControlId);
-      g_windowManager.SendThreadMessage(msg, iParentId);
+      CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg, iParentId);
     }
 
     void ControlTextBox::scroll(long position)
@@ -975,7 +977,7 @@ namespace XBMCAddon
       strText = label;
       CGUIMessage msg(GUI_MSG_LABEL_SET, iParentId, iControlId);
       msg.SetLabel(strText);
-      g_windowManager.SendThreadMessage(msg, iParentId);
+      CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg, iParentId);
     }
 
     String ControlLabel::getLabel()
@@ -1041,7 +1043,7 @@ namespace XBMCAddon
       strText = label;
       CGUIMessage msg(GUI_MSG_LABEL_SET, iParentId, iControlId);
       msg.SetLabel(strText);
-      g_windowManager.SendThreadMessage(msg, iParentId);
+      CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg, iParentId);
     }
 
     String ControlEdit::getLabel()
@@ -1058,13 +1060,13 @@ namespace XBMCAddon
       msg.SetLabel(text);
 
       // send message
-      g_windowManager.SendThreadMessage(msg, iParentId);
+      CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg, iParentId);
     }
 
     String ControlEdit::getText()
     {
       CGUIMessage msg(GUI_MSG_ITEM_SELECTED, iParentId, iControlId);
-      g_windowManager.SendMessage(msg, iParentId);
+      CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg, iParentId);
 
       return msg.GetLabel();
     }
@@ -1199,7 +1201,7 @@ namespace XBMCAddon
 
       CGUIMessage msg(GUI_MSG_LABEL_BIND, iParentId, iControlId, 0, 0, items);
       msg.SetPointer(items.get());
-      g_windowManager.SendThreadMessage(msg, iParentId);
+      CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg, iParentId);
     }
 
     void ControlList::selectItem(long item)
@@ -1208,7 +1210,7 @@ namespace XBMCAddon
       CGUIMessage msg(GUI_MSG_ITEM_SELECT, iParentId, iControlId, item);
 
       // send message
-      g_windowManager.SendThreadMessage(msg, iParentId);
+      CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg, iParentId);
     }
 
     void ControlList::removeItem(int index)
@@ -1225,7 +1227,7 @@ namespace XBMCAddon
     {
       CGUIMessage msg(GUI_MSG_LABEL_RESET, iParentId, iControlId);
 
-      g_windowManager.SendThreadMessage(msg, iParentId);
+      CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg, iParentId);
 
       // delete all items from vector
       // delete all ListItem from vector
