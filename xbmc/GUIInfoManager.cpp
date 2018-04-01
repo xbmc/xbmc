@@ -10411,8 +10411,10 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
   case LISTITEM_STEREOSCOPIC_MODE:
     {
       std::string stereoMode = item->GetProperty("stereomode").asString();
+
       if (stereoMode.empty() && item->HasVideoInfoTag())
-        stereoMode = CStereoscopicsManager::GetInstance().NormalizeStereoMode(item->GetVideoInfoTag()->m_streamDetails.GetStereoMode());
+        stereoMode = CStereoscopicsManager::NormalizeStereoMode(item->GetVideoInfoTag()->m_streamDetails.GetStereoMode());
+
       return stereoMode;
     }
   case LISTITEM_IMDBNUMBER:
@@ -10661,8 +10663,10 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
     else if (condition == LISTITEM_IS_STEREOSCOPIC)
     {
       std::string stereoMode = pItem->GetProperty("stereomode").asString();
+
       if (stereoMode.empty() && pItem->HasVideoInfoTag())
-          stereoMode = CStereoscopicsManager::GetInstance().NormalizeStereoMode(pItem->GetVideoInfoTag()->m_streamDetails.GetStereoMode());
+        stereoMode = CStereoscopicsManager::NormalizeStereoMode(pItem->GetVideoInfoTag()->m_streamDetails.GetStereoMode());
+
       if (!stereoMode.empty() && stereoMode != "mono")
         return true;
     }
