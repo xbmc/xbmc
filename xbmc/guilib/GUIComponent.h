@@ -21,6 +21,7 @@
 #pragma once
 
 #include <memory>
+#include <string>
 
 class CGUIWindowManager;
 
@@ -31,6 +32,8 @@ public:
   virtual ~CGUIComponent();
 
   CGUIWindowManager& GetWindowManager();
+
+  bool ConfirmDelete(std::string path);
 
 protected:
   std::unique_ptr<CGUIWindowManager> m_pWindowManager;

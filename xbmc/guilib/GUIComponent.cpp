@@ -20,7 +20,9 @@
 
 #include "GUIComponent.h"
 #include "GUIWindowManager.h"
+#include "dialogs/GUIDialogYesNo.h"
 #include "ServiceBroker.h"
+#include "URL.h"
 
 CGUIComponent::CGUIComponent()
 {
@@ -38,4 +40,20 @@ CGUIComponent::~CGUIComponent()
 CGUIWindowManager& CGUIComponent::GetWindowManager()
 {
   return *m_pWindowManager;
+}
+
+bool CGUIComponent::ConfirmDelete(std::string path)
+{
+  CGUIDialogYesNo* pDialog = GetWindowManager().GetWindow<CGUIDialogYesNo>(WINDOW_DIALOG_YES_NO);
+  if (pDialog)
+  {
+    pDialog->SetHeading(CVariant{122});
+    pDialog->SetLine(0, CVariant{125});
+    pDialog->SetLine(1, CVariant{CURL(path).GetWithoutUserDetails()});
+    pDialog->SetLine(2, CVariant{""});
+    pDialog->Open();
+    if (pDialog->IsConfirmed())
+      return true;
+  }
+  return false;
 }

@@ -397,7 +397,7 @@ void CAddonInstaller::PrunePackageCache()
   {
     size -= items[i]->m_dwSize;
     db.RemovePackage(items[i]->GetPath());
-    CFileUtils::DeleteItem(items[i++], true);
+    CFileUtils::DeleteItem(items[i++]);
   }
 
   if (size > limit)
@@ -416,7 +416,7 @@ void CAddonInstaller::PrunePackageCache()
     {
       size -= items[i]->m_dwSize;
       db.RemovePackage(items[i]->GetPath());
-      CFileUtils::DeleteItem(items[i++],true);
+      CFileUtils::DeleteItem(items[i++]);
     }
   }
 
@@ -857,7 +857,9 @@ bool CAddonUnInstallJob::DoWork()
 
   ClearFavourites();
   if (m_removeData)
-    CFileUtils::DeleteItem("special://profile/addon_data/"+m_addon->ID()+"/", true);
+  {
+    CFileUtils::DeleteItem("special://profile/addon_data/"+m_addon->ID()+"/");
+  }
 
   AddonPtr addon;
   CAddonDatabase database;

@@ -1161,7 +1161,11 @@ void CGUIWindowVideoBase::OnDeleteItem(CFileItemPtr item)
   if ((CServiceBroker::GetSettings().GetBool(CSettings::SETTING_FILELISTS_ALLOWFILEDELETION) ||
        m_vecItems->IsPath("special://videoplaylists/")) &&
       CUtil::SupportsWriteFileOperations(item->GetPath()))
-    CFileUtils::DeleteItem(item);
+  {
+    CGUIComponent *gui = CServiceBroker::GetGUI();
+    if (gui && gui->ConfirmDelete(item->GetPath()))
+      CFileUtils::DeleteItem(item);
+  }
 }
 
 void CGUIWindowVideoBase::LoadPlayList(const std::string& strPlayList, int iPlayList /* = PLAYLIST_VIDEO */)

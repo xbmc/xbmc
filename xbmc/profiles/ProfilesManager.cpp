@@ -351,7 +351,10 @@ bool CProfilesManager::DeleteProfile(size_t index)
   item->SetPath(URIUtils::AddFileToFolder(GetUserDataFolder(), strDirectory + "/"));
   item->m_bIsFolder = true;
   item->Select(true);
-  CFileUtils::DeleteItem(item);
+
+  CGUIComponent *gui = CServiceBroker::GetGUI();
+  if (gui && gui->ConfirmDelete(item->GetPath()))
+    CFileUtils::DeleteItem(item);
 
   return Save();
 }

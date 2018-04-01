@@ -19,9 +19,6 @@
  */
 #include "FileUtils.h"
 #include "ServiceBroker.h"
-#include "guilib/GUIWindowManager.h"
-#include "dialogs/GUIDialogYesNo.h"
-#include "guilib/GUIComponent.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "utils/log.h"
 #include "guilib/LocalizeStrings.h"
@@ -40,30 +37,19 @@
 
 using namespace XFILE;
 
-bool CFileUtils::DeleteItem(const std::string &strPath, bool force)
+bool CFileUtils::DeleteItem(const std::string &strPath)
 {
   CFileItemPtr item(new CFileItem(strPath));
   item->SetPath(strPath);
   item->m_bIsFolder = URIUtils::HasSlashAtEnd(strPath);
   item->Select(true);
-  return DeleteItem(item, force);
+  return DeleteItem(item);
 }
 
-bool CFileUtils::DeleteItem(const CFileItemPtr &item, bool force)
+bool CFileUtils::DeleteItem(const CFileItemPtr &item)
 {
   if (!item || item->IsParentFolder())
     return false;
-
-  CGUIDialogYesNo* pDialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogYesNo>(WINDOW_DIALOG_YES_NO);
-  if (!force && pDialog)
-  {
-    pDialog->SetHeading(CVariant{122});
-    pDialog->SetLine(0, CVariant{125});
-    pDialog->SetLine(1, CVariant{CURL(item->GetPath()).GetWithoutUserDetails()});
-    pDialog->SetLine(2, CVariant{""});
-    pDialog->Open();
-    if (!pDialog->IsConfirmed()) return false;
-  }
 
   // Create a temporary item list containing the file/folder for deletion
   CFileItemPtr pItemTemp(new CFileItem(*item));
