@@ -26,8 +26,6 @@ using namespace ActiveAE;
 #include "ActiveAESound.h"
 #include "ActiveAEStream.h"
 #include "ServiceBroker.h"
-#include "cores/AudioEngine/Engines/ActiveAE/AudioDSPAddons/ActiveAEDSP.h"
-#include "cores/AudioEngine/Engines/ActiveAE/AudioDSPAddons/ActiveAEDSPProcess.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/AudioEngine/Utils/AEStreamInfo.h"
 #include "cores/AudioEngine/AEResampleFactory.h"

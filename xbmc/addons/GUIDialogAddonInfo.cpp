@@ -28,7 +28,6 @@
 #include "ServiceBroker.h"
 #include "filesystem/Directory.h"
 #include "addons/settings/GUIDialogAddonSettings.h"
-#include "cores/AudioEngine/Engines/ActiveAE/AudioDSPAddons/ActiveAEDSP.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogYesNo.h"

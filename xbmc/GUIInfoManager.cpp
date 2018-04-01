@@ -105,7 +105,6 @@
 #include "music/MusicThumbLoader.h"
 #include "video/VideoDatabase.h"
 #include "cores/IPlayer.h"
-#include "cores/AudioEngine/Engines/ActiveAE/AudioDSPAddons/ActiveAEDSP.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/VideoPlayer/VideoRenderers/BaseRenderer.h"
 #include "interfaces/info/InfoExpression.h"
@@ -784,12 +783,6 @@ const infomap weather[] =        {{ "isfetched",        WEATHER_IS_FETCHED },
 ///                  _boolean_,
 ///     Returns true if at least one pvr client addon is installed and enabled.
 ///   }
-///   \table_row3{   <b>`System.HasADSP`</b>,
-///                  \anchor System_HasADSP
-///                  _boolean_,
-///     Returns true if ADSP is supported from Kodi
-///     \note normally always true
-///   }
 ///   \table_row3{   <b>`System.HasCMS`</b>,
 ///                  \anchor System_HasCMS
 ///                  _boolean_,
@@ -1222,7 +1215,6 @@ const infomap system_labels[] =  {{ "hasnetwork",       SYSTEM_ETHERNET_LINK_ACT
                                   { "haspvr",           SYSTEM_HAS_PVR },
                                   { "startupwindow",    SYSTEM_STARTUP_WINDOW },
                                   { "stereoscopicmode", SYSTEM_STEREOSCOPIC_MODE },
-                                  { "hasadsp",          SYSTEM_HAS_ADSP },
                                   { "hascms",           SYSTEM_HAS_CMS },
                                   { "privacypolicy",    SYSTEM_PRIVACY_POLICY },
                                   { "haspvraddon",      SYSTEM_HAS_PVR_ADDON }};
@@ -4832,101 +4824,6 @@ const infomap pvr_times[] =      {{ "epgeventduration",       PVR_EPG_EVENT_DURA
                                   { "timeshiftoffset",        PVR_TIMESHIFT_OFFSET }};
 
 /// \page modules__General__List_of_gui_access
-/// \section modules__General__List_of_gui_access_ADSP ADSP
-/// @{
-/// \table_start
-///   \table_h3{ Labels, Type, Description }
-///   \table_row3{   <b>`ADSP.IsActive`</b>,
-///                  \anchor ADSP_IsActive
-///                  _boolean_,
-///     Returns true if dsp system is enabled
-///   }
-///   \table_row3{   <b>`ADSP.HasModes`</b>,
-///                  \anchor ADSP_HasModes
-///                  _boolean_,
-///     Returns true if one or more modes are present on any of the types
-///   }
-///   \table_row3{   <b>`ADSP.HasInputResample`</b>,
-///                  \anchor ADSP_HasInputResample
-///                  _boolean_,
-///     Returns true if on stream is a input resample is active
-///   }
-///   \table_row3{   <b>`ADSP.HasPreProcess`</b>,
-///                  \anchor ADSP_HasPreProcess
-///                  _boolean_,
-///     Returns true if on stream is a pre process mode active
-///   }
-///   \table_row3{   <b>`ADSP.HasMasterProcess`</b>,
-///                  \anchor ADSP_HasMasterProcess
-///                  _boolean_,
-///     Returns true if on stream is a master process mode available
-///   }
-///   \table_row3{   <b>`ADSP.HasPostProcess`</b>,
-///                  \anchor ADSP_HasPostProcess
-///                  _boolean_,
-///     Returns true if on stream is a post process
-///   }
-///   \table_row3{   <b>`ADSP.HasOutputResample`</b>,
-///                  \anchor ADSP_HasOutputResample
-///                  _boolean_,
-///     Returns true if on stream is a output resample
-///   }
-///   \table_row3{   <b>`ADSP.MasterActive`</b>,
-///                  \anchor ADSP_MasterActive
-///                  _boolean_,
-///     Returns true if on stream is a master mode selected and active
-///   }
-///   \table_row3{   <b>`ADSP.ActiveStreamType`</b>,
-///                  \anchor ADSP_ActiveStreamType
-///                  _string_,
-///     From user wanted and selected stream type\, e.g. music or video
-///   }
-///   \table_row3{   <b>`ADSP.DetectedStreamType`</b>,
-///                  \anchor ADSP_DetectedStreamType
-///                  _string_,
-///     From Kodi detected stream type
-///   }
-///   \table_row3{   <b>`ADSP.MasterName`</b>,
-///                  \anchor ADSP_MasterName
-///                  _string_,
-///     Name of the currently selected and used master dsp mode
-///   }
-///   \table_row3{   <b>`ADSP.MasterInfo`</b>,
-///                  \anchor ADSP_MasterInfo
-///                  _string_,
-///     Continues updated information label of master mode (if available)
-///   }
-///   \table_row3{   <b>`ADSP.MasterOwnIcon`</b>,
-///                  \anchor ADSP_MasterOwnIcon
-///                  _string_,
-///     Icon to use for selected master mode
-///   }
-///   \table_row3{   <b>`ADSP.MasterOverrideIcon`</b>,
-///                  \anchor ADSP_MasterOverrideIcon
-///                  _string_,
-///     Icon to override Kodi's codec icon with one of add-on\, e.g. Dolby
-///     Digital EX on Dolby Digital
-///   }
-/// \table_end
-///
-/// -----------------------------------------------------------------------------
-/// @}
-const infomap adsp[] =           {{ "isactive",                 ADSP_IS_ACTIVE },
-                                  { "hasmodes",                 ADSP_HAS_MODES },
-                                  { "hasinputresample",         ADSP_HAS_INPUT_RESAMPLE },
-                                  { "haspreprocess",            ADSP_HAS_PRE_PROCESS },
-                                  { "hasmasterprocess",         ADSP_HAS_MASTER_PROCESS },
-                                  { "haspostprocess",           ADSP_HAS_POST_PROCESS },
-                                  { "hasoutputresample",        ADSP_HAS_OUTPUT_RESAMPLE },
-                                  { "masteractive",             ADSP_MASTER_ACTIVE },
-                                  { "activestreamtype",         ADSP_ACTIVE_STREAM_TYPE },
-                                  { "detectedstreamtype",       ADSP_DETECTED_STREAM_TYPE },
-                                  { "mastername",               ADSP_MASTER_NAME },
-                                  { "masterinfo",               ADSP_MASTER_INFO },
-                                  { "masterownicon",            ADSP_MASTER_OWN_ICON },
-                                  { "masteroverrideicon",       ADSP_MASTER_OVERRIDE_ICON }};
-
-/// \page modules__General__List_of_gui_access
 /// \section modules__General__List_of_gui_access_RDS Radio RDS
 /// \note Only be supported on PVR Radio where the related add-on client can
 /// bring it.
@@ -5906,14 +5803,6 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
       {
         if (prop.name == pvr_times[i].str)
           return AddMultiInfo(GUIInfo(pvr_times[i].val, TranslateTimeFormat(prop.param())));
-      }
-    }
-    else if (cat.name == "adsp")
-    {
-      for (size_t i = 0; i < sizeof(adsp) / sizeof(infomap); i++)
-      {
-        if (prop.name == adsp[i].str)
-          return adsp[i].val;
       }
     }
     else if (cat.name == "rds")
@@ -7204,9 +7093,6 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
           addonCache.GetAddons(pvrAddons, ADDON::ADDON_PVRDLL);
           bReturn = (pvrAddons.size() > 0);
         }
-        break;
-      case SYSTEM_HAS_ADSP:
-        bReturn = true;
         break;
       case SYSTEM_HAS_CMS:
 #if defined(HAS_GL) || defined(HAS_DX)

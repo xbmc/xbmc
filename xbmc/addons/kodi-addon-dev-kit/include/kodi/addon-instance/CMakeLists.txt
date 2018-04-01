@@ -1,5 +1,4 @@
-set(HEADERS AudioDSP.h
-            AudioDecoder.h
+set(HEADERS AudioDecoder.h
             AudioEncoder.h
             ImageDecoder.h
             Inputstream.h
