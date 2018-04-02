@@ -182,7 +182,7 @@ void CGUIDialog::Open_Internal(bool bProcessRenderLoop, const std::string &param
 {
   // Lock graphic context here as it is sometimes called from non rendering threads
   // maybe we should have a critical section per window instead??
-  CSingleLock lock(g_graphicsContext);
+  CSingleLock lock(CServiceBroker::GetWinSystem().GetGfxContext());
 
   if (!CServiceBroker::GetGUI()->GetWindowManager().Initialized() ||
       (m_active && !m_closing && !IsAnimating(ANIM_TYPE_WINDOW_CLOSE)))
@@ -220,7 +220,7 @@ void CGUIDialog::Open(const std::string &param /* = "" */)
   if (!g_application.IsCurrentThread())
   {
     // make sure graphics lock is not held
-    CSingleExit leaveIt(g_graphicsContext);
+    CSingleExit leaveIt(CServiceBroker::GetWinSystem().GetGfxContext());
     CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_DIALOG_OPEN, -1, -1, static_cast<void*>(this), param);
   }
   else

@@ -314,9 +314,9 @@ bool CGUIAddonWindowDialog::OnMessage(CGUIMessage &message)
 
 void CGUIAddonWindowDialog::Show(bool show /* = true */)
 {
-  unsigned int iCount = g_graphicsContext.exit();
+  unsigned int iCount = CServiceBroker::GetWinSystem().GetGfxContext().exit();
   CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ADDON_DIALOG, 1, show ? 1 : 0, static_cast<void*>(this));
-  g_graphicsContext.restore(iCount);
+  CServiceBroker::GetWinSystem().GetGfxContext().restore(iCount);
 }
 
 void CGUIAddonWindowDialog::Show_Internal(bool show /* = true */)

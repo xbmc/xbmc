@@ -173,7 +173,7 @@ void CGUITextBox::Process(unsigned int currentTime, CDirtyRegionList &dirtyregio
     m_autoScrollRepeatAnim->Animate(currentTime, true);
     TransformMatrix matrix;
     m_autoScrollRepeatAnim->RenderAnimation(matrix);
-    m_cachedTextMatrix = g_graphicsContext.AddTransform(matrix);
+    m_cachedTextMatrix = CServiceBroker::GetWinSystem().GetGfxContext().AddTransform(matrix);
   }
 
   // update our scroll position as necessary
@@ -199,16 +199,16 @@ void CGUITextBox::Process(unsigned int currentTime, CDirtyRegionList &dirtyregio
   CGUIControl::Process(currentTime, dirtyregions);
 
   if (m_autoScrollRepeatAnim)
-    g_graphicsContext.RemoveTransform();
+    CServiceBroker::GetWinSystem().GetGfxContext().RemoveTransform();
 }
 
 void CGUITextBox::Render()
 {
   // render the repeat anim as appropriate
   if (m_autoScrollRepeatAnim)
-    g_graphicsContext.SetTransform(m_cachedTextMatrix);
+    CServiceBroker::GetWinSystem().GetGfxContext().SetTransform(m_cachedTextMatrix);
 
-  if (g_graphicsContext.SetClipRegion(m_posX, m_posY, m_width, m_renderHeight))
+  if (CServiceBroker::GetWinSystem().GetGfxContext().SetClipRegion(m_posX, m_posY, m_width, m_renderHeight))
   {
     // we offset our draw position to take into account scrolling and whether or not our focused
     // item is offscreen "above" the list.
@@ -258,10 +258,10 @@ void CGUITextBox::Render()
       m_font->End();
     }
 
-    g_graphicsContext.RestoreClipRegion();
+    CServiceBroker::GetWinSystem().GetGfxContext().RestoreClipRegion();
   }
   if (m_autoScrollRepeatAnim)
-    g_graphicsContext.RemoveTransform();
+    CServiceBroker::GetWinSystem().GetGfxContext().RemoveTransform();
   CGUIControl::Render();
 }
 

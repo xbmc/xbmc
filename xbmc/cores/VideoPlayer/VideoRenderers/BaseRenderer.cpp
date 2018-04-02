@@ -222,7 +222,7 @@ void CBaseRenderer::CalcNormalRenderRect(float offsetX, float offsetY, float wid
   // calculate the correct output frame ratio (using the users pixel ratio setting
   // and the output pixel ratio setting)
 
-  float outputFrameRatio = inputFrameRatio / g_graphicsContext.GetResInfo().fPixelRatio;
+  float outputFrameRatio = inputFrameRatio / CServiceBroker::GetWinSystem().GetGfxContext().GetResInfo().fPixelRatio;
 
   // allow a certain error to maximize size of render area
   float fCorrection = width / height / outputFrameRatio - 1.0f;
@@ -276,7 +276,7 @@ void CBaseRenderer::CalcNormalRenderRect(float offsetX, float offsetY, float wid
   m_destRect.y2 = m_destRect.y1 + MathUtils::round_int(newHeight);
 
   // clip as needed
-  if (!(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating()))
+  if (!(CServiceBroker::GetWinSystem().GetGfxContext().IsFullScreenVideo() || CServiceBroker::GetWinSystem().GetGfxContext().IsCalibrating()))
   {
     CRect original(m_destRect);
     m_destRect.Intersect(CRect(offsetX, offsetY, offsetX + width, offsetY + height));
@@ -370,7 +370,7 @@ void CBaseRenderer::CalculateFrameAspectRatio(unsigned int desired_width, unsign
 
 void CBaseRenderer::ManageRenderArea()
 {
-  m_viewRect = g_graphicsContext.GetViewWindow();
+  m_viewRect = CServiceBroker::GetWinSystem().GetGfxContext().GetViewWindow();
 
   m_sourceRect.x1 = 0.0f;
   m_sourceRect.y1 = 0.0f;
@@ -378,7 +378,7 @@ void CBaseRenderer::ManageRenderArea()
   m_sourceRect.y2 = (float)m_sourceHeight;
 
   unsigned int stereo_mode  = CONF_FLAGS_STEREO_MODE_MASK(m_iFlags);
-  int          stereo_view  = g_graphicsContext.GetStereoView();
+  int          stereo_view  = CServiceBroker::GetWinSystem().GetGfxContext().GetStereoView();
 
   if(CONF_FLAGS_STEREO_CADENCE(m_iFlags) == CONF_FLAGS_STEREO_CADANCE_RIGHT_LEFT)
   {
@@ -445,8 +445,8 @@ void CBaseRenderer::SetViewMode(int viewMode)
   m_videoSettings.m_ViewMode = viewMode;
 
   // get our calibrated full screen resolution
-  RESOLUTION res = g_graphicsContext.GetVideoResolution();
-  RESOLUTION_INFO info = g_graphicsContext.GetResInfo();
+  RESOLUTION res = CServiceBroker::GetWinSystem().GetGfxContext().GetVideoResolution();
+  RESOLUTION_INFO info = CServiceBroker::GetWinSystem().GetGfxContext().GetResInfo();
   float screenWidth  = (float)(info.Overscan.right  - info.Overscan.left);
   float screenHeight = (float)(info.Overscan.bottom - info.Overscan.top);
 

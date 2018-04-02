@@ -72,7 +72,7 @@ void CTimeUtils::UpdateFrameTime(bool flip)
   unsigned int last = frameTime;
   while (frameTime < currentTime)
   {
-    frameTime += (unsigned int)(1000 / g_graphicsContext.GetFPS());
+    frameTime += (unsigned int)(1000 / CServiceBroker::GetWinSystem().GetGfxContext().GetFPS());
     // observe wrap around
     if (frameTime < last)
       break;

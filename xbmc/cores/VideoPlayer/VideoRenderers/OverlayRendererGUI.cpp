@@ -165,7 +165,7 @@ void COverlayText::PrepareRender(const std::string &font, int color, int height,
     CLog::Log(LOGERROR, "COverlayText::PrepareRender - GetFontLayout failed for font %s", font.c_str());
     return;
   }
-  RESOLUTION_INFO res = g_graphicsContext.GetResInfo();
+  RESOLUTION_INFO res = CServiceBroker::GetWinSystem().GetGfxContext().GetResInfo();
   float width_max = (float)res.Overscan.right - res.Overscan.left;
   m_layout->Update(m_text, width_max * 0.9f, false, true); // true to force LTR reading order (most Hebrew subs are this format)
   m_layout->GetTextExtent(m_width, m_height);
@@ -176,8 +176,8 @@ void COverlayText::Render(OVERLAY::SRenderState &state)
   if(m_layout == NULL)
     return;
 
-  CRect rd = g_graphicsContext.GetViewWindow();
-  RESOLUTION_INFO res = g_graphicsContext.GetResInfo();
+  CRect rd = CServiceBroker::GetWinSystem().GetGfxContext().GetViewWindow();
+  RESOLUTION_INFO res = CServiceBroker::GetWinSystem().GetGfxContext().GetResInfo();
 
   /* our coordinates are in screen coordinates constrained to rd, but the font is sized suitably for fullscreen,
      so we must scale up the positioning to screen coordinates, and then scale down to our final size and position
@@ -194,7 +194,7 @@ void COverlayText::Render(OVERLAY::SRenderState &state)
   float y = state.y;
   mat.InverseTransformPosition(x, y);
 
-  g_graphicsContext.SetTransform(mat, 1.0f, 1.0f);
+  CServiceBroker::GetWinSystem().GetGfxContext().SetTransform(mat, 1.0f, 1.0f);
 
   float width_max = (float) res.Overscan.right - res.Overscan.left;
 
@@ -208,5 +208,5 @@ void COverlayText::Render(OVERLAY::SRenderState &state)
   y = std::min(y, res.Overscan.bottom - m_height);
 
   m_layout->RenderOutline(x, y, 0, 0xFF000000, XBFONT_CENTER_X, width_max);
-  g_graphicsContext.RemoveTransform();
+  CServiceBroker::GetWinSystem().GetGfxContext().RemoveTransform();
 }

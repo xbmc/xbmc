@@ -36,27 +36,27 @@ namespace XBMCAddon
     long getCurrentWindowId()
     {
       DelayedCallGuard dg;
-      CSingleLock gl(g_graphicsContext);
+      CSingleLock gl(CServiceBroker::GetWinSystem().GetGfxContext());
       return CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow();
     }
 
     long getCurrentWindowDialogId()
     {
       DelayedCallGuard dg;
-      CSingleLock gl(g_graphicsContext);
+      CSingleLock gl(CServiceBroker::GetWinSystem().GetGfxContext());
       return CServiceBroker::GetGUI()->GetWindowManager().GetTopmostModalDialog();
     }
 
     long getScreenHeight()
     {
       XBMC_TRACE;
-      return g_graphicsContext.GetHeight();
+      return CServiceBroker::GetWinSystem().GetGfxContext().GetHeight();
     }
 
     long getScreenWidth()
     {
       XBMC_TRACE;
-      return g_graphicsContext.GetWidth();
+      return CServiceBroker::GetWinSystem().GetGfxContext().GetWidth();
     }
 
     const char* getNOTIFICATION_INFO()    { return NOTIFICATION_INFO; }

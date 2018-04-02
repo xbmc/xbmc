@@ -71,15 +71,15 @@ void CGUIWindowScreensaverDim::Process(unsigned int currentTime, CDirtyRegionLis
   if (m_newDimLevel != m_dimLevel && !IsAnimating(ANIM_TYPE_WINDOW_CLOSE))
     m_dimLevel = m_newDimLevel;
   CGUIDialog::Process(currentTime, dirtyregions);
-  m_renderRegion.SetRect(0, 0, (float)g_graphicsContext.GetWidth(), (float)g_graphicsContext.GetHeight());
+  m_renderRegion.SetRect(0, 0, (float)CServiceBroker::GetWinSystem().GetGfxContext().GetWidth(), (float)CServiceBroker::GetWinSystem().GetGfxContext().GetHeight());
 }
 
 void CGUIWindowScreensaverDim::Render()
 {
   // draw a translucent black quad - fading is handled by the window animation
   color_t color = ((color_t)(m_dimLevel * 2.55f) & 0xff) << 24;
-  color = g_graphicsContext.MergeAlpha(color);
-  CRect rect(0, 0, (float)g_graphicsContext.GetWidth(), (float)g_graphicsContext.GetHeight());
+  color = CServiceBroker::GetWinSystem().GetGfxContext().MergeAlpha(color);
+  CRect rect(0, 0, (float)CServiceBroker::GetWinSystem().GetGfxContext().GetWidth(), (float)CServiceBroker::GetWinSystem().GetGfxContext().GetHeight());
   CGUITexture::DrawQuad(rect, color);
   CGUIDialog::Render();
 }

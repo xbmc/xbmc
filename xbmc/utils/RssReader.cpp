@@ -400,7 +400,7 @@ void CRssReader::UpdateObserver()
   getFeed(feed);
   if (!feed.empty())
   {
-    CSingleLock lock(g_graphicsContext);
+    CSingleLock lock(CServiceBroker::GetWinSystem().GetGfxContext());
     if (m_pObserver) // need to check again when locked to make sure observer wasnt removed
       m_pObserver->OnFeedUpdate(feed);
   }

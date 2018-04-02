@@ -486,11 +486,11 @@ bool CStereoscopicsManager::OnAction(const CAction &action)
 
 void CStereoscopicsManager::ApplyStereoMode(const RENDER_STEREO_MODE &mode, bool notify)
 {
-  RENDER_STEREO_MODE currentMode = g_graphicsContext.GetStereoMode();
+  RENDER_STEREO_MODE currentMode = CServiceBroker::GetWinSystem().GetGfxContext().GetStereoMode();
   CLog::Log(LOGDEBUG, "StereoscopicsManager::ApplyStereoMode: trying to apply stereo mode. Current: %s | Target: %s", ConvertGuiStereoModeToString(currentMode), ConvertGuiStereoModeToString(mode));
   if (currentMode != mode)
   {
-    g_graphicsContext.SetStereoMode(mode);
+    CServiceBroker::GetWinSystem().GetGfxContext().SetStereoMode(mode);
     CLog::Log(LOGDEBUG, "StereoscopicsManager: stereo mode changed to %s", ConvertGuiStereoModeToString(mode));
     if (notify)
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(36501), GetLabelForStereoMode(mode));

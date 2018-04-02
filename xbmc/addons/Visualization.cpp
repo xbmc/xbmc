@@ -48,7 +48,7 @@ CVisualization::CVisualization(ADDON::BinaryAddonBasePtr addonBase, float x, flo
   m_struct.props.y = static_cast<int>(y);
   m_struct.props.width = static_cast<int>(w);
   m_struct.props.height = static_cast<int>(h);
-  m_struct.props.pixelRatio = g_graphicsContext.GetResInfo().fPixelRatio;
+  m_struct.props.pixelRatio = CServiceBroker::GetWinSystem().GetGfxContext().GetResInfo().fPixelRatio;
   m_struct.props.name = m_name.c_str();
   m_struct.props.presets = m_presetsPath.c_str();
   m_struct.props.profile = m_profilePath.c_str();

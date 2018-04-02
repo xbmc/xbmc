@@ -334,11 +334,11 @@ void CGUIEPGGridContainer::ProcessProgressIndicator(unsigned int currentTime, CD
 
 void CGUIEPGGridContainer::RenderProgressIndicator()
 {
-  if (g_graphicsContext.SetClipRegion(m_rulerPosX, m_rulerPosY, GetProgressIndicatorWidth(), GetProgressIndicatorHeight()))
+  if (CServiceBroker::GetWinSystem().GetGfxContext().SetClipRegion(m_rulerPosX, m_rulerPosY, GetProgressIndicatorWidth(), GetProgressIndicatorHeight()))
   {
     m_guiProgressIndicatorTexture.SetDiffuseColor(m_diffuseColor);
     m_guiProgressIndicatorTexture.Render();
-    g_graphicsContext.RestoreClipRegion();
+    CServiceBroker::GetWinSystem().GetGfxContext().RestoreClipRegion();
   }
 }
 
@@ -350,7 +350,7 @@ void CGUIEPGGridContainer::ProcessItem(float posX, float posY, const CFileItemPt
     return;
 
   // set the origin
-  g_graphicsContext.SetOrigin(posX, posY);
+  CServiceBroker::GetWinSystem().GetGfxContext().SetOrigin(posX, posY);
 
   if (m_bInvalidated)
     item->SetInvalid();
@@ -412,13 +412,13 @@ void CGUIEPGGridContainer::ProcessItem(float posX, float posY, const CFileItemPt
     else
       item->GetLayout()->Process(item.get(), m_parentID, currentTime, dirtyregions);
   }
-  g_graphicsContext.RestoreOrigin();
+  CServiceBroker::GetWinSystem().GetGfxContext().RestoreOrigin();
 }
 
 void CGUIEPGGridContainer::RenderItem(float posX, float posY, CGUIListItem *item, bool focused)
 {
   // set the origin
-  g_graphicsContext.SetOrigin(posX, posY);
+  CServiceBroker::GetWinSystem().GetGfxContext().SetOrigin(posX, posY);
 
   if (focused)
   {
@@ -432,7 +432,7 @@ void CGUIEPGGridContainer::RenderItem(float posX, float posY, CGUIListItem *item
     else if (item->GetLayout())
       item->GetLayout()->Render(item, m_parentID);
   }
-  g_graphicsContext.RestoreOrigin();
+  CServiceBroker::GetWinSystem().GetGfxContext().RestoreOrigin();
 }
 
 bool CGUIEPGGridContainer::OnAction(const CAction &action)
@@ -2040,9 +2040,9 @@ void CGUIEPGGridContainer::HandleChannels(bool bRender, unsigned int currentTime
   if (bRender)
   {
     if (m_orientation == VERTICAL)
-      g_graphicsContext.SetClipRegion(m_channelPosX, m_channelPosY, m_channelWidth, m_gridHeight);
+      CServiceBroker::GetWinSystem().GetGfxContext().SetClipRegion(m_channelPosX, m_channelPosY, m_channelWidth, m_gridHeight);
     else
-      g_graphicsContext.SetClipRegion(m_channelPosX, m_channelPosY, m_gridWidth, m_channelHeight);
+      CServiceBroker::GetWinSystem().GetGfxContext().SetClipRegion(m_channelPosX, m_channelPosY, m_gridWidth, m_channelHeight);
   }
   else
   {
@@ -2131,7 +2131,7 @@ void CGUIEPGGridContainer::HandleChannels(bool bRender, unsigned int currentTime
         RenderItem(focusedPos, originChannel.y, focusedItem.get(), true);
     }
 
-    g_graphicsContext.RestoreClipRegion();
+    CServiceBroker::GetWinSystem().GetGfxContext().RestoreClipRegion();
   }
 }
 
@@ -2145,9 +2145,9 @@ void CGUIEPGGridContainer::HandleRulerDate(bool bRender, unsigned int currentTim
   if (bRender)
   {
     // Render single ruler item with date of selected programme
-    g_graphicsContext.SetClipRegion(m_posX, m_posY, m_rulerDateWidth, m_rulerDateHeight);
+    CServiceBroker::GetWinSystem().GetGfxContext().SetClipRegion(m_posX, m_posY, m_rulerDateWidth, m_rulerDateHeight);
     RenderItem(m_posX, m_posY, item.get(), false);
-    g_graphicsContext.RestoreClipRegion();
+    CServiceBroker::GetWinSystem().GetGfxContext().RestoreClipRegion();
   }
   else
   {
@@ -2175,18 +2175,18 @@ void CGUIEPGGridContainer::HandleRuler(bool bRender, unsigned int currentTime, C
     if (!m_rulerDateLayout)
     {
       // Render single ruler item with date of selected programme
-      g_graphicsContext.SetClipRegion(m_posX, m_posY, m_width, m_height);
+      CServiceBroker::GetWinSystem().GetGfxContext().SetClipRegion(m_posX, m_posY, m_width, m_height);
       RenderItem(m_posX, m_posY, item.get(), false);
-      g_graphicsContext.RestoreClipRegion();
+      CServiceBroker::GetWinSystem().GetGfxContext().RestoreClipRegion();
     }
 
     // render ruler items
     GetProgrammeCacheOffsets(cacheBeforeRuler, cacheAfterRuler);
 
     if (m_orientation == VERTICAL)
-      g_graphicsContext.SetClipRegion(m_rulerPosX, m_rulerPosY, m_gridWidth, m_rulerHeight);
+      CServiceBroker::GetWinSystem().GetGfxContext().SetClipRegion(m_rulerPosX, m_rulerPosY, m_gridWidth, m_rulerHeight);
     else
-      g_graphicsContext.SetClipRegion(m_rulerPosX, m_rulerPosY, m_rulerWidth, m_gridHeight);
+      CServiceBroker::GetWinSystem().GetGfxContext().SetClipRegion(m_rulerPosX, m_rulerPosY, m_rulerWidth, m_gridHeight);
   }
   else
   {
@@ -2262,7 +2262,7 @@ void CGUIEPGGridContainer::HandleRuler(bool bRender, unsigned int currentTime, C
   }
 
   if (bRender)
-    g_graphicsContext.RestoreClipRegion();
+    CServiceBroker::GetWinSystem().GetGfxContext().RestoreClipRegion();
 }
 
 void CGUIEPGGridContainer::HandleProgrammeGrid(bool bRender, unsigned int currentTime, CDirtyRegionList &dirtyregions)
@@ -2277,7 +2277,7 @@ void CGUIEPGGridContainer::HandleProgrammeGrid(bool bRender, unsigned int curren
   GetProgrammeCacheOffsets(cacheBeforeProgramme, cacheAfterProgramme);
 
   if (bRender)
-    g_graphicsContext.SetClipRegion(m_gridPosX, m_gridPosY, m_gridWidth, m_gridHeight);
+    CServiceBroker::GetWinSystem().GetGfxContext().SetClipRegion(m_gridPosX, m_gridPosY, m_gridWidth, m_gridHeight);
 
   CPoint originProgramme = CPoint(m_gridPosX, m_gridPosY) + m_renderOffset;
   float posA;
@@ -2419,6 +2419,6 @@ void CGUIEPGGridContainer::HandleProgrammeGrid(bool bRender, unsigned int curren
         RenderItem(focusedPosY, focusedPosX, focusedItem.get(), true);
     }
 
-    g_graphicsContext.RestoreClipRegion();
+    CServiceBroker::GetWinSystem().GetGfxContext().RestoreClipRegion();
   }
 }
