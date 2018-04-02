@@ -253,7 +253,7 @@ CUPnPRenderer::Announce(AnnouncementFlag flag, const char *sender, const char *m
     if (flag == Player) {
         if (NPT_FAILED(FindServiceByType("urn:schemas-upnp-org:service:AVTransport:1", avt)))
             return;
-        if (strcmp(message, "OnPlay") == 0) {
+        if (strcmp(message, "OnPlay") == 0 || strcmp(message, "OnResume") == 0 ) {
             avt->SetStateVariable("AVTransportURI", g_application.CurrentFile().c_str());
             avt->SetStateVariable("CurrentTrackURI", g_application.CurrentFile().c_str());
 

@@ -247,6 +247,7 @@ void CDirectoryProvider::Announce(AnnouncementFlag flag, const char *sender, con
     if (flag & Player)
     {
       if (strcmp(message, "OnPlay") == 0 ||
+          strcmp(message, "OnResume") == 0 ||
           strcmp(message, "OnStop") == 0)
       {
         if (m_currentSort.sortBy == SortByNone || // not nice, but many directories that need to be refreshed on start/stop have no special sort order (e.g. in progress movies)

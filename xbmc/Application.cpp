@@ -3439,7 +3439,7 @@ void CApplication::OnPlayBackResumed()
   CVariant param;
   param["player"]["speed"] = 1;
   param["player"]["playerid"] = CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist();
-  CAnnouncementManager::GetInstance().Announce(Player, "xbmc", "OnPlay", m_itemCurrentFile, param);
+  CAnnouncementManager::GetInstance().Announce(Player, "xbmc", "OnResume", m_itemCurrentFile, param);
 }
 
 void CApplication::OnPlayBackSpeedChanged(int iSpeed)
@@ -3482,6 +3482,11 @@ void CApplication::OnAVStarted(const CFileItem &file)
 
   CGUIMessage msg(GUI_MSG_PLAYBACK_AVSTARTED, 0, 0);
   CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
+
+  CVariant param;
+  param["player"]["speed"] = 1;
+  param["player"]["playerid"] = CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist();
+  CAnnouncementManager::GetInstance().Announce(Player, "xbmc", "OnAVStart", m_itemCurrentFile, param);
 }
 
 void CApplication::OnAVChange()
@@ -3492,6 +3497,11 @@ void CApplication::OnAVChange()
 
   CGUIMessage msg(GUI_MSG_PLAYBACK_AVCHANGE, 0, 0);
   CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
+
+  CVariant param;
+  param["player"]["speed"] = 1;
+  param["player"]["playerid"] = CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist();
+  CAnnouncementManager::GetInstance().Announce(Player, "xbmc", "OnAVChange", m_itemCurrentFile, param);
 }
 
 void CApplication::RequestVideoSettings(const CFileItem &fileItem)
