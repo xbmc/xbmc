@@ -19,7 +19,7 @@
  */
 
 #include "Resolution.h"
-#include "gui3d.h"
+#include "guilib/gui3d.h"
 #include "windowing/GraphicContext.h"
 #include "utils/log.h"
 #include "utils/MathUtils.h"

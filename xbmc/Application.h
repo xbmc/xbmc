@@ -24,7 +24,7 @@
 
 #include "addons/AddonSystemSettings.h"
 #include "guilib/IMsgTargetCallback.h"
-#include "guilib/Resolution.h"
+#include "windowing/Resolution.h"
 #include "utils/GlobalsHandling.h"
 #include "messaging/IMessageTarget.h"
 #include "ServiceManager.h"

@@ -24,7 +24,7 @@
 #include "VideoSync.h"
 #include "WinEvents.h"
 #include "guilib/DispResource.h"
-#include "guilib/Resolution.h"
+#include "Resolution.h"
 #include <memory>
 #include <vector>
 
