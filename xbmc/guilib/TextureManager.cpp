@@ -25,7 +25,7 @@
 #include "addons/Skin.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
-#include "GraphicContext.h"
+#include "windowing/GraphicContext.h"
 #include "Texture.h"
 #include "threads/SingleLock.h"
 #include "threads/SystemClock.h"

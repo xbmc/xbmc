@@ -27,7 +27,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
-#include "xbmc/guilib/GraphicContext.h"
+#include "xbmc/windowing/GraphicContext.h"
 #include "settings/Settings.h"
 #include "utils/BitstreamConverter.h"
 #include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"

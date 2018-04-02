@@ -22,7 +22,7 @@
 #include "RenderFlags.h"
 #include "RenderFactory.h"
 #include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
-#include "guilib/GraphicContext.h"
+#include "windowing/GraphicContext.h"
 #include "utils/MathUtils.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"

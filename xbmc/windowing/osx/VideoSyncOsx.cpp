@@ -22,7 +22,7 @@
 #include "VideoSyncOsx.h"
 #include "ServiceBroker.h"
 #include "utils/MathUtils.h"
-#include "guilib/GraphicContext.h"
+#include "windowing/GraphicContext.h"
 #include "utils/TimeUtils.h"
 #include "windowing/WinSystem.h"
 #include <QuartzCore/CVDisplayLink.h>

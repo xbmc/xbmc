@@ -31,7 +31,7 @@
 #include <utility>
 #include <vector>
 
-#include "GraphicContext.h"
+#include "windowing/GraphicContext.h"
 #include "IMsgTargetCallback.h"
 #include "utils/GlobalsHandling.h"
 

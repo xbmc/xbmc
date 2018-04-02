@@ -22,7 +22,7 @@
 #include "DebugRenderer.h"
 #include "OverlayRendererGUI.h"
 #include "cores/VideoPlayer/DVDCodecs/Overlay/DVDOverlayText.h"
-#include "guilib/GraphicContext.h"
+#include "windowing/GraphicContext.h"
 
 using namespace OVERLAY;
 

@@ -20,7 +20,7 @@
 
 #include "ScreenSaver.h"
 #include "filesystem/SpecialProtocol.h"
-#include "guilib/GraphicContext.h"
+#include "windowing/GraphicContext.h"
 #include "windowing/WinSystem.h"
 #include "utils/log.h"
 #ifdef TARGET_WINDOWS

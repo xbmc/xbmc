@@ -20,7 +20,7 @@
 
 #include "SlideShowPicture.h"
 #include "ServiceBroker.h"
-#include "guilib/GraphicContext.h"
+#include "windowing/GraphicContext.h"
 #include "guilib/Texture.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"

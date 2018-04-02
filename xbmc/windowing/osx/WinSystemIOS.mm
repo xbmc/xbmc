@@ -33,7 +33,7 @@
 #include "utils/log.h"
 #include "filesystem/SpecialProtocol.h"
 #include "settings/DisplaySettings.h"
-#include "guilib/GraphicContext.h"
+#include "windowing/GraphicContext.h"
 #include "messaging/ApplicationMessenger.h"
 #include "guilib/Texture.h"
 #include "utils/StringUtils.h"
@@ -326,7 +326,7 @@ void CWinSystemIOS::FillInVideoModes()
       //this is what linux does - though it feels that there shouldn't be
       //the same resolution twice... - thats why i add a FIXME here.
       res.strMode = StringUtils::Format("%dx%d @ %.2f", w, h, refreshrate);
-      g_graphicsContext.ResetOverscan(res);
+      CServiceBroker::GetWinSystem().GetGfxContext().ResetOverscan(res);
       CDisplaySettings::GetInstance().AddResolutionInfo(res);
     }
   }
@@ -471,13 +471,13 @@ bool CWinSystemIOS::HasCursor()
 
 void CWinSystemIOS::NotifyAppActiveChange(bool bActivated)
 {
-  if (bActivated && m_bWasFullScreenBeforeMinimize && !g_graphicsContext.IsFullScreenRoot())
+  if (bActivated && m_bWasFullScreenBeforeMinimize && !CServiceBroker::GetWinSystem().GetGfxContext().IsFullScreenRoot())
     CApplicationMessenger::GetInstance().PostMsg(TMSG_TOGGLEFULLSCREEN);
 }
 
 bool CWinSystemIOS::Minimize()
 {
-  m_bWasFullScreenBeforeMinimize = g_graphicsContext.IsFullScreenRoot();
+  m_bWasFullScreenBeforeMinimize = CServiceBroker::GetWinSystem().GetGfxContext().IsFullScreenRoot();
   if (m_bWasFullScreenBeforeMinimize)
     CApplicationMessenger::GetInstance().PostMsg(TMSG_TOGGLEFULLSCREEN);
 

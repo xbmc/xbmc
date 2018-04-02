@@ -22,7 +22,7 @@
 
 #include "../RenderCapture.h"
 #include "../RenderFlags.h"
-#include "guilib/GraphicContext.h"
+#include "windowing/GraphicContext.h"
 #include "rendering/RenderSystem.h"
 #include "settings/MediaSettings.h"
 #include "platform/android/activity/XBMCApp.h"
@@ -122,14 +122,14 @@ void CRendererMediaCodecSurface::RenderUpdate(int index, int index2, bool clear,
   m_bConfigured = true;
 
   // this hack is needed to get the 2D mode of a 3D movie going
-  RENDER_STEREO_MODE stereo_mode = g_graphicsContext.GetStereoMode();
+  RENDER_STEREO_MODE stereo_mode = CServiceBroker::GetWinSystem().GetGfxContext().GetStereoMode();
   if (stereo_mode)
-    g_graphicsContext.SetStereoView(RENDER_STEREO_VIEW_LEFT);
+    CServiceBroker::GetWinSystem().GetGfxContext().SetStereoView(RENDER_STEREO_VIEW_LEFT);
 
   ManageRenderArea();
 
   if (stereo_mode)
-    g_graphicsContext.SetStereoView(RENDER_STEREO_VIEW_OFF);
+    CServiceBroker::GetWinSystem().GetGfxContext().SetStereoView(RENDER_STEREO_VIEW_OFF);
 
   m_surfDestRect = m_destRect;
   switch (stereo_mode)

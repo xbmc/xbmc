@@ -25,7 +25,7 @@
 #include "utils/TimeUtils.h"
 #include "platform/android/activity/XBMCApp.h"
 #include "windowing/WinSystem.h"
-#include "guilib/GraphicContext.h"
+#include "windowing/GraphicContext.h"
 #include "utils/MathUtils.h"
 #include "platform/linux/XTimeUtils.h"
 
@@ -60,7 +60,7 @@ void CVideoSyncAndroid::Cleanup()
 
 float CVideoSyncAndroid::GetFps()
 {
-  m_fps = g_graphicsContext.GetFPS();
+  m_fps = CServiceBroker::GetWinSystem().GetGfxContext().GetFPS();
   CLog::Log(LOGDEBUG, "CVideoSyncAndroid::%s Detected refreshrate: %f hertz", __FUNCTION__, m_fps);
   return m_fps;
 }

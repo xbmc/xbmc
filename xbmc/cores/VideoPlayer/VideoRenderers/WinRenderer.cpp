@@ -291,7 +291,7 @@ void CWinRenderer::RenderUpdate(int index, int index2, bool clear, unsigned int 
   m_iYV12RenderBuffer = index;
 
   if (clear)
-    g_graphicsContext.Clear(DX::Windowing().UseLimitedColor() ? 0x101010 : 0);
+    CServiceBroker::GetWinSystem().GetGfxContext().Clear(DX::Windowing().UseLimitedColor() ? 0x101010 : 0);
 
   if (!m_bConfigured)
     return;
@@ -304,7 +304,7 @@ void CWinRenderer::RenderUpdate(int index, int index2, bool clear, unsigned int 
 
 void CWinRenderer::PreInit()
 {
-  CSingleLock lock(g_graphicsContext);
+  CSingleLock lock(CServiceBroker::GetWinSystem().GetGfxContext());
   m_bConfigured = false;
   UnInit();
 
@@ -320,7 +320,7 @@ void CWinRenderer::PreInit()
 
 void CWinRenderer::UnInit()
 {
-  CSingleLock lock(g_graphicsContext);
+  CSingleLock lock(CServiceBroker::GetWinSystem().GetGfxContext());
 
   if (m_IntermediateTarget.Get())
     m_IntermediateTarget.Release();
@@ -536,8 +536,8 @@ void CWinRenderer::SelectPSVideoFilter()
   if (m_scalingMethod == VS_SCALINGMETHOD_AUTO)
   {
     bool scaleSD = m_sourceHeight < 720 && m_sourceWidth < 1280;
-    bool scaleUp = static_cast<int>(m_sourceHeight) < g_graphicsContext.GetHeight()
-                && static_cast<int>(m_sourceWidth) < g_graphicsContext.GetWidth();
+    bool scaleUp = static_cast<int>(m_sourceHeight) < CServiceBroker::GetWinSystem().GetGfxContext().GetHeight()
+                && static_cast<int>(m_sourceWidth) < CServiceBroker::GetWinSystem().GetGfxContext().GetWidth();
     bool scaleFps = m_fps < (g_advancedSettings.m_videoAutoScaleMaxFps + 0.01f);
 
     if (m_renderMethod == RENDER_DXVA)
@@ -660,9 +660,9 @@ void CWinRenderer::UpdateVideoFilter()
       m_outputShader->SetCLUT(m_CLUTSize, m_pCLUTView.Get());
   }
 
-  RESOLUTION_INFO res = g_graphicsContext.GetResInfo();
+  RESOLUTION_INFO res = CServiceBroker::GetWinSystem().GetGfxContext().GetResInfo();
   if (!res.bFullScreen)
-    res = g_graphicsContext.GetResInfo(RES_DESKTOP);
+    res = CServiceBroker::GetWinSystem().GetGfxContext().GetResInfo(RES_DESKTOP);
 
   m_destWidth = res.iScreenWidth;
   m_destHeight = res.iScreenHeight;
@@ -822,7 +822,7 @@ void CWinRenderer::RenderPS(CD3DTexture* target)
   }
   else
   {
-    CRect destRect = m_bUseHQScaler ? m_sourceRect : g_graphicsContext.StereoCorrection(m_destRect);
+    CRect destRect = m_bUseHQScaler ? m_sourceRect : CServiceBroker::GetWinSystem().GetGfxContext().StereoCorrection(m_destRect);
     destPoints[0] = { destRect.x1, destRect.y1 };
     destPoints[1] = { destRect.x2, destRect.y1 };
     destPoints[2] = { destRect.x2, destRect.y2 };
@@ -846,7 +846,7 @@ void CWinRenderer::RenderPS(CD3DTexture* target)
 void CWinRenderer::RenderHQ(CD3DTexture* target)
 {
   m_scalerShader->Render(m_IntermediateTarget, m_sourceWidth, m_sourceHeight, m_destWidth, m_destHeight
-                       , m_sourceRect, g_graphicsContext.StereoCorrection(m_destRect)
+                       , m_sourceRect, CServiceBroker::GetWinSystem().GetGfxContext().StereoCorrection(m_destRect)
                        , false, target);
 }
 
@@ -923,7 +923,7 @@ void CWinRenderer::RenderHW(DWORD flags, CD3DTexture* target)
     destRect = CRect(m_rotatedDestCoords[1], m_rotatedDestCoords[3]);
     break;
   default:
-    destRect = m_bUseHQScaler ? m_sourceRect : g_graphicsContext.StereoCorrection(m_destRect);
+    destRect = m_bUseHQScaler ? m_sourceRect : CServiceBroker::GetWinSystem().GetGfxContext().StereoCorrection(m_destRect);
     break;
   }
 
@@ -945,8 +945,8 @@ void CWinRenderer::RenderHW(DWORD flags, CD3DTexture* target)
 
   if (!m_bUseHQScaler)
   {
-    if ( g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_SPLIT_HORIZONTAL
-      || g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_SPLIT_VERTICAL)
+    if ( CServiceBroker::GetWinSystem().GetGfxContext().GetStereoMode() == RENDER_STEREO_MODE_SPLIT_HORIZONTAL
+      || CServiceBroker::GetWinSystem().GetGfxContext().GetStereoMode() == RENDER_STEREO_MODE_SPLIT_VERTICAL)
     {
       CD3DTexture *backBuffer = DX::Windowing().GetBackBuffer();
       CD3D11_VIEWPORT bbSize(0.f, 0.f, static_cast<float>(backBuffer->GetWidth()), static_cast<float>(backBuffer->GetHeight()));
@@ -992,14 +992,14 @@ bool CWinRenderer::RenderCapture(CRenderCapture* capture)
 //********************************************************************************************************
 void CWinRenderer::DeleteRenderBuffer(int index)
 {
-  CSingleLock lock(g_graphicsContext);
+  CSingleLock lock(CServiceBroker::GetWinSystem().GetGfxContext());
   ReleaseBuffer(index);
   m_renderBuffers[index].Release();
 }
 
 bool CWinRenderer::CreateRenderBuffer(int index)
 {
-  CSingleLock lock(g_graphicsContext);
+  CSingleLock lock(CServiceBroker::GetWinSystem().GetGfxContext());
   DeleteRenderBuffer(index);
 
   if (!m_renderBuffers[index].CreateBuffer(m_bufferFormat, m_sourceWidth, m_sourceHeight, m_renderMethod == RENDER_SW))

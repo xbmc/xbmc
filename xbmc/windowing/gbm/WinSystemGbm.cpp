@@ -26,7 +26,7 @@
 #include <string.h>
 
 #include "OptionalsReg.h"
-#include "guilib/GraphicContext.h"
+#include "windowing/GraphicContext.h"
 #include "platform/linux/powermanagement/LinuxPowerSyscall.h"
 #include "settings/DisplaySettings.h"
 #include "utils/log.h"
@@ -163,7 +163,7 @@ void CWinSystemGbm::UpdateResolutions()
 
     for (unsigned int i = 0; i < resolutions.size(); i++)
     {
-      g_graphicsContext.ResetOverscan(resolutions[i]);
+      CServiceBroker::GetWinSystem().GetGfxContext().ResetOverscan(resolutions[i]);
       CDisplaySettings::GetInstance().AddResolutionInfo(resolutions[i]);
 
       CLog::Log(LOGNOTICE, "Found resolution %dx%d for display %d with %dx%d%s @ %f Hz",
@@ -265,4 +265,3 @@ void CWinSystemGbm::OnLostDevice()
       (*i)->OnLostDisplay();
   }
 }
-

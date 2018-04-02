@@ -19,7 +19,7 @@
  */
 
 #include "RenderContext.h"
-#include "guilib/GraphicContext.h"
+#include "windowing/GraphicContext.h"
 #include "rendering/RenderSystem.h"
 #include "settings/DisplaySettings.h"
 #include "settings/MediaSettings.h"

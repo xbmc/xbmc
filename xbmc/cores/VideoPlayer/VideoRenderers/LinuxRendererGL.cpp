@@ -1015,7 +1015,7 @@ void CLinuxRendererGL::UnInit()
   m_bConfigured = false;
 }
 
-bool CLinuxRendererGL::Render(DWORD flags, int renderBuffer)
+bool CLinuxRendererGL::Render(unsigned int flags, int renderBuffer)
 {
   // obtain current field, if interlaced
   if( flags & RENDER_FLAG_TOP)

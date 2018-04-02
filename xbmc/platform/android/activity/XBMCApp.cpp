@@ -70,7 +70,7 @@
 #include "messaging/ApplicationMessenger.h"
 #include "CompileInfo.h"
 #include "settings/DisplaySettings.h"
-#include "guilib/GraphicContext.h"
+#include "windowing/GraphicContext.h"
 #include "guilib/GUIWindowManager.h"
 // Audio Engine includes for Factory and interfaces
 #include "cores/AudioEngine/Interfaces/AE.h"
@@ -593,7 +593,7 @@ CRect CXBMCApp::MapRenderToDroid(const CRect& srcRect)
   CJNIRect r = m_xbmcappinstance->getDisplayRect();
   if (r.width() && r.height())
   {
-    RESOLUTION_INFO renderRes = CDisplaySettings::GetInstance().GetResolutionInfo(g_graphicsContext.GetVideoResolution());
+    RESOLUTION_INFO renderRes = CDisplaySettings::GetInstance().GetResolutionInfo(CServiceBroker::GetWinSystem().GetGfxContext().GetVideoResolution());
     scaleX = (double)r.width() / renderRes.iWidth;
     scaleY = (double)r.height() / renderRes.iHeight;
   }

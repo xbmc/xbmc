@@ -23,7 +23,7 @@
 #include "YUV2RGBShaderGLES.h"
 #include "YUVMatrix.h"
 #include "settings/AdvancedSettings.h"
-#include "guilib/TransformMatrix.h"
+#include "utils/TransformMatrix.h"
 #include "utils/log.h"
 #include "utils/GLUtils.h"
 

@@ -25,7 +25,7 @@
 #include "cores/VideoPlayer/Interface/Addon/DemuxPacket.h"
 #include "utils/log.h"
 #include "utils/EndianSwap.h"
-#include "guilib/GraphicContext.h"
+#include "windowing/GraphicContext.h"
 
 CDVDOverlayCodecFFmpeg::CDVDOverlayCodecFFmpeg() : CDVDOverlayCodec("FFmpeg Subtitle Decoder")
 {

@@ -24,7 +24,7 @@
 
 #include <interface/mmal/mmal.h>
 
-#include "guilib/GraphicContext.h"
+#include "windowing/GraphicContext.h"
 #include "../RenderFlags.h"
 #include "../BaseRenderer.h"
 #include "../RenderCapture.h"

@@ -23,7 +23,7 @@
 #include <memory>
 #include <utility>
 
-#include "guilib/GraphicContext.h"
+#include "windowing/GraphicContext.h"
 #include "guilib/GUIMessage.h"
 #include "messaging/IMessageTarget.h"
 #include "threads/SingleLock.h"

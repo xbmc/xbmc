@@ -19,7 +19,7 @@
 */
 
 #include "GUIShaderDX.h"
-#include "guilib/GraphicContext.h"
+#include "windowing/GraphicContext.h"
 #include "rendering/dx/DeviceResources.h"
 #include "rendering/dx/RenderContext.h"
 #include "utils/log.h"
@@ -385,7 +385,7 @@ void CGUIShaderDX::ClipToScissorParams(void)
   DX::Windowing().GetViewPort(viewPort);
 
   // get current GUI transform
-  const TransformMatrix &guiMatrix = g_graphicsContext.GetGUIMatrix();
+  const TransformMatrix &guiMatrix = CServiceBroker::GetWinSystem().GetGfxContext().GetGUIMatrix();
   // get current GPU transforms
   XMFLOAT4X4 world, view, projection;
   XMStoreFloat4x4(&world, m_cbWorldViewProj.world);

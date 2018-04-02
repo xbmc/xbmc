@@ -25,7 +25,7 @@
 #include "threads/SingleLock.h"
 #include "utils/TimeUtils.h"
 #include "utils/JobManager.h"
-#include "guilib/GraphicContext.h"
+#include "windowing/GraphicContext.h"
 #include "utils/log.h"
 #include "TextureCache.h"
 

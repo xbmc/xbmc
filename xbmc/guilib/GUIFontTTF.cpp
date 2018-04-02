@@ -22,7 +22,7 @@
 #include "GUIFontTTF.h"
 #include "GUIFontManager.h"
 #include "Texture.h"
-#include "GraphicContext.h"
+#include "windowing/GraphicContext.h"
 #include "ServiceBroker.h"
 #include "filesystem/SpecialProtocol.h"
 #include "utils/MathUtils.h"

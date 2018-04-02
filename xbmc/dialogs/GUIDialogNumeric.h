@@ -21,6 +21,7 @@
  */
 
 #include <cstdint>
+#include "PlatformDefs.h"
 #include "guilib/GUIDialog.h"
 
 class CGUIDialogNumeric :

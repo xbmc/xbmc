@@ -25,7 +25,7 @@
 #include <sys/time.h>
 #include "utils/TimeUtils.h"
 #include "utils/MathUtils.h"
-#include "guilib/GraphicContext.h"
+#include "windowing/GraphicContext.h"
 #include "utils/log.h"
 #include "windowing/X11/WinSystemX11GLContext.h"
 
@@ -170,12 +170,12 @@ void CVideoSyncDRM::OnResetDisplay()
 
 float CVideoSyncDRM::GetFps()
 {
-  m_fps = g_graphicsContext.GetFPS();
+  m_fps = CServiceBroker::GetWinSystem().GetGfxContext().GetFPS();
   return m_fps;
 }
 
 void CVideoSyncDRM::RefreshChanged()
 {
-  if (m_fps != g_graphicsContext.GetFPS())
+  if (m_fps != CServiceBroker::GetWinSystem().GetGfxContext().GetFPS())
     m_abort = true;
 }

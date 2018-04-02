@@ -23,7 +23,7 @@
 #include "GUIFontManager.h"
 #include "Texture.h"
 #include "TextureManager.h"
-#include "GraphicContext.h"
+#include "windowing/GraphicContext.h"
 #include "ServiceBroker.h"
 #include "gui3d.h"
 #include "utils/log.h"

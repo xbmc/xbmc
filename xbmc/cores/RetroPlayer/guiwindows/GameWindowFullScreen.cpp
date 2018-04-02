@@ -22,7 +22,7 @@
 #include "GameWindowFullScreenText.h"
 #include "cores/RetroPlayer/guibridge/GUIGameRenderManager.h"
 #include "cores/RetroPlayer/guibridge/GUIRenderHandle.h"
-#include "guilib/GraphicContext.h" //! @todo Remove me
+#include "windowing/GraphicContext.h" //! @todo Remove me
 #include "guilib/GUIDialog.h"
 #include "guilib/GUIControl.h"
 #include "guilib/GUIComponent.h"

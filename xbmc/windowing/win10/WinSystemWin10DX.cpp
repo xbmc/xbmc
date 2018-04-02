@@ -19,7 +19,7 @@
  */
 
 #include "commons/ilog.h"
-#include "guilib/GraphicContext.h"
+#include "windowing/GraphicContext.h"
 #include "input/touch/generic/GenericTouchActionHandler.h"
 #include "input/touch/generic/GenericTouchInputHandler.h"
 #include "rendering/dx/DirectXHelper.h"

@@ -85,7 +85,7 @@ typedef unsigned long kernel_ulong_t;
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "guilib/GraphicContext.h"
+#include "windowing/GraphicContext.h"
 #include "input/mouse/MouseStat.h"
 #include "input/touch/generic/GenericTouchActionHandler.h"
 #include "input/XBMC_keysym.h"
@@ -598,11 +598,11 @@ bool CLinuxInputDevice::RelEvent(const struct input_event& levt, XBMC_Event& dev
   }
 
   // limit the mouse to the screen width
-  m_mouseX = std::min(g_graphicsContext.GetWidth(), m_mouseX);
+  m_mouseX = std::min(CServiceBroker::GetWinSystem().GetGfxContext().GetWidth(), m_mouseX);
   m_mouseX = std::max(0, m_mouseX);
 
   // limit the mouse to the screen height
-  m_mouseY = std::min(g_graphicsContext.GetHeight(), m_mouseY);
+  m_mouseY = std::min(CServiceBroker::GetWinSystem().GetGfxContext().GetHeight(), m_mouseY);
   m_mouseY = std::max(0, m_mouseY);
 
 

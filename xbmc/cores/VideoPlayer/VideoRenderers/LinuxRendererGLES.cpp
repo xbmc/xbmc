@@ -411,7 +411,7 @@ void CLinuxRendererGLES::RenderUpdate(int index, int index2, bool clear, unsigne
   glEnable(GL_BLEND);
 }
 
-void CLinuxRendererGLES::RenderUpdateVideo(bool clear, DWORD flags, DWORD alpha)
+void CLinuxRendererGLES::RenderUpdateVideo(bool clear, unsigned int flags, unsigned int alpha)
 {
   if (!m_bConfigured)
     return;
@@ -582,7 +582,7 @@ void CLinuxRendererGLES::ReleaseShaders()
 void CLinuxRendererGLES::UnInit()
 {
   CLog::Log(LOGDEBUG, "LinuxRendererGL: Cleaning up GL resources");
-  CSingleLock lock(g_graphicsContext);
+  CSingleLock lock(CServiceBroker::GetWinSystem().GetGfxContext());
 
   glFinish();
 
@@ -649,7 +649,7 @@ bool CLinuxRendererGLES::UploadTexture(int index)
   return ret;
 }
 
-void CLinuxRendererGLES::Render(DWORD flags, int index)
+void CLinuxRendererGLES::Render(unsigned int flags, int index)
 {
   // obtain current field, if interlaced
   if( flags & RENDER_FLAG_TOP)
@@ -1056,7 +1056,7 @@ bool CLinuxRendererGLES::RenderCapture(CRenderCapture* capture)
 
   Render(RENDER_FLAG_NOOSD, m_iYV12RenderBuffer);
   // read pixels
-  glReadPixels(0, g_graphicsContext.GetHeight() - capture->GetHeight(), capture->GetWidth(), capture->GetHeight(),
+  glReadPixels(0, CServiceBroker::GetWinSystem().GetGfxContext().GetHeight() - capture->GetHeight(), capture->GetWidth(), capture->GetHeight(),
                GL_RGBA, GL_UNSIGNED_BYTE, capture->GetRenderBuffer());
 
   // OpenGLES returns in RGBA order but CRenderCapture needs BGRA order

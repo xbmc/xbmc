@@ -23,7 +23,7 @@
 #include "RenderContext.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/GraphicContext.h"
+#include "windowing/GraphicContext.h"
 #include "messaging/ApplicationMessenger.h"
 #include "platform/win32/CharsetConverter.h"
 #include "ServiceBroker.h"
@@ -206,7 +206,7 @@ bool DX::DeviceResources::SetFullScreen(bool fullscreen, RESOLUTION_INFO& res)
              m_outputSize.Height);
 
   BOOL bFullScreen;
-  bool recreate = m_stereoEnabled != (g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_HARDWAREBASED);
+  bool recreate = m_stereoEnabled != (CServiceBroker::GetWinSystem().GetGfxContext().GetStereoMode() == RENDER_STEREO_MODE_HARDWAREBASED);
 
   m_swapChain->GetFullscreenState(&bFullScreen, nullptr);
   if (!!bFullScreen && !fullscreen)
@@ -235,7 +235,7 @@ bool DX::DeviceResources::SetFullScreen(bool fullscreen, RESOLUTION_INFO& res)
         || is_interlaced != (res.dwFlags & D3DPRESENTFLAG_INTERLACED ? true : false)
         // force resolution change for stereo mode
         // some drivers unable to create stereo swapchain if mode does not match @23.976
-        || g_graphicsContext.GetStereoMode() == RENDER_STEREO_MODE_HARDWAREBASED)
+        || CServiceBroker::GetWinSystem().GetGfxContext().GetStereoMode() == RENDER_STEREO_MODE_HARDWAREBASED)
       {
         CLog::Log(LOGDEBUG, __FUNCTION__": changing display mode to %dx%d@%0.3f", res.iWidth, res.iHeight, res.fRefreshRate,
                   res.dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "");
@@ -512,7 +512,7 @@ void DX::DeviceResources::ResizeBuffers()
 
   CLog::LogF(LOGDEBUG, "resize buffers.");
 
-  bool bHWStereoEnabled = RENDER_STEREO_MODE_HARDWAREBASED == g_graphicsContext.GetStereoMode();
+  bool bHWStereoEnabled = RENDER_STEREO_MODE_HARDWAREBASED == CServiceBroker::GetWinSystem().GetGfxContext().GetStereoMode();
   bool windowed = true;
 
   DXGI_SWAP_CHAIN_DESC1 scDesc = { 0 };
@@ -596,7 +596,7 @@ void DX::DeviceResources::ResizeBuffers()
       hr = CreateSwapChain(swapChainDesc, scFSDesc, &swapChain); CHECK_ERR();
 
       // fallback to split_horizontal mode.
-      g_graphicsContext.SetStereoMode(RENDER_STEREO_MODE_SPLIT_HORIZONTAL);
+      CServiceBroker::GetWinSystem().GetGfxContext().SetStereoMode(RENDER_STEREO_MODE_SPLIT_HORIZONTAL);
     }
 
     hr = swapChain.As(&m_swapChain); CHECK_ERR();

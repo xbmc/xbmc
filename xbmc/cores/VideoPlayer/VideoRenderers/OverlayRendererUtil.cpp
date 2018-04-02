@@ -23,7 +23,7 @@
 #include "cores/VideoPlayer/DVDCodecs/Overlay/DVDOverlayImage.h"
 #include "cores/VideoPlayer/DVDCodecs/Overlay/DVDOverlaySpu.h"
 #include "cores/VideoPlayer/DVDCodecs/Overlay/DVDOverlaySSA.h"
-#include "guilib/GraphicContext.h"
+#include "windowing/GraphicContext.h"
 #include "settings/Settings.h"
 
 namespace OVERLAY {

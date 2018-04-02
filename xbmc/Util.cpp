@@ -60,7 +60,7 @@
 #endif
 #include "profiles/ProfilesManager.h"
 #include "utils/RegExp.h"
-#include "guilib/GraphicContext.h"
+#include "windowing/GraphicContext.h"
 #include "guilib/TextureManager.h"
 #include "utils/fstrcmp.h"
 #include "storage/MediaManager.h"

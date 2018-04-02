@@ -22,7 +22,7 @@
 #include <sstream>
 #include <X11/extensions/Xrandr.h>
 #include "windowing/X11/WinSystemX11GLContext.h"
-#include "guilib/GraphicContext.h"
+#include "windowing/GraphicContext.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
@@ -50,7 +50,7 @@ void CVideoSyncGLX::OnResetDisplay()
 
 bool CVideoSyncGLX::Setup(PUPDATECLOCK func)
 {
-  CSingleLock lock(g_graphicsContext);
+  CSingleLock lock(CServiceBroker::GetWinSystem().GetGfxContext());
 
   m_glXWaitVideoSyncSGI = NULL;
   m_glXGetVideoSyncSGI = NULL;
@@ -255,7 +255,7 @@ void CVideoSyncGLX::Cleanup()
   CLog::Log(LOGDEBUG, "CVideoReferenceClock: Cleaning up GLX");
 
   {
-    CSingleLock lock(g_graphicsContext);
+    CSingleLock lock(CServiceBroker::GetWinSystem().GetGfxContext());
 
     if (m_vInfo)
     {
@@ -281,6 +281,6 @@ void CVideoSyncGLX::Cleanup()
 
 float CVideoSyncGLX::GetFps()
 {
-  m_fps = g_graphicsContext.GetFPS();
+  m_fps = CServiceBroker::GetWinSystem().GetGfxContext().GetFPS();
   return m_fps;
 }
