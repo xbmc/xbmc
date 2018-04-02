@@ -239,16 +239,15 @@ std::string CSMB::URLEncode(const CURL &url)
 
   std::string flat = "smb://";
 
-  if(url.GetDomain().length() > 0)
-  {
-    flat += URLEncode(url.GetDomain());
-    flat += ";";
-  }
-
   /* samba messes up of password is set but no username is set. don't know why yet */
   /* probably the url parser that goes crazy */
   if(url.GetUserName().length() > 0 /* || url.GetPassWord().length() > 0 */)
   {
+    if(url.GetDomain().length() > 0)
+    {
+      flat += URLEncode(url.GetDomain());
+      flat += ";";
+    }
     flat += URLEncode(url.GetUserName());
     if(url.GetPassWord().length() > 0)
     {
