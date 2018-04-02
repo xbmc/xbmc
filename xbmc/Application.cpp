@@ -36,7 +36,6 @@
 #include "guilib/TextureManager.h"
 #include "cores/IPlayer.h"
 #include "cores/VideoPlayer/DVDFileInfo.h"
-#include "cores/AudioEngine/Engines/ActiveAE/AudioDSPAddons/ActiveAEDSP.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"

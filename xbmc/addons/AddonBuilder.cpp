@@ -85,7 +85,6 @@ std::shared_ptr<IAddon> CAddonBuilder::Build()
   if (type == ADDON_VIZ ||
       type == ADDON_SCREENSAVER ||
       type == ADDON_PVRDLL ||
-      type == ADDON_ADSPDLL ||
       type == ADDON_AUDIOENCODER ||
       type == ADDON_AUDIODECODER ||
       type == ADDON_VFS ||
@@ -121,7 +120,6 @@ std::shared_ptr<IAddon> CAddonBuilder::Build()
     case ADDON_SCRAPER_TVSHOWS:
     case ADDON_SCRAPER_LIBRARY:
       return CScraper::FromExtension(std::move(m_addonInfo), m_extPoint);
-    case ADDON_ADSPDLL:
     case ADDON_AUDIODECODER:
     case ADDON_AUDIOENCODER:
     case ADDON_IMAGEDECODER:
@@ -189,7 +187,6 @@ AddonPtr CAddonBuilder::FromProps(CAddonInfo addonInfo)
       return AddonPtr(new CScraper(std::move(addonInfo)));
     case ADDON_SKIN:
       return AddonPtr(new CSkinInfo(std::move(addonInfo)));
-    case ADDON_ADSPDLL:
     case ADDON_AUDIODECODER:
     case ADDON_AUDIOENCODER:
     case ADDON_IMAGEDECODER:

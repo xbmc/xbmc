@@ -27,7 +27,6 @@
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
 #include "addons/Skin.h"
-#include "cores/AudioEngine/Engines/ActiveAE/AudioDSPAddons/ActiveAEDSP.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include "favourites/FavouritesService.h"
 #include "guilib/GUIMessage.h"

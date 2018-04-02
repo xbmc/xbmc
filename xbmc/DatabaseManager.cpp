@@ -29,10 +29,8 @@
 #include "pvr/epg/EpgDatabase.h"
 #include "games/addons/savestates/SavestateDatabase.h"
 #include "settings/AdvancedSettings.h"
-#include "cores/AudioEngine/Engines/ActiveAE/AudioDSPAddons/ActiveAEDSP.h"
 
 using namespace PVR;
-using namespace ActiveAE;
 
 CDatabaseManager::CDatabaseManager() :
   m_bIsUpgrading(false)
@@ -61,7 +59,6 @@ void CDatabaseManager::Initialize()
   { CVideoDatabase db; UpdateDatabase(db, &g_advancedSettings.m_databaseVideo); }
   { CPVRDatabase db; UpdateDatabase(db, &g_advancedSettings.m_databaseTV); }
   { CPVREpgDatabase db; UpdateDatabase(db, &g_advancedSettings.m_databaseEpg); }
-  { CActiveAEDSPDatabase db; UpdateDatabase(db, &g_advancedSettings.m_databaseADSP); }
 
   CLog::Log(LOGDEBUG, "%s, updating databases... DONE", __FUNCTION__);
 

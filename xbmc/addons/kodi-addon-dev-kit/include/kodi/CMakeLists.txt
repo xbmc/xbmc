@@ -1,5 +1,4 @@
 set(HEADERS AddonBase.h
-            AudioEngine.h
             Filesystem.h
             General.h
             Network.h
