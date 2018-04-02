@@ -197,10 +197,12 @@ protected:
   bool GetMultiInfoInt(int &value, const GUIINFO::GUIInfo &info, int contextWindow = 0) const;
   CGUIControl * GetActiveContainer(int containerId, int contextWindow) const;
   std::string GetMultiInfoLabel(const GUIINFO::GUIInfo &info, int contextWindow = 0, std::string *fallback = nullptr) const;
-  int TranslateListItem(const Property &info);
+  int TranslateListItem(const Property& cat, const Property& prop, int id = 0);
   int TranslateMusicPlayerString(const std::string &info) const;
   static TIME_FORMAT TranslateTimeFormat(const std::string &format);
   bool GetItemBool(const CGUIListItem *item, int condition) const;
+  std::string GetMultiInfoItemImage(const CFileItem *item, const GUIINFO::GUIInfo &info, std::string *fallback = nullptr) const;
+  std::string GetMultiInfoItemLabel(const CFileItem *item, const GUIINFO::GUIInfo &info, std::string *fallback = nullptr) const;
 
   /*! \brief Split an info string into it's constituent parts and parameters
    Format is:
@@ -215,11 +217,9 @@ protected:
   void SplitInfoString(const std::string &infoString, std::vector<Property> &info);
 
   int AddMultiInfo(const GUIINFO::GUIInfo &info);
-  int AddListItemProp(const std::string &str, int offset = 0);
 
-  // Array of multiple information mapped to a single integer lookup
+  // Vector of multiple information mapped to a single integer lookup
   std::vector<GUIINFO::GUIInfo> m_multiInfo;
-  std::vector<std::string> m_listitemProperties;
 
   // Current playing stuff
   CFileItem* m_currentFile;

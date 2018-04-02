@@ -1623,7 +1623,11 @@ const infomap musicpartymode[] = {{ "enabled",           MUSICPM_ENABLED },
 ///   \table_row3{   <b>`MusicPlayer.ChannelGroup`</b>,
 ///                  \anchor MusicPlayer_ChannelGroup
 ///                  _string_,
-///     Channel group of of the radio programme that's currently playing (PVR).
+///     Channel group of the radio programme that's currently playing (PVR).
+///   \table_row3{   <b>`MusicPlayer.Property(propname)`</b>,
+///                  \anchor MusicPlayer_Property_Propname
+///                  _string_,
+///     Get a property of the currently playing item.
 ///   }
 /// \table_end
 ///
@@ -1662,7 +1666,8 @@ const infomap musicplayer[] =    {{ "title",            MUSICPLAYER_TITLE },
                                   { "channelname",      MUSICPLAYER_CHANNEL_NAME },
                                   { "channelnumberlabel", MUSICPLAYER_CHANNEL_NUMBER },
                                   { "channelgroup",     MUSICPLAYER_CHANNEL_GROUP },
-                                  { "dbid", MUSICPLAYER_DBID }
+                                  { "dbid",             MUSICPLAYER_DBID },
+                                  { "property",         MUSICPLAYER_PROPERTY },
 };
 
 /// \page modules__General__List_of_gui_access
@@ -3713,6 +3718,16 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///                  _string_,
 ///     Expiration time of the selected item in a container\, empty string if not supported
 ///   }
+///   \table_row3{   <b>`ListItem.Art(type)`</b>,
+///                  \anchor ListItem_Art_Type
+///                  _string_,
+///     Get a particular art type for an item.
+///   }
+///   \table_row3{   <b>`ListItem.Property(propname)`</b>,
+///                  \anchor ListItem_Property_Propname
+///                  _string_,
+///     Get a property of an item.
+///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
@@ -3895,6 +3910,8 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "addonsize",        LISTITEM_ADDON_SIZE },
                                   { "expirationdate",   LISTITEM_EXPIRATION_DATE },
                                   { "expirationtime",   LISTITEM_EXPIRATION_TIME },
+                                  { "art",              LISTITEM_ART },
+                                  { "property",         LISTITEM_PROPERTY },
 };
 
 /// \page modules__General__List_of_gui_access
@@ -5954,10 +5971,10 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
         return AddMultiInfo(GUIInfo(MUSICPLAYER_CONTENT, prop.param(), 0));
       else if (prop.name == "property")
       {
-        // properties are stored case sensitive in m_listItemProperties, but lookup is insensitive in CGUIListItem::GetProperty
         if (StringUtils::EqualsNoCase(prop.param(), "fanart_image"))
           return AddMultiInfo(GUIInfo(PLAYER_ITEM_ART, "fanart"));
-        return AddListItemProp(prop.param(), MUSICPLAYER_PROPERTY_OFFSET);
+
+        return AddMultiInfo(GUIInfo(MUSICPLAYER_PROPERTY, prop.param()));
       }
       return TranslateMusicPlayerString(prop.name);
     }
@@ -6030,24 +6047,14 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
         return AddMultiInfo(GUIInfo(CONTAINER_SORT_DIRECTION, order));
       }
     }
-    else if (cat.name == "listitem" || cat.name == "listitemposition"
-      || cat.name == "listitemnowrap" || cat.name == "listitemabsolute")
+    else if (cat.name == "listitem" ||
+             cat.name == "listitemposition" ||
+             cat.name == "listitemnowrap" ||
+             cat.name == "listitemabsolute")
     {
-      int offset = atoi(cat.param().c_str());
-      int ret = TranslateListItem(prop);
+      int ret = TranslateListItem(cat, prop);
       if (ret)
         listItemDependent = true;
-      if (offset)
-      {
-        if (cat.name == "listitem")
-          return AddMultiInfo(GUIInfo(ret, 0, offset, INFOFLAG_LISTITEM_WRAP));
-        else if (cat.name == "listitemposition")
-          return AddMultiInfo(GUIInfo(ret, 0, offset, INFOFLAG_LISTITEM_POSITION));
-        else if (cat.name == "listitemabsolute")
-          return AddMultiInfo(GUIInfo(ret, 0, offset, INFOFLAG_LISTITEM_ABSOLUTE));
-        else if (cat.name == "listitemnowrap")
-          return AddMultiInfo(GUIInfo(ret, 0, offset));
-      }
       return ret;
     }
     else if (cat.name == "visualisation")
@@ -6222,27 +6229,16 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
     }
     else if (info[0].name == "container")
     {
-      int id = atoi(info[0].param().c_str());
-      int offset = atoi(info[1].param().c_str());
-      if (info[1].name == "listitemnowrap")
+      if (info[1].name == "listitem" ||
+          info[1].name == "listitemposition" ||
+          info[1].name == "listitemabsolute" ||
+          info[1].name == "listitemnowrap")
       {
-        listItemDependent = true;
-        return AddMultiInfo(GUIInfo(TranslateListItem(info[2]), id, offset));
-      }
-      else if (info[1].name == "listitemposition")
-      {
-        listItemDependent = true;
-        return AddMultiInfo(GUIInfo(TranslateListItem(info[2]), id, offset, INFOFLAG_LISTITEM_POSITION));
-      }
-      else if (info[1].name == "listitem")
-      {
-        listItemDependent = true;
-        return AddMultiInfo(GUIInfo(TranslateListItem(info[2]), id, offset, INFOFLAG_LISTITEM_WRAP));
-      }
-      else if (info[1].name == "listitemabsolute")
-      {
-        listItemDependent = true;
-        return AddMultiInfo(GUIInfo(TranslateListItem(info[2]), id, offset, INFOFLAG_LISTITEM_ABSOLUTE));
+        int id = atoi(info[0].param().c_str());
+        int ret = TranslateListItem(info[1], info[2], id);
+        if (ret)
+          listItemDependent = true;
+        return ret;
       }
     }
     else if (info[0].name == "control")
@@ -6264,34 +6260,61 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
   return 0;
 }
 
-int CGUIInfoManager::TranslateListItem(const Property &info)
+int CGUIInfoManager::TranslateListItem(const Property& cat, const Property& prop, int id /* = 0 */)
 {
-  if (info.num_params() == 1)
+  int ret = 0;
+  std::string data3;
+  int data4 = 0;
+  if (prop.num_params() == 1)
   {
-    if (info.name == "property")
+    // special case: map 'property(fanart_image)' to 'art(fanart)'
+    if (prop.name == "property" && StringUtils::EqualsNoCase(prop.param(), "fanart_image"))
     {
-      // properties are stored case sensitive in m_listItemProperties, but lookup is insensitive in CGUIListItem::GetProperty
-      if (StringUtils::EqualsNoCase(info.param(), "fanart_image"))
-        return AddListItemProp("fanart", LISTITEM_ART_OFFSET);
-      return AddListItemProp(info.param());
+      ret = LISTITEM_ART;
+      data3 = "fanart";
     }
-    if (info.name == "art")
-      return AddListItemProp(info.param(), LISTITEM_ART_OFFSET);
-    if (info.name == "rating")
-      return AddListItemProp(info.param(), LISTITEM_RATING_OFFSET);
-    if (info.name == "votes")
-      return AddListItemProp(info.param(), LISTITEM_VOTES_OFFSET);
-    if (info.name == "ratingandvotes")
-      return AddListItemProp(info.param(), LISTITEM_RATING_AND_VOTES_OFFSET);
-    if (info.name == "duration")
-      return AddListItemProp(info.param(), LISTITEM_DURATION_OFFSET);
+    else if (prop.name == "property" ||
+             prop.name == "art" ||
+             prop.name == "votes" ||
+             prop.name == "ratingandvotes")
+    {
+      data3 = prop.param();
+    }
+    else if (prop.name == "duration")
+    {
+      data4 = TranslateTimeFormat(prop.param());
+    }
   }
 
-  for (size_t i = 0; i < sizeof(listitem_labels) / sizeof(infomap); ++i) // these ones don't have or need an id
+  if (ret == 0)
   {
-    if (info.name == listitem_labels[i].str)
-      return listitem_labels[i].val;
+    for (size_t i = 0; i < sizeof(listitem_labels) / sizeof(infomap); ++i) // these ones don't have or need an id
+    {
+      if (prop.name == listitem_labels[i].str)
+      {
+        ret = listitem_labels[i].val;
+        break;
+      }
+    }
   }
+
+  if (ret)
+  {
+    int offset = std::atoi(cat.param().c_str());
+
+    int flag = 0;
+    if (cat.name == "listitem")
+      flag = INFOFLAG_LISTITEM_WRAP;
+    else if (cat.name == "listitemposition")
+      flag = INFOFLAG_LISTITEM_POSITION;
+    else if (cat.name == "listitemabsolute")
+      flag = INFOFLAG_LISTITEM_ABSOLUTE;
+    else if (cat.name == "listitemnowrap")
+      flag = INFOFLAG_LISTITEM_NOWRAP;
+
+    return AddMultiInfo(GUIInfo(ret, id, offset, flag, data3, data4));
+  }
+
   return 0;
 }
 
@@ -6348,21 +6371,6 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   std::string strLabel;
   if (info >= MULTI_INFO_START && info <= MULTI_INFO_END)
     return GetMultiInfoLabel(m_multiInfo[info - MULTI_INFO_START], contextWindow);
-
-  if (info >= LISTITEM_PROPERTY_START + MUSICPLAYER_PROPERTY_OFFSET &&
-      info - (LISTITEM_PROPERTY_START + MUSICPLAYER_PROPERTY_OFFSET) < static_cast<int>(m_listitemProperties.size()))
-  { // grab the property
-    if (!m_currentFile)
-      return "";
-
-    std::string property = m_listitemProperties[info - LISTITEM_PROPERTY_START - MUSICPLAYER_PROPERTY_OFFSET];
-    if (StringUtils::StartsWithNoCase(property, "Role.") && m_currentFile->HasMusicInfoTag())
-    { // "Role.xxxx" properties are held in music tag
-      property.erase(0, 5); //Remove Role.
-      return m_currentFile->GetMusicInfoTag()->GetArtistStringForRole(property);
-    }
-    return m_currentFile->GetProperty(property).asString();
-  }
 
   if (info >= LISTITEM_START && info <= LISTITEM_END)
   {
@@ -6830,7 +6838,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
         break;
       case STRING_IS_EMPTY:
         // note: Get*Image() falls back to Get*Label(), so this should cover all of them
-        if (item && item->IsFileItem() && info.GetData1() >= LISTITEM_START && info.GetData1() < LISTITEM_END)
+        if (item && item->IsFileItem())
           bReturn = GetItemImage(static_cast<const CFileItem*>(item), info.GetData1()).empty();
         else
           bReturn = GetImage(info.GetData1(), contextWindow).empty();
@@ -6841,7 +6849,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
           if (info.GetData2() < 0) // info labels are stored with negative numbers
           {
             int info2 = -info.GetData2();
-            if (item && item->IsFileItem() && info2 >= LISTITEM_START && info2 < LISTITEM_END)
+            if (item && item->IsFileItem())
               compare = GetItemImage(static_cast<const CFileItem*>(item), info2);
             else
               compare = GetImage(info2, contextWindow);
@@ -6850,7 +6858,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
           { // conditional string
             compare = info.GetData3();
           }
-          if (item && item->IsFileItem() && info.GetData1() >= LISTITEM_START && info.GetData1() < LISTITEM_END)
+          if (item && item->IsFileItem())
             bReturn = StringUtils::EqualsNoCase(GetItemImage(static_cast<const CFileItem *>(item), info.GetData1()), compare);
           else
             bReturn = StringUtils::EqualsNoCase(GetImage(info.GetData1(), contextWindow), compare);
@@ -6866,7 +6874,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
           if (!GetInt(integer, info.GetData1(), contextWindow, item))
           {
             std::string value;
-            if (item && item->IsFileItem() && info.GetData1() >= LISTITEM_START && info.GetData1() < LISTITEM_END)
+            if (item && item->IsFileItem())
               value = GetItemImage(static_cast<const CFileItem*>(item), info.GetData1());
             else
               value = GetImage(info.GetData1(), contextWindow);
@@ -6900,7 +6908,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
           // our compare string is already in lowercase, so lower case our label as well
           // as std::string::Find() is case sensitive
           std::string label;
-          if (item && item->IsFileItem() && info.GetData1() >= LISTITEM_START && info.GetData1() < LISTITEM_END)
+          if (item && item->IsFileItem())
           {
             label = GetItemImage(static_cast<const CFileItem*>(item), info.GetData1());
             StringUtils::ToLower(label);
@@ -7226,7 +7234,7 @@ std::string CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &constinfo, int con
       item = std::static_pointer_cast<CFileItem>(static_cast<IGUIContainer *>(activeContainer)->GetListItem(info.GetData2(), info.GetInfoFlag()));
 
     if (item) // If we got a valid item, do the lookup
-      return GetItemImage(item.get(), info.m_info, fallback); // Image prioritizes images over labels (in the case of music item ratings for instance)
+      return GetMultiInfoItemImage(item.get(), info, fallback); // Image prioritizes images over labels (in the case of music item ratings for instance)
   }
   if (info.m_info == SYSTEM_ADDON_TITLE ||
       info.m_info == SYSTEM_ADDON_ICON ||
@@ -7336,7 +7344,7 @@ std::string CGUIInfoManager::GetImage(int info, int contextWindow, std::string *
     return GetMultiInfoLabel(m_multiInfo[info - MULTI_INFO_START], contextWindow, fallback);
   }
   else if (info == LISTITEM_THUMB || info == LISTITEM_ICON || info == LISTITEM_ACTUAL_ICON ||
-          info == LISTITEM_OVERLAY)
+           info == LISTITEM_OVERLAY || info == LISTITEM_ART)
   {
     CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_HAS_LIST_ITEMS);
     if (window)
@@ -7472,22 +7480,6 @@ void CGUIInfoManager::UpdateAVInfo()
   }
 }
 
-int CGUIInfoManager::AddListItemProp(const std::string &str, int offset)
-{
-  for (int i = 0; i < static_cast<int>(m_listitemProperties.size()); ++i)
-    if (m_listitemProperties[i] == str)
-      return (LISTITEM_PROPERTY_START + offset + i);
-
-  if (m_listitemProperties.size() < LISTITEM_PROPERTY_END - LISTITEM_PROPERTY_START)
-  {
-    m_listitemProperties.emplace_back(str);
-    return LISTITEM_PROPERTY_START + offset + m_listitemProperties.size() - 1;
-  }
-
-  CLog::Log(LOGERROR,"%s - not enough listitem property space!", __FUNCTION__);
-  return 0;
-}
-
 int CGUIInfoManager::AddMultiInfo(const GUIInfo &info)
 {
   // check to see if we have this info already
@@ -7510,14 +7502,6 @@ bool CGUIInfoManager::GetItemInt(int &value, const CGUIListItem *item, int info)
     return false;
   }
 
-  if (info >= LISTITEM_PROPERTY_START && info - LISTITEM_PROPERTY_START < static_cast<int>(m_listitemProperties.size()))
-  { // grab the property
-    std::string property = m_listitemProperties[info - LISTITEM_PROPERTY_START];
-    std::string val = item->GetProperty(property).asString();
-    value = atoi(val.c_str());
-    return true;
-  }
-
   if (m_infoProviders.GetInt(value, item, GUIInfo(info)))
     return true;
 
@@ -7525,65 +7509,30 @@ bool CGUIInfoManager::GetItemInt(int &value, const CGUIListItem *item, int info)
   return false;
 }
 
-std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::string *fallback) const
+std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::string *fallback /* = nullptr */) const
+{
+  return GetMultiInfoItemLabel(item, GUIInfo(info), fallback);
+}
+
+std::string CGUIInfoManager::GetMultiInfoItemLabel(const CFileItem *item, const GUIINFO::GUIInfo &info, std::string *fallback /* = nullptr */) const
 {
   if (!item)
     return "";
 
-  if (info >= CONDITIONAL_LABEL_START && info <= CONDITIONAL_LABEL_END)
-    return GetSkinVariableString(info, false, item);
+  if (info.m_info >= CONDITIONAL_LABEL_START && info.m_info <= CONDITIONAL_LABEL_END)
+    return GetSkinVariableString(info.m_info, false, item);
 
-  if (info >= LISTITEM_PROPERTY_START + LISTITEM_ART_OFFSET &&
-      info - (LISTITEM_PROPERTY_START + LISTITEM_ART_OFFSET) < static_cast<int>(m_listitemProperties.size()))
-  { // grab the art
-    std::string art = m_listitemProperties[info - (LISTITEM_PROPERTY_START + LISTITEM_ART_OFFSET)];
-    return item->GetArt(art);
-  }
-
-  GUIInfo multiInfo(info);
-
-  if (info >= LISTITEM_PROPERTY_START + LISTITEM_RATING_OFFSET &&
-      info - (LISTITEM_PROPERTY_START + LISTITEM_RATING_OFFSET) < static_cast<int>(m_listitemProperties.size()))
-  {
-    multiInfo = GUIInfo(LISTITEM_RATING, m_listitemProperties[info - (LISTITEM_PROPERTY_START + LISTITEM_RATING_OFFSET)]);
-  }
-
-  if (info >= LISTITEM_PROPERTY_START + LISTITEM_VOTES_OFFSET &&
-      info - (LISTITEM_PROPERTY_START + LISTITEM_VOTES_OFFSET) < static_cast<int>(m_listitemProperties.size()))
-  {
-    multiInfo = GUIInfo(LISTITEM_VOTES, m_listitemProperties[info - (LISTITEM_PROPERTY_START + LISTITEM_VOTES_OFFSET)]);
-  }
-
-  if (info >= LISTITEM_PROPERTY_START + LISTITEM_RATING_AND_VOTES_OFFSET &&
-      info - (LISTITEM_PROPERTY_START + LISTITEM_RATING_AND_VOTES_OFFSET) < static_cast<int>(m_listitemProperties.size()))
-  {
-    multiInfo = GUIInfo(LISTITEM_RATING_AND_VOTES, m_listitemProperties[info - (LISTITEM_PROPERTY_START + LISTITEM_RATING_AND_VOTES_OFFSET)]);
-  }
-
-  if (info >= LISTITEM_PROPERTY_START + LISTITEM_DURATION_OFFSET &&
-      info - (LISTITEM_PROPERTY_START + LISTITEM_DURATION_OFFSET) < static_cast<int>(m_listitemProperties.size()))
-  {
-    multiInfo = GUIInfo(LISTITEM_DURATION, TranslateTimeFormat(m_listitemProperties[info - (LISTITEM_PROPERTY_START + LISTITEM_DURATION_OFFSET)]));
-  }
-
-  if (info >= LISTITEM_PROPERTY_START && info - LISTITEM_PROPERTY_START < static_cast<int>(m_listitemProperties.size()))
-  {
-    std::string property = m_listitemProperties[info - LISTITEM_PROPERTY_START];
-    if (StringUtils::StartsWithNoCase(property, "Role.") && item->HasMusicInfoTag())
-    { // "Role.xxxx" properties are held in music tag
-      property.erase(0, 5); //Remove Role.
-      return item->GetMusicInfoTag()->GetArtistStringForRole(property);
-    }
-    // grab the property
-    return item->GetProperty(property).asString();
-  }
+  if (info.m_info >= MULTI_INFO_START && info.m_info <= MULTI_INFO_END)
+    return GetMultiInfoItemLabel(item, m_multiInfo[info.m_info - MULTI_INFO_START], fallback);
 
   std::string value;
-  if (m_infoProviders.GetLabel(value, item, multiInfo, fallback))
+  if (m_infoProviders.GetLabel(value, item, info, fallback))
     return value;
 
-  switch (info)
+  switch (info.m_info)
   {
+  case LISTITEM_PROPERTY:
+    return item->GetProperty(info.GetData3()).asString();
   case LISTITEM_LABEL:
     return item->GetLabel();
   case LISTITEM_LABEL2:
@@ -7592,7 +7541,7 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
   case LISTITEM_FILE_EXTENSION:
     {
       std::string strFile = URIUtils::GetFileName(item->GetPath());
-      if (info == LISTITEM_FILE_EXTENSION)
+      if (info.m_info == LISTITEM_FILE_EXTENSION)
       {
         std::string strExtension = URIUtils::GetExtension(strFile);
         return StringUtils::TrimLeft(strExtension, ".");
@@ -7625,6 +7574,8 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
         *fallback = item->GetIconImage();
       return strThumb;
     }
+  case LISTITEM_ART:
+    return item->GetArt(info.GetData3());
   case LISTITEM_OVERLAY:
     return item->GetOverlayImage();
   case LISTITEM_THUMB:
@@ -7637,7 +7588,7 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
       std::string path;
       URIUtils::GetParentPath(item->GetPath(), path);
       path = CURL(path).GetWithoutUserDetails();
-      if (info == LISTITEM_FOLDERNAME)
+      if (info.m_info == LISTITEM_FOLDERNAME)
       {
         URIUtils::RemoveSlashAtEnd(path);
         path=URIUtils::GetFileName(path);
@@ -7672,24 +7623,26 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int info, std::
   return "";
 }
 
-std::string CGUIInfoManager::GetItemImage(const CFileItem *item, int info, std::string *fallback) const
+std::string CGUIInfoManager::GetItemImage(const CFileItem *item, int info, std::string *fallback /*= nullptr*/) const
 {
-  if (info >= CONDITIONAL_LABEL_START && info <= CONDITIONAL_LABEL_END)
-    return GetSkinVariableString(info, true, item);
+  return GetMultiInfoItemImage(item, GUIInfo(info), fallback);
+}
 
-  return GetItemLabel(item, info, fallback);
+std::string CGUIInfoManager::GetMultiInfoItemImage(const CFileItem *item, const GUIInfo &info, std::string *fallback /*= nullptr*/) const
+{
+  if (info.m_info >= CONDITIONAL_LABEL_START && info.m_info <= CONDITIONAL_LABEL_END)
+    return GetSkinVariableString(info.m_info, true, item);
+
+  if (info.m_info >= MULTI_INFO_START && info.m_info <= MULTI_INFO_END)
+    return GetMultiInfoItemImage(item, m_multiInfo[info.m_info - MULTI_INFO_START], fallback);
+
+  return GetMultiInfoItemLabel(item, info, fallback);
 }
 
 bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
 {
   if (!item)
     return false;
-
-  if (condition >= LISTITEM_PROPERTY_START && condition - LISTITEM_PROPERTY_START < static_cast<int>(m_listitemProperties.size()))
-  { // grab the property
-    std::string property = m_listitemProperties[condition - LISTITEM_PROPERTY_START];
-    return item->GetProperty(property).asBoolean();
-  }
 
   bool value = false;
   if (m_infoProviders.GetBool(value, item, GUIInfo(condition)))

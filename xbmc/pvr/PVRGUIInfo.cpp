@@ -575,7 +575,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem *item, const GUIInfo
       case LISTITEM_NEXT_DURATION:
         if (epgTag->GetDuration() > 0)
         {
-          strValue = StringUtils::SecondsToTimeString(epgTag->GetDuration(), static_cast<TIME_FORMAT>(info.GetData1()));
+          strValue = StringUtils::SecondsToTimeString(epgTag->GetDuration(), static_cast<TIME_FORMAT>(info.GetData4()));
           return true;
         }
         return false;

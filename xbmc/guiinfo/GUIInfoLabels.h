@@ -203,6 +203,7 @@
 #define MUSICPLAYER_CONTRIBUTORS    239
 #define MUSICPLAYER_CONTRIBUTOR_AND_ROLE 240
 #define MUSICPLAYER_DBID            241
+#define MUSICPLAYER_PROPERTY        242
 
 #define VIDEOPLAYER_AUDIO_BITRATE     248
 #define VIDEOPLAYER_VIDEO_BITRATE     249
@@ -797,22 +798,21 @@
 #define LISTITEM_DATE_ADDED         (LISTITEM_START + 114)
 #define LISTITEM_DBTYPE             (LISTITEM_START + 115)
 #define LISTITEM_DBID               (LISTITEM_START + 116)
-
-#define LISTITEM_STARTTIME          (LISTITEM_START + 117)
-#define LISTITEM_ENDTIME            (LISTITEM_START + 118)
-#define LISTITEM_STARTDATE          (LISTITEM_START + 119)
-#define LISTITEM_ENDDATE            (LISTITEM_START + 120)
-#define LISTITEM_NEXT_TITLE         (LISTITEM_START + 121)
-#define LISTITEM_NEXT_GENRE         (LISTITEM_START + 122)
-#define LISTITEM_NEXT_PLOT          (LISTITEM_START + 123)
-#define LISTITEM_NEXT_PLOT_OUTLINE  (LISTITEM_START + 124)
-#define LISTITEM_NEXT_STARTTIME     (LISTITEM_START + 125)
-#define LISTITEM_NEXT_ENDTIME       (LISTITEM_START + 126)
-#define LISTITEM_NEXT_STARTDATE     (LISTITEM_START + 127)
-#define LISTITEM_NEXT_ENDDATE       (LISTITEM_START + 128)
-#define LISTITEM_NEXT_DURATION      (LISTITEM_START + 129)
-#define LISTITEM_CHANNEL_NAME       (LISTITEM_START + 130)
-// unused (LISTITEM_START + 131)
+#define LISTITEM_ART                (LISTITEM_START + 117)
+#define LISTITEM_STARTTIME          (LISTITEM_START + 118)
+#define LISTITEM_ENDTIME            (LISTITEM_START + 119)
+#define LISTITEM_STARTDATE          (LISTITEM_START + 120)
+#define LISTITEM_ENDDATE            (LISTITEM_START + 121)
+#define LISTITEM_NEXT_TITLE         (LISTITEM_START + 122)
+#define LISTITEM_NEXT_GENRE         (LISTITEM_START + 123)
+#define LISTITEM_NEXT_PLOT          (LISTITEM_START + 124)
+#define LISTITEM_NEXT_PLOT_OUTLINE  (LISTITEM_START + 125)
+#define LISTITEM_NEXT_STARTTIME     (LISTITEM_START + 126)
+#define LISTITEM_NEXT_ENDTIME       (LISTITEM_START + 127)
+#define LISTITEM_NEXT_STARTDATE     (LISTITEM_START + 128)
+#define LISTITEM_NEXT_ENDDATE       (LISTITEM_START + 129)
+#define LISTITEM_NEXT_DURATION      (LISTITEM_START + 130)
+#define LISTITEM_CHANNEL_NAME       (LISTITEM_START + 131)
 #define LISTITEM_CHANNEL_GROUP      (LISTITEM_START + 132)
 #define LISTITEM_HASTIMER           (LISTITEM_START + 133)
 #define LISTITEM_ISRECORDING        (LISTITEM_START + 134)
@@ -864,20 +864,11 @@
 #define LISTITEM_ADDON_SIZE         (LISTITEM_START + 179)
 #define LISTITEM_EXPIRATION_DATE    (LISTITEM_START + 180)
 #define LISTITEM_EXPIRATION_TIME    (LISTITEM_START + 181)
+#define LISTITEM_PROPERTY           (LISTITEM_START + 182)
 
-//! @todo There are issues with the LISTITEM_PROPERTY range, breakage occurs when more than 200 properties are used in skins.
-#define LISTITEM_PROPERTY_START     (LISTITEM_START + 200)
-#define LISTITEM_PROPERTY_END       (LISTITEM_PROPERTY_START + 2500)
-#define LISTITEM_END                (LISTITEM_PROPERTY_END)
+#define LISTITEM_END                (LISTITEM_START + 2500)
 
-#define MUSICPLAYER_PROPERTY_OFFSET       1300  // 200 id's reserved for musicplayer props.
-#define LISTITEM_ART_OFFSET               1500  // 200 id's reserved for listitem art.
-#define LISTITEM_RATING_OFFSET      1700 // 200 id's reserved for listitem ratings.
-#define LISTITEM_VOTES_OFFSET       1900 // 200 id's reserved for listitem votes.
-#define LISTITEM_RATING_AND_VOTES_OFFSET  2100 // 200 id's reserved for listitem ratingandvotes.
-#define LISTITEM_DURATION_OFFSET    2300 // 200 id's reserved for listitem duration.
-
-#define CONDITIONAL_LABEL_START       LISTITEM_END + 1 // 37701
+#define CONDITIONAL_LABEL_START       (LISTITEM_END + 1) // 37501
 #define CONDITIONAL_LABEL_END         38500
 
 // the multiple information vector
@@ -885,9 +876,10 @@
 #define MULTI_INFO_END                99999
 #define COMBINED_VALUES_START        100000
 
-// Info Flags
+// listitem info Flags
 // Stored in the top 8 bits of GUIInfo::m_data1
 // therefore we only have room for 8 flags
-#define INFOFLAG_LISTITEM_WRAP        ((uint32_t) (1 << 25))  // Wrap ListItem lookups
-#define INFOFLAG_LISTITEM_POSITION    ((uint32_t) (1 << 26))  // ListItem lookups based on cursor position
-#define INFOFLAG_LISTITEM_ABSOLUTE    ((uint32_t) (1 << 27))  // Absolute ListItem lookups
+#define INFOFLAG_LISTITEM_WRAP        (static_cast<uint32_t>(1 << 25))  // Wrap ListItem lookups
+#define INFOFLAG_LISTITEM_POSITION    (static_cast<uint32_t>(1 << 26))  // ListItem lookups based on cursor position
+#define INFOFLAG_LISTITEM_ABSOLUTE    (static_cast<uint32_t>(1 << 27))  // Absolute ListItem lookups
+#define INFOFLAG_LISTITEM_NOWRAP      (static_cast<uint32_t>(1 << 28))  // Do not wrap ListItem lookups

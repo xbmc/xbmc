@@ -249,10 +249,7 @@ bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, const GU
         int iDuration = tag->GetDuration();
         if (iDuration > 0)
         {
-          TIME_FORMAT format = static_cast<TIME_FORMAT>(info.GetData1());
-          if (format == TIME_FORMAT_GUESS)
-            format = TIME_FORMAT_HH_MM;
-          value = StringUtils::SecondsToTimeString(iDuration, format);
+          value = StringUtils::SecondsToTimeString(iDuration, static_cast<TIME_FORMAT>(info.GetData4()));
           return true;
         }
         break;
@@ -261,6 +258,16 @@ bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, const GU
       /////////////////////////////////////////////////////////////////////////////////////////////
       // LISTITEM_*
       /////////////////////////////////////////////////////////////////////////////////////////////
+      case LISTITEM_PROPERTY:
+        if (StringUtils::StartsWithNoCase(info.GetData3(), "Role."))
+        {
+          // "Role.xxxx" properties are held in music tag
+          std::string property = info.GetData3();
+          property.erase(0, 5); //Remove Role.
+          value = tag->GetArtistStringForRole(property);
+          return true;
+        }
+        break;
       case LISTITEM_VOTES:
         value = StringUtils::FormatNumber(tag->GetVotes());
         return true;
@@ -331,6 +338,9 @@ bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, const GU
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // MUSICPLAYER_*
     ///////////////////////////////////////////////////////////////////////////////////////////////
+    case MUSICPLAYER_PROPERTY:
+      value = item->GetProperty(info.GetData3()).asString();
+      return true;
     case MUSICPLAYER_PLAYLISTLEN:
       if (CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST_MUSIC)
       {

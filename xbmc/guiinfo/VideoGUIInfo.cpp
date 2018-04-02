@@ -314,7 +314,7 @@ bool CVideoGUIInfo::GetLabel(std::string& value, const CFileItem *item, const GU
         int iDuration = tag->GetDuration();
         if (iDuration > 0)
         {
-          value = StringUtils::SecondsToTimeString(iDuration, static_cast<TIME_FORMAT>(info.GetData1()));
+          value = StringUtils::SecondsToTimeString(iDuration, static_cast<TIME_FORMAT>(info.GetData4()));
           return true;
         }
         break;
