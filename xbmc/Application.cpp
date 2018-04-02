@@ -305,7 +305,7 @@ void CApplication::HandleWinEvents()
         {
           if (!g_advancedSettings.m_fullScreen)
           {
-            g_graphicsContext.ApplyWindowResize(newEvent.resize.w, newEvent.resize.h);
+            CServiceBroker::GetWinSystem().GetGfxContext().ApplyWindowResize(newEvent.resize.w, newEvent.resize.h);
             CServiceBroker::GetSettings().SetInt(CSettings::SETTING_WINDOW_WIDTH, newEvent.resize.w);
             CServiceBroker::GetSettings().SetInt(CSettings::SETTING_WINDOW_HEIGHT, newEvent.resize.h);
             CServiceBroker::GetSettings().Save();
@@ -318,7 +318,7 @@ void CApplication::HandleWinEvents()
       }
         break;
       case XBMC_MODECHANGE:
-        g_graphicsContext.ApplyModeChange(newEvent.mode.res);
+        CServiceBroker::GetWinSystem().GetGfxContext().ApplyModeChange(newEvent.mode.res);
         break;
       case XBMC_USEREVENT:
         CApplicationMessenger::GetInstance().PostMsg(static_cast<uint32_t>(newEvent.user.code));
@@ -407,8 +407,8 @@ bool CApplication::Create(const CAppParamParser &params)
 
   for (int i = RES_HDTV_1080i; i <= RES_PAL60_16x9; i++)
   {
-    g_graphicsContext.ResetScreenParameters((RESOLUTION)i);
-    g_graphicsContext.ResetOverscan((RESOLUTION)i, CDisplaySettings::GetInstance().GetResolutionInfo(i).Overscan);
+    CServiceBroker::GetWinSystem().GetGfxContext().ResetScreenParameters((RESOLUTION)i);
+    CServiceBroker::GetWinSystem().GetGfxContext().ResetOverscan((RESOLUTION)i, CDisplaySettings::GetInstance().GetResolutionInfo(i).Overscan);
   }
 
   //! @todo - move to CPlatformXXX
@@ -660,7 +660,7 @@ bool CApplication::CreateGUI()
   bool sav_res = false;
   CDisplaySettings::GetInstance().SetCurrentResolution(CDisplaySettings::GetInstance().GetDisplayResolution());
   CLog::Log(LOGNOTICE, "Checking resolution %i", CDisplaySettings::GetInstance().GetCurrentResolution());
-  if (!g_graphicsContext.IsValidResolution(CDisplaySettings::GetInstance().GetCurrentResolution()))
+  if (!CServiceBroker::GetWinSystem().GetGfxContext().IsValidResolution(CDisplaySettings::GetInstance().GetCurrentResolution()))
   {
     CLog::Log(LOGNOTICE, "Setting safe mode %i", RES_DESKTOP);
     // defer saving resolution after window was created
@@ -678,7 +678,7 @@ bool CApplication::CreateGUI()
     sav_res = true;
   }
 
-  if (!g_graphicsContext.IsValidResolution(CDisplaySettings::GetInstance().GetCurrentResolution()))
+  if (!CServiceBroker::GetWinSystem().GetGfxContext().IsValidResolution(CDisplaySettings::GetInstance().GetCurrentResolution()))
   {
     // Oh uh - doesn't look good for starting in their wanted screenmode
     CLog::Log(LOGERROR, "The screen resolution requested is not valid, resetting to a valid mode");
@@ -715,7 +715,7 @@ bool CApplication::CreateGUI()
   if (!CServiceBroker::GetInputManager().LoadKeymaps())
     return false;
 
-  RESOLUTION_INFO info = g_graphicsContext.GetResInfo();
+  RESOLUTION_INFO info = CServiceBroker::GetWinSystem().GetGfxContext().GetResInfo();
   CLog::Log(LOGINFO, "GUI format %ix%i, Display %s",
             info.iWidth,
             info.iHeight,
@@ -745,7 +745,7 @@ bool CApplication::InitWindow(RESOLUTION res)
     return false;
   }
   // set GUI res and force the clear of the screen
-  g_graphicsContext.SetVideoResolution(res, false);
+  CServiceBroker::GetWinSystem().GetGfxContext().SetVideoResolution(res, false);
   return true;
 }
 
@@ -1351,8 +1351,8 @@ void CApplication::OnSettingChanged(std::shared_ptr<const CSetting> setting)
   }
   else if (settingId == CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN)
   {
-    if (g_graphicsContext.IsFullScreenRoot())
-      g_graphicsContext.SetVideoResolution(g_graphicsContext.GetVideoResolution(), true);
+    if (CServiceBroker::GetWinSystem().GetGfxContext().IsFullScreenRoot())
+      CServiceBroker::GetWinSystem().GetGfxContext().SetVideoResolution(CServiceBroker::GetWinSystem().GetGfxContext().GetVideoResolution(), true);
   }
   else if (settingId == CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGH)
   {
@@ -1566,7 +1566,7 @@ bool CApplication::LoadSkin(const std::string& skinID)
 
   }
 
-  CSingleLock lock(g_graphicsContext);
+  CSingleLock lock(CServiceBroker::GetWinSystem().GetGfxContext());
 
   // store current active window with its focused control
   int currentWindowID = CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow();
@@ -1596,7 +1596,7 @@ bool CApplication::LoadSkin(const std::string& skinID)
   g_SkinInfo = skin;
 
   CLog::Log(LOGINFO, "  load fonts for skin...");
-  g_graphicsContext.SetMediaDir(skin->Path());
+  CServiceBroker::GetWinSystem().GetGfxContext().SetMediaDir(skin->Path());
   g_directoryCache.ClearSubPaths(skin->Path());
 
   g_colorManager.Load(m_ServiceManager->GetSettings().GetString(CSettings::SETTING_LOOKANDFEEL_SKINCOLORS));
@@ -1832,7 +1832,7 @@ void CApplication::Render()
   // Whether externalplayer is playing and we're unfocused
   bool extPlayerActive = m_appPlayer.IsExternalPlaying() && !m_AppFocused;
 
-  if (!extPlayerActive && g_graphicsContext.IsFullScreenVideo() && !m_appPlayer.IsPausedPlayback())
+  if (!extPlayerActive && CServiceBroker::GetWinSystem().GetGfxContext().IsFullScreenVideo() && !m_appPlayer.IsPausedPlayback())
   {
     ResetScreenSaver();
   }
@@ -1843,17 +1843,17 @@ void CApplication::Render()
   // render gui layer
   if (!m_skipGuiRender)
   {
-    if (g_graphicsContext.GetStereoMode())
+    if (CServiceBroker::GetWinSystem().GetGfxContext().GetStereoMode())
     {
-      g_graphicsContext.SetStereoView(RENDER_STEREO_VIEW_LEFT);
+      CServiceBroker::GetWinSystem().GetGfxContext().SetStereoView(RENDER_STEREO_VIEW_LEFT);
       hasRendered |= CServiceBroker::GetGUI()->GetWindowManager().Render();
 
-      if (g_graphicsContext.GetStereoMode() != RENDER_STEREO_MODE_MONO)
+      if (CServiceBroker::GetWinSystem().GetGfxContext().GetStereoMode() != RENDER_STEREO_MODE_MONO)
       {
-        g_graphicsContext.SetStereoView(RENDER_STEREO_VIEW_RIGHT);
+        CServiceBroker::GetWinSystem().GetGfxContext().SetStereoView(RENDER_STEREO_VIEW_RIGHT);
         hasRendered |= CServiceBroker::GetGUI()->GetWindowManager().Render();
       }
-      g_graphicsContext.SetStereoView(RENDER_STEREO_VIEW_OFF);
+      CServiceBroker::GetWinSystem().GetGfxContext().SetStereoView(RENDER_STEREO_VIEW_OFF);
     }
     else
     {
@@ -1880,7 +1880,7 @@ void CApplication::Render()
     g_infoManager.UpdateFPS();
   }
 
-  g_graphicsContext.Flip(hasRendered, m_appPlayer.IsRenderingVideoLayer());
+  CServiceBroker::GetWinSystem().GetGfxContext().Flip(hasRendered, m_appPlayer.IsRenderingVideoLayer());
 
   CTimeUtils::UpdateFrameTime(hasRendered);
 }
@@ -1904,7 +1904,7 @@ bool CApplication::OnAction(const CAction &action)
 
   if (action.GetID() == ACTION_TOGGLE_FULLSCREEN)
   {
-    g_graphicsContext.ToggleFullScreen();
+    CServiceBroker::GetWinSystem().GetGfxContext().ToggleFullScreen();
     m_appPlayer.TriggerUpdateResolution();
     return true;
   }
@@ -2397,7 +2397,7 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
 #ifdef TARGET_ANDROID
   case TMSG_DISPLAY_SETUP:
     // We might come from a refresh rate switch destroying the native window; use the context resolution
-    *static_cast<bool*>(pMsg->lpVoid) = InitWindow(g_graphicsContext.GetVideoResolution());
+    *static_cast<bool*>(pMsg->lpVoid) = InitWindow(CServiceBroker::GetWinSystem().GetGfxContext().GetVideoResolution());
     SetRenderGUI(true);
     break;
 
@@ -2449,11 +2449,11 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
     break;
 
   case TMSG_SETVIDEORESOLUTION:
-    g_graphicsContext.SetVideoResolution(static_cast<RESOLUTION>(pMsg->param1), pMsg->param2 == 1);
+    CServiceBroker::GetWinSystem().GetGfxContext().SetVideoResolution(static_cast<RESOLUTION>(pMsg->param1), pMsg->param2 == 1);
     break;
 
   case TMSG_TOGGLEFULLSCREEN:
-    g_graphicsContext.ToggleFullScreen();
+    CServiceBroker::GetWinSystem().GetGfxContext().ToggleFullScreen();
     m_appPlayer.TriggerUpdateResolution();
     break;
 
@@ -2617,13 +2617,13 @@ void CApplication::LockFrameMoveGuard()
   ++m_WaitingExternalCalls;
   m_frameMoveGuard.lock();
   ++m_ProcessedExternalCalls;
-  g_graphicsContext.lock();
+  CServiceBroker::GetWinSystem().GetGfxContext().lock();
 };
 
 void CApplication::UnlockFrameMoveGuard()
 {
   --m_WaitingExternalCalls;
-  g_graphicsContext.unlock();
+  CServiceBroker::GetWinSystem().GetGfxContext().unlock();
   m_frameMoveGuard.unlock();
 };
 
@@ -2640,7 +2640,7 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
 
     if (processGUI && m_renderGUI)
     {
-      CSingleLock lock(g_graphicsContext);
+      CSingleLock lock(CServiceBroker::GetWinSystem().GetGfxContext());
       // check if there are notifications to display
       CGUIDialogKaiToast *toast = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogKaiToast>(WINDOW_DIALOG_KAI_TOAST);
       if (toast && toast->DoWork())
@@ -2665,7 +2665,7 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
     // Window size can be between 2 and 10ms and depends on number of continuous requests
     if (m_WaitingExternalCalls)
     {
-      CSingleExit ex(g_graphicsContext);
+      CSingleExit ex(CServiceBroker::GetWinSystem().GetGfxContext());
       m_frameMoveGuard.unlock();
 
       // Calculate a window size between 2 and 10ms, 4 continuous requests let the window grow by 1ms
@@ -2690,7 +2690,7 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
 
     // This code reduces rendering fps of the GUI layer when playing videos in fullscreen mode
     // it makes only sense on architectures with multiple layers
-    if (g_graphicsContext.IsFullScreenVideo() && !m_appPlayer.IsPausedPlayback() && m_appPlayer.IsRenderingVideoLayer())
+    if (CServiceBroker::GetWinSystem().GetGfxContext().IsFullScreenVideo() && !m_appPlayer.IsPausedPlayback() && m_appPlayer.IsRenderingVideoLayer())
       fps = m_ServiceManager->GetSettings().GetInt(CSettings::SETTING_VIDEOPLAYER_LIMITGUIUPDATE);
 
     unsigned int now = XbmcThreads::SystemClockMillis();
@@ -3262,7 +3262,7 @@ void CApplication::PlaybackCleanup()
     else
     {
       //  resets to res_desktop or look&feel resolution (including refreshrate)
-      g_graphicsContext.SetFullScreenVideo(false);
+      CServiceBroker::GetWinSystem().GetGfxContext().SetFullScreenVideo(false);
     }
 #ifdef TARGET_DARWIN_IOS
     CDarwinUtils::SetScheduling(false);
@@ -3551,7 +3551,7 @@ void CApplication::StoreVideoSettings(const CFileItem &fileItem, CVideoSettings 
 
 bool CApplication::IsPlayingFullScreenVideo() const
 {
-  return m_appPlayer.IsPlayingVideo() && g_graphicsContext.IsFullScreenVideo();
+  return m_appPlayer.IsPlayingVideo() && CServiceBroker::GetWinSystem().GetGfxContext().IsFullScreenVideo();
 }
 
 bool CApplication::IsFullScreen()
@@ -4276,7 +4276,7 @@ void CApplication::Process()
 
   {
     // Allow processing of script threads to let them shut down properly.
-    CSingleExit ex(g_graphicsContext);
+    CSingleExit ex(CServiceBroker::GetWinSystem().GetGfxContext());
     m_frameMoveGuard.unlock();
     CScriptInvocationManager::GetInstance().Process();
     m_frameMoveGuard.lock();

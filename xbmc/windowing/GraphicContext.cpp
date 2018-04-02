@@ -1089,7 +1089,7 @@ float CGraphicContext::GetFPS() const
 {
   if (m_Resolution != RES_INVALID)
   {
-    RESOLUTION_INFO info = g_graphicsContext.GetResInfo();
+    RESOLUTION_INFO info = GetResInfo();
     if (info.fRefreshRate > 0)
       return info.fRefreshRate;
     if (m_Resolution == RES_PAL_4x3 || m_Resolution == RES_PAL_16x9)

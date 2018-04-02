@@ -6573,13 +6573,13 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
     }
     break;
   case SYSTEM_SCREEN_MODE:
-    strLabel = g_graphicsContext.GetResInfo().strMode;
+    strLabel = CServiceBroker::GetWinSystem().GetGfxContext().GetResInfo().strMode;
     break;
   case SYSTEM_SCREEN_WIDTH:
-    strLabel = StringUtils::Format("%i", g_graphicsContext.GetResInfo().iScreenWidth);
+    strLabel = StringUtils::Format("%i", CServiceBroker::GetWinSystem().GetGfxContext().GetResInfo().iScreenWidth);
     break;
   case SYSTEM_SCREEN_HEIGHT:
-    strLabel = StringUtils::Format("%i", g_graphicsContext.GetResInfo().iScreenHeight);
+    strLabel = StringUtils::Format("%i", CServiceBroker::GetWinSystem().GetGfxContext().GetResInfo().iScreenHeight);
     break;
   case SYSTEM_CURRENT_WINDOW:
     return g_localizeStrings.Get(CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindowOrDialog());

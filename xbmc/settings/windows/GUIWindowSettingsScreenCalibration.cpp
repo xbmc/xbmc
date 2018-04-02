@@ -74,7 +74,7 @@ bool CGUIWindowSettingsScreenCalibration::OnAction(const CAction &action)
     {
       CGUIDialogYesNo* pDialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogYesNo>(WINDOW_DIALOG_YES_NO);
       pDialog->SetHeading(CVariant{20325});
-      std::string strText = StringUtils::Format(g_localizeStrings.Get(20326).c_str(), g_graphicsContext.GetResInfo(m_Res[m_iCurRes]).strMode.c_str());
+      std::string strText = StringUtils::Format(g_localizeStrings.Get(20326).c_str(), CServiceBroker::GetWinSystem().GetGfxContext().GetResInfo(m_Res[m_iCurRes]).strMode.c_str());
       pDialog->SetLine(0, CVariant{std::move(strText)});
       pDialog->SetLine(1, CVariant{20327});
       pDialog->SetChoice(0, CVariant{222});
@@ -82,7 +82,7 @@ bool CGUIWindowSettingsScreenCalibration::OnAction(const CAction &action)
       pDialog->Open();
       if (pDialog->IsConfirmed())
       {
-        g_graphicsContext.ResetScreenParameters(m_Res[m_iCurRes]);
+        CServiceBroker::GetWinSystem().GetGfxContext().ResetScreenParameters(m_Res[m_iCurRes]);
         ResetControls();
       }
       return true;
@@ -93,7 +93,7 @@ bool CGUIWindowSettingsScreenCalibration::OnAction(const CAction &action)
     // choose the next resolution in our list
     {
       m_iCurRes = (m_iCurRes+1) % m_Res.size();
-      g_graphicsContext.SetVideoResolution(m_Res[m_iCurRes], false);
+      CServiceBroker::GetWinSystem().GetGfxContext().SetVideoResolution(m_Res[m_iCurRes], false);
       ResetControls();
       return true;
     }
@@ -139,9 +139,9 @@ bool CGUIWindowSettingsScreenCalibration::OnMessage(CGUIMessage& message)
     {
       CDisplaySettings::GetInstance().UpdateCalibrations();
       CServiceBroker::GetSettings().Save();
-      g_graphicsContext.SetCalibrating(false);
+      CServiceBroker::GetWinSystem().GetGfxContext().SetCalibrating(false);
       // reset our screen resolution to what it was initially
-      g_graphicsContext.SetVideoResolution(CDisplaySettings::GetInstance().GetCurrentResolution(), false);
+      CServiceBroker::GetWinSystem().GetGfxContext().SetVideoResolution(CDisplaySettings::GetInstance().GetCurrentResolution(), false);
       CServiceBroker::GetGUI()->GetWindowManager().SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_WINDOW_RESIZE);
     }
     break;
@@ -149,7 +149,7 @@ bool CGUIWindowSettingsScreenCalibration::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_INIT:
     {
       CGUIWindow::OnMessage(message);
-      g_graphicsContext.SetCalibrating(true);
+      CServiceBroker::GetWinSystem().GetGfxContext().SetCalibrating(true);
 
       // Get the allowable resolutions that we can calibrate...
       m_Res.clear();
@@ -159,20 +159,20 @@ bool CGUIWindowSettingsScreenCalibration::OnMessage(CGUIMessage& message)
         g_application.GetAppPlayer().TriggerUpdateResolution();
 
         m_iCurRes = 0;
-        m_Res.push_back(g_graphicsContext.GetVideoResolution());
+        m_Res.push_back(CServiceBroker::GetWinSystem().GetGfxContext().GetVideoResolution());
         SET_CONTROL_VISIBLE(CONTROL_VIDEO);
       }
       else
       {
         SET_CONTROL_HIDDEN(CONTROL_VIDEO);
         m_iCurRes = (unsigned int)-1;
-        g_graphicsContext.GetAllowedResolutions(m_Res);
+        CServiceBroker::GetWinSystem().GetGfxContext().GetAllowedResolutions(m_Res);
         // find our starting resolution
         m_iCurRes = FindCurrentResolution();
       }
       if (m_iCurRes==(unsigned int)-1)
       {
-        CLog::Log(LOGERROR, "CALIBRATION: Reported current resolution: %d", (int)g_graphicsContext.GetVideoResolution());
+        CLog::Log(LOGERROR, "CALIBRATION: Reported current resolution: %d", (int)CServiceBroker::GetWinSystem().GetGfxContext().GetVideoResolution());
         CLog::Log(LOGERROR, "CALIBRATION: Could not determine current resolution, falling back to default");
         m_iCurRes = 0;
       }
@@ -210,10 +210,10 @@ bool CGUIWindowSettingsScreenCalibration::OnMessage(CGUIMessage& message)
 
 unsigned int CGUIWindowSettingsScreenCalibration::FindCurrentResolution()
 {
-  RESOLUTION curRes = g_graphicsContext.GetVideoResolution();
+  RESOLUTION curRes = CServiceBroker::GetWinSystem().GetGfxContext().GetVideoResolution();
   for (unsigned int i = 0; i < m_Res.size(); i++)
   {
-    // If it's a CUSTOM (monitor) resolution, then g_graphicsContext.GetAllowedResolutions()
+    // If it's a CUSTOM (monitor) resolution, then CServiceBroker::GetWinSystem().GetGfxContext().GetAllowedResolutions()
     // returns just one entry with CUSTOM in it. Update that entry to point to the current
     // CUSTOM resolution.
     if (curRes>=RES_CUSTOM)
@@ -224,7 +224,7 @@ unsigned int CGUIWindowSettingsScreenCalibration::FindCurrentResolution()
         return i;
       }
     }
-    else if (m_Res[i] == g_graphicsContext.GetVideoResolution())
+    else if (m_Res[i] == CServiceBroker::GetWinSystem().GetGfxContext().GetVideoResolution())
       return i;
   }
   return 0;
@@ -263,7 +263,7 @@ void CGUIWindowSettingsScreenCalibration::ResetControls()
   // and set their limits
   // also, set them to invisible if they don't have focus
   CGUIMoverControl *pControl = dynamic_cast<CGUIMoverControl*>(GetControl(CONTROL_TOP_LEFT));
-  RESOLUTION_INFO info = g_graphicsContext.GetResInfo(m_Res[m_iCurRes]);
+  RESOLUTION_INFO info = CServiceBroker::GetWinSystem().GetGfxContext().GetResInfo(m_Res[m_iCurRes]);
   if (pControl)
   {
     pControl->SetLimits( -info.iWidth / 4,
@@ -315,7 +315,7 @@ void CGUIWindowSettingsScreenCalibration::ResetControls()
 void CGUIWindowSettingsScreenCalibration::UpdateFromControl(int iControl)
 {
   std::string strStatus;
-  RESOLUTION_INFO info = g_graphicsContext.GetResInfo(m_Res[m_iCurRes]);
+  RESOLUTION_INFO info = CServiceBroker::GetWinSystem().GetGfxContext().GetResInfo(m_Res[m_iCurRes]);
 
   if (iControl == CONTROL_PIXEL_RATIO)
   {
@@ -370,7 +370,7 @@ void CGUIWindowSettingsScreenCalibration::UpdateFromControl(int iControl)
     }
   }
 
-  g_graphicsContext.SetResInfo(m_Res[m_iCurRes], info);
+  CServiceBroker::GetWinSystem().GetGfxContext().SetResInfo(m_Res[m_iCurRes], info);
 
   // set the label control correctly
   std::string strText;
@@ -417,8 +417,8 @@ void CGUIWindowSettingsScreenCalibration::DoProcess(unsigned int currentTime, CD
   CGUIWindow::DoProcess(currentTime, dirtyregions);
   m_needsScaling = false;
 
-  g_graphicsContext.SetRenderingResolution(m_Res[m_iCurRes], false);
-  g_graphicsContext.AddGUITransform();
+  CServiceBroker::GetWinSystem().GetGfxContext().SetRenderingResolution(m_Res[m_iCurRes], false);
+  CServiceBroker::GetWinSystem().GetGfxContext().AddGUITransform();
 
   // process the movers etc.
   for (int i = CONTROL_TOP_LEFT; i <= CONTROL_PIXEL_RATIO; i++)
@@ -428,7 +428,7 @@ void CGUIWindowSettingsScreenCalibration::DoProcess(unsigned int currentTime, CD
     if (control)
       control->DoProcess(currentTime, dirtyregions);
   }
-  g_graphicsContext.RemoveTransform();
+  CServiceBroker::GetWinSystem().GetGfxContext().RemoveTransform();
 }
 
 void CGUIWindowSettingsScreenCalibration::DoRender()

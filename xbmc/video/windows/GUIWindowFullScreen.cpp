@@ -174,7 +174,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
 void CGUIWindowFullScreen::ClearBackground()
 {
   if (g_application.GetAppPlayer().IsRenderingVideoLayer())
-    g_graphicsContext.Clear(0);
+    CServiceBroker::GetWinSystem().GetGfxContext().Clear(0);
 }
 
 void CGUIWindowFullScreen::OnWindowLoaded()
@@ -228,7 +228,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       g_infoManager.SetDisplayAfterSeek(0); // Make sure display after seek is off.
 
       // switch resolution
-      g_graphicsContext.SetFullScreenVideo(true);
+      CServiceBroker::GetWinSystem().GetGfxContext().SetFullScreenVideo(true);
 
       // now call the base class to load our windows
       CGUIWindow::OnMessage(message);
@@ -248,7 +248,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 
       CServiceBroker::GetSettings().Save();
 
-      g_graphicsContext.SetFullScreenVideo(false);
+      CServiceBroker::GetWinSystem().GetGfxContext().SetFullScreenVideo(false);
 
       return true;
     }
@@ -301,7 +301,7 @@ void CGUIWindowFullScreen::FrameMove()
 
   if (m_dwShowViewModeTimeout)
   {
-    RESOLUTION_INFO res = g_graphicsContext.GetResInfo();
+    RESOLUTION_INFO res = CServiceBroker::GetWinSystem().GetGfxContext().GetResInfo();
 
     {
       // get the "View Mode" string
@@ -389,23 +389,23 @@ void CGUIWindowFullScreen::Process(unsigned int currentTime, CDirtyRegionList &d
 
   //! @todo This isn't quite optimal - ideally we'd only be dirtying up the actual video render rect
   //!       which is probably the job of the renderer as it can more easily track resizing etc.
-  m_renderRegion.SetRect(0, 0, (float)g_graphicsContext.GetWidth(), (float)g_graphicsContext.GetHeight());
+  m_renderRegion.SetRect(0, 0, (float)CServiceBroker::GetWinSystem().GetGfxContext().GetWidth(), (float)CServiceBroker::GetWinSystem().GetGfxContext().GetHeight());
 }
 
 void CGUIWindowFullScreen::Render()
 {
-  g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetVideoResolution(), false);
+  CServiceBroker::GetWinSystem().GetGfxContext().SetRenderingResolution(CServiceBroker::GetWinSystem().GetGfxContext().GetVideoResolution(), false);
   g_application.GetAppPlayer().Render(true, 255);
-  g_graphicsContext.SetRenderingResolution(m_coordsRes, m_needsScaling);
+  CServiceBroker::GetWinSystem().GetGfxContext().SetRenderingResolution(m_coordsRes, m_needsScaling);
   CGUIWindow::Render();
 }
 
 void CGUIWindowFullScreen::RenderEx()
 {
   CGUIWindow::RenderEx();
-  g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetVideoResolution(), false);
+  CServiceBroker::GetWinSystem().GetGfxContext().SetRenderingResolution(CServiceBroker::GetWinSystem().GetGfxContext().GetVideoResolution(), false);
   g_application.GetAppPlayer().Render(false, 255, false);
-  g_graphicsContext.SetRenderingResolution(m_coordsRes, m_needsScaling);
+  CServiceBroker::GetWinSystem().GetGfxContext().SetRenderingResolution(m_coordsRes, m_needsScaling);
 }
 
 void CGUIWindowFullScreen::SeekChapter(int iChapter)

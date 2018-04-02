@@ -163,7 +163,7 @@ void CGUITextureBase::Render()
   // see if we need to clip the image
   if (m_vertex.Width() > m_width || m_vertex.Height() > m_height)
   {
-    if (!g_graphicsContext.SetClipRegion(m_posX, m_posY, m_width, m_height))
+    if (!CServiceBroker::GetWinSystem().GetGfxContext().SetClipRegion(m_posX, m_posY, m_width, m_height))
       return;
   }
 
@@ -175,7 +175,7 @@ void CGUITextureBase::Render()
   if (m_alpha != 0xFF)
 	  color = MIX_ALPHA(m_alpha, color);
 
-  color = g_graphicsContext.MergeAlpha(color);
+  color = CServiceBroker::GetWinSystem().GetGfxContext().MergeAlpha(color);
 
   // setup our renderer
   Begin(color);
@@ -232,7 +232,7 @@ void CGUITextureBase::Render()
   End();
 
   if (m_vertex.Width() > m_width || m_vertex.Height() > m_height)
-    g_graphicsContext.RestoreClipRegion();
+    CServiceBroker::GetWinSystem().GetGfxContext().RestoreClipRegion();
 }
 
 void CGUITextureBase::Render(float left, float top, float right, float bottom, float u1, float v1, float u2, float v2, float u3, float v3)
@@ -240,7 +240,7 @@ void CGUITextureBase::Render(float left, float top, float right, float bottom, f
   CRect diffuse(u1, v1, u2, v2);
   CRect texture(u1, v1, u2, v2);
   CRect vertex(left, top, right, bottom);
-  g_graphicsContext.ClipRect(vertex, texture, m_diffuse.size() ? &diffuse : NULL);
+  CServiceBroker::GetWinSystem().GetGfxContext().ClipRect(vertex, texture, m_diffuse.size() ? &diffuse : NULL);
 
   if (vertex.IsEmpty())
     return; // nothing to render
@@ -262,18 +262,18 @@ void CGUITextureBase::Render(float left, float top, float right, float bottom, f
 
 #define ROUND_TO_PIXEL(x) (float)(MathUtils::round_int(x))
 
-  x[0] = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(vertex.x1, vertex.y1));
-  y[0] = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y1));
-  z[0] = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x1, vertex.y1));
-  x[1] = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(vertex.x2, vertex.y1));
-  y[1] = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x2, vertex.y1));
-  z[1] = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x2, vertex.y1));
-  x[2] = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(vertex.x2, vertex.y2));
-  y[2] = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x2, vertex.y2));
-  z[2] = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x2, vertex.y2));
-  x[3] = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalXCoord(vertex.x1, vertex.y2));
-  y[3] = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y2));
-  z[3] = ROUND_TO_PIXEL(g_graphicsContext.ScaleFinalZCoord(vertex.x1, vertex.y2));
+  x[0] = ROUND_TO_PIXEL(CServiceBroker::GetWinSystem().GetGfxContext().ScaleFinalXCoord(vertex.x1, vertex.y1));
+  y[0] = ROUND_TO_PIXEL(CServiceBroker::GetWinSystem().GetGfxContext().ScaleFinalYCoord(vertex.x1, vertex.y1));
+  z[0] = ROUND_TO_PIXEL(CServiceBroker::GetWinSystem().GetGfxContext().ScaleFinalZCoord(vertex.x1, vertex.y1));
+  x[1] = ROUND_TO_PIXEL(CServiceBroker::GetWinSystem().GetGfxContext().ScaleFinalXCoord(vertex.x2, vertex.y1));
+  y[1] = ROUND_TO_PIXEL(CServiceBroker::GetWinSystem().GetGfxContext().ScaleFinalYCoord(vertex.x2, vertex.y1));
+  z[1] = ROUND_TO_PIXEL(CServiceBroker::GetWinSystem().GetGfxContext().ScaleFinalZCoord(vertex.x2, vertex.y1));
+  x[2] = ROUND_TO_PIXEL(CServiceBroker::GetWinSystem().GetGfxContext().ScaleFinalXCoord(vertex.x2, vertex.y2));
+  y[2] = ROUND_TO_PIXEL(CServiceBroker::GetWinSystem().GetGfxContext().ScaleFinalYCoord(vertex.x2, vertex.y2));
+  z[2] = ROUND_TO_PIXEL(CServiceBroker::GetWinSystem().GetGfxContext().ScaleFinalZCoord(vertex.x2, vertex.y2));
+  x[3] = ROUND_TO_PIXEL(CServiceBroker::GetWinSystem().GetGfxContext().ScaleFinalXCoord(vertex.x1, vertex.y2));
+  y[3] = ROUND_TO_PIXEL(CServiceBroker::GetWinSystem().GetGfxContext().ScaleFinalYCoord(vertex.x1, vertex.y2));
+  z[3] = ROUND_TO_PIXEL(CServiceBroker::GetWinSystem().GetGfxContext().ScaleFinalZCoord(vertex.x1, vertex.y2));
 
   if (y[2] == y[0]) y[2] += 1.0f;
   if (x[2] == x[0]) x[2] += 1.0f;
@@ -377,7 +377,7 @@ bool CGUITextureBase::CalculateSize()
   if (m_aspect.ratio != CAspectRatio::AR_STRETCH && m_frameWidth && m_frameHeight)
   {
     // to get the pixel ratio, we must use the SCALED output sizes
-    float pixelRatio = g_graphicsContext.GetScalingPixelRatio();
+    float pixelRatio = CServiceBroker::GetWinSystem().GetGfxContext().GetScalingPixelRatio();
 
     float fSourceFrameRatio = m_frameWidth / m_frameHeight;
     if (GetOrientation() & 4)

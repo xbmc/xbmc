@@ -42,6 +42,7 @@ struct REFRESHRATE
   int   ResInfo_Index;
 };
 
+class CGraphicContext;
 class CRenderSystemBase;
 class IRenderLoop;
 
@@ -147,22 +148,26 @@ public:
   void UnregisterRenderLoop(IRenderLoop *client);
   void DriveRenderLoop();
 
+  // Access render system interface
+  CGraphicContext& GetGfxContext();
+
 protected:
   void UpdateDesktopResolution(RESOLUTION_INFO& newRes, int screen, int width, int height, float refreshRate, uint32_t dwFlags = 0);
   virtual std::unique_ptr<KODI::WINDOWING::IOSScreenSaver> GetOSScreenSaverImpl() { return nullptr; }
 
-  int m_nWidth;
-  int m_nHeight;
-  int m_nTop;
-  int m_nLeft;
-  bool m_bWindowCreated;
-  bool m_bFullScreen;
-  int m_nScreen;
-  bool m_bBlankOtherDisplay;
-  float m_fRefreshRate;
+  int m_nWidth = 0;
+  int m_nHeight = 0;
+  int m_nTop = 0;
+  int m_nLeft = 0;
+  bool m_bWindowCreated = false;
+  bool m_bFullScreen = false;
+  int m_nScreen = 0;
+  bool m_bBlankOtherDisplay = false;
+  float m_fRefreshRate = 0.0f;
   std::unique_ptr<KODI::WINDOWING::COSScreenSaverManager> m_screenSaverManager;
   CCriticalSection m_renderLoopSection;
   std::vector<IRenderLoop*> m_renderLoopClients;
 
   std::unique_ptr<IWinEvents> m_winEvents;
+  std::unique_ptr<CGraphicContext> m_gfxContext;
 };

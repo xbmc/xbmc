@@ -41,19 +41,19 @@ void CGUIWindowSplash::OnInitWindow()
   if (!g_advancedSettings.m_splashImage)
     return;
 
-  m_image = std::unique_ptr<CGUIImage>(new CGUIImage(0, 0, 0, 0, g_graphicsContext.GetWidth(), g_graphicsContext.GetHeight(), CTextureInfo(CUtil::GetSplashPath())));
+  m_image = std::unique_ptr<CGUIImage>(new CGUIImage(0, 0, 0, 0, CServiceBroker::GetWinSystem().GetGfxContext().GetWidth(), CServiceBroker::GetWinSystem().GetGfxContext().GetHeight(), CTextureInfo(CUtil::GetSplashPath())));
   m_image->SetAspectRatio(CAspectRatio::AR_SCALE);
 }
 
 void CGUIWindowSplash::Render()
 {
-  g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetResInfo(), true);
+  CServiceBroker::GetWinSystem().GetGfxContext().SetRenderingResolution(CServiceBroker::GetWinSystem().GetGfxContext().GetResInfo(), true);
 
   if (!m_image)
     return;
 
-  m_image->SetWidth(g_graphicsContext.GetWidth());
-  m_image->SetHeight(g_graphicsContext.GetHeight());
+  m_image->SetWidth(CServiceBroker::GetWinSystem().GetGfxContext().GetWidth());
+  m_image->SetHeight(CServiceBroker::GetWinSystem().GetGfxContext().GetHeight());
   m_image->AllocResources();
   m_image->Render();
   m_image->FreeResources();

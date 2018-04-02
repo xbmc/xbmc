@@ -49,7 +49,7 @@ CRPProcessInfo::CRPProcessInfo(std::string platformName) :
   m_renderBufferManager(new CRenderBufferManager),
   m_renderContext(new CRenderContext(&CServiceBroker::GetRenderSystem(),
                                      &CServiceBroker::GetWinSystem(),
-                                     g_graphicsContext,
+                                     CServiceBroker::GetWinSystem().GetGfxContext(),
                                      CDisplaySettings::GetInstance(),
                                      CMediaSettings::GetInstance()))
 {

@@ -28,7 +28,6 @@
 #include "utils/TransformMatrix.h"        // for the members m_guiTransform etc.
 #include "utils/Geometry.h"               // for CRect/CPoint
 #include "Resolution.h"
-#include "utils/GlobalsHandling.h"
 #include "rendering/RenderSystem.h"
 
 // required by clients
@@ -43,9 +42,8 @@
 
 /* what types are important for mode setting */
 #define D3DPRESENTFLAG_MODEMASK ( D3DPRESENTFLAG_INTERLACED \
-                                  | D3DPRESENTFLAG_MODE3DSBS \
-                                  | D3DPRESENTFLAG_MODE3DTB)
-
+                                  | D3DPRESENTFLAG_MODE3DSBS  \
+                                  | D3DPRESENTFLAG_MODE3DTB   )
 
 enum VIEW_TYPE { VIEW_TYPE_NONE = 0,
                  VIEW_TYPE_LIST,
@@ -236,6 +234,3 @@ protected:
   RENDER_STEREO_MODE m_stereoMode = RENDER_STEREO_MODE_OFF;
   RENDER_STEREO_MODE m_nextStereoMode = RENDER_STEREO_MODE_OFF;
 };
-
-XBMC_GLOBAL_REF(CGraphicContext,g_graphicsContext);
-#define g_graphicsContext XBMC_GLOBAL_USE(CGraphicContext)

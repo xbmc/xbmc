@@ -1282,9 +1282,9 @@ void CGUIAddonWindowDialog::Show(bool show /* = true */, bool modal /* = true*/)
 {
   if (modal)
   {
-    unsigned int count = g_graphicsContext.exit();
+    unsigned int count = CServiceBroker::GetWinSystem().GetGfxContext().exit();
     CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ADDON_DIALOG, 0, show ? 1 : 0, static_cast<void*>(this));
-    g_graphicsContext.restore(count);
+    CServiceBroker::GetWinSystem().GetGfxContext().restore(count);
   }
   else
     CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ADDON_DIALOG, 0, show ? 1 : 0, static_cast<void*>(this));

@@ -45,9 +45,9 @@ CScreenSaver::CScreenSaver(BinaryAddonBasePtr addonBase)
 #endif
   m_struct.props.x = 0;
   m_struct.props.y = 0;
-  m_struct.props.width = g_graphicsContext.GetWidth();
-  m_struct.props.height = g_graphicsContext.GetHeight();
-  m_struct.props.pixelRatio = g_graphicsContext.GetResInfo().fPixelRatio;
+  m_struct.props.width = CServiceBroker::GetWinSystem().GetGfxContext().GetWidth();
+  m_struct.props.height = CServiceBroker::GetWinSystem().GetGfxContext().GetHeight();
+  m_struct.props.pixelRatio = CServiceBroker::GetWinSystem().GetGfxContext().GetResInfo().fPixelRatio;
   m_struct.props.name = m_name.c_str();
   m_struct.props.presets = m_presets.c_str();
   m_struct.props.profile = m_profile.c_str();

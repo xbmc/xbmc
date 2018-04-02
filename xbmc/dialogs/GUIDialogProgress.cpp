@@ -60,7 +60,7 @@ void CGUIDialogProgress::Open(const std::string &param /* = "" */)
   CLog::Log(LOGDEBUG, "DialogProgress::Open called %s", m_active ? "(already running)!" : "");
 
   {
-    CSingleLock lock(g_graphicsContext);
+    CSingleLock lock(CServiceBroker::GetWinSystem().GetGfxContext());
     ShowProgressBar(true);
   }
   

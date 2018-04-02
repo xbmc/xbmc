@@ -50,24 +50,24 @@ void CGUIVideoControl::Render()
     if (!g_application.GetAppPlayer().IsPausedPlayback())
       g_application.ResetScreenSaver();
 
-    g_graphicsContext.SetViewWindow(m_posX, m_posY, m_posX + m_width, m_posY + m_height);
+    CServiceBroker::GetWinSystem().GetGfxContext().SetViewWindow(m_posX, m_posY, m_posX + m_width, m_posY + m_height);
     TransformMatrix mat;
-    g_graphicsContext.SetTransform(mat, 1.0, 1.0);
+    CServiceBroker::GetWinSystem().GetGfxContext().SetTransform(mat, 1.0, 1.0);
 
-    color_t alpha = g_graphicsContext.MergeAlpha(0xFF000000) >> 24;
+    color_t alpha = CServiceBroker::GetWinSystem().GetGfxContext().MergeAlpha(0xFF000000) >> 24;
     if (g_application.GetAppPlayer().IsRenderingVideoLayer())
     {
-      CRect old = g_graphicsContext.GetScissors();
+      CRect old = CServiceBroker::GetWinSystem().GetGfxContext().GetScissors();
       CRect region = GetRenderRegion();
       region.Intersect(old);
-      g_graphicsContext.SetScissors(region);
-      g_graphicsContext.Clear(0);
-      g_graphicsContext.SetScissors(old);
+      CServiceBroker::GetWinSystem().GetGfxContext().SetScissors(region);
+      CServiceBroker::GetWinSystem().GetGfxContext().Clear(0);
+      CServiceBroker::GetWinSystem().GetGfxContext().SetScissors(old);
     }
     else
       g_application.GetAppPlayer().Render(false, alpha);
 
-    g_graphicsContext.RemoveTransform();
+    CServiceBroker::GetWinSystem().GetGfxContext().RemoveTransform();
   }
   CGUIControl::Render();
 }

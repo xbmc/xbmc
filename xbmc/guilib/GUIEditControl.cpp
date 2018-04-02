@@ -459,7 +459,7 @@ void CGUIEditControl::ProcessText(unsigned int currentTime)
     m_clipRect.x1 += leftTextWidth + spaceWidth;
   }
 
-  if (g_graphicsContext.SetClipRegion(m_clipRect.x1, m_clipRect.y1, m_clipRect.Width(), m_clipRect.Height()))
+  if (CServiceBroker::GetWinSystem().GetGfxContext().SetClipRegion(m_clipRect.x1, m_clipRect.y1, m_clipRect.Width(), m_clipRect.Height()))
   {
     uint32_t align = m_label.GetLabelInfo().align & XBFONT_CENTER_Y; // start aligned left
     if (m_label2.GetTextWidth() < m_clipRect.Width())
@@ -494,7 +494,7 @@ void CGUIEditControl::ProcessText(unsigned int currentTime)
     changed |= m_label2.SetColor(GetTextColor());
     changed |= m_label2.SetOverflow(CGUILabel::OVER_FLOW_CLIP);
     changed |= m_label2.Process(currentTime);
-    g_graphicsContext.RestoreClipRegion();
+    CServiceBroker::GetWinSystem().GetGfxContext().RestoreClipRegion();
   }
   if (changed)
     MarkDirtyRegion();
@@ -504,10 +504,10 @@ void CGUIEditControl::RenderText()
 {
   m_label.Render();
 
-  if (g_graphicsContext.SetClipRegion(m_clipRect.x1, m_clipRect.y1, m_clipRect.Width(), m_clipRect.Height()))
+  if (CServiceBroker::GetWinSystem().GetGfxContext().SetClipRegion(m_clipRect.x1, m_clipRect.y1, m_clipRect.Width(), m_clipRect.Height()))
   {
     m_label2.Render();
-    g_graphicsContext.RestoreClipRegion();
+    CServiceBroker::GetWinSystem().GetGfxContext().RestoreClipRegion();
   }
 }
 
