@@ -295,13 +295,13 @@ bool CGUITextureBase::AllocResources()
   ResetAnimState();
 
   bool changed = false;
-  bool useLarge = m_info.useLarge || !g_TextureManager.CanLoad(m_info.filename);
+  bool useLarge = m_info.useLarge || !CServiceBroker::GetGUI()->GetTextureManager().CanLoad(m_info.filename);
   if (useLarge)
   { // we want to use the large image loader, but we first check for bundled textures
     if (!IsAllocated())
     {
       CTextureArray texture;
-      texture = g_TextureManager.Load(m_info.filename, true);
+      texture = CServiceBroker::GetGUI()->GetTextureManager().Load(m_info.filename, true);
       if (texture.size())
       {
         m_isAllocated = NORMAL;
@@ -312,7 +312,7 @@ bool CGUITextureBase::AllocResources()
     if (m_isAllocated != NORMAL)
     { // use our large image background loader
       CTextureArray texture;
-      if (g_largeTextureManager.GetImage(m_info.filename, texture, !IsAllocated(), m_use_cache))
+      if (CServiceBroker::GetGUI()->GetLargeTextureManager().GetImage(m_info.filename, texture, !IsAllocated(), m_use_cache))
       {
         m_isAllocated = LARGE;
 
@@ -329,7 +329,7 @@ bool CGUITextureBase::AllocResources()
   }
   else if (!IsAllocated())
   {
-    CTextureArray texture = g_TextureManager.Load(m_info.filename);
+    CTextureArray texture = CServiceBroker::GetGUI()->GetTextureManager().Load(m_info.filename);
 
     // set allocated to true even if we couldn't load the image to save
     // us hitting the disk every frame
@@ -345,7 +345,7 @@ bool CGUITextureBase::AllocResources()
   // load the diffuse texture (if necessary)
   if (!m_info.diffuse.empty())
   {
-    m_diffuse = g_TextureManager.Load(m_info.diffuse);
+    m_diffuse = CServiceBroker::GetGUI()->GetTextureManager().Load(m_info.diffuse);
   }
 
   CalculateSize();
@@ -454,12 +454,12 @@ bool CGUITextureBase::CalculateSize()
 void CGUITextureBase::FreeResources(bool immediately /* = false */)
 {
   if (m_isAllocated == LARGE || m_isAllocated == LARGE_FAILED)
-    g_largeTextureManager.ReleaseImage(m_info.filename, immediately || (m_isAllocated == LARGE_FAILED));
+    CServiceBroker::GetGUI()->GetLargeTextureManager().ReleaseImage(m_info.filename, immediately || (m_isAllocated == LARGE_FAILED));
   else if (m_isAllocated == NORMAL && m_texture.size())
-    g_TextureManager.ReleaseTexture(m_info.filename, immediately);
+    CServiceBroker::GetGUI()->GetTextureManager().ReleaseTexture(m_info.filename, immediately);
 
   if (m_diffuse.size())
-    g_TextureManager.ReleaseTexture(m_info.diffuse, immediately);
+    CServiceBroker::GetGUI()->GetTextureManager().ReleaseTexture(m_info.diffuse, immediately);
   m_diffuse.Reset();
 
   m_texture.Reset();

@@ -813,7 +813,7 @@ void CGUIWindow::FreeResources(bool forceUnload /*= false */)
 {
   m_bAllocated = false;
   CGUIControlGroup::FreeResources();
-  //g_TextureManager.Dump();
+  //CServiceBroker::GetGUI()->GetTextureManager().Dump();
   // unload the skin
   if (m_loadType == LOAD_EVERY_TIME || forceUnload) ClearAll();
   if (forceUnload)

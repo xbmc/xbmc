@@ -708,6 +708,10 @@ bool CApplication::CreateGUI()
   if (sav_res)
     CDisplaySettings::GetInstance().SetCurrentResolution(RES_DESKTOP, true);
 
+  m_pGUI.reset(new CGUIComponent());
+  m_pGUI->Init();
+
+  // Splash requires gui component!!
   CServiceBroker::GetRenderSystem().ShowSplash("");
 
   // The key mappings may already have been loaded by a peripheral
@@ -720,8 +724,6 @@ bool CApplication::CreateGUI()
             info.iWidth,
             info.iHeight,
             info.strMode.c_str());
-
-  m_pGUI.reset(new CGUIComponent());
 
   return true;
 }
@@ -1632,6 +1634,7 @@ bool CApplication::LoadSkin(const std::string& skinID)
   CServiceBroker::GetGUI()->GetWindowManager().AddMsgTarget(&g_fontManager);
   CServiceBroker::GetGUI()->GetWindowManager().AddMsgTarget(&CStereoscopicsManager::GetInstance());
   CServiceBroker::GetGUI()->GetWindowManager().SetCallback(*this);
+  //@todo should be done by GUIComponents
   CServiceBroker::GetGUI()->GetWindowManager().Initialize();
   CTextureCache::GetInstance().Initialize();
   g_audioManager.Enable(true);
@@ -1699,8 +1702,8 @@ void CApplication::UnloadSkin(bool forReload /* = false */)
   // remove the skin-dependent window
   CServiceBroker::GetGUI()->GetWindowManager().Delete(WINDOW_DIALOG_FULLSCREEN_INFO);
 
-  g_TextureManager.Cleanup();
-  g_largeTextureManager.CleanupUnusedImages(true);
+  CServiceBroker::GetGUI()->GetTextureManager().Cleanup();
+  CServiceBroker::GetGUI()->GetLargeTextureManager().CleanupUnusedImages(true);
 
   g_fontManager.Clear();
 
@@ -2784,6 +2787,9 @@ bool CApplication::Cleanup()
     _CrtDumpMemoryLeaks();
     while(1); // execution ends
 #endif
+
+    m_pGUI->Deinit();
+    m_pGUI.reset();
 
     // Cleanup was called more than once on exit during my tests
     if (m_ServiceManager)
@@ -4358,9 +4364,9 @@ void CApplication::ProcessSlow()
   // check for any idle curl connections
   g_curlInterface.CheckIdle();
 
-  g_largeTextureManager.CleanupUnusedImages();
+  CServiceBroker::GetGUI()->GetLargeTextureManager().CleanupUnusedImages();
 
-  g_TextureManager.FreeUnusedTextures(5000);
+  CServiceBroker::GetGUI()->GetTextureManager().FreeUnusedTextures(5000);
 
 #ifdef HAS_DVD_DRIVE
   // checks whats in the DVD drive and tries to autostart the content (xbox games, dvd, cdda, avi files...)

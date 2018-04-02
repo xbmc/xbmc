@@ -18,10 +18,6 @@
  *
  */
 
-/*!
-\file TextureManager.h
-\brief
-*/
 #pragma once
 
 #include <list>
@@ -30,6 +26,9 @@
 
 #include "TextureBundle.h"
 #include "threads/CriticalSection.h"
+
+#include "GUIComponent.h"
+#include "ServiceBroker.h"
 
 /************************************************************************/
 /*                                                                      */
@@ -137,8 +136,3 @@ protected:
   CCriticalSection m_section;
 };
 
-/*!
- \ingroup textures
- \brief
- */
-extern CGUITextureManager g_TextureManager;
