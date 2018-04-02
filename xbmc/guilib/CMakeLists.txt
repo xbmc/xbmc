@@ -61,7 +61,6 @@ set(SOURCES DDSImage.cpp
             imagefactory.cpp
             IWindowManagerCallback.cpp
             LocalizeStrings.cpp
-            Resolution.cpp
             StereoscopicsManager.cpp
             TextureBundle.cpp
             TextureBundleXBT.cpp
@@ -146,7 +145,6 @@ set(HEADERS DDSImage.h
             ISliderCallback.h
             IWindowManagerCallback.h
             LocalizeStrings.h
-            Resolution.h
             StereoscopicsManager.h
             Texture.h
             TextureBundle.h

@@ -24,7 +24,7 @@
 #include <utility>
 #include <vector>
 
-#include "guilib/Resolution.h"
+#include "windowing/Resolution.h"
 #include "settings/lib/ISettingCallback.h"
 #include "settings/lib/ISubSettings.h"
 #include "threads/CriticalSection.h"

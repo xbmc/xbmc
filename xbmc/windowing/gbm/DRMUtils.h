@@ -25,7 +25,7 @@
 #include <gbm.h>
 #include <vector>
 
-#include "guilib/Resolution.h"
+#include "windowing/Resolution.h"
 #include "GBMUtils.h"
 
 struct plane

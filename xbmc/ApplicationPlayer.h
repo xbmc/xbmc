@@ -26,7 +26,7 @@
 
 #include "threads/CriticalSection.h"
 #include "threads/SystemClock.h"
-#include "guilib/Resolution.h"
+#include "windowing/Resolution.h"
 #include "cores/IPlayer.h"
 #include "SeekHandler.h"
 
