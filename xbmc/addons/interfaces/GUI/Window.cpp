@@ -1147,16 +1147,16 @@ void CGUIAddonWindow::AllocResources(bool forceLoad /*= false */)
   URIUtils::RemoveSlashAtEnd(fallbackMediaPath);
   m_mediaDir = fallbackMediaPath;
 
-  g_TextureManager.AddTexturePath(m_mediaDir);
+  CServiceBroker::GetGUI()->GetTextureManager().AddTexturePath(m_mediaDir);
   CGUIMediaWindow::AllocResources(forceLoad);
-  g_TextureManager.RemoveTexturePath(m_mediaDir);
+  CServiceBroker::GetGUI()->GetTextureManager().RemoveTexturePath(m_mediaDir);
 }
 
 void CGUIAddonWindow::Render()
 {
-  g_TextureManager.AddTexturePath(m_mediaDir);
+  CServiceBroker::GetGUI()->GetTextureManager().AddTexturePath(m_mediaDir);
   CGUIMediaWindow::Render();
-  g_TextureManager.RemoveTexturePath(m_mediaDir);
+  CServiceBroker::GetGUI()->GetTextureManager().RemoveTexturePath(m_mediaDir);
 }
 
 void CGUIAddonWindow::AddItem(CFileItemPtr* fileItem, int itemPosition)

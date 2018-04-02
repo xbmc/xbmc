@@ -186,9 +186,9 @@ void CGUIAddonWindow::AllocResources(bool forceLoad /*= false */)
   m_mediaDir = fallbackMediaPath;
 
   //CLog::Log(LOGDEBUG, "CGUIPythonWindowXML::AllocResources called: %s", fallbackMediaPath.c_str());
-  g_TextureManager.AddTexturePath(m_mediaDir);
+  CServiceBroker::GetGUI()->GetTextureManager().AddTexturePath(m_mediaDir);
   CGUIMediaWindow::AllocResources(forceLoad);
-  g_TextureManager.RemoveTexturePath(m_mediaDir);
+  CServiceBroker::GetGUI()->GetTextureManager().RemoveTexturePath(m_mediaDir);
 }
 
 void CGUIAddonWindow::FreeResources(bool forceUnLoad /*= false */)
@@ -198,9 +198,9 @@ void CGUIAddonWindow::FreeResources(bool forceUnLoad /*= false */)
 
 void CGUIAddonWindow::Render()
 {
-  g_TextureManager.AddTexturePath(m_mediaDir);
+  CServiceBroker::GetGUI()->GetTextureManager().AddTexturePath(m_mediaDir);
   CGUIMediaWindow::Render();
-  g_TextureManager.RemoveTexturePath(m_mediaDir);
+  CServiceBroker::GetGUI()->GetTextureManager().RemoveTexturePath(m_mediaDir);
 }
 
 void CGUIAddonWindow::Update()

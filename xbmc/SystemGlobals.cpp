@@ -18,8 +18,6 @@
  *
  */
 #include "SectionLoader.h"
-#include "GUILargeTextureManager.h"
-#include "guilib/TextureManager.h"
 #include "utils/AlarmClock.h"
 #include "GUIInfoManager.h"
 #include "filesystem/DllLibCurl.h"
@@ -47,9 +45,6 @@ std::map<std::string, std::string> CSpecialProtocol::m_pathMap;
   CLocalizeStrings   g_localizeStringsTemp;
 
   XFILE::CDirectoryCache g_directoryCache;
-
-  CGUITextureManager g_TextureManager;
-  CGUILargeTextureManager g_largeTextureManager;
 
   CGUIPassword       g_passwordManager;
   CGUIInfoManager    g_infoManager;

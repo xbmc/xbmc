@@ -425,9 +425,9 @@ namespace XBMCAddon
       m_mediaDir = fallbackMediaPath;
 
       //CLog::Log(LOGDEBUG, "CGUIPythonWindowXML::AllocResources called: %s", fallbackMediaPath.c_str());
-      g_TextureManager.AddTexturePath(m_mediaDir);
+      CServiceBroker::GetGUI()->GetTextureManager().AddTexturePath(m_mediaDir);
       ref(window)->AllocResources(forceLoad);
-      g_TextureManager.RemoveTexturePath(m_mediaDir);
+      CServiceBroker::GetGUI()->GetTextureManager().RemoveTexturePath(m_mediaDir);
     }
 
     void WindowXML::FreeResources(bool forceUnLoad /*= false */)
@@ -440,9 +440,9 @@ namespace XBMCAddon
     void WindowXML::Process(unsigned int currentTime, CDirtyRegionList &regions)
     {
       XBMC_TRACE;
-      g_TextureManager.AddTexturePath(m_mediaDir);
+      CServiceBroker::GetGUI()->GetTextureManager().AddTexturePath(m_mediaDir);
       ref(window)->Process(currentTime, regions);
-      g_TextureManager.RemoveTexturePath(m_mediaDir);
+      CServiceBroker::GetGUI()->GetTextureManager().RemoveTexturePath(m_mediaDir);
     }
 
     bool WindowXML::OnClick(int iItem) 

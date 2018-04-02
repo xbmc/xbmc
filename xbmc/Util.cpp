@@ -1550,7 +1550,7 @@ bool CUtil::SupportsReadFileOperations(const std::string& strPath)
 
 std::string CUtil::GetDefaultFolderThumb(const std::string &folderThumb)
 {
-  if (g_TextureManager.HasTexture(folderThumb))
+  if (CServiceBroker::GetGUI()->GetTextureManager().HasTexture(folderThumb))
     return folderThumb;
   return "";
 }

@@ -72,7 +72,7 @@ bool CGUIFontTTFGL::FirstBegin()
   if (m_textureStatus == TEXTURE_REALLOCATED)
   {
     if (glIsTexture(m_nTexture))
-      g_TextureManager.ReleaseHwTexture(m_nTexture);
+      CServiceBroker::GetGUI()->GetTextureManager().ReleaseHwTexture(m_nTexture);
     m_textureStatus = TEXTURE_VOID;
   }
 
@@ -401,7 +401,7 @@ void CGUIFontTTFGL::DeleteHardwareTexture()
   if (m_textureStatus != TEXTURE_VOID)
   {
     if (glIsTexture(m_nTexture))
-      g_TextureManager.ReleaseHwTexture(m_nTexture);
+      CServiceBroker::GetGUI()->GetTextureManager().ReleaseHwTexture(m_nTexture);
 
     m_textureStatus = TEXTURE_VOID;
     m_updateY1 = m_updateY2 = 0;

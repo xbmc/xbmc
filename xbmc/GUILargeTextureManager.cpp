@@ -48,7 +48,7 @@ bool CImageLoader::DoWork()
   bool needsChecking = false;
   std::string loadPath;
 
-  std::string texturePath = g_TextureManager.GetTexturePath(m_path);
+  std::string texturePath = CServiceBroker::GetGUI()->GetTextureManager().GetTexturePath(m_path);
   if (texturePath.empty())
     return false;
 
