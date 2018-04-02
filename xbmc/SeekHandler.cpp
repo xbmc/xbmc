@@ -27,7 +27,7 @@
 #include "cores/DataCacheCore.h"
 #include "FileItem.h"
 #include "guilib/GUIComponent.h"
-#include "guilib/GraphicContext.h"
+#include "windowing/GraphicContext.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "ServiceBroker.h"

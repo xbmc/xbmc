@@ -29,7 +29,7 @@
 #include "cores/VideoSettings.h"
 #include "RenderFlags.h"
 #include "RenderInfo.h"
-#include "guilib/GraphicContext.h"
+#include "windowing/GraphicContext.h"
 #include "BaseRenderer.h"
 #include "ColorManager.h"
 #include "threads/Event.h"
@@ -104,7 +104,7 @@ public:
   bool Supports(ESCALINGMETHOD method) override;
 
 protected:
-  bool Render(DWORD flags, int renderBuffer);
+  bool Render(unsigned int flags, int renderBuffer);
   void ClearBackBuffer();
   void DrawBlackBars();
 

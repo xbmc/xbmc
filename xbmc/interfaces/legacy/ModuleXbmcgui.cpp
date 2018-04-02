@@ -22,7 +22,7 @@
 #include "LanguageHook.h"
 #include "ServiceBroker.h"
 #include "guilib/GUIComponent.h"
-#include "guilib/GraphicContext.h"
+#include "windowing/GraphicContext.h"
 #include "guilib/GUIWindowManager.h"
 
 #define NOTIFICATION_INFO     "info"

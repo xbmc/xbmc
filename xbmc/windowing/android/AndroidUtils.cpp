@@ -33,7 +33,7 @@
 
 #include "AndroidUtils.h"
 
-#include "guilib/gui3d.h"
+#include "windowing/GraphicContext.h"
 #include "utils/log.h"
 #include "settings/Settings.h"
 #include "ServiceBroker.h"

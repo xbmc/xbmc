@@ -19,7 +19,7 @@
  */
 
 #include "commons/ilog.h"
-#include "guilib/GraphicContext.h"
+#include "windowing/GraphicContext.h"
 #include "rendering/dx/RenderContext.h"
 #include "utils/SystemInfo.h"
 #include "utils/log.h"

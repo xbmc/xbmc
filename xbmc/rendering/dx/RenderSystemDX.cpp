@@ -148,7 +148,7 @@ bool CRenderSystemDX::DestroyRenderSystem()
 
 void CRenderSystemDX::CheckInterlacedStereoView()
 {
-  RENDER_STEREO_MODE stereoMode = g_graphicsContext.GetStereoMode();
+  RENDER_STEREO_MODE stereoMode = CServiceBroker::GetWinSystem().GetGfxContext().GetStereoMode();
 
   if ( m_rightEyeTex.Get()
     && RENDER_STEREO_MODE_INTERLACED    != stereoMode
@@ -165,7 +165,7 @@ void CRenderSystemDX::CheckInterlacedStereoView()
     if (!m_rightEyeTex.Create(outputSize.Width, outputSize.Height, 1, D3D11_USAGE_DEFAULT, DXGI_FORMAT_B8G8R8A8_UNORM))
     {
       CLog::Log(LOGERROR, "%s - Failed to create right eye buffer.", __FUNCTION__);
-      g_graphicsContext.SetStereoMode(RENDER_STEREO_MODE_SPLIT_HORIZONTAL); // try fallback to split horizontal
+      CServiceBroker::GetWinSystem().GetGfxContext().SetStereoMode(RENDER_STEREO_MODE_SPLIT_HORIZONTAL); // try fallback to split horizontal
     }
     else
       m_deviceResources->Unregister(&m_rightEyeTex); // we will handle its health

@@ -20,7 +20,7 @@
 
 #include "VideoSyncAML.h"
 #include "ServiceBroker.h"
-#include "guilib/GraphicContext.h"
+#include "windowing/GraphicContext.h"
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
 #include "threads/Thread.h"
@@ -94,7 +94,7 @@ void CVideoSyncAML::Cleanup()
 
 float CVideoSyncAML::GetFps()
 {
-  m_fps = g_graphicsContext.GetFPS();
+  m_fps = CServiceBroker::GetWinSystem().GetGfxContext().GetFPS();
   CLog::Log(LOGDEBUG, "CVideoReferenceClock: fps: %.3f", m_fps);
   return m_fps;
 }

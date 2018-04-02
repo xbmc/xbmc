@@ -20,8 +20,9 @@
 
 #include "WinSystem.h"
 #include "ServiceBroker.h"
+#include "guilib/gui3d.h"
 #include "guilib/DispResource.h"
-#include "guilib/GraphicContext.h"
+#include "windowing/GraphicContext.h"
 #include "settings/DisplaySettings.h"
 #include "settings/lib/Setting.h"
 #include "settings/Settings.h"

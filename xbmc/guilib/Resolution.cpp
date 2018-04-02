@@ -19,7 +19,8 @@
  */
 
 #include "Resolution.h"
-#include "GraphicContext.h"
+#include "gui3d.h"
+#include "windowing/GraphicContext.h"
 #include "utils/log.h"
 #include "utils/MathUtils.h"
 #include "settings/AdvancedSettings.h"

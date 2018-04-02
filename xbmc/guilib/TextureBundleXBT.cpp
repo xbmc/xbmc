@@ -22,7 +22,7 @@
 
 #include "ServiceBroker.h"
 #include "Texture.h"
-#include "GraphicContext.h"
+#include "windowing/GraphicContext.h"
 #include "utils/log.h"
 #include "settings/Settings.h"
 #include "filesystem/SpecialProtocol.h"

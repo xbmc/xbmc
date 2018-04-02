@@ -27,7 +27,7 @@
 #include "cores/VideoPlayer/VideoRenderers/RenderFlags.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "settings/AdvancedSettings.h"
-#include "guilib/GraphicContext.h"
+#include "windowing/GraphicContext.h"
 #include "settings/DisplaySettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
@@ -2265,13 +2265,13 @@ void CAMLCodec::SetVideoRect(const CRect &SrcRect, const CRect &DestRect)
   }
 
   // GUI stereo mode/view.
-  RENDER_STEREO_MODE guiStereoMode = g_graphicsContext.GetStereoMode();
+  RENDER_STEREO_MODE guiStereoMode = CServiceBroker::GetWinSystem().GetGfxContext().GetStereoMode();
   if (m_guiStereoMode != guiStereoMode)
   {
     m_guiStereoMode = guiStereoMode;
     update = true;
   }
-  RENDER_STEREO_VIEW guiStereoView = g_graphicsContext.GetStereoView();
+  RENDER_STEREO_VIEW guiStereoView = CServiceBroker::GetWinSystem().GetGfxContext().GetStereoView();
   if (m_guiStereoView != guiStereoView)
   {
     // left/right/top/bottom eye,
@@ -2305,7 +2305,7 @@ void CAMLCodec::SetVideoRect(const CRect &SrcRect, const CRect &DestRect)
     update = true;
   }
 
-  RESOLUTION video_res = g_graphicsContext.GetVideoResolution();
+  RESOLUTION video_res = CServiceBroker::GetWinSystem().GetGfxContext().GetVideoResolution();
   if (m_video_res != video_res)
   {
     m_video_res = video_res;

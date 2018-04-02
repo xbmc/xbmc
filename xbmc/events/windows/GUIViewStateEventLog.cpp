@@ -21,7 +21,7 @@
 #include "GUIViewStateEventLog.h"
 #include "FileItem.h"
 #include "filesystem/File.h"
-#include "guilib/GraphicContext.h"
+#include "windowing/GraphicContext.h"
 #include "guilib/WindowIDs.h"
 #include "utils/StringUtils.h"
 #include "view/ViewState.h"

@@ -22,7 +22,7 @@
 #include "addons/BinaryAddonCache.h"
 #include "games/addons/GameClient.h"
 #include "games/GameUtils.h"
-#include "guilib/GraphicContext.h" // include before ViewState.h
+#include "windowing/GraphicContext.h" // include before ViewState.h
 #include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
 #include "input/Key.h"

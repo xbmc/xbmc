@@ -28,7 +28,7 @@
 #include "platform/linux/RBP.h"
 #include "utils/StringUtils.h"
 #include "settings/Settings.h"
-#include "guilib/GraphicContext.h"
+#include "windowing/GraphicContext.h"
 #include "guilib/StereoscopicsManager.h"
 #include "rendering/RenderSystem.h"
 #include <cassert>
@@ -128,7 +128,7 @@ bool CRPIUtils::SetNativeResolution(const RESOLUTION_INFO res, EGLSurface m_nati
 
   DestroyDispmanxWindow();
 
-  RENDER_STEREO_MODE stereo_mode = g_graphicsContext.GetStereoMode();
+  RENDER_STEREO_MODE stereo_mode = CServiceBroker::GetWinSystem().GetGfxContext().GetStereoMode();
   if(GETFLAGS_GROUP(res.dwFlags) && GETFLAGS_MODE(res.dwFlags))
   {
     uint32_t mode3d = HDMI_3D_FORMAT_NONE;

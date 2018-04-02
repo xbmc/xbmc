@@ -138,7 +138,7 @@ void CGUIFontTTFDX::LastEnd()
     // Store current GPU transform
     XMMATRIX view = pGUIShader->GetView();
     // Store current scissor
-    CRect scissor = g_graphicsContext.StereoCorrection(g_graphicsContext.GetScissors());
+    CRect scissor = CServiceBroker::GetWinSystem().GetGfxContext().StereoCorrection(CServiceBroker::GetWinSystem().GetGfxContext().GetScissors());
 
     for (size_t i = 0; i < m_vertexTrans.size(); i++)
     {

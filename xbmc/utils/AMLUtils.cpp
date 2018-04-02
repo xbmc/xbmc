@@ -30,7 +30,7 @@
 #include "utils/log.h"
 #include "utils/SysfsUtils.h"
 #include "utils/StringUtils.h"
-#include "guilib/gui3d.h"
+#include "windowing/GraphicContext.h"
 #include "utils/RegExp.h"
 #include "filesystem/SpecialProtocol.h"
 #include "rendering/RenderSystem.h"
@@ -69,7 +69,7 @@ bool aml_wired_present()
 }
 
 bool aml_permissions()
-{  
+{
   if (!aml_present())
     return false;
 
@@ -598,7 +598,7 @@ void aml_handle_scale(const RESOLUTION_INFO &res)
 void aml_handle_display_stereo_mode(const int stereo_mode)
 {
   static std::string lastHdmiTxConfig = "3doff";
-  
+
   std::string command = "3doff";
   switch (stereo_mode)
   {
@@ -612,7 +612,7 @@ void aml_handle_display_stereo_mode(const int stereo_mode)
       // nothing - command is already initialised to "3doff"
       break;
   }
-  
+
   CLog::Log(LOGDEBUG, "AMLUtils::aml_handle_display_stereo_mode old mode %s new mode %s", lastHdmiTxConfig.c_str(), command.c_str());
   // there is no way to read back current mode from sysfs
   // so we track state internal. Because even

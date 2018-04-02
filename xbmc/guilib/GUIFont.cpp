@@ -20,7 +20,7 @@
 
 #include "GUIFont.h"
 #include "GUIFontTTF.h"
-#include "GraphicContext.h"
+#include "windowing/GraphicContext.h"
 
 #include "threads/SingleLock.h"
 #include "utils/TimeUtils.h"

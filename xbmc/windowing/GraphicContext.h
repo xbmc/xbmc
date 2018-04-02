@@ -25,13 +25,27 @@
 #include <stack>
 #include <map>
 #include "threads/CriticalSection.h"
-#include "TransformMatrix.h"        // for the members m_guiTransform etc.
+#include "utils/TransformMatrix.h"        // for the members m_guiTransform etc.
 #include "utils/Geometry.h"               // for CRect/CPoint
-#include "gui3d.h"
-#include "Resolution.h"
+#include "guilib/Resolution.h"
 #include "utils/GlobalsHandling.h"
-#include "DirtyRegion.h"
 #include "rendering/RenderSystem.h"
+
+// required by clients
+#include "ServiceBroker.h"
+#include "WinSystem.h"
+
+#define D3DPRESENTFLAG_INTERLACED   1
+#define D3DPRESENTFLAG_WIDESCREEN   2
+#define D3DPRESENTFLAG_PROGRESSIVE  4
+#define D3DPRESENTFLAG_MODE3DSBS    8
+#define D3DPRESENTFLAG_MODE3DTB    16
+
+/* what types are important for mode setting */
+#define D3DPRESENTFLAG_MODEMASK ( D3DPRESENTFLAG_INTERLACED \
+                                  | D3DPRESENTFLAG_MODE3DSBS \
+                                  | D3DPRESENTFLAG_MODE3DTB)
+
 
 enum VIEW_TYPE { VIEW_TYPE_NONE = 0,
                  VIEW_TYPE_LIST,

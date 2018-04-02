@@ -19,7 +19,7 @@
  */
 
 #include "GUITexture.h"
-#include "GraphicContext.h"
+#include "windowing/GraphicContext.h"
 #include "TextureManager.h"
 #include "GUILargeTextureManager.h"
 #include "utils/MathUtils.h"

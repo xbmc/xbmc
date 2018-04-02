@@ -23,7 +23,7 @@
 #include "cores/VideoPlayer/VideoRenderers/VideoShaders/dither.h"
 #include "cores/VideoPlayer/VideoRenderers/WinRenderBuffer.h"
 #include "filesystem/File.h"
-#include "guilib/GraphicContext.h"
+#include "windowing/GraphicContext.h"
 #include "platform/win32/WIN32Util.h"
 #include "rendering/dx/RenderContext.h"
 #include "rendering/dx/DeviceResources.h"
@@ -1134,7 +1134,7 @@ void CConvolutionShaderSeparable::SetStepParams(UINT iPass)
     // at the second pass m_IntermediateTarget is a source of data
     m_effect.SetTexture("g_Texture", m_IntermediateTarget);
     // restore scissor
-    DX::Windowing().SetScissors(g_graphicsContext.StereoCorrection(g_graphicsContext.GetScissors()));
+    DX::Windowing().SetScissors(CServiceBroker::GetWinSystem().GetGfxContext().StereoCorrection(CServiceBroker::GetWinSystem().GetGfxContext().GetScissors()));
   }
   // setting view port
   pContext->RSSetViewports(1, &viewPort);

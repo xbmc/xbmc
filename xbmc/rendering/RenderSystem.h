@@ -22,7 +22,7 @@
 
 #include "RenderSystemTypes.h"
 #include "utils/Geometry.h"
-#include "guilib/TransformMatrix.h"
+#include "utils/TransformMatrix.h"
 #include "guilib/DirtyRegion.h"
 #include <memory>
 #include <string>

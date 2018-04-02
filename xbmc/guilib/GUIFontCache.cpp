@@ -21,7 +21,7 @@
 #include <stdint.h>
 #include <vector>
 #include "GUIFontTTF.h"
-#include "GraphicContext.h"
+#include "windowing/GraphicContext.h"
 
 template<class Position, class Value>
 class CGUIFontCacheImpl

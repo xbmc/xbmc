@@ -23,7 +23,7 @@
 #include <assert.h>
 #include <string>
 #ifdef TARGET_WINDOWS
-#include "guilib/GraphicContext.h"
+#include "windowing/GraphicContext.h"
 #include "rendering/dx/RenderContext.h"
 #endif
 

@@ -28,7 +28,7 @@
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
 #include "threads/SingleLock.h"
-#include "guilib/GraphicContext.h"
+#include "windowing/GraphicContext.h"
 
 static void libass_log(int level, const char *fmt, va_list args, void *data)
 {

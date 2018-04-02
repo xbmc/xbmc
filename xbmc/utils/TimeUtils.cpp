@@ -21,7 +21,7 @@
 #include "TimeUtils.h"
 #include "XBDateTime.h"
 #include "threads/SystemClock.h"
-#include "guilib/GraphicContext.h"
+#include "windowing/GraphicContext.h"
 
 #if   defined(TARGET_DARWIN)
 #include <mach/mach_time.h>

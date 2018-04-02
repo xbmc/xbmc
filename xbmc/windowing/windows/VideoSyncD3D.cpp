@@ -24,7 +24,7 @@
 #include "rendering/dx/DeviceResources.h"
 #include "rendering/dx/RenderContext.h"
 #include "VideoSyncD3D.h"
-#include "guilib/GraphicContext.h"
+#include "windowing/GraphicContext.h"
 #include "platform/win32/dxerr.h"
 #include "utils/StringUtils.h"
 #include "utils/CharsetConverter.h"
@@ -51,7 +51,7 @@ void CVideoSyncD3D::RefreshChanged()
 bool CVideoSyncD3D::Setup(PUPDATECLOCK func)
 {
   CLog::Log(LOGDEBUG, "CVideoSyncD3D: Setting up Direct3d");
-  CSingleLock lock(g_graphicsContext);
+  CSingleLock lock(CServiceBroker::GetWinSystem().GetGfxContext());
   DX::Windowing().Register(this);
   m_displayLost = false;
   m_displayReset = false;

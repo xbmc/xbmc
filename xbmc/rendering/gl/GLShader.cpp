@@ -24,7 +24,7 @@
 #include "ServiceBroker.h"
 #include "utils/log.h"
 #include "rendering/RenderSystem.h"
-#include "guilib/GraphicContext.h"
+#include "windowing/GraphicContext.h"
 #include "guilib/MatrixGLES.h"
 
 using namespace Shaders;

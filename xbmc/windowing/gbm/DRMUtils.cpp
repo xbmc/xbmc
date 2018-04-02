@@ -30,9 +30,9 @@
 #include <unistd.h>
 
 #include "WinSystemGbmGLESContext.h"
-#include "guilib/gui3d.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
+#include "windowing/GraphicContext.h"
 
 #include "DRMUtils.h"
 

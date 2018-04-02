@@ -21,7 +21,7 @@
 #include "DialogGameVideoSelect.h"
 #include "cores/RetroPlayer/guibridge/GUIGameVideoHandle.h"
 #include "cores/RetroPlayer/guibridge/GUIGameRenderManager.h"
-#include "guilib/GraphicContext.h"
+#include "windowing/GraphicContext.h"
 #include "guilib/GUIBaseContainer.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIComponent.h"

@@ -18,7 +18,7 @@
  *
  */
 
-#include "guilib/GraphicContext.h"
+#include "windowing/GraphicContext.h"
 #include "settings/AdvancedSettings.h"
 #include "RenderSystemGLES.h"
 #include "guilib/MatrixGLES.h"
@@ -131,7 +131,7 @@ bool CRenderSystemGLES::DestroyRenderSystem()
 {
   ResetScissors();
   CDirtyRegionList dirtyRegions;
-  CDirtyRegion dirtyWindow(g_graphicsContext.GetViewWindow());
+  CDirtyRegion dirtyWindow(CServiceBroker::GetWinSystem().GetGfxContext().GetViewWindow());
   dirtyRegions.push_back(dirtyWindow);
 
   ClearBuffers(0);

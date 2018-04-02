@@ -30,7 +30,7 @@
 #include "DVDDemuxers/DVDDemux.h"
 #include "cores/VideoPlayer/Interface/Addon/DemuxPacket.h"
 #include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
-#include "guilib/GraphicContext.h"
+#include "windowing/GraphicContext.h"
 #include <sstream>
 #include <iomanip>
 #include <numeric>

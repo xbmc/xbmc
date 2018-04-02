@@ -20,7 +20,7 @@
 
 #include "GUIComponent.h"
 #include "GUIFontManager.h"
-#include "GraphicContext.h"
+#include "windowing/GraphicContext.h"
 #include "GUIWindowManager.h"
 #include "addons/Skin.h"
 #include "addons/AddonManager.h"

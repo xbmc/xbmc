@@ -30,7 +30,7 @@
 #include "cores/RetroPlayer/process/RenderBufferManager.h"
 #include "cores/RetroPlayer/process/RPProcessInfo.h"
 #include "cores/RetroPlayer/rendering/VideoRenderers/RPBaseRenderer.h"
-#include "guilib/TransformMatrix.h"
+#include "utils/TransformMatrix.h"
 #include "messaging/ApplicationMessenger.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"

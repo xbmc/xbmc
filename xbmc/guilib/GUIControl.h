@@ -29,7 +29,7 @@
 
 #include <vector>
 
-#include "GraphicContext.h" // needed by any rendering operation (all controls)
+#include "windowing/GraphicContext.h" // needed by any rendering operation (all controls)
 #include "GUIMessage.h"     // needed by practically all controls
 #include "VisibleEffect.h"  // needed for the CAnimation members
 #include "GUIInfoTypes.h"   // needed for CGUIInfoColor to handle infolabel'ed colors

@@ -18,7 +18,7 @@
  *
  */
 
-#include "GraphicContext.h"
+#include "windowing/GraphicContext.h"
 #include "Application.h"
 #include "ServiceBroker.h"
 #include "cores/DataCacheCore.h"
@@ -30,10 +30,11 @@
 #include "utils/log.h"
 #include "rendering/RenderSystem.h"
 #include "windowing/WinSystem.h"
-#include "TextureManager.h"
 #include "input/InputManager.h"
-#include "GUIComponent.h"
-#include "GUIWindowManager.h"
+#include "guilib/gui3d.h"
+#include "guilib/GUIComponent.h"
+#include "guilib/GUIWindowManager.h"
+#include "guilib/TextureManager.h"
 #include "ServiceBroker.h"
 
 using namespace KODI::MESSAGING;
