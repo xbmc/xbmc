@@ -162,6 +162,12 @@ namespace PVR
     bool SupportsRecordingsEdl() const { return m_addonCapabilities && m_addonCapabilities->bSupportsRecordings && m_addonCapabilities->bSupportsRecordingEdl; }
 
     /*!
+     * @brief Check whether this add-on supports retrieving an edit decision list for epg tags.
+     * @return True if supported, false otherwise.
+     */
+    bool SupportsEpgTagEdl() const { return m_addonCapabilities && m_addonCapabilities->bSupportsEPG && m_addonCapabilities->bSupportsEPGEdl; }
+
+    /*!
      * @brief Check whether this add-on supports renaming recordings..
      * @return True if supported, false otherwise.
      */
@@ -565,6 +571,14 @@ namespace PVR
     * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
     */
     PVR_ERROR GetRecordingEdl(const CPVRRecording &recording, std::vector<PVR_EDL_ENTRY> &edls);
+    
+    /*!
+    * @brief Retrieve the edit decision list (EDL) from the backend.
+    * @param epgTag The EPG tag.
+    * @param edls The edit decision list (empty on error).
+    * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
+    */
+    PVR_ERROR GetEpgTagEdl(const CConstPVREpgInfoTagPtr &epgTag, std::vector<PVR_EDL_ENTRY> &edls);
 
     //@}
     /** @name PVR timer methods */

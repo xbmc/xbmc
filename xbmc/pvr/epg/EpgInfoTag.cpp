@@ -717,6 +717,15 @@ bool CPVREpgInfoTag::Persist(bool bSingleUpdate /* = true */)
   return bReturn;
 }
 
+std::vector<PVR_EDL_ENTRY> CPVREpgInfoTag::GetEdl() const
+{
+  if (CServiceBroker::GetPVRManager().Clients()->GetClientCapabilities(m_iClientId).SupportsEpgTagEdl())
+  {
+    return CServiceBroker::GetPVRManager().Clients()->GetEpgTagEdl(shared_from_this());
+  }
+  return std::vector<PVR_EDL_ENTRY>();
+}
+
 void CPVREpgInfoTag::UpdatePath(void)
 {
   m_strFileNameAndPath = StringUtils::Format("pvr://guide/%04i/%s.epg", EpgID(), m_startTime.GetAsDBDateTime().c_str());

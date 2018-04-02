@@ -50,7 +50,7 @@ void CEdl::Clear()
   m_lastCutTime = 0;
 }
 
-bool CEdl::ReadEditDecisionLists(const std::string& strMovie, const float fFrameRate, const int iHeight)
+bool CEdl::ReadEditDecisionLists(const CFileItem& fileItem, const float fFrameRate, const int iHeight)
 {
   /*
    * The frame rate hints returned from ffmpeg for the video stream do not appear to take into
@@ -98,8 +98,9 @@ bool CEdl::ReadEditDecisionLists(const std::string& strMovie, const float fFrame
    * Only check for edit decision lists if the movie is on the local hard drive, or accessed over a
    * network share.
    */
+  const std::string strMovie = fileItem.GetDynPath();
   if ((URIUtils::IsHD(strMovie) || URIUtils::IsOnLAN(strMovie)) &&
-      !URIUtils::IsPVRRecording(strMovie) &&
+      !fileItem.IsPVRRecording() &&
       !URIUtils::IsInternetStream(strMovie))
   {
     CLog::Log(LOGDEBUG, "%s - Checking for edit decision lists (EDL) on local drive or remote share for: %s",
@@ -124,12 +125,19 @@ bool CEdl::ReadEditDecisionLists(const std::string& strMovie, const float fFrame
   /*
    * PVR Recordings
    */
-  else if (URIUtils::IsPVRRecording(strMovie))
+  else if (fileItem.IsPVRRecording())
   {
     CLog::Log(LOGDEBUG, "%s - Checking for edit decision list (EDL) for PVR recording: %s",
       __FUNCTION__, strMovie.c_str());
 
-    bFound = ReadPvr(strMovie);
+    bFound = ReadPvr(fileItem);
+  }
+  else if (fileItem.IsEPG())
+  {
+    CLog::Log(LOGDEBUG, "%s - Checking for edit decision list (EDL) for EPG entry: %s",
+      __FUNCTION__, strMovie.c_str());
+
+    bFound = ReadPvr(fileItem);
   }
 
   if (bFound)
@@ -561,26 +569,33 @@ bool CEdl::ReadBeyondTV(const std::string& strMovie)
   }
 }
 
-bool CEdl::ReadPvr(const std::string &strMovie)
+bool CEdl::ReadPvr(const CFileItem &fileItem)
 {
+  const std::string strMovie = fileItem.GetDynPath();
   if (!CServiceBroker::GetPVRManager().IsStarted())
   {
     CLog::Log(LOGERROR, "%s - PVR Manager not started, cannot read Edl for %s", __FUNCTION__, strMovie.c_str());
     return false;
   }
-
-  CFileItemPtr tag =  CServiceBroker::GetPVRManager().Recordings()->GetByPath(strMovie);
-  if (tag && tag->HasPVRRecordingInfoTag())
+  
+  std::vector<PVR_EDL_ENTRY> edl;
+  
+  if (fileItem.HasPVRRecordingInfoTag())
   {
-    CLog::Log(LOGDEBUG, "%s - Reading Edl for recording: %s", __FUNCTION__, tag->GetPVRRecordingInfoTag()->m_strTitle.c_str());
+    CLog::Log(LOGDEBUG, "%s - Reading Edl for recording: %s", __FUNCTION__, fileItem.GetPVRRecordingInfoTag()->m_strTitle.c_str());
+    edl = fileItem.GetPVRRecordingInfoTag()->GetEdl();
+  }
+  else if (fileItem.HasEPGInfoTag())
+  {
+    CLog::Log(LOGDEBUG, "%s - Reading Edl for EPG: %s", __FUNCTION__, fileItem.GetEPGInfoTag()->Title(true).c_str());
+    edl = fileItem.GetEPGInfoTag()->GetEdl();
   }
   else
   {
-    CLog::Log(LOGERROR, "%s - Unable to find PVR recording: %s", __FUNCTION__, strMovie.c_str());
+    CLog::Log(LOGERROR, "%s - Unknown file item type : %s", __FUNCTION__, strMovie.c_str());
     return false;
   }
 
-  std::vector<PVR_EDL_ENTRY> edl = tag->GetPVRRecordingInfoTag()->GetEdl();
   std::vector<PVR_EDL_ENTRY>::const_iterator it;
   for (it = edl.begin(); it != edl.end(); ++it)
   {

@@ -787,6 +787,25 @@ PVR_ERROR CPVRClient::FillEpgTagStreamFileItem(CFileItem &fileItem)
   });
 }
 
+PVR_ERROR CPVRClient::GetEpgTagEdl(const CConstPVREpgInfoTagPtr &epgTag, std::vector<PVR_EDL_ENTRY> &edls)
+{
+  edls.clear();
+  return DoAddonCall(__FUNCTION__, [&epgTag, &edls](const AddonInstance* addon) {
+    CAddonEpgTag addonTag(epgTag);
+
+    PVR_EDL_ENTRY edl_array[PVR_ADDON_EDL_LENGTH];
+    int size = PVR_ADDON_EDL_LENGTH;
+    PVR_ERROR error = addon->GetEPGTagEdl(&addonTag, edl_array, &size);
+    if (error == PVR_ERROR_NO_ERROR)
+    {
+      edls.reserve(size);
+      for (int i = 0; i < size; ++i)
+        edls.emplace_back(edl_array[i]);
+    }
+    return error;
+  }, m_clientCapabilities.SupportsEpgTagEdl());
+}
+
 PVR_ERROR CPVRClient::GetChannelGroupsAmount(int &iGroups)
 {
   iGroups = -1;
