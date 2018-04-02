@@ -499,15 +499,20 @@ std::string CURL::GetWithoutUserDetails(bool redact) const
   }
 
   unsigned int sizeneed = m_strProtocol.length()
-                        + m_strDomain.length()
                         + m_strHostName.length()
                         + m_strFileName.length()
                         + m_strOptions.length()
                         + m_strProtocolOptions.length()
                         + 10;
 
-  if (redact)
-    sizeneed += sizeof("USERNAME:PASSWORD@");
+  if (redact && !m_strUserName.empty())
+  {
+    sizeneed += sizeof("USERNAME");
+    if (!m_strPassword.empty())
+      sizeneed += sizeof(":PASSWORD@");
+    if (!m_strDomain.empty())
+      sizeneed += sizeof("DOMAIN;");
+  }
 
   strURL.reserve(sizeneed);
 
@@ -519,11 +524,11 @@ std::string CURL::GetWithoutUserDetails(bool redact) const
 
   if (redact && !m_strUserName.empty())
   {
+    if (!m_strDomain.empty())
+      strURL += "DOMAIN;";
     strURL += "USERNAME";
     if (!m_strPassword.empty())
-    {
       strURL += ":PASSWORD";
-    }
     strURL += "@";
   }
 
@@ -577,14 +582,13 @@ std::string CURL::GetWithoutFilename() const
   strURL = m_strProtocol;
   strURL += "://";
 
-  if (!m_strDomain.empty())
-  {
-    strURL += m_strDomain;
-    strURL += ";";
-  }
-
   if (!m_strUserName.empty())
   {
+    if (!m_strDomain.empty())
+    {
+      strURL += Encode(m_strDomain);
+      strURL += ";";
+    }
     strURL += Encode(m_strUserName);
     if (!m_strPassword.empty())
     {
@@ -593,8 +597,6 @@ std::string CURL::GetWithoutFilename() const
     }
     strURL += "@";
   }
-  else if (!m_strDomain.empty())
-    strURL += "@";
 
   if (!m_strHostName.empty())
   {

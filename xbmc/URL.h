@@ -54,6 +54,11 @@ public:
     m_strUserName = strUserName;
   }
 
+  void SetDomain(const std::string& strDomain)
+  {
+    m_strDomain = strDomain;
+  }
+
   void SetPassword(const std::string& strPassword)
   {
     m_strPassword = strPassword;
