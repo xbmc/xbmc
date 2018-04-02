@@ -54,6 +54,7 @@ bool CPasswordManager::AuthenticateURL(CURL &url)
   if (it != m_temporaryCache.end())
   {
     CURL auth(it->second);
+    url.SetDomain(auth.GetDomain());
     url.SetPassword(auth.GetPassWord());
     url.SetUserName(auth.GetUserName());
     return true;
@@ -67,13 +68,31 @@ bool CPasswordManager::PromptToAuthenticateURL(CURL &url)
 
   std::string passcode;
   std::string username = url.GetUserName();
+  std::string domain = url.GetDomain();
+  if (!domain.empty())
+    username = domain + '\\' + username;
 
   bool saveDetails = false;
   if (!CGUIDialogLockSettings::ShowAndGetUserAndPassword(username, passcode, url.GetWithoutUserDetails(), &saveDetails))
     return false;
 
+  // domain/name to domain\name
+  std::string name = username;
+  std::replace(name.begin(), name.end(), '/', '\\');
+
+  if (url.IsProtocol("smb") && name.find('\\') != std::string::npos)
+  {
+    auto pair = StringUtils::Split(name, '\\', 2);
+    url.SetDomain(pair[0]);
+    url.SetUserName(pair[1]);
+  }
+  else
+  {
+    url.SetDomain("");
+    url.SetUserName(username);
+  }
+
   url.SetPassword(passcode);
-  url.SetUserName(username);
 
   // save the information for later
   SaveAuthenticatedURL(url, saveDetails);
