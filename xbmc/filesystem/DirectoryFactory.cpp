@@ -45,6 +45,9 @@
 #include "posix/PosixDirectory.h"
 #elif defined(TARGET_WINDOWS)
 #include "win32/Win32Directory.h"
+#ifdef TARGET_WINDOWS_STORE
+#include "platform/win10/filesystem/WinLibraryDirectory.h"
+#endif
 #endif
 #ifdef HAS_FILESYSTEM_SMB
 #ifdef TARGET_WINDOWS
@@ -86,9 +89,6 @@
 #include "ResourceDirectory.h"
 #include "ServiceBroker.h"
 #include "addons/VFSEntry.h"
-#ifdef TARGET_WINDOWS_STORE
-#include "filesystem/win10/WinLibraryDirectory.h"
-#endif
 
 using namespace ADDON;
 

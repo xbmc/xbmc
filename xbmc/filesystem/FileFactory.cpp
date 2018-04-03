@@ -25,7 +25,7 @@
 #elif defined(TARGET_WINDOWS)
 #include "win32/Win32File.h"
 #ifdef TARGET_WINDOWS_STORE
-#include "win10/WinLibraryFile.h"
+#include "platform/win10/filesystem/WinLibraryFile.h"
 #endif
 #endif // TARGET_WINDOWS
 #include "CurlFile.h"

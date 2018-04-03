@@ -4,4 +4,4 @@ set(SOURCES WinLibraryDirectory.cpp
 set(HEADERS WinLibraryDirectory.h
             WinLibraryFile.h)
 
-core_add_library(filesystem_win10)
+core_add_library(platform_win10_filesystem)
