@@ -2076,15 +2076,36 @@ bool CApplication::OnAction(const CAction &action)
   bool bIsPlayingPVRChannel = (CServiceBroker::GetPVRManager().IsStarted() &&
                                CurrentFileItem().IsPVRChannel());
 
-  if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO ||
-      CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_FULLSCREEN_GAME ||
-      (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_VISUALISATION && bIsPlayingPVRChannel) ||
-      ((CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_DIALOG_VIDEO_OSD || (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_DIALOG_MUSIC_OSD && bIsPlayingPVRChannel)) &&
-        (action.GetID() == ACTION_NEXT_ITEM || action.GetID() == ACTION_PREV_ITEM || action.GetID() == ACTION_CHANNEL_UP || action.GetID() == ACTION_CHANNEL_DOWN)) ||
-      action.GetID() == ACTION_STOP)
+  bool bNotifyPlayer = false;
+  if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
+    bNotifyPlayer = true;
+  else if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_FULLSCREEN_GAME)
+    bNotifyPlayer = true;
+  else if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_VISUALISATION && bIsPlayingPVRChannel)
+    bNotifyPlayer = true;
+  else if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_DIALOG_VIDEO_OSD ||
+          (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_DIALOG_MUSIC_OSD && bIsPlayingPVRChannel))
+  {
+    switch (action.GetID())
+    {
+      case ACTION_NEXT_ITEM:
+      case ACTION_PREV_ITEM:
+      case ACTION_CHANNEL_UP:
+      case ACTION_CHANNEL_DOWN:
+        bNotifyPlayer = true;
+        break;
+      default:
+        break;
+    }
+  }
+  else if (action.GetID() == ACTION_STOP)
+    bNotifyPlayer = true;
+
+  if (bNotifyPlayer)
   {
     if (m_appPlayer.OnAction(action))
       return true;
+
     // Player ignored action; popup the OSD
     if ((action.GetID() == ACTION_MOUSE_MOVE && (action.GetAmount(2) || action.GetAmount(3)))  // filter "false" mouse move from touch
         || action.GetID() == ACTION_MOUSE_LEFT_CLICK)
@@ -2646,9 +2667,12 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
     {
       CSingleExit ex(g_graphicsContext);
       m_frameMoveGuard.unlock();
+
       // Calculate a window size between 2 and 10ms, 4 continuous requests let the window grow by 1ms
-      // WHen not playing video we allow it to increase to 80ms
-      unsigned int max_sleep = m_appPlayer.IsPlayingVideo() && !m_appPlayer.IsPausedPlayback() ? 10 : 80;
+      // When not playing video we allow it to increase to 80ms
+      unsigned int max_sleep = 10;
+      if (!m_appPlayer.IsPlayingVideo() || m_appPlayer.IsPausedPlayback())
+        max_sleep = 80;
       unsigned int sleepTime = std::max(static_cast<unsigned int>(2), std::min(m_ProcessedExternalCalls >> 2, max_sleep));
       Sleep(sleepTime);
       m_frameMoveGuard.lock();
@@ -3733,20 +3757,37 @@ void CApplication::CheckOSScreenSaverInhibitionSetting()
 
 void CApplication::CheckScreenSaverAndDPMS()
 {
-  bool maybeScreensaver =
-      !m_dpmsIsActive && !m_screensaverActive
-      && !m_ServiceManager->GetSettings().GetString(CSettings::SETTING_SCREENSAVER_MODE).empty();
-  bool maybeDPMS =
-      !m_dpmsIsActive && m_dpms->IsSupported()
-      && m_ServiceManager->GetSettings().GetInt(CSettings::SETTING_POWERMANAGEMENT_DISPLAYSOFF) > 0;
+  bool maybeScreensaver = true;
+  if (m_dpmsIsActive)
+    maybeScreensaver = false;
+  else if (m_screensaverActive)
+    maybeScreensaver = false;
+  else if (m_ServiceManager->GetSettings().GetString(CSettings::SETTING_SCREENSAVER_MODE).empty())
+    maybeScreensaver = false;
+
+  bool maybeDPMS = true;
+  if (m_dpmsIsActive)
+    maybeDPMS = false;
+  else if (!m_dpms->IsSupported())
+    maybeDPMS = false;
+  else if (m_ServiceManager->GetSettings().GetInt(CSettings::SETTING_POWERMANAGEMENT_DISPLAYSOFF) <= 0)
+    maybeDPMS = false;
+
   // whether the current state of the application should be regarded as active even when there is no
   // explicit user activity such as input
-  bool haveIdleActivity =
-    // * Are we playing a video and it is not paused?
-    (m_appPlayer.IsPlayingVideo() && !m_appPlayer.IsPaused())
-    // * Are we playing some music in fullscreen vis?
-    || (m_appPlayer.IsPlayingAudio() && CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_VISUALISATION
-        && !m_ServiceManager->GetSettings().GetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION).empty());
+  bool haveIdleActivity = false;
+
+  // Are we playing a video and it is not paused?
+  if (m_appPlayer.IsPlayingVideo() && !m_appPlayer.IsPaused())
+    haveIdleActivity = true;
+
+  // Are we playing some music in fullscreen vis?
+  else if (m_appPlayer.IsPlayingAudio() &&
+           CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_VISUALISATION &&
+           !m_ServiceManager->GetSettings().GetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION).empty())
+  {
+    haveIdleActivity = true;
+  }
 
   // Handle OS screen saver state
   if (haveIdleActivity && CServiceBroker::GetWinSystem().GetOSScreenSaver())
@@ -3814,10 +3855,20 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
 
   // disable screensaver lock from the login screen
   m_iScreenSaveLock = CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_LOGIN_SCREEN ? 1 : 0;
+
   // set to Dim in the case of a dialog on screen or playing video
-  if (!forceType && (CServiceBroker::GetGUI()->GetWindowManager().HasModalDialog() ||
-                     (m_appPlayer.IsPlayingVideo() && m_ServiceManager->GetSettings().GetBool(CSettings::SETTING_SCREENSAVER_USEDIMONPAUSE)) ||
-                     CServiceBroker::GetPVRManager().GUIActions()->IsRunningChannelScan()))
+  bool bUseDim = false;
+  if (!forceType)
+  {
+    if (CServiceBroker::GetGUI()->GetWindowManager().HasModalDialog())
+      bUseDim = true;
+    else if (m_appPlayer.IsPlayingVideo() && m_ServiceManager->GetSettings().GetBool(CSettings::SETTING_SCREENSAVER_USEDIMONPAUSE))
+      bUseDim = true;
+    else if (CServiceBroker::GetPVRManager().GUIActions()->IsRunningChannelScan())
+      bUseDim = true;
+  }
+
+  if (bUseDim)
     m_screensaverIdInUse = "screensaver.xbmc.builtin.dim";
   else // Get Screensaver Mode
     m_screensaverIdInUse = m_ServiceManager->GetSettings().GetString(CSettings::SETTING_SCREENSAVER_MODE);
@@ -4014,8 +4065,14 @@ bool CApplication::OnMessage(CGUIMessage& message)
         XFILE::CPluginDirectory::GetPluginResult(url.Get(), file, false);
 
       // Don't queue if next media type is different from current one
-      if ((!file.IsVideo() && m_appPlayer.IsPlayingVideo())
-          || ((!file.IsAudio() || file.IsVideo()) && m_appPlayer.IsPlayingAudio()))
+      bool bNothingToQueue = false;
+
+      if (!file.IsVideo() && m_appPlayer.IsPlayingVideo())
+        bNothingToQueue = true;
+      else if ((!file.IsAudio() || file.IsVideo()) && m_appPlayer.IsPlayingAudio())
+        bNothingToQueue = true;
+
+      if (bNothingToQueue)
       {
         m_appPlayer.OnNothingToQueueNotify();
         return true;

@@ -67,8 +67,18 @@ CAutorun::~CAutorun() = default;
 
 void CAutorun::ExecuteAutorun(const std::string& path, bool bypassSettings, bool ignoreplaying, bool startFromBeginning )
 {
-  if ((!ignoreplaying && (g_application.GetAppPlayer().IsPlayingAudio() || g_application.GetAppPlayer().IsPlayingVideo() || CServiceBroker::GetGUI()->GetWindowManager().HasModalDialog())) || CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_LOGIN_SCREEN)
-    return ;
+  if (!ignoreplaying)
+  {
+    if (g_application.GetAppPlayer().IsPlayingAudio() ||
+        g_application.GetAppPlayer().IsPlayingVideo() ||
+        CServiceBroker::GetGUI()->GetWindowManager().HasModalDialog())
+    {
+      return;
+    }
+  }
+
+  if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_LOGIN_SCREEN)
+    return;
 
   CCdInfo* pInfo = g_mediaManager.GetCdInfo(path);
 
