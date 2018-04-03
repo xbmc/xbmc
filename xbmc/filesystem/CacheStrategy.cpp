@@ -33,7 +33,7 @@
 #include "posix/PosixFile.h"
 #define CacheLocalFile CPosixFile
 #elif defined(TARGET_WINDOWS)
-#include "win32/Win32File.h"
+#include "platform/win32/filesystem/Win32File.h"
 #define CacheLocalFile CWin32File
 #endif // TARGET_WINDOWS
 

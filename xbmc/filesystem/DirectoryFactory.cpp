@@ -44,14 +44,14 @@
 #ifdef TARGET_POSIX
 #include "posix/PosixDirectory.h"
 #elif defined(TARGET_WINDOWS)
-#include "win32/Win32Directory.h"
+#include "platform/win32/filesystem/Win32Directory.h"
 #ifdef TARGET_WINDOWS_STORE
 #include "platform/win10/filesystem/WinLibraryDirectory.h"
 #endif
 #endif
 #ifdef HAS_FILESYSTEM_SMB
 #ifdef TARGET_WINDOWS
-#include "win32/Win32SMBDirectory.h"
+#include "platform/win32/filesystem/Win32SMBDirectory.h"
 #else
 #include "SMBDirectory.h"
 #endif

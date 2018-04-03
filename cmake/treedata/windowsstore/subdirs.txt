@@ -1,5 +1,6 @@
-xbmc/platform/win10             platform_win10
-xbmc/platform/win10/filesystem  platform_win10_filesystem
+xbmc/platform/win10             platform/win10
+xbmc/platform/win10/filesystem  platform/win10/filesystem
+xbmc/platform/win32/filesystem  platform/win32/filesystem
 xbmc/input/touch                input/touch
 xbmc/input/touch/generic        input/touch/generic
 xbmc/network/win10              network/win10
@@ -7,9 +8,8 @@ xbmc/network/mdns               network/mdns
 xbmc/peripherals/bus/win10      peripherals/bus/win10
 xbmc/powermanagement/win10      powermanagement/win10
 xbmc/storage/win10              storage/win10
-xbmc/filesystem/win32           filesystem/win32
-xbmc/utils/win32                utils_win32
-xbmc/rendering/dx               rendering_dx
-xbmc/threads/platform/win       threads_win
+xbmc/utils/win32                utils/win32
+xbmc/rendering/dx               rendering/dx
+xbmc/threads/platform/win       threads/win
 xbmc/windowing/win10            windowing/win10
 xbmc/cores/VideoPlayer/Process/windows cores/VideoPlayer/Process/windows

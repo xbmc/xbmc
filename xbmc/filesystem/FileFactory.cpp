@@ -23,7 +23,7 @@
 #ifdef TARGET_POSIX
 #include "posix/PosixFile.h"
 #elif defined(TARGET_WINDOWS)
-#include "win32/Win32File.h"
+#include "platform/win32/filesystem/Win32File.h"
 #ifdef TARGET_WINDOWS_STORE
 #include "platform/win10/filesystem/WinLibraryFile.h"
 #endif
@@ -33,7 +33,7 @@
 #include "ShoutcastFile.h"
 #ifdef HAS_FILESYSTEM_SMB
 #ifdef TARGET_WINDOWS
-#include "win32/Win32SMBFile.h"
+#include "platform/win32/filesystem/Win32SMBFile.h"
 #else
 #include "SMBFile.h"
 #endif
