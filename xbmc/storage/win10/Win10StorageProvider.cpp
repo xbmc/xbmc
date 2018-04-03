@@ -78,17 +78,23 @@ void CStorageProvider::GetLocalDrives(VECSOURCES &localDrives)
 void CStorageProvider::GetRemovableDrives(VECSOURCES &removableDrives)
 {
   using KODI::PLATFORM::WINDOWS::FromW;
-
-  auto devicesView = Wait(Windows::Storage::KnownFolders::RemovableDevices->GetFoldersAsync());
-  for (unsigned i = 0; i < devicesView->Size; i++)
+  try
   {
-    CMediaSource source;
-    auto device = devicesView->GetAt(i);
-    source.strName = FromW(device->DisplayName->Data());
-    source.strPath = "win-lib://removable/" + FromW(device->Name->Data()).substr(0, 1) + "/";
-    source.m_iDriveType = CMediaSource::SOURCE_TYPE_REMOVABLE;
+    auto devicesView = Wait(Windows::Storage::KnownFolders::RemovableDevices->GetFoldersAsync());
+    for (unsigned i = 0; i < devicesView->Size; i++)
+    {
+      CMediaSource source;
+      auto device = devicesView->GetAt(i);
+      source.strName = FromW(device->DisplayName->Data());
+      std::string driveLetter = FromW(device->Name->Data()).substr(0, 1);
+      source.strPath = "win-lib://removable/" + driveLetter + "/";
+      source.m_iDriveType = CMediaSource::SOURCE_TYPE_REMOVABLE;
 
-    removableDrives.push_back(source);
+      removableDrives.push_back(source);
+    }
+  }
+  catch (Platform::Exception^)
+  {
   }
 }
 
