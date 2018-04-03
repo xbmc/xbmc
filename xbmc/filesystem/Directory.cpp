@@ -216,12 +216,12 @@ bool CDirectory::GetDirectory(const CURL& url, CFileItemList &items, const CHint
       if (CPasswordManager::GetInstance().IsURLSupported(realURL))
       {
         bool hide = false;
-        // for explicitly credetials 
+        // for explicitly credentials 
         if (!realURL.GetUserName().empty())
         {
           // credentials was changed i.e. were stored in the password
           // manager, in this case we can hide them from an item URL,
-          // otherwise we have to keep cretendials in an item URL
+          // otherwise we have to keep credentials in an item URL
           if ( realURL.GetUserName() != authUrl.GetUserName()
             || realURL.GetPassWord() != authUrl.GetPassWord()
             || realURL.GetDomain() != authUrl.GetDomain())

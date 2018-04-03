@@ -243,7 +243,7 @@ std::string CSMB::URLEncode(const CURL &url)
   /* probably the url parser that goes crazy */
   if(url.GetUserName().length() > 0 /* || url.GetPassWord().length() > 0 */)
   {
-    if(url.GetDomain().length() > 0)
+    if(!url.GetDomain().empty())
     {
       flat += URLEncode(url.GetDomain());
       flat += ";";
