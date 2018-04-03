@@ -159,7 +159,7 @@ public:
 #elif defined(HAS_WIN32_NETWORK)
 #include "windows/NetworkWin32.h"
 #elif defined(HAS_WIN10_NETWORK)
-#include "win10/NetworkWin10.h"
+#include "platform/win10/network/NetworkWin10.h"
 #endif
 
 //creates, binds and listens a tcp socket on the desired port. Set bindLocal to
