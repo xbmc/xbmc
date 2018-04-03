@@ -31,6 +31,11 @@ using namespace RETRO;
 
 // --- CRendererFactoryMMAL ----------------------------------------------------
 
+std::string CRendererFactoryMMAL::RenderSystemName() const
+{
+  return "MMAL";
+}
+
 CRPBaseRenderer *CRendererFactoryMMAL::CreateRenderer(const CRenderSettings &settings, CRenderContext &context, std::shared_ptr<IRenderBufferPool> bufferPool)
 {
   return new CRPRendererMMAL(settings, context, std::move(bufferPool));
