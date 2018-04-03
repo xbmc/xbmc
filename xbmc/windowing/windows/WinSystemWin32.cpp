@@ -189,11 +189,11 @@ bool CWinSystemWin32::CreateNewWindow(const std::string& name, bool fullScreen, 
 
   m_inFocus = true;
 
-  const DWORD dwHwndTabletProperty =
+  DWORD dwHwndTabletProperty =
       TABLET_DISABLE_PENBARRELFEEDBACK | // disables UI feedback on pen button down (circle)
       TABLET_DISABLE_FLICKS; // disables pen flicks (back, forward, drag down, drag up)
 
-  SetProp(hWnd, MICROSOFT_TABLETPENSERVICE_PROPERTY, reinterpret_cast<HANDLE>(dwHwndTabletProperty));
+  SetProp(hWnd, MICROSOFT_TABLETPENSERVICE_PROPERTY, &dwHwndTabletProperty);
 
   m_hWnd = hWnd;
   m_bWindowCreated = true;
@@ -235,9 +235,9 @@ bool CWinSystemWin32::CreateBlankWindows()
   }
 
   // We need as many blank windows as there are screens (minus 1)
-  int BlankWindowsCount = m_MonitorsInfo.size() -1;
+  size_t BlankWindowsCount = m_MonitorsInfo.size() - 1;
 
-  for (int i=0; i < BlankWindowsCount; i++)
+  for (size_t i = 0; i < BlankWindowsCount; i++)
   {
     HWND hBlankWindow = CreateWindowEx(WS_EX_TOPMOST, L"BlankWindowClass", L"", WS_POPUP | WS_DISABLED,
     CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr, nullptr, nullptr);
@@ -927,7 +927,7 @@ bool CWinSystemWin32::UpdateResolutionsInternal()
 
         // Careful, some adapters don't end up in the vector (mirroring, no active output, etc.)
         if (ddAdapter.StateFlags & DISPLAY_DEVICE_PRIMARY_DEVICE)
-          m_nPrimary = m_MonitorsInfo.size() -1;
+          m_nPrimary = static_cast<int>(m_MonitorsInfo.size()) - 1;
 
       }
     }
@@ -1071,7 +1071,7 @@ void CWinSystemWin32::SetForegroundWindowInternal(HWND hWnd)
 
     if (dwThisTID != dwCurrTID)
     {
-      SystemParametersInfo(SPI_SETFOREGROUNDLOCKTIMEOUT, 0, reinterpret_cast<PVOID>(lockTimeOut), SPIF_SENDWININICHANGE | SPIF_UPDATEINIFILE);
+      SystemParametersInfo(SPI_SETFOREGROUNDLOCKTIMEOUT, 0, &lockTimeOut, SPIF_SENDWININICHANGE | SPIF_UPDATEINIFILE);
       AttachThreadInput(dwThisTID, dwCurrTID, FALSE);
     }
   }

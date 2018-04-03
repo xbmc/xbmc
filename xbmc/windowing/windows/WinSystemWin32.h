@@ -163,6 +163,10 @@ DECLARE_HANDLE(HGESTUREINFO);
 
 #endif
 
+#ifdef IsMinimized
+#undef IsMinimized
+#endif
+
 class CWinSystemWin32 : public CWinSystemBase
 {
 public:
@@ -177,7 +181,7 @@ public:
   void UpdateResolutions() override;
   bool CenterWindow() override;
   virtual void NotifyAppFocusChange(bool bGaining) override;
-  int  GetNumScreens() override { return m_MonitorsInfo.size(); };
+  int  GetNumScreens() override { return static_cast<int>(m_MonitorsInfo.size()); };
   int  GetCurrentScreen() override;
   void ShowOSMouse(bool show) override;
   bool HasInertialGestures() override { return true; }//if win32 has touchscreen - it uses the win32 gesture api for inertial scrolling
