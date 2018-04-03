@@ -24,7 +24,7 @@
 #include "win32/PeripheralBusUSB.h"
 #elif defined(TARGET_WINDOWS_STORE)
 #define HAVE_PERIPHERAL_BUS_USB 1
-#include "win10/PeripheralBusUSB.h"
+#include "platform/win10/peripherals/PeripheralBusUSB.h"
 #elif defined(TARGET_LINUX) && defined(HAVE_LIBUDEV)
 #define HAVE_PERIPHERAL_BUS_USB 1
 #include "linux/PeripheralBusUSBLibUdev.h"
