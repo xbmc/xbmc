@@ -761,8 +761,8 @@ bool CCPUInfo::readProcStat(unsigned long long& user, unsigned long long& nice,
     }
   }
   else
-#endif // TARGET_WINDOWS_STORE
     return false;
+#endif // TARGET_WINDOWS_STORE
 #elif defined(TARGET_FREEBSD)
   long *cptimes;
   size_t len;
