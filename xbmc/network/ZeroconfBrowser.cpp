@@ -28,7 +28,7 @@
 //on osx use the native implementation
 #include "osx/ZeroconfBrowserOSX.h"
 #elif defined(TARGET_ANDROID)
-#include "android/ZeroconfBrowserAndroid.h"
+#include "platform/android/network/ZeroconfBrowserAndroid.h"
 #elif defined(HAS_MDNS)
 #include "mdns/ZeroconfBrowserMDNS.h"
 #endif

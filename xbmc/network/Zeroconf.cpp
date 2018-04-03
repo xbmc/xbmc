@@ -34,7 +34,7 @@
 //on osx use the native implementation
 #include "osx/ZeroconfOSX.h"
 #elif defined(TARGET_ANDROID)
-#include "android/ZeroconfAndroid.h"
+#include "platform/android/network/ZeroconfAndroid.h"
 #elif defined(HAS_MDNS)
 #include "mdns/ZeroconfMDNS.h"
 #endif

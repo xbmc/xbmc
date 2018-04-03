@@ -8,4 +8,4 @@ set(HEADERS NetworkAndroid.h
             ZeroconfBrowserAndroid.h
       )
 
-core_add_library(network_android)
+core_add_library(platform_android_network)

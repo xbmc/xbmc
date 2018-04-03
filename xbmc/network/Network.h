@@ -153,7 +153,7 @@ public:
 };
 
 #if defined(TARGET_ANDROID)
-#include "android/NetworkAndroid.h"
+#include "platform/android/network/NetworkAndroid.h"
 #elif defined(HAS_LINUX_NETWORK)
 #include "linux/NetworkLinux.h"
 #elif defined(HAS_WIN32_NETWORK)
