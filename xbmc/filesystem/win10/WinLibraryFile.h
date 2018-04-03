@@ -60,8 +60,8 @@ namespace XFILE
     static Platform::String^ GetTokenFromList(const CURL& url, Windows::Storage::AccessCache::IStorageItemAccessList^ list);
     static int Stat(Windows::Storage::StorageFile^ file, struct __stat64* statData);
 
-    bool m_allowWrite;
-    Windows::Storage::StorageFile^ m_sFile;
-    Windows::Storage::Streams::IRandomAccessStream^ m_fileStream;
+    bool m_allowWrite = false;
+    Windows::Storage::StorageFile^ m_sFile = nullptr;
+    Windows::Storage::Streams::IRandomAccessStream^ m_fileStream = nullptr;
   };
 }

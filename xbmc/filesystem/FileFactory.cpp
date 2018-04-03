@@ -24,6 +24,9 @@
 #include "posix/PosixFile.h"
 #elif defined(TARGET_WINDOWS)
 #include "win32/Win32File.h"
+#ifdef TARGET_WINDOWS_STORE
+#include "win10/WinLibraryFile.h"
+#endif
 #endif // TARGET_WINDOWS
 #include "CurlFile.h"
 #include "DAVFile.h"
@@ -71,9 +74,6 @@
 #include "utils/StringUtils.h"
 #include "ServiceBroker.h"
 #include "addons/VFSEntry.h"
-#ifdef TARGET_WINDOWS_STORE
-#include "win10/WinLibraryFile.h"
-#endif
 
 using namespace ADDON;
 using namespace XFILE;

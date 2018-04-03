@@ -35,6 +35,7 @@
 using namespace XFILE;
 using namespace KODI::PLATFORM::WINDOWS;
 using namespace Windows::Foundation;
+using namespace Windows::Security::Cryptography;
 using namespace Windows::Storage;
 using namespace Windows::Storage::AccessCache;
 using namespace Windows::Storage::Search;
@@ -43,29 +44,27 @@ using namespace Windows::Foundation::Collections;
 
 byte* GetUnderlyingBuffer(IBuffer^ buf)
 {
+  if (!buf)
+    return nullptr;
+
   Microsoft::WRL::ComPtr<IBufferByteAccess> bufferByteAccess;
-  HRESULT hr = reinterpret_cast<IUnknown*>(buf)->QueryInterface(IID_PPV_ARGS(&bufferByteAccess));
-  byte* raw_buffer;
-  hr = bufferByteAccess->Buffer(&raw_buffer);
-  return raw_buffer;
+  if (SUCCEEDED(reinterpret_cast<IUnknown*>(buf)->QueryInterface(IID_PPV_ARGS(&bufferByteAccess))))
+  {
+    byte* raw_buffer;
+    if (SUCCEEDED(bufferByteAccess->Buffer(&raw_buffer)))
+      return raw_buffer;
+  }
+  return nullptr;
 }
+
+CWinLibraryFile::CWinLibraryFile() = default;
+CWinLibraryFile::~CWinLibraryFile(void) = default;
 
 bool CWinLibraryFile::IsValid(const CURL & url)
 {
   return CWinLibraryDirectory::IsValid(url)
     && !url.GetFileName().empty()
     && !URIUtils::HasSlashAtEnd(url.GetFileName(), false);
-}
-
-CWinLibraryFile::CWinLibraryFile()
-  : m_allowWrite(false)
-  , m_sFile(nullptr)
-  , m_fileStream(nullptr)
-{
-}
-
-CWinLibraryFile::~CWinLibraryFile(void)
-{
 }
 
 bool CWinLibraryFile::Open(const CURL& url)
@@ -90,29 +89,29 @@ void CWinLibraryFile::Close()
     m_sFile = nullptr;
 }
 
-ssize_t CWinLibraryFile::Read(void * lpBuf, size_t uiBufSize)
+ssize_t CWinLibraryFile::Read(void* lpBuf, size_t uiBufSize)
 {
   if (!m_fileStream)
     return -1;
 
-  IBuffer^ buf = ref new Buffer(uiBufSize);
-  Wait(m_fileStream->ReadAsync(buf, uiBufSize, InputStreamOptions::None));
+  uint32_t bytesToRead = static_cast<uint32_t>(uiBufSize);
+  IBuffer^ buf = ref new Buffer(bytesToRead);
+  Wait(m_fileStream->ReadAsync(buf, bytesToRead, InputStreamOptions::None));
 
   memcpy(lpBuf, GetUnderlyingBuffer(buf), buf->Length);
-
-  return buf->Length;
+  return static_cast<intptr_t>(buf->Length);
 }
 
-ssize_t CWinLibraryFile::Write(const void * lpBuf, size_t uiBufSize)
+ssize_t CWinLibraryFile::Write(const void* lpBuf, size_t uiBufSize)
 {
   if (!m_fileStream || !m_allowWrite)
     return -1;
 
-  auto arrByte = ref new Platform::Array<UCHAR>((PUCHAR)(lpBuf), uiBufSize);
-  IBuffer^ buf = Windows::Security::Cryptography::CryptographicBuffer::CreateFromByteArray(arrByte);
+  auto arrByte = ref new Platform::Array<uint8_t>((uint8_t*)(lpBuf), static_cast<uint32_t>(uiBufSize));
+  IBuffer^ buf = CryptographicBuffer::CreateFromByteArray(arrByte);
 
   uint32_t result = Wait(m_fileStream->WriteAsync(buf));
-  return static_cast<ssize_t>(result);
+  return static_cast<intptr_t>(result);
 }
 
 int64_t CWinLibraryFile::Seek(int64_t iFilePosition, int iWhence)
@@ -125,8 +124,15 @@ int64_t CWinLibraryFile::Seek(int64_t iFilePosition, int iWhence)
     else if (iWhence == SEEK_END)
       pos += m_fileStream->Size;
 
-    m_fileStream->Seek(pos);
+    uint64_t seekTo;
+    if (pos < 0)
+      seekTo = 0;
+    else if (static_cast<uint64_t>(pos) > m_fileStream->Size)
+      seekTo = m_fileStream->Size;
+    else
+      seekTo = static_cast<uint64_t>(pos);
 
+    m_fileStream->Seek(seekTo);
     return GetPosition();
   }
   return -1;
@@ -140,18 +146,24 @@ int CWinLibraryFile::Truncate(int64_t toSize)
 
 int64_t CWinLibraryFile::GetPosition()
 {
-  return m_fileStream != nullptr ? m_fileStream->Position : -1;
+  if (m_fileStream)
+    return static_cast<int64_t>(m_fileStream->Position);
+
+  return -1;
 }
 
 int64_t CWinLibraryFile::GetLength()
 {
-  if (m_fileStream != nullptr)
+  if (m_fileStream)
     return m_fileStream->Size;
+
   return 0;
 }
 
 void CWinLibraryFile::Flush()
 {
+  if (m_fileStream)
+    m_fileStream->FlushAsync();
 }
 
 bool CWinLibraryFile::Delete(const CURL & url)
@@ -293,30 +305,38 @@ bool CWinLibraryFile::OpenIntenal(const CURL &url, FileAccessMode mode)
   return m_fileStream != nullptr;
 }
 
-StorageFile^ CWinLibraryFile::GetFile(const CURL & url)
+StorageFile^ CWinLibraryFile::GetFile(const CURL& url)
 {
   // check that url is library url
   if (CWinLibraryDirectory::IsValid(url))
   {
     StorageFolder^ rootFolder = CWinLibraryDirectory::GetRootFolder(url);
+    if (!rootFolder)
+      return nullptr;
 
     std::string filePath = URIUtils::FixSlashesAndDups(url.GetFileName(), '\\');
-    std::wstring wpath = ToW(filePath);
-
     if (url.GetHostName() == "removable")
     {
-      // here path has the form e\path where first segment is drive letter
-      // we should make path form like regular e:\path
-      auto index = wpath.find('\\');
-      if (index > 0 && wpath[index - 1] != ':')
-        wpath = wpath.insert(index, 1, ':');
+      // here filePath has the form e\path\file.ext where first segment is 
+      // drive letter, we should make path form like regular e:\path\file.ext
+      auto index = filePath.find('\\');
+      if (index == std::string::npos)
+      {
+        CLog::LogF(LOGDEBUG, "wrong file path '%s'", url.GetRedacted().c_str());
+        return nullptr;
+      }
+
+      filePath = filePath.insert(index, 1, ':');
     }
 
     try
     {
-      Platform::String^ pFilePath = ref new Platform::String(wpath.c_str());
-      auto item = Wait(rootFolder->TryGetItemAsync(pFilePath));
-      return (item != nullptr && item->IsOfType(StorageItemTypes::File)) ? dynamic_cast<StorageFile^>(item) : nullptr;
+      std::wstring wpath = ToW(filePath);
+      auto item = Wait(rootFolder->TryGetItemAsync(ref new Platform::String(wpath.c_str())));
+      if (item && item->IsOfType(StorageItemTypes::File))
+        return dynamic_cast<StorageFile^>(item);
+
+      return nullptr;
     }
     catch (Platform::Exception^ ex)
     {
@@ -362,7 +382,7 @@ Platform::String^ CWinLibraryFile::GetTokenFromList(const CURL& url, IStorageIte
   std::wstring filePathW = ToW(filePath);
   Platform::String^ itemKey = ref new Platform::String(filePathW.c_str());
 
-  for (int i = 0; i < listview->Size; i++)
+  for (uint32_t i = 0; i < listview->Size; i++)
   {
     auto listEntry = listview->GetAt(i);
     if (listEntry.Metadata->Equals(itemKey))

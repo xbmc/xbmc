@@ -17,7 +17,6 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#ifdef TARGET_WINDOWS_STORE
 
 #include "WinLibraryDirectory.h"
 #include "FileItem.h"
@@ -51,12 +50,10 @@ bool CWinLibraryDirectory::GetStoragePath(std::string library, std::string & pat
 
 StorageFolder^ CWinLibraryDirectory::GetRootFolder(const CURL& url)
 {
-  std::string protocol = url.GetProtocol();
-  std::string lib = url.GetHostName();
-
-  if (protocol != "win-lib")
+  if (!url.IsProtocol("win-lib"))
     return nullptr;
 
+  std::string lib = url.GetHostName();
   if (lib == "music")
     return KnownFolders::MusicLibrary;
   if (lib == "video")
@@ -75,11 +72,10 @@ StorageFolder^ CWinLibraryDirectory::GetRootFolder(const CURL& url)
 
 bool CWinLibraryDirectory::IsValid(const CURL & url)
 {
-  std::string protocol = url.GetProtocol();
-  std::string lib = url.GetHostName();
-
-  if (protocol != "win-lib")
+  if (!url.IsProtocol("win-lib"))
     return false;
+
+  std::string lib = url.GetHostName();
 
   if ( lib == "music"
     || lib == "video"
@@ -92,27 +88,20 @@ bool CWinLibraryDirectory::IsValid(const CURL & url)
     return false;
 }
 
-CWinLibraryDirectory::CWinLibraryDirectory()
-{
-}
-
-CWinLibraryDirectory::~CWinLibraryDirectory(void)
-{
-}
+CWinLibraryDirectory::CWinLibraryDirectory() = default;
+CWinLibraryDirectory::~CWinLibraryDirectory(void) = default;
 
 bool CWinLibraryDirectory::GetDirectory(const CURL &url, CFileItemList &items)
 {
   items.Clear();
 
-  // We accept win-lib://library/path[/]
-
-  auto libname = url.GetHostName();
-  std::string path(url.Get());
-  URIUtils::AddSlashAtEnd(path); //be sure the dir ends with a slash
-
   auto folder = GetFolder(url);
   if (!folder)
     return false;
+
+  // We accept win-lib://library/path[/]
+  std::string path = url.Get();
+  URIUtils::AddSlashAtEnd(path); //be sure the dir ends with a slash
 
   auto vectorView = Wait(folder->GetItemsAsync());
   for (unsigned i = 0; i < vectorView->Size; i++)
@@ -137,11 +126,19 @@ bool CWinLibraryDirectory::GetDirectory(const CURL &url, CFileItemList &items)
       pItem->SetProperty("file:hidden", true);
 
     auto props = Wait(item->GetBasicPropertiesAsync());
-    ULARGE_INTEGER ularge = { props->DateModified.UniversalTime };
-    FILETIME localTime = { ularge.LowPart, ularge.HighPart };
+
+    ULARGE_INTEGER ularge = { 0 };
+    if (props->DateModified.UniversalTime > 0)
+      ularge.QuadPart = static_cast<uint64_t>(props->DateModified.UniversalTime);
+
+    FILETIME localTime = 
+    { 
+      ularge.LowPart, 
+      ularge.HighPart 
+    };
     pItem->m_dateTime = localTime;
     if (!pItem->m_bIsFolder)
-      pItem->m_dwSize = props->Size;
+      pItem->m_dwSize = static_cast<int64_t>(props->Size);
 
     items.Add(pItem);
   }
@@ -200,23 +197,32 @@ bool CWinLibraryDirectory::Remove(const CURL& url)
 
 StorageFolder^ CWinLibraryDirectory::GetFolder(const CURL& url)
 {
-  std::string folderPath = URIUtils::FixSlashesAndDups(url.GetFileName(), '\\');
   StorageFolder^ rootFolder = GetRootFolder(url);
+  if (!rootFolder)
+    return nullptr;
 
   // find inner folder
+  std::string folderPath = URIUtils::FixSlashesAndDups(url.GetFileName(), '\\');
   if (!folderPath.empty())
   {
     if (url.GetHostName() == "removable")
     {
-      // return root folder for win-lib://removable/F
-      if (folderPath.length() == 1)
-        return rootFolder;
-
       // here path has the form e\path where first segment is drive letter
       // we should make path form like regular e:\path
       auto index = folderPath.find('\\');
-      if (index != std::string::npos && folderPath[index - 1] != ':')
+      if (index != std::string::npos)
+      {
         folderPath = folderPath.insert(index, 1, ':');
+      }
+      // win-lib://removable/F -> folderPath contains only drive letter
+      else if (index == std::string::npos && folderPath.length() == 1)
+      {
+        folderPath += ":\\";
+      }
+      else
+      {
+        return nullptr;
+      }
     }
 
     try
@@ -228,12 +234,10 @@ StorageFolder^ CWinLibraryDirectory::GetFolder(const CURL& url)
     catch (Platform::Exception^ ex)
     {
       std::string error = FromW(std::wstring(ex->Message->Data()));
-      CLog::LogF(LOGERROR, __FUNCTION__, "unable to get folder '%s' with error", folderPath.c_str(), error.c_str());
+      CLog::LogF(LOGERROR, "unable to get folder '%s' with error", url.GetRedacted().c_str(), error.c_str());
     }
     return nullptr;
   }
 
   return rootFolder;
 }
-
-#endif
