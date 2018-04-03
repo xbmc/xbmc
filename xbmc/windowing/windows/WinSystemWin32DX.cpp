@@ -194,7 +194,7 @@ void CWinSystemWin32DX::OnResize(int width, int height)
   if (!m_IsAlteringWindow)
     ReleaseBackBuffer();
 
-  m_deviceResources->SetLogicalSize(width, height);
+  m_deviceResources->SetLogicalSize(static_cast<float>(width), static_cast<float>(height));
 
   if (!m_IsAlteringWindow)
     CreateBackBuffer();
@@ -330,7 +330,7 @@ void CWinSystemWin32DX::FixRefreshRateIfNecessary(const D3D10DDIARG_CREATERESOUR
         refreshRate /= 2;
 
       uint32_t refreshNum, refreshDen;
-      DX::GetRefreshRatio(floor(m_fRefreshRate), &refreshNum, &refreshDen);
+      DX::GetRefreshRatio(static_cast<uint32_t>(floor(m_fRefreshRate)), &refreshNum, &refreshDen);
       float diff = fabs(refreshRate - static_cast<float>(refreshNum) / static_cast<float>(refreshDen)) / refreshRate;
       CLog::LogF(LOGDEBUG, "refreshRate: %0.4f, desired: %0.4f, deviation: %.5f, fixRequired: %s, %d",
         refreshRate, m_fRefreshRate, diff, (diff > 0.0005 && diff < 0.1) ? "yes" : "no", pResource->pPrimaryDesc->Flags);

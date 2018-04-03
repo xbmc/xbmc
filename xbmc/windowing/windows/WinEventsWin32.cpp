@@ -131,7 +131,7 @@ static int XBMC_MapVirtualKey(int scancode, WPARAM vkey)
     case VK_LAUNCH_MEDIA_SELECT:
     case VK_LAUNCH_APP1:
     case VK_LAUNCH_APP2:
-      return vkey;
+      return static_cast<int>(vkey);
     default:;
   }
   switch (mvke)
@@ -149,7 +149,7 @@ static int XBMC_MapVirtualKey(int scancode, WPARAM vkey)
     case VK_PRIOR:  return EXTKEYPAD(VK_NUMPAD9);
     default:;
   }
-  return mvke ? mvke : vkey;
+  return mvke ? mvke : static_cast<int>(vkey);
 }
 
 
@@ -184,7 +184,7 @@ static XBMC_keysym *TranslateKey(WPARAM vkey, UINT scancode, XBMC_keysym *keysym
     * so we handle it as a special case here */
     if ((keystate[VK_NUMLOCK] & 1) && vkey >= VK_NUMPAD0 && vkey <= VK_NUMPAD9)
     {
-      keysym->unicode = vkey - VK_NUMPAD0 + '0';
+      keysym->unicode = static_cast<uint16_t>(vkey - VK_NUMPAD0 + '0');
     }
     else if (ToUnicode(static_cast<UINT>(vkey), scancode, keystate, reinterpret_cast<LPWSTR>(wchars), ARRAY_SIZE(wchars), 0) > 0)
     {
