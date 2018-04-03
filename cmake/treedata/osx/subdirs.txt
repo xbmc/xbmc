@@ -1,5 +1,5 @@
 xbmc/platform/linux          platform/linux
-xbmc/network/linux           network/linux
+xbmc/platform/linux/network  platform/linux/network
 xbmc/network/osx             network/osx
 xbmc/peripherals/bus/osx     peripherals/bus/osx
 xbmc/powermanagement/osx     powermanagement/osx

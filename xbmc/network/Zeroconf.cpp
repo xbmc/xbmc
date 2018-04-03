@@ -29,7 +29,7 @@
 #include "utils/JobManager.h"
 
 #if defined(HAS_AVAHI)
-#include "linux/ZeroconfAvahi.h"
+#include "platform/linux/network/ZeroconfAvahi.h"
 #elif defined(TARGET_DARWIN)
 //on osx use the native implementation
 #include "osx/ZeroconfOSX.h"

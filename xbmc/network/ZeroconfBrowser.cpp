@@ -23,7 +23,7 @@
 #include <cassert>
 
 #if defined (HAS_AVAHI)
-#include "linux/ZeroconfBrowserAvahi.h"
+#include "platform/linux/network/ZeroconfBrowserAvahi.h"
 #elif defined(TARGET_DARWIN)
 //on osx use the native implementation
 #include "osx/ZeroconfBrowserOSX.h"

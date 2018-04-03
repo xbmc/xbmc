@@ -23,7 +23,7 @@
 #if defined(TARGET_ANDROID)
 #include "platform/android/network/NetworkAndroid.h"
 #elif defined(TARGET_POSIX)
-#include "linux/NetworkLinux.h"
+#include "platform/linux/network/NetworkLinux.h"
 #endif
 #include "ServiceBroker.h"
 #include "FileItem.h"

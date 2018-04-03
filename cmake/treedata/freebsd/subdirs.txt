@@ -1,9 +1,9 @@
 xbmc/platform/linux        platform/linux
 xbmc/platform/linux/input  platform/linux/input
+xbmc/platform/linux/network platform/linux/network
 xbmc/platform/linux/storage platform/linux/storage
 xbmc/input/touch           input/touch
 xbmc/input/touch/generic   input/touch/generic
-xbmc/network/linux         network/linux
 xbmc/peripherals/bus/linux peripherals/bus/linux
 xbmc/powermanagement/linux powermanagement/linux
 xbmc/filesystem/posix      filesystem/posix

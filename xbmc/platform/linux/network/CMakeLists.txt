@@ -9,4 +9,4 @@ if(AVAHI_FOUND)
                       ZeroconfBrowserAvahi.h)
 endif()
 
-core_add_library(network_linux)
+core_add_library(platform_linux_network)
