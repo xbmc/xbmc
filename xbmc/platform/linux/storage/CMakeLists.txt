@@ -13,5 +13,5 @@ if(UDEV_FOUND)
 endif()
 
 if(SOURCES)
-  core_add_library(storage_linux)
+  core_add_library(platform_linux_storage)
 endif()
