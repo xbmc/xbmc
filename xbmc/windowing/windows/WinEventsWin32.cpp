@@ -762,9 +762,13 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
         break;
       }
     case WM_PAINT:
+    {
       //some other app has painted over our window, mark everything as dirty
-      CServiceBroker::GetGUI()->GetWindowManager().MarkDirty();
+      CGUIComponent* component = CServiceBroker::GetGUI();
+      if (component)
+        component->GetWindowManager().MarkDirty();
       break;
+    }
     case BONJOUR_EVENT:
       CZeroconf::GetInstance()->ProcessResults();
       break;
