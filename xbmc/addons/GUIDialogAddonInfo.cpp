@@ -41,6 +41,7 @@
 #include "messaging/helpers/DialogOKHelper.h"
 #include "pictures/GUIWindowSlideShow.h"
 #include "settings/Settings.h"
+#include "utils/Digest.h"
 #include "utils/JobManager.h"
 #include "utils/FileOperationJob.h"
 #include "utils/StringUtils.h"
@@ -283,8 +284,8 @@ void CGUIDialogAddonInfo::OnUpdate()
           std::string path(items[i]->GetPath());
           if (database.GetPackageHash(m_localAddon->ID(), items[i]->GetPath(), hash))
           {
-            std::string md5 = CUtil::GetFileMD5(path);
-            if (md5 == hash)
+            std::string md5 = CUtil::GetFileDigest(path, KODI::UTILITY::CDigest::Type::MD5);
+            if (StringUtils::EqualsNoCase(md5, hash))
               versions.push_back(std::make_pair(AddonVersion(versionString), LOCAL_CACHE));
           }
         }

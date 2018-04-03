@@ -3,8 +3,7 @@ set(SOURCES WebSocket.cpp
             WebSocketV13.cpp
             WebSocketV8.cpp)
 
-set(HEADERS sha1.hpp
-            WebSocket.h
+set(HEADERS WebSocket.h
             WebSocketManager.h
             WebSocketV13.h
             WebSocketV8.h)

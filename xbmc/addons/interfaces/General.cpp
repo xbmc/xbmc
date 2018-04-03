@@ -37,15 +37,16 @@
 #endif
 #include "settings/Settings.h"
 #include "utils/CharsetConverter.h"
+#include "utils/Digest.h"
 #include "utils/log.h"
 #include "utils/LangCodeExpander.h"
-#include "utils/md5.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
 #include <string.h>
 
 using namespace kodi; // addon-dev-kit namespace
+using KODI::UTILITY::CDigest;
 
 namespace ADDON
 {
@@ -303,7 +304,7 @@ void Interface_General::get_md5(void* kodiBase, const char* text, char* md5)
     return;
   }
 
-  std::string md5Int = XBMC::XBMC_MD5::GetMD5(std::string(text));
+  std::string md5Int = CDigest::Calculate(CDigest::Type::MD5, std::string(text));
   strncpy(md5, md5Int.c_str(), 40);
 }
 

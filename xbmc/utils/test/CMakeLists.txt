@@ -7,6 +7,7 @@ set(SOURCES TestAlarmClock.cpp
             TestCPUInfo.cpp
             TestCrc32.cpp
             TestDatabaseUtils.cpp
+            TestDigest.cpp
             TestEndianSwap.cpp
             TestFileOperationJob.cpp
             TestFileUtils.cpp
@@ -25,7 +26,6 @@ set(SOURCES TestAlarmClock.cpp
             TestLocale.cpp
             Testlog.cpp
             TestMathUtils.cpp
-            Testmd5.cpp
             TestMime.cpp
             TestPOUtils.cpp
             TestRegExp.cpp

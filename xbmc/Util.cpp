@@ -80,8 +80,8 @@
 #ifdef HAS_IRSERVERSUITE
 #endif
 #include "guilib/LocalizeStrings.h"
+#include "utils/Digest.h"
 #include "utils/FileExtensionProvider.h"
-#include "utils/md5.h"
 #include "utils/TimeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
@@ -104,6 +104,7 @@ using namespace MEDIA_DETECT;
 
 using namespace XFILE;
 using namespace PLAYLIST;
+using KODI::UTILITY::CDigest;
 
 #if !defined(TARGET_WINDOWS)
 unsigned int CUtil::s_randomSeed = time(NULL);
@@ -594,22 +595,22 @@ int CUtil::GetDVDIfoTitle(const std::string& strFile)
   return atoi(strFilename.substr(4, 2).c_str());
 }
 
-std::string CUtil::GetFileMD5(const std::string& strPath)
+std::string CUtil::GetFileDigest(const std::string& strPath, KODI::UTILITY::CDigest::Type type)
 {
   CFile file;
   std::string result;
   if (file.Open(strPath))
   {
-    XBMC::XBMC_MD5 md5;
+    CDigest digest{type};
     char temp[1024];
     while (true)
     {
       ssize_t read = file.Read(temp,1024);
       if (read <= 0)
         break;
-      md5.append(temp,read);
+      digest.Update(temp,read);
     }
-    result = md5.getDigest();
+    result = digest.Finalize();
     file.Close();
   }
 

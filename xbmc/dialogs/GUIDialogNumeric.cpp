@@ -25,9 +25,9 @@
 #include "ServiceBroker.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUILabelControl.h"
-#include "utils/md5.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/XBMC_vkeys.h"
+#include "utils/Digest.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "input/Key.h"
@@ -45,6 +45,7 @@
 #define CONTROL_BACKSPACE     23
 
 using namespace KODI::MESSAGING;
+using KODI::UTILITY::CDigest;
 
 CGUIDialogNumeric::CGUIDialogNumeric(void)
   : CGUIDialog(WINDOW_DIALOG_NUMERIC, "DialogNumeric.xml")
@@ -636,12 +637,11 @@ bool CGUIDialogNumeric::ShowAndVerifyInput(std::string& strToVerify, const std::
     return false;
   }
 
-  std::string md5pword2 = XBMC::XBMC_MD5::GetMD5(strInput);
+  std::string md5pword2 = CDigest::Calculate(CDigest::Type::MD5, strInput);
 
   if (!bVerifyInput)
   {
     strToVerify = md5pword2;
-    StringUtils::ToLower(strToVerify);
     return true;
   }
 
