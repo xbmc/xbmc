@@ -1,13 +1,13 @@
 xbmc/platform/win32             platform/win32
-xbmc/platform/win32/input       platworm/win32/input
+xbmc/platform/win32/input       platform/win32/input
 xbmc/platform/win32/filesystem  platform/win32/filesystem
+xbmc/platform/win32/storage     platform/win32/storage
 xbmc/input/touch                input/touch
 xbmc/input/touch/generic        input/touch/generic
 xbmc/network/windows            network/windows
 xbmc/network/mdns               network/mdns
 xbmc/peripherals/bus/win32      peripherals/bus/win32
 xbmc/powermanagement/windows    powermanagement/windows
-xbmc/storage/windows            storage/windows
 xbmc/utils/win32                utils/win32
 xbmc/rendering/dx               rendering/dx
 xbmc/threads/platform/win       threads/win

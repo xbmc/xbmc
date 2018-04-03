@@ -42,7 +42,7 @@
 #include "powermanagement/windows/Win32PowerSyscall.h"
 #include "ServiceBroker.h"
 #include "storage/MediaManager.h"
-#include "storage/windows/Win32StorageProvider.h"
+#include "platform/win32/storage/Win32StorageProvider.h"
 #include "Util.h"
 #include "utils/JobManager.h"
 #include "utils/log.h"
