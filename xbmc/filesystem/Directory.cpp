@@ -201,6 +201,7 @@ bool CDirectory::GetDirectory(const CURL& url, CFileItemList &items, const CHint
           {
             if (g_application.IsCurrentThread() && pDirectory->ProcessRequirements())
             {
+              authUrl.SetDomain("");
               authUrl.SetUserName("");
               authUrl.SetPassword("");
               continue;
@@ -214,31 +215,37 @@ bool CDirectory::GetDirectory(const CURL& url, CFileItemList &items, const CHint
       // hide credentials if necessary
       if (CPasswordManager::GetInstance().IsURLSupported(realURL))
       {
-        for (int i = 0; i < items.Size(); ++i)
+        bool hide = false;
+        // for explicitly credetials 
+        if (!realURL.GetUserName().empty())
         {
-          CFileItemPtr item = items[i];
-          CURL itemUrl = item->GetURL();
-          // for explicitly credetials 
-          if (!realURL.GetUserName().empty())
+          // credentials was changed i.e. were stored in the password
+          // manager, in this case we can hide them from an item URL,
+          // otherwise we have to keep cretendials in an item URL
+          if ( realURL.GetUserName() != authUrl.GetUserName()
+            || realURL.GetPassWord() != authUrl.GetPassWord()
+            || realURL.GetDomain() != authUrl.GetDomain())
           {
-            // credentials was changed i.e. were stored in the password
-            // manager, in this case we can hide them from an item URL,
-            // otherwise we have to keep cretendials in an item URL
-            if ( realURL.GetUserName() != authUrl.GetUserName()
-              || realURL.GetPassWord() != authUrl.GetPassWord())
-            {
-              // hide credentials
-              itemUrl.SetUserName("");
-              itemUrl.SetPassword("");
-            }
+            hide = true;
           }
-          else
+        }
+        else
+        {
+          // hide credentials in any other cases
+          hide = true;
+        }
+
+        if (hide)
+        {
+          for (int i = 0; i < items.Size(); ++i)
           {
-            // hide credentials in any other cases
+            CFileItemPtr item = items[i];
+            CURL itemUrl = item->GetURL();
+            itemUrl.SetDomain("");
             itemUrl.SetUserName("");
             itemUrl.SetPassword("");
+            item->SetPath(itemUrl.Get());
           }
-          item->SetPath(itemUrl.Get());
         }
       }
 

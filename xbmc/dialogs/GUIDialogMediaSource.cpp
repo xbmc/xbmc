@@ -611,6 +611,7 @@ std::vector<std::string> CGUIDialogMediaSource::GetPaths() const
         CPasswordManager::GetInstance().SaveAuthenticatedURL(url);
         url.SetPassword("");
         url.SetUserName("");
+        url.SetDomain("");
       }
       paths.push_back(url.Get());
     }

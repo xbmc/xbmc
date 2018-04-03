@@ -362,7 +362,18 @@ std::string CGUIDialogNetworkSetup::ConstructPath() const
 
   if (!m_username.empty())
   {
-    url.SetUserName(m_username);
+    // domain/name to domain\name
+    std::string username = m_username;
+    std::replace(username.begin(), username.end(), '/', '\\');
+
+    if (url.IsProtocol("smb") && username.find('\\') != std::string::npos)
+    {
+      auto pair = StringUtils::Split(username, "\\", 2);
+      url.SetDomain(pair[0]);
+      url.SetUserName(pair[1]);
+    }
+    else
+      url.SetUserName(m_username);
     if (!m_password.empty())
       url.SetPassword(m_password);
   }
@@ -409,7 +420,10 @@ bool CGUIDialogNetworkSetup::SetPath(const std::string &path)
     return false;
   }
 
-  m_username = url.GetUserName();
+  if (!url.GetDomain().empty())
+    m_username = url.GetDomain() + "\\" + url.GetUserName();
+  else
+    m_username = url.GetUserName();
   m_password = url.GetPassWord();
   m_port = StringUtils::Format("%i", url.GetPort());
   m_server = url.GetHostName();
