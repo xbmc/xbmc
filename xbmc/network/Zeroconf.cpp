@@ -32,7 +32,7 @@
 #include "platform/linux/network/ZeroconfAvahi.h"
 #elif defined(TARGET_DARWIN)
 //on osx use the native implementation
-#include "osx/ZeroconfOSX.h"
+#include "platform/darwin/osx/network/ZeroconfOSX.h"
 #elif defined(TARGET_ANDROID)
 #include "platform/android/network/ZeroconfAndroid.h"
 #elif defined(HAS_MDNS)

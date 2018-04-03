@@ -26,7 +26,7 @@
 #include "platform/linux/network/ZeroconfBrowserAvahi.h"
 #elif defined(TARGET_DARWIN)
 //on osx use the native implementation
-#include "osx/ZeroconfBrowserOSX.h"
+#include "platform/darwin/osx/network/ZeroconfBrowserOSX.h"
 #elif defined(TARGET_ANDROID)
 #include "platform/android/network/ZeroconfBrowserAndroid.h"
 #elif defined(HAS_MDNS)

@@ -45,7 +45,7 @@
   #include <net/route.h>
   #include <netinet/if_ether.h>
 #else //IOS
-  #include "network/osx/ioshacks.h"
+  #include "platform/darwin/osx/network/ioshacks.h"
 #endif
   #include <ifaddrs.h>
 #elif defined(TARGET_FREEBSD)
