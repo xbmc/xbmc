@@ -7,5 +7,5 @@ elseif(LIBUSB_FOUND)
 endif()
 
 if(SOURCES)
-  core_add_library(peripherals_bus_linux)
+  core_add_library(platform_linux_peripherals)
 endif()
