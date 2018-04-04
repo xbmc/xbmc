@@ -13,5 +13,5 @@ if(DBUS_FOUND)
 endif()
 
 if(SOURCES)
-  core_add_library(powermanagement_linux)
+  core_add_library(platform_linux_powermanagement)
 endif()
