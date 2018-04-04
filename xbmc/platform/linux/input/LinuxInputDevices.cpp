@@ -1044,20 +1044,18 @@ void CLinuxInputDevice::GetInfo(int fd)
     m_devicePreferredId = LI_DEVICE_JOYSTICK;
   else if (m_deviceType & LI_DEVICE_MOUSE)
     m_devicePreferredId = LI_DEVICE_MOUSE;
-  else
+  /* if no better fit and have at least 1 key */
+  else if (num_keys >= 1) 
   {
-    /* if no better fit and have at least 1 key */
-    if (num_keys >= 1)
-    {
-      m_deviceType |= LI_DEVICE_KEYBOARD;
-      m_deviceCaps |= LI_CAPS_KEYS;
+    m_deviceType |= LI_DEVICE_KEYBOARD;
+    m_deviceCaps |= LI_CAPS_KEYS;
 
-      m_deviceMinKeyCode = 0;
-      m_deviceMaxKeyCode = 127;
-    }
-    else
-      m_devicePreferredId = LI_DEVICE_NONE;
-
+    m_deviceMinKeyCode = 0;
+    m_deviceMaxKeyCode = 127;
+  }
+  else
+    m_devicePreferredId = LI_DEVICE_NONE;
+ 
   //printf("type: %d\n", m_deviceType);
   //printf("caps: %d\n", m_deviceCaps);
   //printf("pref: %d\n", m_devicePreferredId);
