@@ -4,4 +4,4 @@ set(SOURCES AndroidJoystickState.cpp
 set(HEADERS AndroidJoystickState.h
             PeripheralBusAndroid.h)
 
-core_add_library(peripherals_bus_android)
+core_add_library(platform_android_peripherals)

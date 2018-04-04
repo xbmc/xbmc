@@ -24,7 +24,7 @@
 
 #include "peripherals/PeripheralTypes.h"
 #include "peripherals/bus/PeripheralBus.h"
-#include "peripherals/bus/android/AndroidJoystickState.h"
+#include "platform/android/peripherals/AndroidJoystickState.h"
 #include "platform/android/activity/IInputDeviceCallbacks.h"
 #include "platform/android/activity/IInputDeviceEventHandler.h"
 #include "threads/CriticalSection.h"
