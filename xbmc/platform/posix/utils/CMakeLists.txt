@@ -7,4 +7,4 @@ set(HEADERS FileHandle.h
             PosixInterfaceForCLog.h
             SharedMemory.h)
 
-core_add_library(utils_posix)
+core_add_library(platform_posix_utils)

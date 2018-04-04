@@ -27,7 +27,7 @@
 #include "utils/StringUtils.h"
 
 #if defined(TARGET_POSIX)
-#include "posix/PosixInterfaceForCLog.h"
+#include "platform/posix/utils/PosixInterfaceForCLog.h"
 typedef class CPosixInterfaceForCLog PlatformInterfaceForCLog;
 #elif defined(TARGET_WINDOWS)
 #include "win32/Win32InterfaceForCLog.h"

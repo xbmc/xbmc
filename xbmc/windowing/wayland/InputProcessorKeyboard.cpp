@@ -26,7 +26,7 @@
 #include <limits>
 
 #include "utils/log.h"
-#include "utils/posix/FileHandle.h"
+#include "platform/posix/utils/FileHandle.h"
 
 using namespace KODI::WINDOWING::WAYLAND;
 

@@ -28,7 +28,7 @@
 #include "Application.h"
 #include "Util.h"
 #include "utils/log.h"
-#include "utils/posix/Mmap.h"
+#include "platform/posix/utils/Mmap.h"
 
 using namespace KODI::WINDOWING::WAYLAND;
 using namespace KODI::UTILS::POSIX;

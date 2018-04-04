@@ -32,7 +32,7 @@
 #include "Registry.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
-#include "utils/posix/FileHandle.h"
+#include "platform/posix/utils/FileHandle.h"
 #include "utils/StringUtils.h"
 #include "WinEventsWayland.h"
 

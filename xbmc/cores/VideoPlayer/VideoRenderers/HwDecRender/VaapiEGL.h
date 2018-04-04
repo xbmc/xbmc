@@ -35,7 +35,7 @@
 #include <va/va.h>
 
 #include "utils/Geometry.h"
-#include "utils/posix/FileHandle.h"
+#include "platform/posix/utils/FileHandle.h"
 
 namespace VAAPI
 {
