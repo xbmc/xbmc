@@ -5,10 +5,10 @@ xbmc/platform/win32/network            platform/win32/network
 xbmc/platform/win32/peripherals        platform/win32/peripherals
 xbmc/platform/win32/powermanagement    platform/win32/powermanagement
 xbmc/platform/win32/storage            platform/win32/storage
+xbmc/platform/win32/utils              platform/win32/utils
 xbmc/input/touch                       input/touch
 xbmc/input/touch/generic               input/touch/generic
 xbmc/network/mdns                      network/mdns
-xbmc/utils/win32                       utils/win32
 xbmc/rendering/dx                      rendering/dx
 xbmc/threads/platform/win              threads/win
 xbmc/windowing/windows                 windowing/windows
