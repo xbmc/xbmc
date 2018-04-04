@@ -38,6 +38,7 @@
 #include "profiles/ProfilesManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/DisplaySettings.h"
+#include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "storage/MediaManager.h"
 #include "utils/AlarmClock.h"
@@ -46,8 +47,10 @@
 #include "utils/SystemInfo.h"
 #include "utils/TimeUtils.h"
 #include "windowing/WinSystem.h"
+#include "windows/GUIMediaWindow.h"
 
 #include "guiinfo/GUIInfo.h"
+#include "guiinfo/GUIInfoHelper.h"
 #include "guiinfo/GUIInfoLabels.h"
 
 using namespace GUIINFO;
@@ -617,6 +620,19 @@ bool CSystemGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
     case SYSTEM_GET_BOOL:
       value = CServiceBroker::GetSettings().GetBool(info.GetData3());
       return true;
+    case SYSTEM_SETTING:
+    {
+      if (StringUtils::EqualsNoCase(info.GetData3(), "hidewatched"))
+      {
+        CGUIWindow *window = CGUIInfoHelper::GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+        if (window)
+        {
+          value = CMediaSettings::GetInstance().GetWatchedMode(static_cast<CGUIMediaWindow*>(window)->CurrentDirectory().GetContent()) == WatchedModeUnwatched;
+          return true;
+        }
+      }
+      break;
+    }
   }
 
   return false;

@@ -51,7 +51,6 @@
 #include "messaging/ApplicationMessenger.h"
 #include "music/MusicDatabase.h"
 #include "music/tags/MusicInfoTag.h"
-#include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "settings/SkinSettings.h"
 #include "utils/CharsetConverter.h"
@@ -62,7 +61,6 @@
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
 #include "video/VideoInfoTag.h"
-#include "windows/GUIMediaWindow.h"
 
 using namespace ADDON;
 using namespace GUIINFO;
@@ -6680,16 +6678,6 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
             bReturn = StringUtils::EndsWith(label, compare);
           else
             bReturn = label.find(compare) != std::string::npos;
-        }
-        break;
-      case SYSTEM_SETTING:
-        {
-          if (StringUtils::EqualsNoCase(info.GetData3(), "hidewatched"))
-          {
-            CGUIWindow *window = CGUIInfoHelper::GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
-            if (window)
-              bReturn = CMediaSettings::GetInstance().GetWatchedMode(static_cast<CGUIMediaWindow*>(window)->CurrentDirectory().GetContent()) == WatchedModeUnwatched;
-          }
         }
         break;
       case LIBRARY_HAS_ROLE:
