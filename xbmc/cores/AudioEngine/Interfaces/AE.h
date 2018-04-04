@@ -230,11 +230,6 @@ public:
   virtual void DeviceChange() {return; }
 
   /**
-   * Indicates if dsp addon system is active.
-   */
-  virtual bool HasDSP() { return false; };
-
-  /**
    * Get the current sink data format
    *
    * @param Current sink data format. For more details see AEAudioFormat.

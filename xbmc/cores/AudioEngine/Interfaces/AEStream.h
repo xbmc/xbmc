@@ -271,10 +271,5 @@ public:
    * Slave a stream to resume when this stream has drained
    */
   virtual void RegisterSlave(IAEStream *stream) = 0;
-
-  /**
-   * Indicates if dsp addon system is active.
-   */
-  virtual bool HasDSP() = 0;
 };
 
