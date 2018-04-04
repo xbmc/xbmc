@@ -38,7 +38,7 @@ bool CWeatherGUIInfo::InitCurrentItem(CFileItem *item)
   return false;
 }
 
-bool CWeatherGUIInfo::GetLabel(std::string& value, const CFileItem *item, const GUIInfo &info, std::string *fallback) const
+bool CWeatherGUIInfo::GetLabel(std::string& value, const CFileItem *item, int contextWindow, const GUIInfo &info, std::string *fallback) const
 {
   switch (info.m_info)
   {
@@ -72,12 +72,12 @@ bool CWeatherGUIInfo::GetLabel(std::string& value, const CFileItem *item, const 
   return false;
 }
 
-bool CWeatherGUIInfo::GetInt(int& value, const CGUIListItem *gitem, const GUIInfo &info) const
+bool CWeatherGUIInfo::GetInt(int& value, const CGUIListItem *gitem, int contextWindow, const GUIInfo &info) const
 {
   return false;
 }
 
-bool CWeatherGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, const GUIInfo &info) const
+bool CWeatherGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contextWindow, const GUIInfo &info) const
 {
   switch (info.m_info)
   {

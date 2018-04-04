@@ -319,7 +319,7 @@ bool CPVRGUIInfo::InitCurrentItem(CFileItem *item)
   return false;
 }
 
-bool CPVRGUIInfo::GetLabel(std::string& value, const CFileItem *item, const GUIInfo &info, std::string *fallback) const
+bool CPVRGUIInfo::GetLabel(std::string& value, const CFileItem *item, int contextWindow, const GUIInfo &info, std::string *fallback) const
 {
   return GetListItemAndPlayerLabel(item, info, value) ||
          GetPVRLabel(item, info, value) ||
@@ -1036,7 +1036,7 @@ bool CPVRGUIInfo::GetRadioRDSLabel(const CFileItem *item, const GUIInfo &info, s
   return false;
 }
 
-bool CPVRGUIInfo::GetInt(int& value, const CGUIListItem *item, const GUIInfo &info) const
+bool CPVRGUIInfo::GetInt(int& value, const CGUIListItem *item, int contextWindow, const GUIInfo &info) const
 {
   if (!item->IsFileItem())
     return false;
@@ -1106,7 +1106,7 @@ bool CPVRGUIInfo::GetPVRInt(const CFileItem *item, const GUIInfo &info, int& iVa
   return false;
 }
 
-bool CPVRGUIInfo::GetBool(bool& value, const CGUIListItem *item, const GUIInfo &info) const
+bool CPVRGUIInfo::GetBool(bool& value, const CGUIListItem *item, int contextWindow, const GUIInfo &info) const
 {
   if (!item->IsFileItem())
     return false;

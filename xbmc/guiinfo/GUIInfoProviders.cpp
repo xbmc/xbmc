@@ -75,31 +75,31 @@ bool CGUIInfoProviders::InitCurrentItem(CFileItem *item)
   return bReturn;
 }
 
-bool CGUIInfoProviders::GetLabel(std::string& value, const CFileItem *item, const GUIInfo &info, std::string *fallback) const
+bool CGUIInfoProviders::GetLabel(std::string& value, const CFileItem *item, int contextWindow, const GUIInfo &info, std::string *fallback) const
 {
   for (const auto& provider : m_providers)
   {
-    if (provider->GetLabel(value, item, info, fallback))
+    if (provider->GetLabel(value, item, contextWindow, info, fallback))
       return true;
   }
   return false;
 }
 
-bool CGUIInfoProviders::GetInt(int& value, const CGUIListItem *item, const GUIInfo &info) const
+bool CGUIInfoProviders::GetInt(int& value, const CGUIListItem *item, int contextWindow, const GUIInfo &info) const
 {
   for (const auto& provider : m_providers)
   {
-    if (provider->GetInt(value, item, info))
+    if (provider->GetInt(value, item, contextWindow, info))
       return true;
   }
   return false;
 }
 
-bool CGUIInfoProviders::GetBool(bool& value, const CGUIListItem *item, const GUIInfo &info) const
+bool CGUIInfoProviders::GetBool(bool& value, const CGUIListItem *item, int contextWindow, const GUIInfo &info) const
 {
   for (const auto& provider : m_providers)
   {
-    if (provider->GetBool(value, item, info))
+    if (provider->GetBool(value, item, contextWindow, info))
       return true;
   }
   return false;

@@ -37,7 +37,7 @@ bool CAddonsGUIInfo::InitCurrentItem(CFileItem *item)
   return false;
 }
 
-bool CAddonsGUIInfo::GetLabel(std::string& value, const CFileItem *item, const GUIInfo &info, std::string *fallback) const
+bool CAddonsGUIInfo::GetLabel(std::string& value, const CFileItem *item, int contextWindow, const GUIInfo &info, std::string *fallback) const
 {
   const std::shared_ptr<const ADDON::IAddon> addonInfo = item->GetAddonInfo();
   if (addonInfo)
@@ -163,12 +163,12 @@ bool CAddonsGUIInfo::GetLabel(std::string& value, const CFileItem *item, const G
   return false;
 }
 
-bool CAddonsGUIInfo::GetInt(int& value, const CGUIListItem *gitem, const GUIInfo &info) const
+bool CAddonsGUIInfo::GetInt(int& value, const CGUIListItem *gitem, int contextWindow, const GUIInfo &info) const
 {
   return false;
 }
 
-bool CAddonsGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, const GUIInfo &info) const
+bool CAddonsGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contextWindow, const GUIInfo &info) const
 {
   switch (info.m_info)
   {

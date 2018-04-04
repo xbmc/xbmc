@@ -47,30 +47,33 @@ public:
   /*!
    * @brief Get a GUIInfoManager label string.
    * @param value Will be filled with the requested value.
-   * @param item The item to get the value for.
+   * @param item The item to get the value for. Can be nullptr.
+   * @param contextWindow The context window. Can be 0.
    * @param info The GUI info (label id + additional data).
    * @param fallback A fallback value. Can be nullptr.
    * @return True if the value was filled successfully, false otherwise.
    */
-  virtual bool GetLabel(std::string &value, const CFileItem *item, const GUIInfo &info, std::string *fallback) const = 0;
+  virtual bool GetLabel(std::string &value, const CFileItem *item, int contextWindow, const GUIInfo &info, std::string *fallback) const = 0;
 
   /*!
    * @brief Get a GUIInfoManager integer value.
    * @param value Will be filled with the requested value.
-   * @param item The item to get the value for.
+   * @param item The item to get the value for. Can be nullptr.
+   * @param contextWindow The context window. Can be 0.
    * @param info The GUI info (label id + additional data).
    * @return True if the value was filled successfully, false otherwise.
    */
-  virtual bool GetInt(int& value, const CGUIListItem *item, const GUIInfo &info) const = 0;
+  virtual bool GetInt(int& value, const CGUIListItem *item, int contextWindow, const GUIInfo &info) const = 0;
 
   /*!
    * @brief Get a GUIInfoManager bool value.
    * @param value Will be filled with the requested value.
-   * @param item The item to get the value for.
+   * @param item The item to get the value for. Can be nullptr.
+   * @param contextWindow The context window. Can be 0.
    * @param info The GUI info (label id + additional data).
    * @return True if the value was filled successfully, false otherwise.
    */
-  virtual bool GetBool(bool& value, const CGUIListItem *item, const GUIInfo &info) const = 0;
+  virtual bool GetBool(bool& value, const CGUIListItem *item, int contextWindow, const GUIInfo &info) const = 0;
 
   /*!
    * @brief Set new audio/video stream info data.

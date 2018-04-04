@@ -126,9 +126,9 @@ public:
   void SetPreviousWindow(int windowID) { m_prevWindowID = windowID; };
 
   void ResetCache();
-  bool GetItemInt(int &value, const CGUIListItem *item, int info) const;
-  std::string GetItemLabel(const CFileItem *item, int info, std::string *fallback = nullptr) const;
-  std::string GetItemImage(const CFileItem *item, int info, std::string *fallback = nullptr) const;
+  bool GetItemInt(int &value, const CGUIListItem *item, int contextWindow, int info) const;
+  std::string GetItemLabel(const CFileItem *item, int contextWindow, int info, std::string *fallback = nullptr) const;
+  std::string GetItemImage(const CFileItem *item, int contextWindow, int info, std::string *fallback = nullptr) const;
 
   /*! \brief containers call here to specify that the focus is changing
    \param id control id
@@ -200,9 +200,9 @@ protected:
   int TranslateListItem(const Property& cat, const Property& prop, int id = 0);
   int TranslateMusicPlayerString(const std::string &info) const;
   static TIME_FORMAT TranslateTimeFormat(const std::string &format);
-  bool GetItemBool(const CGUIListItem *item, int condition) const;
-  std::string GetMultiInfoItemImage(const CFileItem *item, const GUIINFO::GUIInfo &info, std::string *fallback = nullptr) const;
-  std::string GetMultiInfoItemLabel(const CFileItem *item, const GUIINFO::GUIInfo &info, std::string *fallback = nullptr) const;
+  bool GetItemBool(const CGUIListItem *item, int contextWindow, int condition) const;
+  std::string GetMultiInfoItemImage(const CFileItem *item, int contextWindow, const GUIINFO::GUIInfo &info, std::string *fallback = nullptr) const;
+  std::string GetMultiInfoItemLabel(const CFileItem *item, int contextWindow, const GUIINFO::GUIInfo &info, std::string *fallback = nullptr) const;
 
   /*! \brief Split an info string into it's constituent parts and parameters
    Format is:

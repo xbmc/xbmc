@@ -91,7 +91,7 @@ bool CVideoGUIInfo::InitCurrentItem(CFileItem *item)
   return false;
 }
 
-bool CVideoGUIInfo::GetLabel(std::string& value, const CFileItem *item, const GUIInfo &info, std::string *fallback) const
+bool CVideoGUIInfo::GetLabel(std::string& value, const CFileItem *item, int contextWindow, const GUIInfo &info, std::string *fallback) const
 {
   const CVideoInfoTag* tag = item->GetVideoInfoTag();
   if (tag)
@@ -593,7 +593,7 @@ bool CVideoGUIInfo::GetLabel(std::string& value, const CFileItem *item, const GU
   return false;
 }
 
-bool CVideoGUIInfo::GetInt(int& value, const CGUIListItem *gitem, const GUIInfo &info) const
+bool CVideoGUIInfo::GetInt(int& value, const CGUIListItem *gitem, int contextWindow, const GUIInfo &info) const
 {
   if (!gitem->IsFileItem())
     return false;
@@ -616,7 +616,7 @@ bool CVideoGUIInfo::GetInt(int& value, const CGUIListItem *gitem, const GUIInfo 
   return false;
 }
 
-bool CVideoGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, const GUIInfo &info) const
+bool CVideoGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contextWindow, const GUIInfo &info) const
 {
   if (!gitem->IsFileItem())
     return false;

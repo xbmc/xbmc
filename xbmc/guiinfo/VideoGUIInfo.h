@@ -36,9 +36,9 @@ public:
 
   // GUIINFO::IGUIInfoProvider implementation
   bool InitCurrentItem(CFileItem *item) override;
-  bool GetLabel(std::string& value, const CFileItem *item, const GUIInfo &info, std::string *fallback) const override;
-  bool GetInt(int& value, const CGUIListItem *item, const GUIInfo &info) const override;
-  bool GetBool(bool& value, const CGUIListItem *item, const GUIInfo &info) const override;
+  bool GetLabel(std::string& value, const CFileItem *item, int contextWindow, const GUIInfo &info, std::string *fallback) const override;
+  bool GetInt(int& value, const CGUIListItem *item, int contextWindow, const GUIInfo &info) const override;
+  bool GetBool(bool& value, const CGUIListItem *item, int contextWindow, const GUIInfo &info) const override;
 
 private:
   int GetPercentPlayed(const CVideoInfoTag* tag) const;

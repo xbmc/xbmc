@@ -83,7 +83,7 @@ bool CMusicGUIInfo::InitCurrentItem(CFileItem *item)
   return false;
 }
 
-bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, const GUIInfo &info, std::string *fallback) const
+bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, int contextWindow, const GUIInfo &info, std::string *fallback) const
 {
   if (info.GetData1() && info.m_info >= MUSICPLAYER_TITLE && info.m_info <= MUSICPLAYER_ALBUM_ARTIST)
     return GetPlaylistInfo(value, info);
@@ -500,12 +500,12 @@ bool CMusicGUIInfo::GetPlaylistInfo(std::string& value, const GUIInfo &info) con
   return GetLabel(value, playlistItem.get(), 0, CGUIInfo(info.m_info), nullptr);
 }
 
-bool CMusicGUIInfo::GetInt(int& value, const CGUIListItem *gitem, const GUIInfo &info) const
+bool CMusicGUIInfo::GetInt(int& value, const CGUIListItem *gitem, int contextWindow, const GUIInfo &info) const
 {
   return false;
 }
 
-bool CMusicGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, const GUIInfo &info) const
+bool CMusicGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contextWindow, const GUIInfo &info) const
 {
   switch (info.m_info)
   {
