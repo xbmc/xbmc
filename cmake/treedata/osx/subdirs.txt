@@ -1,11 +1,11 @@
 xbmc/platform/posix                   posix
 xbmc/platform/linux                   platform/linux
 xbmc/platform/linux/network           platform/linux/network
-xbmc/powermanagement/osx              powermanagement/osx
 xbmc/platform/darwin                  platform/darwin
 xbmc/platform/darwin/osx              platform/osx
 xbmc/platform/darwin/osx/network      platform/osx/network
 xbmc/platform/darwin/osx/peripherals  platform/osx/peripherals
+xbmc/platform/darwin/osx/powermanagement platform/darwin/osx/powermanagement
 xbmc/platform/darwin/osx/storage      platform/osx/storage
 xbmc/filesystem/posix                 filesystem/posix
 xbmc/utils/posix                      utils/posix
