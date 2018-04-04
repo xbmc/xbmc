@@ -30,7 +30,7 @@
 #include "SpecialProtocol.h"
 #include "URL.h"
 #if defined(TARGET_POSIX)
-#include "posix/PosixFile.h"
+#include "platform/posix/filesystem/PosixFile.h"
 #define CacheLocalFile CPosixFile
 #elif defined(TARGET_WINDOWS)
 #include "platform/win32/filesystem/Win32File.h"

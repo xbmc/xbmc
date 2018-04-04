@@ -1,4 +1,5 @@
 xbmc/platform/posix                 platform/posix
+xbmc/platform/posix/filesystem      platform/posix/filesystem
 xbmc/platform/posix/utils           platform/posix/utils
 xbmc/platform/linux                 platform/linux
 xbmc/platform/linux/input           platform/linux/input
@@ -8,5 +9,4 @@ xbmc/platform/linux/powermanagement platform/linux/powermanagement
 xbmc/platform/linux/storage         platform/linux/storage
 xbmc/input/touch                    input/touch
 xbmc/input/touch/generic            input/touch/generic
-xbmc/filesystem/posix               filesystem/posix
 xbmc/freebsd                        freebsdsupport

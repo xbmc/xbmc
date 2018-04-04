@@ -1,9 +1,9 @@
 xbmc/cores/RetroPlayer/process/android  cores/RetroPlayer/process/android
 xbmc/input/touch                        input/touch
 xbmc/input/touch/generic                input/touch/generic
-xbmc/filesystem/posix                   filesystem/posix
 xbmc/windowing/android                  windowing/android
 xbmc/platform/posix                     platform/posix
+xbmc/platform/posix/filesystem          platform/posix/filesystem
 xbmc/platform/posix/utils               platform/posix/utils
 xbmc/platform/linux                     platform/linux
 xbmc/platform/linux/network             platform/linux/network

@@ -4,4 +4,4 @@ set(SOURCES PosixDirectory.cpp
 set(HEADERS PosixDirectory.h
             PosixFile.h)
 
-core_add_library(filesystem_posix)
+core_add_library(platform_posix_filesystem)

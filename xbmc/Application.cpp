@@ -187,7 +187,7 @@
 #ifdef TARGET_POSIX
 #include "XHandle.h"
 #include "XTimeUtils.h"
-#include "filesystem/posix/PosixDirectory.h"
+#include "platform/posix/filesystem/PosixDirectory.h"
 #endif
 
 #if defined(TARGET_ANDROID)

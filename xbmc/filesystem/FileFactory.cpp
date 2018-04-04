@@ -21,7 +21,7 @@
 #include "network/Network.h"
 #include "FileFactory.h"
 #ifdef TARGET_POSIX
-#include "posix/PosixFile.h"
+#include "platform/posix/filesystem/PosixFile.h"
 #elif defined(TARGET_WINDOWS)
 #include "platform/win32/filesystem/Win32File.h"
 #ifdef TARGET_WINDOWS_STORE

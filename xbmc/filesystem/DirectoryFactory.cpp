@@ -42,7 +42,7 @@
 #include "network/WakeOnAccess.h"
 
 #ifdef TARGET_POSIX
-#include "posix/PosixDirectory.h"
+#include "platform/posix/filesystem/PosixDirectory.h"
 #elif defined(TARGET_WINDOWS)
 #include "platform/win32/filesystem/Win32Directory.h"
 #ifdef TARGET_WINDOWS_STORE
