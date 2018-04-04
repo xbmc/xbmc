@@ -1052,6 +1052,7 @@ void CLinuxInputDevice::GetInfo(int fd)
 
     m_deviceMinKeyCode = 0;
     m_deviceMaxKeyCode = 127;
+    m_devicePreferredId = LI_DEVICE_KEYBOARD;
   }
   else
     m_devicePreferredId = LI_DEVICE_NONE;
