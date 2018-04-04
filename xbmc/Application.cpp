@@ -106,7 +106,7 @@
 #include "filesystem/UPnPDirectory.h"
 #endif
 #if defined(TARGET_POSIX) && defined(HAS_FILESYSTEM_SMB)
-#include "filesystem/SMBDirectory.h"
+#include "platform/posix/filesystem/SMBDirectory.h"
 #endif
 #ifdef HAS_FILESYSTEM_NFS
 #include "filesystem/NFSFile.h"

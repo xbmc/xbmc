@@ -133,13 +133,6 @@ set(HEADERS AddonsDirectory.h
             ZipFile.h
             ZipManager.h)
 
-if(NOT CORE_SYSTEM_NAME STREQUAL windows AND NOT CORE_SYSTEM_NAME STREQUAL windowsstore AND SMBCLIENT_FOUND)
-  list(APPEND SOURCES SMBDirectory.cpp
-                      SMBFile.cpp)
-  list(APPEND HEADERS SMBDirectory.h
-                      SMBFile.h)
-endif()
-
 if(BLURAY_FOUND)
   list(APPEND SOURCES BlurayDirectory.cpp
                       BlurayFile.cpp)

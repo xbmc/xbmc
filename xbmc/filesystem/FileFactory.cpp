@@ -35,7 +35,7 @@
 #ifdef TARGET_WINDOWS
 #include "platform/win32/filesystem/Win32SMBFile.h"
 #else
-#include "SMBFile.h"
+#include "platform/posix/filesystem/SMBFile.h"
 #endif
 #endif
 #include "CDDAFile.h"

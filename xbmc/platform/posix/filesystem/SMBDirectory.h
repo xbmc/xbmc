@@ -19,7 +19,7 @@
  *
  */
 
-#include "IDirectory.h"
+#include "filesystem/IDirectory.h"
 #include "SMBFile.h"
 #include "MediaSource.h"
 

@@ -53,7 +53,7 @@
 #ifdef TARGET_WINDOWS
 #include "platform/win32/filesystem/Win32SMBDirectory.h"
 #else
-#include "SMBDirectory.h"
+#include "platform/posix/filesystem/SMBDirectory.h"
 #endif
 #endif
 #include "CDDADirectory.h"
