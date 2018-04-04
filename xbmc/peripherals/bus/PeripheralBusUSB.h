@@ -36,5 +36,5 @@
 #include "platform/linux/peripherals/PeripheralBusUSBLibUSB.h"
 #elif defined(TARGET_DARWIN)
 #define HAVE_PERIPHERAL_BUS_USB 1
-#include "osx/PeripheralBusUSB.h"
+#include "platform/darwin/osx/peripherals/PeripheralBusUSB.h"
 #endif
