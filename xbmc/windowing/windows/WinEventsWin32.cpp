@@ -37,12 +37,13 @@
 #include "messaging/ApplicationMessenger.h"
 #include "network/Zeroconf.h"
 #include "network/ZeroconfBrowser.h"
+#include "platform/win32/CharsetConverter.h"
+#include "platform/win32/powermanagement/Win32PowerSyscall.h"
+#include "platform/win32/storage/Win32StorageProvider.h"
 #include "platform/win32/WIN32Util.h"
 #include "peripherals/Peripherals.h"
-#include "powermanagement/windows/Win32PowerSyscall.h"
 #include "ServiceBroker.h"
 #include "storage/MediaManager.h"
-#include "platform/win32/storage/Win32StorageProvider.h"
 #include "Util.h"
 #include "utils/JobManager.h"
 #include "utils/log.h"
@@ -50,7 +51,6 @@
 #include "rendering/dx/RenderContext.h"
 #include "WinKeyMap.h"
 #include "WinEventsWin32.h"
-#include "platform/win32/CharsetConverter.h"
 
 #ifdef TARGET_WINDOWS
 
