@@ -9,7 +9,6 @@
 			<width>1520</width>
 			<include>Animation_DialogPopupVisible</include>
 			<visible>!Window.IsVisible(sliderdialog)</visible>
-			<visible>![Window.IsActive(osdaudiodspsettings) + Window.Is(osdaudiosettings)]</visible>
 			<include content="DialogBackgroundCommons">
 				<param name="width" value="1520" />
 				<param name="height" value="870" />
