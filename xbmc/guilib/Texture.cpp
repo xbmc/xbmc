@@ -33,7 +33,7 @@
 #endif
 #if defined(TARGET_ANDROID)
 #include "URL.h"
-#include "filesystem/AndroidAppFile.h"
+#include "platform/android/filesystem/AndroidAppFile.h"
 #endif
 #ifdef TARGET_POSIX
 #include "platform/linux/XMemUtils.h"

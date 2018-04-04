@@ -20,7 +20,7 @@
  */
 
 #if defined(TARGET_ANDROID)
-#include "IFile.h"
+#include "filesystem/IFile.h"
 #include "URL.h"
 #include "string.h"
 

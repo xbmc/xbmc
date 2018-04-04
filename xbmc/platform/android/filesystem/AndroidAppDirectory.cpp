@@ -22,7 +22,7 @@
 #include "AndroidAppDirectory.h"
 #include "platform/android/activity/XBMCApp.h"
 #include "FileItem.h"
-#include "File.h"
+#include "filesystem/File.h"
 #include "utils/URIUtils.h"
 #include <vector>
 #include "utils/log.h"

@@ -23,7 +23,7 @@
 #include "UDFDirectory.h"
 #include "RSSDirectory.h"
 #if defined(TARGET_ANDROID)
-#include "APKDirectory.h"
+#include "platform/android/filesystem/APKDirectory.h"
 #endif
 #include "XbtDirectory.h"
 #include "ZipDirectory.h"

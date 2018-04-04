@@ -64,7 +64,7 @@
 #endif
 #include "PVRDirectory.h"
 #if defined(TARGET_ANDROID)
-#include "APKDirectory.h"
+#include "platform/android/filesystem/APKDirectory.h"
 #endif
 #include "XbtDirectory.h"
 #include "ZipDirectory.h"
@@ -84,7 +84,7 @@
 #include "BlurayDirectory.h"
 #endif
 #if defined(TARGET_ANDROID)
-#include "AndroidAppDirectory.h"
+#include "platform/android/filesystem/AndroidAppDirectory.h"
 #endif
 #include "ResourceDirectory.h"
 #include "ServiceBroker.h"

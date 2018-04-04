@@ -133,17 +133,6 @@ set(HEADERS AddonsDirectory.h
             ZipFile.h
             ZipManager.h)
 
-if(CORE_SYSTEM_NAME STREQUAL android)
-  list(APPEND SOURCES APKDirectory.cpp
-                      APKFile.cpp
-                      AndroidAppDirectory.cpp
-                      AndroidAppFile.cpp)
-  list(APPEND HEADERS APKDirectory.h
-                      APKFile.h
-                      AndroidAppDirectory.h
-                      AndroidAppFile.h)
-endif()
-
 if(NOT CORE_SYSTEM_NAME STREQUAL windows AND NOT CORE_SYSTEM_NAME STREQUAL windowsstore AND SMBCLIENT_FOUND)
   list(APPEND SOURCES SMBDirectory.cpp
                       SMBFile.cpp)

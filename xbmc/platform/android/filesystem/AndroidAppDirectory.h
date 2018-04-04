@@ -1,4 +1,3 @@
-#pragma once
 /*
  *      Copyright (C) 2012-2013 Team XBMC
  *      http://kodi.tv
@@ -19,18 +18,24 @@
  *
  */
 
-#include "IFileDirectory.h"
-
+#pragma once
+#if defined(TARGET_ANDROID)
+#include "filesystem/IDirectory.h"
+#include "FileItem.h"
 namespace XFILE
 {
-  class CAPKDirectory : public IFileDirectory
-  {
-    public:
-    CAPKDirectory() {};
-    virtual ~CAPKDirectory() {};
-    virtual bool GetDirectory(const CURL& url, CFileItemList &items);
-    virtual bool ContainsFiles(const CURL& url);
-    virtual DIR_CACHE_TYPE GetCacheType(const CURL& url) const;
-    virtual bool Exists(const CURL& url);
-  };
+
+class CAndroidAppDirectory :
+      public IDirectory
+{
+public:
+  CAndroidAppDirectory(void);
+  virtual ~CAndroidAppDirectory(void);
+  virtual bool GetDirectory(const CURL& url, CFileItemList &items) override;
+  virtual bool Exists(const CURL& url) override { return true; };
+  virtual bool AllowAll() const override { return true; };
+  virtual DIR_CACHE_TYPE GetCacheType(const CURL& url) const override { return DIR_CACHE_NEVER; }
+};
 }
+#endif
+

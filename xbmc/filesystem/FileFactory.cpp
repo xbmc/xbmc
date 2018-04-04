@@ -41,7 +41,7 @@
 #include "CDDAFile.h"
 #include "ISOFile.h"
 #if defined(TARGET_ANDROID)
-#include "APKFile.h"
+#include "platform/android/filesystem/APKFile.h"
 #endif
 #include "XbtFile.h"
 #include "ZipFile.h"
@@ -52,7 +52,7 @@
 #include "NFSFile.h"
 #endif
 #if defined(TARGET_ANDROID)
-#include "AndroidAppFile.h"
+#include "platform/android/filesystem/AndroidAppFile.h"
 #endif
 #ifdef HAS_UPNP
 #include "UPnPFile.h"
