@@ -696,7 +696,7 @@ bool CAddonsDirectory::GetDirectory(const CURL& url, CFileItemList &items)
     DependencyAddons(path, items);
     return true;
   }
-  // PVR & adsp hardcodes this view so keep for compatibility
+  // PVR hardcodes this view so keep for compatibility
   else if (endpoint == "disabled")
   {
     VECADDONS addons;

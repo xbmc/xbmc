@@ -69,7 +69,6 @@ protected:
   float m_volume;
   int m_audioStream;
   bool m_passthrough;
-  bool m_dspEnabled;
 
   typedef std::vector<int> Features;
   Features m_audioCaps;

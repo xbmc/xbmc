@@ -21,7 +21,6 @@ compiler:
 
 env:
   - BUILD=Kodi TOOLS=CMake
-#  - ADDONS=adsp
 #  - ADDONS=audiodecoder
 #  - ADDONS=audioencoder
 #  - ADDONS=pvr
@@ -31,7 +30,6 @@ env:
 matrix:
   fast_finish: true
   allow_failures:
-#    - env: ADDONS=adsp
 #    - env: ADDONS=audiodecoder
 #    - env: ADDONS=audioencoder
 #    - env: ADDONS=pvr
@@ -96,7 +94,7 @@ before_script:
   - if [[ "$TRAVIS_OS_NAME" == "linux" && "$BUILD" == "Kodi" && "$CXX" == "clang++" ]]; then
       cmake -DCMAKE_CXX_FLAGS="-Qunused-arguments" ..;
     fi
-  - if [[ "$BUILD" != "Kodi" ]] && [[ "$ADDONS" == "adsp" || "$ADDONS" == "audiodecoder" || "$ADDONS" == "audioencoder" ||
+  - if [[ "$BUILD" != "Kodi" ]] && [[ "$ADDONS" == "audiodecoder" || "$ADDONS" == "audioencoder" ||
           "$ADDONS" == "pvr" || "$ADDONS" == "screensaver" || "$ADDONS" == "visualization" ]]; then
       cd $TRAVIS_BUILD_DIR/cmake/addons &&
       mkdir -p build &&
@@ -112,7 +110,7 @@ script:
       make -j4 &&
       make check;
     fi
-  - if [[ "$BUILD" != "Kodi" ]] && [[ "$ADDONS" == "adsp" || "$ADDONS" == "audiodecoder" || "$ADDONS" == "audioencoder" ||
+  - if [[ "$BUILD" != "Kodi" ]] && [[ "$ADDONS" == "audiodecoder" || "$ADDONS" == "audioencoder" ||
           "$ADDONS" == "pvr" || "$ADDONS" == "screensaver" || "$ADDONS" == "visualization" ]]; then
       cd $TRAVIS_BUILD_DIR/ &&
       mkdir -p build &&

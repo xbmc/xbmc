@@ -56,13 +56,11 @@
 #define SETTING_AUDIO_DELAY                    "audio.delay"
 #define SETTING_AUDIO_STREAM                   "audio.stream"
 #define SETTING_AUDIO_PASSTHROUGH              "audio.digitalanalog"
-#define SETTING_AUDIO_DSP                      "audio.dsp"
 #define SETTING_AUDIO_MAKE_DEFAULT             "audio.makedefault"
 
 CGUIDialogAudioSettings::CGUIDialogAudioSettings()
   : CGUIDialogSettingsManualBase(WINDOW_DIALOG_AUDIO_OSD_SETTINGS, "DialogSettings.xml"),
-    m_passthrough(false),
-    m_dspEnabled(false)
+    m_passthrough(false)
 { }
 
 CGUIDialogAudioSettings::~CGUIDialogAudioSettings() = default;
@@ -154,11 +152,7 @@ void CGUIDialogAudioSettings::OnSettingAction(std::shared_ptr<const CSetting> se
   CGUIDialogSettingsManualBase::OnSettingAction(setting);
   
   const std::string &settingId = setting->GetId();
-  if (settingId == SETTING_AUDIO_DSP)
-  {
-    CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_DIALOG_AUDIO_DSP_OSD_SETTINGS);
-  }
-  else if (settingId == SETTING_AUDIO_MAKE_DEFAULT)
+  if (settingId == SETTING_AUDIO_MAKE_DEFAULT)
     Save();
 }
 
@@ -247,8 +241,6 @@ void CGUIDialogAudioSettings::InitializeSettings()
   SettingDependencies depsAudioOutputPassthroughDisabled;
   depsAudioOutputPassthroughDisabled.push_back(dependencyAudioOutputPassthroughDisabled);
 
-  m_dspEnabled = CServiceBroker::GetSettings().GetBool(CSettings::SETTING_AUDIOOUTPUT_DSPADDONSENABLED);
-
   // audio settings
   // audio volume setting
   m_volume = g_application.GetVolume(false);
@@ -256,18 +248,15 @@ void CGUIDialogAudioSettings::InitializeSettings()
   settingAudioVolume->SetDependencies(depsAudioOutputPassthroughDisabled);
   std::static_pointer_cast<CSettingControlSlider>(settingAudioVolume->GetControl())->SetFormatter(SettingFormatterPercentAsDecibel);
 
-  if (m_dspEnabled)
-    AddButton(groupAudio, SETTING_AUDIO_DSP, 24136, SettingLevel::Basic);
-
   // audio volume amplification setting
-  if (SupportsAudioFeature(IPC_AUD_AMP) && !m_dspEnabled)
+  if (SupportsAudioFeature(IPC_AUD_AMP))
   {
     std::shared_ptr<CSettingNumber> settingAudioVolumeAmplification = AddSlider(groupAudio, SETTING_AUDIO_VOLUME_AMPLIFICATION, 660, SettingLevel::Basic, videoSettings.m_VolumeAmplification, 14054, VOLUME_DRC_MINIMUM * 0.01f, (VOLUME_DRC_MAXIMUM - VOLUME_DRC_MINIMUM) / 6000.0f, VOLUME_DRC_MAXIMUM * 0.01f);
     settingAudioVolumeAmplification->SetDependencies(depsAudioOutputPassthroughDisabled);
   }
 
   // audio delay setting
-  if (SupportsAudioFeature(IPC_AUD_OFFSET) && !m_dspEnabled)
+  if (SupportsAudioFeature(IPC_AUD_OFFSET))
   {
     std::shared_ptr<CSettingNumber> settingAudioDelay = AddSlider(groupAudio, SETTING_AUDIO_DELAY, 297, SettingLevel::Basic, videoSettings.m_AudioDelay, 0, -g_advancedSettings.m_videoAudioDelayRange, 0.025f, g_advancedSettings.m_videoAudioDelayRange, 297, usePopup);
     std::static_pointer_cast<CSettingControlSlider>(settingAudioDelay->GetControl())->SetFormatter(SettingFormatterDelay);

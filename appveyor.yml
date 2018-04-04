@@ -6,7 +6,6 @@ environment:
   CONFIG: Release
   matrix:
     - BUILD: Kodi
-    # - ADDONS: adsp
     # - ADDONS: audiodecoder
     # - ADDONS: audioencoder
     # - ADDONS: pvr

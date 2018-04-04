@@ -101,7 +101,7 @@ above. The example below would use the iOS SDK 9.0:
 
 ### 3.3 Compile Kodi binary addons
 
-Kodi maintains a set of binary addons (PVR clients, Visualizations, Audio DSP
+Kodi maintains a set of binary addons (PVR clients, Visualizations
 plugins and more). They can be built as shown below:
 
     cd $HOME/Kodi

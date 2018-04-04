@@ -168,9 +168,6 @@ You can compile all addons or only specific addons by specifying e.g. ADDONS="au
 .1  Specific addons
     $ make -C tools/depends/target/binary-addons PREFIX=/<system prefix added on step 4.1> ADDONS="audioencoder.flac pvr.vdr.vnsi audiodecoder.snesapu"
 
-ADSP addons:
-    adsp.basic, adsp.biquad.filters, adsp.freesurround
-
 Audio decoders:
     audiodecoder.modplug, audiodecoder.nosefart, audiodecoder.sidplay, audiodecoder.snesapu,
     audiodecoder.stsound, audiodecoder.timidity, audiodecoder.vgmstream
