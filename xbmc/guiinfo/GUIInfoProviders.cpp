@@ -28,6 +28,7 @@ namespace GUIINFO
 
 CGUIInfoProviders::CGUIInfoProviders()
 {
+  RegisterProvider(&m_guiControlsGUIInfo);
   RegisterProvider(&m_musicGUIInfo);
   RegisterProvider(&m_videoGUIInfo);
   RegisterProvider(&m_picturesGUIInfo);
@@ -48,6 +49,7 @@ CGUIInfoProviders::~CGUIInfoProviders()
   UnregisterProvider(&m_picturesGUIInfo);
   UnregisterProvider(&m_videoGUIInfo);
   UnregisterProvider(&m_musicGUIInfo);
+  UnregisterProvider(&m_guiControlsGUIInfo);
 }
 
 void CGUIInfoProviders::RegisterProvider(IGUIInfoProvider *provider)

@@ -1114,7 +1114,7 @@ void CGUIBaseContainer::UpdateAutoScrolling(unsigned int currentTime)
 void CGUIBaseContainer::SetContainerMoving(int direction)
 {
   if (direction)
-    g_infoManager.SetContainerMoving(GetID(), direction > 0, m_scroller.IsScrolling());
+    g_infoManager.GetInfoProviders().GetGUIControlsInfoProvider().SetContainerMoving(GetID(), direction > 0, m_scroller.IsScrolling());
 }
 
 void CGUIBaseContainer::UpdateScrollOffset(unsigned int currentTime)

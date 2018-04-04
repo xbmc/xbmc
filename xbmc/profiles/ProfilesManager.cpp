@@ -283,6 +283,7 @@ bool CProfilesManager::LoadProfile(size_t index)
 
   g_infoManager.ResetCache();
   g_infoManager.ResetLibraryBools();
+  g_infoManager.GetInfoProviders().GetGUIControlsInfoProvider().ResetContainerMovingCache();
 
   if (m_currentProfile != 0)
   {

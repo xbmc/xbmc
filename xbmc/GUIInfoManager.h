@@ -33,8 +33,6 @@
 #include "utils/Observer.h"
 
 class CFileItem;
-class CGUIControl;
-class CGUIWindow;
 class CVideoInfoTag;
 
 namespace GUIINFO
@@ -122,24 +120,10 @@ public:
 
   void UpdateAVInfo();
 
-  void SetNextWindow(int windowID) { m_nextWindowID = windowID; };
-  void SetPreviousWindow(int windowID) { m_prevWindowID = windowID; };
-
   void ResetCache();
   bool GetItemInt(int &value, const CGUIListItem *item, int contextWindow, int info) const;
   std::string GetItemLabel(const CFileItem *item, int contextWindow, int info, std::string *fallback = nullptr) const;
   std::string GetItemImage(const CFileItem *item, int contextWindow, int info, std::string *fallback = nullptr) const;
-
-  /*! \brief containers call here to specify that the focus is changing
-   \param id control id
-   \param next true if we're moving to the next item, false if previous
-   \param scrolling true if the container is scrolling, false if the movement requires no scroll
-   */
-  void SetContainerMoving(int id, bool next, bool scrolling)
-  {
-    // magnitude 2 indicates a scroll, sign indicates direction
-    m_containerMoves[id] = (next ? 1 : -1) * (scrolling ? 2 : 1);
-  }
 
   void SetLibraryBool(int condition, bool value);
   bool GetLibraryBool(int condition);
@@ -174,10 +158,6 @@ protected:
   bool GetBool(int condition, int contextWindow = 0, const CGUIListItem *item=NULL);
   int TranslateSingleString(const std::string &strCondition, bool &listItemDependent);
 
-  // routines for window retrieval
-  bool CheckWindowCondition(CGUIWindow *window, int condition) const;
-  CGUIWindow *GetWindowWithCondition(int contextWindow, int condition) const;
-
   /*! \brief class for holding information on properties
    */
   class Property
@@ -195,7 +175,6 @@ protected:
 
   bool GetMultiInfoBool(const GUIINFO::GUIInfo &info, int contextWindow = 0, const CGUIListItem *item = NULL);
   bool GetMultiInfoInt(int &value, const GUIINFO::GUIInfo &info, int contextWindow = 0) const;
-  CGUIControl * GetActiveContainer(int containerId, int contextWindow) const;
   std::string GetMultiInfoLabel(const GUIINFO::GUIInfo &info, int contextWindow = 0, std::string *fallback = nullptr) const;
   int TranslateListItem(const Property& cat, const Property& prop, int id = 0);
   int TranslateMusicPlayerString(const std::string &info) const;
@@ -223,10 +202,6 @@ protected:
 
   // Current playing stuff
   CFileItem* m_currentFile;
-
-  std::map<int, int> m_containerMoves;  // direction of list moving
-  int m_nextWindowID;
-  int m_prevWindowID;
 
   typedef std::set<INFO::InfoPtr, bool(*)(const INFO::InfoPtr&, const INFO::InfoPtr&)> INFOBOOLTYPE;
   INFOBOOLTYPE m_bools;

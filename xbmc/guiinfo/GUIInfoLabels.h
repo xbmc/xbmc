@@ -285,9 +285,9 @@
 #define CONTAINER_CAN_FILTERADVANCED 343
 #define CONTAINER_FILTERED           344
 
-#define CONTAINER_SCROLL_PREVIOUS   345 // NOTE: These 5 must be kept in this consecutive order
+#define CONTAINER_SCROLL_PREVIOUS   345
 #define CONTAINER_MOVE_PREVIOUS     346
-#define CONTAINER_STATIC            347
+// unused 347
 #define CONTAINER_MOVE_NEXT         348
 #define CONTAINER_SCROLL_NEXT       349
 #define CONTAINER_ISUPDATING        350

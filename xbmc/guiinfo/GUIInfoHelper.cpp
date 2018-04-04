@@ -21,9 +21,14 @@
 #include "GUIInfoHelper.h"
 
 #include "ServiceBroker.h"
+#include "guilib/GUIComponent.h"
+#include "guilib/GUIWindow.h"
+#include "guilib/GUIWindowManager.h"
+#include "guilib/IGUIContainer.h"
 #include "guilib/LocalizeStrings.h"
 #include "playlists/PlayList.h"
 #include "utils/StringUtils.h"
+#include "windows/GUIMediaWindow.h"
 
 #include "guiinfo/GUIInfoLabels.h"
 
@@ -70,6 +75,72 @@ std::string CGUIInfoHelper::GetPlaylistLabel(int item, int playlistid /* = PLAYL
     }
   }
   return std::string();
+}
+
+bool CGUIInfoHelper::CheckWindowCondition(CGUIWindow *window, int condition)
+{
+  // check if it satisfies our condition
+  if (!window)
+    return false;
+  if ((condition & WINDOW_CONDITION_HAS_LIST_ITEMS) && !window->HasListItems())
+    return false;
+  if ((condition & WINDOW_CONDITION_IS_MEDIA_WINDOW) && !window->IsMediaWindow())
+    return false;
+  return true;
+}
+
+CGUIWindow* CGUIInfoHelper::GetWindowWithCondition(int contextWindow, int condition)
+{
+  CGUIWindowManager& windowMgr = CServiceBroker::GetGUI()->GetWindowManager();
+
+  CGUIWindow *window = windowMgr.GetWindow(contextWindow);
+  if (CheckWindowCondition(window, condition))
+    return window;
+
+  // try topmost dialog
+  window = windowMgr.GetWindow(windowMgr.GetTopmostModalDialog());
+  if (CheckWindowCondition(window, condition))
+    return window;
+
+  // try active window
+  window = windowMgr.GetWindow(windowMgr.GetActiveWindow());
+  if (CheckWindowCondition(window, condition))
+    return window;
+
+  return nullptr;
+}
+
+CGUIControl* CGUIInfoHelper::GetActiveContainer(int containerId, int contextWindow)
+{
+  CGUIWindow *window = GetWindowWithCondition(contextWindow, 0);
+  if (!window)
+    return nullptr;
+  if (!containerId) // No container specified, so we lookup the current view container
+  {
+    if (window->IsMediaWindow())
+      containerId = static_cast<CGUIMediaWindow*>(window)->GetViewContainerID();
+    else
+    {
+      auto control = window->GetFocusedControl();
+      if (control && control->IsContainer())
+        return control;
+    }
+  }
+
+  CGUIControl *control = window->GetControl(containerId);
+  if (control && control->IsContainer())
+    return control;
+
+  return nullptr;
+}
+
+CGUIListItemPtr CGUIInfoHelper::GetListItemFromActiveContainer(int containerId, int contextWindow, int offset, unsigned int flag)
+{
+  CGUIControl* activeContainer = GetActiveContainer(containerId, contextWindow);
+  if (activeContainer)
+    return static_cast<IGUIContainer *>(activeContainer)->GetListItem(offset, flag);
+
+  return CGUIListItemPtr();
 }
 
 } // namespace GUIINFO

@@ -19,9 +19,15 @@
  */
 #pragma once
 
+#include <memory>
 #include <string>
 
 #include "PlayListPlayer.h"
+
+class CGUIControl;
+class CGUIWindow;
+class CGUIListItem;
+typedef std::shared_ptr<CGUIListItem> CGUIListItemPtr;
 
 namespace GUIINFO
 {
@@ -30,6 +36,13 @@ class CGUIInfoHelper
 {
 public:
   static std::string GetPlaylistLabel(int item, int playlistid = PLAYLIST_NONE);
+
+  static CGUIWindow* GetWindowWithCondition(int contextWindow, int condition);
+  static CGUIControl* GetActiveContainer(int containerId, int contextWindow);
+  static CGUIListItemPtr GetListItemFromActiveContainer(int containerId, int contextWindow, int offset, unsigned int flag);
+
+private:
+  static bool CheckWindowCondition(CGUIWindow *window, int condition);
 };
 
 } // namespace GUIINFO

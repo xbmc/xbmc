@@ -86,6 +86,7 @@ void CSkinSettings::Reset()
   g_SkinInfo->Reset();
 
   g_infoManager.ResetCache();
+  g_infoManager.GetInfoProviders().GetGUIControlsInfoProvider().ResetContainerMovingCache();
 }
 
 bool CSkinSettings::Load(const TiXmlNode *settings)

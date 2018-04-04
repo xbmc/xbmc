@@ -24,9 +24,6 @@
 #include "LangInfo.h"
 #include "ServiceBroker.h"
 #include "addons/BinaryAddonCache.h"
-#include "dialogs/GUIDialogKeyboardGeneric.h"
-#include "dialogs/GUIDialogNumeric.h"
-#include "dialogs/GUIDialogProgress.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
@@ -246,30 +243,6 @@ bool CSystemGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
     case SYSTEM_FPS:
       value = StringUtils::Format("%02.2f", m_fps);
       return true;
-    case SYSTEM_CURRENT_WINDOW:
-      value = g_localizeStrings.Get(CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindowOrDialog());
-      return true;
-    case SYSTEM_STARTUP_WINDOW:
-      value = StringUtils::Format("%i", CServiceBroker::GetSettings().GetInt(CSettings::SETTING_LOOKANDFEEL_STARTUPWINDOW));
-      return true;
-    case SYSTEM_CURRENT_CONTROL:
-    case SYSTEM_CURRENT_CONTROL_ID:
-    {
-      CGUIWindow *window = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindowOrDialog());
-      if (window)
-      {
-        CGUIControl *control = window->GetFocusedControl();
-        if (control)
-        {
-          if (info.m_info == SYSTEM_CURRENT_CONTROL_ID)
-            value = StringUtils::Format("%i", control->GetID());
-          else if (info.m_info == SYSTEM_CURRENT_CONTROL)
-            value = control->GetDescription();
-          return true;
-        }
-      }
-      break;
-    }
 #ifdef HAS_DVD_DRIVE
     case SYSTEM_DVD_LABEL:
       value = g_mediaManager.GetDiskLabel();
@@ -313,13 +286,6 @@ bool CSystemGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
     case SYSTEM_TEMPERATURE_UNITS:
       value = g_langInfo.GetTemperatureUnitString();
       return true;
-    case SYSTEM_PROGRESS_BAR:
-    {
-      CGUIDialogProgress *bar = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogProgress>(WINDOW_DIALOG_PROGRESS);
-      if (bar && bar->IsDialogRunning())
-        value = StringUtils::Format("%i", bar->GetPercentage());
-      return true;
-    }
     case SYSTEM_FRIENDLY_NAME:
       value = CSysInfo::GetDeviceName();
       return true;
@@ -451,13 +417,6 @@ bool CSystemGUIInfo::GetInt(int& value, const CGUIListItem *gitem, int contextWi
     case SYSTEM_BATTERY_LEVEL:
       value = CServiceBroker::GetPowerManager().BatteryLevel();
       return true;
-    case SYSTEM_PROGRESS_BAR:
-    {
-      CGUIDialogProgress *bar = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogProgress>(WINDOW_DIALOG_PROGRESS);
-      if (bar && bar->IsDialogRunning())
-        value = bar->GetPercentage();
-      return true;
-    }
   }
 
   return false;
@@ -603,27 +562,10 @@ bool CSystemGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
     case SYSTEM_HAS_LOGINSCREEN:
       value = CServiceBroker::GetProfileManager().UsingLoginScreen();
       return true;
-    case SYSTEM_HAS_ACTIVE_MODAL_DIALOG:
-      value = CServiceBroker::GetGUI()->GetWindowManager().HasModalDialog();
-      return true;
-    case SYSTEM_HAS_VISIBLE_MODAL_DIALOG:
-      value = CServiceBroker::GetGUI()->GetWindowManager().HasVisibleModalDialog();
-      return true;
     case SYSTEM_INTERNET_STATE:
     {
       g_sysinfo.GetInfo(info.m_info);
       value = g_sysinfo.HasInternet();
-      return true;
-    }
-    case SYSTEM_HAS_INPUT_HIDDEN:
-    {
-      CGUIDialogNumeric *pNumeric = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogNumeric>(WINDOW_DIALOG_NUMERIC);
-      CGUIDialogKeyboardGeneric *pKeyboard = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogKeyboardGeneric>(WINDOW_DIALOG_KEYBOARD);
-
-      if (pNumeric && pNumeric->IsActive())
-        value = pNumeric->IsInputHidden();
-      else if (pKeyboard && pKeyboard->IsActive())
-        value = pKeyboard->IsInputHidden();
       return true;
     }
     case SYSTEM_IDLE_TIME:

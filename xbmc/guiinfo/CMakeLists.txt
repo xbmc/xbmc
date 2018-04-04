@@ -3,6 +3,7 @@ set(SOURCES GUIInfo.cpp
             GUIInfoProviders.cpp
             AddonsGUIInfo.cpp
             GamesGUIInfo.cpp
+            GUIControlsGUIInfo.cpp
             MusicGUIInfo.cpp
             PicturesGUIInfo.cpp
             PlayerGUIInfo.cpp
@@ -18,6 +19,7 @@ set(HEADERS GUIInfo.h
             IGUIInfoProvider.h
             AddonsGUIInfo.h
             GamesGUIInfo.h
+            GUIControlsGUIInfo.h
             MusicGUIInfo.h
             PicturesGUIInfo.h
             PlayerGUIInfo.h
