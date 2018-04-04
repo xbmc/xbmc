@@ -2,4 +2,4 @@ set(SOURCES PeripheralBusUSB.cpp)
 
 set(HEADERS PeripheralBusUSB.h)
 
-core_add_library(peripherals_bus_win32)
+core_add_library(platform_win32_peripherals)
