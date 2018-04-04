@@ -61,7 +61,6 @@
 			</control>
 			<control type="label" id="1">
 				<description>buffering value</description>
-				<visible>Integer.IsGreater(Player.CacheLevel,0)</visible>
 				<label>$INFO[Player.CacheLevel]</label>
 				<centerleft>50%</centerleft>
 				<centertop>50%</centertop>
