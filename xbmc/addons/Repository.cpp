@@ -56,6 +56,7 @@ using namespace XFILE;
 using namespace ADDON;
 using namespace KODI::MESSAGING;
 using KODI::UTILITY::CDigest;
+using KODI::UTILITY::TypedDigest;
 
 using KODI::MESSAGING::HELPERS::DialogResponse;
 
@@ -73,10 +74,10 @@ CRepository::ResolveResult CRepository::ResolvePathAndHash(const AddonPtr& addon
     return {};
   }
 
-  if (!dirIt->hashes)
+  if (dirIt->hashType == CDigest::Type::INVALID)
   {
     // We have a path, but need no hash
-    return {path, ""};
+    return {path, {}};
   }
 
   // Do not follow mirror redirect, we want the headers of the redirect response
@@ -95,12 +96,12 @@ CRepository::ResolveResult CRepository::ResolvePathAndHash(const AddonPtr& addon
   // (saves one request per addon install)
   std::string location = file.GetRedirectURL();
   // content-* headers are base64, convert to base16
-  std::string hash = StringUtils::ToHexadecimal(Base64::Decode(file.GetHttpHeader().GetValue(std::string("content-") + hashTypeStr)));
+  TypedDigest hash{dirIt->hashType, StringUtils::ToHexadecimal(Base64::Decode(file.GetHttpHeader().GetValue(std::string("content-") + hashTypeStr)))};
 
-  if (hash.empty())
+  if (hash.Empty())
   {
     // Expected hash, but none found -> fall back to old method
-    if (!FetchChecksum(path + "." + hashTypeStr, hash) || hash.empty())
+    if (!FetchChecksum(path + "." + hashTypeStr, hash.value) || hash.Empty())
     {
       CLog::Log(LOGERROR, "Failed to find hash for {} from HTTP header and in separate file", path);
       return {};
@@ -112,9 +113,9 @@ CRepository::ResolveResult CRepository::ResolvePathAndHash(const AddonPtr& addon
     location = path;
   }
 
-  CLog::Log(LOGDEBUG, "Resolved addon path {} to {} hash {}", path, location, hash);
+  CLog::Log(LOGDEBUG, "Resolved addon path {} to {} hash {}", path, location, hash.value);
 
-  return {location, hash, dirIt->hashType};
+  return {location, hash};
 }
 
 CRepository::DirInfo CRepository::ParseDirConfiguration(cp_cfg_element_t* configuration)
@@ -125,7 +126,6 @@ CRepository::DirInfo CRepository::ParseDirConfiguration(cp_cfg_element_t* config
   std::string checksumStr = mgr.GetExtValue(configuration, "checksum@verify");
   if (!checksumStr.empty())
   {
-    dir.verifyChecksum = true;
     dir.checksumType = CDigest::TypeFromString(checksumStr);
   }
   dir.info = mgr.GetExtValue(configuration, "info");
@@ -145,7 +145,6 @@ CRepository::DirInfo CRepository::ParseDirConfiguration(cp_cfg_element_t* config
   }
   if (!hashStr.empty() && hashStr != "false")
   {
-    dir.hashes = true;
     dir.hashType = CDigest::TypeFromString(hashStr);
     if (dir.hashType == CDigest::Type::MD5)
     {
@@ -231,7 +230,7 @@ bool CRepository::FetchIndex(const DirInfo& repo, std::string const& digest, VEC
     return false;
   }
 
-  if (repo.verifyChecksum)
+  if (repo.checksumType != CDigest::Type::INVALID)
   {
     std::string actualDigest = CDigest::Calculate(repo.checksumType, response);
     if (!StringUtils::EqualsNoCase(digest, actualDigest))

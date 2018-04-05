@@ -57,6 +57,7 @@ using namespace ADDON;
 using namespace KODI::MESSAGING;
 
 using KODI::MESSAGING::HELPERS::DialogResponse;
+using KODI::UTILITY::TypedDigest;
 
 struct find_map : public std::binary_function<CAddonInstaller::JobMap::value_type, unsigned int, bool>
 {
@@ -523,14 +524,12 @@ bool CAddonInstallJob::DoWork()
     else
     {
       std::string path{m_addon->Path()};
-      std::string hash;
-      KODI::UTILITY::CDigest::Type hashType;
+      TypedDigest hash;
       if (m_repo)
       {
         CRepository::ResolveResult resolvedAddon = m_repo->ResolvePathAndHash(m_addon);
         path = resolvedAddon.location;
-        hash = resolvedAddon.hash;
-        hashType = resolvedAddon.hashType;
+        hash = resolvedAddon.digest;
         if (path.empty())
         {
           CLog::Log(LOGERROR, "CAddonInstallJob[%s]: failed to resolve addon install source path", m_addon->ID().c_str());
@@ -548,10 +547,10 @@ bool CAddonInstallJob::DoWork()
       }
 
       // check that we don't already have a valid copy
-      if (!hash.empty())
+      if (!hash.Empty())
       {
         std::string hashExisting;
-        if (db.GetPackageHash(m_addon->ID(), package, hashExisting) && hash != hashExisting)
+        if (db.GetPackageHash(m_addon->ID(), package, hashExisting) && hash.value != hashExisting)
         {
           db.RemovePackage(package);
         }
@@ -576,20 +575,20 @@ bool CAddonInstallJob::DoWork()
 
       // at this point we have the package - check that it is valid
       SetText(g_localizeStrings.Get(24077));
-      if (!hash.empty())
+      if (!hash.Empty())
       {
-        std::string actualHash = CUtil::GetFileDigest(package, hashType);
-        if (!StringUtils::EqualsNoCase(actualHash, hash))
+        TypedDigest actualHash{hash.type, CUtil::GetFileDigest(package, hash.type)};
+        if (hash != actualHash)
         {
           CFile::Delete(package);
 
-          CLog::Log(LOGERROR, "CAddonInstallJob[%s]: Hash mismatch after download. Expected %s, was %s",
-              m_addon->ID().c_str(), hash.c_str(), actualHash.c_str());
+          CLog::Log(LOGERROR, "CAddonInstallJob[{}]: Hash mismatch after download. Expected {}, was {}",
+              m_addon->ID(), hash.value, actualHash.value);
           ReportInstallError(m_addon->ID(), URIUtils::GetFileName(package));
           return false;
         }
 
-        db.AddPackage(m_addon->ID(), package, hash);
+        db.AddPackage(m_addon->ID(), package, hash.value);
       }
 
       // check if the archive is valid

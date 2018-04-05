@@ -40,12 +40,10 @@ namespace ADDON
       AddonVersion version{""};
       std::string info;
       std::string checksum;
-      bool verifyChecksum{false};
-      KODI::UTILITY::CDigest::Type checksumType;
+      KODI::UTILITY::CDigest::Type checksumType{KODI::UTILITY::CDigest::Type::INVALID};
       std::string datadir;
       std::string artdir;
-      bool hashes{false};
-      KODI::UTILITY::CDigest::Type hashType;
+      KODI::UTILITY::CDigest::Type hashType{KODI::UTILITY::CDigest::Type::INVALID};
     };
 
     typedef std::vector<DirInfo> DirList;
@@ -72,8 +70,7 @@ namespace ADDON
     struct ResolveResult
     {
       std::string location;
-      std::string hash;
-      KODI::UTILITY::CDigest::Type hashType;
+      KODI::UTILITY::TypedDigest digest;
     };
     ResolveResult ResolvePathAndHash(AddonPtr const& addon) const;
 
