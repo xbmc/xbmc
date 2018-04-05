@@ -1,69 +1,60 @@
-Examples:
+![Kodi Logo](../../docs/resources/banner_slim.png)
 
-#- Darwin
-#----------------------------------------------------------------------------
+# Kodi's Unified Depends Build System
+This builds native tools and library dependencies for platforms that do not provide them. It is used on our continuous integration system, **[jenkins](http://jenkins.kodi.tv/)**. A nice side effect is that it allows us to use the same tools and library versions across all platforms.
 
-OSX (i386):
-    ./configure --host=i386-apple-darwin
+In terms of build system usage, largest percentage is Autotools, followed by CMake and, in rare cases, hand crafted Makefiles. Tools and libraries versions are picked for a reason. If you feel the urge to start bumping them, be prepared for robust testing. Some tools and libraries need patching, most do not.
 
-OSX (x86_64):
-    ./configure --host=x86_64-apple-darwin
+That said, we try to stay fairly current with used versions and send patches upstream whenever possible.
 
-IOS (armv7):
-    ./configure --host=arm-apple-darwin
 
-IOS (arm64):
-    ./configure --host=arm-apple-darwin --with-cpu=arm64
+* **Autotools driven tools and libraries** tend to just work **provided** the author(s) followed proper Autotools format. Execute `./bootstrap`, followed by `./configure --[...]` and you're all set. If `./configure --[...]` gives you problems, try `./autoreconf -vif` before `./configure --[...]`.
+Some authors do silly things and only a `config.site` can correct the errors. Watch for this in the config.site(.in) file(s). It is the only way to handle bad Autotools behaviour.
 
-TVOS:
-    ./configure --host=arm-apple-darwin --with-platform=tvos
+* **CMake driven tools and libraries** also tend to just work. Setup CMake flags correctly and go. On rare cases, you might need to diddle the native CMake setup.
 
-  You can target the same --prefix path, each setup will be done in an isolated directory. The
-  last configure/make you do is the one used for Kodi/Xcode.
+* **Hand crafted Makefiles driven tools and libraries** typically require manual sed tweaks or patching. May give you nightmares.
 
-#- Android (the paths are examples and have to match those of docs/READM.android)
-#----------------------------------------------------------------------------
+## Usage Examples
+Paths below are examples. If you want to build Kodi, follow our **[build guides](../../docs/README.md)**.
+### All platforms
+`./bootstrap`
+### Darwin
+**macOS (i386)**  
+`./configure --host=i386-apple-darwin`
 
-  arm:
-    ./configure --with-tarballs=/opt/xbmc-tarballs --host=arm-linux-androideabi --with-sdk-path=/opt/android-sdk-linux --with-ndk-path=/opt/android-ndk-r16 --with-toolchain=/opt/arm-linux-androideabi-4.9-vanilla/android-21 --prefix=/opt/xbmc-depends
+**macOS (x86_64)**  
+`./configure --host=x86_64-apple-darwin`
 
-  x86:
-    ./configure --with-tarballs=/opt/xbmc-tarballs --host=i686-linux-android --with-sdk-path=/opt/android-sdk-linux --with-ndk-path=/opt/android-ndk-r16 --with-toolchain=/opt/x86-linux-4.9-vanilla/android-21 --prefix=/opt/xbmc-depends
+**iOS (armv7)**  
+`./configure --host=arm-apple-darwin`
 
-#- Linux
-#----------------------------------------------------------------------------
+**iOS (arm64)**  
+`./configure --host=arm-apple-darwin --with-cpu=arm64`
 
-  ARM toolchain (codesourcery/lenaro/etc)
-    ./configure --with-toolchain=/opt/toolchains/my-example-toolchain/  --prefix=/opt/xbmc-deps --host=arm-linux-gnueabi
+**tvOS**  
+`./configure --host=arm-apple-darwin --with-platform=tvos`
 
-  RASPBERRY-PI:
-    ./configure --with-platform=raspberry-pi --host=arm-linux-gnueabihf --prefix=/opt/xbmc-deps --with-tarballs=/opt/xbmc-tarballs --with-toolchain=/opt/rbp-dev/tools/arm-bcm2708/arm-rpi-4.9.3-linux-gnueabihf --with-firmware=/opt/rbp-dev/firmware --build=i686-linux
+**NOTE:** You can target the same `--prefix=` path. Each setup will be done in an isolated directory. The last configure/make you do is the one used for Kodi/Xcode.
+ 
+### Android
+**arm**  
+`./configure --with-tarballs=/opt/xbmc-tarballs --host=arm-linux-androideabi --with-sdk-path=/opt/android-sdk-linux --with-ndk-path=/opt/android-ndk-r16b --with-toolchain=/opt/arm-linux-androideabi-4.9-vanilla/android-21 --prefix=/opt/xbmc-depends`
 
-  Native toolchain
-    ./configure --with-toolchain=/usr --prefix=/opt/xbmc-deps --host=x86_64-linux-gnu
+**aarch64**  
+`./configure --with-tarballs=/opt/xbmc-tarballs --host=aarch64-linux-android-4.9 --with-sdk-path=/opt/android-sdk-linux --with-ndk-path=/opt/android-ndk-r16b --with-toolchain=/opt/aarch64-linux-android-4.9-vanilla/android-21 --prefix=/opt/xbmc-depends`
 
-#----------------------------------------------------------------------------
-#----------------------------------------------------------------------------
-Details:
-  We build a native tools for platforms that do not have the native tools we need. OSX is
-  the largest builder of native tools as there is not much present. No cmake, no autotools, etc.
+**x86**  
+`./configure --with-tarballs=/opt/xbmc-tarballs --host=i686-linux-android --with-sdk-path=/opt/android-sdk-linux --with-ndk-path=/opt/android-ndk-r16b --with-toolchain=/opt/x86-linux-4.9-vanilla/android-21 --prefix=/opt/xbmc-depends`
 
-  Cross compiling is a real pain is the rear :) Generally there are three forms,
-    autotools (configure/make), cmake driven, and hand crafted makefile. In term
-    of usage, 90 percent are autotools, followed by cmake and hand crafted makefiles.
-    Some libs need patching, most do not. Lib versions are picked for a reason, be prepared
-    for robust testing if you go bumping libs. Never commit bumps unless you have also done
-    a complete distclean nuke of EVERYTHING and rebuild from scratch on ALL platforms.
-    Epic fail if this is not tested.
+### Linux
+**ARM (codesourcery/lenaro/etc)**  
+`./configure --with-toolchain=/opt/toolchains/my-example-toolchain/ --prefix=/opt/xbmc-deps --host=arm-linux-gnueabi`
 
-  1) autotool driven tend to be simple PROVIDED the authors followed proper autotool format.
-     Try with $(CONFIGURE) 1st, if problem, try adding $(AUTORECONF) -vif before the
-     $(CONFIGURE). Some are do silly things and only a config.site can correct the errors.
-     So watch for this in the config.site.in. config.site rules and this is the only way
-     to handle bad autotool behavior.
+**Raspberry Pi**  
+`./configure --with-platform=raspberry-pi --host=arm-linux-gnueabihf --prefix=/opt/xbmc-deps --with-tarballs=/opt/xbmc-tarballs --with-toolchain=/opt/rbp-dev/tools/arm-bcm2708/arm-rpi-4.9.3-linux-gnueabihf --with-firmware=/opt/rbp-dev/firmware --build=i686-linux`
 
-  2) cmake driven tend to be simple, setup cmake flags right and go. On rare cases, you might
-     need to diddle the native cmake setup.
+**Native**  
+`./configure --with-toolchain=/usr --prefix=/opt/xbmc-deps --host=x86_64-linux-gnu`
 
-  3) hand crafted Makefiles typically require manual sed tweaks or patching.
-
+Cross compiling is a PITA.
