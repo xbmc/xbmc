@@ -136,7 +136,7 @@ install(FILES ${CMAKE_SOURCE_DIR}/tools/Linux/firewalld-services/kodi-eventserve
 
 # Install docs
 install(FILES ${CMAKE_SOURCE_DIR}/copying.txt
-              ${CMAKE_SOURCE_DIR}/LICENSE.GPL
+              ${CMAKE_SOURCE_DIR}/LICENSE.md
               ${CMAKE_SOURCE_DIR}/version.txt
               ${CMAKE_SOURCE_DIR}/docs/README.Linux.md
         DESTINATION ${docdir}
