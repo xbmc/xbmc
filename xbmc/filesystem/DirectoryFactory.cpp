@@ -148,6 +148,9 @@ IDirectory* CDirectoryFactory::Create(const CURL& url)
 #endif
   if (url.IsProtocol("resource")) return new CResourceDirectory();
   if (url.IsProtocol("events")) return new CEventsDirectory();
+#ifdef TARGET_WINDOWS_STORE
+  if (CWinLibraryDirectory::IsValid(url)) return new CWinLibraryDirectory();
+#endif
 
   bool networkAvailable = CServiceBroker::GetNetwork().IsAvailable();
   if (networkAvailable)
@@ -175,9 +178,6 @@ IDirectory* CDirectoryFactory::Create(const CURL& url)
 #endif
 #ifdef HAS_FILESYSTEM_NFS
     if (url.IsProtocol("nfs")) return new CNFSDirectory();
-#endif
-#ifdef TARGET_WINDOWS_STORE
-    if (CWinLibraryDirectory::IsValid(url)) return new CWinLibraryDirectory();
 #endif
   }
 

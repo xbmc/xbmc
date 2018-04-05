@@ -140,6 +140,9 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
   else if (url.IsProtocol("bluray")) return new CBlurayFile();
 #endif
   else if (url.IsProtocol("resource")) return new CResourceFile();
+#ifdef TARGET_WINDOWS_STORE
+  else if (CWinLibraryFile::IsValid(url)) return new CWinLibraryFile();
+#endif
 
   bool networkAvailable = CServiceBroker::GetNetwork().IsAvailable();
   if (networkAvailable)
@@ -167,9 +170,6 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
 #endif
 #ifdef HAS_UPNP
     else if (url.IsProtocol("upnp")) return new CUPnPFile();
-#endif
-#ifdef TARGET_WINDOWS_STORE
-    else if (CWinLibraryFile::IsValid(url)) return new CWinLibraryFile();
 #endif
   }
 
