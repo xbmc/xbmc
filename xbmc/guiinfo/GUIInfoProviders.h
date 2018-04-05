@@ -25,6 +25,7 @@
 #include "guiinfo/AddonsGUIInfo.h"
 #include "guiinfo/GamesGUIInfo.h"
 #include "guiinfo/GUIControlsGUIInfo.h"
+#include "guiinfo/LibraryGUIInfo.h"
 #include "guiinfo/MusicGUIInfo.h"
 #include "guiinfo/PicturesGUIInfo.h"
 #include "guiinfo/PlayerGUIInfo.h"
@@ -131,12 +132,19 @@ public:
    */
   CGUIControlsGUIInfo& GetGUIControlsInfoProvider() { return m_guiControlsGUIInfo; }
 
+  /*!
+   * @brief Get the library guiinfo provider.
+   * @return The library guiinfo provider.
+   */
+  CLibraryGUIInfo& GetLibraryInfoProvider() { return m_libraryGUIInfo; }
+
 private:
   std::vector<IGUIInfoProvider *> m_providers;
 
   CAddonsGUIInfo m_addonsGUIInfo;
   CGamesGUIInfo m_gamesGUIInfo;
   CGUIControlsGUIInfo m_guiControlsGUIInfo;
+  CLibraryGUIInfo m_libraryGUIInfo;
   CMusicGUIInfo m_musicGUIInfo;
   CPicturesGUIInfo m_picturesGUIInfo;
   CPlayerGUIInfo m_playerGUIInfo;

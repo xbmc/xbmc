@@ -6407,7 +6407,7 @@ bool CMusicDatabase::CommitTransaction()
 {
   if (CDatabase::CommitTransaction())
   { // number of items in the db has likely changed, so reset the infomanager cache
-    g_infoManager.SetLibraryBool(LIBRARY_HAS_MUSIC, GetSongsCount() > 0);
+    g_infoManager.GetInfoProviders().GetLibraryInfoProvider().SetLibraryBool(LIBRARY_HAS_MUSIC, GetSongsCount() > 0);
     return true;
   }
   return false;
@@ -7091,7 +7091,7 @@ void CMusicDatabase::ImportFromXML(const std::string &xmlFile)
     }
     CommitTransaction();
 
-    g_infoManager.ResetLibraryBools();
+    g_infoManager.GetInfoProviders().GetLibraryInfoProvider().ResetLibraryBools();
   }
   catch (...)
   {

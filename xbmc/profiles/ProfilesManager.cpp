@@ -282,8 +282,8 @@ bool CProfilesManager::LoadProfile(size_t index)
   CServiceBroker::GetInputManager().SetMouseEnabled(CServiceBroker::GetSettings().GetBool(CSettings::SETTING_INPUT_ENABLEMOUSE));
 
   g_infoManager.ResetCache();
-  g_infoManager.ResetLibraryBools();
   g_infoManager.GetInfoProviders().GetGUIControlsInfoProvider().ResetContainerMovingCache();
+  g_infoManager.GetInfoProviders().GetLibraryInfoProvider().ResetLibraryBools();
 
   if (m_currentProfile != 0)
   {

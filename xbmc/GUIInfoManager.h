@@ -125,10 +125,6 @@ public:
   std::string GetItemLabel(const CFileItem *item, int contextWindow, int info, std::string *fallback = nullptr) const;
   std::string GetItemImage(const CFileItem *item, int contextWindow, int info, std::string *fallback = nullptr) const;
 
-  void SetLibraryBool(int condition, bool value);
-  bool GetLibraryBool(int condition);
-  void ResetLibraryBools();
-
   int TranslateSingleString(const std::string &strCondition);
 
   int RegisterSkinVariableString(const INFO::CSkinVariableString* info);
@@ -207,18 +203,6 @@ protected:
   INFOBOOLTYPE m_bools;
   unsigned int m_refreshCounter;
   std::vector<INFO::CSkinVariableString> m_skinVariableStrings;
-
-  int m_libraryHasMusic;
-  int m_libraryHasMovies;
-  int m_libraryHasTVShows;
-  int m_libraryHasMusicVideos;
-  int m_libraryHasMovieSets;
-  int m_libraryHasSingles;
-  int m_libraryHasCompilations;
-  
-  //Count of artists in music library contributing to song by role e.g. composers, conductors etc.
-  //For checking visibility of custom nodes for a role.
-  std::vector<std::pair<std::string, int>> m_libraryRoleCounts; 
 
   CCriticalSection m_critInfo;
 

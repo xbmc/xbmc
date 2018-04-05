@@ -49,7 +49,6 @@
 #include "interfaces/AnnouncementManager.h"
 #include "interfaces/info/InfoExpression.h"
 #include "messaging/ApplicationMessenger.h"
-#include "music/MusicDatabase.h"
 #include "music/tags/MusicInfoTag.h"
 #include "settings/Settings.h"
 #include "settings/SkinSettings.h"
@@ -59,7 +58,6 @@
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
-#include "video/VideoDatabase.h"
 #include "video/VideoInfoTag.h"
 
 using namespace ADDON;
@@ -78,7 +76,6 @@ CGUIInfoManager::CGUIInfoManager(void) :
 {
   m_currentFile = new CFileItem;
   m_refreshCounter = 0;
-  ResetLibraryBools();
 }
 
 CGUIInfoManager::~CGUIInfoManager(void)
@@ -6491,10 +6488,6 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
       }
     }
   }
-  else if (condition >= LIBRARY_HAS_MUSIC && condition <= LIBRARY_HAS_COMPILATIONS)
-  {
-    bReturn = GetLibraryBool(condition);
-  }
   else if (condition >= MULTI_INFO_START && condition <= MULTI_INFO_END)
   {
     bReturn = GetMultiInfoBool(m_multiInfo[condition - MULTI_INFO_START], contextWindow, item);
@@ -6506,15 +6499,6 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
 
     switch (condition)
     {
-      case LIBRARY_IS_SCANNING:
-        bReturn = (g_application.IsMusicScanning() || g_application.IsVideoScanning());
-        break;
-      case LIBRARY_IS_SCANNING_VIDEO:
-        bReturn = g_application.IsVideoScanning();
-        break;
-      case LIBRARY_IS_SCANNING_MUSIC:
-        bReturn = g_application.IsMusicScanning();
-        break;
       case VISUALISATION_LOCKED:
         {
           CGUIMessage msg(GUI_MSG_GET_VISUALISATION, 0, 0);
@@ -6680,32 +6664,6 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
             bReturn = label.find(compare) != std::string::npos;
         }
         break;
-      case LIBRARY_HAS_ROLE:
-      {
-        std::string strRole = info.GetData3();
-        // Find value for role if already stored
-        int artistcount = -1;
-        for (const auto &role : m_libraryRoleCounts)
-        {
-          if (StringUtils::EqualsNoCase(strRole, role.first))
-          {
-            artistcount = role.second;
-            break;
-          }
-        }
-        // Otherwise get from DB and store
-        if (artistcount < 0)
-        {
-          CMusicDatabase db;
-          if (db.Open())
-          {
-            artistcount = db.GetArtistCountForRole(strRole);
-            db.Close();
-            m_libraryRoleCounts.emplace_back(std::make_pair(strRole, artistcount));
-          }
-        }
-        bReturn = artistcount > 0;
-      }
     }
   }
   return (info.m_info < 0) ? !bReturn : bReturn;
@@ -7145,150 +7103,6 @@ const CVideoInfoTag* CGUIInfoManager::GetCurrentMovieTag() const
     return m_currentFile->GetVideoInfoTag();
 
   return nullptr;
-}
-
-void CGUIInfoManager::SetLibraryBool(int condition, bool value)
-{
-  switch (condition)
-  {
-    case LIBRARY_HAS_MUSIC:
-      m_libraryHasMusic = value ? 1 : 0;
-      break;
-    case LIBRARY_HAS_MOVIES:
-      m_libraryHasMovies = value ? 1 : 0;
-      break;
-    case LIBRARY_HAS_MOVIE_SETS:
-      m_libraryHasMovieSets = value ? 1 : 0;
-      break;
-    case LIBRARY_HAS_TVSHOWS:
-      m_libraryHasTVShows = value ? 1 : 0;
-      break;
-    case LIBRARY_HAS_MUSICVIDEOS:
-      m_libraryHasMusicVideos = value ? 1 : 0;
-      break;
-    case LIBRARY_HAS_SINGLES:
-      m_libraryHasSingles = value ? 1 : 0;
-      break;
-    case LIBRARY_HAS_COMPILATIONS:
-      m_libraryHasCompilations = value ? 1 : 0;
-      break;
-    default:
-      break;
-  }
-}
-
-void CGUIInfoManager::ResetLibraryBools()
-{
-  m_libraryHasMusic = -1;
-  m_libraryHasMovies = -1;
-  m_libraryHasTVShows = -1;
-  m_libraryHasMusicVideos = -1;
-  m_libraryHasMovieSets = -1;
-  m_libraryHasSingles = -1;
-  m_libraryHasCompilations = -1;
-  m_libraryRoleCounts.clear();
-}
-
-bool CGUIInfoManager::GetLibraryBool(int condition)
-{
-  if (condition == LIBRARY_HAS_MUSIC)
-  {
-    if (m_libraryHasMusic < 0)
-    { // query
-      CMusicDatabase db;
-      if (db.Open())
-      {
-        m_libraryHasMusic = (db.GetSongsCount() > 0) ? 1 : 0;
-        db.Close();
-      }
-    }
-    return m_libraryHasMusic > 0;
-  }
-  else if (condition == LIBRARY_HAS_MOVIES)
-  {
-    if (m_libraryHasMovies < 0)
-    {
-      CVideoDatabase db;
-      if (db.Open())
-      {
-        m_libraryHasMovies = db.HasContent(VIDEODB_CONTENT_MOVIES) ? 1 : 0;
-        db.Close();
-      }
-    }
-    return m_libraryHasMovies > 0;
-  }
-  else if (condition == LIBRARY_HAS_MOVIE_SETS)
-  {
-    if (m_libraryHasMovieSets < 0)
-    {
-      CVideoDatabase db;
-      if (db.Open())
-      {
-        m_libraryHasMovieSets = db.HasSets() ? 1 : 0;
-        db.Close();
-      }
-    }
-    return m_libraryHasMovieSets > 0;
-  }
-  else if (condition == LIBRARY_HAS_TVSHOWS)
-  {
-    if (m_libraryHasTVShows < 0)
-    {
-      CVideoDatabase db;
-      if (db.Open())
-      {
-        m_libraryHasTVShows = db.HasContent(VIDEODB_CONTENT_TVSHOWS) ? 1 : 0;
-        db.Close();
-      }
-    }
-    return m_libraryHasTVShows > 0;
-  }
-  else if (condition == LIBRARY_HAS_MUSICVIDEOS)
-  {
-    if (m_libraryHasMusicVideos < 0)
-    {
-      CVideoDatabase db;
-      if (db.Open())
-      {
-        m_libraryHasMusicVideos = db.HasContent(VIDEODB_CONTENT_MUSICVIDEOS) ? 1 : 0;
-        db.Close();
-      }
-    }
-    return m_libraryHasMusicVideos > 0;
-  }
-  else if (condition == LIBRARY_HAS_SINGLES)
-  {
-    if (m_libraryHasSingles < 0)
-    {
-      CMusicDatabase db;
-      if (db.Open())
-      {
-        m_libraryHasSingles = (db.GetSinglesCount() > 0) ? 1 : 0;
-        db.Close();
-      }
-    }
-    return m_libraryHasSingles > 0;
-  }
-  else if (condition == LIBRARY_HAS_COMPILATIONS)
-  {
-    if (m_libraryHasCompilations < 0)
-    {
-      CMusicDatabase db;
-      if (db.Open())
-      {
-        m_libraryHasCompilations = (db.GetCompilationAlbumsCount() > 0) ? 1 : 0;
-        db.Close();
-      }
-    }
-    return m_libraryHasCompilations > 0;
-  }
-  else if (condition == LIBRARY_HAS_VIDEO)
-  {
-    return (GetLibraryBool(LIBRARY_HAS_MOVIES) ||
-            GetLibraryBool(LIBRARY_HAS_TVSHOWS) ||
-            GetLibraryBool(LIBRARY_HAS_MUSICVIDEOS));
-  }
-  return false;
 }
 
 int CGUIInfoManager::RegisterSkinVariableString(const CSkinVariableString* info)
