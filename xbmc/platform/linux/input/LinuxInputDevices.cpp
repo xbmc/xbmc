@@ -1031,7 +1031,7 @@ void CLinuxInputDevice::GetInfo(int fd)
   }
 
   /* if no better fit and have at least 1 key */
-   if ((m_deviceType == LI_DEVICE_NONE) && (num_keys >= 1))
+   if (m_deviceType == LI_DEVICE_NONE && num_keys >= 1)
   {
     m_deviceType |= LI_DEVICE_KEYBOARD;
     m_deviceCaps |= LI_CAPS_KEYS;
