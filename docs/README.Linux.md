@@ -1,279 +1,283 @@
-TOC
-1. Introduction
-2. Getting the source code
-3. Installing the required libraries and headers
-4. How to compile
-   4.4 Binary addons
-   4.5 Test suite
-5. How to run
-6. Uninstalling
-
------------------------------------------------------------------------------
-1. Introduction
------------------------------------------------------------------------------
-
-A graphics-adapter with OpenGL acceleration is highly recommended.
-24/32 bitdepth is required along with OpenGL.
-
-Note to new Linux users:
-All lines that are prefixed with the '$' character are commands,
-that need to be typed into a terminal window / console. The '$' equals the prompt.
-Note: The '$' character itself should NOT be typed as part of the command.
-
------------------------------------------------------------------------------
-2. Getting the source code
------------------------------------------------------------------------------
-
-You will have to grab the source code of course, here we use git as example.
-First install the git package provided by your distribution.
-Then from a terminal, type:
-
-.0  $ cd $HOME
-.1  $ git clone git://github.com/xbmc/xbmc.git kodi
-
-Note: You can clone any specific branch.
-
-.1  $ git clone -b <branch> git://github.com/xbmc/xbmc.git kodi
-
------------------------------------------------------------------------------
-3. Installing the required libraries and headers
------------------------------------------------------------------------------
-
-You will then need the required libraries. The following is the list of packages
-that are used to build Kodi packages on Debian/Ubuntu (with all supported
-external libraries enabled).
-
-Build-Depends: autoconf, automake, autopoint, autotools-dev, cmake, curl,
-  default-jre, gawk, gperf, libao-dev, libasound2-dev,
-  libass-dev (>= 0.9.8), libavahi-client-dev, libavahi-common-dev, libbluetooth-dev,
-  libbluray-dev (>= 0.9.3), libbz2-dev, libcap-dev,
-  libcdio-dev, libcec-dev, libcurl4-openssl-dev | libcurl4-gnutls-dev | libcurl-dev,
-  libcwiid-dev, libdbus-1-dev, libegl1-mesa-dev, libfmt3-dev, libfontconfig-dev, libfreetype6-dev,
-  libfribidi-dev, libgif-dev (>= 4.1.6), libgl1-mesa-dev | libgl-dev, libglu1-mesa-dev | libglu-dev,
-  libiso9660-dev, libjpeg-dev, libltdl-dev, liblzo2-dev, libmicrohttpd-dev,
-  libmpcdec-dev, libmysqlclient-dev, libnfs-dev,
-  libpcre3-dev, libplist-dev, libpng12-dev | libpng-dev, libpulse-dev,
-  libshairplay-dev, libsmbclient-dev, libsqlite3-dev, libssl-dev, libswscale-dev,
-  libtag1-dev (>= 1.8), libtinyxml-dev (>= 2.6.2), libtool, libudev-dev,
-  libusb-dev, libva-dev, libvdpau-dev, libxml2-dev,
-  libxmu-dev, libxrandr-dev, libxslt1-dev, libxt-dev, lsb-release, rapidjson-dev,
-  nasm [!amd64], python-dev, python-imaging, python-support, swig, uuid-dev, yasm, zlib1g-dev,
-  liblirc-dev
-
-If you want to build with Wayland instead of X11, you will need:
-  wayland-protocols (>= 1.7), libwaylandpp-dev
-
-[NOTICE] crossguid / libcrossguid-dev all Linux distributions.
-Kodi now requires crossguid which is not available in Ubuntu repositories at this time.
-We supply a Makefile in tools/depends/target/crossguid
-to make it easy to install into /usr/local.
-    $ make -C tools/depends/target/crossguid PREFIX=/usr/local
-
-[NOTICE] libfmt / libfmt3-dev all Linux distributions.
-Kodi now requires libfmt which is not available in Ubuntu repositories at this time.
-We supply a Makefile in tools/depends/target/libfmt
-to make it easy to install into /usr/local.
-    $ make -C tools/depends/target/libfmt PREFIX=/usr/local
-
-[NOTICE] wayland-protocols all Linux distributions.
-Building Kodi with Wayland requires a recent version of wayland-protocols (at least 1.7)
-which is not available in the Ubuntu LTS repostiories at this time.
-We supply a Makefile in tools/depends/target/wayland-protocols to make it easy to install
-into /usr/local.
-    $ make -C tools/depends/target/wayland-protocols PREFIX=/usr/local
-
-[NOTICE] waylandpp all Linux distributions.
-Building Kodi with Wayland requires waylandpp which is not available in repositories
-of most major distributions at this time.
-We supply a Makefile in tools/depends/target/waylandpp to make it easy to install
-into /usr/local.
-Note that building waylandpp has some dependencies of its own: scons,
-libwayland-dev (>= 1.11.0), libwayland-egl1-mesa
-    $ make -C tools/depends/target/waylandpp PREFIX=/usr/local
-
-Note: For developers and anyone else who compiles frequently it is recommended to use ccache.
-    $ sudo apt-get install ccache
-
------------------------------------------------------------------------------
-3.1. Using the Kodi PPA to get all build dependencies (Debian/Ubuntu only)
------------------------------------------------------------------------------
-
-For this, you need to specify the PPA in your apt sources.
-Please find them on the following wiki link:
-Note: See README.Ubuntu.md as well
+![Kodi Logo](resources/banner_slim.png)
+
+# Linux build guide
+This is the general Linux build guide. Please read it in full before you proceed to familiarize yourself with the build procedure.
+
+Several distribution **[specific build guides](README.md)** are available.
+
+## Table of Contents
+1. **[Document conventions](#1-document-conventions)**
+2. **[Get the source code](#2-get-the-source-code)**
+3. **[Install the required packages](#3-install-the-required-packages)**  
+  3.1. **[Build missing dependencies](#31-build-missing-dependencies)**  
+  3.2. **[Enable internal dependencies](#32-enable-internal-dependencies)**
+4. **[Build Kodi](#4-build-kodi)**  
+  4.1. **[Configure build](#41-configure-build)**  
+  4.2. **[Build](#42-build)**
+5. **[Build binary add-ons](#5-build-binary-add-ons)**
+6. **[Run Kodi](#6-run-kodi)**
+7. **[Uninstall Kodi](#7-uninstall-kodi)**
+8. **[Test suite](#8-test-suite)**
+
+## 1. Document conventions
+This guide assumes you are using `terminal`, also known as `console`, `command-line` or simply `cli`. Commands need to be run at the terminal, one at a time and in the provided order.
+
+This is a comment that provides context:
+```
+this is a command
+this is another command
+and yet another one
+```
+
+**Example:** Clone Kodi's current master branch:
+```
+git clone https://github.com/xbmc/xbmc kodi
+```
+
+Commands that contain strings enclosed in angle brackets denote something you need to change to suit your needs.
+```
+git clone -b <branch-name> https://github.com/xbmc/xbmc kodi
+```
+
+**Example:** Clone Kodi's current Krypton branch:
+```
+git clone -b Krypton https://github.com/xbmc/xbmc kodi
+```
+
+Several different strategies are used to draw your attention to certain pieces of information. In order of how critical the information is, these items are marked as a note, tip, or warning. For example:
+ 
+**NOTE:** Linux is user friendly... It's just very particular about who its friends are.  
+**TIP:** Algorithm is what developers call code they do not want to explain.  
+**WARNING:** Developers don't change light bulbs. It's a hardware problem.
+
+**[back to top](#table-of-contents)** | **[back to section top](#1-document-conventions)**
+
+## 2. Get the source code
+First install the `git` package provided by your distribution. How to do it can be found with a quick search in your favorite search engine.
+
+Change to your `home` directory:
+```
+cd $HOME
+```
+
+Clone Kodi's current master branch:
+```
+git clone https://github.com/xbmc/xbmc kodi
+```
+
+**[back to top](#table-of-contents)**
+
+## 3. Install the required packages
+The following is the list of packages that are used to build Kodi on Debian/Ubuntu (with all supported external libraries enabled).
+
+* autoconf, automake, autopoint, gettext, autotools-dev, cmake, curl, default-jre | openjdk-6-jre | openjdk-7-jre, gawk, gcc (>= 4.9) | gcc-4.9, g++ (>= 4.9) | g++-4.9, cpp (>= 4.9) | cpp-4.9, gdc, gperf, libasound2-dev | libasound-dev, libass-dev (>= 0.9.8), libavahi-client-dev, libavahi-common-dev, libbluetooth-dev, libbluray-dev, libbz2-dev, libcdio-dev, libcec4-dev | libcec-dev, libp8-platform-dev, libcrossguid-dev, libcurl4-openssl-dev | libcurl4-gnutls-dev | libcurl-dev, libcwiid-dev, libdbus-1-dev, libegl1-mesa-dev, libenca-dev, libflac-dev, libfontconfig-dev, libfmt3-dev | libfmt-dev, libfreetype6-dev, libfribidi-dev, libgcrypt-dev, libgif-dev (>= 5.0.5), libgles2-mesa-dev [armel] | libgl1-mesa-dev | libgl-dev, libglew-dev, libglu1-mesa-dev | libglu-dev, libgnutls-dev | libgnutls28-dev, libgpg-error-dev, libiso9660-dev, libjpeg-dev, liblcms2-dev, liblirc-dev, libltdl-dev, liblzo2-dev, libmicrohttpd-dev, libmysqlclient-dev, libnfs-dev, libogg-dev, libomxil-bellagio-dev [armel], libpcre3-dev, libplist-dev, libpng12-dev | libpng-dev, libpulse-dev, libshairplay-dev, libsmbclient-dev, libsqlite3-dev, libssl-dev, libtag1-dev (>= 1.8) | libtag1x8, libtiff5-dev | libtiff-dev | libtiff4-dev, libtinyxml-dev, libtool, libudev-dev, libva-dev, libvdpau-dev, libvorbis-dev, libxkbcommon-dev, libxmu-dev, libxrandr-dev, libxslt1-dev | libxslt-dev, libxt-dev, waylandpp-dev | netcat, wayland-protocols | wipe, lsb-release, nasm [!amd64], python-dev, python-pil | python-imaging, python-support | python-minimal, rapidjson-dev, swig, unzip, uuid-dev, yasm, zip, zlib1g-dev
+
+### 3.1. Build missing dependencies
+Some packages may be missing or outdated in older distributions. Notably `crossguid, libfmt, waylandpp, wayland-protocols, etc.` are known to be outdated or missing. Fortunately there is an easy way to build individual dependencies with **[Kodi's unified depends build system](../tools/depends/README.md)**.
+
+Change to Kodi's source code directory:
+```
+cd $HOME/kodi
+```
+
+Build and install crossguid:
+```
+sudo make -C tools/depends/target/crossguid PREFIX=/usr/local
+```
+
+Build and install libfmt:
+```
+sudo make -C tools/depends/target/libfmt PREFIX=/usr/local
+```
+
+Build and install wayland-protocols:
+```
+sudo make -C tools/depends/target/wayland-protocols PREFIX=/usr/local
+```
+
+Build and install waylandpp:
+```
+sudo make -C tools/depends/target/waylandpp PREFIX=/usr/local
+```
 
-http://kodi.wiki/index.php?title=Official_Ubuntu_PPA
+**WARNING:** Building `waylandpp` has some dependencies of its own, namely `scons, libwayland-dev (>= 1.11.0) and libwayland-egl1-mesa`
 
-Update apt:
-    $ sudo apt-get update
+**TIP:** Complete list of dependencies is available **[here](https://github.com/xbmc/xbmc/tree/master/tools/depends/target)**.
 
-The command to get the build dependencies, used to compile the version on the PPA.
-    $ sudo apt-get build-dep kodi
+### 3.2. Enable internal dependencies
+Some dependencies can be configured to build before Kodi. That's the case with `crossguid, libfmt and rapidjson`. To enable the internal build of a dependency, append `-DENABLE_INTERNAL_<DEPENDENCY_NAME>=ON` to the configure command below. For example, configuring an X11 build with internal `fmt` would become `cmake ../kodi -DCMAKE_INSTALL_PREFIX=/usr/local -DENABLE_INTERNAL_FMT=ON` instead of `cmake ../kodi -DCMAKE_INSTALL_PREFIX=/usr/local`.
 
------------------------------------------------------------------------------
-4. How to compile
------------------------------------------------------------------------------
-Cmake build instructions V18.0 Leia and higher
+**[back to top](#table-of-contents)** | **[back to section top](#3-installing-the-required-packages)**
 
-Create and change to build directory 
-    $ mkdir kodi-build && cd kodi-build
+## 4. Build Kodi
+### 4.1. Configure build
+If you get a `Could NOT find...` error message during CMake configuration step, take a note of the missing dependencies and either install them from repositories (if available) or **[build the missing dependencies manually](#31-build-missing-dependencies)**.
 
-Run CMake
-- for X11
-    $ cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local
-- for Wayland
-    $ cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local -DCORE_PLATFORM_NAME=wayland -DWAYLAND_RENDER_SYSTEM=gl
-    (You can use "gles" instead of "gl" if you want to build with GLES)
+Create an out-of-source build directory:
+```
+mkdir $HOME/kodi-build
+```
 
-Build
-    $ cmake --build . -- VERBOSE=1
-    
-Tip: By adding -j<number> to the make command, you describe how many
-     concurrent jobs will be used, it will speed up the build process.
-     So for quadcore the command is:
-    
-    $ cmake --build . -- VERBOSE=1 -j4
+**TIP:** Look for comments starting with `Or ...` and only execute the command(s) you need.
 
-If the build process completes succesfully you would want to test if it is working.
-Still in the build directory type the following:
+Change to build directory:
+```
+cd $HOME/kodi-build
+```
 
-    $ ./kodi.bin
+Configure build for X11:
+```
+cmake ../kodi -DCMAKE_INSTALL_PREFIX=/usr/local
+```
 
-If everything was okay during your test you can now install the binaries to their place
-in this example "/usr/local".
+Or configure build for Wayland:
+```
+cmake ../kodi -DCMAKE_INSTALL_PREFIX=/usr/local -DCORE_PLATFORM_NAME=wayland -DWAYLAND_RENDER_SYSTEM=gl
+```
 
-    $ sudo make install
+**NOTE:** You can use `gles` instead of `gl` if you want to build with `GLES`.
 
-This will install Kodi in the prefix provided in 4.1 as well as a launcher script.
+Or configure build for GBM:
+```
+cmake ../kodi -DCMAKE_INSTALL_PREFIX=/usr/local -DCORE_PLATFORM_NAME=gbm
+```
 
-Tip: By adding -j<number> to the make command, you describe how many
-     concurrent jobs will be used. So for dualcore the command is:
+### 4.2. Build
+```
+cmake --build . -- VERBOSE=1 -j$(getconf _NPROCESSORS_ONLN)
+```
+**TIP:** By adding `-j<number>` to the make command, you can choose how many concurrent jobs will be used and expedite the build process. It is recommended to use `-j$(getconf _NPROCESSORS_ONLN)` to compile on all available processor cores. The build machine can also be configured to do this automatically by adding `export MAKEFLAGS="-j(getconf _NPROCESSORS_ONLN)"` to your shell config (e.g. `~/.bashrc`).
 
-    $ sudo make install -j2
+After the build process completes successfully you can test your shiny new Kodi build while in the build directory:
+```
+./kodi-x11
+```
 
-Tip: To override the location that Kodi is installed, use PREFIX=<path>.
-For example.
+Or if you built for Wayland:
+```
+./kodi-wayland
+```
 
-    $ make install DESTDIR=$HOME/kodi
+Or if you built for GBM:
+```
+./kodi-gbm
+```
 
------------------------------------------------------------------------------
-4.4. Binary addons - compile
------------------------------------------------------------------------------
+**WARNING:** User running `kodi-gbm` needs to be part of `input` and `video` groups. Otherwise you'll have to use `sudo`.
 
-From v14 with commit 4090a5f a new API for binary addons is available.
-You can compile all addons or only specific addons by specifying e.g. ADDONS="audioencoder.foo pvr.bar audiodecoder.baz"
+Add user to input and video groups:
+```
+sudo usermod -a -G input,video <username>
+```
 
-.0  All addons
-    $ make -C tools/depends/target/binary-addons PREFIX=/<system prefix added on step 4.1>
+You will need to log out and log back in to see the new groups added to your user. Check groups your user belongs to with:
+```
+groups
+```
 
-.1  Specific addons
-    $ make -C tools/depends/target/binary-addons PREFIX=/<system prefix added on step 4.1> ADDONS="audioencoder.flac pvr.vdr.vnsi audiodecoder.snesapu"
+If everything was OK during your test you can now install the binaries to their place, in this example */usr/local*.
+```
+sudo make install
+```
+
+This will install Kodi in the prefix provided in **[section 4.1](#41-configure-build)**.
 
-Audio decoders:
-    audiodecoder.modplug, audiodecoder.nosefart, audiodecoder.sidplay, audiodecoder.snesapu,
-    audiodecoder.stsound, audiodecoder.timidity, audiodecoder.vgmstream
+**TIP:** To override Kodi's install location, use `DESTDIR=<path>`. For example:
+```
+sudo make install DESTDIR=$HOME/kodi
+```
 
-Audio encoders:
-    audioencoder.flac, audioencoder.lame, audioencoder.vorbis, audioencoder.wav
+**[back to top](#table-of-contents)** | **[back to section top](#4-build-kodi)**
 
-Inputstream addons:
-    inputstream.mpd
+## 5. Build binary add-ons
+You can find a complete list of available binary add-ons **[here](https://github.com/xbmc/repo-binary-addons)**.
 
-Peripheral addons:
-    peripheral.joystick
+Change to Kodi's source code directory:
+```
+cd $HOME/kodi
+```
 
-PVR addons:
-    pvr.argustv, pvr.demo, pvr.dvblink, pvr.dvbviewer, pvr.filmon, pvr.hdhomerun, pvr.hts, pvr.iptvsimple,
-    pvr.mediaportal.tvserver,pvr.mythtv, pvr.nextpvr, pvr.njoy, pvr.pctv, pvr.stalker, pvr.vbox, pvr.vdr.vnsi,
-    pvr.vuplus, pvr.wmc
+Build all add-ons:
+```
+sudo make -j$(getconf _NPROCESSORS_ONLN) -C tools/depends/target/binary-addons PREFIX=/usr/local
+```
 
-Screensavers:
-    screensaver.asteroids, screensaver.biogenesis, screensaver.greynetic, screensaver.matrixtrails,
-    screensaver.pingpong, screensaver.pyro, screensavers.rsxs, screensaver.stars
+Build specific add-ons:
+```
+sudo make -j$(getconf _NPROCESSORS_ONLN) -C tools/depends/target/binary-addons PREFIX=/usr/local ADDONS="audioencoder.flac pvr.vdr.vnsi audiodecoder.snesapu"
+```
 
-Visualizations
-    visualization.fishbmc, visualization.goom, visualization.projectm, visualization.shadertoy
-    visualization.spectrum, visualization.vsxu, visualization.waveform
+Build a specific group of add-ons:
+```
+sudo make -j$(getconf _NPROCESSORS_ONLN) -C tools/depends/target/binary-addons PREFIX=/usr/local ADDONS="pvr.*"
+```
 
------------------------------------------------------------------------------
-4.5. Test suite
------------------------------------------------------------------------------
+**NOTE:** `PREFIX=/usr/local` should match Kodi's `-DCMAKE_INSTALL_PREFIX=` prefix used in **[section 4.1](#41-configure-build)**.
 
-Kodi has a test suite which uses the Google C++ Testing Framework.
-This framework is provided directly in Kodi's source tree.
-It has very little requirements, in order to build and run.
-See the README file for the framework at 'lib/gtest/README' for specific requirements.
+**[back to top](#table-of-contents)**
 
-To compile and run Kodi's test suite, type the following:
+## 6. Run Kodi
+If you chose to install Kodi using `/usr` or `/usr/local` as the `-DCMAKE_INSTALL_PREFIX=`, you can just issue *kodi* in a terminal session.
 
-    $ make check
+If you changed `-DCMAKE_INSTALL_PREFIX=` to install Kodi into some non-standard location, you will have to run Kodi directly:
+```
+<CMAKE_INSTALL_PREFIX>/bin/kodi
+```
 
-To compile the test suite without running it, type the following.
+To run Kodi in *portable* mode (useful for testing):
+```
+<CMAKE_INSTALL_PREFIX>/bin/kodi -p
+```
 
-    $ make kodi-test
+**[back to top](#table-of-contents)**
 
-The test suite program can be run manually as well.
-The name of the test suite program is 'kodi-test' and will build in the Kodi source tree.
-To bring up the 'help' notes for the program, type the following:
+## 7. Uninstall Kodi
+```
+sudo make uninstall
+```
+**WARNING:**: If you reran CMakes' configure step with a different `-DCMAKE_INSTALL_PREFIX=`, you will need to rerun configure with the correct path for this step to work correctly.
 
-    $ ./kodi-test --gtest_help
+If you would like to also remove any settings and third-party addons (skins, scripts, etc.) and Kodi configuration files, you should also run:
+```
+rm -rf ~/.kodi
+```
 
-The most useful options are,
+**[back to top](#table-of-contents)**
 
-    --gtest_list_tests
-      List the names of all tests instead of running them.
-	  The name of TEST(Foo, Bar) is "Foo.Bar".
+## 8. Test suite
+Kodi has a test suite which uses the Google C++ Testing Framework. This framework is provided directly in Kodi's source tree.
 
-    --gtest_filter=POSITIVE_PATTERNS[-NEGATIVE_PATTERNS]
-      Run only the tests whose name matches one of the positive patterns but
-      none of the negative patterns. '?' matches any single character; '*'
-      matches any substring; ':' separates two patterns.
+Build and run Kodi's test suite:
+```
+make check
+```
 
------------------------------------------------------------------------------
-5. How to run
------------------------------------------------------------------------------
+Build Kodi's test suite without running it:
+```
+make kodi-test
+```
 
-How to run Kodi depends on the type of installation you have done.
-It is possible to run Kodi without the requirement to install Kodi anywhere else.
-In this case, type the following from the top source directory.
+Run Kodi's test suite manually:
+```
+./kodi-test
+```
 
-    $ ./kodi.bin
+Show Kodi's test suite *help* notes:
+```
+./kodi-test --gtest_help
+```
 
-Or run in 'portable' mode
+Useful options:
+```
+--gtest_list_tests
+  List the names of all tests instead of running them.
+  The name of TEST(Foo, Bar) is "Foo.Bar".
 
-    $ ./kodi.bin -p
+--gtest_filter=POSITIVE_PATTERNS[-NEGATIVE_PATTERNS]
+  Run only the tests whose name matches one of the positive patterns but
+  none of the negative patterns. '?' matches any single character; '*'
+  matches any substring; ':' separates two patterns.
+```
 
-If you chose to install Kodi using '/usr' or '/usr/local' as the PREFIX,
-you can just issue 'kodi' in a terminal session.
+**[back to top](#table-of-contents)**
 
-If you have overridden PREFIX to install Kodi into some non-standard location,
-you will have to run Kodi by directly running 'kodi.bin'.
-
-For example:
-
-    $ $HOME/kodi/usr/lib/kodi/kodi.bin
-
-You should still run the wrapper via
-    $ $PREFIX/bin/kodi
-
-If you wish to use VDPAU decoding you will now have to change the Render Method
-in Settings->Videos->Player from "Auto Detect" to "VDPAU".
-
------------------------------------------------------------------------------
-6. Uninstalling
------------------------------------------------------------------------------
-
-Prepend "sudo" to commands, if your user doesn't have write permission to the install directory.
-
-Note: If you have rerun configure with a different prefix,
-you will either need to rerun configure with the correct prefix for this step to work correctly.
-
-    $ make uninstall
-.0  $ sudo make uninstall
-
-If you would like to also remove any settings and 3rd party addons (skins, scripts, etc)
-you should also run:
-
-.1  $ rm -rf ~/.kodi
-
-EOF
