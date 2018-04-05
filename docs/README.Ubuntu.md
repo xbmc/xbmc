@@ -1,129 +1,152 @@
-TOC
-1. Introduction
-2. Getting the source code
-3. Installing the required Ubuntu packages
-4. How to compile
-5. Uninstalling
+![Kodi Logo](resources/banner_slim.png)
 
------------------------------------------------------------------------------
-1. Introduction
------------------------------------------------------------------------------
+# Debian/Ubuntu build guide
+This guide has been tested with Ubuntu 16.04.4 (Xenial) x86_64 and 18.04 (Bionic). Please read it in full before you proceed to familiarize yourself with the build procedure.
 
-A graphics-adapter with OpenGL acceleration is highly recommended.
-24/32 bitdepth is required along with OpenGL.
+Several other distributions have **[specific build guides](README.md)** and a general **[Linux build guide](README.Linux.md)** is also available.
 
-Note to new Linux users.
-All lines that are prefixed with the '$' character are commands, that need to be typed
-into a terminal window / console (similar to the command prompt for Windows).
-Note that the '$' character itself should NOT be typed as part of the command.
+## Table of Contents
+1. **[Document conventions](#1-document-conventions)**
+2. **[Get the source code](#2-get-the-source-code)**
+3. **[Install the required packages](#3-install-the-required-packages)**  
+  3.1. **[Get build dependencies automagically](#31-get-build-dependencies-automagically)**  
+  3.2. **[Get build dependencies manually](#32-get-build-dependencies-manually)**
+4. **[Build Kodi](#4-build-kodi)**
 
------------------------------------------------------------------------------
-2. Getting the source code
------------------------------------------------------------------------------
+## 1. Document conventions
+This guide assumes you are using `terminal`, also known as `console`, `command-line` or simply `cli`. Commands need to be run at the terminal, one at a time and in the provided order.
 
-.0  $ cd $HOME
-.1  $ git clone git://github.com/xbmc/xbmc.git kodi
+This is a comment that provides context:
+```
+this is a command
+this is another command
+and yet another one
+```
 
-Note: You can clone any specific branch.
+**Example:** Clone Kodi's current master branch:
+```
+git clone https://github.com/xbmc/xbmc kodi
+```
 
-.1  $ git clone -b <branch> git://github.com/xbmc/xbmc.git kodi
+Commands that contain strings enclosed in angle brackets denote something you need to change to suit your needs.
+```
+git clone -b <branch-name> https://github.com/xbmc/xbmc kodi
+```
 
------------------------------------------------------------------------------
-3. Installing the required Ubuntu packages
------------------------------------------------------------------------------
+**Example:** Clone Kodi's current Krypton branch:
+```
+git clone -b Krypton https://github.com/xbmc/xbmc kodi
+```
 
-Two methods exist to install the required Ubuntu packages:
+Several different strategies are used to draw your attention to certain pieces of information. In order of how critical the information is, these items are marked as a note, tip, or warning. For example:
+ 
+**NOTE:** Linux is user friendly... It's just very particular about who its friends are.  
+**TIP:** Algorithm is what developers call code they do not want to explain.  
+**WARNING:** Developers don't change light bulbs. It's a hardware problem.
 
-[NOTICE] For supported older Ubuntu versions, some packages might be outdated.
-         For those, you can either compile them manually, or use our backports
-         available from our official stable PPA:
+**[back to top](#table-of-contents)** | **[back to section top](#1-document-conventions)**
 
-         http://launchpad.net/~team-xbmc/+archive/ppa
+## 2. Get the source code
+Make sure `git` is installed:
+```
+sudo apt install git
+```
 
------------------------------------------------------------------------------
-3a. Use a single command to get all build dependencies
------------------------------------------------------------------------------
-[NOTICE] Supported on Ubuntu >= 16.04
+Change to your `home` directory:
+```
+cd $HOME
+```
 
-You can get all build dependencies used for building the packages on the PPA
+Clone Kodi's current master branch:
+```
+git clone https://github.com/xbmc/xbmc kodi
+```
 
-Add the unstable PPA:
+**[back to top](#table-of-contents)**
 
-For >= 16.04 lts:
-    $ sudo apt-get install software-properties-common
-    $ sudo add-apt-repository -s ppa:team-xbmc/xbmc-nightly
+## 3. Install the required packages
+You can install the required packages using one of two methods: automagically or manually. Please use the former whenever possible.
 
-Add build-depends PPA:
-    $ sudo add-apt-repository ppa:team-xbmc/xbmc-ppa-build-depends
+**WARNING:** Oldest supported Ubuntu version is 16.04 (Xenial). It is possible to build on older Ubuntu releases but due to outdated packages it will require considerable fiddling. Sorry, you're on your own if you decide to go down that particular rabbit hole.
 
-Here is the magic command to get the build dependencies (used to compile the version on the PPA).
-    $ sudo apt-get update
-    $ sudo apt-get build-dep kodi
+### 3.1. Get build dependencies automagically
+Add Kodi's *nightly* PPA to grab dependencies:
+```
+sudo add-apt-repository -s ppa:team-xbmc/xbmc-nightly
+```
 
-Optional: If you do not want Kodi to be installed via PPA, you can removed the PPAs again:
-    $ sudo add-apt-repository -r ppa:team-xbmc/xbmc-nightly
-    $ sudo add-apt-repository -r ppa:team-xbmc/xbmc-ppa-build-depends
+If you're using Ubuntu 16.04, *build-depends* PPA is also required:
+```
+sudo add-apt-repository ppa:team-xbmc/xbmc-ppa-build-depends
+sudo apt update
+```
 
-Note: Do not use "aptitude" for the build-dep command. It doesn't resolve everything properly.
-      For developers and anyone else who compiles frequently it is recommended to use ccache
-    $ sudo apt-get install ccache
+Super-duper magic command to get the build dependencies:
+```
+sudo apt build-dep kodi
+```
 
-Tip: For those with multiple computers at home is to try out distcc
-    (fully unsupported from Kodi of course)
-    $ sudo apt-get install distcc
+**WARNING:** Do not use `aptitude` for the `build-dep` command. It doesn't resolve everything properly.
 
------------------------------------------------------------------------------
-3b. Alternative: Manual dependency installation
------------------------------------------------------------------------------
+If at a later point you decide you do not want Kodi's PPAs on your system, removing them is as easy as:
+```
+sudo add-apt-repository -r ppa:team-xbmc/xbmc-nightly
+sudo add-apt-repository -r ppa:team-xbmc/xbmc-ppa-build-depends
+```
 
-For Ubuntu (all versions >= 16.04):
-    $ sudo apt-get install automake bison build-essential cmake curl cvs \
-      default-jre fp-compiler gawk gdc gettext git-core gperf libasound2-dev libass-dev \
-      libbz2-dev libcap-dev libcdio-dev libcurl3 \
-      libcurl4-openssl-dev libdbus-1-dev libfontconfig-dev libegl1-mesa-dev libfreetype6-dev \
-      libfribidi-dev libgif-dev libiso9660-dev libjpeg-dev liblzo2-dev \
-      libmicrohttpd-dev libmysqlclient-dev libnfs-dev \
-      libpcre3-dev libplist-dev libpng-dev libpulse-dev libsmbclient-dev \
-      libsqlite3-dev libssl-dev libtinyxml-dev libtool libudev-dev libusb-dev \
-      libva-dev libvdpau-dev libxml2-dev libxmu-dev libxrandr-dev \
-      libxrender-dev libxslt1-dev libxt-dev mesa-utils nasm pmount python-dev python-imaging \
-      python-sqlite rapidjson-dev swig uuid-dev yasm zlib1g-dev liblirc-dev
+**NOTE:** For developers and anyone else who builds frequently it is recommended to install `ccache` to expedite subsequent builds of Kodi.
 
-[NOTICE] crossguid / libcrossguid-dev all Linux distributions.
-Kodi now requires crossguid which is not available in Ubuntu repositories at this time.
-If build-deps PPA doesn't provide a pre-packaged version for your distribution, see (1.) below.
+You can install it with:
+```
+sudo apt install ccache
+```
 
-Use prepackaged from the Kodi build-depends PPA.
-0.  $ sudo apt-get install libcrossguid-dev
+**TIP:** If you have multiple computers at home, `distcc` will distribute build workloads of C and C++ code across several machines on a network. Team Kodi may not be willing to give support if problems arise using such a build configuration.
 
-We also supply a Makefile in tools/depends/target/crossguid
-to make it easy to install into /usr/local.
-1.  $ make -C tools/depends/target/crossguid PREFIX=/usr/local
+You can install it with:
+```
+sudo apt install distcc
+```
 
-[NOTICE] libfmt / libfmt3-dev all Linux distributions.
-Kodi now requires libfmt which is not available in Ubuntu repositories at this time.
-If build-deps PPA doesn't provide a pre-packaged version for your distribution, we supply a
-Makefile in tools/depends/target/libfmt to make it easy to install into /usr/local.
-1.  $ make -C tools/depends/target/libfmt PREFIX=/usr/local
+### 3.2. Get build dependencies manually
+If you get a `package not found` type of message with the below command, remove the offending package(s) from the install list and reissue the command. Take a note of the missing dependencies and, after a successful step completion, **[build the missing dependencies manually](README.Linux.md#31-build-missing-dependencies)**.
 
-Unless you are proficient with how Linux libraries and versions work, do not
-try to provide it yourself, as you will likely mess up for other programs.
+Install build dependencies manually:
+```
+sudo apt install debhelper autoconf automake autopoint gettext autotools-dev cmake curl default-jre doxygen gawk gcc gdc gperf libasound2-dev libass-dev libavahi-client-dev libavahi-common-dev libbluetooth-dev libbluray-dev libbz2-dev libcdio-dev libp8-platform-dev libcrossguid-dev libcurl4-openssl-dev libcwiid-dev libdbus-1-dev libegl1-mesa-dev libenca-dev libflac-dev libfontconfig-dev libfreetype6-dev libfribidi-dev libgcrypt-dev libgif-dev libgles2-mesa-dev libgl1-mesa-dev libglu1-mesa-dev libgnutls28-dev libgpg-error-dev libiso9660-dev libjpeg-dev liblcms2-dev libltdl-dev liblzo2-dev libmicrohttpd-dev libmysqlclient-dev libnfs-dev libogg-dev libpcre3-dev libplist-dev libpng-dev libpulse-dev libshairplay-dev libsmbclient-dev libsqlite3-dev libssl-dev libtag1-dev libtiff5-dev libtinyxml-dev libtool libudev-dev libva-dev libvdpau-dev libvorbis-dev libxmu-dev libxrandr-dev libxslt1-dev libxt-dev lsb-release python-dev python-pil rapidjson-dev swig unzip uuid-dev yasm zip zlib1g-dev
+```
 
------------------------------------------------------------------------------
-4. How to compile
------------------------------------------------------------------------------
-See README.linux
+**WARNING:** Make sure you copy paste the entire line or you might receive an error or miss a few dependencies.
 
------------------------------------------------------------------------------
-4.1. Test Suite
------------------------------------------------------------------------------
-See README.linux
+If you're using Ubuntu 16.04, you also need to install:
+```
+sudo apt install libcec4-dev libfmt3-dev liblircclient-dev
+```
 
------------------------------------------------------------------------------
-5. Uninstalling
------------------------------------------------------------------------------
-Remove any PPA installed Kodi.
-    $ sudo apt-get remove kodi* xbmc*
+If you're using Ubuntu 18.04, you also need to install:
+```
+sudo apt install libcec-dev libfmt-dev liblirc-dev
+```
 
-See README.linux/Uninstalling for removing compiled versions of Kodi.
-EOF
+Building for Wayland requires some extra packages:
+```
+sudo apt install libglew-dev libwayland-dev libxkbcommon-dev waylandpp-dev wayland-protocols
+```
+
+Similarly, building for GBM also requires some extra packages:
+```
+sudo apt install libgbm-dev libinput-dev libxkbcommon-dev
+```
+
+Optional packages that you might want to install for extra functionality (generating doxygen documentation, for instance):
+```
+sudo apt install doxygen libcap-dev libsndio-dev libmariadbd-dev
+```
+
+**[back to top](#table-of-contents)**
+
+## 4. Build Kodi
+See the general **[Linux build guide](README.Linux.md)** for reference.
+
+**[back to top](#table-of-contents)**
+
