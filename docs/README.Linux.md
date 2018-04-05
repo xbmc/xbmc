@@ -100,7 +100,7 @@ Note: For developers and anyone else who compiles frequently it is recommended t
 
 For this, you need to specify the PPA in your apt sources.
 Please find them on the following wiki link:
-Note: See README.ubuntu as well
+Note: See README.Ubuntu.md as well
 
 http://kodi.wiki/index.php?title=Official_Ubuntu_PPA
 

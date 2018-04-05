@@ -31,7 +31,7 @@ The dependencies required to build on Linux can be found in
 
 The cross compilation environment for the Raspberry Pi as well as the
 dependencies have to be installed as explained in
-[docs/README.raspberrypi](https://github.com/xbmc/xbmc/tree/master/docs/README.raspberrypi).
+[docs/README.RaspberryPi](https://github.com/xbmc/xbmc/tree/master/docs/README.RaspberryPi.md).
 
 ### Windows
 
@@ -47,7 +47,7 @@ and that the mingw libs (ffmpeg, libdvd and others) are built using
 ### macOS
 
 For macOS the required dependencies can be found in
-[docs/README.osx.md](https://github.com/xbmc/xbmc/tree/master/docs/README.osx.md).
+[docs/README.macOS.md](https://github.com/xbmc/xbmc/tree/master/docs/README.macOS.md).
 
 On macOS it is necessary to build the dependencies in `tools/depends` using
 `./bootstrap && ./configure --host=<PLATFORM> && make`. The other steps such
@@ -57,7 +57,7 @@ as these steps are covered already by the CMake project.
 ### Android
 
 The dependencies needed to compile for Android can be found in
-[docs/README.android](https://github.com/xbmc/xbmc/tree/master/docs/README.android)
+[docs/README.Android](https://github.com/xbmc/xbmc/tree/master/docs/README.Android.md)
 . All described steps have to be executed (except 5.2 which is replaced by the
 respective CMake command below).
 
