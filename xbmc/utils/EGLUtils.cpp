@@ -75,17 +75,17 @@ CEGLContextUtils::~CEGLContextUtils()
 }
 
 bool CEGLContextUtils::CreateDisplay(EGLDisplay display,
-                                     EGLint renderable_type,
-                                     EGLint rendering_api)
+                                     EGLint renderableType,
+                                     EGLint renderingApi)
 {
   EGLint neglconfigs = 0;
   int major, minor;
 
-  EGLint surface_type = EGL_WINDOW_BIT;
+  EGLint surfaceType = EGL_WINDOW_BIT;
   // for the non-trivial dirty region modes, we need the EGL buffer to be preserved across updates
   if (g_advancedSettings.m_guiAlgorithmDirtyRegions == DIRTYREGION_SOLVER_COST_REDUCTION ||
       g_advancedSettings.m_guiAlgorithmDirtyRegions == DIRTYREGION_SOLVER_UNION)
-    surface_type |= EGL_SWAP_BEHAVIOR_PRESERVED_BIT;
+    surfaceType |= EGL_SWAP_BEHAVIOR_PRESERVED_BIT;
 
   EGLint attribs[] =
   {
@@ -97,8 +97,8 @@ bool CEGLContextUtils::CreateDisplay(EGLDisplay display,
     EGL_STENCIL_SIZE,    0,
     EGL_SAMPLE_BUFFERS,  0,
     EGL_SAMPLES,         0,
-    EGL_SURFACE_TYPE,    surface_type,
-    EGL_RENDERABLE_TYPE, renderable_type,
+    EGL_SURFACE_TYPE,    surfaceType,
+    EGL_RENDERABLE_TYPE, renderableType,
     EGL_NONE
   };
 
@@ -132,7 +132,7 @@ bool CEGLContextUtils::CreateDisplay(EGLDisplay display,
     return false;
   }
 
-  eglBindAPI(rendering_api);
+  eglBindAPI(renderingApi);
 
   if (!eglChooseConfig(m_eglDisplay, attribs,
                        &m_eglConfig, 1, &neglconfigs))

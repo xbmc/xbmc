@@ -127,8 +127,8 @@ public:
   ~CEGLContextUtils();
 
   bool CreateDisplay(EGLDisplay display,
-                     EGLint renderable_type,
-                     EGLint rendering_api);
+                     EGLint renderableType,
+                     EGLint renderingApi);
 
   bool CreateSurface(EGLNativeWindowType surface);
   bool CreateContext(const EGLint* contextAttribs);
