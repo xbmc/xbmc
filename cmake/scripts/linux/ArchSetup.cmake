@@ -40,7 +40,6 @@ endif()
 # temp until further cleanup is done
 # add Raspberry Pi 2 and 3 specific flags
 if(CORE_PLATFORM_NAME_LC STREQUAL rbpi)
-  list(APPEND ARCH_DEFINES -D_ARMEL -DTARGET_RASPBERRY_PI)
   if(CPU MATCHES "cortex-a7")
     set(NEON_FLAGS "-fPIC -mcpu=cortex-a7 -mfloat-abi=hard -mfpu=neon-vfpv4 -mvectorize-with-neon-quad")
   elseif(CPU MATCHES "cortex-a53")
