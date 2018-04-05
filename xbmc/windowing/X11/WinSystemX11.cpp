@@ -41,7 +41,7 @@
 #include "WinEventsX11.h"
 #include "input/InputManager.h"
 #include "OSScreenSaverX11.h"
-#include "powermanagement/linux/LinuxPowerSyscall.h"
+#include "platform/linux/powermanagement/LinuxPowerSyscall.h"
 
 using namespace KODI::MESSAGING;
 using namespace KODI::WINDOWING;

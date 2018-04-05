@@ -20,10 +20,10 @@
  */
 
 #include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
-#include "powermanagement/windows/Win32PowerSyscall.h"
+#include "platform/win32/CharsetConverter.h"
+#include "platform/win32/powermanagement/Win32PowerSyscall.h"
 #include "ServiceBroker.h"
 #include "utils/log.h"
-#include "platform/win32/CharsetConverter.h"
 
 #include <mmdeviceapi.h>
 #include <wrl/client.h>

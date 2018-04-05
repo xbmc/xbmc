@@ -29,7 +29,8 @@
 #include "guilib/gui3d.h"
 #include "messaging/ApplicationMessenger.h"
 #include "platform/win32/CharsetConverter.h"
-#include "powermanagement/windows/Win32PowerSyscall.h"
+#include "platform/win32/input/IRServerSuite.h"
+#include "platform/win32/powermanagement/Win32PowerSyscall.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
@@ -38,7 +39,6 @@
 #include "utils/CharsetConverter.h"
 #include "utils/SystemInfo.h"
 #include "VideoSyncD3D.h"
-#include "platform/win32/input/IRServerSuite.h"
 
 #include <tpcshrd.h>
 #include "guilib/GraphicContext.h"

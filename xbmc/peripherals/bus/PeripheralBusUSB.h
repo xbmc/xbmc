@@ -21,20 +21,20 @@
 
 #if   defined(TARGET_WINDOWS_DESKTOP)
 #define HAVE_PERIPHERAL_BUS_USB 1
-#include "win32/PeripheralBusUSB.h"
+#include "platform/win32/peripherals/PeripheralBusUSB.h"
 #elif defined(TARGET_WINDOWS_STORE)
 #define HAVE_PERIPHERAL_BUS_USB 1
-#include "win10/PeripheralBusUSB.h"
+#include "platform/win10/peripherals/PeripheralBusUSB.h"
 #elif defined(TARGET_LINUX) && defined(HAVE_LIBUDEV)
 #define HAVE_PERIPHERAL_BUS_USB 1
-#include "linux/PeripheralBusUSBLibUdev.h"
+#include "platform/linux/peripherals/PeripheralBusUSBLibUdev.h"
 #elif defined(TARGET_LINUX) && defined(HAVE_LIBUSB)
 #define HAVE_PERIPHERAL_BUS_USB 1
-#include "linux/PeripheralBusUSBLibUSB.h"
+#include "platform/linux/peripherals/PeripheralBusUSBLibUSB.h"
 #elif defined(TARGET_FREEBSD) && defined(HAVE_LIBUSB)
 #define HAVE_PERIPHERAL_BUS_USB 1
-#include "linux/PeripheralBusUSBLibUSB.h"
+#include "platform/linux/peripherals/PeripheralBusUSBLibUSB.h"
 #elif defined(TARGET_DARWIN)
 #define HAVE_PERIPHERAL_BUS_USB 1
-#include "osx/PeripheralBusUSB.h"
+#include "platform/darwin/osx/peripherals/PeripheralBusUSB.h"
 #endif

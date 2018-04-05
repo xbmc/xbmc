@@ -85,7 +85,7 @@
 #include "input/mouse/MouseStat.h"
 #include "input/Key.h"
 #include "utils/log.h"
-#include "network/android/NetworkAndroid.h"
+#include "platform/android/network/NetworkAndroid.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "filesystem/SpecialProtocol.h"
 #include "TextureCache.h"

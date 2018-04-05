@@ -42,15 +42,18 @@
 #include "network/WakeOnAccess.h"
 
 #ifdef TARGET_POSIX
-#include "posix/PosixDirectory.h"
+#include "platform/posix/filesystem/PosixDirectory.h"
 #elif defined(TARGET_WINDOWS)
-#include "win32/Win32Directory.h"
+#include "platform/win32/filesystem/Win32Directory.h"
+#ifdef TARGET_WINDOWS_STORE
+#include "platform/win10/filesystem/WinLibraryDirectory.h"
+#endif
 #endif
 #ifdef HAS_FILESYSTEM_SMB
 #ifdef TARGET_WINDOWS
-#include "win32/Win32SMBDirectory.h"
+#include "platform/win32/filesystem/Win32SMBDirectory.h"
 #else
-#include "SMBDirectory.h"
+#include "platform/posix/filesystem/SMBDirectory.h"
 #endif
 #endif
 #include "CDDADirectory.h"
@@ -61,7 +64,7 @@
 #endif
 #include "PVRDirectory.h"
 #if defined(TARGET_ANDROID)
-#include "APKDirectory.h"
+#include "platform/android/filesystem/APKDirectory.h"
 #endif
 #include "XbtDirectory.h"
 #include "ZipDirectory.h"
@@ -81,14 +84,11 @@
 #include "BlurayDirectory.h"
 #endif
 #if defined(TARGET_ANDROID)
-#include "AndroidAppDirectory.h"
+#include "platform/android/filesystem/AndroidAppDirectory.h"
 #endif
 #include "ResourceDirectory.h"
 #include "ServiceBroker.h"
 #include "addons/VFSEntry.h"
-#ifdef TARGET_WINDOWS_STORE
-#include "filesystem/win10/WinLibraryDirectory.h"
-#endif
 
 using namespace ADDON;
 

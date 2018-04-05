@@ -1,0 +1,11 @@
+if(UDEV_FOUND)
+  list(APPEND SOURCES PeripheralBusUSBLibUdev.cpp)
+  list(APPEND HEADERS PeripheralBusUSBLibUdev.h)
+elseif(LIBUSB_FOUND)
+  list(APPEND SOURCES PeripheralBusUSBLibUSB.cpp)
+  list(APPEND HEADERS PeripheralBusUSBLibUSB.h)
+endif()
+
+if(SOURCES)
+  core_add_library(platform_linux_peripherals)
+endif()

@@ -30,7 +30,7 @@
 #include "bus/PeripheralBus.h"
 #include "bus/PeripheralBusUSB.h"
 #if defined(TARGET_ANDROID)
-#include "bus/android/PeripheralBusAndroid.h"
+#include "platform/android/peripherals/PeripheralBusAndroid.h"
 #endif
 #include "bus/virtual/PeripheralBusAddon.h"
 #include "devices/PeripheralBluetooth.h"

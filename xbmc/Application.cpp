@@ -106,7 +106,7 @@
 #include "filesystem/UPnPDirectory.h"
 #endif
 #if defined(TARGET_POSIX) && defined(HAS_FILESYSTEM_SMB)
-#include "filesystem/SMBDirectory.h"
+#include "platform/posix/filesystem/SMBDirectory.h"
 #endif
 #ifdef HAS_FILESYSTEM_NFS
 #include "filesystem/NFSFile.h"
@@ -187,7 +187,7 @@
 #ifdef TARGET_POSIX
 #include "XHandle.h"
 #include "XTimeUtils.h"
-#include "filesystem/posix/PosixDirectory.h"
+#include "platform/posix/filesystem/PosixDirectory.h"
 #endif
 
 #if defined(TARGET_ANDROID)

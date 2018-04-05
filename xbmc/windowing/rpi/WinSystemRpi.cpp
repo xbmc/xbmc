@@ -35,7 +35,7 @@
 #include "../WinEventsLinux.h"
 #include "cores/AudioEngine/AESinkFactory.h"
 #include "cores/AudioEngine/Sinks/AESinkPi.h"
-#include "powermanagement/linux/LinuxPowerSyscall.h"
+#include "platform/linux/powermanagement/LinuxPowerSyscall.h"
 
 #include <EGL/egl.h>
 #include <EGL/eglplatform.h>

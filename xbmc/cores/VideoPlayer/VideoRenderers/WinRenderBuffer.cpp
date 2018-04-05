@@ -28,9 +28,9 @@
 #include "rendering/dx/RenderContext.h"
 #include "utils/log.h"
 #if defined(HAVE_SSE2)
-#include "utils/win32/gpu_memcpy_sse4.h"
+#include "platform/win32/utils/gpu_memcpy_sse4.h"
 #endif
-#include "utils/win32/memcpy_sse2.h"
+#include "platform/win32/utils/memcpy_sse2.h"
 #include "utils/CPUInfo.h"
 
 #define PLANE_Y 0

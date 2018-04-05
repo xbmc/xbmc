@@ -34,7 +34,7 @@
 #include "threads/SingleLock.h"
 #include "threads/Thread.h"
 #include "utils/log.h"
-#include "utils/posix/FileHandle.h"
+#include "platform/posix/utils/FileHandle.h"
 
 using namespace KODI::UTILS::POSIX;
 using namespace KODI::WINDOWING::WAYLAND;

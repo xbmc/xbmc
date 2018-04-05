@@ -49,7 +49,7 @@
 #endif
 
 #ifdef TARGET_WINDOWS_STORE
-#include "filesystem/win10/WinLibraryDirectory.h"
+#include "platform/win10/filesystem/WinLibraryDirectory.h"
 #endif
 
 using namespace XFILE;

@@ -29,12 +29,12 @@
 #include "utils/JobManager.h"
 
 #if defined(HAS_AVAHI)
-#include "linux/ZeroconfAvahi.h"
+#include "platform/linux/network/ZeroconfAvahi.h"
 #elif defined(TARGET_DARWIN)
 //on osx use the native implementation
-#include "osx/ZeroconfOSX.h"
+#include "platform/darwin/osx/network/ZeroconfOSX.h"
 #elif defined(TARGET_ANDROID)
-#include "android/ZeroconfAndroid.h"
+#include "platform/android/network/ZeroconfAndroid.h"
 #elif defined(HAS_MDNS)
 #include "mdns/ZeroconfMDNS.h"
 #endif

@@ -29,7 +29,7 @@
 #include "input/InputManager.h"
 #include "peripherals/Peripherals.h"
 #include "peripherals/addons/AddonButtonMap.h"
-#include "peripherals/bus/android/PeripheralBusAndroid.h"
+#include "platform/android/peripherals/PeripheralBusAndroid.h"
 #include "peripherals/bus/virtual/PeripheralBusAddon.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
