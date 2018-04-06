@@ -67,7 +67,7 @@ public:
 
   void Project(float &x, float &y, float &z) override;
 
-  std::string GetShaderPath(const std::string &filename) override { return "GLES/2.0/"; }
+  std::string GetShaderPath(const std::string &filename) override;
 
   void InitialiseShaders();
   void ReleaseShaders();
@@ -98,6 +98,10 @@ protected:
   std::string m_RenderExtensions;
 
   std::array<std::unique_ptr<CGLESShader>, SM_MAX> m_pShader;
+
+  int m_glslMajor{1};
+  int m_glslMinor{0};
+
   ESHADERMETHOD m_method = SM_DEFAULT;
 
   GLint      m_viewPort[4];

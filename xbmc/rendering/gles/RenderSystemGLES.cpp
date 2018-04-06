@@ -55,6 +55,12 @@ bool CRenderSystemGLES::InitRenderSystem()
     m_RenderVersion = ver;
   }
 
+  ver = reinterpret_cast<const char*>(glGetString(GL_SHADING_LANGUAGE_VERSION));
+  if (ver)
+  {
+    sscanf(ver, "OpenGL ES GLSL ES %d.%d", &m_glslMajor, &m_glslMinor);
+  }
+
   // Get our driver vendor and renderer
   const char *tmpVendor = (const char*) glGetString(GL_VENDOR);
   m_RenderVendor.clear();
@@ -642,4 +648,14 @@ GLint CRenderSystemGLES::GUIShaderGetModel()
     return m_pShader[m_method]->GetModelLoc();
 
   return -1;
+}
+
+std::string CRenderSystemGLES::GetShaderPath(const std::string &filename)
+{
+  if (m_glslMajor >= 3 && m_glslMinor >= 0)
+  {
+    return "GLES/3.0/";
+  }
+
+  return "GLES/2.0/";
 }
