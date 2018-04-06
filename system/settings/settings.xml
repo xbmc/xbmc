@@ -2855,12 +2855,12 @@
         </setting>
         <setting id="debug.extralogging" type="boolean" label="666" help="36394">
           <level>1</level>
-          <default>true</default>
+          <default>false</default>
           <control type="toggle" />
         </setting>
         <setting id="debug.setextraloglevel" type="list[integer]" parent="debug.extralogging" label="668" help="36534">
           <level>1</level>
-          <default>32768</default>
+          <default></default>
           <constraints>
             <options>loggingcomponents</options>
             <delimiter>,</delimiter>
