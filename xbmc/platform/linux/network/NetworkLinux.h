@@ -64,7 +64,7 @@ private:
    CNetworkLinux* m_network;
 };
 
-class CNetworkLinux : public CNetwork
+class CNetworkLinux : public CNetworkBase
 {
 public:
    CNetworkLinux(CSettings &settings);
@@ -90,6 +90,8 @@ private:
    std::vector<CNetworkInterface*> m_interfaces;
    int m_sock;
 };
+
+using CNetwork = CNetworkLinux;
 
 #endif
 

@@ -184,7 +184,7 @@ std::string CNetworkInterfaceWin10::GetCurrentDefaultGateway(void)
 }
 
 CNetworkWin10::CNetworkWin10(CSettings &settings)
-  : CNetwork(settings)
+  : CNetworkBase(settings)
 {
   queryInterfaceList();
   NetworkInformation::NetworkStatusChanged += ref new NetworkStatusChangedEventHandler([this](Platform::Object^) {

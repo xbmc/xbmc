@@ -126,7 +126,7 @@ CFileExtensionProvider& CServiceBroker::GetFileExtensionProvider()
   return g_application.m_ServiceManager->GetFileExtensionProvider();
 }
 
-CNetwork& CServiceBroker::GetNetwork()
+CNetworkBase& CServiceBroker::GetNetwork()
 {
   return g_application.m_ServiceManager->GetNetwork();
 }

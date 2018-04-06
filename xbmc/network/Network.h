@@ -98,7 +98,7 @@ public:
 class CSettings;
 class CNetworkServices;
 
-class CNetwork
+class CNetworkBase
 {
 public:
   enum EMESSAGE
@@ -107,8 +107,8 @@ public:
     SERVICES_DOWN
   };
 
-   CNetwork(CSettings &settings);
-   virtual ~CNetwork();
+   CNetworkBase(CSettings &settings);
+   virtual ~CNetworkBase();
 
    // Get network services
    CNetworkServices& GetServices() { return *m_services; }
@@ -167,6 +167,8 @@ public:
 #include "platform/win32/network/NetworkWin32.h"
 #elif defined(HAS_WIN10_NETWORK)
 #include "platform/win10/network/NetworkWin10.h"
+#else
+using CNetwork = CNetworkBase;
 #endif
 
 //creates, binds and listens a tcp socket on the desired port. Set bindLocal to

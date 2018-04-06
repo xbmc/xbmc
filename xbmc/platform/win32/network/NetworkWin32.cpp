@@ -145,7 +145,7 @@ std::string CNetworkInterfaceWin32::GetCurrentDefaultGateway(void)
 }
 
 CNetworkWin32::CNetworkWin32(CSettings &settings)
- : CNetwork(settings)
+ : CNetworkBase(settings)
 {
   queryInterfaceList();
 }

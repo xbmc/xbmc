@@ -287,7 +287,7 @@ std::string CNetworkInterfaceLinux::GetCurrentDefaultGateway(void)
           strcmp(gateway, "00000000") != 0)
       {
          unsigned char gatewayAddr[4];
-         int len = CNetwork::ParseHex(gateway, gatewayAddr);
+         int len = CNetworkBase::ParseHex(gateway, gatewayAddr);
          if (len == 4)
          {
             struct in_addr in;
@@ -306,7 +306,7 @@ std::string CNetworkInterfaceLinux::GetCurrentDefaultGateway(void)
 }
 
 CNetworkLinux::CNetworkLinux(CSettings &settings)
- : CNetwork(settings)
+ : CNetworkBase(settings)
 {
    m_sock = socket(AF_INET, SOCK_DGRAM, 0);
    queryInterfaceList();
@@ -338,7 +338,7 @@ std::vector<CNetworkInterface*>& CNetworkLinux::GetInterfaceList(void)
 //! and the interface comes up during runtime
 CNetworkInterface* CNetworkLinux::GetFirstConnectedInterface(void)
 {
-    CNetworkInterface *pNetIf=CNetwork::GetFirstConnectedInterface();
+    CNetworkInterface *pNetIf=CNetworkBase::GetFirstConnectedInterface();
     
     // no connected Interfaces found? - requeryInterfaceList
     if (!pNetIf)
@@ -346,7 +346,7 @@ CNetworkInterface* CNetworkLinux::GetFirstConnectedInterface(void)
         CLog::Log(LOGDEBUG,"%s no connected interface found - requery list",__FUNCTION__);        
         queryInterfaceList();        
         //retry finding a connected if
-        pNetIf = CNetwork::GetFirstConnectedInterface();
+        pNetIf = CNetworkBase::GetFirstConnectedInterface();
     }
     
     return pNetIf;
