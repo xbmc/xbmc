@@ -1,75 +1,136 @@
-TOC
-1. Introduction
-2. Building Kodi for the Raspberry Pi
-3. Building Kodi using buildroot environment
+![Kodi Logo](resources/banner_slim.png)
 
------------------------------------------------------------------------------
-1. Introduction
------------------------------------------------------------------------------
+# Raspberry Pi build guide
+This guide has been tested with Ubuntu 16.04 (Xenial) x86_64 and 18.04 (Bionic). It is meant to cross-compile Kodi for the Raspberry Pi using **[Kodi's unified depends build system](../tools/depends/README.md)**. Please read it in full before you proceed to familiarize yourself with the build procedure.
 
-You can build Kodi for the Raspberry Pi in different ways. This document
-shows two different methods. The first assumes that you want to run Kodi
-on top of an image like Raspbian, the second shows how to create an entire
-image which includes Linux.
+If you're looking to build Kodi natively using **[Raspbian](https://www.raspberrypi.org/downloads/raspbian/)**, you should follow the **[Ubuntu guide](README.Ubuntu.md)** instead. Several other distributions have **[specific guides](README.md)** and a general **[Linux guide](README.Linux.md)** is also available.
 
------------------------------------------------------------------------------
-2. Building Kodi for the Raspberry Pi
------------------------------------------------------------------------------
+## Table of Contents
+1. **[Document conventions](#1-document-conventions)**
+2. **[Install the required packages](#2-install-the-required-packages)**
+3. **[Get the source code](#3-get-the-source-code)**  
+  3.1. **[Get Raspberry Pi tools and firmware](#31-get-raspberry-pi-tools-and-firmware)**
+4. **[Build tools and dependencies](#4-build-tools-and-dependencies)**
+5. **[Build Kodi](#5-build-kodi)**
 
-The following steps were tested with Ubuntu 16.04 x64. (Note that building on
-a 32 bit machine requires slightly different setting).
+## 1. Document conventions
+This guide assumes you are using `terminal`, also known as `console`, `command-line` or simply `cli`. Commands need to be run at the terminal, one at a time and in the provided order.
 
-The following commands build for newer Raspberry Pi 2 generation. In order to
-build for the first Raspberry Pi, the commands have to be adapted to use
-`--with-platform=raspberry-pi` instead of `--with-platform=raspberry-pi2`.
+This is a comment that provides context:
+```
+this is a command
+this is another command
+and yet another one
+```
 
-    $ sudo apt-get install git autoconf curl g++ zlib1g-dev libcurl4-openssl-dev gawk gperf libtool autopoint swig default-jre bison make
+**Example:** Clone Kodi's current master branch:
+```
+git clone https://github.com/xbmc/xbmc kodi
+```
 
-    $ RPI_DEV=$PWD
-    $ git clone https://github.com/raspberrypi/tools
-    $ git clone https://github.com/raspberrypi/firmware
-    $ git clone https://github.com/xbmc/xbmc
+Commands that contain strings enclosed in angle brackets denote something you need to change to suit your needs.
+```
+git clone -b <branch-name> https://github.com/xbmc/xbmc kodi
+```
 
-    $ mkdir kodi-bcm
-    $ cd xbmc/tools/depends
-    $ ./bootstrap
-    $ ./configure --host=arm-linux-gnueabihf \
-       --prefix=$RPI_DEV/kodi-bcm \
-       --with-toolchain=$RPI_DEV/tools/arm-bcm2708/arm-rpi-4.9.3-linux-gnueabihf \
-       --with-firmware=$RPI_DEV/firmware \
-       --with-platform=raspberry-pi2 \
-       --disable-debug
+**Example:** Clone Kodi's current Krypton branch:
+```
+git clone -b Krypton https://github.com/xbmc/xbmc kodi
+```
 
-    $ make
-    $ cd ../..
+Several different strategies are used to draw your attention to certain pieces of information. In order of how critical the information is, these items are marked as a note, tip, or warning. For example:
+ 
+**NOTE:** Linux is user friendly... It's just very particular about who its friends are.  
+**TIP:** Algorithm is what developers call code they do not want to explain.  
+**WARNING:** Developers don't change light bulbs. It's a hardware problem.
 
-    $ make -C tools/depends/target/cmakebuildsys
-    $ cd build
-    $ make
-    $ make install
+**[back to top](#table-of-contents)** | **[back to section top](#1-document-conventions)**
 
------------------------------------------------------------------------------
-3. Building Kodi using buildroot environment
------------------------------------------------------------------------------
+## 2. Install the required packages
+Install build dependencies needed to cross-compile Kodi for the Raspberry Pi:
+```
+sudo apt install autoconf bison build-essential curl default-jdk gawk git gperf libcurl4-openssl-dev zlib1g-dev
+```
 
-Installing and setting up the buildroot environment:
+**[back to top](#table-of-contents)**
 
-Create a top level directory where you checkout Kodi and buildroot.
+## 3. Get the source code
+Change to your `home` directory:
+```
+cd $HOME
+```
 
-For example :
+Clone Kodi's current master branch:
+```
+git clone https://github.com/xbmc/xbmc kodi
+```
 
-    $ mkdir /opt/kodi-raspberrypi
-    $ cd /opt/kodi-raspberrypi
+### 3.1. Get Raspberry Pi tools and firmware
+Clone Raspberry Pi tools:
+```
+git clone https://github.com/raspberrypi/tools --depth=1
+```
 
-Checkout kodi :
+Clone Raspberry Pi firmware:
+```
+git clone https://github.com/raspberrypi/firmware --depth=1
+```
 
-    $ git clone https://github.com/xbmc/xbmc.git kodi
+**[back to top](#table-of-contents)**
 
-Checkout buildroot :
+## 4. Build tools and dependencies
+Create target directory:
+```
+mkdir $HOME/kodi-rpi
+```
 
-    $ git clone https://github.com/huceke/buildroot-rbp.git
+Prepare to configure build:
+```
+cd $HOME/kodi/tools/depends
+./bootstrap
+```
 
-    $ cd /opt/kodi-raspberrypi/buildroot-rbp
+**TIP:** Look for comments starting with `Or ...` and only execute the command(s) you need.
 
-Follow the instructions in README.rbp how to build the system and Kodi.
+Configure build for Raspberry Pi 1:
+```
+./configure --host=arm-linux-gnueabihf --prefix=$HOME/kodi-rpi --with-toolchain=$HOME/tools/arm-bcm2708/arm-rpi-4.9.3-linux-gnueabihf --with-firmware=$HOME/firmware --with-platform=raspberry-pi --disable-debug
+```
+
+Or configure build for Raspberry Pi 2 and 3:
+```
+./configure --host=arm-linux-gnueabihf --prefix=$HOME/kodi-rpi --with-toolchain=$HOME/tools/arm-bcm2708/arm-rpi-4.9.3-linux-gnueabihf --with-firmware=$HOME/firmware --with-platform=raspberry-pi2 --disable-debug
+```
+
+Build tools and dependencies:
+```
+make -j$(getconf _NPROCESSORS_ONLN)
+```
+
+**TIP:** By adding `-j<number>` to the make command, you can choose how many concurrent jobs will be used and expedite the build process. It is recommended to use `-j$(getconf _NPROCESSORS_ONLN)` to compile on all available processor cores. The build machine can also be configured to do this automatically by adding `export MAKEFLAGS="-j(getconf _NPROCESSORS_ONLN)"` to your shell config (e.g. `~/.bashrc`).
+
+**[back to top](#table-of-contents)** | **[back to section top](#4-build-tools-and-dependencies)**
+
+## 5. Build Kodi
+Configure CMake build:
+```
+cd $HOME/kodi
+make -C tools/depends/target/cmakebuildsys
+```
+
+Build Kodi:
+```
+cd $HOME/kodi/build
+make -j$(getconf _NPROCESSORS_ONLN)
+```
+
+Install to target directory:
+```
+make install
+```
+
+After the build process is finished, you can find the files ready to be installed inside `$HOME/kodi-rpi`. Look for a directory called `raspberry-pi-release` or `raspberry-pi2-release`.
+
+**[back to top](#table-of-contents)**
+
 
