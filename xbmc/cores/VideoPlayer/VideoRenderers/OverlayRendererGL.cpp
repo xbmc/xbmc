@@ -14,7 +14,7 @@
 #include "LinuxRendererGL.h"
 #include "rendering/gl/RenderSystemGL.h"
 #elif HAS_GLES >= 2
-#include "LinuxRendererGLES.h"
+#include "LinuxRendererGLESBase.h"
 #include "rendering/gles/RenderSystemGLES.h"
 #endif
 #include "rendering/MatrixGL.h"

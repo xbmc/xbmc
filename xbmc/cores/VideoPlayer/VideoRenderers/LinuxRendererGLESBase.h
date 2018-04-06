@@ -56,11 +56,11 @@ enum RenderQuality
 
 class CEvent;
 
-class CLinuxRendererGLES : public CBaseRenderer
+class CLinuxRendererGLESBase : public CBaseRenderer
 {
 public:
-  CLinuxRendererGLES();
-  virtual ~CLinuxRendererGLES();
+  CLinuxRendererGLESBase();
+  virtual ~CLinuxRendererGLESBase();
 
   // Registration
   static CBaseRenderer* Create(CVideoBuffer *buffer);
@@ -107,14 +107,14 @@ protected:
   virtual void DeleteTexture(int index);
   virtual bool CreateTexture(int index);
 
-  bool UploadYV12Texture(int index);
+  virtual bool CreateYV12Texture(int index) = 0;
+  virtual bool UploadYV12Texture(int index) = 0;
   void DeleteYV12Texture(int index);
-  bool CreateYV12Texture(int index);
-  virtual bool SkipUploadYV12(int index) { return false; }
 
-  bool UploadNV12Texture(int index);
+  virtual bool CreateNV12Texture(int index) = 0;
+  virtual bool UploadNV12Texture(int index) = 0;
   void DeleteNV12Texture(int index);
-  bool CreateNV12Texture(int index);
+
 
   void CalculateTextureSourceRects(int source, int num_planes);
 
@@ -189,9 +189,7 @@ protected:
   // field index 0 is full image, 1 is odd scanlines, 2 is even scanlines
   CPictureBuffer m_buffers[NUM_BUFFERS];
 
-  void LoadPlane(CYuvPlane& plane, int type,
-                 unsigned width,  unsigned height,
-                 int stride, int bpp, void* data);
+  virtual void LoadPlane(CYuvPlane& plane, int type, unsigned width,  unsigned height, int stride, int bpp, void* data) = 0;
 
   Shaders::BaseYUV2RGBGLSLShader *m_pYUVProgShader{nullptr};
   Shaders::BaseYUV2RGBGLSLShader *m_pYUVBobShader{nullptr};

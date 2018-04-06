@@ -100,7 +100,7 @@ bool CRendererVAAPI::Configure(const VideoPicture &picture, float fps, unsigned 
     fence = GL_NONE;
   }
 
-  return CLinuxRendererGLES::Configure(picture, fps, orientation);
+  return CLinuxRendererGLES3::Configure(picture, fps, orientation);
 }
 
 bool CRendererVAAPI::ConfigChanged(const VideoPicture &picture)
@@ -110,16 +110,6 @@ bool CRendererVAAPI::ConfigChanged(const VideoPicture &picture)
     return true;
 
   return false;
-}
-
-bool CRendererVAAPI::Supports(ERENDERFEATURE feature)
-{
-  return CLinuxRendererGLES::Supports(feature);
-}
-
-bool CRendererVAAPI::Supports(ESCALINGMETHOD method)
-{
-  return CLinuxRendererGLES::Supports(method);
 }
 
 EShaderFormat CRendererVAAPI::GetShaderFormat()
@@ -284,5 +274,5 @@ void CRendererVAAPI::ReleaseBuffer(int idx)
   {
     m_vaapiTextures[idx]->Unmap();
   }
-  CLinuxRendererGLES::ReleaseBuffer(idx);
+  CLinuxRendererGLES3::ReleaseBuffer(idx);
 }

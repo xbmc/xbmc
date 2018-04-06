@@ -47,10 +47,17 @@ if(OPENGLES_FOUND AND (CORE_PLATFORM_NAME_LC STREQUAL android OR
                        CORE_PLATFORM_NAME_LC STREQUAL aml OR
                        CORE_PLATFORM_NAME_LC STREQUAL gbm OR
                        CORE_PLATFORM_NAME_LC STREQUAL wayland))
-  list(APPEND SOURCES LinuxRendererGLES.cpp
+  list(APPEND SOURCES LinuxRendererGLESBase.cpp
+                      LinuxRendererGLES2.cpp
                       FrameBufferObject.cpp)
-  list(APPEND HEADERS LinuxRendererGLES.h
+  list(APPEND HEADERS LinuxRendererGLESBase.h
+                      LinuxRendererGLES2.h
                       FrameBufferObject.cpp)
+
+  if(OPENGLES3_FOUND)
+    list(APPEND SOURCES LinuxRendererGLES3.cpp)
+    list(APPEND HEADERS LinuxRendererGLES3.h)
+  endif()
 endif()
 
 core_add_library(videorenderers)

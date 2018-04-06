@@ -43,13 +43,13 @@ bool CRendererDRMPRIMEGLES::Configure(const VideoPicture &picture, float fps, un
   for (auto &texture : m_DRMPRIMETextures)
     texture.Init(winSystem->GetEGLDisplay());
 
-  return CLinuxRendererGLES::Configure(picture, fps, orientation);
+  return CLinuxRendererGLESBase::Configure(picture, fps, orientation);
 }
 
 void CRendererDRMPRIMEGLES::ReleaseBuffer(int index)
 {
   m_DRMPRIMETextures[index].Unmap();
-  CLinuxRendererGLES::ReleaseBuffer(index);
+  CLinuxRendererGLESBase::ReleaseBuffer(index);
 }
 
 bool CRendererDRMPRIMEGLES::CreateTexture(int index)

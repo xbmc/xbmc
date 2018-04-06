@@ -8,10 +8,10 @@
 
 #pragma once
 
-#include "cores/VideoPlayer/VideoRenderers/LinuxRendererGLES.h"
+#include "cores/VideoPlayer/VideoRenderers/LinuxRendererGLESBase.h"
 #include "DRMPRIMEEGL.h"
 
-class CRendererDRMPRIMEGLES : public CLinuxRendererGLES
+class CRendererDRMPRIMEGLES : public CLinuxRendererGLESBase
 {
 public:
   CRendererDRMPRIMEGLES() = default;
@@ -21,17 +21,25 @@ public:
   static CBaseRenderer* Create(CVideoBuffer* buffer);
   static void Register();
 
-  // CLinuxRendererGLES overrides
+  // LinuxRendererGLESBase overrides
   bool Configure(const VideoPicture &picture, float fps, unsigned int orientation) override;
   void ReleaseBuffer(int index) override;
 
 protected:
-  // CLinuxRendererGLES overrides
+  // LinuxRendererGLESBase overrides
   bool LoadShadersHook() override;
   bool RenderHook(int index) override;
   bool UploadTexture(int index) override;
   void DeleteTexture(int index) override;
   bool CreateTexture(int index) override;
+
+  bool CreateYV12Texture(int index) override { return false; }
+  bool UploadYV12Texture(int index) override { return false; }
+
+  bool CreateNV12Texture(int index) override { return false; }
+  bool UploadNV12Texture(int index) override { return false; }
+
+  void LoadPlane(CYuvPlane& plane, int type, unsigned width,  unsigned height, int stride, int bpp, void* data) override {}
 
   CDRMPRIMETexture m_DRMPRIMETextures[NUM_BUFFERS];
 };

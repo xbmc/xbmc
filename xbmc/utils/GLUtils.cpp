@@ -240,7 +240,7 @@ int glFormatElementByteCount(GLenum format)
 {
   switch (format)
   {
-#ifdef HAS_GL
+#if defined(HAS_GL)
   case GL_BGRA:
     return 4;
   case GL_RED:
@@ -251,6 +251,13 @@ int glFormatElementByteCount(GLenum format)
     return 2;
   case GL_BGR:
     return 3;
+#elif HAS_GLES == 3
+  case GL_RED_INTEGER:
+  case GL_RED:
+    return 1;
+  case GL_RG_INTEGER:
+  case GL_RG:
+    return 2;
 #endif
   case GL_RGBA:
     return 4;

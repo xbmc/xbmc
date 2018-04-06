@@ -10,7 +10,7 @@
 
 #include <memory>
 
-#include "cores/VideoPlayer/VideoRenderers/LinuxRendererGLES.h"
+#include "cores/VideoPlayer/VideoRenderers/LinuxRendererGLES3.h"
 #include "VaapiEGL.h"
 
 namespace VAAPI
@@ -18,7 +18,7 @@ namespace VAAPI
 class IVaapiWinSystem;
 }
 
-class CRendererVAAPI : public CLinuxRendererGLES
+class CRendererVAAPI : public CLinuxRendererGLES3
 {
 public:
   CRendererVAAPI();
@@ -33,10 +33,6 @@ public:
   bool ConfigChanged(const VideoPicture &picture) override;
   void ReleaseBuffer(int idx) override;
   bool NeedBuffer(int idx) override;
-
-  // Feature support
-  bool Supports(ERENDERFEATURE feature) override;
-  bool Supports(ESCALINGMETHOD method) override;
 
 protected:
   bool LoadShadersHook() override;
