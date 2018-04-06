@@ -1147,16 +1147,16 @@ void CGUIAddonWindow::AllocResources(bool forceLoad /*= false */)
   URIUtils::RemoveSlashAtEnd(fallbackMediaPath);
   m_mediaDir = fallbackMediaPath;
 
-  g_TextureManager.AddTexturePath(m_mediaDir);
+  CServiceBroker::GetGUI()->GetTextureManager().AddTexturePath(m_mediaDir);
   CGUIMediaWindow::AllocResources(forceLoad);
-  g_TextureManager.RemoveTexturePath(m_mediaDir);
+  CServiceBroker::GetGUI()->GetTextureManager().RemoveTexturePath(m_mediaDir);
 }
 
 void CGUIAddonWindow::Render()
 {
-  g_TextureManager.AddTexturePath(m_mediaDir);
+  CServiceBroker::GetGUI()->GetTextureManager().AddTexturePath(m_mediaDir);
   CGUIMediaWindow::Render();
-  g_TextureManager.RemoveTexturePath(m_mediaDir);
+  CServiceBroker::GetGUI()->GetTextureManager().RemoveTexturePath(m_mediaDir);
 }
 
 void CGUIAddonWindow::AddItem(CFileItemPtr* fileItem, int itemPosition)
@@ -1282,9 +1282,9 @@ void CGUIAddonWindowDialog::Show(bool show /* = true */, bool modal /* = true*/)
 {
   if (modal)
   {
-    unsigned int count = g_graphicsContext.exit();
+    unsigned int count = CServiceBroker::GetWinSystem().GetGfxContext().exit();
     CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ADDON_DIALOG, 0, show ? 1 : 0, static_cast<void*>(this));
-    g_graphicsContext.restore(count);
+    CServiceBroker::GetWinSystem().GetGfxContext().restore(count);
   }
   else
     CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ADDON_DIALOG, 0, show ? 1 : 0, static_cast<void*>(this));

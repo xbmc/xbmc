@@ -22,7 +22,7 @@
 #include "VideoSyncIos.h"
 #include "utils/MathUtils.h"
 #include "cores/VideoPlayer/VideoReferenceClock.h"
-#include "guilib/GraphicContext.h"
+#include "windowing/GraphicContext.h"
 #include "windowing/osx/WinSystemIOS.h"
 #include "utils/TimeUtils.h"
 
@@ -60,7 +60,7 @@ void CVideoSyncIos::Cleanup()
 
 float CVideoSyncIos::GetFps()
 {
-  m_fps = g_graphicsContext.GetFPS();
+  m_fps = CServiceBroker::GetWinSystem().GetGfxContext().GetFPS();
   CLog::Log(LOGDEBUG, "CVideoSyncIos::%s Detected refreshrate: %f hertz", __FUNCTION__, m_fps);
   return m_fps;
 }

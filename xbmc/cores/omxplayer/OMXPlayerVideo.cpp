@@ -39,7 +39,7 @@
 #include "settings/MediaSettings.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFlags.h"
 #include "cores/VideoPlayer/VideoRenderers/HwDecRender/MMALRenderer.h"
-#include "guilib/GraphicContext.h"
+#include "windowing/GraphicContext.h"
 #include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
 
 #include "platform/linux/RBP.h"
@@ -668,7 +668,7 @@ void OMXPlayerVideo::SetVideoRect(const CRect &InSrcRect, const CRect &InDestRec
 {
   CRect SrcRect = InSrcRect, DestRect = InDestRect;
   bool stereo_invert = false;
-  RENDER_STEREO_MODE display_stereo_mode = g_graphicsContext.GetStereoMode();
+  RENDER_STEREO_MODE display_stereo_mode = CServiceBroker::GetWinSystem().GetGfxContext().GetStereoMode();
   RENDER_STEREO_MODE video_stereo_mode = RENDER_STEREO_MODE_OFF;
   std::string stereoMode = GetStereoMode();
 
@@ -731,7 +731,7 @@ void OMXPlayerVideo::SetVideoRect(const CRect &InSrcRect, const CRect &InDestRec
   CLog::Log(LOGDEBUG, "OMXPlayerVideo::%s %d,%d,%d,%d -> %d,%d,%d,%d (%d,%d,%d,%d,%s)", __func__,
       (int)SrcRect.x1, (int)SrcRect.y1, (int)SrcRect.x2, (int)SrcRect.y2,
       (int)DestRect.x1, (int)DestRect.y1, (int)DestRect.x2, (int)DestRect.y2,
-      video_stereo_mode, display_stereo_mode, m_processInfo.GetVideoSettings().m_StereoInvert, g_graphicsContext.GetStereoView(), OMXPlayerVideo::GetStereoMode().c_str());
+      video_stereo_mode, display_stereo_mode, m_processInfo.GetVideoSettings().m_StereoInvert, CServiceBroker::GetWinSystem().GetGfxContext().GetStereoView(), OMXPlayerVideo::GetStereoMode().c_str());
 
   m_src_rect = SrcRect;
   m_dst_rect = DestRect;
@@ -741,7 +741,7 @@ void OMXPlayerVideo::SetVideoRect(const CRect &InSrcRect, const CRect &InDestRec
 
   // might need to scale up m_dst_rect to display size as video decodes
   // to separate video plane that is at display size.
-  RESOLUTION res = g_graphicsContext.GetVideoResolution();
+  RESOLUTION res = CServiceBroker::GetWinSystem().GetGfxContext().GetVideoResolution();
   CRect gui(0, 0, CDisplaySettings::GetInstance().GetResolutionInfo(res).iWidth, CDisplaySettings::GetInstance().GetResolutionInfo(res).iHeight);
   CRect display(0, 0, CDisplaySettings::GetInstance().GetResolutionInfo(res).iScreenWidth, CDisplaySettings::GetInstance().GetResolutionInfo(res).iScreenHeight);
 
@@ -772,7 +772,7 @@ void OMXPlayerVideo::SetVideoRect(const CRect &InSrcRect, const CRect &InDestRec
 
 void OMXPlayerVideo::ResolutionUpdateCallBack(uint32_t width, uint32_t height, float framerate, float display_aspect)
 {
-  RESOLUTION res  = g_graphicsContext.GetVideoResolution();
+  RESOLUTION res  = CServiceBroker::GetWinSystem().GetGfxContext().GetVideoResolution();
   uint32_t video_width   = CDisplaySettings::GetInstance().GetResolutionInfo(res).iScreenWidth;
   uint32_t video_height  = CDisplaySettings::GetInstance().GetResolutionInfo(res).iScreenHeight;
 

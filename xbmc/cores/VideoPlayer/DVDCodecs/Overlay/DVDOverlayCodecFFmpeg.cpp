@@ -25,7 +25,7 @@
 #include "cores/VideoPlayer/Interface/Addon/DemuxPacket.h"
 #include "utils/log.h"
 #include "utils/EndianSwap.h"
-#include "guilib/GraphicContext.h"
+#include "windowing/GraphicContext.h"
 
 CDVDOverlayCodecFFmpeg::CDVDOverlayCodecFFmpeg() : CDVDOverlayCodec("FFmpeg Subtitle Decoder")
 {
@@ -243,7 +243,7 @@ CDVDOverlay* CDVDOverlayCodecFFmpeg::GetOverlay()
       }
     }
 
-    RENDER_STEREO_MODE render_stereo_mode = g_graphicsContext.GetStereoMode();
+    RENDER_STEREO_MODE render_stereo_mode = CServiceBroker::GetWinSystem().GetGfxContext().GetStereoMode();
     if (render_stereo_mode != RENDER_STEREO_MODE_OFF)
     {
       if (rect.h > m_height / 2)

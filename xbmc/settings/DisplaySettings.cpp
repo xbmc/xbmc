@@ -30,8 +30,7 @@
 #include "ServiceBroker.h"
 #include "cores/VideoPlayer/VideoRenderers/ColorManager.h"
 #include "dialogs/GUIDialogFileBrowser.h"
-#include "guilib/GraphicContext.h"
-#include "guilib/gui3d.h"
+#include "windowing/GraphicContext.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/StereoscopicsManager.h"
 #include "messaging/ApplicationMessenger.h"
@@ -292,7 +291,7 @@ bool CDisplaySettings::OnSettingChanging(std::shared_ptr<const CSetting> setting
     RESOLUTION newRes = GetResolutionFromString(std::static_pointer_cast<const CSettingString>(setting)->GetValue());
 
     SetCurrentResolution(newRes, false);
-    g_graphicsContext.SetVideoResolution(newRes, false);
+    CServiceBroker::GetWinSystem().GetGfxContext().SetVideoResolution(newRes, false);
 
     // check if the old or the new resolution was/is windowed
     // in which case we don't show any prompt to the user
@@ -317,7 +316,7 @@ bool CDisplaySettings::OnSettingChanging(std::shared_ptr<const CSetting> setting
     RESOLUTION newRes = GetResolutionForScreen();
 
     SetCurrentResolution(newRes, false);
-    g_graphicsContext.SetVideoResolution(newRes, true);
+    CServiceBroker::GetWinSystem().GetGfxContext().SetVideoResolution(newRes, true);
 
     if (!m_resolutionChangeAborted)
     {

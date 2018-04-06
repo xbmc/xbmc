@@ -152,6 +152,7 @@ set(HEADERS ActorProtocol.h
             Temperature.h
             TextSearch.h
             TimeUtils.h
+            TransformMatrix.h
             URIUtils.h
             UrlOptions.h
             Utf8Utils.h

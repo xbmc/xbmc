@@ -19,7 +19,7 @@
  *
  */
 
-#include "guilib/Resolution.h"
+#include "windowing/Resolution.h"
 
 #include <string>
 #include <vector>

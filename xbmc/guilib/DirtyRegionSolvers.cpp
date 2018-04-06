@@ -19,7 +19,7 @@
  */
 
 #include "DirtyRegionSolvers.h"
-#include "GraphicContext.h"
+#include "windowing/GraphicContext.h"
 #include <stdio.h>
 
 void CUnionDirtyRegionSolver::Solve(const CDirtyRegionList &input, CDirtyRegionList &output)
@@ -34,14 +34,14 @@ void CUnionDirtyRegionSolver::Solve(const CDirtyRegionList &input, CDirtyRegionL
 
 void CFillViewportAlwaysRegionSolver::Solve(const CDirtyRegionList &input, CDirtyRegionList &output)
 {
-  CDirtyRegion unifiedRegion(g_graphicsContext.GetViewWindow());
+  CDirtyRegion unifiedRegion(CServiceBroker::GetWinSystem().GetGfxContext().GetViewWindow());
   output.push_back(unifiedRegion);
 }
 
 void CFillViewportOnChangeRegionSolver::Solve(const CDirtyRegionList &input, CDirtyRegionList &output)
 {
   if (!input.empty())
-    output.assign(1,CDirtyRegion(g_graphicsContext.GetViewWindow()));
+    output.assign(1,CDirtyRegion(CServiceBroker::GetWinSystem().GetGfxContext().GetViewWindow()));
 }
 
 CGreedyDirtyRegionSolver::CGreedyDirtyRegionSolver()

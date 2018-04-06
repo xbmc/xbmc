@@ -23,7 +23,7 @@
 #include "GUIFontManager.h"
 #include "Texture.h"
 #include "TextureManager.h"
-#include "GraphicContext.h"
+#include "windowing/GraphicContext.h"
 #include "ServiceBroker.h"
 #include "gui3d.h"
 #include "utils/log.h"
@@ -72,7 +72,7 @@ bool CGUIFontTTFGL::FirstBegin()
   if (m_textureStatus == TEXTURE_REALLOCATED)
   {
     if (glIsTexture(m_nTexture))
-      g_TextureManager.ReleaseHwTexture(m_nTexture);
+      CServiceBroker::GetGUI()->GetTextureManager().ReleaseHwTexture(m_nTexture);
     m_textureStatus = TEXTURE_VOID;
   }
 
@@ -218,7 +218,7 @@ void CGUIFontTTFGL::LastEnd()
     // Bind our pre-calculated array to GL_ELEMENT_ARRAY_BUFFER
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_elementArrayHandle);
     // Store current scissor
-    CRect scissor = g_graphicsContext.StereoCorrection(g_graphicsContext.GetScissors());
+    CRect scissor = CServiceBroker::GetWinSystem().GetGfxContext().StereoCorrection(CServiceBroker::GetWinSystem().GetGfxContext().GetScissors());
 
     for (size_t i = 0; i < m_vertexTrans.size(); i++)
     {
@@ -401,7 +401,7 @@ void CGUIFontTTFGL::DeleteHardwareTexture()
   if (m_textureStatus != TEXTURE_VOID)
   {
     if (glIsTexture(m_nTexture))
-      g_TextureManager.ReleaseHwTexture(m_nTexture);
+      CServiceBroker::GetGUI()->GetTextureManager().ReleaseHwTexture(m_nTexture);
 
     m_textureStatus = TEXTURE_VOID;
     m_updateY1 = m_updateY2 = 0;

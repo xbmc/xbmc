@@ -23,7 +23,7 @@
 #include <assert.h>
 #include <string>
 #ifdef TARGET_WINDOWS
-#include "guilib/GraphicContext.h"
+#include "windowing/GraphicContext.h"
 #include "rendering/dx/RenderContext.h"
 #endif
 
@@ -187,7 +187,7 @@ void DPMSSupport::PlatformSpecificInit()
 
 bool DPMSSupport::PlatformSpecificEnablePowerSaving(PowerSavingMode mode)
 {
-  if(!g_graphicsContext.IsFullScreenRoot())
+  if(!CServiceBroker::GetWinSystem().GetGfxContext().IsFullScreenRoot())
   {
     CLog::Log(LOGDEBUG, "DPMS: not in fullscreen, power saving disabled");
     return false;

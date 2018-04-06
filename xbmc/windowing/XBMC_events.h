@@ -28,7 +28,7 @@
 /* Include file for SDL event handling */
 
 #include "input/XBMC_keyboard.h"
-#include "guilib/Resolution.h"
+#include "Resolution.h"
 
 /* Event enumerations */
 typedef enum {

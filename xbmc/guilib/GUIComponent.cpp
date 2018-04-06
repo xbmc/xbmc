@@ -20,18 +20,31 @@
 
 #include "GUIComponent.h"
 #include "GUIWindowManager.h"
+#include "TextureManager.h"
 #include "dialogs/GUIDialogYesNo.h"
+#include "GUILargeTextureManager.h"
 #include "ServiceBroker.h"
 #include "URL.h"
 
 CGUIComponent::CGUIComponent()
 {
   m_pWindowManager.reset(new CGUIWindowManager());
+  m_pTextureManager.reset(new CGUITextureManager());
+  m_pLargeTextureManager.reset(new CGUILargeTextureManager());
+}
+
+CGUIComponent::~CGUIComponent()
+{
+  Deinit();
+}
+
+void CGUIComponent::Init()
+{
   m_pWindowManager->Initialize();
   CServiceBroker::RegisterGUI(this);
 }
 
-CGUIComponent::~CGUIComponent()
+void CGUIComponent::Deinit()
 {
   CServiceBroker::UnregisterGUI();
   m_pWindowManager->DeInitialize();
@@ -40,6 +53,16 @@ CGUIComponent::~CGUIComponent()
 CGUIWindowManager& CGUIComponent::GetWindowManager()
 {
   return *m_pWindowManager;
+}
+
+CGUITextureManager& CGUIComponent::GetTextureManager()
+{
+  return *m_pTextureManager;
+}
+
+CGUILargeTextureManager& CGUIComponent::GetLargeTextureManager()
+{
+  return *m_pLargeTextureManager;
 }
 
 bool CGUIComponent::ConfirmDelete(std::string path)

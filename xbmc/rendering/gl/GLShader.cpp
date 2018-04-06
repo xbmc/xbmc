@@ -24,7 +24,7 @@
 #include "ServiceBroker.h"
 #include "utils/log.h"
 #include "rendering/RenderSystem.h"
-#include "guilib/GraphicContext.h"
+#include "windowing/GraphicContext.h"
 #include "guilib/MatrixGLES.h"
 
 using namespace Shaders;
@@ -80,7 +80,7 @@ bool CGLShader::OnEnabled()
   glUniformMatrix4fv(m_hProj,  1, GL_FALSE, projMatrix);
   glUniformMatrix4fv(m_hModel, 1, GL_FALSE, modelMatrix);
 
-  const TransformMatrix &guiMatrix = g_graphicsContext.GetGUIMatrix();
+  const TransformMatrix &guiMatrix = CServiceBroker::GetWinSystem().GetGfxContext().GetGUIMatrix();
   CRect viewPort; // absolute positions of corners
   CServiceBroker::GetRenderSystem().GetViewPort(viewPort);
 

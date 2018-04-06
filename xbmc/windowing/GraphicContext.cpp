@@ -19,9 +19,9 @@
  */
 
 #include "GraphicContext.h"
+#include "WinSystem.h"
 #include "Application.h"
 #include "ServiceBroker.h"
-#include "cores/DataCacheCore.h"
 #include "messaging/ApplicationMessenger.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/DisplaySettings.h"
@@ -29,43 +29,15 @@
 #include "settings/Settings.h"
 #include "utils/log.h"
 #include "rendering/RenderSystem.h"
-#include "windowing/WinSystem.h"
-#include "TextureManager.h"
 #include "input/InputManager.h"
-#include "GUIComponent.h"
-#include "GUIWindowManager.h"
-#include "ServiceBroker.h"
+#include "guilib/gui3d.h"
+#include "guilib/GUIComponent.h"
+#include "guilib/GUIWindowManager.h"
+#include "guilib/TextureManager.h"
 
 using namespace KODI::MESSAGING;
 
-extern bool g_fullScreen;
-
-/* quick access to a skin setting, fine unless we starts clearing video settings */
-static std::shared_ptr<CSettingInt> g_guiSkinzoom;
-
-CGraphicContext::CGraphicContext(void) :
-  m_iScreenHeight(576),
-  m_iScreenWidth(720),
-  m_iScreenId(0),
-  /*m_videoRect,*/
-  m_bFullScreenRoot(false),
-  m_bFullScreenVideo(false),
-  m_bCalibrating(false),
-  m_Resolution(RES_INVALID),
-  m_fFPSOverride(0.0),
-  /*m_windowResolution,*/
-  /*,m_cameras, */
-  /*m_origins, */
-  /*m_clipRegions,*/
-  /*m_guiTransform,*/
-  /*m_finalTransform, */
-  /*m_groupTransform*/
-  m_stereoView(RENDER_STEREO_VIEW_OFF)
-  , m_stereoMode(RENDER_STEREO_MODE_OFF)
-  , m_nextStereoMode(RENDER_STEREO_MODE_OFF)
-{
-}
-
+CGraphicContext::CGraphicContext(void) = default;
 CGraphicContext::~CGraphicContext(void) = default;
 
 void CGraphicContext::SetOrigin(float x, float y)
@@ -869,12 +841,7 @@ void CGraphicContext::GetGUIScaling(const RESOLUTION_INFO &res, float &scaleX, f
     float fToWidth    = (float)info.Overscan.right  - fToPosX;
     float fToHeight   = (float)info.Overscan.bottom - fToPosY;
 
-    if(!g_guiSkinzoom) // lookup gui setting if we didn't have it already
-      g_guiSkinzoom = std::static_pointer_cast<CSettingInt>(CServiceBroker::GetSettings().GetSetting(CSettings::SETTING_LOOKANDFEEL_SKINZOOM));
-
-    float fZoom = 1.0f;
-    if(g_guiSkinzoom)
-      fZoom *= (100 + g_guiSkinzoom->GetValue()) * 0.01f;
+    float fZoom = (100 + CServiceBroker::GetSettings().GetInt(CSettings::SETTING_LOOKANDFEEL_SKINZOOM)) * 0.01f;
 
     fZoom -= 1.0f;
     fToPosX -= fToWidth * fZoom * 0.5f;
@@ -1122,7 +1089,7 @@ float CGraphicContext::GetFPS() const
 {
   if (m_Resolution != RES_INVALID)
   {
-    RESOLUTION_INFO info = g_graphicsContext.GetResInfo();
+    RESOLUTION_INFO info = GetResInfo();
     if (info.fRefreshRate > 0)
       return info.fRefreshRate;
     if (m_Resolution == RES_PAL_4x3 || m_Resolution == RES_PAL_16x9)
@@ -1171,7 +1138,7 @@ void CGraphicContext::ToggleFullScreen()
 
 void CGraphicContext::SetMediaDir(const std::string &strMediaDir)
 {
-  g_TextureManager.SetTexturePath(strMediaDir);
+  CServiceBroker::GetGUI()->GetTextureManager().SetTexturePath(strMediaDir);
   m_strMediaDir = strMediaDir;
 }
 

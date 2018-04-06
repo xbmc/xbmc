@@ -25,7 +25,7 @@
 #include "utils/GLUtils.h"
 #include "utils/MathUtils.h"
 #include "rendering/gles/RenderSystemGLES.h"
-#include "guilib/GraphicContext.h"
+#include "windowing/GraphicContext.h"
 
 #include <cstddef>
 

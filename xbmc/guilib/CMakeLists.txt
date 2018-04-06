@@ -2,7 +2,6 @@ set(SOURCES DDSImage.cpp
             DirtyRegionSolvers.cpp
             DirtyRegionTracker.cpp
             FFmpegImage.cpp
-            GraphicContext.cpp
             GUIAction.cpp
             GUIAudioManager.cpp
             GUIBaseContainer.cpp
@@ -62,7 +61,6 @@ set(SOURCES DDSImage.cpp
             imagefactory.cpp
             IWindowManagerCallback.cpp
             LocalizeStrings.cpp
-            Resolution.cpp
             StereoscopicsManager.cpp
             TextureBundle.cpp
             TextureBundleXBT.cpp
@@ -78,7 +76,6 @@ set(HEADERS DDSImage.h
             DirtyRegionTracker.h
             DispResource.h
             FFmpegImage.h
-            GraphicContext.h
             gui3d.h
             GUIAction.h
             GUIAudioManager.h
@@ -148,13 +145,11 @@ set(HEADERS DDSImage.h
             ISliderCallback.h
             IWindowManagerCallback.h
             LocalizeStrings.h
-            Resolution.h
             StereoscopicsManager.h
             Texture.h
             TextureBundle.h
             TextureBundleXBT.h
             TextureManager.h
-            TransformMatrix.h
             Tween.h
             VisibleEffect.h
             WindowIDs.h

@@ -20,7 +20,7 @@
 
 #include "GUIComponent.h"
 #include "GUIFontManager.h"
-#include "GraphicContext.h"
+#include "windowing/GraphicContext.h"
 #include "GUIWindowManager.h"
 #include "addons/Skin.h"
 #include "addons/AddonManager.h"
@@ -61,12 +61,12 @@ void GUIFontManager::RescaleFontSizeAndAspect(float *size, float *aspect, const 
   // as fonts aren't scaled at render time (due to aliasing) we must scale
   // the size of the fonts before they are drawn to bitmaps
   float scaleX, scaleY;
-  g_graphicsContext.GetGUIScaling(sourceRes, scaleX, scaleY);
+  CServiceBroker::GetWinSystem().GetGfxContext().GetGUIScaling(sourceRes, scaleX, scaleY);
 
   if (preserveAspect)
   {
     // font always displayed in the aspect specified by the aspect parameter
-    *aspect /= g_graphicsContext.GetResInfo().fPixelRatio;
+    *aspect /= CServiceBroker::GetWinSystem().GetGfxContext().GetResInfo().fPixelRatio;
   }
   else
   {
@@ -115,7 +115,7 @@ CGUIFont* GUIFontManager::LoadTTF(const std::string& strFontName, const std::str
   std::string strPath;
   if (!CURL::IsFullPath(strFilename))
   {
-    strPath = URIUtils::AddFileToFolder(g_graphicsContext.GetMediaDir(), "fonts", strFilename);
+    strPath = URIUtils::AddFileToFolder(CServiceBroker::GetWinSystem().GetGfxContext().GetMediaDir(), "fonts", strFilename);
   }
   else
     strPath = strFilename;

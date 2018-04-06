@@ -83,7 +83,7 @@ void CGUIWindowTestPattern::Process(unsigned int currentTime, CDirtyRegionList &
   if (m_pattern == 0 || m_pattern == 4)
     MarkDirtyRegion();
   CGUIWindow::Process(currentTime, dirtyregions);
-  m_renderRegion.SetRect(0, 0, (float)g_graphicsContext.GetWidth(), (float)g_graphicsContext.GetHeight());
+  m_renderRegion.SetRect(0, 0, (float)CServiceBroker::GetWinSystem().GetGfxContext().GetWidth(), (float)CServiceBroker::GetWinSystem().GetGfxContext().GetHeight());
 
 #ifndef HAS_DX
   if(CServiceBroker::GetWinSystem().UseLimitedColor())
@@ -102,7 +102,7 @@ void CGUIWindowTestPattern::Process(unsigned int currentTime, CDirtyRegionList &
 void CGUIWindowTestPattern::Render()
 {
   BeginRender();
-  const RESOLUTION_INFO info = g_graphicsContext.GetResInfo();
+  const RESOLUTION_INFO info = CServiceBroker::GetWinSystem().GetGfxContext().GetResInfo();
 
   int top    = info.Overscan.top;
   int bottom = info.Overscan.bottom;

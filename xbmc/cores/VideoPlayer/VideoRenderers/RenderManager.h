@@ -25,7 +25,7 @@
 #include "cores/VideoPlayer/VideoRenderers/BaseRenderer.h"
 #include "cores/VideoPlayer/VideoRenderers/OverlayRenderer.h"
 #include "utils/Geometry.h"
-#include "guilib/Resolution.h"
+#include "windowing/Resolution.h"
 #include "threads/CriticalSection.h"
 #include "cores/VideoSettings.h"
 #include "OverlayRenderer.h"

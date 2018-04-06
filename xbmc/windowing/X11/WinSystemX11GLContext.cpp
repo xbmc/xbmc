@@ -25,7 +25,7 @@
 #include "GLContextEGL.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
-#include "guilib/GraphicContext.h"
+#include "windowing/GraphicContext.h"
 #include "guilib/DispResource.h"
 #include "threads/SingleLock.h"
 #include <vector>
@@ -149,8 +149,8 @@ bool CWinSystemX11GLContext::SetWindow(int width, int height, bool fullscreen, c
   {
     RefreshGLContext(m_currentOutput.compare(output) != 0);
     XSync(m_dpy, False);
-    g_graphicsContext.Clear(0);
-    g_graphicsContext.Flip(true, false);
+    CServiceBroker::GetWinSystem().GetGfxContext().Clear(0);
+    CServiceBroker::GetWinSystem().GetGfxContext().Flip(true, false);
     ResetVSync();
 
     m_windowDirty = false;

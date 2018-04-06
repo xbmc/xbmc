@@ -33,7 +33,7 @@
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 #include "dialogs/GUIDialogKaiToast.h"
-#include "guilib/GraphicContext.h"
+#include "windowing/GraphicContext.h"
 #include "input/Key.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
@@ -809,8 +809,8 @@ bool CEventClient::GetMousePos(float& x, float& y)
   CSingleLock lock(m_critSection);
   if (m_bMouseMoved)
   {
-    x = (float)((m_iMouseX / 65535.0f) * g_graphicsContext.GetWidth());
-    y = (float)((m_iMouseY / 65535.0f) * g_graphicsContext.GetHeight());
+    x = (float)((m_iMouseX / 65535.0f) * CServiceBroker::GetWinSystem().GetGfxContext().GetWidth());
+    y = (float)((m_iMouseY / 65535.0f) * CServiceBroker::GetWinSystem().GetGfxContext().GetHeight());
     m_bMouseMoved = false;
     return true;
   }

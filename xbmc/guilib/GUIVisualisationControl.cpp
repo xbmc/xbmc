@@ -171,7 +171,7 @@ void CGUIVisualisationControl::Process(unsigned int currentTime, CDirtyRegionLis
     }
     else if (m_callStart && m_instance)
     {
-      g_graphicsContext.CaptureStateBlock();
+      CServiceBroker::GetWinSystem().GetGfxContext().CaptureStateBlock();
       if (m_alreadyStarted)
       {
         m_instance->Stop();
@@ -183,7 +183,7 @@ void CGUIVisualisationControl::Process(unsigned int currentTime, CDirtyRegionLis
       if (tag && !tag->GetTitle().empty())
         songTitle = tag->GetTitle();
       m_alreadyStarted = m_instance->Start(m_channels, m_samplesPerSec, m_bitsPerSample, songTitle);
-      g_graphicsContext.ApplyStateBlock();
+      CServiceBroker::GetWinSystem().GetGfxContext().ApplyStateBlock();
       m_callStart = false;
       m_updateTrack = true;
     }
@@ -216,11 +216,11 @@ void CGUIVisualisationControl::Render()
      * the addon renders, so the best we can do is attempt to define
      * a viewport??
      */
-    g_graphicsContext.SetViewPort(m_posX, m_posY, m_width, m_height);
-    g_graphicsContext.CaptureStateBlock();
+    CServiceBroker::GetWinSystem().GetGfxContext().SetViewPort(m_posX, m_posY, m_width, m_height);
+    CServiceBroker::GetWinSystem().GetGfxContext().CaptureStateBlock();
     m_instance->Render();
-    g_graphicsContext.ApplyStateBlock();
-    g_graphicsContext.RestoreViewPort();
+    CServiceBroker::GetWinSystem().GetGfxContext().ApplyStateBlock();
+    CServiceBroker::GetWinSystem().GetGfxContext().RestoreViewPort();
   }
   
   CGUIControl::Render();
@@ -387,26 +387,26 @@ bool CGUIVisualisationControl::InitVisualization()
 
   CServiceBroker::GetActiveAE().RegisterAudioCallback(this);
 
-  g_graphicsContext.CaptureStateBlock();
+  CServiceBroker::GetWinSystem().GetGfxContext().CaptureStateBlock();
 
-  float x = g_graphicsContext.ScaleFinalXCoord(GetXPosition(), GetYPosition());
-  float y = g_graphicsContext.ScaleFinalYCoord(GetXPosition(), GetYPosition());
-  float w = g_graphicsContext.ScaleFinalXCoord(GetXPosition() + GetWidth(), GetYPosition() + GetHeight()) - x;
-  float h = g_graphicsContext.ScaleFinalYCoord(GetXPosition() + GetWidth(), GetYPosition() + GetHeight()) - y;
+  float x = CServiceBroker::GetWinSystem().GetGfxContext().ScaleFinalXCoord(GetXPosition(), GetYPosition());
+  float y = CServiceBroker::GetWinSystem().GetGfxContext().ScaleFinalYCoord(GetXPosition(), GetYPosition());
+  float w = CServiceBroker::GetWinSystem().GetGfxContext().ScaleFinalXCoord(GetXPosition() + GetWidth(), GetYPosition() + GetHeight()) - x;
+  float h = CServiceBroker::GetWinSystem().GetGfxContext().ScaleFinalYCoord(GetXPosition() + GetWidth(), GetYPosition() + GetHeight()) - y;
   if (x < 0)
     x = 0;
   if (y < 0)
     y = 0;
-  if (x + w > g_graphicsContext.GetWidth())
-    w = g_graphicsContext.GetWidth() - x;
-  if (y + h > g_graphicsContext.GetHeight())
-    h = g_graphicsContext.GetHeight() - y;
+  if (x + w > CServiceBroker::GetWinSystem().GetGfxContext().GetWidth())
+    w = CServiceBroker::GetWinSystem().GetGfxContext().GetWidth() - x;
+  if (y + h > CServiceBroker::GetWinSystem().GetGfxContext().GetHeight())
+    h = CServiceBroker::GetWinSystem().GetGfxContext().GetHeight() - y;
 
   m_instance = new ADDON::CVisualization(addonBase, x, y, w, h);
   CreateBuffers();
 
   m_alreadyStarted = false;
-  g_graphicsContext.ApplyStateBlock();
+  CServiceBroker::GetWinSystem().GetGfxContext().ApplyStateBlock();
   return true;
 }
 
@@ -433,9 +433,9 @@ void CGUIVisualisationControl::DeInitVisualization()
   {
     if (m_alreadyStarted)
     {
-      g_graphicsContext.CaptureStateBlock();
+      CServiceBroker::GetWinSystem().GetGfxContext().CaptureStateBlock();
       m_instance->Stop();
-      g_graphicsContext.ApplyStateBlock();
+      CServiceBroker::GetWinSystem().GetGfxContext().ApplyStateBlock();
       m_alreadyStarted = false;
     }
 

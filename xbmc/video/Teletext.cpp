@@ -30,7 +30,7 @@
 #include "Application.h"
 #include "utils/log.h"
 #include "filesystem/SpecialProtocol.h"
-#include "guilib/GraphicContext.h"
+#include "windowing/GraphicContext.h"
 
 static inline void SDL_memset4(uint32_t* dst, uint32_t val, size_t len)
 {
@@ -636,8 +636,8 @@ bool CTeletextDecoder::InitDecoder()
   }
 
   /* calculate font dimensions */
-  m_RenderInfo.Width            = (int)(g_graphicsContext.GetWidth()*g_graphicsContext.GetGUIScaleX());
-  m_RenderInfo.Height           = (int)(g_graphicsContext.GetHeight()*g_graphicsContext.GetGUIScaleY());
+  m_RenderInfo.Width            = (int)(CServiceBroker::GetWinSystem().GetGfxContext().GetWidth()*CServiceBroker::GetWinSystem().GetGfxContext().GetGUIScaleX());
+  m_RenderInfo.Height           = (int)(CServiceBroker::GetWinSystem().GetGfxContext().GetHeight()*CServiceBroker::GetWinSystem().GetGfxContext().GetGUIScaleY());
   m_RenderInfo.FontHeight       = m_RenderInfo.Height / 25;
   m_RenderInfo.FontWidth_Normal = m_RenderInfo.Width  / (m_RenderInfo.Show39 ? 39 : 40);
   SetFontWidth(m_RenderInfo.FontWidth_Normal);

@@ -25,7 +25,7 @@
 #include "threads/SingleLock.h"
 #include "utils/TimeUtils.h"
 #include "utils/JobManager.h"
-#include "guilib/GraphicContext.h"
+#include "windowing/GraphicContext.h"
 #include "utils/log.h"
 #include "TextureCache.h"
 
@@ -48,7 +48,7 @@ bool CImageLoader::DoWork()
   bool needsChecking = false;
   std::string loadPath;
 
-  std::string texturePath = g_TextureManager.GetTexturePath(m_path);
+  std::string texturePath = CServiceBroker::GetGUI()->GetTextureManager().GetTexturePath(m_path);
   if (texturePath.empty())
     return false;
 
@@ -61,7 +61,7 @@ bool CImageLoader::DoWork()
   {
     // direct route - load the image
     unsigned int start = XbmcThreads::SystemClockMillis();
-    m_texture = CBaseTexture::LoadFromFile(loadPath, g_graphicsContext.GetWidth(), g_graphicsContext.GetHeight());
+    m_texture = CBaseTexture::LoadFromFile(loadPath, CServiceBroker::GetWinSystem().GetGfxContext().GetWidth(), CServiceBroker::GetWinSystem().GetGfxContext().GetHeight());
 
     if (XbmcThreads::SystemClockMillis() - start > 100)
       CLog::Log(LOGDEBUG, "%s - took %u ms to load %s", __FUNCTION__, XbmcThreads::SystemClockMillis() - start, loadPath.c_str());

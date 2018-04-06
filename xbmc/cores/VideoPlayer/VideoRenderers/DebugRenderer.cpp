@@ -22,7 +22,7 @@
 #include "DebugRenderer.h"
 #include "OverlayRendererGUI.h"
 #include "cores/VideoPlayer/DVDCodecs/Overlay/DVDOverlayText.h"
-#include "guilib/GraphicContext.h"
+#include "windowing/GraphicContext.h"
 
 using namespace OVERLAY;
 
@@ -123,7 +123,7 @@ void CDebugRenderer::CRenderer::Render(int idx)
     if (text)
       text->PrepareRender("arial.ttf", 1, 16, 0, m_font, m_fontBorder);
 
-    RESOLUTION_INFO res = g_graphicsContext.GetResInfo(g_graphicsContext.GetVideoResolution());
+    RESOLUTION_INFO res = CServiceBroker::GetWinSystem().GetGfxContext().GetResInfo(CServiceBroker::GetWinSystem().GetGfxContext().GetVideoResolution());
 
     o->m_pos = COverlay::POSITION_ABSOLUTE;
     o->m_align = COverlay::ALIGN_SCREEN;

@@ -20,8 +20,9 @@
 
 #include "WinSystem.h"
 #include "ServiceBroker.h"
+#include "guilib/gui3d.h"
 #include "guilib/DispResource.h"
-#include "guilib/GraphicContext.h"
+#include "windowing/GraphicContext.h"
 #include "settings/DisplaySettings.h"
 #include "settings/lib/Setting.h"
 #include "settings/Settings.h"
@@ -35,15 +36,7 @@
 
 CWinSystemBase::CWinSystemBase()
 {
-  m_nWidth = 0;
-  m_nHeight = 0;
-  m_nTop = 0;
-  m_nLeft = 0;
-  m_bWindowCreated = false;
-  m_bFullScreen = false;
-  m_nScreen = 0;
-  m_bBlankOtherDisplay = false;
-  m_fRefreshRate = 0.0f;
+  m_gfxContext.reset(new CGraphicContext());
 #if HAS_LIRC
   CRemoteControl::Register();
 #endif
@@ -123,7 +116,7 @@ void CWinSystemBase::SetWindowResolution(int width, int height)
   window.iScreenWidth = width;
   window.iScreenHeight = height;
   window.iSubtitles = (int)(0.965 * window.iHeight);
-  g_graphicsContext.ResetOverscan(window);
+  CServiceBroker::GetWinSystem().GetGfxContext().ResetOverscan(window);
 }
 
 int CWinSystemBase::DesktopResolution(int screen)
@@ -302,4 +295,9 @@ void CWinSystemBase::DriveRenderLoop()
     for (auto i = m_renderLoopClients.begin(); i != m_renderLoopClients.end(); ++i)
       (*i)->FrameMove();
   }
+}
+
+CGraphicContext& CWinSystemBase::GetGfxContext()
+{
+  return *m_gfxContext;
 }

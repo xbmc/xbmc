@@ -76,9 +76,9 @@ void CGUIControlGroupList::Process(unsigned int currentTime, CDirtyRegionList &d
     // with respect to animations
     CGUIControl *control = *it;
     if (m_orientation == VERTICAL)
-      g_graphicsContext.SetOrigin(m_posX, m_posY + pos - m_scroller.GetValue());
+      CServiceBroker::GetWinSystem().GetGfxContext().SetOrigin(m_posX, m_posY + pos - m_scroller.GetValue());
     else
-      g_graphicsContext.SetOrigin(m_posX + pos - m_scroller.GetValue(), m_posY);
+      CServiceBroker::GetWinSystem().GetGfxContext().SetOrigin(m_posX + pos - m_scroller.GetValue(), m_posY);
     control->DoProcess(currentTime, dirtyregions);
 
     if (control->IsVisible())
@@ -92,7 +92,7 @@ void CGUIControlGroupList::Process(unsigned int currentTime, CDirtyRegionList &d
 
       pos += Size(control) + m_itemGap;
     }
-    g_graphicsContext.RestoreOrigin();
+    CServiceBroker::GetWinSystem().GetGfxContext().RestoreOrigin();
   }
   CGUIControl::Process(currentTime, dirtyregions);
 }
@@ -100,7 +100,7 @@ void CGUIControlGroupList::Process(unsigned int currentTime, CDirtyRegionList &d
 void CGUIControlGroupList::Render()
 {
   // we run through the controls, rendering as we go
-  bool render(g_graphicsContext.SetClipRegion(m_posX, m_posY, m_width, m_height));
+  bool render(CServiceBroker::GetWinSystem().GetGfxContext().SetClipRegion(m_posX, m_posY, m_width, m_height));
   float pos = GetAlignOffset();
   float focusedPos = 0;
   CGUIControl *focusedControl = NULL;
@@ -117,24 +117,24 @@ void CGUIControlGroupList::Render()
     else
     {
       if (m_orientation == VERTICAL)
-        g_graphicsContext.SetOrigin(m_posX, m_posY + pos - m_scroller.GetValue());
+        CServiceBroker::GetWinSystem().GetGfxContext().SetOrigin(m_posX, m_posY + pos - m_scroller.GetValue());
       else
-        g_graphicsContext.SetOrigin(m_posX + pos - m_scroller.GetValue(), m_posY);
+        CServiceBroker::GetWinSystem().GetGfxContext().SetOrigin(m_posX + pos - m_scroller.GetValue(), m_posY);
       control->DoRender();
     }
     if (control->IsVisible())
       pos += Size(control) + m_itemGap;
-    g_graphicsContext.RestoreOrigin();
+    CServiceBroker::GetWinSystem().GetGfxContext().RestoreOrigin();
   }
   if (focusedControl)
   {
     if (m_orientation == VERTICAL)
-      g_graphicsContext.SetOrigin(m_posX, m_posY + focusedPos - m_scroller.GetValue());
+      CServiceBroker::GetWinSystem().GetGfxContext().SetOrigin(m_posX, m_posY + focusedPos - m_scroller.GetValue());
     else
-      g_graphicsContext.SetOrigin(m_posX + focusedPos - m_scroller.GetValue(), m_posY);
+      CServiceBroker::GetWinSystem().GetGfxContext().SetOrigin(m_posX + focusedPos - m_scroller.GetValue(), m_posY);
     focusedControl->DoRender();
   }
-  if (render) g_graphicsContext.RestoreClipRegion();
+  if (render) CServiceBroker::GetWinSystem().GetGfxContext().RestoreClipRegion();
   CGUIControl::Render();
 }
 

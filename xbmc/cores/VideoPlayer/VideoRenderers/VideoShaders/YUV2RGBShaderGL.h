@@ -19,7 +19,7 @@
  */
 #pragma once
 
-#include "guilib/TransformMatrix.h"
+#include "utils/TransformMatrix.h"
 #include "ShaderFormats.h"
 #include "GLSLOutput.h"
 #include "guilib/Shader.h"

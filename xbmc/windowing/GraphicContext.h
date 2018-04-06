@@ -25,13 +25,25 @@
 #include <stack>
 #include <map>
 #include "threads/CriticalSection.h"
-#include "TransformMatrix.h"        // for the members m_guiTransform etc.
+#include "utils/TransformMatrix.h"        // for the members m_guiTransform etc.
 #include "utils/Geometry.h"               // for CRect/CPoint
-#include "gui3d.h"
 #include "Resolution.h"
-#include "utils/GlobalsHandling.h"
-#include "DirtyRegion.h"
 #include "rendering/RenderSystem.h"
+
+// required by clients
+#include "ServiceBroker.h"
+#include "WinSystem.h"
+
+#define D3DPRESENTFLAG_INTERLACED   1
+#define D3DPRESENTFLAG_WIDESCREEN   2
+#define D3DPRESENTFLAG_PROGRESSIVE  4
+#define D3DPRESENTFLAG_MODE3DSBS    8
+#define D3DPRESENTFLAG_MODE3DTB    16
+
+/* what types are important for mode setting */
+#define D3DPRESENTFLAG_MODEMASK ( D3DPRESENTFLAG_INTERLACED \
+                                  | D3DPRESENTFLAG_MODE3DSBS  \
+                                  | D3DPRESENTFLAG_MODE3DTB   )
 
 enum VIEW_TYPE { VIEW_TYPE_NONE = 0,
                  VIEW_TYPE_LIST,
@@ -184,16 +196,16 @@ protected:
   void ApplyVideoResolution(RESOLUTION res);
   void UpdateInternalStateWithResolution(RESOLUTION res);
 
-  int m_iScreenHeight;
-  int m_iScreenWidth;
-  int m_iScreenId;
+  int m_iScreenHeight = 576;
+  int m_iScreenWidth = 720;
+  int m_iScreenId = 0;
   std::string m_strMediaDir;
   CRect m_videoRect;
-  bool m_bFullScreenRoot;
-  bool m_bFullScreenVideo;
-  bool m_bCalibrating;
-  RESOLUTION m_Resolution;
-  float m_fFPSOverride;
+  bool m_bFullScreenRoot = true;
+  bool m_bFullScreenVideo = false;
+  bool m_bCalibrating = false;
+  RESOLUTION m_Resolution = RES_INVALID;
+  float m_fFPSOverride = 0.0f;
 
   RESOLUTION_INFO m_windowResolution;
   std::stack<CPoint> m_cameras;
@@ -218,10 +230,7 @@ protected:
   UITransform m_guiTransform;
   UITransform m_finalTransform;
   std::stack<UITransform> m_transforms;
-  RENDER_STEREO_VIEW m_stereoView;
-  RENDER_STEREO_MODE m_stereoMode;
-  RENDER_STEREO_MODE m_nextStereoMode;
+  RENDER_STEREO_VIEW m_stereoView = RENDER_STEREO_VIEW_OFF;
+  RENDER_STEREO_MODE m_stereoMode = RENDER_STEREO_MODE_OFF;
+  RENDER_STEREO_MODE m_nextStereoMode = RENDER_STEREO_MODE_OFF;
 };
-
-XBMC_GLOBAL_REF(CGraphicContext,g_graphicsContext);
-#define g_graphicsContext XBMC_GLOBAL_USE(CGraphicContext)

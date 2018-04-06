@@ -21,7 +21,7 @@
 #include "DialogGameVideoSelect.h"
 #include "cores/RetroPlayer/guibridge/GUIGameVideoHandle.h"
 #include "cores/RetroPlayer/guibridge/GUIGameRenderManager.h"
-#include "guilib/GraphicContext.h"
+#include "windowing/GraphicContext.h"
 #include "guilib/GUIBaseContainer.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIComponent.h"
@@ -172,7 +172,7 @@ void CDialogGameVideoSelect::Update()
 {
   //! @todo
   // Lock our display, as this window is rendered from the player thread
-  //g_graphicsContext.Lock();
+  //CServiceBroker::GetWinSystem().GetGfxContext().Lock();
 
   m_viewControl->SetCurrentView(DEFAULT_VIEW_ICONS);
 
@@ -181,7 +181,7 @@ void CDialogGameVideoSelect::Update()
 
   OnRefreshList();
 
-  //g_graphicsContext.Unlock();
+  //CServiceBroker::GetWinSystem().GetGfxContext().Unlock();
 }
 
 void CDialogGameVideoSelect::Clear()

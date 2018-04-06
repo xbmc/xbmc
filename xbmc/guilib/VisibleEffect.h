@@ -29,7 +29,7 @@ class TiXmlElement;
 class Tweener;
 class CGUIListItem;
 
-#include "TransformMatrix.h"  // needed for the TransformMatrix member
+#include "utils/TransformMatrix.h"  // needed for the TransformMatrix member
 #include "utils/Geometry.h"         // for CPoint, CRect
 #include <memory>
 #include "interfaces/info/InfoBool.h"

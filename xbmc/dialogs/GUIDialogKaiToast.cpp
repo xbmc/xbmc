@@ -107,7 +107,7 @@ bool CGUIDialogKaiToast::DoWork()
     m_toastDisplayTime = toast.displayTime;
     m_toastMessageTime = toast.messageTime;
 
-    CSingleLock lock2(g_graphicsContext);
+    CSingleLock lock2(CServiceBroker::GetWinSystem().GetGfxContext());
 
     if(!Initialize())
       return false;

@@ -364,7 +364,7 @@ static int SetResolution(const std::vector<std::string>& params)
   else if (paramlow == "1080psbs") res = RES_HDTV_1080pSBS;
   else if (paramlow == "1080ptb") res = RES_HDTV_1080pTB;
   else if (paramlow == "1080i") res = RES_HDTV_1080i;
-  if (g_graphicsContext.IsValidResolution(res))
+  if (CServiceBroker::GetWinSystem().GetGfxContext().IsValidResolution(res))
   {
     CDisplaySettings::GetInstance().SetCurrentResolution(res, true);
     g_application.ReloadSkin();

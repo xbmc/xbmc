@@ -23,7 +23,7 @@
 #include <memory>
 #include <utility>
 
-#include "guilib/GraphicContext.h"
+#include "windowing/GraphicContext.h"
 #include "guilib/GUIMessage.h"
 #include "messaging/IMessageTarget.h"
 #include "threads/SingleLock.h"
@@ -148,7 +148,7 @@ int CApplicationMessenger::SendMsg(ThreadMessage&& message, bool wait)
                  //  waitEvent ... just for such contingencies :)
   { 
     // ensure the thread doesn't hold the graphics lock
-    CSingleExit exit(g_graphicsContext);
+    CSingleExit exit(CServiceBroker::GetWinSystem().GetGfxContext());
     waitEvent->Wait();
     return *result;
   }

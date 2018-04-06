@@ -29,7 +29,7 @@
 #include "cores/VideoSettings.h"
 #include "RenderFlags.h"
 #include "RenderInfo.h"
-#include "guilib/GraphicContext.h"
+#include "windowing/GraphicContext.h"
 #include "BaseRenderer.h"
 #include "xbmc/cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
 
@@ -130,8 +130,8 @@ public:
   virtual bool Supports(ESCALINGMETHOD method) override;
 
 protected:
-  virtual void Render(DWORD flags, int index);
-  virtual void RenderUpdateVideo(bool clear, DWORD flags = 0, DWORD alpha = 255);
+  virtual void Render(unsigned int flags, int index);
+  virtual void RenderUpdateVideo(bool clear, unsigned int flags = 0, unsigned int alpha = 255);
 
   int  NextYV12Texture();
   virtual bool ValidateRenderTarget();
@@ -233,4 +233,3 @@ protected:
   // clear colour for "black" bars
   float m_clearColour;
 };
-

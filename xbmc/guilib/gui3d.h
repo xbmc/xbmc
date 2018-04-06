@@ -1,10 +1,3 @@
-/*!
-\file gui3d.h
-\brief
-*/
-
-#ifndef GUILIB_GUI3D_H
-#define GUILIB_GUI3D_H
 #pragma once
 
 /*
@@ -30,17 +23,6 @@
 #include "PlatformDefs.h" // for TARGET_WINDOWS types
 
 #define GAMMA_RAMP_FLAG  D3DSGR_CALIBRATE
-
-#define D3DPRESENTFLAG_INTERLACED   1
-#define D3DPRESENTFLAG_WIDESCREEN   2
-#define D3DPRESENTFLAG_PROGRESSIVE  4
-#define D3DPRESENTFLAG_MODE3DSBS    8
-#define D3DPRESENTFLAG_MODE3DTB    16
-
-/* what types are important for mode setting */
-#define D3DPRESENTFLAG_MODEMASK ( D3DPRESENTFLAG_INTERLACED \
-                                | D3DPRESENTFLAG_MODE3DSBS  \
-                                | D3DPRESENTFLAG_MODE3DTB   )
 
 #define D3DFMT_LIN_A8R8G8B8 D3DFMT_A8R8G8B8
 #define D3DFMT_LIN_X8R8G8B8 D3DFMT_X8R8G8B8
@@ -72,4 +54,3 @@ struct D3DPalette
 
 typedef D3DPalette* LPDIRECT3DPALETTE8;
 
-#endif // GUILIB_GUI3D_H

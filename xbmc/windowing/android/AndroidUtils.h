@@ -25,7 +25,7 @@
 
 #include <androidjni/Display.h>
 
-#include "guilib/Resolution.h"
+#include "windowing/Resolution.h"
 
 class CAndroidUtils
 {

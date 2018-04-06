@@ -636,7 +636,7 @@ void CMMALRenderer::Process()
   CLog::Log(LOGDEBUG, "%s::%s - starting", CLASSNAME, __func__);
   while (!bStop)
   {
-    double dfps = g_graphicsContext.GetFPS();
+    double dfps = CServiceBroker::GetWinSystem().GetGfxContext().GetFPS();
     double fps = 0.0;
     double inc = 1.0;
     g_RBP.WaitVsync();
@@ -761,7 +761,7 @@ void CMMALRenderer::Run()
         }
 
         // we don't keep up when running at 60fps in the background so switch to half rate
-        if (!g_graphicsContext.IsFullScreenVideo())
+        if (!CServiceBroker::GetWinSystem().GetGfxContext().IsFullScreenVideo())
         {
           if (interlace_method == VS_INTERLACEMETHOD_MMAL_ADVANCED)
             interlace_method = VS_INTERLACEMETHOD_MMAL_ADVANCED_HALF;
@@ -1008,7 +1008,7 @@ void CMMALRenderer::RenderUpdate(int index, int index2, bool clear, unsigned int
 
   omvb = m_buffers[index];
 
-  if (g_graphicsContext.GetStereoView() != RENDER_STEREO_VIEW_RIGHT)
+  if (CServiceBroker::GetWinSystem().GetGfxContext().GetStereoView() != RENDER_STEREO_VIEW_RIGHT)
   {
     ManageRenderArea();
     CRect view;
@@ -1186,7 +1186,7 @@ void CMMALRenderer::SetVideoRect(const CRect& InSrcRect, const CRect& InDestRect
   RENDER_STEREO_MODE video_stereo_mode = (m_iFlags & CONF_FLAGS_STEREO_MODE_SBS) ? RENDER_STEREO_MODE_SPLIT_VERTICAL :
                                          (m_iFlags & CONF_FLAGS_STEREO_MODE_TAB) ? RENDER_STEREO_MODE_SPLIT_HORIZONTAL : RENDER_STEREO_MODE_OFF;
   bool stereo_invert                   = (m_iFlags & CONF_FLAGS_STEREO_CADANCE_RIGHT_LEFT) ? true : false;
-  RENDER_STEREO_MODE display_stereo_mode = g_graphicsContext.GetStereoMode();
+  RENDER_STEREO_MODE display_stereo_mode = CServiceBroker::GetWinSystem().GetGfxContext().GetStereoMode();
 
   // ignore video stereo mode when 3D display mode is disabled
   if (display_stereo_mode == RENDER_STEREO_MODE_OFF)
@@ -1238,7 +1238,7 @@ void CMMALRenderer::SetVideoRect(const CRect& InSrcRect, const CRect& InDestRect
 
   // might need to scale up m_dst_rect to display size as video decodes
   // to separate video plane that is at display size.
-  RESOLUTION res = g_graphicsContext.GetVideoResolution();
+  RESOLUTION res = CServiceBroker::GetWinSystem().GetGfxContext().GetVideoResolution();
   CRect gui(0, 0, CDisplaySettings::GetInstance().GetResolutionInfo(res).iWidth, CDisplaySettings::GetInstance().GetResolutionInfo(res).iHeight);
   CRect display(0, 0, CDisplaySettings::GetInstance().GetResolutionInfo(res).iScreenWidth, CDisplaySettings::GetInstance().GetResolutionInfo(res).iScreenHeight);
 

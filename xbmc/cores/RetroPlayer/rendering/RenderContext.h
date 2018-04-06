@@ -19,7 +19,7 @@
  */
 #pragma once
 
-#include "guilib/Resolution.h"
+#include "windowing/Resolution.h"
 #include "rendering/RenderSystemTypes.h"
 #include "utils/Geometry.h"
 

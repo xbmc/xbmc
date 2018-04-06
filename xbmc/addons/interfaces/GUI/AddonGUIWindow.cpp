@@ -186,9 +186,9 @@ void CGUIAddonWindow::AllocResources(bool forceLoad /*= false */)
   m_mediaDir = fallbackMediaPath;
 
   //CLog::Log(LOGDEBUG, "CGUIPythonWindowXML::AllocResources called: %s", fallbackMediaPath.c_str());
-  g_TextureManager.AddTexturePath(m_mediaDir);
+  CServiceBroker::GetGUI()->GetTextureManager().AddTexturePath(m_mediaDir);
   CGUIMediaWindow::AllocResources(forceLoad);
-  g_TextureManager.RemoveTexturePath(m_mediaDir);
+  CServiceBroker::GetGUI()->GetTextureManager().RemoveTexturePath(m_mediaDir);
 }
 
 void CGUIAddonWindow::FreeResources(bool forceUnLoad /*= false */)
@@ -198,9 +198,9 @@ void CGUIAddonWindow::FreeResources(bool forceUnLoad /*= false */)
 
 void CGUIAddonWindow::Render()
 {
-  g_TextureManager.AddTexturePath(m_mediaDir);
+  CServiceBroker::GetGUI()->GetTextureManager().AddTexturePath(m_mediaDir);
   CGUIMediaWindow::Render();
-  g_TextureManager.RemoveTexturePath(m_mediaDir);
+  CServiceBroker::GetGUI()->GetTextureManager().RemoveTexturePath(m_mediaDir);
 }
 
 void CGUIAddonWindow::Update()
@@ -314,9 +314,9 @@ bool CGUIAddonWindowDialog::OnMessage(CGUIMessage &message)
 
 void CGUIAddonWindowDialog::Show(bool show /* = true */)
 {
-  unsigned int iCount = g_graphicsContext.exit();
+  unsigned int iCount = CServiceBroker::GetWinSystem().GetGfxContext().exit();
   CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ADDON_DIALOG, 1, show ? 1 : 0, static_cast<void*>(this));
-  g_graphicsContext.restore(iCount);
+  CServiceBroker::GetWinSystem().GetGfxContext().restore(iCount);
 }
 
 void CGUIAddonWindowDialog::Show_Internal(bool show /* = true */)

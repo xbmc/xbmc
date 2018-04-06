@@ -22,7 +22,7 @@
 #include "VideoSyncOsx.h"
 #include "ServiceBroker.h"
 #include "utils/MathUtils.h"
-#include "guilib/GraphicContext.h"
+#include "windowing/GraphicContext.h"
 #include "utils/TimeUtils.h"
 #include "windowing/WinSystem.h"
 #include <QuartzCore/CVDisplayLink.h>
@@ -76,7 +76,7 @@ void CVideoSyncOsx::Cleanup()
 
 float CVideoSyncOsx::GetFps()
 {
-  m_fps = g_graphicsContext.GetFPS();
+  m_fps = CServiceBroker::GetWinSystem().GetGfxContext().GetFPS();
   CLog::Log(LOGDEBUG, "CVideoSyncOsx::%s Detected refreshrate: %f hertz", __FUNCTION__, m_fps);
   return m_fps;
 }

@@ -144,14 +144,14 @@ void CGUIMultiImage::Process(unsigned int currentTime, CDirtyRegionList &dirtyre
   else if (m_directoryStatus != LOADING)
     m_image.SetFileName("");
 
-  if (g_graphicsContext.SetClipRegion(m_posX, m_posY, m_width, m_height))
+  if (CServiceBroker::GetWinSystem().GetGfxContext().SetClipRegion(m_posX, m_posY, m_width, m_height))
   {
     if (m_image.SetColorDiffuse(m_diffuseColor))
       MarkDirtyRegion();
 
     m_image.DoProcess(currentTime, dirtyregions);
 
-    g_graphicsContext.RestoreClipRegion();
+    CServiceBroker::GetWinSystem().GetGfxContext().RestoreClipRegion();
   }
 
   CGUIControl::Process(currentTime, dirtyregions);
@@ -236,7 +236,7 @@ void CGUIMultiImage::LoadDirectory()
   if (item.IsPicture() || CTextureCache::GetInstance().HasCachedImage(m_currentPath))
     m_files.push_back(m_currentPath);
   else // bundled folder?
-    g_TextureManager.GetBundledTexturesFromPath(m_currentPath, m_files);
+    CServiceBroker::GetGUI()->GetTextureManager().GetBundledTexturesFromPath(m_currentPath, m_files);
   if (!m_files.empty())
   { // found - nothing more to do
     OnDirectoryLoaded();
@@ -311,7 +311,7 @@ bool CGUIMultiImage::CMultiImageJob::DoWork()
   {
     // Load in images from the directory specified
     // m_path is relative (as are all skin paths)
-    std::string realPath = g_TextureManager.GetTexturePath(m_path, true);
+    std::string realPath = CServiceBroker::GetGUI()->GetTextureManager().GetTexturePath(m_path, true);
     if (realPath.empty())
       return true;
 

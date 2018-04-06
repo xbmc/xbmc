@@ -23,7 +23,7 @@
 #include "cores/VideoPlayer/DVDCodecs/Overlay/DVDOverlayImage.h"
 #include "cores/VideoPlayer/DVDCodecs/Overlay/DVDOverlaySpu.h"
 #include "cores/VideoPlayer/DVDCodecs/Overlay/DVDOverlaySSA.h"
-#include "guilib/GraphicContext.h"
+#include "windowing/GraphicContext.h"
 #include "settings/Settings.h"
 
 namespace OVERLAY {
@@ -299,11 +299,11 @@ int GetStereoscopicDepth()
 {
   int depth = 0;
 
-  if(g_graphicsContext.GetStereoMode() != RENDER_STEREO_MODE_MONO
-  && g_graphicsContext.GetStereoMode() != RENDER_STEREO_MODE_OFF)
+  if(CServiceBroker::GetWinSystem().GetGfxContext().GetStereoMode() != RENDER_STEREO_MODE_MONO
+  && CServiceBroker::GetWinSystem().GetGfxContext().GetStereoMode() != RENDER_STEREO_MODE_OFF)
   {
     depth  = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_SUBTITLES_STEREOSCOPICDEPTH);
-    depth *= (g_graphicsContext.GetStereoView() == RENDER_STEREO_VIEW_LEFT ? 1 : -1);
+    depth *= (CServiceBroker::GetWinSystem().GetGfxContext().GetStereoView() == RENDER_STEREO_VIEW_LEFT ? 1 : -1);
   }
 
   return depth;

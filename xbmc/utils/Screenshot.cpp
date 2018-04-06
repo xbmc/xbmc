@@ -35,7 +35,7 @@
 
 #include "filesystem/File.h"
 #include "guilib/GUIComponent.h"
-#include "guilib/GraphicContext.h"
+#include "windowing/GraphicContext.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 
@@ -80,7 +80,7 @@ bool CScreenshotSurface::capture()
     return false;
 #elif defined(TARGET_WINDOWS)
 
-  CSingleLock lock(g_graphicsContext);
+  CSingleLock lock(CServiceBroker::GetWinSystem().GetGfxContext());
 
   CServiceBroker::GetGUI()->GetWindowManager().Render();
 
@@ -130,7 +130,7 @@ bool CScreenshotSurface::capture()
   }
 #elif defined(HAS_GL) || defined(HAS_GLES)
 
-  CSingleLock lock(g_graphicsContext);
+  CSingleLock lock(CServiceBroker::GetWinSystem().GetGfxContext());
   CServiceBroker::GetGUI()->GetWindowManager().Render();
 #ifndef HAS_GLES
   glReadBuffer(GL_BACK);
