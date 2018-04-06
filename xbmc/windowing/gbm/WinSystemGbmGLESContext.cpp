@@ -14,7 +14,12 @@
 #include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererGBM.h"
 #include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererOpenGLES.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
-#include "cores/VideoPlayer/VideoRenderers/LinuxRendererGLES.h"
+
+#if HAS_GLES == 3
+#include "cores/VideoPlayer/VideoRenderers/LinuxRendererGLES3.h"
+#endif
+#include "cores/VideoPlayer/VideoRenderers/LinuxRendererGLES2.h"
+
 #include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
 
 #include "OptionalsReg.h"
@@ -42,7 +47,6 @@ bool CWinSystemGbmGLESContext::InitWindowSystem()
 {
   VIDEOPLAYER::CRendererFactory::ClearRenderer();
   CDVDFactoryCodec::ClearHWAccels();
-  CLinuxRendererGLES::Register();
   RETRO::CRPProcessInfoGbm::Register();
   RETRO::CRPProcessInfoGbm::RegisterRendererFactory(new RETRO::CRendererFactoryGBM);
   RETRO::CRPProcessInfoGbm::RegisterRendererFactory(new RETRO::CRendererFactoryOpenGLES);
@@ -51,6 +55,17 @@ bool CWinSystemGbmGLESContext::InitWindowSystem()
   {
     return false;
   }
+
+  return true;
+}
+
+void CWinSystemGbmGLESContext::RegisterRenderers()
+{
+#if HAS_GLES >= 3
+  CLinuxRendererGLES3::Register();
+#else
+  CLinuxRendererGLES2::Register();
+#endif
 
   bool general, deepColor;
   m_vaapiProxy.reset(GBM::VaapiProxyCreate(m_DRM->GetRenderNodeFileDescriptor()));
@@ -65,8 +80,6 @@ bool CWinSystemGbmGLESContext::InitWindowSystem()
   CRendererDRMPRIMEGLES::Register();
   CRendererDRMPRIME::Register();
   CDVDVideoCodecDRMPRIME::Register();
-
-  return true;
 }
 
 bool CWinSystemGbmGLESContext::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
@@ -133,12 +146,19 @@ void CWinSystemGbmGLESContext::PresentRender(bool rendered, bool videoLayer)
 bool CWinSystemGbmGLESContext::CreateContext()
 {
   CEGLAttributesVec contextAttribs;
-  contextAttribs.Add({{EGL_CONTEXT_CLIENT_VERSION, 2}});
+  contextAttribs.Add({{EGL_CONTEXT_CLIENT_VERSION, 3}});
 
   if (!m_eglContext.CreateContext(contextAttribs))
   {
-    CLog::Log(LOGERROR, "EGL context creation failed");
-    return false;
+    CEGLAttributesVec contextAttribsFallback;
+    contextAttribsFallback.Add({{EGL_CONTEXT_CLIENT_VERSION, 2}});
+
+    if (!m_eglContext.CreateContext(contextAttribsFallback))
+    {
+      CLog::Log(LOGERROR, "EGL context creation failed");
+      return false;
+    }
   }
+
   return true;
 }

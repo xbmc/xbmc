@@ -97,6 +97,8 @@ bool CWinSystemGbmEGLContext::CreateNewWindow(const std::string& name,
     return false;
   }
 
+  RegisterRenderers();
+
   m_bFullScreen = fullScreen;
   m_nWidth = res.iWidth;
   m_nHeight = res.iHeight;

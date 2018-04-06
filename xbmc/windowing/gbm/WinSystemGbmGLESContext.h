@@ -37,6 +37,7 @@ protected:
   void SetVSyncImpl(bool enable) override { return; };
   void PresentRenderImpl(bool rendered) override {};
   bool CreateContext() override;
+  void RegisterRenderers() override;
 };
 
 }

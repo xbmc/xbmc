@@ -47,6 +47,7 @@ protected:
    */
   bool InitWindowSystemEGL(EGLint renderableType, EGLint apiType);
   virtual bool CreateContext() = 0;
+  virtual void RegisterRenderers() = 0;
 
   CEGLContextUtils m_eglContext;
 
