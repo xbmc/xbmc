@@ -1283,9 +1283,6 @@ void CVideoPlayer::Prepare()
   // give players a chance to reconsider now codecs are known
   CreatePlayers();
 
-  // allow renderer to switch to fullscreen if requested
-  m_VideoPlayerVideo->EnableFullscreen(m_playerOptions.fullscreen);
-
   if (m_omxplayer_mode)
   {
     if (!m_OmxPlayerState.av_clock.OMXInitialize(&m_clock))
@@ -2065,6 +2062,11 @@ void CVideoPlayer::HandlePlaySpeed()
 
       if (!m_State.streamsReady)
       {
+        if (m_playerOptions.fullscreen)
+        {
+          CApplicationMessenger::GetInstance().PostMsg(TMSG_SWITCHTOFULLSCREEN);
+        }
+
         IPlayerCallback *cb = &m_callback;
         CFileItem fileItem = m_item;
         m_outboundEvents->Submit([=]() {

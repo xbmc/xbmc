@@ -96,7 +96,7 @@ void CRenderManager::SetVideoSettings(CVideoSettings settings)
   }
 }
 
-bool CRenderManager::Configure(const VideoPicture& picture, float fps, bool fullscreen, unsigned int orientation, int buffers)
+bool CRenderManager::Configure(const VideoPicture& picture, float fps, unsigned int orientation, int buffers)
 {
 
   // check if something has changed
@@ -154,7 +154,6 @@ bool CRenderManager::Configure(const VideoPicture& picture, float fps, bool full
     m_dvdClock.SetVsyncAdjust(0);
     m_pConfigPicture.reset(new VideoPicture());
     m_pConfigPicture->CopyRef(picture);
-    m_fullscreen = fullscreen;
 
     CSingleLock lock2(m_presentlock);
     m_presentstep = PRESENT_READY;
@@ -300,12 +299,6 @@ void CRenderManager::FrameMove()
 
       firstFrame = true;
       FrameWait(50);
-
-      if (m_fullscreen)
-      {
-        CApplicationMessenger::GetInstance().PostMsg(TMSG_SWITCHTOFULLSCREEN);
-        m_fullscreen = false;
-      }
     }
 
     CheckEnableClockSync();

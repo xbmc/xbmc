@@ -89,7 +89,6 @@ CVideoPlayerVideo::CVideoPlayerVideo(CDVDClock* pClock
   m_iFrameRateErr = 0;
   m_iFrameRateLength = 0;
   m_bFpsInvalid = false;
-  m_bAllowFullscreen = false;
 }
 
 CVideoPlayerVideo::~CVideoPlayerVideo()
@@ -838,15 +837,12 @@ CVideoPlayerVideo::EOutputState CVideoPlayerVideo::OutputPicture(const VideoPict
 
   if (!m_renderManager.Configure(*pPicture,
                                 static_cast<float>(config_framerate),
-                                m_bAllowFullscreen,
                                 m_hints.orientation,
                                 m_pVideoCodec->GetAllowedReferences()))
   {
     CLog::Log(LOGERROR, "%s - failed to configure renderer", __FUNCTION__);
     return OUTPUT_ABORT;
   }
-
-  m_bAllowFullscreen = false;
 
   //try to calculate the framerate
   m_ptsTracker.Add(pPicture->pts);

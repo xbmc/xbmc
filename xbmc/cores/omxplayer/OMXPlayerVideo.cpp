@@ -80,7 +80,6 @@ OMXPlayerVideo::OMXPlayerVideo(OMXClock *av_clock,
   m_stalled               = false;
   m_iSubtitleDelay        = 0;
   m_bRenderSubs           = false;
-  m_bAllowFullscreen      = false;
   m_iCurrentPts           = DVD_NOPTS_VALUE;
   m_fForcedAspectRatio    = 0.0f;
   bool small_mem = g_RBP.GetArmMem() < 256;
@@ -801,13 +800,11 @@ void OMXPlayerVideo::ResolutionUpdateCallBack(uint32_t width, uint32_t height, f
   picture.iDisplayWidth = iDisplayWidth;
   picture.iDisplayHeight = iDisplayHeight;
 
-  if(!m_renderManager.Configure(picture, m_fFrameRate, m_bAllowFullscreen, m_hints.orientation, 3))
+  if(!m_renderManager.Configure(picture, m_fFrameRate, m_hints.orientation, 3))
   {
     CLog::Log(LOGERROR, "%s - failed to configure renderer", __FUNCTION__);
     return;
   }
-
-  m_bAllowFullscreen = false; // only allow on first configure
 
   m_src_rect.SetRect(0, 0, 0, 0);
   m_dst_rect.SetRect(0, 0, 0, 0);
