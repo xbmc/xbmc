@@ -139,8 +139,8 @@ public:
   bool SetVSync(bool enable);
   void SwapBuffers();
 
-  EGLDisplay m_eglDisplay;
-  EGLSurface m_eglSurface;
-  EGLContext m_eglContext;
-  EGLConfig m_eglConfig = 0;
+  EGLDisplay m_eglDisplay{EGL_NO_DISPLAY};
+  EGLSurface m_eglSurface{EGL_NO_SURFACE};
+  EGLContext m_eglContext{EGL_NO_CONTEXT};
+  EGLConfig m_eglConfig{};
 };
