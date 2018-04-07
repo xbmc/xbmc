@@ -156,6 +156,24 @@ public:
   void SwapBuffers();
   bool IsPlatformSupported() const;
 
+  EGLDisplay GetEGLDisplay() const
+  {
+    return m_eglDisplay;
+  }
+  EGLSurface GetEGLSurface() const
+  {
+    return m_eglSurface;
+  }
+  EGLContext GetEGLContext() const
+  {
+    return m_eglContext;
+  }
+  EGLConfig GetEGLConfig() const
+  {
+    return m_eglConfig;
+  }
+
+private:
   bool InitializeDisplay(EGLint renderableType, EGLint renderingApi);
   void SurfaceAttrib();
 

@@ -78,7 +78,7 @@ bool CWinSystemGbmGLESContext::InitWindowSystem()
 
   bool general, deepColor;
   m_vaapiProxy.reset(GBM::VaapiProxyCreate());
-  GBM::VaapiProxyConfig(m_vaapiProxy.get(), m_pGLContext.m_eglDisplay);
+  GBM::VaapiProxyConfig(m_vaapiProxy.get(), m_pGLContext.GetEGLDisplay());
   GBM::VAAPIRegisterRender(m_vaapiProxy.get(), general, deepColor);
 
   if (general)
@@ -190,20 +190,20 @@ void CWinSystemGbmGLESContext::delete_CVaapiProxy::operator()(CVaapiProxy *p) co
 
 EGLDisplay CWinSystemGbmGLESContext::GetEGLDisplay() const
 {
-  return m_pGLContext.m_eglDisplay;
+  return m_pGLContext.GetEGLDisplay();
 }
 
 EGLSurface CWinSystemGbmGLESContext::GetEGLSurface() const
 {
-  return m_pGLContext.m_eglSurface;
+  return m_pGLContext.GetEGLSurface();
 }
 
 EGLContext CWinSystemGbmGLESContext::GetEGLContext() const
 {
-  return m_pGLContext.m_eglContext;
+  return m_pGLContext.GetEGLContext();
 }
 
 EGLConfig  CWinSystemGbmGLESContext::GetEGLConfig() const
 {
-  return m_pGLContext.m_eglConfig;
+  return m_pGLContext.GetEGLConfig();
 }

@@ -129,22 +129,22 @@ void CWinSystemAndroidGLESContext::PresentRenderImpl(bool rendered)
 
 EGLDisplay CWinSystemAndroidGLESContext::GetEGLDisplay() const
 {
-  return m_pGLContext.m_eglDisplay;
+  return m_pGLContext.GetEGLDisplay();
 }
 
 EGLSurface CWinSystemAndroidGLESContext::GetEGLSurface() const
 {
-  return m_pGLContext.m_eglSurface;
+  return m_pGLContext.GetEGLSurface();
 }
 
 EGLContext CWinSystemAndroidGLESContext::GetEGLContext() const
 {
-  return m_pGLContext.m_eglContext;
+  return m_pGLContext.GetEGLContext();
 }
 
 EGLConfig  CWinSystemAndroidGLESContext::GetEGLConfig() const
 {
-  return m_pGLContext.m_eglConfig;
+  return m_pGLContext.GetEGLConfig();
 }
 
 std::unique_ptr<CVideoSync> CWinSystemAndroidGLESContext::GetVideoSync(void *clock)

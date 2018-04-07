@@ -161,22 +161,22 @@ void CWinSystemRpiGLESContext::PresentRenderImpl(bool rendered)
 
 EGLDisplay CWinSystemRpiGLESContext::GetEGLDisplay() const
 {
-  return m_pGLContext.m_eglDisplay;
+  return m_pGLContext.GetEGLDisplay();
 }
 
 EGLSurface CWinSystemRpiGLESContext::GetEGLSurface() const
 {
-  return m_pGLContext.m_eglSurface;
+  return m_pGLContext.GetEGLSurface();
 }
 
 EGLContext CWinSystemRpiGLESContext::GetEGLContext() const
 {
-  return m_pGLContext.m_eglContext;
+  return m_pGLContext.GetEGLContext();
 }
 
 EGLConfig  CWinSystemRpiGLESContext::GetEGLConfig() const
 {
-  return m_pGLContext.m_eglConfig;
+  return m_pGLContext.GetEGLConfig();
 }
 
 std::unique_ptr<CVideoSync> CWinSystemRpiGLESContext::GetVideoSync(void *clock)
