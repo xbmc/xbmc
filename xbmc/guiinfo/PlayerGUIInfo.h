@@ -22,6 +22,7 @@
 #include "guiinfo/GUIInfoProvider.h"
 
 #include <atomic>
+#include <memory>
 
 #include "XBDateTime.h"
 
@@ -33,8 +34,8 @@ class GUIInfo;
 class CPlayerGUIInfo : public CGUIInfoProvider
 {
 public:
-  CPlayerGUIInfo() : m_AfterSeekTimeout(0), m_seekOffset(0), m_playerShowTime(false), m_playerShowInfo(false) {}
-  ~CPlayerGUIInfo() override = default;
+  CPlayerGUIInfo();
+  ~CPlayerGUIInfo() override;
 
   // GUIINFO::IGUIInfoProvider implementation
   bool InitCurrentItem(CFileItem *item) override;
@@ -50,6 +51,8 @@ public:
   bool ToggleShowInfo();
 
 private:
+  std::unique_ptr<CFileItem> m_currentItem;
+
   unsigned int m_AfterSeekTimeout;
   mutable int m_seekOffset;
   std::atomic_bool m_playerShowTime;

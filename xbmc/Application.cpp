@@ -4002,7 +4002,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
         if (m_itemCurrentFile->IsSamePath(item.get()))
         {
           m_itemCurrentFile->UpdateInfo(*item);
-          g_infoManager.UpdateInfo(*item);
+          g_infoManager.UpdateCurrentItem(*item);
         }
       }
     }

@@ -34,12 +34,26 @@
 #include "utils/StringUtils.h"
 #include "utils/TimeUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/Variant.h"
+#include "utils/log.h"
 
 #include "guiinfo/GUIInfo.h"
 #include "guiinfo/GUIInfoHelper.h"
 #include "guiinfo/GUIInfoLabels.h"
 
 using namespace GUIINFO;
+
+CPlayerGUIInfo::CPlayerGUIInfo()
+: m_AfterSeekTimeout(0),
+  m_seekOffset(0),
+  m_playerShowTime(false),
+  m_playerShowInfo(false)
+{
+}
+
+CPlayerGUIInfo::~CPlayerGUIInfo()
+{
+}
 
 int CPlayerGUIInfo::GetTotalPlayTime() const
 {
@@ -160,6 +174,15 @@ bool CPlayerGUIInfo::ToggleShowInfo()
 
 bool CPlayerGUIInfo::InitCurrentItem(CFileItem *item)
 {
+  if (item && g_application.GetAppPlayer().IsPlaying())
+  {
+    CLog::Log(LOGDEBUG,"CPlayerGUIInfo::InitCurrentItem(%s)", item->GetPath().c_str());
+    m_currentItem.reset(new CFileItem(*item));
+  }
+  else
+  {
+    m_currentItem.reset();
+  }
   return false;
 }
 
@@ -544,6 +567,36 @@ bool CPlayerGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
     case PLAYER_PROCESS_VIDEOHWDECODER:
       value = CServiceBroker::GetDataCacheCore().IsVideoHwDecoder();
       return true;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    // LISTITEM_*
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    case LISTITEM_ISPLAYING:
+    {
+      if (item)
+      {
+        if (item->HasProperty("playlistposition"))
+        {
+          value = static_cast<int>(item->GetProperty("playlisttype").asInteger()) == CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() &&
+                  static_cast<int>(item->GetProperty("playlistposition").asInteger()) == CServiceBroker::GetPlaylistPlayer().GetCurrentSong();
+          return true;
+        }
+        else if (m_currentItem && !m_currentItem->GetPath().empty())
+        {
+          if (!g_application.m_strPlayListFile.empty())
+          {
+            //playlist file that is currently playing or the playlistitem that is currently playing.
+            value = item->IsPath(g_application.m_strPlayListFile) || m_currentItem->IsSamePath(item);
+          }
+          else
+          {
+            value = m_currentItem->IsSamePath(item);
+          }
+          return true;
+        }
+      }
+      break;
+    }
   }
 
   return false;

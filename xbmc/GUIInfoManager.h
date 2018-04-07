@@ -105,7 +105,7 @@ public:
    */
   void SetCurrentItem(const CFileItem &item);
   void ResetCurrentItem();
-  void UpdateInfo(const CFileItem &item);
+  void UpdateCurrentItem(const CFileItem &item);
   // Current song stuff
   void SetCurrentAlbumThumb(const std::string &thumbFileName);
   void SetCurrentSongTag(const MUSIC_INFO::CMusicInfoTag &tag);

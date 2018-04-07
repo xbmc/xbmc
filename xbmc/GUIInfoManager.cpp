@@ -29,7 +29,6 @@
 #include "Application.h"
 #include "FileItem.h"
 #include "GUIUserMessages.h"
-#include "PlayListPlayer.h"
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "Util.h"
@@ -6798,22 +6797,20 @@ int CGUIInfoManager::GetEpgEventSeekPercent() const
 void CGUIInfoManager::ResetCurrentItem()
 {
   m_currentFile->Reset();
+  m_infoProviders.InitCurrentItem(nullptr);
 }
 
-void CGUIInfoManager::UpdateInfo(const CFileItem & item)
+void CGUIInfoManager::UpdateCurrentItem(const CFileItem &item)
 {
   m_currentFile->UpdateInfo(item);
 }
 
 void CGUIInfoManager::SetCurrentItem(const CFileItem &item)
 {
-  ResetCurrentItem();
-
   *m_currentFile = item;
+  m_currentFile->FillInDefaultIcon();
 
   m_infoProviders.InitCurrentItem(m_currentFile);
-
-  m_currentFile->FillInDefaultIcon();
 
   SetChanged();
   NotifyObservers(ObservableMessageCurrentItem);
@@ -7039,22 +7036,7 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int contextWindow, i
   if (m_infoProviders.GetBool(value, item, contextWindow, GUIInfo(condition)))
     return value;
 
-  if (condition == LISTITEM_ISPLAYING)
-  {
-    if (item->HasProperty("playlistposition"))
-      return static_cast<int>(item->GetProperty("playlisttype").asInteger()) == CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() &&
-             static_cast<int>(item->GetProperty("playlistposition").asInteger()) == CServiceBroker::GetPlaylistPlayer().GetCurrentSong();
-    else if (item->IsFileItem() && !m_currentFile->GetPath().empty())
-    {
-      if (!g_application.m_strPlayListFile.empty())
-      {
-        //playlist file that is currently playing or the playlistitem that is currently playing.
-        return static_cast<const CFileItem*>(item)->IsPath(g_application.m_strPlayListFile) || m_currentFile->IsSamePath(static_cast<const CFileItem*>(item));
-      }
-      return m_currentFile->IsSamePath(static_cast<const CFileItem*>(item));
-    }
-  }
-  else if (condition == LISTITEM_ISSELECTED)
+  if (condition == LISTITEM_ISSELECTED)
     return item->IsSelected();
   else if (condition == LISTITEM_IS_FOLDER)
     return item->m_bIsFolder;
