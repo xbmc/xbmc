@@ -31,7 +31,7 @@ class ShellHandlerApt:
 
     def __init__(self, usesudo=False):
         self.sudo = usesudo
-        installed, candidate = self._check_versions("xbmc", False)
+        installed, candidate = self._check_versions("kodi", False)
         if not installed:
             # there is no package installed via repo, so we exit here
             log("No installed package found, exiting")
@@ -107,7 +107,7 @@ class ShellHandlerApt:
         return True
 
     def upgrade_system(self):
-        _cmd = "apt-get upgrade -y"
+        _cmd = "apt-get dist-upgrade -y"
         try:
             log("Upgrading system")
             if self.sudo:
