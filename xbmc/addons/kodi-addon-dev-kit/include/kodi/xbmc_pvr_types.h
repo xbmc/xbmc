@@ -303,6 +303,7 @@ extern "C" {
   typedef struct PVR_ADDON_CAPABILITIES
   {
     bool bSupportsEPG;                  /*!< @brief true if the add-on provides EPG information */
+    bool bSupportsEPGEdl;               /*!< @brief true if the backend supports retrieving an edit decision list for an EPG tag. */
     bool bSupportsTV;                   /*!< @brief true if this add-on provides TV channels */
     bool bSupportsRadio;                /*!< @brief true if this add-on supports radio channels */
     bool bSupportsRecordings;           /*!< @brief true if this add-on supports playback of recordings stored on the backend */
@@ -643,6 +644,7 @@ extern "C" {
     PVR_ERROR (__cdecl* GetEPGForChannel)(ADDON_HANDLE, const PVR_CHANNEL&, time_t, time_t);
     PVR_ERROR (__cdecl* IsEPGTagRecordable)(const EPG_TAG*, bool*);
     PVR_ERROR (__cdecl* IsEPGTagPlayable)(const EPG_TAG*, bool*);
+    PVR_ERROR (__cdecl* GetEPGTagEdl)(const EPG_TAG*, PVR_EDL_ENTRY[], int*);
     PVR_ERROR (__cdecl* GetEPGTagStreamProperties)(const EPG_TAG*, PVR_NAMED_VALUE*, unsigned int*);
     int (__cdecl* GetChannelGroupsAmount)(void);
     PVR_ERROR (__cdecl* GetChannelGroups)(ADDON_HANDLE, bool);

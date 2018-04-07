@@ -875,6 +875,15 @@ std::vector<PVR_EDL_ENTRY> CPVRClients::GetRecordingEdl(const CPVRRecording &rec
   return edls;
 }
 
+std::vector<PVR_EDL_ENTRY> CPVRClients::GetEpgTagEdl(const CConstPVREpgInfoTagPtr &epgTag)
+{
+  std::vector<PVR_EDL_ENTRY> edls;
+  ForCreatedClient(__FUNCTION__, epgTag->ClientID(), [&epgTag, &edls](const CPVRClientPtr &client) {
+    return client->GetEpgTagEdl(epgTag, edls);
+  });
+  return edls;
+}
+
 PVR_ERROR CPVRClients::GetEPGForChannel(const CPVRChannelPtr &channel, CPVREpg *epg, time_t start, time_t end)
 {
   return ForCreatedClient(__FUNCTION__, channel->ClientID(), [&channel, epg, start, end](const CPVRClientPtr &client) {

@@ -115,6 +115,16 @@ extern "C"
    * @remarks Required if add-on supports playing epg tags. Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
    */
   PVR_ERROR IsEPGTagPlayable(const EPG_TAG* tag, bool* bIsPlayable);
+  
+  /*!
+  * Retrieve the edit decision list (EDL) of an EPG tag on the backend.
+  * @param epgTag The EPG tag.
+  * @param edl out: The function has to write the EDL list into this array.
+  * @param size in: The maximum size of the EDL, out: the actual size of the EDL.
+  * @return PVR_ERROR_NO_ERROR if the EDL was successfully read.
+  * @remarks Required if bSupportsEpgEdl is set to true. Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
+  */
+  PVR_ERROR GetEPGTagEdl(const EPG_TAG* epgTag, PVR_EDL_ENTRY edl[], int *size);
 
   /*!
    * Get the stream properties for an epg tag from the backend.
@@ -324,7 +334,7 @@ extern "C"
   * @return PVR_ERROR_NO_ERROR if the EDL was successfully read.
   * @remarks Required if bSupportsRecordingEdl is set to true. Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
   */
-  PVR_ERROR GetRecordingEdl(const PVR_RECORDING&, PVR_EDL_ENTRY edl[], int *size);
+  PVR_ERROR GetRecordingEdl(const PVR_RECORDING& recording, PVR_EDL_ENTRY edl[], int *size);
 
   /*!
   * Retrieve the timer types supported by the backend.
@@ -650,6 +660,7 @@ extern "C"
     pClient->toAddon.GetEPGForChannel               = GetEPGForChannel;
     pClient->toAddon.IsEPGTagRecordable             = IsEPGTagRecordable;
     pClient->toAddon.IsEPGTagPlayable               = IsEPGTagPlayable;
+    pClient->toAddon.GetEPGTagEdl                   = GetEPGTagEdl;
     pClient->toAddon.GetEPGTagStreamProperties      = GetEPGTagStreamProperties;
 
     pClient->toAddon.GetChannelGroupsAmount         = GetChannelGroupsAmount;

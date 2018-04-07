@@ -472,6 +472,13 @@ namespace PVR
     * @return The edit decision list (empty on error).
     */
     std::vector<PVR_EDL_ENTRY> GetRecordingEdl(const CPVRRecording &recording);
+    
+    /*!
+    * @brief Retrieve the edit decision list (EDL) for a given EPG tag from the backend.
+    * @param epgTag The EPG tag.
+    * @return The edit decision list (empty on error).
+    */
+    std::vector<PVR_EDL_ENTRY> GetEpgTagEdl(const CConstPVREpgInfoTagPtr &epgTag);
 
     //@}
 
