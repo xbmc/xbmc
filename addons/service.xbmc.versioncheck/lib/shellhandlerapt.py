@@ -21,10 +21,9 @@ from .common import *
 try:
     from subprocess import check_output
     from subprocess import call
-    from subprocess import CalledProcessError    
-except:
-    log('subprocess import error')
-
+    from subprocess import CalledProcessError
+except Exception as error:
+    log('subprocess import error :%s' %error,xbmc.LOGERROR)
 
 class ShellHandlerApt:
 
@@ -48,7 +47,7 @@ class ShellHandlerApt:
         try:
             result = check_output([_cmd], shell=True).split("\n")
         except Exception as error:
-            log("ShellHandlerApt: exception while executing shell command %s: %s" %(_cmd, error))
+            log("ShellHandlerApt: exception while executing shell command %s: %s" %(_cmd, error),xbmc.LOGERROR)
             return False, False
 
         if result[0].replace(":", "") == package:
@@ -70,8 +69,9 @@ class ShellHandlerApt:
                 x = check_output('echo \'%s\' | sudo -S %s' %(self._getpassword(), _cmd), shell=True)
             else:
                 x = check_output(_cmd.split())
+            log("Update cache successful")
         except Exception as error:
-            log("Exception while executing shell command %s: %s" %(_cmd, error))
+            log("Exception while executing shell command %s: %s" %(_cmd, error),xbmc.LOGERROR)
             return False
 
         return True
@@ -85,9 +85,9 @@ class ShellHandlerApt:
                 log("Version available  %s" %candidate)
                 return True
             else:
-                log("Already on newest version")
+                log("Already on newest version for %s" %package)
         elif not installed:
-                log("No installed package found")
+                log("No installed package found for %s" %package)
                 return False
         else:
             return False
@@ -99,9 +99,9 @@ class ShellHandlerApt:
                 x = check_output('echo \'%s\' | sudo -S %s' %(self._getpassword(), _cmd), shell=True)
             else:
                 x = check_output(_cmd.split())
-            log("Upgrade successful")
+            log("Install package %s successful" %package,True)
         except Exception as error:
-            log("Exception while executing shell command %s: %s" %(_cmd, error))
+            log("Exception while executing shell command %s: %s" %(_cmd, error),xbmc.LOGERROR)
             return False
 
         return True
@@ -114,8 +114,9 @@ class ShellHandlerApt:
                 x = check_output('echo \'%s\' | sudo -S %s' %(self._getpassword(), _cmd), shell=True)
             else:
                 x = check_output(_cmd.split())
+            log("Upgrade System successful")
         except Exception as error:
-            log("Exception while executing shell command %s: %s" %(_cmd, error))
+            log("Exception while executing shell command %s: %s" %(_cmd, error),xbmc.LOGERROR)
             return False
 
         return True

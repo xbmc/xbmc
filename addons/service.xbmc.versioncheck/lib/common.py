@@ -58,14 +58,14 @@ def localise(id):
     string = normalize_string(ADDON.getLocalizedString(id))
     return string
 
-def log(txt):
+def log(txt,level_log=xbmc.LOGDEBUG):
     if sys.version_info[0] >= 3:
-        message = '%s: %s' % ("Version Check", txt.encode('utf-8'))
+        message = '{} v{}: {}'.format(ADDONNAME,ADDONVERSION, txt).encode("utf-8")
     else:
         if isinstance (txt,str):
-            txt = txt.decode("utf-8")
-        message = (u'%s: %s' % ("Version Check", txt)).encode("utf-8")
-    xbmc.log(msg=message, level=xbmc.LOGDEBUG)
+            txt = txt.decode("utf-8") 
+        message =(u'{} v{}: {}'.format(ADDONNAME,ADDONVERSION, txt)).encode("utf-8")
+    xbmc.log(msg=message, level=level_log)
 
 def get_password_from_user():
     keyboard = xbmc.Keyboard("", ADDONNAME + "," +localise(32022), True)
