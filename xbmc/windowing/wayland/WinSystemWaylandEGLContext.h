@@ -20,8 +20,10 @@
 
 #pragma once
 
-#include "EGLContext.h"
+#include "utils/EGLUtils.h"
 #include "WinSystemWayland.h"
+
+#include <wayland-egl.hpp>
 
 namespace KODI
 {
@@ -33,7 +35,7 @@ namespace WAYLAND
 class CWinSystemWaylandEGLContext : public CWinSystemWayland
 {
 public:
-  CWinSystemWaylandEGLContext() = default;
+  CWinSystemWaylandEGLContext();
   virtual ~CWinSystemWaylandEGLContext() = default;
 
   bool CreateNewWindow(const std::string& name,
@@ -51,12 +53,14 @@ protected:
    */
   bool InitWindowSystemEGL(EGLint renderableType, EGLint apiType);
 
+  CSizeInt GetNativeWindowAttachedSize();
   void PresentFrame(bool rendered);
   void SetContextSize(CSizeInt size) override;
 
   virtual bool CreateContext() = 0;
 
-  CEGLContext m_eglContext;
+  CEGLContextUtils m_eglContext;
+  wayland::egl_window_t m_nativeWindow;
 };
 
 }
