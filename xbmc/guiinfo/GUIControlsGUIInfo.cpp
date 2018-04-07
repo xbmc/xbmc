@@ -73,39 +73,46 @@ bool CGUIControlsGUIInfo::InitCurrentItem(CFileItem *item)
 
 bool CGUIControlsGUIInfo::GetLabel(std::string& value, const CFileItem *item, int contextWindow, const GUIInfo &info, std::string *fallback) const
 {
-  CGUIWindow *window = CGUIInfoHelper::GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
-  if (window)
+  switch (info.m_info)
   {
-    CGUIMediaWindow* mediaWindow = static_cast<CGUIMediaWindow*>(window);
-
-    switch (info.m_info)
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    // CONTAINER_*
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    case CONTAINER_FOLDERPATH:
+    case CONTAINER_FOLDERNAME:
     {
-      ///////////////////////////////////////////////////////////////////////////////////////////////
-      // CONTAINER_* (contextWindow is a media window)
-      ///////////////////////////////////////////////////////////////////////////////////////////////
-      case CONTAINER_FOLDERPATH:
-      case CONTAINER_FOLDERNAME:
+      CGUIMediaWindow* window = CGUIInfoHelper::GetMediaWindow(contextWindow);
+      if (window)
       {
         if (info.m_info == CONTAINER_FOLDERNAME)
-          value = mediaWindow->CurrentDirectory().GetLabel();
+          value = window->CurrentDirectory().GetLabel();
         else
-          value = CURL(mediaWindow->CurrentDirectory().GetPath()).GetWithoutUserDetails();
+          value = CURL(window->CurrentDirectory().GetPath()).GetWithoutUserDetails();
         return true;
       }
-      case CONTAINER_PLUGINNAME:
+      break;
+    }
+    case CONTAINER_PLUGINNAME:
+    {
+      CGUIMediaWindow* window = CGUIInfoHelper::GetMediaWindow(contextWindow);
+      if (window)
       {
-        const CURL url(mediaWindow->CurrentDirectory().GetPath());
+        const CURL url(window->CurrentDirectory().GetPath());
         if (url.IsProtocol("plugin"))
         {
           value = URIUtils::GetFileName(url.GetHostName());
           return true;
         }
-        break;
       }
-      case CONTAINER_VIEWCOUNT:
-      case CONTAINER_VIEWMODE:
+      break;
+    }
+    case CONTAINER_VIEWCOUNT:
+    case CONTAINER_VIEWMODE:
+    {
+      CGUIMediaWindow* window = CGUIInfoHelper::GetMediaWindow(contextWindow);
+      if (window)
       {
-        const CGUIControl *control = mediaWindow->GetControl(mediaWindow->GetViewContainerID());
+        const CGUIControl *control = window->GetControl(window->GetViewContainerID());
         if (control && control->IsContainer())
         {
           if (info.m_info == CONTAINER_VIEWMODE)
@@ -115,16 +122,20 @@ bool CGUIControlsGUIInfo::GetLabel(std::string& value, const CFileItem *item, in
           }
           else if (info.m_info == CONTAINER_VIEWCOUNT)
           {
-            value = StringUtils::Format("%i", mediaWindow->GetViewCount());
+            value = StringUtils::Format("%i", window->GetViewCount());
             return true;
           }
         }
-        break;
       }
-      case CONTAINER_SORT_METHOD:
-      case CONTAINER_SORT_ORDER:
+      break;
+    }
+    case CONTAINER_SORT_METHOD:
+    case CONTAINER_SORT_ORDER:
+    {
+      CGUIMediaWindow* window = CGUIInfoHelper::GetMediaWindow(contextWindow);
+      if (window)
       {
-        const CGUIViewState *viewState = mediaWindow->GetViewState();
+        const CGUIViewState *viewState = window->GetViewState();
         if (viewState)
         {
           if (info.m_info == CONTAINER_SORT_METHOD)
@@ -138,44 +149,77 @@ bool CGUIControlsGUIInfo::GetLabel(std::string& value, const CFileItem *item, in
             return true;
           }
         }
-        break;
       }
-      case CONTAINER_PROPERTY:
+      break;
+    }
+    case CONTAINER_PROPERTY:
+    {
+      CGUIMediaWindow* window = CGUIInfoHelper::GetMediaWindow(contextWindow);
+      if (window)
       {
-        value = mediaWindow->CurrentDirectory().GetProperty(info.GetData3()).asString();
+        value = window->CurrentDirectory().GetProperty(info.GetData3()).asString();
         return true;
       }
-      case CONTAINER_ART:
+      break;
+    }
+    case CONTAINER_ART:
+    {
+      CGUIMediaWindow* window = CGUIInfoHelper::GetMediaWindow(contextWindow);
+      if (window)
       {
-        value = mediaWindow->CurrentDirectory().GetArt(info.GetData3());
+        value = window->CurrentDirectory().GetArt(info.GetData3());
         return true;
       }
-      case CONTAINER_CONTENT:
+      break;
+    }
+    case CONTAINER_CONTENT:
+    {
+      CGUIMediaWindow* window = CGUIInfoHelper::GetMediaWindow(contextWindow);
+      if (window)
       {
-        value = mediaWindow->CurrentDirectory().GetContent();
+        value = window->CurrentDirectory().GetContent();
         return true;
       }
-      case CONTAINER_SHOWPLOT:
+      break;
+    }
+    case CONTAINER_SHOWPLOT:
+    {
+      CGUIMediaWindow* window = CGUIInfoHelper::GetMediaWindow(contextWindow);
+      if (window)
       {
-        value = mediaWindow->CurrentDirectory().GetProperty("showplot").asString();
+        value = window->CurrentDirectory().GetProperty("showplot").asString();
         return true;
       }
-      case CONTAINER_SHOWTITLE:
+      break;
+    }
+    case CONTAINER_SHOWTITLE:
+    {
+      CGUIMediaWindow* window = CGUIInfoHelper::GetMediaWindow(contextWindow);
+      if (window)
       {
-        value = mediaWindow->CurrentDirectory().GetProperty("showtitle").asString();
+        value = window->CurrentDirectory().GetProperty("showtitle").asString();
         return true;
       }
-      case CONTAINER_PLUGINCATEGORY:
+    }
+    case CONTAINER_PLUGINCATEGORY:
+    {
+      CGUIMediaWindow* window = CGUIInfoHelper::GetMediaWindow(contextWindow);
+      if (window)
       {
-        value = mediaWindow->CurrentDirectory().GetProperty("plugincategory").asString();
+        value = window->CurrentDirectory().GetProperty("plugincategory").asString();
         return true;
       }
-      case CONTAINER_TOTALTIME:
-      case CONTAINER_TOTALWATCHED:
-      case CONTAINER_TOTALUNWATCHED:
+      break;
+    }
+    case CONTAINER_TOTALTIME:
+    case CONTAINER_TOTALWATCHED:
+    case CONTAINER_TOTALUNWATCHED:
+    {
+      CGUIMediaWindow* window = CGUIInfoHelper::GetMediaWindow(contextWindow);
+      if (window)
       {
-        const CFileItemList& items = mediaWindow->CurrentDirectory();
         int count = 0;
+        const CFileItemList& items = window->CurrentDirectory();
         for (const auto& item : items)
         {
           // Iterate through container and count watched, unwatched and total duration.
@@ -198,16 +242,9 @@ bool CGUIControlsGUIInfo::GetLabel(std::string& value, const CFileItem *item, in
           value = StringUtils::Format("%i", count);
           return true;
         }
-        break;
       }
+      break;
     }
-  }
-
-  switch (info.m_info)
-  {
-    ///////////////////////////////////////////////////////////////////////////////////////////////
-    // CONTAINER_*
-    ///////////////////////////////////////////////////////////////////////////////////////////////
     case CONTAINER_NUM_PAGES:
     case CONTAINER_CURRENT_PAGE:
     case CONTAINER_NUM_ITEMS:
@@ -221,13 +258,13 @@ bool CGUIControlsGUIInfo::GetLabel(std::string& value, const CFileItem *item, in
       const CGUIControl *control = nullptr;
       if (info.GetData1())
       { // container specified
-        CGUIWindow *window = CGUIInfoHelper::GetWindowWithCondition(contextWindow, 0);
+        CGUIWindow *window = CGUIInfoHelper::GetWindow(contextWindow);
         if (window)
           control = window->GetControl(info.GetData1());
       }
       else
       { // no container specified - assume a mediawindow
-        CGUIWindow *window = CGUIInfoHelper::GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+        CGUIMediaWindow *window = CGUIInfoHelper::GetMediaWindow(contextWindow);
         if (window)
           control = window->GetControl(window->GetViewContainerID());
       }
@@ -249,7 +286,7 @@ bool CGUIControlsGUIInfo::GetLabel(std::string& value, const CFileItem *item, in
     ///////////////////////////////////////////////////////////////////////////////////////////////
     case CONTROL_GET_LABEL:
     {
-      CGUIWindow *window = CGUIInfoHelper::GetWindowWithCondition(contextWindow, 0);
+      CGUIWindow *window = CGUIInfoHelper::GetWindow(contextWindow);
       if (window)
       {
         const CGUIControl *control = window->GetControl(info.GetData1());
@@ -278,7 +315,7 @@ bool CGUIControlsGUIInfo::GetLabel(std::string& value, const CFileItem *item, in
       }
       else
       { // no window specified - assume active
-        window = CGUIInfoHelper::GetWindowWithCondition(contextWindow, 0);
+        window = CGUIInfoHelper::GetWindow(contextWindow);
       }
       if (window)
       {
@@ -328,40 +365,40 @@ bool CGUIControlsGUIInfo::GetLabel(std::string& value, const CFileItem *item, in
     ///////////////////////////////////////////////////////////////////////////////////////////////
     case FANART_COLOR1:
     {
-      CGUIWindow *window = CGUIInfoHelper::GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+      CGUIMediaWindow* window = CGUIInfoHelper::GetMediaWindow(contextWindow);
       if (window)
       {
-        value = static_cast<CGUIMediaWindow*>(window)->CurrentDirectory().GetProperty("fanart_color1").asString();
+        value = window->CurrentDirectory().GetProperty("fanart_color1").asString();
         return true;
       }
       break;
     }
     case FANART_COLOR2:
     {
-      CGUIWindow *window = CGUIInfoHelper::GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+      CGUIMediaWindow* window = CGUIInfoHelper::GetMediaWindow(contextWindow);
       if (window)
       {
-        value = static_cast<CGUIMediaWindow*>(window)->CurrentDirectory().GetProperty("fanart_color2").asString();
+        value = window->CurrentDirectory().GetProperty("fanart_color2").asString();
         return true;
       }
       break;
     }
     case FANART_COLOR3:
     {
-      CGUIWindow *window = CGUIInfoHelper::GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+      CGUIMediaWindow* window = CGUIInfoHelper::GetMediaWindow(contextWindow);
       if (window)
       {
-        value = static_cast<CGUIMediaWindow*>(window)->CurrentDirectory().GetProperty("fanart_color3").asString();
+        value = window->CurrentDirectory().GetProperty("fanart_color3").asString();
         return true;
       }
       break;
     }
     case FANART_IMAGE:
     {
-      CGUIWindow *window = CGUIInfoHelper::GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+      CGUIMediaWindow* window = CGUIInfoHelper::GetMediaWindow(contextWindow);
       if (window)
       {
-        value = static_cast<CGUIMediaWindow*>(window)->CurrentDirectory().GetArt("fanart");
+        value = window->CurrentDirectory().GetArt("fanart");
         return true;
       }
       break;
@@ -400,10 +437,10 @@ bool CGUIControlsGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int co
     case CONTAINER_HASFILES:
     case CONTAINER_HASFOLDERS:
     {
-      CGUIWindow *window = CGUIInfoHelper::GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+      CGUIMediaWindow* window = CGUIInfoHelper::GetMediaWindow(contextWindow);
       if (window)
       {
-        const CFileItemList& items = static_cast<CGUIMediaWindow*>(window)->CurrentDirectory();
+        const CFileItemList& items = window->CurrentDirectory();
         for (const auto& item : items)
         {
           if ((!item->m_bIsFolder && info.m_info == CONTAINER_HASFILES) ||
@@ -418,60 +455,60 @@ bool CGUIControlsGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int co
     }
     case CONTAINER_STACKED:
     {
-      CGUIWindow *window = CGUIInfoHelper::GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+      CGUIMediaWindow* window = CGUIInfoHelper::GetMediaWindow(contextWindow);
       if (window)
       {
-        value = static_cast<CGUIMediaWindow*>(window)->CurrentDirectory().GetProperty("isstacked").asBoolean();
+        value = window->CurrentDirectory().GetProperty("isstacked").asBoolean();
         return true;
       }
       break;
     }
     case CONTAINER_HAS_THUMB:
     {
-      CGUIWindow *window = CGUIInfoHelper::GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+      CGUIMediaWindow* window = CGUIInfoHelper::GetMediaWindow(contextWindow);
       if (window)
       {
-        value = static_cast<CGUIMediaWindow*>(window)->CurrentDirectory().HasArt("thumb");
+        value = window->CurrentDirectory().HasArt("thumb");
         return true;
       }
       break;
     }
     case CONTAINER_CAN_FILTER:
     {
-      CGUIWindow *window = CGUIInfoHelper::GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+      CGUIMediaWindow *window = CGUIInfoHelper::GetMediaWindow(contextWindow);
       if (window)
       {
-        value = static_cast<CGUIMediaWindow*>(window)->CanFilterAdvanced();
+        value = window->CanFilterAdvanced();
         return true;
       }
       break;
     }
     case CONTAINER_CAN_FILTERADVANCED:
     {
-      CGUIWindow *window = CGUIInfoHelper::GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+      CGUIMediaWindow *window = CGUIInfoHelper::GetMediaWindow(contextWindow);
       if (window)
       {
-        value = static_cast<CGUIMediaWindow*>(window)->CanFilterAdvanced();
+        value = window->CanFilterAdvanced();
         return true;
       }
       break;
     }
     case CONTAINER_FILTERED:
     {
-      CGUIWindow *window = CGUIInfoHelper::GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+      CGUIMediaWindow *window = CGUIInfoHelper::GetMediaWindow(contextWindow);
       if (window)
       {
-        value = static_cast<CGUIMediaWindow*>(window)->IsFiltered();
+        value = window->IsFiltered();
         return true;
       }
       break;
     }
     case CONTAINER_SORT_METHOD:
     {
-      CGUIWindow *window = CGUIInfoHelper::GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+      CGUIMediaWindow *window = CGUIInfoHelper::GetMediaWindow(contextWindow);
       if (window)
       {
-        const CGUIViewState *viewState = static_cast<CGUIMediaWindow*>(window)->GetViewState();
+        const CGUIViewState *viewState = window->GetViewState();
         if (viewState)
         {
           value = (static_cast<unsigned int>(viewState->GetSortMethod().sortBy) == info.GetData1());
@@ -482,10 +519,10 @@ bool CGUIControlsGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int co
     }
     case CONTAINER_SORT_DIRECTION:
     {
-      CGUIWindow *window = CGUIInfoHelper::GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+      CGUIMediaWindow *window = CGUIInfoHelper::GetMediaWindow(contextWindow);
       if (window)
       {
-        const CGUIViewState *viewState = static_cast<CGUIMediaWindow*>(window)->GetViewState();
+        const CGUIViewState *viewState = window->GetViewState();
         if (viewState)
         {
           value = (static_cast<unsigned int>(viewState->GetSortOrder()) == info.GetData1());
@@ -497,7 +534,7 @@ bool CGUIControlsGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int co
     case CONTAINER_CONTENT:
     {
       std::string content;
-      CGUIWindow *window = CGUIInfoHelper::GetWindowWithCondition(contextWindow, 0);
+      CGUIWindow *window = CGUIInfoHelper::GetWindow(contextWindow);
       if (window)
       {
         if (window->GetID() == WINDOW_DIALOG_MUSIC_INFO)
@@ -509,9 +546,9 @@ bool CGUIControlsGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int co
       }
       if (content.empty())
       {
-        window = CGUIInfoHelper::GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+        CGUIMediaWindow* window = CGUIInfoHelper::GetMediaWindow(contextWindow);
         if (window)
-          content = static_cast<CGUIMediaWindow*>(window)->CurrentDirectory().GetContent();
+          content = window->CurrentDirectory().GetContent();
       }
       value = StringUtils::EqualsNoCase(info.GetData3(), content);
       return true;
@@ -528,7 +565,7 @@ bool CGUIControlsGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int co
     {
       if (info.GetData1())
       {
-        CGUIWindow *window = CGUIInfoHelper::GetWindowWithCondition(contextWindow, 0);
+        CGUIWindow *window = CGUIInfoHelper::GetWindow(contextWindow);
         if (window)
         {
           const CGUIControl *control = window->GetControl(info.GetData1());
@@ -552,7 +589,7 @@ bool CGUIControlsGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int co
     }
     case CONTAINER_HAS_FOCUS:
     { // grab our container
-      CGUIWindow *window = CGUIInfoHelper::GetWindowWithCondition(contextWindow, 0);
+      CGUIWindow *window = CGUIInfoHelper::GetWindow(contextWindow);
       if (window)
       {
         const CGUIControl *control = window->GetControl(info.GetData1());
@@ -582,9 +619,9 @@ bool CGUIControlsGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int co
       {
         // no parameters, so we assume it's just requested for a media window.  It therefore
         // can only happen if the list has focus.
-        CGUIWindow *pWindow = CGUIInfoHelper::GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
-        if (pWindow)
-          containerId = pWindow->GetViewContainerID();
+        CGUIMediaWindow *window = CGUIInfoHelper::GetMediaWindow(contextWindow);
+        if (window)
+          containerId = window->GetViewContainerID();
       }
       if (containerId != -1)
       {
@@ -610,7 +647,7 @@ bool CGUIControlsGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int co
     ///////////////////////////////////////////////////////////////////////////////////////////////
     case CONTROL_IS_VISIBLE:
     {
-      CGUIWindow *window = CGUIInfoHelper::GetWindowWithCondition(contextWindow, 0);
+      CGUIWindow *window = CGUIInfoHelper::GetWindow(contextWindow);
       if (window)
       {
         // Note: This'll only work for unique id's
@@ -625,7 +662,7 @@ bool CGUIControlsGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int co
     }
     case CONTROL_IS_ENABLED:
     {
-      CGUIWindow *window = CGUIInfoHelper::GetWindowWithCondition(contextWindow, 0);
+      CGUIWindow *window = CGUIInfoHelper::GetWindow(contextWindow);
       if (window)
       {
         // Note: This'll only work for unique id's
@@ -640,7 +677,7 @@ bool CGUIControlsGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int co
     }
     case CONTROL_HAS_FOCUS:
     {
-      CGUIWindow *window = CGUIInfoHelper::GetWindowWithCondition(contextWindow, 0);
+      CGUIWindow *window = CGUIInfoHelper::GetWindow(contextWindow);
       if (window)
       {
         value = (window->GetFocusedControlID() == static_cast<int>(info.GetData1()));
@@ -650,7 +687,7 @@ bool CGUIControlsGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int co
     }
     case CONTROL_GROUP_HAS_FOCUS:
     {
-      CGUIWindow *window = CGUIInfoHelper::GetWindowWithCondition(contextWindow, 0);
+      CGUIWindow *window = CGUIInfoHelper::GetWindow(contextWindow);
       if (window)
       {
         value = window->ControlGroupHasFocus(info.GetData1(), info.GetData2());

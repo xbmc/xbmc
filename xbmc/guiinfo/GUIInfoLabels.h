@@ -19,10 +19,6 @@
 *
 */
 
-// conditions for window retrieval
-#define WINDOW_CONDITION_HAS_LIST_ITEMS  1
-#define WINDOW_CONDITION_IS_MEDIA_WINDOW 2
-
 #define PLAYER_HAS_MEDIA              1
 #define PLAYER_HAS_AUDIO              2
 #define PLAYER_HAS_VIDEO              3

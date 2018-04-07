@@ -24,10 +24,15 @@
 
 #include "PlayListPlayer.h"
 
-class CGUIControl;
-class CGUIWindow;
+class CFileItem;
+typedef std::shared_ptr<CFileItem> CFileItemPtr;
+
 class CGUIListItem;
 typedef std::shared_ptr<CGUIListItem> CGUIListItemPtr;
+
+class CGUIControl;
+class CGUIMediaWindow;
+class CGUIWindow;
 
 namespace GUIINFO
 {
@@ -37,11 +42,14 @@ class CGUIInfoHelper
 public:
   static std::string GetPlaylistLabel(int item, int playlistid = PLAYLIST_NONE);
 
-  static CGUIWindow* GetWindowWithCondition(int contextWindow, int condition);
+  static CGUIWindow* GetWindow(int contextWindow);
+  static CGUIMediaWindow* GetMediaWindow(int contextWindow);
+  static CFileItemPtr GetCurrentListItemFromWindow(int contextWindow);
   static CGUIControl* GetActiveContainer(int containerId, int contextWindow);
   static CGUIListItemPtr GetListItemFromActiveContainer(int containerId, int contextWindow, int offset, unsigned int flag);
 
 private:
+  static CGUIWindow* GetWindowWithCondition(int contextWindow, int condition);
   static bool CheckWindowCondition(CGUIWindow *window, int condition);
 };
 

@@ -35,6 +35,10 @@
 namespace GUIINFO
 {
 
+// conditions for window retrieval
+static const int WINDOW_CONDITION_HAS_LIST_ITEMS  = 1;
+static const int WINDOW_CONDITION_IS_MEDIA_WINDOW = 2;
+
 std::string CGUIInfoHelper::GetPlaylistLabel(int item, int playlistid /* = PLAYLIST_NONE */)
 {
   if (playlistid < PLAYLIST_NONE)
@@ -110,11 +114,35 @@ CGUIWindow* CGUIInfoHelper::GetWindowWithCondition(int contextWindow, int condit
   return nullptr;
 }
 
+CGUIWindow* CGUIInfoHelper::GetWindow(int contextWindow)
+{
+  return GetWindowWithCondition(contextWindow, 0);
+}
+
+CFileItemPtr CGUIInfoHelper::GetCurrentListItemFromWindow(int contextWindow)
+{
+  CGUIWindow* window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_HAS_LIST_ITEMS);
+  if (window)
+    return window->GetCurrentListItem();
+
+  return CFileItemPtr();
+}
+
+CGUIMediaWindow* CGUIInfoHelper::GetMediaWindow(int contextWindow)
+{
+  CGUIWindow* window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+  if (window)
+    return static_cast<CGUIMediaWindow*>(window);
+
+  return nullptr;
+}
+
 CGUIControl* CGUIInfoHelper::GetActiveContainer(int containerId, int contextWindow)
 {
-  CGUIWindow *window = GetWindowWithCondition(contextWindow, 0);
+  CGUIWindow *window = GetWindow(contextWindow);
   if (!window)
     return nullptr;
+
   if (!containerId) // No container specified, so we lookup the current view container
   {
     if (window->IsMediaWindow())

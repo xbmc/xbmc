@@ -624,10 +624,10 @@ bool CSystemGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
     {
       if (StringUtils::EqualsNoCase(info.GetData3(), "hidewatched"))
       {
-        CGUIWindow *window = CGUIInfoHelper::GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+        CGUIMediaWindow* window = CGUIInfoHelper::GetMediaWindow(contextWindow);
         if (window)
         {
-          value = CMediaSettings::GetInstance().GetWatchedMode(static_cast<CGUIMediaWindow*>(window)->CurrentDirectory().GetContent()) == WatchedModeUnwatched;
+          value = CMediaSettings::GetInstance().GetWatchedMode(window->CurrentDirectory().GetContent()) == WatchedModeUnwatched;
           return true;
         }
       }

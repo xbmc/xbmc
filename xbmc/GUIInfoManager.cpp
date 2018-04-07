@@ -6350,21 +6350,16 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   if (info >= CONDITIONAL_LABEL_START && info <= CONDITIONAL_LABEL_END)
     return GetSkinVariableString(info, false);
 
-  std::string strLabel;
   if (info >= MULTI_INFO_START && info <= MULTI_INFO_END)
     return GetMultiInfoLabel(m_multiInfo[info - MULTI_INFO_START], contextWindow);
 
   if (info >= LISTITEM_START && info <= LISTITEM_END)
   {
-    CGUIWindow *window = CGUIInfoHelper::GetWindowWithCondition(contextWindow, WINDOW_CONDITION_HAS_LIST_ITEMS); // true for has list items
-    if (window)
-    {
-      const CFileItemPtr item = window->GetCurrentListItem();
-      strLabel = GetItemLabel(item.get(), contextWindow, info, fallback);
-    }
-    return strLabel;
+    const CFileItemPtr item = CGUIInfoHelper::GetCurrentListItemFromWindow(contextWindow);
+    return GetItemLabel(item.get(), contextWindow, info, fallback);
   }
 
+  std::string strLabel;
   if (m_infoProviders.GetLabel(strLabel, m_currentFile, contextWindow, GUIInfo(info), fallback))
     return strLabel;
 
@@ -6397,11 +6392,7 @@ bool CGUIInfoManager::GetInt(int &value, int info, int contextWindow, const CGUI
   if (info >= LISTITEM_START && info <= LISTITEM_END)
   {
     if (!item)
-    {
-      CGUIWindow *window = CGUIInfoHelper::GetWindowWithCondition(contextWindow, WINDOW_CONDITION_HAS_LIST_ITEMS); // true for has list items
-      if (window)
-        item = window->GetCurrentListItem().get();
-    }
+      item = CGUIInfoHelper::GetCurrentListItemFromWindow(contextWindow).get();
 
     return GetItemInt(value, item, contextWindow, info);
   }
@@ -6453,12 +6444,8 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
       bReturn = GetItemBool(item, contextWindow, condition);
     else
     {
-      CGUIWindow *window = CGUIInfoHelper::GetWindowWithCondition(contextWindow, WINDOW_CONDITION_HAS_LIST_ITEMS); // true for has list items
-      if (window)
-      {
-        const CFileItemPtr item = window->GetCurrentListItem();
-        bReturn = GetItemBool(item.get(), contextWindow, condition);
-      }
+      const CFileItemPtr item = CGUIInfoHelper::GetCurrentListItemFromWindow(contextWindow);
+      bReturn = GetItemBool(item.get(), contextWindow, condition);
     }
   }
   else if (condition >= MULTI_INFO_START && condition <= MULTI_INFO_END)
@@ -6682,17 +6669,17 @@ std::string CGUIInfoManager::GetImage(int info, int contextWindow, std::string *
   {
     return GetMultiInfoLabel(m_multiInfo[info - MULTI_INFO_START], contextWindow, fallback);
   }
-  else if (info == LISTITEM_THUMB || info == LISTITEM_ICON || info == LISTITEM_ACTUAL_ICON ||
-           info == LISTITEM_OVERLAY || info == LISTITEM_ART)
+  else if (info == LISTITEM_THUMB ||
+           info == LISTITEM_ICON ||
+           info == LISTITEM_ACTUAL_ICON ||
+           info == LISTITEM_OVERLAY ||
+           info == LISTITEM_ART)
   {
-    CGUIWindow *window = CGUIInfoHelper::GetWindowWithCondition(contextWindow, WINDOW_CONDITION_HAS_LIST_ITEMS);
-    if (window)
-    {
-      const CFileItemPtr item = window->GetCurrentListItem();
-      if (item)
-        return GetItemImage(item.get(), contextWindow, info, fallback);
-    }
+    const CFileItemPtr item = CGUIInfoHelper::GetCurrentListItemFromWindow(contextWindow);
+    if (item)
+      return GetItemImage(item.get(), contextWindow, info, fallback);
   }
+
   return GetLabel(info, contextWindow, fallback);
 }
 
