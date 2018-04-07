@@ -80,30 +80,6 @@ bool CEGLContextUtils::CreateDisplay(EGLDisplay display,
     throw std::logic_error("Do not call CreateDisplay when display has already been created");
   }
 
-  EGLint neglconfigs = 0;
-  int major, minor;
-
-  EGLint surfaceType = EGL_WINDOW_BIT;
-  // for the non-trivial dirty region modes, we need the EGL buffer to be preserved across updates
-  if (g_advancedSettings.m_guiAlgorithmDirtyRegions == DIRTYREGION_SOLVER_COST_REDUCTION ||
-      g_advancedSettings.m_guiAlgorithmDirtyRegions == DIRTYREGION_SOLVER_UNION)
-    surfaceType |= EGL_SWAP_BEHAVIOR_PRESERVED_BIT;
-
-  EGLint attribs[] =
-  {
-    EGL_RED_SIZE,        8,
-    EGL_GREEN_SIZE,      8,
-    EGL_BLUE_SIZE,       8,
-    EGL_ALPHA_SIZE,      8,
-    EGL_DEPTH_SIZE,     16,
-    EGL_STENCIL_SIZE,    0,
-    EGL_SAMPLE_BUFFERS,  0,
-    EGL_SAMPLES,         0,
-    EGL_SURFACE_TYPE,    surfaceType,
-    EGL_RENDERABLE_TYPE, renderableType,
-    EGL_NONE
-  };
-
 #if defined(EGL_EXT_platform_base) && defined(EGL_KHR_platform_gbm) && defined(HAVE_GBM)
   if (m_eglDisplay == EGL_NO_DISPLAY &&
       CEGLUtils::HasExtension(EGL_NO_DISPLAY, "EGL_EXT_platform_base") &&
@@ -134,6 +110,7 @@ bool CEGLContextUtils::CreateDisplay(EGLDisplay display,
     return false;
   }
 
+  int major, minor;
   if (!eglInitialize(m_eglDisplay, &major, &minor))
   {
     CEGLUtils::LogError("failed to initialize EGL display");
@@ -149,6 +126,28 @@ bool CEGLContextUtils::CreateDisplay(EGLDisplay display,
     return false;
   }
 
+  EGLint surfaceType = EGL_WINDOW_BIT;
+  // for the non-trivial dirty region modes, we need the EGL buffer to be preserved across updates
+  if (g_advancedSettings.m_guiAlgorithmDirtyRegions == DIRTYREGION_SOLVER_COST_REDUCTION ||
+      g_advancedSettings.m_guiAlgorithmDirtyRegions == DIRTYREGION_SOLVER_UNION)
+    surfaceType |= EGL_SWAP_BEHAVIOR_PRESERVED_BIT;
+
+  EGLint attribs[] =
+  {
+    EGL_RED_SIZE,        8,
+    EGL_GREEN_SIZE,      8,
+    EGL_BLUE_SIZE,       8,
+    EGL_ALPHA_SIZE,      8,
+    EGL_DEPTH_SIZE,     16,
+    EGL_STENCIL_SIZE,    0,
+    EGL_SAMPLE_BUFFERS,  0,
+    EGL_SAMPLES,         0,
+    EGL_SURFACE_TYPE,    surfaceType,
+    EGL_RENDERABLE_TYPE, renderableType,
+    EGL_NONE
+  };
+
+  EGLint neglconfigs = 0;
   if (eglChooseConfig(m_eglDisplay, attribs, &m_eglConfig, 1, &neglconfigs) != EGL_TRUE)
   {
     CEGLUtils::LogError("failed to query number of EGL configs");
