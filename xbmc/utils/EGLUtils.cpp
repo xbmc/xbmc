@@ -78,6 +78,11 @@ bool CEGLContextUtils::CreateDisplay(EGLDisplay display,
                                      EGLint renderableType,
                                      EGLint renderingApi)
 {
+  if (m_eglDisplay != EGL_NO_DISPLAY)
+  {
+    throw std::logic_error("Do not call CreateDisplay when display has already been created");
+  }
+
   EGLint neglconfigs = 0;
   int major, minor;
 
@@ -152,11 +157,13 @@ bool CEGLContextUtils::CreateDisplay(EGLDisplay display,
 
 bool CEGLContextUtils::CreateContext(const EGLint* contextAttribs)
 {
-  if (m_eglContext == EGL_NO_CONTEXT)
+  if (m_eglContext != EGL_NO_CONTEXT)
   {
-    m_eglContext = eglCreateContext(m_eglDisplay, m_eglConfig,
-                                    EGL_NO_CONTEXT, contextAttribs);
+    throw std::logic_error("Do not call CreateContext when context has already been created");
   }
+
+  m_eglContext = eglCreateContext(m_eglDisplay, m_eglConfig,
+                                  EGL_NO_CONTEXT, contextAttribs);
 
   if (m_eglContext == EGL_NO_CONTEXT)
   {
@@ -169,8 +176,12 @@ bool CEGLContextUtils::CreateContext(const EGLint* contextAttribs)
 
 bool CEGLContextUtils::BindContext()
 {
-  if (!eglMakeCurrent(m_eglDisplay, m_eglSurface,
-                      m_eglSurface, m_eglContext))
+  if (m_eglDisplay == EGL_NO_DISPLAY || m_eglSurface == EGL_NO_SURFACE || m_eglContext == EGL_NO_CONTEXT)
+  {
+    throw std::logic_error("Activating an EGLContext requires display, surface, and context");
+  }
+
+  if (eglMakeCurrent(m_eglDisplay, m_eglSurface, m_eglSurface, m_eglContext) != EGL_TRUE)
   {
     CLog::Log(LOGERROR, "Failed to make context current %p %p %p",
                          m_eglDisplay, m_eglSurface, m_eglContext);
