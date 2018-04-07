@@ -97,7 +97,7 @@ public:
 
   int GetSkippedFrames()  { return m_QueueSkip; }
 
-  bool Configure(const VideoPicture& picture, float fps, bool fullscreen, unsigned int orientation, int buffers = 0);
+  bool Configure(const VideoPicture& picture, float fps, unsigned int orientation, int buffers = 0);
   bool AddVideoPicture(const VideoPicture& picture, volatile std::atomic_bool& bStop, EINTERLACEMETHOD deintMethod, bool wait);
   void AddOverlay(CDVDOverlay* o, double pts);
 
@@ -210,7 +210,6 @@ protected:
   float m_fps = 0.0;
   unsigned int m_orientation = 0;
   int m_NumberBuffers = 0;
-  bool m_fullscreen = false;
   std::string m_stereomode;
 
   int m_lateframes = -1;
