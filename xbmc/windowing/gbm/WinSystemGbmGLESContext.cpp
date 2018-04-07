@@ -123,11 +123,6 @@ bool CWinSystemGbmGLESContext::CreateNewWindow(const std::string& name,
     return false;
   }
 
-  if (!m_pGLContext.SurfaceAttrib())
-  {
-    return false;
-  }
-
   return true;
 }
 

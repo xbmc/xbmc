@@ -133,12 +133,12 @@ public:
   bool CreateSurface(EGLNativeWindowType surface);
   bool CreateContext(const EGLint* contextAttribs);
   bool BindContext();
-  bool SurfaceAttrib();
   void Destroy();
   void Detach();
   bool SetVSync(bool enable);
   void SwapBuffers();
 
+  void SurfaceAttrib();
   EGLDisplay m_eglDisplay{EGL_NO_DISPLAY};
   EGLSurface m_eglSurface{EGL_NO_SURFACE};
   EGLContext m_eglContext{EGL_NO_CONTEXT};

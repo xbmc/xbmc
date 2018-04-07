@@ -202,24 +202,22 @@ bool CEGLContextUtils::BindContext()
   return true;
 }
 
-bool CEGLContextUtils::SurfaceAttrib()
+void CEGLContextUtils::SurfaceAttrib()
 {
+  if (m_eglDisplay == EGL_NO_DISPLAY || m_eglSurface == EGL_NO_SURFACE)
+  {
+    throw std::logic_error("Setting surface attributes requires a surface");
+  }
+
   // for the non-trivial dirty region modes, we need the EGL buffer to be preserved across updates
   if (g_advancedSettings.m_guiAlgorithmDirtyRegions == DIRTYREGION_SOLVER_COST_REDUCTION ||
       g_advancedSettings.m_guiAlgorithmDirtyRegions == DIRTYREGION_SOLVER_UNION)
   {
-    if ((m_eglDisplay == EGL_NO_DISPLAY) || (m_eglSurface == EGL_NO_SURFACE))
-    {
-      return false;
-    }
-
     if (eglSurfaceAttrib(m_eglDisplay, m_eglSurface, EGL_SWAP_BEHAVIOR, EGL_BUFFER_PRESERVED) != EGL_TRUE)
     {
-      CLog::Log(LOGDEBUG, "%s: Could not set EGL_SWAP_BEHAVIOR",__FUNCTION__);
+      CEGLUtils::LogError("failed to set EGL_BUFFER_PRESERVED swap behavior");
     }
   }
-
-  return true;
 }
 
 bool CEGLContextUtils::CreateSurface(EGLNativeWindowType surface)
@@ -234,6 +232,8 @@ bool CEGLContextUtils::CreateSurface(EGLNativeWindowType surface)
     CLog::Log(LOGERROR, "failed to create EGL window surface %d", eglGetError());
     return false;
   }
+
+  SurfaceAttrib();
 
   return true;
 }

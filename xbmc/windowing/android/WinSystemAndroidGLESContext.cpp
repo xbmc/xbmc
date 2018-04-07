@@ -77,11 +77,6 @@ bool CWinSystemAndroidGLESContext::CreateNewWindow(const std::string& name,
     return false;
   }
 
-  if (!m_pGLContext.SurfaceAttrib())
-  {
-    return false;
-  }
-
   if (!m_delayDispReset)
   {
     CSingleLock lock(m_resourceSection);
