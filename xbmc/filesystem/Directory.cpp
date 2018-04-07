@@ -84,6 +84,11 @@ public:
     m_id = CJobManager::GetInstance().AddJob(new CGetJob(imp, m_result)
                                            , NULL
                                            , CJob::PRIORITY_HIGH);
+    if (m_id == 0)
+    {
+      CGetJob job(imp, m_result);
+      job.DoWork();
+    }
   }
  ~CGetDirectory()
   {

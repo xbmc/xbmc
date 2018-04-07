@@ -78,7 +78,7 @@ class CMediaManager g_mediaManager;
 CMediaManager::CMediaManager()
 {
   m_bhasoptical = false;
-  m_platformStorage = NULL;
+  m_platformStorage = nullptr;
 }
 
 void CMediaManager::Stop()
@@ -87,7 +87,7 @@ void CMediaManager::Stop()
     m_platformStorage->Stop();
 
   delete m_platformStorage;
-  m_platformStorage = NULL;
+  m_platformStorage = nullptr;
 }
 
 void CMediaManager::Initialize()
@@ -171,7 +171,8 @@ void CMediaManager::GetLocalDrives(VECSOURCES &localDrives, bool includeQ)
 void CMediaManager::GetRemovableDrives(VECSOURCES &removableDrives)
 {
   CSingleLock lock(m_CritSecStorageProvider);
-  m_platformStorage->GetRemovableDrives(removableDrives);
+  if (m_platformStorage)
+    m_platformStorage->GetRemovableDrives(removableDrives);
 }
 
 void CMediaManager::GetNetworkLocations(VECSOURCES &locations, bool autolocations)
