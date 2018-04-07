@@ -33,6 +33,7 @@ public:
   static std::set<std::string> GetClientExtensions();
   static std::set<std::string> GetExtensions(EGLDisplay eglDisplay);
   static bool HasExtension(EGLDisplay eglDisplay, std::string const & name);
+  static bool HasClientExtension(std::string const & name);
   static void LogError(std::string const & what);
   template<typename T>
   static T GetRequiredProcAddress(const char * procname)

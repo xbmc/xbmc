@@ -57,6 +57,12 @@ bool CEGLUtils::HasExtension(EGLDisplay eglDisplay, const std::string& name)
   return (exts.find(name) != exts.end());
 }
 
+bool CEGLUtils::HasClientExtension(const std::string& name)
+{
+  auto exts = GetClientExtensions();
+  return (exts.find(name) != exts.end());
+}
+
 void CEGLUtils::LogError(const std::string& what)
 {
   CLog::Log(LOGERROR, "%s (EGL error %d)", what.c_str(), eglGetError());
