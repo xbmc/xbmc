@@ -311,18 +311,8 @@ bool CEGLContextUtils::CreatePlatformSurface(void* nativeWindow, EGLNativeWindow
 
 void CEGLContextUtils::Destroy()
 {
-  if (m_eglContext != EGL_NO_CONTEXT)
-  {
-    eglDestroyContext(m_eglDisplay, m_eglContext);
-    eglMakeCurrent(m_eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
-    m_eglContext = EGL_NO_CONTEXT;
-  }
-
-  if (m_eglSurface != EGL_NO_SURFACE)
-  {
-    eglDestroySurface(m_eglDisplay, m_eglSurface);
-    m_eglSurface = EGL_NO_SURFACE;
-  }
+  DestroyContext();
+  DestroySurface();
 
   if (m_eglDisplay != EGL_NO_DISPLAY)
   {
@@ -331,19 +321,26 @@ void CEGLContextUtils::Destroy()
   }
 }
 
-void CEGLContextUtils::Detach()
+void CEGLContextUtils::DestroyContext()
 {
   if (m_eglContext != EGL_NO_CONTEXT)
   {
     eglMakeCurrent(m_eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
+    eglDestroyContext(m_eglDisplay, m_eglContext);
+    m_eglContext = EGL_NO_CONTEXT;
   }
+}
 
+void CEGLContextUtils::DestroySurface()
+{
   if (m_eglSurface != EGL_NO_SURFACE)
   {
+    eglMakeCurrent(m_eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
     eglDestroySurface(m_eglDisplay, m_eglSurface);
     m_eglSurface = EGL_NO_SURFACE;
   }
 }
+
 
 bool CEGLContextUtils::SetVSync(bool enable)
 {

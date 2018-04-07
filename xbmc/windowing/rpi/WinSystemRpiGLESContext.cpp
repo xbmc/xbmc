@@ -83,7 +83,7 @@ bool CWinSystemRpiGLESContext::CreateNewWindow(const std::string& name,
                                                bool fullScreen,
                                                RESOLUTION_INFO& res)
 {
-  m_pGLContext.Detach();
+  m_pGLContext.DestroySurface();
 
   if (!CWinSystemRpi::DestroyWindow())
   {

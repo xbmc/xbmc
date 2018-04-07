@@ -150,7 +150,8 @@ public:
   bool CreateContext(const EGLint* contextAttribs);
   bool BindContext();
   void Destroy();
-  void Detach();
+  void DestroySurface();
+  void DestroyContext();
   bool SetVSync(bool enable);
   void SwapBuffers();
   bool IsPlatformSupported() const;
