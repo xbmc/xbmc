@@ -250,17 +250,58 @@ void CEGLContextUtils::SurfaceAttrib()
   }
 }
 
-bool CEGLContextUtils::CreateSurface(EGLNativeWindowType surface)
+bool CEGLContextUtils::CreateSurface(EGLNativeWindowType nativeWindow)
 {
-  m_eglSurface = eglCreateWindowSurface(m_eglDisplay,
-                                        m_eglConfig,
-                                        surface,
-                                        nullptr);
+  if (m_eglDisplay == EGL_NO_DISPLAY)
+  {
+    throw std::logic_error("Creating a surface requires a display");
+  }
+  if (m_eglSurface != EGL_NO_SURFACE)
+  {
+    throw std::logic_error("Do not call CreateSurface when surface has already been created");
+  }
+
+  m_eglSurface = eglCreateWindowSurface(m_eglDisplay, m_eglConfig, nativeWindow, nullptr);
 
   if (m_eglSurface == EGL_NO_SURFACE)
   {
-    CLog::Log(LOGERROR, "failed to create EGL window surface %d", eglGetError());
+    CEGLUtils::LogError("failed to create window surface");
     return false;
+  }
+
+  SurfaceAttrib();
+
+  return true;
+}
+
+bool CEGLContextUtils::CreatePlatformSurface(void* nativeWindow, EGLNativeWindowType nativeWindowLegacy)
+{
+  if (m_eglDisplay == EGL_NO_DISPLAY)
+  {
+    throw std::logic_error("Creating a surface requires a display");
+  }
+  if (m_eglSurface != EGL_NO_SURFACE)
+  {
+    throw std::logic_error("Do not call CreateSurface when surface has already been created");
+  }
+
+#if defined(EGL_EXT_platform_base)
+  if (IsPlatformSupported())
+  {
+    auto createPlatformWindowSurfaceEXT = CEGLUtils::GetRequiredProcAddress<PFNEGLCREATEPLATFORMWINDOWSURFACEEXTPROC>("eglCreatePlatformWindowSurfaceEXT");
+    m_eglSurface = createPlatformWindowSurfaceEXT(m_eglDisplay, m_eglConfig, nativeWindow, nullptr);
+
+    if (m_eglSurface == EGL_NO_SURFACE)
+    {
+      CEGLUtils::LogError("failed to create platform window surface");
+      return false;
+    }
+  }
+#endif
+
+  if (m_eglSurface == EGL_NO_SURFACE)
+  {
+    return CreateSurface(nativeWindowLegacy);
   }
 
   SurfaceAttrib();

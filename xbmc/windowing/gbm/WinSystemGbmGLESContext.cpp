@@ -119,7 +119,7 @@ bool CWinSystemGbmGLESContext::CreateNewWindow(const std::string& name,
     return false;
   }
 
-  if (!m_pGLContext.CreateSurface(reinterpret_cast<EGLNativeWindowType>(m_GBM->GetSurface())))
+  if (!m_pGLContext.CreatePlatformSurface(m_GBM->GetSurface(), m_GBM->GetSurface()))
   {
     return false;
   }

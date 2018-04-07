@@ -145,7 +145,8 @@ public:
    */
   bool CreatePlatformDisplay(void* nativeDisplay, EGLNativeDisplayType nativeDisplayLegacy, EGLint renderableType, EGLint renderingApi);
 
-  bool CreateSurface(EGLNativeWindowType surface);
+  bool CreateSurface(EGLNativeWindowType nativeWindow);
+  bool CreatePlatformSurface(void* nativeWindow, EGLNativeWindowType nativeWindowLegacy);
   bool CreateContext(const EGLint* contextAttribs);
   bool BindContext();
   void Destroy();
