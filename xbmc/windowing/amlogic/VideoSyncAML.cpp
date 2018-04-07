@@ -48,7 +48,7 @@ bool CVideoSyncAML::Setup(PUPDATECLOCK func)
 
   m_abort = false;
 
-  CServiceBroker::GetWinSystem().Register(this);
+  CServiceBroker::GetWinSystem()->Register(this);
   CLog::Log(LOGDEBUG, "CVideoReferenceClock: setting up AML");
 
   return true;
@@ -89,12 +89,12 @@ void CVideoSyncAML::Run(CEvent& stopEvent)
 void CVideoSyncAML::Cleanup()
 {
   CLog::Log(LOGDEBUG, "CVideoReferenceClock: cleaning up AML");
-  CServiceBroker::GetWinSystem().Unregister(this);
+  CServiceBroker::GetWinSystem()->Unregister(this);
 }
 
 float CVideoSyncAML::GetFps()
 {
-  m_fps = CServiceBroker::GetWinSystem().GetGfxContext().GetFPS();
+  m_fps = CServiceBroker::GetWinSystem()->GetGfxContext().GetFPS();
   CLog::Log(LOGDEBUG, "CVideoReferenceClock: fps: %.3f", m_fps);
   return m_fps;
 }

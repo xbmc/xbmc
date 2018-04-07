@@ -52,7 +52,7 @@ CGDirectDisplayID Cocoa_GetDisplayIDFromScreen(NSScreen *screen);
 
 NSOpenGLContext* Cocoa_GL_GetCurrentContext(void)
 {
-  CWinSystemOSX *winSystem = dynamic_cast<CWinSystemOSX*>(&CServiceBroker::GetWinSystem());
+  CWinSystemOSX *winSystem = dynamic_cast<CWinSystemOSX*>(CServiceBroker::GetWinSystem());
   return (NSOpenGLContext *)winSystem->GetNSOpenGLContext();
 }
 

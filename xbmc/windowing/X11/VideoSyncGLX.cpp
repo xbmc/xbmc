@@ -50,7 +50,7 @@ void CVideoSyncGLX::OnResetDisplay()
 
 bool CVideoSyncGLX::Setup(PUPDATECLOCK func)
 {
-  CSingleLock lock(CServiceBroker::GetWinSystem().GetGfxContext());
+  CSingleLock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
 
   m_glXWaitVideoSyncSGI = NULL;
   m_glXGetVideoSyncSGI = NULL;
@@ -255,7 +255,7 @@ void CVideoSyncGLX::Cleanup()
   CLog::Log(LOGDEBUG, "CVideoReferenceClock: Cleaning up GLX");
 
   {
-    CSingleLock lock(CServiceBroker::GetWinSystem().GetGfxContext());
+    CSingleLock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
 
     if (m_vInfo)
     {
@@ -281,6 +281,6 @@ void CVideoSyncGLX::Cleanup()
 
 float CVideoSyncGLX::GetFps()
 {
-  m_fps = CServiceBroker::GetWinSystem().GetGfxContext().GetFPS();
+  m_fps = CServiceBroker::GetWinSystem()->GetGfxContext().GetFPS();
   return m_fps;
 }

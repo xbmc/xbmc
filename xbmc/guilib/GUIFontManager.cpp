@@ -61,12 +61,12 @@ void GUIFontManager::RescaleFontSizeAndAspect(float *size, float *aspect, const 
   // as fonts aren't scaled at render time (due to aliasing) we must scale
   // the size of the fonts before they are drawn to bitmaps
   float scaleX, scaleY;
-  CServiceBroker::GetWinSystem().GetGfxContext().GetGUIScaling(sourceRes, scaleX, scaleY);
+  CServiceBroker::GetWinSystem()->GetGfxContext().GetGUIScaling(sourceRes, scaleX, scaleY);
 
   if (preserveAspect)
   {
     // font always displayed in the aspect specified by the aspect parameter
-    *aspect /= CServiceBroker::GetWinSystem().GetGfxContext().GetResInfo().fPixelRatio;
+    *aspect /= CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo().fPixelRatio;
   }
   else
   {
@@ -115,7 +115,7 @@ CGUIFont* GUIFontManager::LoadTTF(const std::string& strFontName, const std::str
   std::string strPath;
   if (!CURL::IsFullPath(strFilename))
   {
-    strPath = URIUtils::AddFileToFolder(CServiceBroker::GetWinSystem().GetGfxContext().GetMediaDir(), "fonts", strFilename);
+    strPath = URIUtils::AddFileToFolder(CServiceBroker::GetWinSystem()->GetGfxContext().GetMediaDir(), "fonts", strFilename);
   }
   else
     strPath = strFilename;

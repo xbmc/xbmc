@@ -126,7 +126,7 @@ bool CVDPAUContext::EnsureContext(CVDPAUContext **ctx)
   m_context = new CVDPAUContext();
   *ctx = m_context;
   {
-    CSingleLock gLock(CServiceBroker::GetWinSystem().GetGfxContext());
+    CSingleLock gLock(CServiceBroker::GetWinSystem()->GetGfxContext());
     if (!m_context->LoadSymbols() || !m_context->CreateContext())
     {
       delete m_context;
@@ -191,7 +191,7 @@ bool CVDPAUContext::CreateContext()
   CLog::Log(LOGNOTICE,"VDPAU::CreateContext - creating decoder context");
 
   int mScreen;
-  { CSingleLock lock(CServiceBroker::GetWinSystem().GetGfxContext());
+  { CSingleLock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
 
     if (!m_display)
       m_display = XOpenDisplay(NULL);
@@ -199,7 +199,7 @@ bool CVDPAUContext::CreateContext()
     if (!m_display)
       return false;
 
-    mScreen = CServiceBroker::GetWinSystem().GetCurrentScreen();
+    mScreen = CServiceBroker::GetWinSystem()->GetCurrentScreen();
   }
 
   VdpStatus vdp_st;
@@ -501,7 +501,7 @@ CDecoder::CDecoder(CProcessInfo& processInfo) :
 bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum AVPixelFormat fmt)
 {
   // check if user wants to decode this format with VDPAU
-  std::string gpuvendor = CServiceBroker::GetRenderSystem().GetRenderVendor();
+  std::string gpuvendor = CServiceBroker::GetRenderSystem()->GetRenderVendor();
   std::transform(gpuvendor.begin(), gpuvendor.end(), gpuvendor.begin(), ::tolower);
   // nvidia is whitelisted despite for mpeg-4 we need to query user settings
   if ((gpuvendor.compare(0, 6, "nvidia") != 0)  || (avctx->codec_id == AV_CODEC_ID_MPEG4) || (avctx->codec_id == AV_CODEC_ID_H263))
@@ -523,7 +523,7 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
     }
   }
 
-  if (!CServiceBroker::GetRenderSystem().IsExtSupported("GL_NV_vdpau_interop"))
+  if (!CServiceBroker::GetRenderSystem()->IsExtSupported("GL_NV_vdpau_interop"))
   {
     CLog::Log(LOGNOTICE, "VDPAU::Open: required extension GL_NV_vdpau_interop not found");
     return false;
@@ -597,7 +597,7 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
       avctx->slice_flags = SLICE_FLAG_CODED_ORDER|SLICE_FLAG_ALLOW_FIELD;
       avctx->hwaccel_context = &m_hwContext;
 
-      CServiceBroker::GetWinSystem().Register(this);
+      CServiceBroker::GetWinSystem()->Register(this);
       m_avctx = mainctx;
       return true;
     }
@@ -614,7 +614,7 @@ void CDecoder::Close()
 {
   CLog::Log(LOGNOTICE, " (VDPAU) %s", __FUNCTION__);
 
-  CServiceBroker::GetWinSystem().Unregister(this);
+  CServiceBroker::GetWinSystem()->Unregister(this);
 
   CSingleLock lock(m_DecoderSection);
 
@@ -680,18 +680,18 @@ void CDecoder::SetWidthHeight(int width, int height)
 
   //pick the smallest dimensions, so we downscale with vdpau and upscale with opengl when appropriate
   //this requires the least amount of gpu memory bandwidth
-  if (CServiceBroker::GetWinSystem().GetGfxContext().GetWidth() < width || CServiceBroker::GetWinSystem().GetGfxContext().GetHeight() < height || m_vdpauConfig.upscale >= 0)
+  if (CServiceBroker::GetWinSystem()->GetGfxContext().GetWidth() < width || CServiceBroker::GetWinSystem()->GetGfxContext().GetHeight() < height || m_vdpauConfig.upscale >= 0)
   {
     //scale width to desktop size if the aspect ratio is the same or bigger than the desktop
-    if ((double)height * CServiceBroker::GetWinSystem().GetGfxContext().GetWidth() / width <= (double)CServiceBroker::GetWinSystem().GetGfxContext().GetHeight())
+    if ((double)height * CServiceBroker::GetWinSystem()->GetGfxContext().GetWidth() / width <= (double)CServiceBroker::GetWinSystem()->GetGfxContext().GetHeight())
     {
-      m_vdpauConfig.outWidth = CServiceBroker::GetWinSystem().GetGfxContext().GetWidth();
-      m_vdpauConfig.outHeight = MathUtils::round_int((double)height * CServiceBroker::GetWinSystem().GetGfxContext().GetWidth() / width);
+      m_vdpauConfig.outWidth = CServiceBroker::GetWinSystem()->GetGfxContext().GetWidth();
+      m_vdpauConfig.outHeight = MathUtils::round_int((double)height * CServiceBroker::GetWinSystem()->GetGfxContext().GetWidth() / width);
     }
     else //scale height to the desktop size if the aspect ratio is smaller than the desktop
     {
-      m_vdpauConfig.outHeight = CServiceBroker::GetWinSystem().GetGfxContext().GetHeight();
-      m_vdpauConfig.outWidth = MathUtils::round_int((double)width * CServiceBroker::GetWinSystem().GetGfxContext().GetHeight() / height);
+      m_vdpauConfig.outHeight = CServiceBroker::GetWinSystem()->GetGfxContext().GetHeight();
+      m_vdpauConfig.outWidth = MathUtils::round_int((double)width * CServiceBroker::GetWinSystem()->GetGfxContext().GetHeight() / height);
     }
   }
   else
@@ -706,7 +706,7 @@ void CDecoder::OnLostDisplay()
 {
   CLog::Log(LOGNOTICE,"CVDPAU::OnLostDevice event");
 
-  int count = CServiceBroker::GetWinSystem().GetGfxContext().exit();
+  int count = CServiceBroker::GetWinSystem()->GetGfxContext().exit();
 
   CSingleLock lock(m_DecoderSection);
   FiniVDPAUOutput();
@@ -718,14 +718,14 @@ void CDecoder::OnLostDisplay()
   lock.Leave();
   m_DisplayEvent.Reset();
 
-  CServiceBroker::GetWinSystem().GetGfxContext().restore(count);
+  CServiceBroker::GetWinSystem()->GetGfxContext().restore(count);
 }
 
 void CDecoder::OnResetDisplay()
 {
   CLog::Log(LOGNOTICE,"CVDPAU::OnResetDevice event");
 
-  int count = CServiceBroker::GetWinSystem().GetGfxContext().exit();
+  int count = CServiceBroker::GetWinSystem()->GetGfxContext().exit();
 
   CSingleLock lock(m_DecoderSection);
   if (m_DisplayState == VDPAU_LOST)
@@ -735,7 +735,7 @@ void CDecoder::OnResetDisplay()
     m_DisplayEvent.Set();
   }
 
-  CServiceBroker::GetWinSystem().GetGfxContext().restore(count);
+  CServiceBroker::GetWinSystem()->GetGfxContext().restore(count);
 }
 
 CDVDVideoCodec::VCReturn CDecoder::Check(AVCodecContext* avctx)
@@ -914,7 +914,7 @@ bool CDecoder::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
     return false;
 
   // initialize output
-  CSingleLock lock(CServiceBroker::GetWinSystem().GetGfxContext());
+  CSingleLock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
   m_vdpauConfig.stats = &m_bufferStats;
   m_vdpauConfig.vdpau = this;
   m_bufferStats.Reset();
@@ -1303,7 +1303,7 @@ void CDecoder::Register()
 
   CDVDFactoryCodec::RegisterHWAccel("vdpau", CDecoder::Create);
 
-  std::string gpuvendor = CServiceBroker::GetRenderSystem().GetRenderVendor();
+  std::string gpuvendor = CServiceBroker::GetRenderSystem()->GetRenderVendor();
   std::transform(gpuvendor.begin(), gpuvendor.end(), gpuvendor.begin(), ::tolower);
   bool isNvidia = (gpuvendor.compare(0, 6, "nvidia") == 0);
 
@@ -2514,7 +2514,7 @@ void CMixer::InitCycle()
     {
       if(method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_HALF ||
          method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL_HALF ||
-         !CServiceBroker::GetWinSystem().GetGfxContext().IsFullScreenVideo())
+         !CServiceBroker::GetWinSystem()->GetGfxContext().IsFullScreenVideo())
         m_mixersteps = 1;
       else
       {
@@ -2761,7 +2761,7 @@ COutput::~COutput()
 
 void COutput::Dispose()
 {
-  CSingleLock lock(CServiceBroker::GetWinSystem().GetGfxContext());
+  CSingleLock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
   m_bStop = true;
   m_outMsgEvent.Set();
   StopThread();

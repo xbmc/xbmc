@@ -169,17 +169,17 @@ void COverlayQuadsDX::Render(SRenderState &state)
     return;
 
   ID3D11DeviceContext* pContext = DX::DeviceResources::Get()->GetD3DContext();
-  CGUIShaderDX* pGUIShader = DX::Windowing().GetGUIShader();
+  CGUIShaderDX* pGUIShader = DX::Windowing()->GetGUIShader();
 
   XMMATRIX world, view, proj;
   pGUIShader->GetWVP(world, view, proj);
 
-  if (CServiceBroker::GetWinSystem().GetGfxContext().GetStereoMode() == RENDER_STEREO_MODE_SPLIT_HORIZONTAL
-   || CServiceBroker::GetWinSystem().GetGfxContext().GetStereoMode() == RENDER_STEREO_MODE_SPLIT_VERTICAL)
+  if (CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode() == RENDER_STEREO_MODE_SPLIT_HORIZONTAL
+   || CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode() == RENDER_STEREO_MODE_SPLIT_VERTICAL)
   {
     CRect rect;
-    DX::Windowing().GetViewPort(rect);
-    DX::Windowing().SetCameraPosition(CPoint(rect.Width() * 0.5f, rect.Height() * 0.5f),
+    DX::Windowing()->GetViewPort(rect);
+    DX::Windowing()->SetCameraPosition(CPoint(rect.Width() * 0.5f, rect.Height() * 0.5f),
                                   static_cast<int>(rect.Width()),
                                   static_cast<int>(rect.Height()));
   }
@@ -197,7 +197,7 @@ void COverlayQuadsDX::Render(SRenderState &state)
   // Set the type of primitive that should be rendered from this vertex buffer, in this case triangles.
   pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-  DX::Windowing().SetAlphaBlendEnable(true);
+  DX::Windowing()->SetAlphaBlendEnable(true);
   pGUIShader->Begin(SHADER_METHOD_RENDER_FONT);
 
   pGUIShader->SetShaderViews(1, m_texture.GetAddressOfSRV());
@@ -338,17 +338,17 @@ void COverlayImageDX::Render(SRenderState &state)
     return;
 
   ID3D11DeviceContext* pContext = DX::DeviceResources::Get()->GetD3DContext();
-  CGUIShaderDX* pGUIShader = DX::Windowing().GetGUIShader();
+  CGUIShaderDX* pGUIShader = DX::Windowing()->GetGUIShader();
 
   XMMATRIX world, view, proj;
   pGUIShader->GetWVP(world, view, proj);
 
-  if (CServiceBroker::GetWinSystem().GetGfxContext().GetStereoMode() == RENDER_STEREO_MODE_SPLIT_HORIZONTAL
-   || CServiceBroker::GetWinSystem().GetGfxContext().GetStereoMode() == RENDER_STEREO_MODE_SPLIT_VERTICAL)
+  if (CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode() == RENDER_STEREO_MODE_SPLIT_HORIZONTAL
+   || CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode() == RENDER_STEREO_MODE_SPLIT_VERTICAL)
   {
     CRect rect;
-    DX::Windowing().GetViewPort(rect);
-    DX::Windowing().SetCameraPosition(CPoint(rect.Width() * 0.5f, rect.Height() * 0.5f),
+    DX::Windowing()->GetViewPort(rect);
+    DX::Windowing()->SetCameraPosition(CPoint(rect.Width() * 0.5f, rect.Height() * 0.5f),
                                   static_cast<int>(rect.Width()),
                                   static_cast<int>(rect.Height()));
   }
@@ -367,7 +367,7 @@ void COverlayImageDX::Render(SRenderState &state)
   pContext->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
   pGUIShader->Begin(SHADER_METHOD_RENDER_TEXTURE_NOBLEND);
-  DX::Windowing().SetAlphaBlendEnable(true);
+  DX::Windowing()->SetAlphaBlendEnable(true);
 
   pGUIShader->SetShaderViews(1, m_texture.GetAddressOfSRV());
   pGUIShader->Draw(4, 0);

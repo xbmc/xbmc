@@ -37,6 +37,11 @@
 CWinSystemBase::CWinSystemBase()
 {
   m_gfxContext.reset(new CGraphicContext());
+  for (int i = RES_HDTV_1080i; i <= RES_PAL60_16x9; i++)
+  {
+    m_gfxContext->ResetScreenParameters((RESOLUTION)i);
+    m_gfxContext->ResetOverscan((RESOLUTION)i, CDisplaySettings::GetInstance().GetResolutionInfo(i).Overscan);
+  }
 #if HAS_LIRC
   CRemoteControl::Register();
 #endif
@@ -116,7 +121,7 @@ void CWinSystemBase::SetWindowResolution(int width, int height)
   window.iScreenWidth = width;
   window.iScreenHeight = height;
   window.iSubtitles = (int)(0.965 * window.iHeight);
-  CServiceBroker::GetWinSystem().GetGfxContext().ResetOverscan(window);
+  CServiceBroker::GetWinSystem()->GetGfxContext().ResetOverscan(window);
 }
 
 int CWinSystemBase::DesktopResolution(int screen)

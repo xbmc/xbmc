@@ -51,8 +51,8 @@ void CVideoSyncD3D::RefreshChanged()
 bool CVideoSyncD3D::Setup(PUPDATECLOCK func)
 {
   CLog::Log(LOGDEBUG, "CVideoSyncD3D: Setting up Direct3d");
-  CSingleLock lock(CServiceBroker::GetWinSystem().GetGfxContext());
-  DX::Windowing().Register(this);
+  CSingleLock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
+  DX::Windowing()->Register(this);
   m_displayLost = false;
   m_displayReset = false;
   m_lostEvent.Reset();
@@ -123,7 +123,7 @@ void CVideoSyncD3D::Cleanup()
   CLog::Log(LOGDEBUG, "CVideoSyncD3D: Cleaning up Direct3d");
 
   m_lostEvent.Set();
-  DX::Windowing().Unregister(this);
+  DX::Windowing()->Unregister(this);
 }
 
 float CVideoSyncD3D::GetFps()
@@ -139,7 +139,7 @@ float CVideoSyncD3D::GetFps()
   if (m_fps == 23 || m_fps == 29 || m_fps == 59)
     m_fps++;
 
-  if (DX::Windowing().Interlaced())
+  if (DX::Windowing()->Interlaced())
   {
     m_fps *= 2;
   }

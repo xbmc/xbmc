@@ -546,7 +546,7 @@ static void EnumerateDevices(AEDeviceInfoList &list)
   device.m_displayNameExtra = "";
   // TODO screen changing on ios needs to call
   // devices changed once this is available in active
-  if (CServiceBroker::GetWinSystem().GetCurrentScreen() > 0)
+  if (CServiceBroker::GetWinSystem()->GetCurrentScreen() > 0)
   {
     device.m_deviceType = AE_DEVTYPE_IEC958; //allow passthrough for tvout
     device.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_AC3);

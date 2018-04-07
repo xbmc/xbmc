@@ -68,7 +68,7 @@ bool CTextureBundleXBT::OpenBundle()
 {
   // Find the correct texture file (skin or theme)
 
-  auto mediaDir = CServiceBroker::GetWinSystem().GetGfxContext().GetMediaDir();
+  auto mediaDir = CServiceBroker::GetWinSystem()->GetGfxContext().GetMediaDir();
   if (mediaDir.empty())
   {
     mediaDir = CSpecialProtocol::TranslatePath(
@@ -84,7 +84,7 @@ bool CTextureBundleXBT::OpenBundle()
     if (!theme.empty() && !StringUtils::EqualsNoCase(theme, "SKINDEFAULT"))
     {
       std::string themeXBT(URIUtils::ReplaceExtension(theme, ".xbt"));
-      m_path = URIUtils::AddFileToFolder(CServiceBroker::GetWinSystem().GetGfxContext().GetMediaDir(), "media", themeXBT);
+      m_path = URIUtils::AddFileToFolder(CServiceBroker::GetWinSystem()->GetGfxContext().GetMediaDir(), "media", themeXBT);
     }
     else
     {
@@ -93,7 +93,7 @@ bool CTextureBundleXBT::OpenBundle()
   }
   else
   {
-    m_path = URIUtils::AddFileToFolder(CServiceBroker::GetWinSystem().GetGfxContext().GetMediaDir(), "media", "Textures.xbt");
+    m_path = URIUtils::AddFileToFolder(CServiceBroker::GetWinSystem()->GetGfxContext().GetMediaDir(), "media", "Textures.xbt");
   }
 
   m_path = CSpecialProtocol::TranslatePathConvertCase(m_path);

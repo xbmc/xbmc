@@ -593,7 +593,7 @@ CRect CXBMCApp::MapRenderToDroid(const CRect& srcRect)
   CJNIRect r = m_xbmcappinstance->getDisplayRect();
   if (r.width() && r.height())
   {
-    RESOLUTION_INFO renderRes = CDisplaySettings::GetInstance().GetResolutionInfo(CServiceBroker::GetWinSystem().GetGfxContext().GetVideoResolution());
+    RESOLUTION_INFO renderRes = CDisplaySettings::GetInstance().GetResolutionInfo(CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution());
     scaleX = (double)r.width() / renderRes.iWidth;
     scaleY = (double)r.height() / renderRes.iHeight;
   }

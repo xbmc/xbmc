@@ -404,6 +404,7 @@ protected:
   bool NotifyActionListeners(const CAction &action) const;
 
   std::unique_ptr<CGUIComponent> m_pGUI;
+  std::unique_ptr<CWinSystemBase> m_pWinSystem;
 
   bool m_confirmSkinChange;
   bool m_ignoreSkinSettingChanges;

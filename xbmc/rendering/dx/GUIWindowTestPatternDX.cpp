@@ -75,7 +75,7 @@ void CGUIWindowTestPatternDX::DrawVerticalLines(int top, int left, int bottom, i
   UpdateVertexBuffer(vert, p);
 
   ComPtr<ID3D11DeviceContext> pContext = DX::DeviceResources::Get()->GetD3DContext();
-  CGUIShaderDX* pGUIShader = DX::Windowing().GetGUIShader();
+  CGUIShaderDX* pGUIShader = DX::Windowing()->GetGUIShader();
 
   pGUIShader->Begin(SHADER_METHOD_RENDER_DEFAULT);
   unsigned stride = sizeof(Vertex), offset = 0;
@@ -106,7 +106,7 @@ void CGUIWindowTestPatternDX::DrawHorizontalLines(int top, int left, int bottom,
   UpdateVertexBuffer(vert, p);
 
   ComPtr<ID3D11DeviceContext> pContext = DX::DeviceResources::Get()->GetD3DContext();
-  CGUIShaderDX* pGUIShader = DX::Windowing().GetGUIShader();
+  CGUIShaderDX* pGUIShader = DX::Windowing()->GetGUIShader();
 
   pGUIShader->Begin(SHADER_METHOD_RENDER_DEFAULT);
   unsigned stride = sizeof(Vertex), offset = 0;
@@ -148,7 +148,7 @@ void CGUIWindowTestPatternDX::DrawCheckers(int top, int left, int bottom, int ri
   UpdateVertexBuffer(vert, i);
 
   ComPtr<ID3D11DeviceContext> pContext = DX::DeviceResources::Get()->GetD3DContext();
-  CGUIShaderDX* pGUIShader = DX::Windowing().GetGUIShader();
+  CGUIShaderDX* pGUIShader = DX::Windowing()->GetGUIShader();
 
   pGUIShader->Begin(SHADER_METHOD_RENDER_DEFAULT);
   unsigned stride = sizeof(Vertex), offset = 0;
@@ -231,7 +231,7 @@ void CGUIWindowTestPatternDX::DrawContrastBrightnessPattern(int top, int left, i
   UpdateVertexBuffer(vert, ARRAYSIZE(vert));
 
   ComPtr<ID3D11DeviceContext> pContext = DX::DeviceResources::Get()->GetD3DContext();
-  CGUIShaderDX* pGUIShader = DX::Windowing().GetGUIShader();
+  CGUIShaderDX* pGUIShader = DX::Windowing()->GetGUIShader();
 
   pGUIShader->Begin(SHADER_METHOD_RENDER_DEFAULT);
   unsigned stride = sizeof(Vertex), offset = 0;
@@ -305,7 +305,7 @@ void CGUIWindowTestPatternDX::DrawCircleEx(float originX, float originY, float r
   UpdateVertexBuffer(vert, ARRAYSIZE(vert));
 
   ComPtr<ID3D11DeviceContext> pContext = DX::DeviceResources::Get()->GetD3DContext();
-  CGUIShaderDX* pGUIShader = DX::Windowing().GetGUIShader();
+  CGUIShaderDX* pGUIShader = DX::Windowing()->GetGUIShader();
 
   pGUIShader->Begin(SHADER_METHOD_RENDER_DEFAULT);
   unsigned stride = sizeof(Vertex), offset = 0;
@@ -327,7 +327,7 @@ void CGUIWindowTestPatternDX::BeginRender()
 
 void CGUIWindowTestPatternDX::EndRender()
 {
-  DX::Windowing().GetGUIShader()->RestoreBuffers();
+  DX::Windowing()->GetGUIShader()->RestoreBuffers();
 }
 
 void CGUIWindowTestPatternDX::DrawRectangle(float x, float y, float x2, float y2, DWORD color)
@@ -348,7 +348,7 @@ void CGUIWindowTestPatternDX::DrawRectangle(float x, float y, float x2, float y2
   UpdateVertexBuffer(vert, ARRAYSIZE(vert));
 
   ComPtr<ID3D11DeviceContext> pContext = DX::DeviceResources::Get()->GetD3DContext();
-  CGUIShaderDX* pGUIShader = DX::Windowing().GetGUIShader();
+  CGUIShaderDX* pGUIShader = DX::Windowing()->GetGUIShader();
 
   pGUIShader->Begin(SHADER_METHOD_RENDER_DEFAULT);
   unsigned stride = sizeof(Vertex), offset = 0;

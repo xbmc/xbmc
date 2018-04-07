@@ -923,15 +923,15 @@ XBMCController *g_xbmcController;
     m_isPlayingBeforeInactive = YES;
     CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_PAUSE_IF_PLAYING);
   }
-  CWinSystemIOS& winSystem = dynamic_cast<CWinSystemIOS&>(CServiceBroker::GetWinSystem());
-  winSystem.OnAppFocusChange(false);
+  CWinSystemIOS* winSystem = dynamic_cast<CWinSystemIOS*>(CServiceBroker::GetWinSystem());
+  winSystem->OnAppFocusChange(false);
 }
 
 - (void)enterForeground
 {
   PRINT_SIGNATURE();
-  CWinSystemIOS& winSystem = dynamic_cast<CWinSystemIOS&>(CServiceBroker::GetWinSystem());
-  winSystem.OnAppFocusChange(true);
+  CWinSystemIOS* winSystem = dynamic_cast<CWinSystemIOS*>(CServiceBroker::GetWinSystem());
+  winSystem->OnAppFocusChange(true);
   // when we come back, restore playing if we were.
   if (m_isPlayingBeforeInactive)
   {

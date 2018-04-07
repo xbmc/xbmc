@@ -28,7 +28,7 @@
 
 int WINAPI MessageBox(void* hWnd, const char* lpText, const char* lpCaption, UINT uType)
 {
-  Windows::UI::Core::CoreWindow^ coreWindow = DX::Windowing().GetCoreWindow();
+  Windows::UI::Core::CoreWindow^ coreWindow = DX::Windowing()->GetCoreWindow();
   if (!coreWindow)
     return IDOK;
 

@@ -97,7 +97,7 @@ CLinuxRendererGLES::CLinuxRendererGLES()
   m_fbo.width = 0.0;
   m_fbo.height = 0.0;
 
-  m_renderSystem = dynamic_cast<CRenderSystemGLES*>(&CServiceBroker::GetRenderSystem());
+  m_renderSystem = dynamic_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem());
 
 #if defined(EGL_KHR_reusable_sync) && !defined(EGL_EGLEXT_PROTOTYPES)
   if (!eglCreateSyncKHR) {
@@ -582,7 +582,7 @@ void CLinuxRendererGLES::ReleaseShaders()
 void CLinuxRendererGLES::UnInit()
 {
   CLog::Log(LOGDEBUG, "LinuxRendererGL: Cleaning up GL resources");
-  CSingleLock lock(CServiceBroker::GetWinSystem().GetGfxContext());
+  CSingleLock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
 
   glFinish();
 
@@ -1056,7 +1056,7 @@ bool CLinuxRendererGLES::RenderCapture(CRenderCapture* capture)
 
   Render(RENDER_FLAG_NOOSD, m_iYV12RenderBuffer);
   // read pixels
-  glReadPixels(0, CServiceBroker::GetWinSystem().GetGfxContext().GetHeight() - capture->GetHeight(), capture->GetWidth(), capture->GetHeight(),
+  glReadPixels(0, CServiceBroker::GetWinSystem()->GetGfxContext().GetHeight() - capture->GetHeight(), capture->GetWidth(), capture->GetHeight(),
                GL_RGBA, GL_UNSIGNED_BYTE, capture->GetRenderBuffer());
 
   // OpenGLES returns in RGBA order but CRenderCapture needs BGRA order

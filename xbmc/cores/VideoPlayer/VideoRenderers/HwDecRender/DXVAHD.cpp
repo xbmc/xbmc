@@ -53,12 +53,12 @@ CProcessorHD::CProcessorHD()
   , m_pEnumerator(nullptr)
   , m_pVideoProcessor(nullptr)
 {
-  DX::Windowing().Register(this);
+  DX::Windowing()->Register(this);
 }
 
 CProcessorHD::~CProcessorHD()
 {
-  DX::Windowing().Unregister(this);
+  DX::Windowing()->Unregister(this);
   UnInit();
 }
 
@@ -229,7 +229,7 @@ bool CProcessorHD::IsFormatSupported(DXGI_FORMAT format, D3D11_VIDEO_PROCESSOR_F
 bool CProcessorHD::CheckFormats() const
 {
   // check default output format DXGI_FORMAT_B8G8R8A8_UNORM (as render target)
-  DXGI_FORMAT backBufferFormat = DX::Windowing().GetBackBuffer()->GetFormat();
+  DXGI_FORMAT backBufferFormat = DX::Windowing()->GetBackBuffer()->GetFormat();
   if (!IsFormatSupported(backBufferFormat, D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_OUTPUT))
     return false;
   return true;
@@ -579,7 +579,7 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderB
   {
     videoCtx1->VideoProcessorSetStreamColorSpace1(m_pVideoProcessor.Get(), DEFAULT_STREAM_INDEX, GetDXGIColorSpace(views[2]));
     // TODO select color space depend on real output format
-    DXGI_COLOR_SPACE_TYPE colorSpace = DX::Windowing().UseLimitedColor() ? DXGI_COLOR_SPACE_RGB_STUDIO_G22_NONE_P709 : DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709; 
+    DXGI_COLOR_SPACE_TYPE colorSpace = DX::Windowing()->UseLimitedColor() ? DXGI_COLOR_SPACE_RGB_STUDIO_G22_NONE_P709 : DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709; 
     videoCtx1->VideoProcessorSetOutputColorSpace1(m_pVideoProcessor.Get(), colorSpace);
     // makes target available for processing in shaders
     videoCtx1->VideoProcessorSetOutputShaderUsage(m_pVideoProcessor.Get(), 1);
@@ -600,7 +600,7 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderB
     // Output color space
     // don't apply any color range conversion, this will be fixed at later stage.
     colorSpace.Usage = 0;  // 0 - playback, 1 - video processing
-    colorSpace.RGB_Range = DX::Windowing().UseLimitedColor() ? 1 : 0;  // 0 - 0-255, 1 - 16-235
+    colorSpace.RGB_Range = DX::Windowing()->UseLimitedColor() ? 1 : 0;  // 0 - 0-255, 1 - 16-235
     colorSpace.YCbCr_Matrix = 1;  // 0 - BT.601, 1 = BT.709
     colorSpace.YCbCr_xvYCC = 1;  // 0 - Conventional YCbCr, 1 - xvYCC
     colorSpace.Nominal_Range = 0;  // 2 - 0-255, 1 = 16-235, 0 - undefined

@@ -82,10 +82,10 @@ void CGUIProgressControl::Render()
     {
       if (m_bReveal && !m_guiMidClipRect.IsEmpty())
       {
-        bool restore = CServiceBroker::GetWinSystem().GetGfxContext().SetClipRegion(m_guiMidClipRect.x1, m_guiMidClipRect.y1, m_guiMidClipRect.Width(), m_guiMidClipRect.Height());
+        bool restore = CServiceBroker::GetWinSystem()->GetGfxContext().SetClipRegion(m_guiMidClipRect.x1, m_guiMidClipRect.y1, m_guiMidClipRect.Width(), m_guiMidClipRect.Height());
         m_guiMid.Render();
         if (restore)
-          CServiceBroker::GetWinSystem().GetGfxContext().RestoreClipRegion();
+          CServiceBroker::GetWinSystem()->GetGfxContext().RestoreClipRegion();
       }
       else if (!m_bReveal && m_guiMid.GetWidth() > 0)
         m_guiMid.Render();
@@ -96,10 +96,10 @@ void CGUIProgressControl::Render()
 
       if (m_bReveal && !m_guiMidClipRect.IsEmpty())
       {
-        bool restore = CServiceBroker::GetWinSystem().GetGfxContext().SetClipRegion(m_guiMidClipRect.x1, m_guiMidClipRect.y1, m_guiMidClipRect.Width(), m_guiMidClipRect.Height());
+        bool restore = CServiceBroker::GetWinSystem()->GetGfxContext().SetClipRegion(m_guiMidClipRect.x1, m_guiMidClipRect.y1, m_guiMidClipRect.Width(), m_guiMidClipRect.Height());
         m_guiMid.Render();
         if (restore)
-          CServiceBroker::GetWinSystem().GetGfxContext().RestoreClipRegion();
+          CServiceBroker::GetWinSystem()->GetGfxContext().RestoreClipRegion();
       }
       else if (!m_bReveal && m_guiMid.GetWidth() > 0)
         m_guiMid.Render();

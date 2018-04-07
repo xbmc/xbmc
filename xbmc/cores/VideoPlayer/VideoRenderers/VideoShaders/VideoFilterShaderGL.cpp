@@ -70,7 +70,7 @@ ConvolutionFilterShader::ConvolutionFilterShader(ESCALINGMETHOD method, bool str
   std::string shadername;
   std::string defines;
 
-  m_floattex = CServiceBroker::GetRenderSystem().IsExtSupported("GL_ARB_texture_float");
+  m_floattex = CServiceBroker::GetRenderSystem()->IsExtSupported("GL_ARB_texture_float");
 
   if (m_method == VS_SCALINGMETHOD_CUBIC ||
       m_method == VS_SCALINGMETHOD_LANCZOS2 ||

@@ -188,7 +188,7 @@ void App::OnSuspending(Platform::Object^ sender, SuspendingEventArgs^ args)
 
   Concurrency::create_task([this, deferral]()
   {
-    DX::Windowing().TrimDevice();
+    DX::Windowing()->TrimDevice();
     // Insert your code here.
     deferral->Complete();
   });

@@ -174,7 +174,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
 void CGUIWindowFullScreen::ClearBackground()
 {
   if (g_application.GetAppPlayer().IsRenderingVideoLayer())
-    CServiceBroker::GetWinSystem().GetGfxContext().Clear(0);
+    CServiceBroker::GetWinSystem()->GetGfxContext().Clear(0);
 }
 
 void CGUIWindowFullScreen::OnWindowLoaded()
@@ -228,7 +228,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       g_infoManager.SetDisplayAfterSeek(0); // Make sure display after seek is off.
 
       // switch resolution
-      CServiceBroker::GetWinSystem().GetGfxContext().SetFullScreenVideo(true);
+      CServiceBroker::GetWinSystem()->GetGfxContext().SetFullScreenVideo(true);
 
       // now call the base class to load our windows
       CGUIWindow::OnMessage(message);
@@ -248,7 +248,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 
       CServiceBroker::GetSettings().Save();
 
-      CServiceBroker::GetWinSystem().GetGfxContext().SetFullScreenVideo(false);
+      CServiceBroker::GetWinSystem()->GetGfxContext().SetFullScreenVideo(false);
 
       return true;
     }
@@ -301,7 +301,7 @@ void CGUIWindowFullScreen::FrameMove()
 
   if (m_dwShowViewModeTimeout)
   {
-    RESOLUTION_INFO res = CServiceBroker::GetWinSystem().GetGfxContext().GetResInfo();
+    RESOLUTION_INFO res = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo();
 
     {
       // get the "View Mode" string
@@ -338,7 +338,7 @@ void CGUIWindowFullScreen::FrameMove()
     // show resolution information
     {
       std::string strStatus;
-      if (CServiceBroker::GetWinSystem().IsFullScreen())
+      if (CServiceBroker::GetWinSystem()->IsFullScreen())
         strStatus = StringUtils::Format("%s %ix%i@%.2fHz - %s",
                                         g_localizeStrings.Get(13287).c_str(),
                                         res.iScreenWidth,
@@ -389,23 +389,23 @@ void CGUIWindowFullScreen::Process(unsigned int currentTime, CDirtyRegionList &d
 
   //! @todo This isn't quite optimal - ideally we'd only be dirtying up the actual video render rect
   //!       which is probably the job of the renderer as it can more easily track resizing etc.
-  m_renderRegion.SetRect(0, 0, (float)CServiceBroker::GetWinSystem().GetGfxContext().GetWidth(), (float)CServiceBroker::GetWinSystem().GetGfxContext().GetHeight());
+  m_renderRegion.SetRect(0, 0, (float)CServiceBroker::GetWinSystem()->GetGfxContext().GetWidth(), (float)CServiceBroker::GetWinSystem()->GetGfxContext().GetHeight());
 }
 
 void CGUIWindowFullScreen::Render()
 {
-  CServiceBroker::GetWinSystem().GetGfxContext().SetRenderingResolution(CServiceBroker::GetWinSystem().GetGfxContext().GetVideoResolution(), false);
+  CServiceBroker::GetWinSystem()->GetGfxContext().SetRenderingResolution(CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution(), false);
   g_application.GetAppPlayer().Render(true, 255);
-  CServiceBroker::GetWinSystem().GetGfxContext().SetRenderingResolution(m_coordsRes, m_needsScaling);
+  CServiceBroker::GetWinSystem()->GetGfxContext().SetRenderingResolution(m_coordsRes, m_needsScaling);
   CGUIWindow::Render();
 }
 
 void CGUIWindowFullScreen::RenderEx()
 {
   CGUIWindow::RenderEx();
-  CServiceBroker::GetWinSystem().GetGfxContext().SetRenderingResolution(CServiceBroker::GetWinSystem().GetGfxContext().GetVideoResolution(), false);
+  CServiceBroker::GetWinSystem()->GetGfxContext().SetRenderingResolution(CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution(), false);
   g_application.GetAppPlayer().Render(false, 255, false);
-  CServiceBroker::GetWinSystem().GetGfxContext().SetRenderingResolution(m_coordsRes, m_needsScaling);
+  CServiceBroker::GetWinSystem()->GetGfxContext().SetRenderingResolution(m_coordsRes, m_needsScaling);
 }
 
 void CGUIWindowFullScreen::SeekChapter(int iChapter)

@@ -40,7 +40,7 @@ bool CVideoSyncAndroid::Setup(PUPDATECLOCK func)
   m_abortEvent.Reset();
 
   CXBMCApp::InitFrameCallback(this);
-  CServiceBroker::GetWinSystem().Register(this);
+  CServiceBroker::GetWinSystem()->Register(this);
 
   return true;
 }
@@ -55,12 +55,12 @@ void CVideoSyncAndroid::Cleanup()
 {
   CLog::Log(LOGDEBUG, "CVideoSyncAndroid::%s cleaning up", __FUNCTION__);
   CXBMCApp::DeinitFrameCallback();
-  CServiceBroker::GetWinSystem().Unregister(this);
+  CServiceBroker::GetWinSystem()->Unregister(this);
 }
 
 float CVideoSyncAndroid::GetFps()
 {
-  m_fps = CServiceBroker::GetWinSystem().GetGfxContext().GetFPS();
+  m_fps = CServiceBroker::GetWinSystem()->GetGfxContext().GetFPS();
   CLog::Log(LOGDEBUG, "CVideoSyncAndroid::%s Detected refreshrate: %f hertz", __FUNCTION__, m_fps);
   return m_fps;
 }

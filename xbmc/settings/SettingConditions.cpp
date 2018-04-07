@@ -108,7 +108,7 @@ bool HasPowerOffFeature(const std::string &condition, const std::string &value, 
 
 bool IsFullscreen(const std::string &condition, const std::string &value, SettingConstPtr setting, void *data)
 {
-  return CServiceBroker::GetWinSystem().IsFullScreen();
+  return CServiceBroker::GetWinSystem()->IsFullScreen();
 }
 
 bool IsMasterUser(const std::string &condition, const std::string &value, SettingConstPtr setting, void *data)

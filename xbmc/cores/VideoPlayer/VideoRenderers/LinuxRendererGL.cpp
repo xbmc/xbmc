@@ -140,7 +140,7 @@ CLinuxRendererGL::CLinuxRendererGL()
   m_scalingMethodGui = (ESCALINGMETHOD)-1;
   m_useDithering = CServiceBroker::GetSettings().GetBool("videoscreen.dither");
   m_ditherDepth = CServiceBroker::GetSettings().GetInt("videoscreen.ditherdepth");
-  m_fullRange = !CServiceBroker::GetWinSystem().UseLimitedColor();
+  m_fullRange = !CServiceBroker::GetWinSystem()->UseLimitedColor();
 
   m_fbo.width = 0.0;
   m_fbo.height = 0.0;
@@ -161,7 +161,7 @@ CLinuxRendererGL::CLinuxRendererGL()
   m_cmsToken = -1;
   m_cmsOn = false;
 
-  m_renderSystem = dynamic_cast<CRenderSystemGL*>(&CServiceBroker::GetRenderSystem());
+  m_renderSystem = dynamic_cast<CRenderSystemGL*>(CServiceBroker::GetRenderSystem());
 }
 
 CLinuxRendererGL::~CLinuxRendererGL()
@@ -203,8 +203,8 @@ bool CLinuxRendererGL::ValidateRenderTarget()
 {
   if (!m_bValidated)
   {
-    if (!CServiceBroker::GetRenderSystem().IsExtSupported("GL_ARB_texture_non_power_of_two") &&
-         CServiceBroker::GetRenderSystem().IsExtSupported("GL_ARB_texture_rectangle"))
+    if (!CServiceBroker::GetRenderSystem()->IsExtSupported("GL_ARB_texture_non_power_of_two") &&
+         CServiceBroker::GetRenderSystem()->IsExtSupported("GL_ARB_texture_rectangle"))
     {
       m_textureTarget = GL_TEXTURE_RECTANGLE_ARB;
     }
@@ -269,10 +269,10 @@ bool CLinuxRendererGL::Configure(const VideoPicture &picture, float fps, unsigne
   m_nonLinStretchGui = false;
   m_pixelRatio       = 1.0;
 
-  m_pboSupported = CServiceBroker::GetRenderSystem().IsExtSupported("GL_ARB_pixel_buffer_object");
+  m_pboSupported = CServiceBroker::GetRenderSystem()->IsExtSupported("GL_ARB_pixel_buffer_object");
 
   // setup the background colour
-  m_clearColour = CServiceBroker::GetWinSystem().UseLimitedColor() ? (16.0f / 0xff) : 0.0f;
+  m_clearColour = CServiceBroker::GetWinSystem()->UseLimitedColor() ? (16.0f / 0xff) : 0.0f;
 
 #ifdef TARGET_DARWIN_OSX
   // on osx 10.9 mavericks we get a strange ripple
@@ -280,7 +280,7 @@ bool CLinuxRendererGL::Configure(const VideoPicture &picture, float fps, unsigne
   // when used on intel gpu - we have to quirk it here
   if (CDarwinUtils::IsMavericksOrHigher())
   {
-    std::string rendervendor = CServiceBroker::GetRenderSystem().GetRenderVendor();
+    std::string rendervendor = CServiceBroker::GetRenderSystem()->GetRenderVendor();
     StringUtils::ToLower(rendervendor);
     if (rendervendor.find("intel") != std::string::npos)
       m_pboSupported = false;
@@ -596,10 +596,10 @@ void CLinuxRendererGL::DrawBlackBars()
     vertices[quad].x = 0.0;
     vertices[quad].y = 0.0;
     vertices[quad].z = 0;
-    vertices[quad+1].x = CServiceBroker::GetWinSystem().GetGfxContext().GetWidth();
+    vertices[quad+1].x = CServiceBroker::GetWinSystem()->GetGfxContext().GetWidth();
     vertices[quad+1].y = 0;
     vertices[quad+1].z = 0;
-    vertices[quad+2].x = CServiceBroker::GetWinSystem().GetGfxContext().GetWidth();
+    vertices[quad+2].x = CServiceBroker::GetWinSystem()->GetGfxContext().GetWidth();
     vertices[quad+2].y = m_rotatedDestCoords[0].y;
     vertices[quad+2].z = 0;
     vertices[quad+3] = vertices[quad+2];
@@ -611,21 +611,21 @@ void CLinuxRendererGL::DrawBlackBars()
   }
 
   //bottom quad
-  if (m_rotatedDestCoords[2].y < CServiceBroker::GetWinSystem().GetGfxContext().GetHeight())
+  if (m_rotatedDestCoords[2].y < CServiceBroker::GetWinSystem()->GetGfxContext().GetHeight())
   {
     GLubyte quad = count;
     vertices[quad].x = 0.0;
     vertices[quad].y = m_rotatedDestCoords[2].y;
     vertices[quad].z = 0;
-    vertices[quad+1].x = CServiceBroker::GetWinSystem().GetGfxContext().GetWidth();
+    vertices[quad+1].x = CServiceBroker::GetWinSystem()->GetGfxContext().GetWidth();
     vertices[quad+1].y = m_rotatedDestCoords[2].y;
     vertices[quad+1].z = 0;
-    vertices[quad+2].x = CServiceBroker::GetWinSystem().GetGfxContext().GetWidth();
-    vertices[quad+2].y = CServiceBroker::GetWinSystem().GetGfxContext().GetHeight();
+    vertices[quad+2].x = CServiceBroker::GetWinSystem()->GetGfxContext().GetWidth();
+    vertices[quad+2].y = CServiceBroker::GetWinSystem()->GetGfxContext().GetHeight();
     vertices[quad+2].z = 0;
     vertices[quad+3] = vertices[quad+2];
     vertices[quad+4].x = 0;
-    vertices[quad+4].y = CServiceBroker::GetWinSystem().GetGfxContext().GetHeight();
+    vertices[quad+4].y = CServiceBroker::GetWinSystem()->GetGfxContext().GetHeight();
     vertices[quad+4].z = 0;
     vertices[quad+5] = vertices[quad];
     count += 6;
@@ -653,16 +653,16 @@ void CLinuxRendererGL::DrawBlackBars()
   }
 
   //right quad
-  if (m_rotatedDestCoords[2].x < CServiceBroker::GetWinSystem().GetGfxContext().GetWidth())
+  if (m_rotatedDestCoords[2].x < CServiceBroker::GetWinSystem()->GetGfxContext().GetWidth())
   {
     GLubyte quad = count;
     vertices[quad].x = m_rotatedDestCoords[1].x;
     vertices[quad].y = m_rotatedDestCoords[1].y;
     vertices[quad].z = 0;
-    vertices[quad+1].x = CServiceBroker::GetWinSystem().GetGfxContext().GetWidth();
+    vertices[quad+1].x = CServiceBroker::GetWinSystem()->GetGfxContext().GetWidth();
     vertices[quad+1].y = m_rotatedDestCoords[1].y;
     vertices[quad+1].z = 0;
-    vertices[quad+2].x = CServiceBroker::GetWinSystem().GetGfxContext().GetWidth();
+    vertices[quad+2].x = CServiceBroker::GetWinSystem()->GetGfxContext().GetWidth();
     vertices[quad+2].y = m_rotatedDestCoords[2].y;
     vertices[quad+2].z = 0;
     vertices[quad+3] = vertices[quad+2];
@@ -777,7 +777,7 @@ void CLinuxRendererGL::UpdateVideoFilter()
   if (m_scalingMethod == VS_SCALINGMETHOD_AUTO)
   {
     bool scaleSD = m_sourceHeight < 720 && m_sourceWidth < 1280;
-    bool scaleUp = (int)m_sourceHeight < CServiceBroker::GetWinSystem().GetGfxContext().GetHeight() && (int)m_sourceWidth < CServiceBroker::GetWinSystem().GetGfxContext().GetWidth();
+    bool scaleUp = (int)m_sourceHeight < CServiceBroker::GetWinSystem()->GetGfxContext().GetHeight() && (int)m_sourceWidth < CServiceBroker::GetWinSystem()->GetGfxContext().GetWidth();
     bool scaleFps = m_fps < g_advancedSettings.m_videoAutoScaleMaxFps + 0.01f;
 
     if (Supports(VS_SCALINGMETHOD_LANCZOS3_FAST) && scaleSD && scaleUp && scaleFps)
@@ -997,7 +997,7 @@ void CLinuxRendererGL::LoadShaders(int field)
 void CLinuxRendererGL::UnInit()
 {
   CLog::Log(LOGDEBUG, "LinuxRendererGL: Cleaning up GL resources");
-  CSingleLock lock(CServiceBroker::GetWinSystem().GetGfxContext());
+  CSingleLock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
 
   glFinish();
 
@@ -1719,7 +1719,7 @@ bool CLinuxRendererGL::RenderCapture(CRenderCapture* capture)
 
   Render(RENDER_FLAG_NOOSD, m_iYV12RenderBuffer);
   // read pixels
-  glReadPixels(0, CServiceBroker::GetWinSystem().GetGfxContext().GetHeight() - capture->GetHeight(), capture->GetWidth(), capture->GetHeight(),
+  glReadPixels(0, CServiceBroker::GetWinSystem()->GetGfxContext().GetHeight() - capture->GetHeight(), capture->GetWidth(), capture->GetHeight(),
                GL_BGRA, GL_UNSIGNED_BYTE, capture->GetRenderBuffer());
 
   capture->EndRender();

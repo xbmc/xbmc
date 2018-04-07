@@ -54,12 +54,12 @@ bool CWinEventsSDL::MessagePump()
         if( event.active.state & SDL_APPACTIVE )
         {
           g_application.SetRenderGUI(event.active.gain != 0);
-          CServiceBroker::GetWinSystem().NotifyAppActiveChange(g_application.GetRenderGUI());
+          CServiceBroker::GetWinSystem()->NotifyAppActiveChange(g_application.GetRenderGUI());
         }
         else if (event.active.state & SDL_APPINPUTFOCUS)
         {
           g_application.m_AppFocused = event.active.gain != 0;
-          CServiceBroker::GetWinSystem().NotifyAppFocusChange(g_application.m_AppFocused);
+          CServiceBroker::GetWinSystem()->NotifyAppFocusChange(g_application.m_AppFocused);
         }
         break;
 
@@ -151,7 +151,7 @@ bool CWinEventsSDL::MessagePump()
         // Under newer osx versions sdl is so fucked up that it even fires resize events
         // that exceed the screen size (maybe some HiDP incompatibility in old SDL?)
         // ensure to ignore those events because it will mess with windowed size
-        int RES_SCREEN = CServiceBroker::GetWinSystem().DesktopResolution(CServiceBroker::GetWinSystem().GetCurrentScreen());
+        int RES_SCREEN = CServiceBroker::GetWinSystem()->DesktopResolution(CServiceBroker::GetWinSystem()->GetCurrentScreen());
         if((event.resize.w > CDisplaySettings::GetInstance().GetResolutionInfo(RES_SCREEN).iWidth) ||
            (event.resize.h > CDisplaySettings::GetInstance().GetResolutionInfo(RES_SCREEN).iHeight))
         {
@@ -217,7 +217,7 @@ bool CWinEventsSDL::ProcessOSXShortcuts(SDL_Event& event)
       return true;
 
     case SDLK_h: // CMD-h to hide
-      CServiceBroker::GetWinSystem().Hide();
+      CServiceBroker::GetWinSystem()->Hide();
       return true;
 
     case SDLK_m: // CMD-m to minimize

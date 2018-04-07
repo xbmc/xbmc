@@ -235,7 +235,7 @@ bool CRenderBuffer::CreateBuffer(EBufferFormat fmt, unsigned width, unsigned hei
   {
     DXGI_FORMAT uvFormat = DXGI_FORMAT_R8G8_UNORM;
     // FL 9.x doesn't support DXGI_FORMAT_R8G8_UNORM, so we have to use SNORM and correct values in shader
-    if (!DX::Windowing().IsFormatSupport(uvFormat, D3D11_FORMAT_SUPPORT_TEXTURE2D))
+    if (!DX::Windowing()->IsFormatSupport(uvFormat, D3D11_FORMAT_SUPPORT_TEXTURE2D))
       uvFormat = DXGI_FORMAT_R8G8_SNORM;
     if ( !m_textures[PLANE_Y].Create(m_widthTex,       m_heightTex,      1, usage, DXGI_FORMAT_R8_UNORM)
       || !m_textures[PLANE_UV].Create(m_widthTex >> 1, m_heightTex >> 1, 1, usage, uvFormat))

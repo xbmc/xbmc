@@ -6414,7 +6414,7 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
     break;
 
   case SYSTEM_SCREEN_RESOLUTION:
-    if(CServiceBroker::GetWinSystem().IsFullScreen())
+    if(CServiceBroker::GetWinSystem()->IsFullScreen())
       strLabel = StringUtils::Format("%ix%i@%.2fHz - %s",
         CDisplaySettings::GetInstance().GetCurrentResolutionInfo().iScreenWidth,
         CDisplaySettings::GetInstance().GetCurrentResolutionInfo().iScreenHeight,
@@ -6573,13 +6573,13 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
     }
     break;
   case SYSTEM_SCREEN_MODE:
-    strLabel = CServiceBroker::GetWinSystem().GetGfxContext().GetResInfo().strMode;
+    strLabel = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo().strMode;
     break;
   case SYSTEM_SCREEN_WIDTH:
-    strLabel = StringUtils::Format("%i", CServiceBroker::GetWinSystem().GetGfxContext().GetResInfo().iScreenWidth);
+    strLabel = StringUtils::Format("%i", CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo().iScreenWidth);
     break;
   case SYSTEM_SCREEN_HEIGHT:
-    strLabel = StringUtils::Format("%i", CServiceBroker::GetWinSystem().GetGfxContext().GetResInfo().iScreenHeight);
+    strLabel = StringUtils::Format("%i", CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo().iScreenHeight);
     break;
   case SYSTEM_CURRENT_WINDOW:
     return g_localizeStrings.Get(CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindowOrDialog());
@@ -6775,13 +6775,13 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
     }
     break;
   case SYSTEM_RENDER_VENDOR:
-    strLabel = CServiceBroker::GetRenderSystem().GetRenderVendor();
+    strLabel = CServiceBroker::GetRenderSystem()->GetRenderVendor();
     break;
   case SYSTEM_RENDER_RENDERER:
-    strLabel = CServiceBroker::GetRenderSystem().GetRenderRenderer();
+    strLabel = CServiceBroker::GetRenderSystem()->GetRenderRenderer();
     break;
   case SYSTEM_RENDER_VERSION:
-    strLabel = CServiceBroker::GetRenderSystem().GetRenderVersionString();
+    strLabel = CServiceBroker::GetRenderSystem()->GetRenderVersionString();
     break;
   }
 
@@ -7105,7 +7105,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
         bReturn = profileManager.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && g_passwordManager.bMasterUser;
         break;
       case SYSTEM_ISFULLSCREEN:
-        bReturn = CServiceBroker::GetWinSystem().IsFullScreen();
+        bReturn = CServiceBroker::GetWinSystem()->IsFullScreen();
         break;
       case SYSTEM_ISSTANDALONE:
         bReturn = g_application.IsStandAlone();

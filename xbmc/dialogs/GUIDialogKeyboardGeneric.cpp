@@ -688,7 +688,7 @@ void CGUIDialogKeyboardGeneric::ShowWordList(int direct)
 {
   CSingleLock lock(m_CS);
   std::wstring hzlist = L"";
-  CServiceBroker::GetWinSystem().GetGfxContext().SetScalingResolution(m_coordsRes, true);
+  CServiceBroker::GetWinSystem()->GetGfxContext().SetScalingResolution(m_coordsRes, true);
   float width = m_listfont->GetCharWidth(L'<') + m_listfont->GetCharWidth(L'>');
   float spacewidth = m_listfont->GetCharWidth(L' ');
   float numwidth = m_listfont->GetCharWidth(L'1') + m_listfont->GetCharWidth(L'.');

@@ -481,7 +481,7 @@ bool CYUV2RGBShader::Create(EBufferFormat fmt, AVColorPrimaries dstPrimaries, AV
   case BUFFER_FMT_NV12:
     defines["XBMC_NV12"] = "";
     // FL 9.x doesn't support DXGI_FORMAT_R8G8_UNORM, so we have to use SNORM and correct values in shader
-    if (!DX::Windowing().IsFormatSupport(DXGI_FORMAT_R8G8_UNORM, D3D11_FORMAT_SUPPORT_TEXTURE2D))
+    if (!DX::Windowing()->IsFormatSupport(DXGI_FORMAT_R8G8_UNORM, D3D11_FORMAT_SUPPORT_TEXTURE2D))
       defines["NV12_SNORM_UV"] = "";
     break;
   case BUFFER_FMT_UYVY422:
@@ -678,19 +678,19 @@ CConvolutionShader::~CConvolutionShader()
 
 bool CConvolutionShader::ChooseKernelD3DFormat()
 {
-  if (DX::Windowing().IsFormatSupport(DXGI_FORMAT_R16G16B16A16_FLOAT, D3D11_FORMAT_SUPPORT_SHADER_SAMPLE))
+  if (DX::Windowing()->IsFormatSupport(DXGI_FORMAT_R16G16B16A16_FLOAT, D3D11_FORMAT_SUPPORT_SHADER_SAMPLE))
   {
     m_KernelFormat = DXGI_FORMAT_R16G16B16A16_FLOAT;
     m_floattex = true;
     m_rgba = true;
   }
-  else if (DX::Windowing().IsFormatSupport(DXGI_FORMAT_R8G8B8A8_UNORM, D3D11_FORMAT_SUPPORT_SHADER_SAMPLE))
+  else if (DX::Windowing()->IsFormatSupport(DXGI_FORMAT_R8G8B8A8_UNORM, D3D11_FORMAT_SUPPORT_SHADER_SAMPLE))
   {
     m_KernelFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
     m_floattex = false;
     m_rgba = true;
   }
-  else if (DX::Windowing().IsFormatSupport(DXGI_FORMAT_B8G8R8A8_UNORM, D3D11_FORMAT_SUPPORT_SHADER_SAMPLE))
+  else if (DX::Windowing()->IsFormatSupport(DXGI_FORMAT_B8G8R8A8_UNORM, D3D11_FORMAT_SUPPORT_SHADER_SAMPLE))
   {
     m_KernelFormat = DXGI_FORMAT_B8G8R8A8_UNORM;
     m_floattex = false;
@@ -963,7 +963,7 @@ void CConvolutionShaderSeparable::Render(CD3DTexture &sourceTexture,
   Execute({ &m_IntermediateTarget, target }, 4);
 
   // we changed view port, so we need to restore our real viewport.
-  DX::Windowing().RestoreViewPort();
+  DX::Windowing()->RestoreViewPort();
 }
 
 CConvolutionShaderSeparable::~CConvolutionShaderSeparable()
@@ -977,8 +977,8 @@ bool CConvolutionShaderSeparable::ChooseIntermediateD3DFormat()
   D3D11_FORMAT_SUPPORT usage = D3D11_FORMAT_SUPPORT_RENDER_TARGET;
 
   // Need a float texture, as the output of the first pass can contain negative values.
-  if      (DX::Windowing().IsFormatSupport(DXGI_FORMAT_R16G16B16A16_FLOAT, usage)) m_IntermediateFormat = DXGI_FORMAT_R16G16B16A16_FLOAT;
-  else if (DX::Windowing().IsFormatSupport(DXGI_FORMAT_R32G32B32A32_FLOAT, usage)) m_IntermediateFormat = DXGI_FORMAT_R32G32B32A32_FLOAT;
+  if      (DX::Windowing()->IsFormatSupport(DXGI_FORMAT_R16G16B16A16_FLOAT, usage)) m_IntermediateFormat = DXGI_FORMAT_R16G16B16A16_FLOAT;
+  else if (DX::Windowing()->IsFormatSupport(DXGI_FORMAT_R32G32B32A32_FLOAT, usage)) m_IntermediateFormat = DXGI_FORMAT_R32G32B32A32_FLOAT;
   else
   {
     CLog::LogF(LOGNOTICE, "no float format available for the intermediate render target");
@@ -1127,14 +1127,14 @@ void CConvolutionShaderSeparable::SetStepParams(UINT iPass)
   if (iPass == 0)
   {
     // reset scissor
-    DX::Windowing().ResetScissors();
+    DX::Windowing()->ResetScissors();
   }
   else if (iPass == 1)
   {
     // at the second pass m_IntermediateTarget is a source of data
     m_effect.SetTexture("g_Texture", m_IntermediateTarget);
     // restore scissor
-    DX::Windowing().SetScissors(CServiceBroker::GetWinSystem().GetGfxContext().StereoCorrection(CServiceBroker::GetWinSystem().GetGfxContext().GetScissors()));
+    DX::Windowing()->SetScissors(CServiceBroker::GetWinSystem()->GetGfxContext().StereoCorrection(CServiceBroker::GetWinSystem()->GetGfxContext().GetScissors()));
   }
   // setting view port
   pContext->RSSetViewports(1, &viewPort);

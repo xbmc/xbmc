@@ -39,7 +39,7 @@ CFrameBufferObject::CFrameBufferObject()
 
 bool CFrameBufferObject::IsSupported()
 {
-  if(CServiceBroker::GetRenderSystem().IsExtSupported("GL_EXT_framebuffer_object"))
+  if(CServiceBroker::GetRenderSystem()->IsExtSupported("GL_EXT_framebuffer_object"))
     m_supported = true;
   else
     m_supported = false;

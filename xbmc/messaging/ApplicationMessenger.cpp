@@ -148,7 +148,7 @@ int CApplicationMessenger::SendMsg(ThreadMessage&& message, bool wait)
                  //  waitEvent ... just for such contingencies :)
   { 
     // ensure the thread doesn't hold the graphics lock
-    CSingleExit exit(CServiceBroker::GetWinSystem().GetGfxContext());
+    CSingleExit exit(CServiceBroker::GetWinSystem()->GetGfxContext());
     waitEvent->Wait();
     return *result;
   }

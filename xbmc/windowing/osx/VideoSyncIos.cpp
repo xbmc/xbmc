@@ -60,7 +60,7 @@ void CVideoSyncIos::Cleanup()
 
 float CVideoSyncIos::GetFps()
 {
-  m_fps = CServiceBroker::GetWinSystem().GetGfxContext().GetFPS();
+  m_fps = CServiceBroker::GetWinSystem()->GetGfxContext().GetFPS();
   CLog::Log(LOGDEBUG, "CVideoSyncIos::%s Detected refreshrate: %f hertz", __FUNCTION__, m_fps);
   return m_fps;
 }

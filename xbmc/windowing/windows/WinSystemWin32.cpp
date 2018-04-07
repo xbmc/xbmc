@@ -441,7 +441,7 @@ bool CWinSystemWin32::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool 
 
   bool forceChange = false;    // resolution/display is changed but window state isn't changed
   bool changeScreen = false;   // display is changed
-  bool stereoChange = IsStereoEnabled() != (CServiceBroker::GetWinSystem().GetGfxContext().GetStereoMode() == RENDER_STEREO_MODE_HARDWAREBASED);
+  bool stereoChange = IsStereoEnabled() != (CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode() == RENDER_STEREO_MODE_HARDWAREBASED);
 
   if ( m_nWidth != res.iWidth
     || m_nHeight != res.iHeight
@@ -1119,7 +1119,7 @@ void CWinSystemWin32::NotifyAppFocusChange(bool bGaining)
       SetWindowPos(m_hWnd, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_NOREDRAW);
 
     RESOLUTION_INFO res = { 0 };
-    const RESOLUTION resolution = CServiceBroker::GetWinSystem().GetGfxContext().GetVideoResolution();
+    const RESOLUTION resolution = CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution();
     if (bGaining && resolution > RES_INVALID)
       res = CDisplaySettings::GetInstance().GetResolutionInfo(resolution);
 

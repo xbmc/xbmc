@@ -48,7 +48,7 @@ void CGUITextureD3D::Begin(color_t color)
 
   m_col = color;
 
-  DX::Windowing().SetAlphaBlendEnable(true);
+  DX::Windowing()->SetAlphaBlendEnable(true);
 }
 
 void CGUITextureD3D::End()
@@ -118,7 +118,7 @@ void CGUITextureD3D::Draw(float *x, float *y, float *z, const CRect &texture, co
   verts[3].color = xcolor;
 
   CDXTexture* tex = (CDXTexture *)m_texture.m_textures[m_currentFrame];
-  CGUIShaderDX* pGUIShader = DX::Windowing().GetGUIShader();
+  CGUIShaderDX* pGUIShader = DX::Windowing()->GetGUIShader();
 
   pGUIShader->Begin(m_diffuse.size() ? SHADER_METHOD_RENDER_MULTI_TEXTURE_BLEND : SHADER_METHOD_RENDER_TEXTURE_BLEND);
 

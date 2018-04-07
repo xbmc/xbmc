@@ -37,7 +37,7 @@ CGLTexture::CGLTexture(unsigned int width, unsigned int height, unsigned int for
 : CBaseTexture(width, height, format)
 {
   unsigned int major, minor;
-  CServiceBroker::GetRenderSystem().GetRenderVersion(major, minor);
+  CServiceBroker::GetRenderSystem()->GetRenderVersion(major, minor);
   if (major >= 3)
     m_isOglVersion3orNewer = true;
 }
@@ -99,7 +99,7 @@ void CGLTexture::LoadToGPU()
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-  unsigned int maxSize = CServiceBroker::GetRenderSystem().GetMaxTextureSize();
+  unsigned int maxSize = CServiceBroker::GetRenderSystem()->GetMaxTextureSize();
   if (m_textureHeight > maxSize)
   {
     CLog::Log(LOGERROR, "GL: Image height %d too big to fit into single texture unit, truncating to %u", m_textureHeight, maxSize);
@@ -183,12 +183,12 @@ void CGLTexture::LoadToGPU()
       internalformat = pixelformat = GL_RGB;
       break;
     case XB_FMT_A8R8G8B8:
-      if (CServiceBroker::GetRenderSystem().IsExtSupported("GL_EXT_texture_format_BGRA8888") ||
-          CServiceBroker::GetRenderSystem().IsExtSupported("GL_IMG_texture_format_BGRA8888"))
+      if (CServiceBroker::GetRenderSystem()->IsExtSupported("GL_EXT_texture_format_BGRA8888") ||
+          CServiceBroker::GetRenderSystem()->IsExtSupported("GL_IMG_texture_format_BGRA8888"))
       {
         internalformat = pixelformat = GL_BGRA_EXT;
       }
-      else if (CServiceBroker::GetRenderSystem().IsExtSupported("GL_APPLE_texture_format_BGRA8888"))
+      else if (CServiceBroker::GetRenderSystem()->IsExtSupported("GL_APPLE_texture_format_BGRA8888"))
       {
         // Apple's implementation does not conform to spec. Instead, they require
         // differing format/internalformat, more like GL.

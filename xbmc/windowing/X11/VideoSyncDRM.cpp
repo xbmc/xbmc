@@ -31,8 +31,8 @@
 
 static drmVBlankSeqType CrtcSel(void)
 {
-  CWinSystemX11& winSystem = dynamic_cast<CWinSystemX11&>(CServiceBroker::GetWinSystem());
-  int crtc = winSystem.GetCrtc();
+  CWinSystemX11* winSystem = dynamic_cast<CWinSystemX11*>(CServiceBroker::GetWinSystem());
+  int crtc = winSystem->GetCrtc();
   int ret = 0;
 
   if (crtc == 1)
@@ -170,12 +170,12 @@ void CVideoSyncDRM::OnResetDisplay()
 
 float CVideoSyncDRM::GetFps()
 {
-  m_fps = CServiceBroker::GetWinSystem().GetGfxContext().GetFPS();
+  m_fps = CServiceBroker::GetWinSystem()->GetGfxContext().GetFPS();
   return m_fps;
 }
 
 void CVideoSyncDRM::RefreshChanged()
 {
-  if (m_fps != CServiceBroker::GetWinSystem().GetGfxContext().GetFPS())
+  if (m_fps != CServiceBroker::GetWinSystem()->GetGfxContext().GetFPS())
     m_abort = true;
 }

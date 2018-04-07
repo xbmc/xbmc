@@ -74,16 +74,16 @@ void CRenderSystemBase::ShowSplash(const std::string& message)
 
   if (!m_splashImage)
   {
-    m_splashImage = std::unique_ptr<CGUIImage>(new CGUIImage(0, 0, 0, 0, CServiceBroker::GetWinSystem().GetGfxContext().GetWidth(),
-                                                       CServiceBroker::GetWinSystem().GetGfxContext().GetHeight(), CTextureInfo(CUtil::GetSplashPath())));
+    m_splashImage = std::unique_ptr<CGUIImage>(new CGUIImage(0, 0, 0, 0, CServiceBroker::GetWinSystem()->GetGfxContext().GetWidth(),
+                                                       CServiceBroker::GetWinSystem()->GetGfxContext().GetHeight(), CTextureInfo(CUtil::GetSplashPath())));
     m_splashImage->SetAspectRatio(CAspectRatio::AR_SCALE);
   }
 
-  CServiceBroker::GetWinSystem().GetGfxContext().lock();
-  CServiceBroker::GetWinSystem().GetGfxContext().Clear();
+  CServiceBroker::GetWinSystem()->GetGfxContext().lock();
+  CServiceBroker::GetWinSystem()->GetGfxContext().Clear();
 
-  RESOLUTION_INFO res = CServiceBroker::GetWinSystem().GetGfxContext().GetResInfo();
-  CServiceBroker::GetWinSystem().GetGfxContext().SetRenderingResolution(res, true);
+  RESOLUTION_INFO res = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo();
+  CServiceBroker::GetWinSystem()->GetGfxContext().SetRenderingResolution(res, true);
 
   //render splash image
   BeginRender();
@@ -107,8 +107,8 @@ void CRenderSystemBase::ShowSplash(const std::string& message)
       float textWidth, textHeight;
       m_splashMessageLayout->GetTextExtent(textWidth, textHeight);
 
-      int width = CServiceBroker::GetWinSystem().GetGfxContext().GetWidth();
-      int height = CServiceBroker::GetWinSystem().GetGfxContext().GetHeight();
+      int width = CServiceBroker::GetWinSystem()->GetGfxContext().GetWidth();
+      int height = CServiceBroker::GetWinSystem()->GetGfxContext().GetHeight();
       float y = height - textHeight - 100;
       m_splashMessageLayout->RenderOutline(width/2, y, 0, 0xFF000000, XBFONT_CENTER_X, width);
     }
@@ -116,7 +116,7 @@ void CRenderSystemBase::ShowSplash(const std::string& message)
 
   //show it on screen
   EndRender();
-  CServiceBroker::GetWinSystem().GetGfxContext().unlock();
-  CServiceBroker::GetWinSystem().GetGfxContext().Flip(true, false);
+  CServiceBroker::GetWinSystem()->GetGfxContext().unlock();
+  CServiceBroker::GetWinSystem()->GetGfxContext().Flip(true, false);
 }
 

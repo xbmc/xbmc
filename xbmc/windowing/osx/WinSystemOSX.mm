@@ -555,7 +555,7 @@ static void DisplayReconfigured(CGDirectDisplayID display,
   if (flags & kCGDisplayBeginConfigurationFlag)
   {
     // pre/post-reconfiguration changes
-    RESOLUTION res = CServiceBroker::GetWinSystem().GetGfxContext().GetVideoResolution();
+    RESOLUTION res = CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution();
     if (res == RES_INVALID)
       return;
 
@@ -864,7 +864,7 @@ bool CWinSystemOSX::ResizeWindow(int newWidth, int newHeight, int newLeft, int n
   m_nWidth = newWidth;
   m_nHeight = newHeight;
   m_glContext = context;
-  CServiceBroker::GetWinSystem().GetGfxContext().SetFPS(m_refreshRate);
+  CServiceBroker::GetWinSystem()->GetGfxContext().SetFPS(m_refreshRate);
 
   return true;
 }
@@ -1458,7 +1458,7 @@ void CWinSystemOSX::FillInVideoModes()
           res.strOutput = [dispName UTF8String];
         }
 
-        CServiceBroker::GetWinSystem().GetGfxContext().ResetOverscan(res);
+        CServiceBroker::GetWinSystem()->GetGfxContext().ResetOverscan(res);
         CDisplaySettings::GetInstance().AddResolutionInfo(res);
       }
     }
@@ -1862,7 +1862,7 @@ void CWinSystemOSX::AnnounceOnResetDevice()
   // doing the callbacks
   GetScreenResolution(&w, &h, &currentFps, currentScreenIdx);
 
-  CServiceBroker::GetWinSystem().GetGfxContext().SetFPS(currentFps);
+  CServiceBroker::GetWinSystem()->GetGfxContext().SetFPS(currentFps);
 
   CSingleLock lock(m_resourceSection);
   // tell any shared resources

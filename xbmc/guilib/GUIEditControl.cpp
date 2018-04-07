@@ -459,7 +459,7 @@ void CGUIEditControl::ProcessText(unsigned int currentTime)
     m_clipRect.x1 += leftTextWidth + spaceWidth;
   }
 
-  if (CServiceBroker::GetWinSystem().GetGfxContext().SetClipRegion(m_clipRect.x1, m_clipRect.y1, m_clipRect.Width(), m_clipRect.Height()))
+  if (CServiceBroker::GetWinSystem()->GetGfxContext().SetClipRegion(m_clipRect.x1, m_clipRect.y1, m_clipRect.Width(), m_clipRect.Height()))
   {
     uint32_t align = m_label.GetLabelInfo().align & XBFONT_CENTER_Y; // start aligned left
     if (m_label2.GetTextWidth() < m_clipRect.Width())
@@ -494,7 +494,7 @@ void CGUIEditControl::ProcessText(unsigned int currentTime)
     changed |= m_label2.SetColor(GetTextColor());
     changed |= m_label2.SetOverflow(CGUILabel::OVER_FLOW_CLIP);
     changed |= m_label2.Process(currentTime);
-    CServiceBroker::GetWinSystem().GetGfxContext().RestoreClipRegion();
+    CServiceBroker::GetWinSystem()->GetGfxContext().RestoreClipRegion();
   }
   if (changed)
     MarkDirtyRegion();
@@ -504,10 +504,10 @@ void CGUIEditControl::RenderText()
 {
   m_label.Render();
 
-  if (CServiceBroker::GetWinSystem().GetGfxContext().SetClipRegion(m_clipRect.x1, m_clipRect.y1, m_clipRect.Width(), m_clipRect.Height()))
+  if (CServiceBroker::GetWinSystem()->GetGfxContext().SetClipRegion(m_clipRect.x1, m_clipRect.y1, m_clipRect.Width(), m_clipRect.Height()))
   {
     m_label2.Render();
-    CServiceBroker::GetWinSystem().GetGfxContext().RestoreClipRegion();
+    CServiceBroker::GetWinSystem()->GetGfxContext().RestoreClipRegion();
   }
 }
 
@@ -678,7 +678,7 @@ void CGUIEditControl::OnPasteClipboard()
   std::string utf8_text;
 
   // Get text from the clipboard
-  utf8_text = CServiceBroker::GetWinSystem().GetClipboardText();
+  utf8_text = CServiceBroker::GetWinSystem()->GetClipboardText();
   g_charsetConverter.utf8ToW(utf8_text, unicode_text);
 
   // Insert the pasted text at the current cursor position.

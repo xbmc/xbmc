@@ -69,7 +69,7 @@ void CGUITextLayout::Render(float x, float y, float angle, color_t color, color_
   if (angle)
   {
     static const float degrees_to_radians = 0.01745329252f;
-    CServiceBroker::GetWinSystem().GetGfxContext().AddTransform(TransformMatrix::CreateZRotation(angle * degrees_to_radians, x, y, CServiceBroker::GetWinSystem().GetGfxContext().GetScalingPixelRatio()));
+    CServiceBroker::GetWinSystem()->GetGfxContext().AddTransform(TransformMatrix::CreateZRotation(angle * degrees_to_radians, x, y, CServiceBroker::GetWinSystem()->GetGfxContext().GetScalingPixelRatio()));
   }
   // center our text vertically
   if (alignment & XBFONT_CENTER_Y)
@@ -92,7 +92,7 @@ void CGUITextLayout::Render(float x, float y, float angle, color_t color, color_
   }
   m_font->End();
   if (angle)
-    CServiceBroker::GetWinSystem().GetGfxContext().RemoveTransform();
+    CServiceBroker::GetWinSystem()->GetGfxContext().RemoveTransform();
 }
 
 bool CGUITextLayout::UpdateScrollinfo(CScrollInfo &scrollInfo)
@@ -119,7 +119,7 @@ void CGUITextLayout::RenderScrolling(float x, float y, float angle, color_t colo
   if (angle)
   {
     static const float degrees_to_radians = 0.01745329252f;
-    CServiceBroker::GetWinSystem().GetGfxContext().AddTransform(TransformMatrix::CreateZRotation(angle * degrees_to_radians, x, y, CServiceBroker::GetWinSystem().GetGfxContext().GetScalingPixelRatio()));
+    CServiceBroker::GetWinSystem()->GetGfxContext().AddTransform(TransformMatrix::CreateZRotation(angle * degrees_to_radians, x, y, CServiceBroker::GetWinSystem()->GetGfxContext().GetScalingPixelRatio()));
   }
   // center our text vertically
   if (alignment & XBFONT_CENTER_Y)
@@ -142,7 +142,7 @@ void CGUITextLayout::RenderScrolling(float x, float y, float angle, color_t colo
   }
   m_font->End();
   if (angle)
-    CServiceBroker::GetWinSystem().GetGfxContext().RemoveTransform();
+    CServiceBroker::GetWinSystem()->GetGfxContext().RemoveTransform();
 }
 
 void CGUITextLayout::RenderOutline(float x, float y, color_t color, color_t outlineColor, uint32_t alignment, float maxWidth)

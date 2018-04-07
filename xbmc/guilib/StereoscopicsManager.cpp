@@ -145,7 +145,7 @@ void CStereoscopicsManager::SetStereoMode(const RENDER_STEREO_MODE &mode)
 
   if (applyMode != currentMode && applyMode >= RENDER_STEREO_MODE_OFF)
   {
-    if (!CServiceBroker::GetRenderSystem().SupportsStereo(applyMode))
+    if (!CServiceBroker::GetRenderSystem()->SupportsStereo(applyMode))
       return;
     CServiceBroker::GetSettings().SetInt(CSettings::SETTING_VIDEOSCREEN_STEREOSCOPICMODE, applyMode);
   }
@@ -156,7 +156,7 @@ RENDER_STEREO_MODE CStereoscopicsManager::GetNextSupportedStereoMode(const RENDE
   RENDER_STEREO_MODE mode = currentMode;
   do {
     mode = (RENDER_STEREO_MODE) ((mode + step) % RENDER_STEREO_MODE_COUNT);
-    if(CServiceBroker::GetRenderSystem().SupportsStereo(mode))
+    if(CServiceBroker::GetRenderSystem()->SupportsStereo(mode))
       break;
    } while (mode != currentMode);
   return mode;
@@ -220,7 +220,7 @@ RENDER_STEREO_MODE CStereoscopicsManager::GetStereoModeByUserChoice(const std::s
   for (int i = RENDER_STEREO_MODE_OFF; i < RENDER_STEREO_MODE_COUNT; i++)
   {
     RENDER_STEREO_MODE selectableMode = (RENDER_STEREO_MODE) i;
-    if (CServiceBroker::GetRenderSystem().SupportsStereo(selectableMode))
+    if (CServiceBroker::GetRenderSystem()->SupportsStereo(selectableMode))
     {
       selectableModes.push_back(selectableMode);
       std::string label = GetLabelForStereoMode((RENDER_STEREO_MODE) i);
@@ -486,11 +486,11 @@ bool CStereoscopicsManager::OnAction(const CAction &action)
 
 void CStereoscopicsManager::ApplyStereoMode(const RENDER_STEREO_MODE &mode, bool notify)
 {
-  RENDER_STEREO_MODE currentMode = CServiceBroker::GetWinSystem().GetGfxContext().GetStereoMode();
+  RENDER_STEREO_MODE currentMode = CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode();
   CLog::Log(LOGDEBUG, "StereoscopicsManager::ApplyStereoMode: trying to apply stereo mode. Current: %s | Target: %s", ConvertGuiStereoModeToString(currentMode), ConvertGuiStereoModeToString(mode));
   if (currentMode != mode)
   {
-    CServiceBroker::GetWinSystem().GetGfxContext().SetStereoMode(mode);
+    CServiceBroker::GetWinSystem()->GetGfxContext().SetStereoMode(mode);
     CLog::Log(LOGDEBUG, "StereoscopicsManager: stereo mode changed to %s", ConvertGuiStereoModeToString(mode));
     if (notify)
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(36501), GetLabelForStereoMode(mode));
@@ -573,7 +573,7 @@ void CStereoscopicsManager::OnStreamChange()
 
       int idx_mono = pDlgSelect->Add(GetLabelForStereoMode(RENDER_STEREO_MODE_MONO)); // mono / 2d
 
-      if (playing != RENDER_STEREO_MODE_OFF && playing != preferred && preferred != RENDER_STEREO_MODE_AUTO && CServiceBroker::GetRenderSystem().SupportsStereo(playing)) // same as movie
+      if (playing != RENDER_STEREO_MODE_OFF && playing != preferred && preferred != RENDER_STEREO_MODE_AUTO && CServiceBroker::GetRenderSystem()->SupportsStereo(playing)) // same as movie
         idx_playing = pDlgSelect->Add(g_localizeStrings.Get(36532)
                                     + " ("
                                     + GetLabelForStereoMode(playing)

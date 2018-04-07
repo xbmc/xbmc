@@ -110,9 +110,9 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
     {
       if (message.GetParam1() == GUI_MSG_WINDOW_RESIZE)
       {
-        if (IsActive() && CDisplaySettings::GetInstance().GetCurrentResolution() != CServiceBroker::GetWinSystem().GetGfxContext().GetVideoResolution())
+        if (IsActive() && CDisplaySettings::GetInstance().GetCurrentResolution() != CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution())
         {
-          CDisplaySettings::GetInstance().SetCurrentResolution(CServiceBroker::GetWinSystem().GetGfxContext().GetVideoResolution(), true);
+          CDisplaySettings::GetInstance().SetCurrentResolution(CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution(), true);
           CreateSettings();
         }
       }

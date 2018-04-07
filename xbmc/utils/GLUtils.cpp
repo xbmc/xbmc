@@ -97,7 +97,7 @@ void LogGraphicsInfo()
 #define GL_GPU_MEMORY_INFO_EVICTION_COUNT_NVX            0x904A
 #define GL_GPU_MEMORY_INFO_EVICTED_MEMORY_NVX            0x904B
 
-  if (CServiceBroker::GetRenderSystem().IsExtSupported("GL_NVX_gpu_memory_info"))
+  if (CServiceBroker::GetRenderSystem()->IsExtSupported("GL_NVX_gpu_memory_info"))
   {
     GLint mem = 0;
 
@@ -112,7 +112,7 @@ void LogGraphicsInfo()
   std::string extensions;
 #if defined(HAS_GL)
   unsigned int renderVersionMajor, renderVersionMinor;
-  CServiceBroker::GetRenderSystem().GetRenderVersion(renderVersionMajor, renderVersionMinor);
+  CServiceBroker::GetRenderSystem()->GetRenderVersion(renderVersionMajor, renderVersionMinor);
   if (renderVersionMajor > 3 ||
       (renderVersionMajor == 3 && renderVersionMinor >= 2))
   {

@@ -116,7 +116,7 @@ bool CWinSystemAmlogic::CreateNewWindow(const std::string& name,
 {
   RESOLUTION_INFO current_resolution;
   current_resolution.iWidth = current_resolution.iHeight = 0;
-  RENDER_STEREO_MODE stereo_mode = CServiceBroker::GetWinSystem().GetGfxContext().GetStereoMode();
+  RENDER_STEREO_MODE stereo_mode = CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode();
 
   m_nWidth        = res.iWidth;
   m_nHeight       = res.iHeight;
@@ -215,7 +215,7 @@ void CWinSystemAmlogic::UpdateResolutions()
       CDisplaySettings::GetInstance().AddResolutionInfo(res);
     }
 
-    CServiceBroker::GetWinSystem().GetGfxContext().ResetOverscan(resolutions[i]);
+    CServiceBroker::GetWinSystem()->GetGfxContext().ResetOverscan(resolutions[i]);
     CDisplaySettings::GetInstance().GetResolutionInfo(res_index) = resolutions[i];
 
     CLog::Log(LOGNOTICE, "Found resolution %d x %d for display %d with %d x %d%s @ %f Hz\n",

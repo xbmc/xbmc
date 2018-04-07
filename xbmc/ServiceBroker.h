@@ -109,8 +109,6 @@ public:
   static bool IsBinaryAddonCacheUp();
   static bool IsServiceManagerUp();
   static CNetwork& GetNetwork();
-  static CWinSystemBase& GetWinSystem();
-  static CRenderSystemBase& GetRenderSystem();
   static CPowerManager& GetPowerManager();
   static CWeatherManager& GetWeatherManager();
   static CPlayerCoreFactory &GetPlayerCoreFactory();
@@ -122,6 +120,12 @@ public:
   static void RegisterGUI(CGUIComponent *gui);
   static void UnregisterGUI();
 
+  static void RegisterWinSystem(CWinSystemBase *winsystem);
+  static void UnregisterWinSystem();
+  static CWinSystemBase* GetWinSystem();
+  static CRenderSystemBase* GetRenderSystem();
+
 private:
   static CGUIComponent* m_pGUI;
+  static CWinSystemBase* m_pWinSystem;
 };

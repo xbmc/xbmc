@@ -172,7 +172,7 @@ void CDialogGameVideoSelect::Update()
 {
   //! @todo
   // Lock our display, as this window is rendered from the player thread
-  //CServiceBroker::GetWinSystem().GetGfxContext().Lock();
+  //CServiceBroker::GetWinSystem()->GetGfxContext().Lock();
 
   m_viewControl->SetCurrentView(DEFAULT_VIEW_ICONS);
 
@@ -181,7 +181,7 @@ void CDialogGameVideoSelect::Update()
 
   OnRefreshList();
 
-  //CServiceBroker::GetWinSystem().GetGfxContext().Unlock();
+  //CServiceBroker::GetWinSystem()->GetGfxContext().Unlock();
 }
 
 void CDialogGameVideoSelect::Clear()
