@@ -1,3 +1,6 @@
+v0.3.27
+- Test mandatory password for sudo
+
 v0.3.256
 - Update version list
 

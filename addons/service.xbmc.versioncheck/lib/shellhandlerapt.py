@@ -21,6 +21,7 @@ from .common import *
 try:
     from subprocess import check_output
     from subprocess import call
+    from subprocess import CalledProcessError    
 except:
     log('subprocess import error')
 
@@ -120,6 +121,12 @@ class ShellHandlerApt:
         return True
 
     def _getpassword(self):
-        if len(self._pwd) == 0:
-            self._pwd = get_password_from_user()
-        return self._pwd
+        try:
+            check_output('sudo -n true',shell=True)
+            log("No mandatory password")
+            return self._pwd
+        except CalledProcessError as sudotest:
+            log("Mandatory password for [SUDO]")
+            if len(self._pwd) == 0:
+                self._pwd = get_password_from_user()
+            return self._pwd
