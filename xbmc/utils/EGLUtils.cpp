@@ -117,6 +117,12 @@ bool CEGLContextUtils::CreateDisplay(EGLDisplay display,
     {
       m_eglDisplay = getPlatformDisplayEXT(EGL_PLATFORM_GBM_KHR, (EGLNativeDisplayType)display, NULL);
     }
+
+    if (m_eglDisplay == EGL_NO_DISPLAY)
+    {
+      CEGLUtils::LogError("Failed to get EGL platform display");
+      return false;
+    }
   }
 #endif
 
@@ -127,28 +133,36 @@ bool CEGLContextUtils::CreateDisplay(EGLDisplay display,
 
   if (m_eglDisplay == EGL_NO_DISPLAY)
   {
-    CLog::Log(LOGERROR, "failed to get EGL display");
+    CEGLUtils::LogError("failed to get EGL display");
     return false;
   }
 
   if (!eglInitialize(m_eglDisplay, &major, &minor))
   {
-    CLog::Log(LOGERROR, "failed to initialize EGL display");
+    CEGLUtils::LogError("failed to initialize EGL display");
+    Destroy();
+    return false;
+  }
+  CLog::Log(LOGINFO, "EGL v%d.%d", major, minor);
+
+  if (eglBindAPI(renderingApi) != EGL_TRUE)
+  {
+    CEGLUtils::LogError("failed to bind EGL API");
+    Destroy();
     return false;
   }
 
-  eglBindAPI(renderingApi);
-
-  if (!eglChooseConfig(m_eglDisplay, attribs,
-                       &m_eglConfig, 1, &neglconfigs))
+  if (eglChooseConfig(m_eglDisplay, attribs, &m_eglConfig, 1, &neglconfigs) != EGL_TRUE)
   {
-    CLog::Log(LOGERROR, "Failed to query number of EGL configs");
+    CEGLUtils::LogError("failed to query number of EGL configs");
+    Destroy();
     return false;
   }
 
   if (neglconfigs <= 0)
   {
     CLog::Log(LOGERROR, "No suitable EGL configs found");
+    Destroy();
     return false;
   }
 
@@ -167,7 +181,8 @@ bool CEGLContextUtils::CreateContext(const EGLint* contextAttribs)
 
   if (m_eglContext == EGL_NO_CONTEXT)
   {
-    CLog::Log(LOGERROR, "failed to create EGL context");
+    // This is expected to fail under some circumstances, so log as debug
+    CLog::Log(LOGDEBUG, "Failed to create EGL context (EGL error %d)", eglGetError());
     return false;
   }
 
@@ -202,7 +217,7 @@ bool CEGLContextUtils::SurfaceAttrib()
       return false;
     }
 
-    if (!eglSurfaceAttrib(m_eglDisplay, m_eglSurface, EGL_SWAP_BEHAVIOR, EGL_BUFFER_PRESERVED))
+    if (eglSurfaceAttrib(m_eglDisplay, m_eglSurface, EGL_SWAP_BEHAVIOR, EGL_BUFFER_PRESERVED) != EGL_TRUE)
     {
       CLog::Log(LOGDEBUG, "%s: Could not set EGL_SWAP_BEHAVIOR",__FUNCTION__);
     }
@@ -265,12 +280,7 @@ void CEGLContextUtils::Detach()
 
 bool CEGLContextUtils::SetVSync(bool enable)
 {
-  if (!eglSwapInterval(m_eglDisplay, enable))
-  {
-    return false;
-  }
-
-  return true;
+  return (eglSwapInterval(m_eglDisplay, enable) == EGL_TRUE);
 }
 
 void CEGLContextUtils::SwapBuffers()
@@ -280,5 +290,12 @@ void CEGLContextUtils::SwapBuffers()
     return;
   }
 
-  eglSwapBuffers(m_eglDisplay, m_eglSurface);
+  if (eglSwapBuffers(m_eglDisplay, m_eglSurface) != EGL_TRUE)
+  {
+    // For now we just hard fail if this fails
+    // Theoretically, EGL_CONTEXT_LOST could be handled, but it needs to be checked
+    // whether egl implementations actually use it (mesa does not)
+    CEGLUtils::LogError("eglSwapBuffers failed");
+    throw std::runtime_error("eglSwapBuffers failed");
+  }
 }
