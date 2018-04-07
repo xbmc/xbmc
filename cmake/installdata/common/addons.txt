@@ -1,7 +1,6 @@
 addons/audioencoder.kodi.builtin.aac/*
 addons/audioencoder.kodi.builtin.wma/*
 addons/game.controller.default/*
-addons/kodi.adsp/*
 addons/kodi.audiodecoder/*
 addons/kodi.game/*
 addons/kodi.imagedecoder/*

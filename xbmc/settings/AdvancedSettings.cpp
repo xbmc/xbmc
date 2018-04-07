@@ -454,7 +454,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
   //Make a copy of the AS.xml and hide advancedsettings passwords
   CXBMCTinyXML advancedXMLCopy(advancedXML);
   TiXmlNode *pRootElementCopy = advancedXMLCopy.RootElement();
-  for (const auto& dbname : { "videodatabase", "musicdatabase", "tvdatabase", "adspdatabase", "epgdatabase" })
+  for (const auto& dbname : { "videodatabase", "musicdatabase", "tvdatabase", "epgdatabase" })
   {
     TiXmlNode *db = pRootElementCopy->FirstChild(dbname);
     if (db)

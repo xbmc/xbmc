@@ -31,10 +31,6 @@
   \ingroup cpp_kodi_addon
   */
     /*!
-    \defgroup cpp_kodi_addon_audiodsp Audio DSP
-    \ingroup cpp_kodi_addon_instances
-    */
-    /*!
     \defgroup cpp_kodi_addon_audiodecoder Audio Decoder
     \ingroup cpp_kodi_addon_instances
     */

@@ -29,10 +29,6 @@ class CServiceAddonManager;
 class CRepositoryUpdater;
 }
 
-namespace ActiveAE {
-class CActiveAEDSP;
-}
-
 namespace ANNOUNCEMENT
 {
   class CAnnouncementManager;

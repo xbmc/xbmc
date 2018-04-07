@@ -110,7 +110,6 @@ cmake_install.cmake
 /addons/skin.pm3-hd/media/Textures.xbt
 /addons/audioencoder.*
 /addons/pvr.*
-/addons/adsp.*
 /addons/peripheral.*
 /addons/game.*
 /addons/kodi.binary.global.audioengine/addon.xml
@@ -119,7 +118,6 @@ cmake_install.cmake
 /addons/kodi.binary.global.gui/addon.xml
 /addons/kodi.binary.global.main/addon.xml
 /addons/kodi.binary.global.network/addon.xml
-/addons/kodi.binary.instance.adsp/addon.xml
 /addons/kodi.binary.instance.audiodecoder/addon.xml
 /addons/kodi.binary.instance.audioencoder/addon.xml
 /addons/kodi.binary.instance.game/addon.xml
@@ -344,7 +342,6 @@ cmake_install.cmake
 /portable_data
 
 /pvr-addons
-/adsp-addons
 
 # Doxygen generated files
 /docs/html
