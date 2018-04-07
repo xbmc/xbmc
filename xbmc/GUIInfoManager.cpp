@@ -28,18 +28,15 @@
 
 #include "Application.h"
 #include "FileItem.h"
-#include "GUIUserMessages.h"
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "Util.h"
-#include "addons/AddonManager.h"
 #include "cores/DataCacheCore.h"
 #include "filesystem/File.h"
 #include "guiinfo/GUIInfo.h"
 #include "guiinfo/GUIInfoHelper.h"
 #include "guiinfo/GUIInfoLabels.h"
 #include "guilib/GUIComponent.h"
-#include "guilib/GUIVisualisationControl.h"
 #include "guilib/GUIWindow.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
@@ -6386,29 +6383,6 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   case SKIN_FONT:
     strLabel = CServiceBroker::GetSettings().GetString(CSettings::SETTING_LOOKANDFEEL_FONT);
     break;
-  case VISUALISATION_PRESET:
-    {
-      CGUIMessage msg(GUI_MSG_GET_VISUALISATION, 0, 0);
-      CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
-      if (msg.GetPointer())
-      {
-        CGUIVisualisationControl* viz = static_cast<CGUIVisualisationControl*>(msg.GetPointer());
-        if (viz)
-        {
-          strLabel = viz->GetActivePresetName();
-          URIUtils::RemoveExtension(strLabel);
-        }
-      }
-    }
-    break;
-  case VISUALISATION_NAME:
-    {
-      AddonPtr addon;
-      strLabel = CServiceBroker::GetSettings().GetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION);
-      if (CServiceBroker::GetAddonMgr().GetAddon(strLabel,addon) && addon)
-        strLabel = addon->Name();
-    }
-    break;
   }
 
   return strLabel;
@@ -6498,31 +6472,6 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
 
     switch (condition)
     {
-      case VISUALISATION_LOCKED:
-        {
-          CGUIMessage msg(GUI_MSG_GET_VISUALISATION, 0, 0);
-          CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
-          if (msg.GetPointer())
-          {
-            CGUIVisualisationControl *pVis = static_cast<CGUIVisualisationControl*>(msg.GetPointer());
-            bReturn = pVis->IsLocked();
-          }
-        }
-        break;
-      case VISUALISATION_ENABLED:
-        bReturn = !CServiceBroker::GetSettings().GetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION).empty();
-        break;
-      case VISUALISATION_HAS_PRESETS:
-        {
-          CGUIMessage msg(GUI_MSG_GET_VISUALISATION, 0, 0);
-          CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
-          if (msg.GetPointer())
-          {
-            CGUIVisualisationControl* viz = static_cast<CGUIVisualisationControl*>(msg.GetPointer());
-            bReturn = (viz && viz->HasPresets());
-          }
-        }
-        break;
       default: // default, use integer value different from 0 as true
         {
           int val;

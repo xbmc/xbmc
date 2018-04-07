@@ -38,10 +38,12 @@ CGUIInfoProviders::CGUIInfoProviders()
   RegisterProvider(&m_weatherGUIInfo);
   RegisterProvider(&m_gamesGUIInfo);
   RegisterProvider(&m_systemGUIInfo);
+  RegisterProvider(&m_visualisationGUIInfo);
 }
 
 CGUIInfoProviders::~CGUIInfoProviders()
 {
+  UnregisterProvider(&m_visualisationGUIInfo);
   UnregisterProvider(&m_systemGUIInfo);
   UnregisterProvider(&m_gamesGUIInfo);
   UnregisterProvider(&m_weatherGUIInfo);

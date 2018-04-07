@@ -10,6 +10,7 @@ set(SOURCES GUIInfo.cpp
             PlayerGUIInfo.cpp
             SystemGUIInfo.cpp
             VideoGUIInfo.cpp
+            VisualisationGUIInfo.cpp
             WeatherGUIInfo.cpp)
 
 set(HEADERS GUIInfo.h
@@ -27,6 +28,7 @@ set(HEADERS GUIInfo.h
             PlayerGUIInfo.h
             SystemGUIInfo.h
             VideoGUIInfo.h
+            VisualisationGUIInfo.h
             WeatherGUIInfo.h)
 
 core_add_library(guiinfo)
