@@ -95,11 +95,11 @@ def _versionchecklinux(packages):
                         message_upgrade_success()
                         message_restart()
                     else:
-                        log("Error during upgrade")
+                        log("Abort during upgrade %s" %packages[0],xbmc.LOGERROR)
         else:
-            log("Error: no handler found")
+            log("Error: no handler found",xbmc.LOGERROR)
     else:
-        log("Unsupported platform %s" %platform.dist()[0])
+        log("Unsupported platform %s" %platform.dist()[0],xbmc.LOGERROR)
         sys.exit(0)
 
 
@@ -108,5 +108,5 @@ if (__name__ == "__main__"):
     if ADDON.getSetting("versioncheck_enable") == "false":
         log("Disabled")
     else:
-        log('Version %s started' % ADDONVERSION)
+        log('Version %s started' % ADDONVERSION,xbmc.LOGINFO)
         Main()

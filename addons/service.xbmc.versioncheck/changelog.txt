@@ -1,3 +1,6 @@
+v0.3.28
+-  Improvement of log's traces
+
 v0.3.27
 - Test mandatory password for sudo
 
