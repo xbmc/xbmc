@@ -125,11 +125,25 @@ class CEGLContextUtils final
 {
 public:
   CEGLContextUtils();
+  /**
+   * \param platform platform as constant from an extension building on EGL_EXT_platform_base
+   */
+  CEGLContextUtils(EGLenum platform, std::string const& platformExtension);
   ~CEGLContextUtils();
 
-  bool CreateDisplay(EGLDisplay display,
-                     EGLint renderableType,
-                     EGLint renderingApi);
+  bool CreateDisplay(EGLNativeDisplayType nativeDisplay, EGLint renderableType, EGLint renderingApi);
+  /**
+   * Create EGLDisplay with EGL_EXT_platform_base
+   *
+   * Falls back to \ref CreateDisplay (with nativeDisplayLegacy) on failure.
+   * The native displays to use with the platform-based and the legacy approach
+   * may be defined to have different types and/or semantics, so this function takes
+   * both as separate parameters.
+   *
+   * \param nativeDisplay native display to use with eglGetPlatformDisplayEXT
+   * \param nativeDisplayLegacy native display to use with eglGetDisplay
+   */
+  bool CreatePlatformDisplay(void* nativeDisplay, EGLNativeDisplayType nativeDisplayLegacy, EGLint renderableType, EGLint renderingApi);
 
   bool CreateSurface(EGLNativeWindowType surface);
   bool CreateContext(const EGLint* contextAttribs);
@@ -138,8 +152,14 @@ public:
   void Detach();
   bool SetVSync(bool enable);
   void SwapBuffers();
+  bool IsPlatformSupported() const;
 
+  bool InitializeDisplay(EGLint renderableType, EGLint renderingApi);
   void SurfaceAttrib();
+
+  EGLenum m_platform{EGL_NONE};
+  bool m_platformSupported{false};
+
   EGLDisplay m_eglDisplay{EGL_NO_DISPLAY};
   EGLSurface m_eglSurface{EGL_NO_SURFACE};
   EGLContext m_eglContext{EGL_NO_CONTEXT};

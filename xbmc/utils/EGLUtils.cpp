@@ -72,34 +72,60 @@ CEGLContextUtils::CEGLContextUtils()
 {
 }
 
+CEGLContextUtils::CEGLContextUtils(EGLenum platform, std::string const& platformExtension)
+: m_platform{platform}
+{
+  m_platformSupported = CEGLUtils::HasClientExtension("EGL_EXT_platform_base") && CEGLUtils::HasClientExtension(platformExtension);
+}
+
+bool CEGLContextUtils::IsPlatformSupported() const
+{
+  return m_platformSupported;
+}
+
 CEGLContextUtils::~CEGLContextUtils()
 {
   Destroy();
 }
 
-bool CEGLContextUtils::CreateDisplay(EGLDisplay display,
-                                     EGLint renderableType,
-                                     EGLint renderingApi)
+bool CEGLContextUtils::CreateDisplay(EGLNativeDisplayType nativeDisplay, EGLint renderableType, EGLint renderingApi)
 {
   if (m_eglDisplay != EGL_NO_DISPLAY)
   {
     throw std::logic_error("Do not call CreateDisplay when display has already been created");
   }
 
-#if defined(EGL_EXT_platform_base) && defined(EGL_KHR_platform_gbm) && defined(HAVE_GBM)
-  if (m_eglDisplay == EGL_NO_DISPLAY &&
-      CEGLUtils::HasExtension(EGL_NO_DISPLAY, "EGL_EXT_platform_base") &&
-      CEGLUtils::HasExtension(EGL_NO_DISPLAY, "EGL_KHR_platform_gbm"))
+  m_eglDisplay = eglGetDisplay(nativeDisplay);
+  if (m_eglDisplay == EGL_NO_DISPLAY)
   {
-    PFNEGLGETPLATFORMDISPLAYEXTPROC getPlatformDisplayEXT = (PFNEGLGETPLATFORMDISPLAYEXTPROC)eglGetProcAddress("eglGetPlatformDisplayEXT");
-    if (getPlatformDisplayEXT)
-    {
-      m_eglDisplay = getPlatformDisplayEXT(EGL_PLATFORM_GBM_KHR, (EGLNativeDisplayType)display, NULL);
-    }
+    CEGLUtils::LogError("failed to get EGL display");
+    return false;
+  }
+
+  return InitializeDisplay(renderableType, renderingApi);
+}
+
+bool CEGLContextUtils::CreatePlatformDisplay(void* nativeDisplay, EGLNativeDisplayType nativeDisplayLegacy, EGLint renderableType, EGLint renderingApi)
+{
+  if (m_eglDisplay != EGL_NO_DISPLAY)
+  {
+    throw std::logic_error("Do not call CreateDisplay when display has already been created");
+  }
+
+#if defined(EGL_EXT_platform_base)
+  if (IsPlatformSupported())
+  {
+    // Theoretically it is possible to use eglGetDisplay() and eglCreateWindowSurface,
+    // but then the EGL library basically has to guess which platform we want
+    // if it supports multiple which is usually the case -
+    // it's better and safer to make it explicit
+
+    auto getPlatformDisplayEXT = CEGLUtils::GetRequiredProcAddress<PFNEGLGETPLATFORMDISPLAYEXTPROC>("eglGetPlatformDisplayEXT");
+    m_eglDisplay = getPlatformDisplayEXT(m_platform, nativeDisplay, nullptr);
 
     if (m_eglDisplay == EGL_NO_DISPLAY)
     {
-      CEGLUtils::LogError("Failed to get EGL platform display");
+      CEGLUtils::LogError("failed to get platform display");
       return false;
     }
   }
@@ -107,15 +133,13 @@ bool CEGLContextUtils::CreateDisplay(EGLDisplay display,
 
   if (m_eglDisplay == EGL_NO_DISPLAY)
   {
-    m_eglDisplay = eglGetDisplay((EGLNativeDisplayType)display);
+    return CreateDisplay(nativeDisplayLegacy, renderableType, renderingApi);
   }
+  return InitializeDisplay(renderableType, renderingApi);
+}
 
-  if (m_eglDisplay == EGL_NO_DISPLAY)
-  {
-    CEGLUtils::LogError("failed to get EGL display");
-    return false;
-  }
-
+bool CEGLContextUtils::InitializeDisplay(EGLint renderableType, EGLint renderingApi)
+{
   int major, minor;
   if (!eglInitialize(m_eglDisplay, &major, &minor))
   {

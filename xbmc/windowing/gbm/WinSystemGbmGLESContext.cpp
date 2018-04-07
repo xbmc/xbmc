@@ -33,7 +33,15 @@
 #include "OptionalsReg.h"
 #include "utils/log.h"
 
+#include <gbm.h>
+#include <EGL/egl.h>
+#include <EGL/eglext.h>
+
 using namespace KODI;
+
+CWinSystemGbmGLESContext::CWinSystemGbmGLESContext()
+: m_pGLContext{EGL_PLATFORM_GBM_MESA, "EGL_MESA_platform_gbm"}
+{}
 
 std::unique_ptr<CWinSystemBase> CWinSystemBase::CreateWinSystem()
 {
@@ -53,9 +61,7 @@ bool CWinSystemGbmGLESContext::InitWindowSystem()
     return false;
   }
 
-  if (!m_pGLContext.CreateDisplay(m_GBM->GetDevice(),
-                                  EGL_OPENGL_ES2_BIT,
-                                  EGL_OPENGL_ES_API))
+  if (!m_pGLContext.CreatePlatformDisplay(m_GBM->GetDevice(), m_GBM->GetDevice(), EGL_OPENGL_ES2_BIT, EGL_OPENGL_ES_API))
   {
     return false;
   }
