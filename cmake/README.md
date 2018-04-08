@@ -113,6 +113,8 @@ cmake --build . -- VERBOSE=1 -j$(nproc)  # or: make VERBOSE=1 -j$(nproc)
 ```
 
 ### Windows with Visual Studio project files
+These instructions are for Visual Studio 2015. If you want to build for Visal Studio 2017, you need to target `Visual Studio 15` instead of `Visual Studio 14`.
+
 #### Build for win32
 ```
 cmake -G "Visual Studio 14" <KODI_SRC>
