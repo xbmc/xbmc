@@ -24,7 +24,15 @@ msgctxt "#32002"
 msgid "Visit Kodi.tv for more information."
 msgstr ""
 
-#empty strings from id 32003 to 32008
+#empty strings from id 32003 to 32006
+
+msgctxt "#32007"
+msgid "Check kodi upgrade available."
+msgstr ""
+
+msgctxt "#32008"
+msgid "Check system upgrade available."
+msgstr ""
 
 msgctxt "#32009"
 msgid "Would you like to remove this reminder?"
@@ -58,7 +66,17 @@ msgctxt "#32016"
 msgid "There is a newer stable Kodi version available."
 msgstr ""
 
-#empty strings from id 32017 to 32019
+msgctxt "#32017"
+msgid "Do you want to system restart to finish the upgrade?"
+msgstr ""
+
+msgctxt "#32018"
+msgid "Updates are available for the system, do you want to upgrade now?"
+msgstr ""
+
+msgctxt "#32019"
+msgid "Updates are available for the system."
+msgstr ""
 
 msgctxt "#32020"
 msgid "General"
@@ -80,7 +98,21 @@ msgctxt "#32024"
 msgid "Linux: Upgrade using apt"
 msgstr ""
 
-#empty strings from id 32025 to 32029
+msgctxt "#32025"
+msgid "Use sudo"
+msgstr ""
+
+msgctxt "#32027"
+msgid "Already on newest version for kodi."
+msgstr ""
+
+msgctxt "#32028"
+msgid "No system update available."
+msgstr ""
+
+msgctxt "#32029"
+msgid "Abort during upgrade."
+msgstr ""
 
 #. Used in OK dialog
 msgctxt "#32030"
@@ -110,4 +142,12 @@ msgstr ""
 #. Used in OK dialog
 msgctxt "#32035"
 msgid "It is recommended that you to upgrade to a newer version."
+msgstr ""
+
+msgctxt "#32037"
+msgid "Do you want checking updates?"
+msgstr ""
+
+msgctxt "#32038"
+msgid "Autoremove old packages"
 msgstr ""

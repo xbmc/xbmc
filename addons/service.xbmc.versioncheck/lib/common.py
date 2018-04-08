@@ -16,8 +16,9 @@
 #    along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 import sys
-
 import os
+import unicodedata
+
 import xbmc
 import xbmcaddon
 import xbmcgui
@@ -58,14 +59,14 @@ def localise(id):
     string = normalize_string(ADDON.getLocalizedString(id))
     return string
 
-def log(txt):
+def log(txt,level_log=xbmc.LOGDEBUG):
     if sys.version_info[0] >= 3:
-        message = '%s: %s' % ("Version Check", txt.encode('utf-8'))
+        message = '{} v{}: {}'.format(ADDONNAME,ADDONVERSION, txt).encode("utf-8")
     else:
         if isinstance (txt,str):
-            txt = txt.decode("utf-8")
-        message = (u'%s: %s' % ("Version Check", txt)).encode("utf-8")
-    xbmc.log(msg=message, level=xbmc.LOGDEBUG)
+            txt = txt.decode("utf-8") 
+        message =(u'{} v{}: {}'.format(ADDONNAME,ADDONVERSION, txt)).encode("utf-8")
+    xbmc.log(msg=message, level=level_log)
 
 def get_password_from_user():
     keyboard = xbmc.Keyboard("", ADDONNAME + "," +localise(32022), True)
@@ -84,24 +85,16 @@ def message_restart():
     if dialog_yesno(32014):
         xbmc.executebuiltin("RestartApp")
 
+def message_restart_system():
+    if dialog_yesno(32017):
+        xbmc.executebuiltin("Reboot")
+
 def dialog_yesno(line1 = 0, line2 = 0):
     return xbmcgui.Dialog().yesno(ADDONNAME,
                                   localise(line1),
                                   localise(line2))
 
-def upgrade_message(msg, oldversion, upgrade, msg_current, msg_available):
-    wait_for_end_of_video()
-
-    if ADDON.getSetting("lastnotified_version") < ADDONVERSION:
-        xbmcgui.Dialog().ok(ADDONNAME,
-                    localise(msg),
-                    localise(32001),
-                    localise(32002))
-        #ADDON.setSetting("lastnotified_version", ADDONVERSION)
-    else:
-        log("Already notified one time for upgrading.")
-
-def upgrade_message2( version_installed, version_available, version_stable, oldversion, upgrade,):
+def upgrade_message( version_installed, version_available, version_stable, oldversion, upgrade,):
     # shorten releasecandidate to rc
     if version_installed['tag'] == 'releasecandidate':
         version_installed['tag'] = 'rc'
@@ -115,8 +108,6 @@ def upgrade_message2( version_installed, version_available, version_stable, oldv
     msg_available = version_available['major'] + '.' + version_available['minor'] + ' ' + version_available['tag'] + version_available.get('tagversion','')
     msg_stable = version_stable['major'] + '.' + version_stable['minor'] + ' ' + version_stable['tag'] + version_stable.get('tagversion','')
     msg = localise(32034) %(msg_current, msg_available)
-
-    wait_for_end_of_video()
 
     # hack: convert current version number to stable string
     # so users don't get notified again. remove in future
