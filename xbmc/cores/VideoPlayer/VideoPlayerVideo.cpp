@@ -229,6 +229,7 @@ void CVideoPlayerVideo::OpenStream(CDVDStreamInfo &hint, CDVDVideoCodec* codec)
   m_rewindStalled = false;
   m_packets.clear();
   m_syncState = IDVDStreamPlayer::SYNC_STARTING;
+  m_renderManager.ShowVideo(false);
 }
 
 void CVideoPlayerVideo::CloseStream(bool bWaitForBuffers)
@@ -421,6 +422,7 @@ void CVideoPlayerVideo::Process()
       m_syncState = IDVDStreamPlayer::SYNC_INSYNC;
       m_droppingStats.Reset();
       m_rewindStalled = false;
+      m_renderManager.ShowVideo(true);
 
       CLog::Log(LOGDEBUG, "CVideoPlayerVideo - CDVDMsg::GENERAL_RESYNC(%f)", pts);
     }
@@ -441,6 +443,7 @@ void CVideoPlayerVideo::Process()
       m_packets.clear();
       m_droppingStats.Reset();
       m_syncState = IDVDStreamPlayer::SYNC_STARTING;
+      m_renderManager.ShowVideo(false);
       m_rewindStalled = false;
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_FLUSH)) // private message sent by (CVideoPlayerVideo::Flush())
@@ -465,7 +468,10 @@ void CVideoPlayerVideo::Process()
 
       m_stalled = true;
       if (sync)
+      {
         m_syncState = IDVDStreamPlayer::SYNC_STARTING;
+        m_renderManager.ShowVideo(false);
+      }
 
       m_renderManager.DiscardBuffer();
     }
