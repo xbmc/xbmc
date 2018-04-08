@@ -284,6 +284,8 @@ public:
 
   void UpdateLibraries();
 
+  void UpdateCurrentPlayArt();
+
   bool ExecuteXBMCAction(std::string action, const CGUIListItemPtr &item = NULL);
 
   bool OnEvent(XBMC_Event& newEvent);

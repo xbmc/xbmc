@@ -120,7 +120,7 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
             m_viewControl.SetSelectedItem(i);
             i = -1;
             if (url.GetOption("showinfo") == "true")
-              OnItemInfo(pItem.get(), true);
+              OnItemInfo(i);
             break;
           }
         }

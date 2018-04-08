@@ -100,7 +100,7 @@ namespace XBMCAddon
       }
       else if (listitem->item->HasMusicInfoTag())
       {
-        CGUIDialogMusicInfo::ShowFor(*listitem->item);
+        CGUIDialogMusicInfo::ShowFor(listitem->item.get());
         return true;
       }
       return false;

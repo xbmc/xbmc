@@ -1424,6 +1424,75 @@ bool CMusicDatabase::DeleteArtistDiscography(int idArtist)
   return ExecuteQuery(strSQL);
 }
 
+bool CMusicDatabase::GetArtistDiscography(int idArtist, CFileItemList& items)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    // Combine entries from discography and album tables
+    // When title in both, album entry will be before disco entry
+    std::string strSQL;
+    strSQL = PrepareSQL("SELECT strAlbum, "
+      "CAST(discography.strYear as INT) AS iYear, -1 AS idAlbum "
+      "FROM discography "
+      "WHERE discography.idArtist = %i "
+      "UNION "
+      "SELECT strAlbum, iYear, album.idAlbum "
+      "FROM album JOIN album_artist ON album_artist.idAlbum = album.idAlbum "
+      "WHERE album_artist.idArtist = %i "
+      "ORDER BY iYear, strAlbum, idAlbum DESC",       
+      idArtist, idArtist);
+
+    if (!m_pDS->query(strSQL))
+      return false;
+    int iRowsFound = m_pDS->num_rows();
+    if (iRowsFound == 0)
+    {
+      m_pDS->close();
+      return true;
+    }
+
+    std::string strAlbum;
+    std::string strLastAlbum;
+    int iLastID = -1;
+    while (!m_pDS->eof())
+    {
+      int idAlbum = m_pDS->fv("idAlbum").get_asInt();
+      strAlbum = m_pDS->fv("strAlbum").get_asString();
+      if (!strAlbum.empty())
+      {
+        if (strAlbum.compare(strLastAlbum) != 0)
+        { // Save new title (from album or discography)
+          CFileItemPtr pItem(new CFileItem(strAlbum));
+          pItem->SetLabel2(m_pDS->fv("iYear").get_asString());
+          pItem->GetMusicInfoTag()->SetDatabaseId(idAlbum, "album");
+
+          items.Add(pItem);
+          strLastAlbum = strAlbum;
+          iLastID = idAlbum;
+        }
+        else if (idAlbum > 0 && iLastID < 0)
+        { // Amend previously saved discography item to set album ID
+          items[items.Size() - 1]->GetMusicInfoTag()->SetDatabaseId(idAlbum, "album");
+        }
+      }
+      m_pDS->next();
+    }
+
+    // cleanup
+    m_pDS->close();
+
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+  }
+  return false;
+}
+
 int CMusicDatabase::AddRole(const std::string &strRole)
 {
   int idRole = -1;
@@ -5456,20 +5525,6 @@ bool CMusicDatabase::GetAlbumPath(int idAlbum, std::string &basePath)
   return false;
 }
 
-bool CMusicDatabase::SaveAlbumThumb(int idAlbum, const std::string& strThumb)
-{
-  SetArtForItem(idAlbum, MediaTypeAlbum, "thumb", strThumb);
-  //! @todo We should prompt the user to update the art for songs
-  std::string sql = PrepareSQL("UPDATE art"
-                              " SET url='-'"
-                              " WHERE media_type='song'"
-                              " AND type='thumb'"
-                              " AND media_id IN"
-                              " (SELECT idSong FROM song WHERE idAlbum=%ld)", idAlbum);
-  ExecuteQuery(sql);
-  return true;
-}
-
 // Get old "artist path" - where artist.nfo and art was located v17 and below.
 // It is the path common to all albums by an (album) artist, but ensure it is unique 
 // to that artist and not shared with other artists. Previously this caused incorrect nfo 
@@ -5755,6 +5810,25 @@ bool CMusicDatabase::GetArtistFromSong(int idSong, CArtist &artist)
     CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
   }
   return false;
+}
+
+bool CMusicDatabase::IsSongArtist(int idSong, int idArtist)
+{
+  std::string strSQL = PrepareSQL(
+    "SELECT 1 FROM song_artist "
+    "WHERE song_artist.idSong= %i AND "
+    "song_artist.idArtist = %i AND song_artist.idRole = 1",
+    idSong, idArtist);
+  return GetSingleValue(strSQL).empty(); 
+}
+
+bool CMusicDatabase::IsSongAlbumArtist(int idSong, int idArtist)
+{
+  std::string strSQL = PrepareSQL(
+    "SELECT 1 FROM song JOIN album_artist ON song.idAlbum = album_artist.idAlbum "   
+    "WHERE song.idSong = %i AND album_artist.idArtist = %i",
+    idSong, idArtist);
+  return GetSingleValue(strSQL).empty();
 }
 
 int CMusicDatabase::GetAlbumByName(const std::string& strAlbum, const std::string& strArtist)

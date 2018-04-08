@@ -4,7 +4,7 @@
 */
 #pragma once
 /*
- *      Copyright (C) 2005-2013 Team XBMC
+ *      Copyright (C) 2005-2018 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -48,9 +48,8 @@ public:
   bool OnAction(const CAction &action) override;
   bool OnBack(int actionID) override;
 
-  void OnItemInfo(CFileItem *pItem, bool bShowInfo = false);
-
   void DoScan(const std::string &strPath, bool bRescan = false);
+  void RefreshContent(const std::string& strContent);
 
   /*! \brief Prompt the user if he wants to start a scan for this folder
   \param path the path to assign content for
@@ -89,20 +88,12 @@ protected:
   bool OnPlayMedia(int iItem, const std::string &player = "") override;
 
   void RetrieveMusicInfo();
-  void OnItemInfo(int iItem, bool bShowInfo = true);
+  void OnItemInfo(int iItem);
   void OnItemInfoAll(const std::string strPath, bool refresh = false);
   virtual void OnQueueItem(int iItem);
   enum ALLOW_SELECTION { SELECTION_ALLOWED = 0, SELECTION_AUTO, SELECTION_FORCED };
-  bool FindAlbumInfo(const CFileItem* album, MUSIC_GRABBER::CMusicAlbumInfo& albumInfo, ALLOW_SELECTION allowSelection);
-  bool FindArtistInfo(const CFileItem* artist, MUSIC_GRABBER::CMusicArtistInfo& artistInfo, ALLOW_SELECTION allowSelection);
-
-  bool ShowAlbumInfo(const CFileItem *pItem, bool bShowInfo = true);
-  void ShowArtistInfo(const CFileItem *pItem, bool bShowInfo = true);
-  void ShowSongInfo(CFileItem* pItem);
-  void UpdateThumb(const CAlbum &album, const std::string &path);
-
+  
   void OnRipTrack(int iItem);
-  void OnSearch();
   void LoadPlayList(const std::string& strPlayList) override;
   virtual void OnRemoveSource(int iItem);
 
