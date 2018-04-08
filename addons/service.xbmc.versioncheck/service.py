@@ -22,7 +22,6 @@ import xbmc
 import xbmcgui
 import lib.common
 from lib.common import log, dialog_yesno, localise, wait_for_end_of_video
-from lib.common import upgrade_message as _upgrademessage
 
 ADDON        = lib.common.ADDON
 ADDONVERSION = lib.common.ADDONVERSION
@@ -50,6 +49,7 @@ class Main:
         # initial vars
         from lib.jsoninterface import get_installedversion, get_versionfilelist
         from lib.versions import compare_version
+        from lib.common import upgrade_message
         # retrieve versionlists from supplied version file
         versionlist = get_versionfilelist()
         # retrieve version installed
@@ -57,7 +57,7 @@ class Main:
         # copmpare installed and available
         oldversion, version_installed, version_available, version_stable = compare_version(version_installed, versionlist)
         if oldversion:
-            self._upgrademessage( version_installed, version_available, version_stable, oldversion, False)
+          upgrade_message( version_installed, version_available, version_stable, oldversion, False)
         dialogbg.update(100,'Version Check',localise(32027))
 
     def _versionchecklinux(self,packages):
@@ -83,7 +83,7 @@ class Main:
                         dialogbg.update(20,'Version Check',localise(32016))
                         result = handler.upgrade_package(packages[0])
                         if result:
-                            from lib.common import message_upgrade_success, message_restart_app
+                            from lib.common import message_upgrade_success, message_restart
                             dialogbg.update(20,'Version Check',localise(32013))
                             message_upgrade_success()
                             message_restart()
