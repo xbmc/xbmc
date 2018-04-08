@@ -1620,7 +1620,6 @@ bool CApplication::LoadSkin(const std::string& skinID)
   CLog::Log(LOGINFO, "  initialize new skin...");
   CServiceBroker::GetGUI()->GetWindowManager().AddMsgTarget(this);
   CServiceBroker::GetGUI()->GetWindowManager().AddMsgTarget(&CServiceBroker::GetPlaylistPlayer());
-  CServiceBroker::GetGUI()->GetWindowManager().AddMsgTarget(&g_infoManager);
   CServiceBroker::GetGUI()->GetWindowManager().AddMsgTarget(&g_fontManager);
   CServiceBroker::GetGUI()->GetWindowManager().SetCallback(*this);
   //@todo should be done by GUIComponents

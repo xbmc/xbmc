@@ -20,12 +20,12 @@
 #pragma once
 
 #include <map>
+#include <memory>
 #include <set>
 #include <string>
 #include <vector>
 
 #include "guiinfo/GUIInfoProviders.h"
-#include "guilib/IMsgTargetCallback.h"
 #include "interfaces/info/InfoBool.h"
 #include "interfaces/info/SkinVariable.h"
 #include "messaging/IMessageTarget.h"
@@ -34,6 +34,9 @@
 
 class CFileItem;
 class CVideoInfoTag;
+
+class CGUIListItem;
+typedef std::shared_ptr<CGUIListItem> CGUIListItemPtr;
 
 namespace GUIINFO
 {
@@ -53,15 +56,13 @@ namespace MUSIC_INFO
  \ingroup strings
  \brief
  */
-class CGUIInfoManager : public IMsgTargetCallback, public Observable,
-                        public KODI::MESSAGING::IMessageTarget
+class CGUIInfoManager : public Observable, public KODI::MESSAGING::IMessageTarget
 {
 public:
   CGUIInfoManager(void);
   ~CGUIInfoManager(void) override;
 
   void Clear();
-  bool OnMessage(CGUIMessage &message) override;
 
   int GetMessageMask() override;
   void OnApplicationMessage(KODI::MESSAGING::ThreadMessage* pMsg) override;
