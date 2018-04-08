@@ -24,7 +24,7 @@
 #include "Application.h"
 #include "GUIInfoManager.h"
 #include "SeekHandler.h"
-#include "guiinfo/GUIInfoLabels.h"
+#include "guilib/guiinfo/GUIInfoLabels.h"
 
 #define POPUP_SEEK_PROGRESS           401
 #define POPUP_SEEK_EPG_EVENT_PROGRESS 402

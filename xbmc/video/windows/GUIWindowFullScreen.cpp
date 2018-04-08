@@ -44,7 +44,7 @@
 #include "XBDateTime.h"
 #include "windowing/WinSystem.h"
 #include "cores/IPlayer.h"
-#include "guiinfo/GUIInfoLabels.h"
+#include "guilib/guiinfo/GUIInfoLabels.h"
 #include "video/ViewModeSettings.h"
 
 #include <stdio.h>

@@ -23,7 +23,7 @@
 
 #include "PictureInfoTag.h"
 #include "XBDateTime.h"
-#include "guiinfo/GUIInfoLabels.h"
+#include "guilib/guiinfo/GUIInfoLabels.h"
 #include "utils/Variant.h"
 #include "utils/CharsetConverter.h"
 #include "utils/StringUtils.h"

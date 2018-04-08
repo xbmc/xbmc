@@ -65,7 +65,7 @@
 #include "utils/Variant.h"
 #include "URL.h"
 #include "music/infoscanner/MusicInfoScanner.h"
-#include "guiinfo/GUIInfoLabels.h"
+#include "guilib/guiinfo/GUIInfoLabels.h"
 #include "cores/IPlayer.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "CueDocument.h"

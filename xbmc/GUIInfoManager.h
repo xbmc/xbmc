@@ -25,7 +25,7 @@
 #include <string>
 #include <vector>
 
-#include "guiinfo/GUIInfoProviders.h"
+#include "guilib/guiinfo/GUIInfoProviders.h"
 #include "interfaces/info/InfoBool.h"
 #include "interfaces/info/SkinVariable.h"
 #include "messaging/IMessageTarget.h"
@@ -38,10 +38,16 @@ class CVideoInfoTag;
 class CGUIListItem;
 typedef std::shared_ptr<CGUIListItem> CGUIListItemPtr;
 
+namespace KODI
+{
+namespace GUILIB
+{
 namespace GUIINFO
 {
   class CGUIInfo;
   class IGUIInfoProvider;
+}
+}
 }
 namespace INFO
 {
@@ -134,17 +140,17 @@ public:
   /*! \brief register a guiinfo provider
    \param the guiinfo provider to register
    */
-  void RegisterInfoProvider(GUIINFO::IGUIInfoProvider *provider);
+  void RegisterInfoProvider(KODI::GUILIB::GUIINFO::IGUIInfoProvider *provider);
 
   /*! \brief unregister a guiinfo provider
    \param the guiinfo provider to unregister
    */
-  void UnregisterInfoProvider(GUIINFO::IGUIInfoProvider *provider);
+  void UnregisterInfoProvider(KODI::GUILIB::GUIINFO::IGUIInfoProvider *provider);
 
   /*! \brief get access to the registered guiinfo providers
    \return the guiinfo providers
    */
-  GUIINFO::CGUIInfoProviders& GetInfoProviders() { return m_infoProviders; }
+  KODI::GUILIB::GUIINFO::CGUIInfoProviders& GetInfoProviders() { return m_infoProviders; }
 
 private:
   /*! \brief class for holding information on properties
@@ -179,22 +185,22 @@ private:
   int TranslateMusicPlayerString(const std::string &info) const;
   static TIME_FORMAT TranslateTimeFormat(const std::string &format);
 
-  std::string GetMultiInfoLabel(const GUIINFO::CGUIInfo &info, int contextWindow = 0, std::string *fallback = nullptr) const;
-  bool GetMultiInfoInt(int &value, const GUIINFO::CGUIInfo &info, int contextWindow = 0) const;
-  bool GetMultiInfoBool(const GUIINFO::CGUIInfo &info, int contextWindow = 0, const CGUIListItem *item = nullptr);
+  std::string GetMultiInfoLabel(const KODI::GUILIB::GUIINFO::CGUIInfo &info, int contextWindow = 0, std::string *fallback = nullptr) const;
+  bool GetMultiInfoInt(int &value, const KODI::GUILIB::GUIINFO::CGUIInfo &info, int contextWindow = 0) const;
+  bool GetMultiInfoBool(const KODI::GUILIB::GUIINFO::CGUIInfo &info, int contextWindow = 0, const CGUIListItem *item = nullptr);
 
-  std::string GetMultiInfoItemLabel(const CFileItem *item, int contextWindow, const GUIINFO::CGUIInfo &info, std::string *fallback = nullptr) const;
-  std::string GetMultiInfoItemImage(const CFileItem *item, int contextWindow, const GUIINFO::CGUIInfo &info, std::string *fallback = nullptr) const;
+  std::string GetMultiInfoItemLabel(const CFileItem *item, int contextWindow, const KODI::GUILIB::GUIINFO::CGUIInfo &info, std::string *fallback = nullptr) const;
+  std::string GetMultiInfoItemImage(const CFileItem *item, int contextWindow, const KODI::GUILIB::GUIINFO::CGUIInfo &info, std::string *fallback = nullptr) const;
 
   std::string GetSkinVariableString(int info, bool preferImage = false, const CGUIListItem *item = nullptr) const;
 
-  int AddMultiInfo(const GUIINFO::CGUIInfo &info);
+  int AddMultiInfo(const KODI::GUILIB::GUIINFO::CGUIInfo &info);
 
   void SetCurrentSongTag(const MUSIC_INFO::CMusicInfoTag &tag);
   void SetCurrentVideoTag(const CVideoInfoTag &tag);
 
   // Vector of multiple information mapped to a single integer lookup
-  std::vector<GUIINFO::CGUIInfo> m_multiInfo;
+  std::vector<KODI::GUILIB::GUIINFO::CGUIInfo> m_multiInfo;
 
   // Current playing stuff
   CFileItem* m_currentFile;
@@ -206,7 +212,7 @@ private:
 
   CCriticalSection m_critInfo;
 
-  GUIINFO::CGUIInfoProviders m_infoProviders;
+  KODI::GUILIB::GUIINFO::CGUIInfoProviders m_infoProviders;
 };
 
 /*!

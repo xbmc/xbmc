@@ -28,7 +28,7 @@
 #include "ServiceBroker.h"
 #include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
 #include "filesystem/SpecialProtocol.h"
-#include "guiinfo/GUIInfoLabels.h"
+#include "guilib/guiinfo/GUIInfoLabels.h"
 #include "input/Key.h"
 #include "music/tags/MusicInfoTag.h"
 #include "settings/AdvancedSettings.h"

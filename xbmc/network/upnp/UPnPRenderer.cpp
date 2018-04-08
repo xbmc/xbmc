@@ -45,7 +45,7 @@
 #include "utils/StringUtils.h"
 #include "playlists/PlayList.h"
 #include "GUIUserMessages.h"
-#include "guiinfo/GUIInfoLabels.h"
+#include "guilib/guiinfo/GUIInfoLabels.h"
 
 NPT_SET_LOCAL_LOGGER("xbmc.upnp.renderer")
 

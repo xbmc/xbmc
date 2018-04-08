@@ -27,9 +27,9 @@
 #include "GUIInfoManager.h"
 #include "ServiceBroker.h"
 #include "cores/DataCacheCore.h"
-#include "guiinfo/GUIInfo.h"
-#include "guiinfo/GUIInfoHelper.h"
-#include "guiinfo/GUIInfoLabels.h"
+#include "guilib/guiinfo/GUIInfo.h"
+#include "guilib/guiinfo/GUIInfoHelper.h"
+#include "guilib/guiinfo/GUIInfoLabels.h"
 #include "guilib/LocalizeStrings.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
@@ -48,7 +48,7 @@
 #include "pvr/timers/PVRTimers.h"
 
 using namespace PVR;
-using namespace GUIINFO;
+using namespace KODI::GUILIB::GUIINFO;
 
 CPVRGUIInfo::CPVRGUIInfo(void) :
     CThread("PVRGUIInfo")

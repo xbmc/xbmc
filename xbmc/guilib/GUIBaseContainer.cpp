@@ -32,7 +32,7 @@
 #include "utils/XBMCTinyXML.h"
 #include "listproviders/IListProvider.h"
 #include "settings/Settings.h"
-#include "guiinfo/GUIInfoLabels.h"
+#include "guilib/guiinfo/GUIInfoLabels.h"
 
 #define HOLD_TIME_START 100
 #define HOLD_TIME_END   3000

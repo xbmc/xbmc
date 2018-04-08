@@ -17,8 +17,8 @@ xbmc/commons                                    commons
 xbmc/dbwrappers                                 dbwrappers
 xbmc/dialogs                                    dialogs
 xbmc/favourites                                 favourites
-xbmc/guiinfo                                    guiinfo
 xbmc/guilib                                     guilib
+xbmc/guilib/guiinfo                             guilib_guiinfo
 xbmc/input                                      input
 xbmc/input/joysticks                            input/joysticks
 xbmc/input/joysticks/dialogs                    input/joysticks/dialogs

@@ -79,7 +79,7 @@
 
 #include "ServiceBroker.h"
 #include "GUIInfoManager.h"
-#include "guiinfo/GUIInfoLabels.h"
+#include "guilib/guiinfo/GUIInfoLabels.h"
 #include "platform/android/activity/IInputDeviceCallbacks.h"
 #include "platform/android/activity/IInputDeviceEventHandler.h"
 #include "input/mouse/MouseStat.h"

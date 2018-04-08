@@ -33,9 +33,9 @@
 #include "Util.h"
 #include "cores/DataCacheCore.h"
 #include "filesystem/File.h"
-#include "guiinfo/GUIInfo.h"
-#include "guiinfo/GUIInfoHelper.h"
-#include "guiinfo/GUIInfoLabels.h"
+#include "guilib/guiinfo/GUIInfo.h"
+#include "guilib/guiinfo/GUIInfoHelper.h"
+#include "guilib/guiinfo/GUIInfoLabels.h"
 #include "input/WindowTranslator.h"
 #include "interfaces/AnnouncementManager.h"
 #include "interfaces/info/InfoExpression.h"
@@ -46,7 +46,8 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
-using namespace GUIINFO;
+using namespace KODI::GUILIB;
+using namespace KODI::GUILIB::GUIINFO;
 using namespace INFO;
 using namespace MUSIC_INFO;
 
@@ -6340,8 +6341,9 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   }
   else if (info >= LISTITEM_START && info <= LISTITEM_END)
   {
-    const CFileItemPtr item = CGUIInfoHelper::GetCurrentListItemFromWindow(contextWindow);
-    return GetItemLabel(item.get(), contextWindow, info, fallback);
+    const CGUIListItemPtr item = GUIINFO::GetCurrentListItem(contextWindow);
+    if (item && item->IsFileItem())
+      return GetItemLabel(static_cast<CFileItem*>(item.get()), contextWindow, info, fallback);
   }
 
   std::string strLabel;
@@ -6357,9 +6359,12 @@ bool CGUIInfoManager::GetInt(int &value, int info, int contextWindow, const CGUI
   }
   else if (info >= LISTITEM_START && info <= LISTITEM_END)
   {
+    CGUIListItemPtr itemPtr;
     if (!item)
-      item = CGUIInfoHelper::GetCurrentListItemFromWindow(contextWindow).get();
-
+    {
+      itemPtr = GUIINFO::GetCurrentListItem(contextWindow);
+      item = itemPtr.get();
+    }
     return GetItemInt(value, item, contextWindow, info);
   }
 
@@ -6404,13 +6409,13 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
 
   if (condition >= LISTITEM_START && condition < LISTITEM_END)
   {
-    if (item)
-      bReturn = GetItemBool(item, contextWindow, condition);
-    else
+    CGUIListItemPtr itemPtr;
+    if (!item)
     {
-      const CFileItemPtr item = CGUIInfoHelper::GetCurrentListItemFromWindow(contextWindow);
-      bReturn = GetItemBool(item.get(), contextWindow, condition);
+      itemPtr = GUIINFO::GetCurrentListItem(contextWindow);
+      item = itemPtr.get();
     }
+    bReturn = GetItemBool(item, contextWindow, condition);
   }
   else if (condition >= MULTI_INFO_START && condition <= MULTI_INFO_END)
   {
@@ -6433,13 +6438,22 @@ bool CGUIInfoManager::GetMultiInfoBool(const CGUIInfo &info, int contextWindow, 
 
   if (condition >= LISTITEM_START && condition <= LISTITEM_END)
   {
+    CGUIListItemPtr itemPtr;
     if (!item)
-      item = CGUIInfoHelper::GetListItemFromActiveContainer(info.GetData1(), contextWindow, info.GetData2(), info.GetInfoFlag()).get();
+    {
+      itemPtr = GUIINFO::GetCurrentListItem(contextWindow, info.GetData1(), info.GetData2(), info.GetInfoFlag());
+      item = itemPtr.get();
+    }
     if (item)
+    {
       bReturn = GetItemBool(item, contextWindow, condition);
+    }
+    else
+    {
+      bReturn = false;
+    }
   }
-
-  if (!m_infoProviders.GetBool(bReturn, m_currentFile, contextWindow, info))
+  else if (!m_infoProviders.GetBool(bReturn, m_currentFile, contextWindow, info))
   {
     switch (condition)
     {
@@ -6542,9 +6556,15 @@ bool CGUIInfoManager::GetMultiInfoInt(int &value, const CGUIInfo &info, int cont
 {
   if (info.m_info >= LISTITEM_START && info.m_info <= LISTITEM_END)
   {
-    const CGUIListItemPtr item = CGUIInfoHelper::GetListItemFromActiveContainer(info.GetData1(), contextWindow, info.GetData2(), info.GetInfoFlag());
+    const CGUIListItemPtr item = GUIINFO::GetCurrentListItem(contextWindow, info.GetData1(), info.GetData2(), info.GetInfoFlag());
     if (item)
+    {
       return GetItemInt(value, item.get(), contextWindow, info.m_info);
+    }
+    else
+    {
+      return false;
+    }
   }
 
   return m_infoProviders.GetInt(value, m_currentFile, contextWindow, info);
@@ -6556,11 +6576,15 @@ std::string CGUIInfoManager::GetMultiInfoLabel(const CGUIInfo &constinfo, int co
 
   if (info.m_info >= LISTITEM_START && info.m_info <= LISTITEM_END)
   {
-    const CGUIListItemPtr item = CGUIInfoHelper::GetListItemFromActiveContainer(info.GetData1(), contextWindow, info.GetData2(), info.GetInfoFlag());
+    const CGUIListItemPtr item = GUIINFO::GetCurrentListItem(contextWindow, info.GetData1(), info.GetData2(), info.GetInfoFlag());
     if (item)
     {
       // Image prioritizes images over labels (in the case of music item ratings for instance)
       return GetMultiInfoItemImage(dynamic_cast<CFileItem*>(item.get()), contextWindow, info, fallback);
+    }
+    else
+    {
+      return std::string();
     }
   }
   else if (info.m_info == SYSTEM_ADDON_TITLE ||
@@ -6597,9 +6621,9 @@ std::string CGUIInfoManager::GetImage(int info, int contextWindow, std::string *
            info == LISTITEM_OVERLAY ||
            info == LISTITEM_ART)
   {
-    const CFileItemPtr item = CGUIInfoHelper::GetCurrentListItemFromWindow(contextWindow);
-    if (item)
-      return GetItemImage(item.get(), contextWindow, info, fallback);
+    const CGUIListItemPtr item = GUIINFO::GetCurrentListItem(contextWindow);
+    if (item && item->IsFileItem())
+      return GetItemImage(static_cast<CFileItem*>(item.get()), contextWindow, info, fallback);
   }
 
   return GetLabel(info, contextWindow, fallback);
@@ -6708,7 +6732,7 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int contextWind
   return GetMultiInfoItemLabel(item, contextWindow, CGUIInfo(info), fallback);
 }
 
-std::string CGUIInfoManager::GetMultiInfoItemLabel(const CFileItem *item, int contextWindow, const GUIINFO::CGUIInfo &info, std::string *fallback /* = nullptr */) const
+std::string CGUIInfoManager::GetMultiInfoItemLabel(const CFileItem *item, int contextWindow, const CGUIInfo &info, std::string *fallback /* = nullptr */) const
 {
   if (!item)
     return std::string();

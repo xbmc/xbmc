@@ -24,7 +24,7 @@
 #include <vector>
 
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
-#include "guiinfo/GUIInfoProvider.h"
+#include "guilib/guiinfo/GUIInfoProvider.h"
 #include "threads/CriticalSection.h"
 #include "threads/Thread.h"
 #include "utils/Observer.h"
@@ -33,14 +33,20 @@
 #include "pvr/PVRTypes.h"
 #include "pvr/addons/PVRClients.h"
 
+namespace KODI
+{
+namespace GUILIB
+{
 namespace GUIINFO
 {
   class CGUIInfo;
 }
+}
+}
 
 namespace PVR
 {
-  class CPVRGUIInfo : public GUIINFO::CGUIInfoProvider, private CThread, private Observer
+  class CPVRGUIInfo : public KODI::GUILIB::GUIINFO::CGUIInfoProvider, private CThread, private Observer
   {
   public:
     CPVRGUIInfo(void);
@@ -51,11 +57,11 @@ namespace PVR
 
     void Notify(const Observable &obs, const ObservableMessage msg) override;
 
-    // GUIINFO::IGUIInfoProvider implementation
+    // KODI::GUILIB::GUIINFO::IGUIInfoProvider implementation
     bool InitCurrentItem(CFileItem *item) override;
-    bool GetLabel(std::string& value, const CFileItem *item, int contextWindow, const GUIINFO::CGUIInfo &info, std::string *fallback) const override;
-    bool GetInt(int& value, const CGUIListItem *item, int contextWindow, const GUIINFO::CGUIInfo &info) const override;
-    bool GetBool(bool& value, const CGUIListItem *item, int contextWindow, const GUIINFO::CGUIInfo &info) const override;
+    bool GetLabel(std::string& value, const CFileItem *item, int contextWindow, const KODI::GUILIB::GUIINFO::CGUIInfo &info, std::string *fallback) const override;
+    bool GetInt(int& value, const CGUIListItem *item, int contextWindow, const KODI::GUILIB::GUIINFO::CGUIInfo &info) const override;
+    bool GetBool(bool& value, const CGUIListItem *item, int contextWindow, const KODI::GUILIB::GUIINFO::CGUIInfo &info) const override;
 
     /*!
      * @brief Get the total duration of the currently playing epg event or if no epg is
@@ -100,16 +106,16 @@ namespace PVR
 
     void UpdateTimersToggle(void);
 
-    bool GetListItemAndPlayerLabel(const CFileItem *item, const GUIINFO::CGUIInfo &info, std::string &strValue) const;
-    bool GetPVRLabel(const CFileItem *item, const GUIINFO::CGUIInfo &info, std::string &strValue) const;
-    bool GetRadioRDSLabel(const CFileItem *item, const GUIINFO::CGUIInfo &info, std::string &strValue) const;
+    bool GetListItemAndPlayerLabel(const CFileItem *item, const KODI::GUILIB::GUIINFO::CGUIInfo &info, std::string &strValue) const;
+    bool GetPVRLabel(const CFileItem *item, const KODI::GUILIB::GUIINFO::CGUIInfo &info, std::string &strValue) const;
+    bool GetRadioRDSLabel(const CFileItem *item, const KODI::GUILIB::GUIINFO::CGUIInfo &info, std::string &strValue) const;
 
-    bool GetListItemAndPlayerInt(const CFileItem *item, const GUIINFO::CGUIInfo &info, int &iValue) const;
-    bool GetPVRInt(const CFileItem *item, const GUIINFO::CGUIInfo &info, int& iValue) const;
+    bool GetListItemAndPlayerInt(const CFileItem *item, const KODI::GUILIB::GUIINFO::CGUIInfo &info, int &iValue) const;
+    bool GetPVRInt(const CFileItem *item, const KODI::GUILIB::GUIINFO::CGUIInfo &info, int& iValue) const;
 
-    bool GetListItemAndPlayerBool(const CFileItem *item, const GUIINFO::CGUIInfo &info, bool &bValue) const;
-    bool GetPVRBool(const CFileItem *item, const GUIINFO::CGUIInfo &info, bool& bValue) const;
-    bool GetRadioRDSBool(const CFileItem *item, const GUIINFO::CGUIInfo &info, bool &bValue) const;
+    bool GetListItemAndPlayerBool(const CFileItem *item, const KODI::GUILIB::GUIINFO::CGUIInfo &info, bool &bValue) const;
+    bool GetPVRBool(const CFileItem *item, const KODI::GUILIB::GUIINFO::CGUIInfo &info, bool& bValue) const;
+    bool GetRadioRDSBool(const CFileItem *item, const KODI::GUILIB::GUIINFO::CGUIInfo &info, bool &bValue) const;
 
     void CharInfoEpgEventDuration(const CFileItem *item, TIME_FORMAT format, std::string &strValue) const;
     void CharInfoEpgEventElapsedTime(const CFileItem *item, TIME_FORMAT format, std::string &strValue) const;

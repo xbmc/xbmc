@@ -46,7 +46,7 @@
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
-#include "guiinfo/GUIInfoLabels.h"
+#include "guilib/guiinfo/GUIInfoLabels.h"
 #include "cores/DataCacheCore.h"
 
 using namespace KODI::MESSAGING;
