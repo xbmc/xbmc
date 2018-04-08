@@ -8,6 +8,57 @@
     ],
     "returns": null
   },
+  "Player.OnResume": {
+    "type": "notification",
+    "description": "Playback of a media item has been resumed. If there is no ID available extra information will be provided.",
+    "params": [
+      {
+        "name": "sender",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "data",
+        "$ref": "Player.Notifications.Data",
+        "required": true
+      }
+    ],
+    "returns": null
+  },
+  "Player.OnAVStart": {
+    "type": "notification",
+    "description": "Playback of a media item has been started and first frame is available. If there is no ID available extra information will be provided.",
+    "params": [
+      {
+        "name": "sender",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "data",
+        "$ref": "Player.Notifications.Data",
+        "required": true
+      }
+    ],
+    "returns": null
+  },
+  "Player.OnAVChange": {
+    "type": "notification",
+    "description": "Audio- or videostream has changed. If there is no ID available extra information will be provided.",
+    "params": [
+      {
+        "name": "sender",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "data",
+        "$ref": "Player.Notifications.Data",
+        "required": true
+      }
+    ],
+    "returns": null
+  },
   "Player.OnPause": {
     "type": "notification",
     "description": "Playback of a media item has been paused. If there is no ID available extra information will be provided.",

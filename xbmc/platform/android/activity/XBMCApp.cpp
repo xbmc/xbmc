@@ -177,16 +177,16 @@ void CXBMCApp::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender,
   }
   else if (flag & Player)
   {
-     if (strcmp(message, "OnPlay") == 0)
+    if (strcmp(message, "OnPlay") == 0 || strcmp(message, "OnResume") == 0)
       OnPlayBackStarted();
     else if (strcmp(message, "OnPause") == 0)
       OnPlayBackPaused();
     else if (strcmp(message, "OnStop") == 0)
       OnPlayBackStopped();
-     else if (strcmp(message, "OnSeek") == 0)
-       UpdateSessionState();
-     else if (strcmp(message, "OnSpeedChanged") == 0)
-       UpdateSessionState();
+    else if (strcmp(message, "OnSeek") == 0)
+      UpdateSessionState();
+    else if (strcmp(message, "OnSpeedChanged") == 0)
+      UpdateSessionState();
   }
   else if (flag & Info)
   {

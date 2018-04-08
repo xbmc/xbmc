@@ -615,7 +615,7 @@ void CWinEventsWin10::Announce(AnnouncementFlag flag, const char * sender, const
     bool changed = false;
     MediaPlaybackStatus status = MediaPlaybackStatus::Changing;
 
-    if (strcmp(message, "OnPlay") == 0)
+    if (strcmp(message, "OnPlay") == 0 || strcmp(message, "OnResume") == 0)
     {
       changed = true;
       status = MediaPlaybackStatus::Playing;

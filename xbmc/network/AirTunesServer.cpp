@@ -173,7 +173,7 @@ void CAirTunesServer::Announce(AnnouncementFlag flag, const char *sender, const 
 {
   if ( (flag & Player) && strcmp(sender, "xbmc") == 0)
   {
-    if (strcmp(message, "OnPlay") == 0 && m_streamStarted)
+    if ((strcmp(message, "OnPlay") == 0 || strcmp(message, "OnResume") == 0) && m_streamStarted)
     {
       RefreshMetadata();
       RefreshCoverArt();

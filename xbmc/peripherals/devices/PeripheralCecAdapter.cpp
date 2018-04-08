@@ -223,7 +223,7 @@ void CPeripheralCecAdapter::Announce(AnnouncementFlag flag, const char *sender, 
     m_preventActivateSourceOnPlay = CDateTime::GetCurrentDateTime();
     m_bOnPlayReceived = false;
   }
-  else if (flag == Player && !strcmp(sender, "xbmc") && !strcmp(message, "OnPlay"))
+  else if (flag == Player && !strcmp(sender, "xbmc") && (!strcmp(message, "OnPlay") || !strcmp(message, "OnResume")))
   {
     // activate the source when playback started, and the option is enabled
     bool bActivateSource(false);
