@@ -385,7 +385,7 @@ bool CGUIVisualisationControl::InitVisualization()
   if (!addonBase)
     return false;
 
-  CServiceBroker::GetActiveAE().RegisterAudioCallback(this);
+  CServiceBroker::GetActiveAE()->RegisterAudioCallback(this);
 
   CServiceBroker::GetWinSystem()->GetGfxContext().CaptureStateBlock();
 
@@ -415,12 +415,9 @@ void CGUIVisualisationControl::DeInitVisualization()
   if (!m_attemptedLoad)
     return;
 
-  /*
-   * Prevent "UnregisterAudioCallback" in case Kodi is stopped. There becomes
-   * audio engine stopped before gui!
-   */
-  if (!g_application.m_bStop)
-    CServiceBroker::GetActiveAE().UnregisterAudioCallback(this);
+  IAE * ae = CServiceBroker::GetActiveAE();
+  if (ae)
+    ae->UnregisterAudioCallback(this);
   
   m_attemptedLoad = false;
 

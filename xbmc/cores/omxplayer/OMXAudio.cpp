@@ -100,7 +100,7 @@ COMXAudio::COMXAudio(CProcessInfo &processInfo) :
   m_format.m_streamInfo.m_channels = 2;
   m_format.m_sampleRate = 16000;
   m_format.m_frameSize = 1;
-  m_pAudioStream = CServiceBroker::GetActiveAE().MakeStream(m_format);
+  m_pAudioStream = CServiceBroker::GetActiveAE()->MakeStream(m_format);
 }
 
 COMXAudio::~COMXAudio()
@@ -108,7 +108,7 @@ COMXAudio::~COMXAudio()
   Deinitialize();
 
   if (m_pAudioStream)
-    CServiceBroker::GetActiveAE().FreeStream(m_pAudioStream);
+    CServiceBroker::GetActiveAE()->FreeStream(m_pAudioStream);
 }
 
 bool COMXAudio::PortSettingsChanged()

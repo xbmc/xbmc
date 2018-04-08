@@ -245,12 +245,12 @@ static void SinkChangedCallback(pa_context *c, pa_subscription_event_type_t t, u
     if ((t & PA_SUBSCRIPTION_EVENT_TYPE_MASK) == PA_SUBSCRIPTION_EVENT_NEW)
     {
        CLog::Log(LOGDEBUG, "Sink appeared");
-       CServiceBroker::GetActiveAE().DeviceChange();
+       CServiceBroker::GetActiveAE()->DeviceChange();
     }
     else if ((t & PA_SUBSCRIPTION_EVENT_TYPE_MASK) == PA_SUBSCRIPTION_EVENT_REMOVE)
     {
       CLog::Log(LOGDEBUG, "Sink removed");
-      CServiceBroker::GetActiveAE().DeviceChange();
+      CServiceBroker::GetActiveAE()->DeviceChange();
     }
     else if ((t & PA_SUBSCRIPTION_EVENT_TYPE_MASK) == PA_SUBSCRIPTION_EVENT_CHANGE)
     {

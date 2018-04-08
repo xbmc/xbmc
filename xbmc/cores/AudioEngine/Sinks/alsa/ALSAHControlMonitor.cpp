@@ -126,7 +126,7 @@ int CALSAHControlMonitor::HCTLCallback(snd_hctl_elem_t *elem, unsigned int mask)
      * Currently we just re-enumerate on any change.
      * Custom callbacks for handling other control monitoring may be implemented when needed.
      */
-    CServiceBroker::GetActiveAE().DeviceChange();
+    CServiceBroker::GetActiveAE()->DeviceChange();
   }
 
   return 0;

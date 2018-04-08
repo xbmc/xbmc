@@ -92,7 +92,6 @@ public:
   static ANNOUNCEMENT::CAnnouncementManager &GetAnnouncementManager();
   static XBPython &GetXBPython();
   static PVR::CPVRManager &GetPVRManager();
-  static IAE& GetActiveAE();
   static CContextMenuManager& GetContextMenuManager();
   static CDataCacheCore& GetDataCacheCore();
   static PLAYLIST::CPlayListPlayer& GetPlaylistPlayer();
@@ -125,7 +124,12 @@ public:
   static CWinSystemBase* GetWinSystem();
   static CRenderSystemBase* GetRenderSystem();
 
+  static IAE* GetActiveAE();
+  static void RegisterAE(IAE *ae);
+  static void UnregisterAE();
+
 private:
   static CGUIComponent* m_pGUI;
   static CWinSystemBase* m_pWinSystem;
+  static IAE* m_pActiveAE;
 };

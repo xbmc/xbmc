@@ -197,7 +197,7 @@ void CPowerManager::OnSleep()
   g_application.StopShutdownTimer();
   g_application.StopScreenSaverTimer();
   g_application.CloseNetworkShares();
-  CServiceBroker::GetActiveAE().Suspend();
+  CServiceBroker::GetActiveAE()->Suspend();
 }
 
 void CPowerManager::OnWake()
@@ -231,7 +231,7 @@ void CPowerManager::OnWake()
     CBuiltins::GetInstance().Execute("LIRC.Start");
   }
 
-  CServiceBroker::GetActiveAE().Resume();
+  CServiceBroker::GetActiveAE()->Resume();
   g_application.UpdateLibraries();
   CServiceBroker::GetWeatherManager().Refresh();
   CServiceBroker::GetPVRManager().OnWake();

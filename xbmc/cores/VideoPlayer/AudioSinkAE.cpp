@@ -48,7 +48,7 @@ CAudioSinkAE::~CAudioSinkAE()
 {
   CSingleLock lock (m_critSection);
   if (m_pAudioStream)
-    CServiceBroker::GetActiveAE().FreeStream(m_pAudioStream);
+    CServiceBroker::GetActiveAE()->FreeStream(m_pAudioStream);
 }
 
 bool CAudioSinkAE::Create(const DVDAudioFrame &audioframe, AVCodecID codec, bool needresampler)
@@ -67,7 +67,7 @@ bool CAudioSinkAE::Create(const DVDAudioFrame &audioframe, AVCodecID codec, bool
   options |= AESTREAM_PAUSED;
 
   AEAudioFormat format = audioframe.format;
-  m_pAudioStream = CServiceBroker::GetActiveAE().MakeStream(
+  m_pAudioStream = CServiceBroker::GetActiveAE()->MakeStream(
     format,
     options,
     this
@@ -89,7 +89,7 @@ void CAudioSinkAE::Destroy()
   CSingleLock lock (m_critSection);
 
   if (m_pAudioStream)
-    CServiceBroker::GetActiveAE().FreeStream(m_pAudioStream);
+    CServiceBroker::GetActiveAE()->FreeStream(m_pAudioStream);
 
   m_pAudioStream = NULL;
   m_sampleRate = 0;
@@ -367,12 +367,12 @@ CAEStreamInfo::DataType CAudioSinkAE::GetPassthroughStreamType(AVCodecID codecId
       format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_NULL;
   }
 
-  bool supports = CServiceBroker::GetActiveAE().SupportsRaw(format);
+  bool supports = CServiceBroker::GetActiveAE()->SupportsRaw(format);
 
   if (!supports && codecId == AV_CODEC_ID_DTS)
   {
     format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_DTSHD_CORE;
-    supports = CServiceBroker::GetActiveAE().SupportsRaw(format);
+    supports = CServiceBroker::GetActiveAE()->SupportsRaw(format);
   }
 
   if (supports)

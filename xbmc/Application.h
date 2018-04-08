@@ -87,6 +87,11 @@ class CBookmark;
 class IActionListener;
 class CGUIComponent;
 
+namespace ActiveAE
+{
+  class CActiveAE;
+}
+
 namespace VIDEO
 {
   class CVideoInfoScanner;
@@ -407,6 +412,7 @@ protected:
 
   std::unique_ptr<CGUIComponent> m_pGUI;
   std::unique_ptr<CWinSystemBase> m_pWinSystem;
+  std::unique_ptr<ActiveAE::CActiveAE> m_pActiveAE;
 
   bool m_confirmSkinChange;
   bool m_ignoreSkinSettingChanges;

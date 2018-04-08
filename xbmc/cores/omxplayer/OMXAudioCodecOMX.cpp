@@ -98,9 +98,9 @@ bool COMXAudioCodecOMX::Open(CDVDStreamInfo &hints)
   m_pCodecContext->bits_per_coded_sample = hints.bitspersample;
   if (hints.codec == AV_CODEC_ID_TRUEHD)
   {
-    if (CServiceBroker::GetActiveAE().HasStereoAudioChannelCount())
+    if (CServiceBroker::GetActiveAE()->HasStereoAudioChannelCount())
       m_pCodecContext->request_channel_layout = AV_CH_LAYOUT_STEREO;
-    else if (!CServiceBroker::GetActiveAE().HasHDAudioChannelCount())
+    else if (!CServiceBroker::GetActiveAE()->HasHDAudioChannelCount())
       m_pCodecContext->request_channel_layout = AV_CH_LAYOUT_5POINT1;
   }
   if (m_pCodecContext->request_channel_layout)

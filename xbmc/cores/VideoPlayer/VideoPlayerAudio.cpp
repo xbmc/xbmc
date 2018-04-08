@@ -161,7 +161,7 @@ void CVideoPlayerAudio::OpenStream(CDVDStreamInfo &hints, CDVDAudioCodec* codec)
 
 void CVideoPlayerAudio::CloseStream(bool bWaitForBuffers)
 {
-  bool bWait = bWaitForBuffers && m_speed > 0 && !CServiceBroker::GetActiveAE().IsSuspended();
+  bool bWait = bWaitForBuffers && m_speed > 0 && !CServiceBroker::GetActiveAE()->IsSuspended();
 
   // wait until buffers are empty
   if (bWait)
