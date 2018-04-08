@@ -38,25 +38,19 @@
 #include "guiinfo/GUIInfoLabels.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindow.h"
-#include "guilib/LocalizeStrings.h"
-#include "guilib/WindowIDs.h"
-#include "guilib/GUIWindowManager.h"
 #include "input/WindowTranslator.h"
 #include "interfaces/AnnouncementManager.h"
 #include "interfaces/info/InfoExpression.h"
 #include "messaging/ApplicationMessenger.h"
 #include "music/tags/MusicInfoTag.h"
-#include "settings/Settings.h"
 #include "settings/SkinSettings.h"
 #include "utils/CharsetConverter.h"
 #include "utils/StringUtils.h"
-#include "utils/TimeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
 #include "video/VideoInfoTag.h"
 
-using namespace ADDON;
 using namespace GUIINFO;
 using namespace INFO;
 using namespace MUSIC_INFO;
@@ -6360,26 +6354,7 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   }
 
   std::string strLabel;
-  if (m_infoProviders.GetLabel(strLabel, m_currentFile, contextWindow, GUIInfo(info), fallback))
-    return strLabel;
-
-  switch (info)
-  {
-  case SKIN_THEME:
-    strLabel = CServiceBroker::GetSettings().GetString(CSettings::SETTING_LOOKANDFEEL_SKINTHEME);
-    break;
-  case SKIN_COLOUR_THEME:
-    strLabel = CServiceBroker::GetSettings().GetString(CSettings::SETTING_LOOKANDFEEL_SKINCOLORS);
-    break;
-  case SKIN_ASPECT_RATIO:
-    if (g_SkinInfo)
-      strLabel = g_SkinInfo->GetCurrentAspect();
-    break;
-  case SKIN_FONT:
-    strLabel = CServiceBroker::GetSettings().GetString(CSettings::SETTING_LOOKANDFEEL_FONT);
-    break;
-  }
-
+  m_infoProviders.GetLabel(strLabel, m_currentFile, contextWindow, GUIInfo(info), fallback);
   return strLabel;
 }
 
@@ -6489,26 +6464,6 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
   {
     switch (condition)
     {
-      case SKIN_BOOL:
-        {
-          bReturn = CSkinSettings::GetInstance().GetBool(info.GetData1());
-        }
-        break;
-      case SKIN_STRING:
-        {
-          if (!info.GetData3().empty())
-            bReturn = StringUtils::EqualsNoCase(CSkinSettings::GetInstance().GetString(info.GetData1()), info.GetData3());
-          else
-            bReturn = !CSkinSettings::GetInstance().GetString(info.GetData1()).empty();
-        }
-        break;
-      case SKIN_HAS_THEME:
-        {
-          std::string theme = CServiceBroker::GetSettings().GetString(CSettings::SETTING_LOOKANDFEEL_SKINTHEME);
-          URIUtils::RemoveExtension(theme);
-          bReturn = StringUtils::EqualsNoCase(theme, info.GetData3());
-        }
-        break;
       case STRING_IS_EMPTY:
         // note: Get*Image() falls back to Get*Label(), so this should cover all of them
         if (item && item->IsFileItem())
@@ -6621,16 +6576,6 @@ std::string CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &constinfo, int con
   GUIInfo info(constinfo);
   std::string strValue;
 
-  if (info.m_info == SKIN_STRING)
-  {
-    return CSkinSettings::GetInstance().GetString(info.GetData1());
-  }
-  else if (info.m_info == SKIN_BOOL)
-  {
-    bool bInfo = CSkinSettings::GetInstance().GetBool(info.GetData1());
-    if (bInfo)
-      return g_localizeStrings.Get(20122);
-  }
   if (info.m_info >= LISTITEM_START && info.m_info <= LISTITEM_END)
   {
     const CGUIListItemPtr item = CGUIInfoHelper::GetListItemFromActiveContainer(info.GetData1(), contextWindow, info.GetData2(), info.GetInfoFlag());

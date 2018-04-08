@@ -29,6 +29,7 @@
 #include "guiinfo/MusicGUIInfo.h"
 #include "guiinfo/PicturesGUIInfo.h"
 #include "guiinfo/PlayerGUIInfo.h"
+#include "guiinfo/SkinGUIInfo.h"
 #include "guiinfo/SystemGUIInfo.h"
 #include "guiinfo/VideoGUIInfo.h"
 #include "guiinfo/VisualisationGUIInfo.h"
@@ -149,6 +150,7 @@ private:
   CMusicGUIInfo m_musicGUIInfo;
   CPicturesGUIInfo m_picturesGUIInfo;
   CPlayerGUIInfo m_playerGUIInfo;
+  CSkinGUIInfo m_skinGUIInfo;
   CSystemGUIInfo m_systemGUIInfo;
   CVideoGUIInfo m_videoGUIInfo;
   CVisualisationGUIInfo m_visualisationGUIInfo;

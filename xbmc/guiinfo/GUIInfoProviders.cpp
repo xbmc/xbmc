@@ -39,10 +39,12 @@ CGUIInfoProviders::CGUIInfoProviders()
   RegisterProvider(&m_gamesGUIInfo);
   RegisterProvider(&m_systemGUIInfo);
   RegisterProvider(&m_visualisationGUIInfo);
+  RegisterProvider(&m_skinGUIInfo);
 }
 
 CGUIInfoProviders::~CGUIInfoProviders()
 {
+  UnregisterProvider(&m_skinGUIInfo);
   UnregisterProvider(&m_visualisationGUIInfo);
   UnregisterProvider(&m_systemGUIInfo);
   UnregisterProvider(&m_gamesGUIInfo);

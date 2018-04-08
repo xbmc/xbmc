@@ -8,6 +8,7 @@ set(SOURCES GUIInfo.cpp
             MusicGUIInfo.cpp
             PicturesGUIInfo.cpp
             PlayerGUIInfo.cpp
+            SkinGUIInfo.cpp
             SystemGUIInfo.cpp
             VideoGUIInfo.cpp
             VisualisationGUIInfo.cpp
@@ -26,6 +27,7 @@ set(HEADERS GUIInfo.h
             MusicGUIInfo.h
             PicturesGUIInfo.h
             PlayerGUIInfo.h
+            SkinGUIInfo.h
             SystemGUIInfo.h
             VideoGUIInfo.h
             VisualisationGUIInfo.h
