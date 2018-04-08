@@ -2,7 +2,9 @@
 <settings>
     <category label="32020">
         <setting label="32021" type="bool" id="versioncheck_enable" default="true"/>
-        <setting label="32023" type="bool" id="upgrade_system" default="false"/>
-        <setting label="32024" type="bool" id="upgrade_apt" default="false"/>
+        <setting label="32024" type="bool" id="upgrade_apt" default="false" />
+        <setting label="32025" type="bool" id="upgrade_sudo" default="true" enable="eq(-1,true)" />
+	<setting label="32023" type="bool" id="upgrade_system" default="false" enable="eq(-2,true)"/>
+        <setting label="32038" type="bool" id="upgrade_autoremove" default="false" enable="eq(-1,true) + eq(-3,true)" />
     </category>
 </settings>

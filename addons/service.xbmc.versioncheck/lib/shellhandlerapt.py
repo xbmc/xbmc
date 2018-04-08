@@ -23,7 +23,7 @@ try:
     from subprocess import call
     from subprocess import CalledProcessError
 except Exception as error:
-    log('subprocess import error :%s' %error,xbmc.LOGERROR)
+    log('subprocess import error :%s' %error,xbmc.LOGWARNING)
 
 class ShellHandlerApt:
 
@@ -34,7 +34,7 @@ class ShellHandlerApt:
         installed, candidate = self._check_versions("kodi", False)
         if not installed:
             # there is no package installed via repo, so we exit here
-            log("No installed package found, exiting")
+            log("No installed package found, exiting",xbmc.LOGNOTICE)
             import sys
             sys.exit(0)
 
@@ -59,7 +59,7 @@ class ShellHandlerApt:
                 candidate = False
             return installed, candidate
         else:
-            log("ShellHandlerApt: error during version check")
+            log("ShellHandlerApt: error during version check",xbmc.LOGERROR)
             return False, False
 
     def _update_cache(self):
@@ -69,7 +69,7 @@ class ShellHandlerApt:
                 x = check_output('echo \'%s\' | sudo -S %s' %(self._getpassword(), _cmd), shell=True)
             else:
                 x = check_output(_cmd.split())
-            log("Update cache successful")
+            log("Update cache successful",xbmc.LOGNOTICE)
         except Exception as error:
             log("Exception while executing shell command %s: %s" %(_cmd, error),xbmc.LOGERROR)
             return False
@@ -85,9 +85,9 @@ class ShellHandlerApt:
                 log("Version available  %s" %candidate)
                 return True
             else:
-                log("Already on newest version for %s" %package)
+                log("Already on newest version for %s" %package,xbmc.LOGNOTICE)
         elif not installed:
-                log("No installed package found for %s" %package)
+                log("No installed package found for %s" %package,xbmc.LOGNOTICE)
                 return False
         else:
             return False
@@ -99,7 +99,7 @@ class ShellHandlerApt:
                 x = check_output('echo \'%s\' | sudo -S %s' %(self._getpassword(), _cmd), shell=True)
             else:
                 x = check_output(_cmd.split())
-            log("Install package %s successful" %package,True)
+            log("Install package %s successful" %package,xbmc.LOGNOTICE)
         except Exception as error:
             log("Exception while executing shell command %s: %s" %(_cmd, error),xbmc.LOGERROR)
             return False
@@ -114,7 +114,7 @@ class ShellHandlerApt:
                 x = check_output('echo \'%s\' | sudo -S %s' %(self._getpassword(), _cmd), shell=True)
             else:
                 x = check_output(_cmd.split())
-            log("Upgrade System successful")
+            log("Upgrade System successful",xbmc.LOGNOTICE)
         except Exception as error:
             log("Exception while executing shell command %s: %s" %(_cmd, error),xbmc.LOGERROR)
             return False
@@ -131,3 +131,37 @@ class ShellHandlerApt:
             if len(self._pwd) == 0:
                 self._pwd = get_password_from_user()
             return self._pwd
+
+    def check_upgrade_system_available(self):
+        _cmd = "apt list --upgradable"
+        try:
+            if self._update_cache():
+                if self.sudo:
+                    x = check_output('echo \'%s\' | sudo -S %s' %(self._getpassword(), _cmd), shell=True)
+                else:
+                    x = check_output(_cmd.split())
+                n = len(x.splitlines())
+                if (n > 1):
+                    log("Upgrade system available",xbmc.LOGNOTICE)
+                    return True
+            log("No system update available",xbmc.LOGNOTICE)
+            return False
+        except Exception as error:
+            log("Exception while executing shell command %s: %s" %(_cmd, error),xbmc.LOGERROR)
+            return False
+
+        return True
+
+    def  autoremove_package(self):
+        _cmd = "apt-get autoremove -y "
+        try:
+            if self.sudo:
+                x = check_output('echo \'%s\' | sudo -S %s' %(self._getpassword(), _cmd), shell=True)
+            else:
+                x = check_output(_cmd.split())
+            log("Automatically remove old package successful",xbmc.LOGNOTICE)
+        except Exception as error:
+            log("Exception while executing shell command %s: %s" %(_cmd, error),xbmc.LOGERROR)
+            return False
+
+        return True
