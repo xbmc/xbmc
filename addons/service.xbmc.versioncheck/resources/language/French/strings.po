@@ -24,6 +24,14 @@ msgctxt "#32002"
 msgid "Visit Kodi.tv for more information."
 msgstr "Consulter kodi.tv pour plus d'informations."
 
+msgctxt "#32007"
+msgid "Check kodi upgrade available."
+msgstr "Vérification de la mise à jour de Kodi"
+
+msgctxt "#32008"
+msgid "Check system upgrade available."
+msgstr "Vérification de la mise à jour système"
+
 msgctxt "#32009"
 msgid "Would you like to remove this reminder?"
 msgstr "Faut-il retirer ce rappel ?"
@@ -34,19 +42,19 @@ msgstr "Il est possible de l'activer / le désactiver depuis les paramètres de 
 
 msgctxt "#32011"
 msgid "Use your package manager(apt) to upgrade."
-msgstr "Utiliser votre gestionnaire de paquets (apt) pour mettre à niveau."
+msgstr "Utiliser votre gestionnaire de paquets (apt) pour la mise à jour."
 
 msgctxt "#32012"
 msgid "A new version is available, do you want to upgrade now?"
-msgstr "Une nouvelle version est disponible, faut-il mettre à niveau maintenant ?"
+msgstr "Une nouvelle version est disponible, faut-il effectuer la mise à jour maintenant ?"
 
 msgctxt "#32013"
 msgid "Upgrade successful"
-msgstr "Mise à niveau réussie"
+msgstr "Mise à jour réussie"
 
 msgctxt "#32014"
 msgid "Do you want to restart Kodi to finish the upgrade?"
-msgstr "Faut-il redémarrer Kodi pour terminer la mise à niveau ?"
+msgstr "Faut-il redémarrer Kodi pour terminer la mise à jour ?"
 
 msgctxt "#32015"
 msgid "Do you want to check the repository for a new version?"
@@ -55,6 +63,18 @@ msgstr "Faut-il vérifier sur le dépôt s’il existe une nouvelle version?"
 msgctxt "#32016"
 msgid "There is a newer stable Kodi version available."
 msgstr "Une nouvelle version stable de Kodi est disponible."
+
+msgctxt "#32017"
+msgid "Do you want to system restart to finish the upgrade?"
+msgstr "Voulez vous redémarrer le système pour finir la mise à jour?"
+
+msgctxt "#32018"
+msgid "Updates are available for the system, do you want to upgrade now?"
+msgstr "Des mise à jours sont disponibles pour le système. Voulez vous procéder à la mise à jour ?"
+
+msgctxt "#32019"
+msgid "Updates are available for the system."
+msgstr "Des mise à jours sont disponibles pour le système."
 
 msgctxt "#32020"
 msgid "General"
@@ -70,11 +90,27 @@ msgstr "Saisir le mot de passe"
 
 msgctxt "#32023"
 msgid "Linux: Upgrade complete system"
-msgstr "Linux : mettre à niveau le système complet"
+msgstr "Linux: Mettre à niveau le système complet"
 
 msgctxt "#32024"
 msgid "Linux: Upgrade using apt"
-msgstr "Linux : mettre à niveau en utilisant apt"
+msgstr "Linux: Mettre à niveau en utilisant apt"
+
+msgctxt "#32025"
+msgid "Use sudo"
+msgstr "Utiliser l'élévation de privilèges (sudo)"
+
+msgctxt "#32027"
+msgid "Already on newest version for kodi."
+msgstr "Vous avez déjà la dernier version de Kodi."
+
+msgctxt "#32028"
+msgid "No system update available."
+msgstr "Pas de mise à jour disponible pour votre système."
+
+msgctxt "#32029"
+msgid "Abort during upgrade."
+msgstr "Annulation pendant la mise à jour."
 
 msgctxt "#32030"
 msgid "A new stable version of Kodi is available."
@@ -99,3 +135,12 @@ msgstr "%s est utilisée alors que %s est disponible."
 msgctxt "#32035"
 msgid "It is recommended that you to upgrade to a newer version."
 msgstr "Il est recommandé de mettre à niveau vers une nouvelle version."
+
+msgctxt "#32037"
+msgid "Do you want checking updates?"
+msgstr "Voulez vous lancer une vérification des mise à jours ?"
+
+msgctxt "#32038"
+msgid "Autoremove old packages"
+msgstr "Nettoyer automatiquement les paquets obsolètes"
+

@@ -23,7 +23,7 @@ try:
     from aptdaemon import client
     from aptdaemon import errors
 except Exception as error:
-    log('python apt import error :%s' %error,xbmc.LOGERROR)
+    log('python apt import error :%s' %error,xbmc.LOGWARNING)
 
 class AptdaemonHandler:
 

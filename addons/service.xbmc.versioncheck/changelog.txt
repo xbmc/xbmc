@@ -1,3 +1,9 @@
+v0.3.30
+- Replace the message box with a dialog busy box
+- Choice System update or Kodi update or the both
+- Add choice for autoremove old packages if system update
+- Fix unicodedata (missing import)
+
 v0.3.281
 - Fix Apt Upgrade
 
