@@ -795,6 +795,7 @@ msgctxt "#180"
 msgid "Duration"
 msgstr ""
 
+#: xbmc/music/infoscanner/MusicInfoScanner.cpp
 #: xbmc/music/MusicDatabase.cpp
 msgctxt "#181"
 msgid "Select album"
@@ -1544,6 +1545,7 @@ msgctxt "#330"
 msgid "This may take some time..."
 msgstr ""
 
+#: xbmc/music/infoscanner/MusicInfoScanner.cpp
 #: xbmc/music/MusicDatabase.cpp
 msgctxt "#331"
 msgid "Compressing database..."
@@ -1586,6 +1588,7 @@ msgctxt "#339"
 msgid "Optimized"
 msgstr ""
 
+#: xbmc/music/infoscanner/MusicInfoScanner.cpp
 msgctxt "#340"
 msgid "Various artists"
 msgstr ""
@@ -2313,11 +2316,17 @@ msgctxt "#504"
 msgid "Empty"
 msgstr ""
 
+#. label for library update progress bar when scanning media files 
+#: xbmc/music/infoscanner/MusicInfoScanner.cpp
 msgctxt "#505"
 msgid "Loading media information from files..."
 msgstr ""
 
-#empty string with id 506
+#. label for library update progress bar when checking for new or changed media files
+#: xbmc/music/infoscanner/MusicInfoScanner.cpp
+msgctxt "#506"
+msgid "Checking media files..."
+msgstr ""
 
 msgctxt "#507"
 msgid "Sort by: Usage"
@@ -3142,6 +3151,7 @@ msgstr ""
 
 #empty strings from id 684 to 699
 
+#: xbmc/music/infoscanner/MusicInfoScanner.cpp
 #: xbmc/music/MusicDatabase.cpp
 msgctxt "#700"
 msgid "Cleaning up library"
@@ -8458,6 +8468,7 @@ msgctxt "#16010"
 msgid "Enter the profile name"
 msgstr ""
 
+#: xbmc/music/infoscanner/MusicInfoScanner.cpp
 msgctxt "#16011"
 msgid "Enter the album name"
 msgstr ""
@@ -8526,6 +8537,7 @@ msgctxt "#16024"
 msgid "Cancelling..."
 msgstr ""
 
+#: xbmc/music/infoscanner/MusicInfoScanner.cpp
 msgctxt "#16025"
 msgid "Enter the artist name"
 msgstr ""
@@ -12443,10 +12455,12 @@ msgctxt "#20319"
 msgid "Scanning TV shows using {0:s}"
 msgstr ""
 
+#: xbmc/music/infoscanner/MusicInfoScanner.cpp
 msgctxt "#20320"
 msgid "Scanning artists using {0:s}"
 msgstr ""
 
+#: xbmc/music/infoscanner/MusicInfoScanner.cpp
 msgctxt "#20321"
 msgid "Scanning albums using {0:s}"
 msgstr ""
