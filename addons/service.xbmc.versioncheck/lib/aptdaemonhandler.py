@@ -19,12 +19,11 @@ import xbmc
 from .common import *
 
 try:
-    #import apt
     import apt
     from aptdaemon import client
     from aptdaemon import errors
-except:
-    log('python apt import error')
+except Exception as error:
+    log('python apt import error :%s' %error,xbmc.LOGWARNING)
 
 class AptdaemonHandler:
 
@@ -36,7 +35,6 @@ class AptdaemonHandler:
             return False, False
         try:
             trans = self.aptclient.upgrade_packages([package])
-            #trans = self.aptclient.upgrade_packages("bla")
             trans.simulate(reply_handler=self._apttransstarted, error_handler=self._apterrorhandler)
             pkg = trans.packages[4][0]
             if pkg == package:
@@ -49,7 +47,7 @@ class AptdaemonHandler:
             return False, False
 
         except Exception as error:
-            log("Exception while checking versions: %s" %error)
+            log("Exception while checking versions: %s" %error,xbmc.LOGERROR)
             return False, False
 
     def _update_cache(self):
@@ -71,21 +69,21 @@ class AptdaemonHandler:
                 log("Version available  %s" %candidate)
                 return True
             else:
-                log("Already on newest version")
+                log("Already on newest version for %s" %package)
         elif not installed:
-                log("No installed package found")
+                log("No installed package found for %s" %package)
                 return False
         else:
             return False
 
     def upgrade_package(self, package):
         try:
-            log("Installing new version")
+            log("Installing new version for %s" %package)
             if self.aptclient.upgrade_packages([package], wait=True) == "exit-success":
-                log("Upgrade successful")
+                log("Install package %s successful" %package)
                 return True
         except Exception as error:
-            log("Exception during upgrade: %s" %error)
+            log("Exception during upgrade: %s" %error,xbmc.LOGERROR)
         return False
 
     def upgrade_system(self):
@@ -94,7 +92,7 @@ class AptdaemonHandler:
             if self.aptclient.upgrade_system(wait=True) == "exit-success":
                 return True
         except Exception as error:
-            log("Exception during system upgrade: %s" %error)
+            log("Exception during system upgrade: %s" %error,xbmc.LOGERROR)
         return False
 
     def _getpassword(self):
@@ -106,4 +104,4 @@ class AptdaemonHandler:
         pass
     
     def _apterrorhandler(self, error):
-        log("Apt Error %s" %error)
+        log("Apt Error %s" %error,xbmc.LOGERROR)
