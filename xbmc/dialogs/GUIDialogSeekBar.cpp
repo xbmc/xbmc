@@ -24,6 +24,7 @@
 #include "Application.h"
 #include "GUIInfoManager.h"
 #include "SeekHandler.h"
+#include "guiinfo/GUIInfoLabels.h"
 
 #define POPUP_SEEK_PROGRESS           401
 #define POPUP_SEEK_EPG_EVENT_PROGRESS 402
@@ -63,18 +64,65 @@ void CGUIDialogSeekBar::FrameMove()
   }
 
   unsigned int percent = g_application.GetAppPlayer().GetSeekHandler().InProgress()
-    ? lrintf(g_infoManager.GetSeekPercent())
-    : lrintf(g_application.GetPercentage());
+    ? std::lrintf(GetSeekPercent())
+    : std::lrintf(g_application.GetPercentage());
 
   if (percent != m_lastPercent)
     CONTROL_SELECT_ITEM(POPUP_SEEK_PROGRESS, m_lastPercent = percent);
 
   unsigned int epgEventPercent = g_application.GetAppPlayer().GetSeekHandler().InProgress()
-    ? g_infoManager.GetEpgEventSeekPercent()
-    : g_infoManager.GetEpgEventProgress();
+    ? GetEpgEventSeekPercent()
+    : GetEpgEventProgress();
 
   if (epgEventPercent != m_lastEpgEventPercent)
     CONTROL_SELECT_ITEM(POPUP_SEEK_EPG_EVENT_PROGRESS, m_lastEpgEventPercent = epgEventPercent);
 
   CGUIDialog::FrameMove();
+}
+
+float CGUIDialogSeekBar::GetSeekPercent() const
+{
+  int totaltime = std::lrint(g_application.GetTotalTime());
+  if (totaltime == 0)
+    return 0.0f;
+
+  float percentPlayTime = static_cast<float>(std::lrint(g_application.GetTime() * 1000)) / totaltime * 0.1f;
+  float percentPerSecond = 100.0f / static_cast<float>(totaltime);
+  float percent = percentPlayTime + percentPerSecond * g_application.GetAppPlayer().GetSeekHandler().GetSeekSize();
+
+  if (percent > 100.0f)
+    percent = 100.0f;
+  if (percent < 0.0f)
+    percent = 0.0f;
+
+  return percent;
+}
+
+int CGUIDialogSeekBar::GetEpgEventProgress() const
+{
+  int value = 0;
+  g_infoManager.GetInt(value, PVR_EPG_EVENT_PROGRESS);
+  return value;
+}
+
+int CGUIDialogSeekBar::GetEpgEventSeekPercent() const
+{
+  int seekSize = g_application.GetAppPlayer().GetSeekHandler().GetSeekSize();
+  if (seekSize != 0)
+  {
+    int progress = 0;
+    g_infoManager.GetInt(progress, PVR_EPG_EVENT_PROGRESS);
+
+    int total = 0;
+    g_infoManager.GetInt(total, PVR_EPG_EVENT_DURATION);
+
+    float totalTime = static_cast<float>(total);
+    float percentPerSecond = 100.0f / totalTime;
+    float percent = progress + percentPerSecond * seekSize;
+    return std::lrintf(percent);
+  }
+  else
+  {
+    return GetEpgEventProgress();
+  }
 }

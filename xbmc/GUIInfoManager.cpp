@@ -36,20 +36,15 @@
 #include "guiinfo/GUIInfo.h"
 #include "guiinfo/GUIInfoHelper.h"
 #include "guiinfo/GUIInfoLabels.h"
-#include "guilib/GUIComponent.h"
-#include "guilib/GUIWindow.h"
 #include "input/WindowTranslator.h"
 #include "interfaces/AnnouncementManager.h"
 #include "interfaces/info/InfoExpression.h"
 #include "messaging/ApplicationMessenger.h"
-#include "music/tags/MusicInfoTag.h"
 #include "settings/SkinSettings.h"
 #include "utils/CharsetConverter.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
-#include "utils/Variant.h"
 #include "utils/log.h"
-#include "video/VideoInfoTag.h"
 
 using namespace GUIINFO;
 using namespace INFO;
@@ -60,12 +55,11 @@ bool InfoBoolComparator(const InfoPtr &right, const InfoPtr &left)
   return *right < *left;
 }
 
-CGUIInfoManager::CGUIInfoManager(void) :
-    Observable(),
-    m_bools(&InfoBoolComparator)
+CGUIInfoManager::CGUIInfoManager(void)
+: m_currentFile(new CFileItem),
+  m_bools(&InfoBoolComparator),
+  m_refreshCounter(0)
 {
-  m_currentFile = new CFileItem;
-  m_refreshCounter = 0;
 }
 
 CGUIInfoManager::~CGUIInfoManager(void)
@@ -6337,12 +6331,14 @@ TIME_FORMAT CGUIInfoManager::TranslateTimeFormat(const std::string &format)
 std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *fallback) const
 {
   if (info >= CONDITIONAL_LABEL_START && info <= CONDITIONAL_LABEL_END)
+  {
     return GetSkinVariableString(info, false);
-
-  if (info >= MULTI_INFO_START && info <= MULTI_INFO_END)
+  }
+  else if (info >= MULTI_INFO_START && info <= MULTI_INFO_END)
+  {
     return GetMultiInfoLabel(m_multiInfo[info - MULTI_INFO_START], contextWindow);
-
-  if (info >= LISTITEM_START && info <= LISTITEM_END)
+  }
+  else if (info >= LISTITEM_START && info <= LISTITEM_END)
   {
     const CFileItemPtr item = CGUIInfoHelper::GetCurrentListItemFromWindow(contextWindow);
     return GetItemLabel(item.get(), contextWindow, info, fallback);
@@ -6353,13 +6349,13 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
   return strLabel;
 }
 
-// tries to get a integer value for use in progressbars/sliders and such
 bool CGUIInfoManager::GetInt(int &value, int info, int contextWindow, const CGUIListItem *item /* = nullptr */) const
 {
   if (info >= MULTI_INFO_START && info <= MULTI_INFO_END)
+  {
     return GetMultiInfoInt(value, m_multiInfo[info - MULTI_INFO_START], contextWindow);
-
-  if (info >= LISTITEM_START && info <= LISTITEM_END)
+  }
+  else if (info >= LISTITEM_START && info <= LISTITEM_END)
   {
     if (!item)
       item = CGUIInfoHelper::GetCurrentListItemFromWindow(contextWindow).get();
@@ -6401,12 +6397,10 @@ bool CGUIInfoManager::EvaluateBool(const std::string &expression, int contextWin
   return false;
 }
 
-// checks the condition and returns it as necessary.  Currently used
-// for toggle button controls and visibility of images.
 bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListItem *item)
 {
   bool bReturn = false;
-  int condition = abs(condition1);
+  int condition = std::abs(condition1);
 
   if (condition >= LISTITEM_START && condition < LISTITEM_END)
   {
@@ -6422,39 +6416,29 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
   {
     bReturn = GetMultiInfoBool(m_multiInfo[condition - MULTI_INFO_START], contextWindow, item);
   }
-  else
+  else if (!m_infoProviders.GetBool(bReturn, m_currentFile, contextWindow, GUIInfo(condition)))
   {
-    if (m_infoProviders.GetBool(bReturn, m_currentFile, contextWindow, GUIInfo(condition)))
-      return bReturn;
-
-    switch (condition)
-    {
-      default: // default, use integer value different from 0 as true
-        {
-          int val;
-          bReturn = GetInt(val, condition) && val != 0;
-        }
-    }
+    // default: use integer value different from 0 as true
+    int val;
+    bReturn = GetInt(val, condition) && val != 0;
   }
 
-  return condition1 < 0
-    ? !bReturn
-    : bReturn;
+  return (condition1 < 0) ? !bReturn : bReturn;
 }
 
-/// \brief Examines the multi information sent and returns true or false accordingly.
 bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, const CGUIListItem *item)
 {
   bool bReturn = false;
-  int condition = abs(info.m_info);
+  int condition = std::abs(info.m_info);
 
   if (condition >= LISTITEM_START && condition <= LISTITEM_END)
   {
     if (!item)
       item = CGUIInfoHelper::GetListItemFromActiveContainer(info.GetData1(), contextWindow, info.GetData2(), info.GetInfoFlag()).get();
-    if (item) // If we got a valid item, do the lookup
-      bReturn = GetItemBool(item, contextWindow, condition); // Image prioritizes images over labels (in the case of music item ratings for instance)
+    if (item)
+      bReturn = GetItemBool(item, contextWindow, condition);
   }
+
   if (!m_infoProviders.GetBool(bReturn, m_currentFile, contextWindow, info))
   {
     switch (condition)
@@ -6562,14 +6546,13 @@ bool CGUIInfoManager::GetMultiInfoInt(int &value, const GUIInfo &info, int conte
     if (item)
       return GetItemInt(value, item.get(), contextWindow, info.m_info);
   }
+
   return m_infoProviders.GetInt(value, m_currentFile, contextWindow, info);
 }
 
-/// \brief Examines the multi information sent and returns the string as appropriate
 std::string CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &constinfo, int contextWindow, std::string *fallback) const
 {
   GUIInfo info(constinfo);
-  std::string strValue;
 
   if (info.m_info >= LISTITEM_START && info.m_info <= LISTITEM_END)
   {
@@ -6580,9 +6563,9 @@ std::string CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &constinfo, int con
       return GetMultiInfoItemImage(dynamic_cast<CFileItem*>(item.get()), contextWindow, info, fallback);
     }
   }
-  if (info.m_info == SYSTEM_ADDON_TITLE ||
-      info.m_info == SYSTEM_ADDON_ICON ||
-      info.m_info == SYSTEM_ADDON_VERSION)
+  else if (info.m_info == SYSTEM_ADDON_TITLE ||
+           info.m_info == SYSTEM_ADDON_ICON ||
+           info.m_info == SYSTEM_ADDON_VERSION)
   {
     if (info.GetData2() == 0)
     {
@@ -6591,21 +6574,20 @@ std::string CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &constinfo, int con
       info = GUIInfo(info.m_info, addonId);
     }
   }
-  if (m_infoProviders.GetLabel(strValue, m_currentFile, contextWindow, info, fallback))
-  {
-    return strValue;
-  }
 
-  return "";
+  std::string strValue;
+  m_infoProviders.GetLabel(strValue, m_currentFile, contextWindow, info, fallback);
+  return strValue;
 }
 
 /// \brief Obtains the filename of the image to show from whichever subsystem is needed
 std::string CGUIInfoManager::GetImage(int info, int contextWindow, std::string *fallback)
 {
   if (info >= CONDITIONAL_LABEL_START && info <= CONDITIONAL_LABEL_END)
+  {
     return GetSkinVariableString(info, true);
-
-  if (info >= MULTI_INFO_START && info <= MULTI_INFO_END)
+  }
+  else if (info >= MULTI_INFO_START && info <= MULTI_INFO_END)
   {
     return GetMultiInfoLabel(m_multiInfo[info - MULTI_INFO_START], contextWindow, fallback);
   }
@@ -6621,53 +6603,6 @@ std::string CGUIInfoManager::GetImage(int info, int contextWindow, std::string *
   }
 
   return GetLabel(info, contextWindow, fallback);
-}
-
-float CGUIInfoManager::GetSeekPercent() const
-{
-  int totaltime = std::lrint(g_application.GetTotalTime());
-  if (totaltime == 0)
-    return 0.0f;
-
-  float percentPlayTime = static_cast<float>(std::lrint(g_application.GetTime() * 1000)) / totaltime * 0.1f;
-  float percentPerSecond = 100.0f / static_cast<float>(totaltime);
-  float percent = percentPlayTime + percentPerSecond * g_application.GetAppPlayer().GetSeekHandler().GetSeekSize();
-
-  if (percent > 100.0f)
-    percent = 100.0f;
-  if (percent < 0.0f)
-    percent = 0.0f;
-
-  return percent;
-}
-
-int CGUIInfoManager::GetEpgEventProgress() const
-{
-  int value = 0;
-  GetInt(value, PVR_EPG_EVENT_PROGRESS);
-  return value;
-}
-
-int CGUIInfoManager::GetEpgEventSeekPercent() const
-{
-  int seekSize = g_application.GetAppPlayer().GetSeekHandler().GetSeekSize();
-  if (seekSize != 0)
-  {
-    int progress = 0;
-    GetInt(progress, PVR_EPG_EVENT_PROGRESS);
-
-    int total = 0;
-    GetInt(total, PVR_EPG_EVENT_DURATION);
-
-    float totalTime = static_cast<float>(total);
-    float percentPerSecond = 100.0f / totalTime;
-    float percent = progress + percentPerSecond * seekSize;
-    return std::lrintf(percent);
-  }
-  else
-  {
-    return GetEpgEventProgress();
-  }
 }
 
 void CGUIInfoManager::ResetCurrentItem()
@@ -6760,17 +6695,12 @@ int CGUIInfoManager::AddMultiInfo(const GUIInfo &info)
 
 bool CGUIInfoManager::GetItemInt(int &value, const CGUIListItem *item, int contextWindow, int info) const
 {
-  if (!item)
-  {
-    value = 0;
-    return false;
-  }
-
-  if (m_infoProviders.GetInt(value, item, contextWindow, GUIInfo(info)))
-    return true;
-
   value = 0;
-  return false;
+
+  if (!item)
+    return false;
+
+  return m_infoProviders.GetInt(value, item, contextWindow, GUIInfo(info));
 }
 
 std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int contextWindow, int info, std::string *fallback /* = nullptr */) const
@@ -6781,110 +6711,115 @@ std::string CGUIInfoManager::GetItemLabel(const CFileItem *item, int contextWind
 std::string CGUIInfoManager::GetMultiInfoItemLabel(const CFileItem *item, int contextWindow, const GUIINFO::GUIInfo &info, std::string *fallback /* = nullptr */) const
 {
   if (!item)
-    return "";
-
-  if (info.m_info >= CONDITIONAL_LABEL_START && info.m_info <= CONDITIONAL_LABEL_END)
-    return GetSkinVariableString(info.m_info, false, item);
-
-  if (info.m_info >= MULTI_INFO_START && info.m_info <= MULTI_INFO_END)
-    return GetMultiInfoItemLabel(item, contextWindow, m_multiInfo[info.m_info - MULTI_INFO_START], fallback);
+    return std::string();
 
   std::string value;
-  if (m_infoProviders.GetLabel(value, item, contextWindow, info, fallback))
-    return value;
 
-  switch (info.m_info)
+  if (info.m_info >= CONDITIONAL_LABEL_START && info.m_info <= CONDITIONAL_LABEL_END)
   {
-  case LISTITEM_PROPERTY:
-    return item->GetProperty(info.GetData3()).asString();
-  case LISTITEM_LABEL:
-    return item->GetLabel();
-  case LISTITEM_LABEL2:
-    return item->GetLabel2();
-  case LISTITEM_FILENAME:
-  case LISTITEM_FILE_EXTENSION:
+    return GetSkinVariableString(info.m_info, false, item);
+  }
+  else if (info.m_info >= MULTI_INFO_START && info.m_info <= MULTI_INFO_END)
+  {
+    return GetMultiInfoItemLabel(item, contextWindow, m_multiInfo[info.m_info - MULTI_INFO_START], fallback);
+  }
+  else if (!m_infoProviders.GetLabel(value, item, contextWindow, info, fallback))
+  {
+    switch (info.m_info)
     {
-      std::string strFile = URIUtils::GetFileName(item->GetPath());
-      if (info.m_info == LISTITEM_FILE_EXTENSION)
+      case LISTITEM_PROPERTY:
+        return item->GetProperty(info.GetData3()).asString();
+      case LISTITEM_LABEL:
+        return item->GetLabel();
+      case LISTITEM_LABEL2:
+        return item->GetLabel2();
+      case LISTITEM_FILENAME:
+      case LISTITEM_FILE_EXTENSION:
       {
-        std::string strExtension = URIUtils::GetExtension(strFile);
-        return StringUtils::TrimLeft(strExtension, ".");
+        std::string strFile = URIUtils::GetFileName(item->GetPath());
+        if (info.m_info == LISTITEM_FILE_EXTENSION)
+        {
+          std::string strExtension = URIUtils::GetExtension(strFile);
+          return StringUtils::TrimLeft(strExtension, ".");
+        }
+        return strFile;
       }
-      return strFile;
-    }
-    break;
-  case LISTITEM_DATE:
-    if (item->m_dateTime.IsValid())
-      return item->m_dateTime.GetAsLocalizedDate();
-    break;
-  case LISTITEM_DATETIME:
-    if (item->m_dateTime.IsValid())
-      return item->m_dateTime.GetAsLocalizedDateTime();
-    break;
-  case LISTITEM_SIZE:
-    if (!item->m_bIsFolder || item->m_dwSize)
-      return StringUtils::SizeToString(item->m_dwSize);
-    break;
-  case LISTITEM_PROGRAM_COUNT:
-    return StringUtils::Format("%i", item->m_iprogramCount);
-  case LISTITEM_ACTUAL_ICON:
-    return item->GetIconImage();
-  case LISTITEM_ICON:
-    {
-      std::string strThumb = item->GetArt("thumb");
-      if (strThumb.empty())
-        strThumb = item->GetIconImage();
-      if (fallback)
-        *fallback = item->GetIconImage();
-      return strThumb;
-    }
-  case LISTITEM_ART:
-    return item->GetArt(info.GetData3());
-  case LISTITEM_OVERLAY:
-    return item->GetOverlayImage();
-  case LISTITEM_THUMB:
-    return item->GetArt("thumb");
-  case LISTITEM_FOLDERPATH:
-    return CURL(item->GetPath()).GetWithoutUserDetails();
-  case LISTITEM_FOLDERNAME:
-  case LISTITEM_PATH:
-    {
-      std::string path;
-      URIUtils::GetParentPath(item->GetPath(), path);
-      path = CURL(path).GetWithoutUserDetails();
-      if (info.m_info == LISTITEM_FOLDERNAME)
+      case LISTITEM_DATE:
+        if (item->m_dateTime.IsValid())
+          return item->m_dateTime.GetAsLocalizedDate();
+        break;
+      case LISTITEM_DATETIME:
+        if (item->m_dateTime.IsValid())
+          return item->m_dateTime.GetAsLocalizedDateTime();
+        break;
+      case LISTITEM_SIZE:
+        if (!item->m_bIsFolder || item->m_dwSize)
+          return StringUtils::SizeToString(item->m_dwSize);
+        break;
+      case LISTITEM_PROGRAM_COUNT:
+        return StringUtils::Format("%i", item->m_iprogramCount);
+      case LISTITEM_ACTUAL_ICON:
+        return item->GetIconImage();
+      case LISTITEM_ICON:
       {
-        URIUtils::RemoveSlashAtEnd(path);
-        path=URIUtils::GetFileName(path);
+        std::string strThumb = item->GetArt("thumb");
+        if (strThumb.empty())
+          strThumb = item->GetIconImage();
+        if (fallback)
+          *fallback = item->GetIconImage();
+        return strThumb;
       }
-      return path;
+      case LISTITEM_ART:
+        return item->GetArt(info.GetData3());
+      case LISTITEM_OVERLAY:
+        return item->GetOverlayImage();
+      case LISTITEM_THUMB:
+        return item->GetArt("thumb");
+      case LISTITEM_FOLDERPATH:
+        return CURL(item->GetPath()).GetWithoutUserDetails();
+      case LISTITEM_FOLDERNAME:
+      case LISTITEM_PATH:
+      {
+        std::string path;
+        URIUtils::GetParentPath(item->GetPath(), path);
+        path = CURL(path).GetWithoutUserDetails();
+        if (info.m_info == LISTITEM_FOLDERNAME)
+        {
+          URIUtils::RemoveSlashAtEnd(path);
+          path = URIUtils::GetFileName(path);
+        }
+        return path;
+      }
+      case LISTITEM_FILENAME_AND_PATH:
+      {
+        std::string path = item->GetPath();
+        path = CURL(path).GetWithoutUserDetails();
+        return path;
+      }
+      case LISTITEM_SORT_LETTER:
+      {
+        std::string letter;
+        std::wstring character(1, item->GetSortLabel()[0]);
+        StringUtils::ToUpper(character);
+        g_charsetConverter.wToUTF8(character, letter);
+        return letter;
+      }
+      case LISTITEM_STARTTIME:
+      {
+        if (item->m_dateTime.IsValid())
+          return item->m_dateTime.GetAsLocalizedTime("", false);
+        break;
+      }
+      case LISTITEM_STARTDATE:
+      {
+        if (item->m_dateTime.IsValid())
+          return item->m_dateTime.GetAsLocalizedDate(true);
+        break;
+      }
     }
-  case LISTITEM_FILENAME_AND_PATH:
-    {
-      std::string path = item->GetPath();
-      path = CURL(path).GetWithoutUserDetails();
-      return path;
-    }
-  case LISTITEM_SORT_LETTER:
-    {
-      std::string letter;
-      std::wstring character(1, item->GetSortLabel()[0]);
-      StringUtils::ToUpper(character);
-      g_charsetConverter.wToUTF8(character, letter);
-      return letter;
-    }
-    break;
-  case LISTITEM_STARTTIME:
-    if (item->m_dateTime.IsValid())
-      return item->m_dateTime.GetAsLocalizedTime("", false);
-    break;
-  case LISTITEM_STARTDATE:
-    if (item->m_dateTime.IsValid())
-      return item->m_dateTime.GetAsLocalizedDate(true);
-    break;
   }
 
-  return "";
+  return value;
 }
 
 std::string CGUIInfoManager::GetItemImage(const CFileItem *item, int contextWindow, int info, std::string *fallback /*= nullptr*/) const
@@ -6895,10 +6830,13 @@ std::string CGUIInfoManager::GetItemImage(const CFileItem *item, int contextWind
 std::string CGUIInfoManager::GetMultiInfoItemImage(const CFileItem *item, int contextWindow, const GUIInfo &info, std::string *fallback /*= nullptr*/) const
 {
   if (info.m_info >= CONDITIONAL_LABEL_START && info.m_info <= CONDITIONAL_LABEL_END)
+  {
     return GetSkinVariableString(info.m_info, true, item);
-
-  if (info.m_info >= MULTI_INFO_START && info.m_info <= MULTI_INFO_END)
+  }
+  else if (info.m_info >= MULTI_INFO_START && info.m_info <= MULTI_INFO_END)
+  {
     return GetMultiInfoItemImage(item, contextWindow, m_multiInfo[info.m_info - MULTI_INFO_START], fallback);
+  }
 
   return GetMultiInfoItemLabel(item, contextWindow, info, fallback);
 }
@@ -6909,23 +6847,27 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int contextWindow, i
     return false;
 
   bool value = false;
-  if (m_infoProviders.GetBool(value, item, contextWindow, GUIInfo(condition)))
-    return value;
-
-  if (condition == LISTITEM_ISSELECTED)
-    return item->IsSelected();
-  else if (condition == LISTITEM_IS_FOLDER)
-    return item->m_bIsFolder;
-  else if (condition == LISTITEM_IS_PARENTFOLDER)
+  if (!m_infoProviders.GetBool(value, item, contextWindow, GUIInfo(condition)))
   {
-    if (item->IsFileItem())
+    switch (condition)
     {
-      const CFileItem *pItem = static_cast<const CFileItem *>(item);
-      return pItem->IsParentFolder();
+      case LISTITEM_ISSELECTED:
+        return item->IsSelected();
+      case LISTITEM_IS_FOLDER:
+        return item->m_bIsFolder;
+      case LISTITEM_IS_PARENTFOLDER:
+      {
+        if (item->IsFileItem())
+        {
+          const CFileItem *pItem = static_cast<const CFileItem *>(item);
+          return pItem->IsParentFolder();
+        }
+        break;
+      }
     }
   }
 
-  return false;
+  return value;
 }
 
 void CGUIInfoManager::ResetCache()
@@ -6937,13 +6879,13 @@ void CGUIInfoManager::ResetCache()
 
 void CGUIInfoManager::SetCurrentVideoTag(const CVideoInfoTag &tag)
 {
-  *m_currentFile->GetVideoInfoTag() = tag;
+  m_currentFile->SetFromVideoInfoTag(tag);
   m_currentFile->m_lStartOffset = 0;
 }
 
 void CGUIInfoManager::SetCurrentSongTag(const MUSIC_INFO::CMusicInfoTag &tag)
 {
-  *m_currentFile->GetMusicInfoTag() = tag;
+  m_currentFile->SetFromMusicInfoTag(tag);
   m_currentFile->m_lStartOffset = 0;
 }
 
@@ -7039,7 +6981,7 @@ void CGUIInfoManager::OnApplicationMessage(KODI::MESSAGING::ThreadMessage* pMsg)
 
   case TMSG_UPDATE_CURRENT_ITEM:
   {
-    auto item = static_cast<CFileItem*>(pMsg->lpVoid);
+    CFileItem* item = static_cast<CFileItem*>(pMsg->lpVoid);
     if (!item)
       return;
 

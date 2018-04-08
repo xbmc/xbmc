@@ -30,6 +30,10 @@ public:
   bool OnMessage(CGUIMessage& message) override;
   void FrameMove() override;
 private:
+  float GetSeekPercent() const;
+  int GetEpgEventProgress() const;
+  int GetEpgEventSeekPercent() const;
+
   unsigned int m_lastPercent = ~0U;
   unsigned int m_lastEpgEventPercent = ~0U;
 };
