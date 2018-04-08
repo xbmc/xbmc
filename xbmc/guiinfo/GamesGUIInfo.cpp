@@ -56,7 +56,7 @@ bool CGamesGUIInfo::InitCurrentItem(CFileItem *item)
   return false;
 }
 
-bool CGamesGUIInfo::GetLabel(std::string& value, const CFileItem *item, int contextWindow, const GUIInfo &info, std::string *fallback) const
+bool CGamesGUIInfo::GetLabel(std::string& value, const CFileItem *item, int contextWindow, const CGUIInfo &info, std::string *fallback) const
 {
   switch (info.m_info)
   {
@@ -89,12 +89,12 @@ bool CGamesGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
   return false;
 }
 
-bool CGamesGUIInfo::GetInt(int& value, const CGUIListItem *gitem, int contextWindow, const GUIInfo &info) const
+bool CGamesGUIInfo::GetInt(int& value, const CGUIListItem *gitem, int contextWindow, const CGUIInfo &info) const
 {
   return false;
 }
 
-bool CGamesGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contextWindow, const GUIInfo &info) const
+bool CGamesGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contextWindow, const CGUIInfo &info) const
 {
   return false;
 }

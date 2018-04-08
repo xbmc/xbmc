@@ -35,7 +35,7 @@
 
 namespace GUIINFO
 {
-  class GUIInfo;
+  class CGUIInfo;
 }
 
 namespace PVR
@@ -53,9 +53,9 @@ namespace PVR
 
     // GUIINFO::IGUIInfoProvider implementation
     bool InitCurrentItem(CFileItem *item) override;
-    bool GetLabel(std::string& value, const CFileItem *item, int contextWindow, const GUIINFO::GUIInfo &info, std::string *fallback) const override;
-    bool GetInt(int& value, const CGUIListItem *item, int contextWindow, const GUIINFO::GUIInfo &info) const override;
-    bool GetBool(bool& value, const CGUIListItem *item, int contextWindow, const GUIINFO::GUIInfo &info) const override;
+    bool GetLabel(std::string& value, const CFileItem *item, int contextWindow, const GUIINFO::CGUIInfo &info, std::string *fallback) const override;
+    bool GetInt(int& value, const CGUIListItem *item, int contextWindow, const GUIINFO::CGUIInfo &info) const override;
+    bool GetBool(bool& value, const CGUIListItem *item, int contextWindow, const GUIINFO::CGUIInfo &info) const override;
 
     /*!
      * @brief Get the total duration of the currently playing epg event or if no epg is
@@ -100,16 +100,16 @@ namespace PVR
 
     void UpdateTimersToggle(void);
 
-    bool GetListItemAndPlayerLabel(const CFileItem *item, const GUIINFO::GUIInfo &info, std::string &strValue) const;
-    bool GetPVRLabel(const CFileItem *item, const GUIINFO::GUIInfo &info, std::string &strValue) const;
-    bool GetRadioRDSLabel(const CFileItem *item, const GUIINFO::GUIInfo &info, std::string &strValue) const;
+    bool GetListItemAndPlayerLabel(const CFileItem *item, const GUIINFO::CGUIInfo &info, std::string &strValue) const;
+    bool GetPVRLabel(const CFileItem *item, const GUIINFO::CGUIInfo &info, std::string &strValue) const;
+    bool GetRadioRDSLabel(const CFileItem *item, const GUIINFO::CGUIInfo &info, std::string &strValue) const;
 
-    bool GetListItemAndPlayerInt(const CFileItem *item, const GUIINFO::GUIInfo &info, int &iValue) const;
-    bool GetPVRInt(const CFileItem *item, const GUIINFO::GUIInfo &info, int& iValue) const;
+    bool GetListItemAndPlayerInt(const CFileItem *item, const GUIINFO::CGUIInfo &info, int &iValue) const;
+    bool GetPVRInt(const CFileItem *item, const GUIINFO::CGUIInfo &info, int& iValue) const;
 
-    bool GetListItemAndPlayerBool(const CFileItem *item, const GUIINFO::GUIInfo &info, bool &bValue) const;
-    bool GetPVRBool(const CFileItem *item, const GUIINFO::GUIInfo &info, bool& bValue) const;
-    bool GetRadioRDSBool(const CFileItem *item, const GUIINFO::GUIInfo &info, bool &bValue) const;
+    bool GetListItemAndPlayerBool(const CFileItem *item, const GUIINFO::CGUIInfo &info, bool &bValue) const;
+    bool GetPVRBool(const CFileItem *item, const GUIINFO::CGUIInfo &info, bool& bValue) const;
+    bool GetRadioRDSBool(const CFileItem *item, const GUIINFO::CGUIInfo &info, bool &bValue) const;
 
     void CharInfoEpgEventDuration(const CFileItem *item, TIME_FORMAT format, std::string &strValue) const;
     void CharInfoEpgEventElapsedTime(const CFileItem *item, TIME_FORMAT format, std::string &strValue) const;

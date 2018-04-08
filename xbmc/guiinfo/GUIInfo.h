@@ -27,10 +27,10 @@ namespace GUIINFO
 
 // class to hold multiple integer data
 // for storage referenced from a single integer
-class GUIInfo
+class CGUIInfo
 {
 public:
-  GUIInfo(int info, uint32_t data1, int data2, uint32_t flag, const std::string& data3, int data4)
+  CGUIInfo(int info, uint32_t data1, int data2, uint32_t flag, const std::string& data3, int data4)
   : m_info(info),
     m_data1(data1),
     m_data2(data2),
@@ -41,7 +41,7 @@ public:
       SetInfoFlag(flag);
   }
 
-  explicit GUIInfo(int info, uint32_t data1 = 0, int data2 = 0, uint32_t flag = 0)
+  explicit CGUIInfo(int info, uint32_t data1 = 0, int data2 = 0, uint32_t flag = 0)
   : m_info(info),
     m_data1(data1),
     m_data2(data2),
@@ -51,7 +51,7 @@ public:
       SetInfoFlag(flag);
   }
 
-  GUIInfo(int info, uint32_t data1, const std::string& data3)
+  CGUIInfo(int info, uint32_t data1, const std::string& data3)
   : m_info(info),
     m_data1(data1),
     m_data2(0),
@@ -60,7 +60,7 @@ public:
   {
   }
 
-  GUIInfo(int info, const std::string& data3)
+  CGUIInfo(int info, const std::string& data3)
   : m_info(info),
     m_data1(0),
     m_data2(0),
@@ -69,7 +69,7 @@ public:
   {
   }
 
-  GUIInfo(int info, const std::string& data3, int data2)
+  CGUIInfo(int info, const std::string& data3, int data2)
   : m_info(info),
     m_data1(0),
     m_data2(data2),
@@ -78,7 +78,7 @@ public:
   {
   }
 
-  bool operator ==(const GUIInfo &right) const
+  bool operator ==(const CGUIInfo &right) const
   {
     return (m_info == right.m_info &&
             m_data1 == right.m_data1 &&

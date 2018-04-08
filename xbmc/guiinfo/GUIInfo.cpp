@@ -25,20 +25,20 @@
 namespace GUIINFO
 {
 
-void GUIInfo::SetInfoFlag(uint32_t flag)
+void CGUIInfo::SetInfoFlag(uint32_t flag)
 {
   assert(flag >= (1 << 24));
   m_data1 |= flag;
 }
 
-uint32_t GUIInfo::GetInfoFlag() const
+uint32_t CGUIInfo::GetInfoFlag() const
 {
   // we strip out the bottom 24 bits, where we keep data
   // and return the flag only
   return m_data1 & 0xff000000;
 }
 
-uint32_t GUIInfo::GetData1() const
+uint32_t CGUIInfo::GetData1() const
 {
   // we strip out the top 8 bits, where we keep flags
   // and return the unflagged data

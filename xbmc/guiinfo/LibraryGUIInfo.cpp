@@ -38,7 +38,7 @@ CLibraryGUIInfo::CLibraryGUIInfo()
 bool CLibraryGUIInfo::GetLibraryBool(int condition) const
 {
   bool value = false;
-  GetBool(value, nullptr, 0, GUIInfo(condition));
+  GetBool(value, nullptr, 0, CGUIInfo(condition));
   return value;
 }
 
@@ -89,17 +89,17 @@ bool CLibraryGUIInfo::InitCurrentItem(CFileItem *item)
   return false;
 }
 
-bool CLibraryGUIInfo::GetLabel(std::string& value, const CFileItem *item, int contextWindow, const GUIInfo &info, std::string *fallback) const
+bool CLibraryGUIInfo::GetLabel(std::string& value, const CFileItem *item, int contextWindow, const CGUIInfo &info, std::string *fallback) const
 {
   return false;
 }
 
-bool CLibraryGUIInfo::GetInt(int& value, const CGUIListItem *gitem, int contextWindow, const GUIInfo &info) const
+bool CLibraryGUIInfo::GetInt(int& value, const CGUIListItem *gitem, int contextWindow, const CGUIInfo &info) const
 {
   return false;
 }
 
-bool CLibraryGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contextWindow, const GUIInfo &info) const
+bool CLibraryGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contextWindow, const CGUIInfo &info) const
 {
   switch (info.m_info)
   {
@@ -206,9 +206,9 @@ bool CLibraryGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contex
     }
     case LIBRARY_HAS_VIDEO:
     {
-      return (GetBool(value, gitem, contextWindow, GUIInfo(LIBRARY_HAS_MOVIES)) ||
-              GetBool(value, gitem, contextWindow, GUIInfo(LIBRARY_HAS_TVSHOWS)) ||
-              GetBool(value, gitem, contextWindow, GUIInfo(LIBRARY_HAS_MUSICVIDEOS)));
+      return (GetBool(value, gitem, contextWindow, CGUIInfo(LIBRARY_HAS_MOVIES)) ||
+              GetBool(value, gitem, contextWindow, CGUIInfo(LIBRARY_HAS_TVSHOWS)) ||
+              GetBool(value, gitem, contextWindow, CGUIInfo(LIBRARY_HAS_MUSICVIDEOS)));
     }
     case LIBRARY_HAS_ROLE:
     {

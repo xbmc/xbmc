@@ -71,7 +71,7 @@ bool CGUIControlsGUIInfo::InitCurrentItem(CFileItem *item)
   return false;
 }
 
-bool CGUIControlsGUIInfo::GetLabel(std::string& value, const CFileItem *item, int contextWindow, const GUIInfo &info, std::string *fallback) const
+bool CGUIControlsGUIInfo::GetLabel(std::string& value, const CFileItem *item, int contextWindow, const CGUIInfo &info, std::string *fallback) const
 {
   switch (info.m_info)
   {
@@ -408,7 +408,7 @@ bool CGUIControlsGUIInfo::GetLabel(std::string& value, const CFileItem *item, in
   return false;
 }
 
-bool CGUIControlsGUIInfo::GetInt(int& value, const CGUIListItem *gitem, int contextWindow, const GUIInfo &info) const
+bool CGUIControlsGUIInfo::GetInt(int& value, const CGUIListItem *gitem, int contextWindow, const CGUIInfo &info) const
 {
   switch (info.m_info)
   {
@@ -427,7 +427,7 @@ bool CGUIControlsGUIInfo::GetInt(int& value, const CGUIListItem *gitem, int cont
   return false;
 }
 
-bool CGUIControlsGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contextWindow, const GUIInfo &info) const
+bool CGUIControlsGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contextWindow, const CGUIInfo &info) const
 {
   switch (info.m_info)
   {

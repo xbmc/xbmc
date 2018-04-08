@@ -148,7 +148,7 @@ bool CSystemGUIInfo::InitCurrentItem(CFileItem *item)
   return false;
 }
 
-bool CSystemGUIInfo::GetLabel(std::string& value, const CFileItem *item, int contextWindow, const GUIInfo &info, std::string *fallback) const
+bool CSystemGUIInfo::GetLabel(std::string& value, const CFileItem *item, int contextWindow, const CGUIInfo &info, std::string *fallback) const
 {
   switch (info.m_info)
   {
@@ -388,7 +388,7 @@ bool CSystemGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
   return false;
 }
 
-bool CSystemGUIInfo::GetInt(int& value, const CGUIListItem *gitem, int contextWindow, const GUIInfo &info) const
+bool CSystemGUIInfo::GetInt(int& value, const CGUIListItem *gitem, int contextWindow, const CGUIInfo &info) const
 {
   switch (info.m_info)
   {
@@ -425,7 +425,7 @@ bool CSystemGUIInfo::GetInt(int& value, const CGUIListItem *gitem, int contextWi
   return false;
 }
 
-bool CSystemGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contextWindow, const GUIInfo &info) const
+bool CSystemGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contextWindow, const CGUIInfo &info) const
 {
   switch (info.m_info)
   {

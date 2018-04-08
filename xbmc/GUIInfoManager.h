@@ -40,7 +40,7 @@ typedef std::shared_ptr<CGUIListItem> CGUIListItemPtr;
 
 namespace GUIINFO
 {
-  class GUIInfo;
+  class CGUIInfo;
   class IGUIInfoProvider;
 }
 namespace INFO
@@ -179,22 +179,22 @@ private:
   int TranslateMusicPlayerString(const std::string &info) const;
   static TIME_FORMAT TranslateTimeFormat(const std::string &format);
 
-  std::string GetMultiInfoLabel(const GUIINFO::GUIInfo &info, int contextWindow = 0, std::string *fallback = nullptr) const;
-  bool GetMultiInfoInt(int &value, const GUIINFO::GUIInfo &info, int contextWindow = 0) const;
-  bool GetMultiInfoBool(const GUIINFO::GUIInfo &info, int contextWindow = 0, const CGUIListItem *item = nullptr);
+  std::string GetMultiInfoLabel(const GUIINFO::CGUIInfo &info, int contextWindow = 0, std::string *fallback = nullptr) const;
+  bool GetMultiInfoInt(int &value, const GUIINFO::CGUIInfo &info, int contextWindow = 0) const;
+  bool GetMultiInfoBool(const GUIINFO::CGUIInfo &info, int contextWindow = 0, const CGUIListItem *item = nullptr);
 
-  std::string GetMultiInfoItemLabel(const CFileItem *item, int contextWindow, const GUIINFO::GUIInfo &info, std::string *fallback = nullptr) const;
-  std::string GetMultiInfoItemImage(const CFileItem *item, int contextWindow, const GUIINFO::GUIInfo &info, std::string *fallback = nullptr) const;
+  std::string GetMultiInfoItemLabel(const CFileItem *item, int contextWindow, const GUIINFO::CGUIInfo &info, std::string *fallback = nullptr) const;
+  std::string GetMultiInfoItemImage(const CFileItem *item, int contextWindow, const GUIINFO::CGUIInfo &info, std::string *fallback = nullptr) const;
 
   std::string GetSkinVariableString(int info, bool preferImage = false, const CGUIListItem *item = nullptr) const;
 
-  int AddMultiInfo(const GUIINFO::GUIInfo &info);
+  int AddMultiInfo(const GUIINFO::CGUIInfo &info);
 
   void SetCurrentSongTag(const MUSIC_INFO::CMusicInfoTag &tag);
   void SetCurrentVideoTag(const CVideoInfoTag &tag);
 
   // Vector of multiple information mapped to a single integer lookup
-  std::vector<GUIINFO::GUIInfo> m_multiInfo;
+  std::vector<GUIINFO::CGUIInfo> m_multiInfo;
 
   // Current playing stuff
   CFileItem* m_currentFile;

@@ -26,7 +26,7 @@
 namespace GUIINFO
 {
 
-class GUIInfo;
+class CGUIInfo;
 
 class CGUIInfoProvider : public IGUIInfoProvider
 {

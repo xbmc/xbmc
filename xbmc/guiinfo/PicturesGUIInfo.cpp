@@ -129,7 +129,7 @@ bool CPicturesGUIInfo::InitCurrentItem(CFileItem *item)
   return false;
 }
 
-bool CPicturesGUIInfo::GetLabel(std::string& value, const CFileItem *item, int contextWindow, const GUIInfo &info, std::string *fallback) const
+bool CPicturesGUIInfo::GetLabel(std::string& value, const CFileItem *item, int contextWindow, const CGUIInfo &info, std::string *fallback) const
 {
   ///////////////////////////////////////////////////////////////////////////////////////////////
   // LISTITEM_* / SLIDESHOW_* (values directly supported by PictureInfoTag)
@@ -232,12 +232,12 @@ bool CPicturesGUIInfo::GetLabel(std::string& value, const CFileItem *item, int c
   return false;
 }
 
-bool CPicturesGUIInfo::GetInt(int& value, const CGUIListItem *gitem, int contextWindow, const GUIInfo &info) const
+bool CPicturesGUIInfo::GetInt(int& value, const CGUIListItem *gitem, int contextWindow, const CGUIInfo &info) const
 {
   return false;
 }
 
-bool CPicturesGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contextWindow, const GUIInfo &info) const
+bool CPicturesGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contextWindow, const CGUIInfo &info) const
 {
   switch (info.m_info)
   {
