@@ -237,7 +237,7 @@ bool CGraphicContext::SetViewPort(float fx, float fy, float fwidth, float fheigh
   m_viewStack.push(newviewport);
 
   newviewport = StereoCorrection(newviewport);
-  CServiceBroker::GetRenderSystem().SetViewPort(newviewport);
+  CServiceBroker::GetRenderSystem()->SetViewPort(newviewport);
 
 
   UpdateCameraPosition(m_cameras.top(), m_stereoFactors.top());
@@ -250,7 +250,7 @@ void CGraphicContext::RestoreViewPort()
 
   m_viewStack.pop();
   CRect viewport = StereoCorrection(m_viewStack.top());
-  CServiceBroker::GetRenderSystem().SetViewPort(viewport);
+  CServiceBroker::GetRenderSystem()->SetViewPort(viewport);
 
   UpdateCameraPosition(m_cameras.top(), m_stereoFactors.top());
 }
@@ -287,7 +287,7 @@ void CGraphicContext::SetScissors(const CRect &rect)
 {
   m_scissors = rect;
   m_scissors.Intersect(CRect(0,0,(float)m_iScreenWidth, (float)m_iScreenHeight));
-  CServiceBroker::GetRenderSystem().SetScissors(StereoCorrection(m_scissors));
+  CServiceBroker::GetRenderSystem()->SetScissors(StereoCorrection(m_scissors));
 }
 
 const CRect &CGraphicContext::GetScissors() const
@@ -298,7 +298,7 @@ const CRect &CGraphicContext::GetScissors() const
 void CGraphicContext::ResetScissors()
 {
   m_scissors.SetRect(0, 0, (float)m_iScreenWidth, (float)m_iScreenHeight);
-  CServiceBroker::GetRenderSystem().SetScissors(StereoCorrection(m_scissors));
+  CServiceBroker::GetRenderSystem()->SetScissors(StereoCorrection(m_scissors));
 }
 
 const CRect CGraphicContext::GetViewWindow() const
@@ -442,15 +442,15 @@ void CGraphicContext::SetVideoResolutionInternal(RESOLUTION res, bool forceUpdat
   {
 #if defined (TARGET_DARWIN) || defined (TARGET_WINDOWS)
     bool blankOtherDisplays = CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOSCREEN_BLANKDISPLAYS);
-    switched = CServiceBroker::GetWinSystem().SetFullScreen(true,  info_org, blankOtherDisplays);
+    switched = CServiceBroker::GetWinSystem()->SetFullScreen(true,  info_org, blankOtherDisplays);
 #else
-    switched = CServiceBroker::GetWinSystem().SetFullScreen(true,  info_org, false);
+    switched = CServiceBroker::GetWinSystem()->SetFullScreen(true,  info_org, false);
 #endif
   }
   else if (lastRes >= RES_DESKTOP )
-    switched = CServiceBroker::GetWinSystem().SetFullScreen(false, info_org, false);
+    switched = CServiceBroker::GetWinSystem()->SetFullScreen(false, info_org, false);
   else
-    switched = CServiceBroker::GetWinSystem().ResizeWindow(info_org.iWidth, info_org.iHeight, -1, -1);
+    switched = CServiceBroker::GetWinSystem()->ResizeWindow(info_org.iWidth, info_org.iHeight, -1, -1);
 
   if (switched)
   {
@@ -537,14 +537,14 @@ void CGraphicContext::UpdateInternalStateWithResolution(RESOLUTION res)
 void CGraphicContext::ApplyModeChange(RESOLUTION res)
 {
   ApplyVideoResolution(res);
-  CServiceBroker::GetWinSystem().FinishModeChange(res);
+  CServiceBroker::GetWinSystem()->FinishModeChange(res);
 }
 
 void CGraphicContext::ApplyWindowResize(int newWidth, int newHeight)
 {
-  CServiceBroker::GetWinSystem().SetWindowResolution(newWidth, newHeight);
+  CServiceBroker::GetWinSystem()->SetWindowResolution(newWidth, newHeight);
   ApplyVideoResolution(RES_WINDOW);
-  CServiceBroker::GetWinSystem().FinishWindowResize(newWidth, newHeight);
+  CServiceBroker::GetWinSystem()->FinishWindowResize(newWidth, newHeight);
 }
 
 RESOLUTION CGraphicContext::GetVideoResolution() const
@@ -748,17 +748,17 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
 
 void CGraphicContext::Clear(color_t color)
 {
-  CServiceBroker::GetRenderSystem().ClearBuffers(color);
+  CServiceBroker::GetRenderSystem()->ClearBuffers(color);
 }
 
 void CGraphicContext::CaptureStateBlock()
 {
-  CServiceBroker::GetRenderSystem().CaptureStateBlock();
+  CServiceBroker::GetRenderSystem()->CaptureStateBlock();
 }
 
 void CGraphicContext::ApplyStateBlock()
 {
-  CServiceBroker::GetRenderSystem().ApplyStateBlock();
+  CServiceBroker::GetRenderSystem()->ApplyStateBlock();
 }
 
 const RESOLUTION_INFO CGraphicContext::GetResInfo(RESOLUTION res) const
@@ -917,9 +917,9 @@ void CGraphicContext::SetStereoView(RENDER_STEREO_VIEW view)
   m_viewStack.push(viewport);
 
   viewport = StereoCorrection(viewport);
-  CServiceBroker::GetRenderSystem().SetStereoMode(m_stereoMode, m_stereoView);
-  CServiceBroker::GetRenderSystem().SetViewPort(viewport);
-  CServiceBroker::GetRenderSystem().SetScissors(viewport);
+  CServiceBroker::GetRenderSystem()->SetStereoMode(m_stereoMode, m_stereoView);
+  CServiceBroker::GetRenderSystem()->SetViewPort(viewport);
+  CServiceBroker::GetRenderSystem()->SetScissors(viewport);
 }
 
 void CGraphicContext::InvertFinalCoords(float &x, float &y) const
@@ -1002,19 +1002,19 @@ CRect CGraphicContext::GenerateAABB(const CRect &rect) const
 
   float z = 0.0f;
   ScaleFinalCoords(x1, y1, z);
-  CServiceBroker::GetRenderSystem().Project(x1, y1, z);
+  CServiceBroker::GetRenderSystem()->Project(x1, y1, z);
 
   z = 0.0f;
   ScaleFinalCoords(x2, y2, z);
-  CServiceBroker::GetRenderSystem().Project(x2, y2, z);
+  CServiceBroker::GetRenderSystem()->Project(x2, y2, z);
 
   z = 0.0f;
   ScaleFinalCoords(x3, y3, z);
-  CServiceBroker::GetRenderSystem().Project(x3, y3, z);
+  CServiceBroker::GetRenderSystem()->Project(x3, y3, z);
 
   z = 0.0f;
   ScaleFinalCoords(x4, y4, z);
-  CServiceBroker::GetRenderSystem().Project(x4, y4, z);
+  CServiceBroker::GetRenderSystem()->Project(x4, y4, z);
 
   return CRect( std::min(std::min(std::min(x1, x2), x3), x4),
                 std::min(std::min(std::min(y1, y2), y3), y4),
@@ -1042,7 +1042,7 @@ void CGraphicContext::UpdateCameraPosition(const CPoint &camera, const float &fa
     float scaleX = static_cast<float>(CServiceBroker::GetSettings().GetInt(CSettings::SETTING_LOOKANDFEEL_STEREOSTRENGTH)) * scaleRes;
     stereoFactor = factor * (m_stereoView == RENDER_STEREO_VIEW_LEFT ? scaleX : -scaleX);
   }
-  CServiceBroker::GetRenderSystem().SetCameraPosition(camera, m_iScreenWidth, m_iScreenHeight, stereoFactor);
+  CServiceBroker::GetRenderSystem()->SetCameraPosition(camera, m_iScreenWidth, m_iScreenHeight, stereoFactor);
 }
 
 bool CGraphicContext::RectIsAngled(float x1, float y1, float x2, float y2) const
@@ -1102,11 +1102,11 @@ float CGraphicContext::GetFPS() const
 
 float CGraphicContext::GetDisplayLatency() const
 {
-  float latency = CServiceBroker::GetWinSystem().GetDisplayLatency();
+  float latency = CServiceBroker::GetWinSystem()->GetDisplayLatency();
   if (latency < 0.0f)
   {
     // fallback
-    latency = (CServiceBroker::GetWinSystem().NoOfBuffers() + 1) / GetFPS() * 1000.0f;
+    latency = (CServiceBroker::GetWinSystem()->NoOfBuffers() + 1) / GetFPS() * 1000.0f;
   }
 
   return latency;
@@ -1130,7 +1130,7 @@ void CGraphicContext::ToggleFullScreen()
     if (CDisplaySettings::GetInstance().GetCurrentResolution() > RES_DESKTOP)
       uiRes = CDisplaySettings::GetInstance().GetCurrentResolution();
     else
-      uiRes = (RESOLUTION) CServiceBroker::GetWinSystem().DesktopResolution(CServiceBroker::GetWinSystem().GetCurrentScreen());
+      uiRes = (RESOLUTION) CServiceBroker::GetWinSystem()->DesktopResolution(CServiceBroker::GetWinSystem()->GetCurrentScreen());
   }
 
   CDisplaySettings::GetInstance().SetCurrentResolution(uiRes, true);
@@ -1150,7 +1150,7 @@ const std::string& CGraphicContext::GetMediaDir() const
 
 void CGraphicContext::Flip(bool rendered, bool videoLayer)
 {
-  CServiceBroker::GetRenderSystem().PresentRender(rendered, videoLayer);
+  CServiceBroker::GetRenderSystem()->PresentRender(rendered, videoLayer);
 
   if(m_stereoMode != m_nextStereoMode)
   {
@@ -1162,12 +1162,12 @@ void CGraphicContext::Flip(bool rendered, bool videoLayer)
 
 void CGraphicContext::ApplyHardwareTransform()
 {
-  CServiceBroker::GetRenderSystem().ApplyHardwareTransform(m_finalTransform.matrix);
+  CServiceBroker::GetRenderSystem()->ApplyHardwareTransform(m_finalTransform.matrix);
 }
 
 void CGraphicContext::RestoreHardwareTransform()
 {
-  CServiceBroker::GetRenderSystem().RestoreHardwareTransform();
+  CServiceBroker::GetRenderSystem()->RestoreHardwareTransform();
 }
 
 void CGraphicContext::GetAllowedResolutions(std::vector<RESOLUTION> &res)

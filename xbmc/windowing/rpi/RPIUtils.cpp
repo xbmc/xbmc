@@ -128,7 +128,7 @@ bool CRPIUtils::SetNativeResolution(const RESOLUTION_INFO res, EGLSurface m_nati
 
   DestroyDispmanxWindow();
 
-  RENDER_STEREO_MODE stereo_mode = CServiceBroker::GetWinSystem().GetGfxContext().GetStereoMode();
+  RENDER_STEREO_MODE stereo_mode = CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode();
   if(GETFLAGS_GROUP(res.dwFlags) && GETFLAGS_MODE(res.dwFlags))
   {
     uint32_t mode3d = HDMI_3D_FORMAT_NONE;

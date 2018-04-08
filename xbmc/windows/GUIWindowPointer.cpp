@@ -56,7 +56,7 @@ void CGUIWindowPointer::SetPointer(int pointer)
 
 void CGUIWindowPointer::UpdateVisibility()
 {
-  if(CServiceBroker::GetWinSystem().HasCursor())
+  if(CServiceBroker::GetWinSystem()->HasCursor())
   {
     if (CServiceBroker::GetInputManager().IsMouseActive())
       Open();

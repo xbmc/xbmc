@@ -116,8 +116,8 @@ static const CARD16 X_DPMS_MODES[] =
 
 void DPMSSupport::PlatformSpecificInit()
 {
-  CWinSystemX11 &winSystem = dynamic_cast<CWinSystemX11&>(CServiceBroker::GetWinSystem());
-  Display* dpy = winSystem.GetDisplay();
+  CWinSystemX11 *winSystem = dynamic_cast<CWinSystemX11*>(CServiceBroker::GetWinSystem());
+  Display* dpy = winSystem->GetDisplay();
   if (dpy == NULL)
     return;
 
@@ -141,8 +141,8 @@ void DPMSSupport::PlatformSpecificInit()
 
 bool DPMSSupport::PlatformSpecificEnablePowerSaving(PowerSavingMode mode)
 {
-  CWinSystemX11 &winSystem = dynamic_cast<CWinSystemX11&>(CServiceBroker::GetWinSystem());
-  Display* dpy = winSystem.GetDisplay();
+  CWinSystemX11 *winSystem = dynamic_cast<CWinSystemX11*>(CServiceBroker::GetWinSystem());
+  Display* dpy = winSystem->GetDisplay();
   if (dpy == NULL)
     return false;
 
@@ -158,8 +158,8 @@ bool DPMSSupport::PlatformSpecificEnablePowerSaving(PowerSavingMode mode)
 
 bool DPMSSupport::PlatformSpecificDisablePowerSaving()
 {
-  CWinSystemX11 &winSystem = dynamic_cast<CWinSystemX11&>(CServiceBroker::GetWinSystem());
-  Display* dpy = winSystem.GetDisplay();
+  CWinSystemX11 *winSystem = dynamic_cast<CWinSystemX11*>(CServiceBroker::GetWinSystem());
+  Display* dpy = winSystem->GetDisplay();
   if (dpy == NULL)
     return false;
 
@@ -167,7 +167,7 @@ bool DPMSSupport::PlatformSpecificDisablePowerSaving()
   DPMSDisable(dpy);
   XFlush(dpy);
 
-  winSystem.RecreateWindow();
+  winSystem->RecreateWindow();
 
   return true;
 }
@@ -187,7 +187,7 @@ void DPMSSupport::PlatformSpecificInit()
 
 bool DPMSSupport::PlatformSpecificEnablePowerSaving(PowerSavingMode mode)
 {
-  if(!CServiceBroker::GetWinSystem().GetGfxContext().IsFullScreenRoot())
+  if(!CServiceBroker::GetWinSystem()->GetGfxContext().IsFullScreenRoot())
   {
     CLog::Log(LOGDEBUG, "DPMS: not in fullscreen, power saving disabled");
     return false;
@@ -197,10 +197,10 @@ bool DPMSSupport::PlatformSpecificEnablePowerSaving(PowerSavingMode mode)
 #ifdef TARGET_WINDOWS_DESKTOP
   case OFF:
     // Turn off display
-    return SendMessage(DX::Windowing().GetHwnd(), WM_SYSCOMMAND, SC_MONITORPOWER, (LPARAM) 2) == 0;
+    return SendMessage(DX::Windowing()->GetHwnd(), WM_SYSCOMMAND, SC_MONITORPOWER, (LPARAM) 2) == 0;
   case STANDBY:
     // Set display to low power
-    return SendMessage(DX::Windowing().GetHwnd(), WM_SYSCOMMAND, SC_MONITORPOWER, (LPARAM) 1) == 0;
+    return SendMessage(DX::Windowing()->GetHwnd(), WM_SYSCOMMAND, SC_MONITORPOWER, (LPARAM) 1) == 0;
 #endif
   default:
     return true;
@@ -213,7 +213,7 @@ bool DPMSSupport::PlatformSpecificDisablePowerSaving()
   return false;
 #else
   // Turn display on
-  return SendMessage(DX::Windowing().GetHwnd(), WM_SYSCOMMAND, SC_MONITORPOWER, (LPARAM) -1) == 0;
+  return SendMessage(DX::Windowing()->GetHwnd(), WM_SYSCOMMAND, SC_MONITORPOWER, (LPARAM) -1) == 0;
 #endif
 }
 

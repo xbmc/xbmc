@@ -123,7 +123,7 @@ void CDebugRenderer::CRenderer::Render(int idx)
     if (text)
       text->PrepareRender("arial.ttf", 1, 16, 0, m_font, m_fontBorder);
 
-    RESOLUTION_INFO res = CServiceBroker::GetWinSystem().GetGfxContext().GetResInfo(CServiceBroker::GetWinSystem().GetGfxContext().GetVideoResolution());
+    RESOLUTION_INFO res = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution());
 
     o->m_pos = COverlay::POSITION_ABSOLUTE;
     o->m_align = COverlay::ALIGN_SCREEN;

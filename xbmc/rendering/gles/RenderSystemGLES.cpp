@@ -131,7 +131,7 @@ bool CRenderSystemGLES::DestroyRenderSystem()
 {
   ResetScissors();
   CDirtyRegionList dirtyRegions;
-  CDirtyRegion dirtyWindow(CServiceBroker::GetWinSystem().GetGfxContext().GetViewWindow());
+  CDirtyRegion dirtyWindow(CServiceBroker::GetWinSystem()->GetGfxContext().GetViewWindow());
   dirtyRegions.push_back(dirtyWindow);
 
   ClearBuffers(0);

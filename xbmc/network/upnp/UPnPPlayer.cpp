@@ -181,12 +181,12 @@ CUPnPPlayer::CUPnPPlayer(IPlayerCallback& callback, const char* uuid)
   else
     CLog::Log(LOGERROR, "UPNP: CUPnPPlayer couldn't find device as %s", uuid);
 
-  CServiceBroker::GetWinSystem().RegisterRenderLoop(this);
+  CServiceBroker::GetWinSystem()->RegisterRenderLoop(this);
 }
 
 CUPnPPlayer::~CUPnPPlayer()
 {
-  CServiceBroker::GetWinSystem().UnregisterRenderLoop(this);
+  CServiceBroker::GetWinSystem()->UnregisterRenderLoop(this);
   CloseFile();
   CUPnP::UnregisterUserdata(m_delegate);
   delete m_delegate;

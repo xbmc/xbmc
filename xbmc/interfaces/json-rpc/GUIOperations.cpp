@@ -122,7 +122,7 @@ JSONRPC_STATUS CGUIOperations::GetStereoscopicModes(const std::string &method, I
   for (int i = RENDER_STEREO_MODE_OFF; i < RENDER_STEREO_MODE_COUNT; i++)
   {
     RENDER_STEREO_MODE mode = (RENDER_STEREO_MODE) i;
-    if (CServiceBroker::GetRenderSystem().SupportsStereo(mode))
+    if (CServiceBroker::GetRenderSystem()->SupportsStereo(mode))
       result["stereoscopicmodes"].push_back(GetStereoModeObjectFromGuiMode(mode));
   }
 

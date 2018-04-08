@@ -74,7 +74,7 @@ void CVideoReferenceClock::Process()
 
   while(!m_bStop)
   {
-    m_pVideoSync = CServiceBroker::GetWinSystem().GetVideoSync(this);
+    m_pVideoSync = CServiceBroker::GetWinSystem()->GetVideoSync(this);
 
     if (m_pVideoSync)
     {

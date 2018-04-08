@@ -317,7 +317,7 @@ bool CDXVAContext::CreateContext()
   QueryCaps();
 
   // Some older Ati devices can only open a single decoder at a given time
-  std::string renderer =  DX::Windowing().GetRenderRenderer();
+  std::string renderer =  DX::Windowing()->GetRenderRenderer();
   if (renderer.find("Radeon HD 2") != std::string::npos ||
       renderer.find("Radeon HD 3") != std::string::npos ||
       renderer.find("Radeon HD 4") != std::string::npos ||
@@ -491,7 +491,7 @@ bool CDXVAContext::CreateSurfaces(const D3D11_VIDEO_DECODER_DESC &format, const 
 
   unsigned bindFlags = D3D11_BIND_DECODER;
 
-  if (DX::Windowing().IsFormatSupport(format.OutputFormat, D3D11_FORMAT_SUPPORT_SHADER_SAMPLE))
+  if (DX::Windowing()->IsFormatSupport(format.OutputFormat, D3D11_FORMAT_SUPPORT_SHADER_SAMPLE))
     bindFlags |= D3D11_BIND_SHADER_RESOURCE;
 
   CD3D11_TEXTURE2D_DESC texDesc(format.OutputFormat, 
@@ -606,7 +606,7 @@ CDXVAOutputBuffer::~CDXVAOutputBuffer()
 
 ID3D11View* CDXVAOutputBuffer::GetSRV(unsigned idx)
 {
-  if (!DX::Windowing().IsFormatSupport(format, D3D11_FORMAT_SUPPORT_SHADER_SAMPLE))
+  if (!DX::Windowing()->IsFormatSupport(format, D3D11_FORMAT_SUPPORT_SHADER_SAMPLE))
     return nullptr;
 
   if (planes[idx])
@@ -808,13 +808,13 @@ CDecoder::CDecoder(CProcessInfo& processInfo)
   m_context->cfg     = reinterpret_cast<D3D11_VIDEO_DECODER_CONFIG*>(calloc(1, sizeof(D3D11_VIDEO_DECODER_CONFIG)));
   m_context->surface = reinterpret_cast<ID3D11VideoDecoderOutputView**>(calloc(32, sizeof(ID3D11VideoDecoderOutputView*)));
   m_bufferPool.reset();
-  DX::Windowing().Register(this);
+  DX::Windowing()->Register(this);
 }
 
 CDecoder::~CDecoder()
 {
   CLog::LogF(LOGDEBUG, "destructing decoder, %p.", static_cast<void*>(this));
-  DX::Windowing().Unregister(this);
+  DX::Windowing()->Unregister(this);
   Close();
   free(m_context->surface);
   free(m_context->cfg);
@@ -1231,7 +1231,7 @@ bool CDecoder::OpenDecoder()
 
   m_context->decoder = m_decoder.Get();
   m_context->video_context = m_vcontext.Get();
-  m_context->context_mutex = DX::Windowing().GetContexMutex();
+  m_context->context_mutex = DX::Windowing()->GetContexMutex();
 
   return true;
 }

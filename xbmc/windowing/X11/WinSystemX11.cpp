@@ -415,7 +415,7 @@ void CWinSystemX11::UpdateResolutions()
       res.fRefreshRate = mode.hz;
       res.bFullScreen  = true;
 
-      CServiceBroker::GetWinSystem().GetGfxContext().ResetOverscan(res);
+      CServiceBroker::GetWinSystem()->GetGfxContext().ResetOverscan(res);
       CDisplaySettings::GetInstance().AddResolutionInfo(res);
     }
   }
@@ -551,7 +551,7 @@ void CWinSystemX11::NotifyXRREvent()
 {
   CLog::Log(LOGDEBUG, "%s - notify display reset event", __FUNCTION__);
 
-  CSingleLock lock(CServiceBroker::GetWinSystem().GetGfxContext());
+  CSingleLock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
 
   if (!g_xrandr.Query(true))
   {
@@ -572,7 +572,7 @@ void CWinSystemX11::RecreateWindow()
 {
   m_windowDirty = true;
 
-  CSingleLock lock(CServiceBroker::GetWinSystem().GetGfxContext());
+  CSingleLock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
 
   XOutput *out = g_xrandr.GetOutput(m_userOutput);
   XMode   mode = g_xrandr.GetCurrentMode(m_userOutput);
@@ -602,10 +602,10 @@ void CWinSystemX11::RecreateWindow()
     i = RES_DESKTOP;
   }
 
-  if (CServiceBroker::GetWinSystem().GetGfxContext().IsFullScreenRoot())
-    CServiceBroker::GetWinSystem().GetGfxContext().SetVideoResolution((RESOLUTION)i, true);
+  if (CServiceBroker::GetWinSystem()->GetGfxContext().IsFullScreenRoot())
+    CServiceBroker::GetWinSystem()->GetGfxContext().SetVideoResolution((RESOLUTION)i, true);
   else
-    CServiceBroker::GetWinSystem().GetGfxContext().SetVideoResolution(RES_WINDOW, true);
+    CServiceBroker::GetWinSystem()->GetGfxContext().SetVideoResolution(RES_WINDOW, true);
 }
 
 void CWinSystemX11::OnLostDevice()
@@ -1054,5 +1054,5 @@ void CWinSystemX11::UpdateCrtc()
                         &posx, &posy, &child);
 
   m_crtc = g_xrandr.GetCrtc(posx+winattr.width/2, posy+winattr.height/2, fps);
-  CServiceBroker::GetWinSystem().GetGfxContext().SetFPS(fps);
+  CServiceBroker::GetWinSystem()->GetGfxContext().SetFPS(fps);
 }

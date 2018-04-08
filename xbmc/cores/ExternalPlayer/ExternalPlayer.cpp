@@ -286,7 +286,7 @@ void CExternalPlayer::Process()
   if (m_hidexbmc && !m_islauncher)
   {
     CLog::Log(LOGNOTICE, "%s: Hiding %s window", __FUNCTION__, CCompileInfo::GetAppName());
-    CServiceBroker::GetWinSystem().Hide();
+    CServiceBroker::GetWinSystem()->Hide();
   }
 #if defined(TARGET_WINDOWS_DESKTOP)
   else if (currentStyle & WS_EX_TOPMOST)
@@ -333,7 +333,7 @@ void CExternalPlayer::Process()
     if (m_hidexbmc)
     {
       CLog::Log(LOGNOTICE, "%s: %s cannot stay hidden for a launcher process", __FUNCTION__, CCompileInfo::GetAppName());
-      CServiceBroker::GetWinSystem().Show(false);
+      CServiceBroker::GetWinSystem()->Show(false);
     }
 
     {
@@ -352,7 +352,7 @@ void CExternalPlayer::Process()
   CLog::Log(LOGNOTICE, "%s: Stop", __FUNCTION__);
 
 #if defined(TARGET_WINDOWS_DESKTOP)
-  CServiceBroker::GetWinSystem().Restore();
+  CServiceBroker::GetWinSystem()->Restore();
 
   if (currentStyle & WS_EX_TOPMOST)
   {
@@ -364,7 +364,7 @@ void CExternalPlayer::Process()
 #endif
   {
     CLog::Log(LOGNOTICE, "%s: Showing %s window", __FUNCTION__, CCompileInfo::GetAppName());
-    CServiceBroker::GetWinSystem().Show();
+    CServiceBroker::GetWinSystem()->Show();
   }
 
 #if defined(TARGET_WINDOWS_DESKTOP)

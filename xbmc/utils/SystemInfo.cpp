@@ -301,7 +301,7 @@ std::string CSysInfoJob::GetMACAddress()
 
 std::string CSysInfoJob::GetVideoEncoder()
 {
-  return "GPU: " + CServiceBroker::GetRenderSystem().GetRenderRenderer();
+  return "GPU: " + CServiceBroker::GetRenderSystem()->GetRenderRenderer();
 }
 
 std::string CSysInfoJob::GetBatteryLevel()

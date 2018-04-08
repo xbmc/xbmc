@@ -105,7 +105,7 @@ void CGUIPanelContainer::Render()
   int cacheBefore, cacheAfter;
   GetCacheOffsets(cacheBefore, cacheAfter);
 
-  if (CServiceBroker::GetWinSystem().GetGfxContext().SetClipRegion(m_posX, m_posY, m_width, m_height))
+  if (CServiceBroker::GetWinSystem()->GetGfxContext().SetClipRegion(m_posX, m_posY, m_width, m_height))
   {
     CPoint origin = CPoint(m_posX, m_posY) + m_renderOffset;
     float pos = (m_orientation == VERTICAL) ? origin.y : origin.x;
@@ -160,7 +160,7 @@ void CGUIPanelContainer::Render()
         RenderItem(focusedPos, origin.y + focusedCol * m_layout->Size(VERTICAL), focusedItem.get(), true);
     }
 
-    CServiceBroker::GetWinSystem().GetGfxContext().RestoreClipRegion();
+    CServiceBroker::GetWinSystem()->GetGfxContext().RestoreClipRegion();
   }
   CGUIControl::Render();
 }

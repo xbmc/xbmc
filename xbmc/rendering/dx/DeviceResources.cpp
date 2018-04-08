@@ -206,7 +206,7 @@ bool DX::DeviceResources::SetFullScreen(bool fullscreen, RESOLUTION_INFO& res)
              m_outputSize.Height);
 
   BOOL bFullScreen;
-  bool recreate = m_stereoEnabled != (CServiceBroker::GetWinSystem().GetGfxContext().GetStereoMode() == RENDER_STEREO_MODE_HARDWAREBASED);
+  bool recreate = m_stereoEnabled != (CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode() == RENDER_STEREO_MODE_HARDWAREBASED);
 
   m_swapChain->GetFullscreenState(&bFullScreen, nullptr);
   if (!!bFullScreen && !fullscreen)
@@ -235,7 +235,7 @@ bool DX::DeviceResources::SetFullScreen(bool fullscreen, RESOLUTION_INFO& res)
         || is_interlaced != (res.dwFlags & D3DPRESENTFLAG_INTERLACED ? true : false)
         // force resolution change for stereo mode
         // some drivers unable to create stereo swapchain if mode does not match @23.976
-        || CServiceBroker::GetWinSystem().GetGfxContext().GetStereoMode() == RENDER_STEREO_MODE_HARDWAREBASED)
+        || CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode() == RENDER_STEREO_MODE_HARDWAREBASED)
       {
         CLog::Log(LOGDEBUG, __FUNCTION__": changing display mode to %dx%d@%0.3f", res.iWidth, res.iHeight, res.fRefreshRate,
                   res.dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "");
@@ -512,7 +512,7 @@ void DX::DeviceResources::ResizeBuffers()
 
   CLog::LogF(LOGDEBUG, "resize buffers.");
 
-  bool bHWStereoEnabled = RENDER_STEREO_MODE_HARDWAREBASED == CServiceBroker::GetWinSystem().GetGfxContext().GetStereoMode();
+  bool bHWStereoEnabled = RENDER_STEREO_MODE_HARDWAREBASED == CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode();
   bool windowed = true;
 
   DXGI_SWAP_CHAIN_DESC1 scDesc = { 0 };
@@ -596,7 +596,7 @@ void DX::DeviceResources::ResizeBuffers()
       hr = CreateSwapChain(swapChainDesc, scFSDesc, &swapChain); CHECK_ERR();
 
       // fallback to split_horizontal mode.
-      CServiceBroker::GetWinSystem().GetGfxContext().SetStereoMode(RENDER_STEREO_MODE_SPLIT_HORIZONTAL);
+      CServiceBroker::GetWinSystem()->GetGfxContext().SetStereoMode(RENDER_STEREO_MODE_SPLIT_HORIZONTAL);
     }
 
     hr = swapChain.As(&m_swapChain); CHECK_ERR();
@@ -925,7 +925,7 @@ void DX::DeviceResources::HandleOutputChange(const std::function<bool(DXGI_OUTPU
           CLog::LogF(LOGDEBUG, "selected {} adapter. ",
                      KODI::PLATFORM::WINDOWS::FromW(foundDesc.Description));
           // (re)init hooks into new driver
-          Windowing().InitHooks(output.Get());
+          Windowing()->InitHooks(output.Get());
           // recreate d3d11 device on new adapter
           if (m_d3dDevice)
             HandleDeviceLost(false);

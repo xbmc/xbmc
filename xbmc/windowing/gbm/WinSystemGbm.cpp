@@ -163,7 +163,7 @@ void CWinSystemGbm::UpdateResolutions()
 
     for (unsigned int i = 0; i < resolutions.size(); i++)
     {
-      CServiceBroker::GetWinSystem().GetGfxContext().ResetOverscan(resolutions[i]);
+      CServiceBroker::GetWinSystem()->GetGfxContext().ResetOverscan(resolutions[i]);
       CDisplaySettings::GetInstance().AddResolutionInfo(resolutions[i]);
 
       CLog::Log(LOGNOTICE, "Found resolution %dx%d for display %d with %dx%d%s @ %f Hz",

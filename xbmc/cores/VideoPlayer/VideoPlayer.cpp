@@ -678,12 +678,12 @@ CVideoPlayer::CVideoPlayer(IPlayerCallback& callback)
 
   m_displayLost = false;
   m_error = false;
-  CServiceBroker::GetWinSystem().Register(this);
+  CServiceBroker::GetWinSystem()->Register(this);
 }
 
 CVideoPlayer::~CVideoPlayer()
 {
-  CServiceBroker::GetWinSystem().Unregister(this);
+  CServiceBroker::GetWinSystem()->Unregister(this);
 
   CloseFile();
   DestroyPlayers();
@@ -753,7 +753,7 @@ bool CVideoPlayer::CloseFile(bool reopen)
   // since this main thread cleans up all other resources and threads
   // we are done after the StopThread call
   {
-    CSingleExit exitlock(CServiceBroker::GetWinSystem().GetGfxContext());
+    CSingleExit exitlock(CServiceBroker::GetWinSystem()->GetGfxContext());
     StopThread();
   }
 
@@ -1369,7 +1369,7 @@ void CVideoPlayer::Prepare()
 
 void CVideoPlayer::Process()
 {
-  CServiceBroker::GetWinSystem().RegisterRenderLoop(this);
+  CServiceBroker::GetWinSystem()->RegisterRenderLoop(this);
 
   Prepare();
 
@@ -2473,7 +2473,7 @@ void CVideoPlayer::OnExit()
   // subtitles are added from video player. after video player has finished, overlays have to be cleared.
   CloseStream(m_CurrentSubtitle, false);  // clear overlay container
 
-  CServiceBroker::GetWinSystem().UnregisterRenderLoop(this);
+  CServiceBroker::GetWinSystem()->UnregisterRenderLoop(this);
 
   IPlayerCallback *cb = &m_callback;
   CVideoSettings vs = m_processInfo->GetVideoSettings();
@@ -3682,7 +3682,7 @@ bool CVideoPlayer::OpenVideoStream(CDVDStreamInfo& hint, bool reset)
     return false;
 
   // set desired refresh rate
-  if (m_playerOptions.fullscreen && CServiceBroker::GetWinSystem().GetGfxContext().IsFullScreenRoot() &&
+  if (m_playerOptions.fullscreen && CServiceBroker::GetWinSystem()->GetGfxContext().IsFullScreenRoot() &&
       hint.fpsrate != 0 && hint.fpsscale != 0)
   {
     if (CServiceBroker::GetSettings().GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) != ADJUST_REFRESHRATE_OFF)
@@ -4167,7 +4167,7 @@ int CVideoPlayer::OnDiscNavResult(void* pData, int iMessage)
 
 void CVideoPlayer::GetVideoResolution(unsigned int &width, unsigned int &height)
 {
-  RESOLUTION_INFO res = CServiceBroker::GetWinSystem().GetGfxContext().GetResInfo();
+  RESOLUTION_INFO res = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo();
   width = res.iWidth;
   height = res.iHeight;
 }

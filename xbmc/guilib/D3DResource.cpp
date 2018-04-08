@@ -196,7 +196,7 @@ bool CD3DTexture::Create(UINT width, UINT height, UINT mipLevels, D3D11_USAGE us
   if (format == DXGI_FORMAT_UNKNOWN)
     format = DXGI_FORMAT_B8G8R8A8_UNORM; // DXGI_FORMAT_UNKNOWN
 
-  if (!DX::Windowing().IsFormatSupport(format, D3D11_FORMAT_SUPPORT_TEXTURE2D))
+  if (!DX::Windowing()->IsFormatSupport(format, D3D11_FORMAT_SUPPORT_TEXTURE2D))
   {
     CLog::LogF(LOGERROR, "unsupported texture format %d", format);
     return false;
@@ -214,16 +214,16 @@ bool CD3DTexture::Create(UINT width, UINT height, UINT mipLevels, D3D11_USAGE us
   m_usage = usage;
 
   m_bindFlags = 0; // D3D11_BIND_SHADER_RESOURCE;
-  if (D3D11_USAGE_DEFAULT == usage && DX::Windowing().IsFormatSupport(format, D3D11_FORMAT_SUPPORT_RENDER_TARGET))
+  if (D3D11_USAGE_DEFAULT == usage && DX::Windowing()->IsFormatSupport(format, D3D11_FORMAT_SUPPORT_RENDER_TARGET))
     m_bindFlags |= D3D11_BIND_RENDER_TARGET;
   if ( D3D11_USAGE_STAGING != m_usage )
   {
-    if (DX::Windowing().IsFormatSupport(format, D3D11_FORMAT_SUPPORT_SHADER_LOAD)
-      || DX::Windowing().IsFormatSupport(format, D3D11_FORMAT_SUPPORT_SHADER_SAMPLE))
+    if (DX::Windowing()->IsFormatSupport(format, D3D11_FORMAT_SUPPORT_SHADER_LOAD)
+      || DX::Windowing()->IsFormatSupport(format, D3D11_FORMAT_SUPPORT_SHADER_SAMPLE))
     {
       m_bindFlags |= D3D11_BIND_SHADER_RESOURCE;
     }
-    if (DX::Windowing().IsFormatSupport(format, D3D11_FORMAT_SUPPORT_DECODER_OUTPUT))
+    if (DX::Windowing()->IsFormatSupport(format, D3D11_FORMAT_SUPPORT_DECODER_OUTPUT))
     {
       m_bindFlags |= D3D11_BIND_DECODER;
     }
@@ -235,7 +235,7 @@ bool CD3DTexture::Create(UINT width, UINT height, UINT mipLevels, D3D11_USAGE us
     return false;
   }
 
-  DX::Windowing().Register(this);
+  DX::Windowing()->Register(this);
   return true;
 }
 
@@ -246,7 +246,7 @@ bool CD3DTexture::CreateInternal(const void* pixels /* nullptr */, unsigned int 
 
   UINT miscFlags = 0;
   bool autogenmm = false;
-  if (m_mipLevels == 0 && DX::Windowing().IsFormatSupport(m_format, D3D11_FORMAT_SUPPORT_MIP_AUTOGEN))
+  if (m_mipLevels == 0 && DX::Windowing()->IsFormatSupport(m_format, D3D11_FORMAT_SUPPORT_MIP_AUTOGEN))
   {
     autogenmm = pixels != nullptr;
     miscFlags |= D3D11_RESOURCE_MISC_GENERATE_MIPS;
@@ -281,8 +281,8 @@ ID3D11ShaderResourceView* CD3DTexture::GetShaderResource(DXGI_FORMAT format /* =
   if (format == DXGI_FORMAT_UNKNOWN)
     format = m_format;
 
-  if (!DX::Windowing().IsFormatSupport(format, D3D11_FORMAT_SUPPORT_SHADER_SAMPLE)
-    && !DX::Windowing().IsFormatSupport(format, D3D11_FORMAT_SUPPORT_SHADER_LOAD))
+  if (!DX::Windowing()->IsFormatSupport(format, D3D11_FORMAT_SUPPORT_SHADER_SAMPLE)
+    && !DX::Windowing()->IsFormatSupport(format, D3D11_FORMAT_SUPPORT_SHADER_LOAD))
     return nullptr;
 
   if (!m_views[format])
@@ -325,7 +325,7 @@ ID3D11RenderTargetView** CD3DTexture::GetAddressOfRTV()
 void CD3DTexture::Release()
 {
   if (m_texture)
-    DX::Windowing().Unregister(this);
+    DX::Windowing()->Unregister(this);
 
   m_views.clear();
   m_renderTargets[0] = nullptr;
@@ -451,7 +451,7 @@ ID3D11RenderTargetView* CD3DTexture::GetRenderTargetInternal(unsigned idx)
   if (!m_texture)
     return nullptr;
 
-  if (!DX::Windowing().IsFormatSupport(m_format, D3D11_FORMAT_SUPPORT_RENDER_TARGET))
+  if (!DX::Windowing()->IsFormatSupport(m_format, D3D11_FORMAT_SUPPORT_RENDER_TARGET))
     return nullptr;
 
   if (!m_renderTargets[idx])
@@ -529,7 +529,7 @@ void CD3DTexture::DrawQuad(const CPoint points[4], color_t color, unsigned numVi
     { XMFLOAT3(points[3].x, points[3].y, 0), xcolor, XMFLOAT2(coords.x1, coords.y2), XMFLOAT2(0.0f, 0.0f) },
   };
 
-  CGUIShaderDX* pGUIShader = DX::Windowing().GetGUIShader();
+  CGUIShaderDX* pGUIShader = DX::Windowing()->GetGUIShader();
 
   pGUIShader->Begin(view && numViews > 0 ? options : SHADER_METHOD_RENDER_DEFAULT);
   if (view && numViews > 0)
@@ -570,7 +570,7 @@ bool CD3DEffect::Create(const std::string &effectString, DefinesMap* defines)
     m_defines = *defines; //FIXME: is this a copy of all members?
   if (CreateEffect())
   {
-    DX::Windowing().Register(this);
+    DX::Windowing()->Register(this);
     return true;
   }
   return false;
@@ -578,7 +578,7 @@ bool CD3DEffect::Create(const std::string &effectString, DefinesMap* defines)
 
 void CD3DEffect::Release()
 {
-  DX::Windowing().Unregister(this);
+  DX::Windowing()->Unregister(this);
   OnDestroyDevice(false);
 }
 
@@ -832,7 +832,7 @@ bool CD3DBuffer::Create(D3D11_BIND_FLAG type, UINT count, UINT stride, DXGI_FORM
   // create the vertex buffer
   if (CreateBuffer(data))
   {
-    DX::Windowing().Register(this);
+    DX::Windowing()->Register(this);
     return true;
   }
   return false;
@@ -840,7 +840,7 @@ bool CD3DBuffer::Create(D3D11_BIND_FLAG type, UINT count, UINT stride, DXGI_FORM
 
 void CD3DBuffer::Release()
 {
-  DX::Windowing().Unregister(this);
+  DX::Windowing()->Unregister(this);
   m_buffer = nullptr;
 }
 
@@ -951,7 +951,7 @@ CD3DVertexShader::~CD3DVertexShader()
 
 void CD3DVertexShader::Release()
 {
-  DX::Windowing().Unregister(this);
+  DX::Windowing()->Unregister(this);
   ReleaseShader();
   m_VSBuffer = nullptr;
   if (m_vertexLayout)
@@ -998,7 +998,7 @@ bool CD3DVertexShader::Create(const std::wstring& vertexFile, D3D11_INPUT_ELEMEN
   m_inited = CreateInternal();
 
   if (m_inited)
-    DX::Windowing().Register(this);
+    DX::Windowing()->Register(this);
 
   return m_inited;
 }
@@ -1032,7 +1032,7 @@ bool CD3DVertexShader::Create(const void* code, size_t codeLength, D3D11_INPUT_E
   m_inited = CreateInternal();
 
   if (m_inited)
-    DX::Windowing().Register(this);
+    DX::Windowing()->Register(this);
 
   return m_inited;
 }
@@ -1113,7 +1113,7 @@ CD3DPixelShader::~CD3DPixelShader()
 
 void CD3DPixelShader::Release()
 {
-  DX::Windowing().Unregister(this);
+  DX::Windowing()->Unregister(this);
   ReleaseShader();
   m_PSBuffer = nullptr;
 }
@@ -1142,7 +1142,7 @@ bool CD3DPixelShader::Create(const std::wstring& wstrFile)
   m_inited = CreateInternal();
 
   if (m_inited)
-    DX::Windowing().Register(this);
+    DX::Windowing()->Register(this);
 
   return m_inited;
 }
@@ -1166,7 +1166,7 @@ bool CD3DPixelShader::Create(const void* code, size_t codeLength)
   m_inited = CreateInternal();
 
   if (m_inited)
-    DX::Windowing().Register(this);
+    DX::Windowing()->Register(this);
 
   return m_inited;
 }

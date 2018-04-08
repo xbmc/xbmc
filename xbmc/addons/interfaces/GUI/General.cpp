@@ -146,7 +146,7 @@ void Interface_GUIGeneral::DeInit(AddonGlobalInterface* addonInterface)
 void Interface_GUIGeneral::lock()
 {
   if (m_iAddonGUILockRef == 0)
-    CServiceBroker::GetWinSystem().GetGfxContext().lock();
+    CServiceBroker::GetWinSystem()->GetGfxContext().lock();
   ++m_iAddonGUILockRef;
 }
 
@@ -156,7 +156,7 @@ void Interface_GUIGeneral::unlock()
   {
     --m_iAddonGUILockRef;
     if (m_iAddonGUILockRef == 0)
-      CServiceBroker::GetWinSystem().GetGfxContext().unlock();
+      CServiceBroker::GetWinSystem()->GetGfxContext().unlock();
   }
 }
 //@}
@@ -171,7 +171,7 @@ int Interface_GUIGeneral::get_screen_height(void* kodiBase)
     return -1;
   }
 
-  return CServiceBroker::GetWinSystem().GetGfxContext().GetHeight();
+  return CServiceBroker::GetWinSystem()->GetGfxContext().GetHeight();
 }
 
 int Interface_GUIGeneral::get_screen_width(void* kodiBase)
@@ -183,7 +183,7 @@ int Interface_GUIGeneral::get_screen_width(void* kodiBase)
     return -1;
   }
 
-  return CServiceBroker::GetWinSystem().GetGfxContext().GetWidth();
+  return CServiceBroker::GetWinSystem()->GetGfxContext().GetWidth();
 }
 
 int Interface_GUIGeneral::get_video_resolution(void* kodiBase)
@@ -195,7 +195,7 @@ int Interface_GUIGeneral::get_video_resolution(void* kodiBase)
     return -1;
   }
 
-  return (int)CServiceBroker::GetWinSystem().GetGfxContext().GetVideoResolution();
+  return (int)CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution();
 }
 //@}
 
@@ -209,7 +209,7 @@ int Interface_GUIGeneral::get_current_window_dialog_id(void* kodiBase)
     return -1;
   }
 
-  CSingleLock gl(CServiceBroker::GetWinSystem().GetGfxContext());
+  CSingleLock gl(CServiceBroker::GetWinSystem()->GetGfxContext());
   return CServiceBroker::GetGUI()->GetWindowManager().GetTopmostModalDialog();
 }
 
@@ -222,7 +222,7 @@ int Interface_GUIGeneral::get_current_window_id(void* kodiBase)
     return -1;
   }
 
-  CSingleLock gl(CServiceBroker::GetWinSystem().GetGfxContext());
+  CSingleLock gl(CServiceBroker::GetWinSystem()->GetGfxContext());
   return CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow();
 }
 

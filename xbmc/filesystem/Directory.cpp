@@ -182,7 +182,7 @@ bool CDirectory::GetDirectory(const CURL& url, CFileItemList &items, const CHint
 
         if (g_application.IsCurrentThread() && allowThreads && !URIUtils::IsSpecial(pathToUrl))
         {
-          CSingleExit ex(CServiceBroker::GetWinSystem().GetGfxContext());
+          CSingleExit ex(CServiceBroker::GetWinSystem()->GetGfxContext());
 
           CGetDirectory get(pDirectory, authUrl, url);
 

@@ -42,8 +42,8 @@ EINTERLACEMETHOD CProcessInfoWin10::GetFallbackDeintMethod()
 
 std::vector<AVPixelFormat> CProcessInfoWin10::GetRenderFormats()
 {
-  auto processor = DX::Windowing().m_processorFormats;
-  auto shaders = DX::Windowing().m_shaderFormats;
+  auto processor = DX::Windowing()->m_processorFormats;
+  auto shaders = DX::Windowing()->m_shaderFormats;
 
   std::set<AVPixelFormat> formats;
   formats.insert(processor.begin(), processor.end());

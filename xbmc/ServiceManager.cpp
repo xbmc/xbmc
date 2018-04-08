@@ -416,16 +416,6 @@ CFileExtensionProvider& CServiceManager::GetFileExtensionProvider()
   return *m_fileExtensionProvider;
 }
 
-CWinSystemBase &CServiceManager::GetWinSystem()
-{
-  return *m_winSystem.get();
-}
-
-void CServiceManager::SetWinSystem(std::unique_ptr<CWinSystemBase> winSystem)
-{
-  m_winSystem = std::move(winSystem);
-}
-
 CPowerManager &CServiceManager::GetPowerManager()
 {
   return *m_powerManager;

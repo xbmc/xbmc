@@ -247,7 +247,7 @@ bool CWinSystemWin10::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool 
 
   bool forceChange = false;    // resolution/display is changed but window state isn't changed
   bool changeScreen = false;   // display is changed
-  bool stereoChange = IsStereoEnabled() != (CServiceBroker::GetWinSystem().GetGfxContext().GetStereoMode() == RENDER_STEREO_MODE_HARDWAREBASED);
+  bool stereoChange = IsStereoEnabled() != (CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode() == RENDER_STEREO_MODE_HARDWAREBASED);
 
   if ( m_nWidth != res.iWidth
     || m_nHeight != res.iHeight
@@ -428,7 +428,7 @@ bool CWinSystemWin10::ChangeResolution(const RESOLUTION_INFO& res, bool forceCha
       }
       else
       {
-        bool needStereo = CServiceBroker::GetWinSystem().GetGfxContext().GetStereoMode() == RENDER_STEREO_MODE_HARDWAREBASED;
+        bool needStereo = CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode() == RENDER_STEREO_MODE_HARDWAREBASED;
         auto hdmiModes = hdmiInfo->GetSupportedDisplayModes();
 
         HdmiDisplayMode^ selected = nullptr;
@@ -458,7 +458,7 @@ bool CWinSystemWin10::ChangeResolution(const RESOLUTION_INFO& res, bool forceCha
       float dipsW = DX::ConvertPixelsToDips(m_nWidth, dpi);
       float dipsH = DX::ConvertPixelsToDips(m_nHeight, dpi);
 
-      DX::Windowing().OnResize(dipsW, dipsH);
+      DX::Windowing()->OnResize(dipsW, dipsH);
       dynamic_cast<CWinEventsWin10*>(m_winEvents.get())->UpdateWindowSize();
     }
     return changed;

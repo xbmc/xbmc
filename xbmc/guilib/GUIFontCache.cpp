@@ -157,8 +157,8 @@ Value &CGUIFontCacheImpl<Position, Value>::Lookup(Position &pos,
   const CGUIFontCacheKey<Position> key(pos,
                                        const_cast<vecColors &>(colors), const_cast<vecText &>(text),
                                        alignment, maxPixelWidth,
-                                       scrolling, CServiceBroker::GetWinSystem().GetGfxContext().GetGUIMatrix(),
-                                       CServiceBroker::GetWinSystem().GetGfxContext().GetGUIScaleX(), CServiceBroker::GetWinSystem().GetGfxContext().GetGUIScaleY());
+                                       scrolling, CServiceBroker::GetWinSystem()->GetGfxContext().GetGUIMatrix(),
+                                       CServiceBroker::GetWinSystem()->GetGfxContext().GetGUIScaleX(), CServiceBroker::GetWinSystem()->GetGfxContext().GetGUIScaleY());
 
   auto i = m_list.FindKey(key);
   if (i == m_list.hashMap.end())

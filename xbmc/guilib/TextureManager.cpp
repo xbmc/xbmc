@@ -107,7 +107,7 @@ void CTextureArray::Set(CBaseTexture *texture, int width, int height)
 
 void CTextureArray::Free()
 {
-  CSingleLock lock(CServiceBroker::GetWinSystem().GetGfxContext());
+  CSingleLock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
   for (unsigned int i = 0; i < m_textures.size(); i++)
   {
     delete m_textures[i];
@@ -333,7 +333,7 @@ const CTextureArray& CGUITextureManager::Load(const std::string& strTextureName,
     return emptyTexture;
 
   //Lock here, we will do stuff that could break rendering
-  CSingleLock lock(CServiceBroker::GetWinSystem().GetGfxContext());
+  CSingleLock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
 
 #ifdef _DEBUG_TEXTURES
   int64_t start;
@@ -472,7 +472,7 @@ const CTextureArray& CGUITextureManager::Load(const std::string& strTextureName,
 
 void CGUITextureManager::ReleaseTexture(const std::string& strTextureName, bool immediately /*= false */)
 {
-  CSingleLock lock(CServiceBroker::GetWinSystem().GetGfxContext());
+  CSingleLock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
 
   ivecTextures i;
   i = m_vecTextures.begin();
@@ -498,7 +498,7 @@ void CGUITextureManager::ReleaseTexture(const std::string& strTextureName, bool 
 void CGUITextureManager::FreeUnusedTextures(unsigned int timeDelay)
 {
   unsigned int currFrameTime = XbmcThreads::SystemClockMillis();
-  CSingleLock lock(CServiceBroker::GetWinSystem().GetGfxContext());
+  CSingleLock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
   for (ilistUnused i = m_unusedTextures.begin(); i != m_unusedTextures.end();)
   {
     if (currFrameTime - i->second >= timeDelay)
@@ -517,8 +517,8 @@ void CGUITextureManager::FreeUnusedTextures(unsigned int timeDelay)
   // when XBMC is backgrounded (e.x. for backgrounded music playback)
   // sanity check before delete in that case.
 #if defined(TARGET_DARWIN_IOS)
-    CWinSystemIOS& winSystem = dynamic_cast<CWinSystemIOS&>(CServiceBroker::GetWinSystem());
-    if (!winSystem.IsBackgrounded() || glIsTexture(m_unusedHwTextures[i]))
+    CWinSystemIOS* winSystem = dynamic_cast<CWinSystemIOS*>(CServiceBroker::GetWinSystem());
+    if (!winSystem->IsBackgrounded() || glIsTexture(m_unusedHwTextures[i]))
 #endif
       glDeleteTextures(1, (GLuint*) &m_unusedHwTextures[i]);
   }
@@ -528,13 +528,13 @@ void CGUITextureManager::FreeUnusedTextures(unsigned int timeDelay)
 
 void CGUITextureManager::ReleaseHwTexture(unsigned int texture)
 {
-  CSingleLock lock(CServiceBroker::GetWinSystem().GetGfxContext());
+  CSingleLock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
   m_unusedHwTextures.push_back(texture);
 }
 
 void CGUITextureManager::Cleanup()
 {
-  CSingleLock lock(CServiceBroker::GetWinSystem().GetGfxContext());
+  CSingleLock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
 
   ivecTextures i;
   i = m_vecTextures.begin();
@@ -565,7 +565,7 @@ void CGUITextureManager::Dump() const
 
 void CGUITextureManager::Flush()
 {
-  CSingleLock lock(CServiceBroker::GetWinSystem().GetGfxContext());
+  CSingleLock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
 
   ivecTextures i;
   i = m_vecTextures.begin();

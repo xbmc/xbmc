@@ -263,7 +263,7 @@ void CRenderer::Render(COverlay* o, float adjust_height)
     {
       if(align == COverlay::ALIGN_SUBTITLE)
       {
-        RESOLUTION_INFO res = CServiceBroker::GetWinSystem().GetGfxContext().GetResInfo(CServiceBroker::GetWinSystem().GetGfxContext().GetVideoResolution());
+        RESOLUTION_INFO res = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution());
         state.x += m_rv.x1 + m_rv.Width() * 0.5f;
         state.y += m_rv.y1  + (res.iSubtitles - res.Overscan.top);
       }
@@ -348,7 +348,7 @@ COverlay* CRenderer::Convert(CDVDOverlaySSA* o, double pts)
   else if (subalign == SUBTITLE_ALIGN_MANUAL && g_advancedSettings.m_videoAssFixedWorks)
   {
     RESOLUTION_INFO res;
-    res = CServiceBroker::GetWinSystem().GetGfxContext().GetResInfo(CServiceBroker::GetWinSystem().GetGfxContext().GetVideoResolution());
+    res = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution());
     position = 100.0 - (res.iSubtitles - res.Overscan.top) * 100 / res.iHeight;
   }
   else

@@ -62,7 +62,7 @@ float RESOLUTION_INFO::DisplayRatio() const
 
 RESOLUTION CResolutionUtils::ChooseBestResolution(float fps, int width, bool is3D)
 {
-  RESOLUTION res = CServiceBroker::GetWinSystem().GetGfxContext().GetVideoResolution();
+  RESOLUTION res = CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution();
   float weight;
   if (!FindResolutionFromOverride(fps, width, is3D, res, weight, false)) //find a refreshrate from overrides
   {
@@ -70,13 +70,13 @@ RESOLUTION CResolutionUtils::ChooseBestResolution(float fps, int width, bool is3
       FindResolutionFromFpsMatch(fps, width, is3D, res, weight);//if that fails use automatic refreshrate selection
   }
   CLog::Log(LOGNOTICE, "Display resolution ADJUST : %s (%d) (weight: %.3f)",
-            CServiceBroker::GetWinSystem().GetGfxContext().GetResInfo(res).strMode.c_str(), res, weight);
+            CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(res).strMode.c_str(), res, weight);
   return res;
 }
 
 bool CResolutionUtils::FindResolutionFromOverride(float fps, int width, bool is3D, RESOLUTION &resolution, float& weight, bool fallback)
 {
-  RESOLUTION_INFO curr = CServiceBroker::GetWinSystem().GetGfxContext().GetResInfo(resolution);
+  RESOLUTION_INFO curr = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(resolution);
 
   //try to find a refreshrate from the override
   for (int i = 0; i < (int)g_advancedSettings.m_videoAdjustRefreshOverrides.size(); i++)
@@ -92,7 +92,7 @@ bool CResolutionUtils::FindResolutionFromOverride(float fps, int width, bool is3
 
     for (size_t j = (int)RES_DESKTOP; j < CDisplaySettings::GetInstance().ResolutionInfoSize(); j++)
     {
-      RESOLUTION_INFO info = CServiceBroker::GetWinSystem().GetGfxContext().GetResInfo((RESOLUTION)j);
+      RESOLUTION_INFO info = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo((RESOLUTION)j);
 
       if (info.iScreenWidth  == curr.iScreenWidth &&
           info.iScreenHeight == curr.iScreenHeight &&
@@ -134,7 +134,7 @@ void CResolutionUtils::FindResolutionFromFpsMatch(float fps, int width, bool is3
   RESOLUTION_INFO curr;
 
   resolution = FindClosestResolution(fps, width, is3D, 1.0, resolution, weight);
-  curr = CServiceBroker::GetWinSystem().GetGfxContext().GetResInfo(resolution);
+  curr = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(resolution);
 
   if (weight >= maxWeight) //not a very good match, try a 2:3 cadence instead
   {
@@ -142,7 +142,7 @@ void CResolutionUtils::FindResolutionFromFpsMatch(float fps, int width, bool is3
         curr.strMode.c_str(), resolution, fps, weight);
 
     resolution = FindClosestResolution(fps, width, is3D, 2.5, resolution, weight);
-    curr = CServiceBroker::GetWinSystem().GetGfxContext().GetResInfo(resolution);
+    curr = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(resolution);
 
     if (weight >= maxWeight) //2:3 cadence not a good match
     {
@@ -152,7 +152,7 @@ void CResolutionUtils::FindResolutionFromFpsMatch(float fps, int width, bool is3
       //get the resolution with the refreshrate closest to 60 hertz
       for (size_t i = (int)RES_DESKTOP; i < CDisplaySettings::GetInstance().ResolutionInfoSize(); i++)
       {
-        RESOLUTION_INFO info = CServiceBroker::GetWinSystem().GetGfxContext().GetResInfo((RESOLUTION)i);
+        RESOLUTION_INFO info = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo((RESOLUTION)i);
 
         if (MathUtils::round_int(info.fRefreshRate) == 60
          && info.iScreenWidth  == curr.iScreenWidth
@@ -173,7 +173,7 @@ void CResolutionUtils::FindResolutionFromFpsMatch(float fps, int width, bool is3
         CLog::Log(LOGDEBUG, "60 hertz refreshrate not available, choosing highest");
         for (size_t i = (int)RES_DESKTOP; i < CDisplaySettings::GetInstance().ResolutionInfoSize(); i++)
         {
-          RESOLUTION_INFO info = CServiceBroker::GetWinSystem().GetGfxContext().GetResInfo((RESOLUTION)i);
+          RESOLUTION_INFO info = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo((RESOLUTION)i);
 
           if (info.fRefreshRate  >  curr.fRefreshRate
            && info.iScreenWidth  == curr.iScreenWidth
@@ -194,13 +194,13 @@ void CResolutionUtils::FindResolutionFromFpsMatch(float fps, int width, bool is3
 
 RESOLUTION CResolutionUtils::FindClosestResolution(float fps, int width, bool is3D, float multiplier, RESOLUTION current, float& weight)
 {
-  RESOLUTION_INFO curr = CServiceBroker::GetWinSystem().GetGfxContext().GetResInfo(current);
+  RESOLUTION_INFO curr = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(current);
   RESOLUTION orig_res  = CDisplaySettings::GetInstance().GetCurrentResolution();
 
   if (orig_res <= RES_DESKTOP)
     orig_res = RES_DESKTOP;
 
-  RESOLUTION_INFO orig = CServiceBroker::GetWinSystem().GetGfxContext().GetResInfo(orig_res);
+  RESOLUTION_INFO orig = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(orig_res);
 
   float fRefreshRate = fps;
 
@@ -212,7 +212,7 @@ RESOLUTION CResolutionUtils::FindClosestResolution(float fps, int width, bool is
   // Find closest refresh rate
   for (size_t i = (int)RES_DESKTOP; i < CDisplaySettings::GetInstance().ResolutionInfoSize(); i++)
   {
-    const RESOLUTION_INFO info = CServiceBroker::GetWinSystem().GetGfxContext().GetResInfo((RESOLUTION)i);
+    const RESOLUTION_INFO info = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo((RESOLUTION)i);
 
     //discard resolutions that are not the same width and height (and interlaced/3D flags)
     //or have a too low refreshrate

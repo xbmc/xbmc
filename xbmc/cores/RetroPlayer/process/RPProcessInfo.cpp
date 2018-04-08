@@ -47,9 +47,9 @@ CCriticalSection CRPProcessInfo::m_createSection;
 CRPProcessInfo::CRPProcessInfo(std::string platformName) :
   m_platformName(std::move(platformName)),
   m_renderBufferManager(new CRenderBufferManager),
-  m_renderContext(new CRenderContext(&CServiceBroker::GetRenderSystem(),
-                                     &CServiceBroker::GetWinSystem(),
-                                     CServiceBroker::GetWinSystem().GetGfxContext(),
+  m_renderContext(new CRenderContext(CServiceBroker::GetRenderSystem(),
+                                     CServiceBroker::GetWinSystem(),
+                                     CServiceBroker::GetWinSystem()->GetGfxContext(),
                                      CDisplaySettings::GetInstance(),
                                      CMediaSettings::GetInstance()))
 {

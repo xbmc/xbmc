@@ -117,13 +117,13 @@ bool CGUIFontTTFGL::FirstBegin()
 void CGUIFontTTFGL::LastEnd()
 {
 #ifdef HAS_GL
-  CRenderSystemGL& renderSystem = dynamic_cast<CRenderSystemGL&>(CServiceBroker::GetRenderSystem());
-  renderSystem.EnableShader(SM_FONTS);
+  CRenderSystemGL* renderSystem = dynamic_cast<CRenderSystemGL*>(CServiceBroker::GetRenderSystem());
+  renderSystem->EnableShader(SM_FONTS);
 
-  GLint posLoc = renderSystem.ShaderGetPos();
-  GLint colLoc = renderSystem.ShaderGetCol();
-  GLint tex0Loc = renderSystem.ShaderGetCoord0();
-  GLint modelLoc = renderSystem.ShaderGetModel();
+  GLint posLoc = renderSystem->ShaderGetPos();
+  GLint colLoc = renderSystem->ShaderGetCol();
+  GLint tex0Loc = renderSystem->ShaderGetCoord0();
+  GLint modelLoc = renderSystem->ShaderGetModel();
 
   CreateStaticVertexBuffers();
 
@@ -168,13 +168,13 @@ void CGUIFontTTFGL::LastEnd()
 
 #else
   // GLES 2.0 version.
-  CRenderSystemGLES& renderSystem = dynamic_cast<CRenderSystemGLES&>(CServiceBroker::GetRenderSystem());
-  renderSystem.EnableGUIShader(SM_FONTS);
+  CRenderSystemGLES* renderSystem = dynamic_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem());
+  renderSystem->EnableGUIShader(SM_FONTS);
 
-  GLint posLoc  = renderSystem.GUIShaderGetPos();
-  GLint colLoc  = renderSystem.GUIShaderGetCol();
-  GLint tex0Loc = renderSystem.GUIShaderGetCoord0();
-  GLint modelLoc = renderSystem.GUIShaderGetModel();
+  GLint posLoc  = renderSystem->GUIShaderGetPos();
+  GLint colLoc  = renderSystem->GUIShaderGetCol();
+  GLint tex0Loc = renderSystem->GUIShaderGetCoord0();
+  GLint modelLoc = renderSystem->GUIShaderGetModel();
 
 
   CreateStaticVertexBuffers();
@@ -218,12 +218,12 @@ void CGUIFontTTFGL::LastEnd()
     // Bind our pre-calculated array to GL_ELEMENT_ARRAY_BUFFER
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_elementArrayHandle);
     // Store current scissor
-    CRect scissor = CServiceBroker::GetWinSystem().GetGfxContext().StereoCorrection(CServiceBroker::GetWinSystem().GetGfxContext().GetScissors());
+    CRect scissor = CServiceBroker::GetWinSystem()->GetGfxContext().StereoCorrection(CServiceBroker::GetWinSystem()->GetGfxContext().GetScissors());
 
     for (size_t i = 0; i < m_vertexTrans.size(); i++)
     {
       // Apply the clip rectangle
-      CRect clip = renderSystem.ClipRectToScissorRect(m_vertexTrans[i].clip);
+      CRect clip = renderSystem->ClipRectToScissorRect(m_vertexTrans[i].clip);
       if (!clip.IsEmpty())
       {
         // intersect with current scissor
@@ -231,7 +231,7 @@ void CGUIFontTTFGL::LastEnd()
         // skip empty clip
         if (clip.IsEmpty())
           continue;
-        renderSystem.SetScissors(clip);
+        renderSystem->SetScissors(clip);
       }
 
       // Apply the translation to the currently active (top-of-stack) model view matrix
@@ -261,7 +261,7 @@ void CGUIFontTTFGL::LastEnd()
       glMatrixModview.Pop();
     }
     // Restore the original scissor rectangle
-    renderSystem.SetScissors(scissor);
+    renderSystem->SetScissors(scissor);
     // Restore the original model view matrix
     glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glMatrixModview.Get());
     // Unbind GL_ARRAY_BUFFER and GL_ELEMENT_ARRAY_BUFFER
@@ -275,9 +275,9 @@ void CGUIFontTTFGL::LastEnd()
   glDisableVertexAttribArray(tex0Loc);
 
 #ifdef HAS_GL
-  renderSystem.DisableShader();
+  renderSystem->DisableShader();
 #else
-  renderSystem.DisableGUIShader();
+  renderSystem->DisableGUIShader();
 #endif
 }
 

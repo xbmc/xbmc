@@ -95,7 +95,7 @@ void CGUIControlGroup::DynamicResourceAlloc(bool bOnOff)
 void CGUIControlGroup::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
   CPoint pos(GetPosition());
-  CServiceBroker::GetWinSystem().GetGfxContext().SetOrigin(pos.x, pos.y);
+  CServiceBroker::GetWinSystem()->GetGfxContext().SetOrigin(pos.x, pos.y);
 
   CRect rect;
   for (auto *control : m_children)
@@ -107,7 +107,7 @@ void CGUIControlGroup::Process(unsigned int currentTime, CDirtyRegionList &dirty
       rect.Union(control->GetRenderRegion());
   }
 
-  CServiceBroker::GetWinSystem().GetGfxContext().RestoreOrigin();
+  CServiceBroker::GetWinSystem()->GetGfxContext().RestoreOrigin();
   CGUIControl::Process(currentTime, dirtyregions);
   m_renderRegion = rect;
 }
@@ -115,7 +115,7 @@ void CGUIControlGroup::Process(unsigned int currentTime, CDirtyRegionList &dirty
 void CGUIControlGroup::Render()
 {
   CPoint pos(GetPosition());
-  CServiceBroker::GetWinSystem().GetGfxContext().SetOrigin(pos.x, pos.y);
+  CServiceBroker::GetWinSystem()->GetGfxContext().SetOrigin(pos.x, pos.y);
   CGUIControl *focusedControl = NULL;
   for (auto *control : m_children)
   {
@@ -127,7 +127,7 @@ void CGUIControlGroup::Render()
   if (focusedControl)
     focusedControl->DoRender();
   CGUIControl::Render();
-  CServiceBroker::GetWinSystem().GetGfxContext().RestoreOrigin();
+  CServiceBroker::GetWinSystem()->GetGfxContext().RestoreOrigin();
 }
 
 void CGUIControlGroup::RenderEx()

@@ -117,7 +117,7 @@ bool CVAAPIContext::EnsureContext(CVAAPIContext **ctx, CDecoder *decoder)
   m_context = new CVAAPIContext();
   *ctx = m_context;
   {
-    CSingleLock gLock(CServiceBroker::GetWinSystem().GetGfxContext());
+    CSingleLock gLock(CServiceBroker::GetWinSystem()->GetGfxContext());
     if (!m_context->CreateContext())
     {
       delete m_context;
@@ -713,7 +713,7 @@ long CDecoder::Release()
     CSingleLock lock(m_DecoderSection);
     CLog::Log(LOGDEBUG, LOGVIDEO, "VAAPI::Release pre-cleanup");
 
-    CSingleLock lock1(CServiceBroker::GetWinSystem().GetGfxContext());
+    CSingleLock lock1(CServiceBroker::GetWinSystem()->GetGfxContext());
     Message *reply;
     if (m_vaapiOutput.m_controlPort.SendOutMessageSync(COutputControlProtocol::PRECLEANUP,
                                                    &reply,
@@ -1108,7 +1108,7 @@ bool CDecoder::ConfigVAAPI()
   }
 
   // initialize output
-  CSingleLock lock(CServiceBroker::GetWinSystem().GetGfxContext());
+  CSingleLock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
   m_vaapiConfig.stats = &m_bufferStats;
   m_bufferStats.Reset();
   m_vaapiOutput.Start();
@@ -1410,7 +1410,7 @@ COutput::~COutput()
 
 void COutput::Dispose()
 {
-  CSingleLock lock(CServiceBroker::GetWinSystem().GetGfxContext());
+  CSingleLock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
   m_bStop = true;
   m_outMsgEvent.Set();
   StopThread();

@@ -579,7 +579,7 @@ CUPnPRenderer::OnSetNextAVTransportURI(PLT_ActionReference& action)
         if(item->IsVideo())
           playlist = PLAYLIST_VIDEO;
 
-        {   CSingleLock lock(CServiceBroker::GetWinSystem().GetGfxContext());
+        {   CSingleLock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
             CServiceBroker::GetPlaylistPlayer().ClearPlaylist(playlist);
             CServiceBroker::GetPlaylistPlayer().Add(playlist, item);
 

@@ -80,9 +80,9 @@ bool CGLShader::OnEnabled()
   glUniformMatrix4fv(m_hProj,  1, GL_FALSE, projMatrix);
   glUniformMatrix4fv(m_hModel, 1, GL_FALSE, modelMatrix);
 
-  const TransformMatrix &guiMatrix = CServiceBroker::GetWinSystem().GetGfxContext().GetGUIMatrix();
+  const TransformMatrix &guiMatrix = CServiceBroker::GetWinSystem()->GetGfxContext().GetGUIMatrix();
   CRect viewPort; // absolute positions of corners
-  CServiceBroker::GetRenderSystem().GetViewPort(viewPort);
+  CServiceBroker::GetRenderSystem()->GetViewPort(viewPort);
 
   /* glScissor operates in window coordinates. In order that we can use it to
    * perform clipping, we must ensure that there is an independent linear

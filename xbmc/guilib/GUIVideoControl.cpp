@@ -50,24 +50,24 @@ void CGUIVideoControl::Render()
     if (!g_application.GetAppPlayer().IsPausedPlayback())
       g_application.ResetScreenSaver();
 
-    CServiceBroker::GetWinSystem().GetGfxContext().SetViewWindow(m_posX, m_posY, m_posX + m_width, m_posY + m_height);
+    CServiceBroker::GetWinSystem()->GetGfxContext().SetViewWindow(m_posX, m_posY, m_posX + m_width, m_posY + m_height);
     TransformMatrix mat;
-    CServiceBroker::GetWinSystem().GetGfxContext().SetTransform(mat, 1.0, 1.0);
+    CServiceBroker::GetWinSystem()->GetGfxContext().SetTransform(mat, 1.0, 1.0);
 
-    color_t alpha = CServiceBroker::GetWinSystem().GetGfxContext().MergeAlpha(0xFF000000) >> 24;
+    color_t alpha = CServiceBroker::GetWinSystem()->GetGfxContext().MergeAlpha(0xFF000000) >> 24;
     if (g_application.GetAppPlayer().IsRenderingVideoLayer())
     {
-      CRect old = CServiceBroker::GetWinSystem().GetGfxContext().GetScissors();
+      CRect old = CServiceBroker::GetWinSystem()->GetGfxContext().GetScissors();
       CRect region = GetRenderRegion();
       region.Intersect(old);
-      CServiceBroker::GetWinSystem().GetGfxContext().SetScissors(region);
-      CServiceBroker::GetWinSystem().GetGfxContext().Clear(0);
-      CServiceBroker::GetWinSystem().GetGfxContext().SetScissors(old);
+      CServiceBroker::GetWinSystem()->GetGfxContext().SetScissors(region);
+      CServiceBroker::GetWinSystem()->GetGfxContext().Clear(0);
+      CServiceBroker::GetWinSystem()->GetGfxContext().SetScissors(old);
     }
     else
       g_application.GetAppPlayer().Render(false, alpha);
 
-    CServiceBroker::GetWinSystem().GetGfxContext().RemoveTransform();
+    CServiceBroker::GetWinSystem()->GetGfxContext().RemoveTransform();
   }
   CGUIControl::Render();
 }

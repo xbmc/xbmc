@@ -150,7 +150,7 @@ bool COMXImage::DecodeJpeg(COMXImageFile *file, unsigned int width, unsigned int
 
 bool COMXImage::ClampLimits(unsigned int &width, unsigned int &height, unsigned int m_width, unsigned int m_height, bool transposed)
 {
-  RESOLUTION_INFO& res_info = CDisplaySettings::GetInstance().GetResolutionInfo(CServiceBroker::GetWinSystem().GetGfxContext().GetVideoResolution());
+  RESOLUTION_INFO& res_info = CDisplaySettings::GetInstance().GetResolutionInfo(CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution());
   unsigned int max_width = width;
   unsigned int max_height = height;
   const unsigned int gui_width = transposed ? res_info.iHeight:res_info.iWidth;
@@ -224,8 +224,8 @@ bool COMXImage::SendMessage(bool (*callback)(EGLDisplay egl_display, EGLContext 
   // we can only call gl functions from the application thread or texture thread
   if ( g_application.IsCurrentThread() )
   {
-    CWinSystemRpiGLESContext &winsystem = static_cast<CWinSystemRpiGLESContext &>(CServiceBroker::GetWinSystem());
-    return callback(winsystem.GetEGLDisplay(), GetEGLContext(), cookie);
+    CWinSystemRpiGLESContext *winsystem = static_cast<CWinSystemRpiGLESContext *>(CServiceBroker::GetWinSystem());
+    return callback(winsystem->GetEGLDisplay(), GetEGLContext(), cookie);
   }
   struct callbackinfo mess;
   mess.callback = callback;
@@ -337,9 +337,9 @@ bool COMXImage::DecodeJpegToTexture(COMXImageFile *file, unsigned int width, uns
 EGLContext COMXImage::GetEGLContext()
 {
   CSingleLock lock(m_texqueue_lock);
-  CWinSystemRpiGLESContext &winsystem = static_cast<CWinSystemRpiGLESContext &>(CServiceBroker::GetWinSystem());
+  CWinSystemRpiGLESContext *winsystem = static_cast<CWinSystemRpiGLESContext *>(CServiceBroker::GetWinSystem());
   if (g_application.IsCurrentThread())
-    return winsystem.GetEGLContext();
+    return winsystem->GetEGLContext();
   if (m_egl_context == EGL_NO_CONTEXT)
     CreateContext();
   return m_egl_context;
@@ -389,8 +389,8 @@ void COMXImage::CreateContext()
 {
   EGLConfig egl_config;
   GLint m_result;
-  CWinSystemRpiGLESContext &winsystem = static_cast<CWinSystemRpiGLESContext &>(CServiceBroker::GetWinSystem());
-  EGLDisplay egl_display = winsystem.GetEGLDisplay();
+  CWinSystemRpiGLESContext *winsystem = static_cast<CWinSystemRpiGLESContext *>(CServiceBroker::GetWinSystem());
+  EGLDisplay egl_display = winsystem->GetEGLDisplay();
 
   eglInitialize(egl_display, NULL, NULL);
   CheckError();
@@ -417,7 +417,7 @@ void COMXImage::CreateContext()
     CLog::Log(LOGERROR, "%s: Could not find a compatible configuration",__FUNCTION__);
     return;
   }
-  m_egl_context = eglCreateContext(egl_display, egl_config, winsystem.GetEGLContext(), contextAttrs);
+  m_egl_context = eglCreateContext(egl_display, egl_config, winsystem->GetEGLContext(), contextAttrs);
   CheckError();
   if (m_egl_context == EGL_NO_CONTEXT)
   {
@@ -455,8 +455,8 @@ void COMXImage::Process()
       m_texqueue.pop();
       lock.Leave();
 
-      CWinSystemRpiGLESContext &winsystem = static_cast<CWinSystemRpiGLESContext &>(CServiceBroker::GetWinSystem());
-      mess->result = mess->callback(winsystem.GetEGLDisplay(), GetEGLContext(), mess->cookie);
+      CWinSystemRpiGLESContext *winsystem = static_cast<CWinSystemRpiGLESContext *>(CServiceBroker::GetWinSystem());
+      mess->result = mess->callback(winsystem->GetEGLDisplay(), GetEGLContext(), mess->cookie);
       {
         CSingleLock lock(m_texqueue_lock);
         mess->sync.Set();
@@ -1987,8 +1987,8 @@ void COMXTexture::Close()
 
 bool COMXTexture::HandlePortSettingChange(unsigned int resize_width, unsigned int resize_height, void *egl_image, bool port_settings_changed)
 {
-  CWinSystemRpiGLESContext &winsystem = static_cast<CWinSystemRpiGLESContext &>(CServiceBroker::GetWinSystem());
-  EGLDisplay egl_display = winsystem.GetEGLDisplay();
+  CWinSystemRpiGLESContext *winsystem = static_cast<CWinSystemRpiGLESContext *>(CServiceBroker::GetWinSystem());
+  EGLDisplay egl_display = winsystem->GetEGLDisplay();
   OMX_ERRORTYPE omx_err;
 
   if (port_settings_changed)

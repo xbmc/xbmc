@@ -224,7 +224,7 @@ void CMMALVideo::dec_output_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buf
       assert(omvb->mmal_buffer == buffer);
       bool wanted = true;
       // we don't keep up when running at 60fps in the background so switch to half rate
-      if (m_fps > 40.0f && !CServiceBroker::GetWinSystem().GetGfxContext().IsFullScreenVideo() && !(m_num_decoded & 1))
+      if (m_fps > 40.0f && !CServiceBroker::GetWinSystem()->GetGfxContext().IsFullScreenVideo() && !(m_num_decoded & 1))
         wanted = false;
       if (g_advancedSettings.m_omxDecodeStartWithValidFrame && (buffer->flags & MMAL_BUFFER_HEADER_FLAG_CORRUPTED))
         wanted = false;

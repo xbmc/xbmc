@@ -57,7 +57,7 @@ bool CInertialScrollingHandler::CheckForInertialScrolling(const CAction* action)
 {
   bool ret = false;//return value - false no inertial scrolling - true - inertial scrolling
 
-  if(CServiceBroker::GetWinSystem().HasInertialGestures())
+  if(CServiceBroker::GetWinSystem()->HasInertialGestures())
   {
     return ret;//no need for emulating inertial scrolling - windowing does support it natively.
   }

@@ -291,7 +291,7 @@ CActiveAE::~CActiveAE()
 
 void CActiveAE::Dispose()
 {
-  CServiceBroker::GetWinSystem().Unregister(this);
+  CServiceBroker::GetWinSystem()->Unregister(this);
 
   m_bStop = true;
   m_outMsgEvent.Set();
@@ -2611,7 +2611,7 @@ bool CActiveAE::Initialize()
   }
 
   // hook into windowing for receiving display reset events
-  CServiceBroker::GetWinSystem().Register(this);
+  CServiceBroker::GetWinSystem()->Register(this);
 
   m_inMsgEvent.Reset();
   return true;

@@ -168,7 +168,7 @@ ASS_Image* CDVDSubtitlesLibass::RenderImage(int frameWidth, int frameHeight, int
   m_dll.ass_set_margins(m_renderer, topmargin, topmargin, leftmargin, leftmargin);
   m_dll.ass_set_use_margins(m_renderer, useMargin);
   m_dll.ass_set_line_position(m_renderer, position);
-  m_dll.ass_set_aspect_ratio(m_renderer, storage_aspect / CServiceBroker::GetWinSystem().GetGfxContext().GetResInfo().fPixelRatio, storage_aspect);
+  m_dll.ass_set_aspect_ratio(m_renderer, storage_aspect / CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo().fPixelRatio, storage_aspect);
   return m_dll.ass_render_frame(m_renderer, m_track, DVD_TIME_TO_MSEC(pts), changes);
 }
 

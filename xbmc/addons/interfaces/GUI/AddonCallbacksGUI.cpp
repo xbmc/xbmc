@@ -214,7 +214,7 @@ CAddonCallbacksGUI::~CAddonCallbacksGUI()
 void CAddonCallbacksGUI::Lock()
 {
   if (iXBMCGUILockRef == 0)
-    CServiceBroker::GetWinSystem().GetGfxContext().lock();
+    CServiceBroker::GetWinSystem()->GetGfxContext().lock();
   iXBMCGUILockRef++;
 }
 
@@ -224,23 +224,23 @@ void CAddonCallbacksGUI::Unlock()
   {
     iXBMCGUILockRef--;
     if (iXBMCGUILockRef == 0)
-      CServiceBroker::GetWinSystem().GetGfxContext().unlock();
+      CServiceBroker::GetWinSystem()->GetGfxContext().unlock();
   }
 }
 
 int CAddonCallbacksGUI::GetScreenHeight()
 {
-  return CServiceBroker::GetWinSystem().GetGfxContext().GetHeight();
+  return CServiceBroker::GetWinSystem()->GetGfxContext().GetHeight();
 }
 
 int CAddonCallbacksGUI::GetScreenWidth()
 {
-  return CServiceBroker::GetWinSystem().GetGfxContext().GetWidth();
+  return CServiceBroker::GetWinSystem()->GetGfxContext().GetWidth();
 }
 
 int CAddonCallbacksGUI::GetVideoResolution()
 {
-  return (int)CServiceBroker::GetWinSystem().GetGfxContext().GetVideoResolution();
+  return (int)CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution();
 }
 
 GUIHANDLE CAddonCallbacksGUI::Window_New(void *addonData, const char *xmlFilename, const char *defaultSkin, bool forceFallback, bool asDialog)

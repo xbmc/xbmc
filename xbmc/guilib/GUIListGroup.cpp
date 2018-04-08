@@ -59,7 +59,7 @@ void CGUIListGroup::AddControl(CGUIControl *control, int position /*= -1*/)
 
 void CGUIListGroup::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
-  CServiceBroker::GetWinSystem().GetGfxContext().SetOrigin(m_posX, m_posY);
+  CServiceBroker::GetWinSystem()->GetGfxContext().SetOrigin(m_posX, m_posY);
 
   CRect rect;
   for (iControls it = m_children.begin(); it != m_children.end(); ++it)
@@ -72,7 +72,7 @@ void CGUIListGroup::Process(unsigned int currentTime, CDirtyRegionList &dirtyreg
       rect.Union(control->GetRenderRegion());
   }
 
-  CServiceBroker::GetWinSystem().GetGfxContext().RestoreOrigin();
+  CServiceBroker::GetWinSystem()->GetGfxContext().RestoreOrigin();
   CGUIControl::Process(currentTime, dirtyregions);
   m_renderRegion = rect;
   m_item = NULL;

@@ -31,7 +31,7 @@ bool CVideoSyncPi::Setup(PUPDATECLOCK func)
 {
   UpdateClock = func;
   m_abort = false;
-  CServiceBroker::GetWinSystem().Register(this);
+  CServiceBroker::GetWinSystem()->Register(this);
   CLog::Log(LOGDEBUG, "CVideoReferenceClock: setting up RPi");
   return true;
 }
@@ -52,12 +52,12 @@ void CVideoSyncPi::Run(CEvent& stopEvent)
 void CVideoSyncPi::Cleanup()
 {
   CLog::Log(LOGDEBUG, "CVideoReferenceClock: cleaning up RPi");
-  CServiceBroker::GetWinSystem().Unregister(this);
+  CServiceBroker::GetWinSystem()->Unregister(this);
 }
 
 float CVideoSyncPi::GetFps()
 {
-  m_fps = CServiceBroker::GetWinSystem().GetGfxContext().GetFPS();
+  m_fps = CServiceBroker::GetWinSystem()->GetGfxContext().GetFPS();
   CLog::Log(LOGDEBUG, "CVideoReferenceClock: fps: %.2f", m_fps);
   return m_fps;
 }
@@ -69,6 +69,6 @@ void CVideoSyncPi::OnResetDisplay()
 
 void CVideoSyncPi::RefreshChanged()
 {
-  if (m_fps != CServiceBroker::GetWinSystem().GetGfxContext().GetFPS())
+  if (m_fps != CServiceBroker::GetWinSystem()->GetGfxContext().GetFPS())
     m_abort = true;
 }

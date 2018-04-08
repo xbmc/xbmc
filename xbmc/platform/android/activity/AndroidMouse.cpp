@@ -141,5 +141,5 @@ void CAndroidMouse::MouseWheel(float x, float y, float value)
 
   newEvent.type = XBMC_MOUSEBUTTONUP;
 
-  dynamic_cast<CWinSystemAndroid&>(CServiceBroker::GetWinSystem()).MessagePush(&newEvent);
+  dynamic_cast<CWinSystemAndroid*>(CServiceBroker::GetWinSystem())->MessagePush(&newEvent);
 }
