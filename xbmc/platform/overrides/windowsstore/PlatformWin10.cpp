@@ -22,6 +22,9 @@
 #include <stdlib.h>
 #include "filesystem/SpecialProtocol.h"
 #include "platform/Environment.h"
+#include "platform/win10/input/RemoteControlXbox.h"
+#include "platform/win10/powermanagement/Win10PowerSyscall.h"
+#include "utils/SystemInfo.h"
 
 CPlatform* CPlatform::CreateInstance()
 {
@@ -35,4 +38,9 @@ CPlatformWin10::~CPlatformWin10() = default;
 void CPlatformWin10::Init()
 {
   CEnvironment::setenv("SSL_CERT_FILE", CSpecialProtocol::TranslatePath("special://xbmc/system/certs/cacert.pem").c_str(), 1);
+  CPowerSyscall::Register();
+  if (CSysInfo::GetWindowsDeviceFamily() == CSysInfo::WindowsDeviceFamily::Xbox)
+  {
+    CRemoteControlXbox::Register();
+  }
 }

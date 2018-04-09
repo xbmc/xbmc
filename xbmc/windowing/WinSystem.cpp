@@ -30,9 +30,6 @@
 #if HAS_GLES
 #include "guilib/GUIFontTTFGL.h"
 #endif
-#if HAS_LIRC
-#include "platform/linux/input/LIRC.h"
-#endif
 
 CWinSystemBase::CWinSystemBase()
 {
@@ -42,9 +39,6 @@ CWinSystemBase::CWinSystemBase()
     m_gfxContext->ResetScreenParameters((RESOLUTION)i);
     m_gfxContext->ResetOverscan((RESOLUTION)i, CDisplaySettings::GetInstance().GetResolutionInfo(i).Overscan);
   }
-#if HAS_LIRC
-  CRemoteControl::Register();
-#endif
 }
 
 CWinSystemBase::~CWinSystemBase() = default;

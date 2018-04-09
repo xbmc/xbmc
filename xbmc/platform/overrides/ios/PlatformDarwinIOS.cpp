@@ -18,11 +18,26 @@
  *
  */
 
-#include "platform/darwin/PlatformDarwin.h"
+#include "PlatformDarwinIOS.h"
 #include <stdlib.h>
 #include "filesystem/SpecialProtocol.h"
+#if HAS_LIRC
+#include "platform/linux/input/LIRC.h"
+#endif
 
 CPlatform* CPlatform::CreateInstance()
 {
-  return new CPlatformDarwin();
+  return new CPlatformDarwinIOS();
+}
+
+CPlatformDarwinIOS::CPlatformDarwinIOS() = default;
+
+CPlatformDarwinIOS::~CPlatformDarwinIOS() = default;
+
+void CPlatformDarwinIOS::Init()
+{
+  setenv("SSL_CERT_FILE", CSpecialProtocol::TranslatePath("special://xbmc/system/certs/cacert.pem").c_str(), 0);
+#if HAS_LIRC
+  CRemoteControl::Register();
+#endif
 }

@@ -29,8 +29,6 @@
 #include "guilib/gui3d.h"
 #include "messaging/ApplicationMessenger.h"
 #include "platform/win32/CharsetConverter.h"
-#include "platform/win32/input/IRServerSuite.h"
-#include "platform/win32/powermanagement/Win32PowerSyscall.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
@@ -68,8 +66,6 @@ CWinSystemWin32::CWinSystemWin32()
   AE::CAESinkFactory::ClearSinks();
   CAESinkDirectSound::Register();
   CAESinkWASAPI::Register();
-  CWin32PowerSyscall::Register();
-  CRemoteControl::Register();
 }
 
 CWinSystemWin32::~CWinSystemWin32()
