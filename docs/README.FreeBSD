@@ -47,7 +47,7 @@ that are used to build Kodi packages on Debian/Ubuntu (with all supported
 external libraries enabled).
 
 $ pkg install taglib gstreamer1-vaapi hal libcapn \
-enca gawk gperf cmake zip nasm swig30 libssh openjdk8 libtool gettext-tools \
+enca gawk gperf cmake zip nasm swig30 openjdk8 libtool gettext-tools \
 gmake pkgconf rapidjson mesa-libs doxygen glproto dri2proto dri3proto libass \
 flac libcdio curl dbus fontconfig freetype2 fribidi \
 libgcrypt gmp libgpg-error gnutls libidn libinotify lzo2 \

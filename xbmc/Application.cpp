@@ -112,9 +112,6 @@
 #ifdef HAS_FILESYSTEM_NFS
 #include "filesystem/NFSFile.h"
 #endif
-#ifdef HAS_FILESYSTEM_SFTP
-#include "filesystem/SFTPFile.h"
-#endif
 #include "PartyModeManager.h"
 #include "network/ZeroconfBrowser.h"
 #ifndef TARGET_POSIX
@@ -2879,10 +2876,6 @@ void CApplication::Stop(int exitCode)
     }
 #endif
 
-#ifdef HAS_FILESYSTEM_SFTP
-    CSFTPSessionManager::DisconnectAllSessions();
-#endif
-
     for (const auto& vfsAddon : CServiceBroker::GetVFSAddonCache().GetAddonInstances())
       vfsAddon->DisconnectAll();
 
@@ -4390,10 +4383,6 @@ void CApplication::ProcessSlow()
   gNfsConnection.CheckIfIdle();
 #endif
 
-#ifdef HAS_FILESYSTEM_SFTP
-  CSFTPSessionManager::ClearOutIdleSessions();
-#endif
-
   for (const auto& vfsAddon : CServiceBroker::GetVFSAddonCache().GetAddonInstances())
     vfsAddon->ClearOutIdle();
 
@@ -5053,10 +5042,6 @@ void CApplication::CloseNetworkShares()
 
 #ifdef HAS_FILESYSTEM_NFS
   gNfsConnection.Deinit();
-#endif
-
-#ifdef HAS_FILESYSTEM_SFTP
-  CSFTPSessionManager::DisconnectAllSessions();
 #endif
 
   for (const auto& vfsAddon : CServiceBroker::GetVFSAddonCache().GetAddonInstances())

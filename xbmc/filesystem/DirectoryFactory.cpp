@@ -74,9 +74,6 @@
 #ifdef HAS_ZEROCONF
 #include "ZeroconfDirectory.h"
 #endif
-#ifdef HAS_FILESYSTEM_SFTP
-#include "SFTPDirectory.h"
-#endif
 #ifdef HAS_FILESYSTEM_NFS
 #include "NFSDirectory.h"
 #endif
@@ -158,9 +155,6 @@ IDirectory* CDirectoryFactory::Create(const CURL& url)
     if (url.IsProtocol("ftp") || url.IsProtocol("ftps")) return new CFTPDirectory();
     if (url.IsProtocol("http") || url.IsProtocol("https")) return new CHTTPDirectory();
     if (url.IsProtocol("dav") || url.IsProtocol("davs")) return new CDAVDirectory();
-#ifdef HAS_FILESYSTEM_SFTP
-    if (url.IsProtocol("sftp") || url.IsProtocol("ssh")) return new CSFTPDirectory();
-#endif
 #ifdef HAS_FILESYSTEM_SMB
 #ifdef TARGET_WINDOWS
     if (url.IsProtocol("smb")) return new CWin32SMBDirectory();
