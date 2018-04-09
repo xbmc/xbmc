@@ -18,37 +18,33 @@
  *
  */
 
-#include <errno.h>
-#include <iphlpapi.h>
-#include <IcmpAPI.h>
 #include "PlatformDefs.h"
 #include "NetworkWin32.h"
+#include "platform/win32/CharsetConverter.h"
+#include "platform/win32/WIN32Util.h"
 #include "utils/log.h"
 #include "threads/SingleLock.h"
 #include "utils/CharsetConverter.h"
 #include "utils/StringUtils.h"
-#include "platform/win32/WIN32Util.h"
 
+#include <errno.h>
+#include <iphlpapi.h>
+#include <IcmpAPI.h>
 #include <netinet/in.h>
 #include <Mstcpip.h>
+#include <Wlanapi.h>
 
 #pragma comment(lib, "Ntdll.lib")
-
-// undefine if you want to build without the wlan stuff
-// might be needed for VS2003
-#define HAS_WIN32_WLAN_API
-
-#ifdef HAS_WIN32_WLAN_API
-#include "Wlanapi.h"
 #pragma comment (lib,"Wlanapi.lib")
-#endif
 
+using namespace KODI::PLATFORM::WINDOWS;
 
 CNetworkInterfaceWin32::CNetworkInterfaceWin32(CNetworkWin32* network, const IP_ADAPTER_INFO& adapter) :
    m_adaptername(adapter.Description)
 {
-   m_network = network;
-   m_adapter = adapter;
+  m_network = network;
+  m_adapter = adapter;
+  g_charsetConverter.unknownToUTF8(m_adaptername);
 }
 
 CNetworkInterfaceWin32::~CNetworkInterfaceWin32(void)
@@ -57,7 +53,6 @@ CNetworkInterfaceWin32::~CNetworkInterfaceWin32(void)
 
 std::string& CNetworkInterfaceWin32::GetName(void)
 {
-  g_charsetConverter.unknownToUTF8(m_adaptername);
   return m_adaptername;
 }
 
@@ -103,8 +98,6 @@ std::string CNetworkInterfaceWin32::GetCurrentNetmask(void)
 std::string CNetworkInterfaceWin32::GetCurrentWirelessEssId(void)
 {
   std::string result = "";
-
-#ifdef HAS_WIN32_WLAN_API
   if(IsWireless())
   {
     HANDLE hClientHdl = NULL;
@@ -124,9 +117,8 @@ std::string CNetworkInterfaceWin32::GetCurrentWirelessEssId(void)
           WCHAR wcguid[64];
           StringFromGUID2(guid, (LPOLESTR)&wcguid, 64);
           std::wstring strGuid = wcguid;
-          std::wstring strAdaptername;
-          g_charsetConverter.utf8ToW(m_adapter.AdapterName, strAdaptername);
-          if( strGuid == strAdaptername)
+          std::wstring strAdaptername = ToW(m_adapter.AdapterName);
+          if (strGuid == strAdaptername)
           {
             if(WlanQueryInterface(hClientHdl,&ppInterfaceList->InterfaceInfo[i].InterfaceGuid,wlan_intf_opcode_current_connection, NULL, &dwSize, (PVOID*)&pAttributes, NULL ) == ERROR_SUCCESS)
             {
@@ -143,7 +135,7 @@ std::string CNetworkInterfaceWin32::GetCurrentWirelessEssId(void)
     else
       CLog::Log(LOGERROR, "%s: Can't open wlan handle", __FUNCTION__);
   }
-#endif
+
   return result;
 }
 
@@ -152,7 +144,8 @@ std::string CNetworkInterfaceWin32::GetCurrentDefaultGateway(void)
   return m_adapter.GatewayList.IpAddress.String;
 }
 
-CNetworkWin32::CNetworkWin32(void)
+CNetworkWin32::CNetworkWin32(CSettings &settings)
+ : CNetwork(settings)
 {
   queryInterfaceList();
 }
@@ -333,7 +326,6 @@ bool CNetworkInterfaceWin32::GetHostMacAddress(unsigned long host, std::string& 
 std::vector<NetworkAccessPoint> CNetworkInterfaceWin32::GetAccessPoints(void)
 {
    std::vector<NetworkAccessPoint> result;
-#ifdef HAS_WIN32_WLAN_API
   if (!IsWireless())
     return result;
 
@@ -370,8 +362,7 @@ std::vector<NetworkAccessPoint> CNetworkInterfaceWin32::GetAccessPoints(void)
     WCHAR wcguid[64];
     StringFromGUID2(guid, (LPOLESTR)&wcguid, 64);
     std::wstring strGuid = wcguid;
-    std::wstring strAdaptername;
-    g_charsetConverter.utf8ToW(m_adapter.AdapterName, strAdaptername);
+    std::wstring strAdaptername = ToW(m_adapter.AdapterName);
     if (strGuid == strAdaptername)
     {
       WLAN_BSS_LIST *bss_list;
@@ -409,8 +400,6 @@ std::vector<NetworkAccessPoint> CNetworkInterfaceWin32::GetAccessPoints(void)
 
   // Close the handle
   WlanCloseHandle(wlan_handle, NULL);
-
-#endif
 
   return result;
 }
@@ -464,7 +453,6 @@ void CNetworkInterfaceWin32::GetSettings(NetworkAssignment& assignment, std::str
   }
   free(adapterInfo);
 
-#ifdef HAS_WIN32_WLAN_API
   if(IsWireless())
   {
     HANDLE hClientHdl = NULL;
@@ -484,9 +472,8 @@ void CNetworkInterfaceWin32::GetSettings(NetworkAssignment& assignment, std::str
           WCHAR wcguid[64];
           StringFromGUID2(guid, (LPOLESTR)&wcguid, 64);
           std::wstring strGuid = wcguid;
-          std::wstring strAdaptername;
-          g_charsetConverter.utf8ToW(m_adapter.AdapterName, strAdaptername);
-          if( strGuid == strAdaptername)
+          std::wstring strAdaptername = ToW(m_adapter.AdapterName);
+          if (strGuid == strAdaptername)
           {
             if(WlanQueryInterface(hClientHdl,&ppInterfaceList->InterfaceInfo[i].InterfaceGuid,wlan_intf_opcode_current_connection, NULL, &dwSize, (PVOID*)&pAttributes, NULL ) == ERROR_SUCCESS)
             {
@@ -520,7 +507,6 @@ void CNetworkInterfaceWin32::GetSettings(NetworkAssignment& assignment, std::str
       CLog::Log(LOGERROR, "%s: Can't open wlan handle", __FUNCTION__);
   }
   //! @todo get the key (WlanGetProfile, CryptUnprotectData?)
-#endif
 }
 
 void CNetworkInterfaceWin32::SetSettings(NetworkAssignment& assignment, std::string& ipAddress, std::string& networkMask, std::string& defaultGateway, std::string& essId, std::string& key, EncMode& encryptionMode)

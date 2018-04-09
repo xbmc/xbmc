@@ -17,15 +17,14 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#ifndef NETWORK_WIN10_H_
-#define NETWORK_WIN10_H_
- 
-#include <string>
-#include <vector>
+#pragma once
+
 #include "network/Network.h"
-#include "Iphlpapi.h"
 #include "utils/stopwatch.h"
 #include "threads/CriticalSection.h"
+
+#include <string>
+#include <vector>
 
 class CNetworkWin10;
 
@@ -59,7 +58,6 @@ public:
   virtual std::vector<NetworkAccessPoint> GetAccessPoints(void);
 
 private:
-  void WriteSettings(FILE* fw, NetworkAssignment assignment, std::string& ipAddress, std::string& networkMask, std::string& defaultGateway, std::string& essId, std::string& key, EncMode& encryptionMode);
   CNetworkWin10* m_network;
   std::string m_adaptername;
   Windows::Networking::Connectivity::ConnectionProfile^ m_adapter;
@@ -69,7 +67,7 @@ private:
 class CNetworkWin10 : public CNetwork
 {
 public:
-    CNetworkWin10(void);
+    CNetworkWin10(CSettings &settings);
     virtual ~CNetworkWin10(void);
 
     // Return the list of interfaces
@@ -93,4 +91,3 @@ private:
     CStopWatch m_netrefreshTimer;
     CCriticalSection m_critSection;
 };
-#endif

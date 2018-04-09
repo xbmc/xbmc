@@ -67,7 +67,7 @@ private:
 class CNetworkWin32 : public CNetwork
 {
 public:
-   CNetworkWin32(void);
+   CNetworkWin32(CSettings &settings);
    virtual ~CNetworkWin32(void);
 
    // Return the list of interfaces

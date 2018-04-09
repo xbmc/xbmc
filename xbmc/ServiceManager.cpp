@@ -403,15 +403,15 @@ void CServiceManager::delete_favouritesService::operator()(CFavouritesService *p
 CNetwork* CServiceManager::SetupNetwork() const
 {
 #if defined(TARGET_ANDROID)
-  return new CNetworkAndroid();
+  return new CNetworkAndroid(*m_settings);
 #elif defined(HAS_LINUX_NETWORK)
-  return new CNetworkLinux();
+  return new CNetworkLinux(*m_settings);
 #elif defined(HAS_WIN32_NETWORK)
-  return new CNetworkWin32();
+  return new CNetworkWin32(*m_settings);
 #elif defined(HAS_WIN10_NETWORK)
-  return new CNetworkWin10();
+  return new CNetworkWin10(*m_settings);
 #else
-  return new CNetwork();
+  return new CNetwork(*m_settings);
 #endif
 }
 

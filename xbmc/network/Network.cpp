@@ -136,8 +136,8 @@ int NetworkAccessPoint::FreqToChannel(float frequency)
   return 0; // unknown
 }
 
-
-CNetwork::CNetwork()
+CNetwork::CNetwork(CSettings &settings) :
+  m_services(new CNetworkServices(settings))
 {
   CApplicationMessenger::GetInstance().PostMsg(TMSG_NETWORKMESSAGE, SERVICES_UP, 0);
 }
@@ -280,14 +280,14 @@ void CNetwork::NetworkMessage(EMESSAGE message, int param)
   {
     case SERVICES_UP:
       CLog::Log(LOGDEBUG, "%s - Starting network services",__FUNCTION__);
-      CNetworkServices::GetInstance().Start();
+      m_services->Start();
       break;
 
     case SERVICES_DOWN:
       CLog::Log(LOGDEBUG, "%s - Signaling network services to stop",__FUNCTION__);
-      CNetworkServices::GetInstance().Stop(false); // tell network services to stop, but don't wait for them yet
+      m_services->Stop(false); // tell network services to stop, but don't wait for them yet
       CLog::Log(LOGDEBUG, "%s - Waiting for network services to stop",__FUNCTION__);
-      CNetworkServices::GetInstance().Stop(true); // wait for network services to stop
+      m_services->Stop(true); // wait for network services to stop
       break;
   }
 }

@@ -95,6 +95,9 @@ public:
    virtual void SetSettings(NetworkAssignment& assignment, std::string& ipAddress, std::string& networkMask, std::string& defaultGateway, std::string& essId, std::string& key, EncMode& encryptionMode) = 0;
 };
 
+class CSettings;
+class CNetworkServices;
+
 class CNetwork
 {
 public:
@@ -104,8 +107,11 @@ public:
     SERVICES_DOWN
   };
 
-   CNetwork();
+   CNetwork(CSettings &settings);
    virtual ~CNetwork();
+
+   // Get network services
+   CNetworkServices& GetServices() { return *m_services; }
 
    // Return our hostname
    virtual bool GetHostName(std::string& hostname);
@@ -150,6 +156,7 @@ public:
 
    // Waits for the first network interface to become available
    void WaitForNet();
+  std::unique_ptr<CNetworkServices> m_services;
 };
 
 #if defined(TARGET_ANDROID)

@@ -808,7 +808,6 @@ void CSettings::UninitializeISettingsHandlers()
   GetSettingsManager()->UnregisterCallback(&g_audioManager);
   GetSettingsManager()->UnregisterCallback(&g_charsetConverter);
   GetSettingsManager()->UnregisterCallback(&g_langInfo);
-  GetSettingsManager()->UnregisterCallback(&CNetworkServices::GetInstance());
   GetSettingsManager()->UnregisterCallback(&g_passwordManager);
   GetSettingsManager()->UnregisterCallback(&CRssManager::GetInstance());
 #if defined(TARGET_LINUX)
@@ -932,34 +931,6 @@ void CSettings::InitializeISettingCallbacks()
   GetSettingsManager()->RegisterCallback(&g_langInfo, settingSet);
 
   settingSet.clear();
-  settingSet.insert(CSettings::SETTING_SERVICES_WEBSERVER);
-  settingSet.insert(CSettings::SETTING_SERVICES_WEBSERVERPORT);
-  settingSet.insert(CSettings::SETTING_SERVICES_WEBSERVERUSERNAME);
-  settingSet.insert(CSettings::SETTING_SERVICES_WEBSERVERPASSWORD);
-  settingSet.insert(CSettings::SETTING_SERVICES_WEBSERVERSSL);
-  settingSet.insert(CSettings::SETTING_SERVICES_ZEROCONF);
-  settingSet.insert(CSettings::SETTING_SERVICES_AIRPLAY);
-  settingSet.insert(CSettings::SETTING_SERVICES_AIRPLAYVOLUMECONTROL);
-  settingSet.insert(CSettings::SETTING_SERVICES_AIRPLAYVIDEOSUPPORT);
-  settingSet.insert(CSettings::SETTING_SERVICES_USEAIRPLAYPASSWORD);
-  settingSet.insert(CSettings::SETTING_SERVICES_AIRPLAYPASSWORD);
-  settingSet.insert(CSettings::SETTING_SERVICES_UPNP);
-  settingSet.insert(CSettings::SETTING_SERVICES_UPNPSERVER);
-  settingSet.insert(CSettings::SETTING_SERVICES_UPNPRENDERER);
-  settingSet.insert(CSettings::SETTING_SERVICES_UPNPCONTROLLER);
-  settingSet.insert(CSettings::SETTING_SERVICES_ESENABLED);
-  settingSet.insert(CSettings::SETTING_SERVICES_ESPORT);
-  settingSet.insert(CSettings::SETTING_SERVICES_ESALLINTERFACES);
-  settingSet.insert(CSettings::SETTING_SERVICES_ESINITIALDELAY);
-  settingSet.insert(CSettings::SETTING_SERVICES_ESCONTINUOUSDELAY);
-  settingSet.insert(CSettings::SETTING_SMB_WINSSERVER);
-  settingSet.insert(CSettings::SETTING_SMB_WORKGROUP);
-  settingSet.insert(CSettings::SETTING_SMB_MINPROTOCOL);
-  settingSet.insert(CSettings::SETTING_SMB_MAXPROTOCOL);
-  settingSet.insert(CSettings::SETTING_SMB_LEGACYSECURITY);
-  GetSettingsManager()->RegisterCallback(&CNetworkServices::GetInstance(), settingSet);
-
-  settingSet.clear();
   settingSet.insert(CSettings::SETTING_MASTERLOCK_LOCKCODE);
   GetSettingsManager()->RegisterCallback(&g_passwordManager, settingSet);
 
@@ -1008,7 +979,6 @@ void CSettings::UninitializeISettingCallbacks()
   GetSettingsManager()->UnregisterCallback(&g_audioManager);
   GetSettingsManager()->UnregisterCallback(&g_charsetConverter);
   GetSettingsManager()->UnregisterCallback(&g_langInfo);
-  GetSettingsManager()->UnregisterCallback(&CNetworkServices::GetInstance());
   GetSettingsManager()->UnregisterCallback(&g_passwordManager);
   GetSettingsManager()->UnregisterCallback(&CRssManager::GetInstance());
 #if defined(TARGET_LINUX)
