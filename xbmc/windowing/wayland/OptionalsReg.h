@@ -36,30 +36,3 @@ void VAAPIRegister(CVaapiProxy *winSystem, bool deepColor);
 void VAAPIRegisterRender(CVaapiProxy *winSystem, bool &general, bool &deepColor);
 }
 
-
-//-----------------------------------------------------------------------------
-// ALSA
-//-----------------------------------------------------------------------------
-
-namespace WAYLAND
-{
-bool ALSARegister();
-}
-
-//-----------------------------------------------------------------------------
-// PulseAudio
-//-----------------------------------------------------------------------------
-
-namespace WAYLAND
-{
-bool PulseAudioRegister();
-}
-
-//-----------------------------------------------------------------------------
-// sndio
-//-----------------------------------------------------------------------------
-
-namespace WAYLAND
-{
-bool SndioRegister();
-}

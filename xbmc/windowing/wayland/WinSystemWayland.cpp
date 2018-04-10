@@ -20,7 +20,6 @@
 
 #include "WinSystemWayland.h"
 
-#include "OptionalsReg.h"
 #include <algorithm>
 #include <limits>
 #include <numeric>
@@ -35,9 +34,11 @@
 #include "input/touch/generic/GenericTouchActionHandler.h"
 #include "input/touch/generic/GenericTouchInputHandler.h"
 #include "platform/linux/powermanagement/LinuxPowerSyscall.h"
+#include "platform/linux/OptionalsReg.h"
 #include "platform/linux/PlatformConstants.h"
 #include "platform/linux/TimeUtils.h"
 #include "messaging/ApplicationMessenger.h"
+#include "OptionalsReg.h"
 #include "OSScreenSaverIdleInhibitUnstableV1.h"
 #include "Registry.h"
 #include "ServiceBroker.h"
@@ -152,23 +153,23 @@ CWinSystemWayland::CWinSystemWayland()
     envSink = getenv("AE_SINK");
   if (StringUtils::EqualsNoCase(envSink, "ALSA"))
   {
-    ::WAYLAND::ALSARegister();
+    OPTIONALS::ALSARegister();
   }
   else if (StringUtils::EqualsNoCase(envSink, "PULSE"))
   {
-    ::WAYLAND::PulseAudioRegister();
+    OPTIONALS::PulseAudioRegister();
   }
   else if (StringUtils::EqualsNoCase(envSink, "SNDIO"))
   {
-    ::WAYLAND::SndioRegister();
+    OPTIONALS::SndioRegister();
   }
   else
   {
-    if (!::WAYLAND::PulseAudioRegister())
+    if (!OPTIONALS::PulseAudioRegister())
     {
-      if (!::WAYLAND::ALSARegister())
+      if (!OPTIONALS::ALSARegister())
       {
-        ::WAYLAND::SndioRegister();
+        OPTIONALS::SndioRegister();
       }
     }
   }
