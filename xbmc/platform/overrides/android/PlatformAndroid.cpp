@@ -21,6 +21,10 @@
 #include "PlatformAndroid.h"
 #include <stdlib.h>
 #include "filesystem/SpecialProtocol.h"
+#include "platform/android/powermanagement/AndroidPowerSyscall.h"
+#if HAS_LIRC
+#include "platform/linux/input/LIRC.h"
+#endif
 
 CPlatform* CPlatform::CreateInstance()
 {
@@ -39,5 +43,9 @@ CPlatformAndroid::~CPlatformAndroid()
 
 void CPlatformAndroid::Init()
 {
-    setenv("SSL_CERT_FILE", CSpecialProtocol::TranslatePath("special://xbmc/system/certs/cacert.pem").c_str(), 1);
+  setenv("SSL_CERT_FILE", CSpecialProtocol::TranslatePath("special://xbmc/system/certs/cacert.pem").c_str(), 1);
+  CAndroidPowerSyscall::Register();
+#if HAS_LIRC
+  CRemoteControl::Register();
+#endif
 }

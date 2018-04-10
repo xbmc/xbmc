@@ -22,14 +22,14 @@
 
 #include "platform/Platform.h"
 
-class CPlatformDarwin : public CPlatform
+class CPlatformDarwinIOS : public CPlatform
 {
   public:
     /**\brief C'tor */
-    CPlatformDarwin();
+    CPlatformDarwinIOS();
   
     /**\brief D'tor */
-    virtual ~CPlatformDarwin();
+    virtual ~CPlatformDarwinIOS();
   
     void Init() override;
 };

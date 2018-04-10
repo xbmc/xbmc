@@ -1,3 +1,5 @@
+#pragma once
+
 /*
  *      Copyright (C) 2016 Team Kodi
  *      http://kodi.tv
@@ -18,28 +20,16 @@
  *
  */
 
-#include "PlatformDarwinOSX.h"
-#include <stdlib.h>
-#include "filesystem/SpecialProtocol.h"
-#include "platform/darwin/osx/powermanagement/CocoaPowerSyscall.h"
-#if HAS_LIRC
-#include "platform/linux/input/LIRC.h"
-#endif
+#include "platform/Platform.h"
 
-CPlatform* CPlatform::CreateInstance()
+class CPlatformDarwinOSX : public CPlatform
 {
-  return new CPlatformDarwinOSX();
-}
-
-CPlatformDarwinOSX::CPlatformDarwinOSX() = default;
-
-CPlatformDarwinOSX::~CPlatformDarwinOSX() = default;
-
-void CPlatformDarwinOSX::Init()
-{
-  setenv("SSL_CERT_FILE", CSpecialProtocol::TranslatePath("special://xbmc/system/certs/cacert.pem").c_str(), 0);
-  CCocoaPowerSyscall::Register();
-#if HAS_LIRC
-  CRemoteControl::Register();
-#endif
-}
+  public:
+    /**\brief C'tor */
+    CPlatformDarwinOSX();
+  
+    /**\brief D'tor */
+    virtual ~CPlatformDarwinOSX();
+  
+    void Init() override;
+};

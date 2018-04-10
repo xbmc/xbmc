@@ -18,21 +18,25 @@
  *
  */
 
-#include "PlatformDarwin.h"
-#include <stdlib.h>
-#include "filesystem/SpecialProtocol.h"
+#include "PlatformFreeBSD.h"
+#include "platform/linux/powermanagement/LinuxPowerSyscall.h"
+#if HAS_LIRC
+#include "platform/linux/input/LIRC.h"
+#endif
 
-CPlatformDarwin::CPlatformDarwin()
+CPlatform* CPlatform::CreateInstance()
 {
-  
+  return new CPlatformFreeBSD();
 }
 
-CPlatformDarwin::~CPlatformDarwin()
-{
-  
-}
+CPlatformFreeBSD::CPlatformFreeBSD() = default;
 
-void CPlatformDarwin::Init()
+CPlatformFreeBSD::~CPlatformFreeBSD() = default;
+
+void CPlatformFreeBSD::Init()
 {
-    setenv("SSL_CERT_FILE", CSpecialProtocol::TranslatePath("special://xbmc/system/certs/cacert.pem").c_str(), 0);
+  CLinuxPowerSyscall::Register();
+#if HAS_LIRC
+  CRemoteControl::Register();
+#endif
 }

@@ -34,7 +34,6 @@
 #include "cores/AudioEngine/Sinks/AESinkALSA.h"
 #include "windowing/GraphicContext.h"
 #include "windowing/Resolution.h"
-#include "platform/linux/powermanagement/LinuxPowerSyscall.h"
 #include "settings/Settings.h"
 #include "settings/DisplaySettings.h"
 #include "guilib/DispResource.h"
@@ -79,7 +78,6 @@ CWinSystemAmlogic::CWinSystemAmlogic()
   // Register sink
   AE::CAESinkFactory::ClearSinks();
   CAESinkALSA::Register();
-  CLinuxPowerSyscall::Register();
 }
 
 CWinSystemAmlogic::~CWinSystemAmlogic()

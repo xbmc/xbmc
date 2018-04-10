@@ -26,8 +26,6 @@
 #include "windowing/GraphicContext.h"
 #include "messaging/ApplicationMessenger.h"
 #include "platform/win10/AsyncHelpers.h"
-#include "platform/win10/input/RemoteControlXbox.h"
-#include "platform/win10/powermanagement/Win10PowerSyscall.h"
 #include "platform/win32/CharsetConverter.h"
 #include "rendering/dx/DirectXHelper.h"
 #include "rendering/dx/RenderContext.h"
@@ -74,11 +72,6 @@ CWinSystemWin10::CWinSystemWin10()
   {
     CAESinkWASAPI::Register();
   }
-  else if (CSysInfo::GetWindowsDeviceFamily() == CSysInfo::WindowsDeviceFamily::Xbox)
-  {
-    CRemoteControlXbox::Register();
-  }
-  CPowerSyscall::Register();
 }
 
 CWinSystemWin10::~CWinSystemWin10()

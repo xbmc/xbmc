@@ -18,28 +18,21 @@
  *
  */
 
-#include "PlatformDarwinOSX.h"
-#include <stdlib.h>
-#include "filesystem/SpecialProtocol.h"
-#include "platform/darwin/osx/powermanagement/CocoaPowerSyscall.h"
-#if HAS_LIRC
-#include "platform/linux/input/LIRC.h"
-#endif
+#include "PlatformWin32.h"
+#include "platform/win32/input/IRServerSuite.h"
+#include "platform/win32/powermanagement/Win32PowerSyscall.h"
 
 CPlatform* CPlatform::CreateInstance()
 {
-  return new CPlatformDarwinOSX();
+  return new CPlatformWin32();
 }
 
-CPlatformDarwinOSX::CPlatformDarwinOSX() = default;
+CPlatformWin32::CPlatformWin32() = default;
 
-CPlatformDarwinOSX::~CPlatformDarwinOSX() = default;
+CPlatformWin32::~CPlatformWin32() = default;
 
-void CPlatformDarwinOSX::Init()
+void CPlatformWin32::Init()
 {
-  setenv("SSL_CERT_FILE", CSpecialProtocol::TranslatePath("special://xbmc/system/certs/cacert.pem").c_str(), 0);
-  CCocoaPowerSyscall::Register();
-#if HAS_LIRC
   CRemoteControl::Register();
-#endif
+  CWin32PowerSyscall::Register();
 }
