@@ -458,7 +458,10 @@ static std::string Prettify(const std::string& strDirectory)
 bool CMusicInfoScanner::DoScan(const std::string& strDirectory)
 {
   if (m_handle)
+  {
+    m_handle->SetTitle(g_localizeStrings.Get(506)); //"Checking media files..."
     m_handle->SetText(Prettify(strDirectory));
+  }
 
   std::set<std::string>::const_iterator it = m_seenPaths.find(strDirectory);
   if (it != m_seenPaths.end())
@@ -491,6 +494,9 @@ bool CMusicInfoScanner::DoScan(const std::string& strDirectory)
       CLog::Log(LOGDEBUG, "%s Scanning dir '%s' as not in the database", __FUNCTION__, CURL::GetRedacted(strDirectory).c_str());
     else
       CLog::Log(LOGDEBUG, "%s Rescanning dir '%s' due to change", __FUNCTION__, CURL::GetRedacted(strDirectory).c_str());
+
+    if (m_handle)
+      m_handle->SetTitle(g_localizeStrings.Get(505)); //"Loading media information from files..."
 
     // filter items in the sub dir (for .cue sheet support)
     items.FilterCueItems();
@@ -912,10 +918,6 @@ int CMusicInfoScanner::RetrieveMusicInfo(const std::string& strDirectory, CFileI
  
     numAdded += album->songs.size();
   }
-
-  if (m_handle)
-    m_handle->SetTitle(g_localizeStrings.Get(505));
-
   return numAdded;
 }
 
@@ -1017,6 +1019,8 @@ void MUSIC_INFO::CMusicInfoScanner::ScrapeInfoAddedAlbums()
       }
     }
   }
+  // Clear list of albums added to prevent them being scraped again
+  m_albumsAdded.clear();
 }
 
 void MUSIC_INFO::CMusicInfoScanner::RetrieveArtistArt()
