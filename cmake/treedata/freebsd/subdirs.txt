@@ -9,3 +9,6 @@ xbmc/platform/linux/powermanagement platform/linux/powermanagement
 xbmc/platform/linux/storage         platform/linux/storage
 xbmc/input/touch                    input/touch
 xbmc/input/touch/generic            input/touch/generic
+xbmc/cores/RetroPlayer/process/rbpi cores/RetroPlayer/process/rbpi
+xbmc/cores/VideoPlayer/Process/rbpi cores/VideoPlayer/Process/rbpi
+
