@@ -20,45 +20,29 @@
 
 #pragma once
 
-#include "X11/Xlib.h"
-
 //-----------------------------------------------------------------------------
-// VAAPI
+// ALSA
 //-----------------------------------------------------------------------------
 
-class CVaapiProxy;
-
-namespace X11
+namespace OPTIONALS
 {
-CVaapiProxy* VaapiProxyCreate();
-void VaapiProxyDelete(CVaapiProxy *proxy);
-void VaapiProxyConfig(CVaapiProxy *proxy, void *dpy, void *eglDpy);
-void VAAPIRegister(CVaapiProxy *winSystem, bool deepColor);
-void VAAPIRegisterRender(CVaapiProxy *winSystem, bool &general, bool &deepColor);
+bool ALSARegister();
 }
 
 //-----------------------------------------------------------------------------
-// GLX
+// PulseAudio
 //-----------------------------------------------------------------------------
 
-class CVideoSync;
-class CGLContext;
-class CWinSystemX11GLContext;
-
-namespace X11
+namespace OPTIONALS
 {
-XID GLXGetWindow(void* context);
-void* GLXGetContext(void* context);
-CGLContext* GLXContextCreate(Display *dpy);
-CVideoSync* GLXVideoSyncCreate(void *clock, CWinSystemX11GLContext& winSystem);
+bool PulseAudioRegister();
 }
 
 //-----------------------------------------------------------------------------
-// VDPAU
+// sndio
 //-----------------------------------------------------------------------------
 
-namespace X11
+namespace OPTIONALS
 {
-void VDPAURegisterRender();
-void VDPAURegister();
+bool SndioRegister();
 }
