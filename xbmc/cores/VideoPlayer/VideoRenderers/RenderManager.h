@@ -100,6 +100,7 @@ public:
   bool Configure(const VideoPicture& picture, float fps, unsigned int orientation, int buffers = 0);
   bool AddVideoPicture(const VideoPicture& picture, volatile std::atomic_bool& bStop, EINTERLACEMETHOD deintMethod, bool wait);
   void AddOverlay(CDVDOverlay* o, double pts);
+  void ShowVideo(bool enable);
 
   /**
    * If player uses buffering it has to wait for a buffer before it calls
@@ -154,7 +155,7 @@ protected:
   bool m_renderedOverlay = false;
   bool m_renderDebug = false;
   XbmcThreads::EndTime m_debugTimer;
-
+  std::atomic_bool m_showVideo = {false};
 
   enum EPRESENTSTEP
   {

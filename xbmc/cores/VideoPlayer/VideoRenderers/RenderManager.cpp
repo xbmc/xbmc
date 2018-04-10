@@ -261,6 +261,11 @@ bool CRenderManager::IsConfigured() const
     return false;
 }
 
+void CRenderManager::ShowVideo(bool enable)
+{
+  m_showVideo = enable;
+}
+
 void CRenderManager::FrameWait(int ms)
 {
   XbmcThreads::EndTime timeout(ms);
@@ -315,7 +320,7 @@ void CRenderManager::FrameMove()
       m_presentTimer.Set(1000);
     }
 
-    if (m_presentstep == PRESENT_READY)
+    if (m_presentstep == PRESENT_READY && m_showVideo)
       PrepareNextRender();
 
     if (m_presentstep == PRESENT_FLIP)
