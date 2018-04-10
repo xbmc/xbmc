@@ -43,13 +43,7 @@
 #include "platform/linux/XTimeUtils.h"
 #endif
 
-#if defined(TARGET_FREEBSD)
-#include "freebsd/FreeBSDGNUReplacements.h"
-#endif
-
 #define AE_MIN_PERIODSIZE 256
-
-#define ALSA_CHMAP_KERNEL_BLACKLIST
 
 #define ALSA_OPTIONS (SND_PCM_NO_AUTO_FORMAT | SND_PCM_NO_AUTO_CHANNELS | SND_PCM_NO_AUTO_RESAMPLE)
 
@@ -207,11 +201,8 @@ inline CAEChannelInfo CAESinkALSA::GetChannelLayout(const AEAudioFormat& format,
   }
   else
   {
-#ifdef SND_CHMAP_API_VERSION
     /* ask for the actual map */
-    snd_pcm_chmap_t* actualMap = NULL;
-    if (AllowALSAMaps())
-      actualMap = snd_pcm_get_chmap(m_pcm);
+    snd_pcm_chmap_t* actualMap = snd_pcm_get_chmap(m_pcm);
     if (actualMap)
     {
       alsaMapStr = ALSAchmapToString(actualMap);
@@ -239,7 +230,6 @@ inline CAEChannelInfo CAESinkALSA::GetChannelLayout(const AEAudioFormat& format,
       free(actualMap);
     }
     else
-#endif
     {
       info = GetChannelLayoutLegacy(format, channels, channels);
     }
@@ -250,32 +240,6 @@ inline CAEChannelInfo CAESinkALSA::GetChannelLayout(const AEAudioFormat& format,
   CLog::Log(LOGDEBUG, "CAESinkALSA::GetChannelLayout - Got Layout: %s (ALSA: %s)", std::string(info).c_str(), alsaMapStr.c_str());
 
   return info;
-}
-
-#ifdef SND_CHMAP_API_VERSION
-
-bool CAESinkALSA::AllowALSAMaps()
-{
-  /*
-   * Some older kernels had various bugs in the HDA HDMI channel mapping, so just
-   * blanket blacklist them for now to avoid any breakage.
-   * Should be reasonably safe but still blacklisted:
-   * 3.10.20+, 3.11.9+, 3.12.1+
-   * Safe:
-   * 3.12.15+, 3.13+
-   */
-#ifdef ALSA_CHMAP_KERNEL_BLACKLIST
-  static bool checked = false;
-  static bool allowed;
-
-  if (!checked)
-    allowed = strverscmp(g_sysinfo.GetKernelVersionFull().c_str(), "3.12.15") >= 0;
-  checked = true;
-
-  return allowed;
-#else
-  return true;
-#endif
 }
 
 AEChannel CAESinkALSA::ALSAChannelToAEChannel(unsigned int alsaChannel)
@@ -509,8 +473,6 @@ snd_pcm_chmap_t* CAESinkALSA::SelectALSAChannelMap(const CAEChannelInfo& info)
   return chmap;
 }
 
-#endif // SND_CHMAP_API_VERSION
-
 void CAESinkALSA::GetAESParams(const AEAudioFormat& format, std::string& params)
 {
   if (m_passthrough)
@@ -600,9 +562,8 @@ bool CAESinkALSA::Initialize(AEAudioFormat &format, std::string &device)
   /* free the sound config */
   snd_config_delete(config);
 
-#ifdef SND_CHMAP_API_VERSION
   snd_pcm_chmap_t* selectedChmap = NULL;
-  if (!m_passthrough && AllowALSAMaps())
+  if (!m_passthrough)
   {
     selectedChmap = SelectALSAChannelMap(format.m_channelLayout);
     if (selectedChmap)
@@ -611,24 +572,19 @@ bool CAESinkALSA::Initialize(AEAudioFormat &format, std::string &device)
       inconfig.channels = selectedChmap->channels;
     }
   }
-#endif
 
   if (!InitializeHW(inconfig, outconfig) || !InitializeSW(outconfig))
   {
-#ifdef SND_CHMAP_API_VERSION
     free(selectedChmap);
-#endif
     return false;
   }
 
-#ifdef SND_CHMAP_API_VERSION
   if (selectedChmap)
   {
     /* failure is OK, that likely just means the selected chmap is fixed already */
     snd_pcm_set_chmap(m_pcm, selectedChmap);
     free(selectedChmap);
   }
-#endif
 
   // we want it blocking
   snd_pcm_nonblock(m_pcm, 0);
@@ -1539,10 +1495,7 @@ void CAESinkALSA::EnumerateDevice(AEDeviceInfoList &list, const std::string &dev
   }
 
   CAEChannelInfo alsaChannels;
-#ifdef SND_CHMAP_API_VERSION
-  snd_pcm_chmap_query_t** alsaMaps = NULL;
-  if (AllowALSAMaps())
-    alsaMaps = snd_pcm_query_chmaps(pcmhandle);
+  snd_pcm_chmap_query_t** alsaMaps = snd_pcm_query_chmaps(pcmhandle);
   bool useEldChannels = (info.m_channels.Count() > 0);
   if (alsaMaps)
   {
@@ -1558,7 +1511,6 @@ void CAESinkALSA::EnumerateDevice(AEDeviceInfoList &list, const std::string &dev
     snd_pcm_free_chmaps(alsaMaps);
   }
   else
-#endif
   {
     for (int i = 0; i < channels; ++i)
     {
