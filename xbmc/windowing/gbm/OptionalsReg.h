@@ -35,30 +35,3 @@ void VaapiProxyConfig(CVaapiProxy *proxy, void *eglDpy);
 void VAAPIRegister(CVaapiProxy *winSystem, bool deepColor);
 void VAAPIRegisterRender(CVaapiProxy *winSystem, bool &general, bool &deepColor);
 }
-
-//-----------------------------------------------------------------------------
-// ALSA
-//-----------------------------------------------------------------------------
-
-namespace GBM
-{
-bool ALSARegister();
-}
-
-//-----------------------------------------------------------------------------
-// PulseAudio
-//-----------------------------------------------------------------------------
-
-namespace GBM
-{
-bool PulseAudioRegister();
-}
-
-//-----------------------------------------------------------------------------
-// sndio
-//-----------------------------------------------------------------------------
-
-namespace GBM
-{
-bool SndioRegister();
-}

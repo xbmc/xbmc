@@ -26,6 +26,7 @@
 #include <string.h>
 
 #include "OptionalsReg.h"
+#include "platform/linux/OptionalsReg.h"
 #include "windowing/GraphicContext.h"
 #include "platform/linux/powermanagement/LinuxPowerSyscall.h"
 #include "settings/DisplaySettings.h"
@@ -47,23 +48,23 @@ CWinSystemGbm::CWinSystemGbm() :
     envSink = getenv("AE_SINK");
   if (StringUtils::EqualsNoCase(envSink, "ALSA"))
   {
-    GBM::ALSARegister();
+    OPTIONALS::ALSARegister();
   }
   else if (StringUtils::EqualsNoCase(envSink, "PULSE"))
   {
-    GBM::PulseAudioRegister();
+    OPTIONALS::PulseAudioRegister();
   }
   else if (StringUtils::EqualsNoCase(envSink, "SNDIO"))
   {
-    GBM::SndioRegister();
+    OPTIONALS::SndioRegister();
   }
   else
   {
-    if (!GBM::PulseAudioRegister())
+    if (!OPTIONALS::PulseAudioRegister())
     {
-      if (!GBM::ALSARegister())
+      if (!OPTIONALS::ALSARegister())
       {
-        GBM::SndioRegister();
+        OPTIONALS::SndioRegister();
       }
     }
   }
