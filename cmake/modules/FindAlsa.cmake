@@ -15,7 +15,7 @@
 #   ALSA::ALSA   - The Alsa library
 
 if(PKG_CONFIG_FOUND)
-  pkg_check_modules(PC_ALSA alsa>=0.9 QUIET)
+  pkg_check_modules(PC_ALSA alsa>=1.0.27 QUIET)
 endif()
 
 find_path(ALSA_INCLUDE_DIR NAMES alsa/asoundlib.h
