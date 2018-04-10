@@ -3093,6 +3093,9 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
     if(item.GetProperty("StartPercent").isString())
       fallback = (double)atof(item.GetProperty("StartPercent").asString().c_str());
     options.startpercent = item.GetProperty("StartPercent").asDouble(fallback);
+    // Clear the property from m_itemCurrentFile so that it doesn't get set
+    // again on the original FileItem when the playback ends
+    m_itemCurrentFile->ClearProperty("StartPercent");
   }
 
   options.starttime = CUtil::ConvertMilliSecsToSecs(item.m_lStartOffset);

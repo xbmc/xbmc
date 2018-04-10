@@ -510,9 +510,10 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
 
   if (parameterObject["item"].isMember("playlistid"))
   {
-    int playlistid = (int)parameterObject["item"]["playlistid"].asInteger();
+    int playlistid = static_cast<int>(parameterObject["item"]["playlistid"].asInteger());
+    int playlistStartPosition = static_cast<int>(parameterObject["item"]["position"].asInteger());
 
-    if (playlistid < PLAYLIST_PICTURE)
+    if (playlistid == PLAYLIST_MUSIC || playlistid == PLAYLIST_VIDEO)
     {
       // Apply the "shuffled" option if available
       if (optionShuffled.isBoolean())
@@ -520,39 +521,37 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
       // Apply the "repeat" option if available
       if (!optionRepeat.isNull())
         CServiceBroker::GetPlaylistPlayer().SetRepeat(playlistid, (REPEAT_STATE)ParseRepeatState(optionRepeat), false);
+
+      CVariant* payload = nullptr;
+      if (optionResume.isBoolean())
+        payload = new CVariant(optionResume.asBoolean() ? STARTOFFSET_RESUME : 0);
+      else if (optionResume.isDouble())
+        payload = new CVariant(optionResume);
+      else if (optionResume.isObject())
+        payload = new CVariant(static_cast<int>(ParseTimeInSeconds(optionResume) * 75.0));
+
+      CApplicationMessenger::GetInstance().SendMsg(TMSG_PLAYLISTPLAYER_PLAY, playlistStartPosition, playlistid, static_cast<void*>(payload));
+      OnPlaylistChanged();
+      return ACK;
     }
-
-    int playlistStartPosition = (int)parameterObject["item"]["position"].asInteger();
-
-    switch (playlistid)
+    else if (playlistid == PLAYLIST_PICTURE)
     {
-      case PLAYLIST_MUSIC:
-      case PLAYLIST_VIDEO:
-        CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_PLAY, playlistid, playlistStartPosition);
-        OnPlaylistChanged();
-        break;
-
-      case PLAYLIST_PICTURE:
+      std::string firstPicturePath;
+      if (playlistStartPosition > 0)
       {
-        std::string firstPicturePath;
-        if (playlistStartPosition > 0)
+        CGUIWindowSlideShow *slideshow = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIWindowSlideShow>(WINDOW_SLIDESHOW);
+        if (slideshow != NULL)
         {
-          CGUIWindowSlideShow *slideshow = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIWindowSlideShow>(WINDOW_SLIDESHOW);
-          if (slideshow != NULL)
-          {
-            CFileItemList list;
-            slideshow->GetSlideShowContents(list);
-            if (playlistStartPosition < list.Size())
-              firstPicturePath = list.Get(playlistStartPosition)->GetPath();
-          }
+          CFileItemList list;
+          slideshow->GetSlideShowContents(list);
+          if (playlistStartPosition < list.Size())
+            firstPicturePath = list.Get(playlistStartPosition)->GetPath();
         }
-
-        return StartSlideshow("", false, optionShuffled.isBoolean() && optionShuffled.asBoolean(), firstPicturePath);
-        break;
       }
+      return StartSlideshow("", false, optionShuffled.isBoolean() && optionShuffled.asBoolean(), firstPicturePath);
     }
-
-    return ACK;
+    else
+      return InvalidParams;
   }
   else if (parameterObject["item"].isMember("path"))
   {

@@ -361,9 +361,9 @@ bool CPlayListPlayer::Play(int iSong, std::string player, bool bAutoPlay /* = fa
     }
   }
 
-  // reset the start offset of this item
-  if (item->m_lStartOffset == STARTOFFSET_RESUME)
-    item->m_lStartOffset = 0;
+  // reset the start offset and start percent of this item
+  item->m_lStartOffset = 0;
+  item->ClearProperty("StartPercent");
 
   //! @todo - move the above failure logic and the below success logic
   //!        to callbacks instead so we don't rely on the return value
@@ -760,11 +760,37 @@ void PLAYLIST::CPlayListPlayer::OnApplicationMessage(KODI::MESSAGING::ThreadMess
   switch (pMsg->dwMessage)
   {
   case TMSG_PLAYLISTPLAYER_PLAY:
-    if (pMsg->param1 != -1)
-      Play(pMsg->param1, "");
+  {
+    int position = pMsg->param1;
+    int playlistid = pMsg->param2;
+
+    if (playlistid == PLAYLIST_PICTURE)
+      return;
+    if ((playlistid == PLAYLIST_MUSIC || playlistid == PLAYLIST_VIDEO) && GetCurrentPlaylist() != playlistid)
+      SetCurrentPlaylist(playlistid);
+
+    // If a resume value was attached, set it on the item that will be played
+    if (pMsg->lpVoid)
+    {
+      CVariant* resume = static_cast<CVariant*>(pMsg->lpVoid);
+      CPlayList& playlist = GetPlaylist(m_iCurrentPlayList);
+      if (position >= 0 && position < playlist.size())
+      {
+        CFileItemPtr item = playlist[position];
+        if (resume->isInteger())
+          item->m_lStartOffset = static_cast<int>(resume->asInteger());
+        else if (resume->isDouble())
+          item->SetProperty("StartPercent", *resume);
+      }
+      delete resume;
+    }
+
+    if (position != -1)
+      Play(position, "");
     else
       Play();
-    break;
+  }
+  break;
 
   case TMSG_PLAYLISTPLAYER_PLAY_SONG_ID:
     if (pMsg->param1 != -1)
@@ -904,13 +930,6 @@ void PLAYLIST::CPlayListPlayer::OnApplicationMessage(KODI::MESSAGING::ThreadMess
       }
 
       delete list;
-    }
-    else if (pMsg->param1 == PLAYLIST_MUSIC || pMsg->param1 == PLAYLIST_VIDEO)
-    {
-      if (GetCurrentPlaylist() != pMsg->param1)
-        SetCurrentPlaylist(pMsg->param1);
-
-      CApplicationMessenger::GetInstance().SendMsg(TMSG_PLAYLISTPLAYER_PLAY, pMsg->param2);
     }
   }
   break;
