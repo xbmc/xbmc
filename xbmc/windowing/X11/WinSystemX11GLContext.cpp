@@ -77,6 +77,8 @@ CWinSystemX11GLContext::CWinSystemX11GLContext()
       }
     }
   }
+
+  m_lirc.reset(OPTIONALS::LircRegister());
 }
 
 CWinSystemX11GLContext::~CWinSystemX11GLContext()

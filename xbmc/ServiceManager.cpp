@@ -173,8 +173,7 @@ bool CServiceManager::InitStageTwo(const CAppParamParser &params)
   m_contextMenuManager.reset(new CContextMenuManager(*m_addonMgr.get()));
 
   m_gameControllerManager.reset(new GAME::CControllerManager);
-  m_inputManager.reset(new CInputManager(params,
-                                         *m_profileManager));
+  m_inputManager.reset(new CInputManager(params));
   m_inputManager->InitializeInputs();
 
   m_peripherals.reset(new PERIPHERALS::CPeripherals(*m_announcementManager,

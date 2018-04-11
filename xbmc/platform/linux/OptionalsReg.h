@@ -46,3 +46,17 @@ namespace OPTIONALS
 {
 bool SndioRegister();
 }
+
+//-----------------------------------------------------------------------------
+// Lirc
+//-----------------------------------------------------------------------------
+
+namespace OPTIONALS
+{
+class CLircContainer;
+CLircContainer* LircRegister();
+struct delete_CLircContainer
+{
+  void operator()(CLircContainer *p) const;
+};
+}

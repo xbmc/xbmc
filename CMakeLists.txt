@@ -64,7 +64,6 @@ if(NOT WIN32)
   option(WITH_CPU               "build with given cpu" OFF)
 endif()
 if(CORE_SYSTEM_NAME STREQUAL linux)
-  option(ENABLE_LIRC            "Enable LIRC support?" ON)
   option(ENABLE_EVENTCLIENTS    "Enable event clients support?" OFF)
 endif()
 
@@ -149,6 +148,7 @@ set(optional_deps Alsa
                   CCache
                   DBus
                   LCMS2
+                  LircClient
                   MDNS
                   MicroHttpd
                   PulseAudio
@@ -199,11 +199,6 @@ endif()
 
 if(ENABLE_OPTICAL)
   list(APPEND DEP_DEFINES -DHAS_DVD_DRIVE -DHAS_CDDA_RIPPER)
-endif()
-
-if(ENABLE_LIRC)
-  set(LIRC_DEVICE /dev/lircd CACHE STRING "LIRC device to use")
-  list(APPEND DEP_DEFINES -DLIRC_DEVICE="${LIRC_DEVICE}" -DHAS_LIRC=1)
 endif()
 
 if(ENABLE_AIRTUNES)
