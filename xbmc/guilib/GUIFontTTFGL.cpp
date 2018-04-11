@@ -118,6 +118,9 @@ void CGUIFontTTFGL::LastEnd()
 {
 #ifdef HAS_GL
   CRenderSystemGL* renderSystem = dynamic_cast<CRenderSystemGL*>(CServiceBroker::GetRenderSystem());
+#else
+  CRenderSystemGLES* renderSystem = dynamic_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem());
+#endif
   renderSystem->EnableShader(SM_FONTS);
 
   GLint posLoc = renderSystem->ShaderGetPos();
@@ -165,51 +168,6 @@ void CGUIFontTTFGL::LastEnd()
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glDeleteBuffers(1, &VertexVBO);
   }
-
-#else
-  // GLES 2.0 version.
-  CRenderSystemGLES* renderSystem = dynamic_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem());
-  renderSystem->EnableGUIShader(SM_FONTS);
-
-  GLint posLoc  = renderSystem->GUIShaderGetPos();
-  GLint colLoc  = renderSystem->GUIShaderGetCol();
-  GLint tex0Loc = renderSystem->GUIShaderGetCoord0();
-  GLint modelLoc = renderSystem->GUIShaderGetModel();
-
-
-  CreateStaticVertexBuffers();
-
-  // Enable the attributes used by this shader
-  glEnableVertexAttribArray(posLoc);
-  glEnableVertexAttribArray(colLoc);
-  glEnableVertexAttribArray(tex0Loc);
-
-  if (!m_vertex.empty())
-  {
-    // Deal with vertices that had to use software clipping
-    std::vector<SVertex> vecVertices( 6 * (m_vertex.size() / 4) );
-    SVertex *vertices = &vecVertices[0];
-
-    for (size_t i=0; i<m_vertex.size(); i+=4)
-    {
-      *vertices++ = m_vertex[i];
-      *vertices++ = m_vertex[i+1];
-      *vertices++ = m_vertex[i+2];
-
-      *vertices++ = m_vertex[i+1];
-      *vertices++ = m_vertex[i+3];
-      *vertices++ = m_vertex[i+2];
-    }
-
-    vertices = &vecVertices[0];
-
-    glVertexAttribPointer(posLoc,  3, GL_FLOAT, GL_FALSE, sizeof(SVertex), (char*)vertices + offsetof(SVertex, x));
-    glVertexAttribPointer(colLoc,  4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(SVertex), (char*)vertices + offsetof(SVertex, r));
-    glVertexAttribPointer(tex0Loc, 2, GL_FLOAT,  GL_FALSE, sizeof(SVertex), (char*)vertices + offsetof(SVertex, u));
-
-    glDrawArrays(GL_TRIANGLES, 0, vecVertices.size());
-  }
-#endif
 
   if (!m_vertexTrans.empty())
   {
@@ -274,11 +232,7 @@ void CGUIFontTTFGL::LastEnd()
   glDisableVertexAttribArray(colLoc);
   glDisableVertexAttribArray(tex0Loc);
 
-#ifdef HAS_GL
   renderSystem->DisableShader();
-#else
-  renderSystem->DisableGUIShader();
-#endif
 }
 
 CVertexBuffer CGUIFontTTFGL::CreateVertexBuffer(const std::vector<SVertex> &vertices) const
@@ -364,7 +318,7 @@ bool CGUIFontTTFGL::CopyCharToTexture(FT_BitmapGlyph bitGlyph, unsigned int x1, 
     source += bitmap.width;
     target += m_texture->GetPitch();
   }
-  
+
   switch (m_textureStatus)
   {
   case TEXTURE_UPDATED:
@@ -373,7 +327,7 @@ bool CGUIFontTTFGL::CopyCharToTexture(FT_BitmapGlyph bitGlyph, unsigned int x1, 
       m_updateY2 = std::max(m_updateY2, y2);
     }
     break;
-      
+
   case TEXTURE_READY:
     {
       m_updateY1 = y1;
@@ -381,7 +335,7 @@ bool CGUIFontTTFGL::CopyCharToTexture(FT_BitmapGlyph bitGlyph, unsigned int x1, 
       m_textureStatus = TEXTURE_UPDATED;
     }
     break;
-      
+
   case TEXTURE_REALLOCATED:
     {
       m_updateY2 = std::max(m_updateY2, y2);
@@ -392,7 +346,7 @@ bool CGUIFontTTFGL::CopyCharToTexture(FT_BitmapGlyph bitGlyph, unsigned int x1, 
   default:
     break;
   }
-  
+
   return true;
 }
 
