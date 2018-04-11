@@ -303,10 +303,10 @@ void CExternalPlayer::Process()
 
   /* Suspend AE temporarily so exclusive or hog-mode sinks */
   /* don't block external player's access to audio device  */
-  CServiceBroker::GetActiveAE().Suspend();
+  CServiceBroker::GetActiveAE()->Suspend();
   // wait for AE has completed suspended
   XbmcThreads::EndTime timer(2000);
-  while (!timer.IsTimePast() && !CServiceBroker::GetActiveAE().IsSuspended())
+  while (!timer.IsTimePast() && !CServiceBroker::GetActiveAE()->IsSuspended())
   {
     Sleep(50);
   }
@@ -383,7 +383,7 @@ void CExternalPlayer::Process()
 #endif
 
   /* Resume AE processing of XBMC native audio */
-  if (!CServiceBroker::GetActiveAE().Resume())
+  if (!CServiceBroker::GetActiveAE()->Resume())
   {
     CLog::Log(LOGFATAL, "%s: Failed to restart AudioEngine after return from external player",__FUNCTION__);
   }

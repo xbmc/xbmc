@@ -227,7 +227,7 @@ static CEvent screenChangeEvent;
 
   // re-enumerate audio devices in that case too
   // as we might gain passthrough capabilities via HDMI
-  CServiceBroker::GetActiveAE().DeviceChange();
+  CServiceBroker::GetActiveAE()->DeviceChange();
   return true;
 }
 //--------------------------------------------------------------

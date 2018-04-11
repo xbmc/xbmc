@@ -522,7 +522,7 @@ CAEStreamInfo::DataType VideoPlayerCodec::GetPassthroughStreamType(AVCodecID cod
       format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_NULL;
   }
 
-  bool supports = CServiceBroker::GetActiveAE().SupportsRaw(format);
+  bool supports = CServiceBroker::GetActiveAE()->SupportsRaw(format);
 
   if (supports)
     return format.m_streamInfo.m_type;

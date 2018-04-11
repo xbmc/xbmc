@@ -61,11 +61,6 @@ PVR::CPVRManager &CServiceBroker::GetPVRManager()
   return g_application.m_ServiceManager->GetPVRManager();
 }
 
-IAE& CServiceBroker::GetActiveAE()
-{
-  return g_application.m_ServiceManager->GetActiveAE();
-}
-
 CContextMenuManager& CServiceBroker::GetContextMenuManager()
 {
   return g_application.m_ServiceManager->GetContextMenuManager();
@@ -216,4 +211,19 @@ void CServiceBroker::RegisterGUI(CGUIComponent *gui)
 void CServiceBroker::UnregisterGUI()
 {
   m_pGUI = nullptr;
+}
+
+// audio
+IAE* CServiceBroker::m_pActiveAE = nullptr;
+IAE* CServiceBroker::GetActiveAE()
+{
+  return m_pActiveAE;
+}
+void CServiceBroker::RegisterAE(IAE *ae)
+{
+  m_pActiveAE = ae;
+}
+void CServiceBroker::UnregisterAE()
+{
+  m_pActiveAE = nullptr;
 }

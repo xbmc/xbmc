@@ -42,7 +42,6 @@ extern "C" {
 
 class IAESink;
 class IAEEncoder;
-class CServiceManager;
 
 namespace ActiveAE
 {
@@ -223,16 +222,15 @@ protected:
 class CActiveAE : public IAE, public IDispResource, private CThread
 {
 protected:
-  friend class ::CServiceManager;
   friend class CActiveAESound;
   friend class CActiveAEStream;
   friend class CSoundPacket;
   friend class CActiveAEBufferPoolResample;
-  CActiveAE();
-  ~CActiveAE() override;
-  bool  Initialize() override;
 
 public:
+  CActiveAE();
+  ~CActiveAE() override;
+  bool Initialize() override;
   void Shutdown() override;
   bool Suspend() override;
   bool Resume() override;
@@ -251,8 +249,6 @@ public:
   /* returns a new sound object */
   IAESound *MakeSound(const std::string& file) override;
   void FreeSound(IAESound *sound) override;
-
-  void GarbageCollect() override {};
 
   void EnumerateOutputDevices(AEDeviceList &devices, bool passthrough) override;
   bool SupportsRaw(AEAudioFormat &format) override;

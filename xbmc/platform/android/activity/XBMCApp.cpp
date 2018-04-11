@@ -962,7 +962,7 @@ void CXBMCApp::onReceive(CJNIIntent intent)
     if (newstate != m_headsetPlugged)
     {
       m_headsetPlugged = newstate;
-      CServiceBroker::GetActiveAE().DeviceChange();
+      CServiceBroker::GetActiveAE()->DeviceChange();
     }
   }
   else if (action == "android.media.action.HDMI_AUDIO_PLUG")
@@ -974,7 +974,7 @@ void CXBMCApp::onReceive(CJNIIntent intent)
     {
       CLog::Log(LOGDEBUG, "-- HDMI state: %s",  newstate ? "on" : "off");
       m_hdmiPlugged = newstate;
-      CServiceBroker::GetActiveAE().DeviceChange();
+      CServiceBroker::GetActiveAE()->DeviceChange();
     }
   }
   else if (action == "android.intent.action.SCREEN_OFF")

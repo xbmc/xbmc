@@ -343,9 +343,13 @@ IAESound* CGUIAudioManager::LoadSound(const std::string &filename)
     return it->second.sound;
   }
 
-  IAESound *sound = CServiceBroker::GetActiveAE().MakeSound(filename);
+  IAE *ae = CServiceBroker::GetActiveAE();
+  if (!ae)
+    return nullptr;
+
+  IAESound *sound = ae->MakeSound(filename);
   if (!sound)
-    return NULL;
+    return nullptr;
 
   CSoundInfo info;
   info.usage = 1;
@@ -358,10 +362,15 @@ IAESound* CGUIAudioManager::LoadSound(const std::string &filename)
 void CGUIAudioManager::FreeSound(IAESound *sound)
 {
   CSingleLock lock(m_cs);
-  for(soundCache::iterator it = m_soundCache.begin(); it != m_soundCache.end(); ++it) {
-    if (it->second.sound == sound) {
-      if (--it->second.usage == 0) {     
-        CServiceBroker::GetActiveAE().FreeSound(sound);
+  IAE *ae = CServiceBroker::GetActiveAE();
+  for(soundCache::iterator it = m_soundCache.begin(); it != m_soundCache.end(); ++it)
+  {
+    if (it->second.sound == sound)
+    {
+      if (--it->second.usage == 0)
+      {
+        if (ae)
+          ae->FreeSound(sound);
         m_soundCache.erase(it);
       }
       return;
@@ -372,9 +381,13 @@ void CGUIAudioManager::FreeSound(IAESound *sound)
 void CGUIAudioManager::FreeSoundAllUsage(IAESound *sound)
 {
   CSingleLock lock(m_cs);
-  for(soundCache::iterator it = m_soundCache.begin(); it != m_soundCache.end(); ++it) {
-    if (it->second.sound == sound) {   
-      CServiceBroker::GetActiveAE().FreeSound(sound);
+  IAE *ae = CServiceBroker::GetActiveAE();
+  for(soundCache::iterator it = m_soundCache.begin(); it != m_soundCache.end(); ++it)
+  {
+    if (it->second.sound == sound)
+    {
+      if (ae)
+       ae->FreeSound(sound);
       m_soundCache.erase(it);
       return;
     }

@@ -482,13 +482,17 @@ namespace XBMCAddon
     }
 
     void audioSuspend()
-    {  
-      CServiceBroker::GetActiveAE().Suspend();
+    {
+      IAE *ae = CServiceBroker::GetActiveAE();
+      if (ae)
+        ae->Suspend();
     }
 
     void audioResume()
-    { 
-      CServiceBroker::GetActiveAE().Resume();
+    {
+      IAE *ae = CServiceBroker::GetActiveAE();
+      if (ae)
+        ae->Resume();
     }
 
     String convertLanguage(const char* language, int format)

@@ -166,11 +166,6 @@ public:
   virtual void FreeSound(IAESound *sound) = 0;
 
   /**
-   * Callback by CApplication for Garbage Collection. This method is called by CApplication every 500ms and can be used to clean up and free no-longer used resources.
-   */
-  virtual void GarbageCollect() = 0;
-
-  /**
    * Enumerate the supported audio output devices
    * @param devices The device list to append supported devices to
    * @param passthrough True if only passthrough devices are wanted

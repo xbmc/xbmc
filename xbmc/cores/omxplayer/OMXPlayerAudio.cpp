@@ -500,12 +500,12 @@ AEAudioFormat OMXPlayerAudio::GetDataFormat(CDVDStreamInfo hints)
       format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_NULL;
   }
 
-  m_passthrough = CServiceBroker::GetActiveAE().SupportsRaw(format);
+  m_passthrough = CServiceBroker::GetActiveAE()->SupportsRaw(format);
 
   if (!m_passthrough && hints.codec == AV_CODEC_ID_DTS)
   {
     format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_DTSHD_CORE;
-    m_passthrough = CServiceBroker::GetActiveAE().SupportsRaw(format);
+    m_passthrough = CServiceBroker::GetActiveAE()->SupportsRaw(format);
   }
 
   if(!m_passthrough)

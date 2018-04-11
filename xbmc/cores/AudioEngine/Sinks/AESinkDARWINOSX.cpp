@@ -129,7 +129,9 @@ OSStatus deviceChangedCB(AudioObjectID                       inObjectID,
   if  (deviceChanged)
   {
     CLog::Log(LOGDEBUG, "CoreAudio: audiodevicelist changed - reenumerating");
-    CServiceBroker::GetActiveAE().DeviceChange();
+    IAE* ae = CServiceBroker::GetActiveAE();
+    if (ae)
+      ae->DeviceChange();
     CLog::Log(LOGDEBUG, "CoreAudio: audiodevicelist changed - done");
   }
   return noErr;
