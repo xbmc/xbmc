@@ -46,9 +46,6 @@
 #ifdef HAS_PYTHON
 #include "interfaces/python/XBPython.h"
 #endif
-#ifdef TARGET_FREEBSD
-#include "freebsd/FreeBSDGNUReplacements.h"
-#endif
 
 using XFILE::CDirectory;
 using XFILE::CFile;

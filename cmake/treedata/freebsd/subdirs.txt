@@ -9,4 +9,3 @@ xbmc/platform/linux/powermanagement platform/linux/powermanagement
 xbmc/platform/linux/storage         platform/linux/storage
 xbmc/input/touch                    input/touch
 xbmc/input/touch/generic            input/touch/generic
-xbmc/freebsd                        freebsdsupport

@@ -25,9 +25,6 @@
 #include "PlatformDefs.h"
 #include "LinuxTimezone.h"
 #include "utils/SystemInfo.h"
-#ifdef TARGET_FREEBSD
-#include "freebsd/FreeBSDGNUReplacements.h"
-#endif
 
 #include "ServiceBroker.h"
 #include "Util.h"
