@@ -83,20 +83,20 @@ public:
   std::string GetShaderPath(const std::string &filename) override { return "GLES/2.0/"; }
 
   void InitialiseShader();
-  void EnableGUIShader(ESHADERMETHOD method);
-  void DisableGUIShader();
+  void EnableShader(ESHADERMETHOD method);
+  void DisableShader();
 
-  GLint GUIShaderGetPos();
-  GLint GUIShaderGetCol();
-  GLint GUIShaderGetCoord0();
-  GLint GUIShaderGetCoord1();
-  GLint GUIShaderGetUniCol();
-  GLint GUIShaderGetCoord0Matrix();
-  GLint GUIShaderGetField();
-  GLint GUIShaderGetStep();
-  GLint GUIShaderGetContrast();
-  GLint GUIShaderGetBrightness();
-  GLint GUIShaderGetModel();
+  GLint ShaderGetPos();
+  GLint ShaderGetCol();
+  GLint ShaderGetCoord0();
+  GLint ShaderGetCoord1();
+  GLint ShaderGetUniCol();
+  GLint ShaderGetCoord0Matrix();
+  GLint ShaderGetField();
+  GLint ShaderGetStep();
+  GLint ShaderGetContrast();
+  GLint ShaderGetBrightness();
+  GLint ShaderGetModel();
 
 protected:
   virtual void SetVSyncImpl(bool enable) = 0;
