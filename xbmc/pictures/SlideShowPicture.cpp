@@ -30,6 +30,7 @@
 #define _USE_MATH_DEFINES
 #endif
 #include <math.h>
+#include <cstddef>
 
 #if defined(HAS_GL)
 #include "rendering/gl/RenderSystemGL.h"
@@ -849,6 +850,8 @@ void CSlideShowPic::Render(float *x, float *y, CBaseTexture* pTexture, color_t c
 #elif defined(HAS_GLES)
   CRenderSystemGLES *renderSystem = dynamic_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem());
 #endif
+
+#if defined(HAS_GL) || defined(HAS_GLES)
   if (pTexture)
   {
     pTexture->LoadToGPU();
@@ -951,4 +954,5 @@ void CSlideShowPic::Render(float *x, float *y, CBaseTexture* pTexture, color_t c
   glDeleteBuffers(1, &indexVBO);
 
   renderSystem->DisableShader();
+#endif
 }
