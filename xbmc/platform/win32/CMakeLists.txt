@@ -4,7 +4,6 @@ set(SOURCES CharsetConverter.cpp
             dxerr.cpp
             Filesystem.cpp
             pch.cpp
-            strverscmp.cpp
             WIN32Util.cpp
             WindowHelper.cpp)
 
