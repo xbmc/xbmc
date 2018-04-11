@@ -320,12 +320,12 @@ bool CRenderSystemGLES::TestRender()
   glMatrixModview.Push();
   glMatrixModview->Rotatef( theta, 0.0f, 0.0f, 1.0f );
 
-  EnableGUIShader(SM_DEFAULT);
+  EnableShader(SM_DEFAULT);
 
   GLfloat col[4] = {1.0f, 0.0f, 0.0f, 1.0f};
   GLfloat ver[3][2];
-  GLint   posLoc = GUIShaderGetPos();
-  GLint   colLoc = GUIShaderGetCol();
+  GLint   posLoc = ShaderGetPos();
+  GLint   colLoc = ShaderGetCol();
 
   glVertexAttribPointer(posLoc,  2, GL_FLOAT, 0, 0, ver);
   glVertexAttribPointer(colLoc,  4, GL_FLOAT, 0, 0, col);
@@ -346,7 +346,7 @@ bool CRenderSystemGLES::TestRender()
   glDisableVertexAttribArray(posLoc);
   glDisableVertexAttribArray(colLoc);
 
-  DisableGUIShader();
+  DisableShader();
 
   glMatrixModview.Pop();
 
@@ -563,7 +563,7 @@ void CRenderSystemGLES::InitialiseShader()
   }
 }
 
-void CRenderSystemGLES::EnableGUIShader(ESHADERMETHOD method)
+void CRenderSystemGLES::EnableShader(ESHADERMETHOD method)
 {
   m_method = method;
   if (m_pShader[m_method])
@@ -576,7 +576,7 @@ void CRenderSystemGLES::EnableGUIShader(ESHADERMETHOD method)
   }
 }
 
-void CRenderSystemGLES::DisableGUIShader()
+void CRenderSystemGLES::DisableShader()
 {
   if (m_pShader[m_method])
   {
@@ -585,7 +585,7 @@ void CRenderSystemGLES::DisableGUIShader()
   m_method = SM_DEFAULT;
 }
 
-GLint CRenderSystemGLES::GUIShaderGetPos()
+GLint CRenderSystemGLES::ShaderGetPos()
 {
   if (m_pShader[m_method])
     return m_pShader[m_method]->GetPosLoc();
@@ -593,7 +593,7 @@ GLint CRenderSystemGLES::GUIShaderGetPos()
   return -1;
 }
 
-GLint CRenderSystemGLES::GUIShaderGetCol()
+GLint CRenderSystemGLES::ShaderGetCol()
 {
   if (m_pShader[m_method])
     return m_pShader[m_method]->GetColLoc();
@@ -601,7 +601,7 @@ GLint CRenderSystemGLES::GUIShaderGetCol()
   return -1;
 }
 
-GLint CRenderSystemGLES::GUIShaderGetCoord0()
+GLint CRenderSystemGLES::ShaderGetCoord0()
 {
   if (m_pShader[m_method])
     return m_pShader[m_method]->GetCord0Loc();
@@ -609,7 +609,7 @@ GLint CRenderSystemGLES::GUIShaderGetCoord0()
   return -1;
 }
 
-GLint CRenderSystemGLES::GUIShaderGetCoord1()
+GLint CRenderSystemGLES::ShaderGetCoord1()
 {
   if (m_pShader[m_method])
     return m_pShader[m_method]->GetCord1Loc();
@@ -617,7 +617,7 @@ GLint CRenderSystemGLES::GUIShaderGetCoord1()
   return -1;
 }
 
-GLint CRenderSystemGLES::GUIShaderGetUniCol()
+GLint CRenderSystemGLES::ShaderGetUniCol()
 {
   if (m_pShader[m_method])
     return m_pShader[m_method]->GetUniColLoc();
@@ -625,7 +625,7 @@ GLint CRenderSystemGLES::GUIShaderGetUniCol()
   return -1;
 }
 
-GLint CRenderSystemGLES::GUIShaderGetCoord0Matrix()
+GLint CRenderSystemGLES::ShaderGetCoord0Matrix()
 {
   if (m_pShader[m_method])
     return m_pShader[m_method]->GetCoord0MatrixLoc();
@@ -633,7 +633,7 @@ GLint CRenderSystemGLES::GUIShaderGetCoord0Matrix()
   return -1;
 }
 
-GLint CRenderSystemGLES::GUIShaderGetField()
+GLint CRenderSystemGLES::ShaderGetField()
 {
   if (m_pShader[m_method])
     return m_pShader[m_method]->GetFieldLoc();
@@ -641,7 +641,7 @@ GLint CRenderSystemGLES::GUIShaderGetField()
   return -1;
 }
 
-GLint CRenderSystemGLES::GUIShaderGetStep()
+GLint CRenderSystemGLES::ShaderGetStep()
 {
   if (m_pShader[m_method])
     return m_pShader[m_method]->GetStepLoc();
@@ -649,7 +649,7 @@ GLint CRenderSystemGLES::GUIShaderGetStep()
   return -1;
 }
 
-GLint CRenderSystemGLES::GUIShaderGetContrast()
+GLint CRenderSystemGLES::ShaderGetContrast()
 {
   if (m_pShader[m_method])
     return m_pShader[m_method]->GetContrastLoc();
@@ -657,7 +657,7 @@ GLint CRenderSystemGLES::GUIShaderGetContrast()
   return -1;
 }
 
-GLint CRenderSystemGLES::GUIShaderGetBrightness()
+GLint CRenderSystemGLES::ShaderGetBrightness()
 {
   if (m_pShader[m_method])
     return m_pShader[m_method]->GetBrightnessLoc();
@@ -670,7 +670,7 @@ bool CRenderSystemGLES::SupportsStereo(RENDER_STEREO_MODE mode) const
   return CRenderSystemBase::SupportsStereo(mode);
 }
 
-GLint CRenderSystemGLES::GUIShaderGetModel()
+GLint CRenderSystemGLES::ShaderGetModel()
 {
   if (m_pShader[m_method])
     return m_pShader[m_method]->GetModelLoc();

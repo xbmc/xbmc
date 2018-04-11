@@ -30,6 +30,7 @@
 #define _USE_MATH_DEFINES
 #endif
 #include <math.h>
+#include <cstddef>
 
 #if defined(HAS_GL)
 #include "rendering/gl/RenderSystemGL.h"
@@ -708,7 +709,7 @@ void CSlideShowPic::Rotate(float fRotateAngle, bool immediate /* = false */)
 
   // if there is a rotation ongoing already
   // add the new angle to the old destination angle
-  if (m_transitionTemp.type == TRANSITION_ROTATE && 
+  if (m_transitionTemp.type == TRANSITION_ROTATE &&
       m_transitionTemp.start + m_transitionTemp.length > m_iCounter)
   {
     int remainder = m_transitionTemp.start + m_transitionTemp.length - m_iCounter;
@@ -776,7 +777,7 @@ bool CSlideShowPic::UpdateVertexBuffer(Vertex* vertices)
     if (SUCCEEDED(DX::DeviceResources::Get()->GetD3DDevice()->CreateBuffer(&desc, &initData, m_vb.ReleaseAndGetAddressOf())))
       return true;
   }
-  else // update 
+  else // update
   {
     ID3D11DeviceContext* pContext = DX::DeviceResources::Get()->GetD3DContext();
     D3D11_MAPPED_SUBRESOURCE res;
@@ -846,6 +847,11 @@ void CSlideShowPic::Render(float *x, float *y, CBaseTexture* pTexture, color_t c
 
 #elif defined(HAS_GL)
   CRenderSystemGL *renderSystem = dynamic_cast<CRenderSystemGL*>(CServiceBroker::GetRenderSystem());
+#elif defined(HAS_GLES)
+  CRenderSystemGLES *renderSystem = dynamic_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem());
+#endif
+
+#if defined(HAS_GL) || defined(HAS_GLES)
   if (pTexture)
   {
     pTexture->LoadToGPU();
@@ -948,72 +954,5 @@ void CSlideShowPic::Render(float *x, float *y, CBaseTexture* pTexture, color_t c
   glDeleteBuffers(1, &indexVBO);
 
   renderSystem->DisableShader();
-
-#elif defined(HAS_GLES)
-  CRenderSystemGLES *renderSystem = dynamic_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem());
-  if (pTexture)
-  {
-    pTexture->LoadToGPU();
-    pTexture->BindToUnit(0);
-
-    glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-    glEnable(GL_BLEND);          // Turn Blending On
-
-    renderSystem->EnableGUIShader(SM_TEXTURE);
-  }
-  else
-  {
-    renderSystem->EnableGUIShader(SM_DEFAULT);
-  }
-
-  float u1 = 0, u2 = 1, v1 = 0, v2 = 1;
-  if (pTexture)
-  {
-    u2 = (float)pTexture->GetWidth() / pTexture->GetTextureWidth();
-    v2 = (float)pTexture->GetHeight() / pTexture->GetTextureHeight();
-  }
-
-  GLubyte col[4];
-  GLfloat ver[4][3];
-  GLfloat tex[4][2];
-  GLubyte idx[4] = {0, 1, 3, 2};        //determines order of triangle strip
-
-  GLint posLoc  = renderSystem->GUIShaderGetPos();
-  GLint tex0Loc = renderSystem->GUIShaderGetCoord0();
-  GLint uniColLoc= renderSystem->GUIShaderGetUniCol();
-
-  glVertexAttribPointer(posLoc,  3, GL_FLOAT, 0, 0, ver);
-  glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, 0, tex);
-
-  glEnableVertexAttribArray(posLoc);
-  glEnableVertexAttribArray(tex0Loc);
-
-  // Setup Colour values
-  col[0] = (GLubyte)GET_R(color);
-  col[1] = (GLubyte)GET_G(color);
-  col[2] = (GLubyte)GET_B(color);
-  col[3] = (GLubyte)GET_A(color);
-
-  for (int i=0; i<4; i++)
-  {
-    // Setup vertex position values
-    ver[i][0] = x[i];
-    ver[i][1] = y[i];
-    ver[i][2] = 0.0f;
-  }
-  // Setup texture coordinates
-  tex[0][0] = tex[3][0] = u1;
-  tex[0][1] = tex[1][1] = v1;
-  tex[1][0] = tex[2][0] = u2;
-  tex[2][1] = tex[3][1] = v2;
-
-  glUniform4f(uniColLoc,(col[0] / 255.0f), (col[1] / 255.0f), (col[2] / 255.0f), (col[3] / 255.0f));
-  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, idx);
-
-  glDisableVertexAttribArray(posLoc);
-  glDisableVertexAttribArray(tex0Loc);
-
-  renderSystem->DisableGUIShader();
-
 #endif
 }

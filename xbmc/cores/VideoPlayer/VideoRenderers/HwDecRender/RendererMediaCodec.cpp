@@ -134,9 +134,9 @@ bool CRendererMediaCodec::RenderHook(int index)
 
   if (m_currentField != FIELD_FULL)
   {
-    renderSystem->EnableGUIShader(SM_TEXTURE_RGBA_BOB_OES);
-    GLint   fieldLoc = renderSystem->GUIShaderGetField();
-    GLint   stepLoc = renderSystem->GUIShaderGetStep();
+    renderSystem->EnableShader(SM_TEXTURE_RGBA_BOB_OES);
+    GLint   fieldLoc = renderSystem->ShaderGetField();
+    GLint   stepLoc = renderSystem->ShaderGetStep();
 
     // Y is inverted, so invert fields
     if     (m_currentField == FIELD_TOP)
@@ -146,21 +146,21 @@ bool CRendererMediaCodec::RenderHook(int index)
     glUniform1f(stepLoc, 1.0f / (float)plane.texheight);
   }
   else
-    renderSystem->EnableGUIShader(SM_TEXTURE_RGBA_OES);
+    renderSystem->EnableShader(SM_TEXTURE_RGBA_OES);
 
-  GLint   contrastLoc = renderSystem->GUIShaderGetContrast();
+  GLint   contrastLoc = renderSystem->ShaderGetContrast();
   glUniform1f(contrastLoc, m_videoSettings.m_Contrast * 0.02f);
-  GLint   brightnessLoc = renderSystem->GUIShaderGetBrightness();
+  GLint   brightnessLoc = renderSystem->ShaderGetBrightness();
   glUniform1f(brightnessLoc, m_videoSettings.m_Brightness * 0.01f - 0.5f);
 
-  glUniformMatrix4fv(renderSystem->GUIShaderGetCoord0Matrix(), 1, GL_FALSE, m_textureMatrix);
+  glUniformMatrix4fv(renderSystem->ShaderGetCoord0Matrix(), 1, GL_FALSE, m_textureMatrix);
 
   GLubyte idx[4] = {0, 1, 3, 2};        //determines order of triangle strip
   GLfloat ver[4][4];
   GLfloat tex[4][4];
 
-  GLint   posLoc = renderSystem->GUIShaderGetPos();
-  GLint   texLoc = renderSystem->GUIShaderGetCoord0();
+  GLint   posLoc = renderSystem->ShaderGetPos();
+  GLint   texLoc = renderSystem->ShaderGetCoord0();
 
 
   glVertexAttribPointer(posLoc, 4, GL_FLOAT, 0, 0, ver);
@@ -211,9 +211,9 @@ bool CRendererMediaCodec::RenderHook(int index)
       0.0f, 0.0f, 1.0f, 0.0f,
       0.0f, 0.0f, 0.0f, 1.0f
   };
-  glUniformMatrix4fv(renderSystem->GUIShaderGetCoord0Matrix(),  1, GL_FALSE, identity);
+  glUniformMatrix4fv(renderSystem->ShaderGetCoord0Matrix(),  1, GL_FALSE, identity);
 
-  renderSystem->DisableGUIShader();
+  renderSystem->DisableShader();
   VerifyGLState();
 
   glBindTexture(GL_TEXTURE_EXTERNAL_OES, 0);

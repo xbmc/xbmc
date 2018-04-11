@@ -102,7 +102,7 @@ void CRenderContext::EnableGUIShader(GL_SHADER_METHOD method)
 #elif HAS_GLES >= 2
   CRenderSystemGLES *renderingGLES = dynamic_cast<CRenderSystemGLES*>(m_rendering);
   if (renderingGLES != nullptr)
-    renderingGLES->EnableGUIShader(TranslateShaderMethod(method));
+    renderingGLES->EnableShader(TranslateShaderMethod(method));
 #endif
 }
 
@@ -115,7 +115,7 @@ void CRenderContext::DisableGUIShader()
 #elif HAS_GLES >= 2
   CRenderSystemGLES *renderingGLES = dynamic_cast<CRenderSystemGLES*>(m_rendering);
   if (renderingGLES != nullptr)
-    renderingGLES->DisableGUIShader();
+    renderingGLES->DisableShader();
 #endif
 }
 
@@ -128,7 +128,7 @@ int CRenderContext::GUIShaderGetPos()
 #elif HAS_GLES >= 2
   CRenderSystemGLES *renderingGLES = dynamic_cast<CRenderSystemGLES*>(m_rendering);
   if (renderingGLES != nullptr)
-    return static_cast<int>(renderingGLES->GUIShaderGetPos());
+    return static_cast<int>(renderingGLES->ShaderGetPos());
 #endif
 
   return -1;
@@ -143,7 +143,7 @@ int CRenderContext::GUIShaderGetCoord0()
 #elif HAS_GLES >= 2
   CRenderSystemGLES *renderingGLES = dynamic_cast<CRenderSystemGLES*>(m_rendering);
   if (renderingGLES != nullptr)
-    return static_cast<int>(renderingGLES->GUIShaderGetCoord0());
+    return static_cast<int>(renderingGLES->ShaderGetCoord0());
 #endif
 
   return -1;
@@ -158,7 +158,7 @@ int CRenderContext::GUIShaderGetUniCol()
 #elif HAS_GLES >= 2
   CRenderSystemGLES *renderingGLES = dynamic_cast<CRenderSystemGLES*>(m_rendering);
   if (renderingGLES != nullptr)
-    return static_cast<int>(renderingGLES->GUIShaderGetUniCol());
+    return static_cast<int>(renderingGLES->ShaderGetUniCol());
 #endif
 
   return -1;

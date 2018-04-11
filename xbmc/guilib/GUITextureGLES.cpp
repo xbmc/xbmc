@@ -57,11 +57,11 @@ void CGUITextureGLES::Begin(color_t color)
   {
     if (m_col[0] == 255 && m_col[1] == 255 && m_col[2] == 255 && m_col[3] == 255 )
     {
-      m_renderSystem->EnableGUIShader(SM_MULTI);
+      m_renderSystem->EnableShader(SM_MULTI);
     }
     else
     {
-      m_renderSystem->EnableGUIShader(SM_MULTI_BLENDCOLOR);
+      m_renderSystem->EnableShader(SM_MULTI_BLENDCOLOR);
     }
 
     hasAlpha |= m_diffuse.m_textures[0]->HasAlpha();
@@ -73,11 +73,11 @@ void CGUITextureGLES::Begin(color_t color)
   {
     if (m_col[0] == 255 && m_col[1] == 255 && m_col[2] == 255 && m_col[3] == 255)
     {
-      m_renderSystem->EnableGUIShader(SM_TEXTURE_NOBLEND);
+      m_renderSystem->EnableShader(SM_TEXTURE_NOBLEND);
     }
     else
     {
-      m_renderSystem->EnableGUIShader(SM_TEXTURE);
+      m_renderSystem->EnableShader(SM_TEXTURE);
     }
   }
 
@@ -97,10 +97,10 @@ void CGUITextureGLES::End()
 {
   if (m_packedVertices.size())
   {
-    GLint posLoc  = m_renderSystem->GUIShaderGetPos();
-    GLint tex0Loc = m_renderSystem->GUIShaderGetCoord0();
-    GLint tex1Loc = m_renderSystem->GUIShaderGetCoord1();
-    GLint uniColLoc = m_renderSystem->GUIShaderGetUniCol();
+    GLint posLoc  = m_renderSystem->ShaderGetPos();
+    GLint tex0Loc = m_renderSystem->ShaderGetCoord0();
+    GLint tex1Loc = m_renderSystem->ShaderGetCoord1();
+    GLint uniColLoc = m_renderSystem->ShaderGetUniCol();
 
     if(uniColLoc >= 0)
     {
@@ -129,7 +129,7 @@ void CGUITextureGLES::End()
   if (m_diffuse.size())
     glActiveTexture(GL_TEXTURE0);
   glEnable(GL_BLEND);
-  m_renderSystem->DisableGUIShader();
+  m_renderSystem->DisableShader();
 }
 
 void CGUITextureGLES::Draw(float *x, float *y, float *z, const CRect &texture, const CRect &diffuse, int orientation)
@@ -238,13 +238,13 @@ void CGUITextureGLES::DrawQuad(const CRect &rect, color_t color, CBaseTexture *t
   GLubyte idx[4] = {0, 1, 3, 2};        //determines order of triangle strip
 
   if (texture)
-    renderSystem->EnableGUIShader(SM_TEXTURE);
+    renderSystem->EnableShader(SM_TEXTURE);
   else
-    renderSystem->EnableGUIShader(SM_DEFAULT);
+    renderSystem->EnableShader(SM_DEFAULT);
 
-  GLint posLoc   = renderSystem->GUIShaderGetPos();
-  GLint tex0Loc  = renderSystem->GUIShaderGetCoord0();
-  GLint uniColLoc= renderSystem->GUIShaderGetUniCol();
+  GLint posLoc   = renderSystem->ShaderGetPos();
+  GLint tex0Loc  = renderSystem->ShaderGetCoord0();
+  GLint uniColLoc= renderSystem->ShaderGetUniCol();
 
   glVertexAttribPointer(posLoc,  3, GL_FLOAT, 0, 0, ver);
   if (texture)
@@ -283,6 +283,6 @@ void CGUITextureGLES::DrawQuad(const CRect &rect, color_t color, CBaseTexture *t
   if (texture)
     glDisableVertexAttribArray(tex0Loc);
 
-  renderSystem->DisableGUIShader();
+  renderSystem->DisableShader();
 }
 
