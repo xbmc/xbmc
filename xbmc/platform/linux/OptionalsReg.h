@@ -20,19 +20,29 @@
 
 #pragma once
 
-
 //-----------------------------------------------------------------------------
-// VAAPI
+// ALSA
 //-----------------------------------------------------------------------------
 
-class CVaapiProxy;
-
-namespace WAYLAND
+namespace OPTIONALS
 {
-CVaapiProxy* VaapiProxyCreate();
-void VaapiProxyDelete(CVaapiProxy *proxy);
-void VaapiProxyConfig(CVaapiProxy *proxy, void *dpy, void *eglDpy);
-void VAAPIRegister(CVaapiProxy *winSystem, bool deepColor);
-void VAAPIRegisterRender(CVaapiProxy *winSystem, bool &general, bool &deepColor);
+bool ALSARegister();
 }
 
+//-----------------------------------------------------------------------------
+// PulseAudio
+//-----------------------------------------------------------------------------
+
+namespace OPTIONALS
+{
+bool PulseAudioRegister();
+}
+
+//-----------------------------------------------------------------------------
+// sndio
+//-----------------------------------------------------------------------------
+
+namespace OPTIONALS
+{
+bool SndioRegister();
+}

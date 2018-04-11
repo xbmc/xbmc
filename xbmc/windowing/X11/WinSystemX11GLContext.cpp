@@ -40,6 +40,7 @@
 #include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
 
 #include "OptionalsReg.h"
+#include "platform/linux/OptionalsReg.h"
 
 using namespace KODI;
 
@@ -56,23 +57,23 @@ CWinSystemX11GLContext::CWinSystemX11GLContext()
     envSink = getenv("AE_SINK");
   if (StringUtils::EqualsNoCase(envSink, "ALSA"))
   {
-    X11::ALSARegister();
+    OPTIONALS::ALSARegister();
   }
   else if (StringUtils::EqualsNoCase(envSink, "PULSE"))
   {
-    X11::PulseAudioRegister();
+    OPTIONALS::PulseAudioRegister();
   }
   else if (StringUtils::EqualsNoCase(envSink, "SNDIO"))
   {
-    X11::SndioRegister();
+    OPTIONALS::SndioRegister();
   }
   else
   {
-    if (!X11::PulseAudioRegister())
+    if (!OPTIONALS::PulseAudioRegister())
     {
-      if (!X11::ALSARegister())
+      if (!OPTIONALS::ALSARegister())
       {
-        X11::SndioRegister();
+        OPTIONALS::SndioRegister();
       }
     }
   }

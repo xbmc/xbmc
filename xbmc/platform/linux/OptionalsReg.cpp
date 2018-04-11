@@ -18,47 +18,59 @@
  *
  */
 
-#pragma once
+#include "OptionalsReg.h"
 
-#include "X11/Xlib.h"
 
 //-----------------------------------------------------------------------------
-// VAAPI
+// ALSA
 //-----------------------------------------------------------------------------
 
-class CVaapiProxy;
-
-namespace X11
+#ifdef HAS_ALSA
+#include "cores/AudioEngine/Sinks/AESinkALSA.h"
+bool OPTIONALS::ALSARegister()
 {
-CVaapiProxy* VaapiProxyCreate();
-void VaapiProxyDelete(CVaapiProxy *proxy);
-void VaapiProxyConfig(CVaapiProxy *proxy, void *dpy, void *eglDpy);
-void VAAPIRegister(CVaapiProxy *winSystem, bool deepColor);
-void VAAPIRegisterRender(CVaapiProxy *winSystem, bool &general, bool &deepColor);
+  CAESinkALSA::Register();
+  return true;
 }
-
-//-----------------------------------------------------------------------------
-// GLX
-//-----------------------------------------------------------------------------
-
-class CVideoSync;
-class CGLContext;
-class CWinSystemX11GLContext;
-
-namespace X11
+#else
+bool OPTIONALS::ALSARegister()
 {
-XID GLXGetWindow(void* context);
-void* GLXGetContext(void* context);
-CGLContext* GLXContextCreate(Display *dpy);
-CVideoSync* GLXVideoSyncCreate(void *clock, CWinSystemX11GLContext& winSystem);
+  return false;
 }
+#endif
 
 //-----------------------------------------------------------------------------
-// VDPAU
+// PulseAudio
 //-----------------------------------------------------------------------------
 
-namespace X11
+#ifdef HAS_PULSEAUDIO
+#include "cores/AudioEngine/Sinks/AESinkPULSE.h"
+bool OPTIONALS::PulseAudioRegister()
 {
-void VDPAURegisterRender();
-void VDPAURegister();
+  bool ret = CAESinkPULSE::Register();
+  return ret;
 }
+#else
+bool OPTIONALS::PulseAudioRegister()
+{
+  return false;
+}
+#endif
+
+//-----------------------------------------------------------------------------
+// sndio
+//-----------------------------------------------------------------------------
+
+#ifdef HAS_SNDIO
+#include "cores/AudioEngine/Sinks/AESinkSNDIO.h"
+bool OPTIONALS::SndioRegister()
+{
+  CAESinkSNDIO::Register();
+  return true;
+}
+#else
+bool OPTIONALS::SndioRegister()
+{
+  return false;
+}
+#endif
