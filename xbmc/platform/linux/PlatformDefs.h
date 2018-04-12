@@ -124,11 +124,6 @@ typedef void* HMODULE;
 
 typedef unsigned int  DWORD;
 #define INVALID_HANDLE_VALUE     ((HANDLE)~0U)
-#ifdef UNICODE
-typedef const wchar_t*       LPCTSTR;
-#else
-typedef const char*      LPCTSTR;
-#endif
 
 #define MAXWORD   0xffff
 
@@ -148,8 +143,6 @@ typedef union _LARGE_INTEGER
   } u;
   unsigned long long QuadPart;
 } ULARGE_INTEGER;
-
-void OutputDebugString(LPCTSTR lpOutputString);
 
 // Date / Time
 

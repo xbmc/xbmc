@@ -26,10 +26,6 @@
 #include <ctype.h>
 #include <errno.h>
 
-void OutputDebugString(LPCTSTR lpOutputString)
-{
-}
-
 DWORD GetLastError()
 {
   return errno;
