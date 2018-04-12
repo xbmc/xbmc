@@ -38,11 +38,3 @@ int SetFilePointerEx(HANDLE hFile, LARGE_INTEGER liDistanceToMove,PLARGE_INTEGER
 uint32_t GetTimeZoneInformation( LPTIME_ZONE_INFORMATION lpTimeZoneInformation );
 int _stat64(const char *path, struct __stat64 *buffer);
 int _fstat64(int fd, struct __stat64 *buffer);
-
-// uses statfs
-int GetDiskFreeSpaceEx(
-  LPCTSTR lpDirectoryName,
-  PULARGE_INTEGER lpFreeBytesAvailable,
-  PULARGE_INTEGER lpTotalNumberOfBytes,
-  PULARGE_INTEGER lpTotalNumberOfFreeBytes
-);

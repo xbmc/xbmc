@@ -147,7 +147,7 @@ typedef union _LARGE_INTEGER
       DWORD HighPart;
   } u;
   unsigned long long QuadPart;
-} ULARGE_INTEGER, *PULARGE_INTEGER;
+} ULARGE_INTEGER;
 
 void OutputDebugString(LPCTSTR lpOutputString);
 

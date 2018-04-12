@@ -237,38 +237,6 @@ uint32_t SetFilePointer(HANDLE hFile, int32_t lDistanceToMove,
   return (DWORD)currOff;
 }
 
-// uses statfs
-int GetDiskFreeSpaceEx(
-  LPCTSTR lpDirectoryName,
-  PULARGE_INTEGER lpFreeBytesAvailable,
-  PULARGE_INTEGER lpTotalNumberOfBytes,
-  PULARGE_INTEGER lpTotalNumberOfFreeBytes
-  )
-
-{
-#if defined(TARGET_ANDROID) || defined(TARGET_DARWIN)
-  struct statfs fsInfo;
-  // is 64-bit on android and darwin (10.6SDK + any iOS)
-  if (statfs(CSpecialProtocol::TranslatePath(lpDirectoryName).c_str(), &fsInfo) != 0)
-    return false;
-#else
-  struct statfs64 fsInfo;
-  if (statfs64(CSpecialProtocol::TranslatePath(lpDirectoryName).c_str(), &fsInfo) != 0)
-    return false;
-#endif
-
-  if (lpFreeBytesAvailable)
-    lpFreeBytesAvailable->QuadPart =  static_cast<unsigned long long>(fsInfo.f_bavail) * static_cast<unsigned long long>(fsInfo.f_bsize);
-
-  if (lpTotalNumberOfBytes)
-    lpTotalNumberOfBytes->QuadPart = static_cast<unsigned long long>(fsInfo.f_blocks) * static_cast<unsigned long long>(fsInfo.f_bsize);
-
-  if (lpTotalNumberOfFreeBytes)
-    lpTotalNumberOfFreeBytes->QuadPart = static_cast<unsigned long long>(fsInfo.f_bfree) * static_cast<unsigned long long>(fsInfo.f_bsize);
-
-  return 1;
-}
-
 uint32_t GetTimeZoneInformation( LPTIME_ZONE_INFORMATION lpTimeZoneInformation )
 {
   if (lpTimeZoneInformation == NULL)
