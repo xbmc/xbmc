@@ -23,11 +23,6 @@
 #include "PlatformDefs.h"
 #include "XHandlePublic.h"
 
-#define CreateFileA CreateFile
-HANDLE CreateFile(LPCTSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode,
-            LPSECURITY_ATTRIBUTES lpSecurityAttributes,  DWORD dwCreationDisposition,
-            DWORD dwFlagsAndAttributes, HANDLE hTemplateFile);
-
 int WriteFile(HANDLE hFile, const void * lpBuffer, DWORD nNumberOfBytesToWrite,  unsigned int* lpNumberOfBytesWritten, void* lpOverlapped);
 int ReadFile( HANDLE hFile, void* lpBuffer, DWORD nNumberOfBytesToRead, unsigned int* lpNumberOfBytesRead, void* unsupportedlpOverlapped);
 

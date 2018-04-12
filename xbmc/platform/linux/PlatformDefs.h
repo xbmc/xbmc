@@ -258,12 +258,6 @@ typedef struct _WIN32_FIND_DATA
 
 #define FILE_ATTRIBUTE_DIRECTORY           0x00000010
 
-typedef struct _SECURITY_ATTRIBUTES {
-  DWORD nLength;
-  void* lpSecurityDescriptor;
-  int bInheritHandle;
-} SECURITY_ATTRIBUTES, *PSECURITY_ATTRIBUTES, *LPSECURITY_ATTRIBUTES;
-
 #define FILE_BEGIN              0
 #define FILE_CURRENT            1
 #define FILE_END                2
