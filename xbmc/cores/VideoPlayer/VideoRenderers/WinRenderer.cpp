@@ -256,6 +256,13 @@ bool CWinRenderer::Configure(const VideoPicture &picture, float fps, unsigned in
   ManageRenderArea();
 
   SelectRenderMethod();
+
+  if (picture.hasDisplayMetadata || picture.hasLightMetadata)
+  {
+    // if hw doesn't support HDR then this does nothing
+    DX::Windowing()->SetHDREnable(true);
+  }
+
   m_bConfigured = true;
 
   // load 3DLUT
@@ -349,6 +356,8 @@ void CWinRenderer::UnInit()
   }
   m_pCLUTView = nullptr;
   m_outputShader.reset();
+
+  DX::Windowing()->SetHDREnable(false);
 }
 
 void CWinRenderer::Flush()
@@ -700,9 +709,12 @@ void CWinRenderer::Render(DWORD flags, CD3DTexture* target)
     m_bFilterInitialized = false;
   }
 
+  bool isHDR10 = DX::Windowing()->IsHDRSupported();
   bool toneMap = false;
   if (buf.hasLightMetadata || (buf.hasDisplayMetadata && buf.displayMetadata.has_luminance))
     toneMap = true;
+  if (isHDR10)
+    toneMap = false;
   if (toneMap != m_toneMapping)
   {
     m_outputShader.reset();
@@ -711,6 +723,9 @@ void CWinRenderer::Render(DWORD flags, CD3DTexture* target)
   m_toneMapping = toneMap;
 
   UpdateVideoFilter();
+
+  if (isHDR10)
+    SetDisplayMetadata(buf.hasDisplayMetadata, buf.displayMetadata, buf.hasLightMetadata, buf.lightMetadata);
 
   switch (m_renderMethod)
   {
@@ -1208,4 +1223,50 @@ AVColorPrimaries CWinRenderer::GetSrcPrimaries(AVColorPrimaries srcPrimaries, un
       ret = AVCOL_PRI_BT470BG;
   }
   return ret;
+}
+
+void CWinRenderer::SetDisplayMetadata(bool hasDisplayMetadata, AVMasteringDisplayMetadata displayMetadata
+                                    , bool hasLightMetadata, AVContentLightMetadata lightMetadata)
+{
+  static const float displayChromacities[] = { 0.70800f, 0.29200f, 0.17000f, 0.79700f, 0.13100f, 0.04600f, 0.31270f, 0.32900f }; // Rec2020
+
+  if (!DX::Windowing()->IsHDRSupported())
+    return;
+
+  // Set HDR meta data
+  DXGI_HDR_METADATA_HDR10 HDR10MetaData = { 0 };
+  if (hasDisplayMetadata)
+  {
+    HDR10MetaData.RedPrimary[0] = static_cast<uint16_t>(av_q2d(displayMetadata.display_primaries[0][0]) * 50000.0f);
+    HDR10MetaData.RedPrimary[1] = static_cast<uint16_t>(av_q2d(displayMetadata.display_primaries[0][1]) * 50000.0f);
+    HDR10MetaData.GreenPrimary[0] = static_cast<uint16_t>(av_q2d(displayMetadata.display_primaries[1][0]) * 50000.0f);
+    HDR10MetaData.GreenPrimary[1] = static_cast<uint16_t>(av_q2d(displayMetadata.display_primaries[1][1]) * 50000.0f);
+    HDR10MetaData.BluePrimary[0] = static_cast<uint16_t>(av_q2d(displayMetadata.display_primaries[2][0]) * 50000.0f);
+    HDR10MetaData.BluePrimary[1] = static_cast<uint16_t>(av_q2d(displayMetadata.display_primaries[2][1]) * 50000.0f);
+    HDR10MetaData.WhitePoint[0] = static_cast<uint16_t>(av_q2d(displayMetadata.white_point[0]) * 50000.0f);
+    HDR10MetaData.WhitePoint[1] = static_cast<uint16_t>(av_q2d(displayMetadata.white_point[1]) * 50000.0f);
+    HDR10MetaData.MaxMasteringLuminance = static_cast<uint32_t>(av_q2d(displayMetadata.max_luminance) * 10000.0f);
+    HDR10MetaData.MinMasteringLuminance = static_cast<uint32_t>(av_q2d(displayMetadata.min_luminance) * 10000.0f);
+  }
+  else
+  {
+    HDR10MetaData.RedPrimary[0] = static_cast<uint16_t>(displayChromacities[0] * 50000.0f);
+    HDR10MetaData.RedPrimary[1] = static_cast<uint16_t>(displayChromacities[1] * 50000.0f);
+    HDR10MetaData.GreenPrimary[0] = static_cast<uint16_t>(displayChromacities[2] * 50000.0f);
+    HDR10MetaData.GreenPrimary[1] = static_cast<uint16_t>(displayChromacities[3] * 50000.0f);
+    HDR10MetaData.BluePrimary[0] = static_cast<uint16_t>(displayChromacities[4] * 50000.0f);
+    HDR10MetaData.BluePrimary[1] = static_cast<uint16_t>(displayChromacities[5] * 50000.0f);
+    HDR10MetaData.WhitePoint[0] = static_cast<uint16_t>(displayChromacities[6] * 50000.0f);
+    HDR10MetaData.WhitePoint[1] = static_cast<uint16_t>(displayChromacities[7] * 50000.0f);
+    HDR10MetaData.MaxMasteringLuminance = static_cast<uint32_t>(2000.f * 10000.0f);
+    HDR10MetaData.MinMasteringLuminance = static_cast<uint32_t>(0.f * 10000.0f);
+  }
+
+  if (hasLightMetadata)
+  {
+    HDR10MetaData.MaxContentLightLevel = static_cast<uint16_t>(lightMetadata.MaxCLL);
+    HDR10MetaData.MaxFrameAverageLightLevel = static_cast<uint16_t>(lightMetadata.MaxFALL);
+  }
+
+  DX::Windowing()->SetHDR10MetaData(HDR10MetaData);
 }

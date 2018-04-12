@@ -97,6 +97,8 @@ protected:
   bool CreateIntermediateRenderTarget(unsigned int width, unsigned int height, bool dynamic);
   EBufferFormat SelectBufferFormat(AVPixelFormat format, const RenderMethod method) const;
   AVColorPrimaries GetSrcPrimaries(AVColorPrimaries srcPrimaries, unsigned int width, unsigned int height) const;
+  void SetDisplayMetadata(bool hasDisplayMetadata, AVMasteringDisplayMetadata displayMetadata
+                        , bool hasLightMetadata, AVContentLightMetadata lightMetadata);
 
   bool LoadCLUT();
 
