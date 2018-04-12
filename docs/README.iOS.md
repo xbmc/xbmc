@@ -1,190 +1,245 @@
-# Kodi for Apple iOS
+![Kodi Logo](resources/banner_slim.png)
 
-## TOC
+# iOS build guide
+This guide has been tested with macOS 10.13.4()17E199 High Sierra and Xcode 9.3(9E145). It is meant to cross-compile Kodi for iOS using **[Kodi's unified depends build system](../tools/depends/README.md)**. Please read it in full before you proceed to familiarize yourself with the build procedure.
 
-1. [Introduction](#1-introduction)
-2. [Getting the source code](#2-getting-the-source-code)
-3. [Install build dependencies](#3-install-build-dependencies)
-   1. [Install Xcode](#31-install-xcode)
-   2. [Install Kodi build depends](#32-install-kodi-build-depends)
-   3. [Compile Kodi binary addons](#33-compile-kodi-binary-addons)
-4. [How to compile Kodi](#4-how-to-compile-kodi)
-   1. [Using Xcode (or xcodebuild)](#41-using-xcode-or-xcodebuild)
-   2. [Compilation using command-line (make)](#42-compilation-using-command-line-make)
-5. [Packaging](#5-packaging)
-6. [Gesture Handling on iPad/iphone/iPod touch](#6-gesture-handling-on-ipadiphoneipod-touch)
-7. [Usage on un-jailbroken devices](#7-usage-on-un-jailbroken-devices)
-8. [References](#8-references)
+## Table of Contents
+1. **[Document conventions](#1-document-conventions)**
+2. **[Prerequisites](#2-prerequisites)**
+3. **[Get the source code](#3-get-the-source-code)**
+4. **[Configure and build tools and dependencies](#4-configure-and-build-tools-and-dependencies)**
+5. **[Build binary add-ons](#5-build-binary-add-ons)**
+6. **[Build Kodi](#6-build-kodi)**  
+  6.1. **[Build with Xcode](#61-build-with-xcode)**  
+  6.2. **[Build with xcodebuild](#62-build-with-xcodebuild)**  
+  6.3. **[Build with make](#63-build-with-make)**
+7. **[Package](#7-package)**
+8. **[Install](#8-install)**
+9. **[Gesture Handling](#9-gesture-handling)**
 
-## 1 Introduction
+## 1. Document conventions
+This guide assumes you are using `terminal`, also known as `console`, `command-line` or simply `cli`. Commands need to be run at the terminal, one at a time and in the provided order.
 
-This is a platform port of Kodi for the Apple iOS operating system.
-Starting with Kodi v18 the build system has been migrated from native Xcode to
-CMake (and generated project files).
+This is a comment that provides context:
+```
+this is a command
+this is another command
+and yet another one
+```
 
-There are 3 ways to build Kodi for iOS:
+**Example:** Clone Kodi's current master branch:
+```
+git clone https://github.com/xbmc/xbmc kodi
+```
 
-- Xcode IDE (easiest as it presents the build system in a GUI environment)
-- command-line with xcodebuild
-- command-line with make
+Commands that contain strings enclosed in angle brackets denote something you need to change to suit your needs.
+```
+git clone -b <branch-name> https://github.com/xbmc/xbmc kodi
+```
 
-Kodi for iOS is composed of a main binary with numerous dynamic libraries and
-codecs that support a multitude of music and video formats.
+**Example:** Clone Kodi's current Krypton branch:
+```
+git clone -b Krypton https://github.com/xbmc/xbmc kodi
+```
 
-The minimum version of iOS you need to run(!) Kodi is 9.0 atm.
+Several different strategies are used to draw your attention to certain pieces of information. In order of how critical the information is, these items are marked as a note, tip, or warning. For example:
+ 
+**NOTE:** Linux is user friendly... It's just very particular about who its friends are.  
+**TIP:** Algorithm is what developers call code they do not want to explain.  
+**WARNING:** Developers don't change light bulbs. It's a hardware problem.
 
-- On El Capitan (OSX 10.11.x) we recommend using Xcode 8.x.
-- On Sierra (macOS 10.12.x) we recommend using Xcode 8.x.
-- On High Sierra (macOS 10.13.x) we recommend using Xcode 9.x.
+**[back to top](#table-of-contents)** | **[back to section top](#1-document-conventions)**
 
-## 2 Getting the source code
+## 2. Prerequisites
+* **[Java Development Kit (JDK)](http://www.oracle.com/technetwork/java/javase/downloads/index.html)**
+* **[Xcode](https://developer.apple.com/xcode/)**. Install it from the AppStore or from the **[Apple Developer Homepage](https://developer.apple.com/)**.
+* Device with **iOS 9.0 or newer** to install Kodi after build.
 
-    cd $HOME
-    git clone git://github.com/xbmc/xbmc.git Kodi
+Building for iOS should work with the following constellations of Xcode and macOS versions:
+  * Xcode 8.x against iOS SDK 10.x on 10.11.x (El Capitan)(recommended)
+  * Xcode 8.x against iOS SDK 10.x on 10.12.x (Sierra)(recommended)
+  * Xcode 9.x against iOS SDK 11.x on 10.12.x (Sierra)
+  * Xcode 9.x against iOS SDK 11.x on 10.13.x (High Sierra)(recommended)
 
-## 3 Install build dependencies
+**WARNING:** Start Xcode after installation finishes. You need to accept the licenses and install missing components.
 
-### 3.1 Install Xcode
+**[back to top](#table-of-contents)**
 
-Install the Xcode version recommended for your macOS version. You can download
-it either from the macOS AppStore (Xcode) or from the Apple Developer Homepage.
+## 3. Get the source code
+Change to your `home` directory:
+```
+cd $HOME
+```
 
-As far as we know the compilation for iOS should work with the following
-constellations of Xcode and macOS versions (to be updated once we know more):
+Clone Kodi's current master branch:
+```
+git clone https://github.com/xbmc/xbmc kodi
+```
 
-8. Xcode 8.x against iOS SDK 10.x on 10.11 (El Capitan)
-9. Xcode 8.x against iOS SDK 10.x on 10.12 (Sierra)
-10. Xcode 9.x against iOS SDK 11.x on 10.12 (Sierra)
-11. Xcode 9.x against iOS SDK 11.x on 10.13 (High Sierra)
+**[back to top](#table-of-contents)**
 
-The preferred iOS SDK Version is 8.1.
+## 4. Configure and build tools and dependencies
+Kodi can be built as either a 32bit or 64bit program. The dependencies are built in `$HOME/kodi/tools/depends` and installed into `/Users/Shared/xbmc-depends`.
 
-### 3.2 Install Kodi build depends
+**TIP:** Look for comments starting with `Or ...` and only execute the command(s) you need.
 
-Kodi requires a set of build dependencies to be built and installed before you
-will be able to build the Kodi main binary. These often just called *depends*
-are installed using the commands described below (with the latest iOS SDK found
-on your system).
+Configure build for 64bit (**recommended**):
+```
+cd $HOME/kodi/tools/depends
+./bootstrap
+./configure --host=arm-apple-darwin --with-cpu=arm64
+```
 
-In order to speedup compilation it is recommended to use `make -j$(getconf
-_NPROCESSORS_ONLN)` instead of `make` to compile on all available processor
-cores. The build machine can also be configured to do this automatically by
-adding `export MAKEFLAGS="-j(getconf _NPROCESSORS_ONLN)"` to your shell config
-(e.g. `~/.bashrc`).
+Or configure build for 32bit:
+```
+cd $HOME/kodi/tools/depends
+./bootstrap
+./configure --host=arm-apple-darwin --with-sdk=9.3
+```
+**WARNING:** iOS SDK 11 no longer supports 32bit.
 
-#### 3.2.a Compiling as 32 bit armv7 libraries - note 32 bit compiling is not supported anymore as of iOS SDK 11
+Build tools and dependencies:
+```
+make -j$(getconf _NPROCESSORS_ONLN)
+```
 
-    cd $HOME/Kodi
-    cd tools/depends
-    ./bootstrap
-    ./configure --host=arm-apple-darwin
-    make
+**TIP:** By adding `-j<number>` to the make command, you can choose how many concurrent jobs will be used and expedite the build process. It is recommended to use `-j$(getconf _NPROCESSORS_ONLN)` to compile on all available processor cores. The build machine can also be configured to do this automatically by adding `export MAKEFLAGS="-j(getconf _NPROCESSORS_ONLN)"` to your shell config (e.g. `~/.bashrc`).
 
-#### 3.2.b Compiling as 64 bit arm64 libraries (recommended for most users)
+**WARNING:** Look for the `Dependencies built successfully.` success message. If in doubt run a single threaded `make` command until the message appears. If the single make fails, clean the specific library by issuing `make -C target/<name_of_failed_lib> distclean` and run `make`again.
 
-    cd $HOME/Kodi
-    cd tools/depends
-    ./bootstrap
-    ./configure --host=arm-apple-darwin --with-cpu=arm64
-    make
+**NOTE:** **Advanced developers** may want to specify an iOS SDK version (if multiple versions are installed) in the configure line(s) shown above. The example below would use the iOS SDK 9.0:
+```
+./configure --host=arm-apple-darwin --with-cpu=arm64 --with-sdk=9.0
+```
 
-#### 3.3.c Advanced topics
+**[back to top](#table-of-contents)** | **[back to section top](#4-configure-and-build-tools-and-dependencies)**
 
-The dependencies are built into `tools/depends` and installed into
-`/Users/Shared/xbmc-depends`.
+## 5. Build binary add-ons
+You can find a complete list of available binary add-ons **[here](https://github.com/xbmc/repo-binary-addons)**.
 
-**ADVANCED developers only**: If you want to specify an iOS SDK version (if
-multiple versions are installed) - then append it to the configure line
-above. The example below would use the iOS SDK 9.0:
+Change to Kodi's source code directory:
+```
+cd $HOME/kodi
+```
 
-    ./configure --host=arm-apple-darwin --with-sdk=9.0
+Build all add-ons:
+```
+make -C tools/depends/target/binary-addons
+```
 
-### 3.3 Compile Kodi binary addons
+Build specific add-ons:
+```
+make -C tools/depends/target/binary-addons ADDONS="audioencoder.flac pvr.vdr.vnsi audiodecoder.snesapu"
+```
 
-Kodi maintains a set of binary addons (PVR clients, Visualizations
-plugins and more). They can be built as shown below:
+Build a specific group of add-ons:
+```
+make -j$(getconf _NPROCESSORS_ONLN) -C tools/depends/target/binary-addons ADDONS="pvr.*"
+```
 
-    cd $HOME/Kodi
-    cd tools/depends
-    make -C target/binary-addons
+**[back to top](#table-of-contents)**
 
-**NOTE**: If you only want to build specific addons you can specify like this:
+## 6. Build Kodi
+Before you can use Xcode to build Kodi, the Xcode project has to be generated with CMake. CMake is built as part of the dependencies and doesn't have to be installed separately. A toolchain file is also generated and is used to configure CMake.
 
-    cd $HOME/Kodi
-    cd tools/depends
-    make -C target/binary-addons ADDONS="pvr.hts pvr.dvblink"
+### 6.1. Build with Xcode
+Create an out-of-source build directory:
+```
+mkdir $HOME/kodi-build
+```
 
-## 4 How to compile Kodi
+Change to build directory:
+```
+cd $HOME/kodi-build
+```
 
-### 4.1 Using Xcode (or xcodebuild)
+Generate Xcode project for ARM 64bit (**recommended**):
+```
+/Users/Shared/xbmc-depends/x86_64-darwin17.5.0-native/bin/cmake -G Xcode -DCMAKE_TOOLCHAIN_FILE=/Users/Shared/xbmc-depends/iphoneos11.3_arm64-target-debug/share/Toolchain.cmake ../kodi
+```
 
-#### 4.1.1 Generate CMake project files
+Or generate Xcode project for ARM 32bit:
+```
+/Users/Shared/xbmc-depends/x86_64-darwin15.6.0-native/bin/cmake -G Xcode -DCMAKE_TOOLCHAIN_FILE=/Users/Shared/xbmc-depends/iphoneos9.3_armv7-target/share/Toolchain.cmake ../kodi
+```
 
-Before you can use Xcode to build Kodi, the Xcode project has to be generated
-with CMake. Note that CMake is compiled as parts of the depends doesn't have
-to be installed separately. Also a Toolchain-file has been generated with is
-used to configure CMake.
+**WARNING:** The toolchain file location differs depending on your iOS and SDK version. You have to replace `x86_64-darwin15.6.0-native` and `iphoneos11.3_arm64-target-debug` or `iphoneos9.3_armv7-target` in the paths above with the correct ones on your system.
 
-    mkdir $HOME/Kodi/build
-    cd $HOME/Kodi/build
-    /Users/Shared/xbmc-depends/x86_64-darwin15.6.0-native/bin/cmake -G Xcode -DCMAKE_TOOLCHAIN_FILE=/Users/Shared/xbmc-depends/iphoneos9.3_armv7-target/share/Toolchain.cmake ..
+You can check `Users/Shared/xbmc-depends` directory content with:
+```
+ls -l /Users/Shared/xbmc-depends
+```
 
-The toolchain file location differs depending on your iOS and SDK version and
-you have to replace `x86_64-darwin15.6.0-native` and `iphoneos9.3_armv7` in the filename above with the correct
-file on your system. Check the directory content to get the filename.
+**Start Xcode, open the Kodi project file** (`kodi.xcodeproj`) located in `$HOME/kodi-build` and hit `Build`.
 
-#### 4.1.2 Compilation using Xcode
+**WARNING:** If you have selected a specific iOS SDK Version in step 4 then you might need to adapt the active target to use the same iOS SDK version, otherwise build will fail. Be sure to select a device configuration. Building for simulator is not supported.
 
-Start Xcode and open the Kodi project (kodi.xcodeproj) located in
-`$HOME/Kodi/build`.
+### 6.2. Build with xcodebuild
+Alternatively, you can also build via Xcode from the command-line with `xcodebuild`, triggered by CMake:
 
-If you have selected a specific iOS SDK Version in step 3.2 then you might need
-to adapt the active target to use the same iOS SDK version. Else build will fail.
+Change to build directory:
+```
+cd $HOME/kodi-build
+```
 
-Be sure to select a device configuration. Building for simulator is not
-supported.
+Build Kodi:
+```
+/Users/Shared/xbmc-depends/x86_64-darwin17.5.0-native/bin/cmake --build . --config "Debug" -- -verbose -jobs $(getconf _NPROCESSORS_ONLN)
+```
 
-The build process will take a long time when building the first time.
-You can see the progress in "Build Results". There are a large number of static
-and dynamic libraries that will need to be built. Once these are built,
-subsequent builds will be faster.
+**TIP:** You can specify `Release` instead of `Debug` as `--config` parameter.
 
-After the build, you can run Kodi for iOS from Xcode.
+### 6.3. Build with make
+CMake is also able to generate makefiles that can be used to build with make.
 
-Alternatively, you can also build via Xcode from the command-line with
-xcodebuild, triggered by CMake:
+Change to Kodi's source code directory:
+```
+cd $HOME/kodi
+```
 
-    cd $HOME/Kodi/build
-    cmake --build . --config "Debug" -- -verbose -jobs $(getconf _NPROCESSORS_ONLN)
+Generate makefiles:
+```
+make -C tools/depends/target/cmakebuildsys
+```
 
-You can specify `Release` instead of `Debug` as a configuration.
+Build Kodi:
+```
+make -j$(getconf _NPROCESSORS_ONLN) -C build
+```
 
-### 4.2 Compilation using command-line (make)
+**[back to top](#table-of-contents)** | **[back to section top](#6-build-kodi)**
 
-CMake is also able to generate a Makefile based project that can be used to
-compile with make:
+## 7. Package
+CMake generates a target called `deb` which will package Kodi ready for distribution. After Kodi has been built, the target can be triggered by selecting it in Xcode active scheme or manually running
 
-    cd $HOME/Kodi
-    make -C tools/depends/target/cmakebuildsys
-    make -C build
+```
+cd $HOME/kodi-build/build
+/Users/Shared/xbmc-depends/x86_64-darwin17.5.0-native/bin/cmake --build . --target "deb" --config "Debug"
+```
 
-## 5 Packaging
+Alternatively, if you built using makefiles issue:
+```
+cd $HOME/kodi/build
+make deb
+```
 
-CMake generate a target called `deb` which will package Kodi.app for
-distribution.
+**[back to top](#table-of-contents)**
 
-After Kodi has been build, the target can be triggered with by selecting it in
-Xcode, or if using makefiles by issuing:
+## 8. Install
+On jailbroken devices the resulting deb file can be copied to the iOS device via *ssh/scp* and installed manually. You need to SSH into the iOS device and issue:
+```
+dpkg -i <name of the deb file>
+```
 
-    make deb
+If you are a developer with an official Apple code signing identity you can deploy Kodi via Xcode to work on it on non-jailbroken devices. For this to work you need to alter the Xcode project by setting your codesign identity. Just select the *iPhone Developer* shortcut.
+It's also important that you select the signing on all 4 spots in the project settings. After the last buildstep, our support script will do a full sign of all binaries and bundle them with the given identity, including all the `*.viz`, `*.pvr`, `*.so`, etc. files Xcode doesn't know anything about. This should allow you to deploy Kodi to all non-jailbroken devices the same way you deploy normal apps to.
+In that case Kodi will be sandboxed like any other app. All Kodi files are then located in the sandboxed *Documents* folder and can be easily accessed via iTunes file sharing.
 
-On jailbroken devices the resulting deb file can be copied to the iOS device
-via ssh/scp and then be installed manually. For this you need to SSH into the
-iOS device and issue
+From Xcode7 on this approach is also available for non paying app developers (Apple allows self signing from now on).
 
-    dpkg -i <name of the deb file>
+**[back to top](#table-of-contents)**
 
-## 6 Gesture Handling on iPad/iPhone/iPod touch
+## 9. Gesture Handling
 
 | Gesture                                  | Action                     |
 | ---------------------------------------- | -------------------------- |
@@ -195,28 +250,7 @@ iOS device and issue
 | Dragging                                 | For scrollbars and sliders |
 | Zoom gesture                             | In the picture viewer      |
 
-Gestures can be adapted in [system/keymaps/touchscreen.xml](https://github.com/xbmc/xbmc/blob/master/system/keymaps/touchscreen.xml).
+Gestures can be adapted in **[system/keymaps/touchscreen.xml](https://github.com/xbmc/xbmc/blob/master/system/keymaps/touchscreen.xml)**.
 
-## 7 Usage on un-jailbroken devices
+**[back to top](#table-of-contents)**
 
-If you are a developer with an official apple code signing identity you can
-deploy Kodi via xcode to work on it on non-jailbroken devices. For this to
-happen you just need to alter the Xcode project by setting your codesign
-identity. Just select the "iPhone Developer" shortcut. It's also important
-that you select the signing on all 4 spots in the project settings. After that
-the last buildstep in our support script will do a full sign of all binaries
-and the bundle with the given identity (all `*.viz`, `*.pvr`, `*.so` files
-Xcode doesn't know anything about). This should allow you to deploy Kodi to all
-non-jailbroken devices which you can deploy normal apps to. In that case (Kodi
-will be sandboxed like any other app) - all Kodi files are then located in the
-sandboxed *Documents* folder and can be easily accessed via iTunes file
-sharing.
-
-From Xcode7 on this approach is also available for non paying app developers
-(apple allows self signing from now on).
-
-## 6 References
-
-- [cmake/README.md](https://github.com/xbmc/xbmc/tree/master/cmake/README.md)
-- [tools/depends/README](https://github.com/xbmc/xbmc/tree/master/tools/depends/README)
-- [iOS section in forum.kodi.tv](http://forum.kodi.tv/forumdisplay.php?fid=137)
