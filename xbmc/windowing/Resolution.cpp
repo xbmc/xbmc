@@ -224,6 +224,10 @@ RESOLUTION CResolutionUtils::FindClosestResolution(float fps, int width, bool is
       if (!adjustReso && (info.iScreenWidth != curr.iScreenWidth || info.iScreenHeight != curr.iScreenHeight))
         continue;
 
+      // If 3D, only consider 1080p
+      if (is3D && (info.iScreenWidth != 1920 || info.iScreenHeight != 1080))
+        continue;
+
       // evaluate all higher modes and evalute them
       // concerning dimension and refreshrate weight
       // skip lower resolutions
