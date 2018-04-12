@@ -586,14 +586,14 @@ bool CApplication::Create(const CAppParamParser &params)
   CWIN32Util::SetThreadLocalLocale(true); // enable independent locale for each thread, see https://connect.microsoft.com/VisualStudio/feedback/details/794122
 #endif // TARGET_WINDOWS
 
+  // audio (OSX) depends on WinSystem
+  m_pWinSystem = CWinSystemBase::CreateWinSystem();
+  CServiceBroker::RegisterWinSystem(m_pWinSystem.get());
+
   if (!m_ServiceManager->InitStageTwo(params))
   {
     return false;
   }
-
-  // audio (OSX) depends on WinSystem
-  m_pWinSystem = CWinSystemBase::CreateWinSystem();
-  CServiceBroker::RegisterWinSystem(m_pWinSystem.get());
 
   m_pActiveAE.reset(new ActiveAE::CActiveAE());
   // start the AudioEngine
