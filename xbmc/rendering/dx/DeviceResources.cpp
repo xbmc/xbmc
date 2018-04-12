@@ -29,6 +29,11 @@
 #include "ServiceBroker.h"
 #include "utils/log.h"
 
+#ifdef _DEBUG
+#include <dxgidebug.h>
+#pragma comment(lib, "dxgi.lib")
+#endif // _DEBUG
+
 using namespace DirectX;
 using namespace Microsoft::WRL;
 using namespace Windows::Foundation;
@@ -296,6 +301,8 @@ void DX::DeviceResources::CreateDeviceResources()
 {
   CLog::LogF(LOGDEBUG, "creating DirectX 11 device.");
 
+  CreateFactory();
+
   UINT creationFlags = D3D11_CREATE_DEVICE_VIDEO_SUPPORT;
 #if defined(_DEBUG)
   if (DX::SdkLayersAvailable())
@@ -401,7 +408,6 @@ void DX::DeviceResources::CreateDeviceResources()
     hr = dxgiDevice->GetAdapter(&adapter); CHECK_ERR();
     hr = adapter.As(&m_adapter); CHECK_ERR();
   }
-  hr = m_adapter->GetParent(IID_PPV_ARGS(&m_dxgiFactory)); CHECK_ERR();
 
   DXGI_ADAPTER_DESC aDesc;
   m_adapter->GetDesc(&aDesc);
@@ -855,7 +861,7 @@ bool DX::DeviceResources::Begin()
 }
 
 // Present the contents of the swap chain to the screen.
-void DX::DeviceResources::Present() 
+void DX::DeviceResources::Present()
 {
   FinishCommandList();
   m_d3dContext->Flush();
@@ -882,6 +888,8 @@ void DX::DeviceResources::Present()
     {
       CreateWindowSizeDependentResources();
     }
+    if (!m_dxgiFactory->IsCurrent())
+      CreateFactory();
   }
 
   if (m_ctx_mutex != INVALID_HANDLE_VALUE)
@@ -944,6 +952,31 @@ void DX::DeviceResources::HandleOutputChange(const std::function<bool(DXGI_OUTPU
       }
     }
   }
+}
+
+bool DX::DeviceResources::CreateFactory()
+{
+  HRESULT hr;
+#if defined(_DEBUG)
+  bool debugDXGI = false;
+  {
+    ComPtr<IDXGIInfoQueue> dxgiInfoQueue;
+    if (SUCCEEDED(DXGIGetDebugInterface1(0, IID_PPV_ARGS(dxgiInfoQueue.GetAddressOf()))))
+    {
+      debugDXGI = true;
+
+      hr = CreateDXGIFactory2(DXGI_CREATE_FACTORY_DEBUG, IID_PPV_ARGS(m_dxgiFactory.ReleaseAndGetAddressOf())); RETURN_ERR(false);
+
+      dxgiInfoQueue->SetBreakOnSeverity(DXGI_DEBUG_ALL, DXGI_INFO_QUEUE_MESSAGE_SEVERITY_ERROR, true);
+      dxgiInfoQueue->SetBreakOnSeverity(DXGI_DEBUG_ALL, DXGI_INFO_QUEUE_MESSAGE_SEVERITY_CORRUPTION, true);
+    }
+  }
+
+  if (!debugDXGI)
+#endif
+  hr = CreateDXGIFactory1(IID_PPV_ARGS(m_dxgiFactory.ReleaseAndGetAddressOf())); RETURN_ERR(false);
+
+  return true;
 }
 
 void DX::DeviceResources::SetMonitor(HMONITOR monitor)
