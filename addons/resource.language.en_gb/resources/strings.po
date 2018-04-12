@@ -21205,3 +21205,11 @@ msgstr ""
 msgctxt "#39109"
 msgid "Select Program"
 msgstr ""
+
+msgctxt "#39110"
+msgid "Also allow resolution switch"
+msgstr ""
+
+msgctxt "#39111"
+msgid "Allow also the resolution to be adjusted to closely match the source material"
+msgstr ""
