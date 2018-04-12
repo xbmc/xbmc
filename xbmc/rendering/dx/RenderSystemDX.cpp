@@ -665,6 +665,23 @@ HANDLE CRenderSystemDX::GetContexMutex() const
   return INVALID_HANDLE_VALUE;
 }
 
+bool CRenderSystemDX::IsHDRSupported()
+{
+  return m_deviceResources && m_deviceResources->IsHDRSupported();
+}
+
+void CRenderSystemDX::SetHDREnable(bool bEnable)
+{
+  if (m_deviceResources)
+    m_deviceResources->SetHDREnable(bEnable);
+}
+
+void CRenderSystemDX::SetHDR10MetaData(struct DXGI_HDR_METADATA_HDR10 &hdrMetaData)
+{
+  if (m_deviceResources)
+    m_deviceResources->SetHDR10MetaData(hdrMetaData);
+}
+
 CD3DTexture* CRenderSystemDX::GetBackBuffer()
 {
   if (m_stereoView == RENDER_STEREO_VIEW_RIGHT && m_rightEyeTex.Get())

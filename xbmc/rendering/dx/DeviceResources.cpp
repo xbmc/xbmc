@@ -83,6 +83,8 @@ DX::DeviceResources::DeviceResources()
   , m_stereoEnabled(false)
   , m_bDeviceCreated(false)
   , m_ctx_mutex(INVALID_HANDLE_VALUE)
+  , m_supportHDR(false)
+  , m_enableHDR(false)
 {
   m_ctx_mutex = CreateMutexExW(nullptr, nullptr, 0, SYNCHRONIZE);
 }
@@ -624,6 +626,9 @@ void DX::DeviceResources::ResizeBuffers()
     hr = m_d3dDevice.As(&dxgiDevice); CHECK_ERR();
     dxgiDevice->SetMaximumFrameLatency(1);
   }
+
+  // Handle color space settings for HDR
+  UpdateColorSpace();
 }
 
 // These resources need to be recreated every time the window size is changed.
@@ -710,6 +715,8 @@ void DX::DeviceResources::SetLogicalSize(float width, float height)
     return;
 
   CLog::LogF(LOGDEBUG, "receive changing logical size to %f x %f", width, height);
+
+  UpdateColorSpace();
 
   if (m_logicalSize.Width != width || m_logicalSize.Height != height)
   {
@@ -948,6 +955,8 @@ void DX::DeviceResources::HandleOutputChange(const std::function<bool(DXGI_OUTPU
           if (m_d3dDevice)
             HandleDeviceLost(false);
         }
+
+        UpdateColorSpace();
         return;
       }
     }
@@ -1013,6 +1022,86 @@ bool DX::DeviceResources::IsStereoAvailable() const
     return m_dxgiFactory->IsWindowedStereoEnabled();
 
   return false;
+}
+
+void DX::DeviceResources::SetHDREnable(bool bEnable)
+{
+  if (!m_supportHDR)
+    return;
+
+  m_enableHDR = bEnable;
+  UpdateColorSpace();
+
+  if (!m_enableHDR)
+  {
+    // clear metadata
+    ComPtr<IDXGISwapChain4> swapChain4;
+    if (SUCCEEDED(m_swapChain.As(&swapChain4)))
+    {
+      swapChain4->SetHDRMetaData(DXGI_HDR_METADATA_TYPE_NONE, 0, nullptr);
+    }
+  }
+}
+
+void DX::DeviceResources::SetHDR10MetaData(DXGI_HDR_METADATA_HDR10 &hdrMetaData)
+{
+  if (!m_enableHDR || !m_supportHDR)
+    return;
+
+  ComPtr<IDXGISwapChain4> swapChain4;
+  if (SUCCEEDED(m_swapChain.As(&swapChain4)))
+  {
+    swapChain4->SetHDRMetaData(DXGI_HDR_METADATA_TYPE_HDR10, sizeof(DXGI_HDR_METADATA_HDR10), &hdrMetaData);
+  }
+}
+
+void DX::DeviceResources::UpdateColorSpace()
+{
+  DXGI_COLOR_SPACE_TYPE colorSpace = DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709;
+  m_supportHDR = false;
+
+#if defined(NTDDI_WIN10_RS2)
+  if (m_swapChain)
+  {
+    ComPtr<IDXGIOutput> output;
+    GetOutput(output.GetAddressOf());
+    if (output)
+    {
+      ComPtr<IDXGIOutput6> output6;
+      if (SUCCEEDED(output.As(&output6)))
+      {
+        DXGI_OUTPUT_DESC1 desc;
+        if (SUCCEEDED(output6->GetDesc1(&desc)) && desc.ColorSpace == DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020)
+        {
+          // Display output is HDR10.
+          m_supportHDR = true;
+        }
+      }
+    }
+  }
+#endif
+
+  if (m_enableHDR && m_supportHDR)
+  {
+    if (m_backBufferTex.GetFormat() == DXGI_FORMAT_R10G10B10A2_UNORM)
+      colorSpace = DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020;
+  }
+
+  m_colorSpace = colorSpace;
+
+  ComPtr<IDXGISwapChain3> swapChain3;
+  if (m_swapChain && SUCCEEDED(m_swapChain.As(&swapChain3)))
+  {
+    uint32_t spaceSupported = 0;
+    if (SUCCEEDED(swapChain3->CheckColorSpaceSupport(colorSpace, &spaceSupported))
+      && (spaceSupported & DXGI_SWAP_CHAIN_COLOR_SPACE_SUPPORT_FLAG_PRESENT))
+    {
+      if (FAILED(swapChain3->SetColorSpace1(colorSpace)))
+      {
+        CLog::LogF(LOGDEBUG, "unable to set color space %d");
+      }
+    }
+  }
 }
 
 #if defined(TARGET_WINDOWS_DESKTOP)

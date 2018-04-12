@@ -88,6 +88,11 @@ public:
   void SetAlphaBlendEnable(bool enable);
   HANDLE GetContexMutex() const;
 
+  // HDR
+  bool IsHDRSupported();
+  void SetHDREnable(bool bEnable);
+  void SetHDR10MetaData(struct DXGI_HDR_METADATA_HDR10 &hdrMetaData);
+
   // empty overrides
   bool IsExtSupported(const char* extension) const override { return false; };
   void ApplyHardwareTransform(const TransformMatrix &matrix) override {};
