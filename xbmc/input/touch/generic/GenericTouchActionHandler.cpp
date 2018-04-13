@@ -22,7 +22,7 @@
 
 #include <cmath>
 
-#include "Application.h"
+#include "AppInboundProtocol.h"
 #include "ServiceBroker.h"
 #include "messaging/ApplicationMessenger.h"
 #include "guilib/GUIComponent.h"
@@ -171,7 +171,7 @@ int CGenericTouchActionHandler::QuerySupportedGestures(float x, float y)
 void CGenericTouchActionHandler::sendEvent(int actionId, float x, float y, float x2 /* = 0.0f */, float y2 /* = 0.0f */, float x3, float y3, int pointers /* = 1 */)
 {
   XBMC_Event newEvent{XBMC_TOUCH};
-  
+
   newEvent.touch.action = actionId;
   newEvent.touch.x = x;
   newEvent.touch.y = y;
@@ -181,7 +181,9 @@ void CGenericTouchActionHandler::sendEvent(int actionId, float x, float y, float
   newEvent.touch.y3 = y3;
   newEvent.touch.pointers = pointers;
 
-  g_application.OnEvent(newEvent);
+  std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
+  if (appPort)
+    appPort->OnEvent(newEvent);
 }
 
 void CGenericTouchActionHandler::focusControl(float x, float y)
@@ -191,5 +193,7 @@ void CGenericTouchActionHandler::focusControl(float x, float y)
   newEvent.focus.x = static_cast<int> (std::round(x));
   newEvent.focus.y = static_cast<int> (std::round(y));
 
-  g_application.OnEvent(newEvent);
+  std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
+  if (appPort)
+    appPort->OnEvent(newEvent);
 }

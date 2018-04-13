@@ -52,6 +52,7 @@
 #include "Util.h"
 #include "settings/Settings.h"
 #include "AppParamParser.h"
+#include "AppInboundProtocol.h"
 
 #include <algorithm>
 
@@ -281,7 +282,7 @@ bool CInputManager::ProcessEventServer(int windowId, float frameTime)
       newEvent.type = XBMC_MOUSEMOTION;
       newEvent.motion.x = (uint16_t)pos.x;
       newEvent.motion.y = (uint16_t)pos.y;
-      g_application.OnEvent(newEvent);  // had to call this to update g_Mouse position
+      CServiceBroker::GetAppPort()->OnEvent(newEvent);  // had to call this to update g_Mouse position
       return g_application.OnAction(CAction(ACTION_MOUSE_MOVE, pos.x, pos.y));
     }
   }

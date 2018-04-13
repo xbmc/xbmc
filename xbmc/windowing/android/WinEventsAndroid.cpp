@@ -20,7 +20,7 @@
 
 #include "WinEventsAndroid.h"
 
-#include "Application.h"
+#include "AppInboundProtocol.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/InputManager.h"
@@ -106,7 +106,9 @@ bool CWinEventsAndroid::MessagePump()
       m_events.pop_front();
     }
 
-    ret |= g_application.OnEvent(pumpEvent);
+    std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
+    if (appPort)
+      ret |= appPort->OnEvent(pumpEvent);
 
     if (pumpEvent.type == XBMC_MOUSEBUTTONUP)
       CServiceBroker::GetGUI()->GetWindowManager().SendMessage(GUI_MSG_UNFOCUS_ALL, 0, 0, 0, 0);

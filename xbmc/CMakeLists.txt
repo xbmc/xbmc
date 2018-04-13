@@ -1,4 +1,5 @@
 set(SOURCES Application.cpp
+            AppInboundProtocol.cpp
             ApplicationPlayer.cpp
             ApplicationStackHelper.cpp
             AppParamParser.cpp
@@ -39,6 +40,7 @@ set(SOURCES Application.cpp
 
 set(HEADERS AppParamParser.h
             Application.h
+            AppInboundProtocol.h
             ApplicationPlayer.h
             ApplicationStackHelper.h
             AutoSwitch.h
@@ -97,4 +99,3 @@ endif()
 if(CORE_SYSTEM_NAME STREQUAL windowsstore)
   set_target_properties(${CORE_LIBRARY} PROPERTIES STATIC_LIBRARY_FLAGS "/ignore:4264")
 endif()
-
