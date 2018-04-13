@@ -342,7 +342,9 @@ public:
   bool GetPaths(std::set<std::string> &paths);
   bool SetPathHash(const std::string &path, const std::string &hash);
   bool GetPathHash(const std::string &path, std::string &hash);
+  bool GetAlbumPaths(int idAlbum, std::vector<std::pair<std::string, int>>& paths);
   bool GetAlbumPath(int idAlbum, std::string &basePath);
+  int GetDiscnumberForPathID(int idPath);
   bool GetOldArtistPath(int idArtist, std::string &path);
   bool GetArtistPath(const CArtist& artist, std::string &path);
   bool GetAlbumFolder(const CAlbum& album, const std::string &strAlbumPath, std::string &strFolder);

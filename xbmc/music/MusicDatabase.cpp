@@ -5461,15 +5461,31 @@ int CMusicDatabase::GetSongsCount(const Filter &filter)
   return 0;
 }
 
-bool CMusicDatabase::GetAlbumPath(int idAlbum, std::string &basePath)
+bool CMusicDatabase::GetAlbumPath(int idAlbum, std::string& basePath)
 {
+  basePath.clear();
+  std::vector<std::pair<std::string, int>> paths;
+  if (!GetAlbumPaths(idAlbum, paths))
+    return false;
+
+  for (auto pathpair : paths)
+  {
+    if (basePath.empty())
+      basePath = pathpair.first.c_str();
+    else
+      URIUtils::GetCommonPath(basePath, pathpair.first.c_str());
+  }
+  return true;
+}
+
+bool CMusicDatabase::GetAlbumPaths(int idAlbum, std::vector<std::pair<std::string, int>>& paths)
+{
+  paths.clear();
   std::string strSQL;
   try
   {
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS2.get()) return false;
-
-    basePath.clear();
 
     // Get the unique paths of songs on the album, providing there are no songs from 
     // other albums with the same path. This returns 
@@ -5478,51 +5494,64 @@ bool CMusicDatabase::GetAlbumPath(int idAlbum, std::string &basePath)
     // but does *not* return any path when albums are mixed together. That could be because of 
     // deliberate file organisation, or (more likely) because of a tagging error in album name
     // or Musicbrainzalbumid. Thus it avoids finding somme generic music path.
-    strSQL = PrepareSQL("SELECT DISTINCT strPath FROM song "
+    strSQL = PrepareSQL("SELECT DISTINCT strPath, song.idPath FROM song "
       "JOIN path ON song.idPath = path.idPath "
       "WHERE song.idAlbum = %ld "
       "AND (SELECT COUNT(DISTINCT(idAlbum)) FROM song AS song2 "
       "WHERE idPath = song.idPath) = 1", idAlbum);
 
-    if (!m_pDS2->query(strSQL)) return false;
-    int iRowsFound = m_pDS2->num_rows();
-    
-    if (iRowsFound == 0)
+    if (!m_pDS2->query(strSQL))
+      return false;
+    if (m_pDS2->num_rows() == 0)
     {
       // Album does not have a unique path, files are mixed
       m_pDS2->close();
       return false;
     }
-    else if (iRowsFound == 1)
-    {
-      // Path contains all the songs and no others
-      basePath = m_pDS2->fv("strPath").get_asString();
-    }
-    else
-    {
-      // e.g. <album>/cd1, <album>/cd2 etc. for disc sets
-      // Find the common path
-      while (!m_pDS2->eof())
-      {
-        std::string path = m_pDS2->fv("strPath").get_asString();
-        if (basePath.empty())
-          basePath = path;
-        else
-          URIUtils::GetCommonPath(basePath, path);
 
-        m_pDS2->next();
-      }
+    while (!m_pDS2->eof())
+    {
+      paths.emplace_back(m_pDS2->fv("strPath").get_asString(), m_pDS2->fv("song.idPath").get_asInt());
+      m_pDS2->next();
     }
     // Cleanup recordset data
-    m_pDS2->close(); 
+    m_pDS2->close();
     return true;
   }
   catch (...)
   {
-   CLog::Log(LOGERROR, "CMusicDatabase::%s - failed to execute %s", __FUNCTION__, strSQL.c_str());
+    CLog::Log(LOGERROR, "CMusicDatabase::%s - failed to execute %s", __FUNCTION__, strSQL.c_str());
   }
 
   return false;
+}
+
+int CMusicDatabase::GetDiscnumberForPathID(int idPath)
+{
+  std::string strSQL;
+  int result = -1;
+  try
+  {
+    if (NULL == m_pDB.get()) return -1;
+    if (NULL == m_pDS2.get()) return -1;
+
+    strSQL = PrepareSQL("SELECT DISTINCT(song.iTrack >> 16) AS discnum FROM song "
+      "WHERE idPath = %i", idPath);
+
+    if (!m_pDS2->query(strSQL))
+      return -1;
+    if (m_pDS2->num_rows() == 1)
+    { // Songs with this path have a unique disc number
+      result = m_pDS2->fv("discnum").get_asInt();
+    }
+    // Cleanup recordset data
+    m_pDS2->close();
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "CMusicDatabase::%s - failed to execute %s", __FUNCTION__, strSQL.c_str());
+  }
+  return result;
 }
 
 // Get old "artist path" - where artist.nfo and art was located v17 and below.

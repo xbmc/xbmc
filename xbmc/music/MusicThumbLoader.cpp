@@ -176,6 +176,7 @@ bool CMusicThumbLoader::FillLibraryArt(CFileItem &item)
     if (artfound)
     {
       std::string fanartfallback;
+      bool bDiscSetThumbSet = false;
       std::map<std::string, std::string> artmap;
       for (auto artitem : art)
       {
@@ -200,8 +201,21 @@ bool CMusicThumbLoader::FillLibraryArt(CFileItem &item)
 
         // Add fallback art for "thumb" and "fanart" art types only
         // Set album thumb as the fallback used when song thumb is missing
-        if (tag.GetType() == MediaTypeSong && artitem.mediaType == MediaTypeAlbum && artitem.artType == "thumb")
-          item.SetArtFallback(artitem.artType, artname);
+        // or use extra album thumb when part of disc set 
+        if (tag.GetType() == MediaTypeSong && artitem.mediaType == MediaTypeAlbum)
+        {
+          if (artitem.artType == "thumb" && !bDiscSetThumbSet)
+            item.SetArtFallback(artitem.artType, artname);
+          else if (StringUtils::StartsWith(artitem.artType, "thumb"))
+          {
+            int number = atoi(artitem.artType.substr(5).c_str());
+            if (number > 0 && tag.GetDiscNumber() == number)
+            {
+              item.SetArtFallback("thumb", artname);
+              bDiscSetThumbSet = true;
+            }
+          }
+        }
 
         // For albums and songs set fallback fanart from the artist.
         // For songs prefer primary song artist over primary albumartist fanart as fallback fanart 
