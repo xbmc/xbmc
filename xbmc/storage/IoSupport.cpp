@@ -145,7 +145,6 @@ int CIoSupport::ReadSector(HANDLE hDevice, DWORD dwSector, char* lpczBuffer)
     {
       CLog::Log(LOGERROR, "CD: ReadSector Request to read sector %d\n", (int)dwSector);
       CLog::Log(LOGERROR, "CD: ReadSector error: %s\n", strerror(errno));
-      OutputDebugString("CD Read error\n");
       return (-1);
     }
 
@@ -159,7 +158,6 @@ int CIoSupport::ReadSector(HANDLE hDevice, DWORD dwSector, char* lpczBuffer)
       // error reading sector
       CLog::Log(LOGERROR, "CD: ReadSector Request to read sector %d\n", (int)dwSector);
       CLog::Log(LOGERROR, "CD: ReadSector error: %s\n", strerror(errno));
-      OutputDebugString("CD Read error\n");
       return (-1);
     }
 
@@ -241,7 +239,6 @@ int CIoSupport::ReadSectorMode2(HANDLE hDevice, DWORD dwSector, char* lpczBuffer
     CLog::Log(LOGERROR, "CD: ReadSectorMode2 Request to read sector %d\n", (int)dwSector);
     CLog::Log(LOGERROR, "CD: ReadSectorMode2 error: %s\n", strerror(errno));
     CLog::Log(LOGERROR, "CD: ReadSectorMode2 minute %d, second %d, frame %d\n", m, s, f);
-    OutputDebugString("CD Read error\n");
     return -1;
   }
 #elif defined(TARGET_WINDOWS_STORE)

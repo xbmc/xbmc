@@ -23,11 +23,6 @@
 #include "PlatformDefs.h"
 #include "XHandlePublic.h"
 
-#define CreateFileA CreateFile
-HANDLE CreateFile(LPCTSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode,
-            LPSECURITY_ATTRIBUTES lpSecurityAttributes,  DWORD dwCreationDisposition,
-            DWORD dwFlagsAndAttributes, HANDLE hTemplateFile);
-
 int WriteFile(HANDLE hFile, const void * lpBuffer, DWORD nNumberOfBytesToWrite,  unsigned int* lpNumberOfBytesWritten, void* lpOverlapped);
 int ReadFile( HANDLE hFile, void* lpBuffer, DWORD nNumberOfBytesToRead, unsigned int* lpNumberOfBytesRead, void* unsupportedlpOverlapped);
 
@@ -38,11 +33,3 @@ int SetFilePointerEx(HANDLE hFile, LARGE_INTEGER liDistanceToMove,PLARGE_INTEGER
 uint32_t GetTimeZoneInformation( LPTIME_ZONE_INFORMATION lpTimeZoneInformation );
 int _stat64(const char *path, struct __stat64 *buffer);
 int _fstat64(int fd, struct __stat64 *buffer);
-
-// uses statfs
-int GetDiskFreeSpaceEx(
-  LPCTSTR lpDirectoryName,
-  PULARGE_INTEGER lpFreeBytesAvailable,
-  PULARGE_INTEGER lpTotalNumberOfBytes,
-  PULARGE_INTEGER lpTotalNumberOfFreeBytes
-);

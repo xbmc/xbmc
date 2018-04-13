@@ -232,9 +232,4 @@ int TimeTToFileTime(time_t timeT, FILETIME* lpLocalFileTime) {
   return 1;
 }
 
-void GetSystemTimeAsFileTime(LPFILETIME lpSystemTimeAsFileTime)
-{
-  TimeTToFileTime(time(NULL), lpSystemTimeAsFileTime);
-}
-
 #endif
