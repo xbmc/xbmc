@@ -203,28 +203,28 @@ StorageFolder^ CWinLibraryDirectory::GetFolder(const CURL& url)
 
   // find inner folder
   std::string folderPath = URIUtils::FixSlashesAndDups(url.GetFileName(), '\\');
+  if (url.GetHostName() == "removable")
+  {
+    // here path has the form e\path where first segment is drive letter
+    // we should make path form like regular e:\path
+    auto index = folderPath.find('\\');
+    if (index != std::string::npos)
+    {
+      folderPath = folderPath.insert(index, 1, ':');
+    }
+    // win-lib://removable/F -> folderPath contains only drive letter
+    else if (index == std::string::npos && folderPath.length() == 1)
+    {
+      folderPath += ":\\";
+    }
+    else
+    {
+      return nullptr;
+    }
+  }
+
   if (!folderPath.empty())
   {
-    if (url.GetHostName() == "removable")
-    {
-      // here path has the form e\path where first segment is drive letter
-      // we should make path form like regular e:\path
-      auto index = folderPath.find('\\');
-      if (index != std::string::npos)
-      {
-        folderPath = folderPath.insert(index, 1, ':');
-      }
-      // win-lib://removable/F -> folderPath contains only drive letter
-      else if (index == std::string::npos && folderPath.length() == 1)
-      {
-        folderPath += ":\\";
-      }
-      else
-      {
-        return nullptr;
-      }
-    }
-
     try
     {
       std::wstring wStrPath = ToW(folderPath);
