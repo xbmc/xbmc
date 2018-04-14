@@ -29,6 +29,7 @@
 #include "addons/Skin.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include "favourites/FavouritesService.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
@@ -353,7 +354,7 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
   CServiceBroker::GetGUI()->GetWindowManager().ChangeActiveWindow(firstWindow);
 
   g_application.UpdateLibraries();
-  CStereoscopicsManager::GetInstance().Initialize();
+  CServiceBroker::GetGUI()->GetStereoscopicsManager().Initialize();
 
   // if the user interfaces has been fully initialized let everyone know
   if (uiInitializationFinished)
