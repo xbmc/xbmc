@@ -5468,7 +5468,7 @@ bool CMusicDatabase::GetAlbumPath(int idAlbum, std::string& basePath)
   if (!GetAlbumPaths(idAlbum, paths))
     return false;
 
-  for (auto pathpair : paths)
+  for (const auto& pathpair : paths)
   {
     if (basePath.empty())
       basePath = pathpair.first.c_str();

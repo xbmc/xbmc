@@ -1216,7 +1216,7 @@ void MUSIC_INFO::CMusicInfoScanner::RetrieveLocalArt()
     std::vector<std::pair<std::string, int>> paths;
     m_musicDatabase.GetAlbumPaths(albumId, paths);
     // Get album path, the common path when more than one 
-    for (auto pathpair : paths)
+    for (const auto& pathpair : paths)
     {
       if (album.strPath.empty())
         album.strPath = pathpair.first.c_str();
@@ -1237,7 +1237,7 @@ void MUSIC_INFO::CMusicInfoScanner::RetrieveLocalArt()
       than the last processed.
       */
       CMusicThumbLoader loader;
-      for (auto pathpair : paths)
+      for (const auto& pathpair : paths)
       {
         int discnum = m_musicDatabase.GetDiscnumberForPathID(pathpair.second);
         if (discnum > 0)

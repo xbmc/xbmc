@@ -85,6 +85,16 @@ public:
     if (dialog->IsCancelled())
       return false;
 
+    // Get album path (for use in browsing art selection)
+    std::string albumpath;
+    CMusicDatabase db;
+    db.Open();
+    db.GetAlbumPath(m_song->GetMusicInfoTag()->GetAlbumId(), albumpath);
+    m_song->SetProperty("album_path", albumpath);
+    db.Close();
+    if (dialog->IsCancelled())
+      return false;
+
     // Load song art. 
     // For songs in library this includes related album and artist(s) art, 
     // otherwise just embedded or cached thumb is fetched.
@@ -424,7 +434,15 @@ void CGUIDialogSongInfo::OnGetArt()
   // Show list of possible art for user selection
   std::string result;
   VECSOURCES sources(*CMediaSourceSettings::GetInstance().GetSources("music"));
-  CGUIDialogMusicInfo::AddItemPathToFileBrowserSources(sources, *m_song);
+  // Add album folder as source (could be disc set)
+  std::string albumpath = m_song->GetProperty("album_path").asString();
+  if (!albumpath.empty())
+  {
+    CFileItem pathItem(albumpath, true);
+    CGUIDialogMusicInfo::AddItemPathToFileBrowserSources(sources, pathItem);
+  }
+  else  // Add parent folder of song 
+    CGUIDialogMusicInfo::AddItemPathToFileBrowserSources(sources, *m_song);
   g_mediaManager.GetLocalDrives(sources);
   if (CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(13511), result) &&
     result != "thumb://Current") 
