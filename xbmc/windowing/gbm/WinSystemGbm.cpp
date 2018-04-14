@@ -71,6 +71,7 @@ CWinSystemGbm::CWinSystemGbm() :
 
   m_winEvents.reset(new CWinEventsLinux());
   CLinuxPowerSyscall::Register();
+  m_lirc.reset(OPTIONALS::LircRegister());
 }
 
 bool CWinSystemGbm::InitWindowSystem()
