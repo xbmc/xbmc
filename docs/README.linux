@@ -57,7 +57,8 @@ Build-Depends: autoconf, automake, autopoint, autotools-dev, cmake, curl,
   libtag1-dev (>= 1.8), libtinyxml-dev (>= 2.6.2), libtool, libudev-dev,
   libusb-dev, libva-dev, libvdpau-dev, libxml2-dev,
   libxmu-dev, libxrandr-dev, libxslt1-dev, libxt-dev, lsb-release, rapidjson-dev,
-  nasm [!amd64], python-dev, python-imaging, python-support, swig, uuid-dev, yasm, zlib1g-dev
+  nasm [!amd64], python-dev, python-imaging, python-support, swig, uuid-dev, yasm, zlib1g-dev,
+  liblirc-dev
 
 If you want to build with Wayland instead of X11, you will need:
   wayland-protocols (>= 1.7), libwaylandpp-dev
