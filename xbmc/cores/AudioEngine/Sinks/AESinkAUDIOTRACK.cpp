@@ -57,7 +57,19 @@ static const AEChannel KnownChannels[] = { AE_CH_FL, AE_CH_FR, AE_CH_FC, AE_CH_L
 // AMLogic helper for HD Audio
 bool CAESinkAUDIOTRACK::HasAmlHD()
 {
-  return ((CJNIAudioFormat::ENCODING_DOLBY_TRUEHD != -1) && (CJNIAudioFormat::ENCODING_DTS_HD != -1));
+  // AML in great wisdom have these values renamed - with the workaround in libjniandroid gone
+  // we also workaround that here. Remember: a hack introduces a second hack
+  if (CJNIAudioFormat::ENCODING_TRUEHD != -1)
+    CJNIAudioFormat::ENCODING_DOLBY_TRUEHD = CJNIAudioFormat::ENCODING_TRUEHD;
+
+  // For DTS_HD AML might know two formats: ENCODING_DTSHD or ENCODING_DTSHD_MA
+  // ENCODING_DTSHD_MA has priority
+  if (CJNIAudioFormat::ENCODING_DTSHD != -1)
+    CJNIAudioFormat::ENCODING_DTS_HD = CJNIAudioFormat::ENCODING_DTSHD;
+  if (CJNIAudioFormat::ENCODING_DTSHD_MA != -1)
+    CJNIAudioFormat::ENCODING_DTS_HD = CJNIAudioFormat::ENCODING_DTSHD_MA;
+
+  return ((CJNIAudioFormat::ENCODING_TRUEHD != -1) && (CJNIAudioFormat::ENCODING_DTSHD != -1));
 }
 
 static int AEStreamFormatToATFormat(const CAEStreamInfo::DataType& dt)
