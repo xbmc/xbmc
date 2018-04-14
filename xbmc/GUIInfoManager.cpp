@@ -6314,6 +6314,8 @@ TIME_FORMAT CGUIInfoManager::TranslateTimeFormat(const std::string &format)
     return TIME_FORMAT_HH_MM_SS_XX;
   else if (StringUtils::EqualsNoCase(format, "h"))
     return TIME_FORMAT_H;
+  else if (StringUtils::EqualsNoCase(format, "m"))
+    return TIME_FORMAT_M;
   else if (StringUtils::EqualsNoCase(format, "h:mm:ss"))
     return TIME_FORMAT_H_MM_SS;
   else if (StringUtils::EqualsNoCase(format, "h:mm:ss xx"))
