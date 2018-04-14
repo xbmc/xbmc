@@ -175,6 +175,7 @@ CWinSystemWayland::CWinSystemWayland()
   }
   m_winEvents.reset(new CWinEventsWayland());
   CLinuxPowerSyscall::Register();
+  m_lirc.reset(OPTIONALS::LircRegister());
 }
 
 CWinSystemWayland::~CWinSystemWayland() noexcept
