@@ -444,8 +444,8 @@ const infomap player_param[] =   {{ "art",              PLAYER_ITEM_ART }};
 ///                  _string_,
 ///     Returns hours (hh)\, minutes (mm) or seconds (ss).
 ///     Also supported: (hh:mm)\, (mm:ss)\, (hh:mm:ss)\, (h:mm:ss).
-///     Added with Leia: (secs)\, (mins)\, (hours) for total time values.
-///     Example: 3661 seconds => hh=1\, mm=1\, ss=1\, hours=1\, mins=61\, secs=3661
+///     Added with Leia: (secs)\, (mins)\, (hours) for total time values and (m).
+///     Example: 3661 seconds => h=1\, hh=01\, m=1\, mm=01\, ss=01\, hours=1\, mins=61\, secs=3661
 ///   }
 ///   \table_row3{   <b>`Player.SeekStepSize`</b>,
 ///                  \anchor Player_SeekStepSize
@@ -462,8 +462,8 @@ const infomap player_param[] =   {{ "art",              PLAYER_ITEM_ART }};
 ///                  _string_,
 ///     Returns hours (hh)\, minutes (mm) or seconds (ss).
 ///     Also supported: (hh:mm)\, (mm:ss)\, (hh:mm:ss)\, (h:mm:ss).
-///     Added with Leia: (secs)\, (mins)\, (hours) for total time values.
-///     Example: 3661 seconds => hh=1\, mm=1\, ss=1\, hours=1\, mins=61\, secs=3661
+///     Added with Leia: (secs)\, (mins)\, (hours) for total time values and (m).
+///     Example: 3661 seconds => h=1\, hh=01\, m=1\, mm=01\, ss=01\, hours=1\, mins=61\, secs=3661
 ///   }
 ///   \table_row3{   <b>`Player.TimeSpeed`</b>,
 ///                  \anchor Player_TimeSpeed
@@ -480,8 +480,8 @@ const infomap player_param[] =   {{ "art",              PLAYER_ITEM_ART }};
 ///                  _string_,
 ///     Returns hours (hh)\, minutes (mm) or seconds (ss).
 ///     Also supported: (hh:mm)\, (mm:ss)\, (hh:mm:ss)\, (h:mm:ss).
-///     Added with Leia: (secs)\, (mins)\, (hours) for total time values.
-///     Example: 3661 seconds => hh=1\, mm=1\, ss=1\, hours=1\, mins=61\, secs=3661
+///     Added with Leia: (secs)\, (mins)\, (hours) for total time values and (m).
+///     Example: 3661 seconds => h=1\, hh=01\, m=1\, mm=01\, ss=01\, hours=1\, mins=61\, secs=3661
 ///   }
 ///   \table_row3{   <b>`Player.Duration`</b>,
 ///                  \anchor Player_Duration
@@ -493,8 +493,8 @@ const infomap player_param[] =   {{ "art",              PLAYER_ITEM_ART }};
 ///                  _string_,
 ///     Returns hours (hh)\, minutes (mm) or seconds (ss).
 ///     Also supported: (hh:mm)\, (mm:ss)\, (hh:mm:ss)\, (h:mm:ss).
-///     Added with Leia: (secs)\, (mins)\, (hours) for total time values.
-///     Example: 3661 seconds => hh=1\, mm=1\, ss=1\, hours=1\, mins=61\, secs=3661
+///     Added with Leia: (secs)\, (mins)\, (hours) for total time values and (m).
+///     Example: 3661 seconds => h=1\, hh=01\, m=1\, mm=01\, ss=01\, hours=1\, mins=61\, secs=3661
 ///   }
 ///   \table_row3{   <b>`Player.FinishTime`</b>,
 ///                  \anchor Player_FinishTime
@@ -506,8 +506,8 @@ const infomap player_param[] =   {{ "art",              PLAYER_ITEM_ART }};
 ///                  _string_,
 ///     Returns hours (hh)\, minutes (mm) or seconds (ss). When 12 hour clock is used
 ///     (xx) will return AM/PM. Also supported: (hh:mm)\, (mm:ss)\, (hh:mm:ss)\, (h:mm:ss).
-///     Added with Leia: (secs)\, (mins)\, (hours) for total time values.
-///     Example: 3661 seconds => hh=1\, mm=1\, ss=1\, hours=1\, mins=61\, secs=3661
+///     Added with Leia: (secs)\, (mins)\, (hours) for total time values and (m).
+///     Example: 3661 seconds => h=1\, hh=01\, m=1\, mm=01\, ss=01\, hours=1\, mins=61\, secs=3661
 ///   }
 ///   \table_row3{   <b>`Player.StartTime`</b>,
 ///                  \anchor Player_StartTime
@@ -519,8 +519,8 @@ const infomap player_param[] =   {{ "art",              PLAYER_ITEM_ART }};
 ///                  _string_,
 ///     Returns hours (hh)\, minutes (mm) or seconds (ss). When 12 hour clock is used
 ///     (xx) will return AM/PM. Also supported: (hh:mm)\, (mm:ss)\, (hh:mm:ss)\, (h:mm:ss).
-///     Added with Leia: (secs)\, (mins)\, (hours) for total time values.
-///     Example: 3661 seconds => hh=1\, mm=1\, ss=1\, hours=1\, mins=61\, secs=3661
+///     Added with Leia: (secs)\, (mins)\, (hours) for total time values and (m).
+///     Example: 3661 seconds => h=1\, hh=01\, m=1\, mm=01\, ss=01\, hours=1\, mins=61\, secs=3661
 ///   }
 ///   \table_row3{   <b>`Player.SeekNumeric`</b>,
 ///                  \anchor Player_SeekNumeric
@@ -532,8 +532,8 @@ const infomap player_param[] =   {{ "art",              PLAYER_ITEM_ART }};
 ///                  _string_,
 ///     Returns hours (hh)\, minutes (mm) or seconds (ss). When 12 hour clock is used
 ///     (xx) will return AM/PM. Also supported: (hh:mm)\, (mm:ss)\, (hh:mm:ss)\, (h:mm:ss).
-///     Added with Leia: (secs)\, (mins)\, (hours) for total time values.
-///     Example: 3661 seconds => hh=1\, mm=1\, ss=1\, hours=1\, mins=61\, secs=3661
+///     Added with Leia: (secs)\, (mins)\, (hours) for total time values and (m).
+///     Example: 3661 seconds => h=1\, hh=01\, m=1\, mm=01\, ss=01\, hours=1\, mins=61\, secs=3661
 ///   }
 /// \table_end
 ///
@@ -811,8 +811,8 @@ const infomap weather[] =        {{ "isfetched",        WEATHER_IS_FETCHED },
 ///                  _string_,
 ///     Returns hours (hh)\, minutes (mm) or seconds (ss). When 12 hour clock is used
 ///     (xx) will return AM/PM. Also supported: (hh:mm)\, (mm:ss)\, (hh:mm:ss)\, (h:mm:ss).
-///     Added with Leia: (secs)\, (mins)\, (hours) for total time values.
-///     Example: 3661 seconds => hh=1\, mm=1\, ss=1\, hours=1\, mins=61\, secs=3661
+///     Added with Leia: (secs)\, (mins)\, (hours) for total time values and (m).
+///     Example: 3661 seconds => h=1\, hh=01\, m=1\, mm=01\, ss=01\, hours=1\, mins=61\, secs=3661
 ///   }
 ///   \table_row3{   <b>`System.Date`</b>,
 ///                  \anchor System_Date
@@ -3247,8 +3247,8 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///     Returns the duration of the currently selected item in a container in
 ///     different formats: hours (hh)\, minutes (mm) or seconds (ss).
 ///     Also supported: (hh:mm)\, (mm:ss)\, (hh:mm:ss)\, (h:mm:ss).
-///     Added with Leia: (secs)\, (mins)\, (hours) for total time values.
-///     Example: 3661 seconds => hh=1\, mm=1\, ss=1\, hours=1\, mins=61\, secs=3661
+///     Added with Leia: (secs)\, (mins)\, (hours) for total time values and (m).
+///     Example: 3661 seconds => h=1\, hh=01\, m=1\, mm=01\, ss=01\, hours=1\, mins=61\, secs=3661
 ///   }
 ///   \table_row3{   <b>`ListItem.DBTYPE`</b>,
 ///                  \anchor ListItem_DBTYPE
@@ -4611,8 +4611,8 @@ const infomap pvr[] =            {{ "isrecording",              PVR_IS_RECORDING
 ///     Returns the duration of the currently playing epg event in different formats:
 ///     Hours (hh)\, minutes (mm) or seconds (ss).
 ///     Also supported: (hh:mm)\, (mm:ss)\, (hh:mm:ss)\, (h:mm:ss).
-///     Added with Leia: (secs)\, (mins)\, (hours) for total time values.
-///     Example: 3661 seconds => hh=1\, mm=1\, ss=1\, hours=1\, mins=61\, secs=3661
+///     Added with Leia: (secs)\, (mins)\, (hours) for total time values and (m).
+///     Example: 3661 seconds => h=1\, hh=01\, m=1\, mm=01\, ss=01\, hours=1\, mins=61\, secs=3661
 ///   }
 ///   \table_row3{   <b>`PVR.EpgEventElapsedTime`</b>,
 ///                  \anchor PVR_EpgEventElapsedTime
@@ -4626,8 +4626,8 @@ const infomap pvr[] =            {{ "isrecording",              PVR_IS_RECORDING
 ///     Returns the time of the current position of the currently playing epg event in different formats:
 ///     Hours (hh)\, minutes (mm) or seconds (ss).
 ///     Also supported: (hh:mm)\, (mm:ss)\, (hh:mm:ss)\, (h:mm:ss).
-///     Added with Leia: (secs)\, (mins)\, (hours) for total time values.
-///     Example: 3661 seconds => hh=1\, mm=1\, ss=1\, hours=1\, mins=61\, secs=3661
+///     Added with Leia: (secs)\, (mins)\, (hours) for total time values and (m).
+///     Example: 3661 seconds => h=1\, hh=01\, m=1\, mm=01\, ss=01\, hours=1\, mins=61\, secs=3661
 ///   }
 ///   \table_row3{   <b>`PVR.EpgEventRemainingTime`</b>,
 ///                  \anchor PVR_EpgEventRemainingTime
@@ -4641,8 +4641,8 @@ const infomap pvr[] =            {{ "isrecording",              PVR_IS_RECORDING
 ///     Returns the remaining time for currently playing epg event in different formats:
 ///     Hours (hh)\, minutes (mm) or seconds (ss).
 ///     Also supported: (hh:mm)\, (mm:ss)\, (hh:mm:ss)\, (h:mm:ss).
-///     Added with Leia: (secs)\, (mins)\, (hours) for total time values.
-///     Example: 3661 seconds => hh=1\, mm=1\, ss=1\, hours=1\, mins=61\, secs=3661
+///     Added with Leia: (secs)\, (mins)\, (hours) for total time values and (m).
+///     Example: 3661 seconds => h=1\, hh=01\, m=1\, mm=01\, ss=01\, hours=1\, mins=61\, secs=3661
 ///   }
 ///   \table_row3{   <b>`PVR.EpgEventSeekTime`</b>,
 ///                  \anchor PVR_EpgEventSeekTime
@@ -4656,8 +4656,8 @@ const infomap pvr[] =            {{ "isrecording",              PVR_IS_RECORDING
 ///     Returns the time the user is seeking within the currently playing epg event in different formats:
 ///     Hours (hh)\, minutes (mm) or seconds (ss). When 12 hour clock is used
 ///     (xx) will return AM/PM. Also supported: (hh:mm)\, (mm:ss)\, (hh:mm:ss)\, (h:mm:ss).
-///     Added with Leia: (secs)\, (mins)\, (hours) for total time values.
-///     Example: 3661 seconds => hh=1\, mm=1\, ss=1\, hours=1\, mins=61\, secs=3661
+///     Added with Leia: (secs)\, (mins)\, (hours) for total time values and (m).
+///     Example: 3661 seconds => h=1\, hh=01\, m=1\, mm=01\, ss=01\, hours=1\, mins=61\, secs=3661
 ///   }
 ///   \table_row3{   <b>`PVR.EpgEventFinishTime`</b>,
 ///                  \anchor PVR_EpgEventFinishTime
@@ -4671,8 +4671,8 @@ const infomap pvr[] =            {{ "isrecording",              PVR_IS_RECORDING
 ///     Returns the time the currently playing epg event will end in different formats:
 ///     Hours (hh)\, minutes (mm) or seconds (ss). When 12 hour clock is used
 ///     (xx) will return AM/PM. Also supported: (hh:mm)\, (mm:ss)\, (hh:mm:ss)\, (h:mm:ss).
-///     Added with Leia: (secs)\, (mins)\, (hours) for total time values.
-///     Example: 3661 seconds => hh=1\, mm=1\, ss=1\, hours=1\, mins=61\, secs=3661
+///     Added with Leia: (secs)\, (mins)\, (hours) for total time values and (m).
+///     Example: 3661 seconds => h=1\, hh=01\, m=1\, mm=01\, ss=01\, hours=1\, mins=61\, secs=3661
 ///   }
 ///   \table_row3{   <b>`PVR.TimeShiftStart`</b>,
 ///                  \anchor PVR_TimeShiftStart
@@ -4686,8 +4686,8 @@ const infomap pvr[] =            {{ "isrecording",              PVR_IS_RECORDING
 ///     Returns the start time of the timeshift buffer in different formats:
 ///     Hours (hh)\, minutes (mm) or seconds (ss). When 12 hour clock is used
 ///     (xx) will return AM/PM. Also supported: (hh:mm)\, (mm:ss)\, (hh:mm:ss)\, (h:mm:ss).
-///     Added with Leia: (secs)\, (mins)\, (hours) for total time values.
-///     Example: 3661 seconds => hh=1\, mm=1\, ss=1\, hours=1\, mins=61\, secs=3661
+///     Added with Leia: (secs)\, (mins)\, (hours) for total time values and (m).
+///     Example: 3661 seconds => h=1\, hh=01\, m=1\, mm=01\, ss=01\, hours=1\, mins=61\, secs=3661
 ///   }
 ///   \table_row3{   <b>`PVR.TimeShiftEnd`</b>,
 ///                  \anchor PVR_TimeShiftEnd
@@ -4701,8 +4701,8 @@ const infomap pvr[] =            {{ "isrecording",              PVR_IS_RECORDING
 ///     Returns the end time of the timeshift buffer in different formats:
 ///     Hours (hh)\, minutes (mm) or seconds (ss). When 12 hour clock is used
 ///     (xx) will return AM/PM. Also supported: (hh:mm)\, (mm:ss)\, (hh:mm:ss)\, (h:mm:ss).
-///     Added with Leia: (secs)\, (mins)\, (hours) for total time values.
-///     Example: 3661 seconds => hh=1\, mm=1\, ss=1\, hours=1\, mins=61\, secs=3661
+///     Added with Leia: (secs)\, (mins)\, (hours) for total time values and (m).
+///     Example: 3661 seconds => h=1\, hh=01\, m=1\, mm=01\, ss=01\, hours=1\, mins=61\, secs=3661
 ///   }
 ///   \table_row3{   <b>`PVR.TimeShiftCur`</b>,
 ///                  \anchor PVR_TimeShiftCur
@@ -4716,8 +4716,8 @@ const infomap pvr[] =            {{ "isrecording",              PVR_IS_RECORDING
 ///     Returns the current playback time within the timeshift buffer in different formats:
 ///     Hours (hh)\, minutes (mm) or seconds (ss). When 12 hour clock is used
 ///     (xx) will return AM/PM. Also supported: (hh:mm)\, (mm:ss)\, (hh:mm:ss)\, (h:mm:ss).
-///     Added with Leia: (secs)\, (mins)\, (hours) for total time values.
-///     Example: 3661 seconds => hh=1\, mm=1\, ss=1\, hours=1\, mins=61\, secs=3661
+///     Added with Leia: (secs)\, (mins)\, (hours) for total time values and (m).
+///     Example: 3661 seconds => h=1\, hh=01\, m=1\, mm=01\, ss=01\, hours=1\, mins=61\, secs=3661
 ///   }
 ///   \table_row3{   <b>`PVR.TimeShiftOffset`</b>,
 ///                  \anchor PVR_TimeShiftOffset
@@ -4731,8 +4731,8 @@ const infomap pvr[] =            {{ "isrecording",              PVR_IS_RECORDING
 ///     Returns the delta of timeshifted time to actual time in different formats:
 ///     Hours (hh)\, minutes (mm) or seconds (ss).
 ///     Also supported: (hh:mm)\, (mm:ss)\, (hh:mm:ss)\, (h:mm:ss).
-///     Added with Leia: (secs)\, (mins)\, (hours) for total time values.
-///     Example: 3661 seconds => hh=1\, mm=1\, ss=1\, hours=1\, mins=61\, secs=3661
+///     Added with Leia: (secs)\, (mins)\, (hours) for total time values and (m).
+///     Example: 3661 seconds => h=1\, hh=01\, m=1\, mm=01\, ss=01\, hours=1\, mins=61\, secs=3661
 ///   }
 /// \table_end
 ///
