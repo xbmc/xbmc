@@ -861,6 +861,7 @@ void CGUIWindow::SetInitialVisibility()
 {
   // reset our info manager caches
   g_infoManager.ResetCache();
+  g_infoManager.GetInfoProviders().GetGUIControlsInfoProvider().ResetContainerMovingCache();
   CGUIControlGroup::SetInitialVisibility();
 }
 

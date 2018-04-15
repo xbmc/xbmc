@@ -27,11 +27,11 @@
 #include "input/Key.h"
 #include "guilib/LocalizeStrings.h"
 #include "PictureInfoTag.h"
-#include "guiinfo/GUIInfoLabels.h"
+#include "guilib/guiinfo/GUIInfoLabels.h"
 
 #define CONTROL_PICTURE_INFO 5
 
-#define SLIDE_STRING_BASE 21800 - SLIDE_INFO_START
+#define SLIDESHOW_STRING_BASE 21800 - SLIDESHOW_LABELS_START
 
 CGUIDialogPictureInfo::CGUIDialogPictureInfo(void)
     : CGUIDialog(WINDOW_DIALOG_PICTURE_INFO, "DialogPictureInfo.xml")
@@ -47,7 +47,7 @@ CGUIDialogPictureInfo::~CGUIDialogPictureInfo(void)
 
 void CGUIDialogPictureInfo::SetPicture(CFileItem *item)
 {
-  g_infoManager.SetCurrentSlide(*item);
+  g_infoManager.GetInfoProviders().GetPicturesInfoProvider().SetCurrentSlide(item);
 }
 
 void CGUIDialogPictureInfo::OnInitWindow()
@@ -81,10 +81,11 @@ bool CGUIDialogPictureInfo::OnAction(const CAction& action)
 
 void CGUIDialogPictureInfo::FrameMove()
 {
-  if (g_infoManager.GetCurrentSlide().GetPath() != m_currentPicture)
+  const CFileItem* item = g_infoManager.GetInfoProviders().GetPicturesInfoProvider().GetCurrentSlide();
+  if (item && item->GetPath() != m_currentPicture)
   {
     UpdatePictureInfo();
-    m_currentPicture = g_infoManager.GetCurrentSlide().GetPath();
+    m_currentPicture = item->GetPath();
   }
   CGUIDialog::FrameMove();
 }
@@ -95,17 +96,17 @@ void CGUIDialogPictureInfo::UpdatePictureInfo()
   CGUIMessage msgReset(GUI_MSG_LABEL_RESET, GetID(), CONTROL_PICTURE_INFO);
   OnMessage(msgReset);
   m_pictureInfo->Clear();
-  for (int info = SLIDE_INFO_START; info <= SLIDE_INFO_END; ++info)
+  for (int info = SLIDESHOW_LABELS_START; info <= SLIDESHOW_LABELS_END; ++info)
   {
-    // we only want to add SLIDE_EXIF_DATE_TIME
+    // we only want to add SLIDESHOW_EXIF_DATE_TIME
     // so we skip the other date formats
-    if (info == SLIDE_EXIF_DATE || info == SLIDE_EXIF_LONG_DATE || info == SLIDE_EXIF_LONG_DATE_TIME )
+    if (info == SLIDESHOW_EXIF_DATE || info == SLIDESHOW_EXIF_LONG_DATE || info == SLIDESHOW_EXIF_LONG_DATE_TIME )
       continue;
 
     std::string picInfo = g_infoManager.GetLabel(info);
     if (!picInfo.empty())
     {
-      CFileItemPtr item(new CFileItem(g_localizeStrings.Get(SLIDE_STRING_BASE + info)));
+      CFileItemPtr item(new CFileItem(g_localizeStrings.Get(SLIDESHOW_STRING_BASE + info)));
       item->SetLabel2(picInfo);
       m_pictureInfo->Add(item);
     }

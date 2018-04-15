@@ -26,7 +26,7 @@
 #include "utils/SystemInfo.h"
 #include "utils/StringUtils.h"
 #include "storage/MediaManager.h"
-#include "guiinfo/GUIInfoLabels.h"
+#include "guilib/guiinfo/GUIInfoLabels.h"
 #include "ServiceBroker.h"
 
 #define CONTROL_TB_POLICY   30

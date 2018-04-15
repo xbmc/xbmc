@@ -166,8 +166,8 @@ void CGameWindowFullScreen::OnWindowLoaded()
 
 void CGameWindowFullScreen::OnInitWindow()
 {
-  g_infoManager.SetShowInfo(false);
-  g_infoManager.SetDisplayAfterSeek(0); // Make sure display after seek is off
+  g_infoManager.GetInfoProviders().GetPlayerInfoProvider().SetShowInfo(false);
+  g_infoManager.GetInfoProviders().GetPlayerInfoProvider().SetDisplayAfterSeek(0); // Make sure display after seek is off
 
   // Switch resolution
   CServiceBroker::GetWinSystem()->GetGfxContext().SetFullScreenVideo(true); //! @todo

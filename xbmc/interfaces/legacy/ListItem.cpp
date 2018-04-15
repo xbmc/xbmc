@@ -644,9 +644,10 @@ namespace XBMCAddon
           else
           {
             const String& exifkey = key;
-            if (!StringUtils::StartsWithNoCase(exifkey, "exif:") || exifkey.length() < 6) continue;
-            int info = CPictureInfoTag::TranslateString(StringUtils::Mid(exifkey,5));
-            item->GetPictureInfoTag()->SetInfo(info, value);
+            if (!StringUtils::StartsWithNoCase(exifkey, "exif:") || exifkey.length() < 6)
+              continue;
+
+            item->GetPictureInfoTag()->SetInfo(StringUtils::Mid(exifkey, 5), value);
           }
         }
       }

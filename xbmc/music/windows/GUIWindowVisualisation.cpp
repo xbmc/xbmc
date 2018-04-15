@@ -62,7 +62,7 @@ bool CGUIWindowVisualisation::OnAction(const CAction &action)
   case ACTION_SHOW_INFO:
     {
       m_initTimer.Stop();
-      CServiceBroker::GetSettings().SetBool(CSettings::SETTING_MYMUSIC_SONGTHUMBINVIS, g_infoManager.ToggleShowInfo());
+      CServiceBroker::GetSettings().SetBool(CSettings::SETTING_MYMUSIC_SONGTHUMBINVIS, g_infoManager.GetInfoProviders().GetPlayerInfoProvider().ToggleShowInfo());
       return true;
     }
     break;
@@ -100,7 +100,7 @@ bool CGUIWindowVisualisation::OnAction(const CAction &action)
     {
       // actual action is taken care of in CApplication::OnAction()
       m_initTimer.StartZero();
-      g_infoManager.SetShowInfo(true);
+      g_infoManager.GetInfoProviders().GetPlayerInfoProvider().SetShowInfo(true);
     }
     break;
     //! @todo These should be mapped to its own function - at the moment it's overriding
@@ -169,7 +169,7 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
       }
 
       // hide or show the preset button(s)
-      g_infoManager.SetShowInfo(true);  // always show the info initially.
+      g_infoManager.GetInfoProviders().GetPlayerInfoProvider().SetShowInfo(true);  // always show the info initially.
       CGUIWindow::OnMessage(message);
       if (g_infoManager.GetCurrentSongTag())
         m_tag = *g_infoManager.GetCurrentSongTag();
@@ -220,14 +220,14 @@ void CGUIWindowVisualisation::FrameMove()
     m_tag = *tag;
     // fade in
     m_initTimer.StartZero();
-    g_infoManager.SetShowInfo(true);
+    g_infoManager.GetInfoProviders().GetPlayerInfoProvider().SetShowInfo(true);
   }
   if (m_initTimer.IsRunning() && m_initTimer.GetElapsedSeconds() > (float)g_advancedSettings.m_songInfoDuration)
   {
     m_initTimer.Stop();
     if (!CServiceBroker::GetSettings().GetBool(CSettings::SETTING_MYMUSIC_SONGTHUMBINVIS))
     { // reached end of fade in, fade out again
-      g_infoManager.SetShowInfo(false);
+      g_infoManager.GetInfoProviders().GetPlayerInfoProvider().SetShowInfo(false);
     }
   }
   // show or hide the locked texture

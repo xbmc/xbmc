@@ -19,7 +19,7 @@
  */
 
 #include "Profile.h"
-#include "GUIInfoManager.h"
+#include "XBDateTime.h"
 #include "utils/XMLUtils.h"
 
 CProfile::CLock::CLock(LockType type, const std::string &password):
@@ -61,8 +61,9 @@ CProfile::~CProfile(void) = default;
 
 void CProfile::setDate()
 {
-  std::string strDate = g_infoManager.GetDate(true);
-  std::string strTime = g_infoManager.GetTime();
+  const CDateTime now = CDateTime::GetCurrentDateTime();
+  std::string strDate = now.GetAsLocalizedDate(false);
+  std::string strTime = now.GetAsLocalizedTime(TIME_FORMAT_GUESS);
   if (strDate.empty() || strTime.empty())
     setDate("-");
   else

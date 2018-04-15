@@ -23,7 +23,7 @@
 #include <cassert>
 #include <utility>
 
-#include "guiinfo/GUIInfoLabels.h"
+#include "guilib/guiinfo/GUIInfoLabels.h"
 
 CGUIControlGroup::CGUIControlGroup()
 {

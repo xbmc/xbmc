@@ -27,7 +27,7 @@
 #else
 #include <sys/utsname.h>
 #endif
-#include "guiinfo/GUIInfoLabels.h"
+#include "guilib/guiinfo/GUIInfoLabels.h"
 #include "filesystem/CurlFile.h"
 #include "filesystem/File.h"
 #include "network/Network.h"

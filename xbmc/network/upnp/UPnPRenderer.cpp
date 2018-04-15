@@ -45,7 +45,7 @@
 #include "utils/StringUtils.h"
 #include "playlists/PlayList.h"
 #include "GUIUserMessages.h"
-#include "guiinfo/GUIInfoLabels.h"
+#include "guilib/guiinfo/GUIInfoLabels.h"
 
 NPT_SET_LOCAL_LOGGER("xbmc.upnp.renderer")
 
@@ -320,11 +320,13 @@ CUPnPRenderer::UpdateState()
         avt->SetStateVariable("NumberOfTracks", "1");
         avt->SetStateVariable("CurrentTrack", "1");
 
-        std::string buffer = g_infoManager.GetCurrentPlayTime(TIME_FORMAT_HH_MM_SS);
+        // get elapsed time
+        std::string buffer = StringUtils::SecondsToTimeString(std::lrint(g_application.GetTime()), TIME_FORMAT_HH_MM_SS);
         avt->SetStateVariable("RelativeTimePosition", buffer.c_str());
         avt->SetStateVariable("AbsoluteTimePosition", buffer.c_str());
 
-        buffer = g_infoManager.GetDuration(TIME_FORMAT_HH_MM_SS);
+        // get duration
+        buffer = StringUtils::SecondsToTimeString(std::lrint(g_application.GetTotalTime()), TIME_FORMAT_HH_MM_SS);
         if (buffer.length() > 0) {
           avt->SetStateVariable("CurrentTrackDuration", buffer.c_str());
           avt->SetStateVariable("CurrentMediaDuration", buffer.c_str());
@@ -336,8 +338,9 @@ CUPnPRenderer::UpdateState()
     } else if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_SLIDESHOW) {
         avt->SetStateVariable("TransportState", "PLAYING");
 
-        avt->SetStateVariable("AVTransportURI" , g_infoManager.GetPictureLabel(SLIDE_FILE_PATH).c_str());
-        avt->SetStateVariable("CurrentTrackURI", g_infoManager.GetPictureLabel(SLIDE_FILE_PATH).c_str());
+        const std::string filePath = g_infoManager.GetLabel(SLIDESHOW_FILE_PATH);
+        avt->SetStateVariable("AVTransportURI" , filePath.c_str());
+        avt->SetStateVariable("CurrentTrackURI", filePath.c_str());
         avt->SetStateVariable("TransportPlaySpeed", "1");
 
         CGUIWindowSlideShow *slideshow = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIWindowSlideShow>(WINDOW_SLIDESHOW);

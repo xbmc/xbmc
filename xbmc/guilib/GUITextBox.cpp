@@ -23,7 +23,7 @@
 #include "utils/XBMCTinyXML.h"
 #include "utils/MathUtils.h"
 #include "utils/StringUtils.h"
-#include "guiinfo/GUIInfoLabels.h"
+#include "guilib/guiinfo/GUIInfoLabels.h"
 
 #include <algorithm>
 
