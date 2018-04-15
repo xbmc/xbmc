@@ -22,6 +22,7 @@
 #include "addons/Skin.h"
 #include "GUIInfoManager.h"
 #include "GUIInfoTypes.h"
+#include "guilib/GUIComponent.h"
 #include "utils/log.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
@@ -240,7 +241,7 @@ void CGUIIncludes::LoadIncludes(const TiXmlElement *node)
 
       if (condition)
       { // load include file if condition evals to true
-        if (g_infoManager.Register(condition)->Get())
+        if (CServiceBroker::GetGUI()->GetInfoManager().Register(condition)->Get())
           Load_Internal(file);
       }
       else
@@ -420,7 +421,7 @@ void CGUIIncludes::ResolveIncludes(TiXmlElement *node, std::map<INFO::InfoPtr, b
     const char *condition = include->Attribute("condition");
     if (condition)
     {
-      INFO::InfoPtr conditionID = g_infoManager.Register(ResolveExpressions(condition));
+      INFO::InfoPtr conditionID = CServiceBroker::GetGUI()->GetInfoManager().Register(ResolveExpressions(condition));
       bool value = conditionID->Get();
 
       if (xmlIncludeConditions)

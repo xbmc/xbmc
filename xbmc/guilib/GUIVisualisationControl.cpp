@@ -179,7 +179,7 @@ void CGUIVisualisationControl::Process(unsigned int currentTime, CDirtyRegionLis
       }
 
       std::string songTitle = URIUtils::GetFileName(g_application.CurrentFile());
-      const MUSIC_INFO::CMusicInfoTag* tag = g_infoManager.GetCurrentSongTag();
+      const MUSIC_INFO::CMusicInfoTag* tag = CServiceBroker::GetGUI()->GetInfoManager().GetCurrentSongTag();
       if (tag && !tag->GetTitle().empty())
         songTitle = tag->GetTitle();
       m_alreadyStarted = m_instance->Start(m_channels, m_samplesPerSec, m_bitsPerSample, songTitle);
@@ -300,7 +300,7 @@ void CGUIVisualisationControl::UpdateTrack()
     return;
 
   // get the current album art filename
-  m_albumThumb = CSpecialProtocol::TranslatePath(g_infoManager.GetImage(MUSICPLAYER_COVER, WINDOW_INVALID));
+  m_albumThumb = CSpecialProtocol::TranslatePath(CServiceBroker::GetGUI()->GetInfoManager().GetImage(MUSICPLAYER_COVER, WINDOW_INVALID));
   if (m_albumThumb == "DefaultAlbumCover.png")
     m_albumThumb = "";
   else
@@ -308,7 +308,7 @@ void CGUIVisualisationControl::UpdateTrack()
 
   m_instance->OnAction(VIS_ACTION_UPDATE_ALBUMART, (void*)(m_albumThumb.c_str()));
 
-  const MUSIC_INFO::CMusicInfoTag* tag = g_infoManager.GetCurrentSongTag();
+  const MUSIC_INFO::CMusicInfoTag* tag = CServiceBroker::GetGUI()->GetInfoManager().GetCurrentSongTag();
   if (!tag)
     return;
 

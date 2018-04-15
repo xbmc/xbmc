@@ -865,7 +865,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
 
   std::string infoString;
   if (XMLUtils::GetString(pControlNode, "info", infoString))
-    singleInfo = g_infoManager.TranslateString(infoString);
+    singleInfo = CServiceBroker::GetGUI()->GetInfoManager().TranslateString(infoString);
 
   GetTexture(pControlNode, "texturefocus", textureFocus);
   GetTexture(pControlNode, "texturenofocus", textureNoFocus);

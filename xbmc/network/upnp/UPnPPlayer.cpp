@@ -32,6 +32,7 @@
 #include "utils/TimeUtils.h"
 #include "utils/Variant.h"
 #include "GUIInfoManager.h"
+#include "guilib/GUIComponent.h"
 #include "ThumbLoader.h"
 #include "video/VideoThumbLoader.h"
 #include "music/MusicThumbLoader.h"
@@ -486,7 +487,7 @@ void CUPnPPlayer::SeekTime(int64_t ms)
                                 , "REL_TIME", PLT_Didl::FormatTimeStamp((NPT_UInt32)(ms / 1000))
                                 , m_delegate), failed);
 
-  g_infoManager.GetInfoProviders().GetPlayerInfoProvider().SetDisplayAfterSeek();
+  CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetPlayerInfoProvider().SetDisplayAfterSeek();
   return;
 failed:
   CLog::Log(LOGERROR, "UPNP: CUPnPPlayer::SeekTime - unable to seek playback");

@@ -1085,7 +1085,7 @@ void CGUIBaseContainer::SetAutoScrolling(const TiXmlNode *node)
     if (scroll->Attribute("reverse"))
       m_autoScrollIsReversed = true;
     if (scroll->FirstChild())
-      m_autoScrollCondition = g_infoManager.Register(scroll->FirstChild()->ValueStr(), GetParentID());
+      m_autoScrollCondition = CServiceBroker::GetGUI()->GetInfoManager().Register(scroll->FirstChild()->ValueStr(), GetParentID());
   }
 }
 
@@ -1114,7 +1114,7 @@ void CGUIBaseContainer::UpdateAutoScrolling(unsigned int currentTime)
 void CGUIBaseContainer::SetContainerMoving(int direction)
 {
   if (direction)
-    g_infoManager.GetInfoProviders().GetGUIControlsInfoProvider().SetContainerMoving(GetID(), direction > 0, m_scroller.IsScrolling());
+    CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetGUIControlsInfoProvider().SetContainerMoving(GetID(), direction > 0, m_scroller.IsScrolling());
 }
 
 void CGUIBaseContainer::UpdateScrollOffset(unsigned int currentTime)

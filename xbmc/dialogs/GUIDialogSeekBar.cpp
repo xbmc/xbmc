@@ -23,6 +23,7 @@
 #include "GUIDialogSeekBar.h"
 #include "Application.h"
 #include "GUIInfoManager.h"
+#include "guilib/GUIComponent.h"
 #include "SeekHandler.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
 
@@ -101,7 +102,7 @@ float CGUIDialogSeekBar::GetSeekPercent() const
 int CGUIDialogSeekBar::GetEpgEventProgress() const
 {
   int value = 0;
-  g_infoManager.GetInt(value, PVR_EPG_EVENT_PROGRESS);
+  CServiceBroker::GetGUI()->GetInfoManager().GetInt(value, PVR_EPG_EVENT_PROGRESS);
   return value;
 }
 
@@ -110,11 +111,13 @@ int CGUIDialogSeekBar::GetEpgEventSeekPercent() const
   int seekSize = g_application.GetAppPlayer().GetSeekHandler().GetSeekSize();
   if (seekSize != 0)
   {
+    CGUIInfoManager& infoMgr = CServiceBroker::GetGUI()->GetInfoManager();
+
     int progress = 0;
-    g_infoManager.GetInt(progress, PVR_EPG_EVENT_PROGRESS);
+    infoMgr.GetInt(progress, PVR_EPG_EVENT_PROGRESS);
 
     int total = 0;
-    g_infoManager.GetInt(total, PVR_EPG_EVENT_DURATION);
+    infoMgr.GetInt(total, PVR_EPG_EVENT_DURATION);
 
     float totalTime = static_cast<float>(total);
     float percentPerSecond = 100.0f / totalTime;

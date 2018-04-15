@@ -67,6 +67,11 @@ CGUIInfoManager::~CGUIInfoManager(void)
   delete m_currentFile;
 }
 
+void CGUIInfoManager::Initialize()
+{
+  KODI::MESSAGING::CApplicationMessenger::GetInstance().RegisterReceiver(this);
+}
+
 /// \brief Translates a string as given by the skin into an int that we use for more
 /// efficient retrieval of data. Can handle combined strings on the form
 /// Player.Caching + VideoPlayer.IsFullscreen (Logical and)

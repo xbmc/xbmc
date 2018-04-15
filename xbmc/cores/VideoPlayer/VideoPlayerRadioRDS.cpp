@@ -630,7 +630,7 @@ void CDVDRadioRDSData::ResetRDSCache()
   m_currentInfoTag = CPVRRadioRDSInfoTag::CreateDefaultTag();
   m_currentChannel = g_application.CurrentFileItem().GetPVRChannelInfoTag();
   g_application.CurrentFileItem().SetPVRRadioRDSInfoTag(m_currentInfoTag);
-  g_infoManager.SetCurrentItem(g_application.CurrentFileItem());
+  CServiceBroker::GetGUI()->GetInfoManager().SetCurrentItem(g_application.CurrentFileItem());
 
   // send a message to all windows to tell them to update the radiotext
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_RADIOTEXT);
@@ -857,7 +857,7 @@ void CDVDRadioRDSData::ProcessUECP(const unsigned char *data, unsigned int len)
 
           if (m_currentFileUpdate && !m_bStop)
           {
-            g_infoManager.SetCurrentItem(g_application.CurrentFileItem());
+            CServiceBroker::GetGUI()->GetInfoManager().SetCurrentItem(g_application.CurrentFileItem());
             m_currentFileUpdate = false;
           }
         }

@@ -346,8 +346,9 @@ void CGUIViewControl::UpdateViewVisibility()
 {
   // first reset our infomanager cache, as it's likely that the vis conditions
   // used for views (i.e. based on contenttype) may have changed
-  g_infoManager.ResetCache();
-  g_infoManager.GetInfoProviders().GetGUIControlsInfoProvider().ResetContainerMovingCache();
+  CGUIInfoManager& infoMgr = CServiceBroker::GetGUI()->GetInfoManager();
+  infoMgr.ResetCache();
+  infoMgr.GetInfoProviders().GetGUIControlsInfoProvider().ResetContainerMovingCache();
   m_visibleViews.clear();
   for (unsigned int i = 0; i < m_allViews.size(); i++)
   {

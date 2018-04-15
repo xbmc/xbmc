@@ -22,6 +22,7 @@
 #include "utils/XMLUtils.h"
 #include "GUIControlFactory.h"
 #include "GUIInfoManager.h"
+#include "guilib/GUIComponent.h"
 #include "utils/Variant.h"
 #include "utils/StringUtils.h"
 
@@ -115,6 +116,6 @@ bool CGUIStaticItem::IsVisible() const
 
 void CGUIStaticItem::SetVisibleCondition(const std::string &condition, int context)
 {
-  m_visCondition = g_infoManager.Register(condition, context);
+  m_visCondition = CServiceBroker::GetGUI()->GetInfoManager().Register(condition, context);
   m_visState = false;
 }

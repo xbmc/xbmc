@@ -48,12 +48,12 @@ CGUIWindowPVRRecordingsBase::CGUIWindowPVRRecordingsBase(bool bRadio, int id, co
     CSettings::SETTING_MYVIDEOS_SELECTACTION
   })
 {
-  g_infoManager.RegisterObserver(this);
+  CServiceBroker::GetGUI()->GetInfoManager().RegisterObserver(this);
 }
 
 CGUIWindowPVRRecordingsBase::~CGUIWindowPVRRecordingsBase()
 {
-  g_infoManager.UnregisterObserver(this);
+  CServiceBroker::GetGUI()->GetInfoManager().UnregisterObserver(this);
 }
 
 void CGUIWindowPVRRecordingsBase::OnWindowLoaded()

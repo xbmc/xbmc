@@ -20,6 +20,7 @@
 
 #include "GUIInfoTypes.h"
 #include "GUIInfoManager.h"
+#include "guilib/GUIComponent.h"
 #include "addons/AddonManager.h"
 #include "utils/log.h"
 #include "LocalizeStrings.h"
@@ -45,7 +46,7 @@ void CGUIInfoBool::Parse(const std::string &expression, int context)
     m_value = false;
   else
   {
-    m_info = g_infoManager.Register(expression, context);
+    m_info = CServiceBroker::GetGUI()->GetInfoManager().Register(expression, context);
     Update();
   }
 }
@@ -83,7 +84,7 @@ bool CGUIInfoColor::Update()
     return false; // no infolabel
 
   // Expand the infolabel, and then convert it to a color
-  std::string infoLabel(g_infoManager.GetLabel(m_info));
+  std::string infoLabel(CServiceBroker::GetGUI()->GetInfoManager().GetLabel(m_info));
   color_t color = !infoLabel.empty() ? g_colorManager.GetColor(infoLabel.c_str()) : 0;
   if (m_color != color)
   {
@@ -99,21 +100,23 @@ void CGUIInfoColor::Parse(const std::string &label, int context)
   if (label.empty())
     return;
 
+  CGUIInfoManager& infoMgr = CServiceBroker::GetGUI()->GetInfoManager();
+
   // Check for the standard $INFO[] block layout, and strip it if present
   std::string label2 = label;
   if (StringUtils::StartsWithNoCase(label, "$var["))
   {
     label2 = label.substr(5, label.length() - 6);
-    m_info = g_infoManager.TranslateSkinVariableString(label2, context);
+    m_info = infoMgr.TranslateSkinVariableString(label2, context);
     if (!m_info)
-      m_info = g_infoManager.RegisterSkinVariableString(g_SkinInfo->CreateSkinVariable(label2, context));
+      m_info = infoMgr.RegisterSkinVariableString(g_SkinInfo->CreateSkinVariable(label2, context));
     return;
   }
 
   if (StringUtils::StartsWithNoCase(label, "$info["))
     label2 = label.substr(6, label.length()-7);
 
-  m_info = g_infoManager.TranslateString(label2);
+  m_info = infoMgr.TranslateString(label2);
   if (!m_info)
     m_color = g_colorManager.GetColor(label);
 }
@@ -147,15 +150,16 @@ const std::string &CGUIInfoLabel::GetLabel(int contextWindow, bool preferImage, 
   bool needsUpdate = m_dirty;
   if (!m_info.empty())
   {
+    CGUIInfoManager& infoMgr = CServiceBroker::GetGUI()->GetInfoManager();
     for (std::vector<CInfoPortion>::const_iterator portion = m_info.begin(); portion != m_info.end(); ++portion)
     {
       if (portion->m_info)
       {
         std::string infoLabel;
         if (preferImage)
-          infoLabel = g_infoManager.GetImage(portion->m_info, contextWindow, fallback);
+          infoLabel = infoMgr.GetImage(portion->m_info, contextWindow, fallback);
         if (infoLabel.empty())
-          infoLabel = g_infoManager.GetLabel(portion->m_info, contextWindow, fallback);
+          infoLabel = infoMgr.GetLabel(portion->m_info, contextWindow, fallback);
         needsUpdate |= portion->NeedsUpdate(infoLabel);
       }
     }
@@ -171,15 +175,16 @@ const std::string &CGUIInfoLabel::GetItemLabel(const CGUIListItem *item, bool pr
   bool needsUpdate = m_dirty;
   if (item->IsFileItem() && !m_info.empty())
   {
+    CGUIInfoManager& infoMgr = CServiceBroker::GetGUI()->GetInfoManager();
     for (std::vector<CInfoPortion>::const_iterator portion = m_info.begin(); portion != m_info.end(); ++portion)
     {
       if (portion->m_info)
       {
         std::string infoLabel;
         if (preferImages)
-          infoLabel = g_infoManager.GetItemImage(static_cast<const CFileItem*>(item), 0, portion->m_info, fallback);
+          infoLabel = infoMgr.GetItemImage(static_cast<const CFileItem*>(item), 0, portion->m_info, fallback);
         else
-          infoLabel = g_infoManager.GetItemLabel(static_cast<const CFileItem *>(item), 0, portion->m_info, fallback);
+          infoLabel = infoMgr.GetItemLabel(static_cast<const CFileItem *>(item), 0, portion->m_info, fallback);
         needsUpdate |= portion->NeedsUpdate(infoLabel);
       }
     }
@@ -352,17 +357,19 @@ void CGUIInfoLabel::Parse(const std::string &label, int context)
         std::vector<std::string> params = StringUtils::Split(block, ",");
         if (!params.empty())
         {
+          CGUIInfoManager& infoMgr = CServiceBroker::GetGUI()->GetInfoManager();
+
           int info;
           if (format == FORMATVAR || format == FORMATESCVAR)
           {
-            info = g_infoManager.TranslateSkinVariableString(params[0], context);
+            info = infoMgr.TranslateSkinVariableString(params[0], context);
             if (info == 0)
-              info = g_infoManager.RegisterSkinVariableString(g_SkinInfo->CreateSkinVariable(params[0], context));
+              info = infoMgr.RegisterSkinVariableString(g_SkinInfo->CreateSkinVariable(params[0], context));
             if (info == 0) // skinner didn't define this conditional label!
               CLog::Log(LOGWARNING, "Label Formating: $VAR[%s] is not defined", params[0].c_str());
           }
           else
-            info = g_infoManager.TranslateString(params[0]);
+            info = infoMgr.TranslateString(params[0]);
           std::string prefix, postfix;
           if (params.size() > 1)
             prefix = params[1];

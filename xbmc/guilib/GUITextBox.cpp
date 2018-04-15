@@ -20,6 +20,7 @@
 
 #include "GUITextBox.h"
 #include "GUIInfoManager.h"
+#include "guilib/GUIComponent.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/MathUtils.h"
 #include "utils/StringUtils.h"
@@ -371,7 +372,7 @@ void CGUITextBox::SetAutoScrolling(const TiXmlNode *node)
     scroll->Attribute("delay", &m_autoScrollDelay);
     scroll->Attribute("time", &m_autoScrollTime);
     if (scroll->FirstChild())
-      m_autoScrollCondition = g_infoManager.Register(scroll->FirstChild()->ValueStr(), GetParentID());
+      m_autoScrollCondition = CServiceBroker::GetGUI()->GetInfoManager().Register(scroll->FirstChild()->ValueStr(), GetParentID());
     int repeatTime;
     if (scroll->Attribute("repeat", &repeatTime))
       m_autoScrollRepeatAnim = new CAnimation(CAnimation::CreateFader(100, 0, repeatTime, 1000));
@@ -383,7 +384,7 @@ void CGUITextBox::SetAutoScrolling(int delay, int time, int repeatTime, const st
   m_autoScrollDelay = delay;
   m_autoScrollTime = time;
   if (!condition.empty())
-    m_autoScrollCondition = g_infoManager.Register(condition, GetParentID());
+    m_autoScrollCondition = CServiceBroker::GetGUI()->GetInfoManager().Register(condition, GetParentID());
   m_autoScrollRepeatAnim = new CAnimation(CAnimation::CreateFader(100, 0, repeatTime, 1000));
 }
 

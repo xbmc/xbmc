@@ -20,6 +20,7 @@
 
 #include "VisibleEffect.h"
 #include "GUIInfoManager.h"
+#include "guilib/GUIComponent.h"
 #include "utils/log.h"
 #include "addons/Skin.h" // for the effect time adjustments
 #include "utils/StringUtils.h"
@@ -614,7 +615,7 @@ void CAnimation::Create(const TiXmlElement *node, const CRect &rect, int context
   // conditions and reversibility
   const char *condition = node->Attribute("condition");
   if (condition)
-    m_condition = g_infoManager.Register(condition, context);
+    m_condition = CServiceBroker::GetGUI()->GetInfoManager().Register(condition, context);
   const char *reverse = node->Attribute("reversible");
   if (reverse && strcmpi(reverse, "false") == 0)
     m_reversible = false;

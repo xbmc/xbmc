@@ -27,10 +27,11 @@
 #include "GUIInfoManager.h"
 #include "ServiceBroker.h"
 #include "cores/DataCacheCore.h"
+#include "guilib/GUIComponent.h"
+#include "guilib/LocalizeStrings.h"
 #include "guilib/guiinfo/GUIInfo.h"
 #include "guilib/guiinfo/GUIInfoHelper.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
-#include "guilib/LocalizeStrings.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
@@ -54,12 +55,10 @@ CPVRGUIInfo::CPVRGUIInfo(void) :
     CThread("PVRGUIInfo")
 {
   ResetProperties();
-  g_infoManager.RegisterInfoProvider(this);
 }
 
 CPVRGUIInfo::~CPVRGUIInfo(void)
 {
-  g_infoManager.UnregisterInfoProvider(this);
 }
 
 void CPVRGUIInfo::ResetProperties(void)
@@ -104,6 +103,7 @@ void CPVRGUIInfo::ResetProperties(void)
   ClearDescrambleInfo(m_descrambleInfo);
 
   m_updateBackendCacheRequested = false;
+  m_bRegistered = false;
 }
 
 void CPVRGUIInfo::ClearQualityInfo(PVR_SIGNAL_STATUS &qualityInfo)
@@ -129,6 +129,13 @@ void CPVRGUIInfo::Stop(void)
 {
   StopThread();
   CServiceBroker::GetPVRManager().UnregisterObserver(this);
+
+  CGUIComponent* gui = CServiceBroker::GetGUI();
+  if (gui)
+  {
+    gui->GetInfoManager().UnregisterInfoProvider(this);
+    m_bRegistered = false;
+  }
 }
 
 void CPVRGUIInfo::Notify(const Observable &obs, const ObservableMessage msg)
@@ -151,6 +158,16 @@ void CPVRGUIInfo::Process(void)
 
   while (!g_application.m_bStop && !m_bStop)
   {
+    if (!m_bRegistered)
+    {
+      CGUIComponent* gui = CServiceBroker::GetGUI();
+      if (gui)
+      {
+        gui->GetInfoManager().RegisterInfoProvider(this);
+        m_bRegistered = true;
+      }
+    }
+
     if (!m_bStop)
       UpdateQualityData();
     Sleep(0);

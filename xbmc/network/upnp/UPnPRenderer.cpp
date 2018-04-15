@@ -338,7 +338,7 @@ CUPnPRenderer::UpdateState()
     } else if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_SLIDESHOW) {
         avt->SetStateVariable("TransportState", "PLAYING");
 
-        const std::string filePath = g_infoManager.GetLabel(SLIDESHOW_FILE_PATH);
+        const std::string filePath = CServiceBroker::GetGUI()->GetInfoManager().GetLabel(SLIDESHOW_FILE_PATH);
         avt->SetStateVariable("AVTransportURI" , filePath.c_str());
         avt->SetStateVariable("CurrentTrackURI", filePath.c_str());
         avt->SetStateVariable("TransportPlaySpeed", "1");
@@ -414,9 +414,9 @@ CUPnPRenderer::GetMetadata(NPT_String& meta)
         // fetch the item's artwork
         std::string thumb;
         if (object->m_ObjectClass.type == "object.item.audioItem.musicTrack")
-            thumb = g_infoManager.GetImage(MUSICPLAYER_COVER, -1);
+            thumb = CServiceBroker::GetGUI()->GetInfoManager().GetImage(MUSICPLAYER_COVER, -1);
         else
-            thumb = g_infoManager.GetImage(VIDEOPLAYER_COVER, -1);
+            thumb = CServiceBroker::GetGUI()->GetInfoManager().GetImage(VIDEOPLAYER_COVER, -1);
 
         thumb = CTextureUtils::GetWrappedImageURL(thumb);
 

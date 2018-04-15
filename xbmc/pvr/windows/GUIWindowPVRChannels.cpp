@@ -50,12 +50,12 @@ CGUIWindowPVRChannelsBase::CGUIWindowPVRChannelsBase(bool bRadio, int id, const 
   m_bShowHiddenChannels(false)
 {
   CServiceBroker::GetPVRManager().EpgContainer().RegisterObserver(this);
-  g_infoManager.RegisterObserver(this);
+  CServiceBroker::GetGUI()->GetInfoManager().RegisterObserver(this);
 }
 
 CGUIWindowPVRChannelsBase::~CGUIWindowPVRChannelsBase()
 {
-  g_infoManager.UnregisterObserver(this);
+  CServiceBroker::GetGUI()->GetInfoManager().UnregisterObserver(this);
   CServiceBroker::GetPVRManager().EpgContainer().UnregisterObserver(this);
 }
 

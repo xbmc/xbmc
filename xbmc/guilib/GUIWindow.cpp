@@ -220,7 +220,7 @@ bool CGUIWindow::Load(TiXmlElement *pRootElement)
     {
       std::string condition;
       CGUIControlFactory::GetConditionalVisibility(pRootElement, condition);
-      m_visibleCondition = g_infoManager.Register(condition, GetID());
+      m_visibleCondition = CServiceBroker::GetGUI()->GetInfoManager().Register(condition, GetID());
     }
     else if (strValue == "animation" && pChild->FirstChild())
     {
@@ -247,7 +247,7 @@ bool CGUIWindow::Load(TiXmlElement *pRootElement)
         origin.x = CGUIControlFactory::ParsePosition(originElement->Attribute("x"), static_cast<float>(m_coordsRes.iWidth));
         origin.y = CGUIControlFactory::ParsePosition(originElement->Attribute("y"), static_cast<float>(m_coordsRes.iHeight));
         if (originElement->FirstChild())
-          origin.condition = g_infoManager.Register(originElement->FirstChild()->Value(), GetID());
+          origin.condition = CServiceBroker::GetGUI()->GetInfoManager().Register(originElement->FirstChild()->Value(), GetID());
         m_origins.push_back(origin);
         originElement = originElement->NextSiblingElement("origin");
       }
@@ -758,7 +758,7 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
 
 bool CGUIWindow::NeedLoad() const
 {
-  return !m_windowLoaded || g_infoManager.ConditionsChangedValues(m_xmlIncludeConditions);
+  return !m_windowLoaded || CServiceBroker::GetGUI()->GetInfoManager().ConditionsChangedValues(m_xmlIncludeConditions);
 }
 
 void CGUIWindow::AllocResources(bool forceLoad /*= false */)
@@ -860,8 +860,9 @@ bool CGUIWindow::Initialize()
 void CGUIWindow::SetInitialVisibility()
 {
   // reset our info manager caches
-  g_infoManager.ResetCache();
-  g_infoManager.GetInfoProviders().GetGUIControlsInfoProvider().ResetContainerMovingCache();
+  CGUIInfoManager& infoMgr = CServiceBroker::GetGUI()->GetInfoManager();
+  infoMgr.ResetCache();
+  infoMgr.GetInfoProviders().GetGUIControlsInfoProvider().ResetContainerMovingCache();
   CGUIControlGroup::SetInitialVisibility();
 }
 

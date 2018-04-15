@@ -77,6 +77,7 @@ using namespace XFILE;
 using namespace VIDEO;
 using namespace ADDON;
 using namespace KODI::MESSAGING;
+using namespace KODI::GUILIB;
 
 //********************************************************************************************************************************
 CVideoDatabase::CVideoDatabase(void) = default;
@@ -9644,9 +9645,10 @@ bool CVideoDatabase::CommitTransaction()
 {
   if (CDatabase::CommitTransaction())
   { // number of items in the db has likely changed, so recalculate
-    g_infoManager.GetInfoProviders().GetLibraryInfoProvider().SetLibraryBool(LIBRARY_HAS_MOVIES, HasContent(VIDEODB_CONTENT_MOVIES));
-    g_infoManager.GetInfoProviders().GetLibraryInfoProvider().SetLibraryBool(LIBRARY_HAS_TVSHOWS, HasContent(VIDEODB_CONTENT_TVSHOWS));
-    g_infoManager.GetInfoProviders().GetLibraryInfoProvider().SetLibraryBool(LIBRARY_HAS_MUSICVIDEOS, HasContent(VIDEODB_CONTENT_MUSICVIDEOS));
+    GUIINFO::CLibraryGUIInfo& guiInfo = CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetLibraryInfoProvider();
+    guiInfo.SetLibraryBool(LIBRARY_HAS_MOVIES, HasContent(VIDEODB_CONTENT_MOVIES));
+    guiInfo.SetLibraryBool(LIBRARY_HAS_TVSHOWS, HasContent(VIDEODB_CONTENT_TVSHOWS));
+    guiInfo.SetLibraryBool(LIBRARY_HAS_MUSICVIDEOS, HasContent(VIDEODB_CONTENT_MUSICVIDEOS));
     return true;
   }
   return false;

@@ -433,7 +433,7 @@ void CGUIControl::SetEnableCondition(const std::string &expression)
   else if (expression == "false")
     m_enabled = false;
   else
-    m_enableCondition = g_infoManager.Register(expression, GetParentID());
+    m_enableCondition = CServiceBroker::GetGUI()->GetInfoManager().Register(expression, GetParentID());
 }
 
 void CGUIControl::SetPosition(float posX, float posY)
@@ -674,7 +674,7 @@ void CGUIControl::SetVisibleCondition(const std::string &expression, const std::
   else if (expression == "false")
     m_visible = HIDDEN;
   else  // register with the infomanager for updates
-    m_visibleCondition = g_infoManager.Register(expression, GetParentID());
+    m_visibleCondition = CServiceBroker::GetGUI()->GetInfoManager().Register(expression, GetParentID());
   m_allowHiddenFocus.Parse(allowHiddenFocus, GetParentID());
 }
 
