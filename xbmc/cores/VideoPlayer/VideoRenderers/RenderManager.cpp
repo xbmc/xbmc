@@ -320,7 +320,7 @@ void CRenderManager::FrameMove()
       m_presentTimer.Set(1000);
     }
 
-    if (m_presentstep == PRESENT_READY && m_showVideo)
+    if (m_presentstep == PRESENT_READY)
       PrepareNextRender();
 
     if (m_presentstep == PRESENT_FLIP)
@@ -1077,6 +1077,9 @@ void CRenderManager::PrepareNextRender()
     m_presentevent.notifyAll();
     return;
   }
+
+  if (!m_showVideo && !m_forceNext)
+    return;
 
   double frameOnScreen = m_dvdClock.GetClock();
   double frametime = 1.0 / CServiceBroker::GetWinSystem()->GetGfxContext().GetFPS() * DVD_TIME_BASE;
