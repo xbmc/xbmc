@@ -19,6 +19,7 @@
  */
 
 #include "AESinkFactory.h"
+#include "ServiceBroker.h"
 #include "Interfaces/AESink.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
@@ -31,11 +32,20 @@ std::map<std::string, AESinkRegEntry> CAESinkFactory::m_AESinkRegEntry;
 void CAESinkFactory::RegisterSink(AESinkRegEntry regEntry)
 {
   m_AESinkRegEntry[regEntry.sinkName] = regEntry;
+
+  IAE *ae = CServiceBroker::GetActiveAE();
+  if (ae)
+    ae->DeviceChange();
 }
 
 void CAESinkFactory::ClearSinks()
 {
   m_AESinkRegEntry.clear();
+}
+
+bool CAESinkFactory::HasSinks()
+{
+  return !m_AESinkRegEntry.empty();
 }
 
 void CAESinkFactory::ParseDevice(std::string &device, std::string &driver)

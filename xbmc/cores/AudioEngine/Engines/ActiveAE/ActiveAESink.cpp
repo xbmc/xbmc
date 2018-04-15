@@ -676,6 +676,9 @@ void CActiveAESink::EnumerateSinkList(bool force)
   if (!m_sinkInfoList.empty() && !force)
     return;
 
+  if (!CAESinkFactory::HasSinks())
+    return;
+
   unsigned int c_retry = 4;
   m_sinkInfoList.clear();
   CAESinkFactory::EnumerateEx(m_sinkInfoList, false);

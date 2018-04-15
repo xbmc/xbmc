@@ -586,7 +586,6 @@ bool CApplication::Create(const CAppParamParser &params)
   CWIN32Util::SetThreadLocalLocale(true); // enable independent locale for each thread, see https://connect.microsoft.com/VisualStudio/feedback/details/794122
 #endif // TARGET_WINDOWS
 
-  // audio (OSX) depends on WinSystem
   m_pWinSystem = CWinSystemBase::CreateWinSystem();
   CServiceBroker::RegisterWinSystem(m_pWinSystem.get());
 
@@ -596,12 +595,7 @@ bool CApplication::Create(const CAppParamParser &params)
   }
 
   m_pActiveAE.reset(new ActiveAE::CActiveAE());
-  // start the AudioEngine
-  if (!m_pActiveAE->Initialize())
-  {
-    CLog::Log(LOGFATAL, "CApplication::Create: Failed to start the AudioEngine");
-    return false;
-  }
+  m_pActiveAE->Start();
   CServiceBroker::RegisterAE(m_pActiveAE.get());
 
   // restore AE's previous volume state
