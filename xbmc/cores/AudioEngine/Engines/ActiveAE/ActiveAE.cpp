@@ -291,7 +291,13 @@ CActiveAE::~CActiveAE()
 
 void CActiveAE::Dispose()
 {
-  CServiceBroker::GetWinSystem()->Unregister(this);
+  if (m_isWinSysReg)
+  {
+    CWinSystemBase *winsystem = CServiceBroker::GetWinSystem();
+    if (winsystem)
+      winsystem->Unregister(this);
+    m_isWinSysReg = false;
+  }
 
   m_bStop = true;
   m_outMsgEvent.Set();
@@ -437,7 +443,7 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
         {
           case CActiveAEControlProtocol::INIT:
             LoadSettings();
-            if (!m_settings.device.empty())
+            if (!m_settings.device.empty() && CAESinkFactory::HasSinks())
             {
               m_state = AE_TOP_UNCONFIGURED;
               m_bStateMachineSelfTrigger = true;
@@ -446,6 +452,14 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
             {
               // Application can't handle error case and work without an AE
               msg->Reply(CActiveAEControlProtocol::ACC);
+            }
+            return;
+
+          case CActiveAEControlProtocol::DEVICECHANGE:
+            LoadSettings();
+            if (!m_settings.device.empty() && CAESinkFactory::HasSinks())
+            {
+              m_controlPort.SendOutMessage(CActiveAEControlProtocol::INIT);
             }
             return;
 
@@ -491,6 +505,15 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
           m_sink.EnumerateSinkList(false);
           LoadSettings();
           Configure();
+          if (!m_isWinSysReg)
+          {
+            CWinSystemBase *winsystem = CServiceBroker::GetWinSystem();
+            if (winsystem)
+            {
+              winsystem->Register(this);
+              m_isWinSysReg = true;
+            }
+          }
           msg->Reply(CActiveAEControlProtocol::ACC);
           if (!m_extError)
           {
@@ -2586,7 +2609,7 @@ void CActiveAE::LoadSettings()
   m_settings.silenceTimeout = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_AUDIOOUTPUT_STREAMSILENCE) * 60000;
 }
 
-bool CActiveAE::Initialize()
+void CActiveAE::Start()
 {
   Create();
   Message *reply;
@@ -2599,22 +2622,14 @@ bool CActiveAE::Initialize()
     if (!success)
     {
       CLog::Log(LOGERROR, "ActiveAE::%s - returned error", __FUNCTION__);
-      Dispose();
-      return false;
     }
   }
   else
   {
     CLog::Log(LOGERROR, "ActiveAE::%s - failed to init", __FUNCTION__);
-    Dispose();
-    return false;
   }
 
-  // hook into windowing for receiving display reset events
-  CServiceBroker::GetWinSystem()->Register(this);
-
   m_inMsgEvent.Reset();
-  return true;
 }
 
 void CActiveAE::EnumerateOutputDevices(AEDeviceList &devices, bool passthrough)

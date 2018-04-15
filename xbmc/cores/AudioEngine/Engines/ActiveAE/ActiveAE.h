@@ -230,7 +230,7 @@ protected:
 public:
   CActiveAE();
   ~CActiveAE() override;
-  bool Initialize() override;
+  void Start() override;
   void Shutdown() override;
   bool Suspend() override;
   bool Resume() override;
@@ -294,7 +294,6 @@ protected:
   bool InitSink();
   void DrainSink();
   void UnconfigureSink();
-  void Start();
   void Dispose();
   void LoadSettings();
   bool NeedReconfigureBuffers();
@@ -335,6 +334,7 @@ protected:
   unsigned int m_extKeepConfig;
   bool m_extDeferData;
   std::queue<time_t> m_extLastDeviceChange;
+  bool m_isWinSysReg = false;
 
   enum
   {
