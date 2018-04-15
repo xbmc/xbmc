@@ -185,8 +185,7 @@ bool CPluginDirectory::GetPluginResult(const std::string& strPath, CFileItem &re
   { // update the play path and metadata, saving the old one as needed
     if (!resultItem.HasProperty("original_listitem_url"))
       resultItem.SetProperty("original_listitem_url", resultItem.GetPath());
-    resultItem.SetPath(newDir.m_fileResult->GetPath());
-    resultItem.SetDynPath(std::string());
+    resultItem.SetDynPath(newDir.m_fileResult->GetPath());
     resultItem.SetMimeType(newDir.m_fileResult->GetMimeType());
     resultItem.SetContentLookup(newDir.m_fileResult->ContentLookup());
     resultItem.UpdateInfo(*newDir.m_fileResult);
