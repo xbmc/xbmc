@@ -21,6 +21,7 @@
 #pragma once
 
 #include "RPIUtils.h"
+#include "platform/linux/OptionalsReg.h"
 #include "rendering/gles/RenderSystemGLES.h"
 #include "threads/CriticalSection.h"
 #include "windowing/WinSystem.h"
@@ -65,4 +66,5 @@ protected:
 
   CCriticalSection m_resourceSection;
   std::vector<IDispResource*> m_resources;
+  std::unique_ptr<OPTIONALS::CLircContainer, OPTIONALS::delete_CLircContainer> m_lirc;
 };

@@ -98,10 +98,6 @@ void CAppParamParser::DisplayHelp()
   printf("\t\t\tenables network settings.\n");
   printf("  -p or --portable\t%s will look for configurations in install folder instead of ~/.%s\n", CSysInfo::GetAppName().c_str(), lcAppName.c_str());
   printf("  --legacy-res\t\tEnables screen resolutions such as PAL, NTSC, etc.\n");
-#ifdef HAS_LIRC
-  printf("  -l or --lircdev\tLircDevice to use default is " LIRC_DEVICE " .\n");
-  printf("  -n or --nolirc\tdo not use Lirc, i.e. no remote input.\n");
-#endif
   printf("  --debug\t\tEnable debug logging\n");
   printf("  --version\t\tPrint version information\n");
   printf("  --test\t\tEnable test mode. [FILE] required.\n");

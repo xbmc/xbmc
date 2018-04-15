@@ -184,13 +184,6 @@ void CPowerManager::OnSleep()
 
   CLog::Log(LOGNOTICE, "%s: Running sleep jobs", __FUNCTION__);
 
-  // stop lirc
-  if (CBuiltins::GetInstance().HasCommand("LIRC.Stop"))
-  {
-    CLog::Log(LOGNOTICE, "%s: Stopping lirc", __FUNCTION__);
-    CBuiltins::GetInstance().Execute("LIRC.Stop");
-  }
-
   CServiceBroker::GetPVRManager().OnSleep();
   StorePlayerState();
   g_application.StopPlaying();
@@ -223,13 +216,6 @@ void CPowerManager::OnWake()
   }
   g_application.ResetScreenSaver();
 #endif
-
-  // restart lirc
-  if (CBuiltins::GetInstance().HasCommand("LIRC.Start"))
-  {
-    CLog::Log(LOGNOTICE, "%s: Restarting lirc", __FUNCTION__);
-    CBuiltins::GetInstance().Execute("LIRC.Start");
-  }
 
   CServiceBroker::GetActiveAE()->Resume();
   g_application.UpdateLibraries();

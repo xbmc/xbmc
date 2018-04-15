@@ -57,6 +57,7 @@ CWinSystemRpi::CWinSystemRpi()
   AE::CAESinkFactory::ClearSinks();
   CAESinkPi::Register();
   CLinuxPowerSyscall::Register();
+  m_lirc.reset(OPTIONALS::LircRegister());
 }
 
 CWinSystemRpi::~CWinSystemRpi()

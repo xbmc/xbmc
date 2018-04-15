@@ -48,6 +48,7 @@ class IWindowKeymap;
 
 namespace KODI
 {
+
 namespace KEYBOARD
 {
   class IKeyboardDriverHandler;
@@ -78,8 +79,7 @@ class CInputManager : public ISettingCallback,
                       public Observable
 {
 public:
-  explicit CInputManager(const CAppParamParser &params,
-                         const CProfilesManager &profileManager);
+  explicit CInputManager(const CAppParamParser &params);
   CInputManager(const CInputManager&) = delete;
   CInputManager const& operator=(CInputManager const&) = delete;
   ~CInputManager() override;
@@ -287,6 +287,7 @@ public:
   virtual void UnregisterMouseDriverHandler(KODI::MOUSE::IMouseDriverHandler* handler);
 
   static void RegisterRemoteControl(CreateRemoteControlFunc createFunc);
+
 private:
 
   /*! \brief Process keyboard event and translate into an action

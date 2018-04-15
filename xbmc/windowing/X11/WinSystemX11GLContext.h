@@ -24,6 +24,7 @@
 
 #include "EGL/egl.h"
 #include "rendering/gl/RenderSystemGL.h"
+#include "platform/linux/OptionalsReg.h"
 #include <memory>
 
 class CGLContext;
@@ -71,4 +72,6 @@ protected:
     void operator()(CVaapiProxy *p) const;
   };
   std::unique_ptr<CVaapiProxy, delete_CVaapiProxy> m_vaapiProxy;
+
+  std::unique_ptr<OPTIONALS::CLircContainer, OPTIONALS::delete_CLircContainer> m_lirc;
 };

@@ -36,6 +36,7 @@
 #include "Seat.h"
 #include "Signals.h"
 #include "ShellSurface.h"
+#include "platform/linux/OptionalsReg.h"
 #include "threads/CriticalSection.h"
 #include "threads/Event.h"
 #include "utils/ActorProtocol.h"
@@ -296,6 +297,8 @@ private:
   std::uint32_t m_lastAckedSerial{0u};
   /// Whether this is the first call to SetFullScreen
   bool m_isInitialSetFullScreen{true};
+
+  std::unique_ptr<OPTIONALS::CLircContainer, OPTIONALS::delete_CLircContainer> m_lirc;
 };
 
 

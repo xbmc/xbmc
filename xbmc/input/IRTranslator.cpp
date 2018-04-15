@@ -19,6 +19,7 @@
  */
 
 #include "IRTranslator.h"
+#include "ServiceBroker.h"
 #include "filesystem/File.h"
 #include "input/remote/IRRemote.h"
 #include "profiles/ProfilesManager.h"
@@ -30,8 +31,7 @@
 #include <stdlib.h>
 #include <vector>
 
-CIRTranslator::CIRTranslator(const CProfilesManager &profileManager) :
-  m_profileManager(profileManager)
+CIRTranslator::CIRTranslator()
 {
 }
 
@@ -50,7 +50,7 @@ void CIRTranslator::Load(const std::string &irMapName)
   else
     CLog::Log(LOGDEBUG, "CIRTranslator::Load - no system %s found, skipping", irMapName.c_str());
 
-  irMapPath = m_profileManager.GetUserDataItem(irMapName);
+  irMapPath = CServiceBroker::GetProfileManager().GetUserDataItem(irMapName);
   if (XFILE::CFile::Exists(irMapPath))
     success |= LoadIRMap(irMapPath);
   else
@@ -63,7 +63,9 @@ void CIRTranslator::Load(const std::string &irMapName)
 bool CIRTranslator::LoadIRMap(const std::string &irMapPath)
 {
   std::string remoteMapTag = URIUtils::GetFileName(irMapPath);
-  URIUtils::RemoveExtension(remoteMapTag);
+  size_t lastindex = remoteMapTag.find_last_of(".");
+  if (lastindex != std::string::npos)
+    remoteMapTag = remoteMapTag.substr(0, lastindex);
   StringUtils::ToLower(remoteMapTag);
 
   // Load our xml file, and fill up our mapping tables
