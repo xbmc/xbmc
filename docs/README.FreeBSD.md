@@ -1,486 +1,238 @@
-TOC
-1. Introduction
-2. Getting the source code
-3. Installing the required libraries and headers
-4. How to compile
-   4.4 Binary addons
-   4.5 Test suite
-5. How to run
-6. Uninstalling
-7. Example basic setup of a KODI machine running on FreeBSD
-   7.1 Setting up X Server
-   7.2 Install SLiM login manager
-   7.3 Solving the troubles with HDMI Audio
------------------------------------------------------------------------------
-1. Introduction
------------------------------------------------------------------------------
-
-A graphics-adapter with OpenGL acceleration is highly recommended.
-24/32 bitdepth is required along with OpenGL.
-
-Note to new FreeBSD users:
-All lines that are prefixed with the '$' character are commands,
-that need to be typed into a terminal window / console. The '$' equals the prompt.
-Note: The '$' character itself should NOT be typed as part of the command.
-
------------------------------------------------------------------------------
-2. Getting the source code
------------------------------------------------------------------------------
-
-You will have to grab the source code of course, here we use git as example.
-First install the git package provided by your distribution.
-Then from a terminal, type:
-
-.0  $ cd $HOME
-.1  $ git clone git://github.com/xbmc/xbmc.git kodi
-
-Note: You can clone any specific branch.
-
-.1  $ git clone -b <branch> git://github.com/xbmc/xbmc.git kodi
-
------------------------------------------------------------------------------
-3. Installing the required libraries and headers
------------------------------------------------------------------------------
-
-You will then need the required libraries. The following is the list of packages
-that are used to build Kodi packages on Debian/Ubuntu (with all supported
-external libraries enabled).
-
-$ pkg install taglib gstreamer1-vaapi hal libcapn \
-enca gawk gperf cmake zip nasm swig30 openjdk8 libtool gettext-tools \
-gmake pkgconf rapidjson mesa-libs doxygen glproto dri2proto dri3proto libass \
-flac libcdio curl dbus fontconfig freetype2 fribidi \
-libgcrypt gmp libgpg-error gnutls libidn libinotify lzo2 \
-libogg sqlite3 tiff tinyxml e2fsprogs-libuuid git libvorbis libxslt libplist \
-shairplay avahi-app libcec libbluray samba46 libnfs librtmp libva libvdpau \
-jpeg-turbo glew xrandr libedit inputproto giflib m4 encodings \
-font-util mysql57-client xf86vidmodeproto python2 p8-platform libbdplus \
-libaacs libudev-devd sndio ccache xorg-server binutils libmicrohttpd \
-xorg-server xf86-input-mouse xf86-input-keyboard lirc libfmt autoconf automake
-
------------------------------------------------------------------------------
-4. How to compile
------------------------------------------------------------------------------
-Cmake build instructions V18.0 Leia and higher
+![Kodi Logo](resources/banner_slim.png)
+
+# FreeBSD build guide
+This guide has been tested with FreeBSD 11.1 x86_64. Please read it in full before you proceed to familiarize yourself with the build procedure.
+
+Several other distributions have **[specific build guides](README.md)** and a general **[Linux build guide](README.Linux.md)** is also available.
+
+## Table of Contents
+1. **[Document conventions](#1-document-conventions)**
+2. **[Get the source code](#2-get-the-source-code)**
+3. **[Install the required packages](#3-install-the-required-packages)**  
+  3.1. **[Build missing dependencies](#31-build-missing-dependencies)**
+4. **[Build Kodi](#4-build-kodi)**  
+  4.1. **[Configure build](#41-configure-build)**  
+  4.2. **[Build](#42-build)**
+5. **[Build binary add-ons](#5-build-binary-add-ons)**
+6. **[Run Kodi](#6-run-kodi)**
+7. **[Uninstall Kodi](#7-uninstall-kodi)**
+8. **[Test suite](#8-test-suite)**
+
+## 1. Document conventions
+This guide assumes you are using `terminal`, also known as `console`, `command-line` or simply `cli`. Commands need to be run at the terminal, one at a time and in the provided order.
+
+This is a comment that provides context:
+```
+this is a command
+this is another command
+and yet another one
+```
+
+**Example:** Clone Kodi's current master branch:
+```
+git clone https://github.com/xbmc/xbmc kodi
+```
+
+Commands that contain strings enclosed in angle brackets denote something you need to change to suit your needs.
+```
+git clone -b <branch-name> https://github.com/xbmc/xbmc kodi
+```
+
+**Example:** Clone Kodi's current Krypton branch:
+```
+git clone -b Krypton https://github.com/xbmc/xbmc kodi
+```
+
+Several different strategies are used to draw your attention to certain pieces of information. In order of how critical the information is, these items are marked as a note, tip, or warning. For example:
+ 
+**NOTE:** Linux is user friendly... It's just very particular about who its friends are.  
+**TIP:** Algorithm is what developers call code they do not want to explain.  
+**WARNING:** Developers don't change light bulbs. It's a hardware problem.
+
+**[back to top](#table-of-contents)** | **[back to section top](#1-document-conventions)**
+
+## 2. Get the source code
+Make sure `git` is installed:
+```
+sudo pkg install git
+```
+
+Change to your `home` directory:
+```
+cd $HOME
+```
+
+Clone Kodi's current master branch:
+```
+git clone https://github.com/xbmc/xbmc kodi
+```
+
+**[back to top](#table-of-contents)**
+
+## 3. Install the required packages
+If you get a `package not found` type of message with the below command, remove the offending package(s) from the install list and reissue the command. Take a note of the missing dependencies and, after a successful step completion, **[build the missing dependencies manually](#31-build-missing-dependencies)**.
+
+Install build dependencies:
+```
+sudo pkg install autoconf automake avahi-app binutils cmake curl dbus doxygen dri2proto dri3proto e2fsprogs-libuuid enca encodings flac font-util fontconfig freetype2 fribidi gawk gettext-tools giflib git glew glproto gmake gmp gnutls gperf gstreamer1-vaapi hal inputproto jpeg-turbo libaacs libass libbdplus libbluray libcapn libcdio libcec libedit libfmt libgcrypt libgpg-error libidn libinotify libmicrohttpd libnfs libogg libplist librtmp libtool libudev-devd libva libvdpau libvorbis libxslt lirc lzo2 m4 mesa-libs mysql57-client nasm openjdk8 p8-platform pkgconf python2 rapidjson samba46 shairplay sndio sqlite3 swig30 taglib tiff tinyxml xf86-input-keyboard xf86-input-mouse xf86vidmodeproto xorg-server xrandr zip
+```
+
+**WARNING:** Make sure you copy paste the entire line or you might receive an error or miss a few dependencies.
+
+**NOTE:** For developers and anyone else who builds frequently it is recommended to install `ccache` to expedite subsequent builds of Kodi.
+
+You can install it with:
+```
+sudo pkg install ccache
+```
+
+**TIP:** If you have multiple computers at home, `distcc` will distribute build workloads of C and C++ code across several machines on a network. Team Kodi may not be willing to give support if problems arise using such a build configuration.
+
+You can install it with:
+```
+sudo pkg install distcc
+```
+
+### 3.1. Build missing dependencies
+See the general **[Linux build guide](README.Linux.md)** for reference.
+
+**[back to top](#table-of-contents)** | **[back to section top](#3-install-the-required-packages)**
+
+## 4. Build Kodi
+### 4.1. Configure build
+If you get a `Could NOT find...` error message during CMake configuration step, take a note of the missing dependencies and either install them from repositories (if available) or **[build the missing dependencies manually](#31-build-missing-dependencies)**.
+
+Create an out-of-source build directory:
+```
+mkdir $HOME/kodi-build
+```
+
+Change to build directory:
+```
+cd $HOME/kodi-build
+```
+
+Configure build:
+```
+cmake ../kodi -DCMAKE_INSTALL_PREFIX=/usr/local
+```
+
+### 4.2. Build
+```
+cmake --build . -- VERBOSE=1 -j$(sysctl hw.ncpu | awk '{print $2}')
+```
+**TIP:** By adding `-j<number>` to the make command, you can choose how many concurrent jobs will be used and expedite the build process. It is recommended to use `-j$(sysctl hw.ncpu | awk '{print $2}')` to compile on all available processor cores.
+
+After the build process completes successfully you can test your shiny new Kodi build while in the build directory:
+```
+./kodi-x11
+```
+
+If everything was OK during your test you can now install the binaries to their place, in this example */usr/local*.
+```
+sudo gmake install
+```
+
+**NOTE:** `gmake` stands for *GNU Make*. BSD's own make does not work here.
+
+This will install Kodi in the prefix provided in **[section 4.1](#41-configure-build)**.
+
+**TIP:** To override Kodi's install location, use `DESTDIR=<path>`. For example:
+```
+sudo gmake install DESTDIR=$HOME/kodi
+```
+
+**[back to top](#table-of-contents)** | **[back to section top](#4-build-kodi)**
+
+## 5. Build binary add-ons
+You can find a complete list of available binary add-ons **[here](https://github.com/xbmc/repo-binary-addons)**.
+
+Change to Kodi's source code directory:
+```
+cd $HOME/kodi
+```
+
+Build all add-ons:
+```
+sudo gmake -j$(sysctl hw.ncpu | awk '{print $2}') -C tools/depends/target/binary-addons PREFIX=/usr/local
+```
+
+Build specific add-ons:
+```
+sudo gmake -j$(sysctl hw.ncpu | awk '{print $2}') -C tools/depends/target/binary-addons PREFIX=/usr/local ADDONS="audioencoder.flac pvr.vdr.vnsi audiodecoder.snesapu"
+```
+
+Build a specific group of add-ons:
+```
+sudo gmake -j$(sysctl hw.ncpu | awk '{print $2}') -C tools/depends/target/binary-addons PREFIX=/usr/local ADDONS="pvr.*"
+```
+
+**NOTE:** `PREFIX=/usr/local` should match Kodi's `-DCMAKE_INSTALL_PREFIX=` prefix used in **[section 4.1](#41-configure-build)**.
+
+**[back to top](#table-of-contents)**
+
+## 6. Run Kodi
+If you chose to install Kodi using `/usr` or `/usr/local` as the `-DCMAKE_INSTALL_PREFIX=`, you can just issue *kodi* in a terminal session.
+
+If you changed `-DCMAKE_INSTALL_PREFIX=` to install Kodi into some non-standard location, you will have to run Kodi directly:
+```
+<CMAKE_INSTALL_PREFIX>/bin/kodi
+```
+
+To run Kodi in *portable* mode (useful for testing):
+```
+<CMAKE_INSTALL_PREFIX>/bin/kodi -p
+```
+
+**[back to top](#table-of-contents)**
+
+## 7. Uninstall Kodi
+```
+sudo gmake uninstall
+```
+**WARNING:**: If you reran CMakes' configure step with a different `-DCMAKE_INSTALL_PREFIX=`, you will need to rerun configure with the correct path for this step to work correctly.
+
+If you would like to also remove any settings and third-party addons (skins, scripts, etc.) and Kodi configuration files, you should also run:
+```
+rm -rf ~/.kodi
+```
+
+**[back to top](#table-of-contents)**
+
+## 8. Test suite
+Kodi has a test suite which uses the Google C++ Testing Framework. This framework is provided directly in Kodi's source tree.
+
+Build and run Kodi's test suite:
+```
+gmake check
+```
+
+Build Kodi's test suite without running it:
+```
+gmake kodi-test
+```
+
+Run Kodi's test suite manually:
+```
+./kodi-test
+```
+
+Show Kodi's test suite *help* notes:
+```
+./kodi-test --gtest_help
+```
+
+Useful options:
+```
+--gtest_list_tests
+  List the names of all tests instead of running them.
+  The name of TEST(Foo, Bar) is "Foo.Bar".
+
+--gtest_filter=POSITIVE_PATTERNS[-NEGATIVE_PATTERNS]
+  Run only the tests whose name matches one of the positive patterns but
+  none of the negative patterns. '?' matches any single character; '*'
+  matches any substring; ':' separates two patterns.
+```
+
+**[back to top](#table-of-contents)**
 
-Create and change to build directory 
-    $ mkdir kodi-build && cd kodi-build
-
-Run CMake
-- for X11
-    $ cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local
-
-Compiling on FreeBSD -DENABLE_ALSA=OFF recommended. Or build would fail due to Linux
-specific portion of code in xbmc/cores/AudioEngine/Sinks/AESinkALSA.cpp. After build
-KODI would use SNDIO on FreeBSD.
-
-Build
-    $ cmake --build . -- VERBOSE=1
-    
-Tip: By adding -j<number> to the make command, you describe how many
-     concurrent jobs will be used, it will speed up the build process.
-     So for quadcore the command is:
-    
-    $ cmake --build . -- VERBOSE=1 -j4
-
-If the build process completes succesfully you would want to test if it is working.
-Still in the build directory type the following:
-
-    $ ./kodi.bin
-
-If everything was okay during your test you can now install the binaries to their place
-in this example "/usr/local".
-
-    $su
-    $gmake install
-    $exit
-
-NB! 'gmake' stands for 'GNU Make'. BSD's own make does not work here.
-
-This will install Kodi in the prefix provided in 4.1 as well as a launcher script.
-
-Tip: By adding -j<number> to the make command, you describe how many
-     concurrent jobs will be used. So for dualcore the command is:
-
-    $ su
-    $ gmake install -j2
-
-Tip: To override the location that Kodi is installed, use PREFIX=<path>.
-For example.
-
-    $ gmake install DESTDIR=$HOME/kodi
-
------------------------------------------------------------------------------
-4.4. Binary addons - compile
------------------------------------------------------------------------------
-
-From v14 with commit 4090a5f a new API for binary addons is available.
-You can compile all addons or only specific addons by specifying e.g. ADDONS="audioencoder.foo pvr.bar audiodecoder.baz"
-
-.0  All addons
-    $ gmake -C tools/depends/target/binary-addons PREFIX=/<system prefix added on step 4.1>
-
-.1  Specific addons
-    $ gmake -C tools/depends/target/binary-addons PREFIX=/<system prefix added on step 4.1> ADDONS="audioencoder.flac pvr.vdr.vnsi audiodecoder.snesapu"
-
-Audio decoders:
-    audiodecoder.modplug, audiodecoder.nosefart, audiodecoder.sidplay, audiodecoder.snesapu,
-    audiodecoder.stsound, audiodecoder.timidity, audiodecoder.vgmstream
-
-Audio encoders:
-    audioencoder.flac, audioencoder.lame, audioencoder.vorbis, audioencoder.wav
-
-Inputstream addons:
-    inputstream.mpd
-
-Peripheral addons:
-    peripheral.joystick
-
-PVR addons:
-    pvr.argustv, pvr.demo, pvr.dvblink, pvr.dvbviewer, pvr.filmon, pvr.hdhomerun, pvr.hts, pvr.iptvsimple,
-    pvr.mediaportal.tvserver,pvr.mythtv, pvr.nextpvr, pvr.njoy, pvr.pctv, pvr.stalker, pvr.vbox, pvr.vdr.vnsi,
-    pvr.vuplus, pvr.wmc
-
-Screensavers:
-    screensaver.asteroids, screensaver.biogenesis, screensaver.greynetic, screensaver.matrixtrails,
-    screensaver.pingpong, screensaver.pyro, screensavers.rsxs, screensaver.stars
-
-Visualizations
-    visualization.fishbmc, visualization.goom, visualization.projectm, visualization.shadertoy
-    visualization.spectrum, visualization.vsxu, visualization.waveform
-
------------------------------------------------------------------------------
-4.5. Test suite
------------------------------------------------------------------------------
-
-Kodi has a test suite which uses the Google C++ Testing Framework.
-This framework is provided directly in Kodi's source tree.
-It has very little requirements, in order to build and run.
-See the README file for the framework at 'lib/gtest/README' for specific requirements.
-
-To compile and run Kodi's test suite, type the following:
-
-    $ gmake check
-
-To compile the test suite without running it, type the following.
-
-    $ gmake kodi-test
-
-The test suite program can be run manually as well.
-The name of the test suite program is 'kodi-test' and will build in the Kodi source tree.
-To bring up the 'help' notes for the program, type the following:
-
-    $ ./kodi-test --gtest_help
-
-The most useful options are,
-
-    --gtest_list_tests
-      List the names of all tests instead of running them.
-	  The name of TEST(Foo, Bar) is "Foo.Bar".
-
-    --gtest_filter=POSITIVE_PATTERNS[-NEGATIVE_PATTERNS]
-      Run only the tests whose name matches one of the positive patterns but
-      none of the negative patterns. '?' matches any single character; '*'
-      matches any substring; ':' separates two patterns.
-
------------------------------------------------------------------------------
-5. How to run
------------------------------------------------------------------------------
-
-How to run Kodi depends on the type of installation you have done.
-It is possible to run Kodi without the requirement to install Kodi anywhere else.
-In this case, type the following from the top source directory.
-
-    $ ./kodi.bin
-
-Or run in 'portable' mode
-
-    $ ./kodi.bin -p
-
-If you chose to install Kodi using '/usr' or '/usr/local' as the PREFIX,
-you can just issue 'kodi' in a terminal session.
-
-If you have overridden PREFIX to install Kodi into some non-standard location,
-you will have to run Kodi by directly running 'kodi.bin'.
-
-For example:
-
-    $ $HOME/kodi/usr/lib/kodi/kodi.bin
-
-You should still run the wrapper via
-    $ $PREFIX/bin/kodi
-
-If you wish to use VDPAU decoding you will now have to change the Render Method
-in Settings->Videos->Player from "Auto Detect" to "VDPAU".
-
------------------------------------------------------------------------------
-6. Uninstalling
------------------------------------------------------------------------------
-
-Prepend "sudo" or "doas" to commands (if installed, if not use just 'su'), if your
-user doesn't have write permission to the install directory.
-
-Note: If you have rerun configure with a different prefix,
-you will either need to rerun configure with the correct prefix for this step to work correctly.
-
-    $ gmake uninstall
-.0  $ sudo make uninstall
-
-If you would like to also remove any settings and 3rd party addons (skins, scripts, etc)
-you should also run:
-
-.1  $ rm -rf ~/.kodi
-
------------------------------------------------------------------------------
-7. Example basic setup of a KODI machine running on FreeBSD
------------------------------------------------------------------------------
-If having installed FreeBSD 'RELEASE' and not 'STABLE' or 'CURRENT, do system 
-update first: (have to be 'root'). Also, if you have Radeon graphics card and
-plan using HDMI Audio, better install FreeBSD source files during installation.
-    
-    $ freebsd-update fetch
-    $ freebsd-update install
-
-Update binary package repository:
-    
-    $pkg update
-
-Install convenient text editor ('nano' in this case).
-    
-    $pkg install nano
-
-Open /boot/loader.conf
-
-    $ nano /boot/loader.conf
-
-Add into file following rows:
-
-    kern.ipc.shmseg=1024
-    kern.ipc.shmmni=1024
-    kern.maxproc=10000
-    hint.acpi_throttle.0.disabled=1
-    machdep.disable_mtrrs=1
-    kern.cam.scsi_delay=500
-
-Open /etc/rc.conf
-   
-    $ nano /etc/rc.conf
-
-Add into the beginning of a /etc/rc.conf
-   
-    kld_list="radeonkms acpi_asus_wmi acpi_asus acpi_video amdtemp tmpfs libiconv msdosfs_iconv snd_driver"
-
-Brief explanation:
-   
-    radeonkms - Radeon KMS driver.
-    acpi_asus_wmi - both ASUS board specific drivers.
-    acpi_asus
-    amdtemp - temperature sensor module for AMD CPU. For Intel CPU that would be 'coretemp'
-
------------------------------------------------------------------------------
-7.1 Setting up X server
------------------------------------------------------------------------------
-
-You may had some X packages during install of KODI's dependency packages but
-'xorg' is a metapackage, installing the missing bits as well.
-
-    $ pkg install xorg hal
-
-Add keyboard and mouse support
-
-    $ pkg install xf86-input-mouse xf86-input-keyboard
-
-According to your actual hardware, pick one:
-
-    $ pkg install xf86-video-ati
-    $ pkg install xf86-video-nv
-    $ pkg install xf86-video intel
-    
-NB! Nvidia's driver could also be downloaded from https://www.geforce.com/drivers.
-Both FreeBSD 32-bit and 64-bit official driver exist there.
-
-Open /etc/rc.conf and add:
-
-    dbus_enable="YES"
-    hald_enable="YES" 
-
-Add user running KODI into group 'video'. Necessity for having an working OpenGL
-acceleration in KODI.
-
-    $ pw groupmod video -m kodiuser
-
------------------------------------------------------------------------------
-7.2 Install SLiM login manager
------------------------------------------------------------------------------
-
-    $ pkg install slim
-    $ nano /etc/rc.conf
-
-Add:
-
-    slim_enable="YES"
-
-NB! Has to be below 'dbus_enable="YES"' and 'hald_enable="YES"' entries in the file.
-
-Open SLiM configuration file.
-
-    $ nano /usr/local/etc/slim.conf
-
-Edit until it looks like:
-
-    default_path        /sbin:/bin:/usr/sbin:/usr/bin:/usr/games:/usr/local/sbin:/usr/local/bin
-    default_xserver     /usr/local/bin/X 
-    xserver_arguments   -nolisten tcp vt09 
-    halt_cmd            /sbin/shutdown -p now 
-    reboot_cmd          /sbin/shutdown -r now 
-    console_cmd         /usr/local/bin/xterm -C -fg white -bg black +sb -T "Console login" -e /bin/sh -c "/bin/cat /etc/motd; exec /usr/bin/login" 
-    suspend_cmd        /usr/sbin/acpiconf -s 3 
-    xauth_path         /usr/local/bin/xauth 
-    authfile           /var/run/slim.auth 
-    login_cmd           exec /bin/sh - ~/.xinitrc %session 
-    sessiondir              /usr/local/share/xsessions 
-    screenshot_cmd      import -window root /slim.png 
-    default_user        kodi #or whatever user was chosen 
-    auto_login      yes 
-    current_theme       default 
-    lockfile            /var/run/slim.pid 
-    logfile             /var/log/slim.log 
-
-
-Exit root user and log into user you plan to run KODI with:
-create .xinitrc file into it's home directory
-
-    $touch .xinitrc
-
-Add into it:
-
-    exec /usr/local/bin/kodi
-
-Log out of normal user, back to 'root' and add package 'doas' (something like sudo)
-
-    $ pkg install doas
-
-Edit it's config
-
-    $ nano /usr/local/etc/doas.conf
-
-Add into file following rows:
-
-    permit persist :wheel #assuming group 'wheel' has user 
-    permit nopass kodi as root cmd reboot 
-    permit nopass kodi as root cmd shutdown 
-
-It will allow KODI user basic ability to shut down/reboot machine without needing
-privilege escalation. To complete it.
-
-    $ pkg install upower
-
-
-Create file
-
-    $ nano /usr/local/etc/polkit-1/localauthority/50-local.d/custom-actions.pkla
-
-
-Add into it:
-
-    [Actions for KODI users] 
-    Identity=kodi:kodi 
-    Action=org.freedesktop.upower.* 
-    ResultAny=yes 
-    ResultInactive=yes 
-    ResultActive=yes 
-
-On restart (assuming you meanwhile also installed KODI itself), machine should:
-
--start SLiM
--autologin with user kodi (or whatever was chosen)
--autostart KODI
-
-For the rest: FreeBSD has excellent documentation:
-https://www.freebsd.org/doc/handbook/
-
-And active forum you can ask advice from:
-https://forums.freebsd.org/
-
------------------------------------------------------------------------------
-7.3 Solving the troubles with HDMI Audio.
------------------------------------------------------------------------------
-
-Nvidia graphics.
-
-    $ pkg install nvidia-driver nvidia-xconfig
-
-Add into /boot/loader.conf rows:
-    snd_hda_load="YES" 
-    nvidia_load="YES" 
-    hw.snd.default_unit="0" #ID could be something else besides 0. If it is,
-                            #correct it accordingly
-
-You can find it by:
-
-    $ cat /dev/sndstat
-
-After saving the /boot/loader.conf you can force the change in live using
-
-    $ sysctl hw.snd.default_unit=0 (or whatever number your particular machine's
-                                   'cat's would make you choose).
-    $ kldload nvidia
-    $ kldload snd_hda
-
-or just reboot..
-
-
-Radeon graphics.
-First check that HDMI sound output and active sound device in system would be
-both the same.
-
-    $ cat /dev/sndstat 
-    $ sysctl -a | grep hw.snd.default_unit 
-
-For example:
-If former shows:
-
-    pcm0: <ATI R6xx (HDMI)> (play) 
-    pcm1: <Realtek ALC269 (Right Analog)> (play/rec) default 
-    pcm2: <Realtek ALC269 (Internal Analog)> (play/rec) 
-    No devices installed from userspace. 
-
-and latter:
-
-    hw.snd.default_unit: 1
-
-
-then you should give command:
-
-    $ sysctl hw.snd.default_unit=0
-
-
-Assuming you did install system sources during installation (you better have!)
-Open and find:
-
-    int radeon_audio = 0;
-
-From:
-
-    $ nano /usr/src/sys/dev/drm2/radeon/radeon_drv.c
-
-Change it to:
-
-    int radeon_audio = 1;
-
-Save the file, close the editor. Then
-
-    $ cd /usr/src 
-    $ make buildkernel 
-
-Wait until Clang/LLVM finish.
-
-    $make installkernel 
-
-Reboot and now your Radeon's HDMI Audio should function properly.
-
-
-Intel iGPU. Problem may be  in wrong output ID. Find it, correct
-it in a similar manner like demonstrated in examples above.
-
-EOF
