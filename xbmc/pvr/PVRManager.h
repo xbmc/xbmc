@@ -358,20 +358,6 @@ namespace PVR
     void TriggerSearchMissingChannelIcons(void);
 
     /*!
-     * @brief Get the total duration of the currently playing epg event or if no epg is
-     *        available the current lenght in seconds of the playing Live TV stream.
-     * @return The total duration in seconds or 0 if no channel is playing.
-     */
-    int GetTotalTime(void) const;
-
-    /*!
-     * @brief Get the elapsed time since the start of the currently playing epg event or if
-     *        no epg is available since the start of the playback of the current Live TV stream.
-     * @return The time in seconds or 0 if no channel is playing.
-     */
-    int GetElapsedTime(void) const;
-
-    /*!
      * @brief Check whether names are still correct after the language settings changed.
      */
     void LocalizationChanged(void);

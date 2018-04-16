@@ -1700,12 +1700,6 @@ void CPVRGUIInfo::UpdateNextTimer(void)
   m_radioTimersInfo.UpdateNextTimer();
 }
 
-int CPVRGUIInfo::GetDuration(void) const
-{
-  CSingleLock lock(m_critSection);
-  return m_iDuration;
-}
-
 int CPVRGUIInfo::GetElapsedTime(void) const
 {
   CSingleLock lock(m_critSection);
