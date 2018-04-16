@@ -202,8 +202,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
 
 void CGUIWindowVideoBase::OnItemInfo(const CFileItem& fileItem, ADDON::ScraperPtr& scraper)
 {
-  if (fileItem.IsParentFolder() || fileItem.m_bIsShareOrDrive || fileItem.IsPath("add") ||
-     (fileItem.IsPlayList() && !URIUtils::HasExtension(fileItem.GetDynPath(), ".strm")))
+  if (fileItem.IsParentFolder() || fileItem.m_bIsShareOrDrive || fileItem.IsPath("add") || fileItem.IsPlayList())
     return;
 
   CFileItem item(fileItem);
@@ -696,8 +695,7 @@ bool CGUIWindowVideoBase::OnItemInfo(int iItem)
 
   CFileItemPtr item = m_vecItems->Get(iItem);
 
-  if (item->IsPath("add") || item->IsParentFolder() ||
-     (item->IsPlayList() && !URIUtils::HasExtension(item->GetDynPath(), ".strm")))
+  if (item->IsPath("add") || item->IsParentFolder() || item->IsPlayList())
     return false;
 
   if (!m_vecItems->IsPlugin() && (item->IsPlugin() || item->IsScript()))
