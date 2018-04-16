@@ -228,6 +228,7 @@ using namespace JSONRPC;
 using namespace ANNOUNCEMENT;
 using namespace PVR;
 using namespace PERIPHERALS;
+using namespace KODI;
 using namespace KODI::MESSAGING;
 using namespace ActiveAE;
 
@@ -4196,9 +4197,9 @@ bool CApplication::ExecuteXBMCAction(std::string actionStr, const CGUIListItemPt
   //postpone any logging
   const std::string in_actionStr(actionStr);
   if (item)
-    actionStr = CGUIInfoLabel::GetItemLabel(actionStr, item.get());
+    actionStr = GUILIB::GUIINFO::CGUIInfoLabel::GetItemLabel(actionStr, item.get());
   else
-    actionStr = CGUIInfoLabel::GetLabel(actionStr);
+    actionStr = GUILIB::GUIINFO::CGUIInfoLabel::GetLabel(actionStr);
 
   // user has asked for something to be executed
   if (CBuiltins::GetInstance().HasCommand(actionStr))

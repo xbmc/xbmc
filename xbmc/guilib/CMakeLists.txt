@@ -25,7 +25,6 @@ set(SOURCES DDSImage.cpp
             GUIFontTTF.cpp
             GUIImage.cpp
             GUIIncludes.cpp
-            GUIInfoTypes.cpp
             GUIKeyboardFactory.cpp
             GUILabelControl.cpp
             GUILabel.cpp
@@ -101,7 +100,6 @@ set(HEADERS DDSImage.h
             GUIFontTTF.h
             GUIImage.h
             GUIIncludes.h
-            GUIInfoTypes.h
             GUIKeyboard.h
             GUIKeyboardFactory.h
             GUILabel.h

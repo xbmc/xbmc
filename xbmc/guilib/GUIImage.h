@@ -85,7 +85,7 @@ public:
   bool CanFocus() const override;
   void UpdateInfo(const CGUIListItem *item = NULL) override;
 
-  virtual void SetInfo(const CGUIInfoLabel &info);
+  virtual void SetInfo(const KODI::GUILIB::GUIINFO::CGUIInfoLabel &info);
   virtual void SetFileName(const std::string& strFileName, bool setConstant = false, const bool useCache = true);
   virtual void SetAspectRatio(const CAspectRatio &aspect);
   void SetWidth(float width) override;
@@ -114,7 +114,7 @@ protected:
 
   // border + conditional info
   CTextureInfo m_image;
-  CGUIInfoLabel m_info;
+  KODI::GUILIB::GUIINFO::CGUIInfoLabel m_info;
 
   CGUITexture m_texture;
   std::vector<CFadingTexture *> m_fadingTextures;

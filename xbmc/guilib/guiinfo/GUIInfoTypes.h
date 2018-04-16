@@ -36,6 +36,13 @@
 
 class CGUIListItem;
 
+namespace KODI
+{
+namespace GUILIB
+{
+namespace GUIINFO
+{
+
 class CGUIInfoBool
 {
 public:
@@ -176,5 +183,9 @@ private:
   std::string m_fallback;
   std::vector<CInfoPortion> m_info;
 };
+
+} // namespace GUIINFO
+} // namespace GUILIB
+} // namespace KODI
 
 #endif

@@ -18,18 +18,20 @@
  *
  */
 
-#include "GUIInfoTypes.h"
+#include "guilib/guiinfo/GUIInfoTypes.h"
+
 #include "GUIInfoManager.h"
-#include "guilib/GUIComponent.h"
 #include "addons/AddonManager.h"
-#include "utils/log.h"
-#include "LocalizeStrings.h"
-#include "GUIColorManager.h"
-#include "GUIListItem.h"
-#include "utils/StringUtils.h"
 #include "addons/Skin.h"
+#include "guilib/GUIColorManager.h"
+#include "guilib/GUIComponent.h"
+#include "guilib/GUIListItem.h"
+#include "guilib/LocalizeStrings.h"
+#include "utils/StringUtils.h"
+#include "utils/log.h"
 
 using ADDON::CAddonMgr;
+using namespace KODI::GUILIB::GUIINFO;
 
 CGUIInfoBool::CGUIInfoBool(bool value)
 {

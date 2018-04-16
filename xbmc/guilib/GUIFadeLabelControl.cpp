@@ -21,6 +21,8 @@
 #include "GUIFadeLabelControl.h"
 #include "utils/Random.h"
 
+using namespace KODI::GUILIB;
+
 CGUIFadeLabelControl::CGUIFadeLabelControl(int parentID, int controlID, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, bool scrollOut, unsigned int timeToDelayAtEnd, bool resetOnLabelChange, bool randomized)
     : CGUIControl(parentID, controlID, posX, posY, width, height), m_label(labelInfo), m_scrollInfo(50, labelInfo.offsetX, labelInfo.scrollSpeed)
     , m_textLayout(labelInfo.font, false)
@@ -57,7 +59,7 @@ CGUIFadeLabelControl::CGUIFadeLabelControl(const CGUIFadeLabelControl &from)
 
 CGUIFadeLabelControl::~CGUIFadeLabelControl(void) = default;
 
-void CGUIFadeLabelControl::SetInfo(const std::vector<CGUIInfoLabel> &infoLabels)
+void CGUIFadeLabelControl::SetInfo(const std::vector<GUIINFO::CGUIInfoLabel> &infoLabels)
 {
   m_lastLabel = -1;
   m_infoLabels = infoLabels;
@@ -67,7 +69,7 @@ void CGUIFadeLabelControl::SetInfo(const std::vector<CGUIInfoLabel> &infoLabels)
 
 void CGUIFadeLabelControl::AddLabel(const std::string &label)
 {
-  m_infoLabels.push_back(CGUIInfoLabel(label, "", GetParentID()));
+  m_infoLabels.push_back(GUIINFO::CGUIInfoLabel(label, "", GetParentID()));
 }
 
 void CGUIFadeLabelControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)

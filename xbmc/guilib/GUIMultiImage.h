@@ -61,7 +61,7 @@ public:
   bool CanFocus() const override;
   std::string GetDescription() const override;
 
-  void SetInfo(const CGUIInfoLabel &info);
+  void SetInfo(const KODI::GUILIB::GUIINFO::CGUIInfoLabel &info);
   void SetAspectRatio(const CAspectRatio &ratio);
 
 protected:
@@ -83,7 +83,7 @@ protected:
     std::string              m_path;
   };
 
-  CGUIInfoLabel m_texturePath;
+  KODI::GUILIB::GUIINFO::CGUIInfoLabel m_texturePath;
   std::string m_currentPath;
   unsigned int m_currentImage;
   CStopWatch m_imageTimer;

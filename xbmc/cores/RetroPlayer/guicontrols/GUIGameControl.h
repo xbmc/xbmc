@@ -20,11 +20,9 @@
 #pragma once
 
 #include "guilib/GUIControl.h"
-#include "guilib/GUIInfoTypes.h"
+#include "guilib/guiinfo/GUIInfoTypes.h"
 
 #include <memory>
-
-class CGUIInfoLabel;
 
 namespace KODI
 {
@@ -42,8 +40,8 @@ public:
   ~CGUIGameControl() override;
 
   // GUI functions
-  void SetScalingMethod(const CGUIInfoLabel &scalingMethod);
-  void SetViewMode(const CGUIInfoLabel &viewMode);
+  void SetScalingMethod(const KODI::GUILIB::GUIINFO::CGUIInfoLabel &scalingMethod);
+  void SetViewMode(const KODI::GUILIB::GUIINFO::CGUIInfoLabel &viewMode);
 
   // Rendering functions
   bool HasScalingMethod() const { return m_bHasScalingMethod; }
@@ -68,8 +66,8 @@ private:
   void UnregisterControl();
 
   // GUI properties
-  CGUIInfoLabel m_scalingMethodInfo;
-  CGUIInfoLabel m_viewModeInfo;
+  KODI::GUILIB::GUIINFO::CGUIInfoLabel m_scalingMethodInfo;
+  KODI::GUILIB::GUIINFO::CGUIInfoLabel m_viewModeInfo;
 
   // Rendering properties
   bool m_bHasScalingMethod = false;

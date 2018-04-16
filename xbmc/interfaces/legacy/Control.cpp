@@ -44,6 +44,8 @@
 #include "utils/StringUtils.h"
 #include "WindowException.h"
 
+using namespace KODI;
+
 namespace XBMCAddon
 {
   namespace xbmcgui
@@ -345,7 +347,7 @@ namespace XBMCAddon
 
       XBMCAddonUtils::GuiLock lock(languageHook, false);
       if (pGUIControl)
-        static_cast<CGUIImage*>(pGUIControl)->SetColorDiffuse(CGUIInfoColor(colorDiffuse));
+        static_cast<CGUIImage*>(pGUIControl)->SetColorDiffuse(GUILIB::GUIINFO::CGUIInfoColor(colorDiffuse));
     }
 
     CGUIControl* ControlImage::Create()
@@ -358,7 +360,7 @@ namespace XBMCAddon
         static_cast<CGUIImage*>(pGUIControl)->SetAspectRatio((CAspectRatio::ASPECT_RATIO)aspectRatio);
 
       if (pGUIControl && colorDiffuse)
-        static_cast<CGUIImage*>(pGUIControl)->SetColorDiffuse(CGUIInfoColor(colorDiffuse));
+        static_cast<CGUIImage*>(pGUIControl)->SetColorDiffuse(GUILIB::GUIINFO::CGUIInfoColor(colorDiffuse));
 
       return pGUIControl;
     }
@@ -413,7 +415,7 @@ namespace XBMCAddon
          CTextureInfo(strTextureOverlay));
 
       if (pGUIControl && colorDiffuse)
-        static_cast<CGUIProgressControl*>(pGUIControl)->SetColorDiffuse(CGUIInfoColor(colorDiffuse));
+        static_cast<CGUIProgressControl*>(pGUIControl)->SetColorDiffuse(GUILIB::GUIINFO::CGUIInfoColor(colorDiffuse));
 
       return pGUIControl;
     }

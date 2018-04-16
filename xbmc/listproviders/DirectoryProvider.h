@@ -73,11 +73,11 @@ private:
   UpdateState      m_updateState;
   bool             m_isAnnounced;
   unsigned int     m_jobID;
-  CGUIInfoLabel    m_url;
-  CGUIInfoLabel    m_target;
-  CGUIInfoLabel    m_sortMethod;
-  CGUIInfoLabel    m_sortOrder;
-  CGUIInfoLabel    m_limit;
+  KODI::GUILIB::GUIINFO::CGUIInfoLabel m_url;
+  KODI::GUILIB::GUIINFO::CGUIInfoLabel m_target;
+  KODI::GUILIB::GUIINFO::CGUIInfoLabel m_sortMethod;
+  KODI::GUILIB::GUIINFO::CGUIInfoLabel m_sortOrder;
+  KODI::GUILIB::GUIINFO::CGUIInfoLabel m_limit;
   std::string      m_currentUrl;
   std::string      m_currentTarget;   ///< \brief node.target property on the list as a whole
   SortDescription  m_currentSort;

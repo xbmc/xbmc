@@ -28,6 +28,8 @@
 
 #include <algorithm>
 
+using namespace KODI::GUILIB;
+
 CGUITextBox::CGUITextBox(int parentID, int controlID, float posX, float posY, float width, float height,
                          const CLabelInfo& labelInfo, int scrollTime,
                          const CLabelInfo* labelInfoMono)
@@ -340,7 +342,7 @@ void CGUITextBox::SetPageControl(int pageControl)
   m_pageControl = pageControl;
 }
 
-void CGUITextBox::SetInfo(const CGUIInfoLabel &infoLabel)
+void CGUITextBox::SetInfo(const GUIINFO::CGUIInfoLabel &infoLabel)
 {
   m_info = infoLabel;
 }

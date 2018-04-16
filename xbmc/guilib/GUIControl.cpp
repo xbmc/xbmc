@@ -31,6 +31,8 @@
 #include "input/Key.h"
 #include "ServiceBroker.h"
 
+using namespace KODI::GUILIB;
+
 CGUIControl::CGUIControl() :
   m_hitColor(0xffffffff),
   m_diffuseColor(0xffffffff)
@@ -450,7 +452,7 @@ void CGUIControl::SetPosition(float posX, float posY)
   }
 }
 
-bool CGUIControl::SetColorDiffuse(const CGUIInfoColor &color)
+bool CGUIControl::SetColorDiffuse(const GUIINFO::CGUIInfoColor &color)
 {
   bool changed = m_diffuseColor != color;
   m_diffuseColor = color;

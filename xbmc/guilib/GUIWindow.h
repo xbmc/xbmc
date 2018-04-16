@@ -283,7 +283,7 @@ protected:
   bool m_dynamicResourceAlloc;
   bool m_closing;
   bool m_active;        // true if window is active or dialog is running
-  CGUIInfoColor m_clearBackground; // colour to clear the window
+  KODI::GUILIB::GUIINFO::CGUIInfoColor m_clearBackground; // colour to clear the window
 
   int m_renderOrder;      // for render order of dialogs
 

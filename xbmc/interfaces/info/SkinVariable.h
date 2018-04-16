@@ -21,7 +21,7 @@
 
 #include <string>
 #include <vector>
-#include "guilib/GUIInfoTypes.h"
+#include "guilib/guiinfo/GUIInfoTypes.h"
 #include "interfaces/info/InfoBool.h"
 
 class TiXmlElement;
@@ -51,7 +51,7 @@ private:
   struct ConditionLabelPair
   {
     INFO::InfoPtr m_condition;
-    CGUIInfoLabel m_label;
+    KODI::GUILIB::GUIINFO::CGUIInfoLabel m_label;
   };
 
   typedef std::vector<ConditionLabelPair> VECCONDITIONLABELPAIR;

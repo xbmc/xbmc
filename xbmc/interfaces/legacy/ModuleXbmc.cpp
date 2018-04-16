@@ -60,6 +60,7 @@
 #include <vector>
 #include "utils/log.h"
 
+using namespace KODI;
 using namespace KODI::MESSAGING;
 
 #ifdef TARGET_POSIX
@@ -296,7 +297,7 @@ namespace XBMCAddon
       //doesn't seem to be a single InfoTag?
       //try full blown GuiInfoLabel then
       if (ret == 0)
-        return CGUIInfoLabel::GetLabel(cLine);
+        return GUILIB::GUIINFO::CGUIInfoLabel::GetLabel(cLine);
       else
         return infoMgr.GetLabel(ret);
     }

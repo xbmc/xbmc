@@ -29,7 +29,7 @@
 #include <vector>
 
 #include "GUIAction.h"
-#include "GUIInfoTypes.h"
+#include "guiinfo/GUIInfoTypes.h"
 #include "FileItem.h"
 #include "GUIAction.h"
 
@@ -91,7 +91,7 @@ public:
 
   const CGUIAction &GetClickActions() const { return m_clickActions; };
 private:
-  typedef std::vector< std::pair<CGUIInfoLabel, std::string> > InfoVector;
+  typedef std::vector< std::pair<KODI::GUILIB::GUIINFO::CGUIInfoLabel, std::string> > InfoVector;
   InfoVector m_info;
   INFO::InfoPtr m_visCondition;
   bool m_visState;

@@ -26,13 +26,15 @@
 #include "utils/Variant.h"
 #include "utils/StringUtils.h"
 
+using namespace KODI::GUILIB;
+
 CGUIStaticItem::CGUIStaticItem(const TiXmlElement *item, int parentID) : CFileItem()
 {
   m_visState = false;
 
   assert(item);
 
-  CGUIInfoLabel label, label2, thumb, icon;
+  GUIINFO::CGUIInfoLabel label, label2, thumb, icon;
   CGUIControlFactory::GetInfoLabel(item, "label", label, parentID);
   CGUIControlFactory::GetInfoLabel(item, "label2", label2, parentID);
   CGUIControlFactory::GetInfoLabel(item, "thumb", thumb, parentID);
@@ -56,7 +58,7 @@ CGUIStaticItem::CGUIStaticItem(const TiXmlElement *item, int parentID) : CFileIt
   while (property)
   {
     std::string name = XMLUtils::GetAttribute(property, "name");
-    CGUIInfoLabel prop;
+    GUIINFO::CGUIInfoLabel prop;
     if (!name.empty() && CGUIControlFactory::GetInfoLabelFromElement(property, prop, parentID))
     {
       SetProperty(name, prop.GetLabel(parentID, true).c_str());
@@ -77,7 +79,7 @@ void CGUIStaticItem::UpdateProperties(int contextWindow)
 {
   for (InfoVector::const_iterator i = m_info.begin(); i != m_info.end(); ++i)
   {
-    const CGUIInfoLabel &info = i->first;
+    const GUIINFO::CGUIInfoLabel &info = i->first;
     const std::string &name = i->second;
     bool preferTexture = strnicmp("label", name.c_str(), 5) != 0;
     std::string value(info.GetLabel(contextWindow, preferTexture));
