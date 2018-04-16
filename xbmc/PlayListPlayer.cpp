@@ -300,7 +300,7 @@ bool CPlayListPlayer::Play(int iSong, std::string player, bool bAutoPlay /* = fa
   // check if the item itself is a playlist, and can be expanded
   // only allow a few levels, this could end up in a loop
   // if they refer to each other in a loop
-  for (int i=0;i<5;i++)
+  for (int i=0; i<5; i++)
   {
     if(!playlist.Expand(iSong))
       break;
