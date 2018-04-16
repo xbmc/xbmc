@@ -1087,7 +1087,7 @@ bool CPVRGUIInfo::GetPVRInt(const CFileItem *item, const CGUIInfo &info, int& iV
   {
     case PVR_EPG_EVENT_DURATION:
     {
-      const CPVREpgInfoTagPtr epgTag = !item->IsPVRRecording() ? CPVRItem(item).GetEpgInfoTag() : nullptr;
+      const CPVREpgInfoTagPtr epgTag = (item->IsPVRChannel() || item->IsEPG()) ? CPVRItem(item).GetEpgInfoTag() : nullptr;
       if (epgTag && epgTag != m_playingEpgTag)
         iValue = epgTag->GetDuration();
       else
@@ -1096,7 +1096,7 @@ bool CPVRGUIInfo::GetPVRInt(const CFileItem *item, const CGUIInfo &info, int& iV
     }
     case PVR_EPG_EVENT_PROGRESS:
     {
-      const CPVREpgInfoTagPtr epgTag = !item->IsPVRRecording() ? CPVRItem(item).GetEpgInfoTag() : nullptr;
+      const CPVREpgInfoTagPtr epgTag = (item->IsPVRChannel() || item->IsEPG()) ? CPVRItem(item).GetEpgInfoTag() : nullptr;
       if (epgTag && epgTag != m_playingEpgTag)
         iValue = std::lrintf(epgTag->ProgressPercentage());
       else
@@ -1426,7 +1426,7 @@ void CPVRGUIInfo::CharInfoTimeshiftOffset(TIME_FORMAT format, std::string &strVa
 void CPVRGUIInfo::CharInfoEpgEventDuration(const CFileItem *item, TIME_FORMAT format, std::string &strValue) const
 {
   int iDuration = 0;
-  const CPVREpgInfoTagPtr epgTag = !item->IsPVRRecording() ? CPVRItem(item).GetEpgInfoTag() : nullptr;
+  const CPVREpgInfoTagPtr epgTag = (item->IsPVRChannel() || item->IsEPG()) ? CPVRItem(item).GetEpgInfoTag() : nullptr;
   if (epgTag && epgTag != m_playingEpgTag)
     iDuration = epgTag->GetDuration();
   else
@@ -1438,7 +1438,7 @@ void CPVRGUIInfo::CharInfoEpgEventDuration(const CFileItem *item, TIME_FORMAT fo
 void CPVRGUIInfo::CharInfoEpgEventElapsedTime(const CFileItem *item, TIME_FORMAT format, std::string &strValue) const
 {
   int iElapsed = 0;
-  const CPVREpgInfoTagPtr epgTag = !item->IsPVRRecording() ? CPVRItem(item).GetEpgInfoTag() : nullptr;
+  const CPVREpgInfoTagPtr epgTag = (item->IsPVRChannel() || item->IsEPG()) ? CPVRItem(item).GetEpgInfoTag() : nullptr;
   if (epgTag && epgTag != m_playingEpgTag)
     iElapsed = epgTag->Progress();
   else
@@ -1450,7 +1450,7 @@ void CPVRGUIInfo::CharInfoEpgEventElapsedTime(const CFileItem *item, TIME_FORMAT
 int CPVRGUIInfo::GetRemainingTime(const CFileItem *item) const
 {
   int iRemaining = 0;
-  const CPVREpgInfoTagPtr epgTag = !item->IsPVRRecording() ? CPVRItem(item).GetEpgInfoTag() : nullptr;
+  const CPVREpgInfoTagPtr epgTag = (item->IsPVRChannel() || item->IsEPG()) ? CPVRItem(item).GetEpgInfoTag() : nullptr;
   if (epgTag && epgTag != m_playingEpgTag)
     iRemaining = epgTag->GetDuration() - epgTag->Progress();
   else
