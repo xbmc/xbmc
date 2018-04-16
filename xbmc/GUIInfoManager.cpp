@@ -7038,7 +7038,7 @@ void CGUIInfoManager::OnApplicationMessage(KODI::MESSAGING::ThreadMessage* pMsg)
 
 void CGUIInfoManager::RegisterInfoProvider(IGUIInfoProvider *provider)
 {
-  m_infoProviders.RegisterProvider(provider);
+  m_infoProviders.RegisterProvider(provider, false);
 }
 
 void CGUIInfoManager::UnregisterInfoProvider(IGUIInfoProvider *provider)

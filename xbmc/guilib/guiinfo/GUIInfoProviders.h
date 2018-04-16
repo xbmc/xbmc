@@ -60,8 +60,9 @@ public:
   /*!
    * @brief Register a guiinfo provider.
    * @param provider The provider to register.
+   * @param bAppend True to append to the list of providers, false to insert before the first provider
    */
-  void RegisterProvider(IGUIInfoProvider *provider);
+  void RegisterProvider(IGUIInfoProvider *provider, bool bAppend = true);
 
   /*!
    * @brief Unregister a guiinfo provider.
