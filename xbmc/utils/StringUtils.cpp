@@ -866,6 +866,9 @@ long StringUtils::TimeStringToSeconds(const std::string &timeString)
 
 std::string StringUtils::SecondsToTimeString(long lSeconds, TIME_FORMAT format)
 {
+  bool isNegative = lSeconds < 0;
+  lSeconds = std::abs(lSeconds);
+
   std::string strHMS;
   if (format == TIME_FORMAT_SECS)
     strHMS = StringUtils::Format("%i", lSeconds);
@@ -873,10 +876,10 @@ std::string StringUtils::SecondsToTimeString(long lSeconds, TIME_FORMAT format)
     strHMS = StringUtils::Format("%i", lrintf(static_cast<float>(lSeconds) / 60.0f));
   else if (format == TIME_FORMAT_HOURS)
     strHMS = StringUtils::Format("%i", lrintf(static_cast<float>(lSeconds) / 3600.0f));
+  else if (format & TIME_FORMAT_M)
+    strHMS += StringUtils::Format("%i", lSeconds % 3600 / 60);
   else
   {
-    bool isNegative = lSeconds < 0;
-    lSeconds = std::abs(lSeconds);
     int hh = lSeconds / 3600;
     lSeconds = lSeconds % 3600;
     int mm = lSeconds / 60;
@@ -892,9 +895,11 @@ std::string StringUtils::SecondsToTimeString(long lSeconds, TIME_FORMAT format)
       strHMS += StringUtils::Format(strHMS.empty() ? "%2.2i" : ":%2.2i", mm);
     if (format & TIME_FORMAT_SS)
       strHMS += StringUtils::Format(strHMS.empty() ? "%2.2i" : ":%2.2i", ss);
-    if (isNegative)
-      strHMS = "-" + strHMS;
   }
+
+  if (isNegative)
+    strHMS = "-" + strHMS;
+
   return strHMS;
 }
 

@@ -1501,6 +1501,8 @@ std::string CDateTime::GetAsLocalizedTime(TIME_FORMAT format) const
       return GetAsLocalizedTime(use12hourclock ? "hh:mm:ss xx" : "HH:mm:ss", true);
     case TIME_FORMAT_H:
       return GetAsLocalizedTime("h", false);
+    case TIME_FORMAT_M:
+      return GetAsLocalizedTime("m", false);
     case TIME_FORMAT_H_MM_SS:
       return GetAsLocalizedTime("h:mm:ss", true);
     case TIME_FORMAT_H_MM_SS_XX:
