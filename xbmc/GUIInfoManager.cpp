@@ -49,7 +49,6 @@
 using namespace KODI::GUILIB;
 using namespace KODI::GUILIB::GUIINFO;
 using namespace INFO;
-using namespace MUSIC_INFO;
 
 bool InfoBoolComparator(const InfoPtr &right, const InfoPtr &left)
 {
@@ -6357,7 +6356,7 @@ bool CGUIInfoManager::GetInt(int &value, int info, int contextWindow, const CGUI
 {
   if (info >= MULTI_INFO_START && info <= MULTI_INFO_END)
   {
-    return GetMultiInfoInt(value, m_multiInfo[info - MULTI_INFO_START], contextWindow);
+    return GetMultiInfoInt(value, m_multiInfo[info - MULTI_INFO_START], contextWindow, item);
   }
   else if (info >= LISTITEM_START && info <= LISTITEM_END)
   {
@@ -6554,14 +6553,19 @@ bool CGUIInfoManager::GetMultiInfoBool(const CGUIInfo &info, int contextWindow, 
   return (info.m_info < 0) ? !bReturn : bReturn;
 }
 
-bool CGUIInfoManager::GetMultiInfoInt(int &value, const CGUIInfo &info, int contextWindow) const
+bool CGUIInfoManager::GetMultiInfoInt(int &value, const CGUIInfo &info, int contextWindow, const CGUIListItem *item) const
 {
   if (info.m_info >= LISTITEM_START && info.m_info <= LISTITEM_END)
   {
-    const CGUIListItemPtr item = GUIINFO::GetCurrentListItem(contextWindow, info.GetData1(), info.GetData2(), info.GetInfoFlag());
+    CGUIListItemPtr itemPtr;
+    if (!item)
+    {
+      itemPtr = GUIINFO::GetCurrentListItem(contextWindow, info.GetData1(), info.GetData2(), info.GetInfoFlag());
+      item = itemPtr.get();
+    }
     if (item)
     {
-      return GetItemInt(value, item.get(), contextWindow, info.m_info);
+      return GetItemInt(value, item, contextWindow, info.m_info);
     }
     else
     {

@@ -799,16 +799,6 @@ void CPVRManager::OnPlaybackEnded(const CFileItemPtr item)
   OnPlaybackStopped(item);
 }
 
-int CPVRManager::GetTotalTime(void) const
-{
-  return IsStarted() && m_guiInfo ? m_guiInfo->GetDuration() : 0;
-}
-
-int CPVRManager::GetElapsedTime(void) const
-{
-  return IsStarted() && m_guiInfo ? m_guiInfo->GetElapsedTime() : 0;
-}
-
 bool CPVRManager::IsRecording(void) const
 {
   return IsStarted() && m_timers ? m_timers->IsRecording() : false;

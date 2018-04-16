@@ -64,20 +64,6 @@ namespace PVR
     bool GetBool(bool& value, const CGUIListItem *item, int contextWindow, const KODI::GUILIB::GUIINFO::CGUIInfo &info) const override;
 
     /*!
-     * @brief Get the total duration of the currently playing epg event or if no epg is
-     *        available the current lenght in seconds of the playing Live TV stream.
-     * @return The total duration in seconds or 0 if no channel is playing.
-     */
-    int GetDuration(void) const;
-
-    /*!
-     * @brief Get the elapsed time since the start of the currently playing epg event or if
-     *        no epg is available since the start of the playback of the current Live TV stream.
-     * @return The time in seconds or 0 if no channel is playing.
-     */
-    int GetElapsedTime(void) const;
-
-    /*!
      * @brief Clear the playing EPG tag.
      */
     void ResetPlayingTag(void);
@@ -146,6 +132,13 @@ namespace PVR
     void CharInfoTimeshiftEndTime(TIME_FORMAT format, std::string &strValue) const;
     void CharInfoTimeshiftPlayTime(TIME_FORMAT format, std::string &strValue) const;
     void CharInfoTimeshiftOffset(TIME_FORMAT format, std::string &strValue) const;
+
+    /*!
+     * @brief Get the elapsed time since the start of the currently playing epg event or if
+     *        no epg is available since the start of the playback of the current Live TV stream.
+     * @return The time in seconds or 0 if no channel is playing.
+     */
+    int GetElapsedTime(void) const;
 
     int GetRemainingTime(const CFileItem *item) const;
 
