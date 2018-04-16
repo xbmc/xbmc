@@ -521,24 +521,24 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem *item, const CGUIInf
         break;
       }
     }
-  }
 
-  switch (info.m_info)
-  {
-    // special handling for channels without epg or with radio rds data
-    case PLAYER_TITLE:
-    case VIDEOPLAYER_TITLE:
-    case LISTITEM_TITLE:
-    case VIDEOPLAYER_NEXT_TITLE:
-    case LISTITEM_NEXT_TITLE:
-    case LISTITEM_EPG_EVENT_TITLE:
-      // Note: in difference to LISTITEM_TITLE, LISTITEM_EPG_EVENT_TITLE returns the title
-      // associated with the epg event of a timer, if any, and not the title of the timer.
-      if (epgTag)
-        strValue = epgTag->Title();
-      if (strValue.empty() && !CServiceBroker::GetSettings().GetBool(CSettings::SETTING_EPG_HIDENOINFOAVAILABLE))
-        strValue = g_localizeStrings.Get(19055); // no information available
-      return true;
+    switch (info.m_info)
+    {
+      // special handling for channels without epg or with radio rds data
+      case PLAYER_TITLE:
+      case VIDEOPLAYER_TITLE:
+      case LISTITEM_TITLE:
+      case VIDEOPLAYER_NEXT_TITLE:
+      case LISTITEM_NEXT_TITLE:
+      case LISTITEM_EPG_EVENT_TITLE:
+        // Note: in difference to LISTITEM_TITLE, LISTITEM_EPG_EVENT_TITLE returns the title
+        // associated with the epg event of a timer, if any, and not the title of the timer.
+        if (epgTag)
+          strValue = epgTag->Title();
+        if (strValue.empty() && !CServiceBroker::GetSettings().GetBool(CSettings::SETTING_EPG_HIDENOINFOAVAILABLE))
+          strValue = g_localizeStrings.Get(19055); // no information available
+        return true;
+    }
   }
 
   if (epgTag)
