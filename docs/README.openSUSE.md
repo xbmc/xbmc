@@ -1,303 +1,135 @@
-TOC
-1. Introduction
-2. Getting the source code
-3. Installing the required libraries and headers
-4. How to compile
-   4.4 Binary addons
-   4.5 Test suite
-5. How to run
-6. Uninstalling
-
------------------------------------------------------------------------------
-1. Introduction
------------------------------------------------------------------------------
-
-A graphics-adapter with OpenGL acceleration is highly recommended.
-24/32 bitdepth is required along with OpenGL.
-
-Note to new Linux users:
-All lines that are prefixed with the '$' character are commands,
-that need to be typed into a terminal window / console. The '$' equals the prompt.
-Note: The '$' character itself should NOT be typed as part of the command.
-
------------------------------------------------------------------------------
-2. Getting the source code
------------------------------------------------------------------------------
-
-You will have to grab the source code of course, here we use git as example.
-First install the git package provided by your distribution.
-Then from a terminal, type:
-
-.0  $ cd $HOME
-.1  $ git clone git://github.com/xbmc/xbmc.git kodi
-
-Note: You can clone any specific branch.
-
-.1  $ git clone -b <branch> git://github.com/xbmc/xbmc.git kodi
-
------------------------------------------------------------------------------
-3. Installing the required libraries and headers
------------------------------------------------------------------------------
+![Kodi Logo](resources/banner_slim.png)
+
+# openSUSE build guide
+This guide has been tested with openSUSE Tumbleweed x86_64. Please read it in full before you proceed to familiarize yourself with the build procedure.
+
+Several other distributions have **[specific build guides](README.md)** and a general **[Linux build guide](README.Linux.md)** is also available.
+
+**Do not use openSUSE Leap**. Wiser people than us decided that in 2018 `gcc v4.8.5` is the best **stable** release openSUSE Leap 42.3 can provide by default. Installing/using another release along side it is a real PITA.
 
-You will then need the required libraries. The following is the list of packages
-that are used to build Kodi packages on Debian/Ubuntu (with all supported
-external libraries enabled).
+## Table of Contents
+1. **[Document conventions](#1-document-conventions)**
+2. **[Get the source code](#2-get-the-source-code)**
+3. **[Install the required packages](#3-install-the-required-packages)**  
+  3.1. **[Build missing dependencies](#31-build-missing-dependencies)**
+4. **[Build Kodi](#4-build-kodi)**
 
-OpenSuse
-Since commit b2fa60d7c6fba907ecadc0cf36a3531985c4c367
-On OpenSuse there is a need for an extra dependency: libunistring-devel
-
-Full build dependency list is:
-make cmake autoconf automake gcc gcc-c++ libtool gettext-devel patch boost-devel glew-devel
-libmysqlclient-devel libass-devel libmpeg2-devel libmad-devel libjpeg-devel libsamplerate-devel libogg-devel
-libvorbis-devel libmodplug-devel libcurl-devel flac-devel libbz2-devel libtiff-devel lzo-devel libyajl-devel
-fribidi-devel sqlite3-devel libpng12-devel pcre-devel libcdio-devel libjasper-devel
-libmicrohttpd-devel libsmbclient-devel python-devel gperf nasm tinyxml-devel libtag-devel libbluray-devel
-libnfs-devel shairplay-devel swig libvdpau-devel libavahi-devel libcec-devel libdvdread-devel libva-devel libplist-devel
-libxst-devel alsa-devel libpulse-devel libXrandr-devel libXrender-devel randrproto-devel renderproto-devel
-libudev-devel libpcap-devel libgudev-1_0-devel libcap-ng-devel libcap-devel ccache doxygen capi4linux-devel liblcms2-devel
-libunistring-devel
-
-
-Build-Depends: autoconf, automake, autopoint, autotools-dev, cmake, curl,
-  default-jre, gawk, gperf, libao-dev, libasound2-dev,
-  libass-dev (>= 0.9.8), libavahi-client-dev, libavahi-common-dev, libbluetooth-dev,
-  libbluray-dev (>= 0.9.3), libbz2-dev, libcap-dev,
-  libcdio-dev, libcec-dev, libcurl4-openssl-dev | libcurl4-gnutls-dev | libcurl-dev,
-  libcwiid-dev, libdbus-1-dev, libegl1-mesa-dev, libfontconfig-dev, libfreetype6-dev,
-  libfribidi-dev, libgif-dev (>= 4.1.6), libgl1-mesa-dev | libgl-dev, libglu1-mesa-dev | libglu-dev,
-  libiso9660-dev, libjpeg-dev, libltdl-dev, liblzo2-dev, libmicrohttpd-dev,
-  libmpcdec-dev, libmysqlclient-dev, libnfs-dev,
-  libpcre3-dev, libplist-dev, libpng12-dev | libpng-dev, libpulse-dev,
-  libshairplay-dev, libsmbclient-dev, libsqlite3-dev, libssl-dev, libswscale-dev,
-  libtag1-dev (>= 1.8), libtinyxml-dev (>= 2.6.2), libtool, libudev-dev,
-  libusb-dev, libva-dev, libvdpau-dev, libxml2-dev,
-  libxmu-dev, libxrandr-dev, libxslt1-dev, libxt-dev, libyajl-dev (>=2.0), lsb-release,
-  nasm [!amd64], python-dev, python-imaging, python-support, swig, uuid-dev, yasm,
-  zip, zlib1g-dev
+## 1. Document conventions
+This guide assumes you are using `terminal`, also known as `console`, `command-line` or simply `cli`. Commands need to be run at the terminal, one at a time and in the provided order.
+
+This is a comment that provides context:
+```
+this is a command
+this is another command
+and yet another one
+```
+
+**Example:** Clone Kodi's current master branch:
+```
+git clone https://github.com/xbmc/xbmc kodi
+```
+
+Commands that contain strings enclosed in angle brackets denote something you need to change to suit your needs.
+```
+git clone -b <branch-name> https://github.com/xbmc/xbmc kodi
+```
 
-[NOTICE] crossguid / libcrossguid-dev all Linux distributions.
-Kodi now requires crossguid which is not available in Ubuntu repositories at this time.
-We supply a Makefile in tools/depends/target/crossguid
-to make it easy to install into /usr/local.
-    $ make -C tools/depends/target/crossguid PREFIX=/usr/local
-    
-[NOTICE] yail got changed for rapidjson which is not available in OpenSuse repositories.
-To build rapidjson for OpenSuse you must get the source from github and configure, build and install them yourself.
-Next lines explain how to do that.
-First download the sources from github to your local disk.
+**Example:** Clone Kodi's current Krypton branch:
+```
+git clone -b Krypton https://github.com/xbmc/xbmc kodi
+```
 
-    $ git clone https://github.com/miloyip/rapidjson
-    $ cd rapidjson
+Several different strategies are used to draw your attention to certain pieces of information. In order of how critical the information is, these items are marked as a note, tip, or warning. For example:
+ 
+**NOTE:** Linux is user friendly... It's just very particular about who its friends are.  
+**TIP:** Algorithm is what developers call code they do not want to explain.  
+**WARNING:** Developers don't change light bulbs. It's a hardware problem.
 
-To get the files of thirdparty submodules (google test).
+**[back to top](#table-of-contents)** | **[back to section top](#1-document-conventions)**
 
-    $ git submodule update --init
+## 2. Get the source code
+Make sure `git` is installed:
+```
+sudo zypper install git
+```
 
-Create directory called build in rapidjson source directory.
-    $ mkdir build
+Clone Kodi's current master branch:
+```
+cd $HOME
+git clone https://github.com/xbmc/xbmc kodi
+```
 
-Change to build directory
-    $ cd build
+**[back to top](#table-of-contents)**
 
-Run the following command to configure your build.
-It will default to /usr/local
-    $ cmake ..
+## 3. Install the required packages
+Add `opensuse-multimedia-libs` repository because some needed packages are non-OSS:
+```
+sudo zypper ar -f http://ftp.gwdg.de/pub/opensuse/repositories/multimedia:/libs/openSUSE_Tumbleweed/ opensuse-multimedia-libs
+sudo zypper ref
+```
 
-Run the following command to build the sources for installation.
-    $ cmake --build .
+**NOTE:** A message will ask you to accept the key. Enter `a`, the *trust always* option.
 
-Tip: By adding -j<number> to the make command, you describe how many
-     concurrent jobs will be used, it will speed up the build process.
-     So for octacore the command is:
+If you get a `package not found` type of message with the below command, remove the offending package(s) from the install list and reissue the command. Take a note of the missing dependencies and, after a successful step completion, **[build the missing dependencies manually](#31-build-missing-dependencies)**.
 
-    $ cmake --build . -- -j8
+Install build dependencies:
+```
+sudo zypper install alsa-devel autoconf automake bluez-devel boost-devel capi4linux-devel ccache cmake doxygen flac-devel fribidi-devel gcc gcc-c++ gettext-devel giflib-devel glew-devel gperf java-openjdk libass-devel libavahi-devel libbluray-devel libbz2-devel libcap-devel libcap-ng-devel libcdio-devel libcec-devel libcurl-devel libdvdread-devel libgudev-1_0-devel libidn2-devel libjasper-devel libjpeg-devel liblcms2-devel libmad-devel libmicrohttpd-devel libmodplug-devel libmpeg2-devel libmysqlclient-devel libnfs-devel libogg-devel libpcap-devel libplist-devel libpng12-devel libpulse-devel libsamplerate-devel libsmbclient-devel libtag-devel libtiff-devel libtool libudev-devel libuuid-devel libva-devel libvdpau-devel libvorbis-devel libXrandr-devel libXrender-devel libxslt-devel libyajl-devel lirc-devel lzo-devel make Mesa-libEGL-devel Mesa-libGLESv2-devel Mesa-libGLESv3-devel nasm patch pcre-devel python-devel randrproto-devel renderproto-devel shairplay-devel sqlite3-devel swig tinyxml-devel
+```
 
-Run the following command to install the builded sources.
-    $ sudo make install
+**WARNING:** Make sure you copy paste the entire line or you might receive an error or miss a few dependencies.
 
-Tip: By adding -j<number> to the make command, you describe how many
-     concurrent jobs will be used, it will speed up the build process.
-     So for octacore the command is:
+Building for Wayland requires some extra packages:
+```
+sudo zypper install wayland-devel libwayland-egl1 libwayland-egl-devel libxkbcommon-devel scons wayland-protocols-devel
+```
 
-    $ sudo make install -j8
+Similarly, building for GBM also requires some extra packages:
+```
+sudo zypper install libgbm-devel libinput-devel libxkbcommon-devel
+```
 
-If everything went well it is installed to "/usr/local".
+**WARNING:** Fedora repositories don't have install candidates for `libfmt`, `rapidjson` and `waylandpp`. See **[build missing dependencies manually](#31-build-missing-dependencies)** section before you proceed.
 
-Tip: To override the location that the module is installed, use DESTDIR=<path>.
-For example.
+Optional packages that you might want to install for extra functionality (generating doxygen documentation, for instance):
+```
+sudo zypper install doxygen sndio-devel libmariadb-devel
+```
 
-    $ make install DESTDIR=/usr
+**NOTE:** For developers and anyone else who builds frequently it is recommended to install `ccache` to expedite subsequent builds of Kodi.
 
+You can install it with:
+```
+sudo zypper install ccache
+```
 
-Note: For developers and anyone else who compiles frequently it is recommended to use ccache.
-    $ sudo apt-get install ccache
+**TIP:** If you have multiple computers at home, `distcc` will distribute build workloads of C and C++ code across several machines on a network. Team Kodi may not be willing to give support if problems arise using such a build configuration.
 
-    $ sudo apt-get build-dep kodi
+You can install it with:
+```
+sudo zypper install distcc
+```
 
+### 3.1. Build missing dependencies
+See the general **[Linux build guide](README.Linux.md)** for reference.
 
------------------------------------------------------------------------------
-4. How to compile
------------------------------------------------------------------------------
-Cmake build instructions V18.0 and higher OpenSuse
+Change to Kodi's source code directory:
+```
+cd $HOME/kodi
+```
 
-Create and change to build directory 
-    $ mkdir kodi-build && cd kodi-build
-    $ cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local
-    $ cmake --build . -- VERBOSE=1
-    
-Tip: By adding -j<number> to the make command, you describe how many
-     concurrent jobs will be used, it will speed up the build process.
-     So for quadcore the command is:
-    
-    $ cmake --build . -- VERBOSE=1 -j4
+Build and install missing dependencies from repositories (*libfmt*, *rapidjson* and *waylandpp*):
+```
+sudo make -C tools/depends/target/libfmt PREFIX=/usr/local
+sudo make -C tools/depends/target/rapidjson PREFIX=/usr/local
+sudo make -C tools/depends/target/waylandpp PREFIX=/usr/local
+```
 
-If the build process completes succesfully you would want to test if it is working.
-Still in the build directory type the following:
+**[back to top](#table-of-contents)** | **[back to section top](#3-install-the-required-packages)**
 
-    $ ./kodi.bin
+## 4. Build Kodi
+See the general **[Linux build guide](README.Linux.md)** for reference.
 
-If everything was okay during your test you can now install the binaries to their place
-in this example "/usr/local".
+**[back to top](#table-of-contents)**
 
-    $ sudo make install
 
-This will install Kodi in the prefix provided in 4.1 as well as a launcher script.
-
-Tip: By adding -j<number> to the make command, you describe how many
-     concurrent jobs will be used. So for dualcore the command is:
-
-    $ sudo make install -j2
-
-Tip: To override the location that Kodi is installed, use PREFIX=<path>.
-For example.
-
-    $ make install DESTDIR=$HOME/kodi
-
------------------------------------------------------------------------------
-4.4. Binary addons - compile
------------------------------------------------------------------------------
-
-From v14 with commit 4090a5f a new API for binary addons is available.
-You can compile all addons or only specific addons by specifying e.g. ADDONS="audioencoder.foo pvr.bar audiodecoder.baz"
-
-.0  All addons
-    $ make -C tools/depends/target/binary-addons PREFIX=/<system prefix added on step 4.1>
-
-.1  Specific addons
-    $ make -C tools/depends/target/binary-addons PREFIX=/<system prefix added on step 4.1> ADDONS="audioencoder.flac pvr.vdr.vnsi audiodecoder.snesapu"
-
-Audio decoders:
-    audiodecoder.modplug, audiodecoder.nosefart, audiodecoder.sidplay, audiodecoder.snesapu,
-    audiodecoder.stsound, audiodecoder.timidity, audiodecoder.vgmstream
-
-Audio encoders:
-    audioencoder.flac, audioencoder.lame, audioencoder.vorbis, audioencoder.wav
-
-Inputstream addons:
-    inputstream.mpd
-
-Peripheral addons:
-    peripheral.joystick
-
-PVR addons:
-    pvr.argustv, pvr.demo, pvr.dvblink, pvr.dvbviewer, pvr.filmon, pvr.hdhomerun, pvr.hts, pvr.iptvsimple,
-    pvr.mediaportal.tvserver,pvr.mythtv, pvr.nextpvr, pvr.njoy, pvr.pctv, pvr.stalker, pvr.vbox, pvr.vdr.vnsi,
-    pvr.vuplus, pvr.wmc
-
-Screensavers:
-    screensaver.asteroids, screensaver.biogenesis, screensaver.greynetic, screensaver.matrixtrails,
-    screensaver.pingpong, screensaver.pyro, screensavers.rsxs, screensaver.stars
-
-Visualizations
-    visualization.fishbmc, visualization.goom, visualization.projectm, visualization.shadertoy
-    visualization.spectrum, visualization.vsxu, visualization.waveform
-
------------------------------------------------------------------------------
-4.5. Test suite
------------------------------------------------------------------------------
-
-Kodi has a test suite which uses the Google C++ Testing Framework.
-This framework is provided directly in Kodi's source tree.
-It has very little requirements, in order to build and run.
-See the README file for the framework at 'lib/gtest/README' for specific requirements.
-
-To compile and run Kodi's test suite:
-The configure option '--enable-gtest' is enabled by default during the configure stage.
-Once configured, to build the testsuite, type the following:
-
-    $ make check
-
-To compile the test suite without running it, type the following.
-
-    $ make testsuite
-
-The test suite program can be run manually as well.
-The name of the test suite program is 'kodi-test' and will build in the Kodi source tree.
-To bring up the 'help' notes for the program, type the following:
-
-    $ ./kodi-test --gtest_help
-
-The most useful options are,
-
-    --gtest_list_tests
-      List the names of all tests instead of running them.
-	  The name of TEST(Foo, Bar) is "Foo.Bar".
-
-    --gtest_filter=POSTIVE_PATTERNS[-NEGATIVE_PATTERNS]
-      Run only the tests whose name matches one of the positive patterns but
-      none of the negative patterns. '?' matches any single character; '*'
-      matches any substring; ':' separates two patterns.
-
-Note: If the '--enable-gtest' option is not set during the configure stage,
-the make targets 'check,' 'testsuite,' and 'testframework' will simply show a message saying
-the framework has not been configured, and then silently succeed (i.e. it will not return an error).
-
------------------------------------------------------------------------------
-5. How to run
------------------------------------------------------------------------------
-
-How to run Kodi depends on the type of installation you have done.
-It is possible to run Kodi without the requirement to install Kodi anywhere else.
-In this case, type the following from the top source directory.
-
-    $ ./kodi.bin
-
-Or run in 'portable' mode
-
-    $ ./kodi.bin -p
-
-If you chose to install Kodi using '/usr' or '/usr/local' as the PREFIX,
-you can just issue 'kodi' in a terminal session.
-
-If you have overridden PREFIX to install Kodi into some non-standard location,
-you will have to run Kodi by directly running 'kodi.bin'.
-
-For example:
-
-    $ $HOME/kodi/usr/lib/kodi/kodi.bin
-
-You should still run the wrapper via
-    $ $PREFIX/bin/kodi
-
-If you wish to use VDPAU decoding you will now have to change the Render Method
-in Settings->Videos->Player from "Auto Detect" to "VDPAU".
-
------------------------------------------------------------------------------
-6. Uninstalling
------------------------------------------------------------------------------
-
-Prepend "sudo" to commands, if your user doesn't have write permission to the install directory.
-
-Note: If you have rerun configure with a different prefix,
-you will either need to rerun configure with the correct prefix for this step to work correctly.
-
-    $ make uninstall
-.0  $ sudo make uninstall
-
-If you would like to also remove any settings and 3rd party addons (skins, scripts, etc)
-you should also run:
-
-.1  $ rm -rf ~/.kodi
-
-EOF
