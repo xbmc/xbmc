@@ -239,7 +239,7 @@ void CScraper::ClearCache()
     {
       // wipe cache
       if (items[i]->m_dateTime + m_persistence <= CDateTime::GetCurrentDateTime())
-        CFile::Delete(items[i]->GetPath());
+        CFile::Delete(items[i]->GetDynPath());
     }
   }
   else
@@ -456,7 +456,7 @@ CScraperUrl CScraper::NfoUrl(const std::string &sNfoContent)
 
     CScraperUrl::SUrlEntry surl;
     surl.m_type = CScraperUrl::URL_TYPE_GENERAL;
-    surl.m_url = items[0]->GetPath();
+    surl.m_url = items[0]->GetDynPath();
     scurlRet.m_url.emplace_back(surl);
     return scurlRet;
   }
@@ -531,7 +531,7 @@ CScraperUrl CScraper::ResolveIDToUrl(const std::string &externalID)
     CFileItem item("resolve me", false);
 
     if (XFILE::CPluginDirectory::GetPluginResult(str.str(), item, false))
-      scurlRet.ParseString(item.GetPath());
+      scurlRet.ParseString(item.GetDynPath());
 
     return scurlRet;
   }
@@ -612,7 +612,7 @@ CScraperUrl FromFileItem<CScraperUrl>(const CFileItem &item)
     url.relevance = item.GetProperty("relevance").asDouble();
   CScraperUrl::SUrlEntry surl;
   surl.m_type = CScraperUrl::URL_TYPE_GENERAL;
-  surl.m_url = item.GetPath();
+  surl.m_url = item.GetDynPath();
   url.m_url.push_back(surl);
 
   return url;
@@ -636,7 +636,7 @@ CMusicAlbumInfo FromFileItem<CMusicAlbumInfo>(const CFileItem &item)
 
   CScraperUrl url;
   url.m_url.resize(1);
-  url.m_url[0].m_url = item.GetPath();
+  url.m_url[0].m_url = item.GetDynPath();
 
   info = CMusicAlbumInfo(sTitle, sArtist, sAlbumName, url);
   if (item.HasProperty("relevance"))
@@ -653,7 +653,7 @@ CMusicArtistInfo FromFileItem<CMusicArtistInfo>(const CFileItem &item)
 
   CScraperUrl url;
   url.m_url.resize(1);
-  url.m_url[0].m_url = item.GetPath();
+  url.m_url[0].m_url = item.GetDynPath();
 
   info = CMusicArtistInfo(sTitle, url);
   if (item.HasProperty("artist.genre"))

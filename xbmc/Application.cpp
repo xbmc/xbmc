@@ -2915,17 +2915,17 @@ void CApplication::Stop(int exitCode)
   Sleep(200);
 }
 
-bool CApplication::PlayMedia(const CFileItem& item, const std::string &player, int iPlaylist)
+bool CApplication::PlayMedia(CFileItem& item, const std::string &player, int iPlaylist)
 {
-  //If item is a plugin, expand out now and run ourselves again
-  if (item.IsPlugin())
+  //If item is a plugin, expand out
+  if (URIUtils::IsPlugin(item.GetDynPath()))
   {
     bool resume = item.m_lStartOffset == STARTOFFSET_RESUME;
-    CFileItem item_new(item);
-    if (XFILE::CPluginDirectory::GetPluginResult(item.GetPath(), item_new, resume))
-      return PlayMedia(item_new, player, iPlaylist);
-    return false;
+
+    if (!XFILE::CPluginDirectory::GetPluginResult(item.GetDynPath(), item, resume))
+      return false;
   }
+
   if (item.IsSmartPlayList())
   {
     CFileItemList items;
@@ -3058,22 +3058,19 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
   if (item.IsPlayList())
     return false;
 
-  if (item.IsPlugin())
+  if (URIUtils::IsPlugin(item.GetDynPath()))
   { // we modify the item so that it becomes a real URL
     bool resume = item.m_lStartOffset == STARTOFFSET_RESUME;
-    CFileItem item_new(item);
-    if (XFILE::CPluginDirectory::GetPluginResult(item.GetPath(), item_new, resume))
-      return PlayFile(std::move(item_new), player, false);
-    return false;
+
+    if (!XFILE::CPluginDirectory::GetPluginResult(item.GetDynPath(), item, resume))
+      return false;
   }
 
 #ifdef HAS_UPNP
   if (URIUtils::IsUPnP(item.GetPath()))
   {
-    CFileItem item_new(item);
-    if (XFILE::CUPnPDirectory::GetResource(item.GetURL(), item_new))
-      return PlayFile(std::move(item_new), player, false);
-    return false;
+    if (!XFILE::CUPnPDirectory::GetResource(item.GetURL(), item))
+      return false;
   }
 #endif
 
@@ -4069,7 +4066,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
       // ok, grab the next song
       CFileItem file(*playlist[iNext]);
       // handle plugin://
-      CURL url(file.GetPath());
+      CURL url(file.GetDynPath());
       if (url.IsProtocol("plugin"))
         XFILE::CPluginDirectory::GetPluginResult(url.Get(), file, false);
 
@@ -4088,9 +4085,9 @@ bool CApplication::OnMessage(CGUIMessage& message)
       }
 
 #ifdef HAS_UPNP
-      if (URIUtils::IsUPnP(file.GetPath()))
+      if (URIUtils::IsUPnP(file.GetDynPath()))
       {
-        if (!XFILE::CUPnPDirectory::GetResource(file.GetURL(), file))
+        if (!XFILE::CUPnPDirectory::GetResource(file.GetDynURL(), file))
           return true;
       }
 #endif

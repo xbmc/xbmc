@@ -1064,7 +1064,7 @@ bool GetResource(const PLT_MediaObject* entry, CFileItem& item)
   // if it's an item, path is the first url to the item
   // we hope the server made the first one reachable for us
   // (it could be a format we dont know how to play however)
-  item.SetPath((const char*) resource.m_Uri);
+  item.SetDynPath((const char*) resource.m_Uri);
 
   // look for content type in protocol info
   if (resource.m_ProtocolInfo.IsValid()) {
