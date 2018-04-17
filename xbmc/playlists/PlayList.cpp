@@ -467,8 +467,6 @@ bool CPlayList::Expand(int position)
     return false;
 
   std::string path = item->GetDynPath();
-  if (path.empty())
-    path = item->GetPath();
 
   if (!playlist->Load(path))
     return false;
@@ -485,14 +483,10 @@ bool CPlayList::Expand(int position)
 
   // @todo
   // never change original path (id) of a file item
-  // playlist items should be created with dynPath instead
-  if (item->GetDynPath() != item->GetPath())
+  for (int i = 0;i<playlist->size();i++)
   {
-    for (int i = 0;i<playlist->size();i++)
-    {
-      (*playlist)[i]->SetDynPath((*playlist)[i]->GetPath());
-      (*playlist)[i]->SetPath(item->GetPath());
-    }
+    (*playlist)[i]->SetDynPath((*playlist)[i]->GetPath());
+    (*playlist)[i]->SetPath(item->GetPath());
   }
 
   if (playlist->size() <= 0)

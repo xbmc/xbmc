@@ -1095,8 +1095,7 @@ bool CGUIMediaWindow::OnClick(int iItem, const std::string &player)
       }
     }
 
-    if (autoplay && !g_partyModeManager.IsEnabled() && 
-        !pItem->IsPlayList())
+    if (autoplay && !g_partyModeManager.IsEnabled())
     {
       return OnPlayAndQueueMedia(pItem, player);
     }
@@ -1463,7 +1462,7 @@ bool CGUIMediaWindow::OnPlayAndQueueMedia(const CFileItemPtr &item, std::string 
       if (nItem->m_bIsFolder)
         continue;
 
-      if (!nItem->IsPlayList() && !nItem->IsZIP() && !nItem->IsRAR() && (!nItem->IsDVDFile() || (URIUtils::GetFileName(nItem->GetPath()) == mainDVD)))
+      if (!nItem->IsZIP() && !nItem->IsRAR() && (!nItem->IsDVDFile() || (URIUtils::GetFileName(nItem->GetPath()) == mainDVD)))
         CServiceBroker::GetPlaylistPlayer().Add(iPlaylist, nItem);
 
       if (item->IsSamePath(nItem.get()))
