@@ -31,6 +31,8 @@
 #include "input/Key.h"
 #include "ServiceBroker.h"
 
+using namespace KODI::GUILIB;
+
 CGUIControl::CGUIControl() :
   m_hitColor(0xffffffff),
   m_diffuseColor(0xffffffff)
@@ -433,7 +435,7 @@ void CGUIControl::SetEnableCondition(const std::string &expression)
   else if (expression == "false")
     m_enabled = false;
   else
-    m_enableCondition = g_infoManager.Register(expression, GetParentID());
+    m_enableCondition = CServiceBroker::GetGUI()->GetInfoManager().Register(expression, GetParentID());
 }
 
 void CGUIControl::SetPosition(float posX, float posY)
@@ -450,7 +452,7 @@ void CGUIControl::SetPosition(float posX, float posY)
   }
 }
 
-bool CGUIControl::SetColorDiffuse(const CGUIInfoColor &color)
+bool CGUIControl::SetColorDiffuse(const GUIINFO::CGUIInfoColor &color)
 {
   bool changed = m_diffuseColor != color;
   m_diffuseColor = color;
@@ -674,7 +676,7 @@ void CGUIControl::SetVisibleCondition(const std::string &expression, const std::
   else if (expression == "false")
     m_visible = HIDDEN;
   else  // register with the infomanager for updates
-    m_visibleCondition = g_infoManager.Register(expression, GetParentID());
+    m_visibleCondition = CServiceBroker::GetGUI()->GetInfoManager().Register(expression, GetParentID());
   m_allowHiddenFocus.Parse(allowHiddenFocus, GetParentID());
 }
 

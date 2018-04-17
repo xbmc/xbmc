@@ -134,11 +134,11 @@ JSONRPC_STATUS CGUIOperations::GetPropertyValue(const std::string &property, CVa
 {
   if (property == "currentwindow")
   {
-    result["label"] = g_infoManager.GetLabel(g_infoManager.TranslateString("System.CurrentWindow"));
+    result["label"] = CServiceBroker::GetGUI()->GetInfoManager().GetLabel(CServiceBroker::GetGUI()->GetInfoManager().TranslateString("System.CurrentWindow"));
     result["id"] = CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindowOrDialog();
   }
   else if (property == "currentcontrol")
-    result["label"] = g_infoManager.GetLabel(g_infoManager.TranslateString("System.CurrentControl"));
+    result["label"] = CServiceBroker::GetGUI()->GetInfoManager().GetLabel(CServiceBroker::GetGUI()->GetInfoManager().TranslateString("System.CurrentControl"));
   else if (property == "skin")
   {
     std::string skinId = CServiceBroker::GetSettings().GetString(CSettings::SETTING_LOOKANDFEEL_SKIN);

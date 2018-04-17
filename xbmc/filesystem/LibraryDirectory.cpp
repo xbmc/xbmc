@@ -141,21 +141,22 @@ bool CLibraryDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 TiXmlElement *CLibraryDirectory::LoadXML(const std::string &xmlFile)
 {
   if (!CFile::Exists(xmlFile))
-    return NULL;
+    return nullptr;
 
   if (!m_doc.LoadFile(xmlFile))
-    return NULL;
+    return nullptr;
 
   TiXmlElement *xml = m_doc.RootElement();
   if (!xml || xml->ValueStr() != "node")
-    return NULL;
+    return nullptr;
 
   // check the condition
   std::string condition = XMLUtils::GetAttribute(xml, "visible");
-  if (condition.empty() || g_infoManager.EvaluateBool(condition))
+  CGUIComponent* gui = CServiceBroker::GetGUI();
+  if (condition.empty() || (gui && gui->GetInfoManager().EvaluateBool(condition)))
     return xml;
 
-  return NULL;
+  return nullptr;
 }
 
 bool CLibraryDirectory::Exists(const CURL& url)

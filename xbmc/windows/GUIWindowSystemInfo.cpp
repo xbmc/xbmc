@@ -20,6 +20,7 @@
 
 #include "GUIWindowSystemInfo.h"
 #include "GUIInfoManager.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/WindowIDs.h"
 #include "guilib/LocalizeStrings.h"
 #include "pvr/PVRManager.h"
@@ -85,7 +86,7 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
         SET_CONTROL_HIDDEN(CONTROL_TB_POLICY);
       else if (m_section == CONTROL_BT_POLICY)
       {
-        SET_CONTROL_LABEL(CONTROL_TB_POLICY, g_infoManager.GetLabel(SYSTEM_PRIVACY_POLICY));
+        SET_CONTROL_LABEL(CONTROL_TB_POLICY, CServiceBroker::GetGUI()->GetInfoManager().GetLabel(SYSTEM_PRIVACY_POLICY));
         SET_CONTROL_VISIBLE(CONTROL_TB_POLICY);
       }
       return true;
@@ -125,7 +126,7 @@ void CGUIWindowSystemInfo::FrameMove()
   else if (m_section == CONTROL_BT_NETWORK)
   {
     SET_CONTROL_LABEL(40,g_localizeStrings.Get(20158));
-    SET_CONTROL_LABEL(i++, g_infoManager.GetLabel(NETWORK_LINK_STATE));
+    SET_CONTROL_LABEL(i++, CServiceBroker::GetGUI()->GetInfoManager().GetLabel(NETWORK_LINK_STATE));
     SetControlLabel(i++, "%s: %s", 149, NETWORK_MAC_ADDRESS);
     SetControlLabel(i++, "%s: %s", 150, NETWORK_IP_ADDRESS);
     SetControlLabel(i++, "%s: %s", 13159, NETWORK_SUBNET_MASK);
@@ -138,7 +139,7 @@ void CGUIWindowSystemInfo::FrameMove()
   else if (m_section == CONTROL_BT_VIDEO)
   {
     SET_CONTROL_LABEL(40,g_localizeStrings.Get(20159));
-    SET_CONTROL_LABEL(i++,g_infoManager.GetLabel(SYSTEM_VIDEO_ENCODER_INFO));
+    SET_CONTROL_LABEL(i++,CServiceBroker::GetGUI()->GetInfoManager().GetLabel(SYSTEM_VIDEO_ENCODER_INFO));
     SetControlLabel(i++, "%s %s", 13287, SYSTEM_SCREEN_RESOLUTION);
 #ifndef HAS_DX
     SetControlLabel(i++, "%s %s", 22007, SYSTEM_RENDER_VENDOR);
@@ -209,6 +210,6 @@ void CGUIWindowSystemInfo::ResetLabels()
 void CGUIWindowSystemInfo::SetControlLabel(int id, const char *format, int label, int info)
 {
   std::string tmpStr = StringUtils::Format(format, g_localizeStrings.Get(label).c_str(),
-      g_infoManager.GetLabel(info).c_str());
+      CServiceBroker::GetGUI()->GetInfoManager().GetLabel(info).c_str());
   SET_CONTROL_LABEL(id, tmpStr);
 }

@@ -26,6 +26,8 @@
 #include "GUIImage.h"
 #include "utils/XBMCTinyXML.h"
 
+using namespace KODI::GUILIB;
+
 CGUIListItemLayout::CGUIListItemLayout()
 : m_group(0, 0, 0, 0, 0, 0)
 {
@@ -172,7 +174,7 @@ void CGUIListItemLayout::LoadLayout(TiXmlElement *layout, int context, bool focu
   layout->QueryFloatAttribute("height", &m_height);
   const char *condition = layout->Attribute("condition");
   if (condition)
-    m_condition = g_infoManager.Register(condition, context);
+    m_condition = CServiceBroker::GetGUI()->GetInfoManager().Register(condition, context);
   m_isPlaying.Parse("listitem.isplaying", context);
   // ensure width and height are valid
   if (!m_width)
@@ -209,14 +211,14 @@ void CGUIListItemLayout::CreateListControlLayouts(float width, float height, boo
     m_group.AddControl(tex);
   }
   CGUIImage *image = new CGUIImage(0, 0, 8, 0, iconWidth, texHeight, CTextureInfo(""));
-  image->SetInfo(CGUIInfoLabel("$INFO[ListItem.Icon]", "", m_group.GetParentID()));
+  image->SetInfo(GUIINFO::CGUIInfoLabel("$INFO[ListItem.Icon]", "", m_group.GetParentID()));
   image->SetAspectRatio(CAspectRatio::AR_KEEP);
   m_group.AddControl(image);
   float x = iconWidth + labelInfo.offsetX + 10;
-  CGUIListLabel *label = new CGUIListLabel(0, 0, x, labelInfo.offsetY, width - x - 18, height, labelInfo, CGUIInfoLabel("$INFO[ListItem.Label]", "", m_group.GetParentID()), CGUIControl::FOCUS);
+  CGUIListLabel *label = new CGUIListLabel(0, 0, x, labelInfo.offsetY, width - x - 18, height, labelInfo, GUIINFO::CGUIInfoLabel("$INFO[ListItem.Label]", "", m_group.GetParentID()), CGUIControl::FOCUS);
   m_group.AddControl(label);
   x = labelInfo2.offsetX ? labelInfo2.offsetX : m_width - 16;
-  label = new CGUIListLabel(0, 0, x, labelInfo2.offsetY, x - iconWidth - 20, height, labelInfo2, CGUIInfoLabel("$INFO[ListItem.Label2]", "", m_group.GetParentID()), CGUIControl::FOCUS);
+  label = new CGUIListLabel(0, 0, x, labelInfo2.offsetY, x - iconWidth - 20, height, labelInfo2, GUIINFO::CGUIInfoLabel("$INFO[ListItem.Label2]", "", m_group.GetParentID()), CGUIControl::FOCUS);
   m_group.AddControl(label);
 }
 //#endif

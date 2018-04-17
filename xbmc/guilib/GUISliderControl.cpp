@@ -76,7 +76,7 @@ void CGUISliderControl::Process(unsigned int currentTime, CDirtyRegionList &dirt
   if (infoCode)
   {
     int val;
-    if (g_infoManager.GetInt(val, infoCode))
+    if (CServiceBroker::GetGUI()->GetInfoManager().GetInt(val, infoCode))
       SetIntValue(val);
   }
 

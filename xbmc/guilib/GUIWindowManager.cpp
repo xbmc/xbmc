@@ -722,13 +722,13 @@ void CGUIWindowManager::PreviousWindow()
   // ok to go to the previous window now
 
   // tell our info manager which window we are going to
-  g_infoManager.GetInfoProviders().GetGUIControlsInfoProvider().SetNextWindow(previousWindow);
+  CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetGUIControlsInfoProvider().SetNextWindow(previousWindow);
 
   // deinitialize our window
   CloseWindowSync(pCurrentWindow);
 
-  g_infoManager.GetInfoProviders().GetGUIControlsInfoProvider().SetNextWindow(WINDOW_INVALID);
-  g_infoManager.GetInfoProviders().GetGUIControlsInfoProvider().SetPreviousWindow(currentWindow);
+  CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetGUIControlsInfoProvider().SetNextWindow(WINDOW_INVALID);
+  CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetGUIControlsInfoProvider().SetPreviousWindow(currentWindow);
 
   // remove the current window off our window stack
   m_windowHistory.pop_back();
@@ -738,7 +738,7 @@ void CGUIWindowManager::PreviousWindow()
   CGUIMessage msg2(GUI_MSG_WINDOW_INIT, 0, 0, WINDOW_INVALID, GetActiveWindow());
   pNewWindow->OnMessage(msg2);
 
-  g_infoManager.GetInfoProviders().GetGUIControlsInfoProvider().SetPreviousWindow(WINDOW_INVALID);
+  CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetGUIControlsInfoProvider().SetPreviousWindow(WINDOW_INVALID);
   return;
 }
 
@@ -842,14 +842,14 @@ void CGUIWindowManager::ActivateWindow_Internal(int iWindowID, const std::vector
       g_application.OnAction(ACTION_PAUSE);
   }
 
-  g_infoManager.GetInfoProviders().GetGUIControlsInfoProvider().SetNextWindow(iWindowID);
+  CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetGUIControlsInfoProvider().SetNextWindow(iWindowID);
 
   // deactivate any window
   int currentWindow = GetActiveWindow();
   CGUIWindow *pWindow = GetWindow(currentWindow);
   if (pWindow)
     CloseWindowSync(pWindow, iWindowID);
-  g_infoManager.GetInfoProviders().GetGUIControlsInfoProvider().SetNextWindow(WINDOW_INVALID);
+  CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetGUIControlsInfoProvider().SetNextWindow(WINDOW_INVALID);
 
   // Add window to the history list (we must do this before we activate it,
   // as all messages done in WINDOW_INIT will want to be sent to the new
@@ -859,12 +859,12 @@ void CGUIWindowManager::ActivateWindow_Internal(int iWindowID, const std::vector
     m_windowHistory.pop_back();
   AddToWindowHistory(iWindowID);
 
-  g_infoManager.GetInfoProviders().GetGUIControlsInfoProvider().SetPreviousWindow(currentWindow);
+  CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetGUIControlsInfoProvider().SetPreviousWindow(currentWindow);
   // Send the init message
   CGUIMessage msg(GUI_MSG_WINDOW_INIT, 0, 0, currentWindow, iWindowID);
   msg.SetStringParams(params);
   pNewWindow->OnMessage(msg);
-//  g_infoManager.GetInfoProviders().GetGUIControlsInfoProvider().SetPreviousWindow(WINDOW_INVALID);
+//  CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetGUIControlsInfoProvider().SetPreviousWindow(WINDOW_INVALID);
 }
 
 void CGUIWindowManager::CloseDialogs(bool forceClose) const
@@ -1276,7 +1276,7 @@ void CGUIWindowManager::FrameMove()
     window->FrameMove();
   }
 
-  g_infoManager.UpdateAVInfo();
+  CServiceBroker::GetGUI()->GetInfoManager().UpdateAVInfo();
 }
 
 CGUIDialog* CGUIWindowManager::GetDialog(int id) const

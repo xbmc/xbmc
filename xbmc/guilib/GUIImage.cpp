@@ -23,6 +23,8 @@
 
 #include <cassert>
 
+using namespace KODI::GUILIB;
+
 CGUIImage::CGUIImage(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& texture)
     : CGUIControl(parentID, controlID, posX, posY, width, height)
     , m_texture(posX, posY, width, height, texture)
@@ -379,7 +381,7 @@ void CGUIImage::SetPosition(float posX, float posY)
   CGUIControl::SetPosition(posX, posY);
 }
 
-void CGUIImage::SetInfo(const CGUIInfoLabel &info)
+void CGUIImage::SetInfo(const GUIINFO::CGUIInfoLabel &info)
 {
   m_info = info;
   // a constant image never needs updating

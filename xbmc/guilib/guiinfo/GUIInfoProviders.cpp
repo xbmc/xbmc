@@ -57,11 +57,16 @@ CGUIInfoProviders::~CGUIInfoProviders()
   UnregisterProvider(&m_guiControlsGUIInfo);
 }
 
-void CGUIInfoProviders::RegisterProvider(IGUIInfoProvider *provider)
+void CGUIInfoProviders::RegisterProvider(IGUIInfoProvider *provider, bool bAppend /* = true */)
 {
   auto it = std::find(m_providers.begin(), m_providers.end(), provider);
   if (it == m_providers.end())
-    m_providers.emplace_back(provider);
+  {
+    if (bAppend)
+      m_providers.emplace_back(provider);
+    else
+      m_providers.insert(m_providers.begin(), provider);
+  }
 }
 
 void CGUIInfoProviders::UnregisterProvider(IGUIInfoProvider *provider)

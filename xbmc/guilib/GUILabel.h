@@ -26,7 +26,7 @@
  */
 
 #include "GUITextLayout.h"
-#include "GUIInfoTypes.h"
+#include "guiinfo/GUIInfoTypes.h"
 #include "GUIFont.h"
 #include "utils/Geometry.h"
 
@@ -57,12 +57,12 @@ public:
     return changed;
   };
   
-  CGUIInfoColor textColor;
-  CGUIInfoColor shadowColor;
-  CGUIInfoColor selectedColor;
-  CGUIInfoColor disabledColor;
-  CGUIInfoColor focusedColor;
-  CGUIInfoColor invalidColor;
+  KODI::GUILIB::GUIINFO::CGUIInfoColor textColor;
+  KODI::GUILIB::GUIINFO::CGUIInfoColor shadowColor;
+  KODI::GUILIB::GUIINFO::CGUIInfoColor selectedColor;
+  KODI::GUILIB::GUIINFO::CGUIInfoColor disabledColor;
+  KODI::GUILIB::GUIINFO::CGUIInfoColor focusedColor;
+  KODI::GUILIB::GUIINFO::CGUIInfoColor invalidColor;
   uint32_t align;
   float offsetX;
   float offsetY;

@@ -53,6 +53,7 @@
 #include "platform/linux/LinuxResourceCounter.h"
 #endif
 
+using namespace KODI::GUILIB;
 using namespace KODI::MESSAGING;
 
 #if defined(TARGET_DARWIN)
@@ -113,7 +114,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
 
   case ACTION_SHOW_OSD_TIME:
     m_bShowCurrentTime = !m_bShowCurrentTime;
-    g_infoManager.GetInfoProviders().GetPlayerInfoProvider().SetShowTime(m_bShowCurrentTime);
+    CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetPlayerInfoProvider().SetShowTime(m_bShowCurrentTime);
     return true;
     break;
 
@@ -223,9 +224,11 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
         CServiceBroker::GetGUI()->GetWindowManager().PreviousWindow();
         return true;
       }
-      g_infoManager.GetInfoProviders().GetPlayerInfoProvider().SetShowInfo(false);
+
+      GUIINFO::CPlayerGUIInfo& guiInfo = CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetPlayerInfoProvider();
+      guiInfo.SetShowInfo(false);
       m_bShowCurrentTime = false;
-      g_infoManager.GetInfoProviders().GetPlayerInfoProvider().SetDisplayAfterSeek(0); // Make sure display after seek is off.
+      guiInfo.SetDisplayAfterSeek(0); // Make sure display after seek is off.
 
       // switch resolution
       CServiceBroker::GetWinSystem()->GetGfxContext().SetFullScreenVideo(true);
@@ -285,7 +288,7 @@ void CGUIWindowFullScreen::FrameMove()
 {
   float playspeed = g_application.GetAppPlayer().GetPlaySpeed();
   if (playspeed != 1.0 && !g_application.GetAppPlayer().HasGame())
-    g_infoManager.GetInfoProviders().GetPlayerInfoProvider().SetDisplayAfterSeek();
+    CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetPlayerInfoProvider().SetDisplayAfterSeek();
 
   if (!g_application.GetAppPlayer().HasPlayer())
     return;
@@ -413,7 +416,7 @@ void CGUIWindowFullScreen::SeekChapter(int iChapter)
   g_application.GetAppPlayer().SeekChapter(iChapter);
 
   // Make sure gui items are visible.
-  g_infoManager.GetInfoProviders().GetPlayerInfoProvider().SetDisplayAfterSeek();
+  CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetPlayerInfoProvider().SetDisplayAfterSeek();
 }
 
 void CGUIWindowFullScreen::ToggleOSD()

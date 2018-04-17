@@ -27,10 +27,11 @@
 #include "GUIInfoManager.h"
 #include "ServiceBroker.h"
 #include "cores/DataCacheCore.h"
+#include "guilib/GUIComponent.h"
+#include "guilib/LocalizeStrings.h"
 #include "guilib/guiinfo/GUIInfo.h"
 #include "guilib/guiinfo/GUIInfoHelper.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
-#include "guilib/LocalizeStrings.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
@@ -54,12 +55,10 @@ CPVRGUIInfo::CPVRGUIInfo(void) :
     CThread("PVRGUIInfo")
 {
   ResetProperties();
-  g_infoManager.RegisterInfoProvider(this);
 }
 
 CPVRGUIInfo::~CPVRGUIInfo(void)
 {
-  g_infoManager.UnregisterInfoProvider(this);
 }
 
 void CPVRGUIInfo::ResetProperties(void)
@@ -104,6 +103,7 @@ void CPVRGUIInfo::ResetProperties(void)
   ClearDescrambleInfo(m_descrambleInfo);
 
   m_updateBackendCacheRequested = false;
+  m_bRegistered = false;
 }
 
 void CPVRGUIInfo::ClearQualityInfo(PVR_SIGNAL_STATUS &qualityInfo)
@@ -129,6 +129,13 @@ void CPVRGUIInfo::Stop(void)
 {
   StopThread();
   CServiceBroker::GetPVRManager().UnregisterObserver(this);
+
+  CGUIComponent* gui = CServiceBroker::GetGUI();
+  if (gui)
+  {
+    gui->GetInfoManager().UnregisterInfoProvider(this);
+    m_bRegistered = false;
+  }
 }
 
 void CPVRGUIInfo::Notify(const Observable &obs, const ObservableMessage msg)
@@ -151,6 +158,16 @@ void CPVRGUIInfo::Process(void)
 
   while (!g_application.m_bStop && !m_bStop)
   {
+    if (!m_bRegistered)
+    {
+      CGUIComponent* gui = CServiceBroker::GetGUI();
+      if (gui)
+      {
+        gui->GetInfoManager().RegisterInfoProvider(this);
+        m_bRegistered = true;
+      }
+    }
+
     if (!m_bStop)
       UpdateQualityData();
     Sleep(0);
@@ -504,24 +521,24 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem *item, const CGUIInf
         break;
       }
     }
-  }
 
-  switch (info.m_info)
-  {
-    // special handling for channels without epg or with radio rds data
-    case PLAYER_TITLE:
-    case VIDEOPLAYER_TITLE:
-    case LISTITEM_TITLE:
-    case VIDEOPLAYER_NEXT_TITLE:
-    case LISTITEM_NEXT_TITLE:
-    case LISTITEM_EPG_EVENT_TITLE:
-      // Note: in difference to LISTITEM_TITLE, LISTITEM_EPG_EVENT_TITLE returns the title
-      // associated with the epg event of a timer, if any, and not the title of the timer.
-      if (epgTag)
-        strValue = epgTag->Title();
-      if (strValue.empty() && !CServiceBroker::GetSettings().GetBool(CSettings::SETTING_EPG_HIDENOINFOAVAILABLE))
-        strValue = g_localizeStrings.Get(19055); // no information available
-      return true;
+    switch (info.m_info)
+    {
+      // special handling for channels without epg or with radio rds data
+      case PLAYER_TITLE:
+      case VIDEOPLAYER_TITLE:
+      case LISTITEM_TITLE:
+      case VIDEOPLAYER_NEXT_TITLE:
+      case LISTITEM_NEXT_TITLE:
+      case LISTITEM_EPG_EVENT_TITLE:
+        // Note: in difference to LISTITEM_TITLE, LISTITEM_EPG_EVENT_TITLE returns the title
+        // associated with the epg event of a timer, if any, and not the title of the timer.
+        if (epgTag)
+          strValue = epgTag->Title();
+        if (strValue.empty() && !CServiceBroker::GetSettings().GetBool(CSettings::SETTING_EPG_HIDENOINFOAVAILABLE))
+          strValue = g_localizeStrings.Get(19055); // no information available
+        return true;
+    }
   }
 
   if (epgTag)
@@ -1070,7 +1087,7 @@ bool CPVRGUIInfo::GetPVRInt(const CFileItem *item, const CGUIInfo &info, int& iV
   {
     case PVR_EPG_EVENT_DURATION:
     {
-      const CPVREpgInfoTagPtr epgTag = !item->IsPVRRecording() ? CPVRItem(item).GetEpgInfoTag() : nullptr;
+      const CPVREpgInfoTagPtr epgTag = (item->IsPVRChannel() || item->IsEPG()) ? CPVRItem(item).GetEpgInfoTag() : nullptr;
       if (epgTag && epgTag != m_playingEpgTag)
         iValue = epgTag->GetDuration();
       else
@@ -1079,7 +1096,7 @@ bool CPVRGUIInfo::GetPVRInt(const CFileItem *item, const CGUIInfo &info, int& iV
     }
     case PVR_EPG_EVENT_PROGRESS:
     {
-      const CPVREpgInfoTagPtr epgTag = !item->IsPVRRecording() ? CPVRItem(item).GetEpgInfoTag() : nullptr;
+      const CPVREpgInfoTagPtr epgTag = (item->IsPVRChannel() || item->IsEPG()) ? CPVRItem(item).GetEpgInfoTag() : nullptr;
       if (epgTag && epgTag != m_playingEpgTag)
         iValue = std::lrintf(epgTag->ProgressPercentage());
       else
@@ -1409,7 +1426,7 @@ void CPVRGUIInfo::CharInfoTimeshiftOffset(TIME_FORMAT format, std::string &strVa
 void CPVRGUIInfo::CharInfoEpgEventDuration(const CFileItem *item, TIME_FORMAT format, std::string &strValue) const
 {
   int iDuration = 0;
-  const CPVREpgInfoTagPtr epgTag = !item->IsPVRRecording() ? CPVRItem(item).GetEpgInfoTag() : nullptr;
+  const CPVREpgInfoTagPtr epgTag = (item->IsPVRChannel() || item->IsEPG()) ? CPVRItem(item).GetEpgInfoTag() : nullptr;
   if (epgTag && epgTag != m_playingEpgTag)
     iDuration = epgTag->GetDuration();
   else
@@ -1421,7 +1438,7 @@ void CPVRGUIInfo::CharInfoEpgEventDuration(const CFileItem *item, TIME_FORMAT fo
 void CPVRGUIInfo::CharInfoEpgEventElapsedTime(const CFileItem *item, TIME_FORMAT format, std::string &strValue) const
 {
   int iElapsed = 0;
-  const CPVREpgInfoTagPtr epgTag = !item->IsPVRRecording() ? CPVRItem(item).GetEpgInfoTag() : nullptr;
+  const CPVREpgInfoTagPtr epgTag = (item->IsPVRChannel() || item->IsEPG()) ? CPVRItem(item).GetEpgInfoTag() : nullptr;
   if (epgTag && epgTag != m_playingEpgTag)
     iElapsed = epgTag->Progress();
   else
@@ -1433,7 +1450,7 @@ void CPVRGUIInfo::CharInfoEpgEventElapsedTime(const CFileItem *item, TIME_FORMAT
 int CPVRGUIInfo::GetRemainingTime(const CFileItem *item) const
 {
   int iRemaining = 0;
-  const CPVREpgInfoTagPtr epgTag = !item->IsPVRRecording() ? CPVRItem(item).GetEpgInfoTag() : nullptr;
+  const CPVREpgInfoTagPtr epgTag = (item->IsPVRChannel() || item->IsEPG()) ? CPVRItem(item).GetEpgInfoTag() : nullptr;
   if (epgTag && epgTag != m_playingEpgTag)
     iRemaining = epgTag->GetDuration() - epgTag->Progress();
   else

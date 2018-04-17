@@ -25,6 +25,7 @@
 #include "GUIInfoManager.h"
 #include "ServiceBroker.h"
 #include "addons/Skin.h"
+#include "guilib/GUIComponent.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
@@ -85,8 +86,9 @@ void CSkinSettings::Reset()
 {
   g_SkinInfo->Reset();
 
-  g_infoManager.ResetCache();
-  g_infoManager.GetInfoProviders().GetGUIControlsInfoProvider().ResetContainerMovingCache();
+  CGUIInfoManager& infoMgr = CServiceBroker::GetGUI()->GetInfoManager();
+  infoMgr.ResetCache();
+  infoMgr.GetInfoProviders().GetGUIControlsInfoProvider().ResetContainerMovingCache();
 }
 
 bool CSkinSettings::Load(const TiXmlNode *settings)

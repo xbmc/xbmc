@@ -37,6 +37,8 @@
 #include "platform/darwin/osx/CocoaInterface.h"
 #endif
 
+using namespace KODI::GUILIB;
+
 using KODI::UTILITY::CDigest;
 
 const char* CGUIEditControl::smsLetters[10] = { " !@#$%^&*()[]{}<>/\\|0", ".,;:\'\"-+_=?`~1", "abc2ABC", "def3DEF", "ghi4GHI", "jkl5JKL", "mno6MNO", "pqrs7PQRS", "tuv8TUV", "wxyz9WXYZ" };
@@ -520,7 +522,7 @@ CGUILabel::COLOR CGUIEditControl::GetTextColor() const
   return color;
 }
 
-void CGUIEditControl::SetHint(const CGUIInfoLabel& hint)
+void CGUIEditControl::SetHint(const GUIINFO::CGUIInfoLabel& hint)
 {
   m_hintInfo = hint;
 }

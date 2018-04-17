@@ -22,6 +22,7 @@
 
 #include "GUIInfoManager.h"
 #include "ServiceBroker.h"
+#include "guilib/GUIComponent.h"
 #include "input/Key.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "settings/Settings.h"
@@ -40,12 +41,12 @@ using namespace KODI::MESSAGING;
 CGUIWindowPVRTimersBase::CGUIWindowPVRTimersBase(bool bRadio, int id, const std::string &xmlFile) :
   CGUIWindowPVRBase(bRadio, id, xmlFile)
 {
-  g_infoManager.RegisterObserver(this);
+  CServiceBroker::GetGUI()->GetInfoManager().RegisterObserver(this);
 }
 
 CGUIWindowPVRTimersBase::~CGUIWindowPVRTimersBase()
 {
-  g_infoManager.UnregisterObserver(this);
+  CServiceBroker::GetGUI()->GetInfoManager().UnregisterObserver(this);
 }
 
 bool CGUIWindowPVRTimersBase::OnAction(const CAction &action)

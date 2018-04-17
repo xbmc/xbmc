@@ -67,6 +67,11 @@ CGUIInfoManager::~CGUIInfoManager(void)
   delete m_currentFile;
 }
 
+void CGUIInfoManager::Initialize()
+{
+  KODI::MESSAGING::CApplicationMessenger::GetInstance().RegisterReceiver(this);
+}
+
 /// \brief Translates a string as given by the skin into an int that we use for more
 /// efficient retrieval of data. Can handle combined strings on the form
 /// Player.Caching + VideoPlayer.IsFullscreen (Logical and)
@@ -7033,7 +7038,7 @@ void CGUIInfoManager::OnApplicationMessage(KODI::MESSAGING::ThreadMessage* pMsg)
 
 void CGUIInfoManager::RegisterInfoProvider(IGUIInfoProvider *provider)
 {
-  m_infoProviders.RegisterProvider(provider);
+  m_infoProviders.RegisterProvider(provider, false);
 }
 
 void CGUIInfoManager::UnregisterInfoProvider(IGUIInfoProvider *provider)

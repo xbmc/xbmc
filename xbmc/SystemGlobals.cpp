@@ -47,7 +47,6 @@ std::map<std::string, std::string> CSpecialProtocol::m_pathMap;
   XFILE::CDirectoryCache g_directoryCache;
 
   CGUIPassword       g_passwordManager;
-  CGUIInfoManager    g_infoManager;
 
   XCURL::DllLibCurlGlobal g_curlInterface;
   CPartyModeManager     g_partyModeManager;

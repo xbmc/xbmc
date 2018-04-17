@@ -33,6 +33,7 @@
 #include "utils/Random.h"
 #include "utils/StringUtils.h"
 
+using namespace KODI::GUILIB;
 using namespace XFILE;
 
 CGUIMultiImage::CGUIMultiImage(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& texture, unsigned int timePerImage, unsigned int fadeTime, bool randomized, bool loop, unsigned int timeToPauseAtEnd)
@@ -281,7 +282,7 @@ void CGUIMultiImage::OnJobComplete(unsigned int jobID, bool success, CJob *job)
   }
 }
 
-void CGUIMultiImage::SetInfo(const CGUIInfoLabel &info)
+void CGUIMultiImage::SetInfo(const GUIINFO::CGUIInfoLabel &info)
 {
   m_texturePath = info;
   if (m_texturePath.IsConstant())

@@ -157,7 +157,7 @@ JSONRPC_STATUS CPlayerOperations::GetItem(const std::string &method, ITransportL
       {
         if (!CVideoLibrary::FillFileItem(g_application.CurrentFile(), fileItem, parameterObject))
         {
-          const CVideoInfoTag *currentVideoTag = g_infoManager.GetCurrentMovieTag();
+          const CVideoInfoTag *currentVideoTag = CServiceBroker::GetGUI()->GetInfoManager().GetCurrentMovieTag();
           if (currentVideoTag != NULL)
           {
             std::string originalLabel = fileItem->GetLabel();
@@ -172,7 +172,7 @@ JSONRPC_STATUS CPlayerOperations::GetItem(const std::string &method, ITransportL
       {
         if (!CAudioLibrary::FillFileItem(g_application.CurrentFile(), fileItem, parameterObject))
         {
-          const MUSIC_INFO::CMusicInfoTag *currentMusicTag = g_infoManager.GetCurrentSongTag();
+          const MUSIC_INFO::CMusicInfoTag *currentMusicTag = CServiceBroker::GetGUI()->GetInfoManager().GetCurrentSongTag();
           if (currentMusicTag != NULL)
           {
             std::string originalLabel = fileItem->GetLabel();

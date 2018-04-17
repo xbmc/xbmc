@@ -60,6 +60,7 @@
 #include <vector>
 #include "utils/log.h"
 
+using namespace KODI;
 using namespace KODI::MESSAGING;
 
 #ifdef TARGET_POSIX
@@ -291,13 +292,14 @@ namespace XBMCAddon
         return ret;
       }
 
-      int ret = g_infoManager.TranslateString(cLine);
+      CGUIInfoManager& infoMgr = CServiceBroker::GetGUI()->GetInfoManager();
+      int ret = infoMgr.TranslateString(cLine);
       //doesn't seem to be a single InfoTag?
       //try full blown GuiInfoLabel then
       if (ret == 0)
-        return CGUIInfoLabel::GetLabel(cLine);
+        return GUILIB::GUIINFO::CGUIInfoLabel::GetLabel(cLine);
       else
-        return g_infoManager.GetLabel(ret);
+        return infoMgr.GetLabel(ret);
     }
 
     String getInfoImage(const char * infotag)
@@ -309,8 +311,9 @@ namespace XBMCAddon
           return ret;
         }
 
-      int ret = g_infoManager.TranslateString(infotag);
-      return g_infoManager.GetImage(ret, WINDOW_INVALID);
+      CGUIInfoManager& infoMgr = CServiceBroker::GetGUI()->GetInfoManager();
+      int ret = infoMgr.TranslateString(infotag);
+      return infoMgr.GetImage(ret, WINDOW_INVALID);
     }
 
     void playSFX(const char* filename, bool useCached)
@@ -349,8 +352,9 @@ namespace XBMCAddon
         XBMCAddonUtils::GuiLock lock(nullptr, false);
 
         int id = CServiceBroker::GetGUI()->GetWindowManager().GetTopmostModalDialog();
-        if (id == WINDOW_INVALID) id = CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow();
-        ret = g_infoManager.EvaluateBool(condition,id);
+        if (id == WINDOW_INVALID)
+          id = CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow();
+        ret = CServiceBroker::GetGUI()->GetInfoManager().EvaluateBool(condition,id);
       }
 
       return ret;

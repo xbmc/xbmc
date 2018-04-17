@@ -22,6 +22,8 @@
 #include "utils/CharsetConverter.h"
 #include "utils/StringUtils.h"
 
+using namespace KODI::GUILIB;
+
 CGUILabelControl::CGUILabelControl(int parentID, int controlID, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, bool wrapMultiLine, bool bHasPath)
     : CGUIControl(parentID, controlID, posX, posY, width, height)
     , m_label(posX, posY, width, height, labelInfo, wrapMultiLine ? CGUILabel::OVER_FLOW_WRAP : CGUILabel::OVER_FLOW_TRUNCATE)
@@ -58,7 +60,7 @@ void CGUILabelControl::SetCursorPos(int iPos)
   m_iCursorPos = iPos;
 }
 
-void CGUILabelControl::SetInfo(const CGUIInfoLabel &infoLabel)
+void CGUILabelControl::SetInfo(const GUIINFO::CGUIInfoLabel &infoLabel)
 {
   m_infoLabel = infoLabel;
 }

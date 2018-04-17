@@ -30,6 +30,7 @@
 #include "addons/settings/SettingUrlEncodedString.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/LocalizeStrings.h"
 #include "messaging/ApplicationMessenger.h"
 #include "settings/AdvancedSettings.h"
@@ -56,7 +57,7 @@ static const int UnknownSettingLabelIdStart = 100000;
 
 bool InfoBool(const std::string &condition, const std::string &value, SettingConstPtr setting, void *data)
 {
-  return g_infoManager.EvaluateBool(value);
+  return CServiceBroker::GetGUI()->GetInfoManager().EvaluateBool(value);
 }
 
 template<class TSetting>

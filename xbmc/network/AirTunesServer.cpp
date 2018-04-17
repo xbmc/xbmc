@@ -123,8 +123,9 @@ void CAirTunesServer::RefreshMetadata()
 {
   CSingleLock lock(m_metadataLock);
   MUSIC_INFO::CMusicInfoTag tag;
-  if (g_infoManager.GetCurrentSongTag())
-    tag = *g_infoManager.GetCurrentSongTag();
+  CGUIInfoManager& infoMgr = CServiceBroker::GetGUI()->GetInfoManager();
+  if (infoMgr.GetCurrentSongTag())
+    tag = *infoMgr.GetCurrentSongTag();
   if (m_metadata[0].length())
     tag.SetAlbum(m_metadata[0]);//album
   if (m_metadata[1].length())
@@ -142,12 +143,13 @@ void CAirTunesServer::RefreshCoverArt(const char *outputFilename/* = NULL*/)
   if (outputFilename != NULL)
     coverArtFile = std::string(outputFilename);
 
+  CGUIInfoManager& infoMgr = CServiceBroker::GetGUI()->GetInfoManager();
   CSingleLock lock(m_metadataLock);
   //reset to empty before setting the new one
   //else it won't get refreshed because the name didn't change
-  g_infoManager.SetCurrentAlbumThumb("");
+  infoMgr.SetCurrentAlbumThumb("");
   //update the ui
-  g_infoManager.SetCurrentAlbumThumb(coverArtFile);
+  infoMgr.SetCurrentAlbumThumb(coverArtFile);
   //update the ui
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_REFRESH_THUMBS);
   CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);

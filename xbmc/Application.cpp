@@ -228,6 +228,7 @@ using namespace JSONRPC;
 using namespace ANNOUNCEMENT;
 using namespace PVR;
 using namespace PERIPHERALS;
+using namespace KODI;
 using namespace KODI::MESSAGING;
 using namespace ActiveAE;
 
@@ -399,7 +400,6 @@ bool CApplication::Create(const CAppParamParser &params)
   // after that we can send messages to the corresponding modules
   CApplicationMessenger::GetInstance().RegisterReceiver(this);
   CApplicationMessenger::GetInstance().RegisterReceiver(&CServiceBroker::GetPlaylistPlayer());
-  CApplicationMessenger::GetInstance().RegisterReceiver(&g_infoManager);
   CApplicationMessenger::GetInstance().SetGUIThread(m_threadID);
 
   //! @todo - move to CPlatformXXX
@@ -1691,7 +1691,7 @@ void CApplication::UnloadSkin(bool forReload /* = false */)
 
   g_colorManager.Clear();
 
-  g_infoManager.Clear();
+  CServiceBroker::GetGUI()->GetInfoManager().Clear();
 
 //  The g_SkinInfo shared_ptr ought to be reset here
 // but there are too many places it's used without checking for NULL
@@ -1858,12 +1858,13 @@ void CApplication::Render()
   // reset our info cache - we do this at the end of Render so that it is
   // fresh for the next process(), or after a windowclose animation (where process()
   // isn't called)
-  g_infoManager.ResetCache();
-  g_infoManager.GetInfoProviders().GetGUIControlsInfoProvider().ResetContainerMovingCache();
+  CGUIInfoManager& infoMgr = CServiceBroker::GetGUI()->GetInfoManager();
+  infoMgr.ResetCache();
+  infoMgr.GetInfoProviders().GetGUIControlsInfoProvider().ResetContainerMovingCache();
 
   if (hasRendered)
   {
-    g_infoManager.GetInfoProviders().GetSystemInfoProvider().UpdateFPS();
+    infoMgr.GetInfoProviders().GetSystemInfoProvider().UpdateFPS();
   }
 
   CServiceBroker::GetWinSystem()->GetGfxContext().Flip(hasRendered, m_appPlayer.IsRenderingVideoLayer());
@@ -1961,7 +1962,7 @@ bool CApplication::OnAction(const CAction &action)
   // show info : Shows the current video or song information
   if (action.GetID() == ACTION_SHOW_INFO)
   {
-    g_infoManager.GetInfoProviders().GetPlayerInfoProvider().ToggleShowInfo();
+    CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetPlayerInfoProvider().ToggleShowInfo();
     return true;
   }
 
@@ -1975,7 +1976,7 @@ bool CApplication::OnAction(const CAction &action)
     {
       m_itemCurrentFile->GetMusicInfoTag()->SetUserrating(userrating);
       // Mirror changes to GUI item
-      g_infoManager.SetCurrentItem(*m_itemCurrentFile);
+      CServiceBroker::GetGUI()->GetInfoManager().SetCurrentItem(*m_itemCurrentFile);
       
       // Asynchronously update song userrating in music library
       MUSIC_UTILS::UpdateSongRatingJob(m_itemCurrentFile, userrating);
@@ -2004,7 +2005,7 @@ bool CApplication::OnAction(const CAction &action)
     if (needsUpdate)
     {
       // Mirror changes to current GUI item
-      g_infoManager.SetCurrentItem(*m_itemCurrentFile);
+      CServiceBroker::GetGUI()->GetInfoManager().SetCurrentItem(*m_itemCurrentFile);
 
       // Asynchronously update song userrating in music library
       MUSIC_UTILS::UpdateSongRatingJob(m_itemCurrentFile, m_itemCurrentFile->GetMusicInfoTag()->GetUserrating());
@@ -2033,7 +2034,7 @@ bool CApplication::OnAction(const CAction &action)
     if (needsUpdate)
     {
       // Mirror changes to GUI item
-      g_infoManager.SetCurrentItem(*m_itemCurrentFile);
+      CServiceBroker::GetGUI()->GetInfoManager().SetCurrentItem(*m_itemCurrentFile);
 
       CVideoDatabase db;
       if (db.Open())
@@ -3486,7 +3487,7 @@ void CApplication::OnPlayBackSeek(int64_t iTime, int64_t seekOffset)
   param["player"]["playerid"] = CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist();
   param["player"]["speed"] = (int)m_appPlayer.GetPlaySpeed();
   CAnnouncementManager::GetInstance().Announce(Player, "xbmc", "OnSeek", m_itemCurrentFile, param);
-  g_infoManager.GetInfoProviders().GetPlayerInfoProvider().SetDisplayAfterSeek(2500, static_cast<int>(seekOffset));
+  CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetPlayerInfoProvider().SetDisplayAfterSeek(2500, static_cast<int>(seekOffset));
 }
 
 void CApplication::OnPlayBackSeekChapter(int iChapter)
@@ -3992,7 +3993,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
         if (m_itemCurrentFile->IsSamePath(item.get()))
         {
           m_itemCurrentFile->UpdateInfo(*item);
-          g_infoManager.UpdateCurrentItem(*item);
+          CServiceBroker::GetGUI()->GetInfoManager().UpdateCurrentItem(*item);
         }
       }
     }
@@ -4024,7 +4025,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
         CServiceBroker::GetPlaylistPlayer().SetCurrentSong(m_nextPlaylistItem);
         m_itemCurrentFile.reset(new CFileItem(*item));
       }
-      g_infoManager.SetCurrentItem(*m_itemCurrentFile);
+      CServiceBroker::GetGUI()->GetInfoManager().SetCurrentItem(*m_itemCurrentFile);
       g_partyModeManager.OnSongChange(true);
 
 #ifdef HAS_PYTHON
@@ -4112,7 +4113,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
   case GUI_MSG_PLAYBACK_STOPPED:
     m_playerEvent.Set();
     m_itemCurrentFile->Reset();
-    g_infoManager.ResetCurrentItem();
+    CServiceBroker::GetGUI()->GetInfoManager().ResetCurrentItem();
     PlaybackCleanup();
 #ifdef HAS_PYTHON
     g_pythonParser.OnPlayBackStopped();
@@ -4127,7 +4128,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
       return true;
     }
     m_itemCurrentFile->Reset();
-    g_infoManager.ResetCurrentItem();
+    CServiceBroker::GetGUI()->GetInfoManager().ResetCurrentItem();
     if (!CServiceBroker::GetPlaylistPlayer().PlayNext(1, true))
       m_appPlayer.ClosePlayer();
 
@@ -4140,7 +4141,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_PLAYLISTPLAYER_STOPPED:
     m_itemCurrentFile->Reset();
-    g_infoManager.ResetCurrentItem();
+    CServiceBroker::GetGUI()->GetInfoManager().ResetCurrentItem();
     PlaybackCleanup();
     return true;
 
@@ -4193,9 +4194,9 @@ bool CApplication::ExecuteXBMCAction(std::string actionStr, const CGUIListItemPt
   //postpone any logging
   const std::string in_actionStr(actionStr);
   if (item)
-    actionStr = CGUIInfoLabel::GetItemLabel(actionStr, item.get());
+    actionStr = GUILIB::GUIINFO::CGUIInfoLabel::GetItemLabel(actionStr, item.get());
   else
-    actionStr = CGUIInfoLabel::GetLabel(actionStr);
+    actionStr = GUILIB::GUIINFO::CGUIInfoLabel::GetLabel(actionStr);
 
   // user has asked for something to be executed
   if (CBuiltins::GetInstance().HasCommand(actionStr))
@@ -4842,7 +4843,7 @@ void CApplication::UpdateCurrentPlayArt()
   CMusicThumbLoader loader;
   loader.LoadItem(m_itemCurrentFile.get());
   // Mirror changes to GUI item
-  g_infoManager.SetCurrentItem(*m_itemCurrentFile);
+  CServiceBroker::GetGUI()->GetInfoManager().SetCurrentItem(*m_itemCurrentFile);
 }
 
 bool CApplication::IsVideoScanning() const

@@ -21,12 +21,15 @@
 #include "GUIIncludes.h"
 #include "addons/Skin.h"
 #include "GUIInfoManager.h"
-#include "GUIInfoTypes.h"
+#include "guiinfo/GUIInfoTypes.h"
+#include "guilib/GUIComponent.h"
 #include "utils/log.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
 #include "utils/StringUtils.h"
 #include "interfaces/info/SkinVariable.h"
+
+using namespace KODI::GUILIB;
 
 CGUIIncludes::CGUIIncludes()
 {
@@ -240,7 +243,7 @@ void CGUIIncludes::LoadIncludes(const TiXmlElement *node)
 
       if (condition)
       { // load include file if condition evals to true
-        if (g_infoManager.Register(condition)->Get())
+        if (CServiceBroker::GetGUI()->GetInfoManager().Register(condition)->Get())
           Load_Internal(file);
       }
       else
@@ -263,7 +266,7 @@ void CGUIIncludes::FlattenExpressions()
 void CGUIIncludes::FlattenExpression(std::string &expression, const std::vector<std::string> &resolved)
 {
   std::string original(expression);
-  CGUIInfoLabel::ReplaceSpecialKeywordReferences(expression, "EXP", [&](const std::string &expressionName) -> std::string {
+  GUIINFO::CGUIInfoLabel::ReplaceSpecialKeywordReferences(expression, "EXP", [&](const std::string &expressionName) -> std::string {
     if (std::find(resolved.begin(), resolved.end(), expressionName) != resolved.end())
     {
       CLog::Log(LOGERROR, "Skin has a circular expression \"%s\": %s", resolved.back().c_str(), original.c_str());
@@ -420,7 +423,7 @@ void CGUIIncludes::ResolveIncludes(TiXmlElement *node, std::map<INFO::InfoPtr, b
     const char *condition = include->Attribute("condition");
     if (condition)
     {
-      INFO::InfoPtr conditionID = g_infoManager.Register(ResolveExpressions(condition));
+      INFO::InfoPtr conditionID = CServiceBroker::GetGUI()->GetInfoManager().Register(ResolveExpressions(condition));
       bool value = conditionID->Get();
 
       if (xmlIncludeConditions)
@@ -658,7 +661,7 @@ public:
 CGUIIncludes::ResolveParamsResult CGUIIncludes::ResolveParameters(const std::string& strInput, std::string& strOutput, const Params& params)
 {
   ParamReplacer paramReplacer(params);
-  if (CGUIInfoLabel::ReplaceSpecialKeywordReferences(strInput, "PARAM", std::ref(paramReplacer), strOutput))
+  if (GUIINFO::CGUIInfoLabel::ReplaceSpecialKeywordReferences(strInput, "PARAM", std::ref(paramReplacer), strOutput))
     // detect special input values of the form "$PARAM[undefinedParam]" (with no extra characters around)
     return paramReplacer.GetNumUndefinedParams() == 1 && paramReplacer.GetNumTotalParams() == 1 && strOutput.empty() ? SINGLE_UNDEFINED_PARAM_RESOLVED : PARAMS_RESOLVED;
   return NO_PARAMS_FOUND;
@@ -679,7 +682,7 @@ std::string CGUIIncludes::ResolveConstant(const std::string &constant) const
 std::string CGUIIncludes::ResolveExpressions(const std::string &expression) const
 {
   std::string work(expression);
-  CGUIInfoLabel::ReplaceSpecialKeywordReferences(work, "EXP", [&](const std::string &str) -> std::string {
+  GUIINFO::CGUIInfoLabel::ReplaceSpecialKeywordReferences(work, "EXP", [&](const std::string &str) -> std::string {
     std::map<std::string, std::string>::const_iterator it = m_expressions.find(str);
     if (it != m_expressions.end())
       return it->second;

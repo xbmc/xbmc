@@ -199,5 +199,7 @@ namespace PVR
      * information.
      */
     mutable std::atomic<bool>       m_updateBackendCacheRequested;
+
+    bool m_bRegistered;
   };
 }

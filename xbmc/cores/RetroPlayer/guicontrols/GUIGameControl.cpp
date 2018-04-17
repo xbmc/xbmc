@@ -71,12 +71,12 @@ CGUIGameControl::~CGUIGameControl()
   UnregisterControl();
 }
 
-void CGUIGameControl::SetScalingMethod(const CGUIInfoLabel &scalingMethod)
+void CGUIGameControl::SetScalingMethod(const GUILIB::GUIINFO::CGUIInfoLabel &scalingMethod)
 {
   m_scalingMethodInfo = scalingMethod;
 }
 
-void CGUIGameControl::SetViewMode(const CGUIInfoLabel &viewMode)
+void CGUIGameControl::SetViewMode(const GUILIB::GUIINFO::CGUIInfoLabel &viewMode)
 {
   m_viewModeInfo = viewMode;
 }

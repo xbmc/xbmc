@@ -20,9 +20,12 @@
 
 #include "SkinVariable.h"
 #include "GUIInfoManager.h"
+#include "ServiceBroker.h"
+#include "guilib/GUIComponent.h"
 #include "utils/XBMCTinyXML.h"
 
 using namespace INFO;
+using namespace KODI;
 
 const CSkinVariableString* CSkinVariable::CreateFromXML(const TiXmlElement& node, int context)
 {
@@ -38,10 +41,10 @@ const CSkinVariableString* CSkinVariable::CreateFromXML(const TiXmlElement& node
       CSkinVariableString::ConditionLabelPair pair;
       const char *condition = valuenode->Attribute("condition");
       if (condition)
-        pair.m_condition = g_infoManager.Register(condition, context);
+        pair.m_condition = CServiceBroker::GetGUI()->GetInfoManager().Register(condition, context);
 
       auto label = valuenode->FirstChild() ? valuenode->FirstChild()->ValueStr() : "";
-      pair.m_label = CGUIInfoLabel(label);
+      pair.m_label = GUILIB::GUIINFO::CGUIInfoLabel(label);
       tmp->m_conditionLabelPairs.push_back(pair);
       if (!pair.m_condition)
         break; // once we reach default value (without condition) break iterating

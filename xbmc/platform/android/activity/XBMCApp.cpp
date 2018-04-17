@@ -80,6 +80,7 @@
 #include "ServiceBroker.h"
 #include "GUIInfoManager.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
+#include "guilib/GUIComponent.h"
 #include "platform/android/activity/IInputDeviceCallbacks.h"
 #include "platform/android/activity/IInputDeviceEventHandler.h"
 #include "input/mouse/MouseStat.h"
@@ -603,10 +604,11 @@ CRect CXBMCApp::MapRenderToDroid(const CRect& srcRect)
 
 void CXBMCApp::UpdateSessionMetadata()
 {
+  CGUIInfoManager& infoMgr = CServiceBroker::GetGUI()->GetInfoManager();
   CJNIMediaMetadataBuilder builder;
   builder
-      .putString(CJNIMediaMetadata::METADATA_KEY_DISPLAY_TITLE, g_infoManager.GetLabel(PLAYER_TITLE))
-      .putString(CJNIMediaMetadata::METADATA_KEY_TITLE, g_infoManager.GetLabel(PLAYER_TITLE))
+      .putString(CJNIMediaMetadata::METADATA_KEY_DISPLAY_TITLE, infoMgr.GetLabel(PLAYER_TITLE))
+      .putString(CJNIMediaMetadata::METADATA_KEY_TITLE, infoMgr.GetLabel(PLAYER_TITLE))
       .putLong(CJNIMediaMetadata::METADATA_KEY_DURATION, g_application.GetAppPlayer().GetTotalTime())
 //      .putString(CJNIMediaMetadata::METADATA_KEY_ART_URI, thumb)
 //      .putString(CJNIMediaMetadata::METADATA_KEY_DISPLAY_ICON_URI, thumb)
@@ -617,18 +619,18 @@ void CXBMCApp::UpdateSessionMetadata()
   if (m_playback_state & PLAYBACK_STATE_VIDEO)
   {
     builder
-        .putString(CJNIMediaMetadata::METADATA_KEY_DISPLAY_SUBTITLE, g_infoManager.GetLabel(VIDEOPLAYER_TAGLINE))
-        .putString(CJNIMediaMetadata::METADATA_KEY_ARTIST, g_infoManager.GetLabel(VIDEOPLAYER_DIRECTOR))
+        .putString(CJNIMediaMetadata::METADATA_KEY_DISPLAY_SUBTITLE, infoMgr.GetLabel(VIDEOPLAYER_TAGLINE))
+        .putString(CJNIMediaMetadata::METADATA_KEY_ARTIST, infoMgr.GetLabel(VIDEOPLAYER_DIRECTOR))
         ;
-    thumb = g_infoManager.GetImage(VIDEOPLAYER_COVER, -1);
+    thumb = infoMgr.GetImage(VIDEOPLAYER_COVER, -1);
   }
   else if (m_playback_state & PLAYBACK_STATE_AUDIO)
   {
     builder
-        .putString(CJNIMediaMetadata::METADATA_KEY_DISPLAY_SUBTITLE, g_infoManager.GetLabel(MUSICPLAYER_ARTIST))
-        .putString(CJNIMediaMetadata::METADATA_KEY_ARTIST, g_infoManager.GetLabel(MUSICPLAYER_ARTIST))
+        .putString(CJNIMediaMetadata::METADATA_KEY_DISPLAY_SUBTITLE, infoMgr.GetLabel(MUSICPLAYER_ARTIST))
+        .putString(CJNIMediaMetadata::METADATA_KEY_ARTIST, infoMgr.GetLabel(MUSICPLAYER_ARTIST))
         ;
-    thumb = g_infoManager.GetImage(MUSICPLAYER_COVER, -1);
+    thumb = infoMgr.GetImage(MUSICPLAYER_COVER, -1);
   }
   bool needrecaching = false;
   std::string cachefile = CTextureCache::GetInstance().CheckCachedImage(thumb, needrecaching);

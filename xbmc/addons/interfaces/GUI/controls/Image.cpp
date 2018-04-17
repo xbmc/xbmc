@@ -25,6 +25,8 @@
 #include "guilib/GUIImage.h"
 #include "utils/log.h"
 
+using namespace KODI;
+
 extern "C"
 {
 namespace ADDON
@@ -89,7 +91,7 @@ void Interface_GUIControlImage::set_color_diffuse(void* kodiBase, void* handle, 
     return;
   }
 
-  control->SetColorDiffuse(CGUIInfoColor(colorDiffuse));
+  control->SetColorDiffuse(GUILIB::GUIINFO::CGUIInfoColor(colorDiffuse));
 }
 
 } /* namespace ADDON */

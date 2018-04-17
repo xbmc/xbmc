@@ -23,6 +23,7 @@
 #include "FileItem.h"
 #include "ServiceBroker.h"
 #include "GUIInfoManager.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
 #include "messaging/ApplicationMessenger.h"
@@ -50,7 +51,7 @@ CGUIDialogPVRChannelsOSD::~CGUIDialogPVRChannelsOSD()
 {
   delete m_vecItems;
 
-  g_infoManager.UnregisterObserver(this);
+  CServiceBroker::GetGUI()->GetInfoManager().UnregisterObserver(this);
   CServiceBroker::GetPVRManager().EpgContainer().UnregisterObserver(this);
 }
 
@@ -182,7 +183,7 @@ bool CGUIDialogPVRChannelsOSD::OnAction(const CAction &action)
 
 void CGUIDialogPVRChannelsOSD::Update()
 {
-  g_infoManager.RegisterObserver(this);
+  CServiceBroker::GetGUI()->GetInfoManager().RegisterObserver(this);
   CServiceBroker::GetPVRManager().EpgContainer().RegisterObserver(this);
 
   m_viewControl.SetCurrentView(DEFAULT_VIEW_LIST);

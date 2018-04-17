@@ -68,6 +68,8 @@ public:
   CGUIInfoManager(void);
   ~CGUIInfoManager(void) override;
 
+  void Initialize();
+
   void Clear();
   void ResetCache();
 
@@ -214,9 +216,3 @@ private:
 
   KODI::GUILIB::GUIINFO::CGUIInfoProviders m_infoProviders;
 };
-
-/*!
- \ingroup strings
- \brief
- */
-extern CGUIInfoManager g_infoManager;
