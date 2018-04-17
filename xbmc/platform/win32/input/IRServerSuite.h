@@ -20,53 +20,38 @@
  */
 
 #include "IrssMessage.h"
-#include "input/remote/IRemoteControl.h"
+#include "input/IRTranslator.h"
 #include "threads/Thread.h"
 #include "threads/Event.h"
 
 #include <winsock2.h>
 #include <string>
 
-class CRemoteControl : public KODI::REMOTE::IRemoteControl, CThread
+class CIRServerSuite : public CThread
 {
 public:
-  CRemoteControl();
-  virtual ~CRemoteControl();
-  void Initialize() override;
-  void Disconnect() override;
-  void Reset() override;
-  void Update() override;
-  uint16_t GetButton() const override;
-  uint32_t GetHoldTimeMs() const  override;
-  bool IsInitialized() const override { return m_bInitialized; }
-  std::string GetMapFile() override;
-
-  void SetEnabled(bool) override { }
-  void SetDeviceName(const std::string&) override { }
-  void AddSendCommand(const std::string&) override { }
-  bool IsInUse() const override { return false; }
-
-  static IRemoteControl* CreateInstance();
-  static void Register();
+  CIRServerSuite();
+  virtual ~CIRServerSuite();
+  void Initialize();
 
 protected:
   virtual void Process();
+  bool ReadNext();
 
 private:
-  WORD  m_button;
-  bool  m_bInitialized;
-  SOCKET m_socket;
-  bool m_isConnecting;
-  std::string m_deviceName;
-  std::string m_keyCode;
-  CEvent m_event;
-
   bool SendPacket(CIrssMessage& message);
-  bool ReadPacket(CIrssMessage& message);
-  int  ReadN(char *buffer, int n);
+  int ReadPacket(CIrssMessage& message);
+  int ReadN(char *buffer, int n);
   bool WriteN(const char *buffer, int n);
   bool Connect(bool logMessages);
   void Close();
-
   bool HandleRemoteEvent(CIrssMessage& message);
+
+  bool m_bInitialized;
+  bool m_isConnecting;
+  int m_profileId;
+  SOCKET m_socket;
+  CEvent m_event;
+  CCriticalSection m_critSection;
+  CIRTranslator m_irTranslator;
 };
