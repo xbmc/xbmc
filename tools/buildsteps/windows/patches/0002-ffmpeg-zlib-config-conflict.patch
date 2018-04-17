@@ -1,6 +1,6 @@
 --- a/configure
 +++ b/configure
-@@ -7038,6 +7038,9 @@
+@@ -7143,6 +7143,9 @@
                                       $CONFIG_EXTRA      \
                                       $ALL_COMPONENTS    \
  

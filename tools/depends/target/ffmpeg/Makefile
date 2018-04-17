@@ -11,7 +11,7 @@ ffmpg_config = --prefix=$(PREFIX) --extra-version="kodi-$(VERSION)"
 ffmpg_config += --cc="$(CC)" --cxx="$(CXX)" --ar=$(AR) --ranlib=$(RANLIB) --strip=$(STRIP)
 ffmpg_config += --disable-devices --disable-doc
 ffmpg_config += --disable-ffplay --disable-ffmpeg
-ffmpg_config += --disable-ffprobe --disable-ffserver
+ffmpg_config += --disable-ffprobe
 ffmpg_config += --disable-sdl2
 ffmpg_config += --enable-gpl --enable-runtime-cpudetect
 ffmpg_config += --enable-postproc --enable-pthreads
@@ -49,11 +49,11 @@ ifeq ($(OS), ios)
     ffmpg_config += --as="$(NATIVEPREFIX)/bin/gas-preprocessor.pl -arch aarch64 -- $(CC)"
   endif
   ffmpg_config += --yasmexe=$(NATIVEPREFIX)/bin/yasm
-  ffmpg_config += --disable-decoder=mpeg_xvmc --disable-vda --disable-crystalhd --enable-videotoolbox
+  ffmpg_config += --disable-decoder=mpeg_xvmc --disable-crystalhd --enable-videotoolbox
   ffmpg_config += --target-os=darwin
 endif
 ifeq ($(OS), osx)
-  ffmpg_config += --disable-decoder=mpeg_xvmc --disable-vda --disable-crystalhd --enable-videotoolbox
+  ffmpg_config += --disable-decoder=mpeg_xvmc --disable-crystalhd --enable-videotoolbox
   ffmpg_config += --target-os=darwin
   ffmpg_config += --disable-securetransport
 endif
