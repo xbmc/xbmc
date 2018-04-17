@@ -17,10 +17,6 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-
-#ifndef WINDOW_EVENTS_WIN10_H
-#define WINDOW_EVENTS_WIN10_H
-
 #pragma once
 
 #include "interfaces/IAnnouncer.h"
@@ -28,10 +24,15 @@
 #include <concurrent_queue.h>
 #include <cmath>
 
+class CRemoteControlXbox;
+
 class CWinEventsWin10 : public IWinEvents
                       , public ANNOUNCEMENT::IAnnouncer
 {
 public:
+  CWinEventsWin10();
+  virtual ~CWinEventsWin10();
+
   void MessagePush(XBMC_Event *newEvent);
   bool MessagePump() override;
   virtual size_t GetQueueSize();
@@ -83,6 +84,5 @@ private:
   float m_logicalHeight{ 0 };
   float m_logicalPosX{ 0 };
   float m_logicalPosY{ 0 };
+  std::unique_ptr<CRemoteControlXbox> m_remote;
 };
-
-#endif // WINDOW_EVENTS_WIN10_H
