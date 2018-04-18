@@ -1,22 +1,14 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <settings version="1">
-  <section id="player">
-    <category id="videoplayer">
-      <group id="3">
-        <setting id="videoplayer.useprimedecoder" type="boolean" label="13430" help="36172">
-          <level>2</level>
-          <default>true</default>
-          <control type="toggle" />
-        </setting>
-      </group>
-    </category>
-  </section>
   <section id="system">
     <category id="display">
       <group id="1">
         <setting id="videoscreen.limitedrange" type="boolean" label="36042" help="36359">
           <level>3</level>
           <default>false</default>
+          <updates>
+            <update type="rename">videoplayer.vdpaustudiolevel</update>
+          </updates>
           <control type="toggle" />
         </setting>
       </group>
