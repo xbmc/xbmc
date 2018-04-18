@@ -3,7 +3,7 @@
 # ---------------
 # Finds the MySqlClient library
 #
-# This will will define the following variables::
+# This will define the following variables::
 #
 # MYSQLCLIENT_FOUND - system has MySqlClient
 # MYSQLCLIENT_INCLUDE_DIRS - the MySqlClient include directory

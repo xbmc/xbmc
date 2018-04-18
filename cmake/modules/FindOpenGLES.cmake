@@ -3,7 +3,7 @@
 # ------------
 # Finds the OpenGLES2 library
 #
-# This will will define the following variables::
+# This will define the following variables::
 #
 # OPENGLES_FOUND - system has OpenGLES
 # OPENGLES_INCLUDE_DIRS - the OpenGLES include directory

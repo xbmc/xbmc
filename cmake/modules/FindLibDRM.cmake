@@ -3,7 +3,7 @@
 # ----------
 # Finds the LibDRM library
 #
-# This will will define the following variables::
+# This will define the following variables::
 #
 # LIBDRM_FOUND - system has LibDRM
 # LIBDRM_INCLUDE_DIRS - the LibDRM include directory

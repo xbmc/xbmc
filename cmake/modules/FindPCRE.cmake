@@ -3,7 +3,7 @@
 # --------
 # Finds the PCRECPP library
 #
-# This will will define the following variables::
+# This will define the following variables::
 #
 # PCRE_FOUND - system has libpcrecpp
 # PCRE_INCLUDE_DIRS - the libpcrecpp include directory

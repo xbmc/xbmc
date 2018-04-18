@@ -3,7 +3,7 @@
 # --------
 # Finds the libuuid library
 #
-# This will will define the following variables::
+# This will define the following variables::
 #
 # UUID_FOUND - system has libuuid
 # UUID_INCLUDE_DIRS - the libuuid include directory

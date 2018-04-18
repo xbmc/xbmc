@@ -3,7 +3,7 @@
 # -------
 # Finds the UDEV library
 #
-# This will will define the following variables::
+# This will define the following variables::
 #
 # UDEV_FOUND - system has UDEV
 # UDEV_INCLUDE_DIRS - the UDEV include directory

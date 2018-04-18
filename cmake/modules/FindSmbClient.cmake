@@ -3,7 +3,7 @@
 # -------------
 # Finds the SMB Client library
 #
-# This will will define the following variables::
+# This will define the following variables::
 #
 # SMBCLIENT_FOUND - system has SmbClient
 # SMBCLIENT_INCLUDE_DIRS - the SmbClient include directory

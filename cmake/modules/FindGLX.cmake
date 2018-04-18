@@ -3,7 +3,7 @@
 # -----
 # Finds the GLX library
 #
-# This will will define the following variables::
+# This will define the following variables::
 #
 # GLX_FOUND - system has GLX
 # GLX_INCLUDE_DIRS - the GLX include directory

@@ -3,7 +3,7 @@
 # -----------
 # Finds the GNU FriBidi library
 #
-# This will will define the following variables::
+# This will define the following variables::
 #
 # FRIBIDI_FOUND - system has FriBidi
 # FRIBIDI_INCLUDE_DIRS - the FriBidi include directory

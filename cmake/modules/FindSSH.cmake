@@ -3,7 +3,7 @@
 # -------
 # Finds the SSH library
 #
-# This will will define the following variables::
+# This will define the following variables::
 #
 # SSH_FOUND - system has SSH
 # SSH_INCLUDE_DIRS - the SSH include directory

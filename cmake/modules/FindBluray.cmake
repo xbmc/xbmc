@@ -3,7 +3,7 @@
 # ----------
 # Finds the libbluray library
 #
-# This will will define the following variables::
+# This will define the following variables::
 #
 # BLURAY_FOUND - system has libbluray
 # BLURAY_INCLUDE_DIRS - the libbluray include directory

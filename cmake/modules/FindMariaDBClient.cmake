@@ -3,7 +3,7 @@
 # ---------------
 # Finds the MariaDBClient library
 #
-# This will will define the following variables::
+# This will define the following variables::
 #
 # MARIADBCLIENT_FOUND - system has MariaDBClient
 # MARIADBCLIENT_INCLUDE_DIRS - the MariaDBClient include directory

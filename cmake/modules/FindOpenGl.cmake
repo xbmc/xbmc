@@ -3,7 +3,7 @@
 # ----------
 # Finds the FindOpenGl library
 #
-# This will will define the following variables::
+# This will define the following variables::
 #
 # OPENGL_FOUND - system has OpenGl
 # OPENGL_INCLUDE_DIRS - the OpenGl include directory

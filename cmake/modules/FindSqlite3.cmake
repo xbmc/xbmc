@@ -3,7 +3,7 @@
 # -----------
 # Finds the SQLite3 library
 #
-# This will will define the following variables::
+# This will define the following variables::
 #
 # SQLITE3_FOUND - system has SQLite3
 # SQLITE3_INCLUDE_DIRS - the SQLite3 include directory

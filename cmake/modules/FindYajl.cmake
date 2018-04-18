@@ -3,7 +3,7 @@
 # --------
 # Finds the Yajl library
 #
-# This will will define the following variables::
+# This will define the following variables::
 #
 # YAJL_FOUND - system has Yajl
 # YAJL_INCLUDE_DIRS - Yajl include directory

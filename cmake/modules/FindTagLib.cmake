@@ -3,7 +3,7 @@
 # ----------
 # Finds the TagLib library
 #
-# This will will define the following variables::
+# This will define the following variables::
 #
 # TAGLIB_FOUND - system has TagLib
 # TAGLIB_INCLUDE_DIRS - the TagLib include directory

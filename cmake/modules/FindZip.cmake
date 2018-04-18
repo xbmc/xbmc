@@ -3,7 +3,7 @@
 # -----------
 # Finds the Zip library
 #
-# This will will define the following variables::
+# This will define the following variables::
 #
 # ZIP_FOUND - system has Zip
 # ZIP_INCLUDE_DIRS - the Zip include directory

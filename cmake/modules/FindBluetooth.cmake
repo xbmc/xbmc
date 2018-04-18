@@ -3,7 +3,7 @@
 # ---------
 # Finds the Bluetooth library
 #
-# This will will define the following variables::
+# This will define the following variables::
 #
 # BLUETOOTH_FOUND - system has Bluetooth
 # BLUETOOTH_INCLUDE_DIRS - the Bluetooth include directory

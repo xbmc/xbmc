@@ -2,7 +2,7 @@
 # ----------
 # Finds the GBM library
 #
-# This will will define the following variables::
+# This will define the following variables::
 #
 # GBM_FOUND - system has GBM
 # GBM_INCLUDE_DIRS - the GBM include directory

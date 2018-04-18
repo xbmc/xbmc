@@ -3,7 +3,7 @@
 # -------
 # Finds the DBUS library
 #
-# This will will define the following variables::
+# This will define the following variables::
 #
 # DBUS_FOUND - system has DBUS
 # DBUS_INCLUDE_DIRS - the DBUS include directory

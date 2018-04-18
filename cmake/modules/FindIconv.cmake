@@ -3,7 +3,7 @@
 # --------
 # Finds the ICONV library
 #
-# This will will define the following variables::
+# This will define the following variables::
 #
 # ICONV_FOUND - system has ICONV
 # ICONV_INCLUDE_DIRS - the ICONV include directory

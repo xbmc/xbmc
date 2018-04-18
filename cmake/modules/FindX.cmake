@@ -3,7 +3,7 @@
 # -----
 # Finds the X11 library
 #
-# This will will define the following variables::
+# This will define the following variables::
 #
 # X_FOUND - system has X11
 # X_INCLUDE_DIRS - the X11 include directory

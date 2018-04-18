@@ -3,7 +3,7 @@
 # --------
 # Finds the Curl library
 #
-# This will will define the following variables::
+# This will define the following variables::
 #
 # CURL_FOUND - system has Curl
 # CURL_INCLUDE_DIRS - the Curl include directory

@@ -3,7 +3,7 @@
 # --------
 # Finds the Lzo2 library
 #
-# This will will define the following variables::
+# This will define the following variables::
 #
 # LZO2_FOUND - system has Lzo2
 # LZO2_INCLUDE_DIRS - the Lzo2 include directory

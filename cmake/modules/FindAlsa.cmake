@@ -3,7 +3,7 @@
 # --------
 # Finds the Alsa library
 #
-# This will will define the following variables::
+# This will define the following variables::
 #
 # ALSA_FOUND - system has Alsa
 # ALSA_INCLUDE_DIRS - the Alsa include directory

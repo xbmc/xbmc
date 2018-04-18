@@ -3,7 +3,7 @@
 # -------
 # Finds the AML codec
 #
-# This will will define the following variables::
+# This will define the following variables::
 #
 # AML_FOUND - system has AML
 # AML_INCLUDE_DIRS - the AML include directory

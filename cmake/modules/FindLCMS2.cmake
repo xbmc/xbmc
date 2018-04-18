@@ -3,7 +3,7 @@
 # -----------
 # Finds the LCMS Color Management library
 #
-# This will will define the following variables::
+# This will define the following variables::
 #
 # LCMS2_FOUND - system has LCMS Color Management
 # LCMS2_INCLUDE_DIRS - the LCMS Color Management include directory

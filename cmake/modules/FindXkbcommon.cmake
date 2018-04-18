@@ -2,7 +2,7 @@
 # -----------
 # Finds the libxkbcommon library
 #
-# This will will define the following variables::
+# This will define the following variables::
 #
 # XKBCOMMON_FOUND        - the system has libxkbcommon
 # XKBCOMMON_INCLUDE_DIRS - the libxkbcommon include directory
