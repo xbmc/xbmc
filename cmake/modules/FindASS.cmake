@@ -3,7 +3,7 @@
 # -------
 # Finds the ASS library
 #
-# This will will define the following variables::
+# This will define the following variables::
 #
 # ASS_FOUND - system has ASS
 # ASS_INCLUDE_DIRS - the ASS include directory

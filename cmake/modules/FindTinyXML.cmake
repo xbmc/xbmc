@@ -3,7 +3,7 @@
 # -----------
 # Finds the TinyXML library
 #
-# This will will define the following variables::
+# This will define the following variables::
 #
 # TINYXML_FOUND - system has TinyXML
 # TINYXML_INCLUDE_DIRS - the TinyXML include directory

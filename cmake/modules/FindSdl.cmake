@@ -3,7 +3,7 @@
 # -------
 # Finds the SDL library
 #
-# This will will define the following variables::
+# This will define the following variables::
 #
 # SDL_FOUND - system has SDL
 # SDL_INCLUDE_DIRS - the SDL include directory

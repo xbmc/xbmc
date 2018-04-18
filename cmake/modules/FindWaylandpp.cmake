@@ -2,7 +2,7 @@
 # -------------
 # Finds the waylandpp library
 #
-# This will will define the following variables::
+# This will define the following variables::
 #
 # WAYLANDPP_FOUND        - the system has waylandpp
 # WAYLANDPP_INCLUDE_DIRS - the waylandpp include directory

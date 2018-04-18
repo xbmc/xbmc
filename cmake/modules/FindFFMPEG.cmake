@@ -18,7 +18,7 @@
 #               usage: -DWITH_FFMPEG=/path/to/ffmpeg_install_prefix
 #
 # --------
-# This module will will define the following variables:
+# This module will define the following variables:
 #
 # FFMPEG_FOUND - system has FFmpeg
 # FFMPEG_INCLUDE_DIRS - FFmpeg include directory

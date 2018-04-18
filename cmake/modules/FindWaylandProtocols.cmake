@@ -2,7 +2,7 @@
 # --------------------
 # Find wayland-protocols
 #
-# This will will define the following variables::
+# This will define the following variables::
 #
 # WAYLAND_PROTOCOLS_DIR - directory containing the additional Wayland protocols
 #                         from the wayland-protocols package

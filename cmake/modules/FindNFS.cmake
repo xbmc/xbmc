@@ -3,7 +3,7 @@
 # -------
 # Finds the libnfs library
 #
-# This will will define the following variables::
+# This will define the following variables::
 #
 # NFS_FOUND - system has libnfs
 # NFS_INCLUDE_DIRS - the libnfs include directory

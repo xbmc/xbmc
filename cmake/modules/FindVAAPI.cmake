@@ -3,7 +3,7 @@
 # ---------
 # Finds the VAAPI library
 #
-# This will will define the following variables::
+# This will define the following variables::
 #
 # VAAPI_FOUND - system has VAAPI
 # VAAPI_INCLUDE_DIRS - the VAAPI include directory

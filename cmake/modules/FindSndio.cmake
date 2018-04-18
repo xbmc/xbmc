@@ -3,7 +3,7 @@
 # ---------
 # Finds the Sndio Library
 #
-# This will will define the following variables:
+# This will define the following variables:
 #
 # SNDIO_FOUND - system has sndio
 # SNDIO_INCLUDE_DIRS - sndio include directory

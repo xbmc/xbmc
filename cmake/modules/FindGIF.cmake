@@ -3,7 +3,7 @@
 # -------
 # Finds the libgif library
 #
-# This will will define the following variables::
+# This will define the following variables::
 #
 # GIF_FOUND - system has libgif
 # GIF_INCLUDE_DIRS - the libgif include directory

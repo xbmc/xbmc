@@ -3,7 +3,7 @@
 # ----------
 # Finds the USB library
 #
-# This will will define the following variables::
+# This will define the following variables::
 #
 # LIBUSB_FOUND - system has LibUSB
 # LIBUSB_INCLUDE_DIRS - the USB include directory

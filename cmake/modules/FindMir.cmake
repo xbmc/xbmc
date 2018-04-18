@@ -2,7 +2,7 @@
 # -------
 # Finds the Mir library
 #
-# This will will define the following variables::
+# This will define the following variables::
 #
 # MIR_FOUND        - the system has Mir
 # MIR_INCLUDE_DIRS - the Mir include directory

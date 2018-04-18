@@ -3,7 +3,7 @@
 # --------
 # Finds the XSLT library
 #
-# This will will define the following variables::
+# This will define the following variables::
 #
 # XSLT_FOUND - system has XSLT
 # XSLT_INCLUDE_DIRS - the XSLT include directory

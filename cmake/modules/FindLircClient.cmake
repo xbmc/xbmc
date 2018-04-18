@@ -2,7 +2,7 @@
 # -----------
 # Finds the liblirc_client library
 #
-# This will will define the following variables::
+# This will define the following variables::
 #
 #  LIRCCLIENT_FOUND         - if false, do not try to link to lirc_client
 #  LIRCCLIENT_INCLUDE_DIRS  - where to find lirc/lirc_client.h

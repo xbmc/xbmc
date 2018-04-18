@@ -3,7 +3,7 @@
 # -------------
 # Finds the Shairplay library
 #
-# This will will define the following variables::
+# This will define the following variables::
 #
 # SHAIRPLAY_FOUND - system has Shairplay
 # SHAIRPLAY_INCLUDE_DIRS - the Shairplay include directory

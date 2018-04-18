@@ -3,7 +3,7 @@
 # --------------
 # Finds the MicroHttpd library
 #
-# This will will define the following variables::
+# This will define the following variables::
 #
 # MICROHTTPD_FOUND - system has MicroHttpd
 # MICROHTTPD_INCLUDE_DIRS - the MicroHttpd include directory

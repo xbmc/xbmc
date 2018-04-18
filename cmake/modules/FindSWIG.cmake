@@ -3,7 +3,7 @@
 # --------
 # Finds the SWIG executable
 #
-# This will will define the following variables::
+# This will define the following variables::
 #
 # SWIG_FOUND - system has SWIG
 # SWIG_EXECUTABLE - the SWIG executable

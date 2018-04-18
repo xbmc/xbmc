@@ -3,7 +3,7 @@
 # ----------
 # Finds the XRandR library
 #
-# This will will define the following variables::
+# This will define the following variables::
 #
 # XRANDR_FOUND - system has XRANDR
 # XRANDR_INCLUDE_DIRS - the XRANDR include directory

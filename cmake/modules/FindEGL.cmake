@@ -3,7 +3,7 @@
 # -------
 # Finds the EGL library
 #
-# This will will define the following variables::
+# This will define the following variables::
 #
 # EGL_FOUND - system has EGL
 # EGL_INCLUDE_DIRS - the EGL include directory

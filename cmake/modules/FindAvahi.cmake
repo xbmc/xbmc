@@ -3,7 +3,7 @@
 # ---------
 # Finds the avahi library
 #
-# This will will define the following variables::
+# This will define the following variables::
 #
 # AVAHI_FOUND - system has avahi
 # AVAHI_INCLUDE_DIRS - the avahi include directory

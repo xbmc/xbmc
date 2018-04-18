@@ -3,7 +3,7 @@
 # ---------
 # Finds the Plist library
 #
-# This will will define the following variables::
+# This will define the following variables::
 #
 # PLIST_FOUND - system has Plist library
 # PLIST_INCLUDE_DIRS - the Plist library include directory

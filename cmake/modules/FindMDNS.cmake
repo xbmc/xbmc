@@ -3,7 +3,7 @@
 # --------
 # Finds the mDNS library
 #
-# This will will define the following variables::
+# This will define the following variables::
 #
 # MDNS_FOUND - system has mDNS
 # MDNS_INCLUDE_DIRS - the mDNS include directory

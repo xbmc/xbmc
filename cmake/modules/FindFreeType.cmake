@@ -3,7 +3,7 @@
 # ------------
 # Finds the FreeType library
 #
-# This will will define the following variables::
+# This will define the following variables::
 #
 # FREETYPE_FOUND - system has FreeType
 # FREETYPE_INCLUDE_DIRS - the FreeType include directory

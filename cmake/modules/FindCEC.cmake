@@ -3,7 +3,7 @@
 # -------
 # Finds the libCEC library
 #
-# This will will define the following variables::
+# This will define the following variables::
 #
 # CEC_FOUND - system has libCEC
 # CEC_INCLUDE_DIRS - the libCEC include directory

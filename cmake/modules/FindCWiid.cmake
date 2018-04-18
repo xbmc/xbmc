@@ -3,7 +3,7 @@
 # ---------
 # Finds the CWiid library
 #
-# This will will define the following variables::
+# This will define the following variables::
 #
 # CWIID_FOUND - system has CWiid
 # CWIID_INCLUDE_DIRS - the CWiid include directory

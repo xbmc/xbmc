@@ -3,7 +3,7 @@
 # ---------
 # Finds the VDPAU library
 #
-# This will will define the following variables::
+# This will define the following variables::
 #
 # VDPAU_FOUND - system has VDPAU
 # VDPAU_INCLUDE_DIRS - the VDPAU include directory
