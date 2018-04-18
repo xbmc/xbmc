@@ -245,8 +245,7 @@ REFRESHRATE CWinSystemBase::DefaultRefreshRate(int screen, std::vector<REFRESHRA
 
 bool CWinSystemBase::UseLimitedColor()
 {
-  static std::shared_ptr<CSettingBool> setting = std::static_pointer_cast<CSettingBool>(CServiceBroker::GetSettings().GetSetting(CSettings::SETTING_VIDEOSCREEN_LIMITEDRANGE));
-  return setting->GetValue();
+  return CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOSCREEN_LIMITEDRANGE);
 }
 
 std::string CWinSystemBase::GetClipboardText(void)
