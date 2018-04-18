@@ -45,7 +45,7 @@
 						<label>$LOCALIZE[13395]</label>
 						<onclick>ActivateWindow(osdvideosettings)</onclick>
 					</control>
-					<control type="button" id="11105">
+					<control type="button" id="11103">
 						<width>700</width>
 						<include>DialogSettingButton</include>
 						<label>$LOCALIZE[36560]</label>
