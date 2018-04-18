@@ -60,12 +60,9 @@ using EVENTSERVER::CEventServer;
 using namespace KODI;
 using namespace MESSAGING;
 
-CreateRemoteControlFunc CInputManager::m_createRemoteControl = nullptr;
-
 CInputManager::CInputManager(const CAppParamParser &params) :
   m_keymapEnvironment(new CKeymapEnvironment),
   m_buttonTranslator(new CButtonTranslator),
-  m_irTranslator(new CIRTranslator()),
   m_customControllerTranslator(new CCustomControllerTranslator),
   m_touchTranslator(new CTouchTranslator),
   m_joystickTranslator(new CJoystickMapper),
@@ -77,15 +74,6 @@ CInputManager::CInputManager(const CAppParamParser &params) :
 
   RegisterKeyboardDriverHandler(m_keyboardEasterEgg.get());
 
-  if (m_createRemoteControl)
-    m_RemoteControl.reset(m_createRemoteControl());
-
-  if (!params.RemoteControlName().empty())
-    SetRemoteControlName(params.RemoteControlName());
-
-  if (!params.RemoteControlEnabled())
-    DisableRemoteControl();
-
   // Register settings
   std::set<std::string> settingSet;
   settingSet.insert(CSettings::SETTING_INPUT_ENABLEMOUSE);
@@ -95,8 +83,6 @@ CInputManager::CInputManager(const CAppParamParser &params) :
 CInputManager::~CInputManager()
 {
   Deinitialize();
-
-  m_RemoteControl.reset();
 
   // Unregister settings
   CServiceBroker::GetSettings().UnregisterCallback(this);
@@ -110,8 +96,6 @@ CInputManager::~CInputManager()
 
 void CInputManager::InitializeInputs()
 {
-  if (m_RemoteControl)
-    m_RemoteControl->Initialize();
   m_Keyboard.Initialize();
 
   m_Mouse.Initialize();
@@ -120,23 +104,6 @@ void CInputManager::InitializeInputs()
 
 void CInputManager::Deinitialize()
 {
-  if (m_RemoteControl)
-    m_RemoteControl->Disconnect();
-}
-
-bool CInputManager::ProcessRemote(int windowId)
-{
-  if (!m_RemoteControl)
-    return false;
-
-  m_RemoteControl->Update();
-  if (m_RemoteControl->GetButton())
-  {
-    CKey key(m_RemoteControl->GetButton(), m_RemoteControl->GetHoldTimeMs());
-    m_RemoteControl->Reset();
-    return OnKey(key);
-  }
-  return false;
 }
 
 bool CInputManager::ProcessPeripherals(float frameTime)
@@ -354,7 +321,6 @@ void CInputManager::QueueAction(const CAction& action)
 bool CInputManager::Process(int windowId, float frameTime)
 {
   // process input actions
-  ProcessRemote(windowId);
   ProcessEventServer(windowId, frameTime);
   ProcessPeripherals(frameTime);
   ProcessQueuedActions();
@@ -746,10 +712,6 @@ bool CInputManager::HasBuiltin(const std::string& command)
 
 int CInputManager::ExecuteBuiltin(const std::string& execute, const std::vector<std::string>& params)
 {
-  if (HasRemoteControl())
-  {
-    return -1;
-  }
   return 0;
 }
 
@@ -786,54 +748,6 @@ void CInputManager::SetMouseResolution(int maxX, int maxY, float speedX, float s
 void CInputManager::SetMouseState(MOUSE_STATE mouseState)
 {
   m_Mouse.SetState(mouseState);
-}
-
-bool CInputManager::HasRemoteControl()
-{
-  return m_RemoteControl ? true : false;
-}
-
-bool CInputManager::IsRemoteControlEnabled()
-{
-  return m_RemoteControl && m_RemoteControl->IsInUse();
-}
-
-bool CInputManager::IsRemoteControlInitialized()
-{
-  return m_RemoteControl && m_RemoteControl->IsInitialized();
-}
-
-void CInputManager::EnableRemoteControl()
-{
-  if (!m_RemoteControl)
-    return;
-
-  m_RemoteControl->SetEnabled(true);
-  if (!m_RemoteControl->IsInitialized())
-  {
-    m_RemoteControl->Initialize();
-  }
-}
-
-void CInputManager::DisableRemoteControl()
-{
-  if (m_RemoteControl)
-  {
-    m_RemoteControl->Disconnect();
-    m_RemoteControl->SetEnabled(false);
-  }
-}
-
-void CInputManager::InitializeRemoteControl()
-{
-  if (m_RemoteControl && !m_RemoteControl->IsInitialized())
-    m_RemoteControl->Initialize();
-}
-
-void CInputManager::SetRemoteControlName(const std::string& name)
-{
-  if (m_RemoteControl)
-    m_RemoteControl->SetDeviceName(name);
 }
 
 void CInputManager::OnSettingChanged(std::shared_ptr<const CSetting> setting)
@@ -898,8 +812,6 @@ bool CInputManager::LoadKeymaps()
 
   if (m_buttonTranslator->Load())
   {
-    if (m_RemoteControl)
-      m_irTranslator->Load(m_RemoteControl->GetMapFile());
     bSuccess = true;
   }
 
@@ -917,7 +829,6 @@ bool CInputManager::ReloadKeymaps()
 void CInputManager::ClearKeymaps()
 {
   m_buttonTranslator->Clear();
-  m_irTranslator->Clear();
 
   SetChanged();
   NotifyObservers(ObservableMessageButtonMapsChanged);
@@ -961,11 +872,6 @@ std::vector<std::shared_ptr<const IWindowKeymap>> CInputManager::GetJoystickKeym
   return m_joystickTranslator->GetJoystickKeymaps();
 }
 
-int CInputManager::TranslateLircRemoteString(const std::string &szDevice, const std::string &szButton)
-{
-  return m_irTranslator->TranslateButton(szDevice, szButton);
-}
-
 void CInputManager::RegisterKeyboardDriverHandler(KEYBOARD::IKeyboardDriverHandler* handler)
 {
   if (std::find(m_keyboardHandlers.begin(), m_keyboardHandlers.end(), handler) == m_keyboardHandlers.end())
@@ -987,9 +893,3 @@ void CInputManager::UnregisterMouseDriverHandler(MOUSE::IMouseDriverHandler* han
 {
   m_mouseHandlers.erase(std::remove(m_mouseHandlers.begin(), m_mouseHandlers.end(), handler), m_mouseHandlers.end());
 }
-
-void CInputManager::RegisterRemoteControl(CreateRemoteControlFunc createFunc)
-{
-  m_createRemoteControl = createFunc;
-}
-

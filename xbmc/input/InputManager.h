@@ -29,7 +29,6 @@
 #include "input/mouse/interfaces/IMouseInputProvider.h"
 #include "input/mouse/MouseStat.h"
 #include "input/KeyboardStat.h"
-#include "input/remote/IRemoteControl.h"
 #include "interfaces/IActionListener.h"
 #include "settings/lib/ISettingCallback.h"
 #include "threads/CriticalSection.h"
@@ -38,7 +37,6 @@
 class CAppParamParser;
 class CButtonTranslator;
 class CCustomControllerTranslator;
-class CIRTranslator;
 class CJoystickMapper;
 class CKey;
 class CProfilesManager;
@@ -60,7 +58,6 @@ namespace MOUSE
 }
 }
 
-using CreateRemoteControlFunc = KODI::REMOTE::IRemoteControl* (*)();
 /// \addtogroup input
 /// \{
 
@@ -83,13 +80,6 @@ public:
   CInputManager(const CInputManager&) = delete;
   CInputManager const& operator=(CInputManager const&) = delete;
   ~CInputManager() override;
-
-  /*! \brief decode an input event from remote controls.
-   *
-   * \param windowId Currently active window
-   * \return true if event is handled, false otherwise
-   */
-  bool ProcessRemote(int windowId);
 
   /*! \brief decode a mouse event and reset idle timers.
    *
@@ -188,46 +178,6 @@ public:
    */
   void SetMouseResolution(int maxX, int maxY, float speedX, float speedY);
 
-  /*! \brief Enable the remote control
-   *
-   */
-  void EnableRemoteControl();
-
-  /*! \brief Disable the remote control
-   *
-   */
-  void DisableRemoteControl();
-
-  /*! \brief Try to connect to a remote control to listen for commands
-   *
-   */
-  void InitializeRemoteControl();
-
-  /*! \brief Check if the remote control exists
-   *
-   * \return true if remote control is exists, false otherwise 
-   */
-  bool HasRemoteControl();
-
-  /*! \brief Check if the remote control is enabled
-   *
-   * \return true if remote control is enabled, false otherwise 
-   */
-  bool IsRemoteControlEnabled();
-
-  /*! \brief Check if the remote control is initialized
-   *
-   * \return true if initialized, false otherwise 
-   */
-  bool IsRemoteControlInitialized();
-
-  /*! \brief Set the device name to use with LIRC, does nothing 
-   *   if IRServerSuite is used
-   *
-   * \param[in] name Name of the device to use with LIRC
-   */
-  void SetRemoteControlName(const std::string& name);
-
   /*! \brief Returns whether or not we can handle a given built-in command.
    *
    */
@@ -267,8 +217,6 @@ public:
 
   std::vector<std::shared_ptr<const IWindowKeymap>> GetJoystickKeymaps() const;
 
-  int TranslateLircRemoteString(const std::string &szDevice, const std::string &szButton);
-
   /*!
    * \brief Queue an action to be processed on the next call to Process()
    */
@@ -285,8 +233,6 @@ public:
 
   virtual void RegisterMouseDriverHandler(KODI::MOUSE::IMouseDriverHandler* handler);
   virtual void UnregisterMouseDriverHandler(KODI::MOUSE::IMouseDriverHandler* handler);
-
-  static void RegisterRemoteControl(CreateRemoteControlFunc createFunc);
 
 private:
 
@@ -346,17 +292,14 @@ private:
   // Button translation
   std::unique_ptr<IKeymapEnvironment> m_keymapEnvironment;
   std::unique_ptr<CButtonTranslator> m_buttonTranslator;
-  std::unique_ptr<CIRTranslator> m_irTranslator;
   std::unique_ptr<CCustomControllerTranslator> m_customControllerTranslator;
   std::unique_ptr<CTouchTranslator> m_touchTranslator;
   std::unique_ptr<CJoystickMapper> m_joystickTranslator;
-  std::unique_ptr<KODI::REMOTE::IRemoteControl> m_RemoteControl;
 
   std::vector<KODI::KEYBOARD::IKeyboardDriverHandler*> m_keyboardHandlers;
   std::vector<KODI::MOUSE::IMouseDriverHandler*> m_mouseHandlers;
 
   std::unique_ptr<KODI::KEYBOARD::IKeyboardDriverHandler> m_keyboardEasterEgg;
-  static CreateRemoteControlFunc m_createRemoteControl;
 };
 
 /// \}

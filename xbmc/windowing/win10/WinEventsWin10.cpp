@@ -18,6 +18,7 @@
  *
  */
 
+#include "WinEventsWin10.h"
 #include "Application.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
@@ -28,9 +29,9 @@
 #include "input/ActionIDs.h"
 #include "interfaces/AnnouncementManager.h"
 #include "messaging/ApplicationMessenger.h"
+#include "platform/win10/AsyncHelpers.h"
 #include "platform/win10/input/RemoteControlXbox.h"
 #include "rendering/dx/DeviceResources.h"
-#include "platform/win10/AsyncHelpers.h"
 #include "rendering/dx/RenderContext.h"
 #include "ServiceBroker.h"
 #include "utils/log.h"
@@ -38,7 +39,6 @@
 #include "utils/Variant.h"
 #include "windowing/windows/WinKeyMap.h"
 #include "xbmc/GUIUserMessages.h"
-#include "WinEventsWin10.h"
 
 using namespace Windows::Devices::Input;
 using namespace Windows::Foundation;
@@ -57,6 +57,9 @@ static Point GetScreenPoint(Point point)
   auto dpi = DX::DeviceResources::Get()->GetDpi();
   return Point(DX::ConvertDipsToPixels(point.X, dpi), DX::ConvertDipsToPixels(point.Y, dpi));
 }
+
+CWinEventsWin10::CWinEventsWin10() = default;
+CWinEventsWin10::~CWinEventsWin10() = default;
 
 void CWinEventsWin10::InitOSKeymap(void)
 {
@@ -181,6 +184,11 @@ void CWinEventsWin10::InitEventHandlers(CoreWindow^ window)
     }
     m_smtc->IsEnabled = true;
     CAnnouncementManager::GetInstance().AddAnnouncer(this);
+  }
+  if (CSysInfo::GetWindowsDeviceFamily() == CSysInfo::WindowsDeviceFamily::Xbox)
+  {
+    m_remote = std::make_unique<CRemoteControlXbox>();
+    m_remote->Initialize();
   }
 }
 
@@ -461,8 +469,8 @@ void CWinEventsWin10::OnAcceleratorKeyActivated(CoreDispatcher^ sender, Accelera
   static auto lockedState = CoreVirtualKeyStates::Locked;
   static VirtualKey keyStore = VirtualKey::None;
 
-  if ( CSysInfo::GetWindowsDeviceFamily() == CSysInfo::WindowsDeviceFamily::Xbox 
-    && CRemoteControlXbox::IsRemoteControlId(args->DeviceId->Data()))
+  // skip if device is remote control
+  if (m_remote && m_remote->IsRemoteDevice(args->DeviceId->Data()))
     return;
 
   bool isDown = false;

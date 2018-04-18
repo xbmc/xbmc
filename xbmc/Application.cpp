@@ -2898,9 +2898,6 @@ void CApplication::Stop(int exitCode)
     m_pActiveAE->Shutdown();
     m_pActiveAE.reset();
 
-    CLog::Log(LOGNOTICE, "closing down remote control service");
-    CServiceBroker::GetInputManager().DisableRemoteControl();
-
     // unregister ffmpeg lock manager call back
     av_lockmgr_register(NULL);
 

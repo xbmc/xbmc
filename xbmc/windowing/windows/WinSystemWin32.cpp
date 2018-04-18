@@ -69,7 +69,8 @@ CWinSystemWin32::CWinSystemWin32()
   CAESinkDirectSound::Register();
   CAESinkWASAPI::Register();
   CWin32PowerSyscall::Register();
-  CRemoteControl::Register();
+  m_irss.reset(new CIRServerSuite());
+  m_irss->Initialize();
 }
 
 CWinSystemWin32::~CWinSystemWin32()

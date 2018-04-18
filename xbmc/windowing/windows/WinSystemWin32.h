@@ -167,6 +167,8 @@ DECLARE_HANDLE(HGESTUREINFO);
 #undef IsMinimized
 #endif
 
+class CIRServerSuite;
+
 class CWinSystemWin32 : public CWinSystemBase
 {
 public:
@@ -274,6 +276,7 @@ protected:
   bool m_inFocus;
   bool m_bMinimized;
   bool m_bSizeMoveEnabled{ false };
+  std::unique_ptr<CIRServerSuite> m_irss;
 };
 
 extern HWND g_hWnd;

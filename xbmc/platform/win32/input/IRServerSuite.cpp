@@ -19,54 +19,37 @@
  */
 
 #include "IRServerSuite.h"
+#include "Application.h"
 #include "IrssMessage.h"
-#include "input/InputManager.h"
+#include "platform/win32/CharsetConverter.h"
+#include "profiles/ProfilesManager.h"
 #include "utils/log.h"
 #include "ServiceBroker.h"
-#include "platform/win32/CharsetConverter.h"
-#include <Ws2tcpip.h>
+
+#include <WS2tcpip.h>
 
 #define IRSS_PORT 24000
 #define IRSS_MAP_FILENAME "IRSSmap.xml"
 
-KODI::REMOTE::IRemoteControl* CRemoteControl::CreateInstance()
-{
-  return new CRemoteControl();
-}
-
-void CRemoteControl::Register()
-{
-  CInputManager::RegisterRemoteControl(CRemoteControl::CreateInstance);
-}
-
-CRemoteControl::CRemoteControl()
+CIRServerSuite::CIRServerSuite()
   : CThread("RemoteControl")
-  , m_button(0)
   , m_bInitialized(false)
   , m_socket(INVALID_SOCKET)
   , m_isConnecting(false)
 {
 }
 
-CRemoteControl::~CRemoteControl()
-{
-  Disconnect();
-}
-
-std::string CRemoteControl::GetMapFile()
-{
-  return IRSS_MAP_FILENAME;
-}
-
-void CRemoteControl::Disconnect()
+CIRServerSuite::~CIRServerSuite()
 {
   m_event.Set();
-
+  {
+    CSingleLock lock(m_critSection);
+    Close();
+  }
   StopThread();
-  Close();
 }
 
-void CRemoteControl::Close()
+void CIRServerSuite::Close()
 {
   m_isConnecting = false;
   if (m_socket != INVALID_SOCKET)
@@ -83,41 +66,41 @@ void CRemoteControl::Close()
   }
 }
 
-void CRemoteControl::Reset()
+void CIRServerSuite::Initialize()
 {
-  m_button = 0;
-}
-
-void CRemoteControl::Initialize()
-{
-  if (m_isConnecting || m_bInitialized || IsRunning())
-    return;
-  //trying to connect when there is nothing to connect to is kinda slow so kick it off in a thread.
   Create();
+  SetPriority(GetMinPriority());
 }
 
-void CRemoteControl::Process()
+void CIRServerSuite::Process()
 {
-  unsigned int iMsRetryDelay = 5000;
-  int iAttempt = 0;
+  m_profileId = CServiceBroker::GetProfileManager().GetCurrentProfileId();
+  m_irTranslator.Load(IRSS_MAP_FILENAME);
+
   // try to connect 60 times @ a 5 second interval (5 minutes)
   // multiple tries because irss service might be up and running a little later then xbmc on boot.
-  while (!m_bStop && iAttempt <= 60)
+  while (!m_bStop)
   {
-    if (Connect(iAttempt == 0))
-      break;
+    if (!Connect(true))
+    {
+      CLog::LogF(LOGINFO, "failed to connect to irss, will keep retrying every 5 seconds");
+      if (AbortableWait(m_event, 5000) == WAIT_SIGNALED)
+        break;
+      continue;
+    }
 
-    if(iAttempt == 0)
-      CLog::Log(LOGINFO, "CRemoteControl::Process - failed to connect to irss, will keep retrying every %d seconds", iMsRetryDelay / 1000);
-
-    ++iAttempt;
-    
-    if (AbortableWait(m_event, iMsRetryDelay) == WAIT_INTERRUPTED)
-      break;
+    while (!m_bStop)
+    {
+      if (!ReadNext())
+      {
+        break;
+      }
+    }
   }
+  Close();
 }
 
-bool CRemoteControl::Connect(bool logMessages)
+bool CIRServerSuite::Connect(bool logMessages)
 {
   char     namebuf[NI_MAXHOST], portbuf[NI_MAXSERV];
   struct   addrinfo hints = {};
@@ -134,7 +117,7 @@ bool CRemoteControl::Connect(bool logMessages)
   if(res)
   {
     if (logMessages)
-      CLog::Log(LOGDEBUG, "CRemoteControl::Connect - getaddrinfo failed: %s",
+      CLog::LogF(LOGDEBUG, "getaddrinfo failed: %s",
                 KODI::PLATFORM::WINDOWS::FromW(gai_strerror(res)));
     return false;
   }
@@ -148,7 +131,7 @@ bool CRemoteControl::Connect(bool logMessages)
     }
 
     if (logMessages)
-      CLog::Log(LOGDEBUG, "CRemoteControl::Connect - connecting to: %s:%s ...", namebuf, portbuf);
+      CLog::LogF(LOGDEBUG, "connecting to: %s:%s ...", namebuf, portbuf);
 
     m_socket = socket(addr->ai_family, addr->ai_socktype, addr->ai_protocol);
     if(m_socket == INVALID_SOCKET)
@@ -165,7 +148,7 @@ bool CRemoteControl::Connect(bool logMessages)
   if(m_socket == INVALID_SOCKET)
   {
     if (logMessages)
-      CLog::Log(LOGDEBUG, "CRemoteControl::Connect - failed to connect");
+      CLog::LogF(LOGDEBUG, "failed to connect");
     Close();
     return false;
   }
@@ -174,7 +157,7 @@ bool CRemoteControl::Connect(bool logMessages)
   if (ioctlsocket(m_socket, FIONBIO, &iMode) == SOCKET_ERROR)
   {
     if (logMessages)
-      CLog::Log(LOGERROR, "IRServerSuite: failed to set socket to non-blocking.");
+      CLog::LogF(LOGERROR, "failed to set socket to non-blocking.");
     Close();
     return false;
   }
@@ -184,14 +167,14 @@ bool CRemoteControl::Connect(bool logMessages)
   if (!SendPacket(mess))
   {
     if (logMessages)
-      CLog::Log(LOGERROR, "IRServerSuite: failed to send RegisterClient packet.");
+      CLog::LogF(LOGERROR, "failed to send RegisterClient packet.");
     return false;
   }
   m_isConnecting = true;
   return true;
 }
 
-bool CRemoteControl::SendPacket(CIrssMessage& message)
+bool CIRServerSuite::SendPacket(CIrssMessage& message)
 {
   int iSize = 0;
   char* bytes = message.ToBytes(iSize);
@@ -212,19 +195,25 @@ bool CRemoteControl::SendPacket(CIrssMessage& message)
   return true;
 }
 
-
-void CRemoteControl::Update()
+bool CIRServerSuite::ReadNext()
 {
   if ((!m_bInitialized && !m_isConnecting) || (m_socket == INVALID_SOCKET))
   {
-    return;
+    return false;
   }
 
   CIrssMessage mess;
-  if (!ReadPacket(mess))
+  int res = ReadPacket(mess);
+  if (res < 0)
   {
-    return;
+    Close();
+    return false;
   }
+
+  // nothing received
+  if (!res)
+    return true;
+
   switch (mess.GetType())
   {
   case IRSSMT_RegisterClient:
@@ -233,7 +222,8 @@ void CRemoteControl::Update()
     {
       //uh oh, it failed to register
       Close();
-      CLog::Log(LOGERROR, "IRServerSuite: failed to register XBMC as a client.");
+      CLog::LogF(LOGERROR, "failed to register application as a client.");
+      return false;
     }
     else
     {
@@ -242,17 +232,20 @@ void CRemoteControl::Update()
       CIrssMessage mess(IRSSMT_DetectedReceivers, IRSSMF_Request);
       if (!SendPacket(mess))
       {
-        CLog::Log(LOGERROR, "IRServerSuite: failed to send AvailableReceivers packet.");
+        CLog::LogF(LOGERROR, "failed to send `AvailableReceivers` packet.");
+        return false;
       }
       mess.SetType(IRSSMT_AvailableReceivers);
       if (!SendPacket(mess))
       {
-        CLog::Log(LOGERROR, "IRServerSuite: failed to send AvailableReceivers packet.");
+        CLog::LogF(LOGERROR, "failed to send `AvailableReceivers` packet.");
+        return false;
       }
       mess.SetType(IRSSMT_ActiveReceivers);
       if (!SendPacket(mess))
       {
-        CLog::Log(LOGERROR, "IRServerSuite: failed to send AvailableReceivers packet.");
+        CLog::LogF(LOGERROR, "failed to send `AvailableReceivers` packet.");
+        return false;
       }
     }
     break;
@@ -261,11 +254,11 @@ void CRemoteControl::Update()
     break;
   case IRSSMT_Error:
     //I suppose the errormessage is in the packet somewhere...
-    CLog::Log(LOGERROR, "IRServerSuite: we got an error message.");
+    CLog::LogF(LOGERROR, "we got an error message.");
     break;
   case IRSSMT_ServerShutdown:
     Close();
-    break;
+    return false;
   case IRSSMT_ServerSuspend:
     //should we do something?
     break;
@@ -281,7 +274,7 @@ void CRemoteControl::Update()
         char* availablereceivers = new char[size + 1];
         memcpy(availablereceivers, data, size);
         availablereceivers[size] = '\0';
-        CLog::Log(LOGINFO, "IRServerSuite: Available receivers: %s", availablereceivers);
+        CLog::LogF(LOGINFO, "available receivers: %s", availablereceivers);
         delete[] availablereceivers;
       }
     }
@@ -295,7 +288,7 @@ void CRemoteControl::Update()
         char* detectedreceivers = new char[size + 1];
         memcpy(detectedreceivers, data, size);
         detectedreceivers[size] = '\0';
-        CLog::Log(LOGINFO, "IRServerSuite: Detected receivers: %s", detectedreceivers);
+        CLog::LogF(LOGINFO, "detected receivers: %s", detectedreceivers);
         delete[] detectedreceivers;
       }
     }
@@ -309,15 +302,16 @@ void CRemoteControl::Update()
         char* activereceivers = new char[size + 1];
         memcpy(activereceivers, data, size);
         activereceivers[size] = '\0';
-        CLog::Log(LOGINFO, "IRServerSuite: Active receivers: %s", activereceivers);
+        CLog::LogF(LOGINFO, "active receivers: %s", activereceivers);
         delete[] activereceivers;
       }
     }
     break;
   }
+  return true;
 }
 
-bool CRemoteControl::HandleRemoteEvent(CIrssMessage& message)
+bool CIRServerSuite::HandleRemoteEvent(CIrssMessage& message)
 {
   try
   {
@@ -330,7 +324,7 @@ bool CRemoteControl::HandleRemoteEvent(CIrssMessage& message)
     uint32_t keycodelength;
     if (datalen == 0)
     {
-      CLog::Log(LOGERROR, "IRServerSuite: no data in remote message.");
+      CLog::LogF(LOGERROR, "no data in remote message.");
       return false;
     }
     if (datalen <= 8)
@@ -350,14 +344,14 @@ bool CRemoteControl::HandleRemoteEvent(CIrssMessage& message)
       //devicename itself
       if (datalen < 4 + devicenamelength)
       {
-        CLog::Log(LOGERROR, "IRServerSuite: invalid data in remote message (size: %u).", datalen);
+        CLog::LogF(LOGERROR, "invalid data in remote message (size: %u).", datalen);
         return false;
       }
       deviceName = new char[devicenamelength + 1];
       memcpy(deviceName, data + 4, devicenamelength);
       if (datalen < 8 + devicenamelength)
       {
-        CLog::Log(LOGERROR, "IRServerSuite: invalid data in remote message (size: %u).", datalen);
+        CLog::LogF(LOGERROR, "invalid data in remote message (size: %u).", datalen);
         delete[] deviceName;
         return false;
       }
@@ -366,7 +360,7 @@ bool CRemoteControl::HandleRemoteEvent(CIrssMessage& message)
       //keycode itself
       if (datalen < 8 + devicenamelength + keycodelength)
       {
-        CLog::Log(LOGERROR, "IRServerSuite: invalid data in remote message (size: %u).", datalen);
+        CLog::LogF(LOGERROR, "invalid data in remote message (size: %u).", datalen);
         delete[] deviceName;
         return false;
       }
@@ -375,9 +369,22 @@ bool CRemoteControl::HandleRemoteEvent(CIrssMessage& message)
     }
     deviceName[devicenamelength] = '\0';
     keycode[keycodelength] = '\0';
+
+    if (m_profileId != CServiceBroker::GetProfileManager().GetCurrentProfileId())
+    {
+      m_profileId = CServiceBroker::GetProfileManager().GetCurrentProfileId();
+      m_irTranslator.Load(IRSS_MAP_FILENAME);
+    }
+
     //translate to a buttoncode xbmc understands
-    m_button = CServiceBroker::GetInputManager().TranslateLircRemoteString(deviceName, keycode);
-    CLog::Log(LOGDEBUG, "IRServerSuite, RemoteEvent: %s %s", deviceName, keycode);
+    CLog::LogF(LOGDEBUG, "remoteEvent: %s %s", deviceName, keycode);
+    unsigned button = m_irTranslator.TranslateButton(deviceName, keycode);
+
+    XBMC_Event newEvent;
+    newEvent.type = XBMC_BUTTON;
+    newEvent.keybutton.button = button;
+    newEvent.keybutton.holdtime = 0;
+    g_application.OnEvent(newEvent);
 
     delete[] deviceName;
     delete[] keycode;
@@ -385,12 +392,12 @@ bool CRemoteControl::HandleRemoteEvent(CIrssMessage& message)
   }
   catch(...)
   {
-    CLog::Log(LOGERROR, "IRServerSuite: exception while processing RemoteEvent.");
+    CLog::LogF(LOGERROR, "exception while processing RemoteEvent.");
     return false;
   }
 }
 
-int CRemoteControl::ReadN(char *buffer, int n)
+int CIRServerSuite::ReadN(char *buffer, int n)
 {
   int nOriginalSize = n;
   memset(buffer, 0, n);
@@ -398,7 +405,10 @@ int CRemoteControl::ReadN(char *buffer, int n)
   while (n > 0)
   {
     int nBytes = 0;
-    nBytes = recv(m_socket, ptr, n, 0);
+    {
+      CSingleLock lock(m_critSection);
+      nBytes = recv(m_socket, ptr, n, 0);
+    }
 
     if (WSAGetLastError() == WSAEWOULDBLOCK)
     {
@@ -408,7 +418,7 @@ int CRemoteControl::ReadN(char *buffer, int n)
     {
       if (!m_isConnecting)
       {
-        CLog::Log(LOGERROR, "%s, IRServerSuite recv error %d", __FUNCTION__, GetLastError());
+        CLog::LogF(LOGERROR, "recv error %d", WSAGetLastError());
       }
       Close();
       return -1;
@@ -416,7 +426,7 @@ int CRemoteControl::ReadN(char *buffer, int n)
 
     if (nBytes == 0)
     {
-      CLog::Log(LOGDEBUG,"%s, IRServerSuite socket closed by server", __FUNCTION__);
+      CLog::LogF(LOGDEBUG, "socket closed by server");
       Close();
       break;
     }
@@ -428,15 +438,20 @@ int CRemoteControl::ReadN(char *buffer, int n)
   return nOriginalSize - n;
 }
 
-bool CRemoteControl::WriteN(const char *buffer, int n)
+bool CIRServerSuite::WriteN(const char *buffer, int n)
 {
   const char *ptr = buffer;
   while (n > 0)
   {
-    int nBytes = send(m_socket, ptr, n, 0);
+    int nBytes;
+    {
+      CSingleLock lock(m_critSection);
+      nBytes = send(m_socket, ptr, n, 0);
+    }
+
     if (nBytes < 0)
     {
-      CLog::Log(LOGERROR, "%s, IRServerSuite send error %d (%d bytes)", __FUNCTION__, GetLastError(), n);
+      CLog::LogF(LOGERROR, "send error %d (%d bytes)", WSAGetLastError(), n);
       Close();
       return false;
     }
@@ -451,50 +466,46 @@ bool CRemoteControl::WriteN(const char *buffer, int n)
   return n == 0;
 }
 
-bool CRemoteControl::ReadPacket(CIrssMessage &message)
+int CIRServerSuite::ReadPacket(CIrssMessage &message)
 {
   try
   {
     char sizebuf[4];
     int iRead = ReadN(&sizebuf[0], 4);
-    if (iRead <= 0) return false; //nothing to read
+    if (iRead <= 0) 
+      return iRead; // error or nothing to read
+
     if (iRead != 4)
     {
-      CLog::Log(LOGERROR, "IRServerSuite: failed to read packetsize.");
-      return false;
+      CLog::LogF(LOGERROR, "failed to read packetsize.");
+      return -1;
     }
+
     uint32_t size = 0;
     memcpy(&size, &sizebuf[0], 4);
     size = ntohl(size);
     char* messagebytes = new char[size];
+
     if (ReadN(messagebytes, size) != size)
     {
-      CLog::Log(LOGERROR, "IRServerSuite: failed to read packet.");
+      CLog::LogF(LOGERROR, "failed to read packet.");
       delete[] messagebytes;
       return false;
     }
+
     if (!CIrssMessage::FromBytes(messagebytes, size, message))
     {
-      CLog::Log(LOGERROR, "IRServerSuite: invalid packet received (size: %u).", size);
+      CLog::LogF(LOGERROR, "invalid packet received (size: %u).", size);
       delete[] messagebytes;
-      return false;
+      return -1;
     }
+
     delete[] messagebytes;
-    return true;
+    return size;
   }
   catch(...)
   {
-    CLog::Log(LOGERROR, "IRServerSuite: exception while processing packet.");
-    return false;
+    CLog::LogF(LOGERROR, "exception while processing packet.");
+    return -1;
   }
-}
-
-uint16_t CRemoteControl::GetButton() const
-{
-  return m_button;
-}
-
-uint32_t CRemoteControl::GetHoldTimeMs() const
-{
-  return 0;
 }
