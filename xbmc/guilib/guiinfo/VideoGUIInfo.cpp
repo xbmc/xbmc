@@ -26,6 +26,7 @@
 #include "FileItem.h"
 #include "ServiceBroker.h"
 #include "URL.h"
+#include "Util.h"
 #include "cores/DataCacheCore.h"
 #include "cores/VideoPlayer/VideoRenderers/BaseRenderer.h"
 #include "guilib/GUIComponent.h"
@@ -100,16 +101,16 @@ bool CVideoGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
     switch (info.m_info)
     {
       /////////////////////////////////////////////////////////////////////////////////////////////
-      // PLAYER_*
+      // PLAYER_* / VIDEOPLAYER_* / LISTITEM_*
       /////////////////////////////////////////////////////////////////////////////////////////////
       case PLAYER_TITLE:
-        value = tag->m_strTitle;
-        return !value.empty();
-
-      /////////////////////////////////////////////////////////////////////////////////////////////
-      // VIDEOPLAYER_* / LISTITEM_*
-      /////////////////////////////////////////////////////////////////////////////////////////////
       case VIDEOPLAYER_TITLE:
+        value = tag->m_strTitle;
+        if (value.empty())
+          value = item->GetLabel();
+        if (value.empty())
+          value = CUtil::GetTitleFromPath(item->GetPath());
+        return true;
       case LISTITEM_TITLE:
         value = tag->m_strTitle;
         return !value.empty();

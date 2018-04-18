@@ -25,6 +25,7 @@
 #include "PartyModeManager.h"
 #include "PlayListPlayer.h"
 #include "URL.h"
+#include "Util.h"
 #include "guilib/LocalizeStrings.h"
 #include "music/MusicInfoLoader.h"
 #include "music/MusicThumbLoader.h"
@@ -95,16 +96,16 @@ bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
     switch (info.m_info)
     {
       /////////////////////////////////////////////////////////////////////////////////////////////
-      // PLAYER_*
+      // PLAYER_* / MUSICPLAYER_* / LISTITEM_*
       /////////////////////////////////////////////////////////////////////////////////////////////
       case PLAYER_TITLE:
-        value = tag->GetTitle();
-        return !value.empty();
-
-      /////////////////////////////////////////////////////////////////////////////////////////////
-      // MUSICPLAYER_* / LISTITEM_*
-      /////////////////////////////////////////////////////////////////////////////////////////////
       case MUSICPLAYER_TITLE:
+        value = tag->GetTitle();
+        if (value.empty())
+          value = item->GetLabel();
+        if (value.empty())
+          value = CUtil::GetTitleFromPath(item->GetPath());
+        return true;
       case LISTITEM_TITLE:
         value = tag->GetTitle();
         return !value.empty();
