@@ -743,7 +743,7 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecFFmpeg::GetPicture(VideoPicture* pVideoPi
   }
 
   // here we got a frame
-  int64_t framePTS = av_frame_get_best_effort_timestamp(m_pDecodedFrame);
+  int64_t framePTS = m_pDecodedFrame->best_effort_timestamp;
 
   if (m_pCodecContext->skip_frame > AVDISCARD_DEFAULT)
   {
@@ -966,7 +966,7 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(VideoPicture* pVideoPicture)
 
   pVideoPicture->pts = DVD_NOPTS_VALUE;
 
-  AVDictionaryEntry * entry = av_dict_get(av_frame_get_metadata(m_pFrame), "stereo_mode", NULL, 0);
+  AVDictionaryEntry * entry = av_dict_get(m_pFrame->metadata, "stereo_mode", NULL, 0);
   if(entry && entry->value)
   {
     pVideoPicture->stereoMode = (const char*)entry->value;
@@ -1036,7 +1036,7 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(VideoPicture* pVideoPicture)
 
   m_dts = DVD_NOPTS_VALUE;
 
-  int64_t bpts = av_frame_get_best_effort_timestamp(m_pFrame);
+  int64_t bpts = m_pFrame->best_effort_timestamp;
   if (bpts != AV_NOPTS_VALUE)
   {
     pVideoPicture->pts = (double)bpts * DVD_TIME_BASE / AV_TIME_BASE;

@@ -316,7 +316,7 @@ void CDVDVideoCodecDRMPRIME::SetPictureParams(VideoPicture* pVideoPicture)
 
   int64_t pts = m_pFrame->pts;
   if (pts == AV_NOPTS_VALUE)
-    pts = av_frame_get_best_effort_timestamp(m_pFrame);
+    pts = m_pFrame->best_effort_timestamp;
   pVideoPicture->pts = (pts == AV_NOPTS_VALUE) ? DVD_NOPTS_VALUE : (double)pts * DVD_TIME_BASE / AV_TIME_BASE;
   pVideoPicture->dts = DVD_NOPTS_VALUE;
 }

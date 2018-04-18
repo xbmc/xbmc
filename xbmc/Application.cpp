@@ -545,8 +545,6 @@ bool CApplication::Create(const CAppParamParser &params)
   CEnvironment::setenv("OS", "win32");
 #endif
 
-  // register ffmpeg lockmanager callback
-  av_lockmgr_register(&ffmpeg_lockmgr_cb);
   // register avcodec
   avcodec_register_all();
   // register avformat
@@ -2897,9 +2895,6 @@ void CApplication::Stop(int exitCode)
     CServiceBroker::UnregisterAE();
     m_pActiveAE->Shutdown();
     m_pActiveAE.reset();
-
-    // unregister ffmpeg lock manager call back
-    av_lockmgr_register(NULL);
 
     CLog::Log(LOGNOTICE, "stopped");
   }

@@ -203,7 +203,7 @@ void CDVDAudioCodecFFmpeg::GetData(DVDAudioFrame &frame)
   else
     frame.duration = 0.0;
 
-  int64_t bpts = av_frame_get_best_effort_timestamp(m_pFrame);
+  int64_t bpts = m_pFrame->best_effort_timestamp;
   if(bpts != AV_NOPTS_VALUE)
     frame.pts = (double)bpts * DVD_TIME_BASE / AV_TIME_BASE;
   else
