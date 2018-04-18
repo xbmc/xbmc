@@ -23,10 +23,11 @@
 #include "ShaderFormats.h"
 
 void CalculateYUVMatrixGLES(TransformMatrix &matrix
-                          , unsigned int  flags
-                          , EShaderFormat format
-                          , float         black
-                          , float         contrast);
+                          , unsigned int    flags
+                          , EShaderFormat   format
+                          , float           black
+                          , float           contrast
+                          , bool            limited);
 
 #include "guilib/Shader.h"
 
@@ -51,6 +52,8 @@ namespace Shaders {
 
     virtual void SetMatrices(GLfloat *p, GLfloat *m) {};
     virtual void SetAlpha(GLfloat alpha) {};
+
+    virtual void SetConvertFullColorRange(bool convertFullRange) {}
   };
 
 
@@ -67,6 +70,7 @@ namespace Shaders {
 
     void SetBlack(float black) override { m_black    = black; }
     void SetContrast(float contrast) override { m_contrast = contrast; }
+    void SetConvertFullColorRange(bool convertFullRange) override { m_convertFullRange = convertFullRange; }
 
     GLint GetVertexLoc() override { return m_hVertex; }
     GLint GetYcoordLoc() override { return m_hYcoord; }
@@ -111,6 +115,8 @@ namespace Shaders {
     GLfloat *m_proj;
     GLfloat *m_model;
     GLfloat  m_alpha;
+
+    bool m_convertFullRange;
   };
 
   class YUV2RGBProgressiveShader : public BaseYUV2RGBGLSLShader

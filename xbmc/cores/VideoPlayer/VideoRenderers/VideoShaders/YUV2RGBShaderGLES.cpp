@@ -32,14 +32,15 @@
 
 using namespace Shaders;
 
-static void CalculateYUVMatrixGLES(GLfloat      res[4][4]
-                               , unsigned int flags
+static void CalculateYUVMatrixGLES(GLfloat     res[4][4]
+                               , unsigned int  flags
                                , EShaderFormat format
-                               , float        black
-                               , float        contrast)
+                               , float         black
+                               , float         contrast
+                               , bool          limited)
 {
   TransformMatrix matrix;
-  CalculateYUVMatrix(matrix, flags, format, black, contrast, false);
+  CalculateYUVMatrix(matrix, flags, format, black, contrast, limited);
 
   for(int row = 0; row < 3; row++)
     for(int col = 0; col < 4; col++)
@@ -84,6 +85,8 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(unsigned flags, EShaderFormat forma
   m_proj = nullptr;
   m_model = nullptr;
   m_alpha = 1.0;
+
+  m_convertFullRange = false;
 
   if (m_format == SHADER_YV12 ||
       m_format == SHADER_YV12_9 ||
@@ -142,7 +145,7 @@ bool BaseYUV2RGBGLSLShader::OnEnabled()
 
   GLfloat matrix[4][4];
   // keep video levels
-  CalculateYUVMatrixGLES(matrix, m_flags, m_format, m_black, m_contrast);
+  CalculateYUVMatrixGLES(matrix, m_flags, m_format, m_black, m_contrast, !m_convertFullRange);
 
   glUniformMatrix4fv(m_hMatrix, 1, GL_FALSE, (GLfloat*)matrix);
   glUniformMatrix4fv(m_hProj,  1, GL_FALSE, m_proj);

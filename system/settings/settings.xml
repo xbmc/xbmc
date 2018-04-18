@@ -2064,12 +2064,6 @@
           <control type="spinner" format="string" />
         </setting>
         <setting id="videoscreen.limitedrange" type="boolean" label="36042" help="36359">
-          <requirement>
-            <or>
-              <condition>HAS_GL</condition>
-              <condition>HAS_DX</condition>
-            </or>
-          </requirement>
           <level>3</level>
           <default>false</default>
           <updates>
