@@ -29,6 +29,7 @@
 
 #include <vector>
 
+#include "utils/Color.h"
 #include "windowing/GraphicContext.h" // needed by any rendering operation (all controls)
 #include "GUIMessage.h"     // needed by practically all controls
 #include "VisibleEffect.h"  // needed for the CAnimation members
@@ -175,7 +176,7 @@ public:
   bool IsVisibleFromSkin() const { return m_visibleFromSkinCondition; };
   virtual bool IsDisabled() const;
   virtual void SetPosition(float posX, float posY);
-  virtual void SetHitRect(const CRect &rect, const color_t &color);
+  virtual void SetHitRect(const CRect &rect, const UTILS::Color &color);
   virtual void SetCamera(const CPoint &camera);
   virtual void SetStereoFactor(const float &factor);
   bool SetColorDiffuse(const KODI::GUILIB::GUIINFO::CGUIInfoColor &color);
@@ -342,7 +343,7 @@ protected:
   float m_height;
   float m_width;
   CRect m_hitRect;
-  color_t m_hitColor;
+  UTILS::Color m_hitColor;
   KODI::GUILIB::GUIINFO::CGUIInfoColor m_diffuseColor;
   int m_controlID;
   int m_parentID;

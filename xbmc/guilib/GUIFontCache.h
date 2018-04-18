@@ -36,6 +36,7 @@
 #include <memory>
 #include <cassert>
 
+#include "utils/Color.h"
 #include "utils/TransformMatrix.h"
 
 #define FONT_CACHE_TIME_LIMIT (1000)
@@ -51,7 +52,7 @@ template<class Position>
 struct CGUIFontCacheKey
 {
   Position m_pos;
-  vecColors &m_colors;
+  std::vector<UTILS::Color> &m_colors;
   vecText &m_text;
   uint32_t m_alignment;
   float m_maxPixelWidth;
@@ -61,7 +62,7 @@ struct CGUIFontCacheKey
   float m_scaleY;
 
   CGUIFontCacheKey(Position pos,
-                   vecColors &colors, vecText &text,
+                   std::vector<UTILS::Color> &colors, vecText &text,
                    uint32_t alignment, float maxPixelWidth,
                    bool scrolling, const TransformMatrix &matrix,
                    float scaleX, float scaleY) :
@@ -85,7 +86,7 @@ struct CGUIFontCacheEntry
   CGUIFontCacheEntry(const CGUIFontCache<Position, Value> &cache, const CGUIFontCacheKey<Position> &key, unsigned int nowMillis) :
     m_cache(cache),
     m_key(key.m_pos,
-          *new vecColors, *new vecText,
+          *new std::vector<UTILS::Color>, *new vecText,
           key.m_alignment, key.m_maxPixelWidth,
           key.m_scrolling, m_matrix,
           key.m_scaleX, key.m_scaleY),
@@ -150,7 +151,7 @@ public:
   ~CGUIFontCache();
  
   Value &Lookup(Position &pos,
-                const vecColors &colors, const vecText &text,
+                const std::vector<UTILS::Color> &colors, const vecText &text,
                 uint32_t alignment, float maxPixelWidth,
                 bool scrolling,
                 unsigned int nowMillis, bool &dirtyCache);

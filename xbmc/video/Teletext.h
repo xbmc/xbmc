@@ -22,6 +22,7 @@
 
 #include "TeletextDefines.h"
 #include "input/Key.h"
+#include "utils/Color.h"
 #include "guilib/GUITexture.h"
 
 // stuff for freetype
@@ -50,7 +51,7 @@ public:
 
   bool NeedRendering() { return m_updateTexture; }
   void RenderingDone() { m_updateTexture = false; }
-  color_t *GetTextureBuffer() { return m_TextureBuffer + (m_RenderInfo.Width*m_YOffset); }
+  UTILS::Color *GetTextureBuffer() { return m_TextureBuffer + (m_RenderInfo.Width*m_YOffset); }
   int GetHeight() { return m_RenderInfo.Height; }
   int GetWidth() { return m_RenderInfo.Width; }
   bool InitDecoder();
@@ -83,25 +84,25 @@ private:
   void SetFontWidth(int newWidth);
   int GetCurFontWidth();
   void SetPosX(int column);
-  void ClearBB(color_t Color);
-  void ClearFB(color_t Color);
-  void FillBorder(color_t Color);
-  void FillRect(color_t *buffer, int xres, int x, int y, int w, int h, color_t Color);
-  void DrawVLine(color_t *lfb, int xres, int x, int y, int l, color_t color);
-  void DrawHLine(color_t *lfb, int xres,int x, int y, int l, color_t color);
-  void FillRectMosaicSeparated(color_t *lfb, int xres,int x, int y, int w, int h, color_t fgcolor, color_t bgcolor, int set);
-  void FillTrapez(color_t *lfb, int xres,int x0, int y0, int l0, int xoffset1, int h, int l1, color_t color);
-  void FlipHorz(color_t *lfb, int xres,int x, int y, int w, int h);
-  void FlipVert(color_t *lfb, int xres,int x, int y, int w, int h);
+  void ClearBB(UTILS::Color Color);
+  void ClearFB(UTILS::Color Color);
+  void FillBorder(UTILS::Color Color);
+  void FillRect(UTILS::Color *buffer, int xres, int x, int y, int w, int h, UTILS::Color Color);
+  void DrawVLine(UTILS::Color *lfb, int xres, int x, int y, int l, UTILS::Color color);
+  void DrawHLine(UTILS::Color *lfb, int xres,int x, int y, int l, UTILS::Color color);
+  void FillRectMosaicSeparated(UTILS::Color *lfb, int xres,int x, int y, int w, int h, UTILS::Color fgcolor, UTILS::Color bgcolor, int set);
+  void FillTrapez(UTILS::Color *lfb, int xres,int x0, int y0, int l0, int xoffset1, int h, int l1, UTILS::Color color);
+  void FlipHorz(UTILS::Color *lfb, int xres,int x, int y, int w, int h);
+  void FlipVert(UTILS::Color *lfb, int xres,int x, int y, int w, int h);
   int ShapeCoord(int param, int curfontwidth, int curfontheight);
-  void DrawShape(color_t *lfb, int xres, int x, int y, int shapenumber, int curfontwidth, int fontheight, int curfontheight, color_t fgcolor, color_t bgcolor, bool clear);
+  void DrawShape(UTILS::Color *lfb, int xres, int x, int y, int shapenumber, int curfontwidth, int fontheight, int curfontheight, UTILS::Color fgcolor, UTILS::Color bgcolor, bool clear);
   void RenderDRCS(int xres,
-                  unsigned char *s,          /* pointer to char data, parity undecoded */
-                  color_t *d,                  /* pointer to frame buffer of top left pixel */
+                  unsigned char *s,         /* pointer to char data, parity undecoded */
+                  UTILS::Color *d,          /* pointer to frame buffer of top left pixel */
                   unsigned char *ax,        /* array[0..12] of x-offsets, array[0..10] of y-offsets for each pixel */
-                  color_t fgcolor, color_t bgcolor);
+                  UTILS::Color fgcolor, UTILS::Color bgcolor);
   void RenderCharIntern(TextRenderInfo_t* RenderInfo, int Char, TextPageAttr_t *Attribute, int zoom, int yoffset);
-  int RenderChar(color_t *buffer,             // pointer to render buffer, min. fontheight*2*xres
+  int RenderChar(UTILS::Color *buffer,      // pointer to render buffer, min. fontheight*2*xres
                  int xres,                  // length of 1 line in render buffer
                  int Char,                  // character to render
                  int *pPosX,                // left border for rendering relative to *buffer, will be set to right border after rendering
@@ -136,13 +137,13 @@ private:
   int SetNational(unsigned char sec);
   int NextHex(int i);
   void SetColors(unsigned short *pcolormap, int offset, int number);
-  color_t GetColorRGB(enumTeletextColor ttc);
+  UTILS::Color GetColorRGB(enumTeletextColor ttc);
 
   static FT_Error MyFaceRequester(FTC_FaceID face_id, FT_Library library, FT_Pointer request_data, FT_Face *aface);
 
-  std::string          m_teletextFont;     /* Path to teletext font */
+  std::string         m_teletextFont;     /* Path to teletext font */
   int                 m_YOffset;          /* Swap position for Front buffer and Back buffer */
-  color_t            *m_TextureBuffer;    /* Texture buffer to hold generated data */
+  UTILS::Color        *m_TextureBuffer;   /* Texture buffer to hold generated data */
   bool                m_updateTexture;    /* Update the texture if set */
   char                prevHeaderPage;     /* Needed for texture update if header is changed */
   char                prevTimeSec;        /* Needed for Time string update */

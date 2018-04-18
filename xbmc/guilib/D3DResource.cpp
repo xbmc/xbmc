@@ -490,7 +490,7 @@ void CD3DTexture::GenerateMipmaps()
 }
 
 // static methods
-void CD3DTexture::DrawQuad(const CPoint points[4], color_t color, CD3DTexture *texture, const CRect *texCoords, SHADER_METHOD options)
+void CD3DTexture::DrawQuad(const CPoint points[4], UTILS::Color color, CD3DTexture *texture, const CRect *texCoords, SHADER_METHOD options)
 {
   unsigned numViews = 0;
   ID3D11ShaderResourceView* views = nullptr;
@@ -504,7 +504,7 @@ void CD3DTexture::DrawQuad(const CPoint points[4], color_t color, CD3DTexture *t
   DrawQuad(points, color, numViews, &views, texCoords, options);
 }
 
-void CD3DTexture::DrawQuad(const CRect &rect, color_t color, CD3DTexture *texture, const CRect *texCoords, SHADER_METHOD options)
+void CD3DTexture::DrawQuad(const CRect &rect, UTILS::Color color, CD3DTexture *texture, const CRect *texCoords, SHADER_METHOD options)
 {
   CPoint points[] =
   {
@@ -516,7 +516,7 @@ void CD3DTexture::DrawQuad(const CRect &rect, color_t color, CD3DTexture *textur
   DrawQuad(points, color, texture, texCoords, options);
 }
 
-void CD3DTexture::DrawQuad(const CPoint points[4], color_t color, unsigned numViews, ID3D11ShaderResourceView **view, const CRect *texCoords, SHADER_METHOD options)
+void CD3DTexture::DrawQuad(const CPoint points[4], UTILS::Color color, unsigned numViews, ID3D11ShaderResourceView **view, const CRect *texCoords, SHADER_METHOD options)
 {
   XMFLOAT4 xcolor;
   CD3DHelper::XMStoreColor(&xcolor, color);
@@ -537,7 +537,7 @@ void CD3DTexture::DrawQuad(const CPoint points[4], color_t color, unsigned numVi
   pGUIShader->DrawQuad(verts[0], verts[1], verts[2], verts[3]);
 }
 
-void CD3DTexture::DrawQuad(const CRect &rect, color_t color, unsigned numViews, ID3D11ShaderResourceView **view, const CRect *texCoords, SHADER_METHOD options)
+void CD3DTexture::DrawQuad(const CRect &rect, UTILS::Color color, unsigned numViews, ID3D11ShaderResourceView **view, const CRect *texCoords, SHADER_METHOD options)
 {
   CPoint points[] =
   {

@@ -38,6 +38,7 @@
 #include "ServiceBroker.h"
 #include "messaging/ApplicationMessenger.h"
 #include "settings/AdvancedSettings.h"
+#include "utils/Color.h"
 #include "utils/Variant.h"
 #include "utils/StringUtils.h"
 
@@ -1096,7 +1097,7 @@ void CGUIWindow::RunUnloadActions() const
 void CGUIWindow::ClearBackground()
 {
   m_clearBackground.Update();
-  color_t color = m_clearBackground;
+  UTILS::Color color = m_clearBackground;
   if (color)
     CServiceBroker::GetWinSystem()->GetGfxContext().Clear(color);
 }

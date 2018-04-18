@@ -22,6 +22,7 @@
 #include "ServiceBroker.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
+#include "utils/Color.h"
 #include "utils/RssManager.h"
 #include "utils/RssReader.h"
 #include "utils/StringUtils.h"
@@ -166,7 +167,7 @@ void CGUIRSSControl::Render()
 
     if (m_label.font)
     {
-      vecColors colors;
+      std::vector<UTILS::Color> colors;
       colors.push_back(m_label.textColor);
       colors.push_back(m_headlineColor);
       colors.push_back(m_channelColor);

@@ -30,9 +30,9 @@
 
 #include <string>
 #include <vector>
-#include <stdint.h>
 #include <functional>
 #include "interfaces/info/InfoBool.h"
+#include "utils/Color.h"
 
 class CGUIListItem;
 
@@ -58,24 +58,23 @@ private:
   bool m_value;
 };
 
-typedef uint32_t color_t;
-
 class CGUIInfoColor
 {
 public:
-  explicit CGUIInfoColor(color_t color = 0);
+  explicit CGUIInfoColor(UTILS::Color color = 0);
 
   CGUIInfoColor& operator=(const CGUIInfoColor &color);
-  CGUIInfoColor& operator=(color_t color);
-  operator color_t() const { return m_color; };
+  CGUIInfoColor& operator=(UTILS::Color color);
+  operator UTILS::Color() const { return m_color; };
 
   bool Update();
   void Parse(const std::string &label, int context);
 
 private:
-  color_t GetColor() const;
-  int     m_info;
-  color_t m_color;
+  UTILS::Color GetColor() const;
+
+  int m_info;
+  UTILS::Color m_color;
 };
 
 class CGUIInfoLabel

@@ -34,9 +34,6 @@
 #include "GUILabel.h"
 #include "utils/IRssObserver.h"
 
-typedef uint32_t color_t;
-typedef std::vector<color_t> vecColors;
-
 class CRssReader;
 
 /*!

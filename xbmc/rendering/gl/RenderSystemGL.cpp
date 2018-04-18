@@ -223,7 +223,7 @@ bool CRenderSystemGL::EndRender()
   return true;
 }
 
-bool CRenderSystemGL::ClearBuffers(color_t color)
+bool CRenderSystemGL::ClearBuffers(UTILS::Color color)
 {
   if (!m_bRenderCreated)
     return false;

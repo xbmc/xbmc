@@ -19,10 +19,6 @@
  */
 #pragma once
 
-#include <stdint.h>
-
-using color_t = uint32_t;
-
 enum RENDER_STEREO_VIEW
 {
   RENDER_STEREO_VIEW_OFF,

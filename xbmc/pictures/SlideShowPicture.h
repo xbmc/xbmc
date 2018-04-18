@@ -21,12 +21,12 @@
 
 #include "threads/CriticalSection.h"
 #include "guilib/DirtyRegion.h"
+#include "utils/Color.h"
 #include <string>
 #ifdef HAS_DX
 #include "guilib/GUIShaderDX.h"
 #include <wrl/client.h>
 #endif
-typedef uint32_t color_t;
 
 class CBaseTexture;
 
@@ -89,7 +89,7 @@ public:
 private:
   void SetTexture_Internal(int iSlideNumber, CBaseTexture* pTexture, DISPLAY_EFFECT dispEffect = EFFECT_RANDOM, TRANSITION_EFFECT transEffect = FADEIN_FADEOUT);
   void UpdateVertices(float cur_x[4], float cur_y[4], const float new_x[4], const float new_y[4], CDirtyRegionList &dirtyregions);
-  void Render(float *x, float *y, CBaseTexture* pTexture, color_t color);
+  void Render(float *x, float *y, CBaseTexture* pTexture, UTILS::Color color);
   CBaseTexture *m_pImage;
 
   int m_iOriginalWidth;
@@ -102,7 +102,7 @@ private:
   std::string m_strFileName;
   float m_fWidth;
   float m_fHeight;
-  color_t m_alpha;
+  UTILS::Color m_alpha;
   // stuff relative to middle position
   float m_fPosX;
   float m_fPosY;

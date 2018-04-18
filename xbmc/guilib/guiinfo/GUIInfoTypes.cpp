@@ -66,7 +66,7 @@ CGUIInfoColor::CGUIInfoColor(uint32_t color)
   m_info = 0;
 }
 
-CGUIInfoColor &CGUIInfoColor::operator=(color_t color)
+CGUIInfoColor &CGUIInfoColor::operator=(UTILS::Color color)
 {
   m_color = color;
   m_info = 0;
@@ -87,7 +87,7 @@ bool CGUIInfoColor::Update()
 
   // Expand the infolabel, and then convert it to a color
   std::string infoLabel(CServiceBroker::GetGUI()->GetInfoManager().GetLabel(m_info));
-  color_t color = !infoLabel.empty() ? g_colorManager.GetColor(infoLabel.c_str()) : 0;
+  UTILS::Color color = !infoLabel.empty() ? g_colorManager.GetColor(infoLabel.c_str()) : 0;
   if (m_color != color)
   {
     m_color = color;

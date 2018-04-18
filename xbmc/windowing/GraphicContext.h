@@ -29,6 +29,7 @@
 #include "utils/Geometry.h"               // for CRect/CPoint
 #include "Resolution.h"
 #include "rendering/RenderSystem.h"
+#include "utils/Color.h"
 
 // required by clients
 #include "ServiceBroker.h"
@@ -108,7 +109,7 @@ public:
   void ResetScreenParameters(RESOLUTION res);
   void CaptureStateBlock();
   void ApplyStateBlock();
-  void Clear(color_t color = 0);
+  void Clear(UTILS::Color color = 0);
   void GetAllowedResolutions(std::vector<RESOLUTION> &res);
 
   /* \brief Get UI scaling information from a given resolution to the screen resolution.
@@ -131,7 +132,7 @@ public:
   const TransformMatrix &GetGUIMatrix() const;
   float GetGUIScaleX() const;
   float GetGUIScaleY() const;
-  color_t MergeAlpha(color_t color) const;
+  UTILS::Color MergeAlpha(UTILS::Color color) const;
   void SetOrigin(float x, float y);
   void RestoreOrigin();
   void SetCameraPosition(const CPoint &camera);

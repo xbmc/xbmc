@@ -87,6 +87,7 @@ set(HEADERS ActorProtocol.h
             CharsetConverter.h
             CharsetDetection.h
             CPUInfo.h
+            Color.h
             Crc32.h
             CryptThreading.h
             DatabaseUtils.h
