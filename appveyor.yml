@@ -33,8 +33,8 @@ build_script:
   - ps: |
       if ($env:BUILD -eq "Kodi") {
         # Download dependencies
-        cd $env:APPVEYOR_BUILD_FOLDER\project\BuildDependencies
-        & .\DownloadBuildDeps.bat
+        cd $env:APPVEYOR_BUILD_FOLDER\tools\buildsteps\windows\win32
+        & .\download-dependencies.bat
         
         # We are using AppVeyor's already installed msys64 environment,
         # no need to install msys/mingw environment.
@@ -68,7 +68,7 @@ build_script:
   - ps: |
       if ($env:ADDONS.length -ne 0 -and $env:BUILD -ne "Kodi") {
         # Bootstrap
-        cd $env:APPVEYOR_BUILD_FOLDER\tools\buildsteps\win32
+        cd $env:APPVEYOR_BUILD_FOLDER\tools\buildsteps\windows\win32
         & .\bootstrap-addons.bat
         
         # Create build folder
