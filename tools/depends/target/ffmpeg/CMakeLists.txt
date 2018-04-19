@@ -70,10 +70,10 @@ elseif(CORE_SYSTEM_NAME STREQUAL ios)
   else()
     list(APPEND ffmpeg_conf "--as=${NATIVEPREFIX}/bin/gas-preprocessor.pl -arch aarch64 -- ${CMAKE_C_COMPILER}")
   endif()
-  list(APPEND ffmpeg_conf --disable-decoder=mpeg_xvmc --disable-vda --disable-crystalhd --enable-videotoolbox
+  list(APPEND ffmpeg_conf --disable-decoder=mpeg_xvmc --disable-crystalhd --enable-videotoolbox
                           --target-os=darwin)
 elseif(CORE_SYSTEM_NAME STREQUAL osx)
-  list(APPEND ffmpeg_conf --disable-decoder=mpeg_xvmc --disable-vda --disable-crystalhd --enable-videotoolbox
+  list(APPEND ffmpeg_conf --disable-decoder=mpeg_xvmc --disable-crystalhd --enable-videotoolbox
                           --target-os=darwin
                           --disable-securetransport)
 endif()
@@ -102,7 +102,6 @@ externalproject_add(ffmpeg
                       --disable-ffplay
                       --disable-ffmpeg
                       --disable-ffprobe
-                      --disable-ffserver
                       --enable-gpl
                       --enable-runtime-cpudetect
                       --enable-postproc

@@ -98,7 +98,7 @@ echo "-------------------------------------------------"
 echo " building FFmpeg $TRIPLET"
 echo "-------------------------------------------------"
 ./buildffmpeg.sh $MAKECLEAN
-checkfiles avcodec-57.dll avformat-57.dll avutil-55.dll postproc-54.dll swscale-4.dll avfilter-6.dll swresample-2.dll
+checkfiles avcodec-58.dll avformat-58.dll avutil-56.dll postproc-55.dll swscale-5.dll avfilter-7.dll swresample-3.dll
 echo "-------------------------------------------------"
 echo " building of FFmpeg $TRIPLET done..."
 echo "-------------------------------------------------"

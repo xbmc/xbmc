@@ -218,9 +218,9 @@ int CActiveAEFilter::ProcessFilter(uint8_t **dst_buffer, int dst_samples, uint8_
 
     int channels = av_get_channel_layout_nb_channels(m_channelLayout);
 
-    av_frame_set_channel_layout(frame, m_channelLayout);
-    av_frame_set_channels(frame, channels);
-    av_frame_set_sample_rate(frame, m_sampleRate);
+    frame->channel_layout = m_channelLayout;
+    frame->channels = channels;
+    frame->sample_rate = m_sampleRate;
     frame->nb_samples = src_samples;
     frame->format = m_sampleFormat;
 
@@ -286,8 +286,8 @@ int CActiveAEFilter::ProcessFilter(uint8_t **dst_buffer, int dst_samples, uint8_
     {
       av_frame_unref(m_pOutFrame);
       m_pOutFrame->format = m_sampleFormat;
-      av_frame_set_channel_layout(m_pOutFrame, m_channelLayout);
-      av_frame_set_sample_rate(m_pOutFrame, m_sampleRate);
+      m_pOutFrame->channel_layout = m_channelLayout;
+      m_pOutFrame->sample_rate = m_sampleRate;
       result = swr_convert_frame(m_pConvertCtx, m_pOutFrame, m_pConvertFrame);
       av_frame_unref(m_pConvertFrame);
       if (result < 0)

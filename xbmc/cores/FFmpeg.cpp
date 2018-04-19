@@ -53,42 +53,6 @@ void CFFmpegLog::ClearLogLevel()
     delete log;
 }
 
-/* callback for the ffmpeg lock manager */
-int ffmpeg_lockmgr_cb(void **mutex, enum AVLockOp operation)
-{
-  CCriticalSection **lock = (CCriticalSection **)mutex;
-
-  switch (operation)
-  {
-    case AV_LOCK_CREATE:
-    {
-      *lock = NULL;
-      *lock = new CCriticalSection();
-      if (*lock == NULL)
-        return 1;
-      break;
-    }
-    case AV_LOCK_OBTAIN:
-      (*lock)->lock();
-      break;
-
-    case AV_LOCK_RELEASE:
-      (*lock)->unlock();
-      break;
-
-    case AV_LOCK_DESTROY:
-    {
-      delete *lock;
-      *lock = NULL;
-      break;
-    }
-
-    default:
-      return 1;
-  }
-  return 0;
-}
-
 static CCriticalSection m_logSection;
 std::map<uintptr_t, std::string> g_logbuffer;
 
