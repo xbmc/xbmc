@@ -42,6 +42,7 @@
 #include "cores/VideoPlayer/VideoRenderers/HwDecRender/RendererMediaCodecSurface.h"
 #include "platform/android/powermanagement/AndroidPowerSyscall.h"
 #include "addons/interfaces/platform/android/System.h"
+#include "platform/android/drm/MediaDrmCryptoSession.h"
 
 #include <EGL/egl.h>
 #include <EGL/eglplatform.h>
@@ -88,6 +89,7 @@ bool CWinSystemAndroid::InitWindowSystem()
   CRendererMediaCodec::Register();
   CRendererMediaCodecSurface::Register();
   ADDON::Interface_Android::Register();
+  DRM::CMediaDrmCryptoSession::Register();
   return CWinSystemBase::InitWindowSystem();
 }
 

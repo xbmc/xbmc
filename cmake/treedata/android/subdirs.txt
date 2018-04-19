@@ -10,6 +10,7 @@ xbmc/platform/linux/network             platform/linux/network
 xbmc/platform/linux/peripherals         platform/linux/peripherals
 xbmc/platform/android/activity          platform/android/activity
 xbmc/platform/android/bionic_supplement platform/android/bionicsupplement
+xbmc/platform/android/drm               platform/android/drm
 xbmc/platform/android/filesystem        platform/android/filesystem
 xbmc/platform/android/network           platform/android/network
 xbmc/platform/android/peripherals       platform/android/peripherals
