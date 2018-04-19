@@ -63,6 +63,10 @@ CWinSystemX11GLContext::CWinSystemX11GLContext()
   {
     OPTIONALS::PulseAudioRegister();
   }
+  else if (StringUtils::EqualsNoCase(envSink, "OSS"))
+  {
+    OPTIONALS::OSSRegister();
+  }
   else if (StringUtils::EqualsNoCase(envSink, "SNDIO"))
   {
     OPTIONALS::SndioRegister();
@@ -73,7 +77,10 @@ CWinSystemX11GLContext::CWinSystemX11GLContext()
     {
       if (!OPTIONALS::ALSARegister())
       {
-        OPTIONALS::SndioRegister();
+        if (!OPTIONALS::SndioRegister())
+        {
+          OPTIONALS::OSSRegister();
+        }
       }
     }
   }

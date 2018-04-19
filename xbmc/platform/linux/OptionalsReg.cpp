@@ -58,6 +58,23 @@ bool OPTIONALS::PulseAudioRegister()
 #endif
 
 //-----------------------------------------------------------------------------
+// OSS
+//-----------------------------------------------------------------------------
+#ifdef TARGET_FREEBSD
+#include "cores/AudioEngine/Sinks/AESinkOSS.h"
+bool OPTIONALS::OSSRegister()
+{
+  CAESinkOSS::Register();
+  return false;
+}
+#else
+bool OPTIONALS::OSSRegister()
+{
+  return false;
+}
+#endif
+
+//-----------------------------------------------------------------------------
 // sndio
 //-----------------------------------------------------------------------------
 

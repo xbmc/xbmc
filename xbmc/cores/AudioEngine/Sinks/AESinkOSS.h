@@ -33,6 +33,10 @@ public:
   CAESinkOSS();
   ~CAESinkOSS() override;
 
+  static void Register();
+  static IAESink* Create(std::string &device, AEAudioFormat &desiredFormat);
+  static void EnumerateDevicesEx(AEDeviceInfoList &list, bool force = false);
+
   bool Initialize(AEAudioFormat &format, std::string &device) override;
   void Deinitialize() override;
 
@@ -41,7 +45,6 @@ public:
   double GetCacheTotal() override { return 0.0; } /* FIXME */
   unsigned int AddPackets(uint8_t **data, unsigned int frames, unsigned int offset) override;
   void Drain() override;
-  static void EnumerateDevicesEx(AEDeviceInfoList &list, bool force = false);
 private:
   int m_fd;
   std::string m_device;

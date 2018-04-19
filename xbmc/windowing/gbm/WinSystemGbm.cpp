@@ -54,6 +54,10 @@ CWinSystemGbm::CWinSystemGbm() :
   {
     OPTIONALS::PulseAudioRegister();
   }
+  else if (StringUtils::EqualsNoCase(envSink, "OSS"))
+  {
+    OPTIONALS::OSSRegister();
+  }
   else if (StringUtils::EqualsNoCase(envSink, "SNDIO"))
   {
     OPTIONALS::SndioRegister();
@@ -64,7 +68,10 @@ CWinSystemGbm::CWinSystemGbm() :
     {
       if (!OPTIONALS::ALSARegister())
       {
-        OPTIONALS::SndioRegister();
+        if (!OPTIONALS::SndioRegister())
+        {
+          OPTIONALS::OSSRegister();
+        }
       }
     }
   }
