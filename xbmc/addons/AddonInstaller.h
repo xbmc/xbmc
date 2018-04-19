@@ -125,12 +125,11 @@ private:
   /*! \brief Install an addon from a repository or zip
    \param addon the AddonPtr describing the addon
    \param repo the repository to install addon from
-   \param hash the hash to verify the install. Defaults to "".
    \param background whether to install in the background or not. Defaults to true.
    \return true on successful install, false on failure.
    */
   bool DoInstall(const ADDON::AddonPtr &addon, const ADDON::RepositoryPtr &repo,
-      const std::string &hash = "", bool background = true, bool modal = false, bool autoUpdate = false);
+      bool background = true, bool modal = false, bool autoUpdate = false);
 
   /*! \brief Check whether dependencies of an addon exist or are installable.
    Iterates through the addon's dependencies, checking they're installed or installable.
@@ -154,8 +153,7 @@ private:
 class CAddonInstallJob : public CFileOperationJob
 {
 public:
-  CAddonInstallJob(const ADDON::AddonPtr& addon, const ADDON::AddonPtr& repo,
-      const std::string& hash, bool isAutoUpdate);
+  CAddonInstallJob(const ADDON::AddonPtr& addon, const ADDON::RepositoryPtr& repo, bool isAutoUpdate);
 
   bool DoWork() override;
 
@@ -166,13 +164,12 @@ public:
    *  \param hash Hash of the add-on
    *  \return True if the add-on and its hash were found, false otherwise.
    */
-  static bool GetAddonWithHash(const std::string& addonID, ADDON::RepositoryPtr& repo,
-      ADDON::AddonPtr& addon, std::string& hash);
+  static bool GetAddon(const std::string& addonID, ADDON::RepositoryPtr& repo, ADDON::AddonPtr& addon);
 
 private:
   void OnPreInstall();
   void OnPostInstall();
-  bool Install(const std::string &installFrom, const ADDON::AddonPtr& repo = ADDON::AddonPtr());
+  bool Install(const std::string &installFrom, const ADDON::RepositoryPtr& repo = ADDON::RepositoryPtr());
   bool DownloadPackage(const std::string &path, const std::string &dest);
 
   bool DoFileOperation(FileAction action, CFileItemList &items, const std::string &file, bool useSameJob = true);
@@ -185,8 +182,7 @@ private:
   void ReportInstallError(const std::string& addonID, const std::string& fileName, const std::string& message = "");
 
   ADDON::AddonPtr m_addon;
-  ADDON::AddonPtr m_repo;
-  std::string m_hash;
+  ADDON::RepositoryPtr m_repo;
   bool m_isUpdate;
   bool m_isAutoUpdate;
 };

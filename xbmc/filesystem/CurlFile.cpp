@@ -535,10 +535,6 @@ void CCurlFile::SetCommonOptions(CReadState* state)
     state->m_curlAliasList = g_curlInterface.slist_append(state->m_curlAliasList, "ICY 200 OK");
   g_curlInterface.easy_setopt(h, CURLOPT_HTTP200ALIASES, state->m_curlAliasList);
 
-  // never verify peer, we don't have any certificates to do this
-  g_curlInterface.easy_setopt(h, CURLOPT_SSL_VERIFYPEER, 0);
-  g_curlInterface.easy_setopt(h, CURLOPT_SSL_VERIFYHOST, 0);
-
   g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_URL, m_url.c_str());
   g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_TRANSFERTEXT, CURL_OFF);
 
@@ -1065,8 +1061,8 @@ bool CCurlFile::Open(const CURL& url)
     }
   }
 
-  char* efurl;
-  if (CURLE_OK == g_curlInterface.easy_getinfo(m_state->m_easyHandle, CURLINFO_EFFECTIVE_URL,&efurl) && efurl)
+  std::string efurl = GetInfoString(CURLINFO_EFFECTIVE_URL);
+  if (!efurl.empty())
   {
     if (m_url != efurl)
     {
@@ -1102,8 +1098,8 @@ bool CCurlFile::OpenForWrite(const CURL& url, bool bOverWrite)
   SetCommonOptions(m_state);
   SetRequestHeaders(m_state);
 
-  char* efurl;
-  if (CURLE_OK == g_curlInterface.easy_getinfo(m_state->m_easyHandle, CURLINFO_EFFECTIVE_URL,&efurl) && efurl)
+  std::string efurl = GetInfoString(CURLINFO_EFFECTIVE_URL);
+  if (!efurl.empty())
     m_url = efurl;
 
   m_opened = true;
@@ -1771,6 +1767,23 @@ void CCurlFile::SetRequestHeader(const std::string& header, long value)
 std::string CCurlFile::GetURL(void)
 {
   return m_url;
+}
+
+std::string CCurlFile::GetRedirectURL()
+{
+  return GetInfoString(CURLINFO_REDIRECT_URL);
+}
+
+std::string CCurlFile::GetInfoString(int infoType)
+{
+  char* info{};
+  CURLcode result = g_curlInterface.easy_getinfo(m_state->m_easyHandle, static_cast<XCURL::CURLINFO> (infoType), &info);
+  if (result != CURLE_OK)
+  {
+    CLog::Log(LOGERROR, "Info string request for type {} failed with result code {}", infoType, result);
+    return "";
+  }
+  return (info ? info : "");
 }
 
 /* STATIC FUNCTIONS */

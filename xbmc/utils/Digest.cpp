@@ -53,6 +53,11 @@ EVP_MD const * TypeToEVPMD(CDigest::Type type)
 
 }
 
+std::ostream& operator<<(std::ostream& os, TypedDigest const& digest)
+{
+  return os << "{" << CDigest::TypeToString(digest.type) << "}" << digest.value;
+}
+
 std::string CDigest::TypeToString(Type type)
 {
   switch (type)
@@ -65,6 +70,8 @@ std::string CDigest::TypeToString(Type type)
       return "sha256";
     case Type::SHA512:
       return "sha512";
+    case Type::INVALID:
+      return "invalid";
     default:
       throw std::invalid_argument("Unknown digest type");
   }

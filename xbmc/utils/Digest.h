@@ -22,8 +22,12 @@
 
 #include <openssl/evp.h>
 
+#include <iostream>
 #include <memory>
+#include <stdexcept>
 #include <string>
+
+#include "StringUtils.h"
 
 namespace KODI
 {
@@ -41,7 +45,8 @@ public:
     MD5,
     SHA1,
     SHA256,
-    SHA512
+    SHA512,
+    INVALID
   };
 
   /**
@@ -107,6 +112,40 @@ private:
   std::unique_ptr<EVP_MD_CTX, MdCtxDeleter> m_context;
   EVP_MD const* m_md;
 };
+
+struct TypedDigest
+{
+  CDigest::Type type{CDigest::Type::INVALID};
+  std::string value;
+
+  TypedDigest()
+  {}
+
+  TypedDigest(CDigest::Type type, std::string const& value)
+  : type(type), value(value)
+  {}
+
+  bool Empty() const
+  {
+    return (type == CDigest::Type::INVALID || value.empty());
+  }
+};
+
+inline bool operator==(TypedDigest const& left, TypedDigest const& right)
+{
+  if (left.type != right.type)
+  {
+    throw std::logic_error("Cannot compare digests of different type");
+  }
+  return StringUtils::EqualsNoCase(left.value, right.value);
+}
+
+inline bool operator!=(TypedDigest const& left, TypedDigest const& right)
+{
+  return !(left == right);
+}
+
+std::ostream& operator<<(std::ostream& os, TypedDigest const& digest);
 
 }
 }
