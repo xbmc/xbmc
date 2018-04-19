@@ -545,12 +545,6 @@ bool CApplication::Create(const CAppParamParser &params)
   CEnvironment::setenv("OS", "win32");
 #endif
 
-  // register avcodec
-  avcodec_register_all();
-  // register avformat
-  av_register_all();
-  // register avfilter
-  avfilter_register_all();
   // initialize network protocols
   avformat_network_init();
   // set avutil callback
