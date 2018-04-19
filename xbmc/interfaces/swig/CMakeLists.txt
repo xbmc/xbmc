@@ -25,6 +25,7 @@ find_package(SWIG REQUIRED)
 
 # The generated bindings
 set(INPUTS AddonModuleXbmcaddon.i
+           AddonModuleXbmcdrm.i
            AddonModuleXbmcgui.i
            AddonModuleXbmc.i
            AddonModuleXbmcplugin.i

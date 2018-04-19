@@ -217,15 +217,15 @@ namespace XbmcCommons
      *  that can be read out of the buffer or written into the
      *  buffer before it's finished.
      */
-    inline size_t remaining() { return mlimit - mposition; }
+    inline size_t remaining() const { return mlimit - mposition; }
 
     inline Buffer& put(const void* src, size_t bytes)
     { check(bytes); memcpy( buffer + mposition, src, bytes); mposition += bytes; return *this; }
     inline Buffer& get(void* dest, size_t bytes)
     { check(bytes); memcpy( dest, buffer + mposition, bytes); mposition += bytes; return *this; }
 
-    inline unsigned char* array() { return buffer; }
-    inline unsigned char* curPosition() { return buffer + mposition; }
+    inline unsigned char* data() const { return buffer; }
+    inline unsigned char* curPosition() const { return buffer + mposition; }
     inline Buffer& setPosition(size_t position) { mposition = position; return *this; }
     inline Buffer& forward(size_t positionIncrement)
     { check(positionIncrement); mposition += positionIncrement; return *this; }
