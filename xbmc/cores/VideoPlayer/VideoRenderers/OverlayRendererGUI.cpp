@@ -24,6 +24,7 @@
 #include "filesystem/File.h"
 #include "ServiceBroker.h"
 #include "Util.h"
+#include "utils/Color.h"
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
@@ -34,14 +35,14 @@
 
 using namespace OVERLAY;
 
-static color_t colors[8] = { 0xFFFFFF00
-                          , 0xFFFFFFFF
-                          , 0xFF0099FF
-                          , 0xFF00FF00
-                          , 0xFFCCFF00
-                          , 0xFF00FFFF
-                          , 0xFFE5E5E5
-                          , 0xFFC0C0C0 };
+static UTILS::Color colors[8] = { 0xFFFFFF00
+                                , 0xFFFFFFFF
+                                , 0xFF0099FF
+                                , 0xFF00FF00
+                                , 0xFFCCFF00
+                                , 0xFF00FFFF
+                                , 0xFFE5E5E5
+                                , 0xFFC0C0C0 };
 
 CGUITextLayout* COverlayText::GetFontLayout(const std::string &font, int color, int height, int style,
                                             const std::string &fontcache, const std::string &fontbordercache)

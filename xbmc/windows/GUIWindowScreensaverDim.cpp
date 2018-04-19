@@ -23,6 +23,7 @@
 #include "Application.h"
 #include "ServiceBroker.h"
 #include "addons/binary-addons/AddonDll.h"
+#include "utils/Color.h"
 #include "windowing/GraphicContext.h"
 #include "guilib/GUITexture.h"
 
@@ -77,7 +78,7 @@ void CGUIWindowScreensaverDim::Process(unsigned int currentTime, CDirtyRegionLis
 void CGUIWindowScreensaverDim::Render()
 {
   // draw a translucent black quad - fading is handled by the window animation
-  color_t color = ((color_t)(m_dimLevel * 2.55f) & 0xff) << 24;
+  UTILS::Color color = (static_cast<UTILS::Color>(m_dimLevel * 2.55f) & 0xff) << 24;
   color = CServiceBroker::GetWinSystem()->GetGfxContext().MergeAlpha(color);
   CRect rect(0, 0, (float)CServiceBroker::GetWinSystem()->GetGfxContext().GetWidth(), (float)CServiceBroker::GetWinSystem()->GetGfxContext().GetHeight());
   CGUITexture::DrawQuad(rect, color);

@@ -302,16 +302,16 @@ void CSlideShowPic::UpdateVertices(float cur_x[4], float cur_y[4], const float n
 void CSlideShowPic::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
   if (!m_pImage || !m_bIsLoaded || m_bIsFinished) return ;
-  color_t alpha = m_alpha;
+  UTILS::Color alpha = m_alpha;
   if (m_iCounter <= m_transitionStart.length)
   { // do start transition
     if (m_transitionStart.type == CROSSFADE)
     { // fade in at 1x speed
-      alpha = (color_t)((float)m_iCounter / (float)m_transitionStart.length * 255.0f);
+      alpha = (UTILS::Color)((float)m_iCounter / (float)m_transitionStart.length * 255.0f);
     }
     else if (m_transitionStart.type == FADEIN_FADEOUT)
     { // fade in at 2x speed, then keep solid
-      alpha = (color_t)((float)m_iCounter / (float)m_transitionStart.length * 255.0f * 2);
+      alpha = (UTILS::Color)((float)m_iCounter / (float)m_transitionStart.length * 255.0f * 2);
       if (alpha > 255) alpha = 255;
     }
     else // m_transitionEffect == TRANSITION_NONE
@@ -411,11 +411,11 @@ void CSlideShowPic::Process(unsigned int currentTime, CDirtyRegionList &dirtyreg
     m_bDrawNextImage = true;
     if (m_transitionEnd.type == CROSSFADE)
     { // fade out at 1x speed
-      alpha = 255 - (color_t)((float)(m_iCounter - m_transitionEnd.start) / (float)m_transitionEnd.length * 255.0f);
+      alpha = 255 - (UTILS::Color)((float)(m_iCounter - m_transitionEnd.start) / (float)m_transitionEnd.length * 255.0f);
     }
     else if (m_transitionEnd.type == FADEIN_FADEOUT)
     { // keep solid, then fade out at 2x speed
-      alpha = (color_t)((float)(m_transitionEnd.length - m_iCounter + m_transitionEnd.start) / (float)m_transitionEnd.length * 255.0f * 2);
+      alpha = (UTILS::Color)((float)(m_transitionEnd.length - m_iCounter + m_transitionEnd.start) / (float)m_transitionEnd.length * 255.0f * 2);
       if (alpha > 255) alpha = 255;
     }
     else // m_transitionEffect == TRANSITION_NONE
@@ -792,7 +792,7 @@ bool CSlideShowPic::UpdateVertexBuffer(Vertex* vertices)
 }
 #endif
 
-void CSlideShowPic::Render(float *x, float *y, CBaseTexture* pTexture, color_t color)
+void CSlideShowPic::Render(float *x, float *y, CBaseTexture* pTexture, UTILS::Color color)
 {
 #ifdef HAS_DX
   Vertex vertex[5];

@@ -1,13 +1,3 @@
-/*!
-\file GUIColorManager.h
-\brief
-*/
-
-#ifndef GUILIB_COLORMANAGER_H
-#define GUILIB_COLORMANAGER_H
-
-#pragma once
-
 /*
  *      Copyright (C) 2005-2013 Team XBMC
  *      http://kodi.tv
@@ -27,40 +17,13 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+#pragma once
 
-/*!
- \ingroup textures
- \brief
- */
+#include <stdint.h>
 
-#include <map>
-#include <string>
-
-#include "utils/Color.h"
-
-class CXBMCTinyXML;
-
-class CGUIColorManager
+namespace UTILS
 {
-public:
-  CGUIColorManager(void);
-  virtual ~CGUIColorManager(void);
 
-  void Load(const std::string &colorFile);
+  typedef uint32_t Color;
 
-  UTILS::Color GetColor(const std::string &color) const;
-
-  void Clear();
-
-protected:
-  bool LoadXML(CXBMCTinyXML &xmlDoc);
-
-  std::map<std::string, UTILS::Color> m_colors;
-};
-
-/*!
- \ingroup textures
- \brief
- */
-extern CGUIColorManager g_colorManager;
-#endif
+} // namespace UTILS

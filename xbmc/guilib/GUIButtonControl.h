@@ -28,6 +28,8 @@
  *
  */
 
+#include "utils/Color.h"
+
 #include "GUITexture.h"
 #include "GUILabel.h"
 #include "GUIControl.h"
@@ -71,8 +73,8 @@ public:
   virtual void SetMinWidth(float minWidth);
   void SetAlpha(unsigned char alpha);
 
-  void PythonSetLabel(const std::string &strFont, const std::string &strText, color_t textColor, color_t shadowColor, color_t focusedColor);
-  void PythonSetDisabledColor(color_t disabledColor);
+  void PythonSetLabel(const std::string &strFont, const std::string &strText, UTILS::Color textColor, UTILS::Color shadowColor, UTILS::Color focusedColor);
+  void PythonSetDisabledColor(UTILS::Color disabledColor);
 
   virtual void OnClick();
   bool HasClickActions() const { return m_clickActions.HasActionsMeetingCondition(); };

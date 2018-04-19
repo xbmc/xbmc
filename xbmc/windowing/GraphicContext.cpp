@@ -746,7 +746,7 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
   ResetOverscan(res, info.Overscan);
 }
 
-void CGraphicContext::Clear(color_t color)
+void CGraphicContext::Clear(UTILS::Color color)
 {
   CServiceBroker::GetRenderSystem()->ClearBuffers(color);
 }
@@ -1068,9 +1068,9 @@ float CGraphicContext::GetGUIScaleY() const
   return m_finalTransform.scaleY;
 }
 
-color_t CGraphicContext::MergeAlpha(color_t color) const
+UTILS::Color CGraphicContext::MergeAlpha(UTILS::Color color) const
 {
-  color_t alpha = m_finalTransform.matrix.TransformAlpha((color >> 24) & 0xff);
+  UTILS::Color alpha = m_finalTransform.matrix.TransformAlpha((color >> 24) & 0xff);
   if (alpha > 255) alpha = 255;
   return ((alpha << 24) & 0xff000000) | (color & 0xffffff);
 }

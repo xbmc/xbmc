@@ -22,6 +22,7 @@
 #include "GUIWindowManager.h"
 #include "ServiceBroker.h"
 #include "utils/CharsetConverter.h"
+#include "utils/Color.h"
 #include "utils/Digest.h"
 #include "utils/Variant.h"
 #include "GUIKeyboardFactory.h"
@@ -552,10 +553,10 @@ bool CGUIEditControl::SetStyledText(const std::wstring &text)
   vecText styled;
   styled.reserve(text.size() + 1);
 
-  vecColors colors;
+  std::vector<UTILS::Color> colors;
   colors.push_back(m_label.GetLabelInfo().textColor);
   colors.push_back(m_label.GetLabelInfo().disabledColor);
-  color_t select = m_label.GetLabelInfo().selectedColor;
+  UTILS::Color select = m_label.GetLabelInfo().selectedColor;
   if (!select)
     select = 0xFFFF0000;
   colors.push_back(select);

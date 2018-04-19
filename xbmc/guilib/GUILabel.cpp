@@ -65,7 +65,7 @@ bool CGUILabel::SetColor(CGUILabel::COLOR color)
   return changed;
 }
 
-color_t CGUILabel::GetColor() const
+UTILS::Color CGUILabel::GetColor() const
 {
   switch (m_color)
   {
@@ -103,7 +103,7 @@ bool CGUILabel::Process(unsigned int currentTime)
 
 void CGUILabel::Render()
 {
-  color_t color = GetColor();
+  UTILS::Color color = GetColor();
   bool renderSolid = (m_color == COLOR_DISABLED);
   bool overFlows = (m_renderRect.Width() + 0.5f < m_textLayout.GetTextWidth()); // 0.5f to deal with floating point rounding issues
   if (overFlows && m_scrolling && !renderSolid)
@@ -162,7 +162,7 @@ bool CGUILabel::SetAlign(uint32_t align)
   return changed;
 }
 
-bool CGUILabel::SetStyledText(const vecText &text, const vecColors &colors)
+bool CGUILabel::SetStyledText(const vecText &text, const std::vector<UTILS::Color> &colors)
 {
   m_textLayout.UpdateStyled(text, colors, m_maxRect.Width());
   m_invalid = false;

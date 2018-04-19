@@ -24,6 +24,7 @@
 #include "Application.h"
 #include "ServiceBroker.h"
 #include "input/Key.h"
+#include "utils/Color.h"
 #include "WindowIDs.h"
 
 CGUIVideoControl::CGUIVideoControl(int parentID, int controlID, float posX, float posY, float width, float height)
@@ -54,7 +55,7 @@ void CGUIVideoControl::Render()
     TransformMatrix mat;
     CServiceBroker::GetWinSystem()->GetGfxContext().SetTransform(mat, 1.0, 1.0);
 
-    color_t alpha = CServiceBroker::GetWinSystem()->GetGfxContext().MergeAlpha(0xFF000000) >> 24;
+    UTILS::Color alpha = CServiceBroker::GetWinSystem()->GetGfxContext().MergeAlpha(0xFF000000) >> 24;
     if (g_application.GetAppPlayer().IsRenderingVideoLayer())
     {
       CRect old = CServiceBroker::GetWinSystem()->GetGfxContext().GetScissors();

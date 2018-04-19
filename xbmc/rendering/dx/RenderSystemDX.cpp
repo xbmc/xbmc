@@ -307,7 +307,7 @@ bool CRenderSystemDX::EndRender()
   return true;
 }
 
-bool CRenderSystemDX::ClearBuffers(color_t color)
+bool CRenderSystemDX::ClearBuffers(UTILS::Color color)
 {
   if (!m_bRenderCreated)
     return false;

@@ -29,10 +29,9 @@
  */
 
 #include "TextureManager.h"
+#include "utils/Color.h"
 #include "utils/Geometry.h"
 #include "guiinfo/GUIInfoTypes.h"
-
-typedef uint32_t color_t;
 
 // image alignment for <aspect>keep</aspect>, <aspect>scale</aspect> or <aspect>center</aspect>
 #define ASPECT_ALIGN_CENTER  0
@@ -98,7 +97,7 @@ public:
 
   bool SetVisible(bool visible);
   bool SetAlpha(unsigned char alpha);
-  bool SetDiffuseColor(color_t color);
+  bool SetDiffuseColor(UTILS::Color color);
   bool SetPosition(float x, float y);
   bool SetWidth(float width);
   bool SetHeight(float height);
@@ -133,12 +132,12 @@ protected:
   // functions that our implementation classes handle
   virtual void Allocate() {}; ///< called after our textures have been allocated
   virtual void Free() {};     ///< called after our textures have been freed
-  virtual void Begin(color_t color) {};
+  virtual void Begin(UTILS::Color color) {};
   virtual void Draw(float *x, float *y, float *z, const CRect &texture, const CRect &diffuse, int orientation)=0;
   virtual void End() {};
 
   bool m_visible;
-  color_t m_diffuseColor;
+  UTILS::Color m_diffuseColor;
 
   float m_posX;         // size of the frame
   float m_posY;

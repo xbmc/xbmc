@@ -33,10 +33,10 @@
 #include <stdint.h>
 #include <vector>
 
+#include "utils/Color.h"
+
 typedef uint32_t character_t;
-typedef uint32_t color_t;
 typedef std::vector<character_t> vecText;
-typedef std::vector<color_t> vecColors;
 
 class CGUIFontTTFBase;
 
@@ -118,24 +118,24 @@ private:
 class CGUIFont
 {
 public:
-  CGUIFont(const std::string& strFontName, uint32_t style, color_t textColor,
-	   color_t shadowColor, float lineSpacing, float origHeight, CGUIFontTTFBase *font);
+  CGUIFont(const std::string& strFontName, uint32_t style, UTILS::Color textColor,
+	   UTILS::Color shadowColor, float lineSpacing, float origHeight, CGUIFontTTFBase *font);
   virtual ~CGUIFont();
 
   std::string& GetFontName();
 
-  void DrawText( float x, float y, color_t color, color_t shadowColor,
+  void DrawText( float x, float y, UTILS::Color color, UTILS::Color shadowColor,
                  const vecText &text, uint32_t alignment, float maxPixelWidth)
   {
-    vecColors colors;
+    std::vector<UTILS::Color> colors;
     colors.push_back(color);
     DrawText(x, y, colors, shadowColor, text, alignment, maxPixelWidth);
   };
 
-  void DrawText( float x, float y, const vecColors &colors, color_t shadowColor,
+  void DrawText( float x, float y, const std::vector<UTILS::Color> &colors, UTILS::Color shadowColor,
                  const vecText &text, uint32_t alignment, float maxPixelWidth);
 
-  void DrawScrollingText( float x, float y, const vecColors &colors, color_t shadowColor,
+  void DrawScrollingText( float x, float y, const std::vector<UTILS::Color> &colors, UTILS::Color shadowColor,
                  const vecText &text, uint32_t alignment, float maxPixelWidth, const CScrollInfo &scrollInfo);
 
   bool UpdateScrollInfo(const vecText &text, CScrollInfo &scrollInfo);
@@ -166,8 +166,8 @@ public:
 protected:
   std::string m_strFontName;
   uint32_t m_style;
-  color_t m_shadowColor;
-  color_t m_textColor;
+  UTILS::Color m_shadowColor;
+  UTILS::Color m_textColor;
   float m_lineSpacing;
   float m_origHeight;
   CGUIFontTTFBase *m_font; // the font object has the size information

@@ -27,6 +27,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "settings/Settings.h"
+#include "utils/Color.h"
 
 static int teletextFadeAmount = 0;
 
@@ -124,7 +125,7 @@ void CGUIDialogTeletext::Render()
     MarkDirtyRegion();
   }
 
-  color_t color = ((color_t)(teletextFadeAmount * 2.55f) & 0xff) << 24 | 0xFFFFFF;
+  UTILS::Color color = (static_cast<UTILS::Color>(teletextFadeAmount * 2.55f) & 0xff) << 24 | 0xFFFFFF;
   CGUITexture::DrawQuad(m_vertCoords, color, m_pTxtTexture);
 
   CGUIDialog::Render();
