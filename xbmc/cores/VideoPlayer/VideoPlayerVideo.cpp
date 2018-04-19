@@ -125,7 +125,10 @@ bool CVideoPlayerVideo::OpenStream(CDVDStreamInfo hint)
         hint.codec == AV_CODEC_ID_MPEG4 ||
         hint.codec == AV_CODEC_ID_WMV3 ||
         hint.codec == AV_CODEC_ID_VC1)
+    {
+      CLog::Log(LOGWARNING, "%s: Video codec %d without extra_data not supported", __FUNCTION__, hint.codec);
       return false;
+    }
   }
 
   CLog::Log(LOGNOTICE, "Creating video codec with codec id: %i", hint.codec);
