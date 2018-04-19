@@ -6,6 +6,7 @@ set(SOURCES AddonCallback.cpp
             CallbackHandler.cpp
             Control.cpp
             Dialog.cpp
+            DrmCryptoSession.cpp
             File.cpp
             InfoTagMusic.cpp
             InfoTagRadioRDS.cpp
@@ -38,6 +39,7 @@ set(HEADERS Addon.h
             Control.h
             Dialog.h
             Dictionary.h
+            DrmCryptoSession.h
             Exception.h
             File.h
             InfoTagMusic.h
