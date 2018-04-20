@@ -931,7 +931,8 @@ XBMCController *g_xbmcController;
 {
   PRINT_SIGNATURE();
   CWinSystemIOS* winSystem = dynamic_cast<CWinSystemIOS*>(CServiceBroker::GetWinSystem());
-  winSystem->OnAppFocusChange(true);
+  if (winSystem)
+    winSystem->OnAppFocusChange(true);
   // when we come back, restore playing if we were.
   if (m_isPlayingBeforeInactive)
   {
