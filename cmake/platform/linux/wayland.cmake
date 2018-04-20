@@ -15,5 +15,6 @@ endif()
 
 set(PLATFORM_GLOBAL_TARGET_DEPS generate-wayland-extra-protocols)
 set(WAYLAND_EXTRA_PROTOCOL_GENERATED_DIR "${CMAKE_CURRENT_BINARY_DIR}")
+list(APPEND PLATFORM_DEFINES -DPLATFORM_SETTINGS_FILE=wayland.xml)
 # for wayland-extra-protocols.hpp
 include_directories("${WAYLAND_EXTRA_PROTOCOL_GENERATED_DIR}")

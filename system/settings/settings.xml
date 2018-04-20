@@ -2063,20 +2063,6 @@
           </constraints>
           <control type="spinner" format="string" />
         </setting>
-        <setting id="videoscreen.limitedrange" type="boolean" label="36042" help="36359">
-          <requirement>
-            <or>
-              <condition>HAS_GL</condition>
-              <condition>HAS_DX</condition>
-            </or>
-          </requirement>
-          <level>3</level>
-          <default>false</default>
-          <updates>
-            <update type="rename">videoplayer.vdpaustudiolevel</update>
-          </updates>
-          <control type="toggle" />
-        </setting>
         <setting id="videoscreen.dither" type="boolean" label="36099" help="36598">
           <requirement>
             <or>

@@ -87,6 +87,7 @@ CLinuxRendererGLES::CLinuxRendererGLES()
   m_pVideoFilterShader = NULL;
   m_scalingMethod = VS_SCALINGMETHOD_LINEAR;
   m_scalingMethodGui = (ESCALINGMETHOD)-1;
+  m_fullRange = !CServiceBroker::GetWinSystem()->UseLimitedColor();
 
   m_NumYV12Buffers = 0;
   m_bConfigured = false;
@@ -180,6 +181,9 @@ bool CLinuxRendererGLES::Configure(const VideoPicture &picture, float fps, unsig
   // Ensure that textures are recreated and rendering starts only after the 1st
   // frame is loaded after every call to Configure().
   m_bValidated = false;
+
+  // setup the background colour
+  m_clearColour = CServiceBroker::GetWinSystem()->UseLimitedColor() ? (16.0f / 0xff) : 0.0f;
 
   return true;
 }
@@ -532,7 +536,10 @@ void CLinuxRendererGLES::LoadShaders(int field)
 
           EShaderFormat shaderFormat = GetShaderFormat();
           m_pYUVProgShader = new YUV2RGBProgressiveShader(m_iFlags, shaderFormat);
+          m_pYUVProgShader->SetConvertFullColorRange(m_fullRange);
           m_pYUVBobShader = new YUV2RGBBobShader(m_iFlags, shaderFormat);
+          m_pYUVBobShader->SetConvertFullColorRange(m_fullRange);
+
           if ((m_pYUVProgShader && m_pYUVProgShader->CompileAndLink())
               && (m_pYUVBobShader && m_pYUVBobShader->CompileAndLink()))
           {

@@ -708,7 +708,7 @@ void CSlideShowPic::Rotate(float fRotateAngle, bool immediate /* = false */)
 
   // if there is a rotation ongoing already
   // add the new angle to the old destination angle
-  if (m_transitionTemp.type == TRANSITION_ROTATE && 
+  if (m_transitionTemp.type == TRANSITION_ROTATE &&
       m_transitionTemp.start + m_transitionTemp.length > m_iCounter)
   {
     int remainder = m_transitionTemp.start + m_transitionTemp.length - m_iCounter;
@@ -776,7 +776,7 @@ bool CSlideShowPic::UpdateVertexBuffer(Vertex* vertices)
     if (SUCCEEDED(DX::DeviceResources::Get()->GetD3DDevice()->CreateBuffer(&desc, &initData, m_vb.ReleaseAndGetAddressOf())))
       return true;
   }
-  else // update 
+  else // update
   {
     ID3D11DeviceContext* pContext = DX::DeviceResources::Get()->GetD3DContext();
     D3D11_MAPPED_SUBRESOURCE res;
@@ -993,6 +993,13 @@ void CSlideShowPic::Render(float *x, float *y, CBaseTexture* pTexture, UTILS::Co
   col[1] = (GLubyte)GET_G(color);
   col[2] = (GLubyte)GET_B(color);
   col[3] = (GLubyte)GET_A(color);
+
+  if (CServiceBroker::GetWinSystem()->UseLimitedColor())
+  {
+    col[0] = (235 - 16) * col[0] / 255 + 16.0f / 255.0f;
+    col[1] = (235 - 16) * col[1] / 255 + 16.0f / 255.0f;
+    col[2] = (235 - 16) * col[2] / 255 + 16.0f / 255.0f;
+  }
 
   for (int i=0; i<4; i++)
   {

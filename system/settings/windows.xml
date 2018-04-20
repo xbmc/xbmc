@@ -43,6 +43,15 @@
         </setting>
       </group>
     </category>
+    <category id="display">
+      <group id="1">
+        <setting id="videoscreen.limitedrange" type="boolean" label="36042" help="36359">
+          <level>3</level>
+          <default>false</default>
+          <control type="toggle" />
+      </setting>
+    </group>
+  </category>
   </section>
   <section id="interface">
     <category id="regional">
