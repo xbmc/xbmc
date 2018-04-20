@@ -1124,7 +1124,6 @@ bool CApplication::Initialize()
     else
     {
       CJSONRPC::Initialize();
-      CServiceBroker::GetServiceAddons().StartBeforeLogin();
 
       // activate the configured start window
       int firstWindow = g_SkinInfo->GetFirstWindow();
@@ -1146,10 +1145,7 @@ bool CApplication::Initialize()
 
   }
   else //No GUI Created
-  {
     CJSONRPC::Initialize();
-    CServiceBroker::GetServiceAddons().StartBeforeLogin();
-  }
 
   g_sysinfo.Refresh();
 
@@ -1172,7 +1168,8 @@ bool CApplication::Initialize()
   RegisterActionListener(&CPlayerController::GetInstance());
 
   CServiceBroker::GetRepositoryUpdater().Start();
-  CServiceBroker::GetServiceAddons().Start();
+  if (!m_ServiceManager->GetProfileManager().UsingLoginScreen())
+    CServiceBroker::GetServiceAddons().Start();
 
   CLog::Log(LOGNOTICE, "initialize done");
 

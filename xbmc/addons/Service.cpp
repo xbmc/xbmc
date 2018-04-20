@@ -30,16 +30,7 @@ namespace ADDON
 
 std::unique_ptr<CService> CService::FromExtension(CAddonInfo addonInfo, const cp_extension_t* ext)
 {
-  START_OPTION startOption(START_OPTION::LOGIN);
-  std::string start = CServiceBroker::GetAddonMgr().GetExtValue(ext->configuration, "@start");
-  if (start == "startup")
-    startOption = START_OPTION::STARTUP;
-  return std::unique_ptr<CService>(new CService(std::move(addonInfo), startOption));
-}
-
-CService::CService(CAddonInfo addonInfo, START_OPTION startOption)
-  : CAddon(std::move(addonInfo)), m_startOption(startOption)
-{
+  return std::unique_ptr<CService>(new CService(std::move(addonInfo)));
 }
 
 CServiceAddonManager::CServiceAddonManager(CAddonMgr& addonMgr) :
@@ -67,22 +58,6 @@ void CServiceAddonManager::OnEvent(const ADDON::AddonEvent& event)
            typeid(event) == typeid(ADDON::AddonEvents::UnInstalled))
   {
     Stop(event.id);
-  }
-}
-
-void CServiceAddonManager::StartBeforeLogin()
-{
-  VECADDONS addons;
-  if (m_addonMgr.GetAddons(addons, ADDON_SERVICE))
-  {
-    for (const auto& addon : addons)
-    {
-      auto service = std::static_pointer_cast<CService>(addon);
-      if (service->GetStartOption() == START_OPTION::STARTUP)
-      {
-        Start(addon);
-      }
-    }
   }
 }
 
@@ -132,6 +107,7 @@ void CServiceAddonManager::Start(const AddonPtr& addon)
 
 void CServiceAddonManager::Stop()
 {
+  m_addonMgr.Events().Unsubscribe(this);
   CSingleLock lock(m_criticalSection);
   for (const auto& service : m_services)
   {
