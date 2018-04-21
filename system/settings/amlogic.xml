@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<settings version="1">
+  <section id="system">
+    <category id="display">
+      <group id="1">
+        <setting id="videoscreen.limitedrange" type="boolean" label="36042" help="36359">
+          <visible>false</visible>
+        </setting>
+      </group>
+    </category>
+  </section>
+</settings>
