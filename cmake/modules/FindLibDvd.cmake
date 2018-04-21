@@ -76,9 +76,6 @@ else()
   endforeach()
 
   set(DVDREAD_CFLAGS "${DVDREAD_CFLAGS} -I${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/include")
-  if(CMAKE_CROSSCOMPILING)
-    set(EXTRA_FLAGS "CC=${CMAKE_C_COMPILER}")
-  endif()
 
   if(APPLE)
     set(CMAKE_LD_FLAGS "-framework IOKit -framework CoreFoundation")
@@ -113,7 +110,7 @@ else()
                                                     --with-pic
                                                     --prefix=<INSTALL_DIR>
                                                     --libdir=<INSTALL_DIR>/lib
-                                                    "${EXTRA_FLAGS}"
+                                                    "CC=${CMAKE_C_COMPILER}"
                                                     "CFLAGS=${CMAKE_C_FLAGS} ${DVDREAD_CFLAGS}"
                                                     "LDFLAGS=${CMAKE_LD_FLAGS}"
                                   BUILD_BYPRODUCTS ${DVDCSS_LIBRARY})
@@ -154,7 +151,7 @@ else()
                                                   --with-pic
                                                   --prefix=<INSTALL_DIR>
                                                   --libdir=<INSTALL_DIR>/lib
-                                                  "${EXTRA_FLAGS}"
+                                                  "CC=${CMAKE_C_COMPILER}"
                                                   "CFLAGS=${CMAKE_C_FLAGS} ${DVDREAD_CFLAGS}"
                                                   "LDFLAGS=${CMAKE_LD_FLAGS}"
                               BUILD_BYPRODUCTS ${DVDREAD_LIBRARY})
@@ -198,7 +195,7 @@ else()
                                                   --with-pic
                                                   --prefix=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd
                                                   --libdir=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/lib
-                                                  "${EXTRA_FLAGS}"
+                                                  "CC=${CMAKE_C_COMPILER}"
                                                   "LDFLAGS=${CMAKE_LD_FLAGS} -L${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/lib"
                                                   "CFLAGS=${CMAKE_C_FLAGS} ${DVDREAD_CFLAGS}"
                                                   "DVDREAD_CFLAGS=${DVDREAD_CFLAGS}"
