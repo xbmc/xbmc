@@ -1120,6 +1120,11 @@ std::string CWinSystemWin32::GetClipboardText()
   return utf8_text;
 }
 
+bool CWinSystemWin32::UseLimitedColor()
+{
+  return CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOSCREEN_LIMITEDRANGE);
+}
+
 void CWinSystemWin32::NotifyAppFocusChange(bool bGaining)
 {
   if (m_state == WINDOW_STATE_FULLSCREEN && !m_IsAlteringWindow)

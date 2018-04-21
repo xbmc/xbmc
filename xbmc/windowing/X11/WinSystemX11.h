@@ -63,6 +63,7 @@ public:
   void Register(IDispResource *resource) override;
   void Unregister(IDispResource *resource) override;
   bool HasCalibration(const RESOLUTION_INFO &resInfo) override;
+  bool UseLimitedColor() override;
 
   // Local to WinSystemX11 only
   Display*  GetDisplay() { return m_dpy; }

@@ -739,6 +739,11 @@ std::string CWinSystemWin10::GetClipboardText()
   return KODI::PLATFORM::WINDOWS::FromW(unicode_text);
 }
 
+bool CWinSystemWin10::UseLimitedColor()
+{
+  return CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOSCREEN_LIMITEDRANGE);
+}
+
 void CWinSystemWin10::NotifyAppFocusChange(bool bGaining)
 {
   m_inFocus = bGaining;

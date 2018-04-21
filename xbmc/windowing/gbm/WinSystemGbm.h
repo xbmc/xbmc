@@ -53,6 +53,8 @@ public:
 
   void UpdateResolutions() override;
 
+  bool UseLimitedColor() override;
+
   bool Hide() override;
   bool Show(bool raise = true) override;
   virtual void Register(IDispResource *resource);

@@ -232,6 +232,11 @@ void CWinSystemGbm::WaitVBlank()
   m_DRM->WaitVBlank();
 }
 
+bool CWinSystemGbm::UseLimitedColor()
+{
+  return CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOSCREEN_LIMITEDRANGE);
+}
+
 bool CWinSystemGbm::Hide()
 {
   return false;

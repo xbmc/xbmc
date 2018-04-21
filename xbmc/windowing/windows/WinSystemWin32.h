@@ -192,6 +192,8 @@ public:
   bool Hide() override;
   bool Show(bool raise = true) override;
   std::string GetClipboardText() override;
+  bool UseLimitedColor() override;
+
   // videosync
   std::unique_ptr<CVideoSync> GetVideoSync(void *clock) override;
 

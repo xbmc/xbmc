@@ -456,6 +456,11 @@ bool CWinSystemX11::HasCalibration(const RESOLUTION_INFO &resInfo)
   return false;
 }
 
+bool CWinSystemX11::UseLimitedColor()
+{
+  return CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOSCREEN_LIMITEDRANGE);
+}
+
 void CWinSystemX11::GetConnectedOutputs(std::vector<std::string> *outputs)
 {
   std::vector<XOutput> outs;
