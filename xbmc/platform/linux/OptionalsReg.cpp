@@ -39,6 +39,13 @@ bool OPTIONALS::ALSARegister()
 }
 #endif
 
+#ifdef TARGET_LINUX
+bool OPTIONALS::OSSRegister()
+{
+  return false;
+}
+#endif
+
 //-----------------------------------------------------------------------------
 // PulseAudio
 //-----------------------------------------------------------------------------
@@ -52,23 +59,6 @@ bool OPTIONALS::PulseAudioRegister()
 }
 #else
 bool OPTIONALS::PulseAudioRegister()
-{
-  return false;
-}
-#endif
-
-//-----------------------------------------------------------------------------
-// OSS
-//-----------------------------------------------------------------------------
-#ifdef TARGET_FREEBSD
-#include "cores/AudioEngine/Sinks/AESinkOSS.h"
-bool OPTIONALS::OSSRegister()
-{
-  CAESinkOSS::Register();
-  return false;
-}
-#else
-bool OPTIONALS::OSSRegister()
 {
   return false;
 }
