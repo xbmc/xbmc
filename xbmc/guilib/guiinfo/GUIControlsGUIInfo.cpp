@@ -479,7 +479,7 @@ bool CGUIControlsGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int co
       CGUIMediaWindow *window = GUIINFO::GetMediaWindow(contextWindow);
       if (window)
       {
-        value = window->CanFilterAdvanced();
+        value = !window->CanFilterAdvanced();
         return true;
       }
       break;
