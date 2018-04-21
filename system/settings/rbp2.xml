@@ -15,6 +15,9 @@
         <setting id="videoscreen.textures32">
           <default>true</default>
         </setting>
+        <setting id="videoscreen.limitedrange" type="boolean" label="36042" help="36359">
+          <visible>false</visible>
+        </setting>
       </group>
     </category>
     <category id="audio">
