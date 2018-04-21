@@ -293,7 +293,9 @@ void CMediaManager::AddAutoSource(const CMediaSource &share, bool bAutorun)
   CMediaSourceSettings::GetInstance().AddShare("music", share);
   CMediaSourceSettings::GetInstance().AddShare("programs", share);
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
-  CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage( msg );
+  CGUIComponent *gui = CServiceBroker::GetGUI();
+  if (gui)
+    gui->GetWindowManager().SendThreadMessage( msg );
 
 #ifdef HAS_DVD_DRIVE
   if(bAutorun)
