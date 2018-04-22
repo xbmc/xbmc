@@ -893,6 +893,31 @@
 							<align>right</align>
 						</control>
 					</control>
+					<control type="group">
+						<visible>Integer.IsGreater(System.ProfileCount,1) + !Player.HasMedia</visible>
+						<control type="image">
+							<visible>Skin.HasSetting(show_profileavatar)</visible>
+							<top>25</top>
+							<left>-70</left>
+							<width>50</width>
+							<height>50</height>
+							<animation effect="fade" start="100" end="0" time="300" condition="Window.Next(screencalibration)">WindowClose</animation>
+							<texture>$INFO[System.ProfileThumb]</texture>
+							<aspectratio>scale</aspectratio>
+						</control>
+						<control type="label">
+							<visible>Skin.HasSetting(show_profilename)</visible>
+							<font>font45</font>
+							<align>right</align>
+							<left>-630</left>
+							<shadowcolor>text_shadow</shadowcolor>
+							<aligny>center</aligny>
+							<height>110</height>
+							<width max="600">auto</width>
+							<animation effect="fade" start="100" end="0" time="300" condition="Window.Next(screencalibration)">WindowClose</animation>
+							<label>$INFO[System.ProfileName]</label>
+						</control>
+					</control>
 					<control type="label">
 						<font>font_clock</font>
 						<shadowcolor>text_shadow</shadowcolor>

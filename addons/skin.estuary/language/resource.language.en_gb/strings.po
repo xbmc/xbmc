@@ -743,3 +743,21 @@ msgstr ""
 msgctxt "#31163"
 msgid "Show Fanart background"
 msgstr ""
+
+#. Choose profile identifier
+#: /xml/SkinSettings.xml
+msgctxt "#31164"
+msgid "Choose kind of profile identification"
+msgstr ""
+
+#. Label for the kind of profile identification
+#: /xml/SkinSettings.xml
+msgctxt "#31165"
+msgid "Profile name"
+msgstr ""
+
+#. Label for the kind of profile identification
+#: /xml/SkinSettings.xml
+msgctxt "#31166"
+msgid "Profile avatar"
+msgstr ""
