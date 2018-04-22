@@ -29,19 +29,23 @@ except:
     from xbmcclient import *
 
 def usage():
-    print("kodi-send [OPTION] --action=ACTION")
+    print("Usage")
+    print("\tkodi-send [OPTION] --action=ACTION")
+    print("\tkodi-send [OPTION] --button=BUTTON")
     print('Example')
     print('\tkodi-send --host=192.168.0.1 --port=9777 --action="Quit"')
     print("Options")
     print("\t-?, --help\t\t\tWill bring up this message")
     print("\t--host=HOST\t\t\tChoose what HOST to connect to (default=localhost)")
     print("\t--port=PORT\t\t\tChoose what PORT to connect to (default=9777)")
+    print("\t--keymap=KEYMAP\t\t\tChoose which KEYMAP to use for key presses (default=KB)")
+    print('\t--button=BUTTON\t\t\tSends a key press event to Kodi')
     print('\t--action=ACTION\t\t\tSends an action to XBMC, this option can be added multiple times to create a macro')
     pass
 
 def main():
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "?pa:v", ["help", "host=", "port=", "action="])
+        opts, args = getopt.getopt(sys.argv[1:], "?pa:v", ["help", "host=", "port=", "keymap=", "button=", "action="])
     except getopt.GetoptError as err:
         # print help information and exit:
         print(str(err)) # will print something like "option -a not recognized"
@@ -49,6 +53,8 @@ def main():
         sys.exit(2)
     ip = "localhost"
     port = 9777
+    keymap = "KB"
+    button = ""
     actions = []
     verbose = False
     for o, a in opts:
@@ -59,6 +65,10 @@ def main():
             ip = a
         elif o == "--port":
             port = int(a)
+        elif o == "--keymap":
+            keymap = a
+        elif o == "--button":
+            button = a
         elif o in ("-a", "--action"):
             actions.append(a)
         else:
@@ -67,13 +77,18 @@ def main():
     addr = (ip, port)
     sock = socket(AF_INET,SOCK_DGRAM)
     
-    if len(actions) is 0:
+    if len(actions) is 0 and button is "":
         usage()
         sys.exit(0)
     
     for action in actions:
         print('Sending action: %s' % action)
         packet = PacketACTION(actionmessage=action, actiontype=ACTION_BUTTON)
+        packet.send(sock, addr)
+
+    if button is not "":
+        print('Sending key press: %s' % button)
+        packet = PacketBUTTON(code=0, repeat=0, down=1, map_name=keymap, button_name=button, amount=0)
         packet.send(sock, addr)
 
 if __name__=="__main__":
