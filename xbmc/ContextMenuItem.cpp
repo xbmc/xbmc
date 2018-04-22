@@ -29,10 +29,11 @@
 #include "interfaces/generic/ScriptInvocationManager.h"
 #include "interfaces/python/ContextItemAddonInvoker.h"
 #include "interfaces/python/XBPython.h"
+#include "services/ServiceManager.h"
+using namespace SERVICES;
 #endif
 #include "ServiceBroker.h"
 #include "utils/StringUtils.h"
-
 
 bool CContextMenuItem::IsVisible(const CFileItem& item) const
 {
@@ -64,8 +65,14 @@ bool CContextMenuItem::Execute(const CFileItemPtr& item) const
     return false;
 
 #ifdef HAS_PYTHON
-  LanguageInvokerPtr invoker(new CContextItemAddonInvoker(&g_pythonParser, item));
-  return (CScriptInvocationManager::GetInstance().ExecuteAsync(m_library, invoker, addon) != -1);
+  auto xbp = CServiceManager::GetInstance().GetService<XBPython>();
+  if (xbp)
+  {
+    LanguageInvokerPtr invoker(new CContextItemAddonInvoker(xbp.get(), item));
+    return (CScriptInvocationManager::GetInstance().ExecuteAsync(m_library, invoker, addon) != -1);
+  }
+  else
+    return false;
 #else
   return false;
 #endif

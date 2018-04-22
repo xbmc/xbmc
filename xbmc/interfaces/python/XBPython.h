@@ -26,12 +26,11 @@
 #include "threads/Thread.h"
 #include "interfaces/IAnnouncer.h"
 #include "interfaces/generic/ILanguageInvocationHandler.h"
+#include "services/IService.h"
 #include "ServiceBroker.h"
 
 #include <memory>
 #include <vector>
-
-#define g_pythonParser CServiceBroker::GetXBPython()
 
 class CPythonInvoker;
 class CVariant;
@@ -63,7 +62,8 @@ typedef std::vector<LibraryLoader*> PythonExtensionLibraries;
 class XBPython :
   public IPlayerCallback,
   public ANNOUNCEMENT::IAnnouncer,
-  public ILanguageInvocationHandler
+  public ILanguageInvocationHandler,
+  public SERVICES::IService
 {
 public:
   XBPython();
@@ -112,6 +112,9 @@ public:
   void RegisterExtensionLib(LibraryLoader *pLib);
   void UnregisterExtensionLib(LibraryLoader *pLib);
   void UnloadExtensionLibs();
+
+  bool StartService() override;
+  bool StopService() override;
 
 private:
   void Finalize();

@@ -40,7 +40,6 @@ namespace PLAYLIST
 }
 
 class CContextMenuManager;
-class XBPython;
 class CDataCacheCore;
 class CSettings;
 class IAE;
@@ -84,7 +83,6 @@ public:
   static ADDON::CBinaryAddonManager &GetBinaryAddonManager();
   static ADDON::CBinaryAddonCache &GetBinaryAddonCache();
   static ADDON::CVFSAddonCache &GetVFSAddonCache();
-  static XBPython &GetXBPython();
   static PVR::CPVRManager &GetPVRManager();
   static CContextMenuManager& GetContextMenuManager();
   static CDataCacheCore& GetDataCacheCore();

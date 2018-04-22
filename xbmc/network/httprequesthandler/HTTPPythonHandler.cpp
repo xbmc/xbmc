@@ -29,9 +29,12 @@
 #include "network/httprequesthandler/HTTPWebinterfaceHandler.h"
 #include "network/httprequesthandler/python/HTTPPythonInvoker.h"
 #include "network/httprequesthandler/python/HTTPPythonWsgiInvoker.h"
+#include "services/ServiceManager.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+
+using namespace SERVICES;
 
 #define MAX_STRING_POST_SIZE 20000
 
@@ -159,7 +162,8 @@ int CHTTPPythonHandler::HandleRequest()
       pythonRequest->port = port;
     }
 
-    CHTTPPythonInvoker* pythonInvoker = new CHTTPPythonWsgiInvoker(&g_pythonParser, pythonRequest);
+    auto xbp = CServiceManager::GetInstance().GetService<XBPython>();
+    CHTTPPythonInvoker* pythonInvoker = new CHTTPPythonWsgiInvoker(xbp.get(), pythonRequest);
     LanguageInvokerPtr languageInvokerPtr(pythonInvoker);
     int result = CScriptInvocationManager::GetInstance().ExecuteSync(m_scriptPath, languageInvokerPtr, m_addon, args, 30000, false);
 

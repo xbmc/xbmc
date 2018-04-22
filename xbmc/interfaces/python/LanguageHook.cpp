@@ -22,9 +22,12 @@
 #include "LanguageHook.h"
 #include "CallbackHandler.h"
 #include "XBPython.h"
+#include "services/ServiceManager.h"
 
 #include "interfaces/legacy/AddonUtils.h"
 #include "PyContext.h"
+
+using namespace SERVICES;
 
 namespace XBMCAddon
 {
@@ -173,15 +176,46 @@ namespace XBMCAddon
     }
 
 
-    void PythonLanguageHook::RegisterPlayerCallback(IPlayerCallback* player) { XBMC_TRACE; g_pythonParser.RegisterPythonPlayerCallBack(player); }
-    void PythonLanguageHook::UnregisterPlayerCallback(IPlayerCallback* player) { XBMC_TRACE; g_pythonParser.UnregisterPythonPlayerCallBack(player); }
-    void PythonLanguageHook::RegisterMonitorCallback(XBMCAddon::xbmc::Monitor* monitor) { XBMC_TRACE; g_pythonParser.RegisterPythonMonitorCallBack(monitor); }
-    void PythonLanguageHook::UnregisterMonitorCallback(XBMCAddon::xbmc::Monitor* monitor) { XBMC_TRACE; g_pythonParser.UnregisterPythonMonitorCallBack(monitor); }
+    void PythonLanguageHook::RegisterPlayerCallback(IPlayerCallback* player)
+    {
+      XBMC_TRACE;
+      auto xbp = CServiceManager::GetInstance().GetService<XBPython>();
+      if (xbp)
+        xbp->RegisterPythonPlayerCallBack(player);
+    }
+
+    void PythonLanguageHook::UnregisterPlayerCallback(IPlayerCallback* player)
+    {
+      XBMC_TRACE;
+      auto xbp = CServiceManager::GetInstance().GetService<XBPython>();
+      if (xbp)
+        xbp->UnregisterPythonPlayerCallBack(player);
+    }
+
+    void PythonLanguageHook::RegisterMonitorCallback(XBMCAddon::xbmc::Monitor* monitor)
+    {
+      XBMC_TRACE;
+      auto xbp = CServiceManager::GetInstance().GetService<XBPython>();
+      if (xbp)
+        xbp->RegisterPythonMonitorCallBack(monitor);
+    }
+
+    void PythonLanguageHook::UnregisterMonitorCallback(XBMCAddon::xbmc::Monitor* monitor)
+    {
+      XBMC_TRACE;
+      auto xbp = CServiceManager::GetInstance().GetService<XBPython>();
+      if (xbp)
+        xbp->UnregisterPythonMonitorCallBack(monitor);
+    }
 
     bool PythonLanguageHook::WaitForEvent(CEvent& hEvent, unsigned int milliseconds)
-    { 
+    {
       XBMC_TRACE;
-      return g_pythonParser.WaitForEvent(hEvent,milliseconds);
+      auto xbp = CServiceManager::GetInstance().GetService<XBPython>();
+      if (xbp)
+        return xbp->WaitForEvent(hEvent,milliseconds);
+
+      return false;
     }
 
     void PythonLanguageHook::RegisterAddonClassInstance(AddonClass* obj)

@@ -44,13 +44,6 @@ ADDON::CVFSAddonCache &CServiceBroker::GetVFSAddonCache()
   return g_application.m_ServiceManager->GetVFSAddonCache();
 }
 
-#ifdef HAS_PYTHON
-XBPython& CServiceBroker::GetXBPython()
-{
-  return g_application.m_ServiceManager->GetXBPython();
-}
-#endif
-
 PVR::CPVRManager &CServiceBroker::GetPVRManager()
 {
   return g_application.m_ServiceManager->GetPVRManager();

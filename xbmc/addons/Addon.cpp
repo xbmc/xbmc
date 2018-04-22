@@ -45,6 +45,8 @@
 
 #ifdef HAS_PYTHON
 #include "interfaces/python/XBPython.h"
+#include "services/ServiceManager.h"
+using namespace SERVICES;
 #endif
 
 using XFILE::CDirectory;
@@ -198,7 +200,9 @@ void CAddon::SaveSettings(void)
   //push the settings changes to the running addon instance
   CServiceBroker::GetAddonMgr().ReloadSettings(ID());
 #ifdef HAS_PYTHON
-  g_pythonParser.OnSettingsChanged(ID());
+  auto xbp = CServiceManager::GetInstance().GetService<XBPython>();
+  if (xbp)
+    xbp->OnSettingsChanged(ID());
 #endif
 }
 

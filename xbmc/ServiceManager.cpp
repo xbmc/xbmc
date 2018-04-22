@@ -36,7 +36,6 @@
 #include "input/InputManager.h"
 #include "interfaces/AnnouncementManager.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
-#include "interfaces/python/XBPython.h"
 #include "pvr/PVRManager.h"
 #include "network/Network.h"
 #include "settings/Settings.h"
@@ -107,11 +106,6 @@ void CServiceManager::DeinitTesting()
 
 bool CServiceManager::InitStageOne()
 {
-#ifdef HAS_PYTHON
-  m_XBPython.reset(new XBPython());
-  CScriptInvocationManager::GetInstance().RegisterLanguageInvocationHandler(m_XBPython.get(), ".py");
-#endif
-
   m_playlistPlayer.reset(new PLAYLIST::CPlayListPlayer());
 
   m_settings.reset(new CSettings());
@@ -262,10 +256,6 @@ void CServiceManager::DeinitStageOne()
   m_network.reset();
   m_settings.reset();
   m_playlistPlayer.reset();
-#ifdef HAS_PYTHON
-  CScriptInvocationManager::GetInstance().UnregisterLanguageInvocationHandler(m_XBPython.get());
-  m_XBPython.reset();
-#endif
 }
 
 ADDON::CAddonMgr &CServiceManager::GetAddonMgr()
@@ -297,13 +287,6 @@ ADDON::CRepositoryUpdater &CServiceManager::GetRepositoryUpdater()
 {
   return *m_repositoryUpdater;
 }
-
-#ifdef HAS_PYTHON
-XBPython& CServiceManager::GetXBPython()
-{
-  return *m_XBPython;
-}
-#endif
 
 PVR::CPVRManager& CServiceManager::GetPVRManager()
 {

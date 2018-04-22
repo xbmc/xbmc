@@ -46,6 +46,7 @@
 #include "interfaces/legacy/AddonUtils.h"
 #include "interfaces/python/AddonPythonInvoker.h"
 #include "interfaces/python/PythonInvoker.h"
+#include "interfaces/generic/ScriptInvocationManager.h"
 
 using namespace ANNOUNCEMENT;
 using namespace SERVICES;
@@ -749,4 +750,16 @@ bool XBPython::WaitForEvent(CEvent& hEvent, unsigned int milliseconds)
   if (ret)
     m_globalEvent.Reset();
   return ret != NULL;
+}
+
+bool XBPython::StartService()
+{
+  CScriptInvocationManager::GetInstance().RegisterLanguageInvocationHandler(this, ".py");
+  return true;
+}
+
+bool XBPython::StopService()
+{
+  CScriptInvocationManager::GetInstance().UnregisterLanguageInvocationHandler(this);
+  return true;
 }

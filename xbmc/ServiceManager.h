@@ -45,9 +45,6 @@ namespace PLAYLIST
 }
 
 class CContextMenuManager;
-#ifdef HAS_PYTHON
-class XBPython;
-#endif
 class CDataCacheCore;
 class CSettings;
 class CFavouritesService;
@@ -105,9 +102,6 @@ public:
   ADDON::CServiceAddonManager& GetServiceAddons();
   ADDON::CRepositoryUpdater& GetRepositoryUpdater();
   CNetwork& GetNetwork();
-#ifdef HAS_PYTHON
-  XBPython& GetXBPython();
-#endif
   PVR::CPVRManager& GetPVRManager();
   CContextMenuManager& GetContextMenuManager();
   CDataCacheCore& GetDataCacheCore();
@@ -164,9 +158,6 @@ protected:
   std::unique_ptr<ADDON::CVFSAddonCache> m_vfsAddonCache;
   std::unique_ptr<ADDON::CServiceAddonManager> m_serviceAddons;
   std::unique_ptr<ADDON::CRepositoryUpdater> m_repositoryUpdater;
-#ifdef HAS_PYTHON
-  std::unique_ptr<XBPython> m_XBPython;
-#endif
   std::unique_ptr<PVR::CPVRManager> m_PVRManager;
   std::unique_ptr<CContextMenuManager, delete_contextMenuManager> m_contextMenuManager;
   std::unique_ptr<CDataCacheCore, delete_dataCacheCore> m_dataCacheCore;
