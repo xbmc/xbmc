@@ -43,7 +43,7 @@ class CContextMenuManager;
 class CDataCacheCore;
 class CSettings;
 class CFavouritesService;
-class CNetwork;
+class CNetworkBase;
 class CWinSystemBase;
 class CPowerManager;
 class CWeatherManager;
@@ -96,7 +96,7 @@ public:
   ADDON::CVFSAddonCache& GetVFSAddonCache();
   ADDON::CServiceAddonManager& GetServiceAddons();
   ADDON::CRepositoryUpdater& GetRepositoryUpdater();
-  CNetwork& GetNetwork();
+  CNetworkBase& GetNetwork();
   PVR::CPVRManager& GetPVRManager();
   CContextMenuManager& GetContextMenuManager();
   CDataCacheCore& GetDataCacheCore();
@@ -144,7 +144,7 @@ protected:
   };
 
   //! \brief Initialize appropriate networking instance.
-  CNetwork* SetupNetwork() const;
+  CNetworkBase* SetupNetwork() const;
 
   std::unique_ptr<ADDON::CAddonMgr> m_addonMgr;
   std::unique_ptr<ADDON::CBinaryAddonManager> m_binaryAddonManager;
@@ -164,7 +164,7 @@ protected:
   std::unique_ptr<CFavouritesService, delete_favouritesService> m_favouritesService;
   std::unique_ptr<CInputManager> m_inputManager;
   std::unique_ptr<CFileExtensionProvider> m_fileExtensionProvider;
-  std::unique_ptr<CNetwork> m_network;
+  std::unique_ptr<CNetworkBase> m_network;
   std::unique_ptr<CPowerManager> m_powerManager;
   std::unique_ptr<CWeatherManager> m_weatherManager;
   std::unique_ptr<CPlayerCoreFactory> m_playerCoreFactory;

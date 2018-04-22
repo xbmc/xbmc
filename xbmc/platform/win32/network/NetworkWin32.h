@@ -64,7 +64,7 @@ private:
    std::string m_adaptername;
 };
 
-class CNetworkWin32 : public CNetwork
+class CNetworkWin32 : public CNetworkBase
 {
 public:
    CNetworkWin32(void);
@@ -74,6 +74,7 @@ public:
    virtual std::vector<CNetworkInterface*>& GetInterfaceList(void);
 
    // Ping remote host
+   using CNetworkBase::PingHost;
    virtual bool PingHost(unsigned long host, unsigned int timeout_ms = 2000);
 
    // Get/set the nameserver(s)
@@ -102,5 +103,7 @@ private:
    CStopWatch m_netrefreshTimer;
    CCriticalSection m_critSection;
 };
+
+using CNetwork = CNetworkWin32;
 
 #endif

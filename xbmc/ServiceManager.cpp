@@ -366,7 +366,7 @@ void CServiceManager::delete_favouritesService::operator()(CFavouritesService *p
   delete p;
 }
 
-CNetwork* CServiceManager::SetupNetwork() const
+CNetworkBase* CServiceManager::SetupNetwork() const
 {
 #if defined(TARGET_ANDROID)
   return new CNetworkAndroid();
@@ -381,7 +381,7 @@ CNetwork* CServiceManager::SetupNetwork() const
 #endif
 }
 
-CNetwork& CServiceManager::GetNetwork()
+CNetworkBase& CServiceManager::GetNetwork()
 {
   return *m_network;
 }

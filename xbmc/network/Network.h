@@ -95,7 +95,7 @@ public:
    virtual void SetSettings(NetworkAssignment& assignment, std::string& ipAddress, std::string& networkMask, std::string& defaultGateway, std::string& essId, std::string& key, EncMode& encryptionMode) = 0;
 };
 
-class CNetwork
+class CNetworkBase
 {
 public:
   enum EMESSAGE
@@ -104,8 +104,8 @@ public:
     SERVICES_DOWN
   };
 
-   CNetwork();
-   virtual ~CNetwork();
+   CNetworkBase();
+   virtual ~CNetworkBase();
 
    // Return our hostname
    virtual bool GetHostName(std::string& hostname);
@@ -160,6 +160,8 @@ public:
 #include "platform/win32/network/NetworkWin32.h"
 #elif defined(HAS_WIN10_NETWORK)
 #include "platform/win10/network/NetworkWin10.h"
+#else
+using CNetwork = CNetworkBase;
 #endif
 
 //creates, binds and listens a tcp socket on the desired port. Set bindLocal to
