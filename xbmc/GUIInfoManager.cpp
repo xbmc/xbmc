@@ -1638,6 +1638,7 @@ const infomap musicplayer[] =    {{ "title",            MUSICPLAYER_TITLE },
                                   { "channelgroup",     MUSICPLAYER_CHANNEL_GROUP },
                                   { "dbid",             MUSICPLAYER_DBID },
                                   { "property",         MUSICPLAYER_PROPERTY },
+                                  { "playingstation",   MUSICPLAYER_PLAYINGSTATION },
 };
 
 /// \page modules__General__List_of_gui_access

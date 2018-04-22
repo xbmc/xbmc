@@ -74,9 +74,13 @@ bool CShoutcastFile::Open(const CURL& url)
   bool result = m_file.Open(url2);
   if (result)
   {
-    m_tag.SetTitle(m_file.GetHttpHeader().GetValue("icy-name"));
-    if (m_tag.GetTitle().empty())
-      m_tag.SetTitle(m_file.GetHttpHeader().GetValue("ice-name")); // icecast
+    CHttpHeader header = m_file.GetHttpHeader();
+    std::string icyName = header.GetValue("icy-name");
+    if (icyName.empty())
+      icyName = header.GetValue("ice-name"); // icecast
+
+    m_tag.SetTitle(icyName);
+    m_tag.SetPlayingStation(icyName);
     m_tag.SetGenre(m_file.GetHttpHeader().GetValue("icy-genre"));
     if (m_tag.GetGenre().empty())
       m_tag.SetGenre(m_file.GetHttpHeader().GetValue("ice-genre")); // icecast

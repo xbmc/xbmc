@@ -119,6 +119,24 @@ namespace XBMCAddon
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
+    ///
+    /// \ingroup python_InfoTagMusic
+    /// @brief \python_func{ getPlayingStation() }
+    ///-----------------------------------------------------------------------
+    /// Returns the playing station from music as string on info tag.
+    ///
+    /// @return [string] Station
+    ///
+    ///-----------------------------------------------------------------------
+    /// @python_v18 New function added.
+    ///
+    getPlayingStation();
+#else
+    String getPlayingStation();
+#endif
+
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_InfoTagMusic
       /// @brief \python_func{ getMediaType() }
