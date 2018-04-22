@@ -118,6 +118,11 @@ bool aml_permissions()
       CLog::Log(LOGERROR, "AML: no rw on /sys/module/amlvideodri/parameters/freerun_mode");
       permissions_ok = 0;
     }
+    if (!SysfsUtils::HasRW("/sys/class/video/freerun_mode"))
+    {
+      CLog::Log(LOGERROR, "AML: no rw on /sys/class/video/freerun_mode");
+      permissions_ok = 0;
+    }
     if (!SysfsUtils::HasRW("/sys/class/audiodsp/digital_raw"))
     {
       CLog::Log(LOGERROR, "AML: no rw on /sys/class/audiodsp/digital_raw");
@@ -149,6 +154,14 @@ bool aml_permissions()
     if (aml_has_frac_rate_policy() && !SysfsUtils::HasRW("/sys/class/amhdmitx/amhdmitx0/frac_rate_policy"))
     {
       CLog::Log(LOGERROR, "AML: no rw on /sys/class/amhdmitx/amhdmitx0/frac_rate_policy");
+    }
+    if (!SysfsUtils::HasRW("/sys/module/di/parameters/bypass_prog"))
+    {
+      CLog::Log(LOGERROR, "AML: no rw on /sys/module/di/parameters/bypass_prog");
+    }
+    if (!SysfsUtils::HasRW("/sys/class/display/mode"))
+    {
+      CLog::Log(LOGERROR, "AML: no rw on /sys/class/display/mode");
     }
   }
 
