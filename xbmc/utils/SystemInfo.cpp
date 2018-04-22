@@ -32,6 +32,7 @@
 #include "filesystem/File.h"
 #include "network/Network.h"
 #include "ServiceBroker.h"
+#include "services/ServiceManager.h"
 #include "rendering/RenderSystem.h"
 #include "guilib/LocalizeStrings.h"
 #include "CPUInfo.h"
@@ -89,6 +90,7 @@ using namespace Windows::System::Profile;
 #define STR_MACRO(x) #x
 #define XSTR_MACRO(x) STR_MACRO(x)
 
+using namespace SERVICES;
 using namespace XFILE;
 
 #ifdef TARGET_WINDOWS_DESKTOP
@@ -292,7 +294,8 @@ CSysData::INTERNET_STATE CSysInfoJob::GetInternetState()
 std::string CSysInfoJob::GetMACAddress()
 {
 #if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK) || defined(HAS_WIN10_NETWORK)
-  CNetworkInterface* iface = CServiceBroker::GetNetwork().GetFirstConnectedInterface();
+  auto net = CServiceManager::GetInstance().GetService<CNetwork>();
+  CNetworkInterface* iface = net ? net->GetFirstConnectedInterface() : nullptr;
   if (iface)
     return iface->GetMacAddress();
 #endif
@@ -1202,7 +1205,9 @@ std::string CSysInfo::GetDeviceName()
   if (StringUtils::EqualsNoCase(friendlyName, CCompileInfo::GetAppName()))
   {
     std::string hostname("[unknown]");
-    CServiceBroker::GetNetwork().GetHostName(hostname);
+    auto net = CServiceManager::GetInstance().GetService<CNetwork>();
+    if (net)
+      net->GetHostName(hostname);
     return StringUtils::Format("%s (%s)", friendlyName.c_str(), hostname.c_str());
   }
   

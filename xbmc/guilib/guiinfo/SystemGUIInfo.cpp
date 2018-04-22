@@ -36,6 +36,7 @@
 #endif
 #include "powermanagement/PowerManager.h"
 #include "profiles/ProfilesManager.h"
+#include "services/ServiceManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/DisplaySettings.h"
 #include "settings/MediaSettings.h"
@@ -317,7 +318,8 @@ bool CSystemGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
     ///////////////////////////////////////////////////////////////////////////////////////////////
     case NETWORK_IP_ADDRESS:
     {
-      CNetworkInterface* iface = CServiceBroker::GetNetwork().GetFirstConnectedInterface();
+      auto net = SERVICES::CServiceManager::GetInstance().GetService<CNetwork>();
+      CNetworkInterface* iface = net ? net->GetFirstConnectedInterface() : nullptr;
       if (iface)
       {
         value = iface->GetCurrentIPAddress();
@@ -327,7 +329,8 @@ bool CSystemGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
     }
     case NETWORK_SUBNET_MASK:
     {
-      CNetworkInterface* iface = CServiceBroker::GetNetwork().GetFirstConnectedInterface();
+      auto net = SERVICES::CServiceManager::GetInstance().GetService<CNetwork>();
+      CNetworkInterface* iface = net ? net->GetFirstConnectedInterface() : nullptr;
       if (iface)
       {
         value = iface->GetCurrentNetmask();
@@ -337,7 +340,8 @@ bool CSystemGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
     }
     case NETWORK_GATEWAY_ADDRESS:
     {
-      CNetworkInterface* iface = CServiceBroker::GetNetwork().GetFirstConnectedInterface();
+      auto net = SERVICES::CServiceManager::GetInstance().GetService<CNetwork>();
+      CNetworkInterface* iface = net ? net->GetFirstConnectedInterface() : nullptr;
       if (iface)
       {
         value = iface->GetCurrentDefaultGateway();
@@ -347,7 +351,10 @@ bool CSystemGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
     }
     case NETWORK_DNS1_ADDRESS:
     {
-      const std::vector<std::string> nss = CServiceBroker::GetNetwork().GetNameServers();
+      std::vector<std::string> nss;
+      auto net = SERVICES::CServiceManager::GetInstance().GetService<CNetwork>();
+      if (net)
+        nss = net->GetNameServers();
       if (nss.size() >= 1)
       {
         value = nss[0];
@@ -357,7 +364,10 @@ bool CSystemGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
     }
     case NETWORK_DNS2_ADDRESS:
     {
-      const std::vector<std::string> nss = CServiceBroker::GetNetwork().GetNameServers();
+      std::vector<std::string> nss;
+      auto net = SERVICES::CServiceManager::GetInstance().GetService<CNetwork>();
+      if (net)
+        nss = net->GetNameServers();
       if (nss.size() >= 2)
       {
         value = nss[1];
@@ -376,7 +386,8 @@ bool CSystemGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
     {
       std::string linkStatus = g_localizeStrings.Get(151);
       linkStatus += " ";
-      CNetworkInterface* iface = CServiceBroker::GetNetwork().GetFirstConnectedInterface();
+      auto net = SERVICES::CServiceManager::GetInstance().GetService<CNetwork>();
+      CNetworkInterface* iface = net ? net->GetFirstConnectedInterface() : nullptr;
       if (iface && iface->IsConnected())
         linkStatus += g_localizeStrings.Get(15207);
       else

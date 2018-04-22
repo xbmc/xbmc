@@ -29,6 +29,9 @@
 #include "Application.h"
 #include "AppParamParser.h"
 #include "windowing/WinSystem.h"
+#include "services/ServiceManager.h"
+#include "network/Network.h"
+
 #include "platform/Filesystem.h"
 
 #ifdef TARGET_DARWIN
@@ -104,6 +107,18 @@ void TestBasicEnvironment::SetUp()
   if (!g_application.m_ServiceManager->InitForTesting())
     exit(1);
 
+  #if defined(TARGET_ANDROID)
+  SERVICES::CServiceManager::GetInstance().RegisterService(std::shared_ptr<CNetwork>(new CNetworkAndroid()));
+#elif defined(HAS_LINUX_NETWORK)
+  SERVICES::CServiceManager::GetInstance().RegisterService(std::shared_ptr<CNetwork>(new CNetworkLinux()));
+#elif defined(HAS_WIN32_NETWORK)
+  SERVICES::CServiceManager::GetInstance().RegisterService(std::shared_ptr<CNetwork>(new CNetworkWin32()));
+#elif defined(HAS_WIN10_NETWORK)
+  SERVICES::CServiceManager::GetInstance().RegisterService(std::shared_ptr<CNetwork>(new CNetworkWin10()));
+#else
+  SERVICES::CServiceManager::GetInstance().RegisterService(std::shared_ptr<CNetwork>(new CNetwork()));
+#endif
+
   CServiceBroker::GetSettings().Initialize();
 }
 
@@ -111,6 +126,7 @@ void TestBasicEnvironment::TearDown()
 {
   XFILE::CDirectory::RemoveRecursive(m_tempPath);
 
+  SERVICES::CServiceManager::GetInstance().TearDown(0);
   CServiceBroker::GetSettings().Uninitialize();
   g_application.m_ServiceManager->DeinitTesting();
 }

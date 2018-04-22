@@ -75,6 +75,7 @@ public:
    CNetworkInterface* GetFirstConnectedInterface(void) override;        
     
    // Ping remote host
+  using CNetworkBase::PingHost;
    bool PingHost(unsigned long host, unsigned int timeout_ms = 2000) override;
 
    // Get/set the nameserver(s)

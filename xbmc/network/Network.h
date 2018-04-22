@@ -23,6 +23,7 @@
 #include <vector>
 
 #include "settings/lib/ISettingCallback.h"
+#include "services/IService.h"
 
 enum EncMode { ENC_NONE = 0, ENC_WEP = 1, ENC_WPA = 2, ENC_WPA2 = 3 };
 enum NetworkAssignment { NETWORK_DASH = 0, NETWORK_DHCP = 1, NETWORK_STATIC = 2, NETWORK_DISABLED = 3 };
@@ -95,7 +96,7 @@ public:
    virtual void SetSettings(NetworkAssignment& assignment, std::string& ipAddress, std::string& networkMask, std::string& defaultGateway, std::string& essId, std::string& key, EncMode& encryptionMode) = 0;
 };
 
-class CNetworkBase
+class CNetworkBase : public SERVICES::IService
 {
 public:
   enum EMESSAGE

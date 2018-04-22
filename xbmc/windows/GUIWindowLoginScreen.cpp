@@ -298,11 +298,13 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
   // stop PVR related services
   CServiceBroker::GetPVRManager().Stop();
 
+  auto net = SERVICES::CServiceManager::GetInstance().GetService<CNetwork>();
   CProfilesManager &profileManager = CServiceBroker::GetProfileManager();
 
   if (profile != 0 || !profileManager.IsMasterProfile())
   {
-    CServiceBroker::GetNetwork().NetworkMessage(CNetwork::SERVICES_DOWN, 1);
+    if (net)
+      net->NetworkMessage(CNetwork::SERVICES_DOWN, 1);
     profileManager.LoadProfile(profile);
   }
   else
@@ -311,7 +313,8 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
     if (pWindow)
       pWindow->ResetControlStates();
   }
-  CServiceBroker::GetNetwork().NetworkMessage(CNetwork::SERVICES_UP, 1);
+  if (net)
+    net->NetworkMessage(CNetwork::SERVICES_UP, 1);
 
   profileManager.UpdateCurrentProfileDate();
   profileManager.Save();

@@ -40,6 +40,7 @@
 #include "UDFDirectory.h"
 #include "utils/log.h"
 #include "network/WakeOnAccess.h"
+#include "services/ServiceManager.h"
 
 #ifdef TARGET_POSIX
 #include "platform/posix/filesystem/PosixDirectory.h"
@@ -91,7 +92,7 @@
 #include "addons/VFSEntry.h"
 
 using namespace ADDON;
-
+using namespace SERVICES;
 using namespace XFILE;
 
 /*!
@@ -152,7 +153,8 @@ IDirectory* CDirectoryFactory::Create(const CURL& url)
   if (CWinLibraryDirectory::IsValid(url)) return new CWinLibraryDirectory();
 #endif
 
-  bool networkAvailable = CServiceBroker::GetNetwork().IsAvailable();
+  auto net = CServiceManager::GetInstance().GetService<CNetwork>();
+  bool networkAvailable = net && net->IsAvailable();
   if (networkAvailable)
   {
     if (url.IsProtocol("ftp") || url.IsProtocol("ftps")) return new CFTPDirectory();

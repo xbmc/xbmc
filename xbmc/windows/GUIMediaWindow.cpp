@@ -1134,7 +1134,8 @@ bool CGUIMediaWindow::HaveDiscOrConnection(const std::string& strPath, int iDriv
   else if (iDriveType==CMediaSource::SOURCE_TYPE_REMOTE)
   {
     //! @todo Handle not connected to a remote share
-    if (!CServiceBroker::GetNetwork().IsConnected())
+    auto net = SERVICES::CServiceManager::GetInstance().GetService<CNetwork>();
+    if (!net || !net->IsConnected())
     {
       HELPERS::ShowOKDialogText(CVariant{220}, CVariant{221});
       return false;
@@ -1794,7 +1795,11 @@ const CFileItemList& CGUIMediaWindow::CurrentDirectory() const
 
 bool CGUIMediaWindow::WaitForNetwork() const
 {
-  if (CServiceBroker::GetNetwork().IsAvailable())
+  auto net = SERVICES::CServiceManager::GetInstance().GetService<CNetwork>();
+  if (!net)
+    return false;
+
+  if (net->IsAvailable())
     return true;
 
   CGUIDialogProgress *progress = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogProgress>(WINDOW_DIALOG_PROGRESS);
@@ -1806,7 +1811,7 @@ bool CGUIMediaWindow::WaitForNetwork() const
   progress->SetLine(1, CVariant{url.GetWithoutUserDetails()});
   progress->ShowProgressBar(false);
   progress->Open();
-  while (!CServiceBroker::GetNetwork().IsAvailable())
+  while (!net->IsAvailable())
   {
     progress->Progress();
     if (progress->IsCanceled())

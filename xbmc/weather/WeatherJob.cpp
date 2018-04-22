@@ -31,6 +31,7 @@
 #include "platform/linux/XTimeUtils.h"
 #endif
 #include "ServiceBroker.h"
+#include "services/ServiceManager.h"
 #include "settings/lib/Setting.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
@@ -49,6 +50,7 @@
 #define LOCALIZED_TOKEN_LASTID4     97
 
 using namespace ADDON;
+using namespace SERVICES;
 
 CWeatherJob::CWeatherJob(int location)
 {
@@ -58,7 +60,8 @@ CWeatherJob::CWeatherJob(int location)
 bool CWeatherJob::DoWork()
 {
   // wait for the network
-  if (!CServiceBroker::GetNetwork().IsAvailable())
+  auto net = CServiceManager::GetInstance().GetService<CNetwork>();
+  if (!net || !net->IsAvailable())
     return false;
 
   AddonPtr addon;

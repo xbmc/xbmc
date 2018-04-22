@@ -33,6 +33,7 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
+#include "services/ServiceManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/MediaSourceSettings.h"
@@ -224,11 +225,14 @@ bool CMACDiscoveryJob::DoWork()
     return false;
   }
 
-  std::vector<CNetworkInterface*>& ifaces = CServiceBroker::GetNetwork().GetInterfaceList();
-  for (std::vector<CNetworkInterface*>::const_iterator it = ifaces.begin(); it != ifaces.end(); ++it)
+  auto net = SERVICES::CServiceManager::GetInstance().GetService<CNetwork>();
+  if (net)
   {
-    if ((*it)->GetHostMacAddress(ipAddress, m_macAddress))
-      return true;
+    for (auto& it : net->GetInterfaceList())
+    {
+      if (it->GetHostMacAddress(ipAddress, m_macAddress))
+        return true;
+    }
   }
 
   return false;
@@ -354,7 +358,8 @@ public:
   bool SuccessWaiting () const override
   {
     unsigned long address = ntohl(HostToIP(m_host));
-    bool online = CServiceBroker::GetNetwork().HasInterfaceForIP(address);
+    auto net = SERVICES::CServiceManager::GetInstance().GetService<CNetwork>();
+    bool online = net && net->HasInterfaceForIP(address);
 
     if (!online) // setup endtime so we dont return true until network is consistently connected
       m_end.Set (m_settle_time_ms);
@@ -399,7 +404,8 @@ public:
     {
       unsigned long dst_ip = HostToIP(server.host);
 
-      return CServiceBroker::GetNetwork().PingHost(dst_ip, server.ping_port, timeOutMs, server.ping_mode & 1);
+      auto net = SERVICES::CServiceManager::GetInstance().GetService<CNetwork>();
+      return net ? net->PingHost(dst_ip, server.ping_port, timeOutMs, server.ping_mode & 1) : false;
     }
     else // upnp mode
     {
@@ -510,7 +516,8 @@ bool CWakeOnAccess::WakeUpHost(const WakeUpEntry& server)
 
     if (dlg.ShowAndWait (waitObj, m_netinit_sec, LOCALIZED(13028)) != ProgressDialogHelper::Success)
     {
-      if (CServiceBroker::GetNetwork().IsConnected() && HostToIP(server.host) == INADDR_NONE)
+      auto net = SERVICES::CServiceManager::GetInstance().GetService<CNetwork>();
+      if (net && net->IsConnected() && HostToIP(server.host) == INADDR_NONE)
       {
         // network connected (at least one interface) but dns-lookup failed (host by name, not ip-address), so dont abort yet
         CLog::Log(LOGWARNING, "WakeOnAccess timeout/cancel while waiting for network (proceeding anyway)");
@@ -529,7 +536,8 @@ bool CWakeOnAccess::WakeUpHost(const WakeUpEntry& server)
     return true;
   }
 
-  if (!CServiceBroker::GetNetwork().WakeOnLan(server.mac.c_str()))
+  auto net = SERVICES::CServiceManager::GetInstance().GetService<CNetwork>();
+  if (!net || !net->WakeOnLan(server.mac.c_str()))
   {
     CLog::Log(LOGERROR,"WakeOnAccess failed to send. (Is it blocked by firewall?)");
 

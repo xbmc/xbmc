@@ -37,7 +37,6 @@
 #include "interfaces/AnnouncementManager.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
 #include "pvr/PVRManager.h"
-#include "network/Network.h"
 #include "settings/Settings.h"
 #include "utils/FileExtensionProvider.h"
 #include "windowing/WinSystem.h"
@@ -65,7 +64,6 @@ CServiceManager::~CServiceManager()
 bool CServiceManager::InitForTesting()
 {
   m_settings.reset(new CSettings());
-  m_network.reset(SetupNetwork());
 
   m_profileManager.reset(new CProfilesManager(*m_settings));
 
@@ -100,14 +98,12 @@ void CServiceManager::DeinitTesting()
   m_addonMgr.reset();
   m_databaseManager.reset();
   m_profileManager.reset();
-  m_network.reset();
   m_settings.reset();
 }
 
 bool CServiceManager::InitStageOne()
 {
   m_settings.reset(new CSettings());
-  m_network.reset(SetupNetwork());
 
   init_level = 1;
   return true;
@@ -251,7 +247,6 @@ void CServiceManager::DeinitStageOne()
 {
   init_level = 0;
 
-  m_network.reset();
   m_settings.reset();
 }
 
@@ -364,26 +359,6 @@ void CServiceManager::delete_contextMenuManager::operator()(CContextMenuManager 
 void CServiceManager::delete_favouritesService::operator()(CFavouritesService *p) const
 {
   delete p;
-}
-
-CNetworkBase* CServiceManager::SetupNetwork() const
-{
-#if defined(TARGET_ANDROID)
-  return new CNetworkAndroid();
-#elif defined(HAS_LINUX_NETWORK)
-  return new CNetworkLinux();
-#elif defined(HAS_WIN32_NETWORK)
-  return new CNetworkWin32();
-#elif defined(HAS_WIN10_NETWORK)
-  return new CNetworkWin10();
-#else
-  return new CNetwork();
-#endif
-}
-
-CNetworkBase& CServiceManager::GetNetwork()
-{
-  return *m_network;
 }
 
 CWeatherManager& CServiceManager::GetWeatherManager()

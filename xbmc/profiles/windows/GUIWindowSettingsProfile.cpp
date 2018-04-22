@@ -37,6 +37,7 @@
 #include "ServiceBroker.h"
 #include "input/Key.h"
 #include "guilib/LocalizeStrings.h"
+#include "services/ServiceManager.h"
 #include "utils/Variant.h"
 
 using namespace XFILE;
@@ -85,7 +86,9 @@ void CGUIWindowSettingsProfile::OnPopupMenu(int iItem)
     g_application.StopPlaying();
     CGUIMessage msg2(GUI_MSG_ITEM_SELECTED, CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow(), iCtrlID);
     CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg2);
-    CServiceBroker::GetNetwork().NetworkMessage(CNetwork::SERVICES_DOWN,1);
+    auto net = SERVICES::CServiceManager::GetInstance().GetService<CNetwork>();
+    if (net)
+      net->NetworkMessage(CNetwork::SERVICES_DOWN, 1);
     profileManager.LoadMasterProfileForLogin();
     CGUIWindowLoginScreen::LoadProfile(iItem);
     return;

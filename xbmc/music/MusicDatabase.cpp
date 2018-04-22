@@ -3448,7 +3448,8 @@ bool CMusicDatabase::LookupCDDBInfo(bool bRequery/*=false*/)
     return false;
 
   // check network connectivity
-  if (!CServiceBroker::GetNetwork().IsAvailable())
+  auto net = SERVICES::CServiceManager::GetInstance().GetService<CNetwork>();
+  if (!net || !net->IsAvailable())
     return false;
 
   // Get information for the inserted disc

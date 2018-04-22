@@ -27,7 +27,7 @@
 #include "FileItem.h"
 #include "filesystem/StackDirectory.h"
 #include "network/Network.h"
-#include "ServiceBroker.h"
+#include "services/ServiceManager.h"
 #ifndef TARGET_POSIX
 #include <sys\stat.h>
 #endif
@@ -36,6 +36,7 @@
 #include <vector>
 
 using namespace ADDON;
+using namespace SERVICES;
 
 CURL::~CURL() = default;
 
@@ -638,7 +639,8 @@ bool CURL::IsLocal() const
 
 bool CURL::IsLocalHost() const
 {
-  return CServiceBroker::GetNetwork().IsLocalHost(m_strHostName);
+  auto net = CServiceManager::GetInstance().GetService<CNetwork>();
+  return net ? net->IsLocalHost(m_strHostName) : true;
 }
 
 bool CURL::IsFileOnly(const std::string &url)

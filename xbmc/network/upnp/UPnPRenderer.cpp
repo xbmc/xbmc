@@ -427,8 +427,9 @@ CUPnPRenderer::GetMetadata(NPT_String& meta)
         thumb = CTextureUtils::GetWrappedImageURL(thumb);
 
         NPT_String ip;
-        if (CServiceBroker::GetNetwork().GetFirstConnectedInterface()) {
-            ip = CServiceBroker::GetNetwork().GetFirstConnectedInterface()->GetCurrentIPAddress().c_str();
+        auto net = SERVICES::CServiceManager::GetInstance().GetService<CNetwork>();
+        if (net && net->GetFirstConnectedInterface()) {
+            ip = net->GetFirstConnectedInterface()->GetCurrentIPAddress().c_str();
         }
         // build url, use the internal device http server to serv the image
         NPT_HttpUrlQuery query;

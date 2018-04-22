@@ -39,6 +39,7 @@
 #include "URL.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "profiles/ProfilesManager.h"
+#include "services/ServiceManager.h"
 #include "settings/Settings.h"
 #include "GUIUserMessages.h"
 #include "FileItem.h"
@@ -50,6 +51,7 @@
 #include "Util.h"
 #include "utils/SystemInfo.h"
 
+using namespace SERVICES;
 using namespace UPNP;
 using namespace KODI::MESSAGING;
 
@@ -433,8 +435,9 @@ CUPnP::CUPnP() :
     m_UPnP = new PLT_UPnP();
 
     // keep main IP around
-    if (CServiceBroker::GetNetwork().GetFirstConnectedInterface()) {
-        m_IP = CServiceBroker::GetNetwork().GetFirstConnectedInterface()->GetCurrentIPAddress().c_str();
+    auto net = CServiceManager::GetInstance().GetService<CNetwork>();
+    if (net && net->GetFirstConnectedInterface()) {
+        m_IP = net->GetFirstConnectedInterface()->GetCurrentIPAddress().c_str();
     }
     NPT_List<NPT_IpAddress> list;
     if (NPT_SUCCEEDED(PLT_UPnPMessageHelper::GetIPAddresses(list)) && list.GetItemCount()) {

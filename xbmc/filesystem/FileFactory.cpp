@@ -72,10 +72,12 @@
 #include "utils/log.h"
 #include "network/WakeOnAccess.h"
 #include "utils/StringUtils.h"
+#include "services/ServiceManager.h"
 #include "ServiceBroker.h"
 #include "addons/VFSEntry.h"
 
 using namespace ADDON;
+using namespace SERVICES;
 using namespace XFILE;
 
 CFileFactory::CFileFactory() = default;
@@ -144,7 +146,8 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
   else if (CWinLibraryFile::IsValid(url)) return new CWinLibraryFile();
 #endif
 
-  bool networkAvailable = CServiceBroker::GetNetwork().IsAvailable();
+  auto net = CServiceManager::GetInstance().GetService<CNetwork>();
+  bool networkAvailable = net && net->IsAvailable();
   if (networkAvailable)
   {
     if (url.IsProtocol("ftp")

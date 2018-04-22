@@ -29,6 +29,7 @@
 #include "URL.h"
 #include "utils/FileExtensionProvider.h"
 #include "ServiceBroker.h"
+#include "services/ServiceManager.h"
 #include "StringUtils.h"
 #include "utils/log.h"
 
@@ -41,6 +42,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
+using namespace SERVICES;
 using namespace XFILE;
 
 /* returns filename extension including period of filename */
@@ -690,10 +692,11 @@ bool URIUtils::IsHostOnLAN(const std::string& host, bool offLineCheck)
         return true;
     }
     // check if we are on the local subnet
-    if (!CServiceBroker::GetNetwork().GetFirstConnectedInterface())
+    auto net = CServiceManager::GetInstance().GetService<CNetwork>();
+    if (!net || !net->GetFirstConnectedInterface())
       return false;
 
-    if (CServiceBroker::GetNetwork().HasInterfaceForIP(address))
+    if (net->HasInterfaceForIP(address))
       return true;
   }
 

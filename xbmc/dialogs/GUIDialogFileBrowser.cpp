@@ -47,10 +47,12 @@
 #include "URL.h"
 #include "utils/Variant.h"
 #include "utils/FileExtensionProvider.h"
+#include "services/ServiceManager.h"
 #include "settings/AdvancedSettings.h"
 #include "messaging/helpers/DialogOKHelper.h"
 
 using namespace KODI::MESSAGING;
+using namespace SERVICES;
 using namespace XFILE;
 
 #define CONTROL_LIST          450
@@ -578,7 +580,8 @@ bool CGUIDialogFileBrowser::HaveDiscOrConnection( int iDriveType )
   else if ( iDriveType == CMediaSource::SOURCE_TYPE_REMOTE )
   {
     //! @todo Handle not connected to a remote share
-    if ( !CServiceBroker::GetNetwork().IsConnected() )
+    auto net = SERVICES::CServiceManager::GetInstance().GetService<CNetwork>();
+    if (!net || !net->IsConnected())
     {
       HELPERS::ShowOKDialogText(CVariant{220}, CVariant{221});
       return false;

@@ -33,6 +33,7 @@
 #include "network/NetworkServices.h"
 #include "profiles/ProfilesManager.h"
 #include "ServiceBroker.h"
+#include "services/ServiceManager.h"
 #include "Util.h"
 #include "utils/StringUtils.h"
 #include "video/VideoLibraryQueue.h"
@@ -79,7 +80,9 @@ static int LogOff(const std::vector<std::string>& params)
   if (CVideoLibraryQueue::GetInstance().IsRunning())
     CVideoLibraryQueue::GetInstance().CancelAllJobs();
 
-  CServiceBroker::GetNetwork().NetworkMessage(CNetwork::SERVICES_DOWN,1);
+  auto net = SERVICES::CServiceManager::GetInstance().GetService<CNetwork>();
+  if (net)
+    net->NetworkMessage(CNetwork::SERVICES_DOWN,1);
 
 
   CProfilesManager &profileManager = CServiceBroker::GetProfileManager();

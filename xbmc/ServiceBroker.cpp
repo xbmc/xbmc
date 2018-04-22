@@ -109,11 +109,6 @@ CFileExtensionProvider& CServiceBroker::GetFileExtensionProvider()
   return g_application.m_ServiceManager->GetFileExtensionProvider();
 }
 
-CNetworkBase& CServiceBroker::GetNetwork()
-{
-  return g_application.m_ServiceManager->GetNetwork();
-}
-
 bool CServiceBroker::IsBinaryAddonCacheUp()
 {
   return g_application.m_ServiceManager->init_level > 1;

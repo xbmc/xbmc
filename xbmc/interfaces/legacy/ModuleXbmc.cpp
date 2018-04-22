@@ -47,6 +47,7 @@
 #include "guilib/TextureManager.h"
 #include "Util.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
+#include "services/ServiceManager.h"
 #include "storage/MediaManager.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/LangCodeExpander.h"
@@ -228,7 +229,8 @@ namespace XBMCAddon
       XBMC_TRACE;
       char cTitleIP[32];
       sprintf(cTitleIP, "127.0.0.1");
-      CNetworkInterface* iface = CServiceBroker::GetNetwork().GetFirstConnectedInterface();
+      auto net = SERVICES::CServiceManager::GetInstance().GetService<CNetwork>();
+      CNetworkInterface* iface = net ? net->GetFirstConnectedInterface() : nullptr;
       if (iface)
         return iface->GetCurrentIPAddress();
 

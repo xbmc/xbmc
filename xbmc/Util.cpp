@@ -48,6 +48,7 @@
 
 #include "addons/VFSEntry.h"
 #include "ServiceBroker.h"
+#include "services/ServiceManager.h"
 #include "Util.h"
 #include "filesystem/PVRDirectory.h"
 #include "filesystem/Directory.h"
@@ -102,6 +103,7 @@
 using namespace MEDIA_DETECT;
 #endif
 
+using namespace SERVICES;
 using namespace XFILE;
 using KODI::UTILITY::CDigest;
 
@@ -2016,7 +2018,8 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie, std::vector<st
 
   if (!CMediaSettings::GetInstance().GetAdditionalSubtitleDirectoryChecked() && !CServiceBroker::GetSettings().GetString(CSettings::SETTING_SUBTITLES_CUSTOMPATH).empty()) // to avoid checking non-existent directories (network) every time..
   {
-    if (!CServiceBroker::GetNetwork().IsAvailable() && !URIUtils::IsHD(CServiceBroker::GetSettings().GetString(CSettings::SETTING_SUBTITLES_CUSTOMPATH)))
+    auto net = CServiceManager::GetInstance().GetService<CNetwork>();
+    if ((!net || !net->IsAvailable()) && !URIUtils::IsHD(CServiceBroker::GetSettings().GetString(CSettings::SETTING_SUBTITLES_CUSTOMPATH)))
     {
       CLog::Log(LOGINFO, "CUtil::CacheSubtitles: disabling alternate subtitle directory for this session, it's inaccessible");
       CMediaSettings::GetInstance().SetAdditionalSubtitleDirectoryChecked(-1); // disabled

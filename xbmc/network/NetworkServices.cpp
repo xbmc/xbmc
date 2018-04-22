@@ -32,6 +32,7 @@
 #include "network/EventServer.h"
 #include "network/Network.h"
 #include "network/TCPServer.h"
+#include "services/ServiceManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/lib/Setting.h"
 #include "settings/Settings.h"
@@ -79,6 +80,7 @@
 #endif
 
 using namespace KODI::MESSAGING;
+using namespace SERVICES;
 using namespace JSONRPC;
 using namespace EVENTSERVER;
 #ifdef HAS_UPNP
@@ -501,7 +503,8 @@ void CNetworkServices::Stop(bool bWait)
 bool CNetworkServices::StartWebserver()
 {
 #ifdef HAS_WEB_SERVER
-  if (!CServiceBroker::GetNetwork().IsAvailable())
+  auto net = CServiceManager::GetInstance().GetService<CNetwork>();
+  if (!net || !net->IsAvailable())
     return false;
 
   if (!CServiceBroker::GetSettings().GetBool(CSettings::SETTING_SERVICES_WEBSERVER))
@@ -571,8 +574,9 @@ bool CNetworkServices::StartAirPlayServer()
   if (!CServiceBroker::GetSettings().GetBool(CSettings::SETTING_SERVICES_AIRPLAYVIDEOSUPPORT))
     return true;
 
+  auto net = CServiceManager::GetInstance().GetService<CNetwork>();
 #ifdef HAS_AIRPLAY
-  if (!CServiceBroker::GetNetwork().IsAvailable() || !CServiceBroker::GetSettings().GetBool(CSettings::SETTING_SERVICES_AIRPLAY))
+  if (!net || !net->IsAvailable() || !CServiceBroker::GetSettings().GetBool(CSettings::SETTING_SERVICES_AIRPLAY))
     return false;
 
   if (IsAirPlayServerRunning())
@@ -587,7 +591,7 @@ bool CNetworkServices::StartAirPlayServer()
   
 #ifdef HAS_ZEROCONF
   std::vector<std::pair<std::string, std::string> > txt;
-  CNetworkInterface* iface = CServiceBroker::GetNetwork().GetFirstConnectedInterface();
+  CNetworkInterface* iface = net ? net->GetFirstConnectedInterface() : nullptr;
   txt.push_back(std::make_pair("deviceid", iface != NULL ? iface->GetMacAddress() : "FF:FF:FF:FF:FF:F2"));
   txt.push_back(std::make_pair("model", "Xbmc,1"));
   txt.push_back(std::make_pair("srcvers", AIRPLAY_SERVER_VERSION_STR));
@@ -634,7 +638,8 @@ bool CNetworkServices::StopAirPlayServer(bool bWait)
 bool CNetworkServices::StartAirTunesServer()
 {
 #ifdef HAS_AIRTUNES
-  if (!CServiceBroker::GetNetwork().IsAvailable() || !CServiceBroker::GetSettings().GetBool(CSettings::SETTING_SERVICES_AIRPLAY))
+  auto net = SERVICES::CServiceManager::GetInstance().GetService<CNetwork>();
+  if (!net || !net->IsAvailable() || !CServiceBroker::GetSettings().GetBool(CSettings::SETTING_SERVICES_AIRPLAY))
     return false;
 
   if (IsAirTunesServerRunning())

@@ -21,7 +21,7 @@
 #include "network/Network.h"
 #include "threads/SystemClock.h"
 #include "RssReader.h"
-#include "ServiceBroker.h"
+#include "services/ServiceManager.h"
 #include "utils/HTMLUtil.h"
 #include "CharsetConverter.h"
 #include "URL.h"
@@ -43,6 +43,7 @@
 #define RSS_COLOR_HEADLINE  1
 #define RSS_COLOR_CHANNEL   2
 
+using namespace SERVICES;
 using namespace XFILE;
 
 //////////////////////////////////////////////////////////////////////
@@ -145,8 +146,9 @@ void CRssReader::Process()
     std::string fileCharset;
 
     // we wait for the network to come up
+    auto net = CServiceManager::GetInstance().GetService<CNetwork>();
     if ((url.IsProtocol("http") || url.IsProtocol("https")) &&
-        !CServiceBroker::GetNetwork().IsAvailable())
+        (!net || !net->IsAvailable()))
     {
       CLog::Log(LOGWARNING, "RSS: No network connection");
       strXML = "<rss><item><title>"+g_localizeStrings.Get(15301)+"</title></item></rss>";

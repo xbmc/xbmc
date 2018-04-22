@@ -27,10 +27,11 @@
 #include "addons/binary-addons/AddonDll.h"
 #include "network/DNSNameCache.h"
 #include "network/Network.h"
-#include "ServiceBroker.h"
+#include "services/ServiceManager.h"
 #include "utils/log.h"
 
 using namespace kodi; // addon-dev-kit namespace
+using namespace SERVICES;
 
 namespace ADDON
 {
@@ -64,7 +65,8 @@ bool Interface_Network::wake_on_lan(void* kodiBase, const char* mac)
     return false;
   }
 
-  return CServiceBroker::GetNetwork().WakeOnLan(mac);
+  auto net = CServiceManager::GetInstance().GetService<CNetwork>();
+  return net ? net->WakeOnLan(mac) : false;
 }
 
 char* Interface_Network::get_ip_address(void* kodiBase)
@@ -77,7 +79,8 @@ char* Interface_Network::get_ip_address(void* kodiBase)
   }
 
   std::string titleIP;
-  CNetworkInterface* iface = CServiceBroker::GetNetwork().GetFirstConnectedInterface();
+  auto net = CServiceManager::GetInstance().GetService<CNetwork>();
+  CNetworkInterface* iface = net ? net->GetFirstConnectedInterface() : nullptr;
   if (iface)
     titleIP = iface->GetCurrentIPAddress();
   else

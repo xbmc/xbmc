@@ -41,7 +41,6 @@ class IAE;
 class CFavouritesService;
 class CInputManager;
 class CFileExtensionProvider;
-class CNetworkBase;
 class CWinSystemBase;
 class CRenderSystemBase;
 class CPowerManager;
@@ -93,7 +92,6 @@ public:
   static CFileExtensionProvider &GetFileExtensionProvider();
   static bool IsBinaryAddonCacheUp();
   static bool IsServiceManagerUp();
-  static CNetworkBase& GetNetwork();
   static CPowerManager& GetPowerManager();
   static CWeatherManager& GetWeatherManager();
   static CPlayerCoreFactory &GetPlayerCoreFactory();

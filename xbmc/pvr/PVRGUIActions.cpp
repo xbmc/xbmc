@@ -37,6 +37,7 @@
 #include "input/Key.h"
 #include "messaging/ApplicationMessenger.h"
 #include "network/Network.h"
+#include "services/ServiceManager.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "threads/Thread.h"
@@ -1776,7 +1777,8 @@ namespace PVR
     {
       const CPVRTimerInfoTagPtr tag(item->GetPVRTimerInfoTag());
       std::string hostname(CServiceBroker::GetPVRManager().Clients()->GetBackendHostnameByClientId(tag->m_iClientId));
-      if (!hostname.empty() && CServiceBroker::GetNetwork().IsLocalHost(hostname))
+      auto net = SERVICES::CServiceManager::GetInstance().GetService<CNetwork>();
+      if (!hostname.empty() && net && net->IsLocalHost(hostname))
         return true;
     }
     return false;

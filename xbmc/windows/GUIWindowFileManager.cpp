@@ -680,7 +680,8 @@ bool CGUIWindowFileManager::HaveDiscOrConnection( std::string& strPath, int iDri
   else if ( iDriveType == CMediaSource::SOURCE_TYPE_REMOTE )
   {
     //! @todo Handle not connected to a remote share
-    if (!CServiceBroker::GetNetwork().IsConnected())
+    auto net = SERVICES::CServiceManager::GetInstance().GetService<CNetwork>();
+    if (!net || !net->IsConnected())
     {
       HELPERS::ShowOKDialogText(CVariant{220}, CVariant{221});
       return false;

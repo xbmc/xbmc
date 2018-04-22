@@ -25,13 +25,15 @@
 #elif defined(TARGET_POSIX)
 #include "platform/linux/network/NetworkLinux.h"
 #endif
-#include "ServiceBroker.h"
+#include "services/ServiceManager.h"
 #include "FileItem.h"
 #include "input/Key.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/Variant.h"
 
 #define CONTROL_ACCESS_POINTS 3
+
+using namespace SERVICES;
 
 CGUIDialogAccessPoints::CGUIDialogAccessPoints(void)
     : CGUIDialog(WINDOW_DIALOG_ACCESS_POINTS, "DialogAccessPoints.xml")
@@ -88,7 +90,8 @@ void CGUIDialogAccessPoints::OnInitWindow()
   m_accessPoints->Clear();
 
   std::string ifaceName(m_interfaceName);
-  CNetworkInterface* iface = CServiceBroker::GetNetwork().GetInterfaceByName(ifaceName);
+  auto net = CServiceManager::GetInstance().GetService<CNetwork>();
+  CNetworkInterface* iface = net ? net->GetInterfaceByName(ifaceName) : nullptr;
   m_aps = iface->GetAccessPoints();
 
   for (int i = 0; i < (int) m_aps.size(); i++)

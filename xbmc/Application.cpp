@@ -396,6 +396,7 @@ bool CApplication::Create(const CAppParamParser &params)
   SERVICES::CServiceManager::GetInstance().RegisterService(std::make_shared<XBPython>(), 0);
 #endif
   SERVICES::CServiceManager::GetInstance().RegisterService(std::make_shared<PLAYLIST::CPlayListPlayer>(), 0);
+  SERVICES::CServiceManager::GetInstance().RegisterService(std::make_shared<CNetwork>(), 0);
 
   if (!m_ServiceManager->InitStageOne())
   {
@@ -536,7 +537,9 @@ bool CApplication::Create(const CAppParamParser &params)
   std::string executable = CUtil::ResolveExecutablePath();
   CLog::Log(LOGNOTICE, "The executable running is: %s", executable.c_str());
   std::string hostname("[unknown]");
-  m_ServiceManager->GetNetwork().GetHostName(hostname);
+  auto net = SERVICES::CServiceManager::GetInstance().GetService<CNetwork>();
+  if (net)
+    net->GetHostName(hostname);
   CLog::Log(LOGNOTICE, "Local hostname: %s", hostname.c_str());
   std::string lowerAppName = CCompileInfo::GetAppName();
   StringUtils::ToLower(lowerAppName);
@@ -1031,7 +1034,9 @@ bool CApplication::Initialize()
     StringUtils::Format(g_localizeStrings.Get(178).c_str(), g_sysinfo.GetAppName().c_str()),
     "special://xbmc/media/icon256x256.png", EventLevel::Basic)));
 
-  m_ServiceManager->GetNetwork().WaitForNet();
+  auto net = SERVICES::CServiceManager::GetInstance().GetService<CNetwork>();
+  if (net)
+    net->WaitForNet();
 
   // initialize (and update as needed) our databases
   CDatabaseManager &databaseManager = m_ServiceManager->GetDatabaseManager();
@@ -1252,7 +1257,9 @@ void CApplication::StartServices()
 
 void CApplication::StopServices()
 {
-  m_ServiceManager->GetNetwork().NetworkMessage(CNetwork::SERVICES_DOWN, 0);
+  auto net = SERVICES::CServiceManager::GetInstance().GetService<CNetwork>();
+  if (net)
+    net->NetworkMessage(CNetwork::SERVICES_DOWN, 0);
 
 #if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
   CLog::Log(LOGNOTICE, "stop dvd detect media");
@@ -2414,8 +2421,12 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
   break;
 
   case TMSG_NETWORKMESSAGE:
-    m_ServiceManager->GetNetwork().NetworkMessage((CNetwork::EMESSAGE)pMsg->param1, pMsg->param2);
+  {
+    auto net = SERVICES::CServiceManager::GetInstance().GetService<CNetwork>();
+    if (net)
+      net->NetworkMessage((CNetwork::EMESSAGE)pMsg->param1, pMsg->param2);
     break;
+  }
 
   case TMSG_SETLANGUAGE:
     SetLanguage(pMsg->strParam);

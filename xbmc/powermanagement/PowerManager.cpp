@@ -202,7 +202,9 @@ void CPowerManager::OnWake()
 {
   CLog::Log(LOGNOTICE, "%s: Running resume jobs", __FUNCTION__);
 
-  CServiceBroker::GetNetwork().WaitForNet();
+  auto net = SERVICES::CServiceManager::GetInstance().GetService<CNetwork>();
+  if (net)
+    net->WaitForNet();
 
   // reset out timers
   g_application.ResetShutdownTimers();

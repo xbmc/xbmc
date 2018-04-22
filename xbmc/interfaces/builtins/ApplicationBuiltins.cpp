@@ -150,7 +150,9 @@ static int ToggleDPMS(const std::vector<std::string>& params)
  */
 static int WakeOnLAN(const std::vector<std::string>& params)
 {
-  CServiceBroker::GetNetwork().WakeOnLan(params[0].c_str());
+  auto net = SERVICES::CServiceManager::GetInstance().GetService<CNetwork>();
+  if (net)
+    net->WakeOnLan(params[0].c_str());
 
   return 0;
 }
