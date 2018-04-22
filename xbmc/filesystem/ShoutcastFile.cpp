@@ -166,9 +166,27 @@ bool CShoutcastFile::ExtractTagInfo(const char* buf)
   if (reTitle.RegFind(strBuffer.c_str()) != -1)
   {
     std::string newtitle(reTitle.GetMatch(1));
-    CSingleLock lock(m_tagSection);
-    result = (m_tag.GetTitle() != newtitle);
-    m_tag.SetTitle(newtitle);
+
+    CRegExp reParseTitle(true);
+    reParseTitle.RegComp("(?P<a>.*) - (?P<t>.*)");
+
+    if (reParseTitle.RegFind(newtitle) != -1)
+    {
+      std::string newParsedArtist = reParseTitle.GetMatch("a");
+      std::string newParsedTitle(reParseTitle.GetMatch("t"));
+      CSingleLock lock(m_tagSection);
+      result = m_tag.GetTitle() != newParsedTitle;
+      m_tag.SetTitle(newParsedTitle);
+      m_tag.SetArtist(newParsedArtist);
+
+      return result;
+    }
+    else
+    {
+      CSingleLock lock(m_tagSection);
+      result = (m_tag.GetTitle() != newtitle);
+      m_tag.SetTitle(newtitle);
+    }
   }
 
   return result;
