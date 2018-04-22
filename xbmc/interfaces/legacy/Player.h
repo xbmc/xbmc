@@ -452,6 +452,25 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_Player
+      /// @brief \python_func{ isExternalPlayer() }
+      ///-----------------------------------------------------------------------
+      /// Check for external player.
+      ///
+      /// @return                    True if kodi is playing using an
+      ///                            external player.
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v18 New function added.
+      ///
+      isExternalPlayer();
+#else
+      bool isExternalPlayer();
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_Player
       /// @brief \python_func{ getPlayingFile() }
       ///-----------------------------------------------------------------------
       /// Returns the current playing file as a string.

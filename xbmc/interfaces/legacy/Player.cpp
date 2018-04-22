@@ -350,6 +350,12 @@ namespace XBMCAddon
       return g_application.GetAppPlayer().IsPlayingRDS();
     }
 
+    bool Player::isExternalPlayer()
+    {
+      XBMC_TRACE;
+      return g_application.GetAppPlayer().IsExternalPlaying();
+    }
+
     String Player::getPlayingFile()
     {
       XBMC_TRACE;
