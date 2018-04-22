@@ -1074,7 +1074,12 @@
           <control type="button" format="path">
             <heading>657</heading>
           </control>
-        </setting>			
+        </setting>
+        <setting id="musiclibrary.preferonlinealbumart" type="boolean" label="20224" help="20225">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
         <setting id="musiclibrary.albumsscraper" type="addon" label="20193" help="36257">
           <level>1</level>
           <default>metadata.album.universal</default>

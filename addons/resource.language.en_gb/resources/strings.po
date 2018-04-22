@@ -12284,7 +12284,18 @@ msgctxt "#20223"
 msgid "Artist information folder"
 msgstr ""
 
-#empty strings from id 20224 to 20239
+#: system/settings/settings.xml
+msgctxt "#20224"
+msgid "Prefer online album art"
+msgstr ""
+
+#. Description of setting with label #20224 "Prefer online album art"
+#: system/settings/settings.xml
+msgctxt "#20225"
+msgid "Where no local album cover exists, online art will be used. Where neither is available, cover images embedded in music files will be used"
+msgstr ""
+
+#empty strings from id 20226 to 20239
 
 #: xbmc/dialogs/GUIDialogMediaSource.cpp
 msgctxt "#20240"
