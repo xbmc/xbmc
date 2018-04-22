@@ -32,6 +32,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "interfaces/AnnouncementManager.h"
+#include "services/ServiceManager.h"
 #include "interfaces/builtins/Builtins.h"
 #include "network/Network.h"
 #include "pvr/PVRManager.h"
@@ -131,7 +132,9 @@ bool CPowerManager::Reboot()
 
   if (success)
   {
-    CAnnouncementManager::GetInstance().Announce(System, "xbmc", "OnRestart");
+    auto man = SERVICES::CServiceManager::GetInstance().GetService<CAnnouncementManager>();
+    if (man)
+      man->Announce(System, "xbmc", "OnRestart");
 
     CGUIDialogBusy* dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogBusy>(WINDOW_DIALOG_BUSY);
     if (dialog)
@@ -176,7 +179,9 @@ void CPowerManager::ProcessEvents()
 
 void CPowerManager::OnSleep()
 {
-  CAnnouncementManager::GetInstance().Announce(System, "xbmc", "OnSleep");
+  auto man = SERVICES::CServiceManager::GetInstance().GetService<CAnnouncementManager>();
+  if (man)
+    man->Announce(System, "xbmc", "OnSleep");
 
   CGUIDialogBusy* dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogBusy>(WINDOW_DIALOG_BUSY);
   if (dialog)
@@ -223,7 +228,9 @@ void CPowerManager::OnWake()
   CServiceBroker::GetPVRManager().OnWake();
   RestorePlayerState();
 
-  CAnnouncementManager::GetInstance().Announce(System, "xbmc", "OnWake");
+  auto man = SERVICES::CServiceManager::GetInstance().GetService<CAnnouncementManager>();
+  if (man)
+    man->Announce(System, "xbmc", "OnWake");
 }
 
 void CPowerManager::OnLowBattery()
@@ -232,7 +239,9 @@ void CPowerManager::OnLowBattery()
 
   CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(13050), "");
 
-  CAnnouncementManager::GetInstance().Announce(System, "xbmc", "OnLowBattery");
+  auto man = SERVICES::CServiceManager::GetInstance().GetService<CAnnouncementManager>();
+  if (man)
+    man->Announce(System, "xbmc", "OnLowBattery");
 }
 
 void CPowerManager::StorePlayerState()

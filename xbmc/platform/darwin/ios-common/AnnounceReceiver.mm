@@ -37,6 +37,7 @@
 #endif
 #import "utils/Variant.h"
 #include "ServiceBroker.h"
+#include "services/ServiceManager.h"
 
 id objectFromVariant(const CVariant &data);
 
@@ -202,12 +203,16 @@ CAnnounceReceiver *CAnnounceReceiver::GetInstance()
 
 void CAnnounceReceiver::Initialize()
 {
-  ANNOUNCEMENT::CAnnouncementManager::GetInstance().AddAnnouncer(GetInstance());
+  auto man = SERVICES::CServiceManager::GetInstance().GetService<ANNOUNCEMENT::CAnnouncementManager>();
+  if (man)
+    man->AddAnnouncer(GetInstance());
 }
 
 void CAnnounceReceiver::DeInitialize()
 {
-  ANNOUNCEMENT::CAnnouncementManager::GetInstance().RemoveAnnouncer(GetInstance());
+  auto man = SERVICES::CServiceManager::GetInstance().GetService<ANNOUNCEMENT::CAnnouncementManager>();
+  if (man)
+    man->RemoveAnnouncer(GetInstance());
 }
 
 void CAnnounceReceiver::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)

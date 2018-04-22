@@ -35,6 +35,7 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/LocalizeStrings.h"
 #include "interfaces/AnnouncementManager.h"
+#include "services/ServiceManager.h"
 #include "input/Key.h"
 #include "URL.h"
 #include "messaging/ApplicationMessenger.h"
@@ -747,7 +748,10 @@ void CPlayListPlayer::AnnouncePropertyChanged(int iPlaylist, const std::string &
   CVariant data;
   data["player"]["playerid"] = iPlaylist;
   data["property"][strProperty] = value;
-  ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::Player, "xbmc", "OnPropertyChanged", data);
+
+  auto man = SERVICES::CServiceManager::GetInstance().GetService<ANNOUNCEMENT::CAnnouncementManager>();
+  if (man)
+    man->Announce(ANNOUNCEMENT::Player, "xbmc", "OnPropertyChanged", data);
 }
 
 int PLAYLIST::CPlayListPlayer::GetMessageMask()

@@ -34,11 +34,6 @@ class CServiceAddonManager;
 class CRepositoryUpdater;
 }
 
-namespace ANNOUNCEMENT
-{
-class CAnnouncementManager;
-}
-
 namespace PVR
 {
 class CPVRManager;
@@ -109,7 +104,6 @@ public:
   ADDON::CVFSAddonCache& GetVFSAddonCache();
   ADDON::CServiceAddonManager& GetServiceAddons();
   ADDON::CRepositoryUpdater& GetRepositoryUpdater();
-  ANNOUNCEMENT::CAnnouncementManager& GetAnnouncementManager();
   CNetwork& GetNetwork();
 #ifdef HAS_PYTHON
   XBPython& GetXBPython();
@@ -170,7 +164,6 @@ protected:
   std::unique_ptr<ADDON::CVFSAddonCache> m_vfsAddonCache;
   std::unique_ptr<ADDON::CServiceAddonManager> m_serviceAddons;
   std::unique_ptr<ADDON::CRepositoryUpdater> m_repositoryUpdater;
-  std::unique_ptr<ANNOUNCEMENT::CAnnouncementManager> m_announcementManager;
 #ifdef HAS_PYTHON
   std::unique_ptr<XBPython> m_XBPython;
 #endif

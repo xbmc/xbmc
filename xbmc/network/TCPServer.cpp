@@ -28,6 +28,7 @@
 #include "settings/AdvancedSettings.h"
 #include "interfaces/json-rpc/JSONRPC.h"
 #include "interfaces/AnnouncementManager.h"
+#include "services/ServiceManager.h"
 #include "utils/log.h"
 #include "utils/Variant.h"
 #include "threads/SingleLock.h"
@@ -59,6 +60,7 @@ static const bdaddr_t bt_bdaddr_local = {{0, 0, 0, 0xff, 0xff, 0xff}};
 
 using namespace JSONRPC;
 using namespace ANNOUNCEMENT;
+using namespace SERVICES;
 
 #define RECEIVEBUFFER 1024
 
@@ -273,7 +275,9 @@ bool CTCPServer::Initialize()
 
   if (started)
   {
-    CAnnouncementManager::GetInstance().AddAnnouncer(this);
+    auto man = CServiceManager::GetInstance().GetService<CAnnouncementManager>();
+    if (man)
+      man->AddAnnouncer(this);
     CLog::Log(LOGINFO, "JSONRPC Server: Successfully initialized");
     return true;
   }
@@ -506,7 +510,9 @@ void CTCPServer::Deinitialize()
   m_sdpd = NULL;
 #endif
 
-  CAnnouncementManager::GetInstance().RemoveAnnouncer(this);
+  auto man = CServiceManager::GetInstance().GetService<CAnnouncementManager>();
+  if (man)
+    man->RemoveAnnouncer(this);
 }
 
 CTCPServer::CTCPClient::CTCPClient()

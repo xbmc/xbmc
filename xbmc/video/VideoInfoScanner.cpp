@@ -42,6 +42,7 @@
 #include "messaging/helpers/DialogHelper.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "NfoFile.h"
+#include "services/ServiceManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "TextureCache.h"
@@ -63,6 +64,7 @@
 using namespace XFILE;
 using namespace ADDON;
 using namespace KODI::MESSAGING;
+using namespace SERVICES;
 
 using KODI::MESSAGING::HELPERS::DialogResponse;
 using KODI::UTILITY::CDigest;
@@ -115,7 +117,9 @@ namespace VIDEO
       m_bCanInterrupt = true;
 
       CLog::Log(LOGNOTICE, "VideoInfoScanner: Starting scan ..");
-      ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnScanStarted");
+      auto man = CServiceManager::GetInstance().GetService<ANNOUNCEMENT::CAnnouncementManager>();
+      if (man)
+        man->Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnScanStarted");
 
       // Database operations should not be canceled
       // using Interrupt() while scanning as it could
@@ -174,7 +178,9 @@ namespace VIDEO
     }
     
     m_bRunning = false;
-    ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnScanFinished");
+    auto man = CServiceManager::GetInstance().GetService<ANNOUNCEMENT::CAnnouncementManager>();
+    if (man)
+      man->Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnScanFinished");
     
     if (m_handle)
       m_handle->MarkFinished();
@@ -1393,7 +1399,9 @@ namespace VIDEO
     data["added"] = true;
     if (m_bRunning)
       data["transaction"] = true;
-    ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnUpdate", itemCopy, data);
+    auto man = CServiceManager::GetInstance().GetService<ANNOUNCEMENT::CAnnouncementManager>();
+    if (man)
+      man->Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnUpdate", itemCopy, data);
     return lResult;
   }
 

@@ -34,6 +34,7 @@
 #include "rendering/dx/DeviceResources.h"
 #include "rendering/dx/RenderContext.h"
 #include "ServiceBroker.h"
+#include "services/ServiceManager.h"
 #include "utils/log.h"
 #include "utils/SystemInfo.h"
 #include "utils/Variant.h"
@@ -183,7 +184,9 @@ void CWinEventsWin10::InitEventHandlers(CoreWindow^ window)
                                (CWinEventsWin10::OnSystemMediaButtonPressed);
     }
     m_smtc->IsEnabled = true;
-    CAnnouncementManager::GetInstance().AddAnnouncer(this);
+    auto man = SERVICES::CServiceManager::GetInstance().GetService<ANNOUNCEMENT::CAnnouncementManager>();
+    if (man)
+      man->AddAnnouncer(this);
   }
   if (CSysInfo::GetWindowsDeviceFamily() == CSysInfo::WindowsDeviceFamily::Xbox)
   {

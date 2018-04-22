@@ -21,6 +21,7 @@
 #include <vector>
 
 #include "IAnnouncer.h"
+#include "services/IService.h"
 #include "FileItem.h"
 #include "threads/CriticalSection.h"
 #include "threads/Thread.h"
@@ -31,13 +32,11 @@ class CVariant;
 
 namespace ANNOUNCEMENT
 {
-  class CAnnouncementManager : public CThread
+  class CAnnouncementManager : public CThread, public SERVICES::IService
   {
   public:
     CAnnouncementManager();
     ~CAnnouncementManager() override;
-
-    static CAnnouncementManager& GetInstance();
 
     void Start();
     void Deinitialize();
@@ -51,6 +50,12 @@ namespace ANNOUNCEMENT
         const std::shared_ptr<const CFileItem>& item);
     void Announce(AnnouncementFlag flag, const char *sender, const char *message,
         const std::shared_ptr<const CFileItem>& item, const CVariant &data);
+
+    bool StartService() override
+    {
+      Start();
+      return true;
+    }
 
   protected:
     void Process() override;

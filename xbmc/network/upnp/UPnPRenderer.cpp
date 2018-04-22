@@ -35,6 +35,7 @@
 #include "pictures/GUIWindowSlideShow.h"
 #include "pictures/PictureInfoTag.h"
 #include "interfaces/AnnouncementManager.h"
+#include "services/ServiceManager.h"
 #include "settings/Settings.h"
 #include "PlayListPlayer.h"
 #include "TextureDatabase.h"
@@ -62,7 +63,9 @@ CUPnPRenderer::CUPnPRenderer(const char* friendly_name, bool show_ip /*= false*/
                              const char* uuid /*= NULL*/, unsigned int port /*= 0*/)
     : PLT_MediaRenderer(friendly_name, show_ip, uuid, port)
 {
-    CAnnouncementManager::GetInstance().AddAnnouncer(this);
+    auto man = SERVICES::CServiceManager::GetInstance().GetService<CAnnouncementManager>();
+    if (man)
+        man->AddAnnouncer(this);
 }
 
 /*----------------------------------------------------------------------
@@ -70,7 +73,9 @@ CUPnPRenderer::CUPnPRenderer(const char* friendly_name, bool show_ip /*= false*/
 +---------------------------------------------------------------------*/
 CUPnPRenderer::~CUPnPRenderer()
 {
-    CAnnouncementManager::GetInstance().RemoveAnnouncer(this);
+    auto man = SERVICES::CServiceManager::GetInstance().GetService<CAnnouncementManager>();
+    if (man)
+        man->RemoveAnnouncer(this);
 }
 
 /*----------------------------------------------------------------------

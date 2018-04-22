@@ -52,6 +52,7 @@
 #include "MusicAlbumInfo.h"
 #include "MusicInfoScraper.h"
 #include "NfoFile.h"
+#include "services/ServiceManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "TextureCache.h"
@@ -70,6 +71,7 @@ using namespace MUSICDATABASEDIRECTORY;
 using namespace MUSIC_GRABBER;
 using namespace ADDON;
 using KODI::UTILITY::CDigest;
+using namespace SERVICES;
 
 CMusicInfoScanner::CMusicInfoScanner()
 : m_needsCleanup(false),
@@ -87,7 +89,9 @@ CMusicInfoScanner::~CMusicInfoScanner() = default;
 void CMusicInfoScanner::Process()
 {
   m_bStop = false;
-  ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::AudioLibrary, "xbmc", "OnScanStarted");
+  auto man = CServiceManager::GetInstance().GetService<ANNOUNCEMENT::CAnnouncementManager>();
+  if (man)
+    man->Announce(ANNOUNCEMENT::AudioLibrary, "xbmc", "OnScanStarted");
   try
   {
     if (m_showDialog && !CServiceBroker::GetSettings().GetBool(CSettings::SETTING_MUSICLIBRARY_BACKGROUNDUPDATE))
@@ -272,7 +276,8 @@ void CMusicInfoScanner::Process()
   CLog::Log(LOGDEBUG, "%s - Finished scan", __FUNCTION__);
   
   m_bRunning = false;
-  ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::AudioLibrary, "xbmc", "OnScanFinished");
+  if (man)
+    man->Announce(ANNOUNCEMENT::AudioLibrary, "xbmc", "OnScanFinished");
   
   // we need to clear the musicdb cache and update any active lists
   CUtil::DeleteMusicDatabaseDirectoryCache();

@@ -98,6 +98,7 @@
 #include "utils/log.h"
 #include "SeekHandler.h"
 #include "ServiceBroker.h"
+#include "services/ServiceManager.h"
 
 #include "input/KeyboardLayoutManager.h"
 
@@ -389,6 +390,8 @@ bool CApplication::Create(const CAppParamParser &params)
 
   m_ServiceManager.reset(new CServiceManager());
 
+  SERVICES::CServiceManager::GetInstance().RegisterService(std::make_shared<CAnnouncementManager>(), 0);
+
   if (!m_ServiceManager->InitStageOne())
   {
     return false;
@@ -420,6 +423,7 @@ bool CApplication::Create(const CAppParamParser &params)
       fprintf(stderr, "The HOME environment variable is not set!\n");
       /* Cleanup. Leaving this out would lead to another crash */
       m_ServiceManager->DeinitStageOne();
+      SERVICES::CServiceManager::GetInstance().TearDown(0);
       return false;
     }
   #endif
@@ -2779,6 +2783,7 @@ bool CApplication::Cleanup()
     if (m_ServiceManager)
     {
       m_ServiceManager->DeinitStageOne();
+      SERVICES::CServiceManager::GetInstance().TearDown(0);
       m_ServiceManager.reset();
     }
 
@@ -2799,7 +2804,10 @@ void CApplication::Stop(int exitCode)
 
     CVariant vExitCode(CVariant::VariantTypeObject);
     vExitCode["exitcode"] = exitCode;
-    CAnnouncementManager::GetInstance().Announce(System, "xbmc", "OnQuit", vExitCode);
+
+    auto man = SERVICES::CServiceManager::GetInstance().GetService<CAnnouncementManager>();
+    if (man)
+      man->Announce(System, "xbmc", "OnQuit", vExitCode);
 
     // Abort any active screensaver
     WakeUpScreenSaverAndDPMS();
@@ -3285,7 +3293,9 @@ void CApplication::OnPlayBackEnded()
 
   CVariant data(CVariant::VariantTypeObject);
   data["end"] = true;
-  CAnnouncementManager::GetInstance().Announce(Player, "xbmc", "OnStop", m_itemCurrentFile, data);
+  auto man = SERVICES::CServiceManager::GetInstance().GetService<CAnnouncementManager>();
+  if (man)
+    man->Announce(Player, "xbmc", "OnStop", m_itemCurrentFile, data);
 
   CGUIMessage msg(GUI_MSG_PLAYBACK_ENDED, 0, 0);
   CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
@@ -3403,7 +3413,9 @@ void CApplication::OnPlayBackStopped()
 
   CVariant data(CVariant::VariantTypeObject);
   data["end"] = false;
-  CAnnouncementManager::GetInstance().Announce(Player, "xbmc", "OnStop", m_itemCurrentFile, data);
+  auto man = SERVICES::CServiceManager::GetInstance().GetService<CAnnouncementManager>();
+  if (man)
+    man->Announce(Player, "xbmc", "OnStop", m_itemCurrentFile, data);
 
   CGUIMessage msg(GUI_MSG_PLAYBACK_STOPPED, 0, 0);
   CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
@@ -3430,7 +3442,9 @@ void CApplication::OnPlayBackPaused()
   CVariant param;
   param["player"]["speed"] = 0;
   param["player"]["playerid"] = CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist();
-  CAnnouncementManager::GetInstance().Announce(Player, "xbmc", "OnPause", m_itemCurrentFile, param);
+  auto man = SERVICES::CServiceManager::GetInstance().GetService<CAnnouncementManager>();
+  if (man)
+    man->Announce(Player, "xbmc", "OnPause", m_itemCurrentFile, param);
 }
 
 void CApplication::OnPlayBackResumed()
@@ -3446,7 +3460,9 @@ void CApplication::OnPlayBackResumed()
   CVariant param;
   param["player"]["speed"] = 1;
   param["player"]["playerid"] = CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist();
-  CAnnouncementManager::GetInstance().Announce(Player, "xbmc", "OnResume", m_itemCurrentFile, param);
+  auto man = SERVICES::CServiceManager::GetInstance().GetService<CAnnouncementManager>();
+  if (man)
+    man->Announce(Player, "xbmc", "OnResume", m_itemCurrentFile, param);
 }
 
 void CApplication::OnPlayBackSpeedChanged(int iSpeed)
@@ -3458,7 +3474,9 @@ void CApplication::OnPlayBackSpeedChanged(int iSpeed)
   CVariant param;
   param["player"]["speed"] = iSpeed;
   param["player"]["playerid"] = CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist();
-  CAnnouncementManager::GetInstance().Announce(Player, "xbmc", "OnSpeedChanged", m_itemCurrentFile, param);
+  auto man = SERVICES::CServiceManager::GetInstance().GetService<CAnnouncementManager>();
+  if (man)
+    man->Announce(Player, "xbmc", "OnSpeedChanged", m_itemCurrentFile, param);
 }
 
 void CApplication::OnPlayBackSeek(int64_t iTime, int64_t seekOffset)
@@ -3472,7 +3490,9 @@ void CApplication::OnPlayBackSeek(int64_t iTime, int64_t seekOffset)
   CJSONUtils::MillisecondsToTimeObject(seekOffset, param["player"]["seekoffset"]);
   param["player"]["playerid"] = CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist();
   param["player"]["speed"] = (int)m_appPlayer.GetPlaySpeed();
-  CAnnouncementManager::GetInstance().Announce(Player, "xbmc", "OnSeek", m_itemCurrentFile, param);
+  auto man = SERVICES::CServiceManager::GetInstance().GetService<CAnnouncementManager>();
+  if (man)
+    man->Announce(Player, "xbmc", "OnSeek", m_itemCurrentFile, param);
   CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetPlayerInfoProvider().SetDisplayAfterSeek(2500, static_cast<int>(seekOffset));
 }
 
@@ -3493,7 +3513,9 @@ void CApplication::OnAVStarted(const CFileItem &file)
   CVariant param;
   param["player"]["speed"] = 1;
   param["player"]["playerid"] = CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist();
-  CAnnouncementManager::GetInstance().Announce(Player, "xbmc", "OnAVStart", m_itemCurrentFile, param);
+  auto man = SERVICES::CServiceManager::GetInstance().GetService<CAnnouncementManager>();
+  if (man)
+    man->Announce(Player, "xbmc", "OnAVStart", m_itemCurrentFile, param);
 }
 
 void CApplication::OnAVChange()
@@ -3508,7 +3530,9 @@ void CApplication::OnAVChange()
   CVariant param;
   param["player"]["speed"] = 1;
   param["player"]["playerid"] = CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist();
-  CAnnouncementManager::GetInstance().Announce(Player, "xbmc", "OnAVChange", m_itemCurrentFile, param);
+  auto man = SERVICES::CServiceManager::GetInstance().GetService<CAnnouncementManager>();
+  if (man)
+    man->Announce(Player, "xbmc", "OnAVChange", m_itemCurrentFile, param);
 }
 
 void CApplication::RequestVideoSettings(const CFileItem &fileItem)
@@ -3611,7 +3635,9 @@ bool CApplication::ToggleDPMS(bool manual)
       m_dpmsIsActive = false;
       m_dpmsIsManual = false;
       SetRenderGUI(true);
-      CAnnouncementManager::GetInstance().Announce(GUI, "xbmc", "OnDPMSDeactivated");
+      auto man = SERVICES::CServiceManager::GetInstance().GetService<CAnnouncementManager>();
+      if (man)
+        man->Announce(GUI, "xbmc", "OnDPMSDeactivated");
       return m_dpms->DisablePowerSaving();
     }
     else
@@ -3621,7 +3647,9 @@ bool CApplication::ToggleDPMS(bool manual)
         m_dpmsIsActive = true;
         m_dpmsIsManual = manual;
         SetRenderGUI(false);
-        CAnnouncementManager::GetInstance().Announce(GUI, "xbmc", "OnDPMSActivated");
+        auto man = SERVICES::CServiceManager::GetInstance().GetService<CAnnouncementManager>();
+        if (man)
+          man->Announce(GUI, "xbmc", "OnDPMSActivated");
         return true;
       }
     }
@@ -3652,7 +3680,9 @@ bool CApplication::WakeUpScreenSaverAndDPMS(bool bPowerOffKeyPressed /* = false 
     // allow listeners to ignore the deactivation if it precedes a powerdown/suspend etc
     CVariant data(CVariant::VariantTypeObject);
     data["shuttingdown"] = bPowerOffKeyPressed;
-    CAnnouncementManager::GetInstance().Announce(GUI, "xbmc", "OnScreensaverDeactivated", data);
+    auto man = SERVICES::CServiceManager::GetInstance().GetService<CAnnouncementManager>();
+    if (man)
+      man->Announce(GUI, "xbmc", "OnScreensaverDeactivated", data);
 #ifdef TARGET_ANDROID
     // Screensaver deactivated -> acquire wake lock
     CXBMCApp::EnableWakeLock(true);
@@ -3844,7 +3874,9 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
   }
 
   m_screensaverActive = true;
-  CAnnouncementManager::GetInstance().Announce(GUI, "xbmc", "OnScreensaverActivated");
+  auto man = SERVICES::CServiceManager::GetInstance().GetService<CAnnouncementManager>();
+  if (man)
+    man->Announce(GUI, "xbmc", "OnScreensaverActivated");
 
   // disable screensaver lock from the login screen
   m_iScreenSaveLock = CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_LOGIN_SCREEN ? 1 : 0;
@@ -4023,7 +4055,9 @@ bool CApplication::OnMessage(CGUIMessage& message)
       CVariant param;
       param["player"]["speed"] = 1;
       param["player"]["playerid"] = CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist();
-      CAnnouncementManager::GetInstance().Announce(Player, "xbmc", "OnPlay", m_itemCurrentFile, param);
+      auto man = SERVICES::CServiceManager::GetInstance().GetService<CAnnouncementManager>();
+      if (man)
+        man->Announce(Player, "xbmc", "OnPlay", m_itemCurrentFile, param);
 
       // we don't want a busy dialog when switching channels
       if (!m_itemCurrentFile->IsLiveTV() && m_playerEvent.Signaled())
@@ -4579,7 +4613,9 @@ void CApplication::VolumeChanged()
   CVariant data(CVariant::VariantTypeObject);
   data["volume"] = GetVolume();
   data["muted"] = m_muted;
-  CAnnouncementManager::GetInstance().Announce(Application, "xbmc", "OnVolumeChanged", data);
+  auto man = SERVICES::CServiceManager::GetInstance().GetService<CAnnouncementManager>();
+  if (man)
+    man->Announce(Application, "xbmc", "OnVolumeChanged", data);
 
   // if player has volume control, set it.
   m_appPlayer.SetVolume(m_volumeLevel);

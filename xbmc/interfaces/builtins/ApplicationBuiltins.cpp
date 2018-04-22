@@ -26,6 +26,7 @@
 #include "messaging/ApplicationMessenger.h"
 #include "input/Key.h"
 #include "interfaces/AnnouncementManager.h"
+#include "services/ServiceManager.h"
 #include "network/Network.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
@@ -92,7 +93,9 @@ static int NotifyAll(const std::vector<std::string>& params)
     }
   }
 
-  ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::Other, params[0].c_str(), params[1].c_str(), data);
+  auto man = SERVICES::CServiceManager::GetInstance().GetService<ANNOUNCEMENT::CAnnouncementManager>();
+  if (man)
+    man->Announce(ANNOUNCEMENT::Other, params[0].c_str(), params[1].c_str(), data);
 
   return 0;
 }

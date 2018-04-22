@@ -44,6 +44,7 @@
 #include "network/Network.h"
 #include "network/Zeroconf.h"
 #include "network/ZeroconfBrowser.h"
+#include "services/ServiceManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "URL.h"
@@ -659,13 +660,17 @@ void CAirTunesServer::RegisterActionListener(bool doRegister)
 {
   if (doRegister)
   {
-    CAnnouncementManager::GetInstance().AddAnnouncer(this);
+    auto man = SERVICES::CServiceManager::GetInstance().GetService<CAnnouncementManager>();
+    if (man)
+      man->AddAnnouncer(this);
     g_application.RegisterActionListener(this);
     ServerInstance->Create();
   }
   else
   {
-    CAnnouncementManager::GetInstance().RemoveAnnouncer(this);
+    auto man = SERVICES::CServiceManager::GetInstance().GetService<CAnnouncementManager>();
+    if (man)
+      man->RemoveAnnouncer(this);
     g_application.UnregisterActionListener(this);
     ServerInstance->StopThread(true);
   }

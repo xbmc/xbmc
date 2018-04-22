@@ -32,6 +32,7 @@
 #include "input/Key.h"
 #include "guilib/LocalizeStrings.h"
 #include "pictures/GUIWindowSlideShow.h"
+#include "services/ServiceManager.h"
 #include "utils/JobManager.h"
 #include "utils/log.h"
 #include "utils/Variant.h"
@@ -103,7 +104,9 @@ CPeripheralCecAdapter::~CPeripheralCecAdapter(void)
 {
   {
     CSingleLock lock(m_critSection);
-    CAnnouncementManager::GetInstance().RemoveAnnouncer(this);
+    auto man = SERVICES::CServiceManager::GetInstance().GetService<ANNOUNCEMENT::CAnnouncementManager>();
+    if (man)
+      man->RemoveAnnouncer(this);
     m_bStop = true;
   }
 
@@ -162,7 +165,9 @@ void CPeripheralCecAdapter::Announce(AnnouncementFlag flag, const char *sender, 
   {
     CSingleLock lock(m_critSection);
     m_iExitCode = static_cast<int>(data["exitcode"].asInteger(EXITCODE_QUIT));
-    CAnnouncementManager::GetInstance().RemoveAnnouncer(this);
+    auto man = SERVICES::CServiceManager::GetInstance().GetService<ANNOUNCEMENT::CAnnouncementManager>();
+    if (man)
+      man->RemoveAnnouncer(this);
     StopThread(false);
   }
   else if (flag == GUI && !strcmp(sender, "xbmc") && !strcmp(message, "OnScreensaverDeactivated") && m_bIsReady)
@@ -380,7 +385,9 @@ void CPeripheralCecAdapter::Process(void)
     m_bActiveSourceBeforeStandby = false;
   }
 
-  CAnnouncementManager::GetInstance().AddAnnouncer(this);
+  auto man = SERVICES::CServiceManager::GetInstance().GetService<ANNOUNCEMENT::CAnnouncementManager>();
+  if (man)
+    man->AddAnnouncer(this);
 
   m_queryThread = new CPeripheralCecAdapterUpdateThread(this, &m_configuration);
   m_queryThread->Create(false);
@@ -1728,7 +1735,9 @@ bool CPeripheralCecAdapter::ReopenConnection(bool bAsync /* = false */)
   {
     CSingleLock lock(m_critSection);
     m_iExitCode = EXITCODE_RESTARTAPP;
-    CAnnouncementManager::GetInstance().RemoveAnnouncer(this);
+    auto man = SERVICES::CServiceManager::GetInstance().GetService<ANNOUNCEMENT::CAnnouncementManager>();
+    if (man)
+      man->RemoveAnnouncer(this);
     StopThread(false);
   }
   StopThread();

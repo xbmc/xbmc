@@ -24,6 +24,7 @@
 #include "utils/JobManager.h"
 #include "utils/RecentlyAddedJob.h"
 #include "interfaces/AnnouncementManager.h"
+#include "services/ServiceManager.h"
 #include "utils/log.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/Variant.h"
@@ -42,12 +43,16 @@ CGUIWindowHome::CGUIWindowHome(void) : CGUIWindow(WINDOW_HOME, "Home.xml"),
   m_updateRA = (Audio | Video | Totals);
   m_loadType = KEEP_IN_MEMORY;
   
-  CAnnouncementManager::GetInstance().AddAnnouncer(this);
+  auto man = SERVICES::CServiceManager::GetInstance().GetService<CAnnouncementManager>();
+  if (man)
+    man->AddAnnouncer(this);
 }
 
 CGUIWindowHome::~CGUIWindowHome(void)
 {
-  CAnnouncementManager::GetInstance().RemoveAnnouncer(this);
+  auto man = SERVICES::CServiceManager::GetInstance().GetService<CAnnouncementManager>();
+  if (man)
+    man->RemoveAnnouncer(this);
 }
 
 bool CGUIWindowHome::OnAction(const CAction &action)

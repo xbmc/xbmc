@@ -28,6 +28,7 @@
 #include "input/ActionTranslator.h"
 #include "input/WindowTranslator.h"
 #include "interfaces/AnnouncementManager.h"
+#include "services/ServiceManager.h"
 #include "playlists/SmartPlayList.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"
@@ -37,6 +38,7 @@
 
 using namespace ANNOUNCEMENT;
 using namespace JSONRPC;
+using namespace SERVICES;
 
 bool CJSONRPC::m_initialized = false;
 
@@ -221,14 +223,20 @@ JSONRPC_STATUS CJSONRPC::SetConfiguration(const std::string &method, ITransportL
 
 JSONRPC_STATUS CJSONRPC::NotifyAll(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant& parameterObject, CVariant &result)
 {
+  auto man = CServiceManager::GetInstance().GetService<ANNOUNCEMENT::CAnnouncementManager>();
+  if (!man)
+    return ACK;
+
   if (parameterObject["data"].isNull())
-    CAnnouncementManager::GetInstance().Announce(Other, parameterObject["sender"].asString().c_str(),  
-      parameterObject["message"].asString().c_str());
+  {
+    man->Announce(Other, parameterObject["sender"].asString().c_str(),
+                         parameterObject["message"].asString().c_str());
+  }
   else
   {
     CVariant data = parameterObject["data"];
-    CAnnouncementManager::GetInstance().Announce(Other, parameterObject["sender"].asString().c_str(),  
-      parameterObject["message"].asString().c_str(), data);
+    man->Announce(Other, parameterObject["sender"].asString().c_str(),
+                         parameterObject["message"].asString().c_str(), data);
   }
 
   return ACK;

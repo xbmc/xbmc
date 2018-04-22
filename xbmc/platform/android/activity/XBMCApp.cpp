@@ -78,6 +78,7 @@
 #include "cores/AudioEngine/Sinks/AESinkAUDIOTRACK.h"
 
 #include "ServiceBroker.h"
+#include "services/ServiceManager.h"
 #include "GUIInfoManager.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
 #include "guilib/GUIComponent.h"
@@ -348,7 +349,9 @@ void CXBMCApp::onLostFocus()
 
 void CXBMCApp::Initialize()
 {
-  g_application.m_ServiceManager->GetAnnouncementManager().AddAnnouncer(CXBMCApp::get());  
+  auto man = SERVICES::CServiceManager::GetInstance().GetService<ANNOUNCEMENT::CAnnouncementManager>();
+  if (man)
+    man->AddAnnouncer(CXBMCApp::get());
 }
 
 void CXBMCApp::Deinitialize()

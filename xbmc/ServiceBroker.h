@@ -29,11 +29,6 @@ class CServiceAddonManager;
 class CRepositoryUpdater;
 }
 
-namespace ANNOUNCEMENT
-{
-  class CAnnouncementManager;
-}
-
 namespace PVR
 {
   class CPVRManager;
@@ -89,7 +84,6 @@ public:
   static ADDON::CBinaryAddonManager &GetBinaryAddonManager();
   static ADDON::CBinaryAddonCache &GetBinaryAddonCache();
   static ADDON::CVFSAddonCache &GetVFSAddonCache();
-  static ANNOUNCEMENT::CAnnouncementManager &GetAnnouncementManager();
   static XBPython &GetXBPython();
   static PVR::CPVRManager &GetPVRManager();
   static CContextMenuManager& GetContextMenuManager();

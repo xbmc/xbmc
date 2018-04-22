@@ -33,6 +33,7 @@
 #include "input/Key.h"
 #include "guilib/LocalizeStrings.h"
 #include "interfaces/AnnouncementManager.h"
+#include "services/ServiceManager.h"
 #include "messaging/helpers/DialogOKHelper.h"
 
 #define CONTROL_HEADING_LABEL  1
@@ -46,6 +47,7 @@
 
 using namespace KODI::MESSAGING;
 using KODI::UTILITY::CDigest;
+using namespace SERVICES;
 
 CGUIDialogNumeric::CGUIDialogNumeric(void)
   : CGUIDialog(WINDOW_DIALOG_NUMERIC, "DialogNumeric.xml")
@@ -97,7 +99,9 @@ void CGUIDialogNumeric::OnInitWindow()
     data["title"] = control->GetDescription();
 
   data["value"] = GetOutputString();
-  ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::Input, "xbmc", "OnInputRequested", data);
+  auto man = CServiceManager::GetInstance().GetService<ANNOUNCEMENT::CAnnouncementManager>();
+  if (man)
+    man->Announce(ANNOUNCEMENT::Input, "xbmc", "OnInputRequested", data);
 }
 
 void CGUIDialogNumeric::OnDeinitWindow(int nextWindowID)
@@ -105,7 +109,9 @@ void CGUIDialogNumeric::OnDeinitWindow(int nextWindowID)
   // call base class
   CGUIDialog::OnDeinitWindow(nextWindowID);
 
-  ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::Input, "xbmc", "OnInputFinished");
+  auto man = CServiceManager::GetInstance().GetService<ANNOUNCEMENT::CAnnouncementManager>();
+  if (man)
+    man->Announce(ANNOUNCEMENT::Input, "xbmc", "OnInputFinished");
 }
 
 bool CGUIDialogNumeric::OnAction(const CAction &action)

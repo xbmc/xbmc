@@ -58,6 +58,7 @@
 #include "pictures/Picture.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRRadioRDSInfoTag.h"
+#include "services/ServiceManager.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
 #include "utils/CharsetConverter.h"
@@ -953,7 +954,9 @@ unsigned int CDVDRadioRDSData::DecodeTA_TP(uint8_t *msgElement)
 
     CVariant data(CVariant::VariantTypeObject);
     data["on"] = true;
-    ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::PVR, "xbmc", "RDSRadioTA", data);
+    auto man = SERVICES::CServiceManager::GetInstance().GetService<ANNOUNCEMENT::CAnnouncementManager>();
+    if (man)
+      man->Announce(ANNOUNCEMENT::PVR, "xbmc", "RDSRadioTA", data);
   }
 
   if (!traffic_announcement && m_TA_TP_TrafficAdvisory && CServiceBroker::GetSettings().GetBool("pvrplayback.trafficadvisory"))
@@ -963,7 +966,9 @@ unsigned int CDVDRadioRDSData::DecodeTA_TP(uint8_t *msgElement)
 
     CVariant data(CVariant::VariantTypeObject);
     data["on"] = false;
-    ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::PVR, "xbmc", "RDSRadioTA", data);
+    auto man = SERVICES::CServiceManager::GetInstance().GetService<ANNOUNCEMENT::CAnnouncementManager>();
+    if (man)
+      man->Announce(ANNOUNCEMENT::PVR, "xbmc", "RDSRadioTA", data);
   }
 
   return 4;
@@ -1186,7 +1191,9 @@ unsigned int CDVDRadioRDSData::DecodeRTC(uint8_t *msgElement)
 
   CVariant data(CVariant::VariantTypeObject);
   data["dateTime"] = (m_RTC_DateTime.IsValid()) ? m_RTC_DateTime.GetAsRFC1123DateTime() : "";
-  ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::PVR, "xbmc", "RDSRadioRTC", data);
+  auto man = SERVICES::CServiceManager::GetInstance().GetService<ANNOUNCEMENT::CAnnouncementManager>();
+  if (man)
+    man->Announce(ANNOUNCEMENT::PVR, "xbmc", "RDSRadioRTC", data);
 
   return 8;
 }
@@ -1745,6 +1752,8 @@ void CDVDRadioRDSData::SendTMCSignal(unsigned int flags, uint8_t *data)
     msg["y"]       = (unsigned int)(m_TMC_LastData[1]<<8 | m_TMC_LastData[2]);
     msg["z"]       = (unsigned int)(m_TMC_LastData[3]<<8 | m_TMC_LastData[4]);
 
-    ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::PVR, "xbmc", "RDSRadioTMC", msg);
+    auto man = SERVICES::CServiceManager::GetInstance().GetService<ANNOUNCEMENT::CAnnouncementManager>();
+    if (man)
+      man->Announce(ANNOUNCEMENT::PVR, "xbmc", "RDSRadioTMC", msg);
   }
 }

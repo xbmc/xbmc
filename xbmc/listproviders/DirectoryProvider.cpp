@@ -38,6 +38,7 @@
 #include "pvr/PVRManager.h"
 #include "pvr/dialogs/GUIDialogPVRGuideInfo.h"
 #include "pvr/dialogs/GUIDialogPVRRecordingInfo.h"
+#include "services/ServiceManager.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
 #include "utils/JobManager.h"
@@ -53,6 +54,7 @@
 using namespace XFILE;
 using namespace ANNOUNCEMENT;
 using namespace KODI::MESSAGING;
+using namespace SERVICES;
 using namespace PVR;
 
 class CDirectoryJob : public CJob
@@ -338,7 +340,9 @@ void CDirectoryProvider::Reset()
   if (m_isAnnounced)
   {
     m_isAnnounced = false;
-    CAnnouncementManager::GetInstance().RemoveAnnouncer(this);
+    auto man = CServiceManager::GetInstance().GetService<CAnnouncementManager>();
+    if (man)
+      man->RemoveAnnouncer(this);
     CServiceBroker::GetFavouritesService().Events().Unsubscribe(this);
     CServiceBroker::GetAddonMgr().Events().Unsubscribe(this);
     CServiceBroker::GetPVRManager().Events().Unsubscribe(this);
@@ -451,7 +455,9 @@ bool CDirectoryProvider::UpdateURL()
   if (!m_isAnnounced)
   {
     m_isAnnounced = true;
-    CAnnouncementManager::GetInstance().AddAnnouncer(this);
+    auto man = CServiceManager::GetInstance().GetService<CAnnouncementManager>();
+    if (man)
+      man->AddAnnouncer(this);
     CServiceBroker::GetAddonMgr().Events().Subscribe(this, &CDirectoryProvider::OnAddonEvent);
     CServiceBroker::GetPVRManager().Events().Subscribe(this, &CDirectoryProvider::OnPVRManagerEvent);
     CServiceBroker::GetFavouritesService().Events().Subscribe(this, &CDirectoryProvider::OnFavouritesEvent);

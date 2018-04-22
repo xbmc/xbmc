@@ -28,6 +28,7 @@
 #include "log.h"
 #include "video/VideoDatabase.h"
 #include "interfaces/AnnouncementManager.h"
+#include "services/ServiceManager.h"
 #include "Util.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIMessage.h"
@@ -37,6 +38,8 @@
 #include "xbmc/music/tags/MusicInfoTag.h"
 #include "Application.h"
 #include "ServiceBroker.h"
+
+using namespace SERVICES;
 
 void CSaveFileState::DoWork(CFileItem& item,
                             CBookmark& bookmark,
@@ -112,7 +115,9 @@ void CSaveFileState::DoWork(CFileItem& item,
                 CVariant data;
                 data["id"] = item.GetVideoInfoTag()->m_iDbId;
                 data["type"] = item.GetVideoInfoTag()->m_type;
-                ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnUpdate", data);
+                auto man = SERVICES::CServiceManager::GetInstance().GetService<ANNOUNCEMENT::CAnnouncementManager>();
+                if (man)
+                  man->Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnUpdate", data);
               }
             }
           }
@@ -136,7 +141,9 @@ void CSaveFileState::DoWork(CFileItem& item,
               CVariant data;
               data["id"] = item.GetVideoInfoTag()->m_iDbId;
               data["type"] = item.GetVideoInfoTag()->m_type;
-              ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnUpdate", data);
+              auto man = SERVICES::CServiceManager::GetInstance().GetService<ANNOUNCEMENT::CAnnouncementManager>();
+              if (man)
+                man->Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnUpdate", data);
             }
 
             updateListing = true;
@@ -203,7 +210,9 @@ void CSaveFileState::DoWork(CFileItem& item,
             CVariant data;
             data["id"] = item.GetMusicInfoTag()->GetDatabaseId();
             data["type"] = item.GetMusicInfoTag()->GetType();
-            ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::AudioLibrary, "xbmc", "OnUpdate", data);
+            auto man = SERVICES::CServiceManager::GetInstance().GetService<ANNOUNCEMENT::CAnnouncementManager>();
+            if (man)
+              man->Announce(ANNOUNCEMENT::AudioLibrary, "xbmc", "OnUpdate", data);
           }
         }
       }

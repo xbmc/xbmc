@@ -44,6 +44,7 @@
 #include "URL.h"
 #include "cores/IPlayer.h"
 #include "interfaces/AnnouncementManager.h"
+#include "services/ServiceManager.h"
 #ifdef HAS_ZEROCONF
 #include "network/Zeroconf.h"
 #endif // HAS_ZEROCONF
@@ -314,12 +315,16 @@ CAirPlayServer::CAirPlayServer(int port, bool nonlocal) : CThread("AirPlayServer
   m_ServerSocket = INVALID_SOCKET;
   m_usePassword = false;
   m_origVolume = -1;
-  CAnnouncementManager::GetInstance().AddAnnouncer(this);
+  auto man = SERVICES::CServiceManager::GetInstance().GetService<CAnnouncementManager>();
+  if (man)
+    man->AddAnnouncer(this);
 }
 
 CAirPlayServer::~CAirPlayServer()
 {
-  CAnnouncementManager::GetInstance().RemoveAnnouncer(this);
+  auto man = SERVICES::CServiceManager::GetInstance().GetService<CAnnouncementManager>();
+  if (man)
+    man->RemoveAnnouncer(this);
 }
 
 void handleZeroconfAnnouncement()

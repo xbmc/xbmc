@@ -35,6 +35,7 @@
 #include "playlists/PlayList.h"
 #include "playlists/SmartPlayList.h"
 #include "profiles/ProfilesManager.h"
+#include "services/ServiceManager.h"
 #include "threads/SystemClock.h"
 #include "utils/log.h"
 #include "utils/Random.h"
@@ -722,6 +723,8 @@ void CPartyModeManager::Announce()
     
     data["player"]["playerid"] = CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist();
     data["property"]["partymode"] = m_bEnabled;
-    ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::Player, "xbmc", "OnPropertyChanged", data);
+    auto man = SERVICES::CServiceManager::GetInstance().GetService<ANNOUNCEMENT::CAnnouncementManager>();
+    if (man)
+      man->Announce(ANNOUNCEMENT::Player, "xbmc", "OnPropertyChanged", data);
   }
 }

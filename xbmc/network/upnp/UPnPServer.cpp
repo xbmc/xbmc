@@ -36,6 +36,7 @@
 #include "guilib/WindowIDs.h"
 #include "guilib/LocalizeStrings.h"
 #include "music/tags/MusicInfoTag.h"
+#include "services/ServiceManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "utils/Digest.h"
@@ -83,7 +84,9 @@ CUPnPServer::CUPnPServer(const char* friendly_name, const char* uuid /*= NULL*/,
 
 CUPnPServer::~CUPnPServer()
 {
-    ANNOUNCEMENT::CAnnouncementManager::GetInstance().RemoveAnnouncer(this);
+    auto man = SERVICES::CServiceManager::GetInstance().GetService<CAnnouncementManager>();
+    if (man)
+        man->RemoveAnnouncer(this);
 }
 
 /*----------------------------------------------------------------------
@@ -120,7 +123,9 @@ CUPnPServer::SetupServices()
     OnScanCompleted(VideoLibrary);
 
     // now safe to start passing on new notifications
-    ANNOUNCEMENT::CAnnouncementManager::GetInstance().AddAnnouncer(this);
+    auto man = SERVICES::CServiceManager::GetInstance().GetService<CAnnouncementManager>();
+    if (man)
+        man->AddAnnouncer(this);
 
     return result;
 }
@@ -1088,7 +1093,9 @@ CUPnPServer::OnUpdateObject(PLT_ActionReference&             action,
               CVariant data;
               data["id"] = updated.GetVideoInfoTag()->m_iDbId;
               data["type"] = updated.GetVideoInfoTag()->m_type;
-              ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnUpdate", data);
+              auto man = SERVICES::CServiceManager::GetInstance().GetService<CAnnouncementManager>();
+              if (man)
+                man->Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnUpdate", data);
             }
             updatelisting = true;
         }

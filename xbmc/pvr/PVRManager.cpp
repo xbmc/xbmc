@@ -26,6 +26,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "interfaces/AnnouncementManager.h"
 #include "messaging/ApplicationMessenger.h"
+#include "services/ServiceManager.h"
 #include "settings/Settings.h"
 #include "threads/SystemClock.h"
 #include "utils/JobManager.h"
@@ -50,6 +51,7 @@
 using namespace PVR;
 using namespace ANNOUNCEMENT;
 using namespace KODI::MESSAGING;
+using namespace SERVICES;
 
 CPVRManagerJobQueue::CPVRManagerJobQueue()
 : m_triggerEvent(false),
@@ -149,12 +151,16 @@ CPVRManager::CPVRManager(void) :
       CSettings::SETTING_PVRPARENTAL_DURATION
     })
 {
-  CAnnouncementManager::GetInstance().AddAnnouncer(this);
+  auto man = CServiceManager::GetInstance().GetService<CAnnouncementManager>();
+  if (man)
+    man->AddAnnouncer(this);
 }
 
 CPVRManager::~CPVRManager(void)
 {
-  CAnnouncementManager::GetInstance().RemoveAnnouncer(this);
+  auto man = CServiceManager::GetInstance().GetService<CAnnouncementManager>();
+  if (man)
+    man->RemoveAnnouncer(this);
   CLog::Log(LOGDEBUG,"PVRManager - destroyed");
 }
 
