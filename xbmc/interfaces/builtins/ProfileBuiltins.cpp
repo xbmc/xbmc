@@ -79,6 +79,7 @@ static int LogOff(const std::vector<std::string>& params)
   if (CVideoLibraryQueue::GetInstance().IsRunning())
     CVideoLibraryQueue::GetInstance().CancelAllJobs();
 
+  CServiceBroker::GetServiceAddons().Stop();
   CServiceBroker::GetNetwork().NetworkMessage(CNetwork::SERVICES_DOWN,1);
 
 
