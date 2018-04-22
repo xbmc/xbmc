@@ -457,6 +457,13 @@ bool CSystemGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
       value = false;
 #endif
       return true;
+    case SYSTEM_PLATFORM_UWP:
+#ifdef TARGET_WINDOWS_STORE
+      value = true;
+#else
+      value = false;
+#endif
+      return true;
     case SYSTEM_PLATFORM_DARWIN:
 #ifdef TARGET_DARWIN
       value = true;
