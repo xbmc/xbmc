@@ -55,6 +55,17 @@ bool CWinSystemRpiGLESContext::InitWindowSystem()
   {
     return false;
   }
+
+  const EGLint contextAttribs[] =
+  {
+    EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE
+  };
+
+  if (!m_pGLContext.CreateContext(contextAttribs))
+  {
+    return false;
+  }
+
   CProcessInfoPi::Register();
   RETRO::CRPProcessInfoPi::Register();
   RETRO::CRPProcessInfoPi::RegisterRendererFactory(new RETRO::CRendererFactoryOpenGLES);
@@ -85,16 +96,6 @@ bool CWinSystemRpiGLESContext::CreateNewWindow(const std::string& name,
   }
 
   if (!m_pGLContext.CreateSurface(m_nativeWindow))
-  {
-    return false;
-  }
-
-  const EGLint contextAttribs[] =
-  {
-    EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE
-  };
-
-  if (!m_pGLContext.CreateContext(contextAttribs))
   {
     return false;
   }

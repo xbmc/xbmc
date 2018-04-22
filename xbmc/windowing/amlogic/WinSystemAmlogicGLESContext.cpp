@@ -43,6 +43,16 @@ bool CWinSystemAmlogicGLESContext::InitWindowSystem()
     return false;
   }
 
+  const EGLint contextAttribs[] =
+  {
+    EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE
+  };
+
+  if (!m_pGLContext.CreateContext(contextAttribs))
+  {
+    return false;
+  }
+
   return true;
 }
 
@@ -63,16 +73,6 @@ bool CWinSystemAmlogicGLESContext::CreateNewWindow(const std::string& name,
   }
 
   if (!m_pGLContext.CreateSurface(m_nativeWindow))
-  {
-    return false;
-  }
-
-  const EGLint contextAttribs[] =
-  {
-    EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE
-  };
-
-  if (!m_pGLContext.CreateContext(contextAttribs))
   {
     return false;
   }

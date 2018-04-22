@@ -60,6 +60,16 @@ bool CWinSystemGbmGLESContext::InitWindowSystem()
     return false;
   }
 
+  const EGLint contextAttribs[] =
+  {
+    EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE
+  };
+
+  if (!m_pGLContext.CreateContext(contextAttribs))
+  {
+    return false;
+  }
+
   bool general, deepColor;
   m_vaapiProxy.reset(GBM::VaapiProxyCreate());
   GBM::VaapiProxyConfig(m_vaapiProxy.get(), m_pGLContext.m_eglDisplay);
@@ -104,16 +114,6 @@ bool CWinSystemGbmGLESContext::CreateNewWindow(const std::string& name,
   }
 
   if (!m_pGLContext.CreateSurface(reinterpret_cast<EGLNativeWindowType>(m_GBM->GetSurface())))
-  {
-    return false;
-  }
-
-  const EGLint contextAttribs[] =
-  {
-    EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE
-  };
-
-  if (!m_pGLContext.CreateContext(contextAttribs))
   {
     return false;
   }
