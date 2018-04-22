@@ -41,6 +41,7 @@
 #include "TextureDatabase.h"
 #include "ThumbLoader.h"
 #include "URL.h"
+#include "services/ServiceManager.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/StringUtils.h"
@@ -588,11 +589,15 @@ CUPnPRenderer::OnSetNextAVTransportURI(PLT_ActionReference& action)
           playlist = PLAYLIST_VIDEO;
 
         {   CSingleLock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
-            CServiceBroker::GetPlaylistPlayer().ClearPlaylist(playlist);
-            CServiceBroker::GetPlaylistPlayer().Add(playlist, item);
 
-            CServiceBroker::GetPlaylistPlayer().SetCurrentSong(-1);
-            CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(playlist);
+            auto pl = SERVICES::CServiceManager::GetInstance().GetService<PLAYLIST::CPlayListPlayer>();
+            if (pl) {
+                pl->ClearPlaylist(playlist);
+                pl->Add(playlist, item);
+
+                pl->SetCurrentSong(-1);
+                pl->SetCurrentPlaylist(playlist);
+            }
         }
 
         CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0);

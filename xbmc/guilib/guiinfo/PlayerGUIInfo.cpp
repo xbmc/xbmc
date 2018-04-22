@@ -31,6 +31,7 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIDialog.h"
 #include "guilib/GUIWindowManager.h"
+#include "services/ServiceManager.h"
 #include "utils/StringUtils.h"
 #include "utils/TimeUtils.h"
 #include "utils/URIUtils.h"
@@ -532,32 +533,38 @@ bool CPlayerGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
     ///////////////////////////////////////////////////////////////////////////////////////////////
     case PLAYLIST_ISRANDOM:
     {
-      PLAYLIST::CPlayListPlayer& player = CServiceBroker::GetPlaylistPlayer();
+      auto pl = SERVICES::CServiceManager::GetInstance().GetService<PLAYLIST::CPlayListPlayer>();
       int playlistid = info.GetData1();
-      if (info.GetData2() > 0 && playlistid > PLAYLIST_NONE)
-        value = player.IsShuffled(playlistid);
+      if (pl && info.GetData2() > 0 && playlistid > PLAYLIST_NONE)
+        value = pl->IsShuffled(playlistid);
+      else if (pl)
+        value = pl->IsShuffled(pl->GetCurrentPlaylist());
       else
-        value = player.IsShuffled(player.GetCurrentPlaylist());
+        value = false;
       return true;
     }
     case PLAYLIST_ISREPEAT:
     {
-      PLAYLIST::CPlayListPlayer& player = CServiceBroker::GetPlaylistPlayer();
+      auto pl = SERVICES::CServiceManager::GetInstance().GetService<PLAYLIST::CPlayListPlayer>();
       int playlistid = info.GetData1();
-      if (info.GetData2() > 0 && playlistid > PLAYLIST_NONE)
-        value = (player.GetRepeat(playlistid) == PLAYLIST::REPEAT_ALL);
+      if (pl && info.GetData2() > 0 && playlistid > PLAYLIST_NONE)
+        value = pl->GetRepeat(playlistid) == PLAYLIST::REPEAT_ALL;
+      else if (pl)
+        value = pl->GetRepeat(pl->GetCurrentPlaylist()) == PLAYLIST::REPEAT_ALL;
       else
-        value = player.GetRepeat(player.GetCurrentPlaylist()) == PLAYLIST::REPEAT_ALL;
+        value = false;
       return true;
     }
     case PLAYLIST_ISREPEATONE:
     {
-      PLAYLIST::CPlayListPlayer& player = CServiceBroker::GetPlaylistPlayer();
+      auto pl = SERVICES::CServiceManager::GetInstance().GetService<PLAYLIST::CPlayListPlayer>();
       int playlistid = info.GetData1();
-      if (info.GetData2() > 0 && playlistid > PLAYLIST_NONE)
-        value = (player.GetRepeat(playlistid) == PLAYLIST::REPEAT_ONE);
+      if (pl && info.GetData2() > 0 && playlistid > PLAYLIST_NONE)
+        value = pl->GetRepeat(playlistid) == PLAYLIST::REPEAT_ONE;
+      else if (pl)
+        value = pl->GetRepeat(pl->GetCurrentPlaylist()) == PLAYLIST::REPEAT_ONE;
       else
-        value = player.GetRepeat(player.GetCurrentPlaylist()) == PLAYLIST::REPEAT_ONE;
+        value = false;
       return true;
     }
 
@@ -577,8 +584,9 @@ bool CPlayerGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
       {
         if (item->HasProperty("playlistposition"))
         {
-          value = static_cast<int>(item->GetProperty("playlisttype").asInteger()) == CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() &&
-                  static_cast<int>(item->GetProperty("playlistposition").asInteger()) == CServiceBroker::GetPlaylistPlayer().GetCurrentSong();
+          auto pl = SERVICES::CServiceManager::GetInstance().GetService<PLAYLIST::CPlayListPlayer>();
+          value = pl ? static_cast<int>(item->GetProperty("playlisttype").asInteger()) ==  pl->GetCurrentPlaylist() &&
+                  static_cast<int>(item->GetProperty("playlistposition").asInteger()) == pl->GetCurrentSong() : false;
           return true;
         }
         else if (m_currentItem && !m_currentItem->GetPath().empty())

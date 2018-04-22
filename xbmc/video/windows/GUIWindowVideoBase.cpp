@@ -53,6 +53,7 @@
 #include "settings/dialogs/GUIDialogContentSettings.h"
 #include "input/Key.h"
 #include "guilib/LocalizeStrings.h"
+#include "services/ServiceManager.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
@@ -100,8 +101,9 @@ bool CGUIWindowVideoBase::OnAction(const CAction &action)
     return OnContextButton(m_viewControl.GetSelectedItem(),CONTEXT_BUTTON_SCAN);
   else if (action.GetID() == ACTION_SHOW_PLAYLIST)
   {
-    if (CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST_VIDEO ||
-        CServiceBroker::GetPlaylistPlayer().GetPlaylist(PLAYLIST_VIDEO).size() > 0)
+    auto pl = SERVICES::CServiceManager::GetInstance().GetService<PLAYLIST::CPlayListPlayer>();
+    if (pl && (pl->GetCurrentPlaylist() == PLAYLIST_VIDEO ||
+               pl->GetPlaylist(PLAYLIST_VIDEO).size() > 0))
     {
       CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_VIDEO_PLAYLIST);
       return true;
@@ -425,7 +427,8 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItemPtr item, const ScraperPtr &info2, b
 void CGUIWindowVideoBase::OnQueueItem(int iItem)
 {
   // Determine the proper list to queue this element
-  int playlist = CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist();
+  auto pl = SERVICES::CServiceManager::GetInstance().GetService<PLAYLIST::CPlayListPlayer>();
+  int playlist = pl ? pl->GetCurrentPlaylist() : PLAYLIST_NONE;
   if (playlist == PLAYLIST_NONE)
     playlist = g_application.GetAppPlayer().GetPreferredPlaylist();
   if (playlist == PLAYLIST_NONE)
@@ -453,8 +456,11 @@ void CGUIWindowVideoBase::OnQueueItem(int iItem)
     return;
   }
 
-  CServiceBroker::GetPlaylistPlayer().Add(playlist, queuedItems);
-  CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(playlist);
+  if (pl)
+  {
+    pl->Add(playlist, queuedItems);
+    pl->SetCurrentPlaylist(playlist);
+  }
   // video does not auto play on queue like music
   m_viewControl.SetSelectedItem(iItem + 1);
 }
@@ -1091,8 +1097,12 @@ bool CGUIWindowVideoBase::OnPlayMedia(int iItem, const std::string &player)
 
   // Reset Playlistplayer, playback started now does
   // not use the playlistplayer.
-  CServiceBroker::GetPlaylistPlayer().Reset();
-  CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(PLAYLIST_NONE);
+  auto pl = SERVICES::CServiceManager::GetInstance().GetService<PLAYLIST::CPlayListPlayer>();
+  if (pl)
+  {
+    pl->Reset();
+    pl->SetCurrentPlaylist(PLAYLIST_NONE);
+  }
 
   CFileItem item(*pItem);
   if (pItem->IsVideoDb())
@@ -1111,8 +1121,9 @@ bool CGUIWindowVideoBase::OnPlayAndQueueMedia(const CFileItemPtr &item, std::str
 {
   // Get the current playlist and make sure it is not shuffled
   int iPlaylist = m_guiState->GetPlaylist();
-  if (iPlaylist != PLAYLIST_NONE && CServiceBroker::GetPlaylistPlayer().IsShuffled(iPlaylist))
-     CServiceBroker::GetPlaylistPlayer().SetShuffle(iPlaylist, false);
+  auto pl = SERVICES::CServiceManager::GetInstance().GetService<PLAYLIST::CPlayListPlayer>();
+  if (iPlaylist != PLAYLIST_NONE && pl && pl->IsShuffled(iPlaylist))
+     pl->SetShuffle(iPlaylist, false);
 
   CFileItemPtr movieItem(new CFileItem(*item));
 
@@ -1126,7 +1137,9 @@ void CGUIWindowVideoBase::PlayMovie(const CFileItem *item, const std::string &pl
   if(m_thumbLoader.IsLoading())
     m_thumbLoader.StopAsync();
 
-  CServiceBroker::GetPlaylistPlayer().Play(std::make_shared<CFileItem>(*item), player);
+  auto pl = SERVICES::CServiceManager::GetInstance().GetService<PLAYLIST::CPlayListPlayer>();
+  if (pl)
+    pl->Play(std::make_shared<CFileItem>(*item), player);
 
   if(!g_application.GetAppPlayer().IsPlayingVideo())
     m_thumbLoader.Load(*m_vecItems);
@@ -1220,11 +1233,15 @@ void CGUIWindowVideoBase::PlayItem(int iItem, const std::string &player)
     CFileItemList queuedItems;
     AddItemToPlayList(item, queuedItems);
 
-    CServiceBroker::GetPlaylistPlayer().ClearPlaylist(PLAYLIST_VIDEO);
-    CServiceBroker::GetPlaylistPlayer().Reset();
-    CServiceBroker::GetPlaylistPlayer().Add(PLAYLIST_VIDEO, queuedItems);
-    CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(PLAYLIST_VIDEO);
-    CServiceBroker::GetPlaylistPlayer().Play();
+    auto pl = SERVICES::CServiceManager::GetInstance().GetService<PLAYLIST::CPlayListPlayer>();
+    if (pl)
+    {
+      pl->ClearPlaylist(PLAYLIST_VIDEO);
+      pl->Reset();
+      pl->Add(PLAYLIST_VIDEO, queuedItems);
+      pl->SetCurrentPlaylist(PLAYLIST_VIDEO);
+      pl->Play();
+    }
   }
   else if (pItem->IsPlayList())
   {

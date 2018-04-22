@@ -45,6 +45,7 @@
 #include "PlayListPlayer.h"
 #include "playlists/PlayList.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
+#include "services/ServiceManager.h"
 #include "storage/MediaManager.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
@@ -626,7 +627,9 @@ void CGUIWindowFileManager::OnStart(CFileItem *pItem, const std::string &player)
   }
   if (pItem->IsAudio() || pItem->IsVideo())
   {
-    CServiceBroker::GetPlaylistPlayer().Play(std::make_shared<CFileItem>(*pItem), player);
+    auto pl = SERVICES::CServiceManager::GetInstance().GetService<CPlayListPlayer>();
+    if (pl)
+      pl->Play(std::make_shared<CFileItem>(*pItem), player);
     return;
   }
   if (pItem->IsGame())

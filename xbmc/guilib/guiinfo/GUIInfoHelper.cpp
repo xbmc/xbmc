@@ -27,6 +27,7 @@
 #include "guilib/IGUIContainer.h"
 #include "guilib/LocalizeStrings.h"
 #include "playlists/PlayList.h"
+#include "services/ServiceManager.h"
 #include "utils/StringUtils.h"
 #include "windows/GUIMediaWindow.h"
 
@@ -48,32 +49,34 @@ std::string GetPlaylistLabel(int item, int playlistid /* = PLAYLIST_NONE */)
   if (playlistid < PLAYLIST_NONE)
     return std::string();
 
-  PLAYLIST::CPlayListPlayer& player = CServiceBroker::GetPlaylistPlayer();
+  auto pl = SERVICES::CServiceManager::GetInstance().GetService<PLAYLIST::CPlayListPlayer>();
+  if (!pl)
+    return "";
 
-  int iPlaylist = playlistid == PLAYLIST_NONE ? player.GetCurrentPlaylist() : playlistid;
+  int iPlaylist = playlistid == PLAYLIST_NONE ? pl->GetCurrentPlaylist() : playlistid;
   switch (item)
   {
     case PLAYLIST_LENGTH:
     {
-      return StringUtils::Format("%i", player.GetPlaylist(iPlaylist).size());
+      return StringUtils::Format("%i", pl->GetPlaylist(iPlaylist).size());
     }
     case PLAYLIST_POSITION:
     {
-      int currentSong = player.GetCurrentSong();
+      int currentSong = pl->GetCurrentSong();
       if (currentSong > -1)
         return StringUtils::Format("%i", currentSong + 1);
       break;
     }
     case PLAYLIST_RANDOM:
     {
-      if (player.IsShuffled(iPlaylist))
+      if (pl->IsShuffled(iPlaylist))
         return g_localizeStrings.Get(16041); // 16041: On
       else
         return g_localizeStrings.Get(591); // 591: Off
     }
     case PLAYLIST_REPEAT:
     {
-      PLAYLIST::REPEAT_STATE state = player.GetRepeat(iPlaylist);
+      PLAYLIST::REPEAT_STATE state = pl->GetRepeat(iPlaylist);
       if (state == PLAYLIST::REPEAT_ONE)
         return g_localizeStrings.Get(592); // 592: One
       else if (state == PLAYLIST::REPEAT_ALL)

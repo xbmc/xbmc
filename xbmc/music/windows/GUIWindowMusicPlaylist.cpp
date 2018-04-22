@@ -37,6 +37,7 @@
 #include "GUIUserMessages.h"
 #include "favourites/FavouritesService.h"
 #include "profiles/ProfilesManager.h"
+#include "services/ServiceManager.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "guilib/LocalizeStrings.h"
@@ -122,9 +123,10 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
         SET_CONTROL_FOCUS(m_iLastControl, 0);
       }
 
-      if (g_application.GetAppPlayer().IsPlayingAudio() && CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST_MUSIC)
+      auto pl = SERVICES::CServiceManager::GetInstance().GetService<CPlayListPlayer>();
+      if (g_application.GetAppPlayer().IsPlayingAudio() && pl && pl->GetCurrentPlaylist() == PLAYLIST_MUSIC)
       {
-        int iSong = CServiceBroker::GetPlaylistPlayer().GetCurrentSong();
+        int iSong = pl->GetCurrentSong();
         if (iSong >= 0 && iSong <= m_vecItems->Size())
           m_viewControl.SetSelectedItem(iSong);
       }
@@ -140,8 +142,12 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
       {
         if (!g_partyModeManager.IsEnabled())
         {
-          CServiceBroker::GetPlaylistPlayer().SetShuffle(PLAYLIST_MUSIC, !(CServiceBroker::GetPlaylistPlayer().IsShuffled(PLAYLIST_MUSIC)));
-          CMediaSettings::GetInstance().SetMusicPlaylistShuffled(CServiceBroker::GetPlaylistPlayer().IsShuffled(PLAYLIST_MUSIC));
+          auto pl = SERVICES::CServiceManager::GetInstance().GetService<CPlayListPlayer>();
+          if (pl)
+          {
+            pl->SetShuffle(PLAYLIST_MUSIC, !(pl->IsShuffled(PLAYLIST_MUSIC)));
+            CMediaSettings::GetInstance().SetMusicPlaylistShuffled(pl->IsShuffled(PLAYLIST_MUSIC));
+          }
           CServiceBroker::GetSettings().Save();
           UpdateButtons();
           Refresh();
@@ -164,35 +170,51 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
       else if (iControl == CONTROL_BTNPLAY)
       {
         m_guiState->SetPlaylistDirectory("playlistmusic://");
-        CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(PLAYLIST_MUSIC);
-        CServiceBroker::GetPlaylistPlayer().Reset();
-        CServiceBroker::GetPlaylistPlayer().Play(m_viewControl.GetSelectedItem(), "");
+        auto pl = SERVICES::CServiceManager::GetInstance().GetService<CPlayListPlayer>();
+        if (pl)
+        {
+          pl->SetCurrentPlaylist(PLAYLIST_MUSIC);
+          pl->Reset();
+          pl->Play(m_viewControl.GetSelectedItem(), "");
+        }
         UpdateButtons();
       }
       else if (iControl == CONTROL_BTNNEXT)
       {
-        CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(PLAYLIST_MUSIC);
-        CServiceBroker::GetPlaylistPlayer().PlayNext();
+        auto pl = SERVICES::CServiceManager::GetInstance().GetService<CPlayListPlayer>();
+        if (pl)
+        {
+          pl->SetCurrentPlaylist(PLAYLIST_MUSIC);
+          pl->PlayNext();
+        }
       }
       else if (iControl == CONTROL_BTNPREVIOUS)
       {
-        CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(PLAYLIST_MUSIC);
-        CServiceBroker::GetPlaylistPlayer().PlayPrevious();
+        auto pl = SERVICES::CServiceManager::GetInstance().GetService<CPlayListPlayer>();
+        if (pl)
+        {
+          pl->SetCurrentPlaylist(PLAYLIST_MUSIC);
+          pl->PlayPrevious();
+        }
       }
       else if (iControl == CONTROL_BTNREPEAT)
       {
         // increment repeat state
-        PLAYLIST::REPEAT_STATE state = CServiceBroker::GetPlaylistPlayer().GetRepeat(PLAYLIST_MUSIC);
-        if (state == PLAYLIST::REPEAT_NONE)
-          CServiceBroker::GetPlaylistPlayer().SetRepeat(PLAYLIST_MUSIC, PLAYLIST::REPEAT_ALL);
-        else if (state == PLAYLIST::REPEAT_ALL)
-          CServiceBroker::GetPlaylistPlayer().SetRepeat(PLAYLIST_MUSIC, PLAYLIST::REPEAT_ONE);
-        else
-          CServiceBroker::GetPlaylistPlayer().SetRepeat(PLAYLIST_MUSIC, PLAYLIST::REPEAT_NONE);
+        auto pl = SERVICES::CServiceManager::GetInstance().GetService<CPlayListPlayer>();
+        PLAYLIST::REPEAT_STATE state = pl ? pl->GetRepeat(PLAYLIST_MUSIC) : REPEAT_NONE;
+        if (state == PLAYLIST::REPEAT_NONE && pl)
+          pl->SetRepeat(PLAYLIST_MUSIC, PLAYLIST::REPEAT_ALL);
+        else if (state == PLAYLIST::REPEAT_ALL && pl)
+          pl->SetRepeat(PLAYLIST_MUSIC, PLAYLIST::REPEAT_ONE);
+        else if (pl)
+          pl->SetRepeat(PLAYLIST_MUSIC, PLAYLIST::REPEAT_NONE);
 
         // save settings
-        CMediaSettings::GetInstance().SetMusicPlaylistRepeat(CServiceBroker::GetPlaylistPlayer().GetRepeat(PLAYLIST_MUSIC) == PLAYLIST::REPEAT_ALL);
-        CServiceBroker::GetSettings().Save();
+        if (pl)
+        {
+          CMediaSettings::GetInstance().SetMusicPlaylistRepeat(pl->GetRepeat(PLAYLIST_MUSIC) == PLAYLIST::REPEAT_ALL);
+          CServiceBroker::GetSettings().Save();
+        }
 
         UpdateButtons();
       }
@@ -255,22 +277,27 @@ bool CGUIWindowMusicPlayList::MoveCurrentPlayListItem(int iItem, int iAction, bo
 
   // is the currently playing item affected?
   bool bFixCurrentSong = false;
-  if ((CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST_MUSIC) && (g_application.GetAppPlayer().IsPlayingAudio()) &&
-    ((CServiceBroker::GetPlaylistPlayer().GetCurrentSong() == iSelected) || (CServiceBroker::GetPlaylistPlayer().GetCurrentSong() == iNew)))
+  auto pl = SERVICES::CServiceManager::GetInstance().GetService<CPlayListPlayer>();
+  if (!pl)
+    return false;
+
+  if ((pl->GetCurrentPlaylist() == PLAYLIST_MUSIC) &&
+      (g_application.GetAppPlayer().IsPlayingAudio()) &&
+      ((pl->GetCurrentSong() == iSelected) || (pl->GetCurrentSong() == iNew)))
     bFixCurrentSong = true;
 
-  CPlayList& playlist = CServiceBroker::GetPlaylistPlayer().GetPlaylist(PLAYLIST_MUSIC);
+  CPlayList& playlist = pl->GetPlaylist(PLAYLIST_MUSIC);
   if (playlist.Swap(iSelected, iNew))
   {
     // Correct the current playing song in playlistplayer
     if (bFixCurrentSong)
     {
-      int iCurrentSong = CServiceBroker::GetPlaylistPlayer().GetCurrentSong();
+      int iCurrentSong = pl->GetCurrentSong();
       if (iSelected == iCurrentSong)
         iCurrentSong = iNew;
       else if (iNew == iCurrentSong)
         iCurrentSong = iSelected;
-      CServiceBroker::GetPlaylistPlayer().SetCurrentSong(iCurrentSong);
+      pl->SetCurrentSong(iCurrentSong);
     }
 
     if (bUpdate)
@@ -330,11 +357,15 @@ void CGUIWindowMusicPlayList::SavePlayList()
 void CGUIWindowMusicPlayList::ClearPlayList()
 {
   ClearFileItems();
-  CServiceBroker::GetPlaylistPlayer().ClearPlaylist(PLAYLIST_MUSIC);
-  if (CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST_MUSIC)
+  auto pl = SERVICES::CServiceManager::GetInstance().GetService<CPlayListPlayer>();
+  if (!pl)
+    return;
+
+  pl->ClearPlaylist(PLAYLIST_MUSIC);
+  if (pl->GetCurrentPlaylist() == PLAYLIST_MUSIC)
   {
-    CServiceBroker::GetPlaylistPlayer().Reset();
-    CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(PLAYLIST_NONE);
+    pl->Reset();
+    pl->SetCurrentPlaylist(PLAYLIST_NONE);
   }
   Refresh();
   SET_CONTROL_FOCUS(CONTROL_BTNVIEWASICONS, 0);
@@ -343,13 +374,16 @@ void CGUIWindowMusicPlayList::ClearPlayList()
 void CGUIWindowMusicPlayList::RemovePlayListItem(int iItem)
 {
   if (iItem < 0 || iItem > m_vecItems->Size()) return;
+  auto pl = SERVICES::CServiceManager::GetInstance().GetService<CPlayListPlayer>();
+  if (!pl)
+    return;
 
   // The current playing song can't be removed
-  if (CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST_MUSIC && g_application.GetAppPlayer().IsPlayingAudio()
-      && CServiceBroker::GetPlaylistPlayer().GetCurrentSong() == iItem)
+  if (pl->GetCurrentPlaylist() == PLAYLIST_MUSIC && g_application.GetAppPlayer().IsPlayingAudio()
+      && pl->GetCurrentSong() == iItem)
     return ;
 
-  CServiceBroker::GetPlaylistPlayer().Remove(PLAYLIST_MUSIC, iItem);
+  pl->Remove(PLAYLIST_MUSIC, iItem);
 
   Refresh();
 
@@ -378,7 +412,8 @@ void CGUIWindowMusicPlayList::UpdateButtons()
     CONTROL_ENABLE(CONTROL_BTNREPEAT);
     CONTROL_ENABLE(CONTROL_BTNPLAY);
 
-    if (g_application.GetAppPlayer().IsPlayingAudio() && CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST_MUSIC)
+    auto pl = SERVICES::CServiceManager::GetInstance().GetService<CPlayListPlayer>();
+    if (g_application.GetAppPlayer().IsPlayingAudio() && pl && pl->GetCurrentPlaylist() == PLAYLIST_MUSIC)
     {
       CONTROL_ENABLE(CONTROL_BTNNEXT);
       CONTROL_ENABLE(CONTROL_BTNPREVIOUS);
@@ -403,11 +438,12 @@ void CGUIWindowMusicPlayList::UpdateButtons()
 
   // update buttons
   CONTROL_DESELECT(CONTROL_BTNSHUFFLE);
-  if (CServiceBroker::GetPlaylistPlayer().IsShuffled(PLAYLIST_MUSIC))
+  auto pl = SERVICES::CServiceManager::GetInstance().GetService<CPlayListPlayer>();
+  if (pl && pl->IsShuffled(PLAYLIST_MUSIC))
     CONTROL_SELECT(CONTROL_BTNSHUFFLE);
 
   // update repeat button
-  int iRepeat = 595 + CServiceBroker::GetPlaylistPlayer().GetRepeat(PLAYLIST_MUSIC);
+  int iRepeat = 595 + (pl ? pl->GetRepeat(PLAYLIST_MUSIC) : 0);
   SET_CONTROL_LABEL(CONTROL_BTNREPEAT, g_localizeStrings.Get(iRepeat));
 
   // Update object count label
@@ -429,16 +465,24 @@ bool CGUIWindowMusicPlayList::OnPlayMedia(int iItem, const std::string &player)
       if (m_guiState.get())
         m_guiState->SetPlaylistDirectory(m_vecItems->GetPath());
 
-      CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist( iPlaylist );
-      CServiceBroker::GetPlaylistPlayer().Play(iItem, player);
+      auto pl = SERVICES::CServiceManager::GetInstance().GetService<CPlayListPlayer>();
+      if (pl)
+      {
+        pl->SetCurrentPlaylist( iPlaylist );
+        pl->Play(iItem, player);
+      }
     }
     else
     {
       // Reset Playlistplayer, playback started now does
       // not use the playlistplayer.
       CFileItemPtr pItem=m_vecItems->Get(iItem);
-      CServiceBroker::GetPlaylistPlayer().Reset();
-      CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(PLAYLIST_NONE);
+      auto pl = SERVICES::CServiceManager::GetInstance().GetService<CPlayListPlayer>();
+      if (pl)
+      {
+        pl->Reset();
+        pl->SetCurrentPlaylist(PLAYLIST_NONE);
+      }
       g_application.PlayFile(*pItem, player);
     }
   }
@@ -497,7 +541,8 @@ bool CGUIWindowMusicPlayList::Update(const std::string& strDirectory, bool updat
 void CGUIWindowMusicPlayList::GetContextButtons(int itemNumber, CContextButtons &buttons)
 {
   // is this playlist playing?
-  int itemPlaying = CServiceBroker::GetPlaylistPlayer().GetCurrentSong();
+  auto pl = SERVICES::CServiceManager::GetInstance().GetService<CPlayListPlayer>();
+  int itemPlaying = pl ? pl->GetCurrentSong() : -1;
 
   if (itemNumber >= 0 && itemNumber < m_vecItems->Size())
   {

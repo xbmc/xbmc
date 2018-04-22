@@ -59,11 +59,6 @@ CDataCacheCore &CServiceBroker::GetDataCacheCore()
   return g_application.m_ServiceManager->GetDataCacheCore();
 }
 
-PLAYLIST::CPlayListPlayer &CServiceBroker::GetPlaylistPlayer()
-{
-  return g_application.m_ServiceManager->GetPlaylistPlayer();
-}
-
 CSettings& CServiceBroker::GetSettings()
 {
   return g_application.m_ServiceManager->GetSettings();

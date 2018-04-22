@@ -31,6 +31,7 @@
 #include "PlayListPlayer.h"
 #include "playlists/PlayList.h"
 #include "ServiceBroker.h"
+#include "services/ServiceManager.h"
 #include "Util.h"
 #include "utils/JobManager.h"
 
@@ -117,7 +118,11 @@ namespace MUSIC_UTILS
       loaded when the playlist is shown.
       */      
       bool clearcache(false);
-      CPlayList& playlist = CServiceBroker::GetPlaylistPlayer().GetPlaylist(PLAYLIST_MUSIC);
+      auto pl = SERVICES::CServiceManager::GetInstance().GetService<CPlayListPlayer>();
+      if (!pl)
+        return false;
+
+      CPlayList& playlist = pl->GetPlaylist(PLAYLIST_MUSIC);
       for (int i = 0; i < playlist.size(); ++i)
       {
         CFileItemPtr songitem = playlist[i];

@@ -39,6 +39,7 @@
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/epg/EpgInfoTag.h"
 #include "pvr/recordings/PVRRecordings.h"
+#include "services/ServiceManager.h"
 #include "cores/IPlayer.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "SeekHandler.h"
@@ -508,6 +509,8 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
   CVariant optionResume = options["resume"];
   CVariant optionPlayer = options["playername"];
 
+  auto pl = SERVICES::CServiceManager::GetInstance().GetService<CPlayListPlayer>();
+
   if (parameterObject["item"].isMember("playlistid"))
   {
     int playlistid = (int)parameterObject["item"]["playlistid"].asInteger();
@@ -515,11 +518,11 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
     if (playlistid < PLAYLIST_PICTURE)
     {
       // Apply the "shuffled" option if available
-      if (optionShuffled.isBoolean())
-        CServiceBroker::GetPlaylistPlayer().SetShuffle(playlistid, optionShuffled.asBoolean(), false);
+      if (optionShuffled.isBoolean() && pl)
+        pl->SetShuffle(playlistid, optionShuffled.asBoolean(), false);
       // Apply the "repeat" option if available
-      if (!optionRepeat.isNull())
-        CServiceBroker::GetPlaylistPlayer().SetRepeat(playlistid, (REPEAT_STATE)ParseRepeatState(optionRepeat), false);
+      if (!optionRepeat.isNull() && pl)
+        pl->SetRepeat(playlistid, (REPEAT_STATE)ParseRepeatState(optionRepeat), false);
     }
 
     int playlistStartPosition = (int)parameterObject["item"]["position"].asInteger();
@@ -775,7 +778,8 @@ JSONRPC_STATUS CPlayerOperations::SetShuffle(const std::string &method, ITranspo
         return FailedToExecute;
 
       int playlistid = GetPlaylist(GetPlayer(parameterObject["playerid"]));
-      if (CServiceBroker::GetPlaylistPlayer().IsShuffled(playlistid))
+      auto pl = SERVICES::CServiceManager::GetInstance().GetService<CPlayListPlayer>();
+      if (pl && pl->IsShuffled(playlistid))
       {
         if ((shuffle.isBoolean() && !shuffle.asBoolean()) ||
             (shuffle.isString() && shuffle.asString() == "toggle"))
@@ -834,7 +838,8 @@ JSONRPC_STATUS CPlayerOperations::SetRepeat(const std::string &method, ITranspor
       int playlistid = GetPlaylist(GetPlayer(parameterObject["playerid"]));
       if (parameterObject["repeat"].asString() == "cycle")
       {
-        REPEAT_STATE repeatPrev = CServiceBroker::GetPlaylistPlayer().GetRepeat(playlistid);
+        auto pl = SERVICES::CServiceManager::GetInstance().GetService<CPlayListPlayer>();
+        REPEAT_STATE repeatPrev = pl ? pl->GetRepeat(playlistid) : REPEAT_NONE;
         if (repeatPrev == REPEAT_NONE)
           repeat = REPEAT_ALL;
         else if (repeatPrev == REPEAT_ALL)
@@ -1114,7 +1119,8 @@ PlayerType CPlayerOperations::GetPlayer(const CVariant &player)
 
 int CPlayerOperations::GetPlaylist(PlayerType player)
 {
-  int playlist = CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist();
+  auto pl = SERVICES::CServiceManager::GetInstance().GetService<CPlayListPlayer>();
+  int playlist = pl ? pl->GetCurrentPlaylist() : PLAYLIST_NONE;
   if (playlist == PLAYLIST_NONE) // No active playlist, try guessing
     playlist = g_application.GetAppPlayer().GetPreferredPlaylist();
 
@@ -1340,12 +1346,13 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
   else if (property == "position")
   {
     CGUIWindowSlideShow *slideshow = NULL;
+    auto pl = SERVICES::CServiceManager::GetInstance().GetService<CPlayListPlayer>();
     switch (player)
     {
       case Video:
       case Audio: /* Return the position of current item if there is an active playlist */
-        if (!IsPVRChannel() && CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == playlist)
-          result = CServiceBroker::GetPlaylistPlayer().GetCurrentSong();
+        if (!IsPVRChannel() && pl && pl->GetCurrentPlaylist() == playlist)
+          result = pl->GetCurrentSong();
         else
           result = -1;
         break;
@@ -1365,6 +1372,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
   }
   else if (property == "repeat")
   {
+    auto pl = SERVICES::CServiceManager::GetInstance().GetService<CPlayListPlayer>();
     switch (player)
     {
       case Video:
@@ -1375,17 +1383,20 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
           break;
         }
 
-        switch (CServiceBroker::GetPlaylistPlayer().GetRepeat(playlist))
+        if (pl)
         {
-        case REPEAT_ONE:
-          result = "one";
-          break;
-        case REPEAT_ALL:
-          result = "all";
-          break;
-        default:
-          result = "off";
-          break;
+          switch (pl->GetRepeat(playlist))
+          {
+          case REPEAT_ONE:
+            result = "one";
+            break;
+          case REPEAT_ALL:
+            result = "all";
+            break;
+          default:
+            result = "off";
+            break;
+          }
         }
         break;
 
@@ -1398,6 +1409,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
   else if (property == "shuffled")
   {
     CGUIWindowSlideShow *slideshow = NULL;
+    auto pl = SERVICES::CServiceManager::GetInstance().GetService<CPlayListPlayer>();
     switch (player)
     {
       case Video:
@@ -1408,7 +1420,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
           break;
         }
 
-        result = CServiceBroker::GetPlaylistPlayer().IsShuffled(playlist);
+        result = pl ? pl->IsShuffled(playlist) : false;
         break;
 
       case Picture:

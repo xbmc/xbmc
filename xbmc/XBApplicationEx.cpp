@@ -18,10 +18,11 @@
  *
  */
 
+#include "XBApplicationEx.h"
 #include "FileItem.h"
 #include "messaging/ApplicationMessenger.h"
 #include "PlayListPlayer.h"
-#include "XBApplicationEx.h"
+#include "services/ServiceManager.h"
 #include "utils/log.h"
 #include "threads/SystemClock.h"
 #include "commons/Exception.h"
@@ -34,6 +35,9 @@
 #ifndef _DEBUG
 #define XBMC_TRACK_EXCEPTIONS
 #endif
+
+using namespace SERVICES;
+using namespace PLAYLIST;
 
 CXBApplicationEx::CXBApplicationEx()
 {
@@ -65,8 +69,12 @@ int CXBApplicationEx::Run(const CAppParamParser &params)
 
   if (params.Playlist().Size() > 0)
   {
-    CServiceBroker::GetPlaylistPlayer().Add(0, params.Playlist());
-    CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(0);
+    auto pl = SERVICES::CServiceManager::GetInstance().GetService<CPlayListPlayer>();
+    if (pl)
+    {
+      pl->Add(0, params.Playlist());
+      pl->SetCurrentPlaylist(0);
+    }
     KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_PLAYLISTPLAYER_PLAY, -1);
   }
 

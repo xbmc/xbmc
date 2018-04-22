@@ -156,11 +156,12 @@ void AnnounceBridge(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, con
     if (duration > 0)
       [item setValue:[NSNumber numberWithDouble:duration] forKey:@"duration"];
     [item setValue:[NSNumber numberWithDouble:g_application.GetTime()] forKey:@"elapsed"];
-    int current = CServiceBroker::GetPlaylistPlayer().GetCurrentSong();
+    auto pl = SERVICES::CServiceManager::GetInstance().GetService<PLAYLIST::CPlayListPlayer>();
+    int current = pl ? pl->GetCurrentSong() : -1;
     if (current >= 0)
     {
       [item setValue:[NSNumber numberWithInt:current] forKey:@"current"];
-      [item setValue:[NSNumber numberWithInt:CServiceBroker::GetPlaylistPlayer().GetPlaylist(CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist()).size()] forKey:@"total"];
+      [item setValue:[NSNumber numberWithInt:pl->GetPlaylist(pl->GetCurrentPlaylist()).size()] forKey:@"total"];
     }
     if (g_application.CurrentFileItem().HasMusicInfoTag())
     {

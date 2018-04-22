@@ -56,6 +56,7 @@
 #include "network/Network.h"
 #include "playlists/PlayList.h"
 #include "profiles/ProfilesManager.h"
+#include "services/ServiceManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "storage/MediaManager.h"
@@ -85,6 +86,7 @@
 
 using namespace ADDON;
 using namespace KODI::MESSAGING;
+using namespace PLAYLIST;
 
 CGUIMediaWindow::CGUIMediaWindow(int id, const char *xmlFile)
     : CGUIWindow(id, xmlFile)
@@ -1405,8 +1407,12 @@ bool CGUIMediaWindow::OnPlayMedia(int iItem, const std::string &player)
 {
   // Reset Playlistplayer, playback started now does
   // not use the playlistplayer.
-  CServiceBroker::GetPlaylistPlayer().Reset();
-  CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(PLAYLIST_NONE);
+  auto pl = SERVICES::CServiceManager::GetInstance().GetService<PLAYLIST::CPlayListPlayer>();
+  if (pl)
+  {
+    pl->Reset();
+    pl->SetCurrentPlaylist(PLAYLIST_NONE);
+  }
   CFileItemPtr pItem=m_vecItems->Get(iItem);
 
   CLog::Log(LOGDEBUG, "%s %s", __FUNCTION__, CURL::GetRedacted(pItem->GetPath()).c_str());
@@ -1437,8 +1443,12 @@ bool CGUIMediaWindow::OnPlayAndQueueMedia(const CFileItemPtr &item, std::string 
   int iPlaylist = m_guiState->GetPlaylist();
   if (iPlaylist != PLAYLIST_NONE)
   {
-    CServiceBroker::GetPlaylistPlayer().ClearPlaylist(iPlaylist);
-    CServiceBroker::GetPlaylistPlayer().Reset();
+    auto pl = SERVICES::CServiceManager::GetInstance().GetService<PLAYLIST::CPlayListPlayer>();
+    if (pl)
+    {
+      pl->ClearPlaylist(iPlaylist);
+      pl->Reset();
+    }
     int mediaToPlay = 0;
     
     // first try to find mainDVD file (VIDEO_TS.IFO). 
@@ -1463,11 +1473,11 @@ bool CGUIMediaWindow::OnPlayAndQueueMedia(const CFileItemPtr &item, std::string 
         continue;
 
       if (!nItem->IsZIP() && !nItem->IsRAR() && (!nItem->IsDVDFile() || (URIUtils::GetFileName(nItem->GetPath()) == mainDVD)))
-        CServiceBroker::GetPlaylistPlayer().Add(iPlaylist, nItem);
+        pl->Add(iPlaylist, nItem);
 
-      if (item->IsSamePath(nItem.get()))
+      if (item->IsSamePath(nItem.get()) && pl)
       { // item that was clicked
-        mediaToPlay = CServiceBroker::GetPlaylistPlayer().GetPlaylist(iPlaylist).size() - 1;
+        mediaToPlay = pl->GetPlaylist(iPlaylist).size() - 1;
       }
     }
 
@@ -1476,16 +1486,19 @@ bool CGUIMediaWindow::OnPlayAndQueueMedia(const CFileItemPtr &item, std::string 
       m_guiState->SetPlaylistDirectory(m_vecItems->GetPath());
 
     // figure out where we start playback
-    if (CServiceBroker::GetPlaylistPlayer().IsShuffled(iPlaylist))
+    if (pl && pl->IsShuffled(iPlaylist))
     {
-      int iIndex = CServiceBroker::GetPlaylistPlayer().GetPlaylist(iPlaylist).FindOrder(mediaToPlay);
-      CServiceBroker::GetPlaylistPlayer().GetPlaylist(iPlaylist).Swap(0, iIndex);
+      int iIndex = pl->GetPlaylist(iPlaylist).FindOrder(mediaToPlay);
+      pl->GetPlaylist(iPlaylist).Swap(0, iIndex);
       mediaToPlay = 0;
     }
 
     // play
-    CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(iPlaylist);
-    CServiceBroker::GetPlaylistPlayer().Play(mediaToPlay, player);
+    if (pl)
+    {
+      pl->SetCurrentPlaylist(iPlaylist);
+      pl->Play(mediaToPlay, player);
+    }
   }
   return true;
 }
@@ -1514,26 +1527,30 @@ void CGUIMediaWindow::UpdateFileList()
   if (m_guiState.get() && m_guiState->IsCurrentPlaylistDirectory(m_vecItems->GetPath()))
   {
     int iPlaylist=m_guiState->GetPlaylist();
-    int nSong = CServiceBroker::GetPlaylistPlayer().GetCurrentSong();
+    auto pl = SERVICES::CServiceManager::GetInstance().GetService<PLAYLIST::CPlayListPlayer>();
+    int nSong = pl ? pl->GetCurrentSong() : -1;
     CFileItem playlistItem;
     if (nSong > -1 && iPlaylist > -1)
-      playlistItem=*CServiceBroker::GetPlaylistPlayer().GetPlaylist(iPlaylist)[nSong];
+      playlistItem= *pl->GetPlaylist(iPlaylist)[nSong];
 
-    CServiceBroker::GetPlaylistPlayer().ClearPlaylist(iPlaylist);
-    CServiceBroker::GetPlaylistPlayer().Reset();
+    if (pl)
+    {
+      pl->ClearPlaylist(iPlaylist);
+      pl->Reset();
+    }
 
-    for (int i = 0; i < m_vecItems->Size(); i++)
+    for (int i = 0; i < m_vecItems->Size() && pl; i++)
     {
       CFileItemPtr pItem = m_vecItems->Get(i);
       if (pItem->m_bIsFolder)
         continue;
 
       if (!pItem->IsPlayList() && !pItem->IsZIP() && !pItem->IsRAR())
-        CServiceBroker::GetPlaylistPlayer().Add(iPlaylist, pItem);
+        pl->Add(iPlaylist, pItem);
 
       if (pItem->GetPath() == playlistItem.GetPath() &&
           pItem->m_lStartOffset == playlistItem.m_lStartOffset)
-        CServiceBroker::GetPlaylistPlayer().SetCurrentSong(CServiceBroker::GetPlaylistPlayer().GetPlaylist(iPlaylist).size() - 1);
+        pl->SetCurrentSong(pl->GetPlaylist(iPlaylist).size() - 1);
     }
   }
 }

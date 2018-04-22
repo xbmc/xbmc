@@ -20,11 +20,12 @@
 
 #include "PlayList.h"
 #include "PlayListPlayer.h"
-#include "Application.h"
 #include "playlists/PlayListFactory.h"
+#include "services/ServiceManager.h"
 #include "utils/URIUtils.h"
 
 using namespace PLAYLIST;
+using namespace SERVICES;
 
 namespace XBMCAddon
 {
@@ -36,11 +37,11 @@ namespace XBMCAddon
       iPlayList(playList), pPlayList(NULL)
     {
       // we do not create our own playlist, just using the ones from playlistplayer
-      if (iPlayList != PLAYLIST_MUSIC &&
-          iPlayList != PLAYLIST_VIDEO)
+      auto pl = CServiceManager::GetInstance().GetService<CPlayListPlayer>();
+      if (!pl || (iPlayList != PLAYLIST_MUSIC && iPlayList != PLAYLIST_VIDEO))
         throw PlayListException("PlayList does not exist");
 
-      pPlayList = &CServiceBroker::GetPlaylistPlayer().GetPlaylist(playList);
+      pPlayList = &pl->GetPlaylist(playList);
       iPlayList = playList;
     }
 
@@ -89,7 +90,9 @@ namespace XBMCAddon
             return false;
 
           // clear current playlist
-          CServiceBroker::GetPlaylistPlayer().ClearPlaylist(this->iPlayList);
+          auto pl = CServiceManager::GetInstance().GetService<CPlayListPlayer>();
+          if (pl)
+            pl->ClearPlaylist(this->iPlayList);
 
           // add each item of the playlist to the playlistplayer
           for (int i=0; i < (int)pPlayList->size(); ++i)
@@ -136,7 +139,8 @@ namespace XBMCAddon
 
     int PlayList::getposition()
     {
-      return CServiceBroker::GetPlaylistPlayer().GetCurrentSong();
+      auto pl = CServiceManager::GetInstance().GetService<CPlayListPlayer>();
+      return pl ? pl->GetCurrentSong() : -1;
     }
 
     XBMCAddon::xbmcgui::ListItem* PlayList::operator [](long i)

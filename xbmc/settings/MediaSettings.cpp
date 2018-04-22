@@ -35,6 +35,7 @@
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "profiles/ProfilesManager.h"
+#include "services/ServiceManager.h"
 #include "settings/lib/Setting.h"
 #include "settings/Settings.h"
 #include "storage/MediaManager.h"
@@ -184,10 +185,14 @@ bool CMediaSettings::Load(const TiXmlNode *settings)
 
 void CMediaSettings::OnSettingsLoaded()
 {
-  CServiceBroker::GetPlaylistPlayer().SetRepeat(PLAYLIST_MUSIC, m_musicPlaylistRepeat ? PLAYLIST::REPEAT_ALL : PLAYLIST::REPEAT_NONE);
-  CServiceBroker::GetPlaylistPlayer().SetShuffle(PLAYLIST_MUSIC, m_musicPlaylistShuffle);
-  CServiceBroker::GetPlaylistPlayer().SetRepeat(PLAYLIST_VIDEO, m_videoPlaylistRepeat ? PLAYLIST::REPEAT_ALL : PLAYLIST::REPEAT_NONE);
-  CServiceBroker::GetPlaylistPlayer().SetShuffle(PLAYLIST_VIDEO, m_videoPlaylistShuffle);
+  auto pl = SERVICES::CServiceManager::GetInstance().GetService<PLAYLIST::CPlayListPlayer>();
+  if (pl)
+  {
+    pl->SetRepeat(PLAYLIST_MUSIC, m_musicPlaylistRepeat ? PLAYLIST::REPEAT_ALL : PLAYLIST::REPEAT_NONE);
+    pl->SetShuffle(PLAYLIST_MUSIC, m_musicPlaylistShuffle);
+    pl->SetRepeat(PLAYLIST_VIDEO, m_videoPlaylistRepeat ? PLAYLIST::REPEAT_ALL : PLAYLIST::REPEAT_NONE);
+    pl->SetShuffle(PLAYLIST_VIDEO, m_videoPlaylistShuffle);
+  }
 }
 
 bool CMediaSettings::Save(TiXmlNode *settings) const

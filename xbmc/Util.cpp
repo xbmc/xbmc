@@ -103,7 +103,6 @@ using namespace MEDIA_DETECT;
 #endif
 
 using namespace XFILE;
-using namespace PLAYLIST;
 using KODI::UTILITY::CDigest;
 
 #if !defined(TARGET_WINDOWS)

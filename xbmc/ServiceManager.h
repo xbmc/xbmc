@@ -39,11 +39,6 @@ namespace PVR
 class CPVRManager;
 }
 
-namespace PLAYLIST
-{
-  class CPlayListPlayer;
-}
-
 class CContextMenuManager;
 class CDataCacheCore;
 class CSettings;
@@ -113,7 +108,6 @@ public:
   KODI::RETRO::CGUIGameRenderManager& GetGameRenderManager();
   PERIPHERALS::CPeripherals& GetPeripherals();
 
-  PLAYLIST::CPlayListPlayer& GetPlaylistPlayer();
   int init_level = 0;
 
   CSettings& GetSettings();
@@ -162,7 +156,6 @@ protected:
   std::unique_ptr<CContextMenuManager, delete_contextMenuManager> m_contextMenuManager;
   std::unique_ptr<CDataCacheCore, delete_dataCacheCore> m_dataCacheCore;
   std::unique_ptr<CPlatform> m_Platform;
-  std::unique_ptr<PLAYLIST::CPlayListPlayer> m_playlistPlayer;
   std::unique_ptr<CSettings> m_settings;
   std::unique_ptr<KODI::GAME::CControllerManager> m_gameControllerManager;
   std::unique_ptr<KODI::GAME::CGameServices> m_gameServices;

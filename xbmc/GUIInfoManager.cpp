@@ -50,6 +50,8 @@
 using namespace KODI::GUILIB;
 using namespace KODI::GUILIB::GUIINFO;
 using namespace INFO;
+using namespace PLAYLIST;
+
 
 bool InfoBoolComparator(const InfoPtr &right, const InfoPtr &left)
 {

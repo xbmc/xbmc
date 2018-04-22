@@ -21,6 +21,7 @@
 
 #include "guilib/IMsgTargetCallback.h"
 #include "messaging/IMessageTarget.h"
+#include "services/IService.h"
 #include "ServiceBroker.h"
 #include <memory>
 
@@ -46,7 +47,8 @@ enum REPEAT_STATE { REPEAT_NONE = 0, REPEAT_ONE, REPEAT_ALL };
 class CPlayList;
 
 class CPlayListPlayer : public IMsgTargetCallback,
-                        public KODI::MESSAGING::IMessageTarget
+                        public KODI::MESSAGING::IMessageTarget,
+                        public SERVICES::IService
 {
 
 public:

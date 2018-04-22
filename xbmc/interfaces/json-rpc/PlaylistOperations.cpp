@@ -26,11 +26,13 @@
 #include "messaging/ApplicationMessenger.h"
 #include "pictures/GUIWindowSlideShow.h"
 #include "pictures/PictureInfoTag.h"
+#include "services/ServiceManager.h"
 #include "utils/Variant.h"
 
 using namespace JSONRPC;
 using namespace PLAYLIST;
 using namespace KODI::MESSAGING;
+using namespace SERVICES;
 
 JSONRPC_STATUS CPlaylistOperations::GetPlaylists(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
@@ -180,7 +182,8 @@ JSONRPC_STATUS CPlaylistOperations::Remove(const std::string &method, ITransport
     return FailedToExecute;
   
   int position = (int)parameterObject["position"].asInteger();
-  if (CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == playlist && CServiceBroker::GetPlaylistPlayer().GetCurrentSong() == position)
+  auto pl = CServiceManager::GetInstance().GetService<CPlayListPlayer>();
+  if (!pl || (pl->GetCurrentPlaylist() == playlist && pl->GetCurrentSong() == position))
     return InvalidParams;
 
   CApplicationMessenger::GetInstance().SendMsg(TMSG_PLAYLISTPLAYER_REMOVE, playlist, position);

@@ -34,6 +34,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "guilib/StereoscopicsManager.h"
 #include "guilib/WindowIDs.h"
+#include "services/ServiceManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "utils/StringUtils.h"
@@ -497,17 +498,23 @@ bool CVideoGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
     // VIDEOPLAYER_*
     ///////////////////////////////////////////////////////////////////////////////////////////////
     case VIDEOPLAYER_PLAYLISTLEN:
-      if (CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST_VIDEO)
       {
-        value = GUIINFO::GetPlaylistLabel(PLAYLIST_LENGTH);
-        return true;
+        auto pl = SERVICES::CServiceManager::GetInstance().GetService<PLAYLIST::CPlayListPlayer>();
+        if (pl && pl->GetCurrentPlaylist() == PLAYLIST_VIDEO)
+        {
+          value = GUIINFO::GetPlaylistLabel(PLAYLIST_LENGTH);
+          return true;
+        }
       }
       break;
     case VIDEOPLAYER_PLAYLISTPOS:
-      if (CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST_VIDEO)
       {
-        value = GUIINFO::GetPlaylistLabel(PLAYLIST_POSITION);
-        return true;
+        auto pl = SERVICES::CServiceManager::GetInstance().GetService<PLAYLIST::CPlayListPlayer>();
+        if (pl && pl->GetCurrentPlaylist() == PLAYLIST_VIDEO)
+        {
+          value = GUIINFO::GetPlaylistLabel(PLAYLIST_POSITION);
+          return true;
+        }
       }
       break;
     case VIDEOPLAYER_VIDEO_ASPECT:

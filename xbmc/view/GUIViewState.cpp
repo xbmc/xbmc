@@ -43,6 +43,7 @@
 #include "addons/AddonManager.h"
 #include "addons/PluginSource.h"
 #include "view/ViewState.h"
+#include "services/ServiceManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
@@ -53,8 +54,10 @@
 #define PROPERTY_SORT_ORDER         "sort.order"
 #define PROPERTY_SORT_ASCENDING     "sort.ascending"
 
-using namespace KODI;
 using namespace ADDON;
+using namespace KODI;
+using namespace PLAYLIST;
+using namespace SERVICES;
 using namespace PVR;
 
 std::string CGUIViewState::m_strPlaylistDirectory;
@@ -420,7 +423,8 @@ void CGUIViewState::SetPlaylistDirectory(const std::string& strDirectory)
 
 bool CGUIViewState::IsCurrentPlaylistDirectory(const std::string& strDirectory)
 {
-  if (CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist()!=GetPlaylist())
+  auto pl = SERVICES::CServiceManager::GetInstance().GetService<CPlayListPlayer>();
+  if (!pl || pl->GetCurrentPlaylist() != GetPlaylist())
     return false;
 
   std::string strDir = strDirectory;

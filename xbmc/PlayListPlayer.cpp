@@ -612,14 +612,14 @@ void CPlayListPlayer::ReShuffle(int iPlaylist, int iPosition)
       (g_application.GetAppPlayer().IsPlayingVideo() && iPlaylist == PLAYLIST_VIDEO)
       )
     {
-      CServiceBroker::GetPlaylistPlayer().GetPlaylist(iPlaylist).Shuffle(m_iCurrentSong + 2);
+      GetPlaylist(iPlaylist).Shuffle(m_iCurrentSong + 2);
     }
   }
   // otherwise, shuffle from the passed position
   // which is the position of the first new item added
   else
   {
-    CServiceBroker::GetPlaylistPlayer().GetPlaylist(iPlaylist).Shuffle(iPosition);
+    GetPlaylist(iPlaylist).Shuffle(iPosition);
   }
 }
 

@@ -46,6 +46,7 @@
 #include "profiles/dialogs/GUIDialogProfileSettings.h"
 #include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"
+#include "services/ServiceManager.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
@@ -317,9 +318,13 @@ void CGUIWindowLoginScreen::LoadProfile(unsigned int profile)
 
   if (profileManager.GetLastUsedProfileIndex() != profile)
   {
-    CServiceBroker::GetPlaylistPlayer().ClearPlaylist(PLAYLIST_VIDEO);
-    CServiceBroker::GetPlaylistPlayer().ClearPlaylist(PLAYLIST_MUSIC);
-    CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(PLAYLIST_NONE);
+    auto pl = SERVICES::CServiceManager::GetInstance().GetService<PLAYLIST::CPlayListPlayer>();
+    if (pl)
+    {
+      pl->ClearPlaylist(PLAYLIST_VIDEO);
+      pl->ClearPlaylist(PLAYLIST_MUSIC);
+      pl->SetCurrentPlaylist(PLAYLIST_NONE);
+    }
   }
 
   // reload the add-ons, or we will first load all add-ons from the master account without checking disabled status

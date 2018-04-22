@@ -31,6 +31,7 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "AddonUtils.h"
+#include "services/ServiceManager.h"
 #include "utils/log.h"
 #include "cores/IPlayer.h"
 
@@ -119,9 +120,10 @@ namespace XBMCAddon
       CMediaSettings::GetInstance().SetVideoStartWindowed(windowed);
 
       // play current file in playlist
-      if (CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() != iPlayList)
-        CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(iPlayList);
-      CApplicationMessenger::GetInstance().SendMsg(TMSG_PLAYLISTPLAYER_PLAY, CServiceBroker::GetPlaylistPlayer().GetCurrentSong());
+      auto pl = SERVICES::CServiceManager::GetInstance().GetService<PLAYLIST::CPlayListPlayer>();
+      if (pl && pl->GetCurrentPlaylist() != iPlayList)
+        pl->SetCurrentPlaylist(iPlayList);
+      CApplicationMessenger::GetInstance().SendMsg(TMSG_PLAYLISTPLAYER_PLAY, pl ? pl->GetCurrentSong() : 0);
     }
 
     void Player::playPlaylist(const PlayList* playlist, bool windowed, int startpos)
@@ -135,9 +137,11 @@ namespace XBMCAddon
 
         // play a python playlist (a playlist from playlistplayer.cpp)
         iPlayList = playlist->getPlayListId();
-        CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(iPlayList);
-        if (startpos > -1)
-          CServiceBroker::GetPlaylistPlayer().SetCurrentSong(startpos);
+        auto pl = SERVICES::CServiceManager::GetInstance().GetService<PLAYLIST::CPlayListPlayer>();
+        if (pl)
+          pl->SetCurrentPlaylist(iPlayList);
+        if (startpos > -1 && pl)
+          pl->SetCurrentSong(startpos);
         CApplicationMessenger::GetInstance().SendMsg(TMSG_PLAYLISTPLAYER_PLAY, startpos);
       }
       else
@@ -177,11 +181,13 @@ namespace XBMCAddon
       XBMC_TRACE;
       DelayedCallGuard dc(languageHook);
 
-      if (CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() != iPlayList)
+      auto pl = SERVICES::CServiceManager::GetInstance().GetService<PLAYLIST::CPlayListPlayer>();
+      if (pl && pl->GetCurrentPlaylist() != iPlayList)
       {
-        CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(iPlayList);
+        pl->SetCurrentPlaylist(iPlayList);
       }
-      CServiceBroker::GetPlaylistPlayer().SetCurrentSong(selected);
+      if (pl)
+        pl->SetCurrentSong(selected);
 
       CApplicationMessenger::GetInstance().SendMsg(TMSG_PLAYLISTPLAYER_PLAY, selected);
       //CServiceBroker::GetPlaylistPlayer().Play(selected);

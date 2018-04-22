@@ -34,11 +34,6 @@ namespace PVR
   class CPVRManager;
 }
 
-namespace PLAYLIST
-{
-  class CPlayListPlayer;
-}
-
 class CContextMenuManager;
 class CDataCacheCore;
 class CSettings;
@@ -86,7 +81,6 @@ public:
   static PVR::CPVRManager &GetPVRManager();
   static CContextMenuManager& GetContextMenuManager();
   static CDataCacheCore& GetDataCacheCore();
-  static PLAYLIST::CPlayListPlayer& GetPlaylistPlayer();
   static CSettings& GetSettings();
   static KODI::GAME::CControllerManager& GetGameControllerManager();
   static KODI::GAME::CGameServices& GetGameServices();

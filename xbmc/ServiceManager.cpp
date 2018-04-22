@@ -106,8 +106,6 @@ void CServiceManager::DeinitTesting()
 
 bool CServiceManager::InitStageOne()
 {
-  m_playlistPlayer.reset(new PLAYLIST::CPlayListPlayer());
-
   m_settings.reset(new CSettings());
   m_network.reset(SetupNetwork());
 
@@ -255,7 +253,6 @@ void CServiceManager::DeinitStageOne()
 
   m_network.reset();
   m_settings.reset();
-  m_playlistPlayer.reset();
 }
 
 ADDON::CAddonMgr &CServiceManager::GetAddonMgr()
@@ -306,11 +303,6 @@ CDataCacheCore& CServiceManager::GetDataCacheCore()
 CPlatform& CServiceManager::GetPlatform()
 {
   return *m_Platform;
-}
-
-PLAYLIST::CPlayListPlayer& CServiceManager::GetPlaylistPlayer()
-{
-  return *m_playlistPlayer;
 }
 
 CSettings& CServiceManager::GetSettings()

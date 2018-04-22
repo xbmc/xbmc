@@ -54,6 +54,7 @@
 #include "messaging/helpers/DialogOKHelper.h"
 #include "profiles/ProfilesManager.h"
 #include "storage/MediaManager.h"
+#include "services/ServiceManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/MediaSourceSettings.h"
@@ -251,8 +252,9 @@ bool CGUIWindowMusicBase::OnAction(const CAction &action)
 {
   if (action.GetID() == ACTION_SHOW_PLAYLIST)
   {
-    if (CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST_MUSIC ||
-        CServiceBroker::GetPlaylistPlayer().GetPlaylist(PLAYLIST_MUSIC).size() > 0)
+    auto pl = SERVICES::CServiceManager::GetInstance().GetService<PLAYLIST::CPlayListPlayer>();
+    if (pl && (pl->GetCurrentPlaylist() == PLAYLIST_MUSIC ||
+               pl->GetPlaylist(PLAYLIST_MUSIC).size() > 0))
     {
       CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_MUSIC_PLAYLIST);
       return true;
@@ -359,7 +361,8 @@ void CGUIWindowMusicBase::RetrieveMusicInfo()
 void CGUIWindowMusicBase::OnQueueItem(int iItem)
 {
   // Determine the proper list to queue this element
-  int playlist = CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist();
+  auto pl = SERVICES::CServiceManager::GetInstance().GetService<PLAYLIST::CPlayListPlayer>();
+  int playlist = pl ? pl->GetCurrentPlaylist() : PLAYLIST_NONE;
   if (playlist == PLAYLIST_NONE)
     playlist = g_application.GetAppPlayer().GetPreferredPlaylist();
   if (playlist == PLAYLIST_NONE)
@@ -368,7 +371,7 @@ void CGUIWindowMusicBase::OnQueueItem(int iItem)
   // don't re-queue items from playlist window
   if ( iItem < 0 || iItem >= m_vecItems->Size() || GetID() == WINDOW_MUSIC_PLAYLIST) return ;
 
-  int iOldSize=CServiceBroker::GetPlaylistPlayer().GetPlaylist(playlist).size();
+  int iOldSize = pl ? pl->GetPlaylist(playlist).size() : 0;
 
   // add item 2 playlist (make a copy as we alter the queuing state)
   CFileItemPtr item(new CFileItem(*m_vecItems->Get(iItem)));
@@ -395,15 +398,19 @@ void CGUIWindowMusicBase::OnQueueItem(int iItem)
     return;
   }
 
-  CServiceBroker::GetPlaylistPlayer().Add(playlist, queuedItems);
-  if (CServiceBroker::GetPlaylistPlayer().GetPlaylist(playlist).size() && !g_application.GetAppPlayer().IsPlaying())
+  if (pl)
+    pl->Add(playlist, queuedItems);
+  if (pl && pl->GetPlaylist(playlist).size() && !g_application.GetAppPlayer().IsPlaying())
   {
     if (m_guiState.get())
       m_guiState->SetPlaylistDirectory("playlistmusic://");
 
-    CServiceBroker::GetPlaylistPlayer().Reset();
-    CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(playlist);
-    CServiceBroker::GetPlaylistPlayer().Play(iOldSize, ""); // start playing at the first new item
+    if (pl)
+    {
+      pl->Reset();
+      pl->SetCurrentPlaylist(playlist);
+      pl->Play(iOldSize, ""); // start playing at the first new item
+    }
   }
 }
 
@@ -780,13 +787,17 @@ void CGUIWindowMusicBase::PlayItem(int iItem)
     URIUtils::RemoveSlashAtEnd(strPlayListDirectory);
     */
 
-    CServiceBroker::GetPlaylistPlayer().ClearPlaylist(PLAYLIST_MUSIC);
-    CServiceBroker::GetPlaylistPlayer().Reset();
-    CServiceBroker::GetPlaylistPlayer().Add(PLAYLIST_MUSIC, queuedItems);
-    CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(PLAYLIST_MUSIC);
+    auto pl = SERVICES::CServiceManager::GetInstance().GetService<PLAYLIST::CPlayListPlayer>();
+    if (pl)
+    {
+      pl->ClearPlaylist(PLAYLIST_MUSIC);
+      pl->Reset();
+      pl->Add(PLAYLIST_MUSIC, queuedItems);
+      pl->SetCurrentPlaylist(PLAYLIST_MUSIC);
 
-    // play!
-    CServiceBroker::GetPlaylistPlayer().Play();
+      // play!
+      pl->Play();
+    }
   }
   else if (pItem->IsPlayList())
   {
@@ -855,7 +866,9 @@ bool CGUIWindowMusicBase::OnPlayMedia(int iItem, const std::string &player)
       OnQueueItem(iItem);
       return true;
     }
-    CServiceBroker::GetPlaylistPlayer().Play(pItem, player);
+    auto pl = SERVICES::CServiceManager::GetInstance().GetService<PLAYLIST::CPlayListPlayer>();
+    if (pl)
+      pl->Play(pItem, player);
     return true;
   }
   return CGUIMediaWindow::OnPlayMedia(iItem, player);
