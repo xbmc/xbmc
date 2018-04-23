@@ -136,18 +136,18 @@ int NetworkAccessPoint::FreqToChannel(float frequency)
   return 0; // unknown
 }
 
-
-CNetwork::CNetwork()
+CNetworkBase::CNetworkBase(CSettings &settings) :
+  m_services(new CNetworkServices(settings))
 {
   CApplicationMessenger::GetInstance().PostMsg(TMSG_NETWORKMESSAGE, SERVICES_UP, 0);
 }
 
-CNetwork::~CNetwork()
+CNetworkBase::~CNetworkBase()
 {
   CApplicationMessenger::GetInstance().PostMsg(TMSG_NETWORKMESSAGE, SERVICES_DOWN, 0);
 }
 
-int CNetwork::ParseHex(char *str, unsigned char *addr)
+int CNetworkBase::ParseHex(char *str, unsigned char *addr)
 {
    int len = 0;
 
@@ -166,7 +166,7 @@ int CNetwork::ParseHex(char *str, unsigned char *addr)
    return len;
 }
 
-bool CNetwork::GetHostName(std::string& hostname)
+bool CNetworkBase::GetHostName(std::string& hostname)
 {
   char hostName[128];
   if (gethostname(hostName, sizeof(hostName)))
@@ -182,7 +182,7 @@ bool CNetwork::GetHostName(std::string& hostname)
   return true;
 }
 
-bool CNetwork::IsLocalHost(const std::string& hostname)
+bool CNetworkBase::IsLocalHost(const std::string& hostname)
 {
   if (hostname.empty())
     return false;
@@ -211,7 +211,7 @@ bool CNetwork::IsLocalHost(const std::string& hostname)
   return false;
 }
 
-CNetworkInterface* CNetwork::GetFirstConnectedInterface()
+CNetworkInterface* CNetworkBase::GetFirstConnectedInterface()
 {
    std::vector<CNetworkInterface*>& ifaces = GetInterfaceList();
    std::vector<CNetworkInterface*>::const_iterator iter = ifaces.begin();
@@ -226,7 +226,7 @@ CNetworkInterface* CNetwork::GetFirstConnectedInterface()
    return NULL;
 }
 
-bool CNetwork::HasInterfaceForIP(unsigned long address)
+bool CNetworkBase::HasInterfaceForIP(unsigned long address)
 {
    unsigned long subnet;
    unsigned long local;
@@ -248,18 +248,18 @@ bool CNetwork::HasInterfaceForIP(unsigned long address)
    return false;
 }
 
-bool CNetwork::IsAvailable(void)
+bool CNetworkBase::IsAvailable(void)
 {
   std::vector<CNetworkInterface*>& ifaces = GetInterfaceList();
   return (ifaces.size() != 0);
 }
 
-bool CNetwork::IsConnected()
+bool CNetworkBase::IsConnected()
 {
    return GetFirstConnectedInterface() != NULL;
 }
 
-CNetworkInterface* CNetwork::GetInterfaceByName(const std::string& name)
+CNetworkInterface* CNetworkBase::GetInterfaceByName(const std::string& name)
 {
    std::vector<CNetworkInterface*>& ifaces = GetInterfaceList();
    std::vector<CNetworkInterface*>::const_iterator iter = ifaces.begin();
@@ -274,25 +274,25 @@ CNetworkInterface* CNetwork::GetInterfaceByName(const std::string& name)
    return NULL;
 }
 
-void CNetwork::NetworkMessage(EMESSAGE message, int param)
+void CNetworkBase::NetworkMessage(EMESSAGE message, int param)
 {
   switch( message )
   {
     case SERVICES_UP:
       CLog::Log(LOGDEBUG, "%s - Starting network services",__FUNCTION__);
-      CNetworkServices::GetInstance().Start();
+      m_services->Start();
       break;
 
     case SERVICES_DOWN:
       CLog::Log(LOGDEBUG, "%s - Signaling network services to stop",__FUNCTION__);
-      CNetworkServices::GetInstance().Stop(false); // tell network services to stop, but don't wait for them yet
+      m_services->Stop(false); // tell network services to stop, but don't wait for them yet
       CLog::Log(LOGDEBUG, "%s - Waiting for network services to stop",__FUNCTION__);
-      CNetworkServices::GetInstance().Stop(true); // wait for network services to stop
+      m_services->Stop(true); // wait for network services to stop
       break;
   }
 }
 
-bool CNetwork::WakeOnLan(const char* mac)
+bool CNetworkBase::WakeOnLan(const char* mac)
 {
   int i, j, packet;
   unsigned char ethaddr[8];
@@ -427,7 +427,7 @@ static const char* ConnectHostPort(SOCKET soc, const struct sockaddr_in& addr, s
   return 0; // success
 }
 
-bool CNetwork::PingHost(unsigned long ipaddr, unsigned short port, unsigned int timeOutMs, bool readability_check)
+bool CNetworkBase::PingHost(unsigned long ipaddr, unsigned short port, unsigned int timeOutMs, bool readability_check)
 {
   if (port == 0) // use icmp ping
     return PingHost (ipaddr, timeOutMs);
@@ -554,7 +554,7 @@ int CreateTCPServerSocket(const int port, const bool bindLocal, const int backlo
   return sock;
 }
 
-void CNetwork::WaitForNet()
+void CNetworkBase::WaitForNet()
 {
   const int timeout = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_POWERMANAGEMENT_WAITFORNETWORK);
   if (timeout <= 0)

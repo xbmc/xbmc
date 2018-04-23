@@ -293,7 +293,8 @@ std::string CNetworkInterfaceAndroid::GetHostName()
 
 /*************************/
 
-CNetworkAndroid::CNetworkAndroid()
+CNetworkAndroid::CNetworkAndroid(CSettings &settings)
+ : CNetworkBase(settings)
 {
   RetrieveInterfaces();
 }

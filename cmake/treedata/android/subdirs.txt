@@ -6,7 +6,6 @@ xbmc/platform/posix                     platform/posix
 xbmc/platform/posix/filesystem          platform/posix/filesystem
 xbmc/platform/posix/utils               platform/posix/utils
 xbmc/platform/linux                     platform/linux
-xbmc/platform/linux/network             platform/linux/network
 xbmc/platform/linux/peripherals         platform/linux/peripherals
 xbmc/platform/android/activity          platform/android/activity
 xbmc/platform/android/bionic_supplement platform/android/bionicsupplement

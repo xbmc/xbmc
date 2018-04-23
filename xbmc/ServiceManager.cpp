@@ -65,7 +65,7 @@ CServiceManager::~CServiceManager()
 bool CServiceManager::InitForTesting()
 {
   m_settings.reset(new CSettings());
-  m_network.reset(SetupNetwork());
+  m_network.reset(new CNetwork(*m_settings));
 
   m_profileManager.reset(new CProfilesManager(*m_settings));
 
@@ -117,7 +117,7 @@ bool CServiceManager::InitStageOne()
   m_playlistPlayer.reset(new PLAYLIST::CPlayListPlayer());
 
   m_settings.reset(new CSettings());
-  m_network.reset(SetupNetwork());
+  m_network.reset(new CNetwork(*m_settings));
 
   init_level = 1;
   return true;
@@ -400,22 +400,7 @@ void CServiceManager::delete_favouritesService::operator()(CFavouritesService *p
   delete p;
 }
 
-CNetwork* CServiceManager::SetupNetwork() const
-{
-#if defined(TARGET_ANDROID)
-  return new CNetworkAndroid();
-#elif defined(HAS_LINUX_NETWORK)
-  return new CNetworkLinux();
-#elif defined(HAS_WIN32_NETWORK)
-  return new CNetworkWin32();
-#elif defined(HAS_WIN10_NETWORK)
-  return new CNetworkWin10();
-#else
-  return new CNetwork();
-#endif
-}
-
-CNetwork& CServiceManager::GetNetwork()
+CNetworkBase& CServiceManager::GetNetwork()
 {
   return *m_network;
 }

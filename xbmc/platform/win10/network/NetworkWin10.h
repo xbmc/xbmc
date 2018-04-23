@@ -17,15 +17,14 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#ifndef NETWORK_WIN10_H_
-#define NETWORK_WIN10_H_
- 
-#include <string>
-#include <vector>
+#pragma once
+
 #include "network/Network.h"
-#include "Iphlpapi.h"
 #include "utils/stopwatch.h"
 #include "threads/CriticalSection.h"
+
+#include <string>
+#include <vector>
 
 class CNetworkWin10;
 
@@ -59,23 +58,23 @@ public:
   virtual std::vector<NetworkAccessPoint> GetAccessPoints(void);
 
 private:
-  void WriteSettings(FILE* fw, NetworkAssignment assignment, std::string& ipAddress, std::string& networkMask, std::string& defaultGateway, std::string& essId, std::string& key, EncMode& encryptionMode);
   CNetworkWin10* m_network;
   std::string m_adaptername;
   Windows::Networking::Connectivity::ConnectionProfile^ m_adapter;
 };
 
 
-class CNetworkWin10 : public CNetwork
+class CNetworkWin10 : public CNetworkBase
 {
 public:
-    CNetworkWin10(void);
+    CNetworkWin10(CSettings &settings);
     virtual ~CNetworkWin10(void);
 
     // Return the list of interfaces
     virtual std::vector<CNetworkInterface*>& GetInterfaceList(void);
 
     // Ping remote host
+    using CNetworkBase::PingHost;
     virtual bool PingHost(unsigned long host, unsigned int timeout_ms = 2000);
 
     // Get/set the nameserver(s)
@@ -93,4 +92,6 @@ private:
     CStopWatch m_netrefreshTimer;
     CCriticalSection m_critSection;
 };
-#endif
+
+using CNetwork = CNetworkWin10;
+

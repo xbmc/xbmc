@@ -90,7 +90,7 @@ static int LogOff(const std::vector<std::string>& params)
   g_application.WakeUpScreenSaverAndDPMS();
   CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_LOGIN_SCREEN, {}, false);
 
-  if (!CNetworkServices::GetInstance().StartEventServer()) // event server could be needed in some situations
+  if (!CServiceBroker::GetNetwork().GetServices().StartEventServer()) // event server could be needed in some situations
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(33102), g_localizeStrings.Get(33100));
 
   return 0;

@@ -63,12 +63,12 @@ protected:
 };
 
 
-class CNetworkAndroid : public CNetwork
+class CNetworkAndroid : public CNetworkBase
 {
   friend class CXBMCApp;
 
 public:
-  CNetworkAndroid();
+  CNetworkAndroid(CSettings &settings);
   ~CNetworkAndroid();
 
   // CNetwork interface
@@ -80,6 +80,7 @@ public:
   virtual void SetNameServers(const std::vector<std::string>& nameServers) override;
 
   // Ping remote host
+  using CNetworkBase::PingHost;
   virtual bool PingHost(unsigned long remote_ip, unsigned int timeout_ms = 2000) override;
 
 protected:
@@ -89,3 +90,4 @@ protected:
   CCriticalSection m_refreshMutex;
 };
 
+using CNetwork = CNetworkAndroid;
