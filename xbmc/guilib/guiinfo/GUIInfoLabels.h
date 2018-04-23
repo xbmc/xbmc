@@ -879,3 +879,4 @@
 #define INFOFLAG_LISTITEM_POSITION    (static_cast<uint32_t>(1 << 26))  // ListItem lookups based on cursor position
 #define INFOFLAG_LISTITEM_ABSOLUTE    (static_cast<uint32_t>(1 << 27))  // Absolute ListItem lookups
 #define INFOFLAG_LISTITEM_NOWRAP      (static_cast<uint32_t>(1 << 28))  // Do not wrap ListItem lookups
+#define INFOFLAG_LISTITEM_CONTAINER   (static_cast<uint32_t>(1 << 29))  // Lookup the item in given container

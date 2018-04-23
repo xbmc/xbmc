@@ -183,7 +183,7 @@ private:
   void SplitInfoString(const std::string &infoString, std::vector<Property> &info);
 
   int TranslateSingleString(const std::string &strCondition);
-  int TranslateListItem(const Property& cat, const Property& prop, int id = 0);
+  int TranslateListItem(const Property& cat, const Property& prop, int id, bool container);
   int TranslateMusicPlayerString(const std::string &info) const;
   static TIME_FORMAT TranslateTimeFormat(const std::string &format);
 
