@@ -56,49 +56,26 @@ int CEnvironment::win_setenv(const std::string &name, const std::string &value /
   std::wstring Wvalue = KODI::PLATFORM::WINDOWS::ToW(value);
   int retValue = 0;
 
-  ApplicationDataContainer^ localSettings = ApplicationData::Current->LocalSettings;
-  auto values = localSettings->Values;
-
-  Platform::String^ key = ref new Platform::String(Wname.c_str());
-  Platform::String^ v = ref new Platform::String(Wvalue.c_str());
-
-  switch (action)
-  {
-  case deleteVariable:
-    if (values->HasKey(key))
-    {
-      values->Remove(key);
-    }
-    retValue = 0;
-    break;
-
-  default:
-    retValue = values->Insert(key, v) ? 0 : -1;
-    break;
-  }
+  // Update process Environment used for current process and for future new child processes
+  if (action == deleteVariable || value.empty())
+    retValue += SetEnvironmentVariableW(Wname.c_str(), nullptr) ? 0 : 4; // 4 if failed
+  else
+    retValue += SetEnvironmentVariableW(Wname.c_str(), Wvalue.c_str()) ? 0 : 4; // 4 if failed
 
   return retValue;
 }
 
 std::string CEnvironment::win_getenv(const std::string &name)
 {
-  std::string result;
-
-  // check key
   if (name.empty())
     return "";
 
-  std::wstring Wname = KODI::PLATFORM::WINDOWS::ToW(name);
-  Platform::String^ key = ref new Platform::String(Wname.c_str());
+  uint32_t varSize = GetEnvironmentVariableA(name.c_str(), nullptr, 0);
+  if (varSize == 0)
+    return ""; // Not found
 
-  ApplicationDataContainer^ localSettings = ApplicationData::Current->LocalSettings;
-  auto values = localSettings->Values;
-
-  if (values->HasKey(key))
-  {
-    auto value = safe_cast<Platform::String^>(values->Lookup(key));
-    result = KODI::PLATFORM::WINDOWS::FromW(value->Data());
-  }
+  std::string result(varSize, 0);
+  GetEnvironmentVariableA(name.c_str(), const_cast<char*>(result.c_str()), varSize);
 
   return result;
 }
