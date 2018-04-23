@@ -404,7 +404,9 @@ std::vector<NetworkAccessPoint> CNetworkInterfaceWin32::GetAccessPoints(void)
   return result;
 }
 
-void CNetworkInterfaceWin32::GetSettings(NetworkAssignment& assignment, std::string& ipAddress, std::string& networkMask, std::string& defaultGateway, std::string& essId, std::string& key, EncMode& encryptionMode)
+void CNetworkInterfaceWin32::GetSettings(NetworkAssignment& assignment, std::string& ipAddress
+                                       , std::string& networkMask, std::string& defaultGateway
+                                       , std::string& essId, std::string& key, EncMode& encryptionMode)
 {
   ipAddress = "0.0.0.0";
   networkMask = "0.0.0.0";
@@ -416,19 +418,19 @@ void CNetworkInterfaceWin32::GetSettings(NetworkAssignment& assignment, std::str
 
 
   PIP_ADAPTER_INFO adapterInfo;
-  PIP_ADAPTER_INFO adapter = NULL;
+  PIP_ADAPTER_INFO adapter = nullptr;
 
   ULONG ulOutBufLen = sizeof (IP_ADAPTER_INFO);
 
   adapterInfo = (IP_ADAPTER_INFO *) malloc(sizeof (IP_ADAPTER_INFO));
-  if (adapterInfo == NULL)
+  if (adapterInfo == nullptr)
     return;
 
   if (GetAdaptersInfo(adapterInfo, &ulOutBufLen) == ERROR_BUFFER_OVERFLOW)
   {
     free(adapterInfo);
     adapterInfo = (IP_ADAPTER_INFO *) malloc(ulOutBufLen);
-    if (adapterInfo == NULL)
+    if (adapterInfo == nullptr)
       return;
   }
 
@@ -446,7 +448,7 @@ void CNetworkInterfaceWin32::GetSettings(NetworkAssignment& assignment, std::str
           assignment = NETWORK_DHCP;
         else
           assignment = NETWORK_STATIC;
-
+        break;
       }
       adapter = adapter->Next;
     }
@@ -455,13 +457,13 @@ void CNetworkInterfaceWin32::GetSettings(NetworkAssignment& assignment, std::str
 
   if(IsWireless())
   {
-    HANDLE hClientHdl = NULL;
+    HANDLE hClientHdl = nullptr;
     DWORD dwVersion = 0;
     DWORD dwret = 0;
     PWLAN_CONNECTION_ATTRIBUTES pAttributes;
     DWORD dwSize = 0;
 
-    if(WlanOpenHandle(1,NULL,&dwVersion, &hClientHdl) == ERROR_SUCCESS)
+    if(WlanOpenHandle(1, nullptr, &dwVersion, &hClientHdl) == ERROR_SUCCESS)
     {
       PWLAN_INTERFACE_INFO_LIST ppInterfaceList;
       if(WlanEnumInterfaces(hClientHdl,NULL, &ppInterfaceList ) == ERROR_SUCCESS)
@@ -475,12 +477,14 @@ void CNetworkInterfaceWin32::GetSettings(NetworkAssignment& assignment, std::str
           std::wstring strAdaptername = ToW(m_adapter.AdapterName);
           if (strGuid == strAdaptername)
           {
-            if(WlanQueryInterface(hClientHdl,&ppInterfaceList->InterfaceInfo[i].InterfaceGuid,wlan_intf_opcode_current_connection, NULL, &dwSize, (PVOID*)&pAttributes, NULL ) == ERROR_SUCCESS)
+            if (WlanQueryInterface(hClientHdl, &ppInterfaceList->InterfaceInfo[i].InterfaceGuid
+                                 , wlan_intf_opcode_current_connection, nullptr, &dwSize
+                                 , (PVOID*)&pAttributes, nullptr) == ERROR_SUCCESS)
             {
               essId = (char*)pAttributes->wlanAssociationAttributes.dot11Ssid.ucSSID;
-              if(pAttributes->wlanSecurityAttributes.bSecurityEnabled)
+              if (pAttributes->wlanSecurityAttributes.bSecurityEnabled)
               {
-                switch(pAttributes->wlanSecurityAttributes.dot11AuthAlgorithm)
+                switch (pAttributes->wlanSecurityAttributes.dot11AuthAlgorithm)
                 {
                 case DOT11_AUTH_ALGO_80211_SHARED_KEY:
                   encryptionMode = ENC_WEP;
@@ -492,6 +496,7 @@ void CNetworkInterfaceWin32::GetSettings(NetworkAssignment& assignment, std::str
                 case DOT11_AUTH_ALGO_RSNA:
                 case DOT11_AUTH_ALGO_RSNA_PSK:
                   encryptionMode = ENC_WPA2;
+                  break;
                 }
               }
               WlanFreeMemory((PVOID*)&pAttributes);
@@ -509,12 +514,16 @@ void CNetworkInterfaceWin32::GetSettings(NetworkAssignment& assignment, std::str
   //! @todo get the key (WlanGetProfile, CryptUnprotectData?)
 }
 
-void CNetworkInterfaceWin32::SetSettings(NetworkAssignment& assignment, std::string& ipAddress, std::string& networkMask, std::string& defaultGateway, std::string& essId, std::string& key, EncMode& encryptionMode)
+void CNetworkInterfaceWin32::SetSettings(NetworkAssignment& assignment, std::string& ipAddress
+                                       , std::string& networkMask, std::string& defaultGateway
+                                       , std::string& essId, std::string& key, EncMode& encryptionMode)
 {
   return;
 }
 
-void CNetworkInterfaceWin32::WriteSettings(FILE* fw, NetworkAssignment assignment, std::string& ipAddress, std::string& networkMask, std::string& defaultGateway, std::string& essId, std::string& key, EncMode& encryptionMode)
+void CNetworkInterfaceWin32::WriteSettings(FILE* fw, NetworkAssignment assignment, std::string& ipAddress
+                                         , std::string& networkMask, std::string& defaultGateway
+                                         , std::string& essId, std::string& key, EncMode& encryptionMode)
 {
   return;
 }
