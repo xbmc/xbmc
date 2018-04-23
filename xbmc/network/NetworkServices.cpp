@@ -89,10 +89,9 @@ using namespace UPNP;
 using KODI::MESSAGING::HELPERS::DialogResponse;
 
 CNetworkServices::CNetworkServices(CSettings &settings)
+  : m_settings(settings)
 #ifdef HAS_WEB_SERVER
-  :
-  m_settings(settings),
-  m_webserver(*new CWebServer),
+  , m_webserver(*new CWebServer),
   m_httpImageHandler(*new CHTTPImageHandler),
   m_httpImageTransformationHandler(*new CHTTPImageTransformationHandler),
   m_httpVfsHandler(*new CHTTPVfsHandler),
