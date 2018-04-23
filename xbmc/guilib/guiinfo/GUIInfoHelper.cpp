@@ -152,37 +152,36 @@ CGUIControl* GetActiveContainer(int containerId, int contextWindow)
   if (!window)
     return nullptr;
 
+  CGUIControl *control = nullptr;
   if (!containerId) // No container specified, so we lookup the current view container
   {
     if (window->IsMediaWindow())
       containerId = static_cast<CGUIMediaWindow*>(window)->GetViewContainerID();
     else
-    {
-      auto control = window->GetFocusedControl();
-      if (control && control->IsContainer())
-        return control;
-    }
+      control = window->GetFocusedControl();
   }
 
-  CGUIControl *control = window->GetControl(containerId);
+  if (!control)
+    control = window->GetControl(containerId);
+
   if (control && control->IsContainer())
     return control;
 
   return nullptr;
 }
 
-CGUIListItemPtr GetCurrentListItem(int contextWindow, int containerId /* = 0 */, int itemOffset /* = 0 */, unsigned int itemFlag /* = 0 */)
+CGUIListItemPtr GetCurrentListItem(int contextWindow, int containerId /* = 0 */, int itemOffset /* = 0 */, unsigned int itemFlags /* = 0 */)
 {
   CGUIListItemPtr item;
 
-  if (containerId == 0  && itemOffset == 0)
+  if (containerId == 0  && itemOffset == 0 && !(itemFlags & INFOFLAG_LISTITEM_CONTAINER))
     item = GetCurrentListItemFromWindow(contextWindow);
 
   if (!item)
   {
     CGUIControl* activeContainer = GetActiveContainer(containerId, contextWindow);
     if (activeContainer)
-      item = static_cast<IGUIContainer *>(activeContainer)->GetListItem(itemOffset, itemFlag);
+      item = static_cast<IGUIContainer *>(activeContainer)->GetListItem(itemOffset, itemFlags);
   }
 
   return item;

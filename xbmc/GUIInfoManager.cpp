@@ -6022,7 +6022,7 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
              cat.name == "listitemnowrap" ||
              cat.name == "listitemabsolute")
     {
-      int ret = TranslateListItem(cat, prop);
+      int ret = TranslateListItem(cat, prop, 0, false);
       if (ret)
         listItemDependent = true;
       return ret;
@@ -6205,7 +6205,7 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
           info[1].name == "listitemnowrap")
       {
         int id = atoi(info[0].param().c_str());
-        int ret = TranslateListItem(info[1], info[2], id);
+        int ret = TranslateListItem(info[1], info[2], id, true);
         if (ret)
           listItemDependent = true;
         return ret;
@@ -6230,7 +6230,7 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
   return 0;
 }
 
-int CGUIInfoManager::TranslateListItem(const Property& cat, const Property& prop, int id /* = 0 */)
+int CGUIInfoManager::TranslateListItem(const Property& cat, const Property& prop, int id, bool container)
 {
   int ret = 0;
   std::string data3;
@@ -6272,17 +6272,20 @@ int CGUIInfoManager::TranslateListItem(const Property& cat, const Property& prop
   {
     int offset = std::atoi(cat.param().c_str());
 
-    int flag = 0;
+    int flags = 0;
     if (cat.name == "listitem")
-      flag = INFOFLAG_LISTITEM_WRAP;
+      flags = INFOFLAG_LISTITEM_WRAP;
     else if (cat.name == "listitemposition")
-      flag = INFOFLAG_LISTITEM_POSITION;
+      flags = INFOFLAG_LISTITEM_POSITION;
     else if (cat.name == "listitemabsolute")
-      flag = INFOFLAG_LISTITEM_ABSOLUTE;
+      flags = INFOFLAG_LISTITEM_ABSOLUTE;
     else if (cat.name == "listitemnowrap")
-      flag = INFOFLAG_LISTITEM_NOWRAP;
+      flags = INFOFLAG_LISTITEM_NOWRAP;
 
-    return AddMultiInfo(CGUIInfo(ret, id, offset, flag, data3, data4));
+    if (container)
+      flags |= INFOFLAG_LISTITEM_CONTAINER;
+
+    return AddMultiInfo(CGUIInfo(ret, id, offset, flags, data3, data4));
   }
 
   return 0;
