@@ -23,16 +23,16 @@
 #include "utils/stopwatch.h"
 #include "threads/CriticalSection.h"
 
+#include <IPTypes.h>
 #include <string>
 #include <vector>
 
 class CNetworkWin10;
 
-
 class CNetworkInterfaceWin10 : public CNetworkInterface
 {
 public:
-  CNetworkInterfaceWin10(CNetworkWin10* network, Windows::Networking::Connectivity::ConnectionProfile^ profile);
+  CNetworkInterfaceWin10(CNetworkWin10* network, const PIP_ADAPTER_ADDRESSES adapter, Windows::Networking::Connectivity::NetworkAdapter^ winRTadapter);
   ~CNetworkInterfaceWin10(void);
 
   virtual std::string& GetName(void);
@@ -51,16 +51,23 @@ public:
   virtual std::string GetCurrentDefaultGateway(void);
   virtual std::string GetCurrentWirelessEssId(void);
 
-  virtual void GetSettings(NetworkAssignment& assignment, std::string& ipAddress, std::string& networkMask, std::string& defaultGateway, std::string& essId, std::string& key, EncMode& encryptionMode);
-  virtual void SetSettings(NetworkAssignment& assignment, std::string& ipAddress, std::string& networkMask, std::string& defaultGateway, std::string& essId, std::string& key, EncMode& encryptionMode);
+  virtual void GetSettings(NetworkAssignment& assignment, std::string& ipAddress
+                         , std::string& networkMask, std::string& defaultGateway
+                         , std::string& essId, std::string& key, EncMode& encryptionMode);
+  virtual void SetSettings(NetworkAssignment& assignment, std::string& ipAddress
+                         , std::string& networkMask, std::string& defaultGateway
+                         , std::string& essId, std::string& key, EncMode& encryptionMode);
 
   // Returns the list of access points in the area
   virtual std::vector<NetworkAccessPoint> GetAccessPoints(void);
 
 private:
   CNetworkWin10* m_network;
+
   std::string m_adaptername;
-  Windows::Networking::Connectivity::ConnectionProfile^ m_adapter;
+  PIP_ADAPTER_ADDRESSES m_adapterAddr;
+  Windows::Networking::Connectivity::NetworkAdapter^ m_winRT;
+  Windows::Networking::Connectivity::ConnectionProfile^ m_profile;
 };
 
 
@@ -70,27 +77,24 @@ public:
     CNetworkWin10(CSettings &settings);
     virtual ~CNetworkWin10(void);
 
-    // Return the list of interfaces
-    virtual std::vector<CNetworkInterface*>& GetInterfaceList(void);
+    std::vector<CNetworkInterface*>& GetInterfaceList(void) override;
+    CNetworkInterface* GetFirstConnectedInterface() override;
+    std::vector<std::string> GetNameServers(void) override;
+    void SetNameServers(const std::vector<std::string>& nameServers) override;
 
-    // Ping remote host
-    using CNetworkBase::PingHost;
-    virtual bool PingHost(unsigned long host, unsigned int timeout_ms = 2000);
-
-    // Get/set the nameserver(s)
-    virtual std::vector<std::string> GetNameServers(void);
-    virtual void SetNameServers(const std::vector<std::string>& nameServers);
+    bool PingHost(unsigned long host, unsigned int timeout_ms = 2000) override;
 
     friend class CNetworkInterfaceWin10;
-
 private:
     int GetSocket() { return m_sock; }
     void queryInterfaceList();
     void CleanInterfaceList();
+
     std::vector<CNetworkInterface*> m_interfaces;
     int m_sock;
     CStopWatch m_netrefreshTimer;
     CCriticalSection m_critSection;
+    PIP_ADAPTER_ADDRESSES m_adapterAddresses;
 };
 
 using CNetwork = CNetworkWin10;
