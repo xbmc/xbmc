@@ -3,7 +3,7 @@ DEPS=Makefile
 
 # lib name, version
 LIBNAME=waylandpp
-VERSION=0.2.2
+VERSION=0.2.3
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
