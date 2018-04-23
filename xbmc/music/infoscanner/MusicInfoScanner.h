@@ -172,6 +172,7 @@ protected:
    */
   int RetrieveMusicInfo(const std::string& strDirectory, CFileItemList& items);
 
+  void RetrieveLocalArt();
   void ScrapeInfoAddedAlbums();
   void RetrieveArtistArt();
 
@@ -208,9 +209,8 @@ protected:
   int m_scanType; // 0 - load from files, 1 - albums, 2 - artists
   CMusicDatabase m_musicDatabase;
 
-  std::vector<int> m_albumsAdded;
-  std::set<int> m_artistsArt;
-
+  std::set<int> m_albumsAdded;
+ 
   std::set<std::string> m_seenPaths;
   int m_flags;
   CThread m_fileCountReader;
