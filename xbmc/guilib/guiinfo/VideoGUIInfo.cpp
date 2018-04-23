@@ -387,15 +387,8 @@ bool CVideoGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
         }
         break;
       case LISTITEM_PERCENT_PLAYED:
-      {
-        int iPercentPlayed = GetPercentPlayed(tag);
-        if (iPercentPlayed > 0)
-        {
-          value = StringUtils::Format("%d", iPercentPlayed);
-          return true;
-        }
-        break;
-      }
+        value = StringUtils::Format("%d", GetPercentPlayed(tag));
+        return true;
       case LISTITEM_VIDEO_CODEC:
         value = tag->m_streamDetails.GetVideoCodec();
         return true;
