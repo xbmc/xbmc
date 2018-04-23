@@ -22,7 +22,7 @@
 #include "WinEventsOSX.h"
 #include "VideoSyncOsx.h"
 #include "OSScreenSaverOSX.h"
-#include "Application.h"
+#include "AppInboundProtocol.h"
 #include "ServiceBroker.h"
 #include "messaging/ApplicationMessenger.h"
 #include "CompileInfo.h"
@@ -104,7 +104,9 @@ using namespace WINDOWING;
       newEvent.type = XBMC_VIDEOMOVE;
       newEvent.move.x = window_origin.x;
       newEvent.move.y = window_origin.y;
-      g_application.OnEvent(newEvent);
+      std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
+      if (appPort)
+        appPort->OnEvent(newEvent);
     }
   }
 }
@@ -130,26 +132,7 @@ using namespace WINDOWING;
   CWinSystemOSX *winsys = (CWinSystemOSX*)m_userdata;
 	if (!winsys)
     return;
-  /* placeholder, do not uncomment or you will SDL recurse into death
-  NSOpenGLContext* context = [NSOpenGLContext currentContext];
-  if (context)
-  {
-    if ([context view])
-    {
-      NSSize view_size = [[context view] frame].size;
-      XBMC_Event newEvent;
-      memset(&newEvent, 0, sizeof(newEvent));
-      newEvent.type = XBMC_VIDEORESIZE;
-      newEvent.resize.w = view_size.width;
-      newEvent.resize.h = view_size.height;
-      if (newEvent.resize.w * newEvent.resize.h)
-      {
-        g_application.OnEvent(newEvent);
-        CServiceBroker::GetGUI()->GetWindowManager().MarkDirty();
-      }
-    }
-  }
-  */
+
 }
 @end
 

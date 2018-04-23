@@ -37,29 +37,6 @@
 #include <string>
 #include <vector>
 
-class CAction;
-class CFileItem;
-class CFileItemList;
-class CKey;
-
-
-namespace ADDON
-{
-  class CSkinInfo;
-  class IAddon;
-  typedef std::shared_ptr<IAddon> AddonPtr;
-}
-
-namespace MEDIA_DETECT
-{
-  class CAutorun;
-}
-
-namespace PLAYLIST
-{
-  class CPlayList;
-}
-
 #include "cores/IPlayerCallback.h"
 #include "settings/lib/ISettingsHandler.h"
 #include "settings/lib/ISettingCallback.h"
@@ -79,6 +56,10 @@ namespace PLAYLIST
 #include "ApplicationPlayer.h"
 #include "FileItem.h"
 
+class CAction;
+class CFileItem;
+class CFileItemList;
+class CKey;
 class CSeekHandler;
 class CInertialScrollingHandler;
 class DPMSSupport;
@@ -86,6 +67,24 @@ class CSplash;
 class CBookmark;
 class IActionListener;
 class CGUIComponent;
+class CAppInboundProtocol;
+
+namespace ADDON
+{
+  class CSkinInfo;
+  class IAddon;
+  typedef std::shared_ptr<IAddon> AddonPtr;
+}
+
+namespace MEDIA_DETECT
+{
+  class CAutorun;
+}
+
+namespace PLAYLIST
+{
+  class CPlayList;
+}
 
 namespace ActiveAE
 {
@@ -127,6 +126,8 @@ class CApplication : public CXBApplicationEx, public IPlayerCallback, public IMs
                      public ISettingCallback, public ISettingsHandler, public ISubSettings,
                      public KODI::MESSAGING::IMessageTarget
 {
+friend class CAppInboundProtocol;
+
 public:
 
   enum ESERVERS
@@ -293,8 +294,6 @@ public:
 
   bool ExecuteXBMCAction(std::string action, const CGUIListItemPtr &item = NULL);
 
-  bool OnEvent(XBMC_Event& newEvent);
-
 #ifdef HAS_DVD_DRIVE
   std::unique_ptr<MEDIA_DETECT::CAutorun> m_Autorun;
 #endif
@@ -357,7 +356,6 @@ public:
 
   bool SwitchToFullScreen(bool force = false);
 
-  void SetRenderGUI(bool renderGUI) override;
   bool GetRenderGUI() const { return m_renderGUI; };
 
   bool SetLanguage(const std::string &strLanguage);
@@ -403,6 +401,10 @@ protected:
   void CheckOSScreenSaverInhibitionSetting();
   void PlaybackCleanup();
 
+  // inbound protocol
+  bool OnEvent(XBMC_Event& newEvent);
+  void SetRenderGUI(bool renderGUI);
+
   /*!
    \brief Delegates the action to all registered action handlers.
    \param action The action
@@ -413,6 +415,9 @@ protected:
   std::unique_ptr<CGUIComponent> m_pGUI;
   std::unique_ptr<CWinSystemBase> m_pWinSystem;
   std::unique_ptr<ActiveAE::CActiveAE> m_pActiveAE;
+  std::shared_ptr<CAppInboundProtocol> m_pAppPort;
+  std::deque<XBMC_Event> m_portEvents;
+  CCriticalSection m_portSection;
 
   bool m_confirmSkinChange;
   bool m_ignoreSkinSettingChanges;
@@ -492,7 +497,7 @@ protected:
   bool InitDirectoriesOSX();
   bool InitDirectoriesWin32();
   void CreateUserDirs() const;
-  void HandleWinEvents();
+  void HandlePortEvents();
 
   /*! \brief Helper method to determine how to handle TMSG_SHUTDOWN
   */
@@ -503,7 +508,6 @@ protected:
   ReplayGainSettings m_replayGainSettings;
   std::vector<IActionListener *> m_actionListeners;
   std::vector<std::string> m_incompatibleAddons;  /*!< Result of addon migration */
-  std::deque<XBMC_Event> m_winEvents;
 
 private:
   CCriticalSection m_critSection;                 /*!< critical section for all changes to this class, except for changes to triggers */

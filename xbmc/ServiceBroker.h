@@ -20,6 +20,8 @@
 
 #pragma once
 
+#include <memory>
+
 namespace ADDON {
 class CAddonMgr;
 class CBinaryAddonManager;
@@ -62,6 +64,7 @@ class CDatabaseManager;
 class CProfilesManager;
 class CEventLog;
 class CGUIComponent;
+class CAppInboundProtocol;
 
 namespace KODI
 {
@@ -128,8 +131,13 @@ public:
   static void RegisterAE(IAE *ae);
   static void UnregisterAE();
 
+  static std::shared_ptr<CAppInboundProtocol> GetAppPort();
+  static void RegisterAppPort(std::shared_ptr<CAppInboundProtocol> port);
+  static void UnregisterAppPort();
+
 private:
   static CGUIComponent* m_pGUI;
   static CWinSystemBase* m_pWinSystem;
   static IAE* m_pActiveAE;
+  static std::shared_ptr<CAppInboundProtocol> m_pAppPort;
 };

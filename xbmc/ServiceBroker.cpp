@@ -227,3 +227,18 @@ void CServiceBroker::UnregisterAE()
 {
   m_pActiveAE = nullptr;
 }
+
+// application
+std::shared_ptr<CAppInboundProtocol> CServiceBroker::m_pAppPort;
+std::shared_ptr<CAppInboundProtocol> CServiceBroker::GetAppPort()
+{
+  return m_pAppPort;
+}
+void CServiceBroker::RegisterAppPort(std::shared_ptr<CAppInboundProtocol> port)
+{
+  m_pAppPort = port;
+}
+void CServiceBroker::UnregisterAppPort()
+{
+  m_pAppPort.reset();
+}

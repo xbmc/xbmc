@@ -25,7 +25,8 @@
 #include <mir_toolkit/mir_client_library.h>
 #include <xkbcommon/xkbcommon-keysyms.h>
 
-#include "Application.h"
+#include "AppInboundProtocol.h"
+#include "ServiceBroker.h"
 #include "input/mouse/MouseStat.h"
 #include "input/Key.h"
 
@@ -337,6 +338,7 @@ void MirHandleEvent(MirWindow* window, MirEvent const* ev, void* context)
 bool CWinEventsMir::MessagePump()
 {
   auto ret = GetQueueSize();
+  std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
 
   while (GetQueueSize())
   {
@@ -346,7 +348,9 @@ bool CWinEventsMir::MessagePump()
       e = m_events.front();
       m_events.pop();
     }
-    g_application.OnEvent(e);
+
+    if (appPort)
+      appPort->OnEvent(newEvent);
   }
 
   return ret;

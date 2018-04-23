@@ -24,6 +24,8 @@
 
 #include "settings/AdvancedSettings.h"
 #include "Application.h"
+#include "AppInboundProtocol.h"
+#include "ServiceBroker.h"
 #include "messaging/ApplicationMessenger.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
@@ -314,14 +316,18 @@ using namespace KODI::MESSAGING;
 {
   PRINT_SIGNATURE();
   pause = TRUE;
-  g_application.SetRenderGUI(false);
+  std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
+  if (appPort)
+    appPort->SetRenderGUI(false);
 }
 //--------------------------------------------------------------
 - (void) resumeAnimation
 {
   PRINT_SIGNATURE();
   pause = FALSE;
-  g_application.SetRenderGUI(true);
+  std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
+  if (appPort)
+    appPort->SetRenderGUI(true);
 }
 //--------------------------------------------------------------
 - (void) startAnimation

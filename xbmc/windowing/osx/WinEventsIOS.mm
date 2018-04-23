@@ -22,7 +22,7 @@
 #include "WinEventsIOS.h"
 #include "input/InputManager.h"
 #include "input/XBMC_vkeys.h"
-#include "Application.h"
+#include "AppInboundProtocol.h"
 #include "threads/CriticalSection.h"
 #include "guilib/GUIWindowManager.h"
 #include "utils/log.h"
@@ -34,6 +34,7 @@ static std::list<XBMC_Event> events;
 bool CWinEventsIOS::MessagePump()
 {
   bool ret = false;
+  std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
 
   // Do not always loop, only pump the initial queued count events. else if ui keep pushing
   // events the loop won't finish then it will block xbmc main message loop.
@@ -49,7 +50,9 @@ bool CWinEventsIOS::MessagePump()
       pumpEvent = events.front();
       events.pop_front();
     }
-    ret = g_application.OnEvent(pumpEvent);
+
+    if (appPort)
+      ret = appPort->OnEvent(pumpEvent);
   }
   return ret;
 }

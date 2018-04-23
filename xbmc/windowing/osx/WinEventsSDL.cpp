@@ -20,6 +20,7 @@
 
 #include "WinEventsSDL.h"
 #include "Application.h"
+#include "AppInboundProtocol.h"
 #include "ServiceBroker.h"
 #include "messaging/ApplicationMessenger.h"
 #include "GUIUserMessages.h"
@@ -53,7 +54,9 @@ bool CWinEventsSDL::MessagePump()
         //If the window was inconified or restored
         if( event.active.state & SDL_APPACTIVE )
         {
-          g_application.SetRenderGUI(event.active.gain != 0);
+          std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
+          if (appPort)
+            appPort->SetRenderGUI(event.active.gain != 0);
           CServiceBroker::GetWinSystem()->NotifyAppActiveChange(g_application.GetRenderGUI());
         }
         else if (event.active.state & SDL_APPINPUTFOCUS)
@@ -87,7 +90,9 @@ bool CWinEventsSDL::MessagePump()
 
         // don't handle any more messages in the queue until we've handled keydown,
         // if a keyup is in the queue it will reset the keypress before it is handled.
-        ret |= g_application.OnEvent(newEvent);
+        std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
+        if (appPort)
+          ret |= appPort->OnEvent(newEvent);
         break;
       }
 
@@ -100,7 +105,9 @@ bool CWinEventsSDL::MessagePump()
         newEvent.key.keysym.mod =(XBMCMod) event.key.keysym.mod;
         newEvent.key.keysym.unicode = event.key.keysym.unicode;
 
-        ret |= g_application.OnEvent(newEvent);
+        std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
+        if (appPort)
+          ret |= appPort->OnEvent(newEvent);
         break;
       }
 
@@ -112,7 +119,9 @@ bool CWinEventsSDL::MessagePump()
         newEvent.button.x = event.button.x;
         newEvent.button.y = event.button.y;
 
-        ret |= g_application.OnEvent(newEvent);
+        std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
+        if (appPort)
+          ret |= appPort->OnEvent(newEvent);
         break;
       }
 
@@ -124,7 +133,9 @@ bool CWinEventsSDL::MessagePump()
         newEvent.button.x = event.button.x;
         newEvent.button.y = event.button.y;
 
-        ret |= g_application.OnEvent(newEvent);
+        std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
+        if (appPort)
+          ret |= appPort->OnEvent(newEvent);
         break;
       }
 
@@ -143,7 +154,9 @@ bool CWinEventsSDL::MessagePump()
         newEvent.motion.x = event.motion.x;
         newEvent.motion.y = event.motion.y;
 
-        ret |= g_application.OnEvent(newEvent);
+        std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
+        if (appPort)
+          ret |= appPort->OnEvent(newEvent);
         break;
       }
       case SDL_VIDEORESIZE:
@@ -161,7 +174,9 @@ bool CWinEventsSDL::MessagePump()
         newEvent.type = XBMC_VIDEORESIZE;
         newEvent.resize.w = event.resize.w;
         newEvent.resize.h = event.resize.h;
-        ret |= g_application.OnEvent(newEvent);
+        std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
+        if (appPort)
+          ret |= appPort->OnEvent(newEvent);
         CServiceBroker::GetGUI()->GetWindowManager().MarkDirty();
         break;
       }
@@ -170,7 +185,9 @@ bool CWinEventsSDL::MessagePump()
         XBMC_Event newEvent;
         newEvent.type = XBMC_USEREVENT;
         newEvent.user.code = event.user.code;
-        ret |= g_application.OnEvent(newEvent);
+        std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
+        if (appPort)
+          ret |= appPort->OnEvent(newEvent);
         break;
       }
       case SDL_VIDEOEXPOSE:

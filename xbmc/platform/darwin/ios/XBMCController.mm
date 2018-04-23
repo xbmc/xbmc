@@ -30,6 +30,7 @@
 #include "playlists/PlayList.h"
 #include "messaging/ApplicationMessenger.h"
 #include "Application.h"
+#include "AppInboundProtocol.h"
 #include "input/touch/generic/GenericTouchActionHandler.h"
 #include "guilib/GUIControl.h"
 #include "input/Key.h"
@@ -96,11 +97,16 @@ XBMCController *g_xbmcController;
 //--------------------------------------------------------------
 - (void) sendKeypressEvent: (XBMC_Event) event
 {
-  event.type = XBMC_KEYDOWN;
-  g_application.OnEvent(event);
+  std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
 
-  event.type = XBMC_KEYUP;
-  g_application.OnEvent(event);
+  if (appPort)
+  {
+    event.type = XBMC_KEYDOWN;
+    appPort->OnEvent(event);
+
+    event.type = XBMC_KEYUP;
+    appPort->OnEvent(event);
+  }
 }
 
 // START OF UIKeyInput protocol

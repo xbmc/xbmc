@@ -27,6 +27,7 @@
 #include <Windowsx.h>
 
 #include "Application.h"
+#include "AppInboundProtocol.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIControl.h"       // for EVENT_RESULT
 #include "guilib/GUIWindowManager.h"
@@ -244,7 +245,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
 #if 0
   if (uMsg == WM_NCCREATE)
   {
-    // if available, enable DPI scaling of non-client portion of window (title bar, etc.) 
+    // if available, enable DPI scaling of non-client portion of window (title bar, etc.)
     if (g_Windowing.PtrEnableNonClientDpiScaling != NULL)
     {
       g_Windowing.PtrEnableNonClientDpiScaling(hWnd);
@@ -276,6 +277,8 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
   if(g_uQueryCancelAutoPlay != 0 && uMsg == g_uQueryCancelAutoPlay)
     return S_FALSE;
 
+  std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
+
   switch (uMsg)
   {
     case WM_CLOSE:
@@ -289,12 +292,14 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
           CLog::LogF(LOGNOTICE, "UnregisterDeviceNotification failed (%d)", GetLastError());
       }
       newEvent.type = XBMC_QUIT;
-      g_application.OnEvent(newEvent);
+      if (appPort)
+        appPort->OnEvent(newEvent);
       break;
     case WM_SHOWWINDOW:
       {
         bool active = g_application.GetRenderGUI();
-        g_application.SetRenderGUI(wParam != 0);
+        if (appPort)
+          appPort->SetRenderGUI(wParam != 0);
         if (g_application.GetRenderGUI() != active)
           DX::Windowing()->NotifyAppActiveChange(g_application.GetRenderGUI());
         CLog::LogF(LOGDEBUG, "WM_SHOWWINDOW -> window is %s", wParam != 0 ? "shown" : "hidden");
@@ -306,7 +311,8 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
         bool active = g_application.GetRenderGUI();
         if (HIWORD(wParam))
         {
-          g_application.SetRenderGUI(false);
+          if (appPort)
+            appPort->SetRenderGUI(false);
         }
         else
         {
@@ -315,11 +321,14 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
           if (LOWORD(wParam) != WA_INACTIVE)
           {
             if (GetWindowPlacement(hWnd, &lpwndpl))
-              g_application.SetRenderGUI(lpwndpl.showCmd != SW_HIDE);
+            {
+              if (appPort)
+                appPort->SetRenderGUI(lpwndpl.showCmd != SW_HIDE);
+            }
           }
           else
           {
-            //g_application.SetRenderGUI(g_Windowing.WindowedMode());
+
           }
         }
         if (g_application.GetRenderGUI() != active)
@@ -397,7 +406,8 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
 
       newEvent.type = XBMC_KEYDOWN;
       newEvent.key.keysym = keysym;
-      g_application.OnEvent(newEvent);
+      if (appPort)
+        appPort->OnEvent(newEvent);
     }
     return(0);
 
@@ -439,7 +449,8 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       else
         newEvent.type = XBMC_KEYUP;
       newEvent.key.keysym = keysym;
-      g_application.OnEvent(newEvent);
+      if (appPort)
+        appPort->OnEvent(newEvent);
     }
     return(0);
     case WM_APPCOMMAND: // MULTIMEDIA keys are mapped to APPCOMMANDS
@@ -493,7 +504,8 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       newEvent.type = XBMC_MOUSEMOTION;
       newEvent.motion.x = GET_X_LPARAM(lParam);
       newEvent.motion.y = GET_Y_LPARAM(lParam);
-      g_application.OnEvent(newEvent);
+      if (appPort)
+        appPort->OnEvent(newEvent);
       return(0);
     case WM_LBUTTONDOWN:
     case WM_MBUTTONDOWN:
@@ -505,7 +517,8 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       if (uMsg == WM_LBUTTONDOWN) newEvent.button.button = XBMC_BUTTON_LEFT;
       else if (uMsg == WM_MBUTTONDOWN) newEvent.button.button = XBMC_BUTTON_MIDDLE;
       else if (uMsg == WM_RBUTTONDOWN) newEvent.button.button = XBMC_BUTTON_RIGHT;
-      g_application.OnEvent(newEvent);
+      if (appPort)
+        appPort->OnEvent(newEvent);
       return(0);
     case WM_LBUTTONUP:
     case WM_MBUTTONUP:
@@ -517,7 +530,8 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       if (uMsg == WM_LBUTTONUP) newEvent.button.button = XBMC_BUTTON_LEFT;
       else if (uMsg == WM_MBUTTONUP) newEvent.button.button = XBMC_BUTTON_MIDDLE;
       else if (uMsg == WM_RBUTTONUP) newEvent.button.button = XBMC_BUTTON_RIGHT;
-      g_application.OnEvent(newEvent);
+      if (appPort)
+        appPort->OnEvent(newEvent);
       return(0);
     case WM_MOUSEWHEEL:
       {
@@ -533,16 +547,19 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
         newEvent.button.x = static_cast<uint16_t>(point.x);
         newEvent.button.y = static_cast<uint16_t>(point.y);
         newEvent.button.button = GET_Y_LPARAM(wParam) > 0 ? XBMC_BUTTON_WHEELUP : XBMC_BUTTON_WHEELDOWN;
-        g_application.OnEvent(newEvent);
-        newEvent.type = XBMC_MOUSEBUTTONUP;
-        g_application.OnEvent(newEvent);
+        if (appPort)
+        {
+          appPort->OnEvent(newEvent);
+          newEvent.type = XBMC_MOUSEBUTTONUP;
+          appPort->OnEvent(newEvent);
+        }
     }
       return(0);
     case WM_DPICHANGED:
     // This message tells the program that most of its window is on a
-    // monitor with a new DPI. The wParam contains the new DPI, and the 
-    // lParam contains a rect which defines the window rectangle scaled 
-    // the new DPI. 
+    // monitor with a new DPI. The wParam contains the new DPI, and the
+    // lParam contains a rect which defines the window rectangle scaled
+    // the new DPI.
     {
       // get the suggested size of the window on the new display with a different DPI
       unsigned short  dpi = LOWORD(wParam);
@@ -551,12 +568,12 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       return(0);
     }
     case WM_DISPLAYCHANGE:
-      CLog::LogF(LOGDEBUG, "display change event");  
-      if (g_application.GetRenderGUI() && !DX::Windowing()->IsAlteringWindow() && GET_X_LPARAM(lParam) > 0 && GET_Y_LPARAM(lParam) > 0)  
+      CLog::LogF(LOGDEBUG, "display change event");
+      if (g_application.GetRenderGUI() && !DX::Windowing()->IsAlteringWindow() && GET_X_LPARAM(lParam) > 0 && GET_Y_LPARAM(lParam) > 0)
       {
         DX::Windowing()->UpdateResolutions();
       }
-      return(0);  
+      return(0);
     case WM_ENTERSIZEMOVE:
       {
         DX::Windowing()->SetSizeMoveMode(true);
@@ -576,7 +593,10 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
           DX::Windowing()->OnMove(newEvent.move.x, newEvent.move.y);
           // tell the application about new position
           if (g_application.GetRenderGUI() && !DX::Windowing()->IsAlteringWindow())
-            g_application.OnEvent(newEvent);
+          {
+            if (appPort)
+              appPort->OnEvent(newEvent);
+          }
         }
         if (g_sizeMoveSizing)
         {
@@ -589,7 +609,10 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
           DX::Windowing()->OnResize(newEvent.resize.w, newEvent.resize.h);
           // tell the application about new size
           if (g_application.GetRenderGUI() && !DX::Windowing()->IsAlteringWindow() && newEvent.resize.w > 0 && newEvent.resize.h > 0)
-            g_application.OnEvent(newEvent);
+          {
+            if (appPort)
+              appPort->OnEvent(newEvent);
+          }
         }
       }
     return(0);
@@ -600,27 +623,33 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
         {
           DX::Windowing()->SetMinimized(true);
           if (!g_application.GetRenderGUI())
-            g_application.SetRenderGUI(false);
+          {
+            if (appPort)
+              appPort->SetRenderGUI(false);
+          }
         }
       }
       else if (DX::Windowing()->IsMinimized())
       {
         DX::Windowing()->SetMinimized(false);
         if (!g_application.GetRenderGUI())
-          g_application.SetRenderGUI(true);
-      } 
+        {
+          if (appPort)
+            appPort->SetRenderGUI(true);
+        }
+      }
       else
       {
         g_sizeMoveWidth = GET_X_LPARAM(lParam);
         g_sizeMoveHight = GET_Y_LPARAM(lParam);
         if (DX::Windowing()->IsInSizeMoveMode())
         {
-          // If an user is dragging the resize bars, we don't resize 
-          // the buffers and don't rise XBMC_VIDEORESIZE here because 
+          // If an user is dragging the resize bars, we don't resize
+          // the buffers and don't rise XBMC_VIDEORESIZE here because
           // as the user continuously resize the window, a lot of WM_SIZE
           // messages are sent to the proc, and it'd be pointless (and slow)
           // to resize for each WM_SIZE message received from dragging.
-          // So instead, we reset after the user is done resizing the 
+          // So instead, we reset after the user is done resizing the
           // window and releases the resize bars, which ends with WM_EXITSIZEMOVE.
           g_sizeMoveSizing = true;
         }
@@ -636,7 +665,10 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
           DX::Windowing()->OnResize(newEvent.resize.w, newEvent.resize.h);
           // tell application about size changes
           if (g_application.GetRenderGUI() && !DX::Windowing()->IsAlteringWindow() && newEvent.resize.w > 0 && newEvent.resize.h > 0)
-            g_application.OnEvent(newEvent);
+          {
+            if (appPort)
+              appPort->OnEvent(newEvent);
+          }
         }
       }
       return(0);
@@ -660,7 +692,10 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
           // tell the device about new position
           DX::Windowing()->OnMove(newEvent.move.x, newEvent.move.y);
           if (g_application.GetRenderGUI() && !DX::Windowing()->IsAlteringWindow())
-            g_application.OnEvent(newEvent);
+          {
+            if (appPort)
+              appPort->OnEvent(newEvent);
+          }
         }
       }
       return(0);
@@ -668,8 +703,8 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       {
         // This event detects media changes of usb, sd card and optical media.
         // It only works if the explorer.exe process is started. Because this
-        // isn't the case for all setups we use WM_DEVICECHANGE for usb and 
-        // optical media because this event is also triggered without the 
+        // isn't the case for all setups we use WM_DEVICECHANGE for usb and
+        // optical media because this event is also triggered without the
         // explorer process. Since WM_DEVICECHANGE doesn't detect sd card changes
         // we still use this event only for sd.
         long lEvent;

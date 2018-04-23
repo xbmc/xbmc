@@ -19,7 +19,7 @@
  */
 
 #include "IRServerSuite.h"
-#include "Application.h"
+#include "AppInboundProtocol.h"
 #include "IrssMessage.h"
 #include "platform/win32/CharsetConverter.h"
 #include "profiles/ProfilesManager.h"
@@ -384,7 +384,9 @@ bool CIRServerSuite::HandleRemoteEvent(CIrssMessage& message)
     newEvent.type = XBMC_BUTTON;
     newEvent.keybutton.button = button;
     newEvent.keybutton.holdtime = 0;
-    g_application.OnEvent(newEvent);
+    std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
+    if (appPort)
+      appPort->OnEvent(newEvent);
 
     delete[] deviceName;
     delete[] keycode;
@@ -472,7 +474,7 @@ int CIRServerSuite::ReadPacket(CIrssMessage &message)
   {
     char sizebuf[4];
     int iRead = ReadN(&sizebuf[0], 4);
-    if (iRead <= 0) 
+    if (iRead <= 0)
       return iRead; // error or nothing to read
 
     if (iRead != 4)

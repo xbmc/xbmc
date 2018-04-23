@@ -20,6 +20,7 @@
 
 #include "WinEventsWin10.h"
 #include "Application.h"
+#include "AppInboundProtocol.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/mouse/MouseStat.h"
@@ -80,12 +81,17 @@ void CWinEventsWin10::MessagePush(XBMC_Event *newEvent)
     m_events.push(*newEvent);
   }
   else
-    g_application.OnEvent(*newEvent);
+  {
+    std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
+    if (appPort)
+      appPort->OnEvent(*newEvent);
+  }
 }
 
 bool CWinEventsWin10::MessagePump()
 {
   bool ret = false;
+  std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
 
   // processes all pending events and exits immediately
   CoreWindow::GetForCurrentThread()->Dispatcher->ProcessEvents(CoreProcessEventsOption::ProcessAllIfPresent);
@@ -93,7 +99,8 @@ bool CWinEventsWin10::MessagePump()
   XBMC_Event pumpEvent;
   while (m_events.try_pop(pumpEvent))
   {
-    ret |= g_application.OnEvent(pumpEvent);
+    if (appPort)
+      ret |= appPort->OnEvent(pumpEvent);
 
     if (pumpEvent.type == XBMC_MOUSEBUTTONUP)
       CServiceBroker::GetGUI()->GetWindowManager().SendMessage(GUI_MSG_UNFOCUS_ALL, 0, 0, 0, 0);
@@ -123,7 +130,7 @@ void CWinEventsWin10::InitEventHandlers(CoreWindow^ window)
     window->ResizeCompleted += ref new TypedEventHandler<CoreWindow^, Platform::Object^>([&](CoreWindow^ wnd, Platform::Object^ args) {
       OnWindowResizeCompleted(wnd, args);
     });
-  } 
+  }
   catch (Platform::Exception^ ex)
   {
     // Win10 Creators Update is required
@@ -267,7 +274,10 @@ void CWinEventsWin10::HandleWindowSizeChanged()
 void CWinEventsWin10::OnVisibilityChanged(CoreWindow^ sender, VisibilityChangedEventArgs^ args)
 {
   bool active = g_application.GetRenderGUI();
-  g_application.SetRenderGUI(args->Visible);
+  std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
+  if (appPort)
+    appPort->SetRenderGUI(args->Visible);
+
   if (g_application.GetRenderGUI() != active)
     DX::Windowing()->NotifyAppActiveChange(g_application.GetRenderGUI());
   CLog::Log(LOGDEBUG, __FUNCTION__": window is %s", g_application.GetRenderGUI() ? "shown" : "hidden");
@@ -278,12 +288,16 @@ void CWinEventsWin10::OnWindowActivationChanged(CoreWindow ^ sender, WindowActiv
   bool active = g_application.GetRenderGUI();
   if (args->WindowActivationState == CoreWindowActivationState::Deactivated)
   {
-    g_application.SetRenderGUI(DX::Windowing()->WindowedMode());
+    std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
+    if (appPort)
+      appPort->SetRenderGUI(DX::Windowing()->WindowedMode());
   }
   else if (args->WindowActivationState == CoreWindowActivationState::PointerActivated
     || args->WindowActivationState == CoreWindowActivationState::CodeActivated)
   {
-    g_application.SetRenderGUI(true);
+    std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
+    if (appPort)
+      appPort->SetRenderGUI(true);
   }
   if (g_application.GetRenderGUI() != active)
     DX::Windowing()->NotifyAppActiveChange(g_application.GetRenderGUI());

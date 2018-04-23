@@ -22,6 +22,7 @@
 #include "network/Network.h"
 #include "threads/SystemClock.h"
 #include "Application.h"
+#include "AppInboundProtocol.h"
 #include "dialogs/GUIDialogBusy.h"
 #include "events/EventLog.h"
 #include "events/NotificationEvent.h"
@@ -287,16 +288,19 @@ CApplication::~CApplication(void)
 
 bool CApplication::OnEvent(XBMC_Event& newEvent)
 {
-  m_winEvents.push_back(newEvent);
+  CSingleLock lock(m_portSection);
+  m_portEvents.push_back(newEvent);
   return true;
 }
 
-void CApplication::HandleWinEvents()
+void CApplication::HandlePortEvents()
 {
-  while (!m_winEvents.empty())
+  CSingleLock lock(m_portSection);
+  while (!m_portEvents.empty())
   {
-    auto newEvent = m_winEvents.front();
-    m_winEvents.pop_front();
+    auto newEvent = m_portEvents.front();
+    m_portEvents.pop_front();
+    CSingleExit lock(m_portSection);
     switch(newEvent.type)
     {
       case XBMC_QUIT:
@@ -578,6 +582,10 @@ bool CApplication::Create(const CAppParamParser &params)
   CWIN32Util::SetThreadLocalLocale(true); // enable independent locale for each thread, see https://connect.microsoft.com/VisualStudio/feedback/details/794122
 #endif // TARGET_WINDOWS
 
+  // application inbound service
+  m_pAppPort = std::make_shared<CAppInboundProtocol>(*this);
+  CServiceBroker::RegisterAppPort(m_pAppPort);
+  
   m_pWinSystem = CWinSystemBase::CreateWinSystem();
   CServiceBroker::RegisterWinSystem(m_pWinSystem.get());
 
@@ -2639,7 +2647,7 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
       }
     }
 
-    HandleWinEvents();
+    HandlePortEvents();
     CServiceBroker::GetInputManager().Process(CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindowOrDialog(), frameTime);
 
     if (processGUI && m_renderGUI)
@@ -2793,6 +2801,22 @@ bool CApplication::Cleanup()
 
 void CApplication::Stop(int exitCode)
 {
+  {
+    // close inbound port
+    CServiceBroker::UnregisterAppPort();
+    XbmcThreads::EndTime timer(1000);
+    while (m_pAppPort.use_count() > 1)
+    {
+      Sleep(100);
+      if (timer.IsTimePast())
+      {
+        CLog::Log(LOGERROR, "CApplication::Stop - CAppPort still in use, app may crash");
+        break;
+      }
+    }
+    m_pAppPort.reset();
+  }
+
   try
   {
     m_frameMoveGuard.unlock();

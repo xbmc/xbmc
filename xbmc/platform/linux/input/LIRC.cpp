@@ -19,7 +19,7 @@
  */
 
 #include "LIRC.h"
-#include "Application.h"
+#include "AppInboundProtocol.h"
 #include "ServiceBroker.h"
 #include "profiles/ProfilesManager.h"
 #include "settings/AdvancedSettings.h"
@@ -129,7 +129,9 @@ void CLirc::ProcessCode(char *buf)
     newEvent.type = XBMC_BUTTON;
     newEvent.keybutton.button = button;
     newEvent.keybutton.holdtime = 0;
-    g_application.OnEvent(newEvent);
+    std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
+    if (appPort)
+      appPort->OnEvent(newEvent);
     return;
   }
   else if (repeat > g_advancedSettings.m_remoteDelay)
@@ -138,6 +140,8 @@ void CLirc::ProcessCode(char *buf)
     newEvent.type = XBMC_BUTTON;
     newEvent.keybutton.button = button;
     newEvent.keybutton.holdtime = XbmcThreads::SystemClockMillis() - m_firstClickTime;
-    g_application.OnEvent(newEvent);
+    std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
+    if (appPort)
+      appPort->OnEvent(newEvent);
   }
 }
