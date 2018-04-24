@@ -364,7 +364,7 @@ int CLinuxInputDevice::KeyboardGetSymbol(unsigned short value)
     case 0x7f:
       return XBMCK_BACKSPACE;
     case 0xa4:
-      return XBMCK_EURO; /* euro currency sign */
+      return 0x20ac; /* euro currency sign */
     default:
       return index;
     }
@@ -438,6 +438,7 @@ XBMCMod CLinuxInputDevice::UpdateModifiers(XBMC_Event& devt)
     case XBMCK_RALT: modifier = XBMCKMOD_RALT; break;
     case XBMCK_LMETA: modifier = XBMCKMOD_LMETA; break;
     case XBMCK_RMETA: modifier = XBMCKMOD_RMETA; break;
+    case XBMCK_MODE: modifier = XBMCKMOD_RALT; break;
     default: break;
   }
 
@@ -559,10 +560,7 @@ bool CLinuxInputDevice::KeyEvent(const struct input_event& levt, XBMC_Event& dev
       if (keyMapValue != XBMCK_UNKNOWN)
       {
         devt.key.keysym.sym = (XBMCKey) keyMapValue;
-        if (keyMapValue > 0 && keyMapValue < 127)
-        {
-          devt.key.keysym.unicode = devt.key.keysym.sym;
-        }
+        devt.key.keysym.unicode = devt.key.keysym.sym;
       }
     }
   }
