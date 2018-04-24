@@ -669,6 +669,13 @@ void CGUIWindowPVRGuideBase::OnInputDone()
   }
 }
 
+void CGUIWindowPVRGuideBase::GetChannelNumbers(std::vector<std::string>& channelNumbers)
+{
+  const CPVRChannelGroupPtr group = GetChannelGroup();
+  if (group)
+    group->GetChannelNumbers(channelNumbers);
+}
+
 CPVRRefreshTimelineItemsThread::CPVRRefreshTimelineItemsThread(CGUIWindowPVRGuideBase *pGuideWindow)
 : CThread("epg-grid-refresh-timeline-items"),
   m_pGuideWindow(pGuideWindow),

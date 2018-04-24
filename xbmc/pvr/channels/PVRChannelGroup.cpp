@@ -554,6 +554,13 @@ int CPVRChannelGroup::GetMembers(CFileItemList &results, bool bGroupMembers /* =
   return results.Size() - iOrigSize;
 }
 
+void CPVRChannelGroup::GetChannelNumbers(std::vector<std::string>& channelNumbers) const
+{
+  CSingleLock lock(m_critSection);
+  for (const auto& member : m_sortedMembers)
+    channelNumbers.emplace_back(member.channelNumber.FormattedChannelNumber());
+}
+
 CPVRChannelGroupPtr CPVRChannelGroup::GetNextGroup(void) const
 {
   return CServiceBroker::GetPVRManager().ChannelGroups()->Get(m_bRadio)->GetNextGroup(*this);

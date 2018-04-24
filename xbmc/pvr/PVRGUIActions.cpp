@@ -1862,6 +1862,18 @@ namespace PVR
     CPVRChannelNumberInputHandler::AppendChannelNumberCharacter(cCharacter);
   }
 
+  void CPVRChannelSwitchingInputHandler::GetChannelNumbers(std::vector<std::string>& channelNumbers)
+  {
+    CPVRManager& pvrMgr = CServiceBroker::GetPVRManager();
+    const CPVRChannelPtr playingChannel = pvrMgr.GetPlayingChannel();
+    if (playingChannel)
+    {
+      const CPVRChannelGroupPtr group = pvrMgr.ChannelGroups()->GetGroupAll(playingChannel->IsRadio());
+      if (group)
+        group->GetChannelNumbers(channelNumbers);
+    }
+  }
+
   void CPVRChannelSwitchingInputHandler::OnInputDone()
   {
     CPVRChannelNumber channelNumber = GetChannelNumber();

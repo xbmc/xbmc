@@ -308,6 +308,12 @@ std::string CGUIDialogPVRChannelsOSD::GetLastSelectedItemPath(int iGroupID) cons
   return "";
 }
 
+void CGUIDialogPVRChannelsOSD::GetChannelNumbers(std::vector<std::string>& channelNumbers)
+{
+  if (m_group)
+    m_group->GetChannelNumbers(channelNumbers);
+}
+
 void CGUIDialogPVRChannelsOSD::OnInputDone()
 {
   const CPVRChannelNumber channelNumber = GetChannelNumber();

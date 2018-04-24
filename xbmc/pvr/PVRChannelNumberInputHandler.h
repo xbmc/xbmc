@@ -19,6 +19,7 @@
  *
  */
 
+#include <vector>
 #include <string>
 
 #include "threads/CriticalSection.h"
@@ -49,6 +50,12 @@ public:
   void OnTimeout() override;
 
   /*!
+   * @brief Get the currently available channel numbers.
+   * @param channelNumbers The list to fill with the channel numbers.
+   */
+  virtual void GetChannelNumbers(std::vector<std::string>& channelNumbers) = 0;
+
+  /*!
    * @brief This method gets called after the channel number input timer has expired.
    */
   virtual void OnInputDone() = 0;
@@ -66,10 +73,10 @@ public:
   bool HasChannelNumber() const;
 
   /*!
-   * @brief Get the currently entered channel number as a formatted string. Format is n digits with leading zeros, where n is the number of digits specified when calling the ctor.
+   * @brief Get the currently entered channel number as a formatted string.
    * @return the channel number string.
    */
-  std::string GetChannelNumberAsString() const;
+  std::string GetChannelNumberLabel() const;
 
   /*!
    * @brief If a number was entered, execute the associated action.
@@ -93,9 +100,13 @@ protected:
   CCriticalSection m_mutex;
 
 private:
+  void ExecuteAction();
+
+  std::vector<std::string> m_sortedChannelNumbers;
   const int m_iDelay;
   const int m_iMaxDigits;
   std::string m_inputBuffer;
+  std::string m_label;
   CTimer m_timer;
 };
 
