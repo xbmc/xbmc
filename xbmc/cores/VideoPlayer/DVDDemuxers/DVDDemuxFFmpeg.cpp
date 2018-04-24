@@ -505,7 +505,7 @@ bool CDVDDemuxFFmpeg::Open(std::shared_ptr<CDVDInputStream> pInput, bool streami
   m_pFormatContext->flags |= AVFMT_FLAG_NONBLOCK;
 
   // print some extra information
-  av_dump_format(m_pFormatContext, 0, strFile.c_str(), 0);
+  av_dump_format(m_pFormatContext, 0, CURL::GetRedacted(strFile).c_str(), 0);
 
   // deprecated, will be always set in future versions
   m_pFormatContext->flags |= AVFMT_FLAG_KEEP_SIDE_DATA;
