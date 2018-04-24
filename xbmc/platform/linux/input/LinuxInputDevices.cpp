@@ -274,6 +274,14 @@ KeyMap keyMap[] = {
   { 378               , XBMCK_RIGHT       }, // Green
   { 381               , XBMCK_UP          }, // Yellow
   { 366               , XBMCK_DOWN        }, // Blue
+  // Wiimote controller Additions
+  { 304               , XBMCK_RETURN      }, // A
+  { 305               , XBMCK_ESCAPE      }, // B
+  { 412               , XBMCK_KP_MINUS    }, // -
+  { 316               , XBMCK_HOME        }, // Home
+  { 407               , XBMCK_KP_PLUS     }, // +
+  { 257               , XBMCK_1           }, // 1
+  { 258               , XBMCK_2           }, // 2
 };
 
 typedef enum
