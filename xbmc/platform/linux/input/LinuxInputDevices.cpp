@@ -1030,6 +1030,16 @@ void CLinuxInputDevice::GetInfo(int fd)
     m_deviceMaxAxis = std::max(num_rels, num_abs) - 1;
   }
 
+  /* if no better fit and have at least 1 key */
+   if (m_deviceType == LI_DEVICE_NONE && num_keys >= 1)
+  {
+    m_deviceType |= LI_DEVICE_KEYBOARD;
+    m_deviceCaps |= LI_CAPS_KEYS;
+
+    m_deviceMinKeyCode = 0;
+    m_deviceMaxKeyCode = 127;
+  }
+
   /* Decide which primary input device to be. */
   if (m_deviceType & LI_DEVICE_KEYBOARD)
     m_devicePreferredId = LI_DEVICE_KEYBOARD;
@@ -1046,7 +1056,7 @@ void CLinuxInputDevice::GetInfo(int fd)
     m_devicePreferredId = LI_DEVICE_MOUSE;
   else
     m_devicePreferredId = LI_DEVICE_NONE;
-
+ 
   //printf("type: %d\n", m_deviceType);
   //printf("caps: %d\n", m_deviceCaps);
   //printf("pref: %d\n", m_devicePreferredId);
