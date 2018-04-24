@@ -172,7 +172,6 @@ IDirectory* CDirectoryFactory::Create(const CURL& url)
     if (url.IsProtocol("upnp")) return new CUPnPDirectory();
 #endif
     if (url.IsProtocol("rss") || url.IsProtocol("rsss")) return new CRSSDirectory();
-    if (url.IsProtocol("pvr")) return new CPVRDirectory();
 #ifdef HAS_ZEROCONF
     if (url.IsProtocol("zeroconf")) return new CZeroconfDirectory();
 #endif
@@ -180,6 +179,9 @@ IDirectory* CDirectoryFactory::Create(const CURL& url)
     if (url.IsProtocol("nfs")) return new CNFSDirectory();
 #endif
   }
+
+  if (url.IsProtocol("pvr"))
+    return new CPVRDirectory();
 
   if (!url.GetProtocol().empty() && CServiceBroker::IsBinaryAddonCacheUp())
   {
