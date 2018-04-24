@@ -28,6 +28,9 @@ except:
     sys.path.append(os.path.join(os.path.realpath(os.path.dirname(__file__)), '../../lib/python'))
     from xbmcclient import *
 
+TYPE_ACTION = 'action'
+TYPE_BUTTON = 'button'
+
 def usage():
     print("Usage")
     print("\tkodi-send [OPTION] --action=ACTION")
@@ -39,7 +42,7 @@ def usage():
     print("\t--host=HOST\t\t\tChoose what HOST to connect to (default=localhost)")
     print("\t--port=PORT\t\t\tChoose what PORT to connect to (default=9777)")
     print("\t--keymap=KEYMAP\t\t\tChoose which KEYMAP to use for key presses (default=KB)")
-    print('\t--button=BUTTON\t\t\tSends a key press event to Kodi')
+    print('\t--button=BUTTON\t\t\tSends a key press event to Kodi, this option can be added multiple times to create a macro')
     print('\t--action=ACTION\t\t\tSends an action to XBMC, this option can be added multiple times to create a macro')
     pass
 
@@ -54,7 +57,6 @@ def main():
     ip = "localhost"
     port = 9777
     keymap = "KB"
-    button = ""
     actions = []
     verbose = False
     for o, a in opts:
@@ -68,27 +70,25 @@ def main():
         elif o == "--keymap":
             keymap = a
         elif o == "--button":
-            button = a
+            actions.append({'type': TYPE_BUTTON, 'content': a})
         elif o in ("-a", "--action"):
-            actions.append(a)
+            actions.append({'type': TYPE_ACTION, 'content': a})
         else:
             assert False, "unhandled option"
     
     addr = (ip, port)
     sock = socket(AF_INET,SOCK_DGRAM)
     
-    if len(actions) is 0 and button is "":
+    if len(actions) is 0:
         usage()
         sys.exit(0)
     
     for action in actions:
-        print('Sending action: %s' % action)
-        packet = PacketACTION(actionmessage=action, actiontype=ACTION_BUTTON)
-        packet.send(sock, addr)
-
-    if button is not "":
-        print('Sending key press: %s' % button)
-        packet = PacketBUTTON(code=0, repeat=0, down=1, map_name=keymap, button_name=button, amount=0)
+        print('Sending: %s' % action)
+        if action['type'] == TYPE_ACTION:
+            packet = PacketACTION(actionmessage=action['content'], actiontype=ACTION_BUTTON)
+        elif action['type'] == TYPE_BUTTON:
+            packet = PacketBUTTON(code=0, repeat=0, down=1, queue=1, map_name=keymap, button_name=action['content'], amount=0)
         packet.send(sock, addr)
 
 if __name__=="__main__":
