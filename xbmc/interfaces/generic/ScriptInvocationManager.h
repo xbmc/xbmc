@@ -43,7 +43,7 @@ public:
   void RegisterLanguageInvocationHandler(ILanguageInvocationHandler *invocationHandler, const std::set<std::string> &extensions);
   void UnregisterLanguageInvocationHandler(ILanguageInvocationHandler *invocationHandler);
   bool HasLanguageInvoker(const std::string &script) const;
-  LanguageInvokerPtr GetLanguageInvoker(const std::string &script) const;
+  LanguageInvokerPtr GetLanguageInvoker(const std::string &script);
 
   /*!
    * \brief Executes the given script asynchronously in a separate thread.
@@ -53,7 +53,7 @@ public:
    * \param arguments (Optional) List of arguments passed to the script
    * \return -1 if an error occurred, otherwise the ID of the script
    */
-  int ExecuteAsync(const std::string &script, const ADDON::AddonPtr &addon = ADDON::AddonPtr(), const std::vector<std::string> &arguments = std::vector<std::string>());
+  int ExecuteAsync(const std::string &script, const ADDON::AddonPtr &addon = ADDON::AddonPtr(), const std::vector<std::string> &arguments = std::vector<std::string>(), bool reuseable = false);
   /*!
   * \brief Executes the given script asynchronously in a separate thread.
   *
@@ -63,7 +63,7 @@ public:
   * \param arguments (Optional) List of arguments passed to the script
   * \return -1 if an error occurred, otherwise the ID of the script
   */
-  int ExecuteAsync(const std::string &script, LanguageInvokerPtr languageInvoker, const ADDON::AddonPtr &addon = ADDON::AddonPtr(), const std::vector<std::string> &arguments = std::vector<std::string>());
+  int ExecuteAsync(const std::string &script, LanguageInvokerPtr languageInvoker, const ADDON::AddonPtr &addon = ADDON::AddonPtr(), const std::vector<std::string> &arguments = std::vector<std::string>(), bool reuseable = false);
 
   /*!
   * \brief Executes the given script synchronously.
@@ -109,7 +109,7 @@ public:
 protected:
   friend class CLanguageInvokerThread;
 
-  void OnScriptEnded(int scriptId);
+  void OnExecutionDone(int scriptId);
 
 private:
   CScriptInvocationManager();
@@ -129,6 +129,8 @@ private:
 
   LanguageInvocationHandlerMap m_invocationHandlers;
   LanguageInvokerThreadMap m_scripts;
+  CLanguageInvokerThreadPtr m_lastInvokerThread;
+
   std::map<std::string, int> m_scriptPaths;
   int m_nextId;
   CCriticalSection m_critSection;

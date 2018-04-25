@@ -33,7 +33,8 @@ typedef enum {
   InvokerStateInitialized,
   InvokerStateRunning,
   InvokerStateStopping,
-  InvokerStateDone,
+  InvokerStateScriptDone,
+  InvokerStateExecutionDone,
   InvokerStateFailed
 } InvokerState;
 

@@ -159,7 +159,7 @@ bool CPluginDirectory::StartScript(const std::string& strPath, bool retrievingDi
   CLog::Log(LOGDEBUG, "%s - calling plugin %s('%s','%s','%s','%s')", __FUNCTION__, m_addon->Name().c_str(), argv[0].c_str(), argv[1].c_str(), argv[2].c_str(), argv[3].c_str());
   bool success = false;
   std::string file = m_addon->LibPath();
-  int id = CScriptInvocationManager::GetInstance().ExecuteAsync(file, m_addon, argv);
+  int id = CScriptInvocationManager::GetInstance().ExecuteAsync(file, m_addon, argv, true);
   if (id >= 0)
   { // wait for our script to finish
     std::string scriptName = m_addon->Name();
