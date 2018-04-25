@@ -3,7 +3,7 @@ AC_INIT([xbmc-depends], [2.00], [http://trac.xbmc.org])
 :${CFLAGS=""}
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_FILES([target/config.site native/config.site.native Makefile.include target/Toolchain.cmake
-                 target/config-binaddons.site target/Toolchain_binaddons.cmake])
+                 target/config-binaddons.site target/Toolchain_binaddons.cmake target/cross-file.meson])
 AC_CANONICAL_HOST
 
 m4_include([m4/xbmc_arch.m4])
@@ -719,6 +719,7 @@ cp -vf target/config.site $prefix/$deps_dir/share
 cp -vf target/config-binaddons.site $prefix/$tool_dir/share
 cp -vf target/Toolchain.cmake $prefix/$deps_dir/share
 cp -vf target/Toolchain_binaddons.cmake $prefix/$deps_dir/share
+cp -vf target/cross-file.meson $prefix/$deps_dir/share
 cp -vf native/config.site.native $prefix/$tool_dir/share/config.site
 
 

@@ -25,59 +25,21 @@
 #include "AppInboundProtocol.h"
 #include "input/mouse/MouseStat.h"
 #include "utils/log.h"
-#include "powermanagement/PowerManager.h"
-#include "peripherals/Peripherals.h"
 #include "ServiceBroker.h"
 
-
-bool CWinEventsLinux::m_initialized = false;
-CLinuxInputDevices CWinEventsLinux::m_devices;
-
 CWinEventsLinux::CWinEventsLinux()
+  : m_libinput(new CLibInputHandler(this))
 {
-}
-
-void CWinEventsLinux::RefreshDevices()
-{
-  m_devices.InitAvailable();
-}
-
-bool CWinEventsLinux::IsRemoteLowBattery()
-{
-  return m_devices.IsRemoteLowBattery();
 }
 
 bool CWinEventsLinux::MessagePump()
 {
-  if (!m_initialized)
-  {
-    CServiceBroker::GetPeripherals().RegisterObserver(this);
-    m_devices.InitAvailable();
-    m_checkHotplug = std::unique_ptr<CLinuxInputDevicesCheckHotplugged>(new CLinuxInputDevicesCheckHotplugged(m_devices));
-    m_initialized = true;
-  }
+  m_libinput->OnReadyRead();
 
-  bool ret = false;
-  XBMC_Event event = {0};
-  std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
-  while (1)
-  {
-    event = m_devices.ReadEvent();
-    if (event.type != XBMC_NOEVENT)
-    {
-      if (appPort)
-        ret |= appPort->OnEvent(event);
-    }
-    else
-    {
-      break;
-    }
-  }
-
-  return ret;
+  return true;
 }
 
-void CWinEventsLinux::MessagePush(XBMC_Event *ev)
+void CWinEventsLinux::MessagePush(XBMC_Event* ev)
 {
   std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
   if (appPort)

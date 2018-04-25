@@ -7,8 +7,17 @@ if(LIRCCLIENT_FOUND)
 endif()
 
 if(CORE_PLATFORM_NAME_LC STREQUAL rbpi OR CORE_PLATFORM_NAME_LC STREQUAL gbm OR CORE_PLATFORM_NAME_LC STREQUAL aml)
-  list(APPEND SOURCES LinuxInputDevices.cpp)
-  list(APPEND HEADERS LinuxInputDevices.h)
+  if(LIBINPUT_FOUND)
+    list(APPEND SOURCES LibInputHandler.cpp
+                        LibInputKeyboard.cpp
+                        LibInputPointer.cpp
+                        LibInputTouch.cpp)
+
+    list(APPEND HEADERS LibInputHandler.h
+                        LibInputKeyboard.h
+                        LibInputPointer.h
+                        LibInputTouch.h)
+  endif()
 endif()
 
 if(SOURCES)

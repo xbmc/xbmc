@@ -49,5 +49,6 @@ config.site.native
 /tools/depends/target/ffmpeg/ffmpeg-install/
 /tools/depends/target/Toolchain_binaddons.cmake
 /tools/depends/target/config-binaddons.site
+/target/cross-file.meson
 /target/libfmt/fmt-*.tar.gz
 /target/rapidjson/rapidjson-*.tar.gz

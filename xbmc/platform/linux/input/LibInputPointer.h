@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2013 Team XBMC
+ *      Copyright (C) 2005-2017 Team XBMC
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -18,24 +18,28 @@
  *
  */
 
-#pragma once
+#include <libinput.h>
 
-#include <memory>
-#include <mutex>
-#include <queue>
+struct pos
+{
+  int X;
+  int Y;
+};
 
-#include "platform/linux/input/LibInputHandler.h"
-#include "windowing/WinEvents.h"
+class CWinEventsLinux;
 
-class CWinEventsLinux : public IWinEvents
+class CLibInputPointer
 {
 public:
-  CWinEventsLinux();
+  CLibInputPointer(CWinEventsLinux *winEvents) { m_winEvents = winEvents; };
+  ~CLibInputPointer() = default;
 
-  bool MessagePump();
-  void MessagePush(XBMC_Event *ev);
+  void ProcessButton(libinput_event_pointer *e);
+  void ProcessMotion(libinput_event_pointer *e);
+  void ProcessAxis(libinput_event_pointer *e);
 
 private:
+  struct pos m_pos = { 0, 0 };
 
-  std::unique_ptr<CLibInputHandler> m_libinput;
+  CWinEventsLinux *m_winEvents;
 };

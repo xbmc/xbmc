@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2013 Team XBMC
+ *      Copyright (C) 2005-2017 Team XBMC
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -18,24 +18,25 @@
  *
  */
 
-#pragma once
+#include "input/touch/generic/GenericTouchInputHandler.h"
+#include "utils/Geometry.h"
 
-#include <memory>
-#include <mutex>
-#include <queue>
+#include <libinput.h>
+#include <vector>
 
-#include "platform/linux/input/LibInputHandler.h"
-#include "windowing/WinEvents.h"
+struct libinput_event_touch;
+struct libinput_device;
 
-class CWinEventsLinux : public IWinEvents
+class CLibInputTouch
 {
 public:
-  CWinEventsLinux();
-
-  bool MessagePump();
-  void MessagePush(XBMC_Event *ev);
+  CLibInputTouch();
+  void ProcessTouchDown(libinput_event_touch *e);
+  void ProcessTouchMotion(libinput_event_touch *e);
+  void ProcessTouchUp(libinput_event_touch *e);
+  void ProcessTouchCancel(libinput_event_touch *e);
+  void ProcessTouchFrame(libinput_event_touch *e);
 
 private:
-
-  std::unique_ptr<CLibInputHandler> m_libinput;
+  std::vector<std::pair<TouchInput, CPoint>> m_points;
 };

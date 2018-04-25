@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2013 Team XBMC
+ *      Copyright (C) 2005-2017 Team XBMC
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -20,22 +20,36 @@
 
 #pragma once
 
+#include <libinput.h>
+#include <libudev.h>
 #include <memory>
-#include <mutex>
-#include <queue>
+#include <vector>
 
-#include "platform/linux/input/LibInputHandler.h"
-#include "windowing/WinEvents.h"
+class CWinEventsLinux;
+class CLibInputKeyboard;
+class CLibInputPointer;
+class CLibInputTouch;
 
-class CWinEventsLinux : public IWinEvents
+class CLibInputHandler
 {
 public:
-  CWinEventsLinux();
+  CLibInputHandler(CWinEventsLinux *winEvents);
+  ~CLibInputHandler();
 
-  bool MessagePump();
-  void MessagePush(XBMC_Event *ev);
+  void OnReadyRead();
 
 private:
+  void ProcessEvent(libinput_event *ev);
+  void DeviceAdded(libinput_device *dev);
+  void DeviceRemoved(libinput_device *dev);
 
-  std::unique_ptr<CLibInputHandler> m_libinput;
+  udev *m_udev;
+  libinput *m_li;
+  int m_liFd;
+
+  std::unique_ptr<CLibInputKeyboard> m_keyboard;
+  std::unique_ptr<CLibInputPointer> m_pointer;
+  std::unique_ptr<CLibInputTouch> m_touch;
+  std::vector<libinput_device*> m_devices;
 };
+
