@@ -31,7 +31,7 @@ public:
 protected:
   // implementation of ILanguageInvoker
   bool execute(const std::string &script, const std::vector<std::string> &arguments) override;
-  virtual void executeScript(void *fp, const std::string &script, void *module, void *moduleDict);
+  virtual void executeScript(FILE* fp, const std::string& script, PyObject* moduleDict);
   bool stop(bool abort) override;
   void onExecutionFailed() override;
 

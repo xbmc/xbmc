@@ -107,10 +107,10 @@ HTTPPythonRequest* CHTTPPythonWsgiInvoker::GetRequest()
   return m_request;
 }
 
-void CHTTPPythonWsgiInvoker::executeScript(void *fp, const std::string &script, void *module, void *moduleDict)
+void CHTTPPythonWsgiInvoker::executeScript(FILE* fp, const std::string& script, PyObject* moduleDict)
 {
   if (m_request == NULL || m_addon == NULL || m_addon->Type() != ADDON::ADDON_WEB_INTERFACE ||
-      fp == NULL || script.empty() || module == NULL || moduleDict == NULL)
+      fp == NULL || script.empty() || moduleDict == NULL)
     return;
 
   ADDON::CWebinterface* webinterface = static_cast<ADDON::CWebinterface*>(m_addon.get());

@@ -34,7 +34,7 @@ public:
 
 protected:
   // overrides of CPythonInvoker
-  void executeScript(void *fp, const std::string &script, void *module, void *moduleDict) override;
+  void executeScript(FILE* fp, const std::string& script, PyObject* moduleDict) override;
   std::map<std::string, PythonModuleInitialization> getModules() const override;
   const char* getInitializationScript() const override;
 
