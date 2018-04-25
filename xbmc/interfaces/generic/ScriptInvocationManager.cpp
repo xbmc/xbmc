@@ -194,6 +194,20 @@ bool CScriptInvocationManager::HasLanguageInvoker(const std::string &script) con
   return it != m_invocationHandlers.end() && it->second != NULL;
 }
 
+int CScriptInvocationManager::GetReusablePluginHandle(const std::string &script)
+{
+  CSingleLock lock(m_critSection);
+
+  if (m_lastInvokerThread)
+  {
+    if (m_lastInvokerThread->Reuseable(script))
+      return m_lastPluginHandle;
+    m_lastInvokerThread->Release();
+    m_lastInvokerThread = nullptr;
+  }
+  return -1;
+}
+
 LanguageInvokerPtr CScriptInvocationManager::GetLanguageInvoker(const std::string &script)
 {
   CSingleLock lock(m_critSection);
@@ -219,7 +233,11 @@ LanguageInvokerPtr CScriptInvocationManager::GetLanguageInvoker(const std::strin
   return LanguageInvokerPtr();
 }
 
-int CScriptInvocationManager::ExecuteAsync(const std::string &script, const ADDON::AddonPtr &addon /* = ADDON::AddonPtr() */, const std::vector<std::string> &arguments /* = std::vector<std::string>() */, bool reuseable /* = false */)
+int CScriptInvocationManager::ExecuteAsync(const std::string &script,
+  const ADDON::AddonPtr &addon /* = ADDON::AddonPtr() */,
+  const std::vector<std::string> &arguments /* = std::vector<std::string>() */,
+  bool reuseable /* = false */,
+  int pluginHandle /* = -1 */)
 {
   if (script.empty())
     return -1;
@@ -231,10 +249,15 @@ int CScriptInvocationManager::ExecuteAsync(const std::string &script, const ADDO
   }
 
   LanguageInvokerPtr invoker = GetLanguageInvoker(script);
-  return ExecuteAsync(script, invoker, addon, arguments, reuseable);
+  return ExecuteAsync(script, invoker, addon, arguments, reuseable, pluginHandle);
 }
 
-int CScriptInvocationManager::ExecuteAsync(const std::string &script, LanguageInvokerPtr languageInvoker, const ADDON::AddonPtr &addon /* = ADDON::AddonPtr() */, const std::vector<std::string> &arguments /* = std::vector<std::string>() */, bool reuseable /* = false */)
+int CScriptInvocationManager::ExecuteAsync(const std::string &script,
+  LanguageInvokerPtr languageInvoker,
+  const ADDON::AddonPtr &addon /* = ADDON::AddonPtr() */,
+  const std::vector<std::string> &arguments /* = std::vector<std::string>() */,
+  bool reuseable /* = false */,
+  int pluginHandle /* = -1 */)
 {
   if (script.empty() || languageInvoker == NULL)
     return -1;
@@ -266,6 +289,7 @@ int CScriptInvocationManager::ExecuteAsync(const std::string &script, LanguageIn
     m_lastInvokerThread->SetAddon(addon);
 
   m_lastInvokerThread->SetId(m_nextId++);
+  m_lastPluginHandle = pluginHandle;
 
   LanguageInvokerThread thread = { m_lastInvokerThread, script, false };
   m_scripts.insert(std::make_pair(m_lastInvokerThread->GetId(), thread));
@@ -276,7 +300,11 @@ int CScriptInvocationManager::ExecuteAsync(const std::string &script, LanguageIn
   return m_lastInvokerThread->GetId();
 }
 
-int CScriptInvocationManager::ExecuteSync(const std::string &script, const ADDON::AddonPtr &addon /* = ADDON::AddonPtr() */, const std::vector<std::string> &arguments /* = std::vector<std::string>() */, uint32_t timeoutMs /* = 0 */, bool waitShutdown /* = false */)
+int CScriptInvocationManager::ExecuteSync(const std::string &script,
+  const ADDON::AddonPtr &addon /* = ADDON::AddonPtr() */,
+  const std::vector<std::string> &arguments /* = std::vector<std::string>() */,
+  uint32_t timeoutMs /* = 0 */,
+  bool waitShutdown /* = false */)
 {
   if (script.empty())
     return -1;
@@ -291,7 +319,12 @@ int CScriptInvocationManager::ExecuteSync(const std::string &script, const ADDON
   return ExecuteSync(script, invoker, addon, arguments, timeoutMs, waitShutdown);
 }
 
-int CScriptInvocationManager::ExecuteSync(const std::string &script, LanguageInvokerPtr languageInvoker, const ADDON::AddonPtr &addon /* = ADDON::AddonPtr() */, const std::vector<std::string> &arguments /* = std::vector<std::string>() */, uint32_t timeoutMs /* = 0 */, bool waitShutdown /* = false */)
+int CScriptInvocationManager::ExecuteSync(const std::string &script,
+  LanguageInvokerPtr languageInvoker,
+  const ADDON::AddonPtr &addon /* = ADDON::AddonPtr() */,
+  const std::vector<std::string> &arguments /* = std::vector<std::string>() */,
+  uint32_t timeoutMs /* = 0 */,
+  bool waitShutdown /* = false */)
 {
   int scriptId = ExecuteAsync(script, languageInvoker, addon, arguments);
   if (scriptId < 0)
