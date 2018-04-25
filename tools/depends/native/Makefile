@@ -22,7 +22,7 @@ endif
 
 ifeq ($(OS),linux)
   ifeq ($(TARGET_PLATFORM),$(filter $(TARGET_PLATFORM),raspberry-pi aml gbm))
-    NATIVE += python3-native
+    NATIVE += meson-native python3-native
   endif
 endif
 
@@ -41,6 +41,7 @@ autoconf-native: m4-native
 automake-native: autoconf-native
 libtool-native: automake-native
 libpng-native: zlib-native
+meson-native: python3-native
 swig-native: pcre-native
 distribute-native: python27-native
 distutilscross-native: python27-native distribute-native
