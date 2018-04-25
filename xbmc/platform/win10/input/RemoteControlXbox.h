@@ -38,7 +38,7 @@ private:
 
   bool m_bInitialized;
   uint32_t m_firstClickTime;
+  uint32_t m_repeatCount;
   Windows::Foundation::EventRegistrationToken m_token;
   Windows::Foundation::EventRegistrationToken m_mediatoken;
-  Windows::System::VirtualKey m_lastKey;
 };
