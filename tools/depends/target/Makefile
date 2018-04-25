@@ -73,6 +73,9 @@ ifeq ($(OS),linux)
   DEPENDS += alsa-lib
   ALSA_LIB = alsa-lib
   CROSSGUID_DEPS = libuuid
+  ifeq ($(TARGET_PLATFORM),$(filter $(TARGET_PLATFORM),raspberry-pi aml gbm))
+    DEPENDS += libxkbcommon libinput libudev libevdev mtdev
+  endif
 endif
 
 ifeq ($(TARGET_PLATFORM),wayland)
@@ -116,6 +119,8 @@ libdvdread: $(DVDREAD_DEPS)
 wayland: expat libffi
 waylandpp: wayland $(WAYLANDPP_DEPS)
 dbus: expat
+libinput: mtdev libevdev
+libevdev: libudev
 
 .installed-$(PLATFORM): $(DEPENDS)
 	touch $@
