@@ -58,12 +58,6 @@ extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
 using namespace XFILE;
 using namespace KODI::MESSAGING;
 
-extern "C"
-{
-  int xbp_chdir(const char *dirname);
-  char* dll_getenv(const char* szKey);
-}
-
 #define PythonModulesSize sizeof(PythonModules) / sizeof(PythonModule)
 
 CCriticalSection CPythonInvoker::s_critical;
