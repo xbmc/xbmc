@@ -365,6 +365,7 @@ void CAdvancedSettings::Initialize()
   // the following setting determines the readRate of a player data
   // as multiply of the default data read rate
   m_cacheReadFactor = 4.0f;
+  m_bReuseLanguageInvoker = true;
 
   m_addonPackageFolderSize = 200;
 
@@ -1202,6 +1203,12 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetBoolean(pElement, "visualizedirtyregions", m_guiVisualizeDirtyRegions);
     XMLUtils::GetInt(pElement, "algorithmdirtyregions",     m_guiAlgorithmDirtyRegions);
     XMLUtils::GetBoolean(pElement, "smartredraw", m_guiSmartRedraw);
+  }
+
+  pElement = pRootElement->FirstChildElement("addon");
+  if (pElement)
+  {
+    XMLUtils::GetBoolean(pElement, "reuselanguageinvoker", m_bReuseLanguageInvoker);
   }
 
   std::string seekSteps;
