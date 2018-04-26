@@ -346,8 +346,6 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     bool m_guiSmartRedraw;
     unsigned int m_addonPackageFolderSize;
 
-    bool m_bReuseLanguageInvoker;
-
     unsigned int m_cacheMemSize;
     unsigned int m_cacheBufferMode;
     float m_cacheReadFactor;

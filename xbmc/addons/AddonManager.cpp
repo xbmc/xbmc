@@ -182,12 +182,19 @@ void CAddonMgr::FillCpluffMetadata(const cp_plugin_info_t* plugin, CAddonBuilder
     builder.SetLicense(CServiceBroker::GetAddonMgr().GetExtValue(metadata->configuration, "license"));
     builder.SetPackageSize(StringUtils::ToUint64(CServiceBroker::GetAddonMgr().GetExtValue(metadata->configuration, "size"), 0));
 
-    std::string language = CServiceBroker::GetAddonMgr().GetExtValue(metadata->configuration, "language");
-    if (!language.empty())
     {
       InfoMap extrainfo;
-      extrainfo.insert(std::make_pair("language",language));
-      builder.SetExtrainfo(std::move(extrainfo));
+
+      std::string metaString = CServiceBroker::GetAddonMgr().GetExtValue(metadata->configuration, "language");
+      if (!metaString.empty())
+        extrainfo.insert(std::make_pair("language", metaString));
+
+      metaString = CServiceBroker::GetAddonMgr().GetExtValue(metadata->configuration, "reuselanguageinvoker");
+      if (!metaString.empty())
+        extrainfo.insert(std::make_pair("reuselanguageinvoker", metaString));
+
+      if (!extrainfo.empty())
+        builder.SetExtrainfo(std::move(extrainfo));
     }
 
     builder.SetBroken(CServiceBroker::GetAddonMgr().GetExtValue(metadata->configuration, "broken"));

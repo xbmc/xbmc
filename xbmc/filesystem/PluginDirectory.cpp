@@ -29,7 +29,6 @@
 #include "threads/SingleLock.h"
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogBusy.h"
-#include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "FileItem.h"
 #include "video/VideoInfoTag.h"
@@ -171,7 +170,11 @@ bool CPluginDirectory::StartScript(const std::string& strPath, bool retrievingDi
   CLog::Log(LOGDEBUG, "%s - calling plugin %s('%s','%s','%s','%s')", __FUNCTION__, m_addon->Name().c_str(), argv[0].c_str(), argv[1].c_str(), argv[2].c_str(), argv[3].c_str());
   bool success = false;
   std::string file = m_addon->LibPath();
-  int id = CScriptInvocationManager::GetInstance().ExecuteAsync(file, m_addon, argv, g_advancedSettings.m_bReuseLanguageInvoker, handle);
+  bool reuseLanguageInvoker = true;
+  if (m_addon->ExtraInfo().find("reuselanguageinvoker") != m_addon->ExtraInfo().end())
+    reuseLanguageInvoker = m_addon->ExtraInfo().at("reuselanguageinvoker") != "false";
+
+  int id = CScriptInvocationManager::GetInstance().ExecuteAsync(file, m_addon, argv, reuseLanguageInvoker, handle);
   if (id >= 0)
   { // wait for our script to finish
     std::string scriptName = m_addon->Name();
