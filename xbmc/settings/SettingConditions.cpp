@@ -78,7 +78,7 @@ bool CheckMasterLock(const std::string &condition, const std::string &value, Set
 
 bool CheckPVRParentalPin(const std::string &condition, const std::string &value, SettingConstPtr setting, void *data)
 {
-  return CServiceBroker::GetPVRManager().GUIActions()->CheckParentalPIN();
+  return CServiceBroker::GetPVRManager().GUIActions()->CheckParentalPIN() == PVR::ParentalCheckResult::SUCCESS;
 }
 
 bool HasPeripherals(const std::string &condition, const std::string &value, SettingConstPtr setting, void *data)

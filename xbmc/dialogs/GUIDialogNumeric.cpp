@@ -566,10 +566,14 @@ bool CGUIDialogNumeric::ShowAndVerifyNewPassword(std::string& strNewPassword)
 {
   // Prompt user for password input
   std::string strUserInput;
-  if (!ShowAndVerifyInput(strUserInput, g_localizeStrings.Get(12340), false))
+  InputVerificationResult ret = ShowAndVerifyInput(strUserInput, g_localizeStrings.Get(12340), false);
+  if (ret != InputVerificationResult::SUCCESS)
   {
-    // Show error to user saying the password entry was blank
-    HELPERS::ShowOKDialogText(CVariant{12357}, CVariant{12358}); // Password is empty/blank
+    if (ret == InputVerificationResult::FAILED)
+    {
+      // Show error to user saying the password entry was blank
+      HELPERS::ShowOKDialogText(CVariant{12357}, CVariant{12358}); // Password is empty/blank
+    }
     return false;
   }
 
@@ -578,10 +582,14 @@ bool CGUIDialogNumeric::ShowAndVerifyNewPassword(std::string& strNewPassword)
     return false;
 
   // Prompt again for password input, this time sending previous input as the password to verify
-  if (!ShowAndVerifyInput(strUserInput, g_localizeStrings.Get(12341), true))
+  ret = ShowAndVerifyInput(strUserInput, g_localizeStrings.Get(12341), true);
+  if (ret != InputVerificationResult::SUCCESS)
   {
-    // Show error to user saying the password re-entry failed
-    HELPERS::ShowOKDialogText(CVariant{12357}, CVariant{12344}); // Password do not match
+    if (ret == InputVerificationResult::FAILED)
+    {
+      // Show error to user saying the password re-entry failed
+      HELPERS::ShowOKDialogText(CVariant{12357}, CVariant{12344}); // Password do not match
+    }
     return false;
   }
 
@@ -598,16 +606,21 @@ bool CGUIDialogNumeric::ShowAndVerifyNewPassword(std::string& strNewPassword)
 int CGUIDialogNumeric::ShowAndVerifyPassword(std::string& strPassword, const std::string& strHeading, int iRetries)
 {
   std::string strTempHeading = strHeading;
-  if (0 < iRetries)
+  if (iRetries > 0)
   {
     // Show a string telling user they have iRetries retries left
     strTempHeading = StringUtils::Format("%s. %s %i %s", strHeading.c_str(), g_localizeStrings.Get(12342).c_str(), iRetries, g_localizeStrings.Get(12343).c_str());
   }
+
   // make a copy of strPassword to prevent from overwriting it later
   std::string strPassTemp = strPassword;
-  if (ShowAndVerifyInput(strPassTemp, strTempHeading, true))
+  InputVerificationResult ret = ShowAndVerifyInput(strPassTemp, strTempHeading, true);
+  if (ret == InputVerificationResult::SUCCESS)
     return 0;   // user entered correct password
-  if (strPassTemp.empty()) return -1;   // user canceled out
+
+  if (ret == InputVerificationResult::CANCELED)
+    return -1;   // user canceled out
+
   return 1; // user must have entered an incorrect password
 }
 
@@ -615,16 +628,17 @@ int CGUIDialogNumeric::ShowAndVerifyPassword(std::string& strPassword, const std
 // \param strToVerify Value to compare against user input.
 // \param dlgHeading String shown on dialog title.
 // \param bVerifyInput If set as true we verify the users input versus strToVerify.
-// \return true if successful display and user input. false if unsuccessful display, no user input, or canceled editing.
-bool CGUIDialogNumeric::ShowAndVerifyInput(std::string& strToVerify, const std::string& dlgHeading, bool bVerifyInput)
+// \return the result of the check (success, failed, or canceled by user).
+InputVerificationResult CGUIDialogNumeric::ShowAndVerifyInput(std::string& strToVerify, const std::string& dlgHeading, bool bVerifyInput)
 {
   // Prompt user for password input
   CGUIDialogNumeric *pDialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogNumeric>(WINDOW_DIALOG_NUMERIC);
-  pDialog->SetHeading( dlgHeading );
+  pDialog->SetHeading(dlgHeading);
 
   std::string strInput;
   if (!bVerifyInput)
     strInput = strToVerify;
+
   pDialog->SetMode(INPUT_PASSWORD, strInput);
   pDialog->Open();
 
@@ -633,23 +647,19 @@ bool CGUIDialogNumeric::ShowAndVerifyInput(std::string& strToVerify, const std::
   if (!pDialog->IsConfirmed() || pDialog->IsCanceled())
   {
     // user canceled out
-    strToVerify ="";
-    return false;
+    strToVerify = "";
+    return InputVerificationResult::CANCELED;
   }
 
-  std::string md5pword2 = CDigest::Calculate(CDigest::Type::MD5, strInput);
+  const std::string md5pword2 = CDigest::Calculate(CDigest::Type::MD5, strInput);
 
   if (!bVerifyInput)
   {
     strToVerify = md5pword2;
-    return true;
+    return InputVerificationResult::SUCCESS;
   }
 
-  if (StringUtils::EqualsNoCase(strToVerify, md5pword2))
-    return true;  // entered correct password
-
-  // incorrect password
-  return false;
+  return StringUtils::EqualsNoCase(strToVerify, md5pword2) ? InputVerificationResult::SUCCESS : InputVerificationResult::FAILED;
 }
 
 bool CGUIDialogNumeric::IsConfirmed() const
