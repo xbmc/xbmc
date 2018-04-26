@@ -101,6 +101,10 @@ bool CRenderSystemDX::InitRenderSystem()
   CPoint camPoint = { outputSize.Width * 0.5f, outputSize.Height * 0.5f };
   SetCameraPosition(camPoint, outputSize.Width, outputSize.Height);
 
+  DXGI_ADAPTER_DESC AIdentifier = { 0 };
+  m_deviceResources->GetAdapterDesc(&AIdentifier);
+  m_RenderRenderer = KODI::PLATFORM::WINDOWS::FromW(AIdentifier.Description);
+
   return true;
 }
 
