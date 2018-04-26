@@ -48,6 +48,7 @@ namespace PVR
   {
   public:
     // CPVRChannelNumberInputHandler implementation
+    void GetChannelNumbers(std::vector<std::string>& channelNumbers) override;
     void AppendChannelNumberCharacter(char cCharacter) override;
     void OnInputDone() override;
 

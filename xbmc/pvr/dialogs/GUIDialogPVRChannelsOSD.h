@@ -44,6 +44,7 @@ namespace PVR
     void Notify(const Observable &obs, const ObservableMessage msg) override;
 
     // CPVRChannelNumberInputHandler implementation
+    void GetChannelNumbers(std::vector<std::string>& channelNumbers) override;
     void OnInputDone() override;
 
   protected:

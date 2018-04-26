@@ -338,6 +338,13 @@ void CGUIWindowPVRChannelsBase::OnInputDone()
   }
 }
 
+void CGUIWindowPVRChannelsBase::GetChannelNumbers(std::vector<std::string>& channelNumbers)
+{
+  const CPVRChannelGroupPtr group = GetChannelGroup();
+  if (group)
+    group->GetChannelNumbers(channelNumbers);
+}
+
 CGUIWindowPVRTVChannels::CGUIWindowPVRTVChannels()
   : CGUIWindowPVRChannelsBase(false, WINDOW_TV_CHANNELS, "MyPVRChannels.xml")
 {

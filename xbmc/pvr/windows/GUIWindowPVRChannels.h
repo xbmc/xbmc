@@ -38,6 +38,7 @@ namespace PVR
     bool OnAction(const CAction &action) override;
 
     // CPVRChannelNumberInputHandler implementation
+    void GetChannelNumbers(std::vector<std::string>& channelNumbers) override;
     void OnInputDone() override;
 
   private:

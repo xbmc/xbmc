@@ -865,7 +865,7 @@ bool CPVRGUIInfo::GetPVRLabel(const CFileItem *item, const CGUIInfo &info, std::
       CharInfoTotalDiskSpace(strValue);
       return true;
     case PVR_CHANNEL_NUMBER_INPUT:
-      strValue = CServiceBroker::GetPVRManager().GUIActions()->GetChannelNumberInputHandler().GetChannelNumberAsString();
+      strValue = CServiceBroker::GetPVRManager().GUIActions()->GetChannelNumberInputHandler().GetChannelNumberLabel();
       return true;
   }
 

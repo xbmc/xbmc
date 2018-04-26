@@ -335,6 +335,12 @@ namespace PVR
     virtual int GetMembers(CFileItemList &results, bool bGroupMembers = true) const;
 
     /*!
+     * @brief Get the list of channel numbers in a group.
+     * @param channelNumbers The list to store the numbers in.
+     */
+    void GetChannelNumbers(std::vector<std::string>& channelNumbers) const;
+
+    /*!
      * @return The next channel group.
      */
     CPVRChannelGroupPtr GetNextGroup(void) const;

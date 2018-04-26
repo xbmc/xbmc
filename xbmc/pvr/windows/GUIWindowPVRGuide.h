@@ -53,6 +53,7 @@ namespace PVR
     bool RefreshTimelineItems();
 
     // CPVRChannelNumberInputHandler implementation
+    void GetChannelNumbers(std::vector<std::string>& channelNumbers) override;
     void OnInputDone() override;
 
   protected:
