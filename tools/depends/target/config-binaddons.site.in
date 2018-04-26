@@ -134,22 +134,6 @@ if test "@platform_os@" = "ios"; then
   ac_cv_func_clock_gettime=no
   ac_cv_func_getentropy=no
 
-  # tweaks for libffi (ios must use llvm-gcc-4.2)
-  if test "${PACKAGE_NAME}" = "libffi" ; then
-      case "@use_xcode@" in
-        4.* | 4.*.*)
-          export CC="@use_toolchain@/usr/bin/llvm-gcc-4.2"
-          export CPP="@use_toolchain@/usr/bin/llvm-gcc-4.2 -E"
-          ;;
-        *)
-          export CC="@use_toolchain@/usr/bin/clang"
-          export CPP="@use_toolchain@/usr/bin/clang -E"
-          ;;
-        esac
-    unset AS
-    unset CCAS
-  fi
-
   # tweaks for flac
   if test "${ac_unique_file}" = "src/flac/main.c" ; then
     # compiler barfs if we use -O3/O2 for flac

@@ -260,30 +260,19 @@ case $host in
     native_platform_min_version=-mmacosx-version-min=`sw_vers | grep ProductVersion | sed -E "s/.*:.*(10\..*)\.?.*/\1/"`
     use_xcodepath=`xcode-select -print-path`
     use_xcodebuild=$use_xcodepath/usr/bin/xcodebuild
-    use_xcode=[`$use_xcodebuild -version | grep Xcode | awk '{ print $2}'`]
     AC_MSG_RESULT(found xcodebuild at $use_xcodebuild)
     use_build_toolchain=$use_xcodepath
+    use_toolchain="${use_xcodepath}/Toolchains/XcodeDefault.xctoolchain"
 
     # darwin builds are always cross
     cross_compiling="yes"
 
-    platform_cflags="-std=gnu99 -no_compact_linkedit -no-cpp-precomp"
-    platform_ldflags="-Wl,-search_paths_first -no_compact_linkedit"
-    platform_cxxflags="-no_compact_linkedit -no-cpp-precomp"
+    platform_cc=clang
+    platform_cxx=clang++
+    platform_cflags="-fheinous-gnu-extensions -no-cpp-precomp"
+    platform_ldflags="-Wl,-search_paths_first"
+    platform_cxxflags="-no-cpp-precomp"
 
-    case $use_xcode in
-      4.* | 4.*.*)
-        platform_cc=llvm-gcc-4.2
-        platform_cxx=llvm-g++-4.2
-        ;;
-      *)
-        platform_cc=clang
-        platform_cxx=clang++
-        platform_cflags="-fheinous-gnu-extensions -no-cpp-precomp"
-        platform_ldflags="-Wl,-search_paths_first"
-        platform_cxxflags="-no-cpp-precomp"
-        ;;
-    esac
     case $host in
       *86*-apple-darwin)
         MC_CHECK_NOT_CPU([$use_cpu], "arm")
@@ -325,16 +314,6 @@ case $host in
 
         use_sdk_path=[`$use_xcodebuild -version -sdk $sdk_name Path`]
         platform_os="osx"
-
-        # find the matching toolchain
-        case $use_xcode in
-          5.* | 5.*.* )
-            use_toolchain="${use_xcodepath}/Toolchains/XcodeDefault.xctoolchain"
-            ;;
-          *)
-            use_toolchain="${use_toolchain:-$use_xcodepath}"
-            ;;
-        esac
       ;;
 
       arm-apple-darwin*)
@@ -376,8 +355,6 @@ case $host in
               AC_MSG_ERROR(error in configure of --with-sdk=$use_sdk)
             ;;
         esac
-
-        use_toolchain="${use_xcodepath}/Toolchains/XcodeDefault.xctoolchain"
 
         platform_os="ios"
 
@@ -693,7 +670,6 @@ AC_SUBST(has_zlib)
 AC_SUBST(link_iconv)
 AC_SUBST(need_libiconv)
 AC_SUBST(use_gplv3)
-AC_SUBST(use_xcode)
 AC_SUBST(use_ccache)
 AC_SUBST(native_platform_min_version)
 AC_SUBST(app_rendersystem)
