@@ -20,11 +20,11 @@
 
 #include "LibInputPointer.h"
 
+#include "AppInboundProtocol.h"
 #include "input/mouse/MouseStat.h"
 #include "ServiceBroker.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
-#include "windowing/WinEventsLinux.h"
 
 #include <algorithm>
 #include <linux/input.h>
@@ -76,7 +76,9 @@ void CLibInputPointer::ProcessButton(libinput_event_pointer *e)
   CLog::Log(LOGDEBUG, "CLibInputPointer::%s - event.button.x: %i", __FUNCTION__, event.button.x);
   CLog::Log(LOGDEBUG, "CLibInputPointer::%s - event.button.y: %i", __FUNCTION__, event.button.y);
 
-  m_winEvents->MessagePush(&event);
+  std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
+  if (appPort)
+    appPort->OnEvent(event);
 }
 
 void CLibInputPointer::ProcessMotion(libinput_event_pointer *e)
@@ -106,7 +108,9 @@ void CLibInputPointer::ProcessMotion(libinput_event_pointer *e)
   CLog::Log(LOGDEBUG, "CLibInputPointer::%s - event.motion.x: %i", __FUNCTION__, event.motion.x);
   CLog::Log(LOGDEBUG, "CLibInputPointer::%s - event.motion.y: %i", __FUNCTION__, event.motion.y);
 
-  m_winEvents->MessagePush(&event);
+  std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
+  if (appPort)
+    appPort->OnEvent(event);
 }
 
 void CLibInputPointer::ProcessAxis(libinput_event_pointer *e)
@@ -133,9 +137,12 @@ void CLibInputPointer::ProcessAxis(libinput_event_pointer *e)
   CLog::Log(LOGDEBUG, "CLibInputPointer::%s - event.button.x: %i", __FUNCTION__, event.button.x);
   CLog::Log(LOGDEBUG, "CLibInputPointer::%s - event.button.y: %i", __FUNCTION__, event.button.y);
 
-  m_winEvents->MessagePush(&event);
+  std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
+  if (appPort)
+    appPort->OnEvent(event);
 
   event.type = XBMC_MOUSEBUTTONUP;
 
-  m_winEvents->MessagePush(&event);
+  if (appPort)
+    appPort->OnEvent(event);
 }

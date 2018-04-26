@@ -73,7 +73,7 @@ static void LogHandler(libinput  __attribute__((unused)) *libinput, libinput_log
   }
 }
 
-CLibInputHandler::CLibInputHandler(CWinEventsLinux *winEvents)
+CLibInputHandler::CLibInputHandler() : CThread("libinput")
 {
   m_udev = udev_new();
   if (!m_udev)
@@ -98,31 +98,42 @@ CLibInputHandler::CLibInputHandler(CWinEventsLinux *winEvents)
 
   m_liFd = libinput_get_fd(m_li);
 
-  m_keyboard.reset(new CLibInputKeyboard(winEvents));
-  m_pointer.reset(new CLibInputPointer(winEvents));
+  m_keyboard.reset(new CLibInputKeyboard());
+  m_pointer.reset(new CLibInputPointer());
   m_touch.reset(new CLibInputTouch());
 }
 
 CLibInputHandler::~CLibInputHandler()
 {
+  StopThread();
+
   libinput_unref(m_li);
   udev_unref(m_udev);
 }
 
-void CLibInputHandler::OnReadyRead()
+void CLibInputHandler::Start()
 {
-  auto ret = libinput_dispatch(m_li);
-  if (ret < 0)
-  {
-    CLog::Log(LOGERROR, "CLibInputHandler::%s - libinput_dispatch failed: %s", __FUNCTION__, strerror(-errno));
-    return;
-  }
+  Create();
+  SetPriority(GetMinPriority());
+}
 
-  libinput_event *ev;
-  while ((ev = libinput_get_event(m_li)) != nullptr)
+void CLibInputHandler::Process()
+{
+  while (!m_bStop)
   {
-    ProcessEvent(ev);
-    libinput_event_destroy(ev);
+    auto ret = libinput_dispatch(m_li);
+    if (ret < 0)
+    {
+      CLog::Log(LOGERROR, "CLibInputHandler::%s - libinput_dispatch failed: %s", __FUNCTION__, strerror(-errno));
+      return;
+    }
+
+    libinput_event *ev;
+    while ((ev = libinput_get_event(m_li)) != nullptr)
+    {
+      ProcessEvent(ev);
+      libinput_event_destroy(ev);
+    }
   }
 }
 
