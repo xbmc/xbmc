@@ -25,7 +25,7 @@ fi
 LD_LIBRARY_PATH=@prefix@/@tool_dir@/lib:$LD_LIBRARY_PATH
 NASM=@prefix@/@tool_dir@/bin/yasm
 
-if test "@platform_os@" = "osx" ; then
+if test "@build_os@" = "osx" ; then
   # Xcode 8 + 10.11, clock_gettime and getentropy is present
   # in 10.12 but will get wrongly detected if building on 10.11
   ac_cv_search_clock_gettime=no

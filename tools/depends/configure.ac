@@ -184,6 +184,7 @@ case $build in
   ;;
   *darwin*)
     build_os="osx"
+    native_platform_min_version=-mmacosx-version-min=`sw_vers | grep ProductVersion | sed -E "s/.*:.*(10\..*)\.?.*/\1/"`
   ;;
   *)
     AC_MSG_ERROR(unsupported native build platform: $build)
@@ -257,7 +258,6 @@ case $host in
       prefix=/Users/Shared/xbmc-depends
     fi
 
-    native_platform_min_version=-mmacosx-version-min=`sw_vers | grep ProductVersion | sed -E "s/.*:.*(10\..*)\.?.*/\1/"`
     use_xcodepath=`xcode-select -print-path`
     use_xcodebuild=$use_xcodepath/usr/bin/xcodebuild
     AC_MSG_RESULT(found xcodebuild at $use_xcodebuild)
