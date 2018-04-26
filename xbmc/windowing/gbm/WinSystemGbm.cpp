@@ -40,7 +40,8 @@
 CWinSystemGbm::CWinSystemGbm() :
   m_DRM(nullptr),
   m_GBM(new CGBMUtils),
-  m_delayDispReset(false)
+  m_delayDispReset(false),
+  m_libinput(new CLibInputHandler)
 {
   std::string envSink;
   if (getenv("AE_SINK"))
@@ -70,6 +71,7 @@ CWinSystemGbm::CWinSystemGbm() :
 
   CLinuxPowerSyscall::Register();
   m_lirc.reset(OPTIONALS::LircRegister());
+  m_libinput->Start();
 }
 
 bool CWinSystemGbm::InitWindowSystem()
