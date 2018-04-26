@@ -101,6 +101,14 @@ bool CRenderSystemDX::InitRenderSystem()
   CPoint camPoint = { outputSize.Width * 0.5f, outputSize.Height * 0.5f };
   SetCameraPosition(camPoint, outputSize.Width, outputSize.Height);
 
+  DXGI_ADAPTER_DESC AIdentifier = { 0 };
+  m_deviceResources->GetAdapterDesc(&AIdentifier);
+  m_RenderRenderer = KODI::PLATFORM::WINDOWS::FromW(AIdentifier.Description);
+  uint32_t version = 0;
+  for (uint32_t decimal = m_deviceResources->GetDeviceFeatureLevel() >> 8, round = 0; decimal > 0; decimal >>= 4, ++round)
+    version += (decimal % 16) * std::pow(10, round);
+  m_RenderVersion = StringUtils::Format("%.1f", static_cast<float>(version) / 10.0f);
+
   return true;
 }
 
