@@ -155,26 +155,11 @@ if test "@platform_os@" = "ios"; then
   ac_cv_func_clock_gettime=no
   ac_cv_func_getentropy=no
 
-  # tweaks for libffi (ios must use llvm-gcc-4.2)
+  # tweaks for libffi
   if test "${PACKAGE_NAME}" = "libffi" ; then
-      case "@use_xcode@" in
-        4.* | 4.*.*)
-          export CC="@use_toolchain@/usr/bin/llvm-gcc-4.2"
-          export CPP="@use_toolchain@/usr/bin/llvm-gcc-4.2 -E"
-          ;;
-        *)
-          export CC="@use_toolchain@/usr/bin/clang"
-          export CPP="@use_toolchain@/usr/bin/clang -E"
-          ;;
-        esac
- 
     if test "@use_cpu@" = "arm64"; then
-      host=aarch64-apple-darwin
       host_alias=aarch64-apple-darwin
-    fi 
- 
-    unset AS
-    unset CCAS
+    fi
   fi
 
   # tweaks for flac
