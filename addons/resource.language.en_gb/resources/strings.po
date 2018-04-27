@@ -7187,6 +7187,7 @@ msgctxt "#13513"
 msgid "Remote art"
 msgstr ""
 
+#: xbmc/music/dialogs/GUIDialogMusicInfo.cpp
 #: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
 msgctxt "#13514"
 msgid "Local art"
@@ -12280,6 +12281,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 #: xbmc/settings/dialogs/GUIDialogLibExportSettings.cpp
+#: xbmc/music/dialogs/GUIDialogMusicInfo.cpp
 msgctxt "#20223"
 msgid "Artist information folder"
 msgstr ""
