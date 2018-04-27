@@ -39,7 +39,8 @@
 #include <EGL/egl.h>
 #include <EGL/eglplatform.h>
 
-CWinSystemRpi::CWinSystemRpi()
+CWinSystemRpi::CWinSystemRpi() :
+  m_libinput(new CLibInputHandler)
 {
   m_nativeDisplay = EGL_NO_DISPLAY;
   m_nativeWindow = EGL_NO_SURFACE;
@@ -56,6 +57,7 @@ CWinSystemRpi::CWinSystemRpi()
   CAESinkPi::Register();
   CLinuxPowerSyscall::Register();
   m_lirc.reset(OPTIONALS::LircRegister());
+  m_libinput->Start();
 }
 
 CWinSystemRpi::~CWinSystemRpi()
