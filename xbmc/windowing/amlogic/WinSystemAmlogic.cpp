@@ -49,7 +49,8 @@
 
 using namespace KODI;
 
-CWinSystemAmlogic::CWinSystemAmlogic()
+CWinSystemAmlogic::CWinSystemAmlogic() :
+  m_libinput(new CLibInputHandler)
 {
   const char *env_framebuffer = getenv("FRAMEBUFFER");
 
@@ -78,6 +79,7 @@ CWinSystemAmlogic::CWinSystemAmlogic()
   AE::CAESinkFactory::ClearSinks();
   CAESinkALSA::Register();
   CLinuxPowerSyscall::Register();
+  m_libinput->Start();
 }
 
 CWinSystemAmlogic::~CWinSystemAmlogic()

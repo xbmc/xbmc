@@ -20,6 +20,7 @@
 
 #pragma once
 
+#include "platform/linux/input/LibInputHandler.h"
 #include "rendering/gles/RenderSystemGLES.h"
 #include "threads/CriticalSection.h"
 #include "windowing/WinSystem.h"
@@ -63,4 +64,6 @@ protected:
 
   CCriticalSection m_resourceSection;
   std::vector<IDispResource*> m_resources;
+
+  std::unique_ptr<CLibInputHandler> m_libinput;
 };
