@@ -264,6 +264,8 @@ bool CRenderManager::IsConfigured() const
 void CRenderManager::ShowVideo(bool enable)
 {
   m_showVideo = enable;
+  if (!enable)
+    Flush(false);
 }
 
 void CRenderManager::FrameWait(int ms)
