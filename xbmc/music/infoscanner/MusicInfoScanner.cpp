@@ -1013,78 +1013,6 @@ void MUSIC_INFO::CMusicInfoScanner::ScrapeInfoAddedAlbums()
   }
 }
 
-void MUSIC_INFO::CMusicInfoScanner::RetrieveArtistArt()
-{
-  bool albumartistsonly = !CServiceBroker::GetSettings().GetBool(CSettings::SETTING_MUSICLIBRARY_SHOWCOMPILATIONARTISTS);
-  int i = 0;
-  std::set<int> artists;
-  for (auto albumId : m_albumsAdded)
-  {
-    i++;
-    if (m_bStop)
-      break;
-    CAlbum album;
-    // Fetch album artist(s) ids
-    m_musicDatabase.GetAlbum(albumId, album, !albumartistsonly);
-    if (m_handle)
-    {
-      m_handle->SetText(album.GetAlbumArtistString() + " - " + album.strAlbum);
-      m_handle->SetProgress(i, m_albumsAdded.size());
-    }
-
-    // Set art for album artists that have not been processed before, avoiding repeating
-    // unsuccessful attempts for every album by that artist.
-    for (const auto &artistCredit : album.artistCredits)
-    {
-      if (m_bStop)
-        break;
-      if (artists.find(artistCredit.GetArtistId()) == artists.end())
-      {
-        artists.insert(artistCredit.GetArtistId()); // Artist processed
-        std::map<std::string, std::string> art;
-        if (!m_musicDatabase.GetArtForItem(artistCredit.GetArtistId(), MediaTypeArtist, art))
-        { 
-          CArtist artist;
-          //Get artist details including available art returned by scraping
-          m_musicDatabase.GetArtist(artistCredit.GetArtistId(), artist);
-          // Get path for artist in the artists folder (not done in GetArtist)
-          m_musicDatabase.GetArtistPath(artist, artist.strPath);
-          m_musicDatabase.SetArtForItem(artist.idArtist, MediaTypeArtist, GetArtistArtwork(artist, 1));
-        }
-      }
-    }
-    // Only fetch song artist art if they are being displayed in artists node by default
-    if (!albumartistsonly)
-    {
-      for (auto &song : album.songs)
-      {
-        if (m_bStop)
-          break;
-        for (const auto &artistCredit : song.artistCredits)
-        {
-          if (m_bStop)
-            break;
-
-          std::map<std::string, std::string> art;
-          if (artists.find(artistCredit.GetArtistId()) == artists.end())
-          {
-            artists.insert(artistCredit.GetArtistId()); // Artist processed
-            if (!m_musicDatabase.GetArtForItem(artistCredit.GetArtistId(), MediaTypeArtist, art))
-            {
-              CArtist artist;
-              //Get artist details including available art returned by scraping
-              m_musicDatabase.GetArtist(artistCredit.GetArtistId(), artist);
-              m_musicDatabase.GetArtistPath(artist, artist.strPath);
-              m_musicDatabase.SetArtForItem(artist.idArtist, MediaTypeArtist, GetArtistArtwork(artist, 1));
-            }
-          }
-        }
-      }
-    }
-
-  }
-}
-
 /*
   Set thumb for songs and the album(if only one album in folder).
   The album thumb is either set to the folder art, or failing that to the art
@@ -1294,21 +1222,28 @@ void MUSIC_INFO::CMusicInfoScanner::RetrieveLocalArt()
       {
         artistsArtDone.insert(idArtist); // Artist processed
         std::map<std::string, std::string> art;
-        if (!m_musicDatabase.GetArtForItem(idArtist, MediaTypeArtist, art))
+        m_musicDatabase.GetArtForItem(idArtist, MediaTypeArtist, art);
+        std::vector<std::string> missing = GetMissingArtTypes(MediaTypeArtist, art);
+        if (!missing.empty())
         {
-            CArtist artist;
-            // Get artist and path for artist in the Artists Info folder            
-            m_musicDatabase.GetArtist(idArtist, artist);
-            m_musicDatabase.GetArtistPath(artist, artist.strPath);
-            art = GetArtistArtwork(artist, 1);
-            // If no art has been found in the Artists Info folder, for primary
-            // album artist look in the folder immediately above the album folder
-            if (art.empty() && !album.strPath.empty() && artistCredit == album.artistCredits.begin())
-            {
-              artist.strPath = URIUtils::GetParentPath(album.strPath);
-              art = GetArtistArtwork(artist, 1);
-            }
-            m_musicDatabase.SetArtForItem(artist.idArtist, MediaTypeArtist, art);
+          // Get artist and subfolder within the Artist Information Folder
+          CArtist artist;
+          m_musicDatabase.GetArtist(idArtist, artist);
+          m_musicDatabase.GetArtistPath(artist, artist.strPath);
+          // Location of local art
+          std::string artfolder;
+          if (CDirectory::Exists(artist.strPath))
+            // When subfolder exists that is only place we look for local art
+            artfolder = artist.strPath;
+          else if (!album.strPath.empty() && artistCredit == album.artistCredits.begin())
+          {
+            // If no individual artist subfolder has been found, for primary
+            // album artist only look in the folder immediately above the album
+            // folder. Not using GetOldArtistPath here because may not have not
+            // have scanned all the albums yet.
+              artfolder = URIUtils::GetParentPath(album.strPath);
+          }
+          SetArtistArtwork(artist, missing, artfolder);
         }
       }
     }
@@ -1418,13 +1353,29 @@ loop:
     artistInfo.SetLoaded();
   }
 
-  // When artist still has no art look in Artists Info folder (there may be art
-  // files, but no NFO) or use first available from scraped list when it has
-  // been scraped
-  if (artist.art.empty())
+  // Check artist art.
+  // Fill any gaps with local art files, or use first available from scraped
+  // list (when it has been successfuly scraped). Do this even when no info
+  // added, there may be new local art files.
+  m_musicDatabase.GetArtForItem(artist.idArtist, MediaTypeArtist, artist.art);
+  std::vector<std::string> missing = GetMissingArtTypes(MediaTypeArtist, artist.art);
+  if (!missing.empty())
   {
+    // Get individual artist subfolder within the Artist Information Folder
     m_musicDatabase.GetArtistPath(artist, artist.strPath);
-    m_musicDatabase.SetArtForItem(artist.idArtist, MediaTypeArtist, GetArtistArtwork(artist, 1));
+    // Location of local art
+    std::string artfolder;
+    if (CDirectory::Exists(artist.strPath))
+      // When subfolder exists that is only place we look for art
+      artfolder = artist.strPath;
+    else
+    {
+      // Fallback to the old location local to music files (when there is a 
+      // unique folder). If there is no folder for the artist, and *only* the
+      // artist, this will be blank
+      m_musicDatabase.GetOldArtistPath(artist.idArtist, artfolder);
+    }
+    SetArtistArtwork(artist, missing, artfolder);
   }
 
   return artistDownloadStatus;
@@ -1937,56 +1888,67 @@ void CMusicInfoScanner::ScannerWait(unsigned int milliseconds)
     XbmcThreads::ThreadSleep(milliseconds);
 }
 
-
-std::map<std::string, std::string> CMusicInfoScanner::GetArtistArtwork(const CArtist& artist, unsigned int level /* = 3*/)
+std::vector<std::string> CMusicInfoScanner::GetMissingArtTypes(const MediaType& mediaType, const std::map<std::string, std::string>& art)
 {
-  std::map<std::string, std::string> artwork;
-  std::string strFolder;
-  if (level > 3)
-    level = 3; //Don't go up more than 2 levels of folders
-
-  // check thumb
-  std::string thumb;
-  if (!artist.strPath.empty())
+  std::vector<std::string> missing;
+  std::vector<std::string> arttypes;
+  // Set default types of art that are automatically fetched during scanning
+  if (mediaType == MediaTypeArtist)
+    arttypes = { "thumb", "fanart" };
+  else if (mediaType == MediaTypeAlbum)
+    arttypes = { "thumb" };
+  
+  if (art.empty())
+    missing = arttypes;
+  else
   {
-    strFolder = artist.strPath;
-    for (unsigned int i = 0; i < level && thumb.empty(); ++i)
+    for (auto& type : arttypes)
     {
-      CFileItem item(strFolder, true);
-      thumb = item.GetUserMusicThumb(true);
-      strFolder = URIUtils::GetParentPath(strFolder);
+      if (art.find(type) == art.end())
+        missing.emplace_back(type);
     }
   }
-  if (thumb.empty())
-    thumb = CScraperUrl::GetThumbURL(artist.thumbURL.GetFirstThumb());
-  if (!thumb.empty())
-  {
-    CTextureCache::GetInstance().BackgroundCacheImage(thumb);
-    artwork.insert(make_pair("thumb", thumb));
-  }
-
-  // check fanart
-  std::string fanart;
-  if (!artist.strPath.empty())
-  {
-    strFolder = artist.strPath;
-    for (unsigned int i = 0; i < level && fanart.empty(); ++i)
-    {
-      CFileItem item(strFolder, true);
-      fanart = item.GetLocalFanart();
-      strFolder = URIUtils::GetParentPath(strFolder);
-    }
-  }
-  if (fanart.empty())
-    fanart = artist.fanart.GetImageURL();
-  if (!fanart.empty())
-  {
-    CTextureCache::GetInstance().BackgroundCacheImage(fanart);
-    artwork.insert(make_pair("fanart", fanart));
-  }
-
-  return artwork;
+  
+  return missing;
 }
+
+void CMusicInfoScanner::SetArtistArtwork(CArtist& artist, const std::vector<std::string>& missing, const std::string& artfolder)
+{   
+  if (missing.empty())
+    return; // All types of artist art found
+   
+  for (const auto& type : missing)
+  {
+    std::string strArt;
+    if (!artfolder.empty())
+    {
+      CFileItem item(artfolder, true);
+      if (type == "thumb")
+        // Local music thumbnail images named by <musicthumbs>
+        strArt = item.GetUserMusicThumb(true);
+      else if (type == "fanart")
+        // Local music fanart images named by <fanart>
+        strArt = item.GetLocalFanart();
+    }
+    // No local art, use first from scraped lists (thumbs, fanart)
+    if (strArt.empty())
+    {
+      if (type == "thumb")
+        strArt = CScraperUrl::GetThumbURL(artist.thumbURL.GetFirstThumb());
+      else if (type == "fanart")
+        strArt = artist.fanart.GetImageURL();
+    }
+    // Add art to artist and library
+    if (!strArt.empty())
+    {
+      CTextureCache::GetInstance().BackgroundCacheImage(strArt);
+      artist.art.insert(make_pair(type, strArt));
+      m_musicDatabase.SetArtForItem(artist.idArtist, MediaTypeArtist, type, strArt);
+    }
+  }
+
+}
+
 
 // This function is the Run() function of the IRunnable
 // CFileCountReader and runs in a separate thread.

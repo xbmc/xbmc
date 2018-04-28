@@ -152,15 +152,24 @@ protected:
    */
   INFO_RET DownloadArtistInfo(const CArtist& artist, const ADDON::ScraperPtr& scraper, MUSIC_GRABBER::CMusicArtistInfo& artistInfo, bool bUseScrapedMBID, CGUIDialogProgress* pDialog = NULL);
 
-  /*! \brief Get art for an artist
-   Checks for thumb and fanart in given folder, and in parent folders back up the artist path (if non-empty).
-   If none is found there then it tries to use the first available thumb and fanart from those listed in the
-   artist structure. Images found are cached.
-   \param artist [in] an artist
-   \param level [in] how many levels of folders to search in. 1 => just the folder
-   \return set of art type and file location (URL or path) pairs
+  /*! \brief Get the types of art for an artist or album that can be 
+   automatically found during scanning, and are not in the provided set of art
+   \param mediaType [in] artist or album
+   \param art [in] set of art type and file location (URL or path) pairs
+   \return vector of art types that are missing from the set
    */
-  std::map<std::string, std::string> GetArtistArtwork(const CArtist& artist, unsigned int level = 3);
+  std::vector<std::string> GetMissingArtTypes(const MediaType& mediaType, const std::map<std::string, std::string>& art);
+  
+  /*! \brief Set art for an artist
+  Checks for the missing types of art in the given folder. If none is found
+  there then it tries to use the first available art of that type from those
+  listed in the artist structure. Art found is saved in the artist structure
+  and written to the music database. The images found are cached.
+  \param artist [in/out] an artist, the art is set
+  \param missing [in] vector of art types that are missing
+  \param artfolder [in] path of the location to search for local art files
+  */
+  void SetArtistArtwork(CArtist& artist, const std::vector<std::string>& missing, const std::string& artfolder);
 
   /*! \brief Scan in the ID3/Ogg/FLAC tags for a bunch of FileItems
    Given a list of FileItems, scan in the tags for those FileItems
@@ -174,7 +183,6 @@ protected:
 
   void RetrieveLocalArt();
   void ScrapeInfoAddedAlbums();
-  void RetrieveArtistArt();
 
   /*! \brief Scan in the ID3/Ogg/FLAC tags for a bunch of FileItems
     Given a list of FileItems, scan in the tags for those FileItems
