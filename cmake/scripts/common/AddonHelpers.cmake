@@ -157,7 +157,8 @@ macro (build_addon target prefix libs)
     target_link_libraries(${target} ${${libs}})
     set_target_properties(${target} PROPERTIES VERSION ${${prefix}_VERSION}
                                                SOVERSION ${APP_VERSION_MAJOR}.${APP_VERSION_MINOR}
-                                               PREFIX "")
+                                               PREFIX ""
+                                               POSITION_INDEPENDENT_CODE 1)
     if(OS STREQUAL "android")
       set_target_properties(${target} PROPERTIES PREFIX "lib")
     endif()
