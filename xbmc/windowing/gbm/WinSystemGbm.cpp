@@ -32,7 +32,6 @@
 #include "settings/DisplaySettings.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
-#include "../WinEventsLinux.h"
 #include "DRMAtomic.h"
 #include "DRMLegacy.h"
 #include "messaging/ApplicationMessenger.h"
@@ -69,7 +68,6 @@ CWinSystemGbm::CWinSystemGbm() :
     }
   }
 
-  m_winEvents.reset(new CWinEventsLinux());
   CLinuxPowerSyscall::Register();
   m_lirc.reset(OPTIONALS::LircRegister());
 }
