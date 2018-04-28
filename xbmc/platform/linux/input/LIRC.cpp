@@ -27,6 +27,7 @@
 #include <lirc/lirc_client.h>
 #include <fcntl.h>
 #include <sys/socket.h>
+#include <sys/un.h>
 
 CLirc::CLirc() : CThread("Lirc")
 {
@@ -53,10 +54,25 @@ void CLirc::Process()
   m_profileId = CServiceBroker::GetProfileManager().GetCurrentProfileId();
   m_irTranslator.Load("Lircmap.xml");
 
+  // make sure work-around (CheckDaemon) uses the same socket path as lirc_init
+  const char* socket_path = getenv("LIRC_SOCKET_PATH");
+  socket_path = socket_path ? socket_path : "/var/run/lirc/lircd";
+  setenv("LIRC_SOCKET_PATH", socket_path, 0);
+
   while (!m_bStop)
   {
     {
       CSingleLock lock(m_critSection);
+
+      // lirc_client is buggy because it does not close socket, if connect fails
+      // work around by checking if daemon is running before calling lirc_init
+      if (!CheckDaemon())
+      {
+        CSingleExit lock(m_critSection);
+        Sleep(1000);
+        continue;
+      }
+
       m_fd = lirc_init(const_cast<char*>("kodi"), 0);
       if (m_fd <= 0)
       {
@@ -144,4 +160,33 @@ void CLirc::ProcessCode(char *buf)
     if (appPort)
       appPort->OnEvent(newEvent);
   }
+}
+
+bool CLirc::CheckDaemon()
+{
+  const char* socket_path = getenv("LIRC_SOCKET_PATH");
+
+  struct sockaddr_un addr_un;
+  if (strlen(socket_path) + 1 > sizeof(addr_un.sun_path))
+  {
+    return false;
+  }
+
+  addr_un.sun_family = AF_UNIX;
+  strcpy(addr_un.sun_path, socket_path);
+
+  int fd = socket(AF_UNIX, SOCK_STREAM, 0);
+  if (fd == -1)
+  {
+    return false;
+  }
+
+  if (connect(fd, reinterpret_cast<struct sockaddr*>(&addr_un), sizeof(addr_un)) == -1)
+  {
+    close(fd);
+    return false;
+  }
+
+  close(fd);
+  return true;
 }

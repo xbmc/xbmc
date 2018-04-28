@@ -35,6 +35,7 @@ public:
 protected:
   void Process() override;
   void ProcessCode(char *buf);
+  bool CheckDaemon();
 
   int m_fd = -1;
   uint32_t m_firstClickTime = 0;
