@@ -1056,3 +1056,8 @@ void CWinSystemX11::UpdateCrtc()
   m_crtc = g_xrandr.GetCrtc(posx+winattr.width/2, posy+winattr.height/2, fps);
   CServiceBroker::GetWinSystem()->GetGfxContext().SetFPS(fps);
 }
+
+bool CWinSystemX11::MessagePump()
+{
+  return m_winEvents->MessagePump();
+}

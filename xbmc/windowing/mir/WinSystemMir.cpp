@@ -182,3 +182,8 @@ void CWinSystemMir::Register(IDispResource * /*resource*/)
 void CWinSystemMir::Unregister(IDispResource * /*resource*/)
 {
 }
+
+bool CWinSystemMir::MessagePump()
+{
+  return m_winEvents->MessagePump();
+}

@@ -509,3 +509,8 @@ std::unique_ptr<CVideoSync> CWinSystemIOS::GetVideoSync(void *clock)
   std::unique_ptr<CVideoSync> pVSync(new CVideoSyncIos(clock, *this));
   return pVSync;
 }
+
+bool CWinSystemIOS::MessagePump()
+{
+  return m_winEvents->MessagePump();
+}

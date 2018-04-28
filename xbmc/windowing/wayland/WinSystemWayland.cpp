@@ -1531,3 +1531,8 @@ void CWinSystemWayland::OnClose()
 {
   KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_QUIT);
 }
+
+bool CWinSystemWayland::MessagePump()
+{
+  return m_winEvents->MessagePump();
+}

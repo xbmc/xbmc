@@ -1880,3 +1880,8 @@ std::unique_ptr<CVideoSync> CWinSystemOSX::GetVideoSync(void *clock)
   std::unique_ptr<CVideoSync> pVSync(new CVideoSyncOsx(clock));
   return pVSync;
 }
+
+bool CWinSystemOSX::MessagePump()
+{
+  return m_winEvents->MessagePump();
+}

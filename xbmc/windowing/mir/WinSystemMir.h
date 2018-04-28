@@ -53,6 +53,9 @@ public:
   virtual void Register(IDispResource *resource);
   virtual void Unregister(IDispResource *resource);
 
+  // winevents override
+  bool MessagePump() override;
+
 protected:
   MirConnection* m_connection;
   MirWindow* m_window;

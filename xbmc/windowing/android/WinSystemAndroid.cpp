@@ -267,3 +267,8 @@ void CWinSystemAndroid::MessagePush(XBMC_Event *newEvent)
 {
   dynamic_cast<CWinEventsAndroid&>(*m_winEvents).MessagePush(newEvent);
 }
+
+bool CWinSystemAndroid::MessagePump()
+{
+  return m_winEvents->MessagePump();
+}

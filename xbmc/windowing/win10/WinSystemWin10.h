@@ -125,6 +125,9 @@ public:
 
   bool CanDoWindowed() override;
 
+  // winevents override
+  bool MessagePump() override;
+
 protected:
   bool CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res) override = 0;
   virtual void UpdateStates(bool fullScreen);
