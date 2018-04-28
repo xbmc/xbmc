@@ -2801,6 +2801,9 @@ bool CApplication::Cleanup()
 
 void CApplication::Stop(int exitCode)
 {
+  CLog::Log(LOGNOTICE, "stop player");
+  m_appPlayer.ClosePlayer();
+
   {
     // close inbound port
     CServiceBroker::UnregisterAppPort();
@@ -2868,9 +2871,6 @@ void CApplication::Stop(int exitCode)
       CVideoLibraryQueue::GetInstance().CancelAllJobs();
 
     CApplicationMessenger::GetInstance().Cleanup();
-
-    CLog::Log(LOGNOTICE, "stop player");
-    m_appPlayer.ClosePlayer();
 
     StopServices();
 
