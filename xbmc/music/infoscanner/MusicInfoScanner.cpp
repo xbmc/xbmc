@@ -1894,7 +1894,10 @@ std::vector<std::string> CMusicInfoScanner::GetMissingArtTypes(const MediaType& 
   std::vector<std::string> arttypes;
   // Set default types of art that are automatically fetched during scanning
   if (mediaType == MediaTypeArtist)
+  {
     arttypes = { "thumb", "fanart" };
+    arttypes.insert(arttypes.end(), g_advancedSettings.m_musicArtistExtraArt.begin(), g_advancedSettings.m_musicArtistExtraArt.end());
+  }
   else if (mediaType == MediaTypeAlbum)
     arttypes = { "thumb" };
   
@@ -1917,6 +1920,24 @@ void CMusicInfoScanner::SetArtistArtwork(CArtist& artist, const std::vector<std:
   if (missing.empty())
     return; // All types of artist art found
    
+  // Any extra type of art missing, fetch the image files from the art folder.
+  // Thumbs and fanart have own advanced settings for file names, what other
+  // art types to fetch automatically is optional to, but local file name must
+  // match the type
+  CFileItemList items;
+  bool extratype = false;
+  for (const auto& type : missing)
+    if (type != "thumb" && type != "fanart")
+    {
+      extratype = true;
+      break;
+    }
+  if (extratype)
+      CDirectory::GetDirectory(artfolder, items, 
+        CServiceBroker::GetFileExtensionProvider().GetPictureExtensions(), 
+        DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_READ_CACHE | DIR_FLAG_NO_FILE_INFO);
+
+  // Get missing art
   for (const auto& type : missing)
   {
     std::string strArt;
@@ -1929,14 +1950,34 @@ void CMusicInfoScanner::SetArtistArtwork(CArtist& artist, const std::vector<std:
       else if (type == "fanart")
         // Local music fanart images named by <fanart>
         strArt = item.GetLocalFanart();
+      else
+      {
+        // Check for images with type as name case and ext insenitively
+        for (int j = 0; j < items.Size(); j++)
+        {
+          std::string strCandidate = URIUtils::GetFileName(items[j]->GetPath());
+          URIUtils::RemoveExtension(strCandidate);
+          if (StringUtils::EqualsNoCase(strCandidate, type))
+          {
+            strArt = items[j]->GetPath();
+            break;
+          }
+        }
+      }
     }
-    // No local art, use first from scraped lists (thumbs, fanart)
+    // No local art, use first from scraped lists. 
+    // Fanart has own list. Art type is encoded into the scraper XML held in
+    // thumbURL as optional "aspect=" field. Type "thumb" or "" returns URLs for
+    // all types of art including those without aspect. Those URL without aspect
+    // are also returned for all other type values.
     if (strArt.empty())
     {
       if (type == "thumb")
         strArt = CScraperUrl::GetThumbURL(artist.thumbURL.GetFirstThumb());
       else if (type == "fanart")
         strArt = artist.fanart.GetImageURL();
+      else 
+        strArt = CScraperUrl::GetThumbURL(artist.thumbURL.GetFirstThumb(type));
     }
     // Add art to artist and library
     if (!strArt.empty())
