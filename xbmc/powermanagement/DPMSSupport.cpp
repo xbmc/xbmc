@@ -267,6 +267,31 @@ bool DPMSSupport::PlatformSpecificDisablePowerSaving()
   return (IORegistryEntrySetCFProperty(r, CFSTR("IORequestIdle"), kCFBooleanFalse) == 0);
 }
 
+#elif defined(HAVE_GBM)
+#include "ServiceBroker.h"
+#include "windowing/gbm/WinSystemGbm.h"
+void DPMSSupport::PlatformSpecificInit()
+{
+  m_supportedModes.push_back(OFF);
+}
+bool DPMSSupport::PlatformSpecificEnablePowerSaving(PowerSavingMode mode)
+{
+  CWinSystemGbm *winSystem = dynamic_cast<CWinSystemGbm*>(CServiceBroker::GetWinSystem());
+  switch(mode)
+  {
+  case OFF:
+    return winSystem->Hide();
+  default:
+    return false;
+  }
+}
+
+bool DPMSSupport::PlatformSpecificDisablePowerSaving()
+{
+  CWinSystemGbm *winSystem = dynamic_cast<CWinSystemGbm*>(CServiceBroker::GetWinSystem());
+  winSystem->Show();
+}
+
 #else
 // Not implemented on this platform
 void DPMSSupport::PlatformSpecificInit()

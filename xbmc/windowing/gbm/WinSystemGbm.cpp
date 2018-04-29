@@ -234,12 +234,16 @@ void CWinSystemGbm::WaitVBlank()
 
 bool CWinSystemGbm::Hide()
 {
-  return false;
+  bool ret = m_DRM->SetActive(false);
+  FlipPage(false, false);
+  return ret;
 }
 
 bool CWinSystemGbm::Show(bool raise)
 {
-  return true;
+  bool ret = m_DRM->SetActive(true);
+  FlipPage(false, false);
+  return ret;
 }
 
 void CWinSystemGbm::Register(IDispResource *resource)
