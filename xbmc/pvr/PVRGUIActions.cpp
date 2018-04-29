@@ -172,7 +172,7 @@ namespace PVR
   bool CPVRGUIActions::ShowEPGInfo(const CFileItemPtr &item) const
   {
     const CPVRChannelPtr channel(CPVRItem(item).GetChannel());
-    if (channel && !CheckParentalLock(channel))
+    if (channel && CheckParentalLock(channel) != ParentalCheckResult::SUCCESS)
       return false;
 
     const CPVREpgInfoTagPtr epgTag(CPVRItem(item).GetEpgInfoTag());
@@ -198,7 +198,7 @@ namespace PVR
   bool CPVRGUIActions::ShowChannelEPG(const CFileItemPtr &item) const
   {
     const CPVRChannelPtr channel(CPVRItem(item).GetChannel());
-    if (channel && !CheckParentalLock(channel))
+    if (channel && CheckParentalLock(channel) != ParentalCheckResult::SUCCESS)
       return false;
 
     CGUIDialogPVRChannelGuide* pDlgInfo = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogPVRChannelGuide>(WINDOW_DIALOG_PVR_CHANNEL_GUIDE);
@@ -303,7 +303,7 @@ namespace PVR
       return false;
     }
 
-    if (!CheckParentalLock(channel))
+    if (CheckParentalLock(channel) != ParentalCheckResult::SUCCESS)
       return false;
 
     const CPVREpgInfoTagPtr epgTag(CPVRItem(item).GetEpgInfoTag());
@@ -361,7 +361,7 @@ namespace PVR
       return false;
     }
 
-    if (!CheckParentalLock(item->Channel()))
+    if (CheckParentalLock(item->Channel()) != ParentalCheckResult::SUCCESS)
       return false;
 
     if (!CServiceBroker::GetPVRManager().Timers()->AddTimer(item))
@@ -499,7 +499,7 @@ namespace PVR
     if (!channel)
       return bReturn;
 
-    if (!CheckParentalLock(channel))
+    if (CheckParentalLock(channel) != ParentalCheckResult::SUCCESS)
       return bReturn;
 
     if (CServiceBroker::GetPVRManager().Clients()->GetClientCapabilities(channel->ClientID()).SupportsTimers())
@@ -1136,9 +1136,10 @@ namespace PVR
       return true;
     }
 
-    // switch to channel or if recording present, ask whether to switch or play recording...
-    if (channel && CheckParentalLock(channel))
+    ParentalCheckResult result = channel ? CheckParentalLock(channel) : ParentalCheckResult::FAILED;
+    if (result == ParentalCheckResult::SUCCESS)
     {
+      // switch to channel or if recording present, ask whether to switch or play recording...
       const CPVRRecordingPtr recording(channel->GetRecording());
       if (recording)
       {
@@ -1164,13 +1165,14 @@ namespace PVR
       StartPlayback(new CFileItem(channel), m_settings.GetBoolValue(CSettings::SETTING_PVRPLAYBACK_SWITCHTOFULLSCREEN));
       return true;
     }
+    else if (result == ParentalCheckResult::FAILED)
+    {
+      const std::string channelName = channel ? channel->ChannelName() : g_localizeStrings.Get(19029); // Channel
+      const std::string msg = StringUtils::Format(g_localizeStrings.Get(19035).c_str(), channelName.c_str()); // CHANNELNAME could not be played. Check the log for details.
 
-    std::string channelName = g_localizeStrings.Get(19029); // Channel
-    if (channel)
-      channelName = channel->ChannelName();
-    std::string msg = StringUtils::Format(g_localizeStrings.Get(19035).c_str(), channelName.c_str()); // CHANNELNAME could not be played. Check the log for details.
+      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(19166), msg); // PVR information
+    }
 
-    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(19166), msg); // PVR information
     return false;
   }
 
@@ -1526,7 +1528,7 @@ namespace PVR
     }
     else
     {
-      if (!CheckParentalPIN() ||
+      if (CheckParentalPIN() != ParentalCheckResult::SUCCESS ||
           !CGUIDialogYesNo::ShowAndGetInput(CVariant{19098},  // "Warning!"
                                             CVariant{19186})) // "All your TV related data (channels, groups, guide) will be cleared. Are you sure?"
         return false;
@@ -1611,37 +1613,44 @@ namespace PVR
     return true;
   }
 
-  bool CPVRGUIActions::CheckParentalLock(const CPVRChannelPtr &channel) const
+  ParentalCheckResult CPVRGUIActions::CheckParentalLock(const CPVRChannelPtr &channel) const
   {
-    bool bReturn = !CServiceBroker::GetPVRManager().IsParentalLocked(channel) || CheckParentalPIN();
+    if (!CServiceBroker::GetPVRManager().IsParentalLocked(channel))
+      return ParentalCheckResult::SUCCESS;
 
-    if (!bReturn)
+    ParentalCheckResult ret = CheckParentalPIN();
+
+    if (ret == ParentalCheckResult::FAILED)
       CLog::Log(LOGERROR, "CPVRGUIActions - %s - parental lock verification failed for channel '%s': wrong PIN entered.", __FUNCTION__, channel->ChannelName().c_str());
 
-    return bReturn;
+    return ret;
   }
 
-  bool CPVRGUIActions::CheckParentalPIN() const
+  ParentalCheckResult CPVRGUIActions::CheckParentalPIN() const
   {
+    if (!m_settings.GetBoolValue(CSettings::SETTING_PVRPARENTAL_ENABLED))
+      return ParentalCheckResult::SUCCESS;
+
     std::string pinCode = m_settings.GetStringValue(CSettings::SETTING_PVRPARENTAL_PIN);
+    if (pinCode.empty())
+      return ParentalCheckResult::SUCCESS;
 
-    if (!m_settings.GetBoolValue(CSettings::SETTING_PVRPARENTAL_ENABLED) || pinCode.empty())
-      return true;
+    InputVerificationResult ret = CGUIDialogNumeric::ShowAndVerifyInput(pinCode, g_localizeStrings.Get(19262), true); // "Parental control. Enter PIN:"
 
-    // Locked channel. Enter PIN:
-    bool bValidPIN = CGUIDialogNumeric::ShowAndVerifyInput(pinCode, g_localizeStrings.Get(19262), true); // "Parental control. Enter PIN:"
-    if (!bValidPIN)
+    if (ret == InputVerificationResult::SUCCESS)
     {
-      // display message: The entered PIN number was incorrect
+      CServiceBroker::GetPVRManager().RestartParentalTimer();
+      return ParentalCheckResult::SUCCESS;
+    }
+    else if (ret == InputVerificationResult::FAILED)
+    {
       HELPERS::ShowOKDialogText(CVariant{19264}, CVariant{19265}); // "Incorrect PIN", "The entered PIN was incorrect."
+      return ParentalCheckResult::FAILED;
     }
     else
     {
-      // restart the parental timer
-      CServiceBroker::GetPVRManager().RestartParentalTimer();
+      return ParentalCheckResult::CANCELED;
     }
-
-    return bValidPIN;
   }
 
   bool CPVRGUIActions::CanSystemPowerdown(bool bAskUser /*= true*/) const

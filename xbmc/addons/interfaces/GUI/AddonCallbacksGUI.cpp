@@ -1780,10 +1780,12 @@ int CAddonCallbacksGUI::Dialog_Numeric_ShowAndVerifyPassword(char &strPassword, 
 bool CAddonCallbacksGUI::Dialog_Numeric_ShowAndVerifyInput(char &strPassword, unsigned int iMaxStringSize, const char *strHeading, bool bGetUserInput)
 {
   std::string str = &strPassword;
-  bool bRet = CGUIDialogNumeric::ShowAndVerifyInput(str, strHeading, bGetUserInput);
-  if (bRet)
+  if (CGUIDialogNumeric::ShowAndVerifyInput(str, strHeading, bGetUserInput) == InputVerificationResult::SUCCESS)
+  {
     strncpy(&strPassword, str.c_str(), iMaxStringSize);
-  return bRet;
+    return true;
+  }
+  return false;
 }
 
 bool CAddonCallbacksGUI::Dialog_Numeric_ShowAndGetTime(tm &time, const char *strHeading)

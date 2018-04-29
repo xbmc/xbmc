@@ -108,10 +108,12 @@ bool Interface_GUIDialogNumeric::show_and_verify_input(void* kodiBase, const cha
   }
 
   std::string str = verify_in;
-  bool bRet = CGUIDialogNumeric::ShowAndVerifyInput(str, heading, verify_input);
-  if (bRet)
+  if (CGUIDialogNumeric::ShowAndVerifyInput(str, heading, verify_input) == InputVerificationResult::SUCCESS)
+  {
     *verify_out = strdup(str.c_str());
-  return bRet;
+    return true;
+  }
+  return false;
 }
 
 bool Interface_GUIDialogNumeric::show_and_get_time(void* kodiBase, tm* time, const char* heading)

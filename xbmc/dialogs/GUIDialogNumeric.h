@@ -24,6 +24,13 @@
 #include "PlatformDefs.h"
 #include "guilib/GUIDialog.h"
 
+enum class InputVerificationResult
+{
+  CANCELED,
+  FAILED,
+  SUCCESS
+};
+
 class CGUIDialogNumeric :
       public CGUIDialog
 {
@@ -42,7 +49,7 @@ public:
 
   static bool ShowAndVerifyNewPassword(std::string& strNewPassword);
   static int ShowAndVerifyPassword(std::string& strPassword, const std::string& strHeading, int iRetries);
-  static bool ShowAndVerifyInput(std::string& strPassword, const std::string& strHeading, bool bGetUserInput);
+  static InputVerificationResult ShowAndVerifyInput(std::string& strPassword, const std::string& strHeading, bool bGetUserInput);
 
   void SetHeading(const std::string &strHeading);
   void SetMode(INPUT_MODE mode, const SYSTEMTIME &initial);
