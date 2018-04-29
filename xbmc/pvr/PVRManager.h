@@ -531,7 +531,7 @@ namespace PVR
     CEventSource<PVREvent> m_events;
 
     CPVRActionListener m_actionListener;
-    CPVRSettings m_settings;
+    std::unique_ptr<CPVRSettings> m_settings;
 
     CPVRChannelPtr m_playingChannel;
     CPVRRecordingPtr m_playingRecording;
