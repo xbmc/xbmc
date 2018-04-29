@@ -1671,7 +1671,14 @@ void CMusicInfoScanner::GetAlbumArtwork(long id, const CAlbum &album)
 {
   if (album.thumbURL.m_url.size())
   {
-    if (m_musicDatabase.GetArtForItem(id, MediaTypeAlbum, "thumb").empty())
+    // Check current album thumb
+    std::string artURL = m_musicDatabase.GetArtForItem(id, MediaTypeAlbum, "thumb");
+    // Use first scraped album image (if there is one) when 
+    // a) no thumb or 
+    // b) thumb is embedded in music file and "prefer online album art" enabled
+    if (artURL.empty() || 
+        (StringUtils::StartsWith(artURL, "image://") && 
+         CServiceBroker::GetSettings().GetBool(CSettings::SETTING_MUSICLIBRARY_PREFERONLINEALBUMART)))
     {
       std::string thumb = CScraperUrl::GetThumbURL(album.thumbURL.GetFirstThumb());
       if (!thumb.empty())
