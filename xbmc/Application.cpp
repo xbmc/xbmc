@@ -2929,7 +2929,7 @@ void CApplication::Stop(int exitCode)
 bool CApplication::PlayMedia(CFileItem& item, const std::string &player, int iPlaylist)
 {
   //If item is a plugin, expand out
-  if (URIUtils::IsPlugin(item.GetDynPath()))
+  for (int i=0; URIUtils::IsPlugin(item.GetDynPath()) && i<5; ++i)
   {
     bool resume = item.m_lStartOffset == STARTOFFSET_RESUME;
 
@@ -3069,7 +3069,7 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
   if (item.IsPlayList())
     return false;
 
-  if (URIUtils::IsPlugin(item.GetDynPath()))
+  for (int i=0; URIUtils::IsPlugin(item.GetDynPath()) && i<5; ++i)
   { // we modify the item so that it becomes a real URL
     bool resume = item.m_lStartOffset == STARTOFFSET_RESUME;
 
