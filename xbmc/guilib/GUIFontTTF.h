@@ -1,10 +1,3 @@
-/*!
-\file GUIFont.h
-\brief
-*/
-
-#ifndef CGUILIB_GUIFONTTTF_H
-#define CGUILIB_GUIFONTTTF_H
 #pragma once
 
 /*
@@ -44,8 +37,9 @@ using namespace DirectX::PackedVector;
 #endif
 
 constexpr size_t LOOKUPTABLE_SIZE = 256 * 8;
-// forward definition
+
 class CBaseTexture;
+class CRenderSystemBase;
 
 struct FT_FaceRec_;
 struct FT_LibraryRec_;
@@ -198,6 +192,8 @@ protected:
   CGUIFontCache<CGUIFontCacheStaticPosition, CGUIFontCacheStaticValue> m_staticCache;
   CGUIFontCache<CGUIFontCacheDynamicPosition, CGUIFontCacheDynamicValue> m_dynamicCache;
 
+  CRenderSystemBase *m_renderSystem = nullptr;
+
 private:
   virtual bool FirstBegin() = 0;
   virtual void LastEnd() = 0;
@@ -214,4 +210,3 @@ private:
 #define CGUIFontTTF CGUIFontTTFDX
 #endif
 
-#endif

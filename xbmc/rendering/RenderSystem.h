@@ -91,6 +91,7 @@ public:
   virtual bool SupportsStereo(RENDER_STEREO_MODE mode) const;
   unsigned int GetMaxTextureSize() const { return m_maxTextureSize; }
   unsigned int GetMinDXTPitch() const { return m_minDXTPitch; }
+  bool UseLimitedColorRange();
 
   virtual void ShowSplash(const std::string& message);
 
@@ -107,6 +108,7 @@ protected:
   int          m_RenderVersionMajor;
   RENDER_STEREO_VIEW m_stereoView;
   RENDER_STEREO_MODE m_stereoMode;
+  bool m_limitedColorRange = false;
 
   std::unique_ptr<CGUIImage> m_splashImage;
   std::unique_ptr<CGUITextLayout> m_splashMessageLayout;

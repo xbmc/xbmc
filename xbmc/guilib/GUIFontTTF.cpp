@@ -184,6 +184,8 @@ CGUIFontTTFBase::CGUIFontTTFBase(const std::string& strFileName) : m_staticCache
   m_ellipsesWidth = m_height = 0.0f;
   m_color = 0;
   m_nTexture = 0;
+
+  m_renderSystem = CServiceBroker::GetRenderSystem();
 }
 
 CGUIFontTTFBase::~CGUIFontTTFBase(void)
@@ -323,8 +325,8 @@ bool CGUIFontTTFBase::Load(const std::string& strFilename, float height, float a
 
   m_textureWidth = CBaseTexture::PadPow2(m_textureWidth);
 
-  if (m_textureWidth > CServiceBroker::GetRenderSystem()->GetMaxTextureSize())
-    m_textureWidth = CServiceBroker::GetRenderSystem()->GetMaxTextureSize();
+  if (m_textureWidth > m_renderSystem->GetMaxTextureSize())
+    m_textureWidth = m_renderSystem->GetMaxTextureSize();
   m_textureScaleX = 1.0f / m_textureWidth;
 
   // set the posX and posY so that our texture will be created on first character write.
@@ -366,7 +368,7 @@ void CGUIFontTTFBase::DrawTextInternal(float x, float y, const std::vector<UTILS
 
   uint32_t rawAlignment = alignment;
   bool dirtyCache(false);
-  bool hardwareClipping = CServiceBroker::GetRenderSystem()->ScissorsCanEffectClipping();
+  bool hardwareClipping = m_renderSystem->ScissorsCanEffectClipping();
   CGUIFontCacheStaticPosition staticPos(x, y);
   CGUIFontCacheDynamicPosition dynamicPos;
   if (hardwareClipping)
@@ -752,9 +754,9 @@ bool CGUIFontTTFBase::CacheCharacter(wchar_t letter, uint32_t style, Character *
         // create the new larger texture
         unsigned int newHeight = m_posY + GetTextureLineHeight();
         // check for max height
-        if (newHeight > CServiceBroker::GetRenderSystem()->GetMaxTextureSize())
+        if (newHeight > m_renderSystem->GetMaxTextureSize())
         {
-          CLog::Log(LOGDEBUG, "%s: New cache texture is too large (%u > %u pixels long)", __FUNCTION__, newHeight, CServiceBroker::GetRenderSystem()->GetMaxTextureSize());
+          CLog::Log(LOGDEBUG, "%s: New cache texture is too large (%u > %u pixels long)", __FUNCTION__, newHeight, m_renderSystem->GetMaxTextureSize());
           FT_Done_Glyph(glyph);
           return false;
         }
@@ -827,7 +829,7 @@ void CGUIFontTTFBase::RenderCharacter(float posX, float posY, const Character *c
                (posY + ch->offsetY + height) * CServiceBroker::GetWinSystem()->GetGfxContext().GetGUIScaleY());
   vertex += CPoint(m_originX, m_originY);
   CRect texture(ch->left, ch->top, ch->right, ch->bottom);
-  if (!CServiceBroker::GetRenderSystem()->ScissorsCanEffectClipping())
+  if (!m_renderSystem->ScissorsCanEffectClipping())
     CServiceBroker::GetWinSystem()->GetGfxContext().ClipRect(vertex, texture);
 
   // transform our positions - note, no scaling due to GUI calibration/resolution occurs
@@ -889,7 +891,7 @@ void CGUIFontTTFBase::RenderCharacter(float posX, float posY, const Character *c
               , b = GET_B(color)
               , a = GET_A(color);
 
-  if(CServiceBroker::GetWinSystem()->UseLimitedColor())
+  if (m_renderSystem->UseLimitedColorRange())
   {
     r = (235 - 16) * r / 255;
     g = (235 - 16) * g / 255;

@@ -67,6 +67,11 @@ bool CRenderSystemBase::SupportsStereo(RENDER_STEREO_MODE mode) const
   }
 }
 
+bool CRenderSystemBase::UseLimitedColorRange()
+{
+  return m_limitedColorRange;
+}
+
 void CRenderSystemBase::ShowSplash(const std::string& message)
 {
   if (!g_advancedSettings.m_splashImage && !(m_splashImage || !message.empty()))

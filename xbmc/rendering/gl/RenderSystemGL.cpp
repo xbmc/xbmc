@@ -212,6 +212,7 @@ bool CRenderSystemGL::BeginRender()
   if (!m_bRenderCreated)
     return false;
 
+  m_limitedColorRange = CServiceBroker::GetWinSystem()->UseLimitedColor();
   return true;
 }
 
