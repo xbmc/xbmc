@@ -29,6 +29,7 @@
 #include "utils/SystemInfo.h"
 #include "VideoSyncD3D.h"
 #include "windowing/GraphicContext.h"
+#include "windowing/windows/Win32DPMSSupport.h"
 #include "WinEventsWin32.h"
 
 #include <algorithm>
@@ -73,6 +74,7 @@ CWinSystemWin32::CWinSystemWin32()
     m_irss.reset(new CIRServerSuite());
     m_irss->Initialize();
   }
+  m_dpms = std::make_shared<CWin32DPMSSupport>();
 }
 
 CWinSystemWin32::~CWinSystemWin32()

@@ -278,7 +278,7 @@ void CApplication::HandlePortEvents()
 #ifdef TARGET_WINDOWS
           else
           {
-            // this may occurs when OS tries to resize application window 
+            // this may occurs when OS tries to resize application window
             //CDisplaySettings::GetInstance().SetCurrentResolution(RES_DESKTOP, true);
             //auto& gfxContext = CServiceBroker::GetWinSystem()->GetGfxContext();
             //gfxContext.SetVideoResolution(gfxContext.GetVideoResolution(), true);
@@ -756,13 +756,11 @@ bool CApplication::Initialize()
   // GUI depends on seek handler
   m_appPlayer.GetSeekHandler().Configure();
 
-  // Init DPMS, before creating the corresponding setting control.
-  m_dpms.reset(new DPMSSupport());
   bool uiInitializationFinished = false;
+
   if (CServiceBroker::GetGUI()->GetWindowManager().Initialized())
   {
     const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-    settings->GetSetting(CSettings::SETTING_POWERMANAGEMENT_DISPLAYSOFF)->SetRequirementsMet(m_dpms->IsSupported());
 
     CServiceBroker::GetGUI()->GetWindowManager().CreateWindows();
 
@@ -3354,6 +3352,14 @@ void CApplication::StopScreenSaverTimer()
 
 bool CApplication::ToggleDPMS(bool manual)
 {
+  auto winSystem = CServiceBroker::GetWinSystem();
+  if (!winSystem)
+    return false;
+
+  std::shared_ptr<CDPMSSupport> dpms = winSystem->GetDPMSManager();
+  if (!dpms)
+    return false;
+
   if (manual || (m_dpmsIsManual == manual))
   {
     if (m_dpmsIsActive)
@@ -3363,11 +3369,11 @@ bool CApplication::ToggleDPMS(bool manual)
       SetRenderGUI(true);
       CheckOSScreenSaverInhibitionSetting();
       CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::GUI, "xbmc", "OnDPMSDeactivated");
-      return m_dpms->DisablePowerSaving();
+      return dpms->DisablePowerSaving();
     }
     else
     {
-      if (m_dpms->EnablePowerSaving(m_dpms->GetSupportedModes()[0]))
+      if (dpms->EnablePowerSaving(dpms->GetSupportedModes()[0]))
       {
         m_dpmsIsActive = true;
         m_dpmsIsManual = manual;
@@ -3487,7 +3493,7 @@ void CApplication::CheckOSScreenSaverInhibitionSetting()
   // Kodi screen saver overrides OS one: always inhibit OS screen saver then
   // except when DPMS is active (inhibiting the screen saver then might also
   // disable DPMS again)
-  if (!m_dpmsIsActive && 
+  if (!m_dpmsIsActive &&
       !CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_SCREENSAVER_MODE).empty() &&
       CServiceBroker::GetWinSystem()->GetOSScreenSaver())
   {
@@ -3512,11 +3518,20 @@ void CApplication::CheckScreenSaverAndDPMS()
   else if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_SCREENSAVER_MODE).empty())
     maybeScreensaver = false;
 
+  auto winSystem = CServiceBroker::GetWinSystem();
+  if (!winSystem)
+    return;
+
+  std::shared_ptr<CDPMSSupport> dpms = winSystem->GetDPMSManager();
+
   bool maybeDPMS = true;
   if (m_dpmsIsActive)
     maybeDPMS = false;
-  else if (!m_dpms->IsSupported())
-    maybeDPMS = false;
+  else if (dpms)
+  {
+    if (!dpms->IsSupported())
+      maybeDPMS = false;
+  }
   else if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_POWERMANAGEMENT_DISPLAYSOFF) <= 0)
     maybeDPMS = false;
 

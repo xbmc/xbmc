@@ -9,6 +9,7 @@
 #include "WinSystem.h"
 #include "ServiceBroker.h"
 #include "guilib/DispResource.h"
+#include "powermanagement/DPMSSupport.h"
 #include "windowing/GraphicContext.h"
 #include "settings/DisplaySettings.h"
 #include "settings/lib/Setting.h"
@@ -263,4 +264,9 @@ void CWinSystemBase::DriveRenderLoop()
 CGraphicContext& CWinSystemBase::GetGfxContext()
 {
   return *m_gfxContext;
+}
+
+std::shared_ptr<CDPMSSupport> CWinSystemBase::GetDPMSManager()
+{
+  return m_dpms;
 }

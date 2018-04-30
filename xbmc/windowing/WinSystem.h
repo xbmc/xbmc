@@ -30,6 +30,7 @@ struct REFRESHRATE
   int   ResInfo_Index;
 };
 
+class CDPMSSupport;
 class CGraphicContext;
 class CRenderSystemBase;
 class IRenderLoop;
@@ -150,6 +151,8 @@ public:
    */
   virtual void* GetHWContext() { return nullptr; }
 
+  std::shared_ptr<CDPMSSupport> GetDPMSManager();
+
 protected:
   void UpdateDesktopResolution(RESOLUTION_INFO& newRes, const std::string &output, int width, int height, float refreshRate, uint32_t dwFlags);
   virtual std::unique_ptr<KODI::WINDOWING::IOSScreenSaver> GetOSScreenSaverImpl() { return nullptr; }
@@ -168,4 +171,5 @@ protected:
 
   std::unique_ptr<IWinEvents> m_winEvents;
   std::unique_ptr<CGraphicContext> m_gfxContext;
+  std::shared_ptr<CDPMSSupport> m_dpms;
 };
