@@ -148,6 +148,9 @@ public:
   void UnregisterRenderLoop(IRenderLoop *client);
   void DriveRenderLoop();
 
+  // winsystem events
+  virtual bool MessagePump() { return false; }
+
   // Access render system interface
   CGraphicContext& GetGfxContext();
 

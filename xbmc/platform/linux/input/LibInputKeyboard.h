@@ -28,12 +28,10 @@
 #include <vector>
 #include <xkbcommon/xkbcommon.h>
 
-class CWinEventsLinux;
-
 class CLibInputKeyboard
 {
 public:
-  CLibInputKeyboard(CWinEventsLinux *winEvents);
+  CLibInputKeyboard();
   ~CLibInputKeyboard();
 
   void ProcessKey(libinput_event_keyboard *e);
@@ -51,8 +49,6 @@ private:
   xkb_led_index_t m_ledindex[3];
 
   int m_leds;
-
-  CWinEventsLinux *m_winEvents;
 
   XBMC_Event m_repeatEvent;
   std::map<libinput_device*, std::vector<int>> m_repeatData;

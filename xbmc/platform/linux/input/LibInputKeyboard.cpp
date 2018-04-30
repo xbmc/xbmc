@@ -20,8 +20,9 @@
 
 #include "LibInputKeyboard.h"
 
+#include "AppInboundProtocol.h"
+#include "ServiceBroker.h"
 #include "utils/log.h"
-#include "windowing/WinEventsLinux.h"
 
 #include <algorithm>
 #include <fcntl.h>
@@ -154,9 +155,8 @@ static const std::map<xkb_keysym_t, XBMCKey> xkbMap =
   // XBMCK_FASTFORWARD clashes with XBMCK_MEDIA_FASTFORWARD
 };
 
-CLibInputKeyboard::CLibInputKeyboard(CWinEventsLinux *winEvents)
-  : m_winEvents(winEvents)
-  , m_repeatTimer(std::bind(&CLibInputKeyboard::KeyRepeatTimeout, this))
+CLibInputKeyboard::CLibInputKeyboard()
+  : m_repeatTimer(std::bind(&CLibInputKeyboard::KeyRepeatTimeout, this))
 {
   m_ctx = xkb_context_new(XKB_CONTEXT_NO_FLAGS);
   if (!m_ctx)
@@ -271,7 +271,9 @@ void CLibInputKeyboard::ProcessKey(libinput_event_keyboard *e)
   event.key.keysym.scancode = scancode;
   event.key.keysym.unicode = unicode;
 
-  m_winEvents->MessagePush(&event);
+  std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
+  if (appPort)
+    appPort->OnEvent(event);
 
   if (pressed && xkb_keymap_key_repeats(m_keymap, xkbkey))
   {
@@ -319,7 +321,10 @@ XBMCKey CLibInputKeyboard::XBMCKeyForKeysym(xkb_keysym_t sym, uint32_t scancode)
 void CLibInputKeyboard::KeyRepeatTimeout()
 {
   m_repeatTimer.RestartAsync(m_repeatRate);
-  m_winEvents->MessagePush(&m_repeatEvent);
+
+  std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
+  if (appPort)
+    appPort->OnEvent(m_repeatEvent);
 }
 
 void CLibInputKeyboard::UpdateLeds(libinput_device *dev)

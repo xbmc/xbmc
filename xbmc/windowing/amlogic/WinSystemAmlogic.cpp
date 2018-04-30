@@ -42,7 +42,6 @@
 #include "utils/log.h"
 #include "utils/SysfsUtils.h"
 #include "threads/SingleLock.h"
-#include "../WinEventsLinux.h"
 
 #include <linux/fb.h>
 
@@ -50,7 +49,8 @@
 
 using namespace KODI;
 
-CWinSystemAmlogic::CWinSystemAmlogic()
+CWinSystemAmlogic::CWinSystemAmlogic() :
+  m_libinput(new CLibInputHandler)
 {
   const char *env_framebuffer = getenv("FRAMEBUFFER");
 
@@ -75,11 +75,11 @@ CWinSystemAmlogic::CWinSystemAmlogic()
   aml_permissions();
   aml_disable_freeScale();
 
-  m_winEvents.reset(new CWinEventsLinux());
   // Register sink
   AE::CAESinkFactory::ClearSinks();
   CAESinkALSA::Register();
   CLinuxPowerSyscall::Register();
+  m_libinput->Start();
 }
 
 CWinSystemAmlogic::~CWinSystemAmlogic()

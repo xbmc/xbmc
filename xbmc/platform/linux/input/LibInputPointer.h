@@ -26,12 +26,10 @@ struct pos
   int Y;
 };
 
-class CWinEventsLinux;
-
 class CLibInputPointer
 {
 public:
-  CLibInputPointer(CWinEventsLinux *winEvents) { m_winEvents = winEvents; };
+  CLibInputPointer() = default;
   ~CLibInputPointer() = default;
 
   void ProcessButton(libinput_event_pointer *e);
@@ -40,6 +38,4 @@ public:
 
 private:
   struct pos m_pos = { 0, 0 };
-
-  CWinEventsLinux *m_winEvents;
 };

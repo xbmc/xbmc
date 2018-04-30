@@ -101,6 +101,9 @@ public:
   // Like CWinSystemX11
   void GetConnectedOutputs(std::vector<std::string>* outputs);
 
+  // winevents override
+  bool MessagePump() override;
+
 protected:
   std::unique_ptr<KODI::WINDOWING::IOSScreenSaver> GetOSScreenSaverImpl() override;
   CSizeInt GetBufferSize() const

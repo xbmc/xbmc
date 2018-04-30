@@ -72,6 +72,9 @@ public:
   void RecreateWindow();
   int GetCrtc() { return m_crtc; }
 
+  // winevents override
+  bool MessagePump() override;
+
 protected:
   std::unique_ptr<KODI::WINDOWING::IOSScreenSaver> GetOSScreenSaverImpl() override;
 

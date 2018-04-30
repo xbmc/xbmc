@@ -77,6 +77,9 @@ public:
   bool IsBackgrounded() const { return m_bIsBackgrounded; }
   void* GetEAGLContextObj();
 
+  // winevents override
+  bool MessagePump() override;
+
 protected:
   void PresentRenderImpl(bool rendered) override;
   void SetVSyncImpl(bool enable) override;

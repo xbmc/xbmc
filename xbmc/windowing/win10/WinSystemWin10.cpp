@@ -755,4 +755,9 @@ WINDOW_STATE CWinSystemWin10::GetState(bool fullScreen) const
   return static_cast<WINDOW_STATE>(fullScreen ? m_fullscreenState : m_windowState);
 }
 
+bool CWinSystemWin10::MessagePump()
+{
+  return m_winEvents->MessagePump();
+}
+
 #pragma pack(pop)

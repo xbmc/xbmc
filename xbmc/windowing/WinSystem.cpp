@@ -283,7 +283,7 @@ void CWinSystemBase::UnregisterRenderLoop(IRenderLoop *client)
 
 void CWinSystemBase::DriveRenderLoop()
 {
-  m_winEvents->MessagePump();
+  MessagePump();
 
   { CSingleLock lock(m_renderLoopSection);
     for (auto i = m_renderLoopClients.begin(); i != m_renderLoopClients.end(); ++i)

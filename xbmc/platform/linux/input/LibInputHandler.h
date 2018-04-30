@@ -20,25 +20,27 @@
 
 #pragma once
 
+#include "threads/Thread.h"
+
 #include <libinput.h>
 #include <libudev.h>
 #include <memory>
 #include <vector>
 
-class CWinEventsLinux;
 class CLibInputKeyboard;
 class CLibInputPointer;
 class CLibInputTouch;
 
-class CLibInputHandler
+class CLibInputHandler : CThread
 {
 public:
-  CLibInputHandler(CWinEventsLinux *winEvents);
+  CLibInputHandler();
   ~CLibInputHandler();
 
-  void OnReadyRead();
+  void Start();
 
 private:
+  void Process() override;
   void ProcessEvent(libinput_event *ev);
   void DeviceAdded(libinput_device *dev);
   void DeviceRemoved(libinput_device *dev);

@@ -80,6 +80,9 @@ public:
   void* GetCGLContextObj();
   void* GetNSOpenGLContext();
 
+  // winevents override
+  bool MessagePump() override;
+
 protected:
   virtual std::unique_ptr<KODI::WINDOWING::IOSScreenSaver> GetOSScreenSaverImpl() override;
 

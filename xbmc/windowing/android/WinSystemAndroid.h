@@ -55,6 +55,9 @@ public:
 
   void MessagePush(XBMC_Event *newEvent);
 
+  // winevents override
+  bool MessagePump() override;
+
 protected:
   CAndroidUtils *m_android;
 
