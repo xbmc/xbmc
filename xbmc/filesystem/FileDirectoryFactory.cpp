@@ -121,7 +121,7 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
     CURL zipURL = URIUtils::CreateArchivePath("apk", url);
 
     CFileItemList items;
-    CDirectory::GetDirectory(zipURL, items, strMask);
+    CDirectory::GetDirectory(zipURL, items, strMask, DIR_FLAG_DEFAULTS);
     if (items.Size() == 0) // no files
       pItem->m_bIsFolder = true;
     else if (items.Size() == 1 && items[0]->m_idepth == 0 && !items[0]->m_bIsFolder)
@@ -142,7 +142,7 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
     CURL zipURL = URIUtils::CreateArchivePath("zip", url);
 
     CFileItemList items;
-    CDirectory::GetDirectory(zipURL, items, strMask);
+    CDirectory::GetDirectory(zipURL, items, strMask, DIR_FLAG_DEFAULTS);
     if (items.Size() == 0) // no files
       pItem->m_bIsFolder = true;
     else if (items.Size() == 1 && items[0]->m_idepth == 0 && !items[0]->m_bIsFolder)

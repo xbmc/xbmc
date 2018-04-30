@@ -153,7 +153,7 @@ BD_DIR_H* DllLibbluray::dir_open(void *handle, const char* rel_path)
   CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - Opening dir %s\n", CURL::GetRedacted(strDirname).c_str());
 
   SDirState *st = new SDirState();
-  if (!CDirectory::GetDirectory(strDirname, st->list))
+  if (!CDirectory::GetDirectory(strDirname, st->list, "", DIR_FLAG_DEFAULTS))
   {
     if (!CFile::Exists(strDirname))
       CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - Error opening dir! (%s)\n", CURL::GetRedacted(strDirname).c_str());

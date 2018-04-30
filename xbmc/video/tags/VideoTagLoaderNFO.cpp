@@ -184,7 +184,7 @@ std::string CVideoTagLoaderNFO::FindNFO(const CFileItem& item,
     else
       strPath = URIUtils::GetDirectory(item.GetPath());
 
-    if (dir.GetDirectory(strPath, items, ".nfo") && items.Size())
+    if (dir.GetDirectory(strPath, items, ".nfo", DIR_FLAG_DEFAULTS) && items.Size())
     {
       int numNFO = -1;
       for (int i = 0; i < items.Size(); i++)

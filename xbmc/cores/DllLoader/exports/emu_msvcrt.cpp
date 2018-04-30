@@ -836,7 +836,7 @@ extern "C"
     strURL = url.Get();
     bVecDirsInited = true;
     vecDirsOpen[iDirSlot].items.Clear();
-    XFILE::CDirectory::GetDirectory(strURL, vecDirsOpen[iDirSlot].items, strMask);
+    XFILE::CDirectory::GetDirectory(strURL, vecDirsOpen[iDirSlot].items, strMask, DIR_FLAG_DEFAULTS);
     if (vecDirsOpen[iDirSlot].items.Size())
     {
       int size = sizeof(data->name);
@@ -956,7 +956,7 @@ extern "C"
     bVecDirsInited = true;
     vecDirsOpen[iDirSlot].items.Clear();
 
-    if (XFILE::CDirectory::GetDirectory(url.Get(), vecDirsOpen[iDirSlot].items))
+    if (XFILE::CDirectory::GetDirectory(url.Get(), vecDirsOpen[iDirSlot].items, "", DIR_FLAG_DEFAULTS))
     {
       vecDirsOpen[iDirSlot].curr_index = 0;
       return (DIR *)&vecDirsOpen[iDirSlot];

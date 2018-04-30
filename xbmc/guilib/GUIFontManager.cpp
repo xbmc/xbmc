@@ -469,9 +469,9 @@ void GUIFontManager::SettingOptionsFontsFiller(SettingConstPtr setting, std::vec
   CFileItemList items2;
 
   // find TTF fonts
-  XFILE::CDirectory::GetDirectory("special://home/media/Fonts/", items2);
+  XFILE::CDirectory::GetDirectory("special://home/media/Fonts/", items2, "", XFILE::DIR_FLAG_DEFAULTS);
 
-  if (XFILE::CDirectory::GetDirectory("special://xbmc/media/Fonts/", items))
+  if (XFILE::CDirectory::GetDirectory("special://xbmc/media/Fonts/", items, "", XFILE::DIR_FLAG_DEFAULTS))
   {
     items.Append(items2);
     for (int i = 0; i < items.Size(); ++i)

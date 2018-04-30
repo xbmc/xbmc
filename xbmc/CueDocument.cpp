@@ -489,7 +489,7 @@ bool CCueDocument::ResolvePath(std::string &strPath, const std::string &strBase)
   if (!CFile::Exists(strPath))
   {
     CFileItemList items;
-    CDirectory::GetDirectory(strDirectory,items);
+    CDirectory::GetDirectory(strDirectory, items, "", DIR_FLAG_DEFAULTS);
     for (int i=0;i<items.Size();++i)
     {
       if (items[i]->IsPath(strPath))

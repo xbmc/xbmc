@@ -97,14 +97,14 @@ bool CFilesystemInstaller::UnpackArchive(std::string path, const std::string& de
     path = URIUtils::CreateArchivePath("zip", CURL(path), "").Get();
 
   CFileItemList files;
-  if (!CDirectory::GetDirectory(path, files))
+  if (!CDirectory::GetDirectory(path, files, "", DIR_FLAG_DEFAULTS))
     return false;
 
   if (files.Size() == 1 && files[0]->m_bIsFolder)
   {
     path = files[0]->GetPath();
     files.Clear();
-    if (!CDirectory::GetDirectory(path, files))
+    if (!CDirectory::GetDirectory(path, files, "", DIR_FLAG_DEFAULTS))
       return false;
   }
   CLog::Log(LOGDEBUG, "Unpacking %s to %s", path.c_str(), dest.c_str());

@@ -1258,7 +1258,7 @@ void CGUIWindowSlideShow::AddItems(const std::string &strPath, path_set *recursi
   CGUIViewStateWindowPictures viewState(items);
 
   // fetch directory and sort accordingly
-  if (!CDirectory::GetDirectory(strPath, items, viewState.GetExtensions(), DIR_FLAG_NO_FILE_DIRS, true))
+  if (!CDirectory::GetDirectory(strPath, items, viewState.GetExtensions(), DIR_FLAG_NO_FILE_DIRS))
     return;
 
   items.Sort(method, order, sortAttributes);

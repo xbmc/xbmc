@@ -105,7 +105,7 @@ JSONRPC_STATUS CFileOperations::GetDirectory(const std::string &method, ITranspo
     extensions = CServiceBroker::GetFileExtensionProvider().GetPictureExtensions();
   }
 
-  if (CDirectory::GetDirectory(strPath, items, extensions))
+  if (CDirectory::GetDirectory(strPath, items, extensions, DIR_FLAG_DEFAULTS))
   {
     // we might need to get additional information for music items
     if (media == "music")
@@ -184,7 +184,7 @@ JSONRPC_STATUS CFileOperations::GetFileDetails(const std::string &method, ITrans
   std::string path = URIUtils::GetDirectory(file);
 
   CFileItemList items;
-  if (path.empty() || !CDirectory::GetDirectory(path, items) || !items.Contains(file))
+  if (path.empty() || !CDirectory::GetDirectory(path, items, "", DIR_FLAG_DEFAULTS) || !items.Contains(file))
     return InvalidParams;
 
   CFileItemPtr item = items.Get(file);
@@ -368,7 +368,7 @@ bool CFileOperations::FillFileItemList(const CVariant &parameterObject, CFileIte
       }
 
       CDirectory directory;
-      if (directory.GetDirectory(strPath, items, extensions))
+      if (directory.GetDirectory(strPath, items, extensions, DIR_FLAG_DEFAULTS))
       {
         // Sort folders and files by filename to avoid reverse item order bug on some platforms,
         // but leave items from a playlist, smartplaylist or upnp container in order supplied

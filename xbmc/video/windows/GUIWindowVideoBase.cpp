@@ -224,7 +224,8 @@ void CGUIWindowVideoBase::OnItemInfo(const CFileItem& fileItem, ADDON::ScraperPt
     if (item.m_bIsFolder && scraper && scraper->Content() != CONTENT_TVSHOWS)
     {
       CFileItemList items;
-      CDirectory::GetDirectory(item.GetPath(), items, CServiceBroker::GetFileExtensionProvider().GetVideoExtensions());
+      CDirectory::GetDirectory(item.GetPath(), items, CServiceBroker::GetFileExtensionProvider().GetVideoExtensions(),
+                               DIR_FLAG_DEFAULTS);
       items.Stack();
 
       // check for media files
@@ -904,7 +905,7 @@ bool CGUIWindowVideoBase::OnPlayStackPart(int iItem)
     return false;
 
   CFileItemList parts;
-  CDirectory::GetDirectory(path, parts);
+  CDirectory::GetDirectory(path, parts, "", DIR_FLAG_DEFAULTS);
 
   for (int i = 0; i < parts.Size(); i++)
     parts[i]->SetLabel(StringUtils::Format(g_localizeStrings.Get(23051).c_str(), i+1));
@@ -1386,7 +1387,7 @@ void CGUIWindowVideoBase::AddToDatabase(int iItem)
   pSelect->SetHeading(CVariant{530}); // Select Genre
   pSelect->Reset();
   CFileItemList items;
-  if (!CDirectory::GetDirectory("videodb://movies/genres/", items))
+  if (!CDirectory::GetDirectory("videodb://movies/genres/", items, "", DIR_FLAG_DEFAULTS))
     return;
   pSelect->SetItems(items);
   pSelect->EnableButton(true, 531); // New Genre

@@ -288,7 +288,8 @@ namespace VIDEO
       }
       else
       { // need to fetch the folder
-        CDirectory::GetDirectory(strDirectory, items, CServiceBroker::GetFileExtensionProvider().GetVideoExtensions());
+        CDirectory::GetDirectory(strDirectory, items, CServiceBroker::GetFileExtensionProvider().GetVideoExtensions(),
+                                 DIR_FLAG_DEFAULTS);
         items.Stack();
 
         // check whether to re-use previously computed fast hash
@@ -326,7 +327,8 @@ namespace VIDEO
 
       if (foundDirectly && !settings.parent_name_root)
       {
-        CDirectory::GetDirectory(strDirectory, items, CServiceBroker::GetFileExtensionProvider().GetVideoExtensions());
+        CDirectory::GetDirectory(strDirectory, items, CServiceBroker::GetFileExtensionProvider().GetVideoExtensions(),
+                                 DIR_FLAG_DEFAULTS);
         items.SetPath(strDirectory);
         GetPathHash(items, hash);
         bSkip = true;

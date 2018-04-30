@@ -274,7 +274,8 @@ bool CAddonInstaller::InstallFromZip(const std::string &path)
   //! @bug some zip files return a single item (root folder) that we think is stored, so we don't use the zip:// protocol
   CURL pathToUrl(path);
   CURL zipDir = URIUtils::CreateArchivePath("zip", pathToUrl, "");
-  if (!CDirectory::GetDirectory(zipDir, items) || items.Size() != 1 || !items[0]->m_bIsFolder)
+  if (!CDirectory::GetDirectory(zipDir, items, "", DIR_FLAG_DEFAULTS) ||
+      items.Size() != 1 || !items[0]->m_bIsFolder)
   {
     CServiceBroker::GetEventLog().AddWithNotification(EventPtr(new CNotificationEvent(24045,
         StringUtils::Format(g_localizeStrings.Get(24143).c_str(), path.c_str()),
@@ -596,7 +597,7 @@ bool CAddonInstallJob::DoWork()
 
       CFileItemList archivedFiles;
       AddonPtr temp;
-      if (!CDirectory::GetDirectory(archive, archivedFiles) ||
+      if (!CDirectory::GetDirectory(archive, archivedFiles, "", DIR_FLAG_DEFAULTS) ||
           archivedFiles.Size() != 1 || !archivedFiles[0]->m_bIsFolder ||
           !CServiceBroker::GetAddonMgr().LoadAddonDescription(archivedFiles[0]->GetPath(), temp))
       {

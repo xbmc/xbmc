@@ -231,7 +231,7 @@ void CGUIDialogCMSSettings::Cms3dLutsFiller(
   std::string current3dlut = CServiceBroker::GetSettings().GetString(SETTING_VIDEO_CMS3DLUT);
   if (!current3dlut.empty())
     current3dlut = URIUtils::GetDirectory(current3dlut);
-  XFILE::CDirectory::GetDirectory(current3dlut, items, ".3dlut");
+  XFILE::CDirectory::GetDirectory(current3dlut, items, ".3dlut", XFILE::DIR_FLAG_DEFAULTS);
 
   for (int i = 0; i < items.Size(); i++)
   {
