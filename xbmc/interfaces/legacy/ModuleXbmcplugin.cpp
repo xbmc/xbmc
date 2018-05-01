@@ -31,6 +31,8 @@ namespace XBMCAddon
     bool addDirectoryItem(int handle, const String& url, const xbmcgui::ListItem* listItem,
                           bool isFolder, int totalItems)
     {
+      if (listItem == nullptr)
+        throw new XBMCAddon::WrongTypeException("None not allowed as argument for listitem");
       AddonClass::Ref<xbmcgui::ListItem> pListItem(listItem);
       pListItem->item->SetPath(url);
       pListItem->item->m_bIsFolder = isFolder;
@@ -69,6 +71,8 @@ namespace XBMCAddon
 
     void setResolvedUrl(int handle, bool succeeded, const xbmcgui::ListItem* listItem)
     {
+      if (listItem == nullptr)
+        throw new XBMCAddon::WrongTypeException("None not allowed as argument for listitem");
       AddonClass::Ref<xbmcgui::ListItem> pListItem(listItem);
       XFILE::CPluginDirectory::SetResolvedUrl(handle, succeeded, pListItem->item.get());
     }
