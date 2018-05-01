@@ -4,7 +4,7 @@ uniform sampler2D img;
 uniform float m_stretch;
 uniform float m_alpha;
 in vec2 m_cord;
-out fragColor;
+out vec4 fragColor;
 
 vec2 stretch(vec2 pos)
 {
