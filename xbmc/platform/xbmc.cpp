@@ -85,23 +85,7 @@ extern "C" int XBMC_Run(bool renderGUI, const CAppParamParser &params)
   }
 #endif
 
-  try
-  {
-    status = g_application.Run(params);
-  }
-#ifdef TARGET_WINDOWS
-  catch (const XbmcCommons::UncheckedException &e)
-  {
-    e.LogThrowMessage("CApplication::Create()");
-    CMessagePrinter::DisplayError("ERROR: Exception caught on main loop. Exiting");
-    status = -1;
-  }
-#endif
-  catch(...)
-  {
-    CMessagePrinter::DisplayError("ERROR: Exception caught on main loop. Exiting");
-    status = -1;
-  }
+  status = g_application.Run(params);
 
 #ifdef TARGET_WINDOWS_DESKTOP
   // the end
