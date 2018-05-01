@@ -89,7 +89,7 @@ def main():
             packet = PacketACTION(actionmessage=action['content'], actiontype=ACTION_BUTTON)
         elif action['type'] == TYPE_BUTTON:
             packet = PacketBUTTON(code=0, repeat=0, down=1, queue=1, map_name=keymap, button_name=action['content'], amount=0)
-        packet.send(sock, addr)
+        packet.send(sock, addr, uid=0)
 
 if __name__=="__main__":
     main()
