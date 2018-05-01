@@ -86,7 +86,7 @@ bool CGUIDialogBusy::WaitOnEvent(CEvent &event, unsigned int displaytime /* = 10
         }
       }
       
-      dialog->Close();
+      dialog->Close(true);
     }
   }
   return !cancelled;
