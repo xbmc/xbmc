@@ -21,6 +21,7 @@
 
 #include "GUIDialogSimpleMenu.h"
 #include "ServiceBroker.h"
+#include "dialogs/GUIDialogBusy.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "GUIDialogSelect.h"
@@ -29,10 +30,29 @@
 #include "utils/URIUtils.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
+#include "threads/Thread.h"
 #include "utils/log.h"
 #include "video/VideoInfoTag.h"
 #include "URL.h"
 #include "utils/Variant.h"
+
+class CGetDirectoryItems : public IRunnable
+{
+public:
+  CGetDirectoryItems(const std::string &path, CFileItemList &items, const XFILE::CDirectory::CHints &hints)
+  : m_path(path), m_items(items), m_hints(hints)
+  {
+  }
+  void Run() override
+  {
+    m_result = XFILE::CDirectory::GetDirectory(m_path, m_items, m_hints);
+  }
+  bool m_result;
+protected:
+  std::string m_path;
+  CFileItemList &m_items;
+  XFILE::CDirectory::CHints m_hints;
+};
 
 bool CGUIDialogSimpleMenu::ShowPlaySelection(CFileItem& item)
 {
@@ -81,7 +101,7 @@ bool CGUIDialogSimpleMenu::ShowPlaySelection(CFileItem& item, const std::string&
 
   CFileItemList items;
 
-  if (!XFILE::CDirectory::GetDirectory(directory, items, XFILE::CDirectory::CHints()))
+  if (!GetDirectoryItems(directory, items, XFILE::CDirectory::CHints()))
   {
     CLog::Log(LOGERROR, "CGUIWindowVideoBase::ShowPlaySelection - Failed to get play directory for %s", directory.c_str());
     return true;
@@ -119,8 +139,7 @@ bool CGUIDialogSimpleMenu::ShowPlaySelection(CFileItem& item, const std::string&
     }
 
     items.Clear();
-    // @todo BusyDialog
-    if (!XFILE::CDirectory::GetDirectory(item_new->GetPath(), items, XFILE::CDirectory::CHints()) || items.IsEmpty())
+    if (!GetDirectoryItems(item_new->GetPath(), items, XFILE::CDirectory::CHints()) || items.IsEmpty())
     {
       CLog::Log(LOGERROR, "CGUIWindowVideoBase::ShowPlaySelection - Failed to get any items %s", item_new->GetPath().c_str());
       break;
@@ -128,4 +147,15 @@ bool CGUIDialogSimpleMenu::ShowPlaySelection(CFileItem& item, const std::string&
   }
 
   return false;
+}
+
+bool CGUIDialogSimpleMenu::GetDirectoryItems(const std::string &path, CFileItemList &items,
+                                             const XFILE::CDirectory::CHints &hints)
+{
+  CGetDirectoryItems getItems(path, items, hints);
+  if (!CGUIDialogBusy::Wait(&getItems))
+  {
+    return false;
+  }
+  return getItems.m_result;
 }
