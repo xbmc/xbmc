@@ -53,8 +53,3 @@ private:
   CGLContextEGL m_pGLContext;
 
 };
-
-#if defined(HAS_GL)
-XBMC_GLOBAL_REF(CWinSystemMirGLContext, g_Windowing);
-#define g_Windowing XBMC_GLOBAL_USE(CWinSystemMirGLContext)
-#endif
