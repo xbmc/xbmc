@@ -79,6 +79,7 @@ CWinSystemAmlogic::CWinSystemAmlogic() :
   AE::CAESinkFactory::ClearSinks();
   CAESinkALSA::Register();
   CLinuxPowerSyscall::Register();
+  m_lirc.reset(OPTIONALS::LircRegister());
   m_libinput->Start();
 }
 
