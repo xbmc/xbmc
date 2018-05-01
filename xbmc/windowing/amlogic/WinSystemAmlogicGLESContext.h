@@ -55,6 +55,3 @@ private:
   CEGLContextUtils m_pGLContext;
 
 };
-
-XBMC_GLOBAL_REF(CWinSystemAmlogicGLESContext, g_Windowing);
-#define g_Windowing XBMC_GLOBAL_USE(CWinSystemAmlogicGLESContext)
