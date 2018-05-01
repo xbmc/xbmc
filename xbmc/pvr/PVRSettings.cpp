@@ -35,12 +35,14 @@ using namespace PVR;
 CPVRSettings::CPVRSettings(const std::set<std::string> &settingNames)
 {
   Init(settingNames);
+  CServiceBroker::GetSettings().GetSettingsManager()->RegisterSettingsHandler(this);
   CServiceBroker::GetSettings().RegisterCallback(this, settingNames);
 }
 
 CPVRSettings::~CPVRSettings()
 {
   CServiceBroker::GetSettings().UnregisterCallback(this);
+  CServiceBroker::GetSettings().GetSettingsManager()->UnregisterSettingsHandler(this);
 }
 
 void CPVRSettings::Init(const std::set<std::string> &settingNames)
@@ -57,6 +59,21 @@ void CPVRSettings::Init(const std::set<std::string> &settingNames)
     CSingleLock lock(m_critSection);
     m_settings.insert(std::make_pair(settingName, setting->Clone(settingName)));
   }
+}
+
+void CPVRSettings::OnSettingsLoaded()
+{
+  std::set<std::string> settingNames;
+
+  {
+    CSingleLock lock(m_critSection);
+    for (const auto& settingName : m_settings)
+      settingNames.insert(settingName.first);
+
+    m_settings.clear();
+  }
+
+  Init(settingNames);
 }
 
 void CPVRSettings::OnSettingChanged(std::shared_ptr<const CSetting> setting)

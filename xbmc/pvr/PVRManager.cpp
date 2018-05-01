@@ -141,7 +141,13 @@ CPVRManager::CPVRManager(void) :
     m_bFirstStart(true),
     m_bEpgsCreated(false),
     m_managerState(ManagerStateStopped),
-    m_parentalTimer(new CStopWatch)
+    m_parentalTimer(new CStopWatch),
+    m_settings({
+      CSettings::SETTING_PVRPOWERMANAGEMENT_ENABLED,
+      CSettings::SETTING_PVRPOWERMANAGEMENT_SETWAKEUPCMD,
+      CSettings::SETTING_PVRPARENTAL_ENABLED,
+      CSettings::SETTING_PVRPARENTAL_DURATION
+    })
 {
   CAnnouncementManager::GetInstance().AddAnnouncer(this);
 }
@@ -243,13 +249,6 @@ void CPVRManager::ResetProperties(void)
 
 void CPVRManager::Init()
 {
-  m_settings.reset(new CPVRSettings({
-    CSettings::SETTING_PVRPOWERMANAGEMENT_ENABLED,
-    CSettings::SETTING_PVRPOWERMANAGEMENT_SETWAKEUPCMD,
-    CSettings::SETTING_PVRPARENTAL_ENABLED,
-    CSettings::SETTING_PVRPARENTAL_DURATION
-  }));
-
   // initial check for enabled addons
   // if at least one pvr addon is enabled, PVRManager start up
   CJobManager::GetInstance().AddJob(new CPVRStartupJob(), nullptr);
@@ -473,10 +472,10 @@ void CPVRManager::Process(void)
 bool CPVRManager::SetWakeupCommand(void)
 {
 #if !defined(TARGET_DARWIN_IOS) && !defined(TARGET_WINDOWS_STORE)
-  if (!m_settings->GetBoolValue(CSettings::SETTING_PVRPOWERMANAGEMENT_ENABLED))
+  if (!m_settings.GetBoolValue(CSettings::SETTING_PVRPOWERMANAGEMENT_ENABLED))
     return false;
 
-  const std::string strWakeupCommand(m_settings->GetStringValue(CSettings::SETTING_PVRPOWERMANAGEMENT_SETWAKEUPCMD));
+  const std::string strWakeupCommand(m_settings.GetStringValue(CSettings::SETTING_PVRPOWERMANAGEMENT_SETWAKEUPCMD));
   if (!strWakeupCommand.empty() && m_timers)
   {
     time_t iWakeupTime;
@@ -678,11 +677,11 @@ bool CPVRManager::IsParentalLocked(const CPVRChannelPtr &channel)
   if (// different channel
       (!currentChannel || channel != currentChannel) &&
       // parental control enabled
-      m_settings->GetBoolValue(CSettings::SETTING_PVRPARENTAL_ENABLED) &&
+      m_settings.GetBoolValue(CSettings::SETTING_PVRPARENTAL_ENABLED) &&
       // channel is locked
       channel && channel->IsLocked())
   {
-    float parentalDurationMs = m_settings->GetIntValue(CSettings::SETTING_PVRPARENTAL_DURATION) * 1000.0f;
+    float parentalDurationMs = m_settings.GetIntValue(CSettings::SETTING_PVRPARENTAL_DURATION) * 1000.0f;
     bReturn = m_parentalTimer &&
         (!m_parentalTimer->IsRunning() ||
           m_parentalTimer->GetElapsedMilliseconds() > parentalDurationMs);
