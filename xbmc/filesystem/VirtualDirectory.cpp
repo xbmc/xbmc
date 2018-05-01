@@ -72,7 +72,6 @@ bool CVirtualDirectory::GetDirectory(const CURL& url, CFileItemList &items, bool
     flags |= DIR_FLAG_NO_FILE_DIRS;
   if (!strPath.empty() && strPath != "files://")
   {
-    // @todo BusyDialog
     return CDirectory::GetDirectory(strPath, items, m_strFileMask, flags);
   }
 
