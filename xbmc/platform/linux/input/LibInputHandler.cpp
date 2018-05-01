@@ -31,6 +31,7 @@
 #include <string.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
+#include <thread>
 
 static int open_restricted(const char *path, int flags, void __attribute__((unused)) *user_data)
 {
@@ -134,6 +135,8 @@ void CLibInputHandler::Process()
       ProcessEvent(ev);
       libinput_event_destroy(ev);
     }
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(10));
   }
 }
 
