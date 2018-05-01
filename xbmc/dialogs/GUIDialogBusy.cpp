@@ -69,6 +69,11 @@ bool CGUIDialogBusy::WaitOnEvent(CEvent &event, unsigned int displaytime /* = 10
     CGUIDialogBusy* dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogBusy>(WINDOW_DIALOG_BUSY);
     if (dialog)
     {
+      if (dialog->IsDialogRunning())
+      {
+        throw std::logic_error("busy dialog already running");
+      }
+
       dialog->Open();
 
       while(!event.WaitMSec(1))
