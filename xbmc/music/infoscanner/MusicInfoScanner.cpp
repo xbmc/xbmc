@@ -1129,70 +1129,44 @@ void MUSIC_INFO::CMusicInfoScanner::RetrieveLocalArt()
       m_handle->SetProgress(count, m_albumsAdded.size());
     }
 
-    /*
-    Adjust album art for disc sets
-
-    When songs from an album are are all under a unique common folder (no songs
-    from other albums) but spread over multiple subfolders, then adjust the
-    album art by looking for local art in the (common) album folder.
-    It has already been during set by FindArtForAlbums() to either the art of
-    the last subfolder processed (if there is any), or to the first song in
-    that subfolder with embedded art (if there is any).
-    Not when songs from different albums are in one folder, no paths are returned.
-    */
-
+    // Fetch album path and any subfolders (disc sets).
+    // No paths found when songs from different albums are in one folder.
     std::vector<std::pair<std::string, int>> paths;
     m_musicDatabase.GetAlbumPaths(albumId, paths);
-    // Get album path, the common path when more than one 
     for (const auto& pathpair : paths)
     {
       if (album.strPath.empty())
         album.strPath = pathpair.first.c_str();
       else
+        // When more than one album path is the common path 
         URIUtils::GetCommonPath(album.strPath, pathpair.first.c_str());
     }
+    /*
+    Automatically fetch local art from album folder
+
+    Providing all songs from an album are are under a unique common album
+    folder (no songs from other albums) then thumb has been set to local art,
+    or failing that to embedded art, during scanning by FindArtForAlbums(). 
+    But when songs are also spread over multiple subfolders within it e.g. disc
+    sets, it will have been set to either the art of the last subfolder that was
+    processed (if there is any), or from the first song in that subfolder with
+    embedded art (if there is any). To correct this and find any thumb in the
+    (common) album folder add "thumb" to those missing.
+    */
+    std::map<std::string, std::string> art;
+    m_musicDatabase.GetArtForItem(albumId, MediaTypeAlbum, art);
+    std::vector<std::string> missing = GetMissingArtTypes(MediaTypeAlbum, art);
+    if (paths.size() > 1 && album.art.find("thumb") == album.art.end())
+      missing.emplace_back("thumb"); //Adjust album thumb for disc sets
+    if (!missing.empty())
+    {
+      SetAlbumArtwork(album, missing, album.strPath);
+    }
+
+    //Automatically fetch local art from disc set subfolders
     if (paths.size() > 1)
-    {      
-      // Get art from any local files in album folder.
-      // This has not been done during scan
-      CFileItem albumItem(album.strPath, true);
-      std::string albumArt = albumItem.GetUserMusicThumb(true);
-
-      /*
-      When we have a true disc set - subfolders AND songs tagged with same
-      unique discnumber in in each subfolder - save the disc cover art, and if
-      we don't have album folder art then use the first disc in set rather
-      than the last processed.
-      */
-      CMusicThumbLoader loader;
-      for (const auto& pathpair : paths)
-      {
-        int discnum = m_musicDatabase.GetDiscnumberForPathID(pathpair.second);
-        if (discnum > 0)
-        {
-          // Get art for path from textures db (could be embedded or local file)
-          CFileItem discItem(pathpair.first.c_str(), true);
-          std::string artURL = loader.GetCachedImage(discItem, "thumb");
-          if (!artURL.empty())
-          {
-            // Save the disc set cover art as album "thumb<disc number>"
-            std::string strArtType = StringUtils::Format("thumb%i", discnum);
-            m_musicDatabase.SetArtForItem(album.idAlbum, MediaTypeAlbum, strArtType, artURL);
-
-            if (albumArt.empty() && discnum == 1)
-            { // Use art for first disc in set as album art
-              albumArt = artURL;
-            }
-          }
-        }
-      }
-      // Save Album thumb
-      if (!albumArt.empty())
-      {
-        m_musicDatabase.SetArtForItem(album.idAlbum, MediaTypeAlbum, "thumb", albumArt);
-        // Assign art as folder thumb (in textures db) as well
-        loader.SetCachedImage(albumItem, "thumb", albumArt);
-      }
+    {          
+      SetDiscSetArtwork(album, paths);    
     }
 
     /*
@@ -1280,40 +1254,73 @@ CMusicInfoScanner::UpdateDatabaseAlbumInfo(CAlbum& album,
     return INFO_ERROR;
 
   CMusicAlbumInfo albumInfo;
+  INFO_RET albumDownloadStatus(INFO_CANCELLED);
+  std::string origArtist(album.GetAlbumArtistString());
+  std::string origAlbum(album.strAlbum);
 
-loop:
-  CLog::Log(LOGDEBUG, "%s downloading info for: %s", __FUNCTION__, album.strAlbum.c_str());
-  INFO_RET albumDownloadStatus = DownloadAlbumInfo(album, scraper, albumInfo, !bAllowSelection, pDialog);
-  if (albumDownloadStatus == INFO_NOT_FOUND)
+  bool stop(false);
+  while (!stop)
   {
-    if (pDialog && bAllowSelection)
+    stop = true;
+    CLog::Log(LOGDEBUG, "%s downloading info for: %s", __FUNCTION__, album.strAlbum.c_str());
+    albumDownloadStatus = DownloadAlbumInfo(album, scraper, albumInfo, !bAllowSelection, pDialog);
+    if (albumDownloadStatus == INFO_NOT_FOUND)
     {
-      if (!CGUIKeyboardFactory::ShowAndGetInput(album.strAlbum, CVariant{g_localizeStrings.Get(16011)}, false))
-        return INFO_CANCELLED;
-
-      std::string strTempArtist(album.GetAlbumArtistString());
-      if (!CGUIKeyboardFactory::ShowAndGetInput(strTempArtist, CVariant{g_localizeStrings.Get(16025)}, false))
-        return INFO_CANCELLED;
-
-      album.strArtistDesc = strTempArtist;
-      goto loop;
-    }
-    else
-    {
-      CServiceBroker::GetEventLog().Add(EventPtr(new CMediaLibraryEvent(
-        MediaTypeAlbum, album.strPath, 24146,
-        StringUtils::Format(g_localizeStrings.Get(24147).c_str(), MediaTypeAlbum, album.strAlbum.c_str()),
-        CScraperUrl::GetThumbURL(album.thumbURL.GetFirstThumb()), CURL::GetRedacted(album.strPath), EventLevel::Warning)));
-    }
+      if (pDialog && bAllowSelection)
+      {
+        std::string strTempAlbum(album.strAlbum);
+        if (!CGUIKeyboardFactory::ShowAndGetInput(strTempAlbum, CVariant{ g_localizeStrings.Get(16011) }, false))
+          albumDownloadStatus = INFO_CANCELLED;
+        else
+        {
+          std::string strTempArtist(album.GetAlbumArtistString());
+          if (!CGUIKeyboardFactory::ShowAndGetInput(strTempArtist, CVariant{ g_localizeStrings.Get(16025) }, false))
+            albumDownloadStatus = INFO_CANCELLED;
+          else
+          {
+            album.strAlbum = strTempAlbum;
+            album.strArtistDesc = strTempArtist;
+            stop = false;
+          }
+        }
+      }
+      else
+      {
+        CServiceBroker::GetEventLog().Add(EventPtr(new CMediaLibraryEvent(
+          MediaTypeAlbum, album.strPath, 24146,
+          StringUtils::Format(g_localizeStrings.Get(24147).c_str(), MediaTypeAlbum, album.strAlbum.c_str()),
+          CScraperUrl::GetThumbURL(album.thumbURL.GetFirstThumb()), CURL::GetRedacted(album.strPath), EventLevel::Warning)));
+      }
+    }    
   }
-  else if (albumDownloadStatus == INFO_ADDED)
+  
+  // Restore original album and artist name, possibly changed by manual entry
+  // to get info but should not change outside merge
+  album.strAlbum = origAlbum;
+  album.strArtistDesc = origArtist;
+
+  if (albumDownloadStatus == INFO_ADDED)
   {
     bool overridetags = CServiceBroker::GetSettings().GetBool(CSettings::SETTING_MUSICLIBRARY_OVERRIDETAGS);
     album.MergeScrapedAlbum(albumInfo.GetAlbum(), overridetags);
     m_musicDatabase.UpdateAlbum(album);
-    GetAlbumArtwork(album.idAlbum, album);
     albumInfo.SetLoaded(true);
   }
+
+  // Check album art.
+  // Fill any gaps with local art files, or use first available from scraped
+  // list (when it has been successfuly scraped). Do this even when no info
+  // added (cancelled, not found or error), there may be new local art files.
+  m_musicDatabase.GetArtForItem(album.idAlbum, MediaTypeAlbum , album.art);
+  std::vector<std::string> missing = GetMissingArtTypes(MediaTypeAlbum, album.art);
+  if (!missing.empty())
+  {
+    if (album.strPath.empty())
+      m_musicDatabase.GetAlbumPath(album.idAlbum, album.strPath);
+    if (SetAlbumArtwork(album, missing, album.strPath))
+      albumDownloadStatus = INFO_ADDED; // Local art added
+  }
+
   return albumDownloadStatus;
 }
 
@@ -1326,27 +1333,40 @@ CMusicInfoScanner::UpdateDatabaseArtistInfo(CArtist& artist,
   if (!scraper)
     return INFO_ERROR;
 
-  CMusicArtistInfo artistInfo;    
-loop:
-  CLog::Log(LOGDEBUG, "%s downloading info for: %s", __FUNCTION__, artist.strArtist.c_str());
-  INFO_RET artistDownloadStatus = DownloadArtistInfo(artist, scraper, artistInfo, !bAllowSelection, pDialog);
-  if (artistDownloadStatus == INFO_NOT_FOUND)
+  CMusicArtistInfo artistInfo;
+  INFO_RET artistDownloadStatus(INFO_CANCELLED);
+  std::string origArtist(artist.strArtist);
+
+  bool stop(false);
+  while (!stop)
   {
-    if (pDialog && bAllowSelection)
+    stop = true;
+    CLog::Log(LOGDEBUG, "%s downloading info for: %s", __FUNCTION__, artist.strArtist.c_str());
+    artistDownloadStatus = DownloadArtistInfo(artist, scraper, artistInfo, !bAllowSelection, pDialog);
+    if (artistDownloadStatus == INFO_NOT_FOUND)
     {
-      if (!CGUIKeyboardFactory::ShowAndGetInput(artist.strArtist, CVariant{g_localizeStrings.Get(16025)}, false))
-        return INFO_CANCELLED;
-      goto loop;
-    }
-    else
-    {
-      CServiceBroker::GetEventLog().Add(EventPtr(new CMediaLibraryEvent(
-        MediaTypeArtist, artist.strPath, 24146,
-        StringUtils::Format(g_localizeStrings.Get(24147).c_str(), MediaTypeArtist, artist.strArtist.c_str()),
-        CScraperUrl::GetThumbURL(artist.thumbURL.GetFirstThumb()), CURL::GetRedacted(artist.strPath), EventLevel::Warning)));
+      if (pDialog && bAllowSelection)
+      {
+        if (!CGUIKeyboardFactory::ShowAndGetInput(artist.strArtist, CVariant{ g_localizeStrings.Get(16025) }, false))
+          artistDownloadStatus = INFO_CANCELLED;
+        else
+          stop = false;
+      }
+      else
+      {
+        CServiceBroker::GetEventLog().Add(EventPtr(new CMediaLibraryEvent(
+          MediaTypeArtist, artist.strPath, 24146,
+          StringUtils::Format(g_localizeStrings.Get(24147).c_str(), MediaTypeArtist, artist.strArtist.c_str()),
+          CScraperUrl::GetThumbURL(artist.thumbURL.GetFirstThumb()), CURL::GetRedacted(artist.strPath), EventLevel::Warning)));
+      }
     }
   }
-  else if (artistDownloadStatus == INFO_ADDED)
+  
+  // Restore original artist name, possibly changed by manual entry to get info
+  // but should not change outside merge
+  artist.strArtist = origArtist;
+    
+  if (artistDownloadStatus == INFO_ADDED)
   {
     artist.MergeScrapedArtist(artistInfo.GetArtist(), CServiceBroker::GetSettings().GetBool(CSettings::SETTING_MUSICLIBRARY_OVERRIDETAGS));
     m_musicDatabase.UpdateArtist(artist);
@@ -1356,7 +1376,7 @@ loop:
   // Check artist art.
   // Fill any gaps with local art files, or use first available from scraped
   // list (when it has been successfuly scraped). Do this even when no info
-  // added, there may be new local art files.
+  // added (cancelled, not found or error), there may be new local art files.
   m_musicDatabase.GetArtForItem(artist.idArtist, MediaTypeArtist, artist.art);
   std::vector<std::string> missing = GetMissingArtTypes(MediaTypeArtist, artist.art);
   if (!missing.empty())
@@ -1375,10 +1395,11 @@ loop:
       // artist, this will be blank
       m_musicDatabase.GetOldArtistPath(artist.idArtist, artfolder);
     }
-    SetArtistArtwork(artist, missing, artfolder);
+    if (SetArtistArtwork(artist, missing, artfolder))
+      artistDownloadStatus = INFO_ADDED; // Local art added
   }
 
-  return artistDownloadStatus;
+  return artistDownloadStatus; // Added, cancelled or not found
 }
 
 #define THRESHOLD .95f
@@ -1888,19 +1909,34 @@ void CMusicInfoScanner::ScannerWait(unsigned int milliseconds)
     XbmcThreads::ThreadSleep(milliseconds);
 }
 
+std::vector<std::string> CMusicInfoScanner::GetArtTypesToScan(const MediaType& mediaType)
+{
+  std::vector<std::string> arttypes;
+  // Get default types of art that are to be automatically fetched during scanning
+  if (mediaType == MediaTypeArtist)
+  {
+    arttypes = { "thumb", "fanart" };
+    arttypes.insert(arttypes.end(), g_advancedSettings.m_musicArtistExtraArt.begin(), 
+      g_advancedSettings.m_musicArtistExtraArt.end());
+  }
+  else if (mediaType == MediaTypeAlbum)
+  {
+    arttypes = { "thumb" };
+    arttypes.insert(arttypes.end(), g_advancedSettings.m_musicAlbumExtraArt.begin(), 
+      g_advancedSettings.m_musicAlbumExtraArt.end());
+  }
+
+  return arttypes;
+}
+
 std::vector<std::string> CMusicInfoScanner::GetMissingArtTypes(const MediaType& mediaType, const std::map<std::string, std::string>& art)
 {
   std::vector<std::string> missing;
   std::vector<std::string> arttypes;
-  // Set default types of art that are automatically fetched during scanning
-  if (mediaType == MediaTypeArtist)
-  {
-    arttypes = { "thumb", "fanart" };
-    arttypes.insert(arttypes.end(), g_advancedSettings.m_musicArtistExtraArt.begin(), g_advancedSettings.m_musicArtistExtraArt.end());
-  }
-  else if (mediaType == MediaTypeAlbum)
-    arttypes = { "thumb" };
-  
+  // Get default types of art that are automatically fetched during scanning
+  arttypes = GetArtTypesToScan(mediaType);
+
+  // Find the types which are missing from the given art 
   if (art.empty())
     missing = arttypes;
   else
@@ -1915,14 +1951,14 @@ std::vector<std::string> CMusicInfoScanner::GetMissingArtTypes(const MediaType& 
   return missing;
 }
 
-void CMusicInfoScanner::SetArtistArtwork(CArtist& artist, const std::vector<std::string>& missing, const std::string& artfolder)
-{   
+bool CMusicInfoScanner::SetArtistArtwork(CArtist& artist, const std::vector<std::string>& missing, const std::string& artfolder)
+{
   if (missing.empty())
-    return; // All types of artist art found
+    return false; // All types of artist art found
    
   // Any extra type of art missing, fetch the image files from the art folder.
   // Thumbs and fanart have own advanced settings for file names, what other
-  // art types to fetch automatically is optional to, but local file name must
+  // art types to fetch automatically is optional too, but local file name must
   // match the type
   CFileItemList items;
   bool extratype = false;
@@ -1938,6 +1974,7 @@ void CMusicInfoScanner::SetArtistArtwork(CArtist& artist, const std::vector<std:
         DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_READ_CACHE | DIR_FLAG_NO_FILE_INFO);
 
   // Get missing art
+  int addedCount = 0;
   for (const auto& type : missing)
   {
     std::string strArt;
@@ -1985,11 +2022,199 @@ void CMusicInfoScanner::SetArtistArtwork(CArtist& artist, const std::vector<std:
       CTextureCache::GetInstance().BackgroundCacheImage(strArt);
       artist.art.insert(make_pair(type, strArt));
       m_musicDatabase.SetArtForItem(artist.idArtist, MediaTypeArtist, type, strArt);
+      addedCount++;
     }
   }
 
+  return addedCount > 0;
 }
 
+bool CMusicInfoScanner::SetAlbumArtwork(CAlbum& album, std::vector<std::string>& missing, const std::string& artfolder)
+{
+  if (album.thumbURL.m_url.empty())
+  {
+    if (artfolder.empty())
+      return false; // No local or scraped art to process
+  }
+  else if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_MUSICLIBRARY_PREFERONLINEALBUMART))
+  {  
+    // When "prefer online album art" enabled, and we have a scraped cover then
+    // if the thumb is embedded replace it by adding "thumb" to the missing types
+    std::map<std::string, std::string>::iterator it;
+    it = album.art.find("thumb");
+    if (it != album.art.end() && StringUtils::StartsWith(it->second, "image://"))
+      missing.emplace_back("thumb");
+  }
+
+  if (missing.empty())
+    return false; // All types of album art found
+
+  // Any extra type of art missing, fetch the image files from the art folder.
+  // Thumbs and fanart have own advanced settings for file names, what other
+  // art types to fetch automatically is optional too, but local file name must
+  // match the type
+  CFileItemList items;
+  bool extratype = false;
+  for (const auto& type : missing)
+    if (type != "thumb")
+    {
+      extratype = true;
+      break;
+    }
+  if (extratype)
+    CDirectory::GetDirectory(artfolder, items,
+      CServiceBroker::GetFileExtensionProvider().GetPictureExtensions(),
+      DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_READ_CACHE | DIR_FLAG_NO_FILE_INFO);
+
+  // Get missing art
+  int addedCount = 0;
+  for (const auto& type : missing)
+  {
+    std::string strArt;
+    if (!artfolder.empty())
+    {
+      CFileItem item(artfolder, true);
+      if (type == "thumb")
+        // Local music thumbnail images named by <musicthumbs>
+        strArt = item.GetUserMusicThumb(true);
+      else if (type == "fanart")
+        // Local music fanart images named by <fanart>
+        strArt = item.GetLocalFanart();
+      else
+      {
+        // Check for images with type as name case and ext insenitively
+        for (int j = 0; j < items.Size(); j++)
+        {
+          std::string strCandidate = URIUtils::GetFileName(items[j]->GetPath());
+          URIUtils::RemoveExtension(strCandidate);
+          if (StringUtils::EqualsNoCase(strCandidate, type))
+          {
+            strArt = items[j]->GetPath();
+            break;
+          }
+        }
+      }
+    }
+    // No local art, use first from scraped list. 
+    // Art type is encoded into the scraper XML held in thumbURL as optional
+    // "aspect=" field. Type "thumb" or "" returns URLs for all types of art
+    // including those without aspect. Those URL without aspect are also
+    // returned for all other type values.
+    // Historically albums do not have fanart, so there is no special handling
+    // of scraper results for it (unlike artist).
+    if (strArt.empty())
+    {
+      if (type == "thumb")
+        strArt = CScraperUrl::GetThumbURL(album.thumbURL.GetFirstThumb());
+      else
+        strArt = CScraperUrl::GetThumbURL(album.thumbURL.GetFirstThumb(type));
+    }
+    // Add art to album and library
+    if (!strArt.empty())
+    {
+      CTextureCache::GetInstance().BackgroundCacheImage(strArt);
+      album.art.insert(make_pair(type, strArt));
+      m_musicDatabase.SetArtForItem(album.idAlbum, MediaTypeAlbum, type, strArt);
+      addedCount++;
+    }
+  }
+
+  return addedCount > 0;
+}
+
+void CMusicInfoScanner::SetDiscSetArtwork(CAlbum& album, const std::vector<std::pair<std::string, int>>& paths)
+{
+  /*
+  Automatically fetch local art from disc set subfolders
+
+  When we have a true disc set - subfolders AND songs tagged with same unique
+  discnumber in each subfolder - save the local art (all types) for each disc.
+  */
+ 
+  if (paths.size() <= 1)
+    return;  // No disc subfolders to process
+  
+  // Get default types of art that are to be automatically fetched during scanning
+  std::vector<std::string> arttypes;
+  arttypes = GetArtTypesToScan(MediaTypeAlbum);
+
+  // Check that there are art types other than thumb to process
+  bool extratype = !g_advancedSettings.m_musicAlbumExtraArt.empty();
+
+  std::string firstDiscThumb;
+  int iDiscThumb = 10000;
+  for (const auto& pathpair : paths)
+  {
+    int discnum = m_musicDatabase.GetDiscnumberForPathID(pathpair.second);
+    if (discnum > 0)
+    {
+      CFileItemList items;
+      if (extratype)
+        // Fetch the image files from the disc folder.
+        CDirectory::GetDirectory(pathpair.first.c_str(), items,
+          CServiceBroker::GetFileExtensionProvider().GetPictureExtensions(),
+          DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_READ_CACHE | DIR_FLAG_NO_FILE_INFO);
+
+      for (const auto& type : arttypes)
+      {
+        CFileItem item(pathpair.first.c_str(), true);
+        std::string strArt;
+        std::string strArtType;
+        if (type == "thumb")
+        {
+          // Get thumb for path from textures db (could be embedded or local file)
+          CMusicThumbLoader loader;
+          strArt = loader.GetCachedImage(item, type);
+          if (!strArt.empty())
+          {
+            // Store thumb of first disc with a thumb
+            if (discnum < iDiscThumb)
+            {
+              iDiscThumb = discnum;
+              firstDiscThumb = strArt;
+            }
+          }
+        }
+        else if (type == "fanart")
+          // Local music fanart images named by <fanart>
+          strArt = item.GetLocalFanart();
+        else
+        {
+          // Check for images with type as name case and ext insenitively
+          for (int j = 0; j < items.Size(); j++)
+          {
+            std::string strCandidate = URIUtils::GetFileName(items[j]->GetPath());
+            URIUtils::RemoveExtension(strCandidate);
+            if (StringUtils::EqualsNoCase(strCandidate, type))
+            {
+              strArt = items[j]->GetPath();
+              break;
+            }
+          }
+        }
+        // Add disc set art as album art "<type><disc number>" and to library
+        if (!strArt.empty())
+        {
+          CTextureCache::GetInstance().BackgroundCacheImage(strArt);
+          strArtType = StringUtils::Format("%s%i", type.c_str(), discnum);
+          album.art.insert(make_pair(strArtType, strArt));
+          m_musicDatabase.SetArtForItem(album.idAlbum, MediaTypeAlbum, strArtType, strArt);
+        }
+      }
+    }
+  }
+  
+  // Finally if we still don't have album thumb then use the art from the
+  // first disc in the set with a thumb
+  if (!firstDiscThumb.empty() && album.art.find("thumb") == album.art.end())
+  {
+    m_musicDatabase.SetArtForItem(album.idAlbum, MediaTypeAlbum, "thumb", firstDiscThumb);
+    // Assign art as folder thumb (in textures db) as well
+    CMusicThumbLoader loader;
+    CFileItem albumItem(album.strPath, true);
+    loader.SetCachedImage(albumItem, "thumb", firstDiscThumb);
+  }
+}
 
 // This function is the Run() function of the IRunnable
 // CFileCountReader and runs in a separate thread.

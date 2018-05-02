@@ -274,6 +274,7 @@ void CAdvancedSettings::Initialize()
   m_musicThumbs = "folder.jpg|Folder.jpg|folder.JPG|Folder.JPG|cover.jpg|Cover.jpg|cover.jpeg|thumb.jpg|Thumb.jpg|thumb.JPG|Thumb.JPG";
   m_fanartImages = "fanart.jpg|fanart.png";
   m_musicArtistExtraArt = { };
+  m_musicAlbumExtraArt = {};
 
   m_bMusicLibraryAllItemsOnBottom = false;
   m_bMusicLibraryCleanOnUpdate = false;
@@ -758,6 +759,19 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
       {
         if (arttype->FirstChild())
           m_musicArtistExtraArt.push_back(arttype->FirstChild()->ValueStr());
+        arttype = arttype->NextSibling("arttype");
+      }
+    }
+    // Music extra album art
+    arttypes = pElement->FirstChildElement("albumextraart");
+    if (arttypes)
+    {
+      m_musicAlbumExtraArt.clear();
+      TiXmlNode* arttype = arttypes->FirstChild("arttype");
+      while (arttype)
+      {
+        if (arttype->FirstChild())
+          m_musicAlbumExtraArt.push_back(arttype->FirstChild()->ValueStr());
         arttype = arttype->NextSibling("arttype");
       }
     }

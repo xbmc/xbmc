@@ -152,6 +152,14 @@ protected:
    */
   INFO_RET DownloadArtistInfo(const CArtist& artist, const ADDON::ScraperPtr& scraper, MUSIC_GRABBER::CMusicArtistInfo& artistInfo, bool bUseScrapedMBID, CGUIDialogProgress* pDialog = NULL);
 
+
+  /*! \brief Get the types of art for an artist or album that are to be
+  automatically fetched from local files during scanning
+  \param mediaType [in] artist or album
+  \return vector of art types that are to be fetched during scanning
+  */
+  std::vector<std::string> GetArtTypesToScan(const MediaType& mediaType);
+
   /*! \brief Get the types of art for an artist or album that can be 
    automatically found during scanning, and are not in the provided set of art
    \param mediaType [in] artist or album
@@ -159,7 +167,7 @@ protected:
    \return vector of art types that are missing from the set
    */
   std::vector<std::string> GetMissingArtTypes(const MediaType& mediaType, const std::map<std::string, std::string>& art);
-  
+
   /*! \brief Set art for an artist
   Checks for the missing types of art in the given folder. If none is found
   there then it tries to use the first available art of that type from those
@@ -168,8 +176,32 @@ protected:
   \param artist [in/out] an artist, the art is set
   \param missing [in] vector of art types that are missing
   \param artfolder [in] path of the location to search for local art files
+  \return true when art is added
   */
-  void SetArtistArtwork(CArtist& artist, const std::vector<std::string>& missing, const std::string& artfolder);
+  bool SetArtistArtwork(CArtist& artist, const std::vector<std::string>& missing, const std::string& artfolder);
+
+  /*! \brief Set art for an album
+  Checks for the missing types of art in the given folder. If none is found
+  there then it tries to use the first available art of that type from those
+  listed in the album structure. Art found is saved in the album structure
+  and written to the music database. The images found are cached.
+  \param artist [in/out] an album, the art is set
+  \param missing [in] vector of art types that are missing
+  \param artfolder [in] path of the location to search for local art files
+  \return true when art is added
+  */
+  bool SetAlbumArtwork(CAlbum& album, std::vector<std::string>& missing, const std::string& artfolder);
+
+  /*! \brief Set art for an album with local art from disc set subfolders
+  When we have a true disc set - subfolders beneath the album folder AND the
+  music files in each sub folder tagged with same unique - this checks for the
+  all types of art in the given subfolders.
+  Art found is saved in the album structure and written to the music database.
+  The images found are cached.
+  \param artist [in/out] an album, the art is modified
+  \param paths [in] a set of pairs of disc subfolder path and disc number
+  */
+  void SetDiscSetArtwork(CAlbum& album, const std::vector<std::pair<std::string, int>>& paths);
 
   /*! \brief Scan in the ID3/Ogg/FLAC tags for a bunch of FileItems
    Given a list of FileItems, scan in the tags for those FileItems
