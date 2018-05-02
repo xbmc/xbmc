@@ -572,7 +572,7 @@ bool CAddonCallbacksAddon::CanOpenDirectory(const void* addonData, const char* s
     return false;
 
   CFileItemList items;
-  return CDirectory::GetDirectory(strURL, items);
+  return CDirectory::GetDirectory(strURL, items, "", DIR_FLAG_DEFAULTS);
 }
 
 bool CAddonCallbacksAddon::CreateDirectory(const void* addonData, const char *strPath)
@@ -601,7 +601,7 @@ bool CAddonCallbacksAddon::RemoveDirectory(const void* addonData, const char *st
 
   // Empty directory
   CFileItemList fileItems;
-  CDirectory::GetDirectory(strPath, fileItems);
+  CDirectory::GetDirectory(strPath, fileItems, "", DIR_FLAG_DEFAULTS);
   for (int i = 0; i < fileItems.Size(); ++i)
     CFile::Delete(fileItems.Get(i)->GetPath());
 

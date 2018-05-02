@@ -244,7 +244,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const std::string& strDrive, int& nAdde
         {
           CLog::Log(LOGINFO,"HD DVD: Checking for playlist.");
           // find playlist file
-          CDirectory::GetDirectory(pItem->GetPath(), items, "*.xpl");
+          CDirectory::GetDirectory(pItem->GetPath(), items, "*.xpl", DIR_FLAG_DEFAULTS);
           if (items.Size())
           {
             // HD DVD Standard says the highest numbered playlist has to be handled first.
@@ -264,7 +264,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const std::string& strDrive, int& nAdde
           {
             CLog::Log(LOGINFO,"HD DVD: Checking for ifo.");
             // find Video Manager or Title Set Information
-            CDirectory::GetDirectory(pItem->GetPath(), items, "HV*.ifo");
+            CDirectory::GetDirectory(pItem->GetPath(), items, "HV*.ifo", DIR_FLAG_DEFAULTS);
             if (items.Size())
             {
               // HD DVD Standard says the lowest numbered ifo has to be handled first.
@@ -278,7 +278,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const std::string& strDrive, int& nAdde
           // Find and sort *.evo files for internal playback.
           // While this algorithm works for all of my HD DVDs, it may fail on other discs. If there are very large extras which are
           // alphabetically before the main movie they will be sorted to the top of the playlist and get played first.
-          CDirectory::GetDirectory(pItem->GetPath(), items, "*.evo");
+          CDirectory::GetDirectory(pItem->GetPath(), items, "*.evo", DIR_FLAG_DEFAULTS);
           if (items.Size())
           {
             // Sort *.evo files in alphabetical order.
@@ -354,7 +354,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const std::string& strDrive, int& nAdde
              && (bypassSettings || CServiceBroker::GetSettings().GetBool(CSettings::SETTING_DVDS_AUTORUN)))
         {
           CFileItemList items;
-          CDirectory::GetDirectory(pItem->GetPath(), items, strExt);
+          CDirectory::GetDirectory(pItem->GetPath(), items, strExt, DIR_FLAG_DEFAULTS);
           if (items.Size())
           {
             items.Sort(SortByLabel, SortOrderAscending);

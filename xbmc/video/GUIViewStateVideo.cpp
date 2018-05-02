@@ -375,9 +375,9 @@ VECSOURCES& CGUIViewStateWindowVideoNav::GetSources()
   m_sources.clear();
   CFileItemList items;
   if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_MYVIDEOS_FLATTEN))
-    CDirectory::GetDirectory("library://video_flat/", items, "");
+    CDirectory::GetDirectory("library://video_flat/", items, "", DIR_FLAG_DEFAULTS);
   else
-    CDirectory::GetDirectory("library://video/", items, "");
+    CDirectory::GetDirectory("library://video/", items, "", DIR_FLAG_DEFAULTS);
   for (int i=0; i<items.Size(); ++i)
   {
     CFileItemPtr item=items[i];

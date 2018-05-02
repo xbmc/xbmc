@@ -213,7 +213,7 @@ bool CPVRRecordings::Delete(const CFileItem& item)
 bool CPVRRecordings::DeleteDirectory(const CFileItem& directory)
 {
   CFileItemList items;
-  XFILE::CDirectory::GetDirectory(directory.GetPath(), items);
+  XFILE::CDirectory::GetDirectory(directory.GetPath(), items, "", XFILE::DIR_FLAG_DEFAULTS);
 
   bool allDeleted = true;
 
@@ -510,7 +510,7 @@ bool CPVRRecordings::ChangeRecordingsPlayCount(const CFileItemPtr &item, int cou
     CFileItemList items;
     if (item->m_bIsFolder)
     {
-      XFILE::CDirectory::GetDirectory(item->GetPath(), items);
+      XFILE::CDirectory::GetDirectory(item->GetPath(), items, "", XFILE::DIR_FLAG_DEFAULTS);
     }
     else
       items.Add(item);

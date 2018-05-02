@@ -691,7 +691,7 @@ CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference&          action,
                                   + CServiceBroker::GetFileExtensionProvider().GetVideoExtensions() + "|"
                                   + CServiceBroker::GetFileExtensionProvider().GetMusicExtensions() + "|"
                                   + CServiceBroker::GetFileExtensionProvider().GetPictureExtensions();
-            CDirectory::GetDirectory((const char*)parent_id, items, supported);
+            CDirectory::GetDirectory((const char*)parent_id, items, supported, DIR_FLAG_DEFAULTS);
             DefaultSortItems(items);
         }
 

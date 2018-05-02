@@ -317,9 +317,9 @@ namespace XFILE
     CFileItemList list;
     bool filesExist = false;
     if (CSmartPlaylist::IsMusicType(playlistType))
-      filesExist = CDirectory::GetDirectory("special://musicplaylists/", list, ".xsp", false);
+      filesExist = CDirectory::GetDirectory("special://musicplaylists/", list, ".xsp", DIR_FLAG_DEFAULTS);
     else // all others are video
-      filesExist = CDirectory::GetDirectory("special://videoplaylists/", list, ".xsp", false);
+      filesExist = CDirectory::GetDirectory("special://videoplaylists/", list, ".xsp", DIR_FLAG_DEFAULTS);
     if (filesExist)
     {
       for (int i = 0; i < list.Size(); i++)

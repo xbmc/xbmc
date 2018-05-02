@@ -102,7 +102,7 @@ bool Interface_Filesystem::can_open_directory(void* kodiBase, const char* url)
   }
 
   CFileItemList items;
-  return CDirectory::GetDirectory(url, items);
+  return CDirectory::GetDirectory(url, items, "", DIR_FLAG_DEFAULTS);
 }
 
 bool Interface_Filesystem::create_directory(void* kodiBase, const char *path)
@@ -140,7 +140,7 @@ bool Interface_Filesystem::remove_directory(void* kodiBase, const char *path)
 
   // Empty directory
   CFileItemList fileItems;
-  CDirectory::GetDirectory(path, fileItems);
+  CDirectory::GetDirectory(path, fileItems, "", DIR_FLAG_DEFAULTS);
   for (int i = 0; i < fileItems.Size(); ++i)
     CFile::Delete(fileItems.Get(i)->GetPath());
 

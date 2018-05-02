@@ -19,6 +19,7 @@
  */
 
 #include "filesystem/Directory.h"
+#include "filesystem/IDirectory.h"
 #include "filesystem/SpecialProtocol.h"
 #include "FileItem.h"
 #include "utils/URIUtils.h"
@@ -40,7 +41,7 @@ TEST(TestDirectory, General)
   EXPECT_FALSE(XFILE::CDirectory::Exists(tmppath2));
   EXPECT_TRUE(XFILE::CDirectory::Create(tmppath2));
   EXPECT_TRUE(XFILE::CDirectory::Exists(tmppath2));
-  EXPECT_TRUE(XFILE::CDirectory::GetDirectory(tmppath1, items));
+  EXPECT_TRUE(XFILE::CDirectory::GetDirectory(tmppath1, items, "", XFILE::DIR_FLAG_DEFAULTS));
   XFILE::CDirectory::FilterFileDirectories(items, "");
   tmppath3 = tmppath2;
   URIUtils::AddSlashAtEnd(tmppath3);

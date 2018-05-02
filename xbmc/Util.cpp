@@ -687,7 +687,7 @@ void CUtil::ClearSubtitles()
 {
   //delete cached subs
   CFileItemList items;
-  CDirectory::GetDirectory("special://temp/",items);
+  CDirectory::GetDirectory("special://temp/",items, "", DIR_FLAG_DEFAULTS);
   for( int i=0;i<items.Size();++i)
   {
     if (!items[i]->m_bIsFolder)
@@ -1561,7 +1561,7 @@ void CUtil::GetSkinThemes(std::vector<std::string>& vecTheme)
 
   std::string strPath = URIUtils::AddFileToFolder(CServiceBroker::GetWinSystem()->GetGfxContext().GetMediaDir(), "media");
   CFileItemList items;
-  CDirectory::GetDirectory(strPath, items);
+  CDirectory::GetDirectory(strPath, items, "", DIR_FLAG_DEFAULTS);
   // Search for Themes in the Current skin!
   for (int i = 0; i < items.Size(); ++i)
   {

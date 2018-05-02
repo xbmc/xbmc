@@ -72,7 +72,7 @@ public:
   }
   bool DoWork() override
   {
-    CDirectory::GetDirectory(m_url.Get(), *m_items);
+    CDirectory::GetDirectory(m_url.Get(), *m_items, "", DIR_FLAG_DEFAULTS);
     return true;
   }
   bool operator==(const CJob *job) const override

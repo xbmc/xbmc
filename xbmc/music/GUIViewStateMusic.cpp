@@ -542,7 +542,7 @@ VECSOURCES& CGUIViewStateWindowMusicNav::GetSources()
   m_sources.clear();
   CFileItemList items;
 
-  CDirectory::GetDirectory("library://music/", items, "");
+  CDirectory::GetDirectory("library://music/", items, "", DIR_FLAG_DEFAULTS);
   for (int i=0; i<items.Size(); ++i)
   {
     CFileItemPtr item=items[i];
