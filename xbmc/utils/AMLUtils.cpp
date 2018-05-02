@@ -191,7 +191,7 @@ bool aml_set_audio_passthrough(bool passthrough)
     return false;
   }
 
-  int ret = SysfsUtils::SetInt("/sys/class/audiodsp/digital_raw", passthrough ? 2 : 0)
+  int ret = SysfsUtils::SetInt("/sys/class/audiodsp/digital_raw", passthrough ? 2 : 0);
   if (ret < 0)
     return false;
 
