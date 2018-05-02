@@ -1399,19 +1399,6 @@ bool CApplication::OnSettingUpdate(std::shared_ptr<CSetting> setting, const char
   if (setting == NULL)
     return false;
 
-#if defined(HAS_LIBAMCODEC)
-  if (setting->GetId() == CSettings::SETTING_VIDEOPLAYER_USEAMCODEC)
-  {
-    // Do not permit amcodec to be used on non-aml platforms.
-    // The setting will be hidden but the default value is true,
-    // so change it to false.
-    if (!aml_present())
-    {
-      std::shared_ptr<CSettingBool> useamcodec = std::static_pointer_cast<CSettingBool>(setting);
-      return useamcodec->SetValue(false);
-    }
-  }
-#endif
 #if defined(TARGET_DARWIN_OSX)
   if (setting->GetId() == CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE)
   {
