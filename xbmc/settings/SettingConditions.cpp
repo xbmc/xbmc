@@ -330,8 +330,7 @@ void CSettingConditions::Initialize(const CProfilesManager &profileManager)
   m_simpleConditions.insert("HasVTB");
 #endif
 #ifdef HAS_LIBAMCODEC
-  if (aml_present())
-    m_simpleConditions.insert("have_amcodec");
+  m_simpleConditions.insert("have_amcodec");
 #endif
 #if defined(TARGET_WINDOWS)
   m_simpleConditions.insert("has_dx");
