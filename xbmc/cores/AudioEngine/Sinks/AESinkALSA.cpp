@@ -520,10 +520,8 @@ bool CAESinkALSA::Initialize(AEAudioFormat &format, std::string &device)
     m_passthrough   = false;
   }
 #if defined(HAS_LIBAMCODEC)
-  if (aml_present())
-  {
-    aml_set_audio_passthrough(m_passthrough);
-  }
+  if (!aml_set_audio_passthrough(m_passthrough))
+    CLog::Log(LOGERROR, "CAESinkALSA::Initialize - failed to set audio passthrough for amlogic");
 #endif
 
   if (inconfig.channels == 0)
