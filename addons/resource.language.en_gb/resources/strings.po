@@ -1230,9 +1230,10 @@ msgctxt "#263"
 msgid "Allow remote control via HTTP"
 msgstr ""
 
-#. Label for a context menu entry to start/schedule a recording
+#. Label for a context menu entry / button to start/schedule a recording
 #: xbmc/music/windows/GUIWindowMusicBase.cpp
 #: xbmc/pvr/dialogs/GUIDialogPVRGuideInfo.cpp
+#: xbmc/pvr/windows/GUIWIndowPVRGuide.cpp
 #: xbmc/pvr/PVRContextMenus.cpp
 #: addons/skin.estuary/xml/Variables.xml
 msgctxt "#264"
@@ -9972,7 +9973,9 @@ msgctxt "#19164"
 msgid "Could not start recording. Check the log for more information about this message."
 msgstr ""
 
+#. Label for "switch to channel" button""
 #: addons/skin.estuary/xml/DialogPVRInfo.xml
+#: xbmc/pvr/windows/GUIWIndowPVRGuide.cpp
 msgctxt "#19165"
 msgid "Switch"
 msgstr ""
@@ -10785,7 +10788,13 @@ msgctxt "#19301"
 msgid "Horizontal channels, no group selector"
 msgstr ""
 
-#empty strings from id 19302 to 19498
+#. text for yes no dialog shown when user selects a future programme in the guide window and default select action is 'smart select'
+#: xbmc/pvr/windows/GUIWindowPVRGuide.cpp
+msgctxt "#19302"
+msgid "Do you want to record the selected programme or to switch to the current programme?"
+msgstr ""
+
+#empty strings from id 19303 to 19498
 
 #. label for epg genre value
 #: xbmc/epg/Epg.cpp

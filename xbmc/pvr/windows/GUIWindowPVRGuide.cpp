@@ -29,6 +29,7 @@
 #include "dialogs/GUIDialogNumeric.h"
 #include "input/Key.h"
 #include "messaging/ApplicationMessenger.h"
+#include "messaging/helpers/DialogHelper.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
 #include "view/GUIViewState.h"
@@ -39,6 +40,7 @@
 #include "pvr/epg/EpgContainer.h"
 #include "pvr/windows/GUIEPGGridContainer.h"
 
+using namespace KODI::MESSAGING;
 using namespace PVR;
 
 CGUIWindowPVRGuideBase::CGUIWindowPVRGuideBase(bool bRadio, int id, const std::string &xmlFile) :
@@ -397,7 +399,17 @@ bool CGUIWindowPVRGuideBase::OnMessage(CGUIMessage& message)
                       if (tag->HasTimer())
                         CServiceBroker::GetPVRManager().GUIActions()->EditTimer(pItem);
                       else
-                        CServiceBroker::GetPVRManager().GUIActions()->AddTimer(pItem, false);
+                      {
+                        HELPERS::DialogResponse ret
+                          = HELPERS::ShowYesNoDialogText(CVariant{19096}, // "Smart select"
+                                                          CVariant{19302}, // "Do you want to record the selected programme or to switch to the current programme?"
+                                                          CVariant{264}, // No => "Record"
+                                                          CVariant{19165}); // Yes => "Switch"
+                        if (ret == HELPERS::DialogResponse::NO)
+                          CServiceBroker::GetPVRManager().GUIActions()->AddTimer(pItem, false);
+                        else if (ret == HELPERS::DialogResponse::YES)
+                          CServiceBroker::GetPVRManager().GUIActions()->SwitchToChannel(pItem, true);
+                      }
                     }
                     else
                     {
