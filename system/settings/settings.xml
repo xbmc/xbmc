@@ -2013,6 +2013,18 @@
           </dependencies>
           <control type="spinner" format="string" delayed="true" />
         </setting>
+        <setting id="videoscreen.whitelist" type="list[string]" parent="videoscreen.screen" label="14085" help="36356">
+          <level>1</level>
+          <constraints>
+            <options>modes</options>
+            <default></default>
+            <delimiter>,</delimiter>
+            <minimumitems>0</minimumitems>
+          </constraints>
+          <control type="list" format="string">
+            <multiselect>true</multiselect>
+          </control>
+        </setting>
         <setting id="videoscreen.resolution" type="integer" parent="videoscreen.screen" label="169" help="36352">
           <level>0</level>
           <default>16</default> <!-- RES_DESKTOP -->

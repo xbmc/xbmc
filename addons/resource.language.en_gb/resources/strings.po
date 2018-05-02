@@ -7689,7 +7689,10 @@ msgctxt "#14084"
 msgid "Queue songs on selection"
 msgstr ""
 
-#empty string with id 14085
+#: system/settings/settings.xml
+msgctxt "#14085"
+msgid "Whitelist"
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#14086"
@@ -18998,7 +19001,11 @@ msgctxt "#36355"
 msgid "In a multi-screen configuration, the screens not displaying this application are blacked out."
 msgstr ""
 
-#empty string with id 36356
+#. Description of setting with label #14085 "Whitelist"
+#: system/settings/settings.xml
+msgctxt "#36356"
+msgid "Whitelisted modes are allowed to be switched to when changing resolution and refresh rate"
+msgstr ""
 
 #. Description of setting with label #214 "Video calibration..."
 #: system/settings/settings.xml
