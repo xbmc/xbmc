@@ -151,8 +151,11 @@ bool CDRMLegacy::QueueFlip(struct gbm_bo *bo)
 
 void CDRMLegacy::FlipPage(struct gbm_bo *bo, bool rendered, bool videoLayer)
 {
-  flip_happening = QueueFlip(bo);
-  WaitingForFlip();
+  if (rendered || videoLayer)
+  {
+    flip_happening = QueueFlip(bo);
+    WaitingForFlip();
+  }
 }
 
 bool CDRMLegacy::InitDrm()
@@ -168,5 +171,45 @@ bool CDRMLegacy::InitDrm()
   }
 
   CLog::Log(LOGDEBUG, "CDRMLegacy::%s - initialized legacy DRM", __FUNCTION__);
+  return true;
+}
+
+bool CDRMLegacy::AddConnectorProperty(const char *name, int value)
+{
+  struct connector *obj = m_connector;
+  int prop_id = 0;
+
+  for (unsigned int i = 0 ; i < obj->props->count_props ; i++)
+  {
+    if (strcmp(obj->props_info[i]->name, name) == 0)
+    {
+      prop_id = obj->props_info[i]->prop_id;
+      break;
+    }
+  }
+
+  if (prop_id < 0)
+  {
+    CLog::Log(LOGERROR, "CDRMUtils::%s - no connector property: %s", __FUNCTION__, name);
+    return false;
+  }
+
+  auto ret = drmModeConnectorSetProperty(m_fd, m_connector->connector->connector_id, prop_id, value);
+  if (ret < 0)
+  {
+    return false;
+  }
+
+  return true;
+}
+
+bool CDRMLegacy::SetActive(bool active)
+{
+  if (!AddConnectorProperty("DPMS", active ? DRM_MODE_DPMS_ON : DRM_MODE_DPMS_OFF))
+  {
+    CLog::Log(LOGDEBUG, "CDRMLegacy::%s - failed to set DPMS property");
+    return false;
+  }
+
   return true;
 }

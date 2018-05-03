@@ -140,7 +140,7 @@ void CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool video
       return;
     }
 
-    if (!AddCrtcProperty(m_req, m_crtc->crtc->crtc_id, "ACTIVE", 1))
+    if (!AddCrtcProperty(m_req, m_crtc->crtc->crtc_id, "ACTIVE", m_active ? 1 : 0)
     {
       return;
     }
@@ -263,6 +263,14 @@ void CDRMAtomic::DestroyDrm()
 bool CDRMAtomic::SetVideoMode(RESOLUTION_INFO res, struct gbm_bo *bo)
 {
   m_need_modeset = true;
+
+  return true;
+}
+
+bool CDRMAtomic::SetActive(bool active)
+{
+  m_need_modeset = true;
+  m_active = active;
 
   return true;
 }
