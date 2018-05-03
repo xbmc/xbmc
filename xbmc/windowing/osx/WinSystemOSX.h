@@ -58,6 +58,7 @@ public:
   virtual bool Hide() override;
   virtual bool Show(bool raise = true) override;
   virtual void OnMove(int x, int y) override;
+  bool UseLimitedColor() override;
 
   virtual std::string GetClipboardText(void) override;
 

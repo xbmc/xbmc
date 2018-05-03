@@ -75,6 +75,8 @@ public:
   void FinishModeChange(RESOLUTION res) override;
   void FinishWindowResize(int newWidth, int newHeight) override;
 
+  bool UseLimitedColor() override;
+
   void UpdateResolutions() override;
   int GetNumScreens() override;
   int GetCurrentScreen() override;
