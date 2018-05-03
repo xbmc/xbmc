@@ -121,21 +121,12 @@ void CWinEventsWin10::InitEventHandlers(CoreWindow^ window)
   window->SizeChanged += ref new TypedEventHandler<CoreWindow^, WindowSizeChangedEventArgs^>([&](CoreWindow^ wnd, WindowSizeChangedEventArgs^ args) {
     OnWindowSizeChanged(wnd, args);
   });
-#if defined(NTDDI_WIN10_RS2) && (NTDDI_VERSION >= NTDDI_WIN10_RS2)
-  try
-  {
-    window->ResizeStarted += ref new TypedEventHandler<CoreWindow^, Platform::Object^>([&](CoreWindow^ wnd, Platform::Object^ args) {
-      OnWindowResizeStarted(wnd, args);
-    });
-    window->ResizeCompleted += ref new TypedEventHandler<CoreWindow^, Platform::Object^>([&](CoreWindow^ wnd, Platform::Object^ args) {
-      OnWindowResizeCompleted(wnd, args);
-    });
-  }
-  catch (Platform::Exception^ ex)
-  {
-    // Win10 Creators Update is required
-  }
-#endif
+  window->ResizeStarted += ref new TypedEventHandler<CoreWindow^, Platform::Object^>([&](CoreWindow^ wnd, Platform::Object^ args) {
+    OnWindowResizeStarted(wnd, args);
+  });
+  window->ResizeCompleted += ref new TypedEventHandler<CoreWindow^, Platform::Object^>([&](CoreWindow^ wnd, Platform::Object^ args) {
+    OnWindowResizeCompleted(wnd, args);
+  });
   window->Closed += ref new TypedEventHandler<CoreWindow^, CoreWindowEventArgs^>([&](CoreWindow^ wnd, CoreWindowEventArgs^ args) {
     OnWindowClosed(wnd, args);
   });

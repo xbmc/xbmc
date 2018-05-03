@@ -48,9 +48,7 @@
 #include <ppltasks.h>
 
 using namespace Windows::Graphics::Display;
-#if defined(NTDDI_WIN10_RS2) && (NTDDI_VERSION >= NTDDI_WIN10_RS2)
 using namespace Windows::Graphics::Display::Core;
-#endif
 using namespace Windows::UI::ViewManagement;
 
 CWinSystemWin10::CWinSystemWin10()
@@ -407,7 +405,6 @@ bool CWinSystemWin10::ChangeResolution(const RESOLUTION_INFO& res, bool forceCha
   if (!details)
     return false;
 
-#if defined(NTDDI_WIN10_RS2) && (NTDDI_VERSION >= NTDDI_WIN10_RS2)
   if (Windows::Foundation::Metadata::ApiInformation::IsTypePresent("Windows.Graphics.Display.Core.HdmiDisplayInformation"))
   {
     bool changed = false;
@@ -458,7 +455,6 @@ bool CWinSystemWin10::ChangeResolution(const RESOLUTION_INFO& res, bool forceCha
     }
     return changed;
   }
-#endif
 
   CLog::LogFunction(LOGDEBUG, __FUNCTION__, "Not supported.");
   return false;
@@ -492,7 +488,6 @@ void CWinSystemWin10::UpdateResolutions()
   UpdateDesktopResolution(CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP), 0, w, h, refreshRate, dwFlags);
   CLog::Log(LOGNOTICE, "Primary mode: %s", CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP).strMode.c_str());
 
-#if defined(NTDDI_WIN10_RS2) && (NTDDI_VERSION >= NTDDI_WIN10_RS2)
   if (Windows::Foundation::Metadata::ApiInformation::IsTypePresent("Windows.Graphics.Display.Core.HdmiDisplayInformation"))
   {
     auto hdmiInfo = HdmiDisplayInformation::GetForCurrentView();
@@ -508,7 +503,6 @@ void CWinSystemWin10::UpdateResolutions()
       }
     }
   }
-#endif
 
   // Desktop resolution of the other screens
   if (m_MonitorsInfo.size() >= 2)
@@ -591,7 +585,6 @@ bool CWinSystemWin10::UpdateResolutionsInternal()
 
     if (Windows::Foundation::Metadata::ApiInformation::IsTypePresent("Windows.Graphics.Display.Core.HdmiDisplayInformation"))
     {
-#if defined(NTDDI_WIN10_RS2) && (NTDDI_VERSION >= NTDDI_WIN10_RS2)
       auto hdmiInfo = HdmiDisplayInformation::GetForCurrentView();
       if (hdmiInfo != nullptr)
       {
@@ -600,7 +593,6 @@ bool CWinSystemWin10::UpdateResolutionsInternal()
         md.Bpp = currentMode->BitsPerPixel;
       }
       else
-#endif
       {
         md.RefreshRate = 60.0;
         md.Bpp = 24;
