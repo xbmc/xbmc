@@ -617,14 +617,31 @@ bool CGUIControlButtonSetting::OnClick()
     if (controlFormat == "addon")
     {
       // prompt for the addon
-      std::shared_ptr<CSettingAddon> setting = std::static_pointer_cast<CSettingAddon>(m_pSetting);
-      std::string addonID = setting->GetValue();
-      if (CGUIWindowAddonBrowser::SelectAddonID(setting->GetAddonType(), addonID, setting->AllowEmpty(),
-                                                buttonControl->ShowAddonDetails(), buttonControl->ShowInstalledAddons(),
-                                                buttonControl->ShowInstallableAddons(), buttonControl->ShowMoreAddons()) != 1)
+      std::shared_ptr<CSettingAddon> setting;
+      std::vector<std::string> addonIDs;
+      if (m_pSetting->GetType() == SettingType::List)
+      {
+        std::shared_ptr<CSettingList> settingList = std::static_pointer_cast<CSettingList>(m_pSetting);
+        setting = std::static_pointer_cast<CSettingAddon>(settingList->GetDefinition());
+        for (const SettingPtr addon : settingList->GetValue())
+          addonIDs.push_back(std::static_pointer_cast<CSettingAddon>(addon)->GetValue());
+      }
+      else
+      {
+        setting = std::static_pointer_cast<CSettingAddon>(m_pSetting);
+        addonIDs.push_back(setting->GetValue());
+      }
+
+      if (CGUIWindowAddonBrowser::SelectAddonID(setting->GetAddonType(), addonIDs, setting->AllowEmpty(),
+                                                buttonControl->ShowAddonDetails(), m_pSetting->GetType() == SettingType::List,
+                                                buttonControl->ShowInstalledAddons(), buttonControl->ShowInstallableAddons(),
+                                                buttonControl->ShowMoreAddons()) != 1)
         return false;
 
-      SetValid(setting->SetValue(addonID));
+      if (m_pSetting->GetType() == SettingType::List)
+        std::static_pointer_cast<CSettingList>(m_pSetting)->FromString(addonIDs);
+      else
+        SetValid(setting->SetValue(addonIDs[0]));
     }
     else if (controlFormat == "path" || controlFormat == "file" || controlFormat == "image")
       SetValid(GetPath(std::static_pointer_cast<CSettingPath>(m_pSetting), m_localizer));
