@@ -24,6 +24,7 @@
 #include <float.h>
 
 #include "WinEventsAndroid.h"
+#include "OSScreenSaverAndroid.h"
 #include "ServiceBroker.h"
 #include "windowing/GraphicContext.h"
 #include "windowing/Resolution.h"
@@ -271,4 +272,10 @@ void CWinSystemAndroid::MessagePush(XBMC_Event *newEvent)
 bool CWinSystemAndroid::MessagePump()
 {
   return m_winEvents->MessagePump();
+}
+
+std::unique_ptr<WINDOWING::IOSScreenSaver> CWinSystemAndroid::GetOSScreenSaverImpl()
+{
+  std::unique_ptr<KODI::WINDOWING::IOSScreenSaver> ret(new COSScreenSaverAndroid());
+  return ret;
 }

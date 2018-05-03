@@ -59,6 +59,8 @@ public:
   bool MessagePump() override;
 
 protected:
+  std::unique_ptr<KODI::WINDOWING::IOSScreenSaver> GetOSScreenSaverImpl() override;
+
   CAndroidUtils *m_android;
 
   EGLDisplay m_nativeDisplay;
