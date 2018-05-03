@@ -25,27 +25,12 @@
 
 namespace ADDON
 {
-
-  enum class START_OPTION
-  {
-    STARTUP,
-    LOGIN
-  };
-
   class CService: public CAddon
   {
   public:
     static std::unique_ptr<CService> FromExtension(CAddonInfo addonInfo, const cp_extension_t* ext);
 
-    explicit CService(CAddonInfo addonInfo) : CAddon(std::move(addonInfo)),
-        m_startOption(START_OPTION::LOGIN) {}
-
-    CService(CAddonInfo addonInfo, START_OPTION startOption);
-
-    START_OPTION GetStartOption() { return m_startOption; }
-
-  private:
-    START_OPTION m_startOption;
+    explicit CService(CAddonInfo addonInfo) : CAddon(std::move(addonInfo)) {}
   };
 
   class CServiceAddonManager
@@ -58,11 +43,6 @@ namespace ADDON
      * Start all services.
      */
     void Start();
-
-    /**
-     * Start services that have start option 'startup'.
-     */
-    void StartBeforeLogin();
 
     /**
      * Start service by add-on id.
