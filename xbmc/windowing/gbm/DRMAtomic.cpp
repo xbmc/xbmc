@@ -140,7 +140,7 @@ void CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool video
       return;
     }
 
-    if (!AddCrtcProperty(m_req, m_crtc->crtc->crtc_id, "ACTIVE", m_active ? 1 : 0)
+    if (!AddCrtcProperty(m_req, m_crtc->crtc->crtc_id, "ACTIVE", m_active ? 1 : 0))
     {
       return;
     }
