@@ -367,6 +367,7 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
     onError(exceptionType, exceptionValue, exceptionTraceback);
   }
 
+  CSingleLock lock(m_critical);
   // no need to do anything else because the script has already stopped
   if (failed)
   {
@@ -374,29 +375,33 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
     return true;
   }
 
-  PyObject *m = PyImport_AddModule((char*)"xbmc");
-  if (m == NULL || PyObject_SetAttrString(m, (char*)"abortRequested", PyBool_FromLong(1)))
-    CLog::Log(LOGERROR, "CPythonInvoker(%d, %s): failed to set abortRequested", GetId(), m_sourceFile.c_str());
-
-  // make sure all sub threads have finished
-  for (PyThreadState* s = m_threadState->interp->tstate_head, *old = NULL; s;)
+  if (m_threadState)
   {
-    if (s == m_threadState)
-    {
-      s = s->next;
-      continue;
-    }
-    if (old != s)
-    {
-      CLog::Log(LOGINFO, "CPythonInvoker(%d, %s): waiting on thread %" PRIu64, GetId(), m_sourceFile.c_str(), (uint64_t)s->thread_id);
-      old = s;
-    }
+    PyObject *m = PyImport_AddModule((char*)"xbmc");
+    if (m == NULL || PyObject_SetAttrString(m, (char*)"abortRequested", PyBool_FromLong(1)))
+      CLog::Log(LOGERROR, "CPythonInvoker(%d, %s): failed to set abortRequested", GetId(), m_sourceFile.c_str());
 
-    CPyThreadState pyState;
-    Sleep(100);
-    pyState.Restore();
+    // make sure all sub threads have finished
+    for (PyThreadState *s = m_threadState->interp->tstate_head, *old = nullptr; s != nullptr && m_threadState != nullptr;)
+    {
+      for (; s && s == m_threadState;)
+        s = s->next;
 
-    s = m_threadState->interp->tstate_head;
+      if (!s)
+        break;
+
+      if (old != s)
+      {
+        CLog::Log(LOGINFO, "CPythonInvoker(%d, %s): waiting on thread %" PRIu64, GetId(), m_sourceFile.c_str(), (uint64_t)s->thread_id);
+        old = s;
+      }
+
+      lock.Leave();
+      CPyThreadState pyState;
+      Sleep(100);
+      pyState.Restore();
+      lock.Enter();
+    }
   }
 
   // pending calls must be cleared out
@@ -434,6 +439,8 @@ bool CPythonInvoker::stop(bool abort)
     {
       setState(InvokerStateStopping);
 
+      lock.Leave();
+
       PyEval_AcquireLock();
       old = PyThreadState_Swap((PyThreadState*)m_threadState);
 
@@ -450,9 +457,9 @@ bool CPythonInvoker::stop(bool abort)
       old = NULL;
       PyEval_ReleaseLock();
     }
-
-    //Release the lock while waiting for threads to finish
-    lock.Leave();
+    else
+      //Release the lock while waiting for threads to finish
+      lock.Leave();
 
     XbmcThreads::EndTime timeout(PYTHON_SCRIPT_TIMEOUT);
     while (!m_stoppedEvent.WaitMSec(15))
@@ -472,6 +479,9 @@ bool CPythonInvoker::stop(bool abort)
       }
     }
 
+    // grabbing the PyLock while holding the m_critical is asking for a deadlock
+    PyEval_AcquireLock();
+
     lock.Enter();
 
     setState(InvokerStateExecutionDone);
@@ -479,13 +489,6 @@ bool CPythonInvoker::stop(bool abort)
     // Useful for add-on performance metrics
     if (!timeout.IsTimePast())
       CLog::Log(LOGDEBUG, "CPythonInvoker(%d, %s): script termination took %dms", GetId(), m_sourceFile.c_str(), PYTHON_SCRIPT_TIMEOUT - timeout.MillisLeft());
-
-    // everything which didn't exit by now gets killed
-    {
-      // grabbing the PyLock while holding the m_critical is asking for a deadlock
-      CSingleExit ex2(m_critical);
-      PyEval_AcquireLock();
-    }
 
     // Since we released the m_critical it's possible that the state is cleaned up
     // so we need to recheck for m_threadState == NULL
