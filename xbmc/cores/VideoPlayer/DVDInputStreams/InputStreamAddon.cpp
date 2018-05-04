@@ -30,6 +30,7 @@
 #include "filesystem/SpecialProtocol.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/log.h"
 
 CInputStreamProvider::CInputStreamProvider(ADDON::BinaryAddonBasePtr addonBase, kodi::addon::IAddonInstance* parentInstance)
   : m_addonBase(addonBase)
@@ -343,13 +344,19 @@ CDemuxStream* CInputStreamAddon::GetStream(int streamId) const
 {
   INPUTSTREAM_INFO stream = m_struct.toAddon.get_stream(&m_struct, streamId);
   if (stream.m_streamType == INPUTSTREAM_INFO::TYPE_NONE)
+  {
+    CLog::Log(LOGWARNING,"CInputStreamAddon::GetStream: Invalid stream type:%d", stream.m_streamType);
     return nullptr;
+  }
 
   std::string codecName(stream.m_codecName);
   StringUtils::ToLower(codecName);
   AVCodec *codec = avcodec_find_decoder_by_name(codecName.c_str());
   if (!codec)
+  {
+    CLog::Log(LOGWARNING,"CInputStreamAddon::GetStream: Invalid stream codec:%s", codecName.c_str());
     return nullptr;
+  }
 
   CDemuxStream *demuxStream;
 
@@ -383,7 +390,10 @@ CDemuxStream* CInputStreamAddon::GetStream(int streamId) const
     demuxStream = subtitleStream;
   }
   else
+  {
+    CLog::Log(LOGWARNING,"CInputStreamAddon::GetStream: Stream type not implemented: %d", stream.m_streamType);
     return nullptr;
+  }
 
   demuxStream->name = stream.m_name;
   demuxStream->codec = codec->id;
