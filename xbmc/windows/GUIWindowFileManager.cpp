@@ -94,6 +94,8 @@ using namespace KODI::MESSAGING;
 #define CONTROL_CURRENTDIRLABEL_LEFT    101
 #define CONTROL_CURRENTDIRLABEL_RIGHT   102
 
+namespace
+{
 class CGetDirectoryItems : public IRunnable
 {
 public:
@@ -111,6 +113,7 @@ protected:
   CURL m_url;
   CFileItemList &m_items;
 };
+}
 
 CGUIWindowFileManager::CGUIWindowFileManager(void)
     : CGUIWindow(WINDOW_FILES, "FileManager.xml"),

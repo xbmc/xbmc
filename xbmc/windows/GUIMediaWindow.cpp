@@ -87,6 +87,8 @@
 using namespace ADDON;
 using namespace KODI::MESSAGING;
 
+namespace
+{
 class CGetDirectoryItems : public IRunnable
 {
 public:
@@ -105,6 +107,7 @@ protected:
   CFileItemList &m_items;
   bool m_useDir;
 };
+}
 
 CGUIMediaWindow::CGUIMediaWindow(int id, const char *xmlFile)
     : CGUIWindow(id, xmlFile)

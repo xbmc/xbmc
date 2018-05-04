@@ -36,6 +36,8 @@
 #include "URL.h"
 #include "utils/Variant.h"
 
+namespace
+{
 class CGetDirectoryItems : public IRunnable
 {
 public:
@@ -53,6 +55,8 @@ protected:
   CFileItemList &m_items;
   XFILE::CDirectory::CHints m_hints;
 };
+}
+
 
 bool CGUIDialogSimpleMenu::ShowPlaySelection(CFileItem& item)
 {
