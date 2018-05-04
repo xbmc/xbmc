@@ -596,10 +596,10 @@ RESOLUTION CDisplaySettings::GetResolutionFromString(const std::string &strResol
   else if (strResolution.size() >= 21)
   {
     // format: SWWWWWHHHHHRRR.RRRRRP333, where S = screen, W = width, H = height, R = refresh, P = interlace, 3 = stereo mode
-    int screen = std::strtol(StringUtils::Mid(strResolution, 0,1).c_str(), NULL, 10);
-    int width = std::strtol(StringUtils::Mid(strResolution, 1,5).c_str(), NULL, 10);
-    int height = std::strtol(StringUtils::Mid(strResolution, 6,5).c_str(), NULL, 10);
-    float refresh = (float)std::strtod(StringUtils::Mid(strResolution, 11,9).c_str(), NULL);
+    int screen = CDisplaySettings::GetInstance().GetCurrentDisplayMode();
+    int width = std::strtol(StringUtils::Mid(strResolution, 0,5).c_str(), NULL, 10);
+    int height = std::strtol(StringUtils::Mid(strResolution, 5,5).c_str(), NULL, 10);
+    float refresh = (float)std::strtod(StringUtils::Mid(strResolution, 10,9).c_str(), NULL);
     unsigned flags = 0;
 
     // look for 'i' and treat everything else as progressive,
@@ -632,7 +632,7 @@ std::string CDisplaySettings::GetStringFromResolution(RESOLUTION resolution, flo
     // also handle RES_DESKTOP resolutions with non-default refresh rates
     if (resolution != RES_DESKTOP || (refreshrate > 0.0f && refreshrate != info.fRefreshRate))
     {
-      return StringUtils::Format("%1i%05i%05i%09.5f%s", info.iScreen,
+      return StringUtils::Format("%05i%05i%09.5f%s",
                                  info.iScreenWidth, info.iScreenHeight,
                                  refreshrate > 0.0f ? refreshrate : info.fRefreshRate, ModeFlagsToString(info.dwFlags, true).c_str());
     }
@@ -656,10 +656,39 @@ RESOLUTION CDisplaySettings::GetResolutionForScreen()
   return RES_DESKTOP;
 }
 
+static inline bool ModeSort(std::pair<std::string, std::string> i,std::pair<std::string, std::string> j)
+{
+  return (i.second > j.second);
+}
+
+void CDisplaySettings::SettingOptionsModesFiller(std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
+{
+  RESOLUTION res = CDisplaySettings::GetInstance().GetDisplayResolution();
+  RESOLUTION_INFO info = CDisplaySettings::GetInstance().GetResolutionInfo(res);
+
+  for (auto index = (unsigned int)RES_DESKTOP; index < CDisplaySettings::GetInstance().ResolutionInfoSize(); ++index)
+  {
+    const auto mode = CDisplaySettings::GetInstance().GetResolutionInfo(index);
+
+    if (mode.dwFlags ^ D3DPRESENTFLAG_INTERLACED)
+    {
+      auto setting = GetStringFromResolution((RESOLUTION)index, mode.fRefreshRate);
+
+      list.push_back(std::make_pair(
+        StringUtils::Format("%dx%d%s %0.2fHz", mode.iScreenWidth, mode.iScreenHeight,
+                            ModeFlagsToString(mode.dwFlags, false).c_str(),
+                            mode.fRefreshRate),
+                            setting));
+    }
+  }
+
+  std::sort(list.begin(), list.end(), ModeSort);
+}
+
 void CDisplaySettings::SettingOptionsRefreshChangeDelaysFiller(SettingConstPtr setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
 {
   list.push_back(std::make_pair(g_localizeStrings.Get(13551), 0));
-          
+
   for (int i = 1; i <= MAX_REFRESH_CHANGE_DELAY; i++)
     list.push_back(std::make_pair(StringUtils::Format(g_localizeStrings.Get(13553).c_str(), (double)i / 10.0), i));
 }
