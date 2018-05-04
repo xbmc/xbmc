@@ -26,6 +26,7 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
+#include "input/WindowTranslator.h"
 #include "interfaces/builtins/Builtins.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "addons/AddonManager.h"
@@ -59,17 +60,20 @@ JSONRPC_STATUS CGUIOperations::GetProperties(const std::string &method, ITranspo
 
 JSONRPC_STATUS CGUIOperations::ActivateWindow(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  CVariant params = parameterObject["parameters"];
-  std::string cmd = "ActivateWindow(" + parameterObject["window"].asString();
-  for (CVariant::iterator_array param = params.begin_array(); param != params.end_array(); param++)
+  int iWindow = CWindowTranslator::TranslateWindow(parameterObject["window"].asString());
+  if (iWindow != WINDOW_INVALID)
   {
-    if (param->isString() && !param->empty())
-      cmd += "," + param->asString();
+    std::vector<std::string> params;
+    for (CVariant::const_iterator_array param = parameterObject["parameters"].begin_array(); param != parameterObject["parameters"].end_array(); param++)
+    {
+      if (param->isString() && !param->empty())
+        params.push_back(param->asString());
+    }
+    CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTIVATE_WINDOW, iWindow, 0, nullptr, "", params);
+    return ACK;
   }
-  cmd += ")";
-  CBuiltins::GetInstance().Execute(cmd);
 
-  return ACK;
+  return InvalidParams;
 }
 
 JSONRPC_STATUS CGUIOperations::ShowNotification(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
