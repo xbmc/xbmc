@@ -46,6 +46,11 @@
           </constraints>
           <control type="list" format="string" />
         </setting>
+        <setting id="videoplayer.adjustresolution" type="boolean" label="39110" help="39111">
+          <level>2</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
         <setting id="videoplayer.usedisplayasclock" type="boolean" label="13510" help="36166">
           <level>1</level>
           <default>false</default>
