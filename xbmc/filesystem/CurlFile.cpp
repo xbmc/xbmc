@@ -525,8 +525,11 @@ void CCurlFile::SetCommonOptions(CReadState* state)
   // resolves. Unfortunately, c-ares does not yet support IPv6.
   g_curlInterface.easy_setopt(h, CURLOPT_NOSIGNAL, CURL_ON);
 
-  // not interested in failed requests
-  g_curlInterface.easy_setopt(h, CURLOPT_FAILONERROR, 1);
+  if (!g_advancedSettings.CanLogComponent(LOGCURL))
+  {
+    // not interested in failed requests
+    g_curlInterface.easy_setopt(h, CURLOPT_FAILONERROR, 1);
+  }
 
   // enable support for icecast / shoutcast streams
   if ( NULL == state->m_curlAliasList )
@@ -1010,9 +1013,18 @@ bool CCurlFile::Open(const CURL& url)
   m_state->m_bRetry = m_allowRetry;
 
   m_httpresponse = m_state->Connect(m_bufferSize);
+
   if (m_httpresponse <= 0 || m_httpresponse >= 400)
   {
-    CLog::Log(LOGERROR, "CCurlFile::Open failed with code %li for %s", m_httpresponse, url.GetRedacted().c_str());
+    std::string error;
+    if (m_httpresponse >= 400 && g_advancedSettings.CanLogComponent(LOGCURL))
+    {
+      error.resize(256);
+      ReadString(&error[0], 255);
+    }
+
+    CLog::Log(LOGERROR, "CCurlFile::Open failed with code %li for %s:\n%s", m_httpresponse, url.GetRedacted().c_str(), error.c_str());
+
     return false;
   }
 
