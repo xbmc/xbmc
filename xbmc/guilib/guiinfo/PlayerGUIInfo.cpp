@@ -516,7 +516,7 @@ bool CPlayerGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
     case PLAYER_ISINTERNETSTREAM:
       if (item)
       {
-        value = URIUtils::IsInternetStream(item->GetPath());
+        value = URIUtils::IsInternetStream(item->GetDynPath());
         return true;
       }
       break;
