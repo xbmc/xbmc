@@ -3333,7 +3333,6 @@ bool CFileItem::LoadMusicTag()
     if (musicDatabase.GetSongByFileName(m_strPath, song))
     {
       GetMusicInfoTag()->SetSong(song);
-      SetArt("thumb", song.strThumb);
       return true;
     }
     musicDatabase.Close();
