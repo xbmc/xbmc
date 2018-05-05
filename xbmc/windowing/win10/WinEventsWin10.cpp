@@ -121,21 +121,12 @@ void CWinEventsWin10::InitEventHandlers(CoreWindow^ window)
   window->SizeChanged += ref new TypedEventHandler<CoreWindow^, WindowSizeChangedEventArgs^>([&](CoreWindow^ wnd, WindowSizeChangedEventArgs^ args) {
     OnWindowSizeChanged(wnd, args);
   });
-#if defined(NTDDI_WIN10_RS2) && (NTDDI_VERSION >= NTDDI_WIN10_RS2)
-  try
-  {
-    window->ResizeStarted += ref new TypedEventHandler<CoreWindow^, Platform::Object^>([&](CoreWindow^ wnd, Platform::Object^ args) {
-      OnWindowResizeStarted(wnd, args);
-    });
-    window->ResizeCompleted += ref new TypedEventHandler<CoreWindow^, Platform::Object^>([&](CoreWindow^ wnd, Platform::Object^ args) {
-      OnWindowResizeCompleted(wnd, args);
-    });
-  }
-  catch (Platform::Exception^ ex)
-  {
-    // Win10 Creators Update is required
-  }
-#endif
+  window->ResizeStarted += ref new TypedEventHandler<CoreWindow^, Platform::Object^>([&](CoreWindow^ wnd, Platform::Object^ args) {
+    OnWindowResizeStarted(wnd, args);
+  });
+  window->ResizeCompleted += ref new TypedEventHandler<CoreWindow^, Platform::Object^>([&](CoreWindow^ wnd, Platform::Object^ args) {
+    OnWindowResizeCompleted(wnd, args);
+  });
   window->Closed += ref new TypedEventHandler<CoreWindow^, CoreWindowEventArgs^>([&](CoreWindow^ wnd, CoreWindowEventArgs^ args) {
     OnWindowClosed(wnd, args);
   });
@@ -429,7 +420,7 @@ void CWinEventsWin10::OnPointerWheelChanged(CoreWindow^ sender, PointerEventArgs
 
 void CWinEventsWin10::Kodi_KeyEvent(unsigned int vkey, unsigned scancode, unsigned keycode, bool isDown)
 {
-  static auto downState = CoreVirtualKeyStates::Down;
+  using State = CoreVirtualKeyStates;
 
   XBMC_keysym keysym;
   memset(&keysym, 0, sizeof(keysym));
@@ -441,32 +432,32 @@ void CWinEventsWin10::Kodi_KeyEvent(unsigned int vkey, unsigned scancode, unsign
 
   uint16_t mod = (uint16_t)XBMCKMOD_NONE;
   // If left control and right alt are down this usually means that AltGr is down
-  if ((window->GetKeyState(VirtualKey::LeftControl) & downState) == downState
-    && (window->GetKeyState(VirtualKey::RightMenu) & downState) == downState)
+  if ((window->GetKeyState(VirtualKey::LeftControl) & State::Down) == State::Down
+    && (window->GetKeyState(VirtualKey::RightMenu) & State::Down) == State::Down)
   {
     mod |= XBMCKMOD_MODE;
     mod |= XBMCKMOD_MODE;
   }
   else
   {
-    if ((window->GetKeyState(VirtualKey::LeftControl) & downState) == downState)
+    if ((window->GetKeyState(VirtualKey::LeftControl) & State::Down) == State::Down)
       mod |= XBMCKMOD_LCTRL;
-    if ((window->GetKeyState(VirtualKey::RightMenu) & downState) == downState)
+    if ((window->GetKeyState(VirtualKey::RightMenu) & State::Down) == State::Down)
       mod |= XBMCKMOD_RALT;
   }
 
   // Check the remaining modifiers
-  if ((window->GetKeyState(VirtualKey::LeftShift) & downState) == downState)
+  if ((window->GetKeyState(VirtualKey::LeftShift) & State::Down) == State::Down)
     mod |= XBMCKMOD_LSHIFT;
-  if ((window->GetKeyState(VirtualKey::RightShift) & downState) == downState)
+  if ((window->GetKeyState(VirtualKey::RightShift) & State::Down) == State::Down)
     mod |= XBMCKMOD_RSHIFT;
-  if ((window->GetKeyState(VirtualKey::RightControl) & downState) == downState)
+  if ((window->GetKeyState(VirtualKey::RightControl) & State::Down) == State::Down)
     mod |= XBMCKMOD_RCTRL;
-  if ((window->GetKeyState(VirtualKey::LeftMenu) & downState) == downState)
+  if ((window->GetKeyState(VirtualKey::LeftMenu) & State::Down) == State::Down)
     mod |= XBMCKMOD_LALT;
-  if ((window->GetKeyState(VirtualKey::LeftWindows) & downState) == downState)
+  if ((window->GetKeyState(VirtualKey::LeftWindows) & State::Down) == State::Down)
     mod |= XBMCKMOD_LSUPER;
-  if ((window->GetKeyState(VirtualKey::RightWindows) & downState) == downState)
+  if ((window->GetKeyState(VirtualKey::RightWindows) & State::Down) == State::Down)
     mod |= XBMCKMOD_LSUPER;
 
   keysym.mod = (XBMCMod)mod;
@@ -544,6 +535,7 @@ void CWinEventsWin10::OnAcceleratorKeyActivated(CoreDispatcher^ sender, Accelera
   }
 
   Kodi_KeyEvent(vk, args->KeyStatus.ScanCode, keyCode, isDown);
+  args->Handled = true;
 }
 
 // DisplayInformation event handlers.

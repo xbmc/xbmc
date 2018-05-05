@@ -42,6 +42,15 @@ public:
   bool PumpDriveChangeEvents(IStorageEventsCallback *callback) override;
 
 private:
+  enum Drive_Types
+  {
+    ALL_DRIVES = 0,
+    LOCAL_DRIVES,
+    REMOVABLE_DRIVES,
+    DVD_DRIVES
+  };
+  static void GetDrivesByType(VECSOURCES &localDrives, Drive_Types eDriveType = ALL_DRIVES, bool bonlywithmedia = false);
+
   Windows::Devices::Enumeration::DeviceWatcher^ m_watcher{ nullptr };
   std::atomic<bool> m_changed;
 };

@@ -739,26 +739,17 @@ bool CCPUInfo::readProcStat(unsigned long long& user, unsigned long long& nice,
     for (std::map<int, CoreInfo>::iterator it = m_cores.begin(); it != m_cores.end(); ++it)
       it->second.m_fPct = double(m_lastUsedPercentage); // use CPU average as fallback
 #endif // TARGET_WINDOWS_DESKTOP
-#if defined(TARGET_WINDOWS_STORE) && defined(NTDDI_WIN10_RS2) && (NTDDI_VERSION >= NTDDI_WIN10_RS2)
-  // introduced in 10.0.15063.0
+#if defined(TARGET_WINDOWS_STORE)
   if (Windows::Foundation::Metadata::ApiInformation::IsTypePresent("Windows.System.Diagnostics.SystemDiagnosticInfo"))
   {
-    try
-    {
-      auto diagnostic = Windows::System::Diagnostics::SystemDiagnosticInfo::GetForCurrentSystem();
-      auto usage = diagnostic->CpuUsage;
-      auto report = usage->GetReport();
+    auto diagnostic = Windows::System::Diagnostics::SystemDiagnosticInfo::GetForCurrentSystem();
+    auto usage = diagnostic->CpuUsage;
+    auto report = usage->GetReport();
 
-      user = report->UserTime.Duration;
-      idle = report->IdleTime.Duration;
-      system = report->KernelTime.Duration - idle;
-      return true;
-    }
-    catch (...)
-    {
-      // requires Win10 CU (10.0.15063) or later
-      return false;
-    }
+    user = report->UserTime.Duration;
+    idle = report->IdleTime.Duration;
+    system = report->KernelTime.Duration - idle;
+    return true;
   }
   else
     return false;

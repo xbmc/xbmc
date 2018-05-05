@@ -45,9 +45,13 @@ CStorageProvider::~CStorageProvider()
 void CStorageProvider::Initialize()
 {
   m_changed = false;
-  // TODO check for a optical drive (available on desktop)
-  g_mediaManager.SetHasOpticalDrive(false);
-  
+  VECSOURCES vShare;
+  GetDrivesByType(vShare, DVD_DRIVES);
+  if (!vShare.empty())
+    g_mediaManager.SetHasOpticalDrive(true);
+  else
+    CLog::Log(LOGDEBUG, "%s: No optical drive found.", __FUNCTION__);
+
   m_watcher = DeviceInformation::CreateWatcher(DeviceClass::PortableStorageDevice);
   auto handler = [this](DeviceWatcher^, DeviceInformation^)
   {
@@ -71,13 +75,18 @@ void CStorageProvider::GetLocalDrives(VECSOURCES &localDrives)
   share.strName = g_localizeStrings.Get(21440);
   share.m_ignore = true;
   share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
-
   localDrives.push_back(share);
+
+  GetDrivesByType(localDrives, LOCAL_DRIVES);
 }
 
 void CStorageProvider::GetRemovableDrives(VECSOURCES &removableDrives)
 {
   using KODI::PLATFORM::WINDOWS::FromW;
+
+  // get drives which we have direct access for (in case of broad file system access)
+  GetDrivesByType(removableDrives, REMOVABLE_DRIVES, true);
+  
   try
   {
     auto devicesView = Wait(Windows::Storage::KnownFolders::RemovableDevices->GetFoldersAsync());
@@ -87,8 +96,23 @@ void CStorageProvider::GetRemovableDrives(VECSOURCES &removableDrives)
       auto device = devicesView->GetAt(i);
       source.strName = FromW(device->DisplayName->Data());
       std::string driveLetter = FromW(device->Name->Data()).substr(0, 1);
+      std::string root = driveLetter + ":\\";
+
+      // skip exiting in case if we have direct access
+      auto exiting = std::find_if(removableDrives.begin(), removableDrives.end(), [&root](CMediaSource& m) {
+        return m.strPath == root;
+      });
+      if (exiting != removableDrives.end())
+        continue;
+
+      UINT uDriveType = GetDriveTypeA(root.c_str());
       source.strPath = "win-lib://removable/" + driveLetter + "/";
-      source.m_iDriveType = CMediaSource::SOURCE_TYPE_REMOVABLE;
+      source.m_iDriveType = (
+        (uDriveType == DRIVE_FIXED) ? CMediaSource::SOURCE_TYPE_LOCAL :
+        (uDriveType == DRIVE_REMOTE) ? CMediaSource::SOURCE_TYPE_REMOTE :
+        (uDriveType == DRIVE_CDROM) ? CMediaSource::SOURCE_TYPE_DVD :
+        (uDriveType == DRIVE_REMOVABLE) ? CMediaSource::SOURCE_TYPE_REMOVABLE :
+        CMediaSource::SOURCE_TYPE_UNKNOWN);
 
       removableDrives.push_back(source);
     }
@@ -100,7 +124,14 @@ void CStorageProvider::GetRemovableDrives(VECSOURCES &removableDrives)
 
 std::string CStorageProvider::GetFirstOpticalDeviceFileName()
 {
-  return "";
+  VECSOURCES vShare;
+  std::string strdevice = "\\\\.\\";
+  GetDrivesByType(vShare, DVD_DRIVES);
+
+  if (!vShare.empty())
+    return strdevice.append(vShare.front().strPath);
+  else
+    return "";
 }
 
 bool CStorageProvider::Eject(const std::string& mountpath)
@@ -110,18 +141,40 @@ bool CStorageProvider::Eject(const std::string& mountpath)
 
 std::vector<std::string> CStorageProvider::GetDiskUsage()
 {
+  using KODI::PLATFORM::WINDOWS::FromW;
+
   std::vector<std::string> result;
   ULARGE_INTEGER ULTotal = { { 0 } };
   ULARGE_INTEGER ULTotalFree = { { 0 } };
   std::string strRet;
 
   Platform::String^ localfolder = Windows::Storage::ApplicationData::Current->LocalFolder->Path;
-  std::wstring folderNameW(localfolder->Data());
-
-  GetDiskFreeSpaceExW(folderNameW.c_str(), nullptr, &ULTotal, &ULTotalFree);
-  strRet = KODI::PLATFORM::WINDOWS::FromW(StringUtils::Format(L"%d MB %s", (ULTotalFree.QuadPart / (1024 * 1024)), g_localizeStrings.Get(160).c_str()));
+  GetDiskFreeSpaceExW(localfolder->Data(), nullptr, &ULTotal, &ULTotalFree);
+  strRet = FromW(StringUtils::Format(L"%s: %d MB %s", g_localizeStrings.Get(21440), (ULTotalFree.QuadPart / (1024 * 1024)), g_localizeStrings.Get(160).c_str()));
   result.push_back(strRet);
 
+  DWORD drivesBits = GetLogicalDrives();
+  if (drivesBits == 0)
+    return result;
+
+  CMediaSource share;
+  char volumeName[100];
+
+  drivesBits >>= 2;       // skip A and B
+  char driveLetter = 'C'; // start with C
+  for (; drivesBits > 0; drivesBits >>= 1, driveLetter++)
+  {
+    if (!(drivesBits & 1))
+      continue;
+
+    std::string strDrive = std::string(1, driveLetter) + ":\\";
+    if (DRIVE_FIXED == GetDriveTypeA(strDrive.c_str()) 
+      && GetDiskFreeSpaceExA((strDrive.c_str()), nullptr, &ULTotal, &ULTotalFree))
+    {
+      strRet = StringUtils::Format("%s %d MB %s", strDrive.c_str(), int(ULTotalFree.QuadPart / (1024 * 1024)), g_localizeStrings.Get(160).c_str());
+      result.push_back(strRet);
+    }
+  }
   return result;
 }
 
@@ -130,5 +183,92 @@ bool CStorageProvider::PumpDriveChangeEvents(IStorageEventsCallback *callback)
   bool res = m_changed.load();
   m_changed = false;
   return res;
+}
+
+void CStorageProvider::GetDrivesByType(VECSOURCES & localDrives, Drive_Types eDriveType, bool bonlywithmedia)
+{
+  DWORD drivesBits = GetLogicalDrives();
+  if (drivesBits == 0)
+    return;
+
+  CMediaSource share;
+  char volumeName[100];
+
+  drivesBits >>= 2;       // skip A and B
+  char driveLetter = 'C'; // start with C
+  for (; drivesBits > 0; drivesBits >>= 1, driveLetter++)
+  {
+    if (!(drivesBits & 1))
+      continue;
+
+    std::string strDrive = std::string(1, driveLetter) + ":\\";
+    UINT uDriveType = GetDriveTypeA(strDrive.c_str());
+    int nResult = GetVolumeInformationA(strDrive.c_str(), volumeName, 100, 0, 0, 0, NULL, 25);
+    if (nResult == 0 && bonlywithmedia)
+    {
+      continue;
+    }
+
+    bool bUseDCD = false;
+    // skip unsupported types
+    if (uDriveType < DRIVE_REMOVABLE || uDriveType > DRIVE_CDROM)
+      continue;
+    // only fixed and remote
+    if (eDriveType == LOCAL_DRIVES && uDriveType != DRIVE_FIXED && uDriveType != DRIVE_REMOTE)
+      continue;
+    // only removable
+    if (eDriveType == REMOVABLE_DRIVES && uDriveType != DRIVE_REMOVABLE)
+      continue;
+    // only CD-ROMs
+    if (eDriveType == DVD_DRIVES && uDriveType != DRIVE_CDROM)
+      continue;
+
+    share.strPath = strDrive;
+    if (volumeName[0] != L'\0')
+      share.strName = volumeName;
+    if (uDriveType == DRIVE_CDROM && nResult)
+    {
+      // Has to be the same as auto mounted devices
+      share.strStatus = share.strName;
+      share.strName = share.strPath;
+      share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
+      bUseDCD = true;
+    }
+    else
+    {
+      // Lets show it, like Windows explorer do...
+      switch (uDriveType)
+      {
+      case DRIVE_CDROM:
+        share.strName = StringUtils::Format("%s (%s)", share.strPath.c_str(), g_localizeStrings.Get(218).c_str());
+        break;
+      case DRIVE_REMOVABLE:
+        if (share.strName.empty())
+          share.strName = StringUtils::Format("%s (%s)", g_localizeStrings.Get(437).c_str(), share.strPath.c_str());
+        break;
+      default:
+        if (share.strName.empty())
+          share.strName = share.strPath;
+        else
+          share.strName = StringUtils::Format("%s (%s)", share.strPath.c_str(), share.strName.c_str());
+        break;
+      }
+    }
+
+    StringUtils::Replace(share.strName, ":\\", ":");
+    StringUtils::Replace(share.strPath, ":\\", ":");
+    share.m_ignore = true;
+    if (!bUseDCD)
+    {
+      share.m_iDriveType = (
+        (uDriveType == DRIVE_FIXED) ? CMediaSource::SOURCE_TYPE_LOCAL :
+        (uDriveType == DRIVE_REMOTE) ? CMediaSource::SOURCE_TYPE_REMOTE :
+        (uDriveType == DRIVE_CDROM) ? CMediaSource::SOURCE_TYPE_DVD :
+        (uDriveType == DRIVE_REMOVABLE) ? CMediaSource::SOURCE_TYPE_REMOVABLE :
+        CMediaSource::SOURCE_TYPE_UNKNOWN);
+    }
+
+    AddOrReplace(localDrives, share);
+  }
 }
 

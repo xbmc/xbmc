@@ -22,6 +22,7 @@
 #include "AppInboundProtocol.h"
 #include "input/remote/IRRemote.h"
 #include "ServiceBroker.h"
+#include "settings/AdvancedSettings.h"
 #include "threads/SystemClock.h"
 #include "utils/log.h"
 
@@ -36,7 +37,7 @@ using namespace Windows::UI::Core;
 CRemoteControlXbox::CRemoteControlXbox()
   : m_bInitialized(false)
   , m_firstClickTime(0)
-  , m_lastKey(VirtualKey::None)
+  , m_repeatCount(0)
 {
 }
 
@@ -53,15 +54,19 @@ bool CRemoteControlXbox::IsRemoteDevice(const std::wstring &deviceId) const
 
 void CRemoteControlXbox::Disconnect()
 {
-  auto dispatcher = CoreWindow::GetForCurrentThread()->Dispatcher;
-  dispatcher->AcceleratorKeyActivated -= m_token;
+  m_bInitialized = false;
+  auto coreWindow = CoreWindow::GetForCurrentThread();
+  if (!coreWindow) // window is destroyed already
+    return;
+
+  // unregister our key handler
+  coreWindow->Dispatcher->AcceleratorKeyActivated -= m_token;
 
   auto smtc = SystemMediaTransportControls::GetForCurrentView();
   if (smtc)
   {
     smtc->ButtonPressed -= m_mediatoken;
   }
-  m_bInitialized = false;
 }
 
 void CRemoteControlXbox::Initialize()
@@ -98,37 +103,35 @@ void CRemoteControlXbox::HandleAcceleratorKey(CoreDispatcher^ sender, Accelerato
   newEvent.keybutton.button = button;
   newEvent.keybutton.holdtime = 0;
 
+  std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
+
   switch (args->EventType)
   {
   case CoreAcceleratorKeyEventType::KeyDown:
   case CoreAcceleratorKeyEventType::SystemKeyDown:
   {
-    if (m_lastKey != args->VirtualKey)
+    if (!args->KeyStatus.WasKeyDown) // first occurrence
     {
-      m_lastKey = args->VirtualKey;
       m_firstClickTime = XbmcThreads::SystemClockMillis();
+      if (appPort)
+        appPort->OnEvent(newEvent);
     }
     else
-      newEvent.keybutton.holdtime = XbmcThreads::SystemClockMillis() - m_firstClickTime;
-
-    std::shared_ptr<CAppInboundProtocol> appPort;
-    appPort = CServiceBroker::GetAppPort();
-    if (appPort)
-      appPort->OnEvent(newEvent);
-
+    {
+      m_repeatCount++;
+      if (m_repeatCount > g_advancedSettings.m_remoteDelay)
+      {
+        newEvent.keybutton.holdtime = XbmcThreads::SystemClockMillis() - m_firstClickTime;
+        if (appPort)
+          appPort->OnEvent(newEvent);
+      }
+    }
     break;
   }
   case CoreAcceleratorKeyEventType::KeyUp:
   case CoreAcceleratorKeyEventType::SystemKeyUp:
   {
-    if (m_lastKey == args->VirtualKey)
-      newEvent.keybutton.holdtime = XbmcThreads::SystemClockMillis() - m_firstClickTime;
-
-    m_lastKey = VirtualKey::None;
-    std::shared_ptr<CAppInboundProtocol> appPort;
-    appPort = CServiceBroker::GetAppPort();
-    if (appPort)
-      appPort->OnEvent(newEvent);
+    m_repeatCount = 0;
     break;
   }
   case CoreAcceleratorKeyEventType::Character:
