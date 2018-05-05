@@ -2091,7 +2091,7 @@ bool CVideoDatabase::GetEpisodeInfo(const std::string& strFilenameAndPath, CVide
       return false;
 
     if (idEpisode < 0)
-      idEpisode = GetEpisodeId(strFilenameAndPath);
+      idEpisode = GetEpisodeId(strFilenameAndPath, details.m_iEpisode, details.m_iSeason);
     if (idEpisode < 0) return false;
 
     std::string sql = PrepareSQL("select * from episode_view where idEpisode=%i",idEpisode);
