@@ -264,6 +264,8 @@ bool CRenderManager::IsConfigured() const
 void CRenderManager::ShowVideo(bool enable)
 {
   m_showVideo = enable;
+  if (!enable)
+    Flush(false);
 }
 
 void CRenderManager::FrameWait(int ms)
@@ -355,6 +357,12 @@ void CRenderManager::FrameMove()
 
 void CRenderManager::PreInit()
 {
+  {
+    CSingleLock lock(m_statelock);
+    if (m_renderState != STATE_UNCONFIGURED)
+      return;
+  }
+
   if (!g_application.IsCurrentThread())
   {
     m_initEvent.Reset();
