@@ -357,6 +357,12 @@ void CRenderManager::FrameMove()
 
 void CRenderManager::PreInit()
 {
+  {
+    CSingleLock lock(m_statelock);
+    if (m_renderState != STATE_UNCONFIGURED)
+      return;
+  }
+
   if (!g_application.IsCurrentThread())
   {
     m_initEvent.Reset();
