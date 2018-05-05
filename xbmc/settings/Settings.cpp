@@ -169,6 +169,7 @@ const std::string CSettings::SETTING_VIDEOPLAYER_USEVAAPIMPEG4 = "videoplayer.us
 const std::string CSettings::SETTING_VIDEOPLAYER_USEVAAPIVC1 = "videoplayer.usevaapivc1";
 const std::string CSettings::SETTING_VIDEOPLAYER_USEVAAPIVP8 = "videoplayer.usevaapivp8";
 const std::string CSettings::SETTING_VIDEOPLAYER_USEVAAPIVP9 = "videoplayer.usevaapivp9";
+const std::string CSettings::SETTING_VIDEOPLAYER_USEVAAPIHEVC = "videoplayer.usevaapihevc";
 const std::string CSettings::SETTING_VIDEOPLAYER_PREFERVAAPIRENDER = "videoplayer.prefervaapirender";
 const std::string CSettings::SETTING_VIDEOPLAYER_USEDXVA2 = "videoplayer.usedxva2";
 const std::string CSettings::SETTING_VIDEOPLAYER_USEOMXPLAYER = "videoplayer.useomxplayer";
