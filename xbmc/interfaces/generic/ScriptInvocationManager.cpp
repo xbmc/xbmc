@@ -217,6 +217,7 @@ LanguageInvokerPtr CScriptInvocationManager::GetLanguageInvoker(const std::strin
     if (m_lastInvokerThread->Reuseable(script))
     {
       CLog::Log(LOGDEBUG, "%s - Reusing LanguageInvokerThread %d for script %s", __FUNCTION__, m_lastInvokerThread->GetId(), script.c_str());
+      m_lastInvokerThread->GetInvoker()->Reset();
       return m_lastInvokerThread->GetInvoker();
     }
     m_lastInvokerThread->Release();
