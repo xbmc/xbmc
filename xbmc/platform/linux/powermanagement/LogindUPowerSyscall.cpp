@@ -25,7 +25,6 @@
 
 CLogindUPowerSyscall::CLogindUPowerSyscall()
 {
-  m_delayLockFd = -1;
   m_lowBattery = false;
 
   CLog::Log(LOGINFO, "Selected Logind/UPower as PowerSyscall");
@@ -42,7 +41,7 @@ CLogindUPowerSyscall::CLogindUPowerSyscall()
   m_canHibernate = LogindCheckCapability("CanHibernate");
   m_canSuspend   = LogindCheckCapability("CanSuspend");
 
-  InhibitDelayLock();
+  InhibitDelayLockSleep();
 
   m_batteryLevel = 0;
   if (m_hasUPower)
@@ -71,11 +70,14 @@ CLogindUPowerSyscall::CLogindUPowerSyscall()
 
 CLogindUPowerSyscall::~CLogindUPowerSyscall()
 {
-  ReleaseDelayLock();
+  ReleaseDelayLockSleep();
+  ReleaseDelayLockShutdown();
 }
 
 bool CLogindUPowerSyscall::Powerdown()
 {
+  // delay shutdown so that the app can close properly
+  InhibitDelayLockShutdown();
   return LogindSetPowerState("PowerOff");
 }
 
@@ -194,7 +196,7 @@ void CLogindUPowerSyscall::UpdateBatteryLevel()
 bool CLogindUPowerSyscall::PumpPowerEvents(IPowerEventsCallback *callback)
 {
   bool result = false;
-  bool releaseLock = false;
+  bool releaseLockSleep = false;
 
   if (m_connection)
   {
@@ -212,12 +214,12 @@ bool CLogindUPowerSyscall::PumpPowerEvents(IPowerEventsCallback *callback)
         if (arg)
         {
           callback->OnSleep();
-          releaseLock = true;
+          releaseLockSleep = true;
         }
         else
         {
           callback->OnWake();
-          InhibitDelayLock();
+          InhibitDelayLockSleep();
         }
 
         result = true;
@@ -236,17 +238,27 @@ bool CLogindUPowerSyscall::PumpPowerEvents(IPowerEventsCallback *callback)
     }
   }
 
-  if (releaseLock)
-    ReleaseDelayLock();
+  if (releaseLockSleep)
+    ReleaseDelayLockSleep();
 
   return result;
 }
 
-void CLogindUPowerSyscall::InhibitDelayLock()
+void CLogindUPowerSyscall::InhibitDelayLockSleep()
+{
+  m_delayLockSleepFd = InhibitDelayLock("sleep");
+}
+
+void CLogindUPowerSyscall::InhibitDelayLockShutdown()
+{
+  m_delayLockShutdownFd = InhibitDelayLock("shutdown");
+}
+
+int CLogindUPowerSyscall::InhibitDelayLock(const char *what)
 {
 #ifdef DBUS_TYPE_UNIX_FD
   CDBusMessage message("org.freedesktop.login1", "/org/freedesktop/login1", "org.freedesktop.login1.Manager", "Inhibit");
-  message.AppendArgument("sleep"); // what to inhibit
+  message.AppendArgument(what); // what to inhibit
   message.AppendArgument("XBMC"); // who
   message.AppendArgument(""); // reason
   message.AppendArgument("delay"); // mode
@@ -255,30 +267,42 @@ void CLogindUPowerSyscall::InhibitDelayLock()
 
   if (!reply)
   {
-    CLog::Log(LOGWARNING, "LogindUPowerSyscall - failed to inhibit sleep delay lock");
-    m_delayLockFd = -1;
-    return;
+    CLog::Log(LOGWARNING, "LogindUPowerSyscall - failed to inhibit %s delay lock", what);
+    return -1;
   }
 
-  if (!dbus_message_get_args(reply, NULL, DBUS_TYPE_UNIX_FD, &m_delayLockFd, DBUS_TYPE_INVALID))
+  int delayLockFd;
+  if (!dbus_message_get_args(reply, NULL, DBUS_TYPE_UNIX_FD, &delayLockFd, DBUS_TYPE_INVALID))
   {
     CLog::Log(LOGWARNING, "LogindUPowerSyscall - failed to get inhibit file descriptor");
-    m_delayLockFd = -1;
-    return;
+    return -1;
   }
 
-    CLog::Log(LOGDEBUG, "LogindUPowerSyscall - inhibit lock taken, fd %i", m_delayLockFd);
+  CLog::Log(LOGDEBUG, "LogindUPowerSyscall - inhibit lock taken, fd %i", delayLockFd);
+  return delayLockFd;
 #else
-    CLog::Log(LOGWARNING, "LogindUPowerSyscall - inhibit lock support not compiled in");
+  CLog::Log(LOGWARNING, "LogindUPowerSyscall - inhibit lock support not compiled in");
+  return -1;
 #endif
 }
 
-void CLogindUPowerSyscall::ReleaseDelayLock()
+void CLogindUPowerSyscall::ReleaseDelayLockSleep()
 {
-  if (m_delayLockFd != -1)
+  ReleaseDelayLock(m_delayLockSleepFd, "sleep");
+  m_delayLockSleepFd = -1;
+}
+
+void CLogindUPowerSyscall::ReleaseDelayLockShutdown()
+{
+  ReleaseDelayLock(m_delayLockShutdownFd, "shutdown");
+  m_delayLockShutdownFd = -1;
+}
+
+void CLogindUPowerSyscall::ReleaseDelayLock(int lockFd, const char *what)
+{
+  if (lockFd != -1)
   {
-    close(m_delayLockFd);
-    m_delayLockFd = -1;
-    CLog::Log(LOGDEBUG, "LogindUPowerSyscall - delay lock released");
+    close(lockFd);
+    CLog::Log(LOGDEBUG, "LogindUPowerSyscall - delay lock %s released", what);
   }
 }
