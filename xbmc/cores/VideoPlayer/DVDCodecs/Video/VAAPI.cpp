@@ -1542,6 +1542,7 @@ void COutput::StateMachine(int signal, Protocol *port, Message *msg)
         case COutputControlProtocol::FLUSH:
           Flush();
           msg->Reply(COutputControlProtocol::ACC);
+          m_state = O_TOP_CONFIGURED_IDLE;
           return;
         case COutputControlProtocol::PRECLEANUP:
           Flush();
