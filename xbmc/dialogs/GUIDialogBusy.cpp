@@ -29,16 +29,27 @@
 
 class CBusyWaiter : public CThread
 {
-  std::shared_ptr<CEvent>  m_done;
+  std::shared_ptr<CEvent> m_done;
+  IRunnable *m_runnable;
 public:
-  explicit CBusyWaiter(IRunnable *runnable) : CThread(runnable, "waiting"), m_done(new CEvent()) {  }
+  explicit CBusyWaiter(IRunnable *runnable) :
+  CThread(runnable, "waiting"), m_done(new CEvent()),  m_runnable(runnable) { }
   
   bool Wait(unsigned int displaytime, bool allowCancel)
   {
     std::shared_ptr<CEvent> e_done(m_done);
 
     Create();
-    return CGUIDialogBusy::WaitOnEvent(*e_done, displaytime, allowCancel);
+    unsigned int start = XbmcThreads::SystemClockMillis();
+    if (!CGUIDialogBusy::WaitOnEvent(*e_done, displaytime, allowCancel))
+    {
+      m_runnable->Cancel();
+      unsigned int elapsed = XbmcThreads::SystemClockMillis() - start;
+      unsigned int remaining = (elapsed >= displaytime) ? 0 : displaytime - elapsed;
+      CGUIDialogBusy::WaitOnEvent(*e_done, remaining, false);
+      return false;
+    }
+    return true;
   }
 
   // 'this' is actually deleted from the thread where it's on the stack
@@ -52,12 +63,16 @@ public:
 
 };
 
-bool CGUIDialogBusy::Wait(IRunnable *runnable, unsigned int displaytime /* = 100 */, bool allowCancel /* = true */)
+bool CGUIDialogBusy::Wait(IRunnable *runnable, unsigned int displaytime, bool allowCancel)
 {
   if (!runnable)
     return false;
   CBusyWaiter waiter(runnable);
-  return waiter.Wait(displaytime, allowCancel);
+  if (!waiter.Wait(displaytime, allowCancel))
+  {
+    return false;
+  }
+  return true;
 }
 
 bool CGUIDialogBusy::WaitOnEvent(CEvent &event, unsigned int displaytime /* = 100 */, bool allowCancel /* = true */)

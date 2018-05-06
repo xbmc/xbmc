@@ -19,6 +19,7 @@
  */
 
 #include "VirtualDirectory.h"
+#include "DirectoryFactory.h"
 #include "URL.h"
 #include "Util.h"
 #include "utils/URIUtils.h"
@@ -72,7 +73,11 @@ bool CVirtualDirectory::GetDirectory(const CURL& url, CFileItemList &items, bool
     flags |= DIR_FLAG_NO_FILE_DIRS;
   if (!strPath.empty() && strPath != "files://")
   {
-    return CDirectory::GetDirectory(strPath, items, m_strFileMask, flags);
+    CURL realURL = URIUtils::SubstitutePath(url);
+    m_pDir.reset(CDirectoryFactory::Create(realURL));
+    bool ret = CDirectory::GetDirectory(strPath, m_pDir, items, m_strFileMask, flags);
+    m_pDir.reset();
+    return ret;
   }
 
   // if strPath is blank, clear the list (to avoid parent items showing up)
@@ -87,6 +92,12 @@ bool CVirtualDirectory::GetDirectory(const CURL& url, CFileItemList &items, bool
   GetSources(shares);
   CSourcesDirectory dir;
   return dir.GetDirectory(shares, items);
+}
+
+void CVirtualDirectory::CancelDirectory()
+{
+  if (m_pDir)
+    m_pDir->CancelDirectory();
 }
 
 /*!

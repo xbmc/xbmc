@@ -48,7 +48,7 @@ public:
    \param allowCancel whether the user can cancel the wait, defaults to true.
    \return true if the runnable completes, false if the user cancels early.
    */
-  static bool Wait(IRunnable *runnable, unsigned int displaytime = 100, bool allowCancel = true);
+  static bool Wait(IRunnable *runnable, unsigned int displaytime, bool allowCancel);
 
   /*! \brief Wait on an event while displaying the busy dialog.
    Throws up the busy dialog after the given time.
