@@ -98,7 +98,6 @@ namespace VIDEO
      */
     static void GetSeasonThumbs(const CVideoInfoTag &show, std::map<int, std::map<std::string, std::string> > &art, const std::vector<std::string> &artTypes, bool useLocal = true);
     static std::string GetImage(const CScraperUrl::SUrlEntry &image, const std::string& itemPath);
-    static std::string GetFanart(CFileItem *pItem, bool useLocal);
 
     bool EnumerateEpisodeItem(const CFileItem *item, EPISODELIST& episodeList);
 

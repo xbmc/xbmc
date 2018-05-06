@@ -317,6 +317,12 @@ void CAdvancedSettings::Initialize()
   m_bVideoScannerIgnoreErrors = false;
   m_iVideoLibraryDateAdded = 1; // prefer mtime over ctime and current time
 
+  m_videoEpisodeExtraArt = {};
+  m_videoTvShowExtraArt = {};
+  m_videoTvSeasonExtraArt = {};
+  m_videoMovieExtraArt = {};
+  m_videoMusicVideoExtraArt = {};
+
   m_iEpgUpdateCheckInterval = 300; /* check if tables need to be updated every 5 minutes */
   m_iEpgCleanupInterval = 900;     /* remove old entries from the EPG every 15 minutes */
   m_iEpgActiveTagCheckInterval = 60; /* check for updated active tags every minute */
@@ -772,32 +778,9 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
         separator = separator->NextSibling("separator");
       }
     }
-    // Music extra artist art
-    TiXmlElement* arttypes = pElement->FirstChildElement("artistextraart");
-    if (arttypes)
-    {
-      m_musicArtistExtraArt.clear();
-      TiXmlNode* arttype = arttypes->FirstChild("arttype");
-      while (arttype)
-      {
-        if (arttype->FirstChild())
-          m_musicArtistExtraArt.push_back(arttype->FirstChild()->ValueStr());
-        arttype = arttype->NextSibling("arttype");
-      }
-    }
-    // Music extra album art
-    arttypes = pElement->FirstChildElement("albumextraart");
-    if (arttypes)
-    {
-      m_musicAlbumExtraArt.clear();
-      TiXmlNode* arttype = arttypes->FirstChild("arttype");
-      while (arttype)
-      {
-        if (arttype->FirstChild())
-          m_musicAlbumExtraArt.push_back(arttype->FirstChild()->ValueStr());
-        arttype = arttype->NextSibling("arttype");
-      }
-    }
+
+    SetExtraArtwork(pElement->FirstChildElement("artistextraart"), m_musicArtistExtraArt);
+    SetExtraArtwork(pElement->FirstChildElement("albumextraart"), m_musicAlbumExtraArt);
   }
 
   pElement = pRootElement->FirstChildElement("videolibrary");
@@ -812,6 +795,12 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetBoolean(pElement, "importwatchedstate", m_bVideoLibraryImportWatchedState);
     XMLUtils::GetBoolean(pElement, "importresumepoint", m_bVideoLibraryImportResumePoint);
     XMLUtils::GetInt(pElement, "dateadded", m_iVideoLibraryDateAdded);
+
+    SetExtraArtwork(pElement->FirstChildElement("episodeextraart"), m_videoEpisodeExtraArt);
+    SetExtraArtwork(pElement->FirstChildElement("tvshowextraart"), m_videoTvShowExtraArt);
+    SetExtraArtwork(pElement->FirstChildElement("tvseasonextraart"), m_videoTvSeasonExtraArt);
+    SetExtraArtwork(pElement->FirstChildElement("movieextraart"), m_videoMovieExtraArt);
+    SetExtraArtwork(pElement->FirstChildElement("musicvideoextraart"), m_videoMusicVideoExtraArt);
   }
 
   pElement = pRootElement->FirstChildElement("videoscanner");
@@ -1460,5 +1449,19 @@ void CAdvancedSettings::SetExtraLogLevel(const std::vector<CVariant> &components
       continue;
 
     m_extraLogLevels |= static_cast<int>(it->asInteger());
+  }
+}
+
+void CAdvancedSettings::SetExtraArtwork(const TiXmlElement* arttypes, std::vector<std::string>& artworkMap)
+{
+  if (!arttypes)
+    return
+  artworkMap.clear();
+  const TiXmlNode* arttype = arttypes->FirstChild("arttype");
+  while (arttype)
+  {
+    if (arttype->FirstChild())
+      artworkMap.push_back(arttype->FirstChild()->ValueStr());
+    arttype = arttype->NextSibling("arttype");
   }
 }
