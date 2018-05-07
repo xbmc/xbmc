@@ -81,7 +81,7 @@ int CXBApplicationEx::Run(const CAppParamParser &params)
     {
 #endif
       lastFrameTime = XbmcThreads::SystemClockMillis();
-      Process();
+      Process(true);
       //reset exception count
 #ifdef XBMC_TRACK_EXCEPTIONS
 

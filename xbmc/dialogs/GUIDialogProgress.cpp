@@ -82,7 +82,7 @@ void CGUIDialogProgress::Progress()
 {
   if (m_active)
   {
-    ProcessRenderLoop();
+    ProcessRenderLoop(false, true);
   }
 }
 
