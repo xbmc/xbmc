@@ -157,7 +157,7 @@ bool CGUIDialogSimpleMenu::GetDirectoryItems(const std::string &path, CFileItemL
                                              const XFILE::CDirectory::CHints &hints)
 {
   CGetDirectoryItems getItems(path, items, hints);
-  if (!CGUIDialogBusy::Wait(&getItems))
+  if (!CGUIDialogBusy::Wait(&getItems, 100, true))
   {
     return false;
   }

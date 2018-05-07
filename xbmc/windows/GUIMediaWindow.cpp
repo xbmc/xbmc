@@ -42,6 +42,7 @@
 #include "dialogs/GUIDialogSmartPlaylistEditor.h"
 #include "favourites/FavouritesService.h"
 #include "filesystem/File.h"
+#include "filesystem/DirectoryFactory.h"
 #include "filesystem/FileDirectoryFactory.h"
 #include "filesystem/MultiPathDirectory.h"
 #include "filesystem/PluginDirectory.h"
@@ -99,6 +100,10 @@ public:
   void Run() override
   {
     m_result = m_dir.GetDirectory(m_url, m_items, m_useDir);
+  }
+  void Cancel() override
+  {
+    m_dir.CancelDirectory();
   }
   bool m_result;
 protected:
@@ -2162,9 +2167,8 @@ bool CGUIMediaWindow::GetDirectoryItems(CURL &url, CFileItemList &items, bool us
   if (m_useBusyDialog)
   {
     CGetDirectoryItems getItems(m_rootDir, url, items, useDir);
-    if (!CGUIDialogBusy::Wait(&getItems))
+    if (!CGUIDialogBusy::Wait(&getItems, 100, true))
     {
-      m_rootDir.CancelDirectory();
       return false;
     }
     return getItems.m_result;
