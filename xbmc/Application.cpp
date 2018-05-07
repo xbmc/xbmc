@@ -428,6 +428,11 @@ bool CApplication::Create(const CAppParamParser &params)
     }
   #endif
 
+  if (!m_ServiceManager->InitStageOnePointFive())
+    return false;
+
+  CSpecialProtocol::RegisterProfileManager(m_ServiceManager->GetProfileManager());
+
   // only the InitDirectories* for the current platform should return true
   bool inited = InitDirectoriesLinux();
   if (!inited)
@@ -453,11 +458,6 @@ bool CApplication::Create(const CAppParamParser &params)
 
   // Init our DllLoaders emu env
   init_emu_environ();
-
-  if (!m_ServiceManager->InitStageOnePointFive())
-    return false;
-
-  CSpecialProtocol::RegisterProfileManager(m_ServiceManager->GetProfileManager());
 
   CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
   CLog::Log(LOGNOTICE, "Starting %s (%s). Platform: %s %s %d-bit", CSysInfo::GetAppName().c_str(), CSysInfo::GetVersion().c_str(),
