@@ -1873,8 +1873,13 @@ void COutput::Flush()
   {
     if (msg->signal == COutputDataProtocol::NEWFRAME)
     {
-      CVaapiDecodedPicture pic = *reinterpret_cast<CVaapiDecodedPicture*>(msg->data);
-      m_config.videoSurfaces->ClearRender(pic.videoSurface);
+      CPayloadWrap<CVaapiDecodedPicture> *payload;
+      payload = dynamic_cast<CPayloadWrap<CVaapiDecodedPicture>*>(msg->payloadObj.get());
+      if (payload)
+      {
+        CVaapiDecodedPicture pic = *(payload->GetPlayload());
+        m_config.videoSurfaces->ClearRender(pic.videoSurface);
+      }
     }
     else if (msg->signal == COutputDataProtocol::RETURNPIC)
     {
