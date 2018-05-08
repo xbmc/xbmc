@@ -507,7 +507,7 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
     { AV_CODEC_ID_MPEG2VIDEO, CSettings::SETTING_VIDEOPLAYER_USEVAAPIMPEG2 },
     { AV_CODEC_ID_VP8, CSettings::SETTING_VIDEOPLAYER_USEVAAPIVP8 },
     { AV_CODEC_ID_VP9, CSettings::SETTING_VIDEOPLAYER_USEVAAPIVP9 },
-    { AV_CODEC_ID_HEVC, CSettings::SETTING_VIDEOPLAYER_USEVAAPIHEVC },
+    { AV_CODEC_ID_HEVC, "videoplayer.usevaapihevc" },
   };
 
   auto entry = settings_map.find(avctx->codec_id);
@@ -1209,7 +1209,7 @@ void CDecoder::Register(IVaapiWinSystem *winSystem, bool deepColor)
   CServiceBroker::GetSettings().GetSetting(CSettings::SETTING_VIDEOPLAYER_USEVAAPIMPEG2)->SetVisible(true);
   CServiceBroker::GetSettings().GetSetting(CSettings::SETTING_VIDEOPLAYER_USEVAAPIVP8)->SetVisible(true);
   CServiceBroker::GetSettings().GetSetting(CSettings::SETTING_VIDEOPLAYER_USEVAAPIVP9)->SetVisible(true);
-  CServiceBroker::GetSettings().GetSetting(CSettings::SETTING_VIDEOPLAYER_USEVAAPIHEVC)->SetVisible(true);
+  CServiceBroker::GetSettings().GetSetting("videoplayer.usevaapihevc")->SetVisible(true);
 }
 
 //-----------------------------------------------------------------------------

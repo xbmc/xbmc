@@ -123,7 +123,6 @@ public:
   static const std::string SETTING_VIDEOPLAYER_USEVAAPIVC1;
   static const std::string SETTING_VIDEOPLAYER_USEVAAPIVP8;
   static const std::string SETTING_VIDEOPLAYER_USEVAAPIVP9;
-  static const std::string SETTING_VIDEOPLAYER_USEVAAPIHEVC;
   static const std::string SETTING_VIDEOPLAYER_PREFERVAAPIRENDER;
   static const std::string SETTING_VIDEOPLAYER_USEDXVA2;
   static const std::string SETTING_VIDEOPLAYER_USEOMXPLAYER;
