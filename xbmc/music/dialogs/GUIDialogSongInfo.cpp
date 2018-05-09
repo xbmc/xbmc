@@ -96,8 +96,9 @@ public:
       return false;
 
     // Load song art. 
-    // For songs in library this includes related album and artist(s) art, 
-    // otherwise just embedded or cached thumb is fetched.
+    // For songs in library this includes related album and artist(s) art.  
+    // Also fetches artist art for non library songs when artist can be found
+    // uniquely by name, otherwise just embedded or cached thumb is fetched.
     CMusicThumbLoader loader;
     loader.LoadItem(m_song.get());
     if (dialog->IsCancelled())
@@ -110,21 +111,6 @@ public:
     dialog->SetArtTypeList(artlist);
     if (dialog->IsCancelled())
       return false;
-
-    // Fetch artist art for non db songs when artist can be found uniquely by name
-    if (!m_song->IsMusicDb() && m_song->HasMusicInfoTag() && !m_song->GetMusicInfoTag()->GetArtist().empty())
-    {
-      CMusicDatabase db;
-      db.Open();
-      int idArtist = db.GetArtistByName(m_song->GetMusicInfoTag()->GetArtist()[0]);
-      if (idArtist > 0)
-      {
-        std::map<std::string, std::string> art;
-        if (db.GetArtForItem(idArtist, MediaTypeArtist, art))
-          m_song->AppendArt(art, "artist");
-      }
-      db.Close();
-    }
 
     // Tell waiting SongInfoDialog that job is complete
     dialog->FetchComplete();
