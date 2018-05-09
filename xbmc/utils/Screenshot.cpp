@@ -213,9 +213,9 @@ void CScreenShot::TakeScreenshot(const std::string &filename, bool sync)
   else
   {
     //make sure the file exists to avoid concurrency issues
-    FILE* fp = fopen(filename.c_str(), "w");
-    if (fp)
-      fclose(fp);
+    XFILE::CFile file;
+    if (file.OpenForWrite(filename))
+      file.Close();
     else
       CLog::Log(LOGERROR, "Unable to create file %s", CURL::GetRedacted(filename).c_str());
 
