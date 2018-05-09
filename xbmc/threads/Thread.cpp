@@ -39,7 +39,7 @@ static thread_local CThread* currentThread;
 //////////////////////////////////////////////////////////////////////
 
 CThread::CThread(const char* ThreadName)
-: m_StopEvent(true,true), m_TermEvent(true), m_StartEvent(true)
+: m_StopEvent(true,true), m_TermEvent(true), m_StartEvent(true, true)
 {
   m_bStop = false;
 
@@ -56,7 +56,7 @@ CThread::CThread(const char* ThreadName)
 }
 
 CThread::CThread(IRunnable* pRunnable, const char* ThreadName)
-: m_StopEvent(true,true), m_TermEvent(true), m_StartEvent(true)
+: m_StopEvent(true, true), m_TermEvent(true), m_StartEvent(true, true)
 {
   m_bStop = false;
 
@@ -154,6 +154,8 @@ bool CThread::IsAutoDelete() const
 
 void CThread::StopThread(bool bWait /*= true*/)
 {
+  m_StartEvent.Wait();
+
   m_bStop = true;
   m_StopEvent.Set();
   CSingleLock lock(m_CriticalSection);
