@@ -126,14 +126,14 @@ void CResolutionUtils::FindResolutionFromWhitelist(float fps, int width, bool is
     }
   }
 
-  CLog::Log(LOGDEBUG, "No double refresh rate whitelisted resolution matched, trying desktop resolution");
+  CLog::Log(LOGDEBUG, "No double refresh rate whitelisted resolution matched, trying current resolution");
 
   for (const auto &mode : indexList)
   {
     auto i = CDisplaySettings::GetInstance().GetResFromString(mode.asString());
     const RESOLUTION_INFO info = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(i);
 
-    const RESOLUTION_INFO desktop_info = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(RES_DESKTOP);
+    const RESOLUTION_INFO desktop_info = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(CDisplaySettings::GetInstance().GetCurrentResolution());
 
     // allow resolutions that are desktop resolution but have the correct refresh rate
     if (info.iScreenWidth == desktop_info.iWidth &&
@@ -147,14 +147,14 @@ void CResolutionUtils::FindResolutionFromWhitelist(float fps, int width, bool is
     }
   }
 
-  CLog::Log(LOGDEBUG, "No larger whitelisted resolution matched, trying desktop resolution with double refreshrate");
+  CLog::Log(LOGDEBUG, "No larger whitelisted resolution matched, trying current resolution with double refreshrate");
 
   for (const auto &mode : indexList)
   {
     auto i = CDisplaySettings::GetInstance().GetResFromString(mode.asString());
     const RESOLUTION_INFO info = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(i);
 
-    const RESOLUTION_INFO desktop_info = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(RES_DESKTOP);
+    const RESOLUTION_INFO desktop_info = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(CDisplaySettings::GetInstance().GetCurrentResolution());
 
     // allow resolutions that are desktop resolution but have double the refresh rate
     if (info.iScreenWidth == desktop_info.iWidth &&
