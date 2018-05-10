@@ -11,7 +11,7 @@
 
   <Properties>
     <DisplayName>@APP_NAME@</DisplayName>
-    <PublisherDisplayName>@APP_COMPANY_NAME@</PublisherDisplayName>
+    <PublisherDisplayName>@COMPANY_NAME@</PublisherDisplayName>
     <Description>@APP_PACKAGE_DESCRIPTION@</Description>
     <Logo>media\icon50x50.png</Logo>
   </Properties>
