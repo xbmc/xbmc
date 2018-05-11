@@ -198,18 +198,23 @@ void CWinEventsWin10::UpdateWindowSize()
     MessagePush(&newEvent);
 }
 
-// Window event handlers.
-void CWinEventsWin10::OnWindowSizeChanged(const CoreWindow&, const WindowSizeChangedEventArgs& args)
+void CWinEventsWin10::OnResize(float width, float height)
 {
   CLog::Log(LOGDEBUG, __FUNCTION__": window size changed.");
-  m_logicalWidth = args.Size().Width;
-  m_logicalHeight = args.Size().Height;
+  m_logicalWidth = width;
+  m_logicalHeight = height;
   m_bResized = true;
 
   if (m_sizeChanging)
     return;
 
   HandleWindowSizeChanged();
+}
+
+// Window event handlers.
+void CWinEventsWin10::OnWindowSizeChanged(const CoreWindow&, const WindowSizeChangedEventArgs& args)
+{
+  OnResize(args.Size().Width, args.Size().Height);
 }
 
 void CWinEventsWin10::OnWindowResizeStarted(const CoreWindow& sender, const winrt::IInspectable&)

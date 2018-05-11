@@ -134,6 +134,11 @@ bool CWinSystemWin10::CreateNewWindow(const std::string& name, bool fullScreen, 
   // and hide UWP splash, without this the Kodi's splash will not be shown
   m_coreWindow.Dispatcher().ProcessEvents(winrt::Windows::UI::Core::CoreProcessEventsOption::ProcessOneAndAllPending);
 
+  // in some cases CoreWindow::SizeChanged isn't fired
+  // it causes mismatch between window actual size and UI
+  winrt::Rect winRect = m_coreWindow.Bounds();
+  dynamic_cast<CWinEventsWin10&>(*m_winEvents).OnResize(winRect.Width, winRect.Height);
+
   return true;
 }
 
@@ -442,16 +447,14 @@ bool CWinSystemWin10::ChangeResolution(const RESOLUTION_INFO& res, bool forceCha
       }
     }
 
-    // changing display mode doesn't cause OnResize event
-    // for CoreWindow, so we "emulate" it manually
+    // changing display mode doesn't fire CoreWindow::SizeChanged event
     if (changed && m_bWindowCreated)
     {
       float dpi = DisplayInformation::GetForCurrentView().LogicalDpi();
       float dipsW = DX::ConvertPixelsToDips(m_nWidth, dpi);
       float dipsH = DX::ConvertPixelsToDips(m_nHeight, dpi);
 
-      DX::Windowing()->OnResize(dipsW, dipsH);
-      dynamic_cast<CWinEventsWin10*>(m_winEvents.get())->UpdateWindowSize();
+      dynamic_cast<CWinEventsWin10&>(*m_winEvents).OnResize(dipsW, dipsH);
     }
     return changed;
   }

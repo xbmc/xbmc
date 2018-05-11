@@ -73,6 +73,7 @@ public:
 private:
   friend class CWinSystemWin10;
 
+  void OnResize(float width, float height);
   void UpdateWindowSize();
   void Kodi_KeyEvent(unsigned int vkey, unsigned scancode, unsigned keycode, bool isDown);
   void HandleWindowSizeChanged();
