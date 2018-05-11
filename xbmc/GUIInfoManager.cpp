@@ -6455,7 +6455,13 @@ bool CGUIInfoManager::GetMultiInfoBool(const CGUIInfo &info, int contextWindow, 
     }
     if (item)
     {
-      bReturn = GetItemBool(item, contextWindow, condition);
+      if (condition == LISTITEM_PROPERTY)
+      {
+        if (item->HasProperty(info.GetData3()))
+          bReturn = item->GetProperty(info.GetData3()).asBoolean();
+      }
+      else
+        bReturn = GetItemBool(item, contextWindow, condition);
     }
     else
     {
@@ -6573,7 +6579,17 @@ bool CGUIInfoManager::GetMultiInfoInt(int &value, const CGUIInfo &info, int cont
     }
     if (item)
     {
-      return GetItemInt(value, item, contextWindow, info.m_info);
+      if (info.m_info == LISTITEM_PROPERTY)
+      {
+        if (item->HasProperty(info.GetData3()))
+        {
+          value = item->GetProperty(info.GetData3()).asInteger();
+          return true;
+        }
+        return false;
+      }
+      else
+        return GetItemInt(value, item, contextWindow, info.m_info);
     }
     else
     {
