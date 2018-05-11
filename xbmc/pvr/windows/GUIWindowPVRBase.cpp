@@ -194,8 +194,10 @@ bool CGUIWindowPVRBase::OnAction(const CAction &action)
     case ACTION_NEXT_CHANNELGROUP:
     {
       // switch to next or previous group
-      const CPVRChannelGroupPtr channelGroup = GetChannelGroup();
-      SetChannelGroup(action.GetID() == ACTION_NEXT_CHANNELGROUP ? channelGroup->GetNextGroup() : channelGroup->GetPreviousGroup());
+      if (const CPVRChannelGroupPtr channelGroup = GetChannelGroup())
+      {
+        SetChannelGroup(action.GetID() == ACTION_NEXT_CHANNELGROUP ? channelGroup->GetNextGroup() : channelGroup->GetPreviousGroup());
+      }
       return true;
     }
     case ACTION_MOVE_RIGHT:
@@ -377,7 +379,10 @@ bool CGUIWindowPVRBase::OpenChannelGroupSelectionDialog(void)
   dialog->SetHeading(CVariant{g_localizeStrings.Get(19146)});
   dialog->SetItems(options);
   dialog->SetMultiSelection(false);
-  dialog->SetSelected(GetChannelGroup()->GroupName());
+  if (const CPVRChannelGroupPtr channelGroup = GetChannelGroup())
+  {
+    dialog->SetSelected(channelGroup->GroupName());
+  }
   dialog->Open();
 
   if (!dialog->IsConfirmed())
@@ -480,7 +485,11 @@ void CGUIWindowPVRBase::UpdateButtons(void)
   CGUIMediaWindow::UpdateButtons();
 
   const CPVRChannelGroupPtr channelGroup = GetChannelGroup();
-  SET_CONTROL_LABEL(CONTROL_BTNCHANNELGROUPS, g_localizeStrings.Get(19141) + ": " + channelGroup->GroupName());
+  if (channelGroup)
+  {
+    SET_CONTROL_LABEL(CONTROL_BTNCHANNELGROUPS, g_localizeStrings.Get(19141) + ": " + channelGroup->GroupName());
+  }
+
   m_channelGroupsSelector->SelectChannelGroup(channelGroup);
 }
 
