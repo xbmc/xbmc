@@ -20,6 +20,7 @@
 #pragma once
 
 #include "filesystem/IFile.h"
+#include <winrt/Windows.Storage.AccessCache.h>
 
 namespace XFILE
 {
@@ -54,14 +55,14 @@ namespace XFILE
     static bool IsInAccessList(const CURL& url);
 
   private:
-    bool OpenIntenal(const CURL& url, Windows::Storage::FileAccessMode mode);
-    Windows::Storage::StorageFile^ GetFile(const CURL& url);
-    static bool IsInList(const CURL& url, Windows::Storage::AccessCache::IStorageItemAccessList^ list);
-    static Platform::String^ GetTokenFromList(const CURL& url, Windows::Storage::AccessCache::IStorageItemAccessList^ list);
-    static int Stat(Windows::Storage::StorageFile^ file, struct __stat64* statData);
+    bool OpenIntenal(const CURL& url, winrt::Windows::Storage::FileAccessMode mode);
+    winrt::Windows::Storage::StorageFile GetFile(const CURL& url);
+    static bool IsInList(const CURL& url, const winrt::Windows::Storage::AccessCache::IStorageItemAccessList& list);
+    static winrt::hstring GetTokenFromList(const CURL& url, const winrt::Windows::Storage::AccessCache::IStorageItemAccessList& list);
+    static int Stat(const winrt::Windows::Storage::StorageFile& file, struct __stat64* statData);
 
     bool m_allowWrite = false;
-    Windows::Storage::StorageFile^ m_sFile = nullptr;
-    Windows::Storage::Streams::IRandomAccessStream^ m_fileStream = nullptr;
+    winrt::Windows::Storage::StorageFile m_sFile = nullptr;
+    winrt::Windows::Storage::Streams::IRandomAccessStream m_fileStream = nullptr;
   };
 }

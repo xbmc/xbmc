@@ -19,8 +19,9 @@
  */
 
 #include "Win10PowerSyscall.h"
+#include <winrt/Windows.Devices.Power.h>
 
-using namespace Windows::Devices::Power;
+using namespace winrt::Windows::Devices::Power;
 
 IPowerSyscall* CPowerSyscall::CreateInstance()
 {
@@ -73,15 +74,15 @@ bool CPowerSyscall::CanReboot()
 int CPowerSyscall::BatteryLevel()
 {
   int result = 0;
-  auto aggBattery = Battery::AggregateBattery;
-  auto report = aggBattery->GetReport();
+  auto aggBattery = Battery::AggregateBattery();
+  auto report = aggBattery.GetReport();
 
   int remaining = 0;
-  if (report->RemainingCapacityInMilliwattHours)
-    remaining = report->RemainingCapacityInMilliwattHours->Value;
+  if (report.RemainingCapacityInMilliwattHours())
+    remaining = report.RemainingCapacityInMilliwattHours().GetInt32();
   int full = 0;
-  if (report->FullChargeCapacityInMilliwattHours)
-    full = report->FullChargeCapacityInMilliwattHours->Value;
+  if (report.FullChargeCapacityInMilliwattHours())
+    full = report.FullChargeCapacityInMilliwattHours().GetInt32();
 
   if (full != 0 && remaining != 0)
   {

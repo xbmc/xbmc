@@ -38,7 +38,6 @@ public:
   bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays) override;
   void PresentRenderImpl(bool rendered) override;
   bool DPIChanged(WORD dpi, RECT windowRect) const override;
-  void SetWindow(HWND hWnd) const;
   bool DestroyRenderSystem() override;
 
   void UninitHooks();
@@ -46,7 +45,7 @@ public:
 
   void OnMove(int x, int y) override;
   void OnResize(int width, int height);
-  Windows::Foundation::Size GetOutputSize() { return m_deviceResources->GetOutputSize(); };
+  winrt::Windows::Foundation::Size GetOutputSize() { return m_deviceResources->GetOutputSize(); };
   void TrimDevice() { m_deviceResources->Trim(); };
 
   /*!

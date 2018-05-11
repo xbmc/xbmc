@@ -23,7 +23,6 @@
 #include <wrl/client.h>
 #include <concrt.h>
 #if defined(TARGET_WINDOWS_STORE)
-#include <agile.h>
 #include <dxgi1_3.h>
 #else
 #include <dxgi1_2.h>
@@ -79,9 +78,9 @@ namespace DX
     void Present();
 
     // The size of the render target, in pixels.
-    Windows::Foundation::Size GetOutputSize() const { return m_outputSize; }
+    winrt::Windows::Foundation::Size GetOutputSize() const { return m_outputSize; }
     // The size of the render target, in dips.
-    Windows::Foundation::Size GetLogicalSize() const { return m_logicalSize; }
+    winrt::Windows::Foundation::Size GetLogicalSize() const { return m_logicalSize; }
     void SetLogicalSize(float width, float height);
     float GetDpi() const { return m_effectiveDpi; }
     void SetDpi(float dpi);
@@ -131,8 +130,8 @@ namespace DX
     void SetWindow(HWND window);
 #elif defined(TARGET_WINDOWS_STORE)
     void Trim() const;
-    void SetWindow(Windows::UI::Core::CoreWindow^ window);
-    void SetWindowPos(Windows::Foundation::Rect rect);
+    void SetWindow(const winrt::Windows::UI::Core::CoreWindow& window);
+    void SetWindowPos(winrt::Windows::Foundation::Rect rect);
 #endif // TARGET_WINDOWS_STORE
     HANDLE GetContexMutex() const { return m_ctx_mutex; }
 
@@ -156,7 +155,7 @@ namespace DX
 
     HWND m_window{ nullptr };
 #if defined(TARGET_WINDOWS_STORE)
-    Platform::Agile<Windows::UI::Core::CoreWindow> m_coreWindow;
+    winrt::Windows::UI::Core::CoreWindow m_coreWindow = nullptr;
 #endif
     Microsoft::WRL::ComPtr<IDXGIFactory2> m_dxgiFactory;
     Microsoft::WRL::ComPtr<IDXGIAdapter1> m_adapter;
@@ -176,8 +175,8 @@ namespace DX
 
     // Cached device properties.
     D3D_FEATURE_LEVEL m_d3dFeatureLevel;
-    Windows::Foundation::Size m_outputSize;
-    Windows::Foundation::Size m_logicalSize;
+    winrt::Windows::Foundation::Size m_outputSize;
+    winrt::Windows::Foundation::Size m_logicalSize;
     float m_dpi;
 
     // This is the DPI that will be reported back to the app. It takes into account whether the app supports high resolution screens or not.

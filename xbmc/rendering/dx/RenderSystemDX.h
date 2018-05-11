@@ -30,7 +30,6 @@
 #include "rendering/RenderSystem.h"
 
 #include <vector>
-#include <wrl.h>
 #include <wrl/client.h>
 
 enum PCI_Vendors

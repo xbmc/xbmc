@@ -31,8 +31,11 @@
 
 using namespace DirectX;
 using namespace Microsoft::WRL;
-using namespace Windows::Foundation;
-using namespace concurrency;
+using namespace Concurrency;
+namespace winrt
+{
+  using namespace Windows::Foundation;
+}
 
 #ifdef _DEBUG
 #define breakOnDebug __debugbreak()
@@ -496,7 +499,7 @@ HRESULT DX::DeviceResources::CreateSwapChain(DXGI_SWAP_CHAIN_DESC1& desc, DXGI_S
 #else
   hr = m_dxgiFactory->CreateSwapChainForCoreWindow(
     m_d3dDevice.Get(),
-    reinterpret_cast<IUnknown*>(m_coreWindow.Get()),
+    winrt::get_abi(m_coreWindow),
     &desc,
     nullptr,
     ppSwapChain
@@ -689,7 +692,7 @@ void DX::DeviceResources::SetLogicalSize(float width, float height)
 #if defined(TARGET_WINDOWS_DESKTOP)
   (!m_window)
 #else
-  (!m_coreWindow.Get())
+  (!m_coreWindow)
 #endif
     return;
 
@@ -699,7 +702,7 @@ void DX::DeviceResources::SetLogicalSize(float width, float height)
   {
     CLog::LogF(LOGDEBUG, "change logical size to %f x %f", width, height);
 
-    m_logicalSize = Size(width, height);
+    m_logicalSize = winrt::Size(width, height);
 
     UpdateRenderTargetSize();
     ResizeBuffers();
@@ -983,21 +986,24 @@ void DX::DeviceResources::SetWindow(HWND window)
 }
 #elif defined(TARGET_WINDOWS_STORE)
 // This method is called when the CoreWindow is created (or re-created).
-void DX::DeviceResources::SetWindow(Windows::UI::Core::CoreWindow^ window)
+void DX::DeviceResources::SetWindow(const winrt::Windows::UI::Core::CoreWindow& window)
 {
+  using namespace winrt::Windows::UI::Core;
+  using namespace winrt::Windows::Graphics::Display;
+
   m_coreWindow = window;
-  auto dispatcher = m_coreWindow->Dispatcher;
-  auto handler = ref new Windows::UI::Core::DispatchedHandler([&]()
+  auto dispatcher = m_coreWindow.Dispatcher();
+  DispatchedHandler handler([&]()
   {
-    auto coreWindow = Windows::UI::Core::CoreWindow::GetForCurrentThread();
-    m_logicalSize = Windows::Foundation::Size(coreWindow->Bounds.Width, coreWindow->Bounds.Height);
-    m_dpi = Windows::Graphics::Display::DisplayInformation::GetForCurrentView()->LogicalDpi;
-    SetWindowPos(coreWindow->Bounds);
+    auto coreWindow = CoreWindow::GetForCurrentThread();
+    m_logicalSize = winrt::Size(coreWindow.Bounds().Width, coreWindow.Bounds().Height);
+    m_dpi = DisplayInformation::GetForCurrentView().LogicalDpi();
+    SetWindowPos(coreWindow.Bounds());
   });
-  if (dispatcher->HasThreadAccess)
-    handler->Invoke();
+  if (dispatcher.HasThreadAccess())
+    handler();
   else
-    Concurrency::create_task(dispatcher->RunAsync(Windows::UI::Core::CoreDispatcherPriority::High, handler)).wait();
+    dispatcher.RunAsync(CoreDispatcherPriority::High, handler).get();
 
   CreateDeviceIndependentResources();
   CreateDeviceResources();
@@ -1005,7 +1011,7 @@ void DX::DeviceResources::SetWindow(Windows::UI::Core::CoreWindow^ window)
   CreateWindowSizeDependentResources();
 }
 
-void DX::DeviceResources::SetWindowPos(Windows::Foundation::Rect rect)
+void DX::DeviceResources::SetWindowPos(winrt::Rect rect)
 {
   int centerX = rect.X + rect.Width / 2;
   int centerY = rect.Y + rect.Height / 2;

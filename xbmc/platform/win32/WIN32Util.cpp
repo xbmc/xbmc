@@ -51,13 +51,15 @@ extern HWND g_hWnd;
 using namespace MEDIA_DETECT;
 
 #ifdef TARGET_WINDOWS_STORE
-#include <collection.h>
-#include <ppltasks.h>
 #include "platform/win10/AsyncHelpers.h"
-using namespace Windows::Devices::Power;
-using namespace Windows::Graphics::Display;
-using namespace Windows::Foundation::Collections;
-using namespace Windows::Storage;
+#include <ppltasks.h>
+#include <winrt/Windows.Devices.Power.h>
+#include <winrt/Windows.Foundation.Collections.h>
+#include <winrt/Windows.Storage.h>
+
+using namespace winrt::Windows::Devices::Power;
+using namespace winrt::Windows::Graphics::Display;
+using namespace winrt::Windows::Storage;
 #endif
 
 CWIN32Util::CWIN32Util(void)
@@ -287,8 +289,8 @@ std::string CWIN32Util::GetResInfoString()
   auto displayInfo = DisplayInformation::GetForCurrentView();
 
   return StringUtils::Format("Desktop Resolution: %dx%d"
-    , displayInfo->ScreenWidthInRawPixels
-    , displayInfo->ScreenHeightInRawPixels
+    , displayInfo.ScreenWidthInRawPixels()
+    , displayInfo.ScreenHeightInRawPixels()
   );
 #else
   DEVMODE devmode;
@@ -348,8 +350,8 @@ std::string CWIN32Util::GetProfilePath()
 {
   std::string strProfilePath;
 #ifdef TARGET_WINDOWS_STORE
-  auto localFolder = ApplicationData::Current->LocalFolder;
-  strProfilePath = KODI::PLATFORM::WINDOWS::FromW(std::wstring(localFolder->Path->Data()));
+  auto localFolder = ApplicationData::Current().LocalFolder();
+  strProfilePath = KODI::PLATFORM::WINDOWS::FromW(localFolder.Path().c_str());
 #else
   std::string strHomePath = CUtil::GetHomePath();
 
@@ -1231,12 +1233,12 @@ bool CWIN32Util::IsUsbDevice(const std::wstring &strWdrive)
 #ifdef TARGET_WINDOWS_STORE
   bool result = false;
 
-  auto removables = Windows::Storage::KnownFolders::RemovableDevices;
-  auto vector = Wait(removables->GetFoldersAsync());
+  auto removables = winrt::Windows::Storage::KnownFolders::RemovableDevices();
+  auto vector = Wait(removables.GetFoldersAsync());
   auto strdrive = KODI::PLATFORM::WINDOWS::FromW(strWdrive);
-  for (auto device : vector)
+  for (auto& device : vector)
   {
-    auto path = KODI::PLATFORM::WINDOWS::FromW(device->Path->Data());
+    auto path = KODI::PLATFORM::WINDOWS::FromW(device.Path().c_str());
     if (StringUtils::StartsWith(path, strdrive))
     {
       // looks like drive is removable

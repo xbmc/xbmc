@@ -27,13 +27,18 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include <string>
+#include <winrt/Windows.Storage.FileProperties.h>
 
 using namespace XFILE;
 using namespace KODI::PLATFORM::WINDOWS;
-using namespace Windows::Storage;
-using namespace Windows::Storage::Search;
-using namespace Windows::Foundation;
-using namespace Windows::Foundation::Collections;
+using namespace winrt::Windows::Storage;
+using namespace winrt::Windows::Storage::FileProperties;
+using namespace winrt::Windows::Storage::Search;
+using namespace winrt::Windows::Foundation::Collections;
+namespace winrt
+{
+  using namespace Windows::Foundation;
+}
 
 bool CWinLibraryDirectory::GetStoragePath(std::string library, std::string & path)
 {
@@ -48,24 +53,24 @@ bool CWinLibraryDirectory::GetStoragePath(std::string library, std::string & pat
   return true;
 }
 
-StorageFolder^ CWinLibraryDirectory::GetRootFolder(const CURL& url)
+StorageFolder CWinLibraryDirectory::GetRootFolder(const CURL& url)
 {
   if (!url.IsProtocol("win-lib"))
     return nullptr;
 
   std::string lib = url.GetHostName();
   if (lib == "music")
-    return KnownFolders::MusicLibrary;
+    return KnownFolders::MusicLibrary();
   if (lib == "video")
-    return KnownFolders::VideosLibrary;
+    return KnownFolders::VideosLibrary();
   if (lib == "pictures")
-    return KnownFolders::PicturesLibrary;
+    return KnownFolders::PicturesLibrary();
   if (lib == "photos")
-    return KnownFolders::CameraRoll;
+    return KnownFolders::CameraRoll();
   if (lib == "documents")
-    return KnownFolders::DocumentsLibrary;
+    return KnownFolders::DocumentsLibrary();
   if (lib == "removable")
-    return KnownFolders::RemovableDevices;
+    return KnownFolders::RemovableDevices();
 
   return nullptr;
 }
@@ -103,18 +108,18 @@ bool CWinLibraryDirectory::GetDirectory(const CURL &url, CFileItemList &items)
   std::string path = url.Get();
   URIUtils::AddSlashAtEnd(path); //be sure the dir ends with a slash
 
-  auto vectorView = Wait(folder->GetItemsAsync());
-  for (unsigned i = 0; i < vectorView->Size; i++)
+  auto vectorView = Wait(folder.GetItemsAsync());
+  for (unsigned i = 0; i < vectorView.Size(); i++)
   {
-    IStorageItem^ item = vectorView->GetAt(i);
-    std::string itemName = FromW(std::wstring(item->Name->Data()));
+    IStorageItem item = vectorView.GetAt(i);
+    std::string itemName = FromW(item.Name().c_str());
 
     CFileItemPtr pItem(new CFileItem(itemName));
-    pItem->m_bIsFolder = (item->Attributes & FileAttributes::Directory) == FileAttributes::Directory;
-    IStorageItemProperties^ storageItemProperties = dynamic_cast<IStorageItemProperties^>(item);
+    pItem->m_bIsFolder = (item.Attributes() & FileAttributes::Directory) == FileAttributes::Directory;
+    IStorageItemProperties storageItemProperties = item.as<IStorageItemProperties>();
     if (item != nullptr)
     {
-      pItem->m_strTitle = FromW(storageItemProperties->DisplayName->Data());
+      pItem->m_strTitle = FromW(storageItemProperties.DisplayName().c_str());
     }
 
     if (pItem->m_bIsFolder)
@@ -125,20 +130,11 @@ bool CWinLibraryDirectory::GetDirectory(const CURL &url, CFileItemList &items)
     if (itemName.front() == '.')
       pItem->SetProperty("file:hidden", true);
 
-    auto props = Wait(item->GetBasicPropertiesAsync());
+    auto props = Wait(item.GetBasicPropertiesAsync());
 
-    ULARGE_INTEGER ularge = { 0 };
-    if (props->DateModified.UniversalTime > 0)
-      ularge.QuadPart = static_cast<uint64_t>(props->DateModified.UniversalTime);
-
-    FILETIME localTime = 
-    { 
-      ularge.LowPart, 
-      ularge.HighPart 
-    };
-    pItem->m_dateTime = localTime;
+    pItem->m_dateTime = winrt::clock::to_FILETIME(props.DateModified());
     if (!pItem->m_bIsFolder)
-      pItem->m_dwSize = static_cast<int64_t>(props->Size);
+      pItem->m_dwSize = static_cast<int64_t>(props.Size());
 
     items.Add(pItem);
   }
@@ -160,9 +156,9 @@ bool CWinLibraryDirectory::Create(const CURL& url)
   try
   {
     std::wstring wStrPath = ToW(url.GetFileNameWithoutPath());
-    Wait(folder->CreateFolderAsync(ref new Platform::String(wStrPath.c_str())));
+    Wait(folder.CreateFolderAsync(wStrPath));
   }
-  catch (Platform::Exception^ ex)
+  catch (const winrt::hresult_error&)
   {
     return false;
   }
@@ -183,21 +179,21 @@ bool CWinLibraryDirectory::Remove(const CURL& url)
       return false;
   try
   {
-    Wait(folder->DeleteAsync(StorageDeleteOption::PermanentDelete));
+    Wait(folder.DeleteAsync(StorageDeleteOption::PermanentDelete));
     exists = true;
   }
-  catch(Platform::Exception^ ex)
+  catch(const winrt::hresult_error& ex)
   {
-    std::string error = FromW(std::wstring(ex->Message->Data()));
+    std::string error = FromW(ex.message().c_str());
     CLog::LogF(LOGERROR, __FUNCTION__, "unable remove folder '%s' with error", url.Get(), error.c_str());
     exists = false;
   }
   return exists;
 }
 
-StorageFolder^ CWinLibraryDirectory::GetFolder(const CURL& url)
+StorageFolder CWinLibraryDirectory::GetFolder(const CURL& url)
 {
-  StorageFolder^ rootFolder = GetRootFolder(url);
+  StorageFolder rootFolder = GetRootFolder(url);
   if (!rootFolder)
     return nullptr;
 
@@ -228,12 +224,11 @@ StorageFolder^ CWinLibraryDirectory::GetFolder(const CURL& url)
     try
     {
       std::wstring wStrPath = ToW(folderPath);
-      Platform::String^ pPath = ref new Platform::String(wStrPath.c_str());
-      return Wait(rootFolder->GetFolderAsync(pPath));
+      return Wait(rootFolder.GetFolderAsync(wStrPath));
     }
-    catch (Platform::Exception^ ex)
+    catch (const winrt::hresult_error& ex)
     {
-      std::string error = FromW(std::wstring(ex->Message->Data()));
+      std::string error = FromW(ex.message().c_str());
       CLog::LogF(LOGERROR, "unable to get folder '%s' with error", url.GetRedacted().c_str(), error.c_str());
     }
     return nullptr;

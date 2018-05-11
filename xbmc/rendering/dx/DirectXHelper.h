@@ -143,12 +143,15 @@ namespace DX
 }
 
 #ifdef TARGET_WINDOWS_DESKTOP
-namespace Windows
+namespace winrt
 {
-  namespace Foundation
+  namespace Windows
   {
-    typedef DX::SizeGen<float>  Size;
-    typedef DX::SizeGen<int>    SizeInt;
+    namespace Foundation
+    {
+      typedef DX::SizeGen<float>  Size;
+      typedef DX::SizeGen<int>    SizeInt;
+    }
   }
 }
 #endif

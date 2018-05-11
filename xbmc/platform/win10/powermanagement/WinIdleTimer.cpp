@@ -19,31 +19,33 @@
  */
 #include "powermanagement/WinIdleTimer.h"
 #include "Application.h"
+#include <winrt/Windows.System.Display.h>
 
-using namespace Windows::ApplicationModel::Core;
-using namespace Windows::Foundation;
-using namespace Windows::System::Display;
-using namespace Windows::System::Threading;
-using namespace Windows::UI::Core;
+using namespace winrt::Windows::ApplicationModel::Core;
+using namespace winrt::Windows::System::Display;
+using namespace winrt::Windows::UI::Core;
 
 void CWinIdleTimer::StartZero()
 {
+  static DisplayRequest displayRequest = nullptr;
   if (!g_application.IsDPMSActive())
   {
-    auto workItem = ref new DispatchedHandler([]()
+    if (!displayRequest)
+      displayRequest = DisplayRequest();
+
+    auto workItem = DispatchedHandler([&]()
     {
       try
       {
-        auto displayRequest = ref new DisplayRequest();
         // this couple of calls activate and deactivate a display-required
         // request in other words they reset display idle timer
-        displayRequest->RequestActive();
-        displayRequest->RequestRelease();
+        displayRequest.RequestActive();
+        displayRequest.RequestRelease();
       }
-      catch (Platform::Exception^ ex) { }
+      catch (const winrt::hresult_error&) { }
     });
-    CoreWindow^ window = CoreApplication::MainView->CoreWindow;
-    window->Dispatcher->RunAsync(CoreDispatcherPriority::High, workItem);
+    CoreWindow window = CoreApplication::MainView().CoreWindow();
+    window.Dispatcher().RunAsync(CoreDispatcherPriority::High, workItem);
   }
   CStopWatch::StartZero();
 }
