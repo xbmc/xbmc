@@ -393,14 +393,14 @@ bool CGUIWindowPVRBase::OpenChannelGroupSelectionDialog(void)
 
 bool CGUIWindowPVRBase::InitChannelGroup()
 {
-  const CPVRChannelGroupPtr group(CServiceBroker::GetPVRManager().GetPlayingGroup(m_bRadio));
+  CPVRChannelGroupPtr group(CServiceBroker::GetPVRManager().GetPlayingGroup(m_bRadio));
   if (group)
   {
     CSingleLock lock(m_critSection);
     if (m_channelGroup != group)
     {
       m_viewControl.SetSelectedItem(0);
-      SetChannelGroup(group, false);
+      SetChannelGroup(std::move(group), false);
     }
     // Path might have changed since last init. Set it always, not just on group change.
     m_vecItems->SetPath(GetDirectoryPath());
@@ -415,7 +415,7 @@ CPVRChannelGroupPtr CGUIWindowPVRBase::GetChannelGroup(void)
   return m_channelGroup;
 }
 
-void CGUIWindowPVRBase::SetChannelGroup(const CPVRChannelGroupPtr &group, bool bUpdate /* = true */)
+void CGUIWindowPVRBase::SetChannelGroup(CPVRChannelGroupPtr &&group, bool bUpdate /* = true */)
 {
   if (!group)
     return;
@@ -427,7 +427,7 @@ void CGUIWindowPVRBase::SetChannelGroup(const CPVRChannelGroupPtr &group, bool b
     {
       if (m_channelGroup)
         m_channelGroup->UnregisterObserver(this);
-      m_channelGroup = group;
+      m_channelGroup = std::move(group);
       // we need to register the window to receive changes from the new group
       m_channelGroup->RegisterObserver(this);
       if (bUpdate)

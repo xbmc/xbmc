@@ -105,7 +105,7 @@ namespace PVR
      * @param group The new group.
      * @param bUpdate if true, window content will be updated.
      */
-    void SetChannelGroup(const CPVRChannelGroupPtr &group, bool bUpdate = true);
+    void SetChannelGroup(CPVRChannelGroupPtr &&group, bool bUpdate = true);
 
     virtual void UpdateSelectedItemPath();
 
