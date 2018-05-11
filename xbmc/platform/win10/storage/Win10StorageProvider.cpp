@@ -86,7 +86,7 @@ void CStorageProvider::GetLocalDrives(VECSOURCES &localDrives)
   share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
   localDrives.push_back(share);
 
-  GetDrivesByType(localDrives, LOCAL_DRIVES);
+  GetDrivesByType(localDrives, LOCAL_DRIVES, true);
 }
 
 void CStorageProvider::GetRemovableDrives(VECSOURCES &removableDrives)
