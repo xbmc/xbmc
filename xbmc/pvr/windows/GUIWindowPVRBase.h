@@ -98,7 +98,7 @@ namespace PVR
      * @brief Get the channel group for this window.
      * @return the group or null, if no group set.
      */
-   virtual CPVRChannelGroupPtr GetChannelGroup(void);
+   CPVRChannelGroupPtr GetChannelGroup(void);
 
     /*!
      * @brief Set a new channel group, start listening to this group, optionally update window content.
