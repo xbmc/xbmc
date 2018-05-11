@@ -75,6 +75,7 @@
 #include "LangInfo.h"
 #include "URL.h"
 
+
 #ifdef TARGET_RASPBERRY_PI
 #include "cores/omxplayer/OMXPlayerAudio.h"
 #include "cores/omxplayer/OMXPlayerVideo.h"
@@ -169,8 +170,11 @@ class PredicateAudioFilter
 {
 private:
   int currentAudioStream;
+  bool preferStereo;
 public:
-  explicit PredicateAudioFilter(int audioStream) : currentAudioStream(audioStream)
+  explicit PredicateAudioFilter(int audioStream, bool preferStereo)
+    : currentAudioStream(audioStream)
+    , preferStereo(preferStereo)
   {
   };
   bool operator()(const SelectionStream& lh, const SelectionStream& rh)
@@ -199,8 +203,12 @@ public:
                        rh.flags & StreamFlags::FLAG_DEFAULT);
     }
 
-    PREDICATE_RETURN(lh.channels,
-                     rh.channels);
+    if (preferStereo)
+      PREDICATE_RETURN(lh.channels == 2,
+                       rh.channels == 2);
+    else
+      PREDICATE_RETURN(lh.channels,
+                       rh.channels);
 
     PREDICATE_RETURN(StreamUtils::GetCodecPriority(lh.codec),
                      StreamUtils::GetCodecPriority(rh.codec));
@@ -946,9 +954,9 @@ void CVideoPlayer::OpenDefaultStreams(bool reset)
 
   // open audio stream
   valid = false;
-  if (!m_playerOptions.video_only)
+  if (!m_playerOptions.videoOnly)
   {
-    PredicateAudioFilter af(m_processInfo->GetVideoSettings().m_AudioStream);
+    PredicateAudioFilter af(m_processInfo->GetVideoSettings().m_AudioStream, m_playerOptions.preferStereo);
     for (const auto &stream : m_SelectionStreams.Get(STREAM_AUDIO, af))
     {
       if(OpenStream(m_CurrentAudio, stream.demuxerId, stream.id, stream.source, reset))
@@ -1179,7 +1187,7 @@ bool CVideoPlayer::IsValidStream(CCurrentStream& stream)
 bool CVideoPlayer::IsBetterStream(CCurrentStream& current, CDemuxStream* stream)
 {
   // Do not reopen non-video streams if we're in video-only mode
-  if (m_playerOptions.video_only && current.type != STREAM_VIDEO)
+  if (m_playerOptions.videoOnly && current.type != STREAM_VIDEO)
     return false;
 
   if(stream->disabled)
