@@ -1294,7 +1294,11 @@ void CGUIWindowFileManager::SetInitialPath(const std::string &path)
       VECSOURCES shares;
       m_rootDir.GetSources(shares);
       int iIndex = CUtil::GetMatchingSource(strDestination, shares, bIsSourceName);
-      if (iIndex > -1)
+      if (iIndex > -1
+#if defined(TARGET_DARWIN_IOS)
+          || URIUtils::PathHasParent(strDestination, "special://envhome/Documents/Inbox/")
+#endif
+          || URIUtils::PathHasParent(strDestination, "special://profile/"))
       {
         // set current directory to matching share
         std::string path;
