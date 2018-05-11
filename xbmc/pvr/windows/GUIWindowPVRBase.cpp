@@ -420,7 +420,7 @@ void CGUIWindowPVRBase::SetChannelGroup(const CPVRChannelGroupPtr &group, bool b
   if (!group)
     return;
 
-  CPVRChannelGroupPtr channelGroup;
+  CPVRChannelGroupPtr updateChannelGroup;
   {
     CSingleLock lock(m_critSection);
     if (m_channelGroup != group)
@@ -430,13 +430,14 @@ void CGUIWindowPVRBase::SetChannelGroup(const CPVRChannelGroupPtr &group, bool b
       m_channelGroup = group;
       // we need to register the window to receive changes from the new group
       m_channelGroup->RegisterObserver(this);
-      channelGroup = m_channelGroup;
+      if (bUpdate)
+        updateChannelGroup = m_channelGroup;
     }
   }
 
-  if (bUpdate && channelGroup)
+  if (updateChannelGroup)
   {
-    CServiceBroker::GetPVRManager().SetPlayingGroup(channelGroup);
+    CServiceBroker::GetPVRManager().SetPlayingGroup(updateChannelGroup);
     Update(GetDirectoryPath());
   }
 }
