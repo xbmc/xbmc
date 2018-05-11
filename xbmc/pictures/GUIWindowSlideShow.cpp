@@ -43,6 +43,7 @@
 #include "TextureDatabase.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
+#include "utils/Random.h"
 #include "utils/Variant.h"
 #include "interfaces/AnnouncementManager.h"
 #include "pictures/GUIViewStatePictures.h"
@@ -51,6 +52,7 @@
 #ifdef TARGET_POSIX
 #include "platform/linux/XTimeUtils.h"
 #endif
+#include <random>
 
 using namespace XFILE;
 using namespace KODI::MESSAGING;
@@ -1164,7 +1166,7 @@ void CGUIWindowSlideShow::OnLoadPic(int iPic, int iSlideNumber, const std::strin
 
 void CGUIWindowSlideShow::Shuffle()
 {
-  std::random_shuffle(m_slides.begin(), m_slides.end());
+  KODI::UTILS::RandomShuffle(m_slides.begin(), m_slides.end());
   m_iCurrentSlide = 0;
   m_iNextSlide = GetNextSlide();
   m_bShuffled = true;
