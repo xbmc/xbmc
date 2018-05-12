@@ -20,6 +20,7 @@
 
 #include "GUITextBox.h"
 #include "GUIInfoManager.h"
+#include "GUIMessage.h"
 #include "guilib/GUIComponent.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/MathUtils.h"

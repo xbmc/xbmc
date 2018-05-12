@@ -19,6 +19,7 @@
  */
 
 #include "GUIDialogPVRRecordingInfo.h"
+#include "guilib/GUIMessage.h"
 
 #include "FileItem.h"
 #include "ServiceBroker.h"

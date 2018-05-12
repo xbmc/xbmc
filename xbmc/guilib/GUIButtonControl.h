@@ -33,6 +33,7 @@
 #include "GUITexture.h"
 #include "GUILabel.h"
 #include "GUIControl.h"
+#include "GUIAction.h"
 
 /*!
  \ingroup controls

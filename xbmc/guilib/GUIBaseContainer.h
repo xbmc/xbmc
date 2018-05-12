@@ -30,6 +30,7 @@
 #include <list>
 
 #include "IGUIContainer.h"
+#include "GUIAction.h"
 #include "utils/Stopwatch.h"
 
 /*!

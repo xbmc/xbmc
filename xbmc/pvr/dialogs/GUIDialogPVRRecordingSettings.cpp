@@ -21,6 +21,7 @@
 #include "GUIDialogPVRRecordingSettings.h"
 
 #include "ServiceBroker.h"
+#include "guilib/GUIMessage.h"
 #include "guilib/LocalizeStrings.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "settings/lib/Setting.h"

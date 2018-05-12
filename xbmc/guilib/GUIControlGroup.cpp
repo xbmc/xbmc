@@ -19,6 +19,7 @@
  */
 
 #include "GUIControlGroup.h"
+#include "GUIMessage.h"
 
 #include <cassert>
 #include <utility>

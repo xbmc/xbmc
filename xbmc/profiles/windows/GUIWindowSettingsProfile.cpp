@@ -30,6 +30,7 @@
 #include "utils/URIUtils.h"
 #include "GUIPassword.h"
 #include "windows/GUIWindowLoginScreen.h"
+#include "guilib/GUIMessage.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "filesystem/Directory.h"

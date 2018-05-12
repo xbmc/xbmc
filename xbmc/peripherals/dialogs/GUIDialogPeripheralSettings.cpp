@@ -19,6 +19,7 @@
  */
 
 #include "GUIDialogPeripheralSettings.h"
+#include "guilib/GUIMessage.h"
 
 #include <utility>
 

@@ -20,6 +20,7 @@
 
 #include "GUIBaseContainer.h"
 #include "GUIListItemLayout.h"
+#include "GUIMessage.h"
 #include "ServiceBroker.h"
 #include "utils/CharsetConverter.h"
 #include "GUIInfoManager.h"

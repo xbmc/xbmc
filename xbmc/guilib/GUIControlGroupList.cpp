@@ -19,6 +19,8 @@
  */
 
 #include "GUIControlGroupList.h"
+#include "GUIMessage.h"
+#include "GUIAction.h"
 #include "input/Key.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
 #include "GUIControlProfiler.h"

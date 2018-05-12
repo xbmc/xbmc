@@ -19,6 +19,7 @@
  */
 
 #include "GUIMultiImage.h"
+#include "GUIMessage.h"
 #include "ServiceBroker.h"
 #include "TextureManager.h"
 #include "filesystem/Directory.h"

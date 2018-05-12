@@ -24,6 +24,7 @@
 
 #include "ServiceBroker.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
+#include "guilib/GUIMessage.h"
 #include "guilib/GUIEditControl.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
