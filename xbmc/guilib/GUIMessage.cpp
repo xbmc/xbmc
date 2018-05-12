@@ -54,10 +54,7 @@ CGUIMessage::CGUIMessage(int msg, int senderID, int controlID, int param1, int p
   m_item = item;
 }
 
-CGUIMessage::CGUIMessage(const CGUIMessage& msg)
-{
-  *this = msg;
-}
+CGUIMessage::CGUIMessage(const CGUIMessage& msg) = default;
 
 CGUIMessage::~CGUIMessage(void) = default;
 
@@ -97,23 +94,7 @@ int CGUIMessage::GetSenderId() const
   return m_senderID;
 }
 
-
-CGUIMessage& CGUIMessage::operator = (const CGUIMessage& msg)
-{
-  if (this == &msg) return * this;
-
-  m_message = msg.m_message;
-  m_controlID = msg.m_controlID;
-  m_param1 = msg.m_param1;
-  m_param2 = msg.m_param2;
-  m_pointer = msg.m_pointer;
-  m_strLabel = msg.m_strLabel;
-  m_senderID = msg.m_senderID;
-  m_params = msg.m_params;
-  m_item = msg.m_item;
-  return *this;
-}
-
+CGUIMessage& CGUIMessage::operator = (const CGUIMessage& msg) = default;
 
 void CGUIMessage::SetParam1(int param1)
 {
