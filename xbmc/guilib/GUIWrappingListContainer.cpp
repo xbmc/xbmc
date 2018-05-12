@@ -19,6 +19,7 @@
  */
 
 #include "GUIWrappingListContainer.h"
+#include "GUIListItemLayout.h"
 #include "FileItem.h"
 #include "input/Key.h"
 

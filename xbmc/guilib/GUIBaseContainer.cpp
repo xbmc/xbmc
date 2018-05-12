@@ -19,6 +19,7 @@
  */
 
 #include "GUIBaseContainer.h"
+#include "GUIListItemLayout.h"
 #include "ServiceBroker.h"
 #include "utils/CharsetConverter.h"
 #include "GUIInfoManager.h"
@@ -62,6 +63,8 @@ CGUIBaseContainer::CGUIBaseContainer(int parentID, int controlID, float posX, fl
   m_autoScrollIsReversed = false;
   m_lastRenderTime = 0;
 }
+
+CGUIBaseContainer::CGUIBaseContainer(const CGUIBaseContainer &) = default;
 
 CGUIBaseContainer::~CGUIBaseContainer(void)
 {
