@@ -45,13 +45,15 @@ public:
     starttime = 0LL;
     startpercent = 0LL;
     fullscreen = false;
-    video_only = false;
+    videoOnly = false;
+    preferStereo = false;
   }
-  double  starttime; /* start time in seconds */
-  double  startpercent; /* start time in percent */  
+  double starttime; /* start time in seconds */
+  double startpercent; /* start time in percent */
   std::string state;  /* potential playerstate to restore to */
-  bool    fullscreen; /* player is allowed to switch to fullscreen */
-  bool    video_only; /* player is not allowed to play audio streams, video streams only */
+  bool fullscreen; /* player is allowed to switch to fullscreen */
+  bool videoOnly; /* player is not allowed to play audio streams, video streams only */
+  bool preferStereo; /* prefer stereo streams when selecting initial audio stream*/
 };
 
 class CFileItem;

@@ -2686,9 +2686,7 @@ bool CActiveAE::HasStereoAudioChannelCount()
   std::string device = CServiceBroker::GetSettings().GetString(CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE);
   int numChannels = (m_sink.GetDeviceType(device) == AE_DEVTYPE_IEC958) ? AE_CH_LAYOUT_2_0 : CServiceBroker::GetSettings().GetInt(CSettings::SETTING_AUDIOOUTPUT_CHANNELS);
   bool passthrough = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_AUDIOOUTPUT_CONFIG) == AE_CONFIG_FIXED ? false : CServiceBroker::GetSettings().GetBool(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGH);
-  return numChannels == AE_CH_LAYOUT_2_0 && ! (passthrough &&
-    CServiceBroker::GetSettings().GetBool(CSettings::SETTING_AUDIOOUTPUT_AC3PASSTHROUGH) &&
-    CServiceBroker::GetSettings().GetBool(CSettings::SETTING_AUDIOOUTPUT_AC3TRANSCODE));
+  return numChannels == AE_CH_LAYOUT_2_0 && !passthrough;
 }
 
 bool CActiveAE::HasHDAudioChannelCount()
