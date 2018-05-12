@@ -49,8 +49,6 @@ CGUIListItemLayout::CGUIListItemLayout(const CGUIListItemLayout &from, CGUIContr
   m_group.SetParentControl(control);
 }
 
-CGUIListItemLayout::~CGUIListItemLayout() = default;
-
 bool CGUIListItemLayout::IsAnimating(ANIMATION_TYPE animType)
 {
   return m_group.IsAnimating(animType);
