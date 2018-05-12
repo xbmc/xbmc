@@ -35,6 +35,11 @@ public:
   explicit CBusyWaiter(IRunnable *runnable) :
   CThread(runnable, "waiting"), m_done(new CEvent()),  m_runnable(runnable) { }
   
+  ~CBusyWaiter()
+  {
+    StopThread();
+  }
+
   bool Wait(unsigned int displaytime, bool allowCancel)
   {
     std::shared_ptr<CEvent> e_done(m_done);
