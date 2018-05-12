@@ -81,10 +81,10 @@ protected:
   virtual void UpdateVisibility();
 
   virtual void Open_Internal(const std::string &param = "");
-  virtual void Open_Internal(bool bProcessRenderLoop, const std::string &param = "");
+  virtual void Open_Internal(bool bProcessRenderLoop, const std::string &param);
   void OnDeinitWindow(int nextWindowID) override;
 
-  void ProcessRenderLoop(bool renderOnly = false);
+  void ProcessRenderLoop(bool renderOnly, bool processMsgs);
 
   bool m_wasRunning; ///< \brief true if we were running during the last DoProcess()
   bool m_autoClosing;
