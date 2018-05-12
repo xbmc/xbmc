@@ -19,8 +19,6 @@
  *
  */
 
-#include <map>
-
 #include "XBDateTime.h"
 #include "threads/CriticalSection.h"
 #include "threads/Thread.h"
