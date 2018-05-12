@@ -38,15 +38,15 @@ public:
 
   CPointGen() noexcept = default;
 
-  CPointGen(T a, T b)
+  constexpr CPointGen(T a, T b)
   : x{a}, y{b}
   {}
 
-  template<class U> explicit CPointGen(const CPointGen<U>& rhs)
+  template<class U> explicit constexpr CPointGen(const CPointGen<U>& rhs)
   : x{static_cast<T> (rhs.x)}, y{static_cast<T> (rhs.y)}
   {}
 
-  this_type operator+(const this_type &point) const
+  constexpr this_type operator+(const this_type &point) const
   {
     return {x + point.x, y + point.y};
   };
@@ -58,7 +58,7 @@ public:
     return *this;
   };
 
-  this_type operator-(const this_type &point) const
+  constexpr this_type operator-(const this_type &point) const
   {
     return {x - point.x, y - point.y};
   };
@@ -70,7 +70,7 @@ public:
     return *this;
   };
 
-  this_type operator*(T factor) const
+  constexpr this_type operator*(T factor) const
   {
     return {x * factor, y * factor};
   }
@@ -82,7 +82,7 @@ public:
     return *this;
   }
 
-  this_type operator/(T factor) const
+  constexpr this_type operator/(T factor) const
   {
     return {x / factor, y / factor};
   }
@@ -98,13 +98,13 @@ public:
 };
 
 template<typename T>
-inline bool operator==(const CPointGen<T> &point1, const CPointGen<T> &point2) noexcept
+constexpr bool operator==(const CPointGen<T> &point1, const CPointGen<T> &point2) noexcept
 {
   return (point1.x == point2.x && point1.y == point2.y);
 }
 
 template<typename T>
-inline bool operator!=(const CPointGen<T> &point1, const CPointGen<T> &point2) noexcept
+constexpr bool operator!=(const CPointGen<T> &point1, const CPointGen<T> &point2) noexcept
 {
   return !(point1 == point2);
 }
@@ -264,19 +264,19 @@ public:
 
   CRectGen() noexcept = default;
 
-  CRectGen(T left, T top, T right, T bottom)
+  constexpr CRectGen(T left, T top, T right, T bottom)
   : x1{left}, y1{top}, x2{right}, y2{bottom}
   {}
 
-  CRectGen(const point_type &p1, const point_type &p2)
+  constexpr CRectGen(const point_type &p1, const point_type &p2)
   : x1{p1.x}, y1{p1.y}, x2{p2.x}, y2{p2.y}
   {}
 
-  CRectGen(const point_type &origin, const size_type &size)
+  constexpr CRectGen(const point_type &origin, const size_type &size)
   : x1{origin.x}, y1{origin.y}, x2{x1 + size.Width()}, y2{y1 + size.Height()}
   {}
 
-  template<class U> explicit CRectGen(const CRectGen<U>& rhs)
+  template<class U> explicit constexpr CRectGen(const CRectGen<U>& rhs)
   : x1{static_cast<T> (rhs.x1)}, y1{static_cast<T> (rhs.y1)}, x2{static_cast<T> (rhs.x2)}, y2{static_cast<T> (rhs.y2)}
   {}
 
@@ -288,7 +288,7 @@ public:
     y2 = bottom;
   }
 
-  bool PtInRect(const point_type &point) const
+  constexpr bool PtInRect(const point_type &point) const
   {
     return (x1 <= point.x && point.x <= x2 && y1 <= point.y && point.y <= y2);
   };
@@ -302,7 +302,7 @@ public:
     return *this;
   };
 
-  this_type operator-(const point_type &point) const
+  constexpr this_type operator-(const point_type &point) const
   {
     return {x1 - point.x, y1 - point.y, x2 - point.x, y2 - point.y};
   }
@@ -316,7 +316,7 @@ public:
     return *this;
   };
 
-  this_type operator+(const point_type &point) const
+  constexpr this_type operator+(const point_type &point) const
   {
     return {x1 + point.x, y1 + point.y, x2 + point.x, y2 + point.y};
   }
@@ -328,7 +328,7 @@ public:
     return *this;
   };
 
-  this_type operator-(const size_type &size) const
+  constexpr this_type operator-(const size_type &size) const
   {
     return {x1, y1, x2 - size.Width(), y2 - size.Height()};
   }
@@ -340,7 +340,7 @@ public:
     return *this;
   };
 
-  this_type operator+(const size_type &size) const
+  constexpr this_type operator+(const size_type &size) const
   {
     return {x1, y1, x2 + size.Width(), y2 + size.Height()};
   }
@@ -370,32 +370,32 @@ public:
     return *this;
   };
 
-  bool IsEmpty() const XBMC_FORCE_INLINE
+  constexpr bool IsEmpty() const XBMC_FORCE_INLINE
   {
     return (x2 - x1) * (y2 - y1) == 0;
   };
 
-  point_type P1() const XBMC_FORCE_INLINE
+  constexpr point_type P1() const XBMC_FORCE_INLINE
   {
     return {x1, y1};
   }
 
-  point_type P2() const XBMC_FORCE_INLINE
+  constexpr point_type P2() const XBMC_FORCE_INLINE
   {
     return {x2, y2};
   }
 
-  T Width() const XBMC_FORCE_INLINE
+  constexpr T Width() const XBMC_FORCE_INLINE
   {
     return x2 - x1;
   };
 
-  T Height() const XBMC_FORCE_INLINE
+  constexpr T Height() const XBMC_FORCE_INLINE
   {
     return y2 - y1;
   };
 
-  T Area() const XBMC_FORCE_INLINE
+  constexpr T Area() const XBMC_FORCE_INLINE
   {
     return Width() * Height();
   };
@@ -466,20 +466,20 @@ public:
 
   T x1{}, y1{}, x2{}, y2{};
 private:
-  static T clamp_range(T x, T l, T h) XBMC_FORCE_INLINE
+  static constexpr T clamp_range(T x, T l, T h) XBMC_FORCE_INLINE
   {
     return (x > h) ? h : ((x < l) ? l : x);
   }
 };
 
 template<typename T>
-inline bool operator==(const CRectGen<T> &rect1, const CRectGen<T> &rect2) noexcept
+constexpr bool operator==(const CRectGen<T> &rect1, const CRectGen<T> &rect2) noexcept
 {
   return (rect1.x1 == rect2.x1 && rect1.y1 == rect2.y1 && rect1.x2 == rect2.x2 && rect1.y2 == rect2.y2);
 }
 
 template<typename T>
-inline bool operator!=(const CRectGen<T> &rect1, const CRectGen<T> &rect2) noexcept
+constexpr bool operator!=(const CRectGen<T> &rect1, const CRectGen<T> &rect2) noexcept
 {
   return !(rect1 == rect2);
 }
