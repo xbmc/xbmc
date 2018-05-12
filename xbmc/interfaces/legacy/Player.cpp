@@ -362,7 +362,7 @@ namespace XBMCAddon
       if (!g_application.GetAppPlayer().IsPlaying())
         throw PlayerException("XBMC is not playing any file");
 
-      return g_application.CurrentFile();
+      return g_application.CurrentFileItem().GetDynPath();
     }
 
     InfoTagVideo* Player::getVideoInfoTag()
