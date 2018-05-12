@@ -194,7 +194,10 @@ bool CGUIWindowPVRBase::OnAction(const CAction &action)
     case ACTION_NEXT_CHANNELGROUP:
     {
       // switch to next or previous group
-      SetChannelGroup(action.GetID() == ACTION_NEXT_CHANNELGROUP ? m_channelGroup->GetNextGroup() : m_channelGroup->GetPreviousGroup());
+      if (const CPVRChannelGroupPtr channelGroup = GetChannelGroup())
+      {
+        SetChannelGroup(action.GetID() == ACTION_NEXT_CHANNELGROUP ? channelGroup->GetNextGroup() : channelGroup->GetPreviousGroup());
+      }
       return true;
     }
     case ACTION_MOVE_RIGHT:
@@ -248,7 +251,7 @@ void CGUIWindowPVRBase::OnInitWindow(void)
     m_viewControl.SetSelectedItem(CServiceBroker::GetPVRManager().GUIActions()->GetSelectedItemPath(m_bRadio));
 
     // This has to be done after base class OnInitWindow to restore correct selection
-    m_channelGroupsSelector->SelectChannelGroup(m_channelGroup);
+    m_channelGroupsSelector->SelectChannelGroup(GetChannelGroup());
   }
   else
   {
@@ -302,7 +305,7 @@ bool CGUIWindowPVRBase::OnMessage(CGUIMessage& message)
           // late init
           InitChannelGroup();
           m_channelGroupsSelector->Initialize(this, m_bRadio);
-          m_channelGroupsSelector->SelectChannelGroup(m_channelGroup);
+          m_channelGroupsSelector->SelectChannelGroup(GetChannelGroup());
           RegisterObservers();
           HideProgressDialog();
           Refresh(true);
@@ -376,7 +379,10 @@ bool CGUIWindowPVRBase::OpenChannelGroupSelectionDialog(void)
   dialog->SetHeading(CVariant{g_localizeStrings.Get(19146)});
   dialog->SetItems(options);
   dialog->SetMultiSelection(false);
-  dialog->SetSelected(m_channelGroup->GroupName());
+  if (const CPVRChannelGroupPtr channelGroup = GetChannelGroup())
+  {
+    dialog->SetSelected(channelGroup->GroupName());
+  }
   dialog->Open();
 
   if (!dialog->IsConfirmed())
@@ -393,14 +399,14 @@ bool CGUIWindowPVRBase::OpenChannelGroupSelectionDialog(void)
 
 bool CGUIWindowPVRBase::InitChannelGroup()
 {
-  const CPVRChannelGroupPtr group(CServiceBroker::GetPVRManager().GetPlayingGroup(m_bRadio));
+  CPVRChannelGroupPtr group(CServiceBroker::GetPVRManager().GetPlayingGroup(m_bRadio));
   if (group)
   {
     CSingleLock lock(m_critSection);
     if (m_channelGroup != group)
     {
       m_viewControl.SetSelectedItem(0);
-      SetChannelGroup(group, false);
+      SetChannelGroup(std::move(group), false);
     }
     // Path might have changed since last init. Set it always, not just on group change.
     m_vecItems->SetPath(GetDirectoryPath());
@@ -415,28 +421,29 @@ CPVRChannelGroupPtr CGUIWindowPVRBase::GetChannelGroup(void)
   return m_channelGroup;
 }
 
-void CGUIWindowPVRBase::SetChannelGroup(const CPVRChannelGroupPtr &group, bool bUpdate /* = true */)
+void CGUIWindowPVRBase::SetChannelGroup(CPVRChannelGroupPtr &&group, bool bUpdate /* = true */)
 {
   if (!group)
     return;
 
-  CPVRChannelGroupPtr channelGroup;
+  CPVRChannelGroupPtr updateChannelGroup;
   {
     CSingleLock lock(m_critSection);
     if (m_channelGroup != group)
     {
       if (m_channelGroup)
         m_channelGroup->UnregisterObserver(this);
-      m_channelGroup = group;
+      m_channelGroup = std::move(group);
       // we need to register the window to receive changes from the new group
       m_channelGroup->RegisterObserver(this);
-      channelGroup = m_channelGroup;
+      if (bUpdate)
+        updateChannelGroup = m_channelGroup;
     }
   }
 
-  if (bUpdate && channelGroup)
+  if (updateChannelGroup)
   {
-    CServiceBroker::GetPVRManager().SetPlayingGroup(channelGroup);
+    CServiceBroker::GetPVRManager().SetPlayingGroup(updateChannelGroup);
     Update(GetDirectoryPath());
   }
 }
@@ -477,8 +484,13 @@ void CGUIWindowPVRBase::UpdateButtons(void)
 {
   CGUIMediaWindow::UpdateButtons();
 
-  SET_CONTROL_LABEL(CONTROL_BTNCHANNELGROUPS, g_localizeStrings.Get(19141) + ": " + m_channelGroup->GroupName());
-  m_channelGroupsSelector->SelectChannelGroup(m_channelGroup);
+  const CPVRChannelGroupPtr channelGroup = GetChannelGroup();
+  if (channelGroup)
+  {
+    SET_CONTROL_LABEL(CONTROL_BTNCHANNELGROUPS, g_localizeStrings.Get(19141) + ": " + channelGroup->GroupName());
+  }
+
+  m_channelGroupsSelector->SelectChannelGroup(channelGroup);
 }
 
 void CGUIWindowPVRBase::ShowProgressDialog(const std::string &strText, int iProgress)
