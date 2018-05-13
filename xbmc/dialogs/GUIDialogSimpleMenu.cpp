@@ -30,7 +30,7 @@
 #include "utils/URIUtils.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
-#include "threads/Thread.h"
+#include "threads/IRunnable.h"
 #include "utils/log.h"
 #include "video/VideoInfoTag.h"
 #include "URL.h"

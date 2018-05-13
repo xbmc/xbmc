@@ -52,7 +52,7 @@
 #include "input/InputManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "messaging/helpers/DialogOKHelper.h"
-#include "threads/Thread.h"
+#include "threads/IRunnable.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 #include "utils/JobManager.h"
