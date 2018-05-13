@@ -82,12 +82,6 @@ public:
   virtual bool AddData(const DemuxPacket &packet) = 0;
 
   /*
-   * returns nr of bytes in decode buffer
-   * the data is valid until the next call
-   */
-  virtual int GetData(uint8_t** dst) = 0;
-
-  /*
    * the data is valid until the next call
    */
   virtual void GetData(DVDAudioFrame &frame) = 0;

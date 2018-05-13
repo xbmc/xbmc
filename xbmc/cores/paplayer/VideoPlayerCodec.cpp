@@ -349,23 +349,24 @@ int VideoPlayerCodec::ReadPCM(unsigned char *pBuffer, int size, int *actualsize)
     {
       int samples = *actualsize / (m_bitsPerSample>>3);
       int frames = samples / m_channels;
-      m_pResampler->Resample(&pBuffer, frames, m_audioPlanes, frames, 1.0);
+      m_pResampler->Resample(&pBuffer, frames, m_audioFrame.data, frames, 1.0);
       for (int i=0; i<m_planes; i++)
       {
-        m_audioPlanes[i] += frames*m_srcFormat.m_frameSize/m_planes;
+        m_audioFrame.data[i] += frames*m_srcFormat.m_frameSize/m_planes;
       }
     }
     else
     {
-      memcpy(pBuffer, m_audioPlanes[0], *actualsize);
-      m_audioPlanes[0] += (*actualsize);
+      memcpy(pBuffer, m_audioFrame.data[0], *actualsize);
+      m_audioFrame.data[0] += (*actualsize);
     }
     m_nDecodedLen -= nLen;
     return READ_SUCCESS;
   }
 
   m_nDecodedLen = 0;
-  int bytes = m_pAudioCodec->GetData(m_audioPlanes);
+  m_pAudioCodec->GetData(m_audioFrame);
+  int bytes = m_audioFrame.nb_frames * m_audioFrame.framesize;
 
   if (!bytes)
   {
@@ -390,7 +391,8 @@ int VideoPlayerCodec::ReadPCM(unsigned char *pBuffer, int size, int *actualsize)
       return READ_ERROR;
     }
 
-    bytes = m_pAudioCodec->GetData(m_audioPlanes);
+    m_pAudioCodec->GetData(m_audioFrame);
+    bytes = m_audioFrame.nb_frames * m_audioFrame.framesize;
   }
 
   m_nDecodedLen = bytes;
@@ -405,16 +407,16 @@ int VideoPlayerCodec::ReadPCM(unsigned char *pBuffer, int size, int *actualsize)
     {
       int samples = *actualsize / (m_bitsPerSample>>3);
       int frames = samples / m_channels;
-      m_pResampler->Resample(&pBuffer, frames, m_audioPlanes, frames, 1.0);
+      m_pResampler->Resample(&pBuffer, frames, m_audioFrame.data, frames, 1.0);
       for (int i=0; i<m_planes; i++)
       {
-        m_audioPlanes[i] += frames*m_srcFormat.m_frameSize/m_planes;
+        m_audioFrame.data[i] += frames*m_srcFormat.m_frameSize/m_planes;
       }
     }
     else
     {
-      memcpy(pBuffer, m_audioPlanes[0], *actualsize);
-      m_audioPlanes[0] += *actualsize;
+      memcpy(pBuffer, m_audioFrame.data[0], *actualsize);
+      m_audioFrame.data[0] += *actualsize;
     }
     m_nDecodedLen -= *actualsize;
   }

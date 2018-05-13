@@ -52,12 +52,12 @@ public:
   virtual void Dispose() override;
   virtual bool AddData(const DemuxPacket &packet) override;
   virtual void GetData(DVDAudioFrame &frame) override;
-  virtual int GetData(uint8_t** dst) override;
   virtual void Reset() override;
   virtual AEAudioFormat GetFormat() override { return m_format; }
   virtual const char* GetName() override { return "mediacodec"; }
-  
+
 protected:
+  int GetData(uint8_t** dst);
   int GetChannels() { return m_channels; }
   int GetEncodedChannels() { return m_channels; }
   CAEChannelInfo GetChannelMap();

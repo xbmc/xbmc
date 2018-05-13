@@ -68,7 +68,7 @@ private:
   bool m_bCanSeek;
 
   ActiveAE::IAEResample *m_pResampler;
-  uint8_t *m_audioPlanes[8];
+  DVDAudioFrame m_audioFrame;
   int m_planes;
   bool m_needConvert;
   AEAudioFormat m_srcFormat;

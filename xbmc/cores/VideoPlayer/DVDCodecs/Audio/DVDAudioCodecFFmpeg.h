@@ -42,7 +42,6 @@ public:
   void Dispose() override;
   bool AddData(const DemuxPacket &packet) override;
   void GetData(DVDAudioFrame &frame) override;
-  int GetData(uint8_t** dst) override;
   void Reset() override;
   AEAudioFormat GetFormat() override { return m_format; }
   const char* GetName() override { return "FFmpeg"; }
@@ -51,6 +50,7 @@ public:
   int GetProfile() override;
 
 protected:
+  int GetData(uint8_t** dst);
   enum AEDataFormat GetDataFormat();
   int GetSampleRate();
   int GetChannels();
