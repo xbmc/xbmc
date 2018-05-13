@@ -103,6 +103,8 @@ ADDON::AddonPtr CPVRClient::GetRunningInstance() const
 
 void CPVRClient::ResetProperties(int iClientId /* = PVR_INVALID_CLIENT_ID */)
 {
+  CSingleLock lock(m_critSection);
+
   /* initialise members */
   m_strUserPath           = CSpecialProtocol::TranslatePath(Profile());
   m_strClientPath         = CSpecialProtocol::TranslatePath(Path());
@@ -503,6 +505,7 @@ bool CPVRClient::GetAddonProperties(void)
     retVal = PVR_ERROR_NO_ERROR; // timer support is optional.
 
   /* update the members */
+  CSingleLock lock(m_critSection);
   m_strBackendName      = strBackendName;
   m_strConnectionString = strConnectionString;
   m_strFriendlyName     = strFriendlyName;
@@ -1016,6 +1019,7 @@ PVR_ERROR CPVRClient::UpdateTimer(const CPVRTimerInfoTag &timer)
 
 PVR_ERROR CPVRClient::GetTimerTypes(CPVRTimerTypes& results) const
 {
+  CSingleLock lock(m_critSection);
   results = m_timertypes;
   return PVR_ERROR_NO_ERROR;
 }
