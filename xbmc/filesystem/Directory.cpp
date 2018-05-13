@@ -205,6 +205,8 @@ bool CDirectory::GetDirectory(const CURL& url, std::shared_ptr<IDirectory> pDire
         {
           if (!cancel)
           {
+            // @TODO ProcessRequirements() can bring up the keyboard input dialog
+            // filesystem must not depend on GUI
             if (g_application.IsCurrentThread() && pDirectory->ProcessRequirements())
             {
               authUrl.SetDomain("");

@@ -2166,12 +2166,27 @@ bool CGUIMediaWindow::GetDirectoryItems(CURL &url, CFileItemList &items, bool us
 {
   if (m_useBusyDialog)
   {
+    bool ret = true;
     CGetDirectoryItems getItems(m_rootDir, url, items, useDir);
     if (!CGUIDialogBusy::Wait(&getItems, 100, true))
     {
-      return false;
+      // cancelled
+      ret = false;
     }
-    return getItems.m_result;
+    else if (!getItems.m_result)
+    {
+      if (g_application.IsCurrentThread() && !m_rootDir.GetDirImpl()->ProcessRequirements())
+      {
+        ret = false;
+      }
+      else if (!CGUIDialogBusy::Wait(&getItems, 100, true) || !getItems.m_result)
+      {
+        ret = false;
+      }
+    }
+
+    m_rootDir.ReleaseDirImpl();
+    return ret;
   }
   else
   {

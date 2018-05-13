@@ -60,6 +60,9 @@ namespace XFILE
 
     void AllowNonLocalSources(bool allow) { m_allowNonLocalSources = allow; };
 
+    std::shared_ptr<IDirectory> GetDirImpl() { return m_pDir; }
+    void ReleaseDirImpl() { m_pDir.reset(); }
+
   protected:
     void CacheThumbs(CFileItemList &items);
 
