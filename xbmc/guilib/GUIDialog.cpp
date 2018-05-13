@@ -178,7 +178,7 @@ void CGUIDialog::Open_Internal(const std::string &param /* = "" */)
   CGUIDialog::Open_Internal(m_modalityType != DialogModalityType::MODELESS, param);
 }
 
-void CGUIDialog::Open_Internal(bool bProcessRenderLoop, const std::string &param)
+void CGUIDialog::Open_Internal(bool bProcessRenderLoop, const std::string &param /* = "" */)
 {
   // Lock graphic context here as it is sometimes called from non rendering threads
   // maybe we should have a critical section per window instead??
@@ -210,7 +210,7 @@ void CGUIDialog::Open_Internal(bool bProcessRenderLoop, const std::string &param
 
     while (m_active && !g_application.m_bStop)
     {
-      CServiceBroker::GetGUI()->GetWindowManager().ProcessRenderLoop(false, true);
+      CServiceBroker::GetGUI()->GetWindowManager().ProcessRenderLoop();
     }
   }
 }
@@ -259,7 +259,7 @@ void CGUIDialog::CancelAutoClose(void)
   m_autoClosing = false;
 }
 
-void CGUIDialog::ProcessRenderLoop(bool renderOnly, bool processMsgs)
+void CGUIDialog::ProcessRenderLoop(bool renderOnly)
 {
-  CServiceBroker::GetGUI()->GetWindowManager().ProcessRenderLoop(renderOnly, processMsgs);
+  CServiceBroker::GetGUI()->GetWindowManager().ProcessRenderLoop(renderOnly);
 }

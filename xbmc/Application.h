@@ -211,7 +211,7 @@ public:
   void CloseNetworkShares();
 
   void ShowAppMigrationMessage();
-  void Process(bool processMsgs) override;
+  void Process() override;
   void ProcessSlow();
   void ResetScreenSaver();
   float GetVolume(bool percentage = true) const;
