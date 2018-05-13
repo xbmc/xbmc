@@ -22,6 +22,9 @@
 #include "IDirectory.h"
 #include "MediaSource.h"
 
+#include <memory>
+#include <string>
+
 namespace XFILE
 {
 
