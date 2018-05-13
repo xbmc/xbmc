@@ -125,6 +125,7 @@ private:
   typedef std::list<StreamInfo*> StreamList;
 
   bool                m_signalSpeedChange;   /* true if OnPlaybackSpeedChange needs to be called */
+  bool m_signalStarted = true;
   std::atomic_int m_playbackSpeed;           /* the playback speed (1 = normal) */
   bool                m_isPlaying;
   bool                m_isPaused;
@@ -160,5 +161,6 @@ private:
   void SetTimeInternal(int64_t time);
   void SetTotalTimeInternal(int64_t time);
   void CloseFileCB(StreamInfo &si);
+  void AdvancePlaylistOnError(CFileItem &fileItem);
 };
 

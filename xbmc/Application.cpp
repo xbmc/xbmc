@@ -3339,6 +3339,8 @@ void CApplication::OnPlayBackStarted(const CFileItem &file)
   CServiceBroker::GetPVRManager().OnPlaybackStarted(m_itemCurrentFile);
   m_stackHelper.OnPlayBackStarted(file);
 
+  m_playerEvent.Reset();
+
   CGUIMessage msg(GUI_MSG_PLAYBACK_STARTED, 0, 0);
   CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
 }
@@ -4049,9 +4051,8 @@ bool CApplication::OnMessage(CGUIMessage& message)
       CAnnouncementManager::GetInstance().Announce(Player, "xbmc", "OnPlay", m_itemCurrentFile, param);
 
       // we don't want a busy dialog when switching channels
-      if (!m_itemCurrentFile->IsLiveTV() && m_playerEvent.Signaled())
+      if (!m_itemCurrentFile->IsLiveTV())
       {
-        m_playerEvent.Reset();
         CGUIDialogBusy* dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogBusy>(WINDOW_DIALOG_BUSY);
         if (dialog)
           dialog->WaitOnEvent(m_playerEvent);
