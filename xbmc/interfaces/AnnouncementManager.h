@@ -19,6 +19,7 @@
  *
  */
 #include <vector>
+#include <list>
 
 #include "IAnnouncer.h"
 #include "FileItem.h"
