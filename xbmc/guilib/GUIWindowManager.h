@@ -257,7 +257,7 @@ private:
    */
   void ActivateWindow_Internal(int windowID, const std::vector<std::string> &params, bool swappingWindows, bool force = false);
 
-  void ProcessRenderLoop(bool renderOnly, bool processMsgs);
+  void ProcessRenderLoop(bool renderOnly = false);
 
   bool HandleAction(const CAction &action) const;
 

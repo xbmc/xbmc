@@ -2159,7 +2159,7 @@ std::string CGUIMediaWindow::RemoveParameterFromPath(const std::string &strDirec
 
 void CGUIMediaWindow::ProcessRenderLoop(bool renderOnly)
 {
-  CServiceBroker::GetGUI()->GetWindowManager().ProcessRenderLoop(renderOnly, true);
+  CServiceBroker::GetGUI()->GetWindowManager().ProcessRenderLoop(renderOnly);
 }
 
 bool CGUIMediaWindow::GetDirectoryItems(CURL &url, CFileItemList &items, bool useDir)
