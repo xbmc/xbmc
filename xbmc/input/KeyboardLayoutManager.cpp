@@ -25,6 +25,7 @@
 #include "FileItem.h"
 #include "filesystem/Directory.h"
 #include "URL.h"
+#include "settings/lib/Setting.h"
 #include "utils/log.h"
 #include "utils/XBMCTinyXML.h"
 

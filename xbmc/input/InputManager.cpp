@@ -51,6 +51,7 @@
 #include "utils/StringUtils.h"
 #include "Util.h"
 #include "settings/Settings.h"
+#include "settings/lib/Setting.h"
 #include "AppParamParser.h"
 #include "AppInboundProtocol.h"
 
