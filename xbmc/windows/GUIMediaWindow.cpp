@@ -916,18 +916,31 @@ bool CGUIMediaWindow::Update(const std::string &strDirectory, bool updateFilterP
 
 bool CGUIMediaWindow::Refresh(bool clearCache /* = false */)
 {
+  if (m_vecItemsUpdating)
+  {
+    CLog::Log(LOGWARNING, "CGUIMediaWindow::Update - updating in progress");
+    return false;
+  }
+
   std::string strCurrentDirectory = m_vecItems->GetPath();
   if (strCurrentDirectory == "?")
     return false;
 
+  m_vecItemsUpdating = true;
+
   if (clearCache)
     m_vecItems->RemoveDiscCache(GetID());
 
+  bool ret = true;
+
   // get the original number of items
   if (!Update(strCurrentDirectory, false))
-    return false;
+  {
+    ret = false;
+  }
 
-  return true;
+  m_vecItemsUpdating = false;
+  return ret;
 }
 
 /*!
