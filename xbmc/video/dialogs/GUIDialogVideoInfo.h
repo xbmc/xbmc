@@ -22,6 +22,7 @@
 
 #include "guilib/GUIDialog.h"
 #include "FileItem.h"
+#include "MediaSource.h"
 
 class CVideoDatabase;
 
