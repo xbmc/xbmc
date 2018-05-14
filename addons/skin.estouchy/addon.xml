@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="skin.estouchy" version="2.0.13" name="Estouchy" provider-name="Team Kodi">
+<addon id="skin.estouchy" version="2.0.14" name="Estouchy" provider-name="Team Kodi">
 	<requires>
 		<import addon="xbmc.gui" version="5.13.0"/>
 	</requires>
@@ -11,7 +11,7 @@
 		<summary lang="af_ZA">Oortreksel vir raakskerm toestelle</summary>
 		<summary lang="am_ET">ለ ተችስክሪን አካሎች ቆዳ</summary>
 		<summary lang="be_BY">Абалонка для сэнсарных прылад</summary>
-		<summary lang="bg_BG">Облик за устройства с екран чувствителен на допир</summary>
+		<summary lang="bg_BG">Облик за устройства със сензорен екран</summary>
 		<summary lang="ca_ES">Aparença per als dispositius amb pantalla tàctil</summary>
 		<summary lang="cs_CZ">Vzhled pro zařízení s dotykovou obrazovkou</summary>
 		<summary lang="de_DE">Skin für Touchscreen-Geräte</summary>
@@ -55,7 +55,7 @@
 		<summary lang="zh_TW">為具有觸控螢幕的裝置所製作的佈景主題</summary>
 		<description lang="af_ZA">Oortreksel ontwerp om op raakskerm toestelle soos tablette en slimfone te gebruik</description>
 		<description lang="be_BY">Абалонка распрацавана для выкарыстання на сэнсарных прыладах , такіх як планшэты і смартфоны</description>
-		<description lang="bg_BG">Обликът е разработен за ползване на устройства, с екран чувствителен на допир като таблет или телефон.</description>
+		<description lang="bg_BG">Обликът е разработен за ползване на устройства със сензорен екран, като таблети и телефони.</description>
 		<description lang="ca_ES">Aparença dissenyada perquè s'utilitzi en dispositius amb pantalla tàctil com taules i telèfons intel·ligents</description>
 		<description lang="cs_CZ">Vzhled navržený pro použití na zařízeních s dotykovou obrazovkou, jako jsou tablety a chytré telefony</description>
 		<description lang="de_DE">Dieses Skin wurde für die Benutzung mit Touchscreen-Geräten wie Tablets und Handys entworfen</description>

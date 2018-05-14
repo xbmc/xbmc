@@ -18,7 +18,7 @@ msgstr ""
 
 msgctxt "#31002"
 msgid "Audio Settings"
-msgstr "Аудио настройки"
+msgstr "Звукови настройки"
 
 msgctxt "#31003"
 msgid "IP"
@@ -62,7 +62,23 @@ msgstr "Албуми"
 
 msgctxt "#31017"
 msgid "PVR info"
-msgstr "ПВР информация"
+msgstr "Информация за ПВР"
+
+msgctxt "#31018"
+msgid "Player process info"
+msgstr "Инф. за процеса на плейъра"
+
+msgctxt "#31019"
+msgid "Video decoder"
+msgstr "Видео декодер"
+
+msgctxt "#31020"
+msgid "Pixel format"
+msgstr "Формат на пикселите"
+
+msgctxt "#31021"
+msgid "System memory usage"
+msgstr "Използвана памет"
 
 msgctxt "#31024"
 msgid "Page"
@@ -76,6 +92,10 @@ msgctxt "#31038"
 msgid "Login"
 msgstr "Влизане"
 
+msgctxt "#31039"
+msgid "Updated:"
+msgstr "Обновено:"
+
 msgctxt "#31044"
 msgid "FAST FORWARD"
 msgstr "ПРЕВЪРТАНЕ НАПРЕД"
@@ -83,6 +103,10 @@ msgstr "ПРЕВЪРТАНЕ НАПРЕД"
 msgctxt "#31045"
 msgid "REWIND"
 msgstr "ПРЕВЪРТАНЕ НАЗАД"
+
+msgctxt "#31046"
+msgid "Play speed"
+msgstr "Скорост на възпроизвеждане"
 
 msgctxt "#31049"
 msgid "End Time"
@@ -140,6 +164,10 @@ msgctxt "#31303"
 msgid "Data provider"
 msgstr "Доставчик на данни"
 
+msgctxt "#31309"
+msgid "System Memory Used:"
+msgstr "Използвана памет:"
+
 msgctxt "#31320"
 msgid "Last Logged In"
 msgstr "Последно вписване"
@@ -180,9 +208,41 @@ msgctxt "#31406"
 msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
 msgstr "Настройка на екрана · Настройка на звука · Настройка на достъпа до Интернет · Настройка на пестенето на енергия · Настройка на журналите"
 
+msgctxt "#31407"
+msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
+msgstr "Управление на инсталираните добавки · Преглед и инсталиране на добавки от kodi.tv · Промяна на настройките на добавките"
+
+msgctxt "#31408"
+msgid "Configure actions that can be used during playback · Configure how media content is played"
+msgstr "Настройки за наличните действия по време на възпроизвеждане · Настройки за начина на възпроизвеждане на медийните файлове"
+
+msgctxt "#31409"
+msgid "Configure library sources · Show the media lists display content · Configure how library lists are navigated"
+msgstr "Настройка на източниците за библиотеката · Показване на съдържанието на медийните списъци · Настройка на навигирането в библиотеката"
+
+msgctxt "#31410"
+msgid "Configure skin · Configure region · Configure control · Configure screensaver · Configure master lock"
+msgstr "Настройки на облика · Настройки за езика и региона · Настройки на управлението · Настройки на скрийнсейвъра · Настройки за заключване с код"
+
+msgctxt "#31411"
+msgid "Configure your profiles · Set locking options · Enable login screen"
+msgstr "Настройки на профилите · Настройки за заключване · Включване на екрана за вход"
+
+msgctxt "#31412"
+msgid "Display system information · Hardware statistics · Check storage availability · View network configuration"
+msgstr "Показване на системна информация · Хардуерни статистики · Проверка на наличното място за съхранение · Преглед на мрежовите настройки"
+
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
 msgstr "Изберете потребителски профил,[CR]за да продължите"
+
+msgctxt "#31548"
+msgid "Home menu"
+msgstr "Начално меню"
+
+msgctxt "#31549"
+msgid "Home Add-ons"
+msgstr "Добавки за началния екран"
 
 msgctxt "#31550"
 msgid "Backgrounds"
@@ -192,6 +252,10 @@ msgctxt "#31551"
 msgid "Add-on Shortcut"
 msgstr "Кратък път на добавка"
 
+msgctxt "#31552"
+msgid "SYNC"
+msgstr "СИНХР"
+
 msgctxt "#31553"
 msgid "Use Custom Background"
 msgstr "Персонален фон"
@@ -200,9 +264,25 @@ msgctxt "#31554"
 msgid "Background:"
 msgstr "Фон:"
 
+msgctxt "#31555"
+msgid "Configure TV settings · Change full screen info · Manage EPG data settings"
+msgstr "Настройки на телевизията · Промяна на инф. на цял екран · Управление на настройките за данните на справочника"
+
 msgctxt "#31556"
 msgid "Live TV"
-msgstr "Телевизия"
+msgstr "ТВ на живо"
+
+msgctxt "#31557"
+msgid "Hide video background"
+msgstr "Скриване на фоновото видео"
+
+msgctxt "#31558"
+msgid "Hide visualization background"
+msgstr "Скриване на фоновата визуализация"
+
+msgctxt "#31559"
+msgid "Channel settings"
+msgstr "Настройки на канала"
 
 msgctxt "#31560"
 msgid "Available groups"
@@ -210,15 +290,23 @@ msgstr "Налични групи"
 
 msgctxt "#31561"
 msgid "Add Group"
-msgstr "Добави група"
+msgstr "Добавяне на група"
 
 msgctxt "#31562"
 msgid "Rename Group"
-msgstr "Преименувай групата"
+msgstr "Преименуване на групата"
 
 msgctxt "#31563"
 msgid "Delete Group"
-msgstr "Изтрий групата"
+msgstr "Изтриване на групата"
+
+msgctxt "#31564"
+msgid "Show hidden"
+msgstr "Показване на скритите"
+
+msgctxt "#31565"
+msgid "Show deleted"
+msgstr "Показване на изтритите"
 
 msgctxt "#31900"
 msgid "First Run"
@@ -230,11 +318,11 @@ msgstr "За навигирането в Estouchy трябва да знаете
 
 msgctxt "#31902"
 msgid "The Kodi logo functions as a 'HOME' button. Whenever you touch it, you will be taken back to the home screen."
-msgstr "Логото на Kodi функционира като бутон водещ към началния екран."
+msgstr "Логото на Kodi функционира като бутон водещ към началния екран. Когато го докоснете, ще се върнете на началния екран."
 
 msgctxt "#31903"
 msgid "When you are playing audio or video, the item title will appear at the top of the screen. Touching it will take you to the fullscreen visualization or video window."
-msgstr "При възпроизвеждане на видео или аудио заглавието на дадения елемент се визуализира в горната част на екрана. При докосване отваря на целия екран видеото или визуализацията."
+msgstr "При възпроизвеждане на видео или аудио заглавието му се визуализира в горната част на екрана. При докосване видеото или визуализацията ще се отвори на цял екран."
 
 msgctxt "#31904"
 msgid "Now Playing Title..."
