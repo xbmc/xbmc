@@ -74,9 +74,9 @@ bool CVirtualDirectory::GetDirectory(const CURL& url, CFileItemList &items, bool
   if (!strPath.empty() && strPath != "files://")
   {
     CURL realURL = URIUtils::SubstitutePath(url);
-    m_pDir.reset(CDirectoryFactory::Create(realURL));
+    if (!m_pDir)
+      m_pDir.reset(CDirectoryFactory::Create(realURL));
     bool ret = CDirectory::GetDirectory(strPath, m_pDir, items, m_strFileMask, flags);
-    m_pDir.reset();
     return ret;
   }
 
