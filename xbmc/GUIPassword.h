@@ -24,7 +24,7 @@
 #include <vector>
 
 #include "settings/lib/ISettingCallback.h"
-#include "settings/lib/Setting.h"
+#include "settings/lib/SettingLevel.h"
 #include "LockType.h"
 
 class CFileItem;
