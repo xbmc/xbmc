@@ -36,6 +36,7 @@
 #include "messaging/helpers/DialogHelper.h"
 #include "profiles/ProfilesManager.h"
 #include "settings/Settings.h"
+#include "xbmc/settings/lib/Setting.h"
 #include "playlists/PlayList.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
