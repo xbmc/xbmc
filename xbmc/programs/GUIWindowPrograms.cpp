@@ -20,6 +20,7 @@
 
 #include "GUIWindowPrograms.h"
 #include "Util.h"
+#include "GUIPassword.h"
 #include "addons/GUIDialogAddonInfo.h"
 #include "Autorun.h"
 #include "dialogs/GUIDialogMediaSource.h"
