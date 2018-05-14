@@ -56,7 +56,7 @@
 	<key>DTPlatformBuild</key>
 	<string>13E230</string>
 	<key>UIFileSharingEnabled</key>
-	<string>YES</string>
+	<true/>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleDevelopmentRegion</key>
