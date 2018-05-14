@@ -358,14 +358,14 @@ class CFileItemList;
  \ingroup winmsg
  \brief
  */
-class CGUIMessage
+class CGUIMessage final
 {
 public:
   CGUIMessage(int dwMsg, int senderID, int controlID, int param1 = 0, int param2 = 0);
   CGUIMessage(int msg, int senderID, int controlID, int param1, int param2, CFileItemList* item);
   CGUIMessage(int msg, int senderID, int controlID, int param1, int param2, const CGUIListItemPtr &item);
   CGUIMessage(const CGUIMessage& msg);
-  virtual ~CGUIMessage(void);
+  ~CGUIMessage(void);
   CGUIMessage& operator = (const CGUIMessage& msg);
 
   int GetControlId() const ;

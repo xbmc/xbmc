@@ -22,6 +22,8 @@
 
 #include "guilib/GUIWindow.h"
 
+class CFileItemList;
+
 class CGUIWindowSettingsProfile :
       public CGUIWindow
 {

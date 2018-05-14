@@ -19,6 +19,8 @@
  */
 
 #include "GUIControl.h"
+#include "GUIMessage.h"
+#include "GUIAction.h"
 
 #include "GUIInfoManager.h"
 #include "utils/log.h"
@@ -90,6 +92,7 @@ CGUIControl::CGUIControl(int parentID, int controlID, float posX, float posY, fl
   m_controlStats = nullptr;
 }
 
+CGUIControl::CGUIControl(const CGUIControl &) = default;
 
 CGUIControl::~CGUIControl(void) = default;
 
@@ -163,7 +166,7 @@ void CGUIControl::DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyreg
 
   if (changed)
   {
-    dirtyregions.push_back(CDirtyRegion(dirtyRegion));
+    dirtyregions.emplace_back(dirtyRegion);
   }
 }
 

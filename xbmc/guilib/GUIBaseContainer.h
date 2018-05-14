@@ -27,9 +27,10 @@
 
 #include <utility>
 #include <vector>
+#include <list>
 
-#include "GUIListItemLayout.h"
 #include "IGUIContainer.h"
+#include "GUIAction.h"
 #include "utils/Stopwatch.h"
 
 /*!
@@ -39,11 +40,13 @@
 
 class IListProvider;
 class TiXmlNode;
+class CGUIListItemLayout;
 
 class CGUIBaseContainer : public IGUIContainer
 {
 public:
   CGUIBaseContainer(int parentID, int controlID, float posX, float posY, float width, float height, ORIENTATION orientation, const CScroller& scroller, int preloadItems);
+  CGUIBaseContainer(const CGUIBaseContainer &);
   ~CGUIBaseContainer(void) override;
 
   bool OnAction(const CAction &action) override;
@@ -153,8 +156,8 @@ protected:
 
   int m_pageControl;
 
-  std::vector<CGUIListItemLayout> m_layouts;
-  std::vector<CGUIListItemLayout> m_focusedLayouts;
+  std::list<CGUIListItemLayout> m_layouts;
+  std::list<CGUIListItemLayout> m_focusedLayouts;
 
   CGUIListItemLayout *m_layout;
   CGUIListItemLayout *m_focusedLayout;

@@ -19,6 +19,7 @@
  */
 
 #include "GUIDialogAccessPoints.h"
+#include "guilib/GUIMessage.h"
 #include "guilib/GUIKeyboardFactory.h"
 #if defined(TARGET_ANDROID)
 #include "platform/android/network/NetworkAndroid.h"

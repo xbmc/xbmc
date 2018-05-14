@@ -19,6 +19,7 @@
  */
 
 #include "GUIFadeLabelControl.h"
+#include "GUIMessage.h"
 #include "utils/Random.h"
 
 using namespace KODI::GUILIB;

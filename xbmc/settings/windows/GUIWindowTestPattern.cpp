@@ -21,6 +21,7 @@
 #include "GUIWindowTestPattern.h"
 #include "ServiceBroker.h"
 #include "input/Key.h"
+#include "guilib/GUIMessage.h"
 #include "guilib/WindowIDs.h"
 #include "windowing/WinSystem.h"
 

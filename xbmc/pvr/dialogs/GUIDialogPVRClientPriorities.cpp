@@ -19,6 +19,7 @@
  */
 
 #include "GUIDialogPVRClientPriorities.h"
+#include "guilib/GUIMessage.h"
 
 #include <cstdlib>
 

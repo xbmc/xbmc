@@ -19,6 +19,8 @@
  */
 
 #include "GUIWrappingListContainer.h"
+#include "GUIListItemLayout.h"
+#include "GUIMessage.h"
 #include "FileItem.h"
 #include "input/Key.h"
 

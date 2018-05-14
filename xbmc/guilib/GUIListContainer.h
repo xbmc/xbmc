@@ -27,6 +27,9 @@
 
 #include "GUIBaseContainer.h"
 
+class CLabelInfo;
+class CTextureInfo;
+
 /*!
  \ingroup controls
  \brief

@@ -28,12 +28,11 @@ class CGUIListItem;
 class CFileItem;
 class CLabelInfo;
 
-class CGUIListItemLayout
+class CGUIListItemLayout final
 {
 public:
   CGUIListItemLayout();
   CGUIListItemLayout(const CGUIListItemLayout &from, CGUIControl *control);
-  virtual ~CGUIListItemLayout();
   void LoadLayout(TiXmlElement *layout, int context, bool focused, float maxWidth, float maxHeight);
   void Process(CGUIListItem *item, int parentID, unsigned int currentTime, CDirtyRegionList &dirtyregions);
   void Render(CGUIListItem *item, int parentID);
@@ -57,7 +56,7 @@ public:
   bool MoveRight();
 
 #ifdef _DEBUG
-  virtual void DumpTextureUse();
+  void DumpTextureUse();
 #endif
   bool CheckCondition();
 protected:

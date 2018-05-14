@@ -19,6 +19,7 @@
  */
 
 #include "GUIDialogButtonMenu.h"
+#include "guilib/GUIMessage.h"
 
 #define CONTROL_BUTTON_LABEL  3100
 

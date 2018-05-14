@@ -27,6 +27,8 @@
 #include "guilib/DirtyRegion.h"
 #include "guilib/GUIControlFactory.h"
 #include "guilib/GUIListItem.h"
+#include "guilib/GUIMessage.h"
+#include "guilib/GUIAction.h"
 #include "input/Key.h"
 #include "utils/MathUtils.h"
 #include "utils/StringUtils.h"

@@ -22,6 +22,7 @@
 
 #include "GUIInfoManager.h"
 #include "ServiceBroker.h"
+#include "guilib/GUIMessage.h"
 #include "guilib/GUIComponent.h"
 #include "input/Key.h"
 #include "messaging/helpers/DialogOKHelper.h"

@@ -36,6 +36,7 @@
 #include "games/controllers/guicontrols/GUIControllerButton.h"
 #include "games/controllers/guicontrols/GUIGameController.h"
 #include "games/GameServices.h"
+#include "guilib/GUIMessage.h"
 #include "guilib/GUIButtonControl.h"
 #include "guilib/GUIControlGroupList.h"
 #include "guilib/GUIWindow.h"

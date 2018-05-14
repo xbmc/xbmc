@@ -28,6 +28,7 @@
  *
  */
 
+#include "GUIAction.h"
 #include "GUIControlGroup.h"
 #include <memory>
 #include "threads/CriticalSection.h"

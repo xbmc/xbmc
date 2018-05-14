@@ -31,15 +31,15 @@
 
 #include "utils/Color.h"
 #include "windowing/GraphicContext.h" // needed by any rendering operation (all controls)
-#include "GUIMessage.h"     // needed by practically all controls
 #include "VisibleEffect.h"  // needed for the CAnimation members
 #include "guiinfo/GUIInfoTypes.h" // needed for CGUIInfoColor to handle infolabel'ed colors
 #include "DirtyRegion.h"
-#include "GUIAction.h"
 
 class CGUIListItem; // forward
 class CAction;
 class CMouseEvent;
+class CGUIMessage;
+class CGUIAction;
 
 enum ORIENTATION { HORIZONTAL = 0, VERTICAL };
 
@@ -90,6 +90,7 @@ class CGUIControl
 public:
   CGUIControl();
   CGUIControl(int parentID, int controlID, float posX, float posY, float width, float height);
+  CGUIControl(const CGUIControl &);
   virtual ~CGUIControl(void);
   virtual CGUIControl *Clone() const=0;
 

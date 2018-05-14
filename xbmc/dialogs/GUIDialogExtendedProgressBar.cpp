@@ -20,6 +20,7 @@
 
 #include <cmath>
 #include "GUIDialogExtendedProgressBar.h"
+#include "guilib/GUIMessage.h"
 #include "guilib/GUIProgressControl.h"
 #include "threads/SingleLock.h"
 #include "threads/SystemClock.h"

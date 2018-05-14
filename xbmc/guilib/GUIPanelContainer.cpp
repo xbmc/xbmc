@@ -19,6 +19,8 @@
  */
 
 #include "GUIPanelContainer.h"
+#include "GUIListItemLayout.h"
+#include "GUIMessage.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
 #include "input/Key.h"
 #include "utils/StringUtils.h"

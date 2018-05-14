@@ -19,6 +19,7 @@
  */
 
 #include "GUIMoverControl.h"
+#include "GUIMessage.h"
 #include "input/Key.h"
 #include "utils/TimeUtils.h"
 
