@@ -42,6 +42,8 @@ CBaseRenderer* CRendererVAAPI::Create(CVideoBuffer *buffer)
 
 void CRendererVAAPI::Register(IVaapiWinSystem *winSystem, VADisplay vaDpy, EGLDisplay eglDisplay, bool &general, bool &deepColor)
 {
+  general = deepColor = false;
+
   int major_version, minor_version;
   if (vaInitialize(vaDpy, &major_version, &minor_version) != VA_STATUS_SUCCESS)
   {
@@ -49,7 +51,6 @@ void CRendererVAAPI::Register(IVaapiWinSystem *winSystem, VADisplay vaDpy, EGLDi
     return;
   }
 
-  general = deepColor = false;
   CVaapi2Texture::TestInterop(vaDpy, eglDisplay, general, deepColor);
   CLog::Log(LOGDEBUG, "Vaapi2 EGL interop test results: general %s, deepColor %s", general ? "yes" : "no", deepColor ? "yes" : "no");
   if (!general)
