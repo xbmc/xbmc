@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="skin.estuary" version="2.0.8" name="Estuary" provider-name="phil65, Ichabod Fletchman">
+<addon id="skin.estuary" version="2.0.9" name="Estuary" provider-name="phil65, Ichabod Fletchman">
 	<requires>
 		<import addon="xbmc.gui" version="5.13.0"/>
 	</requires>
@@ -49,7 +49,7 @@
 		<summary lang="pl_PL">Skóra Eustary autorstwa phil65. (domyślna skóra Kodi)</summary>
 		<summary lang="pt_BR">Skin Estuary por phil65 e Piers. (Skin padrão do Kodi)</summary>
 		<summary lang="pt_PT">Visual Estuary de phil65 e Piers. (Visual por omissão do Kodi)</summary>
-		<summary lang="ro_RO">Tema Estuary de phil65 și Piers. (Tema implicită pentru Kodi)</summary>
+		<summary lang="ro_RO">Tema Estuary de phil65. (Temă implicită pentru Kodi)</summary>
 		<summary lang="ru_RU">Обложка Estuary (стандартная обложка Kodi). Авторы: phil65 and Piers.</summary>
 		<summary lang="sk_SK">Vzhľad Estuary, vytvorili phil65 a Piers. (predvolený vzhľad pre Kodi)</summary>
 		<summary lang="sr_RS">Маска Estuary аутора phil65 и Piers. (Подразумевана Коди маска)</summary>
@@ -62,7 +62,7 @@
 		<summary lang="zh_CN">phil65 开发的 Estuary 皮肤（Kodi 的默认皮肤）。</summary>
 		<summary lang="zh_TW">phil65與Piers 製作的Estuary佈景主題（Kodi的預設佈景主題）</summary>
 		<description lang="af_ZA">Estuary is die bestek oortreksel vir Kodi 17.0 en op. Dit poog om maklik te wees vir eerste keer Kodi gebruikers om te verstaan en te gebruik.</description>
-		<description lang="bg_BG">Estuary е стандартният облик на Kodi 17 и по-новите версии. Целта е да се улеснят хората които се сблъскват за първи път с Kodi.</description>
+		<description lang="bg_BG">Estuary е стандартният облик на Kodi 17 и по-новите версии. Целта е да се улеснят хората, които се сблъскват за първи път с Kodi.</description>
 		<description lang="ca_ES">Estuary és l'aparença predeterminada de Kodi 17.0 i posteriors. Per als usuaris per primera vegada de Kodi, intenta ser fàcil d'entendre i d'utilitzar.</description>
 		<description lang="cs_CZ">Estuary je výchozí vzhled pro Kodi 17.0 a vyšší. Snaží se být jednoduše pochopitelný a použitelný pro nové uživatele Kodi.</description>
 		<description lang="da_DK">Estuary er standard  brugerfladen er Kodi 17.0 og højere. Det forenkler førstegangsbrugen  af Kodi ved at gøre det nemmer at forstå og bruge.</description>

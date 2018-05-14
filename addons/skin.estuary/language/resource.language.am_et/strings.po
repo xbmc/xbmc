@@ -176,6 +176,10 @@ msgctxt "#31097"
 msgid "Channel options"
 msgstr "የ ጣቢያ ምርጫዎች "
 
+msgctxt "#31100"
+msgid "Shift"
+msgstr "Shift"
+
 msgctxt "#31102"
 msgid "Wall"
 msgstr "ግድግዳ"
@@ -195,6 +199,10 @@ msgstr "አበርካቾች"
 msgctxt "#31134"
 msgid "Remaining"
 msgstr "የቀረው"
+
+msgctxt "#31137"
+msgid "PVR info"
+msgstr "የ PVR መረጃ "
 
 msgctxt "#31140"
 msgid "Pixel format"

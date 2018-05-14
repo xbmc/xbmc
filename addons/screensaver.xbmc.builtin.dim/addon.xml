@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="screensaver.xbmc.builtin.dim"
        name="Dim"
-       version="1.0.40"
+       version="1.0.41"
        provider-name="Team Kodi">
   <extension point="xbmc.ui.screensaver" library=""/>
   <extension point="xbmc.addon.metadata">
     <summary lang="af_ZA">Sluimerskerm wat jou skerm verdof</summary>
+    <summary lang="am_ET">መመልከቻ ማዳኛ የ እርስዎን መመልከቻ ፈዘዝ ያደርገዋል </summary>
     <summary lang="ar_SA">شاشة توقف تمكن من تظليم الشاشة</summary>
     <summary lang="be_BY">Ахоўнік экрану што зацямняе экран</summary>
     <summary lang="bg_BG">Скрийнсейвър, който затъмнява екрана</summary>
@@ -65,6 +66,7 @@
     <summary lang="zh_CN">淡出屏幕保护程序</summary>
     <summary lang="zh_TW">讓螢幕變暗的螢幕保護程式</summary>
     <description lang="af_ZA">Die Verdof sluimerskerm is 'n eenvoudige sluimerskerm wat jou skerm verdof (uit vaag) tot 'n stelbare waarde tussen 20 en 100%</description>
+    <description lang="am_ET">የ መመልከቻ ማዳኛ ማደብዘዣ የ እርስዎን መመልከቻ ያፈዘዋል (ማፍዘዣ) የ እርስዎን መመልከቻ ዋጋ በ 20 እና በ 100% መካከል</description>
     <description lang="ar_SA">Dim عبارة عن شاشة توقف  تمكن من  تظليم (صورة خافتة) الشاشة إلى قيمة قابلة للتحديد بين 20 و 100%</description>
     <description lang="be_BY">Dim - просты ахоўнік экрану , які будзе зацямняць экран. Значэнне зацямнення можа змяняцца ад 20 да 100%.</description>
     <description lang="bg_BG">Скрийнсейвърът "Dim" затъмнява екрана, до стойност, която Вие определяте предварително (между 20 и 100%).</description>

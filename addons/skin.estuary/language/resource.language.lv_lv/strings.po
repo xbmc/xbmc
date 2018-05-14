@@ -188,6 +188,10 @@ msgctxt "#31065"
 msgid "Video playlist"
 msgstr "Video spēļsaraksts"
 
+msgctxt "#31067"
+msgid "Event log"
+msgstr "Notikumu žurnāls"
+
 msgctxt "#31069"
 msgid "Last Updated"
 msgstr "Pēdējie jaunumi"
