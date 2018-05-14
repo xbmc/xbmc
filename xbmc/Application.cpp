@@ -2457,7 +2457,9 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
         CLog::Log(LOGNOTICE, "%s: Failed to suspend AudioEngine before launching external program", __FUNCTION__);
       }
     }
-#if defined( TARGET_POSIX) && !defined(TARGET_DARWIN)
+#if defined(TARGET_DARWIN)
+    CLog::Log(LOGNOTICE, "ExecWait is not implemented on this platform");
+#elif defined(TARGET_POSIX)
     CUtil::RunCommandLine(pMsg->strParam.c_str(), (pMsg->param1 == 1));
 #elif defined(TARGET_WINDOWS)
     CWIN32Util::XBMCShellExecute(pMsg->strParam.c_str(), (pMsg->param1 == 1));
