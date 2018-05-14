@@ -35,8 +35,6 @@ bool CGUIListItem::icompare::operator()(const std::string &s1, const std::string
 
 CGUIListItem::CGUIListItem(const CGUIListItem& item)
 {
-  m_layout = NULL;
-  m_focusedLayout = NULL;
   *this = item;
   SetInvalid();
 }
@@ -46,8 +44,6 @@ CGUIListItem::CGUIListItem(void)
   m_bIsFolder = false;
   m_bSelected = false;
   m_overlayIcon = ICON_OVERLAY_NONE;
-  m_layout = NULL;
-  m_focusedLayout = NULL;
 }
 
 CGUIListItem::CGUIListItem(const std::string& strLabel):
@@ -57,8 +53,6 @@ CGUIListItem::CGUIListItem(const std::string& strLabel):
   SetSortLabel(strLabel);
   m_bSelected = false;
   m_overlayIcon = ICON_OVERLAY_NONE;
-  m_layout = NULL;
-  m_focusedLayout = NULL;
 }
 
 CGUIListItem::~CGUIListItem(void)
@@ -352,37 +346,33 @@ void CGUIListItem::FreeMemory(bool immediately)
   if (m_layout)
   {
     m_layout->FreeResources(immediately);
-    delete m_layout;
-    m_layout = NULL;
+    m_layout.reset();
   }
   if (m_focusedLayout)
   {
     m_focusedLayout->FreeResources(immediately);
-    delete m_focusedLayout;
-    m_focusedLayout = NULL;
+    m_focusedLayout.reset();
   }
 }
 
-void CGUIListItem::SetLayout(CGUIListItemLayout *layout)
+void CGUIListItem::SetLayout(CGUIListItemLayoutPtr layout)
 {
-  delete m_layout;
-  m_layout = layout;
+  m_layout = std::move(layout);
 }
 
 CGUIListItemLayout *CGUIListItem::GetLayout()
 {
-  return m_layout;
+  return m_layout.get();
 }
 
-void CGUIListItem::SetFocusedLayout(CGUIListItemLayout *layout)
+void CGUIListItem::SetFocusedLayout(CGUIListItemLayoutPtr layout)
 {
-  delete m_focusedLayout;
-  m_focusedLayout = layout;
+  m_focusedLayout = std::move(layout);
 }
 
 CGUIListItemLayout *CGUIListItem::GetFocusedLayout()
 {
-  return m_focusedLayout;
+  return m_focusedLayout.get();
 }
 
 void CGUIListItem::SetInvalid()
