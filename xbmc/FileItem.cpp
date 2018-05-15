@@ -1066,6 +1066,9 @@ bool CFileItem::IsPythonScript() const
 
 bool CFileItem::IsType(const char *ext) const
 {
+  if (!m_strDynPath.empty())
+    return URIUtils::HasExtension(m_strDynPath, ext);
+
   return URIUtils::HasExtension(m_strPath, ext);
 }
 
