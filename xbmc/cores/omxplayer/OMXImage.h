@@ -57,7 +57,6 @@ public:
     GLuint texture;
     EGLImageKHR egl_image;
     void *parent;
-    const char *filename;
   };
   COMXImage();
   virtual ~COMXImage();
