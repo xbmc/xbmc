@@ -365,7 +365,7 @@ void CGUIDialogFileBrowser::Update(const std::string &strDirectory)
     CFileItemList items;
     std::string strParentPath;
 
-    if (!m_rootDir.GetDirectory(pathToUrl, items, m_useFileDirectories))
+    if (!m_rootDir.GetDirectory(pathToUrl, items, m_useFileDirectories, false))
     {
       CLog::Log(LOGERROR,"CGUIDialogFileBrowser::GetDirectory(%s) failed", pathToUrl.GetRedacted().c_str());
 

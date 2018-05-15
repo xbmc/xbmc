@@ -99,7 +99,7 @@ public:
   }
   void Run() override
   {
-    m_result = m_dir.GetDirectory(m_url, m_items, m_useDir);
+    m_result = m_dir.GetDirectory(m_url, m_items, m_useDir, true);
   }
   void Cancel() override
   {
@@ -2203,6 +2203,6 @@ bool CGUIMediaWindow::GetDirectoryItems(CURL &url, CFileItemList &items, bool us
   }
   else
   {
-    return m_rootDir.GetDirectory(url, items, useDir);
+    return m_rootDir.GetDirectory(url, items, useDir, false);
   }
 }
