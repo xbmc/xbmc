@@ -28,34 +28,50 @@
 #include "utils/URIUtils.h"
 #include "URL.h"
 
-#include <collection.h>
 #include <string>
 #include <robuffer.h>
+#include <winrt/Windows.Foundation.Collections.h>
+#include <winrt/Windows.Security.Cryptography.h>
+#include <winrt/Windows.Storage.AccessCache.h>
+#include <winrt/Windows.Storage.FileProperties.h>
+#include <winrt/Windows.Storage.Search.h>
+#include <winrt/Windows.Storage.Streams.h>
 
 using namespace XFILE;
 using namespace KODI::PLATFORM::WINDOWS;
-using namespace Windows::Foundation;
-using namespace Windows::Security::Cryptography;
-using namespace Windows::Storage;
-using namespace Windows::Storage::AccessCache;
-using namespace Windows::Storage::Search;
-using namespace Windows::Storage::Streams;
-using namespace Windows::Foundation::Collections;
-
-byte* GetUnderlyingBuffer(IBuffer^ buf)
+namespace winrt 
 {
-  if (!buf)
-    return nullptr;
-
-  Microsoft::WRL::ComPtr<IBufferByteAccess> bufferByteAccess;
-  if (SUCCEEDED(reinterpret_cast<IUnknown*>(buf)->QueryInterface(IID_PPV_ARGS(&bufferByteAccess))))
-  {
-    byte* raw_buffer;
-    if (SUCCEEDED(bufferByteAccess->Buffer(&raw_buffer)))
-      return raw_buffer;
-  }
-  return nullptr;
+  using namespace Windows::Foundation;
 }
+using namespace winrt::Windows::Foundation::Collections;
+using namespace winrt::Windows::Security::Cryptography;
+using namespace winrt::Windows::Storage;
+using namespace winrt::Windows::Storage::AccessCache;
+using namespace winrt::Windows::Storage::Search;
+using namespace winrt::Windows::Storage::Streams;
+
+struct __declspec(uuid("905a0fef-bc53-11df-8c49-001e4fc686da")) IBufferByteAccess : ::IUnknown
+{
+  virtual HRESULT __stdcall Buffer(void** value) = 0;
+};
+
+struct CustomBuffer : winrt::implements<CustomBuffer, IBuffer, IBufferByteAccess>
+{
+  void *m_address;
+  uint32_t m_capacity;
+  uint32_t m_length;
+
+  CustomBuffer(void *address, uint32_t capacity) : m_address(address), m_capacity(capacity), m_length(0) { }
+  uint32_t Capacity() const { return m_capacity; }
+  uint32_t Length() const { return m_length; }
+  void Length(uint32_t length) { m_length = length; }
+
+  HRESULT __stdcall Buffer(void** value) final
+  {
+    *value = m_address;
+    return S_OK;
+  }
+};
 
 CWinLibraryFile::CWinLibraryFile() = default;
 CWinLibraryFile::~CWinLibraryFile(void) = default;
@@ -94,12 +110,10 @@ ssize_t CWinLibraryFile::Read(void* lpBuf, size_t uiBufSize)
   if (!m_fileStream)
     return -1;
 
-  uint32_t bytesToRead = static_cast<uint32_t>(uiBufSize);
-  IBuffer^ buf = ref new Buffer(bytesToRead);
-  Wait(m_fileStream->ReadAsync(buf, bytesToRead, InputStreamOptions::None));
+  IBuffer buf = winrt::make<CustomBuffer>(lpBuf, static_cast<uint32_t>(uiBufSize));
+  Wait(m_fileStream.ReadAsync(buf, buf.Capacity(), InputStreamOptions::None));
 
-  memcpy(lpBuf, GetUnderlyingBuffer(buf), buf->Length);
-  return static_cast<intptr_t>(buf->Length);
+  return static_cast<intptr_t>(buf.Length());
 }
 
 ssize_t CWinLibraryFile::Write(const void* lpBuf, size_t uiBufSize)
@@ -107,10 +121,10 @@ ssize_t CWinLibraryFile::Write(const void* lpBuf, size_t uiBufSize)
   if (!m_fileStream || !m_allowWrite)
     return -1;
 
-  auto arrByte = ref new Platform::Array<uint8_t>((uint8_t*)(lpBuf), static_cast<uint32_t>(uiBufSize));
-  IBuffer^ buf = CryptographicBuffer::CreateFromByteArray(arrByte);
+  uint8_t* buff = (uint8_t*)lpBuf;
+  auto winrt_buffer = CryptographicBuffer::CreateFromByteArray({ buff, buff + uiBufSize });
 
-  uint32_t result = Wait(m_fileStream->WriteAsync(buf));
+  uint32_t result = Wait(m_fileStream.WriteAsync(winrt_buffer));
   return static_cast<intptr_t>(result);
 }
 
@@ -120,19 +134,19 @@ int64_t CWinLibraryFile::Seek(int64_t iFilePosition, int iWhence)
   {
     int64_t pos = iFilePosition;
     if (iWhence == SEEK_CUR)
-      pos += m_fileStream->Position;
+      pos += m_fileStream.Position();
     else if (iWhence == SEEK_END)
-      pos += m_fileStream->Size;
+      pos += m_fileStream.Size();
 
     uint64_t seekTo;
     if (pos < 0)
       seekTo = 0;
-    else if (static_cast<uint64_t>(pos) > m_fileStream->Size)
-      seekTo = m_fileStream->Size;
+    else if (static_cast<uint64_t>(pos) > m_fileStream.Size())
+      seekTo = m_fileStream.Size();
     else
       seekTo = static_cast<uint64_t>(pos);
 
-    m_fileStream->Seek(seekTo);
+    m_fileStream.Seek(seekTo);
     return GetPosition();
   }
   return -1;
@@ -146,24 +160,24 @@ int CWinLibraryFile::Truncate(int64_t toSize)
 
 int64_t CWinLibraryFile::GetPosition()
 {
-  if (m_fileStream)
-    return static_cast<int64_t>(m_fileStream->Position);
+  if (m_fileStream != nullptr)
+    return static_cast<int64_t>(m_fileStream.Position());
 
   return -1;
 }
 
 int64_t CWinLibraryFile::GetLength()
 {
-  if (m_fileStream)
-    return m_fileStream->Size;
+  if (m_fileStream != nullptr)
+    return m_fileStream.Size();
 
   return 0;
 }
 
 void CWinLibraryFile::Flush()
 {
-  if (m_fileStream)
-    m_fileStream->FlushAsync();
+  if (m_fileStream != nullptr)
+    m_fileStream.FlushAsync();
 }
 
 bool CWinLibraryFile::Delete(const CURL & url)
@@ -174,9 +188,9 @@ bool CWinLibraryFile::Delete(const CURL & url)
   {
     try
     {
-      Wait(file->DeleteAsync());
+      Wait(file.DeleteAsync());
     }
-    catch(Platform::Exception^)
+    catch(const winrt::hresult_error&)
     { 
       return false;
     }
@@ -199,9 +213,9 @@ bool CWinLibraryFile::Rename(const CURL & urlCurrentName, const CURL & urlNewNam
       // replace exiting
       try
       {
-        Wait(currFile->MoveAndReplaceAsync(destFile));
+        Wait(currFile.MoveAndReplaceAsync(destFile));
       }
-      catch (Platform::Exception^)
+      catch (const winrt::hresult_error&)
       {
         return false;
       }
@@ -210,14 +224,14 @@ bool CWinLibraryFile::Rename(const CURL & urlCurrentName, const CURL & urlNewNam
 
     // move
     CURL defFolder = CURL(urlNewName.GetWithoutFilename());
-    StorageFolder^ destFolder = CWinLibraryDirectory::GetFolder(defFolder);
-    if (destFolder)
+    StorageFolder destFolder = CWinLibraryDirectory::GetFolder(defFolder);
+    if (destFolder != nullptr)
     {
       try
       {
-        Wait(currFile->MoveAsync(destFolder));
+        Wait(currFile.MoveAsync(destFolder));
       }
-      catch (Platform::Exception^)
+      catch (const winrt::hresult_error&)
       {
         return false;
       }
@@ -253,18 +267,18 @@ bool CWinLibraryFile::IsInAccessList(const CURL& url)
   // skip local folder and installation folder
   using KODI::PLATFORM::WINDOWS::FromW;
 
-  auto localFolder = Windows::Storage::ApplicationData::Current->LocalFolder;
-  std::string path = FromW(localFolder->Path->Data(), localFolder->Path->Length());
+  auto localFolder = winrt::Windows::Storage::ApplicationData::Current().LocalFolder();
+  std::string path = FromW(localFolder.Path().c_str());
   if (StringUtils::StartsWithNoCase(url.Get(), path))
     return false;
 
-  auto appFolder = Windows::ApplicationModel::Package::Current->InstalledLocation;
-  path = FromW(appFolder->Path->Data(), appFolder->Path->Length());
+  auto appFolder = winrt::Windows::ApplicationModel::Package::Current().InstalledLocation();
+  path = FromW(appFolder.Path().c_str());
   if (StringUtils::StartsWithNoCase(url.Get(), path))
     return false;
 
-  return IsInList(url, StorageApplicationPermissions::FutureAccessList)
-      || IsInList(url, StorageApplicationPermissions::MostRecentlyUsedList);
+  return IsInList(url, StorageApplicationPermissions::FutureAccessList())
+      || IsInList(url, StorageApplicationPermissions::MostRecentlyUsedList());
 }
 
 bool CWinLibraryFile::OpenIntenal(const CURL &url, FileAccessMode mode)
@@ -282,19 +296,18 @@ bool CWinLibraryFile::OpenIntenal(const CURL &url, FileAccessMode mode)
       if (folder)
       {
         std::wstring fileNameW = ToW(url.GetFileNameWithoutPath());
-        Platform::String^ strRT = ref new Platform::String(fileNameW.c_str());
-        m_sFile = Wait(folder->CreateFileAsync(strRT, CreationCollisionOption::ReplaceExisting));
+        m_sFile = Wait(folder.CreateFileAsync(fileNameW, CreationCollisionOption::ReplaceExisting));
         if (m_sFile)
           m_allowWrite = true;
       }
     }
 
     if (m_sFile)
-      m_fileStream = Wait(m_sFile->OpenAsync(mode));
+      m_fileStream = Wait(m_sFile.OpenAsync(mode));
   }
-  catch (Platform::Exception^ ex)
+  catch (const winrt::hresult_error& ex)
   {
-    std::string error = FromW(std::wstring(ex->Message->Data()));
+    std::string error = FromW(ex.message().c_str());
     CLog::LogF(LOGERROR, "an exception occurs while openning a file '%s' (mode: %s) : %s"
                        , url.GetRedacted().c_str()
                        , mode == FileAccessMode::Read ? "r" : "rw"
@@ -305,13 +318,13 @@ bool CWinLibraryFile::OpenIntenal(const CURL &url, FileAccessMode mode)
   return m_fileStream != nullptr;
 }
 
-StorageFile^ CWinLibraryFile::GetFile(const CURL& url)
+StorageFile CWinLibraryFile::GetFile(const CURL& url)
 {
   // check that url is library url
   if (CWinLibraryDirectory::IsValid(url))
   {
-    StorageFolder^ rootFolder = CWinLibraryDirectory::GetRootFolder(url);
-    if (!rootFolder)
+    StorageFolder rootFolder = CWinLibraryDirectory::GetRootFolder(url);
+    if (rootFolder == nullptr)
       return nullptr;
 
     std::string filePath = URIUtils::FixSlashesAndDups(url.GetFileName(), '\\');
@@ -332,15 +345,15 @@ StorageFile^ CWinLibraryFile::GetFile(const CURL& url)
     try
     {
       std::wstring wpath = ToW(filePath);
-      auto item = Wait(rootFolder->TryGetItemAsync(ref new Platform::String(wpath.c_str())));
-      if (item && item->IsOfType(StorageItemTypes::File))
-        return dynamic_cast<StorageFile^>(item);
+      auto item = Wait(rootFolder.TryGetItemAsync(wpath));
+      if (item && item.IsOfType(StorageItemTypes::File))
+        return item.as<StorageFile>();
 
       return nullptr;
     }
-    catch (Platform::Exception^ ex)
+    catch (const winrt::hresult_error& ex)
     {
-      std::string error = FromW(std::wstring(ex->Message->Data()));
+      std::string error = FromW(ex.message().c_str());
       CLog::LogF(LOGERROR, "unable to get file '%s' with error %s"
                          , url.GetRedacted().c_str()
                          , error.c_str());
@@ -350,42 +363,41 @@ StorageFile^ CWinLibraryFile::GetFile(const CURL& url)
   {
     // check that a file in feature access list or most rescently used list
     // search in FAL
-    IStorageItemAccessList^ list = StorageApplicationPermissions::FutureAccessList;
-    Platform::String^ token = GetTokenFromList(url, list);
-    if (!token || token->IsEmpty())
+    IStorageItemAccessList list = StorageApplicationPermissions::FutureAccessList();
+    winrt::hstring token = GetTokenFromList(url, list);
+    if (token.empty())
     {
       // serach in MRU list
-      IStorageItemAccessList^ list = StorageApplicationPermissions::MostRecentlyUsedList;
+      IStorageItemAccessList list = StorageApplicationPermissions::MostRecentlyUsedList();
       token = GetTokenFromList(url, list);
     }
-    if (token && !token->IsEmpty())
-      return Wait(list->GetFileAsync(token));
+    if (token.empty())
+      return Wait(list.GetFileAsync(token));
   }
 
   return nullptr;
 }
 
-bool CWinLibraryFile::IsInList(const CURL& url, IStorageItemAccessList^ list)
+bool CWinLibraryFile::IsInList(const CURL& url, const IStorageItemAccessList& list)
 {
-  Platform::String^ token = GetTokenFromList(url, list);
-  return token != nullptr && !token->IsEmpty();
+  auto token = GetTokenFromList(url, list);
+  return token != nullptr && !token.empty();
 }
 
-Platform::String^ CWinLibraryFile::GetTokenFromList(const CURL& url, IStorageItemAccessList^ list)
+winrt::hstring CWinLibraryFile::GetTokenFromList(const CURL& url, const IStorageItemAccessList& list)
 {
-  AccessListEntryView^ listview = list->Entries;
-  if (listview->Size == 0)
+  AccessListEntryView listview = list.Entries();
+  if (listview.Size() == 0)
     return nullptr;
 
   using KODI::PLATFORM::WINDOWS::ToW;
   std::string filePath = url.Get();
   std::wstring filePathW = ToW(filePath);
-  Platform::String^ itemKey = ref new Platform::String(filePathW.c_str());
 
-  for (uint32_t i = 0; i < listview->Size; i++)
+  for (uint32_t i = 0; i < listview.Size(); i++)
   {
-    auto listEntry = listview->GetAt(i);
-    if (listEntry.Metadata->Equals(itemKey))
+    auto listEntry = listview.GetAt(i);
+    if (listEntry.Metadata == filePathW)
     {
       return listEntry.Token;
     }
@@ -394,12 +406,12 @@ Platform::String^ CWinLibraryFile::GetTokenFromList(const CURL& url, IStorageIte
   return nullptr;
 }
 
-int CWinLibraryFile::Stat(Windows::Storage::StorageFile^ file, struct __stat64* statData)
+int CWinLibraryFile::Stat(const StorageFile& file, struct __stat64* statData)
 {
   if (!statData)
     return -1;
 
-  if (!file)
+  if (file == nullptr)
     return -1;
 
   /* set st_gid */
@@ -409,34 +421,33 @@ int CWinLibraryFile::Stat(Windows::Storage::StorageFile^ file, struct __stat64* 
   /* set st_ino */
   statData->st_ino = 0; // inode number is not implemented on Win32
 
-  auto propertyList = ref new Platform::Collections::Vector<Platform::String^>();
-  propertyList->Append("System.DateAccessed");
-  propertyList->Append("System.DateCreated");
-  propertyList->Append("System.DateModified");
-  propertyList->Append("System.Size");
+  auto requestedProps = Wait(file.Properties().RetrievePropertiesAsync({
+    L"System.DateAccessed",
+    L"System.DateCreated",
+    L"System.DateModified",
+    L"System.Size"
+  }));
 
-  auto requestedProps = Wait(file->Properties->RetrievePropertiesAsync(propertyList));
-
-  auto dateAccessed = requestedProps->Lookup("System.DateAccessed");
+  auto dateAccessed = requestedProps.Lookup(L"System.DateAccessed").as<winrt::IPropertyValue>();
   if (dateAccessed)
   {
-    statData->st_atime = CWIN32Util::fileTimeToTimeT(static_cast<Windows::Foundation::DateTime>(dateAccessed).UniversalTime);
+    statData->st_atime = winrt::clock::to_time_t(dateAccessed.GetDateTime());
   }
-  auto dateCreated = requestedProps->Lookup("System.DateCreated");
+  auto dateCreated = requestedProps.Lookup(L"System.DateCreated").as<winrt::IPropertyValue>();
   if (dateCreated)
   {
-    statData->st_ctime = CWIN32Util::fileTimeToTimeT(static_cast<Windows::Foundation::DateTime>(dateCreated).UniversalTime);
+    statData->st_ctime = winrt::clock::to_time_t(dateCreated.GetDateTime());
   }
-  auto dateModified = requestedProps->Lookup("System.DateModified");
+  auto dateModified = requestedProps.Lookup(L"System.DateModified").as<winrt::IPropertyValue>();
   if (dateModified)
   {
-    statData->st_mtime = CWIN32Util::fileTimeToTimeT(static_cast<Windows::Foundation::DateTime>(dateModified).UniversalTime);
+    statData->st_mtime = winrt::clock::to_time_t(dateModified.GetDateTime());
   }
-  auto fileSize = requestedProps->Lookup("System.Size");
+  auto fileSize = requestedProps.Lookup(L"System.Size").as<winrt::IPropertyValue>();
   if (fileSize)
   {
     /* set st_size */
-    statData->st_size = static_cast<unsigned long long>(fileSize);
+    statData->st_size = fileSize.GetInt64();
   }
 
   statData->st_dev = 0;

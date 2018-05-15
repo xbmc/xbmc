@@ -26,30 +26,33 @@
 #include "rendering/dx/RenderContext.h"
 #include "windowing/win10/WinSystemWin10DX.h"
 
+#include <winrt/Windows.ApplicationModel.Core.h>
+#include <winrt/Windows.UI.Popups.h>
+
 int WINAPI MessageBox(void* hWnd, const char* lpText, const char* lpCaption, UINT uType)
 {
-  Windows::UI::Core::CoreWindow^ coreWindow = DX::Windowing()->GetCoreWindow();
+  using namespace winrt::Windows::ApplicationModel::Core;
+
+  auto coreWindow = CoreApplication::MainView().CoreWindow();
   if (!coreWindow)
     return IDOK;
 
   auto wText = KODI::PLATFORM::WINDOWS::ToW(lpText);
   auto wCaption = KODI::PLATFORM::WINDOWS::ToW(lpCaption);
 
-  auto handler = ref new Windows::UI::Core::DispatchedHandler([wText, wCaption]()
+  auto handler = winrt::Windows::UI::Core::DispatchedHandler([wText, wCaption]()
   {
-    auto message = ref new Platform::String(wText.c_str());
-    auto title = ref new Platform::String(wCaption.c_str());
     // Show the message dialog
-    auto msg = ref new Windows::UI::Popups::MessageDialog(message, title);
+    auto msg = winrt::Windows::UI::Popups::MessageDialog(wText, wCaption);
     // Set the command to be invoked when a user presses 'ESC'
-    msg->CancelCommandIndex = 1;
-    msg->ShowAsync();
+    msg.CancelCommandIndex(1);
+    msg.ShowAsync();
   });
 
-  if (coreWindow->Dispatcher->HasThreadAccess)
-    handler->Invoke();
+  if (coreWindow.Dispatcher().HasThreadAccess())
+    handler();
   else
-    coreWindow->Dispatcher->RunAsync(Windows::UI::Core::CoreDispatcherPriority::Normal, handler);
+    coreWindow.Dispatcher().RunAsync(winrt::Windows::UI::Core::CoreDispatcherPriority::Normal, handler);
 
   return IDOK;
 }

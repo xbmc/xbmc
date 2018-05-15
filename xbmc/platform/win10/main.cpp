@@ -1,13 +1,8 @@
 #include "pch.h"
-#include "platform/win10/Win10Main.h"
+#include "platform/win10/Win10App.h"
 
-#pragma comment(lib, "libkodi.lib")
-
-// The main function is only used to initialize our IFrameworkView class.
-[Platform::MTAThread]
-int main(Platform::Array<Platform::String^>^)
+int __stdcall WinMain(HINSTANCE, HINSTANCE, PCSTR, int)
 {
-  auto viewProvider = GetViewProvider();
-  Windows::ApplicationModel::Core::CoreApplication::Run(viewProvider);
-	return 0;
+  winrt::init_apartment();
+  winrt::Windows::ApplicationModel::Core::CoreApplication::Run(KODI::PLATFORM::WINDOWS10::App());
 }

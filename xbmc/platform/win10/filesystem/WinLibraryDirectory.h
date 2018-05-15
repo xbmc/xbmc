@@ -41,7 +41,7 @@ namespace XFILE
 
   private:
     friend CWinLibraryFile;
-    static Windows::Storage::StorageFolder^ GetRootFolder(const CURL& url);
-    static Windows::Storage::StorageFolder^ GetFolder(const CURL &url);
+    static winrt::Windows::Storage::StorageFolder GetRootFolder(const CURL& url);
+    static winrt::Windows::Storage::StorageFolder GetFolder(const CURL &url);
   };
 }

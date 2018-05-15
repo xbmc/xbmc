@@ -23,7 +23,6 @@
 
 #pragma once
 
-#include <agile.h>
 #include <string>
 #include <vector>
 
@@ -115,15 +114,10 @@ public:
   bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays) override;
 
   // CWinSystemWin10
-  HWND GetHwnd() const { return nullptr; }
   bool IsAlteringWindow() const { return m_IsAlteringWindow; }
   virtual bool DPIChanged(WORD dpi, RECT windowRect) const;
   bool IsMinimized() const { return m_bMinimized; }
   void SetMinimized(bool minimized) { m_bMinimized = minimized; }
-
-  // UWP
-  void SetCoreWindow(Windows::UI::Core::CoreWindow^ window);
-  Windows::UI::Core::CoreWindow^ GetCoreWindow() { return m_coreWindow.Get(); }
 
   bool CanDoWindowed() override;
 
@@ -178,7 +172,7 @@ protected:
   bool m_inFocus;
   bool m_bMinimized;
 
-  Platform::Agile<Windows::UI::Core::CoreWindow> m_coreWindow;
+  winrt::Windows::UI::Core::CoreWindow m_coreWindow = nullptr;
 };
 
 #pragma pack(pop)

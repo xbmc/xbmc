@@ -26,13 +26,14 @@
 #include <IPTypes.h>
 #include <string>
 #include <vector>
+#include <winrt/Windows.Networking.Connectivity.h>
 
 class CNetworkWin10;
 
 class CNetworkInterfaceWin10 : public CNetworkInterface
 {
 public:
-  CNetworkInterfaceWin10(CNetworkWin10* network, const PIP_ADAPTER_ADDRESSES adapter, Windows::Networking::Connectivity::NetworkAdapter^ winRTadapter);
+  CNetworkInterfaceWin10(CNetworkWin10* network, const PIP_ADAPTER_ADDRESSES adapter, ::IUnknown* winRTadapter);
   ~CNetworkInterfaceWin10(void);
 
   virtual std::string& GetName(void);
@@ -66,8 +67,8 @@ private:
 
   std::string m_adaptername;
   PIP_ADAPTER_ADDRESSES m_adapterAddr;
-  Windows::Networking::Connectivity::NetworkAdapter^ m_winRT;
-  Windows::Networking::Connectivity::ConnectionProfile^ m_profile;
+  winrt::Windows::Networking::Connectivity::NetworkAdapter m_winRT = nullptr;
+  winrt::Windows::Networking::Connectivity::ConnectionProfile m_profile = nullptr;
 };
 
 

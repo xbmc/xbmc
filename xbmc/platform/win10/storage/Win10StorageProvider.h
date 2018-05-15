@@ -26,7 +26,7 @@
 #include "storage/IStorageProvider.h"
 #include "utils/Job.h"
 
-class CStorageProvider : public IStorageProvider
+class CStorageProvider : public ::IStorageProvider
 {
 public:
   virtual ~CStorageProvider();
@@ -51,6 +51,6 @@ private:
   };
   static void GetDrivesByType(VECSOURCES &localDrives, Drive_Types eDriveType = ALL_DRIVES, bool bonlywithmedia = false);
 
-  Windows::Devices::Enumeration::DeviceWatcher^ m_watcher{ nullptr };
+  winrt::Windows::Devices::Enumeration::DeviceWatcher m_watcher{ nullptr };
   std::atomic<bool> m_changed;
 };

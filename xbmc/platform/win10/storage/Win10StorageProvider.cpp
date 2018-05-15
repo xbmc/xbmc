@@ -28,18 +28,27 @@
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 
-using namespace Windows::Foundation;
-using namespace Windows::Devices::Enumeration;
+#include <winrt/Windows.Devices.Enumeration.h>
+#include <winrt/Windows.Foundation.Collections.h>
+#include <winrt/Windows.Storage.h>
 
-IStorageProvider* IStorageProvider::CreateInstance()
+namespace winrt 
+{
+  using namespace Windows::Foundation;
+}
+using namespace winrt::Windows::Devices::Enumeration;
+using namespace winrt::Windows::Foundation::Collections;
+using namespace winrt::Windows::Storage;
+
+::IStorageProvider* ::IStorageProvider::CreateInstance()
 {
   return new CStorageProvider();
 }
 
 CStorageProvider::~CStorageProvider()
 {
-  if (m_watcher && m_watcher->Status == DeviceWatcherStatus::Started)
-    m_watcher->Stop();
+  if (m_watcher && m_watcher.Status() == DeviceWatcherStatus::Started)
+    m_watcher.Stop();
 }
 
 void CStorageProvider::Initialize()
@@ -53,19 +62,19 @@ void CStorageProvider::Initialize()
     CLog::Log(LOGDEBUG, "%s: No optical drive found.", __FUNCTION__);
 
   m_watcher = DeviceInformation::CreateWatcher(DeviceClass::PortableStorageDevice);
-  auto handler = [this](DeviceWatcher^, DeviceInformation^)
+  m_watcher.Added([this](auto&&, auto&&)
   {
     m_changed = true;
-  };
-  auto handler2 = [this](DeviceWatcher^, DeviceInformationUpdate^)
+  });
+  m_watcher.Removed([this](auto&&, auto&&)
   {
     m_changed = true;
-  };
-
-  m_watcher->Added += ref new TypedEventHandler<DeviceWatcher^, DeviceInformation^>(handler);
-  m_watcher->Removed += ref new TypedEventHandler<DeviceWatcher^, DeviceInformationUpdate^>(handler2);
-  m_watcher->Updated += ref new TypedEventHandler<DeviceWatcher^, DeviceInformationUpdate^>(handler2);
-  m_watcher->Start();
+  });
+  m_watcher.Updated([this](auto&&, auto&&)
+  {
+    m_changed = true;
+  });
+  m_watcher.Start();
 }
 
 void CStorageProvider::GetLocalDrives(VECSOURCES &localDrives)
@@ -77,7 +86,7 @@ void CStorageProvider::GetLocalDrives(VECSOURCES &localDrives)
   share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
   localDrives.push_back(share);
 
-  GetDrivesByType(localDrives, LOCAL_DRIVES);
+  GetDrivesByType(localDrives, LOCAL_DRIVES, true);
 }
 
 void CStorageProvider::GetRemovableDrives(VECSOURCES &removableDrives)
@@ -89,13 +98,13 @@ void CStorageProvider::GetRemovableDrives(VECSOURCES &removableDrives)
   
   try
   {
-    auto devicesView = Wait(Windows::Storage::KnownFolders::RemovableDevices->GetFoldersAsync());
-    for (unsigned i = 0; i < devicesView->Size; i++)
+    auto devicesView = Wait(winrt::Windows::Storage::KnownFolders::RemovableDevices().GetFoldersAsync());
+    for (unsigned i = 0; i < devicesView.Size(); i++)
     {
       CMediaSource source;
-      auto device = devicesView->GetAt(i);
-      source.strName = FromW(device->DisplayName->Data());
-      std::string driveLetter = FromW(device->Name->Data()).substr(0, 1);
+      auto device = devicesView.GetAt(i);
+      source.strName = FromW(device.DisplayName().c_str());
+      std::string driveLetter = FromW(device.Name().c_str()).substr(0, 1);
       std::string root = driveLetter + ":\\";
 
       // skip exiting in case if we have direct access
@@ -117,7 +126,7 @@ void CStorageProvider::GetRemovableDrives(VECSOURCES &removableDrives)
       removableDrives.push_back(source);
     }
   }
-  catch (Platform::Exception^)
+  catch (const winrt::hresult_error&)
   {
   }
 }
@@ -148,8 +157,8 @@ std::vector<std::string> CStorageProvider::GetDiskUsage()
   ULARGE_INTEGER ULTotalFree = { { 0 } };
   std::string strRet;
 
-  Platform::String^ localfolder = Windows::Storage::ApplicationData::Current->LocalFolder->Path;
-  GetDiskFreeSpaceExW(localfolder->Data(), nullptr, &ULTotal, &ULTotalFree);
+  auto localfolder = ApplicationData::Current().LocalFolder().Path();
+  GetDiskFreeSpaceExW(localfolder.c_str(), nullptr, &ULTotal, &ULTotalFree);
   strRet = FromW(StringUtils::Format(L"%s: %d MB %s", g_localizeStrings.Get(21440), (ULTotalFree.QuadPart / (1024 * 1024)), g_localizeStrings.Get(160).c_str()));
   result.push_back(strRet);
 
@@ -158,7 +167,6 @@ std::vector<std::string> CStorageProvider::GetDiskUsage()
     return result;
 
   CMediaSource share;
-  char volumeName[100];
 
   drivesBits >>= 2;       // skip A and B
   char driveLetter = 'C'; // start with C

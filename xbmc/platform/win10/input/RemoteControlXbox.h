@@ -20,6 +20,7 @@
  */
 
 #include <string>
+#include <winrt/Windows.Media.h>
 
 class CRemoteControlXbox
 {
@@ -31,14 +32,14 @@ public:
   bool IsRemoteDevice(const std::wstring &deviceId) const;
 
 private:
-  void HandleAcceleratorKey(Windows::UI::Core::CoreDispatcher^ sender, Windows::UI::Core::AcceleratorKeyEventArgs^ args);
-  void HandleMediaButton(Windows::Media::SystemMediaTransportControlsButtonPressedEventArgs^ args);
-  int32_t TranslateVirtualKey(Windows::System::VirtualKey vk);
-  int32_t TranslateMediaKey(Windows::Media::SystemMediaTransportControlsButton mk);
+  void HandleAcceleratorKey(const winrt::Windows::UI::Core::CoreDispatcher&, const winrt::Windows::UI::Core::AcceleratorKeyEventArgs&);
+  void HandleMediaButton(const winrt::Windows::Media::SystemMediaTransportControlsButtonPressedEventArgs&);
+  int32_t TranslateVirtualKey(winrt::Windows::System::VirtualKey vk);
+  int32_t TranslateMediaKey(winrt::Windows::Media::SystemMediaTransportControlsButton mk);
 
   bool m_bInitialized;
   uint32_t m_firstClickTime;
   uint32_t m_repeatCount;
-  Windows::Foundation::EventRegistrationToken m_token;
-  Windows::Foundation::EventRegistrationToken m_mediatoken;
+  winrt::event_token m_token;
+  winrt::event_token m_mediatoken;
 };

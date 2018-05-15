@@ -63,6 +63,7 @@ add_options(CXX ALL_BUILDS "/wd\"4996\"")
 add_options(CXX ALL_BUILDS "/wd\"4146\"")
 add_options(CXX ALL_BUILDS "/wd\"4251\"")
 add_options(CXX ALL_BUILDS "/wd\"4668\"")
+add_options(CXX ALL_BUILDS "/wd\"5033\"")
 set(ARCH_DEFINES -D_WINDOWS -DTARGET_WINDOWS -DTARGET_WINDOWS_STORE -DXBMC_EXPORT -DMS_UWP)
 if(NOT SDK_TARGET_ARCH STREQUAL arm)
   list(APPEND ARCH_DEFINES -D__SSE__ -D__SSE2__)
@@ -78,7 +79,7 @@ set(SYSTEM_DEFINES -DWIN32_LEAN_AND_MEAN -DNOMINMAX -DHAS_DX -D__STDC_CONSTANT_M
 list(APPEND SYSTEM_DEFINES -DHAS_WIN10_NETWORK)
 
 # The /MP option enables /FS by default.
-set(CMAKE_CXX_FLAGS "/MP ${CMAKE_CXX_FLAGS} /ZW /EHsc /await")
+set(CMAKE_CXX_FLAGS "/MP ${CMAKE_CXX_FLAGS} /EHsc /await /std:c++latest")
 # Google Test needs to use shared version of runtime libraries
 set(gtest_force_shared_crt ON CACHE STRING "" FORCE)
 
@@ -90,20 +91,10 @@ set(gtest_force_shared_crt ON CACHE STRING "" FORCE)
 link_directories(${MINGW_LIBS_DIR}/lib
                  ${DEPENDENCIES_DIR}/lib)
 
-list(APPEND DEPLIBS d3d11.lib WS2_32.lib dxguid.lib dloadhelper.lib)
-if(ARCH STREQUAL win32 OR ARCH STREQUAL x64)
-  list(APPEND DEPLIBS DInput8.lib DSound.lib winmm.lib Mpr.lib Iphlpapi.lib PowrProf.lib setupapi.lib dwmapi.lib)
-endif()
-# NODEFAULTLIB option
+list(APPEND DEPLIBS d3d11.lib WS2_32.lib dxguid.lib dloadhelper.lib WindowsApp.lib)
 
-set(_nodefaultlibs_RELEASE libcmt)
-set(_nodefaultlibs_DEBUG libcmt msvcrt)
-foreach(_lib ${_nodefaultlibs_RELEASE})
-  set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} /NODEFAULTLIB:\"${_lib}\"")
-endforeach()
-foreach(_lib ${_nodefaultlibs_DEBUG})
-  set(CMAKE_EXE_LINKER_FLAGS_DEBUG "${CMAKE_EXE_LINKER_FLAGS_DEBUG} /NODEFAULTLIB:\"${_lib}\"")
-endforeach()
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /WINMD:NO")
+set(CMAKE_EXE_LINKER_FLAGS_DEBUG "${CMAKE_EXE_LINKER_FLAGS_DEBUG} /NODEFAULTLIB:msvcrt /DEBUG:FASTLINK /OPT:NOREF /OPT:NOICF")
 
 # Make the Release version create a PDB
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /Zi")
@@ -117,13 +108,6 @@ set(CMAKE_STATIC_LINKER_FLAGS "${CMAKE_STATIC_LINKER_FLAGS} /ignore:4264")
 
 if(CMAKE_GENERATOR MATCHES "Visual Studio")
   set_property(GLOBAL PROPERTY USE_FOLDERS ON)
-
-  # Generate a batch file that opens Visual Studio with the necessary env variables set.
-  file(WRITE ${CMAKE_BINARY_DIR}/kodi-sln.bat
-             "@echo off\n"
-             "set KODI_HOME=%~dp0\n"
-             "set PATH=%~dp0\\system\n"
-             "start %~dp0\\${PROJECT_NAME}.sln")
 endif()
 
 # -------- Build options ---------

@@ -46,10 +46,13 @@
 #include <VersionHelpers.h>
 
 #ifdef TARGET_WINDOWS_STORE
-using namespace Windows::ApplicationModel;
-using namespace Windows::Security::ExchangeActiveSyncProvisioning;
-using namespace Windows::System;
-using namespace Windows::System::Profile;
+#include <winrt/Windows.Security.ExchangeActiveSyncProvisioning.h>
+#include <winrt/Windows.System.Profile.h>
+
+using namespace winrt::Windows::ApplicationModel;
+using namespace winrt::Windows::Security::ExchangeActiveSyncProvisioning;
+using namespace winrt::Windows::System;
+using namespace winrt::Windows::System::Profile;
 #endif
 #include <wincrypt.h>
 #include "platform/win32/CharsetConverter.h"
@@ -532,9 +535,9 @@ std::string CSysInfo::GetKernelName(bool emptyIfUnknown /*= false*/)
     if (sysGetVersionExWByRef(osvi) && osvi.dwPlatformId == VER_PLATFORM_WIN32_NT)
       kernelName = "Windows NT";
 #elif defined(TARGET_WINDOWS_STORE)
-    auto e = ref new EasClientDeviceInformation();
-    auto os = e->OperatingSystem;
-    g_charsetConverter.wToUTF8(std::wstring(os->Data()), kernelName);
+    auto e = EasClientDeviceInformation();
+    auto os = e.OperatingSystem();
+    g_charsetConverter.wToUTF8(std::wstring(os.c_str()), kernelName);
 #elif defined(TARGET_POSIX)
     struct utsname un;
     if (uname(&un) == 0)
@@ -563,9 +566,9 @@ std::string CSysInfo::GetKernelVersionFull(void)
     kernelVersionFull = StringUtils::Format("%d.%d.%d", osvi.dwMajorVersion, osvi.dwMinorVersion, osvi.dwBuildNumber);
 #elif  defined(TARGET_WINDOWS_STORE)
   // get the system version number
-  auto sv = AnalyticsInfo::VersionInfo->DeviceFamilyVersion;
+  auto sv = AnalyticsInfo::VersionInfo().DeviceFamilyVersion();
   wchar_t* end;
-  unsigned long long  v = wcstoull(sv->Data(), &end, 10);
+  unsigned long long  v = wcstoull(sv.c_str(), &end, 10);
   unsigned long long v1 = (v & 0xFFFF000000000000L) >> 48;
   unsigned long long v2 = (v & 0x0000FFFF00000000L) >> 32;
   unsigned long long v3 = (v & 0x00000000FFFF0000L) >> 16;
@@ -770,9 +773,9 @@ std::string CSysInfo::GetManufacturerName(void)
 #elif defined(TARGET_DARWIN)
     manufName = CDarwinUtils::GetManufacturer();
 #elif defined(TARGET_WINDOWS_STORE)
-    EasClientDeviceInformation^ eas = ref new EasClientDeviceInformation();
-    Platform::String^ manufacturer = eas->SystemManufacturer;
-    g_charsetConverter.wToUTF8(std::wstring(manufacturer->Data()), manufName);
+    auto eas = EasClientDeviceInformation();
+    auto manufacturer = eas.SystemManufacturer();
+    g_charsetConverter.wToUTF8(std::wstring(manufacturer.c_str()), manufName);
 #elif defined(TARGET_WINDOWS)
     // We just don't care, might be useful on embedded
 #endif
@@ -803,9 +806,9 @@ std::string CSysInfo::GetModelName(void)
         modelName.assign(buf.get(), nameLen - 1); // assign exactly 'nameLen-1' characters to 'modelName'
     }
 #elif defined(TARGET_WINDOWS_STORE)
-    EasClientDeviceInformation^ eas = ref new EasClientDeviceInformation();
-    Platform::String^ manufacturer = eas->SystemProductName;
-    g_charsetConverter.wToUTF8(std::wstring(manufacturer->Data()), modelName);
+    auto eas = EasClientDeviceInformation();
+    auto manufacturer = eas.SystemProductName();
+    g_charsetConverter.wToUTF8(std::wstring(manufacturer.c_str()), modelName);
 #elif defined(TARGET_WINDOWS)
     // We just don't care, might be useful on embedded
 #endif
@@ -879,8 +882,8 @@ int CSysInfo::GetKernelBitness(void)
   if (kernelBitness == -1)
   {
 #ifdef TARGET_WINDOWS_STORE
-    Package^ package = Package::Current;
-    auto arch = package->Id->Architecture;
+    Package package = Package::Current();
+    auto arch = package.Id().Architecture();
     switch (arch)
     {
     case ProcessorArchitecture::X86:
@@ -1399,16 +1402,16 @@ std::string CSysInfo::GetPrivacyPolicy()
 CSysInfo::WindowsDeviceFamily CSysInfo::GetWindowsDeviceFamily()
 {
 #ifdef TARGET_WINDOWS_STORE
-  auto familyName = Windows::System::Profile::AnalyticsInfo::VersionInfo->DeviceFamily;
-  if (familyName->Equals("Windows.Desktop"))
+  auto familyName = AnalyticsInfo::VersionInfo().DeviceFamily();
+  if (familyName == L"Windows.Desktop")
     return WindowsDeviceFamily::Desktop;
-  else if (familyName->Equals("Windows.Mobile"))
+  else if (familyName == L"Windows.Mobile")
     return WindowsDeviceFamily::Mobile;
-  else if (familyName->Equals("Windows.Universal"))
+  else if (familyName == L"Windows.Universal")
     return WindowsDeviceFamily::IoT;
-  else if (familyName->Equals("Windows.Team"))
+  else if (familyName == L"Windows.Team")
     return WindowsDeviceFamily::Surface;
-  else if (familyName->Equals("Windows.Xbox"))
+  else if (familyName == L"Windows.Xbox")
     return WindowsDeviceFamily::Xbox;
   else
     return WindowsDeviceFamily::Other;

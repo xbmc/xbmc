@@ -28,7 +28,6 @@
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 
-#include <collection.h>
 #include <errno.h>
 #include <iphlpapi.h>
 #include <ppltasks.h>
@@ -69,8 +68,8 @@ typedef struct icmp_echo_reply {
 #endif //! IP_STATUS_BASE
 #include <Icmpapi.h>
 
-using namespace Windows::Networking;
-using namespace Windows::Networking::Connectivity;
+using namespace winrt::Windows::Networking;
+using namespace winrt::Windows::Networking::Connectivity;
 using namespace KODI::PLATFORM::WINDOWS;
 
 std::string GetIpStr(struct sockaddr* sa)
@@ -130,12 +129,12 @@ std::string GetMaskByPrefix(ADDRESS_FAMILY family, uint8_t prefix)
   return result;
 }
 
-CNetworkInterfaceWin10::CNetworkInterfaceWin10(CNetworkWin10 * network, const PIP_ADAPTER_ADDRESSES address, NetworkAdapter^ winRTadapter)
+CNetworkInterfaceWin10::CNetworkInterfaceWin10(CNetworkWin10 * network, const PIP_ADAPTER_ADDRESSES address, IUnknown* winRTadapter)
 {
   m_network = network;
   m_adapterAddr = address;
   m_adaptername = address->AdapterName;
-  m_winRT = winRTadapter;
+  winrt::attach_abi(m_winRT, winRTadapter);
   m_profile = nullptr;
 }
 
@@ -303,18 +302,18 @@ std::string CNetworkInterfaceWin10::GetCurrentWirelessEssId(void)
 
   if (IsConnected() && !m_profile)
   {
-    m_profile = Wait(m_winRT->GetConnectedProfileAsync());
+    m_profile = Wait(m_winRT.GetConnectedProfileAsync());
   }
 
   if (!m_profile)
     return result;
 
-  if (!m_profile->IsWlanConnectionProfile)
+  if (!m_profile.IsWlanConnectionProfile())
     return result;
 
-  auto ssid = m_profile->WlanConnectionProfileDetails->GetConnectedSsid();
-  if (ssid)
-    result = FromW(ssid->Data());
+  auto ssid = m_profile.WlanConnectionProfileDetails().GetConnectedSsid();
+  if (!ssid.empty())
+    result = FromW(ssid.c_str());
 
   return result;
 }
@@ -342,7 +341,7 @@ CNetworkWin10::CNetworkWin10(CSettings &settings)
   , m_adapterAddresses(nullptr)
 {
   queryInterfaceList();
-  NetworkInformation::NetworkStatusChanged += ref new NetworkStatusChangedEventHandler([this](Platform::Object^) {
+  NetworkInformation::NetworkStatusChanged([this](auto&&) {
     CSingleLock lock(m_critSection);
     queryInterfaceList();
   });
@@ -372,7 +371,7 @@ std::vector<CNetworkInterface*>& CNetworkWin10::GetInterfaceList(void)
   return m_interfaces;
 }
 
-CNetworkInterface * CNetworkWin10::GetFirstConnectedInterface()
+CNetworkInterface* CNetworkWin10::GetFirstConnectedInterface()
 {
   CSingleLock lock(m_critSection);
   for (CNetworkInterface* intf : m_interfaces)
@@ -389,23 +388,42 @@ void CNetworkWin10::queryInterfaceList()
 {
   CleanInterfaceList();
 
-  // collect all adapters from WinRT
-  std::map<Platform::Guid, NetworkAdapter^> adapters;
-  auto connectionProfiles = NetworkInformation::GetConnectionProfiles();
-  for (auto it = begin(connectionProfiles); it != end(connectionProfiles); ++it)
+  struct ci_less
   {
-    auto profile = *it;
-    if (profile && profile->NetworkAdapter)
+    // case-independent (ci) compare_less
+    struct nocase_compare
     {
-      auto adapter = profile->NetworkAdapter;
-      adapters[adapter->NetworkAdapterId] = adapter;
+      bool operator() (const unsigned int& c1, const unsigned int& c2) const {
+        return tolower(c1) < tolower(c2);
+      }
+    };
+    bool operator()(const std::wstring & s1, const std::wstring & s2) const {
+      return std::lexicographical_compare
+      (s1.begin(), s1.end(),
+       s2.begin(), s2.end(),
+       nocase_compare());
+    }
+  };
+
+  // collect all adapters from WinRT
+  std::map<std::wstring, IUnknown*, ci_less> adapters;
+  for (auto& profile : NetworkInformation::GetConnectionProfiles())
+  {
+    if (profile && profile.NetworkAdapter())
+    {
+      auto adapter = profile.NetworkAdapter();
+
+      wchar_t* guidStr = nullptr;
+      StringFromIID(adapter.NetworkAdapterId(), &guidStr);
+      adapters[guidStr] = winrt::detach_abi(adapter);
+
+      CoTaskMemFree(guidStr);
     }
   }
 
   const ULONG flags = GAA_FLAG_INCLUDE_GATEWAYS | GAA_FLAG_INCLUDE_PREFIX;
   ULONG ulOutBufLen;
-  GUID rawguid;
-  NetworkAdapter^ winRTAdapter = nullptr;
+  NetworkAdapter winRTAdapter = nullptr;
 
   if (GetAdaptersAddresses(AF_INET, flags, nullptr, nullptr, &ulOutBufLen) != ERROR_BUFFER_OVERFLOW)
     return;
@@ -422,13 +440,7 @@ void CNetworkWin10::queryInterfaceList()
         continue;
 
       std::wstring name = ToW(adapter->AdapterName);
-      if (SUCCEEDED(IIDFromString(name.c_str(), &rawguid)))
-      {
-        Platform::Guid guid(rawguid);
-        winRTAdapter = adapters[guid];
-      }
-
-      m_interfaces.push_back(new CNetworkInterfaceWin10(this, adapter, winRTAdapter));
+      m_interfaces.push_back(new CNetworkInterfaceWin10(this, adapter, adapters[name]));
       winRTAdapter = nullptr;
     }
   }

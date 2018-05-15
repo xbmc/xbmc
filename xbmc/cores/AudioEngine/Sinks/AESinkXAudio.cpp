@@ -31,7 +31,6 @@
 #include "utils/TimeUtils.h"
 
 #include <algorithm>
-#include <collection.h>
 #include <ksmedia.h>
 #include <mfapi.h>
 #include <mmdeviceapi.h>
