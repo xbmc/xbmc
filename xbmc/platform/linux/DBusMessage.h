@@ -78,6 +78,8 @@ public:
     AppendArguments(args...);
   }
 
+  DBusMessageIter * GetArgumentIter();
+
   /**
    * Retrieve simple arguments from DBus reply message
    *

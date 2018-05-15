@@ -23,6 +23,7 @@
 #include "UDevProvider.h"
 #ifdef HAS_DBUS
 #include "UDisksProvider.h"
+#include "UDisks2Provider.h"
 #endif
 #include "PosixMountProvider.h"
 
@@ -36,7 +37,9 @@ CLinuxStorageProvider::CLinuxStorageProvider()
   m_instance = NULL;
 
 #ifdef HAS_DBUS
-  if (CUDisksProvider::HasUDisks())
+  if (CUDisks2Provider::HasUDisks2())
+    m_instance = new CUDisks2Provider();
+  else if (CUDisksProvider::HasUDisks())
     m_instance = new CUDisksProvider();
 #endif
 #ifdef HAVE_LIBUDEV
