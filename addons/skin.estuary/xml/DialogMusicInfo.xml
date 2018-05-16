@@ -337,11 +337,12 @@
 						<onup>130</onup>
 						<onleft>12</onleft>
 						<onright>120</onright>
+						<onclick condition="String.IsEmpty(ListItem.DBID)">PlayMedia($INFO[ListItem.FilenameAndPath])</onclick>
 						<onclick condition="System.HasAddon(script.playalbum) + String.IsEqual(ListItem.DBType,album)">RunScript(script.playalbum,albumid=$INFO[ListItem.DBID])</onclick>
 						<onclick condition="System.HasAddon(script.playalbum) + String.IsEqual(ListItem.DBType,song)">RunScript(script.playalbum,songid=$INFO[ListItem.DBID])</onclick>
 						<onclick condition="System.HasAddon(script.playalbum)">Action(close)</onclick>
-						<onclick condition="!System.HasAddon(script.playalbum)">InstallAddon(script.playalbum)</onclick>
-						<visible>[String.IsEqual(ListItem.DBType,album) | String.IsEqual(ListItem.DBType,song)] + !String.IsEmpty(ListItem.Dbid)</visible>
+						<onclick condition="!System.HasAddon(script.playalbum) + !String.IsEmpty(ListItem.DBID)">InstallAddon(script.playalbum)</onclick>
+						<visible>!String.IsEqual(ListItem.DBType,artist)</visible>
 					</control>
 					<control type="group" id="420">
 						<width>262</width>
@@ -352,7 +353,7 @@
 							</include>
 							<label>$LOCALIZE[31033]</label>
 							<onup>130</onup>
-							<onleft>12</onleft>
+							<onleft>155</onleft>
 							<onright>120</onright>
 							<onup condition="Integer.IsGreater(Container(5000).CurrentItem,3)">210</onup>
 							<onup condition="!Integer.IsGreater(Container(5000).CurrentItem,3)">138</onup>
