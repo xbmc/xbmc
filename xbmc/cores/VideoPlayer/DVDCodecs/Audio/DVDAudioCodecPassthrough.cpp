@@ -50,25 +50,25 @@ bool CDVDAudioCodecPassthrough::Open(CDVDStreamInfo &hints, CDVDCodecOptions &op
   switch (m_format.m_streamInfo.m_type)
   {
     case CAEStreamInfo::STREAM_TYPE_AC3:
-      m_processInfo.SetAudioDecoderName("PT_AC3");
+      m_codecName = "pt-ac3";
       break;
 
     case CAEStreamInfo::STREAM_TYPE_EAC3:
-      m_processInfo.SetAudioDecoderName("PT_EAC3");
+      m_codecName = "pt-eac3";
       break;
 
     case CAEStreamInfo::STREAM_TYPE_DTSHD:
-      m_processInfo.SetAudioDecoderName("PT_DTSHD");
+      m_codecName = "pt-dtshd";
       break;
 
     case CAEStreamInfo::STREAM_TYPE_DTSHD_CORE:
-      m_processInfo.SetAudioDecoderName("PT_DTS");
+      m_codecName = "pt-dts";
       m_parser.SetCoreOnly(true);
       break;
 
     case CAEStreamInfo::STREAM_TYPE_TRUEHD:
       m_trueHDBuffer.reset(new uint8_t[TRUEHD_BUF_SIZE]);
-      m_processInfo.SetAudioDecoderName("PT_TRUEHD");
+      m_codecName = "pt-truehd";
       break;
 
     default:

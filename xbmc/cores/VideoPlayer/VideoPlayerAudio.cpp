@@ -528,6 +528,7 @@ bool CVideoPlayerAudio::ProcessDecoderOutput(DVDAudioFrame &audioframe)
       m_processInfo.SetAudioChannels(audioframe.format.m_channelLayout);
       m_processInfo.SetAudioSampleRate(audioframe.format.m_sampleRate);
       m_processInfo.SetAudioBitsPerSample(audioframe.bits_per_sample);
+      m_processInfo.SetAudioDecoderName(m_pAudioCodec->GetName());
       m_messageParent.Put(new CDVDMsg(CDVDMsg::PLAYER_AVCHANGE));
     }
   }

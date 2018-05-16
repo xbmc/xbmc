@@ -296,15 +296,19 @@ PROCESSDECODER:
   }
 
   CLog::Log(LOGINFO, "CDVDAudioCodecAndroidMediaCodec Open Android MediaCodec %s", m_formatname.c_str());
-  if (!m_decryptCodec)
-    m_processInfo.SetAudioDecoderName(m_formatname.c_str());
-
 
   m_opened = true;
   m_resettable = false;
   m_currentPts = DVD_NOPTS_VALUE;
   return m_opened;
 }
+
+std::string CDVDAudioCodecAndroidMediaCodec::GetName()
+{
+  if (m_decryptCodec)
+    return "amc-raw/" + m_decryptCodec->GetName();
+  return m_formatname;
+};
 
 void CDVDAudioCodecAndroidMediaCodec::Dispose()
 {
