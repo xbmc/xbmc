@@ -67,5 +67,6 @@ protected:
   bool m_eof;
   int m_channels;
   uint64_t m_layout;
+  std::string m_codecDisplayName;
 };
 

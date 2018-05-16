@@ -133,7 +133,7 @@ bool CDVDAudioCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   m_iSampleFormat = AV_SAMPLE_FMT_NONE;
   m_matrixEncoding = AV_MATRIX_ENCODING_NONE;
 
-  m_processInfo.SetAudioDecoderName(m_pCodecContext->codec->name);
+  m_codecDisplayName = "ff-" + std::string(m_pCodecContext->codec->name);
   CLog::Log(LOGNOTICE,"CDVDAudioCodecFFmpeg::Open() Successful opened audio decoder %s", m_pCodecContext->codec->name);
   return true;
 }
@@ -246,6 +246,12 @@ int CDVDAudioCodecFFmpeg::GetData(uint8_t** dst)
     int planes = av_sample_fmt_is_planar(m_pCodecContext->sample_fmt) ? m_pFrame->channels : 1;
     for (int i=0; i<planes; i++)
       dst[i] = m_pFrame->extended_data[i];
+
+    if (!m_codecDisplayName.empty())
+    {
+      m_processInfo.SetAudioDecoderName(m_codecDisplayName);
+      m_codecDisplayName.clear();
+    }
 
     return m_pFrame->nb_samples * m_pFrame->channels *
            av_get_bytes_per_sample(m_pCodecContext->sample_fmt);

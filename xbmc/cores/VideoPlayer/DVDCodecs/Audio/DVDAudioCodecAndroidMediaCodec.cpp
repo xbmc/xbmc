@@ -296,9 +296,6 @@ PROCESSDECODER:
   }
 
   CLog::Log(LOGINFO, "CDVDAudioCodecAndroidMediaCodec Open Android MediaCodec %s", m_formatname.c_str());
-  if (!m_decryptCodec)
-    m_processInfo.SetAudioDecoderName(m_formatname.c_str());
-
 
   m_opened = true;
   m_resettable = false;
@@ -576,6 +573,11 @@ void CDVDAudioCodecAndroidMediaCodec::GetData(DVDAudioFrame &frame)
     frame.duration = 0.0;
   if (frame.nb_frames > 0 && g_advancedSettings.CanLogComponent(LOGAUDIO))
     CLog::Log(LOGERROR, "MediaCodecAudio::GetData: frames:%d pts: %0.4f", frame.nb_frames, frame.pts);
+  if (!m_formatname.empty())
+  {
+    m_processInfo.SetAudioDecoderName(m_formatname.c_str());
+    m_formatname.clear();
+  }
 }
 
 int CDVDAudioCodecAndroidMediaCodec::GetData(uint8_t** dst)

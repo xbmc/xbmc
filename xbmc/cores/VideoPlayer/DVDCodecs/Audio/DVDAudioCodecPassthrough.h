@@ -62,5 +62,6 @@ private:
   // TrueHD specifics
   std::unique_ptr<uint8_t[]> m_trueHDBuffer;
   unsigned int m_trueHDoffset = 0;
+  std::string m_codecDisplayName;
 };
 
