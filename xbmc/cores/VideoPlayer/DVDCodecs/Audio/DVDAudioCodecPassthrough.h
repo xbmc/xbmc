@@ -43,7 +43,7 @@ public:
   void Reset() override;
   AEAudioFormat GetFormat() override { return m_format; }
   bool NeedPassthrough() override { return true; }
-  const char* GetName() override { return "passthrough"; }
+  std::string GetName() override { return m_codecName; }
   int GetBufferSize() override;
 
 private:
@@ -58,6 +58,7 @@ private:
   unsigned int m_backlogSize = 0;
   double m_currentPts = DVD_NOPTS_VALUE;
   double m_nextPts = DVD_NOPTS_VALUE;
+  std::string m_codecName;
 
   // TrueHD specifics
   std::unique_ptr<uint8_t[]> m_trueHDBuffer;

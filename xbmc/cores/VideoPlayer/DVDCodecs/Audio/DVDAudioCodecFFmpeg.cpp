@@ -133,8 +133,10 @@ bool CDVDAudioCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   m_iSampleFormat = AV_SAMPLE_FMT_NONE;
   m_matrixEncoding = AV_MATRIX_ENCODING_NONE;
 
-  m_processInfo.SetAudioDecoderName(m_pCodecContext->codec->name);
+  m_codecName = "ff-" + std::string(m_pCodecContext->codec->name);
+
   CLog::Log(LOGNOTICE,"CDVDAudioCodecFFmpeg::Open() Successful opened audio decoder %s", m_pCodecContext->codec->name);
+
   return true;
 }
 
