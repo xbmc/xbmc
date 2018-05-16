@@ -50,25 +50,25 @@ bool CDVDAudioCodecPassthrough::Open(CDVDStreamInfo &hints, CDVDCodecOptions &op
   switch (m_format.m_streamInfo.m_type)
   {
     case CAEStreamInfo::STREAM_TYPE_AC3:
-      m_processInfo.SetAudioDecoderName("PT_AC3");
+      m_codecDisplayName = "PT_AC3";
       break;
 
     case CAEStreamInfo::STREAM_TYPE_EAC3:
-      m_processInfo.SetAudioDecoderName("PT_EAC3");
+      m_codecDisplayName = "PT_EAC3";
       break;
 
     case CAEStreamInfo::STREAM_TYPE_DTSHD:
-      m_processInfo.SetAudioDecoderName("PT_DTSHD");
+      m_codecDisplayName = "PT_DTSHD";
       break;
 
     case CAEStreamInfo::STREAM_TYPE_DTSHD_CORE:
-      m_processInfo.SetAudioDecoderName("PT_DTS");
+      m_codecDisplayName = "PT_DTS";
       m_parser.SetCoreOnly(true);
       break;
 
     case CAEStreamInfo::STREAM_TYPE_TRUEHD:
       m_trueHDBuffer.reset(new uint8_t[TRUEHD_BUF_SIZE]);
-      m_processInfo.SetAudioDecoderName("PT_TRUEHD");
+      m_codecDisplayName = "PT_TRUEHD";
       break;
 
     default:
@@ -223,6 +223,12 @@ void CDVDAudioCodecPassthrough::GetData(DVDAudioFrame &frame)
   frame.duration = DVD_MSEC_TO_TIME(frame.format.m_streamInfo.GetDuration());
   frame.pts = m_currentPts;
   m_currentPts = DVD_NOPTS_VALUE;
+
+  if (!m_codecDisplayName.empty())
+  {
+    m_processInfo.SetAudioDecoderName(m_codecDisplayName);
+    m_codecDisplayName.clear();
+  }
 }
 
 int CDVDAudioCodecPassthrough::GetData(uint8_t** dst)
