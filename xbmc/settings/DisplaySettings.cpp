@@ -666,7 +666,7 @@ void CDisplaySettings::SettingOptionsModesFiller(std::shared_ptr<const CSetting>
   RESOLUTION res = CDisplaySettings::GetInstance().GetDisplayResolution();
   RESOLUTION_INFO info = CDisplaySettings::GetInstance().GetResolutionInfo(res);
 
-  for (auto index = (unsigned int)RES_DESKTOP; index < CDisplaySettings::GetInstance().ResolutionInfoSize(); ++index)
+  for (auto index = (unsigned int)RES_CUSTOM; index < CDisplaySettings::GetInstance().ResolutionInfoSize(); ++index)
   {
     const auto mode = CDisplaySettings::GetInstance().GetResolutionInfo(index);
 
