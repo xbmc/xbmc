@@ -40,7 +40,6 @@ public:
   void Dispose() override;
   bool AddData(const DemuxPacket &packet) override;
   void GetData(DVDAudioFrame &frame) override;
-  int GetData(uint8_t** dst) override;
   void Reset() override;
   AEAudioFormat GetFormat() override { return m_format; }
   bool NeedPassthrough() override { return true; }
@@ -48,6 +47,7 @@ public:
   int GetBufferSize() override;
 
 private:
+  int GetData(uint8_t** dst);
   CAEStreamParser m_parser;
   uint8_t* m_buffer = nullptr;
   unsigned int m_bufferSize = 0;
