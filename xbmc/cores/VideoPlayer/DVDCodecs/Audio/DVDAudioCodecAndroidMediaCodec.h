@@ -48,13 +48,13 @@ public:
 
   // required overrides
 public:
-  virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options) override;
-  virtual void Dispose() override;
-  virtual bool AddData(const DemuxPacket &packet) override;
-  virtual void GetData(DVDAudioFrame &frame) override;
-  virtual void Reset() override;
-  virtual AEAudioFormat GetFormat() override { return m_format; }
-  virtual const char* GetName() override { return "mediacodec"; }
+  bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options) override;
+  void Dispose() override;
+  bool AddData(const DemuxPacket &packet) override;
+  void GetData(DVDAudioFrame &frame) override;
+  void Reset() override;
+  AEAudioFormat GetFormat() override;
+  const char* GetName() override { return "mediacodec"; }
 
 protected:
   int GetData(uint8_t** dst);
@@ -72,7 +72,7 @@ protected:
   std::string m_mime;
   std::string m_codecname;
   std::string m_formatname;
-  bool m_opened;
+  bool m_opened, m_resettable;
   int m_samplerate;
   int m_channels;
   uint8_t* m_buffer;
@@ -83,4 +83,5 @@ protected:
 
   std::shared_ptr<CJNIMediaCodec> m_codec;
   CJNIMediaCrypto *m_crypto;
+  std::shared_ptr<CDVDAudioCodec> m_decryptCodec;
 };

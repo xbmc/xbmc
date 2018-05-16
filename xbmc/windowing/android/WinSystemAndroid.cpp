@@ -43,6 +43,7 @@
 #include "platform/android/powermanagement/AndroidPowerSyscall.h"
 #include "addons/interfaces/platform/android/System.h"
 #include "platform/android/drm/MediaDrmCryptoSession.h"
+#include <androidjni/MediaCodecList.h>
 
 #include <EGL/egl.h>
 #include <EGL/eglplatform.h>
@@ -236,6 +237,17 @@ void CWinSystemAndroid::UpdateResolutions()
     RESOLUTION_INFO desktop = CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP);
     CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP) = CDisplaySettings::GetInstance().GetResolutionInfo(ResDesktop);
     CDisplaySettings::GetInstance().GetResolutionInfo(ResDesktop) = desktop;
+  }
+
+  unsigned int num_codecs = CJNIMediaCodecList::getCodecCount();
+  for (int i = 0; i < num_codecs; i++)
+  {
+    CJNIMediaCodecInfo codec_info = CJNIMediaCodecList::getCodecInfoAt(i);
+    if (codec_info.isEncoder())
+      continue;
+
+    std::string codecname = codec_info.getName();
+    CLog::Log(LOGNOTICE, "Mediacodec: %s", codecname.c_str());
   }
 }
 
