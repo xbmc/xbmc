@@ -255,6 +255,7 @@ void CAdvancedSettings::Initialize()
 
   m_remoteDelay = 3;
   m_controllerDeadzone = 0.2f;
+  m_bScanIRServer = true;
 
   m_playlistAsFolders = true;
   m_detectAsUdf = false;
@@ -1011,6 +1012,8 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
 
   XMLUtils::GetInt(pRootElement, "remotedelay", m_remoteDelay, 0, 20);
   XMLUtils::GetFloat(pRootElement, "controllerdeadzone", m_controllerDeadzone, 0.0f, 1.0f);
+  XMLUtils::GetBoolean(pRootElement, "scanirserver", m_bScanIRServer);
+
   XMLUtils::GetUInt(pRootElement, "fanartres", m_fanartRes, 0, 9999);
   XMLUtils::GetUInt(pRootElement, "imageres", m_imageRes, 0, 9999);
   if (XMLUtils::GetString(pRootElement, "imagescalingalgorithm", tmp))

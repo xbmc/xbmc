@@ -80,8 +80,11 @@ CWinSystemWin32::CWinSystemWin32()
   CAESinkDirectSound::Register();
   CAESinkWASAPI::Register();
   CWin32PowerSyscall::Register();
-  m_irss.reset(new CIRServerSuite());
-  m_irss->Initialize();
+  if (g_advancedSettings.m_bScanIRServer)
+  {
+    m_irss.reset(new CIRServerSuite());
+    m_irss->Initialize();
+  }
 }
 
 CWinSystemWin32::~CWinSystemWin32()
