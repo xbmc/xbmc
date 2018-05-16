@@ -483,7 +483,7 @@ int CreateTCPServerSocket(const int port, const bool bindLocal, const int backlo
 #endif
   
   // first try ipv6
-  if ((sock = socket(PF_INET6, SOCK_STREAM, IPPROTO_TCP)) >= 0)
+  if (!bindLocal && (sock = socket(PF_INET6, SOCK_STREAM, IPPROTO_TCP)) >= 0)
   {
     // in case we're on ipv6, make sure the socket is dual stacked
     if (setsockopt(sock, IPPROTO_IPV6, IPV6_V6ONLY, (const char*)&no, sizeof(no)) < 0)
@@ -503,10 +503,7 @@ int CreateTCPServerSocket(const int port, const bool bindLocal, const int backlo
     addr.ss_family = AF_INET6;
     s6 = (struct sockaddr_in6 *) &addr;
     s6->sin6_port = htons(port);
-    if (bindLocal)
-      s6->sin6_addr = in6addr_loopback;
-    else
-      s6->sin6_addr = in6addr_any;
+    s6->sin6_addr = in6addr_any;
 
     if (bind( sock, (struct sockaddr *) &addr, sizeof(struct sockaddr_in6)) < 0)
     {
