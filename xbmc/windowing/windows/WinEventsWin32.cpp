@@ -302,12 +302,12 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
           appPort->SetRenderGUI(wParam != 0);
         if (g_application.GetRenderGUI() != active)
           DX::Windowing()->NotifyAppActiveChange(g_application.GetRenderGUI());
-        CLog::LogF(LOGDEBUG, "WM_SHOWWINDOW -> window is %s", wParam != 0 ? "shown" : "hidden");
+        CLog::LogFC(LOGDEBUG, LOGWINDOWING, "WM_SHOWWINDOW -> window is %s", wParam != 0 ? "shown" : "hidden");
       }
       break;
     case WM_ACTIVATE:
       {
-        CLog::LogF(LOGDEBUG, "WM_ACTIVATE -> window is %s", LOWORD(wParam) != WA_INACTIVE ? "active" : "inactive");
+        CLog::LogFC(LOGDEBUG, LOGWINDOWING, "WM_ACTIVATE -> window is %s", LOWORD(wParam) != WA_INACTIVE ? "active" : "inactive");
         bool active = g_application.GetRenderGUI();
         if (HIWORD(wParam))
         {
@@ -333,20 +333,20 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
         }
         if (g_application.GetRenderGUI() != active)
           DX::Windowing()->NotifyAppActiveChange(g_application.GetRenderGUI());
-        CLog::LogF(LOGDEBUG, "window is %s", g_application.GetRenderGUI() ? "active" : "inactive");
+        CLog::LogFC(LOGDEBUG, LOGWINDOWING, "window is %s", g_application.GetRenderGUI() ? "active" : "inactive");
       }
       break;
     case WM_SETFOCUS:
     case WM_KILLFOCUS:
       g_application.m_AppFocused = uMsg == WM_SETFOCUS;
-      CLog::LogF(LOGDEBUG, "window focus %s", g_application.m_AppFocused ? "set" : "lost");
+      CLog::LogFC(LOGDEBUG, LOGWINDOWING, "window focus %s", g_application.m_AppFocused ? "set" : "lost");
 
       DX::Windowing()->NotifyAppFocusChange(g_application.m_AppFocused);
       if (uMsg == WM_KILLFOCUS)
       {
         std::string procfile;
         if (CWIN32Util::GetFocussedProcess(procfile))
-          CLog::LogF(LOGDEBUG, "Focus switched to process %s", procfile);
+          CLog::LogFC(LOGDEBUG, LOGWINDOWING, "Focus switched to process %s", procfile);
       }
       break;
     /* needs to be reviewed after frodo. we reset the system idle timer
@@ -457,7 +457,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
     {
       const unsigned int appcmd = GET_APPCOMMAND_LPARAM(lParam);
 
-      CLog::LogF(LOGDEBUG, "APPCOMMAND %d", appcmd);
+      CLog::LogFC(LOGDEBUG, LOGWINDOWING, "APPCOMMAND %d", appcmd);
 
       // Reset the screen saver
       g_application.ResetScreenSaver();
@@ -474,12 +474,12 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       CAction appcmdaction = CServiceBroker::GetInputManager().GetAction(iWin, key);
       if (appcmdaction.GetID())
       {
-        CLog::LogF(LOGDEBUG, "appcommand %d, action %s", appcmd, appcmdaction.GetName().c_str());
+        CLog::LogFC(LOGDEBUG, LOGWINDOWING, "appcommand %d, action %s", appcmd, appcmdaction.GetName().c_str());
         CServiceBroker::GetInputManager().QueueAction(appcmdaction);
         return true;
       }
 
-      CLog::LogF(LOGDEBUG, "unknown appcommand %d", appcmd);
+      CLog::LogFC(LOGDEBUG, LOGWINDOWING, "unknown appcommand %d", appcmd);
       return DefWindowProc(hWnd, uMsg, wParam, lParam);
     }
     case WM_GESTURENOTIFY:
@@ -660,7 +660,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
           newEvent.resize.w = g_sizeMoveWidth;
           newEvent.resize.h = g_sizeMoveHight;
 
-          CLog::LogF(LOGDEBUG, "window resize event %d x %d", newEvent.resize.w, newEvent.resize.h);
+          CLog::LogFC(LOGDEBUG, LOGWINDOWING, "window resize event %d x %d", newEvent.resize.w, newEvent.resize.h);
           // tell device about new size
           DX::Windowing()->OnResize(newEvent.resize.w, newEvent.resize.h);
           // tell application about size changes
@@ -687,7 +687,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
           newEvent.move.x = g_sizeMoveX;
           newEvent.move.y = g_sizeMoveY;
 
-          CLog::LogF(LOGDEBUG, "window move event");
+          CLog::LogFC(LOGDEBUG, LOGWINDOWING, "window move event");
 
           // tell the device about new position
           DX::Windowing()->OnMove(newEvent.move.x, newEvent.move.y);
