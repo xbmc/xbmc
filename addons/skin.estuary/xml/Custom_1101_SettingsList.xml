@@ -22,7 +22,7 @@
 				<control type="grouplist" id="11100">
 					<visible>String.IsEqual(window(home).Property(settingslist_content),osd)</visible>
 					<width>700</width>
-					<height>360</height>
+					<height>420</height>
 					<itemgap>0</itemgap>
 					<onup>11100</onup>
 					<ondown>11100</ondown>
@@ -65,6 +65,13 @@
 						<label>$LOCALIZE[31132]</label>
 						<onclick>PlayerProgramSelect</onclick>
 						<visible>Player.HasPrograms</visible>
+					</control>
+					<control type="button" id="11107">
+						<width>700</width>
+						<include>DialogSettingButton</include>
+						<label>$LOCALIZE[31133]</label>
+						<onclick>PlayerResolutionSelect</onclick>
+						<visible>Player.HasResolutions</visible>
 					</control>
 				</control>
 				<control type="grouplist" id="13100">

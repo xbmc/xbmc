@@ -21265,3 +21265,8 @@ msgstr ""
 msgctxt "#39109"
 msgid "Select Program"
 msgstr ""
+
+#: xbmc/video/PlayerController.cpp
+msgctxt "#39110"
+msgid "Select Resolution"
+msgstr ""

@@ -395,7 +395,8 @@ const infomap player_labels[] =  {{ "hasmedia",         PLAYER_HAS_MEDIA },     
                                   { "tempoenabled", PLAYER_SUPPORTS_TEMPO},
                                   { "istempo", PLAYER_IS_TEMPO},
                                   { "playspeed", PLAYER_PLAYSPEED},
-                                  { "hasprograms", PLAYER_HAS_PROGRAMS}};
+                                  { "hasprograms", PLAYER_HAS_PROGRAMS},
+                                  { "hasresolutions", PLAYER_HAS_RESOLUTIONS}};
 
 /// \page modules__General__List_of_gui_access
 /// @{

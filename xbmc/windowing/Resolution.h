@@ -101,6 +101,7 @@ class CResolutionUtils
 {
 public:
   static RESOLUTION ChooseBestResolution(float fps, int width, bool is3D);
+  static bool HasWhitelist();
 protected:
   static void FindResolutionFromWhitelist(float fps, int width, bool is3D, RESOLUTION &resolution);
   static bool FindResolutionFromOverride(float fps, int width, bool is3D, RESOLUTION &resolution, float& weight, bool fallback);
