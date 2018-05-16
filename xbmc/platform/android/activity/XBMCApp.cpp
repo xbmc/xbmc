@@ -95,6 +95,7 @@
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "windowing/android/VideoSyncAndroid.h"
+#include "windowing/WinSystem.h"
 #include "windowing/WinEvents.h"
 #include "platform/xbmc.h"
 
@@ -228,10 +229,8 @@ void CXBMCApp::onResume()
 {
   android_printf("%s: ", __PRETTY_FUNCTION__);
 
-  if (!g_application.IsInScreenSaver())
+  if (g_application.IsInitialized() && CServiceBroker::GetWinSystem()->GetOSScreenSaver()->IsInhibited())
     EnableWakeLock(true);
-  else
-    g_application.WakeUpScreenSaverAndDPMS();
 
   CJNIAudioManager audioManager(getSystemService("audio"));
   m_headsetPlugged = audioManager.isWiredHeadsetOn() || audioManager.isBluetoothA2dpOn();
