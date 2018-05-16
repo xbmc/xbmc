@@ -1375,6 +1375,7 @@ void CAdvancedSettings::SettingOptionsLoggingComponentsFiller(SettingConstPtr se
   list.push_back(std::make_pair(g_localizeStrings.Get(676), LOGAUDIO));
   list.push_back(std::make_pair(g_localizeStrings.Get(680), LOGVIDEO));
   list.push_back(std::make_pair(g_localizeStrings.Get(683), LOGAVTIMING));
+  list.push_back(std::make_pair(g_localizeStrings.Get(684), LOGWINDOWING));
 #ifdef HAS_DBUS
   list.push_back(std::make_pair(g_localizeStrings.Get(674), LOGDBUS));
 #endif
