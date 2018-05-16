@@ -29,7 +29,7 @@ find_package_handle_standard_args(LibInput
                                   VERSION_VAR LIBINPUT_VERSION)
 
 if(LIBINPUT_FOUND)
-  set(LIBINPUT_INCLUDE_DIRS ${LIBINPUT_INCLUDE_DIR}})
+  set(LIBINPUT_INCLUDE_DIRS ${LIBINPUT_INCLUDE_DIR})
   set(LIBINPUT_LIBRARIES ${LIBINPUT_LIBRARY})
 endif()
 
