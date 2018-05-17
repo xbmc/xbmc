@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>Kodi EventServer</short>
+  <description>Kodi is a free cross-platform media-player jukebox and entertainment hub.  Enable this option to remotely control Kodi via its EventServer API.</description>
+  <port protocol="udp" port="9777"/>
+</service>

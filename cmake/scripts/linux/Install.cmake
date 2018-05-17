@@ -127,6 +127,13 @@ install(FILES ${CMAKE_SOURCE_DIR}/tools/Linux/packaging/media/icon256x256.png
         DESTINATION ${datarootdir}/icons/hicolor/256x256/apps
         COMPONENT kodi)
 
+# Install firewalld service definitions
+install(FILES ${CMAKE_SOURCE_DIR}/tools/Linux/firewalld-services/kodi-eventserver.xml
+              ${CMAKE_SOURCE_DIR}/tools/Linux/firewalld-services/kodi-http.xml
+              ${CMAKE_SOURCE_DIR}/tools/Linux/firewalld-services/kodi-jsonrpc.xml
+        DESTINATION ${prefix}/lib/firewalld/services
+        COMPONENT kodi)
+
 # Install docs
 install(FILES ${CMAKE_SOURCE_DIR}/copying.txt
               ${CMAKE_SOURCE_DIR}/LICENSE.GPL

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>Kodi web interface</short>
+  <description>Kodi is a free cross-platform media-player jukebox and entertainment hub.  Enable this option to remotely control Kodi via its web interface.</description>
+  <port protocol="tcp" port="8080"/>
+</service>
