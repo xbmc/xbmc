@@ -255,6 +255,7 @@ void CAdvancedSettings::Initialize()
 
   m_remoteDelay = 3;
   m_controllerDeadzone = 0.2f;
+  m_bScanIRServer = true;
 
   m_playlistAsFolders = true;
   m_detectAsUdf = false;
@@ -1039,6 +1040,8 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
 
   XMLUtils::GetInt(pRootElement, "remotedelay", m_remoteDelay, 0, 20);
   XMLUtils::GetFloat(pRootElement, "controllerdeadzone", m_controllerDeadzone, 0.0f, 1.0f);
+  XMLUtils::GetBoolean(pRootElement, "scanirserver", m_bScanIRServer);
+
   XMLUtils::GetUInt(pRootElement, "fanartres", m_fanartRes, 0, 9999);
   XMLUtils::GetUInt(pRootElement, "imageres", m_imageRes, 0, 9999);
   if (XMLUtils::GetString(pRootElement, "imagescalingalgorithm", tmp))
@@ -1403,6 +1406,7 @@ void CAdvancedSettings::SettingOptionsLoggingComponentsFiller(SettingConstPtr se
   list.push_back(std::make_pair(g_localizeStrings.Get(676), LOGAUDIO));
   list.push_back(std::make_pair(g_localizeStrings.Get(680), LOGVIDEO));
   list.push_back(std::make_pair(g_localizeStrings.Get(683), LOGAVTIMING));
+  list.push_back(std::make_pair(g_localizeStrings.Get(684), LOGWINDOWING));
 #ifdef HAS_DBUS
   list.push_back(std::make_pair(g_localizeStrings.Get(674), LOGDBUS));
 #endif
