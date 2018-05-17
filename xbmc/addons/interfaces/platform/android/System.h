@@ -31,6 +31,7 @@ struct Interface_Android
 
   static void* get_jni_env();
   static int get_sdk_version();
+  static const char *get_class_name();
 };
 
 } //namespace ADDON

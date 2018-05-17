@@ -34,13 +34,14 @@
  */
 
 static const char* INTERFACE_ANDROID_SYSTEM_NAME = "ANDROID_SYSTEM";
-static const char* INTERFACE_ANDROID_SYSTEM_VERSION = "1.0.0";
-static const char* INTERFACE_ANDROID_SYSTEM_VERSION_MIN = "1.0.0";
+static const char* INTERFACE_ANDROID_SYSTEM_VERSION = "1.0.1";
+static const char* INTERFACE_ANDROID_SYSTEM_VERSION_MIN = "1.0.1";
 
 struct AddonToKodiFuncTable_android_system
 {
   void* (*get_jni_env)();
   int (*get_sdk_version)();
+  const char *(*get_class_name)();
 };
 
 //==============================================================================
@@ -97,6 +98,22 @@ namespace platform
         return m_interface->get_sdk_version();
 
       return 0;
+    }
+
+    //============================================================================
+    ///
+    /// \ingroup cpp_kodi_platform
+    /// @brief request the android main class name e.g. org.xbmc.kodi.
+    ///
+    /// @param[in]:
+    /// @return package class name
+    ///
+    inline std::string GetClassName()
+    {
+      if (m_interface)
+        return m_interface->get_class_name();
+
+      return std::string();
     }
 
   private:

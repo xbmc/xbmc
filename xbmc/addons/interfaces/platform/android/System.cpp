@@ -19,6 +19,7 @@
  */
 
 #include "System.h"
+#include "CompileInfo.h"
 #include "addons/binary-addons/AddonDll.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/platform/android/System.h"
 
@@ -33,6 +34,7 @@ void Interface_Android::Register()
 {
   function_table.get_jni_env = get_jni_env;
   function_table.get_sdk_version = get_sdk_version;
+  function_table.get_class_name = get_class_name;
   CAddonDll::RegisterInterface(Get);
 }
 
@@ -55,5 +57,11 @@ int Interface_Android::get_sdk_version()
 {
   return CXBMCApp::get()->getActivity()->sdkVersion;
 }
+
+const char *Interface_Android::get_class_name()
+{
+  return CCompileInfo::GetClass();
+}
+
 
 } //namespace ADDON
