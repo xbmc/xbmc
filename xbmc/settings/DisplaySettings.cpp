@@ -50,6 +50,8 @@
 
 #if defined(HAVE_X11)
 #include "windowing/X11/WinSystemX11.h"
+#elif defined(TARGET_DARWIN_OSX)
+#include "windowing/osx/WinSystemOSX.h"
 #elif defined(HAVE_WAYLAND)
 #include "windowing/wayland/WinSystemWayland.h"
 #endif
@@ -382,6 +384,16 @@ bool CDisplaySettings::OnSettingUpdate(std::shared_ptr<CSetting> setting, const 
   }
 
   return false;
+}
+
+void CDisplaySettings::SetMonitor(std::string monitor)
+{
+  std::string curMonitor = CServiceBroker::GetSettings().GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR);
+  if (curMonitor != monitor)
+  {
+    m_resolutionChangeAborted = true;
+    CServiceBroker::GetSettings().SetString(CSettings::SETTING_VIDEOSCREEN_MONITOR, monitor);
+  }
 }
 
 void CDisplaySettings::SetCurrentResolution(RESOLUTION resolution, bool save /* = false */)
@@ -763,18 +775,13 @@ void CDisplaySettings::SettingOptionsScreensFiller(SettingConstPtr setting, std:
   if (g_advancedSettings.m_canWindowed && CServiceBroker::GetWinSystem()->CanDoWindowed())
     list.push_back(std::make_pair(g_localizeStrings.Get(242), DM_WINDOWED));
 
-#if defined(HAVE_X11) || defined(HAVE_WAYLAND)
+#if defined(HAVE_X11) || defined(HAVE_WAYLAND) || defined(TARGET_DARWIN_OSX)
   list.push_back(std::make_pair(g_localizeStrings.Get(244), 0));
 #else
 
   for (int idx = 0; idx < CServiceBroker::GetWinSystem()->GetNumScreens(); idx++)
   {
     int screen = CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP + idx).iScreen;
-#if defined(TARGET_DARWIN_OSX)
-    if (!CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP + idx).strOutput.empty())
-      list.push_back(std::make_pair(CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP + idx).strOutput, screen));
-    else
-#endif
     list.push_back(std::make_pair(StringUtils::Format(g_localizeStrings.Get(241).c_str(), screen + 1), screen));
   }
 
@@ -822,9 +829,14 @@ void CDisplaySettings::SettingOptionsPreferredStereoscopicViewModesFiller(Settin
 
 void CDisplaySettings::SettingOptionsMonitorsFiller(SettingConstPtr setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
 {
-#if defined(HAVE_X11)
+#if defined(HAVE_X11) || defined(TARGET_DARWIN_OSX)
   std::vector<std::string> monitors;
+
+#if defined(HAVE_X11)
   CWinSystemX11 *winSystem = dynamic_cast<CWinSystemX11*>(CServiceBroker::GetWinSystem());
+#elif defined(TARGET_DARWIN_OSX)
+  CWinSystemOSX *winSystem = dynamic_cast<CWinSystemOSX*>(CServiceBroker::GetWinSystem());
+#endif
   winSystem->GetConnectedOutputs(&monitors);
   std::string currentMonitor = CServiceBroker::GetSettings().GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR);
   for (unsigned int i=0; i<monitors.size(); ++i)
