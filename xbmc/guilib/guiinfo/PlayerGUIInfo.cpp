@@ -523,6 +523,10 @@ bool CPlayerGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
     case PLAYER_HAS_PROGRAMS:
       value = (g_application.GetAppPlayer().GetProgramsCount() > 1) ? true : false;
       return true;
+    case PLAYER_HAS_RESOLUTIONS:
+      value = CServiceBroker::GetWinSystem()->GetGfxContext().IsFullScreenRoot() &&
+              CResolutionUtils::HasWhitelist();
+      return true;
     case PLAYER_HASDURATION:
       value = g_application.GetTotalTime() > 0;
       return true;

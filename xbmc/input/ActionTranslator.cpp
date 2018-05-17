@@ -68,6 +68,7 @@ static const std::map<ActionName, ActionID> ActionMappings =
     { "codecinfo"                , ACTION_PLAYER_PROCESS_INFO },
     { "playerprocessinfo"        , ACTION_PLAYER_PROCESS_INFO },
     { "playerprogramselect"      , ACTION_PLAYER_PROGRAM_SELECT },
+    { "playerresolutionselect"   , ACTION_PLAYER_RESOLUTION_SELECT },
     { "nextpicture"              , ACTION_NEXT_PICTURE },
     { "previouspicture"          , ACTION_PREV_PICTURE },
     { "zoomout"                  , ACTION_ZOOM_OUT },

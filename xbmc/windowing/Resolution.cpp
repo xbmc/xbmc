@@ -249,3 +249,9 @@ float CResolutionUtils::RefreshWeight(float refresh, float fps)
 
   return weight;
 }
+
+bool CResolutionUtils::HasWhitelist()
+{
+  std::vector<CVariant> indexList = CServiceBroker::GetSettings().GetList(CSettings::SETTING_VIDEOSCREEN_WHITELIST);
+  return !indexList.empty();
+}

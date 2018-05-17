@@ -23,6 +23,7 @@
 #include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogSlider.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/DisplaySettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "cores/IPlayer.h"
@@ -451,6 +452,38 @@ bool CPlayerController::OnAction(const CAction &action)
           idx = dialog->GetSelectedItem();
           if (idx > 0)
             g_application.GetAppPlayer().SetProgram(programs[idx].id);
+        }
+        return true;
+      }
+
+      case ACTION_PLAYER_RESOLUTION_SELECT:
+      {
+        std::vector<CVariant> indexList = CServiceBroker::GetSettings().GetList(CSettings::SETTING_VIDEOSCREEN_WHITELIST);
+
+        CGUIDialogSelect *dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
+        if (dialog)
+        {
+          int current = 0;
+          int idx = 0;
+          auto currentRes = CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution();
+          for (const CVariant &mode : indexList)
+          {
+            auto res = CDisplaySettings::GetInstance().GetResFromString(mode.asString());
+            const RESOLUTION_INFO info = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(res);
+            dialog->Add(info.strMode);
+            if (res == currentRes)
+              current = idx;
+            idx++;
+          }
+          dialog->SetHeading(CVariant{g_localizeStrings.Get(39110)});
+          dialog->SetSelected(current);
+          dialog->Open();
+          idx = dialog->GetSelectedItem();
+          if (idx >= 0)
+          {
+            auto res = CDisplaySettings::GetInstance().GetResFromString(indexList[idx].asString());
+            CServiceBroker::GetWinSystem()->GetGfxContext().SetVideoResolution(res, false);
+          }
         }
         return true;
       }

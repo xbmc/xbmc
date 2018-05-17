@@ -598,7 +598,12 @@ msgctxt "#31132"
 msgid "Select Program"
 msgstr ""
 
-#empty string with id 31133
+#: /xml/Custom_1101_SettingsList.xml
+msgctxt "#31133"
+msgid "Select Resolution"
+msgstr ""
+
+#empty string with id 31134
 
 #: /xml/DialogSeekBar.xml
 msgctxt "#31134"
