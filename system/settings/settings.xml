@@ -789,33 +789,33 @@
         <!-- Hidden settings edited using CGUIDialogMusicExportSettings -->
         <setting id="musiclibrary.exportfiletype" type="integer" label="38304" help="">
           <level>4</level>
-          <default>0</default>		  
+          <default>0</default>
         </setting>
         <setting id="musiclibrary.exportfolder" type="string" label="38305" help="">
-          <level>4</level>		
+          <level>4</level>
           <default></default>
 		  <constraints>
             <allowempty>true</allowempty>
           </constraints>
         </setting>
         <setting id="musiclibrary.exportitems" type="integer" label="" help="">
-          <level>4</level>		
+          <level>4</level>
           <default>48</default> <!-- Albums + Album Artists -->
         </setting>
         <setting id="musiclibrary.exportunscraped" type="boolean" label="" help="">
-          <level>4</level>		
+          <level>4</level>
           <default>false</default>
         </setting>
         <setting id="musiclibrary.exportoverwrite" type="boolean" label="" help="">
-          <level>4</level>		
+          <level>4</level>
           <default>false</default>
         </setting>
         <setting id="musiclibrary.exportartwork" type="boolean" label="" help="">
-          <level>4</level>          
+          <level>4</level>
 		  <default>false</default>
-        </setting>		
+        </setting>
         <setting id="musiclibrary.exportskipnfo" type="boolean" label="" help="">
-          <level>4</level>          
+          <level>4</level>
 		  <default>false</default>
         </setting>
         <setting id="musiclibrary.import" type="action" label="14249" help="36263">
@@ -1993,6 +1993,7 @@
             <or>
               <condition>HAVE_X11</condition>
               <condition>HAVE_WAYLAND</condition>
+              <condition>HAVE_OSX</condition>
             </or>
           </requirement>
           <level>0</level>

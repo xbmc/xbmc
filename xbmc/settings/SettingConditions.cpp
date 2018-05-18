@@ -329,6 +329,9 @@ void CSettingConditions::Initialize(const CProfilesManager &profileManager)
 #ifdef TARGET_DARWIN
   m_simpleConditions.insert("HasVTB");
 #endif
+#ifdef TARGET_DARWIN_OSX
+  m_simpleConditions.insert("have_osx");
+#endif
 #ifdef HAS_LIBAMCODEC
   if (aml_present())
     m_simpleConditions.insert("have_amcodec");
