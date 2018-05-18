@@ -1,78 +1,33 @@
-### Introduction
+![Kodi Logo](resources/banner_slim.png)
 
-**Kodi** uses Github for development only, i.e. for *pull requests* and the review of such code.  
-**Do not open** an issue on Github for your questions or bug reports.  
-**Do not comment** on a *pull request* unless you are involved in the testing of such or have something meaningful to contribute.  
-Not familiar with git? Start by looking at Github's [collaborating pages](https://help.github.com/categories/collaborating/).
+# Contributing to Kodi Home Theater
+Looking to **contribute code** to Kodi Home Theater? Great! You landed on the right place and we appreciate you for taking the time. Can't code for your life? No shame in that. There's a lot more to the Kodi project than just code. Check out **[other ways](../README.md#how-to-contribute)** to contribute.
 
-#### Questions about Kodi?
+First, a few words of caution: Kodi's huge codebase spans over 15 years of development, hundreds of volunteer developers from all walks of life and countless, sleepless hours. Please remember that somewhere in between your first *WTH?* and before you start ranting or splitting hairs.
 
-To get your questions answered, please ask in the [Kodi community forum's](http://forum.kodi.tv/) or on **IRC:** [#kodi](http://webchat.freenode.net?nick=kodi-contrib&channels=%23kodi&prompt=1&uio=OT10cnVlde) on freenode.net
+Also, always keep in mind that for many of us English is not our native language. What might come across as discourteous is probably an unintended side effect of the language barrier. Usage of emoticons is highly encouraged. They are great to convey, er, emotions and state of mind.
 
-#### Issue or bug reports and discussions
+## Getting Started
+Before you start coding we advise you to build Kodi's master branch. This will save you and us precious time by making sure a proper build environment is set up and all dependencies are met. For your convenience, **[build guides](README.md)** are available for most common platforms. A **[git guide](GIT-FU.md)** is also available, streamlined to Kodi's development workflow. Unless you're a *git ninja*, please read it carefully.  
+If you are a *git ninja*, we feel happy and sad for you at the same time. Your soul might be lost to the dark side already but worry not, we have cookies!
 
-Issue or bug reports are created and reviewed at [Kodi's bug tracker](http://trac.kodi.tv) using the Kodi forum's *username* and *password*.
+## Pull request guidelines
+* **Create topic branches**. Never ever open a pull request from your master branch. **Ever!**
+* **Code against master branch**. Unless release specific, all Kodi development occurs in the `master` branch. If it needs backporting it can be done after it hits master.
+* **One topic branch per change**. Found something that needs fixing but is unrelated to the current work? Create a new topic branch and open another *pull request*.
+* **Use a coherent commit history**. Make sure each individual commit in your *pull request* is meaningful and organized in logical chunks. Tidy up and squash commits before submitting.
+* **Be descriptive, but concise**. The *pull request* and commits should have a useful title and follow the `[component(s)] Short description...` format. No, `[README.md] Update` is **not** descriptive enough. The *pull request* description should only contain information relevant to the change.
+* **Be patient, be kind, rewind**. We're all volunteers with busy lives but usually very responsive in cataloging *pull requests* and pinging the relevant maintainer(s). Sometimes though, things go unnoticed for longer than usual. Probably due to beer deprivation... or lack thereof. Feel free to nudge us if we forget.
 
-If you can, we encourage you to investigate the issue yourself and create a [pull request](https://help.github.com/articles/creating-a-pull-request/) for us to review.
+## Coding guidelines
+* **Follow our [code guidelines](CODE_GUIDELINES.md)**. New code should follow those guidelines even if existing code doesn't. If you're up to it, improve existing code and submit it in separate commits.
+* **Document the code**. You know you're brilliant, but maybe you'd like to understand what you did a year from now. Or, code God forbid, help others... Nope, `// Magic. Do not touch!` does not count as documentation.
+* **Separate code from cosmetics**. Code and cosmetic changes should be in separate commits. It's already hard to review code without added noise. Of course, deleting a **few** trailing spaces does not warrant a separate commit. Use your judgement.
+* **Test your changes**. Kodi's **[continuous integration system](http://jenkins.kodi.tv/)** builds every PR automatically. Nonetheless, you're expected to test the code on your development platform.
 
-For bug reports and related discussions, feature requests and all other support, please go to [Kodi community forum's](http://forum.kodi.tv/).
+## Updating your PR
+Making a *pull request* adhere to the standards above can be difficult. If the maintainers notice anything that they'd like changed, they'll ask you to edit your *pull request* before it gets merged. **There's no need to open a new *pull request*, just edit the existing one**. If you're not sure how to do that, our **[git guide](GIT-FU.md)** provides a step by step guide. If you're still not sure, ask us for guidance. We're all fairly proficient with *git* and happy to be of assistance.
 
-#### Pull Requests
+<a href="https://github.com/xbmc/xbmc"><img src="https://forthebadge.com/images/badges/made-with-c-plus-plus.svg" height="25"></a>
+<a href="https://github.com/xbmc/xbmc"><img src="https://forthebadge.com/images/badges/contains-technical-debt.svg" height="25"></a>
 
-Before [creating a pull request](https://help.github.com/articles/creating-a-pull-request/), please read our general code guidelines that can be found at:
-
-- [Code guidelines](http://kodi.wiki/view/Official:Code_guidelines_and_formatting_conventions)
-- [Submitting a patch](http://kodi.wiki/view/HOW-TO_submit_a_patch)
-- [Kodi development](http://kodi.wiki/view/Development)
-
-###### General guidelines for creating pull requests:
-- **Create topic branches**. Don't ask us to pull from your master branch. 
-- **One pull request per feature**. If you want to do more than one thing, send multiple *pull requests*. 
-- **Send coherent history**. Make sure each individual commit in your *pull
-  request* is meaningful.  
-  If you had to make multiple intermediate commits while developing, please squash them before sending them to us.  
-  In the end before merging you may be asked to squash your commit even some more.
-
-###### Please follow these guidelines; it's the best way to get your work included in the project!
-
-- [Click here](https://github.com/xbmc/xbmc/fork/) to **fork Kodi** project,
-   and [configure the remote](https://help.github.com/articles/configuring-a-remote-for-a-fork/):
-
-   ```bash
-   # Clone your fork of kodi's repo into the current directory in terminal
-   git clone git@github.com:<your github username>/xbmc.git kodi
-   # Navigate to the newly cloned directory
-   cd kodi
-   # Assign the original repo to a remote called "upstream"
-   git remote add upstream https://github.com/xbmc/xbmc.git
-   ```
-
-- If you cloned a while ago, get the latest changes from upstream:
-
-   ```bash
-   # Fetch upstream changes
-   git fetch upstream
-   # Make sure you are on your 'master' branch
-   git checkout master
-   # Merge upstream changes
-   git merge upstream/master
-   ```
-
-- Create a new topic branch to contain your feature, change, or fix:
-
-   ```bash
-   git checkout -b <topic-branch-name>
-   ```
-
-- Commit your changes in logical chunks, or your *pull request* is unlikely to be merged into the main project.  
-   Use git's [interactive rebase](https://help.github.com/articles/interactive-rebase)
-   feature to tidy up your commits before making them public.
-
-- Push your topic branch up to your fork:
-
-   ```bash
-   git push origin <topic-branch-name>
-   ```
-
--  Open a [pull request](https://help.github.com/articles/using-pull-requests) with a 
-   clear title and description.
