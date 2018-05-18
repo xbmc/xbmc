@@ -83,7 +83,7 @@ CWebSocketFrame::CWebSocketFrame(const char* data, uint64_t length)
       (m_length == 126 && m_lengthFrame < LENGTH_MIN + 2) ||
       (m_length == 127 && m_lengthFrame < LENGTH_MIN + 8))
   {
-    CLog::Log(LOGINFO, "WebSocket: Frame with invalid length received");
+    CLog::Log(LOGINFO, "WebSocket: Frame with invalid length received: %lld / %lld", m_length, m_lengthFrame);
     reset();
     return;
   }
@@ -109,7 +109,8 @@ CWebSocketFrame::CWebSocketFrame(const char* data, uint64_t length)
 
   if (m_lengthFrame < LENGTH_MIN + offset + m_length)
   {
-    CLog::Log(LOGINFO, "WebSocket: Frame with invalid length received");
+    // TODO: Handle split frames
+    CLog::Log(LOGINFO, "WebSocket: Frame with invalid length received: %lld / %lld", m_length, m_lengthFrame);
     reset();
     return;
   }
@@ -311,6 +312,7 @@ const CWebSocketMessage* CWebSocket::Handle(const char* &buffer, size_t &length,
         CWebSocketFrame *frame = GetFrame(buffer, length);
         if (!frame->IsValid())
         {
+          // TODO: Handle split frames
           CLog::Log(LOGINFO, "WebSocket: Invalid frame received");
           delete frame;
           return NULL;

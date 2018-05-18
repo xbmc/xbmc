@@ -60,7 +60,7 @@ static const bdaddr_t bt_bdaddr_local = {{0, 0, 0, 0xff, 0xff, 0xff}};
 using namespace JSONRPC;
 using namespace ANNOUNCEMENT;
 
-#define RECEIVEBUFFER 1024
+#define RECEIVEBUFFER 16384
 
 CTCPServer *CTCPServer::ServerInstance = NULL;
 
