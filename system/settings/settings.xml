@@ -1994,6 +1994,7 @@
               <condition>HAVE_X11</condition>
               <condition>HAVE_WAYLAND</condition>
               <condition>HAVE_OSX</condition>
+              <condition>HAS_DX</condition>
             </or>
           </requirement>
           <level>0</level>

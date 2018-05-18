@@ -66,102 +66,19 @@ enum WINDOW_WINDOW_STATE
 
 struct MONITOR_DETAILS
 {
-  // Windows desktop info
-  int       ScreenWidth;
-  int       ScreenHeight;
-  int       RefreshRate;
-  int       Bpp;
-  bool      Interlaced;
+  int ScreenWidth;
+  int ScreenHeight;
+  int RefreshRate;
+  int Bpp;
+  int DisplayId;
+  bool Interlaced;
+  bool IsPrimary;
 
   HMONITOR  hMonitor;
   std::wstring MonitorNameW;
   std::wstring CardNameW;
   std::wstring DeviceNameW;
-  int       ScreenNumber; // XBMC POV, not Windows. Windows primary is XBMC #0, then each secondary is +1.
 };
-
-#ifndef WM_GESTURE
-
-#define WM_GESTURE       0x0119
-#define WM_GESTURENOTIFY 0x011A
-
-// Gesture Information Flags
-#define GF_BEGIN   0x00000001
-#define GF_INERTIA 0x00000002
-#define GF_END     0x00000004
-
-// Gesture IDs
-#define GID_BEGIN                       1
-#define GID_END                         2
-#define GID_ZOOM                        3
-#define GID_PAN                         4
-#define GID_ROTATE                      5
-#define GID_TWOFINGERTAP                6
-#define GID_PRESSANDTAP                 7
-#define GID_ROLLOVER                    GID_PRESSANDTAP
-
-#define GC_ALLGESTURES 0x00000001
-
-// Zoom Gesture Configuration Flags
-#define GC_ZOOM 0x00000001
-
-// Pan Gesture Configuration Flags
-#define GC_PAN 0x00000001
-#define GC_PAN_WITH_SINGLE_FINGER_VERTICALLY 0x00000002
-#define GC_PAN_WITH_SINGLE_FINGER_HORIZONTALLY 0x00000004
-#define GC_PAN_WITH_GUTTER 0x00000008
-#define GC_PAN_WITH_INERTIA 0x00000010
-
-// Rotate Gesture Configuration Flags
-#define GC_ROTATE 0x00000001
-
-// Two finger tap configuration flags
-#define GC_TWOFINGERTAP 0x00000001
-
-// Press and tap Configuration Flags
-#define GC_PRESSANDTAP 0x00000001
-#define GC_ROLLOVER GC_PRESSANDTAP
-
-typedef struct _GESTUREINFO {
-  UINT      cbSize;
-  DWORD     dwFlags;
-  DWORD     dwID;
-  HWND      hwndTarget;
-  POINTS    ptsLocation;
-  DWORD     dwInstanceID;
-  DWORD     dwSequenceID;
-  ULONGLONG ullArguments;
-  UINT      cbExtraArgs;
-}GESTUREINFO, *PGESTUREINFO;
-
-// GESTURECONFIG struct defintion
-typedef struct tagGESTURECONFIG {
-    DWORD dwID;                     // gesture ID
-    DWORD dwWant;                   // settings related to gesture ID that are to be turned on
-    DWORD dwBlock;                  // settings related to gesture ID that are to be turned off
-} GESTURECONFIG, *PGESTURECONFIG;
-
-/*
- * Gesture notification structure
- *   - The WM_GESTURENOTIFY message lParam contains a pointer to this structure.
- *   - The WM_GESTURENOTIFY message notifies a window that gesture recognition is
- *     in progress and a gesture will be generated if one is recognized under the
- *     current gesture settings.
- */
-typedef struct tagGESTURENOTIFYSTRUCT {
-    UINT cbSize;                    // size, in bytes, of this structure
-    DWORD dwFlags;                  // unused
-    HWND hwndTarget;                // handle to window targeted by the gesture
-    POINTS ptsLocation;             // starting location
-    DWORD dwInstanceID;             // internally used
-} GESTURENOTIFYSTRUCT, *PGESTURENOTIFYSTRUCT;
-
-#define GID_ROTATE_ANGLE_TO_ARGUMENT(_arg_)     ((USHORT)((((_arg_) + 2.0 * 3.14159265) / (4.0 * 3.14159265)) * 65535.0))
-#define GID_ROTATE_ANGLE_FROM_ARGUMENT(_arg_)   ((((double)(_arg_) / 65535.0) * 4.0 * 3.14159265) - 2.0 * 3.14159265)
-
-DECLARE_HANDLE(HGESTUREINFO);
-
-#endif
 
 #ifdef IsMinimized
 #undef IsMinimized
@@ -183,8 +100,6 @@ public:
   void UpdateResolutions() override;
   bool CenterWindow() override;
   virtual void NotifyAppFocusChange(bool bGaining) override;
-  int  GetNumScreens() override { return static_cast<int>(m_MonitorsInfo.size()); };
-  int  GetCurrentScreen() override;
   void ShowOSMouse(bool show) override;
   bool HasInertialGestures() override { return true; }//if win32 has touchscreen - it uses the win32 gesture api for inertial scrolling
   bool Minimize() override;
@@ -206,7 +121,8 @@ public:
   virtual bool DPIChanged(WORD dpi, RECT windowRect) const;
   bool IsMinimized() const { return m_bMinimized; }
   void SetMinimized(bool minimized) { m_bMinimized = minimized; }
-
+  void GetConnectedOutputs(std::vector<std::string> *outputs);
+  
   // touchscreen support
   typedef BOOL(WINAPI *pGetGestureInfo)(HGESTUREINFO, PGESTUREINFO);
   typedef BOOL(WINAPI *pSetGestureConfig)(HWND, DWORD, UINT, PGESTURECONFIG, UINT);
@@ -232,7 +148,7 @@ protected:
   virtual void CreateBackBuffer() = 0;
   virtual void ResizeDeviceBuffers() = 0;
   virtual bool IsStereoEnabled() = 0;
-  virtual void OnScreenChange(int screen) = 0;
+  virtual void OnScreenChange(HMONITOR monitor) = 0;
   virtual void AdjustWindow(bool forceResize = false);
   void CenterCursor() const;
 
@@ -240,18 +156,20 @@ protected:
   virtual void Unregister(IDispResource *resource);
 
   virtual bool ChangeResolution(const RESOLUTION_INFO& res, bool forceChange = false);
-  virtual bool UpdateResolutionsInternal();
   virtual bool CreateBlankWindows();
   virtual bool BlankNonActiveMonitors(bool bBlank);
-  const MONITOR_DETAILS* GetMonitor(int screen) const;
-  void RestoreDesktopResolution(int screen);
-  RECT ScreenRect(int screen) const;
+  MONITOR_DETAILS* GetDisplayDetails(const std::string& name);
+  MONITOR_DETAILS* GetDisplayDetails(HMONITOR handle);
+  void RestoreDesktopResolution(MONITOR_DETAILS* details);
+  RECT ScreenRect(HMONITOR handle);
+  void GetConnectedDisplays(std::vector<MONITOR_DETAILS>& outputs);
+
 
   /*!
    \brief Adds a resolution to the list of resolutions if we don't already have it
    \param res resolution to add.
    */
-  static void AddResolution(const RESOLUTION_INFO &res);
+  static bool AddResolution(const RESOLUTION_INFO &res);
 
   void OnDisplayLost();
   void OnDisplayReset();
@@ -260,11 +178,11 @@ protected:
   static void SetForegroundWindowInternal(HWND hWnd);
 
   HWND m_hWnd;
+  HMONITOR m_hMonitor;
+
   std::vector<HWND> m_hBlankWindows;
   HINSTANCE m_hInstance;
   HICON m_hIcon;
-  std::vector<MONITOR_DETAILS> m_MonitorsInfo;
-  int m_nPrimary;
   bool m_ValidWindowedPosition;
   bool m_IsAlteringWindow;
 
@@ -282,6 +200,7 @@ protected:
   bool m_bMinimized;
   bool m_bSizeMoveEnabled{ false };
   std::unique_ptr<CIRServerSuite> m_irss;
+  std::vector<MONITOR_DETAILS> m_displays;
 };
 
 extern HWND g_hWnd;
