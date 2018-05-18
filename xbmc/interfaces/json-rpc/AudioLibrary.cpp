@@ -135,7 +135,7 @@ JSONRPC_STATUS CAudioLibrary::GetArtists(const std::string &method, ITransportLa
     param["properties"] = CVariant(CVariant::VariantTypeArray);
   param["properties"].append("artist");
 
-  //Get roleids, songgenreids etc, if needed
+  //Get roleids, songgenreids, sources etc, if needed
   JSONRPC_STATUS ret = GetAdditionalArtistDetails(parameterObject, items, musicdatabase);
   if (ret != OK)
     return ret;
@@ -247,7 +247,7 @@ JSONRPC_STATUS CAudioLibrary::GetAlbums(const std::string &method, ITransportLay
     items.Add(pItem);
   }
 
-  //Get song genres (genreIDs and/or genre strings)
+  //Get song genres (genreIDs and/or genre strings) and sources
   JSONRPC_STATUS ret = GetAdditionalAlbumDetails(parameterObject, items, musicdatabase);
   if (ret != OK)
     return ret;
@@ -501,13 +501,17 @@ JSONRPC_STATUS CAudioLibrary::GetGenres(const std::string &method, ITransportLay
   if (!musicdatabase.Open())
     return InternalError;
 
+  // Check if sources for genre wanted
+  bool sourcesneeded(false);
+  std::set<std::string> checkProperties;
+  checkProperties.insert("sourceid");
+  std::set<std::string> additionalProperties;
+  if (CheckForAdditionalProperties(parameterObject["properties"], checkProperties, additionalProperties))
+    sourcesneeded = (additionalProperties.find("sourcid") != additionalProperties.end());
+   
   CFileItemList items;
-  if (!musicdatabase.GetGenresNav("musicdb://genres/", items))
+  if (!musicdatabase.GetGenresJSON(items, sourcesneeded))
     return InternalError;
-
-  /* need to set strTitle in each item*/
-  for (unsigned int i = 0; i < (unsigned int)items.Size(); i++)
-    items[i]->GetMusicInfoTag()->SetTitle(items[i]->GetLabel());
 
   HandleFileItemList("genreid", false, "genres", items, parameterObject, result);
   return OK;
@@ -528,6 +532,20 @@ JSONRPC_STATUS CAudioLibrary::GetRoles(const std::string &method, ITransportLaye
     items[i]->GetMusicInfoTag()->SetTitle(items[i]->GetLabel());
 
   HandleFileItemList("roleid", false, "roles", items, parameterObject, result);
+  return OK;
+}
+
+JSONRPC_STATUS JSONRPC::CAudioLibrary::GetSources(const std::string& method, ITransportLayer* transport, IClient* client, const CVariant& parameterObject, CVariant& result)
+{
+  CMusicDatabase musicdatabase;
+  if (!musicdatabase.Open())
+    return InternalError;
+  
+  CFileItemList items;
+  if (!musicdatabase.GetSources(items))
+    return InternalError;
+
+  HandleFileItemList("sourceid", true, "sourceid", items, parameterObject, result);
   return OK;
 }
 
@@ -983,6 +1001,7 @@ JSONRPC_STATUS CAudioLibrary::GetAdditionalArtistDetails(const CVariant &paramet
   checkProperties.insert("roles");
   checkProperties.insert("songgenres");
   checkProperties.insert("isalbumartist");
+  checkProperties.insert("sourceid");
   std::set<std::string> additionalProperties;
   if (!CheckForAdditionalProperties(parameterObject["properties"], checkProperties, additionalProperties))
     return OK;
@@ -1011,6 +1030,15 @@ JSONRPC_STATUS CAudioLibrary::GetAdditionalArtistDetails(const CVariant &paramet
       musicdatabase.GetIsAlbumArtist(item->GetMusicInfoTag()->GetDatabaseId(), item.get());
     }
   }
+  if (additionalProperties.find("sourceid") != additionalProperties.end())
+  {
+    for (int i = 0; i < items.Size(); i++)
+    {
+      CFileItemPtr item = items[i];
+      musicdatabase.GetSourcesByArtist(item->GetMusicInfoTag()->GetDatabaseId(), item.get());
+    }
+  }
+
   return OK;
 }
 
@@ -1021,6 +1049,7 @@ JSONRPC_STATUS CAudioLibrary::GetAdditionalAlbumDetails(const CVariant &paramete
 
   std::set<std::string> checkProperties;
   checkProperties.insert("songgenres");
+  checkProperties.insert("sourceid");
   std::set<std::string> additionalProperties;
   if (!CheckForAdditionalProperties(parameterObject["properties"], checkProperties, additionalProperties))
     return OK;
@@ -1033,6 +1062,15 @@ JSONRPC_STATUS CAudioLibrary::GetAdditionalAlbumDetails(const CVariant &paramete
       musicdatabase.GetGenresByAlbum(item->GetMusicInfoTag()->GetDatabaseId(), item.get());
     }
   }
+  if (additionalProperties.find("sourceid") != additionalProperties.end())
+  {
+    for (int i = 0; i < items.Size(); i++)
+    {
+      CFileItemPtr item = items[i];
+      musicdatabase.GetSourcesByAlbum(item->GetMusicInfoTag()->GetDatabaseId(), item.get());
+    }
+  }
+
   return OK;
 }
 
@@ -1043,6 +1081,7 @@ JSONRPC_STATUS CAudioLibrary::GetAdditionalSongDetails(const CVariant &parameter
 
   std::set<std::string> checkProperties;
   checkProperties.insert("genreid");
+  checkProperties.insert("sourceid");
   // Query (songview join songartistview) returns song.strAlbumArtists = CMusicInfoTag.m_strAlbumArtistDesc only
   // Actual album artist data, if required,  comes from album_artist and artist tables.
   // It may differ from just splitting album artist description string
@@ -1067,6 +1106,10 @@ JSONRPC_STATUS CAudioLibrary::GetAdditionalSongDetails(const CVariant &parameter
 
         item->SetProperty("genreid", genreidObj);
       }
+    }
+    if (additionalProperties.find("sourceid") != additionalProperties.end())
+    {      
+      musicdatabase.GetSourcesBySong(item->GetMusicInfoTag()->GetDatabaseId(), item->GetPath(), item.get());
     }
     if (item->GetMusicInfoTag()->GetAlbumId() > 0)
     {
