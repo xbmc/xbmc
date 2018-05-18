@@ -45,19 +45,7 @@ void CAppParamParser::Parse(const char* const* argv, int nArgs)
   if (nArgs > 1)
   {
     for (int i = 1; i < nArgs; i++)
-    {
       ParseArg(argv[i]);
-      if (stricmp(argv[i], "-d") == 0)
-      {
-        if (i + 1 < nArgs)
-        {
-          int sleeptime = atoi(argv[i + 1]);
-          if (sleeptime > 0 && sleeptime < 360)
-            Sleep(sleeptime*1000);
-        }
-        i++;
-      }
-    }
   }
 }
 
@@ -74,7 +62,6 @@ void CAppParamParser::DisplayHelp()
   StringUtils::ToLower(lcAppName);
   printf("Usage: %s [OPTION]... [FILE]...\n\n", lcAppName.c_str());
   printf("Arguments:\n");
-  printf("  -d <n>\t\tdelay <n> seconds before starting\n");
   printf("  -fs\t\t\tRuns %s in full screen\n", CSysInfo::GetAppName().c_str());
   printf("  --standalone\t\t%s runs in a stand alone environment without a window \n", CSysInfo::GetAppName().c_str());
   printf("\t\t\tmanager and supporting applications. For example, that\n");
