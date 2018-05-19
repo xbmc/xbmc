@@ -80,7 +80,6 @@ void CAppParamParser::DisplayHelp()
   printf("\t\t\tmanager and supporting applications. For example, that\n");
   printf("\t\t\tenables network settings.\n");
   printf("  -p or --portable\t%s will look for configurations in install folder instead of ~/.%s\n", CSysInfo::GetAppName().c_str(), lcAppName.c_str());
-  printf("  --legacy-res\t\tEnables screen resolutions such as PAL, NTSC, etc.\n");
   printf("  --debug\t\tEnable debug logging\n");
   printf("  --version\t\tPrint version information\n");
   printf("  --test\t\tEnable test mode. [FILE] required.\n");
@@ -110,8 +109,6 @@ void CAppParamParser::ParseArg(const std::string &arg)
     g_application.EnablePlatformDirectories(false);
   else if (arg == "--debug")
     EnableDebugMode();
-  else if (arg == "--legacy-res")
-    g_application.SetEnableLegacyRes(true);
   else if (arg == "--test")
     m_testmode = true;
   else if (arg.substr(0, 11) == "--settings=")

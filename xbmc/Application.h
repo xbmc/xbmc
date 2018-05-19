@@ -329,16 +329,6 @@ public:
     return m_bStandalone;
   }
 
-  void SetEnableLegacyRes(bool value)
-  {
-    m_bEnableLegacyRes = value;
-  }
-
-  bool IsEnableLegacyRes()
-  {
-    return m_bEnableLegacyRes;
-  }
-
   void SetEnableTestMode(bool value)
   {
     m_bTestMode = value;
@@ -474,7 +464,6 @@ protected:
   bool m_skipGuiRender;
 
   bool m_bStandalone;
-  bool m_bEnableLegacyRes;
   bool m_bTestMode;
   bool m_bSystemScreenSaverEnable;
 
