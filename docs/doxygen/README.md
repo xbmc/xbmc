@@ -1,5 +1,5 @@
-To generate doxygen documentation,
+![Kodi Logo](../resources/banner_slim.png)
 
-run doxygen on the "Doxyfile.doxy" configuration file in this directory. It will generate HTML documentation
-in the ../docs folder (under "html")
+# Kodi's Doxygen Documentation
+To generate Kodi's doxygen documentation, run `doxygen Doxyfile.doxy` in this directory. Generated documentation will be located a directory level up (docs) inside `html`.
 
