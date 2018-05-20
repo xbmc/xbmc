@@ -209,10 +209,10 @@ void CRendererDRMPRIME::SetVideoPlane(CVideoBufferDRMPRIME* buffer)
       return;
     }
 
-    int32_t crtc_x = (int32_t)m_destRect.x1;
-    int32_t crtc_y = (int32_t)m_destRect.y1;
-    uint32_t crtc_w = (uint32_t)m_destRect.Width();
-    uint32_t crtc_h = (uint32_t)m_destRect.Height();
+    int32_t crtc_x = static_cast<int32_t>(m_destRect.x1) & ~1;
+    int32_t crtc_y = static_cast<int32_t>(m_destRect.y1) & ~1;
+    uint32_t crtc_w = (static_cast<uint32_t>(m_destRect.Width()) + 1) & ~1;
+    uint32_t crtc_h = (static_cast<uint32_t>(m_destRect.Height()) + 1) & ~1;
     uint32_t src_x = 0;
     uint32_t src_y = 0;
     uint32_t src_w = buffer->GetWidth() << 16;
