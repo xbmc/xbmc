@@ -295,7 +295,14 @@ void CDVDVideoCodecDRMPRIME::SetPictureParams(VideoPicture* pVideoPicture)
   pVideoPicture->iWidth = m_pFrame->width;
   pVideoPicture->iHeight = m_pFrame->height;
 
-  double aspect_ratio = (float)pVideoPicture->iWidth / (float)pVideoPicture->iHeight;
+  double aspect_ratio = 0;
+  AVRational pixel_aspect = m_pFrame->sample_aspect_ratio;
+  if (pixel_aspect.num)
+    aspect_ratio = av_q2d(pixel_aspect) * pVideoPicture->iWidth / pVideoPicture->iHeight;
+
+  if (aspect_ratio <= 0.0)
+    aspect_ratio = (float)pVideoPicture->iWidth / (float)pVideoPicture->iHeight;
+
   pVideoPicture->iDisplayWidth = ((int)lrint(pVideoPicture->iHeight * aspect_ratio)) & -3;
   pVideoPicture->iDisplayHeight = pVideoPicture->iHeight;
   if (pVideoPicture->iDisplayWidth > pVideoPicture->iWidth)
