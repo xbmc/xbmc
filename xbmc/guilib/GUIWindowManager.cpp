@@ -821,6 +821,8 @@ void CGUIWindowManager::ActivateWindow_Internal(int iWindowID, const std::vector
     {
       CSingleExit exitit(CServiceBroker::GetWinSystem()->GetGfxContext());
       static_cast<CGUIDialog *>(pNewWindow)->Open(params.size() > 0 ? params[0] : "");
+      // Invalidate underlying windows after closing a modal dialog
+      MarkDirty();
     }
     return;
   }
@@ -1131,12 +1133,22 @@ void CGUIWindowManager::Process(unsigned int currentTime)
 
 void CGUIWindowManager::MarkDirty()
 {
-  m_tracker.MarkDirtyRegion(CDirtyRegion(CRect(0, 0, float(CServiceBroker::GetWinSystem()->GetGfxContext().GetWidth()), float(CServiceBroker::GetWinSystem()->GetGfxContext().GetHeight()))));
+  MarkDirty(CRect(0, 0, float(CServiceBroker::GetWinSystem()->GetGfxContext().GetWidth()), float(CServiceBroker::GetWinSystem()->GetGfxContext().GetHeight())));
 }
 
 void CGUIWindowManager::MarkDirty(const CRect& rect)
 {
   m_tracker.MarkDirtyRegion(CDirtyRegion(rect));
+
+  CGUIWindow* pWindow = GetWindow(GetActiveWindow());
+  if (pWindow)
+    pWindow->MarkDirtyRegion();
+
+  // make copy of vector as we may remove items from it as we go
+  auto activeDialogs = m_activeDialogs;
+  for (const auto& window : activeDialogs)
+    if (window->IsDialogRunning())
+      window->MarkDirtyRegion();
 }
 
 void CGUIWindowManager::RenderPass() const
