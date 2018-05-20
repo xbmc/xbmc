@@ -201,7 +201,7 @@ void CMusicDatabase::CreateTables()
   m_pDS->exec("CREATE TABLE art(art_id INTEGER PRIMARY KEY, media_id INTEGER, media_type TEXT, type TEXT, url TEXT)");
 
   CLog::Log(LOGINFO, "create versiontagscan table");
-  m_pDS->exec("CREATE TABLE versiontagscan (idVersion integer, iNeedsScan integer)");
+  m_pDS->exec("CREATE TABLE versiontagscan (idVersion INTEGER, iNeedsScan INTEGER, lastscanned VARCHAR(20))");
   m_pDS->exec(PrepareSQL("INSERT INTO versiontagscan (idVersion, iNeedsScan) values(%i, 0)", GetSchemaVersion()));
 }
 
@@ -381,6 +381,7 @@ void CMusicDatabase::CreateViews()
 bool CMusicDatabase::AddAlbum(CAlbum& album)
 {
   BeginTransaction();
+  SetLibraryLastUpdated();
 
   album.idAlbum = AddAlbum(album.strAlbum,
                            album.strMusicBrainzAlbumID,
@@ -453,6 +454,7 @@ bool CMusicDatabase::AddAlbum(CAlbum& album)
 bool CMusicDatabase::UpdateAlbum(CAlbum& album)
 {
   BeginTransaction();
+  SetLibraryLastUpdated();
 
   UpdateAlbum(album.idAlbum,
               album.strAlbum, album.strMusicBrainzAlbumID,
@@ -1074,6 +1076,8 @@ int CMusicDatabase::AddGenre(std::string& strGenre)
 
 bool CMusicDatabase::UpdateArtist(const CArtist& artist)
 {
+  SetLibraryLastUpdated();
+
   UpdateArtist(artist.idArtist,
                artist.strArtist, artist.strSortName,
                artist.strMusicBrainzArtistID, artist.bScrapedMBID,
@@ -3283,6 +3287,7 @@ bool CMusicDatabase::CleanupOrphanedItems()
   // paths aren't cleaned up here - they're cleaned up in RemoveSongsFromPath()
   if (NULL == m_pDB.get()) return false;
   if (NULL == m_pDS.get()) return false;
+  SetLibraryLastUpdated();
   if (!CleanupAlbums()) return false;
   if (!CleanupArtists()) return false;
   if (!CleanupGenres()) return false;
@@ -5330,6 +5335,13 @@ void CMusicDatabase::UpdateTables(int version)
     // Update all songs iStartOffset and iEndOffset to milliseconds instead of frames (* 1000 / 75)
     m_pDS->exec("UPDATE song SET iStartOffset = iStartOffset * 40 / 3, iEndOffset = iEndOffset * 40 / 3 \n");
   }
+  if (version < 71)
+  {
+    // Add lastscanned to versiontagscan table
+    m_pDS->exec("ALTER TABLE versiontagscan ADD lastscanned VARCHAR(20)\n");
+    CDateTime dateAdded = CDateTime::GetCurrentDateTime();
+    m_pDS->exec(PrepareSQL("UPDATE versiontagscan SET lastscanned = '%s'", dateAdded.GetAsDBDateTime().c_str()));
+  }
 
   // Set the verion of tag scanning required. 
   // Not every schema change requires the tags to be rescanned, set to the highest schema version 
@@ -5350,7 +5362,7 @@ void CMusicDatabase::UpdateTables(int version)
 
 int CMusicDatabase::GetSchemaVersion() const
 {
-  return 70;
+  return 71;
 }
 
 int CMusicDatabase::GetMusicNeedsTagScan()
@@ -5396,6 +5408,18 @@ void CMusicDatabase::SetMusicTagScanVersion(int version /* = 0 */)
   else
     m_pDS->exec(PrepareSQL("UPDATE versiontagscan SET idVersion=%i", version));
 }
+
+std::string CMusicDatabase::GetLibraryLastUpdated()
+{
+  return GetSingleValue("SELECT lastscanned FROM versiontagscan LIMIT 1");
+}
+
+void CMusicDatabase::SetLibraryLastUpdated()
+{
+  CDateTime dateUpdated = CDateTime::GetCurrentDateTime();
+  m_pDS->exec(PrepareSQL("UPDATE versiontagscan SET lastscanned = '%s'", dateUpdated.GetAsDBDateTime().c_str()));
+}
+
 
 unsigned int CMusicDatabase::GetSongIDs(const Filter &filter, std::vector<std::pair<int,int> > &songIDs)
 {
@@ -6231,6 +6255,7 @@ bool CMusicDatabase::RemoveSongsFromPath(const std::string &path1, MAPSONGS& son
   // Note: when used to remove all songs from a path and its subpath (exact=false), this
   // does miss archived songs.
   std::string path(path1);
+  SetLibraryLastUpdated();
   try
   {
     if (!URIUtils::HasSlashAtEnd(path))

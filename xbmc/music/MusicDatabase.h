@@ -585,6 +585,9 @@ public:
   */
   void SetMusicTagScanVersion(int version = 0);
 
+std::string GetLibraryLastUpdated();
+void SetLibraryLastUpdated();
+
 protected:
   std::map<std::string, int> m_genreCache;
   std::map<std::string, int> m_pathCache;
