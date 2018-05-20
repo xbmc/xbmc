@@ -55,6 +55,8 @@ protected:
   void UpdateButtons();
   int GetSelectedItem();
   void HighlightItem(int item);
+  std::string GetUniqueMediaSourceName();
+  static void OnMediaSourceChanged(const std::string& type, const std::string& oldName, const CMediaSource& share);
 
   std::vector<std::string> GetPaths() const;
 
