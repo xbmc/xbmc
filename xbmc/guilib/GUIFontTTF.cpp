@@ -893,9 +893,9 @@ void CGUIFontTTFBase::RenderCharacter(float posX, float posY, const Character *c
 
   if (m_renderSystem->UseLimitedColorRange())
   {
-    r = (235 - 16) * r / 255;
-    g = (235 - 16) * g / 255;
-    b = (235 - 16) * b / 255;
+    r = (235 - 16) * r / 255 + 16;
+    g = (235 - 16) * g / 255 + 16;
+    b = (235 - 16) * b / 255 + 16;
   }
 #endif
 

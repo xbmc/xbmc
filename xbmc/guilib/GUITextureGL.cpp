@@ -53,9 +53,9 @@ void CGUITextureGL::Begin(UTILS::Color color)
 
   if (m_renderSystem->UseLimitedColorRange())
   {
-    m_col[0] = (235 - 16) * m_col[0] / 255 + 16.0f / 255.0f;
-    m_col[1] = (235 - 16) * m_col[1] / 255 + 16.0f / 255.0f;
-    m_col[2] = (235 - 16) * m_col[2] / 255 + 16.0f / 255.0f;
+    m_col[0] = (235 - 16) * m_col[0] / 255 + 16;
+    m_col[1] = (235 - 16) * m_col[1] / 255 + 16;
+    m_col[2] = (235 - 16) * m_col[2] / 255 + 16;
   }
 
   bool hasAlpha = m_texture.m_textures[m_currentFrame]->HasAlpha() || m_col[3] < 255;
