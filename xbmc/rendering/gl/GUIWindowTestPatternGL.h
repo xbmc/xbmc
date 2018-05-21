@@ -2,7 +2,7 @@
 
 /*
  *      Copyright (C) 2005-present Team Kodi
- *      http://kodi.tv
+ *      This file is part of Kodi - https://kodi.tv
  *
  *      Test patterns designed by Ofer LaOr - hometheater.co.il
  *

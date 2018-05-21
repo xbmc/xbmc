@@ -5,7 +5,7 @@
  * Code was taken from http://refactormycode.com/codes/778-an-efficient-http-parser
  *
  *      Copyright (C) 2011-present Team Kodi
- *      http://kodi.tv
+ *      This file is part of Kodi - https://kodi.tv
  *
  *  Kodi is free software: you can redistribute it and/or modify it
  *  under the terms of the GNU General Public License as published by

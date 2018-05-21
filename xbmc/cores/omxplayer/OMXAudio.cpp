@@ -2,7 +2,7 @@
  *      Copyright (C) 2002 d7o3g4q and RUNTiME
  *      Portions Copyright (c) by the authors of ffmpeg and xvid
  *      Copyright (C) 2012-present Team Kodi
- *      http://kodi.tv
+ *      This file is part of Kodi - https://kodi.tv
  *
  *  Kodi is free software: you can redistribute it and/or modify it
  *  under the terms of the GNU General Public License as published by

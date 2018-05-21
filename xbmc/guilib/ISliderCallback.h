@@ -2,7 +2,7 @@
 
 /*
  *      Copyright (C) 2013-present Team Kodi
- *      http://www.xbmc.org
+ *      This file is part of Kodi - https://kodi.tvg
  *
  *  Kodi is free software: you can redistribute it and/or modify it
  *  under the terms of the GNU General Public License as published by

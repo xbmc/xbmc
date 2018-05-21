@@ -1,7 +1,7 @@
 @ECHO OFF
 rem Application for Windows install script
 rem Copyright (C) 2005-present Team Kodi
-rem http://kodi.tv
+rem This file is part of Kodi - https://kodi.tv
 
 rem Script by chadoe
 rem This script generates NullSoft NSIS installer include files for application's add-ons
