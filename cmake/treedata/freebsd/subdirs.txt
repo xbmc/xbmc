@@ -1,6 +1,7 @@
 xbmc/platform/posix                 platform/posix
 xbmc/platform/posix/filesystem      platform/posix/filesystem
 xbmc/platform/posix/utils           platform/posix/utils
+xbmc/platform/freebsd               platform/freebsd
 xbmc/platform/linux                 platform/linux
 xbmc/platform/linux/input           platform/linux/input
 xbmc/platform/linux/network         platform/linux/network
