@@ -925,9 +925,9 @@ void CSlideShowPic::Render(float *x, float *y, CBaseTexture* pTexture, UTILS::Co
 
   if (CServiceBroker::GetWinSystem()->UseLimitedColor())
   {
-    colour[0] = (235 - 16) * colour[0] / 255 + 16.0f / 255.0f;
-    colour[1] = (235 - 16) * colour[1] / 255 + 16.0f / 255.0f;
-    colour[2] = (235 - 16) * colour[2] / 255 + 16.0f / 255.0f;
+    colour[0] = (235 - 16) * colour[0] / 255 + 16;
+    colour[1] = (235 - 16) * colour[1] / 255 + 16;
+    colour[2] = (235 - 16) * colour[2] / 255 + 16;
   }
 
   glUniform4f(uniColLoc,(colour[0] / 255.0f), (colour[1] / 255.0f),
@@ -996,9 +996,9 @@ void CSlideShowPic::Render(float *x, float *y, CBaseTexture* pTexture, UTILS::Co
 
   if (CServiceBroker::GetWinSystem()->UseLimitedColor())
   {
-    col[0] = (235 - 16) * col[0] / 255 + 16.0f / 255.0f;
-    col[1] = (235 - 16) * col[1] / 255 + 16.0f / 255.0f;
-    col[2] = (235 - 16) * col[2] / 255 + 16.0f / 255.0f;
+    col[0] = (235 - 16) * col[0] / 255 + 16;
+    col[1] = (235 - 16) * col[1] / 255 + 16;
+    col[2] = (235 - 16) * col[2] / 255 + 16;
   }
 
   for (int i=0; i<4; i++)
