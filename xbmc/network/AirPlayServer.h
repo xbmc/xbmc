@@ -3,7 +3,7 @@
  * Many concepts and protocol specification in this code are taken from
  * the Boxee project. http://www.boxee.tv
  *
- *      Copyright (C) 2011-2013 Team XBMC
+ *      Copyright (C) 2011-present Team Kodi
  *      http://kodi.tv
  *
  *  Kodi is free software: you can redistribute it and/or modify it

@@ -2,8 +2,8 @@
 
 /*
  * Socket classes
- *      Copyright (c) 2008 d4rk
- *      Copyright (C) 2008-2015 Team Kodi
+ *      Copyright (C) 2008 d4rk
+ *      Copyright (C) 2008-present Team Kodi
  *      http://kodi.tv
  *
  *  Kodi is free software: you can redistribute it and/or modify it

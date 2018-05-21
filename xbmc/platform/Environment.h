@@ -2,7 +2,7 @@
 #ifndef XBMC_SETENV_H
 #define XBMC_SETENV_H
 /*
- *      Copyright (C) 2013 Team XBMC
+ *      Copyright (C) 2013-present Team Kodi
  *      http://kodi.tv
  *
  *  Kodi is free software: you can redistribute it and/or modify it

@@ -1,6 +1,6 @@
 /*
- *      Copyright (c) 2007 d4rk
- *      Copyright (C) 2007-2015 Team XBMC
+ *      Copyright (C) 2007 d4rk
+ *      Copyright (C) 2007-present Team Kodi
  *      Copyright (C) 2015 Lauri Mylläri
  *      http://kodi.tv
  *

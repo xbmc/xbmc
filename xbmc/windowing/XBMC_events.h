@@ -6,7 +6,7 @@
  *      Sam Lantinga
  *      slouken@libsdl.org
  *  
- *      Copyright (C) 2005-2015 Team Kodi
+ *      Copyright (C) 2005-present Team Kodi
  *      http://kodi.tv
  *
  *  Kodi is free software: you can redistribute it and/or modify it

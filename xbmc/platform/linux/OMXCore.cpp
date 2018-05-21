@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2010-2013 Team XBMCn
+ *      Copyright (C) 2010-present Team Kodin
  *      http://kodi.tv
  *
  *  Kodi is free software: you can redistribute it and/or modify it

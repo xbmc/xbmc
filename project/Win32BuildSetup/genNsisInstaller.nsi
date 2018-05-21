@@ -1,5 +1,5 @@
 ;Application for Windows install script
-;Copyright (C) 2005-2013 Team XBMC
+;Copyright (C) 2005-present Team Kodi
 ;http://xbmc.org
 
 ;--------------------------------

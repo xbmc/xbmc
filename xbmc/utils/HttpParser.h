@@ -4,7 +4,7 @@
  * This code is in the public domain.
  * Code was taken from http://refactormycode.com/codes/778-an-efficient-http-parser
  *
- *      Copyright (C) 2011-2013 Team XBMC
+ *      Copyright (C) 2011-present Team Kodi
  *      http://kodi.tv
  *
  *  Kodi is free software: you can redistribute it and/or modify it

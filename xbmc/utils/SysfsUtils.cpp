@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2011-2014 Team XBMC
+ *      Copyright (C) 2011-present Team Kodi
  *      http://kodi.tv
  *
  *  Kodi is free software: you can redistribute it and/or modify it

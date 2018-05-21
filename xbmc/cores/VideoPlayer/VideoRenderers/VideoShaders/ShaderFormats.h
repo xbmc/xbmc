@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2007-2017 Team Kodi
+ *      Copyright (C) 2007-present Team Kodi
  *      http://kodi.tv
  *
  *  Kodi is free software: you can redistribute it and/or modify it

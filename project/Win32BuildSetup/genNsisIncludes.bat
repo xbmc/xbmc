@@ -1,6 +1,6 @@
 @ECHO OFF
 rem Application for Windows install script
-rem Copyright (C) 2005-2015 Team XBMC
+rem Copyright (C) 2005-present Team Kodi
 rem http://kodi.tv
 
 rem Script by chadoe

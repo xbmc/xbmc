@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2015 Team Kodi
+ *      Copyright (C) 2015-present Team Kodi
  *
  *  Kodi is free software: you can redistribute it and/or modify it
  *  under the terms of the GNU General Public License as published by

@@ -4,7 +4,7 @@
  * Many concepts and protocol are taken from
  * the Boxee project. http://www.boxee.tv
  * 
- *      Copyright (C) 2011-2015 Team Kodi
+ *      Copyright (C) 2011-present Team Kodi
  *      http://kodi.tv
  *
  *  Kodi is free software: you can redistribute it and/or modify it

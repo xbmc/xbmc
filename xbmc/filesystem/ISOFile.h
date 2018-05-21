@@ -1,7 +1,7 @@
 /*
- *      Copyright (c) 2002 Frodo
+ *      Copyright (C) 2002 Frodo
  *      Portions Copyright (c) by the authors of ffmpeg and xvid
- *      Copyright (C) 2002-2013 Team XBMC
+ *      Copyright (C) 2002-present Team Kodi
  *      http://kodi.tv
  *
  *  Kodi is free software: you can redistribute it and/or modify it

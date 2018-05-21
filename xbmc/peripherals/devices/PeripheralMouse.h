@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2017-2018 Team Kodi
+ *      Copyright (C) 2017-present Team Kodi
  *      http://kodi.tv
  *
  *  Kodi is free software: you can redistribute it and/or modify it

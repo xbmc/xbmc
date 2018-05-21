@@ -1,8 +1,8 @@
 /*
- *      Copyright (c) 2007 Frodo/jcmarshall/vulkanr/d4rk
+ *      Copyright (C) 2007 Frodo/jcmarshall/vulkanr/d4rk
  *      Based on XBoxRenderer by Frodo/jcmarshall
  *      Portions Copyright (c) by the authors of ffmpeg / xvid /mplayer
- *      Copyright (C) 2007-2013 Team XBMC
+ *      Copyright (C) 2007-present Team Kodi
  *      http://kodi.tv
  *
  *  Kodi is free software: you can redistribute it and/or modify it

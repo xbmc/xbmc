@@ -1,5 +1,6 @@
 /*
- *  Copyright (C) 2009-2013 Team XBMC
+ *      Copyright (C) 2009-present Team Kodi
+ *      This file is part of Kodi - https://kodi.tv
  *
  *  Kodi is free software: you can redistribute it and/or modify it
  *  under the terms of the GNU General Public License as published by

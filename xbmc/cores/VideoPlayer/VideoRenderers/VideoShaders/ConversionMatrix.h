@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2018 Team XBMC
+ *      Copyright (C) 2005-present Team Kodi
  *      http://kodi.tv
  *
  *  This library is free software; you can redistribute it and/or

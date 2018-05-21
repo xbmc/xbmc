@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2013 Team XBMC
+ *      Copyright (C) 2005-present Team Kodi
  *      http://kodi.tv
  *
  *      Test patterns designed by Ofer LaOr - hometheater.co.il

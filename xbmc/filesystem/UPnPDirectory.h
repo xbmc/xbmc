@@ -1,10 +1,10 @@
 /*
  * UPnP Support for XBMC
- *      Copyright (c) 2006 c0diq (Sylvain Rebaud)
+ *      Copyright (C) 2006 c0diq (Sylvain Rebaud)
  *      Portions Copyright (c) by the authors of libPlatinum
  *      http://www.plutinosoft.com/blog/category/platinum/
  *
- *      Copyright (C) 2010-2013 Team XBMC
+ *      Copyright (C) 2010-present Team Kodi
  *      http://kodi.tv
  *
  *  Kodi is free software: you can redistribute it and/or modify it

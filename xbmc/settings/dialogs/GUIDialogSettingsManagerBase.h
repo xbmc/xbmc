@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2014 Team XBMC
+ *      Copyright (C) 2014-present Team Kodi
  *      http://www.xbmc.org
  *
  *  Kodi is free software: you can redistribute it and/or modify it
