@@ -210,9 +210,9 @@ void CRPRendererGuiTexture::RenderInternal(bool clear, uint8_t alpha)
 
   if (m_context.UseLimitedColor())
   {
-    colour[0] = (235 - 16) * colour[0] / 255;
-    colour[1] = (235 - 16) * colour[1] / 255;
-    colour[2] = (235 - 16) * colour[2] / 255;
+    colour[0] = (235 - 16) * colour[0] / 255 + 16;
+    colour[1] = (235 - 16) * colour[1] / 255 + 16;
+    colour[2] = (235 - 16) * colour[2] / 255 + 16;
   }
 
   glUniform4f(uniColLoc, (colour[0] / 255.0f), (colour[1] / 255.0f),
