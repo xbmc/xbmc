@@ -133,6 +133,7 @@ namespace DX
     void SetWindow(const winrt::Windows::UI::Core::CoreWindow& window);
     void SetWindowPos(winrt::Windows::Foundation::Rect rect);
 #endif // TARGET_WINDOWS_STORE
+    bool DoesTextureSharingWork();
 
   private:
     class CBackBuffer : public CD3DTexture
@@ -165,6 +166,7 @@ namespace DX
     Microsoft::WRL::ComPtr<ID3D11DeviceContext1> m_d3dContext;
     Microsoft::WRL::ComPtr<ID3D11DeviceContext1> m_deferrContext;
     Microsoft::WRL::ComPtr<IDXGISwapChain1> m_swapChain;
+    Microsoft::WRL::ComPtr<ID3D11Query> m_query;
 #ifdef _DEBUG
     Microsoft::WRL::ComPtr<ID3D11Debug> m_d3dDebug;
 #endif

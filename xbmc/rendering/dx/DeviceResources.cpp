@@ -28,6 +28,7 @@
 #include "platform/win32/CharsetConverter.h"
 #include "ServiceBroker.h"
 #include "utils/log.h"
+#include "utils/SystemInfo.h"
 
 #ifdef _DEBUG
 #include <dxgidebug.h>
@@ -314,16 +315,16 @@ void DX::DeviceResources::CreateDeviceResources()
   // Note the ordering should be preserved.
   // Don't forget to declare your application's minimum required feature level in its
   // description.  All applications are assumed to support 9.1 unless otherwise stated.
-  D3D_FEATURE_LEVEL featureLevels[] =
-  {
-    D3D_FEATURE_LEVEL_11_1,
-    D3D_FEATURE_LEVEL_11_0,
-    D3D_FEATURE_LEVEL_10_1,
-    D3D_FEATURE_LEVEL_10_0,
-    D3D_FEATURE_LEVEL_9_3,
-    D3D_FEATURE_LEVEL_9_2,
-    D3D_FEATURE_LEVEL_9_1
-  };
+  std::vector<D3D_FEATURE_LEVEL> featureLevels;
+  if (CSysInfo::IsWindowsVersionAtLeast(CSysInfo::WindowsVersionWin8))
+    featureLevels.push_back(D3D_FEATURE_LEVEL_11_1);
+
+  featureLevels.push_back(D3D_FEATURE_LEVEL_11_0);
+  featureLevels.push_back(D3D_FEATURE_LEVEL_10_1);
+  featureLevels.push_back(D3D_FEATURE_LEVEL_10_0);
+  featureLevels.push_back(D3D_FEATURE_LEVEL_9_3);
+  featureLevels.push_back(D3D_FEATURE_LEVEL_9_2);
+  featureLevels.push_back(D3D_FEATURE_LEVEL_9_1);
 
   // Create the Direct3D 11 API device object and a corresponding context.
   ComPtr<ID3D11Device> device;
@@ -335,8 +336,8 @@ void DX::DeviceResources::CreateDeviceResources()
       drivertType,               // Create a device using scepcified driver.
       nullptr,                   // Should be 0 unless the driver is D3D_DRIVER_TYPE_SOFTWARE.
       creationFlags,             // Set debug and Direct2D compatibility flags.
-      featureLevels,             // List of feature levels this app can support.
-      ARRAYSIZE(featureLevels),  // Size of the list above.
+      featureLevels.data(),      // List of feature levels this app can support.
+      featureLevels.size(),      // Size of the list above.
       D3D11_SDK_VERSION,         // Always set this to D3D11_SDK_VERSION for Windows Store apps.
       &device,                   // Returns the Direct3D device created.
       &m_d3dFeatureLevel,        // Returns feature level of device created.
@@ -351,8 +352,8 @@ void DX::DeviceResources::CreateDeviceResources()
         D3D_DRIVER_TYPE_WARP, // Create a WARP device instead of a hardware device.
         nullptr,
         creationFlags,
-        featureLevels,
-        ARRAYSIZE(featureLevels),
+        featureLevels.data(),
+        featureLevels.size(),
         D3D11_SDK_VERSION,
         &device,
         &m_d3dFeatureLevel,
@@ -429,6 +430,7 @@ void DX::DeviceResources::ReleaseBackBuffer()
   m_d3dDepthStencilView = nullptr;
   m_deferrContext->Flush();
   m_d3dContext->Flush();
+  m_query = nullptr;
 }
 
 void DX::DeviceResources::CreateBackBuffer()
@@ -862,7 +864,6 @@ bool DX::DeviceResources::Begin()
 void DX::DeviceResources::Present()
 {
   FinishCommandList();
-  m_d3dContext->Flush();
 
   // The first argument instructs DXGI to block until VSync, putting the application
   // to sleep until the next VSync. This ensures we don't waste any cycles rendering
@@ -1005,6 +1006,14 @@ bool DX::DeviceResources::IsStereoAvailable() const
     return m_dxgiFactory->IsWindowedStereoEnabled();
 
   return false;
+}
+
+bool DX::DeviceResources::DoesTextureSharingWork()
+{
+  if (m_d3dFeatureLevel < D3D_FEATURE_LEVEL_10_0)
+    return false;
+
+  return false; // @todo proper check
 }
 
 #if defined(TARGET_WINDOWS_DESKTOP)

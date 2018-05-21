@@ -325,33 +325,17 @@ ID3D11VideoProcessorInputView* CProcessorHD::GetInputView(CRenderBuffer* view) c
   ComPtr<ID3D11VideoProcessorInputView> inputView;
   D3D11_VIDEO_PROCESSOR_INPUT_VIEW_DESC vpivd = { 0, D3D11_VPIV_DIMENSION_TEXTURE2D,{ 0, 0 } };
 
-  if (view->format == BUFFER_FMT_D3D11_BYPASS)
+  ComPtr<ID3D11Resource> resource;
+  unsigned arrayIdx = 0;
+  hr = view->GetResource(resource.GetAddressOf(), &arrayIdx);
+  if (SUCCEEDED(hr))
   {
-    // the view cames from decoder
-    ID3D11VideoDecoderOutputView* decoderView = reinterpret_cast<ID3D11VideoDecoderOutputView*>(view->GetHWView());
-    if (!decoderView)
-    {
-      CLog::Log(LOGERROR, "%s: cannot get decoder view.", __FUNCTION__);
-      return nullptr;
-    }
-
-    ComPtr<ID3D11Resource> resource;
-    D3D11_VIDEO_DECODER_OUTPUT_VIEW_DESC vdovd;
-    decoderView->GetDesc(&vdovd);
-    decoderView->GetResource(resource.GetAddressOf());
-    vpivd.Texture2D.ArraySlice = vdovd.Texture2D.ArraySlice;
-
+    vpivd.Texture2D.ArraySlice = arrayIdx;
     hr = m_pVideoDevice->CreateVideoProcessorInputView(resource.Get(), m_pEnumerator.Get(), &vpivd, inputView.GetAddressOf());
-  }
-  else if (view->format == BUFFER_FMT_D3D11_NV12
-        || view->format == BUFFER_FMT_D3D11_P010
-        || view->format == BUFFER_FMT_D3D11_P016)
-  {
-    hr = m_pVideoDevice->CreateVideoProcessorInputView(view->GetResource(), m_pEnumerator.Get(), &vpivd, inputView.GetAddressOf());
   }
 
   if (FAILED(hr) || hr == S_FALSE)
-    CLog::Log(LOGERROR, "%s: cannot create processor input view.", __FUNCTION__);
+    CLog::LogF(LOGERROR, "cannot create processor input view.");
 
   return inputView.Detach();
 }
