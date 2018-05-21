@@ -84,7 +84,7 @@ Kodi - Cross-platform Media Center
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 Generic classes for raster images
 
@@ -161,7 +161,7 @@ Mach-O library symbol mapping Ruby Scripts
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 Wiimote C Library
 <http://www.wiiuse.net/>
@@ -180,7 +180,7 @@ Wiimote C Library
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 Wiiuse Class for Kodi
 
@@ -197,7 +197,7 @@ Wiiuse Class for Kodi
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 Apple Remote Control Wrapper Classes
 
@@ -333,7 +333,7 @@ GNU gettext - internationalization aids
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 DBUSServer Class
 <http://www.azurdigitalnetworks.net/>
@@ -351,7 +351,7 @@ DBUSServer Class
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 Really Slick X Screensavers
 <http://www.reallyslick.com/>
@@ -370,7 +370,7 @@ Really Slick X Screensavers
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 SDLMain.h
 
@@ -394,7 +394,7 @@ XKGeneral.h - General Utility and Helper function Class' Header
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 Goom 2k4
 <http://www.ios-software.com/index.php3?page=projet&quoi=1&lg=AN>
@@ -413,7 +413,7 @@ Goom 2k4
     Lesser General Public License for more details.
 
     You should have received a copy of the GNU Lesser General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
     iTunes Visualizer Plug-In SDK files included in Goom 2k4 are under the
     following license.
@@ -472,7 +472,7 @@ XAnalyser, frequence spectrum analyser for X Window
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 XMMS - Cross-platform multimedia player
 <http://www.xmms.org/>
@@ -491,7 +491,7 @@ XMMS - Cross-platform multimedia player
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 Pthreads-win32 - POSIX Threads Library for Win32
 <http://sourceware.org/pthreads-win32/>
@@ -509,7 +509,7 @@ Pthreads-win32 - POSIX Threads Library for Win32
     Library General Public License for more details.
 
     You should have received a copy of the GNU Library General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 projectM - OpenGL based advanced music visualization program
 <http://projectm.sourceforge.net/>
@@ -527,7 +527,7 @@ projectM - OpenGL based advanced music visualization program
     Lesser General Public License for more details.
 
     You should have received a copy of the GNU Lesser General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 OpenDAAP
 <http://www.opendaap.org/>
@@ -546,7 +546,7 @@ OpenDAAP
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 zlib - A Massively Spiffy Yet Delicately Unobtrusive Compression Library
 <http://www.zlib.net/>
@@ -584,7 +584,7 @@ iso9660.h
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 Neptune Portable C++ Runtime Library
 <http://neptune.sourceforge.net/>
@@ -634,7 +634,7 @@ MMST implementation taken from the xine-mms plugin made by Major MMS
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 Ogg Bitstream Library
 <http://www.xiph.org/>
@@ -710,7 +710,7 @@ LAME Ain't an Mp3 Encoder
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 GNU libmicrohttpd
 <http://www.gnu.org/software/libmicrohttpd/>
@@ -729,7 +729,7 @@ GNU libmicrohttpd
     Lesser General Public License for more details.
 
     You should have received a copy of the GNU Lesser General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 Python Programming Language
 <http://www.python.org/>
@@ -785,7 +785,7 @@ libsamplerate - audio rate conversion library
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 MediaMVP Media Center
 <http://www.mvpmc.org/>
@@ -804,7 +804,7 @@ MediaMVP Media Center
     Lesser General Public License for more details.
 
     You should have received a copy of the GNU Lesser General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 MySQL
 <http://www.mysql.com/>
@@ -821,7 +821,7 @@ MySQL
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 libid3tag - ID3 tag manipulation library
 <http://www.underbit.com/products/mad/>
@@ -839,7 +839,7 @@ libid3tag - ID3 tag manipulation library
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 Simple DirectMedia Layer
 <http://www.libsdl.org/>
@@ -857,7 +857,7 @@ Simple DirectMedia Layer
     Lesser General Public License for more details.
 
     You should have received a copy of the GNU Lesser General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 libfribidi - Free Implementation of the Unicode BiDi algorithm
 <http://www.fribidi.org/>
@@ -876,7 +876,7 @@ libfribidi - Free Implementation of the Unicode BiDi algorithm
     Lesser General Public License for more details.
 
     You should have received a copy of the GNU Lesser General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 CDRip - library that provides methods for extracting data from audio CDs
 <http://libcdrip.sourceforge.net/>
@@ -894,7 +894,7 @@ CDRip - library that provides methods for extracting data from audio CDs
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 Platinum - UPnP library
 <http://www.plutinosoft.com/>
@@ -912,7 +912,7 @@ Platinum - UPnP library
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 SQLite - library that implements a self-contained, serverless,
 zero-configuration, transactional SQL database engine.
@@ -1038,7 +1038,7 @@ CxImage - C++ image processing and conversion library
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
     MNG
     Copyright © 2000-2007 Gerard Juyn (gerard@libmng.com)
@@ -1185,7 +1185,7 @@ Audioscrobbler - The Social Music Technology Playground
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 Samba - Opening Windows to a Wider World
 <http://www.samba.org/>
@@ -1207,7 +1207,7 @@ Samba - Opening Windows to a Wider World
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 PCRE - Perl Compatible Regular Expressions
 <http://www.pcre.org/>
@@ -1256,7 +1256,7 @@ HDHomeRun - Networked Digital Tuner
     Lesser General Public License for more details.
 
     You should have received a copy of the GNU Lesser General Public
-    License along with this library.  If not, see
+    License along with this library. If not, see
     <http://www.gnu.org/licenses/>.
 
     As a special exception to the GNU Lesser General Public License,
@@ -1288,7 +1288,7 @@ LibASS - portable library for SSA/ASS subtitles rendering
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 libRTV - ReplayTV library
 
@@ -1305,7 +1305,7 @@ libRTV - ReplayTV library
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 libiconv - iconv() implementation
 <http://www.gnu.org/software/libiconv/>
@@ -1323,7 +1323,7 @@ libiconv - iconv() implementation
     Library General Public License for more details.
 
     You should have received a copy of the GNU Library General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 Boost C++ Libraries
 <http://www.boost.org/>
@@ -1370,7 +1370,7 @@ streaming server for Linux.
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 GNU Compact Disc Input and Control Library
 <http://www.gnu.org/software/libcdio/index.html>
@@ -1389,7 +1389,7 @@ GNU Compact Disc Input and Control Library
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 SNESAPU - SNES APU emulator library
 <http://www.alpha-ii.com/>
@@ -1407,7 +1407,7 @@ SNESAPU - SNES APU emulator library
     Lesser General Public License for more details.
 
     You should have received a copy of the GNU Lesser General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 Musepack Decoder Library
 <http://www.musepack.net/>
@@ -1458,7 +1458,7 @@ FLAC - Free Lossless Audio Codec
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 Gens APU from Gens
 <http://info.sonicretro.org/Gens/GS>
@@ -1476,7 +1476,7 @@ Gens APU from Gens
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 vgmstream - library for playback of various video game audio formats
 <http://vgmstream.sourceforge.net/>
@@ -1511,7 +1511,7 @@ nosefart - NES sound format player
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 MAD - MPEG Audio Decoder
 <http://www.underbit.com/products/mad/>
@@ -1529,7 +1529,7 @@ MAD - MPEG Audio Decoder
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 SID Player Music Library V2
 <http://sidplay2.sourceforge.net/>
@@ -1550,7 +1550,7 @@ SID Player Music Library V2
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 Xbox ADPCM audio codec
 <http://www.winamp.com/plugins/details/147392>
@@ -1568,7 +1568,7 @@ Xbox ADPCM audio codec
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 ST-Sound - general "Nostalgic" Computer Sound Emulator
 <http://leonard.oxg.free.fr>
@@ -1586,7 +1586,7 @@ ST-Sound - general "Nostalgic" Computer Sound Emulator
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 TiMidity++ - software synthesizer
 <http://timidity.sourceforge.net/>
@@ -1605,7 +1605,7 @@ TiMidity++ - software synthesizer
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 FFmpeg - complete, cross-platform solution to record, convert and stream audio
 and video
@@ -1653,7 +1653,7 @@ and video
     Lesser General Public License for more details.
 
     You should have received a copy of the GNU Lesser General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
     GPL-2
 
@@ -1668,7 +1668,7 @@ and video
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 nuttcp - TCP/UDP network testing tool
 <http://www.lcp.nrl.navy.mil/nuttcp/>
@@ -1720,7 +1720,7 @@ libdvdnav and libdvdread - libraries to read DVDs and navigate DVD menus
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 libdca - free library for decoding DTS Coherent Acoustics streams
 <http://www.videolan.org/developers/libdca.html>
@@ -1738,7 +1738,7 @@ libdca - free library for decoding DTS Coherent Acoustics streams
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 libspucc - library that's part of the Xine project
 <http://www.xine-project.org/home>
@@ -1757,7 +1757,7 @@ libspucc - library that's part of the Xine project
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 libmpeg2 - a free MPEG-2 video stream decoder
 <http://libmpeg2.sourceforge.net/>
@@ -1776,7 +1776,7 @@ libmpeg2 - a free MPEG-2 video stream decoder
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 libdvdcss - library designed for accessing encrypted DVDs
 <http://www.videolan.org/developers/libdvdcss.html>
@@ -1794,7 +1794,7 @@ libdvdcss - library designed for accessing encrypted DVDs
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 Sample frequency change classes
 
@@ -1814,7 +1814,7 @@ Sample frequency change classes
     Lesser General Public License for more details.
 
     You should have received a copy of the GNU Lesser General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 Kodi-xrandr.c
 
@@ -1856,7 +1856,7 @@ Kodi/Crc32.cpp and Kodi/Crc32.h
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
     Portion of this code was taken from efone.
     efone - Distributed internet phone system.
@@ -1906,7 +1906,7 @@ Crystal HD
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU Lesser General Public License for more details.
     You should have received a copy of the GNU Lesser General Public License
-    along with this header.  If not, see <http://www.gnu.org/licenses/>.
+    along with this header. If not, see <http://www.gnu.org/licenses/>.
 
     The Crystal HD driver is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public License as published by
@@ -1918,7 +1918,7 @@ Crystal HD
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this driver.  If not, see <http://www.gnu.org/licenses/>.
+    along with this driver. If not, see <http://www.gnu.org/licenses/>.
 
 OpenSSH
 <http://www.openssh.org/>
@@ -1944,7 +1944,7 @@ Enca - Extremely Naive Charset Analyser
     more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 C-Pluff - a plug-in framework for C
 <http://www.c-pluff.org/>
@@ -2005,7 +2005,7 @@ J2ME Event Client
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 OSXRemote Client
 
@@ -2023,7 +2023,7 @@ OSXRemote Client
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 HIDRemote Classes used by OSXRemote Client
 
@@ -2213,7 +2213,7 @@ SlingboxLib - Library to communicate with Slingbox devices
     General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 ASAP (Another Slight Atari Player)
 <http://asap.sourceforge.net>
@@ -2231,7 +2231,7 @@ ASAP (Another Slight Atari Player)
     See the GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 CMyth - C library for communicating with MythTv server
 <http://www.mvpmc.org>
@@ -2249,7 +2249,7 @@ CMyth - C library for communicating with MythTv server
     Lesser General Public License for more details.
 
     You should have received a copy of the GNU Lesser General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 libapetag - Library for manipulating APE tags.
 <http://src.gnu-darwin.org/ports/audio/easytag/work/easytag-2.1/src/libapetag/>
@@ -2267,7 +2267,7 @@ libapetag - Library for manipulating APE tags.
     GNU Lesser General Public License for more details.
 
     You should have received a copy of the GNU Lesser General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 libbluray - Blu-ray disc playback support library
 
@@ -2368,7 +2368,7 @@ LZO Library - LZO real-time data compression library
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 Licenses:
 

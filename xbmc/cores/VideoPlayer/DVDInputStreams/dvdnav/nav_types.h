@@ -9,11 +9,11 @@
  * VOBDUMP: a program for examining DVD .VOB files.
  * Copyright 1998, 1999 Eric Smith <eric@brouhaha.com>
  *
- * VOBDUMP is free software; you can redistribute it and/or modify it
+ * VOBDUMP is free software; you can redistribute it and/or modify it it
  * under the terms of the GNU General Public License version 2 as
  * published by the Free Software Foundation.  Note that I am not
  * granting permission to redistribute or modify VOBDUMP under the terms
- * of any later version of the General Public License.
+ * of (at your option) any later version.of the General Public License.
  *
  * This program is distributed in the hope that it will be useful (or at
  * least amusing), but WITHOUT ANY WARRANTY; without even the implied

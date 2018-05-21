@@ -497,7 +497,7 @@ index 0000000..1a32d7a
 +	print "   ";
 +	print "   This program is distributed in the hope that it will be useful,";
 +	print "   but WITHOUT ANY WARRANTY; without even the implied warranty of";
-+	print "   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the";
++	print "   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the";
 +	print "   GNU General Public License for more details.";
 +	print "   ";
 +	print "   You should have received a copy of the GNU General Public License";
@@ -826,7 +826,7 @@ index 0000000..d742a0a
 +
 +   This program is distributed in the hope that it will be useful,
 +   but WITHOUT ANY WARRANTY; without even the implied warranty of
-+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 +   GNU General Public License for more details.
 +
 +   You should have received a copy of the GNU General Public License
@@ -1047,12 +1047,12 @@ index 0000000..da83314
 +
 +# This file is free software; you can redistribute it and/or modify it
 +# under the terms of the GNU General Public License as published by
-+# the Free Software Foundation; either version 2 of the License, or
++# the Free Software Foundation, either version 2 of the License, or
 +# (at your option) any later version.
 +#
 +# This program is distributed in the hope that it will be useful, but
 +# WITHOUT ANY WARRANTY; without even the implied warranty of
-+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 +# General Public License for more details.
 +#
 +# You should have received a copy of the GNU General Public License
@@ -2618,12 +2618,12 @@ index 0000000..a39437d
 +#
 +# This file is free software; you can redistribute it and/or modify
 +# it under the terms of the GNU General Public License as published by
-+# the Free Software Foundation; either version 2 of the License, or
++# the Free Software Foundation, either version 2 of the License, or
 +# (at your option) any later version.
 +#
 +# This program is distributed in the hope that it will be useful,
 +# but WITHOUT ANY WARRANTY; without even the implied warranty of
-+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 +# GNU General Public License for more details.
 +#
 +# You should have received a copy of the GNU General Public License
@@ -10409,7 +10409,7 @@ index 0000000..a8b3d06
 +#
 +# This program is distributed in the hope that it will be useful, but
 +# WITHOUT ANY WARRANTY; without even the implied warranty of
-+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 +# General Public License for more details.
 +#
 +# You should have received a copy of the GNU General Public License
@@ -14138,12 +14138,12 @@ index 0000000..da83314
 +
 +# This file is free software; you can redistribute it and/or modify it
 +# under the terms of the GNU General Public License as published by
-+# the Free Software Foundation; either version 2 of the License, or
++# the Free Software Foundation, either version 2 of the License, or
 +# (at your option) any later version.
 +#
 +# This program is distributed in the hope that it will be useful, but
 +# WITHOUT ANY WARRANTY; without even the implied warranty of
-+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 +# General Public License for more details.
 +#
 +# You should have received a copy of the GNU General Public License
@@ -15709,12 +15709,12 @@ index 0000000..a39437d
 +#
 +# This file is free software; you can redistribute it and/or modify
 +# it under the terms of the GNU General Public License as published by
-+# the Free Software Foundation; either version 2 of the License, or
++# the Free Software Foundation, either version 2 of the License, or
 +# (at your option) any later version.
 +#
 +# This program is distributed in the hope that it will be useful,
 +# but WITHOUT ANY WARRANTY; without even the implied warranty of
-+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 +# GNU General Public License for more details.
 +#
 +# You should have received a copy of the GNU General Public License
@@ -25984,7 +25984,7 @@ index 0000000..31baaf7
 +#
 +#   This program is distributed in the hope that it will be useful,
 +#   but WITHOUT ANY WARRANTY; without even the implied warranty of
-+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 +#   GNU General Public License for more details.
 +#
 +#   You should have received a copy of the GNU General Public License
@@ -26605,7 +26605,7 @@ index 0000000..01e6b69
 +#
 +#   This program is distributed in the hope that it will be useful,
 +#   but WITHOUT ANY WARRANTY; without even the implied warranty of
-+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 +#   GNU General Public License for more details.
 +#
 +#   You should have received a copy of the GNU General Public License
@@ -27203,7 +27203,7 @@ index 0000000..e039311
 +#
 +#   This program is distributed in the hope that it will be useful,
 +#   but WITHOUT ANY WARRANTY; without even the implied warranty of
-+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 +#   GNU General Public License for more details.
 +#
 +#   You should have received a copy of the GNU General Public License
@@ -27819,7 +27819,7 @@ index 0000000..aac9002
 +#
 +#   This program is distributed in the hope that it will be useful,
 +#   but WITHOUT ANY WARRANTY; without even the implied warranty of
-+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 +#   GNU General Public License for more details.
 +#
 +#   You should have received a copy of the GNU General Public License
@@ -28418,7 +28418,7 @@ index 0000000..9e9b53b
 +#
 +#   This program is distributed in the hope that it will be useful,
 +#   but WITHOUT ANY WARRANTY; without even the implied warranty of
-+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 +#   GNU General Public License for more details.
 +#
 +#   You should have received a copy of the GNU General Public License
@@ -28463,7 +28463,7 @@ index 0000000..90c3ed5
 +#
 +#   This program is distributed in the hope that it will be useful,
 +#   but WITHOUT ANY WARRANTY; without even the implied warranty of
-+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 +#   GNU General Public License for more details.
 +#
 +#   You should have received a copy of the GNU General Public License
@@ -29062,7 +29062,7 @@ index 0000000..52ec571
 +#
 +#   This program is distributed in the hope that it will be useful,
 +#   but WITHOUT ANY WARRANTY; without even the implied warranty of
-+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 +#   GNU General Public License for more details.
 +#
 +#   You should have received a copy of the GNU General Public License
@@ -29661,7 +29661,7 @@ index 0000000..c0aae12
 +#
 +#   This program is distributed in the hope that it will be useful,
 +#   but WITHOUT ANY WARRANTY; without even the implied warranty of
-+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 +#   GNU General Public License for more details.
 +#
 +#   You should have received a copy of the GNU General Public License
@@ -30259,7 +30259,7 @@ index 0000000..aca5de6
 +#
 +#   This program is distributed in the hope that it will be useful,
 +#   but WITHOUT ANY WARRANTY; without even the implied warranty of
-+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 +#   GNU General Public License for more details.
 +#
 +#   You should have received a copy of the GNU General Public License
@@ -30857,7 +30857,7 @@ index 0000000..d859406
 +#
 +#   This program is distributed in the hope that it will be useful,
 +#   but WITHOUT ANY WARRANTY; without even the implied warranty of
-+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 +#   GNU General Public License for more details.
 +#
 +#   You should have received a copy of the GNU General Public License
@@ -31469,7 +31469,7 @@ index 0000000..03b489d
 +#
 +#   This program is distributed in the hope that it will be useful,
 +#   but WITHOUT ANY WARRANTY; without even the implied warranty of
-+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 +#   GNU General Public License for more details.
 +#
 +#   You should have received a copy of the GNU General Public License
@@ -32454,7 +32454,7 @@ index 0000000..b97ed25
 +
 +   This program is distributed in the hope that it will be useful,
 +   but WITHOUT ANY WARRANTY; without even the implied warranty of
-+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 +   GNU General Public License for more details.
 +
 +   You should have received a copy of the GNU General Public License
@@ -33259,7 +33259,7 @@ index 0000000..955ff89
 +
 +   This program is distributed in the hope that it will be useful,
 +   but WITHOUT ANY WARRANTY; without even the implied warranty of
-+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 +   GNU General Public License for more details.
 +
 +   You should have received a copy of the GNU General Public License
@@ -33344,7 +33344,7 @@ index 0000000..c415449
 +   
 +   This program is distributed in the hope that it will be useful,
 +   but WITHOUT ANY WARRANTY; without even the implied warranty of
-+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 +   GNU General Public License for more details.
 +   
 +   You should have received a copy of the GNU General Public License
@@ -33471,7 +33471,7 @@ index 0000000..ec8f802
 +   
 +   This program is distributed in the hope that it will be useful,
 +   but WITHOUT ANY WARRANTY; without even the implied warranty of
-+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 +   GNU General Public License for more details.
 +   
 +   You should have received a copy of the GNU General Public License
@@ -33607,7 +33607,7 @@ index 0000000..d257970
 +   
 +   This program is distributed in the hope that it will be useful,
 +   but WITHOUT ANY WARRANTY; without even the implied warranty of
-+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 +   GNU General Public License for more details.
 +   
 +   You should have received a copy of the GNU General Public License
@@ -35780,7 +35780,7 @@ index 0000000..424a3af
 + *
 + * This program is distributed in the hope that it will be useful,
 + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 + * GNU General Public License for more details.
 + *
 + * You should have received a copy of the GNU General Public License
