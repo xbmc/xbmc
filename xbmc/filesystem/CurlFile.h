@@ -196,6 +196,7 @@ namespace XFILE
       bool m_skipshout;
       bool m_postdataset;
       bool m_allowRetry;
+      bool m_verifyPeer = true;
 
       CRingBuffer m_buffer; // our ringhold buffer
       char* m_overflowBuffer; // in the rare case we would overflow the above buffer
