@@ -30,9 +30,11 @@
 
 #include <map>
 #include <string>
+#include <memory>
 
 //  Forward
 class CGUIListItemLayout;
+using CGUIListItemLayoutPtr = std::unique_ptr<CGUIListItemLayout>;
 class CArchive;
 class CVariant;
 
@@ -142,10 +144,10 @@ public:
   bool HasOverlay() const;
   virtual bool IsFileItem() const { return false; };
 
-  void SetLayout(CGUIListItemLayout *layout);
+  void SetLayout(CGUIListItemLayoutPtr layout);
   CGUIListItemLayout *GetLayout();
 
-  void SetFocusedLayout(CGUIListItemLayout *layout);
+  void SetFocusedLayout(CGUIListItemLayoutPtr layout);
   CGUIListItemLayout *GetFocusedLayout();
 
   void FreeIcons();
@@ -182,8 +184,8 @@ protected:
   std::string m_strIcon;      // filename of icon
   GUIIconOverlay m_overlayIcon; // type of overlay icon
 
-  CGUIListItemLayout *m_layout;
-  CGUIListItemLayout *m_focusedLayout;
+  CGUIListItemLayoutPtr m_layout;
+  CGUIListItemLayoutPtr m_focusedLayout;
   bool m_bSelected;     // item is selected or not
 
   struct icompare

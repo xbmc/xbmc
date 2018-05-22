@@ -165,8 +165,7 @@ void CGUIBaseContainer::ProcessItem(float posX, float posY, CGUIListItemPtr& ite
   {
     if (!item->GetFocusedLayout())
     {
-      CGUIListItemLayout *layout = new CGUIListItemLayout(*m_focusedLayout, this);
-      item->SetFocusedLayout(layout);
+      item->SetFocusedLayout(CGUIListItemLayoutPtr(new CGUIListItemLayout(*m_focusedLayout, this)));
     }
     if (item->GetFocusedLayout())
     {
@@ -192,9 +191,9 @@ void CGUIBaseContainer::ProcessItem(float posX, float posY, CGUIListItemPtr& ite
       item->GetFocusedLayout()->SetFocusedItem(0);  // focus is not set
     if (!item->GetLayout())
     {
-      CGUIListItemLayout *layout = new CGUIListItemLayout(*m_layout);
+      CGUIListItemLayoutPtr layout(new CGUIListItemLayout(*m_layout));
       layout->SetParentControl(this);
-      item->SetLayout(layout);
+      item->SetLayout(std::move(layout));
     }
     if (item->GetFocusedLayout())
       item->GetFocusedLayout()->Process(item.get(), m_parentID, currentTime, dirtyregions);
