@@ -231,8 +231,15 @@ function(add_addon_depends addon searchpath)
                                     -DCMAKE_INCLUDE_PATH=${OUTPUT_DIR}/include)
             endif()
 
+            if(EXISTS ${dir}/${id}.sha256)
+              file(STRINGS ${dir}/${id}.sha256 sha256sum)
+              list(GET sha256sum 0 sha256sum)
+              set(URL_HASH_COMMAND URL_HASH SHA256=${sha256sum})
+            endif()
+
             externalproject_add(${id}
                                 URL ${url}
+                                "${URL_HASH_COMMAND}"
                                 DOWNLOAD_DIR ${BUILD_DIR}/download
                                 CONFIGURE_COMMAND ${CONFIGURE_COMMAND}
                                 "${EXTERNALPROJECT_SETUP}")
