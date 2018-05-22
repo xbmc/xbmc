@@ -168,35 +168,38 @@ static uint32_t GetPropertyId(struct drm_object *object, const char *name)
     if (!strcmp(object->props_info[i]->name, name))
       return object->props_info[i]->prop_id;
 
+  CLog::Log(LOGWARNING, "CDRMUtils::%s - could not find property %s", __FUNCTION__, name);
   return 0;
 }
 
 bool CDRMUtils::AddProperty(drmModeAtomicReqPtr req, struct drm_object *object, const char *name, uint64_t value)
 {
   uint32_t property_id = GetPropertyId(object, name);
-  if (property_id)
+  if (!property_id)
+    return false;
+
+  if (drmModeAtomicAddProperty(req, object->id, property_id, value) < 0)
   {
-    int ret = drmModeAtomicAddProperty(req, object->id, property_id, value);
-    if (ret > 0)
-      return true;
+    CLog::Log(LOGERROR, "CDRMUtils::%s - could not add property %s", __FUNCTION__, name);
+    return false;
   }
 
-  CLog::Log(LOGWARNING, "CDRMUtils::%s - could not %s property %s", __FUNCTION__, property_id ? "add" : "find", name);
-  return false;
+  return true;
 }
 
 bool CDRMUtils::SetProperty(struct drm_object *object, const char *name, uint64_t value)
 {
   uint32_t property_id = GetPropertyId(object, name);
-  if (property_id)
+  if (!property_id)
+    return false;
+
+  if (drmModeObjectSetProperty(m_fd, object->id, object->type, property_id, value))
   {
-    int ret = drmModeObjectSetProperty(m_fd, object->id, object->type, property_id, value);
-    if (!ret)
-      return true;
+    CLog::Log(LOGERROR, "CDRMUtils::%s - could not set property %s", __FUNCTION__, name);
+    return false;
   }
 
-  CLog::Log(LOGWARNING, "CDRMUtils::%s - could not %s property %s", __FUNCTION__, property_id ? "set" : "find", name);
-  return false;
+  return true;
 }
 
 bool CDRMUtils::GetResources()
@@ -517,12 +520,7 @@ bool CDRMUtils::OpenDrm()
 
         drmModeFreeConnector(m_connector->connector);
         m_connector->connector = nullptr;
-
-        drmModeFreeObjectProperties(m_connector->props);
-        m_connector->props = nullptr;
-
-        drmModeFreeProperty(*m_connector->props_info);
-        *m_connector->props_info = nullptr;
+        FreeProperties(m_connector);
 
         CLog::Log(LOGDEBUG, "CDRMUtils::%s - opened device: %s using module: %s", __FUNCTION__, device.c_str(), module);
         return true;
