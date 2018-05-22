@@ -33,7 +33,6 @@ public:
   virtual bool InitDrm() override;
 
 private:
-  bool AddConnectorProperty(const char *name, int value);
   bool WaitingForFlip();
   bool QueueFlip(struct gbm_bo *bo);
   static void PageFlipHandler(int fd, unsigned int frame, unsigned int sec,

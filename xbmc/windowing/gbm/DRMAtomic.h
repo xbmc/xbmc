@@ -33,11 +33,7 @@ public:
   virtual bool InitDrm() override;
   virtual void DestroyDrm() override;
 
-  bool AddPlaneProperty(drmModeAtomicReq *req, struct plane *obj, const char *name, int value);
-
 private:
-  bool AddConnectorProperty(drmModeAtomicReq *req, int obj_id, const char *name, int value);
-  bool AddCrtcProperty(drmModeAtomicReq *req, int obj_id, const char *name, int value);
   void DrmAtomicCommit(int fb_id, int flags, bool rendered, bool videoLayer);
 
   bool m_need_modeset;

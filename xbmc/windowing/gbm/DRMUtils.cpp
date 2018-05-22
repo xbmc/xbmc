@@ -128,6 +128,80 @@ drm_fb * CDRMUtils::DrmFbGetFromBo(struct gbm_bo *bo)
   return fb;
 }
 
+static bool GetProperties(int fd, uint32_t id, uint32_t type, struct drm_object *object)
+{
+  drmModeObjectPropertiesPtr props = drmModeObjectGetProperties(fd, id, type);
+  if (!props)
+    return false;
+
+  object->id = id;
+  object->type = type;
+  object->props = props;
+  object->props_info = new drmModePropertyPtr[props->count_props];
+
+  for (uint32_t i = 0; i < props->count_props; i++)
+    object->props_info[i] = drmModeGetProperty(fd, props->props[i]);
+
+  return true;
+}
+
+static void FreeProperties(struct drm_object *object)
+{
+  if (object->props_info)
+  {
+    for (uint32_t i = 0; i < object->props->count_props; i++)
+      drmModeFreeProperty(object->props_info[i]);
+
+    delete [] object->props_info;
+    object->props_info = nullptr;
+  }
+
+  drmModeFreeObjectProperties(object->props);
+  object->props = nullptr;
+  object->type = 0;
+  object->id = 0;
+}
+
+static uint32_t GetPropertyId(struct drm_object *object, const char *name)
+{
+  for (uint32_t i = 0; i < object->props->count_props; i++)
+    if (!strcmp(object->props_info[i]->name, name))
+      return object->props_info[i]->prop_id;
+
+  CLog::Log(LOGWARNING, "CDRMUtils::%s - could not find property %s", __FUNCTION__, name);
+  return 0;
+}
+
+bool CDRMUtils::AddProperty(drmModeAtomicReqPtr req, struct drm_object *object, const char *name, uint64_t value)
+{
+  uint32_t property_id = GetPropertyId(object, name);
+  if (!property_id)
+    return false;
+
+  if (drmModeAtomicAddProperty(req, object->id, property_id, value) < 0)
+  {
+    CLog::Log(LOGERROR, "CDRMUtils::%s - could not add property %s", __FUNCTION__, name);
+    return false;
+  }
+
+  return true;
+}
+
+bool CDRMUtils::SetProperty(struct drm_object *object, const char *name, uint64_t value)
+{
+  uint32_t property_id = GetPropertyId(object, name);
+  if (!property_id)
+    return false;
+
+  if (drmModeObjectSetProperty(m_fd, object->id, object->type, property_id, value))
+  {
+    CLog::Log(LOGERROR, "CDRMUtils::%s - could not set property %s", __FUNCTION__, name);
+    return false;
+  }
+
+  return true;
+}
+
 bool CDRMUtils::GetResources()
 {
   m_drm_resources = drmModeGetResources(m_fd);
@@ -161,17 +235,10 @@ bool CDRMUtils::GetConnector()
     return false;
   }
 
-  m_connector->props = drmModeObjectGetProperties(m_fd, m_connector->connector->connector_id, DRM_MODE_OBJECT_CONNECTOR);
-  if (!m_connector->props)
+  if (!GetProperties(m_fd, m_connector->connector->connector_id, DRM_MODE_OBJECT_CONNECTOR, m_connector))
   {
     CLog::Log(LOGERROR, "CDRMUtils::%s - could not get connector %u properties: %s", __FUNCTION__, m_connector->connector->connector_id, strerror(errno));
     return false;
-  }
-
-  m_connector->props_info = new drmModePropertyPtr[m_connector->props->count_props];
-  for (uint32_t i = 0; i < m_connector->props->count_props; i++)
-  {
-    m_connector->props_info[i] = drmModeGetProperty(m_fd, m_connector->props->props[i]);
   }
 
   return true;
@@ -223,17 +290,10 @@ bool CDRMUtils::GetCrtc()
     return false;
   }
 
-  m_crtc->props = drmModeObjectGetProperties(m_fd, m_crtc->crtc->crtc_id, DRM_MODE_OBJECT_CRTC);
-  if (!m_crtc->props)
+  if (!GetProperties(m_fd, m_crtc->crtc->crtc_id, DRM_MODE_OBJECT_CRTC, m_crtc))
   {
     CLog::Log(LOGERROR, "CDRMUtils::%s - could not get crtc %u properties: %s", __FUNCTION__, m_crtc->crtc->crtc_id, strerror(errno));
     return false;
-  }
-
-  m_crtc->props_info = new drmModePropertyPtr[m_crtc->props->count_props];
-  for (uint32_t i = 0; i < m_crtc->props->count_props; i++)
-  {
-    m_crtc->props_info[i] = drmModeGetProperty(m_fd, m_crtc->props->props[i]);
   }
 
   return true;
@@ -337,17 +397,10 @@ bool CDRMUtils::GetPlanes()
     return false;
   }
 
-  m_primary_plane->props = drmModeObjectGetProperties(m_fd, primary_plane_id, DRM_MODE_OBJECT_PLANE);
-  if (!m_primary_plane->props)
+  if (!GetProperties(m_fd, primary_plane_id, DRM_MODE_OBJECT_PLANE, m_primary_plane))
   {
     CLog::Log(LOGERROR, "CDRMUtils::%s - could not get primary plane %u properties: %s", __FUNCTION__, primary_plane_id, strerror(errno));
     return false;
-  }
-
-  m_primary_plane->props_info = new drmModePropertyPtr[m_primary_plane->props->count_props];
-  for (uint32_t i = 0; i < m_primary_plane->props->count_props; i++)
-  {
-    m_primary_plane->props_info[i] = drmModeGetProperty(m_fd, m_primary_plane->props->props[i]);
   }
 
   for (uint32_t i = 0; i < m_primary_plane->plane->count_formats; i++)
@@ -384,17 +437,10 @@ bool CDRMUtils::GetPlanes()
       return false;
     }
 
-    m_overlay_plane->props = drmModeObjectGetProperties(m_fd, overlay_plane_id, DRM_MODE_OBJECT_PLANE);
-    if (!m_overlay_plane->props)
+    if (!GetProperties(m_fd, overlay_plane_id, DRM_MODE_OBJECT_PLANE, m_overlay_plane))
     {
       CLog::Log(LOGERROR, "CDRMUtils::%s - could not get overlay plane %u properties: %s", __FUNCTION__, overlay_plane_id, strerror(errno));
       return false;
-    }
-
-    m_overlay_plane->props_info = new drmModePropertyPtr[m_overlay_plane->props->count_props];
-    for (uint32_t i = 0; i < m_overlay_plane->props->count_props; i++)
-    {
-      m_overlay_plane->props_info[i] = drmModeGetProperty(m_fd, m_overlay_plane->props->props[i]);
     }
 
     fourcc = 0;
@@ -474,12 +520,7 @@ bool CDRMUtils::OpenDrm()
 
         drmModeFreeConnector(m_connector->connector);
         m_connector->connector = nullptr;
-
-        drmModeFreeObjectProperties(m_connector->props);
-        m_connector->props = nullptr;
-
-        drmModeFreeProperty(*m_connector->props_info);
-        *m_connector->props_info = nullptr;
+        FreeProperties(m_connector);
 
         CLog::Log(LOGDEBUG, "CDRMUtils::%s - opened device: %s using module: %s", __FUNCTION__, device.c_str(), module);
         return true;
@@ -594,8 +635,7 @@ void CDRMUtils::DestroyDrm()
   m_drm_resources = nullptr;
 
   drmModeFreeConnector(m_connector->connector);
-  drmModeFreeObjectProperties(m_connector->props);
-  delete [] m_connector->props_info;
+  FreeProperties(m_connector);
   delete m_connector;
   m_connector = nullptr;
 
@@ -604,21 +644,18 @@ void CDRMUtils::DestroyDrm()
   m_encoder = nullptr;
 
   drmModeFreeCrtc(m_crtc->crtc);
-  drmModeFreeObjectProperties(m_crtc->props);
-  delete [] m_crtc->props_info;
+  FreeProperties(m_crtc);
   delete m_crtc;
   m_crtc = nullptr;
 
   drmModeFreePlane(m_primary_plane->plane);
-  drmModeFreeObjectProperties(m_primary_plane->props);
-  delete [] m_primary_plane->props_info;
+  FreeProperties(m_primary_plane);
   delete m_primary_plane;
 
   if (m_overlay_plane != m_primary_plane)
   {
     drmModeFreePlane(m_overlay_plane->plane);
-    drmModeFreeObjectProperties(m_overlay_plane->props);
-    delete [] m_overlay_plane->props_info;
+    FreeProperties(m_overlay_plane);
     delete m_overlay_plane;
   }
   m_overlay_plane = nullptr;
