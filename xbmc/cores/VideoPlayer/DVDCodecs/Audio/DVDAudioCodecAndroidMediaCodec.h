@@ -72,7 +72,7 @@ protected:
   std::string m_mime;
   std::string m_codecname;
   std::string m_formatname;
-  bool m_opened, m_resettable;
+  bool m_opened, m_codecIsFed;
   int m_samplerate;
   int m_channels;
   uint8_t* m_buffer;
