@@ -77,7 +77,6 @@ namespace XFILE
       void SetProxy(const std::string &type, const std::string &host, uint16_t port,
                     const std::string &user, const std::string &password);
       void SetCustomRequest(const std::string &request) { m_customrequest = request; }
-      void UseOldHttpVersion(bool bUse) { m_useOldHttpVersion = bUse; }
       void SetAcceptEncoding(const std::string& encoding) { m_acceptencoding = encoding; }
       void SetAcceptCharset(const std::string& charset) { m_acceptCharset = charset; }
       void SetTimeout(int connecttimeout) { m_connecttimeout = connecttimeout; }
@@ -192,12 +191,12 @@ namespace XFILE
       bool m_opened;
       bool m_forWrite;
       bool m_inError;
-      bool m_useOldHttpVersion;
       bool m_seekable;
       bool m_multisession;
       bool m_skipshout;
       bool m_postdataset;
       bool m_allowRetry;
+      bool m_verifyPeer = true;
 
       CRingBuffer m_buffer; // our ringhold buffer
       char* m_overflowBuffer; // in the rare case we would overflow the above buffer
