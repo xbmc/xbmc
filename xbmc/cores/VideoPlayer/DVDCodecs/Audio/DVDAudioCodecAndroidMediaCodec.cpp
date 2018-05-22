@@ -77,7 +77,7 @@ CDVDAudioCodecAndroidMediaCodec::CDVDAudioCodecAndroidMediaCodec(CProcessInfo &p
   CDVDAudioCodec(processInfo),
   m_formatname("mediacodec"),
   m_opened(false),
-  m_resettable(false),
+  m_codecIsFed(false),
   m_samplerate(0),
   m_channels(0),
   m_buffer(NULL),
@@ -298,7 +298,7 @@ PROCESSDECODER:
   CLog::Log(LOGINFO, "CDVDAudioCodecAndroidMediaCodec Open Android MediaCodec %s", m_formatname.c_str());
 
   m_opened = true;
-  m_resettable = false;
+  m_codecIsFed = false;
   m_currentPts = DVD_NOPTS_VALUE;
   return m_opened;
 }
@@ -413,7 +413,7 @@ bool CDVDAudioCodecAndroidMediaCodec::AddData(const DemuxPacket &packet)
         xbmc_jnienv()->ExceptionDescribe();
         xbmc_jnienv()->ExceptionClear();
       }
-      m_resettable = true;
+      m_codecIsFed = true;
     }
   }
 
@@ -447,7 +447,7 @@ void CDVDAudioCodecAndroidMediaCodec::Reset()
   if (!m_opened)
     return;
 
-  if (m_codec && m_resettable)
+  if (m_codec && m_codecIsFed)
   {
     // now we can flush the actual MediaCodec object
     m_codec->flush();
@@ -457,7 +457,7 @@ void CDVDAudioCodecAndroidMediaCodec::Reset()
       xbmc_jnienv()->ExceptionClear();
     }
   }
-  m_resettable = false;
+  m_codecIsFed = false;
 
   if (m_decryptCodec)
     m_decryptCodec->Reset();
@@ -562,8 +562,13 @@ void CDVDAudioCodecAndroidMediaCodec::GetData(DVDAudioFrame &frame)
   frame.format.m_dataFormat = m_format.m_dataFormat;
   frame.format.m_channelLayout = m_format.m_channelLayout;
   frame.framesize = (CAEUtil::DataFormatToBits(frame.format.m_dataFormat) >> 3) * frame.format.m_channelLayout.Count();
-  if(frame.framesize == 0)
+
+  if (frame.framesize == 0)
     return;
+
+  if (!m_codecIsFed)
+    return;
+
   frame.nb_frames = GetData(frame.data)/frame.framesize;
   frame.planes = AE_IS_PLANAR(frame.format.m_dataFormat) ? frame.format.m_channelLayout.Count() : 1;
   frame.bits_per_sample = CAEUtil::DataFormatToBits(frame.format.m_dataFormat);
@@ -579,7 +584,7 @@ void CDVDAudioCodecAndroidMediaCodec::GetData(DVDAudioFrame &frame)
   else
     frame.duration = 0.0;
   if (frame.nb_frames > 0 && g_advancedSettings.CanLogComponent(LOGAUDIO))
-    CLog::Log(LOGERROR, "MediaCodecAudio::GetData: frames:%d pts: %0.4f", frame.nb_frames, frame.pts);
+    CLog::Log(LOGDEBUG, "MediaCodecAudio::GetData: frames:%d pts: %0.4f", frame.nb_frames, frame.pts);
 }
 
 int CDVDAudioCodecAndroidMediaCodec::GetData(uint8_t** dst)
@@ -593,6 +598,8 @@ int CDVDAudioCodecAndroidMediaCodec::GetData(uint8_t** dst)
   {
     std::string err = CJNIBase::ExceptionToString();
     CLog::Log(LOGERROR, "CDVDAudioCodecAndroidMediaCodec::GetData ExceptionCheck; dequeueOutputBuffer \n %s", err.c_str());
+    xbmc_jnienv()->ExceptionDescribe();
+    xbmc_jnienv()->ExceptionClear();
     return 0;
   }
   if (index >= 0)
