@@ -426,7 +426,6 @@ CCurlFile::CCurlFile()
   m_inError = false;
   m_multisession  = true;
   m_seekable = true;
-  m_useOldHttpVersion = false;
   m_connecttimeout = 0;
   m_redirectlimit = 5;
   m_lowspeedtime = 0;
@@ -599,16 +598,13 @@ void CCurlFile::SetCommonOptions(CReadState* state)
   if (m_acceptencoding.length() > 0)
     g_curlInterface.easy_setopt(h, CURLOPT_ACCEPT_ENCODING, m_acceptencoding.c_str());
 
-  if (!m_useOldHttpVersion && !m_acceptCharset.empty())
+  if (!m_acceptCharset.empty())
     SetRequestHeader("Accept-Charset", m_acceptCharset);
 
   if (m_userAgent.length() > 0)
     g_curlInterface.easy_setopt(h, CURLOPT_USERAGENT, m_userAgent.c_str());
   else /* set some default agent as shoutcast doesn't return proper stuff otherwise */
     g_curlInterface.easy_setopt(h, CURLOPT_USERAGENT, g_advancedSettings.m_userAgent.c_str());
-
-  if (m_useOldHttpVersion)
-    g_curlInterface.easy_setopt(h, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_0);
 
   if (g_advancedSettings.m_curlDisableIPV6)
     g_curlInterface.easy_setopt(h, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
