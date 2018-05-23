@@ -182,11 +182,20 @@ public:
     PREDICATE_RETURN(lh.type_index == currentAudioStream
                      , rh.type_index == currentAudioStream);
 
-    if (!StringUtils::EqualsNoCase(CServiceBroker::GetSettings().GetString(CSettings::SETTING_LOCALE_AUDIOLANGUAGE), "original"))
+
+    if (!StringUtils::EqualsNoCase(CServiceBroker::GetSettings().GetString(CSettings::SETTING_LOCALE_AUDIOLANGUAGE), "mediadefault"))
     {
-      std::string audio_language = g_langInfo.GetAudioLanguage();
-      PREDICATE_RETURN(g_LangCodeExpander.CompareISO639Codes(audio_language, lh.language)
-                       , g_LangCodeExpander.CompareISO639Codes(audio_language, rh.language));
+      if (!StringUtils::EqualsNoCase(CServiceBroker::GetSettings().GetString(CSettings::SETTING_LOCALE_AUDIOLANGUAGE), "original"))
+      {
+        std::string audio_language = g_langInfo.GetAudioLanguage();
+        PREDICATE_RETURN(g_LangCodeExpander.CompareISO639Codes(audio_language, lh.language)
+          , g_LangCodeExpander.CompareISO639Codes(audio_language, rh.language));
+      }
+      else
+      {
+        PREDICATE_RETURN(lh.flags & StreamFlags::FLAG_ORIGINAL,
+          rh.flags & StreamFlags::FLAG_ORIGINAL);
+      }
 
       bool hearingimp = CServiceBroker::GetSettings().GetBool(CSettings::SETTING_ACCESSIBILITY_AUDIOHEARING);
       PREDICATE_RETURN(!hearingimp ? !(lh.flags & StreamFlags::FLAG_HEARING_IMPAIRED) : lh.flags & StreamFlags::FLAG_HEARING_IMPAIRED

@@ -735,6 +735,7 @@ void CLangInfo::SetAudioLanguage(const std::string& language)
   if (language.empty()
     || StringUtils::EqualsNoCase(language, "default")
     || StringUtils::EqualsNoCase(language, "original")
+    || StringUtils::EqualsNoCase(language, "mediadefault")
     || !g_LangCodeExpander.ConvertToISO6392B(language, m_audioLanguage))
     m_audioLanguage.clear();
 }
@@ -1147,6 +1148,7 @@ void CLangInfo::SettingOptionsISO6391LanguagesFiller(SettingConstPtr setting, st
 
 void CLangInfo::SettingOptionsAudioStreamLanguagesFiller(SettingConstPtr setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
 {
+  list.emplace_back(g_localizeStrings.Get(307), "mediadefault");
   list.emplace_back(g_localizeStrings.Get(308), "original");
   list.emplace_back(g_localizeStrings.Get(309), "default");
 
