@@ -97,6 +97,11 @@ void CDBusMessage::AppendWithType(int type, const void* value)
   }
 }
 
+DBusMessageIter * CDBusMessage::GetArgumentIter() {
+  PrepareArgument();
+  return &m_args;
+}
+
 DBusMessage *CDBusMessage::SendSystem()
 {
   return Send(DBUS_BUS_SYSTEM);
@@ -147,7 +152,7 @@ DBusMessage *CDBusMessage::Send(DBusBusType type, CDBusError& error)
   CDBusConnection con;
   if (!con.Connect(type, error))
     return nullptr;
-  
+
   DBusMessage *returnMessage = Send(con, error);
 
   return returnMessage;

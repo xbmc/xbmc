@@ -3,8 +3,10 @@ set(SOURCES LinuxStorageProvider.cpp)
 set(HEADERS LinuxStorageProvider.h)
 
 if(DBUS_FOUND)
-  list(APPEND SOURCES UDisksProvider.cpp)
-  list(APPEND HEADERS UDisksProvider.h)
+  list(APPEND SOURCES UDisksProvider.cpp
+                      UDisks2Provider.cpp)
+  list(APPEND HEADERS UDisksProvider.h
+                      UDisks2Provider.h)
 endif()
 
 if(UDEV_FOUND)
