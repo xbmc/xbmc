@@ -71,7 +71,7 @@ public:
   void SetCodecControl(int flags) override { m_codecControlFlags = flags; };
 
 protected:
-  virtual AVCodec* FindDecoder(CDVDStreamInfo& hints);
+  virtual const AVCodec* FindDecoder(CDVDStreamInfo& hints);
   virtual void Drain();
   virtual void SetPictureParams(VideoPicture* pVideoPicture);
 

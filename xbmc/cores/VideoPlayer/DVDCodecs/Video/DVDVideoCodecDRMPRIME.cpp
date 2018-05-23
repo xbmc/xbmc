@@ -171,10 +171,12 @@ void CDVDVideoCodecDRMPRIME::Register()
   CDVDFactoryCodec::RegisterHWVideoCodec("drm_prime", CDVDVideoCodecDRMPRIME::Create);
 }
 
-AVCodec* CDVDVideoCodecDRMPRIME::FindDecoder(CDVDStreamInfo& hints)
+const AVCodec* CDVDVideoCodecDRMPRIME::FindDecoder(CDVDStreamInfo& hints)
 {
-  AVCodec* codec = nullptr;
-  while ((codec = av_codec_next(codec)))
+  const AVCodec* codec = nullptr;
+  void *i = 0;
+
+  while ((codec = av_codec_iterate(&i)))
   {
     if (av_codec_is_decoder(codec) && codec->id == hints.codec && codec->pix_fmts)
     {
@@ -193,7 +195,7 @@ AVCodec* CDVDVideoCodecDRMPRIME::FindDecoder(CDVDStreamInfo& hints)
 
 bool CDVDVideoCodecDRMPRIME::Open(CDVDStreamInfo& hints, CDVDCodecOptions& options)
 {
-  AVCodec* pCodec = FindDecoder(hints);
+  const AVCodec* pCodec = FindDecoder(hints);
   if (!pCodec)
   {
     CLog::Log(LOGDEBUG, "CDVDVideoCodecDRMPRIME::%s - unable to find decoder for codec %d", __FUNCTION__, hints.codec);
