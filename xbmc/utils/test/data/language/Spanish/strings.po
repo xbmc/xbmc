@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Main\n"
-"Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
+"Report-Msgid-Bugs-To: https://trac.kodi.tv/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Kodi Translation Team\n"

@@ -1,5 +1,5 @@
 AC_PREREQ(2.59)
-AC_INIT([xbmc-depends], [2.00], [http://trac.xbmc.org])
+AC_INIT([xbmc-depends], [2.00], [https://trac.kodi.tv])
 :${CFLAGS=""}
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_FILES([target/config.site native/config.site.native Makefile.include target/Toolchain.cmake
