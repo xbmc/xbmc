@@ -211,6 +211,15 @@ static const AVCodec* FindDecoder(CDVDStreamInfo& hints)
   return nullptr;
 }
 
+static enum AVPixelFormat GetFormat(struct AVCodecContext* avctx, const enum AVPixelFormat* fmt)
+{
+  for (int n = 0; fmt[n] != AV_PIX_FMT_NONE; n++)
+    if (fmt[n] == AV_PIX_FMT_DRM_PRIME)
+      return fmt[n];
+
+  return AV_PIX_FMT_NONE;
+}
+
 bool CDVDVideoCodecDRMPRIME::Open(CDVDStreamInfo& hints, CDVDCodecOptions& options)
 {
   const AVCodec* pCodec = FindDecoder(hints);
@@ -241,6 +250,7 @@ bool CDVDVideoCodecDRMPRIME::Open(CDVDStreamInfo& hints, CDVDCodecOptions& optio
   }
 
   m_pCodecContext->pix_fmt = AV_PIX_FMT_DRM_PRIME;
+  m_pCodecContext->get_format = GetFormat;
   m_pCodecContext->codec_tag = hints.codec_tag;
   m_pCodecContext->coded_width = hints.width;
   m_pCodecContext->coded_height = hints.height;
