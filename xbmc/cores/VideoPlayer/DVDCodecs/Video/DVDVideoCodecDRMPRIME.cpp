@@ -25,6 +25,7 @@
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
+#include "windowing/gbm/WinSystemGbm.h"
 
 #include <xf86drm.h>
 #include <xf86drmMode.h>
@@ -179,6 +180,10 @@ static const AVCodecHWConfig* FindHWConfig(const AVCodec* codec)
     if (config->pix_fmt != AV_PIX_FMT_DRM_PRIME)
       continue;
 
+    if ((config->methods & AV_CODEC_HW_CONFIG_METHOD_HW_DEVICE_CTX) &&
+        config->device_type == AV_HWDEVICE_TYPE_DRM)
+      return config;
+
     if ((config->methods & AV_CODEC_HW_CONFIG_METHOD_INTERNAL))
       return config;
   }
@@ -221,6 +226,20 @@ bool CDVDVideoCodecDRMPRIME::Open(CDVDStreamInfo& hints, CDVDCodecOptions& optio
   if (!m_pCodecContext)
     return false;
 
+  const AVCodecHWConfig* pConfig = FindHWConfig(pCodec);
+  if (pConfig &&
+      (pConfig->methods & AV_CODEC_HW_CONFIG_METHOD_HW_DEVICE_CTX) &&
+      pConfig->device_type == AV_HWDEVICE_TYPE_DRM)
+  {
+    CWinSystemGbm* winSystem = dynamic_cast<CWinSystemGbm*>(CServiceBroker::GetWinSystem());
+    if (av_hwdevice_ctx_create(&m_pCodecContext->hw_device_ctx, AV_HWDEVICE_TYPE_DRM, winSystem->GetDevicePath().c_str(), nullptr, 0) < 0)
+    {
+      CLog::Log(LOGNOTICE, "CDVDVideoCodecDRMPRIME::%s - unable to create hwdevice context", __FUNCTION__);
+      avcodec_free_context(&m_pCodecContext);
+      return false;
+    }
+  }
+
   m_pCodecContext->pix_fmt = AV_PIX_FMT_DRM_PRIME;
   m_pCodecContext->codec_tag = hints.codec_tag;
   m_pCodecContext->coded_width = hints.width;
@@ -239,6 +258,13 @@ bool CDVDVideoCodecDRMPRIME::Open(CDVDStreamInfo& hints, CDVDCodecOptions& optio
   if (avcodec_open2(m_pCodecContext, pCodec, nullptr) < 0)
   {
     CLog::Log(LOGNOTICE, "CDVDVideoCodecDRMPRIME::%s - unable to open codec", __FUNCTION__);
+    avcodec_free_context(&m_pCodecContext);
+    return false;
+  }
+
+  if (m_pCodecContext->pix_fmt != AV_PIX_FMT_DRM_PRIME)
+  {
+    CLog::Log(LOGNOTICE, "CDVDVideoCodecDRMPRIME::%s - unexpected pix fmt %s", __FUNCTION__, av_get_pix_fmt_name(m_pCodecContext->pix_fmt));
     avcodec_free_context(&m_pCodecContext);
     return false;
   }
