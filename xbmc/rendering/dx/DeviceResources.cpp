@@ -29,6 +29,11 @@
 #include "ServiceBroker.h"
 #include "utils/log.h"
 
+#ifdef _DEBUG
+#include <dxgidebug.h>
+#pragma comment(lib, "dxgi.lib")
+#endif // _DEBUG
+
 using namespace DirectX;
 using namespace Microsoft::WRL;
 using namespace Concurrency;
@@ -81,6 +86,8 @@ DX::DeviceResources::DeviceResources()
   , m_stereoEnabled(false)
   , m_bDeviceCreated(false)
   , m_ctx_mutex(INVALID_HANDLE_VALUE)
+  , m_supportHDR(false)
+  , m_enableHDR(false)
 {
   m_ctx_mutex = CreateMutexExW(nullptr, nullptr, 0, SYNCHRONIZE);
 }
@@ -299,6 +306,8 @@ void DX::DeviceResources::CreateDeviceResources()
 {
   CLog::LogF(LOGDEBUG, "creating DirectX 11 device.");
 
+  CreateFactory();
+
   UINT creationFlags = D3D11_CREATE_DEVICE_VIDEO_SUPPORT;
 #if defined(_DEBUG)
   if (DX::SdkLayersAvailable())
@@ -404,7 +413,6 @@ void DX::DeviceResources::CreateDeviceResources()
     hr = dxgiDevice->GetAdapter(&adapter); CHECK_ERR();
     hr = adapter.As(&m_adapter); CHECK_ERR();
   }
-  hr = m_adapter->GetParent(IID_PPV_ARGS(&m_dxgiFactory)); CHECK_ERR();
 
   DXGI_ADAPTER_DESC aDesc;
   m_adapter->GetDesc(&aDesc);
@@ -566,11 +574,21 @@ void DX::DeviceResources::ResizeBuffers()
   else
   {
     // Otherwise, create a new one using the same adapter as the existing Direct3D device.
-    DXGI_SWAP_CHAIN_DESC1 swapChainDesc = { 0 };
 
+    DXGI_FORMAT backBufferFormat = DXGI_FORMAT_B8G8R8A8_UNORM;
+    uint32_t is10bitSupported;
+
+    if ( m_d3dFeatureLevel >= D3D_FEATURE_LEVEL_11_0
+      && SUCCEEDED(m_d3dDevice->CheckFormatSupport(DXGI_FORMAT_R10G10B10A2_UNORM, &is10bitSupported))
+      && (is10bitSupported & D3D11_FORMAT_SUPPORT_RENDER_TARGET))
+    {
+      backBufferFormat = DXGI_FORMAT_R10G10B10A2_UNORM;
+    }
+
+    DXGI_SWAP_CHAIN_DESC1 swapChainDesc = { 0 };
     swapChainDesc.Width = lround(m_outputSize.Width);
     swapChainDesc.Height = lround(m_outputSize.Height);
-    swapChainDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
+    swapChainDesc.Format = backBufferFormat;
     swapChainDesc.Stereo = bHWStereoEnabled;
     swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
     swapChainDesc.BufferCount = 3 * (1 + bHWStereoEnabled);
@@ -611,6 +629,9 @@ void DX::DeviceResources::ResizeBuffers()
     hr = m_d3dDevice.As(&dxgiDevice); CHECK_ERR();
     dxgiDevice->SetMaximumFrameLatency(1);
   }
+
+  // Handle color space settings for HDR
+  UpdateColorSpace();
 }
 
 // These resources need to be recreated every time the window size is changed.
@@ -697,6 +718,8 @@ void DX::DeviceResources::SetLogicalSize(float width, float height)
     return;
 
   CLog::LogF(LOGDEBUG, "receive changing logical size to %f x %f", width, height);
+
+  UpdateColorSpace();
 
   if (m_logicalSize.Width != width || m_logicalSize.Height != height)
   {
@@ -848,7 +871,7 @@ bool DX::DeviceResources::Begin()
 }
 
 // Present the contents of the swap chain to the screen.
-void DX::DeviceResources::Present() 
+void DX::DeviceResources::Present()
 {
   FinishCommandList();
   m_d3dContext->Flush();
@@ -875,6 +898,8 @@ void DX::DeviceResources::Present()
     {
       CreateWindowSizeDependentResources();
     }
+    if (!m_dxgiFactory->IsCurrent())
+      CreateFactory();
   }
 
   if (m_ctx_mutex != INVALID_HANDLE_VALUE)
@@ -933,10 +958,37 @@ void DX::DeviceResources::HandleOutputChange(const std::function<bool(DXGI_OUTPU
           if (m_d3dDevice)
             HandleDeviceLost(false);
         }
+
+        UpdateColorSpace();
         return;
       }
     }
   }
+}
+
+bool DX::DeviceResources::CreateFactory()
+{
+  HRESULT hr;
+#if defined(_DEBUG)
+  bool debugDXGI = false;
+  {
+    ComPtr<IDXGIInfoQueue> dxgiInfoQueue;
+    if (SUCCEEDED(DXGIGetDebugInterface1(0, IID_PPV_ARGS(dxgiInfoQueue.GetAddressOf()))))
+    {
+      debugDXGI = true;
+
+      hr = CreateDXGIFactory2(DXGI_CREATE_FACTORY_DEBUG, IID_PPV_ARGS(m_dxgiFactory.ReleaseAndGetAddressOf())); RETURN_ERR(false);
+
+      dxgiInfoQueue->SetBreakOnSeverity(DXGI_DEBUG_ALL, DXGI_INFO_QUEUE_MESSAGE_SEVERITY_ERROR, true);
+      dxgiInfoQueue->SetBreakOnSeverity(DXGI_DEBUG_ALL, DXGI_INFO_QUEUE_MESSAGE_SEVERITY_CORRUPTION, true);
+    }
+  }
+
+  if (!debugDXGI)
+#endif
+  hr = CreateDXGIFactory1(IID_PPV_ARGS(m_dxgiFactory.ReleaseAndGetAddressOf())); RETURN_ERR(false);
+
+  return true;
 }
 
 void DX::DeviceResources::SetMonitor(HMONITOR monitor)
@@ -973,6 +1025,86 @@ bool DX::DeviceResources::IsStereoAvailable() const
     return m_dxgiFactory->IsWindowedStereoEnabled();
 
   return false;
+}
+
+void DX::DeviceResources::SetHDREnable(bool bEnable)
+{
+  if (!m_supportHDR)
+    return;
+
+  m_enableHDR = bEnable;
+  UpdateColorSpace();
+
+  if (!m_enableHDR)
+  {
+    // clear metadata
+    ComPtr<IDXGISwapChain4> swapChain4;
+    if (SUCCEEDED(m_swapChain.As(&swapChain4)))
+    {
+      swapChain4->SetHDRMetaData(DXGI_HDR_METADATA_TYPE_NONE, 0, nullptr);
+    }
+  }
+}
+
+void DX::DeviceResources::SetHDR10MetaData(DXGI_HDR_METADATA_HDR10 &hdrMetaData)
+{
+  if (!m_enableHDR || !m_supportHDR)
+    return;
+
+  ComPtr<IDXGISwapChain4> swapChain4;
+  if (SUCCEEDED(m_swapChain.As(&swapChain4)))
+  {
+    swapChain4->SetHDRMetaData(DXGI_HDR_METADATA_TYPE_HDR10, sizeof(DXGI_HDR_METADATA_HDR10), &hdrMetaData);
+  }
+}
+
+void DX::DeviceResources::UpdateColorSpace()
+{
+  DXGI_COLOR_SPACE_TYPE colorSpace = DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709;
+  m_supportHDR = false;
+
+#if defined(NTDDI_WIN10_RS2)
+  if (m_swapChain)
+  {
+    ComPtr<IDXGIOutput> output;
+    GetOutput(output.GetAddressOf());
+    if (output)
+    {
+      ComPtr<IDXGIOutput6> output6;
+      if (SUCCEEDED(output.As(&output6)))
+      {
+        DXGI_OUTPUT_DESC1 desc;
+        if (SUCCEEDED(output6->GetDesc1(&desc)) && desc.ColorSpace == DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020)
+        {
+          // Display output is HDR10.
+          m_supportHDR = true;
+        }
+      }
+    }
+  }
+#endif
+
+  if (m_enableHDR && m_supportHDR)
+  {
+    if (m_backBufferTex.GetFormat() == DXGI_FORMAT_R10G10B10A2_UNORM)
+      colorSpace = DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020;
+  }
+
+  m_colorSpace = colorSpace;
+
+  ComPtr<IDXGISwapChain3> swapChain3;
+  if (m_swapChain && SUCCEEDED(m_swapChain.As(&swapChain3)))
+  {
+    uint32_t spaceSupported = 0;
+    if (SUCCEEDED(swapChain3->CheckColorSpaceSupport(colorSpace, &spaceSupported))
+      && (spaceSupported & DXGI_SWAP_CHAIN_COLOR_SPACE_SUPPORT_FLAG_PRESENT))
+    {
+      if (FAILED(swapChain3->SetColorSpace1(colorSpace)))
+      {
+        CLog::LogF(LOGDEBUG, "unable to set color space %d");
+      }
+    }
+  }
 }
 
 #if defined(TARGET_WINDOWS_DESKTOP)

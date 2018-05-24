@@ -22,10 +22,18 @@
 #include <wrl.h>
 #include <wrl/client.h>
 #include <concrt.h>
+#if defined(NTDDI_WIN10_RS2)
+#include <dxgi1_6.h>
+#else
 #if defined(TARGET_WINDOWS_STORE)
 #include <dxgi1_3.h>
 #else
 #include <dxgi1_2.h>
+#endif
+#endif
+#if defined(TARGET_WINDOWS_STORE)
+#include <agile.h>
+#else
 #include <easyhook/easyhook.h>
 #endif
 #include <functional>
@@ -135,6 +143,10 @@ namespace DX
 #endif // TARGET_WINDOWS_STORE
     HANDLE GetContexMutex() const { return m_ctx_mutex; }
 
+    bool IsHDRSupported() { return m_supportHDR; }
+    void SetHDREnable(bool bEnable);
+    void SetHDR10MetaData(DXGI_HDR_METADATA_HDR10 &hdrMetaData);
+
   private:
     class CBackBuffer : public CD3DTexture
     {
@@ -152,6 +164,8 @@ namespace DX
     void OnDeviceLost(bool removed);
     void OnDeviceRestored();
     void HandleOutputChange(const std::function<bool(DXGI_OUTPUT_DESC)>& cmpFunc);
+    bool CreateFactory();
+    void UpdateColorSpace();
 
     HWND m_window{ nullptr };
 #if defined(TARGET_WINDOWS_STORE)
@@ -191,5 +205,10 @@ namespace DX
     bool m_stereoEnabled;
     bool m_bDeviceCreated;
     HANDLE m_ctx_mutex;
+
+    // HDR
+    bool m_enableHDR;
+    bool m_supportHDR;
+    DXGI_COLOR_SPACE_TYPE m_colorSpace;
   };
 }

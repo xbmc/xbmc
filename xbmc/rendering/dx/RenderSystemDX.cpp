@@ -170,7 +170,8 @@ void CRenderSystemDX::CheckInterlacedStereoView()
       || RENDER_STEREO_MODE_CHECKERBOARD == stereoMode))
   {
     const auto outputSize = m_deviceResources->GetOutputSize();
-    if (!m_rightEyeTex.Create(outputSize.Width, outputSize.Height, 1, D3D11_USAGE_DEFAULT, DXGI_FORMAT_B8G8R8A8_UNORM))
+    DXGI_FORMAT texFormat = m_deviceResources->GetBackBuffer()->GetFormat();
+    if (!m_rightEyeTex.Create(outputSize.Width, outputSize.Height, 1, D3D11_USAGE_DEFAULT, texFormat))
     {
       CLog::Log(LOGERROR, "%s - Failed to create right eye buffer.", __FUNCTION__);
       CServiceBroker::GetWinSystem()->GetGfxContext().SetStereoMode(RENDER_STEREO_MODE_SPLIT_HORIZONTAL); // try fallback to split horizontal
@@ -671,6 +672,23 @@ HANDLE CRenderSystemDX::GetContexMutex() const
     return m_deviceResources->GetContexMutex();
 
   return INVALID_HANDLE_VALUE;
+}
+
+bool CRenderSystemDX::IsHDRSupported()
+{
+  return m_deviceResources && m_deviceResources->IsHDRSupported();
+}
+
+void CRenderSystemDX::SetHDREnable(bool bEnable)
+{
+  if (m_deviceResources)
+    m_deviceResources->SetHDREnable(bEnable);
+}
+
+void CRenderSystemDX::SetHDR10MetaData(struct DXGI_HDR_METADATA_HDR10 &hdrMetaData)
+{
+  if (m_deviceResources)
+    m_deviceResources->SetHDR10MetaData(hdrMetaData);
 }
 
 CD3DTexture* CRenderSystemDX::GetBackBuffer()
