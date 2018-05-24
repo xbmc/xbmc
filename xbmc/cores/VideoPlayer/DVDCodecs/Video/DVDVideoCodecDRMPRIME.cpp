@@ -306,8 +306,8 @@ bool CDVDVideoCodecDRMPRIME::AddData(const DemuxPacket& packet)
   avpkt.size = packet.iSize;
   avpkt.dts = (packet.dts == DVD_NOPTS_VALUE) ? AV_NOPTS_VALUE : static_cast<int64_t>(packet.dts / DVD_TIME_BASE * AV_TIME_BASE);
   avpkt.pts = (packet.pts == DVD_NOPTS_VALUE) ? AV_NOPTS_VALUE : static_cast<int64_t>(packet.pts / DVD_TIME_BASE * AV_TIME_BASE);
-  // TODO: avpkt.side_data = static_cast<AVPacketSideData*>(packet.pSideData);
-  // TODO: avpkt.side_data_elems = packet.iSideDataElems;
+  avpkt.side_data = static_cast<AVPacketSideData*>(packet.pSideData);
+  avpkt.side_data_elems = packet.iSideDataElems;
 
   int ret = avcodec_send_packet(m_pCodecContext, &avpkt);
   if (ret == AVERROR(EAGAIN))
@@ -347,7 +347,14 @@ void CDVDVideoCodecDRMPRIME::SetPictureParams(VideoPicture* pVideoPicture)
   pVideoPicture->iWidth = m_pFrame->width;
   pVideoPicture->iHeight = m_pFrame->height;
 
-  double aspect_ratio = (float)pVideoPicture->iWidth / (float)pVideoPicture->iHeight;
+  double aspect_ratio = 0;
+  AVRational pixel_aspect = m_pFrame->sample_aspect_ratio;
+  if (pixel_aspect.num)
+    aspect_ratio = av_q2d(pixel_aspect) * pVideoPicture->iWidth / pVideoPicture->iHeight;
+
+  if (aspect_ratio <= 0.0)
+    aspect_ratio = (float)pVideoPicture->iWidth / (float)pVideoPicture->iHeight;
+
   pVideoPicture->iDisplayWidth = ((int)lrint(pVideoPicture->iHeight * aspect_ratio)) & -3;
   pVideoPicture->iDisplayHeight = pVideoPicture->iHeight;
   if (pVideoPicture->iDisplayWidth > pVideoPicture->iWidth)
