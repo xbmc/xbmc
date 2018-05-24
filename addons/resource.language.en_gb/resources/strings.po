@@ -1429,11 +1429,20 @@ msgctxt "#306"
 msgid "Non-interleaved"
 msgstr ""
 
-#empty string with id 307
-
+#. Select option for the setting "Preferred audio language".
+#. Will prefer the stream marked as "default" if available.
 #: xbmc/LangInfo.cpp
+#: xbmc/cores/VideoPlayer/VideoPlayer.cpp
+msgctxt "#307"
+msgid "Media default"
+msgstr ""
+
+#. Select option for the setting "Preferred audio language".
+#. Will prefer the stream marked as "original" if available.
+#: xbmc/LangInfo.cpp
+#: xbmc/cores/VideoPlayer/VideoPlayer.cpp
 msgctxt "#308"
-msgid "Original stream's language"
+msgid "Original language"
 msgstr ""
 
 #: xbmc/LangInfo.cpp
@@ -21240,27 +21249,27 @@ msgctxt "#39104"
 msgid "View as text"
 msgstr ""
 
-#. audio/video/subtilte flag - FLAG_DEFAULT
+#. audio/video/subtitle flag - FLAG_DEFAULT
 #: xbmc/video/dialogs/GUIDialogAudioSubtitleSettings.cpp
 #: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#39105"
 msgid "default"
 msgstr ""
 
-#. audio/video/subtilte flag - FLAG_FORCED
+#. audio/video/subtitle flag - FLAG_FORCED
 #: xbmc/video/dialogs/GUIDialogAudioSubtitleSettings.cpp
 #: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#39106"
 msgid "forced"
 msgstr ""
 
-#. audio/video/subtilte flag - FLAG_HEARING_IMPAIRED
+#. audio/video/subtitle flag - FLAG_HEARING_IMPAIRED
 #: xbmc/video/dialogs/GUIDialogAudioSubtitleSettings.cpp
 msgctxt "#39107"
 msgid "captions"
 msgstr ""
 
-#. audio/video/subtilte flag - FLAG_VISUAL_IMPAIRED
+#. audio/video/subtitle flag - FLAG_VISUAL_IMPAIRED
 #: xbmc/video/dialogs/GUIDialogAudioSubtitleSettings.cpp
 msgctxt "#39108"
 msgid "audio description"
@@ -21274,4 +21283,11 @@ msgstr ""
 #: xbmc/video/PlayerController.cpp
 msgctxt "#39110"
 msgid "Select Resolution"
+msgstr ""
+
+#. audio flag - FLAG_ORIGINAL
+#. language prefix displayed in audio settings stream selection
+#: xbmc/video/dialogs/GUIDialogAudioSubtitleSettings.cpp
+msgctxt "#39111"
+msgid "original"
 msgstr ""

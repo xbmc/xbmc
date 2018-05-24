@@ -509,7 +509,7 @@
       <group id="1" label="14221">
         <setting id="locale.audiolanguage" type="string" label="285" help="36119">
           <level>0</level>
-          <default>original</default>
+          <default>mediadefault</default>
           <constraints>
             <options>audiostreamlanguages</options>
           </constraints>

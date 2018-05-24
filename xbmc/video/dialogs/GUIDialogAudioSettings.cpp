@@ -377,6 +377,8 @@ std::string CGUIDialogAudioSettings::FormatFlags(StreamFlags flags)
     localizedFlags.emplace_back(g_localizeStrings.Get(39107));
   if (flags &  StreamFlags::FLAG_VISUAL_IMPAIRED)
     localizedFlags.emplace_back(g_localizeStrings.Get(39108));
+  if (flags & StreamFlags::FLAG_ORIGINAL)
+    localizedFlags.emplace_back(g_localizeStrings.Get(39111));
 
   std::string formated = StringUtils::Join(localizedFlags, ", ");
 

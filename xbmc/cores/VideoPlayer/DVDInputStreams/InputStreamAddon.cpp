@@ -393,12 +393,12 @@ CDemuxStream* CInputStreamAddon::GetStream(int streamId) const
   demuxStream->language[1] = stream.m_language[1];
   demuxStream->language[2] = stream.m_language[2];
   demuxStream->language[3] = stream.m_language[3];
+  demuxStream->flags = static_cast<StreamFlags>(stream.m_flags);
 
   if (stream.m_ExtraData && stream.m_ExtraSize)
   {
     demuxStream->ExtraData = new uint8_t[stream.m_ExtraSize];
     demuxStream->ExtraSize = stream.m_ExtraSize;
-    demuxStream->flags = static_cast<StreamFlags>(stream.m_flags);
     for (unsigned int j = 0; j < stream.m_ExtraSize; ++j)
       demuxStream->ExtraData[j] = stream.m_ExtraData[j];
   }
