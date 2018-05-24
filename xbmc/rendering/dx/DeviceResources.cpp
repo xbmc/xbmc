@@ -80,18 +80,13 @@ DX::DeviceResources::DeviceResources()
   , m_deviceNotify(nullptr)
   , m_stereoEnabled(false)
   , m_bDeviceCreated(false)
-  , m_ctx_mutex(INVALID_HANDLE_VALUE)
 {
-  m_ctx_mutex = CreateMutexExW(nullptr, nullptr, 0, SYNCHRONIZE);
 }
 
 DX::DeviceResources::~DeviceResources()
 {
   if (m_bDeviceCreated)
     Release();
-  if (m_ctx_mutex != INVALID_HANDLE_VALUE)
-    CloseHandle(m_ctx_mutex);
-  m_ctx_mutex = INVALID_HANDLE_VALUE;
 }
 
 void DX::DeviceResources::Release()
@@ -853,9 +848,6 @@ void DX::DeviceResources::Present()
   FinishCommandList();
   m_d3dContext->Flush();
 
-  if (m_ctx_mutex != INVALID_HANDLE_VALUE)
-    WaitForSingleObjectEx(m_ctx_mutex, INFINITE, FALSE);
-
   // The first argument instructs DXGI to block until VSync, putting the application
   // to sleep until the next VSync. This ensures we don't waste any cycles rendering
   // frames that will never be displayed to the screen.
@@ -876,9 +868,6 @@ void DX::DeviceResources::Present()
       CreateWindowSizeDependentResources();
     }
   }
-
-  if (m_ctx_mutex != INVALID_HANDLE_VALUE)
-    ReleaseMutex(m_ctx_mutex);
 
   if (m_d3dContext == m_deferrContext)
   {
