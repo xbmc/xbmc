@@ -57,7 +57,6 @@ namespace PERIPHERALS
 #endif
 #include <libcec/cectypes.h>
 
-class DllLibCEC;
 class CVariant;
 
 namespace CEC
@@ -153,7 +152,6 @@ namespace PERIPHERALS
     static void CecSourceActivated(void *param, const CEC::cec_logical_address address, const uint8_t activated);
     static void CecKeyPress(void *cbParam, const CEC::cec_keypress* key);
 
-    DllLibCEC* m_dll;
     CEC::ICECAdapter* m_cecAdapter;
     bool m_bStarted;
     bool m_bHasButton;

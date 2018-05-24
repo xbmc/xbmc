@@ -29,7 +29,6 @@
 
 #define DLL_PATH_LIBPLIST      "@PLIST_SONAME@"
 #define DLL_PATH_LIBSHAIRPLAY  "@SHAIRPLAY_SONAME@"
-#define DLL_PATH_LIBCEC        "@LIBCEC_SONAME@"
 
 /* VideoPlayer */
 #define DLL_PATH_LIBASS        "@ASS_SONAME@"

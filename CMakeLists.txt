@@ -146,6 +146,7 @@ set(optional_deps Alsa
                   Bluetooth
                   CAP
                   CCache
+                  CEC
                   DBus
                   LCMS2
                   LircClient
@@ -165,7 +166,6 @@ set(required_dyload ASS)
 
 # Optional, dyloaded deps. Keep in alphabetical order please
 set(dyload_optional Bluray
-                    CEC
                     NFS
                     Plist)
 
