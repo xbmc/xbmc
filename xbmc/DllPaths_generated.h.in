@@ -34,7 +34,6 @@
 /* VideoPlayer */
 #define DLL_PATH_LIBASS        "@ASS_SONAME@"
 #define DLL_PATH_LIBDVDNAV     "special://xbmcbin/system/players/VideoPlayer/libdvdnav-@ARCH@.so"
-#define DLL_PATH_LIBMPEG2      "@MPEG2_SONAME@"
 
 /* libbluray */
 #define DLL_PATH_LIBBLURAY     "@BLURAY_SONAME@"
