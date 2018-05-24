@@ -91,7 +91,6 @@ public:
     pPrivate = NULL;
     ExtraData = NULL;
     ExtraSize = 0;
-    memset(language, 0, sizeof(language));
     disabled = false;
     changes = 0;
     flags = StreamFlags::FLAG_NONE;
@@ -122,7 +121,7 @@ public:
   unsigned int ExtraSize; // size of extra data
 
   StreamFlags flags;
-  char language[4]; // ISO 639 3-letter language code (empty string if undefined)
+  std::string language; // RFC 5646 language code (empty string if undefined)
   bool disabled; // set when stream is disabled. (when no decoder exists)
 
   std::string name;
