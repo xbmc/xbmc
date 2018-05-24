@@ -35,8 +35,7 @@ endif()
 
 if(APPLE)
   list(APPEND SOURCES VTB.cpp)
-  list(APPEND HEADERS DllVideoToolBox.h
-                      VTB.h)
+  list(APPEND HEADERS VTB.h)
 endif()
 
 if(MMAL_FOUND)
