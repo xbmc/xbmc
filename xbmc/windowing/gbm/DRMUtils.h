@@ -74,6 +74,9 @@ public:
   virtual bool InitDrm();
   virtual void DestroyDrm();
 
+  std::string GetModule() const { return m_module; }
+  std::string GetDevicePath() const { return m_device_path; }
+
   bool GetModes(std::vector<RESOLUTION_INFO> &resolutions);
   bool SetMode(RESOLUTION_INFO res);
   void WaitVBlank();
@@ -106,6 +109,8 @@ private:
   static void DrmFbDestroyCallback(struct gbm_bo *bo, void *data);
 
   int m_crtc_index;
+  std::string m_module;
+  std::string m_device_path;
 
   drmModeResPtr m_drm_resources = nullptr;
   drmModeCrtcPtr m_orig_crtc = nullptr;

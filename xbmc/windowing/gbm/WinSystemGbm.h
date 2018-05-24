@@ -61,6 +61,9 @@ public:
   virtual void Register(IDispResource *resource);
   virtual void Unregister(IDispResource *resource);
 
+  std::string GetModule() const { return m_DRM->GetModule(); }
+  std::string GetDevicePath() const { return m_DRM->GetDevicePath(); }
+
   std::shared_ptr<CDRMUtils> m_DRM;
 
 protected:

@@ -522,6 +522,9 @@ bool CDRMUtils::OpenDrm()
         m_connector->connector = nullptr;
         FreeProperties(m_connector);
 
+        m_module = module;
+        m_device_path = device;
+
         CLog::Log(LOGDEBUG, "CDRMUtils::%s - opened device: %s using module: %s", __FUNCTION__, device.c_str(), module);
         return true;
       }
