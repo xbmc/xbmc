@@ -33,20 +33,13 @@ if(NOT CEC_FIND_VERSION)
   set(CEC_FIND_VERSION 4.0.0)
 endif()
 
-include(FindPackageHandleStandardArgs)
-if(NOT WIN32)
-  find_library(CEC_LIBRARY NAMES cec
-                           PATHS ${PC_CEC_LIBDIR})
+find_library(CEC_LIBRARY NAMES cec
+                         PATHS ${PC_CEC_LIBDIR})
 
-  find_package_handle_standard_args(CEC
-                                    REQUIRED_VARS CEC_LIBRARY CEC_INCLUDE_DIR
-                                    VERSION_VAR CEC_VERSION)
-else()
-  # Dynamically loaded DLL
-  find_package_handle_standard_args(CEC
-                                    REQUIRED_VARS CEC_INCLUDE_DIR
-                                    VERSION_VAR CEC_VERSION)
-endif()
+include(FindPackageHandleStandardArgs)
+find_package_handle_standard_args(CEC
+                                  REQUIRED_VARS CEC_LIBRARY CEC_INCLUDE_DIR
+                                  VERSION_VAR CEC_VERSION)
 
 if(CEC_FOUND)
   set(CEC_LIBRARIES ${CEC_LIBRARY})

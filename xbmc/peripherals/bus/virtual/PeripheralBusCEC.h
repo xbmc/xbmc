@@ -35,7 +35,6 @@ namespace CEC
 namespace PERIPHERALS
 {
   class CPeripherals;
-  class DllLibCEC;
 
   class CPeripheralBusCEC : public CPeripheralBus
   {
@@ -49,7 +48,6 @@ namespace PERIPHERALS
     bool PerformDeviceScan(PeripheralScanResults &results) override;
 
   private:
-    DllLibCEC*                m_dll;
     CEC::ICECAdapter*         m_cecAdapter;
     CEC::libcec_configuration m_configuration;
   };

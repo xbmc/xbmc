@@ -25,13 +25,16 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	rm -rf $(PLATFORM); mkdir -p $(PLATFORM)/build
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); patch -p1 -i ../remove_git_info.patch
-	cd $(PLATFORM)/build; $(CMAKE) -DBUILD_SHARED_LIBS=1 -DSKIP_PYTHON_WRAPPER:STRING=1 -DCMAKE_INSTALL_LIBDIR=$(PREFIX)/lib ..
+	cd $(PLATFORM)/build; $(CMAKE) -DBUILD_SHARED_LIBS=1 -DSKIP_PYTHON_WRAPPER:STRING=1 -DCMAKE_INSTALL_LIBDIR=$(PREFIX)/lib -DCMAKE_PLATFORM_NO_VERSIONED_SONAME=1 ..
 
 $(LIBDYLIB): $(PLATFORM)
 	$(MAKE) -C $(PLATFORM)/build
 
 .installed-$(PLATFORM): $(LIBDYLIB)
 	$(MAKE) -C $(PLATFORM)/build install
+ifeq (darwin, $(findstring darwin, $(HOST)))
+	install_name_tool -id $(PREFIX)/lib/$(LIBNAME).dylib $(PREFIX)/lib/$(LIBNAME).dylib
+endif
 	touch $@
 
 clean:

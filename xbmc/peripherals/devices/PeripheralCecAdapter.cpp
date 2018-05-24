@@ -18,7 +18,6 @@
  *
  */
 
-#if defined(HAVE_LIBCEC)
 #include "PeripheralCecAdapter.h"
 #include "input/remote/IRRemote.h"
 #include "Application.h"
@@ -67,31 +66,9 @@ using namespace CEC;
 /* time in seconds to suppress source activation after receiving OnStop */
 #define CEC_SUPPRESS_ACTIVATE_SOURCE_AFTER_ON_STOP 2
 
-class DllLibCECInterface
-{
-public:
-  virtual ~DllLibCECInterface() = default;
-  virtual ICECAdapter* CECInitialise(libcec_configuration *configuration)=0;
-  virtual void*        CECDestroy(ICECAdapter *adapter)=0;
-};
-
-class DllLibCEC : public DllDynamic, DllLibCECInterface
-{
-  DECLARE_DLL_WRAPPER(DllLibCEC, DLL_PATH_LIBCEC)
-
-  DEFINE_METHOD1(ICECAdapter*, CECInitialise, (libcec_configuration *p1))
-  DEFINE_METHOD1(void*       , CECDestroy,    (ICECAdapter *p1))
-
-  BEGIN_METHOD_RESOLVE()
-    RESOLVE_METHOD_RENAME(CECInitialise,  CECInitialise)
-    RESOLVE_METHOD_RENAME(CECDestroy, CECDestroy)
-  END_METHOD_RESOLVE()
-};
-
 CPeripheralCecAdapter::CPeripheralCecAdapter(CPeripherals& manager, const PeripheralScanResult& scanResult, CPeripheralBus* bus) :
   CPeripheralHID(manager, scanResult, bus),
   CThread("CECAdapter"),
-  m_dll(NULL),
   m_cecAdapter(NULL)
 {
   ResetMembers();
@@ -110,22 +87,18 @@ CPeripheralCecAdapter::~CPeripheralCecAdapter(void)
   StopThread(true);
   delete m_queryThread;
 
-  if (m_dll && m_cecAdapter)
+  if (m_cecAdapter)
   {
-    m_dll->CECDestroy(m_cecAdapter);
+    CECDestroy(m_cecAdapter);
     m_cecAdapter = NULL;
-    delete m_dll;
-    m_dll = NULL;
   }
 }
 
 void CPeripheralCecAdapter::ResetMembers(void)
 {
-  if (m_cecAdapter && m_dll)
-    m_dll->CECDestroy(m_cecAdapter);
+  if (m_cecAdapter)
+    CECDestroy(m_cecAdapter);
   m_cecAdapter               = NULL;
-  delete m_dll;
-  m_dll                        = NULL;
   m_bStarted                   = false;
   m_bHasButton                 = false;
   m_bIsReady                   = false;
@@ -261,19 +234,7 @@ bool CPeripheralCecAdapter::InitialiseFeature(const PeripheralFeature feature)
     m_configuration.callbackParam    = this;
     m_configuration.callbacks        = &m_callbacks;
 
-    m_dll = new DllLibCEC;
-    if (m_dll->Load() && m_dll->IsLoaded())
-      m_cecAdapter = m_dll->CECInitialise(&m_configuration);
-    else
-    {
-      // display warning: libCEC could not be loaded
-      CLog::Log(LOGERROR, "%s", g_localizeStrings.Get(36017).c_str());
-      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(36000), g_localizeStrings.Get(36017));
-      delete m_dll;
-      m_dll = NULL;
-      m_features.clear();
-      return false;
-    }
+    m_cecAdapter = CECInitialise(&m_configuration);
 
     if (m_configuration.serverVersion < CEC_LIB_SUPPORTED_VERSION)
     {
@@ -285,7 +246,7 @@ bool CPeripheralCecAdapter::InitialiseFeature(const PeripheralFeature feature)
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(36000), strMessage);
       m_bError = true;
       if (m_cecAdapter)
-        m_dll->CECDestroy(m_cecAdapter);
+        CECDestroy(m_cecAdapter);
       m_cecAdapter = NULL;
 
       m_features.clear();
@@ -1812,5 +1773,3 @@ bool CPeripheralCecAdapter::ToggleDeviceState(CecStateChange mode /*= STATE_SWIT
 
   return false;
 }
-
-#endif
