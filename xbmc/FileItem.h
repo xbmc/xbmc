@@ -32,7 +32,7 @@
 
 #include "addons/IAddon.h"
 #include "guilib/GUIListItem.h"
-#include "GUIPassword.h"
+#include "LockType.h"
 #include "pvr/PVRTypes.h"
 #include "threads/CriticalSection.h"
 #include "utils/IArchivable.h"

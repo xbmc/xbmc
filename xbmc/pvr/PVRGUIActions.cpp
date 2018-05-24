@@ -39,7 +39,7 @@
 #include "network/Network.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
-#include "threads/Thread.h"
+#include "threads/IRunnable.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"

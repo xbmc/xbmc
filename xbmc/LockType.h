@@ -1,6 +1,7 @@
 #pragma once
+
 /*
- *      Copyright (C) 2010-2013 Team XBMC
+ *      Copyright (C) 2005-2013 Team XBMC
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,13 +20,13 @@
  *
  */
 
-#include "AE.h"
-#include "threads/IRunnable.h"
-
-class IThreadedAE : public IAE, public IRunnable
+typedef enum
 {
-public:
-  virtual void Run () = 0;
-  virtual void Stop() = 0;
-};
-
+  LOCK_MODE_UNKNOWN            = -1,
+  LOCK_MODE_EVERYONE           =  0,
+  LOCK_MODE_NUMERIC            =  1,
+  LOCK_MODE_GAMEPAD            =  2,
+  LOCK_MODE_QWERTY             =  3,
+  LOCK_MODE_SAMBA              =  4,
+  LOCK_MODE_EEPROM_PARENTAL    =  5
+} LockType;

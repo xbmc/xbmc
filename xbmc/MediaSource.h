@@ -21,7 +21,7 @@
 
 #include <string>
 #include <vector>
-#include "GUIPassword.h"
+#include "LockType.h"
 
 /*!
 \ingroup windows

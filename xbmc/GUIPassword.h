@@ -20,28 +20,17 @@
  *
  */
 
-#include <map>
 #include <string>
 #include <vector>
 
 #include "settings/lib/ISettingCallback.h"
-#include "settings/lib/Setting.h"
+#include "settings/lib/SettingLevel.h"
+#include "LockType.h"
 
 class CFileItem;
 class CMediaSource;
 
 typedef std::vector<CMediaSource> VECSOURCES;
-
-typedef enum
-{
-  LOCK_MODE_UNKNOWN            = -1,
-  LOCK_MODE_EVERYONE           =  0,
-  LOCK_MODE_NUMERIC            =  1,
-  LOCK_MODE_GAMEPAD            =  2,
-  LOCK_MODE_QWERTY             =  3,
-  LOCK_MODE_SAMBA              =  4,
-  LOCK_MODE_EEPROM_PARENTAL    =  5
-} LockType;
 
 namespace LOCK_LEVEL {
   /**

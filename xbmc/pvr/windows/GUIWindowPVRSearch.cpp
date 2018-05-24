@@ -28,6 +28,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "input/Key.h"
 #include "messaging/helpers/DialogOKHelper.h"
+#include "threads/IRunnable.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 

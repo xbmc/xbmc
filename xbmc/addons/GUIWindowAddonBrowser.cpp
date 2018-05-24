@@ -40,6 +40,7 @@
 #include "messaging/helpers/DialogHelper.h"
 #include "settings/Settings.h"
 #include "settings/MediaSourceSettings.h"
+#include "threads/IRunnable.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "AddonDatabase.h"

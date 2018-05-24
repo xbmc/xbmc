@@ -28,6 +28,7 @@
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "Util.h"
+#include "GUIPassword.h"
 #include "guilib/LocalizeStrings.h"
 #include "filesystem/Directory.h"
 #include "settings/AdvancedSettings.h"

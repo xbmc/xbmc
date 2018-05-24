@@ -36,6 +36,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/MediaSourceSettings.h"
+#include "settings/lib/Setting.h"
 #include "utils/JobManager.h"
 #include "utils/log.h"
 #include "utils/XMLUtils.h"

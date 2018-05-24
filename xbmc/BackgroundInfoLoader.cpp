@@ -20,6 +20,7 @@
 
 #include "BackgroundInfoLoader.h"
 #include "FileItem.h"
+#include "threads/Thread.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "URL.h"

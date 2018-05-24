@@ -20,7 +20,6 @@
  */
 
 #include <memory>
-#include <vector>
 
 #include "utils/Observer.h"
 #include "windows/GUIMediaWindow.h"

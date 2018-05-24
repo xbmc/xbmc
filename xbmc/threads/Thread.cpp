@@ -22,6 +22,7 @@
 
 #include "threads/SystemClock.h"
 #include "Thread.h"
+#include "IRunnable.h"
 #include "threads/SingleLock.h"
 #include "commons/Exception.h"
 #include <stdlib.h>

@@ -20,7 +20,7 @@
 
 #include "SettingConditions.h"
 #include "Application.h"
-#include "GUIPassword.h"
+#include "LockType.h"
 #include "Util.h"
 #include "addons/AddonManager.h"
 #include "addons/binary-addons/BinaryAddonManager.h"

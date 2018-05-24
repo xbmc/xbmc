@@ -33,6 +33,7 @@
 #include "guilib/GUIEditControl.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
+#include "settings/lib/Setting.h"
 #include "settings/windows/GUIControlSettings.h"
 #include "URL.h"
 #include "utils/log.h"

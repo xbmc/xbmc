@@ -34,13 +34,7 @@
 #include <mach/mach.h>
 #endif
 
-class IRunnable
-{
-public:
-  virtual void Run()=0;
-  virtual void Cancel() {};
-  virtual ~IRunnable() = default;
-};
+class IRunnable;
 
 // minimum as mandated by XTL
 #define THREAD_MINSTACKSIZE 0x10000

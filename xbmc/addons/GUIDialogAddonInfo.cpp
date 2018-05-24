@@ -48,6 +48,7 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "utils/Variant.h"
+#include "GUIPassword.h"
 #include "Util.h"
 #include "interfaces/builtins/Builtins.h"
 

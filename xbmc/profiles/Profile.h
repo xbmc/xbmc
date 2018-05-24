@@ -20,6 +20,7 @@
  */
 
 #include "GUIPassword.h"
+#include "LockType.h"
 
 #include <string>
 #include <vector>

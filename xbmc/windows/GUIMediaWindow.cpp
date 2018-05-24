@@ -61,6 +61,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "storage/MediaManager.h"
+#include "threads/IRunnable.h"
 #include "threads/SystemClock.h"
 #include "utils/FileUtils.h"
 #include "utils/LabelFormatter.h"

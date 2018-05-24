@@ -1,6 +1,5 @@
-#pragma once
 /*
- *      Copyright (C) 2010-2013 Team XBMC
+ *      Copyright (C) 2005-2013 Team XBMC
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,13 +18,12 @@
  *
  */
 
-#include "AE.h"
-#include "threads/IRunnable.h"
+#pragma once
 
-class IThreadedAE : public IAE, public IRunnable
+class IRunnable
 {
 public:
-  virtual void Run () = 0;
-  virtual void Stop() = 0;
+  virtual void Run()=0;
+  virtual void Cancel() {};
+  virtual ~IRunnable() = default;
 };
-
