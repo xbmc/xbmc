@@ -32,6 +32,9 @@ $(LIBDYLIB): $(PLATFORM)
 
 .installed-$(PLATFORM): $(LIBDYLIB)
 	$(MAKE) -C $(PLATFORM)/build install
+ifeq (darwin, $(findstring darwin, $(HOST)))
+	install_name_tool -id $(PREFIX)/lib/$(LIBNAME).dylib $(PREFIX)/lib/$(LIBNAME).dylib
+endif
 	touch $@
 
 clean:
