@@ -1118,6 +1118,17 @@ bool CDecoder::GetPicture(AVCodecContext* avctx, VideoPicture* picture)
   picture->videoBuffer = m_videoBuffer;
   m_videoBuffer = nullptr;
 
+  int queued, discard, free;
+  m_processInfo.GetRenderBuffers(queued, discard, free);
+  if (free > 1)
+  {
+    DX::Windowing()->RequestDecodingTime();
+  }
+  else
+  {
+    DX::Windowing()->ReleaseDecodingTime();
+  }
+
   return true;
 }
 
@@ -1231,7 +1242,6 @@ bool CDecoder::OpenDecoder()
 
   m_context->decoder = m_decoder.Get();
   m_context->video_context = m_vcontext.Get();
-  m_context->context_mutex = DX::Windowing()->GetContexMutex();
 
   return true;
 }
