@@ -83,7 +83,8 @@ public:
 
   std::string GetShaderPath(const std::string &filename) override { return "GLES/2.0/"; }
 
-  void InitialiseShader();
+  void InitialiseShaders();
+  void ReleaseShaders();
   void EnableGUIShader(ESHADERMETHOD method);
   void DisableGUIShader();
 
