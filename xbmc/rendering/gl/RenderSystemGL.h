@@ -98,7 +98,8 @@ protected:
   virtual void SetVSyncImpl(bool enable) = 0;
   virtual void PresentRenderImpl(bool rendered) = 0;
   void CalculateMaxTexturesize();
-  void InitialiseShader();
+  void InitialiseShaders();
+  void ReleaseShaders();
 
   bool m_bVsyncInit = false;
   int m_width;

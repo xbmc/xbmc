@@ -29,18 +29,24 @@
 
 using namespace Shaders;
 
-CGLShader::CGLShader(const char *shader) : CGLSLShaderProgram("gl_shader_vert.glsl", shader)
+CGLShader::CGLShader(const char *shader, std::string prefix)
 {
   m_proj = nullptr;
   m_model  = nullptr;
   m_clipPossible = false;
+
+  VertexShader()->LoadSource("gl_shader_vert.glsl");
+  PixelShader()->LoadSource(shader, prefix);
 }
 
-CGLShader::CGLShader(const char *vshader, const char *fshader) : CGLSLShaderProgram(vshader, fshader)
+CGLShader::CGLShader(const char *vshader, const char *fshader, std::string prefix)
 {
   m_proj = nullptr;
   m_model  = nullptr;
   m_clipPossible = false;
+
+  VertexShader()->LoadSource(vshader, prefix);
+  PixelShader()->LoadSource(fshader, prefix);
 }
 
 void CGLShader::OnCompiledAndLinked()
