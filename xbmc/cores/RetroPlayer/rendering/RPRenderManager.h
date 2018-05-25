@@ -147,6 +147,8 @@ namespace RETRO
 
     CRenderVideoSettings GetEffectiveSettings(const IGUIRenderSettings *settings) const;
 
+    void CheckFlush();
+
     // Construction parameters
     CRPProcessInfo &m_processInfo;
     CRenderContext &m_renderContext;
@@ -163,6 +165,7 @@ namespace RETRO
     {
       UNCONFIGURED,
       CONFIGURING,
+      RECONFIGURING,
       CONFIGURED,
     };
     RENDER_STATE m_state = RENDER_STATE::UNCONFIGURED;
@@ -175,6 +178,7 @@ namespace RETRO
     std::map<AVPixelFormat, SwsContext*> m_scalers;
     bool m_bHasCachedFrame = false;
     bool m_bTriggerUpdateResolution = false;
+    std::atomic<bool> m_bFlush = {false};
     CCriticalSection m_stateMutex;
     CCriticalSection m_bufferMutex;
   };

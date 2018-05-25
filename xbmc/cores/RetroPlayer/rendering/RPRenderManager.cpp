@@ -97,20 +97,32 @@ bool CRPRenderManager::Configure(AVPixelFormat format, unsigned int nominalWidth
 
   CSingleLock lock(m_stateMutex);
 
-  m_state = RENDER_STATE::CONFIGURING;
+  if (m_state == RENDER_STATE::UNCONFIGURED)
+    m_state = RENDER_STATE::CONFIGURING;
+  else
+  {
+    Flush();
+    m_state = RENDER_STATE::RECONFIGURING;
+  }
 
   return true;
 }
 
 void CRPRenderManager::AddFrame(const uint8_t* data, size_t size, unsigned int width, unsigned int height, unsigned int orientationDegCCW)
 {
+  if (m_bFlush || m_state != RENDER_STATE::CONFIGURED)
+    return;
+
   // Validate parameters
   if (data == nullptr || size == 0 || width == 0 || height == 0)
     return;
 
-  //! @todo Allow dimension changes
   if (width != m_width || height != m_height)
+  {
+    // Reconfigure
+    Configure(m_format, width, height, m_maxWidth, m_maxHeight);
     return;
+  }
 
   // Copy frame to buffers with visible renderers
   std::vector<IRenderBuffer*> renderBuffers;
@@ -125,6 +137,8 @@ void CRPRenderManager::AddFrame(const uint8_t* data, size_t size, unsigned int w
       CopyFrame(renderBuffer, m_format, data, size, width, height);
       renderBuffers.emplace_back(renderBuffer);
     }
+    else
+      CLog::Log(LOGDEBUG, "RetroPlayer[RENDER]: Unable to get render buffer for frame");
   }
 
   {
@@ -165,7 +179,7 @@ void CRPRenderManager::SetSpeed(double speed)
 
 void CRPRenderManager::FrameMove()
 {
-  UpdateResolution();
+  CheckFlush();
 
   bool bIsConfigured = false;
 
@@ -175,9 +189,20 @@ void CRPRenderManager::FrameMove()
     if (m_state == RENDER_STATE::CONFIGURING)
     {
       MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_SWITCHTOFULLSCREEN);
+
       m_state = RENDER_STATE::CONFIGURED;
 
       CLog::Log(LOGINFO, "RetroPlayer[RENDER]: Renderer configured on first frame");
+    }
+    else if (m_state == RENDER_STATE::RECONFIGURING)
+    {
+      CLog::Log(LOGDEBUG, "RetroPlayer[RENDER]: Reconfiguring %u renderer(s)", m_renderers.size());
+
+      // Reconfigure any existing renderers
+      for (auto &renderer : m_renderers)
+        renderer->Configure(m_format, m_width, m_height);
+
+      m_state = RENDER_STATE::CONFIGURED;
     }
 
     if (m_state == RENDER_STATE::CONFIGURED)
@@ -191,9 +216,34 @@ void CRPRenderManager::FrameMove()
   }
 }
 
+void CRPRenderManager::CheckFlush()
+{
+  if (m_bFlush)
+  {
+    {
+      CSingleLock lock(m_bufferMutex);
+      for (auto renderBuffer : m_renderBuffers)
+        renderBuffer->Release();
+      m_renderBuffers.clear();
+
+      m_cachedFrame.clear();
+
+      m_bHasCachedFrame = false;
+    }
+
+    for (const auto &renderer : m_renderers)
+      renderer->Flush();
+
+    m_processInfo.GetBufferManager().FlushPools();
+
+
+    m_bFlush = false;
+  }
+}
+
 void CRPRenderManager::Flush()
 {
-  m_processInfo.GetBufferManager().FlushPools();
+  m_bFlush = true;
 }
 
 void CRPRenderManager::TriggerUpdateResolution()
@@ -358,7 +408,10 @@ std::shared_ptr<CRPBaseRenderer> CRPRenderManager::GetRenderer(IRenderBufferPool
   std::shared_ptr<CRPBaseRenderer> renderer;
 
   if (!bufferPool->IsCompatible(renderSettings.VideoSettings()))
+  {
+    CLog::Log(LOGERROR, "RetroPlayer[RENDER]: buffer pool is not compatible with renderer");
     return renderer;
+  }
 
   // Get compatible renderer for this buffer pool
   for (const auto &it : m_renderers)
@@ -414,6 +467,9 @@ bool CRPRenderManager::HasRenderBuffer(IRenderBufferPool *bufferPool)
 
 IRenderBuffer *CRPRenderManager::GetRenderBuffer(IRenderBufferPool *bufferPool)
 {
+  if (m_bFlush || m_state != RENDER_STATE::CONFIGURED)
+    return nullptr;
+
   IRenderBuffer *renderBuffer = nullptr;
 
   CSingleLock lock(m_bufferMutex);
@@ -435,6 +491,9 @@ IRenderBuffer *CRPRenderManager::GetRenderBuffer(IRenderBufferPool *bufferPool)
 
 void CRPRenderManager::CreateRenderBuffer(IRenderBufferPool *bufferPool)
 {
+  if (m_bFlush || m_state != RENDER_STATE::CONFIGURED)
+    return;
+
   CSingleLock lock(m_bufferMutex);
 
   if (!HasRenderBuffer(bufferPool) && m_bHasCachedFrame)
