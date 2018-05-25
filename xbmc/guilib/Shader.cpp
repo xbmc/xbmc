@@ -133,7 +133,7 @@ bool CGLSLVertexShader::Compile()
   glCompileShader(m_vertexShader);
   glGetShaderiv(m_vertexShader, GL_COMPILE_STATUS, params);
   VerifyGLState();
-  if (params[0]!=GL_TRUE)
+  if (params[0] != GL_TRUE)
   {
     GLchar log[LOG_SIZE];
     CLog::Log(LOGERROR, "GL: Error compiling vertex shader");
@@ -145,9 +145,13 @@ bool CGLSLVertexShader::Compile()
   else
   {
     GLchar log[LOG_SIZE];
-    CLog::Log(LOGDEBUG, "GL: Vertex Shader compilation log:");
-    glGetShaderInfoLog(m_vertexShader, LOG_SIZE, NULL, log);
-    CLog::Log(LOGDEBUG, "%s", log);
+    GLsizei length;
+    glGetShaderInfoLog(m_vertexShader, LOG_SIZE, &length, log);
+    if (length > 0)
+    {
+      CLog::Log(LOGDEBUG, "GL: Vertex Shader compilation log:");
+      CLog::Log(LOGDEBUG, "%s", log);
+    }
     m_lastLog = log;
     m_compiled = true;
   }

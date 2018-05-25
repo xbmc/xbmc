@@ -30,4 +30,8 @@ varying   vec4      m_cord1;
 void main ()
 {
   gl_FragColor.rgba = (texture2D(m_samp0, m_cord0.xy) * texture2D(m_samp1, m_cord1.xy)).rgba;
+#if defined(KODI_LIMITED_RANGE)
+  gl_FragColor.rgb *= (235.0-16.0) / 255.0;
+  gl_FragColor.rgb += 16.0 / 255.0;
+#endif
 }

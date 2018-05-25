@@ -21,12 +21,13 @@
 #pragma once
 
 #include "xbmc/guilib/Shader.h"
+#include <string>
 
 class CGLESShader : public Shaders::CGLSLShaderProgram
 {
 public:
-  CGLESShader( const char *shader = 0 );
-  CGLESShader(const char *vshader, const char *fshader);
+  CGLESShader( const char *shader, std::string prefix);
+  CGLESShader(const char *vshader, const char *fshader, std::string prefix);
   void OnCompiledAndLinked();
   bool OnEnabled();
   void Free();
