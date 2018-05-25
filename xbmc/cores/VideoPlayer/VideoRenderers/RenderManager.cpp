@@ -265,7 +265,7 @@ void CRenderManager::ShowVideo(bool enable)
 {
   m_showVideo = enable;
   if (!enable)
-    Flush(false);
+    DiscardBuffer();
 }
 
 void CRenderManager::FrameWait(int ms)
