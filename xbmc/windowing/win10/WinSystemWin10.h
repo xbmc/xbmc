@@ -23,13 +23,12 @@
 
 #pragma once
 
-#include <string>
-#include <vector>
-
 #include "guilib/DispResource.h"
 #include "threads/CriticalSection.h"
 #include "threads/SystemClock.h"
 #include "windowing/WinSystem.h"
+
+#include <vector>
 
 #pragma pack(push)
 #pragma pack(8)
@@ -74,12 +73,6 @@ struct MONITOR_DETAILS
   float     RefreshRate;
   int       Bpp;
   bool      Interlaced;
-
-  //HMONITOR  hMonitor;
-  //std::wstring MonitorNameW;
-  //std::wstring CardNameW;
-  //std::wstring DeviceNameW;
-  int       ScreenNumber; // XBMC POV, not Windows. Windows primary is XBMC #0, then each secondary is +1.
 };
 
 class CWinSystemWin10 : public CWinSystemBase
@@ -94,9 +87,8 @@ public:
   bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop) override;
   void FinishWindowResize(int newWidth, int newHeight) override;
   void UpdateResolutions() override;
-  bool CenterWindow() override;
-  virtual void NotifyAppFocusChange(bool bGaining) override;
-  int  GetNumScreens() override { return m_MonitorsInfo.size(); };
+  void NotifyAppFocusChange(bool bGaining) override;
+  int  GetNumScreens() override { return m_displays.size(); };
   int  GetCurrentScreen() override;
   void ShowOSMouse(bool show) override;
   bool HasInertialGestures() override { return true; }//if win32 has touchscreen - it uses the win32 gesture api for inertial scrolling
@@ -133,31 +125,28 @@ protected:
   virtual void CreateBackBuffer() = 0;
   virtual void ResizeDeviceBuffers() = 0;
   virtual bool IsStereoEnabled() = 0;
-  virtual void AdjustWindow(bool forceResize = false);
-  void CenterCursor() const;
+  virtual void AdjustWindow();
 
   virtual void Register(IDispResource *resource);
   virtual void Unregister(IDispResource *resource);
 
   bool ChangeResolution(const RESOLUTION_INFO& res, bool forceChange = false);
-  virtual bool UpdateResolutionsInternal();
-  const MONITOR_DETAILS* GetMonitor(int screen) const;
-  void RestoreDesktopResolution(int screen);
-  RECT ScreenRect(int screen) const;
+  const MONITOR_DETAILS* GetDefaultMonitor() const;
+  void RestoreDesktopResolution();
+  void GetConnectedDisplays(std::vector<MONITOR_DETAILS>& outputs);
 
   /*!
   \brief Adds a resolution to the list of resolutions if we don't already have it
   \param res resolution to add.
   */
-  static void AddResolution(const RESOLUTION_INFO &res);
+  static bool AddResolution(const RESOLUTION_INFO &res);
 
   void OnDisplayLost();
   void OnDisplayReset();
   void OnDisplayBack();
   void ResolutionChanged();
 
-  std::vector<MONITOR_DETAILS> m_MonitorsInfo;
-  int m_nPrimary;
+  std::vector<MONITOR_DETAILS> m_displays;
   bool m_ValidWindowedPosition;
   bool m_IsAlteringWindow;
 

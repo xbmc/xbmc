@@ -22,16 +22,13 @@
 #include "cores/AudioEngine/AESinkFactory.h"
 #include "cores/AudioEngine/Sinks/AESinkXAudio.h"
 #include "cores/AudioEngine/Sinks/AESinkWASAPI.h"
-#include "guilib/gui3d.h"
 #include "windowing/GraphicContext.h"
-#include "messaging/ApplicationMessenger.h"
 #include "platform/win10/AsyncHelpers.h"
 #include "platform/win10/powermanagement/Win10PowerSyscall.h"
 #include "platform/win32/CharsetConverter.h"
 #include "rendering/dx/DirectXHelper.h"
 #include "rendering/dx/RenderContext.h"
 #include "ServiceBroker.h"
-#include "settings/AdvancedSettings.h"
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
@@ -50,6 +47,7 @@
 #include <winrt/Windows.Graphics.Display.h>
 #include <winrt/Windows.Graphics.Display.Core.h>
 
+using namespace winrt::Windows::ApplicationModel::DataTransfer;
 using namespace winrt::Windows::Foundation::Metadata;
 using namespace winrt::Windows::Graphics::Display;
 using namespace winrt::Windows::Graphics::Display::Core;
@@ -58,7 +56,6 @@ using namespace winrt::Windows::UI::ViewManagement;
 
 CWinSystemWin10::CWinSystemWin10()
   : CWinSystemBase()
-  , m_nPrimary(0)
   , m_ValidWindowedPosition(false)
   , m_IsAlteringWindow(false)
   , m_delayDispReset(false)
@@ -85,13 +82,13 @@ CWinSystemWin10::~CWinSystemWin10()
 
 bool CWinSystemWin10::InitWindowSystem()
 {
-  m_coreWindow = winrt::Windows::UI::Core::CoreWindow::GetForCurrentThread();
+  m_coreWindow = CoreWindow::GetForCurrentThread();
   dynamic_cast<CWinEventsWin10&>(*m_winEvents).InitEventHandlers(m_coreWindow);
 
   if (!CWinSystemBase::InitWindowSystem())
     return false;
 
-  if (m_MonitorsInfo.empty())
+  if (m_displays.empty())
   {
     CLog::Log(LOGERROR, "%s - no suitable monitor found, aborting...", __FUNCTION__);
     return false;
@@ -103,7 +100,7 @@ bool CWinSystemWin10::InitWindowSystem()
 bool CWinSystemWin10::DestroyWindowSystem()
 {
   m_bWindowCreated = false;
-  RestoreDesktopResolution(m_nScreen);
+  RestoreDesktopResolution();
   return true;
 }
 
@@ -132,30 +129,12 @@ bool CWinSystemWin10::CreateNewWindow(const std::string& name, bool fullScreen, 
   AdjustWindow();
   // dispatch all events currently pending in the queue to show window's content
   // and hide UWP splash, without this the Kodi's splash will not be shown
-  m_coreWindow.Dispatcher().ProcessEvents(winrt::Windows::UI::Core::CoreProcessEventsOption::ProcessOneAndAllPending);
+  m_coreWindow.Dispatcher().ProcessEvents(CoreProcessEventsOption::ProcessOneAndAllPending);
 
   // in some cases CoreWindow::SizeChanged isn't fired
   // it causes mismatch between window actual size and UI
   winrt::Rect winRect = m_coreWindow.Bounds();
   dynamic_cast<CWinEventsWin10&>(*m_winEvents).OnResize(winRect.Width, winRect.Height);
-
-  return true;
-}
-
-bool CWinSystemWin10::CenterWindow()
-{
-  RESOLUTION_INFO DesktopRes = CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP);
-
-  m_nLeft = (DesktopRes.iWidth / 2) - (m_nWidth / 2);
-  m_nTop = (DesktopRes.iHeight / 2) - (m_nHeight / 2);
-
-  RECT rc;
-  rc.left = m_nLeft;
-  rc.top = m_nTop;
-  rc.right = rc.left + m_nWidth;
-  rc.bottom = rc.top + m_nHeight;
-
-  // @todo center the window
 
   return true;
 }
@@ -189,7 +168,7 @@ void CWinSystemWin10::FinishWindowResize(int newWidth, int newHeight)
   ApplicationView::PreferredLaunchWindowingMode(ApplicationViewWindowingMode::PreferredLaunchViewSize);
 }
 
-void CWinSystemWin10::AdjustWindow(bool forceResize)
+void CWinSystemWin10::AdjustWindow()
 {
   CLog::Log(LOGDEBUG, __FUNCTION__": adjusting window if required.");
 
@@ -231,31 +210,22 @@ void CWinSystemWin10::AdjustWindow(bool forceResize)
   }
 }
 
-void CWinSystemWin10::CenterCursor() const
-{
-}
-
 bool CWinSystemWin10::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
 {
   CWinSystemWin10::UpdateStates(fullScreen);
   WINDOW_STATE state = GetState(fullScreen);
 
-  CLog::Log(LOGDEBUG, "%s (%s) on screen %d with size %dx%d, refresh %f%s", __FUNCTION__, window_state_names[state]
-    , res.iScreen, res.iWidth, res.iHeight, res.fRefreshRate, (res.dwFlags & D3DPRESENTFLAG_INTERLACED) ? "i" : "");
+  CLog::Log(LOGDEBUG, "%s (%s) with size %dx%d, refresh %f%s", __FUNCTION__, window_state_names[state]
+          , res.iWidth, res.iHeight, res.fRefreshRate, (res.dwFlags & D3DPRESENTFLAG_INTERLACED) ? "i" : "");
 
   bool forceChange = false;    // resolution/display is changed but window state isn't changed
-  bool changeScreen = false;   // display is changed
   bool stereoChange = IsStereoEnabled() != (CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode() == RENDER_STEREO_MODE_HARDWAREBASED);
 
   if ( m_nWidth != res.iWidth
     || m_nHeight != res.iHeight
     || m_fRefreshRate != res.fRefreshRate
-    || m_nScreen != res.iScreen
     || stereoChange)
   {
-    if (m_nScreen != res.iScreen)
-      changeScreen = true;
-
     forceChange = true;
   }
 
@@ -270,11 +240,10 @@ bool CWinSystemWin10::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool 
 
   if (m_state == WINDOW_STATE_WINDOWED)
   {
-    // @todo get window size
-    //if (GetWindowInfo(m_hWnd, &wi))
+    if (m_coreWindow)
     {
-      //m_nLeft = wi.rcClient.left;
-      //m_nTop = wi.rcClient.top;
+      m_nLeft = m_coreWindow.Bounds().X;
+      m_nTop = m_coreWindow.Bounds().Y;
       m_ValidWindowedPosition = true;
     }
   }
@@ -282,18 +251,7 @@ bool CWinSystemWin10::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool 
   m_IsAlteringWindow = true;
   ReleaseBackBuffer();
 
-  if (changeScreen)
-  {
-    // before we changing display we have to leave exclusive mode on "old" display
-    //if (m_state == WINDOW_STATE_FULLSCREEN)
-    //  SetDeviceFullScreen(false, res);
-
-    // restoring native resolution on "old" display
-    RestoreDesktopResolution(m_nScreen);
-  }
-
   m_bFullScreen = fullScreen;
-  m_nScreen = res.iScreen;
   m_nWidth = res.iWidth;
   m_nHeight = res.iHeight;
   m_bBlankOtherDisplay = blankOtherDisplays;
@@ -305,15 +263,11 @@ bool CWinSystemWin10::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool 
   }
   else if (m_state == WINDOW_STATE_FULLSCREEN || m_state == WINDOW_STATE_FULLSCREEN_WINDOW) // we're in fullscreen state now
   {
-    // guess we are leaving exclusive mode, this will not an effect if we already not in
-    //SetDeviceFullScreen(false, res);
-
     if (state == WINDOW_STATE_WINDOWED) // go to a windowed state
     {
       // need to restore resoultion if it was changed to not native
       // because we do not support resolution change in windowed mode
-      if (changeScreen)
-        RestoreDesktopResolution(m_nScreen);
+      RestoreDesktopResolution();
     }
     else if (state == WINDOW_STATE_FULLSCREEN_WINDOW) // enter fullscreen window instead
     {
@@ -321,7 +275,7 @@ bool CWinSystemWin10::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool 
     }
 
     m_state = state;
-    AdjustWindow(changeScreen);
+    AdjustWindow();
   }
   else // we're in windowed state now
   {
@@ -330,12 +284,9 @@ bool CWinSystemWin10::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool 
       ChangeResolution(res, stereoChange);
 
       m_state = state;
-      AdjustWindow(changeScreen);
+      AdjustWindow();
     }
   }
-
-  if (changeScreen)
-    CenterCursor();
 
   CreateBackBuffer();
   m_IsAlteringWindow = false;
@@ -348,39 +299,18 @@ bool CWinSystemWin10::DPIChanged(WORD dpi, RECT windowRect) const
   return true;
 }
 
-void CWinSystemWin10::RestoreDesktopResolution(int screen)
+void CWinSystemWin10::RestoreDesktopResolution()
 {
-  CLog::Log(LOGDEBUG, __FUNCTION__": restoring desktop resolution for screen %i, ", screen);
-  int resIdx = RES_DESKTOP;
-  for (int idx = RES_DESKTOP; idx < RES_DESKTOP + GetNumScreens(); idx++)
-  {
-    if (CDisplaySettings::GetInstance().GetResolutionInfo(idx).iScreen == screen)
-    {
-      resIdx = idx;
-      break;
-    }
-  }
-  ChangeResolution(CDisplaySettings::GetInstance().GetResolutionInfo(resIdx));
+  CLog::Log(LOGDEBUG, __FUNCTION__": restoring default desktop resolution");
+  ChangeResolution(CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP));
 }
 
-const MONITOR_DETAILS* CWinSystemWin10::GetMonitor(int screen) const
+const MONITOR_DETAILS* CWinSystemWin10::GetDefaultMonitor() const
 {
-  for (unsigned int monitor = 0; monitor < m_MonitorsInfo.size(); monitor++)
-    if (m_MonitorsInfo[monitor].ScreenNumber == screen)
-      return &m_MonitorsInfo[monitor];
-
-  // What to do if monitor is not found? Not sure... use the primary screen as a default value.
-  if (m_nPrimary >= 0 && static_cast<size_t>(m_nPrimary) < m_MonitorsInfo.size())
-  {
-    CLog::Log(LOGDEBUG, __FUNCTION__, "no monitor found for screen %i, "
-      "will use primary screen %i", screen, m_nPrimary);
-    return &m_MonitorsInfo[m_nPrimary];
-  }
-  else
-  {
-    CLog::LogFunction(LOGERROR, __FUNCTION__, "no monitor found for screen %i", screen);
+  if (m_displays.empty())
     return nullptr;
-  }
+
+  return &m_displays.front();
 }
 
 int CWinSystemWin10::GetCurrentScreen()
@@ -390,22 +320,9 @@ int CWinSystemWin10::GetCurrentScreen()
   return 0;
 }
 
-RECT CWinSystemWin10::ScreenRect(int screen) const
-{
-  const MONITOR_DETAILS* details = GetMonitor(screen);
-
-  if (!details)
-  {
-    CLog::LogFunction(LOGERROR, __FUNCTION__, "no monitor found for screen %i", screen);
-  }
-
-  RECT rc = { 0, 0, details->ScreenWidth, details->ScreenHeight };
-  return rc;
-}
-
 bool CWinSystemWin10::ChangeResolution(const RESOLUTION_INFO& res, bool forceChange /*= false*/)
 {
-  const MONITOR_DETAILS* details = GetMonitor(res.iScreen);
+  const MONITOR_DETAILS* details = GetDefaultMonitor();
 
   if (!details)
     return false;
@@ -465,31 +382,31 @@ bool CWinSystemWin10::ChangeResolution(const RESOLUTION_INFO& res, bool forceCha
 
 void CWinSystemWin10::UpdateResolutions()
 {
-  m_MonitorsInfo.clear();
+  m_displays.clear();
+
   CWinSystemBase::UpdateResolutions();
+  GetConnectedDisplays(m_displays);
 
-  UpdateResolutionsInternal();
-
-  if (m_MonitorsInfo.empty())
+  const MONITOR_DETAILS* details = GetDefaultMonitor();
+  if (!details)
     return;
 
-  float refreshRate = 0;
-  int w = 0;
-  int h = 0;
-  uint32_t dwFlags;
+  float refreshRate;
+  int w = details->ScreenWidth;
+  int h = details->ScreenHeight;
+  uint32_t dwFlags = details->Interlaced ? D3DPRESENTFLAG_INTERLACED : 0;;
 
-  // Primary
-  m_MonitorsInfo[m_nPrimary].ScreenNumber = 0;
-  w = m_MonitorsInfo[m_nPrimary].ScreenWidth;
-  h = m_MonitorsInfo[m_nPrimary].ScreenHeight;
-  if ((m_MonitorsInfo[m_nPrimary].RefreshRate == 59) || (m_MonitorsInfo[m_nPrimary].RefreshRate == 29) || (m_MonitorsInfo[m_nPrimary].RefreshRate == 23))
-    refreshRate = (float)(m_MonitorsInfo[m_nPrimary].RefreshRate + 1) / 1.001f;
+  if (details->RefreshRate == 59 || details->RefreshRate == 29 || details->RefreshRate == 23)
+    refreshRate = static_cast<float>(details->RefreshRate + 1) / 1.001f;
   else
-    refreshRate = (float)m_MonitorsInfo[m_nPrimary].RefreshRate;
-  dwFlags = m_MonitorsInfo[m_nPrimary].Interlaced ? D3DPRESENTFLAG_INTERLACED : 0;
+    refreshRate = static_cast<float>(details->RefreshRate);
 
-  UpdateDesktopResolution(CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP), 0, w, h, refreshRate, dwFlags);
-  CLog::Log(LOGNOTICE, "Primary mode: %s", CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP).strMode.c_str());
+  RESOLUTION_INFO& primary_info = CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP);
+  UpdateDesktopResolution(primary_info, 0, w, h, refreshRate, dwFlags);
+  CLog::Log(LOGNOTICE, "Primary mode: %s", primary_info.strMode.c_str());
+
+  // erase previous stored modes
+  CDisplaySettings::GetInstance().ClearCustomResolutions();
 
   if (ApiInformation::IsTypePresent(L"Windows.Graphics.Display.Core.HdmiDisplayInformation"))
   {
@@ -501,62 +418,39 @@ void CWinSystemWin10::UpdateResolutions()
       {
         RESOLUTION_INFO res;
         UpdateDesktopResolution(res, 0, mode.ResolutionWidthInRawPixels(), mode.ResolutionHeightInRawPixels(), mode.RefreshRate(), 0);
-        AddResolution(res);
-        CLog::Log(LOGNOTICE, "Additional mode: %s %s", res.strMode.c_str(), mode.Is2086MetadataSupported() ? "(HDR)" : "");
+        GetGfxContext().ResetOverscan(res);
+
+        if (AddResolution(res))
+          CLog::Log(LOGNOTICE, "Additional mode: %s %s", res.strMode.c_str(), mode.Is2086MetadataSupported() ? "(HDR)" : "");
       }
     }
   }
 
-  // Desktop resolution of the other screens
-  if (m_MonitorsInfo.size() >= 2)
-  {
-    int xbmcmonitor = 1;  // The screen number+1 showed in the GUI display settings
-
-    for (unsigned int monitor = 0; monitor < m_MonitorsInfo.size(); monitor++)
-    {
-      if (monitor != m_nPrimary)
-      {
-        m_MonitorsInfo[monitor].ScreenNumber = xbmcmonitor;
-        w = m_MonitorsInfo[monitor].ScreenWidth;
-        h = m_MonitorsInfo[monitor].ScreenHeight;
-        if ((m_MonitorsInfo[monitor].RefreshRate == 59) || (m_MonitorsInfo[monitor].RefreshRate == 29) || (m_MonitorsInfo[monitor].RefreshRate == 23))
-          refreshRate = (float)(m_MonitorsInfo[monitor].RefreshRate + 1) / 1.001f;
-        else
-          refreshRate = (float)m_MonitorsInfo[monitor].RefreshRate;
-        dwFlags = m_MonitorsInfo[monitor].Interlaced ? D3DPRESENTFLAG_INTERLACED : 0;
-
-        RESOLUTION_INFO res;
-        UpdateDesktopResolution(res, xbmcmonitor++, w, h, refreshRate, dwFlags);
-        CDisplaySettings::GetInstance().AddResolutionInfo(res);
-        CLog::Log(LOGNOTICE, "Secondary mode: %s", res.strMode.c_str());
-      }
-    }
-  }
+  CDisplaySettings::GetInstance().ApplyCalibrations();
 }
 
-void CWinSystemWin10::AddResolution(const RESOLUTION_INFO &res)
+bool CWinSystemWin10::AddResolution(const RESOLUTION_INFO &res)
 {
-  for (unsigned int i = 0; i < CDisplaySettings::GetInstance().ResolutionInfoSize(); i++)
+  for (unsigned int i = RES_CUSTOM; i < CDisplaySettings::GetInstance().ResolutionInfoSize(); i++)
   {
-    if (CDisplaySettings::GetInstance().GetResolutionInfo(i).iScreen == res.iScreen &&
-      CDisplaySettings::GetInstance().GetResolutionInfo(i).iWidth == res.iWidth &&
-      CDisplaySettings::GetInstance().GetResolutionInfo(i).iHeight == res.iHeight &&
-      CDisplaySettings::GetInstance().GetResolutionInfo(i).iScreenWidth == res.iScreenWidth &&
-      CDisplaySettings::GetInstance().GetResolutionInfo(i).iScreenHeight == res.iScreenHeight &&
-      CDisplaySettings::GetInstance().GetResolutionInfo(i).fRefreshRate == res.fRefreshRate &&
-      CDisplaySettings::GetInstance().GetResolutionInfo(i).dwFlags == res.dwFlags)
-      return; // already have this resolution
+    RESOLUTION_INFO& info = CDisplaySettings::GetInstance().GetResolutionInfo(i);
+    if ( info.iWidth == res.iWidth 
+      && info.iHeight == res.iHeight 
+      && info.iScreenWidth == res.iScreenWidth 
+      && info.iScreenHeight == res.iScreenHeight 
+      && info.fRefreshRate == res.fRefreshRate 
+      && info.dwFlags == res.dwFlags)
+      return false; // already have this resolution
   }
 
   CDisplaySettings::GetInstance().AddResolutionInfo(res);
+  return true;
 }
 
-bool CWinSystemWin10::UpdateResolutionsInternal()
+void CWinSystemWin10::GetConnectedDisplays(std::vector<MONITOR_DETAILS>& outputs)
 {
-  CLog::Log(LOGNOTICE, "Win10 UWP Found screen. Need to update code to use DirectX!");
-
   auto dispatcher = m_coreWindow.Dispatcher();
-  winrt::Windows::UI::Core::DispatchedHandler handler([this]()
+  DispatchedHandler handler([&]()
   {
     MONITOR_DETAILS md = {};
 
@@ -609,15 +503,13 @@ bool CWinSystemWin10::UpdateResolutionsInternal()
     }
     md.Interlaced = false;
 
-    m_MonitorsInfo.push_back(md);
+    outputs.push_back(md);
   });
 
   if (dispatcher.HasThreadAccess())
     handler();
   else
     Wait(dispatcher.RunAsync(CoreDispatcherPriority::High, handler));
-
-  return true;
 }
 
 void CWinSystemWin10::ShowOSMouse(bool show)
@@ -625,11 +517,11 @@ void CWinSystemWin10::ShowOSMouse(bool show)
   if (!m_coreWindow)
     return;
 
-  winrt::Windows::UI::Core::DispatchedHandler handler([this, show]()
+  DispatchedHandler handler([this, show]()
   {
     CoreCursor cursor = nullptr;
     if (show)
-      CoreCursor cursor(CoreCursorType::Arrow, 1);
+      cursor = CoreCursor(CoreCursorType::Arrow, 1);
     m_coreWindow.PointerCursor(cursor);
   });
 
@@ -722,10 +614,9 @@ std::unique_ptr<CVideoSync> CWinSystemWin10::GetVideoSync(void *clock)
 std::string CWinSystemWin10::GetClipboardText()
 {
   std::wstring unicode_text;
-  std::string utf8_text;
 
-  auto contentView = winrt::Windows::ApplicationModel::DataTransfer::Clipboard::GetContent();
-  if (contentView.Contains(winrt::Windows::ApplicationModel::DataTransfer::StandardDataFormats::Text()))
+  auto contentView = Clipboard::GetContent();
+  if (contentView.Contains(StandardDataFormats::Text()))
   {
     auto text = Wait(contentView.GetTextAsync());
     unicode_text.append(text.c_str());

@@ -24,13 +24,11 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/mouse/MouseStat.h"
-#include "input/touch/generic/GenericTouchActionHandler.h"
 #include "input/touch/generic/GenericTouchInputHandler.h"
 #include "input/Action.h"
 #include "input/ActionIDs.h"
 #include "interfaces/AnnouncementManager.h"
 #include "messaging/ApplicationMessenger.h"
-#include "platform/win10/AsyncHelpers.h"
 #include "platform/win10/input/RemoteControlXbox.h"
 #include "rendering/dx/DeviceResources.h"
 #include "rendering/dx/RenderContext.h"
@@ -392,7 +390,6 @@ void CWinEventsWin10::OnPointerExited(const CoreWindow&, const PointerEventArgs&
   if (point.PointerDevice().PointerDeviceType() == PointerDeviceType::Touch)
   {
     CGenericTouchInputHandler::GetInstance().HandleTouchInput(TouchInputAbort, position.X, position.Y, point.Timestamp(), 0, 10);
-    return;
   }
 }
 
@@ -451,7 +448,7 @@ void CWinEventsWin10::Kodi_KeyEvent(unsigned int vkey, unsigned scancode, unsign
   if ((window.GetKeyState(VirtualKey::RightWindows) & State::Down) == State::Down)
     mod |= XBMCKMOD_LSUPER;
 
-  keysym.mod = (XBMCMod)mod;
+  keysym.mod = static_cast<XBMCMod>(mod);
 
   XBMC_Event newEvent;
   memset(&newEvent, 0, sizeof(newEvent));
