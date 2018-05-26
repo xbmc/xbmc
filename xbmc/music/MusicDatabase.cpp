@@ -1919,7 +1919,7 @@ bool CMusicDatabase::GetGenresByAlbum(int idAlbum, CFileItem* item)
       "song JOIN song_genre ON song.idSong = song_genre.idSong "
       "JOIN genre ON song_genre.idGenre = genre.idGenre "
       "WHERE song.idAlbum = %i "
-      "ORDER BY song_genre.idSong, song_genre.iOrder,", idAlbum);
+      "ORDER BY song_genre.idSong, song_genre.iOrder", idAlbum);
     if (!m_pDS->query(strSQL))
       return false;
     if (m_pDS->num_rows() == 0)
