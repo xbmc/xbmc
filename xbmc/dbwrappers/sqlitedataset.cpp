@@ -216,7 +216,13 @@ int SqliteDatabase::connect(bool create) {
     int flags = SQLITE_OPEN_READWRITE;
     if (create)
       flags |= SQLITE_OPEN_CREATE;
-    if (sqlite3_open_v2(db_fullpath.c_str(), &conn, flags, NULL)==SQLITE_OK)
+    int errorCode = sqlite3_open_v2(db_fullpath.c_str(), &conn, flags, NULL);
+    if (create && errorCode == SQLITE_CANTOPEN)
+    {
+      CLog::Log(LOGFATAL, "SqliteDatabase: can't open %s", db_fullpath.c_str());
+      throw std::runtime_error("SqliteDatabase: can't open " + db_fullpath);
+    }
+    else if (errorCode == SQLITE_OK)
     {
       sqlite3_busy_handler(conn, busy_callback, NULL);
       char* err=NULL;
@@ -224,13 +230,18 @@ int SqliteDatabase::connect(bool create) {
       {
         throw DbErrors(getErrorMsg());
       }
+      else if (sqlite3_db_readonly(conn, nullptr) == 1)
+      {
+        CLog::Log(LOGFATAL, "SqliteDatabase: %s is read only", db_fullpath.c_str());
+        throw std::runtime_error("SqliteDatabase: " + db_fullpath + " is read only");
+      }
       active = true;
       return DB_CONNECTION_OK;
     }
 
     return DB_CONNECTION_NONE;
   }
-  catch(...)
+  catch(const DbErrors&)
   {
   }
   return DB_CONNECTION_NONE;
