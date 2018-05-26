@@ -18,13 +18,9 @@
  *
  */
 
-#include "commons/ilog.h"
-#include "windowing/GraphicContext.h"
 #include "input/touch/generic/GenericTouchActionHandler.h"
 #include "input/touch/generic/GenericTouchInputHandler.h"
 #include "rendering/dx/DirectXHelper.h"
-#include "rendering/dx/RenderContext.h"
-#include "utils/SystemInfo.h"
 #include "utils/log.h"
 #include "WinSystemWin10DX.h"
 
@@ -58,7 +54,7 @@ void CWinSystemWin10DX::PresentRenderImpl(bool rendered)
 
 bool CWinSystemWin10DX::CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res)
 {
-  const MONITOR_DETAILS* monitor = GetMonitor(res.iScreen);
+  const MONITOR_DETAILS* monitor = GetDefaultMonitor();
   if (!monitor)
     return false;
 
@@ -91,13 +87,6 @@ void CWinSystemWin10DX::ShowSplash(const std::string & message)
   // this will prevent killing the app by watchdog timeout during loading
   if (m_coreWindow != nullptr)
     m_coreWindow.Dispatcher().ProcessEvents(winrt::Windows::UI::Core::CoreProcessEventsOption::ProcessAllIfPresent);
-}
-
-void CWinSystemWin10DX::UpdateMonitor() const
-{
-  //const MONITOR_DETAILS* monitor = GetMonitor(m_nScreen);
-  //if (monitor)
-  //  m_deviceResources->SetMonitor(monitor->hMonitor);
 }
 
 void CWinSystemWin10DX::SetDeviceFullScreen(bool fullScreen, RESOLUTION_INFO& res)

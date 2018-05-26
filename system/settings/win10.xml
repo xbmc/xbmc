@@ -11,6 +11,9 @@
           <default>false</default>
           <visible>false</visible>
         </setting>
+        <setting id="videoscreen.monitor">
+          <visible>false</visible>
+        </setting>
       </group>
     </category>
     <category id="audio">

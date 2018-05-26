@@ -54,6 +54,8 @@
 #include "windowing/osx/WinSystemOSX.h"
 #elif defined(HAVE_WAYLAND)
 #include "windowing/wayland/WinSystemWayland.h"
+#elif defined(TARGET_WINDOWS_DESKTOP)
+#include "windowing/windows/WinSystemWin32DX.h"
 #endif
 
 using namespace KODI::MESSAGING;
@@ -848,9 +850,13 @@ void CDisplaySettings::SettingOptionsMonitorsFiller(SettingConstPtr setting, std
     }
     list.push_back(std::make_pair(monitors[i], monitors[i]));
   }
-#elif defined(HAVE_WAYLAND)
+#elif defined(HAVE_WAYLAND) || defined(TARGET_WINDOWS_DESKTOP)
   std::vector<std::string> monitors;
+#if defined(HAVE_WAYLAND)
   KODI::WINDOWING::WAYLAND::CWinSystemWayland *winSystem = dynamic_cast<KODI::WINDOWING::WAYLAND::CWinSystemWayland*>(CServiceBroker::GetWinSystem());
+#elif defined(TARGET_WINDOWS_DESKTOP)
+  CWinSystemWin32DX *winSystem = dynamic_cast<CWinSystemWin32DX*>(CServiceBroker::GetWinSystem());
+#endif
   winSystem->GetConnectedOutputs(&monitors);
   bool foundMonitor = false;
   std::string currentMonitor = CServiceBroker::GetSettings().GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR);

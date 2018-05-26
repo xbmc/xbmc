@@ -18,13 +18,16 @@
  *
  */
 
+#include "WinSystemWin32DX.h"
 #include "commons/ilog.h"
-#include "windowing/GraphicContext.h"
+#include "platform/win32/CharsetConverter.h"
 #include "rendering/dx/RenderContext.h"
+#include "settings/DisplaySettings.h"
+#include "settings/Settings.h"
 #include "utils/SystemInfo.h"
 #include "utils/log.h"
-#include "WinSystemWin32DX.h"
-#include "platform/win32/CharsetConverter.h"
+#include "windowing/GraphicContext.h"
+
 #include "system.h"
 
 #ifndef _M_X64
@@ -80,13 +83,14 @@ void CWinSystemWin32DX::PresentRenderImpl(bool rendered)
 
 bool CWinSystemWin32DX::CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res)
 {
-  const MONITOR_DETAILS* monitor = GetMonitor(res.iScreen);
+  const MONITOR_DETAILS* monitor = GetDisplayDetails(CServiceBroker::GetSettings().GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR));
   if (!monitor)
     return false;
 
+  m_hMonitor = monitor->hMonitor;
   m_deviceResources = DX::DeviceResources::Get();
   // setting monitor before creating window for proper hooking into a driver
-  m_deviceResources->SetMonitor(monitor->hMonitor);
+  m_deviceResources->SetMonitor(m_hMonitor);
 
   return CWinSystemWin32::CreateNewWindow(name, fullScreen, res) && m_deviceResources->HasValidDevice();
 }
@@ -103,13 +107,6 @@ bool CWinSystemWin32DX::DestroyRenderSystem()
   m_deviceResources->Release();
   m_deviceResources.reset();
   return true;
-}
-
-void CWinSystemWin32DX::UpdateMonitor() const
-{
-  const MONITOR_DETAILS* monitor = GetMonitor(m_nScreen);
-  if (monitor)
-    m_deviceResources->SetMonitor(monitor->hMonitor);
 }
 
 void CWinSystemWin32DX::SetDeviceFullScreen(bool fullScreen, RESOLUTION_INFO& res)
@@ -133,11 +130,12 @@ void CWinSystemWin32DX::OnMove(int x, int y)
     return;
 
   HMONITOR newMonitor = MonitorFromWindow(m_hWnd, MONITOR_DEFAULTTONEAREST);
-  const MONITOR_DETAILS* monitor = GetMonitor(m_nScreen);
-  if (newMonitor != monitor->hMonitor)
+  if (newMonitor != m_hMonitor)
   {
+    MONITOR_DETAILS* details = GetDisplayDetails(newMonitor);
+    CDisplaySettings::GetInstance().SetMonitor(KODI::PLATFORM::WINDOWS::FromW(details->MonitorNameW));
     m_deviceResources->SetMonitor(newMonitor);
-    m_nScreen = GetCurrentScreen();
+    m_hMonitor = newMonitor;
   }
 }
 
@@ -170,14 +168,9 @@ bool CWinSystemWin32DX::IsStereoEnabled()
   return m_deviceResources->IsStereoEnabled();
 }
 
-void CWinSystemWin32DX::OnScreenChange(int screen)
+void CWinSystemWin32DX::OnScreenChange(HMONITOR monitor)
 {
-  const MONITOR_DETAILS* new_monitor = GetMonitor(screen);
-  const MONITOR_DETAILS* old_monitor = GetMonitor(m_nScreen);
-  if (old_monitor->hMonitor != new_monitor->hMonitor)
-  {
-    m_deviceResources->SetMonitor(new_monitor->hMonitor);
-  }
+  m_deviceResources->SetMonitor(monitor);
 }
 
 bool CWinSystemWin32DX::ChangeResolution(const RESOLUTION_INFO &res, bool forceChange)

@@ -22,7 +22,6 @@
 #include "interfaces/IAnnouncer.h"
 #include "windowing/WinEvents.h"
 #include <concurrent_queue.h>
-#include <cmath>
 #include <winrt/Windows.Media.h>
 
 class CRemoteControlXbox;
