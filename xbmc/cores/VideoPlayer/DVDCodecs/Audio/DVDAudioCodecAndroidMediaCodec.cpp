@@ -75,6 +75,7 @@ static bool IsDecoderBlacklisted(const std::string &name)
 {
   static const char *blacklistDecoders[] = {
     "OMX.google",
+    "OMX.MTK",
     // End of list
     NULL
   };
