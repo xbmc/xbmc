@@ -68,6 +68,9 @@ bool CServiceManager::InitForTesting()
   m_network.reset(new CNetwork(*m_settings));
 
   m_profileManager.reset(new CProfilesManager(*m_settings));
+  CProfile profile("special://temp");
+  m_profileManager.get()->AddProfile(profile);
+  m_profileManager.get()->CreateProfileFolders();
 
   m_databaseManager.reset(new CDatabaseManager);
 
