@@ -28,6 +28,7 @@
 #include "DVDSubtitleParserSSA.h"
 #include "DVDSubtitleParserVplayer.h"
 
+#include <cstring>
 #include <memory>
 
 CDVDSubtitleParser* CDVDFactorySubtitle::CreateParser(std::string& strFile)
