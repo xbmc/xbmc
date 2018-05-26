@@ -436,11 +436,10 @@ bool CAirPlayServer::Initialize()
 {
   Deinitialize();
   
-  SOCKET fd = CreateTCPServerSocket(m_port, !m_nonlocal, 10, "AIRPLAY");
-  if (fd == INVALID_SOCKET)
+  m_ServerSockets = CreateTCPServerSocket(m_port, !m_nonlocal, 10, "AIRPLAY");
+  if (m_ServerSockets.empty())
     return false;
 
-  m_servers.push_back(fd);
   CLog::Log(LOGINFO, "AIRPLAY Server: Successfully initialized");
   return true;
 }
