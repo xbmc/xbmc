@@ -91,7 +91,6 @@ public:
   virtual bool SupportsStereo(RENDER_STEREO_MODE mode) const;
   unsigned int GetMaxTextureSize() const { return m_maxTextureSize; }
   unsigned int GetMinDXTPitch() const { return m_minDXTPitch; }
-  bool UseLimitedColorRange();
 
   virtual void ShowSplash(const std::string& message);
 

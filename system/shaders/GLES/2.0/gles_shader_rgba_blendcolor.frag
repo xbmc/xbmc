@@ -32,4 +32,8 @@ uniform int       m_method;
 void main ()
 {
   gl_FragColor.rgba = vec4(texture2D(m_samp0, m_cord0.xy).rgba * m_colour);
+#if defined(KODI_LIMITED_RANGE)
+ gl_FragColor.rgb *= (235.0-16.0) / 255.0;
+ gl_FragColor.rgb += 16.0 / 255.0;
+#endif
 }
