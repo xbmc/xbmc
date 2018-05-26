@@ -103,7 +103,7 @@ private:
   CCriticalSection m_connectionLock;
   std::vector<CTCPClient> m_connections;
   std::map<std::string, int> m_reverseSockets;
-  int m_ServerSocket;
+  std::vector<SOCKET> m_ServerSockets;
   int m_port;
   bool m_nonlocal;
   bool m_usePassword;
