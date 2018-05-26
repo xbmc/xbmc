@@ -27,7 +27,6 @@
 #define DLL_PATH_LIBSHAIRPLAY  "special://xbmcbin/shairplay.dll"
 
 /* VideoPlayer */
-#define DLL_PATH_LIBASS        "special://xbmcbin/libass.dll"
 #define DLL_PATH_LIBDVDNAV     "special://xbmcbin/libdvdnav.dll"
 
 /* libbluray */

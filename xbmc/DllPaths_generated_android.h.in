@@ -32,7 +32,6 @@
 #define DLL_PATH_LIBSHAIRPLAY  "@SHAIRPLAY_SONAME@"
 
 /* VideoPlayer */
-#define DLL_PATH_LIBASS        "@ASS_SONAME@"
 #define DLL_PATH_LIBDVDNAV     "libdvdnav-@ARCH@.so"
 
 /* libbluray */

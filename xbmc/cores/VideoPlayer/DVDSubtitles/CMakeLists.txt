@@ -23,7 +23,6 @@ set(HEADERS DVDFactorySubtitle.h
             DVDSubtitleStream.h
             DVDSubtitleTagMicroDVD.h
             DVDSubtitleTagSami.h
-            DVDSubtitlesLibass.h
-            DllLibass.h)
+            DVDSubtitlesLibass.h)
 
 core_add_library(dvdsubtitles)

@@ -20,11 +20,12 @@
  *
  */
 
-#include "DllLibass.h"
 #include "DVDResource.h"
 #include "threads/CriticalSection.h"
 
-/** Wrapper for Libass **/
+#include <ass/ass.h>
+
+ /** Wrapper for Libass **/
 
 class CDVDSubtitlesLibass : public IDVDResourceCounted<CDVDSubtitlesLibass>
 {
@@ -42,11 +43,9 @@ public:
   bool CreateTrack(char* buf, size_t size);
 
 private:
-  DllLibass m_dll;
-  long m_references;
-  ASS_Library* m_library;
-  ASS_Track* m_track;
-  ASS_Renderer* m_renderer;
+  ASS_Library* m_library = nullptr;
+  ASS_Track* m_track = nullptr;
+  ASS_Renderer* m_renderer = nullptr;
   CCriticalSection m_section;
 };
 
