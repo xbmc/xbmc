@@ -923,13 +923,6 @@ void CSlideShowPic::Render(float *x, float *y, CBaseTexture* pTexture, UTILS::Co
   colour[2] = (GLubyte)GET_B(color);
   colour[3] = (GLubyte)GET_A(color);
 
-  if (CServiceBroker::GetWinSystem()->UseLimitedColor())
-  {
-    colour[0] = (235 - 16) * colour[0] / 255 + 16;
-    colour[1] = (235 - 16) * colour[1] / 255 + 16;
-    colour[2] = (235 - 16) * colour[2] / 255 + 16;
-  }
-
   glUniform4f(uniColLoc,(colour[0] / 255.0f), (colour[1] / 255.0f),
                         (colour[2] / 255.0f), (colour[3] / 255.0f));
 
