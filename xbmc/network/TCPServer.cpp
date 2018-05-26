@@ -474,14 +474,13 @@ bool CTCPServer::InitializeBlue()
 
 bool CTCPServer::InitializeTCP()
 {
-  SOCKET fd;
-
   Deinitialize();
 
-  if ((fd = CreateTCPServerSocket(m_port, !m_nonlocal, 10, "JSONRPC")) == INVALID_SOCKET)
+  std::vector<SOCKET> sockets = CreateTCPServerSocket(m_port, !m_nonlocal, 10, "JSONRPC");
+  if (sockets.empty())
     return false;
 
-  m_servers.push_back(fd);
+  m_servers.insert(m_servers.end(), sockets.begin(), sockets.end());
   return true;
 }
 

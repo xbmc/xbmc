@@ -311,7 +311,7 @@ CAirPlayServer::CAirPlayServer(int port, bool nonlocal) : CThread("AirPlayServer
 {
   m_port = port;
   m_nonlocal = nonlocal;
-  m_ServerSocket = INVALID_SOCKET;
+  m_ServerSockets = std::vector<SOCKET>();
   m_usePassword = false;
   m_origVolume = -1;
   CAnnouncementManager::GetInstance().AddAnnouncer(this);
@@ -346,8 +346,12 @@ void CAirPlayServer::Process()
     struct timeval  to     = {1, 0};
     FD_ZERO(&rfds);
 
-    FD_SET(m_ServerSocket, &rfds);
-    max_fd = m_ServerSocket;
+    for (SOCKET socket : m_ServerSockets)
+    {
+      FD_SET(socket, &rfds);
+      if ((intptr_t)socket > (intptr_t)max_fd)
+        max_fd = socket;
+    }
 
     for (unsigned int i = 0; i < m_connections.size(); i++)
     {
@@ -388,29 +392,32 @@ void CAirPlayServer::Process()
         }
       }
 
-      if (FD_ISSET(m_ServerSocket, &rfds))
+      for (SOCKET socket : m_ServerSockets)
       {
-        CLog::Log(LOGDEBUG, "AIRPLAY Server: New connection detected");
-        CTCPClient newconnection;
-        newconnection.m_socket = accept(m_ServerSocket, (struct sockaddr*) &newconnection.m_cliaddr, &newconnection.m_addrlen);
-        sessionCounter++;
-        newconnection.m_sessionCounter = sessionCounter;
+        if (FD_ISSET(socket, &rfds))
+        {
+          CLog::Log(LOGDEBUG, "AIRPLAY Server: New connection detected");
+          CTCPClient newconnection;
+          newconnection.m_socket = accept(socket, (struct sockaddr*) &newconnection.m_cliaddr, &newconnection.m_addrlen);
+          sessionCounter++;
+          newconnection.m_sessionCounter = sessionCounter;
 
-        if (newconnection.m_socket == INVALID_SOCKET)
-        {
-          CLog::Log(LOGERROR, "AIRPLAY Server: Accept of new connection failed: %d", errno);
-          if (EBADF == errno)
+          if (newconnection.m_socket == INVALID_SOCKET)
           {
-            Sleep(1000);
-            Initialize();
-            break;
+            CLog::Log(LOGERROR, "AIRPLAY Server: Accept of new connection failed: %d", errno);
+            if (EBADF == errno)
+            {
+              Sleep(1000);
+              Initialize();
+              break;
+            }
           }
-        }
-        else
-        {
-          CSingleLock lock (m_connectionLock);
-          CLog::Log(LOGINFO, "AIRPLAY Server: New connection added");
-          m_connections.push_back(newconnection);
+          else
+          {
+            CSingleLock lock (m_connectionLock);
+            CLog::Log(LOGINFO, "AIRPLAY Server: New connection added");
+            m_connections.push_back(newconnection);
+          }
         }
       }
     }
@@ -429,9 +436,10 @@ bool CAirPlayServer::Initialize()
 {
   Deinitialize();
   
-  if ((m_ServerSocket = CreateTCPServerSocket(m_port, !m_nonlocal, 10, "AIRPLAY")) == INVALID_SOCKET)
+  m_ServerSockets = CreateTCPServerSocket(m_port, !m_nonlocal, 10, "AIRPLAY");
+  if (m_ServerSockets.empty())
     return false;
-  
+
   CLog::Log(LOGINFO, "AIRPLAY Server: Successfully initialized");
   return true;
 }
@@ -445,12 +453,12 @@ void CAirPlayServer::Deinitialize()
   m_connections.clear();
   m_reverseSockets.clear();
 
-  if (m_ServerSocket != INVALID_SOCKET)
+  for (SOCKET socket : m_ServerSockets)
   {
-    shutdown(m_ServerSocket, SHUT_RDWR);
-    close(m_ServerSocket);
-    m_ServerSocket = INVALID_SOCKET;
+    shutdown(socket, SHUT_RDWR);
+    close(socket);
   }
+  m_ServerSockets.clear();
 }
 
 CAirPlayServer::CTCPClient::CTCPClient()
