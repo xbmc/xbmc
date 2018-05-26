@@ -550,8 +550,7 @@ void CDVDDemuxClient::SetStreamProps(CDemuxStream *stream, std::map<int, std::sh
   toStream->flags = stream->flags;
   toStream->cryptoSession = stream->cryptoSession;
   toStream->externalInterfaces = stream->externalInterfaces;
-  for (int j=0; j<4; j++)
-    toStream->language[j] = stream->language[j];
+  toStream->language = stream->language;
 
   toStream->realtime = stream->realtime;
 

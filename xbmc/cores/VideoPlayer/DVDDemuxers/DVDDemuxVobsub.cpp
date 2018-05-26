@@ -208,8 +208,7 @@ bool CDVDDemuxVobsub::ParseId(SState& state, char* line)
   std::unique_ptr<CStream> stream(new CStream(this));
 
   while(*line == ' ') line++;
-  strncpy(stream->language, line, 2);
-  stream->language[2] = '\0';
+  stream->language = std::string(line, 2);
   line+=2;
 
   while(*line == ' ' || *line == ',') line++;

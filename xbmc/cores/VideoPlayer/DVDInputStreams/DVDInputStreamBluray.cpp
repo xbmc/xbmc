@@ -1124,7 +1124,7 @@ int64_t CDVDInputStreamBluray::GetLength()
   return m_dll->bd_get_title_size(m_bd);
 }
 
-static bool find_stream(int pid, BLURAY_STREAM_INFO *info, int count, char* language)
+static bool find_stream(int pid, BLURAY_STREAM_INFO *info, int count, std::string &language)
 {
   int i=0;
   for(;i<count;i++,info++)
@@ -1134,11 +1134,11 @@ static bool find_stream(int pid, BLURAY_STREAM_INFO *info, int count, char* lang
   }
   if(i==count)
     return false;
-  memcpy(language, info->lang, 4);
+  language = reinterpret_cast<char*>(info->lang);
   return true;
 }
 
-void CDVDInputStreamBluray::GetStreamInfo(int pid, char* language)
+void CDVDInputStreamBluray::GetStreamInfo(int pid, std::string &language)
 {
   if(!m_title || m_clip >= m_title->clip_count)
     return;

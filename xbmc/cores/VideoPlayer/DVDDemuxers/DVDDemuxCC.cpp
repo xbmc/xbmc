@@ -325,7 +325,7 @@ void CDVDDemuxCC::Handler(int service, void *userdata)
   if (idx >= ctx->m_streamdata.size())
   {
     CDemuxStreamSubtitle stream;
-    strcpy(stream.language, "cc");
+    stream.language = "cc";
     stream.flags = FLAG_HEARING_IMPAIRED;
     stream.codec = AV_CODEC_ID_TEXT;
     stream.uniqueId = service;
