@@ -22,21 +22,6 @@
 
 #include "Vector.h"
 
-CVector::CVector(float xCoord, float yCoord)
-  : x(xCoord),
-    y(yCoord)
-{ }
-
-const CVector CVector::operator+(const CVector &other) const
-{
-  return CVector(x + other.x, y + other.y);
-}
-
-const CVector CVector::operator-(const CVector &other) const
-{
-  return CVector(x - other.x, y - other.y);
-}
-
 CVector& CVector::operator+=(const CVector &other)
 {
   x += other.x;
@@ -51,11 +36,6 @@ CVector& CVector::operator-=(const CVector &other)
   y -= other.y;
 
   return *this;
-}
-
-float CVector::scalar(const CVector &other) const
-{
-  return x * other.x + y * other.y;
 }
 
 float CVector::length() const
