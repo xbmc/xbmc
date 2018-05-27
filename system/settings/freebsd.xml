@@ -67,6 +67,7 @@
         </setting>
         <setting id="videoplayer.usevaapimpeg2" type="boolean" parent="videoplayer.usevaapi" label="13447" help="13448">
           <requirement>HAVE_LIBVA</requirement>
+          <visible>false</visible>
           <dependencies>
             <dependency type="enable">
               <condition setting="videoplayer.usevaapi" operator="is">true</condition>
