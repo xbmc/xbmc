@@ -26,8 +26,6 @@ public:
   CVector(float xCoord, float yCoord);
   virtual ~CVector() = default;
   
-  virtual void reset();
-  
   const CVector operator+(const CVector &other) const;
   const CVector operator-(const CVector &other) const;
   CVector& operator+=(const CVector &other);

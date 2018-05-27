@@ -24,19 +24,14 @@
 
 CVector::CVector()
 {
-  reset();
+  x = 0.0f;
+  y = 0.0f;
 }
 
 CVector::CVector(float xCoord, float yCoord)
   : x(xCoord),
     y(yCoord)
 { }
-
-void CVector::reset()
-{
-  x = 0.0f;
-  y = 0.0f;
-}
 
 const CVector CVector::operator+(const CVector &other) const
 {
