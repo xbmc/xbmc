@@ -22,12 +22,6 @@
 
 #include "Vector.h"
 
-CVector::CVector()
-{
-  x = 0.0f;
-  y = 0.0f;
-}
-
 CVector::CVector(float xCoord, float yCoord)
   : x(xCoord),
     y(yCoord)

@@ -22,7 +22,7 @@
 class CVector
 {
 public:
-  CVector();
+  CVector() = default;
   CVector(float xCoord, float yCoord);
   
   const CVector operator+(const CVector &other) const;
@@ -33,6 +33,6 @@ public:
   float scalar(const CVector &other) const;
   float length() const;
   
-  float x;
-  float y;
+  float x = 0;
+  float y = 0;
 };
