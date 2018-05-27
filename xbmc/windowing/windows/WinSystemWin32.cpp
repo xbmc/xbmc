@@ -44,6 +44,7 @@
 #include "windowing/GraphicContext.h"
 #include "WinEventsWin32.h"
 
+#include <algorithm>
 #include <tpcshrd.h>
 
 CWinSystemWin32::CWinSystemWin32()
@@ -747,12 +748,16 @@ void CWinSystemWin32::GetConnectedDisplays(std::vector<MONITOR_DETAILS>& outputs
       HMONITOR hm = MonitorFromPoint(pt, MONITOR_DEFAULTTONULL);
 
       MONITOR_DETAILS md = {};
-      md.MonitorNameW = ddMon.DeviceString;
+      uint8_t num = 1;
+      do
+      {
+        // `Monitor #N`
+        md.MonitorNameW = std::wstring(ddMon.DeviceString) + L" #" + std::to_wstring(num++);
+      }
+      while(std::any_of(outputs.begin(), outputs.end(), [&](MONITOR_DETAILS& m) { return m.MonitorNameW == md.MonitorNameW; }));
+
       md.CardNameW = ddAdapter.DeviceString;
       md.DeviceNameW = ddAdapter.DeviceName;
-
-      // width x height @ x,y - bpp - refresh rate
-      // note that refresh rate information is not available on Win9x
       md.ScreenWidth = dm.dmPelsWidth;
       md.ScreenHeight = dm.dmPelsHeight;
       md.hMonitor = hm;
