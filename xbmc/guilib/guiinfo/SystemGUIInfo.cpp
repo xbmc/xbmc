@@ -24,6 +24,7 @@
 #include "LangInfo.h"
 #include "ServiceBroker.h"
 #include "addons/BinaryAddonCache.h"
+#include "GUIPassword.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"

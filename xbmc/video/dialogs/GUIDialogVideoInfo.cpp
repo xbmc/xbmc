@@ -21,6 +21,7 @@
 #include "GUIDialogVideoInfo.h"
 #include "Application.h"
 #include "ServiceBroker.h"
+#include "GUIPassword.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindow.h"
 #include "Util.h"

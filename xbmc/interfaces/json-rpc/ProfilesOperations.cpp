@@ -21,6 +21,7 @@
 #include "ProfilesOperations.h"
 #include "messaging/ApplicationMessenger.h"
 #include "guilib/LocalizeStrings.h"
+#include "GUIPassword.h"
 #include "profiles/ProfilesManager.h"
 #include "utils/Digest.h"
 #include "utils/Variant.h"
