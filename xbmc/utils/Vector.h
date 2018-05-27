@@ -24,7 +24,6 @@ class CVector
 public:
   CVector();
   CVector(float xCoord, float yCoord);
-  virtual ~CVector() = default;
   
   const CVector operator+(const CVector &other) const;
   const CVector operator-(const CVector &other) const;

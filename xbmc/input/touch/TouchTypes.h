@@ -29,8 +29,6 @@
 class Touch : public CVector
 {
 public:
-  ~Touch() override = default;
-
   /*!
    * \brief Checks if the touch is valid i.e. if the x/y coordinates and the
    *        time are >= 0
