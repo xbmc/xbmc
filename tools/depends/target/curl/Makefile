@@ -1,13 +1,9 @@
 include ../../Makefile.include
-DEPS= ../../Makefile.include Makefile 0001-HTTP-reset-expected-DL-UL-sizes-on-redirects.patch
+DEPS= ../../Makefile.include Makefile
 
 # lib name, version
 LIBNAME=curl
-ifeq (osx, $(findstring osx, $(OS)))
-VERSION=7.21.6
-else
 VERSION=7.56.1
-endif
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.bz2
 # configuration settings
@@ -26,9 +22,6 @@ $(TARBALLS_LOCATION)/$(ARCHIVE):
 $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
-ifeq (osx, $(findstring osx, $(OS)))
-	cd $(PLATFORM); patch -p1 < ../0001-HTTP-reset-expected-DL-UL-sizes-on-redirects.patch
-endif
 ifeq (darwin, $(findstring darwin, $(HOST)))
 	cd $(PLATFORM); sed -ie "s/elif defined(HAVE_CLOCK_GETTIME_MONOTONIC)/#elif defined(HAVE_CLOCK_GETTIME_MONOTONIC_NOPE)/" lib/timeval.c
 endif
