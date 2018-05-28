@@ -841,7 +841,7 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
         {
           SetCustomRequest(value);
         }
-        if (name == "verifypeer")
+        else if (name == "verifypeer")
         {
           if (value == "false")
             m_verifyPeer = false;
