@@ -6174,6 +6174,8 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
       }
       else if (platform == "windows")
         return SYSTEM_PLATFORM_WINDOWS;
+      else if (platform == "uwp")
+        return SYSTEM_PLATFORM_UWP;
       else if (platform == "darwin")
         return SYSTEM_PLATFORM_DARWIN;
       else if (platform == "osx")
