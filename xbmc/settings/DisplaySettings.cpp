@@ -777,7 +777,7 @@ void CDisplaySettings::SettingOptionsScreensFiller(SettingConstPtr setting, std:
   if (g_advancedSettings.m_canWindowed && CServiceBroker::GetWinSystem()->CanDoWindowed())
     list.push_back(std::make_pair(g_localizeStrings.Get(242), DM_WINDOWED));
 
-#if defined(HAVE_X11) || defined(HAVE_WAYLAND) || defined(TARGET_DARWIN_OSX)
+#if defined(HAVE_X11) || defined(HAVE_WAYLAND) || defined(TARGET_DARWIN_OSX) || defined(TARGET_WINDOWS)
   list.push_back(std::make_pair(g_localizeStrings.Get(244), 0));
 #else
 
