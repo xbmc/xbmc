@@ -30,11 +30,6 @@
 #endif
 #include "AppParamParser.h"
 
-// Put this here for easy enable and disable
-#ifndef _DEBUG
-#define XBMC_TRACK_EXCEPTIONS
-#endif
-
 CXBApplicationEx::CXBApplicationEx()
 {
   // Variables to perform app timing
@@ -76,81 +71,27 @@ int CXBApplicationEx::Run(const CAppParamParser &params)
     //-----------------------------------------
     // Animate and render a frame
     //-----------------------------------------
-#ifdef XBMC_TRACK_EXCEPTIONS
-    try
-    {
-#endif
-      lastFrameTime = XbmcThreads::SystemClockMillis();
-      Process();
-      //reset exception count
-#ifdef XBMC_TRACK_EXCEPTIONS
 
-    }
-    catch (const XbmcCommons::UncheckedException &e)
-    {
-      e.LogThrowMessage("CApplication::Process()");
-      throw;
-    }
-    catch (...)
-    {
-      CLog::Log(LOGERROR, "exception in CApplication::Process()");
-      throw;
-    }
-#endif
-    // Frame move the scene
-#ifdef XBMC_TRACK_EXCEPTIONS
-    try
-    {
-#endif
-      if (!m_bStop)
-      {
-        FrameMove(true, m_renderGUI);
-      }
+    lastFrameTime = XbmcThreads::SystemClockMillis();
+    Process();
 
-      //reset exception count
-#ifdef XBMC_TRACK_EXCEPTIONS
-    }
-    catch (const XbmcCommons::UncheckedException &e)
+    if (!m_bStop)
     {
-      e.LogThrowMessage("CApplication::FrameMove()");
-      throw;
+      FrameMove(true, m_renderGUI);
     }
-    catch (...)
-    {
-      CLog::Log(LOGERROR, "exception in CApplication::FrameMove()");
-      throw;
-    }
-#endif
 
-    // Render the scene
-#ifdef XBMC_TRACK_EXCEPTIONS
-    try
+    if (m_renderGUI && !m_bStop)
     {
-#endif
-      if (m_renderGUI && !m_bStop)
-      {
-        Render();
-      }
-      else if (!m_renderGUI)
-      {
-        frameTime = XbmcThreads::SystemClockMillis() - lastFrameTime;
-        if(frameTime < noRenderFrameTime)
-          Sleep(noRenderFrameTime - frameTime);
-      }
-#ifdef XBMC_TRACK_EXCEPTIONS
+      Render();
     }
-    catch (const XbmcCommons::UncheckedException &e)
+    else if (!m_renderGUI)
     {
-      e.LogThrowMessage("CApplication::Render()");
-      throw;
+      frameTime = XbmcThreads::SystemClockMillis() - lastFrameTime;
+      if(frameTime < noRenderFrameTime)
+        Sleep(noRenderFrameTime - frameTime);
     }
-    catch (...)
-    {
-      CLog::Log(LOGERROR, "exception in CApplication::Render()");
-      throw;
-    }
-#endif
-  } // while (!m_bStop)
+
+  }
   Destroy();
 
   CLog::Log(LOGNOTICE, "application stopped..." );
