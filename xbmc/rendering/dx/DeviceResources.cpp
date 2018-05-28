@@ -27,6 +27,7 @@
 #include "messaging/ApplicationMessenger.h"
 #include "platform/win32/CharsetConverter.h"
 #include "ServiceBroker.h"
+#include "settings/AdvancedSettings.h"
 #include "utils/log.h"
 #include "utils/SystemInfo.h"
 
@@ -1013,7 +1014,8 @@ bool DX::DeviceResources::DoesTextureSharingWork()
   if (m_d3dFeatureLevel < D3D_FEATURE_LEVEL_10_0)
     return false;
 
-  return false; // @todo proper check
+  // @todo proper check in run-time
+  return g_advancedSettings.m_allowUseSeparateDeviceForDecoding;
 }
 
 #if defined(TARGET_WINDOWS_DESKTOP)
