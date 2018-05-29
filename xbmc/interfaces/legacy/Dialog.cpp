@@ -34,6 +34,7 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "ModuleXbmcgui.h"
 #include "guilib/GUIKeyboardFactory.h"
+#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "WindowException.h"
@@ -499,59 +500,26 @@ namespace XBMCAddon
       return dlg->IsCanceled();
     }
 
+    // deprecated because wrong
+    // modal dialogs can't be called from python using a proxy class with async
+    // messaging. there can only be one DialogBusy at a time.
     DialogBusy::~DialogBusy() { XBMC_TRACE; deallocating(); }
-
     void DialogBusy::deallocating()
     {
-      XBMC_TRACE;
-
-      if (dlg && open)
-      {
-        DelayedCallGuard dg;
-        dlg->Close();
-      }
     }
-
     void DialogBusy::create()
     {
-      DelayedCallGuard dcguard(languageHook);
-      CGUIDialogBusy* pDialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogBusy>(WINDOW_DIALOG_BUSY);
-
-      if (pDialog == nullptr)
-        throw WindowException("Error: Window is NULL, this is not possible :-)");
-
-      dlg = pDialog;
-      open = true;
-
-      pDialog->Open();
+      CLog::Log(LOGWARNING, "using DialogBusy from python results in nop now");
     }
-
     void DialogBusy::update(int percent) const
     {
-      DelayedCallGuard dcguard(languageHook);
-
-      if (dlg == nullptr)
-        throw WindowException("Dialog not created.");
-
-      if (percent >= -1 && percent <= 100)
-        dlg->SetProgress(percent);
-
     }
-
     void DialogBusy::close()
     {
-      DelayedCallGuard dcguard(languageHook);
-      if (dlg == nullptr)
-        throw WindowException("Dialog not created.");
-      dlg->Close();
-      open = false;
     }
-
     bool DialogBusy::iscanceled() const
     {
-      if (dlg == nullptr)
-        throw WindowException("Dialog not created.");
-      return dlg->IsCanceled();
+      return false;
     }
 
     DialogProgressBG::~DialogProgressBG() { XBMC_TRACE; deallocating(); }
