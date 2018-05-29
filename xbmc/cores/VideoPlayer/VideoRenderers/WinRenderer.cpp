@@ -1124,7 +1124,7 @@ CRenderInfo CWinRenderer::GetRenderInfo()
 
 void CWinRenderer::ReleaseBuffer(int idx)
 {
-  SAFE_RELEASE(m_renderBuffers[idx].videoBuffer);
+  m_renderBuffers[idx].ReleasePicture();
 }
 
 bool CWinRenderer::NeedBuffer(int idx)

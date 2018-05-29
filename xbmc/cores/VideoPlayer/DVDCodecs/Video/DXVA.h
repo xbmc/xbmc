@@ -41,19 +41,21 @@ class CDXVAOutputBuffer : public CVideoBuffer
 public:
   virtual ~CDXVAOutputBuffer();
 
-  ID3D11View* GetSRV(unsigned idx);
   void SetRef(AVFrame *frame);
   void Unref();
+
+  HANDLE GetHandle();
+  unsigned GetIdx();
 
   ID3D11View* view{ nullptr };
   DXGI_FORMAT format{ DXGI_FORMAT_UNKNOWN };
   unsigned width{ 0 };
   unsigned height{ 0 };
+  bool shared{ false };
 
 private:
   CDXVAOutputBuffer(int id);
 
-  Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> planes[2];
   AVFrame* m_pFrame{ nullptr };
 };
 
@@ -100,6 +102,7 @@ public:
                    , ID3D11VideoDecoder **decoder, ID3D11VideoContext **context);
   void Release(CDecoder *decoder);
   ID3D11VideoContext* GetVideoContext() const { return m_vcontext.Get(); }
+  bool IsContextShared() const { return m_sharingAllowed; }
 
 private:
   CDXVAContext();
@@ -120,6 +123,7 @@ private:
   GUID *m_input_list;
   std::vector<CDecoder*> m_decoders;
   bool m_atiWorkaround;
+  bool m_sharingAllowed;
 };
 
 class CDecoder
