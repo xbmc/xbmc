@@ -2185,9 +2185,9 @@ std::string CGUIMediaWindow::RemoveParameterFromPath(const std::string &strDirec
   return strDirectory;
 }
 
-void CGUIMediaWindow::ProcessRenderLoop(bool renderOnly)
+bool CGUIMediaWindow::ProcessRenderLoop(bool renderOnly)
 {
-  CServiceBroker::GetGUI()->GetWindowManager().ProcessRenderLoop(renderOnly);
+  return CServiceBroker::GetGUI()->GetWindowManager().ProcessRenderLoop(renderOnly);
 }
 
 bool CGUIMediaWindow::GetDirectoryItems(CURL &url, CFileItemList &items, bool useDir)
@@ -2247,7 +2247,8 @@ bool CGUIMediaWindow::WaitGetDirectoryItems(CGetDirectoryItems &items)
 
     while (!m_updateEvent.WaitMSec(1))
     {
-      ProcessRenderLoop(false);
+      if (!ProcessRenderLoop(false))
+        break;
     }
 
     if (m_updateAborted || !items.m_result)

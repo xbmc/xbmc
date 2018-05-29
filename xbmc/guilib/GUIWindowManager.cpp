@@ -1312,7 +1312,7 @@ CGUIWindow* CGUIWindowManager::GetWindow(int id) const
   return nullptr;
 }
 
-void CGUIWindowManager::ProcessRenderLoop(bool renderOnly /*= false*/)
+bool CGUIWindowManager::ProcessRenderLoop(bool renderOnly)
 {
   if (g_application.IsCurrentThread() && m_pCallback)
   {
@@ -1323,6 +1323,10 @@ void CGUIWindowManager::ProcessRenderLoop(bool renderOnly /*= false*/)
     m_pCallback->Render();
     m_iNested--;
   }
+  if (g_application.m_bStop)
+    return false;
+  else
+    return true;
 }
 
 void CGUIWindowManager::SetCallback(IWindowManagerCallback& callback)

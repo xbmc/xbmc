@@ -208,9 +208,10 @@ void CGUIDialog::Open_Internal(bool bProcessRenderLoop, const std::string &param
 
     lock.Leave();
 
-    while (m_active && !g_application.m_bStop)
+    while (m_active)
     {
-      CServiceBroker::GetGUI()->GetWindowManager().ProcessRenderLoop();
+      if (!CServiceBroker::GetGUI()->GetWindowManager().ProcessRenderLoop(false))
+        break;
     }
   }
 }
