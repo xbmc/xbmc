@@ -380,6 +380,12 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
         if ((m_vecItems->IsVirtualDirectoryRoot() ||
              m_vecItems->IsSourcesPath()) && IsActive())
         {
+          if (m_vecItemsUpdating)
+          {
+            CLog::Log(LOGWARNING, "CGUIMediaWindow::OnMessage - updating in progress");
+            return true;
+          }
+          CUpdateGuard ug(m_vecItemsUpdating);
           int iItem = m_viewControl.GetSelectedItem();
           Refresh(true);
           m_viewControl.SetSelectedItem(iItem);
@@ -388,6 +394,12 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
       }
       else if (message.GetParam1()==GUI_MSG_UPDATE && IsActive())
       {
+        if (m_vecItemsUpdating)
+        {
+          CLog::Log(LOGWARNING, "CGUIMediaWindow::OnMessage - updating in progress");
+          return true;
+        }
+        CUpdateGuard ug(m_vecItemsUpdating);
         if (message.GetNumStringParams())
         {
           if (message.GetParam2()) // param2 is used for resetting the history
@@ -917,17 +929,9 @@ bool CGUIMediaWindow::Update(const std::string &strDirectory, bool updateFilterP
 
 bool CGUIMediaWindow::Refresh(bool clearCache /* = false */)
 {
-  if (m_vecItemsUpdating)
-  {
-    CLog::Log(LOGWARNING, "CGUIMediaWindow::Update - updating in progress");
-    return false;
-  }
-
   std::string strCurrentDirectory = m_vecItems->GetPath();
   if (strCurrentDirectory == "?")
     return false;
-
-  m_vecItemsUpdating = true;
 
   if (clearCache)
     m_vecItems->RemoveDiscCache(GetID());
@@ -940,7 +944,6 @@ bool CGUIMediaWindow::Refresh(bool clearCache /* = false */)
     ret = false;
   }
 
-  m_vecItemsUpdating = false;
   return ret;
 }
 
@@ -1633,7 +1636,7 @@ void CGUIMediaWindow::OnRenameItem(int iItem)
 void CGUIMediaWindow::OnInitWindow()
 {
   // initial fetch is done unthreaded to ensure the items are setup prior to skin animations kicking off
-  m_useBusyDialog = false;
+  m_backgroundLoad = false;
 
   // the start directory may change during Refresh
   bool updateStartDirectory = URIUtils::PathEquals(m_vecItems->GetPath(), m_startDirectory, true);
@@ -1661,7 +1664,7 @@ void CGUIMediaWindow::OnInitWindow()
     SetHistoryForPath(m_startDirectory);
   }
 
-  m_useBusyDialog = true;
+  m_backgroundLoad = true;
 
   CGUIWindow::OnInitWindow();
 }
@@ -2178,7 +2181,7 @@ void CGUIMediaWindow::ProcessRenderLoop(bool renderOnly)
 
 bool CGUIMediaWindow::GetDirectoryItems(CURL &url, CFileItemList &items, bool useDir)
 {
-  if (m_useBusyDialog)
+  if (m_backgroundLoad)
   {
     bool ret = true;
     CGetDirectoryItems getItems(m_rootDir, url, items, useDir);

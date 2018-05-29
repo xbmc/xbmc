@@ -192,6 +192,20 @@ protected:
   CDirectoryHistory m_history;
   std::unique_ptr<CGUIViewState> m_guiState;
   std::atomic_bool m_vecItemsUpdating = {false};
+  class CUpdateGuard
+  {
+  public:
+    CUpdateGuard(std::atomic_bool &update) : m_update(update)
+    {
+      m_update = true;
+    }
+    ~CUpdateGuard()
+    {
+      m_update = false;
+    }
+  protected:
+    std::atomic_bool &m_update;
+  };
 
   // save control state on window exit
   int m_iLastControl;
@@ -212,5 +226,5 @@ protected:
    \sa Update
    */
   std::string m_strFilterPath;
-  bool m_useBusyDialog = false;
+  bool m_backgroundLoad = false;
 };
