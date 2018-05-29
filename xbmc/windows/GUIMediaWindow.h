@@ -31,6 +31,10 @@
 
 class CFileItemList;
 class CGUIViewState;
+namespace
+{
+class CGetDirectoryItems;
+}
 
 // base class for all media windows
 class CGUIMediaWindow : public CGUIWindow
@@ -168,6 +172,7 @@ protected:
   void OnRenameItem(int iItem);
   bool WaitForNetwork() const;
   bool GetDirectoryItems(CURL &url, CFileItemList &items, bool useDir);
+  bool WaitGetDirectoryItems(CGetDirectoryItems &items);
 
   /*! \brief Translate the folder to start in from the given quick path
    \param url the folder the user wants
@@ -206,6 +211,9 @@ protected:
   protected:
     std::atomic_bool &m_update;
   };
+  CEvent m_updateEvent;
+  std::atomic_bool m_updateAborted;
+  std::atomic_bool m_updateJobActive = {false};
 
   // save control state on window exit
   int m_iLastControl;

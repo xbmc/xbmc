@@ -236,6 +236,14 @@ bool CGUIMediaWindow::OnAction(const CAction &action)
 
 bool CGUIMediaWindow::OnBack(int actionID)
 {
+  if (m_updateJobActive)
+  {
+    m_rootDir.CancelDirectory();
+    m_updateAborted = true;
+    m_updateEvent.Wait();
+    m_updateJobActive = false;
+  }
+
   CURL filterUrl(m_strFilterPath);
   if (actionID == ACTION_NAV_BACK &&
       !m_vecItems->IsVirtualDirectoryRoot() &&
@@ -2188,7 +2196,8 @@ bool CGUIMediaWindow::GetDirectoryItems(CURL &url, CFileItemList &items, bool us
   {
     bool ret = true;
     CGetDirectoryItems getItems(m_rootDir, url, items, useDir);
-    if (!CGUIDialogBusy::Wait(&getItems, 100, true))
+
+    if (!WaitGetDirectoryItems(getItems))
     {
       // cancelled
       ret = false;
@@ -2199,12 +2208,13 @@ bool CGUIMediaWindow::GetDirectoryItems(CURL &url, CFileItemList &items, bool us
       {
         ret = false;
       }
-      else if (!CGUIDialogBusy::Wait(&getItems, 100, true) || !getItems.m_result)
+      else if (!WaitGetDirectoryItems(getItems) || !getItems.m_result)
       {
         ret = false;
       }
     }
 
+    m_updateJobActive = false;
     m_rootDir.ReleaseDirImpl();
     return ret;
   }
@@ -2212,4 +2222,38 @@ bool CGUIMediaWindow::GetDirectoryItems(CURL &url, CFileItemList &items, bool us
   {
     return m_rootDir.GetDirectory(url, items, useDir, false);
   }
+}
+
+bool CGUIMediaWindow::WaitGetDirectoryItems(CGetDirectoryItems &items)
+{
+  bool ret = true;
+  CGUIDialogBusy* dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogBusy>(WINDOW_DIALOG_BUSY);
+  if (dialog && !dialog->IsDialogRunning())
+  {
+    if (!CGUIDialogBusy::Wait(&items, 100, true))
+    {
+      // cancelled
+      ret = false;
+    }
+  }
+  else
+  {
+    m_updateJobActive = true;
+    m_updateEvent.Reset();
+    CJobManager::GetInstance().Submit([&]() {
+      items.Run();
+      m_updateEvent.Set();
+    }, nullptr, CJob::PRIORITY_NORMAL);
+
+    while (!m_updateEvent.WaitMSec(1))
+    {
+      ProcessRenderLoop(false);
+    }
+
+    if (m_updateAborted || !items.m_result)
+    {
+      ret = false;
+    }
+  }
+  return ret;
 }
