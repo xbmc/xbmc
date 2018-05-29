@@ -670,7 +670,7 @@
 						<include>WidgetGroupListCommon</include>
 						<pagecontrol>16010</pagecontrol>
 						<include content="WidgetListCategories" condition="Library.HasContent(musicvideos) + !Skin.HasSetting(home_no_categories_widget)">
-							<param name="content_path" value="library://music/musicvideos/"/>
+							<param name="content_path" value="library://video/musicvideos/"/>
 							<param name="widget_header" value="$LOCALIZE[31148]"/>
 							<param name="widget_target" value="videos"/>
 							<param name="list_id" value="16900"/>
