@@ -947,6 +947,31 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_xbmcgui_listitem
+      /// @brief \python_func{ setProperties(values) }
+      ///-----------------------------------------------------------------------
+      /// Sets multiple properties for listitem's
+      ///
+      /// @param values             dictionary - pairs of `{ label: value }`.
+      ///
+      /// @python_v18 New function added.
+      ///
+      ///-----------------------------------------------------------------------
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ...
+      /// # setProperties(values)
+      /// listitem.setProperties({ 'AspectRatio': '1.85', 'StartOffset' : '256.4' })
+      /// ...
+      /// ~~~~~~~~~~~~~
+      ///
+      setProperties(...);
+#else
+      void setProperties(const Properties& dictionary);
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmcgui_listitem
       /// @brief \python_func{ getProperty(key) }
       ///-----------------------------------------------------------------------
       /// Returns a listitem property as a string, similar to an infolabel.
