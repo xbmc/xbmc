@@ -303,9 +303,8 @@ static CGEventRef tapEventCallback(CGEventTapProxy proxy, CGEventType type, CGEv
 
 - (void)enableTap
 {
-  if (![self getDebuggerActive] && ![self getActive] && floor(NSAppKitVersionNumber) >= 949)
+  if (![self getDebuggerActive] && ![self getActive])
   {
-    // check runtime, we only allow this on 10.5+
     m_eventPort = CGEventTapCreate(kCGSessionEventTap,
       kCGHeadInsertEventTap, kCGEventTapOptionDefault,
       CGEventMaskBit(NX_SYSDEFINED), tapEventCallback, self);

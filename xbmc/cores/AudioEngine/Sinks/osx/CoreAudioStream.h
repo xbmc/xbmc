@@ -28,11 +28,6 @@
 #include <list>
 #include <vector>
 
-// not defined in 10.6 sdk
-#ifndef kIOAudioDeviceTransportTypeThunderbolt
-#define kIOAudioDeviceTransportTypeThunderbolt 'thun'
-#endif
-
 
 typedef std::vector<AudioStreamID> AudioStreamIdList;
 typedef std::vector<AudioStreamRangedDescription> StreamFormatList;

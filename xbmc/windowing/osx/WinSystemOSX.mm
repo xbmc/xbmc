@@ -615,8 +615,6 @@ CWinSystemOSX::CWinSystemOSX() : CWinSystemBase(), m_lostDeviceTimer(this)
   m_osx_events = NULL;
   m_obscured   = false;
   m_obscured_timecheck = XbmcThreads::SystemClockMillis() + 1000;
-  // check runtime, we only allow this on 10.5+
-  m_can_display_switch = (floor(NSAppKitVersionNumber) >= 949);
   m_lastDisplayNr = -1;
   m_movedToOtherScreen = false;
   m_refreshRate = 0.0;
@@ -677,8 +675,7 @@ bool CWinSystemOSX::InitWindowSystem()
 
   m_osx_events = new CWinEventsOSX();
 
-  if (m_can_display_switch)
-    CGDisplayRegisterReconfigurationCallback(DisplayReconfigured, (void*)this);
+  CGDisplayRegisterReconfigurationCallback(DisplayReconfigured, (void*)this);
 
   NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
   windowDidMoveNoteClass *windowDidMove;
@@ -713,8 +710,7 @@ bool CWinSystemOSX::DestroyWindowSystem()
   [center removeObserver:(windowDidReSizeNoteClass*)m_windowDidReSize name:NSWindowDidResizeNotification object:nil];
   [center removeObserver:(windowDidChangeScreenNoteClass*)m_windowChangedScreen name:NSWindowDidChangeScreenNotification object:nil];
 
-  if (m_can_display_switch)
-    CGDisplayRemoveReconfigurationCallback(DisplayReconfigured, (void*)this);
+  CGDisplayRemoveReconfigurationCallback(DisplayReconfigured, (void*)this);
 
   delete m_osx_events;
   m_osx_events = NULL;
@@ -930,11 +926,8 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
   //handle resolution/refreshrate switching early here
   if (m_bFullScreen)
   {
-    if (m_can_display_switch)
-    {
-      // switch videomode
-      SwitchToVideoMode(res.iWidth, res.iHeight, res.fRefreshRate);
-    }
+    // switch videomode
+    SwitchToVideoMode(res.iWidth, res.iHeight, res.fRefreshRate);
   }
 
   //no context? done.
@@ -1157,12 +1150,9 @@ void CWinSystemOSX::UpdateResolutions()
 
   CDisplaySettings::GetInstance().ClearCustomResolutions();
 
-  if (m_can_display_switch)
-  {
-    // now just fill in the possible resolutions for the attached screens
-    // and push to the resolution info vector
-    FillInVideoModes();
-  }
+  // now just fill in the possible resolutions for the attached screens
+  // and push to the resolution info vector
+  FillInVideoModes();
   CDisplaySettings::GetInstance().ApplyCalibrations();
 }
 

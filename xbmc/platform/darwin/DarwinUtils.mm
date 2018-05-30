@@ -42,10 +42,6 @@
 #import "AutoPool.h"
 #import "DarwinUtils.h"
 
-#ifndef NSAppKitVersionNumber10_9
-#define NSAppKitVersionNumber10_9 1265
-#endif
-
 
 enum iosPlatform
 {
