@@ -1,9 +1,3 @@
-/*!
- \file FileItem.h
- \brief
- */
-#pragma once
-
 /*
  *      Copyright (C) 2005-2013 Team XBMC
  *      http://kodi.tv
@@ -22,6 +16,13 @@
  *  along with XBMC; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
+ */
+
+#pragma once
+
+/*!
+ \file FileItem.h
+ \brief
  */
 
 #include <map>

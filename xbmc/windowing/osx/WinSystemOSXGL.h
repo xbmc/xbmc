@@ -1,6 +1,3 @@
-
-#pragma once
-
 /*
  *      Copyright (C) 2005-2013 Team XBMC
  *      http://kodi.tv
@@ -20,6 +17,9 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#pragma once
+
 #if !defined(__arm__) && !defined(__aarch64__)
 #include "WinSystemOSX.h"
 #include "rendering/gl/RenderSystemGL.h"

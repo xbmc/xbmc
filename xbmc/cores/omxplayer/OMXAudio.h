@@ -1,5 +1,3 @@
-#pragma once
-
 /*
  *      Copyright (c) 2002 d7o3g4q and RUNTiME
  *      Portions Copyright (c) by the authors of ffmpeg and xvid
@@ -21,6 +19,8 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#pragma once
 
 #include "cores/AudioEngine/Utils/AEAudioFormat.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"

@@ -18,9 +18,10 @@
  *
  */
 
+#pragma once
+
 #ifndef GUILIB_GUICONTROLPROFILER_H__
 #define GUILIB_GUICONTROLPROFILER_H__
-#pragma once
 
 #include <vector>
 

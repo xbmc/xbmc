@@ -1,4 +1,3 @@
-#pragma once
 /*
  *      Copyright (C) 2005-2012 Team XBMC
  *      http://www.xbmc.org
@@ -18,6 +17,8 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#pragma once
 
 #include "filesystem/OverrideFile.h"
 #include "video/VideoDatabase.h"

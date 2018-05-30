@@ -1,4 +1,3 @@
-#pragma once
 /*
  *      Copyright (C) 2015 Team XBMC
  *      http://kodi.tv
@@ -18,6 +17,9 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#pragma once
+
 #include <vector>
 
 #include "interfaces/legacy/AddonClass.h"

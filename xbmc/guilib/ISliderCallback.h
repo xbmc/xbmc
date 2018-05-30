@@ -1,5 +1,3 @@
-#pragma once
-
 /*
  *      Copyright (C) 2013 Team XBMC
  *      http://www.xbmc.org
@@ -19,6 +17,8 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#pragma once
 
 class CGUISliderControl;
 

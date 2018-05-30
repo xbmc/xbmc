@@ -19,6 +19,7 @@
  */
 
 #pragma once
+
 #include <list>
 #include <utility>
 

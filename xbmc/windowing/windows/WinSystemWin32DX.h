@@ -18,10 +18,10 @@
  *
  */
 
+#pragma once
+
 #ifndef WIN_SYSTEM_WIN32_DX_H
 #define WIN_SYSTEM_WIN32_DX_H
-
-#pragma once
 
 #include "easyhook/easyhook.h"
 #include "rendering/dx/RenderSystemDX.h"

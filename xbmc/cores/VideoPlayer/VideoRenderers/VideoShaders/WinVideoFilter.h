@@ -1,5 +1,3 @@
-#pragma once
-
 /*
  *      Copyright (C) 2007-2013 Team XBMC
  *      http://kodi.tv
@@ -20,6 +18,7 @@
  *
  */
 
+#pragma once
 
 #include "cores/IPlayer.h"
 #include "cores/VideoPlayer/VideoRenderers/VideoShaders/ConversionMatrix.h"

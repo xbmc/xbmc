@@ -1,7 +1,3 @@
-// IAudioCallback.h: interface for the IAudioCallback class.
-//
-//////////////////////////////////////////////////////////////////////
-
 /*
  *      Copyright (C) 2005-2013 Team XBMC
  *      http://kodi.tv
@@ -23,6 +19,10 @@
  */
 
 #pragma once
+
+// IAudioCallback.h: interface for the IAudioCallback class.
+//
+//////////////////////////////////////////////////////////////////////
 
 class IAudioCallback
 {

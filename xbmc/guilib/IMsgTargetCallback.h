@@ -1,13 +1,3 @@
-/*!
-\file IMsgTargetCallback.h
-\brief
-*/
-
-#ifndef GUILIB_IMSGTARGETCALLBACK
-#define GUILIB_IMSGTARGETCALLBACK
-
-#pragma once
-
 /*
  *      Copyright (C) 2005-2013 Team XBMC
  *      http://kodi.tv
@@ -27,6 +17,16 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#pragma once
+
+/*!
+\file IMsgTargetCallback.h
+\brief
+*/
+
+#ifndef GUILIB_IMSGTARGETCALLBACK
+#define GUILIB_IMSGTARGETCALLBACK
 
 #include "GUIMessage.h"
 

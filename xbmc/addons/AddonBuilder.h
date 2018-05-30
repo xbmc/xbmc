@@ -1,4 +1,3 @@
-#pragma once
 /*
  *      Copyright (C) 2016 Team Kodi
  *      http://kodi.tv
@@ -18,6 +17,9 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#pragma once
+
 #include "IAddon.h"
 #include "Service.h"
 

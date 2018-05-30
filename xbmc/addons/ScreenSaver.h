@@ -17,6 +17,7 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
 #pragma once
 
 #include "addons/kodi-addon-dev-kit/include/kodi/addon-instance/Screensaver.h"

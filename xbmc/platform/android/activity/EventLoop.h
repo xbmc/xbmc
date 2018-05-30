@@ -1,4 +1,3 @@
-#pragma once
 /*
  *      Copyright (C) 2012-2013 Team XBMC
  *      http://kodi.tv
@@ -18,7 +17,9 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
- 
+
+#pragma once
+
 #include <android_native_app_glue.h>
 
 #include "IActivityHandler.h"

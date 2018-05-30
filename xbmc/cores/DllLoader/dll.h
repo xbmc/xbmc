@@ -1,7 +1,3 @@
-#pragma once
-
-#include "PlatformDefs.h"
-
 /*
  *      Copyright (C) 2005-2015 Team Kodi
  *      http://kodi.tv
@@ -21,6 +17,10 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#pragma once
+
+#include "PlatformDefs.h"
 
 extern "C" HMODULE __stdcall dllLoadLibraryExtended(const char* file, const char* sourcedll);
 extern "C" HMODULE __stdcall dllLoadLibraryA(const char* file);

@@ -18,12 +18,12 @@
  *
  */
 
+#pragma once
+
 /*!
  * @file StereoscopicsManager.cpp
  * @brief This class acts as container for stereoscopic related functions
  */
-
-#pragma once
 
 #include <stdlib.h>
 #include "settings/lib/ISettingCallback.h"

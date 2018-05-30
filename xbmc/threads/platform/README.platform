@@ -1,4 +1,3 @@
-
 In order to port xbmc to an unsupported platform, the threading model
 needs to replace the following classes:
 

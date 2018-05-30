@@ -1,13 +1,3 @@
-/*!
-\file GUIListItem.h
-\brief
-*/
-
-#ifndef GUILIB_GUILISTITEM_H
-#define GUILIB_GUILISTITEM_H
-
-#pragma once
-
 /*
  *      Copyright (C) 2005-2013 Team XBMC
  *      http://kodi.tv
@@ -27,6 +17,16 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#pragma once
+
+/*!
+\file GUIListItem.h
+\brief
+*/
+
+#ifndef GUILIB_GUILISTITEM_H
+#define GUILIB_GUILISTITEM_H
 
 #include <map>
 #include <string>

@@ -20,11 +20,11 @@
  *
  */
 
+#pragma once
+
 // File.h: interface for the CFile class.
 //
 //////////////////////////////////////////////////////////////////////
-
-#pragma once
 
 #include <iostream>
 #include <stdio.h>

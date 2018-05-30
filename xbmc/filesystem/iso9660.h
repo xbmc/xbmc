@@ -19,9 +19,10 @@
  *
  */
 
+#pragma once
+
 #ifndef ISO9660_H
 #define ISO9660_H
-#pragma once
 #include <vector>
 #include <string>
 #include "PlatformDefs.h" // for win32 types

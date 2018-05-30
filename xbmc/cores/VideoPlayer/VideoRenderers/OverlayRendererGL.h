@@ -20,6 +20,7 @@
  */
 
 #pragma once
+
 #include "system_gl.h"
 #include "OverlayRenderer.h"
 

@@ -18,10 +18,10 @@
  *
  */
 
+#pragma once
+
 #ifndef WINDOW_SYSTEM_WIN10_H
 #define WINDOW_SYSTEM_WIN10_H
-
-#pragma once
 
 #include "guilib/DispResource.h"
 #include "threads/CriticalSection.h"

@@ -1,5 +1,3 @@
-#pragma once
-
   /* GNU gettext - internationalization aids
   Copyright (C) 1995 Free Software Foundation, Inc.
 
@@ -19,6 +17,9 @@ You should have received a copy of the GNU General Public License
 along with XBMC; see the file COPYING.  If not, see
 <http://www.gnu.org/licenses/>.
 */
+
+#pragma once
+
 #define PARAMS(proto) proto
 
 #ifdef __cplusplus

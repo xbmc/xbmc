@@ -17,11 +17,14 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#pragma once
+
 /*!
  \file MusicDatabase.h
 \brief
 */
-#pragma once
+
 #include <utility>
 #include <vector>
 

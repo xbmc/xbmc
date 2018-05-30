@@ -1,13 +1,3 @@
-/*!
-\file GUIRESIZEControl.h
-\brief
-*/
-
-#ifndef GUILIB_GUIRESIZECONTROL_H
-#define GUILIB_GUIRESIZECONTROL_H
-
-#pragma once
-
 /*
  *      Copyright (C) 2005-2013 Team XBMC
  *      http://kodi.tv
@@ -27,6 +17,16 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#pragma once
+
+/*!
+\file GUIRESIZEControl.h
+\brief
+*/
+
+#ifndef GUILIB_GUIRESIZECONTROL_H
+#define GUILIB_GUIRESIZECONTROL_H
 
 #include "GUITexture.h"
 #include "GUIControl.h"

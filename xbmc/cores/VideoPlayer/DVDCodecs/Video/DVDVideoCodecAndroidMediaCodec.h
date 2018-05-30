@@ -1,4 +1,3 @@
-#pragma once
 /*
  *      Copyright (C) 2013 Team XBMC
  *      http://kodi.tv
@@ -19,6 +18,8 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
+
+#pragma once
 
 #include <deque>
 #include <vector>

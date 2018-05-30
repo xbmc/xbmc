@@ -1,4 +1,3 @@
-#pragma once
 /*
  *      Copyright (C) 2014 Arne Morten Kvarving
  *
@@ -18,6 +17,7 @@
  *
  */
 
+#pragma once
 
 #include "IFileDirectory.h"
 extern "C" {

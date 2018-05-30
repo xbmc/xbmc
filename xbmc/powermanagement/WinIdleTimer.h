@@ -1,5 +1,3 @@
-#pragma once
-
 /*
  *      Copyright (C) 2005-2018 Team Kodi
  *      http://kodi.tv
@@ -19,6 +17,9 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#pragma once
+
 #include "utils/Stopwatch.h"
 
 class CWinIdleTimer : public CStopWatch

@@ -16,6 +16,7 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
 #pragma once
 
 #ifndef TARGET_WINDOWS

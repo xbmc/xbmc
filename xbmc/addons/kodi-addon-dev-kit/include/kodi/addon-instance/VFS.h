@@ -1,4 +1,3 @@
-#pragma once
 /*
  *      Copyright (C) 2015 Team Kodi
  *
@@ -17,6 +16,8 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#pragma once
 
 #include "../AddonBase.h"
 #include "../Filesystem.h"

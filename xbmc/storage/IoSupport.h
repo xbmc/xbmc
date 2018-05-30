@@ -20,6 +20,8 @@
  *
  */
 
+#pragma once
+
 // IoSupport.h: interface for the CIoSupport class.
 //
 //////////////////////////////////////////////////////////////////////
@@ -28,8 +30,6 @@
 #define AFX_IOSUPPORT_H__F084A488_BD6E_49D5_8CD3_0BE62149DB40__INCLUDED_
 
 #include "PlatformDefs.h" // for Win32 types
-
-#pragma once
 
 #define MODE1_DATA_SIZE    2048 // Mode1 sector has 2048 bytes of data
 

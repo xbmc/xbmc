@@ -18,10 +18,10 @@
  *
  */
 
+#pragma once
+
 #include "music/tags/MusicInfoTag.h"
 #include "AddonClass.h"
-
-#pragma once
 
 namespace XBMCAddon
 {

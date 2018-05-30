@@ -1,5 +1,3 @@
-#pragma once
-
 /*
  * Many concepts and protocol are taken from
  * the Boxee project. http://www.boxee.tv
@@ -22,6 +20,8 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#pragma once
 
 #include "threads/CriticalSection.h"
 #include "threads/Event.h"

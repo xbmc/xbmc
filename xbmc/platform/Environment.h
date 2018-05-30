@@ -1,4 +1,3 @@
-#pragma once
 #ifndef XBMC_SETENV_H
 #define XBMC_SETENV_H
 /*
@@ -20,6 +19,8 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#pragma once
 
 /**
  * \file utils\Environment.h

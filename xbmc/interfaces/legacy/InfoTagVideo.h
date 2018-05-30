@@ -18,10 +18,10 @@
  *
  */
 
+#pragma once
+
 #include "video/VideoInfoTag.h"
 #include "AddonClass.h"
-
-#pragma once
 
 namespace XBMCAddon
 {

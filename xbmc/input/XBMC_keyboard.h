@@ -1,5 +1,3 @@
-#pragma once
-
 /*
     SDL - Simple DirectMedia Layer
     Copyright (C) 1997-2009 Sam Lantinga
@@ -21,6 +19,8 @@
     Sam Lantinga
     slouken@libsdl.org
 */
+
+#pragma once
 
 /* Include file for SDL keyboard event handling */
 

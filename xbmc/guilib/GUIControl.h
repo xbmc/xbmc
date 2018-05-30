@@ -1,12 +1,3 @@
-/*!
-\file GUIControl.h
-\brief
-*/
-
-#ifndef GUILIB_GUICONTROL_H
-#define GUILIB_GUICONTROL_H
-#pragma once
-
 /*
  *      Copyright (C) 2005-2013 Team XBMC
  *      http://kodi.tv
@@ -26,6 +17,16 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#pragma once
+
+/*!
+\file GUIControl.h
+\brief
+*/
+
+#ifndef GUILIB_GUICONTROL_H
+#define GUILIB_GUICONTROL_H
 
 #include <vector>
 

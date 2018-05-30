@@ -17,6 +17,7 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
 #pragma once
 
 #include "input/keyboard/interfaces/IKeyboardInputHandler.h"

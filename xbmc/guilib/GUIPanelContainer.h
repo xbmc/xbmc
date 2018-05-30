@@ -1,10 +1,3 @@
-/*!
-\file GUIPanelContainer.h
-\brief
-*/
-
-#pragma once
-
 /*
  *      Copyright (C) 2005-2013 Team XBMC
  *      http://kodi.tv
@@ -24,6 +17,13 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#pragma once
+
+/*!
+\file GUIPanelContainer.h
+\brief
+*/
 
 #include "GUIBaseContainer.h"
 

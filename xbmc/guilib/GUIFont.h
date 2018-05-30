@@ -1,12 +1,3 @@
-/*!
-\file GUIFont.h
-\brief
-*/
-
-#ifndef CGUILIB_GUIFONT_H
-#define CGUILIB_GUIFONT_H
-#pragma once
-
 /*
  *      Copyright (C) 2003-2013 Team XBMC
  *      http://kodi.tv
@@ -26,6 +17,16 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#pragma once
+
+/*!
+\file GUIFont.h
+\brief
+*/
+
+#ifndef CGUILIB_GUIFONT_H
+#define CGUILIB_GUIFONT_H
 
 #include <assert.h>
 #include <math.h>

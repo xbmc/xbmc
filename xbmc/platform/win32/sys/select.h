@@ -1,4 +1,3 @@
-#pragma once
 /*
  *      Copyright (C) 2011-2013 Team XBMC
  *      http://kodi.tv
@@ -18,4 +17,7 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#pragma once
+
 #include <sys/socket.h>

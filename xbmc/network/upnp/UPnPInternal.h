@@ -17,7 +17,9 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
 #pragma once
+
 #include <Neptune/Source/Core/NptTypes.h>
 #include <Neptune/Source/Core/NptReferences.h>
 #include <Neptune/Source/Core/NptStrings.h>

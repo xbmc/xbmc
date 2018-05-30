@@ -1,4 +1,3 @@
-#pragma once
 /*
  *      Copyright (C) 2015-2016 Team KODI
  *      http://kodi.tv
@@ -18,6 +17,8 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#pragma once
 
 #include "addons/kodi-addon-dev-kit/include/kodi/libKODI_guilib.h"
 

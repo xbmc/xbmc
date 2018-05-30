@@ -1,13 +1,3 @@
-/*!
-\file 
-\brief
-*/
-
-#ifndef GUILIB_GUISCROLLBAR_H
-#define GUILIB_GUISCROLLBAR_H
-
-#pragma once
-
 /*
  *      Copyright (C) 2005-2013 Team XBMC
  *      http://kodi.tv
@@ -27,6 +17,16 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#pragma once
+
+/*!
+\file 
+\brief
+*/
+
+#ifndef GUILIB_GUISCROLLBAR_H
+#define GUILIB_GUISCROLLBAR_H
 
 #include "GUITexture.h"
 #include "GUIControl.h"

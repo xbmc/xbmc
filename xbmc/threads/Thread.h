@@ -18,11 +18,11 @@
  *
  */
 
+#pragma once
+
 // Thread.h: interface for the CThread class.
 //
 //////////////////////////////////////////////////////////////////////
-
-#pragma once
 
 #include <atomic>
 #include <string>

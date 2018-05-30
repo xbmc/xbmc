@@ -1,13 +1,3 @@
-/*!
-\file guiImage.h
-\brief
-*/
-
-#ifndef GUILIB_GUIIMAGECONTROL_H
-#define GUILIB_GUIIMAGECONTROL_H
-
-#pragma once
-
 /*
  *      Copyright (C) 2005-2013 Team XBMC
  *      http://kodi.tv
@@ -27,6 +17,16 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#pragma once
+
+/*!
+\file guiImage.h
+\brief
+*/
+
+#ifndef GUILIB_GUIIMAGECONTROL_H
+#define GUILIB_GUIIMAGECONTROL_H
 
 #include <vector>
 

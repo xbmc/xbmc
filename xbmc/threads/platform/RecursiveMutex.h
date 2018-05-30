@@ -19,6 +19,7 @@
  */
 
 #pragma once
+
 #include <mutex>
 
 #if (defined TARGET_POSIX)

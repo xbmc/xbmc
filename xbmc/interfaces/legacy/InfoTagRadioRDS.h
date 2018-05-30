@@ -18,10 +18,10 @@
  *
  */
 
+#pragma once
+
 #include "pvr/channels/PVRRadioRDSInfoTag.h"
 #include "AddonClass.h"
-
-#pragma once
 
 namespace XBMCAddon
 {

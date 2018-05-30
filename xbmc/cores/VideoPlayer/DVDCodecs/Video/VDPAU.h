@@ -18,6 +18,8 @@
  *
  */
 
+#pragma once
+
 /**
  * design goals:
  * - improve performance
@@ -35,8 +37,6 @@
  * - move to an actor based design in order to reduce the number
  *   of locks needed.
  */
-
-#pragma once
 
 #include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
 #include "cores/VideoPlayer/Process/VideoBuffer.h"

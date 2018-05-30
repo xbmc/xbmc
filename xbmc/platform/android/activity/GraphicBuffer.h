@@ -55,6 +55,7 @@
  * ***** END LICENSE BLOCK ***** */
 
 #pragma once
+
 #include <stdint.h>
 #include "guilib/XBTF.h"
 
