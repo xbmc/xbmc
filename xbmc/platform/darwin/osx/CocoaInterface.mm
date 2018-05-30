@@ -21,12 +21,10 @@
 #import <unistd.h>
 #import <sys/mount.h>
 
-#define BOOL XBMC_BOOL
 #include "utils/log.h"
 #include "CompileInfo.h"
 #include "ServiceBroker.h"
 #include "windowing/osx/WinSystemOSX.h"
-#undef BOOL
 
 #import <Cocoa/Cocoa.h>
 #import <QuartzCore/QuartzCore.h>
