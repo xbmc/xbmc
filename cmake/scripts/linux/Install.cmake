@@ -266,7 +266,7 @@ if(ENABLE_EVENTCLIENTS)
   endif()
 
   # Install kodi-eventclients-xbmc-send
-  install(PROGRAMS "${CMAKE_SOURCE_DIR}/tools/EventClients/Clients/Kodi Send/kodi-send.py"
+  install(PROGRAMS ${CMAKE_SOURCE_DIR}/tools/EventClients/Clients/KodiSend/kodi-send.py
           RENAME ${APP_NAME_LC}-send
           DESTINATION ${bindir}
           COMPONENT kodi-eventclients-xbmc-send)
