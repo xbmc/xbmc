@@ -51,7 +51,6 @@
 #include "platform/darwin/osx/CocoaInterface.h"
 #include <CoreVideo/CoreVideo.h>
 #include <OpenGL/CGLIOSurface.h>
-#include "platform/darwin/DarwinUtils.h"
 #endif
 
 //! @bug
@@ -278,13 +277,10 @@ bool CLinuxRendererGL::Configure(const VideoPicture &picture, float fps, unsigne
   // on osx 10.9 mavericks we get a strange ripple
   // effect when rendering with pbo
   // when used on intel gpu - we have to quirk it here
-  if (CDarwinUtils::IsMavericksOrHigher())
-  {
-    std::string rendervendor = CServiceBroker::GetRenderSystem()->GetRenderVendor();
-    StringUtils::ToLower(rendervendor);
-    if (rendervendor.find("intel") != std::string::npos)
-      m_pboSupported = false;
-  }
+  std::string rendervendor = CServiceBroker::GetRenderSystem()->GetRenderVendor();
+  StringUtils::ToLower(rendervendor);
+  if (rendervendor.find("intel") != std::string::npos)
+    m_pboSupported = false;
 #endif
 
   // load 3DLUT

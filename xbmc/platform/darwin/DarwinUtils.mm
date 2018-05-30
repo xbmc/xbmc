@@ -227,24 +227,6 @@ enum iosPlatform getIosPlatform()
   return eDev;
 }
 
-bool CDarwinUtils::IsMavericksOrHigher(void)
-{
-  static int isMavericks = -1;
-#if defined(TARGET_DARWIN_OSX)
-  // there is no NSAppKitVersionNumber10_9 out there anywhere
-  // so we detect mavericks by one of these newly added app nap
-  // methods - and fix the ugly mouse rect problem which was hitting
-  // us when mavericks came out
-  if (isMavericks == -1)
-  {
-    isMavericks = [NSProcessInfo instancesRespondToSelector:@selector(beginActivityWithOptions:reason:)] == TRUE ? 1 : 0;
-    if (isMavericks == 1)
-      CLog::Log(LOGDEBUG, "Detected Mavericks or higher ...");
-  }
-#endif
-  return isMavericks == 1;
-}
-
 bool CDarwinUtils::DeviceHasRetina(double &scale)
 {
   static enum iosPlatform platform = iDeviceUnknown;

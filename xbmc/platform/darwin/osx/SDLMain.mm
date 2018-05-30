@@ -21,7 +21,6 @@
 #import "platform/darwin/osx/storage/DarwinStorageProvider.h"
 
 #import "platform/darwin/osx/HotKeyController.h"
-#import "platform/darwin/DarwinUtils.h"
 
 // For some reason, Apple removed setAppleMenu from the headers in 10.4,
 // but the method still is there and works. To avoid warnings, we declare
@@ -49,7 +48,6 @@ extern OSErr	CPSSetFrontProcess(CPSProcessSerNum *psn);
 
 static int    gArgc;
 static char  **gArgv;
-static BOOL   gFinderLaunch;
 static BOOL   gCalledAppMainline = FALSE;
 
 static NSString *getApplicationName(void)
@@ -220,20 +218,17 @@ static void setupWindowMenu(void)
 @implementation XBMCDelegate
 
 // Set the working directory to the .app's parent directory
-- (void) setupWorkingDirectory:(BOOL)shouldChdir
+- (void) setupWorkingDirectory
 {
-  if (shouldChdir)
+  char parentdir[MAXPATHLEN];
+  CFURLRef url = CFBundleCopyBundleURL(CFBundleGetMainBundle());
+  CFURLRef url2 = CFURLCreateCopyDeletingLastPathComponent(0, url);
+  if (CFURLGetFileSystemRepresentation(url2, true, (UInt8 *)parentdir, MAXPATHLEN))
   {
-    char parentdir[MAXPATHLEN];
-    CFURLRef url = CFBundleCopyBundleURL(CFBundleGetMainBundle());
-    CFURLRef url2 = CFURLCreateCopyDeletingLastPathComponent(0, url);
-    if (CFURLGetFileSystemRepresentation(url2, true, (UInt8 *)parentdir, MAXPATHLEN))
-    {
-      assert( chdir (parentdir) == 0 );   /* chdir to the binary app's parent */
-		}
-		CFRelease(url);
-		CFRelease(url2);
+    assert( chdir (parentdir) == 0 );   /* chdir to the binary app's parent */
   }
+  CFRelease(url);
+  CFRelease(url2);
 }
 
 - (void) applicationWillTerminate: (NSNotification *) note
@@ -291,7 +286,7 @@ static void setupWindowMenu(void)
     [NSThread detachNewThreadSelector:@selector(kickstartMultiThreaded:) toTarget:self withObject:nil];
 
   // Set the working directory to the .app's parent directory
-  [self setupWorkingDirectory:gFinderLaunch];
+  [self setupWorkingDirectory];
 
   [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self
     selector:@selector(deviceDidMountNotification:)
@@ -382,10 +377,6 @@ static void setupWindowMenu(void)
   size_t arglen;
   char *arg;
   char **newargv;
-
-  // MacOS is passing command line args.
-  if (!gFinderLaunch)
-    return FALSE;
 
   // app has started, ignore this document.
   if (gCalledAppMainline)
@@ -522,22 +513,12 @@ int main(int argc, char *argv[])
     gArgv[0] = argv[0];
     gArgv[1] = NULL;
     gArgc = 1;
-    gFinderLaunch = YES;
   } else {
     gArgc = argc;
     gArgv = (char **) SDL_malloc(sizeof (char *) * (argc+1));
     for (int i = 0; i <= argc; i++)
         gArgv[i] = argv[i];
-    gFinderLaunch = NO;
   }
-
-  // fix open with document/movie - autostart
-  // on mavericks we are not called with "-psn" anymore
-  // as the whole ProcessSerialNumber approach is deprecated
-  // in that case assume finder launch - else
-  // we wouldn't handle documents/movies someone dragged on the app icon
-  if (CDarwinUtils::IsMavericksOrHigher())
-    gFinderLaunch = TRUE;
 
   // Ensure the application object is initialised
   [XBMCApplication sharedApplication];
