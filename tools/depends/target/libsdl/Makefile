@@ -1,5 +1,5 @@
 include ../../Makefile.include
-DEPS= ../../Makefile.include Makefile 01-SDL_SetWidthHeight.patch 02-OSX_interpretKeyEvents.patch 03-mavericks-compile.patch 04-fix_external_screen_crash.patch 05-x11-xdata32.patch
+DEPS= ../../Makefile.include Makefile 01-SDL_SetWidthHeight.patch 02-OSX_interpretKeyEvents.patch 03-mavericks-compile.patch 04-fix_external_screen_crash.patch
 
 # lib name, version
 LIBNAME=SDL
@@ -27,7 +27,6 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	cd $(PLATFORM); patch -p0 < ../02-OSX_interpretKeyEvents.patch
 	cd $(PLATFORM); patch -p0 < ../03-mavericks-compile.patch
 	cd $(PLATFORM); patch -p0 < ../04-fix_external_screen_crash.patch
-	cd $(PLATFORM); patch -p1 < ../05-x11-xdata32.patch
 	cd $(PLATFORM); ./autogen.sh
 	cd $(PLATFORM); $(CONFIGURE)
 
