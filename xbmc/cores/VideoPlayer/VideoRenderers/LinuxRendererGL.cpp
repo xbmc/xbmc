@@ -273,16 +273,6 @@ bool CLinuxRendererGL::Configure(const VideoPicture &picture, float fps, unsigne
   // setup the background colour
   m_clearColour = CServiceBroker::GetWinSystem()->UseLimitedColor() ? (16.0f / 0xff) : 0.0f;
 
-#ifdef TARGET_DARWIN_OSX
-  // on osx 10.9 mavericks we get a strange ripple
-  // effect when rendering with pbo
-  // when used on intel gpu - we have to quirk it here
-  std::string rendervendor = CServiceBroker::GetRenderSystem()->GetRenderVendor();
-  StringUtils::ToLower(rendervendor);
-  if (rendervendor.find("intel") != std::string::npos)
-    m_pboSupported = false;
-#endif
-
   // load 3DLUT
   if (m_ColorManager->IsEnabled())
   {
