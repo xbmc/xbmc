@@ -204,7 +204,7 @@ if(ENABLE_EVENTCLIENTS)
   file(WRITE ${CMAKE_BINARY_DIR}/packages/deb/defs.py ICON_PATH="usr/share/pixmaps/${APP_NAME_LC}/")
   install(PROGRAMS ${CMAKE_BINARY_DIR}/packages/deb/defs.py
                    ${CMAKE_SOURCE_DIR}/tools/EventClients/lib/python/__init__.py
-                   "${CMAKE_SOURCE_DIR}/tools/EventClients/Clients/PS3 BD Remote/ps3_remote.py"
+                   ${CMAKE_SOURCE_DIR}/tools/EventClients/Clients/PS3BDRemote/ps3_remote.py
                    ${CMAKE_SOURCE_DIR}/tools/EventClients/lib/python/xbmcclient.py
                    ${CMAKE_SOURCE_DIR}/tools/EventClients/lib/python/zeroconf.py
           DESTINATION ${PYTHON_LIB_PATH}/${APP_NAME_LC}
@@ -253,7 +253,7 @@ if(ENABLE_EVENTCLIENTS)
           COMPONENT kodi-eventclients-dev)
 
   # Install kodi-eventclients-ps3
-  install(PROGRAMS "${CMAKE_SOURCE_DIR}/tools/EventClients/Clients/PS3 BD Remote/ps3_remote.py"
+  install(PROGRAMS ${CMAKE_SOURCE_DIR}/tools/EventClients/Clients/PS3BDRemote/ps3_remote.py
           RENAME ${APP_NAME_LC}-ps3remote
           DESTINATION ${bindir}
           COMPONENT kodi-eventclients-ps3)
