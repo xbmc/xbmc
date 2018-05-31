@@ -99,8 +99,6 @@ bool CInertialScrollingHandler::CheckForInertialScrolling(const CAction* action)
   }
   else if(action->GetID() == ACTION_GESTURE_END && !m_panPoints.empty()) //do we need to animate inertial scrolling?
   {
-    PanPoint lastPanPoint = m_panPoints.front();
-
     // Calculate velocity in the last MAXIMUM_DELAY_FOR_INERTIA milliseconds.
     // Do not use the velocity given by the ACTION_GESTURE_END data - it is calculated
     // for the whole duration of the touch and thus useless for inertia. The user
