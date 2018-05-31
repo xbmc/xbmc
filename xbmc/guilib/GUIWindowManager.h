@@ -201,8 +201,8 @@ public:
   void AddMsgTarget( IMsgTargetCallback* pMsgTarget );
   int GetActiveWindow() const;
   int GetActiveWindowOrDialog() const;
-  bool HasModalDialog(const std::vector<DialogModalityType>& types = std::vector<DialogModalityType>(), bool ignoreClosing = true) const;
-  bool HasVisibleModalDialog(const std::vector<DialogModalityType>& types = std::vector<DialogModalityType>()) const;
+  bool HasModalDialog(bool ignoreClosing) const;
+  bool HasVisibleModalDialog() const;
   bool IsDialogTopmost(int id, bool modal = false) const;
   bool IsDialogTopmost(const std::string &xmlFile, bool modal = false) const;
   bool IsModalDialogTopmost(int id) const;

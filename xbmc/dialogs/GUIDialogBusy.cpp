@@ -114,7 +114,7 @@ bool CGUIDialogBusy::WaitOnEvent(CEvent &event, unsigned int displaytime /* = 10
 }
 
 CGUIDialogBusy::CGUIDialogBusy(void)
-  : CGUIDialog(WINDOW_DIALOG_BUSY, "DialogBusy.xml", DialogModalityType::PARENTLESS_MODAL),
+  : CGUIDialog(WINDOW_DIALOG_BUSY, "DialogBusy.xml", DialogModalityType::MODAL),
     m_bLastVisible(false)
 {
   m_loadType = LOAD_ON_GUI_INIT;

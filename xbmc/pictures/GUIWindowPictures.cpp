@@ -211,8 +211,8 @@ void CGUIWindowPictures::OnPrepareFileItems(CFileItemList& items)
   loader.SetProgressCallback(m_dlgProgress);
   loader.Load(items);
 
-  bool bShowProgress=!CServiceBroker::GetGUI()->GetWindowManager().HasModalDialog();
-  bool bProgressVisible=false;
+  bool bShowProgress = !CServiceBroker::GetGUI()->GetWindowManager().HasModalDialog(true);
+  bool bProgressVisible = false;
 
   unsigned int tick=XbmcThreads::SystemClockMillis();
 

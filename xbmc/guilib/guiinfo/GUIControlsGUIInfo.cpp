@@ -808,7 +808,7 @@ bool CGUIControlsGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int co
     // SYSTEM_*
     ///////////////////////////////////////////////////////////////////////////////////////////////
     case SYSTEM_HAS_ACTIVE_MODAL_DIALOG:
-      value = CServiceBroker::GetGUI()->GetWindowManager().HasModalDialog();
+      value = CServiceBroker::GetGUI()->GetWindowManager().HasModalDialog(true);
       return true;
     case SYSTEM_HAS_VISIBLE_MODAL_DIALOG:
       value = CServiceBroker::GetGUI()->GetWindowManager().HasVisibleModalDialog();
