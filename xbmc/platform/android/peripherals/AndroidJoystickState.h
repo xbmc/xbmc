@@ -27,9 +27,9 @@ namespace PERIPHERALS
 
     int GetDeviceId() const { return m_deviceId; }
 
-    unsigned int GetButtonCount() const { return m_buttons.size(); }
-    unsigned int GetHatCount() const { return m_hats.size(); }
-    unsigned int GetAxisCount() const { return m_axes.size(); }
+    unsigned int GetButtonCount() const { return static_cast<unsigned int>(m_buttons.size()); }
+    unsigned int GetHatCount() const { return static_cast<unsigned int>(m_hats.size()); }
+    unsigned int GetAxisCount() const { return static_cast<unsigned int>(m_axes.size()); }
 
     /*!
      * Initialize the joystick object. Joystick will be initialized before the

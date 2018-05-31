@@ -630,12 +630,13 @@ bool CPeripheralAddon::SetIgnoredPrimitives(const CPeripheral* device, const Pri
 
   JOYSTICK_DRIVER_PRIMITIVE* addonPrimitives = nullptr;
   kodi::addon::DriverPrimitives::ToStructs(primitives, &addonPrimitives);
+  const unsigned int primitiveCount = static_cast<unsigned int>(primitives.size());
 
   LogError(retVal = m_struct.toAddon.set_ignored_primitives(&m_struct, &joystickStruct,
-        primitives.size(), addonPrimitives), "SetIgnoredPrimitives()");
+    primitiveCount, addonPrimitives), "SetIgnoredPrimitives()");
 
   kodi::addon::Joystick::FreeStruct(joystickStruct);
-  kodi::addon::DriverPrimitives::FreeStructs(primitives.size(), addonPrimitives);
+  kodi::addon::DriverPrimitives::FreeStructs(primitiveCount, addonPrimitives);
 
   return retVal == PERIPHERAL_NO_ERROR;
 }
