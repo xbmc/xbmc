@@ -40,7 +40,7 @@ namespace GAME
     virtual unsigned int NormalizeSamplerate(unsigned int samplerate) const = 0;
     virtual bool OpenPCMStream(AEDataFormat format, unsigned int samplerate, const CAEChannelInfo& channelLayout) = 0;
     virtual bool OpenEncodedStream(AVCodecID codec, unsigned int samplerate, const CAEChannelInfo& channelLayout) = 0;
-    virtual void AddData(const uint8_t* data, unsigned int size) = 0;
+    virtual void AddData(const uint8_t* data, size_t size) = 0;
     virtual void CloseStream() = 0;
   };
 
@@ -51,7 +51,7 @@ namespace GAME
 
     virtual bool OpenPixelStream(AVPixelFormat pixfmt, unsigned int width, unsigned int height, unsigned int orientationDeg) = 0;
     virtual bool OpenEncodedStream(AVCodecID codec) = 0;
-    virtual void AddData(const uint8_t* data, unsigned int size) = 0;
+    virtual void AddData(const uint8_t* data, size_t size) = 0;
     virtual void CloseStream() = 0;
   };
 

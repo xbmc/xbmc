@@ -99,7 +99,7 @@ bool CRPRenderManager::Configure(AVPixelFormat format, unsigned int width, unsig
   return true;
 }
 
-void CRPRenderManager::AddFrame(const uint8_t* data, unsigned int size)
+void CRPRenderManager::AddFrame(const uint8_t* data, size_t size)
 {
   // Validate parameters
   if (data == nullptr || size == 0)
@@ -491,10 +491,10 @@ void CRPRenderManager::CopyFrame(IRenderBuffer *renderBuffer, const uint8_t *dat
     if (scalerContext != nullptr)
     {
       uint8_t *source = const_cast<uint8_t*>(data);
-      const int sourceStride = size / m_height;
+      const int sourceStride = static_cast<int>(size / m_height);
 
       uint8_t *target = renderBuffer->GetMemory();
-      const int targetStride = renderBuffer->GetFrameSize() / renderBuffer->GetHeight();
+      const int targetStride = static_cast<int>(renderBuffer->GetFrameSize() / renderBuffer->GetHeight());
 
       uint8_t* src[] =       { source,        nullptr,   nullptr,   nullptr };
       int      srcStride[] = { sourceStride,  0,         0,         0       };

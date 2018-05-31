@@ -37,7 +37,7 @@ namespace RETRO
     virtual ~CRenderBufferGuiTexture() = default;
 
     // implementation of IRenderBuffer via CBaseRenderBuffer
-    bool Allocate(AVPixelFormat format, unsigned int width, unsigned int height, unsigned int size) override;
+    bool Allocate(AVPixelFormat format, unsigned int width, unsigned int height, size_t size) override;
     size_t GetFrameSize() const override;
     uint8_t *GetMemory() override;
     bool UploadTexture() override;

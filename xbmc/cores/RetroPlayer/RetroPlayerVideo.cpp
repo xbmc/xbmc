@@ -65,7 +65,7 @@ bool CRetroPlayerVideo::OpenEncodedStream(AVCodecID codec)
   return false; //! @todo
 }
 
-void CRetroPlayerVideo::AddData(const uint8_t* data, unsigned int size)
+void CRetroPlayerVideo::AddData(const uint8_t* data, size_t size)
 {
   m_renderManager.AddFrame(data, size);
 }
