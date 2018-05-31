@@ -41,7 +41,7 @@ do { \
   HRESULT res = a; \
   if(FAILED(res)) \
   { \
-    CLog::Log(LOGERROR, "%s: failed executing "#a" at line %d with error %x", __FUNCTION__, __LINE__, res); \
+    CLog::LogF(LOGERROR, "failed executing "#a" at line %d with error %x", __LINE__, res); \
   } \
 } while(0);
 
@@ -66,7 +66,6 @@ void CProcessorHD::UnInit()
 {
   CSingleLock lock(m_section);
   Close();
-  m_pVideoDevice = nullptr;
 }
 
 void CProcessorHD::Close()
@@ -75,14 +74,18 @@ void CProcessorHD::Close()
   m_pEnumerator = nullptr;
   m_pVideoProcessor = nullptr;
   m_pVideoContext = nullptr;
+  m_pVideoDevice = nullptr;
 }
 
 bool CProcessorHD::PreInit()
 {
+  ComPtr<ID3D11VideoDevice> pVideoDevice;
+  ComPtr<ID3D11VideoProcessorEnumerator> pEnumerator;
   ComPtr<ID3D11Device> pD3DDevice = DX::DeviceResources::Get()->GetD3DDevice();
-  if (FAILED(pD3DDevice.As(&m_pVideoDevice)))
+
+  if (FAILED(pD3DDevice.As(&pVideoDevice)))
   {
-    CLog::Log(LOGWARNING, "%s: failed to get video device.", __FUNCTION__);
+    CLog::LogF(LOGWARNING, "failed to get video device.");
     return false;
   }
 
@@ -96,29 +99,35 @@ bool CProcessorHD::PreInit()
   desc1.Usage = D3D11_VIDEO_USAGE_PLAYBACK_NORMAL;
 
   // try to create video enum
-  if (FAILED(m_pVideoDevice->CreateVideoProcessorEnumerator(&desc1, m_pEnumerator.ReleaseAndGetAddressOf())))
+  if (FAILED(pVideoDevice->CreateVideoProcessorEnumerator(&desc1, &pEnumerator)))
   {
-    CLog::Log(LOGWARNING, "%s: failed to create Video Enumerator.", __FUNCTION__);
+    CLog::LogF(LOGWARNING, "failed to create Video Enumerator.");
     return false;
   }
-
-  m_pEnumerator = nullptr;
   return true;
 }
 
 bool CProcessorHD::InitProcessor()
 {
-  m_pEnumerator = nullptr;
+  m_pVideoDevice = nullptr;
   m_pVideoContext = nullptr;
+  m_pEnumerator = nullptr;
 
   ComPtr<ID3D11DeviceContext1> pD3DDeviceContext = DX::DeviceResources::Get()->GetImmediateContext();
+  ComPtr<ID3D11Device> pD3DDevice = DX::DeviceResources::Get()->GetD3DDevice();
+
   if (FAILED(pD3DDeviceContext.As(&m_pVideoContext)))
   {
-    CLog::Log(LOGWARNING, "%s: Context initialization is failed.", __FUNCTION__);
+    CLog::LogF(LOGWARNING, "video context initialization is failed.");
+    return false;
+  }
+  if (FAILED(pD3DDevice.As(&m_pVideoDevice)))
+  {
+    CLog::LogF(LOGWARNING, "video device initialization is failed.");
     return false;
   }
 
-  CLog::Log(LOGDEBUG, "%s: Initing Video Enumerator with params: %dx%d.", __FUNCTION__, m_width, m_height);
+  CLog::LogF(LOGDEBUG, "initing video enumerator with params: %dx%d.", m_width, m_height);
 
   D3D11_VIDEO_PROCESSOR_CONTENT_DESC contentDesc = {};
   memset(&contentDesc, 0, sizeof(contentDesc));
@@ -131,25 +140,25 @@ bool CProcessorHD::InitProcessor()
 
   if (FAILED(m_pVideoDevice->CreateVideoProcessorEnumerator(&contentDesc, m_pEnumerator.ReleaseAndGetAddressOf())))
   {
-    CLog::Log(LOGWARNING, "%s: failed to init video enumerator with params: %dx%d.", __FUNCTION__, m_width, m_height);
+    CLog::LogF(LOGWARNING, "failed to init video enumerator with params: %dx%d.", m_width, m_height);
     return false;
   }
 
   if (FAILED(m_pEnumerator->GetVideoProcessorCaps(&m_vcaps)))
   {
-    CLog::Log(LOGWARNING, "%s - failed to get processor caps.", __FUNCTION__);
+    CLog::LogF(LOGWARNING, "failed to get processor caps.");
     return false;
   }
 
-  CLog::Log(LOGDEBUG, "%s: Video processor has %d rate conversion.", __FUNCTION__, m_vcaps.RateConversionCapsCount);
-  CLog::Log(LOGDEBUG, "%s: Video processor has %#x feature caps.", __FUNCTION__, m_vcaps.FeatureCaps);
-  CLog::Log(LOGDEBUG, "%s: Video processor has %#x device caps.", __FUNCTION__, m_vcaps.DeviceCaps);
-  CLog::Log(LOGDEBUG, "%s: Video processor has %#x input format caps.", __FUNCTION__, m_vcaps.InputFormatCaps);
-  CLog::Log(LOGDEBUG, "%s: Video processor has %d max input streams.", __FUNCTION__, m_vcaps.MaxInputStreams);
-  CLog::Log(LOGDEBUG, "%s: Video processor has %d max stream states.", __FUNCTION__, m_vcaps.MaxStreamStates);
+  CLog::LogF(LOGDEBUG, "video processor has %d rate conversion.", m_vcaps.RateConversionCapsCount);
+  CLog::LogF(LOGDEBUG, "video processor has %#x feature caps.", m_vcaps.FeatureCaps);
+  CLog::LogF(LOGDEBUG, "video processor has %#x device caps.", m_vcaps.DeviceCaps);
+  CLog::LogF(LOGDEBUG, "video processor has %#x input format caps.", m_vcaps.InputFormatCaps);
+  CLog::LogF(LOGDEBUG, "video processor has %d max input streams.", m_vcaps.MaxInputStreams);
+  CLog::LogF(LOGDEBUG, "video processor has %d max stream states.", m_vcaps.MaxStreamStates);
 
   if (0 != (m_vcaps.FeatureCaps & D3D11_VIDEO_PROCESSOR_FEATURE_CAPS_LEGACY))
-    CLog::Log(LOGWARNING, "%s: The video driver does not support full video processing capabilities.", __FUNCTION__);
+    CLog::LogF(LOGWARNING, "the video driver does not support full video processing capabilities.");
 
   m_max_back_refs = 0;
   m_max_fwd_refs = 0;
@@ -170,20 +179,20 @@ bool CProcessorHD::InitProcessor()
     }
   }
 
-  CLog::Log(LOGDEBUG, "%s: Selected video processor index: %d.", __FUNCTION__, m_procIndex);
+  CLog::LogF(LOGDEBUG, "selected video processor index: %d.", m_procIndex);
 
   LOGIFERROR(m_pEnumerator->GetVideoProcessorRateConversionCaps(m_procIndex, &m_rateCaps))
   m_max_fwd_refs  = std::min(m_rateCaps.FutureFrames, 2u);
   m_max_back_refs = std::min(m_rateCaps.PastFrames,  4u);
 
-  CLog::Log(LOGNOTICE, "%s: Supported deinterlace methods: Blend:%s, Bob:%s, Adaptive:%s, MoComp:%s.", __FUNCTION__,
+  CLog::LogF(LOGNOTICE, "supported deinterlace methods: blend:%s, bob:%s, adaptive:%s, mocomp:%s.",
     (m_rateCaps.ProcessorCaps & 0x1) != 0 ? "yes" : "no", // BLEND
     (m_rateCaps.ProcessorCaps & 0x2) != 0 ? "yes" : "no", // BOB
     (m_rateCaps.ProcessorCaps & 0x4) != 0 ? "yes" : "no", // ADAPTIVE
     (m_rateCaps.ProcessorCaps & 0x8) != 0 ? "yes" : "no"  // MOTION_COMPENSATION
     );
 
-  CLog::Log(LOGDEBUG, "%s: Selected video processor allows %d future frames and %d past frames.", __FUNCTION__, m_rateCaps.FutureFrames, m_rateCaps.PastFrames);
+  CLog::LogF(LOGDEBUG, "selected video processor allows %d future frames and %d past frames.", m_rateCaps.FutureFrames, m_rateCaps.PastFrames);
 
   m_size = m_max_back_refs + 1 + m_max_fwd_refs;  // refs + 1 display
 
@@ -199,12 +208,12 @@ bool CProcessorHD::InitProcessor()
         continue;
       }
       m_Filters[i].bSupported = true;
-      CLog::Log(LOGDEBUG, "%s: Filter %d has following params - max: %d, min: %d, default: %d", __FUNCTION__,
+      CLog::LogF(LOGDEBUG, "filter %d has following params - max: %d, min: %d, default: %d",
         PROCAMP_FILTERS[i], m_Filters[i].Range.Maximum, m_Filters[i].Range.Minimum, m_Filters[i].Range.Default);
     }
     else
     {
-      CLog::Log(LOGDEBUG, "%s: Filter %d not supported by processor.", __FUNCTION__, PROCAMP_FILTERS[i]);
+      CLog::LogF(LOGDEBUG, "filter %d not supported by processor.", PROCAMP_FILTERS[i]);
 
       m_Filters[i].bSupported = false;
     }
@@ -222,7 +231,7 @@ bool CProcessorHD::IsFormatSupported(DXGI_FORMAT format, D3D11_VIDEO_PROCESSOR_F
       return true;
   }
 
-  CLog::Log(LOGERROR, "%s: Unsupported format %d for %d.", __FUNCTION__, format, support);
+  CLog::LogF(LOGERROR, "unsupported format %d for %d.", format, support);
   return false;
 }
 
@@ -256,10 +265,7 @@ bool CProcessorHD::Open(UINT width, UINT height)
 bool CProcessorHD::ReInit()
 {
   CSingleLock lock(m_section);
-  UnInit();
-
-  if (!PreInit())
-    return false;
+  Close();
 
   if (!InitProcessor())
     return false;
@@ -278,13 +284,13 @@ bool CProcessorHD::OpenProcessor()
   if (!m_pEnumerator && !ReInit())
     return false;
 
-  CLog::Log(LOGDEBUG, "%s: Creating processor.", __FUNCTION__);
+  CLog::LogF(LOGDEBUG, "creating processor.");
 
   // create processor
   HRESULT hr = m_pVideoDevice->CreateVideoProcessor(m_pEnumerator.Get(), m_procIndex, m_pVideoProcessor.ReleaseAndGetAddressOf());
   if (FAILED(hr))
   {
-    CLog::Log(LOGDEBUG, "%s: Failed creating video processor with error %x.", __FUNCTION__, hr);
+    CLog::LogF(LOGDEBUG, "failed creating video processor with error %x.", hr);
     return false;
   }
 
@@ -529,7 +535,7 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderB
 
   if (count != pastFrames + futureFrames + 1)
   {
-    CLog::Log(LOGERROR, "%s: incomplete views set.", __FUNCTION__);
+    CLog::LogF(LOGERROR, "incomplete views set.");
     ReleaseStream(stream_data);
     return false;
   }
@@ -609,14 +615,14 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderB
   ComPtr<ID3D11VideoProcessorOutputView> pOutputView;
   hr = m_pVideoDevice->CreateVideoProcessorOutputView(target, m_pEnumerator.Get(), &OutputViewDesc, pOutputView.GetAddressOf());
   if (S_OK != hr)
-    CLog::Log(FAILED(hr) ? LOGERROR : LOGWARNING, "%s: Device returns result '%x' while creating processor output view.", __FUNCTION__, hr);
+    CLog::LogF(FAILED(hr) ? LOGERROR : LOGWARNING, "video device returns result '%x' while creating processor output view.", hr);
 
   if (SUCCEEDED(hr))
   {
     hr = m_pVideoContext->VideoProcessorBlt(m_pVideoProcessor.Get(), pOutputView.Get(), frameIdx, 1, &stream_data);
     if (S_OK != hr)
     {
-      CLog::Log(FAILED(hr) ? LOGERROR : LOGWARNING, "%s: Device returns result '%x' while VideoProcessorBlt execution.", __FUNCTION__, hr);
+      CLog::LogF(FAILED(hr) ? LOGERROR : LOGWARNING, "video device returns result '%x' while VideoProcessorBlt execution.", hr);
     }
   }
 
