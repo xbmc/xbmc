@@ -313,8 +313,8 @@ void CWinRenderer::PreInit()
   m_processor = std::make_unique<DXVA::CProcessorHD>();
   if (!m_processor->PreInit())
   {
-    CLog::Log(LOGNOTICE, "%: - could not init DXVA processor - skipping.", __FUNCTION__);
-    m_processor.reset();
+    CLog::LogF(LOGNOTICE, "could not init DXVA processor - skipping.");
+    m_processor.reset();;
   }
 }
 
@@ -344,7 +344,6 @@ void CWinRenderer::UnInit()
 
   if (m_processor)
   {
-    m_processor->UnInit();
     m_processor.reset();
   }
   m_pCLUTView = nullptr;

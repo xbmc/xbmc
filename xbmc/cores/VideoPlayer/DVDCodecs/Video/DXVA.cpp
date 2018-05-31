@@ -528,22 +528,27 @@ bool CDXVAContext::CreateSurfaces(const D3D11_VIDEO_DECODER_DESC &format, const 
 {
   HRESULT hr = S_OK;
   ComPtr<ID3D11Device> pD3DDevice;
-  ComPtr<ID3D11DeviceContext1> pD3DDeviceContext;
-  m_vcontext.As(&pD3DDeviceContext);
-  m_service.As(&pD3DDevice);
+  ComPtr<ID3D11DeviceContext> pD3DDeviceContext;
+  ComPtr<ID3D11DeviceContext1> pD3DDeviceContext1;
 
-  unsigned bindFlags = D3D11_BIND_DECODER;
-  UINT supported;
-
-  if ( SUCCEEDED(pD3DDevice->CheckFormatSupport(format.OutputFormat, &supported))
-    && (supported & D3D11_FORMAT_SUPPORT_SHADER_SAMPLE))
-    bindFlags |= D3D11_BIND_SHADER_RESOURCE;
+  m_vcontext->GetDevice(&pD3DDevice);
+  pD3DDevice->GetImmediateContext(&pD3DDeviceContext);
+  pD3DDeviceContext.As(&pD3DDeviceContext1);
 
   CD3D11_TEXTURE2D_DESC texDesc(format.OutputFormat, 
                                 FFALIGN(format.SampleWidth, alignment), 
                                 FFALIGN(format.SampleHeight, alignment), 
-                                count, 1, bindFlags);
-  texDesc.MiscFlags |= D3D11_RESOURCE_MISC_SHARED;
+                                count, 1, D3D11_BIND_DECODER);
+  UINT supported;
+  if (SUCCEEDED(pD3DDevice->CheckFormatSupport(format.OutputFormat, &supported))
+    && (supported & D3D11_FORMAT_SUPPORT_SHADER_SAMPLE))
+  {
+    texDesc.BindFlags |= D3D11_BIND_SHADER_RESOURCE;
+  }
+  if (m_sharingAllowed)
+  {
+    texDesc.MiscFlags |= D3D11_RESOURCE_MISC_SHARED;
+  }
 
   CLog::LogFunction(LOGDEBUG, "DXVA", "allocating %d surfaces with format %d.", count, format.OutputFormat);
 
@@ -570,7 +575,8 @@ bool CDXVAContext::CreateSurfaces(const D3D11_VIDEO_DECODER_DESC &format, const 
       CLog::LogF(LOGERROR, "failed creating surfaces.");
       break;
     }
-    pD3DDeviceContext->ClearView(surfaces[i], clearColor, nullptr, 0);
+    if (pD3DDeviceContext1)
+      pD3DDeviceContext1->ClearView(surfaces[i], clearColor, nullptr, 0);
   }
 
   if (FAILED(hr))
