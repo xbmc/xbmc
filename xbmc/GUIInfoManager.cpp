@@ -6248,6 +6248,7 @@ int CGUIInfoManager::TranslateListItem(const Property& cat, const Property& prop
     }
     else if (prop.name == "property" ||
              prop.name == "art" ||
+             prop.name == "rating" ||
              prop.name == "votes" ||
              prop.name == "ratingandvotes")
     {
