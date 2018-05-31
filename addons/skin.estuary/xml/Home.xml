@@ -804,7 +804,7 @@
 					<top>240</top>
 					<width>462</width>
 					<bottom>-10</bottom>
-					<movement>6</movement>
+					<movement>7</movement>
 					<focusposition>0</focusposition>
 					<onfocus>ClearProperty(listposition,home)</onfocus>
 					<onright>SetFocus($INFO[Container(9000).ListItem.Property(menu_id)])</onright>
