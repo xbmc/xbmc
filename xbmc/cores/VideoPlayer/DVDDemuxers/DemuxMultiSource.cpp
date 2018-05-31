@@ -239,16 +239,9 @@ void CDemuxMultiSource::SetMissingStreamDetails(DemuxPtr demuxer)
     {
       stream->flags = static_cast<StreamFlags>(info.flag);
     }
-    if (stream->language[0] == '\0')
+    if (stream->language.empty())
     {
-      size_t len = info.language.size();
-      for (size_t i = 0; i < 3; ++i)
-      {
-        if (i < len)
-        {
-          stream->language[i] = info.language.at(i);
-        }
-      }
+      stream->language = info.language;
     }
   }
 }
