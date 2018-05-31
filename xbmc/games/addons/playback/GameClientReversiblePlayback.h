@@ -47,9 +47,9 @@ namespace GAME
     virtual ~CGameClientReversiblePlayback();
 
     // implementation of IGameClientPlayback
-    virtual bool CanPause() const override               { return true; }
-    virtual bool CanSeek() const override                { return true; }
-    virtual unsigned int GetTimeMs() const override      { return m_playTimeMs; }
+    virtual bool CanPause() const override { return true; }
+    virtual bool CanSeek() const override { return true; }
+    virtual unsigned int GetTimeMs() const override { return m_playTimeMs; }
     virtual unsigned int GetTotalTimeMs() const override { return m_totalTimeMs; }
     virtual unsigned int GetCacheTimeMs() const override { return m_cacheTimeMs; }
     virtual void SeekTimeMs(unsigned int timeMs) override;
@@ -77,18 +77,18 @@ namespace GAME
     CGameClient* const m_gameClient;
 
     // Gameplay functionality
-    CGameLoop                      m_gameLoop;
+    CGameLoop m_gameLoop;
     std::unique_ptr<IMemoryStream> m_memoryStream;
-    CCriticalSection               m_mutex;
+    CCriticalSection m_mutex;
 
     // Savestate functionality
     std::unique_ptr<CSavestateWriter> m_savestateWriter;
     std::unique_ptr<CSavestateReader> m_savestateReader;
 
     // Playback stats
-    uint64_t     m_totalFrameCount;
-    uint64_t     m_pastFrameCount;
-    uint64_t     m_futureFrameCount;
+    uint64_t m_totalFrameCount;
+    uint64_t m_pastFrameCount;
+    uint64_t m_futureFrameCount;
     unsigned int m_playTimeMs;
     unsigned int m_totalTimeMs;
     unsigned int m_cacheTimeMs;
