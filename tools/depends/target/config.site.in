@@ -102,8 +102,6 @@ if test "${PACKAGE_NAME}" = "Samba" -a "@platform_os@" = "osx"; then
   # various configure overrides
   ac_cv_header_libunwind_h=no
   ac_cv_header_execinfo_h=no
-  # fixes crash on 10.6 if xbmc is built using 10.7 SDK with 10.6 min
-  ac_cv_func_vdprintf=no
   samba_cv_HAVE_IFACE_GETIFADDRS=yes
 fi
 

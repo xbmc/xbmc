@@ -17,12 +17,11 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#define BOOL XBMC_BOOL
+
 #include "guilib/GUIKeyboardFactory.h"
 #include "threads/Event.h"
 #include "Application.h"
 #include "platform/darwin/DarwinUtils.h"
-#undef BOOL
 
 #import "IOSKeyboardView.h"
 #import "IOSScreenManager.h"

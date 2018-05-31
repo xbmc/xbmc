@@ -103,7 +103,6 @@ protected:
   bool                         m_obscured;
   unsigned int                 m_obscured_timecheck;
 
-  bool                         m_can_display_switch;
   bool                         m_movedToOtherScreen;
   int                          m_lastDisplayNr;
   void                        *m_windowDidMove;
