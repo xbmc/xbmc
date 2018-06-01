@@ -1105,14 +1105,14 @@ CDVDVideoCodec::VCReturn CDecoder::Decode(AVCodecContext *avctx, AVFrame *pFrame
     m_videoSurfaces.MarkRender(surf);
 
     // send frame to output for processing
-    CVdpauDecodedPicture pic;
-    static_cast<ICallbackHWAccel*>(avctx->opaque)->GetPictureCommon(&pic.DVDPic);
-    pic.videoSurface = surf;
-    pic.DVDPic.color_space = avctx->colorspace;
+    CVdpauDecodedPicture *pic = new CVdpauDecodedPicture();
+    static_cast<ICallbackHWAccel*>(avctx->opaque)->GetPictureCommon(&(pic->DVDPic));
+    m_codecControl = pic->DVDPic.iFlags & (DVD_CODEC_CTRL_HURRY | DVD_CODEC_CTRL_NO_POSTPROC);
+    pic->videoSurface = surf;
+    pic->DVDPic.color_space = avctx->colorspace;
     m_bufferStats.IncDecoded();
-    m_vdpauOutput.m_dataPort.SendOutMessage(COutputDataProtocol::NEWFRAME, &pic, sizeof(pic));
-
-    m_codecControl = pic.DVDPic.iFlags & (DVD_CODEC_CTRL_DRAIN | DVD_CODEC_CTRL_NO_POSTPROC);
+    CPayloadWrap<CVdpauDecodedPicture> *payload = new CPayloadWrap<CVdpauDecodedPicture>(pic);
+    m_vdpauOutput.m_dataPort.SendOutMessage(COutputDataProtocol::NEWFRAME, payload);
   }
 
   uint16_t decoded, processed, render;
@@ -1314,6 +1314,7 @@ void CDecoder::Register()
     CServiceBroker::GetSettings().GetSetting(CSettings::SETTING_VIDEOPLAYER_USEVDPAUMPEG4)->SetVisible(true);
     CServiceBroker::GetSettings().GetSetting(CSettings::SETTING_VIDEOPLAYER_USEVDPAUVC1)->SetVisible(true);
     CServiceBroker::GetSettings().GetSetting(CSettings::SETTING_VIDEOPLAYER_USEVDPAUMPEG2)->SetVisible(true);
+    CServiceBroker::GetSettings().GetSetting(CSettings::SETTING_VIDEOPLAYER_USEVDPAUMIXER)->SetVisible(true);
   }
 
 }
@@ -1620,11 +1621,11 @@ void CMixer::StateMachine(int signal, Protocol *port, Message *msg)
         switch (signal)
         {
         case CMixerDataProtocol::FRAME:
-          CVdpauDecodedPicture *frame;
-          frame = (CVdpauDecodedPicture*)msg->data;
-          if (frame)
+          CPayloadWrap<CVdpauDecodedPicture> *payload;
+          payload = dynamic_cast<CPayloadWrap<CVdpauDecodedPicture>*>(msg->payloadObj.get());
+          if (payload)
           {
-            m_decodedPics.push(*frame);
+            m_decodedPics.push(*(payload->GetPlayload()));
           }
           m_extTimeout = 0;
           return;
@@ -2446,8 +2447,13 @@ void CMixer::Flush()
   {
     if (msg->signal == CMixerDataProtocol::FRAME)
     {
-      CVdpauDecodedPicture pic = *reinterpret_cast<CVdpauDecodedPicture*>(msg->data);
-      m_config.videoSurfaces->ClearRender(pic.videoSurface);
+      CPayloadWrap<CVdpauDecodedPicture> *payload;
+      payload = dynamic_cast<CPayloadWrap<CVdpauDecodedPicture>*>(msg->payloadObj.get());
+      if (payload)
+      {
+        CVdpauDecodedPicture pic = *(payload->GetPlayload());
+        m_config.videoSurfaces->ClearRender(pic.videoSurface);
+      }
     }
     else if (msg->signal == CMixerDataProtocol::BUFFER)
     {
@@ -2906,12 +2912,11 @@ void COutput::StateMachine(int signal, Protocol *port, Message *msg)
         switch (signal)
         {
         case COutputDataProtocol::NEWFRAME:
-          CVdpauDecodedPicture *frame;
-          frame = (CVdpauDecodedPicture*)msg->data;
-          if (frame)
+          CPayloadWrap<CVdpauDecodedPicture> *payload;
+          payload = dynamic_cast<CPayloadWrap<CVdpauDecodedPicture>*>(msg->payloadObj.release());
+          if (payload)
           {
-            m_mixer.m_dataPort.SendOutMessage(CMixerDataProtocol::FRAME,
-                                               frame,sizeof(CVdpauDecodedPicture));
+            m_mixer.m_dataPort.SendOutMessage(CMixerDataProtocol::FRAME, payload);
           }
           return;
         case COutputDataProtocol::RETURNPIC:
@@ -3126,8 +3131,13 @@ void COutput::Flush()
   {
     if (msg->signal == COutputDataProtocol::NEWFRAME)
     {
-      CVdpauDecodedPicture pic = *reinterpret_cast<CVdpauDecodedPicture*>(msg->data);
-      m_config.videoSurfaces->ClearRender(pic.videoSurface);
+      CPayloadWrap<CVdpauDecodedPicture> *payload;
+      payload = dynamic_cast<CPayloadWrap<CVdpauDecodedPicture>*>(msg->payloadObj.get());
+      if (payload)
+      {
+        CVdpauDecodedPicture pic = *(payload->GetPlayload());
+        m_config.videoSurfaces->ClearRender(pic.videoSurface);
+      }
     }
     else if (msg->signal == COutputDataProtocol::RETURNPIC)
     {
