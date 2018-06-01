@@ -47,6 +47,7 @@
 #include "guilib/TextureManager.h"
 #include "Util.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
+#include "input/WindowTranslator.h"
 #include "storage/MediaManager.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/LangCodeExpander.h"
@@ -109,6 +110,25 @@ namespace XBMCAddon
       XBMC_TRACE;
       if (! function)
         return;
+
+      // builtins is no anarchy
+      // enforce some rules here
+      // DialogBusy must not be activated, it is modal dialog
+      std::string execute;
+      std::vector<std::string> params;
+      CUtil::SplitExecFunction(function, execute, params);
+      StringUtils::ToLower(execute);
+      if (StringUtils::EqualsNoCase(execute, "activatewindow") ||
+          StringUtils::EqualsNoCase(execute, "closedialog"))
+      {
+        int win = CWindowTranslator::TranslateWindow(params[0]);
+        if (win == WINDOW_DIALOG_BUSY)
+        {
+          CLog::Log(LOGWARNING, "addons must not activate DialogBusy");
+          return;
+        }
+      }
+
       if (wait)
         CApplicationMessenger::GetInstance().SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, function);
       else

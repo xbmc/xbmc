@@ -164,7 +164,7 @@ bool CGUIWindowLoginScreen::OnBack(int actionID)
 
 void CGUIWindowLoginScreen::FrameMove()
 {
-  if (GetFocusedControlID() == CONTROL_BIG_LIST && !CServiceBroker::GetGUI()->GetWindowManager().HasModalDialog())
+  if (GetFocusedControlID() == CONTROL_BIG_LIST && !CServiceBroker::GetGUI()->GetWindowManager().HasModalDialog(true))
   {
     if (m_viewControl.HasControl(CONTROL_BIG_LIST))
       m_iSelectedItem = m_viewControl.GetSelectedItem();

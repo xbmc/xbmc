@@ -72,7 +72,7 @@ void CAutorun::ExecuteAutorun(const std::string& path, bool bypassSettings, bool
   {
     if (g_application.GetAppPlayer().IsPlayingAudio() ||
         g_application.GetAppPlayer().IsPlayingVideo() ||
-        CServiceBroker::GetGUI()->GetWindowManager().HasModalDialog())
+        CServiceBroker::GetGUI()->GetWindowManager().HasModalDialog(true))
     {
       return;
     }

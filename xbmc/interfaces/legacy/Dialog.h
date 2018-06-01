@@ -733,19 +733,17 @@ namespace XBMCAddon
     /// @brief <b>Kodi's busy dialog class</b>
     ///
     ///-----------------------------------------------------------------------
-    /// @python_v17 New class added.
+    /// @python_v18 removed, usage results in nop!
     ///
     class DialogBusy : public AddonClass
     {
-      CGUIDialogBusy* dlg;
-      bool open;
 
     protected:
       void deallocating() override;
 
     public:
 
-      DialogBusy() : dlg(NULL), open(false) {}
+      DialogBusy() {}
       ~DialogBusy() override;
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -760,7 +758,7 @@ namespace XBMCAddon
       ///
       ///
       ///------------------------------------------------------------------------
-      /// @python_v17 New method added
+      /// @python_v18 removed, usage results in nop!
       ///
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
@@ -789,7 +787,7 @@ namespace XBMCAddon
       ///
       ///
       ///------------------------------------------------------------------------
-      /// @python_v17 New method added
+      /// @python_v18 removed, usage results in nop!
       ///
       update(...);
 #else
@@ -806,7 +804,7 @@ namespace XBMCAddon
       ///
       ///
       ///------------------------------------------------------------------------
-      /// @python_v17 New method added
+      /// @python_v18 removed, usage results in nop!
       ///
       close(...);
 #else
@@ -825,7 +823,7 @@ namespace XBMCAddon
       ///
       ///
       ///------------------------------------------------------------------------
-      /// @python_v17 New method added
+      /// @python_v18 removed, usage results in nop!
       ///
       iscanceled(...);
 #else

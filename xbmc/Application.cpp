@@ -3875,7 +3875,7 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
   bool bUseDim = false;
   if (!forceType)
   {
-    if (CServiceBroker::GetGUI()->GetWindowManager().HasModalDialog())
+    if (CServiceBroker::GetGUI()->GetWindowManager().HasModalDialog(true))
       bUseDim = true;
     else if (m_appPlayer.IsPlayingVideo() && m_ServiceManager->GetSettings().GetBool(CSettings::SETTING_SCREENSAVER_USEDIMONPAUSE))
       bUseDim = true;

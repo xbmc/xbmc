@@ -236,6 +236,14 @@ bool CGUIMediaWindow::OnAction(const CAction &action)
 
 bool CGUIMediaWindow::OnBack(int actionID)
 {
+  if (m_updateJobActive)
+  {
+    m_rootDir.CancelDirectory();
+    m_updateAborted = true;
+    m_updateEvent.Wait();
+    m_updateJobActive = false;
+  }
+
   CURL filterUrl(m_strFilterPath);
   if (actionID == ACTION_NAV_BACK &&
       !m_vecItems->IsVirtualDirectoryRoot() &&
@@ -380,6 +388,12 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
         if ((m_vecItems->IsVirtualDirectoryRoot() ||
              m_vecItems->IsSourcesPath()) && IsActive())
         {
+          if (m_vecItemsUpdating)
+          {
+            CLog::Log(LOGWARNING, "CGUIMediaWindow::OnMessage - updating in progress");
+            return true;
+          }
+          CUpdateGuard ug(m_vecItemsUpdating);
           int iItem = m_viewControl.GetSelectedItem();
           Refresh(true);
           m_viewControl.SetSelectedItem(iItem);
@@ -388,6 +402,12 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
       }
       else if (message.GetParam1()==GUI_MSG_UPDATE && IsActive())
       {
+        if (m_vecItemsUpdating)
+        {
+          CLog::Log(LOGWARNING, "CGUIMediaWindow::OnMessage - updating in progress");
+          return true;
+        }
+        CUpdateGuard ug(m_vecItemsUpdating);
         if (message.GetNumStringParams())
         {
           if (message.GetParam2()) // param2 is used for resetting the history
@@ -917,17 +937,9 @@ bool CGUIMediaWindow::Update(const std::string &strDirectory, bool updateFilterP
 
 bool CGUIMediaWindow::Refresh(bool clearCache /* = false */)
 {
-  if (m_vecItemsUpdating)
-  {
-    CLog::Log(LOGWARNING, "CGUIMediaWindow::Update - updating in progress");
-    return false;
-  }
-
   std::string strCurrentDirectory = m_vecItems->GetPath();
   if (strCurrentDirectory == "?")
     return false;
-
-  m_vecItemsUpdating = true;
 
   if (clearCache)
     m_vecItems->RemoveDiscCache(GetID());
@@ -940,7 +952,6 @@ bool CGUIMediaWindow::Refresh(bool clearCache /* = false */)
     ret = false;
   }
 
-  m_vecItemsUpdating = false;
   return ret;
 }
 
@@ -1633,7 +1644,7 @@ void CGUIMediaWindow::OnRenameItem(int iItem)
 void CGUIMediaWindow::OnInitWindow()
 {
   // initial fetch is done unthreaded to ensure the items are setup prior to skin animations kicking off
-  m_useBusyDialog = false;
+  m_backgroundLoad = false;
 
   // the start directory may change during Refresh
   bool updateStartDirectory = URIUtils::PathEquals(m_vecItems->GetPath(), m_startDirectory, true);
@@ -1661,7 +1672,7 @@ void CGUIMediaWindow::OnInitWindow()
     SetHistoryForPath(m_startDirectory);
   }
 
-  m_useBusyDialog = true;
+  m_backgroundLoad = true;
 
   CGUIWindow::OnInitWindow();
 }
@@ -1748,8 +1759,11 @@ bool CGUIMediaWindow::OnPopupMenu(int itemIdx)
 
   if (InRange(static_cast<size_t>(idx), pluginMenuRange))
   {
+    bool saveVal = m_backgroundLoad;
+    m_backgroundLoad = false;
     CApplicationMessenger::GetInstance().SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr,
         item->GetProperty(StringUtils::Format("contextmenuaction(%i)", idx - pluginMenuRange.first)).asString());
+    m_backgroundLoad = saveVal;
     return true;
   }
 
@@ -2171,18 +2185,19 @@ std::string CGUIMediaWindow::RemoveParameterFromPath(const std::string &strDirec
   return strDirectory;
 }
 
-void CGUIMediaWindow::ProcessRenderLoop(bool renderOnly)
+bool CGUIMediaWindow::ProcessRenderLoop(bool renderOnly)
 {
-  CServiceBroker::GetGUI()->GetWindowManager().ProcessRenderLoop(renderOnly);
+  return CServiceBroker::GetGUI()->GetWindowManager().ProcessRenderLoop(renderOnly);
 }
 
 bool CGUIMediaWindow::GetDirectoryItems(CURL &url, CFileItemList &items, bool useDir)
 {
-  if (m_useBusyDialog)
+  if (m_backgroundLoad)
   {
     bool ret = true;
     CGetDirectoryItems getItems(m_rootDir, url, items, useDir);
-    if (!CGUIDialogBusy::Wait(&getItems, 100, true))
+
+    if (!WaitGetDirectoryItems(getItems))
     {
       // cancelled
       ret = false;
@@ -2193,12 +2208,13 @@ bool CGUIMediaWindow::GetDirectoryItems(CURL &url, CFileItemList &items, bool us
       {
         ret = false;
       }
-      else if (!CGUIDialogBusy::Wait(&getItems, 100, true) || !getItems.m_result)
+      else if (!WaitGetDirectoryItems(getItems) || !getItems.m_result)
       {
         ret = false;
       }
     }
 
+    m_updateJobActive = false;
     m_rootDir.ReleaseDirImpl();
     return ret;
   }
@@ -2206,4 +2222,39 @@ bool CGUIMediaWindow::GetDirectoryItems(CURL &url, CFileItemList &items, bool us
   {
     return m_rootDir.GetDirectory(url, items, useDir, false);
   }
+}
+
+bool CGUIMediaWindow::WaitGetDirectoryItems(CGetDirectoryItems &items)
+{
+  bool ret = true;
+  CGUIDialogBusy* dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogBusy>(WINDOW_DIALOG_BUSY);
+  if (dialog && !dialog->IsDialogRunning())
+  {
+    if (!CGUIDialogBusy::Wait(&items, 100, true))
+    {
+      // cancelled
+      ret = false;
+    }
+  }
+  else
+  {
+    m_updateJobActive = true;
+    m_updateEvent.Reset();
+    CJobManager::GetInstance().Submit([&]() {
+      items.Run();
+      m_updateEvent.Set();
+    }, nullptr, CJob::PRIORITY_NORMAL);
+
+    while (!m_updateEvent.WaitMSec(1))
+    {
+      if (!ProcessRenderLoop(false))
+        break;
+    }
+
+    if (m_updateAborted || !items.m_result)
+    {
+      ret = false;
+    }
+  }
+  return ret;
 }

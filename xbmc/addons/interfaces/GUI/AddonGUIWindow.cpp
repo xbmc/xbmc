@@ -334,9 +334,10 @@ void CGUIAddonWindowDialog::Show_Internal(bool show /* = true */)
     // this dialog is derived from GUiMediaWindow
     // make sure it is rendered last
     m_renderOrder = RENDER_ORDER_DIALOG;
-    while (m_bRunning && !g_application.m_bStop)
+    while (m_bRunning)
     {
-      ProcessRenderLoop();
+      if (!ProcessRenderLoop(false))
+        break;
     }
   }
   else // hide

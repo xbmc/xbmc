@@ -34,8 +34,7 @@
 enum class DialogModalityType
 {
   MODELESS,
-  MODAL,
-  PARENTLESS_MODAL
+  MODAL
 };
 #ifdef TARGET_WINDOWS_STORE
 #pragma pack(pop)
@@ -63,7 +62,7 @@ public:
 
   bool IsDialogRunning() const override { return m_active; };
   bool IsDialog() const override { return true;};
-  bool IsModalDialog() const override { return m_modalityType == DialogModalityType::MODAL || m_modalityType == DialogModalityType::PARENTLESS_MODAL; };
+  bool IsModalDialog() const override { return m_modalityType == DialogModalityType::MODAL; };
   virtual DialogModalityType GetModalityType() const { return m_modalityType; };
 
   void SetAutoClose(unsigned int timeoutMs);
