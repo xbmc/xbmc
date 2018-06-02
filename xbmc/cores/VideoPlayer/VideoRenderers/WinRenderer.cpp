@@ -518,7 +518,6 @@ void CWinRenderer::SelectPSVideoFilter()
     break;
 
   case VS_SCALINGMETHOD_SINC8:
-  case VS_SCALINGMETHOD_NEDI:
     CLog::Log(LOGERROR, "D3D: TODO: This scaler has not yet been implemented");
     break;
 
