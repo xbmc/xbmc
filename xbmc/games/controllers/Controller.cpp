@@ -86,7 +86,8 @@ const CControllerFeature& CController::GetFeature(const std::string &name) const
 unsigned int CController::FeatureCount(FEATURE_TYPE type /* = FEATURE_TYPE::UNKNOWN */,
                                        JOYSTICK::INPUT_TYPE inputType /* = JOYSTICK::INPUT_TYPE::UNKNOWN */) const
 {
-  return std::count_if(m_features.begin(), m_features.end(), FeatureTypeEqual(type, inputType));
+  auto featureCount = std::count_if(m_features.begin(), m_features.end(), FeatureTypeEqual(type, inputType));
+  return static_cast<unsigned int>(featureCount);
 }
 
 void CController::GetFeatures(std::vector<std::string>& features,

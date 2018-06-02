@@ -100,7 +100,7 @@ unsigned int CControllerGrid::AddPorts(const ControllerPortVec &ports, Controlle
       if (port.PortType() == PORT_TYPE::CONTROLLER)
       {
         // Add controller
-        height = std::max(height, AddController(port, column.vertices.size(), column.vertices, grid));
+        height = std::max(height, AddController(port, static_cast<unsigned int>(column.vertices.size()), column.vertices, grid));
 
         if (bFirstPlayer == true)
         {
@@ -108,9 +108,9 @@ unsigned int CControllerGrid::AddPorts(const ControllerPortVec &ports, Controlle
 
           // Keyboard and mouse are added below the first controller
           if (itKeyboard != ports.end())
-            height = std::max(height, AddController(*itKeyboard, column.vertices.size(), column.vertices, grid));
+            height = std::max(height, AddController(*itKeyboard, static_cast<unsigned int>(column.vertices.size()), column.vertices, grid));
           if (itMouse != ports.end())
-            height = std::max(height, AddController(*itMouse, column.vertices.size(), column.vertices, grid));
+            height = std::max(height, AddController(*itMouse, static_cast<unsigned int>(column.vertices.size()), column.vertices, grid));
         }
       }
 
@@ -124,9 +124,9 @@ unsigned int CControllerGrid::AddPorts(const ControllerPortVec &ports, Controlle
     ControllerColumn column;
 
     if (itKeyboard != ports.end())
-      height = std::max(height, AddController(*itKeyboard, column.vertices.size(), column.vertices, grid));
+      height = std::max(height, AddController(*itKeyboard, static_cast<unsigned int>(column.vertices.size()), column.vertices, grid));
     if (itMouse != ports.end())
-      height = std::max(height, AddController(*itMouse, column.vertices.size(), column.vertices, grid));
+      height = std::max(height, AddController(*itMouse, static_cast<unsigned int>(column.vertices.size()), column.vertices, grid));
 
     if (!column.vertices.empty())
       grid.emplace_back(std::move(column));
@@ -222,7 +222,7 @@ void CControllerGrid::SetHeight(unsigned int height, ControllerGrid &grid)
 {
   for (auto &column : grid)
   {
-    while (column.vertices.size() < height)
+    while (static_cast<unsigned int>(column.vertices.size()) < height)
       AddInvisible(column.vertices);
   }
 }
