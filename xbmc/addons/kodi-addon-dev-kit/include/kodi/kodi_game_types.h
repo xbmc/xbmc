@@ -62,6 +62,8 @@
 extern "C" {
 #endif
 
+/// @name Add-on types
+///{
 /*! Game add-on error codes */
 typedef enum GAME_ERROR
 {
@@ -74,38 +76,10 @@ typedef enum GAME_ERROR
   GAME_ERROR_NOT_LOADED,             // no game is loaded
   GAME_ERROR_RESTRICTED,             // game requires restricted resources
 } GAME_ERROR;
+///}
 
-typedef enum GAME_STREAM_TYPE
-{
-  GAME_STREAM_UNKNOWN,
-  GAME_STREAM_AUDIO,
-  GAME_STREAM_VIDEO,
-} GAME_STREAM_TYPE;
-
-typedef enum GAME_PIXEL_FORMAT
-{
-  GAME_PIXEL_FORMAT_UNKNOWN,
-  GAME_PIXEL_FORMAT_YUV420P,
-  GAME_PIXEL_FORMAT_0RGB8888,
-  GAME_PIXEL_FORMAT_RGB565,
-  GAME_PIXEL_FORMAT_0RGB1555,
-} GAME_PIXEL_FORMAT;
-
-typedef enum GAME_VIDEO_CODEC
-{
-  GAME_VIDEO_CODEC_UNKNOWN,
-  GAME_VIDEO_CODEC_H264,
-  GAME_VIDEO_CODEC_THEORA,
-} GAME_VIDEO_CODEC;
-
-typedef enum GAME_VIDEO_ROTATION // Counter-clockwise
-{
-  GAME_VIDEO_ROTATION_0,
-  GAME_VIDEO_ROTATION_90,
-  GAME_VIDEO_ROTATION_180,
-  GAME_VIDEO_ROTATION_270,
-} GAME_VIDEO_ROTATION;
-
+/// @name Audio stream
+///{
 typedef enum GAME_PCM_FORMAT
 {
   GAME_PCM_FORMAT_UNKNOWN,
@@ -142,51 +116,138 @@ typedef enum GAME_AUDIO_CHANNEL
   GAME_CH_BLOC,
   GAME_CH_BROC,
 } GAME_AUDIO_CHANNEL;
+///}
 
-// TODO
-typedef enum GAME_HW_FRAME_BUFFER
+/// @name Video stream
+///{
+typedef enum GAME_PIXEL_FORMAT
 {
-  GAME_HW_FRAME_BUFFER_VALID,     // Pass this to game_video_refresh if rendering to hardware
-  GAME_HW_FRAME_BUFFER_DUPLICATE, // Passing NULL to game_video_refresh is still a frame dupe as normal
-  GAME_HW_FRAME_BUFFER_RENDER,
-} GAME_HW_FRAME_BUFFER;
+  GAME_PIXEL_FORMAT_UNKNOWN,
+  GAME_PIXEL_FORMAT_YUV420P,
+  GAME_PIXEL_FORMAT_0RGB8888,
+  GAME_PIXEL_FORMAT_RGB565,
+  GAME_PIXEL_FORMAT_0RGB1555,
+} GAME_PIXEL_FORMAT;
 
+typedef enum GAME_VIDEO_CODEC
+{
+  GAME_VIDEO_CODEC_UNKNOWN,
+  GAME_VIDEO_CODEC_H264,
+  GAME_VIDEO_CODEC_THEORA,
+} GAME_VIDEO_CODEC;
+
+typedef enum GAME_VIDEO_ROTATION // Counter-clockwise
+{
+  GAME_VIDEO_ROTATION_0,
+  GAME_VIDEO_ROTATION_90,
+  GAME_VIDEO_ROTATION_180,
+  GAME_VIDEO_ROTATION_270,
+} GAME_VIDEO_ROTATION;
+///}
+
+/// @name Hardware framebuffer stream
+///{
 typedef enum GAME_HW_CONTEXT_TYPE
 {
   GAME_HW_CONTEXT_NONE,
-  GAME_HW_CONTEXT_OPENGL,      // OpenGL 2.x. Latest version available before 3.x+. Driver can choose to use latest compatibility context
-  GAME_HW_CONTEXT_OPENGLES2,   // GLES 2.0
-  GAME_HW_CONTEXT_OPENGL_CORE, // Modern desktop core GL context. Use major/minor fields to set GL version
-  GAME_HW_CONTEXT_OPENGLES3,   // GLES 3.0
+
+  // OpenGL 2.x. Driver can choose to use latest compatibility context
+  GAME_HW_CONTEXT_OPENGL,
+
+  // OpenGL ES 2.0
+  GAME_HW_CONTEXT_OPENGLES2,
+
+  // Modern desktop core GL context. Use major/minor fields to set GL version
+  GAME_HW_CONTEXT_OPENGL_CORE,
+
+  // OpenGL ES 3.0
+  GAME_HW_CONTEXT_OPENGLES3,
+
+  // OpenGL ES 3.1+. Set major/minor fields.
+  GAME_HW_CONTEXT_OPENGLES_VERSION,
+
+  // Vulkan
+  GAME_HW_CONTEXT_VULKAN
 } GAME_HW_CONTEXT_TYPE;
 
-typedef enum GAME_INPUT_EVENT_SOURCE
+typedef struct game_hw_info
 {
-  GAME_INPUT_EVENT_DIGITAL_BUTTON,
-  GAME_INPUT_EVENT_ANALOG_BUTTON,
-  GAME_INPUT_EVENT_AXIS,
-  GAME_INPUT_EVENT_ANALOG_STICK,
-  GAME_INPUT_EVENT_ACCELEROMETER,
-  GAME_INPUT_EVENT_KEY,
-  GAME_INPUT_EVENT_RELATIVE_POINTER,
-  GAME_INPUT_EVENT_ABSOLUTE_POINTER,
-  GAME_INPUT_EVENT_MOTOR,
-} GAME_INPUT_EVENT_SOURCE;
+  /*!
+   * The API to use.
+   */
+  GAME_HW_CONTEXT_TYPE context_type;
 
-typedef enum GAME_KEY_MOD
+  /*!
+   * Set if render buffers should have depth component attached.
+   *
+   * TODO: Obsolete
+   */
+  bool depth;
+
+  /*!
+   * Set if stencil buffers should be attached. If depth and stencil are true,
+   * a packed 24/8 buffer will be added. Only attaching stencil is invalid and
+   * will be ignored.
+   *
+   * TODO: Obsolete.
+   */
+  bool stencil;
+
+  /*!
+   * Use conventional bottom-left origin convention. If false, standard top-left
+   * origin semantics are used.
+   *
+   * TODO: Move to GL specific interface
+   */
+  bool bottom_left_origin;
+
+  /*!
+   * Major version number for core GL context or GLES 3.1+.
+   */
+  unsigned int version_major;
+
+  /*!
+   * Minor version number for core GL context or GLES 3.1+.
+   */
+  unsigned int version_minor;
+
+  /*!
+   * If this is true, the frontend will go very far to avoid resetting context
+   * in scenarios like toggling fullscreen, etc.
+   *
+   * TODO: Obsolete? Maybe frontend should just always assume this...
+   *
+   * The reset callback might still be called in extreme situations such as if
+   * the context is lost beyond recovery.
+   *
+   * For optimal stability, set this to false, and allow context to be reset at
+   * any time.
+   */
+  bool cache_context;
+
+  /*!
+   * Creates a debug context.
+   */
+  bool debug_context;
+} ATTRIBUTE_PACKED game_hw_info;
+
+typedef void (*game_proc_address_t)(void);
+///}
+
+/// @name Stream types
+///{
+typedef enum GAME_STREAM_TYPE
 {
-  GAME_KEY_MOD_NONE = 0x0000,
+  GAME_STREAM_UNKNOWN,
+  GAME_STREAM_AUDIO,
+  GAME_STREAM_VIDEO,
+  GAME_STREAM_HW_FRAMEBUFFER,
+  GAME_STREAM_SW_FRAMEBUFFER,
+} GAME_STREAM_TYPE;
+///}
 
-  GAME_KEY_MOD_SHIFT = 0x0001,
-  GAME_KEY_MOD_CTRL = 0x0002,
-  GAME_KEY_MOD_ALT = 0x0004,
-  GAME_KEY_MOD_META = 0x0008,
-  GAME_KEY_MOD_SUPER = 0x0010,
-
-  GAME_KEY_MOD_NUMLOCK = 0x0100,
-  GAME_KEY_MOD_CAPSLOCK = 0x0200,
-  GAME_KEY_MOD_SCROLLOCK = 0x0400,
-} GAME_KEY_MOD;
+/// @name Game types
+///{
 
 /*! Returned from game_get_region() */
 typedef enum GAME_REGION
@@ -262,14 +323,38 @@ typedef enum GAME_SIMD
   GAME_SIMD_AVX2                     = (1 << 12),
   GAME_SIMD_VFPU                     = (1 << 13),
 } GAME_SIMD;
+///}
 
-typedef enum GAME_ROTATION
+/// @name Input types
+///{
+
+typedef enum GAME_INPUT_EVENT_SOURCE
 {
-  GAME_ROTATION_0_CW,
-  GAME_ROTATION_90_CW,
-  GAME_ROTATION_180_CW,
-  GAME_ROTATION_270_CW,
-} GAME_ROTATION;
+  GAME_INPUT_EVENT_DIGITAL_BUTTON,
+  GAME_INPUT_EVENT_ANALOG_BUTTON,
+  GAME_INPUT_EVENT_AXIS,
+  GAME_INPUT_EVENT_ANALOG_STICK,
+  GAME_INPUT_EVENT_ACCELEROMETER,
+  GAME_INPUT_EVENT_KEY,
+  GAME_INPUT_EVENT_RELATIVE_POINTER,
+  GAME_INPUT_EVENT_ABSOLUTE_POINTER,
+  GAME_INPUT_EVENT_MOTOR,
+} GAME_INPUT_EVENT_SOURCE;
+
+typedef enum GAME_KEY_MOD
+{
+  GAME_KEY_MOD_NONE = 0x0000,
+
+  GAME_KEY_MOD_SHIFT = 0x0001,
+  GAME_KEY_MOD_CTRL = 0x0002,
+  GAME_KEY_MOD_ALT = 0x0004,
+  GAME_KEY_MOD_META = 0x0008,
+  GAME_KEY_MOD_SUPER = 0x0010,
+
+  GAME_KEY_MOD_NUMLOCK = 0x0100,
+  GAME_KEY_MOD_CAPSLOCK = 0x0200,
+  GAME_KEY_MOD_SCROLLOCK = 0x0400,
+} GAME_KEY_MOD;
 
 /*!
  * \brief Type of port on the virtual game console
@@ -418,29 +503,16 @@ typedef struct game_input_event
     struct game_motor_event          motor;
   };
 } ATTRIBUTE_PACKED game_input_event;
+///}
 
+/// @name Environment types
+///{
 struct game_system_timing
 {
   double fps;                   // FPS of video content.
   double sample_rate;           // Sampling rate of audio.
 };
-
-typedef void (*game_proc_address_t)(void);
-
-struct game_hw_info
-{
-  GAME_HW_CONTEXT_TYPE context_type;        // Which API to use. Set by game client
-  bool                 depth;               // Set if render buffers should have depth component attached
-  bool                 stencil;             // Set if stencil buffers should be attached
-                                            // If depth and stencil are true, a packed 24/8 buffer will be added. Only attaching stencil is invalid and will be ignored
-  bool                 bottom_left_origin;  // Use conventional bottom-left origin convention. Is false, standard top-left origin semantics are used
-  unsigned             version_major;       // Major version number for core GL context
-  unsigned             version_minor;       // Minor version number for core GL context
-  bool                 cache_context;       // If this is true, the frontend will go very far to avoid resetting context in scenarios like toggling fullscreen, etc.
-                                            // The reset callback might still be called in extreme situations such as if the context is lost beyond recovery
-                                            // For optimal stability, set this to false, and allow context to be reset at any time
-  bool                 debug_context;       // Creates a debug context
-};
+///}
 
 /*! Properties passed to the ADDON_Create() method of a game client */
 typedef struct AddonProps_Game
@@ -495,7 +567,7 @@ typedef struct AddonProps_Game
 } AddonProps_Game;
 
 typedef AddonProps_Game game_client_properties;
-  
+
 /*! Structure to transfer the methods from kodi_game_dll.h to Kodi */
 
 typedef struct AddonToKodiFuncTable_Game
