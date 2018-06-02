@@ -87,7 +87,7 @@ namespace RETRO
 
     // Functions called from game loop
     bool Configure(AVPixelFormat format, unsigned int width, unsigned int height, unsigned int orientation);
-    void AddFrame(const uint8_t* data, unsigned int size);
+    void AddFrame(const uint8_t* data, size_t size);
 
     // Functions called from the player
     void SetSpeed(double speed);

@@ -23,7 +23,7 @@
 using namespace KODI;
 using namespace RETRO;
 
-bool CRenderBufferSysMem::Allocate(AVPixelFormat format, unsigned int width, unsigned int height, unsigned int size)
+bool CRenderBufferSysMem::Allocate(AVPixelFormat format, unsigned int width, unsigned int height, size_t size)
 {
   // Initialize IRenderBuffer
   m_format = format;

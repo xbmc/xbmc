@@ -35,7 +35,7 @@ namespace RETRO
     virtual ~CRenderBufferSysMem() = default;
 
     // implementation of IRenderBuffer
-    bool Allocate(AVPixelFormat format, unsigned int width, unsigned int height, unsigned int size) override;
+    bool Allocate(AVPixelFormat format, unsigned int width, unsigned int height, size_t size) override;
     size_t GetFrameSize() const override;
     uint8_t *GetMemory() override;
 

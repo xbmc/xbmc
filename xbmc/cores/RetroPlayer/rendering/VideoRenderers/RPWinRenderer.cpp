@@ -157,8 +157,8 @@ bool CWinRenderBuffer::CreateScalingContext()
 
 void CWinRenderBuffer::ScalePixels(uint8_t *source, size_t sourceSize, uint8_t *target, size_t targetSize)
 {
-  const int sourceStride = sourceSize / m_height;
-  const int targetStride = targetSize / m_height;
+  const int sourceStride = static_cast<int>(sourceSize / m_height);
+  const int targetStride = static_cast<int>(targetSize / m_height);
 
   uint8_t* src[] =       { source,        nullptr,   nullptr,   nullptr };
   int      srcStride[] = { sourceStride,  0,         0,         0       };

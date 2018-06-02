@@ -39,14 +39,14 @@ namespace GAME
     virtual ~CDeltaPairMemoryStream() = default;
 
     // implementation of IMemoryStream via CLinearMemoryStream
-    virtual void         Reset() override;
-    virtual unsigned int PastFramesAvailable() const override;
-    virtual unsigned int RewindFrames(unsigned int frameCount) override;
+    virtual void Reset() override;
+    virtual uint64_t PastFramesAvailable() const override;
+    virtual uint64_t RewindFrames(uint64_t frameCount) override;
 
   protected:
     // implementation of CLinearMemoryStream
     virtual void SubmitFrameInternal() override;
-    virtual void CullPastFrames(unsigned int frameCount) override;
+    virtual void CullPastFrames(uint64_t frameCount) override;
 
     /*!
      * Rewinding is implemented by applying XOR deltas on the specific parts of
@@ -60,7 +60,7 @@ namespace GAME
      */
     struct DeltaPair
     {
-      size_t   pos;
+      size_t pos;
       uint32_t delta;
     };
 
@@ -69,7 +69,7 @@ namespace GAME
     struct MemoryFrame
     {
       DeltaPairVector buffer;
-      uint64_t        frameHistoryCount;
+      uint64_t frameHistoryCount;
     };
 
     std::deque<MemoryFrame> m_rewindBuffer;

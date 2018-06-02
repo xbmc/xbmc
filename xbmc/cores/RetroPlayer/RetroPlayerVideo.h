@@ -45,7 +45,7 @@ namespace RETRO
     // implementation of IGameVideoCallback
     bool OpenPixelStream(AVPixelFormat pixfmt, unsigned int width, unsigned int height, unsigned int orientationDeg) override;
     bool OpenEncodedStream(AVCodecID codec) override;
-    void AddData(const uint8_t* data, unsigned int size) override;
+    void AddData(const uint8_t* data, size_t size) override;
     void CloseStream() override;
 
   private:

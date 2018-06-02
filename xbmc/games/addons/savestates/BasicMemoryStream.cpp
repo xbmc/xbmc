@@ -28,7 +28,7 @@ CBasicMemoryStream::CBasicMemoryStream()
   Reset();
 }
 
-void CBasicMemoryStream::Init(size_t frameSize, size_t maxFrameCount)
+void CBasicMemoryStream::Init(size_t frameSize, uint64_t maxFrameCount)
 {
   Reset();
 

@@ -61,14 +61,14 @@ void CDeltaPairMemoryStream::SubmitFrameInternal()
     CullPastFrames(1);
 }
 
-unsigned int CDeltaPairMemoryStream::PastFramesAvailable() const
+uint64_t CDeltaPairMemoryStream::PastFramesAvailable() const
 {
-  return static_cast<unsigned int>(m_rewindBuffer.size());
+  return static_cast<uint64_t>(m_rewindBuffer.size());
 }
 
-unsigned int CDeltaPairMemoryStream::RewindFrames(unsigned int frameCount)
+uint64_t CDeltaPairMemoryStream::RewindFrames(uint64_t frameCount)
 {
-  unsigned int rewound;
+  uint64_t rewound;
 
   for (rewound = 0; rewound < frameCount; rewound++)
   {
@@ -94,9 +94,9 @@ unsigned int CDeltaPairMemoryStream::RewindFrames(unsigned int frameCount)
   return rewound;
 }
 
-void CDeltaPairMemoryStream::CullPastFrames(unsigned int frameCount)
+void CDeltaPairMemoryStream::CullPastFrames(uint64_t frameCount)
 {
-  for (unsigned int removedCount = 0; removedCount < frameCount; removedCount++)
+  for (uint64_t removedCount = 0; removedCount < frameCount; removedCount++)
   {
     if (m_rewindBuffer.empty())
     {

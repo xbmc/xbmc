@@ -35,25 +35,25 @@ namespace GAME
     virtual ~CBasicMemoryStream() = default;
 
     // implementation of IMemoryStream
-    virtual void           Init(size_t frameSize, size_t maxFrameCount) override;
-    virtual void           Reset() override;
-    virtual size_t         FrameSize() const override                      { return m_frameSize; }
-    virtual unsigned int   MaxFrameCount() const override                  { return 1; }
-    virtual void           SetMaxFrameCount(size_t maxFrameCount) override { }
-    virtual uint8_t*       BeginFrame() override;
-    virtual void           SubmitFrame() override;
+    virtual void Init(size_t frameSize, uint64_t maxFrameCount) override;
+    virtual void Reset() override;
+    virtual size_t FrameSize() const override { return m_frameSize; }
+    virtual uint64_t MaxFrameCount() const override { return 1; }
+    virtual void SetMaxFrameCount(uint64_t maxFrameCount) override { }
+    virtual uint8_t* BeginFrame() override;
+    virtual void SubmitFrame() override;
     virtual const uint8_t* CurrentFrame() const override;
-    virtual unsigned int   FutureFramesAvailable() const override          { return 0; }
-    virtual unsigned int   AdvanceFrames(unsigned int frameCount) override { return 0; }
-    virtual unsigned int   PastFramesAvailable() const override            { return 0; }
-    virtual unsigned int   RewindFrames(unsigned int frameCount) override  { return 0; }
-    virtual uint64_t       GetFrameCounter() const override                { return 0; }
-    virtual void           SetFrameCounter(uint64_t frameCount) override   { };
+    virtual uint64_t FutureFramesAvailable() const override { return 0; }
+    virtual uint64_t AdvanceFrames(uint64_t frameCount) override { return 0; }
+    virtual uint64_t PastFramesAvailable() const override { return 0; }
+    virtual uint64_t RewindFrames(uint64_t frameCount) override { return 0; }
+    virtual uint64_t GetFrameCounter() const override { return 0; }
+    virtual void SetFrameCounter(uint64_t frameCount) override { };
 
   private:
-    size_t                     m_frameSize;
+    size_t m_frameSize;
     std::unique_ptr<uint8_t[]> m_frameBuffer;
-    bool                       m_bHasFrame;
+    bool m_bHasFrame;
   };
 }
 }
