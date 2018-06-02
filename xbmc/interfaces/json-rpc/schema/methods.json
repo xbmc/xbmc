@@ -639,16 +639,6 @@
       }
     }
   },
-  "AudioLibrary.GetProperties": {
-    "type": "method",
-    "description": "Retrieves the values of the music library properties",
-    "transport": "Response",
-    "permission": "ReadData",
-    "params": [      
-      { "name": "properties", "type": "array", "uniqueItems": true, "required": true, "items": { "$ref": "Audio.Property.Name" } }
-    ],
-    "returns":  { "$ref": "Audio.Property.Value", "required": true }
-  },
   "Files.SetFileDetails": {
     "type": "method",
     "description": "Update the given specific file with the given details",
@@ -662,6 +652,16 @@
       { "name": "resume", "type": [ "null", { "$ref": "Video.Resume", "required": true } ], "default": null }
     ],
     "returns": "string"
+  },
+  "AudioLibrary.GetProperties": {
+    "type": "method",
+    "description": "Retrieves the values of the music library properties",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [      
+      { "name": "properties", "type": "array", "uniqueItems": true, "required": true, "items": { "$ref": "Audio.Property.Name" } }
+    ],
+    "returns":  { "$ref": "Audio.Property.Value", "required": true }
   },
   "AudioLibrary.GetArtists": {
     "type": "method",
@@ -808,8 +808,9 @@
           { "$ref": "List.Filter.Songs" }
         ]
       },
-      { "name": "includesingles", "type": "boolean", "default": true },
-      { "name": "allroles", "type": "boolean", "default":false, "description": "Whether or not to include all roles when filtering by artist, rather than default of excluding other contributors. When true it overrides any role filter value." }
+      { "name": "includesingles", "type": "boolean", "default": true, "description": "Only songs from albums are returned when false, but overidden when singlesonly parameter is true" },
+      { "name": "allroles", "type": "boolean", "default":false, "description": "Whether or not to include all roles when filtering by artist, rather than default of excluding other contributors. When true it overrides any role filter value." },
+      { "name": "singlesonly", "type": "boolean", "default": false, "description": "Only singles are returned when true, and overides includesingles parameter" }
     ],
     "returns": {
       "type": "object",
