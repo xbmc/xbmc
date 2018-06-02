@@ -346,34 +346,32 @@ bool CGameClient::InitializeGameplay(const std::string& gamePath, IGameAudioCall
 
 bool CGameClient::LoadGameInfo()
 {
-  // Get information about system audio/video timings and geometry
+  // Get information about system timings
   // Can be called only after retro_load_game()
-  game_system_av_info av_info = { };
+  game_system_timing timingInfo = { };
 
   bool bSuccess = false;
-  try { bSuccess = LogError(m_struct.toAddon.GetGameInfo(&av_info), "GetGameInfo()"); }
-  catch (...) { LogException("GetGameInfo()"); }
+  try { bSuccess = LogError(m_struct.toAddon.GetGameTiming(&timingInfo), "GetGameTiming()"); }
+  catch (...) { LogException("GetGameTiming()"); }
 
   if (!bSuccess)
+  {
+    CLog::Log(LOGERROR, "GameClient: Failed to get timing info");
     return false;
+  }
 
   GAME_REGION region;
   try { region = m_struct.toAddon.GetRegion(); }
   catch (...) { LogException("GetRegion()"); return false; }
 
   CLog::Log(LOGINFO, "GAME: ---------------------------------------");
-  CLog::Log(LOGINFO, "GAME: Base Width:   %u", av_info.geometry.base_width);
-  CLog::Log(LOGINFO, "GAME: Base Height:  %u", av_info.geometry.base_height);
-  CLog::Log(LOGINFO, "GAME: Max Width:    %u", av_info.geometry.max_width);
-  CLog::Log(LOGINFO, "GAME: Max Height:   %u", av_info.geometry.max_height);
-  CLog::Log(LOGINFO, "GAME: Aspect Ratio: %f", av_info.geometry.aspect_ratio);
-  CLog::Log(LOGINFO, "GAME: FPS:          %f", av_info.timing.fps);
-  CLog::Log(LOGINFO, "GAME: Sample Rate:  %f", av_info.timing.sample_rate);
-  CLog::Log(LOGINFO, "GAME: Region:       %s", CGameClientTranslator::TranslateRegion(region));
+  CLog::Log(LOGINFO, "GAME: FPS:         %f", timingInfo.fps);
+  CLog::Log(LOGINFO, "GAME: Sample Rate: %f", timingInfo.sample_rate);
+  CLog::Log(LOGINFO, "GAME: Region:      %s", CGameClientTranslator::TranslateRegion(region));
   CLog::Log(LOGINFO, "GAME: ---------------------------------------");
 
-  m_framerate = av_info.timing.fps;
-  m_samplerate = av_info.timing.sample_rate;
+  m_framerate = timingInfo.fps;
+  m_samplerate = timingInfo.sample_rate;
   m_region = region;
 
   return true;

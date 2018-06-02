@@ -419,27 +419,10 @@ typedef struct game_input_event
   };
 } ATTRIBUTE_PACKED game_input_event;
 
-struct game_geometry
-{
-  unsigned base_width;          // Nominal video width of game
-  unsigned base_height;         // Nominal video height of game
-  unsigned max_width;           // Maximum possible width of game
-  unsigned max_height;          // Maximum possible height of game
-  float    aspect_ratio;        // Nominal aspect ratio of game. If aspect_ratio is <= 0.0,
-                                // an aspect ratio of base_width / base_height is assumed.
-                                // A frontend could override this setting if desired.
-};
-
 struct game_system_timing
 {
   double fps;                   // FPS of video content.
   double sample_rate;           // Sampling rate of audio.
-};
-
-struct game_system_av_info
-{
-  struct game_geometry geometry;
-  struct game_system_timing timing;
 };
 
 typedef void (*game_proc_address_t)(void);
@@ -540,7 +523,7 @@ typedef struct KodiToAddonFuncTable_Game
   GAME_ERROR  (__cdecl* LoadGameSpecial)(SPECIAL_GAME_TYPE, const char**, size_t);
   GAME_ERROR  (__cdecl* LoadStandalone)(void);
   GAME_ERROR  (__cdecl* UnloadGame)(void);
-  GAME_ERROR  (__cdecl* GetGameInfo)(game_system_av_info*);
+  GAME_ERROR  (__cdecl* GetGameTiming)(game_system_timing*);
   GAME_REGION (__cdecl* GetRegion)(void);
   bool        (__cdecl* RequiresGameLoop)(void);
   GAME_ERROR  (__cdecl* RunFrame)(void);
