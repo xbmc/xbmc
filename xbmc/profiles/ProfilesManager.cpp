@@ -258,7 +258,7 @@ void CProfilesManager::Clear()
   m_profiles.clear();
 }
 
-void CProfilesManager::PrepareLoadProfile(size_t profileIndex)
+void CProfilesManager::PrepareLoadProfile(unsigned int profileIndex)
 {
   CContextMenuManager &contextMenuManager = CServiceBroker::GetContextMenuManager();
   ADDON::CServiceAddonManager &serviceAddons = CServiceBroker::GetServiceAddons();
@@ -276,7 +276,7 @@ void CProfilesManager::PrepareLoadProfile(size_t profileIndex)
     networkManager.NetworkMessage(CNetwork::SERVICES_DOWN, 1);
 }
 
-bool CProfilesManager::LoadProfile(size_t index)
+bool CProfilesManager::LoadProfile(unsigned int index)
 {
   PrepareLoadProfile(index);
 
@@ -462,7 +462,7 @@ void CProfilesManager::LogOff()
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(33102), g_localizeStrings.Get(33100));
 }
 
-bool CProfilesManager::DeleteProfile(size_t index)
+bool CProfilesManager::DeleteProfile(unsigned int index)
 {
   CSingleLock lock(m_critical);
   const CProfile *profile = GetProfile(index);
@@ -548,7 +548,7 @@ const CProfile& CProfilesManager::GetCurrentProfile() const
   return EmptyProfile;
 }
 
-const CProfile* CProfilesManager::GetProfile(size_t index) const
+const CProfile* CProfilesManager::GetProfile(unsigned int index) const
 {
   CSingleLock lock(m_critical);
   if (index < m_profiles.size())
@@ -557,7 +557,7 @@ const CProfile* CProfilesManager::GetProfile(size_t index) const
   return NULL;
 }
 
-CProfile* CProfilesManager::GetProfile(size_t index)
+CProfile* CProfilesManager::GetProfile(unsigned int index)
 {
   CSingleLock lock(m_critical);
   if (index < m_profiles.size())
@@ -569,7 +569,7 @@ CProfile* CProfilesManager::GetProfile(size_t index)
 int CProfilesManager::GetProfileIndex(const std::string &name) const
 {
   CSingleLock lock(m_critical);
-  for (size_t i = 0; i < m_profiles.size(); i++)
+  for (int i = 0; i < static_cast<int>(m_profiles.size()); i++)
   {
     if (StringUtils::EqualsNoCase(m_profiles[i].getName(), name))
       return i;
@@ -609,7 +609,7 @@ void CProfilesManager::LoadMasterProfileForLogin()
   }
 }
 
-bool CProfilesManager::GetProfileName(const size_t profileId, std::string& name) const
+bool CProfilesManager::GetProfileName(const unsigned int profileId, std::string& name) const
 {
   CSingleLock lock(m_critical);
   const CProfile *profile = GetProfile(profileId);
@@ -718,7 +718,7 @@ void CProfilesManager::OnSettingAction(std::shared_ptr<const CSetting> setting)
     GetEventLog().ShowFullEventLog();
 }
 
-void CProfilesManager::SetCurrentProfileId(size_t profileId)
+void CProfilesManager::SetCurrentProfileId(unsigned int profileId)
 {
   CSingleLock lock(m_critical);
   m_currentProfile = profileId;
