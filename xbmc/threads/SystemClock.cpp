@@ -20,15 +20,8 @@
 
 #include <stdint.h>
 
-#if   defined(TARGET_DARWIN)
-#include <mach/mach_time.h>
-#include <CoreVideo/CVHostTime.h>
-#elif defined(TARGET_WINDOWS)
-#include <windows.h>
-#else
-#include <time.h>
-#endif
 #include "SystemClock.h"
+#include "utils/TimeUtils.h"
 
 namespace XbmcThreads
 {
@@ -37,19 +30,9 @@ namespace XbmcThreads
     uint64_t now_time;
     static uint64_t start_time = 0;
     static bool start_time_set = false;
-#if defined(TARGET_DARWIN)
-    now_time = CVGetCurrentHostTime() *  1000 / CVGetHostClockFrequency();
-#elif defined(TARGET_WINDOWS)
-    now_time = GetTickCount64();
-#else
-    struct timespec ts = {};
-#ifdef CLOCK_MONOTONIC_RAW
-    clock_gettime(CLOCK_MONOTONIC_RAW, &ts);
-#else
-    clock_gettime(CLOCK_MONOTONIC, &ts);
-#endif // CLOCK_MONOTONIC_RAW
-    now_time = (ts.tv_sec * 1000) + (ts.tv_nsec / 1000000);
-#endif
+
+    now_time = static_cast<uint64_t>(1000 * CurrentHostCounter() / CurrentHostFrequency());
+
     if (!start_time_set)
     {
       start_time = now_time;
