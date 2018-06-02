@@ -51,6 +51,8 @@
 #define SETTING_VIDEO_NONLIN_STRETCH      "video.nonlinearstretch"
 #define SETTING_VIDEO_POSTPROCESS         "video.postprocess"
 #define SETTING_VIDEO_VERTICAL_SHIFT      "video.verticalshift"
+#define SETTING_VIDEO_TONEMAP_METHOD      "video.tonemapmethod"
+#define SETTING_VIDEO_TONEMAP_PARAM       "video.tonemapparam"
 
 #define SETTING_VIDEO_VDPAU_NOISE         "vdpau.noise"
 #define SETTING_VIDEO_VDPAU_SHARPNESS     "vdpau.sharpness"
@@ -175,6 +177,18 @@ void CGUIDialogVideoSettings::OnSettingChanged(std::shared_ptr<const CSetting> s
   {
     CVideoSettings vs = g_application.GetAppPlayer().GetVideoSettings();
     vs.m_Sharpness = static_cast<float>(std::static_pointer_cast<const CSettingNumber>(setting)->GetValue());
+    g_application.GetAppPlayer().SetVideoSettings(vs);
+  }
+  else if (settingId == SETTING_VIDEO_TONEMAP_METHOD)
+  {
+    CVideoSettings vs = g_application.GetAppPlayer().GetVideoSettings();
+    vs.m_ToneMapMethod = static_cast<int>(std::static_pointer_cast<const CSettingInt>(setting)->GetValue());
+    g_application.GetAppPlayer().SetVideoSettings(vs);
+  }
+  else if (settingId == SETTING_VIDEO_TONEMAP_PARAM)
+  {
+    CVideoSettings vs = g_application.GetAppPlayer().GetVideoSettings();
+    vs.m_ToneMapParam = static_cast<float>(std::static_pointer_cast<const CSettingNumber>(setting)->GetValue());
     g_application.GetAppPlayer().SetVideoSettings(vs);
   }
   else if (settingId == SETTING_VIDEO_STEREOSCOPICMODE)
@@ -386,6 +400,16 @@ void CGUIDialogVideoSettings::InitializeSettings()
     AddSlider(groupVideo, SETTING_VIDEO_VDPAU_SHARPNESS, 16313, SettingLevel::Basic, videoSettings.m_Sharpness, "%2.2f", -1.0f, 0.02f, 1.0f, 16313, usePopup);
   if (g_application.GetAppPlayer().Supports(RENDERFEATURE_NONLINSTRETCH))
     AddToggle(groupVideo, SETTING_VIDEO_NONLIN_STRETCH, 659, SettingLevel::Basic, videoSettings.m_CustomNonLinStretch);
+
+  // tone mapping
+  if (g_application.GetAppPlayer().Supports(RENDERFEATURE_TONEMAP))
+  {
+    entries.clear();
+    entries.push_back(std::make_pair(36554, VS_TONEMAPMETHOD_OFF));
+    entries.push_back(std::make_pair(36555, VS_TONEMAPMETHOD_REINHARD));
+    AddSpinner(groupVideo, SETTING_VIDEO_TONEMAP_METHOD, 36553, SettingLevel::Basic, videoSettings.m_ToneMapMethod, entries);
+    AddSlider(groupVideo, SETTING_VIDEO_TONEMAP_PARAM, 36556, SettingLevel::Basic, videoSettings.m_ToneMapParam, "%2.2f", 0.1f, 0.1f, 5.0f, 36556, usePopup);
+  }
 
   // stereoscopic settings
   entries.clear();

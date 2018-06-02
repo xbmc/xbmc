@@ -102,7 +102,8 @@ void CVideoDatabase::CreateTables()
               "SubtitleDelay float, SubtitlesOn bool, Brightness float, Contrast float, Gamma float,"
               "VolumeAmplification float, AudioDelay float, ResumeTime integer,"
               "Sharpness float, NoiseReduction float, NonLinStretch bool, PostProcess bool,"
-              "ScalingMethod integer, DeinterlaceMode integer, StereoMode integer, StereoInvert bool, VideoStream integer)\n");
+              "ScalingMethod integer, DeinterlaceMode integer, StereoMode integer, StereoInvert bool, VideoStream integer,"
+              "TonemapMethod integer, TonemapParam float)\n");
 
   CLog::Log(LOGINFO, "create stacktimes table");
   m_pDS->exec("CREATE TABLE stacktimes (idFile integer, times text)\n");
@@ -4287,7 +4288,15 @@ bool CVideoDatabase::GetVideoSettings(int idFile, CVideoSettings &settings)
       settings.m_StereoInvert = m_pDS->fv("StereoInvert").get_asBool();
       settings.m_SubtitleCached = false;
       settings.m_VideoStream = m_pDS->fv("VideoStream").get_asInt();
+      settings.m_ToneMapMethod = m_pDS->fv("TonemapMethod").get_asInt();
+      settings.m_ToneMapParam = m_pDS->fv("TonemapParam").get_asFloat();
       m_pDS->close();
+
+      if (settings.m_ToneMapParam == 0.0)
+      {
+        settings.m_ToneMapMethod = VS_TONEMAPMETHOD_REINHARD;
+        settings.m_ToneMapParam = 1.0;
+      }
       return true;
     }
     m_pDS->close();
@@ -4329,8 +4338,10 @@ void CVideoDatabase::SetVideoSettings(int idFile, const CVideoSettings &setting)
                        setting.m_Brightness, setting.m_Contrast, setting.m_Gamma, setting.m_VolumeAmplification, setting.m_AudioDelay,
                        setting.m_Sharpness,setting.m_NoiseReduction,setting.m_CustomNonLinStretch,setting.m_PostProcess,setting.m_ScalingMethod);
       std::string strSQL2;
-      strSQL2=PrepareSQL("ResumeTime=%i,StereoMode=%i,StereoInvert=%i, VideoStream=%i where idFile=%i\n", setting.m_ResumeTime, setting.m_StereoMode,
-                        setting.m_StereoInvert, setting.m_VideoStream, idFile);
+
+      strSQL2=PrepareSQL("ResumeTime=%i,StereoMode=%i,StereoInvert=%i,VideoStream=%i,TonemapMethod=%i,TonemapParam=%f where idFile=%i\n",
+                         setting.m_ResumeTime, setting.m_StereoMode, setting.m_StereoInvert, setting.m_VideoStream,
+                         setting.m_ToneMapMethod, setting.m_ToneMapParam, idFile);
       strSQL += strSQL2;
       m_pDS->exec(strSQL);
       return ;
@@ -4342,15 +4353,15 @@ void CVideoDatabase::SetVideoSettings(int idFile, const CVideoSettings &setting)
                 "AudioStream,SubtitleStream,SubtitleDelay,SubtitlesOn,Brightness,"
                 "Contrast,Gamma,VolumeAmplification,AudioDelay,"
                 "ResumeTime,"
-                "Sharpness,NoiseReduction,NonLinStretch,PostProcess,ScalingMethod,StereoMode,StereoInvert,VideoStream) "
+                "Sharpness,NoiseReduction,NonLinStretch,PostProcess,ScalingMethod,StereoMode,StereoInvert,VideoStream,TonemapMethod,TonemapParam) "
               "VALUES ";
-      strSQL += PrepareSQL("(%i,%i,%i,%f,%f,%f,%i,%i,%f,%i,%f,%f,%f,%f,%f,%i,%f,%f,%i,%i,%i,%i,%i,%i)",
+      strSQL += PrepareSQL("(%i,%i,%i,%f,%f,%f,%i,%i,%f,%i,%f,%f,%f,%f,%f,%i,%f,%f,%i,%i,%i,%i,%i,%i,%i,%f)",
                            idFile, setting.m_InterlaceMethod, setting.m_ViewMode, setting.m_CustomZoomAmount, setting.m_CustomPixelRatio, setting.m_CustomVerticalShift,
                            setting.m_AudioStream, setting.m_SubtitleStream, setting.m_SubtitleDelay, setting.m_SubtitleOn, setting.m_Brightness,
                            setting.m_Contrast, setting.m_Gamma, setting.m_VolumeAmplification, setting.m_AudioDelay,
                            setting.m_ResumeTime,
                            setting.m_Sharpness, setting.m_NoiseReduction, setting.m_CustomNonLinStretch, setting.m_PostProcess, setting.m_ScalingMethod,
-                           setting.m_StereoMode, setting.m_StereoInvert, setting.m_VideoStream);
+                           setting.m_StereoMode, setting.m_StereoInvert, setting.m_VideoStream, setting.m_ToneMapMethod, setting.m_ToneMapParam);
       m_pDS->exec(strSQL);
     }
   }
@@ -5286,11 +5297,17 @@ void CVideoDatabase::UpdateTables(int iVersion)
     m_pDS->exec("DROP TABLE settings");
     m_pDS->exec("ALTER TABLE settingsnew RENAME TO settings");
   }
+
+  if (iVersion < 110)
+  {
+    m_pDS->exec("ALTER TABLE settings ADD TonemapMethod integer");
+    m_pDS->exec("ALTER TABLE settings ADD TonemapParam float");
+  }
 }
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 109;
+  return 110;
 }
 
 bool CVideoDatabase::LookupByFolders(const std::string &path, bool shows)

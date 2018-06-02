@@ -176,6 +176,8 @@ bool BaseYUV2RGBGLSLShader::OnEnabled()
     else if (m_hasDisplayMetadata && m_displayMetadata.has_luminance)
       param = log10(100) / log10(m_displayMetadata.max_luminance.num/m_displayMetadata.max_luminance.den);
 
+    param *= m_toneMappingParam;
+
     float coefs[3];
     CConvertMatrix::GetRGBYuvCoefs(AVColorSpace::AVCOL_SPC_BT709, coefs);
     glUniform3f(m_hCoefsDst, coefs[0], coefs[1], coefs[2]);

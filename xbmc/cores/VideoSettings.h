@@ -69,6 +69,13 @@ enum ESCALINGMETHOD
   VS_SCALINGMETHOD_MAX // do not use and keep as last enum value.
 };
 
+enum ETONEMAPMETHOD
+{
+  VS_TONEMAPMETHOD_OFF=0,
+  VS_TONEMAPMETHOD_REINHARD,
+  VS_TONEMAPMETHOD_MAX
+};
+
 enum ViewMode
 {
   ViewModeNormal = 0,
@@ -115,6 +122,8 @@ public:
   int m_StereoMode;
   bool m_StereoInvert;
   int m_VideoStream;
+  int m_ToneMapMethod = VS_TONEMAPMETHOD_REINHARD;
+  float m_ToneMapParam = 1.0;
 };
 
 class CCriticalSection;

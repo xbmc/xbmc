@@ -125,6 +125,8 @@ bool CMediaSettings::Load(const TiXmlNode *settings)
     if (!XMLUtils::GetInt(pElement, "stereomode", m_defaultVideoSettings.m_StereoMode))
       m_defaultVideoSettings.m_StereoMode = 0;
 
+    m_defaultVideoSettings.m_ToneMapMethod = 1;
+    m_defaultVideoSettings.m_ToneMapParam = 1.0f;
     m_defaultVideoSettings.m_SubtitleCached = false;
   }
 

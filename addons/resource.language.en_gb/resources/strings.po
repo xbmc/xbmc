@@ -19806,7 +19806,31 @@ msgctxt "#36552"
 msgid "Defines the number of presentation buffers used by the graphics driver. Select 2 if the driver uses double buffering or 3 for triple buffering."
 msgstr ""
 
-#empty strings from id 36553 to 36559
+#. label of a setting, allowing to specify tonemap method
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
+msgctxt "#36553"
+msgid "Tone mapping"
+msgstr ""
+
+#. label of a setting, tone mapping method
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
+msgctxt "#36554"
+msgid "off"
+msgstr ""
+
+#. label of a setting, tone mapping method
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
+msgctxt "#36555"
+msgid "Reinhard"
+msgstr ""
+
+#. label of a setting, allowing to specify tone mapping parameter
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
+msgctxt "#36556"
+msgid "Tone mapping parameter"
+msgstr ""
+
+#empty strings from id 36557 to 36559
 
 #: system/settings/settings.xml
 msgctxt "#36560"
