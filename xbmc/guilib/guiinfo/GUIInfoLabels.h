@@ -360,6 +360,8 @@
 
 #define SKIN_BOOL                   600
 #define SKIN_STRING                 601
+#define SKIN_STRING_IS_EQUAL        602
+#define SKIN_STRING_NOT_EMPTY       603
 #define SKIN_THEME                  604
 #define SKIN_COLOUR_THEME           605
 #define SKIN_HAS_THEME              606
