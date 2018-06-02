@@ -878,6 +878,8 @@ void CRenderManager::UpdateResolution()
         RESOLUTION res = CResolutionUtils::ChooseBestResolution(m_fps, m_width, !m_stereomode.empty());
         CServiceBroker::GetWinSystem()->GetGfxContext().SetVideoResolution(res, false);
         UpdateLatencyTweak();
+        if (m_pRenderer)
+          m_pRenderer->Update();
       }
       m_bTriggerUpdateResolution = false;
       m_playerPort->VideoParamsChange();
