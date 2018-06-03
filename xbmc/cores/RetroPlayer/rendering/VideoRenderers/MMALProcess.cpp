@@ -20,8 +20,8 @@
 
 #include "MMALProcess.h"
 #include "MMALRenderer.h"
+#include "cores/RetroPlayer/buffers/IRenderBufferPool.h"
 #include "cores/RetroPlayer/process/rbpi/RenderBufferMMAL.h"
-#include "cores/RetroPlayer/process/IRenderBufferPool.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 

@@ -37,7 +37,6 @@ namespace GAME
   public:
     virtual ~IGameAudioCallback() = default;
 
-    virtual unsigned int NormalizeSamplerate(unsigned int samplerate) const = 0;
     virtual bool OpenPCMStream(AEDataFormat format, unsigned int samplerate, const CAEChannelInfo& channelLayout) = 0;
     virtual bool OpenEncodedStream(AVCodecID codec, unsigned int samplerate, const CAEChannelInfo& channelLayout) = 0;
     virtual void AddData(const uint8_t* data, size_t size) = 0;

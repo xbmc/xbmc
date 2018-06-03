@@ -46,45 +46,12 @@ CRetroPlayerAudio::~CRetroPlayerAudio()
   CloseStream();
 }
 
-unsigned int CRetroPlayerAudio::NormalizeSamplerate(unsigned int samplerate) const
-{
-  //! @todo List comes from AESinkALSA.cpp many moons ago
-  static unsigned int sampleRateList[] = { 5512, 8000, 11025, 16000, 22050, 32000, 44100, 48000, 0 };
-
-  for (unsigned int *rate = sampleRateList; ; rate++)
-  {
-    const unsigned int thisValue = *rate;
-    const unsigned int nextValue = *(rate + 1);
-
-    if (nextValue == 0)
-    {
-      // Reached the end of our list
-      return thisValue;
-    }
-
-    if (samplerate < (thisValue + nextValue) / 2)
-    {
-      // samplerate is between this rate and the next, so use this rate
-      return thisValue;
-    }
-  }
-
-  return samplerate; // Shouldn't happen
-}
-
 bool CRetroPlayerAudio::OpenPCMStream(AEDataFormat format, unsigned int samplerate, const CAEChannelInfo& channelLayout)
 {
   if (m_pAudioStream != nullptr)
     CloseStream();
 
   CLog::Log(LOGINFO, "RetroPlayer[AUDIO]: Creating audio stream, sample rate = %d", samplerate);
-
-  // Resampling is not supported
-  if (NormalizeSamplerate(samplerate) != samplerate)
-  {
-    CLog::Log(LOGERROR, "RetroPlayer[AUDIO]: Resampling to %d not supported", NormalizeSamplerate(samplerate));
-    return false;
-  }
 
   AEAudioFormat audioFormat;
   audioFormat.m_dataFormat = format;

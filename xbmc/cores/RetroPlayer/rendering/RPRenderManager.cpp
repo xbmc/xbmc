@@ -22,12 +22,12 @@
 #include "RenderContext.h"
 #include "RenderSettings.h"
 #include "RenderTranslator.h"
+#include "cores/RetroPlayer/buffers/IRenderBuffer.h"
+#include "cores/RetroPlayer/buffers/IRenderBufferPool.h"
+#include "cores/RetroPlayer/buffers/RenderBufferManager.h"
 #include "cores/RetroPlayer/guibridge/GUIGameSettings.h"
 #include "cores/RetroPlayer/guibridge/GUIRenderTargetFactory.h"
 #include "cores/RetroPlayer/guibridge/IGUIRenderSettings.h"
-#include "cores/RetroPlayer/process/IRenderBuffer.h"
-#include "cores/RetroPlayer/process/IRenderBufferPool.h"
-#include "cores/RetroPlayer/process/RenderBufferManager.h"
 #include "cores/RetroPlayer/process/RPProcessInfo.h"
 #include "cores/RetroPlayer/rendering/VideoRenderers/RPBaseRenderer.h"
 #include "utils/TransformMatrix.h"
@@ -40,6 +40,7 @@ extern "C" {
 #include "libswscale/swscale.h"
 }
 
+#include <algorithm>
 #include <cstring>
 
 using namespace KODI;
@@ -186,9 +187,6 @@ void CRPRenderManager::FrameMove()
 
 void CRPRenderManager::Flush()
 {
-  for (const auto &renderer : m_renderers)
-    renderer->Flush();
-
   m_processInfo.GetBufferManager().FlushPools();
 }
 
@@ -478,32 +476,49 @@ void CRPRenderManager::UpdateResolution()
 
 void CRPRenderManager::CopyFrame(IRenderBuffer *renderBuffer, const uint8_t *data, size_t size, AVPixelFormat format)
 {
-  if (renderBuffer->GetFormat() == format)
-    std::memcpy(renderBuffer->GetMemory(), data, size);
-  else
+  const uint8_t *source = data;
+  uint8_t *target = renderBuffer->GetMemory();
+
+  if (target != nullptr)
   {
-    SwsContext *&scalerContext = m_scalers[renderBuffer->GetFormat()];
-    scalerContext = sws_getCachedContext(scalerContext,
-                                         m_width, m_height, format,
-                                         renderBuffer->GetWidth(), renderBuffer->GetHeight(), renderBuffer->GetFormat(),
-                                         SWS_FAST_BILINEAR, nullptr, nullptr, nullptr);
+    const unsigned int sourceStride = static_cast<unsigned int>(size / m_height);
+    const unsigned int targetStride = static_cast<unsigned int>(renderBuffer->GetFrameSize() / renderBuffer->GetHeight());
 
-    if (scalerContext != nullptr)
+    if (m_format == renderBuffer->GetFormat())
     {
-      uint8_t *source = const_cast<uint8_t*>(data);
-      const int sourceStride = static_cast<int>(size / m_height);
+      if (sourceStride == targetStride)
+        std::memcpy(target, source, size);
+      else
+      {
+        const unsigned int widthBytes = CRenderTranslator::TranslateWidthToBytes(m_width, m_format);
+        if (widthBytes > 0)
+        {
+          for (unsigned int i = 0; i < m_height; i++)
+            std::memcpy(target + targetStride * i, source + sourceStride * i, widthBytes);
+        }
+      }
+    }
+    else
+    {
+      SwsContext *&scalerContext = m_scalers[renderBuffer->GetFormat()];
+      scalerContext = sws_getCachedContext(scalerContext,
+                                           m_width, m_height, format,
+                                           renderBuffer->GetWidth(), renderBuffer->GetHeight(), renderBuffer->GetFormat(),
+                                           SWS_FAST_BILINEAR, nullptr, nullptr, nullptr);
 
-      uint8_t *target = renderBuffer->GetMemory();
-      const int targetStride = static_cast<int>(renderBuffer->GetFrameSize() / renderBuffer->GetHeight());
+      if (scalerContext != nullptr)
+      {
+        uint8_t* src[] =       { const_cast<uint8_t*>(source),    nullptr,   nullptr,   nullptr };
+        int      srcStride[] = { static_cast<int>(sourceStride),  0,         0,         0       };
+        uint8_t *dst[] =       { target,                          nullptr,   nullptr,   nullptr };
+        int      dstStride[] = { static_cast<int>(targetStride),  0,         0,         0       };
 
-      uint8_t* src[] =       { source,        nullptr,   nullptr,   nullptr };
-      int      srcStride[] = { sourceStride,  0,         0,         0       };
-      uint8_t *dst[] =       { target,        nullptr,   nullptr,   nullptr };
-      int      dstStride[] = { targetStride,  0,         0,         0       };
-
-      sws_scale(scalerContext, src, srcStride, 0, m_height, dst, dstStride);
+        sws_scale(scalerContext, src, srcStride, 0, m_height, dst, dstStride);
+      }
     }
   }
+
+  renderBuffer->ReleaseMemory();
 }
 
 CRenderVideoSettings CRPRenderManager::GetEffectiveSettings(const IGUIRenderSettings *settings) const

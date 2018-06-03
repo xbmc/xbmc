@@ -20,8 +20,8 @@
 #pragma once
 
 #include "RPBaseRenderer.h"
-#include "cores/RetroPlayer/process/BaseRenderBufferPool.h"
-#include "cores/RetroPlayer/process/RenderBufferSysMem.h"
+#include "cores/RetroPlayer/buffers/video/RenderBufferSysMem.h"
+#include "cores/RetroPlayer/buffers/BaseRenderBufferPool.h"
 #include "cores/RetroPlayer/process/RPProcessInfo.h"
 
 #include "system_gl.h"

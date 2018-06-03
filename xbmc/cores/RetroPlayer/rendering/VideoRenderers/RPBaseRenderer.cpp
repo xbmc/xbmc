@@ -19,8 +19,8 @@
  */
 
 #include "RPBaseRenderer.h"
-#include "cores/RetroPlayer/process/IRenderBuffer.h"
-#include "cores/RetroPlayer/process/IRenderBufferPool.h"
+#include "cores/RetroPlayer/buffers/IRenderBuffer.h"
+#include "cores/RetroPlayer/buffers/IRenderBufferPool.h"
 #include "cores/RetroPlayer/rendering/RenderContext.h"
 #include "settings/Settings.h"
 #include "utils/log.h"

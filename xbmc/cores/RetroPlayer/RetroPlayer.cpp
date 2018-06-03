@@ -35,7 +35,6 @@
 #include "games/addons/savestates/Savestate.h"
 #include "games/addons/savestates/SavestateUtils.h"
 #include "games/addons/GameClient.h"
-#include "games/addons/GameClientTiming.h" //! @todo
 #include "games/dialogs/osd/DialogGameVideoSelect.h"
 #include "games/tags/GameInfoTag.h"
 #include "games/GameServices.h"
@@ -191,7 +190,7 @@ bool CRetroPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options
     m_callback.OnAVStarted(fileCopy);
     if (!bStandalone)
       m_autoSave.reset(new CRetroPlayerAutoSave(*m_gameClient));
-    m_processInfo->SetVideoFps(static_cast<float>(m_gameClient->Timing().GetFrameRate()));
+    m_processInfo->SetVideoFps(static_cast<float>(m_gameClient->GetFrameRate()));
   }
   else
   {

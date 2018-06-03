@@ -19,7 +19,7 @@
  */
 
 #include "RPRendererGuiTexture.h"
-#include "cores/RetroPlayer/process/RenderBufferGuiTexture.h"
+#include "cores/RetroPlayer/buffers/video/RenderBufferGuiTexture.h"
 #include "cores/RetroPlayer/rendering/RenderContext.h"
 #include "cores/RetroPlayer/rendering/RenderVideoSettings.h"
 

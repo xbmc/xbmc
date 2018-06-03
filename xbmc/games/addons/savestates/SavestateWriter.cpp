@@ -45,7 +45,7 @@ bool CSavestateWriter::Initialize(const CGameClient* gameClient, uint64_t frameH
   m_savestate.Reset();
   m_fps = 0.0;
 
-  m_fps = gameClient->Timing().GetFrameRate();
+  m_fps = gameClient->GetFrameRate();
 
   CDateTime now = CDateTime::GetCurrentDateTime();
   std::string label = now.GetAsLocalizedDateTime();

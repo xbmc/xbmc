@@ -20,6 +20,8 @@
 
 #include "RenderTranslator.h"
 
+#include <stdint.h>
+
 using namespace KODI;
 using namespace RETRO;
 
@@ -53,4 +55,32 @@ const char *CRenderTranslator::TranslateScalingMethod(ESCALINGMETHOD scalingMeth
   }
 
   return "";
+}
+
+unsigned int CRenderTranslator::TranslateWidthToBytes(unsigned int width, AVPixelFormat format)
+{
+  unsigned int bpp = 0;
+
+  switch (format)
+  {
+  case AV_PIX_FMT_0RGB32:
+  {
+    bpp = sizeof(uint32_t);
+    break;
+  }
+  case AV_PIX_FMT_RGB555:
+  {
+    bpp = sizeof(uint16_t);
+    break;
+  }
+  case AV_PIX_FMT_RGB565:
+  {
+    bpp = sizeof(uint16_t);
+    break;
+  }
+  default:
+    break;
+  }
+
+  return width * bpp;
 }
