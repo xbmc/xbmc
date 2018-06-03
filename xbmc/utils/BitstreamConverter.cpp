@@ -1,20 +1,19 @@
 /*
- *      Copyright (C) 2010-2017 Team XBMC
- *      http://kodi.tv
+ *      Copyright (C) 2010-present Team Kodi
+ *      This file is part of Kodi - https://kodi.tv
  *
- *  This Program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2, or (at your option)
- *  any later version.
+ *  Kodi is free software: you can redistribute it and/or modify it
+ *  under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 2 of the License, or
+ *  (at your option) any later version.
  *
- *  This Program is distributed in the hope that it will be useful,
+ *  Kodi is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
- *  <http://www.gnu.org/licenses/>.
+ *  along with Kodi. If not, see <https://www.gnu.org/licenses/>.
  *
  */
 
@@ -108,7 +107,7 @@ enum {
 //           (C) 2008 Wim Taymans <wim.taymans@gmail.com>
 // gsth264parse.c:
 //  * License as published by the Free Software Foundation; either
-//  * version 2.1 of the License, or (at your option) any later version.
+//  * version 2.1 of the License, or (at your option) (at your option) any later version.
 static void nal_bs_init(nal_bitstream *bs, const uint8_t *data, size_t size)
 {
   bs->data = data;

@@ -7,7 +7,7 @@
 
 Kodi can display an RSS feed on the home screen of the default skin/interface
 (Estuary), as well as any other skin that supports RSS feeds. By default,
-the RSS news feed is taken from [http://kodi.tv](http://kodi.tv/), but the feed
+the RSS news feed is taken from [https://kodi.tv](https://kodi.tv/), but the feed
 can be changed to almost any RSS feed.
 
 @note Don't confuse the RSS ticker with RSS media source, which allows access to

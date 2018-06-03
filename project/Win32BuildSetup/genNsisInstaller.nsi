@@ -1,6 +1,6 @@
 ;Application for Windows install script
-;Copyright (C) 2005-2013 Team XBMC
-;http://xbmc.org
+;Copyright (C) 2005-present Team Kodi
+;This file is part of Kodi - https://kodi.tv
 
 ;--------------------------------
 ;Include Modern UI

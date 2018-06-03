@@ -97,7 +97,7 @@ echo "Version: $VERSION-$REVISION"                >> $DIRNAME/$PACKAGE/DEBIAN/co
 echo "Architecture: iphoneos-arm"                 >> $DIRNAME/$PACKAGE/DEBIAN/control
 echo "Installed-Size: $SIZE"                      >> $DIRNAME/$PACKAGE/DEBIAN/control
 echo "Description: @APP_NAME@ Entertainment Center for iOS" >> $DIRNAME/$PACKAGE/DEBIAN/control
-echo "Homepage: http://kodi.tv/"                 >> $DIRNAME/$PACKAGE/DEBIAN/control
+echo "Homepage: https://kodi.tv/"                 >> $DIRNAME/$PACKAGE/DEBIAN/control
 echo "Maintainer: Memphiz"                        >> $DIRNAME/$PACKAGE/DEBIAN/control
 echo "Author: Team-@APP_NAME@"                    >> $DIRNAME/$PACKAGE/DEBIAN/control
 echo "Section: Multimedia"                        >> $DIRNAME/$PACKAGE/DEBIAN/control
