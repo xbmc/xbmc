@@ -216,6 +216,8 @@ void COutputShader::ApplyEffectParameters(CD3DEffect &effect, unsigned sourceWid
     else if (m_hasDisplayMetadata && m_displayMetadata.has_luminance)
       param = log10(100) / log10(m_displayMetadata.max_luminance.num / m_displayMetadata.max_luminance.den);
 
+    param *= m_toneMappingParam;
+
     float coefs[3];
     CConvertMatrix::GetRGBYuvCoefs(AVColorSpace::AVCOL_SPC_BT709, coefs);
 

@@ -83,6 +83,7 @@ public:
   void SetCLUT(int clutSize, ID3D11ShaderResourceView *pCLUTView);
   void SetDisplayMetadata(bool hasDisplayMetadata, AVMasteringDisplayMetadata displayMetadata,
                           bool hasLightMetadata, AVContentLightMetadata lightMetadata);
+  void SetToneMapParam(float param) { m_toneMappingParam = param; }
 
   static bool CreateCLUTView(int clutSize, uint16_t* clutData, bool isRGB, ID3D11ShaderResourceView** ppCLUTView);
 
@@ -116,6 +117,7 @@ private:
 
   // tone mapping
   bool m_toneMapping{ false };
+  float m_toneMappingParam{ 1.0f };
   bool m_hasDisplayMetadata{ false };
   bool m_hasLightMetadata{ false };
   AVMasteringDisplayMetadata m_displayMetadata;
