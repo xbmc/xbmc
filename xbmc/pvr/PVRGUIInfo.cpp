@@ -1389,33 +1389,27 @@ bool CPVRGUIInfo::GetRadioRDSBool(const CFileItem *item, const CGUIInfo &info, b
 
 namespace
 {
-  int TimeFromDateTime(time_t datetime)
+  std::string TimeToTimeString(time_t datetime, TIME_FORMAT format, bool withSeconds)
   {
     CDateTime time;
     time.SetFromUTCDateTime(datetime);
-    return time.GetHour() * 60 * 60 + time.GetMinute() * 60 + time.GetSecond();
+    return time.GetAsLocalizedTime(format, withSeconds);
   }
 } // unnamed namespace
 
 void CPVRGUIInfo::CharInfoTimeshiftStartTime(TIME_FORMAT format, std::string &strValue) const
 {
-  if (format == TIME_FORMAT_GUESS)
-    format = TIME_FORMAT_HH_MM;
-
-  strValue = StringUtils::SecondsToTimeString(TimeFromDateTime(m_iTimeshiftStartTime), format).c_str();
+  strValue = TimeToTimeString(m_iTimeshiftStartTime, format, false);
 }
 
 void CPVRGUIInfo::CharInfoTimeshiftEndTime(TIME_FORMAT format, std::string &strValue) const
 {
-  if (format == TIME_FORMAT_GUESS)
-    format = TIME_FORMAT_HH_MM;
-
-  strValue = StringUtils::SecondsToTimeString(TimeFromDateTime(m_iTimeshiftEndTime), format).c_str();
+  strValue = TimeToTimeString(m_iTimeshiftEndTime, format, false);
 }
 
 void CPVRGUIInfo::CharInfoTimeshiftPlayTime(TIME_FORMAT format, std::string &strValue) const
 {
-  strValue = StringUtils::SecondsToTimeString(TimeFromDateTime(m_iTimeshiftPlayTime), format).c_str();
+  strValue = TimeToTimeString(m_iTimeshiftPlayTime, format, true);
 }
 
 void CPVRGUIInfo::CharInfoTimeshiftOffset(TIME_FORMAT format, std::string &strValue) const
@@ -1466,12 +1460,9 @@ void CPVRGUIInfo::CharInfoEpgEventRemainingTime(const CFileItem *item, TIME_FORM
 
 void CPVRGUIInfo::CharInfoEpgEventFinishTime(const CFileItem *item, TIME_FORMAT format, std::string &strValue) const
 {
-  if (format == TIME_FORMAT_GUESS)
-    format = TIME_FORMAT_HH_MM;
-
   CDateTime finish = CDateTime::GetCurrentDateTime();
   finish += CDateTimeSpan(0, 0, 0, GetRemainingTime(item));
-  strValue = StringUtils::SecondsToTimeString(finish.GetHour() * 60 * 60 + finish.GetMinute() * 60 + finish.GetSecond(), format).c_str();
+  strValue = finish.GetAsLocalizedTime(format);
 }
 
 void CPVRGUIInfo::CharInfoBackendNumber(std::string &strValue) const

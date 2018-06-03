@@ -1475,14 +1475,14 @@ std::string CDateTime::GetAsLocalizedDateTime(bool longDate/*=false*/, bool with
   return GetAsLocalizedDate(longDate) + ' ' + GetAsLocalizedTime("", withSeconds);
 }
 
-std::string CDateTime::GetAsLocalizedTime(TIME_FORMAT format) const
+std::string CDateTime::GetAsLocalizedTime(TIME_FORMAT format, bool withSeconds /* = false */) const
 {
   const std::string timeFormat = g_langInfo.GetTimeFormat();
   bool use12hourclock = timeFormat.find('h') != std::string::npos;
   switch (format)
   {
     case TIME_FORMAT_GUESS:
-      return GetAsLocalizedTime("", false);
+      return GetAsLocalizedTime("", withSeconds);
     case TIME_FORMAT_SS:
       return GetAsLocalizedTime("ss", true);
     case TIME_FORMAT_MM:
