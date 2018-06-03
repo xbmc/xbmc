@@ -170,11 +170,15 @@ bool BaseYUV2RGBGLSLShader::OnEnabled()
 
   if (m_toneMapping)
   {
-    float param = 0.5;
+    float param = 0.7;
     if (m_hasLightMetadata)
       param = log10(100) / log10(m_lightMetadata.MaxCLL);
     else if (m_hasDisplayMetadata && m_displayMetadata.has_luminance)
       param = log10(100) / log10(m_displayMetadata.max_luminance.num/m_displayMetadata.max_luminance.den);
+
+    // Sanity check
+    if (param < 0.1f || param > 5.0f)
+      param = 0.7f;
 
     param *= m_toneMappingParam;
 
