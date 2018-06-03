@@ -21261,7 +21261,16 @@ msgctxt "#39027"
 msgid "Sortname"
 msgstr ""
 
-#empty strings from id 39028 to 39099
+#empty strings from id 39028 to 39029
+
+#. Media source, a filter and smart playlist rule option 
+#: xbmc/dialogs/GUIDialogMediaFilter.cpp
+#: xbmc/playlists/SmartPlaylist.cpp
+msgctxt "#39030"
+msgid "Source"
+msgstr ""
+
+#empty strings from id 39031 to 39099
 
 #: system/settings/settings.xml
 msgctxt "#39100"

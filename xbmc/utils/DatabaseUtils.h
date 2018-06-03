@@ -118,6 +118,7 @@ typedef enum {
   FieldAlbumType,
   FieldMusicLabel,
   FieldCompilation,
+  FieldSource,
   FieldTrailer,
   FieldVideoResolution,
   FieldVideoAspectRatio,
