@@ -422,21 +422,23 @@ void DX::DeviceResources::ReleaseBackBuffer()
 {
   CLog::LogF(LOGDEBUG, "release buffers.");
 
-  // Clear the previous window size specific context.
-  ID3D11RenderTargetView* nullViews[] = { nullptr, nullptr, nullptr, nullptr };
-  m_deferrContext->OMSetRenderTargets(4, nullViews, nullptr);
-  FinishCommandList(false);
-
   m_backBufferTex.Release();
   m_d3dDepthStencilView = nullptr;
-  m_deferrContext->Flush();
-  m_d3dContext->Flush();
-  m_query = nullptr;
+  if (m_deferrContext) 
+  {
+    // Clear the previous window size specific context.
+    ID3D11RenderTargetView* nullViews[] = { nullptr, nullptr, nullptr, nullptr };
+    m_deferrContext->OMSetRenderTargets(4, nullViews, nullptr);
+    FinishCommandList(false);
+
+    m_deferrContext->Flush();
+    m_d3dContext->Flush();
+  }
 }
 
 void DX::DeviceResources::CreateBackBuffer()
 {
-  if (!m_bDeviceCreated)
+  if (!m_bDeviceCreated || !m_swapChain)
     return;
 
   CLog::LogF(LOGDEBUG, "create buffers.");
@@ -521,6 +523,7 @@ void DX::DeviceResources::ResizeBuffers()
 
   bool bHWStereoEnabled = RENDER_STEREO_MODE_HARDWAREBASED == CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode();
   bool windowed = true;
+  HRESULT hr = E_FAIL;
 
   DXGI_SWAP_CHAIN_DESC1 scDesc = { 0 };
   if (m_swapChain)
@@ -548,7 +551,7 @@ void DX::DeviceResources::ResizeBuffers()
   {
     // If the swap chain already exists, resize it.
     m_swapChain->GetDesc1(&scDesc);
-    HRESULT hr = m_swapChain->ResizeBuffers(
+    hr = m_swapChain->ResizeBuffers(
       scDesc.BufferCount,
       lround(m_outputSize.Width),
       lround(m_outputSize.Height),
@@ -570,21 +573,10 @@ void DX::DeviceResources::ResizeBuffers()
   else
   {
     // Otherwise, create a new one using the same adapter as the existing Direct3D device.
-
-    DXGI_FORMAT backBufferFormat = DXGI_FORMAT_B8G8R8A8_UNORM;
-    uint32_t is10bitSupported;
-
-    if ( m_d3dFeatureLevel >= D3D_FEATURE_LEVEL_11_0
-      && SUCCEEDED(m_d3dDevice->CheckFormatSupport(DXGI_FORMAT_R10G10B10A2_UNORM, &is10bitSupported))
-      && (is10bitSupported & D3D11_FORMAT_SUPPORT_RENDER_TARGET))
-    {
-      backBufferFormat = DXGI_FORMAT_R10G10B10A2_UNORM;
-    }
-
     DXGI_SWAP_CHAIN_DESC1 swapChainDesc = { 0 };
     swapChainDesc.Width = lround(m_outputSize.Width);
     swapChainDesc.Height = lround(m_outputSize.Height);
-    swapChainDesc.Format = backBufferFormat;
+    swapChainDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
     swapChainDesc.Stereo = bHWStereoEnabled;
     swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
     swapChainDesc.BufferCount = 3 * (1 + bHWStereoEnabled);
@@ -599,7 +591,19 @@ void DX::DeviceResources::ResizeBuffers()
     scFSDesc.Windowed = windowed;
 
     ComPtr<IDXGISwapChain1> swapChain;
-    HRESULT hr = CreateSwapChain(swapChainDesc, scFSDesc, &swapChain);
+    if (m_d3dFeatureLevel >= D3D_FEATURE_LEVEL_11_0 && !bHWStereoEnabled)
+    {
+      swapChainDesc.Format = DXGI_FORMAT_R10G10B10A2_UNORM;
+      hr = CreateSwapChain(swapChainDesc, scFSDesc, &swapChain);
+      if (FAILED(hr))
+      {
+        CLog::LogF(LOGWARNING, "creating 10bit swapchain failed, fallback to 8bit.");
+        swapChainDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
+      }
+    }
+
+    if (!swapChain)
+      hr = CreateSwapChain(swapChainDesc, scFSDesc, &swapChain);
 
     if (FAILED(hr) && bHWStereoEnabled)
     {
@@ -614,6 +618,12 @@ void DX::DeviceResources::ResizeBuffers()
 
       // fallback to split_horizontal mode.
       CServiceBroker::GetWinSystem()->GetGfxContext().SetStereoMode(RENDER_STEREO_MODE_SPLIT_HORIZONTAL);
+    }
+
+    if (FAILED(hr))
+    {
+      CLog::LogF(LOGERROR, "unable to create swapchain.");
+      return;
     }
 
     hr = swapChain.As(&m_swapChain); CHECK_ERR();
