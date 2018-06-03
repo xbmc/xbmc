@@ -591,7 +591,9 @@ void DX::DeviceResources::ResizeBuffers()
     scFSDesc.Windowed = windowed;
 
     ComPtr<IDXGISwapChain1> swapChain;
-    if (m_d3dFeatureLevel >= D3D_FEATURE_LEVEL_11_0 && !bHWStereoEnabled)
+    if ( m_d3dFeatureLevel >= D3D_FEATURE_LEVEL_11_0 
+      && !bHWStereoEnabled 
+      && g_advancedSettings.m_bTry10bitOutput)
     {
       swapChainDesc.Format = DXGI_FORMAT_R10G10B10A2_UNORM;
       hr = CreateSwapChain(swapChainDesc, scFSDesc, &swapChain);
