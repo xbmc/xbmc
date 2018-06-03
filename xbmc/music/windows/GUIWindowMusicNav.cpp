@@ -471,6 +471,8 @@ bool CGUIWindowMusicNav::GetDirectory(const std::string &strDirectory, CFileItem
       items.SetContent("songs");
     else if (node == NODE_TYPE_GENRE)
       items.SetContent("genres");
+    else if (node == NODE_TYPE_SOURCE)
+      items.SetContent("sources");
     else if (node == NODE_TYPE_ROLE)
       items.SetContent("roles");
     else if (node == NODE_TYPE_YEAR)
