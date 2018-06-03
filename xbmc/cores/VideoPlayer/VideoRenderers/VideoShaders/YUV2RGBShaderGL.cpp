@@ -176,6 +176,10 @@ bool BaseYUV2RGBGLSLShader::OnEnabled()
     else if (m_hasDisplayMetadata && m_displayMetadata.has_luminance)
       param = log10(100) / log10(m_displayMetadata.max_luminance.num/m_displayMetadata.max_luminance.den);
 
+    // Sanity check
+    if (param < 0.1f || param > 5.0f)
+      param = 0.7f;
+
     param *= m_toneMappingParam;
 
     float coefs[3];
