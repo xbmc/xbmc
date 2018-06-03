@@ -450,7 +450,7 @@ void CGUIVisualisationControl::CreateBuffers()
   // Get the number of buffers from the current vis
   VIS_INFO info { false, 0 };
 
-  if (m_instance && m_alreadyStarted)
+  if (m_instance)
     m_instance->GetInfo(&info);
 
   m_numBuffers = info.iSyncDelay + 1;
