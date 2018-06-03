@@ -518,7 +518,6 @@ void CWinRenderer::SelectPSVideoFilter()
     break;
 
   case VS_SCALINGMETHOD_SINC8:
-  case VS_SCALINGMETHOD_NEDI:
     CLog::Log(LOGERROR, "D3D: TODO: This scaler has not yet been implemented");
     break;
 
@@ -700,8 +699,11 @@ void CWinRenderer::Render(DWORD flags, CD3DTexture* target)
   }
 
   bool toneMap = false;
-  if (buf.hasLightMetadata || (buf.hasDisplayMetadata && buf.displayMetadata.has_luminance))
-    toneMap = true;
+  if (m_videoSettings.m_ToneMapMethod != VS_TONEMAPMETHOD_OFF)
+  {
+    if (buf.hasLightMetadata || (buf.hasDisplayMetadata && buf.displayMetadata.has_luminance))
+      toneMap = true;
+  }
   if (toneMap != m_toneMapping)
   {
     m_outputShader.reset();
@@ -795,6 +797,7 @@ void CWinRenderer::RenderSW(CD3DTexture* target)
   // 2. output to display
 
   m_outputShader->SetDisplayMetadata(buf.hasDisplayMetadata, buf.displayMetadata, buf.hasLightMetadata, buf.lightMetadata);
+  m_outputShader->SetToneMapParam(m_videoSettings.m_ToneMapParam);
   m_outputShader->Render(m_IntermediateTarget, m_sourceWidth, m_sourceHeight, m_sourceRect, m_rotatedDestCoords, target,
                          DX::Windowing()->UseLimitedColor(), m_videoSettings.m_Contrast * 0.01f, m_videoSettings.m_Brightness * 0.01f);
 }
@@ -832,6 +835,7 @@ void CWinRenderer::RenderPS(CD3DTexture* target)
 
   // set params
   m_outputShader->SetDisplayMetadata(buf.hasDisplayMetadata, buf.displayMetadata, buf.hasLightMetadata, buf.lightMetadata);
+  m_outputShader->SetToneMapParam(m_videoSettings.m_ToneMapParam);
 
   m_colorShader->SetParams(m_videoSettings.m_Contrast, m_videoSettings.m_Brightness, DX::Windowing()->UseLimitedColor());
   m_colorShader->SetColParams(buf.color_space, buf.bits, !buf.full_range, buf.texBits);
@@ -954,6 +958,7 @@ void CWinRenderer::RenderHW(DWORD flags, CD3DTexture* target)
 
     // render frame
     m_outputShader->SetDisplayMetadata(buf.hasDisplayMetadata, buf.displayMetadata, buf.hasLightMetadata, buf.lightMetadata);
+    m_outputShader->SetToneMapParam(m_videoSettings.m_ToneMapParam);
     m_outputShader->Render(m_IntermediateTarget, m_destWidth, m_destHeight, dst, dst, target);
     DX::Windowing()->RestoreViewPort();
   }
@@ -1028,7 +1033,8 @@ bool CWinRenderer::Supports(ERENDERFEATURE feature)
       feature == RENDERFEATURE_VERTICAL_SHIFT  ||
       feature == RENDERFEATURE_PIXEL_RATIO     ||
       feature == RENDERFEATURE_ROTATION        ||
-      feature == RENDERFEATURE_POSTPROCESS)
+      feature == RENDERFEATURE_POSTPROCESS     ||
+      feature == RENDERFEATURE_TONEMAP)
     return true;
 
   return false;

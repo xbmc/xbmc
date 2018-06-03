@@ -74,6 +74,8 @@ bool CVideoSettings::operator!=(const CVideoSettings &right) const
   if (m_StereoMode != right.m_StereoMode) return true;
   if (m_StereoInvert != right.m_StereoInvert) return true;
   if (m_VideoStream != right.m_VideoStream) return true;
+  if (m_ToneMapMethod != right.m_ToneMapMethod) return true;
+  if (m_ToneMapParam != right.m_ToneMapParam) return true;
   return false;
 }
 
