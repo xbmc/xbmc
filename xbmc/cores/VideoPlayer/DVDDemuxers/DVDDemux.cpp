@@ -35,14 +35,12 @@ std::string CDemuxStreamAudio::GetStreamType()
   {
     switch (profile)
     {
-#ifdef FF_PROFILE_DTS_HD_MA
     case FF_PROFILE_DTS_HD_MA:
       strInfo = "DTS-HD MA ";
       break;
     case FF_PROFILE_DTS_HD_HRA:
       strInfo = "DTS-HD HRA ";
       break;
-#endif
     default:
       strInfo = "DTS ";
       break;

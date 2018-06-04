@@ -1831,7 +1831,6 @@ std::string CDVDDemuxFFmpeg::GetStreamCodecName(int iStreamId)
   std::string strName;
   if (stream)
   {
-#ifdef FF_PROFILE_DTS_HD_MA
     /* use profile to determine the DTS type */
     if (stream->codec == AV_CODEC_ID_DTS)
     {
@@ -1844,7 +1843,6 @@ std::string CDVDDemuxFFmpeg::GetStreamCodecName(int iStreamId)
 
       return strName;
     }
-#endif
 
     AVCodec *codec = avcodec_find_decoder(stream->codec);
     if (codec)
