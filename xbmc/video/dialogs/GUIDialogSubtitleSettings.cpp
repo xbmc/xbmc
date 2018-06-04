@@ -79,6 +79,15 @@ void CGUIDialogSubtitleSettings::FrameMove()
   CGUIDialogSettingsManualBase::FrameMove();
 }
 
+bool CGUIDialogSubtitleSettings::OnMessage(CGUIMessage& message)
+{
+  if (message.GetMessage() == GUI_MSG_SUBTITLE_DOWNLOADED)
+  {
+    Close();
+  }
+  return CGUIDialogSettingsManualBase::OnMessage(message);
+}
+
 void CGUIDialogSubtitleSettings::OnSettingChanged(std::shared_ptr<const CSetting> setting)
 {
   if (setting == NULL)
