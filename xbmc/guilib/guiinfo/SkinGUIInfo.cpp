@@ -111,7 +111,7 @@ bool CSkinGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contextWi
       value = StringUtils::EqualsNoCase(CSkinSettings::GetInstance().GetString(info.GetData1()), info.GetData3());
       return true;
     }
-    case SKIN_STRING_NOT_EMPTY:
+    case SKIN_STRING:
     {
       value = !CSkinSettings::GetInstance().GetString(info.GetData1()).empty();
       return true;

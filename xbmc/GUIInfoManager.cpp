@@ -6058,7 +6058,7 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
           if (prop.num_params() == 2)
             return AddMultiInfo(CGUIInfo(SKIN_STRING_IS_EQUAL, CSkinSettings::GetInstance().TranslateString(prop.param(0)), prop.param(1)));
           else
-            return AddMultiInfo(CGUIInfo(SKIN_STRING_NOT_EMPTY, CSkinSettings::GetInstance().TranslateString(prop.param(0))));
+            return AddMultiInfo(CGUIInfo(SKIN_STRING, CSkinSettings::GetInstance().TranslateString(prop.param(0))));
         }
         if (prop.name == "hassetting")
           return AddMultiInfo(CGUIInfo(SKIN_BOOL, CSkinSettings::GetInstance().TranslateBool(prop.param(0))));
