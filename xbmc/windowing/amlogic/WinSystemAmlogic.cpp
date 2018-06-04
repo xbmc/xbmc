@@ -241,7 +241,7 @@ void CWinSystemAmlogic::UpdateResolutions()
     res_index = (RESOLUTION)((int)res_index + 1);
   }
 
-  // swap desktop index for desktop res if available
+  // set RES_DESKTOP
   if (ResDesktop != RES_INVALID)
   {
     CLog::Log(LOGNOTICE, "Found (%dx%d%s@%f) at %d, setting to RES_DESKTOP at %d",
@@ -250,9 +250,7 @@ void CWinSystemAmlogic::UpdateResolutions()
       resDesktop.fRefreshRate,
       (int)ResDesktop, (int)RES_DESKTOP);
 
-    RESOLUTION_INFO desktop = CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP);
     CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP) = CDisplaySettings::GetInstance().GetResolutionInfo(ResDesktop);
-    CDisplaySettings::GetInstance().GetResolutionInfo(ResDesktop) = desktop;
   }
 }
 
