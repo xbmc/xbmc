@@ -38,7 +38,6 @@ public:
   bool HasListItems() const override { return true; };
   CFileItemPtr GetCurrentListItem(int offset = 0) override;
   int GetViewContainerID() const override { return m_viewControl.GetCurrentControl(); };
-  static void LoadProfile(unsigned int profile);
 
 protected:
   void OnInitWindow() override;

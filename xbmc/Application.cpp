@@ -214,7 +214,6 @@
 #include "cores/FFmpeg.h"
 #include "utils/CharsetConverter.h"
 #include "pictures/GUIWindowSlideShow.h"
-#include "windows/GUIWindowLoginScreen.h"
 
 using namespace ADDON;
 using namespace XFILE;
@@ -1054,9 +1053,12 @@ bool CApplication::Initialize()
 
   StartServices();
 
+  // GUI depends on seek handler
+  m_appPlayer.GetSeekHandler().Configure();
+
   // Init DPMS, before creating the corresponding setting control.
   m_dpms.reset(new DPMSSupport());
-  bool uiInitializationFinished = true;
+  bool uiInitializationFinished = false;
   if (CServiceBroker::GetGUI()->GetWindowManager().Initialized())
   {
     m_ServiceManager->GetSettings().GetSetting(CSettings::SETTING_POWERMANAGEMENT_DISPLAYSOFF)->SetRequirementsMet(m_dpms->IsSupported());
@@ -1107,23 +1109,18 @@ bool CApplication::Initialize()
 
     if (m_ServiceManager->GetSettings().GetBool(CSettings::SETTING_MASTERLOCK_STARTUPLOCK) &&
         m_ServiceManager->GetProfileManager().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE &&
-       !m_ServiceManager->GetProfileManager().GetMasterProfile().getLockCode().empty())
+        !m_ServiceManager->GetProfileManager().GetMasterProfile().getLockCode().empty())
     {
-       g_passwordManager.CheckStartUpLock();
+      g_passwordManager.CheckStartUpLock();
     }
 
     // check if we should use the login screen
     if (m_ServiceManager->GetProfileManager().UsingLoginScreen())
     {
-      // the login screen still needs to perform additional initialization
-      uiInitializationFinished = false;
-
       CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_LOGIN_SCREEN);
     }
     else
     {
-      CJSONRPC::Initialize();
-
       // activate the configured start window
       int firstWindow = g_SkinInfo->GetFirstWindow();
       CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(firstWindow);
@@ -1135,16 +1132,19 @@ bool CApplication::Initialize()
 
       // the startup window is considered part of the initialization as it most likely switches to the final window
       uiInitializationFinished = firstWindow != WINDOW_STARTUP_ANIM;
-
-      if (!m_ServiceManager->InitStageThree())
-      {
-        CLog::Log(LOGERROR, "Application - Init3 failed");
-      }
     }
-
   }
   else //No GUI Created
-    CJSONRPC::Initialize();
+  {
+    uiInitializationFinished = true;
+  }
+
+  CJSONRPC::Initialize();
+
+  if (!m_ServiceManager->InitStageThree())
+  {
+    CLog::Log(LOGERROR, "Application - Init3 failed");
+  }
 
   g_sysinfo.Refresh();
 
@@ -1158,9 +1158,6 @@ bool CApplication::Initialize()
   }
 
   m_slowTimer.StartZero();
-
-  // configure seek handler
-  m_appPlayer.GetSeekHandler().Configure();
 
   // register action listeners
   RegisterActionListener(&m_appPlayer.GetSeekHandler());
@@ -2566,7 +2563,12 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
   break;
 
   case TMSG_LOADPROFILE:
-    CGUIWindowLoginScreen::LoadProfile(pMsg->param1);
+    {
+      const int profile = pMsg->param1;
+      if (profile >= 0)
+        m_ServiceManager->GetProfileManager().LoadProfile(static_cast<unsigned int>(profile));
+    }
+
     break;
 
   default:
