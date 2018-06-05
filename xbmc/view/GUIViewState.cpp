@@ -587,6 +587,19 @@ CGUIViewStateFromItems::CGUIViewStateFromItems(const CFileItemList &items) : CGU
   LoadViewState(items.GetPath(), CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow());
 }
 
+bool CGUIViewStateFromItems::AutoPlayNextItem()
+{
+  if (m_items.GetContent() == "musicvideos" ||
+    m_items.GetContent() == "tvshows" ||
+    m_items.GetContent() == "episodes" ||
+    m_items.GetContent() == "movies")
+  {
+    return CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_AUTOPLAYNEXTITEM);
+  }
+
+  return false;
+}
+
 void CGUIViewStateFromItems::SaveViewState()
 {
   SaveViewToDb(m_items.GetPath(), CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow());
