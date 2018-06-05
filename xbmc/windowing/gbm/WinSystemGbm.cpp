@@ -215,7 +215,11 @@ bool CWinSystemGbm::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
   }
 
   auto result = m_DRM->SetVideoMode(res, bo);
-  m_GBM->ReleaseBuffer();
+
+  if (!m_DRM->m_req)
+  {
+    m_GBM->ReleaseBuffer();
+  }
 
   int delay = CServiceBroker::GetSettings().GetInt("videoscreen.delayrefreshchange");
   if (delay > 0)
