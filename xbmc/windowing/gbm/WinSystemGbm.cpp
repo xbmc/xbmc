@@ -138,6 +138,8 @@ bool CWinSystemGbm::CreateNewWindow(const std::string& name,
     return false;
   }
 
+  m_bFullScreen = fullScreen;
+
   CLog::Log(LOGDEBUG, "CWinSystemGbm::%s - initialized GBM", __FUNCTION__);
   return true;
 }
@@ -213,7 +215,11 @@ bool CWinSystemGbm::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
   }
 
   auto result = m_DRM->SetVideoMode(res, bo);
-  m_GBM->ReleaseBuffer();
+
+  if (!m_DRM->m_req)
+  {
+    m_GBM->ReleaseBuffer();
+  }
 
   int delay = CServiceBroker::GetSettings().GetInt("videoscreen.delayrefreshchange");
   if (delay > 0)

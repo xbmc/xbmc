@@ -174,7 +174,7 @@ void CDRMAtomic::DestroyDrm()
   m_req = nullptr;
 }
 
-bool CDRMAtomic::SetVideoMode(RESOLUTION_INFO res, struct gbm_bo *bo)
+bool CDRMAtomic::SetVideoMode(RESOLUTION_INFO& res, struct gbm_bo *bo)
 {
   m_need_modeset = true;
 

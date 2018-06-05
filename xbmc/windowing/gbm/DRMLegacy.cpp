@@ -38,7 +38,7 @@
 
 static int flip_happening = 0;
 
-bool CDRMLegacy::SetVideoMode(RESOLUTION_INFO res, struct gbm_bo *bo)
+bool CDRMLegacy::SetVideoMode(RESOLUTION_INFO& res, struct gbm_bo *bo)
 {
   struct drm_fb *drm_fb = DrmFbGetFromBo(bo);
 
