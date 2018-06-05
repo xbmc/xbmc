@@ -162,9 +162,8 @@ void CWinSystemGbm::UpdateResolutions()
                           m_DRM->m_mode->vdisplay,
                           m_DRM->m_mode->vrefresh);
 
-  std::vector<RESOLUTION_INFO> resolutions;
-
-  if (!m_DRM->GetModes(resolutions) || resolutions.empty())
+  auto resolutions = m_DRM->GetModes();
+  if (resolutions.empty())
   {
     CLog::Log(LOGWARNING, "CWinSystemGbm::%s - Failed to get resolutions", __FUNCTION__);
   }

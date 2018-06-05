@@ -77,7 +77,7 @@ public:
   std::string GetModule() const { return m_module; }
   std::string GetDevicePath() const { return m_device_path; }
 
-  bool GetModes(std::vector<RESOLUTION_INFO> &resolutions);
+  std::vector<RESOLUTION_INFO> GetModes();
   bool SetMode(const RESOLUTION_INFO& res);
   void WaitVBlank();
 

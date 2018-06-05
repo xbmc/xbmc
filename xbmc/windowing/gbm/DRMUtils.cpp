@@ -665,8 +665,11 @@ void CDRMUtils::DestroyDrm()
   m_primary_plane = nullptr;
 }
 
-bool CDRMUtils::GetModes(std::vector<RESOLUTION_INFO> &resolutions)
+std::vector<RESOLUTION_INFO> CDRMUtils::GetModes()
 {
+  std::vector<RESOLUTION_INFO> resolutions;
+  resolutions.reserve(m_connector->connector->count_modes);
+
   for(auto i = 0; i < m_connector->connector->count_modes; i++)
   {
     RESOLUTION_INFO res;
@@ -710,5 +713,5 @@ bool CDRMUtils::GetModes(std::vector<RESOLUTION_INFO> &resolutions)
     resolutions.push_back(res);
   }
 
-  return !resolutions.empty();
+  return resolutions;
 }
