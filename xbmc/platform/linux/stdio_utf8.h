@@ -18,6 +18,8 @@
  *
  */
 
+#pragma once
+
 #ifndef STDIO_UTF8_H__
 #define STDIO_UTF8_H__
 

@@ -21,6 +21,8 @@
  *
  */
 
+#pragma once
+
 //** Defines taken from ntddscsi.h in MS Windows DDK CD
 #define SCSI_IOCTL_DATA_OUT             0 //Give data to SCSI device (e.g. for writing)
 #define SCSI_IOCTL_DATA_IN              1 //Get data from SCSI device (e.g. for reading)

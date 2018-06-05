@@ -21,6 +21,8 @@
  *
  */
 
+#pragma once
+
 #include "windowing/XBMC_events.h"
 
 #define XBMC_BUTTON(X)		(1 << ((X)-1))

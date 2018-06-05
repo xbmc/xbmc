@@ -22,6 +22,9 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#pragma once
+
 #include "IFileDirectory.h"
 
 namespace XFILE

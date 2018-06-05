@@ -27,6 +27,8 @@
  * available at http://sourceforge.net/projects/ccdecoder/.
  */
 
+#pragma once
+
 #include <stdint.h>
 
 #define CC_ROWS 15

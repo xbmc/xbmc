@@ -23,6 +23,8 @@
  * to access dvdnav functionality.
  */
 
+#pragma once
+
 #ifndef LIBDVDNAV_DVDNAV_H
 #define LIBDVDNAV_DVDNAV_H
 

@@ -19,6 +19,8 @@
  *
  */
 
+#pragma once
+
 #include "cores/IPlayer.h"
 #include "guilib/DispResource.h"
 #include "threads/SystemClock.h"

@@ -16,6 +16,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+#pragma once
+
 #ifndef LIBDVDNAV_REMAP_H
 #define LIBDVDNAV_REMAP_H
 typedef struct block_s block_t;

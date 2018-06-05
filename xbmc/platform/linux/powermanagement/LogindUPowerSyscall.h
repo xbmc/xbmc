@@ -19,6 +19,8 @@
  *
  */
 
+#pragma once
+
 #include "powermanagement/IPowerSyscall.h"
 #include "DBusUtil.h"
 

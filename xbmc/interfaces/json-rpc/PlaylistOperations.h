@@ -18,6 +18,8 @@
  *
  */
 
+#pragma once
+
 #include "JSONRPC.h"
 #include "FileItemHandler.h"
 #include "FileItem.h"

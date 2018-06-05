@@ -21,6 +21,8 @@
  *
  */
 
+#pragma once
+
 #include "GUIControl.h"
 #include "TextureManager.h"
 #include "GUIImage.h"

@@ -21,6 +21,8 @@
  *
  */
 
+#pragma once
+
 #include <string>
 #ifdef TARGET_POSIX
 #include "platform/linux/PlatformDefs.h"

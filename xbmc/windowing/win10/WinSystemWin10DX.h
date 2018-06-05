@@ -18,6 +18,8 @@
  *
  */
 
+#pragma once
+
 #ifndef WIN_SYSTEM_WIN10_DX_H
 #define WIN_SYSTEM_WIN10_DX_H
 

@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef HAS_LIBEXIF_H
 #define HAS_LIBEXIF_H
 

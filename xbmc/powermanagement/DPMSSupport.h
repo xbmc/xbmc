@@ -18,6 +18,8 @@
  *
  */
 
+#pragma once
+
 #ifndef DPMSSUPPORT_H
 #define DPMSSUPPORT_H
 

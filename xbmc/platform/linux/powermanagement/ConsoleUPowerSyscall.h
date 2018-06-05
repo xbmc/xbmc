@@ -18,6 +18,8 @@
  *
  */
 
+#pragma once
+
 #include "UPowerSyscall.h"
 #include "DBusUtil.h"
 

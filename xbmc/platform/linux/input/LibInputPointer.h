@@ -18,6 +18,8 @@
  *
  */
 
+#pragma once
+
 #include <libinput.h>
 
 struct pos

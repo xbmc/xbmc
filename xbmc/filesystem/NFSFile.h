@@ -18,6 +18,8 @@
  *
  */
 
+#pragma once
+
 // FileNFS.h: interface for the CNFSFile class.
 #ifndef FILENFS_H_
 #define FILENFS_H_

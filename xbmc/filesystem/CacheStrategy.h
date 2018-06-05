@@ -18,6 +18,7 @@
  *
  */
 
+#pragma once
 
 #ifndef XFILECACHESTRATEGY_H
 #define XFILECACHESTRATEGY_H

@@ -18,6 +18,8 @@
  *
  */
 
+#pragma once
+
 #include <Python.h>
 
 #include "interfaces/legacy/CallbackHandler.h"

@@ -18,6 +18,8 @@
  *
  */
 
+#pragma once
+
 #ifndef _AVCLOCK_H_
 #define _AVCLOCK_H_
 

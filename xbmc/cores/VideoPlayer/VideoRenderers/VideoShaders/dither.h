@@ -1,5 +1,7 @@
 // Generated with https://git.fruit.je/src?a=blob;f=dither/dither.c;h=913d06c11f8d7cbd24121ecd772396b7c10f4826;hb=HEAD
 
+#pragma once
+
 #include <stdint.h>
 
 static const int dither_size = 64;

@@ -22,6 +22,8 @@
  * This header defines events and event types 
  */
 
+#pragma once
+
 #ifndef LIBDVDNAV_DVDNAV_EVENTS_H
 #define LIBDVDNAV_DVDNAV_EVENTS_H
 

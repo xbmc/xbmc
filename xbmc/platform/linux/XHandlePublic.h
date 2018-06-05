@@ -21,6 +21,8 @@
  *
  */
 
+#pragma once
+
 struct  CXHandle;
 typedef CXHandle* HANDLE;
 typedef HANDLE*   LPHANDLE;

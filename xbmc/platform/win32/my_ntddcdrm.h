@@ -21,6 +21,8 @@
  *
  */
 
+#pragma once
+
 #include <winioctl.h>
 
 #define IOCTL_CDROM_BASE             FILE_DEVICE_CD_ROM

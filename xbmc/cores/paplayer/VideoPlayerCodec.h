@@ -21,6 +21,8 @@
  *
  */
 
+#pragma once
+
 #include "ICodec.h"
 
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemux.h"

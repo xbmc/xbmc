@@ -20,6 +20,8 @@
     slouken@libsdl.org
 */
 
+#pragma once
+
 #ifndef XBMC_vkeys_h
 #define XBMC_vkeys_h
 

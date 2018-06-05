@@ -21,6 +21,8 @@
  *
  */
 
+#pragma once
+
 #include <stdio.h>
 #ifdef TARGET_POSIX
 #include "PlatformDefs.h"

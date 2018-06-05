@@ -17,6 +17,9 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#pragma once
+
 #ifndef NETWORK_LINUX_H_
 #define NETWORK_LINUX_H_
  

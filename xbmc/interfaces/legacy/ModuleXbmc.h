@@ -18,6 +18,8 @@
  *
  */
 
+#pragma once
+
 #include "AddonString.h"
 #include "Tuple.h"
 //#include "Monitor.h"

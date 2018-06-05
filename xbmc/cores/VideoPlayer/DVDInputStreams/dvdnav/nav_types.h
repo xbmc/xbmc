@@ -25,6 +25,8 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+#pragma once
+
 #ifndef LIBDVDREAD_NAV_TYPES_H
 #define LIBDVDREAD_NAV_TYPES_H
 

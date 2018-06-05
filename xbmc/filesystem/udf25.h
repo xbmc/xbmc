@@ -25,6 +25,9 @@
  *  Jorgen Lundman and team boxee did the necessary modifications to support udf 2.5
  *
  */
+
+#pragma once
+
 #include "File.h"
 
 /**

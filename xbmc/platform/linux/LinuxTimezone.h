@@ -21,6 +21,8 @@
  *
  */
 
+#pragma once
+
 #include "settings/lib/ISettingCallback.h"
 #include "settings/lib/ISettingsHandler.h"
 #include <string>

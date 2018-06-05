@@ -20,6 +20,8 @@
     slouken@libsdl.org
 */
 
+#pragma once
+
 #ifndef XBMC_keysym_h
 #define XBMC_keysym_h
 

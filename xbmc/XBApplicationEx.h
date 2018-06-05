@@ -18,6 +18,8 @@
  *
  */
 
+#pragma once
+
 #ifndef XBAPPLICATIONEX_H
 #define XBAPPLICATIONEX_H
 

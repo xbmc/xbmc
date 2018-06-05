@@ -20,6 +20,8 @@
  *
  */
 
+#pragma once
+
 #include "IFile.h"
 #include <zlib.h>
 #include "File.h"

@@ -18,6 +18,8 @@
  *
  */
 
+#pragma once
+
 #ifndef CRSSDIRECTORY_H_
 #define CRSSDIRECTORY_H_
 

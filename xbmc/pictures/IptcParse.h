@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef __IPTC_PARSE_H
 #define __IPTC_PARSE_H
 

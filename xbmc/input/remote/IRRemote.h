@@ -18,6 +18,8 @@
  *
  */
 
+#pragma once
+
 #ifndef XBIRREMOTE_H
 #define XBIRREMOTE_H
 

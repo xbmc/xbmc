@@ -18,6 +18,8 @@
  *
  */
 
+#pragma once
+
 #ifndef STAT_UTF8_H__
 #define STAT_UTF8_H__
 

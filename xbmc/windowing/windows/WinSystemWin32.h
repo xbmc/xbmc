@@ -18,6 +18,8 @@
  *
  */
 
+#pragma once
+
 #ifndef WINDOW_SYSTEM_WIN32_H
 #define WINDOW_SYSTEM_WIN32_H
 

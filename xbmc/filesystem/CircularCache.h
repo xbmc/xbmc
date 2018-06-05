@@ -18,6 +18,8 @@
  *
  */
 
+#pragma once
+
 #ifndef CACHECIRCULAR_H
 #define CACHECIRCULAR_H
 

@@ -20,6 +20,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+#pragma once
+
 #ifndef LIBDVDREAD_DVD_READER_H
 #define LIBDVDREAD_DVD_READER_H
 

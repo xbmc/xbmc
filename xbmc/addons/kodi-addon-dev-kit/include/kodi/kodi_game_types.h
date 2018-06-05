@@ -17,6 +17,9 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#pragma once
+
 #ifndef KODI_GAME_TYPES_H_
 #define KODI_GAME_TYPES_H_
 

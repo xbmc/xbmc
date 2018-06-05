@@ -21,6 +21,8 @@
  *
  */
 
+#pragma once
+
 /* prefix install location */
 #define PREFIX_USR_PATH        "@prefix@"
 
