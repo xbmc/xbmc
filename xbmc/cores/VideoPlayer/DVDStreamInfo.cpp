@@ -21,6 +21,7 @@
 #include "DVDStreamInfo.h"
 
 #include "DVDDemuxers/DVDDemux.h"
+#include "cores/VideoPlayer/Interface/Addon/DemuxCrypto.h"
 
 CDVDStreamInfo::CDVDStreamInfo()                                                     { extradata = NULL; Clear(); }
 CDVDStreamInfo::CDVDStreamInfo(const CDVDStreamInfo &right, bool withextradata )     { extradata = NULL; Clear(); Assign(right, withextradata); }
@@ -123,6 +124,13 @@ bool CDVDStreamInfo::Equal(const CDVDStreamInfo& right, bool withextradata)
     return false;
 
   // SUBTITLE
+
+  // Crypto
+  if ((cryptoSession.get() == nullptr) != (right.cryptoSession.get() == nullptr))
+    return false;
+
+  if (cryptoSession && !(*cryptoSession.get() == *right.cryptoSession.get()))
+    return false;
 
   return true;
 }

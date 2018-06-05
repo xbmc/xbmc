@@ -48,6 +48,13 @@ struct DemuxCryptoSession
     delete[] sessionId;
   }
 
+  bool operator == (const DemuxCryptoSession &other) const
+  {
+    return sessionIdSize == other.sessionIdSize &&
+      keySystem == other.keySystem &&
+      memcmp(sessionId, other.sessionId, sessionIdSize) == 0;
+  };
+
   // encryped stream infos
   char * sessionId;
   uint16_t sessionIdSize;
