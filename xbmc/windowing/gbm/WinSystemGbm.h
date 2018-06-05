@@ -52,6 +52,7 @@ public:
   void FlipPage(bool rendered, bool videoLayer);
   void WaitVBlank();
 
+  bool CanDoWindowed() override { return false; }
   void UpdateResolutions() override;
 
   bool UseLimitedColor() override;

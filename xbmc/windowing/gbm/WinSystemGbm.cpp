@@ -138,6 +138,8 @@ bool CWinSystemGbm::CreateNewWindow(const std::string& name,
     return false;
   }
 
+  m_bFullScreen = fullScreen;
+
   CLog::Log(LOGDEBUG, "CWinSystemGbm::%s - initialized GBM", __FUNCTION__);
   return true;
 }
