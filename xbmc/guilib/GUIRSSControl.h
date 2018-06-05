@@ -25,9 +25,6 @@
 \brief
 */
 
-#ifndef GUILIB_GUIRSSControl_H
-#define GUILIB_GUIRSSControl_H
-
 #include <vector>
 
 #include "GUIControl.h"
@@ -84,4 +81,4 @@ protected:
   bool m_stopped;
   int  m_urlset;
 };
-#endif
+

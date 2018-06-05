@@ -25,9 +25,6 @@
 \brief
 */
 
-#ifndef GUILIB_GUISCROLLBAR_H
-#define GUILIB_GUISCROLLBAR_H
-
 #include "GUITexture.h"
 #include "GUIControl.h"
 
@@ -81,4 +78,4 @@ protected:
   bool m_showOnePage;
   ORIENTATION m_orientation;
 };
-#endif
+

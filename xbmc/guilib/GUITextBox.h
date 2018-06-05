@@ -25,9 +25,6 @@
 \brief
 */
 
-#ifndef GUILIB_GUITEXTBOX_H
-#define GUILIB_GUITEXTBOX_H
-
 #include "GUITextLayout.h"
 #include "GUIControl.h"
 #include "GUILabel.h"
@@ -109,4 +106,4 @@ protected:
 
   KODI::GUILIB::GUIINFO::CGUIInfoLabel m_info;
 };
-#endif
+

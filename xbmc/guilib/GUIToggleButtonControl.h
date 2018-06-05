@@ -25,9 +25,6 @@
 \brief
 */
 
-#ifndef GUILIB_GUITOGGLEBUTTONCONTROL_H
-#define GUILIB_GUITOGGLEBUTTONCONTROL_H
-
 #include "GUIButtonControl.h"
 
 /*!
@@ -68,4 +65,4 @@ private:
   void ProcessToggle(unsigned int currentTime);
   std::string m_altLabel;
 };
-#endif
+

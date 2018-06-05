@@ -25,9 +25,6 @@
 \brief
 */
 
-#ifndef GUILIB_COLORMANAGER_H
-#define GUILIB_COLORMANAGER_H
-
 /*!
  \ingroup textures
  \brief
@@ -63,4 +60,4 @@ protected:
  \brief
  */
 extern CGUIColorManager g_colorManager;
-#endif
+

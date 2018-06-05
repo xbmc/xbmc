@@ -25,9 +25,6 @@
 
 #pragma once
 
-#ifndef LIBDVDNAV_DVDNAV_H
-#define LIBDVDNAV_DVDNAV_H
-
 #define MP_DVDNAV 1
 
 #ifdef __cplusplus
@@ -708,4 +705,3 @@ int64_t dvdnav_convert_time(dvd_time_t *time);
 }
 #endif
 
-#endif /* LIBDVDNAV_DVDNAV_H */

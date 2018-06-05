@@ -19,9 +19,6 @@
  */
 
 #pragma once
-
-#ifndef NETWORK_LINUX_H_
-#define NETWORK_LINUX_H_
  
 #include <string>
 #include <vector>
@@ -109,4 +106,3 @@ private:
 
 using CNetwork = CNetworkWin32;
 
-#endif

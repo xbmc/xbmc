@@ -25,8 +25,6 @@
 
 #pragma once
 
-#ifndef HTTPPARSER_H_
-#define HTTPPARSER_H_
 #include <stdlib.h>
 #include <vector>
 #include <string>
@@ -110,4 +108,4 @@ private:
 
     status_t _status;
 };
-#endif//HTTPPARSER_H_
+

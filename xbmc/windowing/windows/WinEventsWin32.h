@@ -20,9 +20,6 @@
 
 #pragma once
 
-#ifndef WINDOW_EVENTS_WIN32_H
-#define WINDOW_EVENTS_WIN32_H
-
 #include "windowing/WinEvents.h"
 #include "input/touch/TouchTypes.h"
 
@@ -45,4 +42,3 @@ private:
   static CGenericTouchSwipeDetector *m_touchSwipeDetector;
 };
 
-#endif // WINDOW_EVENTS_WIN32_H

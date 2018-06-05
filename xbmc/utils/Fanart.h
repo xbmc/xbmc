@@ -1,6 +1,3 @@
-#if !defined(FANART_H_)
-#define FANART_H_
-
 /*
  *      Copyright (C) 2005-2013 Team XBMC
  *      http://kodi.tv
@@ -120,4 +117,3 @@ private:
   std::vector<SFanartData> m_fanart;
 };
 
-#endif

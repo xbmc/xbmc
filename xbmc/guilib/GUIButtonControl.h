@@ -110,4 +110,4 @@ protected:
 
   bool m_bSelected;
 };
-#endif
+

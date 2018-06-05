@@ -1,6 +1,3 @@
-#ifndef ZIP_MANAGER_H_
-#define ZIP_MANAGER_H_
-
 /*
  *      Copyright (C) 2005-2013 Team XBMC
  *      http://kodi.tv
@@ -121,4 +118,3 @@ private:
 
 extern CZipManager g_ZipManager;
 
-#endif

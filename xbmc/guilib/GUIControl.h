@@ -25,9 +25,6 @@
 \brief
 */
 
-#ifndef GUILIB_GUICONTROL_H
-#define GUILIB_GUICONTROL_H
-
 #include <vector>
 
 #include "utils/Color.h"
@@ -387,4 +384,3 @@ protected:
   CRect m_renderRegion;         // In screen coordinates
 };
 
-#endif

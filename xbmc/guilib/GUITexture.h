@@ -25,9 +25,6 @@
 \brief
 */
 
-#ifndef GUILIB_GUITEXTURE_H
-#define GUILIB_GUITEXTURE_H
-
 #include "TextureManager.h"
 #include "utils/Color.h"
 #include "utils/Geometry.h"
@@ -184,4 +181,3 @@ protected:
 #define CGUITexture CGUITextureD3D
 #endif
 
-#endif

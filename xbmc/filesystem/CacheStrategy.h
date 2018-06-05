@@ -20,9 +20,6 @@
 
 #pragma once
 
-#ifndef XFILECACHESTRATEGY_H
-#define XFILECACHESTRATEGY_H
-
 #include <stdint.h>
 #include <string>
 #include "threads/Event.h"
@@ -144,4 +141,3 @@ protected:
 
 }
 
-#endif

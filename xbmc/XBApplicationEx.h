@@ -20,9 +20,6 @@
 
 #pragma once
 
-#ifndef XBAPPLICATIONEX_H
-#define XBAPPLICATIONEX_H
-
 #include "guilib/IWindowManagerCallback.h"
 
 class CAppParamParser;
@@ -58,4 +55,3 @@ public:
 private:
 };
 
-#endif /* XBAPPLICATIONEX_H */

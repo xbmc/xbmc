@@ -20,9 +20,6 @@
 
 #pragma once
 
-#ifndef CACHECIRCULAR_H
-#define CACHECIRCULAR_H
-
 #include "CacheStrategy.h"
 #include "threads/CriticalSection.h"
 #include "threads/Event.h"
@@ -66,4 +63,4 @@ protected:
 };
 
 } // namespace XFILE
-#endif
+

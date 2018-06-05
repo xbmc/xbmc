@@ -25,9 +25,6 @@
 \brief
 */
 
-#ifndef GUILIB_SPINCONTROLEX_H
-#define GUILIB_SPINCONTROLEX_H
-
 #include "GUISpinControl.h"
 #include "GUIButtonControl.h"
 
@@ -69,4 +66,4 @@ protected:
   CGUIButtonControl m_buttonControl;
   float m_spinPosX;
 };
-#endif
+

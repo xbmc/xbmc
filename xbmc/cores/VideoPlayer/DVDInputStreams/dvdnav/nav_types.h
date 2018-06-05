@@ -27,9 +27,6 @@
 
 #pragma once
 
-#ifndef LIBDVDREAD_NAV_TYPES_H
-#define LIBDVDREAD_NAV_TYPES_H
-
 //#include <inttypes.h>
 #include "ifo_types.h" /* only dvd_time_t, vm_cmd_t and user_ops_t */
 
@@ -271,4 +268,3 @@ typedef struct {
 #pragma pack()
 #endif
 
-#endif /* LIBDVDREAD_NAV_TYPES_H */

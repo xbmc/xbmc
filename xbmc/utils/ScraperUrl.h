@@ -1,6 +1,3 @@
-#ifndef SCRAPER_URL_H
-#define SCRAPER_URL_H
-
 /*
  *      Copyright (C) 2005-2013 Team XBMC
  *      http://kodi.tv
@@ -89,7 +86,4 @@ public:
   double relevance;
   std::vector<SUrlEntry> m_url;
 };
-
-#endif
-
 

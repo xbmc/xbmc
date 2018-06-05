@@ -20,9 +20,6 @@
 
 #pragma once
 
-#ifndef KODI_GAME_TYPES_H_
-#define KODI_GAME_TYPES_H_
-
 #include "versions.h"
 #include "xbmc_addon_types.h"
 
@@ -718,4 +715,3 @@ typedef struct AddonInstance_Game
 }
 #endif
 
-#endif // KODI_GAME_TYPES_H_

@@ -20,9 +20,6 @@
 
 #pragma once
 
-#ifndef WINDOW_SYSTEM_WIN32_H
-#define WINDOW_SYSTEM_WIN32_H
-
 #include "guilib/DispResource.h"
 #include "threads/CriticalSection.h"
 #include "threads/SystemClock.h"
@@ -206,6 +203,4 @@ protected:
 };
 
 extern HWND g_hWnd;
-
-#endif // WINDOW_SYSTEM_H
 

@@ -25,9 +25,6 @@
 \brief
 */
 
-#ifndef GUILIB_GUIPROGRESSCONTROL_H
-#define GUILIB_GUIPROGRESSCONTROL_H
-
 #include "GUITexture.h"
 #include "GUIControl.h"
 
@@ -78,4 +75,4 @@ protected:
   bool m_bReveal;
   bool m_bChanged;
 };
-#endif
+

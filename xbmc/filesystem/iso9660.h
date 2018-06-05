@@ -21,8 +21,6 @@
 
 #pragma once
 
-#ifndef ISO9660_H
-#define ISO9660_H
 #include <vector>
 #include <string>
 #include "PlatformDefs.h" // for win32 types
@@ -233,4 +231,4 @@ protected:
 
 };
 extern class iso9660 m_isoReader;
-#endif
+

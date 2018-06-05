@@ -25,9 +25,6 @@
 \brief
 */
 
-#ifndef GUILIB_GUITEXTURED3D_H
-#define GUILIB_GUITEXTURED3D_H
-
 #include "GUITexture.h"
 #include "utils/Color.h"
 
@@ -47,4 +44,3 @@ private:
   UTILS::Color       m_col;
 };
 
-#endif

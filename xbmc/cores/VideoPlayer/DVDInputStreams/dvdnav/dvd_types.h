@@ -25,9 +25,6 @@
  * Various useful structs and enums for DVDs.
  */
 
-#ifndef LIBDVDNAV_DVD_TYPES_H
-#define LIBDVDNAV_DVD_TYPES_H
-
 /*
  * DVD Menu ID
  * (see dvdnav_menu_call())
@@ -276,4 +273,3 @@ typedef struct {
 
 #endif
 
-#endif /* LIBDVDNAV_DVD_TYPES_H */

@@ -25,9 +25,6 @@
 \brief
 */
 
-#ifndef CGUILIB_GUIFONT_H
-#define CGUILIB_GUIFONT_H
-
 #include <assert.h>
 #include <math.h>
 #include <string>
@@ -177,4 +174,3 @@ private:
   bool ClippedRegionIsEmpty(float x, float y, float width, uint32_t alignment) const;
 };
 
-#endif

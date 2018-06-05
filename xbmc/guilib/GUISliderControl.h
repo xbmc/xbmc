@@ -25,9 +25,6 @@
 \brief
 */
 
-#ifndef GUILIB_GUISLIDERCONTROL_H
-#define GUILIB_GUISLIDERCONTROL_H
-
 #include "GUIControl.h"
 #include "GUITexture.h"
 
@@ -133,4 +130,4 @@ protected:
   bool m_dragging; ///< Whether we're in a (mouse/touch) drag operation or not - some actions are sent only on release.
   ORIENTATION m_orientation;
 };
-#endif
+

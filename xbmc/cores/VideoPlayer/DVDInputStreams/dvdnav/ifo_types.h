@@ -21,9 +21,6 @@
 
 #pragma once
 
-#ifndef LIBDVDREAD_IFO_TYPES_H
-#define LIBDVDREAD_IFO_TYPES_H
-
 //#include <inttypes.h>
 #include "dvd_reader.h"
 
@@ -752,4 +749,3 @@ typedef struct {
   vobu_admap_t   *vts_vobu_admap;
 } ifo_handle_t;
 
-#endif /* LIBDVDREAD_IFO_TYPES_H */

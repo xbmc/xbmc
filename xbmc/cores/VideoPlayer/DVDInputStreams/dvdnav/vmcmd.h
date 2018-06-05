@@ -21,10 +21,6 @@
 
 #pragma once
 
-#ifndef LIBDVDNAV_VMCMD_H
-#define LIBDVDNAV_VMCMD_H
-
 void vm_print_mnemonic(vm_cmd_t *command);
 void vm_print_cmd(int row, vm_cmd_t *command);
 
-#endif /* LIBDVDNAV_VMCMD_H */

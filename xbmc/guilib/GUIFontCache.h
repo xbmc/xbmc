@@ -25,9 +25,6 @@
 \brief
 */
 
-#ifndef CGUILIB_GUIFONTCACHE_H
-#define CGUILIB_GUIFONTCACHE_H
-
 #include <cstddef>
 #include <cstring>
 #include <stdint.h>
@@ -265,4 +262,3 @@ inline float MatrixHashContribution(const CGUIFontCacheKey<CGUIFontCacheDynamicP
   return 0;
 }
 
-#endif

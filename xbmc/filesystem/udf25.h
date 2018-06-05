@@ -1,5 +1,3 @@
-#ifndef UDF25_H
-#define UDF25_H
 /*
  *      Copyright (C) 2010 Team Boxee
  *      http://www.boxee.tv
@@ -229,4 +227,3 @@ protected:
   XFILE::CFile* m_fp;
 };
 
-#endif

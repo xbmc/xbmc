@@ -25,9 +25,6 @@
 \brief
 */
 
-#ifndef GUI_CONTROL_FACTORY_H
-#define GUI_CONTROL_FACTORY_H
-
 #include <string>
 #include <vector>
 
@@ -168,4 +165,4 @@ private:
                             const char *centerRightTag, const char *widthTag, const float parentSize, float &left,
                             float &width, float &min_width);
 };
-#endif
+

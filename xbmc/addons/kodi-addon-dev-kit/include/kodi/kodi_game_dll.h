@@ -20,9 +20,6 @@
 
 #pragma once
 
-#ifndef KODI_GAME_DLL_H_
-#define KODI_GAME_DLL_H_
-
 #include "kodi_game_types.h"
 
 #ifdef __cplusplus
@@ -340,4 +337,3 @@ void __declspec(dllexport) get_addon(void* ptr)
 }
 #endif
 
-#endif // KODI_GAME_DLL_H_

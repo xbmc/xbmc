@@ -25,9 +25,6 @@
 \brief
 */
 
-#ifndef GUILIB_GUILABELCONTROL_H
-#define GUILIB_GUILABELCONTROL_H
-
 #include "GUIControl.h"
 #include "GUILabel.h"
 #include "guilib/guiinfo/GUIInfoLabel.h"
@@ -92,4 +89,4 @@ protected:
   unsigned int m_startSelection;
   unsigned int m_endSelection;
 };
-#endif
+

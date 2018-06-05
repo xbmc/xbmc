@@ -25,9 +25,6 @@
 \brief
 */
 
-#ifndef GUILIB_GUIFADELABELCONTROL_H
-#define GUILIB_GUIFADELABELCONTROL_H
-
 #include <vector>
 
 #include "GUIControl.h"
@@ -87,4 +84,4 @@ protected:
   bool m_resetOnLabelChange;
   bool m_randomized;
 };
-#endif
+

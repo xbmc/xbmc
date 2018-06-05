@@ -25,9 +25,6 @@
 \brief
 */
 
-#ifndef GUILIB_GUIRESIZECONTROL_H
-#define GUILIB_GUIRESIZECONTROL_H
-
 #include "GUITexture.h"
 #include "GUIControl.h"
 
@@ -83,4 +80,4 @@ protected:
   float m_fAcceleration;
   float m_x1, m_x2, m_y1, m_y2;
 };
-#endif
+

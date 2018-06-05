@@ -25,9 +25,6 @@
 \brief
 */
 
-#ifndef GUILIB_SPINCONTROL_H
-#define GUILIB_SPINCONTROL_H
-
 #include <vector>
 
 #include "GUIControl.h"
@@ -139,4 +136,4 @@ protected:
   int m_numItems;
   bool m_showOnePage;
 };
-#endif
+

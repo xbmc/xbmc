@@ -25,9 +25,6 @@
 \brief
 */
 
-#ifndef GUILIB_GUILISTITEM_H
-#define GUILIB_GUILISTITEM_H
-
 #include <map>
 #include <string>
 #include <memory>
@@ -202,5 +199,4 @@ private:
   ArtMap m_art;
   ArtMap m_artFallbacks;
 };
-#endif
 

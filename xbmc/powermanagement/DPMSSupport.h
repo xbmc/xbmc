@@ -20,9 +20,6 @@
 
 #pragma once
 
-#ifndef DPMSSUPPORT_H
-#define DPMSSUPPORT_H
-
 #include <vector>
 
 // This class encapsulates support for monitor power-saving features (DPMS).
@@ -87,4 +84,3 @@ private:
   bool PlatformSpecificDisablePowerSaving();
 };
 
-#endif  // DPMSSUPPORT_H

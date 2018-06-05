@@ -25,9 +25,6 @@
 \brief
 */
 
-#ifndef GUILIB_GUIWINDOW_H
-#define GUILIB_GUIWINDOW_H
-
 #include "GUIAction.h"
 #include "GUIControlGroup.h"
 #include <memory>
@@ -303,4 +300,3 @@ private:
   std::map<INFO::InfoPtr, bool> m_xmlIncludeConditions; ///< \brief used to store conditions used to resolve includes for this window
 };
 
-#endif

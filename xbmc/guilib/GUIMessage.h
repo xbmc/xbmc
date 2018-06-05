@@ -25,9 +25,6 @@
 \brief
 */
 
-#ifndef GUILIB_MESSAGE_H
-#define GUILIB_MESSAGE_H
-
 #define GUI_MSG_WINDOW_INIT     1   // initialize window
 #define GUI_MSG_WINDOW_DEINIT   2   // deinit window
 #define GUI_MSG_WINDOW_RESET    27  // reset window to initial state
@@ -402,4 +399,4 @@ private:
 
   static std::string empty_string;
 };
-#endif
+

@@ -20,9 +20,6 @@
 
 #pragma once
 
-#ifndef _AVCLOCK_H_
-#define _AVCLOCK_H_
-
 #include "OMXCore.h"
 #include "DVDClock.h"
 #include "platform/linux/XTimeUtils.h"
@@ -96,4 +93,3 @@ public:
   static double NormalizeFrameduration(double frameduration);
 };
 
-#endif

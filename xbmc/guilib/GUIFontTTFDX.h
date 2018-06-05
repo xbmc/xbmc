@@ -25,9 +25,6 @@
 \brief
 */
 
-#ifndef CGUILIB_GUIFONTTTF_DX_H
-#define CGUILIB_GUIFONTTTF_DX_H
-
 #include "D3DResource.h"
 #include "GUIFontTTF.h"
 #include <list>
@@ -76,4 +73,3 @@ private:
   static Microsoft::WRL::ComPtr<ID3D11Buffer> m_staticIndexBuffer;
 };
 
-#endif

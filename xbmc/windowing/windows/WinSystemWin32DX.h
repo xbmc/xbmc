@@ -20,9 +20,6 @@
 
 #pragma once
 
-#ifndef WIN_SYSTEM_WIN32_DX_H
-#define WIN_SYSTEM_WIN32_DX_H
-
 #include "easyhook/easyhook.h"
 #include "rendering/dx/RenderSystemDX.h"
 #include "windowing/windows/WinSystemWin32.h"
@@ -92,4 +89,3 @@ protected:
   TRACED_HOOK_HANDLE m_hHook;
 };
 
-#endif // WIN_SYSTEM_WIN32_DX_H

@@ -18,9 +18,6 @@
  *
  */
 
-#ifndef RENDER_SYSTEM_DX_H
-#define RENDER_SYSTEM_DX_H
-
 #pragma once
 
 #include "DeviceResources.h"
@@ -133,4 +130,3 @@ protected:
   std::shared_ptr<DX::DeviceResources> m_deviceResources;
 };
 
-#endif // RENDER_SYSTEM_DX

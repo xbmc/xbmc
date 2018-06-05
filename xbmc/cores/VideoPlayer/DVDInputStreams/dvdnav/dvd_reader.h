@@ -22,9 +22,6 @@
 
 #pragma once
 
-#ifndef LIBDVDREAD_DVD_READER_H
-#define LIBDVDREAD_DVD_READER_H
-
 #ifdef _MSC_VER
 #include "config.h"
 
@@ -333,4 +330,4 @@ int DVDUDFCacheLevel( dvd_reader_t *, int );
 #ifdef __cplusplus
 };
 #endif
-#endif /* LIBDVDREAD_DVD_READER_H */
+

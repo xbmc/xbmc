@@ -20,9 +20,6 @@
 
 #pragma once
 
-#ifndef LIBDVDNAV_DVDNAV_INTERNAL_H
-#define LIBDVDNAV_DVDNAV_INTERNAL_H
-
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -231,4 +228,3 @@ dvdnav_status_t dvdnav_set_state(dvdnav_t *self, dvd_state_t *save_state);
 #define printerr(str) \
 	do { if (this) strncpy(this->err_str, str, MAX_ERR_LEN - 1); } while (0)
 
-#endif /* LIBDVDNAV_DVDNAV_INTERNAL_H */

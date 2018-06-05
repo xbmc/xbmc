@@ -21,8 +21,6 @@
 #pragma once
 
 // FileNFS.h: interface for the CNFSFile class.
-#ifndef FILENFS_H_
-#define FILENFS_H_
 
 #include "IFile.h"
 #include "URL.h"
@@ -163,6 +161,4 @@ namespace XFILE
     std::string m_exportPath;
   };
 }
-#endif // FILENFS_H_
-
 

@@ -25,9 +25,6 @@
 \brief
 */
 
-#ifndef GUILIB_GUIMULTIIMAGECONTROL_H
-#define GUILIB_GUIMULTIIMAGECONTROL_H
-
 #include <vector>
 
 #include "GUIImage.h"
@@ -101,4 +98,4 @@ protected:
   DIRECTORY_STATUS m_directoryStatus;
   unsigned int m_jobID;
 };
-#endif
+

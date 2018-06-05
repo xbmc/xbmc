@@ -25,9 +25,6 @@
 \brief
 */
 
-#ifndef GUILIB_FONTMANAGER_H
-#define GUILIB_FONTMANAGER_H
-
 #include <utility>
 #include <vector>
 
@@ -102,4 +99,4 @@ protected:
  */
 XBMC_GLOBAL_REF(GUIFontManager, g_fontManager);
 #define g_fontManager XBMC_GLOBAL_USE(GUIFontManager)
-#endif
+

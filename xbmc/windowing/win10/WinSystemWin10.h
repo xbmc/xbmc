@@ -20,9 +20,6 @@
 
 #pragma once
 
-#ifndef WINDOW_SYSTEM_WIN10_H
-#define WINDOW_SYSTEM_WIN10_H
-
 #include "guilib/DispResource.h"
 #include "threads/CriticalSection.h"
 #include "threads/SystemClock.h"
@@ -166,4 +163,3 @@ protected:
 
 #pragma pack(pop)
 
-#endif // WINDOW_SYSTEM_WIN10_H

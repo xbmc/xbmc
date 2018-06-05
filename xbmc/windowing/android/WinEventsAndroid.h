@@ -20,9 +20,6 @@
 
 #pragma once
 
-#ifndef WINDOW_EVENTS_ANDROID_H
-#define WINDOW_EVENTS_ANDROID_H
-
 #include <list>
 #include <queue>
 #include <vector>
@@ -55,6 +52,4 @@ private:
   CCriticalSection             m_lasteventCond;
   std::queue<XBMC_Event>       m_lastevent;
 };
-
-#endif // WINDOW_EVENTS_ANDROID_H
 

@@ -1,5 +1,3 @@
-#ifndef UDF_DIRECTORY_H
-#define UDF_DIRECTORY_H
 /*
  *      Copyright (C) 2010 Team Boxee
  *      http://www.boxee.tv
@@ -41,4 +39,3 @@ public:
 };
 }
 
-#endif

@@ -25,9 +25,6 @@
 \brief
 */
 
-#ifndef GUILIB_GUIIMAGECONTROL_H
-#define GUILIB_GUIIMAGECONTROL_H
-
 #include <vector>
 
 #include "GUIControl.h"
@@ -126,4 +123,4 @@ protected:
   unsigned int m_currentFadeTime;
   unsigned int m_lastRenderTime;
 };
-#endif
+

@@ -20,9 +20,6 @@
 
 #pragma once
 
-#ifndef CRSSDIRECTORY_H_
-#define CRSSDIRECTORY_H_
-
 #include "IFileDirectory.h"
 #include "FileItem.h"
 
@@ -45,4 +42,3 @@ namespace XFILE
   };
 }
 
-#endif /*CRSSDIRECTORY_H_*/

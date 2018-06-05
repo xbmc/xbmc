@@ -25,9 +25,6 @@
 \brief
 */
 
-#ifndef GUILIB_GUIVIDEOCONTROL_H
-#define GUILIB_GUIVIDEOCONTROL_H
-
 #include "GUIControl.h"
 
 /*!
@@ -49,4 +46,4 @@ public:
   bool CanFocus() const override;
   bool CanFocusFromPoint(const CPoint &point) const override;
 };
-#endif
+

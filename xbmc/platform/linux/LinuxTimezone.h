@@ -1,6 +1,3 @@
-#ifndef LINUX_TIMEZONE_
-#define LINUX_TIMEZONE_
-
 /*
  *      Copyright (C) 2005-2013 Team XBMC
  *      http://kodi.tv
@@ -63,4 +60,3 @@ private:
 
 extern CLinuxTimezone g_timezone;
 
-#endif

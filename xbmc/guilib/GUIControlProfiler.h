@@ -20,9 +20,6 @@
 
 #pragma once
 
-#ifndef GUILIB_GUICONTROLPROFILER_H__
-#define GUILIB_GUICONTROLPROFILER_H__
-
 #include <vector>
 
 #include "GUIControl.h"
@@ -101,4 +98,3 @@ private:
 #define GUIPROFILER_RENDER_BEGIN(x) { if (CGUIControlProfiler::IsRunning()) CGUIControlProfiler::Instance().BeginRender(x); }
 #define GUIPROFILER_RENDER_END(x) { if (CGUIControlProfiler::IsRunning()) CGUIControlProfiler::Instance().EndRender(x); }
 
-#endif

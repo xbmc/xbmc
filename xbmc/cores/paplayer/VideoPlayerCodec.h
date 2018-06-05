@@ -1,6 +1,3 @@
-#ifndef VideoPlayer_CODEC_H_
-#define VideoPlayer_CODEC_H_
-
 /*
  *      Copyright (C) 2005-2013 Team XBMC
  *      http://kodi.tv
@@ -79,4 +76,3 @@ private:
   std::unique_ptr<CProcessInfo> m_processInfo;
 };
 
-#endif

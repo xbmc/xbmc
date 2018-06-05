@@ -25,9 +25,6 @@
 \brief
 */
 
-#ifndef GUILIB_LOCALIZESTRINGS_H
-#define GUILIB_LOCALIZESTRINGS_H
-
 #include "threads/CriticalSection.h"
 #include "threads/SharedSection.h"
 
@@ -86,4 +83,4 @@ protected:
  */
 extern CLocalizeStrings g_localizeStrings;
 extern CLocalizeStrings g_localizeStringsTemp;
-#endif
+
