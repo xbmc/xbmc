@@ -69,11 +69,11 @@ bool CDRMUtils::SetMode(RESOLUTION_INFO& res)
 
 void CDRMUtils::DrmFbDestroyCallback(struct gbm_bo *bo, void *data)
 {
-  int drm_fd = gbm_device_get_fd(gbm_bo_get_device(bo));
   struct drm_fb *fb = static_cast<drm_fb *>(data);
 
   if(fb->fb_id)
   {
+    int drm_fd = gbm_device_get_fd(gbm_bo_get_device(bo));
     drmModeRmFB(drm_fd, fb->fb_id);
   }
 
