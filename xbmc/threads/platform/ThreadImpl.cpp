@@ -18,8 +18,6 @@
  *
  */
 
-#pragma once
-
 #if (defined TARGET_POSIX)
 #include "threads/platform/pthreads/ThreadImpl.cpp"
 #if defined(TARGET_DARWIN_IOS)
