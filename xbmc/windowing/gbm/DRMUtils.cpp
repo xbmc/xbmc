@@ -710,5 +710,5 @@ bool CDRMUtils::GetModes(std::vector<RESOLUTION_INFO> &resolutions)
     resolutions.push_back(res);
   }
 
-  return resolutions.size() > 0;
+  return !resolutions.empty();
 }
