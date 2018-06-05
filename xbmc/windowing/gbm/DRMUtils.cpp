@@ -53,7 +53,7 @@ void CDRMUtils::WaitVBlank()
   drmWaitVBlank(m_fd, &vbl);
 }
 
-bool CDRMUtils::SetMode(RESOLUTION_INFO& res)
+bool CDRMUtils::SetMode(const RESOLUTION_INFO& res)
 {
   m_mode = &m_connector->connector->modes[atoi(res.strId.c_str())];
 

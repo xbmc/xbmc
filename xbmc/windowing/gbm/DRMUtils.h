@@ -69,7 +69,7 @@ public:
   CDRMUtils();
   virtual ~CDRMUtils() = default;
   virtual void FlipPage(struct gbm_bo *bo, bool rendered, bool videoLayer) {};
-  virtual bool SetVideoMode(RESOLUTION_INFO& res, struct gbm_bo *bo) { return false; };
+  virtual bool SetVideoMode(const RESOLUTION_INFO& res, struct gbm_bo *bo) { return false; };
   virtual bool SetActive(bool active) { return false; };
   virtual bool InitDrm();
   virtual void DestroyDrm();
@@ -78,7 +78,7 @@ public:
   std::string GetDevicePath() const { return m_device_path; }
 
   bool GetModes(std::vector<RESOLUTION_INFO> &resolutions);
-  bool SetMode(RESOLUTION_INFO& res);
+  bool SetMode(const RESOLUTION_INFO& res);
   void WaitVBlank();
 
   bool AddProperty(drmModeAtomicReqPtr req, struct drm_object *object, const char *name, uint64_t value);
