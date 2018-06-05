@@ -78,10 +78,11 @@ do_removeOption() {
 
 do_getFFmpegConfig
 
+# enable OpenSSL, because schannel has issues
 do_removeOption "--enable-gnutls"
-do_removeOption "--enable-openssl"
 do_addOption "--disable-gnutls"
-do_addOption "--disable-openssl"
+do_addOption "--enable-openssl"
+do_addOption "--enable-nonfree"
 do_addOption "--toolchain=msvc"
 
 if [ "$ARCH" == "x86_64" ]; then
@@ -96,13 +97,9 @@ export CFLAGS=""
 export CXXFLAGS=""
 export LDFLAGS=""
 
-extra_cflags="-I$LOCALDESTDIR/include -I/depends/$TRIPLET/include"
+extra_cflags="-I$LOCALDESTDIR/include -I/depends/$TRIPLET/include -DWIN32_LEAN_AND_MEAN"
 extra_ldflags="-LIBPATH:\"$LOCALDESTDIR/lib\" -LIBPATH:\"$MINGW_PREFIX/lib\" -LIBPATH:\"/depends/$TRIPLET/lib\""
 if [ $win10 == "yes" ]; then
-  # enable OpenSSL on UWP, because schannel isn't available
-  do_removeOption "--disable-openssl"
-  do_addOption "--enable-openssl"
-  do_addOption "--enable-nonfree"
   do_addOption "--enable-cross-compile"
   extra_cflags=$extra_cflags" -MD -DWINAPI_FAMILY=WINAPI_FAMILY_APP -D_WIN32_WINNT=0x0A00"
   extra_ldflags=$extra_ldflags" -APPCONTAINER WindowsApp.lib"
