@@ -193,7 +193,7 @@ bool CDRMUtils::SetProperty(struct drm_object *object, const char *name, uint64_
   if (!property_id)
     return false;
 
-  if (drmModeObjectSetProperty(m_fd, object->id, object->type, property_id, value))
+  if (drmModeObjectSetProperty(m_fd, object->id, object->type, property_id, value) < 0)
   {
     CLog::Log(LOGERROR, "CDRMUtils::%s - could not set property %s", __FUNCTION__, name);
     return false;
