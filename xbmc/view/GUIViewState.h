@@ -119,6 +119,7 @@ class CGUIViewStateFromItems : public CGUIViewState
 {
 public:
   explicit CGUIViewStateFromItems(const CFileItemList& items);
+  bool AutoPlayNextItem() override;
 
 protected:
   void SaveViewState() override;
