@@ -76,17 +76,20 @@ bool CWinRenderBuffer::CreateTexture()
   return true;
 }
 
-uint8_t *CWinRenderBuffer::GetTexture()
+bool CWinRenderBuffer::GetTexture(uint8_t*& data, unsigned int& stride)
 {
   // Scale and upload texture
   D3D11_MAPPED_SUBRESOURCE destlr;
   if (!m_intermediateTarget->LockRect(0, &destlr, D3D11_MAP_WRITE_DISCARD))
   {
     CLog::Log(LOGERROR, "WinRenderer: Failed to lock swtarget texture into memory");
-    return nullptr;
+    return false;
   }
 
-  return static_cast<uint8_t*>(destlr.pData);
+  data = static_cast<uint8_t*>(destlr.pData);
+  stride = destlr.RowPitch;
+
+  return true;
 }
 
 bool CWinRenderBuffer::ReleaseTexture()
@@ -108,13 +111,6 @@ bool CWinRenderBuffer::UploadTexture()
     return false;
   }
 
-  const size_t destSize = m_width * m_height * (CD3DHelper::BitsPerPixel(m_targetDxFormat) >> 3);
-  if (destSize == 0)
-  {
-    CLog::Log(LOGERROR, "WinRenderer: Unknown bits per pixel for DX format %d", m_targetDxFormat);
-    return false;
-  }
-
   if (!CreateScalingContext())
     return false;
 
@@ -129,11 +125,13 @@ bool CWinRenderBuffer::UploadTexture()
     }
   }
 
-  uint8_t *destData = GetTexture();
-  if (destData == nullptr)
+  uint8_t *destData = nullptr;
+  unsigned int destStride = 0;
+  if (!GetTexture(destData, destStride))
     return false;
 
-  ScalePixels(m_data.data(), m_data.size(), destData, destSize);
+  const unsigned int sourceStride = static_cast<unsigned int>(m_data.size() / m_height);
+  ScalePixels(m_data.data(), sourceStride, destData, destStride);
 
   if (!ReleaseTexture())
     return false;
@@ -155,15 +153,12 @@ bool CWinRenderBuffer::CreateScalingContext()
   return true;
 }
 
-void CWinRenderBuffer::ScalePixels(uint8_t *source, size_t sourceSize, uint8_t *target, size_t targetSize)
+void CWinRenderBuffer::ScalePixels(uint8_t *source, unsigned int sourceStride, uint8_t *target, unsigned int targetStride)
 {
-  const int sourceStride = static_cast<int>(sourceSize / m_height);
-  const int targetStride = static_cast<int>(targetSize / m_height);
-
-  uint8_t* src[] =       { source,        nullptr,   nullptr,   nullptr };
-  int      srcStride[] = { sourceStride,  0,         0,         0       };
-  uint8_t *dst[] =       { target,        nullptr,   nullptr,   nullptr };
-  int      dstStride[] = { targetStride,  0,         0,         0       };
+  uint8_t* src[] =       { source,                          nullptr,   nullptr,   nullptr };
+  int      srcStride[] = { static_cast<int>(sourceStride),  0,         0,         0       };
+  uint8_t* dst[] =       { target,                          nullptr,   nullptr,   nullptr };
+  int      dstStride[] = { static_cast<int>(targetStride),  0,         0,         0       };
 
   sws_scale(m_swsContext, src, srcStride, 0, m_height, dst, dstStride);
 }
