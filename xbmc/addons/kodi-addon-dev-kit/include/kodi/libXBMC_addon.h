@@ -203,14 +203,18 @@ namespace ADDON
      * @brief Add a message to XBMC's log.
      * @param loglevel The log level of the message.
      * @param format The format of the message to pass to XBMC.
+     * @note This method uses limited buffer (16k) for the formatted output.
+     * So data, which will not fit into it, will be silently discarded.
      */
     void Log(const addon_log_t loglevel, const char *format, ... )
     {
       char buffer[16384];
+      static constexpr size_t len = sizeof (buffer) - 1;
       va_list args;
       va_start (args, format);
-      vsprintf (buffer, format, args);
+      vsnprintf (buffer, len, format, args);
       va_end (args);
+      buffer[len] = '\0'; // to be sure it's null-terminated
       m_Callbacks->Log(m_Handle->addonData, loglevel, buffer);
     }
 
