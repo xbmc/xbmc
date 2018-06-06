@@ -479,7 +479,7 @@ bool CDRMUtils::GetPlanes()
 
 bool CDRMUtils::OpenDrm()
 {
-  std::vector<const char*>modules =
+  static constexpr const char *modules[] =
   {
     "i915",
     "amdgpu",
