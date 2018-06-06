@@ -398,7 +398,17 @@ bool CGUIViewStateWindowVideoNav::AutoPlayNextItem()
   if (params.GetContentType() == VIDEODB_CONTENT_MUSICVIDEOS || params.GetContentType() == 6) // recently added musicvideos
     return CServiceBroker::GetSettings().GetBool(CSettings::SETTING_MUSICPLAYER_AUTOPLAYNEXTITEM);
 
-  return CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_AUTOPLAYNEXTITEM);
+  int settingValue(-1);
+  if (m_items.GetContent() == "musicvideos")
+    settingValue = CSettings::SETTING_AUTOPLAYNEXT_MUSICVIDEOS;
+  if (m_items.GetContent() == "tvshows")
+    settingValue = CSettings::SETTING_AUTOPLAYNEXT_TVSHOWS;
+  if (m_items.GetContent() == "episodes")
+    settingValue = CSettings::SETTING_AUTOPLAYNEXT_EPISODES;
+  if (m_items.GetContent() == "movies")
+    settingValue = CSettings::SETTING_AUTOPLAYNEXT_MOVIES;
+
+  return settingValue >= 0 && CServiceBroker::GetSettings().FindIntInList(CSettings::SETTING_VIDEOPLAYER_AUTOPLAYNEXTITEM, settingValue);
 }
 
 CGUIViewStateWindowVideoPlaylist::CGUIViewStateWindowVideoPlaylist(const CFileItemList& items) : CGUIViewStateWindowVideo(items)

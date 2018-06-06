@@ -589,15 +589,17 @@ CGUIViewStateFromItems::CGUIViewStateFromItems(const CFileItemList &items) : CGU
 
 bool CGUIViewStateFromItems::AutoPlayNextItem()
 {
-  if (m_items.GetContent() == "musicvideos" ||
-    m_items.GetContent() == "tvshows" ||
-    m_items.GetContent() == "episodes" ||
-    m_items.GetContent() == "movies")
-  {
-    return CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_AUTOPLAYNEXTITEM);
-  }
+  int settingValue(-1);
+  if (m_items.GetContent() == "musicvideos")
+    settingValue = CSettings::SETTING_AUTOPLAYNEXT_MUSICVIDEOS;
+  if (m_items.GetContent() == "tvshows")
+    settingValue = CSettings::SETTING_AUTOPLAYNEXT_TVSHOWS;
+  if (m_items.GetContent() == "episodes")
+    settingValue = CSettings::SETTING_AUTOPLAYNEXT_EPISODES;
+  if (m_items.GetContent() == "movies")
+    settingValue = CSettings::SETTING_AUTOPLAYNEXT_MOVIES;
 
-  return false;
+  return settingValue >= 0 && CServiceBroker::GetSettings().FindIntInList(CSettings::SETTING_VIDEOPLAYER_AUTOPLAYNEXTITEM, settingValue);
 }
 
 void CGUIViewStateFromItems::SaveViewState()

@@ -175,6 +175,14 @@ void CSettingsBase::UnregisterCallback(ISettingCallback* callback)
   m_settingsManager->UnregisterCallback(callback);
 }
 
+bool CSettingsBase::FindIntInList(const std::string &id, int value)
+{
+  if (id.empty())
+    return nullptr;
+
+  return m_settingsManager->FindIntInList(id, value);
+}
+
 SettingPtr CSettingsBase::GetSetting(const std::string& id) const
 {
   if (id.empty())

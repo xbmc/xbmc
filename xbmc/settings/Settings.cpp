@@ -430,6 +430,11 @@ const std::string CSettings::SETTING_GAMES_ENABLE = "gamesgeneral.enable";
 const std::string CSettings::SETTING_GAMES_ENABLEREWIND = "gamesgeneral.enablerewind";
 const std::string CSettings::SETTING_GAMES_REWINDTIME = "gamesgeneral.rewindtime";
 
+const int CSettings::SETTING_AUTOPLAYNEXT_MUSICVIDEOS = 0;
+const int CSettings::SETTING_AUTOPLAYNEXT_TVSHOWS = 1;
+const int CSettings::SETTING_AUTOPLAYNEXT_EPISODES = 2;
+const int CSettings::SETTING_AUTOPLAYNEXT_MOVIES = 3;
+
 bool CSettings::Initialize()
 {
   CSingleLock lock(m_critical);

@@ -111,6 +111,15 @@ public:
   void UnregisterCallback(ISettingCallback* callback);
 
   /*!
+  \brief Search in a list of Ints for a given value.
+
+  \param id Setting identifier
+  \param value value to search for
+  \return True if value was found in list, false otherwise
+  */
+  bool FindIntInList(const std::string &id, int value);
+
+  /*!
    \brief Gets the setting with the given identifier.
 
    \param id Setting identifier

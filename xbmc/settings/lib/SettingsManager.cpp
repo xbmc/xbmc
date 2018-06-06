@@ -714,6 +714,20 @@ bool CSettingsManager::SetList(const std::string &id, const std::vector< std::sh
   return std::static_pointer_cast<CSettingList>(setting)->SetValue(value);
 }
 
+bool CSettingsManager::FindIntInList(const std::string &id, int value)
+{
+  CSharedLock lock(m_settingsCritical);
+  SettingPtr setting = GetSetting(id);
+  if (setting == nullptr || setting->GetType() != SettingType::List)
+    return false;
+
+  for (auto item : std::static_pointer_cast<CSettingList>(setting)->GetValue())
+    if (item->GetType() == SettingType::Integer && std::static_pointer_cast<CSettingInt>(item)->GetValue() == value)
+      return true;
+
+  return false;
+}
+
 bool CSettingsManager::SetDefault(const std::string &id)
 {
   CSharedLock lock(m_settingsCritical);
