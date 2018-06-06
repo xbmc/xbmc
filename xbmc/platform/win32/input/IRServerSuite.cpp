@@ -77,15 +77,23 @@ void CIRServerSuite::Process()
   m_profileId = CServiceBroker::GetProfileManager().GetCurrentProfileId();
   m_irTranslator.Load(IRSS_MAP_FILENAME);
 
-  // try to connect 60 times @ a 5 second interval (5 minutes)
-  // multiple tries because irss service might be up and running a little later then xbmc on boot.
+  bool logging = true;
+
+  // try to connect continuously with a 5 second interval
+  // multiple tries because:
+  // 1. irss might be up and running a little later on boot.
+  // 2. irss might be restarted
   while (!m_bStop)
   {
-    if (!Connect(true))
+    if (!Connect(logging))
     {
-      CLog::LogF(LOGINFO, "failed to connect to irss, will keep retrying every 5 seconds");
+      if (logging)
+        CLog::LogF(LOGINFO, "failed to connect to irss, will keep retrying every 5 seconds");
+
       if (AbortableWait(m_event, 5000) == WAIT_SIGNALED)
         break;
+
+      logging = false;
       continue;
     }
 
@@ -93,6 +101,7 @@ void CIRServerSuite::Process()
     {
       if (!ReadNext())
       {
+        logging = true;
         break;
       }
     }
