@@ -25,7 +25,7 @@ import threading
 import os
 
 if os.path.exists("../../lib/python"):
-    sys.path.append("../PS3 BD Remote")
+    sys.path.append("../PS3BDRemote")
     sys.path.append("../../lib/python")
     from bt.hid import HID
     from bt.bt import bt_lookup_name
