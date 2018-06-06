@@ -83,7 +83,7 @@ class CVideoBufferPoolDRMPRIME
   : public IVideoBufferPool
 {
 public:
-  ~CVideoBufferPoolDRMPRIME() override;
+  ~CVideoBufferPoolDRMPRIME();
   void Return(int id) override;
   CVideoBuffer* Get() override;
 

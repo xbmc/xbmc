@@ -29,7 +29,7 @@ class CRendererDRMPRIME
 {
 public:
   CRendererDRMPRIME(std::shared_ptr<CDRMUtils> drm);
-  virtual ~CRendererDRMPRIME();
+  ~CRendererDRMPRIME();
 
   // Registration
   static CBaseRenderer* Create(CVideoBuffer* buffer);
