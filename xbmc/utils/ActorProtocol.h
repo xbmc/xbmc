@@ -20,9 +20,11 @@
 
 #pragma once
 
-#include "threads/Thread.h"
+#include "threads/CriticalSection.h"
+#include "threads/Event.h"
 #include <queue>
-#include "memory.h"
+#include <memory>
+#include <string>
 
 #define MSG_INTERNAL_BUFFER_SIZE 32
 

@@ -20,6 +20,8 @@
 
 #include "ActorProtocol.h"
 
+#include <cstring>
+
 using namespace Actor;
 
 void Message::Release()

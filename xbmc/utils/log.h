@@ -20,12 +20,10 @@
  *
  */
 
-#include <memory>
 #include <string>
 #include <utility>
 
 #include "commons/ilog.h"
-#include "utils/GlobalsHandling.h"
 #include "utils/StringUtils.h"
 
 

@@ -19,7 +19,7 @@
  *
  */
 
-#include "GUIPassword.h"
+#include "SettingsLock.h"
 #include "LockType.h"
 
 #include <string>

@@ -26,6 +26,7 @@
 #include "DatabaseManager.h"
 #include "FileItem.h"
 #include "GUIInfoManager.h"
+#include "GUIPassword.h"
 #include "PasswordManager.h"
 #include "ServiceBroker.h"
 #include "Util.h"

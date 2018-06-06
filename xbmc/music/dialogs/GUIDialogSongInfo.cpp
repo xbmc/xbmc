@@ -28,6 +28,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "GUIDialogMusicInfo.h"
 #include "GUIUserMessages.h"
+#include "GUIPassword.h"
 #include "input/Key.h"
 #include "music/Album.h"
 #include "music/MusicDatabase.h"

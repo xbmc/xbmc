@@ -31,6 +31,7 @@
 #include "dialogs/GUIDialogYesNo.h"
 #include "FileItem.h"
 #include "filesystem/File.h"
+#include "GUIPassword.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"

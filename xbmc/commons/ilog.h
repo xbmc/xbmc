@@ -20,8 +20,6 @@
 
 #pragma once
 
-#include <stdio.h>
-
 #define LOG_LEVEL_NONE         -1 // nothing at all is logged
 #define LOG_LEVEL_NORMAL        0 // shows notice, error, severe and fatal
 #define LOG_LEVEL_DEBUG         1 // shows all

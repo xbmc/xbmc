@@ -23,6 +23,7 @@
 #include <utility>
 
 #include "FileItem.h"
+#include "GUIPassword.h"
 #include "ServiceBroker.h"
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "dialogs/GUIDialogProgress.h"
