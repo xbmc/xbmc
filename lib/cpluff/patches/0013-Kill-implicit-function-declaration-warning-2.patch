@@ -1,0 +1,12 @@
+diff --git a/lib/cpluff/console/cmdinput_readline.c b/lib/cpluff/console/cmdinput_readline.c
+index e383c8faba..b8d78af005 100644
+--- a/lib/cpluff/console/cmdinput_readline.c
++++ b/lib/cpluff/console/cmdinput_readline.c
+@@ -26,6 +26,7 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <ctype.h>
++#include <string.h>
+ #include <readline/readline.h>
+ #include <readline/history.h>
+ #include "console.h"
