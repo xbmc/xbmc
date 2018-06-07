@@ -23,9 +23,6 @@
 
 #pragma once
 
-#ifndef WII_REMOTE_H
-#define WII_REMOTE_H
-
 /* Toggle one bit */
 #define ToggleBit(bf,b) (bf) = ((bf) & b) ? ((bf) & ~(b)) : ((bf) | (b))
 
@@ -170,7 +167,5 @@ private:
   void CheckIn();
 #endif
 };
-
-#endif // WII_REMOTE_H
 
 extern CWiiRemote g_WiiRemote;

@@ -43,9 +43,6 @@
 
 #pragma once
 
-#ifndef WIIUSE_INTERNAL_H_INCLUDED
-#define WIIUSE_INTERNAL_H_INCLUDED
-
 #ifndef WIN32
 	#include <arpa/inet.h>				/* htons() */
 	#include <bluetooth/bluetooth.h>
@@ -225,4 +222,3 @@ int wiiuse_read_data_cb(struct wiimote_t* wm, wiiuse_read_cb read_cb, byte* buff
 }
 #endif
 
-#endif /* WIIUSE_INTERNAL_H_INCLUDED */

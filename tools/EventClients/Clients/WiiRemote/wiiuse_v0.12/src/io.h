@@ -33,9 +33,6 @@
 
 #pragma once
 
-#ifndef CONNECT_H_INCLUDED
-#define CONNECT_H_INCLUDED
-
 #ifndef WIN32
 	#include <bluetooth/bluetooth.h>
 #endif
@@ -55,4 +52,3 @@ int wiiuse_io_write(struct wiimote_t* wm, byte* buf, int len);
 }
 #endif
 
-#endif // CONNECT_H_INCLUDED

@@ -1,6 +1,3 @@
-#ifndef __XBMC_CLIENT_H__
-#define __XBMC_CLIENT_H__
-
 /*
  *      Copyright (C) 2008-2015 Team Kodi
  *      http://kodi.tv
@@ -830,4 +827,3 @@ public:
   }
 };
 
-#endif

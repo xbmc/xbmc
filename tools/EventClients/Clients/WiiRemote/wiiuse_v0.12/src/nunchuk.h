@@ -33,9 +33,6 @@
 
 #pragma once
 
-#ifndef NUNCHUK_H_INCLUDED
-#define NUNCHUK_H_INCLUDED
-
 #include "wiiuse_internal.h"
 
 #ifdef __cplusplus
@@ -52,4 +49,3 @@ void nunchuk_event(struct nunchuk_t* nc, byte* msg);
 }
 #endif
 
-#endif // NUNCHUK_H_INCLUDED

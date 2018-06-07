@@ -38,9 +38,6 @@
 
 #pragma once
 
-#ifndef OS_H_INCLUDED
-#define OS_H_INCLUDED
-
 #ifdef WIN32
 	/* windows */
 	#define isnan(x)		_isnan(x)
@@ -54,5 +51,3 @@
 	/* nix */
 #endif
 
-
-#endif // OS_H_INCLUDED

@@ -37,9 +37,6 @@
 
 #pragma once
 
-#ifndef DYNAMICS_H_INCLUDED
-#define DYNAMICS_H_INCLUDED
-
 #include "wiiuse_internal.h"
 
 #ifdef __cplusplus
@@ -55,4 +52,3 @@ void apply_smoothing(struct accel_t* ac, struct orient_t* orient, int type);
 }
 #endif
 
-#endif // DYNAMICS_H_INCLUDED

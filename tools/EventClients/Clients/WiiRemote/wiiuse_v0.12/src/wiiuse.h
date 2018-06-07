@@ -38,9 +38,6 @@
 
 #pragma once
 
-#ifndef WIIUSE_H_INCLUDED
-#define WIIUSE_H_INCLUDED
-
 #ifdef _WIN32
 	/* windows */
 	#include <windows.h>
@@ -649,7 +646,4 @@ WIIUSE_EXPORT extern void wiiuse_set_nunchuk_accel_threshold(struct wiimote_t* w
 #ifdef __cplusplus
 }
 #endif
-
-
-#endif /* WIIUSE_H_INCLUDED */
 

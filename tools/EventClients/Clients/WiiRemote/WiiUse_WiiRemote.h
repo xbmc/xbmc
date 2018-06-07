@@ -124,3 +124,4 @@ unsigned short convert_code(unsigned short);
 float smoothDeg(float, float);
 
 CXBMCClient EventClient;
+

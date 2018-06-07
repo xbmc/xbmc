@@ -33,9 +33,6 @@
 
 #pragma once
 
-#ifndef IR_H_INCLUDED
-#define IR_H_INCLUDED
-
 #include "wiiuse_internal.h"
 
 #define WII_VRES_X		560
@@ -52,7 +49,4 @@ float calc_yaw(struct ir_t* ir);
 #ifdef __cplusplus
 }
 #endif
-
-#endif // IR_H_INCLUDED
-
 

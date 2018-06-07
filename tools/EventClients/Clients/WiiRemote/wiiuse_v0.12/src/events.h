@@ -36,9 +36,6 @@
 
 #pragma once
 
-#ifndef EVENTS_H_INCLUDED
-#define EVENTS_H_INCLUDED
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -52,5 +49,3 @@ void disable_expansion(struct wiimote_t* wm);
 }
 #endif
 
-
-#endif // EVENTS_H_INCLUDED

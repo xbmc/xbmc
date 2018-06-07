@@ -33,9 +33,6 @@
 
 #pragma once
 
-#ifndef GUITAR_HERO_3_H_INCLUDED
-#define GUITAR_HERO_3_H_INCLUDED
-
 #include "wiiuse_internal.h"
 
 #define GUITAR_HERO_3_JS_MIN_X				0xC5
@@ -61,4 +58,3 @@ void guitar_hero_3_event(struct guitar_hero_3_t* gh3, byte* msg);
 }
 #endif
 
-#endif // GUITAR_HERO_3_H_INCLUDED
