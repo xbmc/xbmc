@@ -267,7 +267,6 @@ void CRPWinRenderer::RenderInternal(bool clear, uint8_t alpha)
 bool CRPWinRenderer::Supports(ERENDERFEATURE feature) const
 {
   if (feature == RENDERFEATURE_STRETCH ||
-      //feature == RENDERFEATURE_NONLINSTRETCH ||
       feature == RENDERFEATURE_ZOOM ||
       feature == RENDERFEATURE_VERTICAL_SHIFT ||
       feature == RENDERFEATURE_PIXEL_RATIO ||

@@ -50,8 +50,6 @@ namespace RETRO
     bool HasScalingMethod(ESCALINGMETHOD scalingMethod) const;
 
   protected:
-    static std::vector<ESCALINGMETHOD> GetScalingMethods();
-
     struct RenderBufferPools
     {
       IRendererFactory* factory;

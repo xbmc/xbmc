@@ -141,13 +141,6 @@ void CRPBaseRenderer::Flush()
   FlushInternal();
 }
 
-void CRPBaseRenderer::GetVideoRect(CRect &source, CRect &dest, CRect &view) const
-{
-  source = m_sourceRect;
-  dest = m_renderSettings.Geometry().Dimensions();
-  view = m_viewRect;
-}
-
 float CRPBaseRenderer::GetAspectRatio() const
 {
   return m_sourceFrameRatio;
@@ -176,7 +169,6 @@ void CRPBaseRenderer::CalculateViewMode()
   // Parameters to determine
   float &pixelRatio = m_pixelRatio;
   float &zoomAmount = m_zoomAmount;
-  bool &bNonLinearStretch = m_bNonLinearStretch;
 
   // Get our calibrated full screen resolution
   RESOLUTION res = m_context.GetVideoResolution();
@@ -194,8 +186,6 @@ void CRPBaseRenderer::CalculateViewMode()
 
   screenWidth *= xscale;
   screenHeight *= yscale;
-
-  bNonLinearStretch = false;
 
   switch (viewMode)
   {
@@ -251,12 +241,9 @@ void CRPBaseRenderer::CalculateViewMode()
     pixelRatio = pow(stretchAmount, float(2.0 / 3.0));
     zoomAmount = pow(stretchAmount, float((stretchAmount < 1.0) ? -1.0 / 3.0 : 1.0 / 3.0));
 
-    bNonLinearStretch = true;
-
     break;
   }
   case ViewModeStretch16x9:
-  case ViewModeStretch16x9Nonlin:
   {
     // Stretch image to 16:9 ratio
     zoomAmount = 1.0f;
@@ -272,8 +259,6 @@ void CRPBaseRenderer::CalculateViewMode()
       // Incorrect behaviour, but it's what the users want, so...
       pixelRatio = (screenWidth / screenHeight) * info.fPixelRatio / sourceFrameRatio;
     }
-
-    bNonLinearStretch = (viewMode == ViewModeStretch16x9Nonlin);
 
     break;
   }
@@ -482,22 +467,6 @@ void CRPBaseRenderer::CalcNormalRenderRect(float offsetX, float offsetY, float w
   // Center the game
   float posY = (height - newHeight) / 2;
   float posX = (width - newWidth) / 2;
-
-  const float verticalShift = 0.0f; //! @todo
-
-  // Vertical shift range -1 to 1 shifts within the top and bottom black bars
-  // If there are no top and bottom black bars, this range does nothing
-  float blackBarSize = std::max((height - newHeight) / 2.0f, 0.0f);
-  posY += blackBarSize * std::max(std::min(verticalShift, 1.0f), -1.0f);
-
-  // Vertical shift ranges -2 to -1 and 1 to 2 will shift the image out of the screen
-  // If vertical shift is -2 it will be completely shifted out the top,
-  // if it's 2 it will be completely shifted out the bottom
-  float shiftRange = std::min(newHeight, newHeight - (newHeight - height) / 2.0f);
-  if (verticalShift > 1.0f)
-    posY += shiftRange * (verticalShift - 1.0f);
-  else if (verticalShift < -1.0f)
-    posY += shiftRange * (verticalShift + 1.0f);
 
   destRect.x1 = static_cast<float>(MathUtils::round_int(posX + offsetX));
   destRect.x2 = destRect.x1 + MathUtils::round_int(newWidth);

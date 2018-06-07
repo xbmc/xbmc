@@ -143,10 +143,13 @@ void CRPRendererMMAL::ManageRenderArea()
 
   if (m_renderer)
   {
+    //! @todo
+    /*
     CRect source;
     CRect dest;
     CRect view;
     GetVideoRect(source, dest, view);
     m_renderer->SetDimensions(source, dest);
+    */
   }
 }
