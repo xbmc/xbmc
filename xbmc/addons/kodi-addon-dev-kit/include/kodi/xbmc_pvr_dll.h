@@ -119,9 +119,9 @@ extern "C"
   /*!
   * Retrieve the edit decision list (EDL) of an EPG tag on the backend.
   * @param epgTag The EPG tag.
-  * @param edl out: The function has to write the EDL list into this array.
+  * @param edl out: The function has to write the EDL into this array.
   * @param size in: The maximum size of the EDL, out: the actual size of the EDL.
-  * @return PVR_ERROR_NO_ERROR if the EDL was successfully read.
+   * @return PVR_ERROR_NO_ERROR if the EDL was successfully read or no EDL exists.
   * @remarks Required if bSupportsEpgEdl is set to true. Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
   */
   PVR_ERROR GetEPGTagEdl(const EPG_TAG* epgTag, PVR_EDL_ENTRY edl[], int *size);
@@ -329,9 +329,9 @@ extern "C"
   /*!
   * Retrieve the edit decision list (EDL) of a recording on the backend.
   * @param recording The recording.
-  * @param edl out: The function has to write the EDL list into this array.
+  * @param edl out: The function has to write the EDL into this array.
   * @param size in: The maximum size of the EDL, out: the actual size of the EDL.
-  * @return PVR_ERROR_NO_ERROR if the EDL was successfully read.
+  * @return PVR_ERROR_NO_ERROR if the EDL was successfully read or no EDL exists.
   * @remarks Required if bSupportsRecordingEdl is set to true. Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
   */
   PVR_ERROR GetRecordingEdl(const PVR_RECORDING& recording, PVR_EDL_ENTRY edl[], int *size);
