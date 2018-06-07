@@ -1,6 +1,3 @@
-#ifndef CMDLINEARGS_H
-#define CMDLINEARGS_H
-
 /*
  *      Copyright (C) 2005-2013 Team XBMC
  *      http://kodi.tv
@@ -149,5 +146,3 @@ private:
     } // ParseCmdLine()
 }; // class CmdLineArgs
 
-
-#endif // CMDLINEARGS_H

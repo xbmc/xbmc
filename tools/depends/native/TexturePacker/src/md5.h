@@ -22,9 +22,6 @@
 
 #pragma once
 
-#ifndef MD5_H
-#define MD5_H
-
 #include <cstring>		/* for memcpy() */
 #include <cstdint>
 
@@ -39,4 +36,3 @@ void MD5Init(struct MD5Context *ctx);
 void MD5Update(struct MD5Context *ctx, const uint8_t *buf, unsigned len);
 void MD5Final(unsigned char digest[16], struct MD5Context *ctx);
 
-#endif
