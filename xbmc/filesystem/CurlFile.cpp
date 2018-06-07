@@ -1032,7 +1032,7 @@ bool CCurlFile::Open(const CURL& url)
       ReadString(&error[0], 255);
     }
 
-    CLog::Log(LOGERROR, "CCurlFile::Open failed with code %li for %s:\n%s", m_httpresponse, url.GetRedacted().c_str(), error.c_str());
+    CLog::Log(LOGERROR, "CCurlFile::Open failed with code %li for %s:\n%s", m_httpresponse, redactPath.c_str(), error.c_str());
 
     return false;
   }
