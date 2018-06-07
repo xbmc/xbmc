@@ -63,11 +63,11 @@ namespace RETRO
 
   private:
     bool CreateTexture();
-    uint8_t *GetTexture();
+    bool GetTexture(uint8_t*& data, unsigned int& stride);
     bool ReleaseTexture();
 
     bool CreateScalingContext();
-    void ScalePixels(uint8_t *source, size_t sourceSize, uint8_t *target, size_t targetSize);
+    void ScalePixels(uint8_t *source, unsigned int sourceStride, uint8_t *target, unsigned int targetStride);
 
     static AVPixelFormat GetPixFormat(DXGI_FORMAT dxFormat);
 
