@@ -217,8 +217,10 @@ void CPVRGUIInfo::UpdateQualityData(void)
   ClearQualityInfo(qualityInfo);
 
   CPVRClientPtr client;
+  bool bIsPlayingRecording = false;
   if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_PVRPLAYBACK_SIGNALQUALITY) &&
-      CServiceBroker::GetPVRManager().Clients()->GetPlayingClient(client) &&
+      CServiceBroker::GetPVRManager().Clients()->GetPlayingClient(client, bIsPlayingRecording) &&
+      client && !bIsPlayingRecording &&
       client->SignalQuality(qualityInfo) == PVR_ERROR_NO_ERROR)
     memcpy(&m_qualityInfo, &qualityInfo, sizeof(m_qualityInfo));
 }
@@ -229,7 +231,9 @@ void CPVRGUIInfo::UpdateDescrambleData(void)
   ClearDescrambleInfo(descrambleInfo);
 
   CPVRClientPtr client;
-  if (CServiceBroker::GetPVRManager().Clients()->GetPlayingClient(client) &&
+  bool bIsPlayingRecording = false;
+  if (CServiceBroker::GetPVRManager().Clients()->GetPlayingClient(client, bIsPlayingRecording) &&
+      client && !bIsPlayingRecording &&
       client->GetDescrambleInfo(descrambleInfo) == PVR_ERROR_NO_ERROR)
     memcpy(&m_descrambleInfo, &descrambleInfo, sizeof(m_descrambleInfo));
 }
