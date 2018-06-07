@@ -3,10 +3,22 @@
   <section id="player" label="14200" help="38100">
     <category id="videoplayer" label="14215" help="38103">
       <group id="1" label="14230">
-        <setting id="videoplayer.autoplaynextitem" type="boolean" label="13433" help="36152">
+        <setting id="videoplayer.autoplaynextitem" type="list[integer]" label="13433" help="36152">
+          <constraints>
+            <options>
+              <option label="20389">0</option> <!-- musicvideos -->
+              <option label="20343">1</option> <!-- tvshows -->
+              <option label="20360">2</option> <!-- episodes -->
+              <option label="20342">3</option> <!-- movies -->
+            </options>
+            <delimiter>,</delimiter>
+          </constraints>
           <level>0</level>
-          <default>false</default>
-          <control type="toggle" />
+          <default></default>
+          <control type="list" format="string">
+            <multiselect>true</multiselect>
+            <hidevalue>false</hidevalue>
+          </control>
         </setting>
         <setting id="videoplayer.seeksteps" type="list[integer]" label="13556" help="37042">
           <level>1</level>

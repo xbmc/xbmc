@@ -383,6 +383,11 @@ public:
   static const std::string SETTING_GAMES_ENABLEREWIND;
   static const std::string SETTING_GAMES_REWINDTIME;
 
+  static const int SETTING_AUTOPLAYNEXT_MUSICVIDEOS;
+  static const int SETTING_AUTOPLAYNEXT_TVSHOWS;
+  static const int SETTING_AUTOPLAYNEXT_EPISODES;
+  static const int SETTING_AUTOPLAYNEXT_MOVIES;
+
   /*!
    \brief Creates a new settings wrapper around a new settings manager.
 
