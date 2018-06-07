@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2016-2017 Team Kodi
+ *      Copyright (C) 2017 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,16 +19,29 @@
  */
 #pragma once
 
+#include "cores/RetroPlayer/streams/RetroPlayerStreamTypes.h"
+#include "cores/AudioEngine/Utils/AEChannelData.h"
+
 namespace KODI
 {
-namespace GAME
+namespace RETRO
 {
-  class IGameInputCallback
+  class CAudioTranslator
   {
   public:
-    virtual ~IGameInputCallback() = default;
+    /*!
+     * \brief Translate audio PCM format (Game API to AudioEngine).
+     * \param format The audio PCM format to translate.
+     * \return Translated audio PCM format.
+     */
+    static AEDataFormat TranslatePCMFormat(PCMFormat format);
 
-    virtual void PollInput() = 0;
+    /*!
+     * \brief Translate audio channels (Game API to AudioEngine).
+     * \param format The audio channels to translate.
+     * \return Translated audio channels.
+     */
+    static AEChannel TranslateAudioChannel(AudioChannel channel);
   };
 }
 }

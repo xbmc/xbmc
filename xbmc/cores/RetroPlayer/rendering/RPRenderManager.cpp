@@ -80,18 +80,20 @@ void CRPRenderManager::Deinitialize()
   m_state = RENDER_STATE::UNCONFIGURED;
 }
 
-bool CRPRenderManager::Configure(AVPixelFormat format, unsigned int width, unsigned int height, unsigned int orientation)
+bool CRPRenderManager::Configure(AVPixelFormat format, unsigned int nominalWidth, unsigned int nominalHeight, unsigned int maxWidth, unsigned int maxHeight)
 {
-  m_format = format;
-  m_width = width;
-  m_height = height;
-  m_orientation = orientation;
-
-  CLog::Log(LOGINFO, "RetroPlayer[RENDER]: Configuring format %s, %ux%u, %u deg",
+  CLog::Log(LOGINFO, "RetroPlayer[RENDER]: Configuring format %s, nominal %ux%u, max %ux%u",
             CRenderTranslator::TranslatePixelFormat(format),
-            width,
-            height,
-            orientation);
+            nominalWidth,
+            nominalHeight,
+            maxWidth,
+            maxHeight);
+
+  m_format = format;
+  m_maxWidth = maxWidth;
+  m_maxHeight = maxHeight;
+  m_width = nominalWidth; //! @todo Allow dimension changes
+  m_height = nominalHeight; //! @todo Allow dimension changes
 
   CSingleLock lock(m_stateMutex);
 
@@ -100,10 +102,14 @@ bool CRPRenderManager::Configure(AVPixelFormat format, unsigned int width, unsig
   return true;
 }
 
-void CRPRenderManager::AddFrame(const uint8_t* data, size_t size)
+void CRPRenderManager::AddFrame(const uint8_t* data, size_t size, unsigned int width, unsigned int height, unsigned int orientationDegCCW)
 {
   // Validate parameters
-  if (data == nullptr || size == 0)
+  if (data == nullptr || size == 0 || width == 0 || height == 0)
+    return;
+
+  //! @todo Allow dimension changes
+  if (width != m_width || height != m_height)
     return;
 
   // Copy frame to buffers with visible renderers
@@ -116,7 +122,7 @@ void CRPRenderManager::AddFrame(const uint8_t* data, size_t size)
     IRenderBuffer *renderBuffer = bufferPool->GetBuffer(size);
     if (renderBuffer != nullptr)
     {
-      CopyFrame(renderBuffer, data, size, m_format);
+      CopyFrame(renderBuffer, m_format, data, size, width, height);
       renderBuffers.emplace_back(renderBuffer);
     }
   }
@@ -373,7 +379,7 @@ std::shared_ptr<CRPBaseRenderer> CRPRenderManager::GetRenderer(IRenderBufferPool
               m_processInfo.GetRenderSystemName(bufferPool).c_str());
 
     renderer.reset(m_processInfo.CreateRenderer(bufferPool, renderSettings));
-    if (renderer && renderer->Configure(m_format, m_width, m_height, m_orientation))
+    if (renderer && renderer->Configure(m_format, m_width, m_height))
     {
       // Ensure we have a render buffer for this renderer
       CreateRenderBuffer(renderer->GetBufferPool());
@@ -442,7 +448,7 @@ void CRPRenderManager::CreateRenderBuffer(IRenderBufferPool *bufferPool)
       {
         {
           CSingleExit exit(m_bufferMutex);
-          CopyFrame(renderBuffer, cachedFrame.data(), cachedFrame.size(), m_format);
+          CopyFrame(renderBuffer, m_format, cachedFrame.data(), cachedFrame.size(), m_width, m_height);
         }
         m_renderBuffers.emplace_back(renderBuffer);
       }
@@ -474,14 +480,14 @@ void CRPRenderManager::UpdateResolution()
   */
 }
 
-void CRPRenderManager::CopyFrame(IRenderBuffer *renderBuffer, const uint8_t *data, size_t size, AVPixelFormat format)
+void CRPRenderManager::CopyFrame(IRenderBuffer *renderBuffer, AVPixelFormat format, const uint8_t *data, size_t size, unsigned int width, unsigned int height)
 {
   const uint8_t *source = data;
   uint8_t *target = renderBuffer->GetMemory();
 
   if (target != nullptr)
   {
-    const unsigned int sourceStride = static_cast<unsigned int>(size / m_height);
+    const unsigned int sourceStride = static_cast<unsigned int>(size / height);
     const unsigned int targetStride = static_cast<unsigned int>(renderBuffer->GetFrameSize() / renderBuffer->GetHeight());
 
     if (m_format == renderBuffer->GetFormat())
@@ -490,10 +496,10 @@ void CRPRenderManager::CopyFrame(IRenderBuffer *renderBuffer, const uint8_t *dat
         std::memcpy(target, source, size);
       else
       {
-        const unsigned int widthBytes = CRenderTranslator::TranslateWidthToBytes(m_width, m_format);
+        const unsigned int widthBytes = CRenderTranslator::TranslateWidthToBytes(width, m_format);
         if (widthBytes > 0)
         {
-          for (unsigned int i = 0; i < m_height; i++)
+          for (unsigned int i = 0; i < height; i++)
             std::memcpy(target + targetStride * i, source + sourceStride * i, widthBytes);
         }
       }
@@ -502,7 +508,7 @@ void CRPRenderManager::CopyFrame(IRenderBuffer *renderBuffer, const uint8_t *dat
     {
       SwsContext *&scalerContext = m_scalers[renderBuffer->GetFormat()];
       scalerContext = sws_getCachedContext(scalerContext,
-                                           m_width, m_height, format,
+                                           width, height, format,
                                            renderBuffer->GetWidth(), renderBuffer->GetHeight(), renderBuffer->GetFormat(),
                                            SWS_FAST_BILINEAR, nullptr, nullptr, nullptr);
 
@@ -513,7 +519,7 @@ void CRPRenderManager::CopyFrame(IRenderBuffer *renderBuffer, const uint8_t *dat
         uint8_t *dst[] =       { target,                          nullptr,   nullptr,   nullptr };
         int      dstStride[] = { static_cast<int>(targetStride),  0,         0,         0       };
 
-        sws_scale(scalerContext, src, srcStride, 0, m_height, dst, dstStride);
+        sws_scale(scalerContext, src, srcStride, 0, height, dst, dstStride);
       }
     }
   }
