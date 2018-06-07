@@ -31,6 +31,8 @@
  *	@brief General definitions.
  */
 
+#pragma once
+
 #ifndef DEFINITIONS_H_INCLUDED
 #define DEFINITIONS_H_INCLUDED
 

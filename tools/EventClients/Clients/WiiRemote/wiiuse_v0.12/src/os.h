@@ -36,6 +36,8 @@
  *	at compile time.
  */
 
+#pragma once
+
 #ifndef OS_H_INCLUDED
 #define OS_H_INCLUDED
 

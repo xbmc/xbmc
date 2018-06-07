@@ -31,6 +31,8 @@
  *	@brief Guitar Hero 3 expansion device.
  */
 
+#pragma once
+
 #ifndef GUITAR_HERO_3_H_INCLUDED
 #define GUITAR_HERO_3_H_INCLUDED
 

@@ -31,6 +31,8 @@
  *	@brief Classic controller expansion device.
  */
 
+#pragma once
+
 #ifndef CLASSIC_H_INCLUDED
 #define CLASSIC_H_INCLUDED
 

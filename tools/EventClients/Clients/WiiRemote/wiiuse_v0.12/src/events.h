@@ -34,6 +34,8 @@
  *	that are sent from the wiimote to us.
  */
 
+#pragma once
+
 #ifndef EVENTS_H_INCLUDED
 #define EVENTS_H_INCLUDED
 

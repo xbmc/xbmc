@@ -31,6 +31,8 @@
  *	@brief Handles device I/O.
  */
 
+#pragma once
+
 #ifndef CONNECT_H_INCLUDED
 #define CONNECT_H_INCLUDED
 

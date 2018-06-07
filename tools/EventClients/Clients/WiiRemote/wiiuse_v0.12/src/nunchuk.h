@@ -31,6 +31,8 @@
  *	@brief Nunchuk expansion device.
  */
 
+#pragma once
+
 #ifndef NUNCHUK_H_INCLUDED
 #define NUNCHUK_H_INCLUDED
 

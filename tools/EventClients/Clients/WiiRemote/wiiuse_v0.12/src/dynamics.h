@@ -35,6 +35,8 @@
  *	motion sensing.
  */
 
+#pragma once
+
 #ifndef DYNAMICS_H_INCLUDED
 #define DYNAMICS_H_INCLUDED
 

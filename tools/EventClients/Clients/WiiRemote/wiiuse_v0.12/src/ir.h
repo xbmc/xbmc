@@ -31,6 +31,8 @@
  *	@brief Handles IR data.
  */
 
+#pragma once
+
 #ifndef IR_H_INCLUDED
 #define IR_H_INCLUDED
 

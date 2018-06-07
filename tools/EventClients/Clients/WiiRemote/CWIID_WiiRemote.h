@@ -21,6 +21,8 @@
  *
  */
 
+#pragma once
+
 #ifndef WII_REMOTE_H
 #define WII_REMOTE_H
 

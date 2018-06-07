@@ -36,6 +36,8 @@
  *	is also included which extends this file.
  */
 
+#pragma once
+
 #ifndef WIIUSE_H_INCLUDED
 #define WIIUSE_H_INCLUDED
 

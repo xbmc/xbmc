@@ -41,6 +41,8 @@
  *	internally, wiiuse.h is included only here.
  */
 
+#pragma once
+
 #ifndef WIIUSE_INTERNAL_H_INCLUDED
 #define WIIUSE_INTERNAL_H_INCLUDED
 
