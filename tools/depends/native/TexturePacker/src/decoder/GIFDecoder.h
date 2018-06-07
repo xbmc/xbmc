@@ -19,6 +19,7 @@
  */
 
 #pragma once
+
 #include "IDecoder.h"
 
 class GIFDecoder : public IDecoder

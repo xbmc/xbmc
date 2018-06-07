@@ -20,6 +20,8 @@
  * Still in the public domain.
  */
 
+#pragma once
+
 #ifndef MD5_H
 #define MD5_H
 

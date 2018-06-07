@@ -21,6 +21,8 @@
  *
  */
 
+#pragma once
+
 #ifdef TARGET_POSIX
 char* GetCommandLine();
 #define _snprintf snprintf

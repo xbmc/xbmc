@@ -20,6 +20,8 @@
     But that said, if there are any problems please get in touch.
 */
 
+#pragma once
+
 #ifdef __cplusplus
 extern "C"
 {
