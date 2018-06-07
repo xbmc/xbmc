@@ -36,7 +36,7 @@
 #include "xbmc_epg_types.h"
 
 /*! @note Define "USE_DEMUX" at compile time if demuxing in the PVR add-on is used.
- *        Also XBMC's "DVDDemuxPacket.h" file must be in the include path of the add-on,
+ *        Also, "DVDDemuxPacket.h" file must be in the include path of the add-on,
  *        and the add-on should set bHandlesDemuxing to true.
  */
 #ifdef USE_DEMUX
@@ -202,7 +202,7 @@ extern "C" {
   {
     PVR_ERROR_NO_ERROR           = 0,  /*!< @brief no error occurred */
     PVR_ERROR_UNKNOWN            = -1, /*!< @brief an unknown error occurred */
-    PVR_ERROR_NOT_IMPLEMENTED    = -2, /*!< @brief the method that XBMC called is not implemented by the add-on */
+    PVR_ERROR_NOT_IMPLEMENTED    = -2, /*!< @brief the method that Kodi called is not implemented by the add-on */
     PVR_ERROR_SERVER_ERROR       = -3, /*!< @brief the backend reported an error, or the add-on isn't connected */
     PVR_ERROR_SERVER_TIMEOUT     = -4, /*!< @brief the command was sent to the backend, but the response timed out */
     PVR_ERROR_REJECTED           = -5, /*!< @brief the command was rejected by the backend */
@@ -312,7 +312,7 @@ extern "C" {
     bool bSupportsChannelGroups;        /*!< @brief true if this add-on supports channel groups */
     bool bSupportsChannelScan;          /*!< @brief true if this add-on support scanning for new channels on the backend */
     bool bSupportsChannelSettings;      /*!< @brief true if this add-on supports the following functions: DeleteChannel, RenameChannel, DialogChannelSettings and DialogAddChannel */
-    bool bHandlesInputStream;           /*!< @brief true if this add-on provides an input stream. false if XBMC handles the stream. */
+    bool bHandlesInputStream;           /*!< @brief true if this add-on provides an input stream. false if Kodi handles the stream. */
     bool bHandlesDemuxing;              /*!< @brief true if this add-on demultiplexes packets. */
     bool bSupportsRecordingPlayCount;   /*!< @brief true if the backend supports play count for recordings. */
     bool bSupportsLastPlayedPosition;   /*!< @brief true if the backend supports store/retrieve of last played position for recordings. */
@@ -628,7 +628,7 @@ extern "C" {
   } AddonToKodiFuncTable_PVR;
 
   /*!
-   * @brief Structure to transfer the methods from xbmc_pvr_dll.h to XBMC
+   * @brief Structure to transfer the methods from xbmc_pvr_dll.h to Kodi
    */
   typedef struct KodiToAddonFuncTable_PVR
   {
