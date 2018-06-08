@@ -25,14 +25,8 @@
 #include "GUIComponent.h"
 #include "ServiceBroker.h"
 
-CGUIAction::CGUIAction()
-{
-  m_sendThreadMessages = false;
-}
-
 CGUIAction::CGUIAction(int controlID)
 {
-  m_sendThreadMessages = false;
   SetNavigation(controlID);
 }
 
