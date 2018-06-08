@@ -30,11 +30,7 @@
 
 using namespace KODI::GUILIB::GUIINFO;
 
-CGUIInfoLabel::CGUIInfoLabel() : m_dirty(false)
-{
-}
-
-CGUIInfoLabel::CGUIInfoLabel(const std::string &label, const std::string &fallback /*= ""*/, int context /*= 0*/) : m_dirty(false)
+CGUIInfoLabel::CGUIInfoLabel(const std::string &label, const std::string &fallback /*= ""*/, int context /*= 0*/)
 {
   SetLabel(label, fallback, context);
 }

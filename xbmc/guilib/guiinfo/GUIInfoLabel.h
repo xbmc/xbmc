@@ -41,7 +41,7 @@ namespace GUIINFO
 class CGUIInfoLabel
 {
 public:
-  CGUIInfoLabel();
+  CGUIInfoLabel() = default;
   CGUIInfoLabel(const std::string &label, const std::string &fallback = "", int context = 0);
 
   void SetLabel(const std::string &label, const std::string &fallback, int context = 0);
@@ -138,7 +138,7 @@ private:
     std::string m_postfix;
   };
 
-  mutable bool        m_dirty;
+  mutable bool        m_dirty = false;
   mutable std::string m_label;
   std::string m_fallback;
   std::vector<CInfoPortion> m_info;
