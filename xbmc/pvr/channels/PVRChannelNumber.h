@@ -28,30 +28,50 @@ namespace PVR
   public:
     CPVRChannelNumber() = default;
 
-    CPVRChannelNumber(unsigned int iChannelNumber, unsigned int iSubChannelNumber)
+    constexpr CPVRChannelNumber(unsigned int iChannelNumber, unsigned int iSubChannelNumber)
     : m_iChannelNumber(iChannelNumber), m_iSubChannelNumber(iSubChannelNumber) {}
 
-    bool operator ==(const CPVRChannelNumber &right) const;
-    bool operator !=(const CPVRChannelNumber &right) const;
-    bool operator <(const CPVRChannelNumber &right) const;
+    constexpr bool operator ==(const CPVRChannelNumber &right) const
+    {
+      return (m_iChannelNumber  == right.m_iChannelNumber &&
+              m_iSubChannelNumber == right.m_iSubChannelNumber);
+    }
+
+    constexpr bool operator !=(const CPVRChannelNumber &right) const
+    {
+      return !(*this == right);
+    }
+
+    constexpr bool operator <(const CPVRChannelNumber &right) const
+    {
+      return m_iChannelNumber == right.m_iChannelNumber
+        ? m_iSubChannelNumber < right.m_iSubChannelNumber
+        : m_iChannelNumber < right.m_iChannelNumber;
+    }
 
     /*!
      * @brief Check whether this channel number is valid (main channel number > 0).
      * @return True if valid, false otherwise..
      */
-    bool IsValid() const { return m_iChannelNumber > 0; }
+    constexpr bool IsValid() const { return m_iChannelNumber > 0; }
 
     /*!
      * @brief Set the primary channel number.
      * @return The channel number.
      */
-    unsigned int GetChannelNumber() const;
+    constexpr unsigned int GetChannelNumber() const
+    {
+      return m_iChannelNumber;
+    }
 
     /*!
      * @brief Set the sub channel number.
      * @return The sub channel number (ATSC).
      */
-    unsigned int GetSubChannelNumber() const;
+    constexpr unsigned int GetSubChannelNumber() const
+    {
+      return m_iSubChannelNumber;
+    }
 
     /*!
      * @brief The character used to separate channel and subchannel number.

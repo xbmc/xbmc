@@ -26,35 +26,6 @@ using namespace PVR;
 
 const char CPVRChannelNumber::SEPARATOR = '.';
 
-bool CPVRChannelNumber::operator==(const CPVRChannelNumber &right) const
-{
-  return (m_iChannelNumber  == right.m_iChannelNumber &&
-          m_iSubChannelNumber == right.m_iSubChannelNumber);
-}
-
-bool CPVRChannelNumber::operator!=(const CPVRChannelNumber &right) const
-{
-  return !(*this == right);
-}
-
-bool CPVRChannelNumber::operator <(const CPVRChannelNumber &right) const
-{
-  if (m_iChannelNumber == right.m_iChannelNumber)
-    return m_iSubChannelNumber < right.m_iSubChannelNumber;
-
-  return m_iChannelNumber < right.m_iChannelNumber;
-}
-
-unsigned int CPVRChannelNumber::GetChannelNumber() const
-{
-  return m_iChannelNumber;
-}
-
-unsigned int CPVRChannelNumber::GetSubChannelNumber() const
-{
-  return m_iSubChannelNumber;
-}
-
 std::string CPVRChannelNumber::FormattedChannelNumber() const
 {
   if (m_iSubChannelNumber == 0)
