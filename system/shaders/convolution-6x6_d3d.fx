@@ -75,7 +75,7 @@ float4 CONVOLUTION6x6(in float2 TextureUV  : TEXCOORD0) : SV_TARGET
   float3 ypos1 = xystart.y + g_StepXY.y * float3(0.0, 1.0, 2.0);
   float3 ypos2 = xystart.y + g_StepXY.y * float3(3.0, 4.0, 5.0);
 
-  float3 rgb =  
+  float3 rgb =
         getLine(ypos1.x, xpos1, xpos2, linetaps1, linetaps2) * columntaps1.r +
 		getLine(ypos1.y, xpos1, xpos2, linetaps1, linetaps2) * columntaps2.r +
 		getLine(ypos1.z, xpos1, xpos2, linetaps1, linetaps2) * columntaps1.g +

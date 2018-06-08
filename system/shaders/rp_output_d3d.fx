@@ -65,7 +65,7 @@ float4 OUTPUT_PS(VS_OUTPUT In) : SV_TARGET
   float4 color = g_Texture.Sample(TextureSampler, In.TextureUV);
   [flatten] if (m_params[0])
     color = saturate(0.0625 + color * 219.0 / 255.0);
-    
+
   color.a = 1.0;
 
   return color;
