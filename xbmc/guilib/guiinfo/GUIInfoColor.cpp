@@ -28,7 +28,7 @@
 
 using namespace KODI::GUILIB::GUIINFO;
 
-CGUIInfoColor::CGUIInfoColor(uint32_t color)
+CGUIInfoColor::CGUIInfoColor(UTILS::Color color)
 {
   m_color = color;
   m_info = 0;
