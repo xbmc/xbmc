@@ -43,7 +43,7 @@ bool CGUIAction::ExecuteActions(int controlID, int parentID, const CGUIListItemP
     if (i.condition.empty() || infoMgr.EvaluateBool(i.condition, 0, item))
     {
       if (!StringUtils::IsInteger(i.action))
-        actions.push_back(i.action);
+        actions.emplace_back(i.action);
     }
   }
   // execute them
@@ -89,9 +89,8 @@ void CGUIAction::SetNavigation(int id)
       return;
     }
   }
-  cond_action_pair pair;
-  pair.action = strId;
-  m_actions.push_back(pair);
+  m_actions.emplace_back();
+  m_actions.back().action = strId;
 }
 
 bool CGUIAction::HasActionsMeetingCondition() const
