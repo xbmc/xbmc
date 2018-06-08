@@ -110,7 +110,7 @@ protected:
 
 private:
   IStorageProvider *m_platformStorage;
-  
+
   struct DiscInfo
   {
     std::string name;

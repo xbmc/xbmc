@@ -49,11 +49,11 @@ using namespace XFILE;
 
 CCDDARipJob::CCDDARipJob(const std::string& input,
                          const std::string& output,
-                         const CMusicInfoTag& tag, 
+                         const CMusicInfoTag& tag,
                          int encoder,
                          bool eject,
                          unsigned int rate,
-                         unsigned int channels, unsigned int bps) : 
+                         unsigned int channels, unsigned int bps) :
   m_rate(rate), m_channels(channels), m_bps(bps), m_tag(tag),
   m_input(input), m_output(CUtil::MakeLegalPath(output)), m_eject(eject),
   m_encoder(encoder)
@@ -71,7 +71,7 @@ bool CCDDARipJob::DoWork()
   CFileItem file(m_output, false);
   if (file.IsRemote())
     m_output = SetupTempFile();
-  
+
   if (m_output.empty())
   {
     CLog::Log(LOGERROR, "CCDDARipper: Error opening file");
@@ -88,7 +88,7 @@ bool CCDDARipJob::DoWork()
   }
 
   // setup the progress dialog
-  CGUIDialogExtendedProgressBar* pDlgProgress = 
+  CGUIDialogExtendedProgressBar* pDlgProgress =
       CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogExtendedProgressBar>(WINDOW_DIALOG_EXT_PROGRESS);
   CGUIDialogProgressBarHandle* handle = pDlgProgress->GetHandle(g_localizeStrings.Get(605));
 
@@ -123,7 +123,7 @@ bool CCDDARipJob::DoWork()
     // copy the ripped track to the share
     if (!CFile::Copy(m_output, file.GetPath()))
     {
-      CLog::Log(LOGERROR, "CDDARipper: Error copying file from %s to %s", 
+      CLog::Log(LOGERROR, "CDDARipper: Error copying file from %s to %s",
                 m_output.c_str(), file.GetPath().c_str());
       CFile::Delete(m_output);
       return false;
@@ -238,7 +238,7 @@ std::string CCDDARipJob::SetupTempFile()
   int fd;
   strncpy(tmp, CSpecialProtocol::TranslatePath("special://temp/riptrackXXXXXX").c_str(), MAX_PATH);
   if ((fd = mkstemp(tmp)) == -1)
-   tmp[0] = '\0'; 
+   tmp[0] = '\0';
   if (fd != -1)
     close(fd);
 #endif

@@ -173,8 +173,8 @@ public:
   virtual bool SeekTimeRelative(int64_t iTime) { return false; }
 
   /*!
-   \brief Sets the current time. This 
-   can be used for injecting the current time. 
+   \brief Sets the current time. This
+   can be used for injecting the current time.
    This is not to be confused with a seek. It just
    can be used if endless streams contain multiple
    tracks in reality (like with airtunes)
@@ -206,7 +206,7 @@ public:
   //returns a state that is needed for resuming from a specific time
   virtual std::string GetPlayerState() { return ""; };
   virtual bool SetPlayerState(const std::string& state) { return false;};
-  
+
   virtual void GetAudioCapabilities(std::vector<int> &audioCaps) { audioCaps.assign(1,IPC_AUD_ALL); };
   /*!
    \brief define the subtitle capabilities of the player

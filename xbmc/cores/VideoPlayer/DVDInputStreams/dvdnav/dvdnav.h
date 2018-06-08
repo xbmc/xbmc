@@ -1,18 +1,18 @@
-/* 
+/*
  * Copyright (C) 2001 Rich Wareham <richwareham@users.sourceforge.net>
- * 
+ *
  * This file is part of libdvdnav, a DVD navigation library.
- * 
+ *
  * libdvdnav is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * libdvdnav is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along
  * with libdvdnav; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
@@ -91,7 +91,7 @@ dvdnav_status_t dvdnav_open(dvdnav_t **dest, const char *path);
 dvdnav_status_t dvdnav_open_stream(dvdnav_t **dest, void *stream, dvdnav_stream_cb *stream_cb);
 
 /*
- * Closes a dvdnav_t previously opened with dvdnav_open(), freeing any 
+ * Closes a dvdnav_t previously opened with dvdnav_open(), freeing any
  * memory associated with it.
  */
 dvdnav_status_t dvdnav_close(dvdnav_t *self);
@@ -127,7 +127,7 @@ const char* dvdnav_err_to_string(dvdnav_t *self);
  * Sets the region mask (bit 0 set implies region 1, bit 1 set implies
  * region 2, etc) of the virtual machine. Generally you will only need to set
  * this if you are playing RCE discs which query the virtual machine as to its
- * region setting. 
+ * region setting.
  *
  * This has _nothing_ to do with the region setting of the DVD drive.
  */
@@ -186,7 +186,7 @@ dvdnav_status_t dvdnav_get_PGC_positioning_flag(dvdnav_t *self, int32_t *pgc_bas
  */
 
 /*
- * Attempts to get the next block off the DVD and copies it into the buffer 'buf'. 
+ * Attempts to get the next block off the DVD and copies it into the buffer 'buf'.
  * If there is any special actions that may need to be performed, the value
  * pointed to by 'event' gets set accordingly.
  *
@@ -335,7 +335,7 @@ dvdnav_status_t dvdnav_current_title_program(dvdnav_t *self, int32_t *title,
 /*
  * Return the current position (in blocks) within the current
  * title and the length (in blocks) of said title.
- * 
+ *
  * Current implementation is wrong and likely to behave unpredictably!
  * Use is discouraged!
  */
@@ -370,7 +370,7 @@ dvdnav_status_t dvdnav_part_search(dvdnav_t *self, int32_t part);
  * 'origin' can be one of SEEK_SET, SEEK_CUR, SEEK_END as defined in
  * fcntl.h.
  */
-dvdnav_status_t dvdnav_sector_search(dvdnav_t *self, 
+dvdnav_status_t dvdnav_sector_search(dvdnav_t *self,
 				     uint64_t offset, int32_t origin);
 
 /*
@@ -385,7 +385,7 @@ int64_t dvdnav_get_current_time(dvdnav_t *self);
  *
  * Currently implemented using interpolation, which is slightly inaccurate.
  */
-dvdnav_status_t dvdnav_time_search(dvdnav_t *self, 
+dvdnav_status_t dvdnav_time_search(dvdnav_t *self,
 				   uint64_t time);
 
 /*
@@ -439,7 +439,7 @@ dvdnav_status_t dvdnav_get_position(dvdnav_t *self, uint32_t *pos,
  */
 
 /*
- * Get the currently highlighted button 
+ * Get the currently highlighted button
  * number (1..36) or 0 if no button is highlighted.
  */
 dvdnav_status_t dvdnav_get_current_highlight(dvdnav_t *self, int32_t *button);
@@ -511,7 +511,7 @@ dvdnav_status_t dvdnav_mouse_activate(dvdnav_t *self, pci_t *pci, int32_t x, int
  * languages                                                         *
  *********************************************************************/
 
-/* 
+/*
  * The language codes expected by these functions are two character
  * codes as defined in ISO639.
  */
@@ -560,7 +560,7 @@ dvdnav_status_t dvdnav_get_serial_string(dvdnav_t *self, const char **serial_str
  * Get video aspect code.
  * The aspect code does only change on VTS boundaries.
  * See the DVDNAV_VTS_CHANGE event.
- * 
+ *
  * 0 -- 4:3, 2 -- 16:9
  */
 uint8_t dvdnav_get_video_aspect(dvdnav_t *self);
@@ -598,7 +598,7 @@ uint16_t dvdnav_audio_stream_format(dvdnav_t *self, uint8_t stream);
 uint16_t dvdnav_audio_stream_channels(dvdnav_t *self, uint8_t stream);
 
 /*
- * Converts a *logical* subpicture stream id into country code 
+ * Converts a *logical* subpicture stream id into country code
  * (returns 0xffff if no such stream).
  */
 uint16_t dvdnav_spu_stream_to_lang(dvdnav_t *self, uint8_t stream);

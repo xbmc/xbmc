@@ -199,9 +199,9 @@ void COutputShader::ApplyEffectParameters(CD3DEffect &effect, unsigned sourceWid
   }
   if (m_useDithering)
   {
-    float ditherParams[3] = 
-    { 
-      static_cast<float>(sourceWidth) / dither_size, 
+    float ditherParams[3] =
+    {
+      static_cast<float>(sourceWidth) / dither_size,
       static_cast<float>(sourceHeight) / dither_size,
       static_cast<float>(1 << m_ditherDepth) - 1.0f
     };
@@ -574,7 +574,7 @@ CYUV2RGBShader::~CYUV2RGBShader()
 void CYUV2RGBShader::PrepareParameters(CRenderBuffer* videoBuffer, CRect sourceRect, CPoint dest[])
 {
   if (m_sourceRect != sourceRect
-    || m_dest[0] != dest[0] || m_dest[1] != dest[1] 
+    || m_dest[0] != dest[0] || m_dest[1] != dest[1]
     || m_dest[2] != dest[2] || m_dest[3] != dest[3]
     || videoBuffer->GetWidth() != m_sourceWidth
     || videoBuffer->GetHeight() != m_sourceHeight)
@@ -641,7 +641,7 @@ void CYUV2RGBShader::SetShaderParameters(CRenderBuffer* videoBuffer)
   m_effect.SetResources("g_Texture", ppSRView, videoBuffer->GetActivePlanes());
   m_effect.SetFloatArray("g_StepXY", m_texSteps, ARRAY_SIZE(m_texSteps));
 
-  float yuvMat[4][4]; 
+  float yuvMat[4][4];
   m_pConvMatrix->GetYuvMat(yuvMat);
   m_effect.SetMatrix("g_ColorMatrix", reinterpret_cast<float*>(yuvMat));
 
@@ -802,7 +802,7 @@ bool CConvolutionShader1Pass::Create(ESCALINGMETHOD method, COutputShader *pCLUT
 void CConvolutionShader1Pass::Render(CD3DTexture &sourceTexture,
                                      unsigned int sourceWidth, unsigned int sourceHeight,
                                      unsigned int destWidth, unsigned int destHeight,
-                                     CRect sourceRect, CRect destRect, bool useLimitRange, 
+                                     CRect sourceRect, CRect destRect, bool useLimitRange,
                                      CD3DTexture *target)
 {
   PrepareParameters(sourceWidth, sourceHeight, sourceRect, destRect);
@@ -957,11 +957,11 @@ void CConvolutionShaderSeparable::Render(CD3DTexture &sourceTexture,
     CreateIntermediateRenderTarget(destWidth, sourceHeight);
 
   PrepareParameters(sourceWidth, sourceHeight, destWidth, destHeight, sourceRect, destRect);
-  float texSteps[] = 
-  { 
-    1.0f / static_cast<float>(sourceWidth), 
-    1.0f / static_cast<float>(sourceHeight), 
-    1.0f / static_cast<float>(destWidth), 
+  float texSteps[] =
+  {
+    1.0f / static_cast<float>(sourceWidth),
+    1.0f / static_cast<float>(sourceHeight),
+    1.0f / static_cast<float>(destWidth),
     1.0f / static_cast<float>(sourceHeight)
   };
   SetShaderParameters(sourceTexture, texSteps, 4, useLimitRange);
@@ -1049,7 +1049,7 @@ void CConvolutionShaderSeparable::PrepareParameters(unsigned int sourceWidth, un
     // Horizontal dimension: crop/zoom, so that it is completely done with the convolution shader. Scaling to display width in pass1 and
     // cropping/zooming in pass 2 would use bilinear in pass2, which we don't want.
     // Vertical dimension: crop using sourceRect to save memory bandwidth for high zoom values, but don't stretch/shrink in any way in this pass.
-    
+
     v[0].x = 0;
     v[0].y = 0;
     v[0].z = 0;
@@ -1110,8 +1110,8 @@ void CConvolutionShaderSeparable::SetShaderParameters(CD3DTexture &sourceTexture
   m_effect.SetTexture( "g_Texture",  sourceTexture );
   m_effect.SetTexture( "g_KernelTexture", m_HQKernelTexture );
   m_effect.SetFloatArray("g_StepXY", texSteps, texStepsCount);
-  float colorRange[2] = 
-  { 
+  float colorRange[2] =
+  {
     (useLimitRange ?  16.f / 255.f : 0.f),
     (useLimitRange ? 219.f / 255.f : 1.f)
   };
@@ -1125,7 +1125,7 @@ void CConvolutionShaderSeparable::SetStepParams(UINT iPass)
   ID3D11DeviceContext* pContext = DX::DeviceResources::Get()->GetD3DContext();
 
   CD3D11_VIEWPORT viewPort = CD3D11_VIEWPORT(
-    0.0f, 
+    0.0f,
     0.0f,
     static_cast<float>(m_target->GetWidth()),
     static_cast<float>(m_target->GetHeight()));

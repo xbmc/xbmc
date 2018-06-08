@@ -186,7 +186,7 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
       CFileItemList items;
 
       CDirectory::GetDirectory(pathToUrl, items, CServiceBroker::GetFileExtensionProvider().GetPictureExtensions(), DIR_FLAG_NO_FILE_DIRS);
-      
+
       // create the folder thumb by choosing 4 random thumbs within the folder and putting
       // them into one thumb.
       // count the number of images

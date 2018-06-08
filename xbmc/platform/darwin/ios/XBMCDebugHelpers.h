@@ -38,7 +38,7 @@
 #define ELOG(s, ...) NSLog(@"[ERROR] " s, ##__VA_ARGS__)
 #define DLOG(s, ...) LOG(s, ##__VA_ARGS__)
 #else
-#define LOG(s, ...) 
+#define LOG(s, ...)
 #define ILOG(s, ...) NSLog(@"[INFO]  " s, ##__VA_ARGS__)
 #define ELOG(s, ...) NSLog(@"[ERROR] " s, ##__VA_ARGS__)
 #define DLOG(s, ...) LOG(s, ##__VA_ARGS__)

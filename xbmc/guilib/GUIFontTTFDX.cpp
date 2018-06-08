@@ -126,7 +126,7 @@ void CGUIFontTTFDX::LastEnd()
       size_t count = size - character;
       count = std::min<size_t>(count, ELEMENT_ARRAY_MAX_CHAR_INDEX);
 
-      // 6 indices and 4 vertices per character 
+      // 6 indices and 4 vertices per character
       pGUIShader->DrawIndexed(count * 6, 0, character * 4);
     }
   }
@@ -173,7 +173,7 @@ void CGUIFontTTFDX::LastEnd()
         size_t count = m_vertexTrans[i].vertexBuffer->size - character;
         count = std::min<size_t>(count, ELEMENT_ARRAY_MAX_CHAR_INDEX);
 
-        // 6 indices and 4 vertices per character 
+        // 6 indices and 4 vertices per character
         pGUIShader->DrawIndexed(count * 6, 0, character * 4);
       }
     }

@@ -53,7 +53,7 @@ static std::string getFilename(const CURL& url)
   std::string filename(url.GetFileName());
   if (IsAliasShortcut(filename, false))
     TranslateAliasShortcut(filename);
-  
+
   return filename;
 }
 
@@ -62,14 +62,14 @@ bool CPosixFile::Open(const CURL& url)
 {
   if (m_fd >= 0)
     return false;
-  
+
   const std::string filename(getFilename(url));
   if (filename.empty())
     return false;
-  
+
   m_fd = open(filename.c_str(), O_RDONLY, S_IRUSR | S_IRGRP | S_IROTH);
   m_filePos = 0;
-  
+
   return m_fd != -1;
 }
 
@@ -77,18 +77,18 @@ bool CPosixFile::OpenForWrite(const CURL& url, bool bOverWrite /* = false*/ )
 {
   if (m_fd >= 0)
     return false;
-  
+
   const std::string filename(getFilename(url));
   if (filename.empty())
     return false;
-  
+
   m_fd = open(filename.c_str(), O_RDWR | O_CREAT | (bOverWrite ? O_TRUNC : 0), S_IWUSR | S_IRUSR | S_IRGRP | S_IWGRP | S_IROTH);
   if (m_fd < 0)
     return false;
-  
+
   m_filePos = 0;
   m_allowWrite = true;
-  
+
   return true;
 }
 
@@ -109,21 +109,21 @@ ssize_t CPosixFile::Read(void* lpBuf, size_t uiBufSize)
 {
   if (m_fd < 0)
     return -1;
-  
+
   assert(lpBuf != NULL || uiBufSize == 0);
   if (lpBuf == NULL && uiBufSize != 0)
     return -1;
 
   if (uiBufSize > SSIZE_MAX)
     uiBufSize = SSIZE_MAX;
-  
+
   const ssize_t res = read(m_fd, lpBuf, uiBufSize);
   if (res < 0)
   {
     Seek(0, SEEK_CUR); // force update file position
     return -1;
   }
-  
+
   if (m_filePos >= 0)
   {
     m_filePos += res; // if m_filePos was known - update it
@@ -158,17 +158,17 @@ ssize_t CPosixFile::Write(const void* lpBuf, size_t uiBufSize)
 
   if (uiBufSize > SSIZE_MAX)
     uiBufSize = SSIZE_MAX;
-  
+
   const ssize_t res = write(m_fd, lpBuf, uiBufSize);
   if (res < 0)
   {
     Seek(0, SEEK_CUR); // force update file position
     return -1;
   }
-  
+
   if (m_filePos >= 0)
     m_filePos += res; // if m_filePos was known - update it
-  
+
   return res;
 }
 
@@ -176,7 +176,7 @@ int64_t CPosixFile::Seek(int64_t iFilePosition, int iWhence /* = SEEK_SET*/)
 {
   if (m_fd < 0)
     return -1;
-  
+
 #ifdef TARGET_ANDROID
   //! @todo properly support with detection in configure
   //! Android special case: Android doesn't substitute off64_t for off_t and similar functions
@@ -186,10 +186,10 @@ int64_t CPosixFile::Seek(int64_t iFilePosition, int iWhence /* = SEEK_SET*/)
   // check for parameter overflow
   if (sizeof(int64_t) != sizeof(off_t) && iFilePosition != filePosOffT)
     return -1;
-  
+
   m_filePos = lseek(m_fd, filePosOffT, iWhence);
 #endif // !TARGET_ANDROID
-  
+
   return m_filePos;
 }
 
@@ -197,12 +197,12 @@ int CPosixFile::Truncate(int64_t size)
 {
   if (m_fd < 0)
     return -1;
-  
+
   const off_t sizeOffT = (off_t) size;
   // check for parameter overflow
   if (sizeof(int64_t) != sizeof(off_t) && size != sizeOffT)
     return -1;
-  
+
   return ftruncate(m_fd, sizeOffT);
 }
 
@@ -213,7 +213,7 @@ int64_t CPosixFile::GetPosition()
 
   if (m_filePos < 0)
     m_filePos = lseek(m_fd, 0, SEEK_CUR);
-  
+
   return m_filePos;
 }
 
@@ -225,7 +225,7 @@ int64_t CPosixFile::GetLength()
   struct stat64 st;
   if (fstat64(m_fd, &st) != 0)
     return -1;
-  
+
   return st.st_size;
 }
 
@@ -258,7 +258,7 @@ int CPosixFile::IoControl(EIoControl request, void* param)
       // restore file position
       if (Seek(orgPos, SEEK_SET) != orgPos)
         return 0; // seeking is not possible
-      
+
       return seekPossible ? 1 : 0;
     }
     else
@@ -268,7 +268,7 @@ int CPosixFile::IoControl(EIoControl request, void* param)
       // restore file position
       if (Seek(0, SEEK_SET) != 0)
         return 0; // seeking is not possible
-      
+
       if (seekPossible)
         return 1;
 
@@ -278,7 +278,7 @@ int CPosixFile::IoControl(EIoControl request, void* param)
         return 0; // size of file is 1 byte or more and seeking not possible
     }
   }
-  
+
   return -1;
 }
 
@@ -288,13 +288,13 @@ bool CPosixFile::Delete(const CURL& url)
   const std::string filename(getFilename(url));
   if (filename.empty())
     return false;
-  
+
   if (unlink(filename.c_str()) == 0)
     return true;
-  
+
   if (errno == EACCES || errno == EPERM)
     CLog::LogF(LOGWARNING, "Can't access file \"%s\"", filename.c_str());
-  
+
   return false;
 }
 
@@ -303,13 +303,13 @@ bool CPosixFile::Rename(const CURL& url, const CURL& urlnew)
   const std::string name(getFilename(url)), newName(getFilename(urlnew));
   if (name.empty() || newName.empty())
     return false;
-  
+
   if (name == newName)
     return true;
-  
+
   if (rename(name.c_str(), newName.c_str()) == 0)
     return true;
-  
+
   if (errno == EACCES || errno == EPERM)
     CLog::LogF(LOGWARNING, "Can't access file \"%s\" for rename to \"%s\"", name.c_str(), newName.c_str());
 
@@ -334,7 +334,7 @@ bool CPosixFile::Exists(const CURL& url)
   const std::string filename(getFilename(url));
   if (filename.empty())
     return false;
-  
+
   struct stat64 st;
   return stat64(filename.c_str(), &st) == 0 && !S_ISDIR(st.st_mode);
 }
@@ -345,7 +345,7 @@ int CPosixFile::Stat(const CURL& url, struct __stat64* buffer)
   const std::string filename(getFilename(url));
   if (filename.empty() || !buffer)
     return -1;
-  
+
   return stat64(filename.c_str(), buffer);
 }
 
@@ -354,7 +354,7 @@ int CPosixFile::Stat(struct __stat64* buffer)
   assert(buffer != NULL);
   if (m_fd < 0 || !buffer)
     return -1;
-  
+
   return fstat64(m_fd, buffer);
 }
 

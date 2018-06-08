@@ -35,7 +35,7 @@ CSettingPath::CSettingPath(const std::string &id, CSettingsManager *settingsMana
 CSettingPath::CSettingPath(const std::string &id, int label, const std::string &value, CSettingsManager *settingsManager /* = nullptr */)
   : CSettingString(id, label, value, settingsManager)
 { }
-  
+
 CSettingPath::CSettingPath(const std::string &id, const CSettingPath &setting)
   : CSettingString(id, setting)
 {
@@ -53,14 +53,14 @@ bool CSettingPath::Deserialize(const TiXmlNode *node, bool update /* = false */)
 
   if (!CSettingString::Deserialize(node, update))
     return false;
-    
+
   if (m_control != nullptr &&
      (m_control->GetType() != "button" || (m_control->GetFormat() != "path" && m_control->GetFormat() != "file")))
   {
     CLog::Log(LOGERROR, "CSettingPath: invalid <control> of \"%s\"", m_id.c_str());
     return false;
   }
-    
+
   auto constraints = node->FirstChild(XML_ELM_CONSTRAINTS);
   if (constraints != nullptr)
   {

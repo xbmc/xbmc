@@ -110,7 +110,7 @@ void CEventButtonState::Load()
         - (unsigned char)'0'; // convert <num> to int
       m_joystickName = m_joystickName.substr(2); // extract joyname
     }
-    
+
     if (m_mapName.length() > 3 &&
         (StringUtils::StartsWith(m_mapName, "CC")) ) // custom map - CC:<controllerName>
     {

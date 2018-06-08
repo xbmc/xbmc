@@ -37,7 +37,7 @@ public:
   ~CJNIXBMCVideoView();
 
   static void RegisterNatives(JNIEnv* env);
-  
+
   static CJNIXBMCVideoView* createVideoView(CJNISurfaceHolderCallback* callback);
 
   // CJNISurfaceHolderCallback interface

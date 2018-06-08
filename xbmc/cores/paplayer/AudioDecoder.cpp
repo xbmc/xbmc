@@ -205,7 +205,7 @@ void *CAudioDecoder::GetData(unsigned int samples)
     CLog::Log(LOGERROR, "CAudioDecoder::GetData - More data was requested then we have space to buffer!");
     return NULL;
   }
-  
+
   if (size > m_pcmBuffer.getMaxReadSize())
   {
     CLog::Log(LOGWARNING, "CAudioDecoder::GetData() more bytes/samples (%i) requested than we have to give (%i)!", size, m_pcmBuffer.getMaxReadSize());
@@ -216,10 +216,10 @@ void *CAudioDecoder::GetData(unsigned int samples)
   {
     if (m_status == STATUS_ENDING && m_pcmBuffer.getMaxReadSize() == 0)
       m_status = STATUS_ENDED;
-    
+
     return m_outputBuffer;
   }
-  
+
   CLog::Log(LOGERROR, "CAudioDecoder::GetData() ReadBinary failed with %i samples", samples);
   return NULL;
 }

@@ -360,18 +360,18 @@ bool CGUIPassword::CheckSettingLevelLock(const SettingLevel& level, bool enforce
   const CProfilesManager &profileManager = CServiceBroker::GetProfileManager();
 
   LOCK_LEVEL::SETTINGS_LOCK lockLevel = profileManager.GetCurrentProfile().settingsLockLevel();
-  
+
   if (lockLevel == LOCK_LEVEL::NONE)
     return true;
-  
+
     //check if we are already in settings and in an level that needs unlocking
   int windowID = CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow();
-  if ((int)lockLevel-1 <= (short)CViewStateSettings::GetInstance().GetSettingLevel() && 
-     (windowID == WINDOW_SETTINGS_MENU || 
+  if ((int)lockLevel-1 <= (short)CViewStateSettings::GetInstance().GetSettingLevel() &&
+     (windowID == WINDOW_SETTINGS_MENU ||
          (windowID >= WINDOW_SCREEN_CALIBRATION &&
           windowID <= WINDOW_SETTINGS_MYPVR)))
     return true; //Already unlocked
-  
+
   else if (lockLevel == LOCK_LEVEL::ALL)
     return IsMasterLockUnlocked(true);
   else if ((int)lockLevel-1 <= (short)level)

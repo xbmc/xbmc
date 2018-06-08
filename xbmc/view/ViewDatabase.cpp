@@ -108,7 +108,7 @@ void CViewDatabase::UpdateTables(int version)
                 "sortOrder integer,"
                 "sortAttributes integer,"
                 "skin text)\n");
-    
+
     m_pDS->query("SELECT * FROM tmp_view");
     while (!m_pDS->eof())
     {

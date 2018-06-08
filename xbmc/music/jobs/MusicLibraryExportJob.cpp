@@ -26,7 +26,7 @@
 CMusicLibraryExportJob::CMusicLibraryExportJob(const CLibExportSettings& settings, CGUIDialogProgress* progressDialog)
   : CMusicLibraryProgressJob(NULL),
     m_settings(settings)
-{ 
+{
   if (progressDialog)
     SetProgressIndicators(NULL, progressDialog);
   SetAutoClose(true);

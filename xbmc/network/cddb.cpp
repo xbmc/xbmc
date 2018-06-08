@@ -479,8 +479,8 @@ void Xcddb::parseData(const char *buffer)
   std::map<std::string, std::string> keywords;
   std::list<std::string> keywordsOrder; // remember order of keywords as it appears in data received from CDDB
 
-  // Collect all the keywords and put them in map. 
-  // Multiple occurrences of the same keyword indicate that 
+  // Collect all the keywords and put them in map.
+  // Multiple occurrences of the same keyword indicate that
   // the data contained on those lines should be concatenated
   char *line;
   const char trenner[3] = {'\n', '\r', '\0'};
@@ -512,7 +512,7 @@ void Xcddb::parseData(const char *buffer)
     }
   }
 
-  // parse keywords 
+  // parse keywords
   for (std::list<std::string>::const_iterator it = keywordsOrder.begin(); it != keywordsOrder.end(); ++it)
   {
     std::string strKeyword = *it;

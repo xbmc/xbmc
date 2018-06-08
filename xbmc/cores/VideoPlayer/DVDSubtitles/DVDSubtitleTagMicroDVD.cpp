@@ -149,7 +149,7 @@ void CDVDSubtitleTagMicroDVD::ConvertLine(CDVDOverlayText* pOverlay, const char*
       }
     }
   }
-    
+
   if (strUTF8.empty())
     return;
 

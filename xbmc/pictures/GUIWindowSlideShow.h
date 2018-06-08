@@ -87,7 +87,7 @@ public:
                     SortAttribute sortAttributes = SortAttributeNone,
                     const std::string &strExtensions="");
   void AddFromPath(const std::string &strPath, bool bRecursive,
-                   SortBy method = SortByLabel, 
+                   SortBy method = SortByLabel,
                    SortOrder order = SortOrderAscending,
                    SortAttribute sortAttributes = SortAttributeNone,
                    const std::string &strExtensions="");

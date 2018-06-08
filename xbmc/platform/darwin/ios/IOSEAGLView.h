@@ -26,7 +26,7 @@
 // The view content is basically an EAGL surface you render your OpenGL scene into.
 // Note that setting the view non-opaque will only work if the EAGL surface has an alpha channel.
 @interface IOSEAGLView : UIView
-{    
+{
 @private
   EAGLContext *context;
   // The pixel dimensions of the CAEAGLLayer.
@@ -38,7 +38,7 @@
 	GLuint program;
 	//
 	GLfloat rotz;
-	
+
 	BOOL animating;
   BOOL xbmcAlive;
   BOOL readyToRun;

@@ -35,7 +35,7 @@ class CBusyWaiter : public CThread
 public:
   explicit CBusyWaiter(IRunnable *runnable) :
   CThread(runnable, "waiting"), m_done(new CEvent()),  m_runnable(runnable) { }
-  
+
   ~CBusyWaiter()
   {
     StopThread();
@@ -106,7 +106,7 @@ bool CGUIDialogBusy::WaitOnEvent(CEvent &event, unsigned int displaytime /* = 10
           break;
         }
       }
-      
+
       dialog->Close(true);
     }
   }

@@ -102,7 +102,7 @@ bool CGUIWindow::Load(const std::string& strFileName, bool bContainsPath)
     break;
   }
   CLog::Log(LOGINFO, "Loading skin file: %s, load type: %s", strFileName.c_str(), strLoadType);
-  
+
   // Find appropriate skin folder + resolution to load from
   std::string strPath;
   std::string strLowerPath;
@@ -260,7 +260,7 @@ bool CGUIWindow::Load(TiXmlElement *pRootElement)
       m_hasCamera = true;
     }
     else if (strValue == "depth" && pChild->FirstChild())
-    { 
+    {
       float stereo = static_cast<float>(atof(pChild->FirstChild()->Value()));
       m_stereo = std::max(-1.f, std::min(1.f, stereo));
     }
@@ -590,7 +590,7 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
       return true;
     }
     break;
-      
+
   case GUI_MSG_WINDOW_INIT:
     {
       CLog::Log(LOGDEBUG, "------ Window Init (%s) ------", GetProperty("xmlfile").c_str());
@@ -609,7 +609,7 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
       return true;
     }
     break;
-  
+
   case GUI_MSG_UNFOCUS_ALL:
     {
       //unfocus the current focused control in this window

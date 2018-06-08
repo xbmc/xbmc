@@ -81,7 +81,7 @@ public:
    * return codecs name
    */
   virtual const char* GetName() { return m_codecName.c_str(); }
-  
+
 protected:
   /*
    * Adapts startTime, stopTIme from the subtitle stream (which is relative to stream pts)

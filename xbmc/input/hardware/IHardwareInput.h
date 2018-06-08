@@ -34,7 +34,7 @@ namespace HARDWARE
   {
   public:
     virtual ~IHardwareInput() = default;
-    
+
     /*!
      * \brief A hardware reset button has been pressed
      */

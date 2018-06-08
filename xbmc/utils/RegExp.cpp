@@ -20,7 +20,7 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <algorithm> 
+#include <algorithm>
 #include "RegExp.h"
 #include "log.h"
 #include "utils/StringUtils.h"
@@ -348,7 +348,7 @@ int CRegExp::PrivateRegFind(size_t bufferLen, const char *str, unsigned int star
   {
     CLog::Log(LOGERROR, "PCRE: Called without a string to match");
     return -1;
-  } 
+  }
 
   if (startoffset > bufferLen)
   {
@@ -385,7 +385,7 @@ int CRegExp::PrivateRegFind(size_t bufferLen, const char *str, unsigned int star
       CLog::Log(LOGERROR, "PCRE: Match limit reached");
       return -1;
 
-#ifdef PCRE_ERROR_SHORTUTF8 
+#ifdef PCRE_ERROR_SHORTUTF8
     case PCRE_ERROR_SHORTUTF8:
       {
         const size_t startPos = (m_subject.length() > fragmentLen) ? CUtf8Utils::RFindValidUtf8Char(m_subject, m_subject.length() - fragmentLen) : 0;
@@ -448,8 +448,8 @@ std::string CRegExp::GetReplaceString(const std::string& sReplaceExp) const
       const char nextChar = expr[pos];
       if (nextChar == '&' || nextChar == '\\')
       { // this is "\&" or "\\" combination
-        result.push_back(nextChar); // add '&' or '\' to result 
-        pos++; 
+        result.push_back(nextChar); // add '&' or '\' to result
+        pos++;
       }
       else if (isdigit(nextChar))
       { // this is "\0" - "\9" combination
@@ -559,8 +559,8 @@ void CRegExp::Cleanup()
 {
   if (m_re)
   {
-    pcre_free(m_re); 
-    m_re = NULL; 
+    pcre_free(m_re);
+    m_re = NULL;
   }
 
   if (m_sd)

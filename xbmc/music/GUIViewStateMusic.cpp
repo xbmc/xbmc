@@ -340,7 +340,7 @@ CGUIViewStateMusicSmartPlaylist::CGUIViewStateMusicSmartPlaylist(const CFileItem
     sortAttribute = static_cast<SortAttribute>(sortAttribute | SortAttributeUseArtistSortName);
   const CViewState *viewState = CViewStateSettings::GetInstance().Get("musicnavsongs");
 
-  if (items.GetContent() == "songs" || items.GetContent() == "mixed") 
+  if (items.GetContent() == "songs" || items.GetContent() == "mixed")
   {
     std::string strTrack=CServiceBroker::GetSettings().GetString(CSettings::SETTING_MUSICFILES_TRACKFORMAT);
     AddSortMethod(SortByTrackNumber, 554, LABEL_MASKS(strTrack, "%D"));  // Userdefined, Duration| empty, empty
@@ -365,8 +365,8 @@ CGUIViewStateMusicSmartPlaylist::CGUIViewStateMusicSmartPlaylist(const CFileItem
     }
 
     SetViewAsControl(CViewStateSettings::GetInstance().Get("musicnavsongs")->m_viewMode);
-  } 
-  else if (items.GetContent() == "albums") 
+  }
+  else if (items.GetContent() == "albums")
   {
     std::string strAlbum = g_advancedSettings.m_strMusicLibraryAlbumFormat;
     if (strAlbum.empty())
@@ -399,12 +399,12 @@ CGUIViewStateMusicSmartPlaylist::CGUIViewStateMusicSmartPlaylist(const CFileItem
     }
 
     SetViewAsControl(CViewStateSettings::GetInstance().Get("musicnavalbums")->m_viewMode);
-  } 
-  else 
+  }
+  else
   {
     CLog::Log(LOGERROR,"Music Smart Playlist must be one of songs, mixed or albums");
   }
-  
+
   LoadViewState(items.GetPath(), WINDOW_MUSIC_NAV);
 }
 
@@ -476,7 +476,7 @@ CGUIViewStateWindowMusicNav::CGUIViewStateWindowMusicNav(const CFileItemList& it
         AddSortMethod(SortByArtist, sortAttribute, 557, LABEL_MASKS("%A - %T", "%Y"));
         AddSortMethod(SortByArtistThenYear, sortAttribute, 578, LABEL_MASKS("%A - %T", "%Y"));
         AddSortMethod(SortByAlbum, sortAttribute, 558, LABEL_MASKS("%B - %T", "%Y"));
-        
+
         std::string strTrack=CServiceBroker::GetSettings().GetString(CSettings::SETTING_MUSICFILES_TRACKFORMAT);
         AddSortMethod(SortByTrackNumber, 554, LABEL_MASKS(strTrack, "%D"));  // Userdefined, Duration| empty, empty
       }

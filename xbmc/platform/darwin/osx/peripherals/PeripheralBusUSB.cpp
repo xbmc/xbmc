@@ -118,7 +118,7 @@ PeripheralType CPeripheralBusUSB::GetType(int iDeviceClass)
 }
 
 void CPeripheralBusUSB::DeviceDetachCallback(void *refCon, io_service_t service, natural_t messageType, void *messageArgument)
-{ 
+{
   if (messageType == kIOMessageServiceIsTerminated)
   {
     USBDevicePrivateData *privateDataRef = (USBDevicePrivateData*)refCon;
@@ -132,7 +132,7 @@ void CPeripheralBusUSB::DeviceDetachCallback(void *refCon, io_service_t service,
         ++it;
     }
     privateDataRef->refCon->ScanForDevices();
-    
+
     CLog::Log(LOGDEBUG, "USB Device Detach:%s, %s\n",
       privateDataRef->deviceName.c_str(), privateDataRef->result.m_strLocation.c_str());
     IOObjectRelease(privateDataRef->notification);
@@ -199,7 +199,7 @@ void CPeripheralBusUSB::DeviceAttachCallback(CPeripheralBusUSB* refCon, io_itera
       SInt32 interfaceScore;
       IOCFPlugInInterface **interfacePlugin;
       //create intermediate plugin for interface access
-      result = IOCreatePlugInInterfaceForService(usbInterface, 
+      result = IOCreatePlugInInterfaceForService(usbInterface,
         kIOUSBInterfaceUserClientTypeID, kIOCFPlugInInterfaceID, &interfacePlugin, &interfaceScore);
       if (result != kIOReturnSuccess)
       {
@@ -268,14 +268,14 @@ void CPeripheralBusUSB::DeviceAttachCallback(CPeripheralBusUSB* refCon, io_itera
         privateDataRef->result.m_iSequence = refCon->GetNumberOfPeripheralsWithId(privateDataRef->result.m_iVendorId, privateDataRef->result.m_iProductId);
         if (!refCon->m_scan_results.ContainsResult(privateDataRef->result))
         {
-          // register this usb device for an interest notification callback. 
+          // register this usb device for an interest notification callback.
           result = IOServiceAddInterestNotification(refCon->m_notify_port,
             usbDevice,                      // service
             kIOGeneralInterest,             // interestType
             (IOServiceInterestCallback)DeviceDetachCallback, // callback
             privateDataRef,                 // refCon
             &privateDataRef->notification); // notification
-            
+
           if (result == kIOReturnSuccess)
           {
             refCon->m_scan_results.m_results.push_back(privateDataRef->result);

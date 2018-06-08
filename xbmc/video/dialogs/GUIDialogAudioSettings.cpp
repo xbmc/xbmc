@@ -75,7 +75,7 @@ void CGUIDialogAudioSettings::FrameMove()
   if (g_application.GetAppPlayer().HasPlayer())
   {
     const CVideoSettings videoSettings = g_application.GetAppPlayer().GetVideoSettings();
-    
+
     // these settings can change on the fly
     //! @todo (needs special handling): m_settingsManager->SetInt(SETTING_AUDIO_STREAM, g_application.GetAppPlayer().GetAudioStream());
     GetSettingsManager()->SetNumber(SETTING_AUDIO_DELAY, videoSettings.m_AudioDelay);
@@ -111,7 +111,7 @@ void CGUIDialogAudioSettings::OnSettingChanged(std::shared_ptr<const CSetting> s
     return;
 
   CGUIDialogSettingsManualBase::OnSettingChanged(setting);
-  
+
   const std::string &settingId = setting->GetId();
   if (settingId == SETTING_AUDIO_VOLUME)
   {
@@ -150,7 +150,7 @@ void CGUIDialogAudioSettings::OnSettingAction(std::shared_ptr<const CSetting> se
     return;
 
   CGUIDialogSettingsManualBase::OnSettingAction(setting);
-  
+
   const std::string &settingId = setting->GetId();
   if (settingId == SETTING_AUDIO_MAKE_DEFAULT)
     Save();
@@ -225,7 +225,7 @@ void CGUIDialogAudioSettings::InitializeSettings()
   bool usePopup = g_SkinInfo->HasSkinFile("DialogSlider.xml");
 
   const CVideoSettings videoSettings = g_application.GetAppPlayer().GetVideoSettings();
-  
+
   if (g_application.GetAppPlayer().HasPlayer())
   {
     g_application.GetAppPlayer().GetAudioCapabilities(m_audioCaps);
@@ -261,7 +261,7 @@ void CGUIDialogAudioSettings::InitializeSettings()
     std::shared_ptr<CSettingNumber> settingAudioDelay = AddSlider(groupAudio, SETTING_AUDIO_DELAY, 297, SettingLevel::Basic, videoSettings.m_AudioDelay, 0, -g_advancedSettings.m_videoAudioDelayRange, 0.025f, g_advancedSettings.m_videoAudioDelayRange, 297, usePopup);
     std::static_pointer_cast<CSettingControlSlider>(settingAudioDelay->GetControl())->SetFormatter(SettingFormatterDelay);
   }
-  
+
   // audio stream setting
   if (SupportsAudioFeature(IPC_AUD_SELECT_STREAM))
     AddAudioStreams(groupAudio, SETTING_AUDIO_STREAM);

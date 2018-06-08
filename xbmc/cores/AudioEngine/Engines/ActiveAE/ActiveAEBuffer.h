@@ -162,5 +162,5 @@ protected:
   int64_t m_lastSamplePts;
   bool m_fillPackets;
 };
-  
+
 }

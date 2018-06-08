@@ -63,7 +63,7 @@ void CGUIDialogProgress::Open(const std::string &param /* = "" */)
     CSingleLock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
     ShowProgressBar(true);
   }
-  
+
   CGUIDialog::Open_Internal(false, param);
 
   while (m_active && IsAnimating(ANIM_TYPE_WINDOW_OPEN))

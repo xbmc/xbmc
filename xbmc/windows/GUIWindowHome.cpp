@@ -35,13 +35,13 @@
 
 using namespace ANNOUNCEMENT;
 
-CGUIWindowHome::CGUIWindowHome(void) : CGUIWindow(WINDOW_HOME, "Home.xml"), 
+CGUIWindowHome::CGUIWindowHome(void) : CGUIWindow(WINDOW_HOME, "Home.xml"),
                                        m_recentlyAddedRunning(false),
                                        m_cumulativeUpdateFlag(0)
 {
   m_updateRA = (Audio | Video | Totals);
   m_loadType = KEEP_IN_MEMORY;
-  
+
   CAnnouncementManager::GetInstance().AddAnnouncer(this);
 }
 
@@ -64,7 +64,7 @@ bool CGUIWindowHome::OnAction(const CAction &action)
 }
 
 void CGUIWindowHome::OnInitWindow()
-{  
+{
   // for shared databases (ie mysql) always force an update on return to home
   // this is a temporary solution until remote announcements can be delivered
   if (StringUtils::EqualsNoCase(g_advancedSettings.m_databaseVideo.type, "mysql") ||

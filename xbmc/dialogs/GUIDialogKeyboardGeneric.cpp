@@ -396,7 +396,7 @@ void CGUIDialogKeyboardGeneric::Backspace()
     g_charsetConverter.utf8ToW(m_hzcode, tmp);
     tmp.erase(tmp.length() - 1, 1);
     g_charsetConverter.wToUTF8(tmp, m_hzcode);
-    
+
     switch (m_codingtable->GetType())
     {
     case IInputCodingTable::TYPE_WORD_LIST:

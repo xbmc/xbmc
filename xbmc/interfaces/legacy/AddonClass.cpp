@@ -42,7 +42,7 @@ namespace XBMCAddon
 #endif
   }
 
-  AddonClass::AddonClass() : refs(0L), m_isDeallocating(false), 
+  AddonClass::AddonClass() : refs(0L), m_isDeallocating(false),
                              languageHook(NULL)
   {
 #ifdef XBMC_ADDON_DEBUG_MEMORY
@@ -67,7 +67,7 @@ namespace XBMCAddon
   void AddonClass::Release() const
   {
     if (isDeleted)
-      CLog::Log(LOGERROR,"NEWADDON REFCNT Releasing dead class %s 0x%lx", 
+      CLog::Log(LOGERROR,"NEWADDON REFCNT Releasing dead class %s 0x%lx",
                 GetClassname(), (long)(((void*)this)));
 
     long ct = --refs;
@@ -85,11 +85,11 @@ namespace XBMCAddon
   void AddonClass::Acquire() const
   {
     if (isDeleted)
-      CLog::Log(LOGERROR,"NEWADDON REFCNT Acquiring dead class %s 0x%lx", 
+      CLog::Log(LOGERROR,"NEWADDON REFCNT Acquiring dead class %s 0x%lx",
                 GetClassname(), (long)(((void*)this)));
 
 #ifdef LOG_LIFECYCLE_EVENTS
-    CLog::Log(LOGDEBUG,"NEWADDON REFCNT incrementing to %ld on %s 0x%lx", 
+    CLog::Log(LOGDEBUG,"NEWADDON REFCNT incrementing to %ld on %s 0x%lx",
               ++refs, GetClassname(), (long)(((void*)this)));
 #else
     ++refs;
@@ -98,4 +98,4 @@ namespace XBMCAddon
 #endif
 }
 
-              
+

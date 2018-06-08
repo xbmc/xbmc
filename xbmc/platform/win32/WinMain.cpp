@@ -52,8 +52,8 @@ LONG WINAPI CreateMiniDump(EXCEPTION_POINTERS* pEp)
 INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT)
 {
   using KODI::PLATFORM::WINDOWS::ToW;
-  // this fixes crash if OPENSSL_CONF is set to existed openssl.cfg  
-  // need to set it as soon as possible  
+  // this fixes crash if OPENSSL_CONF is set to existed openssl.cfg
+  // need to set it as soon as possible
   CEnvironment::unsetenv("OPENSSL_CONF");
 
   // Initializes CreateMiniDump to handle exceptions.
@@ -130,7 +130,7 @@ INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT)
   {
     // Initialize before CAppParamParser so it can set the log level
     g_advancedSettings.Initialize();
-    
+
     CAppParamParser appParamParser;
     appParamParser.Parse(argv, argc);
     // Create and run the app

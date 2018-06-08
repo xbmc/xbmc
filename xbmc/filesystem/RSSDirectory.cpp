@@ -516,7 +516,7 @@ static void ParseItem(CFileItem* item, TiXmlElement* root, const std::string& pa
     item->m_dwSize  = best->size;
 
     if(best->duration)
-      item->SetProperty("duration", StringUtils::SecondsToTimeString(best->duration));    
+      item->SetProperty("duration", StringUtils::SecondsToTimeString(best->duration));
 
     /* handling of mimetypes fo directories are sub optimal at best */
     if(best->mime == "application/rss+xml" && StringUtils::StartsWithNoCase(item->GetPath(), "http://"))
@@ -569,7 +569,7 @@ bool CRSSDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   CSingleLock lock(m_section);
   if ((it=m_cache.find(strPath)) != m_cache.end())
   {
-    if (it->second > CDateTime::GetCurrentDateTime() && 
+    if (it->second > CDateTime::GetCurrentDateTime() &&
         items.Load())
       return true;
     m_cache.erase(it);

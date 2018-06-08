@@ -50,7 +50,7 @@ class CGUIControlBaseSetting : protected ILocalizer
 public:
   CGUIControlBaseSetting(int id, std::shared_ptr<CSetting> pSetting, ILocalizer* localizer);
   ~CGUIControlBaseSetting() override = default;
-  
+
   int GetID() const { return m_id; }
   std::shared_ptr<CSetting> GetSetting() { return m_pSetting; }
 
@@ -211,7 +211,7 @@ class CGUIControlRangeSetting : public CGUIControlBaseSetting
 public:
   CGUIControlRangeSetting(CGUISettingsSliderControl* pSlider, int id, std::shared_ptr<CSetting> pSetting, ILocalizer* localizer);
   ~CGUIControlRangeSetting() override;
-  
+
   CGUIControl* GetControl() override { return reinterpret_cast<CGUIControl*>(m_pSlider); }
   bool OnClick() override;
   void Update(bool updateDisplayOnly = false) override;

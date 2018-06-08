@@ -287,7 +287,7 @@ bool CPeripheralCecAdapter::OpenConnection(void)
     m_bStarted = false;
     return bIsOpen;
   }
-  
+
   // open the CEC adapter
   CLog::Log(LOGDEBUG, "%s - opening a connection to the CEC adapter: %s", __FUNCTION__, m_strComPort.c_str());
 
@@ -602,7 +602,7 @@ void CPeripheralCecAdapter::OnTvStandby(void)
   case LOCALISED_ID_HIBERNATE:
     m_bStarted = false;
     KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_SYSTEM_POWERDOWN, TMSG_HIBERNATE);
-    break;    
+    break;
   case LOCALISED_ID_QUIT:
     m_bStarted = false;
     KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_QUIT);

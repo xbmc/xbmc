@@ -293,7 +293,7 @@ CZeroconfBrowser::ZeroconfService::tTxtRecordMap GetTxtRecords(AvahiStringList *
 {
   AvahiStringList *i = NULL;
   CZeroconfBrowser::ZeroconfService::tTxtRecordMap recordMap;
-  
+
   for( i = txt; i; i = i->next )
   {
     char *key, *value;
@@ -307,7 +307,7 @@ CZeroconfBrowser::ZeroconfService::tTxtRecordMap GetTxtRecords(AvahiStringList *
         std::string(value)
       )
     );
-    
+
     if( key )
       avahi_free(key);
     if( value )

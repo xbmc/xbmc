@@ -96,7 +96,7 @@ private:
   unsigned m_sourceWidth{ 0 };
   unsigned m_sourceHeight{ 0 };
   CRect m_sourceRect{ 0.f, 0.f, 0.f, 0.f };
-  CPoint m_destPoints[4] = 
+  CPoint m_destPoints[4] =
   {
     { 0.f, 0.f },
     { 0.f, 0.f },
@@ -161,11 +161,11 @@ public:
   virtual void Render(CD3DTexture &sourceTexture,
                       unsigned int sourceWidth, unsigned int sourceHeight,
                       unsigned int destWidth, unsigned int destHeight,
-                      CRect sourceRect, CRect destRect, bool useLimitRange, 
+                      CRect sourceRect, CRect destRect, bool useLimitRange,
                       CD3DTexture *target) = 0;
   CConvolutionShader();
   virtual ~CConvolutionShader();
-  
+
 protected:
   virtual bool ChooseKernelD3DFormat();
   virtual bool CreateHQKernel(ESCALINGMETHOD method);
@@ -190,14 +190,14 @@ public:
   void Render(CD3DTexture &sourceTexture,
               unsigned int sourceWidth, unsigned int sourceHeight,
               unsigned int destWidth, unsigned int destHeight,
-              CRect sourceRect, CRect destRect, bool useLimitRange, 
+              CRect sourceRect, CRect destRect, bool useLimitRange,
               CD3DTexture *target) override;
   CConvolutionShader1Pass() : CConvolutionShader(), m_sourceWidth(0), m_sourceHeight(0) {}
 
 protected:
   void PrepareParameters(unsigned int sourceWidth, unsigned int sourceHeight,
                          CRect sourceRect, CRect destRect);
-  void SetShaderParameters(CD3DTexture &sourceTexture, float* texSteps, 
+  void SetShaderParameters(CD3DTexture &sourceTexture, float* texSteps,
                            int texStepsCount, bool useLimitRange) override;
 
 
@@ -225,7 +225,7 @@ protected:
   void PrepareParameters(unsigned int sourceWidth, unsigned int sourceHeight,
                          unsigned int destWidth, unsigned int destHeight,
                          CRect sourceRect, CRect destRect);
-  void SetShaderParameters(CD3DTexture &sourceTexture, float* texSteps, 
+  void SetShaderParameters(CD3DTexture &sourceTexture, float* texSteps,
                            int texStepsCount, bool useLimitRange) override;
   void SetStepParams(UINT stepIndex) override;
 

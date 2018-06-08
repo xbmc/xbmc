@@ -83,7 +83,7 @@ COverlayQuadsDX::COverlayQuadsDX(ASS_Image* images, int width, int height)
   SQuads quads;
   if(!convert_quad(images, quads, width))
     return;
-  
+
   float u, v;
   if(!LoadTexture(quads.size_x
                 , quads.size_y

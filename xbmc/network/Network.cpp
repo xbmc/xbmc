@@ -313,7 +313,7 @@ bool CNetworkBase::WakeOnLan(const char* mac)
     CLog::Log(LOGERROR, "%s - Unable to create socket (%s)", __FUNCTION__, strerror (errno));
     return false;
   }
- 
+
   // Set socket options
   struct sockaddr_in saddr;
   saddr.sin_family = AF_INET;
@@ -327,7 +327,7 @@ bool CNetworkBase::WakeOnLan(const char* mac)
     closesocket(packet);
     return false;
   }
- 
+
   // Build the magic packet (6 x 0xff + 16 x MAC address)
   ptr = buf;
   for (i = 0; i < 6; i++)
@@ -336,7 +336,7 @@ bool CNetworkBase::WakeOnLan(const char* mac)
   for (j = 0; j < 16; j++)
     for (i = 0; i < 6; i++)
       *ptr++ = ethaddr[i];
- 
+
   // Send the magic packet
   if (sendto (packet, (char *)buf, 102, 0, (struct sockaddr *)&saddr, sizeof (saddr)) < 0)
   {
@@ -377,8 +377,8 @@ static const char* ConnectHostPort(SOCKET soc, const struct sockaddr_in& addr, s
 
     { // wait for connect to complete
       fd_set wset;
-      FD_ZERO(&wset); 
-      FD_SET(soc, &wset); 
+      FD_ZERO(&wset);
+      FD_SET(soc, &wset);
 
       result = select(FD_SETSIZE, 0, &wset, 0, &timeOut);
     }
@@ -406,8 +406,8 @@ static const char* ConnectHostPort(SOCKET soc, const struct sockaddr_in& addr, s
   if (tryRead)
   {
     fd_set rset;
-    FD_ZERO(&rset); 
-    FD_SET(soc, &rset); 
+    FD_ZERO(&rset);
+    FD_SET(soc, &rset);
 
     result = select(FD_SETSIZE, &rset, 0, 0, &timeOut);
 
@@ -433,20 +433,20 @@ bool CNetworkBase::PingHost(unsigned long ipaddr, unsigned short port, unsigned 
   if (port == 0) // use icmp ping
     return PingHost (ipaddr, timeOutMs);
 
-  struct sockaddr_in addr; 
-  addr.sin_family = AF_INET; 
-  addr.sin_port = htons(port); 
-  addr.sin_addr.s_addr = ipaddr; 
+  struct sockaddr_in addr;
+  addr.sin_family = AF_INET;
+  addr.sin_port = htons(port);
+  addr.sin_addr.s_addr = ipaddr;
 
-  SOCKET soc = socket(AF_INET, SOCK_STREAM, 0); 
+  SOCKET soc = socket(AF_INET, SOCK_STREAM, 0);
 
   const char* err_msg = "invalid socket";
 
   if (soc != INVALID_SOCKET)
   {
-    struct timeval tmout; 
-    tmout.tv_sec = timeOutMs / 1000; 
-    tmout.tv_usec = (timeOutMs % 1000) * 1000; 
+    struct timeval tmout;
+    tmout.tv_sec = timeOutMs / 1000;
+    tmout.tv_usec = (timeOutMs % 1000) * 1000;
 
     err_msg = ConnectHostPort (soc, addr, tmout, readability_check);
 

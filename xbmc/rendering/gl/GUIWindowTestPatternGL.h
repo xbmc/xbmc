@@ -38,6 +38,6 @@ private:
   void DrawContrastBrightnessPattern(int top, int left, int bottom, int right) override;
   void DrawCircle(int originX, int originY, int radius) override;
   void BeginRender() override;
-  void EndRender() override;  
+  void EndRender() override;
 };
 

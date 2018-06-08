@@ -86,8 +86,8 @@ namespace XBMCAddon
 #endif
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
-      // Construct a Player proxying the given generated binding. The 
-      //  construction of a Player needs to identify whether or not any 
+      // Construct a Player proxying the given generated binding. The
+      //  construction of a Player needs to identify whether or not any
       //  callbacks will be executed asynchronously or not.
       explicit Player(int playerCore = 0);
       ~Player(void) override;

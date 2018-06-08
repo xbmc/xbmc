@@ -28,14 +28,14 @@ class CJNIXBMCAudioManagerOnAudioFocusChangeListener : public CJNIAudioManagerAu
 {
 public:
   CJNIXBMCAudioManagerOnAudioFocusChangeListener();
-  CJNIXBMCAudioManagerOnAudioFocusChangeListener(const CJNIXBMCAudioManagerOnAudioFocusChangeListener& other); 
+  CJNIXBMCAudioManagerOnAudioFocusChangeListener(const CJNIXBMCAudioManagerOnAudioFocusChangeListener& other);
   explicit CJNIXBMCAudioManagerOnAudioFocusChangeListener(const jni::jhobject &object) : CJNIBase(object) {}
   virtual ~CJNIXBMCAudioManagerOnAudioFocusChangeListener();
-  
+
   static void RegisterNatives(JNIEnv* env);
-    
+
   void onAudioFocusChange(int focusChange) override;
-  
+
 protected:
-  static void _onAudioFocusChange(JNIEnv* env, jobject thiz, jint focusChange);  
+  static void _onAudioFocusChange(JNIEnv* env, jobject thiz, jint focusChange);
 };

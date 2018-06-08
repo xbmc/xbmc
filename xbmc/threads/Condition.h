@@ -45,7 +45,7 @@ namespace XbmcThreads
   public:
     ConditionVariable() = default;
 
-    inline void wait(CCriticalSection& lock) 
+    inline void wait(CCriticalSection& lock)
     {
       int count  = lock.count;
       lock.count = 0;
@@ -53,8 +53,8 @@ namespace XbmcThreads
       lock.count = count;
     }
 
-    inline bool wait(CCriticalSection& lock, unsigned long milliseconds) 
-    { 
+    inline bool wait(CCriticalSection& lock, unsigned long milliseconds)
+    {
       int count  = lock.count;
       lock.count = 0;
       std::cv_status res = cond.wait_for(lock.get_underlying(), std::chrono::milliseconds(milliseconds));
@@ -65,19 +65,19 @@ namespace XbmcThreads
     inline void wait(CSingleLock& lock) { wait(lock.get_underlying()); }
     inline bool wait(CSingleLock& lock, unsigned long milliseconds) { return wait(lock.get_underlying(), milliseconds); }
 
-    inline void notifyAll() 
-    { 
+    inline void notifyAll()
+    {
       cond.notify_all();
     }
 
-    inline void notify() 
-    { 
+    inline void notify()
+    {
       cond.notify_one();
     }
   };
 
   /**
-   * This is a condition variable along with its predicate. This allows the use of a 
+   * This is a condition variable along with its predicate. This allows the use of a
    *  condition variable without the spurious returns since the state being monitored
    *  is also part of the condition.
    *

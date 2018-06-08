@@ -53,12 +53,12 @@ extern "C"
     } codec;
 
     STREAMCODEC_PROFILE codecProfile;
-    
+
     //UnknownVideoFormat is terminator
     VIDEOCODEC_FORMAT *videoFormats;
 
     uint32_t width, height;
-    
+
     const uint8_t *extraData;
     unsigned int extraDataSize;
 

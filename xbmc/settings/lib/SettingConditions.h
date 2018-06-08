@@ -54,7 +54,7 @@ public:
     : ISettingCondition(settingsManager)
   { }
   ~CSettingConditionItem() override = default;
-  
+
   bool Deserialize(const TiXmlNode *node) override;
   const char* GetTag() const override { return SETTING_XML_ELM_CONDITION; }
   bool Check() const override;

@@ -64,7 +64,7 @@ bool CUPnPSettings::Load(const std::string &file)
 
   if (!CFile::Exists(file))
     return false;
-  
+
   CXBMCTinyXML doc;
   if (!doc.LoadFile(file))
   {

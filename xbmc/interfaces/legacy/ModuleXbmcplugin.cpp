@@ -41,8 +41,8 @@ namespace XBMCAddon
       return XFILE::CPluginDirectory::AddItem(handle, pListItem->item.get(), totalItems);
     }
 
-    bool addDirectoryItems(int handle, 
-                           const std::vector<Tuple<String,const XBMCAddon::xbmcgui::ListItem*,bool> >& items, 
+    bool addDirectoryItems(int handle,
+                           const std::vector<Tuple<String,const XBMCAddon::xbmcgui::ListItem*,bool> >& items,
                            int totalItems)
     {
       CFileItemList fitems;
@@ -62,7 +62,7 @@ namespace XBMCAddon
       return XFILE::CPluginDirectory::AddItems(handle, &fitems, totalItems);
     }
 
-    void endOfDirectory(int handle, bool succeeded, bool updateListing, 
+    void endOfDirectory(int handle, bool succeeded, bool updateListing,
                         bool cacheToDisc)
     {
       // tell the directory class that we're done
@@ -107,7 +107,7 @@ namespace XBMCAddon
       XFILE::CPluginDirectory::SetProperty(handle, "plugincategory", category);
     }
 
-    void setPluginFanart(int handle, const char* image, 
+    void setPluginFanart(int handle, const char* image,
                          const char* color1,
                          const char* color2,
                          const char* color3)
@@ -126,6 +126,6 @@ namespace XBMCAddon
     {
       XFILE::CPluginDirectory::SetProperty(handle, key, value);
     }
-    
+
   }
 }

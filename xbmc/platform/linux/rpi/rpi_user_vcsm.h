@@ -175,7 +175,7 @@ void vcsm_status( VCSM_STATUS_T status, int pid );
 ** handle to gain access to the memory associated with the opaque handle.
 ** When finished using the memory, the user calls vcsm_unlock_xx (see those
 ** function definition for more details on the one that can be used).
-** 
+**
 ** A well behaved application should make every attempt to lock/unlock
 ** only for the duration it needs to access the memory data associated with
 ** the opaque handle.
@@ -194,7 +194,7 @@ unsigned int vcsm_malloc( unsigned int size, char *name );
 ** handle to gain access to the memory associated with the opaque handle.
 ** When finished using the memory, the user calls vcsm_unlock_xx (see those
 ** function definition for more details on the one that can be used).
-** 
+**
 ** A well behaved application should make every attempt to lock/unlock
 ** only for the duration it needs to access the memory data associated with
 ** the opaque handle.

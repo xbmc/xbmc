@@ -61,7 +61,7 @@ bool CGUIControlLookup::IsValidControl(const CGUIControl *control) const
 void CGUIControlLookup::AddLookup(CGUIControl *control)
 {
   CGUIControlLookup *lookupControl(dynamic_cast<CGUIControlLookup*>(control));
-  
+
   if (lookupControl)
   { // first add all the subitems of this group (if they exist)
     const LookupMap &map(lookupControl->GetLookup());

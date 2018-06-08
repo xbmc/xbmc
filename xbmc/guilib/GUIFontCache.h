@@ -147,7 +147,7 @@ public:
   explicit CGUIFontCache(CGUIFontTTFBase &font);
 
   ~CGUIFontCache();
- 
+
   Value &Lookup(Position &pos,
                 const std::vector<UTILS::Color> &colors, const vecText &text,
                 uint32_t alignment, float maxPixelWidth,

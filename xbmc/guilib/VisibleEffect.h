@@ -223,10 +223,10 @@ public:
 
   /**
    * Set target value scroller will be scrolling to
-   * @param endPos target 
+   * @param endPos target
    */
   void ScrollTo(float endPos);
-  
+
   /**
    * Immediately stop scrolling
    */

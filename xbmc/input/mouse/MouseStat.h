@@ -46,8 +46,8 @@
 
 #define MOUSE_MAX_BUTTON 7
 
-enum MOUSE_STATE 
-{ 
+enum MOUSE_STATE
+{
   MOUSE_STATE_NORMAL = 1, /*! < Normal state */
   MOUSE_STATE_FOCUS,      /*! < Control below the mouse is currently in focus */
   MOUSE_STATE_DRAG,       /*! < A drag operation is being performed */

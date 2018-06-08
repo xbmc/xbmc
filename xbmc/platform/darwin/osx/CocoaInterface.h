@@ -37,7 +37,7 @@ extern "C"
   //
   void Cocoa_DoAppleScript(const char* scriptSource);
   void Cocoa_DoAppleScriptFile(const char* filePath);
-  
+
   // Devices
   //
   char* Cocoa_MountPoint2DeviceName(char *path);

@@ -143,7 +143,7 @@ extern "C" JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved)
     return -1;
 
   std::string pkgRoot = CCompileInfo::GetClass();
-  
+
   std::string mainClass = pkgRoot + "/Main";
   std::string bcReceiver = pkgRoot + "/XBMCBroadcastReceiver";
   std::string settingsObserver = pkgRoot + "/XBMCSettingsContentObserver";
@@ -163,7 +163,7 @@ extern "C" JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved)
   jclass cMain = env->FindClass(mainClass.c_str());
   if(cMain)
   {
-    JNINativeMethod methods[] = 
+    JNINativeMethod methods[] =
     {
       {"_onNewIntent", "(Landroid/content/Intent;)V", (void*)&CJNIMainActivity::_onNewIntent},
       {"_onActivityResult", "(IILandroid/content/Intent;)V", (void*)&CJNIMainActivity::_onActivityResult},
@@ -177,7 +177,7 @@ extern "C" JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved)
   jclass cBroadcastReceiver = env->FindClass(bcReceiver.c_str());
   if(cBroadcastReceiver)
   {
-    JNINativeMethod methods[] = 
+    JNINativeMethod methods[] =
     {
       {"_onReceive", "(Landroid/content/Intent;)V", (void*)&CJNIBroadcastReceiver::_onReceive},
     };
@@ -187,7 +187,7 @@ extern "C" JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved)
   jclass cSettingsObserver = env->FindClass(settingsObserver.c_str());
   if(cSettingsObserver)
   {
-    JNINativeMethod methods[] = 
+    JNINativeMethod methods[] =
     {
       {"_onVolumeChanged", "(I)V", (void*)&CJNIMainActivity::_onVolumeChanged},
     };
@@ -197,7 +197,7 @@ extern "C" JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved)
   jclass cInputDeviceListener = env->FindClass(inputDeviceListener.c_str());
   if(cInputDeviceListener)
   {
-    JNINativeMethod methods[] = 
+    JNINativeMethod methods[] =
     {
       { "_onInputDeviceAdded", "(I)V", (void*)&CJNIMainActivity::_onInputDeviceAdded },
       { "_onInputDeviceChanged", "(I)V", (void*)&CJNIMainActivity::_onInputDeviceChanged },

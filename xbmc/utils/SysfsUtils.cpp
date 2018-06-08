@@ -60,9 +60,9 @@ int SysfsUtils::GetString(const std::string& path, std::string& valstr)
     while ((len = read(fd, buf, 256)) > 0)
       valstr.append(buf, len);
     close(fd);
- 
+
     StringUtils::Trim(valstr);
-    
+
     return 0;
   }
 

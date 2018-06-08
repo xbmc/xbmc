@@ -141,7 +141,7 @@ bool CGenericTouchSwipeDetector::OnTouchMove(unsigned int index, const Pointer &
     else if (deltaXabs > m_dpi * SWIPE_MIN_DISTANCE)
       m_swipeDetected = true;
   }
-  
+
   if (m_directions & TouchMoveDirectionUp)
   {
     // check if the movement went too much in X direction
@@ -167,7 +167,7 @@ bool CGenericTouchSwipeDetector::OnTouchMove(unsigned int index, const Pointer &
     m_done = true;
     return false;
   }
-  
+
   return true;
 }
 

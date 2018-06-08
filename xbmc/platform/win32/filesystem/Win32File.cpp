@@ -81,7 +81,7 @@ bool CWin32File::Open(const CURL& url)
 
   m_filepathnameW = pathnameW;
 #ifdef TARGET_WINDOWS_STORE
-  m_hFile = CreateFile2(pathnameW.c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, 
+  m_hFile = CreateFile2(pathnameW.c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE,
                         OPEN_EXISTING, NULL);
 #else
   m_hFile = CreateFileW(pathnameW.c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE,
@@ -109,7 +109,7 @@ bool CWin32File::OpenForWrite(const CURL& url, bool bOverWrite /*= false*/)
   assert((pathnameW.compare(4, 4, L"UNC\\", 4) == 0 && m_smbFile) || !m_smbFile);
 
 #ifdef TARGET_WINDOWS_STORE
-  m_hFile = CreateFile2(pathnameW.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ, 
+  m_hFile = CreateFile2(pathnameW.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ,
                         bOverWrite ? CREATE_ALWAYS : OPEN_ALWAYS, NULL);
 #else
   m_hFile = CreateFileW(pathnameW.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ,
@@ -120,7 +120,7 @@ bool CWin32File::OpenForWrite(const CURL& url, bool bOverWrite /*= false*/)
 
   if (m_hFile == INVALID_HANDLE_VALUE)
     return false;
-    
+
   const bool newlyCreated = (GetLastError() != ERROR_ALREADY_EXISTS);
   m_filepathnameW = pathnameW;
 
@@ -171,7 +171,7 @@ void CWin32File::Close()
 {
   if (m_hFile != INVALID_HANDLE_VALUE)
     CloseHandle(m_hFile);
-  
+
   m_hFile = INVALID_HANDLE_VALUE;
   m_filePos = -1;
   m_allowWrite = false;
@@ -322,7 +322,7 @@ int CWin32File::Truncate(int64_t toSize)
   int64_t prevPos = GetPosition();
   if (prevPos < 0)
     return -1;
-  
+
   if (Seek(toSize) != toSize)
   {
     Seek(prevPos);
@@ -432,7 +432,7 @@ bool CWin32File::SetHidden(const CURL& url, bool hidden)
   const DWORD attrs = GetFileAttributesW(pathnameW.c_str());
   if (attrs == INVALID_FILE_ATTRIBUTES || (attrs & FILE_ATTRIBUTE_DIRECTORY) != 0)
     return false;
-  
+
   // check whether attribute is already set/cleared
   if (((attrs & FILE_ATTRIBUTE_HIDDEN) != 0) == hidden)
     return true;
@@ -496,7 +496,7 @@ int CWin32File::Stat(const CURL& url, struct __stat64* statData)
 
   if (hSearch == INVALID_HANDLE_VALUE)
     return -1;
-  
+
   FindClose(hSearch);
 
   /* set st_gid */
@@ -694,7 +694,7 @@ int CWin32File::Stat(struct __stat64* statData)
   else
     statData->st_dev = 0;
   statData->st_rdev = statData->st_dev;
-  
+
   /* set st_mode */
   statData->st_mode = _S_IREAD; // Always assume Read permission for file owner
 #ifdef TARGET_WINDOWS_STORE

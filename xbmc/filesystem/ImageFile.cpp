@@ -55,7 +55,7 @@ bool CImageFile::Exists(const CURL& url)
   if (!cachedFile.empty())
     return CFile::Exists(cachedFile, false);
 
-  // need to check if the original can be cached on demand and that the file exists 
+  // need to check if the original can be cached on demand and that the file exists
   if (!CTextureCache::CanCacheImageURL(url))
     return false;
 
@@ -69,7 +69,7 @@ int CImageFile::Stat(const CURL& url, struct __stat64* buffer)
   if (!cachedFile.empty())
     return CFile::Stat(cachedFile, buffer);
 
-  /* 
+  /*
    Doesn't exist in the cache yet. We have 3 options here:
    1. Cache the file and do the Stat() on the cached file.
    2. Do the Stat() on the original file.

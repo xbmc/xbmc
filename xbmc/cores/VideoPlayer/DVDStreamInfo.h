@@ -101,14 +101,14 @@ public:
     if (this != &right)
       Assign(right, true);
 
-    return *this; 
+    return *this;
   }
 
   bool operator==(const CDemuxStream& right)      { return Equal( CDVDStreamInfo(right, true), true);}
   bool operator!=(const CDemuxStream& right)      { return !Equal( CDVDStreamInfo(right, true), true);}
 
   CDVDStreamInfo& operator=(const CDemuxStream& right)
-  { 
+  {
     Assign(right, true);
     return *this;
   }

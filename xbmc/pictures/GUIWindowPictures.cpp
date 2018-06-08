@@ -334,7 +334,7 @@ bool CGUIWindowPictures::ShowPicture(int iItem, bool startSlideShow)
   for (int i = 0; i < (int)m_vecItems->Size();++i)
   {
     CFileItemPtr pItem = m_vecItems->Get(i);
-    if (!pItem->m_bIsFolder && !(URIUtils::IsRAR(pItem->GetPath()) || 
+    if (!pItem->m_bIsFolder && !(URIUtils::IsRAR(pItem->GetPath()) ||
           URIUtils::IsZIP(pItem->GetPath())) && (pItem->IsPicture() || (
                                 CServiceBroker::GetSettings().GetBool(CSettings::SETTING_PICTURES_SHOWVIDEOS) &&
                                 pItem->IsVideo())))
@@ -350,7 +350,7 @@ bool CGUIWindowPictures::ShowPicture(int iItem, bool startSlideShow)
 
   if (startSlideShow)
     pSlideShow->StartSlideShow();
-  else 
+  else
   {
     CVariant param;
     param["player"]["speed"] = 1;
@@ -388,7 +388,7 @@ void CGUIWindowPictures::OnSlideShowRecursive(const std::string &strPicture)
 {
   CGUIWindowSlideShow *pSlideShow = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIWindowSlideShow>(WINDOW_SLIDESHOW);
   if (pSlideShow)
-  {   
+  {
     std::string strExtensions;
     CFileItemList items;
     CGUIViewState* viewState=CGUIViewState::GetViewState(GetID(), items);
@@ -423,7 +423,7 @@ void CGUIWindowPictures::OnSlideShow(const std::string &strPicture)
 {
   CGUIWindowSlideShow *pSlideShow = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIWindowSlideShow>(WINDOW_SLIDESHOW);
   if (pSlideShow)
-  {    
+  {
     std::string strExtensions;
     CFileItemList items;
     CGUIViewState* viewState=CGUIViewState::GetViewState(GetID(), items);

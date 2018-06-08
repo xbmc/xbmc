@@ -142,7 +142,7 @@ const char *WASAPIErrToStr(HRESULT err)
         ((format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_DTSHD) ||
         (format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD)))
       {
-        // IEC 61937 transmissions over HDMI       
+        // IEC 61937 transmissions over HDMI
         wfxex.Format.nSamplesPerSec = 192000L;
         wfxex.Format.wBitsPerSample = 16;
         wfxex.Samples.wValidBitsPerSample = 16;

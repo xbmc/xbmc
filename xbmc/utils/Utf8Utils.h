@@ -28,11 +28,11 @@ public:
   enum utf8CheckResult
   {
     plainAscii = -1, // only US-ASCII characters (valid for UTF-8 too)
-    hiAscii    =  0, // non-UTF-8 sequence with high ASCII characters 
+    hiAscii    =  0, // non-UTF-8 sequence with high ASCII characters
                      // (possible single-byte national encoding like WINDOWS-1251, multi-byte encoding like UTF-32 or invalid UTF-8)
     utf8string =  1  // valid UTF-8 sequences, but not US-ASCII only
   };
-  
+
   /**
    * Check given string for valid UTF-8 sequences
    * @param str string to check
@@ -47,7 +47,7 @@ public:
 
   static size_t FindValidUtf8Char(const std::string& str, const size_t startPos = 0);
   static size_t RFindValidUtf8Char(const std::string& str, const size_t startPos);
-  
+
   static size_t SizeOfUtf8Char(const std::string& str, const size_t charStart = 0);
 private:
   static size_t SizeOfUtf8Char(const char* const str);

@@ -63,9 +63,9 @@ void TestBasicEnvironment::SetUp()
 //in guisettings init below
 #ifdef TARGET_DARWIN
   std::string frameworksPath = CUtil::GetFrameworksPath();
-  CSpecialProtocol::SetXBMCFrameworksPath(frameworksPath);    
+  CSpecialProtocol::SetXBMCFrameworksPath(frameworksPath);
 #endif
-  /** 
+  /**
    * @todo Something should be done about all the asserts in GUISettings so
    * that the initialization of these components won't be needed.
    */

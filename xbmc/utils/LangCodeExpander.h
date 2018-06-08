@@ -50,7 +50,7 @@ public:
   *   \param[in] lang2 The second language string to compare given as english language name.
   *   \return true if the two language strings represent the same language, false otherwise.
   *   For example "Abkhaz" and "Abkhazian" represent the same language.
-  */ 
+  */
   bool CompareFullLanguageNames(const std::string& lang1, const std::string& lang2);
 
   /** \brief Determines if two languages given as ISO 639-1, ISO 639-2/T, or ISO 639-2/B codes represent the same language.
@@ -58,16 +58,16 @@ public:
   *   \param[in] code2 The second language to compare given as ISO 639-1, ISO 639-2/T, or ISO 639-2/B code.
   *   \return true if the two language codes represent the same language, false otherwise.
   *   For example "ger", "deu" and "de" represent the same language.
-  */ 
+  */
   bool CompareISO639Codes(const std::string& code1, const std::string& code2);
 
   /** \brief Converts a language given as 2-Char (ISO 639-1),
   *          3-Char (ISO 639-2/T or ISO 639-2/B),
-  *          or full english name string to a 2-Char (ISO 639-1) code.  
+  *          or full english name string to a 2-Char (ISO 639-1) code.
   *   \param[out] code The 2-Char language code of the given language lang.
   *   \param[in] lang The language that should be converted.
-  *   \return true if the conversion succeeded, false otherwise. 
-  */ 
+  *   \return true if the conversion succeeded, false otherwise.
+  */
   bool ConvertToISO6391(const std::string& lang, std::string& code);
 
   /** \brief Converts a language given as 2-Char (ISO 639-1),
@@ -126,7 +126,7 @@ protected:
   *          to its string representation.
   *   \param[in] code The language code given as a long, see #MAKECODE(a, b, c, d).
   *   \param[out] ret The string representation of the given language code code.
-  */ 
+  */
   static void CodeToString(long code, std::string& ret);
 
   static bool LookupInISO639Tables(const std::string& code, std::string& desc);
@@ -137,7 +137,7 @@ protected:
   *   \param[in] desc The english language name for which a code is looked for.
   *   \param[out] code The ISO 639-1, ISO 639-2/T, or ISO 639-2/B code of the given language desc.
   *   \return true if the a code was found, false otherwise.
-  */ 
+  */
   bool ReverseLookup(const std::string& desc, std::string& code);
 
 

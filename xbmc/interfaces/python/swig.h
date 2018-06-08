@@ -38,11 +38,11 @@ namespace PythonBindings
    * using the python call str(pObject).
    *
    * This method will handle a 'None' that's passed in. If 'None' is passed then
-   * the resulting buf will contain the value of XBMCAddon::emptyString (which 
+   * the resulting buf will contain the value of XBMCAddon::emptyString (which
    * is simply a std::string instantiated with the default constructor.
    */
   void PyXBMCGetUnicodeString(std::string& buf, PyObject* pObject, bool coerceToString = false,
-                              const char* pos = "unknown", 
+                              const char* pos = "unknown",
                               const char* methodname = "unknown");
 
   struct TypeInfo
@@ -57,7 +57,7 @@ namespace PythonBindings
 
   // This will hold the pointer to the api type, whether known or unknown
   struct PyHolder
-  { 
+  {
     PyObject_HEAD
     int32_t magicNumber;
     const TypeInfo* typeInfo;
@@ -72,8 +72,8 @@ namespace PythonBindings
    *
    * Since the calls to this are generated there's no NULL pointer checks
    */
-  inline XBMCAddon::AddonClass* retrieveApiInstance(PyObject* pythonObj, const TypeInfo* typeToCheck, 
-                                   const char* methodNameForErrorString, 
+  inline XBMCAddon::AddonClass* retrieveApiInstance(PyObject* pythonObj, const TypeInfo* typeToCheck,
+                                   const char* methodNameForErrorString,
                                    const char* typenameForErrorString)
   {
     if (pythonObj == NULL || pythonObj == Py_None)
@@ -85,7 +85,7 @@ namespace PythonBindings
 
   bool isParameterRightType(const char* passedType, const char* expectedType, const char* methodNamespacePrefix, bool tryReverse = true);
 
-  XBMCAddon::AddonClass* doretrieveApiInstance(const PyHolder* pythonObj, const TypeInfo* typeInfo, const char* expectedType, 
+  XBMCAddon::AddonClass* doretrieveApiInstance(const PyHolder* pythonObj, const TypeInfo* typeInfo, const char* expectedType,
                               const char* methodNamespacePrefix, const char* methodNameForErrorString);
 
   /**
@@ -94,7 +94,7 @@ namespace PythonBindings
    *
    * Since the calls to this are generated there's no NULL pointer checks
    *
-   * This method will return NULL if either the pythonObj is NULL or the 
+   * This method will return NULL if either the pythonObj is NULL or the
    * pythonObj is Py_None.
    */
   inline XBMCAddon::AddonClass* retrieveApiInstance(const PyObject* pythonObj, const char* expectedType, const char* methodNamespacePrefix,
@@ -132,18 +132,18 @@ namespace PythonBindings
    * When this form of the call is used (and pythonType isn't NULL) then the
    * passed type is used in the instance. This is for classes that extend API
    * classes in python. The type passed may not be the same type that's stored
-   * in the class metadata of the AddonClass of which 'api' is an instance, 
+   * in the class metadata of the AddonClass of which 'api' is an instance,
    * it can be a subclass in python.
    *
-   * if pythonType is NULL then the type is inferred using the class metadata 
+   * if pythonType is NULL then the type is inferred using the class metadata
    * stored in the AddonClass instance 'api'.
    */
   PyObject* makePythonInstance(XBMCAddon::AddonClass* api, PyTypeObject* pythonType, bool incrementRefCount);
 
   /**
    * This method allows for conversion of the native api Type to the Python type.
-   * 
-   * When this form of the call is used then the python type constructed will be the 
+   *
+   * When this form of the call is used then the python type constructed will be the
    * type given by the class metadata in the AddonClass instance 'api'.
    *
    * This is just a helper inline to call the other makePythonInstance with NULL as
@@ -167,8 +167,8 @@ namespace PythonBindings
   };
 
   /**
-   * This exception is thrown from Director calls that call into python when the 
-   * Python error is 
+   * This exception is thrown from Director calls that call into python when the
+   * Python error is
    */
   class PythonToCppException : public XbmcCommons::UncheckedException
   {
@@ -197,7 +197,7 @@ namespace PythonBindings
         T* o1 = (T*)retrieveApiInstance(obj1, swigType, methodNamespacePrefix, methodNameForErrorString);
         T* o2 = (T*)retrieveApiInstance(obj2, swigType, methodNamespacePrefix, methodNameForErrorString);
 
-        return ((*o1) < (*o2) ? -1 : 
+        return ((*o1) < (*o2) ? -1 :
                 ((*o1) > (*o2) ? 1 : 0));
       }
       catch (const XBMCAddon::WrongTypeException& e)

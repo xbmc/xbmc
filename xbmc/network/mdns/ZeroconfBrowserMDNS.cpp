@@ -151,7 +151,7 @@ void DNSSD_API CZeroconfBrowserMDNS::ResolveCallback(DNSServiceRef              
   }
 
   DNSServiceErrorType err;
-  CZeroconfBrowser::ZeroconfService::tTxtRecordMap recordMap; 
+  CZeroconfBrowser::ZeroconfService::tTxtRecordMap recordMap;
   std::string strIP;
   CZeroconfBrowserMDNS* p_instance = static_cast<CZeroconfBrowserMDNS*> ( context );
 
@@ -325,7 +325,7 @@ bool CZeroconfBrowserMDNS::doResolveService(CZeroconfBrowser::ZeroconfService& f
 {
   DNSServiceErrorType err;
   DNSServiceRef sdRef = NULL;
-  
+
   //start resolving
   m_resolving_service = fr_service;
   m_resolved_event.Reset();
@@ -349,7 +349,7 @@ bool CZeroconfBrowserMDNS::doResolveService(CZeroconfBrowser::ZeroconfService& f
 #if defined(HAS_MDNS_EMBEDDED)
   // when using the embedded mdns service the call to DNSServiceProcessResult
   // above will not block until the resolving was finished - instead we have to
-  // wait for resolve to return or timeout  
+  // wait for resolve to return or timeout
   m_resolved_event.WaitMSec(f_timeout * 1000);
 #endif //HAS_MDNS_EMBEDDED
   fr_service = m_resolving_service;

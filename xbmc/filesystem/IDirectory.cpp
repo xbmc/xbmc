@@ -61,13 +61,13 @@ bool IDirectory::IsAllowed(const CURL& url) const
     std::string fileName = URIUtils::GetFileName(url);
 
     // Allow filenames of the form video_ts.ifo or vts_##_0.ifo
-    
+
     return StringUtils::EqualsNoCase(fileName, "video_ts.ifo") ||
           (fileName.length() == 12 &&
            StringUtils::StartsWithNoCase(fileName, "vts_") &&
            StringUtils::EndsWithNoCase(fileName, "_0.ifo"));
   }
-  
+
   if (URIUtils::HasExtension(url, ".dat"))
   {
     std::string fileName = URIUtils::GetFileName(url);

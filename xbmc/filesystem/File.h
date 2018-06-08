@@ -152,11 +152,11 @@ public:
   static bool Exists(const std::string& strFileName, bool bUseCache = true);
   /**
   * Fills struct __stat64 with information about file specified by filename
-  * For st_mode function will set correctly _S_IFDIR (directory) flag and may set 
+  * For st_mode function will set correctly _S_IFDIR (directory) flag and may set
   * _S_IREAD (read permission), _S_IWRITE (write permission) flags if such
   * information is available. Function may set st_size (file size), st_atime,
   * st_mtime, st_ctime (access, modification, creation times).
-  * Any other flags and members of __stat64 that didn't updated with actual file 
+  * Any other flags and members of __stat64 that didn't updated with actual file
   * information will be set to zero (st_nlink can be set ether to 1 or zero).
   * @param strFileName specifies requested file
   * @param buffer      pointer to __stat64 buffer to receive information about file

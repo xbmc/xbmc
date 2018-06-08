@@ -28,7 +28,7 @@ CSettingDate::CSettingDate(const std::string &id, CSettingsManager *settingsMana
 CSettingDate::CSettingDate(const std::string &id, int label, const std::string &value, CSettingsManager *settingsManager /* = NULL */)
   : CSettingString(id, label, value, settingsManager)
 { }
-  
+
 CSettingDate::CSettingDate(const std::string &id, const CSettingDate &setting)
   : CSettingString(id, setting)
 { }

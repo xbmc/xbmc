@@ -46,7 +46,7 @@ bool CDVDStateSerializer::DVDToXMLState( std::string &xmlstate, const dvd_state_
   TiXmlElement eRoot("navstate");
   eRoot.SetAttribute("version", 1);
 
-	
+
   { TiXmlElement eRegisters("registers");
 
     for( int i = 0; i < 24; i++ )

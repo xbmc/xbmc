@@ -58,7 +58,7 @@ void CEvent::Set()
   // http://www.boost.org/doc/libs/1_41_0/doc/html/thread/synchronization.html#thread.synchronization.condvar_ref
   {
     CSingleLock slock(mutex);
-    signaled = true; 
+    signaled = true;
   }
 
   condVar.notifyAll();
@@ -75,11 +75,11 @@ namespace XbmcThreads
 {
   /**
    * This will block until any one of the CEvents in the group are
-   * signaled at which point a pointer to that CEvents will be 
+   * signaled at which point a pointer to that CEvents will be
    * returned.
    */
-  CEvent* CEventGroup::wait() 
-  { 
+  CEvent* CEventGroup::wait()
+  {
     return wait(std::numeric_limits<unsigned int>::max());
   }
 
@@ -93,15 +93,15 @@ namespace XbmcThreads
   //  CEvent::groupListMutex -> CEventGroup::mutex -> CEvent::mutex
   //
   // Notice that this method doesn't grab the CEvent::groupListMutex at all. This
-  // is fine. It just grabs the CEventGroup::mutex and THEN the individual 
+  // is fine. It just grabs the CEventGroup::mutex and THEN the individual
   // CEvent::mutex's
-  CEvent* CEventGroup::wait(unsigned int milliseconds)  
-  { 
+  CEvent* CEventGroup::wait(unsigned int milliseconds)
+  {
     CSingleLock lock(mutex); // grab CEventGroup::mutex
-    numWaits++; 
+    numWaits++;
 
     // ==================================================
-    // This block checks to see if any child events are 
+    // This block checks to see if any child events are
     // signaled and sets 'signaled' to the first one it
     // finds.
     // ==================================================
@@ -109,7 +109,7 @@ namespace XbmcThreads
     for (auto* cur : events)
     {
       CSingleLock lock2(cur->mutex);
-      if (cur->signaled) 
+      if (cur->signaled)
         signaled = cur;
     }
     // ==================================================
@@ -118,15 +118,15 @@ namespace XbmcThreads
     {
       // both of these release the CEventGroup::mutex
       if (milliseconds == std::numeric_limits<unsigned int>::max())
-        condVar.wait(mutex); 
+        condVar.wait(mutex);
       else
-        condVar.wait(mutex,milliseconds); 
+        condVar.wait(mutex,milliseconds);
     } // at this point the CEventGroup::mutex is reacquired
-    numWaits--; 
+    numWaits--;
 
     // signaled should have been set by a call to CEventGroup::Set
     CEvent* ret = signaled;
-    if (numWaits == 0) 
+    if (numWaits == 0)
     {
       if (signaled)
         // This acquires and releases the CEvent::mutex. This is fine since the

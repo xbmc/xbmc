@@ -343,7 +343,7 @@ namespace XBMCAddon
     /// | movies   | tvshows  | episodes | musicvideos
     /// | videos   | images   |  games   |
     ///
-    /// @remark Use **videos** for all videos which do not apply to the 
+    /// @remark Use **videos** for all videos which do not apply to the
     /// more specific mentioned ones like "movies", "episodes" etc.
     /// A good example is youtube.
     ///

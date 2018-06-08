@@ -608,7 +608,7 @@ std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddList(SettingGroup
   std::shared_ptr<CSettingString> settingDefinition = std::make_shared<CSettingString>(id, GetSettingsManager());
   if (settingDefinition == NULL)
     return NULL;
-  
+
   settingDefinition->SetOptionsFiller(filler, this);
 
   std::shared_ptr<CSettingList> setting = std::make_shared<CSettingList>(id, settingDefinition, label, GetSettingsManager());
@@ -644,7 +644,7 @@ std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddList(SettingGroup
   std::shared_ptr<CSettingInt> settingDefinition = std::make_shared<CSettingInt>(id, GetSettingsManager());
   if (settingDefinition == NULL)
     return NULL;
-  
+
   settingDefinition->SetTranslatableOptions(entries);
 
   std::shared_ptr<CSettingList> setting = std::make_shared<CSettingList>(id, settingDefinition, label, GetSettingsManager());
@@ -680,7 +680,7 @@ std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddList(SettingGroup
   std::shared_ptr<CSettingInt> settingDefinition = std::make_shared<CSettingInt>(id, GetSettingsManager());
   if (settingDefinition == NULL)
     return NULL;
-  
+
   settingDefinition->SetOptions(entries);
 
   std::shared_ptr<CSettingList> setting = std::make_shared<CSettingList>(id, settingDefinition, label, GetSettingsManager());
@@ -716,7 +716,7 @@ std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddList(SettingGroup
   std::shared_ptr<CSettingInt> settingDefinition = std::make_shared<CSettingInt>(id, GetSettingsManager());
   if (settingDefinition == NULL)
     return NULL;
-  
+
   settingDefinition->SetOptionsFiller(filler, this);
 
   std::shared_ptr<CSettingList> setting = std::make_shared<CSettingList>(id, settingDefinition, label, GetSettingsManager());
@@ -954,7 +954,7 @@ std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddRange(SettingGrou
   std::shared_ptr<CSettingInt> settingDefinition = std::make_shared<CSettingInt>(id, GetSettingsManager());
   if (settingDefinition == NULL)
     return NULL;
-  
+
   settingDefinition->SetMinimum(minimum);
   settingDefinition->SetStep(step);
   settingDefinition->SetMaximum(maximum);
@@ -971,7 +971,7 @@ std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddRange(SettingGrou
     return NULL;
   // setting the default will also set the actual value on an unchanged setting
   setting->SetDefault(settingValues);
-  
+
   setting->SetControl(GetRangeControl(format, delayed, formatLabel, valueFormatLabel, valueFormatString));
   setting->SetMinimumItems(2);
   setting->SetMaximumItems(2);
@@ -993,7 +993,7 @@ std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddRange(SettingGrou
   std::shared_ptr<CSettingNumber> settingDefinition = std::make_shared<CSettingNumber>(id, GetSettingsManager());
   if (settingDefinition == NULL)
     return NULL;
-  
+
   settingDefinition->SetMinimum(minimum);
   settingDefinition->SetStep(step);
   settingDefinition->SetMaximum(maximum);
@@ -1010,7 +1010,7 @@ std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddRange(SettingGrou
     return NULL;
   // setting the default will also set the actual value on an unchanged setting
   setting->SetDefault(settingValues);
-  
+
   setting->SetControl(GetRangeControl(format, delayed, formatLabel, valueFormatLabel, valueFormatString));
   setting->SetMinimumItems(2);
   setting->SetMaximumItems(2);
@@ -1059,7 +1059,7 @@ std::shared_ptr<ISettingControl> CGUIDialogSettingsManualBase::GetEditControl(co
   std::shared_ptr<CSettingControlEdit> control = std::make_shared<CSettingControlEdit>();
   if (!control->SetFormat(format))
     return NULL;
-  
+
   control->SetDelayed(delayed);
   control->SetHidden(hidden);
   control->SetVerifyNewValue(verifyNewValue);
@@ -1074,7 +1074,7 @@ std::shared_ptr<ISettingControl> CGUIDialogSettingsManualBase::GetButtonControl(
   std::shared_ptr<CSettingControlButton> control = std::make_shared<CSettingControlButton>();
   if (!control->SetFormat(format))
     return NULL;
-  
+
   control->SetDelayed(delayed);
   control->SetHeading(heading);
   control->SetHideValue(hideValue);
@@ -1090,7 +1090,7 @@ std::shared_ptr<ISettingControl> CGUIDialogSettingsManualBase::GetSpinnerControl
   std::shared_ptr<CSettingControlSpinner> control = std::make_shared<CSettingControlSpinner>();
   if (!control->SetFormat(format))
     return NULL;
-  
+
   control->SetDelayed(delayed);
   if (formatLabel >= 0)
     control->SetFormatLabel(formatLabel);

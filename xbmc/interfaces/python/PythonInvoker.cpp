@@ -111,7 +111,7 @@ static std::vector<std::vector<char>> storeArgumentsCCompatible(std::vector<std:
 static std::vector<char *> getCPointersToArguments(std::vector<std::vector<char>> & input)
 {
   std::vector<char *> output;
-  std::transform(input.begin(), input.end(), std::back_inserter(output), 
+  std::transform(input.begin(), input.end(), std::back_inserter(output),
                 [](std::vector<char> & i) { return &i[0]; });
   return output;
 }

@@ -182,7 +182,7 @@ void Dataset::parse_sql(std::string &sql) {
 			       if(isalnum(sql[next_idx])  || sql[next_idx]=='_') {
 			       	   continue;
 			       	}
-			      sql.replace(idx,fpattern.size(),by_what); 	
+			      sql.replace(idx,fpattern.size(),by_what);
 		}//while
     }//for
 
@@ -196,8 +196,8 @@ void Dataset::parse_sql(std::string &sql) {
 			       if(isalnum(sql[next_idx]) || sql[next_idx]=='_') {
 			       	   continue;
 			       	}
-			      sql.replace(idx,fpattern.size(),by_what); 	
-			}//while  
+			      sql.replace(idx,fpattern.size(),by_what);
+			}//while
   } //for
 }
 
@@ -229,7 +229,7 @@ void Dataset::refresh() {
     open();
     seek(row);
   }
-  else open();		
+  else open();
 }
 
 
@@ -295,7 +295,7 @@ void Dataset::edit() {
   edit_object->resize(field_count());
   for (unsigned int i=0; i<fields_object->size(); i++) {
        (*edit_object)[i].props = (*fields_object)[i].props;
-       (*edit_object)[i].val = (*fields_object)[i].val; 
+       (*edit_object)[i].val = (*fields_object)[i].val;
   }
   ds_state = dsEdit;
 }
@@ -315,7 +315,7 @@ void Dataset::deletion() {
 bool Dataset::set_field_value(const char *f_name, const field_value &value) {
   bool found = false;
   if ((ds_state == dsInsert) || (ds_state == dsEdit)) {
-      for (unsigned int i=0; i < fields_object->size(); i++) 
+      for (unsigned int i=0; i < fields_object->size(); i++)
 	if (str_compare((*edit_object)[i].props.name.c_str(), f_name)==0) {
 			     (*edit_object)[i].val = value;
 			     found = true;
@@ -377,7 +377,7 @@ const field_value Dataset::get_field_value(const char *f_name) {
       if (name)
         name++;
 
-      for (unsigned int i=0; i < fields_object->size(); i++) 
+      for (unsigned int i=0; i < fields_object->size(); i++)
         if (str_compare((*fields_object)[i].props.name.c_str(), f_name) == 0 || (name && str_compare((*fields_object)[i].props.name.c_str(), name) == 0)) {
           fieldIndexMap_Entries[fieldIndexMapID].fieldIndex = i;
           return (*fields_object)[i].val;
@@ -419,7 +419,7 @@ const sql_record* Dataset::get_sql_record()
 
 const field_value Dataset::f_old(const char *f_name) {
   if (ds_state != dsInactive)
-    for (int unsigned i=0; i < fields_object->size(); i++) 
+    for (int unsigned i=0; i < fields_object->size(); i++)
       if ((*fields_object)[i].props.name == f_name)
 	return (*fields_object)[i].val;
   field_value fv;
@@ -427,7 +427,7 @@ const field_value Dataset::f_old(const char *f_name) {
 }
 
 int Dataset::str_compare(const char * s1, const char * s2) {
- 	std::string ts1 = s1; 
+ 	std::string ts1 = s1;
  	std::string ts2 = s2;
  	std::string::const_iterator p = ts1.begin();
  	std::string::const_iterator p2 = ts2.begin();
@@ -435,8 +435,8 @@ int Dataset::str_compare(const char * s1, const char * s2) {
  		if (toupper(*p)!=toupper(*p2))
  			return (toupper(*p)<toupper(*p2)) ? -1 : 1;
  		++p;
- 		++p2;		
- 	}	
+ 		++p2;
+ 	}
  	return (ts2.size() == ts1.size())? 0:
  		(ts1.size()<ts2.size())? -1 : 1;
  }
@@ -584,7 +584,7 @@ DbErrors::DbErrors(const char *msg, ...) {
 
 const char * DbErrors::getMsg() {
 	return msg_.c_str();
-	
+
 }
 
 }// namespace

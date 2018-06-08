@@ -229,10 +229,10 @@ void CGUIDialogMediaFilter::OnSettingChanged(std::shared_ptr<const CSetting> set
   std::map<std::string, Filter>::iterator it = m_filters.find(setting->GetId());
   if (it == m_filters.end())
     return;
-  
+
   bool remove = false;
   Filter& filter = it->second;
- 
+
   if (filter.controlType == "edit")
   {
     std::string value = setting->ToString();
@@ -354,7 +354,7 @@ void CGUIDialogMediaFilter::SetupView()
   CGUIDialogSettingsManualBase::SetupView();
 
   // set the heading label based on the media type
-  uint32_t localizedMediaId = 0; 
+  uint32_t localizedMediaId = 0;
   if (m_mediaType == "movies")
     localizedMediaId = 20342;
   else if (m_mediaType == "tvshows")
@@ -420,7 +420,7 @@ void CGUIDialogMediaFilter::InitializeSettings()
       }
     }
 
-    std::string settingId = StringUtils::Format("filter.%s.%d", filter.mediaType.c_str(), filter.field); 
+    std::string settingId = StringUtils::Format("filter.%s.%d", filter.mediaType.c_str(), filter.field);
     if (filter.controlType == "edit")
     {
       CVariant data;
@@ -657,7 +657,7 @@ int CGUIDialogMediaFilter::GetItems(const Filter &filter, std::vector<std::strin
     CDatabase::Filter dbfilter;
     dbfilter.where = tmpFilter.GetWhereClause(videodb, playlists);
 
-    VIDEODB_CONTENT_TYPE type = VIDEODB_CONTENT_MOVIES;    
+    VIDEODB_CONTENT_TYPE type = VIDEODB_CONTENT_MOVIES;
     if (m_mediaType == "tvshows")
       type = VIDEODB_CONTENT_TVSHOWS;
     else if (m_mediaType == "episodes")
@@ -687,7 +687,7 @@ int CGUIDialogMediaFilter::GetItems(const Filter &filter, std::vector<std::strin
     std::set<std::string> playlists;
     CDatabase::Filter dbfilter;
     dbfilter.where = tmpFilter.GetWhereClause(musicdb, playlists);
-    
+
     if (filter.field == FieldGenre)
       musicdb.GetGenresNav(m_dbUrl->ToString(), selectItems, dbfilter, countOnly);
     else if (filter.field == FieldArtist || filter.field == FieldAlbumArtist)
@@ -824,7 +824,7 @@ void CGUIDialogMediaFilter::GetRange(const Filter &filter, int &min, int &interv
     if (m_mediaType == "episodes")
     {
       std::string field = StringUtils::Format("CAST(strftime(\"%%s\", c%02d) AS INTEGER)", VIDEODB_ID_EPISODE_AIRED);
-      
+
       GetMinMax("episode_view", field, min, max);
       interval = 60 * 60 * 24 * 7; // 1 week
     }

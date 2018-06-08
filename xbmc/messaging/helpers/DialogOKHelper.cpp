@@ -32,7 +32,7 @@ bool ShowOKDialogText(CVariant heading, CVariant text)
   DialogOKMessage options;
   options.heading = std::move(heading);
   options.text = std::move(text);
-  
+
   if (CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_DIALOG_OK, -1, -1, static_cast<void*>(&options)) > 0)
     return true;
   return false;

@@ -48,7 +48,7 @@ private:
 
   CPVRRadioRDSInfoTag(const CPVRRadioRDSInfoTag& tag) = delete;
   const CPVRRadioRDSInfoTag& operator =(const CPVRRadioRDSInfoTag& tag) = delete;
-  
+
 public:
   ~CPVRRadioRDSInfoTag() override;
 

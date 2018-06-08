@@ -31,7 +31,7 @@ extern "C"
 {
 
 struct AddonGlobalInterface;
-  
+
 namespace ADDON
 {
 
@@ -59,7 +59,7 @@ namespace ADDON
      * class.
      */
     //@{
-    static bool show_and_get_directory(void* kodiBase, const char* shares, 
+    static bool show_and_get_directory(void* kodiBase, const char* shares,
                                        const char* heading, const char* path_in,
                                        char** path_out, bool write_only);
 
@@ -74,13 +74,13 @@ namespace ADDON
                                            bool use_thumbs, bool use_file_directories,
                                            bool singleList);
 
-    static bool show_and_get_file_list(void* kodiBase, const char* shares, 
-                                       const char* mask, const char* heading, 
-                                       char*** file_list, unsigned int* entries, 
+    static bool show_and_get_file_list(void* kodiBase, const char* shares,
+                                       const char* mask, const char* heading,
+                                       char*** file_list, unsigned int* entries,
                                        bool use_thumbs, bool use_file_directories);
 
     static bool show_and_get_source(void* kodiBase, const char* path_in, char** path_out,
-                                    bool allow_network_shares, const char* additional_share, 
+                                    bool allow_network_shares, const char* additional_share,
                                     const char* type);
 
     static bool show_and_get_image(void* kodiBase, const char* shares, const char* heading,

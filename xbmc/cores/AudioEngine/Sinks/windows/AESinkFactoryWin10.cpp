@@ -58,10 +58,10 @@ std::vector<RendererDetail> CAESinkFactoryWin::GetRendererDetails()
 
     // Add custom properties to the query
     DeviceInformationCollection devInfocollection = Wait(DeviceInformation::FindAllAsync(audioSelector,
-      { 
-          PKEY_AudioEndpoint_FormFactor, 
-          PKEY_AudioEndpoint_GUID, 
-          PKEY_AudioEndpoint_PhysicalSpeakers, 
+      {
+          PKEY_AudioEndpoint_FormFactor,
+          PKEY_AudioEndpoint_GUID,
+          PKEY_AudioEndpoint_PhysicalSpeakers,
           PKEY_AudioEngine_DeviceFormat,
           PKEY_Device_EnumeratorName
       }));
@@ -171,7 +171,7 @@ class CAudioInterfaceActivator : public winrt::implements<CAudioInterfaceActivat
 
   }
 public:
-  static Concurrency::task<IAudioClient*> ActivateAsync(LPCWCHAR pszDeviceId) 
+  static Concurrency::task<IAudioClient*> ActivateAsync(LPCWCHAR pszDeviceId)
   {
     winrt::com_ptr<CAudioInterfaceActivator> activator = winrt::make_self<CAudioInterfaceActivator>();
     ComPtr<IActivateAudioInterfaceAsyncOperation> asyncOp;

@@ -39,11 +39,11 @@ class TiXmlElement;
 /*!
  \ingroup lists,items
  \brief wrapper class for a static item in a list container
- 
+
  A wrapper class for the items in a container specified via the <content>
  flag.  Handles constructing items from XML and updating item labels, icons
  and properties.
- 
+
  \sa CFileItem, CGUIBaseContainer
  */
 class CGUIStaticItem : public CFileItem
@@ -58,7 +58,7 @@ public:
        <icon>foo.jpg</icon>
        <onclick>ActivateWindow(Home)</onclick>
      </item>
-   
+
    \param element XML element to construct from
    \param contextWindow window context to use for any info labels
    */
@@ -66,7 +66,7 @@ public:
   explicit CGUIStaticItem(const CFileItem &item); // for python
   ~CGUIStaticItem() override = default;
   CGUIListItem *Clone() const override { return new CGUIStaticItem(*this); };
-  
+
   /*! \brief update any infolabels in the items properties
    Runs through all the items properties, updating any that should be
    periodically recomputed

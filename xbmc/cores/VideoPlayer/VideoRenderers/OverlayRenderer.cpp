@@ -164,7 +164,7 @@ void CRenderer::Render(int idx)
 
     if(!o)
       continue;
- 
+
     render.push_back(o);
   }
 

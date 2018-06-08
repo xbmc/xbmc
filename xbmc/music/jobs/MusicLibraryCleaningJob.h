@@ -46,5 +46,5 @@ protected:
   bool Work(CMusicDatabase &db) override;
 
 private:
- 
+
 };

@@ -59,8 +59,8 @@ namespace JSONRPC
   /*!
    \ingroup jsonrpc
    \brief Permission categories for json rpc methods
-   
-   A JSON-RPC method will only be called if the caller 
+
+   A JSON-RPC method will only be called if the caller
    has the correct permissions to execute the method.
    The method call needs to be perfectly threadsafe.
   */
@@ -90,7 +90,7 @@ namespace JSONRPC
                                                  ControlGUI | ManageAddon | ExecuteAddon | ControlPVR);
 
   /*!
-    \brief Returns a string representation for the 
+    \brief Returns a string representation for the
     given OperationPermission
     \param permission Specific OperationPermission
     \return String representation of the given OperationPermission

@@ -34,7 +34,7 @@ bool CDirectoryNodeRecentlyAddedMusicVideos::GetContent(CFileItemList& items) co
   CVideoDatabase videodatabase;
   if (!videodatabase.Open())
     return false;
-  
+
   bool bSuccess=videodatabase.GetRecentlyAddedMusicVideosNav(BuildPath(), items);
 
   videodatabase.Close();

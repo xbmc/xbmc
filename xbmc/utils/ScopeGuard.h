@@ -32,7 +32,7 @@ namespace UTILS
 
     This is not necessary but recommended to cut down on some typing
     using CSocketHandle = CScopeGuard<SOCKET, INVALID_SOCKET, closesocket>;
-    
+
     CSocketHandle sh(closesocket, open(thingy));
  */
 template<typename Handle, Handle invalid, typename Deleter>
@@ -74,7 +74,7 @@ public:
   }
 
   /*! \brief release the managed handle so that it won't be auto closed
-   
+
       \return The handle being managed by the guard
    */
   Handle release()
@@ -113,7 +113,7 @@ public:
     m_deleter = std::move(rhs.m_deleter);
     return *this;
   }
-  
+
 private:
   Handle m_handle;
   std::function<Deleter> m_deleter;

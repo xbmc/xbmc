@@ -70,7 +70,7 @@ IPlayer* CPlayerCoreFactory::CreatePlayer(const std::string& nameId, IPlayerCall
 {
   CSingleLock lock(m_section);
   size_t idx = GetPlayerIndex(nameId);
-  
+
   if (m_vecPlayerConfigs.empty() || idx > m_vecPlayerConfigs.size())
     return nullptr;
 
@@ -99,7 +99,7 @@ void CPlayerCoreFactory::GetPlayers(std::vector<std::string>&players, const bool
     {
       if (std::find(players.begin(), players.end(), conf->m_name) != players.end())
         continue;
-      
+
       CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers: adding player: %s", conf->m_name.c_str());
       players.push_back(conf->m_name);
     }

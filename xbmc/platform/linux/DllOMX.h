@@ -57,15 +57,15 @@ public:
 class DllOMX : public DllDynamic, DllOMXInterface
 {
 public:
-  virtual OMX_ERRORTYPE OMX_Init(void) 
+  virtual OMX_ERRORTYPE OMX_Init(void)
     { return ::OMX_Init(); };
-  virtual OMX_ERRORTYPE OMX_Deinit(void) 
+  virtual OMX_ERRORTYPE OMX_Deinit(void)
     { return ::OMX_Deinit(); };
   virtual OMX_ERRORTYPE OMX_GetHandle(OMX_HANDLETYPE *pHandle, OMX_STRING cComponentName, OMX_PTR pAppData, OMX_CALLBACKTYPE *pCallBacks)
     { return ::OMX_GetHandle(pHandle, cComponentName, pAppData, pCallBacks); };
   virtual OMX_ERRORTYPE OMX_FreeHandle(OMX_HANDLETYPE hComponent)
     { return ::OMX_FreeHandle(hComponent); };
-  virtual OMX_ERRORTYPE OMX_GetComponentsOfRole(OMX_STRING role, OMX_U32 *pNumComps, OMX_U8 **compNames) 
+  virtual OMX_ERRORTYPE OMX_GetComponentsOfRole(OMX_STRING role, OMX_U32 *pNumComps, OMX_U8 **compNames)
     { return ::OMX_GetComponentsOfRole(role, pNumComps, compNames); };
   virtual OMX_ERRORTYPE OMX_GetRolesOfComponent(OMX_STRING compName, OMX_U32 *pNumRoles, OMX_U8 **roles)
     { return ::OMX_GetRolesOfComponent(compName, pNumRoles, roles); };
@@ -73,9 +73,9 @@ public:
     { return ::OMX_ComponentNameEnum(cComponentName, nNameLength, nIndex); };
   virtual OMX_ERRORTYPE OMX_SetupTunnel(OMX_HANDLETYPE hOutput, OMX_U32 nPortOutput, OMX_HANDLETYPE hInput, OMX_U32 nPortInput)
     { return ::OMX_SetupTunnel(hOutput, nPortOutput, hInput, nPortInput); };
-  virtual bool ResolveExports() 
+  virtual bool ResolveExports()
     { return true; }
-  virtual bool Load() 
+  virtual bool Load()
   {
     CLog::Log(LOGDEBUG, "DllOMX: Using omx system library");
     return true;

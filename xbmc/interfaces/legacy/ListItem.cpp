@@ -39,7 +39,7 @@ namespace XBMCAddon
 {
   namespace xbmcgui
   {
-    ListItem::ListItem(const String& label, 
+    ListItem::ListItem(const String& label,
                        const String& label2,
                        const String& iconImage,
                        const String& thumbnailImage,
@@ -412,7 +412,7 @@ namespace XBMCAddon
             videotag.m_cast.clear();
             for (const auto& castEntry: alt.later())
             {
-              // castEntry can be a string meaning it's the actor or it can be a tuple meaning it's the 
+              // castEntry can be a string meaning it's the actor or it can be a tuple meaning it's the
               //  actor and the role.
               const String& actor = castEntry.which() == first ? castEntry.former() : castEntry.later().first();
               SActorInfo info;
@@ -426,7 +426,7 @@ namespace XBMCAddon
           {
             if (alt.which() != second)
               throw WrongTypeException("When using \"artist\" you need to supply a list of strings for the value in the dictionary");
-            
+
             videotag.m_artist.clear();
 
             for (const auto& castEntry: alt.later())
@@ -864,7 +864,7 @@ namespace XBMCAddon
           value = alt.former();
         return StringUtils::Split(value, g_advancedSettings.m_videoItemSeparator);
       }
-      
+
       std::vector<std::string> els;
       for (const auto& el : alt.later())
       {

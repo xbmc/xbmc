@@ -51,14 +51,14 @@ class CGUIKeyboard : public ITimerCallback
      * \return - true if typedstring is valid and user has confirmed input - false if typedstring is undefined and user canceled the input
      *
      */
-    virtual bool ShowAndGetInput(char_callback_t pCallback, 
-                                 const std::string &initialString, 
-                                 std::string &typedString, 
-                                 const std::string &heading, 
+    virtual bool ShowAndGetInput(char_callback_t pCallback,
+                                 const std::string &initialString,
+                                 std::string &typedString,
+                                 const std::string &heading,
                                  bool bHiddenInput = false) = 0;
-    
+
     /*!
-    *\brief This call should cancel a currently shown keyboard dialog. The implementation should 
+    *\brief This call should cancel a currently shown keyboard dialog. The implementation should
     * return false from the modal ShowAndGetInput once anyone calls this method.
     */
     virtual void Cancel() = 0;
@@ -74,18 +74,18 @@ class CGUIKeyboard : public ITimerCallback
     // helpers for autoclose function
     void startAutoCloseTimer(unsigned int autoCloseMs)
     {
-      if ( autoCloseMs > 0 ) 
+      if ( autoCloseMs > 0 )
         m_idleTimer.Start(autoCloseMs, false);
     }
 
     void resetAutoCloseTimer()
     {
-      if (m_idleTimer.IsRunning()) 
+      if (m_idleTimer.IsRunning())
         m_idleTimer.Restart();
     }
 
     virtual bool SetTextToKeyboard(const std::string &text, bool closeKeyboard = false) { return false; }
-    
+
   private:
     CTimer m_idleTimer;
 };

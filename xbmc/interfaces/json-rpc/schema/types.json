@@ -458,7 +458,7 @@
                 "description", "genre", "died", "disbanded",
                 "yearsactive", "musicbrainzartistid", "fanart",
                 "thumbnail", "compilationartist", "dateadded",
-                "roles", "songgenres", "isalbumartist", 
+                "roles", "songgenres", "isalbumartist",
                 "sortname", "type", "gender", "disambiguation", "art"]
     }
   },
@@ -472,7 +472,7 @@
                 "musicbrainzalbumartistid", "fanart", "thumbnail",
                 "playcount", "artistid", "displayartist",
                 "compilation", "releasetype", "dateadded",
-                "sortartist", "musicbrainzreleasegroupid", "songgenres", "art", 
+                "sortartist", "musicbrainzreleasegroupid", "songgenres", "art",
                 "lastplayed"]
     }
   },
@@ -481,12 +481,12 @@
     "items": { "type": "string",
       "description": "Requesting the genreid, artistid and/or albumartistid field will result in increased response times",
       "enum": [ "title", "artist", "albumartist", "genre", "year",
-                "rating", "album", "track", "duration", "comment", 
+                "rating", "album", "track", "duration", "comment",
                 "lyrics", "musicbrainztrackid", "musicbrainzartistid",
                 "musicbrainzalbumid", "musicbrainzalbumartistid",
                 "playcount", "fanart", "thumbnail", "file", "albumid",
                 "lastplayed", "disc", "genreid", "artistid", "displayartist",
-                "albumartistid", "albumreleasetype", "dateadded", 
+                "albumartistid", "albumreleasetype", "dateadded",
                 "votes", "userrating", "mood", "contributors",
                 "displaycomposer", "displayconductor", "displayorchestra", "displaylyricist",
                 "sortartist", "art"]
@@ -645,7 +645,7 @@
                 "playcount", "writer", "studio", "mpaa", "cast", "country",
                 "imdbnumber", "runtime", "set", "showlink", "streamdetails",
                 "top250", "votes", "fanart", "thumbnail", "file", "sorttitle",
-                "resume", "setid", "dateadded", "tag", "art", "userrating",  
+                "resume", "setid", "dateadded", "tag", "art", "userrating",
                 "ratings", "premiered", "uniqueid" ]
     }
   },
@@ -664,7 +664,7 @@
                 "imdbnumber", "premiered", "votes", "lastplayed",
                 "fanart", "thumbnail", "file", "originaltitle",
                 "sorttitle", "episodeguide", "season", "watchedepisodes",
-                "dateadded", "tag", "art", "userrating", "ratings", 
+                "dateadded", "tag", "art", "userrating", "ratings",
                 "runtime", "uniqueid" ]
     }
   },

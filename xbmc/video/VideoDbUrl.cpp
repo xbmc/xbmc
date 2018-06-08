@@ -212,7 +212,7 @@ bool CVideoDbUrl::validateOption(const std::string &key, const CVariant &value)
   CSmartPlaylist xspFilter;
   if (!xspFilter.LoadFromJson(value.asString()))
     return false;
-  
+
   // check if the filter playlist matches the item type
   return (xspFilter.GetType() == m_itemType ||
          (xspFilter.GetType() == "movies" && m_itemType == "sets"));

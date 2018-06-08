@@ -68,9 +68,9 @@ public:
    * \param time     The time (in nanoseconds) when this touch occured
    * \param pointer  The number of the touch pointer which caused this event (default 0)
    * \param size     The size of the touch pointer (with sub-pixel) (default 0.0)
-   * 
+   *
    * \return True if the event was handled otherwise false.
-   * 
+   *
    * \sa Update
    */
   virtual bool HandleTouchInput(TouchInput event, float x, float y, int64_t time, int32_t pointer = 0, float size = 0.0f) = 0;
@@ -90,9 +90,9 @@ public:
    * \param y        The y coordinate (with sub-pixel) of the touch
    * \param time     The time (in nanoseconds) when this touch occured
    * \param size     The size of the touch pointer (with sub-pixel) (default 0.0)
-   * 
+   *
    * \return True if the pointer was updated otherwise false.
-   * 
+   *
    * \sa Handle
    */
   virtual bool UpdateTouchPointer(int32_t pointer, float x, float y, int64_t time, float size = 0.0f) { return false; }

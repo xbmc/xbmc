@@ -62,7 +62,7 @@ public:
   bool IsSingleFile() const;
   bool IsSeparateFiles() const;
   bool IsToLibFolders() const;
-  
+
   std::string m_strPath;
   bool m_overwrite;
   bool m_artwork;

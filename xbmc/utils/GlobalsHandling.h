@@ -26,17 +26,17 @@
  * This file contains the pattern for moving "globals" from the BSS Segment to the heap.
  * A note on usage of this pattern for globals replacement:
  *
- * This pattern uses a singleton pattern and some compiler/C preprocessor sugar to allow 
- * "global" variables to be lazy instantiated and initialized and moved from the BSS segment 
- * to the heap (that is, they are instantiated on the heap when they are first used rather 
- * than relying on the startup code to initialize the BSS segment). This eliminates the 
+ * This pattern uses a singleton pattern and some compiler/C preprocessor sugar to allow
+ * "global" variables to be lazy instantiated and initialized and moved from the BSS segment
+ * to the heap (that is, they are instantiated on the heap when they are first used rather
+ * than relying on the startup code to initialize the BSS segment). This eliminates the
  * problem associated with global variable dependencies across compilation units.
  *
- * Reference counting from the BSS segment is used to destruct these globals at the time the 
- * last compilation unit that knows about it is finalized by the post-main shutdown. The book 
- * keeping is done by smuggling a smart pointer into every file that references a particular 
- * "global class" through the use of a 'static' declaration of an instance of that smart 
- * pointer in the header file of the global class (did you ever think you'd see a file scope 
+ * Reference counting from the BSS segment is used to destruct these globals at the time the
+ * last compilation unit that knows about it is finalized by the post-main shutdown. The book
+ * keeping is done by smuggling a smart pointer into every file that references a particular
+ * "global class" through the use of a 'static' declaration of an instance of that smart
+ * pointer in the header file of the global class (did you ever think you'd see a file scope
  * 'static' variable in a header file - on purpose?)
  *
  * There are two different ways to use this pattern when replacing global variables.
@@ -106,12 +106,12 @@ namespace xbmcutil
    *
    * Currently THIS IS NOT THREAD SAFE! Why not just add a lock you ask?
    *  Because this singleton is used to initialize global variables and
-   *  there is an issue with having the lock used prior to its 
+   *  there is an issue with having the lock used prior to its
    *  initialization. No matter what, if this class is used as a replacement
    *  for global variables there's going to be a race condition if it's used
    *  anywhere else. So currently this is the only prescribed use.
    *
-   * Therefore this hack depends on the fact that compilation unit global/static 
+   * Therefore this hack depends on the fact that compilation unit global/static
    *  initialization is done in a single thread.
    */
   template <class T> class GlobalsSingleton
@@ -131,15 +131,15 @@ namespace xbmcutil
 
     /**
      * Is it possible that getInstance can be called prior to the shared_ptr 'instance'
-     *  being initialized as a global? If so, then the shared_ptr constructor would 
-     *  effectively 'reset' the shared pointer after it had been set by the prior 
-     *  getInstance call, and a second instance would be created. We really don't 
+     *  being initialized as a global? If so, then the shared_ptr constructor would
+     *  effectively 'reset' the shared pointer after it had been set by the prior
+     *  getInstance call, and a second instance would be created. We really don't
      *  want this to happen so 'instance' is a pointer to a smart pointer so that
-     *  we can deterministically handle its construction. It is guarded by the 
+     *  we can deterministically handle its construction. It is guarded by the
      *  Deleter class above so that when the bss segment that this static is
      *  sitting in is deinitialized, the shared_ptr pointer will be cleaned up.
      */
-    static Deleter<std::shared_ptr<T> > instance; 
+    static Deleter<std::shared_ptr<T> > instance;
 
     /**
      * See 'getQuick' below.
@@ -148,7 +148,7 @@ namespace xbmcutil
   public:
 
     /**
-     * Retrieve an instance of the singleton using a shared pointer for 
+     * Retrieve an instance of the singleton using a shared pointer for
      *  reference counting.
      */
     inline static std::shared_ptr<T> getInstance()
@@ -165,7 +165,7 @@ namespace xbmcutil
     /**
      * This is for quick access when using form (2) of the pattern. Before 'mdd' points
      * it out, this might be a case of 'solving problems we don't have' but this access
-     * is used frequently within the event loop so any help here should benefit the 
+     * is used frequently within the event loop so any help here should benefit the
      * overall performance and there is nothing complicated or tricky here and not
      * a lot of code to maintain.
      */
@@ -183,19 +183,19 @@ namespace xbmcutil
   template <class T> T* GlobalsSingleton<T>::quick;
 
   /**
-   * This is another bit of hackery that will act as a flag for 
+   * This is another bit of hackery that will act as a flag for
    *  whether or not a global/static has been initialized yet. An instance
    *  should be placed in the cpp file after the static/global it's meant to
-   *  monitor. 
+   *  monitor.
    */
   class InitFlag {  public:  explicit InitFlag(bool& flag) { flag = true; }  };
 }
 
 /**
  * For pattern (2) above, you can use the following macro. This pattern is safe to
- * use in all cases but may be very slightly less efficient. 
+ * use in all cases but may be very slightly less efficient.
  *
- * Also, you must also use a #define to replace the actual global variable since 
+ * Also, you must also use a #define to replace the actual global variable since
  * there's no way to use a macro to add a #define. An example would be:
  *
  * XBMC_GLOBAL_REF(CWinSystemWin32DX, g_Windowing);

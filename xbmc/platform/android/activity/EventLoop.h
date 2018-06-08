@@ -24,18 +24,18 @@
 
 #include "IActivityHandler.h"
 #include "IInputHandler.h"
- 
+
 class CEventLoop
 {
 public:
   CEventLoop(android_app* application);
-  
+
   void run(IActivityHandler &activityHandler, IInputHandler &inputHandler);
-  
+
 protected:
   void activate();
   void deactivate();
-  
+
   void processActivity(int32_t command);
   int32_t processInput(AInputEvent* event);
 

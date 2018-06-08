@@ -348,7 +348,7 @@ public:
    * adaptive demuxers like DASH can use this to choose best fitting video stream
    */
   virtual void SetVideoResolution(int width, int height) {};
-  
+
   /*
   * return the id of the demuxer
   */

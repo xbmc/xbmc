@@ -47,7 +47,7 @@ public:
   static void unregisterMediaButtonEventReceiver();
 
   CJNIRect getDisplayRect();
-  
+
 private:
   static CJNIMainActivity *m_appInstance;
 

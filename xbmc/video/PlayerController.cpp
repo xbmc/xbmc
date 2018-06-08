@@ -383,7 +383,7 @@ bool CPlayerController::OnAction(const CAction &action)
         CServiceBroker::GetSettings().SetInt(CSettings::SETTING_SUBTITLES_ALIGN, subalign);
         CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info,
                                               g_localizeStrings.Get(21460),
-                                              g_localizeStrings.Get(21461 + subalign), 
+                                              g_localizeStrings.Get(21461 + subalign),
                                               TOAST_DISPLAY_TIME, false);
         CServiceBroker::GetWinSystem()->GetGfxContext().SetResInfo(CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution(), res_info);
         return true;

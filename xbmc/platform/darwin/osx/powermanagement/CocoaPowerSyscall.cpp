@@ -17,7 +17,7 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
- 
+
 #if defined (TARGET_DARWIN)
 // defined in PlatformDefs.h but I don't want to include that here
 typedef unsigned char BYTE;
@@ -250,8 +250,8 @@ bool CCocoaPowerSyscall::PumpPowerEvents(IPowerEventsCallback *callback)
   {
     callback->OnWake();
     m_OnResume = false;
-  } 
-  
+  }
+
   if (m_HasBattery && m_OnBattery && !m_SentBatteryMessage)
   {
     if (m_BatteryPercent < 10)
@@ -260,7 +260,7 @@ bool CCocoaPowerSyscall::PumpPowerEvents(IPowerEventsCallback *callback)
       m_SentBatteryMessage = true;
     }
   }
-    
+
   return true;
 }
 
@@ -308,7 +308,7 @@ void CCocoaPowerSyscall::DeleteOSPowerCallBacks(void)
   IOServiceClose(m_root_port);
   // destroy the notification port allocated by IORegisterForSystemPower
   IONotificationPortDestroy(m_notify_port);
-  
+
   // we no longer want power source change notifications
   if (m_HasBattery)
   {
@@ -326,7 +326,7 @@ void CCocoaPowerSyscall::OSPowerCallBack(void *refcon, io_service_t service, nat
 #if !defined(TARGET_DARWIN_IOS)
   CCocoaAutoPool autopool;
   CCocoaPowerSyscall  *ctx;
-  
+
   ctx = (CCocoaPowerSyscall*)refcon;
 
   switch (msg_type)
@@ -367,7 +367,7 @@ void CCocoaPowerSyscall::OSPowerCallBack(void *refcon, io_service_t service, nat
 #if !defined(TARGET_DARWIN_IOS)
 static bool stringsAreEqual(CFStringRef a, CFStringRef b)
 {
-	if (a == nil || b == nil) 
+	if (a == nil || b == nil)
 		return 0;
 	return (CFStringCompare (a, b, 0) == kCFCompareEqualTo);
 }
@@ -376,7 +376,7 @@ static bool stringsAreEqual(CFStringRef a, CFStringRef b)
 void CCocoaPowerSyscall::OSPowerSourceCallBack(void *refcon)
 {
 #if !defined(TARGET_DARWIN_IOS)
-  // Called whenever any power source is added, removed, or changes. 
+  // Called whenever any power source is added, removed, or changes.
   // When on battery, we get called periodically as battery level changes.
   CCocoaAutoPool autopool;
   CCocoaPowerSyscall  *ctx = (CCocoaPowerSyscall*)refcon;
@@ -396,7 +396,7 @@ void CCocoaPowerSyscall::OSPowerSourceCallBack(void *refcon)
     if ((CFBooleanRef)CFDictionaryGetValue(description, CFSTR(kIOPSIsPresentKey)) == kCFBooleanFalse)
       continue;
 
-    if (stringsAreEqual((CFStringRef)CFDictionaryGetValue(description, CFSTR (kIOPSTransportTypeKey)), CFSTR (kIOPSInternalType))) 
+    if (stringsAreEqual((CFStringRef)CFDictionaryGetValue(description, CFSTR (kIOPSTransportTypeKey)), CFSTR (kIOPSInternalType)))
     {
       CFStringRef currentState = (CFStringRef)CFDictionaryGetValue(description, CFSTR (kIOPSPowerSourceStateKey));
 
@@ -420,7 +420,7 @@ void CCocoaPowerSyscall::OSPowerSourceCallBack(void *refcon)
         ctx->m_OnBattery = true;
         ctx->m_BatteryPercent = (int)((double)curCapacity/(double)maxCapacity * 100);
       }
-		} 
+		}
   }
 
   CFRelease(power_sources_list);

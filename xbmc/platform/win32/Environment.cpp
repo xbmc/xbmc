@@ -64,8 +64,8 @@ int CEnvironment::win_setenv(const std::string &name, const std::string &value /
     EnvString = Wname + L"=" + Wvalue;
 
   #ifdef _DEBUG
-    // Most dependencies are built in release and use non-debug runtime libs, 
-    // and so we have to sync environment vars for these during debug because 
+    // Most dependencies are built in release and use non-debug runtime libs,
+    // and so we have to sync environment vars for these during debug because
     // they don't share environments between themselves
     typedef int(_cdecl * wputenvPtr) (const wchar_t *envstring);
     static const wchar_t *modulesList[] =
@@ -74,14 +74,14 @@ int CEnvironment::win_setenv(const std::string &name, const std::string &value /
       { L"ucrtbase.dll" },
       { nullptr } // Terminating NULL for list
     };
-  
+
     // Check all modules each function run, because modules can be loaded/unloaded at runtime
     for (int i = 0; modulesList[i]; i++)
     {
       HMODULE hModule;
       if (!GetModuleHandleExW(0, modulesList[i], &hModule) || hModule == nullptr) // Flag 0 ensures that module will be kept loaded until it'll be freed
          continue; // Module not loaded
-  
+
       wputenvPtr wputenvFunc = (wputenvPtr)GetProcAddress(hModule, "_wputenv");
       if (wputenvFunc != nullptr && wputenvFunc(EnvString.c_str()) != 0)
          retValue |= 2; // At lest one external runtime library Environment update failed

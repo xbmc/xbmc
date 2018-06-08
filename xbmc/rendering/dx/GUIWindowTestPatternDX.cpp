@@ -208,7 +208,7 @@ void CGUIWindowTestPatternDX::DrawContrastBrightnessPattern(int top, int left, i
   CD3DHelper::XMStoreColor(&xcolor_black, color_black);
 
   // draw border lines
-  Vertex vert[] = 
+  Vertex vert[] =
   {
     { XMFLOAT3((float)left, y5p, 0.5f), xcolor_white, XMFLOAT2(0.0f, 0.0f), XMFLOAT2(0.0f, 0.0f) },
     { XMFLOAT3(x50p, y5p, 0.5f), xcolor_white, XMFLOAT2(0.0f, 0.0f), XMFLOAT2(0.0f, 0.0f) },
@@ -335,7 +335,7 @@ void CGUIWindowTestPatternDX::DrawRectangle(float x, float y, float x2, float y2
   XMFLOAT4 float4;
   CD3DHelper::XMStoreColor(&float4, color);
 
-  Vertex vert[] = 
+  Vertex vert[] =
   {
     { XMFLOAT3( x, y, 0.5f), float4, XMFLOAT2(0.0f, 0.0f), XMFLOAT2(0.0f, 0.0f) },
     { XMFLOAT3(x2, y, 0.5f), float4, XMFLOAT2(0.0f, 0.0f), XMFLOAT2(0.0f, 0.0f) },
@@ -375,7 +375,7 @@ void CGUIWindowTestPatternDX::UpdateVertexBuffer(Vertex *vertices, unsigned coun
     }
     return;
   }
-  else // update 
+  else // update
   {
     ComPtr<ID3D11DeviceContext> pContext = DX::DeviceResources::Get()->GetD3DContext();
     D3D11_MAPPED_SUBRESOURCE res;

@@ -29,7 +29,7 @@
 #include <DiskArbitration/DiskArbitration.h>
 #include <IOKit/storage/IOCDMedia.h>
 #include <IOKit/storage/IODVDMedia.h>
-#include "platform/darwin/DarwinUtils.h"  
+#include "platform/darwin/DarwinUtils.h"
 #endif
 #include "platform/darwin/osx/CocoaInterface.h"
 
@@ -58,7 +58,7 @@ void CDarwinStorageProvider::GetLocalDrives(VECSOURCES &localDrives)
   share.strName = g_localizeStrings.Get(21440);
   share.m_ignore = true;
   localDrives.push_back(share);
-  
+
 #if defined(TARGET_DARWIN_IOS)
   // iOS Inbox folder
   share.strPath = "special://envhome/Documents/Inbox";
@@ -80,7 +80,7 @@ void CDarwinStorageProvider::GetLocalDrives(VECSOURCES &localDrives)
   share.strName = "Volumes";
   share.m_ignore = true;
   localDrives.push_back(share);
-  
+
   // This will pick up all local non-removable disks including the Root Disk.
   DASessionRef session = DASessionCreate(kCFAllocatorDefault);
   if (session)

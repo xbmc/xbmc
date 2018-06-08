@@ -146,7 +146,7 @@ bool CUPnPDirectory::GetResource(const CURL& path, CFileItem &item)
 {
     if (!CServiceBroker::GetSettings().GetBool(CSettings::SETTING_SERVICES_UPNP))
       return false;
-  
+
     if(!path.IsProtocol("upnp"))
       return false;
 
@@ -192,7 +192,7 @@ CUPnPDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {
     if (!CServiceBroker::GetSettings().GetBool(CSettings::SETTING_SERVICES_UPNP))
       return false;
-  
+
     CUPnP* upnp = CUPnP::GetInstance();
 
     /* upnp should never be cached, it has internal cache */

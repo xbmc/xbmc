@@ -49,7 +49,7 @@ public:
 
     void GetDelay(AEDelayStatus& status) override;
     double GetCacheTotal() override;
-    double GetLatency() override; 
+    double GetLatency() override;
     unsigned int AddPackets(uint8_t **data, unsigned int frames, unsigned int offset) override;
     void Drain() override;
 
@@ -86,7 +86,7 @@ private:
       STDMETHOD_(void, OnVoiceProcessingPassEnd)() override {}
       STDMETHOD_(void, OnStreamEnd)() override {}
       STDMETHOD_(void, OnBufferStart)(void*) override {}
-      STDMETHOD_(void, OnBufferEnd)(void* context) override 
+      STDMETHOD_(void, OnBufferEnd)(void* context) override
       {
         SetEvent(mBufferEnd.get());
         struct buffer_ctx *ctx = static_cast<struct buffer_ctx*>(context);
@@ -96,14 +96,14 @@ private:
       STDMETHOD_(void, OnLoopEnd)(void*) override {}
       STDMETHOD_(void, OnVoiceError)(void*, HRESULT) override {}
 
-      struct handle_closer 
-      { 
-        void operator()(HANDLE h) 
-        { 
-          assert(h != INVALID_HANDLE_VALUE); 
-          if (h) 
-            CloseHandle(h); 
-        } 
+      struct handle_closer
+      {
+        void operator()(HANDLE h)
+        {
+          assert(h != INVALID_HANDLE_VALUE);
+          if (h)
+            CloseHandle(h);
+        }
       };
       std::unique_ptr<void, handle_closer> mBufferEnd;
     };

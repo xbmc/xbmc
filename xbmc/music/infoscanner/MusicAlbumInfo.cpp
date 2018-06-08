@@ -37,7 +37,7 @@ CMusicAlbumInfo::CMusicAlbumInfo(const std::string& strAlbum, const std::string&
   const std::string& strAlbumInfo, const CScraperUrl& strAlbumURL)
 {
   m_album.strAlbum = strAlbum;
-  //Just setting artist desc, not populating album artist credits. 
+  //Just setting artist desc, not populating album artist credits.
   m_album.strArtistDesc = strArtist;
   m_strTitle2 = strAlbumInfo;
   m_albumURL = strAlbumURL;

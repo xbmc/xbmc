@@ -28,7 +28,7 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
-#include "messaging/helpers/DialogOKHelper.h" 
+#include "messaging/helpers/DialogOKHelper.h"
 #include "utils/Variant.h"
 
 #include <libbluray/bluray-version.h>

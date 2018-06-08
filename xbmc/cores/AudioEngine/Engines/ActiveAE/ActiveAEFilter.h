@@ -42,7 +42,7 @@ public:
   bool IsEof();
   bool IsActive();
   int GetBufferedSamples();
-  
+
 protected:
   bool CreateFilterGraph();
   bool CreateAtempoFilter();

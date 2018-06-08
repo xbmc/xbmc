@@ -51,7 +51,7 @@ namespace XBMCAddon
     /// @param cipherAlgorithm  String algorithm used for en- / decryption
     /// @param macAlgorithm     String algorithm used for sign / verify
     ///
-    /// @throws RuntimeException if the session can not be established 
+    /// @throws RuntimeException if the session can not be established
     ///
     //
     class CryptoSession : public AddonClass

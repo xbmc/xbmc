@@ -50,7 +50,7 @@ CZeroconfBrowserAndroid::~CZeroconfBrowserAndroid()
 bool CZeroconfBrowserAndroid::doAddServiceType(const std::string& fcr_service_type)
 {
   CZeroconfBrowserAndroidDiscover* discover = new CZeroconfBrowserAndroidDiscover(this);
-  
+
   // Remove trailing dot
 //  std::string nsdType = fcr_service_type;
 //  if (nsdType.compare(nsdType.size() - 1, 1, ".") == 0)
@@ -120,10 +120,10 @@ bool CZeroconfBrowserAndroid::doResolveService(CZeroconfBrowser::ZeroconfService
   jni::CJNINsdServiceInfo service;
   service.setServiceName(fr_service.GetName());
   service.setServiceType(fr_service.GetType());
-  
+
   CZeroconfBrowserAndroidResolve resolver;
   m_manager.resolveService(service, resolver);
-  
+
   if (!resolver.m_resolutionDone.WaitMSec(f_timeout * 1000))
   {
     CLog::Log(LOGERROR, "ZeroconfBrowserAndroid: DNSServiceResolve Timeout error");
@@ -135,25 +135,25 @@ bool CZeroconfBrowserAndroid::doResolveService(CZeroconfBrowser::ZeroconfService
     CLog::Log(LOGERROR, "ZeroconfBrowserAndroid: DNSServiceResolve returned (error = %ld)", resolver.m_errorCode);
     return false;
   }
-   
+
   fr_service.SetHostname(resolver.m_retServiceInfo.getHost().getHostName());
   fr_service.SetIP(resolver.m_retServiceInfo.getHost().getHostAddress());
   fr_service.SetPort(resolver.m_retServiceInfo.getPort());
-  
-  CZeroconfBrowser::ZeroconfService::tTxtRecordMap recordMap; 
+
+  CZeroconfBrowser::ZeroconfService::tTxtRecordMap recordMap;
   jni::CJNISet<jni::jhstring> txtKey = resolver.m_retServiceInfo.getAttributes().keySet();
   jni::CJNIIterator<jni::jhstring> it = txtKey.iterator();
   while (it.hasNext())
   {
     jni::jhstring k = it.next();
     jni::jhbyteArray v = resolver.m_retServiceInfo.getAttributes().get(k);
-  
+
     std::string key = jni::jcast<std::string>(k);
     std::vector<char> vv = jni::jcast<std::vector<char>>(v);
     std::string value = std::string(vv.begin(), vv.end());
 
     CLog::Log(LOGDEBUG, "ZeroconfBrowserAndroid: TXT record %s = %s (%d)", key.c_str(), value.c_str(), vv.size());
-    
+
     recordMap.insert(std::make_pair(key, value));
   }
   fr_service.SetTxtRecords(recordMap);
@@ -241,7 +241,7 @@ void CZeroconfBrowserAndroidDiscover::onServiceFound(const jni::CJNINsdServiceIn
   {
     jni::jhstring k = it.next();
     jni::jhbyteArray v = serviceInfo.getAttributes().get(k);
-  
+
     std::string key = jni::jcast<std::string>(k);
     std::vector<char> vv = jni::jcast<std::vector<char>>(v);
     std::string value = std::string(vv.begin(), vv.end());

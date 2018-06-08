@@ -37,7 +37,7 @@ void CProcessInfo::RegisterProcessControl(std::string id, CreateProcessControl c
 CProcessInfo* CProcessInfo::CreateInstance()
 {
   CSingleLock lock(createSection);
-  
+
   CProcessInfo *ret = nullptr;
   for (auto &info : m_processControls)
   {

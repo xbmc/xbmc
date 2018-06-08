@@ -274,8 +274,8 @@ void CMusicInfoTag::SetArtist(const std::string& strArtist)
 void CMusicInfoTag::SetArtist(const std::vector<std::string>& artists, bool FillDesc /* = false*/)
 {
   m_artist = artists;
-  if (m_strArtistDesc.empty() || FillDesc) 
-  { 
+  if (m_strArtistDesc.empty() || FillDesc)
+  {
     SetArtistDesc(StringUtils::Join(artists, g_advancedSettings.m_musicItemSeparator));
   }
 }
@@ -322,7 +322,7 @@ void CMusicInfoTag::SetAlbumArtist(const std::string& strAlbumArtist)
 void CMusicInfoTag::SetAlbumArtist(const std::vector<std::string>& albumArtists, bool FillDesc /* = false*/)
 {
   m_albumArtist = albumArtists;
-  if (m_strAlbumArtistDesc.empty() || FillDesc) 
+  if (m_strAlbumArtistDesc.empty() || FillDesc)
     SetAlbumArtistDesc(StringUtils::Join(albumArtists, g_advancedSettings.m_musicItemSeparator));
 }
 
@@ -585,7 +585,7 @@ void CMusicInfoTag::SetType(const MediaType mediaType)
 void CMusicInfoTag::SetArtist(const CArtist& artist)
 {
   SetArtist(artist.strArtist);
-  SetArtistSort(artist.strSortName); 
+  SetArtistSort(artist.strSortName);
   SetAlbumArtist(artist.strArtist);
   SetAlbumArtistSort(artist.strSortName);
   SetMusicBrainzArtistID({ artist.strMusicBrainzArtistID });
@@ -604,7 +604,7 @@ void CMusicInfoTag::SetAlbum(const CAlbum& album)
   //Set all artist infomation from album artist credits and artist description
   SetArtistDesc(album.GetAlbumArtistString());
   SetArtist(album.GetAlbumArtist());
-  SetArtistSort(album.GetAlbumArtistSort()); 
+  SetArtistSort(album.GetAlbumArtistSort());
   SetMusicBrainzArtistID(album.GetMusicBrainzAlbumArtistID());
   SetAlbumArtistDesc(album.GetAlbumArtistString());
   SetAlbumArtist(album.GetAlbumArtist());
@@ -641,7 +641,7 @@ void CMusicInfoTag::SetSong(const CSong& song)
   SetTitle(song.strTitle);
   SetGenre(song.genre);
   /* Set all artist infomation from song artist credits and artist description.
-     During processing e.g. Cue Sheets, song may only have artist description string 
+     During processing e.g. Cue Sheets, song may only have artist description string
      rather than a fully populated artist credits vector.
   */
   if (!song.HasArtistCredits())
@@ -720,7 +720,7 @@ void CMusicInfoTag::Serialize(CVariant& value) const
   value["musicbrainzartistid"] = m_musicBrainzArtistID;
   value["musicbrainzalbumid"] = m_strMusicBrainzAlbumID;
   value["musicbrainzreleasegroupid"] = m_strMusicBrainzReleaseGroupID;
-  value["musicbrainzalbumartistid"] = m_musicBrainzAlbumArtistID; 
+  value["musicbrainzalbumartistid"] = m_musicBrainzAlbumArtistID;
   value["comment"] = m_strComment;
   value["contributors"] = CVariant(CVariant::VariantTypeArray);
   for (const auto& role : m_musicRoles)
@@ -814,7 +814,7 @@ void CMusicInfoTag::Archive(CArchive& ar)
     ar << m_lastPlayed;
     ar << m_dateAdded;
     ar << m_strComment;
-    ar << (int)m_musicRoles.size();   
+    ar << (int)m_musicRoles.size();
     for (VECMUSICROLES::const_iterator credit = m_musicRoles.begin(); credit != m_musicRoles.end(); ++credit)
     {
       ar << credit->GetRoleId();
@@ -999,7 +999,7 @@ void CMusicInfoTag::AppendArtistRole(const CMusicRole& ArtistRole)
 const std::string CMusicInfoTag::GetArtistStringForRole(const std::string& strRole) const
 {
   std::vector<std::string> artistvector;
-  for (VECMUSICROLES::const_iterator credit = m_musicRoles.begin(); credit != m_musicRoles.end(); ++credit) 
+  for (VECMUSICROLES::const_iterator credit = m_musicRoles.begin(); credit != m_musicRoles.end(); ++credit)
   {
     if (StringUtils::EqualsNoCase(credit->GetRoleDesc(), strRole))
       artistvector.push_back(credit->GetArtist());

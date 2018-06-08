@@ -44,14 +44,14 @@ bool CCoreAudioStream::Open(AudioStreamID streamId)
   // watch for physical property changes.
   AudioObjectPropertyAddress propertyAOPA;
   propertyAOPA.mScope    = kAudioObjectPropertyScopeGlobal;
-  propertyAOPA.mElement  = kAudioObjectPropertyElementMaster;  
+  propertyAOPA.mElement  = kAudioObjectPropertyElementMaster;
   propertyAOPA.mSelector = kAudioStreamPropertyPhysicalFormat;
   if (AudioObjectAddPropertyListener(m_StreamId, &propertyAOPA, HardwareStreamListener, this) != noErr)
     CLog::Log(LOGERROR, "CCoreAudioStream::Open: couldn't set up a physical property listener.");
 
   // watch for virtual property changes.
   propertyAOPA.mScope    = kAudioObjectPropertyScopeGlobal;
-  propertyAOPA.mElement  = kAudioObjectPropertyElementMaster;  
+  propertyAOPA.mElement  = kAudioObjectPropertyElementMaster;
   propertyAOPA.mSelector = kAudioStreamPropertyVirtualFormat;
   if (AudioObjectAddPropertyListener(m_StreamId, &propertyAOPA, HardwareStreamListener, this) != noErr)
     CLog::Log(LOGERROR, "CCoreAudioStream::Open: couldn't set up a virtual property listener.");
@@ -59,7 +59,7 @@ bool CCoreAudioStream::Open(AudioStreamID streamId)
   return true;
 }
 
-//! @todo Should it even be possible to change both the 
+//! @todo Should it even be possible to change both the
 //! physical and virtual formats, since the devices do it themselves?
 void CCoreAudioStream::Close(bool restore)
 {
@@ -72,13 +72,13 @@ void CCoreAudioStream::Close(bool restore)
   // that will trigger callbacks that we do not care about.
   AudioObjectPropertyAddress propertyAOPA;
   propertyAOPA.mScope    = kAudioObjectPropertyScopeGlobal;
-  propertyAOPA.mElement  = kAudioObjectPropertyElementMaster;  
+  propertyAOPA.mElement  = kAudioObjectPropertyElementMaster;
   propertyAOPA.mSelector = kAudioStreamPropertyPhysicalFormat;
   if (AudioObjectRemovePropertyListener(m_StreamId, &propertyAOPA, HardwareStreamListener, this) != noErr)
     CLog::Log(LOGDEBUG, "CCoreAudioStream::Close: Couldn't remove property listener.");
 
   propertyAOPA.mScope    = kAudioObjectPropertyScopeGlobal;
-  propertyAOPA.mElement  = kAudioObjectPropertyElementMaster;  
+  propertyAOPA.mElement  = kAudioObjectPropertyElementMaster;
   propertyAOPA.mSelector = kAudioStreamPropertyVirtualFormat;
   if (AudioObjectRemovePropertyListener(m_StreamId, &propertyAOPA, HardwareStreamListener, this) != noErr)
     CLog::Log(LOGDEBUG, "CCoreAudioStream::Close: Couldn't remove property listener.");
@@ -115,12 +115,12 @@ UInt32 CCoreAudioStream::GetDirection()
   UInt32 val = 0;
   UInt32 size = sizeof(UInt32);
 
-  AudioObjectPropertyAddress propertyAddress; 
-  propertyAddress.mScope    = kAudioObjectPropertyScopeGlobal; 
+  AudioObjectPropertyAddress propertyAddress;
+  propertyAddress.mScope    = kAudioObjectPropertyScopeGlobal;
   propertyAddress.mElement  = kAudioObjectPropertyElementMaster;
-  propertyAddress.mSelector = kAudioStreamPropertyDirection; 
+  propertyAddress.mSelector = kAudioStreamPropertyDirection;
 
-  OSStatus ret = AudioObjectGetPropertyData(m_StreamId, &propertyAddress, 0, NULL, &size, &val); 
+  OSStatus ret = AudioObjectGetPropertyData(m_StreamId, &propertyAddress, 0, NULL, &size, &val);
   if (ret)
     return 0;
 
@@ -146,25 +146,25 @@ bool CCoreAudioStream::GetStartingChannelInDevice(AudioStreamID id, UInt32 &star
 {
   if (!id)
     return 0;
-  
+
   UInt32 i_param_size = sizeof(UInt32);
   UInt32 i_param;
   startingChannel = 0;
   bool ret = false;
-  
-  AudioObjectPropertyAddress propertyAddress; 
-  propertyAddress.mScope    = kAudioObjectPropertyScopeGlobal; 
+
+  AudioObjectPropertyAddress propertyAddress;
+  propertyAddress.mScope    = kAudioObjectPropertyScopeGlobal;
   propertyAddress.mElement  = kAudioObjectPropertyElementMaster;
-  propertyAddress.mSelector = kAudioStreamPropertyStartingChannel; 
-  
+  propertyAddress.mSelector = kAudioStreamPropertyStartingChannel;
+
   // number of frames of latency in the AudioStream
-  OSStatus status = AudioObjectGetPropertyData(id, &propertyAddress, 0, NULL, &i_param_size, &i_param); 
+  OSStatus status = AudioObjectGetPropertyData(id, &propertyAddress, 0, NULL, &i_param_size, &i_param);
   if (status == noErr)
   {
     startingChannel = i_param;
     ret = true;
   }
-  
+
   return ret;
 }
 
@@ -176,10 +176,10 @@ UInt32 CCoreAudioStream::GetTerminalType(AudioStreamID id)
   UInt32 val = 0;
   UInt32 size = sizeof(UInt32);
 
-  AudioObjectPropertyAddress propertyAddress; 
-  propertyAddress.mScope    = kAudioObjectPropertyScopeGlobal; 
+  AudioObjectPropertyAddress propertyAddress;
+  propertyAddress.mScope    = kAudioObjectPropertyScopeGlobal;
   propertyAddress.mElement  = kAudioObjectPropertyElementMaster;
-  propertyAddress.mSelector = kAudioStreamPropertyTerminalType; 
+  propertyAddress.mSelector = kAudioStreamPropertyTerminalType;
 
   OSStatus ret = AudioObjectGetPropertyData(id, &propertyAddress, 0, NULL, &size, &val);
   if (ret)
@@ -195,13 +195,13 @@ UInt32 CCoreAudioStream::GetNumLatencyFrames()
   UInt32 i_param_size = sizeof(uint32_t);
   UInt32 i_param, num_latency_frames = 0;
 
-  AudioObjectPropertyAddress propertyAddress; 
-  propertyAddress.mScope    = kAudioObjectPropertyScopeGlobal; 
+  AudioObjectPropertyAddress propertyAddress;
+  propertyAddress.mScope    = kAudioObjectPropertyScopeGlobal;
   propertyAddress.mElement  = kAudioObjectPropertyElementMaster;
-  propertyAddress.mSelector = kAudioStreamPropertyLatency; 
+  propertyAddress.mSelector = kAudioStreamPropertyLatency;
 
   // number of frames of latency in the AudioStream
-  OSStatus ret = AudioObjectGetPropertyData(m_StreamId, &propertyAddress, 0, NULL, &i_param_size, &i_param); 
+  OSStatus ret = AudioObjectGetPropertyData(m_StreamId, &propertyAddress, 0, NULL, &i_param_size, &i_param);
   if (ret == noErr)
   {
     num_latency_frames += i_param;
@@ -217,15 +217,15 @@ bool CCoreAudioStream::GetVirtualFormat(AudioStreamBasicDescription* pDesc)
 
   UInt32 size = sizeof(AudioStreamBasicDescription);
 
-  AudioObjectPropertyAddress propertyAddress; 
-  propertyAddress.mScope    = kAudioObjectPropertyScopeGlobal; 
+  AudioObjectPropertyAddress propertyAddress;
+  propertyAddress.mScope    = kAudioObjectPropertyScopeGlobal;
   propertyAddress.mElement  = kAudioObjectPropertyElementMaster;
-  propertyAddress.mSelector = kAudioStreamPropertyVirtualFormat; 
-  OSStatus ret = AudioObjectGetPropertyDataSize(m_StreamId, &propertyAddress, 0, NULL, &size); 
+  propertyAddress.mSelector = kAudioStreamPropertyVirtualFormat;
+  OSStatus ret = AudioObjectGetPropertyDataSize(m_StreamId, &propertyAddress, 0, NULL, &size);
   if (ret)
     return false;
 
-  ret = AudioObjectGetPropertyData(m_StreamId, &propertyAddress, 0, NULL, &size, pDesc); 
+  ret = AudioObjectGetPropertyData(m_StreamId, &propertyAddress, 0, NULL, &size, pDesc);
   if (ret)
     return false;
   return true;
@@ -257,13 +257,13 @@ bool CCoreAudioStream::SetVirtualFormat(AudioStreamBasicDescription* pDesc)
   }
   m_virtual_format_event.Reset();
 
-  AudioObjectPropertyAddress propertyAddress; 
-  propertyAddress.mScope    = kAudioObjectPropertyScopeGlobal; 
+  AudioObjectPropertyAddress propertyAddress;
+  propertyAddress.mScope    = kAudioObjectPropertyScopeGlobal;
   propertyAddress.mElement  = kAudioObjectPropertyElementMaster;
-  propertyAddress.mSelector = kAudioStreamPropertyVirtualFormat; 
+  propertyAddress.mSelector = kAudioStreamPropertyVirtualFormat;
 
   UInt32 propertySize = sizeof(AudioStreamBasicDescription);
-  OSStatus ret = AudioObjectSetPropertyData(m_StreamId, &propertyAddress, 0, NULL, propertySize, pDesc); 
+  OSStatus ret = AudioObjectSetPropertyData(m_StreamId, &propertyAddress, 0, NULL, propertySize, pDesc);
   if (ret)
   {
     CLog::Log(LOGERROR, "CCoreAudioStream::SetVirtualFormat: "
@@ -307,12 +307,12 @@ bool CCoreAudioStream::GetPhysicalFormat(AudioStreamBasicDescription* pDesc)
 
   UInt32 size = sizeof(AudioStreamBasicDescription);
 
-  AudioObjectPropertyAddress propertyAddress; 
-  propertyAddress.mScope    = kAudioObjectPropertyScopeGlobal; 
+  AudioObjectPropertyAddress propertyAddress;
+  propertyAddress.mScope    = kAudioObjectPropertyScopeGlobal;
   propertyAddress.mElement  = kAudioObjectPropertyElementMaster;
-  propertyAddress.mSelector = kAudioStreamPropertyPhysicalFormat; 
+  propertyAddress.mSelector = kAudioStreamPropertyPhysicalFormat;
 
-  OSStatus ret = AudioObjectGetPropertyData(m_StreamId, &propertyAddress, 0, NULL, &size, pDesc); 
+  OSStatus ret = AudioObjectGetPropertyData(m_StreamId, &propertyAddress, 0, NULL, &size, pDesc);
   if (ret)
     return false;
   return true;
@@ -343,13 +343,13 @@ bool CCoreAudioStream::SetPhysicalFormat(AudioStreamBasicDescription* pDesc)
   }
   m_physical_format_event.Reset();
 
-  AudioObjectPropertyAddress propertyAddress; 
-  propertyAddress.mScope    = kAudioObjectPropertyScopeGlobal; 
+  AudioObjectPropertyAddress propertyAddress;
+  propertyAddress.mScope    = kAudioObjectPropertyScopeGlobal;
   propertyAddress.mElement  = kAudioObjectPropertyElementMaster;
-  propertyAddress.mSelector = kAudioStreamPropertyPhysicalFormat; 
+  propertyAddress.mSelector = kAudioStreamPropertyPhysicalFormat;
 
   UInt32 propertySize = sizeof(AudioStreamBasicDescription);
-  OSStatus ret = AudioObjectSetPropertyData(m_StreamId, &propertyAddress, 0, NULL, propertySize, pDesc); 
+  OSStatus ret = AudioObjectSetPropertyData(m_StreamId, &propertyAddress, 0, NULL, propertySize, pDesc);
   if (ret)
   {
     CLog::Log(LOGERROR, "CCoreAudioStream::SetPhysicalFormat: "
@@ -398,10 +398,10 @@ bool CCoreAudioStream::GetAvailableVirtualFormats(AudioStreamID id, StreamFormat
   if (!pList || !id)
     return false;
 
-  AudioObjectPropertyAddress propertyAddress; 
-  propertyAddress.mScope    = kAudioObjectPropertyScopeGlobal; 
+  AudioObjectPropertyAddress propertyAddress;
+  propertyAddress.mScope    = kAudioObjectPropertyScopeGlobal;
   propertyAddress.mElement  = kAudioObjectPropertyElementMaster;
-  propertyAddress.mSelector = kAudioStreamPropertyAvailableVirtualFormats; 
+  propertyAddress.mSelector = kAudioStreamPropertyAvailableVirtualFormats;
 
   UInt32 propertySize = 0;
   OSStatus ret = AudioObjectGetPropertyDataSize(id, &propertyAddress, 0, NULL, &propertySize);
@@ -430,10 +430,10 @@ bool CCoreAudioStream::GetAvailablePhysicalFormats(AudioStreamID id, StreamForma
   if (!pList || !id)
     return false;
 
-  AudioObjectPropertyAddress propertyAddress; 
-  propertyAddress.mScope    = kAudioObjectPropertyScopeGlobal; 
+  AudioObjectPropertyAddress propertyAddress;
+  propertyAddress.mScope    = kAudioObjectPropertyScopeGlobal;
   propertyAddress.mElement  = kAudioObjectPropertyElementMaster;
-  propertyAddress.mSelector = kAudioStreamPropertyAvailablePhysicalFormats; 
+  propertyAddress.mSelector = kAudioStreamPropertyAvailablePhysicalFormats;
 
   UInt32 propertySize = 0;
   OSStatus ret = AudioObjectGetPropertyDataSize(id, &propertyAddress, 0, NULL, &propertySize);

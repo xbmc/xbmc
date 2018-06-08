@@ -129,7 +129,7 @@ public:
 
     return face;
   };
-  
+
   FT_Stroker GetStroker()
   {
     if (!m_library)
@@ -147,7 +147,7 @@ public:
     assert(face);
     FT_Done_Face(face);
   };
-  
+
   static void ReleaseStroker(FT_Stroker stroker)
   {
     assert(stroker);
@@ -799,7 +799,7 @@ bool CGUIFontTTFBase::CacheCharacter(wchar_t letter, uint32_t style, Character *
     unsigned int x2 = std::min(x1 + bitmap.width, m_textureWidth);
     unsigned int y2 = std::min(y1 + bitmap.rows, m_textureHeight);
     CopyCharToTexture(bitGlyph, x1, y1, x2, y2);
-  
+
     m_posX += spacing_between_characters_in_texture + (unsigned short)std::max(ch->right - ch->left + ch->offsetX, ch->advance);
   }
   m_numChars++;
@@ -816,7 +816,7 @@ void CGUIFontTTFBase::RenderCharacter(float posX, float posY, const Character *c
   // just baseline width and height should include the descent
   const float width = ch->right - ch->left;
   const float height = ch->bottom - ch->top;
-  
+
   // return early if nothing to render
   if (width == 0 || height == 0)
     return;

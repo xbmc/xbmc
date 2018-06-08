@@ -43,7 +43,7 @@ using namespace xbmcwsgi;
 
 %}
 
-// This is all about warning suppression. It's OK that these base classes are 
+// This is all about warning suppression. It's OK that these base classes are
 // not part of what swig parses.
 %feature("knownbasetypes") XBMCAddon::xbmcaddon "AddonClass"
 

@@ -51,7 +51,7 @@ bool CAndroidTouch::onTouchEvent(AInputEvent* event)
   int32_t eventAction = AMotionEvent_getAction(event);
   int8_t touchAction = eventAction & AMOTION_EVENT_ACTION_MASK;
   size_t touchPointer = eventAction >> AMOTION_EVENT_ACTION_POINTER_INDEX_SHIFT;
-  
+
   TouchInput touchEvent = TouchInputAbort;
   switch (touchAction)
   {

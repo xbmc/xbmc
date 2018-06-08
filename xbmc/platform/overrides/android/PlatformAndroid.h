@@ -27,9 +27,9 @@ class CPlatformAndroid : public CPlatform
   public:
     /**\brief C'tor */
     CPlatformAndroid();
-  
+
     /**\brief D'tor */
     virtual ~CPlatformAndroid();
-  
+
     void Init() override;
 };

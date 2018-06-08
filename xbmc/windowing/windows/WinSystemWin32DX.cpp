@@ -55,7 +55,7 @@ std::unique_ptr<CWinSystemBase> CWinSystemBase::CreateWinSystem()
   std::unique_ptr<CWinSystemBase> winSystem(new CWinSystemWin32DX());
   return winSystem;
 }
- 
+
 CWinSystemWin32DX::CWinSystemWin32DX() : CRenderSystemDX()
   , m_hDriverModule(nullptr)
   , m_hHook(nullptr)
@@ -124,9 +124,9 @@ bool CWinSystemWin32DX::ResizeWindow(int newWidth, int newHeight, int newLeft, i
 
 void CWinSystemWin32DX::OnMove(int x, int y)
 {
-  // do not handle moving at window creation because MonitorFromWindow 
+  // do not handle moving at window creation because MonitorFromWindow
   // returns default system monitor in case of m_hWnd is null
-  if (!m_hWnd) 
+  if (!m_hWnd)
     return;
 
   HMONITOR newMonitor = MonitorFromWindow(m_hWnd, MONITOR_DEFAULTTONEAREST);

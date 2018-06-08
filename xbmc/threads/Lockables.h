@@ -29,7 +29,7 @@ namespace XbmcThreads
    * This template will take any implementation of the "Lockable" concept
    * and allow it to be used as an "Exitable Lockable."
    *
-   * Something that implements the "Lockable concept" simply means that 
+   * Something that implements the "Lockable concept" simply means that
    * it has the three methods:
    *
    *   lock();
@@ -73,8 +73,8 @@ namespace XbmcThreads
      *  only once, and so it backs out ALMOST all the way, but
      *  leaves one still there.
      */
-    inline unsigned int exit(unsigned int leave = 0) 
-    { 
+    inline unsigned int exit(unsigned int leave = 0)
+    {
       // it's possible we don't actually own the lock
       // so we will try it.
       unsigned int ret = 0;
@@ -82,9 +82,9 @@ namespace XbmcThreads
       {
         if (leave < (count - 1))
         {
-          ret = count - 1 - leave;  // The -1 is because we don't want 
+          ret = count - 1 - leave;  // The -1 is because we don't want
                                     //  to count the try_lock increment.
-          // We must NOT compare "count" in this loop since 
+          // We must NOT compare "count" in this loop since
           // as soon as the last unlock is called another thread
           // can modify it.
           for (unsigned int i = 0; i < ret; i++)
@@ -93,7 +93,7 @@ namespace XbmcThreads
         unlock(); // undo the try_lock before returning
       }
 
-      return ret; 
+      return ret;
     }
 
     /**
@@ -101,13 +101,13 @@ namespace XbmcThreads
      */
     inline void restore(unsigned int restoreCount)
     {
-      for (unsigned int i = 0; i < restoreCount; i++) 
+      for (unsigned int i = 0; i < restoreCount; i++)
         lock();
     }
 
     /**
-     * Some implementations (see pthreads) require access to the underlying 
-     *  CCriticalSection, which is also implementation specific. This 
+     * Some implementations (see pthreads) require access to the underlying
+     *  CCriticalSection, which is also implementation specific. This
      *  provides access to it through the same method on the guard classes
      *  UniqueLock, and SharedLock.
      *

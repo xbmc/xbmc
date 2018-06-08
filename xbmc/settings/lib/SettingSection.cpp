@@ -112,7 +112,7 @@ bool CSettingGroup::Deserialize(const TiXmlNode *node, bool update /* = false */
       SettingPtr setting;
       if (settingIt != m_settings.end())
         setting = *settingIt;
-      
+
       update = (setting != nullptr);
       if (!update)
       {
@@ -127,7 +127,7 @@ bool CSettingGroup::Deserialize(const TiXmlNode *node, bool update /* = false */
         if (setting == nullptr)
           CLog::Log(LOGERROR, "CSettingGroup: unknown setting type \"%s\" of \"%s\"", settingType, settingId.c_str());
       }
-      
+
       if (setting == nullptr)
         CLog::Log(LOGERROR, "CSettingGroup: unable to create new setting \"%s\"", settingId.c_str());
       else if (!setting->Deserialize(settingElement, update))
@@ -135,10 +135,10 @@ bool CSettingGroup::Deserialize(const TiXmlNode *node, bool update /* = false */
       else if (!update)
         addISetting(settingElement, setting, m_settings);
     }
-      
+
     settingElement = settingElement->NextSiblingElement(SETTING_XML_ELM_SETTING);
   }
-    
+
   return true;
 }
 
@@ -197,7 +197,7 @@ bool CSettingCategory::Deserialize(const TiXmlNode *node, bool update /* = false
   auto accessNode = node->FirstChild(SETTING_XML_ELM_ACCESS);
   if (accessNode != nullptr && !m_accessCondition.Deserialize(accessNode))
     return false;
-    
+
   auto groupNode = node->FirstChild(SETTING_XML_ELM_GROUP);
   while (groupNode != nullptr)
   {
@@ -213,7 +213,7 @@ bool CSettingCategory::Deserialize(const TiXmlNode *node, bool update /* = false
       SettingGroupPtr group;
       if (groupIt != m_groups.end())
         group = *groupIt;
-      
+
       update = (group != nullptr);
       if (!update)
         group = std::make_shared<CSettingGroup>(groupId, m_settingsManager);
@@ -226,10 +226,10 @@ bool CSettingCategory::Deserialize(const TiXmlNode *node, bool update /* = false
       else
         CLog::Log(LOGWARNING, "CSettingCategory: unable to read group \"%s\"", groupId.c_str());
     }
-      
+
     groupNode = groupNode->NextSibling(SETTING_XML_ELM_GROUP);
   }
-    
+
   return true;
 }
 
@@ -264,13 +264,13 @@ void CSettingCategory::AddGroups(const SettingGroupList &groups)
 CSettingSection::CSettingSection(const std::string &id, CSettingsManager *settingsManager /* = nullptr */)
   : ISetting(id, settingsManager)
 { }
-  
+
 bool CSettingSection::Deserialize(const TiXmlNode *node, bool update /* = false */)
 {
   // handle <visible> conditions
   if (!ISetting::Deserialize(node, update))
     return false;
-    
+
   auto categoryNode = node->FirstChild(SETTING_XML_ELM_CATEGORY);
   while (categoryNode != nullptr)
   {
@@ -286,7 +286,7 @@ bool CSettingSection::Deserialize(const TiXmlNode *node, bool update /* = false 
       SettingCategoryPtr category;
       if (categoryIt != m_categories.end())
         category = *categoryIt;
-      
+
       update = (category != nullptr);
       if (!update)
         category = std::make_shared<CSettingCategory>(categoryId, m_settingsManager);
@@ -299,10 +299,10 @@ bool CSettingSection::Deserialize(const TiXmlNode *node, bool update /* = false 
       else
         CLog::Log(LOGWARNING, "CSettingSection: unable to read category \"%s\"", categoryId.c_str());
     }
-      
+
     categoryNode = categoryNode->NextSibling(SETTING_XML_ELM_CATEGORY);
   }
-    
+
   return true;
 }
 

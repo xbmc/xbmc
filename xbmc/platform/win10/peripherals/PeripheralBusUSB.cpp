@@ -51,7 +51,7 @@ bool CPeripheralBusUSB::PerformDeviceScan(PeripheralScanResults &results)
 bool CPeripheralBusUSB::PerformDeviceScan(const GUID *guid, const PeripheralType defaultType, PeripheralScanResults &results)
 {
   bool bReturn(false);
- 
+
   CLog::Log(LOGDEBUG, "%s is not implemented", __FUNCTION__);
 
   return bReturn;

@@ -21,7 +21,7 @@
 #include "MusicLibraryScanningJob.h"
 #include "music/MusicDatabase.h"
 
-CMusicLibraryScanningJob::CMusicLibraryScanningJob(const std::string& directory, int flags, bool showProgress /* = true */) 
+CMusicLibraryScanningJob::CMusicLibraryScanningJob(const std::string& directory, int flags, bool showProgress /* = true */)
   : m_scanner(),
     m_directory(directory),
     m_showProgress(showProgress),

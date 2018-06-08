@@ -134,7 +134,7 @@ public:
 
   /*! \brief Process additional requirements before the directory fetch is performed.
    Some directory fetches may require authentication, keyboard input etc.  The IDirectory subclass
-   should call GetKeyboardInput, SetErrorDialog or RequireAuthentication and then return false 
+   should call GetKeyboardInput, SetErrorDialog or RequireAuthentication and then return false
    from the GetDirectory method. CDirectory will then prompt for input from the user, before
    re-calling the GetDirectory method.
    \sa GetKeyboardInput, SetErrorDialog, RequireAuthentication

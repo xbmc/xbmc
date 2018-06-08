@@ -43,7 +43,7 @@ public:
   {
     NoStudy          = 0, // do not study expression
     StudyRegExp      = 1, // study expression (slower compilation, faster find)
-    StudyWithJitComp      // study expression and JIT-compile it, if possible (heavyweight optimization) 
+    StudyWithJitComp      // study expression and JIT-compile it, if possible (heavyweight optimization)
   };
   enum utf8Mode
   {
@@ -63,7 +63,7 @@ public:
   /**
    * Create new CRegExp object and compile regexp expression in one step
    * @warning Use only with hardcoded regexp when you're sure that regexp is compiled without errors
-   * @param caseless    Matching will be case insensitive if set to true 
+   * @param caseless    Matching will be case insensitive if set to true
    *                    or case sensitive if set to false
    * @param utf8        Control UTF-8 processing
    * @param re          The regular expression
@@ -78,7 +78,7 @@ public:
   /**
    * Compile (prepare) regular expression
    * @param re          The regular expression
-   * @param study (optional) Controls study of expression, useful if expression will be used 
+   * @param study (optional) Controls study of expression, useful if expression will be used
    *                         several times
    * @return true on success, false on any error
    */
@@ -98,7 +98,7 @@ public:
    * Find first match of regular expression in given string
    * @param str         The string to match against regular expression
    * @param startoffset (optional) The string offset to start matching
-   * @param maxNumberOfCharsToTest (optional) The maximum number of characters to test (match) in 
+   * @param maxNumberOfCharsToTest (optional) The maximum number of characters to test (match) in
    *                                          string. If set to -1 string checked up to the end.
    * @return staring position of match in string, negative value in case of error or no match
    */

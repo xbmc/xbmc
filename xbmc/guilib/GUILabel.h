@@ -57,7 +57,7 @@ public:
 
     return changed;
   };
-  
+
   KODI::GUILIB::GUIINFO::CGUIInfoColor textColor;
   KODI::GUILIB::GUIINFO::CGUIInfoColor shadowColor;
   KODI::GUILIB::GUIINFO::CGUIInfoColor selectedColor;
@@ -70,7 +70,7 @@ public:
   float width;
   float angle;
   CGUIFont *font;
-  int scrollSpeed; 
+  int scrollSpeed;
   std::string scrollSuffix;
 };
 
@@ -88,7 +88,7 @@ public:
                COLOR_FOCUSED,
                COLOR_DISABLED,
                COLOR_INVALID };
-  
+
   /*! \brief allowed overflow handling techniques for labels, as defined by the skin
    */
   enum OVER_FLOW { OVER_FLOW_TRUNCATE = 0,
@@ -107,7 +107,7 @@ public:
   /*! \brief Render the label on screen
    */
   void Render();
-  
+
   /*! \brief Set the maximal extent of the label
    Sets the maximal size and positioning that the label may render in.  Note that `textwidth>` can override
    this, and `<textoffsetx>` and `<textoffsety>` may also allow the label to be moved outside this rectangle.
@@ -115,7 +115,7 @@ public:
   bool SetMaxRect(float x, float y, float w, float h);
 
   bool SetAlign(uint32_t align);
-  
+
   /*! \brief Set the text to be displayed in the label
    Updates the label control and recomputes final position and size
    \param text std::string to set as this labels text
@@ -150,7 +150,7 @@ public:
    \sa GetRenderRect, UpdateRenderRect
    */
   void SetRenderRect(const CRect &rect) { m_renderRect = rect; };
-  
+
   /*! \brief Set whether or not this label control should scroll
    \param scrolling true if this label should scroll.
    */
@@ -169,30 +169,30 @@ public:
   /*! \brief Set this label invalid.  Forces an update of the control
    */
   void SetInvalid();
-  
+
   /*! \brief Update this labels colors
    */
   bool UpdateColors();
-  
+
   /*! \brief Returns the precalculated final layout of the current text
    \return CRect containing the extents of the current text
    \sa SetRenderRect, UpdateRenderRect
    */
   const CRect &GetRenderRect() const { return m_renderRect; };
-  
+
   /*! \brief Returns the precalculated full width of the current text, regardless of layout
    \return full width of the current text
    \sa CalcTextWidth
    */
   float GetTextWidth() const { return m_textLayout.GetTextWidth(); };
-  
+
   /*! \brief Returns the maximal width that this label can render into
    \return Maximal width that this label can render into. Note that this may differ from the
            amount given in SetMaxRect as offsets and text width overrides have been taken into account.
    \sa SetMaxRect
    */
   float GetMaxWidth() const;
-  
+
   /*! \brief Calculates the width of some text
    \param text std::wstring of text whose width we want
    \return width of the given text
@@ -204,7 +204,7 @@ public:
   CLabelInfo &GetLabelInfo() { return m_label; };
 
   /*! \brief Check a left aligned and right aligned label for overlap and cut the labels off so that no overlap occurs
-   
+
    If a left-aligned label occupies some of the same space on screen as a right-aligned label, then we may be able to
    correct for this by restricting the width of one or both of them. This routine checks two labels to see whether they
    satisfy this assumption and, if so, adjusts the render rect of both labels so that they no longer do so.  The order
@@ -214,20 +214,20 @@ public:
    actual space occupied by the right label.  Similarly, [L   L]...L] refers to the maximal and actual space occupied
    by the left label.  | refers to the central cutting point, i.e. the point that would divide the maximal allowed
    overlap perfectly in two.  There are 3 scenarios to consider:
-   
+
    cut
    [L       [R...[R  L].|..........L]         R]     left label ends to the left of the cut -> just crop the left label.
    [L       [R.....[R   |      L]..L]         R]     both left and right labels occupy more than the cut allows, so crop both.
    [L       [R..........|.[R   L]..L]         R]     right label ends to the right of the cut -> just crop the right label.
-   
+
    \param label1 First label to check
    \param label2 Second label to check
    */
   static bool CheckAndCorrectOverlap(CGUILabel &label1, CGUILabel &label2);
-  
+
 protected:
   UTILS::Color GetColor() const;
-  
+
   /*! \brief Computes the final layout of the text
    Uses the maximal position and width of the text, as well as the text length
    and alignment to compute the final render rect of the text.

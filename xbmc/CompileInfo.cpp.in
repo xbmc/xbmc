@@ -43,7 +43,7 @@ const char* CCompileInfo::GetPackage()
 const char* CCompileInfo::GetClass()
 {
   static std::string s_classname;
-  
+
   if (s_classname.empty())
   {
     s_classname = CCompileInfo::GetPackage();

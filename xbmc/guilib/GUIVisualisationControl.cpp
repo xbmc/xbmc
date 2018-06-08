@@ -222,7 +222,7 @@ void CGUIVisualisationControl::Render()
     CServiceBroker::GetWinSystem()->GetGfxContext().ApplyStateBlock();
     CServiceBroker::GetWinSystem()->GetGfxContext().RestoreViewPort();
   }
-  
+
   CGUIControl::Render();
 }
 
@@ -243,7 +243,7 @@ bool CGUIVisualisationControl::CanFocusFromPoint(const CPoint &point) const
 void CGUIVisualisationControl::FreeResources(bool immediately)
 {
   DeInitVisualization();
-  
+
   CGUIControl::FreeResources(immediately);
 
   CLog::Log(LOGDEBUG, "FreeVisualisation() done");
@@ -418,7 +418,7 @@ void CGUIVisualisationControl::DeInitVisualization()
   IAE * ae = CServiceBroker::GetActiveAE();
   if (ae)
     ae->UnregisterAudioCallback(this);
-  
+
   m_attemptedLoad = false;
 
   CGUIMessage msg(GUI_MSG_VISUALISATION_UNLOADING, m_controlID, 0);

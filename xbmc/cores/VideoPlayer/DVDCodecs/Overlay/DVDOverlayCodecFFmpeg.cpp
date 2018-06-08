@@ -82,7 +82,7 @@ bool CDVDOverlayCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &optio
     memcpy(parse_extra, hints.extradata, parse_extrasize);
     parse_extra[parse_extrasize] = '\0';
 
-    // assume that the extra data is formatted as a concatenation of lines ('\n' terminated) 
+    // assume that the extra data is formatted as a concatenation of lines ('\n' terminated)
     char *ptr = parse_extra;
     do // read line by line
     {
@@ -97,18 +97,18 @@ bool CDVDOverlayCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &optio
           CLog::Log(LOGDEBUG,"%s - parsed extradata: size: %d x %d", __FUNCTION__,  width, height);
         }
       }
-      /*        
+      /*
       // leaving commented code: these items don't work yet... but they may be meaningful
       if (!strncmp(ptr, "palette:", 8))
         if (sscanf(ptr, "palette: %x, %x, %x, %x, %x, %x, %x, %x,"
-                                " %x, %x, %x, %x, %x, %x, %x, %x", ...        
+                                " %x, %x, %x, %x, %x, %x, %x, %x", ...
       if (!strncasecmp(ptr, "forced subs: on", 15))
         forced_subs_only = 1;
       */
       // if tried all possibilities, then read newline char and move to next line
       ptr = strchr(ptr, '\n');
       if (ptr != NULL) ptr++;
-    } 
+    }
     while (ptr != NULL && ptr <= parse_extra + parse_extrasize);
 
     delete[] parse_extra;
@@ -162,7 +162,7 @@ int CDVDOverlayCodecFFmpeg::Decode(DemuxPacket *pPacket)
     return OC_BUFFER;
 
   double pts_offset = 0.0;
- 
+
   if (m_pCodecContext->codec_id == AV_CODEC_ID_HDMV_PGS_SUBTITLE && m_Subtitle.format == 0)
   {
     // for pgs subtitles the packet pts of the end_segments are wrong

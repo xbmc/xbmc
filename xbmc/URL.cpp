@@ -689,7 +689,7 @@ std::string CURL::Decode(const std::string& strURLData)
     }
     else strResult += kar;
   }
-  
+
   return strResult;
 }
 
@@ -703,7 +703,7 @@ std::string CURL::Encode(const std::string& strURLData)
   for (size_t i = 0; i < strURLData.size(); ++i)
   {
     const char kar = strURLData[i];
-    
+
     // Don't URL encode "-_.!()" according to RFC1738
     //! @todo Update it to "-_.~" after Gotham according to RFC3986
     if (StringUtils::isasciialphanum(kar) || kar == '-' || kar == '.' || kar == '_' || kar == '!' || kar == '(' || kar == ')')
@@ -788,7 +788,7 @@ bool CURL::GetProtocolOption(const std::string &key, std::string &value) const
   CVariant valueObj;
   if (!m_protocolOptions.GetOption(key, valueObj))
     return false;
-  
+
   value = valueObj.asString();
   return true;
 }
@@ -798,7 +798,7 @@ std::string CURL::GetProtocolOption(const std::string &key) const
   std::string value;
   if (!GetProtocolOption(key, value))
     return "";
-  
+
   return value;
 }
 

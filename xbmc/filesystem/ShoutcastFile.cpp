@@ -152,7 +152,7 @@ bool CShoutcastFile::ExtractTagInfo(const char* buf)
   }
   else
     g_charsetConverter.unknownToUTF8(strBuffer);
-  
+
   bool result=false;
 
   std::wstring wBuffer, wConverted;

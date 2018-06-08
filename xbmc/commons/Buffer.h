@@ -35,33 +35,33 @@ namespace XbmcCommons
   };
 
   /**
-   * This class is based on the java java.nio.Buffer class however, it 
-   *  does not implement the 'mark' functionality. 
+   * This class is based on the java java.nio.Buffer class however, it
+   *  does not implement the 'mark' functionality.
    *
-   * [ the following is borrowed from the javadocs for java.nio.Buffer 
+   * [ the following is borrowed from the javadocs for java.nio.Buffer
    * where it applies to this class]:
    *
    * A buffer is a linear, finite sequence of elements of a unspecified types.
-   * Aside from its content, the essential properties of a buffer are its capacity, 
+   * Aside from its content, the essential properties of a buffer are its capacity,
    *   limit, and position:
-   *    A buffer's capacity is the number of elements it contains. The capacity 
+   *    A buffer's capacity is the number of elements it contains. The capacity
    *      of a buffer is never negative and never changes.
    *
-   *    A buffer's limit is the index of the first element that should not be 
-   *      read or written. A buffer's limit is never negative and is never greater 
+   *    A buffer's limit is the index of the first element that should not be
+   *      read or written. A buffer's limit is never negative and is never greater
    *      than its capacity.
    *
-   *     A buffer's position is the index of the next element to be read or written. 
+   *     A buffer's position is the index of the next element to be read or written.
    *       A buffer's position is never negative and is never greater than its limit.
    *
    * Invariants:
    *
    * The following invariant holds for the mark, position, limit, and capacity values:
    *
-   *     0 <= mark <= position <= limit <= capacity 
+   *     0 <= mark <= position <= limit <= capacity
    *
-   * A newly-created buffer always has a position of zero and a limit set to the 
-   * capacity. The initial content of a buffer is, in general, undefined. 
+   * A newly-created buffer always has a position of zero and a limit set to the
+   * capacity. The initial content of a buffer is, in general, undefined.
    *
    * Example:
    *  Buffer buffer(1024);
@@ -75,14 +75,14 @@ namespace XbmcCommons
    *  the above is correct, it would be wrong to chain the output as follows:
    *
    *  std::cout << "buffer contents:" << buffer.getInt() << ", " << std::cout
-   *      << buffer.getCharPointerDirect() << ", " << buffer.getLongLong() 
+   *      << buffer.getCharPointerDirect() << ", " << buffer.getLongLong()
    *      << std::endl;
    *
    * This would result in the get's executing from right to left and therefore would
    *  produce totally erroneous results. This is also a problem when the values are
    *  passed to a method as in:
    *
-   * printf("buffer contents: %d, \"%s\", %ll\n", buffer.getInt(), 
+   * printf("buffer contents: %d, \"%s\", %ll\n", buffer.getInt(),
    *         buffer.getCharPointerDirect(), buffer.getLongLong());
    *
    * This would also produce erroneous results as they get's will be evaluated
@@ -97,8 +97,8 @@ namespace XbmcCommons
     size_t mlimit;
 
     inline void check(size_t count) const
-    { 
-      if ((mposition + count) > mlimit) 
+    {
+      if ((mposition + count) > mlimit)
         throw BufferException("Buffer buffer overflow: Cannot add more data to the Buffer's buffer.");
     }
 
@@ -120,20 +120,20 @@ namespace XbmcCommons
      *
      * Buffer b = Buffer(buf,bufSize).forward(bufSize).flip();
      */
-    inline Buffer(void* buffer_, size_t bufferSize) : buffer((unsigned char*)buffer_), mcapacity(bufferSize) 
+    inline Buffer(void* buffer_, size_t bufferSize) : buffer((unsigned char*)buffer_), mcapacity(bufferSize)
     {
       clear();
     }
 
     /**
      * Construct a buffer buffer using the size buffer provided. The
-     * buffer will be internally managed and potentially shared with 
+     * buffer will be internally managed and potentially shared with
      * other Buffer instances. It will be freed upon destruction of
      * the last Buffer that references it.
      */
     inline explicit Buffer(size_t bufferSize) : buffer(bufferSize ? new unsigned char[bufferSize] : NULL), mcapacity(bufferSize)
-    { 
-      clear(); 
+    {
+      clear();
       bufferRef.reset(buffer, std::default_delete<unsigned char[]>());
     }
 
@@ -144,7 +144,7 @@ namespace XbmcCommons
      * in the source buffer and vice/vrs. However, each buffer maintains
      * its own indexing.
      */
-    inline Buffer(const Buffer& buf) : bufferRef(buf.bufferRef), buffer(buf.buffer), 
+    inline Buffer(const Buffer& buf) : bufferRef(buf.bufferRef), buffer(buf.buffer),
       mposition(buf.mposition), mcapacity(buf.mcapacity), mlimit(buf.mlimit) { }
 
     inline ~Buffer() { }
@@ -175,11 +175,11 @@ namespace XbmcCommons
     }
 
     /**
-     * Flips this buffer. The limit is set to the current position 
-     *   and then the position is set to zero. 
+     * Flips this buffer. The limit is set to the current position
+     *   and then the position is set to zero.
      *
-     * After a sequence of channel-read or put operations, invoke this 
-     *   method to prepare for a sequence of channel-write or relative 
+     * After a sequence of channel-read or put operations, invoke this
+     *   method to prepare for a sequence of channel-write or relative
      *   get operations. For example:
      *
      * buf.put(magic);    // Prepend header
@@ -193,18 +193,18 @@ namespace XbmcCommons
     inline Buffer& flip() { mlimit = mposition; mposition = 0; return *this; }
 
     /**
-     *Clears this buffer. The position is set to zero, the limit 
+     *Clears this buffer. The position is set to zero, the limit
      *  is set to the capacity.
      *
-     * Invoke this method before using a sequence of channel-read 
+     * Invoke this method before using a sequence of channel-read
      *  or put operations to fill this buffer. For example:
      *
      *     buf.clear();     // Prepare buffer for reading
      *     in.read(buf);    // Read data
      *
-     * This method does not actually erase the data in the buffer, 
-     *  but it is named as if it did because it will most often be used 
-     *  in situations in which that might as well be the case. 
+     * This method does not actually erase the data in the buffer,
+     *  but it is named as if it did because it will most often be used
+     *  in situations in which that might as well be the case.
      */
     inline Buffer& clear() { mlimit = mcapacity; mposition = 0; return *this; }
 
@@ -255,8 +255,8 @@ namespace XbmcCommons
 
     inline std::string getString() { std::string ret((const char*)(buffer + mposition)); size_t len = ret.length() + 1; check(len); mposition += len; return ret; }
     inline std::string getString(size_t length)
-    { 
-      check(length); 
+    {
+      check(length);
       std::string ret((const char*)(buffer + mposition),length);
       mposition += length;
       return ret;

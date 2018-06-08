@@ -91,7 +91,7 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
 
       return true;
     }
-    
+
     case GUI_MSG_FOCUSED:
     {
       if (!m_returningFromSkinLoad)
@@ -132,7 +132,7 @@ bool CGUIWindowSettingsCategory::OnAction(const CAction &action)
       //Test if we can access the new level
       if (!g_passwordManager.CheckSettingLevelLock(CViewStateSettings::GetInstance().GetNextSettingLevel(), true))
         return false;
-      
+
       CViewStateSettings::GetInstance().CycleSettingLevel();
       CServiceBroker::GetSettings().Save();
 

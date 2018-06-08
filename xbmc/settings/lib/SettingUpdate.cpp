@@ -32,7 +32,7 @@ bool CSettingUpdate::Deserialize(const TiXmlNode *node)
   auto elem = node->ToElement();
   if (elem == nullptr)
     return false;
-  
+
   auto strType = elem->Attribute(SETTING_XML_ATTR_TYPE);
   if (strType == nullptr || strlen(strType) <= 0 || !setType(strType))
   {

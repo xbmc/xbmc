@@ -1364,7 +1364,7 @@ TEST(TestDatabaseUtils, BuildLimitClause)
 // class DatabaseUtils
 // {
 // public:
-// 
-// 
+//
+//
 //   static std::string BuildLimitClause(int end, int start = 0);
 // };

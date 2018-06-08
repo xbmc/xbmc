@@ -58,7 +58,7 @@ public:
    This takes a list of FileItems and turns it into a tree of Albums,
    Artists, and Songs.
    Albums are defined uniquely by the album name and album artist.
-   
+
    \param songs [in/out] list of songs to categorise - albumartist field may be altered.
    \param albums [out] albums found within these songs.
    */
@@ -117,7 +117,7 @@ protected:
    \param pDialog [in] a progress dialog which this and downstream functions can update with status, if required
    */
   INFO_RET UpdateDatabaseAlbumInfo(CAlbum& album, const ADDON::ScraperPtr& scraper, bool bAllowSelection, CGUIDialogProgress* pDialog = NULL);
- 
+
   /*! \brief Scrape additional artist information and update the database.
    Search for the given artist using the given scraper.
    If info is found, update the database and artwork with the new
@@ -163,7 +163,7 @@ protected:
   */
   std::vector<std::string> GetArtTypesToScan(const MediaType& mediaType);
 
-  /*! \brief Get the types of art for an artist or album that can be 
+  /*! \brief Get the types of art for an artist or album that can be
    automatically found during scanning, and are not in the provided set of art
    \param mediaType [in] artist or album
    \param art [in] set of art type and file location (URL or path) pairs
@@ -235,9 +235,9 @@ protected:
   int CountFilesRecursively(const std::string& strPath);
 
   /*! \brief Resolve a MusicBrainzID to a URL
-   If we have a MusicBrainz ID for an artist or album, 
+   If we have a MusicBrainz ID for an artist or album,
    resolve it to an MB URL and set up the scrapers accordingly.
-   
+
    \param preferredScraper [in] A ScraperPtr to the preferred album/artist scraper.
    \param musicBrainzURL [out] will be populated with the MB URL for the artist/album.
    */
@@ -253,7 +253,7 @@ protected:
   CMusicDatabase m_musicDatabase;
 
   std::set<int> m_albumsAdded;
- 
+
   std::set<std::string> m_seenPaths;
   int m_flags;
   CThread m_fileCountReader;

@@ -58,7 +58,7 @@ namespace PVR
 
     // specialization of CGUIDialogSettingsManualBase
     void InitializeSettings() override;
-    
+
   private:
     void InitializeTypesList();
     void InitializeChannelsList();

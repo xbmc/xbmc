@@ -37,7 +37,7 @@ public:
   void AllocResources() override;
   void FreeResources(bool immediately = false) override;
   void DynamicResourceAlloc(bool bOnOff) override;
-  
+
   CRect CalcRenderRegion() const override;
 
 protected:

@@ -47,7 +47,7 @@
         }
         catch (const XBMCAddon::WrongTypeException&)
         {
-          throw XBMCAddon::WrongTypeException("Failed to convert to input type to either a " 
+          throw XBMCAddon::WrongTypeException("Failed to convert to input type to either a "
                                               "${swigTypeParser.SwigType_ltype(types[0])} or a "
                                               "${swigTypeParser.SwigType_ltype(types[1])}" );
         }

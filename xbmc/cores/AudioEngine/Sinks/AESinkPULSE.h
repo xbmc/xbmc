@@ -69,7 +69,7 @@ private:
   unsigned int m_BufferSize;
   unsigned int m_Channels;
 
-  pa_stream *m_Stream; 
+  pa_stream *m_Stream;
   pa_cvolume m_Volume;
   bool m_volume_needs_update;
   uint32_t m_periodSize;

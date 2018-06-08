@@ -224,7 +224,7 @@ bool CDirectory::GetDirectory(const CURL& url, std::shared_ptr<IDirectory> pDire
       if (CPasswordManager::GetInstance().IsURLSupported(realURL))
       {
         bool hide = false;
-        // for explicitly credentials 
+        // for explicitly credentials
         if (!realURL.GetUserName().empty())
         {
           // credentials was changed i.e. were stored in the password

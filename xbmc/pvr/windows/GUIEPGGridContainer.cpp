@@ -330,7 +330,7 @@ void CGUIEPGGridContainer::ProcessProgressIndicator(unsigned int currentTime, CD
   {
     m_guiProgressIndicatorTexture.SetVisible(false);
   }
-  
+
   m_guiProgressIndicatorTexture.Process(currentTime);
 }
 

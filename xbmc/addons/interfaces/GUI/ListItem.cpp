@@ -93,7 +93,7 @@ void Interface_GUIListItem::destroy(void* kodiBase, void* handle)
     CLog::Log(LOGERROR, "ADDON::Interface_GUIListItem::%s - invalid data", __FUNCTION__);
     return;
   }
-  
+
   CFileItemPtr* item = static_cast<CFileItemPtr*>(handle);
   if (item)
     delete item;

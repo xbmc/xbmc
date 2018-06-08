@@ -103,7 +103,7 @@ public:
       }
       m_target = items.GetProperty("node.target").asString();
     }
-    return true;    
+    return true;
   }
 
   std::shared_ptr<CThumbLoader> getThumbLoader(CGUIStaticItemPtr &item)

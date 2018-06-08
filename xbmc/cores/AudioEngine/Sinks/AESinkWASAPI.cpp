@@ -451,7 +451,7 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
                    "Exclusive mode is not allowed on device \"%s\", check device settings.",
                    details.strDescription);
         SafeRelease(&pDevice);
-        continue; 
+        continue;
       }
       if (SUCCEEDED(hr) || details.eDeviceType == AE_DEVTYPE_HDMI)
       {

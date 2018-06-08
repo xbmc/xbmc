@@ -1699,7 +1699,7 @@ std::string CFileItem::GetOpticalMediaPath() const
   path = URIUtils::AddFileToFolder(GetPath(), "VIDEO_TS.IFO");
   if (CFile::Exists(path))
     return path;
-  
+
   path = URIUtils::AddFileToFolder(GetPath(), "VIDEO_TS", "VIDEO_TS.IFO");
   if (CFile::Exists(path))
     return path;
@@ -1800,7 +1800,7 @@ void CFileItem::LoadEmbeddedCue()
       SetCueDocument(cuesheet);
     }
     // Clear cuesheet tag having added it to item
-    tag.SetCueSheet(""); 
+    tag.SetCueSheet("");
   }
 }
 

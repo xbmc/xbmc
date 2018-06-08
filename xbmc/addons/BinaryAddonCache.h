@@ -43,7 +43,7 @@ public:
 protected:
   void Update();
   void OnEvent(const AddonEvent& event);
-  
+
   CCriticalSection m_critSection;
   std::multimap<TYPE, VECADDONS> m_addons;
 };

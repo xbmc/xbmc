@@ -415,7 +415,7 @@ const CTextureArray& CGUITextureManager::Load(const std::string& strTextureName,
       if (pMap->GetMemoryUsage() <= maxMemoryUsage)
       {
         frame = anim.ReadFrame();
-      } 
+      }
       else
       {
         CLog::Log(LOGDEBUG, "Memory limit (%" PRIu64 " bytes) exceeded, %i frames extracted from file : %s", (maxMemoryUsage/11)*12,pMap->GetTexture().size(), CURL::GetRedacted(strPath).c_str());

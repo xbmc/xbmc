@@ -135,7 +135,7 @@ float CVideoSyncD3D::GetFps()
 
   if (m_fps == 0.0)
     m_fps = 60.0f;
-  
+
   if (m_fps == 23 || m_fps == 29 || m_fps == 59)
     m_fps++;
 

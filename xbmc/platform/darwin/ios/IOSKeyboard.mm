@@ -58,7 +58,7 @@ bool CIOSKeyboard::ShowAndGetInput(char_callback_t pCallback, const std::string 
     // basically as long as g_pIosKeyboard exists...
     [g_xbmcController nativeKeyboardActive:true];
   }
-  
+
   m_pCharCallback = pCallback;
 
   // init keyboard stuff

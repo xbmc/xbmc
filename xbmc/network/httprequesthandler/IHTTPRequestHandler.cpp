@@ -116,7 +116,7 @@ bool IHTTPRequestHandler::AddPostData(const char *data, size_t size)
 {
   if (size > 0)
     return appendPostData(data, size);
-  
+
   return true;
 }
 

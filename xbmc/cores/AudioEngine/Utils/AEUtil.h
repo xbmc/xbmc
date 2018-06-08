@@ -179,10 +179,10 @@ public:
    */
   static inline float GainToScale(const float dB)
   {
-    float val = 0.0f; 
+    float val = 0.0f;
     // we need to make sure that our lowest db returns plain zero
-    if (dB > -60.0f) 
-      val = pow(10.0f, dB/20); 
+    if (dB > -60.0f)
+      val = pow(10.0f, dB/20);
 
     // in order to not introduce computing overhead for nearly zero
     // values of dB e.g. -0.01 or -0.001 we clamp to top

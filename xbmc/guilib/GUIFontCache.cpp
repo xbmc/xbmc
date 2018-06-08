@@ -85,7 +85,7 @@ class CGUIFontCacheImpl
 
   EntryList m_list;
   CGUIFontCache<Position, Value> *m_parent;
-  
+
 public:
 
   explicit CGUIFontCacheImpl(CGUIFontCache<Position, Value>* parent) : m_parent(parent) {}

@@ -39,7 +39,7 @@ public:
   /*!
    * \brief Should return the message mask that it wishes to receive
    *        messages for
-   *        
+   *
    * The message mask is defined in "messaging/ApplicationMessenger.h"
    * pick the next one available when creating a new
    */
@@ -48,10 +48,10 @@ public:
   /*!
    * \brief This gets called whenever a message matching the registered
    *        message mask is processed.
-   *        
+   *
    * There are no ordering guarantees here so implementations should never
    * rely on a certain ordering of messages.
-   * 
+   *
    * Cleaning up any pointers stored in the message payload is not specified
    * and is decided by the implementer of the message.
    * In general prefer to delete any data in this method to keep the callsites cleaner

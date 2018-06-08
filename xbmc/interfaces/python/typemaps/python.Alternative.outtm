@@ -29,7 +29,7 @@
 
     if (<%if (ispointer) { %>${api} != NULL && <%}%>pos != XBMCAddon::none)
     { <%
-      types.eachWithIndex { curType, entryIndex -> 
+      types.eachWithIndex { curType, entryIndex ->
 %>
       if (pos == XBMCAddon::${altSwitch[entryIndex]})
       {

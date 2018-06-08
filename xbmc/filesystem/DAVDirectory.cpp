@@ -92,7 +92,7 @@ void CDAVDirectory::ParseResponse(const TiXmlElement *pElement, CFileItem &item)
                 strptime(pPropChild->FirstChild()->Value(), "%Y-%m-%dT%T", &timeDate);
                 item.m_dateTime = mktime(&timeDate);
               }
-              else 
+              else
               if (CDAVCommon::ValueWithoutNamespace(pPropChild, "resourcetype"))
               {
                 if (CDAVCommon::ValueWithoutNamespace(pPropChild->FirstChild(), "collection"))
@@ -195,7 +195,7 @@ bool CDAVDirectory::Create(const CURL& url)
   std::string strRequest = "MKCOL";
 
   dav.SetCustomRequest(strRequest);
- 
+
   if (!dav.Execute(url))
   {
     CLog::Log(LOGERROR, "%s - Unable to create dav directory (%s) - %d", __FUNCTION__, url.GetRedacted().c_str(), dav.GetLastResponseCode());
@@ -226,7 +226,7 @@ bool CDAVDirectory::Remove(const CURL& url)
   std::string strRequest = "DELETE";
 
   dav.SetCustomRequest(strRequest);
- 
+
   if (!dav.Execute(url))
   {
     CLog::Log(LOGERROR, "%s - Unable to delete dav directory (%s) - %d", __FUNCTION__, url.GetRedacted().c_str(), dav.GetLastResponseCode());

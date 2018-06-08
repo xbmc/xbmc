@@ -66,7 +66,7 @@ private:
     CMaskString(const std::string &prefix, char content, const std::string &postfix) :
       m_prefix(prefix),
       m_postfix(postfix),
-      m_content(content)      
+      m_content(content)
     {};
     std::string m_prefix;
     std::string m_postfix;

@@ -32,7 +32,7 @@ namespace XBMCAddon
   {
     //! @todo need a means to check for a valid construction
     //!  either by throwing an exception or by an "isValid" check
-    PlayList::PlayList(int playList) : 
+    PlayList::PlayList(int playList) :
       iPlayList(playList), pPlayList(NULL)
     {
       // we do not create our own playlist, just using the ones from playlistplayer

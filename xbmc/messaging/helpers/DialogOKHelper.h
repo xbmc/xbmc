@@ -43,7 +43,7 @@ struct DialogOKMessage
   CVariant heading; //!< Heading to be displayed in the dialog box
   CVariant text;  //!< Body text to be displayed, this is mutually exclusive with lines below
   std::array<CVariant, 3> lines;  //!< Body text to be displayed, specified as three lines. This is mutually exclusive with the text above
-  bool show = true; //!< bool to see if the dialog needs to be shown 
+  bool show = true; //!< bool to see if the dialog needs to be shown
 };
 
 /*!
@@ -70,7 +70,7 @@ bool ShowOKDialogText(CVariant heading, CVariant text);
 
 /*!
   \brief This is a helper method to send a threadmessage to open a OK dialog box
-  
+
   \param[in]  heading           The text to display as the dialog box header
   \param[in]  line0             The text to display on the first line
   \param[in]  line1             The text to display on the second line

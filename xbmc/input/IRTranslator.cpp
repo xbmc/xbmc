@@ -165,7 +165,7 @@ unsigned int CIRTranslator::TranslateButton(const std::string &szDevice, const s
 
 uint32_t CIRTranslator::TranslateString(std::string strButton)
 {
-  if (strButton.empty()) 
+  if (strButton.empty())
     return 0;
 
   uint32_t buttonCode = 0;
@@ -244,14 +244,14 @@ uint32_t CIRTranslator::TranslateString(std::string strButton)
 
 uint32_t CIRTranslator::TranslateUniversalRemoteString(const std::string &szButton)
 {
-  if (szButton.empty() || szButton.length() < 4 || strnicmp(szButton.c_str(), "obc", 3)) 
+  if (szButton.empty() || szButton.length() < 4 || strnicmp(szButton.c_str(), "obc", 3))
     return 0;
 
   const char *szCode = szButton.c_str() + 3;
 
   // Button Code is 255 - OBC (Original Button Code) of the button
   uint32_t buttonCode = 255 - atol(szCode);
-  if (buttonCode > 255) 
+  if (buttonCode > 255)
     buttonCode = 0;
 
   return buttonCode;

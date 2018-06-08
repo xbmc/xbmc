@@ -52,7 +52,7 @@ inline void* gpu_memcpy(void* d, const void* s, size_t size)
     __m128i* pTrg = (__m128i*)d;
     __m128i* pTrgEnd = pTrg + ((size - reminder) >> 4);
     __m128i* pSrc = (__m128i*)s;
-    
+
     // Make sure source is synced - doesn't hurt if not needed.
     _mm_sfence();
 

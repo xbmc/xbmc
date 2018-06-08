@@ -201,7 +201,7 @@ void CAdvancedSettings::Initialize()
   m_allExcludeFromScanRegExps.push_back("[\\/]\\.\\_");
   m_allExcludeFromScanRegExps.push_back("\\.DS_Store");
   m_allExcludeFromScanRegExps.push_back("\\.AppleDouble");
-  
+
   m_moviesExcludeFromScanRegExps.clear();
   m_moviesExcludeFromScanRegExps.push_back("-trailer");
   m_moviesExcludeFromScanRegExps.push_back("[!-._ \\\\/]sample[-._ \\\\/]");
@@ -210,14 +210,14 @@ void CAdvancedSettings::Initialize()
                                         m_allExcludeFromScanRegExps.begin(),
                                         m_allExcludeFromScanRegExps.end());
 
-  
+
   m_tvshowExcludeFromScanRegExps.clear();
   m_tvshowExcludeFromScanRegExps.push_back("[!-._ \\\\/]sample[-._ \\\\/]");
   m_tvshowExcludeFromScanRegExps.insert(m_tvshowExcludeFromScanRegExps.end(),
                                         m_allExcludeFromScanRegExps.begin(),
                                         m_allExcludeFromScanRegExps.end());
 
-  
+
   m_audioExcludeFromScanRegExps.clear();
   m_audioExcludeFromScanRegExps.insert(m_audioExcludeFromScanRegExps.end(),
                                         m_allExcludeFromScanRegExps.begin(),
@@ -878,7 +878,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
 
   //airtunes + airplay
   XMLUtils::GetInt(pRootElement,     "airtunesport", m_airTunesPort);
-  XMLUtils::GetInt(pRootElement,     "airplayport", m_airPlayPort);  
+  XMLUtils::GetInt(pRootElement,     "airplayport", m_airPlayPort);
 
   XMLUtils::GetBoolean(pRootElement, "handlemounting", m_handleMounting);
 
@@ -1199,7 +1199,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
   {
     XMLUtils::GetBoolean(pRootElement, "enablemultimediakeys", m_enableMultimediaKeys);
   }
-  
+
   pElement = pRootElement->FirstChildElement("gui");
   if (pElement)
   {

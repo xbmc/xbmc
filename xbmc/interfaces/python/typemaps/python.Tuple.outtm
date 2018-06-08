@@ -34,7 +34,7 @@
 <%  }  // this ends the if (ispointer)
 %>    {
       PyObject* pyentry${seq}; <%
-      types.eachWithIndex { curType, entryIndex -> 
+      types.eachWithIndex { curType, entryIndex ->
 %>
 
       if (vecSize > ${entryIndex})

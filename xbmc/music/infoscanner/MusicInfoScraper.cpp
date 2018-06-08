@@ -194,7 +194,7 @@ bool CMusicInfoScraper::CheckValidOrFallback(const std::string &fallbackScraper)
 {
   return true;
 //! @todo Handle fallback mechanism
-/* 
+/*
   if (m_scraper->Path() != fallbackScraper &&
       parser.Load("special://xbmc/system/scrapers/music/" + fallbackScraper))
   {

@@ -409,7 +409,7 @@ int64_t CVariant::asInteger(int64_t fallback) const
     default:
       return fallback;
   }
-  
+
   return fallback;
 }
 
@@ -435,7 +435,7 @@ uint64_t CVariant::asUnsignedInteger(uint64_t fallback) const
     default:
       return fallback;
   }
-  
+
   return fallback;
 }
 
@@ -461,7 +461,7 @@ double CVariant::asDouble(double fallback) const
     default:
       return fallback;
   }
-  
+
   return fallback;
 }
 
@@ -482,7 +482,7 @@ float CVariant::asFloat(float fallback) const
     default:
       return fallback;
   }
-  
+
   return fallback;
 }
 
@@ -509,7 +509,7 @@ bool CVariant::asBoolean(bool fallback) const
     default:
       return fallback;
   }
-  
+
   return fallback;
 }
 
@@ -530,7 +530,7 @@ std::string CVariant::asString(const std::string &fallback /* = "" */) const
     default:
       return fallback;
   }
-  
+
   return fallback;
 }
 
@@ -551,7 +551,7 @@ std::wstring CVariant::asWideString(const std::wstring &fallback /* = L"" */) co
     default:
       return fallback;
   }
-  
+
   return fallback;
 }
 

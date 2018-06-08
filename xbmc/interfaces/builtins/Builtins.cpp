@@ -170,7 +170,7 @@ int CBuiltins::Execute(const std::string& execString)
                           execute.c_str(), it->second.parameters, params.size());
       return -1;
     }
-  } 
+  }
   else
     return CServiceBroker::GetInputManager().ExecuteBuiltin(execute, params);
 }

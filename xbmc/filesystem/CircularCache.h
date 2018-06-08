@@ -44,7 +44,7 @@ public:
     bool Reset(int64_t pos, bool clearAnyway=true) override;
 
     int64_t CachedDataEndPosIfSeekTo(int64_t iFilePosition) override;
-    int64_t CachedDataEndPos() override; 
+    int64_t CachedDataEndPos() override;
     bool IsCachedPosition(int64_t iFilePosition) override;
 
     CCacheStrategy *CreateNew() override;

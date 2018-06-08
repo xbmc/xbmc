@@ -111,7 +111,7 @@ bool CPosixDirectory::Create(const CURL& url)
 {
   if (!Create(url.Get()))
     return Exists(url);
-  
+
   return true;
 }
 

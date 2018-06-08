@@ -725,7 +725,7 @@ OMX_IMAGE_CODINGTYPE COMXImageFile::GetCodingType(unsigned int &width, unsigned 
           bool bError = false;
           SKIPN(p, 1 * 2);
           readBits += 2;
-        
+
           char o1 = READ8(p);
           char o2 = READ8(p);
           readBits += 2;
@@ -737,14 +737,14 @@ OMX_IMAGE_CODINGTYPE COMXImageFile::GetCodingType(unsigned int &width, unsigned 
             bMotorola = false;
           else
             bError = true;
-        
+
           SKIPN(p, 1 * 2);
           readBits += 2;
 
           if(!bError)
           {
             unsigned int offset, a, b, numberOfTags, tagNumber;
-  
+
             // Get first IFD offset (offset to IFD0)
             if(bMotorola)
             {
@@ -772,7 +772,7 @@ OMX_IMAGE_CODINGTYPE COMXImageFile::GetCodingType(unsigned int &width, unsigned 
             {
               SKIPN(p, 1 * offset);
               readBits += offset;
-            } 
+            }
 
             // Get the number of directory entries contained in this IFD
             if(bMotorola)
@@ -903,7 +903,7 @@ bool COMXImageFile::ReadFile(const std::string& inputFile, int orientation)
     CLog::Log(LOGERROR, "%s::%s %s m_image_buffer null (%lu)\n", CLASSNAME, __func__, m_filename, m_image_size);
     return false;
   }
-  
+
   m_pFile.Read(m_image_buffer, m_image_size);
   m_pFile.Close();
 
@@ -1263,7 +1263,7 @@ bool COMXImageEnc::Encode(unsigned char *buffer, int size, unsigned width, unsig
   if (pitch == 0)
      pitch = 4 * width;
 
-  if (!buffer || !size) 
+  if (!buffer || !size)
   {
     CLog::Log(LOGERROR, "%s::%s error no buffer\n", CLASSNAME, __func__);
     return false;

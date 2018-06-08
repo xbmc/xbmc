@@ -27,7 +27,7 @@ class CDACP
 {
   public:
     CDACP(const std::string &active_remote_header, const std::string &hostname, int port);
-  
+
     void BeginFwd();
     void BeginRewnd();
     void ToggleMute();

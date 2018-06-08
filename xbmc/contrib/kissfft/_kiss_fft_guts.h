@@ -20,7 +20,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 #include <limits.h>
 
 #define MAXFACTORS 32
-/* e.g. an fft of length 128 has 4 factors 
+/* e.g. an fft of length 128 has 4 factors
  as far as kissfft is concerned
  4*4*4*2
  */
@@ -48,7 +48,7 @@ struct kiss_fft_state{
 #define SAMP_MAX 2147483647
 #else
 # define FRACBITS 15
-# define SAMPPROD int32_t 
+# define SAMPPROD int32_t
 #define SAMP_MAX 32767
 #endif
 
@@ -152,12 +152,12 @@ struct kiss_fft_state{
 
 #ifdef KISS_FFT_USE_ALLOCA
 // define this to allow use of alloca instead of malloc for temporary buffers
-// Temporary buffers are used in two case: 
+// Temporary buffers are used in two case:
 // 1. FFT sizes that have "bad" factors. i.e. not 2,3 and 5
 // 2. "in-place" FFTs.  Notice the quotes, since kissfft does not really do an in-place transform.
 #include <alloca.h>
 #define  KISS_FFT_TMP_ALLOC(nbytes) alloca(nbytes)
-#define  KISS_FFT_TMP_FREE(ptr) 
+#define  KISS_FFT_TMP_FREE(ptr)
 #else
 #define  KISS_FFT_TMP_ALLOC(nbytes) KISS_FFT_MALLOC(nbytes)
 #define  KISS_FFT_TMP_FREE(ptr) KISS_FFT_FREE(ptr)

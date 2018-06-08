@@ -17,7 +17,7 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
- 
+
 #if defined (TARGET_ANDROID)
 
 #include "AndroidPowerSyscall.h"
@@ -45,7 +45,7 @@ int CAndroidPowerSyscall::BatteryLevel(void)
 }
 
 bool CAndroidPowerSyscall::PumpPowerEvents(IPowerEventsCallback *callback)
-{    
+{
   return true;
 }
 

@@ -68,7 +68,7 @@ bool CMusicThumbLoader::LoadItemCached(CFileItem* pItem)
   if (pItem->m_bIsShareOrDrive)
     return false;
 
-  if (pItem->HasMusicInfoTag() && (pItem->GetArt().empty() || 
+  if (pItem->HasMusicInfoTag() && (pItem->GetArt().empty() ||
     (pItem->GetArt().size() == 1 && pItem->HasArt("thumb"))))
   {
     if (FillLibraryArt(*pItem))
@@ -262,7 +262,7 @@ bool CMusicThumbLoader::FillLibraryArt(CFileItem &item)
       }
       art.insert(art.end(), artistart.begin(), artistart.end());
     }
-    artfound = !art.empty();    
+    artfound = !art.empty();
     m_musicDatabase->Close();
   }
 
@@ -294,7 +294,7 @@ bool CMusicThumbLoader::FillLibraryArt(CFileItem &item)
 
       // Add fallback art for "thumb" and "fanart" art types only
       // Set album thumb as the fallback used when song thumb is missing
-      // or use extra album thumb when part of disc set 
+      // or use extra album thumb when part of disc set
       if (tag.GetType() == MediaTypeSong && artitem.mediaType == MediaTypeAlbum)
       {
         if (artitem.artType == "thumb" && !bDiscSetThumbSet)
@@ -311,7 +311,7 @@ bool CMusicThumbLoader::FillLibraryArt(CFileItem &item)
       }
 
       // For albums and songs set fallback fanart from the artist.
-      // For songs prefer primary song artist over primary albumartist fanart as fallback fanart 
+      // For songs prefer primary song artist over primary albumartist fanart as fallback fanart
       if (artitem.prefix == "artist" && artitem.artType == "fanart")
         fanartfallback = artname;
       if (artitem.prefix == "albumartist" && artitem.artType == "fanart" && fanartfallback.empty())

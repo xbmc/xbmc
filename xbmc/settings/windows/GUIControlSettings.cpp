@@ -277,7 +277,7 @@ CGUIControlSpinExSetting::CGUIControlSpinExSetting(CGUISpinControlEx *pSpin, int
     return;
 
   m_pSpin->SetID(id);
-  
+
   FillControl();
 }
 
@@ -305,15 +305,15 @@ bool CGUIControlSpinExSetting::OnClick()
 
       break;
     }
-    
+
     case SettingType::String:
       SetValid(std::static_pointer_cast<CSettingString>(m_pSetting)->SetValue(m_pSpin->GetStringValue()));
       break;
-    
+
     default:
       return false;
   }
-  
+
   return IsValid();
 }
 
@@ -445,7 +445,7 @@ bool CGUIControlListSetting::OnClick()
       options.Size() <= 0 ||
      (!control->CanMultiSelect() && options.Size() <= 1))
     return false;
-  
+
   dialog->Reset();
   dialog->SetHeading(CVariant{Localize(m_pSetting->GetLabel())});
   dialog->SetItems(options);
@@ -483,7 +483,7 @@ bool CGUIControlListSetting::OnClick()
     case SettingType::List:
       ret = CSettingUtils::SetList(std::static_pointer_cast<CSettingList>(m_pSetting), values);
       break;
-    
+
     default:
       return false;
   }
@@ -502,7 +502,7 @@ void CGUIControlListSetting::Update(bool updateDisplayOnly /* = false */)
     return;
 
   CGUIControlBaseSetting::Update();
-  
+
   CFileItemList options;
   std::shared_ptr<const CSettingControlList> control = std::static_pointer_cast<const CSettingControlList>(m_pSetting->GetControl());
   bool optionsValid = GetItems(m_pSetting, options);
@@ -607,7 +607,7 @@ bool CGUIControlButtonSetting::OnClick()
 {
   if (m_pButton == NULL)
     return false;
-  
+
   std::shared_ptr<const ISettingControl> control = m_pSetting->GetControl();
   const std::string &controlType = control->GetType();
   const std::string &controlFormat = control->GetFormat();
@@ -718,7 +718,7 @@ void CGUIControlButtonSetting::Update(bool updateDisplayOnly /* = false */)
     return;
 
   CGUIControlBaseSetting::Update();
-  
+
   std::string strText;
   std::shared_ptr<const ISettingControl> control = m_pSetting->GetControl();
   const std::string &controlType = control->GetType();
@@ -761,7 +761,7 @@ void CGUIControlButtonSetting::Update(bool updateDisplayOnly /* = false */)
 
       case SettingType::Action:
       {
-        // CSettingAction. 
+        // CSettingAction.
         // Note: This can be removed once all settings use a proper control & format combination.
         // CSettingAction is strictly speaking not designed to have a label2, it does not even have a value.
         strText = m_pButton->GetLabel2();
@@ -793,7 +793,7 @@ void CGUIControlButtonSetting::Update(bool updateDisplayOnly /* = false */)
           settingNumber->GetValue(), settingNumber->GetMinimum(), settingNumber->GetStep(), settingNumber->GetMaximum(), m_localizer);
         break;
       }
-    
+
       default:
         break;
     }
@@ -869,7 +869,7 @@ void CGUIControlButtonSetting::OnSliderChange(void *data, CGUISliderControl *sli
           settingNumber->GetValue(), settingNumber->GetMinimum(), settingNumber->GetStep(), settingNumber->GetMaximum(), m_localizer);
       break;
     }
-    
+
     default:
       break;
   }
@@ -979,7 +979,7 @@ CGUIControlSliderSetting::CGUIControlSliderSetting(CGUISettingsSliderControl *pS
     return;
 
   m_pSlider->SetID(id);
-  
+
   switch (m_pSetting->GetType())
   {
     case SettingType::Integer:
@@ -1028,11 +1028,11 @@ bool CGUIControlSliderSetting::OnClick()
     case SettingType::Number:
       SetValid(std::static_pointer_cast<CSettingNumber>(m_pSetting)->SetValue(m_pSlider->GetFloatValue()));
       break;
-    
+
     default:
       return false;
   }
-  
+
   return IsValid();
 }
 
@@ -1079,7 +1079,7 @@ void CGUIControlSliderSetting::Update(bool updateDisplayOnly /* = false */)
         value, settingNumber->GetMinimum(), settingNumber->GetStep(), settingNumber->GetMaximum(), m_localizer);
       break;
     }
-    
+
     default:
       break;
   }
@@ -1117,7 +1117,7 @@ CGUIControlRangeSetting::CGUIControlRangeSetting(CGUISettingsSliderControl *pSli
 
   m_pSlider->SetID(id);
   m_pSlider->SetRangeSelection(true);
-  
+
   if (m_pSetting->GetType() == SettingType::List)
   {
     std::shared_ptr<CSettingList> settingList = std::static_pointer_cast<CSettingList>(m_pSetting);
@@ -1181,11 +1181,11 @@ bool CGUIControlRangeSetting::OnClick()
       values.push_back(m_pSlider->GetFloatValue(CGUISliderControl::RangeSelectorLower));
       values.push_back(m_pSlider->GetFloatValue(CGUISliderControl::RangeSelectorUpper));
       break;
-    
+
     default:
       return false;
   }
-  
+
   if (values.size() != 2)
     return false;
 
@@ -1301,7 +1301,7 @@ void CGUIControlRangeSetting::Update(bool updateDisplayOnly /* = false */)
         strText = strTextLower;
       break;
     }
-    
+
     default:
       strText.clear();
       break;

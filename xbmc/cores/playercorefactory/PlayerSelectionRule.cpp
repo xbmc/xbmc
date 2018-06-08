@@ -149,7 +149,7 @@ void CPlayerSelectionRule::GetPlayers(const CFileItem& item, std::vector<std::st
 
     if (CompileRegExp(m_audioCodec, regExp) && !MatchesRegExp(streamDetails.GetAudioCodec(), regExp))
       return;
-    
+
     std::stringstream itoa;
     itoa << streamDetails.GetAudioChannels();
     std::string audioChannelsstr = itoa.str();

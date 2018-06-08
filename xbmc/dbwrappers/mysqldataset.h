@@ -140,7 +140,7 @@ public:
 /* destructor */
   ~MysqlDataset() override;
 
-/* set autorefresh boolean value (if true - refresh the data after edit() 
+/* set autorefresh boolean value (if true - refresh the data after edit()
 or insert() operations default = false) */
   void set_autorefresh(bool val);
 

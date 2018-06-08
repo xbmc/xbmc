@@ -121,7 +121,7 @@ bool CGUIDialogNumeric::OnAction(const CAction &action)
   else if (action.GetID() >= REMOTE_0 && action.GetID() <= REMOTE_9)
     OnNumber(action.GetID() - REMOTE_0);
   else if (action.GetID() >= KEY_VKEY && action.GetID() < KEY_ASCII)
-  { 
+  {
     // input from the keyboard (vkey, not ascii)
     uint8_t b = action.GetID() & 0xFF;
     if (b == XBMCVK_LEFT)
@@ -477,7 +477,7 @@ std::string CGUIDialogNumeric::GetOutputString() const
   case INPUT_PASSWORD:
     return m_number;
   }
-  
+
   //should never get here
   return std::string();
 }
@@ -732,7 +732,7 @@ void CGUIDialogNumeric::HandleInputIP(uint32_t num)
   if (m_ip[m_block] > 25 || (m_ip[m_block] == 0 && num == 0))
   {
     ++m_block;
-    if (m_block > 3) 
+    if (m_block > 3)
       m_block = 0;
     m_dirty = false;
   }
@@ -741,7 +741,7 @@ void CGUIDialogNumeric::HandleInputIP(uint32_t num)
 }
 
 void CGUIDialogNumeric::HandleInputDate(uint32_t num)
-{ 
+{
   if (m_block == 0) // day of month
   {
     if (m_dirty && (m_datetime.wDay < 3 || num < 2))
@@ -801,7 +801,7 @@ void CGUIDialogNumeric::HandleInputDate(uint32_t num)
 }
 
 void CGUIDialogNumeric::HandleInputSeconds(uint32_t num)
-{ 
+{
   if (m_block == 0) // hour
   {
     if (m_dirty) // have input the first digit
@@ -862,7 +862,7 @@ void CGUIDialogNumeric::HandleInputSeconds(uint32_t num)
 }
 
 void CGUIDialogNumeric::HandleInputTime(uint32_t num)
-{ 
+{
   if (m_block == 0) // hour
   {
     if (m_dirty) // have input the first digit

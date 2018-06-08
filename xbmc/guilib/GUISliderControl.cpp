@@ -308,7 +308,7 @@ void CGUISliderControl::SendClick()
     std::string action = StringUtils::Format(m_action->formatString, percent);
     CGUIMessage message(GUI_MSG_EXECUTE, m_controlID, m_parentID);
     message.SetStringParam(action);
-    CServiceBroker::GetGUI()->GetWindowManager().SendMessage(message);    
+    CServiceBroker::GetGUI()->GetWindowManager().SendMessage(message);
   }
 }
 
@@ -633,7 +633,7 @@ EVENT_RESULT CGUISliderControl::OnMouseEvent(const CPoint &point, const CMouseEv
   else if (event.m_id == ACTION_GESTURE_NOTIFY)
   {
     return EVENT_RESULT_PAN_HORIZONTAL_WITHOUT_INERTIA;
-  }  
+  }
   else if (event.m_id == ACTION_GESTURE_BEGIN)
   { // grab exclusive access
     CGUIMessage msg(GUI_MSG_EXCLUSIVE_MOUSE, GetID(), GetParentID());
@@ -641,7 +641,7 @@ EVENT_RESULT CGUISliderControl::OnMouseEvent(const CPoint &point, const CMouseEv
     return EVENT_RESULT_HANDLED;
   }
   else if (event.m_id == ACTION_GESTURE_PAN)
-  { // do the drag 
+  { // do the drag
     SetFromPosition(point);
     return EVENT_RESULT_HANDLED;
   }

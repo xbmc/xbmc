@@ -187,7 +187,7 @@ public:
   bool Equals(const std::string &value) const override;
   bool CheckValidity(const std::string &value) const override;
   void Reset() override;
-  
+
   SettingType GetElementType() const;
   std::shared_ptr<CSetting> GetDefinition() { return m_definition; }
   std::shared_ptr<const CSetting> GetDefinition() const { return m_definition; }
@@ -199,7 +199,7 @@ public:
   void SetMinimumItems(int minimumItems) { m_minimumItems = minimumItems; }
   int GetMaximumItems() const { return m_maximumItems; }
   void SetMaximumItems(int maximumItems) { m_maximumItems = maximumItems; }
-  
+
   bool FromString(const std::vector<std::string> &value);
 
   const SettingList& GetValue() const { return m_values; }

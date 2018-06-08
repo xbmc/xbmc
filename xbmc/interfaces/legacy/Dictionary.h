@@ -35,7 +35,7 @@ namespace XBMCAddon
    * cases python addon api calls handle dictionaries with variable
    * value types. In this case we coerce all of these types into
    * strings and then convert them back in the api. Yes, this is messy
-   * and maybe we should use the CVariant here. But for now the 
+   * and maybe we should use the CVariant here. But for now the
    * native api handles these calls by converting the string to the
    * appropriate types.
    */

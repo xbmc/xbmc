@@ -719,7 +719,7 @@ void CPartyModeManager::Announce()
   if (g_application.GetAppPlayer().IsPlaying())
   {
     CVariant data;
-    
+
     data["player"]["playerid"] = CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist();
     data["property"]["partymode"] = m_bEnabled;
     ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::Player, "xbmc", "OnPropertyChanged", data);

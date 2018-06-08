@@ -58,7 +58,7 @@ public:
 protected:
   virtual bool parse() = 0;
   virtual bool validateOption(const std::string &key, const CVariant &value);
-  
+
   CURL m_url;
   std::string m_type;
 

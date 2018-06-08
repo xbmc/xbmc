@@ -22,7 +22,7 @@
 
 /**
  * This file contains a few templates to define various length
- * Tuples. 
+ * Tuples.
  */
 namespace XBMCAddon
 {

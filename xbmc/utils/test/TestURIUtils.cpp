@@ -508,10 +508,10 @@ TEST_F(TestURIUtils, HasEncodedFilename)
 TEST_F(TestURIUtils, GetRealPath)
 {
   std::string ref;
-  
+
   ref = "/path/to/file/";
   EXPECT_STREQ(ref.c_str(), URIUtils::GetRealPath(ref).c_str());
-  
+
   ref = "path/to/file";
   EXPECT_STREQ(ref.c_str(), URIUtils::GetRealPath("../path/to/file").c_str());
   EXPECT_STREQ(ref.c_str(), URIUtils::GetRealPath("./path/to/file").c_str());
@@ -529,7 +529,7 @@ TEST_F(TestURIUtils, GetRealPath)
 #ifdef TARGET_WINDOWS
   ref = "\\\\path\\to\\file\\";
   EXPECT_STREQ(ref.c_str(), URIUtils::GetRealPath(ref).c_str());
-  
+
   ref = "path\\to\\file";
   EXPECT_STREQ(ref.c_str(), URIUtils::GetRealPath("..\\path\\to\\file").c_str());
   EXPECT_STREQ(ref.c_str(), URIUtils::GetRealPath(".\\path\\to\\file").c_str());
@@ -548,14 +548,14 @@ TEST_F(TestURIUtils, GetRealPath)
   // test rar/zip paths
   ref = "rar://%2fpath%2fto%2frar/subpath/to/file";
   EXPECT_STRCASEEQ(ref.c_str(), URIUtils::GetRealPath(ref).c_str());
-  
+
   // test rar/zip paths
   ref = "rar://%2fpath%2fto%2frar/subpath/to/file";
   EXPECT_STRCASEEQ(ref.c_str(), URIUtils::GetRealPath("rar://%2fpath%2fto%2frar/../subpath/to/file").c_str());
   EXPECT_STRCASEEQ(ref.c_str(), URIUtils::GetRealPath("rar://%2fpath%2fto%2frar/./subpath/to/file").c_str());
   EXPECT_STRCASEEQ(ref.c_str(), URIUtils::GetRealPath("rar://%2fpath%2fto%2frar/subpath/to/./file").c_str());
   EXPECT_STRCASEEQ(ref.c_str(), URIUtils::GetRealPath("rar://%2fpath%2fto%2frar/subpath/to/some/../file").c_str());
-  
+
   EXPECT_STRCASEEQ(ref.c_str(), URIUtils::GetRealPath("rar://%2fpath%2fto%2f.%2frar/subpath/to/file").c_str());
   EXPECT_STRCASEEQ(ref.c_str(), URIUtils::GetRealPath("rar://%2fpath%2fto%2fsome%2f..%2frar/subpath/to/file").c_str());
 
@@ -574,19 +574,19 @@ TEST_F(TestURIUtils, UpdateUrlEncoding)
 
   oldUrl = "rar://%2fpath%2fto%2farchive%2fsome%2darchive%2efile%2erar/video.avi";
   newUrl = "rar://%2fpath%2fto%2farchive%2fsome-archive.file.rar/video.avi";
-  
+
   EXPECT_TRUE(URIUtils::UpdateUrlEncoding(oldUrl));
   EXPECT_STRCASEEQ(newUrl.c_str(), oldUrl.c_str());
-  
+
   oldUrl = "/path/to/some/long%2dnamed%2efile";
   newUrl = "/path/to/some/long%2dnamed%2efile";
-  
+
   EXPECT_FALSE(URIUtils::UpdateUrlEncoding(oldUrl));
   EXPECT_STRCASEEQ(newUrl.c_str(), oldUrl.c_str());
-  
+
   oldUrl = "/path/to/some/long-named.file";
   newUrl = "/path/to/some/long-named.file";
-  
+
   EXPECT_FALSE(URIUtils::UpdateUrlEncoding(oldUrl));
   EXPECT_STRCASEEQ(newUrl.c_str(), oldUrl.c_str());
 }

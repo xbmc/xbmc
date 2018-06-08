@@ -456,7 +456,7 @@ bool CDatabaseQueryRuleCombination::Load(const CVariant &obj, const IDatabaseQue
 {
   if (!obj.isObject() && !obj.isArray())
     return false;
-  
+
   CVariant child;
   if (obj.isObject())
   {

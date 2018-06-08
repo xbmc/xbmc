@@ -132,7 +132,7 @@ void CAirTunesServer::RefreshMetadata()
     tag.SetTitle(m_metadata[1]);//title
   if (m_metadata[2].length())
     tag.SetArtist(m_metadata[2]);//artist
-  
+
   CApplicationMessenger::GetInstance().PostMsg(TMSG_UPDATE_CURRENT_ITEM, 1, -1, static_cast<void*>(new CFileItem(tag)));
 }
 
@@ -163,11 +163,11 @@ void CAirTunesServer::SetMetadataFromBuffer(const char *buffer, unsigned int siz
 
   if(metadata["asal"].length())
     m_metadata[0] = metadata["asal"];//album
-  if(metadata["minm"].length())    
+  if(metadata["minm"].length())
     m_metadata[1] = metadata["minm"];//title
-  if(metadata["asar"].length())    
+  if(metadata["asar"].length())
     m_metadata[2] = metadata["asar"];//artist
-  
+
   RefreshMetadata();
 }
 
@@ -183,7 +183,7 @@ void CAirTunesServer::Announce(AnnouncementFlag flag, const char *sender, const 
       if (m_pDACP)
         m_pDACP->Play();
     }
-    
+
     if (strcmp(message, "OnStop") == 0 && m_streamStarted)
     {
       CSingleLock lock(m_dacpLock);
@@ -238,7 +238,7 @@ void CAirTunesServer::Process()
       currentActions.insert(currentActions.begin(), m_actionQueue.begin(), m_actionQueue.end());
       m_actionQueue.clear();
     }
-    
+
     for (auto currentAction : currentActions)
     {
       CSingleLock lock(m_dacpLock);
@@ -300,7 +300,7 @@ void CAirTunesServer::SetCoverArtFromBuffer(const char *buffer, unsigned int siz
     return;
 
   CSingleLock lock(m_metadataLock);
-  
+
   if (IsJPEG(buffer, size))
     tmpFilename = TMP_COVERART_PATH_JPG;
 
@@ -392,7 +392,7 @@ void* CAirTunesServer::AudioOutputFunctions::audio_init(void *cls, int bits, int
   // no metadata will be sent).  If there *is* metadata, it will be received
   // in a later call to audio_set_metadata/audio_set_coverart.
   ResetMetadata();
-  
+
   // browse for dacp services protocol which gives us the remote control service
   CZeroconfBrowser::GetInstance()->Start();
   CZeroconfBrowser::GetInstance()->AddServiceType(ZEROCONF_DACP_SERVICE);
@@ -481,7 +481,7 @@ void  CAirTunesServer::AudioOutputFunctions::audio_destroy(void *cls, void *sess
   XFILE::CPipeFile *pipe=(XFILE::CPipeFile *)cls;
   pipe->SetEof();
   pipe->Close();
-  
+
   CAirTunesServer::FreeDACPRemote();
   m_dacp_id.clear();
   m_active_remote_header.clear();
@@ -499,7 +499,7 @@ void  CAirTunesServer::AudioOutputFunctions::audio_destroy(void *cls, void *sess
     CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_STOP);
     CLog::Log(LOGDEBUG, "AIRTUNES: AirPlay not running - stopping player");
   }
-  
+
   m_streamStarted = false;
 
   // no need to browse for dacp services while we don't receive
@@ -517,7 +517,7 @@ void shairplay_log(void *cls, int level, const char *msg)
 
   switch(level)
   {
-    case RAOP_LOG_EMERG:    // system is unusable 
+    case RAOP_LOG_EMERG:    // system is unusable
       xbmcLevel = LOGFATAL;
       break;
     case RAOP_LOG_ALERT:    // action must be taken immediately
@@ -692,13 +692,13 @@ bool CAirTunesServer::Initialize(const std::string &password)
     ao.audio_set_progress   = AudioOutputFunctions::audio_set_progress;
     m_pLibShairplay->EnableDelayedUnload(false);
     m_pRaop = m_pLibShairplay->raop_init(1, &ao, RSA_KEY);//1 - we handle one client at a time max
-    ret = m_pRaop != NULL;    
+    ret = m_pRaop != NULL;
 
     if(ret)
     {
-      char macAdr[6];    
+      char macAdr[6];
       unsigned short port = (unsigned short)m_port;
-      
+
       m_pLibShairplay->raop_set_log_level(m_pRaop, RAOP_LOG_WARNING);
       if(g_advancedSettings.CanLogComponent(LOGAIRTUNES))
       {

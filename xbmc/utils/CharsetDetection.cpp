@@ -26,7 +26,7 @@
 #include "LangInfo.h"
 #include "utils/log.h"
 
-/* XML declaration can be virtually any size (with many-many whitespaces) 
+/* XML declaration can be virtually any size (with many-many whitespaces)
  * but for in real world we don't need to process megabytes of data
  * so limit search for XML declaration to reasonable value */
 const size_t CCharsetDetection::m_XmlDeclarationMaxLength = 250;
@@ -92,7 +92,7 @@ bool CCharsetDetection::DetectXmlEncoding(const char* const xmlContent, const si
       if (detectedEncoding == "UTF-7")
         return true;
 
-      /* XML declaration was detected in UTF-8 mode (by 'GetXmlEncodingFromDeclaration') so we know 
+      /* XML declaration was detected in UTF-8 mode (by 'GetXmlEncodingFromDeclaration') so we know
        * that text in single byte encoding, but declaration itself wrongly specify multibyte encoding */
       detectedEncoding.clear();
       return false;
@@ -283,7 +283,7 @@ bool CCharsetDetection::ConvertHtmlToUtf8(const std::string& htmlContent, std::s
     usedHtmlCharset = "UTF-8"; // any charset can be used for empty content, use UTF-8 as default
     return false;
   }
-  
+
   // this is relaxed implementation of http://www.w3.org/TR/2013/CR-html5-20130806/single-page.html#determining-the-character-encoding
 
   // try to get charset from Byte Order Mark
@@ -510,7 +510,7 @@ std::string CCharsetDetection::GetHtmlEncodingFromHead(const std::string& htmlCo
 
     if (pos == std::string::npos)
       return "";
-  
+
     // "next byte" label
     pos++;
   }
@@ -576,7 +576,7 @@ size_t CCharsetDetection::GetHtmlAttribute(const std::string& htmlContent, size_
     }
     return std::string::npos; // no closing quote is found
   }
-   
+
   appendCharAsAsciiUpperCase(attrValue, htmlC[pos]);
   pos++;
 

@@ -43,7 +43,7 @@ public:
     Filter() : fields("*") {};
     explicit Filter(const char *w) : fields("*"), where(w) {};
     explicit Filter(const std::string &w) : fields("*"), where(w) {};
-    
+
     void AppendField(const std::string &strField);
     void AppendJoin(const std::string &strJoin);
     void AppendWhere(const std::string &strWhere, bool combineWithAnd = true);
@@ -66,7 +66,7 @@ public:
     void AppendJoin(const std::string &strJoin);
     void AppendWhere(const std::string &strWhere, bool combineWithAnd = true);
     bool BuildSQL(std::string &strSQL);
-    
+
     std::string tablename;
     std::string param;
     std::string join;

@@ -90,7 +90,7 @@ public:
     int64_t totalTicks = (m_isRunning ? GetTicks() : m_stopTick) - m_startTick;
     return (float)totalTicks * m_timerPeriod;
   }
-  
+
   /*!
     \brief  Retrieve time elapsed between the last call to Start(), StartZero()
             or Reset() and; if running, now; if stopped, the last call to Stop().

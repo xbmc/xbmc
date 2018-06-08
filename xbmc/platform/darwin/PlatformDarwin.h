@@ -27,9 +27,9 @@ class CPlatformDarwin : public CPlatform
   public:
     /**\brief C'tor */
     CPlatformDarwin();
-  
+
     /**\brief D'tor */
     virtual ~CPlatformDarwin();
-  
+
     void Init() override;
 };

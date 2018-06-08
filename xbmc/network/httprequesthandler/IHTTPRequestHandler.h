@@ -151,7 +151,7 @@ public:
   * \details This is only used if the response can be cached.
   */
   virtual bool GetLastModifiedDate(CDateTime &lastModified) const { return false; }
- 
+
   /*!
    * \brief Returns the ranges with raw data belonging to the response.
    *

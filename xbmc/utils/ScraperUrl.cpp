@@ -264,7 +264,7 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL, std::string& strHTML, XFILE::CCur
   {
     CXBMCTinyXML xmlDoc;
     xmlDoc.Parse(strHTML, reportedCharset);
-    
+
     std::string realXmlCharset(xmlDoc.GetUsedCharset());
     if (!realXmlCharset.empty())
     {
@@ -368,7 +368,7 @@ void CScraperUrl::AddElement(std::string url, std::string aspect, std::string re
   }
   else
     nUrl.m_type = URL_TYPE_GENERAL;
-  
+
   nUrl.m_aspect = aspect;
 
   m_url.push_back(nUrl);
@@ -378,7 +378,7 @@ std::string CScraperUrl::GetThumbURL(const CScraperUrl::SUrlEntry &entry)
 {
   if (entry.m_spoof.empty())
     return entry.m_url;
-  
+
   return entry.m_url + "|Referer=" + CURL::Encode(entry.m_spoof);
 }
 

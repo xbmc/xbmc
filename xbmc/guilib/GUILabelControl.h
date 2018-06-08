@@ -50,7 +50,7 @@ public:
   float GetWidth() const override;
   void SetWidth(float width) override;
   CRect CalcRenderRegion() const override;
- 
+
   const CLabelInfo& GetLabelInfo() const { return m_label.GetLabelInfo(); };
   void SetLabel(const std::string &strLabel);
   void ShowCursor(bool bShow = true);

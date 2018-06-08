@@ -211,7 +211,7 @@ int CAEPackIEC61937::PackDTS(uint8_t *data, unsigned int size, uint8_t *dest, bo
     size += size & 0x1;
     SwapEndian((uint16_t*)dataTo, (uint16_t*)data, size >> 1);
   }
-  
+
   if (size != frameSize)
     memset(packet->m_data + size, 0, frameSize - IEC61937_DATA_OFFSET - size);
 

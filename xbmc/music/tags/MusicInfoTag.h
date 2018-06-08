@@ -116,7 +116,7 @@ public:
   void SetLoaded(bool bOnOff = true);
   void SetArtist(const CArtist& artist);
   void SetAlbum(const CAlbum& album);
-  void SetSong(const CSong& song);  
+  void SetSong(const CSong& song);
   void SetMusicBrainzTrackID(const std::string& strTrackID);
   void SetMusicBrainzArtistID(const std::vector<std::string>& musicBrainzArtistId);
   void SetMusicBrainzArtistHints(const std::vector<std::string>& musicBrainzArtistHints);
@@ -162,7 +162,7 @@ public:
    \param genre genre to add.
    */
   void AppendGenre(const std::string &genre);
-  
+
   void AddArtistRole(const std::string& Role, const std::string& strArtist);
   void AddArtistRole(const std::string& Role, const std::vector<std::string>& artists);
   void AppendArtistRole(const CMusicRole& ArtistRole);

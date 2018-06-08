@@ -31,11 +31,11 @@ public:
   CJNIXBMCSurfaceTextureOnFrameAvailableListener(const CJNIXBMCSurfaceTextureOnFrameAvailableListener& other);
   CJNIXBMCSurfaceTextureOnFrameAvailableListener(const jni::jhobject &object) : CJNIBase(object) {}
   virtual ~CJNIXBMCSurfaceTextureOnFrameAvailableListener();
-  
+
   static void RegisterNatives(JNIEnv* env);
-    
+
   void onFrameAvailable(CJNISurfaceTexture) {}
-  
+
 protected:
-  static void _onFrameAvailable(JNIEnv* env, jobject thiz, jobject surface);  
+  static void _onFrameAvailable(JNIEnv* env, jobject thiz, jobject surface);
 };

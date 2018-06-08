@@ -34,7 +34,7 @@ class CGUIDialogProgress;
 
 class CGUIWindowFileManager :
       public CGUIWindow,
-      public CJobQueue 
+      public CJobQueue
 {
 public:
 

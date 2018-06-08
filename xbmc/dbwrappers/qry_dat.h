@@ -36,7 +36,7 @@
 
 namespace dbiplus {
 
-enum fType { 
+enum fType {
 	ft_String,
 	ft_Boolean,
 	ft_Char,
@@ -127,7 +127,7 @@ public:
   field_value& operator= (const int64_t i)
     {set_asInt64(i); return *this;}
   field_value& operator= (const field_value & fv);
-  
+
   //class ostream;
   friend std::ostream& operator<< (std::ostream& os, const field_value &fv)
   {switch (fv.get_fType()) {
@@ -137,7 +137,7 @@ public:
     }
     case ft_Boolean:{
       return os << fv.get_asBool();
-      break;     
+      break;
     }
     case ft_Char: {
       return os << fv.get_asChar();
@@ -208,7 +208,7 @@ struct field_prop {
 struct field {
   field_prop props;
   field_value val;
-}; 
+};
 
 
 typedef std::vector<field> Fields;

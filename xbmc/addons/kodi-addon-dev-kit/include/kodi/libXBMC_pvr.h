@@ -62,7 +62,7 @@ public:
       m_Callbacks = (AddonInstance_PVR*)m_Handle->PVRLib_RegisterMe(m_Handle->addonData);
     if (!m_Callbacks)
       fprintf(stderr, "libXBMC_pvr-ERROR: PVRLib_register_me can't get callback table from Kodi !!!\n");
-  
+
     return m_Callbacks != NULL;
   }
 

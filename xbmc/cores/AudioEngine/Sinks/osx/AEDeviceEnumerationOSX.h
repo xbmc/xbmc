@@ -41,7 +41,7 @@ typedef std::vector< std::pair<struct CADeviceInstance, CAEDeviceInfo> > CADevic
 //            1..n formats
 //       - 0..n sources
 //on non planar devices we have numstreams * numsources devices for our list
-//on planar devices we have 1 * numsources devices for our list 
+//on planar devices we have 1 * numsources devices for our list
 class AEDeviceEnumerationOSX
 {
 public:
@@ -52,15 +52,15 @@ public:
   AEDeviceEnumerationOSX(AudioDeviceID deviceID);
   // d'tor
   ~AEDeviceEnumerationOSX(){};
-  
+
   /*!
-  * @brief Gets the device list which was enumerated by the last call to Enumerate 
+  * @brief Gets the device list which was enumerated by the last call to Enumerate
   *        (which is also called in c'tor).
   *
   * @return Returns the device list.
   */
   CADeviceList  GetDeviceInfoList() const;
-  
+
   /*!
   * @brief Fetches all metadata from the CoreAudio device which is needed to generate a proper DeviceList for AE
   *        This method is always called from C'tor but can be called multiple times if the streams of a device
@@ -93,7 +93,7 @@ public:
   * @param outputStream [out] - the coreaudio streamid which contains the coreaudio format returned in outputFormat
   * @return true if a matching corea audio format was found - else false
   */
-  bool          FindSuitableFormatForStream(UInt32 &streamIdx, const AEAudioFormat &format, bool virt, 
+  bool          FindSuitableFormatForStream(UInt32 &streamIdx, const AEAudioFormat &format, bool virt,
                                             AudioStreamBasicDescription &outputFormat,
                                             AudioStreamID &outputStream) const;
 
@@ -129,13 +129,13 @@ public:
   float             ScoreFormat(const AudioStreamBasicDescription &formatDesc, const AEAudioFormat &format) const;
 
 private:
-  
+
   /*!
   * @brief Checks if this is a digital device based on CA transportType or name
   * @return - true if this is a digital device - else false.
   */
   bool              isDigitalDevice() const;
-  
+
   /*!
   * @brief Checks if there are passthrough formats or digital formats
   *       (the latter are passthrough formats with dedicated format config like AC3/DTS)
@@ -143,8 +143,8 @@ private:
   * @param hasPassthroughFormats [out] - true if there were passthrough formats in the list
   * @param hasDigitalFormat [out] - true if there were dedicated passthrough formats in the list
   */
-  void              hasPassthroughOrDigitalFormats(const StreamFormatList &formatList, 
-                                                   bool &hasPassthroughFormats, 
+  void              hasPassthroughOrDigitalFormats(const StreamFormatList &formatList,
+                                                   bool &hasPassthroughFormats,
                                                    bool &hasDigitalFormat) const;
 
   /*!
@@ -155,7 +155,7 @@ private:
   * @param transportType [in] - the transportType of the device
   * @return the AE devicetype
   */
-  enum AEDeviceType getDeviceType(bool hasPassthroughFormats, bool isDigital, 
+  enum AEDeviceType getDeviceType(bool hasPassthroughFormats, bool isDigital,
                                   UInt32 numChannels, UInt32 transportType) const;
 
   /*!
@@ -167,7 +167,7 @@ private:
   * @brief Scores a samplerate based on:
   * 1. Prefer exact match
   * 2. Prefer exact multiple of source samplerate and prefer the lowest
-  * 
+  *
   * @param destinationRate [in] - the destination samplerate to score
   * @param sourceRate [in] - the sourceRate of the audio format - this is the samplerate the score is based on
   * @return the score

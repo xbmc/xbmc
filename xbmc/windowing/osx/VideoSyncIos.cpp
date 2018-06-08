@@ -29,18 +29,18 @@
 bool CVideoSyncIos::Setup(PUPDATECLOCK func)
 {
   CLog::Log(LOGDEBUG, "CVideoSyncIos::%s setting up OSX", __FUNCTION__);
-  
+
   //init the vblank timestamp
   m_LastVBlankTime = CurrentHostCounter();
   UpdateClock = func;
   m_abortEvent.Reset();
-  
+
   bool setupOk = InitDisplayLink();
   if (setupOk)
   {
     m_winSystem.Register(this);
   }
-  
+
   return setupOk;
 }
 
@@ -75,14 +75,14 @@ void CVideoSyncIos::IosVblankHandler()
   int           NrVBlanks;
   double        VBlankTime;
   int64_t       nowtime = CurrentHostCounter();
-  
+
   //calculate how many vblanks happened
   VBlankTime = (double)(nowtime - m_LastVBlankTime) / (double)CurrentHostFrequency();
   NrVBlanks = MathUtils::round_int(VBlankTime * m_fps);
-  
+
   //save the timestamp of this vblank so we can calculate how many happened next time
   m_LastVBlankTime = nowtime;
-  
+
   //update the vblank timestamp, update the clock and send a signal that we got a vblank
   UpdateClock(NrVBlanks, nowtime, m_refClock);
 }

@@ -272,7 +272,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
         m_filter.Reset();
       }
       m_strFilterPath.clear();
-      
+
       // Call ClearFileItems() after our window has finished doing any WindowClose
       // animations
       ClearFileItems();
@@ -548,7 +548,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
           resetHistory = true;
         }
         if (resetHistory)
-        {  
+        {
           m_vecItems->RemoveDiscCache(GetID());
           SetHistoryForPath(m_vecItems->GetPath());
         }
@@ -738,11 +738,11 @@ bool CGUIMediaWindow::GetDirectory(const std::string &strDirectory, CFileItemLis
 
     if (strDirectory.empty())
       SetupShares();
-    
+
     CFileItemList dirItems;
     if (!GetDirectoryItems(pathToUrl, dirItems, UseFileDirectories()))
       return false;
-    
+
     // assign fetched directory items
     items.Assign(dirItems);
 
@@ -861,7 +861,7 @@ bool CGUIMediaWindow::Update(const std::string &strDirectory, bool updateFilterP
 
   // check the given path for filter data
   UpdateFilterPath(path, *m_vecItems, updateFilterPath);
-    
+
   // if we're getting the root source listing
   // make sure the path history is clean
   if (URIUtils::PathEquals(path, GetRootPath()))
@@ -976,7 +976,7 @@ void CGUIMediaWindow::OnPrepareFileItems(CFileItemList &items)
  *
  * This function will be called by Update() before
  * any additional formatting, filtering or sorting is applied.
- * 
+ *
  * \note Override this function to define a custom caching behaviour.
  */
 void CGUIMediaWindow::OnCacheFileItems(CFileItemList &items)
@@ -1494,18 +1494,18 @@ bool CGUIMediaWindow::OnPlayAndQueueMedia(const CFileItemPtr &item, std::string 
     CServiceBroker::GetPlaylistPlayer().ClearPlaylist(iPlaylist);
     CServiceBroker::GetPlaylistPlayer().Reset();
     int mediaToPlay = 0;
-    
-    // first try to find mainDVD file (VIDEO_TS.IFO). 
+
+    // first try to find mainDVD file (VIDEO_TS.IFO).
     // If we find this we should not allow to queue VOB files
-    std::string mainDVD; 
-    for (int i = 0; i < m_vecItems->Size(); i++) 
-    { 
-      std::string path = URIUtils::GetFileName(m_vecItems->Get(i)->GetPath()); 
-      if (StringUtils::EqualsNoCase(path, "VIDEO_TS.IFO")) 
-      { 
-        mainDVD = path; 
-        break; 
-      } 
+    std::string mainDVD;
+    for (int i = 0; i < m_vecItems->Size(); i++)
+    {
+      std::string path = URIUtils::GetFileName(m_vecItems->Get(i)->GetPath());
+      if (StringUtils::EqualsNoCase(path, "VIDEO_TS.IFO"))
+      {
+        mainDVD = path;
+        break;
+      }
     }
 
     // now queue...
@@ -1877,7 +1877,7 @@ void CGUIMediaWindow::UpdateFilterPath(const std::string &strDirectory, const CF
     else
       m_strFilterPath = items.GetPath();
   }
-  
+
   // maybe the filter path can contain a filter
   if (!canfilter && CanContainFilter(m_strFilterPath))
     canfilter = true;
@@ -1911,7 +1911,7 @@ void CGUIMediaWindow::UpdateFilterPath(const std::string &strDirectory, const CF
 void CGUIMediaWindow::OnFilterItems(const std::string &filter)
 {
   m_viewControl.Clear();
-  
+
   CFileItemList items;
   items.Copy(*m_vecItems, false); // use the original path - it'll likely be relied on for other things later.
   items.Append(*m_unfilteredItems);
@@ -1921,7 +1921,7 @@ void CGUIMediaWindow::OnFilterItems(const std::string &filter)
   // we need to clear the sort state and re-sort the items
   m_vecItems->ClearSortState();
   m_vecItems->Append(items);
-  
+
   // if the filter has changed, get the new filter path
   if (filtered && m_canFilterAdvanced)
   {
@@ -1934,7 +1934,7 @@ void CGUIMediaWindow::OnFilterItems(const std::string &filter)
     else if (m_strFilterPath.empty())
       m_strFilterPath = items.GetPath();
   }
-  
+
   GetGroupedItems(*m_vecItems);
   FormatAndSort(*m_vecItems);
 
@@ -2015,7 +2015,7 @@ bool CGUIMediaWindow::GetFilteredItems(const std::string &filter, CFileItemList 
   std::string trimmedFilter(filter);
   StringUtils::TrimLeft(trimmedFilter);
   StringUtils::ToLower(trimmedFilter);
-  
+
   if (trimmedFilter.empty())
     return result;
 
@@ -2041,10 +2041,10 @@ bool CGUIMediaWindow::GetFilteredItems(const std::string &filter, CFileItemList 
      match = item->GetLayout()->GetAllText();
      else*/
     match = item->GetLabel(); // Filter label only for now
-    
+
     if (numericMatch)
       StringUtils::WordToDigits(match);
-    
+
     size_t pos = StringUtils::FindWords(match.c_str(), trimmedFilter.c_str());
     if (pos != std::string::npos)
       filteredItems.Add(item);

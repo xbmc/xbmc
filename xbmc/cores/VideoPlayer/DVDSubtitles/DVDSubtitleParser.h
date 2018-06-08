@@ -67,7 +67,7 @@ class CDVDSubtitleParserText
 public:
   CDVDSubtitleParserText(std::unique_ptr<CDVDSubtitleStream> && stream, const std::string& filename)
     : CDVDSubtitleParserCollection(filename)
-		, m_pStream(std::move(stream)) 
+		, m_pStream(std::move(stream))
   {
   }
 

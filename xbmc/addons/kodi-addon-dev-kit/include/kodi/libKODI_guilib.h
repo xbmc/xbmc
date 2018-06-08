@@ -540,7 +540,7 @@ public:
 
     return m_cb->Control_Spin_GetValue(m_Handle->addonData, m_controlHandle);
   }
-  
+
   void SetValue(int iValue)
   {
     if (m_controlHandle)
@@ -731,7 +731,7 @@ public:
   {
     m_controlHandle = m_cb->Window_GetControl_SettingsSlider(m_Handle->addonData, m_Window->GetControlHandle(), controlId);
   }
-  
+
   ~CAddonGUISettingsSliderControl(void) override = default;
 
   void SetVisible(bool yesNo)
@@ -907,7 +907,7 @@ inline bool CAddonGUIRenderingControl::OnDirtyCB(GUIHANDLE cbhdl)
 {
   return static_cast<CAddonGUIRenderingControl*>(cbhdl)->Dirty();
 }
-  
+
 class CHelper_libKODI_guilib
 {
 public:
@@ -932,7 +932,7 @@ public:
       m_Callbacks = (KodiAPI::GUI::CB_GUILib*)m_Handle->GUILib_RegisterMe(m_Handle->addonData);
     if (!m_Callbacks)
       fprintf(stderr, "libKODI_guilib-ERROR: GUILib_RegisterMe can't get callback table from Kodi !!!\n");
-  
+
     return m_Callbacks != nullptr;
   }
 

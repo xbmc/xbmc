@@ -35,7 +35,7 @@ namespace
 {
   //helper for getting a the txt-records list
   //returns true on success, false if nothing found or error
-  CZeroconfBrowser::ZeroconfService::tTxtRecordMap GetTxtRecords(CFNetServiceRef serviceRef)  
+  CZeroconfBrowser::ZeroconfService::tTxtRecordMap GetTxtRecords(CFNetServiceRef serviceRef)
   {
     CFIndex idx = 0;
     CZeroconfBrowser::ZeroconfService::tTxtRecordMap recordMap;
@@ -84,13 +84,13 @@ namespace
     struct sockaddr_in address;
     char buffer[256];
     CFArrayRef addressResults = CFNetServiceGetAddressing( (CFNetServiceRef)serviceRef );
-    
+
     if ( addressResults != NULL )
     {
       CFIndex numAddressResults = CFArrayGetCount( addressResults );
       CFDataRef sockAddrRef = NULL;
       struct sockaddr sockHdr;
-      
+
       for ( idx = 0; idx < numAddressResults; idx++ )
       {
         sockAddrRef = (CFDataRef)CFArrayGetValueAtIndex( addressResults, idx );
@@ -140,7 +140,7 @@ void CZeroconfBrowserOSX::BrowserCallback(CFNetServiceBrowserRef browser, CFOpti
   if (error->error == noErr)
   {
     //make sure we receive a service
-    assert(!(flags&kCFNetServiceFlagIsDomain));  
+    assert(!(flags&kCFNetServiceFlagIsDomain));
     CFNetServiceRef service = (CFNetServiceRef)domainOrService;
     assert(service);
     //get our instance
@@ -160,13 +160,13 @@ void CZeroconfBrowserOSX::BrowserCallback(CFNetServiceBrowserRef browser, CFOpti
 
     if (flags & kCFNetServiceFlagRemove)
     {
-      CLog::Log(LOGDEBUG, "CZeroconfBrowserOSX::BrowserCallback service named: %s, type: %s, domain: %s disappeared", 
+      CLog::Log(LOGDEBUG, "CZeroconfBrowserOSX::BrowserCallback service named: %s, type: %s, domain: %s disappeared",
         s.GetName().c_str(), s.GetType().c_str(), s.GetDomain().c_str());
-      p_this->removeDiscoveredService(browser, flags, s);      
+      p_this->removeDiscoveredService(browser, flags, s);
     }
     else
     {
-      CLog::Log(LOGDEBUG, "CZeroconfBrowserOSX::BrowserCallback found service named: %s, type: %s, domain: %s", 
+      CLog::Log(LOGDEBUG, "CZeroconfBrowserOSX::BrowserCallback found service named: %s, type: %s, domain: %s",
         s.GetName().c_str(), s.GetType().c_str(), s.GetDomain().c_str());
       p_this->addDiscoveredService(browser, flags, s);
     }
@@ -257,7 +257,7 @@ bool CZeroconfBrowserOSX::doAddServiceType(const std::string& fcr_service_type)
   if (result == false)
   {
     // Something went wrong so lets clean up.
-    CFNetServiceBrowserUnscheduleFromRunLoop(p_browser, m_runloop, kCFRunLoopCommonModes);         
+    CFNetServiceBrowserUnscheduleFromRunLoop(p_browser, m_runloop, kCFRunLoopCommonModes);
     CFRelease(p_browser);
     p_browser = NULL;
     CLog::Log(LOGERROR, "CFNetServiceBrowserSearchForServices returned"
@@ -287,7 +287,7 @@ bool CZeroconfBrowserOSX::doRemoveServiceType(const std::string &fcr_service_typ
     m_service_browsers.erase(it);
   }
   assert(browser);
-    
+
   //now kill the browser
   CFStreamError streamerror;
   CFNetServiceBrowserStopSearch(browser, &streamerror);

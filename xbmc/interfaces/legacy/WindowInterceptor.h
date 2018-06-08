@@ -48,7 +48,7 @@ namespace XBMCAddon
       /**
        * Calling up ONCE resets the upcall to to false. The reason is that when
        *   a call is recursive we cannot assume the ref has cleared the flag.
-       *   so ... 
+       *   so ...
        *
        * ref(window)->UpCall()
        *
@@ -57,7 +57,7 @@ namespace XBMCAddon
        *  sometimes in OnMessage). In that case, if upcall is still 'true', than
        *  the call will wrongly proceed back to the xbmc core side rather than
        *  to the Addon API side.
-       */  
+       */
       static bool up() { bool ret = ((upcallTls) != NULL); upcallTls = NULL; return ret; }
     public:
 
@@ -69,21 +69,21 @@ namespace XBMCAddon
 
       virtual void setActive(bool active) { }
       virtual bool isActive() { return false; }
-      
+
       friend class ref;
     };
 
     /**
      * Guard class. But instead of managing memory or thread resources,
-     * any call made using the operator-> results in an 'upcall.' That is, 
+     * any call made using the operator-> results in an 'upcall.' That is,
      * it expects the call about to be made to have come from the XBMCAddon
-     * xbmcgui Window API and not from either the scripting language or the 
+     * xbmcgui Window API and not from either the scripting language or the
      * XBMC core Windowing system.
      *
      * This class is meant to hold references to instances of Interceptor<P>.
      *   see that template definition below.
      */
-    class ref 
+    class ref
     {
       InterceptorBase* w;
     public:
@@ -96,7 +96,7 @@ namespace XBMCAddon
     /**
      * The intention of this class is to intercept calls from
      *  multiple points in the CGUIWindow class hierarchy and pass
-     *  those calls over to the XBMCAddon API Window hierarchy. It 
+     *  those calls over to the XBMCAddon API Window hierarchy. It
      *  is a class template that uses the type template parameter
      *  to determine the parent class.
      *
@@ -112,7 +112,7 @@ namespace XBMCAddon
 #define checkedb(methcall) ( window.isNotNull() ? window-> methcall : false )
 #define checkedv(methcall) { if (window.isNotNull()) window-> methcall ; }
 
-    template <class P /* extends CGUIWindow*/> class Interceptor : 
+    template <class P /* extends CGUIWindow*/> class Interceptor :
       public P, public InterceptorBase
     {
       std::string classname;
@@ -131,7 +131,7 @@ namespace XBMCAddon
         window.reset(_window);
         P::SetLoadType(CGUIWindow::LOAD_ON_GUI_INIT);
       }
-                    
+
       Interceptor(const char* specializedName,
                   Window* _window, int windowid,
                   const char* xmlfile) : P(windowid, xmlfile),
@@ -146,20 +146,20 @@ namespace XBMCAddon
       }
 
       ~Interceptor() override
-      { 
+      {
 #ifdef ENABLE_XBMC_TRACE_API
         XBMCAddonUtils::TraceGuard tg;
         CLog::Log(LOGDEBUG, "%sNEWADDON LIFECYCLE destroying %s 0x%lx", tg.getSpaces(),classname.c_str(), (long)(((void*)this)));
 #endif
       }
 
-      bool OnMessage(CGUIMessage& message) override 
+      bool OnMessage(CGUIMessage& message) override
       { XBMC_TRACE; return up() ? P::OnMessage(message) : checkedb(OnMessage(message)); }
-      bool OnAction(const CAction &action) override 
+      bool OnAction(const CAction &action) override
       { XBMC_TRACE; return up() ? P::OnAction(action) : checkedb(OnAction(action)); }
 
       // NOTE!!: This ALWAYS skips up to the CGUIWindow instance.
-      bool OnBack(int actionId) override 
+      bool OnBack(int actionId) override
       { XBMC_TRACE; return up() ? CGUIWindow::OnBack(actionId) : checkedb(OnBack(actionId)); }
 
       void OnDeinitWindow(int nextWindowID) override
@@ -177,18 +177,18 @@ namespace XBMCAddon
       bool isActive() override { XBMC_TRACE; return P::m_active; }
     };
 
-    template <class P /* extends CGUIWindow*/> class InterceptorDialog : 
+    template <class P /* extends CGUIWindow*/> class InterceptorDialog :
       public Interceptor<P>
     {
     public:
       InterceptorDialog(const char* specializedName,
-                        Window* _window, int windowid) : 
+                        Window* _window, int windowid) :
         Interceptor<P>(specializedName, _window, windowid)
       { }
-                    
+
       InterceptorDialog(const char* specializedName,
                   Window* _window, int windowid,
-                  const char* xmlfile) : 
+                  const char* xmlfile) :
         Interceptor<P>(specializedName, _window, windowid,xmlfile)
       { }
     };

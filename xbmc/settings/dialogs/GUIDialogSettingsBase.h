@@ -106,10 +106,10 @@ protected:
   virtual std::shared_ptr<CSetting> GetSetting(const std::string &settingId) = 0;
   virtual unsigned int GetDelayMs() const { return 1500; }
   virtual std::string GetLocalizedString(uint32_t labelId) const;
-  
+
   virtual void OnOkay() { m_confirmed = true; }
   virtual void OnCancel() { }
-  
+
   virtual void SetupView();
   virtual std::set<std::string> CreateSettings();
   virtual void UpdateSettings();
@@ -128,7 +128,7 @@ protected:
 
   virtual CGUIControl* AddSetting(std::shared_ptr<CSetting> pSetting, float width, int &iControlID);
   virtual CGUIControl* AddSettingControl(CGUIControl *pControl, BaseSettingControlPtr pSettingControl, float width, int &iControlID);
-  
+
   virtual void SetupControls(bool createSettings = true);
   virtual void FreeControls();
   virtual void DeleteControls();
@@ -138,7 +138,7 @@ protected:
   virtual void SetDescription(const CVariant &label);
 
   virtual void OnResetSettings();
-  
+
   /*!
     \brief A setting control has been interacted with by the user
 
@@ -158,18 +158,18 @@ protected:
 
   BaseSettingControlPtr GetSettingControl(const std::string &setting);
   BaseSettingControlPtr GetSettingControl(int controlId);
-  
+
   CGUIControl* AddSeparator(float width, int &iControlID);
   CGUIControl* AddGroupLabel(std::shared_ptr<CSettingGroup> group, float width, int &iControlID);
 
   std::vector<std::shared_ptr<CSettingCategory>> m_categories;
   std::vector<BaseSettingControlPtr> m_settingControls;
-  
+
   int m_iSetting;
   int m_iCategory;
   std::shared_ptr<CSettingAction> m_resetSetting;
   std::shared_ptr<CSettingCategory> m_dummyCategory;
-  
+
   CGUISpinControlEx *m_pOriginalSpin;
   CGUISettingsSliderControl *m_pOriginalSlider;
   CGUIRadioButtonControl *m_pOriginalRadioButton;
@@ -179,7 +179,7 @@ protected:
   CGUIImage *m_pOriginalImage;
   CGUILabelControl *m_pOriginalGroupTitle;
   bool m_newOriginalEdit;
-  
+
   BaseSettingControlPtr m_delayedSetting; ///< Current delayed setting \sa CBaseSettingControl::SetDelayed()
   CTimer m_delayedTimer;                  ///< Delayed setting timer
 

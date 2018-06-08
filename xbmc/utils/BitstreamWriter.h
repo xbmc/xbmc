@@ -22,7 +22,7 @@
 
 #include <stdint.h>
 
-class CBitstreamWriter 
+class CBitstreamWriter
 {
 public:
   CBitstreamWriter(uint8_t *buffer, unsigned int buffer_size, int writer_le);

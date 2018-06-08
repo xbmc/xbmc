@@ -56,7 +56,7 @@ namespace XBMCAddon
   {
     Dialog::~Dialog() = default;
 
-    bool Dialog::yesno(const String& heading, const String& line1, 
+    bool Dialog::yesno(const String& heading, const String& line1,
                        const String& line2,
                        const String& line3,
                        const String& nolabel,
@@ -180,7 +180,7 @@ namespace XBMCAddon
         return std::unique_ptr<std::vector<int>>();
     }
 
-    bool Dialog::ok(const String& heading, const String& line1, 
+    bool Dialog::ok(const String& heading, const String& line1,
                     const String& line2,
                     const String& line3)
     {
@@ -204,8 +204,8 @@ namespace XBMCAddon
     }
 
 
-    Alternative<String, std::vector<String> > Dialog::browse(int type, const String& heading, 
-                                const String& s_shares, const String& maskparam, bool useThumbs, 
+    Alternative<String, std::vector<String> > Dialog::browse(int type, const String& heading,
+                                const String& s_shares, const String& maskparam, bool useThumbs,
                                 bool useFileDirectories, const String& defaultt,
                                 bool enableMultiple)
     {
@@ -218,15 +218,15 @@ namespace XBMCAddon
     }
 
     String Dialog::browseSingle(int type, const String& heading, const String& s_shares,
-                                const String& maskparam, bool useThumbs, 
-                                bool useFileDirectories, 
+                                const String& maskparam, bool useThumbs,
+                                bool useFileDirectories,
                                 const String& defaultt )
     {
       DelayedCallGuard dcguard(languageHook);
       std::string value;
       std::string mask = maskparam;
       VECSOURCES *shares = CMediaSourceSettings::GetInstance().GetSources(s_shares);
-      if (!shares) 
+      if (!shares)
         throw WindowException("Error: GetSources given %s is NULL.",s_shares.c_str());
 
       if (useFileDirectories && !maskparam.empty())
@@ -243,14 +243,14 @@ namespace XBMCAddon
     }
 
     std::vector<String> Dialog::browseMultiple(int type, const String& heading, const String& s_shares,
-                          const String& mask, bool useThumbs, 
+                          const String& mask, bool useThumbs,
                           bool useFileDirectories, const String& defaultt )
     {
       DelayedCallGuard dcguard(languageHook);
       VECSOURCES *shares = CMediaSourceSettings::GetInstance().GetSources(s_shares);
       std::vector<String> valuelist;
       String lmask = mask;
-      if (!shares) 
+      if (!shares)
         throw WindowException("Error: GetSources given %s is NULL.",s_shares.c_str());
 
       if (useFileDirectories && !lmask.empty())
@@ -329,7 +329,7 @@ namespace XBMCAddon
         iTime = time;
       if (!icon.empty())
         strIcon = icon;
-      
+
       if (strIcon == getNOTIFICATION_INFO())
         CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, heading, message, iTime, sound);
       else if (strIcon == getNOTIFICATION_WARNING())
@@ -339,7 +339,7 @@ namespace XBMCAddon
       else
         CGUIDialogKaiToast::QueueNotification(strIcon, heading, message, iTime, sound);
     }
-    
+
     String Dialog::input(const String& heading, const String& defaultt, int type, int option, int autoclose)
     {
       DelayedCallGuard dcguard(languageHook);
@@ -431,7 +431,7 @@ namespace XBMCAddon
       }
     }
 
-    void DialogProgress::create(const String& heading, const String& line1, 
+    void DialogProgress::create(const String& heading, const String& line1,
                                 const String& line2,
                                 const String& line3)
     {
@@ -456,7 +456,7 @@ namespace XBMCAddon
       pDialog->Open();
     }
 
-    void DialogProgress::update(int percent, const String& line1, 
+    void DialogProgress::update(int percent, const String& line1,
                                 const String& line2,
                                 const String& line3)
     {
@@ -538,7 +538,7 @@ namespace XBMCAddon
     void DialogProgressBG::create(const String& heading, const String& message)
     {
       DelayedCallGuard dcguard(languageHook);
-      CGUIDialogExtendedProgressBar* pDialog = 
+      CGUIDialogExtendedProgressBar* pDialog =
           CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogExtendedProgressBar>(WINDOW_DIALOG_EXT_PROGRESS);
 
       if (pDialog == NULL)

@@ -636,7 +636,7 @@ bool CAESinkDirectSound::UpdateCacheStatus()
       return false;
     }
   }
-  else 
+  else
     m_BufferTimeouts = 0;
 
   // Calculate available space in the ring buffer

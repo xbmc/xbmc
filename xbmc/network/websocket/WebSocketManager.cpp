@@ -66,7 +66,7 @@ CWebSocket* CWebSocketManager::Handle(const char* data, unsigned int length, std
 
     return NULL;
   }
-  
+
   CWebSocket *websocket = NULL;
   if (strncmp(value, "8", 1) == 0)
     websocket = new CWebSocketV8();

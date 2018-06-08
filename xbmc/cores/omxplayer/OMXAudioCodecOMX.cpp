@@ -240,9 +240,9 @@ int COMXAudioCodecOMX::GetData(unsigned char** dst, double &dts, double &pts)
     {
       m_iSampleFormat = m_pCodecContext->sample_fmt;
       m_pConvert = swr_alloc_set_opts(NULL,
-                      av_get_default_channel_layout(m_pCodecContext->channels), 
+                      av_get_default_channel_layout(m_pCodecContext->channels),
                       m_desiredSampleFormat, m_pCodecContext->sample_rate,
-                      av_get_default_channel_layout(m_pCodecContext->channels), 
+                      av_get_default_channel_layout(m_pCodecContext->channels),
                       m_pCodecContext->sample_fmt, m_pCodecContext->sample_rate,
                       0, NULL);
 

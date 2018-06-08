@@ -38,7 +38,7 @@ CGUIRenderHandle::~CGUIRenderHandle()
 }
 
 void CGUIRenderHandle::Render()
-{ 
+{
   m_renderManager.Render(this);
 }
 

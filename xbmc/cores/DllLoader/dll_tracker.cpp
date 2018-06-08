@@ -68,7 +68,7 @@ void tracker_dll_free(DllLoader* pDll)
 	    DummyListIter dit = (*it)->dummyList.begin();
 	    while (dit != (*it)->dummyList.end()) { free((void*)*dit); ++dit;	}
 	    (*it)->dummyList.clear();
-	
+
       delete (*it);
       it = g_trackedDlls.erase(it);
     }

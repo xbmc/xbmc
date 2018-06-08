@@ -130,7 +130,7 @@ JSONRPC_STATUS CSettingsOperations::GetCategories(const std::string &method, ITr
           varCategory["groups"].push_back(varGroup);
         }
       }
-      
+
       result["categories"].push_back(varCategory);
     }
   }
@@ -149,7 +149,7 @@ JSONRPC_STATUS CSettingsOperations::GetSettings(const std::string &method, ITran
     strSection = filter["section"].asString();
     strCategory = filter["category"].asString();
   }
- 
+
   std::vector<SettingSectionPtr> sections;
 
   if (doFilter)
@@ -719,7 +719,7 @@ bool CSettingsOperations::SerializeSettingControl(std::shared_ptr<const ISetting
 {
   if (control == NULL)
     return false;
-  
+
   const std::string& type = control->GetType();
   obj["type"] = type;
   obj["format"] = control->GetFormat();

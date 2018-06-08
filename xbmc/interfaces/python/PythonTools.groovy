@@ -70,8 +70,8 @@ public class PythonTools
    }
 
    /**
-    * This method gets the FULL class name as a variable including the 
-    * namespace. If converts all of the '::' references to '_' so 
+    * This method gets the FULL class name as a variable including the
+    * namespace. If converts all of the '::' references to '_' so
     * that the result can be used in part, or in whole, as a variable name
     */
    public static String getClassNameAsVariable(Node clazz) { return Helper.findFullClassName(clazz).replaceAll('::','_') }
@@ -114,14 +114,14 @@ public class PythonTools
    }
 
   public static String makeDocString(Node docnode)
-  { 
+  {
     if (docnode?.name() != 'doc')
       throw new RuntimeException("Invalid doc Node passed to PythonTools.makeDocString (" + docnode + ")")
 
     String[] lines = (docnode.@value).split(Helper.newline)
     def ret = ''
-    lines.eachWithIndex { val, index -> 
-      val = ((val =~ /\\n/).replaceAll('')) // remove extraneous \n's 
+    lines.eachWithIndex { val, index ->
+      val = ((val =~ /\\n/).replaceAll('')) // remove extraneous \n's
       val = val.replaceAll("\\\\","\\\\\\\\") // escape backslash
       val = ((val =~ /\"/).replaceAll("\\\\\"")) // escape quotes
       ret += ('"' + val + '\\n"' + (index != lines.length - 1 ? Helper.newline : ''))
@@ -137,7 +137,7 @@ public class PythonTools
     String baseclass = 'NULL'
     List knownbases = []
     if (clazz.baselist)
-    { 
+    {
       if (clazz.baselist[0].base) clazz.baselist[0].base.each {
           Node baseclassnode = Helper.findClassNodeByName(module,it.@name,clazz)
           if (baseclassnode) knownbases.add(baseclassnode)
@@ -145,7 +145,7 @@ public class PythonTools
             System.out.println("WARNING: the base class ${it.@name} for ${Helper.findFullClassName(clazz)} is unrecognized within ${module.@name}.")
         }
     }
-    assert knownbases.size() < 2, 
+    assert knownbases.size() < 2,
       "The class ${Helper.findFullClassName(clazz)} has too many known base classes. Multiple inheritance isn't supported in the code generator. Please \"#ifdef SWIG\" out all but one."
     return knownbases.size() > 0 ? knownbases[0] : null
   }

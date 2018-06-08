@@ -131,7 +131,7 @@ bool CSettingsManager::Initialize(const TiXmlElement *root)
         CLog::Log(LOGWARNING, "CSettingsManager: unable to read section \"%s\"", sectionId.c_str());
       }
     }
-      
+
     sectionNode = sectionNode->NextSibling(SETTING_XML_ELM_SECTION);
   }
 
@@ -530,7 +530,7 @@ void* CSettingsManager::GetSettingOptionsFiller(SettingConstPtr setting)
 
       break;
     }
-    
+
     case SettingOptionsFillerType::String:
     {
       if (setting->GetType() != SettingType::String)
@@ -763,7 +763,7 @@ void CSettingsManager::AddCondition(const std::string &identifier, SettingCondit
 
   m_conditions.AddCondition(identifier, condition, data);
 }
-  
+
 bool CSettingsManager::Serialize(TiXmlNode *parent) const
 {
   if (parent == nullptr)
@@ -796,7 +796,7 @@ bool CSettingsManager::Serialize(TiXmlNode *parent) const
 
   return true;
 }
-  
+
 bool CSettingsManager::Deserialize(const TiXmlNode *node, bool &updated, std::map<std::string, SettingPtr> *loadedSettings /* = nullptr */)
 {
   updated = false;
@@ -847,13 +847,13 @@ bool CSettingsManager::OnSettingChanging(std::shared_ptr<const CSetting> setting
 
   return true;
 }
-  
+
 void CSettingsManager::OnSettingChanged(std::shared_ptr<const CSetting> setting)
 {
   CSharedLock lock(m_settingsCritical);
   if (!m_loaded || setting == nullptr)
     return;
-    
+
   auto settingIt = FindSetting(setting->GetId());
   if (settingIt == m_settings.end())
     return;
@@ -1089,7 +1089,7 @@ bool CSettingsManager::LoadSetting(const TiXmlNode *node, SettingPtr setting, bo
 
       settingElement = settingElement->NextSiblingElement(SETTING_XML_ELM_SETTING);
     }
-  } 
+  }
 
   if (settingElement == nullptr)
     return false;

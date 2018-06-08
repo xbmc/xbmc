@@ -104,7 +104,7 @@ namespace XBMCAddon
 
     void PyGILLock::acquireGil()
     {
-      PyContextState* cur = tlsPyContextState; 
+      PyContextState* cur = tlsPyContextState;
 
       // it's not possible for cur to be NULL (and if it is, we want to fail anyway).
 

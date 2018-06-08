@@ -228,7 +228,7 @@ std::string StringUtils::FormatV(const char *fmt, va_list args)
   int size = FORMAT_BLOCK_SIZE;
   va_list argCopy;
 
-  while (1) 
+  while (1)
   {
     char *cstr = reinterpret_cast<char*>(malloc(sizeof(char) * size));
     if (!cstr)
@@ -271,7 +271,7 @@ std::wstring StringUtils::FormatV(const wchar_t *fmt, va_list args)
 
   int size = FORMAT_BLOCK_SIZE;
   va_list argCopy;
-  
+
   while (1)
   {
     wchar_t *cstr = reinterpret_cast<wchar_t*>(malloc(sizeof(wchar_t) * size));
@@ -281,7 +281,7 @@ std::wstring StringUtils::FormatV(const wchar_t *fmt, va_list args)
     va_copy(argCopy, args);
     int nActual = vswprintf(cstr, size, fmt, argCopy);
     va_end(argCopy);
-    
+
     if (nActual > -1 && nActual < size) // We got a valid result
     {
       std::wstring str(cstr, nActual);
@@ -305,7 +305,7 @@ std::wstring StringUtils::FormatV(const wchar_t *fmt, va_list args)
       size++; // increment for null-termination
 #endif // TARGET_WINDOWS
   }
-  
+
   return L"";
 }
 
@@ -436,12 +436,12 @@ std::string StringUtils::Mid(const std::string &str, size_t first, size_t count 
 {
   if (first + count > str.size())
     count = str.size() - first;
-  
+
   if (first > str.size())
     return std::string();
-  
+
   assert(first + count <= str.size());
-  
+
   return str.substr(first, count);
 }
 
@@ -545,7 +545,7 @@ int StringUtils::Replace(std::string &str, char oldChar, char newChar)
       replacedChars++;
     }
   }
-  
+
   return replacedChars;
 }
 
@@ -556,14 +556,14 @@ int StringUtils::Replace(std::string &str, const std::string &oldStr, const std:
 
   int replacedChars = 0;
   size_t index = 0;
-  
+
   while (index < str.size() && (index = str.find(oldStr, index)) != std::string::npos)
   {
     str.replace(index, oldStr.size(), newStr);
     index += newStr.size();
     replacedChars++;
   }
-  
+
   return replacedChars;
 }
 
@@ -700,7 +700,7 @@ std::vector<std::string> StringUtils::Split(const std::string& input, const std:
 std::vector<std::string> StringUtils::SplitMulti(const std::vector<std::string> &input, const std::vector<std::string> &delimiters, unsigned int iMaxStrings /* = 0 */)
 {
   if (input.empty())
-    return std::vector<std::string>(); 
+    return std::vector<std::string>();
 
   std::vector<std::string> results(input);
 
@@ -724,8 +724,8 @@ std::vector<std::string> StringUtils::SplitMulti(const std::vector<std::string> 
     return results;
   }
 
-  // Control the number of strings input is split into, keeping the original strings. 
-  // Note iMaxStrings > input.size() 
+  // Control the number of strings input is split into, keeping the original strings.
+  // Note iMaxStrings > input.size()
   int iNew = iMaxStrings - results.size();
   for (size_t di = 0; di < delimiters.size(); di++)
   {
@@ -997,11 +997,11 @@ std::string StringUtils::BinaryStringToString(const std::string& in)
   out.reserve(in.size() / 2);
   for (const char *cur = in.c_str(), *end = cur + in.size(); cur != end; ++cur) {
     if (*cur == '\\') {
-      ++cur;                                                                             
+      ++cur;
       if (cur == end) {
         break;
       }
-      if (isdigit(*cur)) {                                                             
+      if (isdigit(*cur)) {
         char* end;
         unsigned long num = strtol(cur, &end, 10);
         cur = end - 1;

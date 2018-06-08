@@ -243,7 +243,7 @@ std::string CNetworkInterfaceLinux::GetCurrentDefaultGateway(void)
    for (next = buf; next < lim; next += rtm->rtm_msglen) {
       rtm = (struct rt_msghdr *)next;
       sa = (struct sockaddr *)(rtm + 1);
-      sa = (struct sockaddr *)(SA_SIZE(sa) + (char *)sa);	
+      sa = (struct sockaddr *)(SA_SIZE(sa) + (char *)sa);
       sockin = (struct sockaddr_in *)sa;
       if (inet_ntop(AF_INET, &sockin->sin_addr.s_addr,
          line, sizeof(line)) == NULL) {
@@ -339,16 +339,16 @@ std::vector<CNetworkInterface*>& CNetworkLinux::GetInterfaceList(void)
 CNetworkInterface* CNetworkLinux::GetFirstConnectedInterface(void)
 {
     CNetworkInterface *pNetIf=CNetworkBase::GetFirstConnectedInterface();
-    
+
     // no connected Interfaces found? - requeryInterfaceList
     if (!pNetIf)
     {
-        CLog::Log(LOGDEBUG,"%s no connected interface found - requery list",__FUNCTION__);        
-        queryInterfaceList();        
+        CLog::Log(LOGDEBUG,"%s no connected interface found - requery list",__FUNCTION__);
+        queryInterfaceList();
         //retry finding a connected if
         pNetIf = CNetworkBase::GetFirstConnectedInterface();
     }
-    
+
     return pNetIf;
 }
 
@@ -376,7 +376,7 @@ void CNetworkLinux::GetMacAddress(const std::string& interfaceName, char rawMac[
   {
     if(interfaceName == interface->ifa_name)
     {
-      if ( (interface->ifa_addr->sa_family == AF_LINK) && (((const struct sockaddr_dl *) interface->ifa_addr)->sdl_type == IFT_ETHER) ) 
+      if ( (interface->ifa_addr->sa_family == AF_LINK) && (((const struct sockaddr_dl *) interface->ifa_addr)->sdl_type == IFT_ETHER) )
       {
         dlAddr = (const struct sockaddr_dl *) interface->ifa_addr;
         base = (const uint8_t *) &dlAddr->sdl_data[dlAddr->sdl_nlen];
@@ -495,7 +495,7 @@ std::vector<std::string> CNetworkLinux::GetNameServers(void)
       }
     }
     pclose(pipe);
-  } 
+  }
   if (result.empty())
     CLog::Log(LOGWARNING, "Unable to determine nameserver");
 #elif defined(TARGET_ANDROID)
@@ -545,7 +545,7 @@ bool CNetworkLinux::PingHost(unsigned long remote_ip, unsigned int timeout_ms)
 {
   char cmd_line [64];
 
-  struct in_addr host_ip; 
+  struct in_addr host_ip;
   host_ip.s_addr = remote_ip;
 
 #if defined (TARGET_DARWIN) || defined (TARGET_FREEBSD)
@@ -581,35 +581,35 @@ bool CNetworkInterfaceLinux::GetHostMacAddress(unsigned long host_ip, std::strin
   struct sockaddr_inarp *sin;
   struct sockaddr_dl *sdl;
   int mib[6];
-  
+
   mac = "";
-  
+
   mib[0] = CTL_NET;
   mib[1] = PF_ROUTE;
   mib[2] = 0;
   mib[3] = AF_INET;
   mib[4] = NET_RT_FLAGS;
   mib[5] = RTF_LLINFO;
-  
+
   if (sysctl(mib, ARRAY_SIZE(mib), NULL, &needed, NULL, 0) == 0)
-  {   
+  {
     buf = (char*)malloc(needed);
     if (buf)
-    {      
+    {
       if (sysctl(mib, ARRAY_SIZE(mib), buf, &needed, NULL, 0) == 0)
-      {        
-        for (next = buf; next < buf + needed; next += rtm->rtm_msglen) 
+      {
+        for (next = buf; next < buf + needed; next += rtm->rtm_msglen)
         {
-          
+
           rtm = (struct rt_msghdr *)next;
           sin = (struct sockaddr_inarp *)(rtm + 1);
           sdl = (struct sockaddr_dl *)(sin + 1);
-          
+
           if (host_ip != sin->sin_addr.s_addr || sdl->sdl_alen < 6)
             continue;
-          
+
           u_char *cp = (u_char*)LLADDR(sdl);
-          
+
           mac = StringUtils::Format("%02X:%02X:%02X:%02X:%02X:%02X",
                                     cp[0], cp[1], cp[2], cp[3], cp[4], cp[5]);
           ret = true;
@@ -649,7 +649,7 @@ bool CNetworkInterfaceLinux::GetHostMacAddress(unsigned long host_ip, std::strin
 
   struct sockaddr* res = &areq.arp_ha;
   mac = StringUtils::Format("%02X:%02X:%02X:%02X:%02X:%02X",
-    (uint8_t) res->sa_data[0], (uint8_t) res->sa_data[1], (uint8_t) res->sa_data[2], 
+    (uint8_t) res->sa_data[0], (uint8_t) res->sa_data[1], (uint8_t) res->sa_data[2],
     (uint8_t) res->sa_data[3], (uint8_t) res->sa_data[4], (uint8_t) res->sa_data[5]);
 
   for (int i=0; i<6; ++i)

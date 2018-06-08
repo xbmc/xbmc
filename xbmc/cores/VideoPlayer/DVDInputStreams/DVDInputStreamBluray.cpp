@@ -537,7 +537,7 @@ void CDVDInputStreamBluray::ProcessEvent() {
 
   int pid = -1;
   switch (m_event.event) {
-  
+
    /* errors */
 
   case BD_EVENT_ERROR:

@@ -232,7 +232,7 @@ int CAESinkAUDIOTRACK::AudioTrackWrite(char* audioData, int offsetInBytes, int s
     else
       written = m_at_jni->write(m_charbuf, 0, sizeInBytes - offsetInBytes);
   }
-  
+
   return written;
 }
 

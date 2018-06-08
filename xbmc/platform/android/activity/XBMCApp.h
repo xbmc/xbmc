@@ -141,7 +141,7 @@ public:
   static ANativeWindow* GetNativeWindow(int timeout);
   static int SetBuffersGeometry(int width, int height, int format);
   static int android_printf(const char *format, ...);
-  
+
   static int GetBatteryLevel();
   static bool EnableWakeLock(bool on);
   static bool HasFocus() { return m_hasFocus; }

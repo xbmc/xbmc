@@ -2510,7 +2510,7 @@ void CVideoPlayer::OnExit()
   m_outboundEvents->Submit([=]() {
     cb->OnPlayerCloseFile(fileItem, bookmark);
   });
-    
+
   // destroy objects
   SAFE_DELETE(m_pDemuxer);
   SAFE_DELETE(m_pSubtitleDemuxer);
@@ -3536,7 +3536,7 @@ bool CVideoPlayer::OpenStream(CCurrentStream& current, int64_t demuxerId, int iS
     stream = m_pSubtitleDemuxer->GetStream(demuxerId, iStream);
     if(!stream || stream->disabled)
       return false;
-    
+
     m_pSubtitleDemuxer->EnableStream(demuxerId, iStream, true);
 
     hint.Assign(*stream, true);
@@ -4759,7 +4759,7 @@ void CVideoPlayer::UpdatePlayState(double timeout)
   state.timestamp = m_clock.GetAbsoluteClock();
 
   m_processInfo->SetPlayTimes(state.startTime, state.time, state.timeMin, state.timeMax);
-  
+
   CSingleLock lock(m_StateSection);
   m_State = state;
 }

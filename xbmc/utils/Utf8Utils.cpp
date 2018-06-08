@@ -109,7 +109,7 @@ inline size_t CUtf8Utils::SizeOfUtf8Char(const char* const str)
 
   /* U+0080 - U+07FF in UTF-8 */                    /* binary representation and range */
   if (chr >= 0xC2 && chr <= 0xDF                    /* C2=1100 0010 - DF=1101 1111 */
-      // as str is null terminated, 
+      // as str is null terminated,
       && ((strU[1] & 0xC0) == 0x80))  /* C0=1100 0000, 80=1000 0000 - BF=1011 1111 */
     return 2;  // valid UTF-8 2 bytes sequence
 

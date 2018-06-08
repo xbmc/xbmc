@@ -58,7 +58,7 @@ class DllLibPlist : public DllDynamic, DllLibPlistInterface
 
 
   BEGIN_METHOD_RESOLVE()
-    RESOLVE_METHOD_RENAME(plist_new_dict,         plist_new_dict)    
+    RESOLVE_METHOD_RENAME(plist_new_dict,         plist_new_dict)
     RESOLVE_METHOD_RENAME(plist_free,             plist_free)
     RESOLVE_METHOD_RENAME(plist_dict_get_size,    plist_dict_get_size)
     RESOLVE_METHOD_RENAME(plist_from_bin,         plist_from_bin)

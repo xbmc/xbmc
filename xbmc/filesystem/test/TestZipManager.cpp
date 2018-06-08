@@ -34,7 +34,7 @@ TEST(TestZipManager, PathTraversal)
   ASSERT_TRUE(pathTraversal.RegFind("test/../test.txt") >= 0);
   ASSERT_TRUE(pathTraversal.RegFind("test\\../test.txt") >= 0);
   ASSERT_TRUE(pathTraversal.RegFind("test\\..\\test.txt") >= 0);
-  
+
   ASSERT_FALSE(pathTraversal.RegFind("...") >= 0);
   ASSERT_FALSE(pathTraversal.RegFind("..test.txt") >= 0);
   ASSERT_FALSE(pathTraversal.RegFind("test.txt..") >= 0);

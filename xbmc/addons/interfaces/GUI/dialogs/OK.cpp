@@ -22,7 +22,7 @@
 #include "addons/kodi-addon-dev-kit/include/kodi/gui/dialogs/OK.h"
 
 #include "addons/binary-addons/AddonDll.h"
-#include "messaging/helpers/DialogOKHelper.h" 
+#include "messaging/helpers/DialogOKHelper.h"
 #include "utils/log.h"
 #include "utils/Variant.h"
 using namespace KODI::MESSAGING;

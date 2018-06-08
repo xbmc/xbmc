@@ -30,7 +30,7 @@ namespace XBMCAddon
 
   /**
    * This class is the superclass for all API classes that are expected
-   * to be able to handle cross-language polymorphism. 
+   * to be able to handle cross-language polymorphism.
    */
   class AddonCallback : public AddonClass
   {

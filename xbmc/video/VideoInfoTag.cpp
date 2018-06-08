@@ -298,7 +298,7 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathI
     season.InsertEndChild(value);
     movie->InsertEndChild(season);
   }
- 
+
   TiXmlElement resume("resume");
   XMLUtils::SetFloat(&resume, "position", (float)m_resumePoint.timeInSeconds);
   XMLUtils::SetFloat(&resume, "total", (float)m_resumePoint.totalTimeInSeconds);
@@ -904,16 +904,16 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
   if (XMLUtils::GetString(movie, "tagline", value))
     SetTagLine(value);
 
-  
+
   if (XMLUtils::GetString(movie, "runtime", value) && !value.empty())
     m_duration = GetDurationFromMinuteString(StringUtils::Trim(value));
-  
+
   if (XMLUtils::GetString(movie, "mpaa", value))
     SetMPAARating(value);
 
   XMLUtils::GetInt(movie, "playcount", m_playCount);
   XMLUtils::GetDate(movie, "lastplayed", m_lastPlayed);
-  
+
   if (XMLUtils::GetString(movie, "file", value))
     SetFile(value);
 
@@ -956,7 +956,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
     if (XMLUtils::GetInt(movie, "year", year))
       SetYear(year);
   }
-  
+
   if (XMLUtils::GetString(movie, "status", value))
     SetStatus(value);
 
@@ -964,7 +964,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
     SetProductionCode(value);
 
   XMLUtils::GetDate(movie, "aired", m_firstAired);
-  
+
   if (XMLUtils::GetString(movie, "album", value))
     SetAlbum(value);
 
@@ -994,7 +994,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
   if (prioritise && iThumbCount && iThumbCount != m_strPictureURL.m_url.size())
   {
     rotate(m_strPictureURL.m_url.begin(),
-           m_strPictureURL.m_url.begin()+iThumbCount, 
+           m_strPictureURL.m_url.begin()+iThumbCount,
            m_strPictureURL.m_url.end());
     m_strPictureURL.m_xml = xmlAdd;
   }
@@ -1045,10 +1045,10 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
     {
       SActorInfo info;
       info.strName = actor->FirstChild()->Value();
-      
+
       if (XMLUtils::GetString(node, "role", value))
         info.strRole = StringUtils::Trim(value);
-      
+
       XMLUtils::GetInt(node, "order", info.order);
       const TiXmlElement* thumb = node->FirstChildElement("thumb");
       while (thumb)

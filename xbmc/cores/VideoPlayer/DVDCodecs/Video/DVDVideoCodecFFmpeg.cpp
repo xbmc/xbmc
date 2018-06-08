@@ -525,7 +525,7 @@ void CDVDVideoCodecFFmpeg::SetFilters()
       case 180:
         m_filters_next += "vflip,hflip";
         break;
-      case 270:  
+      case 270:
         m_filters_next += "transpose=2";
         break;
       default:

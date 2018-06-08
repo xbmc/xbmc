@@ -306,8 +306,8 @@ void CGUIWindowMusicBase::RefreshContent(const std::string& strContent)
   if ( CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_MUSIC_NAV &&
     m_vecItems->GetContent() == strContent &&
     m_vecItems->GetSortMethod() == SortByUserRating)
-    // When music library window is active and showing songs or albums sorted 
-    // by userrating refresh the list to resort items and show new userrating 
+    // When music library window is active and showing songs or albums sorted
+    // by userrating refresh the list to resort items and show new userrating
     Refresh(true);
 }
 
@@ -1123,7 +1123,7 @@ void CGUIWindowMusicBase::OnAssignContent(const std::string &path)
 {
   // Music scrapers are not source specific, so unlike video there is no content selection logic here.
   // Called on having added a music source, this starts scanning items into library when required
- 
+
   // "Add to library" yes/no dialog with additional "settings" custom button
   // "Do you want to add the media from this source to your library?"
   DialogResponse rep = DialogResponse::CUSTOM;
@@ -1133,9 +1133,9 @@ void CGUIWindowMusicBase::OnAssignContent(const std::string &path)
     if (rep == DialogResponse::CUSTOM)
       // Edit default info provider settings so can be applied during scan
       CGUIDialogInfoProviderSettings::Show();
-  }  
-  if (rep == DialogResponse::YES)  
+  }
+  if (rep == DialogResponse::YES)
     g_application.StartMusicScan(path, true);
-  
+
 }
 

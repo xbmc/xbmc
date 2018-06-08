@@ -112,6 +112,6 @@ bool XSLTUtils::SetStylesheet(const std::string& stylesheet)
     m_xmlStylesheet = NULL;
     return false;
   }
-  
+
   return true;
 }

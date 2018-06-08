@@ -38,7 +38,7 @@ namespace MUSIC_INFO
      * Destroys this ByteVectorStream instance.
      */
     ~TagLibVFSStream() override;
-    
+
     /*!
      * Returns the file name in the local file system encoding.
      */

@@ -228,7 +228,7 @@ int CDateTimeSpan::GetSecondsTotal() const
 {
   ULARGE_INTEGER time;
   ToULargeInt(time);
-  
+
   return (int)(time.QuadPart/SECONDS_TO_FILETIME);
 }
 

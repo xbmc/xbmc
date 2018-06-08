@@ -119,7 +119,7 @@ bool CDVDSubtitleStream::IsIncompatible(CDVDInputStream* pInputStream, XUTILS::a
   {
     *bytesRead = (size_t)read;
   }
-  
+
   if (read >= 4)
   {
     if (!std::memcmp(buf.get(), vobsub, 4))

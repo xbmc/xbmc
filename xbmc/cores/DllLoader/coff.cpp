@@ -184,7 +184,7 @@ int CoffLoader::LoadCoffHModule(FILE *fp)
 
   if (fseek(fp, 0x3c, SEEK_SET) != 0)
     return 0;
-  
+
   int Offset = 0;
   if (!fread(&Offset, sizeof(int), 1, fp) || (Offset <= 0))
     return 0;
@@ -315,7 +315,7 @@ int CoffLoader::LoadStringTable(FILE *fp)
 {
   int StringTableSize;
   char *tmp = NULL;
-  
+
   int Offset = ftell(fp);
   if (Offset < 0)
     return 0;

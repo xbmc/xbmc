@@ -470,7 +470,7 @@ int64_t Interface_Filesystem::get_file_length(void* kodiBase, void* file)
     CLog::Log(LOGERROR, "Interface_Filesystem::%s - invalid data (addon='%p', file='%p')", __FUNCTION__, kodiBase, file);
     return -1;
   }
-  
+
   return static_cast<CFile*>(file)->GetLength();
 }
 

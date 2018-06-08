@@ -31,7 +31,7 @@
 #include "DbUrl.h"
 #include "ServiceBroker.h"
 
-#if defined(HAS_MYSQL) || defined(HAS_MARIADB) 
+#if defined(HAS_MYSQL) || defined(HAS_MARIADB)
 #include "mysqldataset.h"
 #endif
 
@@ -143,7 +143,7 @@ bool CDatabase::ExistsSubQuery::BuildSQL(std::string & strSQL)
       strWhere += " AND ";
     strWhere += where;
   }
-  if (!strWhere.empty())      
+  if (!strWhere.empty())
     strSQL += " WHERE " + strWhere;
 
   strSQL += ")";

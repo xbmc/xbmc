@@ -89,12 +89,12 @@ namespace MUSIC_UTILS
           // Check song album artists
           result = db.IsSongAlbumArtist(idSong, itemID);
         }
-      }      
+      }
       return result;
     }
 
     // Asynchronously update song, album or artist art in library
-    // and trigger update to album & artist art of the currently playing song 
+    // and trigger update to album & artist art of the currently playing song
     // and songs queued in the current playlist
     bool DoWork(void) override
     {
@@ -109,13 +109,13 @@ namespace MUSIC_UTILS
         db.SetArtForItem(itemID, type, m_artType, m_newArt);
       else
         db.RemoveArtForItem(itemID, type, m_artType);
-     
+
       /* Update the art of the songs of the current music playlist.
       Song thumb is often a fallback from the album and fanart is from the artist(s).
-      Clear the art if it is a song from the album or by the artist 
+      Clear the art if it is a song from the album or by the artist
       (as song or album artist) that has modified artwork. The new artwork gets
       loaded when the playlist is shown.
-      */      
+      */
       bool clearcache(false);
       CPlayList& playlist = CServiceBroker::GetPlaylistPlayer().GetPlaylist(PLAYLIST_MUSIC);
       for (int i = 0; i < playlist.size(); ++i)
@@ -141,7 +141,7 @@ namespace MUSIC_UTILS
         if (HasSongExtraArtChanged(songitem, type, itemID, db))
           g_application.UpdateCurrentPlayArt();
       }
-      
+
       db.Close();
       return true;
     }
@@ -315,7 +315,7 @@ namespace MUSIC_UTILS
     if (tag && tag->GetType() == MediaTypeSong && tag->GetDatabaseId() > 0)
       // Use song ID when known
       job = new CSetSongRatingJob(tag->GetDatabaseId(), userrating);
-    else 
+    else
       job = new CSetSongRatingJob(pItem->GetPath(), userrating);
     CJobManager::GetInstance().AddJob(job, NULL);
   }

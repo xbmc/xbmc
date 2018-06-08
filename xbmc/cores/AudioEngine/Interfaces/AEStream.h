@@ -148,7 +148,7 @@ public:
    * Returns true if the is stream has finished draining
    */
   virtual bool IsDrained() = 0;
-  
+
   /**
    * Flush all buffers dropping the audio data
    */
@@ -258,7 +258,7 @@ public:
     * @param from The volume level to fade from (0.0f-1.0f) - See notes
     * @param target The volume level to fade to (0.0f-1.0f)
     * @param time The amount of time in milliseconds for the fade to occur
-    * @note The from parameter does not set the streams volume, it is only used to calculate the fade time properly 
+    * @note The from parameter does not set the streams volume, it is only used to calculate the fade time properly
     */
   virtual void FadeVolume(float from, float target, unsigned int time) {} /* FIXME: once all the engines have these new methods */
 

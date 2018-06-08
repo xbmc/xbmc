@@ -34,26 +34,26 @@ CVideoDatabaseFile::~CVideoDatabaseFile(void) = default;
 CVideoInfoTag CVideoDatabaseFile::GetVideoTag(const CURL& url)
 {
   CVideoInfoTag tag;
-  
+
   std::string strFileName = URIUtils::GetFileName(url.Get());
   if (strFileName.empty())
     return tag;
-  
+
   URIUtils::RemoveExtension(strFileName);
   if (!StringUtils::IsNaturalNumber(strFileName))
     return tag;
   long idDb = atol(strFileName.c_str());
-  
+
   VIDEODB_CONTENT_TYPE type = GetType(url);
   if (type == VIDEODB_CONTENT_UNKNOWN)
     return tag;
-  
+
   CVideoDatabase videoDatabase;
   if (!videoDatabase.Open())
     return tag;
-  
+
   tag = videoDatabase.GetDetailsByTypeAndId(type, idDb);
-  
+
   return tag;
 }
 

@@ -41,12 +41,12 @@ public:
   volatile bool haslock;
   volatile bool obtainedlock;
 
-  inline locker(CSharedSection& o, std::atomic<long>* mutex_ = NULL, CEvent* wait_ = NULL) : 
+  inline locker(CSharedSection& o, std::atomic<long>* mutex_ = NULL, CEvent* wait_ = NULL) :
     sec(o), wait(wait_), mutex(mutex_), haslock(false), obtainedlock(false) {}
-  
-  inline locker(CSharedSection& o, CEvent* wait_ = NULL) : 
+
+  inline locker(CSharedSection& o, CEvent* wait_ = NULL) :
     sec(o), wait(wait_), mutex(NULL), haslock(false), obtainedlock(false) {}
-  
+
   void Run() override
   {
     AtomicGuard g(mutex);
@@ -157,7 +157,7 @@ TEST(TestSharedSection, TwoCase)
     EXPECT_TRUE(l2.haslock);
 
     event.Set();
-    
+
     EXPECT_TRUE(waitThread2.timed_join(MILLIS(10000)));
   }
 }
@@ -214,7 +214,7 @@ TEST(TestMultipleSharedSection, General)
     EXPECT_TRUE(l5.haslock);
 
     event.Set();
-    
+
     EXPECT_TRUE(waitThread1.timed_join(MILLIS(10000)));
     EXPECT_TRUE(waitThread2.timed_join(MILLIS(10000)));
     EXPECT_TRUE(waitThread3.timed_join(MILLIS(10000)));

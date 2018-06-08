@@ -61,7 +61,7 @@ public:
    \param bufferoutSize The output buffer size
    \return true if the thumbnail was successfully created
    */
-  virtual bool CreateThumbnailFromSurface(unsigned char* bufferin, unsigned int width, unsigned int height, unsigned int format, unsigned int pitch, const std::string& destFile, 
+  virtual bool CreateThumbnailFromSurface(unsigned char* bufferin, unsigned int width, unsigned int height, unsigned int format, unsigned int pitch, const std::string& destFile,
                                           unsigned char* &bufferout, unsigned int &bufferoutSize)=0;
   /*!
    \brief Frees the output buffer allocated by CreateThumbnailFromSurface
@@ -83,5 +83,5 @@ protected:
   unsigned int m_originalHeight;  ///< original image height before scaling or cropping
   unsigned int m_orientation;
   bool m_hasAlpha;
- 
+
 };

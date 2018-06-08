@@ -35,7 +35,7 @@ class CMultiProvider : public IListProvider
 {
 public:
   CMultiProvider(const TiXmlNode *first, int parentID);
-  
+
   bool Update(bool forceRefresh) override;
   void Fetch(std::vector<CGUIListItemPtr> &items) override;
   bool IsUpdating() const override;
@@ -43,7 +43,7 @@ public:
   bool OnClick(const CGUIListItemPtr &item) override;
   bool OnInfo(const CGUIListItemPtr &item) override;
   bool OnContextMenu(const CGUIListItemPtr &item) override;
-  
+
 protected:
   typedef size_t item_key_type;
   static item_key_type GetItemKey(CGUIListItemPtr const &item);

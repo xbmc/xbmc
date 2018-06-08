@@ -125,7 +125,7 @@ namespace SOCKETS
           hash = 0xfffffffeu;
         return (unsigned long)htonl(hash);
       }
-      else 
+      else
         return (unsigned long)saddr.saddr4.sin_addr.s_addr;
     }
   };

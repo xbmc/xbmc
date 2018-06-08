@@ -36,7 +36,7 @@ class CZeroconfBrowserAndroidDiscover : public jni::CJNIXBMCNsdManagerDiscoveryL
 public:
   explicit CZeroconfBrowserAndroidDiscover(CZeroconfBrowserAndroid* browser);
   bool IsActive() { return m_isActive; }
-  
+
   // CJNINsdManagerDiscoveryListener interface
 public:
   void onDiscoveryStarted(const std::string& serviceType);
@@ -45,7 +45,7 @@ public:
   void onServiceLost(const jni::CJNINsdServiceInfo& serviceInfo);
   void onStartDiscoveryFailed(const std::string& serviceType, int errorCode);
   void onStopDiscoveryFailed(const std::string& serviceType, int errorCode);
-  
+
 protected:
   CZeroconfBrowserAndroid* m_browser;
   bool m_isActive;
@@ -55,12 +55,12 @@ class CZeroconfBrowserAndroidResolve : public jni::CJNIXBMCNsdManagerResolveList
 {
 public:
   CZeroconfBrowserAndroidResolve();
-  
+
   // CJNINsdManagerResolveListener interface
 public:
   void onResolveFailed(const jni::CJNINsdServiceInfo& serviceInfo, int errorCode);
   void onServiceResolved(const jni::CJNINsdServiceInfo& serviceInfo);
-  
+
   CEvent m_resolutionDone;
   int m_errorCode;
   jni::CJNINsdServiceInfo m_retServiceInfo;
@@ -69,18 +69,18 @@ public:
 class CZeroconfBrowserAndroid : public CZeroconfBrowser
 {
   friend class CZeroconfBrowserAndroidDiscover;
-  
+
 public:
   CZeroconfBrowserAndroid();
   virtual ~CZeroconfBrowserAndroid();
-  
+
   // CZeroconfBrowser interface
 protected:
   bool doAddServiceType(const std::string& fcr_service_type);
   bool doRemoveServiceType(const std::string& fcr_service_type);
   std::vector<ZeroconfService> doGetFoundServices();
   bool doResolveService(ZeroconfService& fr_service, double f_timeout);
-  
+
   void addDiscoveredService(CZeroconfBrowserAndroidDiscover* browser, const CZeroconfBrowser::ZeroconfService& fcr_service);
   void removeDiscoveredService(CZeroconfBrowserAndroidDiscover* browser, const CZeroconfBrowser::ZeroconfService& fcr_service);
 
@@ -90,7 +90,7 @@ private:
   //shared variables (with guard)
   CCriticalSection m_data_guard;
   typedef std::map<std::string, CZeroconfBrowserAndroidDiscover*> tBrowserMap;
-  // tBrowserMap maps service types the corresponding browser  
+  // tBrowserMap maps service types the corresponding browser
   tBrowserMap m_service_browsers;
   //tDiscoveredServicesMap maps browsers to their discovered services + a ref-count for each service
   //ref-count is needed, because a service might pop up more than once, if there's more than one network-iface

@@ -125,7 +125,7 @@ public:
   float GetGammaDst();
 
   static bool GetRGBYuvCoefs(AVColorSpace colspace, float (&coefs)[3]);
-  
+
 protected:
   void GenMat();
 
