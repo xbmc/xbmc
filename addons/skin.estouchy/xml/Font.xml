@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fonts>
-	<fontset id="Default" idloc="31390"> 
+	<fontset id="Default" idloc="31390">
 	<!-- Normal Fonts -->
 		<font>
 			<name>font13</name>
@@ -110,7 +110,7 @@
 			<linespacing>0.80</linespacing>
 		</font>
 	</fontset>
-	<fontset id="Arial" idloc="31391"> 
+	<fontset id="Arial" idloc="31391">
 	<!-- Normal Fonts -->
 		<font>
 			<name>font13</name>

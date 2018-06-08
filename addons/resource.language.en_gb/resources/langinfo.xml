@@ -121,7 +121,7 @@
       <thousandsseparator groupingformat="\3">,</thousandsseparator>
       <decimalseparator>.</decimalseparator>
     </region>
-    
+
     <region name="Central Europe" locale="DE">
       <dateshort>DD-MM-YYYY</dateshort>
       <datelong>DDDD, D MMMM YYYY</datelong>
