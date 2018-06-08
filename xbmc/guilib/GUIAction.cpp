@@ -21,7 +21,6 @@
 #include "GUIAction.h"
 #include "utils/StringUtils.h"
 #include "GUIWindowManager.h"
-#include "GUIControl.h"
 #include "GUIInfoManager.h"
 #include "GUIComponent.h"
 #include "ServiceBroker.h"
