@@ -37,7 +37,7 @@ CGUIInfoLabel::CGUIInfoLabel(const std::string &label, const std::string &fallba
 
 int CGUIInfoLabel::GetIntValue(int contextWindow) const
 {
-  std::string label = GetLabel(contextWindow);
+  const std::string label = GetLabel(contextWindow);
   if (!label.empty())
     return strtol(label.c_str(), NULL, 10);
 
@@ -127,7 +127,7 @@ bool CGUIInfoLabel::IsConstant() const
 bool CGUIInfoLabel::ReplaceSpecialKeywordReferences(const std::string &strInput, const std::string &strKeyword, const StringReplacerFunc &func, std::string &strOutput)
 {
   // replace all $strKeyword[value] with resolved strings
-  std::string dollarStrPrefix = "$" + strKeyword + "[";
+  const std::string dollarStrPrefix = "$" + strKeyword + "[";
 
   size_t index = 0;
   size_t startPos;
@@ -184,7 +184,7 @@ std::string AddonReplacer(const std::string &str)
 {
   // assumes "addon.id #####"
   size_t length = str.find(" ");
-  std::string addonid = str.substr(0, length);
+  const std::string addonid = str.substr(0, length);
   int stringid = atoi(str.substr(length + 1).c_str());
   return g_localizeStrings.GetAddonString(addonid, stringid);
 }
@@ -339,12 +339,12 @@ std::string CGUIInfoLabel::CInfoPortion::Get() const
 
 std::string CGUIInfoLabel::GetLabel(const std::string &label, int contextWindow /*= 0*/, bool preferImage /*= false */)
 { // translate the label
-  CGUIInfoLabel info(label, "", contextWindow);
+  const CGUIInfoLabel info(label, "", contextWindow);
   return info.GetLabel(contextWindow, preferImage);
 }
 
 std::string CGUIInfoLabel::GetItemLabel(const std::string &label, const CGUIListItem *item, bool preferImage /*= false */)
 { // translate the label
-  CGUIInfoLabel info(label);
+  const CGUIInfoLabel info(label);
   return info.GetItemLabel(item, preferImage);
 }
