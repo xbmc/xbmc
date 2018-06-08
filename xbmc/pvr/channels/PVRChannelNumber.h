@@ -26,8 +26,7 @@ namespace PVR
   class CPVRChannelNumber
   {
   public:
-    CPVRChannelNumber()
-    : CPVRChannelNumber(0, 0) {}
+    CPVRChannelNumber() = default;
 
     CPVRChannelNumber(unsigned int iChannelNumber, unsigned int iSubChannelNumber)
     : m_iChannelNumber(iChannelNumber), m_iSubChannelNumber(iSubChannelNumber) {}
@@ -66,7 +65,7 @@ namespace PVR
     std::string FormattedChannelNumber() const;
 
   private:
-    unsigned int m_iChannelNumber;
-    unsigned int m_iSubChannelNumber;
+    unsigned int m_iChannelNumber = 0;
+    unsigned int m_iSubChannelNumber = 0;
   };
 }
