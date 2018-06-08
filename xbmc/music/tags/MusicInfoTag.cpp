@@ -36,62 +36,7 @@ CMusicInfoTag::CMusicInfoTag(void)
   Clear();
 }
 
-CMusicInfoTag::CMusicInfoTag(const CMusicInfoTag& tag)
-{
-  *this = tag;
-}
-
 CMusicInfoTag::~CMusicInfoTag() = default;
-
-CMusicInfoTag& CMusicInfoTag::operator =(const CMusicInfoTag& tag)
-{
-  if (this == &tag) return * this;
-
-  m_strURL = tag.m_strURL;
-  m_artist = tag.m_artist;
-  m_strArtistSort = tag.m_strArtistSort;
-  m_strArtistDesc = tag.m_strArtistDesc;
-  m_strComposerSort = tag.m_strComposerSort;
-  m_albumArtist = tag.m_albumArtist;
-  m_strAlbumArtistSort = tag.m_strAlbumArtistSort;
-  m_strAlbumArtistDesc = tag.m_strAlbumArtistDesc;
-  m_strAlbum = tag.m_strAlbum;
-  m_genre = tag.m_genre;
-  m_strTitle = tag.m_strTitle;
-  m_strMusicBrainzTrackID = tag.m_strMusicBrainzTrackID;
-  m_musicBrainzArtistID = tag.m_musicBrainzArtistID;
-  m_musicBrainzArtistHints = tag.m_musicBrainzArtistHints;
-  m_strMusicBrainzAlbumID = tag.m_strMusicBrainzAlbumID;
-  m_strMusicBrainzReleaseGroupID = tag.m_strMusicBrainzReleaseGroupID;
-  m_musicBrainzAlbumArtistID = tag.m_musicBrainzAlbumArtistID;
-  m_musicBrainzAlbumArtistHints = tag.m_musicBrainzAlbumArtistHints;
-  m_musicRoles = tag.m_musicRoles;
-  m_strComment = tag.m_strComment;
-  m_strMood = tag.m_strMood;
-  m_strRecordLabel = tag.m_strRecordLabel;
-  m_strLyrics = tag.m_strLyrics;
-  m_cuesheet = tag.m_cuesheet;
-  m_lastPlayed = tag.m_lastPlayed;
-  m_dateAdded = tag.m_dateAdded;
-  m_bCompilation = tag.m_bCompilation;
-  m_iDuration = tag.m_iDuration;
-  m_iTrack = tag.m_iTrack;
-  m_bLoaded = tag.m_bLoaded;
-  m_Rating = tag.m_Rating;
-  m_Userrating = tag.m_Userrating;
-  m_Votes = tag.m_Votes;
-  m_listeners = tag.m_listeners;
-  m_iTimesPlayed = tag.m_iTimesPlayed;
-  m_iDbId = tag.m_iDbId;
-  m_type = tag.m_type;
-  m_iAlbumId = tag.m_iAlbumId;
-  m_replayGain = tag.m_replayGain;
-  m_albumReleaseType = tag.m_albumReleaseType;
-
-  memcpy(&m_dwReleaseDate, &tag.m_dwReleaseDate, sizeof(m_dwReleaseDate));
-  m_coverArt = tag.m_coverArt;
-  return *this;
-}
 
 bool CMusicInfoTag::operator !=(const CMusicInfoTag& tag) const
 {
