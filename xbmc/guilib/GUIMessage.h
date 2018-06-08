@@ -70,8 +70,6 @@
 
 #define GUI_MSG_LABEL_BIND     24   // bind label control (for controls supporting more then 1 label)
 
-#define GUI_MSG_SELCHANGED  25  // selection within the control has changed
-
 #define GUI_MSG_FOCUSED     26  // a control has become focused
 
 #define GUI_MSG_PAGE_CHANGE 28  // a page control has changed the page number

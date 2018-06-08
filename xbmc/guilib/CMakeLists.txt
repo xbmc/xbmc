@@ -81,7 +81,6 @@ set(HEADERS DDSImage.h
             GUIBaseContainer.h
             GUIBorderedImage.h
             GUIButtonControl.h
-            GUICallback.h
             GUIColorManager.h
             GUIComponent.h
             GUIControl.h

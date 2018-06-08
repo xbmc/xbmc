@@ -609,20 +609,6 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
       return true;
     }
     break;
-
-  case GUI_MSG_CLICKED:
-    {
-      // a specific control was clicked
-      CLICK_EVENT clickEvent = m_mapClickEvents[ message.GetSenderId() ];
-
-      // determine if there are any handlers for this event
-      if (clickEvent.HasAHandler())
-      {
-        // fire the message to all handlers
-        clickEvent.Fire(message);
-      }
-      break;
-    }
   
   case GUI_MSG_UNFOCUS_ALL:
     {
@@ -638,19 +624,6 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
       return true;
     }
 
-  case GUI_MSG_SELCHANGED:
-    {
-      // a selection within a specific control has changed
-      SELECTED_EVENT selectedEvent = m_mapSelectedEvents[ message.GetSenderId() ];
-
-      // determine if there are any handlers for this event
-      if (selectedEvent.HasAHandler())
-      {
-        // fire the message to all handlers
-        selectedEvent.Fire(message);
-      }
-      break;
-    }
   case GUI_MSG_FOCUSED:
     { // a control has been focused
       if (HasID(message.GetSenderId()))

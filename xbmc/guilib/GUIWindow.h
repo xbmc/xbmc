@@ -35,23 +35,9 @@
 
 class CFileItem; typedef std::shared_ptr<CFileItem> CFileItemPtr;
 
-#include "GUICallback.h"  // for GUIEvent
-
 #include <limits.h>
 #include <map>
 #include <vector>
-
-#define ON_CLICK_MESSAGE(i,c,m) \
-{ \
- GUIEventHandler<c, CGUIMessage&> clickHandler(this, &m); \
- m_mapClickEvents[i] = clickHandler; \
-} \
-
-#define ON_SELECTED_MESSAGE(i,c,m) \
-{ \
- GUIEventHandler<c, CGUIMessage&> selectedHandler(this, &m); \
- m_mapSelectedEvents[i] = selectedHandler; \
-} \
 
 enum RenderOrder {
   RENDER_ORDER_WINDOW = 0,
@@ -265,14 +251,6 @@ protected:
   // methods for updating controls and sending messages
   void OnEditChanged(int id, std::string &text);
   bool SendMessage(int message, int id, int param1 = 0, int param2 = 0);
-
-  typedef GUIEvent<CGUIMessage&> CLICK_EVENT;
-  typedef std::map<int, CLICK_EVENT> MAPCONTROLCLICKEVENTS;
-  MAPCONTROLCLICKEVENTS m_mapClickEvents;
-
-  typedef GUIEvent<CGUIMessage&> SELECTED_EVENT;
-  typedef std::map<int, SELECTED_EVENT> MAPCONTROLSELECTEDEVENTS;
-  MAPCONTROLSELECTEDEVENTS m_mapSelectedEvents;
 
   void LoadControl(TiXmlElement* pControl, CGUIControlGroup *pGroup, const CRect &rect);
 
