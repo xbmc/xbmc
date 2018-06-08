@@ -5,7 +5,7 @@ This directory contains the cmake-based buildsystem for Kodi add-ons. It looks i
   - `<addon-id> <git-url> <git-revision>`
   - `<addon-id> <tarball-url>`
   - `<addon-id> <file://path>`
- 
+
 where
 - `<addon-id>` must be identical to the add-on's ID as defined in the add-on's addon.xml
 - `<git-url>` must be the URL of the git repository containing the add-on

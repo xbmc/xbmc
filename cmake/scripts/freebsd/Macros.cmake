@@ -65,7 +65,7 @@ function(find_soname lib)
       set(link_lib -l${${lib}_LIBRARIES})
     endif()
   endif()
-  execute_process(COMMAND ${CMAKE_C_COMPILER} -nostdlib -o /dev/null -Wl,-M ${link_lib} 
+  execute_process(COMMAND ${CMAKE_C_COMPILER} -nostdlib -o /dev/null -Wl,-M ${link_lib}
                   COMMAND grep LOAD.*${liblow}
                   ERROR_QUIET
                   OUTPUT_VARIABLE ${lib}_FILENAME)

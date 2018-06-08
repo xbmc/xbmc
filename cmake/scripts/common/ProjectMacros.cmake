@@ -46,7 +46,7 @@ function(copy_skin_to_buildtree skin)
 endfunction()
 
 # Get GTest tests as CMake tests.
-# Copied from FindGTest.cmake 
+# Copied from FindGTest.cmake
 # Thanks to Daniel Blezek <blezek@gmail.com> for the GTEST_ADD_TESTS code
 function(GTEST_ADD_TESTS executable extra_args)
     if(NOT ARGN)
