@@ -56,16 +56,16 @@ const std::string &CGUIInfoLabel::GetLabel(int contextWindow, bool preferImage, 
   if (!m_info.empty())
   {
     CGUIInfoManager& infoMgr = CServiceBroker::GetGUI()->GetInfoManager();
-    for (std::vector<CInfoPortion>::const_iterator portion = m_info.begin(); portion != m_info.end(); ++portion)
+    for (const auto &portion : m_info)
     {
-      if (portion->m_info)
+      if (portion.m_info)
       {
         std::string infoLabel;
         if (preferImage)
-          infoLabel = infoMgr.GetImage(portion->m_info, contextWindow, fallback);
+          infoLabel = infoMgr.GetImage(portion.m_info, contextWindow, fallback);
         if (infoLabel.empty())
-          infoLabel = infoMgr.GetLabel(portion->m_info, contextWindow, fallback);
-        needsUpdate |= portion->NeedsUpdate(infoLabel);
+          infoLabel = infoMgr.GetLabel(portion.m_info, contextWindow, fallback);
+        needsUpdate |= portion.NeedsUpdate(infoLabel);
       }
     }
   }
@@ -81,16 +81,16 @@ const std::string &CGUIInfoLabel::GetItemLabel(const CGUIListItem *item, bool pr
   if (item->IsFileItem() && !m_info.empty())
   {
     CGUIInfoManager& infoMgr = CServiceBroker::GetGUI()->GetInfoManager();
-    for (std::vector<CInfoPortion>::const_iterator portion = m_info.begin(); portion != m_info.end(); ++portion)
+    for (const auto &portion : m_info)
     {
-      if (portion->m_info)
+      if (portion.m_info)
       {
         std::string infoLabel;
         if (preferImages)
-          infoLabel = infoMgr.GetItemImage(static_cast<const CFileItem*>(item), 0, portion->m_info, fallback);
+          infoLabel = infoMgr.GetItemImage(static_cast<const CFileItem*>(item), 0, portion.m_info, fallback);
         else
-          infoLabel = infoMgr.GetItemLabel(static_cast<const CFileItem *>(item), 0, portion->m_info, fallback);
-        needsUpdate |= portion->NeedsUpdate(infoLabel);
+          infoLabel = infoMgr.GetItemLabel(static_cast<const CFileItem *>(item), 0, portion.m_info, fallback);
+        needsUpdate |= portion.NeedsUpdate(infoLabel);
       }
     }
   }
@@ -105,8 +105,8 @@ const std::string &CGUIInfoLabel::CacheLabel(bool rebuild) const
   if (rebuild)
   {
     m_label.clear();
-    for (std::vector<CInfoPortion>::const_iterator portion = m_info.begin(); portion != m_info.end(); ++portion)
-      m_label += portion->Get();
+    for (const auto &portion : m_info)
+      m_label += portion.Get();
     m_dirty = false;
   }
   if (m_label.empty())  // empty label, use the fallback
