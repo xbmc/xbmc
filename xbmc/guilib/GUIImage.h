@@ -32,6 +32,7 @@
 
 #include "GUIControl.h"
 #include "GUITexture.h"
+#include "guilib/guiinfo/GUIInfoLabel.h"
 
 /*!
  \ingroup controls

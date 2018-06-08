@@ -18,110 +18,17 @@
  *
  */
 
-#include "guilib/guiinfo/GUIInfoTypes.h"
-
+#include "guilib/guiinfo/GUIInfoLabel.h"
 #include "GUIInfoManager.h"
-#include "addons/AddonManager.h"
+#include "FileItem.h"
 #include "addons/Skin.h"
-#include "guilib/GUIColorManager.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIListItem.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
-using ADDON::CAddonMgr;
 using namespace KODI::GUILIB::GUIINFO;
-
-CGUIInfoBool::CGUIInfoBool(bool value)
-{
-  m_value = value;
-}
-
-CGUIInfoBool::~CGUIInfoBool() = default;
-
-void CGUIInfoBool::Parse(const std::string &expression, int context)
-{
-  if (expression == "true")
-    m_value = true;
-  else if (expression == "false")
-    m_value = false;
-  else
-  {
-    m_info = CServiceBroker::GetGUI()->GetInfoManager().Register(expression, context);
-    Update();
-  }
-}
-
-void CGUIInfoBool::Update(const CGUIListItem *item /*= NULL*/)
-{
-  if (m_info)
-    m_value = m_info->Get(item);
-}
-
-
-CGUIInfoColor::CGUIInfoColor(uint32_t color)
-{
-  m_color = color;
-  m_info = 0;
-}
-
-CGUIInfoColor &CGUIInfoColor::operator=(UTILS::Color color)
-{
-  m_color = color;
-  m_info = 0;
-  return *this;
-}
-
-CGUIInfoColor &CGUIInfoColor::operator=(const CGUIInfoColor &color)
-{
-  m_color = color.m_color;
-  m_info = color.m_info;
-  return *this;
-}
-
-bool CGUIInfoColor::Update()
-{
-  if (!m_info)
-    return false; // no infolabel
-
-  // Expand the infolabel, and then convert it to a color
-  std::string infoLabel(CServiceBroker::GetGUI()->GetInfoManager().GetLabel(m_info));
-  UTILS::Color color = !infoLabel.empty() ? g_colorManager.GetColor(infoLabel.c_str()) : 0;
-  if (m_color != color)
-  {
-    m_color = color;
-    return true;
-  }
-  else
-    return false;
-}
-
-void CGUIInfoColor::Parse(const std::string &label, int context)
-{
-  if (label.empty())
-    return;
-
-  CGUIInfoManager& infoMgr = CServiceBroker::GetGUI()->GetInfoManager();
-
-  // Check for the standard $INFO[] block layout, and strip it if present
-  std::string label2 = label;
-  if (StringUtils::StartsWithNoCase(label, "$var["))
-  {
-    label2 = label.substr(5, label.length() - 6);
-    m_info = infoMgr.TranslateSkinVariableString(label2, context);
-    if (!m_info)
-      m_info = infoMgr.RegisterSkinVariableString(g_SkinInfo->CreateSkinVariable(label2, context));
-    return;
-  }
-
-  if (StringUtils::StartsWithNoCase(label, "$info["))
-    label2 = label.substr(6, label.length()-7);
-
-  m_info = infoMgr.TranslateString(label2);
-  if (!m_info)
-    m_color = g_colorManager.GetColor(label);
-}
 
 CGUIInfoLabel::CGUIInfoLabel() : m_dirty(false)
 {

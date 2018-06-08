@@ -31,7 +31,7 @@
 #include "TextureManager.h"
 #include "utils/Color.h"
 #include "utils/Geometry.h"
-#include "guiinfo/GUIInfoTypes.h"
+#include "guiinfo/GUIInfoColor.h"
 
 // image alignment for <aspect>keep</aspect>, <aspect>scale</aspect> or <aspect>center</aspect>
 #define ASPECT_ALIGN_CENTER  0
