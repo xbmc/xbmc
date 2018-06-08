@@ -25,6 +25,8 @@
 #include "XBDateTime.h"
 #include "libexif.h"
 
+#include <string>
+
 class CVariant;
 
 class CPictureInfoTag : public IArchivable, public ISerializable, public ISortable

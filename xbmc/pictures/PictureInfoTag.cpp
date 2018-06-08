@@ -18,16 +18,15 @@
  *
  */
 
-#include <cstdlib>
-#include <algorithm>
-
 #include "PictureInfoTag.h"
-#include "XBDateTime.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
 #include "utils/Variant.h"
 #include "utils/CharsetConverter.h"
 #include "utils/StringUtils.h"
 #include "utils/Archive.h"
+
+#include <algorithm>
+#include <vector>
 
 void CPictureInfoTag::Reset()
 {
