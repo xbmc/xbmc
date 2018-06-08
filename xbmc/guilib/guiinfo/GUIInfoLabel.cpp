@@ -140,7 +140,7 @@ bool CGUIInfoLabel::ReplaceSpecialKeywordReferences(const std::string &strInput,
     {
       if (index == 0)  // first occurrence?
         strOutput.clear();
-      strOutput += strInput.substr(index, startPos - index);            // append part from the left side
+      strOutput.append(strInput, index, startPos - index); // append part from the left side
       strOutput += func(strInput.substr(valuePos, endPos - valuePos));  // resolve and append value part
       index = endPos + 1;
     }
@@ -154,7 +154,7 @@ bool CGUIInfoLabel::ReplaceSpecialKeywordReferences(const std::string &strInput,
 
   if (index)  // if we replaced anything
   {
-    strOutput += strInput.substr(index);  // append leftover from the right side
+    strOutput.append(strInput, index, std::string::npos); // append leftover from the right side
     return true;
   }
 
@@ -258,8 +258,7 @@ void CGUIInfoLabel::Parse(const std::string &label, int context)
       if (pos2 != std::string::npos)
       {
         // decipher the block
-        std::string block = work.substr(pos1 + len, pos2 - pos1 - len);
-        std::vector<std::string> params = StringUtils::Split(block, ",");
+        std::vector<std::string> params = StringUtils::Split(work.substr(pos1 + len, pos2 - pos1 - len), ",");
         if (!params.empty())
         {
           CGUIInfoManager& infoMgr = CServiceBroker::GetGUI()->GetInfoManager();
@@ -283,7 +282,7 @@ void CGUIInfoLabel::Parse(const std::string &label, int context)
           m_info.push_back(CInfoPortion(info, prefix, postfix, format == FORMATESCINFO || format == FORMATESCVAR));
         }
         // and delete it from our work string
-        work = work.substr(pos2 + 1);
+        work.erase(0, pos2 + 1);
       }
       else
       {
