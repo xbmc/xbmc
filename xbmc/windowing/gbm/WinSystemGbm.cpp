@@ -162,9 +162,8 @@ void CWinSystemGbm::UpdateResolutions()
                           m_DRM->m_mode->vdisplay,
                           m_DRM->m_mode->vrefresh);
 
-  std::vector<RESOLUTION_INFO> resolutions;
-
-  if (!m_DRM->GetModes(resolutions) || resolutions.empty())
+  auto resolutions = m_DRM->GetModes();
+  if (resolutions.empty())
   {
     CLog::Log(LOGWARNING, "CWinSystemGbm::%s - Failed to get resolutions", __FUNCTION__);
   }
@@ -172,19 +171,19 @@ void CWinSystemGbm::UpdateResolutions()
   {
     CDisplaySettings::GetInstance().ClearCustomResolutions();
 
-    for (unsigned int i = 0; i < resolutions.size(); i++)
+    for (auto &res : resolutions)
     {
-      CServiceBroker::GetWinSystem()->GetGfxContext().ResetOverscan(resolutions[i]);
-      CDisplaySettings::GetInstance().AddResolutionInfo(resolutions[i]);
+      CServiceBroker::GetWinSystem()->GetGfxContext().ResetOverscan(res);
+      CDisplaySettings::GetInstance().AddResolutionInfo(res);
 
       CLog::Log(LOGNOTICE, "Found resolution %dx%d for display %d with %dx%d%s @ %f Hz",
-                resolutions[i].iWidth,
-                resolutions[i].iHeight,
-                resolutions[i].iScreen,
-                resolutions[i].iScreenWidth,
-                resolutions[i].iScreenHeight,
-                resolutions[i].dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "",
-                resolutions[i].fRefreshRate);
+                res.iWidth,
+                res.iHeight,
+                res.iScreen,
+                res.iScreenWidth,
+                res.iScreenHeight,
+                res.dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "",
+                res.fRefreshRate);
     }
   }
 

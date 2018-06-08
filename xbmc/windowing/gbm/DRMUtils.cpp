@@ -53,7 +53,7 @@ void CDRMUtils::WaitVBlank()
   drmWaitVBlank(m_fd, &vbl);
 }
 
-bool CDRMUtils::SetMode(RESOLUTION_INFO& res)
+bool CDRMUtils::SetMode(const RESOLUTION_INFO& res)
 {
   m_mode = &m_connector->connector->modes[atoi(res.strId.c_str())];
 
@@ -69,11 +69,11 @@ bool CDRMUtils::SetMode(RESOLUTION_INFO& res)
 
 void CDRMUtils::DrmFbDestroyCallback(struct gbm_bo *bo, void *data)
 {
-  int drm_fd = gbm_device_get_fd(gbm_bo_get_device(bo));
   struct drm_fb *fb = static_cast<drm_fb *>(data);
 
   if(fb->fb_id)
   {
+    int drm_fd = gbm_device_get_fd(gbm_bo_get_device(bo));
     drmModeRmFB(drm_fd, fb->fb_id);
   }
 
@@ -479,7 +479,7 @@ bool CDRMUtils::GetPlanes()
 
 bool CDRMUtils::OpenDrm()
 {
-  std::vector<const char*>modules =
+  static constexpr const char *modules[] =
   {
     "i915",
     "amdgpu",
@@ -665,8 +665,11 @@ void CDRMUtils::DestroyDrm()
   m_primary_plane = nullptr;
 }
 
-bool CDRMUtils::GetModes(std::vector<RESOLUTION_INFO> &resolutions)
+std::vector<RESOLUTION_INFO> CDRMUtils::GetModes()
 {
+  std::vector<RESOLUTION_INFO> resolutions;
+  resolutions.reserve(m_connector->connector->count_modes);
+
   for(auto i = 0; i < m_connector->connector->count_modes; i++)
   {
     RESOLUTION_INFO res;
@@ -710,5 +713,5 @@ bool CDRMUtils::GetModes(std::vector<RESOLUTION_INFO> &resolutions)
     resolutions.push_back(res);
   }
 
-  return resolutions.size() > 0;
+  return resolutions;
 }
