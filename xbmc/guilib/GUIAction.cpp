@@ -85,12 +85,12 @@ void CGUIAction::SetNavigation(int id)
   {
     if (StringUtils::IsInteger(i.action) && i.condition.empty())
     {
-      i.action = strId;
+      i.action = std::move(strId);
       return;
     }
   }
   m_actions.emplace_back();
-  m_actions.back().action = strId;
+  m_actions.back().action = std::move(strId);
 }
 
 bool CGUIAction::HasActionsMeetingCondition() const
