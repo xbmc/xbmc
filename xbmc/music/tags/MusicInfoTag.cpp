@@ -18,16 +18,15 @@
  *
  */
 
-#include <algorithm>
-
 #include "MusicInfoTag.h"
-#include "music/Album.h"
 #include "music/Artist.h"
 #include "utils/StringUtils.h"
 #include "guilib/LocalizeStrings.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/Variant.h"
 #include "utils/Archive.h"
+
+#include <algorithm>
 
 using namespace MUSIC_INFO;
 

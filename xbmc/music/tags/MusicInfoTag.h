@@ -23,14 +23,12 @@ class CSong;
 class CArtist;
 class CVariant;
 
-#include <stdint.h>
 #include <string>
 #include <vector>
 
 #include "ReplayGain.h"
 #include "XBDateTime.h"
 #include "music/Album.h"
-#include "music/Artist.h"
 #include "utils/IArchivable.h"
 #include "utils/ISerializable.h"
 #include "utils/ISortable.h"
