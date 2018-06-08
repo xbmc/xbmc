@@ -21,12 +21,12 @@ install:
   - mklink /j %APPVEYOR_BUILD_FOLDER%\project\BuildDependencies\msys64 C:\msys64
 
 build_script:
-  # Setup Visual Studio compiler environment 
+  # Setup Visual Studio compiler environment
   - ps: $ErrorActionPreference= 'silentlycontinue'
-  
-  # Setup Visual Studio compiler environment 
+
+  # Setup Visual Studio compiler environment
   - call "%VS140COMNTOOLS%..\..\VC\bin\vcvars32.bat"
-  
+
   #
   # Build Kodi
   #
@@ -35,12 +35,12 @@ build_script:
         # Download dependencies
         cd $env:APPVEYOR_BUILD_FOLDER\tools\buildsteps\windows\win32
         & .\download-dependencies.bat
-        
+
         # We are using AppVeyor's already installed msys64 environment,
         # no need to install msys/mingw environment.
-        
+
         # Download precompiled mingw32 libraries
-        # To run make-mingwlibs.bat on AppVeyor takes too long, 
+        # To run make-mingwlibs.bat on AppVeyor takes too long,
         # we must use precompiled libs to speed up build
         bash -c "wget -O - http://repo.msys2.org/mingw/i686/mingw-w64-i686-ffmpeg-3.3-1-any.pkg.tar.xz | tar xJv"
         bash -c "wget -O - http://repo.msys2.org/mingw/i686/mingw-w64-i686-libdvdcss-1.4.0-1-any.pkg.tar.xz | tar xJv"
@@ -55,13 +55,13 @@ build_script:
         # Copy all libs and includes under Kodi's dependencies folder
         xcopy /s /y mingw32\*.* .
         xcopy /s /y mingw32\bin\*.dll $env:APPVEYOR_BUILD_FOLDER\system\
-        # Build  
+        # Build
         mkdir $env:APPVEYOR_BUILD_FOLDER\kodi-build
         cd $env:APPVEYOR_BUILD_FOLDER\kodi-build
         cmd /c 'cmake -G "Visual Studio 14" .. 2>&1'
         cmd /c 'cmake --build . --target all_build --config RelWithDebInfo 2>&1'
       }
-  
+
   #
   # Build Addons
   #
@@ -70,7 +70,7 @@ build_script:
         # Bootstrap
         cd $env:APPVEYOR_BUILD_FOLDER\tools\buildsteps\windows\win32
         & .\bootstrap-addons.bat
-        
+
         # Create build folder
         md -Force $env:APPVEYOR_BUILD_FOLDER\build | out-null
         cd $env:APPVEYOR_BUILD_FOLDER\build
@@ -100,17 +100,17 @@ build_script:
         Write-Host "--------------------------------------------------"
         if ($addons_success -ne "") {
           $addons_success.Split(" ") | %{
-            if ($_ -ne "") { 
-              Write-Host [SUCCESS] $_ -ForegroundColor Green 
+            if ($_ -ne "") {
+              Write-Host [SUCCESS] $_ -ForegroundColor Green
             }
           }
         }
         if ($addons_failed -ne "") {
           $addons_failed.Split(" ") | %{
-            if ($_ -ne "") { 
+            if ($_ -ne "") {
               Write-Host [ ERROR ] $_ -ForegroundColor Red
             }
-          } 
+          }
           exit 1
         }
       }
