@@ -22,35 +22,64 @@
 
 std::string CDemuxStreamAudio::GetStreamType()
 {
-  char sInfo[64] = {0};
-
-  if (codec == AV_CODEC_ID_AC3) strcpy(sInfo, "AC3 ");
-  else if (codec == AV_CODEC_ID_DTS)
+  std::string strInfo;
+  switch (codec)
   {
-#ifdef FF_PROFILE_DTS_HD_MA
-    if (profile == FF_PROFILE_DTS_HD_MA)
-      strcpy(sInfo, "DTS-HD MA ");
-    else if (profile == FF_PROFILE_DTS_HD_HRA)
-      strcpy(sInfo, "DTS-HD HRA ");
-    else
-#endif
-      strcpy(sInfo, "DTS ");
-  }
-  else if (codec == AV_CODEC_ID_MP2) strcpy(sInfo, "MP2 ");
-  else if (codec == AV_CODEC_ID_TRUEHD) strcpy(sInfo, "Dolby TrueHD ");
-  else strcpy(sInfo, "");
-
-  if (iChannels == 1) strcat(sInfo, "Mono");
-  else if (iChannels == 2) strcat(sInfo, "Stereo");
-  else if (iChannels == 6) strcat(sInfo, "5.1");
-  else if (iChannels == 8) strcat(sInfo, "7.1");
-  else if (iChannels != 0)
+  case AV_CODEC_ID_AC3:
+    strInfo = "AC3 ";
+    break;
+  case AV_CODEC_ID_EAC3:
+    strInfo = "DD+ ";
+    break;
+  case AV_CODEC_ID_DTS:
   {
-    char temp[32];
-    sprintf(temp, " %d%s", iChannels, "-chs");
-    strcat(sInfo, temp);
+    switch (profile)
+    {
+    case FF_PROFILE_DTS_HD_MA:
+      strInfo = "DTS-HD MA ";
+      break;
+    case FF_PROFILE_DTS_HD_HRA:
+      strInfo = "DTS-HD HRA ";
+      break;
+    default:
+      strInfo = "DTS ";
+      break;
+    }
+    break;
   }
-  return sInfo;
+  case AV_CODEC_ID_MP2:
+    strInfo = "MP2 ";
+    break;
+  case AV_CODEC_ID_MP3:
+    strInfo = "MP3 ";
+    break;
+  case AV_CODEC_ID_TRUEHD:
+    strInfo = "TrueHD ";
+    break;
+  case AV_CODEC_ID_AAC:
+    strInfo = "AAC ";
+    break;
+  case AV_CODEC_ID_ALAC:
+    strInfo = "ALAC ";
+    break;
+  case AV_CODEC_ID_FLAC:
+    strInfo = "FLAC ";
+    break;
+  case AV_CODEC_ID_VORBIS:
+    strInfo = "Vorbis ";
+    break;
+  case AV_CODEC_ID_PCM_BLURAY:
+  case AV_CODEC_ID_PCM_DVD:
+    strInfo = "PCM ";
+    break;
+  default:
+    strInfo = "";
+    break;
+  }
+
+  strInfo += m_channelLayoutName;
+
+  return strInfo;
 }
 
 int CDVDDemux::GetNrOfStreams(StreamType streamType)
