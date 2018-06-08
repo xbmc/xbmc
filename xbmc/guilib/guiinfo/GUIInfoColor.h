@@ -49,8 +49,6 @@ public:
   void Parse(const std::string &label, int context);
 
 private:
-  UTILS::Color GetColor() const;
-
   int m_info;
   UTILS::Color m_color;
 };
