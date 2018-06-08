@@ -472,7 +472,8 @@
                 "musicbrainzalbumartistid", "fanart", "thumbnail",
                 "playcount", "artistid", "displayartist",
                 "compilation", "releasetype", "dateadded",
-                "sortartist", "musicbrainzreleasegroupid", "songgenres", "art"]
+                "sortartist", "musicbrainzreleasegroupid", "songgenres", "art", 
+                "lastplayed"]
     }
   },
   "Audio.Fields.Song": {
@@ -592,7 +593,8 @@
       "releasetype": { "$ref": "Audio.Album.ReleaseType" },
       "musicbrainzreleasegroupid": { "type": "string" },
       "musicbrainzalbumid": { "type": "string" },
-      "songgenres": {"$ref": "Audio.Details.Genres"}
+      "songgenres": {"$ref": "Audio.Details.Genres"},
+      "lastplayed": { "type": "string" }
     }
   },
   "Audio.Details.Song": {
@@ -625,12 +627,13 @@
   },
   "Audio.Property.Name": {
     "type": "string",
-    "enum": [ "missingartistid" ]
+    "enum": [ "missingartistid", "librarylastupdated" ]
   },
   "Audio.Property.Value": {
     "type": "object",
     "properties": {
-      "missingartistid": { "$ref": "Library.Id" }
+      "missingartistid": { "$ref": "Library.Id" },
+      "librarylastupdated": { "type": "string" }
     }
   },
   "Video.Fields.Movie": {

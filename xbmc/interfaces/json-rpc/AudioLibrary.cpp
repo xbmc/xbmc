@@ -51,6 +51,14 @@ JSONRPC_STATUS CAudioLibrary::GetProperties(const std::string &method, ITranspor
     CVariant property;
     if (propertyName == "missingartistid")
       property = (int)BLANKARTIST_ID;
+    else if (propertyName == "librarylastupdated")
+    {
+      CMusicDatabase musicdatabase;
+      if (!musicdatabase.Open())
+        return InternalError;
+
+      property = musicdatabase.GetLibraryLastUpdated();
+    }
 
     properties[propertyName] = property;
   }
@@ -58,6 +66,7 @@ JSONRPC_STATUS CAudioLibrary::GetProperties(const std::string &method, ITranspor
   result = properties;
   return OK;
 }
+
 
 JSONRPC_STATUS CAudioLibrary::GetArtists(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
@@ -291,7 +300,9 @@ JSONRPC_STATUS CAudioLibrary::GetSongs(const std::string &method, ITransportLaye
   if (!musicUrl.FromString("musicdb://songs/"))
     return InternalError;
 
-  if (!parameterObject["includesingles"].asBoolean())
+  if (parameterObject["singlesonly"].asBoolean())
+    musicUrl.AddOption("singles", true);
+  else if (!parameterObject["includesingles"].asBoolean())
     musicUrl.AddOption("singles", false);
 
   bool allroles = false;
