@@ -480,7 +480,14 @@ bool CPVRClients::IsPlaying(void) const
 
 bool CPVRClients::GetPlayingClient(CPVRClientPtr &client) const
 {
-  return GetCreatedClient(GetPlayingClientID(), client);
+  return GetCreatedClient(m_playingClientId, client);
+}
+
+bool CPVRClients::GetPlayingClient(CPVRClientPtr &client, bool &bPlayingRecording) const
+{
+  CSingleLock lock(m_critSection);
+  bPlayingRecording = m_bIsPlayingRecording;
+  return GetCreatedClient(m_playingClientId, client);
 }
 
 int CPVRClients::GetPlayingClientID(void) const

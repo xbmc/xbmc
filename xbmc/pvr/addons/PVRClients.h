@@ -208,6 +208,14 @@ namespace PVR
     bool GetPlayingClient(CPVRClientPtr &client) const;
 
     /*!
+     * @brief Get the instance of the playing client, if there is one.
+     * @param client Will be filled with requested client on success, null otherwise.
+     * @param bPlayingRecording is set to true if the client is currently playing a recording, false otherwise.
+     * @return True on success, false otherwise.
+     */
+    bool GetPlayingClient(CPVRClientPtr &client, bool &bPlayingRecording) const;
+
+    /*!
      * @brief Get the ID of the playing client, if there is one.
      * @return The ID or -1 if no client is playing.
      */
