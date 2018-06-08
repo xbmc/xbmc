@@ -28,12 +28,6 @@
 
 using namespace KODI::GUILIB::GUIINFO;
 
-CGUIInfoColor::CGUIInfoColor(UTILS::Color color)
-{
-  m_color = color;
-  m_info = 0;
-}
-
 bool CGUIInfoColor::Update()
 {
   if (!m_info)
