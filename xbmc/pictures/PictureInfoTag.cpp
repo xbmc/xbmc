@@ -38,17 +38,6 @@ void CPictureInfoTag::Reset()
   m_dateTimeTaken.Reset();
 }
 
-const CPictureInfoTag& CPictureInfoTag::operator=(const CPictureInfoTag& right)
-{
-  if (this == &right) return * this;
-  memcpy(&m_exifInfo, &right.m_exifInfo, sizeof(m_exifInfo));
-  memcpy(&m_iptcInfo, &right.m_iptcInfo, sizeof(m_iptcInfo));
-  m_isLoaded = right.m_isLoaded;
-  m_isInfoSetExternally = right.m_isInfoSetExternally;
-  m_dateTimeTaken = right.m_dateTimeTaken;
-  return *this;
-}
-
 bool CPictureInfoTag::Load(const std::string &path)
 {
   m_isLoaded = false;
