@@ -858,6 +858,13 @@ namespace PVR
     void SetPriority(int iPriority);
 
     /*!
+     * @brief Obtain the chunk size to use when reading streams.
+     * @param iChunkSize the chunk size in bytes.
+     * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
+     */
+    PVR_ERROR GetStreamReadChunkSize(int &iChunkSize);
+
+    /*!
      * @brief Get the interface table used between addon and Kodi.
      * @todo This function will be removed after old callback library system is removed.
      */

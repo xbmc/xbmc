@@ -274,6 +274,13 @@ namespace PVR
     void CloseStream(void);
 
     /*!
+     * @brief Return the read chunk size to use when playing a stream.
+     * @param item The item providing the stream (channel or recording).
+     * @return The chunk size in bytes or 0 in case of an error.
+     */
+    int GetStreamReadChunkSize(const CFileItem &item);
+
+    /*!
      * @brief Read from an open stream.
      * @param lpBuf Target buffer.
      * @param uiBufSize The size of the buffer.

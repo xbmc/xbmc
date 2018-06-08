@@ -1024,6 +1024,13 @@ PVR_ERROR CPVRClient::GetTimerTypes(CPVRTimerTypes& results) const
   return PVR_ERROR_NO_ERROR;
 }
 
+PVR_ERROR CPVRClient::GetStreamReadChunkSize(int& iChunkSize)
+{
+  return DoAddonCall(__FUNCTION__, [&iChunkSize](const AddonInstance* addon) {
+    return addon->GetStreamReadChunkSize(&iChunkSize);
+  }, m_clientCapabilities.SupportsRecordings() || m_clientCapabilities.HandlesInputStream());
+}
+
 PVR_ERROR CPVRClient::ReadLiveStream(void* lpBuf, int64_t uiBufSize, int &iRead)
 {
   iRead = -1;

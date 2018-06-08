@@ -559,6 +559,26 @@ std::string CPVRClients::GetBackendHostnameByClientId(int iClientId) const
   return name;
 }
 
+int CPVRClients::GetStreamReadChunkSize(const CFileItem &item)
+{
+  int iChunkSize = 0;
+  int iClientID = PVR_INVALID_CLIENT_ID;
+
+  if (item.HasPVRChannelInfoTag())
+    iClientID = item.GetPVRChannelInfoTag()->ClientID();
+  else if (item.HasPVRRecordingInfoTag())
+    iClientID = item.GetPVRRecordingInfoTag()->m_iClientId;
+
+  if (iClientID != PVR_INVALID_CLIENT_ID)
+  {
+    ForCreatedClient(__FUNCTION__, iClientID, [&iChunkSize](const CPVRClientPtr &client) {
+      return client->GetStreamReadChunkSize(iChunkSize);
+    });
+  }
+
+  return iChunkSize;
+}
+
 bool CPVRClients::OpenStream(const CPVRChannelPtr &channel)
 {
   CloseStream();
