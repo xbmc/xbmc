@@ -21,14 +21,12 @@
 
 #include "system_gl.h"
 
-#include <cstring>
 #include <stack>
 
 class CMatrixGL
 {
 public:
   CMatrixGL() = default;
-  explicit CMatrixGL(const float matrix[16])   { memcpy(m_pMatrix, matrix, sizeof(m_pMatrix)); }
   operator const float*() const                { return m_pMatrix; }
 
   void LoadIdentity();
