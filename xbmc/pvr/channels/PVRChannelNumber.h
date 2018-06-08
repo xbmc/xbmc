@@ -29,13 +29,8 @@ namespace PVR
     CPVRChannelNumber()
     : CPVRChannelNumber(0, 0) {}
 
-    CPVRChannelNumber(const CPVRChannelNumber &channelNumber)
-    : CPVRChannelNumber(channelNumber.m_iChannelNumber, channelNumber.m_iSubChannelNumber) {}
-
     CPVRChannelNumber(unsigned int iChannelNumber, unsigned int iSubChannelNumber)
     : m_iChannelNumber(iChannelNumber), m_iSubChannelNumber(iSubChannelNumber) {}
-
-    CPVRChannelNumber& operator=(const CPVRChannelNumber &channelNumber);
 
     bool operator ==(const CPVRChannelNumber &right) const;
     bool operator !=(const CPVRChannelNumber &right) const;

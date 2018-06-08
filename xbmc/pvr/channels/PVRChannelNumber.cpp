@@ -26,13 +26,6 @@ using namespace PVR;
 
 const char CPVRChannelNumber::SEPARATOR = '.';
 
-CPVRChannelNumber& CPVRChannelNumber::operator=(const CPVRChannelNumber &channelNumber)
-{
-  m_iChannelNumber = channelNumber.m_iChannelNumber;
-  m_iSubChannelNumber = channelNumber.m_iSubChannelNumber;
-  return *this;
-}
-
 bool CPVRChannelNumber::operator==(const CPVRChannelNumber &right) const
 {
   return (m_iChannelNumber  == right.m_iChannelNumber &&
