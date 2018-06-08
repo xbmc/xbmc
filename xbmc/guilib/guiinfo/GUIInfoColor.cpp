@@ -34,13 +34,6 @@ CGUIInfoColor::CGUIInfoColor(UTILS::Color color)
   m_info = 0;
 }
 
-CGUIInfoColor &CGUIInfoColor::operator=(UTILS::Color color)
-{
-  m_color = color;
-  m_info = 0;
-  return *this;
-}
-
 CGUIInfoColor &CGUIInfoColor::operator=(const CGUIInfoColor &color)
 {
   m_color = color.m_color;

@@ -41,10 +41,9 @@ namespace GUIINFO
 class CGUIInfoColor
 {
 public:
-  explicit CGUIInfoColor(UTILS::Color color = 0);
+  CGUIInfoColor(UTILS::Color color = 0);
 
   CGUIInfoColor& operator=(const CGUIInfoColor &color);
-  CGUIInfoColor& operator=(UTILS::Color color);
   operator UTILS::Color() const { return m_color; };
 
   bool Update();
