@@ -21,7 +21,7 @@
 - (void) enableVerboseMode:(bool) f_really;
 
 - (void) setApplicationPath:(NSString*) fp_app_path;
-- (void) setApplicationHome:(NSString*) fp_home_path;  
+- (void) setApplicationHome:(NSString*) fp_home_path;
 
 - (void) connectToServer:(NSString*) fp_server onPort:(int) f_port withMode:(eRemoteMode) f_mode withTimeout:(double) f_timeout;
 - (void) disconnect;

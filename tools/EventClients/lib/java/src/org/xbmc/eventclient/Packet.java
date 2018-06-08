@@ -73,15 +73,15 @@ import java.net.InetAddress;
  *
  */
 public abstract class Packet {
-	
+
 	private byte[] sig;
 	private byte[] payload = new byte[0];
 	private byte minver;
 	private byte majver;
-	
-	private short packettype; 
-	
-	
+
+	private short packettype;
+
+
 	private final static short MAX_PACKET_SIZE  = 1024;
 	private final static short HEADER_SIZE      = 32;
 	private final static short MAX_PAYLOAD_SIZE = MAX_PACKET_SIZE - HEADER_SIZE;
@@ -102,16 +102,16 @@ public abstract class Packet {
 	public final static byte ICON_JPEG = 0x01;
 	public final static byte ICON_PNG  = 0x02;
 	public final static byte ICON_GIF  = 0x03;
-	
+
 	private static int uid = (int)(Math.random()*Integer.MAX_VALUE);
-	
+
 	/**
 	 * This is an Abstract class and cannot be instanced. Please use one of the Packet implementation Classes
-	 * (PacketXXX). 
-	 * 
+	 * (PacketXXX).
+	 *
 	 * Implements an XBMC Event Client Packet. Type is to be specified at creation time, Payload can be added
 	 * with the various appendPayload methods. Packet can be sent through UDP-Socket with method "send".
-     * @param packettype Type of Packet (PT_XXX) 
+     * @param packettype Type of Packet (PT_XXX)
 	 */
 	protected Packet(short packettype)
 	{
@@ -122,7 +122,7 @@ public abstract class Packet {
 	}
 
 	/**
-	 * Appends a String to the payload (terminated with 0x00) 
+	 * Appends a String to the payload (terminated with 0x00)
 	 * @param payload Payload as String
 	 */
 	protected void appendPayload(String payload)
@@ -172,7 +172,7 @@ public abstract class Packet {
 	protected void appendPayload(short s) {
 		appendPayload(shortToByteArray(s));
 	}
-	
+
 	/**
 	 * Get Number of Packets which will be sent with current Payload...
 	 * @return Number of Packets
@@ -181,7 +181,7 @@ public abstract class Packet {
 	{
 		return (int)((payload.length + (MAX_PAYLOAD_SIZE - 1)) / MAX_PAYLOAD_SIZE);
 	}
-	
+
 	/**
 	 * Get Header for a specific Packet in this sequence...
 	 * @param seq Current sequence number
@@ -207,10 +207,10 @@ public abstract class Packet {
 		System.arraycopy(uid, 0, header, 18, 4);
 		byte[] reserved = new byte[10];
 		System.arraycopy(reserved, 0, header, 22, 10);
-		
+
 		return header;
 	}
-	
+
 	/**
 	 * Generates the whole UDP-Message with Header and Payload of a specific Packet in sequence
 	 * @param seq Current sequence number
@@ -221,23 +221,23 @@ public abstract class Packet {
 		int maxseq = (int)((payload.length + (MAX_PAYLOAD_SIZE - 1)) / MAX_PAYLOAD_SIZE);
 		if(seq > maxseq)
 			return null;
-		
+
 		short actpayloadsize;
-		
+
 		if(seq == maxseq)
 			actpayloadsize = (short)(payload.length%MAX_PAYLOAD_SIZE);
-			
+
 		else
 			actpayloadsize = (short)MAX_PAYLOAD_SIZE;
 
 		byte[] pack = new byte[HEADER_SIZE+actpayloadsize];
-		
+
 		System.arraycopy(getHeader(seq, maxseq, actpayloadsize), 0, pack, 0, HEADER_SIZE);
 		System.arraycopy(payload, (seq-1)*MAX_PAYLOAD_SIZE, pack, HEADER_SIZE, actpayloadsize);
-		
+
 		return pack;
 	}
-	
+
 	/**
 	 * Sends this packet to the EventServer
 	 * @param adr Address of the EventServer
@@ -248,7 +248,7 @@ public abstract class Packet {
 	{
 		int maxseq = getNumPackets();
 		DatagramSocket s = new DatagramSocket();
-		
+
 		// For each Packet in Sequence...
 		for(int seq=1;seq<=maxseq;seq++)
 		{
@@ -260,7 +260,7 @@ public abstract class Packet {
 			s.send(p);
 		}
 	}
-	
+
 	/**
 	 * Helper Method to convert an integer to a Byte array
 	 * @param value
@@ -285,5 +285,5 @@ public abstract class Packet {
                 (byte)value};
 	}
 
-	
+
 }

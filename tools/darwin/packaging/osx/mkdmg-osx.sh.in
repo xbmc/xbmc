@@ -13,7 +13,7 @@ elif [ ${SWITCH:-""} = "release" ]; then
   APP="$DIRNAME/../../../../build/Release/@APP_NAME@.app"
 else
   echo "You need to specify the build target"
-  exit 1 
+  exit 1
 fi
 
 if [ ! -d $APP ]; then

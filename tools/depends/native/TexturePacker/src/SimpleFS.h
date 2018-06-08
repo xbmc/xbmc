@@ -31,7 +31,7 @@ public:
   {
     m_file = NULL;
   }
-  
+
   ~CFile()
   {
     Close();
@@ -70,7 +70,7 @@ public:
       return size;
     return 0;
   }
-  
+
   FILE *getFP()
   {
     return m_file;

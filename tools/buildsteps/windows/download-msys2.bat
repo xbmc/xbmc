@@ -102,7 +102,7 @@ if exist "%downloaddir%\%msysfile%" (
     echo -------------------------------------------------------------------------------
 	%unpack_exe% x %downloaddir%\%msysfile% -so 2>NUL | %unpack_exe% x -aoa -si -ttar -o%instdir% >NUL 2>NUL
 	)
-	
+
 if not exist %instdir%\%msys2%\usr\bin\msys-2.0.dll (
 	echo -------------------------------------------------------------------------------
 	echo.- Installing msys2 basic system failed,

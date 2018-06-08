@@ -24,14 +24,14 @@ import java.net.InetAddress;
 
 /**
  * XBMC Event Client Class
- * 
+ *
  * Implements an XBMC-Client. This class can be used to implement your own application which
  * should act as a Input device for XBMC. Also starts a Ping-Thread, which tells the XBMC EventServer
- * that the client is alive. Therefore if you close your application you SHOULD call stopClient()! 
+ * that the client is alive. Therefore if you close your application you SHOULD call stopClient()!
  * @author Stefan Agner
  *
  */
-public class XBMCClient 
+public class XBMCClient
 {
 	private boolean hasIcon = false;
 	private String deviceName;
@@ -40,9 +40,9 @@ public class XBMCClient
 	private byte[] iconData;
 	private InetAddress hostAddress;
 	private int hostPort;
-	
+
 	/**
-	 * Starts a XBMC EventClient. 
+	 * Starts a XBMC EventClient.
 	 * @param hostAddress Address of the Host running XBMC
 	 * @param hostPort Port of the Host running XBMC (default 9777)
 	 * @param deviceName Name of the Device
@@ -64,21 +64,21 @@ public class XBMCClient
 		FileInputStream iconFileStream = new FileInputStream(iconFile);
 		byte[] iconData = new byte[iconFileStream.available()];
 		iconFileStream.read(iconData);
-		
+
 		hasIcon = true;
-		
+
 		// Call start-Method...
 		startClient(hostAddress, hostPort, deviceName, iconType, iconData);
 	}
-	
+
 
 	/**
-	 * Starts a XBMC EventClient. 
+	 * Starts a XBMC EventClient.
 	 * @param hostAddress Address of the Host running XBMC
 	 * @param hostPort Port of the Host running XBMC (default 9777)
 	 * @param deviceName Name of the Device
 	 * @param iconType Type of the icon file (see Packet.ICON_PNG, Packet.ICON_JPEG or Packet.ICON_GIF)
-	 * @param iconData The icon itself as a Byte-Array 
+	 * @param iconData The icon itself as a Byte-Array
 	 * @throws IOException
 	 */
 	public XBMCClient(InetAddress hostAddress, int hostPort, String deviceName, byte iconType, byte[] iconData) throws IOException
@@ -86,9 +86,9 @@ public class XBMCClient
 		hasIcon = true;
 		startClient(hostAddress, hostPort, deviceName, iconType, iconData);
 	}
-	
+
 	/**
-	 * Starts a XBMC EventClient without an icon. 
+	 * Starts a XBMC EventClient without an icon.
 	 * @param hostAddress Address of the Host running XBMC
 	 * @param hostPort Port of the Host running XBMC (default 9777)
 	 * @param deviceName Name of the Device
@@ -104,12 +104,12 @@ public class XBMCClient
 
 
 	/**
-	 * Starts a XBMC EventClient. 
+	 * Starts a XBMC EventClient.
 	 * @param hostAddress Address of the Host running XBMC
 	 * @param hostPort Port of the Host running XBMC (default 9777)
 	 * @param deviceName Name of the Device
 	 * @param iconType Type of the icon file (see Packet.ICON_PNG, Packet.ICON_JPEG or Packet.ICON_GIF)
-	 * @param iconData The icon itself as a Byte-Array 
+	 * @param iconData The icon itself as a Byte-Array
 	 * @throws IOException
 	 */
 	private void startClient(InetAddress hostAddress, int hostPort, String deviceName, byte iconType, byte[] iconData) throws IOException
@@ -118,7 +118,7 @@ public class XBMCClient
 		this.hostAddress = hostAddress;
 		this.hostPort = hostPort;
 		this.deviceName = deviceName;
-		
+
 		this.iconType = iconType;
 		this.iconData = iconData;
 
@@ -128,14 +128,14 @@ public class XBMCClient
 			p = new PacketHELO(deviceName, iconType, iconData);
 		else
 			p = new PacketHELO(deviceName);
-		
+
 		p.send(hostAddress, hostPort);
-		
+
 		// Start Thread (for Ping packets...)
 		oPingThread = new PingThread(hostAddress, hostPort, 20000);
 		oPingThread.start();
 	}
-	
+
 	/**
 	 * Stops the XBMC EventClient (especially the Ping-Thread)
 	 * @throws IOException
@@ -145,11 +145,11 @@ public class XBMCClient
 		// Stop Ping-Thread...
 		oPingThread.giveup();
 		oPingThread.interrupt();
-		
+
 		PacketBYE p = new PacketBYE();
 		p.send(hostAddress, hostPort);
 	}
-	
+
 
 	/**
 	 * Displays a notification window in XBMC.
@@ -174,12 +174,12 @@ public class XBMCClient
 	 * @param down if this is 1, it implies a press event, 0 implies a release
      * event. (default: 1)
 	 * @param queue a queued key press means that the button event is
-     * executed just once after which the next key press is processed. 
+     * executed just once after which the next key press is processed.
      * It can be used for macros. Currently there is no support for
      * time delays between queued presses. (default: 0)
 	 * @param amount unimplemented for now; in the future it will be used for
      * specifying magnitude of analog key press events
-	 * @param axis 
+	 * @param axis
 	 */
 	public void sendButton(short code, boolean repeat, boolean down, boolean queue, short amount, byte axis) throws IOException
 	{
@@ -200,19 +200,19 @@ public class XBMCClient
      * <li>"LI:devicename" => LIRC remote map where 'devicename' is the
      * actual device's name</li></ul>
 	 * @param button_name a button name defined in the map specified in map_name.
-     * For example, if map_name is "KB" referring to the <keyboard> section in Keymap.xml 
+     * For example, if map_name is "KB" referring to the <keyboard> section in Keymap.xml
      * then, valid button_names include "printscreen", "minus", "x", etc.
 	 * @param repeat this key press should repeat until released (default: 1)
      * Note that queued pressed cannot repeat.
 	 * @param down if this is 1, it implies a press event, 0 implies a release
      * event. (default: 1)
 	 * @param queue a queued key press means that the button event is
-     * executed just once after which the next key press is processed. 
+     * executed just once after which the next key press is processed.
      * It can be used for macros. Currently there is no support for
      * time delays between queued presses. (default: 0)
 	 * @param amount unimplemented for now; in the future it will be used for
      * specifying magnitude of analog key press events
-	 * @param axis 
+	 * @param axis
 	 */
 	public void sendButton(String map_name, String button_name, boolean repeat, boolean down, boolean queue, short amount, byte axis) throws IOException
 	{
@@ -230,7 +230,7 @@ public class XBMCClient
 		PacketMOUSE p = new PacketMOUSE(x, y);
 		p.send(hostAddress, hostPort);
 	}
-	
+
 	/**
 	 * Sends a ping to the XBMC EventServer
 	 * @throws IOException
@@ -259,7 +259,7 @@ public class XBMCClient
 		PacketLOG p = new PacketLOG(loglevel, logmessage);
 		p.send(hostAddress, hostPort);
 	}
-	
+
 	/**
 	 * Tells XBMC to do the action specified, based on the type it knows were it needs to be sent.
 	 * @param actionmessage Actionmessage (as in scripting/skinning)
@@ -269,7 +269,7 @@ public class XBMCClient
 		PacketACTION p = new PacketACTION(actionmessage);
 		p.send(hostAddress, hostPort);
 	}
-	
+
 	/**
 	 * Implements a PingThread which tells XBMC EventServer that the Client is alive (this should
 	 * be done at least every 60 seconds!
@@ -282,7 +282,7 @@ public class XBMCClient
 		private int hostPort;
 		private int sleepTime;
 		private boolean giveup = false;
-		
+
 		public PingThread(InetAddress hostAddress, int hostPort, int sleepTime)
 		{
 			super("XBMC EventClient Ping-Thread");
@@ -290,12 +290,12 @@ public class XBMCClient
 			this.hostPort = hostPort;
 			this.sleepTime = sleepTime;
 		}
-		
+
 		public void giveup()
 		{
 			giveup = true;
 		}
-		
+
 		public void run()
 		{
 			while(!giveup)
@@ -304,10 +304,10 @@ public class XBMCClient
 					PacketPING p = new PacketPING();
 					p.send(hostAddress, hostPort);
 				} catch (IOException e) {
-					
+
 					e.printStackTrace();
 				}
-				
+
 				try {
 					Thread.sleep(sleepTime);
 				} catch (InterruptedException e) {

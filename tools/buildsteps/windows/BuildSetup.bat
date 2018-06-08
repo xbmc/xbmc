@@ -112,7 +112,7 @@ set WORKSPACE=%base_dir%\kodi-build
   PUSHD %base_dir%\project\Win32BuildSetup
   IF EXIST BUILD_WIN32\application rmdir BUILD_WIN32\application /S /Q
   rem Add files to exclude.txt that should not be included in the installer
-  
+
   Echo Thumbs.db>>exclude.txt
   Echo Desktop.ini>>exclude.txt
   Echo dsstdfx.bin>>exclude.txt
@@ -139,7 +139,7 @@ set WORKSPACE=%base_dir%\kodi-build
 
   rem Exclude dlls from system to avoid duplicates
   Echo .dll>>exclude_dll.txt
-  
+
   md BUILD_WIN32\application
 
   xcopy %EXE% BUILD_WIN32\application > NUL
@@ -198,7 +198,7 @@ set WORKSPACE=%base_dir%\kodi-build
   del /s /q /f BUILD_WIN32\application\*.exp  > NUL
   del /s /q /f BUILD_WIN32\application\*.lib  > NUL
   POPD
-  
+
   ECHO ------------------------------------------------------------
   ECHO Build Succeeded!
   GOTO NSIS_EXE
@@ -222,7 +222,7 @@ set WORKSPACE=%base_dir%\kodi-build
     rem try with space delim instead of tab
     FOR /F "tokens=2* delims= " %%A IN ('REG QUERY "HKLM\Software\NSIS" /ve') DO SET NSISExePath=%%B
   )
-      
+
   IF NOT EXIST "%NSISExePath%" (
     rem fails on localized windows (Default) becomes (Par D�faut)
     FOR /F "tokens=3* delims=  " %%A IN ('REG QUERY "HKLM\Software\NSIS" /ve') DO SET NSISExePath=%%B
@@ -231,7 +231,7 @@ set WORKSPACE=%base_dir%\kodi-build
   IF NOT EXIST "%NSISExePath%" (
     FOR /F "tokens=3* delims= " %%A IN ('REG QUERY "HKLM\Software\NSIS" /ve') DO SET NSISExePath=%%B
   )
-  
+
   rem proper x64 registry checks
   IF NOT EXIST "%NSISExePath%" (
     ECHO using x64 registry entries

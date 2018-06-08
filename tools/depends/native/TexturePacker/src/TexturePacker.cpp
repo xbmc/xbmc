@@ -84,7 +84,7 @@ void CreateSkeletonHeaderImpl(CXBTFWriter& xbtfWriter, std::string fullPath, std
   {
     while ((dp = readdir(dirp)) != NULL)
     {
-      if (strcmp(dp->d_name, ".") == 0 || strcmp(dp->d_name, "..") == 0) 
+      if (strcmp(dp->d_name, ".") == 0 || strcmp(dp->d_name, "..") == 0)
       {
         continue;
       }
@@ -201,12 +201,12 @@ CXBTFFrame createXBTFFrame(RGBAImage &image, CXBTFWriter& writer, double maxMSE,
   int width, height;
   unsigned int format = 0;
   unsigned char* argb = (unsigned char*)image.pixels;
-  
+
   width  = image.width;
   height = image.height;
   bool hasAlpha = HasAlpha(argb, width, height);
 
-  CXBTFFrame frame; 
+  CXBTFFrame frame;
   format = XB_FMT_A8R8G8B8;
   frame = appendContent(writer, width, height, argb, (width * height * 4), format, hasAlpha, flags);
 
@@ -239,7 +239,7 @@ static bool checkDupe(struct MD5Context* ctx,
   map<string,unsigned int>::iterator it = hashes.find(hex);
   if (it != hashes.end())
   {
-    dupes[pos] = it->second; 
+    dupes[pos] = it->second;
     return true;
   }
 

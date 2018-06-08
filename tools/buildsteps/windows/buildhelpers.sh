@@ -95,7 +95,7 @@ do_pkgConfig() {
 }
 
 do_autoreconf() {
-  if [[ ! -f $LOCALSRCDIR/configure ]]; then 
+  if [[ ! -f $LOCALSRCDIR/configure ]]; then
     local CURDIR=$(pwd)
     cd $LOCALSRCDIR
     autoreconf -fiv
@@ -203,7 +203,7 @@ function pathChanged ()
   else
     ret="1"
   fi
-  
+
   echo $ret
 }
 

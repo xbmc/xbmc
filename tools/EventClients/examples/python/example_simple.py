@@ -13,7 +13,7 @@ def main():
 
     host = "localhost"
     port = 9777
-    
+
     # Create an XBMCClient object and connect
     xbmc = XBMCClient("Example Remote", "../../icons/bluetooth.png")
     xbmc.connect()

@@ -221,7 +221,7 @@ bool GifHelper::LoadGif(const char* file)
     {
       fprintf(stderr, "Gif::LoadGif(): Could not extract any frame. File %s\n", m_filename.c_str());
       return false;
-    } 
+    }
     else if (extractedFrames < (int)m_numFrames)
     {
       fprintf(stderr, "Gif::LoadGif(): Could only extract %d/%d frames. File %s\n", extractedFrames, m_numFrames, m_filename.c_str());
@@ -420,7 +420,7 @@ bool GifHelper::PrepareTemplate(GifFrame &frame)
   case DISPOSE_PREVIOUS:
   {
 
-    /* 
+    /*
     * This disposal method makes no sense for the first frame
     * Since browsers etc. handle that too, we'll fall back to DISPOSE_DO_NOT
     */

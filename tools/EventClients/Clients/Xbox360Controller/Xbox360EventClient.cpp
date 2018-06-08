@@ -102,7 +102,7 @@ void checkAll(Xbox360Controller &cont)
     checkThumb(cont, client, 1, "leftthumbstickdown", "leftthumbstickup");
     checkThumb(cont, client, 2, "rightthumbstickleft", "rightthumbstickright");
     checkThumb(cont, client, 3, "rightthumbstickdown", "rightthumbstickup");
-  } 
+  }
 }
 
 int main(int argc, char* argv[])

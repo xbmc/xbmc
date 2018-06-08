@@ -80,14 +80,14 @@ def main():
             actions.append({'type': TYPE_DELAY, 'content': int(a)})
         else:
             assert False, "unhandled option"
-    
+
     addr = (ip, port)
     sock = socket(AF_INET,SOCK_DGRAM)
-    
+
     if len(actions) is 0:
         usage()
         sys.exit(0)
-    
+
     for action in actions:
         print('Sending: %s' % action)
         if action['type'] == TYPE_ACTION:

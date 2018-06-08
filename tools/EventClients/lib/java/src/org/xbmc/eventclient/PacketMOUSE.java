@@ -19,13 +19,13 @@
 package org.xbmc.eventclient;
 /**
  * XBMC Event Client Class
- * 
+ *
  * A MOUSE packets sets the mouse position in XBMC
  * @author Stefan Agner
  *
  */
 public class PacketMOUSE extends Packet {
-	
+
 	protected final static byte MS_ABSOLUTE = 0x01;
 
 	/**

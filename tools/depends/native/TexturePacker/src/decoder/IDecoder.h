@@ -27,7 +27,7 @@ class RGBAImage
 {
 public:
   RGBAImage() : pixels(NULL), width(0), height(0), bbp(0), pitch(0) {}
-  
+
   char *pixels;//image data
   int width;// width
   int height;// height

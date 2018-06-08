@@ -19,7 +19,7 @@
 package org.xbmc.eventclient;
 /**
  * XBMC Event Client Class
- * 
+ *
  * This packet displays a notification window in XBMC. It can contain
  * a caption, a message and an icon.
  * @author Stefan Agner
@@ -39,7 +39,7 @@ public class PacketNOTIFICATION extends Packet {
 		super(PT_NOTIFICATION);
 		appendPayload(title, message, iconType, iconData);
 	}
-	
+
 	/**
 	 * This packet displays a notification window in XBMC.
 	 * @param title Message title
@@ -66,6 +66,6 @@ public class PacketNOTIFICATION extends Packet {
 		appendPayload(0); // reserved
 		if(iconData!=null)
 			appendPayload(iconData);
-		
+
 	}
 }

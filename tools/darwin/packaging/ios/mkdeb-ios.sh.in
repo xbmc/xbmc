@@ -14,15 +14,15 @@ ARM64=false
 if [ "${SWITCH#*debug}" != "${SWITCH}" ]; then
   echo "Packaging Debug target for iOS"
   APP="$DIRNAME/../../../../build/Debug-iphoneos/@APP_NAME@.app"
-  DSYM="$DIRNAME/../../../../build/Debug-iphoneos/$DSYM_FILENAME"  
+  DSYM="$DIRNAME/../../../../build/Debug-iphoneos/$DSYM_FILENAME"
 elif [ "${SWITCH#*release}" != "${SWITCH}" ]; then
   echo "Packaging Release target for iOS"
   APP="$DIRNAME/../../../../build/Release-iphoneos/@APP_NAME@.app"
-  DSYM="$DIRNAME/../../../../build/Release-iphoneos/$DSYM_FILENAME"   
+  DSYM="$DIRNAME/../../../../build/Release-iphoneos/$DSYM_FILENAME"
 else
   echo "You need to specify the build target"
-  exit 1 
-fi  
+  exit 1
+fi
 
 # check if build is 64-bit
 if [[ "$(lipo -info "$APP/@APP_NAME@" | awk '{print $NF}')" == "arm64" ]]; then

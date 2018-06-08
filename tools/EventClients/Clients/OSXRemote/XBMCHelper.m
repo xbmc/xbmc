@@ -148,7 +148,7 @@
         [mp_wrapper handleEvent:ATV_BUTTON_RIGHT];
       else
         [mp_wrapper handleEvent:ATV_BUTTON_RIGHT_RELEASE];
-      break;      
+      break;
     case kHIDRemoteButtonCodeCenter:
       if(isPressed) [mp_wrapper handleEvent:ATV_BUTTON_CENTER];
       break;
@@ -183,7 +183,7 @@
       break;
     case kHIDRemoteButtonCodeCenterHold:
       if(isPressed) [mp_wrapper handleEvent:ATV_BUTTON_CENTER_H];
-      break;      
+      break;
     case kHIDRemoteButtonCodeMenuHold:
       if(isPressed) {
         [self checkAndLaunchApp]; //launch mp_app_path if it's not running
@@ -202,13 +202,13 @@
 
 
 // Notification of ID changes
-- (void)hidRemote:(HIDRemote *)hidRemote remoteIDChangedOldID:(SInt32)old 
+- (void)hidRemote:(HIDRemote *)hidRemote remoteIDChangedOldID:(SInt32)old
             newID:(SInt32)newID forHardwareWithAttributes:(NSMutableDictionary *)attributes
 {
   if(m_verbose)
     NSLog(@"Change of remote ID from %d to %d", old, newID);
   [mp_wrapper switchRemote: newID];
-  
+
 }
 
 #pragma mark -
