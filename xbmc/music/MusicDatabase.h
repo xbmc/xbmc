@@ -371,6 +371,8 @@ public:
   bool GetSourcesByArtist(int idArtist, CFileItem* item);
   bool GetSourcesByAlbum(int idAlbum, CFileItem* item);
   bool GetSourcesBySong(int idSong, const std::string& strPath, CFileItem* item);
+  int GetSourceByName(const std::string& strSource);
+  std::string GetSourceById(int id);
 
   /////////////////////////////////////////////////
   // Genres

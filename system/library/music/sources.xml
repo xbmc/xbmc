@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<node order="135" type="folder">
+	<label>39031</label>
+	<icon>DefaultMusicSources.png</icon>
+	<path>musicdb://sources</path>
+</node>

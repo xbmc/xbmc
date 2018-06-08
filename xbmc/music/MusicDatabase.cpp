@@ -5950,13 +5950,9 @@ int CMusicDatabase::AddSource(const std::string& strName, const std::string& str
     if (NULL == m_pDS.get()) return -1;
 
     // Check if source name already exists
-    strSQL = PrepareSQL("SELECT idSource FROM source WHERE strName LIKE '%s'", strName.c_str());
-    m_pDS->query(strSQL);
-
-    if (m_pDS->num_rows() == 0)
+    idSource = GetSourceByName(strName);
+    if (idSource < 0)
     {
-      m_pDS->close();
-
       BeginTransaction();
       // Add new source and source paths
       if (id > 0)
@@ -5964,7 +5960,7 @@ int CMusicDatabase::AddSource(const std::string& strName, const std::string& str
           id, strName.c_str(), strMultipath.c_str());
       else
         strSQL = PrepareSQL("INSERT INTO source (idSource, strName, strMultipath) VALUES(NULL, '%s', '%s')",
-        strName.c_str(), strMultipath.c_str());
+          strName.c_str(), strMultipath.c_str());
       m_pDS->exec(strSQL);
 
       idSource = static_cast<int>(m_pDS->lastinsertid());
@@ -6007,16 +6003,8 @@ int CMusicDatabase::AddSource(const std::string& strName, const std::string& str
       }
 
       CommitTransaction();
-      return idSource;
     }
-    else
-    {
-      // Source already exists with this name 
-      // (should not happen, as sources.xml maintans unique names)
-      idSource = m_pDS->fv("idSource").get_asInt();
-      m_pDS->close();
-      return idSource;
-    }
+    return idSource;
   }
   catch (...)
   {
@@ -6519,6 +6507,37 @@ bool CMusicDatabase::GetSourcesBySong(int idSong, const std::string& strPath1, C
     CLog::Log(LOGERROR, "%s(%i) failed", __FUNCTION__, idSong);
   }
   return false;
+}
+
+int CMusicDatabase::GetSourceByName(const std::string& strSource)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    std::string strSQL;
+    strSQL = PrepareSQL("SELECT idSource FROM source WHERE strName LIKE '%s'", strSource.c_str());
+    // run query
+    if (!m_pDS->query(strSQL)) return false;
+    int iRowsFound = m_pDS->num_rows();
+    if (iRowsFound != 1)
+    {
+      m_pDS->close();
+      return -1;
+    }
+    return m_pDS->fv("idSource").get_asInt();
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+  }
+  return -1;
+}
+
+std::string CMusicDatabase::GetSourceById(int id)
+{
+  return GetSingleValue("source", "strName", PrepareSQL("idSource = %i", id));
 }
 
 int CMusicDatabase::GetArtistByName(const std::string& strArtist)
@@ -7535,6 +7554,8 @@ bool CMusicDatabase::GetItems(const std::string &strBaseDir, const std::string &
 {
   if (StringUtils::EqualsNoCase(itemType, "genres"))
     return GetGenresNav(strBaseDir, items, filter);
+  else if (StringUtils::EqualsNoCase(itemType, "sources"))
+    return GetSourcesNav(strBaseDir, items, filter);
   else if (StringUtils::EqualsNoCase(itemType, "years"))
     return GetYearsNav(strBaseDir, items, filter);
   else if (StringUtils::EqualsNoCase(itemType, "roles"))
@@ -7553,6 +7574,8 @@ std::string CMusicDatabase::GetItemById(const std::string &itemType, int id)
 {
   if (StringUtils::EqualsNoCase(itemType, "genres"))
     return GetGenreById(id);
+  else if (StringUtils::EqualsNoCase(itemType, "sources"))
+    return GetSourceById(id);
   else if (StringUtils::EqualsNoCase(itemType, "years"))
     return StringUtils::Format("%d", id);
   else if (StringUtils::EqualsNoCase(itemType, "artists"))
@@ -8356,6 +8379,7 @@ bool CMusicDatabase::GetFilter(CDbUrl &musicUrl, Filter &filter, SortDescription
   if(idRole > 0) strRoleSQL = PrepareSQL(" AND song_artist.idRole = %i ", idRole);
 
   int idArtist = -1, idGenre = -1, idAlbum = -1, idSong = -1;
+  int idSource = -1;
   bool albumArtistsOnly = false;
   std::string artistname;
 
@@ -8373,6 +8397,17 @@ bool CMusicDatabase::GetFilter(CDbUrl &musicUrl, Filter &filter, SortDescription
     option = options.find("genre");
     if (option != options.end())
       idGenre = GetGenreByName(option->second.asString());
+  }
+
+  // Process source option
+  option = options.find("sourceid");
+  if (option != options.end())
+    idSource = static_cast<int>(option->second.asInteger());
+  else
+  {
+    option = options.find("source");
+    if (option != options.end())
+      idSource = GetSourceByName(option->second.asString());
   }
 
   // Process album option
@@ -8423,36 +8458,87 @@ bool CMusicDatabase::GetFilter(CDbUrl &musicUrl, Filter &filter, SortDescription
           "WHERE song_artist.idSong = %i %s)", idSong, strRoleSQL.c_str()));
       }
       else
-      { // Artists can be only album artists, so for all artists (with linked albums or songs)
-        // we need to check both album_artist and song_artist tables.
-        // Role is determined from song_artist table, so even if looking for album artists only
-        // we can check those that have a specific role e.g. which album artist is a composer
-        // of songs in that album, from entries in the song_artist table.
-        // Role < -1 is used to indicate that all roles are wanted.
-        // When not album artists only and a specific role wanted then only the song_artist table is checked.
-        // When album artists only and role = 1 (an "artist") then only the album_artist table is checked.
+      { /*
+        Process idRole, idGenre, idSource and albumArtistsOnly options
+
+        For artists these rules are combined because they apply via album and song
+        and so we need to ensure all criteria are met via the same album or song.
+        1) Some artists may be only album artists, so for all artists (with linked 
+           albums or songs) we need to check both album_artist and song_artist tables.
+        2) Role is determined from song_artist table, so even if looking for album artists
+           only we find those that also have a specific role e.g. which album artist is a
+           composer of songs in that album, from entries in the song_artist table.
+        a) Role < -1 is used to indicate that all roles are wanted.
+        b) When not album artists only and a specific role wanted then only the song_artist
+           table is checked.
+        c) When album artists only and role = 1 (an "artist") then only the album_artist
+           table is checked.      
+        */        
         std::string albumArtistSQL, songArtistSQL;
         ExistsSubQuery albumArtistSub("album_artist", "album_artist.idArtist = artistview.idArtist");
-        ExistsSubQuery songArtistSub("song_artist", "song_artist.idArtist = artistview.idArtist");
-        if (idRole > 0)
-          songArtistSub.AppendWhere(PrepareSQL("song_artist.idRole = %i", idRole));
-        if (idGenre > 0)
+        // Prepare album artist subquery SQL
+        if (idSource > 0)
         {
-          songArtistSub.AppendJoin("JOIN song_genre ON song_genre.idSong = song_artist.idSong");
-          songArtistSub.AppendWhere(PrepareSQL("song_genre.idGenre = %i", idGenre));
+          if (idRole == 1 && idGenre < 0)
+          {
+            albumArtistSub.AppendJoin("JOIN album_source ON album_source.idAlbum = album_artist.idAlbum");
+            albumArtistSub.AppendWhere(PrepareSQL("album_source.idSource = %i", idSource));
+          }
+          else
+          {
+            albumArtistSub.AppendWhere(PrepareSQL("EXISTS(SELECT 1 FROM album_source "
+              "WHERE album_source.idSource = %i "
+              "AND album_source.idAlbum = album_artist.idAlbum)", idSource));
+          }       
         }
         if (idRole <= 1 && idGenre > 0)
-        {// Check genre of songs of album using nested subquery
-          std::string strGenre = PrepareSQL("EXISTS(SELECT 1 FROM song JOIN song_genre ON song_genre.idSong = song.idSong "
+        { // Check genre of songs of album using nested subquery
+          std::string strGenre = PrepareSQL("EXISTS(SELECT 1 FROM song "
+            "JOIN song_genre ON song_genre.idSong = song.idSong "
             "WHERE song.idAlbum = album_artist.idAlbum AND song_genre.idGenre = %i)", idGenre);
           albumArtistSub.AppendWhere(strGenre);
         }
+
+        // Prepare song artist subquery SQL
+        ExistsSubQuery songArtistSub("song_artist", "song_artist.idArtist = artistview.idArtist");
+        if (idRole > 0)
+          songArtistSub.AppendWhere(PrepareSQL("song_artist.idRole = %i", idRole));
+        if (idSource > 0 && idGenre > 0 && !albumArtistsOnly && idRole >= 1)
+        {
+          songArtistSub.AppendWhere(PrepareSQL("EXISTS(SELECT 1 FROM song "
+            "JOIN song_genre ON song_genre.idSong = song.idSong "
+            "WHERE song.idSong = song_artist.idSong "
+            "AND song_genre.idGenre = %i "
+            "AND EXISTS(SELECT 1 FROM album_source "
+            "WHERE album_source.idSource = %i "
+            "AND album_source.idAlbum = song.idAlbum))", idGenre, idSource));
+        }
+        else 
+        {
+          if (idGenre > 0)
+          {
+            songArtistSub.AppendJoin("JOIN song_genre ON song_genre.idSong = song_artist.idSong");
+            songArtistSub.AppendWhere(PrepareSQL("song_genre.idGenre = %i", idGenre));
+          }
+          if (idSource > 0 && !albumArtistsOnly)
+          {
+            songArtistSub.AppendJoin("JOIN song ON song.idSong = song_artist.idSong");
+            songArtistSub.AppendJoin("JOIN album_source ON album_source.idAlbum = song.idAlbum");
+            songArtistSub.AppendWhere(PrepareSQL("album_source.idSource = %i", idSource));
+          }
+          if (idRole > 1 && albumArtistsOnly)
+          { // Album artists only with role, check AND in album_artist for album of song
+            // using nested subquery correlated with album_artist
+            songArtistSub.AppendJoin("JOIN song ON song.idSong = song_artist.idSong");
+            songArtistSub.param = "song_artist.idArtist = album_artist.idArtist";
+            songArtistSub.AppendWhere("song.idAlbum = album_artist.idAlbum");
+          }         
+        }
+
+        // Build filter clause from subqueries
         if (idRole > 1 && albumArtistsOnly)
         { // Album artists only with role, check AND in album_artist for album of song
           // using nested subquery correlated with album_artist
-          songArtistSub.AppendJoin("JOIN song ON song.idSong = song_artist.idSong");
-          songArtistSub.param = "song_artist.idArtist = album_artist.idArtist";
-          songArtistSub.AppendWhere("song.idAlbum = album_artist.idAlbum");
           songArtistSub.BuildSQL(songArtistSQL);
           albumArtistSub.AppendWhere(songArtistSQL);
           albumArtistSub.BuildSQL(albumArtistSQL);
@@ -8498,6 +8584,10 @@ bool CMusicDatabase::GetFilter(CDbUrl &musicUrl, Filter &filter, SortDescription
     option = options.find("compilation");
     if (option != options.end())
       filter.AppendWhere(PrepareSQL("albumview.bCompilation = %i", option->second.asBoolean() ? 1 : 0));
+
+    if (idSource > 0)
+      filter.AppendWhere(PrepareSQL("EXISTS(SELECT 1 FROM album_source "
+        "WHERE album_source.idAlbum = albumview.idAlbum AND album_source.idSource = %i)", idSource));
 
     // Process artist, role and genre options together as song subquery to filter those
     // albums that have songs with both that artist and genre
@@ -8606,6 +8696,10 @@ bool CMusicDatabase::GetFilter(CDbUrl &musicUrl, Filter &filter, SortDescription
 
     if (idGenre > 0)
       filter.AppendWhere(PrepareSQL("songview.idSong IN (SELECT song_genre.idSong FROM song_genre WHERE song_genre.idGenre = %i)", idGenre));
+
+    if (idSource > 0)
+      filter.AppendWhere(PrepareSQL("EXISTS(SELECT 1 FROM album_source "
+        "WHERE album_source.idAlbum = songview.idAlbum AND album_source.idSource = %i)", idSource));
 
     std::string songArtistClause, albumArtistClause;
     if (idArtist > 0)
