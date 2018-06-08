@@ -43,7 +43,6 @@ class CGUIInfoColor
 public:
   CGUIInfoColor(UTILS::Color color = 0);
 
-  CGUIInfoColor& operator=(const CGUIInfoColor &color);
   operator UTILS::Color() const { return m_color; };
 
   bool Update();
