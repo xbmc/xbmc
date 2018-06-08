@@ -42,7 +42,7 @@ class CGUIInfoBool
 {
 public:
   explicit CGUIInfoBool(bool value = false);
-  virtual ~CGUIInfoBool();
+  ~CGUIInfoBool();
 
   operator bool() const { return m_value; };
 
