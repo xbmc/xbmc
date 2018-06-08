@@ -561,6 +561,23 @@ std::string CURL::GetWithoutUserDetails(bool redact) const
   if( m_strProtocolOptions.length() > 0 )
     strURL += "|"+m_strProtocolOptions;
 
+  size_t idxPostData = strURL.find("postdata=");
+  if (idxPostData != std::string::npos)
+  {
+    size_t endPostDataIdx = strURL.find("&", idxPostData);
+    size_t idxPipe = strURL.find("|", idxPostData);
+    if (idxPipe != std::string::npos && (endPostDataIdx == std::string::npos || idxPipe < endPostDataIdx))
+    {
+      endPostDataIdx = idxPipe;
+    }
+    std::string strUrlWithoutPostData = strURL.substr(0, idxPostData + 9) + "<removed>";
+    if (endPostDataIdx != std::string::npos)
+    {
+      strUrlWithoutPostData += strURL.substr(endPostDataIdx);
+    }
+    strURL = strUrlWithoutPostData;
+  }
+
   return strURL;
 }
 
