@@ -92,7 +92,7 @@ public:
    \param label text to replace
    \return text with any localized strings filled in.
    */
-  static std::string ReplaceAddonStrings(const std::string &label);
+  static std::string ReplaceAddonStrings(std::string &&label);
 
   typedef std::function<std::string(const std::string&)> StringReplacerFunc;
 

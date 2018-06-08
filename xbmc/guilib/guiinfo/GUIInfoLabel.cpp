@@ -166,7 +166,7 @@ bool CGUIInfoLabel::ReplaceSpecialKeywordReferences(std::string &work, const std
   std::string output;
   if (ReplaceSpecialKeywordReferences(work, strKeyword, func, output))
   {
-    work = output;
+    work = std::move(output);
     return true;
   }
   return false;
@@ -202,11 +202,10 @@ std::string CGUIInfoLabel::ReplaceLocalize(const std::string &label)
   return work;
 }
 
-std::string CGUIInfoLabel::ReplaceAddonStrings(const std::string &label)
+std::string CGUIInfoLabel::ReplaceAddonStrings(std::string &&label)
 {
-  std::string work(label);
-  ReplaceSpecialKeywordReferences(work, "ADDON", AddonReplacer);
-  return work;
+  ReplaceSpecialKeywordReferences(label, "ADDON", AddonReplacer);
+  return std::move(label);
 }
 
 enum EINFOFORMAT { NONE = 0, FORMATINFO, FORMATESCINFO, FORMATVAR, FORMATESCVAR };
@@ -229,7 +228,7 @@ void CGUIInfoLabel::Parse(const std::string &label, int context)
   // Step 1: Replace all $LOCALIZE[number] with the real string
   std::string work = ReplaceLocalize(label);
   // Step 2: Replace all $ADDON[id number] with the real string
-  work = ReplaceAddonStrings(work);
+  work = ReplaceAddonStrings(std::move(work));
   // Step 3: Find all $INFO[info,prefix,postfix] blocks
   EINFOFORMAT format;
   do
