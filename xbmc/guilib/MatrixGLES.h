@@ -52,8 +52,6 @@ public:
 class CMatrixGLStack
 {
 public:
-  explicit CMatrixGLStack() {}
-
   void Push()
   {
     m_stack.push(m_current);
