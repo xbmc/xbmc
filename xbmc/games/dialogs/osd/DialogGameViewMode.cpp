@@ -35,7 +35,7 @@ const std::vector<CDialogGameViewMode::ViewModeProperties> CDialogGameViewMode::
   { 630,   RETRO::VIEWMODE::Normal },
 //  { 631,   RETRO::VIEWMODE::Zoom }, //! @todo RetroArch allows trimming some outer pixels
   { 632,   RETRO::VIEWMODE::Stretch4x3 },
-  { 634,   RETRO::VIEWMODE::Stretch16x9 },
+  { 35232, RETRO::VIEWMODE::Fullscreen },
   { 635,   RETRO::VIEWMODE::Original },
 };
 
@@ -65,7 +65,7 @@ void CDialogGameViewMode::PreInit()
         break;
 
       case RETRO::VIEWMODE::Stretch4x3:
-      case RETRO::VIEWMODE::Stretch16x9:
+      case RETRO::VIEWMODE::Fullscreen:
         if (m_gameVideoHandle)
         {
           bSupported = m_gameVideoHandle->SupportsRenderFeature(RETRO::RENDERFEATURE::STRETCH) ||

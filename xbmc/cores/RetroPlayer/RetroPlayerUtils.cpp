@@ -31,8 +31,8 @@ std::string CRetroPlayerUtils::ViewModeToDescription(VIEWMODE viewMode)
       return "normal";
     case VIEWMODE::Stretch4x3:
       return "4:3";
-    case VIEWMODE::Stretch16x9:
-      return "16:9";
+    case VIEWMODE::Fullscreen:
+      return "fullscreen";
     case VIEWMODE::Original:
       return "original";
     default:

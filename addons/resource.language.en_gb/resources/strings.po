@@ -17364,7 +17364,13 @@ msgctxt "#35231"
 msgid "270°"
 msgstr ""
 
-#empty strings from id 35232 to 35249
+#. Label of thumbnail in the in-game menu for stretching the video to fullscreen
+#: xbmc/games/dialogs/osd/DialogGameViewMode.h
+msgctxt "#35232"
+msgid "Fullscreen"
+msgstr ""
+
+#empty strings from id 35233 to 35249
 
 #: xbmc/windows/GUIMediaWindow.cpp
 msgctxt "#35250"

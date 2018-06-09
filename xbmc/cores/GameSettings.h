@@ -38,7 +38,7 @@ enum class VIEWMODE
 {
   Normal = 0,
   Stretch4x3 = 1,
-  Stretch16x9 = 2,
+  Fullscreen = 2,
   Original = 3,
   Max = Original
 };
