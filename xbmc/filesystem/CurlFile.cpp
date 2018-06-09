@@ -196,7 +196,6 @@ size_t CCurlFile::CReadState::ReadCallback(char *buffer, size_t size, size_t nit
 size_t CCurlFile::CReadState::WriteCallback(char *buffer, size_t size, size_t nitems)
 {
   unsigned int amount = size * nitems;
-//  CLog::Log(LOGDEBUG, "CCurlFile::WriteCallback (%p) with %i bytes, readsize = %i, writesize = %i", this, amount, m_buffer.getMaxReadSize(), m_buffer.getMaxWriteSize() - m_overflowSize);
   if (m_overflowSize)
   {
     // we have our overflow buffer - first get rid of as much as we can
@@ -237,8 +236,6 @@ size_t CCurlFile::CReadState::WriteCallback(char *buffer, size_t size, size_t ni
   }
   if (amount)
   {
-//    CLog::Log(LOGDEBUG, "CCurlFile::WriteCallback(%p) not enough free space for %i bytes", (void*)this,  amount);
-
     //! @todo Limit max. amount of the overflowbuffer
     m_overflowBuffer = (char*)realloc_simple(m_overflowBuffer, amount + m_overflowSize);
     if(m_overflowBuffer == NULL)
@@ -767,14 +764,15 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
     }
     m_ftppasvip = url2.HasProtocolOption("pasvip") && url2.GetProtocolOption("pasvip") != "0";
   }
-  else if( url2.IsProtocol("http")
-       ||  url2.IsProtocol("https"))
+  else if(url2.IsProtocol("http") ||
+    url2.IsProtocol("https"))
   {
     const CSettings &s = CServiceBroker::GetSettings();
-    if (m_proxyhost.empty()
-        && s.GetBool(CSettings::SETTING_NETWORK_USEHTTPPROXY)
-        && !s.GetString(CSettings::SETTING_NETWORK_HTTPPROXYSERVER).empty()
-        && s.GetInt(CSettings::SETTING_NETWORK_HTTPPROXYPORT) > 0)
+    if (!url2.IsLocalHost() &&
+      m_proxyhost.empty() &&
+      s.GetBool(CSettings::SETTING_NETWORK_USEHTTPPROXY) &&
+      !s.GetString(CSettings::SETTING_NETWORK_HTTPPROXYSERVER).empty() &&
+      s.GetInt(CSettings::SETTING_NETWORK_HTTPPROXYPORT) > 0)
     {
       m_proxytype = (ProxyType)s.GetInt(CSettings::SETTING_NETWORK_HTTPPROXYTYPE);
       m_proxyhost = s.GetString(CSettings::SETTING_NETWORK_HTTPPROXYSERVER);
