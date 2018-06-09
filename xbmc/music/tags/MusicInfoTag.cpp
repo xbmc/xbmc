@@ -71,6 +71,7 @@ CMusicInfoTag& CMusicInfoTag::operator =(const CMusicInfoTag& tag)
   m_strRecordLabel = tag.m_strRecordLabel;
   m_strLyrics = tag.m_strLyrics;
   m_cuesheet = tag.m_cuesheet;
+  m_playingStation = tag.m_playingStation;
   m_lastPlayed = tag.m_lastPlayed;
   m_dateAdded = tag.m_dateAdded;
   m_bCompilation = tag.m_bCompilation;
@@ -247,6 +248,12 @@ const std::string &CMusicInfoTag::GetCueSheet() const
 {
   return m_cuesheet;
 }
+
+const std::string &CMusicInfoTag::GetPlayingStation() const
+{
+  return m_playingStation;
+}
+
 
 float CMusicInfoTag::GetRating() const
 {
@@ -464,6 +471,12 @@ void CMusicInfoTag::SetCueSheet(const std::string& cueSheet)
 {
   m_cuesheet = cueSheet;
 }
+
+void CMusicInfoTag::SetPlayingStation(const std::string& playingStation)
+{
+  m_playingStation = playingStation;
+}
+
 
 void CMusicInfoTag::SetLyrics(const std::string& lyrics)
 {
@@ -804,6 +817,7 @@ void CMusicInfoTag::Serialize(CVariant& value) const
   value["albumid"] = m_iAlbumId;
   value["compilationartist"] = m_bCompilation;
   value["compilation"] = m_bCompilation;
+  value["playingStation"] = m_playingStation;
   if (m_type.compare(MediaTypeAlbum) == 0)
     value["releasetype"] = CAlbum::ReleaseTypeToString(m_albumReleaseType);
   else if (m_type.compare(MediaTypeSong) == 0)
@@ -893,6 +907,7 @@ void CMusicInfoTag::Archive(CArchive& ar)
     ar << m_coverArt;
     ar << m_cuesheet;
     ar << static_cast<int>(m_albumReleaseType);
+    ar << m_playingStation;
   }
   else
   {
@@ -951,6 +966,7 @@ void CMusicInfoTag::Archive(CArchive& ar)
     int albumReleaseType;
     ar >> albumReleaseType;
     m_albumReleaseType = static_cast<CAlbum::ReleaseType>(albumReleaseType);
+    ar >> m_playingStation;
   }
 }
 
@@ -981,6 +997,7 @@ void CMusicInfoTag::Clear()
   m_strMood.clear();
   m_strRecordLabel.clear();
   m_cuesheet.clear();
+  m_playingStation.clear();
   m_iDbId = -1;
   m_type.clear();
   m_iTimesPlayed = 0;

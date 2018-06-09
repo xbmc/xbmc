@@ -82,6 +82,7 @@ public:
   const std::string& GetRecordLabel() const;
   const std::string& GetLyrics() const;
   const std::string& GetCueSheet() const;
+  const std::string& GetPlayingStation() const;
   const CDateTime& GetLastPlayed() const;
   const CDateTime& GetDateAdded() const;
   bool  GetCompilation() const;
@@ -133,6 +134,7 @@ public:
   void SetRecordLabel(const std::string& publisher);
   void SetLyrics(const std::string& lyrics);
   void SetCueSheet(const std::string& cueSheet);
+  void SetPlayingStation(const std::string& playingStation);
   void SetRating(float rating);
   void SetUserrating(int rating);
   void SetVotes(int votes);
@@ -214,6 +216,7 @@ protected:
   std::string m_strRecordLabel;
   std::string m_strLyrics;
   std::string m_cuesheet;
+  std::string m_playingStation;
   CDateTime m_lastPlayed;
   CDateTime m_dateAdded;
   bool m_bCompilation;

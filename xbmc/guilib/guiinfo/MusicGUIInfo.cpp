@@ -343,6 +343,13 @@ bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
     case MUSICPLAYER_PROPERTY:
       value = item->GetProperty(info.GetData3()).asString();
       return true;
+    case MUSICPLAYER_PLAYINGSTATION:
+      {
+        const CMusicInfoTag &tag = *item->GetMusicInfoTag();
+        value = tag.GetPlayingStation();
+        return true;
+      }
+      break;
     case MUSICPLAYER_PLAYLISTLEN:
       if (CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST_MUSIC)
       {

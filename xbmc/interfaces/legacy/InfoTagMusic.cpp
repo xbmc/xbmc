@@ -62,6 +62,11 @@ namespace XBMCAddon
       return infoTag->GetType();
     }
 
+    String InfoTagMusic::getPlayingStation()
+    {
+      return infoTag->GetPlayingStation();
+    }
+
     String InfoTagMusic::getArtist()
     {
       return infoTag->GetArtistString();
