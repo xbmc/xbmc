@@ -43,6 +43,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "input/InputManager.h"
+#include "peripherals/Peripherals.h"
 #include "settings/Settings.h"
 #include "settings/lib/SettingsManager.h"
 #if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
@@ -272,6 +273,9 @@ void CProfilesManager::PrepareLoadProfile(unsigned int profileIndex)
 
   // stop PVR related services
   pvrManager.Stop();
+
+  // clear peripherals
+  CServiceBroker::GetPeripherals().Clear();
 
   if (profileIndex != 0 || !IsMasterProfile())
     networkManager.NetworkMessage(CNetwork::SERVICES_DOWN, 1);

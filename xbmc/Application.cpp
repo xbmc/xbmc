@@ -1117,6 +1117,7 @@ bool CApplication::Initialize()
     // check if we should use the login screen
     if (m_ServiceManager->GetProfileManager().UsingLoginScreen())
     {
+      CServiceBroker::GetPeripherals().Initialise();
       CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_LOGIN_SCREEN);
     }
     else
