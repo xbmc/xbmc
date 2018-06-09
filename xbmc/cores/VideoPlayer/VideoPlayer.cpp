@@ -28,7 +28,7 @@
 #if defined(HAVE_LIBBLURAY)
 #include "DVDInputStreams/DVDInputStreamBluray.h"
 #endif
-#include "DVDInputStreams/DVDInputStreamPVRManager.h"
+#include "DVDInputStreams/InputStreamPVRBase.h"
 
 #include "DVDDemuxers/DVDDemux.h"
 #include "DVDDemuxers/DVDDemuxUtils.h"
@@ -87,7 +87,6 @@
 
 #include <iterator>
 
-using namespace PVR;
 using namespace KODI::MESSAGING;
 
 //------------------------------------------------------------------------------
@@ -2884,8 +2883,8 @@ void CVideoPlayer::HandleMessages()
 
       if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER) && speed != m_playSpeed)
       {
-        std::shared_ptr<CDVDInputStreamPVRManager> pvrinputstream = std::static_pointer_cast<CDVDInputStreamPVRManager>(m_pInputStream);
-        pvrinputstream->Pause( speed == 0 );
+        std::shared_ptr<CInputStreamPVRBase> pvrinputstream = std::static_pointer_cast<CInputStreamPVRBase>(m_pInputStream);
+        pvrinputstream->Pause(speed == 0);
       }
 
       // do a seek after rewind, clock is not in sync with current pts

@@ -200,33 +200,6 @@ namespace PVR
      */
     std::string GetClientAddonId(int iClientId) const;
 
-    /*!
-     * @brief Get the instance of the playing client, if there is one.
-     * @param client Will be filled with requested client on success, null otherwise.
-     * @return True on success, false otherwise.
-     */
-    bool GetPlayingClient(CPVRClientPtr &client) const;
-
-    /*!
-     * @brief Get the instance of the playing client, if there is one.
-     * @param client Will be filled with requested client on success, null otherwise.
-     * @param bPlayingRecording is set to true if the client is currently playing a recording, false otherwise.
-     * @return True on success, false otherwise.
-     */
-    bool GetPlayingClient(CPVRClientPtr &client, bool &bPlayingRecording) const;
-
-    /*!
-     * @brief Get the ID of the playing client, if there is one.
-     * @return The ID or -1 if no client is playing.
-     */
-    int GetPlayingClientID(void) const;
-
-    /*!
-     * @brief Get the name of the playing client, if there is one.
-     * @return The name of the client or an empty string if nothing is playing.
-     */
-    const std::string GetPlayingClientName(void) const;
-
     /*! @name general methods */
     //@{
 
@@ -255,71 +228,6 @@ namespace PVR
     //@{
 
     /*!
-     * @brief Open a stream on the given channel.
-     * @param channel The channel to start playing.
-     * @return True if the stream was opened successfully, false otherwise.
-     */
-    bool OpenStream(const CPVRChannelPtr &channel);
-
-    /*!
-     * @brief Open a stream from the given recording.
-     * @param recording The recording to start playing.
-     * @return True if the stream was opened successfully, false otherwise.
-     */
-    bool OpenStream(const CPVRRecordingPtr &recording);
-
-    /*!
-     * @brief Close the stream on the currently playing client, if any.
-     */
-    void CloseStream(void);
-
-    /*!
-     * @brief Return the read chunk size to use when playing a stream.
-     * @param item The item providing the stream (channel or recording).
-     * @return The chunk size in bytes or 0 in case of an error.
-     */
-    int GetStreamReadChunkSize(const CFileItem &item);
-
-    /*!
-     * @brief Read from an open stream.
-     * @param lpBuf Target buffer.
-     * @param uiBufSize The size of the buffer.
-     * @return The amount of bytes that was added or -1 in case of an error.
-     */
-    int ReadStream(void* lpBuf, int64_t uiBufSize);
-
-    /*!
-     * @brief Return the filesize of the currently playing stream.
-     * @return The size of the stream or -1 in case of an error.
-     */
-    int64_t GetStreamLength(void);
-
-    /*!
-     * @brief Check whether it is possible to seek the currently playing livetv or recording stream
-     */
-    bool CanSeekStream(void) const;
-
-    /*!
-     * @brief Seek to a position in a stream.
-     * @param iFilePosition The position to seek to.
-     * @param iWhence Specify how to seek ("new position=pos", "new position=pos+actual position" or "new position=filesize-pos")
-     * @return The new stream position or -1 in case of an error.
-     */
-    int64_t SeekStream(int64_t iFilePosition, int iWhence = SEEK_SET);
-
-    /*!
-     * @brief Check whether it is possible to pause the currently playing livetv or recording stream
-     * @return True if there is a playing channel and if it can be paused, false otherwise.
-     */
-    bool CanPauseStream(void) const;
-
-    /*!
-     * @brief Pause/Continue a stream.
-     * @param bPaused If true, pause the stream, unpause otherwise.
-     */
-    void PauseStream(bool bPaused);
-
-    /*!
      * @brief Fill the file item for a channel with the properties required for playback. Values are obtained from the PVR backend.
      * @param fileItem The file item to be filled.
      * @return True if the stream properties have been set, false otherwiese.
@@ -332,25 +240,6 @@ namespace PVR
      * @return True if the stream properties have been set, false otherwiese.
      */
     bool FillRecordingStreamFileItem(CFileItem &fileItem);
-
-    /*!
-     * @brief Check whether the currently playing livetv stream is timeshifted.
-     * @return True if there is a playing stream and if it is timeshifted, false otherwise.
-     */
-    bool IsTimeshifting() const;
-
-    /*!
-     * @brief Get timing data for the currently playing stream.
-     * @param times The struct the client has to fill with data.
-     * @return True, if the data were fetched successfully, false itherwise.
-     */
-    bool GetStreamTimes(PVR_STREAM_TIMES *times) const;
-
-    /*!
-     * @brief Check if the currently playing stream is a realtime stream.
-     * @return True if there is a playing stream and if it is realtime, false otherwise.
-     */
-   bool IsRealTimeStream() const;
 
     //@}
 
@@ -719,24 +608,7 @@ namespace PVR
      */
     PVR_ERROR ForCreatedClient(const char* strFunctionName, int iClientId, PVRClientFunction function) const;
 
-    /*!
-     * @brief Wraps a call to the playing client, if any, in order to do common pre and post function invocation actions.
-     * @param strFunctionName The function name, for logging purposes.
-     * @param function The function to wrap. It has to have return type PVR_ERROR and must take a const reference to a CPVRClientPtr as parameter.
-     * @return PVR_ERROR_NO_ERROR on success, PVR_ERROR_REJECTED if there is no playing client, any other PVR_ERROR_* value otherwise.
-     */
-    PVR_ERROR ForPlayingClient(const char* strFunctionName, PVRClientFunction function) const;
-
-    /*!
-     * @brief Check if a client is currently playing a stream.
-     * @return True if a stream (TV/radio channel, recording) is playing, false otherwise.
-     */
-    bool IsPlaying(void) const;
-
-    int                   m_playingClientId;          /*!< the ID of the client that is currently playing */
-    bool                  m_bIsPlayingRecording;
-    std::string           m_strPlayingClientName;     /*!< the name client that is currently playing a stream or an empty string if nothing is playing */
-    CPVRClientMap         m_clientMap;                /*!< a map of all known clients */
-    CCriticalSection      m_critSection;
+    CCriticalSection m_critSection;
+    CPVRClientMap m_clientMap;
   };
 }

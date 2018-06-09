@@ -109,6 +109,13 @@ namespace PVR
     CPVRClientsPtr Clients(void) const;
 
     /*!
+     * @brief Get the instance of a client that matches the given item.
+     * @param item The item containing a PVR recording, a PVR channel, a PVR timer or a PVR EPG event.
+     * @return the requested client on success, nullptr otherwise.
+     */
+    std::shared_ptr<CPVRClient> GetClient(const CFileItem &item) const;
+
+    /*!
      * @brief Get access to the pvr gui actions.
      * @return The gui actions.
      */
@@ -189,6 +196,12 @@ namespace PVR
     bool IsPlayingEpgTag(const CPVREpgInfoTagPtr &epgTag) const;
 
     /*!
+     * @brief Check whether the currently playing livetv stream is timeshifted.
+     * @return True if there is a playing stream and if it is timeshifted, false otherwise.
+     */
+    bool IsTimeshifting() const;
+
+    /*!
      * @return True while the PVRManager is initialising.
      */
     inline bool IsInitialising(void) const
@@ -242,6 +255,18 @@ namespace PVR
     CPVREpgInfoTagPtr GetPlayingEpgTag(void) const;
 
     /*!
+     * @brief Get the name of the playing client, if there is one.
+     * @return The name of the client or an empty string if nothing is playing.
+     */
+    std::string GetPlayingClientName(void) const;
+
+    /*!
+     * @brief Get the ID of the playing client, if there is one.
+     * @return The ID or -1 if no client is playing.
+     */
+    int GetPlayingClientID(void) const;
+
+    /*!
      * @brief Check whether there is an active recording on the currenlyt playing channel.
      * @return True if there is a playing channel and there is an active recording on that channel, false otherwise.
      */
@@ -281,25 +306,6 @@ namespace PVR
      * @param item The item that ended to play.
      */
     void OnPlaybackEnded(const CFileItemPtr item);
-
-    /*!
-     * @brief Close an open PVR stream.
-     */
-    void CloseStream(void);
-
-    /*!
-     * @brief Open a stream from the given channel.
-     * @param fileItem The file item with the channel to open.
-     * @return True if the stream was opened, false otherwise.
-     */
-    bool OpenLiveStream(const CFileItem &fileItem);
-
-    /*!
-     * @brief Open a stream from the given recording.
-     * @param tag The recording to open.
-     * @return True if the stream was opened, false otherwise.
-     */
-    bool OpenRecordedStream(const CPVRRecordingPtr &tag);
 
     /*!
      * @brief Check whether there are active recordings.
@@ -536,5 +542,7 @@ namespace PVR
     CPVRChannelPtr m_playingChannel;
     CPVRRecordingPtr m_playingRecording;
     CPVREpgInfoTagPtr m_playingEpgTag;
+    std::string m_strPlayingClientName;
+    int m_playingClientId;
   };
 }

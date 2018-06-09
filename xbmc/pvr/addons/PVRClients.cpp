@@ -56,8 +56,6 @@ namespace
 } // unnamed namespace
 
 CPVRClients::CPVRClients(void)
-: m_playingClientId(-EINVAL),
-  m_bIsPlayingRecording(false)
 {
   CServiceBroker::GetAddonMgr().RegisterAddonMgrCallback(ADDON_PVRDLL, this);
   CServiceBroker::GetAddonMgr().Events().Subscribe(this, &CPVRClients::OnAddonEvent);
@@ -217,8 +215,8 @@ bool CPVRClients::RequestRestart(AddonPtr addon, bool bDataChanged)
 
 bool CPVRClients::StopClient(const AddonPtr &addon, bool bRestart)
 {
-  /* stop playback if needed */
-  if (IsPlaying())
+  // stop playback if needed
+  if (CServiceBroker::GetPVRManager().IsPlaying())
     CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_STOP);
 
   CSingleLock lock(m_critSection);
@@ -469,40 +467,6 @@ std::string CPVRClients::GetClientAddonId(int iClientId) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// playing client access
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-bool CPVRClients::IsPlaying(void) const
-{
-  CSingleLock lock(m_critSection);
-  return m_playingClientId != -EINVAL;
-}
-
-bool CPVRClients::GetPlayingClient(CPVRClientPtr &client) const
-{
-  return GetCreatedClient(m_playingClientId, client);
-}
-
-bool CPVRClients::GetPlayingClient(CPVRClientPtr &client, bool &bPlayingRecording) const
-{
-  CSingleLock lock(m_critSection);
-  bPlayingRecording = m_bIsPlayingRecording;
-  return GetCreatedClient(m_playingClientId, client);
-}
-
-int CPVRClients::GetPlayingClientID(void) const
-{
-  CSingleLock lock(m_critSection);
-  return m_playingClientId;
-}
-
-const std::string CPVRClients::GetPlayingClientName(void) const
-{
-  CSingleLock lock(m_critSection);
-  return m_strPlayingClientName;
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // client API calls
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -559,170 +523,6 @@ std::string CPVRClients::GetBackendHostnameByClientId(int iClientId) const
   return name;
 }
 
-int CPVRClients::GetStreamReadChunkSize(const CFileItem &item)
-{
-  int iChunkSize = 0;
-  int iClientID = PVR_INVALID_CLIENT_ID;
-
-  if (item.HasPVRChannelInfoTag())
-    iClientID = item.GetPVRChannelInfoTag()->ClientID();
-  else if (item.HasPVRRecordingInfoTag())
-    iClientID = item.GetPVRRecordingInfoTag()->m_iClientId;
-
-  if (iClientID != PVR_INVALID_CLIENT_ID)
-  {
-    ForCreatedClient(__FUNCTION__, iClientID, [&iChunkSize](const CPVRClientPtr &client) {
-      return client->GetStreamReadChunkSize(iChunkSize);
-    });
-  }
-
-  return iChunkSize;
-}
-
-bool CPVRClients::OpenStream(const CPVRChannelPtr &channel)
-{
-  CloseStream();
-
-  /* try to open the stream on the client */
-  PVR_ERROR error = ForCreatedClient(__FUNCTION__, channel->ClientID(), [&channel](const CPVRClientPtr &client) {
-    return client->OpenLiveStream(channel);
-  });
-
-  if (error == PVR_ERROR_NO_ERROR)
-  {
-    CSingleLock lock(m_critSection);
-    m_playingClientId = channel->ClientID();
-    m_bIsPlayingRecording = false;
-
-    CPVRClientPtr client;
-    if (GetCreatedClient(channel->ClientID(), client))
-      m_strPlayingClientName = client->GetFriendlyName();
-
-    return true;
-  }
-
-  return false;
-}
-
-bool CPVRClients::OpenStream(const CPVRRecordingPtr &recording)
-{
-  CloseStream();
-
-  /* try to open the recording stream on the client */
-  PVR_ERROR error = ForCreatedClient(__FUNCTION__, recording->ClientID(), [&recording](const CPVRClientPtr &client) {
-    return client->OpenRecordedStream(recording);
-  });
-
-  if (error == PVR_ERROR_NO_ERROR)
-  {
-    CSingleLock lock(m_critSection);
-    m_playingClientId = recording->ClientID();
-    m_bIsPlayingRecording = true;
-
-    CPVRClientPtr client;
-    if (GetCreatedClient(recording->ClientID(), client))
-      m_strPlayingClientName = client->GetFriendlyName();
-
-    return true;
-}
-
-  return false;
-}
-
-void CPVRClients::CloseStream(void)
-{
-  PVR_ERROR error = ForPlayingClient(__FUNCTION__, [this](const CPVRClientPtr &client) {
-    if (m_bIsPlayingRecording)
-      return client->CloseRecordedStream();
-    else
-      return client->CloseLiveStream();
-  });
-
-  if (error == PVR_ERROR_NO_ERROR)
-  {
-    CSingleLock lock(m_critSection);
-    m_playingClientId = -EINVAL;
-    m_bIsPlayingRecording = false;
-  }
-}
-
-int CPVRClients::ReadStream(void* lpBuf, int64_t uiBufSize)
-{
-  int iRead = -EINVAL;
-  ForPlayingClient(__FUNCTION__, [this, &lpBuf, uiBufSize, &iRead](const CPVRClientPtr &client) {
-    if (m_bIsPlayingRecording)
-      return client->ReadRecordedStream(lpBuf, uiBufSize, iRead);
-    else
-      return client->ReadLiveStream(lpBuf, uiBufSize, iRead);
-  });
-  return iRead;
-}
-
-int64_t CPVRClients::GetStreamLength(void)
-{
-  int64_t iLength = -EINVAL;
-  ForPlayingClient(__FUNCTION__, [this, &iLength](const CPVRClientPtr &client) {
-    if (m_bIsPlayingRecording)
-      return client->GetRecordedStreamLength(iLength);
-    else
-      return client->GetLiveStreamLength(iLength);
-  });
-  return iLength;
-}
-
-bool CPVRClients::CanSeekStream(void) const
-{
-  bool bCanSeek;
-  {
-    CSingleLock lock(m_critSection);
-    bCanSeek = m_bIsPlayingRecording;
-  }
-
-  if (!bCanSeek)
-  {
-    ForPlayingClient(__FUNCTION__, [&bCanSeek](const CPVRClientPtr &client) {
-      return client->CanSeekStream(bCanSeek);
-    });
-  }
-  return bCanSeek;
-}
-
-int64_t CPVRClients::SeekStream(int64_t iFilePosition, int iWhence/* = SEEK_SET*/)
-{
-  int64_t iPos = -EINVAL;
-  ForPlayingClient(__FUNCTION__, [this, iFilePosition, iWhence, &iPos](const CPVRClientPtr &client) {
-    if (m_bIsPlayingRecording)
-      return client->SeekRecordedStream(iFilePosition, iWhence, iPos);
-    else
-      return client->SeekLiveStream(iFilePosition, iWhence, iPos);
-  });
-  return iPos;
-}
-
-bool CPVRClients::CanPauseStream(void) const
-{
-  bool bCanPause;
-  {
-    CSingleLock lock(m_critSection);
-    bCanPause = m_bIsPlayingRecording;
-  }
-
-  if (!bCanPause)
-  {
-    ForPlayingClient(__FUNCTION__, [&bCanPause](const CPVRClientPtr &client) {
-      return client->CanPauseStream(bCanPause);
-    });
-  }
-  return bCanPause;
-}
-
-void CPVRClients::PauseStream(bool bPaused)
-{
-  ForPlayingClient(__FUNCTION__, [bPaused](const CPVRClientPtr &client) {
-    return client->PauseStream(bPaused);
-  });
-}
-
 bool CPVRClients::FillChannelStreamFileItem(CFileItem &fileItem)
 {
   return ForCreatedClient(__FUNCTION__, fileItem.GetPVRChannelInfoTag()->ClientID(), [&fileItem](const CPVRClientPtr &client) {
@@ -742,31 +542,6 @@ bool CPVRClients::FillEpgTagStreamFileItem(CFileItem &fileItem)
   return ForCreatedClient(__FUNCTION__, fileItem.GetEPGInfoTag()->ClientID(), [&fileItem](const CPVRClientPtr &client) {
     return client->FillEpgTagStreamFileItem(fileItem);
   }) == PVR_ERROR_NO_ERROR;
-}
-
-bool CPVRClients::IsTimeshifting(void) const
-{
-  bool bTimeshifting = false;
-  ForPlayingClient(__FUNCTION__, [&bTimeshifting](const CPVRClientPtr &client) {
-    return client->IsTimeshifting(bTimeshifting);
-  });
-  return bTimeshifting;
-}
-
-bool CPVRClients::GetStreamTimes(PVR_STREAM_TIMES *times) const
-{
-  return ForPlayingClient(__FUNCTION__, [&times](const CPVRClientPtr &client) {
-    return client->GetStreamTimes(times);
-  }) == PVR_ERROR_NO_ERROR;
-}
-
-bool CPVRClients::IsRealTimeStream(void) const
-{
-  bool bRealTime = false;
-  ForPlayingClient(__FUNCTION__, [&bRealTime](const CPVRClientPtr &client) {
-    return client->IsRealTimeStream(bRealTime);
-  });
-  return bRealTime;
 }
 
 bool CPVRClients::SupportsTimers() const
@@ -1014,9 +789,6 @@ PVR_ERROR CPVRClients::OpenDialogChannelSettings(const CPVRChannelPtr &channel)
 
 bool CPVRClients::HasMenuHooks(int iClientID, PVR_MENUHOOK_CAT cat)
 {
-  if (iClientID < 0)
-    iClientID = GetPlayingClientID();
-
   bool bHasMenuHooks = false;
   ForCreatedClient(__FUNCTION__, iClientID, [cat, &bHasMenuHooks](const CPVRClientPtr &client) {
     bHasMenuHooks = client->HasMenuHooks(cat);
@@ -1175,25 +947,6 @@ PVR_ERROR CPVRClients::ForCreatedClient(const char* strFunctionName, int iClient
   else
   {
     CLog::Log(LOGERROR, "CPVRClients - %s - no created client with id '%d'", strFunctionName, iClientId);
-  }
-  return error;
-}
-
-PVR_ERROR CPVRClients::ForPlayingClient(const char* strFunctionName, PVRClientFunction function) const
-{
-  PVR_ERROR error = PVR_ERROR_UNKNOWN;
-
-  if (!IsPlaying())
-    return PVR_ERROR_REJECTED;
-
-  CPVRClientPtr client;
-  if (GetPlayingClient(client))
-  {
-    error = function(client);
-
-    if (error != PVR_ERROR_NO_ERROR && error != PVR_ERROR_NOT_IMPLEMENTED)
-      CLog::Log(LOGERROR, "CPVRClients - %s - playing client '%s' returned an error: %s",
-                strFunctionName, client->GetFriendlyName().c_str(), CPVRClient::ToString(error));
   }
   return error;
 }
