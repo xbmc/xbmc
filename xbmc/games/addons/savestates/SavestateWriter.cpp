@@ -42,6 +42,13 @@ CSavestateWriter::~CSavestateWriter() = default;
 
 bool CSavestateWriter::Initialize(const CGameClient* gameClient, uint64_t frameHistoryCount)
 {
+  //! @todo Handle savestates for standalone game clients
+  if (gameClient->GetGamePath().empty())
+  {
+    CLog::Log(LOGERROR, "Savestates not implemented for standalone game clients");
+    return false;
+  }
+
   m_savestate.Reset();
   m_fps = 0.0;
 
@@ -59,8 +66,6 @@ bool CSavestateWriter::Initialize(const CGameClient* gameClient, uint64_t frameH
   m_savestate.SetPlaytimeWallClock(frameHistoryCount / m_fps); //! @todo Accumulate playtime instead of deriving it
 
   m_savestate.SetPath(CSavestateUtils::MakePath(m_savestate));
-  if (m_savestate.Path().empty())
-    CLog::Log(LOGDEBUG, "Failed to calculate savestate path");
 
   if (m_fps == 0.0)
     return false; // Sanity check
