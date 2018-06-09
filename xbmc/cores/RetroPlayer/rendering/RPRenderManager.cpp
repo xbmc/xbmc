@@ -262,7 +262,7 @@ void CRPRenderManager::ClearBackground()
   m_renderContext.Clear(0);
 }
 
-bool CRPRenderManager::SupportsRenderFeature(ERENDERFEATURE feature) const
+bool CRPRenderManager::SupportsRenderFeature(RENDERFEATURE feature) const
 {
   //! @todo Move to ProcessInfo
   for (const auto &renderer : m_renderers)
@@ -274,7 +274,7 @@ bool CRPRenderManager::SupportsRenderFeature(ERENDERFEATURE feature) const
   return false;
 }
 
-bool CRPRenderManager::SupportsScalingMethod(ESCALINGMETHOD method) const
+bool CRPRenderManager::SupportsScalingMethod(SCALINGMETHOD method) const
 {
   //! @todo Move to ProcessInfo
   for (IRenderBufferPool *bufferPool : m_processInfo.GetBufferManager().GetBufferPools())
@@ -543,7 +543,7 @@ CRenderVideoSettings CRPRenderManager::GetEffectiveSettings(const IGUIRenderSett
   }
 
   // Sanitize settings
-  if (effectiveSettings.GetScalingMethod() == VS_SCALINGMETHOD_AUTO)
+  if (effectiveSettings.GetScalingMethod() == SCALINGMETHOD::AUTO)
     effectiveSettings.SetScalingMethod(m_processInfo.GetDefaultScalingMethod());
 
   return effectiveSettings;

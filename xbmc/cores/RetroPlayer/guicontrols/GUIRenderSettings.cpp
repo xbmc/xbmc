@@ -73,14 +73,14 @@ void CGUIRenderSettings::SetGeometry(CRenderGeometry geometry)
   m_renderSettings.Geometry() = std::move(geometry);
 }
 
-void CGUIRenderSettings::SetScalingMethod(ESCALINGMETHOD scalingMethod)
+void CGUIRenderSettings::SetScalingMethod(SCALINGMETHOD scalingMethod)
 {
   CSingleLock lock(m_mutex);
 
   m_renderSettings.VideoSettings().SetScalingMethod(scalingMethod);
 }
 
-void CGUIRenderSettings::SetViewMode(ViewMode viewMode)
+void CGUIRenderSettings::SetViewMode(VIEWMODE viewMode)
 {
   CSingleLock lock(m_mutex);
 

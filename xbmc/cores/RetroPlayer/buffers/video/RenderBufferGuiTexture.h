@@ -21,7 +21,7 @@
 #pragma once
 
 #include "cores/RetroPlayer/buffers/BaseRenderBuffer.h"
-#include "cores/IPlayer.h"
+#include "cores/GameSettings.h"
 #include "guilib/Texture.h"
 #include "guilib/TextureFormats.h"
 
@@ -34,7 +34,7 @@ namespace RETRO
   class CRenderBufferGuiTexture : public CBaseRenderBuffer
   {
   public:
-    CRenderBufferGuiTexture(ESCALINGMETHOD scalingMethod);
+    CRenderBufferGuiTexture(SCALINGMETHOD scalingMethod);
     virtual ~CRenderBufferGuiTexture() = default;
 
     // implementation of IRenderBuffer via CBaseRenderBuffer
@@ -49,10 +49,10 @@ namespace RETRO
 
   protected:
     AVPixelFormat TranslateFormat(unsigned int textureFormat);
-    TEXTURE_SCALING TranslateScalingMethod(ESCALINGMETHOD scalingMethod);
+    TEXTURE_SCALING TranslateScalingMethod(SCALINGMETHOD scalingMethod);
 
     // Texture parameters
-    ESCALINGMETHOD m_scalingMethod;
+    SCALINGMETHOD m_scalingMethod;
     unsigned int m_textureFormat = XB_FMT_UNKNOWN;
     std::unique_ptr<CTexture> m_texture;
   };

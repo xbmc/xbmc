@@ -146,12 +146,12 @@ float CRPBaseRenderer::GetAspectRatio() const
   return m_sourceFrameRatio;
 }
 
-void CRPBaseRenderer::SetScalingMethod(ESCALINGMETHOD method)
+void CRPBaseRenderer::SetScalingMethod(SCALINGMETHOD method)
 {
   m_renderSettings.VideoSettings().SetScalingMethod(method);
 }
 
-void CRPBaseRenderer::SetViewMode(ViewMode viewMode)
+void CRPBaseRenderer::SetViewMode(VIEWMODE viewMode)
 {
   m_renderSettings.VideoSettings().SetRenderViewMode(viewMode);
   CalculateViewMode();
@@ -164,7 +164,7 @@ void CRPBaseRenderer::SetRenderRotation(unsigned int rotationDegCCW)
 
 void CRPBaseRenderer::CalculateViewMode()
 {
-  const ViewMode viewMode = m_renderSettings.VideoSettings().GetRenderViewMode();
+  const VIEWMODE viewMode = m_renderSettings.VideoSettings().GetRenderViewMode();
 
   // Parameters to determine
   float &pixelRatio = m_pixelRatio;
@@ -189,32 +189,7 @@ void CRPBaseRenderer::CalculateViewMode()
 
   switch (viewMode)
   {
-  case ViewModeZoom:
-  {
-    // Zoom image so no black bars
-    pixelRatio = 1.0f;
-
-    // Calculate the desired output ratio
-    float outputFrameRatio = sourceFrameRatio * pixelRatio / info.fPixelRatio;
-
-    // Now calculate the correct zoom amount
-    // First zoom to full height
-    float newHeight = screenHeight;
-    float newWidth = newHeight * outputFrameRatio;
-
-    zoomAmount = newWidth / screenWidth;
-
-    if (newWidth < screenWidth)
-    {
-      // Zoom to full width
-      newWidth = screenWidth;
-      newHeight = newWidth / outputFrameRatio;
-      zoomAmount = newHeight / screenHeight;
-    }
-
-    break;
-  }
-  case ViewModeStretch4x3:
+  case VIEWMODE::Stretch4x3:
   {
     // Stretch image to 4:3 ratio
     zoomAmount = 1.0f;
@@ -233,17 +208,7 @@ void CRPBaseRenderer::CalculateViewMode()
 
     break;
   }
-  case ViewModeWideZoom:
-  {
-    // Super zoom
-    float stretchAmount = (screenWidth / screenHeight) * info.fPixelRatio / sourceFrameRatio;
-
-    pixelRatio = pow(stretchAmount, float(2.0 / 3.0));
-    zoomAmount = pow(stretchAmount, float((stretchAmount < 1.0) ? -1.0 / 3.0 : 1.0 / 3.0));
-
-    break;
-  }
-  case ViewModeStretch16x9:
+  case VIEWMODE::Stretch16x9:
   {
     // Stretch image to 16:9 ratio
     zoomAmount = 1.0f;
@@ -262,7 +227,7 @@ void CRPBaseRenderer::CalculateViewMode()
 
     break;
   }
-  case ViewModeOriginal:
+  case VIEWMODE::Original:
   {
     // Zoom image so that the height is the original size
     pixelRatio = 1.0f;
@@ -284,7 +249,7 @@ void CRPBaseRenderer::CalculateViewMode()
 
     break;
   }
-  case ViewModeNormal:
+  case VIEWMODE::Normal:
   {
     pixelRatio = 1.0f;
     zoomAmount = 1.0f;
@@ -330,7 +295,7 @@ inline void CRPBaseRenderer::ReorderDrawPoints()
 
   // If renderer doesn't support rotation, treat orientation as 0 degree so
   // that ffmpeg might handle it
-  if (!Supports(RENDERFEATURE_ROTATION))
+  if (!Supports(RENDERFEATURE::ROTATION))
   {
     pointOffset = 0;
     changeAspect = false;

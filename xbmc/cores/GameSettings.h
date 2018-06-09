@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2017 Team Kodi
+ *      Copyright (C) 2017-2018 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -17,35 +17,39 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-
 #pragma once
-
-#include "RenderGeometry.h"
-#include "RenderVideoSettings.h"
 
 namespace KODI
 {
 namespace RETRO
 {
-  class CRenderSettings
-  {
-  public:
-    CRenderSettings() { Reset(); }
 
-    void Reset();
+// NOTE: Only append
+enum class SCALINGMETHOD
+{
+  AUTO = 0,
+  NEAREST = 1,
+  LINEAR = 2,
+  MAX = LINEAR
+};
 
-    bool operator==(const CRenderSettings &rhs) const;
-    bool operator<(const CRenderSettings &rhs) const;
+// NOTE: Only append
+enum class VIEWMODE
+{
+  Normal = 0,
+  Stretch4x3 = 1,
+  Stretch16x9 = 2,
+  Original = 3,
+  Max = Original
+};
 
-    CRenderGeometry &Geometry() { return m_geometry; }
-    const CRenderGeometry &Geometry() const { return m_geometry; }
+enum class RENDERFEATURE
+{
+  ROTATION,
+  STRETCH,
+  ZOOM,
+  PIXEL_RATIO,
+};
 
-    CRenderVideoSettings &VideoSettings() { return m_videoSettings; }
-    const CRenderVideoSettings &VideoSettings() const { return m_videoSettings; }
-
-  private:
-    CRenderGeometry m_geometry;
-    CRenderVideoSettings m_videoSettings;
-  };
 }
 }

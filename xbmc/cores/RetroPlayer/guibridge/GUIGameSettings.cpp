@@ -70,8 +70,8 @@ void CGUIGameSettings::UpdateSettings()
   CSingleLock lock(m_mutex);
 
   // Get settings from GUI
-  ESCALINGMETHOD scalingMethod = m_guiSettings.ScalingMethod();
-  ViewMode viewMode = m_guiSettings.ViewMode();
+  SCALINGMETHOD scalingMethod = m_guiSettings.ScalingMethod();
+  VIEWMODE viewMode = m_guiSettings.ViewMode();
   unsigned int rotationDegCCW = m_guiSettings.RotationDegCCW();
 
   // Save settings for renderer

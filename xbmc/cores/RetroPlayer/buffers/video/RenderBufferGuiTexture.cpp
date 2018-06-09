@@ -23,7 +23,7 @@
 using namespace KODI;
 using namespace RETRO;
 
-CRenderBufferGuiTexture::CRenderBufferGuiTexture(ESCALINGMETHOD scalingMethod) :
+CRenderBufferGuiTexture::CRenderBufferGuiTexture(SCALINGMETHOD scalingMethod) :
   m_scalingMethod(scalingMethod)
 {
   m_textureFormat = XB_FMT_A8R8G8B8;
@@ -99,13 +99,13 @@ AVPixelFormat CRenderBufferGuiTexture::TranslateFormat(unsigned int textureForma
   return AV_PIX_FMT_NONE;
 }
 
-TEXTURE_SCALING CRenderBufferGuiTexture::TranslateScalingMethod(ESCALINGMETHOD scalingMethod)
+TEXTURE_SCALING CRenderBufferGuiTexture::TranslateScalingMethod(SCALINGMETHOD scalingMethod)
 {
   switch (scalingMethod)
   {
-  case VS_SCALINGMETHOD_NEAREST:
+  case SCALINGMETHOD::NEAREST:
     return TEXTURE_SCALING::NEAREST;
-  case VS_SCALINGMETHOD_LINEAR:
+  case SCALINGMETHOD::LINEAR:
     return TEXTURE_SCALING::LINEAR;
   default:
     break;

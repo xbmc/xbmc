@@ -198,7 +198,7 @@ bool CWinRenderBufferPool::ConfigureDX(DXGI_FORMAT dxFormat)
   return true;
 }
 
-CRPWinOutputShader *CWinRenderBufferPool::GetShader(ESCALINGMETHOD scalingMethod) const
+CRPWinOutputShader *CWinRenderBufferPool::GetShader(SCALINGMETHOD scalingMethod) const
 {
   auto it = m_outputShaders.find(scalingMethod);
 
@@ -208,11 +208,11 @@ CRPWinOutputShader *CWinRenderBufferPool::GetShader(ESCALINGMETHOD scalingMethod
   return nullptr;
 }
 
-const std::vector<ESCALINGMETHOD> &CWinRenderBufferPool::GetScalingMethods()
+const std::vector<SCALINGMETHOD> &CWinRenderBufferPool::GetScalingMethods()
 {
-  static std::vector<ESCALINGMETHOD> scalingMethods = {
-    VS_SCALINGMETHOD_NEAREST,
-    VS_SCALINGMETHOD_LINEAR,
+  static std::vector<SCALINGMETHOD> scalingMethods = {
+    SCALINGMETHOD::NEAREST,
+    SCALINGMETHOD::LINEAR,
   };
 
   return scalingMethods;
@@ -264,22 +264,21 @@ void CRPWinRenderer::RenderInternal(bool clear, uint8_t alpha)
   Render(renderingDx->GetBackBuffer());
 }
 
-bool CRPWinRenderer::Supports(ERENDERFEATURE feature) const
+bool CRPWinRenderer::Supports(RENDERFEATURE feature) const
 {
-  if (feature == RENDERFEATURE_STRETCH ||
-      feature == RENDERFEATURE_ZOOM ||
-      feature == RENDERFEATURE_VERTICAL_SHIFT ||
-      feature == RENDERFEATURE_PIXEL_RATIO ||
-      feature == RENDERFEATURE_ROTATION)
+  if (feature == RENDERFEATURE::STRETCH ||
+      feature == RENDERFEATURE::ZOOM ||
+      feature == RENDERFEATURE::PIXEL_RATIO ||
+      feature == RENDERFEATURE::ROTATION)
     return true;
 
   return false;
 }
 
-bool CRPWinRenderer::SupportsScalingMethod(ESCALINGMETHOD method)
+bool CRPWinRenderer::SupportsScalingMethod(SCALINGMETHOD method)
 {
-  if (method == VS_SCALINGMETHOD_LINEAR ||
-      method == VS_SCALINGMETHOD_NEAREST)
+  if (method == SCALINGMETHOD::LINEAR ||
+      method == SCALINGMETHOD::NEAREST)
     return true;
 
   return false;
@@ -296,7 +295,7 @@ void CRPWinRenderer::Render(CD3DTexture *target)
       m_context.GetViewPort(viewPort);
 
       // Pick appropriate output shader depending on the scaling method of the renderer
-      ESCALINGMETHOD scalingMethod = m_renderSettings.VideoSettings().GetScalingMethod();
+      SCALINGMETHOD scalingMethod = m_renderSettings.VideoSettings().GetScalingMethod();
 
       CWinRenderBufferPool *bufferPool = static_cast<CWinRenderBufferPool*>(m_bufferPool.get());
       CRPWinOutputShader *outputShader = bufferPool->GetShader(scalingMethod);

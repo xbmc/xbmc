@@ -65,7 +65,7 @@ bool CGamesGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
     ///////////////////////////////////////////////////////////////////////////////////////////////
     case RETROPLAYER_VIEWMODE:
     {
-      ViewMode viewMode = CMediaSettings::GetInstance().GetCurrentGameSettings().ViewMode();
+      VIEWMODE viewMode = CMediaSettings::GetInstance().GetCurrentGameSettings().ViewMode();
       value = CRetroPlayerUtils::ViewModeToDescription(viewMode);
       return true;
     }

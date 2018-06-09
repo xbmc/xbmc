@@ -20,6 +20,8 @@
 
 #include "GameSettings.h"
 
+using namespace KODI;
+
 CGameSettings &CGameSettings::operator=(const CGameSettings &rhs)
 {
   if (this != &rhs)
@@ -33,8 +35,8 @@ CGameSettings &CGameSettings::operator=(const CGameSettings &rhs)
 
 void CGameSettings::Reset()
 {
-  m_scalingMethod = VS_SCALINGMETHOD_AUTO;
-  m_viewMode = ViewModeNormal;
+  m_scalingMethod = RETRO::SCALINGMETHOD::AUTO;
+  m_viewMode = RETRO::VIEWMODE::Normal;
   m_rotationDegCCW = 0;
 }
 
@@ -45,7 +47,7 @@ bool CGameSettings::operator==(const CGameSettings &rhs) const
          m_rotationDegCCW == rhs.m_rotationDegCCW;
 }
 
-void CGameSettings::SetScalingMethod(ESCALINGMETHOD scalingMethod)
+void CGameSettings::SetScalingMethod(RETRO::SCALINGMETHOD scalingMethod)
 {
   if (scalingMethod != m_scalingMethod)
   {
@@ -54,7 +56,7 @@ void CGameSettings::SetScalingMethod(ESCALINGMETHOD scalingMethod)
   }
 }
 
-void CGameSettings::SetViewMode(enum ViewMode viewMode)
+void CGameSettings::SetViewMode(RETRO::VIEWMODE viewMode)
 {
   if (viewMode != m_viewMode)
   {

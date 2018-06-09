@@ -151,7 +151,7 @@ void CGUIGameControl::UpdateInfo(const CGUIListItem *item /* = nullptr */)
     {
       unsigned int scalingMethod;
       std::istringstream(std::move(strScalingMethod)) >> scalingMethod;
-      m_renderSettings->SetScalingMethod(static_cast<ESCALINGMETHOD>(scalingMethod));
+      m_renderSettings->SetScalingMethod(static_cast<SCALINGMETHOD>(scalingMethod));
       m_bHasScalingMethod = true;
     }
 
@@ -160,7 +160,7 @@ void CGUIGameControl::UpdateInfo(const CGUIListItem *item /* = nullptr */)
     {
       unsigned int viewMode;
       std::istringstream(std::move(strViewMode)) >> viewMode;
-      m_renderSettings->SetViewMode(static_cast<ViewMode>(viewMode));
+      m_renderSettings->SetViewMode(static_cast<VIEWMODE>(viewMode));
       m_bHasViewMode = true;
     }
 

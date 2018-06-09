@@ -23,17 +23,17 @@
 using namespace KODI;
 using namespace RETRO;
 
-bool CRPWinOutputShader::Create(ESCALINGMETHOD scalingMethod)
+bool CRPWinOutputShader::Create(SCALINGMETHOD scalingMethod)
 {
   CWinShader::CreateVertexBuffer(4, sizeof(CUSTOMVERTEX));
 
   DefinesMap defines;
   switch (scalingMethod)
   {
-  case VS_SCALINGMETHOD_NEAREST:
+  case SCALINGMETHOD::NEAREST:
     defines["SAMP_NEAREST"] = "";
     break;
-  case VS_SCALINGMETHOD_LINEAR:
+  case SCALINGMETHOD::LINEAR:
   default:
     break;
   }

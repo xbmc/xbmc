@@ -23,19 +23,17 @@
 using namespace KODI;
 using namespace RETRO;
 
-std::string CRetroPlayerUtils::ViewModeToDescription(ViewMode viewMode)
+std::string CRetroPlayerUtils::ViewModeToDescription(VIEWMODE viewMode)
 {
   switch (viewMode)
   {
-    case ViewModeNormal:
+    case VIEWMODE::Normal:
       return "normal";
-    case ViewModeStretch4x3:
+    case VIEWMODE::Stretch4x3:
       return "4:3";
-    case ViewModeStretch16x9:
+    case VIEWMODE::Stretch16x9:
       return "16:9";
-    case ViewModeStretch16x9Nonlin:
-      return "nonlinear";
-    case ViewModeOriginal:
+    case VIEWMODE::Original:
       return "original";
     default:
       break;

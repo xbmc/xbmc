@@ -58,29 +58,28 @@ CRPRendererMMAL::~CRPRendererMMAL()
   Deinitialize();
 }
 
-bool CRPRendererMMAL::Supports(ERENDERFEATURE feature) const
+bool CRPRendererMMAL::Supports(RENDERFEATURE feature) const
 {
-  if (feature == RENDERFEATURE_STRETCH         ||
-      feature == RENDERFEATURE_ZOOM            ||
-      feature == RENDERFEATURE_ROTATION        ||
-      feature == RENDERFEATURE_VERTICAL_SHIFT  ||
-      feature == RENDERFEATURE_PIXEL_RATIO)
+  if (feature == RENDERFEATURE::STRETCH         ||
+      feature == RENDERFEATURE::ZOOM            ||
+      feature == RENDERFEATURE::ROTATION        ||
+      feature == RENDERFEATURE::PIXEL_RATIO)
     return true;
 
   return false;
 }
 
-bool CRPRendererMMAL::SupportsScalingMethod(ESCALINGMETHOD method)
+bool CRPRendererMMAL::SupportsScalingMethod(SCALINGMETHOD method)
 {
-  if (method == VS_SCALINGMETHOD_LINEAR)
+  if (method == SCALINGMETHOD::LINEAR)
     return true;
 
   return false;
 }
 
-ESCALINGMETHOD CRPRendererMMAL::GetDefaultScalingMethod() const
+SCALINGMETHOD CRPRendererMMAL::GetDefaultScalingMethod() const
 {
-  return VS_SCALINGMETHOD_LINEAR; //! @todo Add nearest neighbor support
+  return SCALINGMETHOD::LINEAR; //! @todo Add nearest neighbor support
 }
 
 void CRPRendererMMAL::Deinitialize()

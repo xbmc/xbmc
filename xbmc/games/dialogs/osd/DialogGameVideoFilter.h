@@ -21,7 +21,7 @@
 #pragma once
 
 #include "DialogGameVideoSelect.h"
-#include "cores/IPlayer.h"
+#include "cores/GameSettings.h"
 #include "FileItem.h"
 
 namespace KODI
@@ -46,7 +46,7 @@ namespace GAME
   private:
     void InitScalingMethods();
 
-    static void GetProperties(const CFileItem &item, ESCALINGMETHOD &scalingMethod, std::string &description);
+    static void GetProperties(const CFileItem &item, RETRO::SCALINGMETHOD &scalingMethod, std::string &description);
 
     CFileItemList m_items;
 
