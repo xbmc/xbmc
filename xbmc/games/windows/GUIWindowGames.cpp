@@ -33,6 +33,7 @@
 #include "guilib/WindowIDs.h"
 #include "GUIPassword.h"
 #include "input/Key.h"
+#include "PlayListPlayer.h"
 #include "ServiceBroker.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
@@ -336,5 +337,6 @@ void CGUIWindowGames::OnItemInfo(int itemNumber)
 
 bool CGUIWindowGames::PlayGame(const CFileItem &item)
 {
-  return g_application.PlayFile(item, "");
+  CFileItem itemCopy(item);
+  return g_application.PlayMedia(itemCopy, "", PLAYLIST_NONE);
 }
