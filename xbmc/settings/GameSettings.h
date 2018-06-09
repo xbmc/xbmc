@@ -43,8 +43,12 @@ public:
   enum ViewMode ViewMode() const { return m_viewMode; }
   void SetViewMode(enum ViewMode viewMode);
 
+  unsigned int RotationDegCCW() const { return m_rotationDegCCW; }
+  void SetRotationDegCCW(unsigned int rotation);
+
 private:
   // Video settings
   ESCALINGMETHOD m_scalingMethod;
   enum ViewMode m_viewMode;
+  unsigned int m_rotationDegCCW;
 };

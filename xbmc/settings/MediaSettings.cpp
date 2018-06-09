@@ -141,6 +141,10 @@ bool CMediaSettings::Load(const TiXmlNode *settings)
     int viewMode;
     if (XMLUtils::GetInt(pElement, "viewmode", viewMode, ViewModeNormal, ViewModeZoom110Width))
       m_defaultGameSettings.SetViewMode(static_cast<ViewMode>(viewMode));
+
+    int rotation;
+    if (XMLUtils::GetInt(pElement, "rotation", rotation, 0, 270) && rotation >= 0)
+      m_defaultGameSettings.SetRotationDegCCW(static_cast<unsigned int>(rotation));
   }
 
   // mymusic settings
@@ -237,6 +241,7 @@ bool CMediaSettings::Save(TiXmlNode *settings) const
 
   XMLUtils::SetInt(pNode, "scalingmethod", m_defaultGameSettings.ScalingMethod());
   XMLUtils::SetInt(pNode, "viewmode", m_defaultGameSettings.ViewMode());
+  XMLUtils::SetInt(pNode, "rotation", m_defaultGameSettings.RotationDegCCW());
 
   // mymusic
   pNode = settings->FirstChild("mymusic");

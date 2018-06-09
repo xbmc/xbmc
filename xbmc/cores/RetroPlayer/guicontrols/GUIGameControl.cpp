@@ -57,8 +57,10 @@ CGUIGameControl::CGUIGameControl(const CGUIGameControl &other) :
   CGUIControl(other),
   m_scalingMethodInfo(other.m_scalingMethodInfo),
   m_viewModeInfo(other.m_viewModeInfo),
+  m_rotationInfo(other.m_rotationInfo),
   m_bHasScalingMethod(other.m_bHasScalingMethod),
   m_bHasViewMode(other.m_bHasViewMode),
+  m_bHasRotation(other.m_bHasRotation),
   m_renderSettings(new CGUIRenderSettings(*this))
 {
   m_renderSettings->SetSettings(other.m_renderSettings->GetSettings());
@@ -79,6 +81,11 @@ void CGUIGameControl::SetScalingMethod(const GUILIB::GUIINFO::CGUIInfoLabel &sca
 void CGUIGameControl::SetViewMode(const GUILIB::GUIINFO::CGUIInfoLabel &viewMode)
 {
   m_viewModeInfo = viewMode;
+}
+
+void CGUIGameControl::SetRotation(const KODI::GUILIB::GUIINFO::CGUIInfoLabel &rotation)
+{
+  m_rotationInfo = rotation;
 }
 
 IGUIRenderSettings *CGUIGameControl::GetRenderSettings() const
@@ -156,6 +163,15 @@ void CGUIGameControl::UpdateInfo(const CGUIListItem *item /* = nullptr */)
       m_renderSettings->SetViewMode(static_cast<ViewMode>(viewMode));
       m_bHasViewMode = true;
     }
+
+    std::string strRotation = m_rotationInfo.GetItemLabel(item);
+    if (StringUtils::IsNaturalNumber(strRotation))
+    {
+      unsigned int rotation;
+      std::istringstream(std::move(strRotation)) >> rotation;
+      m_renderSettings->SetRotationDegCCW(rotation);
+      m_bHasRotation = true;
+    }
   }
 }
 
@@ -163,6 +179,7 @@ void CGUIGameControl::Reset()
 {
   m_bHasScalingMethod = false;
   m_bHasViewMode = false;
+  m_bHasRotation = false;
   m_renderSettings->Reset();
 }
 

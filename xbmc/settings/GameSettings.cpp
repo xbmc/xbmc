@@ -26,6 +26,7 @@ CGameSettings &CGameSettings::operator=(const CGameSettings &rhs)
   {
     m_scalingMethod = rhs.m_scalingMethod;
     m_viewMode = rhs.m_viewMode;
+    m_rotationDegCCW = rhs.m_rotationDegCCW;
   }
   return *this;
 }
@@ -34,12 +35,14 @@ void CGameSettings::Reset()
 {
   m_scalingMethod = VS_SCALINGMETHOD_AUTO;
   m_viewMode = ViewModeNormal;
+  m_rotationDegCCW = 0;
 }
 
 bool CGameSettings::operator==(const CGameSettings &rhs) const
 {
   return m_scalingMethod == rhs.m_scalingMethod &&
-         m_viewMode == rhs.m_viewMode;
+         m_viewMode == rhs.m_viewMode &&
+         m_rotationDegCCW == rhs.m_rotationDegCCW;
 }
 
 void CGameSettings::SetScalingMethod(ESCALINGMETHOD scalingMethod)
@@ -56,6 +59,15 @@ void CGameSettings::SetViewMode(enum ViewMode viewMode)
   if (viewMode != m_viewMode)
   {
     m_viewMode = viewMode;
+    SetChanged();
+  }
+}
+
+void CGameSettings::SetRotationDegCCW(unsigned int rotation)
+{
+  if (rotation != m_rotationDegCCW)
+  {
+    m_rotationDegCCW = rotation;
     SetChanged();
   }
 }

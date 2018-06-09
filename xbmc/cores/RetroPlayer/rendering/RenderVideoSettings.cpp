@@ -27,12 +27,14 @@ void CRenderVideoSettings::Reset()
 {
   m_scalingMethod = VS_SCALINGMETHOD_AUTO;
   m_viewMode = ViewModeNormal;
+  m_rotationDegCCW = 0;
 }
 
 bool CRenderVideoSettings::operator==(const CRenderVideoSettings &rhs) const
 {
   return m_scalingMethod == rhs.m_scalingMethod &&
-         m_viewMode == rhs.m_viewMode;
+         m_viewMode == rhs.m_viewMode &&
+         m_rotationDegCCW == rhs.m_rotationDegCCW;
 }
 
 bool CRenderVideoSettings::operator<(const CRenderVideoSettings &rhs) const
@@ -42,6 +44,9 @@ bool CRenderVideoSettings::operator<(const CRenderVideoSettings &rhs) const
 
   if (m_viewMode < rhs.m_viewMode) return true;
   if (m_viewMode > rhs.m_viewMode) return false;
+
+  if (m_rotationDegCCW < rhs.m_rotationDegCCW) return true;
+  if (m_rotationDegCCW > rhs.m_rotationDegCCW) return false;
 
   return false;
 }

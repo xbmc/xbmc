@@ -47,9 +47,13 @@ namespace RETRO
     ViewMode GetRenderViewMode() const { return m_viewMode; }
     void SetRenderViewMode(ViewMode mode) { m_viewMode = mode; }
 
+    unsigned int GetRenderRotation() const { return m_rotationDegCCW; }
+    void SetRenderRotation(unsigned int rotationDegCCW) { m_rotationDegCCW = rotationDegCCW; }
+
   private:
     ESCALINGMETHOD m_scalingMethod;
     ViewMode m_viewMode;
+    unsigned int m_rotationDegCCW;
   };
 }
 }

@@ -41,6 +41,7 @@ namespace RETRO
     // implementation of IGUIRenderSettings
     bool HasScalingMethod() const override;
     bool HasViewMode() const override;
+    bool HasRotation() const override;
     CRenderSettings GetSettings() const override;
 
     // Render functions
@@ -49,6 +50,7 @@ namespace RETRO
     void SetGeometry(CRenderGeometry geometry);
     void SetScalingMethod(ESCALINGMETHOD scalingMethod);
     void SetViewMode(ViewMode viewMode);
+    void SetRotationDegCCW(unsigned int rotationDegCCW);
 
   private:
     // Construction parameters

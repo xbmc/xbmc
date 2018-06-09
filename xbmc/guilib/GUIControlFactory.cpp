@@ -1155,6 +1155,10 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
       GUIINFO::CGUIInfoLabel viewMode;
       GetInfoLabel(pControlNode, "viewmode", viewMode, parentID);
       static_cast<RETRO::CGUIGameControl*>(control)->SetViewMode(viewMode);
+
+      GUIINFO::CGUIInfoLabel rotation;
+      GetInfoLabel(pControlNode, "rotation", rotation, parentID);
+      static_cast<RETRO::CGUIGameControl*>(control)->SetRotation(rotation);
     }
     break;
   case CGUIControl::GUICONTROL_FADELABEL:

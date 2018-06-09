@@ -164,6 +164,11 @@ void CRPBaseRenderer::SetViewMode(ViewMode viewMode)
   CalculateViewMode();
 }
 
+void CRPBaseRenderer::SetRenderRotation(unsigned int rotationDegCCW)
+{
+  m_renderSettings.VideoSettings().SetRenderRotation(rotationDegCCW);
+}
+
 void CRPBaseRenderer::CalculateViewMode()
 {
   const ViewMode viewMode = m_renderSettings.VideoSettings().GetRenderViewMode();
@@ -308,6 +313,7 @@ void CRPBaseRenderer::CalculateViewMode()
 inline void CRPBaseRenderer::ReorderDrawPoints()
 {
   const CRect &destRect = m_renderSettings.Geometry().Dimensions();
+  const unsigned int renderRotation = m_renderSettings.VideoSettings().GetRenderRotation();
 
   // 0 - top left, 1 - top right, 2 - bottom right, 3 - bottom left
   float origMat[4][2] =
@@ -321,16 +327,17 @@ inline void CRPBaseRenderer::ReorderDrawPoints()
   bool changeAspect = false;
   int pointOffset = 0;
 
-  switch (m_renderOrientation)
+  const unsigned int renderOrientation = (m_renderOrientation + renderRotation) % 360;
+  switch (renderOrientation)
   {
-  case 90:
+  case 270:
     pointOffset = 1;
     changeAspect = true;
     break;
   case 180:
     pointOffset = 2;
     break;
-  case 270:
+  case 90:
     pointOffset = 3;
     changeAspect = true;
     break;

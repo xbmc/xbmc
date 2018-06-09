@@ -40,6 +40,11 @@ bool CGUIRenderSettings::HasViewMode() const
   return m_guiControl.HasViewMode();
 }
 
+bool CGUIRenderSettings::HasRotation() const
+{
+  return m_guiControl.HasRotation();
+}
+
 CRenderSettings CGUIRenderSettings::GetSettings() const
 {
   CSingleLock lock(m_mutex);
@@ -80,4 +85,11 @@ void CGUIRenderSettings::SetViewMode(ViewMode viewMode)
   CSingleLock lock(m_mutex);
 
   m_renderSettings.VideoSettings().SetRenderViewMode(viewMode);
+}
+
+void CGUIRenderSettings::SetRotationDegCCW(unsigned int rotationDegCCW)
+{
+  CSingleLock lock(m_mutex);
+
+  m_renderSettings.VideoSettings().SetRenderRotation(rotationDegCCW);
 }

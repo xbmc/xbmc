@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2017 Team Kodi
+ *      Copyright (C) 2018 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -17,23 +17,22 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-
 #pragma once
 
 #include "DialogGameVideoSelect.h"
-#include "cores/IPlayer.h"
 
+#include <string>
 #include <vector>
 
 namespace KODI
 {
 namespace GAME
 {
-  class CDialogGameViewMode : public CDialogGameVideoSelect
+  class CDialogGameVideoRotation : public CDialogGameVideoSelect
   {
   public:
-    CDialogGameViewMode();
-    ~CDialogGameViewMode() override = default;
+    CDialogGameVideoRotation();
+    ~CDialogGameVideoRotation() override = default;
 
   protected:
     // implementation of CDialogGameVideoSelect
@@ -45,18 +44,11 @@ namespace GAME
     void PostExit() override;
 
   private:
-    struct ViewModeProperties
-    {
-      int stringIndex;
-      ViewMode viewMode;
-    };
+    // Helper functions
+    static std::string GetRotationLabel(unsigned int rotationDegCCW);
 
-    std::vector<ViewModeProperties> m_viewModes;
-
-    /*!
-     * \brief The list of all the view modes along with their properties
-     */
-    static const std::vector<ViewModeProperties> m_allViewModes;
+    // Dialog parameters
+    std::vector<unsigned int> m_rotations; // Degrees counter-clockwise
   };
 }
 }

@@ -17334,7 +17334,37 @@ msgctxt "#35226"
 msgid "Advanced settings"
 msgstr ""
 
-#empty strings from id 35227 to 35249
+#. Label of button in the in-game menu for changing the video rotation
+#: addons/skin.estuary/xml/Custom_1101_SettingsList.xml
+msgctxt "#35227"
+msgid "Rotation"
+msgstr ""
+
+#. Label of the thumbnail for when the video is not rotated and is displayed normally
+#: xbmc/games/dialogs/osd/DialogGameVideoRotation.cpp
+msgctxt "#35228"
+msgid "0°"
+msgstr ""
+
+#. Label of the thumbnail for when the video is rotated to the right
+#: xbmc/games/dialogs/osd/DialogGameVideoRotation.cpp
+msgctxt "#35229"
+msgid "90°"
+msgstr ""
+
+#. Label of the thumbnail for when the video is rotated upside down
+#: xbmc/games/dialogs/osd/DialogGameVideoRotation.cpp
+msgctxt "#35230"
+msgid "180°"
+msgstr ""
+
+#. Label of the thumbnail for when the video is rotated to the left
+#: xbmc/games/dialogs/osd/DialogGameVideoRotation.cpp
+msgctxt "#35231"
+msgid "270°"
+msgstr ""
+
+#empty strings from id 35232 to 35249
 
 #: xbmc/windows/GUIMediaWindow.cpp
 msgctxt "#35250"

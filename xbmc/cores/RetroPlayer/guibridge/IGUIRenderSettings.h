@@ -45,6 +45,11 @@ namespace RETRO
     virtual bool HasViewMode() const { return true; }
 
     /*!
+     * \brief Returns true if this render target has a video rotation set
+     */
+    virtual bool HasRotation() const { return true; }
+
+    /*!
      * \brief Get the settings used to render this target
      *
      * \return The render settings
