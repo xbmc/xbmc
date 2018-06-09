@@ -53,6 +53,7 @@ public:
   bool Pause(double dTime) override { return false; }
   bool IsEOF() override;
   int64_t GetLength() override;
+  int GetBlockSize() override;
 
   ENextStream NextStream() override;
   bool IsRealtime() override;

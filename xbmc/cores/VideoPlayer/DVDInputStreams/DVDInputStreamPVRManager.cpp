@@ -195,6 +195,11 @@ int64_t CDVDInputStreamPVRManager::GetLength()
   return CServiceBroker::GetPVRManager().Clients()->GetStreamLength();
 }
 
+int CDVDInputStreamPVRManager::GetBlockSize()
+{
+  return CServiceBroker::GetPVRManager().Clients()->GetStreamReadChunkSize(m_item);
+}
+
 bool CDVDInputStreamPVRManager::GetTimes(Times &times)
 {
   PVR_STREAM_TIMES streamTimes;

@@ -520,6 +520,17 @@ extern "C"
    */
   //@{
   /*!
+   * Obtain the chunk size to use when reading streams.
+   * @param chunksize must be filled with the chunk size in bytes.
+   * @return PVR_ERROR_NO_ERROR if the chunk size has been fetched successfully.
+   * @remarks Optional, and only used if not reading from demuxer (=> DemuxRead) and
+   *          PVR_ADDON_CAPABILITIES::bSupportsRecordings is true (=> ReadRecordedStream) or
+   *          PVR_ADDON_CAPABILITIES::bHandlesInputStream is true (=> ReadLiveStream).
+   *          Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function. In this case Kodi will decide on the chunk size to use.
+   */
+  PVR_ERROR GetStreamReadChunkSize(int* chunksize);
+
+  /*!
    * Open a stream to a recording on the backend.
    * @param recording The recording to open.
    * @return True if the stream has been opened successfully, false otherwise.
@@ -561,6 +572,7 @@ extern "C"
    *          Return -1 if this add-on won't provide this function.
    */
   long long LengthRecordedStream(void);
+
   //@}
 
   /** @name PVR demultiplexer methods
@@ -773,5 +785,7 @@ extern "C"
     pClient->toAddon.OnPowerSavingActivated         = OnPowerSavingActivated;
     pClient->toAddon.OnPowerSavingDeactivated       = OnPowerSavingDeactivated;
     pClient->toAddon.GetStreamTimes                 = GetStreamTimes;
+
+    pClient->toAddon.GetStreamReadChunkSize         = GetStreamReadChunkSize;
   };
 };

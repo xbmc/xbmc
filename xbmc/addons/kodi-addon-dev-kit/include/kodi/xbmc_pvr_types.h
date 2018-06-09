@@ -706,6 +706,7 @@ extern "C" {
     void (__cdecl* OnPowerSavingActivated)(void);
     void (__cdecl* OnPowerSavingDeactivated)(void);
     PVR_ERROR (__cdecl* GetStreamTimes)(PVR_STREAM_TIMES*);
+    PVR_ERROR (__cdecl* GetStreamReadChunkSize)(int*);
   } KodiToAddonFuncTable_PVR;
 
   typedef struct AddonInstance_PVR
