@@ -18,16 +18,15 @@
  *
  */
 
-#include <cstdlib>
-#include <algorithm>
-
 #include "PictureInfoTag.h"
-#include "XBDateTime.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
 #include "utils/Variant.h"
 #include "utils/CharsetConverter.h"
 #include "utils/StringUtils.h"
 #include "utils/Archive.h"
+
+#include <algorithm>
+#include <vector>
 
 void CPictureInfoTag::Reset()
 {
@@ -36,17 +35,6 @@ void CPictureInfoTag::Reset()
   m_isLoaded = false;
   m_isInfoSetExternally = false;
   m_dateTimeTaken.Reset();
-}
-
-const CPictureInfoTag& CPictureInfoTag::operator=(const CPictureInfoTag& right)
-{
-  if (this == &right) return * this;
-  memcpy(&m_exifInfo, &right.m_exifInfo, sizeof(m_exifInfo));
-  memcpy(&m_iptcInfo, &right.m_iptcInfo, sizeof(m_iptcInfo));
-  m_isLoaded = right.m_isLoaded;
-  m_isInfoSetExternally = right.m_isInfoSetExternally;
-  m_dateTimeTaken = right.m_dateTimeTaken;
-  return *this;
 }
 
 bool CPictureInfoTag::Load(const std::string &path)

@@ -23,14 +23,12 @@ class CSong;
 class CArtist;
 class CVariant;
 
-#include <stdint.h>
 #include <string>
 #include <vector>
 
 #include "ReplayGain.h"
 #include "XBDateTime.h"
 #include "music/Album.h"
-#include "music/Artist.h"
 #include "utils/IArchivable.h"
 #include "utils/ISerializable.h"
 #include "utils/ISortable.h"
@@ -42,9 +40,7 @@ class CMusicInfoTag : public IArchivable, public ISerializable, public ISortable
 {
 public:
   CMusicInfoTag(void);
-  CMusicInfoTag(const CMusicInfoTag& tag);
   ~CMusicInfoTag() override;
-  CMusicInfoTag& operator =(const CMusicInfoTag& tag);
   bool operator !=(const CMusicInfoTag& tag) const;
   bool Loaded() const;
   const std::string& GetTitle() const;
