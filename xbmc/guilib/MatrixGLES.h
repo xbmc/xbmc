@@ -50,6 +50,7 @@ public:
 
   void PrintMatrix(void);
 
+private:
   GLfloat m_pMatrix[16];
 };
 
