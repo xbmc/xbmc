@@ -79,7 +79,7 @@ AddonPtr CAddonMgr::Factory(const cp_plugin_info_t* plugin, TYPE type)
   return nullptr;
 }
 
-bool CAddonMgr::Factory(const cp_plugin_info_t* plugin, TYPE type, CAddonBuilder& builder, bool ignoreExtensions/* = false*/, std::string assetBasePath)
+bool CAddonMgr::Factory(const cp_plugin_info_t* plugin, TYPE type, CAddonBuilder& builder, bool ignoreExtensions/* = false*/, const CRepository::DirInfo& repo)
 {
   if (!plugin || !plugin->identifier)
     return false;
@@ -115,17 +115,11 @@ bool CAddonMgr::Factory(const cp_plugin_info_t* plugin, TYPE type, CAddonBuilder
     }
   }
 
-  if (assetBasePath.empty() && plugin->plugin_path)
-  {
-    // Default for add-on information not loaded from repository
-    assetBasePath = plugin->plugin_path;
-  }
-
-  FillCpluffMetadata(plugin, builder, assetBasePath);
+  FillCpluffMetadata(plugin, builder, repo);
   return true;
 }
 
-void CAddonMgr::FillCpluffMetadata(const cp_plugin_info_t* plugin, CAddonBuilder& builder, std::string const& assetBasePath)
+void CAddonMgr::FillCpluffMetadata(const cp_plugin_info_t* plugin, CAddonBuilder& builder, const CRepository::DirInfo& repo)
 {
   builder.SetId(plugin->identifier);
 
@@ -140,9 +134,6 @@ void CAddonMgr::FillCpluffMetadata(const cp_plugin_info_t* plugin, CAddonBuilder
 
   if (plugin->provider_name)
     builder.SetAuthor(plugin->provider_name);
-
-  if (plugin->plugin_path && strcmp(plugin->plugin_path, "") != 0)
-    builder.SetPath(plugin->plugin_path);
 
   {
     std::vector<DependencyInfo> dependencies;
@@ -161,6 +152,35 @@ void CAddonMgr::FillCpluffMetadata(const cp_plugin_info_t* plugin, CAddonBuilder
   auto metadata = CServiceBroker::GetAddonMgr().GetExtension(plugin, "xbmc.addon.metadata");
   if (!metadata)
     metadata = CServiceBroker::GetAddonMgr().GetExtension(plugin, "kodi.addon.metadata");
+
+  std::string path;
+  if (metadata)
+    path = CServiceBroker::GetAddonMgr().GetExtValue(metadata->configuration, "path");
+
+  if (plugin->plugin_path && strcmp(plugin->plugin_path, "") != 0 && strcmp(plugin->plugin_path, "memory") != 0)
+    builder.SetPath(plugin->plugin_path);
+  else
+  {
+    if (path.empty())
+      builder.SetPath(URIUtils::AddFileToFolder(repo.datadir, plugin->identifier,
+        StringUtils::Format("{}-{}.zip", plugin->identifier, builder.GetVersion().asString())));
+    else
+      builder.SetPath(URIUtils::AddFileToFolder(repo.datadir, path));
+  }
+
+  std::string assetBasePath = repo.artdir;
+  if (repo.artdir.empty() && plugin->plugin_path)
+  {
+    // Default for add-on information not loaded from repository
+    assetBasePath = plugin->plugin_path;
+  }
+  else
+  {
+    if (path.empty())
+      assetBasePath = URIUtils::AddFileToFolder(assetBasePath, plugin->identifier);
+    else
+      assetBasePath = URIUtils::AddFileToFolder(assetBasePath, StringUtils::Split(path, '/')[0]);
+  }
 
   if (!assetBasePath.empty())
   {
@@ -1195,15 +1215,8 @@ bool CAddonMgr::AddonsFromRepoXML(const CRepository::DirInfo& repo, const std::s
     if (info)
     {
       CAddonBuilder builder;
-      auto basePath = URIUtils::AddFileToFolder(repo.datadir, info->identifier);
-      info->plugin_path = static_cast<char*>(malloc(basePath.length() + 1));
-      strncpy(info->plugin_path, basePath.c_str(), basePath.length());
-      info->plugin_path[basePath.length()] = '\0';
-
-      if (Factory(info, ADDON_UNKNOWN, builder, false, URIUtils::AddFileToFolder(repo.artdir, info->identifier)))
+      if (Factory(info, ADDON_UNKNOWN, builder, false, repo))
       {
-        builder.SetPath(URIUtils::AddFileToFolder(repo.datadir, info->identifier,
-          StringUtils::Format("{}-{}.zip", info->identifier, builder.GetVersion().asString())));
         auto addon = builder.Build();
         if (addon)
           addons.push_back(std::move(addon));
