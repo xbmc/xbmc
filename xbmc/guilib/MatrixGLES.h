@@ -53,7 +53,9 @@ public:
   static bool Project(GLfloat objx, GLfloat objy, GLfloat objz, const GLfloat modelMatrix[16], const GLfloat projMatrix[16], const GLint viewport[4], GLfloat* winx, GLfloat* winy, GLfloat* winz);
 
 private:
-  GLfloat m_pMatrix[16];
+  /* alignas(16) allows better SIMD optimizations (e.g. SSE2 benefits
+     a lot from this) */
+  alignas(16) GLfloat m_pMatrix[16];
 };
 
 class CMatrixGLStack
