@@ -48,8 +48,6 @@ public:
 
   static bool Project(GLfloat objx, GLfloat objy, GLfloat objz, const GLfloat modelMatrix[16], const GLfloat projMatrix[16], const GLint viewport[4], GLfloat* winx, GLfloat* winy, GLfloat* winz);
 
-  void PrintMatrix(void);
-
 private:
   GLfloat m_pMatrix[16];
 };

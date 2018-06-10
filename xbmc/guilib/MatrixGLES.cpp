@@ -20,7 +20,6 @@
 
 #include "MatrixGLES.h"
 
-#include "utils/log.h"
 #if defined(HAS_NEON)
 #include "utils/CPUInfo.h"
 #endif
@@ -303,14 +302,6 @@ bool CMatrixGL::Project(GLfloat objx, GLfloat objy, GLfloat objz, const GLfloat 
   *winy=in[1];
   *winz=in[2];
   return true;
-}
-
-void CMatrixGL::PrintMatrix(void)
-{
-  CLog::Log(LOGDEBUG, "%f %f %f %f", m_pMatrix[0], m_pMatrix[4], m_pMatrix[8],  m_pMatrix[12]);
-  CLog::Log(LOGDEBUG, "%f %f %f %f", m_pMatrix[1], m_pMatrix[5], m_pMatrix[9],  m_pMatrix[13]);
-  CLog::Log(LOGDEBUG, "%f %f %f %f", m_pMatrix[2], m_pMatrix[6], m_pMatrix[10], m_pMatrix[14]);
-  CLog::Log(LOGDEBUG, "%f %f %f %f", m_pMatrix[3], m_pMatrix[7], m_pMatrix[11], m_pMatrix[15]);
 }
 
 void CMatrixGLStack::Load()
