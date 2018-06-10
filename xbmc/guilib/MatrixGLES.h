@@ -27,8 +27,7 @@
 class CMatrixGL
 {
 public:
-
-  CMatrixGL()                                  { memset(&m_pMatrix, 0, sizeof(m_pMatrix)); };
+  CMatrixGL() = default;
   explicit CMatrixGL(const float matrix[16])   { memcpy(m_pMatrix, matrix, sizeof(m_pMatrix)); }
   operator const float*() const                { return m_pMatrix; }
 
