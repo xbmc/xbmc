@@ -81,8 +81,8 @@ bool CGLShader::OnEnabled()
 {
   // This is called after glUseProgram()
 
-  const GLfloat *projMatrix = glMatrixProject.Get().m_pMatrix;
-  const GLfloat *modelMatrix = glMatrixModview.Get().m_pMatrix;
+  const GLfloat *projMatrix = glMatrixProject.Get();
+  const GLfloat *modelMatrix = glMatrixModview.Get();
   glUniformMatrix4fv(m_hProj,  1, GL_FALSE, projMatrix);
   glUniformMatrix4fv(m_hModel, 1, GL_FALSE, modelMatrix);
 
