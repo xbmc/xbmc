@@ -181,32 +181,32 @@ inline void Matrix4Mul(const float* src_mat_1, const float* src_mat_2, float* ds
     );
 }
 #endif
-void CMatrixGL::MultMatrixf(const GLfloat *matrix)
+void CMatrixGL::MultMatrixf(const CMatrixGL &matrix) noexcept
 {
 #if defined(HAS_NEON) && !defined(__LP64__)
     if ((g_cpuInfo.GetCPUFeatures() & CPU_FEATURE_NEON) == CPU_FEATURE_NEON)
     {
       GLfloat m[16];
-      Matrix4Mul(m_pMatrix, matrix, m);
+      Matrix4Mul(m_pMatrix, matrix.m_pMatrix, m);
       return;
     }
 #endif
-    GLfloat a = (matrix[0]  * m_pMatrix[0]) + (matrix[1]  * m_pMatrix[4]) + (matrix[2]  * m_pMatrix[8])  + (matrix[3]  * m_pMatrix[12]);
-    GLfloat b = (matrix[0]  * m_pMatrix[1]) + (matrix[1]  * m_pMatrix[5]) + (matrix[2]  * m_pMatrix[9])  + (matrix[3]  * m_pMatrix[13]);
-    GLfloat c = (matrix[0]  * m_pMatrix[2]) + (matrix[1]  * m_pMatrix[6]) + (matrix[2]  * m_pMatrix[10]) + (matrix[3]  * m_pMatrix[14]);
-    GLfloat d = (matrix[0]  * m_pMatrix[3]) + (matrix[1]  * m_pMatrix[7]) + (matrix[2]  * m_pMatrix[11]) + (matrix[3]  * m_pMatrix[15]);
-    GLfloat e = (matrix[4]  * m_pMatrix[0]) + (matrix[5]  * m_pMatrix[4]) + (matrix[6]  * m_pMatrix[8])  + (matrix[7]  * m_pMatrix[12]);
-    GLfloat f = (matrix[4]  * m_pMatrix[1]) + (matrix[5]  * m_pMatrix[5]) + (matrix[6]  * m_pMatrix[9])  + (matrix[7]  * m_pMatrix[13]);
-    GLfloat g = (matrix[4]  * m_pMatrix[2]) + (matrix[5]  * m_pMatrix[6]) + (matrix[6]  * m_pMatrix[10]) + (matrix[7]  * m_pMatrix[14]);
-    GLfloat h = (matrix[4]  * m_pMatrix[3]) + (matrix[5]  * m_pMatrix[7]) + (matrix[6]  * m_pMatrix[11]) + (matrix[7]  * m_pMatrix[15]);
-    GLfloat i = (matrix[8]  * m_pMatrix[0]) + (matrix[9]  * m_pMatrix[4]) + (matrix[10] * m_pMatrix[8])  + (matrix[11] * m_pMatrix[12]);
-    GLfloat j = (matrix[8]  * m_pMatrix[1]) + (matrix[9]  * m_pMatrix[5]) + (matrix[10] * m_pMatrix[9])  + (matrix[11] * m_pMatrix[13]);
-    GLfloat k = (matrix[8]  * m_pMatrix[2]) + (matrix[9]  * m_pMatrix[6]) + (matrix[10] * m_pMatrix[10]) + (matrix[11] * m_pMatrix[14]);
-    GLfloat l = (matrix[8]  * m_pMatrix[3]) + (matrix[9]  * m_pMatrix[7]) + (matrix[10] * m_pMatrix[11]) + (matrix[11] * m_pMatrix[15]);
-    GLfloat m = (matrix[12] * m_pMatrix[0]) + (matrix[13] * m_pMatrix[4]) + (matrix[14] * m_pMatrix[8])  + (matrix[15] * m_pMatrix[12]);
-    GLfloat n = (matrix[12] * m_pMatrix[1]) + (matrix[13] * m_pMatrix[5]) + (matrix[14] * m_pMatrix[9])  + (matrix[15] * m_pMatrix[13]);
-    GLfloat o = (matrix[12] * m_pMatrix[2]) + (matrix[13] * m_pMatrix[6]) + (matrix[14] * m_pMatrix[10]) + (matrix[15] * m_pMatrix[14]);
-    GLfloat p = (matrix[12] * m_pMatrix[3]) + (matrix[13] * m_pMatrix[7]) + (matrix[14] * m_pMatrix[11]) + (matrix[15] * m_pMatrix[15]);
+    GLfloat a = (matrix.m_pMatrix[0]  * m_pMatrix[0]) + (matrix.m_pMatrix[1]  * m_pMatrix[4]) + (matrix.m_pMatrix[2]  * m_pMatrix[8])  + (matrix.m_pMatrix[3]  * m_pMatrix[12]);
+    GLfloat b = (matrix.m_pMatrix[0]  * m_pMatrix[1]) + (matrix.m_pMatrix[1]  * m_pMatrix[5]) + (matrix.m_pMatrix[2]  * m_pMatrix[9])  + (matrix.m_pMatrix[3]  * m_pMatrix[13]);
+    GLfloat c = (matrix.m_pMatrix[0]  * m_pMatrix[2]) + (matrix.m_pMatrix[1]  * m_pMatrix[6]) + (matrix.m_pMatrix[2]  * m_pMatrix[10]) + (matrix.m_pMatrix[3]  * m_pMatrix[14]);
+    GLfloat d = (matrix.m_pMatrix[0]  * m_pMatrix[3]) + (matrix.m_pMatrix[1]  * m_pMatrix[7]) + (matrix.m_pMatrix[2]  * m_pMatrix[11]) + (matrix.m_pMatrix[3]  * m_pMatrix[15]);
+    GLfloat e = (matrix.m_pMatrix[4]  * m_pMatrix[0]) + (matrix.m_pMatrix[5]  * m_pMatrix[4]) + (matrix.m_pMatrix[6]  * m_pMatrix[8])  + (matrix.m_pMatrix[7]  * m_pMatrix[12]);
+    GLfloat f = (matrix.m_pMatrix[4]  * m_pMatrix[1]) + (matrix.m_pMatrix[5]  * m_pMatrix[5]) + (matrix.m_pMatrix[6]  * m_pMatrix[9])  + (matrix.m_pMatrix[7]  * m_pMatrix[13]);
+    GLfloat g = (matrix.m_pMatrix[4]  * m_pMatrix[2]) + (matrix.m_pMatrix[5]  * m_pMatrix[6]) + (matrix.m_pMatrix[6]  * m_pMatrix[10]) + (matrix.m_pMatrix[7]  * m_pMatrix[14]);
+    GLfloat h = (matrix.m_pMatrix[4]  * m_pMatrix[3]) + (matrix.m_pMatrix[5]  * m_pMatrix[7]) + (matrix.m_pMatrix[6]  * m_pMatrix[11]) + (matrix.m_pMatrix[7]  * m_pMatrix[15]);
+    GLfloat i = (matrix.m_pMatrix[8]  * m_pMatrix[0]) + (matrix.m_pMatrix[9]  * m_pMatrix[4]) + (matrix.m_pMatrix[10] * m_pMatrix[8])  + (matrix.m_pMatrix[11] * m_pMatrix[12]);
+    GLfloat j = (matrix.m_pMatrix[8]  * m_pMatrix[1]) + (matrix.m_pMatrix[9]  * m_pMatrix[5]) + (matrix.m_pMatrix[10] * m_pMatrix[9])  + (matrix.m_pMatrix[11] * m_pMatrix[13]);
+    GLfloat k = (matrix.m_pMatrix[8]  * m_pMatrix[2]) + (matrix.m_pMatrix[9]  * m_pMatrix[6]) + (matrix.m_pMatrix[10] * m_pMatrix[10]) + (matrix.m_pMatrix[11] * m_pMatrix[14]);
+    GLfloat l = (matrix.m_pMatrix[8]  * m_pMatrix[3]) + (matrix.m_pMatrix[9]  * m_pMatrix[7]) + (matrix.m_pMatrix[10] * m_pMatrix[11]) + (matrix.m_pMatrix[11] * m_pMatrix[15]);
+    GLfloat m = (matrix.m_pMatrix[12] * m_pMatrix[0]) + (matrix.m_pMatrix[13] * m_pMatrix[4]) + (matrix.m_pMatrix[14] * m_pMatrix[8])  + (matrix.m_pMatrix[15] * m_pMatrix[12]);
+    GLfloat n = (matrix.m_pMatrix[12] * m_pMatrix[1]) + (matrix.m_pMatrix[13] * m_pMatrix[5]) + (matrix.m_pMatrix[14] * m_pMatrix[9])  + (matrix.m_pMatrix[15] * m_pMatrix[13]);
+    GLfloat o = (matrix.m_pMatrix[12] * m_pMatrix[2]) + (matrix.m_pMatrix[13] * m_pMatrix[6]) + (matrix.m_pMatrix[14] * m_pMatrix[10]) + (matrix.m_pMatrix[15] * m_pMatrix[14]);
+    GLfloat p = (matrix.m_pMatrix[12] * m_pMatrix[3]) + (matrix.m_pMatrix[13] * m_pMatrix[7]) + (matrix.m_pMatrix[14] * m_pMatrix[11]) + (matrix.m_pMatrix[15] * m_pMatrix[15]);
     m_pMatrix[0] = a;  m_pMatrix[4] = e;  m_pMatrix[8]  = i;  m_pMatrix[12] = m;
     m_pMatrix[1] = b;  m_pMatrix[5] = f;  m_pMatrix[9]  = j;  m_pMatrix[13] = n;
     m_pMatrix[2] = c;  m_pMatrix[6] = g;  m_pMatrix[10] = k;  m_pMatrix[14] = o;
