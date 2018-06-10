@@ -1,10 +1,7 @@
 /*!
-\file GUIInfoTypes.h
+\file GUIInfoLabel.h
 \brief
 */
-
-#ifndef GUILIB_GUIINFOTYPES_H
-#define GUILIB_GUIINFOTYPES_H
 
 #pragma once
 
@@ -31,8 +28,6 @@
 #include <string>
 #include <vector>
 #include <functional>
-#include "interfaces/info/InfoBool.h"
-#include "utils/Color.h"
 
 class CGUIListItem;
 
@@ -43,44 +38,10 @@ namespace GUILIB
 namespace GUIINFO
 {
 
-class CGUIInfoBool
-{
-public:
-  explicit CGUIInfoBool(bool value = false);
-  virtual ~CGUIInfoBool();
-
-  operator bool() const { return m_value; };
-
-  void Update(const CGUIListItem *item = NULL);
-  void Parse(const std::string &expression, int context);
-private:
-  INFO::InfoPtr m_info;
-  bool m_value;
-};
-
-class CGUIInfoColor
-{
-public:
-  explicit CGUIInfoColor(UTILS::Color color = 0);
-
-  CGUIInfoColor& operator=(const CGUIInfoColor &color);
-  CGUIInfoColor& operator=(UTILS::Color color);
-  operator UTILS::Color() const { return m_color; };
-
-  bool Update();
-  void Parse(const std::string &label, int context);
-
-private:
-  UTILS::Color GetColor() const;
-
-  int m_info;
-  UTILS::Color m_color;
-};
-
 class CGUIInfoLabel
 {
 public:
-  CGUIInfoLabel();
+  CGUIInfoLabel() = default;
   CGUIInfoLabel(const std::string &label, const std::string &fallback = "", int context = 0);
 
   void SetLabel(const std::string &label, const std::string &fallback, int context = 0);
@@ -131,7 +92,7 @@ public:
    \param label text to replace
    \return text with any localized strings filled in.
    */
-  static std::string ReplaceAddonStrings(const std::string &label);
+  static std::string ReplaceAddonStrings(std::string &&label);
 
   typedef std::function<std::string(const std::string&)> StringReplacerFunc;
 
@@ -177,7 +138,7 @@ private:
     std::string m_postfix;
   };
 
-  mutable bool        m_dirty;
+  mutable bool        m_dirty = false;
   mutable std::string m_label;
   std::string m_fallback;
   std::vector<CInfoPortion> m_info;
@@ -186,5 +147,3 @@ private:
 } // namespace GUIINFO
 } // namespace GUILIB
 } // namespace KODI
-
-#endif

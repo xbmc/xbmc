@@ -29,7 +29,8 @@
 #include <vector>
 
 #include "GUIAction.h"
-#include "guiinfo/GUIInfoTypes.h"
+#include "guilib/guiinfo/GUIInfoLabel.h"
+#include "interfaces/info/InfoBool.h"
 #include "FileItem.h"
 #include "GUIAction.h"
 

@@ -1,7 +1,9 @@
 set(SOURCES GUIInfo.cpp
             GUIInfoHelper.cpp
             GUIInfoProviders.cpp
-            GUIInfoTypes.cpp
+            GUIInfoLabel.cpp
+            GUIInfoBool.cpp
+            GUIInfoColor.cpp
             AddonsGUIInfo.cpp
             GamesGUIInfo.cpp
             GUIControlsGUIInfo.cpp
@@ -20,7 +22,9 @@ set(HEADERS GUIInfo.h
             GUIInfoLabels.h
             GUIInfoProvider.h
             GUIInfoProviders.h
-            GUIInfoTypes.h
+            GUIInfoLabel.h
+            GUIInfoBool.h
+            GUIInfoColor.h
             IGUIInfoProvider.h
             AddonsGUIInfo.h
             GamesGUIInfo.h

@@ -28,6 +28,7 @@
  *
  */
 
+#include "guilib/guiinfo/GUIInfoLabel.h"
 #include "utils/Color.h"
 
 #include "GUITexture.h"

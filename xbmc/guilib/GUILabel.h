@@ -26,7 +26,7 @@
  */
 
 #include "GUITextLayout.h"
-#include "guiinfo/GUIInfoTypes.h"
+#include "guiinfo/GUIInfoColor.h"
 #include "GUIFont.h"
 #include "utils/Color.h"
 #include "utils/Geometry.h"

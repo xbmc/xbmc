@@ -32,7 +32,7 @@ class CGUIListItem; typedef std::shared_ptr<CGUIListItem> CGUIListItemPtr;
 class CGUIAction
 {
 public:
-  CGUIAction();
+  CGUIAction() = default;
   explicit CGUIAction(int controlID);
 
   /**
@@ -63,7 +63,7 @@ private:
   };
 
   std::vector<cond_action_pair> m_actions;
-  bool m_sendThreadMessages;
+  bool m_sendThreadMessages = false;
 
   typedef std::vector<cond_action_pair>::const_iterator ciActions;
   typedef std::vector<cond_action_pair>::iterator iActions;

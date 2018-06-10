@@ -1,4 +1,10 @@
+/*!
+\file GUIInfoBool.h
+\brief
+*/
+
 #pragma once
+
 /*
  *      Copyright (C) 2005-2013 Team XBMC
  *      http://kodi.tv
@@ -19,45 +25,34 @@
  *
  */
 
-#include <string>
-#include <vector>
-#include "guilib/guiinfo/GUIInfoLabel.h"
 #include "interfaces/info/InfoBool.h"
 
-class TiXmlElement;
+#include <string>
 
-namespace INFO
+class CGUIListItem;
+
+namespace KODI
 {
-class CSkinVariableString;
+namespace GUILIB
+{
+namespace GUIINFO
+{
 
-class CSkinVariable
+class CGUIInfoBool
 {
 public:
-  static const CSkinVariableString* CreateFromXML(const TiXmlElement& node, int context);
-};
+  explicit CGUIInfoBool(bool value = false);
+  ~CGUIInfoBool();
 
-class CSkinVariableString
-{
-public:
-  const std::string& GetName() const;
-  int GetContext() const;
-  std::string GetValue(bool preferImage = false, const CGUIListItem *item = nullptr) const;
+  operator bool() const { return m_value; };
+
+  void Update(const CGUIListItem *item = NULL);
+  void Parse(const std::string &expression, int context);
 private:
-  CSkinVariableString();
-
-  std::string m_name;
-  int m_context;
-
-  struct ConditionLabelPair
-  {
-    INFO::InfoPtr m_condition;
-    KODI::GUILIB::GUIINFO::CGUIInfoLabel m_label;
-  };
-
-  typedef std::vector<ConditionLabelPair> VECCONDITIONLABELPAIR;
-  VECCONDITIONLABELPAIR m_conditionLabelPairs;
-
-  friend class CSkinVariable;
+  INFO::InfoPtr m_info;
+  bool m_value;
 };
 
-}
+} // namespace GUIINFO
+} // namespace GUILIB
+} // namespace KODI

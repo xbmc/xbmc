@@ -18,123 +18,26 @@
  *
  */
 
-#include "guilib/guiinfo/GUIInfoTypes.h"
-
+#include "guilib/guiinfo/GUIInfoLabel.h"
 #include "GUIInfoManager.h"
-#include "addons/AddonManager.h"
+#include "FileItem.h"
 #include "addons/Skin.h"
-#include "guilib/GUIColorManager.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIListItem.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
-using ADDON::CAddonMgr;
 using namespace KODI::GUILIB::GUIINFO;
 
-CGUIInfoBool::CGUIInfoBool(bool value)
-{
-  m_value = value;
-}
-
-CGUIInfoBool::~CGUIInfoBool() = default;
-
-void CGUIInfoBool::Parse(const std::string &expression, int context)
-{
-  if (expression == "true")
-    m_value = true;
-  else if (expression == "false")
-    m_value = false;
-  else
-  {
-    m_info = CServiceBroker::GetGUI()->GetInfoManager().Register(expression, context);
-    Update();
-  }
-}
-
-void CGUIInfoBool::Update(const CGUIListItem *item /*= NULL*/)
-{
-  if (m_info)
-    m_value = m_info->Get(item);
-}
-
-
-CGUIInfoColor::CGUIInfoColor(uint32_t color)
-{
-  m_color = color;
-  m_info = 0;
-}
-
-CGUIInfoColor &CGUIInfoColor::operator=(UTILS::Color color)
-{
-  m_color = color;
-  m_info = 0;
-  return *this;
-}
-
-CGUIInfoColor &CGUIInfoColor::operator=(const CGUIInfoColor &color)
-{
-  m_color = color.m_color;
-  m_info = color.m_info;
-  return *this;
-}
-
-bool CGUIInfoColor::Update()
-{
-  if (!m_info)
-    return false; // no infolabel
-
-  // Expand the infolabel, and then convert it to a color
-  std::string infoLabel(CServiceBroker::GetGUI()->GetInfoManager().GetLabel(m_info));
-  UTILS::Color color = !infoLabel.empty() ? g_colorManager.GetColor(infoLabel.c_str()) : 0;
-  if (m_color != color)
-  {
-    m_color = color;
-    return true;
-  }
-  else
-    return false;
-}
-
-void CGUIInfoColor::Parse(const std::string &label, int context)
-{
-  if (label.empty())
-    return;
-
-  CGUIInfoManager& infoMgr = CServiceBroker::GetGUI()->GetInfoManager();
-
-  // Check for the standard $INFO[] block layout, and strip it if present
-  std::string label2 = label;
-  if (StringUtils::StartsWithNoCase(label, "$var["))
-  {
-    label2 = label.substr(5, label.length() - 6);
-    m_info = infoMgr.TranslateSkinVariableString(label2, context);
-    if (!m_info)
-      m_info = infoMgr.RegisterSkinVariableString(g_SkinInfo->CreateSkinVariable(label2, context));
-    return;
-  }
-
-  if (StringUtils::StartsWithNoCase(label, "$info["))
-    label2 = label.substr(6, label.length()-7);
-
-  m_info = infoMgr.TranslateString(label2);
-  if (!m_info)
-    m_color = g_colorManager.GetColor(label);
-}
-
-CGUIInfoLabel::CGUIInfoLabel() : m_dirty(false)
-{
-}
-
-CGUIInfoLabel::CGUIInfoLabel(const std::string &label, const std::string &fallback /*= ""*/, int context /*= 0*/) : m_dirty(false)
+CGUIInfoLabel::CGUIInfoLabel(const std::string &label, const std::string &fallback /*= ""*/, int context /*= 0*/)
 {
   SetLabel(label, fallback, context);
 }
 
 int CGUIInfoLabel::GetIntValue(int contextWindow) const
 {
-  std::string label = GetLabel(contextWindow);
+  const std::string label = GetLabel(contextWindow);
   if (!label.empty())
     return strtol(label.c_str(), NULL, 10);
 
@@ -153,16 +56,16 @@ const std::string &CGUIInfoLabel::GetLabel(int contextWindow, bool preferImage, 
   if (!m_info.empty())
   {
     CGUIInfoManager& infoMgr = CServiceBroker::GetGUI()->GetInfoManager();
-    for (std::vector<CInfoPortion>::const_iterator portion = m_info.begin(); portion != m_info.end(); ++portion)
+    for (const auto &portion : m_info)
     {
-      if (portion->m_info)
+      if (portion.m_info)
       {
         std::string infoLabel;
         if (preferImage)
-          infoLabel = infoMgr.GetImage(portion->m_info, contextWindow, fallback);
+          infoLabel = infoMgr.GetImage(portion.m_info, contextWindow, fallback);
         if (infoLabel.empty())
-          infoLabel = infoMgr.GetLabel(portion->m_info, contextWindow, fallback);
-        needsUpdate |= portion->NeedsUpdate(infoLabel);
+          infoLabel = infoMgr.GetLabel(portion.m_info, contextWindow, fallback);
+        needsUpdate |= portion.NeedsUpdate(infoLabel);
       }
     }
   }
@@ -178,16 +81,16 @@ const std::string &CGUIInfoLabel::GetItemLabel(const CGUIListItem *item, bool pr
   if (item->IsFileItem() && !m_info.empty())
   {
     CGUIInfoManager& infoMgr = CServiceBroker::GetGUI()->GetInfoManager();
-    for (std::vector<CInfoPortion>::const_iterator portion = m_info.begin(); portion != m_info.end(); ++portion)
+    for (const auto &portion : m_info)
     {
-      if (portion->m_info)
+      if (portion.m_info)
       {
         std::string infoLabel;
         if (preferImages)
-          infoLabel = infoMgr.GetItemImage(static_cast<const CFileItem*>(item), 0, portion->m_info, fallback);
+          infoLabel = infoMgr.GetItemImage(static_cast<const CFileItem*>(item), 0, portion.m_info, fallback);
         else
-          infoLabel = infoMgr.GetItemLabel(static_cast<const CFileItem *>(item), 0, portion->m_info, fallback);
-        needsUpdate |= portion->NeedsUpdate(infoLabel);
+          infoLabel = infoMgr.GetItemLabel(static_cast<const CFileItem *>(item), 0, portion.m_info, fallback);
+        needsUpdate |= portion.NeedsUpdate(infoLabel);
       }
     }
   }
@@ -202,8 +105,8 @@ const std::string &CGUIInfoLabel::CacheLabel(bool rebuild) const
   if (rebuild)
   {
     m_label.clear();
-    for (std::vector<CInfoPortion>::const_iterator portion = m_info.begin(); portion != m_info.end(); ++portion)
-      m_label += portion->Get();
+    for (const auto &portion : m_info)
+      m_label += portion.Get();
     m_dirty = false;
   }
   if (m_label.empty())  // empty label, use the fallback
@@ -224,7 +127,7 @@ bool CGUIInfoLabel::IsConstant() const
 bool CGUIInfoLabel::ReplaceSpecialKeywordReferences(const std::string &strInput, const std::string &strKeyword, const StringReplacerFunc &func, std::string &strOutput)
 {
   // replace all $strKeyword[value] with resolved strings
-  std::string dollarStrPrefix = "$" + strKeyword + "[";
+  const std::string dollarStrPrefix = "$" + strKeyword + "[";
 
   size_t index = 0;
   size_t startPos;
@@ -237,7 +140,7 @@ bool CGUIInfoLabel::ReplaceSpecialKeywordReferences(const std::string &strInput,
     {
       if (index == 0)  // first occurrence?
         strOutput.clear();
-      strOutput += strInput.substr(index, startPos - index);            // append part from the left side
+      strOutput.append(strInput, index, startPos - index); // append part from the left side
       strOutput += func(strInput.substr(valuePos, endPos - valuePos));  // resolve and append value part
       index = endPos + 1;
     }
@@ -251,7 +154,7 @@ bool CGUIInfoLabel::ReplaceSpecialKeywordReferences(const std::string &strInput,
 
   if (index)  // if we replaced anything
   {
-    strOutput += strInput.substr(index);  // append leftover from the right side
+    strOutput.append(strInput, index, std::string::npos); // append leftover from the right side
     return true;
   }
 
@@ -263,7 +166,7 @@ bool CGUIInfoLabel::ReplaceSpecialKeywordReferences(std::string &work, const std
   std::string output;
   if (ReplaceSpecialKeywordReferences(work, strKeyword, func, output))
   {
-    work = output;
+    work = std::move(output);
     return true;
   }
   return false;
@@ -281,7 +184,7 @@ std::string AddonReplacer(const std::string &str)
 {
   // assumes "addon.id #####"
   size_t length = str.find(" ");
-  std::string addonid = str.substr(0, length);
+  const std::string addonid = str.substr(0, length);
   int stringid = atoi(str.substr(length + 1).c_str());
   return g_localizeStrings.GetAddonString(addonid, stringid);
 }
@@ -299,11 +202,10 @@ std::string CGUIInfoLabel::ReplaceLocalize(const std::string &label)
   return work;
 }
 
-std::string CGUIInfoLabel::ReplaceAddonStrings(const std::string &label)
+std::string CGUIInfoLabel::ReplaceAddonStrings(std::string &&label)
 {
-  std::string work(label);
-  ReplaceSpecialKeywordReferences(work, "ADDON", AddonReplacer);
-  return work;
+  ReplaceSpecialKeywordReferences(label, "ADDON", AddonReplacer);
+  return std::move(label);
 }
 
 enum EINFOFORMAT { NONE = 0, FORMATINFO, FORMATESCINFO, FORMATVAR, FORMATESCVAR };
@@ -326,7 +228,7 @@ void CGUIInfoLabel::Parse(const std::string &label, int context)
   // Step 1: Replace all $LOCALIZE[number] with the real string
   std::string work = ReplaceLocalize(label);
   // Step 2: Replace all $ADDON[id number] with the real string
-  work = ReplaceAddonStrings(work);
+  work = ReplaceAddonStrings(std::move(work));
   // Step 3: Find all $INFO[info,prefix,postfix] blocks
   EINFOFORMAT format;
   do
@@ -355,8 +257,7 @@ void CGUIInfoLabel::Parse(const std::string &label, int context)
       if (pos2 != std::string::npos)
       {
         // decipher the block
-        std::string block = work.substr(pos1 + len, pos2 - pos1 - len);
-        std::vector<std::string> params = StringUtils::Split(block, ",");
+        std::vector<std::string> params = StringUtils::Split(work.substr(pos1 + len, pos2 - pos1 - len), ",");
         if (!params.empty())
         {
           CGUIInfoManager& infoMgr = CServiceBroker::GetGUI()->GetInfoManager();
@@ -380,7 +281,7 @@ void CGUIInfoLabel::Parse(const std::string &label, int context)
           m_info.push_back(CInfoPortion(info, prefix, postfix, format == FORMATESCINFO || format == FORMATESCVAR));
         }
         // and delete it from our work string
-        work = work.substr(pos2 + 1);
+        work.erase(0, pos2 + 1);
       }
       else
       {
@@ -436,12 +337,12 @@ std::string CGUIInfoLabel::CInfoPortion::Get() const
 
 std::string CGUIInfoLabel::GetLabel(const std::string &label, int contextWindow /*= 0*/, bool preferImage /*= false */)
 { // translate the label
-  CGUIInfoLabel info(label, "", contextWindow);
+  const CGUIInfoLabel info(label, "", contextWindow);
   return info.GetLabel(contextWindow, preferImage);
 }
 
 std::string CGUIInfoLabel::GetItemLabel(const std::string &label, const CGUIListItem *item, bool preferImage /*= false */)
 { // translate the label
-  CGUIInfoLabel info(label);
+  const CGUIInfoLabel info(label);
   return info.GetItemLabel(item, preferImage);
 }

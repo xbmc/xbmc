@@ -20,7 +20,7 @@
 #pragma once
 
 #include "guilib/GUIControl.h"
-#include "guilib/guiinfo/GUIInfoTypes.h"
+#include "guilib/guiinfo/GUIInfoLabel.h"
 
 #include <memory>
 
