@@ -1603,7 +1603,7 @@ void CActiveAE::ChangeResamplers()
   std::list<CActiveAEStream*>::iterator it;
   for(it=m_streams.begin(); it!=m_streams.end(); ++it)
   {
-    (*it)->m_processingBuffers->ConfigureResampler(m_settings.normalizelevels, m_settings.stereoupmix, m_settings.resampleQuality);
+    (*it)->m_processingBuffers->ConfigureResampler(m_settings.normalizelevels, m_settings.stereoupmix, m_settings.resampleQuality, m_settings.boostcenter);
   }
 }
 
@@ -2592,6 +2592,7 @@ void CActiveAE::LoadSettings()
   m_settings.stereoupmix = IsSettingVisible(CSettings::SETTING_AUDIOOUTPUT_STEREOUPMIX) ? CServiceBroker::GetSettings().GetBool(CSettings::SETTING_AUDIOOUTPUT_STEREOUPMIX) : false;
   m_settings.normalizelevels = !CServiceBroker::GetSettings().GetBool(CSettings::SETTING_AUDIOOUTPUT_MAINTAINORIGINALVOLUME);
   m_settings.guisoundmode = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_AUDIOOUTPUT_GUISOUNDMODE);
+  m_settings.boostcenter = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_AUDIOOUTPUT_BOOSTCENTER);
 
   m_settings.passthrough = m_settings.config == AE_CONFIG_FIXED ? false : CServiceBroker::GetSettings().GetBool(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGH);
   if (!m_sink.HasPassthroughDevice())
@@ -3166,6 +3167,7 @@ bool CActiveAE::ResampleSound(CActiveAESound *sound)
                   true,
                   outChannels.Count() > 0 ? &outChannels : NULL,
                   m_settings.resampleQuality,
+                  m_settings.boostcenter,
                   false);
 
   dst_samples = resampler->CalcDstSampleCount(sound->GetSound(true)->nb_samples,

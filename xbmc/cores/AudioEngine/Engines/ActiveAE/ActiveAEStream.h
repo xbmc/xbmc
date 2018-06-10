@@ -105,7 +105,7 @@ public:
   bool Create(unsigned int totaltime, bool remap, bool upmix, bool normalize = true);
   void SetExtraData(int profile, enum AVMatrixEncoding matrix_encoding, enum AVAudioServiceType audio_service_type);
   bool ProcessBuffers();
-  void ConfigureResampler(bool normalizelevels, bool stereoupmix, AEQuality quality);
+  void ConfigureResampler(bool normalizelevels, bool stereoupmix, AEQuality quality, int boostcenter);
   bool HasInputLevel(int level);
   float GetDelay();
   void Flush();

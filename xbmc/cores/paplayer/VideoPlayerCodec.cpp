@@ -277,6 +277,7 @@ bool VideoPlayerCodec::Init(const CFileItem &file, unsigned int filecache)
                        false,
                        NULL,
                        AE_QUALITY_UNKNOWN,
+                       AE_OUTPUT_BOOST_CENTER_OFF,
                        false);
 
     m_planes = AE_IS_PLANAR(m_srcFormat.m_dataFormat) ? m_channels : 1;

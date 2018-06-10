@@ -47,6 +47,8 @@ class CAEStreamInfo;
 #define AE_CONFIG_AUTO  2
 #define AE_CONFIG_MATCH 3
 
+#define AE_OUTPUT_BOOST_CENTER_OFF 0
+
 enum AEQuality
 {
   AE_QUALITY_UNKNOWN    = -1, /* Unset, unknown or incorrect quality level */

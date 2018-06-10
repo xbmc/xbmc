@@ -72,6 +72,7 @@ struct AudioSettings
   double atempoThreshold;
   bool streamNoise;
   int silenceTimeout;
+  int boostcenter;
 };
 
 class CActiveAEControlProtocol : public Protocol

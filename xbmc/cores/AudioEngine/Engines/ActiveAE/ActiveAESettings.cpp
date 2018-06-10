@@ -60,6 +60,7 @@ CActiveAESettings::CActiveAESettings(CActiveAE &ae) : m_audioEngine(ae)
   settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_STREAMSILENCE);
   settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_STREAMNOISE);
   settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_MAINTAINORIGINALVOLUME);
+  settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_BOOSTCENTER);
   CServiceBroker::GetSettings().GetSettingsManager()->RegisterCallback(this, settingSet);
 
   CServiceBroker::GetSettings().GetSettingsManager()->RegisterSettingOptionsFiller("aequalitylevels",
@@ -70,6 +71,8 @@ CActiveAESettings::CActiveAESettings(CActiveAE &ae) : m_audioEngine(ae)
                                                                                    SettingOptionsAudioDevicesPassthroughFiller);
   CServiceBroker::GetSettings().GetSettingsManager()->RegisterSettingOptionsFiller("audiostreamsilence",
                                                                                    SettingOptionsAudioStreamsilenceFiller);
+  CServiceBroker::GetSettings().GetSettingsManager()->RegisterSettingOptionsFiller("audioboostcenter",
+                                                                                   SettingOptionsAudioBoostCenterFiller);
 }
 
 CActiveAESettings::~CActiveAESettings()
@@ -79,6 +82,7 @@ CActiveAESettings::~CActiveAESettings()
   CServiceBroker::GetSettings().GetSettingsManager()->UnregisterSettingOptionsFiller("audiodevices");
   CServiceBroker::GetSettings().GetSettingsManager()->UnregisterSettingOptionsFiller("audiodevicespassthrough");
   CServiceBroker::GetSettings().GetSettingsManager()->UnregisterSettingOptionsFiller("audiostreamsilence");
+  CServiceBroker::GetSettings().GetSettingsManager()->UnregisterSettingOptionsFiller("audioboostcenter");
   CServiceBroker::GetSettings().GetSettingsManager()->UnregisterCallback(this);
   m_instance = nullptr;
 }
@@ -119,6 +123,17 @@ void CActiveAESettings::SettingOptionsAudioQualityLevelsFiller(SettingConstPtr s
     list.push_back(std::make_pair(g_localizeStrings.Get(13509), AE_QUALITY_REALLYHIGH));
   if (m_instance->m_audioEngine.SupportsQualityLevel(AE_QUALITY_GPU))
     list.push_back(std::make_pair(g_localizeStrings.Get(38010), AE_QUALITY_GPU));
+}
+
+void CActiveAESettings::SettingOptionsAudioBoostCenterFiller(SettingConstPtr setting,
+                                                             std::vector< std::pair<std::string, int> > &list,
+                                                             int &current, void *data)
+{
+  CSingleLock lock(m_instance->m_cs);
+  for (int i = 0; i <= 30; i++)
+  {
+    list.push_back(std::make_pair(StringUtils::Format(g_localizeStrings.Get(38009), i), i));
+  }
 }
 
 void CActiveAESettings::SettingOptionsAudioStreamsilenceFiller(SettingConstPtr setting,

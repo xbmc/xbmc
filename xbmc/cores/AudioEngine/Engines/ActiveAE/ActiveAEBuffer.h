@@ -99,7 +99,7 @@ public:
   using CActiveAEBufferPool::Create;
   bool Create(unsigned int totaltime, bool remap, bool upmix, bool normalize = true);
   bool ResampleBuffers(int64_t timestamp = 0);
-  void ConfigureResampler(bool normalizelevels, bool stereoupmix, AEQuality quality);
+  void ConfigureResampler(bool normalizelevels, bool stereoupmix, AEQuality quality, int boostcenter);
   float GetDelay();
   void Flush();
   void SetDrain(bool drain);
@@ -125,6 +125,7 @@ protected:
   double m_resampleRatio;
   bool m_fillPackets;
   bool m_normalize;
+  int m_boostcenter;
   bool m_changeResampler;
   bool m_forceResampler;
   AEQuality m_resampleQuality;

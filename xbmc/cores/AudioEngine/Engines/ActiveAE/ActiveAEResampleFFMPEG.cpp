@@ -41,7 +41,7 @@ CActiveAEResampleFFMPEG::~CActiveAEResampleFFMPEG()
   swr_free(&m_pContext);
 }
 
-bool CActiveAEResampleFFMPEG::Init(uint64_t dst_chan_layout, int dst_channels, int dst_rate, AVSampleFormat dst_fmt, int dst_bits, int dst_dither, uint64_t src_chan_layout, int src_channels, int src_rate, AVSampleFormat src_fmt, int src_bits, int src_dither, bool upmix, bool normalize, CAEChannelInfo *remapLayout, AEQuality quality, bool force_resample)
+bool CActiveAEResampleFFMPEG::Init(uint64_t dst_chan_layout, int dst_channels, int dst_rate, AVSampleFormat dst_fmt, int dst_bits, int dst_dither, uint64_t src_chan_layout, int src_channels, int src_rate, AVSampleFormat src_fmt, int src_bits, int src_dither, bool upmix, bool normalize, CAEChannelInfo *remapLayout, AEQuality quality, int boostcenter, bool force_resample)
 {
   m_dst_chan_layout = dst_chan_layout;
   m_dst_channels = dst_channels;
@@ -103,6 +103,11 @@ bool CActiveAEResampleFFMPEG::Init(uint64_t dst_chan_layout, int dst_channels, i
       !remapLayout && normalize)
   {
      av_opt_set_double(m_pContext, "rematrix_maxval", 1.0, 0);
+  }
+  if (boostcenter)
+  {
+    float gain = pow(10.0f, (static_cast<float>(-3 + boostcenter))/20.0f);
+    av_opt_set_double(m_pContext, "center_mix_level", gain, 0);
   }
 
   if (remapLayout)
