@@ -22,7 +22,6 @@
 #include "GUIRenderSettings.h"
 #include "cores/RetroPlayer/guibridge/GUIGameRenderManager.h"
 #include "cores/RetroPlayer/guibridge/GUIRenderHandle.h"
-#include "cores/RetroPlayer/rendering/RenderGeometry.h"
 #include "cores/RetroPlayer/rendering/RenderSettings.h"
 #include "cores/RetroPlayer/rendering/RenderVideoSettings.h"
 #include "games/GameServices.h"
@@ -48,7 +47,7 @@ CGUIGameControl::CGUIGameControl(int parentID, int controlID, float posX, float 
   // Initialize CGUIControl
   ControlType = GUICONTROL_GAME;
 
-  m_renderSettings->SetGeometry(CRenderGeometry(CRect(CPoint(posX, posY), CSize(width, height))));
+  m_renderSettings->SetDimensions(CRect(CPoint(posX, posY), CSize(width, height)));
 
   RegisterControl();
 }
@@ -64,6 +63,7 @@ CGUIGameControl::CGUIGameControl(const CGUIGameControl &other) :
   m_renderSettings(new CGUIRenderSettings(*this))
 {
   m_renderSettings->SetSettings(other.m_renderSettings->GetSettings());
+  m_renderSettings->SetDimensions(CRect(CPoint(m_posX, m_posY), CSize(m_width, m_height)));
 
   RegisterControl();
 }
@@ -125,19 +125,19 @@ bool CGUIGameControl::CanFocus() const
 void CGUIGameControl::SetPosition(float posX, float posY)
 {
   CGUIControl::SetPosition(posX, posY);
-  m_renderSettings->SetGeometry(CRenderGeometry(CRect(CPoint(posX, posY), CSize(m_width, m_height))));
+  m_renderSettings->SetDimensions(CRect(CPoint(posX, posY), CSize(m_width, m_height)));
 }
 
 void CGUIGameControl::SetWidth(float width)
 {
   CGUIControl::SetWidth(width);
-  m_renderSettings->SetGeometry(CRenderGeometry(CRect(CPoint(m_posX, m_posY), CSize(width, m_height))));
+  m_renderSettings->SetDimensions(CRect(CPoint(m_posX, m_posY), CSize(width, m_height)));
 }
 
 void CGUIGameControl::SetHeight(float height)
 {
   CGUIControl::SetHeight(height);
-  m_renderSettings->SetGeometry(CRenderGeometry(CRect(CPoint(m_posX, m_posY), CSize(m_width, height))));
+  m_renderSettings->SetDimensions(CRect(CPoint(m_posX, m_posY), CSize(m_width, height)));
 }
 
 void CGUIGameControl::UpdateInfo(const CGUIListItem *item /* = nullptr */)

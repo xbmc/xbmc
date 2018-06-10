@@ -115,6 +115,7 @@ namespace RETRO
 
     // Rendering properties
     CRenderSettings m_renderSettings;
+    CRect m_dimensions;
     float m_pixelRatio = 1.0f;
     float m_zoomAmount = 1.0f;
     IRenderBuffer *m_renderBuffer = nullptr;

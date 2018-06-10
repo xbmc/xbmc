@@ -52,6 +52,13 @@ CRenderSettings CGUIRenderSettings::GetSettings() const
   return m_renderSettings;
 }
 
+CRect CGUIRenderSettings::GetDimensions() const
+{
+  CSingleLock lock(m_mutex);
+
+  return m_renderDimensions;
+}
+
 void CGUIRenderSettings::Reset()
 {
   CSingleLock lock(m_mutex);
@@ -66,11 +73,11 @@ void CGUIRenderSettings::SetSettings(CRenderSettings settings)
   m_renderSettings = std::move(settings);
 }
 
-void CGUIRenderSettings::SetGeometry(CRenderGeometry geometry)
+void CGUIRenderSettings::SetDimensions(const CRect &dimensions)
 {
   CSingleLock lock(m_mutex);
 
-  m_renderSettings.Geometry() = std::move(geometry);
+  m_renderDimensions = dimensions;
 }
 
 void CGUIRenderSettings::SetScalingMethod(SCALINGMETHOD scalingMethod)

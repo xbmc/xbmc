@@ -25,21 +25,16 @@ using namespace RETRO;
 
 void CRenderSettings::Reset()
 {
-  m_geometry.Reset();
   m_videoSettings.Reset();
 }
 
 bool CRenderSettings::operator==(const CRenderSettings &rhs) const
 {
-  return m_geometry == rhs.m_geometry &&
-         m_videoSettings == rhs.m_videoSettings;
+  return m_videoSettings == rhs.m_videoSettings;
 }
 
 bool CRenderSettings::operator<(const CRenderSettings &rhs) const
 {
-  if (m_geometry < rhs.m_geometry) return true;
-  if (m_geometry > rhs.m_geometry) return false;
-
   if (m_videoSettings < rhs.m_videoSettings) return true;
   if (m_videoSettings > rhs.m_videoSettings) return false;
 

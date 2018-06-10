@@ -21,10 +21,10 @@
 #pragma once
 
 #include "cores/RetroPlayer/guibridge/IGUIRenderSettings.h"
-#include "cores/RetroPlayer/rendering/RenderGeometry.h"
 #include "cores/RetroPlayer/rendering/RenderSettings.h"
 #include "cores/GameSettings.h"
 #include "threads/CriticalSection.h"
+#include "utils/Geometry.h"
 
 namespace KODI
 {
@@ -43,11 +43,12 @@ namespace RETRO
     bool HasViewMode() const override;
     bool HasRotation() const override;
     CRenderSettings GetSettings() const override;
+    CRect GetDimensions() const override;
 
     // Render functions
     void Reset();
     void SetSettings(CRenderSettings settings);
-    void SetGeometry(CRenderGeometry geometry);
+    void SetDimensions(const CRect &dimensions);
     void SetScalingMethod(SCALINGMETHOD scalingMethod);
     void SetViewMode(VIEWMODE viewMode);
     void SetRotationDegCCW(unsigned int rotationDegCCW);
@@ -58,6 +59,7 @@ namespace RETRO
 
     // Render parameters
     CRenderSettings m_renderSettings;
+    CRect m_renderDimensions;
 
     // Synchronization parameters
     CCriticalSection m_mutex;

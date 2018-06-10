@@ -226,7 +226,7 @@ void CRPRenderManager::RenderControl(bool bClear, bool bUseAlpha, const CRect &r
     m_renderContext.SetFullScreenVideo(false);
 
   // Set coordinates
-  CRect coords = renderSettings->GetSettings().Geometry().Dimensions();
+  CRect coords = renderSettings->GetDimensions();
   m_renderContext.SetViewWindow(coords.x1, coords.y1, coords.x2, coords.y2);
   TransformMatrix mat;
   m_renderContext.SetTransform(mat, 1.0, 1.0);

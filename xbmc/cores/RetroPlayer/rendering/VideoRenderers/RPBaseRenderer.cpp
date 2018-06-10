@@ -239,7 +239,7 @@ void CRPBaseRenderer::CalculateViewMode()
 
 inline void CRPBaseRenderer::ReorderDrawPoints()
 {
-  const CRect &destRect = m_renderSettings.Geometry().Dimensions();
+  const CRect &destRect = m_dimensions;
   const unsigned int renderRotation = m_renderSettings.VideoSettings().GetRenderRotation();
 
   // 0 - top left, 1 - top right, 2 - bottom right, 3 - bottom left
@@ -359,7 +359,7 @@ inline void CRPBaseRenderer::ReorderDrawPoints()
 void CRPBaseRenderer::CalcNormalRenderRect(float offsetX, float offsetY, float width, float height, float inputFrameRatio, float zoomAmount)
 {
   CRect &sourceRect = m_sourceRect;
-  CRect &destRect = m_renderSettings.Geometry().Dimensions();
+  CRect &destRect = m_dimensions;
 
   // If view window is empty, set empty destination
   if (height == 0 || width == 0)
@@ -449,7 +449,7 @@ void CRPBaseRenderer::ManageRenderArea()
 
 void CRPBaseRenderer::MarkDirty()
 {
-  //CServiceBroker::GetGUI()->GetWindowManager().MarkDirty(m_renderSettings.Geometry().Dimensions()); //! @todo
+  //CServiceBroker::GetGUI()->GetWindowManager().MarkDirty(m_dimensions); //! @todo
 }
 
 void CRPBaseRenderer::PreRender(bool clear)
