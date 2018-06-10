@@ -39,7 +39,7 @@
 using namespace XFILE;
 using namespace MUSICDATABASEDIRECTORY;
 
-int CGUIViewStateWindowMusic::GetPlaylist()
+int CGUIViewStateWindowMusic::GetPlaylist() const
 {
   //return PLAYLIST_MUSIC_TEMP;
   return PLAYLIST_MUSIC;
@@ -580,7 +580,7 @@ void CGUIViewStateWindowMusicPlaylist::SaveViewState()
   SaveViewToDb(m_items.GetPath(), WINDOW_MUSIC_PLAYLIST);
 }
 
-int CGUIViewStateWindowMusicPlaylist::GetPlaylist()
+int CGUIViewStateWindowMusicPlaylist::GetPlaylist() const
 {
   return PLAYLIST_MUSIC;
 }

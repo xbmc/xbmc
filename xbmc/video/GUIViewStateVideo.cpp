@@ -47,7 +47,7 @@ std::string CGUIViewStateWindowVideo::GetExtensions()
   return CServiceBroker::GetFileExtensionProvider().GetVideoExtensions();
 }
 
-int CGUIViewStateWindowVideo::GetPlaylist()
+int CGUIViewStateWindowVideo::GetPlaylist() const
 {
   return PLAYLIST_VIDEO;
 }
@@ -57,6 +57,13 @@ VECSOURCES& CGUIViewStateWindowVideo::GetSources()
   AddLiveTVSources();
   return CGUIViewState::GetSources();
 }
+
+bool CGUIViewStateWindowVideo::AutoPlayNextItem()
+{
+  return AutoPlayNextVideoItem();
+}
+
+/***************************/
 
 CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& items) : CGUIViewStateWindowVideo(items)
 {
@@ -398,7 +405,7 @@ bool CGUIViewStateWindowVideoNav::AutoPlayNextItem()
   if (params.GetContentType() == VIDEODB_CONTENT_MUSICVIDEOS || params.GetContentType() == 6) // recently added musicvideos
     return CServiceBroker::GetSettings().GetBool(CSettings::SETTING_MUSICPLAYER_AUTOPLAYNEXTITEM);
 
-  return CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_AUTOPLAYNEXTITEM);
+  return CGUIViewStateWindowVideo::AutoPlayNextItem();
 }
 
 CGUIViewStateWindowVideoPlaylist::CGUIViewStateWindowVideoPlaylist(const CFileItemList& items) : CGUIViewStateWindowVideo(items)
