@@ -18,16 +18,14 @@
  *
  */
 
-
-#include "system_gl.h"
-
-#include <cmath>
 #include "MatrixGLES.h"
+
 #include "utils/log.h"
 #if defined(HAS_NEON)
 #include "utils/CPUInfo.h"
 #endif
 
+#include <cmath>
 
 CMatrixGLStack glMatrixModview = CMatrixGLStack();
 CMatrixGLStack glMatrixProject = CMatrixGLStack();

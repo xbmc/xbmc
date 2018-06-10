@@ -19,6 +19,7 @@
  *
  */
 
+#include "system_gl.h"
 
 #include <cmath>
 #include <cstring>
