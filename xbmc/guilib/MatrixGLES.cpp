@@ -142,12 +142,12 @@ void CMatrixGL::Rotatef(GLfloat angle, GLfloat x, GLfloat y, GLfloat z)
 
 #if defined(HAS_NEON) && !defined(__LP64__)
   
-static inline void Matrix4Mul(const float* src_mat_1, const float* src_mat_2, float* dst_mat)
+static inline void Matrix4Mul(const float* src_mat_1, const float* src_mat_2)
 {
   asm volatile (
     // Store A & B leaving room at top of registers for result (q0-q3)
-    "vldmia %1, { q4-q7 }  \n\t"
-    "vldmia %2, { q8-q11 } \n\t"
+    "vldmia %0, { q4-q7 }  \n\t"
+    "vldmia %1, { q8-q11 } \n\t"
 
     // result = first column of B x first row of A
     "vmul.f32 q0, q8, d8[0]\n\t"
@@ -174,9 +174,9 @@ static inline void Matrix4Mul(const float* src_mat_1, const float* src_mat_2, fl
     "vmla.f32 q3, q11, d15[1]\n\t"
 
     // output = result registers
-    "vstmia %2, { q0-q3 }"
+    "vstmia %1, { q0-q3 }"
     : //no output 
-    : "r" (dst_mat), "r" (src_mat_2), "r" (src_mat_1)       // input - note *value* of pointer doesn't change
+    : "r" (src_mat_2), "r" (src_mat_1)       // input - note *value* of pointer doesn't change
     : "memory", "q0", "q1", "q2", "q3", "q4", "q5", "q6", "q7", "q8", "q9", "q10", "q11" //clobber
     );
 }
@@ -186,8 +186,7 @@ void CMatrixGL::MultMatrixf(const CMatrixGL &matrix) noexcept
 #if defined(HAS_NEON) && !defined(__LP64__)
     if ((g_cpuInfo.GetCPUFeatures() & CPU_FEATURE_NEON) == CPU_FEATURE_NEON)
     {
-      GLfloat m[16];
-      Matrix4Mul(m_pMatrix, matrix.m_pMatrix, m);
+      Matrix4Mul(m_pMatrix, matrix.m_pMatrix);
       return;
     }
 #endif
