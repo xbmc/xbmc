@@ -2040,7 +2040,9 @@ void COutput::InitCycle()
       // and use for direct export, so we run into trouble if we or the user want to switch
       // deinterlacing on/off mid-stream.
       // See also: https://bugs.freedesktop.org/show_bug.cgi?id=105145
-      const bool alwaysInsertVpp = m_config.driverIsMesa && ((m_config.vidWidth * m_config.vidHeight) <= (1920 * 1080));
+      const bool alwaysInsertVpp = m_config.driverIsMesa &&
+                                   ((m_config.vidWidth * m_config.vidHeight) <= (1920 * 1080)) &&
+                                   interlaced;
 
       m_config.stats->SetVpp(false);
       if (!preferVaapiRender)
