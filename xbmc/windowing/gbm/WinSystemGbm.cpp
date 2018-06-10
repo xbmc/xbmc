@@ -44,8 +44,8 @@ CWinSystemGbm::CWinSystemGbm() :
   m_libinput(new CLibInputHandler)
 {
   std::string envSink;
-  if (getenv("AE_SINK"))
-    envSink = getenv("AE_SINK");
+  if (getenv("KODI_AE_SINK"))
+    envSink = getenv("KODI_AE_SINK");
   if (StringUtils::EqualsNoCase(envSink, "ALSA"))
   {
     OPTIONALS::ALSARegister();

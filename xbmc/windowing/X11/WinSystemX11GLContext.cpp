@@ -53,8 +53,8 @@ std::unique_ptr<CWinSystemBase> CWinSystemBase::CreateWinSystem()
 CWinSystemX11GLContext::CWinSystemX11GLContext()
 {
   std::string envSink;
-  if (getenv("AE_SINK"))
-    envSink = getenv("AE_SINK");
+  if (getenv("KODI_AE_SINK"))
+    envSink = getenv("KODI_AE_SINK");
   if (StringUtils::EqualsNoCase(envSink, "ALSA"))
   {
     OPTIONALS::ALSARegister();
@@ -278,7 +278,7 @@ bool CWinSystemX11GLContext::RefreshGLContext(bool force)
   std::transform(gpuvendor.begin(), gpuvendor.end(), gpuvendor.begin(), ::tolower);
   bool isNvidia = (gpuvendor.compare(0, 6, "nvidia") == 0);
   bool isIntel = (gpuvendor.compare(0, 5, "intel") == 0);
-  std::string gli = (getenv("GL_INTERFACE") != nullptr) ? getenv("GL_INTERFACE") : "";
+  std::string gli = (getenv("KODI_GL_INTERFACE") != nullptr) ? getenv("KODI_GL_INTERFACE") : "";
 
   if (gli != "GLX")
   {
