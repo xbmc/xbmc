@@ -1561,7 +1561,7 @@ void CUtil::GetSkinThemes(std::vector<std::string>& vecTheme)
   CFileItemList items;
   CDirectory::GetDirectory(strPath, items, "", DIR_FLAG_DEFAULTS);
   // Search for Themes in the Current skin!
-  for (auto pItem : items)
+  for (const auto &pItem : items)
   {
     if (!pItem->m_bIsFolder)
     {
@@ -1909,7 +1909,7 @@ void CUtil::ScanPathsForAssociatedItems(const std::string& videoName,
                                         const std::vector<std::string>& item_exts,
                                         std::vector<std::string>& associatedFiles)
 {
-  for (auto pItem : items)
+  for (const auto &pItem : items)
   {
     if (pItem->m_bIsFolder)
       continue;
