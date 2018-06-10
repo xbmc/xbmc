@@ -59,10 +59,10 @@ void CMatrixGL::Ortho(GLfloat l, GLfloat r, GLfloat b, GLfloat t, GLfloat n, GLf
   GLfloat x = - (r + l) / (r - l);
   GLfloat y = - (t + b) / (t - b);
   GLfloat z = - (f + n) / (f - n);
-  GLfloat matrix[16] = {   u, 0.0f, 0.0f, 0.0f,
-                        0.0f,    v, 0.0f, 0.0f,
-                        0.0f, 0.0f,    w, 0.0f,
-                           x,    y,    z, 1.0f};
+  const CMatrixGL matrix{   u, 0.0f, 0.0f, 0.0f,
+                         0.0f,    v, 0.0f, 0.0f,
+                         0.0f, 0.0f,    w, 0.0f,
+                            x,    y,    z, 1.0f};
   MultMatrixf(matrix);
 }
 
@@ -72,10 +72,10 @@ void CMatrixGL::Ortho2D(GLfloat l, GLfloat r, GLfloat b, GLfloat t)
   GLfloat v =  2.0f / (t - b);
   GLfloat x = - (r + l) / (r - l);
   GLfloat y = - (t + b) / (t - b);
-  GLfloat matrix[16] = {   u, 0.0f, 0.0f, 0.0f,
-                        0.0f,    v, 0.0f, 0.0f,
-                        0.0f, 0.0f,-1.0f, 0.0f,
-                           x,    y, 0.0f, 1.0f};
+  const CMatrixGL matrix{   u, 0.0f, 0.0f, 0.0f,
+                         0.0f,    v, 0.0f, 0.0f,
+                         0.0f, 0.0f,-1.0f, 0.0f,
+                            x,    y, 0.0f, 1.0f};
   MultMatrixf(matrix);
 }
 
@@ -87,28 +87,28 @@ void CMatrixGL::Frustum(GLfloat l, GLfloat r, GLfloat b, GLfloat t, GLfloat n, G
   GLfloat x = (t + b) / (t - b);
   GLfloat y = - (f + n) / (f - n);
   GLfloat z = - (2.0f * f * n) / (f - n);
-  GLfloat matrix[16] = {   u, 0.0f, 0.0f, 0.0f,
-                        0.0f,    v, 0.0f, 0.0f,
-                           w,    x,    y,-1.0f,
-                        0.0f, 0.0f,    z, 0.0f};
+  const CMatrixGL matrix{   u, 0.0f, 0.0f, 0.0f,
+                         0.0f,    v, 0.0f, 0.0f,
+                            w,    x,    y,-1.0f,
+                         0.0f, 0.0f,    z, 0.0f};
   MultMatrixf(matrix);
 }
 
 void CMatrixGL::Translatef(GLfloat x, GLfloat y, GLfloat z)
 {
-  GLfloat matrix[16] = {1.0f, 0.0f, 0.0f, 0.0f,
-                        0.0f, 1.0f, 0.0f, 0.0f,
-                        0.0f, 0.0f, 1.0f, 0.0f,
-                           x,    y,    z, 1.0f};
+  const CMatrixGL matrix{1.0f, 0.0f, 0.0f, 0.0f,
+                         0.0f, 1.0f, 0.0f, 0.0f,
+                         0.0f, 0.0f, 1.0f, 0.0f,
+                            x,    y,    z, 1.0f};
   MultMatrixf(matrix);
 }
 
 void CMatrixGL::Scalef(GLfloat x, GLfloat y, GLfloat z)
 {
-  GLfloat matrix[16] = {   x, 0.0f, 0.0f, 0.0f,
-                        0.0f,    y, 0.0f, 0.0f,
-                        0.0f, 0.0f,    z, 0.0f,
-                        0.0f, 0.0f, 0.0f, 1.0f};
+  const CMatrixGL matrix{   x, 0.0f, 0.0f, 0.0f,
+                         0.0f,    y, 0.0f, 0.0f,
+                         0.0f, 0.0f,    z, 0.0f,
+                         0.0f, 0.0f, 0.0f, 1.0f};
   MultMatrixf(matrix);
 }
 
@@ -133,10 +133,10 @@ void CMatrixGL::Rotatef(GLfloat angle, GLfloat x, GLfloat y, GLfloat z)
   GLfloat g = (z*x*cos1) - (y*sine);
   GLfloat h = (z*y*cos1) + (x*sine);
   GLfloat i = (z*z*cos1) + cosine;
-  GLfloat matrix[16] = {   a,    d,    g, 0.0f,
-                           b,    e,    h, 0.0f,
-                           c,    f,    i, 0.0f,
-                        0.0f, 0.0f, 0.0f, 1.0f};
+  const CMatrixGL matrix{   a,    d,    g, 0.0f,
+                            b,    e,    h, 0.0f,
+                            c,    f,    i, 0.0f,
+                         0.0f, 0.0f, 0.0f, 1.0f};
   MultMatrixf(matrix);
 }
 
@@ -217,7 +217,6 @@ void CMatrixGL::MultMatrixf(const GLfloat *matrix)
 void CMatrixGL::LookAt(GLfloat eyex, GLfloat eyey, GLfloat eyez, GLfloat centerx, GLfloat centery, GLfloat centerz, GLfloat upx, GLfloat upy, GLfloat upz)
 {
   GLfloat forward[3], side[3], up[3];
-  GLfloat m[4][4];
 
   forward[0] = centerx - eyex;
   forward[1] = centery - eyey;
@@ -251,24 +250,14 @@ void CMatrixGL::LookAt(GLfloat eyex, GLfloat eyey, GLfloat eyez, GLfloat centerx
   up[1] = side[2]*forward[0] - side[0]*forward[2];
   up[2] = side[0]*forward[1] - side[1]*forward[0];
 
-  m[0][0] = 1.0f; m[0][1] = 0.0f; m[0][2] = 0.0f; m[0][3] = 0.0f;
-  m[1][0] = 0.0f; m[1][1] = 1.0f; m[1][2] = 0.0f; m[1][3] = 0.0f;
-  m[2][0] = 0.0f; m[2][1] = 0.0f; m[2][2] = 1.0f; m[2][3] = 0.0f;
-  m[3][0] = 0.0f; m[3][1] = 0.0f; m[3][2] = 0.0f; m[3][3] = 1.0f;
+  const CMatrixGL matrix{
+    side[0], up[0], -forward[0], 0.0f,
+    side[1], up[1], -forward[1], 0.0f,
+    side[2], up[2], -forward[2], 0.0f,
+    0.0f, 0.0f, 0.0f, 1.0f,
+  };
 
-  m[0][0] = side[0];
-  m[1][0] = side[1];
-  m[2][0] = side[2];
-
-  m[0][1] = up[0];
-  m[1][1] = up[1];
-  m[2][1] = up[2];
-
-  m[0][2] = -forward[0];
-  m[1][2] = -forward[1];
-  m[2][2] = -forward[2];
-
-  MultMatrixf(&m[0][0]);
+  MultMatrixf(matrix);
   Translatef(-eyex, -eyey, -eyez);
 }
 
