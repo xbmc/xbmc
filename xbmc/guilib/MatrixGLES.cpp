@@ -101,15 +101,15 @@ void CMatrixGL::Scalef(GLfloat x, GLfloat y, GLfloat z)
 
 void CMatrixGL::Rotatef(GLfloat angle, GLfloat x, GLfloat y, GLfloat z)
 {
-  GLfloat modulus = sqrt((x*x)+(y*y)+(z*z));
+  GLfloat modulus = std::sqrt((x*x)+(y*y)+(z*z));
   if (modulus != 0.0)
   {
     x /= modulus;
     y /= modulus;
     z /= modulus;
   }
-  GLfloat cosine = cos(angle);
-  GLfloat sine   = sin(angle);
+  GLfloat cosine = std::cos(angle);
+  GLfloat sine   = std::sin(angle);
   GLfloat cos1   = 1 - cosine;
   GLfloat a = (x*x*cos1) + cosine;
   GLfloat b = (x*y*cos1) - (z*sine);
@@ -214,7 +214,7 @@ void CMatrixGL::LookAt(GLfloat eyex, GLfloat eyey, GLfloat eyez, GLfloat centerx
   up[1] = upy;
   up[2] = upz;
 
-  GLfloat tmp = sqrt(forward[0]*forward[0] + forward[1]*forward[1] + forward[2]*forward[2]);
+  GLfloat tmp = std::sqrt(forward[0]*forward[0] + forward[1]*forward[1] + forward[2]*forward[2]);
   if (tmp != 0.0)
   {
     forward[0] /= tmp;
@@ -226,7 +226,7 @@ void CMatrixGL::LookAt(GLfloat eyex, GLfloat eyey, GLfloat eyez, GLfloat centerx
   side[1] = forward[2]*up[0] - forward[0]*up[2];
   side[2] = forward[0]*up[1] - forward[1]*up[0];
 
-  tmp = sqrt(side[0]*side[0] + side[1]*side[1] + side[2]*side[2]);
+  tmp = std::sqrt(side[0]*side[0] + side[1]*side[1] + side[2]*side[2]);
   if (tmp != 0.0)
   {
     side[0] /= tmp;
