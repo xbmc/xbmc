@@ -26,7 +26,7 @@ CGameSettings &CGameSettings::operator=(const CGameSettings &rhs)
 {
   if (this != &rhs)
   {
-    m_scalingMethod = rhs.m_scalingMethod;
+    m_videoFilter = rhs.m_videoFilter;
     m_viewMode = rhs.m_viewMode;
     m_rotationDegCCW = rhs.m_rotationDegCCW;
   }
@@ -35,23 +35,23 @@ CGameSettings &CGameSettings::operator=(const CGameSettings &rhs)
 
 void CGameSettings::Reset()
 {
-  m_scalingMethod = RETRO::SCALINGMETHOD::AUTO;
+  m_videoFilter.clear();
   m_viewMode = RETRO::VIEWMODE::Normal;
   m_rotationDegCCW = 0;
 }
 
 bool CGameSettings::operator==(const CGameSettings &rhs) const
 {
-  return m_scalingMethod == rhs.m_scalingMethod &&
+  return m_videoFilter == rhs.m_videoFilter &&
          m_viewMode == rhs.m_viewMode &&
          m_rotationDegCCW == rhs.m_rotationDegCCW;
 }
 
-void CGameSettings::SetScalingMethod(RETRO::SCALINGMETHOD scalingMethod)
+void CGameSettings::SetVideoFilter(const std::string &videoFilter)
 {
-  if (scalingMethod != m_scalingMethod)
+  if (videoFilter != m_videoFilter)
   {
-    m_scalingMethod = scalingMethod;
+    m_videoFilter = videoFilter;
     SetChanged();
   }
 }

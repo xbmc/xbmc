@@ -534,8 +534,8 @@ CRenderVideoSettings CRPRenderManager::GetEffectiveSettings(const IGUIRenderSett
 
   if (settings != nullptr)
   {
-    if (settings->HasScalingMethod())
-      effectiveSettings.SetScalingMethod(settings->GetSettings().VideoSettings().GetScalingMethod());
+    if (settings->HasVideoFilter())
+      effectiveSettings.SetVideoFilter(settings->GetSettings().VideoSettings().GetVideoFilter());
     if (settings->HasViewMode())
       effectiveSettings.SetRenderViewMode(settings->GetSettings().VideoSettings().GetRenderViewMode());
     if (settings->HasRotation())
@@ -543,8 +543,10 @@ CRenderVideoSettings CRPRenderManager::GetEffectiveSettings(const IGUIRenderSett
   }
 
   // Sanitize settings
-  if (effectiveSettings.GetScalingMethod() == SCALINGMETHOD::AUTO)
+  if (!m_processInfo.HasScalingMethod(effectiveSettings.GetScalingMethod()))
+  {
     effectiveSettings.SetScalingMethod(m_processInfo.GetDefaultScalingMethod());
+  }
 
   return effectiveSettings;
 }

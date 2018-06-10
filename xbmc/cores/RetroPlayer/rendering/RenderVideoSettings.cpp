@@ -23,6 +23,9 @@
 using namespace KODI;
 using namespace RETRO;
 
+#define VIDEO_FILTER_NEAREST  "nearest"
+#define VIDEO_FILTER_LINEAR   "linear"
+
 void CRenderVideoSettings::Reset()
 {
   m_scalingMethod = SCALINGMETHOD::AUTO;
@@ -49,4 +52,35 @@ bool CRenderVideoSettings::operator<(const CRenderVideoSettings &rhs) const
   if (m_rotationDegCCW > rhs.m_rotationDegCCW) return false;
 
   return false;
+}
+
+std::string CRenderVideoSettings::GetVideoFilter() const
+{
+  switch (m_scalingMethod)
+  {
+  case SCALINGMETHOD::NEAREST:
+    return VIDEO_FILTER_NEAREST;
+  case SCALINGMETHOD::LINEAR:
+    return VIDEO_FILTER_LINEAR;
+  default:
+    break;
+  }
+
+  return "";
+}
+
+void CRenderVideoSettings::SetVideoFilter(const std::string &videoFilter)
+{
+  if (videoFilter == VIDEO_FILTER_NEAREST)
+  {
+    m_scalingMethod = SCALINGMETHOD::NEAREST;
+  }
+  else if (videoFilter == VIDEO_FILTER_LINEAR)
+  {
+    m_scalingMethod = SCALINGMETHOD::LINEAR;
+  }
+  else
+  {
+    m_scalingMethod = SCALINGMETHOD::AUTO;
+  }
 }

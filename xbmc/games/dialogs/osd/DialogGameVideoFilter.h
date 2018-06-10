@@ -44,9 +44,9 @@ namespace GAME
     void PostExit() override;
 
   private:
-    void InitScalingMethods();
+    void InitVideoFilters();
 
-    static void GetProperties(const CFileItem &item, RETRO::SCALINGMETHOD &scalingMethod, std::string &description);
+    static void GetProperties(const CFileItem &item, std::string &videoFilter, std::string &description);
 
     CFileItemList m_items;
 

@@ -39,7 +39,7 @@ namespace RETRO
     ~CGUIRenderSettings() override = default;
 
     // implementation of IGUIRenderSettings
-    bool HasScalingMethod() const override;
+    bool HasVideoFilter() const override;
     bool HasViewMode() const override;
     bool HasRotation() const override;
     CRenderSettings GetSettings() const override;
@@ -49,7 +49,7 @@ namespace RETRO
     void Reset();
     void SetSettings(CRenderSettings settings);
     void SetDimensions(const CRect &dimensions);
-    void SetScalingMethod(SCALINGMETHOD scalingMethod);
+    void SetVideoFilter(const std::string &videoFilter);
     void SetViewMode(VIEWMODE viewMode);
     void SetRotationDegCCW(unsigned int rotationDegCCW);
 

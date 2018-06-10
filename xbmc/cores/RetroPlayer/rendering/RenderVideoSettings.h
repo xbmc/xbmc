@@ -22,6 +22,8 @@
 
 #include "cores/GameSettings.h"
 
+#include <string>
+
 namespace KODI
 {
 namespace RETRO
@@ -40,6 +42,12 @@ namespace RETRO
     bool operator!=(const CRenderVideoSettings &rhs) const { return !(*this == rhs); }
     bool operator<(const CRenderVideoSettings &rhs) const;
     bool operator>(const CRenderVideoSettings &rhs) const { return !(*this == rhs || *this < rhs); }
+
+    /*!
+     * \brief Get a string representation of the video filter parameters
+     */
+    std::string GetVideoFilter() const;
+    void SetVideoFilter(const std::string &videoFilter);
 
     SCALINGMETHOD GetScalingMethod() const { return m_scalingMethod; }
     void SetScalingMethod(SCALINGMETHOD method) { m_scalingMethod = method; }

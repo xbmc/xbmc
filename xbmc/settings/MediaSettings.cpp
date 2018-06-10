@@ -135,9 +135,9 @@ bool CMediaSettings::Load(const TiXmlNode *settings)
   pElement = settings->FirstChildElement("defaultgamesettings");
   if (pElement != nullptr)
   {
-    int scalingMethod;
-    if (XMLUtils::GetInt(pElement, "scalingmethod", scalingMethod, static_cast<int>(RETRO::SCALINGMETHOD::NEAREST), static_cast<int>(RETRO::SCALINGMETHOD::MAX)))
-      m_defaultGameSettings.SetScalingMethod(static_cast<RETRO::SCALINGMETHOD>(scalingMethod));
+    std::string videoFilter;
+    if (XMLUtils::GetString(pElement, "videofilter", videoFilter))
+      m_defaultGameSettings.SetVideoFilter(videoFilter);
 
     int viewMode;
     if (XMLUtils::GetInt(pElement, "viewmode", viewMode, static_cast<int>(RETRO::VIEWMODE::Normal), static_cast<int>(RETRO::VIEWMODE::Max)))
@@ -240,7 +240,7 @@ bool CMediaSettings::Save(TiXmlNode *settings) const
   if (pNode == nullptr)
     return false;
 
-  XMLUtils::SetInt(pNode, "scalingmethod", static_cast<int>(m_defaultGameSettings.ScalingMethod()));
+  XMLUtils::SetString(pNode, "videofilter", m_defaultGameSettings.VideoFilter());
   XMLUtils::SetInt(pNode, "viewmode", static_cast<int>(m_defaultGameSettings.ViewMode()));
   XMLUtils::SetInt(pNode, "rotation", m_defaultGameSettings.RotationDegCCW());
 

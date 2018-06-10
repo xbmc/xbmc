@@ -20,6 +20,7 @@
 
 #include "DialogGameVideoFilter.h"
 #include "cores/RetroPlayer/guibridge/GUIGameVideoHandle.h"
+#include "cores/RetroPlayer/rendering/RenderVideoSettings.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
 #include "settings/GameSettings.h"
@@ -61,7 +62,7 @@ void CDialogGameVideoFilter::PreInit()
 {
   m_items.Clear();
 
-  InitScalingMethods();
+  InitVideoFilters();
 
   if (m_items.Size() == 0)
   {
@@ -72,7 +73,7 @@ void CDialogGameVideoFilter::PreInit()
   m_bHasDescription = false;
 }
 
-void CDialogGameVideoFilter::InitScalingMethods()
+void CDialogGameVideoFilter::InitVideoFilters()
 {
   if (m_gameVideoHandle)
   {
@@ -80,9 +81,12 @@ void CDialogGameVideoFilter::InitScalingMethods()
     {
       if (m_gameVideoHandle->SupportsScalingMethod(scalingMethodProps.scalingMethod))
       {
+        RETRO::CRenderVideoSettings videoSettings;
+        videoSettings.SetScalingMethod(scalingMethodProps.scalingMethod);
+
         CFileItemPtr item = std::make_shared<CFileItem>(g_localizeStrings.Get(scalingMethodProps.nameIndex));
         item->SetLabel2(g_localizeStrings.Get(scalingMethodProps.categoryIndex));
-        item->SetProperty("game.scalingmethod", CVariant{ static_cast<int>(scalingMethodProps.scalingMethod) });
+        item->SetProperty("game.videofilter", CVariant{ videoSettings.GetVideoFilter() });
         item->SetProperty("game.videofilterdescription", CVariant{ g_localizeStrings.Get(scalingMethodProps.descriptionIndex) });
         m_items.Add(std::move(item));
       }
@@ -102,15 +106,15 @@ void CDialogGameVideoFilter::OnItemFocus(unsigned int index)
   {
     CFileItemPtr item = m_items[index];
 
-    RETRO::SCALINGMETHOD scalingMethod;
+    std::string videoFilter;
     std::string description;
-    GetProperties(*item, scalingMethod, description);
+    GetProperties(*item, videoFilter, description);
 
     CGameSettings &gameSettings = CMediaSettings::GetInstance().GetCurrentGameSettings();
 
-    if (gameSettings.ScalingMethod() != scalingMethod)
+    if (gameSettings.VideoFilter() != videoFilter)
     {
-      gameSettings.SetScalingMethod(scalingMethod);
+      gameSettings.SetVideoFilter(videoFilter);
       gameSettings.NotifyObservers(ObservableMessageSettingsChanged);
 
       OnDescriptionChange(description);
@@ -130,11 +134,11 @@ unsigned int CDialogGameVideoFilter::GetFocusedItem() const
 
   for (int i = 0; i < m_items.Size(); i++)
   {
-    RETRO::SCALINGMETHOD scalingMethod;
+    std::string videoFilter;
     std::string description;
-    GetProperties(*m_items[i], scalingMethod, description);
+    GetProperties(*m_items[i], videoFilter, description);
 
-    if (scalingMethod == gameSettings.ScalingMethod())
+    if (videoFilter == gameSettings.VideoFilter())
     {
       return i;
     }
@@ -148,12 +152,8 @@ void CDialogGameVideoFilter::PostExit()
   m_items.Clear();
 }
 
-void CDialogGameVideoFilter::GetProperties(const CFileItem &item, RETRO::SCALINGMETHOD &scalingMethod, std::string &description)
+void CDialogGameVideoFilter::GetProperties(const CFileItem &item, std::string &videoFilter, std::string &description)
 {
-  scalingMethod = RETRO::SCALINGMETHOD::AUTO;
+  videoFilter = item.GetProperty("game.videofilter").asString();
   description = item.GetProperty("game.videofilterdescription").asString();
-
-  std::string strScalingMethod = item.GetProperty("game.scalingmethod").asString();
-  if (StringUtils::IsNaturalNumber(strScalingMethod))
-    scalingMethod = static_cast<RETRO::SCALINGMETHOD>(item.GetProperty("game.scalingmethod").asUnsignedInteger());
 }

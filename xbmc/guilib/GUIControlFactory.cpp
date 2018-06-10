@@ -1148,9 +1148,9 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
     {
       control = new RETRO::CGUIGameControl(parentID, id, posX, posY, width, height);
 
-      GUIINFO::CGUIInfoLabel scalingMethod;
-      GetInfoLabel(pControlNode, "scalingmethod", scalingMethod, parentID);
-      static_cast<RETRO::CGUIGameControl*>(control)->SetScalingMethod(scalingMethod);
+      GUIINFO::CGUIInfoLabel videoFilter;
+      GetInfoLabel(pControlNode, "videofilter", videoFilter, parentID);
+      static_cast<RETRO::CGUIGameControl*>(control)->SetVideoFilter(videoFilter);
 
       GUIINFO::CGUIInfoLabel viewMode;
       GetInfoLabel(pControlNode, "viewmode", viewMode, parentID);

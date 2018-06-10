@@ -36,9 +36,9 @@ namespace RETRO
     virtual ~IGUIRenderSettings() = default;
 
     /*!
-     * \brief Returns true if this render target has a scaling method set
+     * \brief Returns true if this render target has a video filter set
      */
-    virtual bool HasScalingMethod() const { return true; }
+    virtual bool HasVideoFilter() const { return true; }
 
     /*!
      * \brief Returns true if this render target has a view mode set

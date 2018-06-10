@@ -23,6 +23,8 @@
 #include "cores/GameSettings.h"
 #include "utils/Observer.h"
 
+#include <string>
+
 class CGameSettings : public Observable
 {
 public:
@@ -37,8 +39,8 @@ public:
   bool operator==(const CGameSettings &rhs) const;
   bool operator!=(const CGameSettings &rhs) const { return !(*this == rhs); }
 
-  KODI::RETRO::SCALINGMETHOD ScalingMethod() const { return m_scalingMethod; }
-  void SetScalingMethod(KODI::RETRO::SCALINGMETHOD scalingMethod);
+  const std::string &VideoFilter() const { return m_videoFilter; }
+  void SetVideoFilter(const std::string &videoFilter);
 
   KODI::RETRO::VIEWMODE ViewMode() const { return m_viewMode; }
   void SetViewMode(KODI::RETRO::VIEWMODE viewMode);
@@ -48,7 +50,7 @@ public:
 
 private:
   // Video settings
-  KODI::RETRO::SCALINGMETHOD m_scalingMethod;
+  std::string m_videoFilter;
   KODI::RETRO::VIEWMODE m_viewMode;
   unsigned int m_rotationDegCCW;
 };

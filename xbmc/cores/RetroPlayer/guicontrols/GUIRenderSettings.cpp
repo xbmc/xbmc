@@ -30,9 +30,9 @@ CGUIRenderSettings::CGUIRenderSettings(CGUIGameControl &guiControl) :
 {
 }
 
-bool CGUIRenderSettings::HasScalingMethod() const
+bool CGUIRenderSettings::HasVideoFilter() const
 {
-  return m_guiControl.HasScalingMethod();
+  return m_guiControl.HasVideoFilter();
 }
 
 bool CGUIRenderSettings::HasViewMode() const
@@ -80,11 +80,11 @@ void CGUIRenderSettings::SetDimensions(const CRect &dimensions)
   m_renderDimensions = dimensions;
 }
 
-void CGUIRenderSettings::SetScalingMethod(SCALINGMETHOD scalingMethod)
+void CGUIRenderSettings::SetVideoFilter(const std::string &videoFilter)
 {
   CSingleLock lock(m_mutex);
 
-  m_renderSettings.VideoSettings().SetScalingMethod(scalingMethod);
+  m_renderSettings.VideoSettings().SetVideoFilter(videoFilter);
 }
 
 void CGUIRenderSettings::SetViewMode(VIEWMODE viewMode)
