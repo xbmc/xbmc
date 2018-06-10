@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<node order="9" type="folder" visible="Library.HasContent(Music)">
+<node order="90" type="folder" visible="Library.HasContent(Music)">
 	<label>517</label>
 	<icon>DefaultMusicRecentlyPlayed.png</icon>
 	<path>musicdb://recentlyplayedalbums/</path>

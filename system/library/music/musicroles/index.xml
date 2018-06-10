@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<node order="15" type="folder" visible="Library.HasContent(Music)">
+<node order="130" type="folder" visible="Library.HasContent(Music)">
 	<label>29994</label>
 	<icon>DefaultMusicRoles.png</icon>
 </node>
