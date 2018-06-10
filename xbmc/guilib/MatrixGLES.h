@@ -23,6 +23,8 @@
 
 #include <stack>
 
+class TransformMatrix;
+
 class CMatrixGL
 {
 public:
@@ -33,6 +35,8 @@ public:
                       GLfloat x8, GLfloat x9, GLfloat x10, GLfloat x11,
                       GLfloat x12, GLfloat x13, GLfloat x14, GLfloat x15)
     :m_pMatrix{x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15} {}
+
+  CMatrixGL(const TransformMatrix &src) noexcept;
 
   operator const float*() const                { return m_pMatrix; }
 
@@ -47,7 +51,7 @@ public:
 
   void MultMatrixf(const CMatrixGL &matrix) noexcept
   {
-    MultMatrixf(&matrix.m_pMatrix.front());
+    MultMatrixf(matrix.m_pMatrix);
   }
 
   void LookAt(GLfloat eyex, GLfloat eyey, GLfloat eyez, GLfloat centerx, GLfloat centery, GLfloat centerz, GLfloat upx, GLfloat upy, GLfloat upz);

@@ -19,6 +19,7 @@
  */
 
 #include "MatrixGLES.h"
+#include "utils/TransformMatrix.h"
 
 #if defined(HAS_NEON)
 #include "utils/CPUInfo.h"
@@ -29,6 +30,18 @@
 CMatrixGLStack glMatrixModview = CMatrixGLStack();
 CMatrixGLStack glMatrixProject = CMatrixGLStack();
 CMatrixGLStack glMatrixTexture = CMatrixGLStack();
+
+CMatrixGL::CMatrixGL(const TransformMatrix &src) noexcept
+{
+  for(int i = 0; i < 3; i++)
+    for(int j = 0; j < 4; j++)
+      m_pMatrix[j * 4 + i] = src.m[i][j];
+
+  m_pMatrix[3] = 0.0f;
+  m_pMatrix[7] = 0.0f;
+  m_pMatrix[11] = 0.0f;
+  m_pMatrix[15] = 1.0f;
+}
 
 void CMatrixGL::LoadIdentity()
 {
