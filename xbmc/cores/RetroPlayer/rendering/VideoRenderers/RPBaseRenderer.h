@@ -137,7 +137,6 @@ namespace RETRO
     void UpdateDrawPoints(const CRect &destRect);
     void ReorderDrawPoints();
     void MarkDirty();
-    float GetAllowedErrorInAspect() const;
 
     uint64_t m_renderFrameCount = 0;
     uint64_t m_lastRender = 0;

@@ -22,10 +22,8 @@
 #include "cores/RetroPlayer/buffers/IRenderBuffer.h"
 #include "cores/RetroPlayer/buffers/IRenderBufferPool.h"
 #include "cores/RetroPlayer/rendering/RenderContext.h"
-#include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/MathUtils.h"
-#include "ServiceBroker.h"
 
 #include <cmath>
 #include <cstdlib>
@@ -376,18 +374,6 @@ void CRPBaseRenderer::CalcNormalRenderRect(float offsetX, float offsetY, float w
   // setting and the output pixel ratio setting)
   float outputFrameRatio = inputFrameRatio / m_context.GetResInfo().fPixelRatio;
 
-  // Allow a certain error to maximize size of render area
-  float fCorrection = width / height / outputFrameRatio - 1.0f;
-  float fAllowed = GetAllowedErrorInAspect();
-
-  if (fCorrection > fAllowed)
-    fCorrection = fAllowed;
-
-  if (fCorrection < -fAllowed)
-    fCorrection = -fAllowed;
-
-  outputFrameRatio *= 1.0f + fCorrection;
-
   // Maximize the game width
   float newWidth = width;
   float newHeight = newWidth / outputFrameRatio;
@@ -464,11 +450,6 @@ void CRPBaseRenderer::ManageRenderArea()
 void CRPBaseRenderer::MarkDirty()
 {
   //CServiceBroker::GetGUI()->GetWindowManager().MarkDirty(m_renderSettings.Geometry().Dimensions()); //! @todo
-}
-
-float CRPBaseRenderer::GetAllowedErrorInAspect() const
-{
-  return CServiceBroker::GetSettings().GetInt(CSettings::SETTING_VIDEOPLAYER_ERRORINASPECT) * 0.01f;
 }
 
 void CRPBaseRenderer::PreRender(bool clear)
