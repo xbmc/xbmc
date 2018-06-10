@@ -141,13 +141,16 @@ bool CWinRenderBuffer::UploadTexture()
 
 bool CWinRenderBuffer::CreateScalingContext()
 {
-  m_swsContext = sws_getContext(m_width, m_height, m_pixFormat, m_width, m_height, m_targetPixFormat,
-    SWS_FAST_BILINEAR, NULL, NULL, NULL);
-
   if (m_swsContext == nullptr)
   {
-    CLog::Log(LOGERROR, "WinRenderer: Failed to create swscale context");
-    return false;
+    m_swsContext = sws_getContext(m_width, m_height, m_pixFormat, m_width, m_height, m_targetPixFormat,
+      SWS_FAST_BILINEAR, NULL, NULL, NULL);
+
+    if (m_swsContext == nullptr)
+    {
+      CLog::Log(LOGERROR, "WinRenderer: Failed to create swscale context");
+      return false;
+    }
   }
 
   return true;
