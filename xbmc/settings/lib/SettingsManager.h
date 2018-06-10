@@ -416,6 +416,15 @@ public:
   bool SetList(const std::string &id, const std::vector< std::shared_ptr<CSetting> > &value);
 
   /*!
+   \brief Search in a list of Ints for a given value.
+
+   \param id Setting identifier
+   \param value value to search for
+   \return True if value was found in list, false otherwise
+  */
+  bool FindIntInList(const std::string &id, int value) const;
+
+  /*!
    \brief Sets the value of the setting to its default.
 
    \param id Setting identifier

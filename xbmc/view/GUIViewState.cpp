@@ -60,6 +60,12 @@ using namespace PVR;
 std::string CGUIViewState::m_strPlaylistDirectory;
 VECSOURCES CGUIViewState::m_sources;
 
+static const int SETTING_AUTOPLAYNEXT_MUSICVIDEOS = 0;
+static const int SETTING_AUTOPLAYNEXT_TVSHOWS = 1;
+static const int SETTING_AUTOPLAYNEXT_EPISODES = 2;
+static const int SETTING_AUTOPLAYNEXT_MOVIES = 3;
+static const int SETTING_AUTOPLAYNEXT_UNCATEGORIZED = 4;
+
 CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& items)
 {
   // don't expect derived classes to clear the sources
@@ -402,7 +408,7 @@ bool CGUIViewState::DisableAddSourceButtons()
   return true;
 }
 
-int CGUIViewState::GetPlaylist()
+int CGUIViewState::GetPlaylist() const
 {
   return m_playlist;
 }
@@ -497,6 +503,26 @@ void CGUIViewState::SetSortOrder(SortOrder sortOrder)
   m_sortMethods[m_currentSortMethod].m_sortDescription.sortOrder = sortOrder;
 }
 
+bool CGUIViewState::AutoPlayNextVideoItem() const
+{
+  if (GetPlaylist() != PLAYLIST_VIDEO)
+    return false;
+
+  int settingValue(-1);
+  if (m_items.GetContent() == "musicvideos")
+    settingValue = SETTING_AUTOPLAYNEXT_MUSICVIDEOS;
+  else if (m_items.GetContent() == "tvshows")
+    settingValue = SETTING_AUTOPLAYNEXT_TVSHOWS;
+  else if (m_items.GetContent() == "episodes")
+    settingValue = SETTING_AUTOPLAYNEXT_EPISODES;
+  else if (m_items.GetContent() == "movies")
+    settingValue = SETTING_AUTOPLAYNEXT_MOVIES;
+  else
+    settingValue = SETTING_AUTOPLAYNEXT_UNCATEGORIZED;
+
+  return settingValue >= 0 && CServiceBroker::GetSettings().FindIntInList(CSettings::SETTING_VIDEOPLAYER_AUTOPLAYNEXTITEM, settingValue);
+}
+
 void CGUIViewState::LoadViewState(const std::string &path, int windowID)
 { // get our view state from the db
   CViewDatabase db;
@@ -589,15 +615,7 @@ CGUIViewStateFromItems::CGUIViewStateFromItems(const CFileItemList &items) : CGU
 
 bool CGUIViewStateFromItems::AutoPlayNextItem()
 {
-  if (m_items.GetContent() == "musicvideos" ||
-    m_items.GetContent() == "tvshows" ||
-    m_items.GetContent() == "episodes" ||
-    m_items.GetContent() == "movies")
-  {
-    return CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_AUTOPLAYNEXTITEM);
-  }
-
-  return false;
+  return AutoPlayNextVideoItem();
 }
 
 void CGUIViewStateFromItems::SaveViewState()

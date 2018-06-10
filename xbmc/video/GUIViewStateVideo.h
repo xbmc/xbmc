@@ -30,8 +30,9 @@ public:
 protected:
   VECSOURCES& GetSources() override;
   std::string GetLockType() override;
-  int GetPlaylist() override;
+  int GetPlaylist() const override;
   std::string GetExtensions() override;
+  bool AutoPlayNextItem() override;
 };
 
 class CGUIViewStateWindowVideoNav : public CGUIViewStateWindowVideo

@@ -55,7 +55,7 @@ public:
   virtual bool HideParentDirItems();
   virtual bool DisableAddSourceButtons();
 
-  virtual int GetPlaylist();
+  virtual int GetPlaylist() const;
   const std::string& GetPlaylistDirectory();
   void SetPlaylistDirectory(const std::string& strDirectory);
   bool IsCurrentPlaylistDirectory(const std::string& strDirectory);
@@ -93,6 +93,8 @@ protected:
   void SetSortMethod(SortBy sortBy, SortOrder sortOrder = SortOrderNone);
   void SetSortMethod(SortDescription sortDescription);
   void SetSortOrder(SortOrder sortOrder);
+
+  bool AutoPlayNextVideoItem() const;
 
   const CFileItemList& m_items;
 

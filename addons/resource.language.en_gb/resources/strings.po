@@ -12636,6 +12636,7 @@ msgstr ""
 #: xbmc/dialogs/GUIDialogSmartPlaylistRule.cpp
 #: xbmc/media/MediaTypes.cpp
 #: addons/skin.estuary/xml/Variables.xml
+#: xbmc/view/GUIViewState.cpp
 msgctxt "#20342"
 msgid "Movies"
 msgstr ""
@@ -12646,6 +12647,7 @@ msgstr ""
 #: addons/skin.estuary/xml/Home.xml
 #: addons/skin.estuary/xml/SkinSettings.xml
 #: addons/skin.estuary/xml/Variables.xml
+#: xbmc/view/GUIViewState.cpp
 msgctxt "#20343"
 msgid "TV shows"
 msgstr ""
@@ -12738,6 +12740,7 @@ msgstr ""
 #: xbmc/playlists/SmartPlaylist.cpp
 #: addons/skin.estuary/xml/View_51_Poster.xml
 #: addons/skin.estuary/xml/Variables.xml
+#: xbmc/view/GUIViewState.cpp
 msgctxt "#20360"
 msgid "Episodes"
 msgstr ""
@@ -12880,6 +12883,7 @@ msgstr ""
 #: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeOverview.cpp
 #: xbmc/media/MediaTypes.cpp
 #: addons/skin.estuary/xml/Variables.xml
+#: xbmc/view/GUIViewState.cpp
 msgctxt "#20389"
 msgid "Music videos"
 msgstr ""
@@ -13358,7 +13362,13 @@ msgctxt "#21344"
 msgid "If mp4 or mkv files have tags, use this for library metadata"
 msgstr ""
 
-#empty strings from id 21345 to 21357
+#. Used in AutoPlayNextItem dialogs for not categorized listItem directories
+#: xbmc/view/GUIViewState.cpp
+msgctxt "#21345"
+msgid "Uncategorized"
+msgstr ""
+
+#empty strings from id 21346 to 21357
 
 #: system/settings/settings.xml
 msgctxt "#21358"
@@ -17964,7 +17974,7 @@ msgstr ""
 #. Description of setting with label #13433 "Play next video automatically"
 #: system/settings/settings.xml
 msgctxt "#36152"
-msgid "Enable automatic playback of the next file in the list."
+msgid "Enable automatic playback of the next file in the list for selected playlist types."
 msgstr ""
 
 #. Description of setting with label #13415 "Render method"
