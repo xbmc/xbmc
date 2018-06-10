@@ -20837,6 +20837,21 @@ msgstr ""
 #empty strings from id 38074 to 38099
 #strings 38074 to 38099 reserved for music library
 
+#: system/settings/settings.xml
+msgctxt "#38007"
+msgid "Boost centre channel when downmixing"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#38008"
+msgid "Increase this value to make the dialogue louder compared to background sounds when downmixing multichannel audio"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#38009"
+msgid "{0:d} dB"
+msgstr ""
+
 #. Description of section #14200 "Player""
 #: system/settings/settings.xml
 msgctxt "#38100"

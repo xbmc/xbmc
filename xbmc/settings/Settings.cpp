@@ -362,6 +362,7 @@ const std::string CSettings::SETTING_AUDIOOUTPUT_PROCESSQUALITY = "audiooutput.p
 const std::string CSettings::SETTING_AUDIOOUTPUT_ATEMPOTHRESHOLD = "audiooutput.atempothreshold";
 const std::string CSettings::SETTING_AUDIOOUTPUT_STREAMSILENCE = "audiooutput.streamsilence";
 const std::string CSettings::SETTING_AUDIOOUTPUT_STREAMNOISE = "audiooutput.streamnoise";
+const std::string CSettings::SETTING_AUDIOOUTPUT_BOOSTCENTER = "audiooutput.boostcenter";
 const std::string CSettings::SETTING_AUDIOOUTPUT_GUISOUNDMODE = "audiooutput.guisoundmode";
 const std::string CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGH = "audiooutput.passthrough";
 const std::string CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGHDEVICE = "audiooutput.passthroughdevice";
