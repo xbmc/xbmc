@@ -142,7 +142,7 @@ void CMatrixGL::Rotatef(GLfloat angle, GLfloat x, GLfloat y, GLfloat z)
 
 #if defined(HAS_NEON) && !defined(__LP64__)
   
-inline void Matrix4Mul(const float* src_mat_1, const float* src_mat_2, float* dst_mat)
+static inline void Matrix4Mul(const float* src_mat_1, const float* src_mat_2, float* dst_mat)
 {
   asm volatile (
     // Store A & B leaving room at top of registers for result (q0-q3)
