@@ -200,7 +200,6 @@ protected:
   class CRegion final
   {
   public:
-    CRegion(const CRegion& region);
     CRegion();
     void SetDefaults();
     void SetTemperatureUnit(const std::string& strUnit);
