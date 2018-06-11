@@ -366,24 +366,6 @@ bool CRenderSystemGLES::TestRender()
   return true;
 }
 
-void CRenderSystemGLES::ApplyHardwareTransform(const TransformMatrix &finalMatrix)
-{
-  if (!m_bRenderCreated)
-    return;
-
-  glMatrixModview.Push();
-  glMatrixModview->MultMatrixf(finalMatrix);
-  glMatrixModview.Load();
-}
-
-void CRenderSystemGLES::RestoreHardwareTransform()
-{
-  if (!m_bRenderCreated)
-    return;
-
-  glMatrixModview.PopLoad();
-}
-
 void CRenderSystemGLES::CalculateMaxTexturesize()
 {
   // GLES cannot do PROXY textures to determine maximum size,

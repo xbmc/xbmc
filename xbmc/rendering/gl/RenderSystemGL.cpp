@@ -396,24 +396,6 @@ bool CRenderSystemGL::TestRender()
   return true;
 }
 
-void CRenderSystemGL::ApplyHardwareTransform(const TransformMatrix &finalMatrix)
-{
-  if (!m_bRenderCreated)
-    return;
-
-  glMatrixModview.Push();
-  glMatrixModview->MultMatrixf(finalMatrix);
-  glMatrixModview.Load();
-}
-
-void CRenderSystemGL::RestoreHardwareTransform()
-{
-  if (!m_bRenderCreated)
-    return;
-
-  glMatrixModview.PopLoad();
-}
-
 void CRenderSystemGL::CalculateMaxTexturesize()
 {
   GLint width = 256;

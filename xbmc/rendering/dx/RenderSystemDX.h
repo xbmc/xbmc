@@ -88,8 +88,6 @@ public:
 
   // empty overrides
   bool IsExtSupported(const char* extension) const override { return false; };
-  void ApplyHardwareTransform(const TransformMatrix &matrix) override {};
-  void RestoreHardwareTransform() override {};
   bool ResetRenderSystem(int width, int height) override { return true; };
 
   std::vector<AVPixelFormat> m_processorFormats;

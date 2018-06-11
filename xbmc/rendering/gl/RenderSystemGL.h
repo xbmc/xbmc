@@ -67,8 +67,6 @@ public:
 
   void SetCameraPosition(const CPoint &camera, int screenWidth, int screenHeight, float stereoFactor = 0.0f) override;
 
-  void ApplyHardwareTransform(const TransformMatrix &matrix) override;
-  void RestoreHardwareTransform() override;
   void SetStereoMode(RENDER_STEREO_MODE mode, RENDER_STEREO_VIEW view) override;
   bool SupportsStereo(RENDER_STEREO_MODE mode) const override;
   bool SupportsNPOT(bool dxt) const override;
