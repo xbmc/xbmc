@@ -95,8 +95,30 @@ std::string CAddonDll::GetDllPath(const std::string &libPath)
 
   /* Check if lib being loaded exists, else check in XBMC binary location */
 #if defined(TARGET_ANDROID)
-  // Android libs MUST live in this path, else multi-arch will break.
-  // The usual soname requirements apply. no subdirs, and filename is ^lib.*\.so$
+  if (XFILE::CFile::Exists(strFileName))
+  {
+    bool doCopy = true;
+    std::string dstfile = URIUtils::AddFileToFolder(CSpecialProtocol::TranslatePath("special://xbmcaltbinaddons/"), strLibName);
+
+    struct __stat64 dstFileStat;
+    if (XFILE::CFile::Stat(dstfile, &dstFileStat) == 0)
+    {
+      struct __stat64 srcFileStat;
+      if (XFILE::CFile::Stat(strFileName, &srcFileStat) == 0)
+      {
+        if (dstFileStat.st_size == srcFileStat.st_size && dstFileStat.st_mtime > srcFileStat.st_mtime)
+          doCopy = false;
+      }
+    }
+
+    if (doCopy)
+    {
+      CLog::Log(LOGDEBUG, "ADDON: caching %s to %s", strFileName.c_str(), dstfile.c_str());
+      XFILE::CFile::Copy(strFileName, dstfile);
+    }
+
+    strFileName = dstfile;
+  }
   if (!XFILE::CFile::Exists(strFileName))
   {
     std::string tempbin = getenv("KODI_ANDROID_LIBS");
