@@ -19,10 +19,12 @@
  */
 
 #include "GUIGameRenderManager.h"
+#include "GUIGameSettingsHandle.h"
 #include "GUIGameVideoHandle.h"
 #include "GUIRenderHandle.h"
 #include "GUIRenderTarget.h"
 #include "GUIRenderTargetFactory.h"
+#include "IGameCallback.h"
 #include "IRenderCallback.h"
 #include "threads/SingleLock.h"
 
@@ -31,7 +33,9 @@ using namespace RETRO;
 
 CGUIGameRenderManager::~CGUIGameRenderManager() = default;
 
-void CGUIGameRenderManager::RegisterPlayer(CGUIRenderTargetFactory *factory, IRenderCallback *callback)
+void CGUIGameRenderManager::RegisterPlayer(CGUIRenderTargetFactory *factory,
+                                           IRenderCallback *callback,
+                                           IGameCallback *gameCallback)
 {
   // Set factory
   {
@@ -45,10 +49,22 @@ void CGUIGameRenderManager::RegisterPlayer(CGUIRenderTargetFactory *factory, IRe
     CSingleLock lock(m_callbackMutex);
     m_callback = callback;
   }
+
+  // Set game callback
+  {
+    CSingleLock lock(m_gameCallbackMutex);
+    m_gameCallback = gameCallback;
+  }
 }
 
 void CGUIGameRenderManager::UnregisterPlayer()
 {
+  // Reset game callback
+  {
+    CSingleLock lock(m_gameCallbackMutex);
+    m_gameCallback = nullptr;
+  }
+
   // Reset callback
   {
     CSingleLock lock(m_callbackMutex);
@@ -98,6 +114,11 @@ std::shared_ptr<CGUIRenderHandle> CGUIGameRenderManager::RegisterWindow(CGameWin
 std::shared_ptr<CGUIGameVideoHandle> CGUIGameRenderManager::RegisterDialog(GAME::CDialogGameVideoSelect &dialog)
 {
   return std::make_shared<CGUIGameVideoHandle>(*this);
+}
+
+std::shared_ptr<CGUIGameSettingsHandle> CGUIGameRenderManager::RegisterGameSettingsDialog()
+{
+  return std::make_shared<CGUIGameSettingsHandle>(*this);
 }
 
 void CGUIGameRenderManager::UnregisterHandle(CGUIRenderHandle *handle)
@@ -186,6 +207,16 @@ bool CGUIGameRenderManager::SupportsScalingMethod(ESCALINGMETHOD method)
     return m_callback->SupportsScalingMethod(method);
 
   return false;
+}
+
+std::string CGUIGameRenderManager::GameClientID()
+{
+  CSingleLock lock(m_callbackMutex);
+
+  if (m_gameCallback != nullptr)
+    return m_gameCallback->GameClientID();
+
+  return "";
 }
 
 void CGUIGameRenderManager::UpdateRenderTargets()

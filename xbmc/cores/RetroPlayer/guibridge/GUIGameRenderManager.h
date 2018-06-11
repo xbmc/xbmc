@@ -29,6 +29,7 @@ namespace KODI
 {
 namespace GAME
 {
+  class CDialogGameAdvancedSettings;
   class CDialogGameVideoSelect;
 }
 
@@ -36,10 +37,12 @@ namespace RETRO
 {
   class CGameWindowFullScreen;
   class CGUIGameControl;
+  class CGUIGameSettingsHandle;
   class CGUIGameVideoHandle;
   class CGUIRenderTargetFactory;
   class CGUIRenderHandle;
   class CGUIRenderTarget;
+  class IGameCallback;
   class IRenderCallback;
 
   /*!
@@ -71,6 +74,7 @@ namespace RETRO
    */
   class CGUIGameRenderManager
   {
+    friend class CGUIGameSettingsHandle;
     friend class CGUIGameVideoHandle;
     friend class CGUIRenderHandle;
 
@@ -83,8 +87,11 @@ namespace RETRO
      *
      * \param factory The interface for creating render targets exposed to the GUI
      * \param callback The interface for querying video properties
+     * \param gameCallback The interface for querying game properties
      */
-    void RegisterPlayer(CGUIRenderTargetFactory *factory, IRenderCallback *callback);
+    void RegisterPlayer(CGUIRenderTargetFactory *factory,
+                        IRenderCallback *callback,
+                        IGameCallback *gameCallback);
 
     /*!
      * \brief Unregister a RetroPlayer instance
@@ -119,6 +126,13 @@ namespace RETRO
      */
     std::shared_ptr<CGUIGameVideoHandle> RegisterDialog(GAME::CDialogGameVideoSelect &dialog);
 
+    /*!
+     * \brief Register a game settings dialog
+     *
+     * \return A handle to query game properties
+     */
+    std::shared_ptr<CGUIGameSettingsHandle> RegisterGameSettingsDialog();
+
   protected:
     // Functions exposed to friend class CGUIRenderHandle
     void UnregisterHandle(CGUIRenderHandle *handle);
@@ -132,6 +146,10 @@ namespace RETRO
     bool IsPlayingGame();
     bool SupportsRenderFeature(ERENDERFEATURE feature);
     bool SupportsScalingMethod(ESCALINGMETHOD method);
+
+    // Functions exposed to CGUIGameSettingsHandle
+    void UnregisterHandle(CGUIGameSettingsHandle *handle) { }
+    std::string GameClientID();
 
   private:
     /*!
@@ -157,6 +175,10 @@ namespace RETRO
     // Video properties
     IRenderCallback *m_callback = nullptr;
     CCriticalSection m_callbackMutex;
+
+    // Game properties
+    IGameCallback *m_gameCallback = nullptr;
+    CCriticalSection m_gameCallbackMutex;
   };
 }
 }
