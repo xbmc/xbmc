@@ -21,6 +21,7 @@
 #include "GUIDialogPVRRecordingSettings.h"
 
 #include "ServiceBroker.h"
+#include "addons/PVRClient.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/LocalizeStrings.h"
 #include "messaging/helpers/DialogHelper.h"
@@ -31,7 +32,6 @@
 #include "utils/log.h"
 
 #include "pvr/PVRManager.h"
-#include "pvr/addons/PVRClients.h"
 #include "pvr/recordings/PVRRecording.h"
 
 using namespace PVR;
@@ -93,17 +93,18 @@ void CGUIDialogPVRRecordingSettings::InitializeSettings()
   }
 
   std::shared_ptr<CSetting> setting = nullptr;
+  const CPVRClientPtr client = CServiceBroker::GetPVRManager().GetClient(m_recording->ClientID());
 
   // Name
   setting = AddEdit(group, SETTING_RECORDING_NAME, 19075, SettingLevel::Basic, m_strTitle);
-  setting->SetEnabled(CServiceBroker::GetPVRManager().Clients()->GetClientCapabilities(m_recording->ClientID()).SupportsRecordingsRename());
+  setting->SetEnabled(client && client->GetClientCapabilities().SupportsRecordingsRename());
 
   // Play count
-  if (CServiceBroker::GetPVRManager().Clients()->GetClientCapabilities(m_recording->ClientID()).SupportsRecordingsPlayCount())
+  if (client && client->GetClientCapabilities().SupportsRecordingsPlayCount())
     setting = AddEdit(group, SETTING_RECORDING_PLAYCOUNT, 567, SettingLevel::Basic, m_recording->GetLocalPlayCount());
 
   // Lifetime
-  if (CServiceBroker::GetPVRManager().Clients()->GetClientCapabilities(m_recording->ClientID()).SupportsRecordingsLifetimeChange())
+  if (client && client->GetClientCapabilities().SupportsRecordingsLifetimeChange())
     setting = AddList(group, SETTING_RECORDING_LIFETIME, 19083, SettingLevel::Basic, m_iLifetime, LifetimesFiller, 19083);
 }
 
@@ -177,7 +178,11 @@ void CGUIDialogPVRRecordingSettings::LifetimesFiller(
   if (pThis)
   {
     list.clear();
-    CServiceBroker::GetPVRManager().Clients()->GetClientCapabilities(pThis->m_recording->ClientID()).GetRecordingsLifetimeValues(list);
+
+    const CPVRClientPtr client = CServiceBroker::GetPVRManager().GetClient(pThis->m_recording->ClientID());
+    if (client)
+      client->GetClientCapabilities().GetRecordingsLifetimeValues(list);
+
     current = pThis->m_iLifetime;
 
     auto it = list.begin();

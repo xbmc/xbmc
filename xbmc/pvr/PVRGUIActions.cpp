@@ -23,6 +23,7 @@
 #include "Application.h"
 #include "FileItem.h"
 #include "ServiceBroker.h"
+#include "addons/PVRClient.h"
 #include "dialogs/GUIDialogBusy.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogNumeric.h"
@@ -135,9 +136,13 @@ namespace PVR
   private:
     bool DoRun(const CFileItemPtr &item) override
     {
-      PVR_ERROR error;
-      CServiceBroker::GetPVRManager().Clients()->SetRecordingPlayCount(*item->GetPVRRecordingInfoTag(), item->GetPVRRecordingInfoTag()->GetLocalPlayCount(), &error);
-      return error == PVR_ERROR_NO_ERROR;
+      const CPVRClientPtr client = CServiceBroker::GetPVRManager().GetClient(*item);
+      if (client)
+      {
+        const CPVRRecordingPtr recording = item->GetPVRRecordingInfoTag();
+        return client->SetRecordingPlayCount(*recording, recording->GetLocalPlayCount()) == PVR_ERROR_NO_ERROR;
+      }
+      return false;
     }
   };
 
@@ -146,9 +151,10 @@ namespace PVR
   private:
     bool DoRun(const CFileItemPtr &item) override
     {
-      PVR_ERROR error;
-      CServiceBroker::GetPVRManager().Clients()->SetRecordingLifetime(*item->GetPVRRecordingInfoTag(), &error);
-      return error == PVR_ERROR_NO_ERROR;
+      const CPVRClientPtr client = CServiceBroker::GetPVRManager().GetClient(*item);
+      if (client)
+        return client->SetRecordingLifetime(*item->GetPVRRecordingInfoTag()) == PVR_ERROR_NO_ERROR;
+      return false;
     }
   };
 
@@ -349,7 +355,8 @@ namespace PVR
       return false;
     }
 
-    if (!CServiceBroker::GetPVRManager().Clients()->GetClientCapabilities(item->m_iClientId).SupportsTimers())
+    const CPVRClientPtr client = CServiceBroker::GetPVRManager().GetClient(item->m_iClientId);
+    if (client && !client->GetClientCapabilities().SupportsTimers())
     {
       HELPERS::ShowOKDialogText(CVariant{19033}, CVariant{19215}); // "Information", "The PVR backend does not support timers."
       return false;
@@ -502,7 +509,8 @@ namespace PVR
     if (CheckParentalLock(channel) != ParentalCheckResult::SUCCESS)
       return bReturn;
 
-    if (CServiceBroker::GetPVRManager().Clients()->GetClientCapabilities(channel->ClientID()).SupportsTimers())
+    const CPVRClientPtr client = CServiceBroker::GetPVRManager().GetClient(channel->ClientID());
+    if (client && client->GetClientCapabilities().SupportsTimers())
     {
       /* timers are supported on this channel */
       if (bOnOff && !channel->IsRecording())
@@ -1783,10 +1791,13 @@ namespace PVR
   {
     if (item && item->HasPVRTimerInfoTag())
     {
-      const CPVRTimerInfoTagPtr tag(item->GetPVRTimerInfoTag());
-      std::string hostname(CServiceBroker::GetPVRManager().Clients()->GetBackendHostnameByClientId(tag->m_iClientId));
-      if (!hostname.empty() && CServiceBroker::GetNetwork().IsLocalHost(hostname))
-        return true;
+      const CPVRClientPtr client = CServiceBroker::GetPVRManager().GetClient(*item);
+      if (client)
+      {
+        const std::string hostname = client->GetBackendHostname();
+        if (!hostname.empty() && CServiceBroker::GetNetwork().IsLocalHost(hostname))
+          return true;
+      }
     }
     return false;
   }

@@ -23,6 +23,7 @@
 #include <utility>
 
 #include "ServiceBroker.h"
+#include "addons/PVRClient.h"
 #include "guilib/LocalizeStrings.h"
 #include "interfaces/AnnouncementManager.h"
 #include "messaging/ApplicationMessenger.h"
@@ -219,9 +220,14 @@ CPVRClientPtr CPVRManager::GetClient(const CFileItem &item) const
   else if (item.HasEPGInfoTag())
     iClientID = item.GetEPGInfoTag()->ClientID();
 
+  return GetClient(iClientID);
+}
+
+CPVRClientPtr CPVRManager::GetClient(int iClientId) const
+{
   CPVRClientPtr client;
-  if (iClientID != PVR_INVALID_CLIENT_ID)
-    m_addons->GetCreatedClient(iClientID, client);
+  if (iClientId != PVR_INVALID_CLIENT_ID)
+    m_addons->GetCreatedClient(iClientId, client);
 
   return client;
 }
@@ -684,8 +690,8 @@ bool CPVRManager::IsTimeshifting(void) const
   bool bTimeshifting = false;
   if (m_playingChannel)
   {
-    CPVRClientPtr client;
-    if (m_addons->GetCreatedClient(m_playingChannel->ClientID(), client) && client)
+    const CPVRClientPtr client = GetClient(m_playingChannel->ClientID());
+    if (client)
       client->IsTimeshifting(bTimeshifting);
   }
   return bTimeshifting;
@@ -776,10 +782,6 @@ void CPVRManager::OnPlaybackStarted(const CFileItemPtr item)
     m_playingChannel = channel;
     m_playingClientId = m_playingChannel->ClientID();
 
-    CPVRClientPtr client;
-    if (m_addons->GetCreatedClient(m_playingClientId, client) && client)
-      m_strPlayingClientName = client->GetFriendlyName();
-
     SetPlayingGroup(channel);
     UpdateLastWatched(channel);
   }
@@ -787,18 +789,17 @@ void CPVRManager::OnPlaybackStarted(const CFileItemPtr item)
   {
     m_playingRecording = item->GetPVRRecordingInfoTag();
     m_playingClientId = m_playingRecording->m_iClientId;
-
-    CPVRClientPtr client;
-    if (m_addons->GetCreatedClient(m_playingClientId, client) && client)
-      m_strPlayingClientName = client->GetFriendlyName();
   }
   else if (item->HasEPGInfoTag())
   {
     m_playingEpgTag = item->GetEPGInfoTag();
     m_playingClientId = m_playingEpgTag->ClientID();
+  }
 
-    CPVRClientPtr client;
-    if (m_addons->GetCreatedClient(m_playingClientId, client) && client)
+  if (m_playingClientId != -1)
+  {
+    const CPVRClientPtr client = GetClient(m_playingClientId);
+    if (client)
       m_strPlayingClientName = client->GetFriendlyName();
   }
 
@@ -887,14 +888,17 @@ void CPVRManager::SearchMissingChannelIcons(void)
 
 bool CPVRManager::FillStreamFileItem(CFileItem &fileItem)
 {
-  if (fileItem.IsPVRChannel())
-    return m_addons->FillChannelStreamFileItem(fileItem);
-  else if (fileItem.IsPVRRecording())
-    return m_addons->FillRecordingStreamFileItem(fileItem);
-  else if (fileItem.IsEPG())
-    return m_addons->FillEpgTagStreamFileItem(fileItem);
-  else
-    return false;
+  const CPVRClientPtr client = GetClient(fileItem);
+  if (client)
+  {
+    if (fileItem.IsPVRChannel())
+      return client->FillChannelStreamFileItem(fileItem) == PVR_ERROR_NO_ERROR;
+    else if (fileItem.IsPVRRecording())
+      return client->FillRecordingStreamFileItem(fileItem) == PVR_ERROR_NO_ERROR;
+    else if (fileItem.IsEPG())
+      return client->FillEpgTagStreamFileItem(fileItem) == PVR_ERROR_NO_ERROR;
+  }
+  return false;
 }
 
 void CPVRManager::TriggerEpgsCreate(void)

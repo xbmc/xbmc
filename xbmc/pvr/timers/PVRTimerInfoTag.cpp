@@ -21,6 +21,7 @@
 #include "PVRTimerInfoTag.h"
 
 #include "ServiceBroker.h"
+#include "addons/PVRClient.h"
 #include "guilib/LocalizeStrings.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
@@ -63,7 +64,8 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(bool bRadio /* = false */) :
 {
   m_FirstDay.SetValid(false);
 
-  if (CServiceBroker::GetPVRManager().Clients()->GetClientCapabilities(m_iClientId).SupportsTimers())
+  const CPVRClientPtr client = CServiceBroker::GetPVRManager().GetClient(m_iClientId);
+  if (client && client->GetClientCapabilities().SupportsTimers())
   {
     // default to manual one-shot timer for given client
     CPVRTimerTypePtr type(CPVRTimerType::CreateFromAttributes(
@@ -120,7 +122,8 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER &timer, const CPVRChannelPtr 
   if (m_iClientIndex == PVR_TIMER_NO_CLIENT_INDEX)
     CLog::Log(LOGERROR, "%s: invalid client index supplied by client %d (must be > 0)!", __FUNCTION__, m_iClientId);
 
-  if (CServiceBroker::GetPVRManager().Clients()->GetClientCapabilities(m_iClientId).SupportsTimers())
+  const CPVRClientPtr client = CServiceBroker::GetPVRManager().GetClient(m_iClientId);
+  if (client && client->GetClientCapabilities().SupportsTimers())
   {
     // begin compat section
 
@@ -515,12 +518,19 @@ std::string CPVRTimerInfoTag::GetWeekdaysString() const
 
 bool CPVRTimerInfoTag::AddToClient(void) const
 {
-  return CServiceBroker::GetPVRManager().Clients()->AddTimer(*this) == PVR_ERROR_NO_ERROR;
+  const CPVRClientPtr client = CServiceBroker::GetPVRManager().GetClient(m_iClientId);
+  if (client)
+    return client->AddTimer(*this) == PVR_ERROR_NO_ERROR;
+  return false;
 }
 
 TimerOperationResult CPVRTimerInfoTag::DeleteFromClient(bool bForce /* = false */) const
 {
-  PVR_ERROR error = CServiceBroker::GetPVRManager().Clients()->DeleteTimer(*this, bForce);
+  const CPVRClientPtr client = CServiceBroker::GetPVRManager().GetClient(m_iClientId);
+  PVR_ERROR error = PVR_ERROR_UNKNOWN;
+
+  if (client)
+    error = client->DeleteTimer(*this, bForce);
 
   if (error == PVR_ERROR_RECORDING_RUNNING)
     return TimerOperationResult::RECORDING;
@@ -625,7 +635,8 @@ void CPVRTimerInfoTag::ResetChildState()
 
 bool CPVRTimerInfoTag::UpdateOnClient()
 {
-  return CServiceBroker::GetPVRManager().Clients()->UpdateTimer(*this) == PVR_ERROR_NO_ERROR;
+  const CPVRClientPtr client = CServiceBroker::GetPVRManager().GetClient(m_iClientId);
+  return client && (client->UpdateTimer(*this) == PVR_ERROR_NO_ERROR);
 }
 
 std::string CPVRTimerInfoTag::ChannelName() const

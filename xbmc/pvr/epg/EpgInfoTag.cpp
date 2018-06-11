@@ -21,6 +21,7 @@
 #include "EpgInfoTag.h"
 
 #include "ServiceBroker.h"
+#include "addons/PVRClient.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
 #include "cores/DataCacheCore.h"
 #include "guilib/LocalizeStrings.h"
@@ -31,7 +32,6 @@
 #include "utils/log.h"
 
 #include "pvr/PVRManager.h"
-#include "pvr/addons/PVRClients.h"
 #include "pvr/epg/Epg.h"
 #include "pvr/epg/EpgContainer.h"
 #include "pvr/epg/EpgDatabase.h"
@@ -722,11 +722,13 @@ bool CPVREpgInfoTag::Persist(bool bSingleUpdate /* = true */)
 
 std::vector<PVR_EDL_ENTRY> CPVREpgInfoTag::GetEdl() const
 {
-  if (CServiceBroker::GetPVRManager().Clients()->GetClientCapabilities(m_iClientId).SupportsEpgTagEdl())
-  {
-    return CServiceBroker::GetPVRManager().Clients()->GetEpgTagEdl(shared_from_this());
-  }
-  return std::vector<PVR_EDL_ENTRY>();
+  std::vector<PVR_EDL_ENTRY> edls;
+  const CPVRClientPtr client = CServiceBroker::GetPVRManager().GetClient(m_iClientId);
+
+  if (client && client->GetClientCapabilities().SupportsEpgTagEdl())
+    client->GetEpgTagEdl(shared_from_this(), edls);
+
+  return edls;
 }
 
 void CPVREpgInfoTag::UpdatePath(void)
@@ -787,7 +789,8 @@ CPVRRecordingPtr CPVREpgInfoTag::Recording(void) const
 bool CPVREpgInfoTag::IsRecordable(void) const
 {
   bool bIsRecordable = false;
-  if (CServiceBroker::GetPVRManager().Clients()->IsRecordable(shared_from_this(), bIsRecordable) != PVR_ERROR_NO_ERROR)
+  const CPVRClientPtr client = CServiceBroker::GetPVRManager().GetClient(m_iClientId);
+  if (!client || (client->IsRecordable(shared_from_this(), bIsRecordable) != PVR_ERROR_NO_ERROR))
   {
     // event end time based fallback
     bIsRecordable = EndAsLocalTime() > CDateTime::GetCurrentDateTime();
@@ -798,7 +801,8 @@ bool CPVREpgInfoTag::IsRecordable(void) const
 bool CPVREpgInfoTag::IsPlayable(void) const
 {
   bool bIsPlayable = false;
-  if (CServiceBroker::GetPVRManager().Clients()->IsPlayable(shared_from_this(), bIsPlayable) != PVR_ERROR_NO_ERROR)
+  const CPVRClientPtr client = CServiceBroker::GetPVRManager().GetClient(m_iClientId);
+  if (!client || (client->IsPlayable(shared_from_this(), bIsPlayable) != PVR_ERROR_NO_ERROR))
   {
     // fallback
     bIsPlayable = false;

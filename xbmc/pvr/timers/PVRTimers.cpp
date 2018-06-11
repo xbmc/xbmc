@@ -25,6 +25,7 @@
 
 #include "FileItem.h"
 #include "ServiceBroker.h"
+#include "addons/PVRClient.h"
 #include "guilib/LocalizeStrings.h"
 #include "settings/Settings.h"
 #include "threads/SingleLock.h"
@@ -354,17 +355,15 @@ bool CPVRTimers::UpdateEntries(const CPVRTimersContainer &timers, const std::vec
       /* queue notifications / fill eventlog */
       for (const auto &entry : timerNotifications)
       {
-        std::string strName;
-        CServiceBroker::GetPVRManager().Clients()->GetClientAddonName(entry.first, strName);
-
-        std::string strIcon;
-        CServiceBroker::GetPVRManager().Clients()->GetClientAddonIcon(entry.first, strIcon);
-
-        job->AddEvent(m_settings.GetBoolValue(CSettings::SETTING_PVRRECORD_TIMERNOTIFICATIONS),
-                      false, // info, no error
-                      strName,
-                      entry.second,
-                      strIcon);
+        const CPVRClientPtr client = CServiceBroker::GetPVRManager().GetClient(entry.first);
+        if (client)
+        {
+          job->AddEvent(m_settings.GetBoolValue(CSettings::SETTING_PVRRECORD_TIMERNOTIFICATIONS),
+                        false, // info, no error
+                        client->Name(),
+                        entry.second,
+                        client->Icon());
+        }
       }
 
       CJobManager::GetInstance().AddJob(job, nullptr);

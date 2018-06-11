@@ -21,6 +21,7 @@
 #include "PVRChannel.h"
 
 #include "ServiceBroker.h"
+#include "addons/PVRClient.h"
 #include "filesystem/File.h"
 #include "guilib/LocalizeStrings.h"
 #include "threads/SingleLock.h"
@@ -30,7 +31,6 @@
 
 #include "pvr/PVRDatabase.h"
 #include "pvr/PVRManager.h"
-#include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannelGroupInternal.h"
 #include "pvr/epg/EpgContainer.h"
 #include "pvr/timers/PVRTimers.h"
@@ -403,18 +403,22 @@ bool CPVRChannel::SetClientID(int iClientId)
 
 void CPVRChannel::UpdatePath(CPVRChannelGroupInternal* group)
 {
-  if (!group) return;
+  if (!group)
+    return;
 
-  std::string strFileNameAndPath;
-  CSingleLock lock(m_critSection);
-  strFileNameAndPath = StringUtils::Format("%s%s_%d.pvr",
-                                           group->GetPath(),
-                                           CServiceBroker::GetPVRManager().Clients()->GetClientAddonId(m_iClientId).c_str(),
-                                           m_iUniqueId);
-  if (m_strFileNameAndPath != strFileNameAndPath)
+  const CPVRClientPtr client = CServiceBroker::GetPVRManager().GetClient(m_iClientId);
+  if (client)
   {
-    m_strFileNameAndPath = strFileNameAndPath;
-    SetChanged();
+    CSingleLock lock(m_critSection);
+    std::string strFileNameAndPath = StringUtils::Format("%s%s_%d.pvr",
+                                                         group->GetPath(),
+                                                         client->ID().c_str(),
+                                                         m_iUniqueId);
+    if (m_strFileNameAndPath != strFileNameAndPath)
+    {
+      m_strFileNameAndPath = strFileNameAndPath;
+      SetChanged();
+    }
   }
 }
 
@@ -798,5 +802,6 @@ std::string CPVRChannel::EPGScraper(void) const
 
 bool CPVRChannel::CanRecord(void) const
 {
-  return CServiceBroker::GetPVRManager().Clients()->GetClientCapabilities(m_iClientId).SupportsRecordings();
+  const CPVRClientPtr client = CServiceBroker::GetPVRManager().GetClient(m_iClientId);
+  return client && client->GetClientCapabilities().SupportsRecordings();
 }
