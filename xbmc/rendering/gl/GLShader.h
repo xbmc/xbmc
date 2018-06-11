@@ -55,8 +55,8 @@ protected:
   GLint m_hCord0 = 0;
   GLint m_hCord1 = 0;
 
-  GLfloat *m_proj = nullptr;
-  GLfloat *m_model = nullptr;
+  const GLfloat *m_proj = nullptr;
+  const GLfloat *m_model = nullptr;
 
   bool m_clipPossible = false;
   GLfloat m_clipXFactor;

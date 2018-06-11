@@ -21,7 +21,7 @@
 #include "windowing/GraphicContext.h"
 #include "settings/AdvancedSettings.h"
 #include "RenderSystemGLES.h"
-#include "guilib/MatrixGLES.h"
+#include "rendering/MatrixGL.h"
 #include "utils/log.h"
 #include "utils/GLUtils.h"
 #include "utils/TimeUtils.h"
@@ -372,18 +372,7 @@ void CRenderSystemGLES::ApplyHardwareTransform(const TransformMatrix &finalMatri
     return;
 
   glMatrixModview.Push();
-  GLfloat matrix[4][4];
-
-  for(int i = 0; i < 3; i++)
-    for(int j = 0; j < 4; j++)
-      matrix[j][i] = finalMatrix.m[i][j];
-
-  matrix[0][3] = 0.0f;
-  matrix[1][3] = 0.0f;
-  matrix[2][3] = 0.0f;
-  matrix[3][3] = 1.0f;
-
-  glMatrixModview->MultMatrixf(&matrix[0][0]);
+  glMatrixModview->MultMatrixf(finalMatrix);
   glMatrixModview.Load();
 }
 

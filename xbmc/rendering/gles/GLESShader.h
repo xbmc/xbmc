@@ -65,8 +65,8 @@ protected:
   GLint m_hContrast = 0;
   GLint m_hBrightness = 0;
 
-  GLfloat *m_proj;
-  GLfloat *m_model;
+  const GLfloat *m_proj;
+  const GLfloat *m_model;
 
   bool m_clipPossible;
   GLfloat m_clipXFactor;

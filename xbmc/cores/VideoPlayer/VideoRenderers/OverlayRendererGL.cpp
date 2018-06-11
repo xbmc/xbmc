@@ -29,7 +29,7 @@
 #include "LinuxRendererGLES.h"
 #include "rendering/gles/RenderSystemGLES.h"
 #endif
-#include "guilib/MatrixGLES.h"
+#include "rendering/MatrixGL.h"
 #include "RenderManager.h"
 #include "ServiceBroker.h"
 #include "cores/VideoPlayer/DVDCodecs/Overlay/DVDOverlayImage.h"

@@ -21,7 +21,6 @@
 #include "system_gl.h"
 
 #include <locale.h>
-#include "guilib/MatrixGLES.h"
 #include "LinuxRendererGLES.h"
 #include "ServiceBroker.h"
 #include "utils/MathUtils.h"
@@ -33,6 +32,7 @@
 #include "settings/Settings.h"
 #include "VideoShaders/YUV2RGBShaderGLES.h"
 #include "VideoShaders/VideoFilterShaderGLES.h"
+#include "rendering/MatrixGL.h"
 #include "rendering/gles/RenderSystemGLES.h"
 #include "guilib/Texture.h"
 #include "threads/SingleLock.h"

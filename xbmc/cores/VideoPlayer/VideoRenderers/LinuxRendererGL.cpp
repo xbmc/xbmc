@@ -36,7 +36,7 @@
 #include "windowing/WinSystem.h"
 #include "guilib/Texture.h"
 #include "guilib/LocalizeStrings.h"
-#include "guilib/MatrixGLES.h"
+#include "rendering/MatrixGL.h"
 #include "rendering/gl/RenderSystemGL.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"

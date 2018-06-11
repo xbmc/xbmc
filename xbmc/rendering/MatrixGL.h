@@ -19,20 +19,25 @@
  *
  */
 
+#include "system_gl.h"
 
-#include <cmath>
-#include <cstring>
 #include <stack>
+
+class TransformMatrix;
 
 class CMatrixGL
 {
 public:
+  CMatrixGL() = default;
 
-  CMatrixGL()                                  { memset(&m_pMatrix, 0, sizeof(m_pMatrix)); };
-  explicit CMatrixGL(const float matrix[16])   { memcpy(m_pMatrix, matrix, sizeof(m_pMatrix)); }
-  CMatrixGL(const CMatrixGL &rhs )             { memcpy(m_pMatrix, rhs.m_pMatrix, sizeof(m_pMatrix)); }
-  CMatrixGL &operator=( const CMatrixGL &rhs ) { memcpy(m_pMatrix, rhs.m_pMatrix, sizeof(m_pMatrix)); return *this;}
-  operator float*()                            { return m_pMatrix; }
+  constexpr CMatrixGL(GLfloat x0, GLfloat x1, GLfloat x2, GLfloat x3,
+                      GLfloat x4, GLfloat x5, GLfloat x6, GLfloat x7,
+                      GLfloat x8, GLfloat x9, GLfloat x10, GLfloat x11,
+                      GLfloat x12, GLfloat x13, GLfloat x14, GLfloat x15)
+    :m_pMatrix{x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15} {}
+
+  CMatrixGL(const TransformMatrix &src) noexcept;
+
   operator const float*() const                { return m_pMatrix; }
 
   void LoadIdentity();
@@ -42,21 +47,20 @@ public:
   void Translatef(GLfloat x, GLfloat y, GLfloat z);
   void Scalef(GLfloat x, GLfloat y, GLfloat z);
   void Rotatef(GLfloat angle, GLfloat x, GLfloat y, GLfloat z);
-  void MultMatrixf(const GLfloat *matrix);
+  void MultMatrixf(const CMatrixGL &matrix) noexcept;
   void LookAt(GLfloat eyex, GLfloat eyey, GLfloat eyez, GLfloat centerx, GLfloat centery, GLfloat centerz, GLfloat upx, GLfloat upy, GLfloat upz);
 
   static bool Project(GLfloat objx, GLfloat objy, GLfloat objz, const GLfloat modelMatrix[16], const GLfloat projMatrix[16], const GLint viewport[4], GLfloat* winx, GLfloat* winy, GLfloat* winz);
 
-  void PrintMatrix(void);
-
-  GLfloat m_pMatrix[16];
+private:
+  /* alignas(16) allows better SIMD optimizations (e.g. SSE2 benefits
+     a lot from this) */
+  alignas(16) GLfloat m_pMatrix[16];
 };
 
 class CMatrixGLStack
 {
 public:
-  explicit CMatrixGLStack() {}
-
   void Push()
   {
     m_stack.push(m_current);

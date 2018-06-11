@@ -64,7 +64,7 @@ public:
   GLint GetUcoordLoc() { return m_hUcoord; }
   GLint GetVcoordLoc() { return m_hVcoord; }
 
-  void SetMatrices(GLfloat *p, GLfloat *m) { m_proj = p; m_model = m; }
+  void SetMatrices(const GLfloat *p, const GLfloat *m) { m_proj = p; m_model = m; }
   void SetAlpha(GLfloat alpha)  { m_alpha = alpha; }
 
 protected:
@@ -90,8 +90,8 @@ protected:
   float m_contrast;
   float m_stretch;
 
-  GLfloat *m_proj = nullptr;
-  GLfloat *m_model = nullptr;
+  const GLfloat *m_proj = nullptr;
+  const GLfloat *m_model = nullptr;
   GLfloat m_alpha = 1.0f;
 
   std::string m_defines;

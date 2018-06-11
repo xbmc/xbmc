@@ -19,10 +19,10 @@
  */
 
 #include "GLESShader.h"
-#include "xbmc/guilib/MatrixGLES.h"
 #include "ServiceBroker.h"
 #include "utils/log.h"
 #include "rendering/RenderSystem.h"
+#include "rendering/MatrixGL.h"
 #include "windowing/GraphicContext.h"
 
 using namespace Shaders;
@@ -92,8 +92,8 @@ bool CGLESShader::OnEnabled()
 {
   // This is called after glUseProgram()
 
-  GLfloat *projMatrix = glMatrixProject.Get().m_pMatrix;
-  GLfloat *modelMatrix = glMatrixModview.Get().m_pMatrix;
+  const GLfloat *projMatrix = glMatrixProject.Get();
+  const GLfloat *modelMatrix = glMatrixModview.Get();
   glUniformMatrix4fv(m_hProj,  1, GL_FALSE, projMatrix);
   glUniformMatrix4fv(m_hModel, 1, GL_FALSE, modelMatrix);
 
