@@ -24,6 +24,9 @@
 #include "Exception.h"
 #include "commons/Buffer.h"
 
+#include <map>
+#include <vector>
+
 namespace DRM
 {
   class CCryptoSession;
