@@ -197,12 +197,11 @@ protected:
   static std::string PrepareTimeFormat(const std::string& timeFormat, bool use24HourClock);
   static void AddLanguages(std::vector< std::pair<std::string, std::string> > &list);
 
-  class CRegion
+  class CRegion final
   {
   public:
     CRegion(const CRegion& region);
     CRegion();
-    virtual ~CRegion();
     void SetDefaults();
     void SetTemperatureUnit(const std::string& strUnit);
     void SetSpeedUnit(const std::string& strUnit);

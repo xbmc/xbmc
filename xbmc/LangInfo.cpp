@@ -226,8 +226,6 @@ CLangInfo::CRegion::CRegion()
   SetDefaults();
 }
 
-CLangInfo::CRegion::~CRegion() = default;
-
 void CLangInfo::CRegion::SetDefaults()
 {
   m_strName="N/A";
