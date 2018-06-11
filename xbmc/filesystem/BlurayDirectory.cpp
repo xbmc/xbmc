@@ -24,6 +24,7 @@
 #include "URL.h"
 #include "DllLibbluray.h"
 #include "FileItem.h"
+#include "LangInfo.h"
 #include "video/VideoInfoTag.h"
 #include "guilib/LocalizeStrings.h"
 
