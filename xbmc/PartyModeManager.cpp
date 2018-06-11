@@ -57,8 +57,6 @@ CPartyModeManager::CPartyModeManager(void)
   ClearState();
 }
 
-CPartyModeManager::~CPartyModeManager(void) = default;
-
 bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUSIC*/, const std::string& strXspPath /*= ""*/)
 {
   // Filter using our PartyMode xml file
