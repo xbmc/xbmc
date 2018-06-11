@@ -42,7 +42,6 @@ public:
     SOURCE_TYPE_VPATH        = 5,
     SOURCE_TYPE_REMOVABLE    = 6
   };
-  CMediaSource() { m_iDriveType=SOURCE_TYPE_UNKNOWN; m_iLockMode=LOCK_MODE_EVERYONE; m_iBadPwdCount=0; m_iHasLock=0; m_ignore=false; m_allowSharing=true; };
 
   bool operator==(const CMediaSource &right) const;
 
@@ -68,7 +67,7 @@ public:
   - SOURCE_TYPE_REMOTE \n
   Network source.
   */
-  SourceType m_iDriveType;
+  SourceType m_iDriveType = SOURCE_TYPE_UNKNOWN;
 
   /*!
   \brief The type of Lock UI to show when accessing the media source.
@@ -89,16 +88,16 @@ public:
   - LOCK_MODE_UNKNOWN \n
   Value is unknown or unspecified.
   */
-  LockType m_iLockMode;
+  LockType m_iLockMode = LOCK_MODE_EVERYONE;
   std::string m_strLockCode;  ///< Input code for Lock UI to verify, can be chosen freely.
-  int m_iHasLock;
-  int m_iBadPwdCount; ///< Number of wrong passwords user has entered since share was last unlocked
+  int m_iHasLock = 0;
+  int m_iBadPwdCount = 0; ///< Number of wrong passwords user has entered since share was last unlocked
 
   std::string m_strThumbnailImage; ///< Path to a thumbnail image for the share, or blank for default
 
   std::vector<std::string> vecPaths;
-  bool m_ignore; /// <Do not store in xml
-  bool m_allowSharing; /// <Allow browsing of source from UPnP / WebServer
+  bool m_ignore = false; /// <Do not store in xml
+  bool m_allowSharing = true; /// <Allow browsing of source from UPnP / WebServer
 };
 
 /*!
