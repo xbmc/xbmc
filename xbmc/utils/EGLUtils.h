@@ -20,13 +20,12 @@
 
 #pragma once
 
+#include <array>
 #include <set>
 #include <string>
 #include <stdexcept>
 
 #include <EGL/egl.h>
-
-#include "StringUtils.h"
 
 class CEGLUtils
 {
