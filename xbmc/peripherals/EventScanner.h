@@ -31,13 +31,7 @@
 
 namespace PERIPHERALS
 {
-  class IEventScannerCallback
-  {
-  public:
-    virtual ~IEventScannerCallback(void) = default;
-
-    virtual void ProcessEvents(void) = 0;
-  };
+  class IEventScannerCallback;
 
   /*!
    * \brief Class to scan for peripheral events
@@ -50,12 +44,12 @@ namespace PERIPHERALS
                         protected CThread
   {
   public:
-    explicit CEventScanner(IEventScannerCallback* callback);
+    explicit CEventScanner(IEventScannerCallback &callback);
 
-    ~CEventScanner(void) override = default;
+    ~CEventScanner() override = default;
 
-    void Start(void);
-    void Stop(void);
+    void Start();
+    void Stop();
 
     EventPollHandlePtr RegisterPollHandle();
 
@@ -65,28 +59,31 @@ namespace PERIPHERALS
     EventLockHandlePtr RegisterLock();
 
     // implementation of IEventPollCallback
-    void Activate(CEventPollHandle *handle) override;
-    void Deactivate(CEventPollHandle *handle) override;
+    void Activate(CEventPollHandle &handle) override;
+    void Deactivate(CEventPollHandle &handle) override;
     void HandleEvents(bool bWait) override;
-    void Release(CEventPollHandle *handle) override;
+    void Release(CEventPollHandle &handle) override;
 
     // implementation of IEventLockCallback
-    void ReleaseLock(CEventLockHandle *handle) override;
+    void ReleaseLock(CEventLockHandle &handle) override;
 
   protected:
     // implementation of CThread
-    void Process(void) override;
+    void Process() override;
 
   private:
-    double GetScanIntervalMs(void) const;
+    double GetScanIntervalMs() const;
 
-    IEventScannerCallback* const m_callback;
-    std::set<void*>              m_activeHandles;
-    std::set<void*>              m_activeLocks;
-    CEvent                       m_scanEvent;
-    CEvent                       m_scanFinishedEvent;
-    CCriticalSection             m_handleMutex;
-    CCriticalSection             m_lockMutex;
-    CCriticalSection             m_pollMutex; // Prevent two poll handles from polling at once
+    // Construction parameters
+    IEventScannerCallback &m_callback;
+
+    // Event parameters
+    std::set<void*> m_activeHandles;
+    std::set<void*> m_activeLocks;
+    CEvent m_scanEvent;
+    CEvent m_scanFinishedEvent;
+    CCriticalSection m_handleMutex;
+    CCriticalSection m_lockMutex;
+    CCriticalSection m_pollMutex; // Prevent two poll handles from polling at once
   };
 }

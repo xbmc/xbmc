@@ -19,12 +19,12 @@
  */
 
 #include "EventScanner.h"
+#include "IEventScannerCallback.h"
 #include "threads/SingleLock.h"
 #include "threads/SystemClock.h"
 #include "utils/log.h"
 
 #include <algorithm>
-#include <assert.h>
 
 using namespace PERIPHERALS;
 using namespace XbmcThreads;
@@ -36,19 +36,18 @@ using namespace XbmcThreads;
 // input latency when the game is running at < 1/4 speed.
 #define WATCHDOG_TIMEOUT_MS   80
 
-CEventScanner::CEventScanner(IEventScannerCallback* callback) :
+CEventScanner::CEventScanner(IEventScannerCallback &callback) :
   CThread("PeripEventScanner"),
   m_callback(callback)
 {
-  assert(m_callback != nullptr);
 }
 
-void CEventScanner::Start(void)
+void CEventScanner::Start()
 {
   Create();
 }
 
-void CEventScanner::Stop(void)
+void CEventScanner::Stop()
 {
   StopThread(false);
   m_scanEvent.Set();
@@ -57,7 +56,7 @@ void CEventScanner::Stop(void)
 
 EventPollHandlePtr CEventScanner::RegisterPollHandle()
 {
-  EventPollHandlePtr handle(new CEventPollHandle(this));
+  EventPollHandlePtr handle(new CEventPollHandle(*this));
 
   {
     CSingleLock lock(m_handleMutex);
@@ -69,21 +68,21 @@ EventPollHandlePtr CEventScanner::RegisterPollHandle()
   return handle;
 }
 
-void CEventScanner::Activate(CEventPollHandle* handle)
+void CEventScanner::Activate(CEventPollHandle &handle)
 {
   {
     CSingleLock lock(m_handleMutex);
-    m_activeHandles.insert(handle);
+    m_activeHandles.insert(&handle);
   }
 
   CLog::Log(LOGDEBUG, "PERIPHERALS: Event poll handle activated");
 }
 
-void CEventScanner::Deactivate(CEventPollHandle* handle)
+void CEventScanner::Deactivate(CEventPollHandle &handle)
 {
   {
     CSingleLock lock(m_handleMutex);
-    m_activeHandles.erase(handle);
+    m_activeHandles.erase(&handle);
   }
 
   CLog::Log(LOGDEBUG, "PERIPHERALS: Event poll handle deactivated");
@@ -105,11 +104,11 @@ void CEventScanner::HandleEvents(bool bWait)
   }
 }
 
-void CEventScanner::Release(CEventPollHandle* handle)
+void CEventScanner::Release(CEventPollHandle &handle)
 {
   {
     CSingleLock lock(m_handleMutex);
-    m_activeHandles.erase(handle);
+    m_activeHandles.erase(&handle);
   }
 
   CLog::Log(LOGDEBUG, "PERIPHERALS: Event poll handle released");
@@ -139,7 +138,7 @@ void CEventScanner::ReleaseLock(CEventLockHandle &handle)
   CLog::Log(LOGDEBUG, "PERIPHERALS: Event lock handle released");
 }
 
-void CEventScanner::Process(void)
+void CEventScanner::Process()
 {
   double nextScanMs = static_cast<double>(SystemClockMillis());
 
@@ -148,7 +147,7 @@ void CEventScanner::Process(void)
     {
       CSingleLock lock(m_lockMutex);
       if (m_activeLocks.empty())
-        m_callback->ProcessEvents();
+        m_callback.ProcessEvents();
     }
 
     m_scanFinishedEvent.Set();

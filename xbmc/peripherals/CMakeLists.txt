@@ -6,6 +6,7 @@ set(SOURCES EventLockHandle.cpp
 set(HEADERS EventLockHandle.h
             EventPollHandle.h
             EventScanner.h
+            IEventScannerCallback.h
             Peripherals.h
             PeripheralTypes.h)
 

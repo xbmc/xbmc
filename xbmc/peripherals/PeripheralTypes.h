@@ -84,15 +84,15 @@ namespace PERIPHERALS
   };
 
   class CPeripheral;
-  typedef std::shared_ptr<CPeripheral> PeripheralPtr;
-  typedef std::vector<PeripheralPtr>   PeripheralVector;
+  using PeripheralPtr = std::shared_ptr<CPeripheral>;
+  using PeripheralVector = std::vector<PeripheralPtr>;
 
   class CPeripheralAddon;
-  typedef std::shared_ptr<CPeripheralAddon> PeripheralAddonPtr;
-  typedef std::vector<PeripheralAddonPtr>   PeripheralAddonVector;
+  using PeripheralAddonPtr = std::shared_ptr<CPeripheralAddon>;
+  using PeripheralAddonVector = std::vector<PeripheralAddonPtr>;
 
   class CEventPollHandle;
-  typedef std::unique_ptr<CEventPollHandle> EventPollHandlePtr;
+  using EventPollHandlePtr = std::unique_ptr<CEventPollHandle>;
 
   class CEventLockHandle;
   using EventLockHandlePtr = std::unique_ptr<CEventLockHandle>;

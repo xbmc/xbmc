@@ -20,32 +20,29 @@
 
 #include "EventPollHandle.h"
 
-#include <assert.h>
-
 using namespace PERIPHERALS;
 
-CEventPollHandle::CEventPollHandle(IEventPollCallback* callback) :
+CEventPollHandle::CEventPollHandle(IEventPollCallback &callback) :
   m_callback(callback)
 {
-  assert(m_callback != nullptr);
 }
 
 CEventPollHandle::~CEventPollHandle(void)
 {
-  m_callback->Release(this);
+  m_callback.Release(*this);
 }
 
 void CEventPollHandle::Activate()
 {
-  m_callback->Activate(this);
+  m_callback.Activate(*this);
 }
 
 void CEventPollHandle::Deactivate()
 {
-  m_callback->Deactivate(this);
+  m_callback.Deactivate(*this);
 }
 
 void CEventPollHandle::HandleEvents(bool bWait)
 {
-  m_callback->HandleEvents(bWait);
+  m_callback.HandleEvents(bWait);
 }

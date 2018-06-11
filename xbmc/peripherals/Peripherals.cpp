@@ -22,6 +22,7 @@
 
 #include <utility>
 
+#include "EventScanner.h"
 #include "addons/PeripheralAddon.h"
 #include "addons/AddonButtonMap.h"
 #include "addons/AddonManager.h"
@@ -85,7 +86,7 @@ CPeripherals::CPeripherals(ANNOUNCEMENT::CAnnouncementManager &announcements,
   m_announcements(announcements),
   m_inputManager(inputManager),
   m_controllerProfiles(controllerProfiles),
-  m_eventScanner(this)
+  m_eventScanner(new CEventScanner(*this))
 {
   // Register settings
   std::set<std::string> settingSet;
@@ -138,7 +139,7 @@ void CPeripherals::Initialise()
   for (auto& bus : busses)
     bus->Initialise();
 
-  m_eventScanner.Start();
+  m_eventScanner->Start();
 
   MESSAGING::CApplicationMessenger::GetInstance().RegisterReceiver(this);
   m_announcements.AddAnnouncer(this);
@@ -149,7 +150,7 @@ void CPeripherals::Clear()
 {
   m_announcements.RemoveAnnouncer(this);
 
-  m_eventScanner.Stop();
+  m_eventScanner->Stop();
 
   // avoid deadlocks by copying all busses into a temporary variable and destroying them from there
   std::vector<PeripheralBusPtr> busses;
@@ -777,9 +778,14 @@ bool CPeripherals::GetNextKeypress(float frameTime, CKey &key)
   return false;
 }
 
+EventPollHandlePtr CPeripherals::RegisterEventPoller()
+{
+  return m_eventScanner->RegisterPollHandle();
+}
+
 EventLockHandlePtr CPeripherals::RegisterEventLock()
 {
-  return m_eventScanner.RegisterLock();
+  return m_eventScanner->RegisterLock();
 }
 
 void CPeripherals::OnUserNotification()

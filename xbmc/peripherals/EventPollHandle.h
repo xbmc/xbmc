@@ -20,8 +20,6 @@
 
 #pragma once
 
-#include <memory>
-
 namespace PERIPHERALS
 {
   class CEventPollHandle;
@@ -34,10 +32,10 @@ namespace PERIPHERALS
   public:
     virtual ~IEventPollCallback(void) = default;
 
-    virtual void Activate(CEventPollHandle *handle) = 0;
-    virtual void Deactivate(CEventPollHandle *handle) = 0;
+    virtual void Activate(CEventPollHandle &handle) = 0;
+    virtual void Deactivate(CEventPollHandle &handle) = 0;
     virtual void HandleEvents(bool bWait) = 0;
-    virtual void Release(CEventPollHandle *handle) = 0;
+    virtual void Release(CEventPollHandle &handle) = 0;
   };
 
   /*!
@@ -52,12 +50,12 @@ namespace PERIPHERALS
     /*!
      * \brief Create an active polling handle
      */
-    CEventPollHandle(IEventPollCallback* callback);
+    CEventPollHandle(IEventPollCallback &callback);
 
     /*!
      * \brief Handle is automatically released when this class is destructed
      */
-    ~CEventPollHandle(void);
+    ~CEventPollHandle();
 
     /*!
      * \brief Activate handle
@@ -77,6 +75,6 @@ namespace PERIPHERALS
     void HandleEvents(bool bWait);
 
   private:
-    IEventPollCallback* const m_callback;
+    IEventPollCallback &m_callback;
   };
 }
