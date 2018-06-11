@@ -22,6 +22,7 @@
 
 #include <set>
 
+#include "EventLockHandle.h"
 #include "EventPollHandle.h"
 #include "PeripheralTypes.h"
 #include "threads/CriticalSection.h"
@@ -45,6 +46,7 @@ namespace PERIPHERALS
    * input is handled by registering for a polling handle.
    */
   class CEventScanner : public IEventPollCallback,
+                        public IEventLockCallback,
                         protected CThread
   {
   public:
@@ -57,11 +59,19 @@ namespace PERIPHERALS
 
     EventPollHandlePtr RegisterPollHandle();
 
+    /*!
+     * \brief Acquire a lock that prevents event processing while held
+     */
+    EventLockHandlePtr RegisterLock();
+
     // implementation of IEventPollCallback
     void Activate(CEventPollHandle *handle) override;
     void Deactivate(CEventPollHandle *handle) override;
     void HandleEvents(bool bWait) override;
     void Release(CEventPollHandle *handle) override;
+
+    // implementation of IEventLockCallback
+    void ReleaseLock(CEventLockHandle *handle) override;
 
   protected:
     // implementation of CThread
@@ -72,9 +82,11 @@ namespace PERIPHERALS
 
     IEventScannerCallback* const m_callback;
     std::set<void*>              m_activeHandles;
+    std::set<void*>              m_activeLocks;
     CEvent                       m_scanEvent;
     CEvent                       m_scanFinishedEvent;
-    CCriticalSection             m_mutex;
+    CCriticalSection             m_handleMutex;
+    CCriticalSection             m_lockMutex;
     CCriticalSection             m_pollMutex; // Prevent two poll handles from polling at once
   };
 }

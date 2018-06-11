@@ -777,6 +777,11 @@ bool CPeripherals::GetNextKeypress(float frameTime, CKey &key)
   return false;
 }
 
+EventLockHandlePtr CPeripherals::RegisterEventLock()
+{
+  return m_eventScanner.RegisterLock();
+}
+
 void CPeripherals::OnUserNotification()
 {
   if (!CServiceBroker::GetSettings().GetBool(CSettings::SETTING_INPUT_RUMBLENOTIFY))

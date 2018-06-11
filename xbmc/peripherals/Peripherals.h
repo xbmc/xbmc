@@ -239,6 +239,12 @@ namespace PERIPHERALS
     EventPollHandlePtr RegisterEventPoller() { return m_eventScanner.RegisterPollHandle(); }
 
     /*!
+     * @brief Register with the event scanner to disable event processing
+     * @return A handle that unregisters itself when expired
+     */
+    EventLockHandlePtr RegisterEventLock();
+
+    /*!
      * 
      */
     void OnUserNotification();

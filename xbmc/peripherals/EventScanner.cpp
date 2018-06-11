@@ -60,7 +60,7 @@ EventPollHandlePtr CEventScanner::RegisterPollHandle()
   EventPollHandlePtr handle(new CEventPollHandle(this));
 
   {
-    CSingleLock lock(m_mutex);
+    CSingleLock lock(m_handleMutex);
     m_activeHandles.insert(handle.get());
   }
 
@@ -72,7 +72,7 @@ EventPollHandlePtr CEventScanner::RegisterPollHandle()
 void CEventScanner::Activate(CEventPollHandle* handle)
 {
   {
-    CSingleLock lock(m_mutex);
+    CSingleLock lock(m_handleMutex);
     m_activeHandles.insert(handle);
   }
 
@@ -82,7 +82,7 @@ void CEventScanner::Activate(CEventPollHandle* handle)
 void CEventScanner::Deactivate(CEventPollHandle* handle)
 {
   {
-    CSingleLock lock(m_mutex);
+    CSingleLock lock(m_handleMutex);
     m_activeHandles.erase(handle);
   }
 
@@ -108,11 +108,35 @@ void CEventScanner::HandleEvents(bool bWait)
 void CEventScanner::Release(CEventPollHandle* handle)
 {
   {
-    CSingleLock lock(m_mutex);
+    CSingleLock lock(m_handleMutex);
     m_activeHandles.erase(handle);
   }
 
   CLog::Log(LOGDEBUG, "PERIPHERALS: Event poll handle released");
+}
+
+EventLockHandlePtr CEventScanner::RegisterLock()
+{
+  EventLockHandlePtr handle(new CEventLockHandle(*this));
+
+  {
+    CSingleLock lock(m_lockMutex);
+    m_activeLocks.insert(handle.get());
+  }
+
+  CLog::Log(LOGDEBUG, "PERIPHERALS: Event lock handle registered");
+
+  return handle;
+}
+
+void CEventScanner::ReleaseLock(CEventLockHandle &handle)
+{
+  {
+    CSingleLock lock(m_lockMutex);
+    m_activeLocks.erase(&handle);
+  }
+
+  CLog::Log(LOGDEBUG, "PERIPHERALS: Event lock handle released");
 }
 
 void CEventScanner::Process(void)
@@ -121,7 +145,11 @@ void CEventScanner::Process(void)
 
   while (!m_bStop)
   {
-    m_callback->ProcessEvents();
+    {
+      CSingleLock lock(m_lockMutex);
+      if (m_activeLocks.empty())
+        m_callback->ProcessEvents();
+    }
 
     m_scanFinishedEvent.Set();
 
@@ -147,7 +175,7 @@ double CEventScanner::GetScanIntervalMs() const
   bool bHasActiveHandle;
 
   {
-    CSingleLock lock(m_mutex);
+    CSingleLock lock(m_handleMutex);
     bHasActiveHandle = !m_activeHandles.empty();
   }
 

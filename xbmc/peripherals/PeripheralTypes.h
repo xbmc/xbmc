@@ -94,6 +94,9 @@ namespace PERIPHERALS
   class CEventPollHandle;
   typedef std::unique_ptr<CEventPollHandle> EventPollHandlePtr;
 
+  class CEventLockHandle;
+  using EventLockHandlePtr = std::unique_ptr<CEventLockHandle>;
+
   struct PeripheralID
   {
     int m_iVendorId;

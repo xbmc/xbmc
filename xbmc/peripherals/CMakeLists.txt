@@ -1,8 +1,10 @@
-set(SOURCES EventPollHandle.cpp
+set(SOURCES EventLockHandle.cpp
+            EventPollHandle.cpp
             EventScanner.cpp
             Peripherals.cpp)
 
-set(HEADERS EventPollHandle.h
+set(HEADERS EventLockHandle.h
+            EventPollHandle.h
             EventScanner.h
             Peripherals.h
             PeripheralTypes.h)
