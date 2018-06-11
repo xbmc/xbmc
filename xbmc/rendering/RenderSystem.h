@@ -72,8 +72,6 @@ public:
     m_stereoView = view;
   }
 
-  virtual bool TestRender() = 0;
-
   /**
    * Project (x,y,z) 3d scene coordinates to (x,y) 2d screen coordinates
    */

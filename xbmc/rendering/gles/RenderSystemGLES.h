@@ -75,8 +75,6 @@ public:
 
   bool SupportsStereo(RENDER_STEREO_MODE mode) const override;
 
-  bool TestRender() override;
-
   void Project(float &x, float &y, float &z) override;
 
   std::string GetShaderPath(const std::string &filename) override { return "GLES/2.0/"; }

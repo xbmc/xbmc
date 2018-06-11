@@ -71,8 +71,6 @@ public:
   bool SupportsStereo(RENDER_STEREO_MODE mode) const override;
   bool SupportsNPOT(bool dxt) const override;
 
-  bool TestRender() override;
-
   void Project(float &x, float &y, float &z) override;
 
   std::string GetShaderPath(const std::string &filename) override;
