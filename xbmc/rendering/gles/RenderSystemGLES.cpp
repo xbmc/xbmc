@@ -21,7 +21,7 @@
 #include "windowing/GraphicContext.h"
 #include "settings/AdvancedSettings.h"
 #include "RenderSystemGLES.h"
-#include "guilib/MatrixGLES.h"
+#include "rendering/MatrixGL.h"
 #include "utils/log.h"
 #include "utils/GLUtils.h"
 #include "utils/TimeUtils.h"

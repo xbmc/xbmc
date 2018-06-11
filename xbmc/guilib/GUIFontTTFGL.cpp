@@ -33,7 +33,7 @@
 #elif HAS_GLES
 #include "rendering/gles/RenderSystemGLES.h"
 #endif
-#include "guilib/MatrixGLES.h"
+#include "rendering/MatrixGL.h"
 
 // stuff for freetype
 #include <ft2build.h>

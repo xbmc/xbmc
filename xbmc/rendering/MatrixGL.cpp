@@ -18,7 +18,7 @@
  *
  */
 
-#include "MatrixGLES.h"
+#include "MatrixGL.h"
 #include "utils/TransformMatrix.h"
 
 #if defined(HAS_NEON)

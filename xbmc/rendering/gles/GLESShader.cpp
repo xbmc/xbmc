@@ -19,10 +19,10 @@
  */
 
 #include "GLESShader.h"
-#include "xbmc/guilib/MatrixGLES.h"
 #include "ServiceBroker.h"
 #include "utils/log.h"
 #include "rendering/RenderSystem.h"
+#include "rendering/MatrixGL.h"
 #include "windowing/GraphicContext.h"
 
 using namespace Shaders;
