@@ -103,14 +103,15 @@ enum {
   SEI_TONE_MAPPING
 };
 
-////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////
-// GStreamer h264 parser
-// Copyright (C) 2005 Michal Benes <michal.benes@itonis.tv>
-//           (C) 2008 Wim Taymans <wim.taymans@gmail.com>
-// gsth264parse.c:
-//  * License as published by the Free Software Foundation; either
-//  * version 2.1 of the License, or (at your option) any later version.
+/*
+ *  GStreamer h264 parser
+ *  Copyright (C) 2005 Michal Benes <michal.benes@itonis.tv>
+ *            (C) 2008 Wim Taymans <wim.taymans@gmail.com>
+ *  gsth264parse.c
+ *  
+ *  SPDX-License-Identifier: LGPL-2.1-or-later
+ *  See LICENSES/README.md for more information.
+ */
 static void nal_bs_init(nal_bitstream *bs, const uint8_t *data, size_t size)
 {
   bs->data = data;
