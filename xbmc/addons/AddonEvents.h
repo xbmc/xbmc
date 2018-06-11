@@ -28,7 +28,10 @@ namespace ADDON
   {
     std::string id;
     explicit AddonEvent(std::string id) : id(std::move(id)) {};
-    virtual ~AddonEvent() = default;
+
+  protected:
+    /* make sure nobody deletes a pointer to this class */
+    ~AddonEvent() = default;
   };
 
   namespace AddonEvents
