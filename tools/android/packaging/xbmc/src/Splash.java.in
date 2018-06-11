@@ -503,12 +503,14 @@ public class Splash extends Activity
         sXbmcHome = "";
       }
     }
+    File fCacheDir = getCacheDir();
     if (sXbmcHome.isEmpty())
     {
-      File fCacheDir = getCacheDir();
       sXbmcHome = fCacheDir.getAbsolutePath() + "/apk";
       fXbmcHome = new File(sXbmcHome);
     }
+    File fLibCache = new File(fCacheDir.getAbsolutePath() + "/lib");
+    fLibCache.mkdirs();
 
     sXbmcdata = XBMCProperties.getStringProperty("xbmc.data", "");
     if (!sXbmcdata.isEmpty())

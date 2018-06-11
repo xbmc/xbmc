@@ -853,10 +853,6 @@ bool CApplication::InitDirectoriesLinux()
   }
   CSpecialProtocol::SetXBMCBinAddonPath(appBinPath + "/addons");
 
-#if defined(TARGET_ANDROID)
-  CXBMCApp::InitDirectories();
-#endif
-
   return true;
 #else
   return false;
