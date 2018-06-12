@@ -1,4 +1,3 @@
-#pragma once
 /*
  *      Copyright (C) 2010-2015 Team XBMC
  *      http://kodi.tv
@@ -18,6 +17,8 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#pragma once
 
 /**
  * Bit options to pass to IAE::MakeStream

@@ -36,8 +36,7 @@
  *	at compile time.
  */
 
-#ifndef OS_H_INCLUDED
-#define OS_H_INCLUDED
+#pragma once
 
 #ifdef WIN32
 	/* windows */
@@ -52,5 +51,3 @@
 	/* nix */
 #endif
 
-
-#endif // OS_H_INCLUDED

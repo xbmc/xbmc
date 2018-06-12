@@ -1,13 +1,3 @@
-/*!
-\file GUIToggleButtonControl.h
-\brief
-*/
-
-#ifndef GUILIB_GUITOGGLEBUTTONCONTROL_H
-#define GUILIB_GUITOGGLEBUTTONCONTROL_H
-
-#pragma once
-
 /*
  *      Copyright (C) 2005-2013 Team XBMC
  *      http://kodi.tv
@@ -27,6 +17,13 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#pragma once
+
+/*!
+\file GUIToggleButtonControl.h
+\brief
+*/
 
 #include "GUIButtonControl.h"
 
@@ -68,4 +65,4 @@ private:
   void ProcessToggle(unsigned int currentTime);
   std::string m_altLabel;
 };
-#endif
+

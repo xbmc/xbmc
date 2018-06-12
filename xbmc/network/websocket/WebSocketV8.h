@@ -17,7 +17,9 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
 #pragma once
+
 #include "WebSocket.h"
 
 class CWebSocketV8 : public CWebSocket

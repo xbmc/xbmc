@@ -1,6 +1,3 @@
-#ifndef CGUIBorderedImage_H
-#define CGUIBorderedImage_H
-
 /*
  *      Copyright (C) 2005-2013 Team XBMC
  *      http://kodi.tv
@@ -20,6 +17,8 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#pragma once
 
 #include "GUIControl.h"
 #include "TextureManager.h"
@@ -46,4 +45,3 @@ protected:
   CRect m_borderSize;
 };
 
-#endif

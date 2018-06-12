@@ -1,6 +1,3 @@
-#ifndef XBTFWRITER_H_
-#define XBTFWRITER_H_
-
 /*
  *      Copyright (C) 2005-2013 Team XBMC
  *      http://kodi.tv
@@ -20,6 +17,8 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#pragma once
 
 #include <vector>
 #include <string>
@@ -47,4 +46,3 @@ private:
   size_t         m_size;
 };
 
-#endif

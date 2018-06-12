@@ -1,6 +1,3 @@
-#ifndef MY_NTDDSCSI_H
-#define MY_NTDDSCSI_H
-
 /*
  *      Copyright (C) 2005-2013 Team XBMC
  *      http://kodi.tv
@@ -20,6 +17,8 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#pragma once
 
 //** Defines taken from ntddscsi.h in MS Windows DDK CD
 #define SCSI_IOCTL_DATA_OUT             0 //Give data to SCSI device (e.g. for writing)
@@ -72,4 +71,4 @@ typedef struct _SCSI_PASS_THROUGH_DIRECT_AND_SENSE_BUFFER {
     SCSI_PASS_THROUGH_DIRECT sptd;
     UCHAR SenseBuf[MAX_SENSE_LEN];
 }T_SPDT_SBUF;
-#endif
+

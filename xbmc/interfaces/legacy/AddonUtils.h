@@ -18,14 +18,14 @@
  *
  */
 
+#pragma once
+
 /*
  * addon.h
  *
  *  Created on: Aug 21, 2010
  *      Author: jim
  */
-
-#pragma once
 
 //#define ENABLE_XBMC_TRACE_API
 

@@ -20,14 +20,14 @@
  *
  */
 
+#pragma once
+
 // FileISO.h: interface for the CISOFile class.
 //
 //////////////////////////////////////////////////////////////////////
 
 #if !defined(AFX_FILEISO_H__C2FB9C6D_3319_4182_AB45_65E57EFAC8D1__INCLUDED_)
 #define AFX_FILEISO_H__C2FB9C6D_3319_4182_AB45_65E57EFAC8D1__INCLUDED_
-
-#pragma once
 
 #include "IFile.h"
 #include "utils/RingBuffer.h"

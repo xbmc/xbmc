@@ -17,7 +17,9 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
 #pragma once
+
 #include "powermanagement/IPowerSyscall.h"
 
 class CFallbackPowerSyscall : public CPowerSyscallWithoutEvents

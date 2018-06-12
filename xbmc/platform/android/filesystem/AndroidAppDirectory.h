@@ -19,6 +19,7 @@
  */
 
 #pragma once
+
 #if defined(TARGET_ANDROID)
 #include "filesystem/IDirectory.h"
 #include "FileItem.h"

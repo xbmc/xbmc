@@ -18,8 +18,7 @@
  *
  */
 
-#ifndef DPMSSUPPORT_H
-#define DPMSSUPPORT_H
+#pragma once
 
 #include <vector>
 
@@ -85,4 +84,3 @@ private:
   bool PlatformSpecificDisablePowerSaving();
 };
 
-#endif  // DPMSSUPPORT_H

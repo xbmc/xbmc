@@ -18,8 +18,7 @@
  *
  */
 
-#ifndef XBAPPLICATIONEX_H
-#define XBAPPLICATIONEX_H
+#pragma once
 
 #include "guilib/IWindowManagerCallback.h"
 
@@ -56,4 +55,3 @@ public:
 private:
 };
 
-#endif /* XBAPPLICATIONEX_H */

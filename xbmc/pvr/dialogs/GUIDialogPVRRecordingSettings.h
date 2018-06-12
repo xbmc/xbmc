@@ -1,4 +1,3 @@
-#pragma once
 /*
  *      Copyright (C) 2017 Team Kodi
  *      http://kodi.tv
@@ -18,6 +17,8 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#pragma once
 
 #include <string>
 

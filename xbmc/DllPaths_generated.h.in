@@ -1,6 +1,3 @@
-#ifndef DLL_PATHS_GENERATED_H_
-#define DLL_PATHS_GENERATED_H_
-
 /*
  *      Copyright (C) 2005-2013 Team XBMC
  *      http://xbmc.org
@@ -21,6 +18,8 @@
  *
  */
 
+#pragma once
+
 /* prefix install location */
 #define PREFIX_USR_PATH        "@prefix@"
 
@@ -39,4 +38,3 @@
 /* sse4 */
 #define DLL_PATH_LIBSSE4      "special://xbmcbin/system/libsse4-@ARCH@.so"
 
-#endif

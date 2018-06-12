@@ -17,8 +17,8 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#ifndef KODI_GAME_DLL_H_
-#define KODI_GAME_DLL_H_
+
+#pragma once
 
 #include "kodi_game_types.h"
 
@@ -337,4 +337,3 @@ void __declspec(dllexport) get_addon(void* ptr)
 }
 #endif
 
-#endif // KODI_GAME_DLL_H_

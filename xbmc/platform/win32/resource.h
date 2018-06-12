@@ -18,6 +18,8 @@
  *
  */
 
+#pragma once
+
 #define IDI_MAIN_ICON                   100
 
 // Next default values for new objects

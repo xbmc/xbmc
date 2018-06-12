@@ -1,4 +1,3 @@
-#pragma once
 /*
  *      Copyright (C) 2013 Team XBMC
  *      http://kodi.tv
@@ -18,6 +17,8 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#pragma once
 
 #include <string>
 #include <vector>
@@ -60,3 +61,4 @@ private:
   bool m_restart = false;
   bool m_reusable = false;
 };
+

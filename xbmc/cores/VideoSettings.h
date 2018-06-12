@@ -17,11 +17,12 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#pragma once
+ 
 // VideoSettings.h: interface for the CVideoSettings class.
 //
 //////////////////////////////////////////////////////////////////////
-
-#pragma once
 
 enum EINTERLACEMETHOD
 {

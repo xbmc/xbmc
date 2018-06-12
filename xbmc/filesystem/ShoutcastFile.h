@@ -18,11 +18,11 @@
  *
  */
 
+#pragma once
+
 // FileShoutcast.h: interface for the CShoutcastFile class.
 //
 //////////////////////////////////////////////////////////////////////
-
-#pragma once
 
 #include "IFile.h"
 #include "CurlFile.h"

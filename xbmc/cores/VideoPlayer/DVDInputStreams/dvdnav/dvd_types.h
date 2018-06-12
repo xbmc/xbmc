@@ -19,12 +19,11 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+#pragma once
+
 /*
  * Various useful structs and enums for DVDs.
  */
-
-#ifndef LIBDVDNAV_DVD_TYPES_H
-#define LIBDVDNAV_DVD_TYPES_H
 
 /*
  * DVD Menu ID
@@ -274,4 +273,3 @@ typedef struct {
 
 #endif
 
-#endif /* LIBDVDNAV_DVD_TYPES_H */

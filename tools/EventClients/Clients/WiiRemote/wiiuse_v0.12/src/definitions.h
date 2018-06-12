@@ -31,8 +31,7 @@
  *	@brief General definitions.
  */
 
-#ifndef DEFINITIONS_H_INCLUDED
-#define DEFINITIONS_H_INCLUDED
+#pragma once
 
 /* this is wiiuse - used to distinguish from third party programs using wiiuse.h */
 #include "os.h"
@@ -76,4 +75,3 @@
 #define absf(x)						((x >= 0) ? (x) : (x * -1.0f))
 #define diff_f(x, y)				((x >= y) ? (absf(x - y)) : (absf(y - x)))
 
-#endif // DEFINITIONS_H_INCLUDED

@@ -18,9 +18,6 @@
  *
  */
 
-#ifndef WIN_SYSTEM_WIN32_DX_H
-#define WIN_SYSTEM_WIN32_DX_H
-
 #pragma once
 
 #include "easyhook/easyhook.h"
@@ -92,4 +89,3 @@ protected:
   TRACED_HOOK_HANDLE m_hHook;
 };
 
-#endif // WIN_SYSTEM_WIN32_DX_H

@@ -1,5 +1,3 @@
-#pragma once
-
 /*
  * Socket classes
  *      Copyright (c) 2008 d4rk
@@ -21,6 +19,8 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#pragma once
 
 #include "PlatformDefs.h"
 

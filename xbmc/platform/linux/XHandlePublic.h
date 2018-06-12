@@ -1,6 +1,3 @@
-#ifndef XHANDLEPUBLIC_H
-#define XHANDLEPUBLIC_H
-
 /*
  *      Copyright (C) 2005-2013 Team XBMC
  *      http://kodi.tv
@@ -21,6 +18,8 @@
  *
  */
 
+#pragma once
+
 struct  CXHandle;
 typedef CXHandle* HANDLE;
 typedef HANDLE*   LPHANDLE;
@@ -30,5 +29,3 @@ bool CloseHandle(HANDLE hObject);
 #define DUPLICATE_CLOSE_SOURCE 0x00000001
 #define DUPLICATE_SAME_ACCESS  0x00000002
 
-
-#endif

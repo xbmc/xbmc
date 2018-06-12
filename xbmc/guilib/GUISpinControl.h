@@ -1,13 +1,3 @@
-/*!
-\file GUISpinControl.h
-\brief
-*/
-
-#ifndef GUILIB_SPINCONTROL_H
-#define GUILIB_SPINCONTROL_H
-
-#pragma once
-
 /*
  *      Copyright (C) 2005-2013 Team XBMC
  *      http://kodi.tv
@@ -27,6 +17,13 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#pragma once
+
+/*!
+\file GUISpinControl.h
+\brief
+*/
 
 #include <vector>
 
@@ -139,4 +136,4 @@ protected:
   int m_numItems;
   bool m_showOnePage;
 };
-#endif
+

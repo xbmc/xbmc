@@ -31,8 +31,7 @@
  *	@brief Nunchuk expansion device.
  */
 
-#ifndef NUNCHUK_H_INCLUDED
-#define NUNCHUK_H_INCLUDED
+#pragma once
 
 #include "wiiuse_internal.h"
 
@@ -50,4 +49,3 @@ void nunchuk_event(struct nunchuk_t* nc, byte* msg);
 }
 #endif
 
-#endif // NUNCHUK_H_INCLUDED

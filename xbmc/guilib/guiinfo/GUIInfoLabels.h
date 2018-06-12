@@ -1,4 +1,3 @@
-#pragma once
 /*
 *      Copyright (C) 2005-2015 Team XBMC
 *      http://kodi.tv
@@ -18,6 +17,8 @@
 *  <http://www.gnu.org/licenses/>.
 *
 */
+
+#pragma once
 
 #define PLAYER_HAS_MEDIA              1
 #define PLAYER_HAS_AUDIO              2

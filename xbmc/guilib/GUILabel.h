@@ -1,10 +1,3 @@
-/*!
-\file GUILabel.h
-\brief
-*/
-
-#pragma once
-
 /*
  *      Copyright (C) 2005-2013 Team XBMC
  *      http://kodi.tv
@@ -24,6 +17,13 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#pragma once
+
+/*!
+\file GUILabel.h
+\brief
+*/
 
 #include "GUITextLayout.h"
 #include "guiinfo/GUIInfoColor.h"

@@ -1,8 +1,3 @@
-/*!
-\file GUIWindowMusicBase.h
-\brief
-*/
-#pragma once
 /*
  *      Copyright (C) 2005-2018 Team Kodi
  *      http://kodi.tv
@@ -22,6 +17,13 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#pragma once
+
+/*!
+\file GUIWindowMusicBase.h
+\brief
+*/
 
 #include <vector>
 

@@ -19,11 +19,12 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#pragma once
+
 // SingleLock.h: interface for the CSingleLock class.
 //
 //////////////////////////////////////////////////////////////////////
-
-#pragma once
 
 #include "threads/CriticalSection.h"
 #include "threads/Lockables.h"

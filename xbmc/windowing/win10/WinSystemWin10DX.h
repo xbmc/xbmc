@@ -18,8 +18,7 @@
  *
  */
 
-#ifndef WIN_SYSTEM_WIN10_DX_H
-#define WIN_SYSTEM_WIN10_DX_H
+#pragma once
 
 #include "WinSystemWin10.h"
 #include "rendering/dx/RenderSystemDX.h"
@@ -82,4 +81,3 @@ protected:
   bool IsStereoEnabled() override;
 };
 
-#endif // WIN_SYSTEM_WIN32_DX_H

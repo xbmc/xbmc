@@ -1,13 +1,3 @@
-/*!
-\file GUIRSSControl.h
-\brief
-*/
-
-#ifndef GUILIB_GUIRSSControl_H
-#define GUILIB_GUIRSSControl_H
-
-#pragma once
-
 /*
  *      Copyright (C) 2005-2013 Team XBMC
  *      http://kodi.tv
@@ -27,6 +17,13 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#pragma once
+
+/*!
+\file GUIRSSControl.h
+\brief
+*/
 
 #include <vector>
 
@@ -84,4 +81,4 @@ protected:
   bool m_stopped;
   int  m_urlset;
 };
-#endif
+

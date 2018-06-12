@@ -1,4 +1,3 @@
-#pragma once
 /*
  *      Copyright (C) 2014 Team XBMC
  *      http://kodi.tv
@@ -18,6 +17,8 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#pragma once
 
 constexpr unsigned long long int operator"" _kib (unsigned long long int val)
 {

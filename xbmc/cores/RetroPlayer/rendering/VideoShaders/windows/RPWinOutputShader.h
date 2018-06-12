@@ -17,6 +17,7 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
 #pragma once
 
 #include "cores/VideoPlayer/VideoRenderers/VideoShaders/WinVideoFilter.h"

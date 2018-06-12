@@ -1,4 +1,3 @@
-#pragma once
 /*
  *      Copyright (C) 2012-2013 Team XBMC
  *      Copyright (C) 2015-2016 Team KODI
@@ -19,6 +18,8 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#pragma once
 
 #include "addons/interfaces/AddonInterfaces.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/libXBMC_addon.h"

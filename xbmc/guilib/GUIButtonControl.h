@@ -1,13 +1,3 @@
-/*!
-\file GUIButtonControl.h
-\brief
-*/
-
-#ifndef GUILIB_GUIBUTTONCONTROL_H
-#define GUILIB_GUIBUTTONCONTROL_H
-
-#pragma once
-
 /*
  *      Copyright (C) 2005-2013 Team XBMC
  *      http://kodi.tv
@@ -27,6 +17,13 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#pragma once
+
+/*!
+\file GUIButtonControl.h
+\brief
+*/
 
 #include "guilib/guiinfo/GUIInfoLabel.h"
 #include "utils/Color.h"
@@ -113,4 +110,4 @@ protected:
 
   bool m_bSelected;
 };
-#endif
+

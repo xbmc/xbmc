@@ -31,8 +31,7 @@
  *	@brief Classic controller expansion device.
  */
 
-#ifndef CLASSIC_H_INCLUDED
-#define CLASSIC_H_INCLUDED
+#pragma once
 
 #include "wiiuse_internal.h"
 
@@ -50,4 +49,3 @@ void classic_ctrl_event(struct classic_ctrl_t* cc, byte* msg);
 }
 #endif
 
-#endif // CLASSIC_H_INCLUDED

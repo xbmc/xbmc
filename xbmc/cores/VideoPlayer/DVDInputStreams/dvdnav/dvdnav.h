@@ -23,8 +23,7 @@
  * to access dvdnav functionality.
  */
 
-#ifndef LIBDVDNAV_DVDNAV_H
-#define LIBDVDNAV_DVDNAV_H
+#pragma once
 
 #define MP_DVDNAV 1
 
@@ -706,4 +705,3 @@ int64_t dvdnav_convert_time(dvd_time_t *time);
 }
 #endif
 
-#endif /* LIBDVDNAV_DVDNAV_H */

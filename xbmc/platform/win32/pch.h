@@ -17,7 +17,9 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
 #pragma once
+
 #define _CRT_RAND_S
 #include <vector>
 #include <map>

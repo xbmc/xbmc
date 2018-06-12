@@ -19,6 +19,7 @@
  */
 
 #pragma once
+
 #if defined(HAVE_SSE2)
 #include <emmintrin.h>
 #endif

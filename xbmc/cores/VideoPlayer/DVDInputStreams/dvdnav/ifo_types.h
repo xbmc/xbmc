@@ -19,8 +19,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef LIBDVDREAD_IFO_TYPES_H
-#define LIBDVDREAD_IFO_TYPES_H
+#pragma once
 
 //#include <inttypes.h>
 #include "dvd_reader.h"
@@ -750,4 +749,3 @@ typedef struct {
   vobu_admap_t   *vts_vobu_admap;
 } ifo_handle_t;
 
-#endif /* LIBDVDREAD_IFO_TYPES_H */

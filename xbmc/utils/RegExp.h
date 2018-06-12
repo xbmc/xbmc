@@ -1,4 +1,3 @@
-#pragma once
 /*
  *      Copyright (C) 2005-2013 Team XBMC
  *      http://kodi.tv
@@ -19,8 +18,7 @@
  *
  */
 
-#ifndef REGEXP_H
-#define REGEXP_H
+#pragma once
 
 //! @todo - move to std::regex (after switching to gcc 4.9 or higher) and get rid of CRegExp
 
@@ -176,6 +174,4 @@ private:
 };
 
 typedef std::vector<CRegExp> VECCREGEXP;
-
-#endif
 

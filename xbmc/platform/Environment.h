@@ -1,6 +1,3 @@
-#pragma once
-#ifndef XBMC_SETENV_H
-#define XBMC_SETENV_H
 /*
  *      Copyright (C) 2013 Team XBMC
  *      http://kodi.tv
@@ -20,6 +17,8 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#pragma once
 
 /**
  * \file utils\Environment.h
@@ -108,4 +107,4 @@ private:
   static std::string win_getenv(const std::string &name);
 #endif // TARGET_WINDOWS
 };
-#endif
+

@@ -31,8 +31,7 @@
  *	@brief Guitar Hero 3 expansion device.
  */
 
-#ifndef GUITAR_HERO_3_H_INCLUDED
-#define GUITAR_HERO_3_H_INCLUDED
+#pragma once
 
 #include "wiiuse_internal.h"
 
@@ -59,4 +58,3 @@ void guitar_hero_3_event(struct guitar_hero_3_t* gh3, byte* msg);
 }
 #endif
 
-#endif // GUITAR_HERO_3_H_INCLUDED

@@ -18,6 +18,8 @@
  *
  */
 
+#pragma once
+
 #include "input/touch/generic/GenericTouchInputHandler.h"
 #include "utils/Geometry.h"
 

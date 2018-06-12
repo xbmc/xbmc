@@ -18,9 +18,7 @@
  *
  */
 
-
-#ifndef XFILECACHESTRATEGY_H
-#define XFILECACHESTRATEGY_H
+#pragma once
 
 #include <stdint.h>
 #include <string>
@@ -143,4 +141,3 @@ protected:
 
 }
 
-#endif

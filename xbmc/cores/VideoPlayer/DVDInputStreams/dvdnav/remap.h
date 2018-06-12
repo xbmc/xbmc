@@ -16,8 +16,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef LIBDVDNAV_REMAP_H
-#define LIBDVDNAV_REMAP_H
+#pragma once
+
 typedef struct block_s block_t;
 
 typedef struct remap_s remap_t;
@@ -28,4 +28,3 @@ unsigned long remap_block(
 	remap_t *map, int domain, int title, int program, 
 	unsigned long cblock, unsigned long offset);
 
-#endif /* LIBDVDNAV_REMAP_H */

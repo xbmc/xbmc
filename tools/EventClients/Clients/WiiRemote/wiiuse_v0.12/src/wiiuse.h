@@ -36,8 +36,7 @@
  *	is also included which extends this file.
  */
 
-#ifndef WIIUSE_H_INCLUDED
-#define WIIUSE_H_INCLUDED
+#pragma once
 
 #ifdef _WIN32
 	/* windows */
@@ -647,7 +646,4 @@ WIIUSE_EXPORT extern void wiiuse_set_nunchuk_accel_threshold(struct wiimote_t* w
 #ifdef __cplusplus
 }
 #endif
-
-
-#endif /* WIIUSE_H_INCLUDED */
 

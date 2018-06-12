@@ -1,6 +1,3 @@
-#ifndef LINUX_TIMEZONE_
-#define LINUX_TIMEZONE_
-
 /*
  *      Copyright (C) 2005-2013 Team XBMC
  *      http://kodi.tv
@@ -20,6 +17,8 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#pragma once
 
 #include "settings/lib/ISettingCallback.h"
 #include "settings/lib/ISettingsHandler.h"
@@ -61,4 +60,3 @@ private:
 
 extern CLinuxTimezone g_timezone;
 
-#endif

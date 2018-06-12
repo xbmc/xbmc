@@ -18,9 +18,6 @@
  * $Id: ldt_keeper.c 22733 2007-03-18 22:18:11Z nicodvb $
  */
 
-#ifndef LDT_KEEPER_H
-#define LDT_KEEPER_H
-
 #ifdef __cplusplus
 extern "C"
 {
@@ -39,4 +36,3 @@ void      Restore_LDT_Keeper(ldt_fs_t* ldt_fs);
 }
 #endif
 
-#endif /* LDT_KEEPER_H */

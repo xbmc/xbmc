@@ -19,8 +19,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef LIBDVDNAV_DECODER_H
-#define LIBDVDNAV_DECODER_H
+#pragma once
 
 #include "ifo_types.h" /*  vm_cmd_t */
 #include "dvdnav_internal.h"
@@ -109,4 +108,3 @@ void vm_print_link(link_t value);
 void vm_print_registers( registers_t *registers );
 #endif
 
-#endif /* LIBDVDNAV_DECODER_H */

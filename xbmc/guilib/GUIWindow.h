@@ -1,13 +1,3 @@
-/*!
-\file GUIWindow.h
-\brief
-*/
-
-#ifndef GUILIB_GUIWINDOW_H
-#define GUILIB_GUIWINDOW_H
-
-#pragma once
-
 /*
  *      Copyright (C) 2005-2013 Team XBMC
  *      http://kodi.tv
@@ -27,6 +17,13 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#pragma once
+
+/*!
+\file GUIWindow.h
+\brief
+*/
 
 #include "GUIAction.h"
 #include "GUIControlGroup.h"
@@ -303,4 +300,3 @@ private:
   std::map<INFO::InfoPtr, bool> m_xmlIncludeConditions; ///< \brief used to store conditions used to resolve includes for this window
 };
 
-#endif

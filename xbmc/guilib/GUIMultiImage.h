@@ -1,13 +1,3 @@
-/*!
-\file GUIMultiImage.h
-\brief
-*/
-
-#ifndef GUILIB_GUIMULTIIMAGECONTROL_H
-#define GUILIB_GUIMULTIIMAGECONTROL_H
-
-#pragma once
-
 /*
  *      Copyright (C) 2005-2013 Team XBMC
  *      http://kodi.tv
@@ -27,6 +17,13 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#pragma once
+
+/*!
+\file GUIMultiImage.h
+\brief
+*/
 
 #include <vector>
 
@@ -101,4 +98,4 @@ protected:
   DIRECTORY_STATUS m_directoryStatus;
   unsigned int m_jobID;
 };
-#endif
+

@@ -35,8 +35,7 @@
  *	motion sensing.
  */
 
-#ifndef DYNAMICS_H_INCLUDED
-#define DYNAMICS_H_INCLUDED
+#pragma once
 
 #include "wiiuse_internal.h"
 
@@ -53,4 +52,3 @@ void apply_smoothing(struct accel_t* ac, struct orient_t* orient, int type);
 }
 #endif
 
-#endif // DYNAMICS_H_INCLUDED

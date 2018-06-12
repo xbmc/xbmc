@@ -18,8 +18,7 @@
  *
  */
 
-#ifndef WINDOW_SYSTEM_WIN32_H
-#define WINDOW_SYSTEM_WIN32_H
+#pragma once
 
 #include "guilib/DispResource.h"
 #include "threads/CriticalSection.h"
@@ -204,6 +203,4 @@ protected:
 };
 
 extern HWND g_hWnd;
-
-#endif // WINDOW_SYSTEM_H
 

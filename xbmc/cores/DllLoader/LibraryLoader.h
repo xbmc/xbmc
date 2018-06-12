@@ -18,6 +18,8 @@
  *
  */
 
+#pragma once
+
 #ifndef LIBRARY_LOADER
 #define LIBRARY_LOADER
 

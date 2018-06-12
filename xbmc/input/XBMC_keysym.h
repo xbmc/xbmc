@@ -20,8 +20,7 @@
     slouken@libsdl.org
 */
 
-#ifndef XBMC_keysym_h
-#define XBMC_keysym_h
+#pragma once
 
 // The XBMC_keysym identifies a physical key on the keyboard i.e. it is
 // analogous to a scan code but is hardware independent.
@@ -271,4 +270,3 @@ typedef enum {
 #define XBMCKMOD_META  (XBMCKMOD_LMETA  | XBMCKMOD_RMETA)
 #define XBMCKMOD_SUPER (XBMCKMOD_LSUPER | XBMCKMOD_RSUPER)
 
-#endif // XBMC_keysym_h

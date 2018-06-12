@@ -17,11 +17,12 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#pragma once
+
 // LibExportSettings.h: interface for the CLibExportSettings class.
 //
 //////////////////////////////////////////////////////////////////////
-
-#pragma once
 
 #include <string>
 #include "settings/lib/Setting.h"

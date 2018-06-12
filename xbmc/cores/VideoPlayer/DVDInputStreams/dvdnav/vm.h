@@ -20,8 +20,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef LIBDVDNAV_VM_H
-#define LIBDVDNAV_VM_H
+#pragma once
 
 #include "remap.h"
 #include "dvdnav_internal.h"
@@ -186,4 +185,3 @@ void vm_position_print(vm_t *vm, vm_position_t *position);
 /* XBMC added functions */
 vm_t* dvdnav_get_vm(dvdnav_t *self);
 
-#endif /* LIBDVDNAV_VM_H */

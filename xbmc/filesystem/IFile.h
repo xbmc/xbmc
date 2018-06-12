@@ -20,14 +20,14 @@
  *
  */
 
+#pragma once
+
 // IFile.h: interface for the IFile class.
 //
 //////////////////////////////////////////////////////////////////////
 
 #if !defined(AFX_IFILE_H__7EE73AC7_36BC_4822_93FF_44F3B0C766F6__INCLUDED_)
 #define AFX_IFILE_H__7EE73AC7_36BC_4822_93FF_44F3B0C766F6__INCLUDED_
-
-#pragma once
 
 #include "PlatformDefs.h" // for __stat64, ssize_t
 

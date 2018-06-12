@@ -1,5 +1,4 @@
-#ifndef HAS_LIBEXIF_H
-#define HAS_LIBEXIF_H
+#pragma once
 
 #ifdef __cplusplus
 extern "C" {
@@ -135,7 +134,5 @@ EXIF_EXPORT bool process_jpeg(const char *filename, ExifInfo_t *exifInfo, IPTCIn
 
 #ifdef __cplusplus
 }
-#endif
-
 #endif
 

@@ -1,5 +1,3 @@
-#pragma once
-
 /*
  *      Copyright (c) 2002 Frodo
  *      Portions Copyright (c) by the authors of ffmpeg and xvid
@@ -22,6 +20,8 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#pragma once
 
 #include <string>
 #include <vector>

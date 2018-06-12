@@ -31,8 +31,7 @@
  *	@brief Handles IR data.
  */
 
-#ifndef IR_H_INCLUDED
-#define IR_H_INCLUDED
+#pragma once
 
 #include "wiiuse_internal.h"
 
@@ -50,7 +49,4 @@ float calc_yaw(struct ir_t* ir);
 #ifdef __cplusplus
 }
 #endif
-
-#endif // IR_H_INCLUDED
-
 

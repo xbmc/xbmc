@@ -18,6 +18,8 @@
  *
  */
 
+#pragma once
+
 #include "URL.h"
 #include "XBDateTime.h"
 #include "settings/lib/ISettingCallback.h"

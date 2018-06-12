@@ -17,11 +17,13 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#pragma once
+
 /*!
  \file Song.h
 \brief
 */
-#pragma once
 
 #include "utils/ISerializable.h"
 #include "XBDateTime.h"

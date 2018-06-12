@@ -1,4 +1,3 @@
-#pragma once
 /*
  *      Copyright (C) 2016 Christian Browet
  *      http://kodi.tv
@@ -19,6 +18,8 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
+
+#pragma once
 
 #include <queue>
 #include <vector>

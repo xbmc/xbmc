@@ -1,6 +1,3 @@
-#ifndef MY_NTDDCDRM_H
-#define MY_NTDDCDRM_H
-
 /*
  *      Copyright (C) 2005-2013 Team XBMC
  *      http://kodi.tv
@@ -21,6 +18,8 @@
  *
  */
 
+#pragma once
+
 #include <winioctl.h>
 
 #define IOCTL_CDROM_BASE             FILE_DEVICE_CD_ROM
@@ -40,4 +39,3 @@ typedef struct __RAW_READ_INFO
 }
 RAW_READ_INFO, *PRAW_READ_INFO;
 
-#endif

@@ -1,6 +1,3 @@
-#ifndef CPUINFO_H
-#define CPUINFO_H
-
 /*
  *      Copyright (C) 2005-2013 Team XBMC
  *      http://kodi.tv
@@ -20,6 +17,8 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#pragma once
 
 #include <stdio.h>
 #include <time.h>
@@ -145,4 +144,3 @@ private:
 
 extern CCPUInfo g_cpuInfo;
 
-#endif

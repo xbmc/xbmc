@@ -1,13 +1,3 @@
-/*!
-\file GUILabelControl.h
-\brief
-*/
-
-#ifndef GUILIB_GUILABELCONTROL_H
-#define GUILIB_GUILABELCONTROL_H
-
-#pragma once
-
 /*
  *      Copyright (C) 2005-2013 Team XBMC
  *      http://kodi.tv
@@ -27,6 +17,13 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#pragma once
+
+/*!
+\file GUILabelControl.h
+\brief
+*/
 
 #include "GUIControl.h"
 #include "GUILabel.h"
@@ -92,4 +89,4 @@ protected:
   unsigned int m_startSelection;
   unsigned int m_endSelection;
 };
-#endif
+

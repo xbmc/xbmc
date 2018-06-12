@@ -19,6 +19,7 @@
  */
 
 #pragma once
+
 #include <limits.h>
 #include <vector>
 

@@ -1,6 +1,3 @@
-#ifndef BITSTREAM_STATS__H__
-#define BITSTREAM_STATS__H__
-
 /*
  *      Copyright (C) 2005-2013 Team XBMC
  *      http://kodi.tv
@@ -20,6 +17,8 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#pragma once
 
 #include <string>
 #ifdef TARGET_POSIX
@@ -56,6 +55,4 @@ private:
   int64_t m_tmStart;
   static int64_t m_tmFreq;
 };
-
-#endif
 

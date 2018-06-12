@@ -18,8 +18,7 @@
  *
  */
 
-#ifndef _AVCLOCK_H_
-#define _AVCLOCK_H_
+#pragma once
 
 #include "OMXCore.h"
 #include "DVDClock.h"
@@ -94,4 +93,3 @@ public:
   static double NormalizeFrameduration(double frameduration);
 };
 
-#endif

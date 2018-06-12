@@ -19,6 +19,8 @@
  *  Taken from the QuickSync decoder by Eric Gur
  */
 
+#pragma once
+
 #include <emmintrin.h>
 #include <smmintrin.h>
 

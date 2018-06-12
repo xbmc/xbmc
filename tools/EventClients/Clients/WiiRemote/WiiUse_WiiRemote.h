@@ -15,6 +15,7 @@
  *
  */
 
+#pragma once
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -123,3 +124,4 @@ unsigned short convert_code(unsigned short);
 float smoothDeg(float, float);
 
 CXBMCClient EventClient;
+

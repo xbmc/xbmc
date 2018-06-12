@@ -1,13 +1,3 @@
-/*!
-\file GUIFontManager.h
-\brief
-*/
-
-#ifndef GUILIB_FONTMANAGER_H
-#define GUILIB_FONTMANAGER_H
-
-#pragma once
-
 /*
  *      Copyright (C) 2005-2013 Team XBMC
  *      http://kodi.tv
@@ -27,6 +17,13 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#pragma once
+
+/*!
+\file GUIFontManager.h
+\brief
+*/
 
 #include <utility>
 #include <vector>
@@ -102,4 +99,4 @@ protected:
  */
 XBMC_GLOBAL_REF(GUIFontManager, g_fontManager);
 #define g_fontManager XBMC_GLOBAL_USE(GUIFontManager)
-#endif
+

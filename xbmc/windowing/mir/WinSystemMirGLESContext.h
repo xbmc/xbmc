@@ -18,7 +18,6 @@
  *
  */
 
-
 #pragma once
 
 #include "GLContextEGL.h"

@@ -17,8 +17,8 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#ifndef KODI_GAME_TYPES_H_
-#define KODI_GAME_TYPES_H_
+
+#pragma once
 
 #include "versions.h"
 #include "xbmc_addon_types.h"
@@ -715,4 +715,3 @@ typedef struct AddonInstance_Game
 }
 #endif
 
-#endif // KODI_GAME_TYPES_H_

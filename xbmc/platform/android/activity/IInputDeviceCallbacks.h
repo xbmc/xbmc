@@ -1,4 +1,3 @@
-#pragma once
 /*
  *      Copyright (C) 2016 Team XBMC
  *      http://kodi.tv
@@ -18,6 +17,8 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#pragma once
 
 class IInputDeviceCallbacks
 {

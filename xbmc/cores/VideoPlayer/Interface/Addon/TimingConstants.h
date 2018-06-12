@@ -1,5 +1,3 @@
-#pragma once
-
 /*
 *      Copyright (C) 2017 Team XBMC
 *      http://kodi.tv
@@ -19,6 +17,8 @@
 *  <http://www.gnu.org/licenses/>.
 *
 */
+
+#pragma once
 
 #define DVD_TIME_BASE 1000000
 #define DVD_NOPTS_VALUE 0xFFF0000000000000

@@ -1,13 +1,3 @@
-/*!
-\file GUIControlFactory.h
-\brief
-*/
-
-#ifndef GUI_CONTROL_FACTORY_H
-#define GUI_CONTROL_FACTORY_H
-
-#pragma once
-
 /*
  *      Copyright (C) 2005-2013 Team XBMC
  *      http://kodi.tv
@@ -27,6 +17,13 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#pragma once
+
+/*!
+\file GUIControlFactory.h
+\brief
+*/
 
 #include <string>
 #include <vector>
@@ -168,4 +165,4 @@ private:
                             const char *centerRightTag, const char *widthTag, const float parentSize, float &left,
                             float &width, float &min_width);
 };
-#endif
+

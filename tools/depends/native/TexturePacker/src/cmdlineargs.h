@@ -1,6 +1,3 @@
-#ifndef CMDLINEARGS_H
-#define CMDLINEARGS_H
-
 /*
  *      Copyright (C) 2005-2013 Team XBMC
  *      http://kodi.tv
@@ -20,6 +17,8 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#pragma once
 
 #ifdef TARGET_POSIX
 char* GetCommandLine();
@@ -147,5 +146,3 @@ private:
     } // ParseCmdLine()
 }; // class CmdLineArgs
 
-
-#endif // CMDLINEARGS_H

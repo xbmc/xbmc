@@ -1,5 +1,3 @@
-#pragma once
-
 /*
  *      Copyright (C) 2015 Team MrMC
  *      https://github.com/MrMC
@@ -19,6 +17,8 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#pragma once
 
 #import <CoreFoundation/CFNumber.h>
 #import <CoreFoundation/CFDictionary.h>

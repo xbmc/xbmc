@@ -18,6 +18,7 @@
 *  http://www.gnu.org/copyleft/gpl.html
 *
 */
+
 #pragma once
 
 #include "xbmc/windowing/WinEvents.h"

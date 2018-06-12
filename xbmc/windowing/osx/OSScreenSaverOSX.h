@@ -17,6 +17,7 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
 #pragma once
 
 #import <IOKit/pwr_mgt/IOPMLib.h>

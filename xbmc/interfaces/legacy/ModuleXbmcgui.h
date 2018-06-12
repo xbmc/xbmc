@@ -18,6 +18,8 @@
  *
  */
 
+#pragma once
+
 #include "swighelper.h"
 
 #include "guilib/GUIEditControl.h"

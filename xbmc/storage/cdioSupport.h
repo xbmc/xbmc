@@ -18,14 +18,14 @@
  *
  */
 
+#pragma once
+
 //  CCdInfo   -  Information about media type of an inserted cd
 //  CCdIoSupport -  Wrapper class for libcdio with the interface of CIoSupport
 //     and detecting the filesystem on the Disc.
 //
 // by Bobbin007 in 2003
 //  CD-Text support by Mog - Oct 2004
-
-#pragma once
 
 #include "PlatformDefs.h" // for ssize_t typedef
 

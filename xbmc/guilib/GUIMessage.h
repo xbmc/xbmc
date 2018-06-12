@@ -1,13 +1,3 @@
-/*!
-\file GUIMessage.h
-\brief
-*/
-
-#ifndef GUILIB_MESSAGE_H
-#define GUILIB_MESSAGE_H
-
-#pragma once
-
 /*
  *      Copyright (C) 2005-2013 Team Kodi
  *      http://kodi.tv
@@ -27,6 +17,13 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#pragma once
+
+/*!
+\file GUIMessage.h
+\brief
+*/
 
 #define GUI_MSG_WINDOW_INIT     1   // initialize window
 #define GUI_MSG_WINDOW_DEINIT   2   // deinit window
@@ -402,4 +399,4 @@ private:
 
   static std::string empty_string;
 };
-#endif
+

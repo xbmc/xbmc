@@ -18,8 +18,7 @@
  *
  */
 
-#ifndef XBIRREMOTE_H
-#define XBIRREMOTE_H
+#pragma once
 
 #define XINPUT_IR_REMOTE_DISPLAY      213
 #define XINPUT_IR_REMOTE_REVERSE      226
@@ -112,5 +111,3 @@ typedef struct _XINPUT_IR_REMOTE
 }
 XINPUT_IR_REMOTE, *PIR_REMOTE;
 
-
-#endif

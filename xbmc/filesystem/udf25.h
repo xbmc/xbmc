@@ -1,5 +1,3 @@
-#ifndef UDF25_H
-#define UDF25_H
 /*
  *      Copyright (C) 2010 Team Boxee
  *      http://www.boxee.tv
@@ -25,6 +23,9 @@
  *  Jorgen Lundman and team boxee did the necessary modifications to support udf 2.5
  *
  */
+
+#pragma once
+
 #include "File.h"
 
 /**
@@ -226,4 +227,3 @@ protected:
   XFILE::CFile* m_fp;
 };
 
-#endif

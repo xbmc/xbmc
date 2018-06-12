@@ -1,4 +1,3 @@
-#pragma once
 /*
 *      Copyright (C) 2012-2015 Team Kodi
 *      http://kodi.tv
@@ -19,6 +18,8 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#pragma once
 
 #include "iimage.h"
 #include <memory>

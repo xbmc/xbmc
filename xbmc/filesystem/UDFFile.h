@@ -1,5 +1,3 @@
-#pragma once
-
 /*
  *      Copyright (C) 2010 Team Boxee
  *      http://www.boxee.tv
@@ -22,6 +20,8 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#pragma once
 
 #include "IFile.h"
 #include "udf25.h"

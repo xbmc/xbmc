@@ -1,4 +1,3 @@
-#pragma once
 /*
  *      Copyright (C) 2017 Christian Browet
  *      http://kodi.tv
@@ -18,6 +17,8 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#pragma once
 
 #include <androidjni/JNIBase.h>
 

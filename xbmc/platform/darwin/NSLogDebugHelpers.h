@@ -30,6 +30,7 @@
  *  Copyright (C) 2007-2008 Eric Steil III
  *
  */
+
 #define DEBUG
 #ifdef DEBUG
 #define LOG(s, ...)  NSLog(@"[DEBUG] " s, ##__VA_ARGS__)

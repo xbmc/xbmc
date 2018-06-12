@@ -1,12 +1,3 @@
-/*!
-\file GUIFontCache.h
-\brief
-*/
-
-#ifndef CGUILIB_GUIFONTCACHE_H
-#define CGUILIB_GUIFONTCACHE_H
-#pragma once
-
 /*
  *      Copyright (C) 2005-2013 Team XBMC
  *      http://kodi.tv
@@ -26,6 +17,13 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#pragma once
+
+/*!
+\file GUIFontCache.h
+\brief
+*/
 
 #include <cstddef>
 #include <cstring>
@@ -264,4 +262,3 @@ inline float MatrixHashContribution(const CGUIFontCacheKey<CGUIFontCacheDynamicP
   return 0;
 }
 
-#endif

@@ -18,6 +18,8 @@
  *
  */
 
+#pragma once
+
 #include "FileItem.h"
 
 class CAppParamParser

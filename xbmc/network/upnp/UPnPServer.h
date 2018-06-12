@@ -17,7 +17,9 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
 #pragma once
+
 #include <utility>
 #include <Platinum/Source/Devices/MediaConnect/PltMediaConnect.h>
 

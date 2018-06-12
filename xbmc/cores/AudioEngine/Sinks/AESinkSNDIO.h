@@ -1,5 +1,3 @@
-/* -*- mode: c++; c-basic-offset: 2; indent-tabs-mode: nil; -*- */
-#pragma once
 /*
  *      Copyright (C) 2010-2013 Team XBMC
  *      http://kodi.tv
@@ -19,6 +17,8 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#pragma once
 
 #include "cores/AudioEngine/Interfaces/AESink.h"
 #include "cores/AudioEngine/Utils/AEDeviceInfo.h"

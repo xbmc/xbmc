@@ -18,14 +18,12 @@
  *
  */
 
+#pragma once
+
 /*!
 \file GUIFont.h
 \brief
 */
-
-#ifndef CGUILIB_GUIFONTTTF_DX_H
-#define CGUILIB_GUIFONTTTF_DX_H
-#pragma once
 
 #include "D3DResource.h"
 #include "GUIFontTTF.h"
@@ -75,4 +73,3 @@ private:
   static Microsoft::WRL::ComPtr<ID3D11Buffer> m_staticIndexBuffer;
 };
 
-#endif

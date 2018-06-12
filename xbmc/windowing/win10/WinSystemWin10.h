@@ -18,9 +18,6 @@
  *
  */
 
-#ifndef WINDOW_SYSTEM_WIN10_H
-#define WINDOW_SYSTEM_WIN10_H
-
 #pragma once
 
 #include "guilib/DispResource.h"
@@ -166,4 +163,3 @@ protected:
 
 #pragma pack(pop)
 
-#endif // WINDOW_SYSTEM_WIN10_H

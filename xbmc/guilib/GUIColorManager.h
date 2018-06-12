@@ -1,13 +1,3 @@
-/*!
-\file GUIColorManager.h
-\brief
-*/
-
-#ifndef GUILIB_COLORMANAGER_H
-#define GUILIB_COLORMANAGER_H
-
-#pragma once
-
 /*
  *      Copyright (C) 2005-2013 Team XBMC
  *      http://kodi.tv
@@ -27,6 +17,13 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#pragma once
+
+/*!
+\file GUIColorManager.h
+\brief
+*/
 
 /*!
  \ingroup textures
@@ -63,4 +60,4 @@ protected:
  \brief
  */
 extern CGUIColorManager g_colorManager;
-#endif
+

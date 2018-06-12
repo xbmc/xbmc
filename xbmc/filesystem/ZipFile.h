@@ -1,5 +1,3 @@
-#ifndef FILE_ZIP_H_
-#define FILE_ZIP_H_
 /*
  *      Copyright (C) 2005-2013 Team XBMC
  *      http://kodi.tv
@@ -19,6 +17,8 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#pragma once
 
 #include "IFile.h"
 #include <zlib.h>
@@ -70,4 +70,3 @@ namespace XFILE
   };
 }
 
-#endif

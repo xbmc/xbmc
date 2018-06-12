@@ -17,6 +17,9 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#pragma once
+
 namespace XBMCAddon
 {
   namespace Python

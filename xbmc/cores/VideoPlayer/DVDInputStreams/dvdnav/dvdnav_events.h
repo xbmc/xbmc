@@ -22,8 +22,7 @@
  * This header defines events and event types 
  */
 
-#ifndef LIBDVDNAV_DVDNAV_EVENTS_H
-#define LIBDVDNAV_DVDNAV_EVENTS_H
+#pragma once
 
 #include "ifo_types.h"
 #include "dvd_reader.h"
@@ -236,5 +235,3 @@ typedef struct {
  */
 #define DVDNAV_WAIT			13
 
-
-#endif /* LIBDVDNAV_DVDNAV_EVENTS_H */

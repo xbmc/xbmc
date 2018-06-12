@@ -34,8 +34,7 @@
  *	that are sent from the wiimote to us.
  */
 
-#ifndef EVENTS_H_INCLUDED
-#define EVENTS_H_INCLUDED
+#pragma once
 
 #ifdef __cplusplus
 extern "C" {
@@ -50,5 +49,3 @@ void disable_expansion(struct wiimote_t* wm);
 }
 #endif
 
-
-#endif // EVENTS_H_INCLUDED

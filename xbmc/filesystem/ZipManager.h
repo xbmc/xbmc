@@ -1,6 +1,3 @@
-#ifndef ZIP_MANAGER_H_
-#define ZIP_MANAGER_H_
-
 /*
  *      Copyright (C) 2005-2013 Team XBMC
  *      http://kodi.tv
@@ -20,6 +17,8 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
+
+#pragma once
 
 // See http://www.pkware.com/documents/casestudies/APPNOTE.TXT
 #define ZIP_LOCAL_HEADER 0x04034b50
@@ -119,4 +118,3 @@ private:
 
 extern CZipManager g_ZipManager;
 
-#endif
