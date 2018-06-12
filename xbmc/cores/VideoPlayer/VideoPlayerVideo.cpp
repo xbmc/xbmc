@@ -840,6 +840,13 @@ CVideoPlayerVideo::EOutputState CVideoPlayerVideo::OutputPicture(const VideoPict
   }
 
   double config_framerate = m_bFpsInvalid ? 0.0 : m_fFrameRate;
+  if (m_processInfo.GetVideoInterlaced())
+  {
+    if (MathUtils::FloatEquals(config_framerate, 25.0, 0.02))
+      config_framerate = 50.0;
+    else if (MathUtils::FloatEquals(config_framerate, 29.97, 0.02))
+      config_framerate = 59.94;
+  }
 
   if (!m_renderManager.Configure(*pPicture,
                                 static_cast<float>(config_framerate),

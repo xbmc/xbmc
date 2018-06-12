@@ -80,6 +80,7 @@ void CProcessInfo::ResetVideoCodecInfo()
   m_videoHeight = 0;
   m_videoFPS = 0.0;
   m_videoDAR = 0.0;
+  m_videoIsInterlaced = false;
   m_deintMethods.clear();
   m_deintMethods.push_back(EINTERLACEMETHOD::VS_INTERLACEMETHOD_NONE);
   m_deintMethodDefault = EINTERLACEMETHOD::VS_INTERLACEMETHOD_NONE;
@@ -225,6 +226,20 @@ float CProcessInfo::GetVideoDAR()
   CSingleLock lock(m_videoCodecSection);
 
   return m_videoDAR;
+}
+
+void CProcessInfo::SetVideoInterlaced(bool interlaced)
+{
+  CSingleLock lock(m_videoCodecSection);
+
+  m_videoIsInterlaced = interlaced;
+}
+
+bool CProcessInfo::GetVideoInterlaced()
+{
+  CSingleLock lock(m_videoCodecSection);
+
+  return m_videoIsInterlaced;
 }
 
 EINTERLACEMETHOD CProcessInfo::GetFallbackDeintMethod()
