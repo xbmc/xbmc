@@ -19,6 +19,7 @@
  */
 #pragma once
 
+#include <drm_fourcc.h>
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
 
@@ -36,6 +37,7 @@ public:
     int fd{0};
     int offset{0};
     int pitch{0};
+    uint64_t modifier{DRM_FORMAT_MOD_INVALID};
   };
 
   struct EglAttrs
