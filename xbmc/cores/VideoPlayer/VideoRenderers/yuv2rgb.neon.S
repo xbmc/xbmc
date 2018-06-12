@@ -1,12 +1,12 @@
-// Copyright (c) 2011 ARM Limited. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
-//
-//
-// http://code.google.com/p/chromium/issues/detail?id=71403
-//
-//
-//
+/*
+ *  Copyright (c) 2011 ARM Limited. All rights reserved.
+ *
+ *  SPDX-License-Identifier: BSD-3-Clause
+ *  See LICENSES/README.md for more information.
+ *
+ *  http://code.google.com/p/chromium/issues/detail?id=71403
+ */
+
 #if defined(HAS_NEON) && !defined(__LP64__)
 
  /* Initial ARM Neon implementation of core YUV2RGB functions. */
