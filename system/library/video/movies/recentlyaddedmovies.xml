@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<node order="1" type="folder">
+<node order="10" type="folder">
 	<label>20382</label>
 	<icon>DefaultRecentlyAddedMovies.png</icon>
 	<path>videodb://recentlyaddedmovies/</path>

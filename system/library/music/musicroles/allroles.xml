@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<node order="15" type="folder">
+<node order="110" type="folder">
 	<label>38046</label>
 	<icon>DefaultMusicRoles.png</icon>
 	<path>musicdb://roles/?albumartistsonly=false</path>

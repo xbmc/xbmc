@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<node order="1" type="filter" visible="Library.HasContent(Music)">
+<node order="10" type="filter" visible="Library.HasContent(Music)">
 	<label>135</label>
 	<icon>DefaultMusicGenres.png</icon>
 	<content>artists</content>

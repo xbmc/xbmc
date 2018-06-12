@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<node order="20" type="folder">
+<node order="80" type="folder">
 	<label>744</label>
 	<icon>DefaultFolder.png</icon>
 	<path>sources://video/</path>
