@@ -84,6 +84,9 @@ static ESHADERMETHOD TranslateShaderMethod(GL_SHADER_METHOD method)
   {
   case GL_SHADER_METHOD::DEFAULT: return SM_DEFAULT;
   case GL_SHADER_METHOD::TEXTURE: return SM_TEXTURE;
+#if defined(HAS_GLES)
+  case GL_SHADER_METHOD::TEXTURE_RGBA_OES: return SM_TEXTURE_RGBA_OES;
+#endif
   default:
     break;
   }
