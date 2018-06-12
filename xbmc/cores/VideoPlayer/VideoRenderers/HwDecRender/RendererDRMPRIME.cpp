@@ -78,6 +78,12 @@ bool CRendererDRMPRIME::Configure(const VideoPicture& picture, float fps, unsign
 void CRendererDRMPRIME::AddVideoPicture(const VideoPicture& picture, int index, double currentClock)
 {
   BUFFER& buf = m_buffers[index];
+
+  // delay Release of videoBuffer after a Flush call to prevent drmModeRmFB of a videoBuffer tied to a drm plane
+  // TODO: move Release to Flush once current videoBuffer tied to a drm plane is reference counted
+  if (buf.videoBuffer)
+    buf.videoBuffer->Release();
+
   buf.videoBuffer = picture.videoBuffer;
   buf.videoBuffer->Acquire();
 }
@@ -90,14 +96,17 @@ void CRendererDRMPRIME::Reset()
   m_iLastRenderBuffer = -1;
 }
 
+void CRendererDRMPRIME::Flush()
+{
+  m_iLastRenderBuffer = -1;
+}
+
 void CRendererDRMPRIME::ReleaseBuffer(int index)
 {
   BUFFER& buf = m_buffers[index];
   if (buf.videoBuffer)
   {
-    CVideoBufferDRMPRIME* buffer = dynamic_cast<CVideoBufferDRMPRIME*>(buf.videoBuffer);
-    if (buffer)
-      buffer->Release();
+    buf.videoBuffer->Release();
     buf.videoBuffer = nullptr;
   }
 }

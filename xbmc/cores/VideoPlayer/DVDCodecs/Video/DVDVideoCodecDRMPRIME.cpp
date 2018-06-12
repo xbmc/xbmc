@@ -83,7 +83,7 @@ class CVideoBufferPoolDRMPRIME
   : public IVideoBufferPool
 {
 public:
-  ~CVideoBufferPoolDRMPRIME() override;
+  ~CVideoBufferPoolDRMPRIME();
   void Return(int id) override;
   CVideoBuffer* Get() override;
 
@@ -363,11 +363,12 @@ void CDVDVideoCodecDRMPRIME::SetPictureParams(VideoPicture* pVideoPicture)
     pVideoPicture->iDisplayHeight = ((int)lrint(pVideoPicture->iWidth / aspect_ratio)) & -3;
   }
 
-  pVideoPicture->color_range = m_pFrame->color_range;
+  pVideoPicture->color_range = m_pFrame->color_range == AVCOL_RANGE_JPEG ? 1 : 0;
   pVideoPicture->color_primaries = m_pFrame->color_primaries;
   pVideoPicture->color_transfer = m_pFrame->color_trc;
   pVideoPicture->color_space = m_pFrame->colorspace;
 
+  pVideoPicture->iRepeatPicture = 0;
   pVideoPicture->iFlags = 0;
   pVideoPicture->iFlags |= m_pFrame->interlaced_frame ? DVP_FLAG_INTERLACED : 0;
   pVideoPicture->iFlags |= m_pFrame->top_field_first ? DVP_FLAG_TOP_FIELD_FIRST: 0;

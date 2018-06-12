@@ -37,7 +37,7 @@ class CVideoBufferDRMPRIME
 {
 public:
   CVideoBufferDRMPRIME(IVideoBufferPool& pool, int id);
-  virtual ~CVideoBufferDRMPRIME();
+  ~CVideoBufferDRMPRIME();
   void SetRef(AVFrame* frame);
   void Unref();
 
@@ -57,7 +57,7 @@ class CDVDVideoCodecDRMPRIME
 {
 public:
   explicit CDVDVideoCodecDRMPRIME(CProcessInfo& processInfo);
-  ~CDVDVideoCodecDRMPRIME() override;
+  ~CDVDVideoCodecDRMPRIME();
 
   static CDVDVideoCodec* Create(CProcessInfo& processInfo);
   static void Register();

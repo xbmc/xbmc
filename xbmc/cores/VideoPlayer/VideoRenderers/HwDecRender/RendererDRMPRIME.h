@@ -29,7 +29,7 @@ class CRendererDRMPRIME
 {
 public:
   CRendererDRMPRIME(std::shared_ptr<CDRMUtils> drm);
-  virtual ~CRendererDRMPRIME();
+  ~CRendererDRMPRIME();
 
   // Registration
   static CBaseRenderer* Create(CVideoBuffer* buffer);
@@ -40,6 +40,7 @@ public:
   bool IsConfigured() override { return m_bConfigured; };
   void AddVideoPicture(const VideoPicture& picture, int index, double currentClock) override;
   void UnInit() override {};
+  void Flush() override;
   void ReleaseBuffer(int idx) override;
   bool NeedBuffer(int idx) override;
   bool IsGuiLayer() override { return false; };
