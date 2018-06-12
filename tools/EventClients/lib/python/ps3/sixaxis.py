@@ -111,8 +111,8 @@ def normalize(val):
     if val > upperlimit:
         val = upperlimit
 
-    val = ((float(val) - offset) / (float(upperlimit) - 
-                                    lowerlimit)) * 65535.0    
+    val = ((float(val) - offset) / (float(upperlimit) -
+                                    lowerlimit)) * 65535.0
     if val <= 0:
         val = 1
     return val
@@ -147,17 +147,17 @@ def average(array):
     for i in array:
       val += i
     return val / len(array)
-    
+
 def smooth(arr, val):
     cnt = len(arr)
     arr.insert(0, val)
     arr.pop(cnt)
-    return average(arr)    
+    return average(arr)
 
 def set_l2cap_mtu2(sock, mtu):
   SOL_L2CAP = 6
   L2CAP_OPTIONS = 1
-  
+
   s = sock.getsockopt (SOL_L2CAP, L2CAP_OPTIONS, 12)
   o = list( struct.unpack ("HHHBBBH", s) )
   o[0] = o[1] = mtu
@@ -168,7 +168,7 @@ def set_l2cap_mtu2(sock, mtu):
     print("Warning: Unable to set mtu")
 
 class sixaxis():
-    
+
   def __init__(self, xbmc, control_sock, interrupt_sock):
 
     self.xbmc = xbmc
@@ -177,7 +177,7 @@ class sixaxis():
     self.sumy = [0] * self.num_samples
     self.sumr = [0] * self.num_samples
     self.axis_amount = [0, 0, 0, 0]
-    
+
     self.released = set()
     self.pressed  = set()
     self.pending  = set()
@@ -185,7 +185,7 @@ class sixaxis():
     self.psflags  = 0
     self.psdown   = 0
     self.mouse_enabled = 0
-    
+
     set_l2cap_mtu2(control_sock, 64)
     set_l2cap_mtu2(interrupt_sock, 64)
     time.sleep(0.25) # If we ask to quickly here, it sometimes doesn't start
@@ -200,7 +200,7 @@ class sixaxis():
 
     # HID Command: HIDP_TRANS_SET_REPORT | HIDP_DATA_RTYPE_OUTPUT
     # HID Report:1
-    bytes = [0x52, 0x1] 
+    bytes = [0x52, 0x1]
     bytes.extend([0x00, 0x00, 0x00])
     bytes.extend([0xFF, 0x72])
     bytes.extend([0x00, 0x00, 0x00, 0x00])
@@ -214,7 +214,7 @@ class sixaxis():
     #0x40 = 2Hz
     bytes.extend([0xFF, 0x00, 0x01, 0x00, 0x01]) #LED4 [0xff, 0xff, 0x10, 0x10, 0x10]
     bytes.extend([0xFF, 0x00, 0x01, 0x00, 0x01]) #LED3 [0xff, 0x40, 0x08, 0x10, 0x10]
-    bytes.extend([0xFF, 0x00, 0x01, 0x00, 0x01]) #LED2 [0xff, 0x00, 0x10, 0x30, 0x30] 
+    bytes.extend([0xFF, 0x00, 0x01, 0x00, 0x01]) #LED2 [0xff, 0x00, 0x10, 0x30, 0x30]
     bytes.extend([0xFF, 0x00, 0x01, 0x00, 0x01]) #LED1 [0xff, 0x00, 0x10, 0x40, 0x10]
     bytes.extend([0x00, 0x00, 0x00, 0x00, 0x00])
     bytes.extend([0x00, 0x00, 0x00, 0x00, 0x00])
@@ -282,7 +282,7 @@ class sixaxis():
 
     xpos = normalize_angle(roll, math.radians(30))
     ypos = normalize_angle(pitch, math.radians(30))
-    
+
 
     axis = struct.unpack("BBBB", data[7:11])
     return self.process_input(bflags, pressure, axis, xpos, ypos)

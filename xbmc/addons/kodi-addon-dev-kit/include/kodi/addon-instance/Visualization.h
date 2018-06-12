@@ -35,7 +35,7 @@ extern "C"
 struct AddonInstance_Visualization;
 
 typedef enum VIS_ACTION : unsigned int /* internal */
-{ 
+{
   VIS_ACTION_NONE = 0,
   VIS_ACTION_NEXT_PRESET,
   VIS_ACTION_PREV_PRESET,
@@ -691,7 +691,7 @@ namespace addon
     {
       addon->toAddon.addonInstance->AudioData(audioData, audioDataLength, freqData, freqDataLength);
     }
-    
+
     inline static bool ADDON_IsDirty(const AddonInstance_Visualization* addon)
     {
       return addon->toAddon.addonInstance->IsDirty();

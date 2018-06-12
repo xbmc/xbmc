@@ -51,7 +51,7 @@ public:
 /* destructor */
   ~SqliteDatabase() override;
 
-  Dataset *CreateDataset() const override; 
+  Dataset *CreateDataset() const override;
 
 /* func. returns connection handle with SQLite-server */
   sqlite3 *getHandle() {  return conn; }
@@ -94,7 +94,7 @@ public:
 /* virtual methods for formatting */
   std::string vprepare(const char *format, va_list args) override;
 
-  bool in_transaction() override {return _in_transaction;}; 	
+  bool in_transaction() override {return _in_transaction;};
 
 };
 
@@ -135,7 +135,7 @@ public:
 /* destructor */
   ~SqliteDataset() override;
 
-/* set autorefresh boolean value (if true - refresh the data after edit() 
+/* set autorefresh boolean value (if true - refresh the data after edit()
 or insert() operations default = false) */
   void set_autorefresh(bool val);
 

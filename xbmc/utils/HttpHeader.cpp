@@ -50,7 +50,7 @@ void CHttpHeader::Parse(const std::string& strData)
 
     const size_t nextLine = lineEnd + 1;
     if (lineEnd > pos && strDataC[lineEnd - 1] == '\x0d') // use '\x0d' instead of '\r' to be platform independent
-      lineEnd--; 
+      lineEnd--;
 
     if (m_headerdone)
       Clear(); // clear previous header and process new one
@@ -113,7 +113,7 @@ void CHttpHeader::AddParam(const std::string& param, const std::string& value, c
   if (overwrite)
   { // delete ALL parameters with the same name
     // note: 'GetValue' always returns last added parameter,
-    //       so you probably don't need to overwrite 
+    //       so you probably don't need to overwrite
     for (size_t i = 0; i < m_params.size();)
     {
       if (m_params[i].first == paramLower)

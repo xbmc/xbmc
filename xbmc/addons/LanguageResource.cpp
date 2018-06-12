@@ -139,7 +139,7 @@ void CLanguageResource::OnPostInstall(bool update, bool modal)
     return;
 
   if (IsInUse() ||
-     (!update && !modal && 
+     (!update && !modal &&
        (HELPERS::ShowYesNoDialogText(CVariant{Name()}, CVariant{24132}) == DialogResponse::YES)))
   {
     if (IsInUse())

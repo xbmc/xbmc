@@ -29,7 +29,7 @@
 
 CLibExportSettings::CLibExportSettings()
 {
-  m_exporttype = ELIBEXPORT_SINGLEFILE;  
+  m_exporttype = ELIBEXPORT_SINGLEFILE;
   m_itemstoexport = ELIBEXPORT_ALBUMS + ELIBEXPORT_ALBUMARTISTS;
   m_overwrite = false;
   m_artwork = false;
@@ -47,8 +47,8 @@ bool CLibExportSettings::operator!=(const CLibExportSettings &right) const
     return true;
   if (m_itemstoexport != right.m_itemstoexport)
     return true;
-  
-  if (m_artwork != right.m_artwork)      
+
+  if (m_artwork != right.m_artwork)
     return true;
   if (m_unscraped != right.m_unscraped)
     return true;

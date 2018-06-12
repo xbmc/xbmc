@@ -3,7 +3,7 @@
 \page skin_controls Controls
 \brief Controls are the substance of your skin. They define everything from
 buttons, to text labels, to visualization placement. This portion of the
-manual will explain each and every control in detail. 
+manual will explain each and every control in detail.
 
 - \subpage Addon_Rendering_control - Control where rendering becomes performed from add-on
 - \subpage skin_Button_control - a standard push button control.

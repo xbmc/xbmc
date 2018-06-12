@@ -44,7 +44,7 @@ bool CAndroidAppDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {
   std::string dirname = url.GetFileName();
   URIUtils::RemoveSlashAtEnd(dirname);
-  CLog::Log(LOGDEBUG, "CAndroidAppDirectory::GetDirectory: %s",dirname.c_str()); 
+  CLog::Log(LOGDEBUG, "CAndroidAppDirectory::GetDirectory: %s",dirname.c_str());
   std::string appName = CCompileInfo::GetAppName();
   StringUtils::ToLower(appName);
   std::string className = CCompileInfo::GetPackage();

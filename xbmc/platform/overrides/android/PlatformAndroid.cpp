@@ -29,12 +29,12 @@ CPlatform* CPlatform::CreateInstance()
 
 CPlatformAndroid::CPlatformAndroid()
 {
-  
+
 }
 
 CPlatformAndroid::~CPlatformAndroid()
 {
-  
+
 }
 
 void CPlatformAndroid::Init()

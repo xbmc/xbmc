@@ -69,7 +69,7 @@ int CDVDOverlayCodecSSA::Decode(DemuxPacket *pPacket)
 {
   if(!pPacket)
     return OC_ERROR;
-  
+
   double pts = pPacket->dts != DVD_NOPTS_VALUE ? pPacket->dts : pPacket->pts;
   if (pts == DVD_NOPTS_VALUE)
     pts = 0;
@@ -129,7 +129,7 @@ int CDVDOverlayCodecSSA::Decode(DemuxPacket *pPacket)
 
   if(m_pOverlay)
   {
-    /* there will only ever be one active, so we 
+    /* there will only ever be one active, so we
      * must always make sure any new one overlap
      * include the full duration of the old one */
     if(m_pOverlay->iPTSStopTime > pts + duration)

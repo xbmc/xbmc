@@ -1,4 +1,4 @@
-# Check if SSE instructions are available on the machine where 
+# Check if SSE instructions are available on the machine where
 # the project is compiled.
 include(TestCXXAcceptsFlag)
 
@@ -74,7 +74,7 @@ elseif(CMAKE_SYSTEM_NAME MATCHES "FreeBSD")
      string(REGEX REPLACE "^.*(AVX2).*$" "\\1" _SSE_THERE ${CPUINFO})
      string(COMPARE EQUAL "AVX2" "${_SSE_THERE}" _AVX2_TRUE)
      CHECK_CXX_ACCEPTS_FLAG("-mavx2" _AVX2_OK)
-   endif()  
+   endif()
 elseif(CMAKE_SYSTEM_NAME MATCHES "Android")
   if(CPU MATCHES "x86_64" OR CPU MATCHES "i.86")
     set(_SSE_TRUE TRUE)

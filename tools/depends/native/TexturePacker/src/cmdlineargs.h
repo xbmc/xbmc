@@ -41,7 +41,7 @@ public:
         if (m_cmdline)
         {
             strcpy (m_cmdline, cmdline);
-            ParseCmdLine(); 
+            ParseCmdLine();
         } else {
 #ifdef TARGET_POSIX
           delete[] cmdline;
@@ -110,7 +110,7 @@ private:
             bInQuotes = (*pargs == QUOTE);  // see if this token is quoted
 
             if (bInQuotes)                  // skip leading quote
-                pargs++; 
+                pargs++;
 
             push_back (pargs);              // store position of current token
 
@@ -121,7 +121,7 @@ private:
             if (bInQuotes)
             {
                 // find next quote followed by a space or terminator
-                while (*pargs && 
+                while (*pargs &&
                       !(*pargs == QUOTE && (isspace (pargs[1]) || pargs[1] == TERM)))
                     pargs++;
                 if (*pargs)
@@ -134,7 +134,7 @@ private:
             else
             {
                 // skip to next non-whitespace character
-                while (*pargs && !isspace (*pargs)) 
+                while (*pargs && !isspace (*pargs))
                     pargs++;
                 if (*pargs && isspace (*pargs)) // end of token
                 {

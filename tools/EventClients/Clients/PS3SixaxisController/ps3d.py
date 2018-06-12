@@ -261,7 +261,7 @@ class SixWatch(threading.Thread):
 
 class ZeroconfThread ( threading.Thread ):
     """
-    
+
     """
     def __init__(self):
         threading.Thread.__init__(self)

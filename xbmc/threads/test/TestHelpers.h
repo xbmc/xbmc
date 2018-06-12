@@ -38,7 +38,7 @@ template<class E> inline static bool waitForWaiters(E& event, int numWaiters, in
   }
   return false;
 }
-  
+
 inline static bool waitForThread(std::atomic<long>& mutex, int numWaiters, int milliseconds)
 {
   CCriticalSection sec;
@@ -70,7 +70,7 @@ class thread
 
 //  inline thread(const thread& other) { }
 public:
-  inline explicit thread(IRunnable& runnable) : 
+  inline explicit thread(IRunnable& runnable) :
     f(&runnable), cthread(new CThread(f, "DumbThread"))
   {
     cthread->Create();

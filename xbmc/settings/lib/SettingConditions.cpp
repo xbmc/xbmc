@@ -65,7 +65,7 @@ bool CSettingConditionCombination::Check() const
     const auto combination = std::static_pointer_cast<const CSettingConditionCombination>(operation);
     if (combination == nullptr)
       continue;
-    
+
     if (combination->Check())
       ok = true;
     else if (m_operation == BooleanLogicOperationAnd)

@@ -84,7 +84,7 @@ bool CUDFDirectory::GetDirectory(const CURL& url,
       pItem->m_dwSize = dp->d_filesize;
 
       items.Add(pItem);
-    }	
+    }
   }
 
   udfIsoReader.CloseDir(dirp);

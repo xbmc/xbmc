@@ -48,11 +48,11 @@
 #define WIIMOTE_BUTTON_DOWN				0x0400
 #define WIIMOTE_BUTTON_UP				0x0800
 #define WIIMOTE_BUTTON_PLUS				0x1000
-				
+
 #define WIIMOTE_NUM_BUTTONS				11
 #define KEYCODE_BUTTON_UP				1
 #define KEYCODE_BUTTON_DOWN				2
-#define KEYCODE_BUTTON_LEFT				3	
+#define KEYCODE_BUTTON_LEFT				3
 #define KEYCODE_BUTTON_RIGHT				4
 #define KEYCODE_BUTTON_A				5
 #define KEYCODE_BUTTON_B				6
@@ -95,7 +95,7 @@ class CWiiController{
   float m_start_roll;
   float m_start_pitch;
   char* m_joyString;
-  
+
 
   void get_keys(wiimote* wm);
   void handleKeyPress();

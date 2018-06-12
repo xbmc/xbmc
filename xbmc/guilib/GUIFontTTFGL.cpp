@@ -364,7 +364,7 @@ bool CGUIFontTTFGL::CopyCharToTexture(FT_BitmapGlyph bitGlyph, unsigned int x1, 
     source += bitmap.width;
     target += m_texture->GetPitch();
   }
-  
+
   switch (m_textureStatus)
   {
   case TEXTURE_UPDATED:
@@ -373,7 +373,7 @@ bool CGUIFontTTFGL::CopyCharToTexture(FT_BitmapGlyph bitGlyph, unsigned int x1, 
       m_updateY2 = std::max(m_updateY2, y2);
     }
     break;
-      
+
   case TEXTURE_READY:
     {
       m_updateY1 = y1;
@@ -381,7 +381,7 @@ bool CGUIFontTTFGL::CopyCharToTexture(FT_BitmapGlyph bitGlyph, unsigned int x1, 
       m_textureStatus = TEXTURE_UPDATED;
     }
     break;
-      
+
   case TEXTURE_REALLOCATED:
     {
       m_updateY2 = std::max(m_updateY2, y2);
@@ -392,7 +392,7 @@ bool CGUIFontTTFGL::CopyCharToTexture(FT_BitmapGlyph bitGlyph, unsigned int x1, 
   default:
     break;
   }
-  
+
   return true;
 }
 

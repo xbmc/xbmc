@@ -271,7 +271,7 @@ void CTextureBundleXBT::SetThemeBundle(bool themeBundle)
 std::string CTextureBundleXBT::Normalize(const std::string &name)
 {
   std::string newName(name);
-  
+
   StringUtils::Trim(newName);
   StringUtils::ToLower(newName);
   StringUtils::Replace(newName, '\\','/');

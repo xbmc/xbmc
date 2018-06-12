@@ -70,12 +70,12 @@ struct iovec
 #ifdef __cplusplus
 extern "C" {
 #endif
-  
+
 /**
  * Opaque type that is used as a handle for one instance of an opened DVD.
  */
 typedef struct dvd_reader_s dvd_reader_t;
-  
+
 /**
  * Opaque type for a file read handle, much like a normal fd or FILE *.
  */
@@ -104,7 +104,7 @@ typedef struct {
  *
  * If the given file is a block device, or is the mountpoint for a block
  * device, then that device is used for CSS authentication using libdvdcss.
- * If no device is available, then no CSS authentication is performed, 
+ * If no device is available, then no CSS authentication is performed,
  * and we hope that the image is decrypted.
  *
  * If the path given is a directory, then the files in that directory may be
@@ -115,7 +115,7 @@ typedef struct {
  *   path/VTS_01_1.VOB
  *   path/vts_01_1.vob
  *
- * @param path Specifies the the device, file or directory to be used. 
+ * @param path Specifies the the device, file or directory to be used.
  * @return If successful a a read handle is returned. Otherwise 0 is returned.
  *
  * dvd = DVDOpen(path);
@@ -134,13 +134,13 @@ dvd_reader_t *DVDOpen( const char * );
 void DVDClose( dvd_reader_t * );
 
 /**
- * 
+ *
  */
 typedef enum {
   DVD_READ_INFO_FILE,        /**< VIDEO_TS.IFO  or VTS_XX_0.IFO (title) */
   DVD_READ_INFO_BACKUP_FILE, /**< VIDEO_TS.BUP  or VTS_XX_0.BUP (title) */
   DVD_READ_MENU_VOBS,        /**< VIDEO_TS.VOB  or VTS_XX_0.VOB (title) */
-  DVD_READ_TITLE_VOBS        /**< VTS_XX_[1-9].VOB (title).  All files in 
+  DVD_READ_TITLE_VOBS        /**< VTS_XX_[1-9].VOB (title).  All files in
 				  the title set are opened and read as a
 				  single file. */
 } dvd_read_domain_t;
@@ -181,7 +181,7 @@ int DVDFileStat(dvd_reader_t *, int, dvd_read_domain_t, dvd_stat_t *);
  *
  * @param dvd  A dvd read handle.
  * @param titlenum Which Video Title Set should be used, VIDEO_TS is 0.
- * @param domain Which domain. 
+ * @param domain Which domain.
  * @return If successful a a file read handle is returned, otherwise 0.
  *
  * dvd_file = DVDOpenFile(dvd, titlenum, domain); */
@@ -199,8 +199,8 @@ void DVDCloseFile( dvd_file_t * );
 /**
  * Reads block_count number of blocks from the file at the given block offset.
  * Returns number of blocks read on success, -1 on error.  This call is only
- * for reading VOB data, and should not be used when reading the IFO files.  
- * When reading from an encrypted drive, blocks are decrypted using libdvdcss 
+ * for reading VOB data, and should not be used when reading the IFO files.
+ * When reading from an encrypted drive, blocks are decrypted using libdvdcss
  * where required.
  *
  * @param dvd_file  A file read handle.
@@ -256,7 +256,7 @@ ssize_t DVDFileSize( dvd_file_t * );
  * This is the MD5 sum of VIDEO_TS.IFO and the VTS_0?_0.IFO files
  * in title order (those that exist).
  * If you need a 'text' representation of the id, print it as a
- * hexadecimal number, using lowercase letters, discid[0] first. 
+ * hexadecimal number, using lowercase letters, discid[0] first.
  * I.e. the same format as the command-line 'md5sum' program uses.
  *
  * @param dvd A read handle to get the disc ID from
@@ -321,7 +321,7 @@ int DVDISOVolumeInfo( dvd_reader_t *, char *, unsigned int,
  *             -1 - returns the current setting.
  *              0 - UDF Cache turned off.
  *              1 - (default level) Pointers to IFO files and some data from
- *                  PrimaryVolumeDescriptor are cached. 
+ *                  PrimaryVolumeDescriptor are cached.
  *
  * @return The level of caching.
  */

@@ -63,7 +63,7 @@ bool CGUIDialogOK::ShowAndGetInput(CVariant heading, CVariant text)
 bool CGUIDialogOK::ShowAndGetInput(CVariant heading, CVariant line0, CVariant line1, CVariant line2)
 {
   CGUIDialogOK *dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogOK>(WINDOW_DIALOG_OK);
-  if (!dialog) 
+  if (!dialog)
     return false;
   dialog->SetHeading(heading);
   dialog->SetLine(0, line0);

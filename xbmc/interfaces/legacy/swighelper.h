@@ -22,9 +22,9 @@
 
 /**
  * SWIGHIDDENVIRTUAL allows the keyword 'virtual' to be there when the main
- *  Addon api is compiled, but be hidden from the SWIG code generator. 
+ *  Addon api is compiled, but be hidden from the SWIG code generator.
  *
- * This is to provide finer grain control over which methods are callbackable 
+ * This is to provide finer grain control over which methods are callbackable
  *  (is that a word? ...)
  *  into the scripting language, and which ones are not. True polymorphic
  *  behavior across the scripting language boundary will ONLY occur where
@@ -35,14 +35,14 @@
  * Note: You should not hide virtual destructors from the scripting language.
  */
 #ifdef SWIG
-#define SWIGHIDDENVIRTUAL 
+#define SWIGHIDDENVIRTUAL
 #else
 #define SWIGHIDDENVIRTUAL virtual
 #endif
 
 /**
  * SWIG_CONSTANT_FROM_GETTER will define a constant in the scripting
- *  language from a getter in the Addon api and also provide the 
+ *  language from a getter in the Addon api and also provide the
  *  Addon api declaration. E.g. If you use:
  *
  *  SWIG_CONSTANT_FROM_GETTER(int, MY_CONSTANT);
@@ -51,7 +51,7 @@
  *
  *  int getMy_CONSTANT();
  *
- *  ... in a .cpp file. That call will be made to determine the value 
+ *  ... in a .cpp file. That call will be made to determine the value
  *  of the constant in the scripting language.
  */
 #ifdef SWIG

@@ -133,13 +133,13 @@ bool CCoreAudioChannelLayout::CopyLayoutForStereo(UInt32 layout[2])
   enum {
     kVariableLengthArray_deprecated = 1
   };
-  
+
   free(m_pLayout);
   m_pLayout = NULL;
-  
+
   UInt32 channels = 2;
   UInt32 size = sizeof(AudioChannelLayout) + (channels - kVariableLengthArray_deprecated) * sizeof(AudioChannelDescription);
-  
+
   m_pLayout = (AudioChannelLayout*)malloc(size);
   m_pLayout->mChannelLayoutTag = kAudioChannelLayoutTag_UseChannelDescriptions;
   m_pLayout->mNumberChannelDescriptions = 2;//stereo

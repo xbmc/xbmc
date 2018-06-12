@@ -352,56 +352,56 @@ static void ReleaseStream(D3D11_VIDEO_PROCESSOR_STREAM &stream_data)
   delete[] stream_data.ppFutureSurfaces;
 }
 
-static DXGI_COLOR_SPACE_TYPE GetDXGIColorSpace(CRenderBuffer* view) 
+static DXGI_COLOR_SPACE_TYPE GetDXGIColorSpace(CRenderBuffer* view)
 {
   if (view->color_space == AVCOL_SPC_RGB)
   {
-    if (!view->full_range) 
+    if (!view->full_range)
     {
-      if (view->primaries == AVCOL_PRI_BT2020) 
+      if (view->primaries == AVCOL_PRI_BT2020)
       {
-        if (view->color_transfer == AVCOL_TRC_SMPTEST2084) 
+        if (view->color_transfer == AVCOL_TRC_SMPTEST2084)
         {
           return DXGI_COLOR_SPACE_RGB_STUDIO_G2084_NONE_P2020;
         }
-        else 
+        else
         {
           return DXGI_COLOR_SPACE_RGB_STUDIO_G22_NONE_P2020;
         }
       }
-      else 
+      else
       {
         return DXGI_COLOR_SPACE_RGB_STUDIO_G22_NONE_P709;
       }
     }
-    else 
+    else
     {
-      if (view->primaries == AVCOL_PRI_BT2020) 
+      if (view->primaries == AVCOL_PRI_BT2020)
       {
-        if (view->color_transfer == AVCOL_TRC_SMPTEST2084) 
+        if (view->color_transfer == AVCOL_TRC_SMPTEST2084)
         {
           return DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020;
         }
-        else 
+        else
         {
           return DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P2020;
         }
       }
-      else 
+      else
       {
         if (view->color_transfer == AVCOL_TRC_LINEAR ||
-            view->color_transfer == AVCOL_TRC_LOG) 
+            view->color_transfer == AVCOL_TRC_LOG)
         {
           return DXGI_COLOR_SPACE_RGB_FULL_G10_NONE_P709;
         }
-        else 
+        else
         {
           return DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709;
         }
       }
     }
   }
-  else 
+  else
   {
     if (view->primaries == AVCOL_PRI_BT2020) // UHDTV
     {
@@ -466,7 +466,7 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderB
   // restore processor if it was lost
   if (!m_pVideoProcessor && !OpenProcessor())
     return false;
-  
+
   if (!views[2])
     return false;
 
@@ -569,7 +569,7 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderB
   {
     videoCtx1->VideoProcessorSetStreamColorSpace1(m_pVideoProcessor.Get(), DEFAULT_STREAM_INDEX, GetDXGIColorSpace(views[2]));
     // TODO select color space depend on real output format
-    DXGI_COLOR_SPACE_TYPE colorSpace = DX::Windowing()->UseLimitedColor() ? DXGI_COLOR_SPACE_RGB_STUDIO_G22_NONE_P709 : DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709; 
+    DXGI_COLOR_SPACE_TYPE colorSpace = DX::Windowing()->UseLimitedColor() ? DXGI_COLOR_SPACE_RGB_STUDIO_G22_NONE_P709 : DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709;
     videoCtx1->VideoProcessorSetOutputColorSpace1(m_pVideoProcessor.Get(), colorSpace);
     // makes target available for processing in shaders
     videoCtx1->VideoProcessorSetOutputShaderUsage(m_pVideoProcessor.Get(), 1);
@@ -598,10 +598,10 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderB
   }
 
   // brightness
-  ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER_BRIGHTNESS, 
+  ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER_BRIGHTNESS,
               brightness, 0, 100, 50);
   // contrast
-  ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER_CONTRAST, 
+  ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER_CONTRAST,
               contrast, 0, 100, 50);
   // unused filters
   ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER_HUE, 50, 0, 100, 50);

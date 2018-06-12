@@ -110,7 +110,7 @@ protected:
 
   int m_glslMajor = 0;
   int m_glslMinor = 0;
-  
+
   GLint m_viewPort[4];
 
   std::unique_ptr<CGLShader*[]> m_pShader;

@@ -53,29 +53,29 @@ DEFINE_GUID(DXVA_ModeH264_VLD_NoFGT_Flash, 0x4245F676,0x2BBC,0x4166,0xa0,0xBB,0x
 DEFINE_GUID(DXVA_Intel_VC1_ClearVideo_2,   0xE07EC519,0xE651,0x4CD6,0xAC,0x84,0x13,0x70,0xCC,0xEE,0xC8,0x51);
 
 // redefine DXVA_NoEncrypt with other macro, solves unresolved external symbol linker error
-#ifdef DXVA_NoEncrypt 
+#ifdef DXVA_NoEncrypt
 #undef DXVA_NoEncrypt
 #endif
 DEFINE_GUID(DXVA_NoEncrypt, 0x1b81beD0, 0xa0c7, 0x11d3, 0xb9, 0x84, 0x00, 0xc0, 0x4f, 0x2e, 0x73, 0xc5);
 
-static const int PROFILES_MPEG2_SIMPLE[] = { FF_PROFILE_MPEG2_SIMPLE, 
+static const int PROFILES_MPEG2_SIMPLE[] = { FF_PROFILE_MPEG2_SIMPLE,
                                              FF_PROFILE_UNKNOWN };
 static const int PROFILES_MPEG2_MAIN[]   = { FF_PROFILE_MPEG2_SIMPLE,
-                                             FF_PROFILE_MPEG2_MAIN, 
+                                             FF_PROFILE_MPEG2_MAIN,
                                              FF_PROFILE_UNKNOWN };
 static const int PROFILES_H264_HIGH[]    = { FF_PROFILE_H264_BASELINE,
                                              FF_PROFILE_H264_CONSTRAINED_BASELINE,
                                              FF_PROFILE_H264_MAIN,
-                                             FF_PROFILE_H264_HIGH, 
+                                             FF_PROFILE_H264_HIGH,
                                              FF_PROFILE_UNKNOWN };
-static const int PROFILES_HEVC_MAIN[]    = { FF_PROFILE_HEVC_MAIN, 
+static const int PROFILES_HEVC_MAIN[]    = { FF_PROFILE_HEVC_MAIN,
                                              FF_PROFILE_UNKNOWN };
 static const int PROFILES_HEVC_MAIN10[]  = { FF_PROFILE_HEVC_MAIN,
-                                             FF_PROFILE_HEVC_MAIN_10, 
+                                             FF_PROFILE_HEVC_MAIN_10,
                                              FF_PROFILE_UNKNOWN };
-static const int PROFILES_VP9_0[]        = { FF_PROFILE_VP9_0, 
+static const int PROFILES_VP9_0[]        = { FF_PROFILE_VP9_0,
                                              FF_PROFILE_UNKNOWN };
-static const int PROFILES_VP9_10_2[]     = { FF_PROFILE_VP9_2, 
+static const int PROFILES_VP9_10_2[]     = { FF_PROFILE_VP9_2,
                                              FF_PROFILE_UNKNOWN };
 
 typedef struct {
@@ -380,7 +380,7 @@ void CDXVAContext::DestroyContext()
 void CDXVAContext::QueryCaps()
 {
   m_input_count = m_service->GetVideoDecoderProfileCount();
-  
+
   m_input_list = new GUID[m_input_count];
   for (unsigned i = 0; i < m_input_count; i++)
   {
@@ -535,9 +535,9 @@ bool CDXVAContext::CreateSurfaces(const D3D11_VIDEO_DECODER_DESC &format, const 
   pD3DDevice->GetImmediateContext(&pD3DDeviceContext);
   pD3DDeviceContext.As(&pD3DDeviceContext1);
 
-  CD3D11_TEXTURE2D_DESC texDesc(format.OutputFormat, 
-                                FFALIGN(format.SampleWidth, alignment), 
-                                FFALIGN(format.SampleHeight, alignment), 
+  CD3D11_TEXTURE2D_DESC texDesc(format.OutputFormat,
+                                FFALIGN(format.SampleWidth, alignment),
+                                FFALIGN(format.SampleHeight, alignment),
                                 count, 1, D3D11_BIND_DECODER);
   UINT supported;
   if (SUCCEEDED(pD3DDevice->CheckFormatSupport(format.OutputFormat, &supported))
@@ -952,7 +952,7 @@ static bool HasATIMP2Bug(AVCodecContext *avctx)
   // here are params of these videos
   return avctx->height <= 576
       && avctx->colorspace == AVCOL_SPC_BT470BG
-      && avctx->color_primaries == AVCOL_PRI_BT470BG 
+      && avctx->color_primaries == AVCOL_PRI_BT470BG
       && avctx->color_trc == AVCOL_TRC_GAMMA28;
 }
 
@@ -1241,7 +1241,7 @@ CDVDVideoCodec::VCReturn CDecoder::Check(AVCodecContext* avctx)
   && avctx->codec_id != AV_CODEC_ID_VC1
   && avctx->codec_id != AV_CODEC_ID_WMV3)
     return CDVDVideoCodec::VC_NONE;
-  
+
 #ifdef TARGET_WINDOWS_DESKTOP
   D3D11_VIDEO_DECODER_EXTENSION data = {0};
   union {

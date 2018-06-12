@@ -28,7 +28,7 @@
 #endif
 #ifdef __cplusplus
 extern "C" {
-#endif  
+#endif
 #include <nfsc/libnfs.h>
 #ifdef __cplusplus
 }
@@ -53,17 +53,17 @@ public:
   virtual struct nfs_server_list *nfs_find_local_servers(void)=0;
   virtual void   free_nfs_srvr_list(struct nfs_server_list *srv)=0;
   virtual struct nfs_context *nfs_init_context(void)=0;
-  virtual void nfs_destroy_context(struct nfs_context *nfs)=0;  
-  virtual uint64_t nfs_get_readmax(struct nfs_context *nfs)=0;  
+  virtual void nfs_destroy_context(struct nfs_context *nfs)=0;
+  virtual uint64_t nfs_get_readmax(struct nfs_context *nfs)=0;
   virtual uint64_t nfs_get_writemax(struct nfs_context *nfs)=0;
-  virtual char *nfs_get_error(struct nfs_context *nfs)=0;  
+  virtual char *nfs_get_error(struct nfs_context *nfs)=0;
   virtual int nfs_close(struct nfs_context *nfs,     struct nfsfh *nfsfh)=0;
-  virtual int nfs_fsync(struct nfs_context *nfs,     struct nfsfh *nfsfh)=0;  
+  virtual int nfs_fsync(struct nfs_context *nfs,     struct nfsfh *nfsfh)=0;
   virtual int nfs_mkdir(struct nfs_context *nfs,     const char *path)=0;
   virtual int nfs_rmdir(struct nfs_context *nfs,     const char *path)=0;
   virtual int nfs_unlink(struct nfs_context *nfs,    const char *path)=0;
-  virtual void nfs_closedir(struct nfs_context *nfs,      struct nfsdir *nfsdir)=0;      
-  virtual struct nfsdirent *nfs_readdir(struct nfs_context *nfs, struct nfsdir *nfsdir)=0;  
+  virtual void nfs_closedir(struct nfs_context *nfs,      struct nfsdir *nfsdir)=0;
+  virtual struct nfsdirent *nfs_readdir(struct nfs_context *nfs, struct nfsdir *nfsdir)=0;
   virtual int nfs_mount(struct nfs_context *nfs,     const char *server,   const char *exportname)=0;
   virtual int nfs_stat(struct nfs_context *nfs,      const char *path,     NFSSTAT *st)=0;
   virtual int nfs_fstat(struct nfs_context *nfs,     struct nfsfh *nfsfh,  NFSSTAT *st)=0;
@@ -78,14 +78,14 @@ public:
   virtual int nfs_utime(struct nfs_context *nfs,     const char *path,     struct utimbuf *times)=0;
   virtual int nfs_symlink(struct nfs_context *nfs,   const char *oldpath,  const char *newpath)=0;
   virtual int nfs_rename(struct nfs_context *nfs,    const char *oldpath,  const char *newpath)=0;
-  virtual int nfs_link(struct nfs_context *nfs,      const char *oldpath,  const char *newpath)=0;  
+  virtual int nfs_link(struct nfs_context *nfs,      const char *oldpath,  const char *newpath)=0;
   virtual int nfs_readlink(struct nfs_context *nfs,  const char *path,     char *buf,    int bufsize)=0;
   virtual int nfs_chown(struct nfs_context *nfs,     const char *path,     int uid,      int gid)=0;
   virtual int nfs_fchown(struct nfs_context *nfs,    struct nfsfh *nfsfh,  int uid,      int gid)=0;
-  virtual int nfs_open(struct nfs_context *nfs,      const char *path,     int mode,     struct nfsfh **nfsfh)=0;  
-  virtual int nfs_read(struct nfs_context *nfs,      struct nfsfh *nfsfh,  uint64_t count, char *buf)=0;  
+  virtual int nfs_open(struct nfs_context *nfs,      const char *path,     int mode,     struct nfsfh **nfsfh)=0;
+  virtual int nfs_read(struct nfs_context *nfs,      struct nfsfh *nfsfh,  uint64_t count, char *buf)=0;
   virtual int nfs_write(struct nfs_context *nfs,     struct nfsfh *nfsfh,  uint64_t count, char *buf)=0;
-  virtual int nfs_creat(struct nfs_context *nfs,     const char *path,     int mode,     struct nfsfh **nfsfh)=0;  
+  virtual int nfs_creat(struct nfs_context *nfs,     const char *path,     int mode,     struct nfsfh **nfsfh)=0;
   virtual int nfs_pread(struct nfs_context *nfs,     struct nfsfh *nfsfh,  uint64_t offset, uint64_t count, char *buf)=0;
   virtual int nfs_pwrite(struct nfs_context *nfs,    struct nfsfh *nfsfh,  uint64_t offset, uint64_t count, char *buf)=0;
   virtual int nfs_lseek(struct nfs_context *nfs,     struct nfsfh *nfsfh,  uint64_t offset, int whence,   uint64_t *current_offset)=0;
@@ -101,15 +101,15 @@ class DllLibNfs : public DllDynamic, DllLibNfsInterface
   DEFINE_METHOD1(void,    mount_free_export_list,           (struct exportnode *p1))
   DEFINE_METHOD1(void,    nfs_destroy_context,              (struct nfs_context *p1))
   DEFINE_METHOD1(uint64_t,  nfs_get_readmax,                  (struct nfs_context *p1))
-  DEFINE_METHOD1(uint64_t,  nfs_get_writemax,                 (struct nfs_context *p1)) 
-  DEFINE_METHOD1(char *,  nfs_get_error,                    (struct nfs_context *p1))    
+  DEFINE_METHOD1(uint64_t,  nfs_get_writemax,                 (struct nfs_context *p1))
+  DEFINE_METHOD1(char *,  nfs_get_error,                    (struct nfs_context *p1))
   DEFINE_METHOD2(struct nfsdirent *, nfs_readdir,           (struct nfs_context *p1, struct nfsdir *p2))
   DEFINE_METHOD2(int, nfs_fsync,     (struct nfs_context *p1, struct nfsfh *p2))
   DEFINE_METHOD2(int, nfs_mkdir,     (struct nfs_context *p1, const char *p2))
   DEFINE_METHOD2(int, nfs_rmdir,     (struct nfs_context *p1, const char *p2))
   DEFINE_METHOD2(int, nfs_unlink,    (struct nfs_context *p1, const char *p2))
-  DEFINE_METHOD2(void,nfs_closedir,  (struct nfs_context *p1, struct nfsdir *p2))        
-  DEFINE_METHOD2(int, nfs_close,     (struct nfs_context *p1, struct nfsfh *p2)) 
+  DEFINE_METHOD2(void,nfs_closedir,  (struct nfs_context *p1, struct nfsdir *p2))
+  DEFINE_METHOD2(int, nfs_close,     (struct nfs_context *p1, struct nfsfh *p2))
   DEFINE_METHOD3(int, nfs_mount,     (struct nfs_context *p1, const char *p2,    const char *p3))
   DEFINE_METHOD3(int, nfs_stat,      (struct nfs_context *p1, const char *p2,    NFSSTAT *p3))
   DEFINE_METHOD3(int, nfs_fstat,     (struct nfs_context *p1, struct nfsfh *p2,  NFSSTAT *p3))
@@ -124,7 +124,7 @@ class DllLibNfs : public DllDynamic, DllLibNfsInterface
   DEFINE_METHOD3(int, nfs_access,    (struct nfs_context *p1, const char *p2,    int p3))
   DEFINE_METHOD3(int, nfs_symlink,   (struct nfs_context *p1, const char *p2,    const char *p3))
   DEFINE_METHOD3(int, nfs_rename,    (struct nfs_context *p1, const char *p2,    const char *p3))
-  DEFINE_METHOD3(int, nfs_link,      (struct nfs_context *p1, const char *p2,    const char *p3))  
+  DEFINE_METHOD3(int, nfs_link,      (struct nfs_context *p1, const char *p2,    const char *p3))
   DEFINE_METHOD4(int, nfs_open,      (struct nfs_context *p1, const char *p2,    int p3,     struct nfsfh **p4))
   DEFINE_METHOD4(int, nfs_read,      (struct nfs_context *p1, struct nfsfh *p2,  uint64_t p3,  char *p4))
   DEFINE_METHOD4(int, nfs_write,     (struct nfs_context *p1, struct nfsfh *p2,  uint64_t p3,  char *p4))
@@ -142,14 +142,14 @@ class DllLibNfs : public DllDynamic, DllLibNfsInterface
     RESOLVE_METHOD_RENAME(mount_free_export_list, mount_free_export_list)
     RESOLVE_METHOD_RENAME(mount_getexports, mount_getexports)
     RESOLVE_METHOD_RENAME(nfs_find_local_servers, nfs_find_local_servers)
-    RESOLVE_METHOD_RENAME(free_nfs_srvr_list, free_nfs_srvr_list)        
+    RESOLVE_METHOD_RENAME(free_nfs_srvr_list, free_nfs_srvr_list)
     RESOLVE_METHOD_RENAME(nfs_init_context,   nfs_init_context)
     RESOLVE_METHOD_RENAME(nfs_destroy_context,nfs_destroy_context)
     RESOLVE_METHOD_RENAME(nfs_get_readmax,    nfs_get_readmax)
-    RESOLVE_METHOD_RENAME(nfs_get_writemax,   nfs_get_writemax)   
+    RESOLVE_METHOD_RENAME(nfs_get_writemax,   nfs_get_writemax)
     RESOLVE_METHOD_RENAME(nfs_get_error,      nfs_get_error)
-    RESOLVE_METHOD_RENAME(nfs_readdir,        nfs_readdir)    
-    RESOLVE_METHOD_RENAME(nfs_closedir,       nfs_closedir)  
+    RESOLVE_METHOD_RENAME(nfs_readdir,        nfs_readdir)
+    RESOLVE_METHOD_RENAME(nfs_closedir,       nfs_closedir)
     RESOLVE_METHOD_RENAME(nfs_mount,     nfs_mount)
     RESOLVE_METHOD_RENAME(nfs_stat,      nfs_stat)
     RESOLVE_METHOD_RENAME(nfs_fstat,     nfs_fstat)
@@ -179,7 +179,7 @@ class DllLibNfs : public DllDynamic, DllLibNfsInterface
     RESOLVE_METHOD_RENAME(nfs_access,    nfs_access)
     RESOLVE_METHOD_RENAME(nfs_symlink,   nfs_symlink)
     RESOLVE_METHOD_RENAME(nfs_rename,    nfs_rename)
-    RESOLVE_METHOD_RENAME(nfs_link,      nfs_link)      
+    RESOLVE_METHOD_RENAME(nfs_link,      nfs_link)
   END_METHOD_RESOLVE()
 };
 

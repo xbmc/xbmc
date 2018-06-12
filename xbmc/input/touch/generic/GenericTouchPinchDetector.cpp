@@ -94,6 +94,6 @@ bool CGenericTouchPinchDetector::OnTouchMove(unsigned int index, const Pointer &
 
     OnZoomPinch(centerX, centerY, zoom);
   }
-  
+
   return true;
 }

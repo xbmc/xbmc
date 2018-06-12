@@ -45,7 +45,7 @@ static drmVBlankSeqType CrtcSel(void)
   }
   return (drmVBlankSeqType)ret;
 }
-  
+
 bool CVideoSyncDRM::Setup(PUPDATECLOCK func)
 {
   CLog::Log(LOGDEBUG, "CVideoSyncDRM::%s - setting up DRM", __FUNCTION__);

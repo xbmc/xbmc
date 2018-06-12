@@ -47,7 +47,7 @@ bool CDirectoryNodeInProgressTvShows::GetContent(CFileItemList& items) const
   CVideoDatabase videodatabase;
   if (!videodatabase.Open())
     return false;
-  
+
   bool bSuccess=videodatabase.GetInProgressTvShowsNav(BuildPath(), items);
 
   videodatabase.Close();

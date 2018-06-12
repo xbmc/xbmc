@@ -79,7 +79,7 @@ DEFINE_GUIDSTRUCT("00000008-0000-0010-8000-00aa00389b71", KSDATAFORMAT_SUBTYPE_I
 static const unsigned int WASAPISampleRateCount = 10;
 static const unsigned int WASAPISampleRates[] = { 384000, 192000, 176400, 96000, 88200, 48000, 44100, 32000, 22050, 11025 };
 
-static const enum AEChannel layoutsList[][16] = 
+static const enum AEChannel layoutsList[][16] =
 {
   /* Most common configurations */
   {AE_CH_FC,  AE_CH_NULL}, // Mono
@@ -207,7 +207,7 @@ struct IAEWASAPIDevice
 class CAESinkFactoryWin
 {
 public:
-  /* 
+  /*
     Gets list of audio renderers available on platform
   */
   static std::vector<RendererDetail> GetRendererDetails();

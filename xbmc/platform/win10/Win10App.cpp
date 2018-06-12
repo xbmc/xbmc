@@ -36,7 +36,7 @@
 #include <winrt/Windows.Storage.AccessCache.h>
 
 using namespace KODI::PLATFORM::WINDOWS10;
-namespace winrt 
+namespace winrt
 {
   using namespace Windows::Foundation;
 }
@@ -55,16 +55,16 @@ void App::Initialize(const CoreApplicationView& applicationView)
   // Register event handlers for app lifecycle. This example includes Activated, so that we
   // can make the CoreWindow active and start rendering on the window.
   applicationView.Activated({ this, &App::OnActivated });
-  
+
   CoreApplication::Suspending({ this, &App::OnSuspending });
   CoreApplication::Resuming({ this, &App::OnResuming });
-  // TODO 
+  // TODO
   // CoreApplication::UnhandledErrorDetected += ref new EventHandler<UnhandledErrorDetectedEventArgs^>(this, &App::OnUnhandledErrorDetected);
 
   //Initialize COM
   CoInitializeEx(nullptr, COINIT_MULTITHREADED);
 
-  // At this point we have access to the device. 
+  // At this point we have access to the device.
   // We can create the device-dependent resources.
   CWinEventsWin10::InitOSKeymap();
 
@@ -94,7 +94,7 @@ void App::Run()
     g_advancedSettings.Initialize();
     // fix the case then window opened in FS, but current setting is RES_WINDOW
     // the proper way is make window params related to setting, but in this setting isn't loaded yet
-    // perhaps we should observe setting changes and change window's Preffered props 
+    // perhaps we should observe setting changes and change window's Preffered props
     bool fullscreen = ApplicationView::GetForCurrentView().IsFullScreenMode();
     g_advancedSettings.m_startFullScreen = fullscreen;
 

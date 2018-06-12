@@ -176,7 +176,7 @@ char* Interface_General::unknown_to_utf8(void* kodiBase, const char* source, boo
               __FUNCTION__, kodiBase, static_cast<const void*>(source), static_cast<void*>(ret));
     return nullptr;
   }
-   
+
   std::string string;
   *ret = g_charsetConverter.unknownToUTF8(source, string, failOnBadChar);
   char* buffer = strdup(string.c_str());

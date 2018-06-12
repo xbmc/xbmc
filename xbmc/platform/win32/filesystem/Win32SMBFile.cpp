@@ -110,7 +110,7 @@ bool CWin32SMBFile::SetHidden(const CURL& url, bool hidden)
     if (attrs == INVALID_FILE_ATTRIBUTES)
       return false;
   }
-  
+
   if ((attrs & FILE_ATTRIBUTE_DIRECTORY) != 0)
     return false;
 

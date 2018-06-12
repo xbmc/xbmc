@@ -56,7 +56,7 @@ public:
    * @return true if charset is properly detected and HTML is correctly converted, false if charset is only guessed
    */
   static inline bool ConvertHtmlToUtf8(const std::string& htmlContent, std::string& converted, const std::string& serverReportedCharset = "")
-  { 
+  {
     std::string usedHtmlCharset;
     return ConvertHtmlToUtf8(htmlContent, converted, serverReportedCharset, usedHtmlCharset);
   }

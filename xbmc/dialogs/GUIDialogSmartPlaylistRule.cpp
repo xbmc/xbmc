@@ -311,7 +311,7 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
       sources.insert(sources.end(),sources2.begin(),sources2.end());
     }
     g_mediaManager.GetLocalDrives(sources);
-    
+
     std::string path = m_rule.GetParameter();
     CGUIDialogFileBrowser::ShowAndGetDirectory(sources, g_localizeStrings.Get(657), path, false);
     if (!m_rule.m_parameter.empty())
@@ -484,7 +484,7 @@ void CGUIDialogSmartPlaylistRule::OnOperator()
   // check if selection has changed
   if (!dialog->IsConfirmed() || newSelected < 0)
     return;
- 
+
   m_rule.m_operator = (CDatabaseQueryRule::SEARCH_OPERATOR)std::get<1>(labels[newSelected]);
   UpdateButtons();
 }

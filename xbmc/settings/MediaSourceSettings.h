@@ -34,7 +34,7 @@ public:
   static CMediaSourceSettings& GetInstance();
 
   static std::string GetSourcesFile();
-  
+
   void OnSettingsLoaded() override;
   void OnSettingsUnloaded() override;
 

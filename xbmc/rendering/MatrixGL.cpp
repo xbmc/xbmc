@@ -141,7 +141,7 @@ void CMatrixGL::Rotatef(GLfloat angle, GLfloat x, GLfloat y, GLfloat z)
 }
 
 #if defined(HAS_NEON) && !defined(__LP64__)
-  
+
 static inline void Matrix4Mul(float* src_mat_1, const float* src_mat_2)
 {
   asm volatile (
@@ -175,7 +175,7 @@ static inline void Matrix4Mul(float* src_mat_1, const float* src_mat_2)
 
     // output = result registers
     "vstmia %1, { q0-q3 }"
-    : //no output 
+    : //no output
     : "r" (src_mat_2), "r" (src_mat_1)       // input - note *value* of pointer doesn't change
     : "memory", "q0", "q1", "q2", "q3", "q4", "q5", "q6", "q7", "q8", "q9", "q10", "q11" //clobber
     );

@@ -118,7 +118,7 @@ static int ExportLibrary(const std::vector<std::string>& params)
       thumbs = StringUtils::EqualsNoCase(params[2], "true");
     else
     {
-      HELPERS::DialogResponse result = HELPERS::ShowYesNoDialogText(CVariant{iHeading}, CVariant{20430}); 
+      HELPERS::DialogResponse result = HELPERS::ShowYesNoDialogText(CVariant{iHeading}, CVariant{20430});
       cancelled = result == HELPERS::DialogResponse::CANCELLED;
       thumbs = result == HELPERS::DialogResponse::YES;
     }

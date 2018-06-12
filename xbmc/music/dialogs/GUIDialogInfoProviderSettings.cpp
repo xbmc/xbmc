@@ -81,18 +81,18 @@ bool CGUIDialogInfoProviderSettings::Show()
   if (ADDON::CAddonSystemSettings::GetInstance().GetActive(ADDON::ADDON_SCRAPER_ALBUMS, defaultScraper))
   {
     ADDON::ScraperPtr scraper = std::dynamic_pointer_cast<ADDON::CScraper>(defaultScraper);
-    dialog->SetAlbumScraper(scraper);    
+    dialog->SetAlbumScraper(scraper);
   }
 
-  // Get default artist scraper 
+  // Get default artist scraper
   if (ADDON::CAddonSystemSettings::GetInstance().GetActive(ADDON::ADDON_SCRAPER_ARTISTS, defaultScraper))
   {
     ADDON::ScraperPtr scraper = std::dynamic_pointer_cast<ADDON::CScraper>(defaultScraper);
     dialog->SetArtistScraper(scraper);
   }
-    
+
   dialog->m_strArtistInfoPath = CServiceBroker::GetSettings().GetString(CSettings::SETTING_MUSICLIBRARY_ARTISTSFOLDER);
-    
+
   dialog->Open();
 
   dialog->ResetDefaults();
@@ -109,7 +109,7 @@ int CGUIDialogInfoProviderSettings::Show(ADDON::ScraperPtr& scraper)
 
   dialog->m_showSingleScraper = true;
   dialog->m_singleScraperType = scraper->Content();
-  
+
   if (dialog->m_singleScraperType == CONTENT_ALBUMS)
     dialog->SetAlbumScraper(scraper);
   else
@@ -183,7 +183,7 @@ void CGUIDialogInfoProviderSettings::OnSettingAction(std::shared_ptr<const CSett
   CGUIDialogSettingsManualBase::OnSettingAction(setting);
 
   const std::string &settingId = setting->GetId();
-  
+
   if (settingId == CSettings::SETTING_MUSICLIBRARY_ALBUMSSCRAPER)
   {
     std::string currentScraperId;
@@ -221,7 +221,7 @@ void CGUIDialogInfoProviderSettings::OnSettingAction(std::shared_ptr<const CSett
   else if (settingId == SETTING_ALBUMSCRAPER_SETTINGS)
     CGUIDialogAddonSettings::ShowForAddon(m_albumscraper, false);
   else if (settingId == SETTING_ARTISTSCRAPER_SETTINGS)
-    CGUIDialogAddonSettings::ShowForAddon(m_artistscraper, false);  
+    CGUIDialogAddonSettings::ShowForAddon(m_artistscraper, false);
   else if (settingId == CSettings::SETTING_MUSICLIBRARY_ARTISTSFOLDER)
   {
     VECSOURCES shares;
@@ -265,7 +265,7 @@ void CGUIDialogInfoProviderSettings::Save()
   CLog::Log(LOGINFO, "%s called", __FUNCTION__);
   // Save Fetch addiitional info during update
   CServiceBroker::GetSettings().SetBool(CSettings::SETTING_MUSICLIBRARY_DOWNLOADINFO, m_fetchInfo);
-  // Save default scrapers and addon setting values 
+  // Save default scrapers and addon setting values
   CServiceBroker::GetSettings().SetString(CSettings::SETTING_MUSICLIBRARY_ALBUMSSCRAPER, m_albumscraper->ID());
   m_albumscraper->SaveSettings();
   CServiceBroker::GetSettings().SetString(CSettings::SETTING_MUSICLIBRARY_ARTISTSSCRAPER, m_artistscraper->ID());
@@ -389,9 +389,9 @@ void CGUIDialogInfoProviderSettings::InitializeSettings()
     CLog::Log(LOGERROR, "%s: unable to setup settings", __FUNCTION__);
     return;
   }
-  
+
   if (!m_showSingleScraper)
-  {    
+  {
     AddToggle(group1, CSettings::SETTING_MUSICLIBRARY_DOWNLOADINFO, 38333, SettingLevel::Basic, m_fetchInfo); // "Fetch additional information during scan"
   }
   else

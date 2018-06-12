@@ -1,14 +1,14 @@
 <!-- This is the Document Type Definition for font configuration files -->
-<!ELEMENT fontconfig (dir | 
-		      cache | 
+<!ELEMENT fontconfig (dir |
+		      cache |
 		      cachedir |
-		      include | 
+		      include |
 		      config |
 		      selectfont |
-		      match | 
+		      match |
 		      alias)* >
 
-<!-- 
+<!--
     Add a directory that provides fonts
 -->
 <!ELEMENT dir (#PCDATA)>
@@ -153,7 +153,7 @@
     what the fontconfig database contains.
 -->
 <!ELEMENT test (%expr;)*>
-<!ATTLIST test 
+<!ATTLIST test
 	  qual (any|all|first|not_first)    "any"
 	  name CDATA	    #REQUIRED
 	  target (pattern|font|default)		"default"

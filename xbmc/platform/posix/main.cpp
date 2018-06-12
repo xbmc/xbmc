@@ -25,7 +25,7 @@
 
 #if defined(TARGET_DARWIN_OSX) || defined(TARGET_FREEBSD)
   #include "Util.h"
-  // SDL redefines main as SDL_main 
+  // SDL redefines main as SDL_main
   #ifdef HAS_SDL
     #include <SDL/SDL.h>
   #endif
@@ -89,7 +89,7 @@ int main(int argc, char* argv[])
   if (setrlimit(RLIMIT_CORE, &rlim) == -1)
     CLog::Log(LOGDEBUG, "Failed to set core size limit (%s)", strerror(errno));
 #endif
-  
+
   // Set up global SIGINT/SIGTERM handler
   struct sigaction signalHandler;
   std::memset(&signalHandler, 0, sizeof(signalHandler));
@@ -99,11 +99,11 @@ int main(int argc, char* argv[])
   sigaction(SIGTERM, &signalHandler, nullptr);
 
   setlocale(LC_NUMERIC, "C");
- 
+
   // Initialize before CAppParamParser so it can set the log level
   g_advancedSettings.Initialize();
   CAppParamParser appParamParser;
   appParamParser.Parse(argv, argc);
-  
+
   return XBMC_Run(true, appParamParser);
 }

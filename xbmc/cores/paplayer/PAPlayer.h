@@ -137,7 +137,7 @@ private:
   IAudioCallback*     m_audioCallback;       /* the viz audio callback */
 
   CCriticalSection    m_streamsLock;         /* lock for the stream list */
-  StreamList          m_streams;             /* playing streams */  
+  StreamList          m_streams;             /* playing streams */
   StreamList          m_finishing;           /* finishing streams */
   int                 m_jobCounter;
   CEvent              m_jobEvent;

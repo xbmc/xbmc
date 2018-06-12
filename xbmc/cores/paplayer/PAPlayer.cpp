@@ -92,7 +92,7 @@ void PAPlayer::SoftStart(bool wait/* = false */)
     si->m_stream->Resume();
     si->m_stream->FadeVolume(0.0f, 1.0f, FAST_XFADE_TIME);
   }
-  
+
   if (wait)
   {
     /* wait for them to fade in */
@@ -181,14 +181,14 @@ void PAPlayer::SoftStop(bool wait/* = false */, bool close/* = true */)
 
 void PAPlayer::CloseAllStreams(bool fade/* = true */)
 {
-  if (!fade) 
+  if (!fade)
   {
     CSingleLock lock(m_streamsLock);
     while (!m_streams.empty())
     {
       StreamInfo* si = m_streams.front();
       m_streams.pop_front();
-      
+
       if (si->m_stream)
       {
         CloseFileCB(*si);
@@ -222,7 +222,7 @@ void PAPlayer::CloseAllStreams(bool fade/* = true */)
     SoftStop(false, true);
     CSingleLock lock(m_streamsLock);
     m_currentStream = NULL;
-  }  
+  }
 }
 
 bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
@@ -392,7 +392,7 @@ bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn)
   int64_t streamTotalTime = si->m_decoderTotal;
   if (si->m_endOffset)
     streamTotalTime = si->m_endOffset - si->m_startOffset;
-  
+
   si->m_prepareNextAtFrame = 0;
   // cd drives don't really like it to be crossfaded or prepared
   if(!file.IsCDDA())
@@ -419,7 +419,7 @@ bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn)
   if (!PrepareStream(si))
   {
     CLog::Log(LOGINFO, "PAPlayer::QueueNextFileEx - Error preparing stream");
-    
+
     si->m_decoder.Destroy();
     // advance playlist
     AdvancePlaylistOnError(si->m_fileItem);
@@ -550,7 +550,7 @@ void PAPlayer::Process()
     return;
   }
 
-  CLog::Log(LOGDEBUG, "PAPlayer::Process - Playback started");  
+  CLog::Log(LOGDEBUG, "PAPlayer::Process - Playback started");
   while(m_isPlaying && !m_bStop)
   {
     /* this needs to happen outside of any locks to prevent deadlocks */
@@ -574,7 +574,7 @@ void PAPlayer::Process()
       SetTimeInternal(m_newForcedPlayerTime);
       m_newForcedPlayerTime = -1;
     }
-    
+
     if (m_newForcedTotalTime != -1)
     {
       SetTotalTimeInternal(m_newForcedTotalTime);
@@ -601,7 +601,7 @@ inline void PAPlayer::ProcessStreams(double &freeBufferTime)
   {
     StreamInfo* si = *itt;
     if (si->m_stream->IsDrained())
-    {      
+    {
       itt = m_finishing.erase(itt);
       CloseFileCB(*si);
       CServiceBroker::GetActiveAE()->FreeStream(si->m_stream);
@@ -667,7 +667,7 @@ inline void PAPlayer::ProcessStreams(double &freeBufferTime)
 
       /* unregister the audio callback */
       si->m_stream->UnRegisterAudioCallback();
-      si->m_decoder.Destroy();      
+      si->m_decoder.Destroy();
       si->m_stream->Drain(false);
       m_finishing.push_back(si);
       return;
@@ -970,7 +970,7 @@ void PAPlayer::SetTotalTimeInternal(int64_t time)
   CSingleLock lock(m_streamsLock);
   if (!m_currentStream)
     return;
-  
+
   m_currentStream->m_decoder.SetTotalTime(time);
   UpdateGUIData(m_currentStream);
 }
@@ -980,9 +980,9 @@ void PAPlayer::SetTimeInternal(int64_t time)
   CSingleLock lock(m_streamsLock);
   if (!m_currentStream)
     return;
-  
+
   m_currentStream->m_framesSent = time / 1000 * m_currentStream->m_audioFormat.m_sampleRate;
-  
+
   if (m_currentStream->m_stream)
     m_currentStream->m_framesSent += m_currentStream->m_stream->GetDelay() * m_currentStream->m_audioFormat.m_sampleRate;
 }
@@ -1004,7 +1004,7 @@ int64_t PAPlayer::GetTotalTime64()
   total -= m_currentStream->m_startOffset;
   return total;
 }
-                       
+
 void PAPlayer::SetTotalTime(int64_t time)
 {
   m_newForcedTotalTime = time;

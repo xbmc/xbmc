@@ -56,7 +56,7 @@ static struct sndio_formats formats[] =
   { AE_FMT_S32NE, 32, 4, 1, SIO_LE_NATIVE, 1 },
   { AE_FMT_S32LE, 32, 4, 1, 1, 1 },
   { AE_FMT_S32BE, 32, 4, 1, 0, 1 },
-  
+
   { AE_FMT_S24NE4, 24, 4, 1, SIO_LE_NATIVE, 0 },
   { AE_FMT_S24NE4, 24, 4, 1, SIO_LE_NATIVE, 1 },
   { AE_FMT_S24NE3, 24, 3, 1, SIO_LE_NATIVE, 0 },
@@ -68,7 +68,7 @@ static struct sndio_formats formats[] =
   { AE_FMT_S16LE, 16, 2, 1, 1, 0 },
   { AE_FMT_S16BE, 16, 2, 1, 0, 1 },
   { AE_FMT_S16BE, 16, 2, 1, 0, 0 },
-  
+
   { AE_FMT_U8, 8, 1, 0, 0, 0 },
   { AE_FMT_U8, 8, 1, 0, 0, 1 },
   { AE_FMT_U8, 8, 1, 0, 1, 0 },

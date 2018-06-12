@@ -97,7 +97,7 @@ bool CSkinSettings::Load(const TiXmlNode *settings)
     return false;
 
   const TiXmlElement *rootElement = settings->FirstChildElement(XML_SKINSETTINGS);
-  
+
   // return true in the case skinsettings is missing. It just means that
   // it's been migrated and it's not an error
   if (rootElement == nullptr)

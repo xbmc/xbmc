@@ -92,7 +92,7 @@ void CAutorun::ExecuteAutorun(const std::string& path, bool bypassSettings, bool
 #ifdef HAS_CDDA_RIPPER
   const CProfilesManager &profileManager = CServiceBroker::GetProfileManager();
 
-  if (CServiceBroker::GetSettings().GetInt(CSettings::SETTING_AUDIOCDS_AUTOACTION) == AUTOCD_RIP && 
+  if (CServiceBroker::GetSettings().GetInt(CSettings::SETTING_AUDIOCDS_AUTOACTION) == AUTOCD_RIP &&
       pInfo->IsAudio(1) && !profileManager.GetCurrentProfile().musicLocked())
   {
     CCDDARipper::GetInstance().RipCD();
@@ -239,7 +239,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const std::string& strDrive, int& nAdde
         // Most HD DVD will also include an "ADV_OBJ" folder for advanced content. This folder should be handled first.
         //! @todo for the time being, the DVD autorun settings are used to determine if the HD DVD should be started automatically.
         CFileItemList items, sitems;
-        
+
         // Advanced Content HD DVD (most discs?)
         if (StringUtils::EqualsNoCase(name, "ADV_OBJ"))
         {
@@ -251,7 +251,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const std::string& strDrive, int& nAdde
             // HD DVD Standard says the highest numbered playlist has to be handled first.
             CLog::Log(LOGINFO,"HD DVD: Playlist found. Set filetypes to *.xpl for external player.");
             items.Sort(SortByLabel, SortOrderDescending);
-            phddvdItem = pItem; 
+            phddvdItem = pItem;
             hddvdname = URIUtils::GetFileName(items[0]->GetPath());
             CLog::Log(LOGINFO,"HD DVD: %s", items[0]->GetPath().c_str());
           }
@@ -271,7 +271,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const std::string& strDrive, int& nAdde
               // HD DVD Standard says the lowest numbered ifo has to be handled first.
               CLog::Log(LOGINFO,"HD DVD: IFO found. Set filename to HV* and filetypes to *.ifo for external player.");
               items.Sort(SortByLabel, SortOrderAscending);
-              phddvdItem = pItem; 
+              phddvdItem = pItem;
               hddvdname = URIUtils::GetFileName(items[0]->GetPath());
               CLog::Log(LOGINFO,"HD DVD: %s",items[0]->GetPath().c_str());
             }
@@ -321,7 +321,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const std::string& strDrive, int& nAdde
 
             // get playername
             std::string hdVideoPlayer = CServiceBroker::GetPlayerCoreFactory().GetDefaultPlayer(item);
-            
+
             // Single *.xpl or *.ifo files require an external player to handle playback.
             // If no matching rule was found, VideoPlayer will be default player.
             if (hdVideoPlayer != "VideoPlayer")
@@ -342,7 +342,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const std::string& strDrive, int& nAdde
           CServiceBroker::GetPlaylistPlayer().Play(0, "");
           return true;
         }
-				
+
         // Video CDs can have multiple file formats. First we need to determine which one is used on the CD
         std::string strExt;
         if (StringUtils::EqualsNoCase(name, "MPEGAV"))
@@ -513,7 +513,7 @@ bool CAutorun::IsEnabled() const
 bool CAutorun::PlayDiscAskResume(const std::string& path)
 {
   return PlayDisc(path, true, !CanResumePlayDVD(path) ||
-    HELPERS::ShowYesNoDialogText(CVariant{341}, CVariant{""}, CVariant{13404}, CVariant{12021}) == 
+    HELPERS::ShowYesNoDialogText(CVariant{341}, CVariant{""}, CVariant{13404}, CVariant{12021}) ==
     DialogResponse::YES);
 }
 

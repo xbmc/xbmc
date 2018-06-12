@@ -123,7 +123,7 @@ public:
   void Deinitialize();
 
   /*! \brief Handle an input event
-   * 
+   *
    * \param newEvent event details
    * \return true on successfully handled event
    * \sa XBMC_Event
@@ -151,7 +151,7 @@ public:
 
   /*! \brief Check if the mouse is currently active
    *
-   * \return true if active, false otherwise 
+   * \return true if active, false otherwise
    */
   bool IsMouseActive();
 
@@ -175,7 +175,7 @@ public:
    * \param[in] maxY    screen height
    * \param[in] speedX  mouse speed in x dimension
    * \param[in] speedY  mouse speed in y dimension
-   * \return 
+   * \return
    */
   void SetMouseResolution(int maxX, int maxY, float speedX, float speedY);
 

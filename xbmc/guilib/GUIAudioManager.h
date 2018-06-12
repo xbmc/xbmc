@@ -47,7 +47,7 @@ class CGUIAudioManager : public ISettingCallback
   {
   public:
     int usage;
-    IAESound *sound;      
+    IAESound *sound;
   };
 
 public:

@@ -269,7 +269,7 @@ static int SetDefaultAddon(const std::vector<std::string>& params)
   if (type == ADDON_VIZ)
     allowNone = true;
 
-  if (type != ADDON_UNKNOWN && 
+  if (type != ADDON_UNKNOWN &&
       CGUIWindowAddonBrowser::SelectAddonID(type,addonID,allowNone))
   {
     CAddonSystemSettings::GetInstance().SetActive(type, addonID);

@@ -412,7 +412,7 @@ void CAESinkOSS::GetDelay(AEDelayStatus& status)
     status.SetDelay(0);
     return;
   }
-  
+
   int delay;
   if (ioctl(m_fd, SNDCTL_DSP_GETODELAY, &delay) == -1)
   {
@@ -464,7 +464,7 @@ void CAESinkOSS::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
     CLog::Log(LOGNOTICE,
 	  "CAESinkOSS::EnumerateDevicesEx - No OSS mixer device present: %s", mixerdev);
     return;
-  }	
+  }
 
 #if defined(SNDCTL_SYSINFO) && defined(SNDCTL_CARDINFO)
   oss_sysinfo sysinfo;
@@ -523,7 +523,7 @@ void CAESinkOSS::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
     {
       info.m_deviceType = AE_DEVTYPE_PCM;
     }
- 
+
     oss_audioinfo ainfo;
     memset(&ainfo, 0, sizeof(ainfo));
     ainfo.dev = i;

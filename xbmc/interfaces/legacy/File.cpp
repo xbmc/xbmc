@@ -31,7 +31,7 @@ namespace XBMCAddon
       if ((!numBytes || (((int64_t)numBytes) > size)) && (size >= 0))
         numBytes = (unsigned long) size;
 
-      
+
       XbmcCommons::Buffer ret(numBytes);
 
       if (numBytes == 0)

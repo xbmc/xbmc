@@ -20,10 +20,10 @@
 
 /**
  * These methods are somewhat ugly because they have been copied out of
- * the Swig source code and simply made compilable with groovy. They could 
+ * the Swig source code and simply made compilable with groovy. They could
  * all be much cleaner and smaller if they were completely groovyfied but
  * I have no intention of doing that since they are complicated and they work
- * and I don't want to try to trace down problems that would be inevitable 
+ * and I don't want to try to trace down problems that would be inevitable
  * with such a refactor.
  */
 public class SwigTypeParser
@@ -34,7 +34,7 @@ public class SwigTypeParser
    private static Map typeTable = [:]
 
    /**
-    * Add a typedef node to the global list of typedefs to be used later in 
+    * Add a typedef node to the global list of typedefs to be used later in
     *  parsing types.
     */
    public static void appendTypeTable(Node typetab) { typetab.each { typeTable[it.@namespace + it.@type] = it.@basetype } }
@@ -52,11 +52,11 @@ public class SwigTypeParser
 
   /**
    * This method will return the base type for the provided type string. For example,
-   * if the type string is p.MyType you will get MyType. If the string is 
+   * if the type string is p.MyType you will get MyType. If the string is
    * p.q(const).int you will get 'int'
    */
   public static String getRootType(String ty)
-  { 
+  {
     int li = ty.lastIndexOf('.')
     return li >= 0 ? ty.substring(li + 1) : ty
   }
@@ -151,7 +151,7 @@ public class SwigTypeParser
     *  most basic types.
     */
    public static String SwigType_resolve_all_typedefs(String s)
-   { 
+   {
       String result = ''
       String tc = s
 
@@ -268,7 +268,7 @@ public class SwigTypeParser
       // convert template parameters
       //return result.replaceAll('<\\(', '<').replaceAll('\\)>', '>')
    }
-   
+
    /**
    * This creates the C++ declaration for a valid ltype for the type string
    * given. For example, if the type is a "const char*" which is equivalent
@@ -290,7 +290,7 @@ public class SwigTypeParser
    {
      String prefix = (t.startsWith('q(')) ? t.substring(0,t.indexOf('.') + 1) : ""
      String remainder = (t.startsWith('q(')) ? t.substring(t.indexOf('.') + 1) : t
-     
+
      return prefix + "p." + remainder
    }
 
@@ -498,7 +498,7 @@ public class SwigTypeParser
     * Type elements are always delimited by periods, but may be nested with
     * parentheses.  A nested element is always handled as a single item.
     *
-    * Returns the integer size of the element (which can be used to extract a 
+    * Returns the integer size of the element (which can be used to extract a
     * substring, to chop the element off, or for other purposes).
     * ----------------------------------------------------------------------------- */
 
@@ -576,9 +576,9 @@ public class SwigTypeParser
     </typetab>
       '''
       Node xml = new XmlParser().parseText(xmlText)
-      
+
       SwigTypeParser.appendTypeTable(xml)
-      
+
       //      testPrint('f(int,int,int)','foo')
       //      testPrint('p.a(10).p.f(int,p.f(int).int)','foo')
       //      testPrint('p.q(const).char','foo')

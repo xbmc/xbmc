@@ -102,7 +102,7 @@ namespace DX
     void GetOutput(IDXGIOutput** ppOutput) const;
     void GetAdapterDesc(DXGI_ADAPTER_DESC *desc) const;
     void GetDisplayMode(DXGI_MODE_DESC *mode) const;
-    
+
     D3D11_VIEWPORT GetScreenViewport() const { return m_screenViewport; }
     void SetViewPort(D3D11_VIEWPORT& viewPort) const;
 

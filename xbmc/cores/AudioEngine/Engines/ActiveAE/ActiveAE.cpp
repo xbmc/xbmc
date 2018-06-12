@@ -1375,7 +1375,7 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
   }
 
   // resample buffers for sink
-  if (m_sinkBuffers && 
+  if (m_sinkBuffers &&
      (!CompareFormat(m_sinkBuffers->m_format,m_sinkFormat) ||
       !CompareFormat(m_sinkBuffers->m_inputFormat, sinkInputFormat) ||
       m_sinkBuffers->m_format.m_frames != m_sinkFormat.m_frames))
@@ -2038,7 +2038,7 @@ bool CActiveAE::RunStages()
               fadingStep = delta / samples;
             }
 
-            // for stream amplification, 
+            // for stream amplification,
             // turned off downmix normalization,
             // or if sink format is float (in order to prevent from clipping)
             // we need to run on a per sample basis

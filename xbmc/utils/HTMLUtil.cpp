@@ -223,7 +223,7 @@ void CHTMLUtil::ConvertHTMLToW(const std::wstring& strHTML, std::wstring& strStr
     size_t i = iPos;
     while (iPos < strStripped.size() &&
           (base == 16 ? iswxdigit(strStripped[iPos]) : iswdigit(strStripped[iPos])))
-      iPos++; 
+      iPos++;
 
     num = strStripped.substr(i, iPos-i);
     wchar_t val = (wchar_t)wcstol(num.c_str(),NULL,base);

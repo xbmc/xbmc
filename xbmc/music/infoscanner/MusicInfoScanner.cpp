@@ -37,7 +37,7 @@
 #include "filesystem/File.h"
 #include "filesystem/MusicDatabaseDirectory.h"
 #include "filesystem/MusicDatabaseDirectory/DirectoryNode.h"
-#include "filesystem/SmartPlaylistDirectory.h" 
+#include "filesystem/SmartPlaylistDirectory.h"
 #include "GUIInfoManager.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIKeyboardFactory.h"
@@ -107,7 +107,7 @@ void CMusicInfoScanner::Process()
 
       return;
     }
-    
+
     unsigned int tick = XbmcThreads::SystemClockMillis();
     m_musicDatabase.Open();
     m_bCanInterrupt = true;
@@ -141,7 +141,7 @@ void CMusicInfoScanner::Process()
           /*
            * Note that this will skip scanning (if m_bClean is disabled) if the directory really
            * doesn't exist. Since the music scanner is fed with a list of existing paths from the DB
-           * and cleans out all songs under that path as its first step before re-adding files, if 
+           * and cleans out all songs under that path as its first step before re-adding files, if
            * the entire source is offline we totally empty the music database in one go.
            */
           CLog::Log(LOGWARNING, "%s directory '%s' does not exist - skipping scan.", __FUNCTION__, it->c_str());
@@ -153,7 +153,7 @@ void CMusicInfoScanner::Process()
         m_albumsAdded.clear();
         bool scancomplete = DoScan(*it);
         if (scancomplete)
-        { 
+        {
           if (m_albumsAdded.size() > 0)
           {
             // Set local art for added album disc sets and primary album artists
@@ -161,12 +161,12 @@ void CMusicInfoScanner::Process()
 
             if (m_flags & SCAN_ONLINE)
               // Download additional album and artist information for the recently added albums.
-              // This also identifies any local artist thumb and fanart if it exists, and gives it priority, 
+              // This also identifies any local artist thumb and fanart if it exists, and gives it priority,
               // otherwise it is set to the first available from the remote thumbs and fanart that was scraped.
               ScrapeInfoAddedAlbums();
           }
         }
-        else 
+        else
         {
           commit = false;
           break;
@@ -197,7 +197,7 @@ void CMusicInfoScanner::Process()
       m_fileCountReader.StopThread();
 
       m_musicDatabase.EmptyCache();
-      
+
       tick = XbmcThreads::SystemClockMillis() - tick;
       CLog::Log(LOGNOTICE, "My Music: Scanning for music info using worker thread, operation took %s", StringUtils::SecondsToTimeString(tick / 1000).c_str());
     }
@@ -240,7 +240,7 @@ void CMusicInfoScanner::Process()
         CDirectoryNode::GetDatabaseInfo(*it, params);
         // Only scrape information for artists that have not been scraped before
         // For refresh of information the lastscraped date is optionally clearered elsewhere
-        if (m_musicDatabase.HasArtistBeenScraped(params.GetArtistId())) 
+        if (m_musicDatabase.HasArtistBeenScraped(params.GetArtistId()))
             continue;
 
         CArtist artist;
@@ -275,15 +275,15 @@ void CMusicInfoScanner::Process()
   }
   m_musicDatabase.Close();
   CLog::Log(LOGDEBUG, "%s - Finished scan", __FUNCTION__);
-  
+
   m_bRunning = false;
   ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::AudioLibrary, "xbmc", "OnScanFinished");
-  
+
   // we need to clear the musicdb cache and update any active lists
   CUtil::DeleteMusicDatabaseDirectoryCache();
   CGUIMessage msg(GUI_MSG_SCAN_FINISHED, 0, 0, 0);
   CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
-  
+
   if (m_handle)
     m_handle->MarkFinished();
   m_handle = NULL;
@@ -292,7 +292,7 @@ void CMusicInfoScanner::Process()
 void CMusicInfoScanner::Start(const std::string& strDirectory, int flags)
 {
   m_fileCountReader.StopThread();
-  
+
   m_pathsToScan.clear();
   m_seenPaths.clear();
   m_albumsAdded.clear();
@@ -307,7 +307,7 @@ void CMusicInfoScanner::Start(const std::string& strDirectory, int flags)
   }
   else
     m_pathsToScan.insert(strDirectory);
-  
+
   m_bClean = g_advancedSettings.m_bMusicLibraryCleanOnUpdate;
 
   m_scanType = 0;
@@ -608,7 +608,7 @@ static bool SortSongsByTrack(const CSong& song, const CSong& song2)
 void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& albums, MAPSONGS* songsMap /* = NULL */)
 {
   /*
-   * Step 1: Convert the FileItems into Songs. 
+   * Step 1: Convert the FileItems into Songs.
    * If they're MB tagged, create albums directly from the FileItems.
    * If they're non-MB tagged, index them by album name ready for step 2.
    */
@@ -794,11 +794,11 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
       if (sortnames.size() != common.size())
           // Split artist sort names further using multiple possible delimiters, over single separator applied in Tag loader
         sortnames = StringUtils::SplitMulti(sortnames, { ";", ":", "|", "#" });
-      
+
       for (size_t i = 0; i < common.size(); i++)
       {
         album.artistCredits.emplace_back(StringUtils::Trim(common[i]));
-        // Set artist sort name providing we have as many as we have artists, 
+        // Set artist sort name providing we have as many as we have artists,
         // otherwise something is wrong with them so ignore rather than guess.
         if (sortnames.size() == common.size())
           album.artistCredits.back().SetSortName(StringUtils::Trim(sortnames[i]));
@@ -828,7 +828,7 @@ CMusicInfoScanner::UpdateAlbumInfo(CAlbum& album,
                                    bool bAllowSelection,
                                    CGUIDialogProgress* pDialog)
 {
-  m_musicDatabase.Open();  
+  m_musicDatabase.Open();
   INFO_RET result = UpdateDatabaseAlbumInfo(album, scraper, bAllowSelection, pDialog);
   m_musicDatabase.Close();
   return result;
@@ -862,10 +862,10 @@ int CMusicInfoScanner::RetrieveMusicInfo(const std::string& strDirectory, CFileI
   FileItemsToAlbums(scannedItems, albums, &songsMap);
 
   /*
-  Set thumb for songs and, if only one album in folder, store the thumb for 
+  Set thumb for songs and, if only one album in folder, store the thumb for
   the album (music db) and the folder path (in Textures db) too.
   The album and path thumb is either set to the folder art, or failing that to
-  the art embedded in the first music file. 
+  the art embedded in the first music file.
   Song thumb is only set when it varies, otherwise it is cleared so that it will
   fallback to the album art (that may be from the first file, or that of the
   folder or set later by scraping from NFO files or remote sources). Clearing
@@ -874,7 +874,7 @@ int CMusicInfoScanner::RetrieveMusicInfo(const std::string& strDirectory, CFileI
   However even if all songs are from one album this may not be the album
   folder. It could be just a subfolder containing some of the songs from a disc
   set e.g. CD1, CD2 etc., or the album could spread across many folders.  In
-  this case the album art gets reset every time a folder with songs from just 
+  this case the album art gets reset every time a folder with songs from just
   that album is processed, and needs to be corrected later once all the parts
   of the album have been scanned.
   */
@@ -907,7 +907,7 @@ int CMusicInfoScanner::RetrieveMusicInfo(const std::string& strDirectory, CFileI
     album->strPath = strDirectory;
     m_musicDatabase.AddAlbum(*album);
     m_albumsAdded.insert(album->idAlbum);
-    
+
     numAdded += album->songs.size();
   }
   return numAdded;
@@ -1111,7 +1111,7 @@ void MUSIC_INFO::CMusicInfoScanner::RetrieveLocalArt()
   if (m_handle)
   {
     m_handle->SetTitle(g_localizeStrings.Get(506)); //"Checking media files..."
-   //!@todo: title = Checking for local art 
+   //!@todo: title = Checking for local art
   }
 
   std::set<int> artistsArtDone; // artists processed to avoid unsuccessful repeats
@@ -1138,7 +1138,7 @@ void MUSIC_INFO::CMusicInfoScanner::RetrieveLocalArt()
       if (album.strPath.empty())
         album.strPath = pathpair.first.c_str();
       else
-        // When more than one album path is the common path 
+        // When more than one album path is the common path
         URIUtils::GetCommonPath(album.strPath, pathpair.first.c_str());
     }
     /*
@@ -1146,7 +1146,7 @@ void MUSIC_INFO::CMusicInfoScanner::RetrieveLocalArt()
 
     Providing all songs from an album are are under a unique common album
     folder (no songs from other albums) then thumb has been set to local art,
-    or failing that to embedded art, during scanning by FindArtForAlbums(). 
+    or failing that to embedded art, during scanning by FindArtForAlbums().
     But when songs are also spread over multiple subfolders within it e.g. disc
     sets, it will have been set to either the art of the last subfolder that was
     processed (if there is any), or from the first song in that subfolder with
@@ -1165,13 +1165,13 @@ void MUSIC_INFO::CMusicInfoScanner::RetrieveLocalArt()
 
     //Automatically fetch local art from disc set subfolders
     if (paths.size() > 1)
-    {          
-      SetDiscSetArtwork(album, paths);    
+    {
+      SetDiscSetArtwork(album, paths);
     }
 
     /*
-    Local album artist art 
-    
+    Local album artist art
+
     Look in the nominated "Artist Information Folder" for thumbs and fanart.
     Failing that, for backward compatibility, fallback to the folder immediately
     above the album folder.
@@ -1179,7 +1179,7 @@ void MUSIC_INFO::CMusicInfoScanner::RetrieveLocalArt()
     for the first album artist if the album is a collaboration e.g. composer,
     conductor, orchestra, or by several pop artists in their own right.
     Avoids repeatedly processing the same artist by maintaining a set.
-    
+
     Adding the album may have added new artists, or provide art for an existing
     (song) artist, but does not replace any artwork already set. Hence once art
     has been found for an album artist, art is not searched for in other folders.
@@ -1291,9 +1291,9 @@ CMusicInfoScanner::UpdateDatabaseAlbumInfo(CAlbum& album,
           StringUtils::Format(g_localizeStrings.Get(24147).c_str(), MediaTypeAlbum, album.strAlbum.c_str()),
           CScraperUrl::GetThumbURL(album.thumbURL.GetFirstThumb()), CURL::GetRedacted(album.strPath), EventLevel::Warning)));
       }
-    }    
+    }
   }
-  
+
   // Restore original album and artist name, possibly changed by manual entry
   // to get info but should not change outside merge
   album.strAlbum = origAlbum;
@@ -1361,11 +1361,11 @@ CMusicInfoScanner::UpdateDatabaseArtistInfo(CArtist& artist,
       }
     }
   }
-  
+
   // Restore original artist name, possibly changed by manual entry to get info
   // but should not change outside merge
   artist.strArtist = origArtist;
-    
+
   if (artistDownloadStatus == INFO_ADDED)
   {
     artist.MergeScrapedArtist(artistInfo.GetArtist(), CServiceBroker::GetSettings().GetBool(CSettings::SETTING_MUSICLIBRARY_OVERRIDETAGS));
@@ -1390,7 +1390,7 @@ CMusicInfoScanner::UpdateDatabaseArtistInfo(CArtist& artist,
       artfolder = artist.strPath;
     else
     {
-      // Fallback to the old location local to music files (when there is a 
+      // Fallback to the old location local to music files (when there is a
       // unique folder). If there is no folder for the artist, and *only* the
       // artist, this will be blank
       m_musicDatabase.GetOldArtistPath(artist.idArtist, artfolder);
@@ -1425,7 +1425,7 @@ CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album,
   /*
   When the mbid is derived from tags scraping of album information is done directly
   using that ID, otherwise the lookup is based on album and artist names and can mis-identify the
-  album (i.e. classical music has many "Symphony No. 5"). To be able to correct any mistakes a 
+  album (i.e. classical music has many "Symphony No. 5"). To be able to correct any mistakes a
   manual refresh of artist information uses either the mbid if derived from tags or the album
   and artist names, not any previously scraped mbid.
   */
@@ -1530,7 +1530,7 @@ CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album,
           CMusicAlbumInfo& info = scraper.GetAlbum(i);
           double relevance = info.GetRelevance();
           if (relevance < 0)
-            relevance = CUtil::AlbumRelevance(info.GetAlbum().strAlbum, album.strAlbum, 
+            relevance = CUtil::AlbumRelevance(info.GetAlbum().strAlbum, album.strAlbum,
                         info.GetAlbum().GetAlbumArtistString(),
                         album.GetAlbumArtistString());
 
@@ -1632,10 +1632,10 @@ CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album,
     ScannerWait(1000);
 
   albumInfo = scraper.GetAlbum(iSelectedAlbum);
-  
+
   if (result == CInfoScanner::COMBINED_NFO || result == CInfoScanner::OVERRIDE_NFO)
     nfoReader.GetDetails(albumInfo.GetAlbum(), NULL, true);
-  
+
   return INFO_ADDED;
 }
 
@@ -1645,11 +1645,11 @@ void CMusicInfoScanner::GetAlbumArtwork(long id, const CAlbum &album)
   {
     // Check current album thumb
     std::string artURL = m_musicDatabase.GetArtForItem(id, MediaTypeAlbum, "thumb");
-    // Use first scraped album image (if there is one) when 
-    // a) no thumb or 
+    // Use first scraped album image (if there is one) when
+    // a) no thumb or
     // b) thumb is embedded in music file and "prefer online album art" enabled
-    if (artURL.empty() || 
-        (StringUtils::StartsWith(artURL, "image://") && 
+    if (artURL.empty() ||
+        (StringUtils::StartsWith(artURL, "image://") &&
          CServiceBroker::GetSettings().GetBool(CSettings::SETTING_MUSICLIBRARY_PREFERONLINEALBUMART)))
     {
       std::string thumb = CScraperUrl::GetThumbURL(album.thumbURL.GetFirstThumb());
@@ -1683,7 +1683,7 @@ CMusicInfoScanner::DownloadArtistInfo(const CArtist& artist,
   /*
   When the mbid is derived from tags scraping of artist information is done directly
   using that ID, otherwise the lookup is based on name and can mis-identify the artist
-  (many have same name). To be able to correct any mistakes a manual refresh of artist 
+  (many have same name). To be able to correct any mistakes a manual refresh of artist
   information uses either the mbid if derived from tags or the artist name, not any previously
   scraped mbid.
   */
@@ -1699,7 +1699,7 @@ CMusicInfoScanner::DownloadArtistInfo(const CArtist& artist,
     }
   }
 
-  // Handle nfo files 
+  // Handle nfo files
   CInfoScanner::INFO_TYPE result = CInfoScanner::NO_NFO;
   CNfoFile nfoReader;
   std::string strNfo;
@@ -1715,7 +1715,7 @@ CMusicInfoScanner::DownloadArtistInfo(const CArtist& artist,
   {
     strNfo = URIUtils::AddFileToFolder(path, "artist.nfo");
     existsNFO = XFILE::CFile::Exists(strNfo);
-  }  
+  }
 
   // If not there fall back local to music files (historic location for those album artists with a unique folder)
   if (!existsNFO)
@@ -1770,7 +1770,7 @@ CMusicInfoScanner::DownloadArtistInfo(const CArtist& artist,
     /*
     Finding artist using xml scraper makes a request for data from Musicbrainz.
     MusicBrainz rate-limits queries to 1 per sec, once we hit the rate-limiter
-    the server returns 503 errors for all calls from that IP address. To stay 
+    the server returns 503 errors for all calls from that IP address. To stay
     below the rate-limit threshold wait 1s before proceeding
     */
     if (!info->IsPython())
@@ -1916,13 +1916,13 @@ std::vector<std::string> CMusicInfoScanner::GetArtTypesToScan(const MediaType& m
   if (mediaType == MediaTypeArtist)
   {
     arttypes = { "thumb", "fanart" };
-    arttypes.insert(arttypes.end(), g_advancedSettings.m_musicArtistExtraArt.begin(), 
+    arttypes.insert(arttypes.end(), g_advancedSettings.m_musicArtistExtraArt.begin(),
       g_advancedSettings.m_musicArtistExtraArt.end());
   }
   else if (mediaType == MediaTypeAlbum)
   {
     arttypes = { "thumb" };
-    arttypes.insert(arttypes.end(), g_advancedSettings.m_musicAlbumExtraArt.begin(), 
+    arttypes.insert(arttypes.end(), g_advancedSettings.m_musicAlbumExtraArt.begin(),
       g_advancedSettings.m_musicAlbumExtraArt.end());
   }
 
@@ -1936,7 +1936,7 @@ std::vector<std::string> CMusicInfoScanner::GetMissingArtTypes(const MediaType& 
   // Get default types of art that are automatically fetched during scanning
   arttypes = GetArtTypesToScan(mediaType);
 
-  // Find the types which are missing from the given art 
+  // Find the types which are missing from the given art
   if (art.empty())
     missing = arttypes;
   else
@@ -1947,7 +1947,7 @@ std::vector<std::string> CMusicInfoScanner::GetMissingArtTypes(const MediaType& 
         missing.emplace_back(type);
     }
   }
-  
+
   return missing;
 }
 
@@ -1955,7 +1955,7 @@ bool CMusicInfoScanner::SetArtistArtwork(CArtist& artist, const std::vector<std:
 {
   if (missing.empty())
     return false; // All types of artist art found
-   
+
   // Any extra type of art missing, fetch the image files from the art folder.
   // Thumbs and fanart have own advanced settings for file names, what other
   // art types to fetch automatically is optional too, but local file name must
@@ -1969,8 +1969,8 @@ bool CMusicInfoScanner::SetArtistArtwork(CArtist& artist, const std::vector<std:
       break;
     }
   if (extratype)
-      CDirectory::GetDirectory(artfolder, items, 
-        CServiceBroker::GetFileExtensionProvider().GetPictureExtensions(), 
+      CDirectory::GetDirectory(artfolder, items,
+        CServiceBroker::GetFileExtensionProvider().GetPictureExtensions(),
         DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_READ_CACHE | DIR_FLAG_NO_FILE_INFO);
 
   // Get missing art
@@ -2002,7 +2002,7 @@ bool CMusicInfoScanner::SetArtistArtwork(CArtist& artist, const std::vector<std:
         }
       }
     }
-    // No local art, use first from scraped lists. 
+    // No local art, use first from scraped lists.
     // Fanart has own list. Art type is encoded into the scraper XML held in
     // thumbURL as optional "aspect=" field. Type "thumb" or "" returns URLs for
     // all types of art including those without aspect. Those URL without aspect
@@ -2013,7 +2013,7 @@ bool CMusicInfoScanner::SetArtistArtwork(CArtist& artist, const std::vector<std:
         strArt = CScraperUrl::GetThumbURL(artist.thumbURL.GetFirstThumb());
       else if (type == "fanart")
         strArt = artist.fanart.GetImageURL();
-      else 
+      else
         strArt = CScraperUrl::GetThumbURL(artist.thumbURL.GetFirstThumb(type));
     }
     // Add art to artist and library
@@ -2037,7 +2037,7 @@ bool CMusicInfoScanner::SetAlbumArtwork(CAlbum& album, std::vector<std::string>&
       return false; // No local or scraped art to process
   }
   else if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_MUSICLIBRARY_PREFERONLINEALBUMART))
-  {  
+  {
     // When "prefer online album art" enabled, and we have a scraped cover then
     // if the thumb is embedded replace it by adding "thumb" to the missing types
     std::map<std::string, std::string>::iterator it;
@@ -2095,7 +2095,7 @@ bool CMusicInfoScanner::SetAlbumArtwork(CAlbum& album, std::vector<std::string>&
         }
       }
     }
-    // No local art, use first from scraped list. 
+    // No local art, use first from scraped list.
     // Art type is encoded into the scraper XML held in thumbURL as optional
     // "aspect=" field. Type "thumb" or "" returns URLs for all types of art
     // including those without aspect. Those URL without aspect are also
@@ -2130,10 +2130,10 @@ void CMusicInfoScanner::SetDiscSetArtwork(CAlbum& album, const std::vector<std::
   When we have a true disc set - subfolders AND songs tagged with same unique
   discnumber in each subfolder - save the local art (all types) for each disc.
   */
- 
+
   if (paths.size() <= 1)
     return;  // No disc subfolders to process
-  
+
   // Get default types of art that are to be automatically fetched during scanning
   std::vector<std::string> arttypes;
   arttypes = GetArtTypesToScan(MediaTypeAlbum);
@@ -2203,7 +2203,7 @@ void CMusicInfoScanner::SetDiscSetArtwork(CAlbum& album, const std::vector<std::
       }
     }
   }
-  
+
   // Finally if we still don't have album thumb then use the art from the
   // first disc in the set with a thumb
   if (!firstDiscThumb.empty() && album.art.find("thumb") == album.art.end())
@@ -2249,7 +2249,7 @@ int CMusicInfoScanner::CountFiles(const CFileItemList &items, bool recursive)
   for (int i=0; i<items.Size(); ++i)
   {
     const CFileItemPtr pItem=items[i];
-    
+
     if (recursive && pItem->m_bIsFolder)
       count+=CountFilesRecursively(pItem->GetPath());
     else if (pItem->IsAudio() && !pItem->IsPlayList() && !pItem->IsNFO())

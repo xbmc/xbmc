@@ -33,11 +33,11 @@ namespace MUSIC_INFO
 /*! \brief Rip an entire CD or a single track
 
  The CCDDARipper class is used to rip an entire CD or just a single track.
- Tracks are stored in a folder constructed from two user settings: audiocds.recordingpath and 
- audiocds.trackpathformat. The former is the absolute file system path for the root folder 
- where ripped music is stored, and the latter specifies the format for the album subfolder and 
+ Tracks are stored in a folder constructed from two user settings: audiocds.recordingpath and
+ audiocds.trackpathformat. The former is the absolute file system path for the root folder
+ where ripped music is stored, and the latter specifies the format for the album subfolder and
  for the track file name.
- Format used to encode ripped tracks is defined by the audiocds.encoder user setting, and 
+ Format used to encode ripped tracks is defined by the audiocds.encoder user setting, and
  there are several choices: wav, ogg vorbis and mp3.
  */
 class CCDDARipper : public CJobQueue
@@ -68,7 +68,7 @@ private:
   CCDDARipper(const CCDDARipper&) = delete;
   ~CCDDARipper() override;
   CCDDARipper const& operator=(CCDDARipper const&) = delete;
-  
+
   /*! \brief Return track file name extension for the given encoder type
    \param[in] iEncoder encoder type (see CDDARIP_ENCODER_... constants)
    \return file extension string (i.e. ".wav", ".mp3", ...)

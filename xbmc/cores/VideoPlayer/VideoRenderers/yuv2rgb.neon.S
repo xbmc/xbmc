@@ -10,7 +10,7 @@
 #if defined(HAS_NEON) && !defined(__LP64__)
 
  /* Initial ARM Neon implementation of core YUV2RGB functions. */
-        
+
     .text
     .align 4
 #ifndef __APPLE__
@@ -32,7 +32,7 @@
 #define coef_u_g       d2
 #define coef_v_g       d3
 #define coef_u_b       d4
-/* D5 is spare */        
+/* D5 is spare */
 #define bias_r         q3
 #define bias_r_lo      d6
 #define bias_r_hi      d7
@@ -67,7 +67,7 @@
 #define red8_o         d27
 #define grn8_e         d28
 #define alp8_e         d29
-#define grn8_o         d30 /* overlaps with q15 - y_scale, but safe */ 
+#define grn8_o         d30 /* overlaps with q15 - y_scale, but safe */
 #define alp8_o         d31 /* overlaps with q15 - y_scale, but safe */
 
 /* ARM registers */
@@ -84,7 +84,7 @@
 #define aligned_count  sl
 #define rgb_b_ptr      fp
 #define y_b_ptr        ip
-        
+
 /* Constants */
 /* 8-bit constants can be loaded into vectors using VMOV */
 #define C_Y_SCALE      74   /* Y scale , 74 */
@@ -139,7 +139,7 @@ _yuv420_2_rgb8888_neon:
         cmp             width, #16
         vpoplt          {q4-q7}
         poplt           {r4-r12, pc}
-        
+
         /* Load up vectors containing the bias values. */
         vld1.s16        {bias_r_lo[], bias_r_hi[]}, [lr]!
         vld1.s16        {bias_g_lo[], bias_g_hi[]}, [lr]!
@@ -190,15 +190,15 @@ loop_h_420:
            better performance. */
         pld             [v_ptr]
         pld             [u_ptr]
-        
+
         /***********/
         /* TOP ROW */
-        /***********/        
+        /***********/
         /* Top row: Load 16 pixels of y, even and odd. */
         vld2.u8         {y_even, y_odd}, [y_t_ptr], count
 
         /* Top row, even: combine luminance and chrominance. */
-        vmull.u8        y_scale, y_even, coef_y        
+        vmull.u8        y_scale, y_even, coef_y
         vqadd.s16       red, y_scale, r_delta
         vqadd.s16       grn, y_scale, g_delta
         vqadd.s16       blu, y_scale, b_delta
@@ -221,7 +221,7 @@ loop_h_420:
         vzip.u8         blu8_e, grn8_e
 
         /* Top row, odd: combine luminance and chrominance. */
-        vmull.u8        y_scale, y_odd, coef_y        
+        vmull.u8        y_scale, y_odd, coef_y
         vqadd.s16       red, y_scale, r_delta
         vqadd.s16       grn, y_scale, g_delta
         vqadd.s16       blu, y_scale, b_delta
@@ -248,12 +248,12 @@ loop_h_420:
 
         /**************/
         /* BOTTOM ROW */
-        /**************/        
+        /**************/
         /* Bottom row: Load 16 pixels of y, even and odd. */
         vld2.u8         {y_even, y_odd}, [y_b_ptr], count
 
         /* Bottom row, even: combine luminance and chrominance. */
-        vmull.u8        y_scale, y_even, coef_y        
+        vmull.u8        y_scale, y_even, coef_y
         vqadd.s16       red, y_scale, r_delta
         vqadd.s16       grn, y_scale, g_delta
         vqadd.s16       blu, y_scale, b_delta
@@ -276,7 +276,7 @@ loop_h_420:
         vzip.u8         blu8_e, grn8_e
 
         /* Bottom row, odd: combine luminance and chrominance. */
-        vmull.u8        y_scale, y_odd, coef_y        
+        vmull.u8        y_scale, y_odd, coef_y
         vqadd.s16       red, y_scale, r_delta
         vqadd.s16       grn, y_scale, g_delta
         vqadd.s16       blu, y_scale, b_delta
@@ -293,7 +293,7 @@ loop_h_420:
            ready for storage. */
         vzip.u8         red8_o, alp8_o
         vzip.u8         blu8_o, grn8_o
-        
+
         /* Have we reached the end of the row yet? */
         subs            aligned_count, aligned_count, count
 
@@ -318,7 +318,7 @@ loop_h_420:
         add             y_t_ptr, y_pitch, LSL #1
         add             u_ptr, uv_pitch
         add             v_ptr, uv_pitch
-        
+
         /* Have we reached the bottom row yet? */
         subs            height, height, #2
         bgt             loop_v_420
@@ -334,7 +334,7 @@ loop_h_420:
    one row, not a 2x2 matrix */
 #define rgb_ptr     rgb_t_ptr
 #define y_ptr       y_t_ptr
-        
+
 #ifndef __APPLE__
 yuv422_2_rgb8888_neon:
 #else
@@ -366,12 +366,12 @@ _yuv422_2_rgb8888_neon:
         cmp             width, #16
         vpoplt          {q4-q7}
         poplt           {r4-r12, pc}
-        
+
         /* Load up vectors containing the bias values. */
         vld1.s16        {bias_r_lo[], bias_r_hi[]}, [lr]!
         vld1.s16        {bias_g_lo[], bias_g_hi[]}, [lr]!
         vld1.s16        {bias_b_lo[], bias_b_hi[]}, [lr]!
-        
+
         /* Build coefficient vectors containing the same value in each element. */
         vmov.u8         coef_y, #C_Y_SCALE
         vmov.u8         coef_v_r, #C_V_RED
@@ -416,7 +416,7 @@ loop_h_422:
         vadd.s16        b_delta, b_delta, bias_b
 
         /* Even: combine luminance and chrominance. */
-        vmull.u8        y_scale, y_even, coef_y        
+        vmull.u8        y_scale, y_even, coef_y
         vqadd.s16       red, y_scale, r_delta
         vqadd.s16       grn, y_scale, g_delta
         vqadd.s16       blu, y_scale, b_delta
@@ -439,7 +439,7 @@ loop_h_422:
         vzip.u8         blu8_e, grn8_e
 
         /* Odd: combine luminance and chrominance. */
-        vmull.u8        y_scale, y_odd, coef_y        
+        vmull.u8        y_scale, y_odd, coef_y
         vqadd.s16       red, y_scale, r_delta
         vqadd.s16       grn, y_scale, g_delta
         vqadd.s16       blu, y_scale, b_delta
@@ -456,7 +456,7 @@ loop_h_422:
            ready for storage. */
         vzip.u8         red8_o, alp8_o
         vzip.u8         blu8_o, grn8_o
-        
+
         /* Have we reached the end of the row yet? */
         subs            aligned_count, aligned_count, count
 
@@ -480,7 +480,7 @@ loop_h_422:
         add             y_ptr, y_pitch
         add             u_ptr, uv_pitch
         add             v_ptr, uv_pitch
-        
+
         /* Have we reached the bottom yet? */
         subs            height, height, #1
         bgt             loop_v_422

@@ -40,20 +40,20 @@ bool CZeroconfAndroid::doPublishService(const std::string& fcr_identifier, const
   CLog::Log(LOGDEBUG, "ZeroconfAndroid: identifier: %s type: %s name:%s port:%i", fcr_identifier.c_str(), fcr_type.c_str(), fcr_name.c_str(), f_port);
 
   struct tServiceRef newService;
-  
+
   newService.serviceInfo.setServiceName(fcr_name);
   newService.serviceInfo.setServiceType(fcr_type);
   newService.serviceInfo.setHost(CJNIInetAddress::getLocalHost());
   newService.serviceInfo.setPort(f_port);
-  
+
   for (auto it : txt)
   {
 //    CLog::Log(LOGDEBUG, "ZeroconfAndroid: key:%s, value:%s", it.first.c_str(),it.second.c_str());
     newService.serviceInfo.setAttribute(it.first, it.second);
   }
-  
+
   m_manager.registerService(newService.serviceInfo, 1 /* PROTOCOL_DNS_SD */, newService.registrationListener);
-  
+
   CSingleLock lock(m_data_guard);
   newService.updateNumber = 0;
   m_services.insert(make_pair(fcr_identifier, newService));

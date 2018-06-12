@@ -379,7 +379,7 @@ void CLabelFormatter::SplitMask(unsigned int label, const std::string &mask)
   while ((findStart = reg.RegFind(work.c_str())) >= 0)
   { // we've found a match
     m_staticContent[label].push_back(work.substr(0, findStart));
-    m_dynamicContent[label].push_back(CMaskString("", 
+    m_dynamicContent[label].push_back(CMaskString("",
           reg.GetMatch(1)[0], ""));
     work = work.substr(findStart + reg.GetFindLen());
   }

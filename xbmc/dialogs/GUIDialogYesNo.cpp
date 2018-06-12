@@ -187,7 +187,7 @@ int CGUIDialogYesNo::ShowAndGetInput(const KODI::MESSAGING::HELPERS::DialogYesNo
     SetAutoClose(options.autoclose);
   m_bCanceled = false;
   m_bCustom = false;
-  
+
   for (size_t i = 0; i < 3; ++i)
   {
     if (!options.lines[i].isNull())

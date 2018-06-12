@@ -21,7 +21,7 @@ function check_dyloaded_depends
           install_name_tool -change "$a" "$DYLIB_NAMEPATH/$(basename $a)" "$TARGET_FRAMEWORKS/$(basename $b)"
         fi
       fi
-    done 
+    done
   fi
 }
 
@@ -123,7 +123,7 @@ do
 				let REWIND="1"
 			fi
 			install_name_tool -change "$a" "$DYLIB_NAMEPATH/$(basename $a)" "$TARGET_FRAMEWORKS/$(basename $b)"
-		done 
+		done
 	done
 done
 

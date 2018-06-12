@@ -6,12 +6,12 @@
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- 
+
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- 
+
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
@@ -29,7 +29,7 @@ UInt32 _strtoul(const char *str, int size, int base)
 {
   UInt32 total = 0;
   int i;
-  
+
   for (i = 0; i < size; i++)
   {
     if (base == 16)
@@ -55,9 +55,9 @@ kern_return_t SMCOpen(void)
   mach_port_t   masterPort;
   io_iterator_t iterator;
   io_object_t   device;
-  
+
   kern_return_t result = IOMasterPort(MACH_PORT_NULL, &masterPort);
-  
+
   CFMutableDictionaryRef matchingDictionary = IOServiceMatching("AppleSMC");
   result = IOServiceGetMatchingServices(masterPort, matchingDictionary, &iterator);
   if (result != kIOReturnSuccess)
@@ -65,7 +65,7 @@ kern_return_t SMCOpen(void)
     printf("Error: IOServiceGetMatchingServices() = %08x\n", result);
     return 1;
   }
-  
+
   device = IOIteratorNext(iterator);
   IOObjectRelease(iterator);
   if (device == 0)
@@ -73,7 +73,7 @@ kern_return_t SMCOpen(void)
     printf("Error: no SMC found\n");
     return 1;
   }
-  
+
   result = IOServiceOpen(device, mach_task_self(), 0, &conn);
   IOObjectRelease(device);
   if (result != kIOReturnSuccess)
@@ -81,7 +81,7 @@ kern_return_t SMCOpen(void)
     printf("Error: IOServiceOpen() = %08x\n", result);
     return 1;
   }
-  
+
   return kIOReturnSuccess;
 }
 
@@ -95,10 +95,10 @@ kern_return_t SMCCall(int index, SMCKeyData_t *inputStructure, SMCKeyData_t *out
 {
   size_t   structureInputSize;
   size_t   structureOutputSize;
-  
+
   structureInputSize = sizeof(SMCKeyData_t);
   structureOutputSize = sizeof(SMCKeyData_t);
-  
+
 #if MAC_OS_X_VERSION_10_5
   return IOConnectCallStructMethod( conn, index,
                                    // inputStructure
@@ -112,7 +112,7 @@ kern_return_t SMCCall(int index, SMCKeyData_t *inputStructure, SMCKeyData_t *out
                                              inputStructure,        /* inputStructure */
                                              outputStructure);       /* outputStructure */
 #endif
-  
+
 }
 
 kern_return_t SMCReadKey(UInt32ConstChar_t key, SMCVal_t *val)
@@ -120,29 +120,29 @@ kern_return_t SMCReadKey(UInt32ConstChar_t key, SMCVal_t *val)
   kern_return_t result;
   SMCKeyData_t  inputStructure;
   SMCKeyData_t  outputStructure;
-  
+
   memset(&inputStructure, 0, sizeof(SMCKeyData_t));
   memset(&outputStructure, 0, sizeof(SMCKeyData_t));
   memset(val, 0, sizeof(SMCVal_t));
-  
+
   inputStructure.key = _strtoul(key, 4, 16);
   inputStructure.data8 = SMC_CMD_READ_KEYINFO;
-  
+
   result = SMCCall(KERNEL_INDEX_SMC, &inputStructure, &outputStructure);
   if (result != kIOReturnSuccess)
     return result;
-  
+
   val->dataSize = outputStructure.keyInfo.dataSize;
   _ultostr(val->dataType, outputStructure.keyInfo.dataType);
   inputStructure.keyInfo.dataSize = val->dataSize;
   inputStructure.data8 = SMC_CMD_READ_BYTES;
-  
+
   result = SMCCall(KERNEL_INDEX_SMC, &inputStructure, &outputStructure);
   if (result != kIOReturnSuccess)
     return result;
-  
+
   memcpy(val->bytes, outputStructure.bytes, sizeof(outputStructure.bytes));
-  
+
   return kIOReturnSuccess;
 }
 

@@ -21,15 +21,15 @@ FOR %%b in (%*) DO (
   IF %%b==clean SET BUILDMODE=clean
   IF %%b==noclean SET BUILDMODE=noclean
   IF %%b==sh SET opt=sh
-  IF %%b==build64 ( 
-    SET build64=yes 
+  IF %%b==build64 (
+    SET build64=yes
     SET build32=no
     SET buildArm=no
     SET vcarch=amd64
     SET TARGETPLATFORM=x64
     )
-  IF %%b==buildArm ( 
-    SET build64=no 
+  IF %%b==buildArm (
+    SET build64=no
     SET build32=no
     SET buildArm=yes
     SET vcarch=arm
@@ -71,7 +71,7 @@ GOTO ENDWITHERROR
   ECHO msys environment not found
   ECHO bla>%ERRORFILE%
   EXIT /B 1
-  
+
 :END
   ECHO exiting msys environment
   IF EXIST %ERRORFILE% (

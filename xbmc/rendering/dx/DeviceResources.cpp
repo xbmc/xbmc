@@ -47,7 +47,7 @@ namespace winrt
 #ifdef _DEBUG
 #define breakOnDebug __debugbreak()
 #else
-#define breakOnDebug 
+#define breakOnDebug
 #endif
 #define LOG_HR(hr) CLog::LogF(LOGERROR, "function call at line %d ends with error: %s", __LINE__, DX::GetErrorDescription(hr).c_str());
 #define CHECK_ERR() if (FAILED(hr)) { LOG_HR(hr); breakOnDebug; return; }
@@ -101,7 +101,7 @@ void DX::DeviceResources::Release()
   ReleaseBackBuffer();
   OnDeviceLost(true);
 
-  // leave fullscreen before destroying 
+  // leave fullscreen before destroying
   BOOL bFullScreen;
   m_swapChain->GetFullscreenState(&bFullScreen, nullptr);
   if (!!bFullScreen)
@@ -297,7 +297,7 @@ void DX::DeviceResources::CreateDeviceIndependentResources()
 }
 
 // Configures the Direct3D device, and stores handles to it and the device context.
-void DX::DeviceResources::CreateDeviceResources() 
+void DX::DeviceResources::CreateDeviceResources()
 {
   CLog::LogF(LOGDEBUG, "creating DirectX 11 device.");
 
@@ -424,7 +424,7 @@ void DX::DeviceResources::ReleaseBackBuffer()
 
   m_backBufferTex.Release();
   m_d3dDepthStencilView = nullptr;
-  if (m_deferrContext) 
+  if (m_deferrContext)
   {
     // Clear the previous window size specific context.
     ID3D11RenderTargetView* nullViews[] = { nullptr, nullptr, nullptr, nullptr };
@@ -501,7 +501,7 @@ HRESULT DX::DeviceResources::CreateSwapChain(DXGI_SWAP_CHAIN_DESC1& desc, DXGI_S
     nullptr,
     ppSwapChain
   ); RETURN_ERR(hr);
-  hr = m_dxgiFactory->MakeWindowAssociation(m_window, /*DXGI_MWA_NO_WINDOW_CHANGES |*/ DXGI_MWA_NO_ALT_ENTER); 
+  hr = m_dxgiFactory->MakeWindowAssociation(m_window, /*DXGI_MWA_NO_WINDOW_CHANGES |*/ DXGI_MWA_NO_ALT_ENTER);
 #else
   hr = m_dxgiFactory->CreateSwapChainForCoreWindow(
     m_d3dDevice.Get(),
@@ -564,7 +564,7 @@ void DX::DeviceResources::ResizeBuffers()
       // If the device was removed for any reason, a new device and swap chain will need to be created.
       HandleDeviceLost(hr == DXGI_ERROR_DEVICE_REMOVED);
 
-      // Everything is set up now. Do not continue execution of this method. HandleDeviceLost will reenter this method 
+      // Everything is set up now. Do not continue execution of this method. HandleDeviceLost will reenter this method
       // and correctly set up the new device.
       return;
     }
@@ -591,8 +591,8 @@ void DX::DeviceResources::ResizeBuffers()
     scFSDesc.Windowed = windowed;
 
     ComPtr<IDXGISwapChain1> swapChain;
-    if ( m_d3dFeatureLevel >= D3D_FEATURE_LEVEL_11_0 
-      && !bHWStereoEnabled 
+    if ( m_d3dFeatureLevel >= D3D_FEATURE_LEVEL_11_0
+      && !bHWStereoEnabled
       && g_advancedSettings.m_bTry10bitOutput)
     {
       swapChainDesc.Format = DXGI_FORMAT_R10G10B10A2_UNORM;
@@ -640,7 +640,7 @@ void DX::DeviceResources::ResizeBuffers()
 }
 
 // These resources need to be recreated every time the window size is changed.
-void DX::DeviceResources::CreateWindowSizeDependentResources() 
+void DX::DeviceResources::CreateWindowSizeDependentResources()
 {
   ReleaseBackBuffer();
 
@@ -783,8 +783,8 @@ void DX::DeviceResources::ValidateDevice()
   // If the adapter LUIDs don't match, or if the device reports that it has been removed,
   // a new D3D device must be created.
   HRESULT hr = m_d3dDevice->GetDeviceRemovedReason();
-  if ( previousDesc.AdapterLuid.LowPart != currentDesc.AdapterLuid.LowPart 
-    || previousDesc.AdapterLuid.HighPart != currentDesc.AdapterLuid.HighPart 
+  if ( previousDesc.AdapterLuid.LowPart != currentDesc.AdapterLuid.LowPart
+    || previousDesc.AdapterLuid.HighPart != currentDesc.AdapterLuid.HighPart
     || FAILED(hr))
   {
     // Release references to resources related to the old device.
@@ -804,7 +804,7 @@ void DX::DeviceResources::OnDeviceLost(bool removed)
   // tell any shared resources
   for (auto res : m_resources)
   {
-    // the most of resources like textures and buffers try to 
+    // the most of resources like textures and buffers try to
     // receive and save their status from current device.
     // `removed` means that we have no possibility
     // to use the device anymore, tell all resouces about this.
@@ -853,7 +853,7 @@ bool DX::DeviceResources::Begin()
 {
   HRESULT hr = m_swapChain->Present(0, DXGI_PRESENT_TEST);
 
-  // If the device was removed either by a disconnection or a driver upgrade, we 
+  // If the device was removed either by a disconnection or a driver upgrade, we
   // must recreate all device resources.
   if (hr == DXGI_ERROR_DEVICE_REMOVED || hr == DXGI_ERROR_DEVICE_RESET)
   {
@@ -884,7 +884,7 @@ void DX::DeviceResources::Present()
   DXGI_PRESENT_PARAMETERS parameters = { 0 };
   HRESULT hr = m_swapChain->Present1(1, 0, &parameters);
 
-  // If the device was removed either by a disconnection or a driver upgrade, we 
+  // If the device was removed either by a disconnection or a driver upgrade, we
   // must recreate all device resources.
   if (hr == DXGI_ERROR_DEVICE_REMOVED || hr == DXGI_ERROR_DEVICE_RESET)
   {
@@ -987,8 +987,8 @@ bool DX::DeviceResources::CreateFactory()
 
 void DX::DeviceResources::SetMonitor(HMONITOR monitor)
 {
-  HandleOutputChange([monitor](DXGI_OUTPUT_DESC outputDesc) { 
-    return outputDesc.Monitor == monitor; 
+  HandleOutputChange([monitor](DXGI_OUTPUT_DESC outputDesc) {
+    return outputDesc.Monitor == monitor;
   });
 }
 
@@ -1078,7 +1078,7 @@ void DX::DeviceResources::SetWindowPos(winrt::Rect rect)
   });
 }
 
-// Call this method when the app suspends. It provides a hint to the driver that the app 
+// Call this method when the app suspends. It provides a hint to the driver that the app
 // is entering an idle state and that temporary buffers can be reclaimed for use by other apps.
 void DX::DeviceResources::Trim() const
 {

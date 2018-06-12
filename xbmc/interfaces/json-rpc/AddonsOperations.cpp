@@ -130,11 +130,11 @@ JSONRPC_STATUS CAddonsOperations::GetAddons(const std::string &method, ITranspor
 
   int start, end;
   HandleLimits(parameterObject, result, addons.size(), start, end);
-  
+
   CAddonDatabase addondb;
   for (int index = start; index < end; index++)
     FillDetails(addons.at(index), parameterObject["properties"], result["addons"], addondb, true);
-  
+
   return OK;
 }
 
@@ -145,7 +145,7 @@ JSONRPC_STATUS CAddonsOperations::GetAddonDetails(const std::string &method, ITr
   if (!CServiceBroker::GetAddonMgr().GetAddon(id, addon, ADDON::ADDON_UNKNOWN, false) || addon.get() == NULL ||
       addon->Type() <= ADDON_UNKNOWN || addon->Type() >= ADDON_MAX)
     return InvalidParams;
-    
+
   CAddonDatabase addondb;
   FillDetails(addon, parameterObject["properties"], result["addon"], addondb);
 
@@ -180,7 +180,7 @@ JSONRPC_STATUS CAddonsOperations::ExecuteAddon(const std::string &method, ITrans
   if (!CServiceBroker::GetAddonMgr().GetAddon(id, addon) || addon.get() == NULL ||
       addon->Type() < ADDON_VIZ || addon->Type() >= ADDON_MAX)
     return InvalidParams;
-    
+
   std::string argv;
   CVariant params = parameterObject["params"];
   if (params.isObject())
@@ -206,7 +206,7 @@ JSONRPC_STATUS CAddonsOperations::ExecuteAddon(const std::string &method, ITrans
     if (!params.empty())
       argv = StringUtils::Paramify(params.asString());
   }
-  
+
   std::string cmd;
   if (params.empty())
     cmd = StringUtils::Format("RunAddon(%s)", id.c_str());
@@ -217,7 +217,7 @@ JSONRPC_STATUS CAddonsOperations::ExecuteAddon(const std::string &method, ITrans
     CApplicationMessenger::GetInstance().SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, cmd);
   else
     CApplicationMessenger::GetInstance().PostMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, cmd);
-  
+
   return ACK;
 }
 
@@ -265,17 +265,17 @@ void CAddonsOperations::FillDetails(AddonPtr addon, const CVariant& fields, CVar
 {
   if (addon.get() == NULL)
     return;
-  
+
   CVariant addonInfo = Serialize(addon);
 
   CVariant object;
   object["addonid"] = addonInfo["addonid"];
   object["type"] = addonInfo["type"];
-  
+
   for (unsigned int index = 0; index < fields.size(); index++)
   {
     std::string field = fields[index].asString();
-    
+
     // we need to manually retrieve the enabled / installed state of every addon
     // from the addon database because it can't be read from addon.xml
     if (field == "enabled")
@@ -301,7 +301,7 @@ void CAddonsOperations::FillDetails(AddonPtr addon, const CVariant& fields, CVar
     else if (addonInfo.isMember(field))
       object[field] = addonInfo[field];
   }
-  
+
   if (append)
     result.append(object);
   else

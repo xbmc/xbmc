@@ -81,10 +81,10 @@ JSONRPC_STATUS CAudioLibrary::GetArtists(const std::string &method, ITransportLa
   bool allroles = false;
   if (parameterObject["allroles"].isBoolean())
     allroles = parameterObject["allroles"].asBoolean();
-  
+
   int genreID = -1, albumID = -1, songID = -1;
   const CVariant &filter = parameterObject["filter"];
-  
+
   if (allroles)
     musicUrl.AddOption("roleid", -1000); //All roles, any negative parameter overrides implicit roleid=1 filter required for backward compatibility
   else if (filter.isMember("roleid"))
@@ -125,7 +125,7 @@ JSONRPC_STATUS CAudioLibrary::GetArtists(const std::string &method, ITransportLa
     return InvalidParams;
 
   CFileItemList items;
-  musicdatabase.SetTranslateBlankArtist(false);  
+  musicdatabase.SetTranslateBlankArtist(false);
   if (!musicdatabase.GetArtistsNav(musicUrl.ToString(), items, albumArtistsOnly, genreID, albumID, songID, CDatabase::Filter(), sorting))
     return InternalError;
 
@@ -284,7 +284,7 @@ JSONRPC_STATUS CAudioLibrary::GetAlbumDetails(const std::string &method, ITransp
   JSONRPC_STATUS ret = GetAdditionalAlbumDetails(parameterObject, items, musicdatabase);
   if (ret != OK)
     return ret;
-  
+
   HandleFileItem("albumid", false, "albumdetails", items[0], parameterObject, parameterObject["properties"], result, false);
 
   return OK;
@@ -357,10 +357,10 @@ JSONRPC_STATUS CAudioLibrary::GetSongs(const std::string &method, ITransportLaye
   checkProperties.insert("displaylyricist");
   std::set<std::string> additionalProperties;
   bool artistData = CheckForAdditionalProperties(parameterObject["properties"], checkProperties, additionalProperties);
- 
+
   CFileItemList items;
   if (!musicdatabase.GetSongsFullByWhere(musicUrl.ToString(), CDatabase::Filter(), items, sorting, artistData))
-    return InternalError; 
+    return InternalError;
 
   JSONRPC_STATUS ret = GetAdditionalSongDetails(parameterObject, items, musicdatabase);
   if (ret != OK)
@@ -576,11 +576,11 @@ JSONRPC_STATUS CAudioLibrary::SetArtistDetails(const std::string &method, ITrans
   if (ParameterNotNull(parameterObject, "disambiguation"))
     artist.strDisambiguation = parameterObject["disambiguation"].asString();
 
-  // Update existing art. Any existing artwork that isn't specified in this request stays as is. 
+  // Update existing art. Any existing artwork that isn't specified in this request stays as is.
   // If the value is null then the existing art with that type is removed.
   if (ParameterNotNull(parameterObject, "art"))
   {
-    // Get current artwork    
+    // Get current artwork
     musicdatabase.GetArtForItem(artist.idArtist, MediaTypeArtist, artist.art);
 
     std::set<std::string> removedArtwork;
@@ -597,7 +597,7 @@ JSONRPC_STATUS CAudioLibrary::SetArtistDetails(const std::string &method, ITrans
     }
     // Remove null art now, as not done by update
     if (!musicdatabase.RemoveArtForItem(artist.idArtist, MediaTypeArtist, removedArtwork))
-      return InternalError;   
+      return InternalError;
   }
 
   // Update artist including adding or replacing (but not removing) art
@@ -623,7 +623,7 @@ JSONRPC_STATUS CAudioLibrary::SetAlbumDetails(const std::string &method, ITransp
 
   if (ParameterNotNull(parameterObject, "title"))
     album.strAlbum = parameterObject["title"].asString();
-  if (ParameterNotNull(parameterObject, "displayartist")) 
+  if (ParameterNotNull(parameterObject, "displayartist"))
     album.strArtistDesc = parameterObject["displayartist"].asString();
   // Set album sort string before processing artist credits
   if (ParameterNotNull(parameterObject, "sortartist"))
@@ -673,12 +673,12 @@ JSONRPC_STATUS CAudioLibrary::SetAlbumDetails(const std::string &method, ITransp
     album.strMusicBrainzAlbumID = parameterObject["musicbrainzalbumid"].asString();
   if (ParameterNotNull(parameterObject, "musicbrainzreleasegroupid"))
     album.strReleaseGroupMBID = parameterObject["musicbrainzreleasegroupid"].asString();
-  
-  // Update existing art. Any existing artwork that isn't specified in this request stays as is. 
+
+  // Update existing art. Any existing artwork that isn't specified in this request stays as is.
   // If the value is null then the existing art with that type is removed.
   if (ParameterNotNull(parameterObject, "art"))
   {
-    // Get current artwork    
+    // Get current artwork
     musicdatabase.GetArtForItem(album.idAlbum, MediaTypeAlbum, album.art);
 
     std::set<std::string> removedArtwork;
@@ -768,12 +768,12 @@ JSONRPC_STATUS CAudioLibrary::SetSongDetails(const std::string &method, ITranspo
     song.lastPlayed.SetFromDBDateTime(parameterObject["lastplayed"].asString());
   if (ParameterNotNull(parameterObject, "mood"))
     song.strAlbum = parameterObject["mood"].asString();
-  
-  // Update existing art. Any existing artwork that isn't specified in this request stays as is. 
+
+  // Update existing art. Any existing artwork that isn't specified in this request stays as is.
   // If the value is null then the existing art with that type is removed.
   if (ParameterNotNull(parameterObject, "art"))
   {
-    // Get current artwork    
+    // Get current artwork
     std::map<std::string, std::string> artwork;
     musicdatabase.GetArtForItem(song.idSong, MediaTypeSong, artwork);
 
@@ -1044,9 +1044,9 @@ JSONRPC_STATUS CAudioLibrary::GetAdditionalSongDetails(const CVariant &parameter
   std::set<std::string> checkProperties;
   checkProperties.insert("genreid");
   // Query (songview join songartistview) returns song.strAlbumArtists = CMusicInfoTag.m_strAlbumArtistDesc only
-  // Actual album artist data, if required,  comes from album_artist and artist tables. 
+  // Actual album artist data, if required,  comes from album_artist and artist tables.
   // It may differ from just splitting album artist description string
-  checkProperties.insert("albumartist"); 
+  checkProperties.insert("albumartist");
   checkProperties.insert("albumartistid");
   checkProperties.insert("musicbrainzalbumartistid");
   std::set<std::string> additionalProperties;

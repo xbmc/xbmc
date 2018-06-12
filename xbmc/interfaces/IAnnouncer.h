@@ -41,7 +41,7 @@ namespace ANNOUNCEMENT
   #define ANNOUNCE_ALL (Player | Playlist | GUI | System | VideoLibrary | AudioLibrary | Application | Input | ANNOUNCEMENT::PVR | Other)
 
   /*!
-    \brief Returns a string representation for the 
+    \brief Returns a string representation for the
     given AnnouncementFlag
     \param notification Specific AnnouncementFlag
     \return String representation of the given AnnouncementFlag

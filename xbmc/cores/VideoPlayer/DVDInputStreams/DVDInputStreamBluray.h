@@ -43,7 +43,7 @@ class CDVDOverlayImage;
 class DllLibbluray;
 class IVideoPlayer;
 
-class CDVDInputStreamBluray 
+class CDVDInputStreamBluray
   : public CDVDInputStream
   , public CDVDInputStream::IDisplayTime
   , public CDVDInputStream::IChapter

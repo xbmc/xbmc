@@ -64,7 +64,7 @@ namespace XFILE
       std::string id;
       int         label;
     } Node;
-    
+
     class CDirectoryNode
     {
     public:

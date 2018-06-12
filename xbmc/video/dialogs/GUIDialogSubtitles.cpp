@@ -213,7 +213,7 @@ void CGUIDialogSubtitles::Process(unsigned int currentTime, CDirtyRegionList &di
       }
       m_updateSubsList = false;
     }
-    
+
     int control = GetFocusedControlID();
     // nothing has focus
     if (!control)
@@ -254,7 +254,7 @@ void CGUIDialogSubtitles::FillServices()
   else
     // Set default service for filemode and movies
     defaultService = CServiceBroker::GetSettings().GetString(CSettings::SETTING_SUBTITLES_MOVIE);
-  
+
   std::string service = addons.front()->ID();
   for (VECADDONS::const_iterator addonIt = addons.begin(); addonIt != addons.end(); ++addonIt)
   {
@@ -580,7 +580,7 @@ void CGUIDialogSubtitles::OnDownloadComplete(const CFileItemList *items, const s
   // Notify window manager that a subtitle was downloaded
   CGUIMessage msg(GUI_MSG_SUBTITLE_DOWNLOADED, 0, 0);
   CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
-  
+
   // Close the window
   Close();
 }

@@ -32,7 +32,7 @@ CSettingAddon::CSettingAddon(const std::string &id, CSettingsManager *settingsMa
 CSettingAddon::CSettingAddon(const std::string &id, int label, const std::string &value, CSettingsManager *settingsManager /* = nullptr */)
   : CSettingString(id, label, value, settingsManager)
 { }
-  
+
 CSettingAddon::CSettingAddon(const std::string &id, const CSettingAddon &setting)
   : CSettingString(id, setting)
 {
@@ -50,14 +50,14 @@ bool CSettingAddon::Deserialize(const TiXmlNode *node, bool update /* = false */
 
   if (!CSettingString::Deserialize(node, update))
     return false;
-    
+
   if (m_control != nullptr &&
      (m_control->GetType() != "button" || m_control->GetFormat() != "addon"))
   {
     CLog::Log(LOGERROR, "CSettingAddon: invalid <control> of \"%s\"", m_id.c_str());
     return false;
   }
-    
+
   bool ok = false;
   std::string strAddonType;
   auto constraints = node->FirstChild("constraints");
@@ -84,7 +84,7 @@ bool CSettingAddon::Deserialize(const TiXmlNode *node, bool update /* = false */
 void CSettingAddon::copyaddontype(const CSettingAddon &setting)
 {
   CSettingString::Copy(setting);
-  
+
   CExclusiveLock lock(m_critical);
   m_addonType = setting.m_addonType;
 }

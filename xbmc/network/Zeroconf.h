@@ -54,7 +54,7 @@ public:
                       const std::string& fcr_name,
                       unsigned int f_port,
                       std::vector<std::pair<std::string, std::string> > txt /*= std::vector<std::pair<std::string, std::string> >()*/);
-  
+
   //tries to rebroadcast that service on the network without removing/readding
   //this can be achieved by changing a fake txt record. Implementations should
   //implement it by doing so.
@@ -105,7 +105,7 @@ protected:
   //methods to implement for concrete implementations
   //update this service
   virtual bool doForceReAnnounceService(const std::string& fcr_identifier) = 0;
-  
+
   //removes the service if published
   virtual bool doRemoveService(const std::string& fcr_ident) = 0;
 

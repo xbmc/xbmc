@@ -43,7 +43,7 @@ public:
   bool IsStopping() const override { return m_stop || ILanguageInvoker::IsStopping(); }
 
   typedef void (*PythonModuleInitialization)();
-  
+
 protected:
   // implementation of ILanguageInvoker
   bool execute(const std::string &script, const std::vector<std::string> &arguments) override;

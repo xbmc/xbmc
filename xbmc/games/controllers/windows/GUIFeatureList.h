@@ -77,7 +77,7 @@ namespace GAME
     CGUILabelControl*       m_guiGroupTitle;
     CGUIImage*              m_guiFeatureSeparator;
 
-    // Game window stuff 
+    // Game window stuff
     ControllerPtr           m_controller;
     IConfigurationWizard*   m_wizard;
   };

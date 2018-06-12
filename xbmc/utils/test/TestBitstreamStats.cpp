@@ -31,7 +31,7 @@ class CTestBitstreamStatsThread : public CThread
 public:
   CTestBitstreamStatsThread() :
     CThread("TestBitstreamStats"){}
-  
+
 };
 
 TEST(TestBitstreamStats, General)

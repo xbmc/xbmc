@@ -70,9 +70,9 @@ macro(winstore_set_assets target)
   set_property(SOURCE ${ASSET_FILES} PROPERTY VS_DEPLOYMENT_CONTENT 1)
   set_property(SOURCE ${ASSET_FILES} PROPERTY VS_DEPLOYMENT_LOCATION "media")
   source_group("media" FILES ${ASSET_FILES})
-  set(RESOURCES ${RESOURCES} ${ASSET_FILES} 
+  set(RESOURCES ${RESOURCES} ${ASSET_FILES}
                             "${CMAKE_SOURCE_DIR}/tools/windows/packaging/uwp/kodi_temp_key.pfx")
-  set(LICENSE_FILES 
+  set(LICENSE_FILES
     ${CMAKE_SOURCE_DIR}/LICENSE.GPL
     ${CMAKE_SOURCE_DIR}/copying.txt
     ${CMAKE_SOURCE_DIR}/privacy-policy.txt)
@@ -108,7 +108,7 @@ macro(add_deployment_content_group path link match exclude)
     "      <Link>${_link}%(RecursiveDir)%(FileName)%(Extension)</Link>\n"
     "      <DeploymentContent>true</DeploymentContent>\n"
     "    </EmbedResources>\n")
-endmacro() 
+endmacro()
 
 macro(winstore_append_props target)
   # exclude debug dlls from packaging
@@ -126,7 +126,7 @@ macro(winstore_append_props target)
     "    </None>\n"
     "  </ItemGroup>\n")
   endforeach(_dll DEBUG_DLLS)
-  
+
   add_deployment_content_group($(BuildRootPath)/dlls "" *.dll "${DEBUG_DLLS_EXCLUDE}")
   add_deployment_content_group($(BuildRootPath)/system system **/* "$(BuildRootPath)/**/shaders/**")
   add_deployment_content_group($(BuildRootPath)/system/shaders system/shaders **/*.fx "")

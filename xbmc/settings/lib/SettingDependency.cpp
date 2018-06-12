@@ -113,7 +113,7 @@ bool CSettingDependencyCondition::Check() const
       m_operator == SettingDependencyOperator::Unknown ||
       m_settingsManager == nullptr)
     return false;
-  
+
   bool result = false;
   switch (m_target)
   {
@@ -162,7 +162,7 @@ bool CSettingDependencyCondition::Check() const
         case SettingDependencyOperator::Unknown:
         default:
           break;
-      }        
+      }
 
       break;
     }
@@ -343,7 +343,7 @@ bool CSettingDependency::Deserialize(const TiXmlNode *node)
   auto elem = node->ToElement();
   if (elem == nullptr)
     return false;
-  
+
   auto strType = elem->Attribute(SETTING_XML_ATTR_TYPE);
   if (strType == nullptr || strlen(strType) <= 0 || !setType(strType))
   {

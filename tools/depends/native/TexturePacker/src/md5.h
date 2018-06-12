@@ -25,7 +25,7 @@
 #include <cstring>		/* for memcpy() */
 #include <cstdint>
 
-struct MD5Context 
+struct MD5Context
 {
   uint32_t buf[4];
   uint32_t bytes[2];

@@ -31,12 +31,12 @@ class CJNIXBMCNsdManagerDiscoveryListener : public CJNINsdManagerDiscoveryListen
 {
 public:
   CJNIXBMCNsdManagerDiscoveryListener();
-  CJNIXBMCNsdManagerDiscoveryListener(const CJNIXBMCNsdManagerDiscoveryListener& other); 
+  CJNIXBMCNsdManagerDiscoveryListener(const CJNIXBMCNsdManagerDiscoveryListener& other);
   explicit CJNIXBMCNsdManagerDiscoveryListener(const jni::jhobject &object) : CJNIBase(object) {}
   virtual ~CJNIXBMCNsdManagerDiscoveryListener();
-  
+
   static void RegisterNatives(JNIEnv* env);
-   
+
   // CJNINsdManagerDiscoveryListener interface
 public:
   void onDiscoveryStarted(const std::string& serviceType) = 0;

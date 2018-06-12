@@ -224,13 +224,13 @@ public:
       StringUtils::Replace(str, delimiters[di], delimiters[0]);
     return SplitTo(dest, str, delimiters[0]);
   }
-  
+
   /*! \brief Splits the given input strings using the given delimiters into further separate strings.
 
   If the given input string vector is empty the result will be an empty array (not
   an array containing an empty string).
 
-  Delimiter strings are applied in order, so once the (optional) maximum number of 
+  Delimiter strings are applied in order, so once the (optional) maximum number of
   items is produced no other delimiters are applied. This produces different results
   to applying all delimiters at once e.g. "a/b#c/d" becomes "a", "b#c", "d" rather
   than "a", "b", "c/d"
@@ -276,27 +276,27 @@ public:
   /* The next several isasciiXX and asciiXXvalue functions are locale independent (US-ASCII only),
    * as opposed to standard ::isXX (::isalpha, ::isdigit...) which are locale dependent.
    * Next functions get parameter as char and don't need double cast ((int)(unsigned char) is required for standard functions). */
-  inline static bool isasciidigit(char chr) // locale independent 
+  inline static bool isasciidigit(char chr) // locale independent
   {
-    return chr >= '0' && chr <= '9'; 
+    return chr >= '0' && chr <= '9';
   }
-  inline static bool isasciixdigit(char chr) // locale independent 
+  inline static bool isasciixdigit(char chr) // locale independent
   {
-    return (chr >= '0' && chr <= '9') || (chr >= 'a' && chr <= 'f') || (chr >= 'A' && chr <= 'F'); 
+    return (chr >= '0' && chr <= '9') || (chr >= 'a' && chr <= 'f') || (chr >= 'A' && chr <= 'F');
   }
-  static int asciidigitvalue(char chr); // locale independent 
-  static int asciixdigitvalue(char chr); // locale independent 
+  static int asciidigitvalue(char chr); // locale independent
+  static int asciixdigitvalue(char chr); // locale independent
   inline static bool isasciiuppercaseletter(char chr) // locale independent
   {
-    return (chr >= 'A' && chr <= 'Z'); 
+    return (chr >= 'A' && chr <= 'Z');
   }
   inline static bool isasciilowercaseletter(char chr) // locale independent
   {
-    return (chr >= 'a' && chr <= 'z'); 
+    return (chr >= 'a' && chr <= 'z');
   }
   inline static bool isasciialphanum(char chr) // locale independent
   {
-    return isasciiuppercaseletter(chr) || isasciilowercaseletter(chr) || isasciidigit(chr); 
+    return isasciiuppercaseletter(chr) || isasciilowercaseletter(chr) || isasciidigit(chr);
   }
   static std::string SizeToString(int64_t size);
   static const std::string Empty;

@@ -58,7 +58,7 @@ public:
    \sa Unregister, ID3DResource
   */
   void Register(ID3DResource *resource) const
-  { 
+  {
     m_deviceResources->Register(resource);
   };
   /*!
@@ -67,7 +67,7 @@ public:
    \sa Register, ID3DResource
   */
   void Unregister(ID3DResource *resource) const
-  { 
+  {
     m_deviceResources->Unregister(resource);
   };
 

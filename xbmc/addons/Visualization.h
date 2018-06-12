@@ -44,7 +44,7 @@ public:
   int GetActivePreset();
   std::string GetActivePresetName();
   bool IsLocked();
- 
+
 private:
   std::string m_name; /*!< To add-on sended name */
   std::string m_presetsPath; /*!< To add-on sended preset path */

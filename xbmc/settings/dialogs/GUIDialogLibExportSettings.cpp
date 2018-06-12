@@ -274,7 +274,7 @@ void CGUIDialogLibExportSettings::UpdateButtons()
   if (m_settings.IsSingleFile() ||
       m_settings.IsSeparateFiles())
     enableExport = !m_settings.m_strPath.empty();
- 
+
   CONTROL_ENABLE_ON_CONDITION(CONTROL_SETTINGS_OKAY_BUTTON, enableExport);
   if (!enableExport)
     SetFocus(CSettings::SETTING_MUSICLIBRARY_EXPORT_FOLDER);
@@ -305,7 +305,7 @@ void CGUIDialogLibExportSettings::InitializeSettings()
   entries.push_back(std::make_pair(38303, ELIBEXPORT_TOLIBRARYFOLDER));
   AddList(groupDetails, CSettings::SETTING_MUSICLIBRARY_EXPORT_FILETYPE, 38304, SettingLevel::Basic, m_settings.GetExportType(), entries, 38304); // "Choose kind of export output"
   AddButton(groupDetails, CSettings::SETTING_MUSICLIBRARY_EXPORT_FOLDER, 38305, SettingLevel::Basic);
-  
+
   entries.clear();
   entries.push_back(std::make_pair(132, ELIBEXPORT_ALBUMS));  //ablums
   entries.push_back(std::make_pair(38043, ELIBEXPORT_ALBUMARTISTS)); //album artists
@@ -316,7 +316,7 @@ void CGUIDialogLibExportSettings::InitializeSettings()
   AddToggle(groupDetails, CSettings::SETTING_MUSICLIBRARY_EXPORT_UNSCRAPED, 38308, SettingLevel::Basic, m_settings.m_unscraped);
   AddToggle(groupDetails, CSettings::SETTING_MUSICLIBRARY_EXPORT_ARTWORK, 38307, SettingLevel::Basic, m_settings.m_artwork);
   AddToggle(groupDetails, CSettings::SETTING_MUSICLIBRARY_EXPORT_SKIPNFO, 38309, SettingLevel::Basic, m_settings.m_skipnfo);
-  AddToggle(groupDetails, CSettings::SETTING_MUSICLIBRARY_EXPORT_OVERWRITE, 38310, SettingLevel::Basic, m_settings.m_overwrite); 
+  AddToggle(groupDetails, CSettings::SETTING_MUSICLIBRARY_EXPORT_OVERWRITE, 38310, SettingLevel::Basic, m_settings.m_overwrite);
 }
 
 void CGUIDialogLibExportSettings::SetLabel2(const std::string &settingid, const std::string &label)

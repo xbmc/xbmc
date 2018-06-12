@@ -36,5 +36,5 @@ namespace XFILE
     bool GetDirectory(const CURL& url, CFileItemList &items) override;
     bool Exists(const CURL& url) override;
   };
-  
+
 }

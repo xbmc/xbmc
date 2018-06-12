@@ -70,7 +70,7 @@ protected:
   //! \sa CCDDARipper::GetData, CEncoder::Encode
   int RipChunk(XFILE::CFile& reader, CEncoder* encoder, int& percent);
 
-  unsigned int m_rate; //< The sample rate of the input file 
+  unsigned int m_rate; //< The sample rate of the input file
   unsigned int m_channels; //< The number of channels in input file
   unsigned int m_bps; //< The bits per sample of input
   MUSIC_INFO::CMusicInfoTag m_tag; //< Music tag to attach to output file

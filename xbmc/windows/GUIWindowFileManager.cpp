@@ -523,7 +523,7 @@ bool CGUIWindowFileManager::Update(int iList, const std::string &strDirectory)
     pItem->SetArt("thumb", "DefaultFolder.png");
     pItem->SetLabelPreformatted(true);
     m_vecItems[iList]->Add(pItem);
-    
+
     #ifdef TARGET_DARWIN_IOS
       CFileItemPtr iItem(new CFileItem("special://envhome/Documents/Inbox", true));
       iItem->SetLabel("Inbox");

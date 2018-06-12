@@ -969,7 +969,7 @@ void CLinuxRendererGL::LoadShaders(int field)
   else
     CLog::Log(LOGNOTICE, "GL: NPOT texture support detected");
 
-  
+
   if (m_pboSupported)
   {
     CLog::Log(LOGNOTICE, "GL: Using GL_ARB_pixel_buffer_object");
@@ -1526,7 +1526,7 @@ void CLinuxRendererGL::RenderFromFBO()
   glGenBuffers(1, &vertexVBO);
   glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
   glBufferData(GL_ARRAY_BUFFER, sizeof(PackedVertex)*4, &vertex[0], GL_STATIC_DRAW);
-  
+
   glVertexAttribPointer(vertLoc, 3, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, x)));
   glVertexAttribPointer(loc, 2, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, u1)));
 
@@ -1695,9 +1695,9 @@ bool CLinuxRendererGL::RenderCapture(CRenderCapture* capture)
 
   // save current video rect
   CRect saveSize = m_destRect;
-  
+
   saveRotatedCoords();//backup current m_rotatedDestCoords
-      
+
   // new video rect is capture size
   m_destRect.SetRect(0, 0, (float)capture->GetWidth(), (float)capture->GetHeight());
   MarkDirty();
@@ -2623,7 +2623,7 @@ bool CLinuxRendererGL::Supports(ESCALINGMETHOD method)
         return g_advancedSettings.m_videoEnableHighQualityHwScalers;
     }
   }
- 
+
   return false;
 }
 

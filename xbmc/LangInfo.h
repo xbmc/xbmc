@@ -105,7 +105,7 @@ public:
   // or a three char language code
   // or a language name in english (as used by XBMC)
   void SetAudioLanguage(const std::string& language);
-  
+
   // three char language code (not win32 specific)
   const std::string& GetSubtitleLanguage() const;
   // language can either be a two char language code as defined in ISO639

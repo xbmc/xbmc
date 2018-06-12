@@ -33,11 +33,11 @@ namespace JSONRPC
   class JSONSchemaTypeDefinition;
   typedef std::shared_ptr<JSONSchemaTypeDefinition> JSONSchemaTypeDefinitionPtr;
 
-  /*! 
+  /*!
    \ingroup jsonrpc
    \brief Class for a parameter of a
    json rpc method.
-   
+
    Represents a parameter of a defined
    json rpc method and is used to verify
    and extract the value of the parameter
@@ -47,16 +47,16 @@ namespace JSONRPC
   {
   public:
     JSONSchemaTypeDefinition();
-    
+
     bool Parse(const CVariant &value, bool isParameter = false);
     JSONRPC_STATUS Check(const CVariant &value, CVariant &outputValue, CVariant &errorData);
     void Print(bool isParameter, bool isGlobal, bool printDefault, bool printDescriptions, CVariant &output) const;
     void Set(const JSONSchemaTypeDefinitionPtr typeDefinition);
-    
+
     std::string missingReference;
 
     /*!
-     \brief Name of the parameter (for 
+     \brief Name of the parameter (for
      by-name calls)
      */
     std::string name;
@@ -225,11 +225,11 @@ namespace JSONRPC
     JSONSchemaTypeDefinitionPtr additionalProperties;
   };
 
-  /*! 
+  /*!
    \ingroup jsonrpc
    \brief Structure for a published json
    rpc method.
-   
+
    Represents a published json rpc method
    and is used to verify an incoming json
    rpc request against a defined method.
@@ -238,12 +238,12 @@ namespace JSONRPC
   {
   public:
     JsonRpcMethod();
-  
+
     bool Parse(const CVariant &value);
     JSONRPC_STATUS Check(const CVariant &requestParameters, ITransportLayer *transport, IClient *client, bool notification, MethodCall &methodCall, CVariant &outputParameters) const;
-    
-    std::string missingReference;    
-    
+
+    std::string missingReference;
+
     /*!
      \brief Name of the represented method
      */
@@ -275,14 +275,14 @@ namespace JSONRPC
      \brief Definition of the return value
      */
     JSONSchemaTypeDefinitionPtr returns;
-  
+
   private:
     bool parseParameter(const CVariant &value, JSONSchemaTypeDefinitionPtr parameter);
     bool parseReturn(const CVariant &value);
     static JSONRPC_STATUS checkParameter(const CVariant &requestParameters, JSONSchemaTypeDefinitionPtr type, unsigned int position, CVariant &outputParameters, unsigned int &handled, CVariant &errorData);
   };
 
-  /*! 
+  /*!
    \ingroup jsonrpc
    \brief Structure mapping a json rpc method
    definition to an actual method implementation.
@@ -307,10 +307,10 @@ namespace JSONRPC
    service descriptions for the json rpc API
 
    Provides static functions to parse a complete json schema
-   service descriptor of a published service containing json rpc 
-   methods, print the json schema service descriptor representation 
-   into a string (mainly for output purposes) and evaluate and verify 
-   parameters provided in a call to one of the publish json rpc methods 
+   service descriptor of a published service containing json rpc
+   methods, print the json schema service descriptor representation
+   into a string (mainly for output purposes) and evaluate and verify
+   parameters provided in a call to one of the publish json rpc methods
    against a parameter definition parsed from a json schema service
    descriptor.
    */
@@ -391,7 +391,7 @@ namespace JSONRPC
      given parameters from the request against the json schema description for the given method.
      */
     static JSONRPC_STATUS CheckCall(const char* method, const CVariant &requestParameters, ITransportLayer *transport, IClient *client, bool notification, MethodCall &methodCall, CVariant &outputParameters);
-    
+
     static JSONSchemaTypeDefinitionPtr GetType(const std::string &identification);
 
     static void Cleanup();

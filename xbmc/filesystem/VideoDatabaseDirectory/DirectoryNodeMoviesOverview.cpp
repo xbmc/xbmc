@@ -50,7 +50,7 @@ NODE_TYPE CDirectoryNodeMoviesOverview::GetChildType() const
   for (unsigned int i = 0; i < sizeof(MovieChildren) / sizeof(Node); ++i)
     if (GetName() == MovieChildren[i].id)
       return MovieChildren[i].node;
-  
+
   return NODE_TYPE_NONE;
 }
 
@@ -67,7 +67,7 @@ bool CDirectoryNodeMoviesOverview::GetContent(CFileItemList& items) const
   CVideoDbUrl videoUrl;
   if (!videoUrl.FromString(BuildPath()))
     return false;
-  
+
   for (unsigned int i = 0; i < sizeof(MovieChildren) / sizeof(Node); ++i)
   {
     if (i == 6)

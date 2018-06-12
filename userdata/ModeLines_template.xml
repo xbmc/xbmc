@@ -3,7 +3,7 @@
 	<modeline id="ATSC-480-60i" label="480i/60">
             11.97 640 664 736 760 480 484 492 525 Interlace
         </modeline>
- 
+
         <modeline id="ATSC-480-60" label="480p/60">
             23.94 640 664 736 760 480 484 492 525
         </modeline>

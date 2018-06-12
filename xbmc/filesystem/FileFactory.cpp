@@ -126,7 +126,7 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
 #endif
     return new CWin32File();
   }
-#endif // TARGET_WINDOWS 
+#endif // TARGET_WINDOWS
 #if defined(HAS_DVD_DRIVE)
   else if (url.IsProtocol("cdda")) return new CFileCDDA();
 #endif
@@ -151,7 +151,7 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
     ||  url.IsProtocol("ftps")
     ||  url.IsProtocol("rss")
     ||  url.IsProtocol("rsss")
-    ||  url.IsProtocol("http") 
+    ||  url.IsProtocol("http")
     ||  url.IsProtocol("https")) return new CCurlFile();
     else if (url.IsProtocol("dav") || url.IsProtocol("davs")) return new CDAVFile();
 #ifdef HAS_FILESYSTEM_SFTP

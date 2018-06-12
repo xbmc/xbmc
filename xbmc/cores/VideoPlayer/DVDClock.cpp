@@ -302,7 +302,7 @@ double CDVDClock::SystemToPlaying(int64_t system)
     m_vSyncAdjust = 0;
     m_bReset = false;
   }
-  
+
   if (m_pauseClock)
     current = m_pauseClock;
   else

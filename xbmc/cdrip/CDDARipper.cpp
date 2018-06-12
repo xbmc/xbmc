@@ -79,7 +79,7 @@ bool CCDDARipper::RipTrack(CFileItem* pItem)
   if (!CreateAlbumDir(*pItem->GetMusicInfoTag(), strDirectory, legalType))
     return false;
 
-  std::string strFile = URIUtils::AddFileToFolder(strDirectory, 
+  std::string strFile = URIUtils::AddFileToFolder(strDirectory,
                       CUtil::MakeLegalFileName(GetTrackName(pItem), legalType));
 
   AddJob(new CCDDARipJob(pItem->GetPath(),strFile,
@@ -136,7 +136,7 @@ bool CCDDARipper::RipCD()
     if (item->GetPath().find(".cdda") == std::string::npos)
       continue;
 
-    bool eject = CServiceBroker::GetSettings().GetBool(CSettings::SETTING_AUDIOCDS_EJECTONRIP) && 
+    bool eject = CServiceBroker::GetSettings().GetBool(CSettings::SETTING_AUDIOCDS_EJECTONRIP) &&
                  i == vecItems.Size()-1;
     AddJob(new CCDDARipJob(item->GetPath(),strFile,
                            *item->GetMusicInfoTag(),
@@ -208,7 +208,7 @@ std::string CCDDARipper::GetAlbumDirName(const MUSIC_INFO::CMusicInfoTag& infoTa
   size_t pos = strAlbumDir.find_last_of("/\\");
   if (pos == std::string::npos)
     return ""; // no directory
-  
+
   strAlbumDir = strAlbumDir.substr(0, pos);
 
   // replace %A with album artist name

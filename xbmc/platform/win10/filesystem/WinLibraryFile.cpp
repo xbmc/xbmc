@@ -39,7 +39,7 @@
 
 using namespace XFILE;
 using namespace KODI::PLATFORM::WINDOWS;
-namespace winrt 
+namespace winrt
 {
   using namespace Windows::Foundation;
 }
@@ -98,7 +98,7 @@ void CWinLibraryFile::Close()
   if (m_fileStream != nullptr)
   {
     // see https://docs.microsoft.com/en-us/uwp/api/windows.storage.streams.irandomaccessstream
-    // m_fileStream->Close(); // where it is? 
+    // m_fileStream->Close(); // where it is?
     m_fileStream = nullptr;
   }
   if (m_sFile)
@@ -191,7 +191,7 @@ bool CWinLibraryFile::Delete(const CURL & url)
       Wait(file.DeleteAsync());
     }
     catch(const winrt::hresult_error&)
-    { 
+    {
       return false;
     }
     return true;
@@ -290,7 +290,7 @@ bool CWinLibraryFile::OpenIntenal(const CURL &url, FileAccessMode mode)
       m_sFile = GetFile(url);
     }
     else if (mode == FileAccessMode::ReadWrite)
-    { 
+    {
       auto destFolder = CURL(URIUtils::GetParentPath(url.Get()));
       auto folder = CWinLibraryDirectory::GetFolder(destFolder);
       if (folder)
@@ -330,7 +330,7 @@ StorageFile CWinLibraryFile::GetFile(const CURL& url)
     std::string filePath = URIUtils::FixSlashesAndDups(url.GetFileName(), '\\');
     if (url.GetHostName() == "removable")
     {
-      // here filePath has the form e\path\file.ext where first segment is 
+      // here filePath has the form e\path\file.ext where first segment is
       // drive letter, we should make path form like regular e:\path\file.ext
       auto index = filePath.find('\\');
       if (index == std::string::npos)

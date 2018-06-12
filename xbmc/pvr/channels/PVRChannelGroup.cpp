@@ -692,7 +692,7 @@ bool CPVRChannelGroup::RemoveDeletedChannels(const CPVRChannelGroup &channels)
 
       if (possiblyRemovedGroup != m_sortedMembers.end())
         m_sortedMembers.erase(possiblyRemovedGroup);
-      
+
       //We have to start over from the beginning, list can have been modified and
       //resorted, there's no safe way to continue where we left of
       it = m_sortedMembers.begin();

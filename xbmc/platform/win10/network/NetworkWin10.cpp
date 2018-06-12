@@ -106,7 +106,7 @@ std::string GetMaskByPrefix(ADDRESS_FAMILY family, uint8_t prefix)
     int i, j;
 
     memset(&sa.sin6_addr, 0x0, sizeof(sa.sin6_addr));
-    for (i = prefix, j = 0; i > 0; i -= 8, j++) 
+    for (i = prefix, j = 0; i > 0; i -= 8, j++)
     {
       if (i >= 8)
         sa.sin6_addr.s6_addr[j] = 0xff;
@@ -211,7 +211,7 @@ void CNetworkInterfaceWin10::GetSettings(NetworkAssignment& assignment, std::str
 
       if (adapter->Dhcpv4Enabled)
         assignment = NETWORK_DHCP;
-      else 
+      else
         assignment = NETWORK_STATIC;
 
       PIP_ADAPTER_UNICAST_ADDRESS_LH address = m_adapterAddr->FirstUnicastAddress;
@@ -489,7 +489,7 @@ bool CNetworkWin10::PingHost(unsigned long host, unsigned int timeout_ms /* = 20
   SetLastError(ERROR_SUCCESS);
 
   DWORD dwRetVal = IcmpSendEcho2(hIcmpFile, nullptr, nullptr, nullptr,
-                                 host, SendData, sizeof(SendData), nullptr, 
+                                 host, SendData, sizeof(SendData), nullptr,
                                  ReplyBuffer, sizeof(ReplyBuffer), timeout_ms);
 
   DWORD lastErr = GetLastError();

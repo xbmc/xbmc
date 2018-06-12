@@ -79,13 +79,13 @@ public:
    \sa GetTextWidth, CalcTextExtent
    */
   void GetTextExtent(float &width, float &height) const;
-  
+
   /*! \brief Returns the precalculated width of the text to be rendered (in constant time).
    \return width of text
    \sa GetTextExtent, CalcTextExtent
    */
   float GetTextWidth() const { return m_textWidth; };
-  
+
   float GetTextWidth(const std::wstring &text) const;
   bool Update(const std::string &text, float maxWidth = 0, bool forceUpdate = false, bool forceLTRReadingOrder = false);
   bool UpdateW(const std::wstring &text, float maxWidth = 0, bool forceUpdate = false, bool forceLTRReadingOrder = false);
@@ -117,7 +117,7 @@ protected:
   static std::wstring BidiFlip(const std::wstring &text, bool forceLTRReadingOrder);
   void CalcTextExtent();
   void UpdateCommon(const std::wstring &text, float maxWidth, bool forceLTRReadingOrder);
-  
+
   /*! \brief Returns the text, utf8 encoded
    \return utf8 text
    */
@@ -128,7 +128,7 @@ protected:
 
   //! \brief Set whether or not to use the monospace font
   void UseMonoFont(bool use) { m_font = use && m_monoFont ? m_monoFont : m_varFont; }
-  
+
   // our text to render
   std::vector<UTILS::Color> m_colors;
   std::vector<CGUIString> m_lines;

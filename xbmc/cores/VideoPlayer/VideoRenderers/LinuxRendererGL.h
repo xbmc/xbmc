@@ -161,7 +161,7 @@ protected:
   int m_renderMethod;
   RenderQuality m_renderQuality;
   CRenderSystemGL *m_renderSystem;
-  
+
   // Raw data used by renderer
   int m_currentField;
   int m_reloadShaders;

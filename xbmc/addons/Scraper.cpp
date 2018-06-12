@@ -460,7 +460,7 @@ CScraperUrl CScraper::NfoUrl(const std::string &sNfoContent)
     scurlRet.m_url.emplace_back(surl);
     return scurlRet;
   }
-    
+
   // scraper function takes contents of .nfo file, returns XML (see below)
   std::vector<std::string> vcsIn;
   vcsIn.push_back(sNfoContent);

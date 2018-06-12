@@ -20,7 +20,7 @@
 
 #include "DAVCommon.h"
 #include "utils/StringUtils.h"
-#include "utils/log.h"   
+#include "utils/log.h"
 
 using namespace XFILE;
 

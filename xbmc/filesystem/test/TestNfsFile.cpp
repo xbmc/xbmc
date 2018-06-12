@@ -38,7 +38,7 @@ struct SplitPath
   std::string relativePath;
   bool expectedResultExport;
   bool expectedResultPath;
-} g_TestData[] = { 
+} g_TestData[] = {
                    {"nfs://192.168.0.1:2049/srv/test/tvmedia/foo.txt", "/srv/test", "//tvmedia/foo.txt", true, true},
                    {"nfs://192.168.0.1/srv/test/tv/media/foo.txt", "/srv/test/tv", "//media/foo.txt", true, true},
                    {"nfs://192.168.0.1:2049/srv/test/tvmedia", "/srv/test", "//tvmedia", true, true},
@@ -60,7 +60,7 @@ class TestNfs : public Test,
 
 class ExportList
 {
-  public: 
+  public:
     std::list<std::string> data;
 
     ExportList()

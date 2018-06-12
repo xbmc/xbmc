@@ -269,7 +269,7 @@ bool CFile::Open(const CURL& file, const unsigned int flags)
     if ((flags & READ_REOPEN) == 0)
     {
       CLog::Log(LOGERROR, "File::Open - already open: %s", file.GetRedacted().c_str());
-      return false;      
+      return false;
     }
     else
     {
@@ -338,7 +338,7 @@ bool CFile::Open(const CURL& file, const unsigned int flags)
         std::unique_ptr<CURL> pNewUrl(pRedirectEx->m_pNewUrl);
         m_pFile = pRedirectEx->m_pNewFileImp;
         delete pRedirectEx;
-        
+
         if (pNewUrl.get())
         {
           CURL newAuthUrl(*pNewUrl);
@@ -352,7 +352,7 @@ bool CFile::Open(const CURL& file, const unsigned int flags)
           }
         }
         else
-        {        
+        {
           if (!m_pFile->Open(authUrl))
           {
             SAFE_DELETE(m_pFile);
@@ -549,7 +549,7 @@ int CFile::Stat(const CURL& file, struct __stat64* buffer)
       std::unique_ptr<IFile> pImp(pRedirectEx->m_pNewFileImp);
       std::unique_ptr<CURL> pNewUrl(pRedirectEx->m_pNewUrl);
       delete pRedirectEx;
-        
+
       if (pNewUrl.get())
       {
         if (pImp.get())
@@ -564,7 +564,7 @@ int CFile::Stat(const CURL& file, struct __stat64* buffer)
           }
         }
       }
-      else     
+      else
       {
         if (pImp.get() && !pImp->Stat(authUrl, buffer))
         {
@@ -725,7 +725,7 @@ int CFile::Truncate(int64_t iSize)
 {
   if (!m_pFile)
     return -1;
-  
+
   try
   {
     return m_pFile->Truncate(iSize);

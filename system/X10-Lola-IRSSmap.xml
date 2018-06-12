@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- X10 Lola UR89A in PC MODE 
+<!-- X10 Lola UR89A in PC MODE
 Button = CMD
-Record = X10CMD_RECORD 
+Record = X10CMD_RECORD
 Stop = X10CMD_STOP
 Pause = X10CMD_NONE
 Scan- = X10CMD_INPUT
@@ -25,7 +25,7 @@ Enter = X10CMD_ENTER
 Album = X10CMD_BUTTON_C
 Artist = X10CMD_BUTTON_D
 Genre = X10CMD_BUTTON_E
-Track = X10CMD_BUTTON_F 
+Track = X10CMD_BUTTON_F
 1 = X10CMD_1
 2 = X10CMD_2
 3 = X10CMD_3
@@ -71,7 +71,7 @@ Power/All Lts On = X10CMD_POWER
 		<mute>X10CMD_MUTE</mute> <!-- M/All off -->
 		<power>X10CMD_POWER</power> <!-- Power/All Lts on -->
 		<one>X10CMD_1</one> <!-- 1 -->
-		<two>X10CMD_2</two> <!-- 2 --> 
+		<two>X10CMD_2</two> <!-- 2 -->
 		<three>X10CMD_3</three> <!-- 3 -->
 		<four>X10CMD_4</four> <!-- 4 -->
 		<five>X10CMD_5</five> <!-- 5 -->

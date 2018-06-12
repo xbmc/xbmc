@@ -45,7 +45,7 @@ bool GIFDecoder::LoadFile(const std::string &filename, DecodedFrames &frames)
       for (unsigned int i = 0; i < extractedFrames.size(); i++)
       {
         DecodedFrame frame;
-        
+
         frame.rgbaImage.pixels = (char *)new char[frameSize];
         memcpy(frame.rgbaImage.pixels, extractedFrames[i]->m_pImage, frameSize);
         frame.rgbaImage.height = height;
@@ -53,7 +53,7 @@ bool GIFDecoder::LoadFile(const std::string &filename, DecodedFrames &frames)
         frame.rgbaImage.bbp = 32;
         frame.rgbaImage.pitch = pitch;
         frame.delay = extractedFrames[i]->m_delay;
-        
+
         frames.frameList.push_back(frame);
       }
     }

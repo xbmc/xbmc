@@ -198,7 +198,7 @@ Insert new line before
 \subsection code_guidelines_4_1 if else
 
 - put then statement, return or throw to new line
-- keep else if on one line 
+- keep else if on one line
 
 ~~~~~~~~~~~~~
 if (true)
@@ -207,11 +207,11 @@ if (true)
 if (true)
 {
   [...]
-} 
+}
 else if (false)
 {
   return;
-} 
+}
 else
   return;
 ~~~~~~~~~~~~~

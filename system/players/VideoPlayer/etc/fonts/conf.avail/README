@@ -10,7 +10,7 @@ The files are loaded in numeric order, the structure of the configuration
 has led to the following conventions in usage:
 
  Files beginning with:	Contain:
- 
+
  00 through 09		Font directories
  10 through 19		system rendering defaults (AA, etc)
 	10-autohint.conf
@@ -45,4 +45,4 @@ has led to the following conventions in usage:
  	80-delicious.conf
  90 through 98		font synthesis
  	90-synthetic.conf
- 
+

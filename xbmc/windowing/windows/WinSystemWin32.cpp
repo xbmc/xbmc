@@ -640,7 +640,7 @@ MONITOR_DETAILS* CWinSystemWin32::GetDisplayDetails(const std::string& name)
     auto it = std::find_if(m_displays.begin(), m_displays.end(), [&nameW](MONITOR_DETAILS& m)
     {
       if (nameW[0] == '\\') // name is device name
-        return m.DeviceNameW == nameW; 
+        return m.DeviceNameW == nameW;
       return m.MonitorNameW == nameW;
     });
     if (it != m_displays.end())

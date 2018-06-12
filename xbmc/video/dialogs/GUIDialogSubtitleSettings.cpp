@@ -95,7 +95,7 @@ void CGUIDialogSubtitleSettings::OnSettingChanged(std::shared_ptr<const CSetting
     return;
 
   CGUIDialogSettingsManualBase::OnSettingChanged(setting);
-  
+
   const std::string &settingId = setting->GetId();
   if (settingId == SETTING_SUBTITLE_ENABLE)
   {
@@ -158,7 +158,7 @@ void CGUIDialogSubtitleSettings::OnSettingAction(std::shared_ptr<const CSetting>
     return;
 
   CGUIDialogSettingsManualBase::OnSettingAction(setting);
-  
+
   const std::string &settingId = setting->GetId();
   if (settingId == SETTING_SUBTITLE_BROWSER)
   {
@@ -251,7 +251,7 @@ void CGUIDialogSubtitleSettings::InitializeSettings()
   bool usePopup = g_SkinInfo->HasSkinFile("DialogSlider.xml");
 
   const CVideoSettings videoSettings = g_application.GetAppPlayer().GetVideoSettings();
-  
+
   if (g_application.GetAppPlayer().HasPlayer())
   {
     g_application.GetAppPlayer().GetSubtitleCapabilities(m_subtitleCapabilities);

@@ -24,7 +24,7 @@
 
 CMusicLibraryCleaningJob::CMusicLibraryCleaningJob(CGUIDialogProgress* progressDialog)
   : CMusicLibraryProgressJob(nullptr)
-{ 
+{
   if (progressDialog)
     SetProgressIndicators(nullptr, progressDialog);
   SetAutoClose(true);

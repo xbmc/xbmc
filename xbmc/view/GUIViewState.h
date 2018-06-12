@@ -71,7 +71,7 @@ protected:
   virtual void SaveViewState() = 0;
   virtual void SaveViewToDb(const std::string &path, int windowID, CViewState *viewState = NULL);
   void LoadViewState(const std::string &path, int windowID);
-  
+
   /*! \brief Add the addons source for the given content type, if the user has suitable addons
    \param content the type of addon content desired
    \param label the name of the addons source

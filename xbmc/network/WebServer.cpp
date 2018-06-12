@@ -200,7 +200,7 @@ int CWebServer::HandlePartialRequest(struct MHD_Connection *connection, Connecti
   // reset con_cls and set it if still necessary
   *con_cls = nullptr;
 
-  if (!IsAuthenticated(request)) 
+  if (!IsAuthenticated(request))
     return AskForAuthentication(request);
 
   // check if this is the first call to AnswerToConnection for this request
@@ -381,7 +381,7 @@ int CWebServer::FinalizeRequest(const std::shared_ptr<IHTTPRequestHandler>& hand
   const HTTPRequest &request = handler->GetRequest();
   const HTTPResponseDetails &responseDetails = handler->GetResponseDetails();
 
-  // if the request handler has set a content type and it hasn't been set as a header, add it 
+  // if the request handler has set a content type and it hasn't been set as a header, add it
   if (!responseDetails.contentType.empty())
     handler->AddResponseHeader(MHD_HTTP_HEADER_CONTENT_TYPE, responseDetails.contentType);
 
@@ -1077,7 +1077,7 @@ static void logFromMHD(void* unused, const char* fmt, va_list ap)
     {
       if (errDsc.at(errDsc.length() - 1) == '\n')
         errDsc.erase(errDsc.length() - 1);
-      
+
       // Most common error is "aborted connection", so log it at LOGDEBUG level
       CLog::Log(LOGDEBUG, "CWebServer [MHD]: %s", errDsc.c_str());
     }
@@ -1195,7 +1195,7 @@ bool CWebServer::Start(uint16_t port, const std::string &username, const std::st
       m_daemon_ip6 = StartMHD(MHD_USE_IPv6, port);
     }
     m_daemon_ip4 = StartMHD(0, port);
-    
+
     m_running = (m_daemon_ip6 != nullptr) || (m_daemon_ip4 != nullptr);
     if (m_running)
     {
@@ -1219,7 +1219,7 @@ bool CWebServer::Stop()
 
   if (m_daemon_ip4 != nullptr)
     MHD_stop_daemon(m_daemon_ip4);
-    
+
   m_running = false;
   CLog::Log(LOGNOTICE, "CWebServer[%hu]: Stopped", m_port);
   m_port = 0;

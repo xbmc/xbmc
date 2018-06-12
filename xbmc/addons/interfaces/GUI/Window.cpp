@@ -276,7 +276,7 @@ bool Interface_GUIWindow::show(void* kodiBase, void* handle)
     return false;
   }
 
-  if (pAddonWindow->m_oldWindowId != pAddonWindow->m_windowId && 
+  if (pAddonWindow->m_oldWindowId != pAddonWindow->m_windowId &&
       pAddonWindow->m_windowId != CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow())
     pAddonWindow->m_oldWindowId = CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow();
 
@@ -677,7 +677,7 @@ void Interface_GUIWindow::add_list_item(void* kodiBase, void* handle, void* item
               __FUNCTION__, kodiBase, handle, item, addon ? addon->ID().c_str() : "unknown");
     return;
   }
-  
+
   CFileItemPtr* pItem(static_cast<CFileItemPtr*>(item));
   if (pItem->get() == nullptr)
   {
@@ -1071,7 +1071,7 @@ bool CGUIAddonWindow::OnMessage(CGUIMessage& message)
     case GUI_MSG_WINDOW_INIT:
     {
       CGUIMediaWindow::OnMessage(message);
-      
+
       if (CBOnInit)
         CBOnInit(m_clientHandle);
       return true;
@@ -1080,7 +1080,7 @@ bool CGUIAddonWindow::OnMessage(CGUIMessage& message)
 
     case GUI_MSG_FOCUSED:
     {
-      if (m_viewControl.HasControl(message.GetControlId()) && 
+      if (m_viewControl.HasControl(message.GetControlId()) &&
           m_viewControl.GetCurrentControl() != (int)message.GetControlId())
       {
         m_viewControl.SetFocused();

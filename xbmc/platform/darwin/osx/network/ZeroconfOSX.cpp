@@ -91,12 +91,12 @@ bool CZeroconfOSX::doPublishService(const std::string& fcr_identifier,
                                                     (UInt8 *)it->second.c_str(),
                                                     strlen(it->second.c_str())
                                                   );
-                                                  
+
       CFDictionaryAddValue(txtDict,key, value);
       CFRelease(key);
       CFRelease(value);
-    }    
-    
+    }
+
     //add txt records to service
     txtData = CFNetServiceCreateTXTDataWithDictionary(NULL, txtDict);
     CFNetServiceSetTXTData(netService, txtData);
@@ -144,7 +144,7 @@ bool CZeroconfOSX::doForceReAnnounceService(const std::string& fcr_identifier)
     CFRelease(txtDictMutable);
     CFRelease(txtDict);
     CFRelease(txtData);
-  } 
+  }
   return ret;
 }
 

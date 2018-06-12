@@ -234,7 +234,7 @@ JSONRPC_STATUS CVideoLibrary::GetSeasonDetails(const std::string &method, ITrans
   if (!videodatabase.GetSeasonInfo(id, infos) ||
       infos.m_iDbId <= 0 || infos.m_iIdShow <= 0)
     return InvalidParams;
-  
+
   CFileItemPtr pItem = CFileItemPtr(new CFileItem(infos));
   HandleFileItem("seasonid", false, "seasondetails", pItem, parameterObject, parameterObject["properties"], result, false);
   return OK;
@@ -253,7 +253,7 @@ JSONRPC_STATUS CVideoLibrary::GetEpisodes(const std::string &method, ITransportL
 
   int tvshowID = (int)parameterObject["tvshowid"].asInteger();
   int season   = (int)parameterObject["season"].asInteger();
-  
+
   std::string strPath = StringUtils::Format("videodb://tvshows/titles/%i/%i/", tvshowID, season);
 
   CVideoDbUrl videoUrl;
@@ -461,7 +461,7 @@ JSONRPC_STATUS CVideoLibrary::GetGenres(const std::string &method, ITransportLay
     strPath += "musicvideos";
   }
   strPath += "/genres/";
- 
+
   CVideoDatabase videodatabase;
   if (!videodatabase.Open())
     return InternalError;
@@ -925,7 +925,7 @@ bool CVideoLibrary::FillFileItem(const std::string &strFilename, CFileItemPtr &i
   CVideoDatabase videodatabase;
   if (strFilename.empty())
     return false;
-  
+
   bool filled = false;
   if (videodatabase.Open())
   {

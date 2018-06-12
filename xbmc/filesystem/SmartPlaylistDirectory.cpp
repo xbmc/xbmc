@@ -55,10 +55,10 @@ namespace XFILE
     bool result = GetDirectory(playlist, items);
     if (result)
       items.SetProperty("library.smartplaylist", true);
-    
+
     return result;
   }
-  
+
   bool CSmartPlaylistDirectory::GetDirectory(const CSmartPlaylist &playlist, CFileItemList& items, const std::string &strBaseDir /* = "" */, bool filter /* = false */)
   {
     bool success = false, success2 = false;
@@ -137,7 +137,7 @@ namespace XFILE
           videoUrl.AddOption(option, xsp);
         else
           videoUrl.RemoveOption(option);
-        
+
         CDatabase::Filter dbfilter;
         success = db.GetItems(videoUrl.ToString(), items, dbfilter, sorting);
         db.Close();
@@ -252,7 +252,7 @@ namespace XFILE
           videoUrl.AddOption(option, xsp);
         else
           videoUrl.RemoveOption(option);
-        
+
         CFileItemList items2;
         CDatabase::Filter dbfilter;
         success2 = db.GetItems(videoUrl.ToString(), items2, dbfilter, sorting);

@@ -98,7 +98,7 @@ namespace XBMCAddon
       ///
       yesno(...);
 #else
-      bool yesno(const String& heading, const String& line1, 
+      bool yesno(const String& heading, const String& line1,
                  const String& line2 = emptyString,
                  const String& line3 = emptyString,
                  const String& nolabel = emptyString,
@@ -410,8 +410,8 @@ namespace XBMCAddon
       browseSingle(...);
 #else
       String browseSingle(int type, const String& heading, const String& shares,
-                          const String& mask = emptyString, bool useThumbs = false, 
-                          bool treatAsFolder = false, 
+                          const String& mask = emptyString, bool useThumbs = false,
+                          bool treatAsFolder = false,
                           const String& defaultt = emptyString );
 #endif
 
@@ -457,8 +457,8 @@ namespace XBMCAddon
       browseMultiple(...);
 #else
       std::vector<String> browseMultiple(int type, const String& heading, const String& shares,
-                                         const String& mask = emptyString, bool useThumbs = false, 
-                                         bool treatAsFolder = false, 
+                                         const String& mask = emptyString, bool useThumbs = false,
+                                         bool treatAsFolder = false,
                                          const String& defaultt = emptyString );
 #endif
 
@@ -638,7 +638,7 @@ namespace XBMCAddon
       ///
       create(...);
 #else
-      void create(const String& heading, const String& line1 = emptyString, 
+      void create(const String& heading, const String& line1 = emptyString,
                   const String& line2 = emptyString,
                   const String& line3 = emptyString);
 #endif
@@ -670,7 +670,7 @@ namespace XBMCAddon
       ///
       update(...);
 #else
-      void update(int percent, const String& line1 = emptyString, 
+      void update(int percent, const String& line1 = emptyString,
                   const String& line2 = emptyString,
                   const String& line3 = emptyString);
 #endif

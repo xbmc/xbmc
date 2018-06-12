@@ -23,8 +23,8 @@
 namespace XbmcThreads
 {
   /**
-   * This will create a new predicate from an old predicate P with 
-   *  inverse truth value. This predicate is safe to use in a 
+   * This will create a new predicate from an old predicate P with
+   *  inverse truth value. This predicate is safe to use in a
    *  TightConditionVariable<P>
    */
   template <class P> class InversePredicate

@@ -577,9 +577,9 @@ bool CEdl::ReadPvr(const CFileItem &fileItem)
     CLog::Log(LOGERROR, "%s - PVR Manager not started, cannot read Edl for %s", __FUNCTION__, strMovie.c_str());
     return false;
   }
-  
+
   std::vector<PVR_EDL_ENTRY> edl;
-  
+
   if (fileItem.HasPVRRecordingInfoTag())
   {
     CLog::Log(LOGDEBUG, "%s - Reading Edl for recording: %s", __FUNCTION__, fileItem.GetPVRRecordingInfoTag()->m_strTitle.c_str());
@@ -867,7 +867,7 @@ void CEdl::SetLastCutTime(const int iCutTime)
 
 bool CEdl::GetNearestCut(bool bPlus, const int iSeek, Cut *pCut) const
 {
-  if (bPlus) 
+  if (bPlus)
   {
     // Searching forwards
     for (auto &cut : m_vecCuts)
@@ -886,13 +886,13 @@ bool CEdl::GetNearestCut(bool bPlus, const int iSeek, Cut *pCut) const
       }
     }
     return false;
-  } 
+  }
   else
   {
     // Searching backwards
     for (int i = (int)m_vecCuts.size() - 1; i >= 0; i--)
     {
-      if (iSeek - 20000 >= m_vecCuts[i].start && iSeek <= m_vecCuts[i].end) 
+      if (iSeek - 20000 >= m_vecCuts[i].start && iSeek <= m_vecCuts[i].end)
         // Inside cut. We ignore if we're closer to 20 seconds inside
       {
         if (pCut)

@@ -110,7 +110,7 @@ void CJSONRPC::Initialize()
 
   for (unsigned int index = 0; index < size; index++)
     CJSONServiceDescription::AddNotification(JSONRPC_SERVICE_NOTIFICATIONS[index]);
-  
+
   m_initialized = true;
   CLog::Log(LOGINFO, "JSONRPC v%s: Successfully initialized", CJSONServiceDescription::GetVersion());
 }
@@ -222,12 +222,12 @@ JSONRPC_STATUS CJSONRPC::SetConfiguration(const std::string &method, ITransportL
 JSONRPC_STATUS CJSONRPC::NotifyAll(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant& parameterObject, CVariant &result)
 {
   if (parameterObject["data"].isNull())
-    CAnnouncementManager::GetInstance().Announce(Other, parameterObject["sender"].asString().c_str(),  
+    CAnnouncementManager::GetInstance().Announce(Other, parameterObject["sender"].asString().c_str(),
       parameterObject["message"].asString().c_str());
   else
   {
     CVariant data = parameterObject["data"];
-    CAnnouncementManager::GetInstance().Announce(Other, parameterObject["sender"].asString().c_str(),  
+    CAnnouncementManager::GetInstance().Announce(Other, parameterObject["sender"].asString().c_str(),
       parameterObject["message"].asString().c_str(), data);
   }
 

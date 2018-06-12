@@ -50,7 +50,7 @@ std::vector<RendererDetail> CAESinkFactoryWin::GetRendererDetails()
 
   hr = CoCreateInstance(CLSID_MMDeviceEnumerator, NULL, CLSCTX_ALL, IID_IMMDeviceEnumerator, reinterpret_cast<void**>(pEnumerator.GetAddressOf()));
   EXIT_ON_FAILURE(hr, "Could not allocate WASAPI device enumerator.")
-  
+
   UINT uiCount = 0;
 
   // get the default audio endpoint
@@ -204,7 +204,7 @@ struct AEWASAPIDeviceWin32 : public IAEWASAPIDevice
   }
 
 protected:
-  AEWASAPIDeviceWin32(IMMDevice* pDevice) 
+  AEWASAPIDeviceWin32(IMMDevice* pDevice)
     : m_pDevice(pDevice)
   {
   }

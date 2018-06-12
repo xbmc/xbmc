@@ -1,18 +1,18 @@
-/* 
+/*
  * Copyright (C) 2001-2004 Rich Wareham <richwareham@users.sourceforge.net>
- * 
+ *
  * This file is part of libdvdnav, a DVD navigation library.
- * 
+ *
  * libdvdnav is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * libdvdnav is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along
  * with libdvdnav; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
@@ -104,7 +104,7 @@ typedef struct read_cache_s read_cache_t;
 
 /*
  * These are defined here because they are
- * not in ifo_types.h, they maybe one day 
+ * not in ifo_types.h, they maybe one day
  */
 
 #ifndef audio_status_t
@@ -117,7 +117,7 @@ typedef struct {
 #else
   uint8_t zero2;
   unsigned int stream_number : 3;
-  unsigned int zero1         : 4;  
+  unsigned int zero1         : 4;
   unsigned int available     : 1;
 #endif
 } ATTRIBUTE_PACKED audio_status_t;
@@ -154,35 +154,35 @@ typedef struct dvdnav_vobu_s {
   int32_t vobu_length;
   int32_t blockN;      /* Relative offset */
   int32_t vobu_next;   /* Relative offset */
-} dvdnav_vobu_t;  
-   
+} dvdnav_vobu_t;
+
 /** The main DVDNAV type **/
 
 struct dvdnav_s {
   /* General data */
   char        path[MAX_PATH_LEN]; /* Path to DVD device/dir */
   dvd_file_t *file;               /* Currently opened file */
- 
+
   /* Position data */
   vm_position_t position_next;
   vm_position_t position_current;
-  dvdnav_vobu_t vobu;  
+  dvdnav_vobu_t vobu;
 
   /* NAV data */
   pci_t pci;
   dsi_t dsi;
   uint32_t last_cmd_nav_lbn;      /* detects when a command is issued on an already left NAV */
-  
+
   /* Flags */
   int skip_still;                 /* Set when skipping a still */
   int sync_wait;                  /* applications should wait till they are in sync with us */
   int sync_wait_skip;             /* Set when skipping wait state */
-  int spu_clut_changed;           /* The SPU CLUT changed */ 
+  int spu_clut_changed;           /* The SPU CLUT changed */
   int started;                    /* vm_start has been called? */
   int use_read_ahead;             /* 1 - use read-ahead cache, 0 - don't */
   int pgc_based;                  /* positioning works PGC based instead of PG based */
   int cur_cell_time;              /* time expired since the beginning of the current cell, read from the dsi */
-  
+
   /* VM */
   vm_t *vm;
   pthread_mutex_t vm_lock;

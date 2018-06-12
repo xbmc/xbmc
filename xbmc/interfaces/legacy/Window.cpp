@@ -43,9 +43,9 @@ namespace XBMCAddon
     thread_local ref* InterceptorBase::upcallTls;
 
     /**
-     * Used in add/remove control. It only locks if it's given a 
+     * Used in add/remove control. It only locks if it's given a
      * non-NULL CCriticalSection. It's given a NULL CCriticalSection
-     * when a function higher in the call stack already has a 
+     * when a function higher in the call stack already has a
      */
     class MaybeLock
     {
@@ -88,7 +88,7 @@ namespace XBMCAddon
 
     CGUIWindow* ProxyExistingWindowInterceptor::get() { XBMC_TRACE; return cguiwindow; }
 
-    Window::Window(bool discrim): 
+    Window::Window(bool discrim):
       isDisposed(false), window(NULL), iWindowId(-1),
       iOldWindowId(0), iCurrentControlId(3000), bModal(false), m_actionEvent(true),
       canPulse(true), existingWindow(false), destroyAfterDeInit(false)
@@ -99,7 +99,7 @@ namespace XBMCAddon
     /**
      * This just creates a default window.
      */
-    Window::Window(int existingWindowId) : 
+    Window::Window(int existingWindowId) :
       isDisposed(false), window(NULL), iWindowId(-1),
       iOldWindowId(0), iCurrentControlId(3000), bModal(false), m_actionEvent(true),
       canPulse(false), existingWindow(true), destroyAfterDeInit(false)
@@ -215,11 +215,11 @@ namespace XBMCAddon
       }
     }
 
-    void Window::setWindow(InterceptorBase* _window) 
-    { 
+    void Window::setWindow(InterceptorBase* _window)
+    {
       XBMC_TRACE;
-      window = _window; 
-      iWindowId = _window->get()->GetID(); 
+      window = _window;
+      iWindowId = _window->get()->GetID();
 
       if (!existingWindow)
         CServiceBroker::GetGUI()->GetWindowManager().Add(window->get());
@@ -272,7 +272,7 @@ namespace XBMCAddon
       MaybeLock lock(gc);
 
       // check if control exists
-      CGUIControl* pGUIControl = (CGUIControl*)ref(window)->GetControl(iControlId); 
+      CGUIControl* pGUIControl = (CGUIControl*)ref(window)->GetControl(iControlId);
       if (!pGUIControl)
       {
         // control does not exist.
@@ -686,13 +686,13 @@ namespace XBMCAddon
       {
         bModal = true;
 
-        if(iWindowId != ACTIVE_WINDOW) 
+        if(iWindowId != ACTIVE_WINDOW)
           show();
 
         while (bModal && !g_application.m_bStop)
         {
 //! @todo garbear added this code to the python window.cpp class and
-//!  commented in XBPyThread.cpp. I'm not sure how to handle this 
+//!  commented in XBPyThread.cpp. I'm not sure how to handle this
 //! in this native implementation.
 //          // Check if XBPyThread::stop() raised a SystemExit exception
 //          if (PyThreadState_Get()->async_exc == PyExc_SystemExit)
@@ -707,7 +707,7 @@ namespace XBMCAddon
           do
           {
             {
-              DelayedCallGuard dcguard(languageHook);            
+              DelayedCallGuard dcguard(languageHook);
               stillWaiting = WaitForActionEvent(100) ? false : true;
             }
             languageHook->MakePendingCalls();

@@ -572,7 +572,7 @@ namespace PVR
     * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
     */
     PVR_ERROR GetRecordingEdl(const CPVRRecording &recording, std::vector<PVR_EDL_ENTRY> &edls);
-    
+
     /*!
     * @brief Retrieve the edit decision list (EDL) from the backend.
     * @param epgTag The EPG tag.

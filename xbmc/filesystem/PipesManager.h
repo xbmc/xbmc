@@ -1,7 +1,7 @@
 /*
  * Many concepts and protocol are taken from
  * the Boxee project. http://www.boxee.tv
- * 
+ *
  *      Copyright (C) 2011-2015 Team Kodi
  *      http://kodi.tv
  *
@@ -35,7 +35,7 @@
 
 namespace XFILE
 {
- 
+
 class IPipeListener
 {
 public:
@@ -43,18 +43,18 @@ public:
   virtual void OnPipeOverFlow() = 0;
   virtual void OnPipeUnderFlow() = 0;
 };
-  
+
 class Pipe
   {
   public:
     Pipe(const std::string &name, int nMaxSize = PIPE_DEFAULT_MAX_SIZE );
     virtual ~Pipe();
     const std::string &GetName();
-    
+
     void AddRef();
-    void DecRef();   // a pipe does NOT delete itself with ref-count 0. 
-    int  RefCount(); 
-    
+    void DecRef();   // a pipe does NOT delete itself with ref-count 0.
+    int  RefCount();
+
     bool IsEmpty();
 
     /**
@@ -76,21 +76,21 @@ class Pipe
     bool Write(const char *buf, int nSize, int nWaitMillis = -1);
 
     void Flush();
-    
+
     void CheckStatus();
     void Close();
-    
+
     void AddListener(IPipeListener *l);
     void RemoveListener(IPipeListener *l);
-    
+
     void SetEof();
     bool IsEof();
-    
+
     int	GetAvailableRead();
     void SetOpenThreshold(int threshold);
 
   protected:
-    
+
     bool        m_bOpen;
     bool        m_bReadyForRead;
 
@@ -102,13 +102,13 @@ class Pipe
 
     CEvent     m_readEvent;
     CEvent     m_writeEvent;
-    
+
     std::vector<XFILE::IPipeListener *> m_listeners;
-    
+
     CCriticalSection m_lock;
   };
 
-  
+
 class PipesManager
 {
 public:
@@ -120,12 +120,12 @@ public:
   XFILE::Pipe *OpenPipe(const std::string &name);
   void         ClosePipe(XFILE::Pipe *pipe);
   bool         Exists(const std::string &name);
-  
+
 protected:
   PipesManager();
   int    m_nGenIdHelper;
   std::map<std::string, XFILE::Pipe *> m_pipes;
-  
+
   CCriticalSection m_lock;
 };
 

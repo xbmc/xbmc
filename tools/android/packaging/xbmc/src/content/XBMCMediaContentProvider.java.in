@@ -12,7 +12,7 @@ import @APP_PACKAGE@.XBMCJsonRPC;
 public class XBMCMediaContentProvider extends XBMCContentProvider
 {
   private static String TAG = "@APP_NAME@_Media_Provider";
-  
+
   public static final String AUTHORITY = AUTHORITY_ROOT + ".media";
   public static final String SUGGEST_PATH = "suggestions";
 
@@ -65,7 +65,7 @@ public class XBMCMediaContentProvider extends XBMCContentProvider
           String[] selectionArgs, String sortOrder)
   {
     Log.d(TAG, "query: " + uri.toString());
-    
+
     switch (URI_MATCHER.match(uri))
     {
     case SEARCH_SUGGEST:
@@ -75,7 +75,7 @@ public class XBMCMediaContentProvider extends XBMCContentProvider
         limit = Integer.parseInt(uri.getQueryParameter("limit"));
       } catch (Exception e) {}
       return mJsonRPC.getSuggestions(query, limit);
-      
+
     default:
       throw new IllegalArgumentException("Unknown Uri: " + uri);
     }

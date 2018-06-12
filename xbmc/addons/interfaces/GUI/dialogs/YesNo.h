@@ -22,7 +22,7 @@
 
 extern "C"
 {
-  
+
 struct AddonGlobalInterface;
 
 namespace ADDON

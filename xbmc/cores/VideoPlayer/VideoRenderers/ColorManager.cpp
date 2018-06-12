@@ -202,7 +202,7 @@ bool CColorManager::GetVideo3dLut(int videoFlags, int *cmsToken, CMS_DATA_FORMAT
       m_curIccWhitePoint = (CMS_WHITEPOINT)CServiceBroker::GetSettings().GetInt("videoscreen.cmswhitepoint");
       m_curIccPrimaries = (CMS_PRIMARIES)CServiceBroker::GetSettings().GetInt("videoscreen.cmsprimaries");
       CLog::Log(LOGDEBUG, "ColorManager: primaries setting: %d\n", (int)m_curIccPrimaries);
-      if (m_curIccPrimaries == CMS_PRIMARIES_AUTO) 
+      if (m_curIccPrimaries == CMS_PRIMARIES_AUTO)
         m_curIccPrimaries = videoPrimaries;
       CLog::Log(LOGDEBUG, "ColorManager: source profile primaries: %d\n", (int)m_curIccPrimaries);
       cmsHPROFILE sourceProfile = CreateSourceProfile(m_curIccPrimaries, gammaCurve, m_curIccWhitePoint);
@@ -388,12 +388,12 @@ bool CColorManager::Load3dLut(const std::string filename, CMS_DATA_FORMAT format
   int components = format == CMS_DATA_FMT_RGBA ? 4 : 3;
   for (int rIndex = 0; rIndex < rSize; rIndex++)
   {
-    for (int gIndex = 0; gIndex < gSize; gIndex++) 
+    for (int gIndex = 0; gIndex < gSize; gIndex++)
     {
       std::vector<uint16_t> input(bSize * 3); // always 3 components
       lutFile.Read(input.data(), input.size() * sizeof(input[0]));
       int index = (rIndex + gIndex * rSize) * components;
-      for (int bIndex = 0; bIndex < bSize; bIndex++) 
+      for (int bIndex = 0; bIndex < bSize; bIndex++)
       {
         int offset = index + bIndex * rSize * gSize * components;
         clutData[offset + 0] = input[bIndex * 3 + 2];
@@ -576,11 +576,11 @@ void CColorManager::Create3dLut(cmsHTRANSFORM transform, CMS_DATA_FORMAT format,
 #define videoToPC(x) ( clamp((((x)*255)-16)/219,0,1) )
 #define PCToVideo(x) ( (((x)*219)+16)/255 )
 
-  for (int bIndex=0; bIndex<lutResolution; bIndex++) 
+  for (int bIndex=0; bIndex<lutResolution; bIndex++)
   {
-    for (int gIndex=0; gIndex<lutResolution; gIndex++) 
+    for (int gIndex=0; gIndex<lutResolution; gIndex++)
     {
-      for (int rIndex=0; rIndex<lutResolution; rIndex++) 
+      for (int rIndex=0; rIndex<lutResolution; rIndex++)
       {
         int offset = rIndex * components;
         input[offset + 0] = videoToPC(rIndex / (lutResolution-1.0));

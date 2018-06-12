@@ -533,7 +533,7 @@ namespace XBMCAddon
                                            const char* _disabledColor, long angle,
                                            const char* _shadowColor, const char* _focusedColor,
                                            const char* disabledOnTexture, const char* disabledOffTexture) :
-      strFont("font13"), textColor(0xffffffff), disabledColor(0x60ffffff), 
+      strFont("font13"), textColor(0xffffffff), disabledColor(0x60ffffff),
       textOffsetX(_textOffsetX), textOffsetY(_textOffsetY), align(alignment), iAngle(angle),
       shadowColor(0), focusedColor(0xffffffff)
     {
@@ -662,7 +662,7 @@ namespace XBMCAddon
         CTextureInfo(strTextureRadioOnNoFocus),
         CTextureInfo(strTextureRadioOffFocus),
         CTextureInfo(strTextureRadioOffNoFocus),
-        CTextureInfo(strTextureRadioOnDisabled), 
+        CTextureInfo(strTextureRadioOnDisabled),
         CTextureInfo(strTextureRadioOffDisabled));
 
       CGUIRadioButtonControl* pGuiButtonControl =
@@ -893,10 +893,10 @@ namespace XBMCAddon
       strTextureDownDisabled = XBMCAddonUtils::getDefaultImage((char*)"listcontrol", (char*)"texturedowndisabled");
     }
 
-    void ControlSpin::setTextures(const char* up, const char* down, 
-                                  const char* upFocus, 
+    void ControlSpin::setTextures(const char* up, const char* down,
+                                  const char* upFocus,
                                   const char* downFocus,
-                                  const char* upDisabled, 
+                                  const char* upDisabled,
                                   const char* downDisabled)
     {
       strTextureUp = up;

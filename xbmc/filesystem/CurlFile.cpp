@@ -360,7 +360,7 @@ long CCurlFile::CReadState::Connect(unsigned int size)
     long response;
     if (CURLE_OK == g_curlInterface.easy_getinfo(m_easyHandle, CURLINFO_RESPONSE_CODE, &response))
       return response;
-    else 
+    else
       return -1;
   }
 
@@ -1128,7 +1128,7 @@ bool CCurlFile::OpenForWrite(const CURL& url, bool bOverWrite)
 
   assert(m_state->m_multiHandle);
 
-  SetCommonOptions(m_state); 
+  SetCommonOptions(m_state);
   g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_UPLOAD, 1);
 
   g_curlInterface.multi_add_handle(m_state->m_multiHandle, m_state->m_easyHandle);
@@ -1354,7 +1354,7 @@ int64_t CCurlFile::Seek(int64_t iFilePosition, int iWhence)
     {
       m_seekable = false;
       return -1;
-    } 
+    }
   }
 
   SetCorrectHeaders(m_state);
@@ -1401,7 +1401,7 @@ int CCurlFile::Stat(const CURL& url, struct __stat64* buffer)
   SetRequestHeaders(m_state);
   g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_TIMEOUT, g_advancedSettings.m_curlconnecttimeout);
   g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_NOBODY, 1);
-  g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_FILETIME , 1); 
+  g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_FILETIME , 1);
 
   if(url2.IsProtocol("ftp"))
   {
@@ -1421,8 +1421,8 @@ int CCurlFile::Stat(const CURL& url, struct __stat64* buffer)
       return -1;
   }
 
-  if(result == CURLE_GOT_NOTHING 
-  || result == CURLE_HTTP_RETURNED_ERROR 
+  if(result == CURLE_GOT_NOTHING
+  || result == CURLE_HTTP_RETURNED_ERROR
   || result == CURLE_RECV_ERROR /* some silly shoutcast servers */ )
   {
     /* some http servers and shoutcast servers don't give us any data on a head request */

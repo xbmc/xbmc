@@ -117,7 +117,7 @@ extern "C"
    *          Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
    */
   PVR_ERROR IsEPGTagPlayable(const EPG_TAG* tag, bool* bIsPlayable);
-  
+
   /*!
    * Retrieve the edit decision list (EDL) of an EPG tag on the backend.
    * @param epgTag The EPG tag.

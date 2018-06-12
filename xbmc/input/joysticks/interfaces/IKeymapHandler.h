@@ -35,7 +35,7 @@ namespace JOYSTICK
   {
   public:
     virtual ~IKeymapHandler() = default;
-    
+
     /*!
      * \brief Get the pressed state of the given keys
      *

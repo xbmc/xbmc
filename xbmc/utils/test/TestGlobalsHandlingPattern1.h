@@ -37,10 +37,10 @@ namespace xbmcutil
       int somethingToAccess;
 
       TestGlobalPattern1() : somethingToAccess(0) { ctorCalled = true; }
-      ~TestGlobalPattern1() 
-      { 
+      ~TestGlobalPattern1()
+      {
         std::cout << "Clean shutdown of TestGlobalPattern1" << std::endl << std::flush;
-        dtorCalled = true; 
+        dtorCalled = true;
       }
 
       void beHappy() { if (somethingToAccess) throw somethingToAccess; }

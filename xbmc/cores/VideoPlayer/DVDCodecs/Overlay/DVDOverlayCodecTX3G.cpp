@@ -50,7 +50,7 @@
                       (((uint32_t) str[1]) << 16) | \
                       (((uint32_t) str[2]) << 8) | \
                       (((uint32_t) str[3]) << 0))
-                      
+
 typedef enum {
  BOLD       = 0x1,
  ITALIC     = 0x2,
@@ -107,7 +107,7 @@ int CDVDOverlayCodecTX3G::Decode(DemuxPacket *pPacket)
   uint8_t  *end = pPacket->pData + pPacket->iSize;
 
   // Parse the packet as a TX3G TextSample.
-  // Look for a single StyleBox ('styl') and 
+  // Look for a single StyleBox ('styl') and
   // read all contained StyleRecords.
   // Ignore all other box types.
   // NOTE: Buffer overflows on read are not checked.
@@ -244,7 +244,7 @@ int CDVDOverlayCodecTX3G::Decode(DemuxPacket *pPacket)
     // this is a char index, not a byte index.
     charIndex++;
   }
-  
+
   if (strUTF8.empty())
     return OC_BUFFER;
 

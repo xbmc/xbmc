@@ -130,7 +130,7 @@ public:
 
   /*! \brief Resolve an external ID (e.g. MusicBrainz IDs) to a URL using scrapers
    If we have an ID in hand, e.g. MusicBrainz IDs or TheTVDB Season IDs
-   we can get directly to a URL instead of searching by name and choosing from 
+   we can get directly to a URL instead of searching by name and choosing from
    the search results. The correct scraper type should be used to get the right
    URL for a given ID, so we can differentiate albums, artists, TV Seasons, etc.
    \param externalID the external ID - e.g. MusicBrainzArtist/AlbumID

@@ -57,7 +57,7 @@ public:
 
    \param name the name of the database to check.
    \return true if the database can be opened, false otherwise.
-   */ 
+   */
   bool CanOpen(const std::string &name);
 
   bool IsUpgrading() const { return m_bIsUpgrading; }

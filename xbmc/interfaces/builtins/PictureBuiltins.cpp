@@ -92,7 +92,7 @@ static int Slideshow(const std::vector<std::string>& params)
   return 0;
 }
 
-// Note: For new Texts with comma add a "\" before!!! Is used for table text 
+// Note: For new Texts with comma add a "\" before!!! Is used for table text
 //
 /// \page page_List_of_built_in_functions
 /// \section built_in_functions_11 Picture built-in's

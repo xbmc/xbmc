@@ -68,7 +68,7 @@ namespace XBMCAddon
           return true;
         }
         break;
-        
+
       case HACK_CUSTOM_ACTION_CLOSING:
         {
           // This is from the CGUIPythonWindowXMLDialog::Show_Internal

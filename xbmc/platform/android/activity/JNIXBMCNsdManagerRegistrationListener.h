@@ -31,19 +31,19 @@ class CJNIXBMCNsdManagerRegistrationListener : public CJNINsdManagerRegistration
 {
 public:
   CJNIXBMCNsdManagerRegistrationListener();
-  CJNIXBMCNsdManagerRegistrationListener(const CJNIXBMCNsdManagerRegistrationListener& other); 
+  CJNIXBMCNsdManagerRegistrationListener(const CJNIXBMCNsdManagerRegistrationListener& other);
   explicit CJNIXBMCNsdManagerRegistrationListener(const jni::jhobject &object) : CJNIBase(object) {}
   virtual ~CJNIXBMCNsdManagerRegistrationListener();
 
   static void RegisterNatives(JNIEnv* env);
-  
+
   // CJNINsdManagerRegistrationListener interface
 public:
   void onRegistrationFailed(const CJNINsdServiceInfo& serviceInfo, int errorCode) override {}
   void onServiceRegistered(const CJNINsdServiceInfo& serviceInfo) override {}
   void onServiceUnregistered(const CJNINsdServiceInfo& serviceInfo) override {}
   void onUnregistrationFailed(const CJNINsdServiceInfo& serviceInfo, int errorCode) override {}
-  
+
 protected:
   static void _onRegistrationFailed(JNIEnv* env, jobject thiz, jobject serviceInfo, jint errorCode);
   static void _onServiceRegistered(JNIEnv* env, jobject thiz, jobject serviceInfo);

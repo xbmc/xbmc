@@ -48,7 +48,7 @@ bool CPODocument::LoadFile(const std::string &pofilename)
     CLog::Log(LOGERROR, "%s: can't load file \"%s\" or file is too small", __FUNCTION__,  pofilename.c_str());
     return false;
   }
-  
+
   m_strBuffer = '\n';
   m_strBuffer.append(buf.get(), buf.size());
   buf.clear();
@@ -221,7 +221,7 @@ std::string CPODocument::UnescapeString(const std::string &strInput)
         case '\'': oescchar = '\''; break;
         case '\\': oescchar = '\\'; break;
 
-        default: 
+        default:
         {
           CLog::Log(LOGERROR,
                     "POParser: warning, unhandled escape character. Problematic entry: %s",

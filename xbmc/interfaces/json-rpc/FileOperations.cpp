@@ -275,7 +275,7 @@ JSONRPC_STATUS CFileOperations::PrepareDownload(const std::string &method, ITran
 
     return OK;
   }
-  
+
   return InvalidParams;
 }
 

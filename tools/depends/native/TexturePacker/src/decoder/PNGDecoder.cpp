@@ -51,11 +51,11 @@ bool PNGDecoder::CanDecode(const std::string &filename)
   #define PNG_BYTES_TO_CHECK 4
   CFile fp;
   char buf[PNG_BYTES_TO_CHECK];
-  
+
   /* Open the prospective PNG file. */
   if (!fp.Open(filename))
     return false;
-  
+
   /* Read in some of the signature bytes */
   if (fp.Read(buf, PNG_BYTES_TO_CHECK) != PNG_BYTES_TO_CHECK)
   {
@@ -72,30 +72,30 @@ bool PNGDecoder::CanDecode(const std::string &filename)
 bool PNGDecoder::LoadFile(const std::string &filename, DecodedFrames &frames)
 {
   png_byte header[8];
-  
+
   CFile fp;
   if (!fp.Open(filename))
   {
     perror(filename.c_str());
     return false;
   }
-  
+
   // read the header
   fp.Read(header, 8);
-  
+
   if (png_sig_cmp(header, 0, 8))
   {
     fprintf(stderr, "error: %s is not a PNG.\n", filename.c_str());
     return false;
   }
-  
+
   png_structp png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
   if (!png_ptr)
   {
     fprintf(stderr, "error: png_create_read_struct returned 0.\n");
     return false;
   }
-  
+
   // create png info struct
   png_infop info_ptr = png_create_info_struct(png_ptr);
   if (!info_ptr)
@@ -104,7 +104,7 @@ bool PNGDecoder::LoadFile(const std::string &filename, DecodedFrames &frames)
     png_destroy_read_struct(&png_ptr, (png_infopp)NULL, (png_infopp)NULL);
     return false;
   }
-  
+
   // create png info struct
   png_infop end_info = png_create_info_struct(png_ptr);
   if (!end_info)
@@ -113,36 +113,36 @@ bool PNGDecoder::LoadFile(const std::string &filename, DecodedFrames &frames)
     png_destroy_read_struct(&png_ptr, &info_ptr, (png_infopp) NULL);
     return false;
   }
-  
+
   // the code in this if statement gets called if libpng encounters an error
   if (setjmp(png_jmpbuf(png_ptr))) {
     fprintf(stderr, "error from libpng\n");
     png_destroy_read_struct(&png_ptr, &info_ptr, &end_info);
     return false;
   }
-  
+
   // init png reading
   png_init_io(png_ptr, fp.getFP());
-  
+
   // let libpng know you already read the first 8 bytes
   png_set_sig_bytes(png_ptr, 8);
-  
+
   // read all the info up to the image data
   png_read_info(png_ptr, info_ptr);
-  
+
   // variables to pass to get info
   int bit_depth, color_type;
   png_uint_32 temp_width, temp_height;
-  
+
   // get info about png
   png_get_IHDR(png_ptr, info_ptr, &temp_width, &temp_height, &bit_depth, &color_type,
                NULL, NULL, NULL);
-  
+
   if (png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS))
   {
     png_set_tRNS_to_alpha(png_ptr);
   }
-  
+
   //set it to 32bit pixeldepth
   png_color_8 sig_bit;
   sig_bit.red = 32;
@@ -151,12 +151,12 @@ bool PNGDecoder::LoadFile(const std::string &filename, DecodedFrames &frames)
   // if the image has an alpha channel then
   sig_bit.alpha = 32;
   png_set_sBIT(png_ptr, info_ptr, &sig_bit);
-  
-  
+
+
   /* Add filler (or alpha) byte (before/after each RGB triplet) */
   png_set_filler(png_ptr, 0xff, PNG_FILLER_AFTER);
-  
-  
+
+
   if (color_type == PNG_COLOR_TYPE_RGB ||
       color_type == PNG_COLOR_TYPE_RGB_ALPHA)
     png_set_bgr(png_ptr);
@@ -164,10 +164,10 @@ bool PNGDecoder::LoadFile(const std::string &filename, DecodedFrames &frames)
   // convert indexed color to rgb
   if (color_type == PNG_COLOR_TYPE_PALETTE)
     png_set_palette_to_rgb(png_ptr);
-  
+
   /* swap the RGBA or GA data to ARGB or AG (or BGRA to ABGR) */
   //png_set_swap_alpha(png_ptr);
-  
+
   //libsquish only eats 32bit RGBA, must convert grayscale into this format
   if (color_type == PNG_COLOR_TYPE_GRAY ||
       color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
@@ -178,13 +178,13 @@ bool PNGDecoder::LoadFile(const std::string &filename, DecodedFrames &frames)
 
   // Update the png info struct.
   png_read_update_info(png_ptr, info_ptr);
-  
+
   // Row size in bytes.
   int rowbytes = png_get_rowbytes(png_ptr, info_ptr);
-  
+
   // glTexImage2d requires rows to be 4-byte aligned
   //  rowbytes += 3 - ((rowbytes-1) % 4);
-  
+
   // Allocate the image_data as a big block, to be given to opengl
   png_byte * image_data;
   image_data = (png_byte*)new png_byte[rowbytes * temp_height * sizeof(png_byte)+15];
@@ -194,7 +194,7 @@ bool PNGDecoder::LoadFile(const std::string &filename, DecodedFrames &frames)
     png_destroy_read_struct(&png_ptr, &info_ptr, &end_info);
     return false;
   }
-  
+
   // row_pointers is for pointing to image_data for reading the png with libpng
   png_bytep * row_pointers = (png_bytep*) new png_bytep[temp_height * sizeof(png_bytep)];
   if (row_pointers == NULL)
@@ -204,19 +204,19 @@ bool PNGDecoder::LoadFile(const std::string &filename, DecodedFrames &frames)
     delete [] image_data;
     return false;
   }
-  
+
   // set the individual row_pointers to point at the correct offsets of image_data
   for (unsigned int i = 0; i < temp_height; i++)
   {
     row_pointers[i] = image_data + i * rowbytes;
   }
-  
+
   // read the png into image_data through row_pointers
   png_read_image(png_ptr, row_pointers);
-  
+
   frames.user = NULL;
   DecodedFrame frame;
-  
+
   frame.rgbaImage.pixels = (char *)image_data;
   frame.rgbaImage.height = temp_height;
   frame.rgbaImage.width = temp_width;
@@ -235,7 +235,7 @@ void PNGDecoder::FreeDecodedFrames(DecodedFrames &frames)
   {
     delete [] frames.frameList[i].rgbaImage.pixels;
   }
-  
+
   frames.clear();
 }
 

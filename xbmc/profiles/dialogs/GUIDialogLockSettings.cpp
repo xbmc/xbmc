@@ -226,7 +226,7 @@ void CGUIDialogLockSettings::OnCancel()
 void CGUIDialogLockSettings::SetupView()
 {
   CGUIDialogSettingsManualBase::SetupView();
-  
+
   // set the title
   if (m_getUser)
     SetHeading(StringUtils::Format(g_localizeStrings.Get(20152).c_str(), CURL::Decode(m_url).c_str()));
@@ -293,7 +293,7 @@ void CGUIDialogLockSettings::InitializeSettings()
     settingsLevelOptions.push_back(std::make_pair(10038, LOCK_LEVEL::ADVANCED));
     settingsLevelOptions.push_back(std::make_pair(10039, LOCK_LEVEL::EXPERT));
     AddList(groupDetails, SETTING_LOCK_SETTINGS, 20043, SettingLevel::Basic, static_cast<int>(m_locks.settings), settingsLevelOptions, 20043);
-    
+
     AddToggle(groupDetails, SETTING_LOCK_ADDONMANAGER, 24090, SettingLevel::Basic, m_locks.addonManager);
   }
 

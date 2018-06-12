@@ -24,12 +24,12 @@
 
 CPlatformDarwin::CPlatformDarwin()
 {
-  
+
 }
 
 CPlatformDarwin::~CPlatformDarwin()
 {
-  
+
 }
 
 void CPlatformDarwin::Init()

@@ -6,5 +6,5 @@ usage(){
 
 [[ $# -lt 3 ]] && usage
 
-make apk-sign SIGN_STORE=$1 SIGN_STOREPASS=$2 SIGN_KEY=$3 SIGN_KEYPASS=$4 
+make apk-sign SIGN_STORE=$1 SIGN_STOREPASS=$2 SIGN_KEY=$3 SIGN_KEYPASS=$4
 

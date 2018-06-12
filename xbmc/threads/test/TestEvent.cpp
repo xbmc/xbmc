@@ -41,7 +41,7 @@ public:
   volatile bool waiting;
 
   waiter(CEvent& o, bool& flag) : event(o), result(flag), waiting(false) {}
-  
+
   void Run() override
   {
     waiting = true;
@@ -60,7 +60,7 @@ public:
   volatile bool waiting;
 
   timed_waiter(CEvent& o, int& flag, int waitTimeMillis) : event(o), waitTime(waitTimeMillis), result(flag), waiting(false) {}
-  
+
   void Run() override
   {
     waiting = true;
@@ -542,7 +542,7 @@ public:
   volatile bool waiting;
 
   mass_waiter() : event(*g_event), waiting(false) {}
-  
+
   void Run() override
   {
     waiting = true;
@@ -561,7 +561,7 @@ public:
   volatile bool waiting;
 
   poll_mass_waiter() : event(*g_event), waiting(false) {}
-  
+
   void Run() override
   {
     waiting = true;

@@ -21,7 +21,7 @@
 #pragma once
 
 /*!
-\file 
+\file
 \brief
 */
 

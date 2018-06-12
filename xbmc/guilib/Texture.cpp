@@ -131,7 +131,7 @@ void CBaseTexture::Update(unsigned int width, unsigned int height, unsigned int 
     return;
 
   Allocate(width, height, format);
-  
+
   if (m_pixels == nullptr)
     return;
 

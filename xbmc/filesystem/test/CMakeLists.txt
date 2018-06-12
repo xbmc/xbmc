@@ -1,4 +1,4 @@
-set(SOURCES TestDirectory.cpp 
+set(SOURCES TestDirectory.cpp
             TestFile.cpp
             TestFileFactory.cpp
             TestZipFile.cpp

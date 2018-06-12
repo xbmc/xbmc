@@ -64,12 +64,12 @@ fi
 if [ "$NDK_VERSION" == "Default" ]
 then
   NDK_VERSION=$DEFAULT_NDK_VERSION
-fi 
+fi
 
 if [ "$NDK_API" == "Default" ]
 then
   NDK_API=$DEFAULT_NDK_API
-fi 
+fi
 
 if [ "$XBMC_DEPENDS_ROOT" == "Default" ]
 then
@@ -78,7 +78,7 @@ fi
 
 if [ "$DARWIN_ARM_CPU" == "Default" ]
 then
-  DARWIN_ARM_CPU=$DEFAULT_DARWIN_ARM_CPU  
+  DARWIN_ARM_CPU=$DEFAULT_DARWIN_ARM_CPU
 fi
 
 if [ "$XCODE_APP" == "Default" ]
@@ -136,7 +136,7 @@ function pathChanged ()
   else
     ret="1"
   fi
-  
+
   echo $ret
 }
 

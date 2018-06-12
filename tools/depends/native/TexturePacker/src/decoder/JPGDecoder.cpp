@@ -68,33 +68,33 @@ bool JPGDecoder::LoadFile(const std::string &filename, DecodedFrames &frames)
     delete arq;
     return false;
   }
-  
+
   struct jpeg_decompress_struct cinfo;
   struct jpeg_error_mgr jerr;
-  
+
   int ImageSize;
-  
+
   cinfo.err = jpeg_std_error(&jerr);
   jpeg_create_decompress(&cinfo);
-  
+
   jpeg_stdio_src(&cinfo, arq->getFP());
   jpeg_read_header(&cinfo, TRUE);
   jpeg_start_decompress(&cinfo);
-  
+
   // Image Size is calculated as (width * height * bytes per pixel = 4
   ImageSize = cinfo.image_width * cinfo.image_height * 4;
-  
+
   frames.user = NULL;
   DecodedFrame frame;
-  
+
   frame.rgbaImage.pixels = (char *)new char[ImageSize];
-  
+
   unsigned char *scanlinebuff = new unsigned char[3 * cinfo.image_width];
   unsigned char *dst = (unsigned char *)frame.rgbaImage.pixels;
   while (cinfo.output_scanline < cinfo.output_height)
   {
     jpeg_read_scanlines(&cinfo,&scanlinebuff,1);
-    
+
     unsigned char *src2 = scanlinebuff;
     unsigned char *dst2 = dst;
     for (unsigned int x = 0; x < cinfo.image_width; x++, src2 += 3)
@@ -107,16 +107,16 @@ bool JPGDecoder::LoadFile(const std::string &filename, DecodedFrames &frames)
     dst += cinfo.image_width * 4;
   }
   delete [] scanlinebuff;
-  
+
   jpeg_finish_decompress(&cinfo);
   jpeg_destroy_decompress(&cinfo);
-  
+
   frame.rgbaImage.height = cinfo.image_height;
   frame.rgbaImage.width = cinfo.image_width;
   frame.rgbaImage.bbp = 32;
   frame.rgbaImage.pitch = 4 * cinfo.image_width;
   frames.frameList.push_back(frame);
-  
+
   delete arq;
   return true;
 }
@@ -127,7 +127,7 @@ void JPGDecoder::FreeDecodedFrames(DecodedFrames &frames)
   {
     delete [] frames.frameList[i].rgbaImage.pixels;
   }
-  
+
   frames.clear();
 }
 

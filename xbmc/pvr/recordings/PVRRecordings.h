@@ -141,6 +141,6 @@ namespace PVR
      * @param count the new playcount or INCREMENT_PLAY_COUNT to denote that the current playcount(s) are to be incremented by one
      * @return true if all playcounts were changed
      */
-    bool ChangeRecordingsPlayCount(const CFileItemPtr &item, int count);    
+    bool ChangeRecordingsPlayCount(const CFileItemPtr &item, int count);
   };
 }

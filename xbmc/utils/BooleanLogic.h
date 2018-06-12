@@ -80,7 +80,7 @@ public:
 protected:
   virtual CBooleanLogicOperation* newOperation() { return new CBooleanLogicOperation(); }
   virtual CBooleanLogicValue* newValue() { return new CBooleanLogicValue(); }
-  
+
   BooleanLogicOperation m_operation;
   CBooleanLogicOperations m_operations;
   CBooleanLogicValues m_values;

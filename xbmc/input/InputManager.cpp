@@ -217,20 +217,20 @@ bool CInputManager::ProcessEventServer(int windowId, float frameTime)
       {
         int actionID;
         std::string actionName;
-        
+
         // Translate using custom controller translator.
         if (m_customControllerTranslator->TranslateCustomControllerString(windowId, strMapName, wKeyID, actionID, actionName))
         {
           // break screensaver
           g_application.ResetSystemIdleTimer();
           g_application.ResetScreenSaver();
-          
+
           // in case we wokeup the screensaver or screen - eat that action...
           if (g_application.WakeUpScreenSaverAndDPMS())
             return true;
-          
+
           m_Mouse.SetActive(false);
-          
+
           return ExecuteInputAction(CAction(actionID, fAmount, 0.0f, actionName));
         }
         else

@@ -134,6 +134,6 @@ std::vector<std::string> CRumbleGenerator::GetMotors(const std::string& controll
   ControllerPtr controller = controllerManager.GetController(controllerId);
   if (controller)
     controller->GetFeatures(motors, FEATURE_TYPE::MOTOR);
- 
+
   return motors;
 }

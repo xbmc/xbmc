@@ -364,21 +364,21 @@ void CGenericTouchInputHandler::triggerDetectors(TouchInput event, int32_t point
       m_detectors.clear();
       break;
     }
-    
+
     case TouchInputDown:
     {
       for (auto const& detector : m_detectors)
         detector->OnTouchDown(pointer, m_pointers[pointer]);
       break;
     }
-    
+
     case TouchInputUp:
     {
       for (auto const& detector : m_detectors)
         detector->OnTouchUp(pointer, m_pointers[pointer]);
       break;
     }
-    
+
     case TouchInputMove:
     {
       for (auto const& detector : m_detectors)

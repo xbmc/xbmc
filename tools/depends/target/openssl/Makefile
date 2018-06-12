@@ -38,7 +38,7 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 		sed -ie "s|CFLAG= |CFLAG=$(CFLAGS) |" "$(PLATFORM)/Makefile"; \
 	fi
 	# for iphoneos-cross config a sysroot argument is added
-	# however sysroot already set in Makefile.include, so remove this 	
+	# however sysroot already set in Makefile.include, so remove this
 	if test "$(OS)" = "ios"; then \
 		sed -ie "s|CFLAG= |CFLAG=$(CFLAGS) |" "$(PLATFORM)/Makefile"; \
 		sed -ie "s|-isysroot \$$(CROSS_TOP)/SDKs/\$$(CROSS_SDK) ||" "$(PLATFORM)/Makefile"; \

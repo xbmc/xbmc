@@ -143,7 +143,7 @@ protected:
   CGUIListItemLayout *GetFocusedLayout() const;
 
   CPoint m_renderOffset; ///< \brief render offset of the first item in the list \sa SetRenderOffset
-    
+
   float m_analogScrollCount;
   unsigned int m_lastHoldTime;
 

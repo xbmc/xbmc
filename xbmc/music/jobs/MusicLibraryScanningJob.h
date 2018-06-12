@@ -27,7 +27,7 @@
 
 /*!
  \brief Music library job implementation for scanning items.
- Uses CMusicInfoScanner for scanning and can be run with  or 
+ Uses CMusicInfoScanner for scanning and can be run with  or
  without a visible progress bar.
  */
 class CMusicLibraryScanningJob : public CMusicLibraryJob

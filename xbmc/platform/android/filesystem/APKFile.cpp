@@ -65,7 +65,7 @@ bool CAPKFile::Open(const CURL& url)
   m_zip_index = zip_name_locate(m_zip_archive, path.c_str(), zip_flags);
   if (m_zip_index == -1)
   {
-    // might not be an error if caller is just testing for presence/absence 
+    // might not be an error if caller is just testing for presence/absence
     CLog::Log(LOGDEBUG, "CAPKFile::Open: Unable to locate file : '%s'",
       path.c_str());
     zip_close(m_zip_archive);

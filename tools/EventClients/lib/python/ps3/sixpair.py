@@ -57,7 +57,7 @@ def set_pair(dev, mac):
     handle.controlMsg(usb.ENDPOINT_OUT | usb.TYPE_CLASS | usb.RECIP_INTERFACE
                     , usb.REQ_SET_CONFIGURATION, msg, passed_value, itf.interfaceNumber, timeout)
   finally:
-    handle.releaseInterface()  
+    handle.releaseInterface()
 
 
 def get_pair(dev):
@@ -102,7 +102,7 @@ if __name__=="__main__":
       except:
         print("Failed to parse HCI address")
         mac = None
-    
+
     for dev in devs:
       if mac:
         update_pair(dev, mac)

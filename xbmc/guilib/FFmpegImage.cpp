@@ -103,7 +103,7 @@ static int mem_file_read(void *h, uint8_t* buf, int size)
   int64_t unread = mbuf->size - mbuf->pos;
   if (unread <= 0)
     return 0;
-  
+
   size_t tocopy = std::min((size_t)size, (size_t)unread);
   memcpy(buf, mbuf->data + mbuf->pos, tocopy);
   mbuf->pos += tocopy;
@@ -161,7 +161,7 @@ CFFmpegImage::~CFFmpegImage()
 bool CFFmpegImage::LoadImageFromMemory(unsigned char* buffer, unsigned int bufSize,
                                       unsigned int width, unsigned int height)
 {
-    
+
   if (!Initialize(buffer, bufSize))
   {
     //log

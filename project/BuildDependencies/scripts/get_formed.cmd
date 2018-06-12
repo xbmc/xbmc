@@ -64,10 +64,10 @@ IF EXIST %1 (
 ) ELSE (
   CALL :setSubStageName Downloading %1...
   SET DOWNLOAD_URL=%KODI_MIRROR%/build-deps/win32/%1
-  %WGET% -S --quiet --tries=5 --retry-connrefused --waitretry=2 --show-progress "!DOWNLOAD_URL!" 2>&1 | findstr /L /I "Location:" 
+  %WGET% -S --quiet --tries=5 --retry-connrefused --waitretry=2 --show-progress "!DOWNLOAD_URL!" 2>&1 | findstr /L /I "Location:"
   REM Apparently there's a quirk in cmd so this means if error level => 1
   IF ERRORLEVEL 1 (
-    ECHO %1^|Download of !DOWNLOAD_URL! failed >> %FORMED_FAILED_LIST% 
+    ECHO %1^|Download of !DOWNLOAD_URL! failed >> %FORMED_FAILED_LIST%
     ECHO %1^|Download of !DOWNLOAD_URL! failed
     EXIT /B 7
   )

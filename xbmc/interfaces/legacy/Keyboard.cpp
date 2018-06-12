@@ -32,7 +32,7 @@ namespace XBMCAddon
   namespace xbmc
   {
 
-    Keyboard::Keyboard(const String& line /* = nullString*/, const String& heading/* = nullString*/, bool hidden/* = false*/) 
+    Keyboard::Keyboard(const String& line /* = nullString*/, const String& heading/* = nullString*/, bool hidden/* = false*/)
       : strDefault(line), strHeading(heading), bHidden(hidden), bConfirmed(false)
     {
     }

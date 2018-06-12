@@ -50,7 +50,7 @@ protected:
 private:
   unsigned int m_updateY1;
   unsigned int m_updateY2;
-  
+
   enum TextureStatus
   {
     TEXTURE_VOID = 0,
@@ -58,7 +58,7 @@ private:
     TEXTURE_REALLOCATED,
     TEXTURE_UPDATED,
   };
-  
+
   TextureStatus m_textureStatus;
 
   static bool m_staticVertexBufferCreated;

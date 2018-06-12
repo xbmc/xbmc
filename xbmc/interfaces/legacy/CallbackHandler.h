@@ -41,7 +41,7 @@ namespace XBMCAddon
 
   /**
    * This class is primarily for Python support (hence the "Retarded"
-   *  prefix). Python (et. al. Retarded languages) require that 
+   *  prefix). Python (et. al. Retarded languages) require that
    *  the context within which a callback executes is under the control
    *  of the language. Therefore, this handler is used to queue
    *  messages over to a language controlled thread for eventual

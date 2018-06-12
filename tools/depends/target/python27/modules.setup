@@ -109,7 +109,7 @@ PYTHONPATH=$(COREPYTHONPATH)
 # various reasons; therefore they are listed here instead of in the
 # normal order.
 
-# This only contains the minimal set of modules required to run the 
+# This only contains the minimal set of modules required to run the
 # setup.py script in the root of the Python source tree.
 
 posix posixmodule.c		# posix (UNIX) system calls
@@ -126,9 +126,9 @@ zipimport zipimport.c
 # The rest of the modules listed in this file are all commented out by
 # default.  Usually they can be detected and built as dynamically
 # loaded modules by the new setup.py script added in Python 2.1.  If
-# you're on a platform that doesn't support dynamic loading, want to 
-# compile modules statically into the Python binary, or need to 
-# specify some odd set of compiler switches, you can uncomment the 
+# you're on a platform that doesn't support dynamic loading, want to
+# compile modules statically into the Python binary, or need to
+# specify some odd set of compiler switches, you can uncomment the
 # appropriate lines below.
 
 # ======================================================================
@@ -177,7 +177,7 @@ _weakref _weakref.c	# basic weak reference support
 _testcapi _testcapimodule.c    # Python C API test module
 _random _randommodule.c	# Random number generator
 _collections _collectionsmodule.c # Container types
-itertools itertoolsmodule.c	# Functions creating iterators for efficient looping 
+itertools itertoolsmodule.c	# Functions creating iterators for efficient looping
 strop stropmodule.c		# String manipulations
 _functools _functoolsmodule.c	# Tools for working with functions and callable objects
 
@@ -198,7 +198,7 @@ _locale _localemodule.c   -lintl
 # supported...)
 #
 fcntl fcntlmodule.c	# fcntl(2) and ioctl(2)
-#spwd spwdmodule.c		# spwd(3) 
+#spwd spwdmodule.c		# spwd(3)
 #grp grpmodule.c		# grp(3)
 select selectmodule.c	# select(2); not on ancient System V
 
@@ -304,7 +304,7 @@ _sha512 sha512module.c
 #sunaudiodev sunaudiodev.c
 
 
-# A Linux specific module -- off by default; this may also work on 
+# A Linux specific module -- off by default; this may also work on
 # some *BSDs.
 
 #linuxaudiodev linuxaudiodev.c
@@ -370,7 +370,7 @@ syslog syslogmodule.c		# syslog daemon interface
 
 #_curses _cursesmodule.c -lcurses -ltermcap
 # Wrapper for the panel library that's part of ncurses and SYSV curses.
-#_curses_panel _curses_panel.c -lpanel -lncurses 
+#_curses_panel _curses_panel.c -lpanel -lncurses
 
 
 # Generic (SunOS / SVR4) dynamic loading module.

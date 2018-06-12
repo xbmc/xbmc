@@ -66,7 +66,7 @@ public:
    \param needsRecaching [out] whether the image needs recaching.
    \return cached url of this image
    \sa GetCachedImage
-   */ 
+   */
   std::string CheckCachedImage(const std::string &image, bool &needsRecaching);
 
   /*! \brief Cache image (if required) using a background job

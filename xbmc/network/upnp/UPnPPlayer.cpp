@@ -603,7 +603,7 @@ bool CUPnPPlayer::OnAction(const CAction &action)
       {
         //stop on remote system
         m_stopremote = HELPERS::ShowYesNoDialogText(CVariant{37022}, CVariant{37023}) == DialogResponse::YES;
-        
+
         return false; /* let normal code handle the action */
       }
     default:

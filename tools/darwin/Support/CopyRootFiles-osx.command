@@ -13,7 +13,7 @@ if [ "$ACTION" = build ] ; then
 SYNC="rsync -aq --exclude .git* --exclude .DS_Store* --exclude *.dll --exclude *.DLL --exclude *linux.* --exclude *arm-osx.* --exclude *.zlib --exclude *.a"
 
 # rsync command for excluding pngs and jpgs as well. Note that if the skin itself is not compiled
-# using XBMCTex then excluding the pngs and jpgs will most likely make the skin unusable 
+# using XBMCTex then excluding the pngs and jpgs will most likely make the skin unusable
 SYNCSKIN="rsync -aq --exclude .git* --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude *.dll  --exclude *.DLL --exclude *linux.* --exclude *.png --exclude *.jpg --exclude *.bat"
 
 # rsync command for including everything but the skins

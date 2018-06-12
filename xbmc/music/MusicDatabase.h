@@ -238,14 +238,14 @@ public:
    \param strGenre the album genre(s)
    \param year the year
    \param strRecordLabel the recording label
-   \param strType album type (Musicbrainz release type e.g. "Broadcast, Soundtrack, live"), 
+   \param strType album type (Musicbrainz release type e.g. "Broadcast, Soundtrack, live"),
    \param bCompilation if the album is a compilation
    \param releaseType "album" or "single"
    \return the id of the album
    */
   int  AddAlbum(const std::string& strAlbum, const std::string& strMusicBrainzAlbumID,
                 const std::string& strReleaseGroupMBID,
-                const std::string& strArtist, const std::string& strArtistSort, 
+                const std::string& strArtist, const std::string& strArtistSort,
                 const std::string& strGenre, int year,
                 const std::string& strRecordLabel, const std::string& strType,
                 bool bCompilation, CAlbum::ReleaseType releaseType);
@@ -332,7 +332,7 @@ public:
   std::string GetRoleById(int id);
 
   /*! \brief Propagate artist sort name into the concatenated artist sort name strings
-  held for songs and albums 
+  held for songs and albums
   \param int idArtist to propagate sort name for, -1 means all artists
   */
   bool UpdateArtistSortNames(int idArtist = -1);
@@ -414,7 +414,7 @@ public:
 
   int GetArtistCountForRole(int role);
   int GetArtistCountForRole(const std::string& strRole);
-  
+
   /*! \brief Increment the playcount of an item
    Increments the playcount and updates the last played date
    \param item CFileItem to increment the playcount for
@@ -452,7 +452,7 @@ public:
   bool SetScraper(int id, const CONTENT_TYPE &content, const ADDON::ScraperPtr scraper);
   bool SetScraperAll(const std::string& strBaseDir, const ADDON::ScraperPtr scraper);
   bool GetScraper(int id, const CONTENT_TYPE &content, ADDON::ScraperPtr& scraper);
-  
+
   /*! \brief Check whether a given scraper is in use.
    \param scraperID the scraper to check for.
    \return true if the scraper is in use, false otherwise.
@@ -504,18 +504,18 @@ public:
 
   /*! \brief Fetch all related art for a database item.
   Fetches multiple pieces of art for a database item including that for related media types
-  Given song id art for the related album, artist(s) and albumartist(s) will also be fetched, looking up the 
+  Given song id art for the related album, artist(s) and albumartist(s) will also be fetched, looking up the
   album and artist when ids are not provided.
-  Given album id (and not song id) art for the related artist(s) will also be fetched, looking up the 
+  Given album id (and not song id) art for the related artist(s) will also be fetched, looking up the
   artist(s) when id are not provided.
   \param songId the id in the song table, -1 when song art not being fetched
   \param albumId the id in the album table, -1 when album art not being fetched
   \param artistId the id in the artist table, -1 when artist not known
   \param bPrimaryArtist true if art from only the first song artist or album artist is to be fetched
-  \param art [out] a vector, each element having media type e.g. "artist", "album" or "song", 
+  \param art [out] a vector, each element having media type e.g. "artist", "album" or "song",
   artType e.g. "thumb", "fanart", etc., prefix of "", "artist" or "albumartist" etc. giving the kind of artist
   relationship, and the original url of the art.
-  
+
   \return true if art is retrieved, false if no art is found.
   \sa SetArtForItem
   */
@@ -563,7 +563,7 @@ public:
 
   /*! \brief Fetch the distinct types of art held in the database for a type of media.
   \param mediaType the type of media, which corresponds to the table the item resides in (song/artist/album).
-  \param artTypes [out] the types of art e.g. "thumb", "fanart", etc. 
+  \param artTypes [out] the types of art e.g. "thumb", "fanart", etc.
   \return true if art is found, false if no art is found.
   */
   bool GetArtTypes(const MediaType &mediaType, std::vector<std::string> &artTypes);
@@ -571,7 +571,7 @@ public:
   /////////////////////////////////////////////////
   // Tag Scan Version
   /////////////////////////////////////////////////
-  /*! \brief Check if music files need all tags rescanning regardless of file being unchanged 
+  /*! \brief Check if music files need all tags rescanning regardless of file being unchanged
   because the tag processing has changed (which may happen without db version changes) since they
   where last scanned.
   \return -1 if an error occured, 0 if no scan is needed, or the version number of tags if not the same as current.
@@ -583,7 +583,7 @@ public:
   */
   void SetMusicNeedsTagScan(int version);
 
-  /*! \brief Set the version number of tag data 
+  /*! \brief Set the version number of tag data
   \param version the version number of db when tags last scanned, 0 (default) means current db version
   */
   void SetMusicTagScanVersion(int version = 0);
@@ -594,7 +594,7 @@ void SetLibraryLastUpdated();
 protected:
   std::map<std::string, int> m_genreCache;
   std::map<std::string, int> m_pathCache;
-  
+
   void CreateTables() override;
   void CreateAnalytics() override;
   int GetMinSchemaVersion() const override { return 32; }

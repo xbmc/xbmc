@@ -295,10 +295,10 @@ for addon development and detailed documentation about the addon build system.
 
 Clang and GCC support different kinds of Sanitizers. To enable a Sanitizer call CMake with the
 option `-DECM_ENABLE_SANITIZERS=’san1;san2;...'`. For more information about enabling the
-Sanitizers read the documentation in 
+Sanitizers read the documentation in
 [modules/extra/ECMEnableSanitizers.cmake](https://github.com/xbmc/xbmc/tree/master/cmake/modules/extra/ECMEnableSanitizers.cmake).
 
-It is also recommended to read the sections about the Sanitizers in the [Clang 
+It is also recommended to read the sections about the Sanitizers in the [Clang
 documentation](http://clang.llvm.org/docs/).
 
 ## Debugging the build

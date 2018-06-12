@@ -72,7 +72,7 @@ namespace JSONRPC
     static JSONRPC_STATUS GetConfiguration(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant& parameterObject, CVariant &result);
     static JSONRPC_STATUS SetConfiguration(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant& parameterObject, CVariant &result);
     static JSONRPC_STATUS NotifyAll(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant& parameterObject, CVariant &result);
-  
+
   private:
     static bool HandleMethodCall(const CVariant& request, CVariant& response, ITransportLayer *transport, IClient *client);
     static inline bool IsProperJSONRPC(const CVariant& inputroot);

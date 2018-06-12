@@ -64,7 +64,7 @@ static const struct StereoModeMap VideoModeToGuiModeMap[] =
   { "right_left",               RENDER_STEREO_MODE_SPLIT_VERTICAL },
   { "top_bottom",               RENDER_STEREO_MODE_SPLIT_HORIZONTAL },
   { "bottom_top",               RENDER_STEREO_MODE_SPLIT_HORIZONTAL },
-  { "checkerboard_rl",          RENDER_STEREO_MODE_CHECKERBOARD }, 
+  { "checkerboard_rl",          RENDER_STEREO_MODE_CHECKERBOARD },
   { "checkerboard_lr",          RENDER_STEREO_MODE_CHECKERBOARD },
   { "row_interleaved_rl",       RENDER_STEREO_MODE_INTERLACED },
   { "row_interleaved_lr",       RENDER_STEREO_MODE_INTERLACED },

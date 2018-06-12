@@ -46,7 +46,7 @@ TEST(TestStringUtils, ToUpper)
 TEST(TestStringUtils, ToLower)
 {
   std::string refstr = "test";
-  
+
   std::string varstr = "TeSt";
   StringUtils::ToLower(varstr);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
@@ -88,7 +88,7 @@ TEST(TestStringUtils, ToCapitalize)
 TEST(TestStringUtils, EqualsNoCase)
 {
   std::string refstr = "TeSt";
-  
+
   EXPECT_TRUE(StringUtils::EqualsNoCase(refstr, "TeSt"));
   EXPECT_TRUE(StringUtils::EqualsNoCase(refstr, "tEsT"));
 }
@@ -97,15 +97,15 @@ TEST(TestStringUtils, Left)
 {
   std::string refstr, varstr;
   std::string origstr = "test";
-  
+
   refstr = "";
   varstr = StringUtils::Left(origstr, 0);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
-  
+
   refstr = "te";
   varstr = StringUtils::Left(origstr, 2);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
-  
+
   refstr = "test";
   varstr = StringUtils::Left(origstr, 10);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
@@ -115,27 +115,27 @@ TEST(TestStringUtils, Mid)
 {
   std::string refstr, varstr;
   std::string origstr = "test";
-  
+
   refstr = "";
   varstr = StringUtils::Mid(origstr, 0, 0);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
-  
+
   refstr = "te";
   varstr = StringUtils::Mid(origstr, 0, 2);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
-  
+
   refstr = "test";
   varstr = StringUtils::Mid(origstr, 0, 10);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
-  
+
   refstr = "st";
   varstr = StringUtils::Mid(origstr, 2);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
-  
+
   refstr = "st";
   varstr = StringUtils::Mid(origstr, 2, 2);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
-  
+
   refstr = "es";
   varstr = StringUtils::Mid(origstr, 1, 2);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
@@ -145,15 +145,15 @@ TEST(TestStringUtils, Right)
 {
   std::string refstr, varstr;
   std::string origstr = "test";
-  
+
   refstr = "";
   varstr = StringUtils::Right(origstr, 0);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
-  
+
   refstr = "st";
   varstr = StringUtils::Right(origstr, 2);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
-  
+
   refstr = "test";
   varstr = StringUtils::Right(origstr, 10);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
@@ -162,7 +162,7 @@ TEST(TestStringUtils, Right)
 TEST(TestStringUtils, Trim)
 {
   std::string refstr = "test test";
-  
+
   std::string varstr = " test test   ";
   StringUtils::Trim(varstr);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
@@ -171,7 +171,7 @@ TEST(TestStringUtils, Trim)
 TEST(TestStringUtils, TrimLeft)
 {
   std::string refstr = "test test   ";
-  
+
   std::string varstr = " test test   ";
   StringUtils::TrimLeft(varstr);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
@@ -180,7 +180,7 @@ TEST(TestStringUtils, TrimLeft)
 TEST(TestStringUtils, TrimRight)
 {
   std::string refstr = " test test";
-  
+
   std::string varstr = " test test   ";
   StringUtils::TrimRight(varstr);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
@@ -189,18 +189,18 @@ TEST(TestStringUtils, TrimRight)
 TEST(TestStringUtils, Replace)
 {
   std::string refstr = "text text";
-  
+
   std::string varstr = "test test";
   EXPECT_EQ(StringUtils::Replace(varstr, 's', 'x'), 2);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
-  
+
   EXPECT_EQ(StringUtils::Replace(varstr, 's', 'x'), 0);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
-  
+
   varstr = "test test";
   EXPECT_EQ(StringUtils::Replace(varstr, "s", "x"), 2);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
-  
+
   EXPECT_EQ(StringUtils::Replace(varstr, "s", "x"), 0);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
 }
@@ -208,13 +208,13 @@ TEST(TestStringUtils, Replace)
 TEST(TestStringUtils, StartsWith)
 {
   std::string refstr = "test";
-  
+
   EXPECT_FALSE(StringUtils::StartsWithNoCase(refstr, "x"));
-  
+
   EXPECT_TRUE(StringUtils::StartsWith(refstr, "te"));
   EXPECT_TRUE(StringUtils::StartsWith(refstr, "test"));
   EXPECT_FALSE(StringUtils::StartsWith(refstr, "Te"));
-  
+
   EXPECT_TRUE(StringUtils::StartsWithNoCase(refstr, "Te"));
   EXPECT_TRUE(StringUtils::StartsWithNoCase(refstr, "TesT"));
 }
@@ -222,13 +222,13 @@ TEST(TestStringUtils, StartsWith)
 TEST(TestStringUtils, EndsWith)
 {
   std::string refstr = "test";
-  
+
   EXPECT_FALSE(StringUtils::EndsWithNoCase(refstr, "x"));
-  
+
   EXPECT_TRUE(StringUtils::EndsWith(refstr, "st"));
   EXPECT_TRUE(StringUtils::EndsWith(refstr, "test"));
   EXPECT_FALSE(StringUtils::EndsWith(refstr, "sT"));
-  
+
   EXPECT_TRUE(StringUtils::EndsWithNoCase(refstr, "sT"));
   EXPECT_TRUE(StringUtils::EndsWithNoCase(refstr, "TesT"));
 }
@@ -282,7 +282,7 @@ TEST(TestStringUtils, Split)
 
   EXPECT_EQ(1U, StringUtils::Split("a bc  d ef ghi ", "").size());
   EXPECT_STREQ("a bc  d ef ghi ", StringUtils::Split("a bc  d ef ghi ", "").at(0).c_str());
-  
+
   // test overload with char as delimiter
   EXPECT_EQ(4U, StringUtils::Split("a bc  d ef ghi ", ' ', 4).size());
   EXPECT_STREQ("d ef ghi ", StringUtils::Split("a bc  d ef ghi ", ' ', 4).at(3).c_str());

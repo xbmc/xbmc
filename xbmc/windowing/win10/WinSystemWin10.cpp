@@ -434,11 +434,11 @@ bool CWinSystemWin10::AddResolution(const RESOLUTION_INFO &res)
   for (unsigned int i = RES_CUSTOM; i < CDisplaySettings::GetInstance().ResolutionInfoSize(); i++)
   {
     RESOLUTION_INFO& info = CDisplaySettings::GetInstance().GetResolutionInfo(i);
-    if ( info.iWidth == res.iWidth 
-      && info.iHeight == res.iHeight 
-      && info.iScreenWidth == res.iScreenWidth 
-      && info.iScreenHeight == res.iScreenHeight 
-      && info.fRefreshRate == res.fRefreshRate 
+    if ( info.iWidth == res.iWidth
+      && info.iHeight == res.iHeight
+      && info.iScreenWidth == res.iScreenWidth
+      && info.iScreenHeight == res.iScreenHeight
+      && info.fRefreshRate == res.fRefreshRate
       && info.dwFlags == res.dwFlags)
       return false; // already have this resolution
   }

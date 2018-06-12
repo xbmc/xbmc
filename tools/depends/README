@@ -20,7 +20,7 @@ TVOS:
 
   You can target the same --prefix path, each setup will be done in an isolated directory. The
   last configure/make you do is the one used for Kodi/Xcode.
- 
+
 #- Android (the paths are examples and have to match those of docs/READM.android)
 #----------------------------------------------------------------------------
 

@@ -292,7 +292,7 @@ int CDVDInputStreamNavigator::Read(uint8_t* buf, int buf_size)
     else if (navresult == NAVRESULT_NOP)
     {
       NOPcount++;
-      if (NOPcount == 1000) 
+      if (NOPcount == 1000)
       {
         m_bEOF = true;
         CLog::Log(LOGERROR,"CDVDInputStreamNavigator: Stopping playback due to infinite loop, caused by badly authored DVD navigation structure. Try enabling 'Attempt to skip introduction before DVD menu'.");
@@ -1068,10 +1068,10 @@ void CDVDInputStreamNavigator::SetAudioStreamName(AudioStreamInfo &info, const a
   case 1:
     info.name += " Mono";
     break;
-  case 2: 
+  case 2:
     info.name += " Stereo";
     break;
-  case 6: 
+  case 6:
     info.name += " 5.1";
     break;
   case 7:
@@ -1555,7 +1555,7 @@ std::string CDVDInputStreamNavigator::GetDVDSerialString()
 
 int64_t CDVDInputStreamNavigator::GetChapterPos(int ch)
 {
-  if (ch == -1 || ch > GetChapterCount()) 
+  if (ch == -1 || ch > GetChapterCount())
     ch = GetChapter();
 
   std::map<int, std::map<int, int64_t>>::iterator title = m_mapTitleChapters.find(m_iTitle);
@@ -1638,7 +1638,7 @@ int dvd_inputstreamnavigator_cb_read(void * p_stream, void * buffer, int i_read)
 int dvd_inputstreamnavigator_cb_readv(void * p_stream, void * p_iovec, int i_blocks)
 {
   // NOTE/TODO: this vectored read callback somehow doesn't seem to be called by libdvdnav.
-  // Therefore, the code below isn't really tested, but inspired from the libc_readv code for Win32 in libdvdcss (device.c:713). 
+  // Therefore, the code below isn't really tested, but inspired from the libc_readv code for Win32 in libdvdcss (device.c:713).
   CDVDInputStreamFile *lpstream = reinterpret_cast<CDVDInputStreamFile*>(p_stream);
   const struct iovec* lpiovec = reinterpret_cast<const struct iovec*>(p_iovec);
 

@@ -1145,7 +1145,7 @@ void CGraphicContext::SetMediaDir(const std::string &strMediaDir)
 const std::string& CGraphicContext::GetMediaDir() const
 {
   return m_strMediaDir;
-  
+
 }
 
 void CGraphicContext::Flip(bool rendered, bool videoLayer)

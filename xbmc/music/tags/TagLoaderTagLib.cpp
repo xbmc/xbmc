@@ -292,7 +292,7 @@ bool CTagLoaderTagLib::ParseTag(ID3v2::Tag *id3v2, EmbeddedArt *art, MUSIC_INFO:
     if (it->second.isEmpty()) continue;
 
     if      (it->first == "TPE1")   SetArtist(tag, GetID3v2StringList(it->second));
-    else if (it->first == "TSOP")   SetArtistSort(tag, GetID3v2StringList(it->second));    
+    else if (it->first == "TSOP")   SetArtistSort(tag, GetID3v2StringList(it->second));
     else if (it->first == "TALB")   tag.SetAlbum(it->second.front()->toString().to8Bit(true));
     else if (it->first == "TPE2")   SetAlbumArtist(tag, GetID3v2StringList(it->second));
     else if (it->first == "TSO2")   SetAlbumArtistSort(tag, GetID3v2StringList(it->second));
@@ -381,7 +381,7 @@ bool CTagLoaderTagLib::ParseTag(ID3v2::Tag *id3v2, EmbeddedArt *art, MUSIC_INFO:
           CLog::Log(LOGDEBUG, "unrecognized user text tag detected: TXXX:%s", frame->description().toCString(true));
       }
     else if (it->first == "TIPL")
-      // Loop through and process the involved people list 
+      // Loop through and process the involved people list
       // For example Arranger, Engineer, Producer, DJMixer or Mixer
       // In fieldlist every odd field is a function, and every even is an artist or a comma delimited list of artists.
       for (ID3v2::FrameList::ConstIterator ip = it->second.begin(); ip != it->second.end(); ++ip)
@@ -531,20 +531,20 @@ bool CTagLoaderTagLib::ParseTag(APE::Tag *ape, EmbeddedArt *art, CMusicInfoTag& 
       AddArtistRole(tag, "Writer", StringListToVectorString(it->second.toStringList()));
     else if ((it->first == "MIXARTIST") || (it->first == "REMIXER"))
       AddArtistRole(tag, "Remixer", StringListToVectorString(it->second.toStringList()));
-    else if (it->first == "ARRANGER") 
+    else if (it->first == "ARRANGER")
       AddArtistRole(tag, "Arranger", StringListToVectorString(it->second.toStringList()));
-    else if (it->first == "ENGINEER") 
+    else if (it->first == "ENGINEER")
       AddArtistRole(tag, "Engineer", StringListToVectorString(it->second.toStringList()));
-    else if (it->first == "PRODUCER") 
+    else if (it->first == "PRODUCER")
       AddArtistRole(tag, "Producer", StringListToVectorString(it->second.toStringList()));
-    else if (it->first == "DJMIXER") 
+    else if (it->first == "DJMIXER")
       AddArtistRole(tag, "DJMixer", StringListToVectorString(it->second.toStringList()));
     else if (it->first == "MIXER")
       AddArtistRole(tag, "Mixer", StringListToVectorString(it->second.toStringList()));
     else if (it->first == "PERFORMER")
       // Picard uses PERFORMER tag as musician credits list formatted "name (instrument)"
       AddArtistInstrument(tag, StringListToVectorString(it->second.toStringList()));
-    else if (it->first == "LABEL")   
+    else if (it->first == "LABEL")
       tag.SetRecordLabel(it->second.toString().to8Bit(true));
     else if (it->first == "COMPILATION")
       tag.SetCompilation(it->second.toString().toInt() == 1);
@@ -930,7 +930,7 @@ void CTagLoaderTagLib::SetArtist(CMusicInfoTag &tag, const std::vector<std::stri
   else
     // Fill both artist vector and artist desc from tag value.
     // Note desc may not be empty as it could have been set by previous parsing of ID3v2 before APE
-    tag.SetArtist(values, true); 
+    tag.SetArtist(values, true);
 }
 
 void CTagLoaderTagLib::SetArtistSort(CMusicInfoTag &tag, const std::vector<std::string> &values)
@@ -1052,7 +1052,7 @@ void CTagLoaderTagLib::AddArtistRole(CMusicInfoTag &tag, const std::vector<std::
   // Every odd entry is a function (e.g. Producer, Arranger etc.) or instrument (e.g. Orchestra, Vocal, Piano)
   // and every even is an artist or a comma delimited list of artists.
 
-  if (values.size() % 2 != 0) // Must contain an even number of entries 
+  if (values.size() % 2 != 0) // Must contain an even number of entries
     return;
 
   // Vector of possible separators
@@ -1074,12 +1074,12 @@ void CTagLoaderTagLib::AddArtistRole(CMusicInfoTag &tag, const std::vector<std::
 
 void CTagLoaderTagLib::AddArtistInstrument(CMusicInfoTag &tag, const std::vector<std::string> &values)
 {
-  /* Values is a musician credits list, each entry is artist name followed by instrument (or function) 
-     e.g. violin, drums, background vocals, solo, orchestra etc. in brackets. This is how Picard uses 
-     the PERFORMER tag. Multiple instruments may be in one tag 
-     e.g "Pierre Marchand (bass, drum machine and hammond organ)", 
-     these will be separated into individual roles. 
-     If there is not a pair of brackets then role is "performer" by default, and the whole entry is 
+  /* Values is a musician credits list, each entry is artist name followed by instrument (or function)
+     e.g. violin, drums, background vocals, solo, orchestra etc. in brackets. This is how Picard uses
+     the PERFORMER tag. Multiple instruments may be in one tag
+     e.g "Pierre Marchand (bass, drum machine and hammond organ)",
+     these will be separated into individual roles.
+     If there is not a pair of brackets then role is "performer" by default, and the whole entry is
      taken as artist name.
   */
   // Vector of possible separators
@@ -1087,7 +1087,7 @@ void CTagLoaderTagLib::AddArtistInstrument(CMusicInfoTag &tag, const std::vector
 
   for (size_t i = 0; i < values.size(); ++i)
   {
-    std::vector<std::string> roles;    
+    std::vector<std::string> roles;
     std::string strArtist = values[i];
     size_t firstLim = values[i].find_first_of("(");
     size_t lastLim = values[i].find_last_of(")");
@@ -1114,7 +1114,7 @@ void CTagLoaderTagLib::AddArtistInstrument(CMusicInfoTag &tag, const std::vector
 
 bool CTagLoaderTagLib::Load(const std::string& strFileName, CMusicInfoTag& tag, const std::string& fallbackFileExtension, EmbeddedArt *art /* = NULL */)
 {
-  // Dont try to read the tags for streams & shoutcast  
+  // Dont try to read the tags for streams & shoutcast
   if (URIUtils::IsInternetStream(strFileName))
     return false;
 

@@ -55,7 +55,7 @@ macro(check_builtin func var)
 endmacro()
 
 
-# -------- Main script --------- 
+# -------- Main script ---------
 message(STATUS "System type: ${CMAKE_SYSTEM_NAME}")
 
 if(WITH_CPU)

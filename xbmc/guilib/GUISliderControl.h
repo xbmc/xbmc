@@ -97,7 +97,7 @@ protected:
    \return slider position in the range [0,1]
    */
   float GetProportion(RangeSelector selector = RangeSelectorLower) const;
-  
+
   /*! \brief Send a click message (and/or action) to the app in response to a slider move
    */
   void SendClick();

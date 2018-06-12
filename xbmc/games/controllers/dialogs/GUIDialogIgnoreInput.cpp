@@ -51,7 +51,7 @@ std::string CGUIDialogIgnoreInput::GetDialogText()
 
 std::string CGUIDialogIgnoreInput::GetDialogHeader()
 {
-  
+
   return g_localizeStrings.Get(35019); // "Ignore input"
 }
 

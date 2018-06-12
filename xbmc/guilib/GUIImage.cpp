@@ -38,7 +38,7 @@ CGUIImage::CGUIImage(int parentID, int controlID, float posX, float posY, float 
 }
 
 CGUIImage::CGUIImage(const CGUIImage &left)
-  : CGUIControl(left), 
+  : CGUIControl(left),
   m_image(left.m_image),
   m_info(left.m_info),
   m_texture(left.m_texture),

@@ -52,7 +52,7 @@ namespace JOYSTICK
      * \brief
      */
     IInputReceiver *GetInputReceiver(const std::string &controllerId) const;
-    
+
     /*!
      * \brief
      */

@@ -50,10 +50,10 @@ void CDirectoryHistory::SetSelectedItem(const std::string& strSelectedItem, cons
 {
   if (strSelectedItem.empty())
     return;
-  
+
   std::string strDir = preparePath(strDirectory);
   std::string strItem = preparePath(strSelectedItem, false);
-  
+
   HistoryMap::iterator iter = m_vecHistory.find(strDir);
   if (iter != m_vecHistory.end())
   {

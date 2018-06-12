@@ -547,7 +547,7 @@ std::string CMime::GetMimeType(const CFileItem &item)
 
 std::string CMime::GetMimeType(const CURL &url, bool lookup)
 {
-  
+
   std::string strMimeType;
 
   if( url.IsProtocol("shout") || url.IsProtocol("http") || url.IsProtocol("https"))

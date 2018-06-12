@@ -202,7 +202,7 @@ void CAESinkXAudio::GetDelay(AEDelayStatus& status)
 
   XAUDIO2_VOICE_STATE state;
   m_sourceVoice->GetState(&state, 0);
-  
+
   double delay = (double)(m_sinkFrames - state.SamplesPlayed) / m_format.m_sampleRate;
   status.SetDelay(delay);
   return;
@@ -395,7 +395,7 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
     {
       CLog::Log(LOGNOTICE, __FUNCTION__": stream type \"%s\" on device \"%s\" seems to be not supported.", CAEUtil::StreamTypeToStr(CAEStreamInfo::STREAM_TYPE_TRUEHD), details.strDescription.c_str());
     }
-    else 
+    else
     {
       deviceInfo.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_TRUEHD);
       add192 = true;
@@ -417,7 +417,7 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
     {
       CLog::Log(LOGNOTICE, __FUNCTION__": stream type \"%s\" on device \"%s\" seems to be not supported.", CAEUtil::StreamTypeToStr(CAEStreamInfo::STREAM_TYPE_EAC3), details.strDescription.c_str());
     }
-    else 
+    else
     {
       deviceInfo.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_EAC3);
       add192 = true;
@@ -777,7 +777,7 @@ initialize:
   m_uiBufferLen = (int)(format.m_sampleRate * 0.02);
   m_dwFrameSize = wfxex.Format.nBlockAlign;
   m_dwChunkSize = m_dwFrameSize * m_uiBufferLen;
-  m_dwBufferLen = m_dwChunkSize * 4; 
+  m_dwBufferLen = m_dwChunkSize * 4;
   m_AvgBytesPerSec = wfxex.Format.nAvgBytesPerSec;
 
   CLog::Log(LOGINFO, __FUNCTION__": XAudio Sink Initialized using: %s, %d, %d",
@@ -819,7 +819,7 @@ void CAESinkXAudio::Drain()
 
 bool CAESinkXAudio::IsUSBDevice()
 {
-#if 0 // TODO 
+#if 0 // TODO
   IPropertyStore *pProperty = nullptr;
   PROPVARIANT varName;
   PropVariantInit(&varName);

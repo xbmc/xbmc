@@ -102,7 +102,7 @@ bool CPosixUDPSocket::Bind(bool localOnly, int port, int range)
     }
 #else
     CLog::Log(LOGERROR, "UDP: Could not create socket");
-#endif    
+#endif
     CLog::Log(LOGERROR, "UDP: %s", strerror(errno));
     return false;
   }

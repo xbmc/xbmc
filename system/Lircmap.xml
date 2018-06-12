@@ -110,7 +110,7 @@
 		<hash>KEY_NUMERIC_POUND</hash>
 		<info>KEY_INFO</info>
 	</remote>
-	
+
 	<remote device="XboxDVDDongle">
 		<play>PLAY</play>
 		<pause>PAUSE</pause>
@@ -333,7 +333,7 @@
 		<hash>Hash</hash>
 		<playlist>KEY_BOOKMARKS</playlist>
 		<teletext>Thumbnail</teletext>
-		<title>TaskSwitcher</title>		
+		<title>TaskSwitcher</title>
 	</remote>
 	<remote	device="MCE_via_iMON">
 		<play>KEY_PLAY</play>
@@ -597,10 +597,10 @@
 		<green>KEY_GREEN</green>
 		<yellow>KEY_YELLOW</yellow>
 		<blue>KEY_BLUE</blue>
-		<recordedtv>KEY_PVR</recordedtv> 
-		<liveradio>KEY_RADIO</liveradio> 
+		<recordedtv>KEY_PVR</recordedtv>
+		<liveradio>KEY_RADIO</liveradio>
 	</remote>
-	
+
 	<remote device="devinput-32">
 		<left>KEY_LEFT</left>
 		<right>KEY_RIGHT</right>
@@ -656,10 +656,10 @@
 		<green>KEY_GREEN</green>
 		<yellow>KEY_YELLOW</yellow>
 		<blue>KEY_BLUE</blue>
-		<recordedtv>KEY_PVR</recordedtv> 
-		<liveradio>KEY_RADIO</liveradio> 
+		<recordedtv>KEY_PVR</recordedtv>
+		<liveradio>KEY_RADIO</liveradio>
 	</remote>
-	
+
 	<remote device="devinput-64">
 		<left>KEY_LEFT</left>
 		<right>KEY_RIGHT</right>
@@ -715,7 +715,7 @@
 		<green>KEY_GREEN</green>
 		<yellow>KEY_YELLOW</yellow>
 		<blue>KEY_BLUE</blue>
-		<recordedtv>KEY_PVR</recordedtv> 
-		<liveradio>KEY_RADIO</liveradio> 
+		<recordedtv>KEY_PVR</recordedtv>
+		<liveradio>KEY_RADIO</liveradio>
 	</remote>
 </lircmap>

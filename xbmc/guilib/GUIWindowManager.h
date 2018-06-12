@@ -247,7 +247,7 @@ private:
   int GetTopmostDialog(bool modal, bool ignoreClosing) const;
 
   friend class KODI::MESSAGING::CApplicationMessenger;
-  
+
   /*! \brief Activate the given window.
    *
    * \param windowID The window ID to activate.

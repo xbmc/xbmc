@@ -150,7 +150,7 @@ namespace ADDON
     bool FindInstallableById(const std::string& addonId, AddonPtr& addon);
 
     void AddToUpdateableAddons(AddonPtr &pAddon);
-    void RemoveFromUpdateableAddons(AddonPtr &pAddon);    
+    void RemoveFromUpdateableAddons(AddonPtr &pAddon);
     bool ReloadSettings(const std::string &id);
 
     /*! Get addons with available updates */

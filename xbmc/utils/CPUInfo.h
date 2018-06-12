@@ -129,7 +129,7 @@ private:
   unsigned long long m_ioTicks;
 
   int          m_lastUsedPercentage;
-  XbmcThreads::EndTime m_nextUsedReadTime; 
+  XbmcThreads::EndTime m_nextUsedReadTime;
   std::string  m_cpuModel;
   std::string  m_cpuBogoMips;
   std::string  m_cpuHardware;

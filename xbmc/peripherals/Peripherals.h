@@ -239,7 +239,7 @@ namespace PERIPHERALS
     EventPollHandlePtr RegisterEventPoller() { return m_eventScanner.RegisterPollHandle(); }
 
     /*!
-     * 
+     *
      */
     void OnUserNotification();
 

@@ -41,7 +41,7 @@ JSONRPC_STATUS CPVROperations::GetProperties(const std::string &method, ITranspo
 {
   if (!CServiceBroker::GetPVRManager().IsStarted())
     return FailedToExecute;
-  
+
   CVariant properties = CVariant(CVariant::VariantTypeObject);
   for (unsigned int index = 0; index < parameterObject["properties"].size(); index++)
   {
@@ -63,7 +63,7 @@ JSONRPC_STATUS CPVROperations::GetChannelGroups(const std::string &method, ITran
 {
   if (!CServiceBroker::GetPVRManager().IsStarted())
     return FailedToExecute;
-  
+
   CPVRChannelGroupsContainerPtr channelGroupContainer = CServiceBroker::GetPVRManager().ChannelGroups();
   if (!channelGroupContainer)
     return FailedToExecute;
@@ -90,7 +90,7 @@ JSONRPC_STATUS CPVROperations::GetChannelGroupDetails(const std::string &method,
   CPVRChannelGroupsContainerPtr channelGroupContainer = CServiceBroker::GetPVRManager().ChannelGroups();
   if (!channelGroupContainer)
     return FailedToExecute;
-  
+
   CPVRChannelGroupPtr channelGroup;
   CVariant id = parameterObject["channelgroupid"];
   if (id.isInteger())
@@ -100,9 +100,9 @@ JSONRPC_STATUS CPVROperations::GetChannelGroupDetails(const std::string &method,
 
   if (channelGroup == NULL)
     return InvalidParams;
-  
+
   FillChannelGroupDetails(channelGroup, parameterObject, result["channelgroupdetails"], false);
-  
+
   return OK;
 }
 
@@ -110,27 +110,27 @@ JSONRPC_STATUS CPVROperations::GetChannels(const std::string &method, ITransport
 {
   if (!CServiceBroker::GetPVRManager().IsStarted())
     return FailedToExecute;
-  
+
   CPVRChannelGroupsContainerPtr channelGroupContainer = CServiceBroker::GetPVRManager().ChannelGroups();
   if (!channelGroupContainer)
     return FailedToExecute;
-  
+
   CPVRChannelGroupPtr channelGroup;
   CVariant id = parameterObject["channelgroupid"];
   if (id.isInteger())
     channelGroup = channelGroupContainer->GetByIdFromAll((int)id.asInteger());
   else if (id.isString())
     channelGroup = channelGroupContainer->GetGroupAll(id.asString() == "allradio");
-  
+
   if (channelGroup == NULL)
     return InvalidParams;
-  
+
   CFileItemList channels;
   if (channelGroup->GetMembers(channels) < 0)
     return InvalidParams;
-  
+
   HandleFileItemList("channelid", false, "channels", channels, parameterObject, result, true);
-    
+
   return OK;
 }
 
@@ -138,17 +138,17 @@ JSONRPC_STATUS CPVROperations::GetChannelDetails(const std::string &method, ITra
 {
   if (!CServiceBroker::GetPVRManager().IsStarted())
     return FailedToExecute;
-  
+
   CPVRChannelGroupsContainerPtr channelGroupContainer = CServiceBroker::GetPVRManager().ChannelGroups();
   if (!channelGroupContainer)
     return FailedToExecute;
-  
+
   CPVRChannelPtr channel = channelGroupContainer->GetChannelById((int)parameterObject["channelid"].asInteger());
   if (channel == NULL)
     return InvalidParams;
 
   HandleFileItem("channelid", false, "channeldetails", CFileItemPtr(new CFileItem(channel)), parameterObject, parameterObject["properties"], result, false);
-    
+
   return OK;
 }
 

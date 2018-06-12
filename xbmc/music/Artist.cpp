@@ -26,16 +26,16 @@
 
 void CArtist::MergeScrapedArtist(const CArtist& source, bool override /* = true */)
 {
-  /*   
+  /*
   Initial scraping of artist information when the mbid is derived from tags is done directly
   using that ID, otherwise the lookup is based on name and can mis-identify the artist
   (many have same name). It is useful to store the scraped mbid, but we need to be
-  able to correct any mistakes. Hence a manual refresh of artist information uses either 
+  able to correct any mistakes. Hence a manual refresh of artist information uses either
   the mbid is derived from tags or the artist name, not any previously scraped mbid.
 
    A Musicbrainz artist ID derived from music file tags is always taken as accurate and so can
    not be overwritten by a scraped value. When the artist does not already have an mbid or has
-   a previously scraped mbid, merge the new scraped value, flagging it as being from the 
+   a previously scraped mbid, merge the new scraped value, flagging it as being from the
    scraper rather than derived from music file tags.
    */
   if (!source.strMusicBrainzArtistID.empty() && (strMusicBrainzArtistID.empty() || bScrapedMBID))
@@ -118,7 +118,7 @@ bool CArtist::Load(const TiXmlElement *artist, bool append, bool prioritise)
   if (prioritise && iThumbCount && iThumbCount != thumbURL.m_url.size())
   {
     rotate(thumbURL.m_url.begin(),
-           thumbURL.m_url.begin()+iThumbCount, 
+           thumbURL.m_url.begin()+iThumbCount,
            thumbURL.m_url.end());
     thumbURL.m_xml = xmlAdd;
   }
@@ -165,7 +165,7 @@ bool CArtist::Load(const TiXmlElement *artist, bool append, bool prioritise)
     {
       art.insert(make_pair(artdetailNode->ValueStr(), artdetailNode->FirstChild()->ValueStr()));
       artdetailNode = artdetailNode->NextSibling();
-    }    
+    }
   }
 
   return true;

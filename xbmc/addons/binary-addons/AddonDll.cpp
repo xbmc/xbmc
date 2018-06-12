@@ -33,7 +33,7 @@
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
 #include "filesystem/Directory.h"
-#include "messaging/helpers/DialogOKHelper.h" 
+#include "messaging/helpers/DialogOKHelper.h"
 #include "settings/lib/SettingSection.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
@@ -479,7 +479,7 @@ bool CAddonDll::CheckAPIVersion(int type)
   /* If a instance (not global) version becomes checked must be the version
    * present.
    */
-  if (kodiMinVersion > addonVersion || 
+  if (kodiMinVersion > addonVersion ||
       addonVersion > AddonVersion(kodi::addon::GetTypeVersion(type)))
   {
     CLog::Log(LOGERROR, "Add-on '%s' is using an incompatible API version for type '%s'. Kodi API min version = '%s', add-on API version '%s'",
@@ -586,7 +586,7 @@ void CAddonDll::DeInitInterface()
 }
 
 char* CAddonDll::get_addon_path(void* kodiBase)
-{ 
+{
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (addon == nullptr)
   {
@@ -598,7 +598,7 @@ char* CAddonDll::get_addon_path(void* kodiBase)
 }
 
 char* CAddonDll::get_base_user_path(void* kodiBase)
-{ 
+{
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (addon == nullptr)
   {

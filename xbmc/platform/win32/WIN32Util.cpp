@@ -330,7 +330,7 @@ std::string CWIN32Util::GetSpecialFolder(int csidl)
   }
   else
     strProfilePath = "";
-  
+
   delete[] buf;
   return strProfilePath;
 }
@@ -430,7 +430,7 @@ std::wstring CWIN32Util::ConvertPathToWin32Form(const std::string& pathUtf8)
   {
     std::string formedPath("\\\\?\\UNC"); // start from "\\?\UNC" prefix
     formedPath += URIUtils::CanonicalizePath(URIUtils::FixSlashesAndDups(pathUtf8.substr(7), '\\'), '\\'); // fix duplicated and forward slashes, resolve relative path, don't touch "\\?\UNC" prefix,
-    convertResult = g_charsetConverter.utf8ToW(formedPath, result, false, false, true); 
+    convertResult = g_charsetConverter.utf8ToW(formedPath, result, false, false, true);
   }
   else if (pathUtf8.compare(0, 4, "\\\\?\\", 4) == 0) // pathUtf8 starts from "\\?\", but it's not UNC path
   {
@@ -472,7 +472,7 @@ std::wstring CWIN32Util::ConvertPathToWin32Form(const CURL& url)
   {
     if (url.GetHostName().empty())
       return std::wstring(); // empty string
-    
+
     std::wstring result;
     if (g_charsetConverter.utf8ToW("\\\\?\\UNC\\" +
           URIUtils::CanonicalizePath(URIUtils::FixSlashesAndDups(url.GetHostName() + '\\' + url.GetFileName(), '\\'), '\\'),

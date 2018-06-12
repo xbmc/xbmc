@@ -102,7 +102,7 @@ void Pipe::Flush()
 int  Pipe::Read(char *buf, int nMaxSize, int nWaitMillis)
 {
   CSingleLock lock(m_lock);
-  
+
   if (!m_bOpen)
   {
     return -1;
@@ -146,10 +146,10 @@ int  Pipe::Read(char *buf, int nMaxSize, int nWaitMillis)
 
     lock.Enter();
     DecRef();
-    
+
     if (!m_bOpen)
       return -1;
-    
+
     if (bHasData)
     {
       int nToRead = min((int)m_buffer.getMaxReadSize(), nMaxSize);
@@ -157,9 +157,9 @@ int  Pipe::Read(char *buf, int nMaxSize, int nWaitMillis)
       nResult = nToRead;
     }
   }
-  
+
   CheckStatus();
-  
+
   return nResult;
 }
 
@@ -199,7 +199,7 @@ bool Pipe::Write(const char *buf, int nSize, int nWaitMillis)
   }
 
   CheckStatus();
-  
+
   return bOk && m_bOpen;
 }
 
@@ -208,22 +208,22 @@ void Pipe::CheckStatus()
   if (m_bEof)
   {
     m_writeEvent.Set();
-    m_readEvent.Set();  
+    m_readEvent.Set();
     return;
   }
-  
+
   if (m_buffer.getMaxWriteSize() == 0)
     m_writeEvent.Reset();
   else
     m_writeEvent.Set();
-  
+
   if (m_buffer.getMaxReadSize() == 0)
     m_readEvent.Reset();
   else
   {
     if (!m_bReadyForRead  && (int)m_buffer.getMaxReadSize() >= m_nOpenThreshold)
       m_bReadyForRead = true;
-    m_readEvent.Set();  
+    m_readEvent.Set();
   }
 }
 
@@ -288,11 +288,11 @@ XFILE::Pipe *PipesManager::CreatePipe(const std::string &name, int nMaxPipeSize)
   std::string pName = name;
   if (pName.empty())
     pName = GetUniquePipeName();
-  
+
   CSingleLock lock(m_lock);
   if (m_pipes.find(pName) != m_pipes.end())
     return NULL;
-  
+
   XFILE::Pipe *p = new XFILE::Pipe(pName, nMaxPipeSize);
   m_pipes[pName] = p;
   return p;
@@ -312,7 +312,7 @@ void         PipesManager::ClosePipe(XFILE::Pipe *pipe)
   CSingleLock lock(m_lock);
   if (!pipe)
     return ;
-  
+
   pipe->DecRef();
   if (pipe->RefCount() == 0)
   {

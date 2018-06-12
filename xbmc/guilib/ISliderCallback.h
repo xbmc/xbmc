@@ -37,7 +37,7 @@ class ISliderCallback
 {
 public:
   virtual ~ISliderCallback() = default;
-  
+
   /*!
    \brief Callback function called whenever the user moves the slider
 

@@ -218,7 +218,7 @@ void CAndroidStorageProvider::GetRemovableDrives(VECSOURCES &removableDrives)
 std::set<std::string> CAndroidStorageProvider::GetRemovableDrivesLinux()
 {
   std::set<std::string> result;
-  
+
   // mounted usb disks
   char*                               buf     = NULL;
   FILE*                               pipe;

@@ -46,7 +46,7 @@ namespace XFILE
         PROXY_SOCKS5,
         PROXY_SOCKS5_REMOTE,
       } ProxyType;
-    
+
     public:
       CCurlFile();
       ~CCurlFile() override;

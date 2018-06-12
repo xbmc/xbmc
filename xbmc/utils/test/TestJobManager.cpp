@@ -124,7 +124,7 @@ public:
   {
     {
       CSingleLock lock(m_package.jobCreatedMutex);
-    
+
       m_package.ready = true;
       m_package.jobCreatedCond.notifyAll();
     }
@@ -159,7 +159,7 @@ WaitForJobToStartProcessing(CJob::PRIORITY priority, JobControlPackage &package)
   return job;
 }
 }
-  
+
 TEST_F(TestJobManager, PauseLowPriorityJob)
 {
   JobControlPackage package;

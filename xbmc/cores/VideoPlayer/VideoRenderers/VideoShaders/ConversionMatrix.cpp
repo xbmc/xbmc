@@ -357,7 +357,7 @@ void CConvertMatrix::SetColParams(AVColorSpace colSpace, int bits, bool limited,
       m_srcTextureBits == textuteBits &&
       m_pMat)
     return;
-  
+
   m_colSpace = colSpace;
   m_srcBits = bits;
   m_limitedSrc = limited;

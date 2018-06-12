@@ -77,7 +77,7 @@ java -Djava.awt.headless=true -jar slave.jar -jar-cache /Users/Shared/jenkins/ca
 </plist>
 
 13. sudo cp /Users/Shared/jenkins/slave/org.jenkins-ci.slave.jnlp.plist /Library/LaunchDaemons/org.jenkins-ci.slave.jnlp.plist
- 
+
 14. sudo nano /etc/profile and add PATH=$PATH:/usr/local/bin
 
 15. curl http://jenkins.kodi.tv/jnlpJars/slave.jar -o /Users/Shared/jenkins/slave.jar

@@ -48,24 +48,24 @@ namespace XBMCAddon
     ~LanguageHook() override;
 
     /**
-     * If the scripting language needs special handling for calls 
+     * If the scripting language needs special handling for calls
      *  that block or are delayed in any other means, this should
      *  be overloaded.
      *
      * In Python when control is passed to a native
-     *  method that blocks, you need to allow other threads in 
+     *  method that blocks, you need to allow other threads in
      *  Python to run by using Py_BEGIN_ALLOW_THREADS. This is
      *  the place to put that functionality
      */
     virtual void DelayedCallOpen() { }
 
     /**
-     * If the scripting language needs special handling for calls 
+     * If the scripting language needs special handling for calls
      *  that block or are delayed in any other means, this should
      *  be overloaded.
      *
      * In Python when control is passed to a native
-     *  method that blocks, you need to allow other threads in 
+     *  method that blocks, you need to allow other threads in
      *  Python to run by using Py_BEGIN_ALLOW_THREADS. When that
      *  delayed method ends you need to restore the Python thread
      *  state using Py_END_ALLOW_THREADS. This is the place to put
@@ -106,7 +106,7 @@ namespace XBMCAddon
      *
      * Currently (for python) the scripting language has the Addon id injected
      *  into it as a global variable. Therefore the only way to retrieve it is
-     *  to use scripting language specific calls. So until I figure out a 
+     *  to use scripting language specific calls. So until I figure out a
      *  better way to do this, this is how I need to retrieve it.
      */
     virtual String GetAddonId() { return emptyString; }
@@ -126,10 +126,10 @@ namespace XBMCAddon
 
   /**
    * This class can be used to access the language hook's DelayedCallOpen
-   *  and DelayedCallClose. It should be used whenever an API method 
+   *  and DelayedCallClose. It should be used whenever an API method
    *  is written such that it can block for an indefinite amount of time
-   *  since certain scripting languages (like Python) need to do extra 
-   *  work for delayed calls (like free the python locks and handle 
+   *  since certain scripting languages (like Python) need to do extra
+   *  work for delayed calls (like free the python locks and handle
    *  callbacks).
    */
   class DelayedCallGuard
@@ -141,7 +141,7 @@ namespace XBMCAddon
     inline explicit DelayedCallGuard(LanguageHook* languageHook_) : languageHook(languageHook_), clearOnExit(false)
     { if (languageHook) languageHook->DelayedCallOpen(); }
 
-    inline DelayedCallGuard() : languageHook(LanguageHook::GetLanguageHook()), clearOnExit(false) 
+    inline DelayedCallGuard() : languageHook(LanguageHook::GetLanguageHook()), clearOnExit(false)
     { if (languageHook) languageHook->DelayedCallOpen(); }
 
     inline ~DelayedCallGuard()
@@ -159,6 +159,6 @@ namespace XBMCAddon
     inline explicit SetLanguageHookGuard(LanguageHook* languageHook) { LanguageHook::SetLanguageHook(languageHook); }
     inline ~SetLanguageHookGuard() { LanguageHook::ClearLanguageHook(); }
   };
-  
+
 }
 

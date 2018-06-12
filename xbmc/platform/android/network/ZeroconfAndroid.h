@@ -33,14 +33,14 @@ class CZeroconfAndroid : public CZeroconf
 public:
   CZeroconfAndroid();
   virtual ~CZeroconfAndroid();
-  
+
   // CZeroconf interface
 protected:
   bool doPublishService(const std::string& fcr_identifier, const std::string& fcr_type, const std::string& fcr_name, unsigned int f_port, const std::vector<std::pair<std::string, std::string> >& txt);
   bool doForceReAnnounceService(const std::string& fcr_identifier);
   bool doRemoveService(const std::string& fcr_ident);
   void doStop();
-  
+
 private:
   jni::CJNINsdManager m_manager;
 

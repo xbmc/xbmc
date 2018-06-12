@@ -583,7 +583,7 @@ bool CApplication::Create(const CAppParamParser &params)
   // application inbound service
   m_pAppPort = std::make_shared<CAppInboundProtocol>(*this);
   CServiceBroker::RegisterAppPort(m_pAppPort);
-  
+
   m_pWinSystem = CWinSystemBase::CreateWinSystem();
   CServiceBroker::RegisterWinSystem(m_pWinSystem.get());
 
@@ -1966,14 +1966,14 @@ bool CApplication::OnAction(const CAction &action)
       m_itemCurrentFile->GetMusicInfoTag()->SetUserrating(userrating);
       // Mirror changes to GUI item
       CServiceBroker::GetGUI()->GetInfoManager().SetCurrentItem(*m_itemCurrentFile);
-      
+
       // Asynchronously update song userrating in music library
       MUSIC_UTILS::UpdateSongRatingJob(m_itemCurrentFile, userrating);
 
-      // Tell all windows (e.g. playlistplayer, media windows) to update the fileitem 
+      // Tell all windows (e.g. playlistplayer, media windows) to update the fileitem
       CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 0, m_itemCurrentFile);
       CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
-    }      
+    }
     return true;
   }
 
@@ -2003,7 +2003,7 @@ bool CApplication::OnAction(const CAction &action)
       CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 0, m_itemCurrentFile);
       CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
     }
-    
+
     return true;
   }
   else if ((action.GetID() == ACTION_INCREASE_RATING || action.GetID() == ACTION_DECREASE_RATING) && m_appPlayer.IsPlayingVideo())
@@ -2028,8 +2028,8 @@ bool CApplication::OnAction(const CAction &action)
       CVideoDatabase db;
       if (db.Open())
       {
-        db.SetVideoUserRating(m_itemCurrentFile->GetVideoInfoTag()->m_iDbId, 
-                              m_itemCurrentFile->GetVideoInfoTag()->m_iUserRating, 
+        db.SetVideoUserRating(m_itemCurrentFile->GetVideoInfoTag()->m_iDbId,
+                              m_itemCurrentFile->GetVideoInfoTag()->m_iUserRating,
                               m_itemCurrentFile->GetVideoInfoTag()->m_type);
         db.Close();
       }
@@ -4916,7 +4916,7 @@ void CApplication::StartMusicCleanup(bool userInitiated /* = true */)
   if (userInitiated)
     /*
      CMusicLibraryQueue::GetInstance().CleanLibraryModal();
-     As cleaning is non-granular and does not offer many opportunities to update progress 
+     As cleaning is non-granular and does not offer many opportunities to update progress
      dialog rendering, do asynchronously with model dialog
     */
     CMusicLibraryQueue::GetInstance().CleanLibrary(true);

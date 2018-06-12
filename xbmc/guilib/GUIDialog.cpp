@@ -154,7 +154,7 @@ void CGUIDialog::UpdateVisibility()
     else
       Close();
   }
-  
+
   if (m_autoClosing)
   { // check if our timer is running
     if (!m_showStartTime)

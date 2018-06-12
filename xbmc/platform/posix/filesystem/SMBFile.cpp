@@ -501,7 +501,7 @@ int CSMBFile::Stat(const CURL& url, struct __stat64* buffer)
 int CSMBFile::Truncate(int64_t size)
 {
   if (m_fd == -1) return 0;
-/* 
+/*
  * This would force us to be dependant on SMBv3.2 which is GPLv3
  * This is only used by the TagLib writers, which are not currently in use
  * So log and warn until we implement TagLib writing & can re-implement this better.
@@ -525,9 +525,9 @@ ssize_t CSMBFile::Read(void *lpBuf, size_t uiBufSize)
   if (m_fd == -1)
     return -1;
 
-  // Some external libs (libass) use test read with zero size and 
-  // null buffer pointer to check whether file is readable, but 
-  // libsmbclient always return "-1" if called with null buffer 
+  // Some external libs (libass) use test read with zero size and
+  // null buffer pointer to check whether file is readable, but
+  // libsmbclient always return "-1" if called with null buffer
   // regardless of buffer size.
   // To overcome this, force return "0" in that case.
   if (uiBufSize == 0 && lpBuf == NULL)

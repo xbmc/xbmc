@@ -27,7 +27,7 @@
 
 bool CAndroidFeatures::HasNeon()
 {
-  if (android_getCpuFamily() == ANDROID_CPU_FAMILY_ARM) 
+  if (android_getCpuFamily() == ANDROID_CPU_FAMILY_ARM)
     return ((android_getCpuFeatures() & ANDROID_CPU_ARM_FEATURE_NEON) != 0);
   return false;
 }
@@ -43,7 +43,7 @@ int CAndroidFeatures::GetVersion()
     JNIEnv *jenv = xbmc_jnienv();
 
     jclass jcOsBuild = jenv->FindClass("android/os/Build$VERSION");
-    if (jcOsBuild == NULL) 
+    if (jcOsBuild == NULL)
     {
       CLog::Log(LOGERROR, "%s: Error getting class android.os.Build.VERSION", __PRETTY_FUNCTION__);
       return version;

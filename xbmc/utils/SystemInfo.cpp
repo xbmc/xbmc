@@ -99,7 +99,7 @@ static bool sysGetVersionExWByRef(OSVERSIONINFOEXW& osVerInfo)
 {
   ZeroMemory(&osVerInfo, sizeof(osVerInfo));
   osVerInfo.dwOSVersionInfoSize = sizeof(osVerInfo);
-  
+
   typedef NTSTATUS(__stdcall *RtlGetVersionPtr)(RTL_OSVERSIONINFOEXW* pOsInfo);
   static HMODULE hNtDll = GetModuleHandleW(L"ntdll.dll");
   if (hNtDll != NULL)
@@ -161,7 +161,7 @@ static std::string getValueFromOs_release(std::string key)
 
   if (content[valStart] == '\n')
     return "";
-  
+
   // find end of value string
   seachPos = valStart;
   do
@@ -421,7 +421,7 @@ bool CSysInfo::Load(const TiXmlNode *settings)
 {
   if (settings == NULL)
     return false;
-  
+
   const TiXmlElement *pElement = settings->FirstChildElement("general");
   if (pElement)
     XMLUtils::GetInt(pElement, "systemtotaluptime", m_iSystemTimeTotalUp, 0, INT_MAX);
@@ -859,7 +859,7 @@ CSysInfo::WindowsVersion CSysInfo::GetWindowsVersion()
         m_WinVer = WindowsVersionWin7;
       else if (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 2)
         m_WinVer = WindowsVersionWin8;
-      else if (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 3) 
+      else if (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 3)
         m_WinVer = WindowsVersionWin8_1;
       else if (osvi.dwMajorVersion == 10 && osvi.dwMinorVersion == 0 && osvi.dwBuildNumber < 16299)
         m_WinVer = WindowsVersionWin10;
@@ -1087,7 +1087,7 @@ std::string CSysInfo::GetUserAgent()
 #if defined(TARGET_DARWIN_IOS)
   std::string iDevStr(GetModelName()); // device model name with number of model version
   size_t iDevStrDigit = iDevStr.find_first_of("0123456789");
-  std::string iDev(iDevStr, 0, iDevStrDigit);  // device model name without number 
+  std::string iDev(iDevStr, 0, iDevStrDigit);  // device model name without number
   if (iDevStrDigit == 0)
     iDev = "unknown";
   result += iDev + "; ";
@@ -1175,7 +1175,7 @@ std::string CSysInfo::GetUserAgent()
   StringUtils::Replace(iDevVer, ',', '.');
   result += " HW_" + iDev + "/" + iDevVer;
 #endif
-  // add more device IDs here if needed. 
+  // add more device IDs here if needed.
   // keep only one device ID in result! Form:
   // result += " HW_" + "deviceID" + "/" + "1.0"; // '1.0' if device has no version
 
@@ -1208,7 +1208,7 @@ std::string CSysInfo::GetDeviceName()
     CServiceBroker::GetNetwork().GetHostName(hostname);
     return StringUtils::Format("%s (%s)", friendlyName.c_str(), hostname.c_str());
   }
-  
+
   return friendlyName;
 }
 
@@ -1300,11 +1300,11 @@ std::string CSysInfo::GetBuildTargetPlatformVersionDecoded(void)
   if (__MAC_OS_X_VERSION_MIN_REQUIRED % 10)
     return StringUtils::Format("version %d.%d", (__MAC_OS_X_VERSION_MIN_REQUIRED / 100) % 100, (__MAC_OS_X_VERSION_MIN_REQUIRED / 10) % 10);
   else
-    return StringUtils::Format("version %d.%d.%d", (__MAC_OS_X_VERSION_MIN_REQUIRED / 100) % 100, 
+    return StringUtils::Format("version %d.%d.%d", (__MAC_OS_X_VERSION_MIN_REQUIRED / 100) % 100,
       (__MAC_OS_X_VERSION_MIN_REQUIRED / 10) % 10, __MAC_OS_X_VERSION_MIN_REQUIRED % 10);
 #endif // defined(MAC_OS_X_VERSION_10_10) && __MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_10
 #elif defined(TARGET_DARWIN_IOS)
-  return StringUtils::Format("version %d.%d.%d", (__IPHONE_OS_VERSION_MIN_REQUIRED / 10000) % 100, 
+  return StringUtils::Format("version %d.%d.%d", (__IPHONE_OS_VERSION_MIN_REQUIRED / 10000) % 100,
                              (__IPHONE_OS_VERSION_MIN_REQUIRED / 100) % 100, __IPHONE_OS_VERSION_MIN_REQUIRED % 100);
 #elif defined(TARGET_FREEBSD)
   // FIXME: should works well starting from FreeBSD 8.1
@@ -1337,7 +1337,7 @@ std::string CSysInfo::GetBuildTargetPlatformVersionDecoded(void)
 
 std::string CSysInfo::GetBuildTargetCpuFamily(void)
 {
-#if defined(__thumb__) || defined(_M_ARMT) 
+#if defined(__thumb__) || defined(_M_ARMT)
   return "ARM (Thumb)";
 #elif defined(__arm__) || defined(_M_ARM) || defined (__aarch64__)
   return "ARM";

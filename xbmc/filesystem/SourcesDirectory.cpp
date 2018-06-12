@@ -61,7 +61,7 @@ bool CSourcesDirectory::GetDirectory(const VECSOURCES &sources, CFileItemList &i
     CFileItemPtr pItem(new CFileItem(share));
     if (URIUtils::IsProtocol(pItem->GetPath(), "musicsearch"))
       pItem->SetCanQueue(false);
-    
+
     std::string strIcon;
     // We have the real DVD-ROM, set icon on disktype
     if (share.m_iDriveType == CMediaSource::SOURCE_TYPE_DVD && share.m_strThumbnailImage.empty())
@@ -94,13 +94,13 @@ bool CSourcesDirectory::GetDirectory(const VECSOURCES &sources, CFileItemList &i
       strIcon = "DefaultRemovableDisk.png";
     else
       strIcon = "DefaultHardDisk.png";
-    
+
     pItem->SetIconImage(strIcon);
     if (share.m_iHasLock == 2 && m_profileManager.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE)
       pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_LOCKED);
     else
       pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_NONE);
-    
+
     items.Add(pItem);
   }
   return true;

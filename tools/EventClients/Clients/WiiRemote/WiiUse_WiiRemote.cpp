@@ -39,11 +39,11 @@ void CWiiController::get_keys(wiimote* wm)
   }
 }
 
-void CWiiController::handleKeyPress() 
+void CWiiController::handleKeyPress()
 {
   if ((m_holdableReleased && m_buttonDownTime < g_hold_button_timeout))
     EventClient.SendButton(m_buttonReleased, m_joyString, BTN_QUEUE | BTN_NO_REPEAT);
-  if (m_buttonPressed && !m_holdableHeld && !m_buttonHeld)  
+  if (m_buttonPressed && !m_holdableHeld && !m_buttonHeld)
     EventClient.SendButton(m_buttonPressed, m_joyString, BTN_QUEUE | BTN_NO_REPEAT);
 }
 
@@ -66,7 +66,7 @@ void CWiiController::handleACC(float currentRoll, float currentPitch)
   if (rollWeight > 65000)
     rollWeight = 65000;
 
- if (m_start_pitch == 0) 
+ if (m_start_pitch == 0)
     m_start_pitch = currentPitch;
   m_abs_pitch = smoothDeg(m_abs_pitch, currentPitch);
   m_rel_pitch = m_start_pitch - m_abs_pitch;
@@ -81,7 +81,7 @@ void CWiiController::handleACC(float currentRoll, float currentPitch)
       {
         m_currentAction = ACTION_ROLL;
       }
-    else if ((g_deadzone - (abs((int)m_rel_pitch)) < 5) && (abs((int)m_abs_roll) < (g_deadzone / 1.5))) 
+    else if ((g_deadzone - (abs((int)m_rel_pitch)) < 5) && (abs((int)m_abs_roll) < (g_deadzone / 1.5)))
     // crossed the pitch deadzone threshold while inside the roll deadzone
       {
         m_currentAction = ACTION_PITCH;
@@ -126,7 +126,7 @@ int connectWiimote(wiimote** wiimotes)
   wm = wiimotes[0];
   if (connected)
   {
-    EventClient.SendHELO("Wii Remote", ICON_PNG, NULL); 
+    EventClient.SendHELO("Wii Remote", ICON_PNG, NULL);
     wiiuse_set_leds(wm, WIIMOTE_LED_1);
     wiiuse_rumble(wm, 1);
     wiiuse_set_orient_threshold(wm,1);
@@ -193,7 +193,7 @@ int32_t getTicks(void)
   return ticks;
 }
 
-int main(int argc, char** argv) 
+int main(int argc, char** argv)
 {
   int32_t timeout = 0;
   bool connected = 0;
@@ -217,13 +217,13 @@ int main(int argc, char** argv)
       if ((controller.m_buttonDownTime  > g_repeat_rate) && controller.m_repeatableHeld)
         controller.handleRepeat();
     }
-    if (wiiuse_poll(wiimotes, MAX_WIIMOTES)) 
+    if (wiiuse_poll(wiimotes, MAX_WIIMOTES))
     {
       for (int i = 0; i < MAX_WIIMOTES; ++i)
       //MAX_WIIMOTES hardcoded at 1.
       {
         DisableMotionSensing(wm);
-        switch (wiimotes[i]->event) 
+        switch (wiimotes[i]->event)
         {
         case WIIUSE_EVENT:
 

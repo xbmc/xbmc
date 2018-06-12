@@ -59,20 +59,20 @@ void CWiiRemote::MessageCallback(cwiid_wiimote_t *wiiremote, int mesg_count, uni
 #endif
 
 /* The MessageCallback for the Wiiremote.
-   This callback is used for error reports, mainly to see if the connection has been broken 
+   This callback is used for error reports, mainly to see if the connection has been broken
    This callback is also used for getting the IR sources, if this is done in update as with buttons we usually only get 1 IR source at a time wich is much harder to calculate */
 void CWiiRemote::MessageCallback(cwiid_wiimote_t *wiiremote, int mesg_count, union cwiid_mesg mesg[], struct timespec *timestamp)
 {
   for (int i=0; i < mesg_count; i++)
   {
     int valid_source;
-    switch (mesg[i].type) 
+    switch (mesg[i].type)
 	  {
     case CWIID_MESG_IR:
       valid_source = 0;
-      for (int j = 0; j < CWIID_IR_SRC_COUNT; j++) 
+      for (int j = 0; j < CWIID_IR_SRC_COUNT; j++)
       {
-        if (mesg[i].ir_mesg.src[j].valid) 
+        if (mesg[i].ir_mesg.src[j].valid)
           valid_source++;
       }
       if (valid_source == 2)
@@ -87,7 +87,7 @@ void CWiiRemote::MessageCallback(cwiid_wiimote_t *wiiremote, int mesg_count, uni
         g_WiiRemote.CalculateMousePointer(mesg[i].ir_mesg.src[0].pos[CWIID_X],
                                           mesg[i].ir_mesg.src[0].pos[CWIID_Y],
                                           mesg[i].ir_mesg.src[1].pos[CWIID_X],
-                                          mesg[i].ir_mesg.src[1].pos[CWIID_Y]);                                             
+                                          mesg[i].ir_mesg.src[1].pos[CWIID_Y]);
       }
     break;
     case CWIID_MESG_ERROR:
@@ -95,7 +95,7 @@ void CWiiRemote::MessageCallback(cwiid_wiimote_t *wiiremote, int mesg_count, uni
     break;
     case CWIID_MESG_BTN:
       g_WiiRemote.ProcessKey(mesg[i].btn_mesg.buttons);
-    break;	  
+    break;
     case CWIID_MESG_STATUS:
       //Here we can figure out Extension types and such
     break;
@@ -227,13 +227,13 @@ void CWiiRemote::Initialize(CAddress Addr, int Socket)
     ToggleBit(m_rptMode, CWIID_RPT_NUNCHUK);
 
   //If wiiremote is used as a mouse, then report the IR sources
-#ifndef CWIID_OLD  
-  if (m_useIRMouse) 
+#ifndef CWIID_OLD
+  if (m_useIRMouse)
 #endif
-    ToggleBit(m_rptMode, CWIID_RPT_IR);	
+    ToggleBit(m_rptMode, CWIID_RPT_IR);
 
   //Have the first and fourth LED on the Wiiremote shine when connected
-  ToggleBit(m_ledState, CWIID_LED1_ON);	
+  ToggleBit(m_ledState, CWIID_LED1_ON);
   ToggleBit(m_ledState, CWIID_LED4_ON);
 }
 
@@ -267,9 +267,9 @@ void CWiiRemote::EnableMouseEmulation()
   m_useIRMouse = true;
 
 #ifndef CWIID_OLD
-  //We toggle IR Reporting (Save resources?)  
+  //We toggle IR Reporting (Save resources?)
   if (!(m_rptMode & CWIID_RPT_IR))
-    ToggleBit(m_rptMode, CWIID_RPT_IR);   
+    ToggleBit(m_rptMode, CWIID_RPT_IR);
   if (m_connected)
     SetRptMode();
 #endif
@@ -285,7 +285,7 @@ void CWiiRemote::DisableMouseEmulation()
 
   m_useIRMouse = false;
 #ifndef CWIID_OLD
-  //We toggle IR Reporting (Save resources?)  
+  //We toggle IR Reporting (Save resources?)
   if (m_rptMode & CWIID_RPT_IR)
     ToggleBit(m_rptMode, CWIID_RPT_IR);
   if (m_connected)
@@ -308,18 +308,18 @@ void CWiiRemote::Disconnect()
   if (m_connected)
     m_DisconnectWhenPossible = true;
 }
-		
-#ifdef CWIID_OLD		
+
+#ifdef CWIID_OLD
 /* This function is mostly a hack as CWIID < 6.0 doesn't report on disconnects, this function is called everytime
    a message is sent to the callback (Will be once every 10 ms or so) this is to see if the connection is interrupted. */
 void CWiiRemote::CheckIn()
 { //This is always called from a criticalsection
   m_LastMsgTime = getTicks();
-}		
-#endif		
+}
+#endif
 
 //---------------------Private-------------------------------------------------------------------
-/* Connect is designed to be run in a different thread as it only 
+/* Connect is designed to be run in a different thread as it only
    exits if wiiremote is either disabled or a connection is made*/
 bool CWiiRemote::Connect()
 {
@@ -356,10 +356,10 @@ bool CWiiRemote::Connect()
         notification.Send(m_Socket, m_MyAddr);
       }
 #ifdef CWIID_OLD
-      /* CheckIn to say that this is the last msg, If this isn't called it could give issues if we Connects -> Disconnect and then try to connect again 
+      /* CheckIn to say that this is the last msg, If this isn't called it could give issues if we Connects -> Disconnect and then try to connect again
          the CWIID_OLD hack would automatically disconnect the wiiremote as the lastmsg is too old. */
       CheckIn();
-#endif      
+#endif
       m_connected = true;
 
       CPacketLOG log(LOGNOTICE, "Successfully connected a WiiRemote");
@@ -397,7 +397,7 @@ void CWiiRemote::DisconnectNow(bool startConnectThread)
 }
 
 #ifdef CWIID_OLD
-/* This is a harsh check if there really is a connection, It will mainly be used in CWIID < 6.0 
+/* This is a harsh check if there really is a connection, It will mainly be used in CWIID < 6.0
    as it doesn't report connect error, wich is needed to see if the Wiiremote suddenly disconnected.
    This could possible be done with bluetooth specific queries but I cannot find how to do it.  */
 bool CWiiRemote::CheckConnection()
@@ -451,7 +451,7 @@ void CWiiRemote::ProcessKey(int Key)
     }
     else
     {
-      if (getTicks() - m_lastKeyPressed > WIIREMOTE_BUTTON_DELAY_TIME)     
+      if (getTicks() - m_lastKeyPressed > WIIREMOTE_BUTTON_DELAY_TIME)
       {
         m_buttonRepeat = true;
         m_lastKeyPressed = getTicks();
@@ -471,12 +471,12 @@ void CWiiRemote::ProcessKey(int Key)
     RtnKey = 3;
   else if (Key == CWIID_BTN_DOWN)
     RtnKey = 2;
-    
+
   else if (Key == CWIID_BTN_A)
     RtnKey = 5;
   else if (Key == CWIID_BTN_B)
     RtnKey = 6;
-  
+
   else if (Key == CWIID_BTN_MINUS)
     RtnKey = 7;
   else if (Key == CWIID_BTN_PLUS)
@@ -484,7 +484,7 @@ void CWiiRemote::ProcessKey(int Key)
 
   else if (Key == CWIID_BTN_HOME)
     RtnKey = 8;
-  
+
   else if (Key == CWIID_BTN_1)
     RtnKey = 10;
   else if (Key == CWIID_BTN_2)
@@ -546,7 +546,7 @@ void CWiiRemote::ProcessNunchuck(struct cwiid_nunchuk_mesg &Nunchuck)
     }
     else
     {
-      if (getTicks() - m_lastKeyPressedNunchuck > WIIREMOTE_BUTTON_DELAY_TIME)     
+      if (getTicks() - m_lastKeyPressedNunchuck > WIIREMOTE_BUTTON_DELAY_TIME)
       {
         m_buttonRepeatNunchuck = true;
         m_lastKeyPressedNunchuck = getTicks();
@@ -575,7 +575,7 @@ void CWiiRemote::SetRptMode()
 { //Sets our wiiremote to report something, for example IR, Buttons
 #ifdef CWIID_OLD
   if (cwiid_command(m_wiiremoteHandle, CWIID_CMD_RPT_MODE, m_rptMode))
-#else  
+#else
   if (cwiid_set_rpt_mode(m_wiiremoteHandle, m_rptMode))
 #endif
   {
@@ -588,7 +588,7 @@ void CWiiRemote::SetLedState()
 { //Sets our leds on the wiiremote
 #ifdef CWIID_OLD
   if (cwiid_command(m_wiiremoteHandle, CWIID_CMD_LED, m_ledState))
-#else  
+#else
   if (cwiid_set_led(m_wiiremoteHandle, m_ledState))
 #endif
   {
@@ -749,7 +749,7 @@ int main(int argc, char **argv)
     g_WiiRemote.EnableMouseEmulation();
   else
     g_WiiRemote.DisableMouseEmulation();
- 
+
   g_Ping->Send(sockfd, my_addr);
   bool HaveConnected = false;
   while (true)

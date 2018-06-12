@@ -189,8 +189,8 @@ namespace XBMCAddon
     }
 
     void Player::OnPlayBackStarted(const CFileItem &file)
-    { 
-      // We only have fileItem due to us having to 
+    {
+      // We only have fileItem due to us having to
       // implement the interface, we can't send it to python
       // as we're not able to serialize it.
       XBMC_TRACE;
@@ -199,7 +199,7 @@ namespace XBMCAddon
 
     void Player::OnAVStarted(const CFileItem &file)
     {
-      // We only have fileItem due to us having to 
+      // We only have fileItem due to us having to
       // implement the interface, we can't send it to python
       // as we're not able to serialize it.
       XBMC_TRACE;
@@ -213,13 +213,13 @@ namespace XBMCAddon
     }
 
     void Player::OnPlayBackEnded()
-    { 
+    {
       XBMC_TRACE;
       invokeCallback(new CallbackFunction<Player>(this,&Player::onPlayBackEnded));
     }
 
     void Player::OnPlayBackStopped()
-    { 
+    {
       XBMC_TRACE;
       invokeCallback(new CallbackFunction<Player>(this,&Player::onPlayBackStopped));
     }
@@ -231,37 +231,37 @@ namespace XBMCAddon
     }
 
     void Player::OnPlayBackPaused()
-    { 
+    {
       XBMC_TRACE;
       invokeCallback(new CallbackFunction<Player>(this,&Player::onPlayBackPaused));
     }
 
     void Player::OnPlayBackResumed()
-    { 
+    {
       XBMC_TRACE;
       invokeCallback(new CallbackFunction<Player>(this,&Player::onPlayBackResumed));
     }
 
     void Player::OnQueueNextItem()
-    { 
+    {
       XBMC_TRACE;
       invokeCallback(new CallbackFunction<Player>(this,&Player::onQueueNextItem));
     }
 
     void Player::OnPlayBackSpeedChanged(int speed)
-    { 
+    {
       XBMC_TRACE;
       invokeCallback(new CallbackFunction<Player,int>(this,&Player::onPlayBackSpeedChanged,speed));
     }
 
     void Player::OnPlayBackSeek(int64_t time, int64_t seekOffset)
-    { 
+    {
       XBMC_TRACE;
       invokeCallback(new CallbackFunction<Player,int,int>(this,&Player::onPlayBackSeek,static_cast<int>(time),static_cast<int>(seekOffset)));
     }
 
     void Player::OnPlayBackSeekChapter(int chapter)
-    { 
+    {
       XBMC_TRACE;
       invokeCallback(new CallbackFunction<Player,int>(this,&Player::onPlayBackSeekChapter,chapter));
     }
@@ -312,17 +312,17 @@ namespace XBMCAddon
     }
 
     void Player::onPlayBackSpeedChanged(int speed)
-    { 
+    {
       XBMC_TRACE;
     }
 
     void Player::onPlayBackSeek(int time, int seekOffset)
-    { 
+    {
       XBMC_TRACE;
     }
 
     void Player::onPlayBackSeekChapter(int chapter)
-    { 
+    {
       XBMC_TRACE;
     }
 
@@ -529,9 +529,9 @@ namespace XBMCAddon
         }
         return ret;
       }
-    
+
       return std::vector<String>();
-    } 
+    }
 
     void Player::setAudioStream(int iStream)
     {

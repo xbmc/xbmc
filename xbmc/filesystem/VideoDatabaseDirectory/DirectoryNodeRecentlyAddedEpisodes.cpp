@@ -34,7 +34,7 @@ bool CDirectoryNodeRecentlyAddedEpisodes::GetContent(CFileItemList& items) const
   CVideoDatabase videodatabase;
   if (!videodatabase.Open())
     return false;
-  
+
   bool bSuccess=videodatabase.GetRecentlyAddedEpisodesNav(BuildPath(), items);
 
   videodatabase.Close();

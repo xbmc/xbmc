@@ -122,7 +122,7 @@ namespace XBMCAddon
       ///
       /// @return                        Format of captured image: 'BGRA'
       ///-----------------------------------------------------------------------
-      /// @python_v17 Image will now always be returned in BGRA 
+      /// @python_v17 Image will now always be returned in BGRA
       ///
       getImageFormat()
 #else

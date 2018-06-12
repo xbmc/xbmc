@@ -357,7 +357,7 @@ bool CGUIConfigurationWizard::MapPrimitive(JOYSTICK::IButtonMap* buttonMap,
       }
     }
   }
-  
+
   return bHandled;
 }
 

@@ -194,7 +194,7 @@ void CAddon::SaveSettings(void)
     doc.SaveFile(m_userSettingsPath);
 
   m_hasUserSettings = true;
-  
+
   //push the settings changes to the running addon instance
   CServiceBroker::GetAddonMgr().ReloadSettings(ID());
 #ifdef HAS_PYTHON

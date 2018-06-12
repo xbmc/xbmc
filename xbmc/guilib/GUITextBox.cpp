@@ -320,7 +320,7 @@ void CGUITextBox::SetMinHeight(float minHeight)
 {
   if (m_minHeight != minHeight)
     SetInvalid();
-  
+
   m_minHeight = minHeight;
 }
 

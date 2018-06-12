@@ -153,7 +153,7 @@ void CPasswordManager::Load()
     CXBMCTinyXML doc;
     if (!doc.LoadFile(passwordsFile))
     {
-      CLog::Log(LOGERROR, "%s - Unable to load: %s, Line %d\n%s", 
+      CLog::Log(LOGERROR, "%s - Unable to load: %s, Line %d\n%s",
         __FUNCTION__, passwordsFile.c_str(), doc.ErrorRow(), doc.ErrorDesc());
       return;
     }

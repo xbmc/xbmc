@@ -224,7 +224,7 @@ void CGUIResizeControl::SetPosition(float posX, float posY)
 
 bool CGUIResizeControl::SetAlpha(unsigned char alpha)
 {
-  return m_imgFocus.SetAlpha(alpha) | 
+  return m_imgFocus.SetAlpha(alpha) |
          m_imgNoFocus.SetAlpha(alpha);
 }
 

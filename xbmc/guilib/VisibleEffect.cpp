@@ -762,7 +762,7 @@ float CScroller::Tween(float progress)
       // a = 2 , b = -1
       return (2 * m_pTweener->Tween(progress, 0, 1, 1) - 1);
     }
-    else 
+    else
       return m_pTweener->Tween(progress, 0, 1, 1);
   }
   else

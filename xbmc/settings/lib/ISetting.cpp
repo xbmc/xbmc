@@ -30,7 +30,7 @@ ISetting::ISetting(const std::string &id, CSettingsManager *settingsManager /* =
   , m_settingsManager(settingsManager)
   , m_requirementCondition(settingsManager)
 { }
-  
+
 bool ISetting::Deserialize(const TiXmlNode *node, bool update /* = false */)
 {
   if (node == nullptr)

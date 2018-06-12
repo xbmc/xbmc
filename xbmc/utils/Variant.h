@@ -80,7 +80,7 @@ public:
   ~CVariant();
 
 
-  
+
   bool isInteger() const;
   bool isSignedInteger() const;
   bool isUnsignedInteger() const;

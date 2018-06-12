@@ -27,7 +27,7 @@
 #include "input/joysticks/JoystickUtils.h"
 #include "input/IKeymap.h"
 #include "input/ActionIDs.h"
-#include "messaging/helpers/DialogOKHelper.h" 
+#include "messaging/helpers/DialogOKHelper.h"
 #include "peripherals/Peripherals.h"
 #include "utils/Variant.h"
 #include "ServiceBroker.h"

@@ -65,7 +65,7 @@ public:
   {
     CGUIDialogSongInfo *dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSongInfo>(WINDOW_DIALOG_SONG_INFO);
     if (!dialog)
-      return false; 
+      return false;
     if (dialog->IsCancelled())
       return false;
     CFileItemPtr m_song = dialog->GetCurrentListItem();
@@ -81,7 +81,7 @@ public:
     if (dialog->IsCancelled())
       return false;
     // Fetch album and primary song artist data from library as properties
-    // and lyrics by scanning tags from file 
+    // and lyrics by scanning tags from file
     MUSIC_INFO::CMusicInfoLoader::LoadAdditionalTagInfo(m_song.get());
     if (dialog->IsCancelled())
       return false;
@@ -96,8 +96,8 @@ public:
     if (dialog->IsCancelled())
       return false;
 
-    // Load song art. 
-    // For songs in library this includes related album and artist(s) art.  
+    // Load song art.
+    // For songs in library this includes related album and artist(s) art.
     // Also fetches artist art for non library songs when artist can be found
     // uniquely by name, otherwise just embedded or cached thumb is fetched.
     CMusicThumbLoader loader;
@@ -150,7 +150,7 @@ bool CGUIDialogSongInfo::OnMessage(CGUIMessage& message)
 
         // Send a message to all windows to tell them to update the fileitem
         // This communicates the rating change to the music lib window, current playlist and OSD.
-        // The music lib window item is updated to but changes to the rating when it is the sort 
+        // The music lib window item is updated to but changes to the rating when it is the sort
         // do not show on screen until refresh() that fetchs the list from scratch, sorts etc.
         CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 0, m_song);
         CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
@@ -160,7 +160,7 @@ bool CGUIDialogSongInfo::OnMessage(CGUIMessage& message)
       break;
     }
   case GUI_MSG_WINDOW_INIT:
-    CGUIDialog::OnMessage(message);    
+    CGUIDialog::OnMessage(message);
     Update();
     m_cancelled = false;
     break;
@@ -242,7 +242,7 @@ void CGUIDialogSongInfo::OnInitWindow()
 {
   // Enable album info button when we know album
   m_albumId = m_song->GetMusicInfoTag()->GetAlbumId();
-  
+
   CONTROL_ENABLE_ON_CONDITION(CONTROL_ALBUMINFO, m_albumId > 0);
 
   // Disable music user rating button for plugins as they don't have tables to save this
@@ -295,14 +295,14 @@ bool CGUIDialogSongInfo::SetSong(CFileItem* item)
   m_cancelled = false;  // SetSong happens before win_init
   // In a separate job fetch song info and fill list of art types.
   int jobid = CJobManager::GetInstance().AddJob(new CGetSongInfoJob(), nullptr, CJob::PRIORITY_LOW);
-  
+
   // Wait to get all data before show, allowing user to to cancel if fetch is slow
   if (!CGUIDialogBusy::WaitOnEvent(m_event, TIME_TO_BUSY_DIALOG))
   {
     // Cancel job still waiting in queue (unlikely)
     CJobManager::GetInstance().CancelJob(jobid);
     // Flag to stop job already in progress
-    m_cancelled = true; 
+    m_cancelled = true;
     return false;
   }
 
@@ -333,7 +333,7 @@ std::string CGUIDialogSongInfo::GetContent()
   1.  Current art
   2.  Local art (thumb found by filename)
   3.  Embedded art (@todo)
-  4.  None 
+  4.  None
   Note that songs are not scraped, hence there is no list of urls for possible remote art
 */
 void CGUIDialogSongInfo::OnGetArt()
@@ -359,7 +359,7 @@ void CGUIDialogSongInfo::OnGetArt()
     // Add item for current artwork, could a fallback from album/artist
     CFileItemPtr item(new CFileItem("thumb://Current", false));
     item->SetArt("thumb", m_song->GetArt(type));
-    item->SetIconImage("DefaultPicture.png");    
+    item->SetIconImage("DefaultPicture.png");
     item->SetLabel(g_localizeStrings.Get(13512));  //! @todo: label fallback art so user knows?
     items.Add(item);
   }
@@ -394,7 +394,7 @@ void CGUIDialogSongInfo::OnGetArt()
     }
   }
 
-  // Clear these local images from cache so user will see any recent 
+  // Clear these local images from cache so user will see any recent
   // local file changes immediately
   for (auto& item : items)
   {
@@ -408,7 +408,7 @@ void CGUIDialogSongInfo::OnGetArt()
   }
 
   if (bHasArt && !bFallback)
-  { // Actually has this type of art (not a fallback) so 
+  { // Actually has this type of art (not a fallback) so
     // allow the user to delete it by selecting "no art".
     CFileItemPtr item(new CFileItem("thumb://None", false));
     item->SetArt("thumb", "DefaultAlbumCover.png");
@@ -428,13 +428,13 @@ void CGUIDialogSongInfo::OnGetArt()
     CFileItem pathItem(albumpath, true);
     CGUIDialogMusicInfo::AddItemPathToFileBrowserSources(sources, pathItem);
   }
-  else  // Add parent folder of song 
+  else  // Add parent folder of song
     CGUIDialogMusicInfo::AddItemPathToFileBrowserSources(sources, *m_song);
   g_mediaManager.GetLocalDrives(sources);
   if (CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(13511), result) &&
-    result != "thumb://Current") 
+    result != "thumb://Current")
   {
-    // User didn't choose the one they have, or the fallback image. 
+    // User didn't choose the one they have, or the fallback image.
     // Overwrite with the new art or clear it
     std::string newArt;
     if (result == "thumb://Thumb")
@@ -450,7 +450,7 @@ void CGUIDialogSongInfo::OnGetArt()
 
     // Asynchronously update that type of art in the database
     MUSIC_UTILS::UpdateArtJob(m_song, type, newArt);
-  
+
     // Update local song with current art
     if (newArt.empty())
     {
@@ -458,7 +458,7 @@ void CGUIDialogSongInfo::OnGetArt()
       primeArt.erase(type);
       m_song->SetArt(primeArt);
     }
-    else    
+    else
       // Add or modify the type of art
       m_song->SetArt(type, newArt);
 
@@ -475,7 +475,7 @@ void CGUIDialogSongInfo::OnGetArt()
       }
     }
 
-    // Get new artwork to show in other places e.g. on music lib window, 
+    // Get new artwork to show in other places e.g. on music lib window,
     // current playlist and player OSD.
     CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 0, m_song);
     CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);

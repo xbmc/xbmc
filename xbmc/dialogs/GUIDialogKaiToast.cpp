@@ -160,6 +160,6 @@ void CGUIDialogKaiToast::FrameMove()
   // now check if we should exit
   if (CTimeUtils::GetFrameTime() - m_timer > m_toastDisplayTime)
     Close();
-  
+
   CGUIDialog::FrameMove();
 }

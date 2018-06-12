@@ -354,7 +354,7 @@ namespace XBMCAddon
       DelayedCallGuard dg;
       g_audioManager.Stop();
     }
-    
+
     void enableNavSounds(bool yesNo)
     {
       XBMC_TRACE;
@@ -576,7 +576,7 @@ namespace XBMCAddon
     int getLOGNONE() { return LOGNONE; }
 
     // language string formats
-    int getISO_639_1() { return CLangCodeExpander::ISO_639_1; } 
+    int getISO_639_1() { return CLangCodeExpander::ISO_639_1; }
     int getISO_639_2(){ return CLangCodeExpander::ISO_639_2; }
     int getENGLISH_NAME() { return CLangCodeExpander::ENGLISH_NAME; }
 

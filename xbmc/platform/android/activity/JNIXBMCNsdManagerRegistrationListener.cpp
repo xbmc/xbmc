@@ -57,7 +57,7 @@ void CJNIXBMCNsdManagerRegistrationListener::RegisterNatives(JNIEnv* env)
   jclass cClass = env->FindClass(s_className.c_str());
   if(cClass)
   {
-    JNINativeMethod methods[] = 
+    JNINativeMethod methods[] =
     {
       {"_onRegistrationFailed", "(Landroid/net/nsd/NsdServiceInfo;I)V", (void*)&CJNIXBMCNsdManagerRegistrationListener::_onRegistrationFailed},
       {"_onServiceRegistered", "(Landroid/net/nsd/NsdServiceInfo;)V", (void*)&CJNIXBMCNsdManagerRegistrationListener::_onServiceRegistered},

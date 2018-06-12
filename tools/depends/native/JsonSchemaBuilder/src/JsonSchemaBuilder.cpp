@@ -55,11 +55,11 @@ void print_json(ifstream &in, ofstream &out)
       out << endl;
       continue;
     }
-    
+
     // If we just closed a whole object we need to print the separator
     if (closing)
       out << "," << endl;
-    
+
     out << "  ";
     bool started = false;
     closing = false;
@@ -111,7 +111,7 @@ void print_json(ifstream &in, ofstream &out)
     // Only print a closing " if there was real content on the line
     if (started)
       out << '"';
-    
+
     // Only print a newline if we haven't just closed a whole object
     if (!closing)
       out << endl;

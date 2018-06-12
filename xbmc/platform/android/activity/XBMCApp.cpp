@@ -347,7 +347,7 @@ void CXBMCApp::onLostFocus()
 
 void CXBMCApp::Initialize()
 {
-  g_application.m_ServiceManager->GetAnnouncementManager().AddAnnouncer(CXBMCApp::get());  
+  g_application.m_ServiceManager->GetAnnouncementManager().AddAnnouncer(CXBMCApp::get());
 }
 
 void CXBMCApp::Deinitialize()
@@ -607,7 +607,7 @@ void CXBMCApp::UpdateSessionMetadata()
 //      .putString(CJNIMediaMetadata::METADATA_KEY_DISPLAY_ICON_URI, thumb)
 //      .putString(CJNIMediaMetadata::METADATA_KEY_ALBUM_ART_URI, thumb)
       ;
-  
+
   std::string thumb;
   if (m_playback_state & PLAYBACK_STATE_VIDEO)
   {

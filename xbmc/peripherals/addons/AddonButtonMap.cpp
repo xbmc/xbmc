@@ -590,7 +590,7 @@ CAddonButtonMap::DriverMap CAddonButtonMap::CreateLookupTable(const FeatureMap& 
         break;
     }
   }
-  
+
   return driverMap;
 }
 

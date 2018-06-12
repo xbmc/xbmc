@@ -17,7 +17,7 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
- 
+
 #include "threads/SystemClock.h"
 #include "GUIDialogCache.h"
 #include "ServiceBroker.h"
@@ -49,7 +49,7 @@ CGUIDialogCache::CGUIDialogCache(DWORD dwDelay, const std::string& strHeader, co
     dwDelay = 0;
 
   if(dwDelay == 0)
-    OpenDialog();    
+    OpenDialog();
   else
     m_endtime.Set((unsigned int)dwDelay);
 
@@ -65,7 +65,7 @@ void CGUIDialogCache::Close(bool bForceClose)
   if (m_pDlg && m_pDlg->IsDialogRunning())
     CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_WINDOW_CLOSE, -1, bForceClose ? 1 : 0, static_cast<void*>(m_pDlg));
 
-  //Set stop, this will kill this object, when thread stops  
+  //Set stop, this will kill this object, when thread stops
   CThread::m_bStop = true;
 }
 
@@ -109,7 +109,7 @@ void CGUIDialogCache::SetMessage(const std::string& strMessage)
     m_pDlg->SetLine(2, CVariant{strMessage});
   }
   m_strLinePrev2 = m_strLinePrev;
-  m_strLinePrev = strMessage; 
+  m_strLinePrev = strMessage;
 }
 
 bool CGUIDialogCache::OnFileCallback(void* pContext, int ipercent, float avgSpeed)
@@ -120,7 +120,7 @@ bool CGUIDialogCache::OnFileCallback(void* pContext, int ipercent, float avgSpee
     m_pDlg->SetPercentage(ipercent);
   }
 
-  if( IsCanceled() ) 
+  if( IsCanceled() )
     return false;
   else
     return true;
@@ -133,12 +133,12 @@ void CGUIDialogCache::Process()
 
   while( true )
   {
-    
+
     { //Section to make the lock go out of scope before sleep
-      
+
       if( CThread::m_bStop ) break;
 
-      try 
+      try
       {
         CSingleLock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
         m_pDlg->Progress();
@@ -152,7 +152,7 @@ void CGUIDialogCache::Process()
         {
           bSentCancel = true;
         }
-        else if( !m_pDlg->IsDialogRunning() && m_endtime.IsTimePast() 
+        else if( !m_pDlg->IsDialogRunning() && m_endtime.IsTimePast()
               && !CServiceBroker::GetGUI()->GetWindowManager().IsWindowActive(WINDOW_DIALOG_YES_NO) )
           OpenDialog();
       }
@@ -166,14 +166,14 @@ void CGUIDialogCache::Process()
   }
 }
 
-void CGUIDialogCache::ShowProgressBar(bool bOnOff) 
+void CGUIDialogCache::ShowProgressBar(bool bOnOff)
 {
   if (m_pDlg)
     m_pDlg->ShowProgressBar(bOnOff);
 }
 
-void CGUIDialogCache::SetPercentage(int iPercentage) 
-{ 
+void CGUIDialogCache::SetPercentage(int iPercentage)
+{
   if (m_pDlg)
     m_pDlg->SetPercentage(iPercentage);
 }

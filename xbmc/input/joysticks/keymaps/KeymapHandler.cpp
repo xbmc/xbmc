@@ -75,7 +75,7 @@ bool CKeymapHandler::AcceptsInput(const FeatureName& feature) const
 {
   if (HasAction(CJoystickUtils::MakeKeyName(feature)))
     return true;
-  
+
   for (auto dir : CJoystickUtils::GetAnalogStickDirections())
   {
     if (HasAction(CJoystickUtils::MakeKeyName(feature, dir)))

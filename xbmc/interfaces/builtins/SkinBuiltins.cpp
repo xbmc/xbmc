@@ -222,7 +222,7 @@ static int SetPath(const std::vector<std::string>& params)
  *  \param params The parameters.
  *  \details params[0] = Name of skin setting.
  *           params[1] = File mask or add-on type (optional).
- *           params[2] = Extra URL to allow selection from or 
+ *           params[2] = Extra URL to allow selection from or
  *                       content type if mask is an addon-on type (optional).
  */
 static int SetFile(const std::vector<std::string>& params)
@@ -260,7 +260,7 @@ static int SetFile(const std::vector<std::string>& params)
         CSkinSettings::GetInstance().SetString(string, replace);
     }
   }
-  else 
+  else
   {
     if (params.size() > 2)
     {

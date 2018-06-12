@@ -24,7 +24,7 @@
 
 typedef void* HANDLE; // forward declaration, to avoid inclusion of whole Windows.h
 
-class CWin32InterfaceForCLog 
+class CWin32InterfaceForCLog
 {
 public:
   CWin32InterfaceForCLog();

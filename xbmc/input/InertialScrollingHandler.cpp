@@ -94,7 +94,7 @@ bool CInertialScrollingHandler::CheckForInertialScrolling(const CAction* action)
     CServiceBroker::GetGUI()->GetWindowManager().SendMessage(message);
     m_bScrolling = false;
     //wakeup screensaver on pan begin
-    g_application.ResetScreenSaver();    
+    g_application.ResetScreenSaver();
     g_application.WakeUpScreenSaverAndDPMS();
   }
   else if(action->GetID() == ACTION_GESTURE_END && !m_panPoints.empty()) //do we need to animate inertial scrolling?
@@ -135,8 +135,8 @@ bool CInertialScrollingHandler::CheckForInertialScrolling(const CAction* action)
         }
       }
 
-      if( inertialRequested )                                                                                                             
-      {        
+      if( inertialRequested )
+      {
         m_iFlickVelocity.x = velocityX;//in pixels per sec
         m_iFlickVelocity.y = velocityY;//in pixels per sec
         m_iLastGesturePoint.x = action->GetAmount(2);//last gesture point x
@@ -145,7 +145,7 @@ bool CInertialScrollingHandler::CheckForInertialScrolling(const CAction* action)
         //calc deacceleration for fullstop in TIME_TO_ZERO_SPEED secs
         //v = a*t + v0 -> set v = 0 because we want to stop scrolling
         //a = -v0 / t
-        m_inertialDeacceleration.x = -1*m_iFlickVelocity.x/TIME_TO_ZERO_SPEED;    
+        m_inertialDeacceleration.x = -1*m_iFlickVelocity.x/TIME_TO_ZERO_SPEED;
         m_inertialDeacceleration.y = -1*m_iFlickVelocity.y/TIME_TO_ZERO_SPEED;
 
         //CLog::Log(LOGDEBUG, "initial pos: %f,%f velocity: %f,%f dec: %f,%f", m_iLastGesturePoint.x, m_iLastGesturePoint.y, m_iFlickVelocity.x, m_iFlickVelocity.y, m_inertialDeacceleration.x, m_inertialDeacceleration.y);
@@ -165,7 +165,7 @@ bool CInertialScrollingHandler::CheckForInertialScrolling(const CAction* action)
 }
 
 bool CInertialScrollingHandler::ProcessInertialScroll(float frameTime)
-{  
+{
   //do inertial scroll animation by sending gesture_pan
   if( m_bScrolling)
   {
@@ -205,7 +205,7 @@ bool CInertialScrollingHandler::ProcessInertialScroll(float frameTime)
       {
         m_iFlickVelocity.y = 0;
       }
-    }   
+    }
     else//no movement -> done
     {
       m_bAborting = true;//we are done

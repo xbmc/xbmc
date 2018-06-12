@@ -47,7 +47,7 @@ public:
 
   /**
    * GetDateTimeTaken() -- Returns the EXIF DateTimeOriginal for current picture
-   * 
+   *
    * The exif library returns DateTimeOriginal if available else the other
    * DateTime tags. See libexif CExifParse::ProcessDir for details.
    */

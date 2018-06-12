@@ -51,7 +51,7 @@ public:
   static void EnableActionProcessing(bool enable);
   // IACtionListener
   bool OnAction(const CAction &action) override;
-  
+
   //CThread
   void Process() override;
 

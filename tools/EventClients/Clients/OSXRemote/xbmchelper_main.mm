@@ -37,7 +37,7 @@ static struct option long_options[] = {
 { "verbose",    no_argument,       0, 'v' },
 { "externalConfig", no_argument,   0, 'x' },
 { "appPath",    required_argument, 0, 'a' },
-{ "appHome",    required_argument, 0, 'z' }, 
+{ "appHome",    required_argument, 0, 'z' },
 { 0, 0, 0, 0 },
 };
 
@@ -67,30 +67,30 @@ void ReadConfig()
 	// Compute filename.
   std::string strFile = getenv("HOME");
   strFile += "/Library/Application Support/Kodi/XBMCHelper.conf";
-  
+
 	// Open file.
   std::ifstream ifs(strFile.c_str());
 	if (!ifs)
 		return;
-  
+
 	// Read file.
 	stringstream oss;
 	oss << ifs.rdbuf();
-  
+
 	if (!ifs && !ifs.eof())
 		return;
-  
+
 	// Tokenize.
 	string strData(oss.str());
 	istringstream is(strData);
 	vector<string> args = vector<string>(istream_iterator<string>(is), istream_iterator<string>());
-  
+
 	// Convert to char**.
 	int argc = args.size() + 1;
 	char** argv = new char*[argc + 1];
 	int i = 0;
 	argv[i++] = (char*)"XBMCHelper";
-  
+
 	for (vector<string>::iterator it = args.begin(); it != args.end(); ){
     //fixup the arguments, here: remove '"' like bash would normally do
     std::string::size_type j = 0;
@@ -98,12 +98,12 @@ void ReadConfig()
       it->replace(j, 1, "");
 		argv[i++] = (char* )(*it++).c_str();
   }
-	
+
 	argv[i] = 0;
-  
+
 	// Parse the arguments.
 	ParseOptions(argc, argv);
-  
+
 	delete[] argv;
 }
 
@@ -122,8 +122,8 @@ void ParseOptions(int argc, char** argv)
   g_universal_timeout = 0.5;
   g_verbose_mode = false;
   NSLog(@"ParseOptions - force VerboseMode on");
-  
-  while ((c = getopt_long(argc, argv, options, long_options, &option_index)) != -1) 
+
+  while ((c = getopt_long(argc, argv, options, long_options, &option_index)) != -1)
 	{
     switch (c) {
       case 'h':
@@ -150,7 +150,7 @@ void ParseOptions(int argc, char** argv)
       case 'm':
         g_mode = MULTIREMOTE_MODE;
         NSLog(@"ParseOptions - MultiRemoteMode on");
-        break;        
+        break;
       case 't':
         g_universal_timeout = atof(optarg) * 0.001;
         NSLog(@"ParseOptions - Universal Timeout %lf", g_universal_timeout);
@@ -178,22 +178,22 @@ void ParseOptions(int argc, char** argv)
   //reset getopts state
   optreset = 1;
   optind = 0;
-  
+
 	if (readExternal == true)
-		ReadConfig();	
-    
+		ReadConfig();
+
 }
 
 //----------------------------------------------------------------------------
 void ConfigureHelper(){
   [gp_xbmchelper enableVerboseMode:g_verbose_mode];
-  
+
   //set apppath to startup when pressing Menu
-  [gp_xbmchelper setApplicationPath:[NSString stringWithUTF8String:g_app_path.c_str()]];    
+  [gp_xbmchelper setApplicationPath:[NSString stringWithUTF8String:g_app_path.c_str()]];
   //set apppath to startup when pressing Menu
   [gp_xbmchelper setApplicationHome:[NSString stringWithUTF8String:g_app_home.c_str()]];
   //connect to specified server
-  [gp_xbmchelper connectToServer:[NSString stringWithUTF8String:g_server_address.c_str()] onPort:g_server_port withMode:g_mode withTimeout: g_universal_timeout];  
+  [gp_xbmchelper connectToServer:[NSString stringWithUTF8String:g_server_address.c_str()] onPort:g_server_port withMode:g_mode withTimeout: g_universal_timeout];
 }
 
 //----------------------------------------------------------------------------
@@ -215,32 +215,32 @@ void Reconfigure(int nSignal)
 //----------------------------------------------------------------------------
 int main (int argc,  char * argv[]) {
   NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-  
+
   int instanceLockFile = open("/tmp/xbmchelper.lock", O_CREAT | O_APPEND, S_IRUSR | S_IWUSR);
   if (flock(instanceLockFile, LOCK_EX | LOCK_NB) != 0)
   {
       NSLog(@"Already running - exiting ...");
       return 0;
   }
-    
+
   ParseOptions(argc,argv);
 
   NSLog(@"%s %s starting up...", PROGNAME, PROGVERS);
-  gp_xbmchelper = [[XBMCHelper alloc] init];  
+  gp_xbmchelper = [[XBMCHelper alloc] init];
   if(gp_xbmchelper){
     signal(SIGHUP, Reconfigure);
     signal(SIGINT, Reconfigure);
     signal(SIGTERM, Reconfigure);
-    
+
     ConfigureHelper();
-    
+
     //run event loop in this thread
     RunCurrentEventLoop(kEventDurationForever);
     NSLog(@"%s %s exiting...", PROGNAME, PROGVERS);
     //cleanup
-    [gp_xbmchelper release];    
+    [gp_xbmchelper release];
   } else {
-    NSLog(@"%s %s failed to initialize remote.", PROGNAME, PROGVERS);  
+    NSLog(@"%s %s failed to initialize remote.", PROGNAME, PROGVERS);
     return -1;
   }
   [pool drain];

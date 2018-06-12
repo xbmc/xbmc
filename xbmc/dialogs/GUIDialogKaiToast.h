@@ -64,7 +64,7 @@ protected:
 
   unsigned int m_toastDisplayTime;
   unsigned int m_toastMessageTime;
-  
+
   static TOASTQUEUE m_notifications;
   static CCriticalSection m_critical;
 };

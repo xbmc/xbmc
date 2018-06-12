@@ -202,7 +202,7 @@ void CCueDocument::GetSongs(VECSONGS &songs)
       aSong.strArtistDesc = m_strArtist;
     else
       aSong.strArtistDesc = track.strArtist;
-    //Pass album artist to MusicInfoTag object by setting album artist vector. 
+    //Pass album artist to MusicInfoTag object by setting album artist vector.
     aSong.SetAlbumArtist(StringUtils::Split(m_strArtist, g_advancedSettings.m_musicItemSeparator));
     aSong.strAlbum = m_strAlbum;
     aSong.genre = StringUtils::Split(m_strGenre, g_advancedSettings.m_musicItemSeparator);
@@ -218,7 +218,7 @@ void CCueDocument::GetSongs(VECSONGS &songs)
     aSong.iStartOffset = track.iStartTime;
     aSong.iEndOffset = track.iEndTime;
     if (aSong.iEndOffset)
-      // Convert offset in frames (75 per second) to duration in whole seconds with rounding 
+      // Convert offset in frames (75 per second) to duration in whole seconds with rounding
       aSong.iDuration = CUtil::ConvertMilliSecsToSecsIntRounded(aSong.iEndOffset - aSong.iStartOffset);
     else
       aSong.iDuration = 0;

@@ -99,7 +99,7 @@ JSONRPC_STATUS CProfilesOperations::LoadProfile(const std::string &method, ITran
 
   std::string profilename = parameterObject["profile"].asString();
   int index = profileManager.GetProfileIndex(profilename);
-  
+
   if (index < 0)
     return InvalidParams;
 
@@ -123,7 +123,7 @@ JSONRPC_STATUS CProfilesOperations::LoadProfile(const std::string &method, ITran
     const CVariant &passwordObject = parameterObject["password"];
     std::string strToVerify = profile->getLockCode();
     std::string password = passwordObject["value"].asString();
-		
+
     // Create password hash from the provided password if md5 is not used
     std::string md5pword2;
     std::string encryption = passwordObject["encryption"].asString();

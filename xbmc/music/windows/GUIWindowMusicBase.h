@@ -94,7 +94,7 @@ protected:
   void OnItemInfoAll(const std::string strPath, bool refresh = false);
   virtual void OnQueueItem(int iItem);
   enum ALLOW_SELECTION { SELECTION_ALLOWED = 0, SELECTION_AUTO, SELECTION_FORCED };
-  
+
   void OnRipTrack(int iItem);
   void LoadPlayList(const std::string& strPlayList) override;
   virtual void OnRemoveSource(int iItem);

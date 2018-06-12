@@ -152,7 +152,7 @@ static void LoadTexture(GLenum target
 #endif
 
   free(pixelVector);
-  
+
   *u = (GLfloat)width  / width2;
   *v = (GLfloat)height / height2;
 }

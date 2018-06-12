@@ -62,7 +62,7 @@ public:
 
   bool Deserialize(const TiXmlNode *node) override;
   bool Check() const override;
-  
+
   const std::string& GetName() const { return m_name; }
   const std::string& GetSetting() const { return m_setting; }
   SettingDependencyTarget GetTarget() const { return m_target; }
@@ -71,7 +71,7 @@ public:
 private:
   bool setTarget(const std::string &target);
   bool setOperator(const std::string &op);
-  
+
   SettingDependencyTarget m_target = SettingDependencyTarget::Unknown;
   SettingDependencyOperator m_operator = SettingDependencyOperator::Equals;
 };

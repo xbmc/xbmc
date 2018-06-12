@@ -37,7 +37,7 @@ extern "C"
   //
   void* Cocoa_Create_AutoReleasePool(void);
   void Cocoa_Destroy_AutoReleasePool(void* pool);
-  
+
 #ifdef __cplusplus
 }
 #endif

@@ -25,7 +25,7 @@
 namespace MUSIC_UTILS
 {
   /*! \brief Show a dialog to allow the selection of type of art from a list.
-  Input is a fileitem list, with each item having an "arttype" property 
+  Input is a fileitem list, with each item having an "arttype" property
   e.g. "thumb", current art URL (if art exists), and label. One of these art types
   can be selected, or a new art type added. The new art type is added as a new item
   in the list, as well as retuned as the selected art type.
@@ -36,10 +36,10 @@ namespace MUSIC_UTILS
   std::string ShowSelectArtTypeDialog(CFileItemList& artitems);
 
   /*! \brief Helper function to build a list of art types for a music library item.
-  This fetches the possible types of art for a song, album or artist, and the 
+  This fetches the possible types of art for a song, album or artist, and the
   current art URL (if the item has art of that type), for display on a dialog.
   \param musicitem a music CFileItem (song, album or artist)
-  \param artitems [out] a fileitem list,  each item having "arttype" property 
+  \param artitems [out] a fileitem list,  each item having "arttype" property
   e.g. "thumb", current art URL (if art exists), and localized label (for common arttypes)
   \return true if art types are retrieved, false if none is found.
   \sa ShowSelectArtTypeDialog
@@ -53,7 +53,7 @@ namespace MUSIC_UTILS
   then passed to the currently playing song (if there is one).
   \param item a shared pointer to a music CFileItem (song, album or artist)
   \param strType the type of art e.g. "fanart" or "thumb" etc.
-  \param strArt art URL, when empty the entry for that type of art is deleted. 
+  \param strArt art URL, when empty the entry for that type of art is deleted.
   */
   void UpdateArtJob(const CFileItemPtr pItem, const std::string& strType, const std::string& strArt);
 

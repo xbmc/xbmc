@@ -410,7 +410,7 @@ void CSkinInfo::OnPostInstall(bool update, bool modal)
   if (!g_SkinInfo)
     return;
 
-  if (IsInUse() || (!update && !modal && 
+  if (IsInUse() || (!update && !modal &&
     HELPERS::ShowYesNoDialogText(CVariant{Name()}, CVariant{24099}) == DialogResponse::YES))
   {
     CGUIDialogKaiToast *toast = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogKaiToast>(WINDOW_DIALOG_KAI_TOAST);
@@ -439,7 +439,7 @@ void CSkinInfo::SettingOptionsSkinColorsFiller(SettingConstPtr setting, std::vec
 
   // There is a default theme (just defaults.xml)
   // any other *.xml files are additional color themes on top of this one.
-  
+
   // add the default label
   list.push_back(std::make_pair(g_localizeStrings.Get(15109), "SKINDEFAULT")); // the standard defaults.xml will be used!
 

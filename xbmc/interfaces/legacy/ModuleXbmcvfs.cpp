@@ -50,7 +50,7 @@ namespace XBMCAddon
     {
       DelayedCallGuard dg;
       return XFILE::CFile::Rename(file,newFile);
-    }  
+    }
 
     // check for a file or folder existence, mimics Pythons os.path.exists()
     bool exists(const String& path)
@@ -59,14 +59,14 @@ namespace XBMCAddon
       if (URIUtils::HasSlashAtEnd(path, true))
         return XFILE::CDirectory::Exists(path, false);
       return XFILE::CFile::Exists(path, false);
-    }      
+    }
 
     // make a directory
     bool mkdir(const String& path)
     {
       DelayedCallGuard dg;
       return XFILE::CDirectory::Create(path);
-    }      
+    }
 
     // make all directories along the path
     bool mkdirs(const String& path)
@@ -83,7 +83,7 @@ namespace XBMCAddon
         return CFileUtils::DeleteItem(path);
       else
         return XFILE::CDirectory::Remove(path);
-    }      
+    }
 
     Tuple<std::vector<String>, std::vector<String> > listdir(const String& path)
     {
@@ -100,7 +100,7 @@ namespace XBMCAddon
       for (int i=0; i < items.Size(); i++)
       {
         std::string itemPath = items[i]->GetPath();
-        
+
         if (URIUtils::HasSlashAtEnd(itemPath)) // folder
         {
           URIUtils::RemoveSlashAtEnd(itemPath);

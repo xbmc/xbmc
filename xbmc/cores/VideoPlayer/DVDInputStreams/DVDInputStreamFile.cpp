@@ -53,7 +53,7 @@ bool CDVDInputStreamFile::Open()
     return false;
 
   unsigned int flags = READ_TRUNCATED | READ_BITRATE | READ_CHUNKED;
-  
+
   // If this file is audio and/or video (= not a subtitle) flag to caller
   if (!m_item.IsSubtitle())
     flags |= READ_AUDIO_VIDEO;
@@ -128,7 +128,7 @@ int CDVDInputStreamFile::Read(uint8_t* buf, int buf_size)
     return -1; // player will retry read in case of error until playback is stopped
 
   /* we currently don't support non completing reads */
-  if (ret == 0) 
+  if (ret == 0)
     m_eof = true;
 
   return (int)ret;

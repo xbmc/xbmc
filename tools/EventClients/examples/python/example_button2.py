@@ -61,7 +61,7 @@ def main():
     # doesn't matter.
     packet = PacketBUTTON(code=0x28, down=0)
     packet.send(sock, addr)
-    
+
     # ok we're done, close the connection
     # Note that closing the connection clears any repeat key that is
     # active. So in this example, the actual release button event above

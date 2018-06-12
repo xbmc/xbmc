@@ -177,7 +177,7 @@ bool CSFTPSession::GetDirectory(const std::string &base, const std::string &fold
           sftp_attributes_free(attributes);
           continue;
         }
-        
+
         if (attributes)
         {
           std::string itemName = attributes->name;
@@ -387,7 +387,7 @@ bool CSFTPSession::Connect(const std::string &host, unsigned int port, const std
   }
 #endif
   ssh_options_set(m_session, SSH_OPTIONS_LOG_VERBOSITY, 0);
-  ssh_options_set(m_session, SSH_OPTIONS_TIMEOUT, &timeout);  
+  ssh_options_set(m_session, SSH_OPTIONS_TIMEOUT, &timeout);
 
   if(ssh_connect(m_session))
   {

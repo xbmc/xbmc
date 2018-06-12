@@ -451,7 +451,7 @@ namespace PVR
      * @return True if something changed, false otherwise.
      */
     bool Update(const CPVREpgInfoTag &tag, bool bUpdateBroadcastId = true);
-    
+
     /*!
      * @brief Retrieve the edit decision list (EDL) of an EPG tag.
      * @return The edit decision list (empty on error)

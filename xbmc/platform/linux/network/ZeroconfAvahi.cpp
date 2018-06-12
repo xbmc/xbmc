@@ -194,19 +194,19 @@ bool CZeroconfAvahi::doRemoveService(const std::string& fcr_ident)
   {
     return false;
   }
-  
+
   if (it->second->mp_group)
   {
     avahi_entry_group_free(it->second->mp_group);
     it->second->mp_group = 0;
   }
-  
+
   if(it->second->mp_txt)
   {
     avahi_string_list_free(it->second->mp_txt);
     it->second->mp_txt = NULL;
   }
-  
+
   m_services.erase(it);
   return true;
 }
@@ -221,7 +221,7 @@ void CZeroconfAvahi::doStop()
       avahi_entry_group_free(it->second->mp_group);
       it->second->mp_group = 0;
     }
-    
+
     if(it->second->mp_txt)
     {
       avahi_string_list_free(it->second->mp_txt);

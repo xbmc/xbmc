@@ -189,7 +189,7 @@ TEST(TestHttpRanges, GetAll)
   ranges_raw.push_back(range_0);
   ranges_raw.push_back(range_1);
   ranges_raw.push_back(range_2);
-  
+
   CHttpRanges ranges(ranges_raw);
 
   const HttpRanges& ranges_raw_get = ranges.Get();

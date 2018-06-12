@@ -626,7 +626,7 @@ bool CGUIEditControl::ClearMD5()
 {
   if (!(m_inputType == INPUT_TYPE_PASSWORD_MD5 || m_inputType == INPUT_TYPE_PASSWORD_NUMBER_VERIFY_NEW) || !m_isMD5)
     return false;
-  
+
   m_text2.clear();
   m_cursorPos = 0;
   if (m_inputType != INPUT_TYPE_PASSWORD_NUMBER_VERIFY_NEW)
@@ -702,7 +702,7 @@ void CGUIEditControl::SetInputValidation(StringValidation::Validator inputValida
 {
   if (m_inputValidator == inputValidator)
     return;
-  
+
   m_inputValidator = inputValidator;
   m_inputValidatorData = data;
   // the input validator has changed, so re-validate the current data
@@ -748,6 +748,6 @@ std::string CGUIEditControl::GetDescriptionByIndex(int index) const
     return GetDescription();
   else if(index == 1)
     return GetLabel2();
-  
+
   return "";
 }

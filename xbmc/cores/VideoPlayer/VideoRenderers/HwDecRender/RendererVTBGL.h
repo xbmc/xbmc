@@ -31,7 +31,7 @@ public:
 
   static CBaseRenderer* Create(CVideoBuffer *buffer);
   static bool Register();
-  
+
   // Player functions
   virtual void ReleaseBuffer(int idx) override;
   virtual bool NeedBuffer(int idx) override;

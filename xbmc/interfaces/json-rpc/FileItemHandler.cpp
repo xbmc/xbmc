@@ -92,7 +92,7 @@ bool CFileItemHandler::GetField(const std::string &field, const CVariant &info, 
         return true;
       }
     }
-    
+
     if (item->HasProperty("artist_" + field + "_array"))
     {
       result[field] = item->GetProperty("artist_" + field + "_array");
@@ -124,7 +124,7 @@ bool CFileItemHandler::GetField(const std::string &field, const CVariant &info, 
       result["art"] = artObj;
       return true;
     }
-    
+
     if (field == "thumbnail")
     {
       if (thumbLoader != NULL && !item->HasArt("thumb") && !fetchedArt &&
@@ -135,15 +135,15 @@ bool CFileItemHandler::GetField(const std::string &field, const CVariant &info, 
       }
       else if (item->HasPictureInfoTag() && !item->HasArt("thumb"))
         item->SetArt("thumb", CTextureUtils::GetWrappedThumbURL(item->GetPath()));
-      
+
       if (item->HasArt("thumb"))
         result["thumbnail"] = CTextureUtils::GetWrappedImageURL(item->GetArt("thumb"));
       else
         result["thumbnail"] = "";
-      
+
       return true;
     }
-    
+
     if (field == "fanart")
     {
       if (thumbLoader != NULL && !item->HasArt("fanart") && !fetchedArt &&
@@ -152,15 +152,15 @@ bool CFileItemHandler::GetField(const std::string &field, const CVariant &info, 
         thumbLoader->FillLibraryArt(*item);
         fetchedArt = true;
       }
-      
+
       if (item->HasArt("fanart"))
         result["fanart"] = CTextureUtils::GetWrappedImageURL(item->GetArt("fanart"));
       else
         result["fanart"] = "";
-      
+
       return true;
     }
-    
+
     if (item->HasVideoInfoTag() && item->GetVideoContentType() == VIDEODB_CONTENT_TVSHOWS)
     {
       if (item->GetVideoInfoTag()->m_iSeason < 0 && field == "season")
@@ -330,7 +330,7 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
         {
           if (item->m_bIsFolder)
             object["filetype"] = "directory";
-          else 
+          else
             object["filetype"] = "file";
         }
       }
@@ -365,7 +365,7 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
       FillDetails(item->GetMusicInfoTag(), item, fields, object, thumbLoader);
     if (item->HasPictureInfoTag())
       FillDetails(item->GetPictureInfoTag(), item, fields, object, thumbLoader);
-    
+
     FillDetails(item.get(), item, fields, object, thumbLoader);
 
     if (deleteThumbloader)

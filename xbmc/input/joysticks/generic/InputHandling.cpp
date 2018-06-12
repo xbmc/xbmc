@@ -167,6 +167,6 @@ CJoystickFeature* CInputHandling::CreateFeature(const FeatureName& featureName)
     default:
       break;
   }
-  
+
   return feature;
 }

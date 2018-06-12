@@ -394,7 +394,7 @@ void CD3DTexture::SaveTexture()
       // copy contents to new texture
       pContext->CopyResource(texture.Get(), m_texture.Get());
     }
-    else 
+    else
       texture = m_texture;
 
     // read data from texture

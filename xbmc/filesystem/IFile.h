@@ -154,7 +154,7 @@ public:
   CURL  *m_pNewUrl;
 
   CRedirectException();
-  
+
   CRedirectException(IFile *pNewFileImp, CURL *pNewUrl=NULL);
 };
 

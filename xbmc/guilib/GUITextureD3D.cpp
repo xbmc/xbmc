@@ -43,7 +43,7 @@ void CGUITextureD3D::Begin(UTILS::Color color)
   CBaseTexture* texture = m_texture.m_textures[m_currentFrame];
   texture->LoadToGPU();
 
-  if (m_diffuse.size()) 
+  if (m_diffuse.size())
 	  m_diffuse.m_textures[0]->LoadToGPU();
 
   m_col = color;

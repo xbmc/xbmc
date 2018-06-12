@@ -172,10 +172,10 @@ namespace VIDEO
     {
       CLog::Log(LOGERROR, "VideoInfoScanner: Exception while scanning.");
     }
-    
+
     m_bRunning = false;
     ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnScanFinished");
-    
+
     if (m_handle)
       m_handle->MarkFinished();
     m_handle = NULL;
@@ -1740,13 +1740,13 @@ namespace VIDEO
         item.SetPath(file->strPath);
         if (!imdb.GetEpisodeDetails(guide->cScraperUrl, *item.GetVideoInfoTag(), pDlgProgress))
           return INFO_NOT_FOUND; //! @todo should we just skip to the next episode?
-          
+
         // Only set season/epnum from filename when it is not already set by a scraper
         if (item.GetVideoInfoTag()->m_iSeason == -1)
           item.GetVideoInfoTag()->m_iSeason = guide->iSeason;
         if (item.GetVideoInfoTag()->m_iEpisode == -1)
           item.GetVideoInfoTag()->m_iEpisode = guide->iEpisode;
-          
+
         if (AddVideo(&item, CONTENT_TVSHOWS, file->isFolder, useLocal, &showInfo) < 0)
           return INFO_ERROR;
       }

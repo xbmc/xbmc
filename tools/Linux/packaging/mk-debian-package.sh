@@ -75,7 +75,7 @@ function checkEnv {
 function getVersion {
     getGitRev
     if [[ $RELEASEV == "auto" ]]
-    then 
+    then
         local MAJORVER=$(grep VERSION_MAJOR $REPO_DIR/version.txt | awk '{ print $2 }')
         local MINORVER=$(grep VERSION_MINOR $REPO_DIR/version.txt | awk '{ print $2 }')
         RELEASEV=${MAJORVER}.${MINORVER}

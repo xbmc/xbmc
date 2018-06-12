@@ -69,7 +69,7 @@ void CDbUrl::AddOption(const std::string &key, const char *value)
 {
   if (!validateOption(key, value))
     return;
-  
+
   CUrlOptions::AddOption(key, value);
   updateOptions();
 }
@@ -78,7 +78,7 @@ void CDbUrl::AddOption(const std::string &key, const std::string &value)
 {
   if (!validateOption(key, value))
     return;
-  
+
   CUrlOptions::AddOption(key, value);
   updateOptions();
 }
@@ -87,7 +87,7 @@ void CDbUrl::AddOption(const std::string &key, int value)
 {
   if (!validateOption(key, value))
     return;
-  
+
   CUrlOptions::AddOption(key, value);
   updateOptions();
 }
@@ -96,7 +96,7 @@ void CDbUrl::AddOption(const std::string &key, float value)
 {
   if (!validateOption(key, value))
     return;
-  
+
   CUrlOptions::AddOption(key, value);
   updateOptions();
 }
@@ -105,7 +105,7 @@ void CDbUrl::AddOption(const std::string &key, double value)
 {
   if (!validateOption(key, value))
     return;
-  
+
   CUrlOptions::AddOption(key, value);
   updateOptions();
 }
@@ -114,7 +114,7 @@ void CDbUrl::AddOption(const std::string &key, bool value)
 {
   if (!validateOption(key, value))
     return;
-  
+
   CUrlOptions::AddOption(key, value);
   updateOptions();
 }
@@ -122,13 +122,13 @@ void CDbUrl::AddOption(const std::string &key, bool value)
 void CDbUrl::AddOptions(const std::string &options)
 {
   CUrlOptions::AddOptions(options);
-  updateOptions();  
+  updateOptions();
 }
 
 void CDbUrl::RemoveOption(const std::string &key)
 {
   CUrlOptions::RemoveOption(key);
-  updateOptions(); 
+  updateOptions();
 }
 
 bool CDbUrl::validateOption(const std::string &key, const CVariant &value)

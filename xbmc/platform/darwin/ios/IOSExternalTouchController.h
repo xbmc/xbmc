@@ -21,7 +21,7 @@
 #import <UIKit/UIKit.h>
 
 
-@interface IOSExternalTouchController : UIViewController 
+@interface IOSExternalTouchController : UIViewController
 {
   UIWindow      *_internalWindow;
   UIView        *_touchView;

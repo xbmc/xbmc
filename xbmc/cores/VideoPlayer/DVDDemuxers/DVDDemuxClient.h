@@ -59,7 +59,7 @@ protected:
   bool ParsePacket(DemuxPacket* pPacket);
   void DisposeStreams();
   std::shared_ptr<CDemuxStream> GetStreamInternal(int iStreamId);
-  
+
   std::shared_ptr<CDVDInputStream> m_pInput;
   std::shared_ptr<CDVDInputStream::IDemux> m_IDemux;
   std::map<int, std::shared_ptr<CDemuxStream>> m_streams;

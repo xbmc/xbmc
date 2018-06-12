@@ -712,8 +712,8 @@ namespace XBMCAddon
       ///
       setTextures(...);
 #else
-      virtual void setTextures(const char* up, const char* down, 
-                               const char* upFocus, 
+      virtual void setTextures(const char* up, const char* down,
+                               const char* upFocus,
                                const char* downFocus,
                                const char* upDisabled, const char* downDisabled);
 #endif
@@ -741,7 +741,7 @@ namespace XBMCAddon
     /// \ingroup python_xbmcgui_control
     /// @{
     /// @brief **Used to show some lines of text.**
-    /// 
+    ///
     /// \python_class{ ControlLabel(x, y, width, height, label[, font, textColor,
     ///                             disabledColor, alignment, hasPath, angle]) }
     ///
@@ -793,9 +793,9 @@ namespace XBMCAddon
     {
     public:
       ControlLabel(long x, long y, long width, long height, const String& label,
-                  const char* font = NULL, const char* textColor = NULL, 
+                  const char* font = NULL, const char* textColor = NULL,
                   const char* disabledColor = NULL,
-                  long alignment = XBFONT_LEFT, 
+                  long alignment = XBFONT_LEFT,
                   bool hasPath = false, long angle = 0);
 
       ~ControlLabel() override;
@@ -854,7 +854,7 @@ namespace XBMCAddon
       ///
       setLabel(...);
 #else
-      virtual void setLabel(const String& label = emptyString, 
+      virtual void setLabel(const String& label = emptyString,
                             const char* font = NULL,
                             const char* textColor = NULL,
                             const char* disabledColor = NULL,
@@ -864,7 +864,7 @@ namespace XBMCAddon
 #endif
 
 #ifndef SWIG
-      ControlLabel() : 
+      ControlLabel() :
         bHasPath(false),
         iAngle  (0)
       {}
@@ -944,7 +944,7 @@ namespace XBMCAddon
     {
     public:
       ControlEdit(long x, long y, long width, long height, const String& label,
-                  const char* font = NULL, const char* textColor = NULL, 
+                  const char* font = NULL, const char* textColor = NULL,
                   const char* disabledColor = NULL,
                   long _alignment = XBFONT_LEFT, const char* focusTexture = NULL,
                   const char* noFocusTexture = NULL, bool isPassword = false);
@@ -982,7 +982,7 @@ namespace XBMCAddon
       ///
       setLabel(...);
 #else
-      virtual void setLabel(const String& label = emptyString, 
+      virtual void setLabel(const String& label = emptyString,
                             const char* font = NULL,
                             const char* textColor = NULL,
                             const char* disabledColor = NULL,
@@ -1193,7 +1193,7 @@ namespace XBMCAddon
                   const char* buttonFocusTexture = NULL,
                   const char* selectedColor = NULL,
                   long _imageWidth=10, long _imageHeight=10, long _itemTextXOffset = CONTROL_TEXT_OFFSET_X,
-                  long _itemTextYOffset = CONTROL_TEXT_OFFSET_Y, long _itemHeight = 27, long _space = 2, 
+                  long _itemTextYOffset = CONTROL_TEXT_OFFSET_Y, long _itemHeight = 27, long _space = 2,
                   long _alignmentY = XBFONT_CENTER_Y);
 
       ~ControlList() override;
@@ -1622,7 +1622,7 @@ namespace XBMCAddon
 #ifndef SWIG
       void sendLabelBind(int tail);
 
-      SWIGHIDDENVIRTUAL bool canAcceptMessages(int actionId) override 
+      SWIGHIDDENVIRTUAL bool canAcceptMessages(int actionId) override
       { return ((actionId == ACTION_SELECT_ITEM) | (actionId == ACTION_MOUSE_LEFT_CLICK)); }
 
       // This is called from AddonWindow.cpp but shouldn't be available
@@ -1716,9 +1716,9 @@ namespace XBMCAddon
     class ControlFadeLabel : public Control
     {
     public:
-      ControlFadeLabel(long x, long y, long width, long height, 
-                       const char* font = NULL, 
-                       const char* textColor = NULL, 
+      ControlFadeLabel(long x, long y, long width, long height,
+                       const char* font = NULL,
+                       const char* textColor = NULL,
                        long _alignment = XBFONT_LEFT);
 
       // addLabel() Method
@@ -1845,8 +1845,8 @@ namespace XBMCAddon
     class ControlTextBox : public Control
     {
     public:
-      ControlTextBox(long x, long y, long width, long height, 
-                     const char* font = NULL, 
+      ControlTextBox(long x, long y, long width, long height,
+                     const char* font = NULL,
                      const char* textColor = NULL);
 
       // SetText() Method
@@ -2036,7 +2036,7 @@ namespace XBMCAddon
     class ControlImage : public Control
     {
     public:
-      ControlImage(long x, long y, long width, long height, 
+      ControlImage(long x, long y, long width, long height,
                    const char* filename, long aspectRatio = 0,
                    const char* colorDiffuse = NULL);
 
@@ -2178,7 +2178,7 @@ namespace XBMCAddon
     class ControlProgress : public Control
     {
     public:
-      ControlProgress(long x, long y, long width, long height, 
+      ControlProgress(long x, long y, long width, long height,
                       const char* texturebg = NULL,
                       const char* textureleft = NULL,
                       const char* texturemid = NULL,
@@ -2328,10 +2328,10 @@ namespace XBMCAddon
     {
     public:
       ControlButton(long x, long y, long width, long height, const String& label,
-                    const char* focusTexture = NULL, const char* noFocusTexture = NULL, 
-                    long textOffsetX = CONTROL_TEXT_OFFSET_X, 
-                    long textOffsetY = CONTROL_TEXT_OFFSET_Y, 
-                    long alignment = (XBFONT_LEFT | XBFONT_CENTER_Y), 
+                    const char* focusTexture = NULL, const char* noFocusTexture = NULL,
+                    long textOffsetX = CONTROL_TEXT_OFFSET_X,
+                    long textOffsetY = CONTROL_TEXT_OFFSET_Y,
+                    long alignment = (XBFONT_LEFT | XBFONT_CENTER_Y),
                     const char* font = NULL, const char* textColor = NULL,
                     const char* disabledColor = NULL, long angle = 0,
                     const char* shadowColor = NULL, const char* focusedColor = NULL);
@@ -2369,7 +2369,7 @@ namespace XBMCAddon
       ///
       setLabel(...);
 #else
-      virtual void setLabel(const String& label = emptyString, 
+      virtual void setLabel(const String& label = emptyString,
                             const char* font = NULL,
                             const char* textColor = NULL,
                             const char* disabledColor = NULL,
@@ -2620,9 +2620,9 @@ namespace XBMCAddon
                          const char* focusOnTexture = NULL, const char* noFocusOnTexture = NULL,
                          const char* focusOffTexture = NULL, const char* noFocusOffTexture = NULL,
                          const char* focusTexture = NULL, const char* noFocusTexture = NULL,
-                         long textOffsetX = CONTROL_TEXT_OFFSET_X, 
-                         long textOffsetY = CONTROL_TEXT_OFFSET_Y, 
-                         long _alignment = (XBFONT_LEFT | XBFONT_CENTER_Y), 
+                         long textOffsetX = CONTROL_TEXT_OFFSET_X,
+                         long textOffsetY = CONTROL_TEXT_OFFSET_Y,
+                         long _alignment = (XBFONT_LEFT | XBFONT_CENTER_Y),
                          const char* font = NULL, const char* textColor = NULL,
                          const char* disabledColor = NULL, long angle = 0,
                          const char* shadowColor = NULL, const char* focusedColor = NULL,
@@ -2723,7 +2723,7 @@ namespace XBMCAddon
       ///
       setLabel(...);
 #else
-      virtual void setLabel(const String& label = emptyString, 
+      virtual void setLabel(const String& label = emptyString,
                             const char* font = NULL,
                             const char* textColor = NULL,
                             const char* disabledColor = NULL,
@@ -2781,7 +2781,7 @@ namespace XBMCAddon
       UTILS::Color textColor;
       UTILS::Color disabledColor;
       int textOffsetX;
-      int textOffsetY; 
+      int textOffsetY;
      uint32_t align;
       int iAngle;
       UTILS::Color shadowColor;
@@ -2841,8 +2841,8 @@ namespace XBMCAddon
     class ControlSlider : public Control
     {
     public:
-      ControlSlider(long x, long y, long width, long height, 
-                    const char* textureback = NULL, 
+      ControlSlider(long x, long y, long width, long height,
+                    const char* textureback = NULL,
                     const char* texture = NULL,
                     const char* texturefocus = NULL, int orientation = 1);
 

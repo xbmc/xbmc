@@ -81,7 +81,7 @@ public:
   void CenterWindow();
 
   void DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions) override;
-  
+
   /*! \brief Main render function, called every frame.
    Window classes should override this only if they need to alter how something is rendered.
    General updating on a per-frame basis should be handled in FrameMove instead, as DoRender
@@ -94,7 +94,7 @@ public:
     Check if window closing animation is finished and finalize window closing.
    */
   void AfterRender();
-  
+
   /*! \brief Main update function, called every frame prior to rendering
    Any window that requires updating on a frame by frame basis (such as to maintain
    timers and the like) should override this function.
@@ -109,7 +109,7 @@ public:
   // on to the currently focused control.  Returns true if the action has been handled
   // and does not need to be passed further down the line (to our global action handlers)
   bool OnAction(const CAction &action) override;
-  
+
   using CGUIControlGroup::OnBack;
   virtual bool OnBack(int actionID);
   using CGUIControlGroup::OnInfo;

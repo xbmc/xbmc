@@ -60,10 +60,10 @@ public:
   void SetViewPort(D3D11_VIEWPORT viewPort);
 
   void XM_CALLCONV GetWVP(DirectX::XMMATRIX &w, DirectX::XMMATRIX &v, DirectX::XMMATRIX &p)
-  { 
-    w = m_cbWorldViewProj.world; 
-    v = m_cbWorldViewProj.view; 
-    p = m_cbWorldViewProj.projection; 
+  {
+    w = m_cbWorldViewProj.world;
+    v = m_cbWorldViewProj.view;
+    p = m_cbWorldViewProj.projection;
   }
   DirectX::XMMATRIX XM_CALLCONV GetWorld() const { return m_cbWorldViewProj.world; }
   DirectX::XMMATRIX XM_CALLCONV GetView() const { return m_cbWorldViewProj.view; }
@@ -77,7 +77,7 @@ public:
   void DrawQuad(Vertex& v1, Vertex& v2, Vertex& v3, Vertex& v4);
   void DrawIndexed(unsigned int indexCount, unsigned int startIndex, unsigned int startVertex);
   void Draw(unsigned int vertexCount, unsigned int startVertex);
-  
+
   bool  HardwareClipIsPossible(void) const { return m_clipPossible; }
   float GetClipXFactor(void) const { return m_clipXFactor;  }
   float GetClipXOffset(void) const { return m_clipXOffset;  }

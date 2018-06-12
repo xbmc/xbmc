@@ -563,7 +563,7 @@ bool CGUIDialogAddonInfo::ShowForItem(const CFileItemPtr& item)
   if (!dialog->SetItem(item))
     return false;
 
-  dialog->Open(); 
+  dialog->Open();
   return true;
 }
 

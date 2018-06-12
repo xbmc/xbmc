@@ -67,7 +67,7 @@ class IWindowKeymap
 {
 public:
   virtual ~IWindowKeymap() = default;
-  
+
   /*!
    * \brief The controller ID
    *

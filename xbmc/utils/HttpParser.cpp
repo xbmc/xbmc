@@ -102,7 +102,7 @@ HttpParser::parseHeader()
         State nextState = p_error;
 
         for ( unsigned d = 0; d < sizeof(fsm) / sizeof(FSM); ++d ) {
-            if ( fsm[d].curState == _state && 
+            if ( fsm[d].curState == _state &&
                     ( c == fsm[d].c || fsm[d].c == ANY ) ) {
 
                 nextState = fsm[d].nextState;
@@ -227,7 +227,7 @@ HttpParser::getQueryString() const
     return pos;
 }
 
-const char* 
+const char*
 HttpParser::getBody() const
 {
     if ( _contentLength > 0 ) {
@@ -238,7 +238,7 @@ HttpParser::getBody() const
 }
 
 // key should be in lower case.
-const char* 
+const char*
 HttpParser::getValue( const char* key ) const
 {
     for( IntArray::const_iterator iter = _keys.begin();

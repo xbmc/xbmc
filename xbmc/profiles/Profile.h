@@ -53,7 +53,7 @@ public:
 
   CProfile(const std::string &directory = "", const std::string &name = "", const int id = -1);
   ~CProfile(void);
-  
+
   void Load(const TiXmlNode *node, int nextIdProfile);
   void Save(TiXmlNode *root) const;
 

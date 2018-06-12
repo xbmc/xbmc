@@ -291,6 +291,6 @@ bool win32_exception::ShouldHook()
 
     ::FreeLibrary(module);
   }
-  
+
   return result;
 }

@@ -1,7 +1,7 @@
 set(SOURCES input/RemoteControlXbox.cpp
             Environment.cpp
             Win10App.cpp
-            MessagePrinter.cpp        
+            MessagePrinter.cpp
             ../win32/CharsetConverter.cpp
             ../win32/dxerr.cpp
             ../win32/Filesystem.cpp

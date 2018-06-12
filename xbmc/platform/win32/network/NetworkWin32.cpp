@@ -256,7 +256,7 @@ bool CNetworkWin32::PingHost(unsigned long host, unsigned int timeout_ms /* = 20
 
   SetLastError(ERROR_SUCCESS);
 
-  DWORD dwRetVal = IcmpSendEcho(hIcmpFile, host, SendData, sizeof(SendData), 
+  DWORD dwRetVal = IcmpSendEcho(hIcmpFile, host, SendData, sizeof(SendData),
                                 NULL, ReplyBuffer, sizeof(ReplyBuffer), timeout_ms);
 
   DWORD lastErr = GetLastError();
@@ -309,8 +309,8 @@ bool CNetworkInterfaceWin32::GetHostMacAddress(unsigned long host, std::string& 
   {
     if (PhysAddrLen == 6)
     {
-      mac = StringUtils::Format("%02X:%02X:%02X:%02X:%02X:%02X", 
-        bPhysAddr[0], bPhysAddr[1], bPhysAddr[2], 
+      mac = StringUtils::Format("%02X:%02X:%02X:%02X:%02X:%02X",
+        bPhysAddr[0], bPhysAddr[1], bPhysAddr[2],
         bPhysAddr[3], bPhysAddr[4], bPhysAddr[5]);
       return true;
     }

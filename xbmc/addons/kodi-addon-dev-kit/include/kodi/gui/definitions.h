@@ -224,7 +224,7 @@ typedef struct AddonToKodiFuncTable_kodi_gui_dialogKeyboard
   bool (*send_text_to_active_keyboard)(void* kodiBase, const char* text, bool close_keyboard);
   bool (*is_keyboard_activated)(void* kodiBase);
 } AddonToKodiFuncTable_kodi_gui_dialogKeyboard;
-  
+
 typedef struct AddonToKodiFuncTable_kodi_gui_dialogNumeric
 {
   bool (*show_and_verify_new_password)(void* kodiBase, char** password);

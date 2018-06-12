@@ -151,7 +151,7 @@ void CGUIIncludes::LoadDefaults(const TiXmlElement *node)
 {
   if (!node)
     return;
-  
+
   const TiXmlElement* child = node->FirstChildElement("default");
   while (child)
   {

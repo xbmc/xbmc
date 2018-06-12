@@ -290,7 +290,7 @@ CUPnPServer::Build(CFileItemPtr                  item,
             object->m_ObjectID = "0";
             object->m_ParentID = "-1";
             // root has 5 children
-            
+
             //This is dead code because of the HACK a few lines up setting with_count to false
             //if (with_count) {
             //    ((PLT_MediaContainer*)object)->m_ChildrenCount = 5;
@@ -1210,13 +1210,13 @@ CUPnPServer::ServeFile(const NPT_HttpRequest&              request,
 
     // set getCaptionInfo.sec - sets subtitle uri for Samsung devices
     const NPT_String* captionInfoHeader = request.GetHeaders().GetHeaderValue("getCaptionInfo.sec");
-    if (captionInfoHeader) 
+    if (captionInfoHeader)
     {
       NPT_String *sub_uri, movie;
       movie = "subtitle://" + md5;
 
       NPT_AutoLock lock(m_FileMutex);
-      if (NPT_SUCCEEDED(m_FileMap.Get(movie, sub_uri))) 
+      if (NPT_SUCCEEDED(m_FileMap.Get(movie, sub_uri)))
       {
         response.GetHeaders().SetHeader("CaptionInfo.sec", sub_uri->GetChars(), false);
       }

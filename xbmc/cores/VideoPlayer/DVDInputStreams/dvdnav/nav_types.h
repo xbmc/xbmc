@@ -32,7 +32,7 @@
 
 
 #undef ATTRIBUTE_PACKED
-#undef PRAGMA_PACK_BEGIN 
+#undef PRAGMA_PACK_BEGIN
 #undef PRAGMA_PACK_END
 
 #if defined(__GNUC__)
@@ -65,7 +65,7 @@
 
 
 /**
- * PCI General Information 
+ * PCI General Information
  */
 typedef struct {
   uint32_t nv_pck_lbn;      /**< sector address of this nav pack */
@@ -86,8 +86,8 @@ typedef struct {
   uint32_t nsml_agl_dsta[9];  /**< address of destination vobu in AGL_C#n */
 } ATTRIBUTE_PACKED nsml_agli_t;
 
-/** 
- * Highlight General Information 
+/**
+ * Highlight General Information
  *
  * For btngrX_dsp_ty the bits have the following meaning:
  * 000b: normal 4/3 only buttons
@@ -109,7 +109,7 @@ typedef struct {
   unsigned int zero4 : 1;          /**< reserved */
   unsigned int btngr3_dsp_ty : 3;  /**< display type of subpic stream for button group 3 */
   uint8_t btn_ofn;     /**< button offset number range 0-255 */
-  uint8_t btn_ns;      /**< number of valid buttons  <= 36/18/12 (low 6 bits) */  
+  uint8_t btn_ns;      /**< number of valid buttons  <= 36/18/12 (low 6 bits) */
   uint8_t nsl_btn_ns;  /**< number of buttons selectable by U_BTNNi (low 6 bits)   nsl_btn_ns <= btn_ns */
   uint8_t zero5;       /**< reserved */
   uint8_t fosl_btnn;   /**< forcedly selected button  (low 6 bits) */
@@ -117,8 +117,8 @@ typedef struct {
 } ATTRIBUTE_PACKED hl_gi_t;
 
 
-/** 
- * Button Color Information Table 
+/**
+ * Button Color Information Table
  * Each entry being a 32bit word that contains the color indexs and alpha
  * values to use.  They are all represented by 4 bit number and stored
  * like this [Ci3, Ci2, Ci1, Ci0, A3, A2, A1, A0].   The actual palette
@@ -129,7 +129,7 @@ typedef struct {
   uint32_t btn_coli[3][2];  /**< [button color number-1][select:0/action:1] */
 } ATTRIBUTE_PACKED btn_colit_t;
 
-/** 
+/**
  * Button Information
  *
  * NOTE: I've had to change the structure from the disk layout to get
@@ -159,7 +159,7 @@ typedef struct {
 } ATTRIBUTE_PACKED btni_t;
 
 /**
- * Highlight Information 
+ * Highlight Information
  */
 typedef struct {
   hl_gi_t     hl_gi;
@@ -181,7 +181,7 @@ typedef struct {
 
 
 /**
- * DSI General Information 
+ * DSI General Information
  */
 typedef struct {
   uint32_t nv_pck_scr;
@@ -210,7 +210,7 @@ typedef struct {
     uint32_t stp_ptm1;
     uint32_t stp_ptm2;
     uint32_t gap_len1;
-    uint32_t gap_len2;      
+    uint32_t gap_len2;
   } vob_a[8];
 } ATTRIBUTE_PACKED sml_pbi_t;
 
@@ -230,7 +230,7 @@ typedef struct {
 } ATTRIBUTE_PACKED sml_agli_t;
 
 /**
- * VOBU Search Information 
+ * VOBU Search Information
  */
 typedef struct {
   uint32_t next_video; /**< Next vobu that contains video */
@@ -245,7 +245,7 @@ typedef struct {
 
 /**
  * Synchronous Information
- */ 
+ */
 typedef struct {
   uint16_t a_synca[8];   /**< offset to first audio packet for this VOBU */
   uint32_t sp_synca[32]; /**< offset to first subpicture packet */

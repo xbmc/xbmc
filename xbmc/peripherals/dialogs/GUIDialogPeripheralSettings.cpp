@@ -164,7 +164,7 @@ void CGUIDialogPeripheralSettings::InitializeSettings()
     CLog::Log(LOGERROR, "CGUIDialogPeripheralSettings: unable to setup settings");
     return;
   }
-  
+
   std::vector<SettingPtr> settings = peripheral->GetSettings();
   for (std::vector<SettingPtr>::iterator itSetting = settings.begin(); itSetting != settings.end(); ++itSetting)
   {

@@ -57,7 +57,7 @@ void CJNIXBMCNsdManagerDiscoveryListener::RegisterNatives(JNIEnv* env)
   jclass cClass = env->FindClass(s_className.c_str());
   if(cClass)
   {
-    JNINativeMethod methods[] = 
+    JNINativeMethod methods[] =
     {
       {"_onDiscoveryStarted", "(Ljava/lang/String;)V", (void*)&CJNIXBMCNsdManagerDiscoveryListener::_onDiscoveryStarted},
       {"_onDiscoveryStopped", "(Ljava/lang/String;)V", (void*)&CJNIXBMCNsdManagerDiscoveryListener::_onDiscoveryStopped},

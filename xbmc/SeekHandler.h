@@ -43,7 +43,7 @@ public:
   ~CSeekHandler() override;
 
   static void SettingOptionsSeekStepsFiller(std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
-  
+
   void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
   bool OnAction(const CAction &action) override;
 

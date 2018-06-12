@@ -57,7 +57,7 @@ public:
   void Render() override;
 
   void Open(const std::string &param = "");
-  
+
   bool OnBack(int actionID) override;
 
   bool IsDialogRunning() const override { return m_active; };

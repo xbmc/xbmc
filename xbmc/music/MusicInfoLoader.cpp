@@ -91,17 +91,17 @@ bool CMusicInfoLoader::LoadAdditionalTagInfo(CFileItem* pItem)
     return false; // already have the information
 
   std::string path(pItem->GetPath());
-  // For songs in library set the (primary) song artist and album properties 
+  // For songs in library set the (primary) song artist and album properties
   // Use song Id (not path) as called for items from either library or file view,
   // but could also be listitem with tag loaded by a script
-  if (pItem->HasMusicInfoTag() && 
-      pItem->GetMusicInfoTag()->GetType() == MediaTypeSong && 
+  if (pItem->HasMusicInfoTag() &&
+      pItem->GetMusicInfoTag()->GetType() == MediaTypeSong &&
       pItem->GetMusicInfoTag()->GetDatabaseId() > 0)
   {
     CMusicDatabase database;
     database.Open();
     // May already have song artist ids as item property set when data read from
-    // db, but check property is valid array (scripts could set item properties 
+    // db, but check property is valid array (scripts could set item properties
     // incorrectly), otherwise fetch artist using song id.
     CArtist artist;
     bool artistfound = false;
@@ -198,11 +198,11 @@ bool CMusicInfoLoader::LoadItemLookup(CFileItem* pItem)
         m_databaseHits++;
       }
 
-      /* Note for songs from embedded or separate cuesheets strFileName is not unique, so only the first song from such a file 
+      /* Note for songs from embedded or separate cuesheets strFileName is not unique, so only the first song from such a file
          gets added to the song map. Any such songs from a cuesheet can be identified by having a non-zero offset value.
-         When the item we are looking up has a cue document or is a music file with a cuesheet embedded in the tags, it needs 
-         to have the cuesheet fully processed replacing that item with items for every track etc. This is done elsewhere, as 
-         changes to the list of items is not possible from here. This method only loads the item with the song from the database 
+         When the item we are looking up has a cue document or is a music file with a cuesheet embedded in the tags, it needs
+         to have the cuesheet fully processed replacing that item with items for every track etc. This is done elsewhere, as
+         changes to the list of items is not possible from here. This method only loads the item with the song from the database
          when it maps to a single song.
       */
 

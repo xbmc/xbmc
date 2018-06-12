@@ -40,7 +40,7 @@ CSong::CSong(CFileItem& item)
   //Set sort string before processing artist credits
   strArtistSort = tag.GetArtistSort();
   m_strComposerSort = tag.GetComposerSort();
-  
+
   // Determine artist credits from various tag arrays
   SetArtistCredits(tag.GetArtist(), tag.GetMusicBrainzArtistHints(), tag.GetMusicBrainzArtistID());
 
@@ -149,7 +149,7 @@ void CSong::SetArtistCredits(const std::vector<std::string>& names, const std::v
         artistHints = names;
     }
 
-    // Try to get number of artist sort names and musicbrainz ids to match. Split sort names 
+    // Try to get number of artist sort names and musicbrainz ids to match. Split sort names
     // further using multiple possible delimiters, over single separator applied in Tag loader
     if (artistSort.size() != mbids.size())
       artistSort = StringUtils::SplitMulti(artistSort, { ";", ":", "|", "#" });
@@ -169,7 +169,7 @@ void CSong::SetArtistCredits(const std::vector<std::string>& names, const std::v
       else
         artistName = artistId;
 
-      // Use artist sort name providing we have as many as we have mbid, 
+      // Use artist sort name providing we have as many as we have mbid,
       // otherwise something is wrong with them so ignore and leave blank
       if (artistSort.size() == mbids.size())
         artistCredits.emplace_back(StringUtils::Trim(artistName), StringUtils::Trim(artistSort[i]), artistId);
@@ -195,7 +195,7 @@ void CSong::SetArtistCredits(const std::vector<std::string>& names, const std::v
     for (size_t i = 0; i < artists.size(); i++)
     {
       artistCredits.emplace_back(StringUtils::Trim(artists[i]));
-      // Set artist sort name providing we have as many as we have artists, 
+      // Set artist sort name providing we have as many as we have artists,
       // otherwise something is wrong with them so ignore rather than guess.
       if (artistSort.size() == artists.size())
         artistCredits.back().SetSortName(StringUtils::Trim(artistSort[i]));
@@ -213,8 +213,8 @@ void CSong::MergeScrapedSong(const CSong& source, bool override)
     iTrack = source.iTrack;
   if (override)
   {
-    artistCredits = source.artistCredits; // Replace artists and store mbid returned by scraper   
-    strArtistDesc.clear();  // @todo: set artist display string e.g. "artist1 feat. artist2" when scraped 
+    artistCredits = source.artistCredits; // Replace artists and store mbid returned by scraper
+    strArtistDesc.clear();  // @todo: set artist display string e.g. "artist1 feat. artist2" when scraped
   }
 }
 

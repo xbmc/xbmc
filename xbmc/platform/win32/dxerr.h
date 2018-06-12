@@ -46,15 +46,15 @@ void WINAPI DXGetErrorDescriptionW( _In_ HRESULT hr, _Out_cap_(count) WCHAR* des
 //
 //  Desc:  Outputs a formatted error message to the debug stream
 //
-//  Args:  WCHAR* strFile   The current file, typically passed in using the 
+//  Args:  WCHAR* strFile   The current file, typically passed in using the
 //                         __FILEW__ macro.
-//         DWORD dwLine    The current line number, typically passed in using the 
+//         DWORD dwLine    The current line number, typically passed in using the
 //                         __LINE__ macro.
 //         HRESULT hr      An HRESULT that will be traced to the debug stream.
 //         CHAR* strMsg    A string that will be traced to the debug stream (may be NULL)
 //         BOOL bPopMsgBox If TRUE, then a message box will popup also containing the passed info.
 //
-//  Return: The hr that was passed in.  
+//  Return: The hr that was passed in.
 //--------------------------------------------------------------------------------------
 HRESULT WINAPI DXTraceW( _In_z_ const WCHAR* strFile, _In_ DWORD dwLine, _In_ HRESULT hr, _In_opt_ const WCHAR* strMsg, _In_ bool bPopMsgBox );
 

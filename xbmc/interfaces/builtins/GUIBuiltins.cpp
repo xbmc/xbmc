@@ -557,7 +557,7 @@ static int ToggleDirty(const std::vector<std::string>&)
 ///   \table_row2_l{
 ///     <b>`SetProperty(key\,value[\,id])`</b>
 ///     ,
-///     Sets a window property for the current window (key\,value)\, or the 
+///     Sets a window property for the current window (key\,value)\, or the
 ///     specified window (key\,value\,id).
 ///     @param[in] key                   The property to set.
 ///     @param[in] value                 The property value.

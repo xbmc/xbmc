@@ -196,7 +196,7 @@ namespace ADDON
         m_Callbacks = (KodiAPI::AddOn::CB_AddOnLib*)m_Handle->AddOnLib_RegisterMe(m_Handle->addonData);
       if (!m_Callbacks)
         fprintf(stderr, "libXBMC_addon-ERROR: AddOnLib_RegisterMe can't get callback table from Kodi !!!\n");
-    
+
       return m_Callbacks != nullptr;
     }
 
@@ -302,7 +302,7 @@ namespace ADDON
     {
       m_Callbacks->FreeString(m_Handle->addonData, str);
     }
-    
+
     /*!
      * @brief Free the memory used by arr including its elements
      * @param arr The string array to free

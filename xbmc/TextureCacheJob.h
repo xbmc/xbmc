@@ -59,7 +59,7 @@ public:
 /*!
  \ingroup textures
  \brief Job class for caching textures
- 
+
  Handles loading and caching of textures.
  */
 class CTextureCacheJob : public CJob

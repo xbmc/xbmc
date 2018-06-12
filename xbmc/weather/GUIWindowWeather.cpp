@@ -111,7 +111,7 @@ bool CGUIWindowWeather::OnMessage(CGUIMessage& message)
     {
       if (message.GetSenderId() == 0 && m_maxLocation > 0) //handle only message from builtin
       {
-        // Clamp location between 1 and m_maxLocation 
+        // Clamp location between 1 and m_maxLocation
         int v = (CServiceBroker::GetWeatherManager().GetArea() + message.GetParam1() - 1) % m_maxLocation + 1;
         if (v < 1) v += m_maxLocation;
         SetLocation(v);
@@ -145,7 +145,7 @@ void CGUIWindowWeather::UpdateLocations()
   unsigned int iCurWeather = CServiceBroker::GetWeatherManager().GetArea();
 
   if (iCurWeather > m_maxLocation)
-  {  
+  {
     CServiceBroker::GetWeatherManager().SetArea(m_maxLocation);
     iCurWeather = m_maxLocation;
     ClearProperties();
@@ -295,7 +295,7 @@ void CGUIWindowWeather::ClearProperties()
   SetProperty("Current.DewPoint", "");
   SetProperty("Current.Humidity", "");
   SetProperty("Current.FanartCode", "");
-  
+
   // Future weather
   std::string day;
   for (int i = 0; i < NUM_DAYS; i++)

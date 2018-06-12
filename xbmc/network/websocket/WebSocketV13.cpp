@@ -147,7 +147,7 @@ bool CWebSocketV13::Handshake(const char* data, size_t length, std::string &resp
   char *responseBuffer;
   int responseLength = httpResponse.Create(responseBuffer);
   response = std::string(responseBuffer, responseLength);
-  
+
   m_state = WebSocketStateConnected;
 
   return true;

@@ -412,7 +412,7 @@ bool CGUITextureBase::CalculateSize()
     else
       newPosY = m_posY + (m_height - newHeight) * 0.5f;
   }
-  
+
   m_vertex.SetRect(newPosX, newPosY, newPosX + newWidth, newPosY + newHeight);
 
   // scale the diffuse coords as well

@@ -40,7 +40,7 @@ typedef enum
   UIWindow *m_window;
   IOSEAGLView  *m_glView;
   int m_screensaverTimeout;
-	
+
   /* Touch handling */
   CGSize screensize;
   CGPoint lastGesturePoint;
@@ -49,7 +49,7 @@ typedef enum
   int  m_screenIdx;
 
   UIInterfaceOrientation orientation;
-  
+
   bool m_isPlayingBeforeInactive;
   UIBackgroundTaskIdentifier m_bgTask;
   NSTimer *m_networkAutoSuspendTimer;

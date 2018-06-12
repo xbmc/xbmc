@@ -214,7 +214,7 @@ void CGUIDialogSmartPlaylistEditor::OnPopupMenu(int item)
 }
 
 void CGUIDialogSmartPlaylistEditor::OnRuleList(int item)
-{ 
+{
   if (item < 0 || item > static_cast<int>(m_playlist.m_ruleCombination.m_rules.size()))
     return;
   if (item == static_cast<int>(m_playlist.m_ruleCombination.m_rules.size()))
@@ -335,7 +335,7 @@ void CGUIDialogSmartPlaylistEditor::OnType()
   int newSelected = dialog->GetSelectedItem();
   if (!dialog->IsConfirmed() || newSelected < 0 || allowedTypes[newSelected] == ConvertType(m_playlist.GetType()))
     return;
- 
+
   m_playlist.SetType(ConvertType(allowedTypes[newSelected]));
   UpdateButtons();
 }
@@ -398,7 +398,7 @@ void CGUIDialogSmartPlaylistEditor::OnGroupMixed()
 void CGUIDialogSmartPlaylistEditor::UpdateButtons()
 {
   CONTROL_ENABLE(CONTROL_OK); // always enabled since we can have no rules -> match everything (as we do with default partymode playlists)
-  
+
   if (m_mode == "partyvideo" || m_mode == "partymusic")
   {
     SET_CONTROL_LABEL2(CONTROL_NAME, g_localizeStrings.Get(16035));
@@ -406,7 +406,7 @@ void CGUIDialogSmartPlaylistEditor::UpdateButtons()
   }
   else
     SET_CONTROL_LABEL2(CONTROL_NAME, m_playlist.m_playlistName);
-  
+
   UpdateRuleControlButtons();
 
   if (m_playlist.m_ruleCombination.GetType() == CSmartPlaylistRuleCombination::CombinationOr)

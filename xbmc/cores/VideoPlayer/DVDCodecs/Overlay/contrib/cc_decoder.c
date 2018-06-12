@@ -44,13 +44,13 @@ enum { WHITE, GREEN, BLUE, CYAN, RED, YELLOW, MAGENTA, BLACK };
 
 /* --------------------- misc. EIA 608 definitions -------------------*/
 
-#define TRANSP_SPACE 0x19   /* code for transparent space, essentially 
+#define TRANSP_SPACE 0x19   /* code for transparent space, essentially
 			                       arbitrary */
 
 /* mapping from PAC row code to actual CC row */
 static int  rowdata[] = {10, -1, 0, 1, 2, 3, 11, 12, 13, 14, 4, 5, 6, 7, 8, 9};
 /* FIXME: do real TM */
-/* must be mapped as a music note in the captioning font */ 
+/* must be mapped as a music note in the captioning font */
 
 static unsigned char specialchar[] = {0xAE,0xB0,0xBD,0xBF,0x54,0xA2,0xA3,0xB6,0xA0,
                                       TRANSP_SPACE,0xA8,0xA2,0xAA,0xAE,0xB4,0xBB};
@@ -149,7 +149,7 @@ static void ccbuf_add_char(cc_buffer_t *buf, uint8_t c)
 }
 
 
-static void ccbuf_set_cursor(cc_buffer_t *buf, int row, int column, 
+static void ccbuf_set_cursor(cc_buffer_t *buf, int row, int column,
 			     int underline, int italics, int color)
 {
   cc_row_t *rowbuf = &buf->rows[row];
@@ -163,7 +163,7 @@ static void ccbuf_set_cursor(cc_buffer_t *buf, int row, int column,
   rowbuf->pac_attr = attr;
   rowbuf->pac_attr_chg = 1;
 
-  buf->rowpos = row; 
+  buf->rowpos = row;
   rowbuf->pos = column;
   rowbuf->attr_chg = 0;
 }
@@ -173,7 +173,7 @@ static void ccbuf_apply_attribute(cc_buffer_t *buf, cc_attribute_t *attr)
 {
   cc_row_t *rowbuf = &buf->rows[buf->rowpos];
   int pos = rowbuf->pos;
-  
+
   rowbuf->attr_chg = 1;
   rowbuf->cells[pos].attributes = *attr;
   /* A midrow attribute always counts as a space */
@@ -185,7 +185,7 @@ static void ccbuf_tab(cc_buffer_t *buf, int tabsize)
 {
   cc_row_t *rowbuf = &buf->rows[buf->rowpos];
   rowbuf->pos += tabsize;
-  if (rowbuf->pos > CC_COLUMNS) 
+  if (rowbuf->pos > CC_COLUMNS)
   {
     rowbuf->pos = CC_COLUMNS;
     return;
@@ -410,7 +410,7 @@ static void cc_decode_misc_control_code(cc_decoder_t *dec, int channel,
   cc_set_channel(dec, channel);
   cc_buffer_t *buf;
 
-  switch (c2) 
+  switch (c2)
   {          /* 0x20 <= c2 <= 0x2f */
   case 0x20:             /* RCL */
     dec->style = CC_POPON;
@@ -565,7 +565,7 @@ static void cc_decode_EIA608(cc_decoder_t *dec, uint16_t data)
       }
     }
   }
-  
+
   dec->lastcode = data;
 }
 
@@ -579,7 +579,7 @@ void decode_cc(cc_decoder_t *dec, uint8_t *buffer, uint32_t buf_len)
 
     uint8_t data1 = buffer[i + 1];
     uint8_t data2 = buffer[i + 2];
-    
+
     switch (cc_type)
     {
     case 0:
@@ -588,10 +588,10 @@ void decode_cc(cc_decoder_t *dec, uint8_t *buffer, uint32_t buf_len)
         cc_decode_EIA608(dec, data1 | (data2 << 8));
       }
       break;
-      
+
     case 1:
       break;
-      
+
     default:
       break;
     }

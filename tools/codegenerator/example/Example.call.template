@@ -32,8 +32,8 @@ module.function.each { functionNode ->
    }
 %>
     code to invoke the api method {
-      ${Helper.callingName(functionNode)}( <% 
-          functionNode.parm.eachWithIndex { param, i -> 
+      ${Helper.callingName(functionNode)}( <%
+          functionNode.parm.eachWithIndex { param, i ->
             %> p_${param.@name}${i < functionNode.parm.size() - 1 ? "," : ""} <% } %> );
     }
 

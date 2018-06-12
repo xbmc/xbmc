@@ -127,7 +127,7 @@ void Interface_GUIControlEdit::set_input_type(void* kodiBase, void* handle, int 
     default:
       kodiType = CGUIEditControl::INPUT_TYPE_PASSWORD_NUMBER_VERIFY_NEW;
   }
- 
+
   control->SetInputType(kodiType, heading);
 }
 

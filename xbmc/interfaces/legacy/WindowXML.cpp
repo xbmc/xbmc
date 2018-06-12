@@ -47,7 +47,7 @@ namespace XBMCAddon
     template class Interceptor<CGUIMediaWindow>;
 
     /**
-     * This class extends the Interceptor<CGUIMediaWindow> in order to 
+     * This class extends the Interceptor<CGUIMediaWindow> in order to
      *  add behavior for a few more virtual functions that were unnecessary
      *  in the Window or WindowDialog.
      */
@@ -61,7 +61,7 @@ namespace XBMCAddon
       WindowXML* xwin;
     public:
       WindowXMLInterceptor(WindowXML* _window, int windowid,const char* xmlfile) :
-        InterceptorDialog<CGUIMediaWindow>("CGUIMediaWindow",_window,windowid,xmlfile), xwin(_window) 
+        InterceptorDialog<CGUIMediaWindow>("CGUIMediaWindow",_window,windowid,xmlfile), xwin(_window)
       { }
 
       void AllocResources(bool forceLoad = false) override
@@ -237,7 +237,7 @@ namespace XBMCAddon
       //CFileItemPtr fi = pwx->GetListItem(listPos);
       CFileItemPtr fi;
       {
-        if (position < 0 || position >= A(m_vecItems)->Size()) 
+        if (position < 0 || position >= A(m_vecItems)->Size())
           return new ListItem();
         fi = A(m_vecItems)->Get(position);
       }
@@ -332,7 +332,7 @@ namespace XBMCAddon
 
       case GUI_MSG_FOCUSED:
         {
-          if (A(m_viewControl).HasControl(message.GetControlId()) && 
+          if (A(m_viewControl).HasControl(message.GetControlId()) &&
               A(m_viewControl).GetCurrentControl() != (int)message.GetControlId())
           {
             A(m_viewControl).SetFocused();
@@ -377,11 +377,11 @@ namespace XBMCAddon
           {
             CGUIControl* controlClicked = (CGUIControl*)interceptor->GetControl(iControl);
 
-            // The old python way used to check list AND SELECITEM method 
+            // The old python way used to check list AND SELECITEM method
             //   or if its a button, radiobutton.
-            // Its done this way for now to allow other controls without a 
+            // Its done this way for now to allow other controls without a
             //  python version like togglebutton to still raise a onAction event
-            if (controlClicked) // Will get problems if we the id is not on the window 
+            if (controlClicked) // Will get problems if we the id is not on the window
                                 //   and we try to do GetControlType on it. So check to make sure it exists
             {
               if ((controlClicked->IsContainer() && (message.GetParam1() == ACTION_SELECT_ITEM || message.GetParam1() == ACTION_MOUSE_LEFT_CLICK)) || !controlClicked->IsContainer())
@@ -445,7 +445,7 @@ namespace XBMCAddon
       CServiceBroker::GetGUI()->GetTextureManager().RemoveTexturePath(m_mediaDir);
     }
 
-    bool WindowXML::OnClick(int iItem) 
+    bool WindowXML::OnClick(int iItem)
     {
       XBMC_TRACE;
       // Hook Over calling  CGUIMediaWindow::OnClick(iItem) results in it trying to PLAY the file item
@@ -506,7 +506,7 @@ namespace XBMCAddon
       XBMC_TRACE;
       return WindowDialogMixin::OnAction(action) ? true : WindowXML::OnAction(action);
     }
-    
+
     void WindowXMLDialog::OnDeinitWindow(int nextWindowID)
     {
       XBMC_TRACE;
@@ -528,7 +528,7 @@ namespace XBMCAddon
       }
       return false;
     }
-  
+
   }
 
 }

@@ -102,17 +102,17 @@ namespace XBMCAddonUtils
 
   const char* TraceGuard::getSpaces() { return spaces[depth]; }
 
-  TraceGuard::TraceGuard(const char* _function) :function(_function) 
+  TraceGuard::TraceGuard(const char* _function) :function(_function)
   {
     parent = tlParent;
     depth = parent == NULL ? 0 : parent->depth + 1;
 
     tlParent = this;
 
-    CLog::Log(LOGDEBUG, "%sNEWADDON Entering %s", spaces[depth], function); 
+    CLog::Log(LOGDEBUG, "%sNEWADDON Entering %s", spaces[depth], function);
   }
 
-  TraceGuard::TraceGuard() :function(NULL) 
+  TraceGuard::TraceGuard() :function(NULL)
   {
     parent = tlParent;
     depth = parent == NULL ? 0 : parent->depth + 1;
@@ -120,7 +120,7 @@ namespace XBMCAddonUtils
     // silent
   }
 
-  TraceGuard::~TraceGuard() 
+  TraceGuard::~TraceGuard()
   {
     if (function)
       CLog::Log(LOGDEBUG, "%sNEWADDON Leaving %s", spaces[depth], function);

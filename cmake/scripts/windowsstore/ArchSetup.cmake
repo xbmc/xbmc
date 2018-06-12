@@ -25,7 +25,7 @@ elseif(_ARM_)
 else()
    message(FATAL_ERROR "Unsupported architecture")
 endif()
- 
+
 unset(_X86_)
 unset(_AMD64_)
 unset(_ARM_)
@@ -51,7 +51,7 @@ set(MINGW_LIBS_DIR ${CMAKE_SOURCE_DIR}/${DEPS_FOLDER_RELATIVE}/mingwlibs/win10-$
 # mingw libs
 list(APPEND CMAKE_SYSTEM_PREFIX_PATH ${MINGW_LIBS_DIR})
 list(APPEND CMAKE_SYSTEM_LIBRARY_PATH ${MINGW_LIBS_DIR}/bin)
-# dependencies 
+# dependencies
 list(APPEND CMAKE_SYSTEM_PREFIX_PATH ${DEPENDENCIES_DIR})
 # for python
 set(PYTHON_INCLUDE_DIR ${DEPENDENCIES_DIR}/include/python)

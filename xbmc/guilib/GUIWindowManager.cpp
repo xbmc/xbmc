@@ -257,7 +257,7 @@ void CGUIWindowManager::CreateWindows()
   Add(new CGUIDialogLockSettings);
 
   Add(new CGUIDialogContentSettings);
-  
+
   Add(new CGUIDialogLibExportSettings);
 
   Add(new CGUIDialogInfoProviderSettings);

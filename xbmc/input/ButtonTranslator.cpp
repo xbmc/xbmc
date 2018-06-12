@@ -326,7 +326,7 @@ void CButtonTranslator::MapAction(uint32_t buttonCode, const std::string &szActi
 
 void CButtonTranslator::MapWindowActions(const TiXmlNode *pWindow, int windowID)
 {
-  if (pWindow == nullptr || windowID == WINDOW_INVALID) 
+  if (pWindow == nullptr || windowID == WINDOW_INVALID)
     return;
 
   const TiXmlNode *pDevice;

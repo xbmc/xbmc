@@ -97,7 +97,7 @@ std::string create_temp_directory(std::error_code &ec)
     ec.assign(errno, std::system_category());
     return std::string();
   }
-  
+
   ec.clear();
   return std::string(tmp);
 }

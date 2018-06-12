@@ -42,7 +42,7 @@ CGUIFadeLabelControl::CGUIFadeLabelControl(int parentID, int controlID, float po
 }
 
 CGUIFadeLabelControl::CGUIFadeLabelControl(const CGUIFadeLabelControl &from)
-: CGUIControl(from), m_infoLabels(from.m_infoLabels), m_label(from.m_label), m_scrollInfo(from.m_scrollInfo), m_textLayout(from.m_textLayout), 
+: CGUIControl(from), m_infoLabels(from.m_infoLabels), m_label(from.m_label), m_scrollInfo(from.m_scrollInfo), m_textLayout(from.m_textLayout),
   m_fadeAnim(from.m_fadeAnim)
 {
   m_scrollOut = from.m_scrollOut;
@@ -133,7 +133,7 @@ void CGUIFadeLabelControl::Process(unsigned int currentTime, CDirtyRegionList &d
 
     if (m_fadeAnim.GetState() == ANIM_STATE_APPLIED)
       m_fadeAnim.ResetAnimation();
-    
+
     m_scrollInfo.SetSpeed((m_fadeAnim.GetProcess() == ANIM_PROCESS_NONE) ? m_scrollSpeed : 0);
 
     if (moveToNextLabel)

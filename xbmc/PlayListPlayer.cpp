@@ -240,7 +240,7 @@ bool CPlayListPlayer::Play()
     return false;
 
   CPlayList& playlist = GetPlaylist(m_iCurrentPlayList);
-  if (playlist.size() <= 0) 
+  if (playlist.size() <= 0)
     return false;
 
   return Play(0, "");
@@ -252,7 +252,7 @@ bool CPlayListPlayer::PlaySongId(int songId)
     return false;
 
   CPlayList& playlist = GetPlaylist(m_iCurrentPlayList);
-  if (playlist.size() <= 0) 
+  if (playlist.size() <= 0)
     return Play();
 
   for (int i = 0; i < playlist.size(); i++)
@@ -290,11 +290,11 @@ bool CPlayListPlayer::Play(int iSong, std::string player, bool bAutoPlay /* = fa
     return false;
 
   CPlayList& playlist = GetPlaylist(m_iCurrentPlayList);
-  if (playlist.size() <= 0) 
+  if (playlist.size() <= 0)
     return false;
-  if (iSong < 0) 
+  if (iSong < 0)
     iSong = 0;
-  if (iSong >= playlist.size()) 
+  if (iSong >= playlist.size())
     iSong = playlist.size() - 1;
 
   // check if the item itself is a playlist, and can be expanded
@@ -531,7 +531,7 @@ void CPlayListPlayer::SetShuffle(int iPlaylist, bool bYesNo, bool bNotify /* = f
       // so dont do anything
     }
   }
-  
+
   AnnouncePropertyChanged(iPlaylist, "shuffled", IsShuffled(iPlaylist));
 }
 

@@ -555,7 +555,7 @@ static int Seek(const std::vector<std::string>& params)
 ///   \table_row2_l{
 ///     <b>`Playlist.PlayOffset(positionType[\,position])`</b>
 ///     ,
-///     Start playing from a particular offset in the playlist 
+///     Start playing from a particular offset in the playlist
 ///     @param[in] positionType          Position in playlist or playlist type.
 ///     @param[in] position              Position in playlist if params[0] is playlist type (optional).
 ///   }

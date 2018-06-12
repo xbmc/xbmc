@@ -171,6 +171,6 @@ void CKey::SetFromService(bool fromService)
 {
   if (fromService && (m_buttonCode & KEY_ASCII))
     m_unicode = m_buttonCode - KEY_ASCII;
-    
+
   m_fromService = fromService;
 }

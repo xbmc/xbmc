@@ -67,7 +67,7 @@ std::string ByLabel(SortAttribute attributes, const SortItem &values)
 std::string ByFile(SortAttribute attributes, const SortItem &values)
 {
   CURL url(values.at(FieldPath).asString());
-  
+
   return StringUtils::Format("%s %" PRId64, url.GetFileNameWithoutPath().c_str(), values.at(FieldStartOffset).asInteger());
 }
 
@@ -239,7 +239,7 @@ std::string ByYear(SortAttribute attributes, const SortItem &values)
     label += StringUtils::Format(" %i", (int)track.asInteger());
 
   label += " " + ByLabel(attributes, values);
- 
+
   return label;
 }
 
@@ -456,7 +456,7 @@ bool preliminarySort(const SortItem &left, const SortItem &right, bool handleFol
     leftSortSpecial = (SortSpecial)itLeft->second.asInteger();
   if ((itRight = right.find(FieldSortSpecial)) != right.end() && itRight->second.asInteger() <= (int64_t)SortSpecialOnBottom)
     rightSortSpecial = (SortSpecial)itRight->second.asInteger();
-  
+
   // one has a special sort
   if (leftSortSpecial != rightSortSpecial)
   {
@@ -469,7 +469,7 @@ bool preliminarySort(const SortItem &left, const SortItem &right, bool handleFol
       result = true;
       return true;
     }
-    
+
     // otherwise right is sorted above left
     result = false;
     return true;

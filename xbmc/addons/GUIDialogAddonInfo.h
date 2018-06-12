@@ -34,7 +34,7 @@ public:
   ~CGUIDialogAddonInfo(void) override;
   bool OnMessage(CGUIMessage& message) override;
   bool OnAction(const CAction &action) override;
-  
+
   CFileItemPtr GetCurrentListItem(int offset = 0) override { return m_item; }
   bool HasListItems() const override { return true; }
 

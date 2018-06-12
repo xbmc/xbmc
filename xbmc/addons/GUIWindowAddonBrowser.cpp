@@ -421,7 +421,7 @@ int CGUIWindowAddonBrowser::SelectAddonID(const std::vector<ADDON::TYPE> &types,
       for (ADDON::IVECADDONS addon = installableAddons.begin(); addon != installableAddons.end();)
       {
         AddonPtr pAddon = *addon;
-        
+
         // check if the addon matches one of the provided addon types
         bool matchesType = false;
         for (std::vector<ADDON::TYPE>::const_iterator type = validTypes.begin(); type != validTypes.end(); ++type)

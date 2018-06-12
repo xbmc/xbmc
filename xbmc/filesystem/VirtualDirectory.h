@@ -42,7 +42,7 @@ namespace XFILE
     void CancelDirectory() override;
     bool GetDirectory(const CURL& url, CFileItemList &items, bool bUseFileDirectories, bool keepImpl);
     void SetSources(const VECSOURCES& vecSources);
-    inline unsigned int GetNumberOfSources() 
+    inline unsigned int GetNumberOfSources()
     {
       return static_cast<uint32_t>(m_vecSources.size());
     }

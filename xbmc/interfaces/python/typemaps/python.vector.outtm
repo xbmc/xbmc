@@ -28,7 +28,7 @@
     {
 %>
     if (${api} != NULL)
-    { 
+    {
 <%  }  %>
       ${result} = PyList_New(0);
 

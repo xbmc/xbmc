@@ -193,7 +193,7 @@ public:
   // specialization of CSettingControlFormattedRange
   bool Deserialize(const TiXmlNode *node, bool update = false) override;
   bool SetFormat(const std::string &format) override;
-  
+
   int GetHeading() const { return m_heading; }
   void SetHeading(int heading) { m_heading = heading; }
   bool CanMultiSelect() const { return m_multiselect; }

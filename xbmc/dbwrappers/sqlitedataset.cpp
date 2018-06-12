@@ -3,7 +3,7 @@
  *
  * Project:SQLiteDataset C++ Dynamic Library
  * Module: SQLiteDataset class realisation file
- * Author: Leo Seib      E-Mail: leoseib@web.de 
+ * Author: Leo Seib      E-Mail: leoseib@web.de
  * Begin: 5/04/2002
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -59,7 +59,7 @@ int callback(void* res_ptr,int ncol, char** result,char** cols)
     sql_record *rec = new sql_record;
     rec->resize(ncol);
     for (int i=0; i<ncol; i++)
-    { 
+    {
       field_value &v = rec->at(i);
       if (result[i] == NULL)
       {
@@ -73,7 +73,7 @@ int callback(void* res_ptr,int ncol, char** result,char** cols)
     }
     r->records.push_back(rec);
   }
-  return 0;  
+  return 0;
 }
 
 static int busy_callback(void*, int busyCount)
@@ -86,7 +86,7 @@ static int busy_callback(void*, int busyCount)
 
 SqliteDatabase::SqliteDatabase() {
 
-  active = false;  
+  active = false;
   _in_transaction = false;    // for transaction
 
   error = "Unknown database error";//S_NO_CONNECTION;
@@ -418,7 +418,7 @@ void SqliteDatabase::rollback_transaction() {
   if (active) {
     sqlite3_exec(conn,"rollback",NULL,NULL,NULL);
     _in_transaction = false;
-  }  
+  }
 }
 
 
@@ -502,7 +502,7 @@ void SqliteDataset::make_query(StringList &_sql) {
 
   for (std::list<std::string>::iterator i =_sql.begin(); i!=_sql.end(); ++i) {
   query = *i;
-  char* err=NULL; 
+  char* err=NULL;
   Dataset::parse_sql(query);
   if (db->setErr(sqlite3_exec(this->handle(),query.c_str(),NULL,NULL,&err),query.c_str())!=SQLITE_OK) {
     throw DbErrors(db->getErrorMsg());
@@ -513,7 +513,7 @@ void SqliteDataset::make_query(StringList &_sql) {
   if (db->in_transaction() && autocommit) db->commit_transaction();
 
   active = true;
-  ds_state = dsSelect;    
+  ds_state = dsSelect;
   if (autorefresh)
     refresh();
 
@@ -651,8 +651,8 @@ bool SqliteDataset::query(const std::string &query) {
     std::string qry = query;
     int fs = qry.find("select");
     int fS = qry.find("SELECT");
-    if (!( fs >= 0 || fS >=0))                                 
-         throw DbErrors("MUST be select SQL!"); 
+    if (!( fs >= 0 || fS >=0))
+         throw DbErrors("MUST be select SQL!");
 
   close();
 
@@ -707,7 +707,7 @@ bool SqliteDataset::query(const std::string &query) {
   else
   {
     throw DbErrors(db->getErrorMsg());
-  }  
+  }
 }
 
 void SqliteDataset::open(const std::string &sql) {
@@ -717,7 +717,7 @@ void SqliteDataset::open(const std::string &sql) {
 
 void SqliteDataset::open() {
   if (select_sql.size()) {
-    query(select_sql); 
+    query(select_sql);
   }
   else {
     ds_state = dsInactive;
@@ -777,7 +777,7 @@ void SqliteDataset::prev(void) {
 
 void SqliteDataset::next(void) {
   Dataset::next();
-  if (!eof()) 
+  if (!eof())
       fill_fields();
 }
 
@@ -798,7 +798,7 @@ bool SqliteDataset::seek(int pos) {
   if (ds_state == dsSelect) {
     Dataset::seek(pos);
     fill_fields();
-    return true;  
+    return true;
     }
   return false;
 }

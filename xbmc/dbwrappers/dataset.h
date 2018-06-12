@@ -121,11 +121,11 @@ public:
   virtual int status(void) { return DB_CONNECTION_NONE; }
   virtual int setErr(int err_code, const char *qry)=0;
   virtual const char *getErrorMsg(void) { return error.c_str(); }
-	
+
   virtual int connect(bool create) { return DB_COMMAND_OK; }
   virtual int connectFull( const char *newDb, const char *newHost=NULL,
                       const char *newLogin=NULL, const char *newPasswd=NULL,const char *newPort=NULL,
-                      const char *newKey=NULL, const char *newCert=NULL, const char *newCA=NULL, 
+                      const char *newKey=NULL, const char *newCert=NULL, const char *newCA=NULL,
                       const char *newCApath=NULL, const char *newCiphers=NULL, bool newCompression = false);
   virtual void disconnect(void) { active = false; }
   virtual int reset(void) { return DB_COMMAND_OK; }
@@ -196,7 +196,7 @@ protected:
   Database *db;		// info about db connection
   dsStates ds_state;	        // current state
   Fields *fields_object, *edit_object;
-      
+
   /* query results*/
   result_set result;
   result_set exec_res;
@@ -365,7 +365,7 @@ public:
 
 /* func. retrieves a number of fields */
 /* Number of fields in a record */
-  virtual int field_count();       					
+  virtual int field_count();
   virtual int fieldCount();
 /* func. retrieves a field name with 'n' index */
   virtual const char *fieldName(int n);
@@ -459,7 +459,7 @@ public:
 /* Get the column index from a string field_value request */
   bool get_index_map_entry(const char *f_name);
 
-  void set_ds_state(dsStates new_state) {ds_state = new_state;};	
+  void set_ds_state(dsStates new_state) {ds_state = new_state;};
  public:
 /* return ds_state value */
   dsStates get_state() {return ds_state;};

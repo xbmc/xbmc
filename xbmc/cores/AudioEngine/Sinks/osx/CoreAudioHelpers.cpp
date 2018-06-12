@@ -26,7 +26,7 @@
 std::string GetError(OSStatus error)
 {
   char buffer[128];
- 
+
   *(UInt32 *)(buffer + 1) = CFSwapInt32HostToBig(error);
   if (isprint(buffer[1]) && isprint(buffer[2]) &&
       isprint(buffer[3]) && isprint(buffer[4]))
@@ -39,7 +39,7 @@ std::string GetError(OSStatus error)
     // no, format it as an integer
     sprintf(buffer, "%d", (int)error);
   }
- 
+
   return std::string(buffer);
 }
 
@@ -53,7 +53,7 @@ const char* StreamDescriptionToString(AudioStreamBasicDescription desc, std::str
     0
   };
 
-  std::stringstream sstr; 
+  std::stringstream sstr;
   switch (desc.mFormatID)
   {
     case kAudioFormatLinearPCM:
@@ -82,7 +82,7 @@ const char* StreamDescriptionToString(AudioStreamBasicDescription desc, std::str
             << " AC-3/DTS ("
             << (UInt32)desc.mSampleRate
             << "Hz)";
-      str = sstr.str();                
+      str = sstr.str();
       break;
     case kAudioFormat60958AC3:
       sstr  << "["

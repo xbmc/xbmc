@@ -92,7 +92,7 @@ bool CWin32SMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   { // empty share name means that requested list of hosts or list of shares
     if (GetNetworkResources(url, items))
       return true;
-    
+
     // try to connect and authenticate
     CURL authConnUrl(url);
     if (!ConnectAndAuthenticate(authConnUrl, (m_flags & DIR_FLAG_ALLOW_PROMPT) != 0))
@@ -139,7 +139,7 @@ bool CWin32SMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       {
         if ((m_flags & DIR_FLAG_ALLOW_PROMPT) != 0)
           RequireAuthentication(authUrl);
-        
+
         return false;
       }
 
@@ -157,7 +157,7 @@ bool CWin32SMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
     std::wstring itemNameW(findData.cFileName);
     if (itemNameW == L"." || itemNameW == L".." || itemNameW.empty())
       continue;
-    
+
     std::string itemName;
     if (!g_charsetConverter.wToUTF8(itemNameW, itemName, true) || itemName.empty())
     {
@@ -173,18 +173,18 @@ bool CWin32SMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
     else
       pItem->SetPath(pathWithSlash + itemName);
 
-    if ((findData.dwFileAttributes & (FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_SYSTEM)) != 0 
+    if ((findData.dwFileAttributes & (FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_SYSTEM)) != 0
           || itemName.front() == '.') // mark files starting from dot as hidden
       pItem->SetProperty("file:hidden", true);
 
-    // calculation of size and date costs a little on win32 
+    // calculation of size and date costs a little on win32
     // so DIR_FLAG_NO_FILE_INFO flag is ignored
     FILETIME localTime;
     if (FileTimeToLocalFileTime(&findData.ftLastWriteTime, &localTime) == TRUE)
       pItem->m_dateTime = localTime;
     else
       pItem->m_dateTime.SetValid(false);
- 
+
     if (!pItem->m_bIsFolder)
         pItem->m_dwSize = (__int64(findData.nFileSizeHigh) << 32) + findData.nFileSizeLow;
 
@@ -192,7 +192,7 @@ bool CWin32SMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   } while (FindNextFileW(hSearch, &findData));
 
   FindClose(hSearch);
-  
+
   return true;
 }
 
@@ -244,7 +244,7 @@ bool CWin32SMBDirectory::Exists(const CURL& url)
   return RealExists(url, true);
 }
 
-// this functions can check for: 
+// this functions can check for:
 // * presence of directory on remove share (smb://server/share/dir)
 // * presence of remote share on server (smb://server/share)
 // * presence of smb server in network (smb://server)
@@ -254,7 +254,7 @@ bool CWin32SMBDirectory::RealExists(const CURL& url, bool tryToConnect)
 
   if (url.GetHostName().empty())
     return true; // 'root' of network is always exist
-    
+
   //! @todo use real caseless string comparison everywhere in this function
   if (url.GetShareName().empty() || url.GetShareName() == url.GetFileName())
   {
@@ -284,7 +284,7 @@ bool CWin32SMBDirectory::RealExists(const CURL& url, bool tryToConnect)
       baseUrl.SetProtocol("smb");
       baseUrl.SetHostName(url.GetHostName()); // scan server for shares
     }
-    
+
     if (!GetNetworkResources(baseUrl, entries))
     {
       if (tryToConnect && !url.GetShareName().empty())
@@ -351,7 +351,7 @@ bool CWin32SMBDirectory::GetNetworkResources(const CURL& basePath, CFileItemList
   std::string hostName(basePath.GetHostName());
   if (hostName.empty())
     return localGetNetworkResources(NULL, basePath.Get(), items, false); // get all servers from network
-  
+
   // get all shares from server
   std::string basePathStr(basePath.Get());
   if (basePathStr.empty())
@@ -430,7 +430,7 @@ static bool localGetNetworkResources(struct _NETRESOURCEW* basePathToScanPtr, co
     DWORD bufSize = buf.size();
     result = WNetEnumResourceW(netEnum, &resCount, buf.get(), &bufSize);
     if (result == NO_ERROR)
-    { 
+    {
       if (bufSize > buf.size())
       { // buffer is too small
         buf.allocate(bufSize); // discard buffer content and extend the buffer
@@ -443,7 +443,7 @@ static bool localGetNetworkResources(struct _NETRESOURCEW* basePathToScanPtr, co
       for (unsigned int i = 0; i < resCount && !errorFlag; i++)
       {
         _NETRESOURCEW& curResource = ((_NETRESOURCEW*)buf.get())[i];
-        
+
         /* check and collect servers */
         if (!getShares && curResource.dwDisplayType == RESOURCEDISPLAYTYPE_SERVER)
         {
@@ -471,7 +471,7 @@ static bool localGetNetworkResources(struct _NETRESOURCEW* basePathToScanPtr, co
           else
             CLog::LogF(LOGERROR, "Skipping server with empty remote name");
         }
-        
+
         /* check and collect shares */
         if (getShares && (curResource.dwDisplayType == RESOURCEDISPLAYTYPE_SHARE ||
                           curResource.dwDisplayType == RESOURCEDISPLAYTYPE_SHAREADMIN) &&
@@ -580,7 +580,7 @@ static bool localGetShares(const std::wstring& serverNameToScan, const std::stri
   assert(urlPrefixForItems.back() == '/');
 
   CFileItemList locItems; // store items locally until last one is successfully loaded
-  
+
   NET_API_STATUS enumResult;
   DWORD hEnumResume = 0;
   bool errorFlag = false;
@@ -628,7 +628,7 @@ bool CWin32SMBDirectory::ConnectAndAuthenticate(CURL& url, bool allowPromptForCr
   assert(url.IsProtocol("smb"));
   if (url.GetHostName().empty())
     return false; // can't connect to empty host name
-  
+
   if (url.GetUserName().empty() && url.GetPassWord().empty())
     CPasswordManager::GetInstance().AuthenticateURL(url); // set username and password if any
 
@@ -700,7 +700,7 @@ bool CWin32SMBDirectory::ConnectAndAuthenticate(CURL& url, bool allowPromptForCr
       CLog::LogF(LOGDEBUG, "Connected to \"%s\" %s", serverShareName.c_str(), loginDescr.c_str());
       return true;
     }
-    
+
     if (connRes == ERROR_ACCESS_DENIED || connRes == ERROR_BAD_USERNAME || connRes == ERROR_INVALID_PASSWORD ||
         connRes == ERROR_LOGON_FAILURE || connRes == ERROR_LOGON_TYPE_NOT_GRANTED || connRes == ERROR_LOGON_NOT_GRANTED)
     {

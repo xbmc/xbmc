@@ -177,7 +177,7 @@ namespace PERIPHERALS
 
     /* @brief Thread synchronization */
     CCriticalSection    m_critSection;
-    
+
     AddonInstance_Peripheral m_struct;
 
     CSharedSection      m_dllSection;

@@ -32,7 +32,7 @@
 #include <winrt/Windows.Foundation.Collections.h>
 #include <winrt/Windows.Storage.h>
 
-namespace winrt 
+namespace winrt
 {
   using namespace Windows::Foundation;
 }
@@ -95,7 +95,7 @@ void CStorageProvider::GetRemovableDrives(VECSOURCES &removableDrives)
 
   // get drives which we have direct access for (in case of broad file system access)
   GetDrivesByType(removableDrives, REMOVABLE_DRIVES, true);
-  
+
   try
   {
     auto devicesView = Wait(winrt::Windows::Storage::KnownFolders::RemovableDevices().GetFoldersAsync());
@@ -176,7 +176,7 @@ std::vector<std::string> CStorageProvider::GetDiskUsage()
       continue;
 
     std::string strDrive = std::string(1, driveLetter) + ":\\";
-    if (DRIVE_FIXED == GetDriveTypeA(strDrive.c_str()) 
+    if (DRIVE_FIXED == GetDriveTypeA(strDrive.c_str())
       && GetDiskFreeSpaceExA((strDrive.c_str()), nullptr, &ULTotal, &ULTotalFree))
     {
       strRet = StringUtils::Format("%s %d MB %s", strDrive.c_str(), int(ULTotalFree.QuadPart / (1024 * 1024)), g_localizeStrings.Get(160).c_str());

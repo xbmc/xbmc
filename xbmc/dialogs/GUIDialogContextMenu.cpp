@@ -272,7 +272,7 @@ bool CGUIDialogContextMenu::OnContextButton(const std::string &type, const CFile
 {
   // buttons that are available on both sources and autosourced items
   if (!item) return false;
-  
+
   // the rest of the operations require a valid share
   CMediaSource *share = GetShare(type, item.get());
   if (!share) return false;
@@ -500,7 +500,7 @@ bool CGUIDialogContextMenu::OnContextButton(const std::string &type, const CFile
 CMediaSource *CGUIDialogContextMenu::GetShare(const std::string &type, const CFileItem *item)
 {
   VECSOURCES *shares = CMediaSourceSettings::GetInstance().GetSources(type);
-  if (!shares || !item) 
+  if (!shares || !item)
     return nullptr;
   for (unsigned int i = 0; i < shares->size(); i++)
   {
@@ -529,7 +529,7 @@ void CGUIDialogContextMenu::OnWindowLoaded()
 {
   m_coordX = m_posX;
   m_coordY = m_posY;
-  
+
   const CGUIControlGroupList* pGroupList = dynamic_cast<const CGUIControlGroupList *>(GetControl(GROUP_LIST));
   m_backgroundImage = GetControl(BACKGROUND_IMAGE);
   if (m_backgroundImage && pGroupList)

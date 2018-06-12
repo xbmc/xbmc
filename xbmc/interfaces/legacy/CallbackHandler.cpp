@@ -98,8 +98,8 @@ namespace XBMCAddon
 
           // make sure the object is not deallocating
 
-          // we need to grab the object lock to see if the object of the call 
-          //  is deallocating. holding this lock should prevent it from 
+          // we need to grab the object lock to see if the object of the call
+          //  is deallocating. holding this lock should prevent it from
           //  deallocating during the execution of this call.
 #ifdef ENABLE_XBMC_TRACE_API
           CLog::Log(LOGDEBUG,"%sNEWADDON executing callback 0x%lx",_tg.getSpaces(),(long)(p->cb.get()));
@@ -124,13 +124,13 @@ namespace XBMCAddon
 
         // since the state of the iterator may have been corrupted by
         //  the changing state of the list from another thread during
-        //  the releasing fo the lock in the immediately preceeding 
+        //  the releasing fo the lock in the immediately preceeding
         //  codeblock, we need to reset it before continuing the loop
         iter = g_callQueue.begin();
       }
       else // if we're not in the right thread for this callback...
         ++iter;
-    }  
+    }
   }
 
   void RetardedAsyncCallbackHandler::clearPendingCalls(void* userData)

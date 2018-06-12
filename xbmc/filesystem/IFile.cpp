@@ -88,12 +88,12 @@ bool IFile::ReadString(char *szLine, int iLineLength)
   return true;
 }
 
-CRedirectException::CRedirectException() : 
+CRedirectException::CRedirectException() :
   m_pNewFileImp(NULL), m_pNewUrl(NULL)
 {
 }
 
 CRedirectException::CRedirectException(IFile *pNewFileImp, CURL *pNewUrl) :
-  m_pNewFileImp(pNewFileImp), m_pNewUrl(pNewUrl) 
+  m_pNewFileImp(pNewFileImp), m_pNewUrl(pNewUrl)
 {
 }

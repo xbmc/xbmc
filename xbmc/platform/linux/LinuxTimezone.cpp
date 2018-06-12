@@ -197,7 +197,7 @@ void CLinuxTimezone::SetTimezone(std::string timezoneName)
 #else
   bool use_timezone = false;
 #endif
-  
+
   if (use_timezone)
   {
     static char env_var[255];

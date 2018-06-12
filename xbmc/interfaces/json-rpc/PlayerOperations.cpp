@@ -271,7 +271,7 @@ JSONRPC_STATUS CPlayerOperations::PlayPause(const std::string &method, ITranspor
     case Audio:
       if (!g_application.GetAppPlayer().CanPause())
         return FailedToExecute;
-      
+
       if (parameterObject["play"].isString())
         CBuiltins::GetInstance().Execute("playercontrol(play)");
       else
@@ -948,7 +948,7 @@ JSONRPC_STATUS CPlayerOperations::SetAudioStream(const std::string &method, ITra
       else
         return FailedToExecute;
       break;
-      
+
     case Audio:
     case Picture:
     default:
@@ -1009,7 +1009,7 @@ JSONRPC_STATUS CPlayerOperations::SetSubtitle(const std::string &method, ITransp
       else
         return FailedToExecute;
       break;
-      
+
     case Audio:
     case Picture:
     default:
@@ -1320,7 +1320,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
           if (epg)
             ms = epg->GetDuration() * 1000;
         }
-        
+
         MillisecondsToTimeObject(ms, result);
         break;
       }
@@ -1555,7 +1555,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
         else
           result = CVariant(CVariant::VariantTypeNull);
         break;
-        
+
       case Picture:
       default:
         result = CVariant(CVariant::VariantTypeNull);
@@ -1587,7 +1587,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
           }
         }
         break;
-        
+
       case Audio:
       case Picture:
       default:
@@ -1666,7 +1666,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
       case Video:
         result = g_application.GetAppPlayer().GetSubtitleVisible();
         break;
-        
+
       case Audio:
       case Picture:
       default:
@@ -1696,7 +1696,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
         else
           result = CVariant(CVariant::VariantTypeNull);
         break;
-        
+
       case Audio:
       case Picture:
       default:
@@ -1726,7 +1726,7 @@ JSONRPC_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const std:
           }
         }
         break;
-        
+
       case Audio:
       case Picture:
       default:

@@ -47,7 +47,7 @@ public:
     std::string m_strPath;
     std::string m_strFilterPath;
   };
-  
+
   CDirectoryHistory() = default;
   virtual ~CDirectoryHistory();
 
@@ -71,7 +71,7 @@ public:
 
 private:
   static std::string preparePath(const std::string &strDirectory, bool tolower = true);
-  
+
   typedef std::map<std::string, CHistoryItem> HistoryMap;
   HistoryMap m_vecHistory;
   std::vector<CPathHistoryItem> m_vecPathHistory; ///< History of traversed directories

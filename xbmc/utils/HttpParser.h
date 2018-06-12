@@ -30,13 +30,13 @@
 #include <string>
 #include <string.h>
 
-// A class to incrementally parse an HTTP header as it comes in. It 
-// lets you know when it has received all required bytes, as specified 
+// A class to incrementally parse an HTTP header as it comes in. It
+// lets you know when it has received all required bytes, as specified
 // by the content-length header (if present). If there is no content-length,
 // it will stop reading after the final "\n\r".
 //
 // Example usage:
-// 
+//
 //    HttpParser parser;
 //    HttpParser::status_t status;
 //
@@ -86,7 +86,7 @@ private:
     unsigned _contentLength;
     unsigned _contentStart;
     unsigned _uriIndex;
-    
+
     typedef std::vector<unsigned> IntArray;
     IntArray _keys;
 

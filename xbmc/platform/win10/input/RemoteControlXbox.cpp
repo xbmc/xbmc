@@ -29,7 +29,7 @@
 #define XBOX_REMOTE_DEVICE_ID L"GIP:0000F50000000001"
 #define XBOX_REMOTE_DEVICE_NAME "Xbox One Game Controller"
 
-namespace winrt 
+namespace winrt
 {
   using namespace Windows::Foundation;
 }

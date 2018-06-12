@@ -212,7 +212,7 @@ bool CNetworkServices::OnSettingChanging(std::shared_ptr<const CSetting> setting
 #ifdef HAS_AIRPLAY
     else
     {
-      // cannot disable 
+      // cannot disable
       if (IsAirPlayServerRunning() || IsAirTunesServerRunning())
       {
         HELPERS::ShowOKDialogText(CVariant{1259}, CVariant{34303});
@@ -248,12 +248,12 @@ bool CNetworkServices::OnSettingChanging(std::shared_ptr<const CSetting> setting
         return false;
       }
 #endif //HAS_AIRTUNES
-      
+
       if (!StartAirPlayServer())
       {
         HELPERS::ShowOKDialogText(CVariant{1273}, CVariant{33100});
         return false;
-      }      
+      }
     }
     else
     {
@@ -262,7 +262,7 @@ bool CNetworkServices::OnSettingChanging(std::shared_ptr<const CSetting> setting
       if (!StopAirTunesServer(true))
         ret = false;
 #endif //HAS_AIRTUNES
-      
+
       if (!StopAirPlayServer(true))
         ret = false;
 
@@ -498,7 +498,7 @@ void CNetworkServices::Start()
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(33102), g_localizeStrings.Get(33100));
   if (m_settings.GetBool(CSettings::SETTING_SERVICES_ESENABLED) && !StartJSONRPCServer())
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(33103), g_localizeStrings.Get(33100));
-  
+
   // note - airtunesserver has to start before airplay server (ios7 client detection bug)
   StartAirTunesServer();
   StartAirPlayServer();
@@ -576,7 +576,7 @@ bool CNetworkServices::StopWebserver()
     CLog::Log(LOGWARNING, "Webserver: Failed to stop.");
     return false;
   }
-  
+
 #ifdef HAS_ZEROCONF
 #ifdef HAS_WEB_INTERFACE
   CZeroconf::GetInstance()->RemoveService("servers.webserver");
@@ -600,14 +600,14 @@ bool CNetworkServices::StartAirPlayServer()
 
   if (IsAirPlayServerRunning())
     return true;
-  
+
   if (!CAirPlayServer::StartServer(g_advancedSettings.m_airPlayPort, true))
     return false;
-  
+
   if (!CAirPlayServer::SetCredentials(m_settings.GetBool(CSettings::SETTING_SERVICES_USEAIRPLAYPASSWORD),
                                       m_settings.GetString(CSettings::SETTING_SERVICES_AIRPLAYPASSWORD)))
     return false;
-  
+
 #ifdef HAS_ZEROCONF
   std::vector<std::pair<std::string, std::string> > txt;
   CNetworkInterface* iface = CServiceBroker::GetNetwork().GetFirstConnectedInterface();
@@ -775,7 +775,7 @@ bool CNetworkServices::StopEventServer(bool bWait, bool promptuser)
   {
     if (server->GetNumberOfClients() > 0)
     {
-      if (HELPERS::ShowYesNoDialogText(CVariant{13140}, CVariant{13141}, CVariant{""}, CVariant{""}, 10000) != 
+      if (HELPERS::ShowYesNoDialogText(CVariant{13140}, CVariant{13141}, CVariant{""}, CVariant{""}, 10000) !=
         DialogResponse::YES)
       {
         CLog::Log(LOGNOTICE, "ES: Not stopping event server");
@@ -989,7 +989,7 @@ bool CNetworkServices::StopUPnPServer()
 #endif // HAS_UPNP
   return false;
 }
-  
+
 bool CNetworkServices::StartRss()
 {
   if (IsRssRunning())

@@ -17,7 +17,7 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
- 
+
 #include <stdio.h>
 
 #include "HttpResponse.h"
