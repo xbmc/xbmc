@@ -21,18 +21,14 @@
 #include "DVDFactoryDemuxer.h"
 
 #include "DVDInputStreams/DVDInputStream.h"
-#include "DVDInputStreams/DVDInputStreamPVRManager.h"
 
 #include "DVDDemuxFFmpeg.h"
 #include "DVDDemuxBXA.h"
 #include "DVDDemuxCDDA.h"
 #include "DVDDemuxClient.h"
 #include "DemuxMultiSource.h"
-#include "pvr/PVRManager.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
-
-using namespace PVR;
 
 CDVDDemux* CDVDFactoryDemuxer::CreateDemuxer(std::shared_ptr<CDVDInputStream> pInputStream, bool fileinfo)
 {

@@ -1464,7 +1464,7 @@ namespace PVR
     }
 
     if (iClientID < 0)
-      iClientID = CServiceBroker::GetPVRManager().Clients()->GetPlayingClientID();
+      iClientID = CServiceBroker::GetPVRManager().GetPlayingClientID();
 
     CPVRClientPtr client;
     if (CServiceBroker::GetPVRManager().Clients()->GetCreatedClient(iClientID, client) && client->HasMenuHooks(menuCategory))

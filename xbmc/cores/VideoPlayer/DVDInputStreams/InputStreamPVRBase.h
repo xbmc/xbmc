@@ -20,32 +20,29 @@
  *
  */
 
-/*
-* for DESCRIPTION see 'DVDInputStreamPVRManager.cpp'
-*/
-
+#include <map>
+#include <memory>
 #include <vector>
 #include "DVDInputStream.h"
-#include "FileItem.h"
-#include "threads/SystemClock.h"
 
+class CFileItem;
+class IDemux;
 class IVideoPlayer;
 struct PVR_STREAM_PROPERTIES;
-class CDemuxStreamAudio;
-class CDemuxStreamVideo;
-class CDemuxStreamSubtitle;
-class CDemuxStreamTeletext;
-class CDemuxStreamRadioRDS;
-class IDemux;
 
-class CDVDInputStreamPVRManager
+namespace PVR
+{
+  class CPVRClient;
+}
+
+class CInputStreamPVRBase
   : public CDVDInputStream
   , public CDVDInputStream::ITimes
   , public CDVDInputStream::IDemux
 {
 public:
-  CDVDInputStreamPVRManager(IVideoPlayer* pPlayer, const CFileItem& fileitem);
-  ~CDVDInputStreamPVRManager() override;
+  CInputStreamPVRBase(IVideoPlayer* pPlayer, const CFileItem& fileitem);
+  ~CInputStreamPVRBase() override;
   bool Open() override;
   void Close() override;
   int Read(uint8_t* buf, int buf_size) override;
@@ -58,8 +55,6 @@ public:
   ENextStream NextStream() override;
   bool IsRealtime() override;
 
-  PVR::CPVRChannelPtr GetSelectedChannel();
-
   CDVDInputStream::ITimes* GetITimes() override { return this; }
   bool GetTimes(Times &times) override;
 
@@ -67,11 +62,8 @@ public:
   bool CanPause() override;
   void Pause(bool bPaused);
 
-  /* overloaded is streamtype to support m_pOtherStream */
-  bool IsStreamType(DVDStreamType type) const;
-
   // Demux interface
-  CDVDInputStream::IDemux* GetIDemux() override;
+  CDVDInputStream::IDemux* GetIDemux() override { return nullptr; };
   bool OpenDemux() override;
   DemuxPacket* ReadDemux() override;
   CDemuxStream* GetStream(int iStreamId) const override;
@@ -85,19 +77,18 @@ public:
 protected:
   void UpdateStreamMap();
   std::shared_ptr<CDemuxStream> GetStreamInternal(int iStreamId);
-  IVideoPlayer* m_pPlayer;
+
+  virtual bool OpenPVRStream() = 0;
+  virtual void ClosePVRStream() = 0;
+  virtual int ReadPVRStream(uint8_t* buf, int buf_size) = 0;
+  virtual int64_t SeekPVRStream(int64_t offset, int whence) = 0;
+  virtual int64_t GetPVRStreamLength() = 0;
+  virtual ENextStream NextPVRStream() = 0;
+  virtual bool CanPausePVRStream() = 0;
+  virtual bool CanSeekPVRStream() = 0;
+
   bool m_eof;
-  bool m_demuxActive;
-  std::string m_strContent;
-  XbmcThreads::EndTime m_ScanTimeout;
-  PVR_STREAM_PROPERTIES *m_StreamProps;
+  std::shared_ptr<PVR_STREAM_PROPERTIES> m_StreamProps;
   std::map<int, std::shared_ptr<CDemuxStream>> m_streamMap;
-  bool m_isRecording;
+  std::shared_ptr<PVR::CPVRClient> m_client;
 };
-
-
-inline bool CDVDInputStreamPVRManager::IsStreamType(DVDStreamType type) const
-{
-  return m_streamType == type;
-}
-

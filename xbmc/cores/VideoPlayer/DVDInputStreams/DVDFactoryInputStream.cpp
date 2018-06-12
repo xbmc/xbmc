@@ -23,9 +23,10 @@
 #include "DVDInputStreamFile.h"
 #include "DVDInputStreamNavigator.h"
 #include "DVDInputStreamFFmpeg.h"
-#include "DVDInputStreamPVRManager.h"
 #include "InputStreamAddon.h"
 #include "InputStreamMultiSource.h"
+#include "InputStreamPVRChannel.h"
+#include "InputStreamPVRRecording.h"
 #ifdef HAVE_LIBBLURAY
 #include "DVDInputStreamBluray.h"
 #endif
@@ -96,8 +97,10 @@ std::shared_ptr<CDVDInputStream> CDVDFactoryInputStream::CreateInputStream(IVide
 
   if (fileitem.IsDVDFile(false, true))
     return std::shared_ptr<CDVDInputStreamNavigator>(new CDVDInputStreamNavigator(pPlayer, fileitem));
-  else if(file.substr(0, 6) == "pvr://")
-    return std::shared_ptr<CDVDInputStreamPVRManager>(new CDVDInputStreamPVRManager(pPlayer, fileitem));
+  else if (fileitem.IsPVRChannel() && file.substr(0, 6) == "pvr://")
+    return std::shared_ptr<CInputStreamPVRChannel>(new CInputStreamPVRChannel(pPlayer, fileitem));
+  else if (fileitem.IsUsablePVRRecording() && file.substr(0, 6) == "pvr://")
+    return std::shared_ptr<CInputStreamPVRRecording>(new CInputStreamPVRRecording(pPlayer, fileitem));
 #ifdef HAVE_LIBBLURAY
   else if (fileitem.IsType(".bdmv") || fileitem.IsType(".mpls") || file.substr(0, 7) == "bluray:")
     return std::shared_ptr<CDVDInputStreamBluray>(new CDVDInputStreamBluray(pPlayer, fileitem));

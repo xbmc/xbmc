@@ -223,7 +223,7 @@ void CPVREpgInfoTag::Serialize(CVariant &value) const
 CDateTime CPVREpgInfoTag::GetCurrentPlayingTime() const
 {
   if (CServiceBroker::GetPVRManager().GetPlayingChannel() == Channel() &&
-      CServiceBroker::GetPVRManager().Clients()->IsTimeshifting())
+      CServiceBroker::GetPVRManager().IsTimeshifting())
   {
     // timeshifting; start time valid?
     time_t startTime = CServiceBroker::GetDataCacheCore().GetStartTime();
