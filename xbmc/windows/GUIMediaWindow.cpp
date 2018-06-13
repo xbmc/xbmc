@@ -236,13 +236,7 @@ bool CGUIMediaWindow::OnAction(const CAction &action)
 
 bool CGUIMediaWindow::OnBack(int actionID)
 {
-  if (m_updateJobActive)
-  {
-    m_rootDir.CancelDirectory();
-    m_updateAborted = true;
-    m_updateEvent.Wait();
-    m_updateJobActive = false;
-  }
+  CancelUpdateItems();
 
   CURL filterUrl(m_strFilterPath);
   if (actionID == ACTION_NAV_BACK &&
@@ -262,6 +256,8 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_DEINIT:
     {
+      CancelUpdateItems();
+
       m_iLastControl = GetFocusedControlID();
       CGUIWindow::OnMessage(message);
 
@@ -1092,6 +1088,13 @@ bool CGUIMediaWindow::OnClick(int iItem, const std::string &player)
       m_history.RemoveParentPath();
       m_history.AddPath(strCurrentDirectory, m_strFilterPath);
     }
+
+    if (m_vecItemsUpdating)
+    {
+      CLog::Log(LOGWARNING, "CGUIMediaWindow::OnClick - updating in progress");
+      return true;
+    }
+    CUpdateGuard ug(m_vecItemsUpdating);
 
     CFileItem directory(*pItem);
     if (!Update(directory.GetPath()))
@@ -2257,4 +2260,18 @@ bool CGUIMediaWindow::WaitGetDirectoryItems(CGetDirectoryItems &items)
     }
   }
   return ret;
+}
+
+void CGUIMediaWindow::CancelUpdateItems()
+{
+  if (m_updateJobActive)
+  {
+    m_rootDir.CancelDirectory();
+    m_updateAborted = true;
+    if (!m_updateEvent.WaitMSec(5000))
+    {
+      CLog::Log(LOGERROR, "CGUIMediaWindow::CancelUpdateItems - error cancel update");
+    }
+    m_updateJobActive = false;
+  }
 }

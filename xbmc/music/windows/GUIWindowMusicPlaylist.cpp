@@ -85,6 +85,14 @@ bool CGUIWindowMusicPlayList::OnMessage(CGUIMessage& message)
     {
       // global playlist changed outside playlist window
       UpdateButtons();
+
+      if (m_vecItemsUpdating)
+      {
+        CLog::Log(LOGWARNING, "CGUIWindowMusicPlayList::OnMessage - updating in progress");
+        return true;
+      }
+      CUpdateGuard ug(m_vecItemsUpdating);
+
       Refresh(true);
 
       if (m_viewControl.HasControl(m_iLastControl) && m_vecItems->Size() <= 0)
@@ -239,6 +247,8 @@ bool CGUIWindowMusicPlayList::OnAction(const CAction &action)
 
 bool CGUIWindowMusicPlayList::OnBack(int actionID)
 {
+  CancelUpdateItems();
+
   if (actionID == ACTION_NAV_BACK)
     return CGUIWindow::OnBack(actionID); // base class goes up a folder, but none to go up
   return CGUIWindowMusicBase::OnBack(actionID);
