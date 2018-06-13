@@ -95,8 +95,8 @@ protected:
 public:
   bool Deserialize(const TiXmlNode *node) override;
 
-  virtual const CBooleanLogicOperationPtr& Get() const { return m_operation; }
-  virtual CBooleanLogicOperationPtr Get() { return m_operation; }
+  const CBooleanLogicOperationPtr& Get() const { return m_operation; }
+  CBooleanLogicOperationPtr Get() { return m_operation; }
 
 protected:
   CBooleanLogicOperationPtr m_operation;
