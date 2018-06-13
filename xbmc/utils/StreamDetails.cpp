@@ -29,15 +29,6 @@
 
 const float VIDEOASPECT_EPSILON = 0.025f;
 
-void CStreamDetail::Archive(CArchive &ar)
-{
-  // there's nothing to do here, the type is stored externally and parent isn't stored
-}
-void CStreamDetail::Serialize(CVariant &value) const
-{
-  // there's nothing to do here, the type is stored externally and parent isn't stored
-}
-
 CStreamDetailVideo::CStreamDetailVideo() :
   CStreamDetail(CStreamDetail::VIDEO), m_iWidth(0), m_iHeight(0), m_fAspect(0.0), m_iDuration(0)
 {
@@ -57,7 +48,6 @@ CStreamDetailVideo::CStreamDetailVideo(const VideoStreamInfo &info, int duration
 
 void CStreamDetailVideo::Archive(CArchive& ar)
 {
-  CStreamDetail::Archive(ar);
   if (ar.IsStoring())
   {
     ar << m_strCodec;
@@ -115,7 +105,6 @@ CStreamDetailAudio::CStreamDetailAudio(const AudioStreamInfo &info) :
 
 void CStreamDetailAudio::Archive(CArchive& ar)
 {
-  CStreamDetail::Archive(ar);
   if (ar.IsStoring())
   {
     ar << m_strCodec;
@@ -165,7 +154,6 @@ CStreamDetailSubtitle::CStreamDetailSubtitle(const SubtitleStreamInfo &info) :
 
 void CStreamDetailSubtitle::Archive(CArchive& ar)
 {
-  CStreamDetail::Archive(ar);
   if (ar.IsStoring())
   {
     ar << m_strLanguage;
