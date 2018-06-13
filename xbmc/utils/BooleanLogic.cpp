@@ -51,12 +51,6 @@ bool CBooleanLogicValue::Deserialize(const TiXmlNode *node)
   return true;
 }
 
-CBooleanLogicOperation::~CBooleanLogicOperation()
-{
-  m_operations.clear();
-  m_values.clear();
-}
-
 bool CBooleanLogicOperation::Deserialize(const TiXmlNode *node)
 {
   if (node == NULL)

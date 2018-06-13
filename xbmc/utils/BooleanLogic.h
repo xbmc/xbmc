@@ -67,7 +67,7 @@ public:
   explicit CBooleanLogicOperation(BooleanLogicOperation op = BooleanLogicOperationAnd)
     : m_operation(op)
   { }
-  virtual ~CBooleanLogicOperation();
+  virtual ~CBooleanLogicOperation() = default;
 
   bool Deserialize(const TiXmlNode *node) override;
 
