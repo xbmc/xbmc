@@ -697,10 +697,6 @@ bool CPVREpgInfoTag::Persist(bool bSingleUpdate /* = true */)
 {
   bool bReturn = false;
 
-#if EPG_DEBUGGING
-  CLog::Log(LOGDEBUG, "Epg - %s - Infotag '%s' %s, persisting...", __FUNCTION__, m_strTitle.c_str(), m_iBroadcastId > 0 ? "has changes" : "is new");
-#endif
-
   CPVREpgDatabasePtr database = CServiceBroker::GetPVRManager().EpgContainer().GetEpgDatabase();
   if (!database)
   {

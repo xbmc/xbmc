@@ -338,9 +338,6 @@ bool CPVREpg::Load(void)
   else
   {
     m_lastScanTime = GetLastScanTime();
-#if EPG_DEBUGGING
-    CLog::Log(LOGDEBUG, "EPG - %s - %d entries loaded for table '%s'.", __FUNCTION__, (int) m_tags.size(), m_strName.c_str());
-#endif
     bReturn = true;
   }
 
@@ -352,21 +349,12 @@ bool CPVREpg::Load(void)
 bool CPVREpg::UpdateEntries(const CPVREpg &epg, bool bStoreInDb /* = true */)
 {
   CSingleLock lock(m_critSection);
-#if EPG_DEBUGGING
-  CLog::Log(LOGDEBUG, "EPG - {0} - {1} entries in memory before merging", __FUNCTION__, m_tags.size());
-#endif
   /* copy over tags */
   for (std::map<CDateTime, CPVREpgInfoTagPtr>::const_iterator it = epg.m_tags.begin(); it != epg.m_tags.end(); ++it)
     UpdateEntry(it->second, bStoreInDb);
 
-#if EPG_DEBUGGING
-  CLog::Log(LOGDEBUG, "EPG - {0} - {1} entries in memory after merging and before fixing", __FUNCTION__, m_tags.size());
-#endif
   FixOverlappingEvents(bStoreInDb);
 
-#if EPG_DEBUGGING
-  CLog::Log(LOGDEBUG, "EPG - {0} - {1} entries in memory after fixing", __FUNCTION__, m_tags.size());
-#endif
   /* update the last scan time of this table */
   m_lastScanTime = CDateTime::GetCurrentDateTime().GetAsUTCDateTime();
   m_bUpdateLastScanTime = true;
@@ -591,10 +579,6 @@ bool CPVREpg::Persist(void)
   if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_EPG_IGNOREDBFORCLIENT) || !NeedsSave())
     return true;
 
-#if EPG_DEBUGGING
-  CLog::Log(LOGDEBUG, "persist table '%s' (#%d) changed=%d deleted=%d", Name().c_str(), m_iEpgID, m_changedTags.size(), m_deletedTags.size());
-#endif
-
   CPVREpgDatabasePtr database = CServiceBroker::GetPVRManager().EpgContainer().GetEpgDatabase();
   if (!database)
   {
@@ -708,49 +692,51 @@ bool CPVREpg::FixOverlappingEvents(bool bUpdateDb /* = false */)
 
 bool CPVREpg::UpdateFromScraper(time_t start, time_t end)
 {
-  bool bGrabSuccess = false;
-  if (ScraperName() == "client")
+  if (m_strScraperName.empty())
+  {
+    CLog::Log(LOGERROR, "EPG - %s - no EPG scraper defined for table '%s'", __FUNCTION__, m_strName.c_str());
+  }
+  else if (m_strScraperName == "client")
   {
     const CPVRChannelPtr channel = Channel();
-    const CPVRClientPtr client = CServiceBroker::GetPVRManager().GetClient(channel->ClientID());
-    if (!channel)
+    if (channel)
     {
-      CLog::Log(LOGWARNING, "EPG - %s - channel not found, can't update", __FUNCTION__);
+      if (!channel->EPGEnabled() || channel->IsHidden())
+      {
+        // ignore. not interested in any updates.
+        return true;
+      }
+
+      const CPVRClientPtr client = CServiceBroker::GetPVRManager().GetClient(channel->ClientID());
+      if (client)
+      {
+        if (!client->GetClientCapabilities().SupportsEPG())
+        {
+          CLog::Log(LOGERROR, "EPG - %s - the backend for channel '%s' on client '%i' does not support EPGs", __FUNCTION__, channel->ChannelName().c_str(), channel->ClientID());
+        }
+        else
+        {
+          CLog::Log(LOGDEBUG, "EPG - %s - updating EPG for channel '%s' from client '%i'", __FUNCTION__, channel->ChannelName().c_str(), channel->ClientID());
+          return (client->GetEPGForChannel(channel, this, start, end) == PVR_ERROR_NO_ERROR);
+        }
+      }
+      else
+      {
+        CLog::Log(LOGERROR, "EPG - %s - client '%i' not found, can't update", __FUNCTION__, channel->ClientID());
+      }
     }
-    else if (!channel->EPGEnabled())
+    else
     {
-#if EPG_DEBUGGING
-      CLog::Log(LOGDEBUG, "EPG - %s - EPG updating disabled in the channel configuration", __FUNCTION__);
-#endif
-      bGrabSuccess = true;
-    }
-    else if (channel->IsHidden())
-    {
-#if EPG_DEBUGGING
-      CLog::Log(LOGDEBUG, "EPG - %s - channel '%s' on client '%i' is hidden", __FUNCTION__, channel->ChannelName().c_str(), channel->ClientID());
-#endif
-      bGrabSuccess = true;
-    }
-    else if (client && !client->GetClientCapabilities().SupportsEPG())
-    {
-      CLog::Log(LOGDEBUG, "EPG - %s - the backend for channel '%s' on client '%i' does not support EPGs", __FUNCTION__, channel->ChannelName().c_str(), channel->ClientID());
-    }
-    else if (client)
-    {
-      CLog::Log(LOGDEBUG, "EPG - %s - updating EPG for channel '%s' from client '%i'", __FUNCTION__, channel->ChannelName().c_str(), channel->ClientID());
-      bGrabSuccess = (client->GetEPGForChannel(channel, this, start, end) == PVR_ERROR_NO_ERROR);
+      CLog::Log(LOGERROR, "EPG - %s - channel not found, can't update", __FUNCTION__);
     }
   }
-  else if (m_strScraperName.empty()) /* no grabber defined */
-    CLog::Log(LOGWARNING, "EPG - %s - no EPG scraper defined for table '%s'", __FUNCTION__, m_strName.c_str());
-  else
+  else // other non-empty scraper name...
   {
-    CLog::Log(LOGINFO, "EPG - %s - updating EPG table '%s' with scraper '%s'", __FUNCTION__, m_strName.c_str(), m_strScraperName.c_str());
-    CLog::Log(LOGWARNING, "loading the EPG via scraper has not been implemented yet");
+    CLog::Log(LOGERROR, "Loading the EPG via scraper has not been implemented yet!");
     //! @todo Add Support for Web EPG Scrapers here
   }
 
-  return bGrabSuccess;
+  return false;
 }
 
 //@}
