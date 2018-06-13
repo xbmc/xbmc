@@ -640,16 +640,30 @@ void CWinEventsWin10::Announce(AnnouncementFlag flag, const char * sender, const
 
     if (changed)
     {
-      auto dispatcher = CoreApplication::MainView().Dispatcher();
-      dispatcher.RunAsync(CoreDispatcherPriority::Normal, DispatchedHandler([status, speed]
+      try
       {
-        auto smtc = SystemMediaTransportControls::GetForCurrentView();
-        if (!smtc)
-          return;
+        // if something wrong with main view then Activated() will throw an 
+        // exception instead of std::terminate what Dispatcher() does
+        auto token = CoreApplication::MainView().Activated([](auto&&, auto&&) {});
+        CoreApplication::MainView().Activated(token);
 
-        smtc.PlaybackStatus(status);
-        smtc.PlaybackRate(speed);
-      }));
+        auto dispatcher = CoreApplication::MainView().Dispatcher();
+        if (dispatcher)
+        {
+          dispatcher.RunAsync(CoreDispatcherPriority::Normal, DispatchedHandler([status, speed]
+          {
+            auto smtc = SystemMediaTransportControls::GetForCurrentView();
+            if (!smtc)
+              return;
+
+            smtc.PlaybackStatus(status);
+            smtc.PlaybackRate(speed);
+          }));
+        }
+      }
+      catch (const winrt::hresult_error&)
+      {
+      }
     }
   }
 }
