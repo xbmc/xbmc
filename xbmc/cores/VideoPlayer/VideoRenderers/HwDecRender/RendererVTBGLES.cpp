@@ -108,7 +108,7 @@ bool CRendererVTB::LoadShadersHook()
   float ios_version = CDarwinUtils::GetIOSVersion();
   CLog::Log(LOGNOTICE, "GL: Using CVBREF render method");
   m_textureTarget = GL_TEXTURE_2D;
-  m_renderMethod = RENDER_CVREF;
+  m_renderMethod = RENDER_CUSTOM;
 
   if (ios_version < 5.0)
   {
@@ -138,15 +138,15 @@ bool CRendererVTB::CreateTexture(int index)
   YUVBUFFER &buf = m_buffers[index];
   YuvImage &im = buf.image;
   YUVPLANE (&planes)[YuvImage::MAX_PLANES] = buf.fields[0];
-  
+
   DeleteTexture(index);
-  
+
   memset(&im    , 0, sizeof(im));
   memset(&planes, 0, sizeof(YUVPLANE[YuvImage::MAX_PLANES]));
-  
+
   im.height = m_sourceHeight;
   im.width = m_sourceWidth;
-  
+
   planes[0].texwidth  = im.width;
   planes[0].texheight = im.height;
   planes[1].texwidth  = planes[0].texwidth >> im.cshift_x;
@@ -239,7 +239,6 @@ bool CRendererVTB::UploadTexture(int index)
   planes[1].id = CVOpenGLESTextureGetName(renderBuf.m_textureUV);
   planes[2].id = CVOpenGLESTextureGetName(renderBuf.m_textureUV);
 
-
   for (int p=0; p<2; p++)
   {
     glBindTexture(m_textureTarget, planes[p].id);
@@ -276,7 +275,7 @@ bool CRendererVTB::NeedBuffer(int idx)
     if (syncState != GL_SIGNALED_APPLE)
       return true;
   }
-  
+
   return false;
 }
 
