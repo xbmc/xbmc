@@ -547,17 +547,17 @@ void CStreamDetails::DetermineBestStreams(void)
   std::vector<CStreamDetail *>::const_iterator iter;
   for (iter = m_vecItems.begin(); iter != m_vecItems.end(); ++iter)
   {
-    CStreamDetail **champion;
+    const CStreamDetail **champion;
     switch ((*iter)->m_eType)
     {
     case CStreamDetail::VIDEO:
-      champion = (CStreamDetail **)&m_pBestVideo;
+      champion = (const CStreamDetail **)&m_pBestVideo;
       break;
     case CStreamDetail::AUDIO:
-      champion = (CStreamDetail **)&m_pBestAudio;
+      champion = (const CStreamDetail **)&m_pBestAudio;
       break;
     case CStreamDetail::SUBTITLE:
-      champion = (CStreamDetail **)&m_pBestSubtitle;
+      champion = (const CStreamDetail **)&m_pBestSubtitle;
       break;
     default:
       champion = NULL;

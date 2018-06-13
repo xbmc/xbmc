@@ -141,7 +141,7 @@ public:
 private:
   CStreamDetail *NewStream(CStreamDetail::StreamType type);
   std::vector<CStreamDetail *> m_vecItems;
-  CStreamDetailVideo *m_pBestVideo;
-  CStreamDetailAudio *m_pBestAudio;
-  CStreamDetailSubtitle *m_pBestSubtitle;
+  const CStreamDetailVideo *m_pBestVideo;
+  const CStreamDetailAudio *m_pBestAudio;
+  const CStreamDetailSubtitle *m_pBestSubtitle;
 };
