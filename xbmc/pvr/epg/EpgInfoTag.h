@@ -33,8 +33,6 @@
 #include "pvr/recordings/PVRRecording.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
 
-#define EPG_DEBUGGING 0
-
 class CVariant;
 
 namespace PVR
