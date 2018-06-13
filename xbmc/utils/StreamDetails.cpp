@@ -197,7 +197,7 @@ CStreamDetails& CStreamDetails::operator=(const CStreamDetails &that)
   if (this != &that)
   {
     Reset();
-    for (const CStreamDetail *iter : that.m_vecItems)
+    for (const auto &iter : that.m_vecItems)
     {
       switch (iter->m_eType)
       {
@@ -296,7 +296,7 @@ std::string CStreamDetails::GetVideoLanguage(int idx) const
 int CStreamDetails::GetStreamCount(CStreamDetail::StreamType type) const
 {
   int retVal = 0;
-  for (const CStreamDetail *iter : m_vecItems)
+  for (const auto &iter : m_vecItems)
     if (iter->m_eType == type)
       retVal++;
   return retVal;
@@ -328,7 +328,7 @@ CStreamDetails::CStreamDetails(const CStreamDetails &that)
 void CStreamDetails::AddStream(CStreamDetail *item)
 {
   item->m_pParent = this;
-  m_vecItems.push_back(item);
+  m_vecItems.emplace_back(item);
 }
 
 void CStreamDetails::Reset(void)
@@ -337,8 +337,6 @@ void CStreamDetails::Reset(void)
   m_pBestAudio = nullptr;
   m_pBestSubtitle = nullptr;
 
-  for (CStreamDetail *iter : m_vecItems)
-    delete iter;
   m_vecItems.clear();
 }
 
@@ -363,12 +361,12 @@ const CStreamDetail* CStreamDetails::GetNthStream(CStreamDetail::StreamType type
     }
   }
 
-  for (const CStreamDetail *iter : m_vecItems)
+  for (const auto &iter : m_vecItems)
     if (iter->m_eType == type)
     {
       idx--;
       if (idx < 1)
-        return iter;
+        return iter.get();
     }
 
   return NULL;
@@ -477,7 +475,7 @@ void CStreamDetails::Archive(CArchive& ar)
   {
     ar << (int)m_vecItems.size();
 
-    for (CStreamDetail *iter : m_vecItems)
+    for (auto &iter : m_vecItems)
     {
       // the type goes before the actual item.  When loading we need
       // to know the type before we can construct an instance to serialize
@@ -513,7 +511,7 @@ void CStreamDetails::Serialize(CVariant& value) const
   value["subtitle"] = CVariant(CVariant::VariantTypeArray);
 
   CVariant v;
-  for (const CStreamDetail *iter : m_vecItems)
+  for (const auto &iter : m_vecItems)
   {
     v.clear();
     iter->Serialize(v);
@@ -538,7 +536,7 @@ void CStreamDetails::DetermineBestStreams(void)
   m_pBestAudio = NULL;
   m_pBestSubtitle = NULL;
 
-  for (const CStreamDetail *iter : m_vecItems)
+  for (const auto &iter : m_vecItems)
   {
     const CStreamDetail **champion;
     switch (iter->m_eType)
@@ -560,7 +558,7 @@ void CStreamDetails::DetermineBestStreams(void)
       continue;
 
     if ((*champion == NULL) || (*champion)->IsWorseThan(*iter))
-      *champion = iter;
+      *champion = iter.get();
   }  /* for each */
 }
 

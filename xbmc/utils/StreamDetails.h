@@ -24,6 +24,7 @@
 #include "ISerializable.h"
 #include <string>
 #include <vector>
+#include <memory>
 
 class CStreamDetails;
 class CVariant;
@@ -100,7 +101,6 @@ class CStreamDetails : public IArchivable, public ISerializable
 public:
   CStreamDetails() { Reset(); };
   CStreamDetails(const CStreamDetails &that);
-  ~CStreamDetails() override { Reset(); };
   CStreamDetails& operator=(const CStreamDetails &that);
   bool operator ==(const CStreamDetails &that) const;
   bool operator !=(const CStreamDetails &that) const;
@@ -140,7 +140,7 @@ public:
   bool SetStreams(const VideoStreamInfo& videoInfo, int videoDuration, const AudioStreamInfo& audioInfo, const SubtitleStreamInfo& subtitleInfo);
 private:
   CStreamDetail *NewStream(CStreamDetail::StreamType type);
-  std::vector<CStreamDetail *> m_vecItems;
+  std::vector<std::unique_ptr<CStreamDetail>> m_vecItems;
   const CStreamDetailVideo *m_pBestVideo;
   const CStreamDetailAudio *m_pBestAudio;
   const CStreamDetailSubtitle *m_pBestSubtitle;
