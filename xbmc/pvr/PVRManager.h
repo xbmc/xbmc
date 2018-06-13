@@ -117,6 +117,13 @@ namespace PVR
     std::shared_ptr<CPVRClient> GetClient(const CFileItem &item) const;
 
     /*!
+     * @brief Get the instance of a client that matches the given id.
+     * @param iClientId The id of a PVR client.
+     * @return the requested client on success, nullptr otherwise.
+     */
+    std::shared_ptr<CPVRClient> GetClient(int iClientId) const;
+
+    /*!
      * @brief Get access to the pvr gui actions.
      * @return The gui actions.
      */

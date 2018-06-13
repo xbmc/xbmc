@@ -22,6 +22,7 @@
 
 #include <utility>
 
+#include "addons/PVRClient.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_epg_types.h"
 #include "EpgContainer.h"
 #include "EpgDatabase.h"
@@ -33,7 +34,6 @@
 #include "utils/log.h"
 
 #include "pvr/PVRManager.h"
-#include "pvr/addons/PVRClients.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimers.h"
 
@@ -711,7 +711,8 @@ bool CPVREpg::UpdateFromScraper(time_t start, time_t end)
   bool bGrabSuccess = false;
   if (ScraperName() == "client")
   {
-    CPVRChannelPtr channel = Channel();
+    const CPVRChannelPtr channel = Channel();
+    const CPVRClientPtr client = CServiceBroker::GetPVRManager().GetClient(channel->ClientID());
     if (!channel)
     {
       CLog::Log(LOGWARNING, "EPG - %s - channel not found, can't update", __FUNCTION__);
@@ -730,14 +731,14 @@ bool CPVREpg::UpdateFromScraper(time_t start, time_t end)
 #endif
       bGrabSuccess = true;
     }
-    else if (!CServiceBroker::GetPVRManager().Clients()->GetClientCapabilities(channel->ClientID()).SupportsEPG())
+    else if (client && !client->GetClientCapabilities().SupportsEPG())
     {
       CLog::Log(LOGDEBUG, "EPG - %s - the backend for channel '%s' on client '%i' does not support EPGs", __FUNCTION__, channel->ChannelName().c_str(), channel->ClientID());
     }
-    else
+    else if (client)
     {
       CLog::Log(LOGDEBUG, "EPG - %s - updating EPG for channel '%s' from client '%i'", __FUNCTION__, channel->ChannelName().c_str(), channel->ClientID());
-      bGrabSuccess = (CServiceBroker::GetPVRManager().Clients()->GetEPGForChannel(channel, this, start, end) == PVR_ERROR_NO_ERROR);
+      bGrabSuccess = (client->GetEPGForChannel(channel, this, start, end) == PVR_ERROR_NO_ERROR);
     }
   }
   else if (m_strScraperName.empty()) /* no grabber defined */

@@ -21,6 +21,7 @@
 #include "PVRTimerType.h"
 
 #include "ServiceBroker.h"
+#include "addons/PVRClient.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
@@ -45,14 +46,17 @@ const CPVRTimerTypePtr CPVRTimerType::GetFirstAvailableType()
 
 CPVRTimerTypePtr CPVRTimerType::CreateFromIds(unsigned int iTypeId, int iClientId)
 {
-  std::vector<CPVRTimerTypePtr> types;
-  PVR_ERROR error = CServiceBroker::GetPVRManager().Clients()->GetTimerTypes(types, iClientId);
-  if (error == PVR_ERROR_NO_ERROR)
+  const CPVRClientPtr client = CServiceBroker::GetPVRManager().GetClient(iClientId);
+  if (client)
   {
-    for (const auto &type : types)
+    std::vector<CPVRTimerTypePtr> types;
+    if (client->GetTimerTypes(types) == PVR_ERROR_NO_ERROR)
     {
-      if (type->GetTypeId() == iTypeId)
-        return type;
+      for (const auto &type : types)
+      {
+        if (type->GetTypeId() == iTypeId)
+          return type;
+      }
     }
   }
 
@@ -63,15 +67,18 @@ CPVRTimerTypePtr CPVRTimerType::CreateFromIds(unsigned int iTypeId, int iClientI
 CPVRTimerTypePtr CPVRTimerType::CreateFromAttributes(
   unsigned int iMustHaveAttr, unsigned int iMustNotHaveAttr, int iClientId)
 {
-  std::vector<CPVRTimerTypePtr> types;
-  PVR_ERROR error = CServiceBroker::GetPVRManager().Clients()->GetTimerTypes(types, iClientId);
-  if (error == PVR_ERROR_NO_ERROR)
+  const CPVRClientPtr client = CServiceBroker::GetPVRManager().GetClient(iClientId);
+  if (client)
   {
-    for (const auto &type : types)
+    std::vector<CPVRTimerTypePtr> types;
+    if (client->GetTimerTypes(types) == PVR_ERROR_NO_ERROR)
     {
-      if (((type->m_iAttributes & iMustHaveAttr)    == iMustHaveAttr) &&
-          ((type->m_iAttributes & iMustNotHaveAttr) == 0))
-        return type;
+      for (const auto &type : types)
+      {
+        if (((type->m_iAttributes & iMustHaveAttr)    == iMustHaveAttr) &&
+            ((type->m_iAttributes & iMustNotHaveAttr) == 0))
+          return type;
+      }
     }
   }
 
