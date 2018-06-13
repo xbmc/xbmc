@@ -102,6 +102,10 @@ bool CMusicDbUrl::parse()
       m_type = "genres";
       break;
 
+    case NODE_TYPE_SOURCE:
+      m_type = "sources";
+      break;
+
     case NODE_TYPE_ROLE:
       m_type = "roles";
       break;

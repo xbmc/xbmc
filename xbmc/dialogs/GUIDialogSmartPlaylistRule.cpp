@@ -159,6 +159,17 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
     }
     iLabel = 515;
   }
+  else if (m_rule.m_field == FieldSource)
+  {
+    if (m_type == "songs" ||
+      m_type == "albums" ||
+      m_type == "artists" ||
+      m_type == "mixed")
+    {
+      database.GetSourcesNav("musicdb://sources/", items);
+      iLabel = 39030;
+    }
+  }
   else if (m_rule.m_field == FieldRole)
   {
     if (m_type == "artists" || m_type == "mixed")

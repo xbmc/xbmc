@@ -298,15 +298,22 @@ void CMusicInfoScanner::Start(const std::string& strDirectory, int flags)
   m_albumsAdded.clear();
   m_flags = flags;
 
+  m_musicDatabase.Open();
+  // Check db sources match xml file and update if they don't
+  m_musicDatabase.UpdateSources();
+
   if (strDirectory.empty())
-  { // scan all paths in the database.  We do this by scanning all paths in the db, and crossing them off the list as
-    // we go.
-    m_musicDatabase.Open();
+  { // Scan all paths in the database.  We do this by scanning all paths in the
+    // db, and crossing them off the list as we go.
     m_musicDatabase.GetPaths(m_pathsToScan);
-    m_musicDatabase.Close();
+    m_idSourcePath = -1;
   }
   else
-    m_pathsToScan.insert(strDirectory);
+  {
+    m_pathsToScan.insert(strDirectory);    
+    m_idSourcePath = m_musicDatabase.GetSourceFromPath(strDirectory);
+  }
+  m_musicDatabase.Close();
 
   m_bClean = g_advancedSettings.m_bMusicLibraryCleanOnUpdate;
 
@@ -905,7 +912,7 @@ int CMusicInfoScanner::RetrieveMusicInfo(const std::string& strDirectory, CFileI
       album->releaseType = CAlbum::Single;
 
     album->strPath = strDirectory;
-    m_musicDatabase.AddAlbum(*album);
+    m_musicDatabase.AddAlbum(*album, m_idSourcePath);
     m_albumsAdded.insert(album->idAlbum);
 
     numAdded += album->songs.size();

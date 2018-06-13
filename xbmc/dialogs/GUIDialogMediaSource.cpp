@@ -236,7 +236,7 @@ void CGUIDialogMediaSource::OnMediaSourceChanged(const std::string& type, const 
       // Assign content to a path, refresh scraper information optionally start a scan
       CGUIWindowVideoBase::OnAssignContent(share.strPath);
     else if (type == "music")
-      CGUIWindowMusicBase::OnAssignContent(share.strPath);
+      CGUIWindowMusicBase::OnAssignContent(oldName, share);
   }
 }
 

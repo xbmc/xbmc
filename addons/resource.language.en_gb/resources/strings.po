@@ -3345,6 +3345,7 @@ msgctxt "#743"
 msgid "Yellow"
 msgstr ""
 
+#: system/library/music/files.xml
 #: xbmc/dialogs/GUIDialogMediaSource.cpp
 msgctxt "#744"
 msgid "Files"
@@ -20671,6 +20672,7 @@ msgstr ""
 
 #: xbmc/dialogs/GUIDialogSmartPlaylistRule.cpp
 #: xbmc/playlists/SmartPlaylist.cpp
+#: xbmc/filesystem/MusicDatabaseDirectory/DirectoryNodeOverview.cpp
 msgctxt "#38033"
 msgid "Role"
 msgstr ""
@@ -21261,7 +21263,24 @@ msgctxt "#39027"
 msgid "Sortname"
 msgstr ""
 
-#empty strings from id 39028 to 39099
+#empty strings from id 39028 to 39029
+
+#. Media source, a filter and smart playlist rule option 
+#: xbmc/dialogs/GUIDialogMediaFilter.cpp
+#: xbmc/dialogs/GUIDialogSmartPlaylistRule.cpp
+#: xbmc/playlists/SmartPlaylist.cpp
+msgctxt "#39030"
+msgid "Source"
+msgstr ""
+
+#. Node title, plural of #39030
+#: system/library/music/files.xml
+#: xbmc/filesystem/MusicDatabaseDirectory/DirectoryNodeOverview.cpp
+msgctxt "#39031"
+msgid "Sources"
+msgstr ""
+
+#empty strings from id 39032 to 39099
 
 #: system/settings/settings.xml
 msgctxt "#39100"
