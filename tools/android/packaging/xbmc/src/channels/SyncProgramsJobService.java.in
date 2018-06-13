@@ -297,7 +297,7 @@ public class SyncProgramsJobService extends JobService
       }
       if (media instanceof TVEpisode)
       {
-        builder.setSeasonNumber(((TVEpisode)media).getEpisode());
+        builder.setSeasonNumber(((TVEpisode)media).getSeason());
         builder.setEpisodeNumber(((TVEpisode)media).getEpisode());
       }
 
