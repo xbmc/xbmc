@@ -60,6 +60,8 @@ public:
   float GetVideoFps();
   void SetVideoDAR(float dar);
   float GetVideoDAR();
+  void SetVideoInterlaced(bool interlaced);
+  bool GetVideoInterlaced();
   virtual EINTERLACEMETHOD GetFallbackDeintMethod();
   virtual void SetSwDeinterlacingMethods();
   void UpdateDeinterlacingMethods(std::list<EINTERLACEMETHOD> &methods);
@@ -132,6 +134,7 @@ protected:
   int m_videoHeight;
   float m_videoFPS;
   float m_videoDAR;
+  bool m_videoIsInterlaced;
   std::list<EINTERLACEMETHOD> m_deintMethods;
   EINTERLACEMETHOD m_deintMethodDefault;
   CCriticalSection m_videoCodecSection;

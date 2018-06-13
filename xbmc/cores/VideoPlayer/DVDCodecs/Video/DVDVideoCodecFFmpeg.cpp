@@ -775,6 +775,8 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecFFmpeg::GetPicture(VideoPicture* pVideoPi
   else
     m_interlaced = false;
 
+  m_processInfo.SetVideoInterlaced(m_interlaced);
+
   if (!m_started)
   {
     int frames = 300;
