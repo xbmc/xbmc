@@ -6,13 +6,14 @@
 
 \tableofcontents
 
-These are conventions which we try to follow when writing code for Kodi. They
-are this way mainly for reasons of taste, however, sticking to a common set of
-formatting rules also makes it slightly easier to read through our sources. If
-you want to submit patches, please try to follow these rules.
+When working in a large group, the two most important values are readability
+and maintainability. We code for other people, not computers. To accomplish
+these goals, we have created a unified set of code conventions.
 
-As such we don't follow these rules slavishly, in certain cases it is ok (and
-in fact favorable) to stray from them.
+Conventions can be bent or broken in the interest of making code more readable
+and maintainable. However, if you submit a patch that contains excessive style
+conflicts, you may be asked to improve your code before your pull request is
+reviewed.
 
 ================================================================================
 \section code_guidelines_1 Indentation
@@ -58,27 +59,26 @@ class ILogger
 
 \subsection code_guidelines_1_3 Headers
 
-Included header files `*.h`, are to sort alphabetical to prevent double used file
-definition and allow better overview
+Included header files should be sorted alphabetically to prevent duplicates and
+allow better overview, with an empty line clearly separating sections.
 
-- Header file corresponding to this cpp file
-- C system files
-- C++ system files
+Header order should be:
+
+- Own header file
+- Other Kodi includes
+- C and C++ system files
 - Other libraries' header files
-- Own header files
 
 ~~~~~~~~~~~~~
 #include "PVRManager.h"
 
-#include <cassert>
-#include <utility>
-
-#include "Application.h"
-#include "Util.h"
 #include "addons/AddonInstaller.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "messaging/helpers/DialogHelper.h"
+#include "messaging/ApplicationMessenger.h"
+#include "messaging/ThreadMessage.h"
 #include "music/tags/MusicInfoTag.h"
+#include "music/MusicDatabase.h"
 #include "network/Network.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannel.h"
@@ -88,6 +88,29 @@ definition and allow better overview
 #include "utils/log.h"
 #include "utils/Variant.h"
 #include "video/VideoDatabase.h"
+#include "Application.h"
+#include "ServiceBroker.h"
+
+#include <cassert>
+#include <utility>
+
+#include <libavutil/pixfmt.h>
+~~~~~~~~~~~~~
+
+Place directories before files. If the headers aren't sorted, either do your best
+to match the existing order, or precede your commit with an alphabetization commit.
+
+If possible, you should avoid including headers in another header. Instead, you can
+forward-declare the class and use a `std::unique_ptr`:
+
+~~~~~~~~~~~~~
+class CFileItem;
+
+class Example
+{
+  ...
+  std::unique_ptr<CFileItem> m_fileItem;
+}
 ~~~~~~~~~~~~~
 
 ================================================================================
@@ -219,7 +242,7 @@ else
 --------------------------------------------------------------------------------
 \subsection code_guidelines_4_2 switch / case
 
-~~~~~~~~~~~~~[.cpp}
+~~~~~~~~~~~~~
 switch (cmd)
 {
   case x:

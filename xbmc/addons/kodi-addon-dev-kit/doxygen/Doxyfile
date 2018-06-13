@@ -812,7 +812,7 @@ WARN_LOGFILE           =
 INPUT                  = main.txt \
                          General/General.dox \
                          General/DoxygenOnAddon.dox \
-                         ../../../../CODING_GUIDELINES.dox \
+                         ../../../../docs/doxygen/CODING_GUIDELINES.dox \
                          ../../../GUIInfoManager.cpp \
                          Modules/modules_general.dox \
                          Modules/modules_cpp.dox \
