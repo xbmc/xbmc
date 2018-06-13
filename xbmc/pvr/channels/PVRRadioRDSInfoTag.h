@@ -32,7 +32,7 @@
 namespace PVR
 {
 
-class CPVRRadioRDSInfoTag : public IArchivable, public ISerializable
+class CPVRRadioRDSInfoTag final : public IArchivable, public ISerializable
 {
 public:
   /*!
