@@ -1196,7 +1196,7 @@ int CUtil::GetMatchingSource(const std::string& strPath1, VECSOURCES& VECSOURCES
   // we first test the NAME of a source
   for (int i = 0; i < (int)VECSOURCES.size(); ++i)
   {
-    CMediaSource share = VECSOURCES.at(i);
+    const CMediaSource &share = VECSOURCES[i];
     std::string strName = share.strName;
 
     // special cases for dvds
@@ -1234,7 +1234,7 @@ int CUtil::GetMatchingSource(const std::string& strPath1, VECSOURCES& VECSOURCES
   size_t iLenPath = strDest.size();
   for (int i = 0; i < (int)VECSOURCES.size(); ++i)
   {
-    CMediaSource share = VECSOURCES.at(i);
+    const CMediaSource &share = VECSOURCES[i];
 
     // does it match a source name?
     if (share.strPath.substr(0,8) == "shout://")
