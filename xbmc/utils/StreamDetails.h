@@ -43,7 +43,7 @@ public:
   explicit CStreamDetail(StreamType type) : m_eType(type), m_pParent(NULL) {};
   void Archive(CArchive& ar) override;
   void Serialize(CVariant& value) const override;
-  virtual bool IsWorseThan(CStreamDetail *that) { return true; };
+  virtual bool IsWorseThan(CStreamDetail *that) = 0;
 
   const StreamType m_eType;
 
