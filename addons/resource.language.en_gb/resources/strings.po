@@ -6334,6 +6334,7 @@ msgstr ""
 #: xbmc/pvr/PVRGUIInfo.cpp
 #: xbmc/video/dialogs/GUIDialogAudioSubtitleSettings.cpp
 #: xbmc/video/PlayerController.cpp
+#: xbmc/video/dialogs/GUIDialogAudioSettings.cpp
 msgctxt "#13205"
 msgid "Unknown"
 msgstr ""
@@ -8254,6 +8255,7 @@ msgstr ""
 
 #. pvr "channels" settings group label
 #: system/settings/settings.xml
+#: xbmc/video/dialogs/GUIDialogAudioSettings.cpp
 msgctxt "#14301"
 msgid "Channels"
 msgstr ""
