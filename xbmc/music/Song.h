@@ -56,7 +56,7 @@ class CFileItem;
  \brief Class to store and read song information from CMusicDatabase
  \sa CAlbum, CMusicDatabase
  */
-class CSong: public ISerializable
+class CSong final : public ISerializable
 {
 public:
   CSong() ;
