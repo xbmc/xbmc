@@ -88,10 +88,11 @@ protected:
 
 class CBooleanLogic : public IXmlDeserializable
 {
-public:
-  CBooleanLogic() = default;
-  ~CBooleanLogic() override = default;
+protected:
+  /* make sure nobody deletes a pointer to this class */
+  ~CBooleanLogic() = default;
 
+public:
   bool Deserialize(const TiXmlNode *node) override;
 
   virtual const CBooleanLogicOperationPtr& Get() const { return m_operation; }
