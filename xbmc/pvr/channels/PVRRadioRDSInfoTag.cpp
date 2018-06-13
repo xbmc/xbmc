@@ -42,8 +42,6 @@ CPVRRadioRDSInfoTag::CPVRRadioRDSInfoTag(void)
   Clear();
 }
 
-CPVRRadioRDSInfoTag::~CPVRRadioRDSInfoTag() = default;
-
 void CPVRRadioRDSInfoTag::Serialize(CVariant& value) const
 {
   value["strLanguage"] = m_strLanguage;
