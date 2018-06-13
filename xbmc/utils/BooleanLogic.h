@@ -38,7 +38,7 @@ public:
   CBooleanLogicValue(const std::string &value = "", bool negated = false)
     : m_value(value), m_negated(negated)
   { }
-  ~CBooleanLogicValue() override = default;
+  virtual ~CBooleanLogicValue() = default;
 
   bool Deserialize(const TiXmlNode *node) override;
 
@@ -67,7 +67,7 @@ public:
   explicit CBooleanLogicOperation(BooleanLogicOperation op = BooleanLogicOperationAnd)
     : m_operation(op)
   { }
-  ~CBooleanLogicOperation() override;
+  virtual ~CBooleanLogicOperation();
 
   bool Deserialize(const TiXmlNode *node) override;
 
