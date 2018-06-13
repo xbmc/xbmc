@@ -89,8 +89,6 @@ namespace PVR
     CPVRRecording &operator =(const CPVRRecording &other) = delete;
 
   public:
-    ~CPVRRecording() override = default;
-
     bool operator ==(const CPVRRecording& right) const;
     bool operator !=(const CPVRRecording& right) const;
 
