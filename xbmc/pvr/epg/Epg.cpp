@@ -712,12 +712,14 @@ bool CPVREpg::UpdateFromScraper(time_t start, time_t end)
   if (ScraperName() == "client")
   {
     const CPVRChannelPtr channel = Channel();
-    const CPVRClientPtr client = CServiceBroker::GetPVRManager().GetClient(channel->ClientID());
     if (!channel)
     {
       CLog::Log(LOGWARNING, "EPG - %s - channel not found, can't update", __FUNCTION__);
+      return bGrabSuccess;
     }
-    else if (!channel->EPGEnabled())
+
+    const CPVRClientPtr client = CServiceBroker::GetPVRManager().GetClient(channel->ClientID());
+    if (!channel->EPGEnabled())
     {
 #if EPG_DEBUGGING
       CLog::Log(LOGDEBUG, "EPG - %s - EPG updating disabled in the channel configuration", __FUNCTION__);
@@ -731,6 +733,8 @@ bool CPVREpg::UpdateFromScraper(time_t start, time_t end)
 #endif
       bGrabSuccess = true;
     }
+
+
     else if (client && !client->GetClientCapabilities().SupportsEPG())
     {
       CLog::Log(LOGDEBUG, "EPG - %s - the backend for channel '%s' on client '%i' does not support EPGs", __FUNCTION__, channel->ChannelName().c_str(), channel->ClientID());
