@@ -521,7 +521,7 @@ void CCurlFile::SetCommonOptions(CReadState* state)
   // resolves. Unfortunately, c-ares does not yet support IPv6.
   g_curlInterface.easy_setopt(h, CURLOPT_NOSIGNAL, CURL_ON);
 
-  if (!g_advancedSettings.CanLogComponent(LOGCURL))
+  if (m_state->m_failOnError)
   {
     // not interested in failed requests
     g_curlInterface.easy_setopt(h, CURLOPT_FAILONERROR, 1);
@@ -1014,6 +1014,7 @@ bool CCurlFile::Open(const CURL& url)
                                 &m_state->m_multiHandle);
 
   // setup common curl options
+  m_state->m_failOnError = !g_advancedSettings.CanLogComponent(LOGCURL);
   SetCommonOptions(m_state);
   SetRequestHeaders(m_state);
   m_state->m_sendRange = m_seekable;
