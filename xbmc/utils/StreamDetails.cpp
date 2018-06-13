@@ -197,19 +197,18 @@ CStreamDetails& CStreamDetails::operator=(const CStreamDetails &that)
   if (this != &that)
   {
     Reset();
-    std::vector<CStreamDetail *>::const_iterator iter;
-    for (iter = that.m_vecItems.begin(); iter != that.m_vecItems.end(); ++iter)
+    for (const CStreamDetail *iter : that.m_vecItems)
     {
-      switch ((*iter)->m_eType)
+      switch (iter->m_eType)
       {
       case CStreamDetail::VIDEO:
-        AddStream(new CStreamDetailVideo(static_cast<const CStreamDetailVideo&>(**iter)));
+        AddStream(new CStreamDetailVideo(static_cast<const CStreamDetailVideo&>(*iter)));
         break;
       case CStreamDetail::AUDIO:
-        AddStream(new CStreamDetailAudio(static_cast<const CStreamDetailAudio&>(**iter)));
+        AddStream(new CStreamDetailAudio(static_cast<const CStreamDetailAudio&>(*iter)));
         break;
       case CStreamDetail::SUBTITLE:
-        AddStream(new CStreamDetailSubtitle(static_cast<const CStreamDetailSubtitle&>(**iter)));
+        AddStream(new CStreamDetailSubtitle(static_cast<const CStreamDetailSubtitle&>(*iter)));
         break;
       }
     }
@@ -297,9 +296,8 @@ std::string CStreamDetails::GetVideoLanguage(int idx) const
 int CStreamDetails::GetStreamCount(CStreamDetail::StreamType type) const
 {
   int retVal = 0;
-  std::vector<CStreamDetail *>::const_iterator iter;
-  for (iter = m_vecItems.begin(); iter != m_vecItems.end(); ++iter)
-    if ((*iter)->m_eType == type)
+  for (const CStreamDetail *iter : m_vecItems)
+    if (iter->m_eType == type)
       retVal++;
   return retVal;
 }
@@ -339,9 +337,8 @@ void CStreamDetails::Reset(void)
   m_pBestAudio = nullptr;
   m_pBestSubtitle = nullptr;
 
-  std::vector<CStreamDetail *>::iterator iter;
-  for (iter = m_vecItems.begin(); iter != m_vecItems.end(); ++iter)
-    delete *iter;
+  for (CStreamDetail *iter : m_vecItems)
+    delete iter;
   m_vecItems.clear();
 }
 
@@ -366,13 +363,12 @@ const CStreamDetail* CStreamDetails::GetNthStream(CStreamDetail::StreamType type
     }
   }
 
-  std::vector<CStreamDetail *>::const_iterator iter;
-  for (iter = m_vecItems.begin(); iter != m_vecItems.end(); ++iter)
-    if ((*iter)->m_eType == type)
+  for (const CStreamDetail *iter : m_vecItems)
+    if (iter->m_eType == type)
     {
       idx--;
       if (idx < 1)
-        return *iter;
+        return iter;
     }
 
   return NULL;
@@ -481,13 +477,12 @@ void CStreamDetails::Archive(CArchive& ar)
   {
     ar << (int)m_vecItems.size();
 
-    std::vector<CStreamDetail *>::const_iterator iter;
-    for (iter = m_vecItems.begin(); iter != m_vecItems.end(); ++iter)
+    for (CStreamDetail *iter : m_vecItems)
     {
       // the type goes before the actual item.  When loading we need
       // to know the type before we can construct an instance to serialize
-      ar << (int)(*iter)->m_eType;
-      ar << (**iter);
+      ar << (int)iter->m_eType;
+      ar << (*iter);
     }
   }
   else
@@ -517,13 +512,12 @@ void CStreamDetails::Serialize(CVariant& value) const
   value["video"] = CVariant(CVariant::VariantTypeArray);
   value["subtitle"] = CVariant(CVariant::VariantTypeArray);
 
-  std::vector<CStreamDetail *>::const_iterator iter;
   CVariant v;
-  for (iter = m_vecItems.begin(); iter != m_vecItems.end(); ++iter)
+  for (const CStreamDetail *iter : m_vecItems)
   {
     v.clear();
-    (*iter)->Serialize(v);
-    switch ((*iter)->m_eType)
+    iter->Serialize(v);
+    switch (iter->m_eType)
     {
     case CStreamDetail::AUDIO:
       value["audio"].push_back(v);
@@ -544,11 +538,10 @@ void CStreamDetails::DetermineBestStreams(void)
   m_pBestAudio = NULL;
   m_pBestSubtitle = NULL;
 
-  std::vector<CStreamDetail *>::const_iterator iter;
-  for (iter = m_vecItems.begin(); iter != m_vecItems.end(); ++iter)
+  for (const CStreamDetail *iter : m_vecItems)
   {
     const CStreamDetail **champion;
-    switch ((*iter)->m_eType)
+    switch (iter->m_eType)
     {
     case CStreamDetail::VIDEO:
       champion = (const CStreamDetail **)&m_pBestVideo;
@@ -566,8 +559,8 @@ void CStreamDetails::DetermineBestStreams(void)
     if (!champion)
       continue;
 
-    if ((*champion == NULL) || (*champion)->IsWorseThan(**iter))
-      *champion = *iter;
+    if ((*champion == NULL) || (*champion)->IsWorseThan(*iter))
+      *champion = iter;
   }  /* for each */
 }
 
