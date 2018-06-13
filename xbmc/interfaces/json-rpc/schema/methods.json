@@ -299,14 +299,7 @@
         ]
       }
     ],
-    "returns": {
-      "type": "object",
-      "properties": {
-        "percentage": { "$ref": "Player.Position.Percentage" },
-        "time": { "$ref": "Global.Time" },
-        "totaltime": { "$ref": "Global.Time" }
-      }
-    }
+    "returns": "string"
   },
   "Player.Move": {
     "type": "method",
