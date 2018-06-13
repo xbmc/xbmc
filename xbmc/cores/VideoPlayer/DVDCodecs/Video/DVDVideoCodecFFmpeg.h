@@ -72,43 +72,43 @@ protected:
   bool HasHardware() { return m_pHardware != nullptr; };
   void SetHardware(IHardwareDecoder *hardware);
 
-  AVFrame* m_pFrame;
-  AVFrame* m_pDecodedFrame;
-  AVCodecContext* m_pCodecContext;
+  AVFrame* m_pFrame = nullptr;;
+  AVFrame* m_pDecodedFrame = nullptr;;
+  AVCodecContext* m_pCodecContext = nullptr;;
   std::shared_ptr<CVideoBufferPoolFFmpeg> m_videoBufferPool;
 
   std::string m_filters;
   std::string m_filters_next;
-  AVFilterGraph* m_pFilterGraph;
-  AVFilterContext* m_pFilterIn;
-  AVFilterContext* m_pFilterOut;
-  AVFrame* m_pFilterFrame;
+  AVFilterGraph* m_pFilterGraph = nullptr;
+  AVFilterContext* m_pFilterIn = nullptr;
+  AVFilterContext* m_pFilterOut = nullptr;;
+  AVFrame* m_pFilterFrame = nullptr;;
   bool m_filterEof = false;
-  bool m_eof;
+  bool m_eof = false;
 
   CDVDVideoPPFFmpeg m_postProc;
 
-  int m_iPictureWidth;
-  int m_iPictureHeight;
-
-  int m_iScreenWidth;
-  int m_iScreenHeight;
-  int m_iOrientation;// orientation of the video in degrees counter clockwise
+  int m_iPictureWidth = 0;
+  int m_iPictureHeight = 0;
+  int m_iScreenWidth = 0;
+  int m_iScreenHeight = 0;
+  int m_iOrientation = 0;// orientation of the video in degrees counter clockwise
 
   std::string m_name;
   int m_decoderState;
-  IHardwareDecoder *m_pHardware;
-  int m_iLastKeyframe;
-  double m_dts;
+  IHardwareDecoder *m_pHardware = nullptr;
+  int m_iLastKeyframe = 0;
+  double m_dts = DVD_NOPTS_VALUE;
   bool m_started = false;
+  bool m_startedInput = false;
   std::vector<AVPixelFormat> m_formats;
-  double m_decoderPts;
-  int    m_skippedDeint;
-  int    m_droppedFrames;
-  bool   m_requestSkipDeint;
-  int    m_codecControlFlags;
-  bool m_interlaced;
-  double m_DAR;
+  double m_decoderPts = DVD_NOPTS_VALUE;
+  int m_skippedDeint = 0;
+  int m_droppedFrames = 0;
+  bool m_requestSkipDeint = false;
+  int m_codecControlFlags = 0;
+  bool m_interlaced = false;
+  double m_DAR = 1.0;
   CDVDStreamInfo m_hints;
   CDVDCodecOptions m_options;
 

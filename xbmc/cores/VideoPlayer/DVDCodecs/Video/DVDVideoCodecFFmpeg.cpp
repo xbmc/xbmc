@@ -317,33 +317,9 @@ enum AVPixelFormat CDVDVideoCodecFFmpeg::GetFormat(struct AVCodecContext * avctx
 CDVDVideoCodecFFmpeg::CDVDVideoCodecFFmpeg(CProcessInfo &processInfo)
 : CDVDVideoCodec(processInfo), m_postProc(processInfo)
 {
-  m_pCodecContext = nullptr;
-  m_pFrame = nullptr;
-  m_pDecodedFrame = nullptr;
-  m_pFilterGraph = nullptr;
-  m_pFilterIn = nullptr;
-  m_pFilterOut = nullptr;
-  m_pFilterFrame = nullptr;
   m_videoBufferPool = std::make_shared<CVideoBufferPoolFFmpeg>();
 
-  m_iPictureWidth = 0;
-  m_iPictureHeight = 0;
-  m_iScreenWidth = 0;
-  m_iScreenHeight = 0;
-  m_iOrientation = 0;
   m_decoderState = STATE_NONE;
-  m_pHardware = nullptr;
-  m_iLastKeyframe = 0;
-  m_dts = DVD_NOPTS_VALUE;
-  m_started = false;
-  m_decoderPts = DVD_NOPTS_VALUE;
-  m_codecControlFlags = 0;
-  m_requestSkipDeint = false;
-  m_skippedDeint = 0;
-  m_droppedFrames = 0;
-  m_interlaced = false;
-  m_eof = false;
-  m_DAR = 1.0;
 }
 
 CDVDVideoCodecFFmpeg::~CDVDVideoCodecFFmpeg()
@@ -627,12 +603,18 @@ bool CDVDVideoCodecFFmpeg::AddData(const DemuxPacket &packet)
   if (m_iLastKeyframe > 300)
     m_iLastKeyframe = 300;
 
+  m_startedInput = true;
+
   return true;
 }
 
 CDVDVideoCodec::VCReturn CDVDVideoCodecFFmpeg::GetPicture(VideoPicture* pVideoPicture)
 {
-  if (m_eof)
+  if (!m_startedInput)
+  {
+    return VC_BUFFER;
+  }
+  else if (m_eof)
   {
     return VC_EOF;
   }
@@ -900,6 +882,7 @@ bool CDVDVideoCodecFFmpeg::SetPictureParams(VideoPicture* pVideoPicture)
 void CDVDVideoCodecFFmpeg::Reset()
 {
   m_started = false;
+  m_startedInput = false;
   m_interlaced = false;
   m_decoderPts = DVD_NOPTS_VALUE;
   m_skippedDeint = 0;
