@@ -19,8 +19,8 @@
  */
 
 #include "RetroPlayerInput.h"
-#include "peripherals/Peripherals.h"
 #include "peripherals/EventPollHandle.h"
+#include "peripherals/Peripherals.h"
 #include "utils/log.h"
 
 using namespace KODI;

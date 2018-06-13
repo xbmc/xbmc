@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2016-2017 Team Kodi
+ *      Copyright (C) 2018 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -18,31 +18,16 @@
  *
  */
 
-#include "EventPollHandle.h"
+#include "EventLockHandle.h"
 
 using namespace PERIPHERALS;
 
-CEventPollHandle::CEventPollHandle(IEventPollCallback &callback) :
+CEventLockHandle::CEventLockHandle(IEventLockCallback &callback) :
   m_callback(callback)
 {
 }
 
-CEventPollHandle::~CEventPollHandle(void)
+CEventLockHandle::~CEventLockHandle(void)
 {
-  m_callback.Release(*this);
-}
-
-void CEventPollHandle::Activate()
-{
-  m_callback.Activate(*this);
-}
-
-void CEventPollHandle::Deactivate()
-{
-  m_callback.Deactivate(*this);
-}
-
-void CEventPollHandle::HandleEvents(bool bWait)
-{
-  m_callback.HandleEvents(bWait);
+  m_callback.ReleaseLock(*this);
 }

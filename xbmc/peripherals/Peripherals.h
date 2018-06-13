@@ -20,9 +20,10 @@
 
 #pragma once
 
+#include <memory>
 #include <vector>
 
-#include "EventScanner.h"
+#include "IEventScannerCallback.h"
 #include "bus/PeripheralBus.h"
 #include "devices/Peripheral.h"
 #include "interfaces/IAnnouncer.h"
@@ -60,6 +61,8 @@ namespace ANNOUNCEMENT
 
 namespace PERIPHERALS
 {
+  class CEventScanner;
+
   class CPeripherals :  public ISettingCallback,
                         public Observable,
                         public KODI::MESSAGING::IMessageTarget,
@@ -236,7 +239,13 @@ namespace PERIPHERALS
      * @brief Register with the event scanner to control scan timing
      * @return A handle that unregisters itself when expired
      */
-    EventPollHandlePtr RegisterEventPoller() { return m_eventScanner.RegisterPollHandle(); }
+    EventPollHandlePtr RegisterEventPoller();
+
+    /*!
+     * @brief Register with the event scanner to disable event processing
+     * @return A handle that unregisters itself when expired
+     */
+    EventLockHandlePtr RegisterEventLock();
 
     /*!
      *
@@ -344,12 +353,12 @@ namespace PERIPHERALS
     KODI::GAME::CControllerManager &m_controllerProfiles;
 
 #if !defined(HAVE_LIBCEC)
-    bool                                 m_bMissingLibCecWarningDisplayed = false;
+    bool m_bMissingLibCecWarningDisplayed = false;
 #endif
-    std::vector<PeripheralBusPtr>        m_busses;
+    std::vector<PeripheralBusPtr> m_busses;
     std::vector<PeripheralDeviceMapping> m_mappings;
-    CEventScanner                        m_eventScanner;
-    CCriticalSection                     m_critSectionBusses;
-    CCriticalSection                     m_critSectionMappings;
+    std::unique_ptr<CEventScanner> m_eventScanner;
+    CCriticalSection m_critSectionBusses;
+    CCriticalSection m_critSectionMappings;
   };
 }
