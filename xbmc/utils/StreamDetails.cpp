@@ -80,14 +80,14 @@ void CStreamDetailVideo::Serialize(CVariant& value) const
   value["language"] = m_strLanguage;
 }
 
-bool CStreamDetailVideo::IsWorseThan(CStreamDetail *that)
+bool CStreamDetailVideo::IsWorseThan(const CStreamDetail &that) const
 {
-  if (that->m_eType != CStreamDetail::VIDEO)
+  if (that.m_eType != CStreamDetail::VIDEO)
     return true;
 
   // Best video stream is that with the most pixels
-  CStreamDetailVideo *sdv = static_cast<CStreamDetailVideo*>(that);
-  return (sdv->m_iWidth * sdv->m_iHeight) > (m_iWidth * m_iHeight);
+  auto &sdv = static_cast<const CStreamDetailVideo &>(that);
+  return (sdv.m_iWidth * sdv.m_iHeight) > (m_iWidth * m_iHeight);
 }
 
 CStreamDetailAudio::CStreamDetailAudio() :
@@ -125,20 +125,20 @@ void CStreamDetailAudio::Serialize(CVariant& value) const
   value["channels"] = m_iChannels;
 }
 
-bool CStreamDetailAudio::IsWorseThan(CStreamDetail *that)
+bool CStreamDetailAudio::IsWorseThan(const CStreamDetail &that) const
 {
-  if (that->m_eType != CStreamDetail::AUDIO)
+  if (that.m_eType != CStreamDetail::AUDIO)
     return true;
 
-  CStreamDetailAudio *sda = static_cast<CStreamDetailAudio*>(that);
+  auto &sda = static_cast<const CStreamDetailAudio &>(that);
   // First choice is the thing with the most channels
-  if (sda->m_iChannels > m_iChannels)
+  if (sda.m_iChannels > m_iChannels)
     return true;
-  if (m_iChannels > sda->m_iChannels)
+  if (m_iChannels > sda.m_iChannels)
     return false;
 
   // In case of a tie, revert to codec priority
-  return StreamUtils::GetCodecPriority(sda->m_strCodec) > StreamUtils::GetCodecPriority(m_strCodec);
+  return StreamUtils::GetCodecPriority(sda.m_strCodec) > StreamUtils::GetCodecPriority(m_strCodec);
 }
 
 CStreamDetailSubtitle::CStreamDetailSubtitle() :
@@ -168,18 +168,18 @@ void CStreamDetailSubtitle::Serialize(CVariant& value) const
   value["language"] = m_strLanguage;
 }
 
-bool CStreamDetailSubtitle::IsWorseThan(CStreamDetail *that)
+bool CStreamDetailSubtitle::IsWorseThan(const CStreamDetail &that) const
 {
-  if (that->m_eType != CStreamDetail::SUBTITLE)
+  if (that.m_eType != CStreamDetail::SUBTITLE)
     return true;
 
-  if (g_LangCodeExpander.CompareISO639Codes(m_strLanguage, static_cast<CStreamDetailSubtitle*>(that)->m_strLanguage))
+  if (g_LangCodeExpander.CompareISO639Codes(m_strLanguage, static_cast<const CStreamDetailSubtitle &>(that).m_strLanguage))
     return false;
 
   // the best subtitle should be the one in the user's preferred language
   // If preferred language is set to "original" this is "eng"
   return m_strLanguage.empty() ||
-    g_LangCodeExpander.CompareISO639Codes(static_cast<CStreamDetailSubtitle*>(that)->m_strLanguage, g_langInfo.GetSubtitleLanguage());
+    g_LangCodeExpander.CompareISO639Codes(static_cast<const CStreamDetailSubtitle &>(that).m_strLanguage, g_langInfo.GetSubtitleLanguage());
 }
 
 CStreamDetailSubtitle& CStreamDetailSubtitle::operator=(const CStreamDetailSubtitle &that)
@@ -566,7 +566,7 @@ void CStreamDetails::DetermineBestStreams(void)
     if (!champion)
       continue;
 
-    if ((*champion == NULL) || (*champion)->IsWorseThan(*iter))
+    if ((*champion == NULL) || (*champion)->IsWorseThan(**iter))
       *champion = *iter;
   }  /* for each */
 }

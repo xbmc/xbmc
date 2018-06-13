@@ -41,7 +41,7 @@ public:
   };
 
   explicit CStreamDetail(StreamType type) : m_eType(type), m_pParent(NULL) {};
-  virtual bool IsWorseThan(CStreamDetail *that) = 0;
+  virtual bool IsWorseThan(const CStreamDetail &that) const = 0;
 
   const StreamType m_eType;
 
@@ -57,7 +57,7 @@ public:
   CStreamDetailVideo(const VideoStreamInfo &info, int duration = 0);
   void Archive(CArchive& ar) override;
   void Serialize(CVariant& value) const override;
-  bool IsWorseThan(CStreamDetail *that) override;
+  bool IsWorseThan(const CStreamDetail &that) const override;
 
   int m_iWidth;
   int m_iHeight;
@@ -75,7 +75,7 @@ public:
   CStreamDetailAudio(const AudioStreamInfo &info);
   void Archive(CArchive& ar) override;
   void Serialize(CVariant& value) const override;
-  bool IsWorseThan(CStreamDetail *that) override;
+  bool IsWorseThan(const CStreamDetail &that) const override;
 
   int m_iChannels;
   std::string m_strCodec;
@@ -90,7 +90,7 @@ public:
   CStreamDetailSubtitle& operator=(const CStreamDetailSubtitle &that);
   void Archive(CArchive& ar) override;
   void Serialize(CVariant& value) const override;
-  bool IsWorseThan(CStreamDetail *that) override;
+  bool IsWorseThan(const CStreamDetail &that) const override;
 
   std::string m_strLanguage;
 };
