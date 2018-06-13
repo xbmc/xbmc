@@ -401,10 +401,7 @@ JSONRPC_STATUS CPlayerOperations::Seek(const std::string &method, ITransportLaye
       else
         return InvalidParams;
 
-      GetPropertyValue(player, "percentage", result["percentage"]);
-      GetPropertyValue(player, "time", result["time"]);
-      GetPropertyValue(player, "totaltime", result["totaltime"]);
-      return OK;
+      return ACK;
     }
 
     case Picture:
