@@ -33,8 +33,8 @@ public:
 
   static std::string GetDirectory(const std::string &strFilePath);
 
-  static const std::string GetFileName(const CURL& url);
-  static const std::string GetFileName(const std::string& strFileNameAndPath);
+  static std::string GetFileName(const CURL& url);
+  static std::string GetFileName(const std::string& strFileNameAndPath);
 
   static std::string GetExtension(const CURL& url);
   static std::string GetExtension(const std::string& strFileName);

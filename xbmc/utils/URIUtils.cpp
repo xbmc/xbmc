@@ -175,14 +175,14 @@ std::string URIUtils::ReplaceExtension(const std::string& strFile,
   return strChangedFile;
 }
 
-const std::string URIUtils::GetFileName(const CURL& url)
+std::string URIUtils::GetFileName(const CURL& url)
 {
   return GetFileName(url.GetFileName());
 }
 
 /* returns a filename given an url */
 /* handles both / and \, and options in urls*/
-const std::string URIUtils::GetFileName(const std::string& strFileNameAndPath)
+std::string URIUtils::GetFileName(const std::string& strFileNameAndPath)
 {
   if(IsURL(strFileNameAndPath))
   {
