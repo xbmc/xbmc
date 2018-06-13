@@ -41,7 +41,6 @@ class CMusicInfoTag final : public IArchivable, public ISerializable, public ISo
 {
 public:
   CMusicInfoTag(void);
-  ~CMusicInfoTag() override;
   bool operator !=(const CMusicInfoTag& tag) const;
   bool Loaded() const;
   const std::string& GetTitle() const;
