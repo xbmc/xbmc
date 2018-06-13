@@ -63,11 +63,17 @@ public:
   virtual bool DoScan(const std::string& strDirectory) = 0;
 
   /*! \brief Check if the folder is excluded from scanning process
-   \param strDirectory Directory to scan
+   \param directory Directory to scan
    \param regexps Regular expression to exclude from the scan
    \return true if there is a .nomedia file or one of the regexps is a match
    */
-  bool IsExcluded(const std::string& strDirectory, const std::vector<std::string> &regexps);
+  bool IsDirectoryExcluded(const std::string& strDirectory, const std::vector<std::string> &regexps) const;
+  /*! \brief Check if the file is excluded from scanning process
+   \param file to scan
+   \param regexps Regular expression to exclude from the scan
+   \return true if there is a .nomedia file in the parent directory or one of the regexps is a match
+   */
+  bool IsFileExcluded(const std::string& file, const std::vector<std::string>& regexps) const;
 
   //! \brief Set whether or not to show a progress dialog.
   void ShowDialog(bool show) { m_showDialog = show; }
