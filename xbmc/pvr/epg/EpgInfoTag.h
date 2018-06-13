@@ -71,8 +71,6 @@ namespace PVR
     CPVREpgInfoTag &operator =(const CPVREpgInfoTag &other) = delete;
 
   public:
-    ~CPVREpgInfoTag() override = default;
-
     bool operator ==(const CPVREpgInfoTag& right) const;
     bool operator !=(const CPVREpgInfoTag& right) const;
 
