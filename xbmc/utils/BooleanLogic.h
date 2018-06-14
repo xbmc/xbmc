@@ -25,22 +25,22 @@
 
 #include <memory>
 
-#include "utils/IXmlDeserializable.h"
+class TiXmlNode;
 
 typedef enum {
   BooleanLogicOperationOr = 0,
   BooleanLogicOperationAnd
 } BooleanLogicOperation;
 
-class CBooleanLogicValue : public IXmlDeserializable
+class CBooleanLogicValue
 {
 public:
   CBooleanLogicValue(const std::string &value = "", bool negated = false)
     : m_value(value), m_negated(negated)
   { }
-  ~CBooleanLogicValue() override = default;
+  virtual ~CBooleanLogicValue() = default;
 
-  bool Deserialize(const TiXmlNode *node) override;
+  bool Deserialize(const TiXmlNode *node);
 
   virtual const std::string& GetValue() const { return m_value; }
   virtual bool IsNegated() const { return m_negated; }
@@ -61,15 +61,15 @@ class CBooleanLogicOperation;
 typedef std::shared_ptr<CBooleanLogicOperation> CBooleanLogicOperationPtr;
 typedef std::vector<CBooleanLogicOperationPtr> CBooleanLogicOperations;
 
-class CBooleanLogicOperation : public IXmlDeserializable
+class CBooleanLogicOperation
 {
 public:
   explicit CBooleanLogicOperation(BooleanLogicOperation op = BooleanLogicOperationAnd)
     : m_operation(op)
   { }
-  ~CBooleanLogicOperation() override;
+  virtual ~CBooleanLogicOperation() = default;
 
-  bool Deserialize(const TiXmlNode *node) override;
+  bool Deserialize(const TiXmlNode *node);
 
   virtual BooleanLogicOperation GetOperation() const { return m_operation; }
   virtual const CBooleanLogicOperations& GetOperations() const { return m_operations; }
@@ -86,16 +86,17 @@ protected:
   CBooleanLogicValues m_values;
 };
 
-class CBooleanLogic : public IXmlDeserializable
+class CBooleanLogic
 {
+protected:
+  /* make sure nobody deletes a pointer to this class */
+  ~CBooleanLogic() = default;
+
 public:
-  CBooleanLogic() = default;
-  ~CBooleanLogic() override = default;
+  bool Deserialize(const TiXmlNode *node);
 
-  bool Deserialize(const TiXmlNode *node) override;
-
-  virtual const CBooleanLogicOperationPtr& Get() const { return m_operation; }
-  virtual CBooleanLogicOperationPtr Get() { return m_operation; }
+  const CBooleanLogicOperationPtr& Get() const { return m_operation; }
+  CBooleanLogicOperationPtr Get() { return m_operation; }
 
 protected:
   CBooleanLogicOperationPtr m_operation;

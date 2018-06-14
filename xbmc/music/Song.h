@@ -56,12 +56,11 @@ class CFileItem;
  \brief Class to store and read song information from CMusicDatabase
  \sa CAlbum, CMusicDatabase
  */
-class CSong: public ISerializable
+class CSong final : public ISerializable
 {
 public:
   CSong() ;
   explicit CSong(CFileItem& item);
-  ~CSong() override = default;
   void Clear() ;
   void MergeScrapedSong(const CSong& source, bool override);
   void Serialize(CVariant& value) const override;

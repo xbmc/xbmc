@@ -39,7 +39,7 @@ namespace PVR
 {
   class CPVREpg;
 
-  class CPVREpgInfoTag : public ISerializable, public std::enable_shared_from_this<CPVREpgInfoTag>
+  class CPVREpgInfoTag final : public ISerializable, public std::enable_shared_from_this<CPVREpgInfoTag>
   {
     friend class CPVREpg;
     friend class CPVREpgDatabase;
@@ -71,8 +71,6 @@ namespace PVR
     CPVREpgInfoTag &operator =(const CPVREpgInfoTag &other) = delete;
 
   public:
-    ~CPVREpgInfoTag() override = default;
-
     bool operator ==(const CPVREpgInfoTag& right) const;
     bool operator !=(const CPVREpgInfoTag& right) const;
 

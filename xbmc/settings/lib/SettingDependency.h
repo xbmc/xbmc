@@ -60,7 +60,7 @@ public:
                               CSettingsManager *settingsManager = nullptr);
   ~CSettingDependencyCondition() override = default;
 
-  bool Deserialize(const TiXmlNode *node) override;
+  bool Deserialize(const TiXmlNode *node);
   bool Check() const override;
 
   const std::string& GetName() const { return m_name; }
@@ -94,7 +94,7 @@ public:
   }
   ~CSettingDependencyConditionCombination() override = default;
 
-  bool Deserialize(const TiXmlNode *node) override;
+  bool Deserialize(const TiXmlNode *node);
 
   const std::set<std::string>& GetSettings() const { return m_settings; }
 
@@ -115,7 +115,7 @@ public:
   CSettingDependency(SettingDependencyType type, CSettingsManager *settingsManager = nullptr);
   ~CSettingDependency() override = default;
 
-  bool Deserialize(const TiXmlNode *node) override;
+  bool Deserialize(const TiXmlNode *node);
 
   SettingDependencyType GetType() const { return m_type; }
   std::set<std::string> GetSettings() const;

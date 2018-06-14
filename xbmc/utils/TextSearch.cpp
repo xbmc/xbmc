@@ -27,13 +27,6 @@ CTextSearch::CTextSearch(const std::string &strSearchTerms, bool bCaseSensitive 
   ExtractSearchTerms(strSearchTerms, defaultSearchMode);
 }
 
-CTextSearch::~CTextSearch(void)
-{
-  m_AND.clear();
-  m_OR.clear();
-  m_NOT.clear();
-}
-
 bool CTextSearch::IsValid(void) const
 {
   return m_AND.size() > 0 || m_OR.size() > 0 || m_NOT.size() > 0;

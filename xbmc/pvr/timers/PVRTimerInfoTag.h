@@ -53,13 +53,11 @@ namespace PVR
     RECORDING // The timer was not deleted because it is currently recording (see DeleteTimer).
   };
 
-  class CPVRTimerInfoTag : public ISerializable
+  class CPVRTimerInfoTag final : public ISerializable
   {
   public:
     explicit CPVRTimerInfoTag(bool bRadio = false);
     CPVRTimerInfoTag(const PVR_TIMER &timer, const CPVRChannelPtr &channel, unsigned int iClientId);
-
-    ~CPVRTimerInfoTag(void) override;
 
     bool operator ==(const CPVRTimerInfoTag& right) const;
     bool operator !=(const CPVRTimerInfoTag& right) const;

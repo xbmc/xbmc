@@ -32,7 +32,7 @@
 namespace PVR
 {
 
-class CPVRRadioRDSInfoTag : public IArchivable, public ISerializable
+class CPVRRadioRDSInfoTag final : public IArchivable, public ISerializable
 {
 public:
   /*!
@@ -50,8 +50,6 @@ private:
   const CPVRRadioRDSInfoTag& operator =(const CPVRRadioRDSInfoTag& tag) = delete;
 
 public:
-  ~CPVRRadioRDSInfoTag() override;
-
   bool operator ==(const CPVRRadioRDSInfoTag& tag) const;
   bool operator !=(const CPVRRadioRDSInfoTag& tag) const;
 

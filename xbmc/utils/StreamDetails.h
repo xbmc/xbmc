@@ -42,6 +42,7 @@ public:
   };
 
   explicit CStreamDetail(StreamType type) : m_eType(type), m_pParent(NULL) {};
+  virtual ~CStreamDetail() = default;
   virtual bool IsWorseThan(const CStreamDetail &that) const = 0;
 
   const StreamType m_eType;
@@ -51,7 +52,7 @@ protected:
   friend class CStreamDetails;
 };
 
-class CStreamDetailVideo : public CStreamDetail
+class CStreamDetailVideo final : public CStreamDetail
 {
 public:
   CStreamDetailVideo();
@@ -69,7 +70,7 @@ public:
   std::string m_strLanguage;
 };
 
-class CStreamDetailAudio : public CStreamDetail
+class CStreamDetailAudio final : public CStreamDetail
 {
 public:
   CStreamDetailAudio();
@@ -83,7 +84,7 @@ public:
   std::string m_strLanguage;
 };
 
-class CStreamDetailSubtitle : public CStreamDetail
+class CStreamDetailSubtitle final : public CStreamDetail
 {
 public:
   CStreamDetailSubtitle();
@@ -96,7 +97,7 @@ public:
   std::string m_strLanguage;
 };
 
-class CStreamDetails : public IArchivable, public ISerializable
+class CStreamDetails final : public IArchivable, public ISerializable
 {
 public:
   CStreamDetails() { Reset(); };

@@ -28,9 +28,6 @@ class CURL;
 class URIUtils
 {
 public:
-  URIUtils(void);
-  virtual ~URIUtils(void);
-
   static std::string GetDirectory(const std::string &strFilePath);
 
   static std::string GetFileName(const CURL& url);

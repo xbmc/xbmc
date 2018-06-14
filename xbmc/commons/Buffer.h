@@ -26,7 +26,7 @@
 
 namespace XbmcCommons
 {
-  class BufferException
+  class BufferException final
   {
     std::string message;
 
@@ -146,8 +146,6 @@ namespace XbmcCommons
      */
     inline Buffer(const Buffer& buf) : bufferRef(buf.bufferRef), buffer(buf.buffer),
       mposition(buf.mposition), mcapacity(buf.mcapacity), mlimit(buf.mlimit) { }
-
-    inline ~Buffer() { }
 
     /**
      * Copy another buffer. This is a "shallow copy" and therefore

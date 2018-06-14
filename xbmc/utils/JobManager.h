@@ -200,7 +200,7 @@ private:
 
  \sa CJob and IJobCallback
  */
-class CJobManager
+class CJobManager final
 {
   class CWorkItem
   {
@@ -357,7 +357,6 @@ private:
   CJobManager();
   CJobManager(const CJobManager&) = delete;
   CJobManager const& operator=(CJobManager const&) = delete;
-  virtual ~CJobManager();
 
   /*! \brief Pop a job off the job queue and add to the processing queue ready to process
    \return the job to process, NULL if no jobs are available

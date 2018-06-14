@@ -35,8 +35,6 @@ CMusicInfoTag::CMusicInfoTag(void)
   Clear();
 }
 
-CMusicInfoTag::~CMusicInfoTag() = default;
-
 bool CMusicInfoTag::operator !=(const CMusicInfoTag& tag) const
 {
   if (this == &tag) return false;

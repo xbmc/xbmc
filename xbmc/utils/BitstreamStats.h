@@ -27,14 +27,13 @@
 #include <stdint.h>
 #endif
 
-class BitstreamStats
+class BitstreamStats final
 {
 public:
   // in order not to cause a performance hit, we should only check the clock when
   // we reach m_nEstimatedBitrate bits.
   // if this value is 1, we will calculate bitrate on every sample.
   explicit BitstreamStats(unsigned int nEstimatedBitrate=(10240*8) /*10Kbit*/);
-  virtual ~BitstreamStats();
 
   void AddSampleBytes(unsigned int nBytes);
   void AddSampleBits(unsigned int nBits);

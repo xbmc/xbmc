@@ -38,7 +38,7 @@ enum class EventLevel
 class IEvent : public ISortable
 {
 public:
-  ~IEvent() override = default;
+  virtual ~IEvent() = default;
 
   virtual const char* GetType() const = 0;
   virtual std::string GetIdentifier() const = 0;

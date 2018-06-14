@@ -30,11 +30,10 @@ typedef enum TextSearchDefault
   SEARCH_DEFAULT_NOT
 } TextSearchDefault;
 
-class CTextSearch
+class CTextSearch final
 {
 public:
   CTextSearch(const std::string &strSearchTerms, bool bCaseSensitive = false, TextSearchDefault defaultSearchMode = SEARCH_DEFAULT_OR);
-  virtual ~CTextSearch(void);
 
   bool Search(const std::string &strHaystack) const;
   bool IsValid(void) const;

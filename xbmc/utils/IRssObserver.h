@@ -27,9 +27,11 @@ typedef std::vector<character_t> vecText;
 
 class IRssObserver
 {
-public:
-  virtual ~IRssObserver() = default;
+protected:
+  /* make sure nobody deletes a pointer to this class */
+  ~IRssObserver() = default;
 
+public:
   virtual void OnFeedUpdate(const vecText &feed) = 0;
   virtual void OnFeedRelease() = 0;
 };

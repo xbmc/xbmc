@@ -53,7 +53,7 @@ namespace PVR
   /*!
    * @brief Representation of a CPVRRecording unique ID.
    */
-  class CPVRRecordingUid
+  class CPVRRecordingUid final
   {
   public:
     int           m_iClientId;        /*!< ID of the backend */
@@ -67,7 +67,7 @@ namespace PVR
     bool operator !=(const CPVRRecordingUid& right) const;
   };
 
-  class CPVRRecording : public CVideoInfoTag
+  class CPVRRecording final : public CVideoInfoTag
   {
   public:
     int           m_iClientId;        /*!< ID of the backend */
@@ -89,8 +89,6 @@ namespace PVR
     CPVRRecording &operator =(const CPVRRecording &other) = delete;
 
   public:
-    ~CPVRRecording() override = default;
-
     bool operator ==(const CPVRRecording& right) const;
     bool operator !=(const CPVRRecording& right) const;
 

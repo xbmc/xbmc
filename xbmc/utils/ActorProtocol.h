@@ -82,7 +82,7 @@ public:
     : portName(name), inDefered(false), outDefered(false) {containerInEvent = inEvent; containerOutEvent = outEvent;};
   Protocol(std::string name)
     : Protocol(name, nullptr, nullptr) {}
-  virtual ~Protocol();
+  ~Protocol();
   Message *GetMessage();
   void ReturnMessage(Message *msg);
   bool SendOutMessage(int signal, void *data = nullptr, int size = 0, Message *outMsg = nullptr);
