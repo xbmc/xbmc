@@ -170,8 +170,6 @@ public:
    */
   bool SetClipRegion(float x, float y, float w, float h);
   void RestoreClipRegion();
-  void ApplyHardwareTransform();
-  void RestoreHardwareTransform();
   void ClipRect(CRect &vertex, CRect &texture, CRect *diffuse = NULL);
   CRect GetClipRegion();
   void AddGUITransform();

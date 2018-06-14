@@ -1160,16 +1160,6 @@ void CGraphicContext::Flip(bool rendered, bool videoLayer)
   }
 }
 
-void CGraphicContext::ApplyHardwareTransform()
-{
-  CServiceBroker::GetRenderSystem()->ApplyHardwareTransform(m_finalTransform.matrix);
-}
-
-void CGraphicContext::RestoreHardwareTransform()
-{
-  CServiceBroker::GetRenderSystem()->RestoreHardwareTransform();
-}
-
 void CGraphicContext::GetAllowedResolutions(std::vector<RESOLUTION> &res)
 {
   res.clear();

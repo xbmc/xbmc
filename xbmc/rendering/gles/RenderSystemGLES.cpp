@@ -321,69 +321,6 @@ void CRenderSystemGLES::Project(float &x, float &y, float &z)
   }
 }
 
-bool CRenderSystemGLES::TestRender()
-{
-  static float theta = 0.0;
-
-  //RESOLUTION_INFO resInfo = CDisplaySettings::GetInstance().GetCurrentResolutionInfo();
-  //glViewport(0, 0, resInfo.iWidth, resInfo.iHeight);
-
-  glMatrixModview.Push();
-  glMatrixModview->Rotatef( theta, 0.0f, 0.0f, 1.0f );
-
-  EnableGUIShader(SM_DEFAULT);
-
-  GLfloat col[4] = {1.0f, 0.0f, 0.0f, 1.0f};
-  GLfloat ver[3][2];
-  GLint   posLoc = GUIShaderGetPos();
-  GLint   colLoc = GUIShaderGetCol();
-
-  glVertexAttribPointer(posLoc,  2, GL_FLOAT, 0, 0, ver);
-  glVertexAttribPointer(colLoc,  4, GL_FLOAT, 0, 0, col);
-
-  glEnableVertexAttribArray(posLoc);
-  glEnableVertexAttribArray(colLoc);
-
-  // Setup vertex position values
-  ver[0][0] =  0.0f;
-  ver[0][1] =  1.0f;
-  ver[1][0] =  0.87f;
-  ver[1][1] = -0.5f;
-  ver[2][0] = -0.87f;
-  ver[2][1] = -0.5f;
-
-  glDrawArrays(GL_TRIANGLES, 0, 3);
-
-  glDisableVertexAttribArray(posLoc);
-  glDisableVertexAttribArray(colLoc);
-
-  DisableGUIShader();
-
-  glMatrixModview.Pop();
-
-  theta += 1.0f;
-
-  return true;
-}
-
-void CRenderSystemGLES::ApplyHardwareTransform(const TransformMatrix &finalMatrix)
-{
-  if (!m_bRenderCreated)
-    return;
-
-  glMatrixModview.Push();
-  glMatrixModview->MultMatrixf(finalMatrix);
-  glMatrixModview.Load();
-}
-
-void CRenderSystemGLES::RestoreHardwareTransform()
-{
-  if (!m_bRenderCreated)
-    return;
-
-  glMatrixModview.PopLoad();
-}
-
 void CRenderSystemGLES::CalculateMaxTexturesize()
 {
   // GLES cannot do PROXY textures to determine maximum size,

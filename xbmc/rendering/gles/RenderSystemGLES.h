@@ -73,11 +73,7 @@ public:
 
   void SetCameraPosition(const CPoint &camera, int screenWidth, int screenHeight, float stereoFactor = 0.0f) override;
 
-  void ApplyHardwareTransform(const TransformMatrix &matrix) override;
-  void RestoreHardwareTransform() override;
   bool SupportsStereo(RENDER_STEREO_MODE mode) const override;
-
-  bool TestRender() override;
 
   void Project(float &x, float &y, float &z) override;
 

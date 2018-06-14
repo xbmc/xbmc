@@ -66,15 +66,11 @@ public:
   virtual void ApplyStateBlock() = 0;
 
   virtual void SetCameraPosition(const CPoint &camera, int screenWidth, int screenHeight, float stereoFactor = 0.f) = 0;
-  virtual void ApplyHardwareTransform(const TransformMatrix &matrix) = 0;
-  virtual void RestoreHardwareTransform() = 0;
   virtual void SetStereoMode(RENDER_STEREO_MODE mode, RENDER_STEREO_VIEW view)
   {
     m_stereoMode = mode;
     m_stereoView = view;
   }
-
-  virtual bool TestRender() = 0;
 
   /**
    * Project (x,y,z) 3d scene coordinates to (x,y) 2d screen coordinates

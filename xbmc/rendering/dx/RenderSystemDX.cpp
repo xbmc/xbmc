@@ -462,11 +462,6 @@ CRect CRenderSystemDX::GetBackBufferRect()
   return CRect(0.f, 0.f, static_cast<float>(outputSize.Width), static_cast<float>(outputSize.Height));
 }
 
-bool CRenderSystemDX::TestRender()
-{
-  return true;
-}
-
 void CRenderSystemDX::GetViewPort(CRect& viewPort)
 {
   if (!m_bRenderCreated)

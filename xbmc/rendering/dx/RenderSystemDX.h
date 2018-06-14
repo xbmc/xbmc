@@ -66,7 +66,6 @@ public:
   void SetCameraPosition(const CPoint &camera, int screenWidth, int screenHeight, float stereoFactor = 0.f) override;
   void SetStereoMode(RENDER_STEREO_MODE mode, RENDER_STEREO_VIEW view) override;
   bool SupportsStereo(RENDER_STEREO_MODE mode) const override;
-  bool TestRender() override;
   void Project(float &x, float &y, float &z) override;
   bool SupportsNPOT(bool dxt) const override;
 
@@ -88,8 +87,6 @@ public:
 
   // empty overrides
   bool IsExtSupported(const char* extension) const override { return false; };
-  void ApplyHardwareTransform(const TransformMatrix &matrix) override {};
-  void RestoreHardwareTransform() override {};
   bool ResetRenderSystem(int width, int height) override { return true; };
 
   std::vector<AVPixelFormat> m_processorFormats;
