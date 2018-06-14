@@ -68,7 +68,7 @@ public:
   uint8_t *data = nullptr;
   std::unique_ptr<CPayloadWrapBase> payloadObj;
   Message *replyMessage = nullptr;
-  Protocol *const origin;
+  Protocol &origin;
   CEvent *event = nullptr;
 
   void Release();
@@ -76,7 +76,7 @@ public:
 
 private:
   explicit Message(Protocol &_origin) noexcept
-    :origin(&_origin) {}
+    :origin(_origin) {}
 };
 
 class Protocol
