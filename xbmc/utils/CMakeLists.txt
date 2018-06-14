@@ -114,6 +114,7 @@ set(HEADERS ActorProtocol.h
             IRssObserver.h
             ISerializable.h
             ISortable.h
+            IXmlDeserializable.h
             Job.h
             JobManager.h
             JSONVariantParser.h

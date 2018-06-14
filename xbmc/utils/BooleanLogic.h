@@ -25,14 +25,14 @@
 
 #include <memory>
 
-class TiXmlNode;
+#include "utils/IXmlDeserializable.h"
 
 typedef enum {
   BooleanLogicOperationOr = 0,
   BooleanLogicOperationAnd
 } BooleanLogicOperation;
 
-class CBooleanLogicValue
+class CBooleanLogicValue : public IXmlDeserializable
 {
 public:
   CBooleanLogicValue(const std::string &value = "", bool negated = false)
@@ -40,7 +40,7 @@ public:
   { }
   virtual ~CBooleanLogicValue() = default;
 
-  bool Deserialize(const TiXmlNode *node);
+  bool Deserialize(const TiXmlNode *node) override;
 
   virtual const std::string& GetValue() const { return m_value; }
   virtual bool IsNegated() const { return m_negated; }
@@ -61,7 +61,7 @@ class CBooleanLogicOperation;
 typedef std::shared_ptr<CBooleanLogicOperation> CBooleanLogicOperationPtr;
 typedef std::vector<CBooleanLogicOperationPtr> CBooleanLogicOperations;
 
-class CBooleanLogicOperation
+class CBooleanLogicOperation : public IXmlDeserializable
 {
 public:
   explicit CBooleanLogicOperation(BooleanLogicOperation op = BooleanLogicOperationAnd)
@@ -69,7 +69,7 @@ public:
   { }
   virtual ~CBooleanLogicOperation() = default;
 
-  bool Deserialize(const TiXmlNode *node);
+  bool Deserialize(const TiXmlNode *node) override;
 
   virtual BooleanLogicOperation GetOperation() const { return m_operation; }
   virtual const CBooleanLogicOperations& GetOperations() const { return m_operations; }
@@ -86,14 +86,14 @@ protected:
   CBooleanLogicValues m_values;
 };
 
-class CBooleanLogic
+class CBooleanLogic : public IXmlDeserializable
 {
 protected:
   /* make sure nobody deletes a pointer to this class */
   ~CBooleanLogic() = default;
 
 public:
-  bool Deserialize(const TiXmlNode *node);
+  bool Deserialize(const TiXmlNode *node) override;
 
   const CBooleanLogicOperationPtr& Get() const { return m_operation; }
   CBooleanLogicOperationPtr Get() { return m_operation; }
