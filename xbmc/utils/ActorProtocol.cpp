@@ -109,7 +109,7 @@ Message *Protocol::GetMessage()
     freeMessageQueue.pop();
   }
   else
-    msg = new Message();
+    msg = new Message(*this);
 
   msg->isSync = false;
   msg->isSyncFini = false;
@@ -118,7 +118,6 @@ Message *Protocol::GetMessage()
   msg->data = NULL;
   msg->payloadSize = 0;
   msg->replyMessage = NULL;
-  msg->origin = this;
 
   return msg;
 }
