@@ -309,7 +309,7 @@ void CGUIDialogAudioSettings::AudioStreamsOptionFiller(SettingConstPtr setting, 
 {
   int audioStreamCount = g_application.GetAppPlayer().GetAudioStreamCount();
 
-  std::string strFormat = "%s - %s - %d " + g_localizeStrings.Get(14301);
+  std::string strFormat = "%s - %s - %d " + g_localizeStrings.Get(10127);
   std::string strUnknown = "[" + g_localizeStrings.Get(13205) + "]";
 
   // cycle through each audio stream and add it to our list control
@@ -322,7 +322,7 @@ void CGUIDialogAudioSettings::AudioStreamsOptionFiller(SettingConstPtr setting, 
     g_application.GetAppPlayer().GetAudioStreamInfo(i, info);
 
     if (!g_LangCodeExpander.Lookup(info.language, strLanguage))
-      strLanguage = g_localizeStrings.Get(13205); // Unknown
+      strLanguage = strUnknown;
 
     if (info.name.length() == 0)
       info.name = strUnknown;

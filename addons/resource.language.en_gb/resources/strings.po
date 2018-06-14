@@ -5083,7 +5083,11 @@ msgctxt "#10126"
 msgid "File browser"
 msgstr ""
 
-#empty string with id 10127
+#. Audio Channel count
+#: xbmc/video/dialogs/GUIDialogAudioSettings.cpp
+msgctxt "#10127"
+msgid "Channels"
+msgstr ""
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#10128"
@@ -8255,7 +8259,6 @@ msgstr ""
 
 #. pvr "channels" settings group label
 #: system/settings/settings.xml
-#: xbmc/video/dialogs/GUIDialogAudioSettings.cpp
 msgctxt "#14301"
 msgid "Channels"
 msgstr ""
@@ -20402,7 +20405,7 @@ msgstr ""
 
 #: system/settings/rbp.xml
 msgctxt "#37018"
-msgid "Boost centre channel when downmixing"
+msgid "Boost center channel when downmixing"
 msgstr ""
 
 #empty string with id 37019
