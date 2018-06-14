@@ -58,7 +58,7 @@ class Message
   friend class Protocol;
 public:
   int signal;
-  bool isSync;
+  bool isSync = false;
   bool isSyncFini;
   bool isOut;
   bool isSyncTimeout;
@@ -68,20 +68,20 @@ public:
   std::unique_ptr<CPayloadWrapBase> payloadObj;
   Message *replyMessage = nullptr;
   Protocol *origin = nullptr;
-  CEvent *event;
+  CEvent *event = nullptr;
 
   void Release();
   bool Reply(int sig, void *data = nullptr, int size = 0);
 
 private:
-  Message() {isSync = false; data = nullptr; event = nullptr; replyMessage = nullptr;};
+  Message() = default;
 };
 
 class Protocol
 {
 public:
   Protocol(std::string name, CEvent* inEvent, CEvent *outEvent)
-    : portName(name), inDefered(false), outDefered(false) {containerInEvent = inEvent; containerOutEvent = outEvent;};
+    :portName(name), containerInEvent(inEvent), containerOutEvent(outEvent) {}
   Protocol(std::string name)
     : Protocol(name, nullptr, nullptr) {}
   ~Protocol();
@@ -110,7 +110,7 @@ protected:
   std::queue<Message*> outMessages;
   std::queue<Message*> inMessages;
   std::queue<Message*> freeMessageQueue;
-  bool inDefered, outDefered;
+  bool inDefered = false, outDefered = false;
 };
 
 }
