@@ -19,6 +19,7 @@
  */
 
 #include "ActorProtocol.h"
+#include "threads/Event.h"
 
 #include <cstring>
 

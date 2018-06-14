@@ -21,12 +21,14 @@
 #pragma once
 
 #include "threads/CriticalSection.h"
-#include "threads/Event.h"
+
 #include <queue>
 #include <memory>
 #include <string>
 
 #define MSG_INTERNAL_BUFFER_SIZE 32
+
+class CEvent;
 
 namespace Actor
 {
