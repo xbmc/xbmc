@@ -241,7 +241,7 @@ bool Protocol::SendOutMessageSync(int signal, Message **retMsg, int timeout, voi
 
   if (!msg->event->WaitMSec(timeout))
   {
-    msg->origin.Lock();
+    const CSingleLock lock(criticalSection);
     if (msg->replyMessage)
       *retMsg = msg->replyMessage;
     else
@@ -249,7 +249,6 @@ bool Protocol::SendOutMessageSync(int signal, Message **retMsg, int timeout, voi
       *retMsg = NULL;
       msg->isSyncTimeout = true;
     }
-    msg->origin.Unlock();
   }
   else
     *retMsg = msg->replyMessage;
@@ -273,7 +272,7 @@ bool Protocol::SendOutMessageSync(int signal, Message **retMsg, int timeout, CPa
 
   if (!msg->event->WaitMSec(timeout))
   {
-    msg->origin.Lock();
+    const CSingleLock lock(criticalSection);
     if (msg->replyMessage)
       *retMsg = msg->replyMessage;
     else
@@ -281,7 +280,6 @@ bool Protocol::SendOutMessageSync(int signal, Message **retMsg, int timeout, CPa
       *retMsg = NULL;
       msg->isSyncTimeout = true;
     }
-    msg->origin.Unlock();
   }
   else
     *retMsg = msg->replyMessage;
