@@ -43,8 +43,7 @@ void Message::Release()
   payloadObj.release();
 
   // delete event in case of sync message
-  if (event)
-    delete event;
+  delete event;
 
   origin.ReturnMessage(this);
 }
