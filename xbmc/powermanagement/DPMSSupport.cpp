@@ -290,6 +290,7 @@ bool DPMSSupport::PlatformSpecificDisablePowerSaving()
 {
   CWinSystemGbm *winSystem = dynamic_cast<CWinSystemGbm*>(CServiceBroker::GetWinSystem());
   winSystem->Show();
+  return true;
 }
 
 #else

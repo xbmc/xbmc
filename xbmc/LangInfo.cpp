@@ -912,9 +912,9 @@ const std::string& CLangInfo::MeridiemSymbolToString(MeridiemSymbol symbol)
 // Fills the array with the region names available for this language
 void CLangInfo::GetRegionNames(std::vector<std::string>& array)
 {
-  for (ITMAPREGIONS it=m_regions.begin(); it!=m_regions.end(); ++it)
+  for (const auto &region : m_regions)
   {
-    std::string strName=it->first;
+    std::string strName=region.first;
     if (strName=="N/A")
       strName=g_localizeStrings.Get(416);
     array.emplace_back(std::move(strName));
@@ -1110,8 +1110,8 @@ void CLangInfo::SettingOptionsLanguageNamesFiller(SettingConstPtr setting, std::
   if (!CServiceBroker::GetAddonMgr().GetAddons(addons, ADDON::ADDON_RESOURCE_LANGUAGE))
     return;
 
-  for (ADDON::VECADDONS::const_iterator addon = addons.begin(); addon != addons.end(); ++addon)
-    list.emplace_back((*addon)->Name(), (*addon)->Name());
+  for (const auto &addon : addons)
+    list.emplace_back(addon->Name(), addon->Name());
 
   sort(list.begin(), list.end(), SortLanguage());
 }
@@ -1121,8 +1121,8 @@ void CLangInfo::SettingOptionsISO6391LanguagesFiller(SettingConstPtr setting, st
   // get a list of language names
   std::vector<std::string> languages = g_LangCodeExpander.GetLanguageNames(CLangCodeExpander::ISO_639_1, true);
   sort(languages.begin(), languages.end(), sortstringbyname());
-  for (std::vector<std::string>::const_iterator language = languages.begin(); language != languages.end(); ++language)
-    list.emplace_back(*language, *language);
+  for (const auto &language : languages)
+    list.emplace_back(language, language);
 }
 
 void CLangInfo::SettingOptionsAudioStreamLanguagesFiller(SettingConstPtr setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
