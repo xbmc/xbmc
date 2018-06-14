@@ -20,8 +20,10 @@
 
 #pragma once
 
-#include "cores/IPlayer.h"
+#include "cores/GameSettings.h"
 #include "utils/Observer.h"
+
+#include <string>
 
 class CGameSettings : public Observable
 {
@@ -37,14 +39,18 @@ public:
   bool operator==(const CGameSettings &rhs) const;
   bool operator!=(const CGameSettings &rhs) const { return !(*this == rhs); }
 
-  ESCALINGMETHOD ScalingMethod() const { return m_scalingMethod; }
-  void SetScalingMethod(ESCALINGMETHOD scalingMethod);
+  const std::string &VideoFilter() const { return m_videoFilter; }
+  void SetVideoFilter(const std::string &videoFilter);
 
-  enum ViewMode ViewMode() const { return m_viewMode; }
-  void SetViewMode(enum ViewMode viewMode);
+  KODI::RETRO::VIEWMODE ViewMode() const { return m_viewMode; }
+  void SetViewMode(KODI::RETRO::VIEWMODE viewMode);
+
+  unsigned int RotationDegCCW() const { return m_rotationDegCCW; }
+  void SetRotationDegCCW(unsigned int rotation);
 
 private:
   // Video settings
-  ESCALINGMETHOD m_scalingMethod;
-  enum ViewMode m_viewMode;
+  std::string m_videoFilter;
+  KODI::RETRO::VIEWMODE m_viewMode;
+  unsigned int m_rotationDegCCW;
 };

@@ -42,13 +42,13 @@ const char *CRenderTranslator::TranslatePixelFormat(AVPixelFormat format)
   return "unknown";
 }
 
-const char *CRenderTranslator::TranslateScalingMethod(ESCALINGMETHOD scalingMethod)
+const char *CRenderTranslator::TranslateScalingMethod(SCALINGMETHOD scalingMethod)
 {
   switch (scalingMethod)
   {
-  case VS_SCALINGMETHOD_NEAREST:
+  case SCALINGMETHOD::NEAREST:
     return "nearest";
-  case VS_SCALINGMETHOD_LINEAR:
+  case SCALINGMETHOD::LINEAR:
     return "linear";
   default:
     break;

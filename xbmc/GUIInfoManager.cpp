@@ -2081,8 +2081,7 @@ const infomap videoplayer[] =    {{ "title",            VIDEOPLAYER_TITLE },
 ///     The following values are possible:
 ///     - normal
 ///     - 4:3
-///     - 16:9
-///     - nonlinear
+///     - fullscreen
 ///     - original
 ///   }
 /// \table_end

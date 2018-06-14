@@ -101,7 +101,7 @@ std::string CRenderBufferManager::GetRenderSystemName(IRenderBufferPool *renderB
   return "";
 }
 
-bool CRenderBufferManager::HasScalingMethod(ESCALINGMETHOD scalingMethod) const
+bool CRenderBufferManager::HasScalingMethod(SCALINGMETHOD scalingMethod) const
 {
   CRenderVideoSettings videoSettings;
   videoSettings.SetScalingMethod(scalingMethod);

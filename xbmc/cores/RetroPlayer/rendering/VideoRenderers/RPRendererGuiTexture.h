@@ -23,7 +23,7 @@
 #include "RPBaseRenderer.h"
 #include "cores/RetroPlayer/buffers/BaseRenderBufferPool.h"
 #include "cores/RetroPlayer/process/RPProcessInfo.h"
-#include "cores/IPlayer.h"
+#include "cores/GameSettings.h"
 
 namespace KODI
 {
@@ -43,7 +43,7 @@ namespace RETRO
   class CRenderBufferPoolGuiTexture : public CBaseRenderBufferPool
   {
   public:
-    CRenderBufferPoolGuiTexture(ESCALINGMETHOD scalingMethod);
+    CRenderBufferPoolGuiTexture(SCALINGMETHOD scalingMethod);
     ~CRenderBufferPoolGuiTexture() override = default;
 
     // implementation of IRenderBufferPool via CBaseRenderBufferPool
@@ -53,7 +53,7 @@ namespace RETRO
     IRenderBuffer *CreateRenderBuffer(void *header = nullptr) override;
 
   private:
-    ESCALINGMETHOD m_scalingMethod;
+    SCALINGMETHOD m_scalingMethod;
   };
 
   class CRPRendererGuiTexture : public CRPBaseRenderer
@@ -63,8 +63,8 @@ namespace RETRO
     ~CRPRendererGuiTexture() override = default;
 
     // public implementation of CRPBaseRenderer
-    bool Supports(ERENDERFEATURE feature) const override;
-    ESCALINGMETHOD GetDefaultScalingMethod() const override { return VS_SCALINGMETHOD_NEAREST; }
+    bool Supports(RENDERFEATURE feature) const override;
+    SCALINGMETHOD GetDefaultScalingMethod() const override { return SCALINGMETHOD::NEAREST; }
 
   protected:
     // protected implementation of CRPBaseRenderer

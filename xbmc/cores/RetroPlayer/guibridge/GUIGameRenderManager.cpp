@@ -189,7 +189,7 @@ bool CGUIGameRenderManager::IsPlayingGame()
   return m_callback != nullptr;
 }
 
-bool CGUIGameRenderManager::SupportsRenderFeature(ERENDERFEATURE feature)
+bool CGUIGameRenderManager::SupportsRenderFeature(RENDERFEATURE feature)
 {
   CSingleLock lock(m_callbackMutex);
 
@@ -199,7 +199,7 @@ bool CGUIGameRenderManager::SupportsRenderFeature(ERENDERFEATURE feature)
   return false;
 }
 
-bool CGUIGameRenderManager::SupportsScalingMethod(ESCALINGMETHOD method)
+bool CGUIGameRenderManager::SupportsScalingMethod(SCALINGMETHOD method)
 {
   CSingleLock lock(m_callbackMutex);
 

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2017 Team Kodi
+ *      Copyright (C) 2018 Team Kodi
  *      http://kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -17,33 +17,24 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-
 #pragma once
 
+#include "cores/GameSettings.h"
 #include "utils/Geometry.h"
+
+#include <array>
 
 namespace KODI
 {
 namespace RETRO
 {
-  class CRenderGeometry
+  class CRenderUtils
   {
   public:
-    CRenderGeometry() { Reset(); }
-    CRenderGeometry(const CRect &dimensions);
-
-    void Reset();
-
-    bool operator==(const CRenderGeometry &rhs) const;
-    bool operator!=(const CRenderGeometry &rhs) const { return !(*this == rhs); }
-    bool operator<(const CRenderGeometry &rhs) const;
-    bool operator>(const CRenderGeometry &rhs) const { return !(*this == rhs || *this < rhs); }
-
-    CRect &Dimensions() { return m_dimensions; }
-    const CRect &Dimensions() const { return m_dimensions; }
-
-  private:
-    CRect m_dimensions;
+    static void CalculateViewMode(VIEWMODE viewMode, unsigned int rotationDegCCW, unsigned int sourceWidth, unsigned int sourceHeight, float screenWidth, float screenHeight, float &pixelRatio, float &zoomAmount);
+    static void CalcNormalRenderRect(const CRect &viewRect, float outputFrameRatio, float zoomAmount, CRect &destRect);
+    static void ClipRect(const CRect &viewRect, CRect &sourceRect, CRect &destRect);
+    static std::array<CPoint, 4> ReorderDrawPoints(const CRect &destRect, unsigned int orientationDegCCW, float aspectRatio);
   };
 }
 }

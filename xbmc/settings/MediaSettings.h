@@ -23,6 +23,7 @@
 #include <map>
 #include <string>
 
+#include "cores/VideoSettings.h"
 #include "settings/lib/ISettingCallback.h"
 #include "settings/lib/ISettingsHandler.h"
 #include "settings/lib/ISubSettings.h"

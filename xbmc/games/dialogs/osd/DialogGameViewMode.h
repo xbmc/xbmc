@@ -21,7 +21,9 @@
 #pragma once
 
 #include "DialogGameVideoSelect.h"
-#include "cores/IPlayer.h"
+#include "cores/GameSettings.h"
+
+#include <vector>
 
 namespace KODI
 {
@@ -46,7 +48,7 @@ namespace GAME
     struct ViewModeProperties
     {
       int stringIndex;
-      ViewMode viewMode;
+      RETRO::VIEWMODE viewMode;
     };
 
     std::vector<ViewModeProperties> m_viewModes;

@@ -20,9 +20,7 @@
 
 #pragma once
 
-#include "RenderGeometry.h"
 #include "RenderVideoSettings.h"
-#include "cores/IPlayer.h"
 
 namespace KODI
 {
@@ -38,14 +36,10 @@ namespace RETRO
     bool operator==(const CRenderSettings &rhs) const;
     bool operator<(const CRenderSettings &rhs) const;
 
-    CRenderGeometry &Geometry() { return m_geometry; }
-    const CRenderGeometry &Geometry() const { return m_geometry; }
-
     CRenderVideoSettings &VideoSettings() { return m_videoSettings; }
     const CRenderVideoSettings &VideoSettings() const { return m_videoSettings; }
 
   private:
-    CRenderGeometry m_geometry;
     CRenderVideoSettings m_videoSettings;
   };
 }

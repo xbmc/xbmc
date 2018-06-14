@@ -8,7 +8,7 @@
 			<height>460</height>
 			<centertop>50%</centertop>
 			<width>700</width>
-			<visible>!Window.IsActive(DialogSettings.xml) + !Window.IsActive(DialogSlider.xml) + !Window.IsActive(GameVideoFilter) + !Window.IsActive(GameViewMode) + !Window.IsActive(GameControllers)</visible>
+			<visible>!Window.IsActive(DialogSettings.xml) + !Window.IsActive(DialogSlider.xml) + !Window.IsActive(GameVideoFilter) + !Window.IsActive(GameViewMode) + !Window.IsActive(GameControllers) + !Window.IsActive(GameVideoRotation)</visible>
 			<animation effect="fade" time="200">VisibleChange</animation>
 			<include content="DialogBackgroundCommons">
 				<param name="width" value="700" />
@@ -110,7 +110,7 @@
 					<defaultcontrol always="true">14101</defaultcontrol>
 					<visible>String.IsEqual(window(home).Property(settingslist_content),games)</visible>
 					<width>700</width>
-					<height>360</height>
+					<height>430</height>
 					<itemgap>0</itemgap>
 					<onup>14100</onup>
 					<ondown>14100</ondown>
@@ -128,6 +128,13 @@
 						<include>DialogSettingButton</include>
 						<label>$LOCALIZE[629]</label>
 						<onclick>ActivateWindow(GameViewMode)</onclick>
+					</control>
+					<control type="button" id="14106">
+						<description>Video rotation button</description>
+						<width>700</width>
+						<include>DialogSettingButton</include>
+						<label>$LOCALIZE[35227]</label>
+						<onclick>ActivateWindow(GameVideoRotation)</onclick>
 					</control>
 					<control type="button" id="14104">
 						<description>Volume button</description>

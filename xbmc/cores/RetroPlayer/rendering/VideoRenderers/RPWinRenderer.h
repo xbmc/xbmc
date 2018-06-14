@@ -98,15 +98,15 @@ namespace RETRO
 
     // DirectX interface
     bool ConfigureDX(DXGI_FORMAT dxFormat);
-    CRPWinOutputShader *GetShader(ESCALINGMETHOD scalingMethod) const;
+    CRPWinOutputShader *GetShader(SCALINGMETHOD scalingMethod) const;
 
   private:
-    static const std::vector<ESCALINGMETHOD> &GetScalingMethods();
+    static const std::vector<SCALINGMETHOD> &GetScalingMethods();
 
     void CompileOutputShaders();
 
     DXGI_FORMAT m_targetDxFormat = DXGI_FORMAT_UNKNOWN;
-    std::map<ESCALINGMETHOD, std::unique_ptr<CRPWinOutputShader>> m_outputShaders;
+    std::map<SCALINGMETHOD, std::unique_ptr<CRPWinOutputShader>> m_outputShaders;
   };
 
   class CRPWinRenderer : public CRPBaseRenderer
@@ -116,15 +116,15 @@ namespace RETRO
     ~CRPWinRenderer() override;
 
     // implementation of CRPBaseRenderer
-    bool Supports(ERENDERFEATURE feature) const override;
-    ESCALINGMETHOD GetDefaultScalingMethod() const override { return DEFAULT_SCALING_METHOD; }
+    bool Supports(RENDERFEATURE feature) const override;
+    SCALINGMETHOD GetDefaultScalingMethod() const override { return DEFAULT_SCALING_METHOD; }
 
-    static bool SupportsScalingMethod(ESCALINGMETHOD method);
+    static bool SupportsScalingMethod(SCALINGMETHOD method);
 
     /*!
      * \brief The default scaling method of the renderer
      */
-    static const ESCALINGMETHOD DEFAULT_SCALING_METHOD = VS_SCALINGMETHOD_NEAREST;
+    static const SCALINGMETHOD DEFAULT_SCALING_METHOD = SCALINGMETHOD::NEAREST;
 
   protected:
     // implementation of CRPBaseRenderer

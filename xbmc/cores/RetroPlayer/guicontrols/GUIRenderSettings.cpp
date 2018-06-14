@@ -30,9 +30,9 @@ CGUIRenderSettings::CGUIRenderSettings(CGUIGameControl &guiControl) :
 {
 }
 
-bool CGUIRenderSettings::HasScalingMethod() const
+bool CGUIRenderSettings::HasVideoFilter() const
 {
-  return m_guiControl.HasScalingMethod();
+  return m_guiControl.HasVideoFilter();
 }
 
 bool CGUIRenderSettings::HasViewMode() const
@@ -40,11 +40,23 @@ bool CGUIRenderSettings::HasViewMode() const
   return m_guiControl.HasViewMode();
 }
 
+bool CGUIRenderSettings::HasRotation() const
+{
+  return m_guiControl.HasRotation();
+}
+
 CRenderSettings CGUIRenderSettings::GetSettings() const
 {
   CSingleLock lock(m_mutex);
 
   return m_renderSettings;
+}
+
+CRect CGUIRenderSettings::GetDimensions() const
+{
+  CSingleLock lock(m_mutex);
+
+  return m_renderDimensions;
 }
 
 void CGUIRenderSettings::Reset()
@@ -61,23 +73,30 @@ void CGUIRenderSettings::SetSettings(CRenderSettings settings)
   m_renderSettings = std::move(settings);
 }
 
-void CGUIRenderSettings::SetGeometry(CRenderGeometry geometry)
+void CGUIRenderSettings::SetDimensions(const CRect &dimensions)
 {
   CSingleLock lock(m_mutex);
 
-  m_renderSettings.Geometry() = std::move(geometry);
+  m_renderDimensions = dimensions;
 }
 
-void CGUIRenderSettings::SetScalingMethod(ESCALINGMETHOD scalingMethod)
+void CGUIRenderSettings::SetVideoFilter(const std::string &videoFilter)
 {
   CSingleLock lock(m_mutex);
 
-  m_renderSettings.VideoSettings().SetScalingMethod(scalingMethod);
+  m_renderSettings.VideoSettings().SetVideoFilter(videoFilter);
 }
 
-void CGUIRenderSettings::SetViewMode(ViewMode viewMode)
+void CGUIRenderSettings::SetViewMode(VIEWMODE viewMode)
 {
   CSingleLock lock(m_mutex);
 
   m_renderSettings.VideoSettings().SetRenderViewMode(viewMode);
+}
+
+void CGUIRenderSettings::SetRotationDegCCW(unsigned int rotationDegCCW)
+{
+  CSingleLock lock(m_mutex);
+
+  m_renderSettings.VideoSettings().SetRenderRotation(rotationDegCCW);
 }

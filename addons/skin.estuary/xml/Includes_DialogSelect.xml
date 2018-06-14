@@ -188,8 +188,9 @@
 						<control type="gamewindow">
 							<width>444</width>
 							<height>250</height>
-							<scalingmethod>$INFO[ListItem.Property(game.scalingmethod)]</scalingmethod>
+							<videofilter>$INFO[ListItem.Property(game.videofilter)]</videofilter>
 							<viewmode>$INFO[ListItem.Property(game.viewmode)]</viewmode>
+							<rotation>$INFO[ListItem.Property(game.videorotation)]</rotation>
 						</control>
 						<control type="label">
 							<top>250</top>
@@ -218,8 +219,9 @@
 						<control type="gamewindow">
 							<width>444</width>
 							<height>250</height>
-							<scalingmethod>$INFO[ListItem.Property(game.scalingmethod)]</scalingmethod>
+							<videofilter>$INFO[ListItem.Property(game.videofilter)]</videofilter>
 							<viewmode>$INFO[ListItem.Property(game.viewmode)]</viewmode>
+							<rotation>$INFO[ListItem.Property(game.videorotation)]</rotation>
 						</control>
 						<control type="label">
 							<top>250</top>
@@ -292,8 +294,9 @@
 						<control type="gamewindow">
 							<width>444</width>
 							<height>250</height>
-							<scalingmethod>$INFO[ListItem.Property(game.scalingmethod)]</scalingmethod>
+							<videofilter>$INFO[ListItem.Property(game.videofilter)]</videofilter>
 							<viewmode>$INFO[ListItem.Property(game.viewmode)]</viewmode>
+							<rotation>$INFO[ListItem.Property(game.videorotation)]</rotation>
 						</control>
 						<control type="label">
 							<top>250</top>
@@ -322,8 +325,9 @@
 						<control type="gamewindow">
 							<width>444</width>
 							<height>250</height>
-							<scalingmethod>$INFO[ListItem.Property(game.scalingmethod)]</scalingmethod>
+							<videofilter>$INFO[ListItem.Property(game.videofilter)]</videofilter>
 							<viewmode>$INFO[ListItem.Property(game.viewmode)]</viewmode>
+							<rotation>$INFO[ListItem.Property(game.videorotation)]</rotation>
 						</control>
 						<control type="label">
 							<top>250</top>

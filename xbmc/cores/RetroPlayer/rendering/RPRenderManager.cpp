@@ -226,7 +226,7 @@ void CRPRenderManager::RenderControl(bool bClear, bool bUseAlpha, const CRect &r
     m_renderContext.SetFullScreenVideo(false);
 
   // Set coordinates
-  CRect coords = renderSettings->GetSettings().Geometry().Dimensions();
+  CRect coords = renderSettings->GetDimensions();
   m_renderContext.SetViewWindow(coords.x1, coords.y1, coords.x2, coords.y2);
   TransformMatrix mat;
   m_renderContext.SetTransform(mat, 1.0, 1.0);
@@ -262,7 +262,7 @@ void CRPRenderManager::ClearBackground()
   m_renderContext.Clear(0);
 }
 
-bool CRPRenderManager::SupportsRenderFeature(ERENDERFEATURE feature) const
+bool CRPRenderManager::SupportsRenderFeature(RENDERFEATURE feature) const
 {
   //! @todo Move to ProcessInfo
   for (const auto &renderer : m_renderers)
@@ -274,7 +274,7 @@ bool CRPRenderManager::SupportsRenderFeature(ERENDERFEATURE feature) const
   return false;
 }
 
-bool CRPRenderManager::SupportsScalingMethod(ESCALINGMETHOD method) const
+bool CRPRenderManager::SupportsScalingMethod(SCALINGMETHOD method) const
 {
   //! @todo Move to ProcessInfo
   for (IRenderBufferPool *bufferPool : m_processInfo.GetBufferManager().GetBufferPools())
@@ -347,6 +347,7 @@ std::shared_ptr<CRPBaseRenderer> CRPRenderManager::GetRenderer(const IGUIRenderS
   {
     renderer->SetScalingMethod(effectiveRenderSettings.VideoSettings().GetScalingMethod());
     renderer->SetViewMode(effectiveRenderSettings.VideoSettings().GetRenderViewMode());
+    renderer->SetRenderRotation(effectiveRenderSettings.VideoSettings().GetRenderRotation());
   }
 
   return renderer;
@@ -533,15 +534,19 @@ CRenderVideoSettings CRPRenderManager::GetEffectiveSettings(const IGUIRenderSett
 
   if (settings != nullptr)
   {
-    if (settings->HasScalingMethod())
-      effectiveSettings.SetScalingMethod(settings->GetSettings().VideoSettings().GetScalingMethod());
+    if (settings->HasVideoFilter())
+      effectiveSettings.SetVideoFilter(settings->GetSettings().VideoSettings().GetVideoFilter());
     if (settings->HasViewMode())
       effectiveSettings.SetRenderViewMode(settings->GetSettings().VideoSettings().GetRenderViewMode());
+    if (settings->HasRotation())
+      effectiveSettings.SetRenderRotation(settings->GetSettings().VideoSettings().GetRenderRotation());
   }
 
   // Sanitize settings
-  if (effectiveSettings.GetScalingMethod() == VS_SCALINGMETHOD_AUTO)
+  if (!m_processInfo.HasScalingMethod(effectiveSettings.GetScalingMethod()))
+  {
     effectiveSettings.SetScalingMethod(m_processInfo.GetDefaultScalingMethod());
+  }
 
   return effectiveSettings;
 }

@@ -39,12 +39,12 @@ bool CGUIGameVideoHandle::IsPlayingGame()
   return m_renderManager.IsPlayingGame();
 }
 
-bool CGUIGameVideoHandle::SupportsRenderFeature(ERENDERFEATURE feature)
+bool CGUIGameVideoHandle::SupportsRenderFeature(RENDERFEATURE feature)
 {
   return m_renderManager.SupportsRenderFeature(feature);
 }
 
-bool CGUIGameVideoHandle::SupportsScalingMethod(ESCALINGMETHOD method)
+bool CGUIGameVideoHandle::SupportsScalingMethod(SCALINGMETHOD method)
 {
   return m_renderManager.SupportsScalingMethod(method);
 }
