@@ -5086,7 +5086,7 @@ msgstr ""
 #. Audio Channel count
 #: xbmc/video/dialogs/GUIDialogAudioSettings.cpp
 msgctxt "#10127"
-msgid "Channels"
+msgid "channels"
 msgstr ""
 
 #: xbmc/guilib/WindowIDs.h
@@ -20405,7 +20405,7 @@ msgstr ""
 
 #: system/settings/rbp.xml
 msgctxt "#37018"
-msgid "Boost center channel when downmixing"
+msgid "Boost centre channel when downmixing"
 msgstr ""
 
 #empty string with id 37019
