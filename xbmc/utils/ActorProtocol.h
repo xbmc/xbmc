@@ -27,8 +27,6 @@
 #include <memory>
 #include <string>
 
-#define MSG_INTERNAL_BUFFER_SIZE 32
-
 class CEvent;
 
 namespace Actor
@@ -57,6 +55,9 @@ class Protocol;
 class Message
 {
   friend class Protocol;
+
+  static constexpr size_t MSG_INTERNAL_BUFFER_SIZE = 32;
+
 public:
   int signal;
   bool isSync = false;
