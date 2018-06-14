@@ -590,7 +590,6 @@ void CGUIDialogPVRTimerSettings::Save()
   else
     m_bEndAnyTime = false; // Assume end time change needs checking for
   // Begin and end time
-  const CDateTime now(CDateTime::GetCurrentDateTime());
   if (!m_bStartAnyTime && !m_bEndAnyTime)
   {
     if (m_timerType->SupportsStartTime() &&    // has start clock entry
