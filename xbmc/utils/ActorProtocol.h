@@ -22,6 +22,7 @@
 
 #include "threads/CriticalSection.h"
 
+#include <cstddef>
 #include <queue>
 #include <memory>
 #include <string>
@@ -62,7 +63,7 @@ public:
   bool isSyncFini;
   bool isOut;
   bool isSyncTimeout;
-  int payloadSize;
+  size_t payloadSize;
   uint8_t buffer[MSG_INTERNAL_BUFFER_SIZE];
   uint8_t *data = nullptr;
   std::unique_ptr<CPayloadWrapBase> payloadObj;
@@ -71,7 +72,7 @@ public:
   CEvent *event = nullptr;
 
   void Release();
-  bool Reply(int sig, void *data = nullptr, int size = 0);
+  bool Reply(int sig, void *data = nullptr, size_t size = 0);
 
 private:
   Message() = default;
@@ -87,11 +88,11 @@ public:
   ~Protocol();
   Message *GetMessage();
   void ReturnMessage(Message *msg);
-  bool SendOutMessage(int signal, void *data = nullptr, int size = 0, Message *outMsg = nullptr);
+  bool SendOutMessage(int signal, void *data = nullptr, size_t size = 0, Message *outMsg = nullptr);
   bool SendOutMessage(int signal, CPayloadWrapBase *payload, Message *outMsg = nullptr);
-  bool SendInMessage(int signal, void *data = nullptr, int size = 0, Message *outMsg = nullptr);
+  bool SendInMessage(int signal, void *data = nullptr, size_t size = 0, Message *outMsg = nullptr);
   bool SendInMessage(int signal, CPayloadWrapBase *payload, Message *outMsg = nullptr);
-  bool SendOutMessageSync(int signal, Message **retMsg, int timeout, void *data = nullptr, int size = 0);
+  bool SendOutMessageSync(int signal, Message **retMsg, int timeout, void *data = nullptr, size_t size = 0);
   bool SendOutMessageSync(int signal, Message **retMsg, int timeout, CPayloadWrapBase *payload);
   bool ReceiveOutMessage(Message **msg);
   bool ReceiveInMessage(Message **msg);

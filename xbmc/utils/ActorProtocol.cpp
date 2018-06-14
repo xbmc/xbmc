@@ -49,7 +49,7 @@ void Message::Release()
   origin->ReturnMessage(this);
 }
 
-bool Message::Reply(int sig, void *data /* = NULL*/, int size /* = 0 */)
+bool Message::Reply(int sig, void *data /* = NULL*/, size_t size /* = 0 */)
 {
   if (!isSync)
   {
@@ -130,7 +130,7 @@ void Protocol::ReturnMessage(Message *msg)
   freeMessageQueue.push(msg);
 }
 
-bool Protocol::SendOutMessage(int signal, void *data /* = NULL */, int size /* = 0 */, Message *outMsg /* = NULL */)
+bool Protocol::SendOutMessage(int signal, void *data /* = NULL */, size_t size /* = 0 */, Message *outMsg /* = NULL */)
 {
   Message *msg;
   if (outMsg)
@@ -181,7 +181,7 @@ bool Protocol::SendOutMessage(int signal, CPayloadWrapBase *payload, Message *ou
   return true;
 }
 
-bool Protocol::SendInMessage(int signal, void *data /* = NULL */, int size /* = 0 */, Message *outMsg /* = NULL */)
+bool Protocol::SendInMessage(int signal, void *data /* = NULL */, size_t size /* = 0 */, Message *outMsg /* = NULL */)
 {
   Message *msg;
   if (outMsg)
@@ -232,7 +232,7 @@ bool Protocol::SendInMessage(int signal, CPayloadWrapBase *payload, Message *out
   return true;
 }
 
-bool Protocol::SendOutMessageSync(int signal, Message **retMsg, int timeout, void *data /* = NULL */, int size /* = 0 */)
+bool Protocol::SendOutMessageSync(int signal, Message **retMsg, int timeout, void *data /* = NULL */, size_t size /* = 0 */)
 {
   Message *msg = GetMessage();
   msg->isOut = true;
