@@ -68,7 +68,7 @@ bool Message::Reply(int sig, void *data /* = NULL*/, size_t size /* = 0 */)
     replyMessage = msg;
     if (data)
     {
-      if (size > MSG_INTERNAL_BUFFER_SIZE)
+      if (size > sizeof(msg->buffer))
         msg->data = new uint8_t[size];
       else
         msg->data = msg->buffer;
@@ -141,7 +141,7 @@ bool Protocol::SendOutMessage(int signal, void *data /* = NULL */, size_t size /
 
   if (data)
   {
-    if (size > MSG_INTERNAL_BUFFER_SIZE)
+    if (size > sizeof(msg->buffer))
       msg->data = new uint8_t[size];
     else
       msg->data = msg->buffer;
@@ -192,7 +192,7 @@ bool Protocol::SendInMessage(int signal, void *data /* = NULL */, size_t size /*
 
   if (data)
   {
-    if (size > MSG_INTERNAL_BUFFER_SIZE)
+    if (size > sizeof(msg->data))
       msg->data = new uint8_t[size];
     else
       msg->data = msg->buffer;
