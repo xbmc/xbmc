@@ -52,6 +52,22 @@ const CGFloat timeFadeSecs                    = 2.0;
     [_touchView setMultipleTouchEnabled:YES];
     [_touchView setContentMode:UIViewContentModeCenter];
 
+    //load the splash image
+    std::string strUserSplash = CUtil::GetSplashPath();
+    xbmcLogo = [UIImage imageWithContentsOfFile:[NSString stringWithUTF8String:strUserSplash.c_str()]];
+    
+    //make a view with the image
+    xbmcLogoView = [[UIImageView alloc] initWithImage:xbmcLogo];
+    //center the image and add it to the view
+    [xbmcLogoView setFrame:frame];
+    [xbmcLogoView setContentMode:UIViewContentModeScaleAspectFill];
+    //autoresize the image frame
+    [xbmcLogoView setAutoresizingMask:UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight];
+    [xbmcLogoView setAutoresizesSubviews:YES];
+    [_touchView addSubview:xbmcLogoView];
+    //send the image to the background
+    [_touchView sendSubviewToBack:xbmcLogoView];
+    [xbmcLogoView release];
 
     CGRect labelRect = frame;
     labelRect.size.height/=2;
@@ -83,23 +99,6 @@ const CGFloat timeFadeSecs                    = 2.0;
     [descriptionLabel setAutoresizesSubviews:YES];
     [_touchView addSubview:descriptionLabel];
     [descriptionLabel release];
-
-    //load the splash image
-    std::string strUserSplash = CUtil::GetSplashPath();
-    xbmcLogo = [UIImage imageWithContentsOfFile:[NSString stringWithUTF8String:strUserSplash.c_str()]];
-
-    //make a view with the image
-    xbmcLogoView = [[UIImageView alloc] initWithImage:xbmcLogo];
-    //center the image and add it to the view
-    [xbmcLogoView setFrame:frame];
-    [xbmcLogoView setContentMode:UIViewContentModeCenter];
-    //autoresize the image frame
-    [xbmcLogoView setAutoresizingMask:UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight];
-    [xbmcLogoView setAutoresizesSubviews:YES];
-    [_touchView addSubview:xbmcLogoView];
-    //send the image to the background
-    [_touchView sendSubviewToBack:xbmcLogoView];
-    [xbmcLogoView release];
 
     [[self view] addSubview: _touchView];
 
