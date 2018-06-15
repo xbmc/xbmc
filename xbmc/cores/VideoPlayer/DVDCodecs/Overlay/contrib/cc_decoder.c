@@ -1,30 +1,19 @@
 /*
- * Copyright (C) 2000-2008 the xine project
+ *  Copyright (C) 2000-2008 the xine project
  *
- * Copyright (C) Christian Vogler
- *               cvogler@gradient.cis.upenn.edu - December 2001
+ *  Copyright (C) Christian Vogler
+ *                cvogler@gradient.cis.upenn.edu - December 2001
  *
- * This file is part of xine, a free video player.
+ *  This file is part of xine, a free video player.
  *
- * xine is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ *  SPDX-License-Identifier: GPL-2.0-or-later
+ *  See LICENSES/README.md for more information.
  *
- * xine is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ *  stuff needed to provide closed captioning decoding and display
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
- *
- * stuff needed to provide closed captioning decoding and display
- *
- * Some small bits and pieces of the EIA-608 captioning decoder were
- * adapted from CCDecoder 0.9.1 by Mike Baker. The latest version is
- * available at http://sourceforge.net/projects/ccdecoder/.
+ *  Some small bits and pieces of the EIA-608 captioning decoder were
+ *  adapted from CCDecoder 0.9.1 by Mike Baker. The latest version is
+ *  available at http://sourceforge.net/projects/ccdecoder/.
  */
 
 #include <stdio.h>
