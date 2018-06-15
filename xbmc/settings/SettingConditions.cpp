@@ -333,6 +333,9 @@ void CSettingConditions::Initialize(const CProfilesManager &profileManager)
 #ifdef TARGET_DARWIN_OSX
   m_simpleConditions.insert("have_osx");
 #endif
+#ifdef TARGET_DARWIN_IOS
+  m_simpleConditions.insert("have_ios");
+#endif
 #ifdef HAS_LIBAMCODEC
   if (aml_present())
     m_simpleConditions.insert("have_amcodec");

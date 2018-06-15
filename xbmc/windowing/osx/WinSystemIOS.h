@@ -37,6 +37,7 @@ public:
   CWinSystemIOS();
   virtual ~CWinSystemIOS();
 
+  int GetDisplayIndexFromSettings();
   // Implementation of CWinSystemBase
   CRenderSystemBase *GetRenderSystem() override { return this; }
   bool InitWindowSystem() override;
@@ -66,9 +67,6 @@ public:
   void Register(IDispResource *resource) override;
   void Unregister(IDispResource *resource) override;
 
-  int GetNumScreens() override;
-  int GetCurrentScreen() override;
-
   virtual std::unique_ptr<CVideoSync> GetVideoSync(void *clock) override;
 
   bool InitDisplayLink(CVideoSyncIos *syncImpl);
@@ -76,6 +74,7 @@ public:
   void OnAppFocusChange(bool focus);
   bool IsBackgrounded() const { return m_bIsBackgrounded; }
   void* GetEAGLContextObj();
+  void GetConnectedOutputs(std::vector<std::string> *outputs);
 
   // winevents override
   bool MessagePump() override;
@@ -95,8 +94,8 @@ protected:
 
 private:
   bool GetScreenResolution(int* w, int* h, double* fps, int screenIdx);
-  void FillInVideoModes();
-  bool SwitchToVideoMode(int width, int height, double refreshrate, int screenIdx);
+  void FillInVideoModes(int screenIdx);
+  bool SwitchToVideoMode(int width, int height, double refreshrate);
   CADisplayLinkWrapper *m_pDisplayLink;
 };
 

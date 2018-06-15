@@ -52,6 +52,8 @@
 #include "windowing/X11/WinSystemX11.h"
 #elif defined(TARGET_DARWIN_OSX)
 #include "windowing/osx/WinSystemOSX.h"
+#elif defined(TARGET_DARWIN_IOS)
+#include "windowing/osx/WinSystemIOS.h"
 #elif defined(HAVE_WAYLAND)
 #include "windowing/wayland/WinSystemWayland.h"
 #elif defined(TARGET_WINDOWS_DESKTOP)
@@ -777,7 +779,7 @@ void CDisplaySettings::SettingOptionsScreensFiller(SettingConstPtr setting, std:
   if (g_advancedSettings.m_canWindowed && CServiceBroker::GetWinSystem()->CanDoWindowed())
     list.push_back(std::make_pair(g_localizeStrings.Get(242), DM_WINDOWED));
 
-#if defined(HAVE_X11) || defined(HAVE_WAYLAND) || defined(TARGET_DARWIN_OSX) || defined(TARGET_WINDOWS)
+#if defined(HAVE_X11) || defined(HAVE_WAYLAND) || defined(TARGET_DARWIN_OSX) || defined(TARGET_WINDOWS) || defined(TARGET_DARWIN_IOS)
   list.push_back(std::make_pair(g_localizeStrings.Get(244), 0));
 #else
 
@@ -831,13 +833,15 @@ void CDisplaySettings::SettingOptionsPreferredStereoscopicViewModesFiller(Settin
 
 void CDisplaySettings::SettingOptionsMonitorsFiller(SettingConstPtr setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
 {
-#if defined(HAVE_X11) || defined(TARGET_DARWIN_OSX)
+#if defined(HAVE_X11) || defined(TARGET_DARWIN_OSX) || defined(TARGET_DARWIN_IOS)
   std::vector<std::string> monitors;
 
 #if defined(HAVE_X11)
   CWinSystemX11 *winSystem = dynamic_cast<CWinSystemX11*>(CServiceBroker::GetWinSystem());
 #elif defined(TARGET_DARWIN_OSX)
   CWinSystemOSX *winSystem = dynamic_cast<CWinSystemOSX*>(CServiceBroker::GetWinSystem());
+#elif defined(TARGET_DARWIN_IOS)
+  CWinSystemIOS *winSystem = dynamic_cast<CWinSystemIOS*>(CServiceBroker::GetWinSystem());
 #endif
   winSystem->GetConnectedOutputs(&monitors);
   std::string currentMonitor = CServiceBroker::GetSettings().GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR);
