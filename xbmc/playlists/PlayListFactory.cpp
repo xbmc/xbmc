@@ -73,8 +73,6 @@ CPlayList* CPlayListFactory::Create(const CFileItem& item)
   }
 
   std::string path = item.GetDynPath();
-  if (path.empty())
-    path = item.GetPath();
 
   std::string extension = URIUtils::GetExtension(path);
   StringUtils::ToLower(extension);
