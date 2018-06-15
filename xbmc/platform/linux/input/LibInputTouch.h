@@ -40,5 +40,12 @@ public:
   void ProcessTouchFrame(libinput_event_touch *e);
 
 private:
-  std::vector<std::pair<TouchInput, CPoint>> m_points;
+  void CheckSlot(int slot);
+  TouchInput GetEvent(int slot);
+  void SetEvent(int slot, TouchInput event);
+  void SetPosition(int slot, CPoint point);
+  int GetX(int slot) { return m_points.at(slot).second.x; }
+  int GetY(int slot) { return m_points.at(slot).second.y; }
+
+  std::vector<std::pair<TouchInput, CPoint>> m_points{std::make_pair(TouchInputUnchanged, CPoint(0, 0))};
 };
