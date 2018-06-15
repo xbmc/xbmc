@@ -1260,11 +1260,11 @@ void CVideoPlayer::Prepare()
   m_processInfo->SetSpeed(1.0);
   m_processInfo->SetTempo(1.0);
   m_State.Clear();
-  m_CurrentVideo.Clear();
-  m_CurrentAudio.Clear();
-  m_CurrentSubtitle.Clear();
-  m_CurrentTeletext.Clear();
-  m_CurrentRadioRDS.Clear();
+  m_CurrentVideo.hint.Clear();
+  m_CurrentAudio.hint.Clear();
+  m_CurrentSubtitle.hint.Clear();
+  m_CurrentTeletext.hint.Clear();
+  m_CurrentRadioRDS.hint.Clear();
   memset(&m_SpeedState, 0, sizeof(m_SpeedState));
   m_offset_pts = 0;
   m_CurrentAudio.lastdts = DVD_NOPTS_VALUE;
