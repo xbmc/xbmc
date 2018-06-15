@@ -116,7 +116,7 @@ bool CRendererMediaCodec::LoadShadersHook()
 {
   CLog::Log(LOGNOTICE, "GL: Using MediaCodec render method");
   m_textureTarget = GL_TEXTURE_2D;
-  m_renderMethod = RENDER_MEDIACODEC;
+  m_renderMethod = RENDER_CUSTOM;
   return true;
 }
 

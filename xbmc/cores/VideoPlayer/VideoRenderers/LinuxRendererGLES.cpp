@@ -1056,15 +1056,8 @@ bool CLinuxRendererGLES::RenderCapture(CRenderCapture* capture)
   glDisable(GL_BLEND);
 
   glMatrixModview.Push();
-  // fixme - we know that cvref  & eglimg are already flipped in y direction
-  // but somehow this also effects the rendercapture here
-  // therefore we have to skip the flip here or we get upside down
-  // images
-  if (m_renderMethod != RENDER_CVREF)
-  {
-    glMatrixModview->Translatef(0.0f, capture->GetHeight(), 0.0f);
-    glMatrixModview->Scalef(1.0f, -1.0f, 1.0f);
-  }
+  glMatrixModview->Translatef(0.0f, capture->GetHeight(), 0.0f);
+  glMatrixModview->Scalef(1.0f, -1.0f, 1.0f);
   glMatrixModview.Load();
 
   capture->BeginRender();
@@ -1250,10 +1243,7 @@ bool CLinuxRendererGLES::CreateYV12Texture(int index)
         format = GL_LUMINANCE;
       internalformat = GetInternalFormat(format, im.bpp);
 
-      if(m_renderMethod & RENDER_POT)
-        CLog::Log(LOGDEBUG, "GL: Creating YUV POT texture of size %d x %d",  plane.texwidth, plane.texheight);
-      else
-        CLog::Log(LOGDEBUG,  "GL: Creating YUV NPOT texture of size %d x %d", plane.texwidth, plane.texheight);
+      CLog::Log(LOGDEBUG,  "GL: Creating YUV NPOT texture of size %d x %d", plane.texwidth, plane.texheight);
 
       glTexImage2D(m_textureTarget, 0, internalformat, plane.texwidth, plane.texheight, 0, format, GL_UNSIGNED_BYTE, NULL);
 

@@ -64,13 +64,8 @@ struct YUVCOEF
 
 enum RenderMethod
 {
-  RENDER_GLSL   = 0x001,
-  RENDER_SW     = 0x004,
-  RENDER_POT    = 0x010,
-  RENDER_OMXEGL = 0x040,
-  RENDER_CVREF  = 0x080,
-  RENDER_MEDIACODEC = 0x400,
-  RENDER_MEDIACODECSURFACE = 0x800,
+  RENDER_GLSL = 0x01,
+  RENDER_CUSTOM = 0x02,
 };
 
 enum RenderQuality

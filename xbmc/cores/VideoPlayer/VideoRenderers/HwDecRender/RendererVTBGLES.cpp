@@ -108,7 +108,7 @@ bool CRendererVTB::LoadShadersHook()
   float ios_version = CDarwinUtils::GetIOSVersion();
   CLog::Log(LOGNOTICE, "GL: Using CVBREF render method");
   m_textureTarget = GL_TEXTURE_2D;
-  m_renderMethod = RENDER_CVREF;
+  m_renderMethod = RENDER_CUSTOM;
 
   if (ios_version < 5.0)
   {
@@ -238,7 +238,6 @@ bool CRendererVTB::UploadTexture(int index)
   planes[0].id = CVOpenGLESTextureGetName(renderBuf.m_textureY);
   planes[1].id = CVOpenGLESTextureGetName(renderBuf.m_textureUV);
   planes[2].id = CVOpenGLESTextureGetName(renderBuf.m_textureUV);
-
 
   for (int p=0; p<2; p++)
   {
