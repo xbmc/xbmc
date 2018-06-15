@@ -280,7 +280,10 @@ static CEvent screenChangeEvent;
 //--------------------------------------------------------------
 + (void) updateResolutions
 {
-  CServiceBroker::GetWinSystem()->UpdateResolutions();
+  if (CServiceBroker::GetWinSystem() != nullptr)
+  {
+    CServiceBroker::GetWinSystem()->UpdateResolutions();
+  }
 }
 //--------------------------------------------------------------
 - (void) dealloc
