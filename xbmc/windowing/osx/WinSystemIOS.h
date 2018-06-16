@@ -75,6 +75,7 @@ public:
   bool IsBackgrounded() const { return m_bIsBackgrounded; }
   void* GetEAGLContextObj();
   void GetConnectedOutputs(std::vector<std::string> *outputs);
+  void MoveToTouchscreen();
 
   // winevents override
   bool MessagePump() override;

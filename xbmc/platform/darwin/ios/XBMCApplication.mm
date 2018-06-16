@@ -88,7 +88,7 @@ XBMCController *m_xbmcController;
 
 - (void)screenDidDisconnect:(NSNotification *)aNotification
 {
-  [IOSScreenManager updateResolutions];
+  [[IOSScreenManager sharedInstance] screenDisconnect];
 }
 
 - (void)registerScreenNotifications:(BOOL)bRegister

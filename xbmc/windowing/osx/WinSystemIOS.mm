@@ -94,8 +94,7 @@ int CWinSystemIOS::GetDisplayIndexFromSettings()
     else// screen 1 is setup but not connected
     {
       // force internal screen
-      CDisplaySettings::GetInstance().SetMonitor(CONST_TOUCHSCREEN);
-      UpdateResolutions();
+      MoveToTouchscreen();
     }
   }
   
@@ -513,6 +512,11 @@ void CWinSystemIOS::GetConnectedOutputs(std::vector<std::string> *outputs)
   {
     outputs->push_back(CONST_EXTERNAL);
   }
+}
+
+void CWinSystemIOS::MoveToTouchscreen()
+{
+  CDisplaySettings::GetInstance().SetMonitor(CONST_TOUCHSCREEN);
 }
 
 std::unique_ptr<CVideoSync> CWinSystemIOS::GetVideoSync(void *clock)
