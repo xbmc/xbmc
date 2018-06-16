@@ -1456,9 +1456,9 @@ void CFileItem::FillInMimeType(bool lookup /*= true*/)
       m_mimetype = "x-directory/normal";
     else if( m_pvrChannelInfoTag )
       m_mimetype = m_pvrChannelInfoTag->InputFormat();
-    else if( StringUtils::StartsWithNoCase(m_strPath, "shout://")
-          || StringUtils::StartsWithNoCase(m_strPath, "http://")
-          || StringUtils::StartsWithNoCase(m_strPath, "https://"))
+    else if( StringUtils::StartsWithNoCase(GetDynPath(), "shout://")
+          || StringUtils::StartsWithNoCase(GetDynPath(), "http://")
+          || StringUtils::StartsWithNoCase(GetDynPath(), "https://"))
     {
       // If lookup is false, bail out early to leave mime type empty
       if (!lookup)
@@ -1488,8 +1488,14 @@ void CFileItem::FillInMimeType(bool lookup /*= true*/)
   }
 
   // change protocol to mms for the following mime-type.  Allows us to create proper FileMMS.
-  if( StringUtils::StartsWithNoCase(m_mimetype, "application/vnd.ms.wms-hdr.asfv1") || StringUtils::StartsWithNoCase(m_mimetype, "application/x-mms-framed") )
-    StringUtils::Replace(m_strPath, "http:", "mms:");
+  if(StringUtils::StartsWithNoCase(m_mimetype, "application/vnd.ms.wms-hdr.asfv1") || 
+     StringUtils::StartsWithNoCase(m_mimetype, "application/x-mms-framed"))
+  {
+    if (m_strDynPath.empty())
+      m_strDynPath = m_strPath;
+
+    StringUtils::Replace(m_strDynPath, "http:", "mms:");
+  }
 }
 
 void CFileItem::SetMimeTypeForInternetFile()
