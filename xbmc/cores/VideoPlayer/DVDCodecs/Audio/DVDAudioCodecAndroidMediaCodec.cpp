@@ -293,8 +293,11 @@ PROCESSDECODER:
       }
       if (!m_decryptCodec)
       {
+        CDVDStreamInfo ffhints = hints;
+        ffhints.cryptoSession = nullptr;
+
         m_decryptCodec = std::shared_ptr<CDVDAudioCodec>(new CDVDAudioCodecFFmpeg(m_processInfo));
-        if (!m_decryptCodec->Open(hints, options))
+        if (!m_decryptCodec->Open(ffhints, options))
         {
           CLog::Log(LOGERROR, "CDVDAudioCodecAndroidMediaCodec::Open() Failed opening FFmpeg decoder");
           return false;
