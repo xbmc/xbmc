@@ -603,13 +603,14 @@ RESOLUTION CDisplaySettings::FindBestMatchingResolution(const std::map<RESOLUTIO
 
 RESOLUTION CDisplaySettings::GetResolutionFromString(const std::string &strResolution)
 {
+
   if (strResolution == "DESKTOP")
     return RES_DESKTOP;
   else if (strResolution == "WINDOW")
     return RES_WINDOW;
-  else if (strResolution.size() >= 21)
+  else if (strResolution.size() >= 20)
   {
-    // format: SWWWWWHHHHHRRR.RRRRRP333, where S = screen, W = width, H = height, R = refresh, P = interlace, 3 = stereo mode
+    // format: WWWWWHHHHHRRR.RRRRRP333, where W = width, H = height, R = refresh, P = interlace, 3 = stereo mode
     int screen = CDisplaySettings::GetInstance().GetCurrentDisplayMode();
     int width = std::strtol(StringUtils::Mid(strResolution, 0,5).c_str(), NULL, 10);
     int height = std::strtol(StringUtils::Mid(strResolution, 5,5).c_str(), NULL, 10);
@@ -617,12 +618,12 @@ RESOLUTION CDisplaySettings::GetResolutionFromString(const std::string &strResol
     unsigned flags = 0;
 
     // look for 'i' and treat everything else as progressive,
-    if(StringUtils::Mid(strResolution, 20,1) == "i")
+    if(StringUtils::Mid(strResolution, 19,1) == "i")
       flags |= D3DPRESENTFLAG_INTERLACED;
 
-    if(StringUtils::Mid(strResolution, 21,3) == "sbs")
+    if(StringUtils::Mid(strResolution, 20,3) == "sbs")
       flags |= D3DPRESENTFLAG_MODE3DSBS;
-    else if(StringUtils::Mid(strResolution, 21,3) == "tab")
+    else if(StringUtils::Mid(strResolution, 20,3) == "tab")
       flags |= D3DPRESENTFLAG_MODE3DTB;
 
     std::map<RESOLUTION, RESOLUTION_INFO> resolutionInfos;
