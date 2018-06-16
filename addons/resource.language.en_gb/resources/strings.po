@@ -5202,7 +5202,14 @@ msgctxt "#10157"
 msgid "OSD CMS settings"
 msgstr ""
 
-#empty strings from id 10158 to 10209
+#empty string with id 10158
+
+#: xbmc/guilib/WindowIDs.h
+msgctxt "#10159"
+msgid "Subtitle OSD settings"
+msgstr ""
+
+#empty strings from id 10160 to 10209
 
 msgctxt "#10210"
 msgid "Looking for subtitles..."
