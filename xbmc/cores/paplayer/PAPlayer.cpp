@@ -339,10 +339,11 @@ bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn)
   {
     CLog::Log(LOGWARNING, "PAPlayer::QueueNextFileEx - Failed to create the decoder");
 
-    delete si;
     // advance playlist
     AdvancePlaylistOnError(si->m_fileItem);
     m_callback.OnQueueNextItem();
+
+    delete si;
     return false;
   }
 

@@ -4045,7 +4045,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
       if (!m_itemCurrentFile->IsLiveTV())
       {
         CGUIDialogBusy* dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogBusy>(WINDOW_DIALOG_BUSY);
-        if (dialog)
+        if (dialog && !dialog->IsDialogRunning())
           dialog->WaitOnEvent(m_playerEvent);
       }
 
