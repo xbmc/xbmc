@@ -331,7 +331,17 @@ namespace XBMCAddon
       /// |   2   | ShowAndGetImage                 |
       /// |   3   | ShowAndGetWriteableDirectory    |
       /// @param heading        string or unicode - dialog heading.
-      /// @param shares         string or unicode - from [sources.xml](http://kodi.wiki/view/Sources.xml) . (i.e. 'myprograms')
+      /// @param shares         string or unicode - from [sources.xml](http://kodi.wiki/view/Sources.xml)
+      /// | Param          | Name                                         |
+      /// |:--------------:|:---------------------------------------------|
+      /// |   "programs"   | list program addons
+      /// |   "video"      | list video sources
+      /// |   "music"      | list music sources
+      /// |   "pictures"   | list picture sources
+      /// |   "files"      | list file sources (added through filemanager)
+      /// |   "games"      | list game sources
+      /// |   "local"      | list local drives
+      /// |   ""           | list local drives and network shares
       /// @param mask           [opt] string or unicode - '|' separated file mask. (i.e. '.jpg|.png')
       /// @param useThumbs      [opt] boolean - if True autoswitch to Thumb view if files exist.
       /// @param treatAsFolder  [opt] boolean - if True playlists and archives act as folders.
@@ -347,6 +357,7 @@ namespace XBMCAddon
       ///
       ///
       ///------------------------------------------------------------------------
+      /// @python_v18 New option added to browse network and/or local drives.
       ///
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
@@ -386,7 +397,17 @@ namespace XBMCAddon
       /// |   2   | ShowAndGetImage
       /// |   3   | ShowAndGetWriteableDirectory
       /// @param heading        string or unicode - dialog heading.
-      /// @param shares         string or unicode - from [sources.xml](http://kodi.wiki/view/Sources.xml) . (i.e. 'myprograms')
+      /// @param shares         string or unicode - from [sources.xml](http://kodi.wiki/view/Sources.xml)
+      /// | Param          | Name                                         |
+      /// |:--------------:|:---------------------------------------------|
+      /// |   "programs"   | list program addons
+      /// |   "video"      | list video sources
+      /// |   "music"      | list music sources
+      /// |   "pictures"   | list picture sources
+      /// |   "files"      | list file sources (added through filemanager)
+      /// |   "games"      | list game sources
+      /// |   "local"      | list local drives
+      /// |   ""           | list local drives and network shares
       /// @param mask           [opt] string or unicode - '|' separated file mask. (i.e. '.jpg|.png')
       /// @param useThumbs      [opt] boolean - if True autoswitch to Thumb view if files exist (default=false).
       /// @param treatAsFolder  [opt] boolean - if True playlists and archives act as folders (default=false).
@@ -398,6 +419,7 @@ namespace XBMCAddon
       ///
       ///
       ///------------------------------------------------------------------------
+      /// @python_v18 New option added to browse network and/or local drives.
       ///
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
@@ -435,7 +457,17 @@ namespace XBMCAddon
       /// |   1   | ShowAndGetFile
       /// |   2   | ShowAndGetImage
       /// @param heading        string or unicode - dialog heading.
-      /// @param shares         string or unicode - from [sources.xml](http://kodi.wiki/view/Sources.xml) . (i.e. 'myprograms')
+      /// @param shares         string or unicode - from [sources.xml](http://kodi.wiki/view/Sources.xml)
+      /// | Param          | Name                                         |
+      /// |:--------------:|:---------------------------------------------|
+      /// |   "programs"   | list program addons
+      /// |   "video"      | list video sources
+      /// |   "music"      | list music sources
+      /// |   "pictures"   | list picture sources
+      /// |   "files"      | list file sources (added through filemanager)
+      /// |   "games"      | list game sources
+      /// |   "local"      | list local drives
+      /// |   ""           | list local drives and network shares
       /// @param mask           [opt] string or unicode - '|' separated file mask. (i.e. '.jpg|.png')
       /// @param useThumbs      [opt] boolean - if True autoswitch to Thumb view if files exist (default=false).
       /// @param treatAsFolder  [opt] boolean - if True playlists and archives act as folders (default=false).
@@ -445,6 +477,7 @@ namespace XBMCAddon
       ///
       ///
       ///------------------------------------------------------------------------
+      /// @python_v18 New option added to browse network and/or local drives.
       ///
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
