@@ -29,7 +29,7 @@ using namespace VDPAU;
 // interop state
 //-----------------------------------------------------------------------------
 
-bool CInteropState::Init(void *device, void *procFunc, void *ident)
+bool CInteropState::Init(void *device, void *procFunc, int64_t ident)
 {
   m_device = device;
   m_procFunc = procFunc;
@@ -72,7 +72,7 @@ InteropInfo &CInteropState::GetInterop()
   return m_interop;
 }
 
-bool CInteropState::NeedInit(void *device, void *procFunc, void *ident)
+bool CInteropState::NeedInit(void *device, void *procFunc, int64_t ident)
 {
   if (m_device != device)
     return true;

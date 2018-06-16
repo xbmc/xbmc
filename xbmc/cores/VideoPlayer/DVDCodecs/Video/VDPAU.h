@@ -175,6 +175,7 @@ struct CVdpauConfig
   CVDPAUContext *context;
   CProcessInfo *processInfo;
   int resetCounter;
+  uint64_t timeOpened;
 };
 
 /**
@@ -240,7 +241,7 @@ public:
   CRect crop;
   void *device;
   void *procFunc;
-  void *ident;
+  int64_t ident;
 };
 
 //-----------------------------------------------------------------------------
