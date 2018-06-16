@@ -168,6 +168,71 @@ void CResolutionUtils::FindResolutionFromWhitelist(float fps, int width, bool is
     }
   }
 
+  // Allow 3:2 pull down
+  // 23.976 * 3 + 23.976 *2 ~ 59.94 * 2
+  // 23.976 * 2.5 ~ 59.94
+  for (const auto &mode : indexList)
+  {
+    auto i = CDisplaySettings::GetInstance().GetResFromString(mode.asString());
+    const RESOLUTION_INFO info = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(i);
+
+    const RESOLUTION_INFO desktop_info = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(CDisplaySettings::GetInstance().GetCurrentResolution());
+
+    if (info.iScreenWidth == desktop_info.iWidth &&
+        info.iScreen == desktop_info.iScreen &&
+        (info.dwFlags & D3DPRESENTFLAG_MODEMASK) == (desktop_info.dwFlags & D3DPRESENTFLAG_MODEMASK) &&
+        MathUtils::FloatEquals(info.fRefreshRate, fps * 2.5f, 0.01f))
+    {
+      CLog::Log(LOGDEBUG, "Matched 3:2 pulldown whitelisted Resolution %s (%d)", info.strMode.c_str(), i);
+      resolution = i;
+      return;
+    }
+  }
+
+  // Allow next upper integer refreshrate - some computers, like the MAC don't have fractional refreshrates - those refreshrate
+  // especially make sense with Sync Playback to Display
+  // 60.0 - 59.94 ~ 0.06 + something if they are a bit off
+  // min: 59.86
+  // max: 60.14
+  for (const auto &mode : indexList)
+  {
+    auto i = CDisplaySettings::GetInstance().GetResFromString(mode.asString());
+    const RESOLUTION_INFO info = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(i);
+
+    const RESOLUTION_INFO desktop_info = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(CDisplaySettings::GetInstance().GetCurrentResolution());
+
+    if (info.iScreenWidth == desktop_info.iWidth &&
+        info.iScreen == desktop_info.iScreen &&
+        (info.dwFlags & D3DPRESENTFLAG_MODEMASK) == (desktop_info.dwFlags & D3DPRESENTFLAG_MODEMASK) &&
+        MathUtils::FloatEquals(info.fRefreshRate, fps , 0.1f))
+    {
+      CLog::Log(LOGDEBUG, "Matched upper sync refreshrate from whitelisted Resolution %s (%d)", info.strMode.c_str(), i);
+      resolution = i;
+      return;
+    }
+  }
+
+  // And finally to help people to get 29.97i to 60 hz
+  for (const auto &mode : indexList)
+  {
+    auto i = CDisplaySettings::GetInstance().GetResFromString(mode.asString());
+    const RESOLUTION_INFO info = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(i);
+
+    const RESOLUTION_INFO desktop_info = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(CDisplaySettings::GetInstance().GetCurrentResolution());
+
+    // allow resolutions that are desktop resolution but have double the refresh rate
+    if (info.iScreenWidth == desktop_info.iWidth &&
+        info.iScreen == desktop_info.iScreen &&
+        (info.dwFlags & D3DPRESENTFLAG_MODEMASK) == (desktop_info.dwFlags & D3DPRESENTFLAG_MODEMASK) &&
+        MathUtils::FloatEquals(info.fRefreshRate, 2 * fps, 0.1f))
+    {
+      CLog::Log(LOGDEBUG, "Matched double upper sync refreshrate from whitelisted Resolution %s (%d)", info.strMode.c_str(), i);
+      resolution = i;
+      return;
+    }
+  }
+
+
   CLog::Log(LOGDEBUG, "No whitelisted resolution matched");
 }
 
