@@ -98,14 +98,15 @@ int DegreeToOrientation(int degrees)
   }
 }
 
-bool CDVDFileInfo::ExtractThumb(const std::string &strPath,
+bool CDVDFileInfo::ExtractThumb(const CFileItem& fileItem,
                                 CTextureDetails &details,
-                                CStreamDetails *pStreamDetails, int pos)
+                                CStreamDetails *pStreamDetails,
+                                int64_t pos)
 {
-  std::string redactPath = CURL::GetRedacted(strPath);
+  const std::string redactPath = CURL::GetRedacted(fileItem.GetPath());
   unsigned int nTime = XbmcThreads::SystemClockMillis();
-  CFileItem item(strPath, false);
 
+  CFileItem item(fileItem);
   item.SetMimeTypeForInternetFile();
   auto pInputStream = CDVDFactoryInputStream::CreateInputStream(NULL, item);
   if (!pInputStream)
@@ -143,6 +144,7 @@ bool CDVDFileInfo::ExtractThumb(const std::string &strPath,
   if (pStreamDetails)
   {
 
+    const std::string strPath = item.GetPath();
     DemuxerToStreamDetails(pInputStream, pDemuxer, *pStreamDetails, strPath);
 
     //extern subtitles
@@ -210,7 +212,7 @@ bool CDVDFileInfo::ExtractThumb(const std::string &strPath,
     if (pVideoCodec)
     {
       int nTotalLen = pDemuxer->GetStreamLength();
-      int nSeekTo = (pos==-1) ? nTotalLen / 3 : pos;
+      int nSeekTo = (pos == -1) ? nTotalLen / 3 : pos;
 
       CLog::Log(LOGDEBUG,"%s - seeking to pos %dms (total: %dms) in %s", __FUNCTION__, nSeekTo, nTotalLen, redactPath.c_str());
       if (pDemuxer->SeekTime(nSeekTo, true))
