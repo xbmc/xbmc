@@ -280,9 +280,10 @@ static CEvent screenChangeEvent;
 //--------------------------------------------------------------
 + (void) updateResolutions
 {
-  if (CServiceBroker::GetWinSystem() != nullptr)
+  CWinSystemBase *winSystem = CServiceBroker::GetWinSystem();
+  if (winSystem != nullptr)
   {
-    CServiceBroker::GetWinSystem()->UpdateResolutions();
+    winSystem->UpdateResolutions();
   }
 }
 //--------------------------------------------------------------

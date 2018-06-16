@@ -761,7 +761,8 @@ XBMCController *g_xbmcController;
 - (CGSize) getScreenSize
 {
   __block CGSize tmp;
-  if ([NSThread isMainThread]) {
+  if ([NSThread isMainThread])
+  {
     tmp.width  = m_glView.bounds.size.width * screenScale;
     tmp.height = m_glView.bounds.size.height * screenScale;
   }
