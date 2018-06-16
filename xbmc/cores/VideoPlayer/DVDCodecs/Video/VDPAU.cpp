@@ -536,6 +536,7 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
     return false;
   }
   m_vdpauConfig.numRenderBuffers = 5;
+  m_vdpauConfig.timeOpened = CurrentHostCounter();
   m_decoderThread = CThread::GetCurrentThreadId();
 
   if (!CVDPAUContext::EnsureContext(&m_vdpauConfig.context))
@@ -3204,7 +3205,7 @@ CVdpauRenderPicture* COutput::ProcessMixerPicture()
     retPic->procPic = procPic;
     retPic->device = reinterpret_cast<void*>(m_config.context->GetDevice());
     retPic->procFunc = reinterpret_cast<void*>(m_config.context->GetProcs().vdp_get_proc_address);
-    retPic->ident = m_config.vdpau + m_config.resetCounter;
+    retPic->ident = m_config.timeOpened + m_config.resetCounter;
 
     retPic->DVDPic.SetParams(procPic.DVDPic);
     if (!procPic.isYuv)
