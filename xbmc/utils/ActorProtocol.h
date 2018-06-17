@@ -21,12 +21,13 @@
 #pragma once
 
 #include "threads/CriticalSection.h"
-#include "threads/Event.h"
+
+#include <cstddef>
 #include <queue>
 #include <memory>
 #include <string>
 
-#define MSG_INTERNAL_BUFFER_SIZE 32
+class CEvent;
 
 namespace Actor
 {
@@ -54,42 +55,46 @@ class Protocol;
 class Message
 {
   friend class Protocol;
+
+  static constexpr size_t MSG_INTERNAL_BUFFER_SIZE = 32;
+
 public:
   int signal;
-  bool isSync;
+  bool isSync = false;
   bool isSyncFini;
   bool isOut;
   bool isSyncTimeout;
-  int payloadSize;
+  size_t payloadSize;
   uint8_t buffer[MSG_INTERNAL_BUFFER_SIZE];
   uint8_t *data = nullptr;
   std::unique_ptr<CPayloadWrapBase> payloadObj;
   Message *replyMessage = nullptr;
-  Protocol *origin = nullptr;
-  CEvent *event;
+  Protocol &origin;
+  CEvent *event = nullptr;
 
   void Release();
-  bool Reply(int sig, void *data = nullptr, int size = 0);
+  bool Reply(int sig, void *data = nullptr, size_t size = 0);
 
 private:
-  Message() {isSync = false; data = nullptr; event = nullptr; replyMessage = nullptr;};
+  explicit Message(Protocol &_origin) noexcept
+    :origin(_origin) {}
 };
 
 class Protocol
 {
 public:
   Protocol(std::string name, CEvent* inEvent, CEvent *outEvent)
-    : portName(name), inDefered(false), outDefered(false) {containerInEvent = inEvent; containerOutEvent = outEvent;};
+    :portName(name), containerInEvent(inEvent), containerOutEvent(outEvent) {}
   Protocol(std::string name)
     : Protocol(name, nullptr, nullptr) {}
   ~Protocol();
   Message *GetMessage();
   void ReturnMessage(Message *msg);
-  bool SendOutMessage(int signal, void *data = nullptr, int size = 0, Message *outMsg = nullptr);
+  bool SendOutMessage(int signal, void *data = nullptr, size_t size = 0, Message *outMsg = nullptr);
   bool SendOutMessage(int signal, CPayloadWrapBase *payload, Message *outMsg = nullptr);
-  bool SendInMessage(int signal, void *data = nullptr, int size = 0, Message *outMsg = nullptr);
+  bool SendInMessage(int signal, void *data = nullptr, size_t size = 0, Message *outMsg = nullptr);
   bool SendInMessage(int signal, CPayloadWrapBase *payload, Message *outMsg = nullptr);
-  bool SendOutMessageSync(int signal, Message **retMsg, int timeout, void *data = nullptr, int size = 0);
+  bool SendOutMessageSync(int signal, Message **retMsg, int timeout, void *data = nullptr, size_t size = 0);
   bool SendOutMessageSync(int signal, Message **retMsg, int timeout, CPayloadWrapBase *payload);
   bool ReceiveOutMessage(Message **msg);
   bool ReceiveInMessage(Message **msg);
@@ -108,7 +113,7 @@ protected:
   std::queue<Message*> outMessages;
   std::queue<Message*> inMessages;
   std::queue<Message*> freeMessageQueue;
-  bool inDefered, outDefered;
+  bool inDefered = false, outDefered = false;
 };
 
 }
