@@ -700,3 +700,75 @@ void aml_set_framebuffer_resolution(int width, int height, std::string framebuff
     close(fd0);
   }
 }
+
+bool aml_read_reg(const std::string &reg, uint32_t &reg_val)
+{
+  std::string path = "/sys/kernel/debug/aml_reg/paddr";
+  if (SysfsUtils::Has(path))
+  {
+    if (SysfsUtils::SetString(path, reg) == 0)
+    {
+      std::string val;
+      if (SysfsUtils::GetString(path, val) == 0)
+      {
+        CRegExp regexp;
+        regexp.RegComp("\\[0x(?<reg>.+)\\][\\s]+=[\\s]+(?<val>.+)");
+        if (regexp.RegFind(val) == 0)
+        {
+          std::string match;
+          if (regexp.GetNamedSubPattern("reg", match))
+          {
+            if (match == reg)
+            {
+              if (regexp.GetNamedSubPattern("val", match))
+              {
+                try
+                {
+                  reg_val = std::stoul(match, 0, 16);
+                  return true;
+                }
+                catch (...) {}
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  return false;
+}
+
+bool aml_has_capability_ignore_alpha()
+{
+  // AML is at least GXBB
+  uint32_t reg_val;
+  if (aml_read_reg("c8100220", reg_val))
+  {
+    if ((reg_val >> 24) >= 0x1f)
+      return true;
+  }
+  return false;
+}
+
+bool aml_set_reg_ignore_alpha()
+{
+  if (aml_has_capability_ignore_alpha())
+  {
+    std::string path = "/sys/kernel/debug/aml_reg/paddr";
+    if (SysfsUtils::SetString(path, "d01068b4 0x7fc0") == 0)
+      return true;
+  }
+  return false;
+}
+
+bool aml_unset_reg_ignore_alpha()
+{
+  if (aml_has_capability_ignore_alpha())
+  {
+    std::string path = "/sys/kernel/debug/aml_reg/paddr";
+    if (SysfsUtils::SetString(path, "d01068b4 0x3fc0") == 0)
+      return true;
+  }
+  return false;
+}
+
