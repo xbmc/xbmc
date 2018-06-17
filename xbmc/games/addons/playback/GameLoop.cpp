@@ -19,7 +19,6 @@
  */
 
 #include "GameLoop.h"
-#include "threads/SingleLock.h"
 #include "threads/SystemClock.h"
 
 #include <cmath>
@@ -35,7 +34,8 @@ CGameLoop::CGameLoop(IGameLoopCallback* callback, double fps) :
   m_callback(callback),
   m_fps(fps ? fps : DEFAULT_FPS),
   m_speedFactor(0.0),
-  m_lastFrameMs(0.0)
+  m_lastFrameMs(0.0),
+  m_adjustTime(0.0)
 {
 }
 
@@ -58,79 +58,58 @@ void CGameLoop::Stop()
 
 void CGameLoop::SetSpeed(double speedFactor)
 {
-  {
-    CSingleLock lock(m_mutex);
-    m_speedFactor = speedFactor;
-    m_bPauseAsync = false;
-  }
+  m_speedFactor = speedFactor;
 
   m_sleepEvent.Set();
 }
 
 void CGameLoop::PauseAsync()
 {
-  {
-    CSingleLock lock(m_mutex);
-    m_bPauseAsync = true;
-  }
-
-  m_sleepEvent.Set();
+  SetSpeed(0.0);
 }
 
 void CGameLoop::Process(void)
 {
-  double nextFrameMs = NowMs();
-
-  CSingleLock lock(m_mutex);
-
   while (!m_bStop)
   {
-    double speedFactor = m_speedFactor;
-
-    // Pause game if the pause async flag was set
-    if (m_bPauseAsync)
+    if (m_speedFactor == 0.0)
     {
-      m_bPauseAsync = false;
-      m_speedFactor = 0.0;
+      m_lastFrameMs = 0.0;
+      m_sleepEvent.WaitMSec(5000);
     }
-
+    else
     {
-      CSingleExit exit(m_mutex);
-      if (speedFactor > 0.0)
+      if (m_speedFactor > 0.0)
         m_callback->FrameEvent();
-      else if (speedFactor < 0.0)
+      else if (m_speedFactor < 0.0)
         m_callback->RewindEvent();
-    }
 
-    // Record frame time
-    m_lastFrameMs = nextFrameMs;
-
-    // Calculate sleep time
-    double nowMs = NowMs();
-    double sleepTimeMs = SleepTimeMs(nowMs);
-
-    // Sleep at least 1 ms to avoid sleeping forever
-    while (sleepTimeMs > 1.0)
-    {
+      if (m_lastFrameMs > 0.0)
       {
-        CSingleExit exit(m_mutex);
-        m_sleepEvent.WaitMSec(static_cast<unsigned int>(sleepTimeMs));
+        m_lastFrameMs += FrameTimeMs();
+        m_adjustTime = m_lastFrameMs - NowMs();
+      }
+      else
+      {
+        m_lastFrameMs = NowMs();
+        m_adjustTime = 0.0;
       }
 
-      if (m_bStop)
-        break;
+      // Calculate sleep time
+      double sleepTimeMs = SleepTimeMs();
 
-      // Speed may have changed, update sleep time
-      nowMs = NowMs();
-      sleepTimeMs = SleepTimeMs(nowMs);
+      // Sleep at least 1 ms to avoid sleeping forever
+      while (sleepTimeMs > 1.0)
+      {
+        m_sleepEvent.WaitMSec(static_cast<unsigned int>(sleepTimeMs));
+
+        if (m_bStop)
+          break;
+
+        // Speed may have changed, update sleep time
+        sleepTimeMs = SleepTimeMs();
+      }
     }
-
-    // Calculate next frame time
-    nextFrameMs += FrameTimeMs();
-
-    // If sleep time goes negative, we fell behind, so fast-forward to now
-    if (sleepTimeMs < 0.0)
-      nextFrameMs = nowMs;
   }
 }
 
@@ -139,16 +118,22 @@ double CGameLoop::FrameTimeMs() const
   if (m_speedFactor != 0.0)
     return 1000.0 / m_fps / std::abs(m_speedFactor);
   else
-    return FOREVER_MS;
+    return 1000.0 / m_fps / 1.0;
 }
 
-double CGameLoop::SleepTimeMs(double nowMs) const
+double CGameLoop::SleepTimeMs() const
 {
   // Calculate next frame time
   const double nextFrameMs = m_lastFrameMs + FrameTimeMs();
 
   // Calculate sleep time
-  const double sleepTimeMs = nextFrameMs - nowMs;
+  double sleepTimeMs = (nextFrameMs - NowMs()) + m_adjustTime;
+
+  // Reset adjust time
+  m_adjustTime = 0.0;
+
+  // Positive or zero
+  sleepTimeMs = (sleepTimeMs >= 0.0 ? sleepTimeMs : 0.0);
 
   return sleepTimeMs;
 }
