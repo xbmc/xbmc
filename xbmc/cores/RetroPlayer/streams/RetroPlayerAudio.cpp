@@ -33,6 +33,8 @@
 using namespace KODI;
 using namespace RETRO;
 
+const double MAX_DELAY = 0.3; // seconds
+
 CRetroPlayerAudio::CRetroPlayerAudio(CRPProcessInfo& processInfo) :
   m_processInfo(processInfo),
   m_pAudioStream(nullptr),
@@ -85,11 +87,15 @@ bool CRetroPlayerAudio::OpenStream(const StreamProperties& properties)
   if (m_pAudioStream != nullptr)
     CloseStream();
 
-  CLog::Log(LOGINFO, "RetroPlayer[AUDIO]: Creating audio stream, sample rate = %d", iSampleRate);
 
   IAE* audioEngine = CServiceBroker::GetActiveAE();
   if (audioEngine == nullptr)
     return false;
+
+  CLog::Log(LOGINFO, "RetroPlayer[AUDIO]: Creating audio stream, format = %s, sample rate = %d, channels = %d",
+             CAEUtil::DataFormatToStr(pcmFormat)
+             , iSampleRate
+             , channelLayout.Count());
 
   AEAudioFormat audioFormat;
   audioFormat.m_dataFormat = pcmFormat;
@@ -118,8 +124,19 @@ void CRetroPlayerAudio::AddStreamData(const StreamPacket &packet)
   {
     if (m_pAudioStream)
     {
+      const double delaySecs = m_pAudioStream->GetDelay();
+
       const size_t frameSize = m_pAudioStream->GetChannelCount() * (CAEUtil::DataFormatToBits(m_pAudioStream->GetDataFormat()) >> 3);
-      m_pAudioStream->AddData(&audioPacket.data, 0, static_cast<unsigned int>(audioPacket.size / frameSize));
+
+      const unsigned int frameCount = static_cast<unsigned int>(audioPacket.size / frameSize);
+
+      if (delaySecs > MAX_DELAY)
+      {
+        m_pAudioStream->Flush();
+        CLog::Log(LOGDEBUG, "RetroPlayer[AUDIO]: Audio delay (%0.2f ms) is too high - flushing", delaySecs * 1000);
+      }
+
+      m_pAudioStream->AddData(&audioPacket.data, 0, frameCount);
     }
   }
 }
