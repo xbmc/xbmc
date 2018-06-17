@@ -35,8 +35,6 @@
 
 #include "utils/AMLUtils.h"
 
-//#define DEBUG_VERBOSE 1
-
 // This is an alternative to the linear weighted delay smoothing
 // advantages: only one history value needs to be stored
 // in tests the linear weighted average smoother yield better results
@@ -574,9 +572,7 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
 
 void CAESinkAUDIOTRACK::Deinitialize()
 {
-#ifdef DEBUG_VERBOSE
   CLog::Log(LOGDEBUG, "CAESinkAUDIOTRACK::Deinitialize");
-#endif
   // Restore volume
   if (m_volume != -1)
   {
