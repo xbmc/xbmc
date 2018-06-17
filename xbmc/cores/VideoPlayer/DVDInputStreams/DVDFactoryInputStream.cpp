@@ -139,7 +139,7 @@ std::shared_ptr<CDVDInputStream> CDVDFactoryInputStream::CreateInputStream(IVide
           finalUrl.SetProtocolOptions(origUrl.GetProtocolOptions());
           finalUrl.SetUserName(origUrl.GetUserName());
           finalUrl.SetPassword(origUrl.GetPassWord());
-          finalFileitem.SetPath(finalUrl.Get());
+          finalFileitem.SetDynPath(finalUrl.Get());
         }
         curlFile.Close();
       }
