@@ -161,6 +161,13 @@ std::shared_ptr<CDVDInputStream> CDVDFactoryInputStream::CreateInputStream(IVide
 
     if (URIUtils::IsProtocol(finalFileitem.GetPath(), "udp"))
       return std::shared_ptr<CDVDInputStreamFFmpeg>(new CDVDInputStreamFFmpeg(finalFileitem));
+
+    if (StringUtils::StartsWithNoCase(fileitem.GetPath(), "pvr://") && URIUtils::IsProtocol(finalFileitem.GetDynPath(), "http"))
+    {
+      auto inputStream = std::shared_ptr<CDVDInputStreamFFmpeg>(new CDVDInputStreamFFmpeg(finalFileitem));
+      inputStream->SetRealtime(true);
+      return inputStream;
+    }
   }
 
   // our file interface handles all these types of streams
