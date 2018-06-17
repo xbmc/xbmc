@@ -82,7 +82,10 @@ IRenderBuffer *CBaseRenderBufferPool::GetBuffer(size_t size)
 
   // Changing sizes is not implemented
   if (m_frameSize != size)
+  {
+    CLog::Log(LOGDEBUG, "RetroPlayer[RENDER]: buffer pool frame size change -- not implemented");
     return nullptr;
+  }
 
   IRenderBuffer *renderBuffer = nullptr;
 
@@ -124,7 +127,11 @@ void CBaseRenderBufferPool::Return(IRenderBuffer *buffer)
   buffer->SetLoaded(false);
   buffer->SetRendered(false);
 
-  m_free.emplace_back(buffer);
+  std::unique_ptr<IRenderBuffer> bufferPtr(buffer);
+
+  // Only reclaim buffers of the same size
+  if (buffer->GetFrameSize() == m_frameSize)
+    m_free.emplace_back(std::move(bufferPtr));
 }
 
 void CBaseRenderBufferPool::Prime(size_t bufferSize)
@@ -158,4 +165,6 @@ void CBaseRenderBufferPool::Flush()
   CSingleLock lock(m_bufferMutex);
 
   m_free.clear();
+  m_frameSize = 0;
+  m_bConfigured = false;
 }
