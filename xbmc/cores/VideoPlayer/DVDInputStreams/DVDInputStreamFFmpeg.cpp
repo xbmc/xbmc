@@ -155,3 +155,10 @@ std::string CDVDInputStreamFFmpeg::GetFileName()
   }
   return CDVDInputStream::GetFileName();
 }
+
+void CDVDInputStreamFFmpeg::SetRealtime(bool realtime)
+{
+    m_can_pause = false;
+    m_can_seek = false;
+    m_realtime = true;
+}

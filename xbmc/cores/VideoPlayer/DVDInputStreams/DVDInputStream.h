@@ -189,7 +189,7 @@ public:
 
   virtual bool IsRealtime() { return m_realtime; }
 
-  void SetRealtime(bool realtime) { m_realtime = realtime; }
+  virtual void SetRealtime(bool realtime) { m_realtime = realtime; }
 
   // interfaces
   virtual IDemux* GetIDemux() { return nullptr; }
