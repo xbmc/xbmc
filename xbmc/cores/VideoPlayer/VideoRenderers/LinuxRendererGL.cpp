@@ -303,6 +303,11 @@ bool CLinuxRendererGL::ConfigChanged(const VideoPicture &picture)
 void CLinuxRendererGL::AddVideoPicture(const VideoPicture &picture, int index, double currentClock)
 {
   CPictureBuffer &buf = m_buffers[index];
+  if (buf.videoBuffer)
+  {
+    CLog::LogF(LOGERROR, "unreleased video buffer");
+    buf.videoBuffer->Release();
+  }
   buf.videoBuffer = picture.videoBuffer;
   buf.videoBuffer->Acquire();
   buf.loaded = false;
@@ -461,9 +466,6 @@ void CLinuxRendererGL::LoadPlane(YUVPLANE& plane, int type,
 
 void CLinuxRendererGL::Flush()
 {
-  if (!m_bValidated)
-    return;
-
   glFinish();
 
   for (int i = 0 ; i < m_NumYV12Buffers ; i++)
