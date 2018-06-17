@@ -29,9 +29,10 @@ namespace ADDON
     std::string id;
     explicit AddonEvent(std::string id) : id(std::move(id)) {};
 
-  protected:
-    /* make sure nobody deletes a pointer to this class */
-    ~AddonEvent() = default;
+    // Note: Do not remove the virtual dtor. There are types derived from AddonEvent (see below)
+    //       and there are several places where 'typeid' is used to determine the runtime type of
+    //       AddonEvent references. And 'typeid' only works for polymorphic objects.
+    virtual ~AddonEvent() = default;
   };
 
   namespace AddonEvents
