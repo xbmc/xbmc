@@ -14965,7 +14965,7 @@ this.Kodi.module("LandingApp.Show", function(Show, App, Backbone, Marionette, $,
       }
       if ($hero.is(':visible') && this.rendered === this.settings.sections.length && this.fanarts.length > 0) {
         randomModel = this.fanarts[Math.floor(Math.random() * this.fanarts.length)];
-        $hero.css('background-image', 'url(' + randomModel.fanart + ')').attr('href', '#' + randomModel.url).attr('title', randomModel.title);
+        $hero.css('background-image', 'url("' + randomModel.fanart + '")').attr('href', '#' + randomModel.url).attr('title', randomModel.title);
         return $('body').removeClass('landing-loading');
       }
     };
