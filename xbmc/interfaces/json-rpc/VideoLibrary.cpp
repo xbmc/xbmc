@@ -933,6 +933,7 @@ bool CVideoLibrary::FillFileItem(const std::string &strFilename, CFileItemPtr &i
     if (videodatabase.LoadVideoInfo(strFilename, details))
     {
       item->SetFromVideoInfoTag(details);
+      item->SetDynPath(strFilename);
       filled = true;
     }
   }
