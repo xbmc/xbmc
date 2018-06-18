@@ -31,7 +31,17 @@ void CWinIdleTimer::StartZero()
   if (!g_application.IsDPMSActive())
   {
     if (!displayRequest)
-      displayRequest = DisplayRequest();
+    {
+      try
+      {
+        // this may throw an exception
+        displayRequest = DisplayRequest();
+      }
+      catch (const winrt::hresult_error&) 
+      {
+        return;
+      }
+    }
 
     auto workItem = DispatchedHandler([&]()
     {

@@ -176,8 +176,13 @@ std::string CSpecialProtocol::TranslatePath(const CURL &url)
   else if (RootDir == "videoplaylists")
     translatedPath = URIUtils::AddFileToFolder(CUtil::VideoPlaylistsLocation(), FileName);
   else if (RootDir == "skin")
+  {
+    auto winSystem = CServiceBroker::GetWinSystem();
+    // windowing may not have been initialized yet
+    if (!winSystem)
+      return url.Get();
     translatedPath = URIUtils::AddFileToFolder(CServiceBroker::GetWinSystem()->GetGfxContext().GetMediaDir(), FileName);
-
+  }
   // from here on, we have our "real" special paths
   else if (RootDir == "xbmc" ||
            RootDir == "xbmcbin" ||
