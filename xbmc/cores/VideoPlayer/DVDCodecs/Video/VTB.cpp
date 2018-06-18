@@ -167,11 +167,7 @@ CDecoder::~CDecoder()
 
 void CDecoder::Close()
 {
-  if (m_avctx)
-  {
-    av_videotoolbox_default_free(m_avctx);
-    m_avctx = nullptr;
-  }
+
 }
 
 bool CDecoder::Open(AVCodecContext *avctx, AVCodecContext* mainctx, enum AVPixelFormat fmt)
@@ -179,13 +175,13 @@ bool CDecoder::Open(AVCodecContext *avctx, AVCodecContext* mainctx, enum AVPixel
   if (!CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_USEVTB))
     return false;
 
-  if (av_videotoolbox_default_init(avctx) < 0)
-    return false;
-
+  AVBufferRef *deviceRef =  av_hwdevice_ctx_alloc(AV_HWDEVICE_TYPE_VIDEOTOOLBOX);
+  AVBufferRef *framesRef = av_hwframe_ctx_alloc(deviceRef);
+  AVHWFramesContext *framesCtx = (AVHWFramesContext*)framesRef->data;
+  framesCtx->format = AV_PIX_FMT_VIDEOTOOLBOX;
+  framesCtx->sw_format = AV_PIX_FMT_NV12;
+  avctx->hw_frames_ctx = framesRef;
   m_avctx = avctx;
-
-  mainctx->pix_fmt = fmt;
-  mainctx->hwaccel_context = avctx->hwaccel_context;
 
   m_processInfo.SetVideoDeintMethod("none");
 
