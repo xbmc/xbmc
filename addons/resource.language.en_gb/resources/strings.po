@@ -7191,7 +7191,31 @@ msgctxt "#13461"
 msgid "Enable this option to use hardware acceleration for the HEVC codec. If disabled the CPU will be used instead."
 msgstr ""
 
-#empty strings from id 13462 to 13504
+#. Option for setting the PRIME render method
+#: system/settings/settings.xml
+msgctxt "#13462"
+msgid "PRIME Render Method"
+msgstr ""
+
+#. Description of setting with label #13462 "PRIME Render Method"
+#: system/settings/settings.xml
+msgctxt "#13463"
+msgid "This option switches between direct-to-plane and EGL rendering methods."
+msgstr ""
+
+#. String for options 1 of setting with label #13462 "PRIME Render Method"
+#: system/settings/settings.xml
+msgctxt "#13464"
+msgid "Direct To Plane"
+msgstr ""
+
+#. String for options 2 of setting with label #13462 "PRIME Render Method"
+#: system/settings/settings.xml
+msgctxt "#13465"
+msgid "EGL"
+msgstr ""
+
+#empty strings from id 13466 to 13504
 
 #: system/settings/settings.xml
 msgctxt "#13505"

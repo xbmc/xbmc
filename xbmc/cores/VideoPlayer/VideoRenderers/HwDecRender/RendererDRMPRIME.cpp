@@ -23,7 +23,11 @@
 #include "cores/VideoPlayer/VideoRenderers/RenderCapture.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFlags.h"
+#include "ServiceBroker.h"
+#include "settings/Settings.h"
 #include "utils/log.h"
+
+const std::string SETTING_VIDEOPLAYER_USEPRIMERENDERER = "videoplayer.useprimerenderer";
 
 static CWinSystemGbmGLESContext *m_pWinSystem;
 
@@ -40,7 +44,10 @@ CRendererDRMPRIME::~CRendererDRMPRIME()
 CBaseRenderer* CRendererDRMPRIME::Create(CVideoBuffer* buffer)
 {
   if (buffer && dynamic_cast<CVideoBufferDRMPRIME*>(buffer))
-    return new CRendererDRMPRIME(m_pWinSystem->m_DRM);
+  {
+    if (CServiceBroker::GetSettings().GetInt(SETTING_VIDEOPLAYER_USEPRIMERENDERER) == 0)
+      return new CRendererDRMPRIME(m_pWinSystem->m_DRM);
+  }
 
   return nullptr;
 }

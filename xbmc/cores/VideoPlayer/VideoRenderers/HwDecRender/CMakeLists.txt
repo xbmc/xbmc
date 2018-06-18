@@ -50,8 +50,12 @@ if(CORE_SYSTEM_NAME STREQUAL android)
 endif()
 
 if(CORE_PLATFORM_NAME_LC STREQUAL gbm)
-  list(APPEND SOURCES RendererDRMPRIME.cpp)
-  list(APPEND HEADERS RendererDRMPRIME.h)
+  list(APPEND SOURCES RendererDRMPRIME.cpp
+                      RendererDRMPRIMEGLES.cpp
+                      DRMPRIMEEGL.cpp)
+  list(APPEND HEADERS RendererDRMPRIME.h
+                      RendererDRMPRIMEGLES.h
+                      DRMPRIMEEGL.h)
 endif()
 
 # we might want to build on linux systems
