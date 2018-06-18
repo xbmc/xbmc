@@ -387,41 +387,26 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
 
 bool CFileItemHandler::FillFileItemList(const CVariant &parameterObject, CFileItemList &list)
 {
-  CAudioLibrary::FillFileItemList(parameterObject, list);
-  CVideoLibrary::FillFileItemList(parameterObject, list);
-  CFileOperations::FillFileItemList(parameterObject, list);
-
-  std::string file = parameterObject["file"].asString();
-  if (!file.empty() && (URIUtils::IsURL(file) || (CFile::Exists(file) && !CDirectory::Exists(file))))
+  if (parameterObject.isMember("file"))
   {
-    bool added = false;
-    for (int index = 0; index < list.Size(); index++)
-    {
-      if (list[index]->GetPath() == file || list[index]->GetMusicInfoTag()->GetURL() == file || list[index]->GetVideoInfoTag()->GetPath() == file)
-      {
-        added = true;
-        break;
-      }
-    }
-
-    if (!added)
+    std::string file = parameterObject["file"].asString();
+    if (!file.empty() && (URIUtils::IsURL(file) || (CFile::Exists(file) && !CDirectory::Exists(file))))
     {
       CFileItemPtr item = CFileItemPtr(new CFileItem(file, false));
-      if (item->IsPicture())
-      {
-        CPictureInfoTag picture;
-        picture.Load(item->GetPath());
-        *item->GetPictureInfoTag() = picture;
-      }
-      if (item->GetLabel().empty())
-      {
-        item->SetLabel(CUtil::GetTitleFromPath(file, false));
-        if (item->GetLabel().empty())
-          item->SetLabel(URIUtils::GetFileName(file));
-      }
       list.Add(item);
     }
   }
+  else if (parameterObject.isMember("directory"))
+    CFileOperations::FillFileItemList(parameterObject, list);
+  else if (parameterObject.isMember("movieid")
+        || parameterObject.isMember("episodeid")
+        || parameterObject.isMember("musicvideoid"))
+    CVideoLibrary::FillFileItemList(parameterObject, list);
+  else if (parameterObject.isMember("artistid")
+        || parameterObject.isMember("albumid")
+        || parameterObject.isMember("songid")
+        || parameterObject.isMember("genreid"))
+    CAudioLibrary::FillFileItemList(parameterObject, list);
 
   return (list.Size() > 0);
 }
