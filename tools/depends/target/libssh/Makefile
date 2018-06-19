@@ -38,10 +38,10 @@ endif
 	cd $(PLATFORM)/build; $(CMAKE) -DWITH_STATIC_LIB=1 -DWITH_EXAMPLES=0 -DTHREADS_PTHREAD_ARG=0 $(CMAKE_EXTRAFLAGS) -DWITH_GSSAPI=0 VERBOSE=1 ..
 
 $(LIBDYLIB): $(PLATFORM)
-	make -j 1 -C $(PLATFORM)/build
+	$(MAKE) -j 1 -C $(PLATFORM)/build
 
 .installed-$(PLATFORM): $(LIBDYLIB)
-	make -C $(PLATFORM)/build install
+	$(MAKE) -C $(PLATFORM)/build install
 	rm -f $(PREFIX)/lib/libssh.so $(PREFIX)/lib/libssh.so.4.3.0 $(PREFIX)/lib/libssh.so.4
 	rm -f $(PREFIX)/lib/libssh.*dylib*
 	rm -f $(PREFIX)/lib/libssh_threads.*dylib*
