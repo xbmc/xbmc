@@ -1223,6 +1223,7 @@ int CUtil::GetMatchingSource(const std::string& strPath1, VECSOURCES& VECSOURCES
   // and ends with a trailing slash so as not to match a substring
   CURL urlDest(strPath);
   urlDest.SetOptions("");
+  urlDest.SetProtocolOptions("");
   std::string strDest = urlDest.GetWithoutUserDetails();
   ForceForwardSlashes(strDest);
   if (!URIUtils::HasSlashAtEnd(strDest))
@@ -1259,6 +1260,7 @@ int CUtil::GetMatchingSource(const std::string& strPath1, VECSOURCES& VECSOURCES
       // and ends with a trailing slash so as not to match a substring
       CURL urlShare(path);
       urlShare.SetOptions("");
+      urlShare.SetProtocolOptions("");
       std::string strShare = urlShare.GetWithoutUserDetails();
       ForceForwardSlashes(strShare);
       if (!URIUtils::HasSlashAtEnd(strShare))
