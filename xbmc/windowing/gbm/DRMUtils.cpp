@@ -595,6 +595,11 @@ bool CDRMUtils::InitDrm()
   return true;
 }
 
+void CDRMUtils::HideCursor()
+{
+  drmModeMoveCursor(m_fd, m_crtc->crtc->crtc_id, 0, m_mode->hdisplay);
+}
+
 bool CDRMUtils::RestoreOriginalMode()
 {
   if(!m_orig_crtc)

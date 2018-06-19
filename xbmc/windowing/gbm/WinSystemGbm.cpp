@@ -100,6 +100,9 @@ bool CWinSystemGbm::InitWindowSystem()
     }
   }
 
+  /* move mouse cursor of underlying window system in the lower left corner */
+  m_DRM->HideCursor();
+
   if (!m_GBM->CreateDevice(m_DRM->m_fd))
   {
     m_GBM.reset();

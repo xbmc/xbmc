@@ -73,6 +73,7 @@ public:
   virtual bool SetActive(bool active) { return false; };
   virtual bool InitDrm();
   virtual void DestroyDrm();
+  virtual void HideCursor();
 
   std::string GetModule() const { return m_module; }
   std::string GetDevicePath() const { return m_device_path; }
