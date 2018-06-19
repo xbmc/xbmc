@@ -35,8 +35,6 @@
 
 #include "utils/AMLUtils.h"
 
-//#define DEBUG_VERBOSE 1
-
 // This is an alternative to the linear weighted delay smoothing
 // advantages: only one history value needs to be stored
 // in tests the linear weighted average smoother yield better results
@@ -181,16 +179,38 @@ static int AEChannelMapToAUDIOTRACKChannelMask(CAEChannelInfo info)
 jni::CJNIAudioTrack *CAESinkAUDIOTRACK::CreateAudioTrack(int stream, int sampleRate, int channelMask, int encoding, int bufferSize)
 {
   jni::CJNIAudioTrack *jniAt = NULL;
-  m_jniAudioFormat = encoding;
 
   try
   {
-    jniAt = new CJNIAudioTrack(stream,
-                               sampleRate,
-                               channelMask,
-                               encoding,
-                               bufferSize,
-                               CJNIAudioTrack::MODE_STREAM);
+    if (CJNIBase::GetSDKVersion() >= 21)
+    {
+      CJNIAudioAttributesBuilder attrBuilder;
+      attrBuilder.setContentType(stream == CJNIAudioManager::STREAM_MUSIC
+        ? CJNIAudioAttributes::CONTENT_TYPE_MUSIC
+        : CJNIAudioAttributes::CONTENT_TYPE_MOVIE);
+      attrBuilder.setUsage(CJNIAudioAttributes::USAGE_MEDIA);
+//      attrBuilder.setFlags(CJNIAudioAttributes::FLAG_AUDIBILITY_ENFORCED);
+
+      CJNIAudioFormatBuilder fmtBuilder;
+      fmtBuilder.setChannelMask(channelMask);
+      fmtBuilder.setEncoding(encoding);
+      fmtBuilder.setSampleRate(sampleRate);
+
+      jniAt = new CJNIAudioTrack(attrBuilder.build(),
+                                 fmtBuilder.build(),
+                                 bufferSize,
+                                 CJNIAudioTrack::MODE_STREAM,
+                                 CJNIAudioManager::AUDIO_SESSION_ID_GENERATE);
+    }
+    else
+    {
+      jniAt = new CJNIAudioTrack(stream,
+                                 sampleRate,
+                                 channelMask,
+                                 encoding,
+                                 bufferSize,
+                                 CJNIAudioTrack::MODE_STREAM);
+    }
   }
   catch (const std::invalid_argument& e)
   {
@@ -282,22 +302,7 @@ bool CAESinkAUDIOTRACK::VerifySinkConfiguration(int sampleRate, int channelMask,
   if (minBufferSize < 0)
     return false;
 
- // Try to construct a jniSink
-  jni::CJNIAudioTrack *jniAt = NULL;
-
-  try
-  {
-    jniAt = new CJNIAudioTrack(CJNIAudioManager::STREAM_MUSIC,
-                               sampleRate,
-                               channelMask,
-                               encoding,
-                               minBufferSize,
-                               CJNIAudioTrack::MODE_STREAM);
-  }
-  catch (const std::invalid_argument& e)
-  {
-    CLog::Log(LOGINFO, "AESinkAUDIOTRACK - AudioTrack creation faild: Encoding: %d ChannelMask: %d Error: %s", encoding, channelMask, e.what());
-  }
+  jni::CJNIAudioTrack *jniAt = CreateAudioTrack(CJNIAudioManager::STREAM_MUSIC, sampleRate, channelMask, encoding, minBufferSize);
 
   bool success = (jniAt && jniAt->getState() == CJNIAudioTrack::STATE_INITIALIZED);
 
@@ -423,7 +428,7 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
 
   while (!m_at_jni)
   {
-    CLog::Log(LOGNOTICE, "Trying to open: %u samplerate %d channelMask %d encoding", m_sink_sampleRate, atChannelMask, m_encoding);
+    CLog::Log(LOGNOTICE, "Trying to open: samplerate: %u, channelMask: %d, encoding: %d", m_sink_sampleRate, atChannelMask, m_encoding);
     int min_buffer = CJNIAudioTrack::getMinBufferSize(m_sink_sampleRate,
                                                          atChannelMask,
                                                          m_encoding);
@@ -529,6 +534,7 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
     CLog::Log(LOGDEBUG, "Created Audiotrackbuffer with playing time of %lf ms min buffer size: %u bytes",
                          m_audiotrackbuffer_sec * 1000, m_min_buffer_size);
 
+    m_jniAudioFormat = m_encoding;
     m_at_jni = CreateAudioTrack(stream, m_sink_sampleRate, atChannelMask,
                                 m_encoding, m_min_buffer_size);
 
@@ -574,9 +580,8 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
 
 void CAESinkAUDIOTRACK::Deinitialize()
 {
-#ifdef DEBUG_VERBOSE
   CLog::Log(LOGDEBUG, "CAESinkAUDIOTRACK::Deinitialize");
-#endif
+
   // Restore volume
   if (m_volume != -1)
   {
