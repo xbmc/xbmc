@@ -55,7 +55,7 @@ distclean:
 	mkdir -p $(PLATFORM)
 ifeq ($(PREFIX),)
 	@echo
-	@echo "ERROR: please set PREFIX to the xbmc install path e.g. make PREFIX=/usr/local"
+	@echo "ERROR: please set PREFIX to the xbmc install path e.g. $(MAKE) PREFIX=/usr/local"
 	@exit 1
 endif
 ifeq ($(CROSS_COMPILING),yes)
@@ -66,7 +66,7 @@ endif
          $(CMAKE) -DCMAKE_INSTALL_PREFIX=$(INSTALL_PREFIX) $(CMAKE_EXTRA) \
          $(TOOLCHAIN) $(SRC_OVERRIDE) \
          -DADDONS_TO_BUILD="$(ADDONS)" $(ADDON_PROJECT_DIR) -DBUILD_DIR=$(BUILDDIR)/$(PLATFORM)/build ;\
-         for addon in $$(make supported_addons | awk '/^ALL_ADDONS_BUILDING: .*$$/ { first = $$1; $$1 = ""; print $$0 }'); do \
+         for addon in $$($(MAKE) supported_addons | awk '/^ALL_ADDONS_BUILDING: .*$$/ { first = $$1; $$1 = ""; print $$0 }'); do \
            $(MAKE) $$addon && echo $$addon >> $(ADDON_PROJECT_DIR)/.success || echo $$addon >> $(ADDON_PROJECT_DIR)/.failure ;\
          done
 ifneq ($(CROSS_COMPILING),yes)
