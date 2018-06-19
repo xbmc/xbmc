@@ -29,8 +29,6 @@
 
 const std::string SETTING_VIDEOPLAYER_USEPRIMERENDERER = "videoplayer.useprimerenderer";
 
-static CWinSystemGbmGLESContext *m_pWinSystem;
-
 CRendererDRMPRIME::CRendererDRMPRIME(std::shared_ptr<CDRMUtils> drm)
   : m_DRM(drm)
 {
@@ -43,19 +41,20 @@ CRendererDRMPRIME::~CRendererDRMPRIME()
 
 CBaseRenderer* CRendererDRMPRIME::Create(CVideoBuffer* buffer)
 {
-  if (buffer && dynamic_cast<CVideoBufferDRMPRIME*>(buffer))
+  if (buffer && dynamic_cast<CVideoBufferDRMPRIME*>(buffer) &&
+      CServiceBroker::GetSettings().GetInt(SETTING_VIDEOPLAYER_USEPRIMERENDERER) == 0)
   {
-    if (CServiceBroker::GetSettings().GetInt(SETTING_VIDEOPLAYER_USEPRIMERENDERER) == 0)
-      return new CRendererDRMPRIME(m_pWinSystem->m_DRM);
+    CWinSystemGbmGLESContext* winSystem = dynamic_cast<CWinSystemGbmGLESContext*>(CServiceBroker::GetWinSystem());
+    if (winSystem)
+      return new CRendererDRMPRIME(winSystem->m_DRM);
   }
 
   return nullptr;
 }
 
-bool CRendererDRMPRIME::Register(CWinSystemGbmGLESContext *winSystem)
+bool CRendererDRMPRIME::Register()
 {
   VIDEOPLAYER::CRendererFactory::RegisterRenderer("drm_prime", CRendererDRMPRIME::Create);
-  m_pWinSystem = winSystem;
   return true;
 }
 
@@ -97,7 +96,7 @@ void CRendererDRMPRIME::AddVideoPicture(const VideoPicture& picture, int index, 
 
 void CRendererDRMPRIME::Reset()
 {
-  for (int i = 0; i < m_numRenderBuffers; i++)
+  for (int i = 0; i < NUM_BUFFERS; i++)
     ReleaseBuffer(i);
 
   m_iLastRenderBuffer = -1;
@@ -126,9 +125,7 @@ bool CRendererDRMPRIME::NeedBuffer(int index)
 CRenderInfo CRendererDRMPRIME::GetRenderInfo()
 {
   CRenderInfo info;
-  info.max_buffer_size = m_numRenderBuffers;
-  info.optimal_buffer_size = m_numRenderBuffers;
-  info.opaque_pointer = (void*)this;
+  info.max_buffer_size = NUM_BUFFERS;
   return info;
 }
 
