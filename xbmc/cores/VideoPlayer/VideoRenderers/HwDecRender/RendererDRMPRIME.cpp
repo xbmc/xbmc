@@ -96,7 +96,7 @@ void CRendererDRMPRIME::AddVideoPicture(const VideoPicture& picture, int index, 
 
 void CRendererDRMPRIME::Reset()
 {
-  for (int i = 0; i < m_numRenderBuffers; i++)
+  for (int i = 0; i < NUM_BUFFERS; i++)
     ReleaseBuffer(i);
 
   m_iLastRenderBuffer = -1;
@@ -125,9 +125,7 @@ bool CRendererDRMPRIME::NeedBuffer(int index)
 CRenderInfo CRendererDRMPRIME::GetRenderInfo()
 {
   CRenderInfo info;
-  info.max_buffer_size = m_numRenderBuffers;
-  info.optimal_buffer_size = m_numRenderBuffers;
-  info.opaque_pointer = (void*)this;
+  info.max_buffer_size = NUM_BUFFERS;
   return info;
 }
 
