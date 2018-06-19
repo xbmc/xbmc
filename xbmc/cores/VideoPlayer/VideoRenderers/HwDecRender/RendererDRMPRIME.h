@@ -33,7 +33,7 @@ public:
 
   // Registration
   static CBaseRenderer* Create(CVideoBuffer* buffer);
-  static bool Register(CWinSystemGbmGLESContext *winSystem);
+  static bool Register();
 
   // Player functions
   bool Configure(const VideoPicture& picture, float fps, unsigned int orientation) override;

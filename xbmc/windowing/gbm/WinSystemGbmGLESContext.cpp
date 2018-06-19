@@ -69,7 +69,7 @@ bool CWinSystemGbmGLESContext::InitWindowSystem()
   }
 
   CRendererDRMPRIMEGLES::Register();
-  CRendererDRMPRIME::Register(this);
+  CRendererDRMPRIME::Register();
   CDVDVideoCodecDRMPRIME::Register();
 
   return true;
