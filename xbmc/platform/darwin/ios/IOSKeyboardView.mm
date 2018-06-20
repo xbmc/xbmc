@@ -127,7 +127,7 @@ static CEvent keyboardFinishedEvent;
   CGFloat headingW = 0;
   if (_heading.text and _heading.text.length > 0)
   {
-    CGSize headingSize = [_heading.text sizeWithFont:[UIFont systemFontOfSize:[UIFont systemFontSize]]];
+    CGSize headingSize = [_heading.text sizeWithAttributes: @{NSFontAttributeName: [UIFont systemFontOfSize:[UIFont systemFontSize]]}];
     headingW = MIN(self.bounds.size.width/2, headingSize.width+30);
   }
   CGFloat kbHeight = _kbRect.size.height;
