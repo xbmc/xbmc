@@ -394,9 +394,9 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
           }
           return;
         case CActiveAEDataProtocol::FREESTREAM:
-          CActiveAEStream *stream;
-          stream = *(CActiveAEStream**)msg->data;
-          DiscardStream(stream);
+          MsgStreamFree *msgStreamFree;
+          msgStreamFree = *(MsgStreamFree**)msg->data;
+          DiscardStream(msgStreamFree->stream);
           msg->Reply(CActiveAEDataProtocol::ACC);
           return;
         case CActiveAEDataProtocol::FREESOUND:
@@ -404,6 +404,7 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
           DiscardSound(sound);
           return;
         case CActiveAEDataProtocol::DRAINSTREAM:
+          CActiveAEStream *stream;
           stream = *(CActiveAEStream**)msg->data;
           stream->m_drain = true;
           stream->m_processingBuffers->SetDrain(true);
@@ -775,8 +776,9 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
           m_state = AE_TOP_CONFIGURED_PLAY;
           return;
         case CActiveAEDataProtocol::FREESTREAM:
-          stream = *(CActiveAEStream**)msg->data;
-          DiscardStream(stream);
+          MsgStreamFree *msgStreamFree;
+          msgStreamFree = reinterpret_cast<MsgStreamFree*>(msg->data);
+          DiscardStream(msgStreamFree->stream);
           msg->Reply(CActiveAEDataProtocol::ACC);
           if (m_streams.empty())
           {
@@ -786,7 +788,10 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
             {
               AEDelayStatus status;
               m_stats.GetDelay(status);
-              m_extDrainTimer.Set(status.GetDelay() * 1000);
+              if (msgStreamFree->finish)
+                m_extDrainTimer.Set(status.GetDelay() * 1000);
+              else
+                m_extDrainTimer.Set(status.GetDelay() * 1000 + 1000);
             }
             m_extDrain = true;
           }
@@ -3241,12 +3246,16 @@ IAEStream *CActiveAE::MakeStream(AEAudioFormat &audioFormat, unsigned int option
   return NULL;
 }
 
-bool CActiveAE::FreeStream(IAEStream *stream)
+bool CActiveAE::FreeStream(IAEStream *stream, bool finish)
 {
+  MsgStreamFree msg;
+  msg.stream = static_cast<CActiveAEStream*>(stream);
+  msg.finish = finish;
+
   Message *reply;
   if (m_dataPort.SendOutMessageSync(CActiveAEDataProtocol::FREESTREAM,
                                     &reply,1000,
-                                    &stream, sizeof(IAEStream*)))
+                                    &msg, sizeof(MsgStreamFree)))
   {
     bool success = reply->signal == CActiveAEControlProtocol::ACC;
     reply->Release();

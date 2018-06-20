@@ -143,6 +143,12 @@ struct MsgStreamNew
   IAEClockCallback *clock;
 };
 
+struct MsgStreamFree
+{
+  CActiveAEStream *stream;
+  bool finish; // if true switch back to gui sound mode
+};
+
 struct MsgStreamSample
 {
   CSampleBuffer *buffer;
@@ -245,7 +251,7 @@ public:
 
   /* returns a new stream for data in the specified format */
   IAEStream *MakeStream(AEAudioFormat &audioFormat, unsigned int options = 0, IAEClockCallback *clock = NULL) override;
-  bool FreeStream(IAEStream *stream) override;
+  bool FreeStream(IAEStream *stream, bool finish) override;
 
   /* returns a new sound object */
   IAESound *MakeSound(const std::string& file) override;

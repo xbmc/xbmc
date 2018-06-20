@@ -48,7 +48,7 @@ public:
   void Resume();
   bool Create(const DVDAudioFrame &audioframe, AVCodecID codec, bool needresampler);
   bool IsValidFormat(const DVDAudioFrame &audioframe);
-  void Destroy();
+  void Destroy(bool finish);
   unsigned int AddPackets(const DVDAudioFrame &audioframe);
   double GetPlayingPts();
   double GetCacheTime();
