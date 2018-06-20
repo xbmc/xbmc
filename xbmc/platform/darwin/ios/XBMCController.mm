@@ -760,8 +760,20 @@ XBMCController *g_xbmcController;
 //--------------------------------------------------------------
 - (CGSize) getScreenSize
 {
-  screensize.width  = m_glView.bounds.size.width * screenScale;
-  screensize.height = m_glView.bounds.size.height * screenScale;
+  __block CGSize tmp;
+  if ([NSThread isMainThread])
+  {
+    tmp.width  = m_glView.bounds.size.width * screenScale;
+    tmp.height = m_glView.bounds.size.height * screenScale;
+  }
+  else
+  {
+    dispatch_sync(dispatch_get_main_queue(), ^{
+      tmp.width  = m_glView.bounds.size.width * screenScale;
+      tmp.height = m_glView.bounds.size.height * screenScale;
+    });
+  }
+  screensize = tmp;
   return screensize;
 }
 //--------------------------------------------------------------

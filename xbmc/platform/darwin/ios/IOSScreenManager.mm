@@ -26,6 +26,7 @@
 #include "threads/Event.h"
 #include "Application.h"
 #include "windowing/WinSystem.h"
+#include "windowing/osx/WinSystemIOS.h"
 #include "settings/DisplaySettings.h"
 #include "ServiceBroker.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
@@ -271,16 +272,23 @@ static CEvent screenChangeEvent;
 {
   //if we are on external screen and he was disconnected
   //change back to internal screen
-  if([[UIScreen screens] count] == 1 && _screenIdx != 0)
+  if (_screenIdx != 0)
   {
-    RESOLUTION_INFO res = CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP);//internal screen default res
-    CServiceBroker::GetWinSystem()->SetFullScreen(true, res, false);
+    CWinSystemIOS *winSystem = (CWinSystemIOS *)CServiceBroker::GetWinSystem();
+    if (winSystem != nullptr)
+    {
+      winSystem->MoveToTouchscreen();
+    }
   }
 }
 //--------------------------------------------------------------
 + (void) updateResolutions
 {
-  CServiceBroker::GetWinSystem()->UpdateResolutions();
+  CWinSystemBase *winSystem = CServiceBroker::GetWinSystem();
+  if (winSystem != nullptr)
+  {
+    winSystem->UpdateResolutions();
+  }
 }
 //--------------------------------------------------------------
 - (void) dealloc

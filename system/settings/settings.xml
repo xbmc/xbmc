@@ -2008,6 +2008,7 @@
               <condition>HAVE_WAYLAND</condition>
               <condition>HAVE_OSX</condition>
               <condition>HAS_DX</condition>
+              <condition>HAVE_IOS</condition>
             </or>
           </requirement>
           <level>0</level>
