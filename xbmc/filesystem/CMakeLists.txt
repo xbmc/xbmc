@@ -155,13 +155,6 @@ if(NFS_FOUND)
                       NFSFile.h)
 endif()
 
-if(SSH_FOUND)
-  list(APPEND SOURCES SFTPDirectory.cpp
-                      SFTPFile.cpp)
-  list(APPEND SOURCES SFTPDirectory.h
-                      SFTPFile.h)
-endif()
-
 if(ENABLE_UPNP)
   list(APPEND SOURCES NptXbmcFile.cpp
                       UPnPDirectory.cpp

@@ -982,6 +982,7 @@ bool URIUtils::IsInternetStream(const CURL& url, bool bStrictCheck /* = false */
     return IsInternetStream(CStackDirectory::GetFirstStackedFile(url.Get()));
 
   // Special case these
+  //! @todo sftp special case has to be handled by vfs addon
   if (url.IsProtocol("ftp") || url.IsProtocol("ftps")  ||
       url.IsProtocol("dav") || url.IsProtocol("davs")  ||
       url.IsProtocol("sftp"))

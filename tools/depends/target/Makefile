@@ -12,7 +12,7 @@ DEPENDS = \
 	libxml2 rapidjson libmicrohttpd mariadb libffi \
 	python27 libshairplay libfmt \
 	libplist libcec libbluray tinyxml \
-	libssh taglib libusb libnfs \
+	taglib libusb libnfs \
 	pythonmodule-pil pythonmodule-pycryptodome pythonmodule-setuptools \
 	libxslt ffmpeg platform crossguid \
         libdvdread libdvdnav libdvdcss p8-platform
@@ -99,7 +99,6 @@ libcdio: $(ICONV)
 libcdio-gplv3: $(ICONV)
 libplist: $(ZLIB)
 libbluray: $(ICONV) libxml2
-libssh: libgcrypt openssl $(ZLIB)
 mariadb: openssl $(ICONV) $(ZLIB)
 libzip: $(ZLIB)
 libpng: $(ZLIB)

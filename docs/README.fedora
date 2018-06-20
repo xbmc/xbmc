@@ -50,7 +50,7 @@ fribidi-devel giflib-devel \
 libjpeg-turbo-devel libtool-ltdl-devel lzo-devel libmicrohttpd-devel \
 libmpc-devel mariadb-devel libnfs-devel \
 pcre-devel libplist-devel libpng12-devel \
-shairplay-devel libsmbclient-devel sqlite-devel libssh-devel openssl-devel ffmpeg-devel \
+shairplay-devel libsmbclient-devel sqlite-devel openssl-devel ffmpeg-devel \
 taglib-devel tinyxml-devel libtool-ltdl-devel libudev-devel \
 libusb-devel libva-devel libvdpau-devel libxml2-devel \
 libXmu-devel libXrandr-devel libxslt-devel libXt-devel rapidjson-devel \

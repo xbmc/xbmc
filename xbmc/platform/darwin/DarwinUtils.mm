@@ -395,22 +395,6 @@ int  CDarwinUtils::GetExecutablePath(char* path, size_t *pathsize)
   return 0;
 }
 
-const char* CDarwinUtils::GetUserHomeDirectory(void)
-{
-  static std::string appHomeFolder;
-  if (appHomeFolder.empty())
-  {
-#if defined(TARGET_DARWIN_IOS)
-    appHomeFolder = URIUtils::AddFileToFolder(CDarwinUtils::GetAppRootFolder(), CCompileInfo::GetAppName());
-#else
-    appHomeFolder = URIUtils::AddFileToFolder(getenv("HOME"), "Library/Application Support");
-    appHomeFolder = URIUtils::AddFileToFolder(appHomeFolder, CCompileInfo::GetAppName());
-#endif
-  }
-
-  return appHomeFolder.c_str();
-}
-
 const char* CDarwinUtils::GetAppRootFolder(void)
 {
   static std::string rootFolder = "";
