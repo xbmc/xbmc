@@ -110,8 +110,6 @@ const CGFloat timeFadeSecs                    = 2.0;
     [_internalWindow makeKeyAndVisible];
     [_internalWindow setRootViewController:self];
 
-    [self setWantsFullScreenLayout:YES];
-
     [self startSleepTimer];//will fade from black too
   }
   return self;
