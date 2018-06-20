@@ -79,7 +79,8 @@ struct DemuxPacket;
 #define PVR_STREAM_MAX_PROPERTIES     20
 #define PVR_STREAM_PROPERTY_STREAMURL "streamurl" /*!< @brief the URL of the stream that should be played. */
 #define PVR_STREAM_PROPERTY_INPUTSTREAMADDON  "inputstreamaddon" /*!< @brief the name of the inputstream add-on that should be used by Kodi to play the stream denoted by PVR_STREAM_PROPERTY_STREAMURL. Leave blank to use Kodi's built-in playing capabilities. */
-#define PVR_STREAM_PROPERTY_MIMETYPE "mimetype" /*!< @brief the Mime-Type of the stream that should be played. */
+#define PVR_STREAM_PROPERTY_MIMETYPE "mimetype" /*!< @brief the MIME type of the stream that should be played. */
+#define PVR_STREAM_PROPERTY_ISREALTIMESTREAM "isrealtimestream" /*!< @brief "true" to denote that the stream that should be played is a realtime stream. Any other value indicates that this is no realtime stream.*/
 
 /* using the default avformat's MAX_STREAMS value to be safe */
 #define PVR_STREAM_MAX_STREAMS 20
