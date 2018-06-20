@@ -108,7 +108,7 @@ COMXAudio::~COMXAudio()
   Deinitialize();
 
   if (m_pAudioStream)
-    CServiceBroker::GetActiveAE()->FreeStream(m_pAudioStream);
+    CServiceBroker::GetActiveAE()->FreeStream(m_pAudioStream, true);
 }
 
 bool COMXAudio::PortSettingsChanged()
