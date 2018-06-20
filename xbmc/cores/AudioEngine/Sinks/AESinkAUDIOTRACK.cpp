@@ -185,11 +185,8 @@ jni::CJNIAudioTrack *CAESinkAUDIOTRACK::CreateAudioTrack(int stream, int sampleR
     if (CJNIBase::GetSDKVersion() >= 21)
     {
       CJNIAudioAttributesBuilder attrBuilder;
-      attrBuilder.setContentType(stream == CJNIAudioManager::STREAM_MUSIC
-        ? CJNIAudioAttributes::CONTENT_TYPE_MUSIC
-        : CJNIAudioAttributes::CONTENT_TYPE_MOVIE);
       attrBuilder.setUsage(CJNIAudioAttributes::USAGE_MEDIA);
-//      attrBuilder.setFlags(CJNIAudioAttributes::FLAG_AUDIBILITY_ENFORCED);
+      attrBuilder.setFlags(CJNIAudioAttributes::FLAG_AUDIBILITY_ENFORCED);
 
       CJNIAudioFormatBuilder fmtBuilder;
       fmtBuilder.setChannelMask(channelMask);
