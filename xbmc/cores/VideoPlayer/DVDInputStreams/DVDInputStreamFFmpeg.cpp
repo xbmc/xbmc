@@ -34,11 +34,15 @@ using PLAYLIST::CPlayListM3U;
 
 CDVDInputStreamFFmpeg::CDVDInputStreamFFmpeg(const CFileItem& fileitem)
   : CDVDInputStream(DVDSTREAM_TYPE_FFMPEG, fileitem)
-  , m_can_pause(false)
-  , m_can_seek(false)
+  , m_can_pause(true)
+  , m_can_seek(true)
   , m_aborted(false)
 {
+  if (StringUtils::StartsWithNoCase(m_item.GetDynPath(), "udp://") || StringUtils::StartsWithNoCase(m_item.GetDynPath(), "rtp://"))
+    SetRealtime(true);
 
+  if(StringUtils::StartsWithNoCase(m_item.GetDynPath(), "tcp://"))
+    m_can_seek  = false;
 }
 
 CDVDInputStreamFFmpeg::~CDVDInputStreamFFmpeg()
@@ -56,27 +60,7 @@ bool CDVDInputStreamFFmpeg::IsEOF()
 
 bool CDVDInputStreamFFmpeg::Open()
 {
-  if (!CDVDInputStream::Open())
-    return false;
-
-  m_can_pause = true;
-  m_can_seek  = true;
-  m_aborted   = false;
-
-  if(strnicmp(m_item.GetDynPath().c_str(), "udp://", 6) == 0 ||
-     strnicmp(m_item.GetDynPath().c_str(), "rtp://", 6) == 0)
-  {
-    m_can_pause = false;
-    m_can_seek = false;
-    m_realtime = true;
-  }
-
-  if(strnicmp(m_item.GetDynPath().c_str(), "tcp://", 6) == 0)
-  {
-    m_can_pause = true;
-    m_can_seek  = false;
-  }
-  return true;
+  return CDVDInputStream::Open();
 }
 
 // close file and reset everything
@@ -154,4 +138,11 @@ std::string CDVDInputStreamFFmpeg::GetFileName()
     return url.Get();
   }
   return CDVDInputStream::GetFileName();
+}
+
+void CDVDInputStreamFFmpeg::SetRealtime(bool realtime)
+{
+    m_can_pause = false;
+    m_can_seek = false;
+    m_realtime = true;
 }

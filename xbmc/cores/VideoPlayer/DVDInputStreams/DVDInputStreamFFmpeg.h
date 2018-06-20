@@ -44,6 +44,7 @@ public:
 
   bool CanSeek() override { return m_can_seek; }
   bool CanPause() override { return m_can_pause; }
+  void SetRealtime(bool realtime) override;
 
   std::string GetProxyType() const;
   std::string GetProxyHost() const;
