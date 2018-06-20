@@ -110,8 +110,6 @@ const CGFloat timeFadeSecs                    = 2.0;
     [_internalWindow makeKeyAndVisible];
     [_internalWindow setRootViewController:self];
 
-    [self setWantsFullScreenLayout:YES];
-
     [self startSleepTimer];//will fade from black too
   }
   return self;
@@ -320,7 +318,6 @@ const CGFloat timeFadeSecs                    = 2.0;
 //--------------------------------------------------------------
 - (void)viewWillAppear:(BOOL)animated
 {
-  _startup = true;
   [super viewWillAppear:animated];
 }
 //--------------------------------------------------------------
@@ -330,56 +327,6 @@ const CGFloat timeFadeSecs                    = 2.0;
   [_touchView release];
   [_internalWindow release];
   [super dealloc];
-}
-//--------------------------------------------------------------
-// - iOS6 rotation API - will be called on iOS7 runtime!--------
-- (NSUInteger)supportedInterfaceOrientations
-{
-  // mask defines available as of ios6 sdk
-  //return UIInterfaceOrientationMaskAll;
-  return (1 << UIInterfaceOrientationLandscapeLeft) | (1 << UIInterfaceOrientationLandscapeRight) |
-  (1 << UIInterfaceOrientationPortraitUpsideDown) | (1 << UIInterfaceOrientationPortrait);
-}
-- (BOOL)shouldAutorotate
-{
-  _startup = false;
-  return [self shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)[[UIDevice currentDevice] orientation]];
-}
-// - old rotation API will be called on iOS6 and lower - removed in iOS7
--(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-  if(_startup)
-  {
-    //start with landscape
-    switch(interfaceOrientation)
-    {
-      case UIInterfaceOrientationLandscapeLeft:
-      case UIInterfaceOrientationLandscapeRight:
-        return YES;
-      default:
-        return FALSE;
-    }
-  }
-  else
-  {
-    return YES;//we allow all rotations after startup...
-  }
-}
-- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
-{
-  if(_startup)
-  {
-    //start with landscape
-    switch(toInterfaceOrientation)
-    {
-      case UIInterfaceOrientationLandscapeLeft:
-      case UIInterfaceOrientationLandscapeRight:
-        _startup = false;//allow all orientations after initial landscape rotation
-        break;
-      default:
-        break;
-    }
-  }
 }
 //--------------------------------------------------------------
 @end

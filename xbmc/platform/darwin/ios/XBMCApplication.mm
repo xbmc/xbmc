@@ -117,7 +117,6 @@ XBMCController *m_xbmcController;
   UIScreen *currentScreen = [UIScreen mainScreen];
 
   m_xbmcController = [[XBMCController alloc] initWithFrame: [currentScreen bounds] withScreen:currentScreen];
-  m_xbmcController.wantsFullScreenLayout = YES;
   [m_xbmcController startAnimation];
   [self registerScreenNotifications:YES];
 

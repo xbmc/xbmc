@@ -55,14 +55,7 @@ using namespace KODI::MESSAGING;
 
 #import <AVFoundation/AVAudioSession.h>
 #import <MediaPlayer/MPMediaItem.h>
-#ifdef __IPHONE_5_0
 #import <MediaPlayer/MPNowPlayingInfoCenter.h>
-#else
-const NSString *MPNowPlayingInfoPropertyElapsedPlaybackTime = @"MPNowPlayingInfoPropertyElapsedPlaybackTime";
-const NSString *MPNowPlayingInfoPropertyPlaybackRate = @"MPNowPlayingInfoPropertyPlaybackRate";
-const NSString *MPNowPlayingInfoPropertyPlaybackQueueIndex = @"MPNowPlayingInfoPropertyPlaybackQueueIndex";
-const NSString *MPNowPlayingInfoPropertyPlaybackQueueCount = @"MPNowPlayingInfoPropertyPlaybackQueueCount";
-#endif
 #import "IOSEAGLView.h"
 
 #import "XBMCController.h"
@@ -186,34 +179,6 @@ XBMCController *g_xbmcController;
   return NO;
 }
 //--------------------------------------------------------------
-- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
-{
-#if __IPHONE_8_0
-  if (CDarwinUtils::GetIOSVersion() < 8.0)
-#endif
-  {
-    orientation = toInterfaceOrientation;
-    CGRect srect = [IOSScreenManager getLandscapeResolution: [m_glView getCurrentScreen]];
-    CGRect rect = srect;;
-
-    switch(toInterfaceOrientation)
-    {
-      case UIInterfaceOrientationPortrait:
-      case UIInterfaceOrientationPortraitUpsideDown:
-        if(![[IOSScreenManager sharedInstance] isExternalScreen])
-        {
-          rect.size = CGSizeMake( srect.size.height, srect.size.width );
-        }
-        break;
-      case UIInterfaceOrientationLandscapeLeft:
-      case UIInterfaceOrientationLandscapeRight:
-      case UIInterfaceOrientationUnknown:
-        break;//just leave the rect as is
-    }
-    m_glView.frame = rect;
-  }
-}
-
 - (UIInterfaceOrientation) getOrientation
 {
 	return orientation;
@@ -605,36 +570,12 @@ XBMCController *g_xbmcController;
 
   orientation = UIInterfaceOrientationLandscapeLeft;
 
-#if __IPHONE_8_0
-  if (CDarwinUtils::GetIOSVersion() < 8.0)
-#endif
-  {
-    /* We start in landscape mode */
-    CGRect srect = frame;
-    // in ios sdks older then 8.0 the landscape mode is 90 degrees
-    // rotated
-    srect.size = CGSizeMake( frame.size.height, frame.size.width );
-
-    m_glView = [[IOSEAGLView alloc] initWithFrame: srect withScreen:screen];
-    [[IOSScreenManager sharedInstance] setView:m_glView];
-    [m_glView setMultipleTouchEnabled:YES];
-
-    /* Check if screen is Retina */
-    screenScale = [m_glView getScreenScale:screen];
-
-    [self.view addSubview: m_glView];
-
-    [self createGestureRecognizers];
-    [m_window addSubview: self.view];
-  }
-
   [m_window makeKeyAndVisible];
   g_xbmcController = self;
 
   return self;
 }
 //--------------------------------------------------------------
-#if __IPHONE_8_0
 - (void)loadView
 {
   [super loadView];
@@ -655,7 +596,6 @@ XBMCController *g_xbmcController;
     [self createGestureRecognizers];
   }
 }
-#endif
 //--------------------------------------------------------------
 -(void)viewDidLoad
 {
@@ -875,15 +815,9 @@ XBMCController *g_xbmcController;
   }
   // reset the rotation of the view
   view.layer.transform = CATransform3DMakeRotation(angle, 0, 0.0, 1.0);
-#if __IPHONE_8_0
   view.layer.bounds = view.bounds;
-#else
-  [view setFrame:m_window.frame];
-#endif
   m_window.screen = screen;
-#if __IPHONE_8_0
   [view setFrame:m_window.frame];
-#endif
 }
 //--------------------------------------------------------------
 - (void) remoteControlReceivedWithEvent: (UIEvent *) receivedEvent {
