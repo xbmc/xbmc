@@ -1620,6 +1620,18 @@
           <control type="toggle" />
         </setting>
       </group>
+      <group id="3">
+      <requirement>HAS_ZEROCONF</requirement>
+        <setting id="services.deviceuuid" type="string">
+          <visible>false</visible>
+          <level>1</level>
+          <default></default>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
+          <control type="edit" format="string" />
+        </setting>
+      </group>
     </category>
     <category id="control" label="14223" help="36327">
       <group id="1" label="33101">
