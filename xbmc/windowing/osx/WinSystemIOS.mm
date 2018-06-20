@@ -315,18 +315,6 @@ void CWinSystemIOS::FillInVideoModes(int screenIdx)
     UpdateDesktopResolution(res, 0, w, h, refreshrate);
     CLog::Log(LOGNOTICE, "Found possible resolution for display %d with %d x %d\n", screenIdx, w, h);
 
-    //overwrite the mode str because  UpdateDesktopResolution adds a
-    //"Full Screen". Since the current resolution is there twice
-    //this would lead to 2 identical resolution entrys in the guisettings.xml.
-    //That would cause problems with saving screen overscan calibration
-    //because the wrong entry is picked on load.
-    //So we just use UpdateDesktopResolutions for the current DESKTOP_RESOLUTIONS
-    //in UpdateResolutions. And on all other resolutions make a unique
-    //mode str by doing it without appending "Full Screen".
-    //this is what linux does - though it feels that there shouldn't be
-    //the same resolution twice... - thats why i add a FIXME here.
-    res.strMode = StringUtils::Format("%dx%d @ %.2f", w, h, refreshrate);
-
     CServiceBroker::GetWinSystem()->GetGfxContext().ResetOverscan(res);
     CDisplaySettings::GetInstance().AddResolutionInfo(res);
   }
