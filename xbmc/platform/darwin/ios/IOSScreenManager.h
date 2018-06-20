@@ -47,8 +47,6 @@
 - (void)    screenDisconnect;
 // wrapper for g_Windowing.UpdateResolutions();
 + (void)    updateResolutions;
-// returns the landscape resolution for the given screen
-+ (CGRect)  getLandscapeResolution:(UIScreen *)screen;
 // fades the screen from black back to full alpha after delaySecs seconds
 - (void)    fadeFromBlack:(CGFloat) delaySecs;
 // returns true if switching to screenIdx will change from internal to external screen

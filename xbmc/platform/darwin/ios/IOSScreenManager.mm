@@ -101,26 +101,7 @@ static CEvent screenChangeEvent;
 
     [_glView setScreen:newScreen withFrameBufferResize:TRUE];//will also resize the framebuffer
 
-    if (toExternal)
-    {
-      // portrait on external screen means its landscape for xbmc
-#if __IPHONE_8_0
-      if (CDarwinUtils::GetIOSVersion() >= 8.0 && CDarwinUtils::GetIOSVersion() < 9.0)
-        [g_xbmcController activateScreen:newScreen withOrientation:UIInterfaceOrientationLandscapeLeft];// will attach the screen to xbmc mainwindow
-      else
-#endif
-        [g_xbmcController activateScreen:newScreen withOrientation:UIInterfaceOrientationPortrait];// will attach the screen to xbmc mainwindow
-    }
-    else
-    {
-#if __IPHONE_8_0
-      if (CDarwinUtils::GetIOSVersion() >= 8.0)
-        [g_xbmcController activateScreen:newScreen withOrientation:UIInterfaceOrientationPortrait];// will attach the screen to xbmc mainwindow
-      else
-#endif
-      // switching back to internal - use same orientation as we used for the touch controller
-      [g_xbmcController activateScreen:newScreen withOrientation:_lastTouchControllerOrientation];// will attach the screen to xbmc mainwindow
-    }
+    [g_xbmcController activateScreen:newScreen withOrientation:UIInterfaceOrientationPortrait];// will attach the screen to xbmc mainwindow
 
     if(toExternal)//changing the external screen might need some time ...
     {
@@ -135,11 +116,7 @@ static CEvent screenChangeEvent;
         //the parameter enum is lacking the UIScreenOverscanCompensationNone value.
         //Someone on stackoverflow figured out that value 3 is for turning it off
         //(though there is no enum value for it).
-#ifdef __IPHONE_5_0
         [newScreen setOverscanCompensation:(UIScreenOverscanCompensation)3];
-#else
-        [newScreen setOverscanCompensation:3];
-#endif
         CLog::Log(LOGDEBUG, "[IOSScreenManager] Disabling overscancompensation.");
       }
       else
@@ -248,24 +225,6 @@ static CEvent screenChangeEvent;
     return true;
   }
   return false;
-}
-//--------------------------------------------------------------
-+ (CGRect) getLandscapeResolution:(UIScreen *)screen
-{
-  CGRect res = [screen bounds];
-  #if __IPHONE_8_0
-  if (CDarwinUtils::GetIOSVersion() < 8.0)
-  #endif
-  {
-    //main screen is in portrait mode (physically) so exchange height and width
-    //at least when compiled with ios sdk < 8.0 (seems to be fixed in later sdks)
-    if(screen == [UIScreen mainScreen])
-    {
-      CGRect frame = res;
-      res.size = CGSizeMake(frame.size.height, frame.size.width);
-    }
-  }
-  return res;
 }
 //--------------------------------------------------------------
 - (void) screenDisconnect
