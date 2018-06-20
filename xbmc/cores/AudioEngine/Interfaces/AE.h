@@ -143,9 +143,10 @@ public:
    * This method will remove the specifyed stream from the engine.
    * For OSX/IOS this is essential to reconfigure the audio output.
    * @param stream The stream to be altered
+   * @param finish if true AE will switch back to gui sound mode (if this is last stream)
    * @return NULL
    */
-  virtual bool FreeStream(IAEStream *stream) = 0;
+  virtual bool FreeStream(IAEStream *stream, bool finish) = 0;
 
   /**
    * Creates a new IAESound that is ready to play the specified file

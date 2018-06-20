@@ -188,7 +188,7 @@ void CVideoPlayerAudio::CloseStream(bool bWaitForBuffers)
     m_audioSink.Flush();
   }
 
-  m_audioSink.Destroy();
+  m_audioSink.Destroy(true);
 
   // uninit queue
   m_messageQueue.End();
@@ -474,7 +474,7 @@ bool CVideoPlayerAudio::ProcessDecoderOutput(DVDAudioFrame &audioframe)
       if(m_speed)
         m_audioSink.Drain();
 
-      m_audioSink.Destroy();
+      m_audioSink.Destroy(false);
 
       if (!m_audioSink.Create(audioframe, m_streaminfo.codec, m_setsynctype == SYNC_RESAMPLE))
         CLog::Log(LOGERROR, "%s - failed to create audio renderer", __FUNCTION__);
