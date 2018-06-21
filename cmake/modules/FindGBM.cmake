@@ -39,12 +39,23 @@ check_c_source_compiles("#include <gbm.h>
                          }
                          " GBM_HAS_BO_MAP)
 
+check_c_source_compiles("#include <gbm.h>
+
+                         int main()
+                         {
+                           gbm_surface_create_with_modifiers(NULL, 0, 0, 0, NULL, 0);
+                         }
+                         " GBM_HAS_MODIFIERS)
+
 if(GBM_FOUND)
   set(GBM_LIBRARIES ${GBM_LIBRARY})
   set(GBM_INCLUDE_DIRS ${GBM_INCLUDE_DIR})
   set(GBM_DEFINITIONS -DHAVE_GBM=1)
   if(GBM_HAS_BO_MAP)
     list(APPEND GBM_DEFINITIONS -DHAS_GBM_BO_MAP=1)
+  endif()
+  if(GBM_HAS_MODIFIERS)
+    list(APPEND GBM_DEFINITIONS -DHAS_GBM_MODIFIERS=1)
   endif()
   if(NOT TARGET GBM::GBM)
     add_library(GBM::GBM UNKNOWN IMPORTED)
