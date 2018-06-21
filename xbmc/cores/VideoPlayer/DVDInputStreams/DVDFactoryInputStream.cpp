@@ -30,9 +30,7 @@
 #ifdef HAVE_LIBBLURAY
 #include "DVDInputStreamBluray.h"
 #endif
-#ifdef ENABLE_DVDINPUTSTREAM_STACK
 #include "DVDInputStreamStack.h"
-#endif
 #include "FileItem.h"
 #include "storage/MediaManager.h"
 #include "URL.h"
@@ -121,10 +119,8 @@ std::shared_ptr<CDVDInputStream> CDVDFactoryInputStream::CreateInputStream(IVide
   {
     return std::shared_ptr<CDVDInputStreamFFmpeg>(new CDVDInputStreamFFmpeg(fileitem));
   }
-#ifdef ENABLE_DVDINPUTSTREAM_STACK
   else if(StringUtils::StartsWithNoCase(file, "stack://"))
     return std::shared_ptr<CDVDInputStreamStack>(new CDVDInputStreamStack(fileitem));
-#endif
 
   CFileItem finalFileitem(fileitem);
 
