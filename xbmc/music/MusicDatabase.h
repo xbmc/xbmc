@@ -665,6 +665,12 @@ private:
   */
   bool CheckSources(VECSOURCES& sources);
 
+  /*! \brief Initially fills source table from sources.xml for use only at
+  migration of db from an earlier version than 72
+  returns true when successfuly done
+  */
+  bool MigrateSources();
+
   bool m_translateBlankArtist;
 
   // Fields should be ordered as they

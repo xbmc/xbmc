@@ -5508,9 +5508,11 @@ void CMusicDatabase::UpdateTables(int version)
     m_pDS->exec("CREATE TABLE source_path (idSource INTEGER, idPath INTEGER, strPath varchar(512))");
     // Create album_source table
     m_pDS->exec("CREATE TABLE album_source (idSource INTEGER, idAlbum INTEGER)");
-    // When updating from previous versions the source table could be populated
-    // during CreateAnalytics (needs to be done after indexes are created or is
-    // very slow), but it is checked and filled as part of scanning anyway
+    // Populate source and source_path tables from sources.xml
+    // Filling album_source needs to be done after indexes are created or it is
+    // very slow. It could be populated during CreateAnalytics but it is checked
+    // and filled as part of scanning anyway so simply force full rescan.
+    MigrateSources();
   }
 
   // Set the verion of tag scanning required.
@@ -5975,33 +5977,36 @@ int CMusicDatabase::AddSource(const std::string& strName, const std::string& str
       }
 
       // Find albums by song path, building WHERE for multiple source paths
-      std::vector<int> albumIds;
-      Filter extFilter;
-      strSQL = "SELECT DISTINCT idAlbum FROM song ";
-      extFilter.AppendJoin("JOIN path ON song.idPath = path.idPath");
-      for (const auto& path : vecPaths)
-        extFilter.AppendWhere(PrepareSQL("path.strPath LIKE '%s%%%%'", path.c_str()), false);
-      if (!BuildSQL(strSQL, extFilter, strSQL))
-        return false;
-
-      if (!m_pDS->query(strSQL))
-        return false;
-
-      while (!m_pDS->eof())
+      // (providing source has a path)
+      if (vecPaths.size() > 0)
       {
-        albumIds.push_back(m_pDS->fv("idAlbum").get_asInt());
-        m_pDS->next();
-      }
-      m_pDS->close();
+        std::vector<int> albumIds;
+        Filter extFilter;
+        strSQL = "SELECT DISTINCT idAlbum FROM song ";
+        extFilter.AppendJoin("JOIN path ON song.idPath = path.idPath");
+        for (const auto& path : vecPaths)
+          extFilter.AppendWhere(PrepareSQL("path.strPath LIKE '%s%%%%'", path.c_str()), false);
+        if (!BuildSQL(strSQL, extFilter, strSQL))
+          return -1;
 
-      // Add album_source for related albums
-      for (auto idAlbum : albumIds)
-      {
-        strSQL = PrepareSQL("INSERT INTO album_source (idSource, idAlbum) VALUES('%i', '%i')",
-          idSource, idAlbum);
-        m_pDS->exec(strSQL);
-      }
+        if (!m_pDS->query(strSQL))
+          return -1;
 
+        while (!m_pDS->eof())
+        {
+          albumIds.push_back(m_pDS->fv("idAlbum").get_asInt());
+          m_pDS->next();
+        }
+        m_pDS->close();
+
+        // Add album_source for related albums
+        for (auto idAlbum : albumIds)
+        {
+          strSQL = PrepareSQL("INSERT INTO album_source (idSource, idAlbum) VALUES('%i', '%i')",
+            idSource, idAlbum);
+          m_pDS->exec(strSQL);
+        }
+      }
       CommitTransaction();
     }
     return idSource;
@@ -6248,6 +6253,44 @@ bool CMusicDatabase::CheckSources(VECSOURCES& sources)
   catch (...)
   {
     CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+  }
+  return false;
+}
+
+bool CMusicDatabase::MigrateSources()
+{
+  //Fetch music sources from xml
+  VECSOURCES sources(*CMediaSourceSettings::GetInstance().GetSources("music"));
+
+  std::string strSQL;
+  try
+  {   
+    // Fill source and source paths tables
+    for (const auto& source : sources)
+    {
+      // AddSource(source.strName, source.strPath, source.vecPaths);
+      // Add new source
+      strSQL = PrepareSQL("INSERT INTO source (idSource, strName, strMultipath) VALUES(NULL, '%s', '%s')",
+        source.strName.c_str(), source.strPath.c_str());
+      m_pDS->exec(strSQL);
+      int idSource = static_cast<int>(m_pDS->lastinsertid());
+
+      // Add new source paths
+      int idPath = 1;
+      for (const auto& path : source.vecPaths)
+      {
+        strSQL = PrepareSQL("INSERT INTO source_path (idSource, idPath, strPath) values(%i,%i,'%s')",
+          idSource, idPath, path.c_str());
+        m_pDS->exec(strSQL);
+        ++idPath;
+      }  
+    }
+
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strSQL.c_str());
   }
   return false;
 }
