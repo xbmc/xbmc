@@ -28,6 +28,7 @@
 #include "platform/android/media/drm/MediaDrmCryptoSession.h"
 #include "platform/android/media/decoderfilter/MediaCodecDecoderFilterManager.h"
 #include "platform/android/activity/XBMCApp.h"
+#include "rendering/gles/ScreenshotSurfaceGLES.h"
 #include "ServiceBroker.h"
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
@@ -85,6 +86,9 @@ bool CWinSystemAndroid::InitWindowSystem()
   ADDON::Interface_Android::Register();
   DRM::CMediaDrmCryptoSession::Register();
   VIDEOPLAYER::CProcessInfoAndroid::Register();
+
+  CScreenshotSurfaceGLES::Register();
+
   return CWinSystemBase::InitWindowSystem();
 }
 

@@ -1,8 +1,10 @@
 set(SOURCES RenderSystemGL.cpp
+            ScreenshotSurfaceGL.cpp
             ../MatrixGL.cpp
             GLShader.cpp)
 
 set(HEADERS RenderSystemGL.h
+            ScreenshotSurfaceGL.h
             ../MatrixGL.h
             GLShader.h)
 

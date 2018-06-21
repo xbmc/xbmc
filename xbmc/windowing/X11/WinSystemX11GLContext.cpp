@@ -29,6 +29,7 @@
 
 #include "OptionalsReg.h"
 #include "platform/linux/OptionalsReg.h"
+#include "rendering/gl/ScreenshotSurfaceGL.h"
 #include "X11DPMSSupport.h"
 
 using namespace KODI;
@@ -268,6 +269,8 @@ bool CWinSystemX11GLContext::RefreshGLContext(bool force)
   CDVDFactoryCodec::ClearHWAccels();
   VIDEOPLAYER::CRendererFactory::ClearRenderer();
   CLinuxRendererGL::Register();
+
+  CScreenshotSurfaceGL::Register();
 
   std::string gpuvendor;
   const char* vend = (const char*) glGetString(GL_VENDOR);
