@@ -67,6 +67,7 @@ class CTextureInfo
 {
 public:
   CTextureInfo();
+  CTextureInfo(GUIResourceProviderPtr provider);
   explicit CTextureInfo(const std::string &file);
   CTextureInfo& operator=(const CTextureInfo &right);
   bool       useLarge;

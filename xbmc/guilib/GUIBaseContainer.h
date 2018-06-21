@@ -29,6 +29,7 @@
 #include <vector>
 #include <list>
 
+#include "IResourceProvider.h"
 #include "IGUIContainer.h"
 #include "GUIAction.h"
 #include "utils/Stopwatch.h"
@@ -76,7 +77,7 @@ public:
   void DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions) override;
   void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions) override;
 
-  void LoadLayout(TiXmlElement *layout);
+  void LoadLayout(TiXmlElement *layout, GUIResourceProviderPtr provider);
   void LoadListProvider(TiXmlElement *content, int defaultItem, bool defaultAlways);
 
   CGUIListItemPtr GetListItem(int offset, unsigned int flag = 0) const override;

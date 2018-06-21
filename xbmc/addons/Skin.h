@@ -28,10 +28,12 @@
 #include "addons/Addon.h"
 #include "windowing/GraphicContext.h" // needed for the RESOLUTION members
 #include "guilib/GUIIncludes.h"    // needed for the GUIInclude member
+#include "guilib/IResourceProvider.h"
 
 #define CREDIT_LINE_LENGTH 50
 
 class CSetting;
+class CGUIFont; 
 
 namespace ADDON
 {
@@ -94,7 +96,7 @@ protected:
 
 typedef std::shared_ptr<CSkinSettingBool> CSkinSettingBoolPtr;
 
-class CSkinInfo : public CAddon
+class CSkinInfo : public CAddon, public IGUIResourceProvider
 {
 public:
   class CStartupWindow
@@ -183,6 +185,30 @@ public:
   void ToggleDebug();
   const INFO::CSkinVariableString* CreateSkinVariable(const std::string& name, int context);
 
+  /*! \brief load Fonts.xml for the skin, adding fonts to the font manager
+ +   \param fontSet the name of the <fontset> to load.
+ +   */
+  void LoadFonts(const std::string &fontSet);
+
+  /*! \brief fetch a font from the skin
+ +   \param fontName the name of the font (from Fonts.xml) to fetch
+ +   \return a CGUIFont pointer with the font, NULL if not found
+ +   */
+  CGUIFont *GetFont(const std::string &fontName) const override;
+
+  /*! \brief load the skin colors
+ +   Loads the default system colors, default skin colors, then chosen skin colors.
+ +   \param colorFile color file to load
+ +   */
+  void LoadColors(const std::string &colorFile);
+
+  /*! \brief retrieve a color by name.
+ +   \param color the name of the color to retrieve
+ +   \return the color value, if found, else 0xffffffff (white).
+ +   */
+  UTILS::Color GetColor(const std::string &color) const override;
+
+
   static void SettingOptionsSkinColorsFiller(std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
   static void SettingOptionsSkinFontsFiller(std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
   static void SettingOptionsSkinThemesFiller(std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data);
@@ -225,6 +251,10 @@ protected:
 
   bool LoadStartupWindows(const cp_extension_t *ext);
 
+  void LoadFonts(const TiXmlNode* fontNode, const RESOLUTION_INFO &fontRes);
+  static void GetStyle(const TiXmlNode *fontNode, int &iStyle);
+  bool LoadColors(const TiXmlElement *rootElement);
+
   static CSkinSettingPtr ParseSetting(const TiXmlElement* element);
 
   bool SettingsInitialized() const override;
@@ -240,6 +270,10 @@ protected:
   std::string m_currentAspect;
 
   std::vector<CStartupWindow> m_startupWindows;
+
+  typedef std::map<std::string, UTILS::Color> ColorMap;
+  ColorMap m_colors;
+
   bool m_debugging;
 
 private:

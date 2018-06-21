@@ -7,7 +7,6 @@ set(SOURCES DDSImage.cpp
             GUIBaseContainer.cpp
             GUIBorderedImage.cpp
             GUIButtonControl.cpp
-            GUIColorManager.cpp
             GUIComponent.cpp
             GUIControl.cpp
             GUIControlFactory.cpp
@@ -81,7 +80,6 @@ set(HEADERS DDSImage.h
             GUIBaseContainer.h
             GUIBorderedImage.h
             GUIButtonControl.h
-            GUIColorManager.h
             GUIComponent.h
             GUIControl.h
             GUIControlFactory.h
@@ -139,6 +137,7 @@ set(HEADERS DDSImage.h
             imagefactory.h
             IMsgTargetCallback.h
             IRenderingCallback.h
+            IResourceProvider.h
             ISliderCallback.h
             IWindowManagerCallback.h
             LocalizeStrings.h

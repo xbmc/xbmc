@@ -21,12 +21,16 @@
 #include "guilib/guiinfo/GUIInfoColor.h"
 #include "GUIInfoManager.h"
 #include "addons/Skin.h"
-#include "guilib/GUIColorManager.h"
 #include "guilib/GUIComponent.h"
 #include "utils/StringUtils.h"
 #include "ServiceBroker.h"
 
 using namespace KODI::GUILIB::GUIINFO;
+
+CGUIInfoColor::CGUIInfoColor(GUIResourceProviderPtr colorProvider, UTILS::Color color)
+: m_color(color), m_colorProvider(colorProvider)
+{
+}
 
 bool CGUIInfoColor::Update()
 {
@@ -35,7 +39,7 @@ bool CGUIInfoColor::Update()
 
   // Expand the infolabel, and then convert it to a color
   std::string infoLabel(CServiceBroker::GetGUI()->GetInfoManager().GetLabel(m_info));
-  UTILS::Color color = !infoLabel.empty() ? g_colorManager.GetColor(infoLabel.c_str()) : 0;
+  UTILS::Color color = !infoLabel.empty() ? TranslateColor(infoLabel) : 0;
   if (m_color != color)
   {
     m_color = color;
@@ -43,6 +47,16 @@ bool CGUIInfoColor::Update()
   }
   else
     return false;
+}
+
+UTILS::Color CGUIInfoColor::TranslateColor(const std::string &color) const
+{
+  if (m_colorProvider)
+    return m_colorProvider->GetColor(color);
+  // try translating directly
+  UTILS::Color value = 0;
+  sscanf(color.c_str(), "%x", &value);
+  return value;
 }
 
 void CGUIInfoColor::Parse(const std::string &label, int context)
@@ -68,5 +82,5 @@ void CGUIInfoColor::Parse(const std::string &label, int context)
 
   m_info = infoMgr.TranslateString(label2);
   if (!m_info)
-    m_color = g_colorManager.GetColor(label);
+    m_color = TranslateColor(label);
 }

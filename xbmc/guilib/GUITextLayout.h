@@ -20,6 +20,8 @@
 
 #pragma once
 
+#include "IResourceProvider.h"
+
 #include <string>
 #include <stdint.h>
 #include <vector>
@@ -65,7 +67,7 @@ class CGUITextLayout
 {
 public:
   CGUITextLayout(CGUIFont *font, bool wrap, float fHeight=0.0f, CGUIFont *borderFont = NULL);  // this may need changing - we may just use this class to replace CLabelInfo completely
-
+  CGUITextLayout(GUIResourceProviderPtr provider, CGUIFont *font, bool wrap, float fHeight=0.0f, CGUIFont *borderFont = NULL);
   bool UpdateScrollinfo(CScrollInfo &scrollInfo);
 
   // main function to render strings
@@ -162,6 +164,9 @@ private:
   };
   static void AppendToUTF32(const std::string &utf8, character_t colStyle, vecText &utf32);
   static void AppendToUTF32(const std::wstring &utf16, character_t colStyle, vecText &utf32);
-  static void ParseText(const std::wstring &text, uint32_t defaultStyle, UTILS::Color defaultColor, std::vector<UTILS::Color> &colors, vecText &parsedText);
+  static void ParseText(const std::wstring &text, uint32_t defaultStyle, UTILS::Color defaultColor, GUIResourceProviderPtr colorProvider, std::vector<UTILS::Color> &colors, vecText &parsedText);
+  static UTILS::Color TranslateColor(const std::string &color, GUIResourceProviderPtr colorProvider);
+
+  GUIResourceProviderPtr m_resourceProvider;
 };
 

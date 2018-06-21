@@ -28,6 +28,8 @@
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/GUIComponent.h"
+#include "guilib/GUIFont.h"
+#include "guilib/GUIFontManager.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
@@ -425,6 +427,196 @@ void CSkinInfo::OnPostInstall(bool update, bool modal)
       CServiceBroker::GetSettings().SetString(CSettings::SETTING_LOOKANDFEEL_SKIN, ID());
   }
 }
+
+void CSkinInfo::LoadFonts(const std::string& fontSet)
+{
+  // Get the file to load fonts from:
+  RESOLUTION_INFO fontRes;
+  const std::string strPath = GetSkinPath("Font.xml", &fontRes);
+  CLog::Log(LOGINFO, "Loading fonts from %s", strPath.c_str());
+
+  CXBMCTinyXML xmlDoc;
+  if (!xmlDoc.LoadFile(strPath))
+  {
+    CLog::Log(LOGERROR, "Couldn't load %s", strPath.c_str());
+    return;
+  }
+
+  TiXmlElement* pRootElement = xmlDoc.RootElement();
+  if (!pRootElement || pRootElement->ValueStr() != "fonts")
+  {
+    CLog::Log(LOGERROR, "file %s doesnt start with <fonts>", strPath.c_str());
+    return;
+  }
+
+  // take note of the first font available in case we can't load the one specified
+  std::string firstFont;
+
+  const TiXmlElement *pChild = pRootElement->FirstChildElement("fontset");
+  while (pChild)
+  {
+    const char* idAttr = pChild->Attribute("id");
+    if (idAttr)
+    {
+      if (firstFont.empty())
+        firstFont = idAttr;
+
+      if (StringUtils::EqualsNoCase(fontSet, idAttr))
+      {
+        LoadFonts(pChild->FirstChild("font"), fontRes);
+        return;
+      }
+    }
+    pChild = pChild->NextSiblingElement("fontset");
+  }
+
+  // no fontset was loaded, try the first
+  if (!firstFont.empty())
+  {
+    CLog::Log(LOGWARNING, "file doesnt have <fontset> with name '%s', defaulting to first fontset", fontSet.c_str());
+    LoadFonts(firstFont);
+  }
+  else
+    CLog::Log(LOGERROR, "file '%s' doesnt have a valid <fontset>", strPath.c_str());
+}
+
+void CSkinInfo::LoadFonts(const TiXmlNode* fontNode, const RESOLUTION_INFO &fontRes)
+{
+  while (fontNode)
+  {
+    std::string temp;
+    std::string fontName;
+    std::string fileName;
+    int iSize = 20;
+    float aspect = 1.0f;
+    float lineSpacing = 1.0f;
+    UTILS::Color shadowColor = 0;
+    UTILS::Color textColor = 0;
+    int iStyle = FONT_STYLE_NORMAL;
+
+    XMLUtils::GetString(fontNode, "name", fontName);
+    XMLUtils::GetInt(fontNode, "size", iSize);
+    XMLUtils::GetFloat(fontNode, "linespacing", lineSpacing);
+    XMLUtils::GetFloat(fontNode, "aspect", aspect);
+    if (XMLUtils::GetString(fontNode, "shadow", temp))
+      shadowColor = GetColor(temp);
+    if (XMLUtils::GetString(fontNode, "color", temp))
+      textColor = GetColor(temp);
+    XMLUtils::GetString(fontNode, "filename", fileName);
+    GetStyle(fontNode, iStyle);
+
+    if (!fontName.empty() && URIUtils::HasExtension(fileName, ".ttf"))
+    {
+      // TODO: Why do we tolower() this shit?
+      std::string strFontFileName = fileName;
+      StringUtils::ToLower(strFontFileName);
+      g_fontManager.LoadTTF(fontName, strFontFileName, textColor, shadowColor, iSize, iStyle, fontRes, false, lineSpacing, aspect);
+    }
+    fontNode = fontNode->NextSibling("font");
+  }
+}
+
+void CSkinInfo::GetStyle(const TiXmlNode *fontNode, int &iStyle)
+{
+  std::string style;
+  iStyle = FONT_STYLE_NORMAL;
+  if (XMLUtils::GetString(fontNode, "style", style))
+  {
+    std::vector<std::string> styles = StringUtils::Tokenize(style, " ");
+    for (auto i = styles.begin(); i != styles.end(); ++i)
+    {
+      if (*i == "bold")
+        iStyle |= FONT_STYLE_BOLD;
+      else if (*i == "italics")
+        iStyle |= FONT_STYLE_ITALICS;
+      else if (*i == "bolditalics") // backward compatibility
+        iStyle |= (FONT_STYLE_BOLD | FONT_STYLE_ITALICS);
+      else if (*i == "uppercase")
+        iStyle |= FONT_STYLE_UPPERCASE;
+      else if (*i == "lowercase")
+        iStyle |= FONT_STYLE_LOWERCASE;
+      else if (*i == "capitalize")
+        iStyle |= FONT_STYLE_CAPITALIZE;
+      else if (*i == "lighten")
+        iStyle |= FONT_STYLE_LIGHT;
+    }
+  }
+}
+
+CGUIFont *CSkinInfo::GetFont(const std::string &fontName) const
+{
+  return g_fontManager.GetFont(fontName);
+}
+
+// load the color file in
+void CSkinInfo::LoadColors(const std::string &colorFile)
+{
+  m_colors.clear();
+
+  // load the global color map if it exists
+  CXBMCTinyXML xmlDoc;
+  if (xmlDoc.LoadFile(CSpecialProtocol::TranslatePathConvertCase("special://xbmc/system/colors.xml")))
+    LoadColors(xmlDoc.RootElement());
+
+  // first load the default color map if it exists
+  std::string basePath = URIUtils::AddFileToFolder(g_SkinInfo->Path(), "colors");
+  std::string path = URIUtils::AddFileToFolder(basePath, "defaults.xml");
+
+  if (xmlDoc.LoadFile(CSpecialProtocol::TranslatePathConvertCase(path)))
+    LoadColors(xmlDoc.RootElement());
+
+  // now the color map requested
+  if (StringUtils::EqualsNoCase(colorFile, "SKINDEFAULT"))
+    return; // nothing to do
+
+  path = URIUtils::AddFileToFolder(basePath, colorFile);
+  if (!URIUtils::HasExtension(path))
+    path += ".xml";
+
+  CLog::Log(LOGINFO, "Loading colors from %s", path.c_str());
+  if (xmlDoc.LoadFile(path))
+    LoadColors(xmlDoc.RootElement());
+}
+
+bool CSkinInfo::LoadColors(const TiXmlElement *rootElement)
+{
+  if (!rootElement || rootElement->ValueStr() != "colors")
+  {
+    CLog::Log(LOGERROR, "color file doesnt start with <colors>");
+    return false;
+  }
+
+  const TiXmlElement *color = rootElement->FirstChildElement("color");
+  while (color)
+  {
+    if (color->FirstChild() && color->Attribute("name"))
+    {
+      UTILS::Color value = 0xffffffff;
+      sscanf(color->FirstChild()->ValueStr().c_str(), "%x", (unsigned int*) &value);
+      std::string name = color->Attribute("name");
+      m_colors[name] = value;
+    }
+    color = color->NextSiblingElement("color");
+  }
+  return true;
+}
+
+// lookup a color and return it's hex value
+UTILS::Color CSkinInfo::GetColor(const std::string &color) const
+{
+  // look in our color map
+  std::string trimmed(color);
+  StringUtils::TrimLeft(trimmed, "= ");
+  ColorMap::const_iterator it = m_colors.find(trimmed);
+  if (it != m_colors.end())
+    return (*it).second;
+
+  // try converting hex directly
+  UTILS::Color value = 0;
+  sscanf(trimmed.c_str(), "%x", &value);
+  return value;
+}
+
 
 void CSkinInfo::SettingOptionsSkinColorsFiller(SettingConstPtr setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
 {

@@ -44,6 +44,24 @@ public:
     angle = 0;
     scrollSpeed = CScrollInfo::defaultSpeed;
   };
+  CLabelInfo(GUIResourceProviderPtr provider)
+  : textColor(provider),
+    shadowColor(provider),
+    selectedColor(provider),
+    disabledColor(provider),
+    focusedColor(provider),
+    invalidColor(provider),
+    align(XBFONT_LEFT),
+    offsetX(0),
+    offsetY(0),
+    width(0),
+    angle(0),
+    font(NULL),
+    scrollSpeed(CScrollInfo::defaultSpeed),
+    scrollSuffix(" | "),
+    resourceProvider(provider)
+  {
+  };
   bool UpdateColors()
   {
     bool changed = false;
@@ -72,6 +90,7 @@ public:
   CGUIFont *font;
   int scrollSpeed;
   std::string scrollSuffix;
+  GUIResourceProviderPtr resourceProvider;
 };
 
 /*!

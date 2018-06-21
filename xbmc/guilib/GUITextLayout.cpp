@@ -21,7 +21,6 @@
 #include "GUITextLayout.h"
 #include "GUIFont.h"
 #include "GUIControl.h"
-#include "GUIColorManager.h"
 #include "utils/CharsetConverter.h"
 #include "utils/StringUtils.h"
 
@@ -49,6 +48,19 @@ CGUITextLayout::CGUITextLayout(CGUIFont *font, bool wrap, float fHeight, CGUIFon
   m_textWidth = 0;
   m_textHeight = 0;
   m_lastUpdateW = false;
+}
+
+CGUITextLayout::CGUITextLayout(GUIResourceProviderPtr provider, CGUIFont *font, bool wrap, float fHeight, CGUIFont *borderFont)
+: m_font(font),
+  m_borderFont(borderFont),
+  m_wrap(wrap),
+  m_maxHeight(fHeight),
+  m_textColor(0),
+  m_lastUpdateW(false),
+  m_textWidth(0),
+  m_textHeight(0),
+  m_resourceProvider(provider)
+{
 }
 
 void CGUITextLayout::SetWrap(bool bWrap)
@@ -241,7 +253,7 @@ void CGUITextLayout::UpdateCommon(const std::wstring &text, float maxWidth, bool
   // parse the text for style information
   vecText parsedText;
   std::vector<UTILS::Color> colors;
-  ParseText(text, m_font ? m_font->GetStyle() : 0, m_textColor, colors, parsedText);
+  ParseText(text, m_font ? m_font->GetStyle() : 0, m_textColor, m_resourceProvider, colors, parsedText);
 
   // and update
   UpdateStyled(parsedText, colors, maxWidth, forceLTRReadingOrder);
@@ -330,14 +342,14 @@ void CGUITextLayout::Filter(std::string &text)
   g_charsetConverter.utf8ToW(text, utf16, false);
   std::vector<UTILS::Color> colors;
   vecText parsedText;
-  ParseText(utf16, 0, 0xffffffff, colors, parsedText);
+  ParseText(utf16, 0, 0xffffffff, GUIResourceProviderPtr(), colors, parsedText);
   utf16.clear();
   for (unsigned int i = 0; i < parsedText.size(); i++)
     utf16 += (wchar_t)(0xffff & parsedText[i]);
   g_charsetConverter.wToUTF8(utf16, text);
 }
 
-void CGUITextLayout::ParseText(const std::wstring &text, uint32_t defaultStyle, UTILS::Color defaultColor, std::vector<UTILS::Color> &colors, vecText &parsedText)
+void CGUITextLayout::ParseText(const std::wstring &text, uint32_t defaultStyle, UTILS::Color defaultColor, GUIResourceProviderPtr colorProvider, std::vector<UTILS::Color> &colors, vecText &parsedText)
 {
   // run through the string, searching for:
   // [B] or [/B] -> toggle bold on and off
@@ -427,8 +439,9 @@ void CGUITextLayout::ParseText(const std::wstring &text, uint32_t defaultStyle, 
       {
         std::string t;
         g_charsetConverter.wToUTF8(text.substr(pos + 5, finish - pos - 5), t);
-        UTILS::Color color = g_colorManager.GetColor(t);
-        const auto& it = std::find(colors.begin(), colors.end(), color);
+        StringUtils::TrimLeft(t, "= ");
+        UTILS::Color color = TranslateColor(t, colorProvider);
+        std::vector<UTILS::Color>::const_iterator it = std::find(colors.begin(), colors.end(), color);
         if (it == colors.end())
         { // create new color
           if (colors.size() <= 0xFF)
@@ -487,6 +500,16 @@ void CGUITextLayout::ParseText(const std::wstring &text, uint32_t defaultStyle, 
   if (currentStyle & FONT_STYLE_CAPITALIZE)
     StringUtils::ToCapitalize(subText);
   AppendToUTF32(subText, ((currentStyle & FONT_STYLE_MASK) << 24) | (currentColor << 16), parsedText);
+}
+
+UTILS::Color CGUITextLayout::TranslateColor(const std::string &color, GUIResourceProviderPtr colorProvider)
+{
+  if (colorProvider)
+    return colorProvider->GetColor(color);
+  // try translating directly
+  UTILS::Color value = 0;
+  sscanf(color.c_str(), "%x", &value);
+  return value;
 }
 
 void CGUITextLayout::SetMaxHeight(float fHeight)

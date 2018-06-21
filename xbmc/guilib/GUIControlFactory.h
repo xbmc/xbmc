@@ -29,6 +29,7 @@
 #include <vector>
 
 #include "GUIControl.h"
+#include "IResourceProvider.h"
 #include "utils/Color.h"
 
 class CTextureInfo; // forward
@@ -54,7 +55,7 @@ namespace GUIINFO
 class CGUIControlFactory
 {
 public:
-  CGUIControlFactory(void);
+  CGUIControlFactory(GUIResourceProviderPtr provider);
   virtual ~CGUIControlFactory(void);
   CGUIControl* Create(int parentID, const CRect &rect, TiXmlElement* pControlNode, bool insideContainer = false);
 
@@ -164,5 +165,7 @@ private:
   static bool GetDimensions(const TiXmlNode *node, const char *leftTag, const char *rightTag, const char *centerLeftTag,
                             const char *centerRightTag, const char *widthTag, const float parentSize, float &left,
                             float &width, float &min_width);
+
+  GUIResourceProviderPtr m_provider;
 };
 

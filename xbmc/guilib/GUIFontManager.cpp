@@ -22,13 +22,10 @@
 #include "GUIFontManager.h"
 #include "windowing/GraphicContext.h"
 #include "GUIWindowManager.h"
-#include "addons/Skin.h"
 #include "addons/AddonManager.h"
 #include "addons/FontResource.h"
 #include "GUIFontTTF.h"
 #include "GUIFont.h"
-#include "utils/XMLUtils.h"
-#include "GUIControlFactory.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "settings/lib/Setting.h"
@@ -96,7 +93,7 @@ static bool CheckFont(std::string& strPath, const std::string& newPath,
   return true;
 }
 
-CGUIFont* GUIFontManager::LoadTTF(const std::string& strFontName, const std::string& strFilename, UTILS::Color textColor, UTILS::Color shadowColor, const int iSize, const int iStyle, bool border, float lineSpacing, float aspect, const RESOLUTION_INFO *sourceRes, bool preserveAspect)
+CGUIFont* GUIFontManager::LoadTTF(const std::string& strFontName, const std::string& strFilename, UTILS::Color textColor, UTILS::Color shadowColor, const int iSize, const int iStyle, const RESOLUTION_INFO &sourceRes, bool border, float lineSpacing, float aspect, bool preserveAspect)
 {
   float originalAspect = aspect;
 
@@ -105,11 +102,8 @@ CGUIFont* GUIFontManager::LoadTTF(const std::string& strFontName, const std::str
   if (pFont)
     return pFont;
 
-  if (!sourceRes) // no source res specified, so assume the skin res
-    sourceRes = &m_skinResolution;
-
   float newSize = (float)iSize;
-  RescaleFontSizeAndAspect(&newSize, &aspect, *sourceRes, preserveAspect);
+  RescaleFontSizeAndAspect(&newSize, &aspect, sourceRes, preserveAspect);
 
   // First try to load the font from the skin
   std::string strPath;
@@ -156,7 +150,7 @@ CGUIFont* GUIFontManager::LoadTTF(const std::string& strFontName, const std::str
       if (strFilename != "arial.ttf")
       {
         CLog::Log(LOGERROR, "Couldn't load font name: %s(%s), trying to substitute arial.ttf", strFontName.c_str(), strFilename.c_str());
-        return LoadTTF(strFontName, "arial.ttf", textColor, shadowColor, iSize, iStyle, border, lineSpacing, originalAspect);
+        return LoadTTF(strFontName, "arial.ttf", textColor, shadowColor, iSize, iStyle, sourceRes, border, lineSpacing, originalAspect);
       }
       CLog::Log(LOGERROR, "Couldn't load font name:%s file:%s", strFontName.c_str(), strPath.c_str());
 
@@ -176,7 +170,7 @@ CGUIFont* GUIFontManager::LoadTTF(const std::string& strFontName, const std::str
   fontInfo.aspect = originalAspect;
   fontInfo.fontFilePath = strPath;
   fontInfo.fileName = strFilename;
-  fontInfo.sourceRes = *sourceRes;
+  fontInfo.sourceRes = sourceRes;
   fontInfo.preserveAspect = preserveAspect;
   fontInfo.border = border;
   m_vecFontInfo.push_back(fontInfo);
@@ -331,7 +325,7 @@ CGUIFont* GUIFontManager::GetDefaultFont(bool border)
     { // create it
       CGUIFont *font13 = m_vecFonts[font13index];
       OrigFontInfo fontInfo = m_vecFontInfo[font13index];
-      font13border = LoadTTF("__defaultborder__", fontInfo.fileName, 0xFF000000, 0, fontInfo.size, font13->GetStyle(), true, 1.0f, fontInfo.aspect, &fontInfo.sourceRes, fontInfo.preserveAspect);
+      font13border = LoadTTF("__defaultborder__", fontInfo.fileName, 0xFF000000, 0, fontInfo.size, font13->GetStyle(), fontInfo.sourceRes, true, 1.0f, fontInfo.aspect, fontInfo.preserveAspect);
     }
     return font13border;
   }
@@ -349,118 +343,6 @@ void GUIFontManager::Clear()
   m_vecFonts.clear();
   m_vecFontFiles.clear();
   m_vecFontInfo.clear();
-}
-
-void GUIFontManager::LoadFonts(const std::string& fontSet)
-{
-  // Get the file to load fonts from:
-  const std::string strPath = g_SkinInfo->GetSkinPath("Font.xml", &m_skinResolution);
-  CLog::Log(LOGINFO, "Loading fonts from %s", strPath.c_str());
-
-  CXBMCTinyXML xmlDoc;
-  if (!xmlDoc.LoadFile(strPath))
-  {
-    CLog::Log(LOGERROR, "Couldn't load %s", strPath.c_str());
-    return;
-  }
-
-  TiXmlElement* pRootElement = xmlDoc.RootElement();
-  if (!pRootElement || pRootElement->ValueStr() != "fonts")
-  {
-    CLog::Log(LOGERROR, "file %s doesnt start with <fonts>", strPath.c_str());
-    return;
-  }
-  // Resolve includes in Font.xml
-  g_SkinInfo->ResolveIncludes(pRootElement);
-  // take note of the first font available in case we can't load the one specified
-  std::string firstFont;
-
-  const TiXmlElement *pChild = pRootElement->FirstChildElement("fontset");
-  while (pChild)
-  {
-    const char* idAttr = pChild->Attribute("id");
-    if (idAttr)
-    {
-      if (firstFont.empty())
-        firstFont = idAttr;
-
-      if (StringUtils::EqualsNoCase(fontSet, idAttr))
-      {
-        LoadFonts(pChild->FirstChild("font"));
-        return;
-      }
-    }
-    pChild = pChild->NextSiblingElement("fontset");
-  }
-
-  // no fontset was loaded, try the first
-  if (!firstFont.empty())
-  {
-    CLog::Log(LOGWARNING, "file doesnt have <fontset> with name '%s', defaulting to first fontset", fontSet.c_str());
-    LoadFonts(firstFont);
-  }
-  else
-    CLog::Log(LOGERROR, "file '%s' doesnt have a valid <fontset>", strPath.c_str());
-}
-
-void GUIFontManager::LoadFonts(const TiXmlNode* fontNode)
-{
-  while (fontNode)
-  {
-    std::string fontName;
-    std::string fileName;
-    int iSize = 20;
-    float aspect = 1.0f;
-    float lineSpacing = 1.0f;
-    UTILS::Color shadowColor = 0;
-    UTILS::Color textColor = 0;
-    int iStyle = FONT_STYLE_NORMAL;
-
-    XMLUtils::GetString(fontNode, "name", fontName);
-    XMLUtils::GetInt(fontNode, "size", iSize);
-    XMLUtils::GetFloat(fontNode, "linespacing", lineSpacing);
-    XMLUtils::GetFloat(fontNode, "aspect", aspect);
-    CGUIControlFactory::GetColor(fontNode, "shadow", shadowColor);
-    CGUIControlFactory::GetColor(fontNode, "color", textColor);
-    XMLUtils::GetString(fontNode, "filename", fileName);
-    GetStyle(fontNode, iStyle);
-
-    if (!fontName.empty() && URIUtils::HasExtension(fileName, ".ttf"))
-    {
-      //! @todo Why do we tolower() this shit?
-      std::string strFontFileName = fileName;
-      StringUtils::ToLower(strFontFileName);
-      LoadTTF(fontName, strFontFileName, textColor, shadowColor, iSize, iStyle, false, lineSpacing, aspect);
-    }
-    fontNode = fontNode->NextSibling("font");
-  }
-}
-
-void GUIFontManager::GetStyle(const TiXmlNode *fontNode, int &iStyle)
-{
-  std::string style;
-  iStyle = FONT_STYLE_NORMAL;
-  if (XMLUtils::GetString(fontNode, "style", style))
-  {
-    std::vector<std::string> styles = StringUtils::Tokenize(style, " ");
-    for (std::vector<std::string>::const_iterator i = styles.begin(); i != styles.end(); ++i)
-    {
-      if (*i == "bold")
-        iStyle |= FONT_STYLE_BOLD;
-      else if (*i == "italics")
-        iStyle |= FONT_STYLE_ITALICS;
-      else if (*i == "bolditalics") // backward compatibility
-        iStyle |= (FONT_STYLE_BOLD | FONT_STYLE_ITALICS);
-      else if (*i == "uppercase")
-        iStyle |= FONT_STYLE_UPPERCASE;
-      else if (*i == "lowercase")
-        iStyle |= FONT_STYLE_LOWERCASE;
-      else if (*i == "capitalize")
-        iStyle |= FONT_STYLE_CAPITALIZE;
-      else if (*i == "lighten")
-        iStyle |= FONT_STYLE_LIGHT;
-    }
-  }
 }
 
 void GUIFontManager::SettingOptionsFontsFiller(SettingConstPtr setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)

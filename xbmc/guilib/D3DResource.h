@@ -22,7 +22,7 @@
 
 #include "utils/Color.h"
 #include "utils/Geometry.h"
-#include "GUIColorManager.h"
+#include "GUIFont.h"
 
 #include <map>
 #include <d3dx11effect.h>

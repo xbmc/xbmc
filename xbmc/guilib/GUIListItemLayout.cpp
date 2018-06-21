@@ -141,13 +141,13 @@ bool CGUIListItemLayout::CheckCondition()
   return !m_condition || m_condition->Get();
 }
 
-void CGUIListItemLayout::LoadControl(TiXmlElement *child, CGUIControlGroup *group)
+void CGUIListItemLayout::LoadControl(TiXmlElement *child, CGUIControlGroup *group, GUIResourceProviderPtr provider)
 {
   if (!group) return;
 
   CRect rect(group->GetXPosition(), group->GetYPosition(), group->GetXPosition() + group->GetWidth(), group->GetYPosition() + group->GetHeight());
 
-  CGUIControlFactory factory;
+  CGUIControlFactory factory(provider);
   CGUIControl *control = factory.Create(0, rect, child, true);  // true indicating we're inside a list for the
                                                                 // different label control + defaults.
   if (control)
@@ -158,14 +158,14 @@ void CGUIListItemLayout::LoadControl(TiXmlElement *child, CGUIControlGroup *grou
       TiXmlElement *grandChild = child->FirstChildElement("control");
       while (grandChild)
       {
-        LoadControl(grandChild, static_cast<CGUIControlGroup*>(control));
+        LoadControl(grandChild, static_cast<CGUIControlGroup*>(control), provider);
         grandChild = grandChild->NextSiblingElement("control");
       }
     }
   }
 }
 
-void CGUIListItemLayout::LoadLayout(TiXmlElement *layout, int context, bool focused, float maxWidth, float maxHeight)
+void CGUIListItemLayout::LoadLayout(TiXmlElement *layout, int context, bool focused, float maxWidth, float maxHeight, GUIResourceProviderPtr provider)
 {
   m_focused = focused;
   layout->QueryFloatAttribute("width", &m_width);
@@ -187,7 +187,7 @@ void CGUIListItemLayout::LoadLayout(TiXmlElement *layout, int context, bool focu
   TiXmlElement *child = layout->FirstChildElement("control");
   while (child)
   {
-    LoadControl(child, &m_group);
+    LoadControl(child, &m_group, provider);
     child = child->NextSiblingElement("control");
   }
 }

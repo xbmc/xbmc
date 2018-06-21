@@ -26,7 +26,7 @@ using namespace KODI::GUILIB;
 
 CGUIFadeLabelControl::CGUIFadeLabelControl(int parentID, int controlID, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, bool scrollOut, unsigned int timeToDelayAtEnd, bool resetOnLabelChange, bool randomized)
     : CGUIControl(parentID, controlID, posX, posY, width, height), m_label(labelInfo), m_scrollInfo(50, labelInfo.offsetX, labelInfo.scrollSpeed)
-    , m_textLayout(labelInfo.font, false)
+    , m_textLayout(labelInfo.resourceProvider, labelInfo.font, false)
     , m_fadeAnim(CAnimation::CreateFader(100, 0, timeToDelayAtEnd, 200))
 {
   m_currentLabel = 0;

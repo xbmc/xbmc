@@ -1559,21 +1559,21 @@ void CGUIEPGGridContainer::ValidateOffset()
   }
 }
 
-void CGUIEPGGridContainer::LoadLayout(TiXmlElement *layout)
+void CGUIEPGGridContainer::LoadLayout(TiXmlElement *layout, GUIResourceProviderPtr provider)
 {
   /* layouts for the channel column */
   TiXmlElement *itemElement = layout->FirstChildElement("channellayout");
   while (itemElement)
   {
     m_channelLayouts.emplace_back();
-    m_channelLayouts.back().LoadLayout(itemElement, GetParentID(), false, m_width, m_height);
+    m_channelLayouts.back().LoadLayout(itemElement, GetParentID(), false, m_width, m_height, provider);
     itemElement = itemElement->NextSiblingElement("channellayout");
   }
   itemElement = layout->FirstChildElement("focusedchannellayout");
   while (itemElement)
   {
     m_focusedChannelLayouts.emplace_back();
-    m_focusedChannelLayouts.back().LoadLayout(itemElement, GetParentID(), true, m_width, m_height);
+    m_focusedChannelLayouts.back().LoadLayout(itemElement, GetParentID(), true, m_width, m_height, provider);
     itemElement = itemElement->NextSiblingElement("focusedchannellayout");
   }
 
@@ -1582,14 +1582,14 @@ void CGUIEPGGridContainer::LoadLayout(TiXmlElement *layout)
   while (itemElement)
   {
     m_focusedProgrammeLayouts.emplace_back();
-    m_focusedProgrammeLayouts.back().LoadLayout(itemElement, GetParentID(), true, m_width, m_height);
+    m_focusedProgrammeLayouts.back().LoadLayout(itemElement, GetParentID(), true, m_width, m_height, provider);
     itemElement = itemElement->NextSiblingElement("focusedlayout");
   }
   itemElement = layout->FirstChildElement("itemlayout");
   while (itemElement)
   {
     m_programmeLayouts.emplace_back();
-    m_programmeLayouts.back().LoadLayout(itemElement, GetParentID(), false, m_width, m_height);
+    m_programmeLayouts.back().LoadLayout(itemElement, GetParentID(), false, m_width, m_height, provider);
     itemElement = itemElement->NextSiblingElement("itemlayout");
   }
 
@@ -1598,7 +1598,7 @@ void CGUIEPGGridContainer::LoadLayout(TiXmlElement *layout)
   while (itemElement)
   {
     m_rulerDateLayouts.emplace_back();
-    m_rulerDateLayouts.back().LoadLayout(itemElement, GetParentID(), false, m_width, m_height);
+    m_rulerDateLayouts.back().LoadLayout(itemElement, GetParentID(), false, m_width, m_height, provider);
     itemElement = itemElement->NextSiblingElement("rulerdatelayout");
   }
 
@@ -1607,7 +1607,7 @@ void CGUIEPGGridContainer::LoadLayout(TiXmlElement *layout)
   while (itemElement)
   {
     m_rulerLayouts.emplace_back();
-    m_rulerLayouts.back().LoadLayout(itemElement, GetParentID(), false, m_width, m_height);
+    m_rulerLayouts.back().LoadLayout(itemElement, GetParentID(), false, m_width, m_height, provider);
     itemElement = itemElement->NextSiblingElement("rulerlayout");
   }
 }

@@ -35,7 +35,7 @@ CGUITextBox::CGUITextBox(int parentID, int controlID, float posX, float posY, fl
                          const CLabelInfo& labelInfo, int scrollTime,
                          const CLabelInfo* labelInfoMono)
     : CGUIControl(parentID, controlID, posX, posY, width, height)
-    , CGUITextLayout(labelInfo.font, true)
+    , CGUITextLayout(labelInfo.resourceProvider, labelInfo.font, true)
     , m_label(labelInfo)
 {
   m_offset = 0;

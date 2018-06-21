@@ -25,6 +25,7 @@
 \brief
 */
 
+#include "guilib/IResourceProvider.h"
 #include "utils/Color.h"
 
 #include <string>
@@ -42,6 +43,7 @@ class CGUIInfoColor
 {
 public:
   constexpr CGUIInfoColor(UTILS::Color color = 0):m_color(color) {}
+  CGUIInfoColor(GUIResourceProviderPtr colorProvider, UTILS::Color color = 0);
 
   constexpr operator UTILS::Color() const { return m_color; };
 
@@ -49,8 +51,10 @@ public:
   void Parse(const std::string &label, int context);
 
 private:
+  UTILS::Color TranslateColor(const std::string &color) const;
   int m_info = 0;
   UTILS::Color m_color;
+  GUIResourceProviderPtr m_colorProvider;
 };
 
 } // namespace GUIINFO

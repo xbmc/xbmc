@@ -28,6 +28,7 @@
 #include "guilib/GUIControl.h"
 #include "guilib/GUIListItemLayout.h"
 #include "guilib/IGUIContainer.h"
+#include "guilib/IResourceProvider.h"
 
 namespace PVR
 {
@@ -74,7 +75,7 @@ namespace PVR
     PVR::CPVRChannelPtr GetSelectedChannel() const;
     CDateTime GetSelectedDate() const;
 
-    void LoadLayout(TiXmlElement *layout);
+    void LoadLayout(TiXmlElement *layout, GUIResourceProviderPtr provider);
     void SetPageControl(int id);
 
     /*! \brief Set the offset of the first item in the container from the container's position

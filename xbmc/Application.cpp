@@ -50,7 +50,6 @@
 #include "GUIInfoManager.h"
 #include "playlists/PlayListFactory.h"
 #include "guilib/GUIFontManager.h"
-#include "guilib/GUIColorManager.h"
 #include "guilib/StereoscopicsManager.h"
 #include "addons/BinaryAddonCache.h"
 #include "addons/LanguageResource.h"
@@ -1571,11 +1570,11 @@ bool CApplication::LoadSkin(const std::string& skinID)
   CServiceBroker::GetWinSystem()->GetGfxContext().SetMediaDir(skin->Path());
   g_directoryCache.ClearSubPaths(skin->Path());
 
-  g_colorManager.Load(m_ServiceManager->GetSettings().GetString(CSettings::SETTING_LOOKANDFEEL_SKINCOLORS));
+  g_SkinInfo->LoadColors(CServiceBroker::GetSettings().GetString(CSettings::SETTING_LOOKANDFEEL_SKINCOLORS));
 
   g_SkinInfo->LoadIncludes();
 
-  g_fontManager.LoadFonts(m_ServiceManager->GetSettings().GetString(CSettings::SETTING_LOOKANDFEEL_FONT));
+  g_SkinInfo->LoadFonts(m_ServiceManager->GetSettings().GetString(CSettings::SETTING_LOOKANDFEEL_FONT));
 
   // load in the skin strings
   std::string langPath = URIUtils::AddFileToFolder(skin->Path(), "language");
@@ -1674,8 +1673,6 @@ void CApplication::UnloadSkin(bool forReload /* = false */)
   CServiceBroker::GetGUI()->GetLargeTextureManager().CleanupUnusedImages(true);
 
   g_fontManager.Clear();
-
-  g_colorManager.Clear();
 
   CServiceBroker::GetGUI()->GetInfoManager().Clear();
 

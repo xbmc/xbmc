@@ -23,6 +23,7 @@
 #include "GUIListGroup.h"
 #include "GUITexture.h"
 #include "guilib/guiinfo/GUIInfoLabel.h"
+#include "IResourceProvider.h"
 
 class CGUIListItem;
 class CFileItem;
@@ -33,7 +34,7 @@ class CGUIListItemLayout final
 public:
   CGUIListItemLayout();
   CGUIListItemLayout(const CGUIListItemLayout &from, CGUIControl *control);
-  void LoadLayout(TiXmlElement *layout, int context, bool focused, float maxWidth, float maxHeight);
+  void LoadLayout(TiXmlElement *layout, int context, bool focused, float maxWidth, float maxHeight, GUIResourceProviderPtr provider);
   void Process(CGUIListItem *item, int parentID, unsigned int currentTime, CDirtyRegionList &dirtyregions);
   void Render(CGUIListItem *item, int parentID);
   float Size(ORIENTATION orientation) const;
@@ -60,7 +61,7 @@ public:
 #endif
   bool CheckCondition();
 protected:
-  void LoadControl(TiXmlElement *child, CGUIControlGroup *group);
+  void LoadControl(TiXmlElement *child, CGUIControlGroup *group, GUIResourceProviderPtr provider);
   void Update(CFileItem *item);
 
   CGUIListGroup m_group;

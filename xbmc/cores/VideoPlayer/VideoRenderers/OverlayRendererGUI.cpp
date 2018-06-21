@@ -62,14 +62,14 @@ CGUITextLayout* COverlayText::GetFontLayout(const std::string &font, int color, 
                                                     , 0
                                                     , height
                                                     , style
-                                                    , false, 1.0f, 1.0f, &pal, true);
+                                                    , pal, false, 1.0f, 1.0f, true);
     CGUIFont *border_font   = g_fontManager.LoadTTF(fontbordercache
                                                     , font_path
                                                     , 0xFF000000
                                                     , 0
                                                     , height
                                                     , style
-                                                    , true, 1.0f, 1.0f, &pal, true);
+                                                    , pal, true, 1.0f, 1.0f, true);
     if (!subtitle_font || !border_font)
       CLog::Log(LOGERROR, "COverlayText::GetFontLayout - Unable to load subtitle font");
     else
