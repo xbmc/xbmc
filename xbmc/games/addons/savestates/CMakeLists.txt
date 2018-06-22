@@ -1,18 +1,11 @@
-set(SOURCES BasicMemoryStream.cpp
-            DeltaPairMemoryStream.cpp
-            LinearMemoryStream.cpp
-            Savestate.cpp
+set(SOURCES Savestate.cpp
             SavestateDatabase.cpp
             SavestateReader.cpp
             SavestateTranslator.cpp
             SavestateUtils.cpp
             SavestateWriter.cpp)
 
-set(HEADERS BasicMemoryStream.h
-            DeltaPairMemoryStream.h
-            IMemoryStream.h
-            LinearMemoryStream.h
-            Savestate.h
+set(HEADERS Savestate.h
             SavestateDatabase.h
             SavestateDefines.h
             SavestateReader.h

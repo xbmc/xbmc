@@ -14,12 +14,12 @@
 #include "addons/AddonManager.h"
 #include "addons/BinaryAddonCache.h"
 #include "cores/AudioEngine/Utils/AEChannelInfo.h"
+#include "cores/RetroPlayer/playback/RealtimePlayback.h"
+#include "cores/RetroPlayer/playback/ReversiblePlayback.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
 #include "games/addons/input/GameClientInput.h"
-#include "games/addons/playback/GameClientRealtimePlayback.h"
-#include "games/addons/playback/GameClientReversiblePlayback.h"
 #include "games/addons/streams/GameClientStreams.h"
 #include "games/addons/streams/IGameClientStream.h"
 #include "games/GameServices.h"
@@ -425,7 +425,7 @@ void CGameClient::CreatePlayback()
 
   if (bRequiresGameLoop)
   {
-    m_playback.reset(new CGameClientReversiblePlayback(this, m_framerate, m_serializeSize));
+    m_playback.reset(new RETRO::CReversiblePlayback(this, m_framerate, m_serializeSize));
   }
   else
   {
@@ -435,7 +435,7 @@ void CGameClient::CreatePlayback()
 
 void CGameClient::ResetPlayback()
 {
-  m_playback.reset(new CGameClientRealtimePlayback);
+  m_playback.reset(new RETRO::CRealtimePlayback);
 }
 
 void CGameClient::Reset()

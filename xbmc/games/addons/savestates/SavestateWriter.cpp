@@ -9,7 +9,6 @@
 #include "SavestateWriter.h"
 #include "filesystem/File.h"
 #include "games/addons/GameClient.h"
-#include "IMemoryStream.h"
 #include "games/addons/savestates/SavestateUtils.h"
 #include "pictures/Picture.h"
 #include "settings/AdvancedSettings.h"
@@ -56,14 +55,14 @@ bool CSavestateWriter::Initialize(const CGameClient* gameClient, uint64_t frameH
   return !m_savestate.Path().empty();
 }
 
-bool CSavestateWriter::WriteSave(IMemoryStream* memoryStream)
+bool CSavestateWriter::WriteSave(const uint8_t *data, size_t size)
 {
   using namespace XFILE;
 
-  if (memoryStream->CurrentFrame() == nullptr)
+  if (data == nullptr)
     return false;
 
-  m_savestate.SetSize(memoryStream->FrameSize());
+  m_savestate.SetSize(size);
 
   CLog::Log(LOGDEBUG, "Saving savestate to %s", m_savestate.Path().c_str());
 
@@ -72,8 +71,8 @@ bool CSavestateWriter::WriteSave(IMemoryStream* memoryStream)
   CFile file;
   if (file.OpenForWrite(m_savestate.Path()))
   {
-    ssize_t written = file.Write(memoryStream->CurrentFrame(), memoryStream->FrameSize());
-    bSuccess = (written == static_cast<ssize_t>(memoryStream->FrameSize()));
+    ssize_t written = file.Write(data, size);
+    bSuccess = (written == static_cast<ssize_t>(size));
   }
 
   if (!bSuccess)

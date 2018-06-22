@@ -9,7 +9,7 @@
 #include "LinearMemoryStream.h"
 
 using namespace KODI;
-using namespace GAME;
+using namespace RETRO;
 
 // Pad forward to nearest boundary of bytes
 #define PAD_TO_CEIL(x, bytes)  (((x) + (bytes) - 1) / (bytes))

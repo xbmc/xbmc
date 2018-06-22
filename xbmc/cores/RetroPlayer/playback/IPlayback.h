@@ -8,17 +8,16 @@
 
 #pragma once
 
-#include <stdint.h>
 #include <string>
 
 namespace KODI
 {
-namespace GAME
+namespace RETRO
 {
-  class IGameClientPlayback
+  class IPlayback
   {
   public:
-    virtual ~IGameClientPlayback() = default;
+    virtual ~IPlayback() = default;
 
     // Playback capabilities
     virtual bool CanPause() const = 0;

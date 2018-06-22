@@ -8,18 +8,18 @@
 
 #pragma once
 
-#include "IGameClientPlayback.h"
+#include "IPlayback.h"
 
 namespace KODI
 {
-namespace GAME
+namespace RETRO
 {
-  class CGameClientRealtimePlayback : public IGameClientPlayback
+  class CRealtimePlayback : public IPlayback
   {
   public:
-    virtual ~CGameClientRealtimePlayback() = default;
+    virtual ~CRealtimePlayback() = default;
 
-    // implementation of IGameClientPlayback
+    // implementation of IPlayback
     virtual bool CanPause() const override { return false; }
     virtual bool CanSeek() const override { return false; }
     virtual unsigned int GetTimeMs() const override { return 0; }

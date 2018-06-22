@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "IGameClientPlayback.h"
+#include "IPlayback.h"
 #include "GameLoop.h"
 #include "threads/CriticalSection.h"
 #include "utils/Observer.h"
@@ -24,18 +24,22 @@ namespace GAME
   class CGameClient;
   class CSavestateReader;
   class CSavestateWriter;
+}
+
+namespace RETRO
+{
   class IMemoryStream;
 
-  class CGameClientReversiblePlayback : public IGameClientPlayback,
-                                        public IGameLoopCallback,
-                                        public Observer
+  class CReversiblePlayback : public IPlayback,
+                              public IGameLoopCallback,
+                              public Observer
   {
   public:
-    CGameClientReversiblePlayback(CGameClient* gameClient, double fps, size_t serializeSize);
+    CReversiblePlayback(GAME::CGameClient* gameClient, double fps, size_t serializeSize);
 
-    virtual ~CGameClientReversiblePlayback();
+    virtual ~CReversiblePlayback();
 
-    // implementation of IGameClientPlayback
+    // implementation of IPlayback
     virtual bool CanPause() const override { return true; }
     virtual bool CanSeek() const override { return true; }
     virtual unsigned int GetTimeMs() const override { return m_playTimeMs; }
@@ -63,7 +67,7 @@ namespace GAME
     void UpdateMemoryStream();
 
     // Construction parameter
-    CGameClient* const m_gameClient;
+    GAME::CGameClient* const m_gameClient;
 
     // Gameplay functionality
     CGameLoop m_gameLoop;
@@ -71,8 +75,8 @@ namespace GAME
     CCriticalSection m_mutex;
 
     // Savestate functionality
-    std::unique_ptr<CSavestateWriter> m_savestateWriter;
-    std::unique_ptr<CSavestateReader> m_savestateReader;
+    std::unique_ptr<GAME::CSavestateWriter> m_savestateWriter;
+    std::unique_ptr<GAME::CSavestateReader> m_savestateReader;
 
     // Playback stats
     uint64_t m_totalFrameCount;

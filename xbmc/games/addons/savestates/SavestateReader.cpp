@@ -10,7 +10,6 @@
 #include "filesystem/File.h"
 #include "games/addons/GameClient.h"
 #include "utils/log.h"
-#include "IMemoryStream.h"
 
 using namespace KODI;
 using namespace GAME;
@@ -37,7 +36,7 @@ bool CSavestateReader::Initialize(const std::string& path, const CGameClient* ga
   return bSuccess;
 }
 
-bool CSavestateReader::ReadSave(IMemoryStream* memoryStream)
+bool CSavestateReader::ReadSave(uint8_t *data, size_t size)
 {
   using namespace XFILE;
 
@@ -46,10 +45,9 @@ bool CSavestateReader::ReadSave(IMemoryStream* memoryStream)
   CFile file;
   if (file.Open(m_savestate.Path()))
   {
-    ssize_t read = file.Read(memoryStream->BeginFrame(), memoryStream->FrameSize());
-    if (read == static_cast<ssize_t>(memoryStream->FrameSize()))
+    ssize_t read = file.Read(data, size);
+    if (read == static_cast<ssize_t>(size))
     {
-      memoryStream->SubmitFrame();
       m_frameCount = m_savestate.PlaytimeFrames();
       bSuccess = true;
     }

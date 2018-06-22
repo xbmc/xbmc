@@ -15,7 +15,7 @@
 
 namespace KODI
 {
-namespace GAME
+namespace RETRO
 {
   /*!
    * \brief Implementation of a linear memory stream using XOR deltas

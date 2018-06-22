@@ -19,7 +19,6 @@ namespace KODI
 namespace GAME
 {
   class CGameClient;
-  class IMemoryStream;
 
   class CSavestateReader
   {
@@ -27,7 +26,7 @@ namespace GAME
     ~CSavestateReader();
 
     bool Initialize(const std::string& path, const CGameClient* gameClient);
-    bool ReadSave(IMemoryStream* memoryStream);
+    bool ReadSave(uint8_t *data, size_t size);
     uint64_t GetFrameCount(void) const { return m_frameCount; }
 
   private:

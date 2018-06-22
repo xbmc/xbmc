@@ -9,7 +9,7 @@
 #include "BasicMemoryStream.h"
 
 using namespace KODI;
-using namespace GAME;
+using namespace RETRO;
 
 CBasicMemoryStream::CBasicMemoryStream()
 {
