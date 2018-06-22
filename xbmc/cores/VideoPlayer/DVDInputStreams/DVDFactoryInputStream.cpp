@@ -30,9 +30,7 @@
 #ifdef HAVE_LIBBLURAY
 #include "DVDInputStreamBluray.h"
 #endif
-#ifdef ENABLE_DVDINPUTSTREAM_STACK
 #include "DVDInputStreamStack.h"
-#endif
 #include "FileItem.h"
 #include "storage/MediaManager.h"
 #include "URL.h"
@@ -97,33 +95,32 @@ std::shared_ptr<CDVDInputStream> CDVDFactoryInputStream::CreateInputStream(IVide
 
   if (fileitem.IsDVDFile(false, true))
     return std::shared_ptr<CDVDInputStreamNavigator>(new CDVDInputStreamNavigator(pPlayer, fileitem));
-  else if (fileitem.IsPVRChannel() && file.substr(0, 6) == "pvr://")
+  else if (fileitem.IsPVRChannel() && StringUtils::StartsWithNoCase(file, "pvr://"))
     return std::shared_ptr<CInputStreamPVRChannel>(new CInputStreamPVRChannel(pPlayer, fileitem));
-  else if (fileitem.IsUsablePVRRecording() && file.substr(0, 6) == "pvr://")
+  else if (fileitem.IsUsablePVRRecording() && StringUtils::StartsWithNoCase(file, "pvr://"))
     return std::shared_ptr<CInputStreamPVRRecording>(new CInputStreamPVRRecording(pPlayer, fileitem));
 #ifdef HAVE_LIBBLURAY
-  else if (fileitem.IsType(".bdmv") || fileitem.IsType(".mpls") || file.substr(0, 7) == "bluray:")
+  else if (fileitem.IsType(".bdmv") || fileitem.IsType(".mpls") || StringUtils::StartsWithNoCase(file, "bluray:"))
     return std::shared_ptr<CDVDInputStreamBluray>(new CDVDInputStreamBluray(pPlayer, fileitem));
 #endif
-  else if(file.substr(0, 6) == "rtp://"
-       || file.substr(0, 7) == "rtsp://"
-       || file.substr(0, 6) == "sdp://"
-       || file.substr(0, 6) == "udp://"
-       || file.substr(0, 6) == "tcp://"
-       || file.substr(0, 6) == "mms://"
-       || file.substr(0, 7) == "mmst://"
-       || file.substr(0, 7) == "mmsh://")
+  else if(StringUtils::StartsWithNoCase(file, "rtp://") ||
+          StringUtils::StartsWithNoCase(file, "rtsp://") ||
+          StringUtils::StartsWithNoCase(file, "sdp://") ||
+          StringUtils::StartsWithNoCase(file, "udp://") ||
+          StringUtils::StartsWithNoCase(file, "tcp://") ||
+          StringUtils::StartsWithNoCase(file, "mms://") ||
+          StringUtils::StartsWithNoCase(file, "mmst://") ||
+          StringUtils::StartsWithNoCase(file, "mmsh://") ||
+          StringUtils::StartsWithNoCase(file, "rtmp://") ||
+          StringUtils::StartsWithNoCase(file, "rtmpt://") ||
+          StringUtils::StartsWithNoCase(file, "rtmpe://") ||
+          StringUtils::StartsWithNoCase(file, "rtmpte://") ||
+          StringUtils::StartsWithNoCase(file, "rtmps://"))
+  {
     return std::shared_ptr<CDVDInputStreamFFmpeg>(new CDVDInputStreamFFmpeg(fileitem));
-#ifdef ENABLE_DVDINPUTSTREAM_STACK
-  else if(file.substr(0, 8) == "stack://")
+  }
+  else if(StringUtils::StartsWithNoCase(file, "stack://"))
     return std::shared_ptr<CDVDInputStreamStack>(new CDVDInputStreamStack(fileitem));
-#endif
-  else if(file.substr(0, 7) == "rtmp://"
-       || file.substr(0, 8) == "rtmpt://"
-       || file.substr(0, 8) == "rtmpe://"
-       || file.substr(0, 9) == "rtmpte://"
-       || file.substr(0, 8) == "rtmps://")
-    return std::shared_ptr<CDVDInputStreamFFmpeg>(new CDVDInputStreamFFmpeg(fileitem));
 
   CFileItem finalFileitem(fileitem);
 
@@ -142,7 +139,7 @@ std::shared_ptr<CDVDInputStream> CDVDFactoryInputStream::CreateInputStream(IVide
           finalUrl.SetProtocolOptions(origUrl.GetProtocolOptions());
           finalUrl.SetUserName(origUrl.GetUserName());
           finalUrl.SetPassword(origUrl.GetPassWord());
-          finalFileitem.SetPath(finalUrl.Get());
+          finalFileitem.SetDynPath(finalUrl.Get());
         }
         curlFile.Close();
       }
