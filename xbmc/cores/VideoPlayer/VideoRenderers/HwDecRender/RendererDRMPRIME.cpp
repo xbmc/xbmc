@@ -47,7 +47,7 @@ CBaseRenderer* CRendererDRMPRIME::Create(CVideoBuffer* buffer)
   {
     CWinSystemGbmGLESContext* winSystem = dynamic_cast<CWinSystemGbmGLESContext*>(CServiceBroker::GetWinSystem());
     if (winSystem)
-      return new CRendererDRMPRIME(winSystem->m_DRM);
+      return new CRendererDRMPRIME(winSystem->GetDrm());
   }
 
   return nullptr;
