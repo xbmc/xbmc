@@ -239,6 +239,9 @@ function(add_addon_depends addon searchpath)
               if(TARBALL_DIR)
                 set(DOWNLOAD_DIR ${TARBALL_DIR})
               endif()
+            else()
+              unset(URL_HASH_COMMAND)
+              message(AUTHOR_WARNING "${dir}/${id}.sha256 is missing")
             endif()
 
             externalproject_add(${id}
