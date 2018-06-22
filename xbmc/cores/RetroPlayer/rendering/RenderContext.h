@@ -39,6 +39,7 @@ enum class GL_SHADER_METHOD
 {
   DEFAULT,
   TEXTURE,
+  TEXTURE_RGBA_OES,
 };
 
 namespace KODI

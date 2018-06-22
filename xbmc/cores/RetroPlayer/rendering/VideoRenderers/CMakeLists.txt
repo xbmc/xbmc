@@ -27,4 +27,9 @@ if(MMAL_FOUND)
                       RPRendererMMAL.h)
 endif()
 
+if(CORE_PLATFORM_NAME_LC STREQUAL gbm)
+  list(APPEND SOURCES RPRendererGBM.cpp)
+  list(APPEND HEADERS RPRendererGBM.h)
+endif()
+
 core_add_library(rp-videorenderers)

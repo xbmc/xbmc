@@ -137,7 +137,7 @@ namespace RETRO
      */
     void DrawBlackBars();
 
-    void Render(uint8_t alpha);
+    virtual void Render(uint8_t alpha);
 
     GLenum m_textureTarget = GL_TEXTURE_2D;
     float m_clearColour = 0.0f;

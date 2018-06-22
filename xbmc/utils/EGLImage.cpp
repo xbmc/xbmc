@@ -46,6 +46,22 @@ namespace
     EGL_DMA_BUF_PLANE1_PITCH_EXT,
     EGL_DMA_BUF_PLANE2_PITCH_EXT,
   };
+
+#if defined(EGL_EXT_image_dma_buf_import_modifiers)
+  const EGLint eglDmabufPlaneModifierLoAttr[CEGLImage::MAX_NUM_PLANES] =
+  {
+    EGL_DMA_BUF_PLANE0_MODIFIER_LO_EXT,
+    EGL_DMA_BUF_PLANE1_MODIFIER_LO_EXT,
+    EGL_DMA_BUF_PLANE2_MODIFIER_LO_EXT,
+  };
+
+  const EGLint eglDmabufPlaneModifierHiAttr[CEGLImage::MAX_NUM_PLANES] =
+  {
+    EGL_DMA_BUF_PLANE0_MODIFIER_HI_EXT,
+    EGL_DMA_BUF_PLANE1_MODIFIER_HI_EXT,
+    EGL_DMA_BUF_PLANE2_MODIFIER_HI_EXT,
+  };
+#endif
 } // namespace
 
 CEGLImage::CEGLImage(EGLDisplay display) :
@@ -76,6 +92,12 @@ bool CEGLImage::CreateImage(EglAttrs imageAttrs)
       attribs.Add({{eglDmabufPlaneFdAttr[i], imageAttrs.planes[i].fd},
                    {eglDmabufPlaneOffsetAttr[i], imageAttrs.planes[i].offset},
                    {eglDmabufPlanePitchAttr[i], imageAttrs.planes[i].pitch}});
+
+#if defined(EGL_EXT_image_dma_buf_import_modifiers)
+      if (imageAttrs.planes[i].modifier != DRM_FORMAT_MOD_INVALID)
+        attribs.Add({{eglDmabufPlaneModifierLoAttr[i], static_cast<EGLint>(imageAttrs.planes[i].modifier & 0xFFFFFFFF)},
+                     {eglDmabufPlaneModifierHiAttr[i], static_cast<EGLint>(imageAttrs.planes[i].modifier >> 32)}});
+#endif
     }
   }
 

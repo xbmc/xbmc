@@ -85,6 +85,8 @@ void CRenderBufferOpenGLES::CreateTexture()
   glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
   glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+  glBindTexture(m_textureTarget, 0);
 }
 
 bool CRenderBufferOpenGLES::UploadTexture()
@@ -124,6 +126,8 @@ bool CRenderBufferOpenGLES::UploadTexture()
     for (unsigned int y = 0; y < m_height; ++y, pixels += stride)
       glTexSubImage2D(m_textureTarget, 0, 0, y, m_width, 1, m_pixelformat, m_pixeltype, pixels);
   }
+
+  glBindTexture(m_textureTarget, 0);
 
   return true;
 }

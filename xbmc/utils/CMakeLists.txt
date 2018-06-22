@@ -109,6 +109,7 @@ set(HEADERS ActorProtocol.h
             HttpRangeUtils.h
             HttpResponse.h
             IArchivable.h
+            IBufferObject.h
             ILocalizer.h
             InfoLoader.h
             IRssObserver.h
@@ -195,6 +196,11 @@ endif()
 if(CORE_PLATFORM_NAME_LC STREQUAL gbm)
   list(APPEND SOURCES EGLImage.cpp)
   list(APPEND HEADERS EGLImage.h)
+
+  if(GBM_HAS_BO_MAP)
+    list(APPEND SOURCES GBMBufferObject.cpp)
+    list(APPEND HEADERS GBMBufferObject.h)
+  endif()
 endif()
 
 core_add_library(utils)
