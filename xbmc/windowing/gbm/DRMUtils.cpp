@@ -172,21 +172,6 @@ uint32_t CDRMUtils::GetPropertyId(struct drm_object *object, const char *name)
   return 0;
 }
 
-bool CDRMUtils::SetProperty(struct drm_object *object, const char *name, uint64_t value)
-{
-  uint32_t property_id = this->GetPropertyId(object, name);
-  if (!property_id)
-    return false;
-
-  if (drmModeObjectSetProperty(m_fd, object->id, object->type, property_id, value) < 0)
-  {
-    CLog::Log(LOGERROR, "CDRMUtils::%s - could not set property %s", __FUNCTION__, name);
-    return false;
-  }
-
-  return true;
-}
-
 bool CDRMUtils::GetResources()
 {
   m_drm_resources = drmModeGetResources(m_fd);

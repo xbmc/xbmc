@@ -82,11 +82,9 @@ public:
   void WaitVBlank();
 
   virtual bool AddProperty(struct drm_object *object, const char *name, uint64_t value) { return false; }
-  bool SetProperty(struct drm_object *object, const char *name, uint64_t value);
-
+  virtual bool SetProperty(struct drm_object *object, const char *name, uint64_t value) { return false; }
 
   int m_fd;
-
   struct connector *m_connector = nullptr;
   struct encoder *m_encoder = nullptr;
   struct crtc *m_crtc = nullptr;
@@ -97,8 +95,7 @@ public:
 protected:
   bool OpenDrm();
   uint32_t GetPropertyId(struct drm_object *object, const char *name);
-
-  drm_fb * DrmFbGetFromBo(struct gbm_bo *bo);
+  drm_fb* DrmFbGetFromBo(struct gbm_bo *bo);
 
 private:
   bool GetResources();
