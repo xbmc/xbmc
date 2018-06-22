@@ -2456,22 +2456,22 @@
 		<control type="button">
 			<label>13395</label>
 			<include>MenuButtonCommonValues</include>
-			<onclick>ActivateWindow(123)</onclick>
+			<onclick>ActivateWindow(osdvideosettings)</onclick>
 		</control>
 		<control type="button">
 			<label>31002</label>
 			<include>MenuButtonCommonValues</include>
-			<onclick>ActivateWindow(124)</onclick>
+			<onclick>ActivateWindow(osdaudiosettings)</onclick>
+		</control>
+		<control type="button">
+			<label>24133</label>
+			<include>MenuButtonCommonValues</include>
+			<onclick>ActivateWindow(osdsubtitlesettings)</onclick>
 		</control>
 		<control type="button">
 			<label>298</label>
 			<include>MenuButtonCommonValues</include>
-			<onclick>ActivateWindow(125)</onclick>
-		</control>
-		<control type="button">
-			<label>31356</label>
-			<include>MenuButtonCommonValues</include>
-			<onclick>ActivateWindow(SubtitleSearch)</onclick>
+			<onclick>ActivateWindow(videobookmarks)</onclick>
 		</control>
 		<control type="button">
 			<label>$LOCALIZE[486]$INFO[Playlist.Repeat, : ]</label>
