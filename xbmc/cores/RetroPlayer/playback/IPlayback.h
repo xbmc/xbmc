@@ -19,6 +19,10 @@ namespace RETRO
   public:
     virtual ~IPlayback() = default;
 
+    // Lifetime management
+    virtual void Initialize() = 0;
+    virtual void Deinitialize() = 0;
+
     // Playback capabilities
     virtual bool CanPause() const = 0;
     virtual bool CanSeek() const = 0;

@@ -40,6 +40,8 @@ namespace RETRO
     virtual ~CReversiblePlayback();
 
     // implementation of IPlayback
+    virtual void Initialize() override;
+    virtual void Deinitialize() override;
     virtual bool CanPause() const override { return true; }
     virtual bool CanSeek() const override { return true; }
     virtual unsigned int GetTimeMs() const override { return m_playTimeMs; }

@@ -42,8 +42,6 @@ CReversiblePlayback::CReversiblePlayback(GAME::CGameClient* gameClient, double f
 
   GAME::CGameSettings &gameSettings = CServiceBroker::GetGameServices().GameSettings();
   gameSettings.RegisterObserver(this);
-
-  m_gameLoop.Start();
 }
 
 CReversiblePlayback::~CReversiblePlayback()
@@ -51,6 +49,16 @@ CReversiblePlayback::~CReversiblePlayback()
   GAME::CGameSettings &gameSettings = CServiceBroker::GetGameServices().GameSettings();
   gameSettings.UnregisterObserver(this);
 
+  Deinitialize();
+}
+
+void CReversiblePlayback::Initialize()
+{
+  m_gameLoop.Start();
+}
+
+void CReversiblePlayback::Deinitialize()
+{
   m_gameLoop.Stop();
 }
 

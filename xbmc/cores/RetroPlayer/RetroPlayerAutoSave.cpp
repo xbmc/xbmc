@@ -8,7 +8,6 @@
 
 #include "RetroPlayerAutoSave.h"
 #include "cores/RetroPlayer/playback/IPlayback.h"
-#include "games/addons/GameClient.h"
 #include "games/GameSettings.h"
 #include "utils/log.h"
 #include "URL.h"
@@ -18,10 +17,10 @@ using namespace RETRO;
 
 #define AUTOSAVE_DURATION_SECS    10 // Auto-save every 10 seconds
 
-CRetroPlayerAutoSave::CRetroPlayerAutoSave(GAME::CGameClient &gameClient,
+CRetroPlayerAutoSave::CRetroPlayerAutoSave(IAutoSaveCallback &callback,
                                            GAME::CGameSettings &settings) :
   CThread("CRetroPlayerAutoSave"),
-  m_gameClient(gameClient),
+  m_callback(callback),
   m_settings(settings)
 {
   CLog::Log(LOGDEBUG, "RetroPlayer[SAVE]: Initializing autosave");
@@ -50,9 +49,9 @@ void CRetroPlayerAutoSave::Process()
     if (!m_settings.AutosaveEnabled())
       continue;
 
-    if (m_gameClient.GetPlayback()->GetSpeed() > 0.0)
+    if (m_callback.IsAutoSaveEnabled())
     {
-      std::string savePath = m_gameClient.GetPlayback()->CreateSavestate();
+      std::string savePath = m_callback.CreateSavestate();
       if (!savePath.empty())
         CLog::Log(LOGDEBUG, "RetroPlayer[SAVE]: Saved state to %s", CURL::GetRedacted(savePath).c_str());
     }

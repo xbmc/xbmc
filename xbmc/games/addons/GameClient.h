@@ -26,7 +26,6 @@ namespace KODI
 {
 namespace RETRO
 {
-  class IPlayback;
   class IStreamManager;
 }
 
@@ -66,12 +65,12 @@ public:
   virtual ADDON::AddonPtr GetRunningInstance() const override;
 
   // Query properties of the game client
-  bool                         SupportsStandalone() const { return m_bSupportsStandalone; }
-  bool                         SupportsPath() const;
-  bool                         SupportsVFS() const { return m_bSupportsVFS; }
+  bool SupportsStandalone() const { return m_bSupportsStandalone; }
+  bool SupportsPath() const;
+  bool SupportsVFS() const { return m_bSupportsVFS; }
   const std::set<std::string>& GetExtensions() const { return m_extensions; }
-  bool                         SupportsAllExtensions() const { return m_bSupportsAllExtensions; }
-  bool                         IsExtensionValid(const std::string& strExtension) const;
+  bool SupportsAllExtensions() const { return m_bSupportsAllExtensions; }
+  bool IsExtensionValid(const std::string& strExtension) const;
 
   // Start/stop gameplay
   bool Initialize(void);
@@ -83,8 +82,9 @@ public:
   const std::string& GetGamePath() const { return m_gamePath; }
 
   // Playback control
+  bool RequiresGameLoop() const { return m_bRequiresGameLoop; }
   bool IsPlaying() const { return m_bIsPlaying; }
-  RETRO::IPlayback* GetPlayback() { return m_playback.get(); }
+  size_t GetSerializeSize() const { return m_serializeSize; }
   double GetFrameRate() const { return m_framerate; }
   double GetSampleRate() const { return m_samplerate; }
   void RunFrame();
@@ -111,11 +111,6 @@ private:
   bool LoadGameInfo();
   void NotifyError(GAME_ERROR error);
   std::string GetMissingResource();
-  void CreatePlayback();
-  void ResetPlayback();
-
-  // Private memory stream functions
-  size_t GetSerializeSize();
 
   // Helper functions
   void LogAddonProperties(void) const;
@@ -147,11 +142,11 @@ private:
   // Properties of the current playing file
   std::atomic_bool      m_bIsPlaying;          // True between OpenFile() and CloseFile()
   std::string           m_gamePath;
+  bool                  m_bRequiresGameLoop = false;
   size_t                m_serializeSize;
   IGameInputCallback*   m_input = nullptr;     // The input callback passed to OpenFile()
   double                m_framerate = 0.0;     // Video frame rate (fps)
   double                m_samplerate = 0.0;    // Audio sample rate (Hz)
-  std::unique_ptr<RETRO::IPlayback> m_playback; // Interface to control playback
   GAME_REGION           m_region;              // Region of the loaded game
 
   // In-game saves

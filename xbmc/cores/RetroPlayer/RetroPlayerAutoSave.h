@@ -10,6 +10,8 @@
 
 #include "threads/Thread.h"
 
+#include <string>
+
 namespace KODI
 {
 namespace GAME
@@ -20,10 +22,19 @@ namespace GAME
 
 namespace RETRO
 {
+  class IAutoSaveCallback
+  {
+  public:
+    virtual ~IAutoSaveCallback() = default;
+
+    virtual bool IsAutoSaveEnabled() const = 0;
+    virtual std::string CreateSavestate() = 0;
+  };
+
   class CRetroPlayerAutoSave : protected CThread
   {
   public:
-    explicit CRetroPlayerAutoSave(GAME::CGameClient &gameClient,
+    explicit CRetroPlayerAutoSave(IAutoSaveCallback &callback,
                                   GAME::CGameSettings &settings);
 
     ~CRetroPlayerAutoSave() override;
@@ -34,7 +45,7 @@ namespace RETRO
 
   private:
     // Construction parameters
-    GAME::CGameClient &m_gameClient;
+    IAutoSaveCallback &m_callback;
     GAME::CGameSettings &m_settings;
   };
 }

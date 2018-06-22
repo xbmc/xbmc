@@ -20,6 +20,8 @@ namespace RETRO
     virtual ~CRealtimePlayback() = default;
 
     // implementation of IPlayback
+    virtual void Initialize() override { }
+    virtual void Deinitialize() override { }
     virtual bool CanPause() const override { return false; }
     virtual bool CanSeek() const override { return false; }
     virtual unsigned int GetTimeMs() const override { return 0; }
