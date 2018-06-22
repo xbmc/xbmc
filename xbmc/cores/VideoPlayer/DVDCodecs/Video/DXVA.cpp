@@ -1168,7 +1168,7 @@ bool CDecoder::GetPicture(AVCodecContext* avctx, VideoPicture* picture)
   picture->videoBuffer = m_videoBuffer;
   m_videoBuffer = nullptr;
 
-  if (!m_shared)
+  if (!m_dxva_context->IsContextShared())
   {
     int queued, discard, free;
     m_processInfo.GetRenderBuffers(queued, discard, free);
