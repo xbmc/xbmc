@@ -161,6 +161,20 @@ size_t CD3DHelper::BitsPerPixel(DXGI_FORMAT fmt)
   }
 }
 
+void ID3DResource::Register()
+{
+  if (!m_bRegistered)
+    DX::Windowing()->Register(this);
+  m_bRegistered = true;
+}
+
+void ID3DResource::Unregister()
+{
+  if (m_bRegistered)
+    DX::Windowing()->Unregister(this);
+  m_bRegistered = false;
+}
+
 CD3DTexture::CD3DTexture()
 {
   m_width = 0;
@@ -235,7 +249,8 @@ bool CD3DTexture::Create(UINT width, UINT height, UINT mipLevels, D3D11_USAGE us
     return false;
   }
 
-  DX::Windowing()->Register(this);
+  Register();
+
   return true;
 }
 
@@ -324,8 +339,7 @@ ID3D11RenderTargetView** CD3DTexture::GetAddressOfRTV()
 
 void CD3DTexture::Release()
 {
-  if (m_texture)
-    DX::Windowing()->Unregister(this);
+  Unregister();
 
   m_views.clear();
   m_renderTargets[0] = nullptr;
@@ -570,7 +584,7 @@ bool CD3DEffect::Create(const std::string &effectString, DefinesMap* defines)
     m_defines = *defines; //FIXME: is this a copy of all members?
   if (CreateEffect())
   {
-    DX::Windowing()->Register(this);
+    Register();
     return true;
   }
   return false;
@@ -578,7 +592,7 @@ bool CD3DEffect::Create(const std::string &effectString, DefinesMap* defines)
 
 void CD3DEffect::Release()
 {
-  DX::Windowing()->Unregister(this);
+  Unregister();
   OnDestroyDevice(false);
 }
 
@@ -832,7 +846,7 @@ bool CD3DBuffer::Create(D3D11_BIND_FLAG type, UINT count, UINT stride, DXGI_FORM
   // create the vertex buffer
   if (CreateBuffer(data))
   {
-    DX::Windowing()->Register(this);
+    Register();
     return true;
   }
   return false;
@@ -840,7 +854,7 @@ bool CD3DBuffer::Create(D3D11_BIND_FLAG type, UINT count, UINT stride, DXGI_FORM
 
 void CD3DBuffer::Release()
 {
-  DX::Windowing()->Unregister(this);
+  Unregister();
   m_buffer = nullptr;
 }
 
@@ -951,7 +965,7 @@ CD3DVertexShader::~CD3DVertexShader()
 
 void CD3DVertexShader::Release()
 {
-  DX::Windowing()->Unregister(this);
+  Unregister();
   ReleaseShader();
   m_VSBuffer = nullptr;
   if (m_vertexLayout)
@@ -998,7 +1012,7 @@ bool CD3DVertexShader::Create(const std::wstring& vertexFile, D3D11_INPUT_ELEMEN
   m_inited = CreateInternal();
 
   if (m_inited)
-    DX::Windowing()->Register(this);
+    Register();
 
   return m_inited;
 }
@@ -1032,7 +1046,7 @@ bool CD3DVertexShader::Create(const void* code, size_t codeLength, D3D11_INPUT_E
   m_inited = CreateInternal();
 
   if (m_inited)
-    DX::Windowing()->Register(this);
+    Register();
 
   return m_inited;
 }
@@ -1113,7 +1127,7 @@ CD3DPixelShader::~CD3DPixelShader()
 
 void CD3DPixelShader::Release()
 {
-  DX::Windowing()->Unregister(this);
+  Unregister();
   ReleaseShader();
   m_PSBuffer = nullptr;
 }
@@ -1142,7 +1156,7 @@ bool CD3DPixelShader::Create(const std::wstring& wstrFile)
   m_inited = CreateInternal();
 
   if (m_inited)
-    DX::Windowing()->Register(this);
+    Register();
 
   return m_inited;
 }
@@ -1166,7 +1180,7 @@ bool CD3DPixelShader::Create(const void* code, size_t codeLength)
   m_inited = CreateInternal();
 
   if (m_inited)
-    DX::Windowing()->Register(this);
+    Register();
 
   return m_inited;
 }

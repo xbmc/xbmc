@@ -51,6 +51,12 @@ public:
 
   virtual void OnDestroyDevice(bool fatal)=0;
   virtual void OnCreateDevice()=0;
+
+protected:
+  void Register();
+  void Unregister();
+
+  bool m_bRegistered = false;
 };
 
 class CD3DHelper
