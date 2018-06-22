@@ -100,7 +100,7 @@ bool CWinSystemGbm::InitWindowSystem()
     }
   }
 
-  if (!m_GBM->CreateDevice(m_DRM->m_fd))
+  if (!m_GBM->CreateDevice(m_DRM->GetFileDescriptor()))
   {
     m_GBM.reset();
     return false;

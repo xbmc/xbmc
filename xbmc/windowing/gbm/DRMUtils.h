@@ -76,6 +76,7 @@ public:
 
   std::string GetModule() const { return m_module; }
   std::string GetDevicePath() const { return m_device_path; }
+  int GetFileDescriptor() const { return m_fd; }
 
   std::vector<RESOLUTION_INFO> GetModes();
   bool SetMode(const RESOLUTION_INFO& res);
@@ -84,7 +85,6 @@ public:
   virtual bool AddProperty(struct drm_object *object, const char *name, uint64_t value) { return false; }
   virtual bool SetProperty(struct drm_object *object, const char *name, uint64_t value) { return false; }
 
-  int m_fd;
   struct connector *m_connector = nullptr;
   struct encoder *m_encoder = nullptr;
   struct crtc *m_crtc = nullptr;
@@ -96,6 +96,8 @@ protected:
   bool OpenDrm();
   uint32_t GetPropertyId(struct drm_object *object, const char *name);
   drm_fb* DrmFbGetFromBo(struct gbm_bo *bo);
+
+  int m_fd;
 
 private:
   bool GetResources();
