@@ -62,9 +62,7 @@ CRenderSystemDX::CRenderSystemDX() : CRenderSystemBase()
   memset(&m_scissor, 0, sizeof m_scissor);
 }
 
-CRenderSystemDX::~CRenderSystemDX()
-{
-}
+CRenderSystemDX::~CRenderSystemDX() = default;
 
 bool CRenderSystemDX::InitRenderSystem()
 {
