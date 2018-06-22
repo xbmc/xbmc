@@ -208,14 +208,14 @@ bool CWinSystemGbm::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
 
   struct gbm_bo *bo = nullptr;
 
-  if (!m_DRM->m_req)
+  if (!std::dynamic_pointer_cast<CDRMAtomic>(m_DRM))
   {
     bo = m_GBM->LockFrontBuffer();
   }
 
   auto result = m_DRM->SetVideoMode(res, bo);
 
-  if (!m_DRM->m_req)
+  if (!std::dynamic_pointer_cast<CDRMAtomic>(m_DRM))
   {
     m_GBM->ReleaseBuffer();
   }

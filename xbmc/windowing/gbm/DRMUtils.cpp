@@ -162,7 +162,7 @@ static void FreeProperties(struct drm_object *object)
   object->id = 0;
 }
 
-static uint32_t GetPropertyId(struct drm_object *object, const char *name)
+uint32_t CDRMUtils::GetPropertyId(struct drm_object *object, const char *name)
 {
   for (uint32_t i = 0; i < object->props->count_props; i++)
     if (!strcmp(object->props_info[i]->name, name))
@@ -172,24 +172,9 @@ static uint32_t GetPropertyId(struct drm_object *object, const char *name)
   return 0;
 }
 
-bool CDRMUtils::AddProperty(drmModeAtomicReqPtr req, struct drm_object *object, const char *name, uint64_t value)
-{
-  uint32_t property_id = GetPropertyId(object, name);
-  if (!property_id)
-    return false;
-
-  if (drmModeAtomicAddProperty(req, object->id, property_id, value) < 0)
-  {
-    CLog::Log(LOGERROR, "CDRMUtils::%s - could not add property %s", __FUNCTION__, name);
-    return false;
-  }
-
-  return true;
-}
-
 bool CDRMUtils::SetProperty(struct drm_object *object, const char *name, uint64_t value)
 {
-  uint32_t property_id = GetPropertyId(object, name);
+  uint32_t property_id = this->GetPropertyId(object, name);
   if (!property_id)
     return false;
 

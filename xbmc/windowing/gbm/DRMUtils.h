@@ -81,8 +81,9 @@ public:
   bool SetMode(const RESOLUTION_INFO& res);
   void WaitVBlank();
 
-  bool AddProperty(drmModeAtomicReqPtr req, struct drm_object *object, const char *name, uint64_t value);
+  virtual bool AddProperty(struct drm_object *object, const char *name, uint64_t value) { return false; }
   bool SetProperty(struct drm_object *object, const char *name, uint64_t value);
+
 
   int m_fd;
 
@@ -92,10 +93,11 @@ public:
   struct plane *m_primary_plane = nullptr;
   struct plane *m_overlay_plane = nullptr;
   drmModeModeInfo *m_mode = nullptr;
-  drmModeAtomicReq *m_req = nullptr;
 
 protected:
   bool OpenDrm();
+  uint32_t GetPropertyId(struct drm_object *object, const char *name);
+
   drm_fb * DrmFbGetFromBo(struct gbm_bo *bo);
 
 private:

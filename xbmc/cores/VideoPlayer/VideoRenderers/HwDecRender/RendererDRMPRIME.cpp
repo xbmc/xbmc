@@ -26,6 +26,7 @@
 #include "ServiceBroker.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
+#include "windowing/gbm/DRMAtomic.h"
 
 const std::string SETTING_VIDEOPLAYER_USEPRIMERENDERER = "videoplayer.useprimerenderer";
 
@@ -233,18 +234,18 @@ void CRendererDRMPRIME::SetVideoPlane(CVideoBufferDRMPRIME* buffer)
     uint32_t src_w = buffer->GetWidth() << 16;
     uint32_t src_h = buffer->GetHeight() << 16;
 
-    if(m_DRM->m_req)
+    if(std::dynamic_pointer_cast<CDRMAtomic>(m_DRM))
     {
-      m_DRM->AddProperty(m_DRM->m_req, m_DRM->m_primary_plane, "FB_ID",   buffer->m_fb_id);
-      m_DRM->AddProperty(m_DRM->m_req, m_DRM->m_primary_plane, "CRTC_ID", m_DRM->m_crtc->crtc->crtc_id);
-      m_DRM->AddProperty(m_DRM->m_req, m_DRM->m_primary_plane, "SRC_X",   src_x);
-      m_DRM->AddProperty(m_DRM->m_req, m_DRM->m_primary_plane, "SRC_Y",   src_y);
-      m_DRM->AddProperty(m_DRM->m_req, m_DRM->m_primary_plane, "SRC_W",   src_w);
-      m_DRM->AddProperty(m_DRM->m_req, m_DRM->m_primary_plane, "SRC_H",   src_h);
-      m_DRM->AddProperty(m_DRM->m_req, m_DRM->m_primary_plane, "CRTC_X",  crtc_x);
-      m_DRM->AddProperty(m_DRM->m_req, m_DRM->m_primary_plane, "CRTC_Y",  crtc_y);
-      m_DRM->AddProperty(m_DRM->m_req, m_DRM->m_primary_plane, "CRTC_W",  crtc_w);
-      m_DRM->AddProperty(m_DRM->m_req, m_DRM->m_primary_plane, "CRTC_H",  crtc_h);
+      m_DRM->AddProperty(m_DRM->m_primary_plane, "FB_ID",   buffer->m_fb_id);
+      m_DRM->AddProperty(m_DRM->m_primary_plane, "CRTC_ID", m_DRM->m_crtc->crtc->crtc_id);
+      m_DRM->AddProperty(m_DRM->m_primary_plane, "SRC_X",   src_x);
+      m_DRM->AddProperty(m_DRM->m_primary_plane, "SRC_Y",   src_y);
+      m_DRM->AddProperty(m_DRM->m_primary_plane, "SRC_W",   src_w);
+      m_DRM->AddProperty(m_DRM->m_primary_plane, "SRC_H",   src_h);
+      m_DRM->AddProperty(m_DRM->m_primary_plane, "CRTC_X",  crtc_x);
+      m_DRM->AddProperty(m_DRM->m_primary_plane, "CRTC_Y",  crtc_y);
+      m_DRM->AddProperty(m_DRM->m_primary_plane, "CRTC_W",  crtc_w);
+      m_DRM->AddProperty(m_DRM->m_primary_plane, "CRTC_H",  crtc_h);
     }
     else
     {
