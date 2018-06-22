@@ -183,7 +183,7 @@ bool CDRMUtils::GetResources()
   return true;
 }
 
-bool CDRMUtils::GetConnector()
+bool CDRMUtils::FindConnector()
 {
   for(auto i = 0; i < m_drm_resources->count_connectors; i++)
   {
@@ -214,7 +214,7 @@ bool CDRMUtils::GetConnector()
   return true;
 }
 
-bool CDRMUtils::GetEncoder()
+bool CDRMUtils::FindEncoder()
 {
   for(auto i = 0; i < m_drm_resources->count_encoders; i++)
   {
@@ -238,7 +238,7 @@ bool CDRMUtils::GetEncoder()
   return true;
 }
 
-bool CDRMUtils::GetCrtc()
+bool CDRMUtils::FindCrtc()
 {
   for(auto i = 0; i < m_drm_resources->count_crtcs; i++)
   {
@@ -269,7 +269,7 @@ bool CDRMUtils::GetCrtc()
   return true;
 }
 
-bool CDRMUtils::GetPreferredMode()
+bool CDRMUtils::FindPreferredMode()
 {
   for(auto i = 0, area = 0; i < m_connector->connector->count_modes; i++)
   {
@@ -305,7 +305,7 @@ bool CDRMUtils::GetPreferredMode()
   return true;
 }
 
-bool CDRMUtils::GetPlanes()
+bool CDRMUtils::FindPlanes()
 {
   drmModePlaneResPtr plane_resources;
   uint32_t primary_plane_id = 0;
@@ -480,7 +480,7 @@ bool CDRMUtils::OpenDrm()
           continue;
         }
 
-        if(!GetConnector())
+        if(!FindConnector())
         {
           continue;
         }
@@ -524,22 +524,22 @@ bool CDRMUtils::InitDrm()
       return false;
     }
 
-    if(!GetConnector())
+    if(!FindConnector())
     {
       return false;
     }
 
-    if(!GetEncoder())
+    if(!FindEncoder())
     {
       return false;
     }
 
-    if(!GetCrtc())
+    if(!FindCrtc())
     {
       return false;
     }
 
-    if(!GetPlanes())
+    if(!FindPlanes())
     {
       return false;
     }
@@ -553,7 +553,7 @@ bool CDRMUtils::InitDrm()
     return false;
   }
 
-  if(!GetPreferredMode())
+  if(!FindPreferredMode())
   {
     return false;
   }

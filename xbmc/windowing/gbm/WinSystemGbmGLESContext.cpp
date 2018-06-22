@@ -133,8 +133,8 @@ bool CWinSystemGbmGLESContext::CreateNewWindow(const std::string& name,
 
 bool CWinSystemGbmGLESContext::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
 {
-  if (res.iWidth != m_DRM->m_mode->hdisplay ||
-      res.iHeight != m_DRM->m_mode->vdisplay)
+  if (res.iWidth != m_DRM->GetCurrentMode()->hdisplay ||
+      res.iHeight != m_DRM->GetCurrentMode()->vdisplay)
   {
     CLog::Log(LOGDEBUG, "CWinSystemGbmGLESContext::%s - resolution changed, creating a new window", __FUNCTION__);
     CreateNewWindow("", fullScreen, res);

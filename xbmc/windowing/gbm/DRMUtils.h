@@ -77,6 +77,10 @@ public:
   std::string GetModule() const { return m_module; }
   std::string GetDevicePath() const { return m_device_path; }
   int GetFileDescriptor() const { return m_fd; }
+  struct plane* GetPrimaryPlane() const { return m_primary_plane; }
+  struct plane* GetOverlayPlane() const { return m_overlay_plane; }
+  struct crtc* GetCrtc() const { return m_crtc; }
+  drmModeModeInfo* GetCurrentMode() const { return m_mode; }
 
   std::vector<RESOLUTION_INFO> GetModes();
   bool SetMode(const RESOLUTION_INFO& res);
@@ -85,6 +89,12 @@ public:
   virtual bool AddProperty(struct drm_object *object, const char *name, uint64_t value) { return false; }
   virtual bool SetProperty(struct drm_object *object, const char *name, uint64_t value) { return false; }
 
+protected:
+  bool OpenDrm();
+  uint32_t GetPropertyId(struct drm_object *object, const char *name);
+  drm_fb* DrmFbGetFromBo(struct gbm_bo *bo);
+
+  int m_fd;
   struct connector *m_connector = nullptr;
   struct encoder *m_encoder = nullptr;
   struct crtc *m_crtc = nullptr;
@@ -92,20 +102,13 @@ public:
   struct plane *m_overlay_plane = nullptr;
   drmModeModeInfo *m_mode = nullptr;
 
-protected:
-  bool OpenDrm();
-  uint32_t GetPropertyId(struct drm_object *object, const char *name);
-  drm_fb* DrmFbGetFromBo(struct gbm_bo *bo);
-
-  int m_fd;
-
 private:
   bool GetResources();
-  bool GetConnector();
-  bool GetEncoder();
-  bool GetCrtc();
-  bool GetPlanes();
-  bool GetPreferredMode();
+  bool FindConnector();
+  bool FindEncoder();
+  bool FindCrtc();
+  bool FindPlanes();
+  bool FindPreferredMode();
   bool RestoreOriginalMode();
   static void DrmFbDestroyCallback(struct gbm_bo *bo, void *data);
 
