@@ -47,8 +47,11 @@ bool CGameClientStreamVideo::OpenStream(RETRO::IRetroPlayerStream* stream, const
 
 void CGameClientStreamVideo::CloseStream()
 {
-  m_stream->CloseStream();
-  m_stream = nullptr;
+  if (m_stream != nullptr)
+  {
+    m_stream->CloseStream();
+    m_stream = nullptr;
+  }
 }
 
 void CGameClientStreamVideo::AddData(const game_stream_packet& packet)

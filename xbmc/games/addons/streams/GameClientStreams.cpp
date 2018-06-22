@@ -90,6 +90,8 @@ void CGameClientStreams::CloseStream(IGameClientStream *stream)
   if (stream != nullptr)
   {
     std::unique_ptr<IGameClientStream> streamHolder(stream);
+    streamHolder->CloseStream();
+
     m_streamManager->CloseStream(std::move(m_streams[stream]));
     m_streams.erase(stream);
   }

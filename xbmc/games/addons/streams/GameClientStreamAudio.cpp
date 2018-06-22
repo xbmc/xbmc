@@ -52,8 +52,11 @@ bool CGameClientStreamAudio::OpenStream(RETRO::IRetroPlayerStream* stream, const
 
 void CGameClientStreamAudio::CloseStream()
 {
-  m_stream->CloseStream();
-  m_stream = nullptr;
+  if (m_stream != nullptr)
+  {
+    m_stream->CloseStream();
+    m_stream = nullptr;
+  }
 }
 
 void CGameClientStreamAudio::AddData(const game_stream_packet &packet)
