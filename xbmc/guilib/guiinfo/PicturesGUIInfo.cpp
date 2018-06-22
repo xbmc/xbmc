@@ -139,8 +139,11 @@ bool CPicturesGUIInfo::GetLabel(std::string& value, const CFileItem *item, int c
     const auto& it = listitem2slideshow_map.find(info.m_info);
     if (it != listitem2slideshow_map.end())
     {
-      value = item->GetPictureInfoTag()->GetInfo(it->second);
-      return true;
+      if (item->HasPictureInfoTag())
+      {
+        value = item->GetPictureInfoTag()->GetInfo(it->second);
+        return true;
+      }
     }
     else
     {
