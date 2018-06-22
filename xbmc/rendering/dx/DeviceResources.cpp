@@ -90,14 +90,13 @@ DX::DeviceResources::DeviceResources()
 {
 }
 
-DX::DeviceResources::~DeviceResources()
-{
-  if (m_bDeviceCreated)
-    Release();
-}
+DX::DeviceResources::~DeviceResources() = default;
 
 void DX::DeviceResources::Release()
 {
+  if (!m_bDeviceCreated)
+    return;
+
   ReleaseBackBuffer();
   OnDeviceLost(true);
 
@@ -799,7 +798,9 @@ void DX::DeviceResources::ValidateDevice()
 
 void DX::DeviceResources::OnDeviceLost(bool removed)
 {
-  CServiceBroker::GetGUI()->GetWindowManager().SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_RENDERER_LOST);
+  auto pGUI = CServiceBroker::GetGUI();
+  if (pGUI)
+    pGUI->GetWindowManager().SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_RENDERER_LOST);
 
   // tell any shared resources
   for (auto res : m_resources)
@@ -818,7 +819,9 @@ void DX::DeviceResources::OnDeviceRestored()
   for (auto res : m_resources)
     res->OnCreateDevice();
 
-  CServiceBroker::GetGUI()->GetWindowManager().SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_RENDERER_RESET);
+  auto pGUI = CServiceBroker::GetGUI();
+  if (pGUI)
+    pGUI->GetWindowManager().SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_RENDERER_RESET);
 }
 
 // Recreate all device resources and set them back to the current state.
