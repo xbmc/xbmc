@@ -52,12 +52,9 @@ StreamPtr CRPStreamManager::CreateStream(StreamType streamType)
     return StreamPtr(m_audioStream);
   }
   case StreamType::VIDEO:
-  {
-    return StreamPtr(new CRetroPlayerVideo(m_renderManager, m_processInfo));
-  }
   case StreamType::SW_BUFFER:
   {
-    //return StreamPtr(new CRetroPlayerSoftware(m_renderManager, m_processInfo)); //! @todo
+    return StreamPtr(new CRetroPlayerVideo(m_renderManager, m_processInfo));
   }
   case StreamType::HW_BUFFER:
   {

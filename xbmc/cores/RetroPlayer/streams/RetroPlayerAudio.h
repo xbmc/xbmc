@@ -32,15 +32,28 @@ namespace RETRO
 {
   class CRPProcessInfo;
 
-  struct AudioStreamProperties
+  struct AudioStreamProperties : public StreamProperties
   {
+    AudioStreamProperties(PCMFormat format, double sampleRate, AudioChannelMap channelMap) :
+      format(format),
+      sampleRate(sampleRate),
+      channelMap(channelMap)
+    {
+    }
+
     PCMFormat format;
     double sampleRate;
     AudioChannelMap channelMap;
   };
 
-  struct AudioStreamPacket
+  struct AudioStreamPacket : public StreamPacket
   {
+    AudioStreamPacket(const uint8_t* data, size_t size) :
+      data(data),
+      size(size)
+    {
+    }
+
     const uint8_t* data;
     size_t size;
   };

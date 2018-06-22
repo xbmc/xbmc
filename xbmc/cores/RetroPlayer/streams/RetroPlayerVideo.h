@@ -33,8 +33,18 @@ namespace RETRO
   class CRPProcessInfo;
   class CRPRenderManager;
 
-  struct VideoStreamProperties
+  struct VideoStreamProperties : public StreamProperties
   {
+    VideoStreamProperties(AVPixelFormat pixfmt, unsigned int nominalWidth, unsigned int nominalHeight, unsigned int maxWidth, unsigned int maxHeight, float pixelAspectRatio) :
+      pixfmt(pixfmt),
+      nominalWidth(nominalWidth),
+      nominalHeight(nominalHeight),
+      maxWidth(maxWidth),
+      maxHeight(maxHeight),
+      pixelAspectRatio(pixelAspectRatio)
+    {
+    }
+
     AVPixelFormat pixfmt;
     unsigned int nominalWidth;
     unsigned int nominalHeight;
@@ -43,8 +53,24 @@ namespace RETRO
     float pixelAspectRatio;
   };
 
-  struct VideoStreamPacket
+  struct VideoStreamBuffer : public StreamBuffer
   {
+    AVPixelFormat pixfmt;
+    uint8_t *data;
+    size_t size;
+  };
+
+  struct VideoStreamPacket: public StreamPacket
+  {
+    VideoStreamPacket(unsigned int width, unsigned int height, VideoRotation rotation, const uint8_t *data, size_t size) :
+      width(width),
+      height(height),
+      rotation(rotation),
+      data(data),
+      size(size)
+    {
+    }
+
     unsigned int width;
     unsigned int height;
     VideoRotation rotation;
@@ -65,7 +91,7 @@ namespace RETRO
 
     // implementation of IRetroPlayerStream
     bool OpenStream(const StreamProperties& properties) override;
-    bool GetStreamBuffer(unsigned int width, unsigned int height, StreamBuffer& buffer) override { return false; }
+    bool GetStreamBuffer(unsigned int width, unsigned int height, StreamBuffer& buffer) override;
     void AddStreamData(const StreamPacket &packet) override;
     void CloseStream() override;
 

@@ -74,6 +74,13 @@ namespace GAME
     static AVPixelFormat TranslatePixelFormat(GAME_PIXEL_FORMAT format);
 
     /*!
+     * \brief Translate pixel format (RetroPlayer/FFMPEG to Game API).
+     * \param format The pixel format to translate.
+     * \return Translated pixel format.
+     */
+    static GAME_PIXEL_FORMAT TranslatePixelFormat(AVPixelFormat format);
+
+    /*!
      * \brief Translate audio PCM format (Game API to RetroPlayer).
      * \param format The audio PCM format to translate.
      * \return Translated audio PCM format.

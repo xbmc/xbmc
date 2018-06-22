@@ -77,6 +77,10 @@ void CRPRenderManager::Deinitialize()
     renderBuffer->Release();
   m_renderBuffers.clear();
 
+  for (auto buffer : m_pendingBuffers)
+    buffer->Release();
+  m_pendingBuffers.clear();
+
   m_renderers.clear();
 
   m_state = RENDER_STATE::UNCONFIGURED;
@@ -113,6 +117,41 @@ bool CRPRenderManager::Configure(AVPixelFormat format, unsigned int nominalWidth
   return true;
 }
 
+bool CRPRenderManager::GetVideoBuffer(unsigned int width, unsigned int height, AVPixelFormat &format, uint8_t *&data, size_t &size)
+{
+  if (m_bFlush || m_state != RENDER_STATE::CONFIGURED)
+    return false;
+
+  for (IRenderBuffer *buffer : m_pendingBuffers)
+    buffer->Release();
+  m_pendingBuffers.clear();
+
+  // Get buffers from visible renderers
+  for (IRenderBufferPool *bufferPool : m_processInfo.GetBufferManager().GetBufferPools())
+  {
+    if (!bufferPool->HasVisibleRenderer())
+      continue;
+
+    IRenderBuffer *renderBuffer = bufferPool->GetBuffer(width, height);
+    if (renderBuffer != nullptr)
+      m_pendingBuffers.emplace_back(renderBuffer);
+    else
+      CLog::Log(LOGDEBUG, "RetroPlayer[RENDER]: Unable to get video buffer for frame");
+  }
+
+  if (m_pendingBuffers.empty())
+    return false;
+
+  //! @todo Handle multiple buffers
+  IRenderBuffer *renderBuffer = m_pendingBuffers.at(0);
+
+  format = renderBuffer->GetFormat();
+  data = renderBuffer->GetMemory();
+  size = renderBuffer->GetFrameSize();
+
+  return true;
+}
+
 void CRPRenderManager::AddFrame(const uint8_t* data, size_t size, unsigned int width, unsigned int height, unsigned int orientationDegCCW)
 {
   if (m_bFlush || m_state != RENDER_STATE::CONFIGURED)
@@ -129,18 +168,36 @@ void CRPRenderManager::AddFrame(const uint8_t* data, size_t size, unsigned int w
     return;
   }
 
-  // Copy frame to buffers with visible renderers
+  // Get render buffers to copy the frame into
   std::vector<IRenderBuffer*> renderBuffers;
-  for (IRenderBufferPool *bufferPool : m_processInfo.GetBufferManager().GetBufferPools())
-  {
-    if (!bufferPool->HasVisibleRenderer())
-      continue;
 
-    IRenderBuffer *renderBuffer = bufferPool->GetBuffer(width, height);
-    if (renderBuffer != nullptr)
+  // Check pending buffers
+  for (IRenderBuffer *buffer : m_pendingBuffers)
+  {
+    if (buffer->GetMemory() == data)
     {
-      CopyFrame(renderBuffer, m_format, data, size, width, height);
-      renderBuffers.emplace_back(renderBuffer);
+      buffer->Acquire();
+      renderBuffers.emplace_back(buffer);
+    }
+  }
+
+  // If we aren't submitting a zero-copy frame, copy into render buffer now
+  if (renderBuffers.empty())
+  {
+    // Copy frame to buffers with visible renderers
+    for (IRenderBufferPool *bufferPool : m_processInfo.GetBufferManager().GetBufferPools())
+    {
+      if (!bufferPool->HasVisibleRenderer())
+        continue;
+
+      IRenderBuffer *renderBuffer = bufferPool->GetBuffer(width, height);
+      if (renderBuffer != nullptr)
+      {
+        CopyFrame(renderBuffer, m_format, data, size, width, height);
+        renderBuffers.emplace_back(renderBuffer);
+      }
+      else
+        CLog::Log(LOGDEBUG, "RetroPlayer[RENDER]: Unable to get render buffer for frame");
     }
   }
 
