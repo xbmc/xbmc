@@ -137,7 +137,7 @@ void CDRMAtomic::FlipPage(struct gbm_bo *bo, bool rendered, bool videoLayer)
 
 bool CDRMAtomic::InitDrm()
 {
-  if (!CDRMUtils::OpenDrm())
+  if (!CDRMUtils::OpenDrm(true))
   {
     return false;
   }

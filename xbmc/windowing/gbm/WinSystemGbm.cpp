@@ -34,6 +34,7 @@
 #include "utils/StringUtils.h"
 #include "DRMAtomic.h"
 #include "DRMLegacy.h"
+#include "OffScreenModeSetting.h"
 #include "messaging/ApplicationMessenger.h"
 
 
@@ -95,7 +96,14 @@ bool CWinSystemGbm::InitWindowSystem()
     {
       CLog::Log(LOGERROR, "CWinSystemGbm::%s - failed to initialize Legacy DRM", __FUNCTION__);
       m_DRM.reset();
-      return false;
+
+      m_DRM = std::make_shared<COffScreenModeSetting>();
+      if (!m_DRM->InitDrm())
+      {
+        CLog::Log(LOGERROR, "CWinSystemGbm::%s - failed to initialize off screen DRM", __FUNCTION__);
+        m_DRM.reset();
+        return false;
+      }
     }
   }
 
