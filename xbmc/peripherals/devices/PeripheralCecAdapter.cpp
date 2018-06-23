@@ -178,6 +178,10 @@ void CPeripheralCecAdapter::Announce(AnnouncementFlag flag, const char *sender, 
   else if (flag == System && !strcmp(sender, "xbmc") && !strcmp(message, "OnWake"))
   {
     CLog::Log(LOGDEBUG, "%s - reconnecting to the CEC adapter after standby mode", __FUNCTION__);
+    {
+      CSingleLock lock(m_critSection);
+      m_bGoingToStandby = false;
+    }
     if (ReopenConnection())
     {
       bool bActivate(false);
@@ -1688,6 +1692,8 @@ bool CPeripheralCecAdapter::ReopenConnection(bool bAsync /* = false */)
   // stop running thread
   {
     CSingleLock lock(m_critSection);
+    if (m_bGoingToStandby)
+      return;
     m_iExitCode = EXITCODE_RESTARTAPP;
     CAnnouncementManager::GetInstance().RemoveAnnouncer(this);
     StopThread(false);
