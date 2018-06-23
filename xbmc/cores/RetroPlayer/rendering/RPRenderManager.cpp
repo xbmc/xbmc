@@ -159,9 +159,9 @@ void CRPRenderManager::AddFrame(const uint8_t* data, size_t size, unsigned int w
       if (!m_bHasCachedFrame)
       {
         // In this case, cachedFrame is definitely empty (see invariant for
-        // m_bHasCachedFrame). Otherwise, cachedFrame may be empty if the frame is being
-        // copied in the rendering thread. In that case, we would want to leave cached frame
-        // empty to avoid caching another frame.
+        // m_bHasCachedFrame). Otherwise, cachedFrame may be empty if the frame
+        // is being copied in the rendering thread. In that case, we would want
+        // to leave cached frame empty to avoid caching another frame.
 
         cachedFrame.resize(size);
         m_bHasCachedFrame = true;
