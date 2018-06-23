@@ -53,7 +53,7 @@ bool CWinSystemGbmGLESContext::InitWindowSystem()
     return false;
   }
 
-  if (!m_pGLContext.CreateDisplay(m_GBM->m_device,
+  if (!m_pGLContext.CreateDisplay(m_GBM->GetDevice(),
                                   EGL_OPENGL_ES2_BIT,
                                   EGL_OPENGL_ES_API))
   {
@@ -103,7 +103,7 @@ bool CWinSystemGbmGLESContext::CreateNewWindow(const std::string& name,
     return false;
   }
 
-  if (!m_pGLContext.CreateSurface(reinterpret_cast<EGLNativeWindowType>(m_GBM->m_surface)))
+  if (!m_pGLContext.CreateSurface(reinterpret_cast<EGLNativeWindowType>(m_GBM->GetSurface())))
   {
     return false;
   }
@@ -133,8 +133,8 @@ bool CWinSystemGbmGLESContext::CreateNewWindow(const std::string& name,
 
 bool CWinSystemGbmGLESContext::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
 {
-  if (res.iWidth != m_DRM->m_mode->hdisplay ||
-      res.iHeight != m_DRM->m_mode->vdisplay)
+  if (res.iWidth != m_DRM->GetCurrentMode()->hdisplay ||
+      res.iHeight != m_DRM->GetCurrentMode()->vdisplay)
   {
     CLog::Log(LOGDEBUG, "CWinSystemGbmGLESContext::%s - resolution changed, creating a new window", __FUNCTION__);
     CreateNewWindow("", fullScreen, res);

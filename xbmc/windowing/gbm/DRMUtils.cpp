@@ -162,7 +162,7 @@ static void FreeProperties(struct drm_object *object)
   object->id = 0;
 }
 
-static uint32_t GetPropertyId(struct drm_object *object, const char *name)
+uint32_t CDRMUtils::GetPropertyId(struct drm_object *object, const char *name)
 {
   for (uint32_t i = 0; i < object->props->count_props; i++)
     if (!strcmp(object->props_info[i]->name, name))
@@ -170,36 +170,6 @@ static uint32_t GetPropertyId(struct drm_object *object, const char *name)
 
   CLog::Log(LOGWARNING, "CDRMUtils::%s - could not find property %s", __FUNCTION__, name);
   return 0;
-}
-
-bool CDRMUtils::AddProperty(drmModeAtomicReqPtr req, struct drm_object *object, const char *name, uint64_t value)
-{
-  uint32_t property_id = GetPropertyId(object, name);
-  if (!property_id)
-    return false;
-
-  if (drmModeAtomicAddProperty(req, object->id, property_id, value) < 0)
-  {
-    CLog::Log(LOGERROR, "CDRMUtils::%s - could not add property %s", __FUNCTION__, name);
-    return false;
-  }
-
-  return true;
-}
-
-bool CDRMUtils::SetProperty(struct drm_object *object, const char *name, uint64_t value)
-{
-  uint32_t property_id = GetPropertyId(object, name);
-  if (!property_id)
-    return false;
-
-  if (drmModeObjectSetProperty(m_fd, object->id, object->type, property_id, value) < 0)
-  {
-    CLog::Log(LOGERROR, "CDRMUtils::%s - could not set property %s", __FUNCTION__, name);
-    return false;
-  }
-
-  return true;
 }
 
 bool CDRMUtils::GetResources()
@@ -213,7 +183,7 @@ bool CDRMUtils::GetResources()
   return true;
 }
 
-bool CDRMUtils::GetConnector()
+bool CDRMUtils::FindConnector()
 {
   for(auto i = 0; i < m_drm_resources->count_connectors; i++)
   {
@@ -244,7 +214,7 @@ bool CDRMUtils::GetConnector()
   return true;
 }
 
-bool CDRMUtils::GetEncoder()
+bool CDRMUtils::FindEncoder()
 {
   for(auto i = 0; i < m_drm_resources->count_encoders; i++)
   {
@@ -268,7 +238,7 @@ bool CDRMUtils::GetEncoder()
   return true;
 }
 
-bool CDRMUtils::GetCrtc()
+bool CDRMUtils::FindCrtc()
 {
   for(auto i = 0; i < m_drm_resources->count_crtcs; i++)
   {
@@ -299,7 +269,7 @@ bool CDRMUtils::GetCrtc()
   return true;
 }
 
-bool CDRMUtils::GetPreferredMode()
+bool CDRMUtils::FindPreferredMode()
 {
   for(auto i = 0, area = 0; i < m_connector->connector->count_modes; i++)
   {
@@ -335,7 +305,7 @@ bool CDRMUtils::GetPreferredMode()
   return true;
 }
 
-bool CDRMUtils::GetPlanes()
+bool CDRMUtils::FindPlanes()
 {
   drmModePlaneResPtr plane_resources;
   uint32_t primary_plane_id = 0;
@@ -510,7 +480,7 @@ bool CDRMUtils::OpenDrm()
           continue;
         }
 
-        if(!GetConnector())
+        if(!FindConnector())
         {
           continue;
         }
@@ -554,22 +524,22 @@ bool CDRMUtils::InitDrm()
       return false;
     }
 
-    if(!GetConnector())
+    if(!FindConnector())
     {
       return false;
     }
 
-    if(!GetEncoder())
+    if(!FindEncoder())
     {
       return false;
     }
 
-    if(!GetCrtc())
+    if(!FindCrtc())
     {
       return false;
     }
 
-    if(!GetPlanes())
+    if(!FindPlanes())
     {
       return false;
     }
@@ -583,7 +553,7 @@ bool CDRMUtils::InitDrm()
     return false;
   }
 
-  if(!GetPreferredMode())
+  if(!FindPreferredMode())
   {
     return false;
   }

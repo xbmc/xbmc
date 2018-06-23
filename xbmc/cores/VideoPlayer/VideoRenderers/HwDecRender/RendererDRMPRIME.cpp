@@ -26,6 +26,7 @@
 #include "ServiceBroker.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
+#include "windowing/gbm/DRMAtomic.h"
 
 const std::string SETTING_VIDEOPLAYER_USEPRIMERENDERER = "videoplayer.useprimerenderer";
 
@@ -46,7 +47,7 @@ CBaseRenderer* CRendererDRMPRIME::Create(CVideoBuffer* buffer)
   {
     CWinSystemGbmGLESContext* winSystem = dynamic_cast<CWinSystemGbmGLESContext*>(CServiceBroker::GetWinSystem());
     if (winSystem)
-      return new CRendererDRMPRIME(winSystem->m_DRM);
+      return new CRendererDRMPRIME(winSystem->GetDrm());
   }
 
   return nullptr;
@@ -181,7 +182,7 @@ bool CRendererDRMPRIME::Supports(ESCALINGMETHOD method)
 
 void CRendererDRMPRIME::SetVideoPlane(CVideoBufferDRMPRIME* buffer)
 {
-  buffer->m_drm_fd = m_DRM->m_fd;
+  buffer->m_drm_fd = m_DRM->GetFileDescriptor();
 
   AVDRMFrameDescriptor* descriptor = buffer->GetDescriptor();
   if (descriptor && descriptor->nb_layers)
@@ -193,7 +194,7 @@ void CRendererDRMPRIME::SetVideoPlane(CVideoBufferDRMPRIME* buffer)
     // convert Prime FD to GEM handle
     for (int object = 0; object < descriptor->nb_objects; object++)
     {
-      ret = drmPrimeFDToHandle(m_DRM->m_fd, descriptor->objects[object].fd, &buffer->m_handles[object]);
+      ret = drmPrimeFDToHandle(m_DRM->GetFileDescriptor(), descriptor->objects[object].fd, &buffer->m_handles[object]);
       if (ret < 0)
       {
         CLog::Log(LOGERROR, "CRendererDRMPRIME::%s - failed to retrieve the GEM handle from prime fd %d, ret = %d", __FUNCTION__, descriptor->objects[object].fd, ret);
@@ -217,7 +218,7 @@ void CRendererDRMPRIME::SetVideoPlane(CVideoBufferDRMPRIME* buffer)
     }
 
     // add the video frame FB
-    ret = drmModeAddFB2WithModifiers(m_DRM->m_fd, buffer->GetWidth(), buffer->GetHeight(), layer->format, handles, pitches, offsets, modifier, &buffer->m_fb_id, 0);
+    ret = drmModeAddFB2WithModifiers(m_DRM->GetFileDescriptor(), buffer->GetWidth(), buffer->GetHeight(), layer->format, handles, pitches, offsets, modifier, &buffer->m_fb_id, 0);
     if (ret < 0)
     {
       CLog::Log(LOGERROR, "CRendererDRMPRIME::%s - failed to add drm layer %d, ret = %d", __FUNCTION__, buffer->m_fb_id, ret);
@@ -233,28 +234,28 @@ void CRendererDRMPRIME::SetVideoPlane(CVideoBufferDRMPRIME* buffer)
     uint32_t src_w = buffer->GetWidth() << 16;
     uint32_t src_h = buffer->GetHeight() << 16;
 
-    if(m_DRM->m_req)
+    if(std::dynamic_pointer_cast<CDRMAtomic>(m_DRM))
     {
-      m_DRM->AddProperty(m_DRM->m_req, m_DRM->m_primary_plane, "FB_ID",   buffer->m_fb_id);
-      m_DRM->AddProperty(m_DRM->m_req, m_DRM->m_primary_plane, "CRTC_ID", m_DRM->m_crtc->crtc->crtc_id);
-      m_DRM->AddProperty(m_DRM->m_req, m_DRM->m_primary_plane, "SRC_X",   src_x);
-      m_DRM->AddProperty(m_DRM->m_req, m_DRM->m_primary_plane, "SRC_Y",   src_y);
-      m_DRM->AddProperty(m_DRM->m_req, m_DRM->m_primary_plane, "SRC_W",   src_w);
-      m_DRM->AddProperty(m_DRM->m_req, m_DRM->m_primary_plane, "SRC_H",   src_h);
-      m_DRM->AddProperty(m_DRM->m_req, m_DRM->m_primary_plane, "CRTC_X",  crtc_x);
-      m_DRM->AddProperty(m_DRM->m_req, m_DRM->m_primary_plane, "CRTC_Y",  crtc_y);
-      m_DRM->AddProperty(m_DRM->m_req, m_DRM->m_primary_plane, "CRTC_W",  crtc_w);
-      m_DRM->AddProperty(m_DRM->m_req, m_DRM->m_primary_plane, "CRTC_H",  crtc_h);
+      m_DRM->AddProperty(m_DRM->GetPrimaryPlane(), "FB_ID",   buffer->m_fb_id);
+      m_DRM->AddProperty(m_DRM->GetPrimaryPlane(), "CRTC_ID", m_DRM->GetCrtc()->crtc->crtc_id);
+      m_DRM->AddProperty(m_DRM->GetPrimaryPlane(), "SRC_X",   src_x);
+      m_DRM->AddProperty(m_DRM->GetPrimaryPlane(), "SRC_Y",   src_y);
+      m_DRM->AddProperty(m_DRM->GetPrimaryPlane(), "SRC_W",   src_w);
+      m_DRM->AddProperty(m_DRM->GetPrimaryPlane(), "SRC_H",   src_h);
+      m_DRM->AddProperty(m_DRM->GetPrimaryPlane(), "CRTC_X",  crtc_x);
+      m_DRM->AddProperty(m_DRM->GetPrimaryPlane(), "CRTC_Y",  crtc_y);
+      m_DRM->AddProperty(m_DRM->GetPrimaryPlane(), "CRTC_W",  crtc_w);
+      m_DRM->AddProperty(m_DRM->GetPrimaryPlane(), "CRTC_H",  crtc_h);
     }
     else
     {
       // show the video frame FB on the video plane
-      ret = drmModeSetPlane(m_DRM->m_fd, m_DRM->m_primary_plane->plane->plane_id, m_DRM->m_crtc->crtc->crtc_id, buffer->m_fb_id, 0,
+      ret = drmModeSetPlane(m_DRM->GetFileDescriptor(), m_DRM->GetPrimaryPlane()->plane->plane_id, m_DRM->GetCrtc()->crtc->crtc_id, buffer->m_fb_id, 0,
                             crtc_x, crtc_y, crtc_w, crtc_h,
                             src_x, src_y, src_w, src_h);
       if (ret < 0)
       {
-        CLog::Log(LOGERROR, "CRendererDRMPRIME::%s - failed to set drm plane %d, buffer = %d, ret = %d", __FUNCTION__, m_DRM->m_primary_plane->plane->plane_id, buffer->m_fb_id, ret);
+        CLog::Log(LOGERROR, "CRendererDRMPRIME::%s - failed to set drm plane %d, buffer = %d, ret = %d", __FUNCTION__, m_DRM->GetPrimaryPlane()->plane->plane_id, buffer->m_fb_id, ret);
         return;
       }
     }

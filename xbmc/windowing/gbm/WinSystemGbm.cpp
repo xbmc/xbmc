@@ -100,7 +100,7 @@ bool CWinSystemGbm::InitWindowSystem()
     }
   }
 
-  if (!m_GBM->CreateDevice(m_DRM->m_fd))
+  if (!m_GBM->CreateDevice(m_DRM->GetFileDescriptor()))
   {
     m_GBM.reset();
     return false;
@@ -132,7 +132,7 @@ bool CWinSystemGbm::CreateNewWindow(const std::string& name,
     return false;
   }
 
-  if(!m_GBM->CreateSurface(m_DRM->m_mode->hdisplay, m_DRM->m_mode->vdisplay))
+  if(!m_GBM->CreateSurface(m_DRM->GetCurrentMode()->hdisplay, m_DRM->GetCurrentMode()->vdisplay))
   {
     CLog::Log(LOGERROR, "CWinSystemGbm::%s - failed to initialize GBM", __FUNCTION__);
     return false;
@@ -158,9 +158,9 @@ void CWinSystemGbm::UpdateResolutions()
 
   UpdateDesktopResolution(CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP),
                           0,
-                          m_DRM->m_mode->hdisplay,
-                          m_DRM->m_mode->vdisplay,
-                          m_DRM->m_mode->vrefresh);
+                          m_DRM->GetCurrentMode()->hdisplay,
+                          m_DRM->GetCurrentMode()->vdisplay,
+                          m_DRM->GetCurrentMode()->vrefresh);
 
   auto resolutions = m_DRM->GetModes();
   if (resolutions.empty())
@@ -208,14 +208,14 @@ bool CWinSystemGbm::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
 
   struct gbm_bo *bo = nullptr;
 
-  if (!m_DRM->m_req)
+  if (!std::dynamic_pointer_cast<CDRMAtomic>(m_DRM))
   {
     bo = m_GBM->LockFrontBuffer();
   }
 
   auto result = m_DRM->SetVideoMode(res, bo);
 
-  if (!m_DRM->m_req)
+  if (!std::dynamic_pointer_cast<CDRMAtomic>(m_DRM))
   {
     m_GBM->ReleaseBuffer();
   }
