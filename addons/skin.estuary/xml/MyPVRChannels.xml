@@ -81,10 +81,10 @@
 							<shadowcolor>text_shadow</shadowcolor>
 						</control>
 						<control type="label">
-							<left>12</left>
+							<left>10</left>
 							<top>0</top>
 							<height>90</height>
-							<width>75</width>
+							<width>82</width>
 							<align>center</align>
 							<aligny>center</aligny>
 							<font>font32_title</font>
@@ -140,10 +140,10 @@
 							<textcolor>grey</textcolor>
 						</control>
 						<control type="label">
-							<left>12</left>
+							<left>10</left>
 							<top>0</top>
 							<height>90</height>
-							<width>75</width>
+							<width>82</width>
 							<align>center</align>
 							<aligny>center</aligny>
 							<font>font32_title</font>
@@ -213,10 +213,10 @@
 							<label>$INFO[ListItem.Title]</label>
 						</control>
 						<control type="label">
-							<left>12</left>
+							<left>10</left>
 							<top>0</top>
 							<bottom>0</bottom>
-							<width>75</width>
+							<width>82</width>
 							<align>center</align>
 							<aligny>center</aligny>
 							<font>font32_title</font>
@@ -262,10 +262,10 @@
 							<textcolor>grey</textcolor>
 						</control>
 						<control type="label">
-							<left>12</left>
+							<left>10</left>
 							<top>0</top>
 							<bottom>0</bottom>
-							<width>75</width>
+							<width>82</width>
 							<align>center</align>
 							<aligny>center</aligny>
 							<font>font32_title</font>
