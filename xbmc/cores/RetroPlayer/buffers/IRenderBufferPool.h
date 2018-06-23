@@ -45,7 +45,7 @@ namespace RETRO
     virtual void UnregisterRenderer(CRPBaseRenderer *renderer) = 0;
     virtual bool HasVisibleRenderer() const = 0;
 
-    virtual bool Configure(AVPixelFormat format, unsigned int width, unsigned int height) = 0;
+    virtual bool Configure(AVPixelFormat format) = 0;
 
     virtual bool IsConfigured() const = 0;
 
@@ -54,16 +54,21 @@ namespace RETRO
     /*!
      * \brief Get a free buffer from the pool, sets ref count to 1
      *
-     * \param Buffer size, must remain constant
+     * \param width The horizontal pixel count of the buffer
+     * \param height The vertical pixel could of the buffer
+     *
+     * \return The allocated buffer, or nullptr on failure
      */
-    virtual IRenderBuffer *GetBuffer(size_t size) = 0;
+    virtual IRenderBuffer *GetBuffer(unsigned int width, unsigned int height) = 0;
 
     /*!
      * \brief Called by buffer when ref count goes to zero
+     *
+     * \param buffer A fully dereferenced buffer
      */
     virtual void Return(IRenderBuffer *buffer) = 0;
 
-    virtual void Prime(size_t bufferSize) = 0;
+    virtual void Prime(unsigned int width, unsigned int height) = 0;
 
     virtual void Flush() = 0;
 

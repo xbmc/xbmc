@@ -65,7 +65,7 @@ bool CRPBaseRenderer::Configure(AVPixelFormat format, unsigned int width, unsign
   {
     CLog::Log(LOGDEBUG, "RetroPlayer[RENDER]: Configuring buffer pool");
 
-    if (!m_bufferPool->Configure(format, width, height))
+    if (!m_bufferPool->Configure(format))
     {
       CLog::Log(LOGERROR, "RetroPlayer[RENDER]: Failed to configure buffer pool");
       return false;

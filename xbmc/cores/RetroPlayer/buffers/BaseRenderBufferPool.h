@@ -41,17 +41,15 @@ namespace RETRO
     void RegisterRenderer(CRPBaseRenderer *renderer) override;
     void UnregisterRenderer(CRPBaseRenderer *renderer) override;
     bool HasVisibleRenderer() const override;
-    bool Configure(AVPixelFormat format, unsigned int width, unsigned int height) override;
+    bool Configure(AVPixelFormat format) override;
     bool IsConfigured() const override { return m_bConfigured; }
-    IRenderBuffer *GetBuffer(size_t size) override;
+    IRenderBuffer *GetBuffer(unsigned int width, unsigned int height) override;
     void Return(IRenderBuffer *buffer) override;
-    void Prime(size_t bufferSize) override;
+    void Prime(unsigned int width, unsigned int height) override;
     void Flush() override;
 
+    // Buffer properties
     AVPixelFormat Format() const { return m_format; }
-    unsigned int Width() const { return m_width; }
-    unsigned int Height() const { return m_height; }
-    size_t FrameSize() const { return m_frameSize; }
 
   protected:
     virtual IRenderBuffer *CreateRenderBuffer(void *header = nullptr) = 0;
@@ -67,11 +65,6 @@ namespace RETRO
     // Configuration parameters
     bool m_bConfigured = false;
     AVPixelFormat m_format = AV_PIX_FMT_NONE;
-    unsigned int m_width = 0;
-    unsigned int m_height = 0;
-
-    // Stream properties
-    size_t m_frameSize = 0; // Initially unknown, set on first call to GetBuffer()
 
   private:
     // Buffer properties

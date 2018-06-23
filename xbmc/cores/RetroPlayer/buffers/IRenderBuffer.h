@@ -45,7 +45,7 @@ namespace RETRO
     virtual IRenderBufferPool *GetPool() = 0;
 
     // Buffer functions
-    virtual bool Allocate(AVPixelFormat format, unsigned int width, unsigned int height, size_t size) = 0;
+    virtual bool Allocate(AVPixelFormat format, unsigned int width, unsigned int height) = 0;
     virtual void Update() { } //! @todo Remove me
     virtual size_t GetFrameSize() const = 0;
     virtual uint8_t *GetMemory() = 0;

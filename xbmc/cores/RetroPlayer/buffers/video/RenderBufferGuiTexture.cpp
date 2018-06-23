@@ -29,7 +29,7 @@ CRenderBufferGuiTexture::CRenderBufferGuiTexture(SCALINGMETHOD scalingMethod) :
   m_textureFormat = XB_FMT_A8R8G8B8;
 }
 
-bool CRenderBufferGuiTexture::Allocate(AVPixelFormat format, unsigned int width, unsigned int height, size_t size)
+bool CRenderBufferGuiTexture::Allocate(AVPixelFormat format, unsigned int width, unsigned int height)
 {
   // Initialize IRenderBuffer
   m_format = TranslateFormat(m_textureFormat);

@@ -19,16 +19,19 @@
  */
 
 #include "RenderBufferSysMem.h"
+#include "cores/RetroPlayer/rendering/RenderTranslator.h"
 
 using namespace KODI;
 using namespace RETRO;
 
-bool CRenderBufferSysMem::Allocate(AVPixelFormat format, unsigned int width, unsigned int height, size_t size)
+bool CRenderBufferSysMem::Allocate(AVPixelFormat format, unsigned int width, unsigned int height)
 {
   // Initialize IRenderBuffer
   m_format = format;
   m_width = width;
   m_height = height;
+
+  const size_t size = GetBufferSize(format, width, height);
 
   if (m_format != AV_PIX_FMT_NONE && size > 0)
   {
@@ -48,4 +51,12 @@ size_t CRenderBufferSysMem::GetFrameSize() const
 uint8_t *CRenderBufferSysMem::GetMemory()
 {
   return m_data.data();
+}
+
+size_t CRenderBufferSysMem::GetBufferSize(AVPixelFormat format, unsigned int width, unsigned int height)
+{
+  const size_t bufferStride = CRenderTranslator::TranslateWidthToBytes(width, format);
+  const size_t bufferSize = bufferStride * height;
+
+  return bufferSize;
 }

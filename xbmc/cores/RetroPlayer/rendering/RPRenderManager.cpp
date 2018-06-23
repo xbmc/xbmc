@@ -91,11 +91,14 @@ bool CRPRenderManager::Configure(AVPixelFormat format, unsigned int nominalWidth
             maxWidth,
             maxHeight);
 
+  // Immutable parameters
   m_format = format;
   m_maxWidth = maxWidth;
   m_maxHeight = maxHeight;
-  m_width = nominalWidth; //! @todo Allow dimension changes
-  m_height = nominalHeight; //! @todo Allow dimension changes
+
+  // Mutable parameters
+  m_width = nominalWidth;
+  m_height = nominalHeight;
 
   CSingleLock lock(m_stateMutex);
 
@@ -133,14 +136,12 @@ void CRPRenderManager::AddFrame(const uint8_t* data, size_t size, unsigned int w
     if (!bufferPool->HasVisibleRenderer())
       continue;
 
-    IRenderBuffer *renderBuffer = bufferPool->GetBuffer(size);
+    IRenderBuffer *renderBuffer = bufferPool->GetBuffer(width, height);
     if (renderBuffer != nullptr)
     {
       CopyFrame(renderBuffer, m_format, data, size, width, height);
       renderBuffers.emplace_back(renderBuffer);
     }
-    else
-      CLog::Log(LOGDEBUG, "RetroPlayer[RENDER]: Unable to get render buffer for frame");
   }
 
   {
@@ -522,7 +523,7 @@ IRenderBuffer *CRPRenderManager::CreateFromCache(std::vector<uint8_t> &cachedFra
   {
     CLog::Log(LOGERROR, "RetroPlayer[RENDER]: Creating render buffer for renderer");
 
-    IRenderBuffer *renderBuffer = bufferPool->GetBuffer(ownedFrame.size());
+    IRenderBuffer *renderBuffer = bufferPool->GetBuffer(m_width, m_height);
     if (renderBuffer != nullptr)
     {
       CSingleExit exit(mutex);

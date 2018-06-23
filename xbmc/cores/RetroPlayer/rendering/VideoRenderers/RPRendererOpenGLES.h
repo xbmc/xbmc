@@ -54,9 +54,7 @@ namespace RETRO
                           GLuint pixeltype,
                           GLuint internalformat,
                           GLuint pixelformat,
-                          GLuint bpp,
-                          unsigned int width,
-                          unsigned int height);
+                          GLuint bpp);
     ~CRenderBufferOpenGLES() override;
 
     // implementation of IRenderBuffer via CRenderBufferSysMem
@@ -71,8 +69,6 @@ namespace RETRO
     const GLuint m_internalformat;
     const GLuint m_pixelformat;
     const GLuint m_bpp;
-    const unsigned int m_width;
-    const unsigned int m_height;
 
     const GLenum m_textureTarget = GL_TEXTURE_2D; //! @todo
     GLuint m_textureId = 0;

@@ -55,16 +55,12 @@ CRenderBufferOpenGLES::CRenderBufferOpenGLES(CRenderContext &context,
                                              GLuint pixeltype,
                                              GLuint internalformat,
                                              GLuint pixelformat,
-                                             GLuint bpp,
-                                             unsigned int width,
-                                             unsigned int height) :
+                                             GLuint bpp) :
   m_context(context),
   m_pixeltype(pixeltype),
   m_internalformat(internalformat),
   m_pixelformat(pixelformat),
-  m_bpp(bpp),
-  m_width(width),
-  m_height(height)
+  m_bpp(bpp)
 {
 }
 
@@ -161,9 +157,7 @@ IRenderBuffer *CRenderBufferPoolOpenGLES::CreateRenderBuffer(void *header /* = n
                                    m_pixeltype,
                                    m_internalformat,
                                    m_pixelformat,
-                                   m_bpp,
-                                   m_width,
-                                   m_height);
+                                   m_bpp);
 }
 
 bool CRenderBufferPoolOpenGLES::ConfigureInternal()
