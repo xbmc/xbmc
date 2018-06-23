@@ -122,9 +122,9 @@
 			<size>120</size>
 		</font>
 		<font>
-			<name>Mono30</name>
+			<name>Mono26</name>
 			<filename>NotoMono-Regular.ttf</filename>
-			<size>30</size>
+			<size>26</size>
 		</font>
 	</fontset>
 	<fontset id="Arial" idloc="31053">
@@ -237,9 +237,9 @@
 			<style>bold</style>
 		</font>
 		<font>
-			<name>Mono30</name>
+			<name>Mono26</name>
 			<filename>arial.ttf</filename>
-			<size>30</size>
+			<size>26</size>
 		</font>
 	</fontset>
 </fonts>
