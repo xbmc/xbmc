@@ -114,6 +114,7 @@ private:
   bool FindPreferredMode();
   bool RestoreOriginalMode();
   static void DrmFbDestroyCallback(struct gbm_bo *bo, void *data);
+  RESOLUTION_INFO GetResolutionInfo(drmModeModeInfoPtr mode);
 
   int m_crtc_index;
   std::string m_module;

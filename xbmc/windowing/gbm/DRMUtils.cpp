@@ -637,6 +637,40 @@ void CDRMUtils::DestroyDrm()
   m_primary_plane = nullptr;
 }
 
+RESOLUTION_INFO CDRMUtils::GetResolutionInfo(drmModeModeInfoPtr mode)
+{
+  RESOLUTION_INFO res;
+  res.iScreen = 0;
+  res.iScreenWidth = mode->hdisplay;
+  res.iScreenHeight = mode->vdisplay;
+  res.iWidth = res.iScreenWidth;
+  res.iHeight = res.iScreenHeight;
+
+  if (mode->clock % 5 != 0)
+    res.fRefreshRate = static_cast<float>(mode->vrefresh) * (1000.0f/1001.0f);
+  else
+    res.fRefreshRate = mode->vrefresh;
+  res.iSubtitles = static_cast<int>(0.965 * res.iHeight);
+  res.fPixelRatio = 1.0f;
+  res.bFullScreen = true;
+
+  if (mode->flags & DRM_MODE_FLAG_3D_MASK)
+  {
+    if (mode->flags & DRM_MODE_FLAG_3D_TOP_AND_BOTTOM)
+      res.dwFlags = D3DPRESENTFLAG_MODE3DTB;
+    else if (mode->flags & DRM_MODE_FLAG_3D_SIDE_BY_SIDE_HALF)
+      res.dwFlags = D3DPRESENTFLAG_MODE3DSBS;
+  }
+  else if (mode->flags & DRM_MODE_FLAG_INTERLACE)
+    res.dwFlags = D3DPRESENTFLAG_INTERLACED;
+  else
+    res.dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
+
+  res.strMode = StringUtils::Format("%dx%d%s @ %.6f Hz", res.iScreenWidth, res.iScreenHeight,
+                                    res.dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "", res.fRefreshRate);
+  return res;
+}
+
 std::vector<RESOLUTION_INFO> CDRMUtils::GetModes()
 {
   std::vector<RESOLUTION_INFO> resolutions;
@@ -644,44 +678,8 @@ std::vector<RESOLUTION_INFO> CDRMUtils::GetModes()
 
   for(auto i = 0; i < m_connector->connector->count_modes; i++)
   {
-    RESOLUTION_INFO res;
-    res.iScreen = 0;
-    res.iWidth = m_connector->connector->modes[i].hdisplay;
-    res.iHeight = m_connector->connector->modes[i].vdisplay;
-    res.iScreenWidth = m_connector->connector->modes[i].hdisplay;
-    res.iScreenHeight = m_connector->connector->modes[i].vdisplay;
-    if (m_connector->connector->modes[i].clock % 5 != 0)
-      res.fRefreshRate = (float)m_connector->connector->modes[i].vrefresh * (1000.0f/1001.0f);
-    else
-      res.fRefreshRate = m_connector->connector->modes[i].vrefresh;
-    res.iSubtitles = static_cast<int>(0.965 * res.iHeight);
-    res.fPixelRatio = 1.0f;
-    res.bFullScreen = true;
+    RESOLUTION_INFO res = GetResolutionInfo(&m_connector->connector->modes[i]);
     res.strId = std::to_string(i);
-
-    if(m_connector->connector->modes[i].flags & DRM_MODE_FLAG_3D_MASK)
-    {
-      if(m_connector->connector->modes[i].flags & DRM_MODE_FLAG_3D_TOP_AND_BOTTOM)
-      {
-        res.dwFlags = D3DPRESENTFLAG_MODE3DTB;
-      }
-      else if(m_connector->connector->modes[i].flags
-          & DRM_MODE_FLAG_3D_SIDE_BY_SIDE_HALF)
-      {
-        res.dwFlags = D3DPRESENTFLAG_MODE3DSBS;
-      }
-    }
-    else if(m_connector->connector->modes[i].flags & DRM_MODE_FLAG_INTERLACE)
-    {
-      res.dwFlags = D3DPRESENTFLAG_INTERLACED;
-    }
-    else
-    {
-      res.dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
-    }
-
-    res.strMode = StringUtils::Format("%dx%d%s @ %.6f Hz", res.iScreenWidth, res.iScreenHeight,
-                                      res.dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "", res.fRefreshRate);
     resolutions.push_back(res);
   }
 
