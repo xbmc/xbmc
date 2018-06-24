@@ -642,6 +642,15 @@ void CRenderSystemGL::InitialiseShaders()
     CLog::Log(LOGERROR, "GUI Shader gl_shader_frag_texture.glsl - compile and link failed");
   }
 
+  m_pShader[SM_TEXTURE_LIM] = new CGLShader("gl_shader_frag_texture_lim.glsl", defines);
+  if (!m_pShader[SM_TEXTURE_LIM]->CompileAndLink())
+  {
+    m_pShader[SM_TEXTURE_LIM]->Free();
+    delete m_pShader[SM_TEXTURE_LIM];
+    m_pShader[SM_TEXTURE_LIM] = nullptr;
+    CLog::Log(LOGERROR, "GUI Shader gl_shader_frag_texture_lim.glsl - compile and link failed");
+  }
+
   m_pShader[SM_MULTI] = new CGLShader("gl_shader_frag_multi.glsl", defines);
   if (!m_pShader[SM_MULTI]->CompileAndLink())
   {
@@ -690,6 +699,11 @@ void CRenderSystemGL::ReleaseShaders()
     m_pShader[SM_TEXTURE]->Free();
   delete m_pShader[SM_TEXTURE];
   m_pShader[SM_TEXTURE] = nullptr;
+
+  if (m_pShader[SM_TEXTURE_LIM])
+    m_pShader[SM_TEXTURE_LIM]->Free();
+  delete m_pShader[SM_TEXTURE_LIM];
+  m_pShader[SM_TEXTURE_LIM] = nullptr;
 
   if (m_pShader[SM_MULTI])
     m_pShader[SM_MULTI]->Free();
