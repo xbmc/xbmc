@@ -16,14 +16,14 @@ image which includes Linux.
 2. Building Kodi for the Raspberry Pi
 -----------------------------------------------------------------------------
 
-The following steps were tested with Ubuntu 14.04 x64. (Note that building on
+The following steps were tested with Ubuntu 16.04 x64. (Note that building on
 a 32 bit machine requires slightly different setting).
 
 The following commands build for newer Raspberry Pi 2 generation. In order to
 build for the first Raspberry Pi, the commands have to be adapted to use
 `--with-platform=raspberry-pi` instead of `--with-platform=raspberry-pi2`.
 
-    $ sudo apt-get install git autoconf curl g++ zlib1g-dev libcurl4-openssl-dev gawk gperf libtool autopoint swig default-jre
+    $ sudo apt-get install git autoconf curl g++ zlib1g-dev libcurl4-openssl-dev gawk gperf libtool autopoint swig default-jre bison make
 
     $ RPI_DEV=$PWD
     $ git clone https://github.com/raspberrypi/tools
@@ -38,7 +38,6 @@ build for the first Raspberry Pi, the commands have to be adapted to use
        --with-toolchain=$RPI_DEV/tools/arm-bcm2708/arm-rpi-4.9.3-linux-gnueabihf \
        --with-firmware=$RPI_DEV/firmware \
        --with-platform=raspberry-pi2 \
-       --build=i686-linux \
        --disable-debug
 
     $ make
