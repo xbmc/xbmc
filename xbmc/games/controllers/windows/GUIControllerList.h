@@ -23,6 +23,7 @@
 #include "IConfigurationWindow.h"
 #include "addons/AddonEvents.h"
 #include "addons/Addon.h"
+#include "games/GameTypes.h"
 #include "games/controllers/ControllerTypes.h"
 
 #include <set>
@@ -68,6 +69,7 @@ namespace GAME
     // Game stuff
     ControllerVector      m_controllers;
     int                   m_focusedController;
+    GameClientPtr         m_gameClient;
   };
 }
 }

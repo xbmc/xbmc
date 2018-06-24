@@ -26,6 +26,9 @@
 #include "addons/GUIWindowAddonBrowser.h"
 #include "addons/IAddon.h"
 #include "addons/AddonManager.h"
+#include "cores/RetroPlayer/guibridge/GUIGameRenderManager.h"
+#include "cores/RetroPlayer/guibridge/GUIGameSettingsHandle.h"
+#include "games/addons/GameClient.h"
 #include "games/controllers/dialogs/GUIDialogIgnoreInput.h"
 #include "guilib/GUIButtonControl.h"
 #include "guilib/GUIControl.h"
@@ -198,6 +201,19 @@ void CGUIControllerWindow::OnEvent(const ADDON::CRepositoryUpdater::RepositoryUp
 
 void CGUIControllerWindow::OnInitWindow(void)
 {
+  // Get active game add-on
+  GameClientPtr gameClient;
+  {
+    auto gameSettingsHandle = CServiceBroker::GetGameRenderManager().RegisterGameSettingsDialog();
+    if (gameSettingsHandle)
+    {
+      ADDON::AddonPtr addon;
+      if (CServiceBroker::GetAddonMgr().GetAddon(gameSettingsHandle->GameClientID(), addon, ADDON::ADDON_GAMEDLL))
+        gameClient = std::static_pointer_cast<CGameClient>(addon);
+    }
+  }
+  m_gameClient = std::move(gameClient);
+
   CGUIDialog::OnInitWindow();
 
   if (!m_featureList)
@@ -247,6 +263,8 @@ void CGUIControllerWindow::OnDeinitWindow(int nextWindowID)
   }
 
   CGUIDialog::OnDeinitWindow(nextWindowID);
+
+  m_gameClient.reset();
 }
 
 void CGUIControllerWindow::OnControllerFocused(unsigned int controllerIndex)
@@ -278,7 +296,10 @@ void CGUIControllerWindow::UpdateButtons(void)
   using namespace ADDON;
 
   VECADDONS addons;
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_GET_MORE, CServiceBroker::GetAddonMgr().GetInstallableAddons(addons, ADDON::ADDON_GAME_CONTROLLER) && !addons.empty());
+  if (m_gameClient)
+    SET_CONTROL_HIDDEN(CONTROL_GET_MORE);
+  else
+    CONTROL_ENABLE_ON_CONDITION(CONTROL_GET_MORE, CServiceBroker::GetAddonMgr().GetInstallableAddons(addons, ADDON::ADDON_GAME_CONTROLLER) && !addons.empty());
 }
 
 void CGUIControllerWindow::GetMoreControllers(void)

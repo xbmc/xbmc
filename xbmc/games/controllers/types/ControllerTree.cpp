@@ -63,6 +63,22 @@ void CControllerNode::SetHub(CControllerHub hub)
   m_hub.reset(new CControllerHub(std::move(hub)));
 }
 
+bool CControllerNode::IsControllerAccepted(const std::string &controllerId) const
+{
+  bool bAccepted = false;
+
+  for (const auto &port : m_hub->Ports())
+  {
+    if (port.IsControllerAccepted(controllerId))
+    {
+      bAccepted = true;
+      break;
+    }
+  }
+
+  return bAccepted;
+}
+
 bool CControllerNode::IsControllerAccepted(const std::string &portAddress,
                                            const std::string &controllerId) const
 {
@@ -128,6 +144,24 @@ void CControllerPortNode::SetCompatibleControllers(ControllerNodeVec controllers
   m_controllers = std::move(controllers);
 }
 
+bool CControllerPortNode::IsControllerAccepted(const std::string &controllerId) const
+{
+  // Base case
+  CControllerPort port;
+  GetControllerPort(port);
+  if (port.IsCompatible(controllerId))
+    return true;
+
+  // Visit nodes
+  for (const auto &node : m_controllers)
+  {
+    if (node.IsControllerAccepted(controllerId))
+      return true;
+  }
+
+  return false;
+}
+
 bool CControllerPortNode::IsControllerAccepted(const std::string &portAddress,
                                                const std::string &controllerId) const
 {
@@ -143,6 +177,7 @@ bool CControllerPortNode::IsControllerAccepted(const std::string &portAddress,
   }
   else
   {
+    // Visit nodes
     for (const auto &node : m_controllers)
     {
       if (node.IsControllerAccepted(portAddress, controllerId))
@@ -182,6 +217,22 @@ CControllerHub &CControllerHub::operator=(const CControllerHub &rhs)
 void CControllerHub::SetPorts(ControllerPortVec ports)
 {
   m_ports = std::move(ports);
+}
+
+bool CControllerHub::IsControllerAccepted(const std::string &controllerId) const
+{
+  bool bAccepted = false;
+
+  for (const CControllerPortNode &port : m_ports)
+  {
+    if (port.IsControllerAccepted(controllerId))
+    {
+      bAccepted = true;
+      break;
+    }
+  }
+
+  return bAccepted;
 }
 
 bool CControllerHub::IsControllerAccepted(const std::string &portAddress,

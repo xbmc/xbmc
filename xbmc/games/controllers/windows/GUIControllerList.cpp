@@ -28,7 +28,12 @@
 #include "GUIControllerWindow.h"
 #include "GUIFeatureList.h"
 #include "addons/AddonManager.h"
+#include "cores/RetroPlayer/guibridge/GUIGameRenderManager.h"
+#include "cores/RetroPlayer/guibridge/GUIGameSettingsHandle.h"
 #include "dialogs/GUIDialogYesNo.h"
+#include "games/addons/input/GameClientInput.h"
+#include "games/addons/GameClient.h"
+#include "games/controllers/types/ControllerTree.h"
 #include "games/controllers/Controller.h"
 #include "games/controllers/ControllerIDs.h"
 #include "games/controllers/ControllerFeature.h"
@@ -68,6 +73,19 @@ bool CGUIControllerList::Initialize(void)
   if (m_controllerButton)
     m_controllerButton->SetVisible(false);
 
+  // Get active game add-on
+  GameClientPtr gameClient;
+  {
+    auto gameSettingsHandle = CServiceBroker::GetGameRenderManager().RegisterGameSettingsDialog();
+    if (gameSettingsHandle)
+    {
+      ADDON::AddonPtr addon;
+      if (CServiceBroker::GetAddonMgr().GetAddon(gameSettingsHandle->GameClientID(), addon, ADDON::ADDON_GAMEDLL))
+        gameClient = std::static_pointer_cast<CGameClient>(addon);
+    }
+  }
+  m_gameClient = std::move(gameClient);
+
   CServiceBroker::GetAddonMgr().Events().Subscribe(this, &CGUIControllerList::OnEvent);
   Refresh();
 
@@ -78,6 +96,8 @@ bool CGUIControllerList::Initialize(void)
 void CGUIControllerList::Deinitialize(void)
 {
   CServiceBroker::GetAddonMgr().Events().Unsubscribe(this);
+
+  m_gameClient.reset();
 
   CleanupButtons();
 
@@ -166,7 +186,7 @@ bool CGUIControllerList::RefreshControllers(void)
   CGameServices& gameServices = CServiceBroker::GetGameServices();
   ControllerVector newControllers = gameServices.GetControllers();
 
-  // Don't show an empty list in the GUI
+  // Don't show an empty feature list in the GUI
   auto HasButtonForFeature = [this](const CControllerFeature &feature)
     {
       return m_featureList->HasButton(feature.Type());
@@ -180,6 +200,20 @@ bool CGUIControllerList::RefreshControllers(void)
     };
 
   newControllers.erase(std::remove_if(newControllers.begin(), newControllers.end(), HasButtonForController), newControllers.end());
+
+  // Filter by current game add-on
+  if (m_gameClient)
+  {
+    const CControllerTree &controllers = m_gameClient->Input().GetControllerTree();
+
+    auto ControllerNotAccepted = [&controllers](const ControllerPtr &controller)
+      {
+        return !controllers.IsControllerAccepted(controller->ID());
+      };
+
+    if (!std::all_of(newControllers.begin(), newControllers.end(), ControllerNotAccepted))
+      newControllers.erase(std::remove_if(newControllers.begin(), newControllers.end(), ControllerNotAccepted), newControllers.end());
+  }
 
   // Check for changes
   std::set<std::string> oldControllerIds;
