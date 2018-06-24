@@ -55,6 +55,9 @@ public:
   bool Supports(ERENDERFEATURE feature) override;
   bool Supports(ESCALINGMETHOD method) override;
 
+protected:
+  void ManageRenderArea() override;
+
 private:
   void Reset();
   void SetVideoPlane(CVideoBufferDRMPRIME* buffer);
