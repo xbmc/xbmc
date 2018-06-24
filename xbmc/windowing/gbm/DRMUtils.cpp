@@ -56,6 +56,8 @@ void CDRMUtils::WaitVBlank()
 bool CDRMUtils::SetMode(const RESOLUTION_INFO& res)
 {
   m_mode = &m_connector->connector->modes[atoi(res.strId.c_str())];
+  m_width = res.iWidth;
+  m_height = res.iHeight;
 
   CLog::Log(LOGDEBUG, "CDRMUtils::%s - found crtc mode: %dx%d%s @ %d Hz",
             __FUNCTION__,

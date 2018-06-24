@@ -102,6 +102,9 @@ protected:
   struct plane *m_overlay_plane = nullptr;
   drmModeModeInfo *m_mode = nullptr;
 
+  int m_width = 0;
+  int m_height = 0;
+
 private:
   bool GetResources();
   bool FindConnector();

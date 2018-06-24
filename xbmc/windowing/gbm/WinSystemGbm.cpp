@@ -132,13 +132,16 @@ bool CWinSystemGbm::CreateNewWindow(const std::string& name,
     return false;
   }
 
-  if(!m_GBM->CreateSurface(m_DRM->GetCurrentMode()->hdisplay, m_DRM->GetCurrentMode()->vdisplay))
+  if(!m_GBM->CreateSurface(res.iWidth, res.iHeight))
   {
     CLog::Log(LOGERROR, "CWinSystemGbm::%s - failed to initialize GBM", __FUNCTION__);
     return false;
   }
 
   m_bFullScreen = fullScreen;
+  m_nWidth = res.iWidth;
+  m_nHeight = res.iHeight;
+  m_fRefreshRate = res.fRefreshRate;
 
   CLog::Log(LOGDEBUG, "CWinSystemGbm::%s - initialized GBM", __FUNCTION__);
   return true;

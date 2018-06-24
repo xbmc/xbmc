@@ -78,8 +78,8 @@ void CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool video
     AddProperty(plane, "CRTC_ID", m_crtc->crtc->crtc_id);
     AddProperty(plane, "SRC_X", 0);
     AddProperty(plane, "SRC_Y", 0);
-    AddProperty(plane, "SRC_W", m_mode->hdisplay << 16);
-    AddProperty(plane, "SRC_H", m_mode->vdisplay << 16);
+    AddProperty(plane, "SRC_W", m_width << 16);
+    AddProperty(plane, "SRC_H", m_height << 16);
     AddProperty(plane, "CRTC_X", 0);
     AddProperty(plane, "CRTC_Y", 0);
     AddProperty(plane, "CRTC_W", m_mode->hdisplay);
