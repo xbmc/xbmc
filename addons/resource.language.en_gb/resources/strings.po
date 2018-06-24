@@ -17351,11 +17351,7 @@ msgctxt "#35222"
 msgid "Exit"
 msgstr ""
 
-#. Label of button in the in-game menu for opening the input configuration window
-#: addons/skin.estuary/xml/GameOSD.xml
-msgctxt "#35223"
-msgid "Input settings"
-msgstr ""
+#empty string with id 35223
 
 #. Label of button in the in-game menu for pausing and resuming playback
 #: addons/skin.estuary/xml/GameOSD.xml
@@ -17418,7 +17414,13 @@ msgctxt "#35233"
 msgid "Stretch mode"
 msgstr ""
 
-#empty strings from id 35234 to 35249
+#. Label of button in the in-game menu for configuring the game's controls
+#: addons/skin.estuary/xml/GameOSD.xml
+msgctxt "#35234"
+msgid "Controls"
+msgstr ""
+
+#empty strings from id 35235 to 35249
 
 #: xbmc/windows/GUIMediaWindow.cpp
 msgctxt "#35250"

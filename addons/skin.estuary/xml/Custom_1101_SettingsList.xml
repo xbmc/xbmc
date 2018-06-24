@@ -145,10 +145,10 @@
 						<onclick>ActivateWindow(GameVolume)</onclick>
 					</control>
 					<control type="button" id="14103">
-						<description>Input settings button</description>
+						<description>Controller settings button</description>
 						<width>700</width>
 						<include>DialogSettingButton</include>
-						<label>$LOCALIZE[35223]</label>
+						<label>$LOCALIZE[35234]</label>
 						<onclick>ActivateWindow(GameControllers)</onclick>
 					</control>
 					<control type="button" id="14105">
