@@ -17411,7 +17411,14 @@ msgctxt "#35232"
 msgid "Fullscreen"
 msgstr ""
 
-#empty strings from id 35233 to 35249
+#. Label of the setting in the in-game menu for stretching the game to fit the monitor
+#: addons/skin.estuary/xml/Custom_1101_SettingsList.xml
+#: xbmc/games/dialogs/osdDialogGameViewMode.cpp
+msgctxt "#35233"
+msgid "Stretch mode"
+msgstr ""
+
+#empty strings from id 35234 to 35249
 
 #: xbmc/windows/GUIMediaWindow.cpp
 msgctxt "#35250"

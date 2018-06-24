@@ -46,7 +46,7 @@ CDialogGameViewMode::CDialogGameViewMode() :
 
 std::string CDialogGameViewMode::GetHeading()
 {
-  return g_localizeStrings.Get(629); // "View mode"
+  return g_localizeStrings.Get(35233); // "Stretch mode"
 }
 
 void CDialogGameViewMode::PreInit()
