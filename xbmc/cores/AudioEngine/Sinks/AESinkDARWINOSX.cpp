@@ -35,6 +35,7 @@ static void EnumerateDevices(CADeviceList &list)
 {
   std::string defaultDeviceName;
   CCoreAudioHardware::GetOutputDeviceName(defaultDeviceName);
+  AudioDeviceID defaultID = CCoreAudioHardware::GetDefaultOutputDevice();
 
   CoreAudioDeviceList deviceIDList;
   CCoreAudioHardware::GetOutputDevices(&deviceIDList);
@@ -54,7 +55,7 @@ static void EnumerateDevices(CADeviceList &list)
     //like that)
     //fixme taking the first stream device is wrong here
     //we rather might need the concatenation of all streams *sucks*
-    if(defaultDeviceName == devEnum.GetMasterDeviceName())
+    if(defaultID == deviceID && defaultDeviceName == devEnum.GetMasterDeviceName())
     {
       struct CADeviceInstance deviceInstance;
       deviceInstance.audioDeviceId = deviceID;

@@ -478,14 +478,22 @@ AESampleRateList AEDeviceEnumerationOSX::getSampleRateListForStream(UInt32 strea
 
 std::string AEDeviceEnumerationOSX::getDeviceNameForStream(UInt32 streamIdx) const
 {
-  std::string deviceName = "";
+  std::stringstream deviceIdStr;
+  deviceIdStr << m_deviceID;
+
+  // device name is the devicename from coreaudio + the device id to make it unique
+  // for example devicename could be DisplayPort and couldn't be distinguished if multiple
+  // DisplayPort devices are available
+  std::string deviceName = m_deviceName + "-" + deviceIdStr.str();
   if (m_isPlanar)// planar devices are saved as :stream0
-    deviceName = m_deviceName + ":stream0";
+  {
+    deviceName += ":stream0";
+  }
   else
   {
     std::stringstream streamIdxStr;
     streamIdxStr << streamIdx;
-    deviceName = m_deviceName + ":stream" + streamIdxStr.str();
+    deviceName += ":stream" + streamIdxStr.str();
   }
   return deviceName;
 }
