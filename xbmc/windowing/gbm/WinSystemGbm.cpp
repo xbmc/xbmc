@@ -157,13 +157,7 @@ bool CWinSystemGbm::DestroyWindow()
 
 void CWinSystemGbm::UpdateResolutions()
 {
-  CWinSystemBase::UpdateResolutions();
-
-  UpdateDesktopResolution(CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP),
-                          0,
-                          m_DRM->GetCurrentMode()->hdisplay,
-                          m_DRM->GetCurrentMode()->vdisplay,
-                          m_DRM->GetCurrentMode()->vrefresh);
+  RESOLUTION_INFO current = m_DRM->GetCurrentMode();
 
   auto resolutions = m_DRM->GetModes();
   if (resolutions.empty())
@@ -178,6 +172,16 @@ void CWinSystemGbm::UpdateResolutions()
     {
       CServiceBroker::GetWinSystem()->GetGfxContext().ResetOverscan(res);
       CDisplaySettings::GetInstance().AddResolutionInfo(res);
+
+      if (current.iScreenWidth == res.iScreenWidth &&
+          current.iScreenHeight == res.iScreenHeight &&
+          current.iWidth == res.iWidth &&
+          current.iHeight == res.iHeight &&
+          current.fRefreshRate == res.fRefreshRate &&
+          current.dwFlags == res.dwFlags)
+      {
+        CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP) = res;
+      }
 
       CLog::Log(LOGNOTICE, "Found resolution %dx%d for display %d with %dx%d%s @ %f Hz",
                 res.iWidth,

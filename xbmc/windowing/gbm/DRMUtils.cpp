@@ -671,6 +671,11 @@ RESOLUTION_INFO CDRMUtils::GetResolutionInfo(drmModeModeInfoPtr mode)
   return res;
 }
 
+RESOLUTION_INFO CDRMUtils::GetCurrentMode()
+{
+  return GetResolutionInfo(m_mode);
+}
+
 std::vector<RESOLUTION_INFO> CDRMUtils::GetModes()
 {
   std::vector<RESOLUTION_INFO> resolutions;

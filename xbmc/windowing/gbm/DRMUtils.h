@@ -80,8 +80,8 @@ public:
   struct plane* GetPrimaryPlane() const { return m_primary_plane; }
   struct plane* GetOverlayPlane() const { return m_overlay_plane; }
   struct crtc* GetCrtc() const { return m_crtc; }
-  drmModeModeInfo* GetCurrentMode() const { return m_mode; }
 
+  RESOLUTION_INFO GetCurrentMode();
   std::vector<RESOLUTION_INFO> GetModes();
   bool SetMode(const RESOLUTION_INFO& res);
   void WaitVBlank();
