@@ -912,6 +912,7 @@ bool CVideoPlayer::OpenDemuxStream()
   m_SelectionStreams.Update(m_pInputStream, m_pDemuxer);
   m_pDemuxer->GetPrograms(m_programs);
   UpdateContent();
+  m_demuxerSpeed = DVD_PLAYSPEED_NORMAL;
 
   int64_t len = m_pInputStream->GetLength();
   int64_t tim = m_pDemuxer->GetStreamLength();
@@ -1476,8 +1477,22 @@ void CVideoPlayer::Process()
     if ((!m_VideoPlayerAudio->AcceptsData() && m_CurrentAudio.id >= 0) ||
         (!m_VideoPlayerVideo->AcceptsData() && m_CurrentVideo.id >= 0))
     {
+      if (m_playSpeed == DVD_PLAYSPEED_PAUSE &&
+          m_demuxerSpeed != DVD_PLAYSPEED_PAUSE)
+      {
+        if (m_pDemuxer)
+          m_pDemuxer->SetSpeed(DVD_PLAYSPEED_PAUSE);
+        m_demuxerSpeed = DVD_PLAYSPEED_PAUSE;
+      }
       Sleep(10);
       continue;
+    }
+
+    if (m_demuxerSpeed == DVD_PLAYSPEED_PAUSE)
+    {
+      if (m_pDemuxer)
+        m_pDemuxer->SetSpeed(DVD_PLAYSPEED_NORMAL);
+      m_demuxerSpeed = DVD_PLAYSPEED_NORMAL;
     }
 
     // always yield to players if they have data levels > 50 percent
@@ -2951,8 +2966,6 @@ void CVideoPlayer::HandleMessages()
       m_VideoPlayerAudio->SetSpeed(speed);
       m_VideoPlayerVideo->SetSpeed(speed);
       m_streamPlayerSpeed = speed;
-      if (m_pDemuxer)
-        m_pDemuxer->SetSpeed(speed);
     }
     else if (pMsg->IsType(CDVDMsg::PLAYER_FRAME_ADVANCE))
     {
@@ -4720,12 +4733,12 @@ void CVideoPlayer::UpdatePlayState(double timeout)
 
   if (m_Edl.HasCut())
   {
-    state.time        = (double) m_Edl.RemoveCutTime(llrint(state.time));
-    state.timeMax  = (double) m_Edl.RemoveCutTime(llrint(state.timeMax));
+    state.time = (double) m_Edl.RemoveCutTime(llrint(state.time));
+    state.timeMax = (double) m_Edl.RemoveCutTime(llrint(state.timeMax));
   }
 
   if (state.timeMax <= 0)
-    state.canseek  = false;
+    state.canseek = false;
 
   if (m_caching > CACHESTATE_DONE && m_caching < CACHESTATE_PLAY)
     state.caching = true;
@@ -4735,14 +4748,14 @@ void CVideoPlayer::UpdatePlayState(double timeout)
   double level, delay, offset;
   if (GetCachingTimes(level, delay, offset))
   {
-    state.cache_delay  = std::max(0.0, delay);
-    state.cache_level  = std::max(0.0, std::min(1.0, level));
+    state.cache_delay = std::max(0.0, delay);
+    state.cache_level = std::max(0.0, std::min(1.0, level));
     state.cache_offset = offset;
   }
   else
   {
-    state.cache_delay  = 0.0;
-    state.cache_level  = std::min(1.0, GetQueueTime() / 8000.0);
+    state.cache_delay = 0.0;
+    state.cache_level = std::min(1.0, GetQueueTime() / 8000.0);
     state.cache_offset = GetQueueTime() / state.timeMax;
   }
 

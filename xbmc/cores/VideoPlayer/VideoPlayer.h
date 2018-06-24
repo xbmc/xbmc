@@ -526,12 +526,13 @@ protected:
 
   int m_playSpeed;
   int m_streamPlayerSpeed;
+  int m_demuxerSpeed = DVD_PLAYSPEED_NORMAL;
   struct SSpeedState
   {
-    double  lastpts;  // holds last display pts during ff/rw operations
+    double lastpts;  // holds last display pts during ff/rw operations
     int64_t lasttime;
     double lastseekpts;
-    double  lastabstime;
+    double lastabstime;
   } m_SpeedState;
   std::atomic_bool m_canTempo;
 
