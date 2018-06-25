@@ -519,11 +519,6 @@ std::string CUtil::GetHomePath(std::string strTarget)
   return ::GetHomePath(strTarget, strPath);
 }
 
-bool CUtil::IsPVR(const std::string& strFile)
-{
-  return StringUtils::StartsWithNoCase(strFile, "pvr:");
-}
-
 bool CUtil::IsLiveTV(const std::string& strFile)
 {
   if (StringUtils::StartsWithNoCase(strFile, "pvr://channels"))
