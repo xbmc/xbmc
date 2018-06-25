@@ -166,7 +166,7 @@ bool CPicturesGUIInfo::GetLabel(std::string& value, const CFileItem *item, int c
     {
       case LISTITEM_PICTURE_PATH:
       {
-        if (!item->IsZIP() || item->IsRAR() || item->IsCBZ() || item->IsCBR())
+        if (!item->IsZIP() || item->IsRAR() || item->IsType(".cbz") || item->IsCBR())
         {
           value = item->GetPath();
           return true;

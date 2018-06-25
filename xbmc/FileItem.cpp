@@ -1112,11 +1112,6 @@ bool CFileItem::IsZIP() const
   return URIUtils::IsZIP(m_strPath);
 }
 
-bool CFileItem::IsCBZ() const
-{
-  return URIUtils::HasExtension(m_strPath, ".cbz");
-}
-
 bool CFileItem::IsCBR() const
 {
   return URIUtils::HasExtension(m_strPath, ".cbr");

@@ -613,7 +613,7 @@ void CGUIWindowFileManager::OnClick(int iList, int iItem)
     if (!Update(iList, strPath))
       ShowShareErrorMessage(pItem.get());
   }
-  else if (pItem->IsZIP() || pItem->IsCBZ()) // mount zip archive
+  else if (pItem->IsZIP() || pItem->IsType(".cbz")) // mount zip archive
   {
     CURL pathToUrl = URIUtils::CreateArchivePath("zip", pItem->GetURL(), "");
     Update(iList, pathToUrl.Get());
