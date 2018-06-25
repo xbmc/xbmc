@@ -3164,7 +3164,17 @@ msgctxt "#684"
 msgid "Verbose logging of [B]Windowing[/B] component"
 msgstr ""
 
-#empty strings from id 685 to 699
+#: xbmc/settings/AdvancedSettings.cpp
+msgctxt "#685"
+msgid "Verbose logging of [B]PVR[/B] component"
+msgstr ""
+
+#: xbmc/settings/AdvancedSettings.cpp
+msgctxt "#686"
+msgid "Verbose logging of [B]EPG[/B] component"
+msgstr ""
+
+#empty strings from id 687 to 699
 
 #: xbmc/music/infoscanner/MusicInfoScanner.cpp
 #: xbmc/music/MusicDatabase.cpp

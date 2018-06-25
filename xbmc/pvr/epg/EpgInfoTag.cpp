@@ -700,7 +700,7 @@ bool CPVREpgInfoTag::Persist(bool bSingleUpdate /* = true */)
   CPVREpgDatabasePtr database = CServiceBroker::GetPVRManager().EpgContainer().GetEpgDatabase();
   if (!database)
   {
-    CLog::Log(LOGERROR, "%s - could not open the database", __FUNCTION__);
+    CLog::LogF(LOGERROR, "Could not open the EPG database");
     return bReturn;
   }
 

@@ -138,7 +138,7 @@ void CPVRClients::UpdateAddons(const std::string &changedAddonId /*= ""*/)
           client = std::dynamic_pointer_cast<CPVRClient>(addon);
           if (!client)
           {
-            CLog::Log(LOGERROR, "CPVRClients - %s - severe error, incorrect add-on type", __FUNCTION__);
+            CLog::LogF(LOGERROR, "Severe error, incorrect add-on type");
             continue;
           }
         }
@@ -164,7 +164,7 @@ void CPVRClients::UpdateAddons(const std::string &changedAddonId /*= ""*/)
 
       if (status != ADDON_STATUS_OK)
       {
-        CLog::Log(LOGERROR, "%s - failed to create add-on %s, status = %d", __FUNCTION__, addon.first->Name().c_str(), status);
+        CLog::LogF(LOGERROR, "Failed to create add-on %s, status = %d", addon.first->Name().c_str(), status);
         if (status == ADDON_STATUS_PERMANENT_FAILURE)
         {
           CServiceBroker::GetAddonMgr().DisableAddon(addon.first->ID());
@@ -594,16 +594,7 @@ void CPVRClients::ConnectionStateChange(
   CPVRClient *client, std::string &strConnectionString, PVR_CONNECTION_STATE newState, std::string &strMessage)
 {
   if (!client)
-  {
-    CLog::Log(LOGDEBUG, "PVR - %s - invalid client id", __FUNCTION__);
     return;
-  }
-
-  if (strConnectionString.empty())
-  {
-    CLog::Log(LOGERROR, "PVR - %s - invalid handler data", __FUNCTION__);
-    return;
-  }
 
   int iMsg = -1;
   bool bError = true;
@@ -639,7 +630,7 @@ void CPVRClients::ConnectionStateChange(
       bNotify = false;
       break;
     default:
-      CLog::Log(LOGERROR, "PVR - %s - unknown connection state", __FUNCTION__);
+      CLog::LogF(LOGERROR, "Unknown connection state");
       return;
   }
 
@@ -657,9 +648,8 @@ void CPVRClients::ConnectionStateChange(
   {
     // update properties on connect
     if (!client->GetAddonProperties())
-    {
-      CLog::Log(LOGERROR, "PVR - %s - error reading properties", __FUNCTION__);
-    }
+      CLog::LogF(LOGERROR, "Error reading PVR client properties");
+
     CServiceBroker::GetPVRManager().Start();
   }
 }
@@ -683,9 +673,9 @@ PVR_ERROR CPVRClients::ForCreatedClients(const char* strFunctionName, PVRClientF
 
     if (currentError != PVR_ERROR_NO_ERROR && currentError != PVR_ERROR_NOT_IMPLEMENTED)
     {
-      CLog::Log(LOGERROR,
-                "CPVRClients - %s - client '%s' returned an error: %s",
-                strFunctionName, clientEntry.second->GetFriendlyName().c_str(), CPVRClient::ToString(currentError));
+      CLog::LogFunction(LOGERROR, strFunctionName,
+                        "PVR client '%s' returned an error: %s",
+                        clientEntry.second->GetFriendlyName().c_str(), CPVRClient::ToString(currentError));
       lastError = currentError;
       failedClients.emplace_back(clientEntry.first);
     }

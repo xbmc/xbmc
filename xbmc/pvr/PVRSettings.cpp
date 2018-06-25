@@ -52,7 +52,7 @@ void CPVRSettings::Init(const std::set<std::string> &settingNames)
     SettingPtr setting = CServiceBroker::GetSettings().GetSetting(settingName);
     if (!setting)
     {
-      CLog::Log(LOGERROR, "CPVRSettings - %s - Unknown setting '%s'", __FUNCTION__, settingName.c_str());
+      CLog::LogF(LOGERROR, "Unknown PVR setting '%s'", settingName.c_str());
       continue;
     }
 
@@ -96,7 +96,7 @@ bool CPVRSettings::GetBoolValue(const std::string &settingName) const
       return setting->GetValue();
   }
 
-  CLog::Log(LOGERROR, "CPVRSettings - %s - setting '%s' not found or wrong type given", __FUNCTION__, settingName.c_str());
+  CLog::LogF(LOGERROR, "PVR setting '%s' not found or wrong type given", settingName.c_str());
   return false;
 }
 
@@ -111,7 +111,7 @@ int CPVRSettings::GetIntValue(const std::string &settingName) const
       return setting->GetValue();
   }
 
-  CLog::Log(LOGERROR, "CPVRSettings - %s - setting '%s' not found or wrong type given", __FUNCTION__, settingName.c_str());
+  CLog::LogF(LOGERROR, "PVR setting '%s' not found or wrong type given", settingName.c_str());
   return -1;
 }
 
@@ -126,7 +126,7 @@ std::string CPVRSettings::GetStringValue(const std::string &settingName) const
       return setting->GetValue();
   }
 
-  CLog::Log(LOGERROR, "CPVRSettings - %s - setting '%s' not found or wrong type given", __FUNCTION__, settingName.c_str());
+  CLog::LogF(LOGERROR, "PVR setting '%s' not found or wrong type given", settingName.c_str());
   return "";
 }
 

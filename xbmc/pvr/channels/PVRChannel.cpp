@@ -539,8 +539,8 @@ int CPVRChannel::GetEPG(CFileItemList &results) const
   CPVREpgPtr epg = GetEPG();
   if (!epg)
   {
-    CLog::Log(LOGDEBUG, "PVR - %s - cannot get EPG for channel '%s'",
-        __FUNCTION__, m_strChannelName.c_str());
+    CLog::LogFC(LOGDEBUG, LOGPVR, "Cannot get EPG for channel '%s'",
+                m_strChannelName.c_str());
     return -1;
   }
 

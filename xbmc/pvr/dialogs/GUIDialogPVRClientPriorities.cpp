@@ -56,7 +56,7 @@ std::string CGUIDialogPVRClientPriorities::GetSettingsLabel(std::shared_ptr<ISet
   if (clientEntry != m_clients.end())
     return clientEntry->second->GetFriendlyName();
 
-  CLog::Log(LOGERROR, "CGUIDialogPVRClientPriorities::GetSettingsLabel - Unable to obtain pvr client with id '%i'", iClientId);
+  CLog::LogF(LOGERROR, "Unable to obtain pvr client with id '%i'", iClientId);
   return CGUIDialogSettingsManualBase::GetLocalizedString(13205); // Unknown
 }
 
@@ -67,14 +67,14 @@ void CGUIDialogPVRClientPriorities::InitializeSettings()
   const std::shared_ptr<CSettingCategory> category = AddCategory("pvrclientpriorities", -1);
   if (category == nullptr)
   {
-    CLog::Log(LOGERROR, "CGUIDialogPVRClientPriorities::InitializeSettings - Unable to add settings category");
+    CLog::LogF(LOGERROR, "Unable to add settings category");
     return;
   }
 
   const std::shared_ptr<CSettingGroup> group = AddGroup(category);
   if (group == nullptr)
   {
-    CLog::Log(LOGERROR, "CGUIDialogPVRClientPriorities::InitializeSettings - Unable to add settings group");
+    CLog::LogF(LOGERROR, "Unable to add settings group");
     return;
   }
 
@@ -91,7 +91,7 @@ void CGUIDialogPVRClientPriorities::OnSettingChanged(std::shared_ptr<const CSett
 {
   if (setting == nullptr)
   {
-    CLog::Log(LOGERROR, "CGUIDialogPVRClientPriorities::OnSettingChanged - No setting");
+    CLog::LogF(LOGERROR, "No setting");
     return;
   }
 
