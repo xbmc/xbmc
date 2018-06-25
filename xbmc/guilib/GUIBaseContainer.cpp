@@ -919,8 +919,10 @@ void CGUIBaseContainer::UpdateVisibility(const CGUIListItem *item)
   if ((m_layout && m_layout->CheckCondition() != m_layoutCondition) ||
       (m_focusedLayout && m_focusedLayout->CheckCondition() != m_focusedLayoutCondition))
   {
-    m_layoutCondition = m_layout->CheckCondition();
-    m_focusedLayoutCondition = m_focusedLayout->CheckCondition();
+    if (m_layout)
+      m_layoutCondition = m_layout->CheckCondition();
+    if (m_focusedLayout)
+      m_focusedLayoutCondition = m_focusedLayout->CheckCondition();
 
     int itemIndex = GetSelectedItem();
     UpdateLayout(true); // true to refresh all items
