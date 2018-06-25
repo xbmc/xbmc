@@ -1113,11 +1113,6 @@ bool CFileItem::IsScript() const
   return URIUtils::IsScript(m_strPath);
 }
 
-bool CFileItem::IsSourcesPath() const
-{
-  return URIUtils::IsSourcesPath(m_strPath);
-}
-
 bool CFileItem::IsMultiPath() const
 {
   return URIUtils::IsMultiPath(m_strPath);
@@ -2516,7 +2511,7 @@ void CFileItemList::Stack(bool stackFiles /* = true */)
   // not allowed here
   if (IsVirtualDirectoryRoot() ||
       IsLiveTV() ||
-      IsSourcesPath() ||
+      IsType("sources://") ||
       IsLibraryFolder())
     return;
 

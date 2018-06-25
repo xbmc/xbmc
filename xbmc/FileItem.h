@@ -203,7 +203,6 @@ public:
   bool IsSmartPlayList() const;
   bool IsLibraryFolder() const;
   bool IsScript() const;
-  bool IsSourcesPath() const;
   bool IsDiscImage() const;
   bool IsOpticalMediaFile() const;
   bool IsDVDFile(bool bVobs = true, bool bIfos = true) const;

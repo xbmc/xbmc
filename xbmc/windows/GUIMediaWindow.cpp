@@ -358,7 +358,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
       else if (message.GetParam1() == GUI_MSG_REMOVED_MEDIA)
       {
         if ((m_vecItems->IsVirtualDirectoryRoot() ||
-             m_vecItems->IsSourcesPath()) && IsActive())
+             m_vecItems->IsType("sources://")) && IsActive())
         {
           int iItem = m_viewControl.GetSelectedItem();
           Refresh();
@@ -382,7 +382,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
       else if (message.GetParam1()==GUI_MSG_UPDATE_SOURCES)
       { // State of the sources changed, so update our view
         if ((m_vecItems->IsVirtualDirectoryRoot() ||
-             m_vecItems->IsSourcesPath()) && IsActive())
+             m_vecItems->IsType("sources://")) && IsActive())
         {
           if (m_vecItemsUpdating)
           {
