@@ -240,7 +240,12 @@ public:
   bool IsInProgressPVRRecording() const;
   bool IsPVRTimer() const;
   bool IsPVRRadioRDS() const;
+
+  //! \brief Check if path item points to has a given extension or protocol type.
+  //! \param[in] ext Extension or protocol type
+  //! \details If ext contains a '.', it is an extension, else it is a protocol.
   bool IsType(const char *ext) const;
+
   bool IsVirtualDirectoryRoot() const;
   bool IsReadOnly() const;
   bool CanQueue() const;

@@ -1066,10 +1066,10 @@ bool CFileItem::IsPythonScript() const
 
 bool CFileItem::IsType(const char *ext) const
 {
-  if (!m_strDynPath.empty())
-    return URIUtils::HasExtension(m_strDynPath, ext);
+  if (*ext == '.')
+    return URIUtils::HasExtension(GetDynPath(), ext);
 
-  return URIUtils::HasExtension(m_strPath, ext);
+  return StringUtils::StartsWithNoCase(GetDynPath(), ext);
 }
 
 bool CFileItem::IsNFO() const
