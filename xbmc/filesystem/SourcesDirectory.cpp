@@ -79,7 +79,7 @@ bool CSourcesDirectory::GetDirectory(const VECSOURCES &sources, CFileItemList &i
       strIcon = "DefaultPlaylist.png";
     else if (   pItem->IsVideoDb()
              || pItem->IsMusicDb()
-             || pItem->IsPlugin()
+             || pItem->IsType("plugin://")
              || pItem->IsPath("musicsearch://"))
       strIcon = "DefaultFolder.png";
     else if (pItem->IsRemote())

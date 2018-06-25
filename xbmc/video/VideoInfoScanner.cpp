@@ -512,7 +512,7 @@ namespace VIDEO
     std::string strPath = pItem->GetPath();
     if (pItem->m_bIsFolder)
       idTvShow = m_database.GetTvShowId(strPath);
-    else if (pItem->IsPlugin() && pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iIdShow >= 0)
+    else if (pItem->IsType("plugin://") && pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iIdShow >= 0)
     {
       // for plugin source we cannot get idTvShow from episode path with URIUtils::GetDirectory() in all cases
       // so use m_iIdShow from video info tag if possible
@@ -811,7 +811,7 @@ namespace VIDEO
       {
         CVideoInfoDownloader loader(scraper);
         loader.GetArtwork(showInfo);
-        GetSeasonThumbs(showInfo, seasonArt, CVideoThumbLoader::GetArtTypes(MediaTypeSeason), useLocal && !item->IsPlugin());
+        GetSeasonThumbs(showInfo, seasonArt, CVideoThumbLoader::GetArtTypes(MediaTypeSeason), useLocal && !item->IsType("plugin://"));
         for (std::map<int, std::map<std::string, std::string> >::const_iterator i = seasonArt.begin(); i != seasonArt.end(); ++i)
         {
           int seasonID = m_database.AddSeason(showID, i->first);
@@ -841,7 +841,7 @@ namespace VIDEO
         m_pathsToScan.erase(it);
 
       std::string hash, dbHash;
-      if (item->IsPlugin())
+      if (item->IsType("plugin://"))
       {
         // if plugin has already calculated a hash for directory contents - use it
         // in this case we don't need to get directory listing from plugin for hash checking
@@ -998,7 +998,7 @@ namespace VIDEO
       isValid = true;
 
     // episode 0 with non-zero season is valid! (e.g. prequel episode)
-    if (item->IsPlugin() && tag->m_iSeason > 0 && tag->m_iEpisode >= 0)
+    if (item->IsType("plugin://") && tag->m_iSeason > 0 && tag->m_iEpisode >= 0)
       isValid = true;
 
     if (isValid)
@@ -1009,7 +1009,7 @@ namespace VIDEO
       episode.iEpisode = tag->m_iEpisode;
       episode.isFolder = false;
       // save full item for plugin source
-      if (item->IsPlugin())
+      if (item->IsType("plugin://"))
         episode.item = std::make_shared<CFileItem>(*item);
       episodeList.push_back(episode);
       CLog::Log(LOGDEBUG, "%s - found match for: %s. Season %d, Episode %d", __FUNCTION__,
@@ -1277,7 +1277,7 @@ namespace VIDEO
       return -1;
 
     if (!libraryImport)
-      GetArtwork(pItem, content, videoFolder, useLocal && !pItem->IsPlugin(), showInfo ? showInfo->m_strPath : "");
+      GetArtwork(pItem, content, videoFolder, useLocal && !pItem->IsType("plugin://"), showInfo ? showInfo->m_strPath : "");
 
     // ensure the art map isn't completely empty by specifying an empty thumb
     std::map<std::string, std::string> art = pItem->GetArt();
@@ -1346,7 +1346,7 @@ namespace VIDEO
         std::map<int, std::map<std::string, std::string> > seasonArt;
 
         if (!libraryImport)
-          GetSeasonThumbs(movieDetails, seasonArt, CVideoThumbLoader::GetArtTypes(MediaTypeSeason), useLocal && !pItem->IsPlugin());
+          GetSeasonThumbs(movieDetails, seasonArt, CVideoThumbLoader::GetArtTypes(MediaTypeSeason), useLocal && !pItem->IsType("plugin://"));
 
         lResult = m_database.SetDetailsForTvShow(paths, movieDetails, art, seasonArt);
         movieDetails.m_iDbId = lResult;
@@ -1814,7 +1814,7 @@ namespace VIDEO
     {
       const CFileItemPtr pItem = items[i];
       digest.Update(pItem->GetPath());
-      if (pItem->IsPlugin())
+      if (pItem->IsType("plugin://"))
       {
         // allow plugin to calculate hash itself using strings rather than binary data for size and date
         // according to ListItem.setInfo() documentation date format should be "d.m.Y"
@@ -1838,7 +1838,7 @@ namespace VIDEO
 
   bool CVideoInfoScanner::CanFastHash(const CFileItemList &items, const std::vector<std::string> &excludes) const
   {
-    if (!g_advancedSettings.m_bVideoLibraryUseFastHash || items.IsPlugin())
+    if (!g_advancedSettings.m_bVideoLibraryUseFastHash || items.IsType("plugin://"))
       return false;
 
     for (int i = 0; i < items.Size(); ++i)

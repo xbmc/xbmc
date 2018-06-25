@@ -37,7 +37,7 @@ IVideoInfoTagLoader* CVideoInfoTagLoaderFactory::CreateLoader(const CFileItem& i
   if (item.IsInternetStream())
     return nullptr;
 
-  if (item.IsPlugin() && info && info->ID() == "metadata.local")
+  if (item.IsType("plugin://") && info && info->ID() == "metadata.local")
   {
     // Direct loading from plugin source with metadata.local scraper
     CVideoTagLoaderPlugin* plugin = new CVideoTagLoaderPlugin(item, forceRefresh);

@@ -111,7 +111,7 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
       {
         std::unique_ptr<CVideoInfoTag> tag(new CVideoInfoTag());
         nfoResult = loader->Load(*tag, false);
-        if (nfoResult == CInfoScanner::FULL_NFO && m_item->IsPlugin() && scraper->ID() == "metadata.local")
+        if (nfoResult == CInfoScanner::FULL_NFO && m_item->IsType("plugin://") && scraper->ID() == "metadata.local")
         {
           // get video info and art from plugin source with metadata.local scraper
           if (scraper->Content() == CONTENT_TVSHOWS && !m_item->m_bIsFolder && tag->m_iIdShow < 0)

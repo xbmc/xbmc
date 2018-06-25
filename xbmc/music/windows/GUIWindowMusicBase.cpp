@@ -292,7 +292,7 @@ void CGUIWindowMusicBase::OnItemInfo(int iItem)
     return;
   }
 
-  if (!m_vecItems->IsPlugin() && (item->IsPlugin() || item->IsScript()))
+  if (!m_vecItems->IsType("plugin://") && (item->IsType("plugin://") || item->IsScript()))
   {
     CGUIDialogAddonInfo::ShowForItem(item);
     return;
@@ -479,7 +479,7 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
     { // just queue the internet stream, it will be expanded on play
       queuedItems.Add(pItem);
     }
-    else if (pItem->IsPlugin() && pItem->GetProperty("isplayable") == "true")
+    else if (pItem->IsType("plugin://") && pItem->GetProperty("isplayable") == "true")
     {
       // python files can be played
       queuedItems.Add(pItem);
@@ -563,7 +563,7 @@ void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &but
       }
       if (!m_vecItems->IsMusicDb() && !m_vecItems->IsInternetStream()           &&
           !item->IsPath("add") && !item->IsParentFolder() &&
-          !item->IsPlugin() && !item->IsMusicDb()         &&
+          !item->IsType("plugin://") && !item->IsMusicDb()         &&
           !item->IsLibraryFolder() &&
           !StringUtils::StartsWithNoCase(item->GetPath(), "addons://")              &&
           (profileManager.GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser))
@@ -753,7 +753,7 @@ void CGUIWindowMusicBase::PlayItem(int iItem)
 #endif
 
   // if its a folder, build a playlist
-  if (pItem->m_bIsFolder && !pItem->IsPlugin())
+  if (pItem->m_bIsFolder && !pItem->IsType("plugin://"))
   {
     // make a copy so that we can alter the queue state
     CFileItemPtr item(new CFileItem(*m_vecItems->Get(iItem)));

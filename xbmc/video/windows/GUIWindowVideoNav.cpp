@@ -568,7 +568,7 @@ void CGUIWindowVideoNav::LoadVideoInfo(CFileItemList &items, CVideoDatabase &dat
 {
   //! @todo this could possibly be threaded as per the music info loading,
   //!       we could also cache the info
-  if (!items.GetContent().empty() && !items.IsPlugin())
+  if (!items.GetContent().empty() && !items.IsType("plugin://"))
     return; // don't load for listings that have content set and weren't created from plugins
 
   std::string content = items.GetContent();
@@ -576,7 +576,7 @@ void CGUIWindowVideoNav::LoadVideoInfo(CFileItemList &items, CVideoDatabase &dat
   if (content.empty())
   {
     content = database.GetContentForPath(items.GetPath());
-    items.SetContent((content.empty() && !items.IsPlugin()) ? "files" : content);
+    items.SetContent((content.empty() && !items.IsType("plugin://")) ? "files" : content);
   }
 
   /*
@@ -715,7 +715,7 @@ void CGUIWindowVideoNav::UpdateButtons()
 
   SET_CONTROL_SELECTED(GetID(),CONTROL_BTNPARTYMODE, g_partyModeManager.IsEnabled());
 
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_UPDATE_LIBRARY, !m_vecItems->IsAddonsPath() && !m_vecItems->IsPlugin() && !m_vecItems->IsScript());
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_UPDATE_LIBRARY, !m_vecItems->IsAddonsPath() && !m_vecItems->IsType("plugin://") && !m_vecItems->IsScript());
 }
 
 bool CGUIWindowVideoNav::GetFilteredItems(const std::string &filter, CFileItemList &items)
@@ -1010,7 +1010,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
           buttons.Add(CONTEXT_BUTTON_RENAME, 118);
         }
         // add "Set/Change content" to folders
-        if (item->m_bIsFolder && !item->IsVideoDb() && !item->IsPlayList() && !item->IsSmartPlayList() && !item->IsLibraryFolder() && !item->IsLiveTV() && !item->IsPlugin() && !item->IsAddonsPath() && !URIUtils::IsUPnP(item->GetPath()))
+        if (item->m_bIsFolder && !item->IsVideoDb() && !item->IsPlayList() && !item->IsSmartPlayList() && !item->IsLibraryFolder() && !item->IsLiveTV() && !item->IsType("plugin://") && !item->IsAddonsPath() && !URIUtils::IsUPnP(item->GetPath()))
         {
           if (info && info->Content() != CONTENT_NONE)
             buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20442);
@@ -1037,7 +1037,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   if (CGUIDialogContextMenu::OnContextButton("video", item, button))
   {
     //! @todo should we search DB for entries from plugins?
-    if (button == CONTEXT_BUTTON_REMOVE_SOURCE && !item->IsPlugin()
+    if (button == CONTEXT_BUTTON_REMOVE_SOURCE && !item->IsType("plugin://")
         && !item->IsLiveTV() &&!item->IsRSS() && !URIUtils::IsUPnP(item->GetPath()))
     {
       // if the source has been properly removed, remove the cached source list because the list has changed

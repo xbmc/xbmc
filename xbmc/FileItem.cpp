@@ -759,7 +759,7 @@ bool CFileItem::Exists(bool bUseCache /* = true */) const
    || IsInternetStream()
    || IsParentFolder()
    || IsVirtualDirectoryRoot()
-   || IsPlugin()
+   || IsType("plugin://")
    || IsPVR())
     return true;
 
@@ -1111,11 +1111,6 @@ bool CFileItem::IsRSS() const
 bool CFileItem::IsStack() const
 {
   return URIUtils::IsStack(m_strPath);
-}
-
-bool CFileItem::IsPlugin() const
-{
-  return URIUtils::IsPlugin(m_strPath);
 }
 
 bool CFileItem::IsScript() const
@@ -2933,7 +2928,7 @@ std::string CFileItem::GetUserMusicThumb(bool alwaysCheckRemote /* = false */, b
    || IsInternetStream()
    || URIUtils::IsUPnP(m_strPath)
    || (URIUtils::IsFTP(m_strPath) && !g_advancedSettings.m_bFTPThumbs)
-   || IsPlugin()
+   || IsType("plugin://")
    || IsAddonsPath()
    || IsLibraryFolder()
    || IsParentFolder()
@@ -3025,7 +3020,7 @@ bool CFileItem::SkipLocalArt() const
        || IsInternetStream()
        || URIUtils::IsUPnP(m_strPath)
        || (URIUtils::IsFTP(m_strPath) && !g_advancedSettings.m_bFTPThumbs)
-       || IsPlugin()
+       || IsType("plugin://")
        || IsAddonsPath()
        || IsLibraryFolder()
        || IsParentFolder()
@@ -3124,7 +3119,7 @@ std::string CFileItem::GetFolderThumb(const std::string &folderJPG /* = "folder.
   if (IsMultiPath())
     strFolder = CMultiPathDirectory::GetFirstPath(m_strPath);
 
-  if (IsPlugin())
+  if (IsType("plugin://"))
     return "";
 
   return URIUtils::AddFileToFolder(strFolder, folderJPG);
@@ -3132,7 +3127,7 @@ std::string CFileItem::GetFolderThumb(const std::string &folderJPG /* = "folder.
 
 std::string CFileItem::GetMovieName(bool bUseFolderNames /* = false */) const
 {
-  if (IsPlugin() && HasVideoInfoTag() && !GetVideoInfoTag()->m_strTitle.empty())
+  if (IsType("plugin://") && HasVideoInfoTag() && !GetVideoInfoTag()->m_strTitle.empty())
     return GetVideoInfoTag()->m_strTitle;
 
   if (IsLabelPreformatted())
@@ -3221,7 +3216,7 @@ std::string CFileItem::GetLocalFanart() const
    || URIUtils::IsUPnP(strFile)
    || URIUtils::IsBluray(strFile)
    || IsLiveTV()
-   || IsPlugin()
+   || IsType("plugin://")
    || IsAddonsPath()
    || IsDVD()
    || (URIUtils::IsFTP(strFile) && !g_advancedSettings.m_bFTPThumbs)
@@ -3494,7 +3489,7 @@ std::string CFileItem::FindTrailer() const
    || URIUtils::IsUPnP(strFile)
    || URIUtils::IsBluray(strFile)
    || IsLiveTV()
-   || IsPlugin()
+   || IsType("plugin://")
    || IsDVD())
     return "";
 

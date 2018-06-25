@@ -188,7 +188,7 @@ void CGUIWindowPrograms::OnItemInfo(int iItem)
     return;
 
   CFileItemPtr item = m_vecItems->Get(iItem);
-  if (!m_vecItems->IsPlugin() && (item->IsPlugin() || item->IsScript()))
+  if (!m_vecItems->IsType("plugin://") && (item->IsType("plugin://") || item->IsScript()))
   {
     CGUIDialogAddonInfo::ShowForItem(item);
   }

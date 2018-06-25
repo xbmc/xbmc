@@ -297,7 +297,7 @@ bool CGUIWindowPictures::GetDirectory(const std::string &strDirectory, CFileItem
   if (items.GetLabel().empty() && m_rootDir.IsSource(items.GetPath(), CMediaSourceSettings::GetInstance().GetSources("pictures"), &label))
     items.SetLabel(label);
 
-  if (items.GetContent().empty() && !items.IsVirtualDirectoryRoot() && !items.IsPlugin())
+  if (items.GetContent().empty() && !items.IsVirtualDirectoryRoot() && !items.IsType("plugin://"))
     items.SetContent("images");
   return true;
 }
@@ -483,7 +483,7 @@ void CGUIWindowPictures::GetContextButtons(int itemNumber, CContextButtons &butt
         }
       }
 
-      if (!item->IsPlugin() && !item->IsScript() && !m_vecItems->IsPlugin())
+      if (!item->IsType("plugin://") && !item->IsScript() && !m_vecItems->IsType("plugin://"))
         buttons.Add(CONTEXT_BUTTON_SWITCH_MEDIA, 523);
     }
   }
@@ -586,7 +586,7 @@ void CGUIWindowPictures::OnItemInfo(int itemNumber)
   CFileItemPtr item = m_vecItems->Get(itemNumber);
   if (!item)
     return;
-  if (!m_vecItems->IsPlugin() && (item->IsPlugin() || item->IsScript()))
+  if (!m_vecItems->IsType("plugin://") && (item->IsType("plugin://") || item->IsScript()))
   {
     CGUIDialogAddonInfo::ShowForItem(item);
     return;

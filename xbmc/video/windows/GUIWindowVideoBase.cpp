@@ -541,7 +541,7 @@ void CGUIWindowVideoBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
     { // just queue the internet stream, it will be expanded on play
       queuedItems.Add(pItem);
     }
-    else if (pItem->IsPlugin() && pItem->GetProperty("isplayable") == "true")
+    else if (pItem->IsType("plugin://") && pItem->GetProperty("isplayable") == "true")
     { // a playable python files
       queuedItems.Add(pItem);
     }
@@ -701,11 +701,11 @@ bool CGUIWindowVideoBase::OnItemInfo(int iItem)
      (item->IsPlayList() && !URIUtils::HasExtension(item->GetDynPath(), ".strm")))
     return false;
 
-  if (!m_vecItems->IsPlugin() && (item->IsPlugin() || item->IsScript()))
+  if (!m_vecItems->IsType("plugin://") && (item->IsType("plugin://") || item->IsScript()))
     return CGUIDialogAddonInfo::ShowForItem(item);
 
   ADDON::ScraperPtr scraper;
-  if (!m_vecItems->IsPlugin() && !m_vecItems->IsRSS() && !m_vecItems->IsLiveTV())
+  if (!m_vecItems->IsType("plugin://") && !m_vecItems->IsRSS() && !m_vecItems->IsLiveTV())
   {
     std::string strDir;
     if (item->IsVideoDb()       &&
@@ -828,7 +828,7 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
       if (item->IsVideoDb() && item->HasVideoInfoTag())
         path = item->GetVideoInfoTag()->m_strFileNameAndPath;
 
-      if (!item->IsPath("add") && !item->IsPlugin() &&
+      if (!item->IsPath("add") && !item->IsType("plugin://") &&
           !item->IsScript() && !item->IsAddonsPath() && !item->IsLiveTV())
       {
         if (URIUtils::IsStack(path))
@@ -1203,7 +1203,7 @@ void CGUIWindowVideoBase::PlayItem(int iItem, const std::string &player)
 
   const CFileItemPtr pItem = m_vecItems->Get(iItem);
   // if its a folder, build a temp playlist
-  if (pItem->m_bIsFolder && !pItem->IsPlugin())
+  if (pItem->m_bIsFolder && !pItem->IsType("plugin://"))
   {
     // take a copy so we can alter the queue state
     CFileItemPtr item(new CFileItem(*m_vecItems->Get(iItem)));
@@ -1299,7 +1299,7 @@ bool CGUIWindowVideoBase::GetDirectory(const std::string &strDirectory, CFileIte
 bool CGUIWindowVideoBase::StackingAvailable(const CFileItemList &items)
 {
   CURL url(items.GetPath());
-  return !(items.IsPlugin() || items.IsAddonsPath()  ||
+  return !(items.IsType("plugin://") || items.IsAddonsPath()  ||
            items.IsRSS() || items.IsInternetStream() ||
            items.IsVideoDb() || url.IsProtocol("playlistvideo"));
 }
@@ -1542,7 +1542,7 @@ int CGUIWindowVideoBase::GetScraperForItem(CFileItem *item, ADDON::ScraperPtr &i
   if (!item)
     return 0;
 
-  if (m_vecItems->IsPlugin() || m_vecItems->IsRSS())
+  if (m_vecItems->IsType("plugin://") || m_vecItems->IsRSS())
   {
     info.reset();
     return 0;

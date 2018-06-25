@@ -178,7 +178,7 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
       pItem->SetArt("thumb", thumb);
       return;
     }
-    if (!pItem->IsPlugin())
+    if (!pItem->IsType("plugin://"))
     {
       // we load the directory, grab 4 random thumb files (if available) and then generate
       // the thumb.

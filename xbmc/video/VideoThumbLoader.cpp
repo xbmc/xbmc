@@ -136,7 +136,7 @@ bool CThumbExtractor::DoWork()
       }
     }
   }
-  else if (!m_item.IsPlugin() &&
+  else if (!m_item.IsType("plugin://") &&
            (!m_item.HasVideoInfoTag() ||
            !m_item.GetVideoInfoTag()->HasStreamDetails()))
   {

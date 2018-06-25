@@ -246,7 +246,7 @@ void CGUIDialogSongInfo::OnInitWindow()
   CONTROL_ENABLE_ON_CONDITION(CONTROL_ALBUMINFO, m_albumId > 0);
 
   // Disable music user rating button for plugins as they don't have tables to save this
-  if (m_song->IsPlugin())
+  if (m_song->IsType("plugin://"))
     CONTROL_DISABLE(CONTROL_USERRATING);
   else
     CONTROL_ENABLE(CONTROL_USERRATING);

@@ -117,7 +117,7 @@ bool CGUIWindowGames::OnClickMsg(int controlId, int actionId)
   }
   case ACTION_SHOW_INFO:
   {
-    if (!m_vecItems->IsPlugin())
+    if (!m_vecItems->IsType("plugin://"))
     {
       if (pItem->HasAddonInfo())
       {
@@ -270,7 +270,7 @@ bool CGUIWindowGames::GetDirectory(const std::string &strDirectory, CFileItemLis
   if (items.GetContent().empty())
   {
     if (!items.IsVirtualDirectoryRoot() && // Don't set content for root directory
-        !items.IsPlugin())                 // Don't set content for plugins
+        !items.IsType("plugin://"))        // Don't set content for plugins
     {
       content = "games";
     }
@@ -318,9 +318,9 @@ void CGUIWindowGames::OnItemInfo(int itemNumber)
   if (!item)
     return;
 
-  if (!m_vecItems->IsPlugin())
+  if (!m_vecItems->IsType("plugin://"))
   {
-    if (item->IsPlugin() || item->IsScript())
+    if (item->IsType("plugin://") || item->IsScript())
       CGUIDialogAddonInfo::ShowForItem(item);
   }
 

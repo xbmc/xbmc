@@ -490,7 +490,7 @@ bool CGUIWindowMusicNav::GetDirectory(const std::string &strDirectory, CFileItem
   else if (items.IsAddonsPath())
     items.SetContent("addons");
   else if (!items.IsSourcesPath() && !items.IsVirtualDirectoryRoot() &&
-           !items.IsLibraryFolder() && !items.IsPlugin() && !items.IsSmartPlayList())
+           !items.IsLibraryFolder() && !items.IsType("plugin://") && !items.IsSmartPlayList())
     items.SetContent("files");
 
   return bResult;
@@ -544,7 +544,7 @@ void CGUIWindowMusicNav::UpdateButtons()
 
   SET_CONTROL_SELECTED(GetID(),CONTROL_BTNPARTYMODE, g_partyModeManager.IsEnabled());
 
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_UPDATE_LIBRARY, !m_vecItems->IsAddonsPath() && !m_vecItems->IsPlugin() && !m_vecItems->IsScript());
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_UPDATE_LIBRARY, !m_vecItems->IsAddonsPath() && !m_vecItems->IsType("plugin://") && !m_vecItems->IsScript());
 }
 
 void CGUIWindowMusicNav::PlayItem(int iItem)
@@ -608,7 +608,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
 #endif
       if (!inPlaylists && !m_vecItems->IsInternetStream() &&
         !item->IsPath("add") && !item->IsParentFolder() &&
-        !item->IsPlugin() &&
+        !item->IsType("plugin://") &&
         !StringUtils::StartsWithNoCase(item->GetPath(), "addons://") &&
         (profileManager.GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser))
       {
@@ -625,7 +625,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
       if (!item->IsParentFolder() && !dir.IsAllItem(item->GetPath()))
       {
         if (item->m_bIsFolder && !item->IsVideoDb() &&
-          !item->IsPlugin() && !StringUtils::StartsWithNoCase(item->GetPath(), "musicsearch://"))
+          !item->IsType("plugin://") && !StringUtils::StartsWithNoCase(item->GetPath(), "musicsearch://"))
         {
           if (item->IsAlbum())
             // enable query all albums button only in album view
@@ -673,7 +673,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
         }
         if (item->HasVideoInfoTag() && !item->m_bIsFolder)
         {
-          if ((profileManager.GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser) && !item->IsPlugin())
+          if ((profileManager.GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser) && !item->IsType("plugin://"))
           {
             buttons.Add(CONTEXT_BUTTON_RENAME, 16105);
             buttons.Add(CONTEXT_BUTTON_DELETE, 646);

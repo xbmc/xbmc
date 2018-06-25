@@ -1102,7 +1102,7 @@ bool CGUIMediaWindow::OnClick(int iItem, const std::string &player)
 
     return true;
   }
-  else if (pItem->IsPlugin() && !pItem->GetProperty("isplayable").asBoolean())
+  else if (pItem->IsType("plugin://") && !pItem->GetProperty("isplayable").asBoolean())
   {
     bool resume = pItem->m_lStartOffset == STARTOFFSET_RESUME;
     return XFILE::CPluginDirectory::RunScriptWithParams(pItem->GetPath(), resume);
@@ -1135,7 +1135,7 @@ bool CGUIMediaWindow::OnClick(int iItem, const std::string &player)
 
     bool autoplay = m_guiState.get() && m_guiState->AutoPlayNextItem();
 
-    if (m_vecItems->IsPlugin())
+    if (m_vecItems->IsType("plugin://"))
     {
       CURL url(m_vecItems->GetPath());
       AddonPtr addon;
