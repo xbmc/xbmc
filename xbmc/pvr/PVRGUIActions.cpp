@@ -1399,7 +1399,7 @@ namespace PVR
 
     if (item)
     {
-      if (item->IsEPG())
+      if (item->HasEPGInfoTag())
       {
         if (item->GetEPGInfoTag()->HasChannel())
         {

@@ -895,7 +895,7 @@ bool CPVRManager::FillStreamFileItem(CFileItem &fileItem)
       return client->FillChannelStreamFileItem(fileItem) == PVR_ERROR_NO_ERROR;
     else if (fileItem.IsPVRRecording())
       return client->FillRecordingStreamFileItem(fileItem) == PVR_ERROR_NO_ERROR;
-    else if (fileItem.IsEPG())
+    else if (fileItem.HasEPGInfoTag())
       return client->FillEpgTagStreamFileItem(fileItem) == PVR_ERROR_NO_ERROR;
   }
   return false;

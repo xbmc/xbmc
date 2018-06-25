@@ -830,11 +830,6 @@ bool CFileItem::IsVideo() const
   return URIUtils::HasExtension(m_strPath, CServiceBroker::GetFileExtensionProvider().GetVideoExtensions());
 }
 
-bool CFileItem::IsEPG() const
-{
-  return HasEPGInfoTag();
-}
-
 bool CFileItem::IsPVRChannel() const
 {
   return HasPVRChannelInfoTag();
@@ -2960,7 +2955,7 @@ bool CFileItemList::AlwaysCache() const
     return CMusicDatabaseDirectory::CanCache(GetPath());
   if (IsVideoDb())
     return CVideoDatabaseDirectory::CanCache(GetPath());
-  if (IsEPG())
+  if (HasEPGInfoTag())
     return true; // always cache
   return false;
 }

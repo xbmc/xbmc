@@ -132,7 +132,7 @@ bool CEdl::ReadEditDecisionLists(const CFileItem& fileItem, const float fFrameRa
 
     bFound = ReadPvr(fileItem);
   }
-  else if (fileItem.IsEPG())
+  else if (fileItem.HasEPGInfoTag())
   {
     CLog::Log(LOGDEBUG, "%s - Checking for edit decision list (EDL) for EPG entry: %s",
       __FUNCTION__, strMovie.c_str());

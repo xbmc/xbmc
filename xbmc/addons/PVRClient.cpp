@@ -612,7 +612,7 @@ PVR_ERROR CPVRClient::CallMenuHook(const PVR_MENUHOOK &hook, const CFileItemPtr 
 
     if (item)
     {
-      if (item->IsEPG())
+      if (item->HasEPGInfoTag())
       {
         hookData.cat = PVR_MENUHOOK_EPG;
         hookData.data.iEpgUid = item->GetEPGInfoTag()->UniqueBroadcastID();
