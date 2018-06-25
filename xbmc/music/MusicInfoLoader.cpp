@@ -213,7 +213,7 @@ bool CMusicInfoLoader::LoadItemLookup(CFileItem* pItem)
         if (!it->second.strThumb.empty())
           pItem->SetArt("thumb", it->second.strThumb);
       }
-      else if (pItem->IsMusicDb())
+      else if (pItem->IsType("musicdb:///"))
       { // a music db item that doesn't have tag loaded - grab details from the database
         XFILE::MUSICDATABASEDIRECTORY::CQueryParams param;
         XFILE::MUSICDATABASEDIRECTORY::CDirectoryNode::GetDatabaseInfo(pItem->GetPath(),param);

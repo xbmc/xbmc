@@ -326,7 +326,7 @@ void CGUIWindowMusicPlayList::SavePlayList()
 
       //  Musicdatabase items should contain the real path instead of a musicdb url
       //  otherwise the user can't save and reuse the playlist when the musicdb gets deleted
-      if (pItem->IsMusicDb())
+      if (pItem->IsType("musicdb://"))
         pItem->SetPath(pItem->GetMusicInfoTag()->GetURL());
 
       playlist.Add(pItem);

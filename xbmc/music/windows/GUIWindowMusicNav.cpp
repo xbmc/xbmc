@@ -388,7 +388,7 @@ bool CGUIWindowMusicNav::OnClick(int iItem, const std::string &player /* = "" */
     }
     return true;
   }
-  if (item->IsMusicDb() && !item->m_bIsFolder)
+  if (item->IsType("musicdb://") && !item->m_bIsFolder)
     m_musicdatabase.SetPropertiesForFileItem(*item);
 
   return CGUIWindowMusicBase::OnClick(iItem, player);
@@ -447,7 +447,7 @@ bool CGUIWindowMusicNav::GetDirectory(const std::string &strDirectory, CFileItem
     else
       items.SetContent("");
   }
-  else if (StringUtils::StartsWithNoCase(strDirectory, "musicdb://") || items.IsMusicDb())
+  else if (StringUtils::StartsWithNoCase(strDirectory, "musicdb://") || items.IsType("musicdb://"))
   {
     CMusicDatabaseDirectory dir;
     NODE_TYPE node = dir.GetDirectoryChildType(items.GetPath());

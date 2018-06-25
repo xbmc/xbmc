@@ -198,7 +198,7 @@ void CSaveFileState::DoWork(CFileItem& item,
 
           // UPnP announce resume point changes to clients
           // however not if playcount is modified as that already announces
-          if (item.IsMusicDb())
+          if (item.IsType("musicdb://"))
           {
             CVariant data;
             data["id"] = item.GetMusicInfoTag()->GetDatabaseId();

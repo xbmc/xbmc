@@ -1019,7 +1019,7 @@ void CGUIDialogMusicInfo::ShowFor(CFileItem* pItem)
   }
 
   // We have a folder album/artist info dialog only shown for db items
-  if (pItem->IsMusicDb())
+  if (pItem->IsType("musicdb://"))
   {
     if (!pItem->HasMusicInfoTag() || pItem->GetMusicInfoTag()->GetDatabaseId() < 1)
     {

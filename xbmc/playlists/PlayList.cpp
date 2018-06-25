@@ -516,7 +516,7 @@ void CPlayList::UpdateItem(const CFileItem *item)
 
 const std::string& CPlayList::ResolveURL(const CFileItemPtr &item ) const
 {
-  if (item->IsMusicDb() && item->HasMusicInfoTag())
+  if (item->IsType("musicdb://") && item->HasMusicInfoTag())
     return item->GetMusicInfoTag()->GetURL();
   else
     return item->GetPath();

@@ -380,7 +380,7 @@ void CGUIDialogSongInfo::OnGetArt()
   if (type == "thumb")
   { // Local thumb type art held in <filename>.tbn (for non-library items)
     localThumb = m_song->GetUserMusicThumb(true);
-    if (m_song->IsMusicDb())
+    if (m_song->IsType("musicdb://"))
     {
       CFileItem item(m_song->GetMusicInfoTag()->GetURL(), false);
       localThumb = item.GetUserMusicThumb(true);
@@ -500,7 +500,7 @@ void CGUIDialogSongInfo::ShowFor(CFileItem* pItem)
 {
   if (pItem->m_bIsFolder)
     return;
-  if (!pItem->IsMusicDb())
+  if (!pItem->IsType("musicdb://"))
     pItem->LoadMusicTag();
   if (!pItem->HasMusicInfoTag())
     return;

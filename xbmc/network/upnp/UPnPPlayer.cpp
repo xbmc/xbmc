@@ -217,7 +217,7 @@ int CUPnPPlayer::PlayFile(const CFileItem& file, const CPlayerOptions& options, 
 
   if (file.IsVideoDb())
     thumb_loader = NPT_Reference<CThumbLoader>(new CVideoThumbLoader());
-  else if (item.IsMusicDb())
+  else if (item.IsType("musicdb://"))
     thumb_loader = NPT_Reference<CThumbLoader>(new CMusicThumbLoader());
 
   obj = BuildObject(item, path, false, thumb_loader, NULL, CUPnP::GetServer(), UPnPPlayer);
@@ -406,7 +406,7 @@ bool CUPnPPlayer::QueueNextFile(const CFileItem& file)
 
   if (file.IsVideoDb())
     thumb_loader = NPT_Reference<CThumbLoader>(new CVideoThumbLoader());
-  else if (item.IsMusicDb())
+  else if (item.IsType("musicdb://"))
     thumb_loader = NPT_Reference<CThumbLoader>(new CMusicThumbLoader());
 
 

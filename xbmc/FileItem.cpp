@@ -1163,11 +1163,6 @@ bool CFileItem::IsHD() const
   return URIUtils::IsHD(m_strPath);
 }
 
-bool CFileItem::IsMusicDb() const
-{
-  return URIUtils::IsMusicDb(m_strPath);
-}
-
 bool CFileItem::IsVideoDb() const
 {
   return URIUtils::IsVideoDb(m_strPath);
@@ -1449,7 +1444,7 @@ bool CFileItem::IsSamePath(const CFileItem *item) const
       return ((GetVideoInfoTag()->m_iDbId == item->GetVideoInfoTag()->m_iDbId) &&
         (GetVideoInfoTag()->m_type == item->GetVideoInfoTag()->m_type));
   }
-  if (IsMusicDb() && HasMusicInfoTag())
+  if (IsType("musicdb://") && HasMusicInfoTag())
   {
     CFileItem dbItem(m_musicInfoTag->GetURL(), false);
     if (HasProperty("item_start"))
@@ -1463,7 +1458,7 @@ bool CFileItem::IsSamePath(const CFileItem *item) const
       dbItem.SetProperty("item_start", GetProperty("item_start"));
     return dbItem.IsSamePath(item);
   }
-  if (item->IsMusicDb() && item->HasMusicInfoTag())
+  if (item->IsType("musicdb://") && item->HasMusicInfoTag())
   {
     CFileItem dbItem(item->m_musicInfoTag->GetURL(), false);
     if (item->HasProperty("item_start"))
@@ -2862,7 +2857,7 @@ std::string CFileItemList::GetDiscFileCache(int windowID) const
   if (IsCDDA() || IsOnDVD())
     return StringUtils::Format("special://temp/archive_cache/r-%08x.fi", crc);
 
-  if (IsMusicDb())
+  if (IsType("musicdb://"))
     return StringUtils::Format("special://temp/archive_cache/mdb-%08x.fi", crc);
 
   if (IsVideoDb())
@@ -2880,7 +2875,7 @@ std::string CFileItemList::GetDiscFileCache(int windowID) const
 bool CFileItemList::AlwaysCache() const
 {
   // some database folders are always cached
-  if (IsMusicDb())
+  if (IsType("musicdb://"))
     return CMusicDatabaseDirectory::CanCache(GetPath());
   if (IsVideoDb())
     return CVideoDatabaseDirectory::CanCache(GetPath());
@@ -2902,7 +2897,7 @@ std::string CFileItem::GetUserMusicThumb(bool alwaysCheckRemote /* = false */, b
    || IsType("addons://")
    || IsLibraryFolder()
    || IsParentFolder()
-   || IsMusicDb())
+   || IsType("musicdb://"))
     return "";
 
   // we first check for <filename>.tbn or <foldername>.tbn

@@ -598,7 +598,7 @@ CUPnPServer::OnBrowseMetadata(PLT_ActionReference&          action,
         if (item->IsVideoDb()) {
             thumb_loader = NPT_Reference<CThumbLoader>(new CVideoThumbLoader());
         }
-        else if (item->IsMusicDb()) {
+        else if (item->IsType("musicdb://")) {
             thumb_loader = NPT_Reference<CThumbLoader>(new CMusicThumbLoader());
         }
         if (!thumb_loader.IsNull()) {
@@ -1108,7 +1108,7 @@ CUPnPServer::OnUpdateObject(PLT_ActionReference&             action,
             updated.SetFromVideoInfoTag(tag);
         }
 
-    } else if (updated.IsMusicDb()) {
+    } else if (updated.IsType("musicdb://")) {
       //! @todo implement this
 
     } else {
@@ -1121,7 +1121,7 @@ CUPnPServer::OnUpdateObject(PLT_ActionReference&             action,
         updated.SetPath(path);
         if (updated.IsVideoDb())
              CUtil::DeleteVideoDatabaseDirectoryCache();
-        else if (updated.IsMusicDb())
+        else if (updated.IsType("musicdb://"))
              CUtil::DeleteMusicDatabaseDirectoryCache();
 
         CFileItemPtr msgItem(new CFileItem(updated));

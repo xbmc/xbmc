@@ -417,7 +417,7 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
   // fast lookup is needed here
   queuedItems.SetFastLookup(true);
 
-  if (pItem->IsMusicDb() && pItem->m_bIsFolder && !pItem->IsParentFolder())
+  if (pItem->IsType("musicdb://") && pItem->m_bIsFolder && !pItem->IsParentFolder())
   { // we have a music database folder, just grab the "all" item underneath it
     CMusicDatabaseDirectory dir;
     if (!dir.ContainsSongs(pItem->GetPath()))
@@ -503,7 +503,7 @@ void CGUIWindowMusicBase::UpdateButtons()
 
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTNSCAN,
                               !(m_vecItems->IsVirtualDirectoryRoot() ||
-                                m_vecItems->IsMusicDb()));
+                                m_vecItems->IsType("musicdb://")));
 
   if (g_application.IsMusicScanning())
     SET_CONTROL_LABEL(CONTROL_BTNSCAN, 14056); // Stop Scan
@@ -561,11 +561,11 @@ void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &but
         else if (item->IsPlayList() || m_vecItems->IsPlayList())
           buttons.Add(CONTEXT_BUTTON_EDIT, 586);
       }
-      if (!m_vecItems->IsMusicDb() && !m_vecItems->IsInternetStream()           &&
-          !item->IsPath("add") && !item->IsParentFolder() &&
-          !item->IsType("plugin://") && !item->IsMusicDb()         &&
-          !item->IsLibraryFolder() &&
-          !StringUtils::StartsWithNoCase(item->GetPath(), "addons://")              &&
+      if (!m_vecItems->IsType("musicdb://") && !m_vecItems->IsInternetStream() &&
+          !item->IsPath("add") && !item->IsParentFolder()                      &&
+          !item->IsType("plugin://") && !item->IsType("musicdb://")            &&
+          !item->IsLibraryFolder()                                             &&
+          !StringUtils::StartsWithNoCase(item->GetPath(), "addons://")         &&
           (profileManager.GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser))
       {
         buttons.Add(CONTEXT_BUTTON_SCAN, 13352);
@@ -865,7 +865,7 @@ bool CGUIWindowMusicBase::OnPlayMedia(int iItem, const std::string &player)
 /// \param items File items to fill
 void CGUIWindowMusicBase::OnRetrieveMusicInfo(CFileItemList& items)
 {
-  if (items.GetFolderCount()==items.Size() || items.IsMusicDb() ||
+  if (items.GetFolderCount()==items.Size() || items.IsType("musicdb://") ||
      (!CServiceBroker::GetSettings().GetBool(CSettings::SETTING_MUSICFILES_USETAGS) && !items.IsCDDA()))
   {
     return;
@@ -1002,7 +1002,7 @@ bool CGUIWindowMusicBase::GetDirectory(const std::string &strDirectory, CFileIte
 bool CGUIWindowMusicBase::CheckFilterAdvanced(CFileItemList &items) const
 {
   std::string content = items.GetContent();
-  if ((items.IsMusicDb() || CanContainFilter(m_strFilterPath)) &&
+  if ((items.IsType("musicdb://") || CanContainFilter(m_strFilterPath)) &&
       (StringUtils::EqualsNoCase(content, "artists") ||
        StringUtils::EqualsNoCase(content, "albums")  ||
        StringUtils::EqualsNoCase(content, "songs")))
@@ -1120,7 +1120,7 @@ void CGUIWindowMusicBase::OnPrepareFileItems(CFileItemList &items)
 {
   CGUIMediaWindow::OnPrepareFileItems(items);
 
-  if (!items.IsMusicDb() && !items.IsSmartPlayList())
+  if (!items.IsType("musicdb://") && !items.IsSmartPlayList())
     RetrieveMusicInfo();
 }
 

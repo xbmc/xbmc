@@ -150,7 +150,7 @@ GetMimeType(const CFileItem& item,
     if (mime.IsEmpty()) {
         if (item.IsVideo() || item.IsVideoDb() )
             mime = "video/" + ext;
-        else if (item.IsAudio() || item.IsMusicDb() )
+        else if (item.IsAudio() || item.IsType("musicdb://") )
             mime = "audio/" + ext;
         else if (item.IsPicture() )
             mime = "image/" + ext;
@@ -392,7 +392,7 @@ BuildObject(CFileItem&                    item,
         object->m_ObjectID = item.GetPath().c_str();
 
         /* Setup object type */
-        if (item.IsMusicDb() || item.IsAudio()) {
+        if (item.IsType("musicdb://") || item.IsAudio()) {
             object->m_ObjectClass.type = "object.item.audioItem.musicTrack";
 
             if (item.HasMusicInfoTag()) {
@@ -467,7 +467,7 @@ BuildObject(CFileItem&                    item,
         container->m_ChildrenCount = -1;
 
         /* this might be overkill, but hey */
-        if (item.IsMusicDb()) {
+        if (item.IsType("musicdb://")) {
             MUSICDATABASEDIRECTORY::NODE_TYPE node = CMusicDatabaseDirectory::GetDirectoryType(item.GetPath());
             switch(node) {
                 case MUSICDATABASEDIRECTORY::NODE_TYPE_ARTIST: {

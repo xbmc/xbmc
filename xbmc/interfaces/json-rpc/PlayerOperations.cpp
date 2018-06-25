@@ -230,7 +230,7 @@ JSONRPC_STATUS CPlayerOperations::GetItem(const std::string &method, ITransportL
       }
       else if (player == Audio)
       {
-        if (fileItem->IsMusicDb())
+        if (fileItem->IsType("musicdb://"))
         {
           CMusicDatabase musicdb;
           CFileItemList items;

@@ -46,7 +46,7 @@ IMusicInfoTagLoader* CMusicInfoTagLoaderFactory::CreateLoader(const CFileItem& i
   if (item.IsInternetStream())
     return NULL;
 
-  if (item.IsMusicDb())
+  if (item.IsType("musicdb://"))
     return new CMusicInfoTagLoaderDatabase();
 
   std::string strExtension = URIUtils::GetExtension(item.GetPath());
