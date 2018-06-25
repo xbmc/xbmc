@@ -189,7 +189,7 @@ std::string CVideoTagLoaderNFO::FindNFO(const CFileItem& item,
       int numNFO = -1;
       for (int i = 0; i < items.Size(); i++)
       {
-        if (items[i]->IsNFO())
+        if (items[i]->IsType(".nfo"))
         {
           if (numNFO == -1)
             numNFO = i;

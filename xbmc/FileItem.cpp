@@ -1051,11 +1051,6 @@ bool CFileItem::IsType(const char *ext) const
   return StringUtils::StartsWithNoCase(GetDynPath(), ext);
 }
 
-bool CFileItem::IsNFO() const
-{
-  return URIUtils::HasExtension(m_strPath, ".nfo");
-}
-
 bool CFileItem::IsDiscImage() const
 {
   return URIUtils::HasExtension(m_strPath, ".img|.iso|.nrg|.udf");
@@ -2688,7 +2683,7 @@ void CFileItemList::StackFiles()
     // skip folders, nfo files, playlists
     if (item1->m_bIsFolder
       || item1->IsParentFolder()
-      || item1->IsNFO()
+      || item1->IsType(".nfo")
       || item1->IsPlayList()
       )
     {
@@ -2728,7 +2723,7 @@ void CFileItemList::StackFiles()
           // skip folders, nfo files, playlists
           if (item2->m_bIsFolder
             || item2->IsParentFolder()
-            || item2->IsNFO()
+            || item2->IsType(".nfo")
             || item2->IsPlayList()
             )
           {

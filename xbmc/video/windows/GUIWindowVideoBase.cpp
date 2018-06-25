@@ -551,7 +551,7 @@ void CGUIWindowVideoBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
       CFileItemPtr item(new CFileItem(*pItem->GetVideoInfoTag()));
       queuedItems.Add(item);
     }
-    else if (!pItem->IsNFO() && pItem->IsVideo())
+    else if (!pItem->IsType(".nfo") && pItem->IsVideo())
     {
       queuedItems.Add(pItem);
     }
@@ -567,7 +567,7 @@ void CGUIWindowVideoBase::GetResumeItemOffset(const CFileItem *item, int64_t& st
   startoffset = 0;
   partNumber = 0;
 
-  if (!item->IsNFO() && !item->IsPlayList())
+  if (!item->IsType(".nfo") && !item->IsPlayList())
   {
     if (item->GetCurrentResumeTimeAndPartNumber(startoffset, partNumber))
     {

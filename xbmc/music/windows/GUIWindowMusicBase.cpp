@@ -484,7 +484,7 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
       // python files can be played
       queuedItems.Add(pItem);
     }
-    else if (!pItem->IsNFO() && (pItem->IsAudio() || pItem->IsVideo()))
+    else if (!pItem->IsType(".nfo") && (pItem->IsAudio() || pItem->IsVideo()))
     {
       CFileItemPtr itemCheck = queuedItems.Get(pItem->GetPath());
       if (!itemCheck || itemCheck->m_lStartOffset != pItem->m_lStartOffset)

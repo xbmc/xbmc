@@ -621,7 +621,7 @@ namespace VIDEO
                                           CScraperUrl* pURL,
                                           CGUIDialogProgress* pDlgProgress)
   {
-    if (pItem->m_bIsFolder || !pItem->IsVideo() || pItem->IsNFO() ||
+    if (pItem->m_bIsFolder || !pItem->IsVideo() || pItem->IsType(".nfo") ||
        (pItem->IsPlayList() && !URIUtils::HasExtension(pItem->GetPath(), ".strm")))
       return INFO_NOT_NEEDED;
 
@@ -700,7 +700,7 @@ namespace VIDEO
                                                CScraperUrl* pURL,
                                                CGUIDialogProgress* pDlgProgress)
   {
-    if (pItem->m_bIsFolder || !pItem->IsVideo() || pItem->IsNFO() ||
+    if (pItem->m_bIsFolder || !pItem->IsVideo() || pItem->IsType(".nfo") ||
        (pItem->IsPlayList() && !URIUtils::HasExtension(pItem->GetPath(), ".strm")))
       return INFO_NOT_NEEDED;
 
@@ -1829,7 +1829,7 @@ namespace VIDEO
         FILETIME time = pItem->m_dateTime;
         digest.Update(&time, sizeof(FILETIME));
       }
-      if (pItem->IsVideo() && !pItem->IsPlayList() && !pItem->IsNFO())
+      if (pItem->IsVideo() && !pItem->IsPlayList() && !pItem->IsType(".nfo"))
         count++;
     }
     hash = digest.Finalize();
