@@ -336,7 +336,7 @@ void CGUIDialogSubtitles::Search(const std::string &search/*=""*/)
     url.SetOption("languages", setting->ToString());
 
   // Check for stacking
-  if (g_application.CurrentFileItem().IsStack())
+  if (g_application.CurrentFileItem().IsType("stack://"))
     url.SetOption("stack", "1");
 
   std::string preferredLanguage = CServiceBroker::GetSettings().GetString(CSettings::SETTING_LOCALE_SUBTITLELANGUAGE);
@@ -478,7 +478,7 @@ void CGUIDialogSubtitles::OnDownloadComplete(const CFileItemList *items, const s
       strCurrentFilePath = URIUtils::GetDirectory(strCurrentFile);
 
     // Handle stacks
-    if (g_application.CurrentFileItem().IsStack() && items->Size() > 1)
+    if (g_application.CurrentFileItem().IsType("stack://") && items->Size() > 1)
     {
       CStackDirectory::GetPaths(g_application.CurrentFileItem().GetPath(), vecFiles);
       // Make sure (stack) size is the same as the size of the items handed to us, else fallback to single item

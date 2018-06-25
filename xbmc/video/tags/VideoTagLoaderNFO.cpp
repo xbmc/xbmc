@@ -116,7 +116,7 @@ std::string CVideoTagLoaderNFO::FindNFO(const CFileItem& item,
     // grab the folder path
     std::string strPath = URIUtils::GetDirectory(item.GetPath());
 
-    if (movieFolder && !item.IsStack())
+    if (movieFolder && !item.IsType("stack://"))
     { // looking up by folder name - movie.nfo takes priority - but not for stacked items (handled below)
       nfoFile = URIUtils::AddFileToFolder(strPath, "movie.nfo");
       if (CFile::Exists(nfoFile))
@@ -124,7 +124,7 @@ std::string CVideoTagLoaderNFO::FindNFO(const CFileItem& item,
     }
 
     // try looking for .nfo file for a stacked item
-    if (item.IsStack())
+    if (item.IsType("stack://"))
     {
       // first try .nfo file matching first file in stack
       CStackDirectory dir;

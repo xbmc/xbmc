@@ -396,7 +396,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const std::string& strDrive, int& nAdde
       if (!pItem->m_bIsFolder && pItem->IsVideo())
       {
         bPlaying = true;
-        if (pItem->IsStack())
+        if (pItem->IsType("stack://"))
         {
           //! @todo remove this once the app/player is capable of handling stacks immediately
           CStackDirectory dir;

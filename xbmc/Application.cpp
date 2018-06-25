@@ -3077,7 +3077,7 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
   // if we have a stacked set of files, we need to setup our stack routines for
   // "seamless" seeking and total time of the movie etc.
   // will recall with restart set to true
-  if (item.IsStack())
+  if (item.IsType("stack://"))
     return PlayStack(item, bRestart);
 
   CPlayerOptions options;

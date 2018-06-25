@@ -219,7 +219,6 @@ public:
   bool IsRemote() const;
   bool IsSmb() const;
   bool IsURL() const;
-  bool IsStack() const;
   bool IsMultiPath() const;
   bool IsUsablePVRRecording() const;
   bool IsDeletedPVRRecording() const;

@@ -75,7 +75,7 @@ void CApplicationStackHelper::OnPlayBackStarted(const CFileItem& item)
 
 bool CApplicationStackHelper::InitializeStack(const CFileItem & item)
 {
-  if (!item.IsStack())
+  if (!item.IsType("stack://"))
     return false;
 
   CFileItemPtr stack(new CFileItem(item));

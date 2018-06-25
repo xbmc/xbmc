@@ -392,7 +392,7 @@ void CExternalPlayer::Process()
   g_application.ResetScreenSaver();
   g_application.WakeUpScreenSaverAndDPMS();
 
-  if (!ret || (m_playOneStackItem && g_application.CurrentFileItem().IsStack()))
+  if (!ret || (m_playOneStackItem && g_application.CurrentFileItem().IsType("stack://")))
     m_callback.OnPlayBackStopped();
   else
     m_callback.OnPlayBackEnded();

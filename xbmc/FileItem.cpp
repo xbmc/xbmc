@@ -1093,11 +1093,6 @@ bool CFileItem::IsRSS() const
       || m_mimetype == "application/rss+xml";
 }
 
-bool CFileItem::IsStack() const
-{
-  return URIUtils::IsStack(m_strPath);
-}
-
 bool CFileItem::IsScript() const
 {
   return URIUtils::IsScript(m_strPath);
@@ -2932,7 +2927,7 @@ std::string CFileItem::GetTBNFile() const
   std::string thumbFile;
   std::string strFile = m_strPath;
 
-  if (IsStack())
+  if (IsType("stack://"))
   {
     std::string strPath, strReturn;
     URIUtils::GetParentPath(m_strPath,strPath);
@@ -3017,7 +3012,7 @@ std::string CFileItem::GetLocalArt(const std::string &artFile, bool useFolder) c
     return "";
 
   std::string strFile = m_strPath;
-  if (IsStack())
+  if (IsType("stack://"))
   {
 /*    CFileItem item(CStackDirectory::GetFirstStackedFile(strFile),false);
     std::string localArt = item.GetLocalArt(artFile);
@@ -3069,7 +3064,7 @@ std::string CFileItem::GetFolderThumb(const std::string &folderJPG /* = "folder.
 {
   std::string strFolder = m_strPath;
 
-  if (IsStack() ||
+  if (IsType("stack://") ||
       URIUtils::IsInRAR(strFolder) ||
       URIUtils::IsInZIP(strFolder))
   {
@@ -3151,7 +3146,7 @@ std::string CFileItem::GetLocalFanart() const
 
   std::string strFile2;
   std::string strFile = m_strPath;
-  if (IsStack())
+  if (IsType("stack://"))
   {
     std::string strPath;
     URIUtils::GetParentPath(m_strPath,strPath);
@@ -3424,7 +3419,7 @@ std::string CFileItem::FindTrailer() const
 {
   std::string strFile2;
   std::string strFile = m_strPath;
-  if (IsStack())
+  if (IsType("stack://"))
   {
     std::string strPath;
     URIUtils::GetParentPath(m_strPath,strPath);

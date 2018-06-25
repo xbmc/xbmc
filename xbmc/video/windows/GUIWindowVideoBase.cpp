@@ -1147,7 +1147,7 @@ void CGUIWindowVideoBase::OnDeleteItem(int iItem)
 void CGUIWindowVideoBase::OnDeleteItem(CFileItemPtr item)
 {
   // HACK: stacked files need to be treated as folders in order to be deleted
-  if (item->IsStack())
+  if (item->IsType("stack://"))
     item->m_bIsFolder = true;
 
   const CProfilesManager &profileManager = CServiceBroker::GetProfileManager();
@@ -1290,7 +1290,7 @@ bool CGUIWindowVideoBase::GetDirectory(const std::string &strDirectory, CFileIte
   if (info && info->Content() == CONTENT_TVSHOWS)
     m_stackingAvailable = false;
 
-  if (m_stackingAvailable && !items.IsStack() && CServiceBroker::GetSettings().GetBool(CSettings::SETTING_MYVIDEOS_STACKVIDEOS))
+  if (m_stackingAvailable && !items.IsType("stack://") && CServiceBroker::GetSettings().GetBool(CSettings::SETTING_MYVIDEOS_STACKVIDEOS))
     items.Stack();
 
   return bResult;

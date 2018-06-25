@@ -67,7 +67,7 @@ CThumbExtractor::CThumbExtractor(const CFileItem& item,
   if (item.IsType("videodb://") && item.HasVideoInfoTag())
     m_item.SetPath(item.GetVideoInfoTag()->m_strFileNameAndPath);
 
-  if (m_item.IsStack())
+  if (m_item.IsType("stack://"))
     m_item.SetPath(CStackDirectory::GetFirstStackedFile(m_item.GetPath()));
 }
 
