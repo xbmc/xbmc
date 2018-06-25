@@ -22,6 +22,8 @@
 
 #include "threads/Thread.h"
 
+#include <string>
+
 namespace KODI
 {
 namespace JOYSTICK
@@ -32,11 +34,14 @@ namespace JOYSTICK
     CGUIDialogNewJoystick();
     virtual ~CGUIDialogNewJoystick() = default;
 
-    void ShowAsync();
+    void ShowAsync(const std::string& deviceName);
 
   protected:
     // implementation of CThread
     virtual void Process() override;
+
+  private:
+    std::string m_strDeviceName;
   };
 }
 }

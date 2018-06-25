@@ -117,7 +117,7 @@ bool CInputHandling::OnDigitalMotion(const CDriverPrimitive& source, bool bPress
     if (m_buttonMap->IsEmpty())
     {
       CLog::Log(LOGDEBUG, "Empty button map detected for %s", m_buttonMap->ControllerID().c_str());
-      m_dialog->ShowAsync();
+      m_dialog->ShowAsync(m_buttonMap->DeviceName());
     }
   }
 

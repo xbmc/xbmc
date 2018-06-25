@@ -22,9 +22,11 @@
 #include "ServiceBroker.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "settings/Settings.h"
+#include "utils/StringUtils.h"
 
 using namespace KODI;
 using namespace JOYSTICK;
@@ -34,7 +36,7 @@ CGUIDialogNewJoystick::CGUIDialogNewJoystick() :
 {
 }
 
-void CGUIDialogNewJoystick::ShowAsync()
+void CGUIDialogNewJoystick::ShowAsync(const std::string& deviceName)
 {
   bool bShow = true;
 
@@ -46,16 +48,20 @@ void CGUIDialogNewJoystick::ShowAsync()
     bShow = false;
 
   if (bShow)
+  {
+    m_strDeviceName = deviceName;
     Create();
+  }
 }
 
 void CGUIDialogNewJoystick::Process()
 {
   using namespace MESSAGING::HELPERS;
 
-  // "New controller detected"
-  // "A new controller has been detected. Configuration can be done at any time in "Settings -> System Settings -> Input". Would you like to configure it now?"
-  if (ShowYesNoDialogText(CVariant{ 35011 }, CVariant{ 35012 }) == DialogResponse::YES)
+  // "Unknown controller detected"
+  // "Would you like to setup \"%s\"?"
+  std::string dialogText = StringUtils::Format(g_localizeStrings.Get(35012).c_str(), m_strDeviceName.c_str());
+  if (ShowYesNoDialogText(CVariant{ 35011 }, CVariant{ std::move(dialogText) }) == DialogResponse::YES)
   {
     CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_DIALOG_GAME_CONTROLLERS);
   }

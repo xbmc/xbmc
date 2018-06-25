@@ -16754,13 +16754,13 @@ msgstr ""
 #. Title of dialog to ask users if they would like to configure a new controller
 #: xbmc/input/joysticks/dialogs/GUIDialogNewJoystick.cpp
 msgctxt "#35011"
-msgid "New controller detected"
+msgid "Unknown controller detected"
 msgstr ""
 
-#. Text of dialog to ask users if they would like to configure a new controller
+#. Text of dialog for new controllers. %s - controller name
 #: xbmc/input/joysticks/dialogs/GUIDialogNewJoystick.cpp
 msgctxt "#35012"
-msgid "A new controller has been detected. Configuration can be done at any time in \"Settings -> System Settings -> Input\". Would you like to configure it now?"
+msgid "Would you like to setup \"%s\"?"
 msgstr ""
 
 #empty string with id 35013
