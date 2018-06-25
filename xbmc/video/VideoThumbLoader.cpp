@@ -90,7 +90,7 @@ bool CThumbExtractor::DoWork()
   if (m_item.IsLiveTV()
   // Due to a pvr addon api design flaw (no support for multiple concurrent streams
   // per addon instance), pvr recording thumbnail extraction does not work (reliably).
-  ||  m_item.IsPVRRecording()
+  ||  m_item.HasPVRRecordingInfoTag()
   ||  URIUtils::IsUPnP(m_item.GetPath())
   ||  URIUtils::IsBluray(m_item.GetPath())
   ||  m_item.IsBDFile()

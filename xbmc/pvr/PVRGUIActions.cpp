@@ -221,7 +221,7 @@ namespace PVR
 
   bool CPVRGUIActions::ShowRecordingInfo(const CFileItemPtr &item) const
   {
-    if (!item->IsPVRRecording())
+    if (!item->HasPVRRecordingInfoTag())
     {
       CLog::Log(LOGERROR, "CPVRGUIActions - %s - no recording!", __FUNCTION__);
       return false;
@@ -947,7 +947,7 @@ namespace PVR
 
   bool CPVRGUIActions::DeleteRecording(const CFileItemPtr &item) const
   {
-    if ((!item->IsPVRRecording() && !item->m_bIsFolder) || item->IsParentFolder())
+    if ((!item->HasPVRRecordingInfoTag() && !item->m_bIsFolder) || item->IsParentFolder())
       return false;
 
     if (!ConfirmDeleteRecording(item))

@@ -37,7 +37,7 @@ bool CVideoInfo::IsVisible(const CFileItem& item) const
   if (!item.HasVideoInfoTag())
     return false;
 
-  if (item.IsPVRRecording())
+  if (item.HasPVRRecordingInfoTag())
     return false; // pvr recordings have its own implementation for this
 
   return item.GetVideoInfoTag()->m_type == m_mediaType;

@@ -1165,7 +1165,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerBool(const CFileItem *item, const CGUIInfo
           bValue = timer->IsRecording();
         return true;
       }
-      else if (item->IsPVRRecording())
+      else if (item->HasPVRRecordingInfoTag())
       {
         bValue = item->GetPVRRecordingInfoTag()->IsInProgress();
         return true;
@@ -1274,7 +1274,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerBool(const CFileItem *item, const CGUIInfo
       }
       break;
     case VIDEOPLAYER_CAN_RESUME_LIVE_TV:
-      if (item->IsPVRRecording())
+      if (item->HasPVRRecordingInfoTag())
       {
         const CPVRRecordingPtr recording = item->GetPVRRecordingInfoTag();
         const CPVREpgInfoTagPtr epgTag = CServiceBroker::GetPVRManager().EpgContainer().GetTagById(recording->Channel(), recording->BroadcastUid());

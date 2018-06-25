@@ -804,7 +804,7 @@ bool CFileItem::IsVideo() const
     return false;
 
   // only tv recordings are videos...
-  if (IsPVRRecording())
+  if (HasPVRRecordingInfoTag())
     return !GetPVRRecordingInfoTag()->IsRadio();
 
   // ... all other PVR items are not.
@@ -828,11 +828,6 @@ bool CFileItem::IsVideo() const
   // file before assuming it is video.
 
   return URIUtils::HasExtension(m_strPath, CServiceBroker::GetFileExtensionProvider().GetVideoExtensions());
-}
-
-bool CFileItem::IsPVRRecording() const
-{
-  return HasPVRRecordingInfoTag();
 }
 
 bool CFileItem::IsUsablePVRRecording() const
@@ -3061,7 +3056,7 @@ bool CFileItem::SkipLocalArt() const
        || IsLibraryFolder()
        || IsParentFolder()
        || IsLiveTV()
-       || IsPVRRecording()
+       || HasPVRRecordingInfoTag()
        || IsDVD());
 }
 
