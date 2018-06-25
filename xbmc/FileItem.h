@@ -209,7 +209,6 @@ public:
   bool IsBDFile() const;
   bool IsRAR() const;
   bool IsZIP() const;
-  bool IsCDDA() const;
   bool IsDVD() const;
   bool IsOnDVD() const;
   bool IsOnLAN() const;

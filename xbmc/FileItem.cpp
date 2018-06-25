@@ -874,7 +874,7 @@ bool CFileItem::IsAudio() const
   if (HasGameInfoTag())
     return false;
 
-  if (IsCDDA())
+  if (IsType("cdda://"))
     return true;
 
   if(StringUtils::StartsWithNoCase(m_mimetype, "application/"))
@@ -1103,11 +1103,6 @@ bool CFileItem::IsMultiPath() const
   return URIUtils::IsMultiPath(m_strPath);
 }
 
-bool CFileItem::IsCDDA() const
-{
-  return URIUtils::IsCDDA(m_strPath);
-}
-
 bool CFileItem::IsDVD() const
 {
   return URIUtils::IsDVD(m_strPath) || m_iDriveType == CMediaSource::SOURCE_TYPE_DVD;
@@ -1160,7 +1155,7 @@ bool CFileItem::IsVirtualDirectoryRoot() const
 
 bool CFileItem::IsRemovable() const
 {
-  return IsOnDVD() || IsCDDA() || m_iDriveType == CMediaSource::SOURCE_TYPE_REMOVABLE;
+  return IsOnDVD() || IsType("cdda://") || m_iDriveType == CMediaSource::SOURCE_TYPE_REMOVABLE;
 }
 
 bool CFileItem::IsReadOnly() const
@@ -2839,7 +2834,7 @@ std::string CFileItemList::GetDiscFileCache(int windowID) const
   uint32_t crc = Crc32::ComputeFromLowerCase(strPath);
 
   std::string cacheFile;
-  if (IsCDDA() || IsOnDVD())
+  if (IsType("cdda://") || IsOnDVD())
     return StringUtils::Format("special://temp/archive_cache/r-%08x.fi", crc);
 
   if (IsType("musicdb://"))
@@ -3257,7 +3252,7 @@ bool CFileItem::LoadMusicTag()
       return true;
   }
   // no tag - try some other things
-  if (IsCDDA())
+  if (IsType("cdda://"))
   {
     // we have the tracknumber...
     int iTrack = GetMusicInfoTag()->GetTrackNumber();

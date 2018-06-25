@@ -593,7 +593,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
       CGUIDialogContextMenu::GetContextButtons("music", item, buttons);
 #ifdef HAS_DVD_DRIVE
       // enable Rip CD an audio disc
-      if (g_mediaManager.IsDiscInDrive() && item->IsCDDA())
+      if (g_mediaManager.IsDiscInDrive() && item->IsType("cdda://"))
       {
         // those cds can also include Audio Tracks: CDExtra and MixedMode!
         MEDIA_DETECT::CCdInfo *pCdInfo = g_mediaManager.GetCdInfo();

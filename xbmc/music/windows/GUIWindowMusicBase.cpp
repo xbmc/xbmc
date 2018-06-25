@@ -572,7 +572,7 @@ void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &but
       }
 #ifdef HAS_DVD_DRIVE
       // enable Rip CD Audio or Track button if we have an audio disc
-      if (g_mediaManager.IsDiscInDrive() && m_vecItems->IsCDDA())
+      if (g_mediaManager.IsDiscInDrive() && m_vecItems->IsType("cdda://"))
       {
         // those cds can also include Audio Tracks: CDExtra and MixedMode!
         MEDIA_DETECT::CCdInfo *pCdInfo = g_mediaManager.GetCdInfo();
@@ -583,7 +583,7 @@ void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &but
     }
 
     // enable CDDB lookup if the current dir is CDDA
-    if (g_mediaManager.IsDiscInDrive() && m_vecItems->IsCDDA() &&
+    if (g_mediaManager.IsDiscInDrive() && m_vecItems->IsType("cdda://") &&
        (profileManager.GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser))
     {
       buttons.Add(CONTEXT_BUTTON_CDDB, 16002);
@@ -710,7 +710,7 @@ void CGUIWindowMusicBase::OnRipCD()
 {
   if(g_mediaManager.IsAudio())
   {
-    if (!g_application.CurrentFileItem().IsCDDA())
+    if (!g_application.CurrentFileItem().IsType("cdda://"))
     {
 #ifdef HAS_CDDA_RIPPER
       CCDDARipper::GetInstance().RipCD();
@@ -725,7 +725,7 @@ void CGUIWindowMusicBase::OnRipTrack(int iItem)
 {
   if(g_mediaManager.IsAudio())
   {
-    if (!g_application.CurrentFileItem().IsCDDA())
+    if (!g_application.CurrentFileItem().IsType("cdda://"))
     {
 #ifdef HAS_CDDA_RIPPER
       CFileItemPtr item = m_vecItems->Get(iItem);
@@ -866,7 +866,7 @@ bool CGUIWindowMusicBase::OnPlayMedia(int iItem, const std::string &player)
 void CGUIWindowMusicBase::OnRetrieveMusicInfo(CFileItemList& items)
 {
   if (items.GetFolderCount()==items.Size() || items.IsType("musicdb://") ||
-     (!CServiceBroker::GetSettings().GetBool(CSettings::SETTING_MUSICFILES_USETAGS) && !items.IsCDDA()))
+     (!CServiceBroker::GetSettings().GetBool(CSettings::SETTING_MUSICFILES_USETAGS) && !items.IsType("cdda://")))
   {
     return;
   }

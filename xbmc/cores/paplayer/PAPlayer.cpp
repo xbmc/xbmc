@@ -279,7 +279,7 @@ bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 void PAPlayer::UpdateCrossfadeTime(const CFileItem& file)
 {
   // we explicitly disable crossfading for audio cds
-  if (file.IsCDDA())
+  if (file.IsType("cdda://"))
    m_upcomingCrossfadeMS = 0;
   else
     m_upcomingCrossfadeMS = m_defaultCrossfadeMS = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_MUSICPLAYER_CROSSFADE) * 1000;
@@ -396,7 +396,7 @@ bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn)
 
   si->m_prepareNextAtFrame = 0;
   // cd drives don't really like it to be crossfaded or prepared
-  if(!file.IsCDDA())
+  if(!file.IsType("cdda://"))
   {
     if (streamTotalTime >= TIME_TO_CACHE_NEXT_FILE + m_defaultCrossfadeMS)
       si->m_prepareNextAtFrame = (int)((streamTotalTime - TIME_TO_CACHE_NEXT_FILE - m_defaultCrossfadeMS) * si->m_audioFormat.m_sampleRate / 1000.0f);

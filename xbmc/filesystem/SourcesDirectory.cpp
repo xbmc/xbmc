@@ -88,7 +88,7 @@ bool CSourcesDirectory::GetDirectory(const VECSOURCES &sources, CFileItemList &i
       strIcon = "DefaultDVDRom.png";
     else if (pItem->IsDVD())
       strIcon = "DefaultDVDFull.png";
-    else if (pItem->IsCDDA())
+    else if (pItem->IsType("cdda://"))
       strIcon = "DefaultCDDA.png";
     else if (pItem->IsRemovable() && CServiceBroker::GetGUI()->GetTextureManager().HasTexture("DefaultRemovableDisk.png"))
       strIcon = "DefaultRemovableDisk.png";

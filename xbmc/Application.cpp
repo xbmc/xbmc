@@ -3275,7 +3275,7 @@ void CApplication::PlaybackCleanup()
   }
 
   // DVD ejected while playing in vis ?
-  if (!m_appPlayer.IsPlayingAudio() && (m_itemCurrentFile->IsCDDA() || m_itemCurrentFile->IsOnDVD()) && !g_mediaManager.IsDiscInDrive() && CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_VISUALISATION)
+  if (!m_appPlayer.IsPlayingAudio() && (m_itemCurrentFile->IsType("cdda://") || m_itemCurrentFile->IsOnDVD()) && !g_mediaManager.IsDiscInDrive() && CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_VISUALISATION)
   {
     // yes, disable vis
     m_ServiceManager->GetSettings().Save();    // save vis settings

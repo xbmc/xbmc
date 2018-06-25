@@ -362,7 +362,7 @@ int CPlayList::RemoveDVDItems()
   while (it != m_vecItems.end() )
   {
     CFileItemPtr item = *it;
-    if ( item->IsCDDA() || item->IsOnDVD() )
+    if ( item->IsType("cdda://") || item->IsOnDVD() )
     {
       vecFilenames.push_back( item->GetPath() );
     }

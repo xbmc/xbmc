@@ -149,7 +149,7 @@ bool CResume::Execute(const CFileItemPtr& itemIn) const
 {
   CFileItem item(itemIn->GetItemToPlay());
 #ifdef HAS_DVD_DRIVE
-  if (item.IsDVD() || item.IsCDDA())
+  if (item.IsDVD() || item.IsType("cdda://"))
     return MEDIA_DETECT::CAutorun::PlayDisc(item.GetPath(), true, false);
 #endif
 
@@ -177,14 +177,14 @@ bool CPlay::IsVisible(const CFileItem& itemIn) const
   if (item.m_bIsFolder)
     return false; //! @todo implement
 
-  return item.IsVideo() || item.IsLiveTV() || item.IsDVD() || item.IsCDDA();
+  return item.IsVideo() || item.IsLiveTV() || item.IsDVD() || item.IsType("cdda://");
 }
 
 bool CPlay::Execute(const CFileItemPtr& itemIn) const
 {
   CFileItem item(itemIn->GetItemToPlay());
 #ifdef HAS_DVD_DRIVE
-  if (item.IsDVD() || item.IsCDDA())
+  if (item.IsDVD() || item.IsType("cdda://"))
     return MEDIA_DETECT::CAutorun::PlayDisc(item.GetPath(), true, true);
 #endif
   SetPathAndPlay(item);
