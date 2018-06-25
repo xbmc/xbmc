@@ -59,10 +59,10 @@ class ILogger
 
 \subsection code_guidelines_1_3 Headers
 
-Included header files should be sorted alphabetically to prevent duplicates and
+Included header files have to be sorted alphabetically to prevent duplicates and
 allow better overview, with an empty line clearly separating sections.
 
-Header order should be:
+Header order has to be:
 
 - Own header file
 - Other Kodi includes
@@ -100,7 +100,7 @@ Header order should be:
 Place directories before files. If the headers aren't sorted, either do your best
 to match the existing order, or precede your commit with an alphabetization commit.
 
-If possible, you should avoid including headers in another header. Instead, you can
+If possible, avoid including headers in another header. Instead, you can
 forward-declare the class and use a `std::unique_ptr`:
 
 ~~~~~~~~~~~~~
@@ -116,7 +116,7 @@ class Example
 ================================================================================
 \section code_guidelines_2 Braces
 
-Braces should go to newline and your code should look like the following example:
+Braces have to go to a new line.
 
 ~~~~~~~~~~~~~
 if (int i = 0; i < t; i++)
@@ -137,41 +137,41 @@ class Dummy()
 ================================================================================
 \section code_guidelines_3 Whitespaces
 
-Conventional operators should be surrounded by a whitespace.
+Conventional operators have to be surrounded by a whitespace.
 
 ~~~~~~~~~~~~~
 a = (b + c) * d;
 ~~~~~~~~~~~~~
 
-Reserved words should be separated from opening parentheses by a whitespace.
+Reserved words have to be separated from opening parentheses by a whitespace.
 
 ~~~~~~~~~~~~~
 while (true)
 for (int i = 0; i < x; ++i)
 ~~~~~~~~~~~~~
 
-Commas should be followed by a whitespace.
+Commas have to be followed by a whitespace.
 
 ~~~~~~~~~~~~~
 void Dummy::Method(int a, int b, int c);
 int d, e;
 ~~~~~~~~~~~~~
 
-Semicolons should be followed by a whitespace if there is more than one
-expression per line.
+Semicolons have to be followed by a newline.
 
 ~~~~~~~~~~~~~
 for (int i = 0; i < x; ++i)
-doSomething(e); doSomething(f); // this is probably bad style anyway
+doSomething(e);
+doSomething(f);
 ~~~~~~~~~~~~~
 
 --------------------------------------------------------------------------------
 \subsection code_guidelines_3_1 No vertical alignment
 
-Do not use whitespaces to align value names together, this becomes problematic
-on updates to see the change, if the whitespace need to change on all.
+Do not use whitespaces to align value names together. This causes problems
+on code review if one needs to realign all values to their new position.
 
-This should be not used:
+Wrong:
 ~~~~~~~~~~~~~
 ...
 
@@ -189,7 +189,7 @@ biggerExampleClass->InitExample();
 ...
 ~~~~~~~~~~~~~
 
-Use it as:
+Right:
 ~~~~~~~~~~~~~
 ...
 
@@ -262,7 +262,7 @@ switch (cmd)
 \section code_guidelines_5 Naming
 \subsection code_guidelines_5_1 Namespaces
 
-Namespaces should be in uppercase letters
+Namespaces have to be in uppercase.
 
 ~~~~~~~~~~~~~
 namespace KODI
@@ -273,7 +273,7 @@ namespace KODI
 
 \subsection code_guidelines_5_2 Constants
 
-Use upper case with underscore spacing where necessary.
+Use uppercase with underscore spacing where necessary.
 
 ~~~~~~~~~~~~~
 const int MY_CONSTANT = 1;
@@ -282,7 +282,7 @@ const int MY_CONSTANT = 1;
 --------------------------------------------------------------------------------
 \subsection code_guidelines_5_3 Enums
 
-Use CamelCase for the enum name and upper case for the values.
+Use CamelCase for the enum name and uppercase for the values.
 
 ~~~~~~~~~~~~~
 enum Dummy
@@ -295,8 +295,8 @@ enum Dummy
 --------------------------------------------------------------------------------
 \subsection code_guidelines_5_4 Interfaces
 
-We use CamelCase for interface names and they should be prefixed with an
-uppercase I. Filename should match the interface name, e.g. `ILogger.h`
+Use CamelCase for interface names and they have to be prefixed with an
+uppercase I. Filename has to match the interface name, e.g. `ILogger.h`
 
 ~~~~~~~~~~~~~
 class ILogger
@@ -308,8 +308,8 @@ class ILogger
 --------------------------------------------------------------------------------
 \subsection code_guidelines_5_5 Classes
 
-We use CamelCase for class names and they should be prefixed with an uppercase C.
-Filename should match the class name without the prefixed C, e.g. `Logger.cpp`
+We use CamelCase for class names and they have to be prefixed with an uppercase C.
+Filenamehas match the class name without the prefixed C, e.g. `Logger.cpp`
 
 ~~~~~~~~~~~~~
 class CLogger : public ILogger
@@ -321,7 +321,7 @@ class CLogger : public ILogger
 --------------------------------------------------------------------------------
 \subsection code_guidelines_5_6 Methods
 
-We use CamelCase for method names and first letter should always be upper case.
+Use CamelCase for method names and first letter shas to be uppercase.
 Even if the methods are private or protected.
 
 ~~~~~~~~~~~~~
@@ -356,7 +356,7 @@ int m_variableA;
 --------------------------------------------------------------------------------
 \subsection code_guidelines_6_1 Casts
 
-New code should use C++ style casts and not older C style casts. When modifying
+New code has to use C++ style casts and not older C style casts. When modifying
 existing code the developer can choose to update it to C++ style casts or leave
 as is. Remember that whenever a dynamic_cast is used the result can be a nullptr
 and needs to be checked accordingly.
