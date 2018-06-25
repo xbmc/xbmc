@@ -16792,7 +16792,7 @@ msgstr ""
 #. Error dialog text when the controller dialog is opened but peripheral add-ons are disabled
 #: xbmc/peripherals/bus/virtual/PeripheralBusAddon.cpp
 msgctxt "#35018"
-msgid "Controller configuration depends on a disabled add-on. Would you like to enable it?"
+msgid "Controller setup depends on a disabled add-on. Would you like to enable it?"
 msgstr ""
 
 #. Label of the button to fix the bug where buttons are skipped in the controller dialog
@@ -16869,13 +16869,13 @@ msgstr ""
 
 #empty strings from id 35056 to 35057
 
-#. Title of controller configuration window
+#. Title of controller setup window
 #: addons/skin.estuary/xml/DialogGameControllers.xml
 msgctxt "#35058"
-msgid "Controller Configuration"
+msgid "Controller setup"
 msgstr ""
 
-#. Heading for controller buttons list in controller configuration window
+#. Heading for controller buttons list in controller setup window
 #: addons/skin.estuary/xml/DialogGameControllers.xml
 msgctxt "#35059"
 msgid "Buttons"
@@ -16899,7 +16899,7 @@ msgctxt "#35062"
 msgid "All available controller profiles are installed."
 msgstr ""
 
-#. Name of the setting that activates the controller configuration window
+#. Name of the setting that activates the controller setup window
 #: system/settings/settings.xml
 msgctxt "#35063"
 msgid "Configure attached controllers"
@@ -17092,7 +17092,7 @@ msgstr ""
 #. Name of group in "Games -> Keyboard" for configuring keyboard players
 #: system/settings/settings.xml
 msgctxt "#35151"
-msgid "Player configuration"
+msgid "Player setup"
 msgstr ""
 
 #. Name of setting for enabling the keyboard during gameplay
@@ -17124,49 +17124,49 @@ msgctxt "#35156"
 msgid "{0:d}"
 msgstr ""
 
-#. Name of setting to configure a keyboard player's controller configuration
+#. Name of setting to configure a keyboard player's controller setup
 #: system/settings/settings.xml
 msgctxt "#35157"
 msgid "Configure keyboard player 1"
 msgstr ""
 
-#. Name of setting to configure a keyboard player's controller configuration
+#. Name of setting to configure a keyboard player's controller setup
 #: system/settings/settings.xml
 msgctxt "#35158"
 msgid "Configure keyboard player 2"
 msgstr ""
 
-#. Name of setting to configure a keyboard player's controller configuration
+#. Name of setting to configure a keyboard player's controller setup
 #: system/settings/settings.xml
 msgctxt "#35159"
 msgid "Configure keyboard player 3"
 msgstr ""
 
-#. Name of setting to configure a keyboard player's controller configuration
+#. Name of setting to configure a keyboard player's controller setup
 #: system/settings/settings.xml
 msgctxt "#35160"
 msgid "Configure keyboard player 4"
 msgstr ""
 
-#. Name of setting to configure a keyboard player's controller configuration
+#. Name of setting to configure a keyboard player's controller setup
 #: system/settings/settings.xml
 msgctxt "#35161"
 msgid "Configure keyboard player 5"
 msgstr ""
 
-#. Name of setting to configure a keyboard player's controller configuration
+#. Name of setting to configure a keyboard player's controller setup
 #: system/settings/settings.xml
 msgctxt "#35162"
 msgid "Configure keyboard player 6"
 msgstr ""
 
-#. Name of setting to configure a keyboard player's controller configuration
+#. Name of setting to configure a keyboard player's controller setup
 #: system/settings/settings.xml
 msgctxt "#35163"
 msgid "Configure keyboard player 7"
 msgstr ""
 
-#. Name of setting to configure a keyboard player's controller configuration
+#. Name of setting to configure a keyboard player's controller setup
 #: system/settings/settings.xml
 msgctxt "#35164"
 msgid "Configure keyboard player 8"
