@@ -632,7 +632,7 @@ PVR_ERROR CPVRClient::CallMenuHook(const PVR_MENUHOOK &hook, const CFileItemPtr 
         hookData.cat = PVR_MENUHOOK_DELETED_RECORDING;
         WriteClientRecordingInfo(*item->GetPVRRecordingInfoTag(), hookData.data.recording);
       }
-      else if (item->IsPVRTimer())
+      else if (item->HasPVRTimerInfoTag())
       {
         hookData.cat = PVR_MENUHOOK_TIMER;
         WriteClientTimerInfo(*item->GetPVRTimerInfoTag(), hookData.data.timer);

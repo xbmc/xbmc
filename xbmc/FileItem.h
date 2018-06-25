@@ -226,7 +226,6 @@ public:
   bool IsUsablePVRRecording() const;
   bool IsDeletedPVRRecording() const;
   bool IsInProgressPVRRecording() const;
-  bool IsPVRTimer() const;
   bool IsPVRRadioRDS() const;
 
   //! \brief Check if path item points to has a given extension or protocol type.

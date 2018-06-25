@@ -501,7 +501,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem *item, const CGUIInf
 
   CPVREpgInfoTagPtr epgTag;
   CPVRChannelPtr channel;
-  if (item->HasPVRChannelInfoTag() || item->HasEPGInfoTag() || item->IsPVRTimer())
+  if (item->HasPVRChannelInfoTag() || item->HasEPGInfoTag() || item->HasPVRTimerInfoTag())
   {
     switch (info.m_info)
     {
@@ -1158,7 +1158,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerBool(const CFileItem *item, const CGUIInfo
         bValue = item->GetPVRChannelInfoTag()->IsRecording();
         return true;
       }
-      else if (item->HasEPGInfoTag() || item->IsPVRTimer())
+      else if (item->HasEPGInfoTag() || item->HasPVRTimerInfoTag())
       {
         const CPVRTimerInfoTagPtr timer = CPVRItem(item).GetTimerInfoTag();
         if (timer)
@@ -1190,7 +1190,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerBool(const CFileItem *item, const CGUIInfo
       }
       break;
     case LISTITEM_HASTIMERSCHEDULE:
-      if (item->HasPVRChannelInfoTag() || item->HasEPGInfoTag() || item->IsPVRTimer())
+      if (item->HasPVRChannelInfoTag() || item->HasEPGInfoTag() || item->HasPVRTimerInfoTag())
       {
         const CPVRTimerInfoTagPtr timer = CPVRItem(item).GetTimerInfoTag();
         if (timer)
@@ -1235,7 +1235,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerBool(const CFileItem *item, const CGUIInfo
       }
       break;
     case LISTITEM_HAS_EPG:
-      if (item->HasPVRChannelInfoTag() || item->HasEPGInfoTag() || item->IsPVRTimer())
+      if (item->HasPVRChannelInfoTag() || item->HasEPGInfoTag() || item->HasPVRTimerInfoTag())
       {
         const CPVREpgInfoTagPtr epgTag = CPVRItem(item).GetEpgInfoTag();
         bValue = (epgTag != nullptr);

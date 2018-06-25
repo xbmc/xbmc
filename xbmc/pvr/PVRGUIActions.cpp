@@ -1424,7 +1424,7 @@ namespace PVR
         iClientID = item->GetPVRRecordingInfoTag()->m_iClientId;
         menuCategory = PVR_MENUHOOK_RECORDING;
       }
-      else if (item->IsPVRTimer())
+      else if (item->HasPVRTimerInfoTag())
       {
         iClientID = item->GetPVRTimerInfoTag()->m_iClientId;
         menuCategory = PVR_MENUHOOK_TIMER;

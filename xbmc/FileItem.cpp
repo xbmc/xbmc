@@ -845,11 +845,6 @@ bool CFileItem::IsInProgressPVRRecording() const
   return (m_pvrRecordingInfoTag && m_pvrRecordingInfoTag->IsInProgress());
 }
 
-bool CFileItem::IsPVRTimer() const
-{
-  return HasPVRTimerInfoTag();
-}
-
 bool CFileItem::IsPVRRadioRDS() const
 {
   return HasPVRRadioRDSInfoTag();
@@ -1271,7 +1266,7 @@ void CFileItem::FillInDefaultIcon()
         // video
         SetIconImage("DefaultVideo.png");
       }
-      else if (IsPVRTimer())
+      else if (HasPVRTimerInfoTag())
       {
         SetIconImage("DefaultVideo.png");
       }

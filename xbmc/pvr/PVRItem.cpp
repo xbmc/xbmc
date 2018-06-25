@@ -43,7 +43,7 @@ namespace PVR
     {
       return m_item->GetPVRChannelInfoTag()->GetEPGNow();
     }
-    else if (m_item->IsPVRTimer())
+    else if (m_item->HasPVRTimerInfoTag())
     {
       return m_item->GetPVRTimerInfoTag()->GetEpgInfoTag();
     }
@@ -87,7 +87,7 @@ namespace PVR
     {
       return m_item->GetEPGInfoTag()->Channel();
     }
-    else if (m_item->IsPVRTimer())
+    else if (m_item->HasPVRTimerInfoTag())
     {
       return m_item->GetPVRTimerInfoTag()->Channel();
     }
@@ -100,7 +100,7 @@ namespace PVR
 
   CPVRTimerInfoTagPtr CPVRItem::GetTimerInfoTag() const
   {
-    if (m_item->IsPVRTimer())
+    if (m_item->HasPVRTimerInfoTag())
     {
       return m_item->GetPVRTimerInfoTag();
     }
