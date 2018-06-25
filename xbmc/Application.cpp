@@ -2973,7 +2973,7 @@ bool CApplication::PlayMedia(CFileItem& item, const std::string &player, int iPl
       }
     }
   }
-  else if (item.IsPVR())
+  else if (item.IsType("pvr://"))
   {
     return CServiceBroker::GetPVRManager().GUIActions()->PlayMedia(CFileItemPtr(new CFileItem(item)));
   }

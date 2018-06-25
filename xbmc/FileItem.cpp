@@ -760,7 +760,7 @@ bool CFileItem::Exists(bool bUseCache /* = true */) const
    || IsParentFolder()
    || IsVirtualDirectoryRoot()
    || IsType("plugin://")
-   || IsPVR())
+   || IsType("pvr://"))
     return true;
 
   if (IsVideoDb() && HasVideoInfoTag())
@@ -808,7 +808,7 @@ bool CFileItem::IsVideo() const
     return !GetPVRRecordingInfoTag()->IsRadio();
 
   // ... all other PVR items are not.
-  if (IsPVR())
+  if (IsType("pvr://"))
     return false;
 
   if (URIUtils::IsDVD(m_strPath))
@@ -929,7 +929,7 @@ bool CFileItem::IsGame() const
   if (HasPictureInfoTag())
     return false;
 
-  if (IsPVR())
+  if (IsType("pvr://"))
     return false;
 
   if (HasAddonInfo())
@@ -1171,11 +1171,6 @@ bool CFileItem::IsSmb() const
 bool CFileItem::IsURL() const
 {
   return URIUtils::IsURL(m_strPath);
-}
-
-bool CFileItem::IsPVR() const
-{
-  return CUtil::IsPVR(m_strPath);
 }
 
 bool CFileItem::IsLiveTV() const

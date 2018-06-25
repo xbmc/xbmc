@@ -2282,7 +2282,7 @@ void CUtil::ScanForExternalDemuxSub(const std::string& videoPath, std::vector<st
   if (item.IsInternetStream()
     || item.IsPlayList()
     || item.IsLiveTV()
-    || item.IsPVR()
+    || item.IsType("pvr://")
     || !item.IsVideo())
     return;
 
@@ -2306,7 +2306,7 @@ void CUtil::ScanForExternalAudio(const std::string& videoPath, std::vector<std::
   if ( item.IsInternetStream()
    ||  item.IsPlayList()
    ||  item.IsLiveTV()
-   ||  item.IsPVR()
+   ||  item.IsType("pvr://")
    || !item.IsVideo())
     return;
 

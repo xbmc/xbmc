@@ -767,7 +767,7 @@ std::string CGUIWindowVideoBase::GetResumeString(const CFileItem &item)
 
 bool CGUIWindowVideoBase::ShowResumeMenu(CFileItem &item)
 {
-  if (!item.m_bIsFolder && !item.IsPVR())
+  if (!item.m_bIsFolder && !item.IsType("pvr://"))
   {
     std::string resumeString = GetResumeString(item);
     if (!resumeString.empty())
