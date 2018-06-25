@@ -829,7 +829,7 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
         path = item->GetVideoInfoTag()->m_strFileNameAndPath;
 
       if (!item->IsPath("add") && !item->IsType("plugin://") &&
-          !item->IsScript() && !item->IsAddonsPath() && !item->IsLiveTV())
+          !item->IsScript() && !item->IsType("addons://") && !item->IsLiveTV())
       {
         if (URIUtils::IsStack(path))
         {
@@ -1299,7 +1299,7 @@ bool CGUIWindowVideoBase::GetDirectory(const std::string &strDirectory, CFileIte
 bool CGUIWindowVideoBase::StackingAvailable(const CFileItemList &items)
 {
   CURL url(items.GetPath());
-  return !(items.IsType("plugin://") || items.IsAddonsPath()  ||
+  return !(items.IsType("plugin://") || items.IsType("addons://")  ||
            items.IsRSS() || items.IsInternetStream() ||
            items.IsVideoDb() || url.IsProtocol("playlistvideo"));
 }

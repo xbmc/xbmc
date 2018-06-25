@@ -1113,11 +1113,6 @@ bool CFileItem::IsScript() const
   return URIUtils::IsScript(m_strPath);
 }
 
-bool CFileItem::IsAddonsPath() const
-{
-  return URIUtils::IsAddonsPath(m_strPath);
-}
-
 bool CFileItem::IsSourcesPath() const
 {
   return URIUtils::IsSourcesPath(m_strPath);
@@ -2919,7 +2914,7 @@ std::string CFileItem::GetUserMusicThumb(bool alwaysCheckRemote /* = false */, b
    || URIUtils::IsUPnP(m_strPath)
    || (URIUtils::IsFTP(m_strPath) && !g_advancedSettings.m_bFTPThumbs)
    || IsType("plugin://")
-   || IsAddonsPath()
+   || IsType("addons://")
    || IsLibraryFolder()
    || IsParentFolder()
    || IsMusicDb())
@@ -3011,7 +3006,7 @@ bool CFileItem::SkipLocalArt() const
        || URIUtils::IsUPnP(m_strPath)
        || (URIUtils::IsFTP(m_strPath) && !g_advancedSettings.m_bFTPThumbs)
        || IsType("plugin://")
-       || IsAddonsPath()
+       || IsType("addons://")
        || IsLibraryFolder()
        || IsParentFolder()
        || IsLiveTV()
@@ -3207,7 +3202,7 @@ std::string CFileItem::GetLocalFanart() const
    || URIUtils::IsBluray(strFile)
    || IsLiveTV()
    || IsType("plugin://")
-   || IsAddonsPath()
+   || IsType("addons://")
    || IsDVD()
    || (URIUtils::IsFTP(strFile) && !g_advancedSettings.m_bFTPThumbs)
    || m_strPath.empty())

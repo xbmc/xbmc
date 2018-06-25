@@ -487,7 +487,7 @@ bool CGUIWindowMusicNav::GetDirectory(const std::string &strDirectory, CFileItem
     items.SetContent("playlists");
   else if (URIUtils::PathEquals(strDirectory, "plugin://music/"))
     items.SetContent("plugins");
-  else if (items.IsAddonsPath())
+  else if (items.IsType("addons://"))
     items.SetContent("addons");
   else if (!items.IsSourcesPath() && !items.IsVirtualDirectoryRoot() &&
            !items.IsLibraryFolder() && !items.IsType("plugin://") && !items.IsSmartPlayList())
@@ -544,7 +544,7 @@ void CGUIWindowMusicNav::UpdateButtons()
 
   SET_CONTROL_SELECTED(GetID(),CONTROL_BTNPARTYMODE, g_partyModeManager.IsEnabled());
 
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_UPDATE_LIBRARY, !m_vecItems->IsAddonsPath() && !m_vecItems->IsType("plugin://") && !m_vecItems->IsScript());
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_UPDATE_LIBRARY, !m_vecItems->IsType("addons://") && !m_vecItems->IsType("plugin://") && !m_vecItems->IsScript());
 }
 
 void CGUIWindowMusicNav::PlayItem(int iItem)

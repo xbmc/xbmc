@@ -204,7 +204,7 @@ std::string CFavouritesService::GetExecutePath(const CFileItem &item, const std:
   //! @todo STRING_CLEANUP
   else if (item.IsScript() && item.GetPath().size() > 9) // script://<foo>
     execute = StringUtils::Format("RunScript(%s)", StringUtils::Paramify(item.GetPath().substr(9)).c_str());
-  else if (item.IsAddonsPath() && item.GetPath().size() > 9) // addons://<foo>
+  else if (item.IsType("addons://") && item.GetPath().size() > 9) // addons://<foo>
   {
     CURL url(item.GetPath());
     execute = StringUtils::Format("RunAddon(%s)", url.GetFileName().c_str());
