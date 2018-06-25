@@ -84,7 +84,7 @@ bool CSourcesDirectory::GetDirectory(const VECSOURCES &sources, CFileItemList &i
       strIcon = "DefaultFolder.png";
     else if (pItem->IsRemote())
       strIcon = "DefaultNetwork.png";
-    else if (pItem->IsISO9660())
+    else if (pItem->IsType("iso9660://"))
       strIcon = "DefaultDVDRom.png";
     else if (pItem->IsDVD())
       strIcon = "DefaultDVDFull.png";

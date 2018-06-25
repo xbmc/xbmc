@@ -1128,11 +1128,6 @@ bool CFileItem::IsOnLAN() const
   return URIUtils::IsOnLAN(m_strPath);
 }
 
-bool CFileItem::IsISO9660() const
-{
-  return URIUtils::IsISO9660(m_strPath);
-}
-
 bool CFileItem::IsRemote() const
 {
   return URIUtils::IsRemote(m_strPath);
