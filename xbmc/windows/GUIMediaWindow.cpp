@@ -1108,7 +1108,7 @@ bool CGUIMediaWindow::OnClick(int iItem, const std::string &player)
     return XFILE::CPluginDirectory::RunScriptWithParams(pItem->GetPath(), resume);
   }
 #if defined(TARGET_ANDROID)
-  else if (pItem->IsAndroidApp())
+  else if (pItem->IsType("androidapp://"))
   {
     std::string appName = URIUtils::GetFileName(pItem->GetPath());
     CLog::Log(LOGDEBUG, "CGUIMediaWindow::OnClick Trying to run: %s",appName.c_str());

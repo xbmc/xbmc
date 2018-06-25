@@ -209,7 +209,7 @@ std::string CFavouritesService::GetExecutePath(const CFileItem &item, const std:
     CURL url(item.GetPath());
     execute = StringUtils::Format("RunAddon(%s)", url.GetFileName().c_str());
   }
-  else if (item.IsAndroidApp() && item.GetPath().size() > 26) // androidapp://sources/apps/<foo>
+  else if (item.IsType("androidapp://") && item.GetPath().size() > 26) // androidapp://sources/apps/<foo>
     execute = StringUtils::Format("StartAndroidActivity(%s)", StringUtils::Paramify(item.GetPath().substr(26)).c_str());
   else  // assume a media file
   {
