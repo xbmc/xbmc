@@ -662,7 +662,7 @@ void CGUIWindowFileManager::OnStart(CFileItem *pItem, const std::string &player)
     return ;
   }
 #ifdef HAS_PYTHON
-  if (pItem->IsPythonScript())
+  if (pItem->IsType(".py"))
   {
     CScriptInvocationManager::GetInstance().ExecuteAsync(pItem->GetPath());
     return ;

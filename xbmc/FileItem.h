@@ -202,7 +202,6 @@ public:
   bool IsPlayList() const;
   bool IsSmartPlayList() const;
   bool IsLibraryFolder() const;
-  bool IsPythonScript() const;
   bool IsScript() const;
   bool IsAddonsPath() const;
   bool IsSourcesPath() const;

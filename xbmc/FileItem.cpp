@@ -1038,11 +1038,6 @@ bool CFileItem::IsPlayList() const
   return CPlayListFactory::IsPlaylist(*this);
 }
 
-bool CFileItem::IsPythonScript() const
-{
-  return URIUtils::HasExtension(m_strPath, ".py");
-}
-
 bool CFileItem::IsType(const char *ext) const
 {
   if (*ext == '.')
@@ -1304,7 +1299,7 @@ void CFileItem::FillInDefaultIcon()
       {
         SetIconImage("DefaultPlaylist.png");
       }
-      else if ( IsPythonScript() )
+      else if (IsType(".py"))
       {
         SetIconImage("DefaultScript.png");
       }

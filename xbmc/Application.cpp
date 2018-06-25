@@ -4210,7 +4210,7 @@ bool CApplication::ExecuteXBMCAction(std::string actionStr, const CGUIListItemPt
     }
     CFileItem item(actionStr, false);
 #ifdef HAS_PYTHON
-    if (item.IsPythonScript())
+    if (item.IsType(".py"))
     { // a python script
       CScriptInvocationManager::GetInstance().ExecuteAsync(item.GetPath());
     }
