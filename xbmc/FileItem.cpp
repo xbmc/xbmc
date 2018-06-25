@@ -1112,11 +1112,6 @@ bool CFileItem::IsZIP() const
   return URIUtils::IsZIP(m_strPath);
 }
 
-bool CFileItem::IsCBR() const
-{
-  return URIUtils::HasExtension(m_strPath, ".cbr");
-}
-
 bool CFileItem::IsRSS() const
 {
   return StringUtils::StartsWithNoCase(m_strPath, "rss://") || URIUtils::HasExtension(m_strPath, ".rss")

@@ -213,7 +213,7 @@ CBaseTexture *CTextureCacheJob::LoadImage(const std::string &image, unsigned int
   // Validate file URL to see if it is an image
   CFileItem file(image, false);
   file.FillInMimeType();
-  if (!(file.IsPicture() && !(file.IsZIP() || file.IsRAR() || file.IsCBR() || file.IsType(".cbz") ))
+  if (!(file.IsPicture() && !(file.IsZIP() || file.IsRAR() || file.IsType(".cbr") || file.IsType(".cbz") ))
       && !StringUtils::StartsWithNoCase(file.GetMimeType(), "image/") && !StringUtils::EqualsNoCase(file.GetMimeType(), "application/octet-stream")) // ignore non-pictures
     return NULL;
 

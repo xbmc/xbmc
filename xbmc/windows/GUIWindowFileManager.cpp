@@ -618,7 +618,7 @@ void CGUIWindowFileManager::OnClick(int iList, int iItem)
     CURL pathToUrl = URIUtils::CreateArchivePath("zip", pItem->GetURL(), "");
     Update(iList, pathToUrl.Get());
   }
-  else if (pItem->IsRAR() || pItem->IsCBR())
+  else if (pItem->IsRAR() || pItem->IsType(".cbr"))
   {
     CURL pathToUrl = URIUtils::CreateArchivePath("rar", pItem->GetURL(), "");
     Update(iList, pathToUrl.Get());
