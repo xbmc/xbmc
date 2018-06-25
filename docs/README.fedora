@@ -55,7 +55,8 @@ taglib-devel tinyxml-devel libtool-ltdl-devel libudev-devel \
 libusb-devel libva-devel libvdpau-devel libxml2-devel \
 libXmu-devel libXrandr-devel libxslt-devel libXt-devel rapidjson-devel \
 nasm python-devel yasm swig uuid-devel zlib-devel python-pillow \
-trousers-devel libidn2-devel
+trousers-devel libidn2-devel gcc-c++ mesa-libGLw-devel libuuid-devel \
+libcurl-devel gtkglext-devel libtool gettext-devel
 
 
 -----------------------------------------------------------------------------
