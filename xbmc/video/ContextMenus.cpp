@@ -72,7 +72,7 @@ bool CMarkWatched::IsVisible(const CFileItem& item) const
   if (item.m_bIsFolder) // Only allow video db content, video and recording folders to be updated recursively
   {
     if (item.HasVideoInfoTag())
-      return item.IsVideoDb();
+      return item.IsType("videodb://");
     else if (item.GetProperty("IsVideoFolder").asBoolean())
       return true;
     else
@@ -98,7 +98,7 @@ bool CMarkUnWatched::IsVisible(const CFileItem& item) const
   if (item.m_bIsFolder) // Only allow video db content, video and recording folders to be updated recursively
   {
     if (item.HasVideoInfoTag())
-      return item.IsVideoDb();
+      return item.IsType("videodb://");
     else if (item.GetProperty("IsVideoFolder").asBoolean())
       return true;
     else
@@ -132,7 +132,7 @@ bool CResume::IsVisible(const CFileItem& itemIn) const
 
 static void SetPathAndPlay(CFileItem& item)
 {
-  if (item.IsVideoDb())
+  if (item.IsType("videodb://"))
   {
     item.SetProperty("original_listitem_url", item.GetPath());
     item.SetPath(item.GetVideoInfoTag()->m_strFileNameAndPath);

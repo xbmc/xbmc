@@ -148,7 +148,7 @@ GetMimeType(const CFileItem& item,
 
     /* fallback to generic mime type if not found */
     if (mime.IsEmpty()) {
-        if (item.IsVideo() || item.IsVideoDb() )
+        if (item.IsVideo() || item.IsType("videodb://") )
             mime = "video/" + ext;
         else if (item.IsAudio() || item.IsType("musicdb://") )
             mime = "audio/" + ext;
@@ -399,7 +399,7 @@ BuildObject(CFileItem&                    item,
                 CMusicInfoTag *tag = (CMusicInfoTag*)item.GetMusicInfoTag();
                 PopulateObjectFromTag(*tag, *object, &file_path, &resource, quirks, upnp_service);
             }
-        } else if (item.IsVideoDb() || item.IsVideo()) {
+        } else if (item.IsType("videodb://") || item.IsVideo()) {
             object->m_ObjectClass.type = "object.item.videoItem";
 
             if(quirks & ECLIENTQUIRKS_UNKNOWNSERIES)
@@ -511,7 +511,7 @@ BuildObject(CFileItem&                    item,
                 default:
                   break;
             }
-        } else if (item.IsVideoDb()) {
+        } else if (item.IsType("videodb://")) {
             VIDEODATABASEDIRECTORY::NODE_TYPE node = CVideoDatabaseDirectory::GetDirectoryType(item.GetPath());
             CVideoInfoTag &tag = *(CVideoInfoTag*)item.GetVideoInfoTag();
             switch(node) {

@@ -208,7 +208,7 @@ void CGUIWindowVideoBase::OnItemInfo(const CFileItem& fileItem, ADDON::ScraperPt
 
   CFileItem item(fileItem);
   bool fromDB = false;
-  if ((item.IsVideoDb() && item.HasVideoInfoTag()) ||
+  if ((item.IsType("videodb://") && item.HasVideoInfoTag()) ||
       (item.HasVideoInfoTag() && item.GetVideoInfoTag()->m_iDbId != -1))
   {
     if (item.GetVideoInfoTag()->m_type == MediaTypeSeason)
@@ -381,7 +381,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItemPtr item, const ScraperPtr &info2, b
     {
       item = pDlgInfo->GetCurrentListItem();
 
-      if (item->IsVideoDb() && item->HasVideoInfoTag())
+      if (item->IsType("videodb://") && item->HasVideoInfoTag())
         item->SetPath(item->GetVideoInfoTag()->GetPath());
     }
   }
@@ -545,7 +545,7 @@ void CGUIWindowVideoBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
     { // a playable python files
       queuedItems.Add(pItem);
     }
-    else if (pItem->IsVideoDb())
+    else if (pItem->IsType("videodb://"))
     { // this case is needed unless we allow IsVideo() to return true for videodb items,
       // but then we have issues with playlists of videodb items
       CFileItemPtr item(new CFileItem(*pItem->GetVideoInfoTag()));
@@ -577,7 +577,7 @@ void CGUIWindowVideoBase::GetResumeItemOffset(const CFileItem *item, int64_t& st
     {
       CBookmark bookmark;
       std::string strPath = item->GetPath();
-      if ((item->IsVideoDb() || item->IsDVD()) && item->HasVideoInfoTag())
+      if ((item->IsType("videodb://") || item->IsDVD()) && item->HasVideoInfoTag())
         strPath = item->GetVideoInfoTag()->m_strFileNameAndPath;
 
       CVideoDatabase db;
@@ -641,7 +641,7 @@ bool CGUIWindowVideoBase::OnFileAction(int iItem, int action, std::string player
     {
       CContextButtons choices;
 
-      if (item->IsVideoDb())
+      if (item->IsType("videodb://"))
       {
         std::string itemPath(item->GetPath());
         itemPath = item->GetVideoInfoTag()->m_strFileNameAndPath;
@@ -708,8 +708,8 @@ bool CGUIWindowVideoBase::OnItemInfo(int iItem)
   if (!m_vecItems->IsType("plugin://") && !m_vecItems->IsRSS() && !m_vecItems->IsLiveTV())
   {
     std::string strDir;
-    if (item->IsVideoDb()       &&
-        item->HasVideoInfoTag() &&
+    if (item->IsType("videodb://")  &&
+        item->HasVideoInfoTag()     &&
         !item->GetVideoInfoTag()->m_strPath.empty())
     {
       strDir = item->GetVideoInfoTag()->m_strPath;
@@ -825,7 +825,7 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
     if (!item->IsParentFolder())
     {
       std::string path(item->GetPath());
-      if (item->IsVideoDb() && item->HasVideoInfoTag())
+      if (item->IsType("videodb://") && item->HasVideoInfoTag())
         path = item->GetVideoInfoTag()->m_strFileNameAndPath;
 
       if (!item->IsPath("add") && !item->IsType("plugin://") &&
@@ -858,7 +858,7 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
 
         // get players
         std::vector<std::string> players;
-        if (item->IsVideoDb())
+        if (item->IsType("videodb://"))
         {
           CFileItem item2(item->GetVideoInfoTag()->m_strFileNameAndPath, false);
           playerCoreFactory.GetPlayers(item2, players);
@@ -898,7 +898,7 @@ bool CGUIWindowVideoBase::OnPlayStackPart(int iItem)
 
   CFileItemPtr stack = m_vecItems->Get(iItem);
   std::string path(stack->GetPath());
-  if (stack->IsVideoDb())
+  if (stack->IsType("videodb://"))
     path = stack->GetVideoInfoTag()->m_strFileNameAndPath;
 
   if (!URIUtils::IsStack(path))
@@ -996,7 +996,7 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       const CPlayerCoreFactory &playerCoreFactory = CServiceBroker::GetPlayerCoreFactory();
 
       std::vector<std::string> players;
-      if (item->IsVideoDb())
+      if (item->IsType("videodb://"))
       {
         CFileItem item2(*item->GetVideoInfoTag());
         playerCoreFactory.GetPlayers(item2, players);
@@ -1033,10 +1033,10 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       SScanSettings settings;
       GetScraperForItem(item.get(), info, settings);
       std::string strPath = item->GetPath();
-      if (item->IsVideoDb() && (!item->m_bIsFolder || item->GetVideoInfoTag()->m_strPath.empty()))
+      if (item->IsType("videodb://") && (!item->m_bIsFolder || item->GetVideoInfoTag()->m_strPath.empty()))
         return false;
 
-      if (item->IsVideoDb())
+      if (item->IsType("videodb://"))
         strPath = item->GetVideoInfoTag()->m_strPath;
 
       if (!info || info->Content() == CONTENT_NONE)
@@ -1096,7 +1096,7 @@ bool CGUIWindowVideoBase::OnPlayMedia(int iItem, const std::string &player)
   CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(PLAYLIST_NONE);
 
   CFileItem item(*pItem);
-  if (pItem->IsVideoDb())
+  if (pItem->IsType("videodb://"))
   {
     item.SetPath(pItem->GetVideoInfoTag()->m_strFileNameAndPath);
     item.SetProperty("original_listitem_url", pItem->GetPath());
@@ -1301,7 +1301,7 @@ bool CGUIWindowVideoBase::StackingAvailable(const CFileItemList &items)
   CURL url(items.GetPath());
   return !(items.IsType("plugin://") || items.IsType("addons://")  ||
            items.IsRSS() || items.IsInternetStream() ||
-           items.IsVideoDb() || url.IsProtocol("playlistvideo"));
+           items.IsType("videodb://") || url.IsProtocol("playlistvideo"));
 }
 
 void CGUIWindowVideoBase::GetGroupedItems(CFileItemList &items)
@@ -1346,7 +1346,7 @@ void CGUIWindowVideoBase::GetGroupedItems(CFileItemList &items)
 bool CGUIWindowVideoBase::CheckFilterAdvanced(CFileItemList &items) const
 {
   std::string content = items.GetContent();
-  if ((items.IsVideoDb() || CanContainFilter(m_strFilterPath)) &&
+  if ((items.IsType("videodb://") || CanContainFilter(m_strFilterPath)) &&
       (StringUtils::EqualsNoCase(content, "movies")   ||
        StringUtils::EqualsNoCase(content, "tvshows")  ||
        StringUtils::EqualsNoCase(content, "episodes") ||
@@ -1490,7 +1490,7 @@ void CGUIWindowVideoBase::OnSearchItemFound(const CFileItem* pSelItem)
 
     Update(strParentPath);
 
-    if (pSelItem->IsVideoDb() && CServiceBroker::GetSettings().GetBool(CSettings::SETTING_MYVIDEOS_FLATTEN))
+    if (pSelItem->IsType("videodb://") && CServiceBroker::GetSettings().GetBool(CSettings::SETTING_MYVIDEOS_FLATTEN))
       SetHistoryForPath("");
     else
       SetHistoryForPath(strParentPath);
@@ -1516,7 +1516,7 @@ void CGUIWindowVideoBase::OnSearchItemFound(const CFileItem* pSelItem)
 
     Update(strPath);
 
-    if (pSelItem->IsVideoDb() && CServiceBroker::GetSettings().GetBool(CSettings::SETTING_MYVIDEOS_FLATTEN))
+    if (pSelItem->IsType("videodb://") && CServiceBroker::GetSettings().GetBool(CSettings::SETTING_MYVIDEOS_FLATTEN))
       SetHistoryForPath("");
     else
       SetHistoryForPath(strPath);
@@ -1525,7 +1525,7 @@ void CGUIWindowVideoBase::OnSearchItemFound(const CFileItem* pSelItem)
     {
       CFileItemPtr pItem = m_vecItems->Get(i);
       CURL url(pItem->GetPath());
-      if (pSelItem->IsVideoDb())
+      if (pSelItem->IsType("videodb://"))
         url.SetOptions("");
       if (url.Get() == pSelItem->GetPath())
       {

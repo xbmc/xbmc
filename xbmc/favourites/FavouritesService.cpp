@@ -213,7 +213,7 @@ std::string CFavouritesService::GetExecutePath(const CFileItem &item, const std:
     execute = StringUtils::Format("StartAndroidActivity(%s)", StringUtils::Paramify(item.GetPath().substr(26)).c_str());
   else  // assume a media file
   {
-    if (item.IsVideoDb() && item.HasVideoInfoTag())
+    if (item.IsType("videodb://") && item.HasVideoInfoTag())
       execute = StringUtils::Format("PlayMedia(%s)", StringUtils::Paramify(item.GetVideoInfoTag()->m_strFileNameAndPath).c_str());
     else if (item.IsType("musicdb://") && item.HasMusicInfoTag())
       execute = StringUtils::Format("PlayMedia(%s)", StringUtils::Paramify(item.GetMusicInfoTag()->GetURL()).c_str());

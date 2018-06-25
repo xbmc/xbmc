@@ -221,7 +221,6 @@ public:
   bool IsURL() const;
   bool IsStack() const;
   bool IsMultiPath() const;
-  bool IsVideoDb() const;
   bool IsUsablePVRRecording() const;
   bool IsDeletedPVRRecording() const;
   bool IsInProgressPVRRecording() const;

@@ -286,7 +286,7 @@ void CGUIWindowMusicBase::OnItemInfo(int iItem)
 
   CFileItemPtr item = m_vecItems->Get(iItem);
 
-  if (item->IsVideoDb())
+  if (item->IsType("videodb://"))
   { // Music video on a mixed current playlist
     OnContextButton(iItem, CONTEXT_BUTTON_INFO);
     return;
