@@ -1098,11 +1098,6 @@ bool CFileItem::IsScript() const
   return URIUtils::IsScript(m_strPath);
 }
 
-bool CFileItem::IsMultiPath() const
-{
-  return URIUtils::IsMultiPath(m_strPath);
-}
-
 bool CFileItem::IsDVD() const
 {
   return URIUtils::IsDVD(m_strPath) || m_iDriveType == CMediaSource::SOURCE_TYPE_DVD;
@@ -3021,7 +3016,7 @@ std::string CFileItem::GetLocalArt(const std::string &artFile, bool useFolder) c
     strFile = URIUtils::AddFileToFolder(strParent, URIUtils::GetFileName(strFile));
   }
 
-  if (IsMultiPath())
+  if (IsType("multipath://"))
     strFile = CMultiPathDirectory::GetFirstPath(m_strPath);
 
   if (IsOpticalMediaFile())
@@ -3061,7 +3056,7 @@ std::string CFileItem::GetFolderThumb(const std::string &folderJPG /* = "folder.
     URIUtils::GetParentPath(m_strPath,strFolder);
   }
 
-  if (IsMultiPath())
+  if (IsType("multipath://"))
     strFolder = CMultiPathDirectory::GetFirstPath(m_strPath);
 
   if (IsType("plugin://"))
@@ -3101,7 +3096,7 @@ std::string CFileItem::GetBaseMoviePath(bool bUseFolderNames) const
 {
   std::string strMovieName = m_strPath;
 
-  if (IsMultiPath())
+  if (IsType("multipath://"))
     strMovieName = CMultiPathDirectory::GetFirstPath(m_strPath);
 
   if (IsOpticalMediaFile())

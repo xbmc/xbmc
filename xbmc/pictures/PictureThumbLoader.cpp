@@ -168,7 +168,7 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
       pathToUrl = URIUtils::CreateArchivePath("zip",pItem->GetURL(),"");
       thumb = "cover.jpg";
     }
-    if (pItem->IsMultiPath())
+    if (pItem->IsType("multipath://"))
       pathToUrl = CURL(CMultiPathDirectory::GetFirstPath(pItem->GetPath()));
     thumb = URIUtils::AddFileToFolder(pathToUrl.Get(), thumb);
     if (CFile::Exists(thumb))

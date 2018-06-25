@@ -438,7 +438,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
         if (IsActive())
         {
           if((message.GetStringParam() == m_vecItems->GetPath()) ||
-             (m_vecItems->IsMultiPath() && XFILE::CMultiPathDirectory::HasPath(m_vecItems->GetPath(), message.GetStringParam())))
+             (m_vecItems->IsType("multipath://") && XFILE::CMultiPathDirectory::HasPath(m_vecItems->GetPath(), message.GetStringParam())))
             Refresh();
         }
       }
