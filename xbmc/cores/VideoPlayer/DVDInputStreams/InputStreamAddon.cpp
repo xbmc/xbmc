@@ -196,13 +196,6 @@ int64_t CInputStreamAddon::Seek(int64_t offset, int whence)
   return m_struct.toAddon.seek_stream(&m_struct, offset, whence);
 }
 
-int64_t CInputStreamAddon::PositionStream()
-{
-  if (!m_struct.toAddon.position_stream)
-    return -1;
-
-  return m_struct.toAddon.position_stream(&m_struct);
-}
 int64_t CInputStreamAddon::GetLength()
 {
   if (!m_struct.toAddon.length_stream)
@@ -485,7 +478,7 @@ void CInputStreamAddon::SetVideoResolution(int width, int height)
     m_struct.toAddon.set_video_resolution(&m_struct, width, height);
 }
 
-bool CInputStreamAddon::IsRealTimeStream()
+bool CInputStreamAddon::IsRealtime()
 {
   if (m_struct.toAddon.is_real_time_stream)
     return m_struct.toAddon.is_real_time_stream(&m_struct);

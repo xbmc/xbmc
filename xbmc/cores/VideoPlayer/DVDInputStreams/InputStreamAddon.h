@@ -96,8 +96,7 @@ public:
   void AbortDemux() override;
   void FlushDemux() override;
   void SetVideoResolution(int width, int height) override;
-  int64_t PositionStream();
-  bool IsRealTimeStream();
+  bool IsRealtime() override;
 
 protected:
   static int ConvertVideoCodecProfile(STREAMCODEC_PROFILE profile);
