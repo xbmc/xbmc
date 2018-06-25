@@ -845,11 +845,6 @@ bool CFileItem::IsInProgressPVRRecording() const
   return (m_pvrRecordingInfoTag && m_pvrRecordingInfoTag->IsInProgress());
 }
 
-bool CFileItem::IsPVRRadioRDS() const
-{
-  return HasPVRRadioRDSInfoTag();
-}
-
 bool CFileItem::IsDiscStub() const
 {
   if (IsVideoDb() && HasVideoInfoTag())
