@@ -198,7 +198,6 @@ public:
   bool IsAudioBook() const;
 
   bool IsGame() const;
-  bool IsCUESheet() const;
   bool IsInternetStream(const bool bStrictCheck = false) const;
   bool IsPlayList() const;
   bool IsSmartPlayList() const;

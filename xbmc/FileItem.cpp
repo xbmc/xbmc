@@ -983,11 +983,6 @@ bool CFileItem::IsSubtitle() const
   return URIUtils::HasExtension(m_strPath, CServiceBroker::GetFileExtensionProvider().GetSubtitleExtensions());
 }
 
-bool CFileItem::IsCUESheet() const
-{
-  return URIUtils::HasExtension(m_strPath, ".cue");
-}
-
 bool CFileItem::IsInternetStream(const bool bStrictCheck /* = false */) const
 {
   if (HasProperty("IsHTTPDirectory"))
@@ -2487,7 +2482,7 @@ void CFileItemList::FilterCueItems()
     CFileItemPtr pItem = m_items[i];
     if (!pItem->m_bIsFolder)
     { // see if it's a .CUE sheet
-      if (pItem->IsCUESheet())
+      if (pItem->IsType(".cue"))
       {
         CCueDocumentPtr cuesheet(new CCueDocument);
         if (cuesheet->ParseFile(pItem->GetPath()))
@@ -2526,7 +2521,7 @@ void CFileItemList::FilterCueItems()
                   {
                     strMediaFile = URIUtils::ReplaceExtension(pItem->GetPath(), *i);
                     CFileItem item(strMediaFile, false);
-                    if (!item.IsCUESheet() && !item.IsPlayList() && Contains(strMediaFile))
+                    if (!item.IsType(".cue") && !item.IsPlayList() && Contains(strMediaFile))
                     {
                       bFoundMediaFile = true;
                       break;
