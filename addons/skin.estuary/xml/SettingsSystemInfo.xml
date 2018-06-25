@@ -16,72 +16,72 @@
 			<visible>!Player.HasMedia + !String.IsEmpty(Skin.String(HomeFanart.path))</visible>
 		</control>
 		<control type="group">
-			<left>60</left>
+			<left>40</left>
 			<top>70</top>
 			<include>OpenClose_Right</include>
 			<control type="grouplist">
-				<left>430</left>
+				<left>420</left>
 				<top>105</top>
 				<height>550</height>
 				<orientation>vertical</orientation>
 				<control type="label" id="2">
 					<height>47</height>
-					<width>1370</width>
-					<font>Mono30</font>
+					<width>1400</width>
+					<font>Mono26</font>
 				</control>
 				<control type="label" id="3">
 					<height>47</height>
-					<width>1370</width>
-					<font>Mono30</font>
+					<width>1400</width>
+					<font>Mono26</font>
 				</control>
 				<control type="label" id="4">
 					<height>47</height>
-					<width>1370</width>
-					<font>Mono30</font>
+					<width>1400</width>
+					<font>Mono26</font>
 				</control>
 				<control type="label" id="5">
 					<height>47</height>
-					<width>1370</width>
-					<font>Mono30</font>
+					<width>1400</width>
+					<font>Mono26</font>
 				</control>
 				<control type="label" id="6">
 					<height>47</height>
-					<width>1370</width>
-					<font>Mono30</font>
+					<width>1400</width>
+					<font>Mono26</font>
 				</control>
 				<control type="label" id="7">
 					<height>47</height>
-					<width>1370</width>
-					<font>Mono30</font>
+					<width>1400</width>
+					<font>Mono26</font>
 				</control>
 				<control type="label" id="8">
 					<height>47</height>
-					<width>1370</width>
-					<font>Mono30</font>
+					<width>1400</width>
+					<font>Mono26</font>
 				</control>
 				<control type="label" id="9">
 					<height>47</height>
-					<width>1370</width>
-					<font>Mono30</font>
+					<width>1400</width>
+					<font>Mono26</font>
 				</control>
 				<control type="label" id="10">
 					<height>47</height>
-					<width>1370</width>
-					<font>Mono30</font>
+					<width>1400</width>
+					<font>Mono26</font>
 				</control>
 				<control type="label" id="11">
 					<height>47</height>
-					<width>1370</width>
-					<font>Mono30</font>
+					<width>1400</width>
+					<font>Mono26</font>
 				</control>
 				<control type="label" id="12">
 					<height>47</height>
-					<width>1370</width>
-					<font>Mono30</font>
+					<width>1400</width>
+					<font>Mono26</font>
 				</control>
 			</control>
 			<control type="textbox" id="30">
-				<left>430</left>
+				<left>420</left>
 				<right>50</right>
 				<top>100</top>
 				<bottom>315</bottom>
@@ -105,7 +105,7 @@
 				<animation effect="fade" start="100" end="0" time="150">WindowClose</animation>
 			</control>
 			<control type="image">
-				<left>360</left>
+				<left>380</left>
 				<top>90</top>
 				<right>0</right>
 				<height>3</height>
@@ -115,14 +115,14 @@
 				<bottom>0</bottom>
 				<height>330</height>
 				<control type="image">
-					<left>360</left>
+					<left>380</left>
 					<top>20</top>
 					<right>0</right>
 					<height>3</height>
 					<texture colordiffuse="button_focus" border="2">dialogs/separator-grey.png</texture>
 				</control>
 				<control type="grouplist">
-					<left>430</left>
+					<left>420</left>
 					<orientation>vertical</orientation>
 					<control type="label">
 						<description>CPU Text</description>
@@ -172,7 +172,7 @@
 					<itemgap>10</itemgap>
 					<top>80</top>
 					<left>1210</left>
-					<width>800</width>
+					<width>820</width>
 					<height>45</height>
 					<orientation>horizontal</orientation>
 					<control type="label">
