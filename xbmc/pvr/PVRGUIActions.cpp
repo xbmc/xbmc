@@ -1409,7 +1409,7 @@ namespace PVR
         else
           return false;
       }
-      else if (item->IsPVRChannel())
+      else if (item->HasPVRChannelInfoTag())
       {
         iClientID = item->GetPVRChannelInfoTag()->ClientID();
         menuCategory = PVR_MENUHOOK_CHANNEL;

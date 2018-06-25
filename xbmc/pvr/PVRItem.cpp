@@ -39,7 +39,7 @@ namespace PVR
     {
       return m_item->GetEPGInfoTag();
     }
-    else if (m_item->IsPVRChannel())
+    else if (m_item->HasPVRChannelInfoTag())
     {
       return m_item->GetPVRChannelInfoTag()->GetEPGNow();
     }
@@ -60,7 +60,7 @@ namespace PVR
     {
       return m_item->GetEPGInfoTag()->GetNextEvent();
     }
-    else if (m_item->IsPVRChannel())
+    else if (m_item->HasPVRChannelInfoTag())
     {
       return m_item->GetPVRChannelInfoTag()->GetEPGNext();
     }
@@ -79,7 +79,7 @@ namespace PVR
 
   CPVRChannelPtr CPVRItem::GetChannel() const
   {
-    if (m_item->IsPVRChannel())
+    if (m_item->HasPVRChannelInfoTag())
     {
       return m_item->GetPVRChannelInfoTag();
     }
@@ -108,7 +108,7 @@ namespace PVR
     {
       return m_item->GetEPGInfoTag()->Timer();
     }
-    else if (m_item->IsPVRChannel())
+    else if (m_item->HasPVRChannelInfoTag())
     {
       CPVRTimerInfoTagPtr timer;
       const CPVREpgInfoTagPtr epgTag(m_item->GetPVRChannelInfoTag()->GetEPGNow());
@@ -146,7 +146,7 @@ namespace PVR
 
   bool CPVRItem::IsRadio() const
   {
-    if (m_item->IsPVRChannel())
+    if (m_item->HasPVRChannelInfoTag())
     {
       return m_item->GetPVRChannelInfoTag()->IsRadio();
     }

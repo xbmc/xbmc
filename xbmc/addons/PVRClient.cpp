@@ -617,7 +617,7 @@ PVR_ERROR CPVRClient::CallMenuHook(const PVR_MENUHOOK &hook, const CFileItemPtr 
         hookData.cat = PVR_MENUHOOK_EPG;
         hookData.data.iEpgUid = item->GetEPGInfoTag()->UniqueBroadcastID();
       }
-      else if (item->IsPVRChannel())
+      else if (item->HasPVRChannelInfoTag())
       {
         hookData.cat = PVR_MENUHOOK_CHANNEL;
         WriteClientChannelInfo(item->GetPVRChannelInfoTag(), hookData.data.channel);

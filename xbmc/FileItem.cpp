@@ -830,11 +830,6 @@ bool CFileItem::IsVideo() const
   return URIUtils::HasExtension(m_strPath, CServiceBroker::GetFileExtensionProvider().GetVideoExtensions());
 }
 
-bool CFileItem::IsPVRChannel() const
-{
-  return HasPVRChannelInfoTag();
-}
-
 bool CFileItem::IsPVRRecording() const
 {
   return HasPVRRecordingInfoTag();
@@ -1296,7 +1291,7 @@ void CFileItem::FillInDefaultIcon()
        * in mind the complexity of the code behind the check in the
        * case of IsWhatever() returns false.
        */
-      if (IsPVRChannel())
+      if (HasPVRChannelInfoTag())
       {
         if (GetPVRChannelInfoTag()->IsRadio())
           SetIconImage("DefaultAudio.png");

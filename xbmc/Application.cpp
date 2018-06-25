@@ -2047,7 +2047,7 @@ bool CApplication::OnAction(const CAction &action)
 
   // Now check with the player if action can be handled.
   bool bIsPlayingPVRChannel = (CServiceBroker::GetPVRManager().IsStarted() &&
-                               CurrentFileItem().IsPVRChannel());
+                               CurrentFileItem().HasPVRChannelInfoTag());
 
   bool bNotifyPlayer = false;
   if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)

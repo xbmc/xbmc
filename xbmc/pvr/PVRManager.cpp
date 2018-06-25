@@ -891,7 +891,7 @@ bool CPVRManager::FillStreamFileItem(CFileItem &fileItem)
   const CPVRClientPtr client = GetClient(fileItem);
   if (client)
   {
-    if (fileItem.IsPVRChannel())
+    if (fileItem.HasPVRChannelInfoTag())
       return client->FillChannelStreamFileItem(fileItem) == PVR_ERROR_NO_ERROR;
     else if (fileItem.IsPVRRecording())
       return client->FillRecordingStreamFileItem(fileItem) == PVR_ERROR_NO_ERROR;
