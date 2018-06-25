@@ -465,7 +465,7 @@ void CGUIWindowPictures::GetContextButtons(int itemNumber, CContextButtons &butt
     {
       if (item)
       {
-        if (!(item->m_bIsFolder || item->IsZIP() || item->IsRAR() || item->IsType(".cbz") || item->IsType(".cbr") || item->IsScript()))
+        if (!(item->m_bIsFolder || item->IsZIP() || item->IsRAR() || item->IsType(".cbz") || item->IsType(".cbr") || item->IsType("script://")))
         {
           if (item->IsPicture())
             buttons.Add(CONTEXT_BUTTON_INFO, 13406); // picture info
@@ -483,7 +483,7 @@ void CGUIWindowPictures::GetContextButtons(int itemNumber, CContextButtons &butt
         }
       }
 
-      if (!item->IsType("plugin://") && !item->IsScript() && !m_vecItems->IsType("plugin://"))
+      if (!item->IsType("plugin://") && !item->IsType("script://") && !m_vecItems->IsType("plugin://"))
         buttons.Add(CONTEXT_BUTTON_SWITCH_MEDIA, 523);
     }
   }
@@ -586,7 +586,7 @@ void CGUIWindowPictures::OnItemInfo(int itemNumber)
   CFileItemPtr item = m_vecItems->Get(itemNumber);
   if (!item)
     return;
-  if (!m_vecItems->IsType("plugin://") && (item->IsType("plugin://") || item->IsScript()))
+  if (!m_vecItems->IsType("plugin://") && (item->IsType("plugin://") || item->IsType("script://")))
   {
     CGUIDialogAddonInfo::ShowForItem(item);
     return;

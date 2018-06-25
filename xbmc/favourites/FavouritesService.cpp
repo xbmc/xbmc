@@ -202,7 +202,7 @@ std::string CFavouritesService::GetExecutePath(const CFileItem &item, const std:
       execute = StringUtils::Format("ActivateWindow(%s,%s,return)", contextWindow.c_str(), StringUtils::Paramify(item.GetPath()).c_str());
   }
   //! @todo STRING_CLEANUP
-  else if (item.IsScript() && item.GetPath().size() > 9) // script://<foo>
+  else if (item.IsType("script://") && item.GetPath().size() > 9) // script://<foo>
     execute = StringUtils::Format("RunScript(%s)", StringUtils::Paramify(item.GetPath().substr(9)).c_str());
   else if (item.IsType("addons://") && item.GetPath().size() > 9) // addons://<foo>
   {

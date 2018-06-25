@@ -1093,11 +1093,6 @@ bool CFileItem::IsRSS() const
       || m_mimetype == "application/rss+xml";
 }
 
-bool CFileItem::IsScript() const
-{
-  return URIUtils::IsScript(m_strPath);
-}
-
 bool CFileItem::IsDVD() const
 {
   return URIUtils::IsDVD(m_strPath) || m_iDriveType == CMediaSource::SOURCE_TYPE_DVD;

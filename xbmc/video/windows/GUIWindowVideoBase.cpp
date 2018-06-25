@@ -701,7 +701,7 @@ bool CGUIWindowVideoBase::OnItemInfo(int iItem)
      (item->IsPlayList() && !URIUtils::HasExtension(item->GetDynPath(), ".strm")))
     return false;
 
-  if (!m_vecItems->IsType("plugin://") && (item->IsType("plugin://") || item->IsScript()))
+  if (!m_vecItems->IsType("plugin://") && (item->IsType("plugin://") || item->IsType("script://")))
     return CGUIDialogAddonInfo::ShowForItem(item);
 
   ADDON::ScraperPtr scraper;
@@ -829,7 +829,7 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
         path = item->GetVideoInfoTag()->m_strFileNameAndPath;
 
       if (!item->IsPath("add") && !item->IsType("plugin://") &&
-          !item->IsScript() && !item->IsType("addons://") && !item->IsLiveTV())
+          !item->IsType("script://") && !item->IsType("addons://") && !item->IsLiveTV())
       {
         if (URIUtils::IsStack(path))
         {
@@ -877,7 +877,7 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
       //if the item isn't a folder or script, is a member of a list rather than a single item
       //and we're not on the last element of the list,
       //then add add either 'play from here' or 'play only this' depending on default behaviour
-      if (!(item->m_bIsFolder || item->IsScript()) && m_vecItems->Size() > 1 && itemNumber < m_vecItems->Size()-1)
+      if (!(item->m_bIsFolder || item->IsType("script://")) && m_vecItems->Size() > 1 && itemNumber < m_vecItems->Size()-1)
       {
         if (!CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_AUTOPLAYNEXTITEM))
           buttons.Add(CONTEXT_BUTTON_PLAY_AND_QUEUE, 13412);

@@ -1031,7 +1031,7 @@ bool CGUIMediaWindow::OnClick(int iItem, const std::string &player)
     delete pFileDirectory;
   }
 
-  if (pItem->IsScript())
+  if (pItem->IsType("script://"))
   {
     // execute the script
     CURL url(pItem->GetPath());

@@ -544,7 +544,7 @@ void CGUIWindowMusicNav::UpdateButtons()
 
   SET_CONTROL_SELECTED(GetID(),CONTROL_BTNPARTYMODE, g_partyModeManager.IsEnabled());
 
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_UPDATE_LIBRARY, !m_vecItems->IsType("addons://") && !m_vecItems->IsType("plugin://") && !m_vecItems->IsScript());
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_UPDATE_LIBRARY, !m_vecItems->IsType("addons://") && !m_vecItems->IsType("plugin://") && !m_vecItems->IsType("script://"));
 }
 
 void CGUIWindowMusicNav::PlayItem(int iItem)

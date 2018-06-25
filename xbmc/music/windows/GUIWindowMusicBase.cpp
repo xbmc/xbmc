@@ -292,7 +292,7 @@ void CGUIWindowMusicBase::OnItemInfo(int iItem)
     return;
   }
 
-  if (!m_vecItems->IsType("plugin://") && (item->IsType("plugin://") || item->IsScript()))
+  if (!m_vecItems->IsType("plugin://") && (item->IsType("plugin://") || item->IsType("script://")))
   {
     CGUIDialogAddonInfo::ShowForItem(item);
     return;
@@ -525,7 +525,7 @@ void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &but
 
     if (item && !item->IsParentFolder())
     {
-      if (item->CanQueue() && !item->IsType("addons://") && !item->IsScript())
+      if (item->CanQueue() && !item->IsType("addons://") && !item->IsType("script://"))
       {
         buttons.Add(CONTEXT_BUTTON_QUEUE_ITEM, 13347); //queue
 

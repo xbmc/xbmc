@@ -320,7 +320,7 @@ void CGUIWindowGames::OnItemInfo(int itemNumber)
 
   if (!m_vecItems->IsType("plugin://"))
   {
-    if (item->IsType("plugin://") || item->IsScript())
+    if (item->IsType("plugin://") || item->IsType("script://"))
       CGUIDialogAddonInfo::ShowForItem(item);
   }
 
