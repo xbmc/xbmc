@@ -82,9 +82,9 @@ public:
   static std::string Format(const std::string& fmt, Args&&... args)
   {
     // coverity[fun_call_w_exception : FALSE]
-    auto result = fmt::format(fmt, std::forward<Args>(args)...);
+    auto result = ::fmt::format(fmt, std::forward<Args>(args)...);
     if (result == fmt)
-      result = fmt::sprintf(fmt, std::forward<Args>(args)...);
+      result = ::fmt::sprintf(fmt, std::forward<Args>(args)...);
 
     return result;
   }
@@ -92,9 +92,9 @@ public:
   static std::wstring Format(const std::wstring& fmt, Args&&... args)
   {
     // coverity[fun_call_w_exception : FALSE]
-    auto result = fmt::format(fmt, std::forward<Args>(args)...);
+    auto result = ::fmt::format(fmt, std::forward<Args>(args)...);
     if (result == fmt)
-      result = fmt::sprintf(fmt, std::forward<Args>(args)...);
+      result = ::fmt::sprintf(fmt, std::forward<Args>(args)...);
 
     return result;
   }
