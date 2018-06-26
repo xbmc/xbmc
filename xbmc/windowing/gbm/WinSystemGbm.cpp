@@ -132,13 +132,16 @@ bool CWinSystemGbm::CreateNewWindow(const std::string& name,
     return false;
   }
 
-  if(!m_GBM->CreateSurface(m_DRM->GetCurrentMode()->hdisplay, m_DRM->GetCurrentMode()->vdisplay))
+  if(!m_GBM->CreateSurface(res.iWidth, res.iHeight))
   {
     CLog::Log(LOGERROR, "CWinSystemGbm::%s - failed to initialize GBM", __FUNCTION__);
     return false;
   }
 
   m_bFullScreen = fullScreen;
+  m_nWidth = res.iWidth;
+  m_nHeight = res.iHeight;
+  m_fRefreshRate = res.fRefreshRate;
 
   CLog::Log(LOGDEBUG, "CWinSystemGbm::%s - initialized GBM", __FUNCTION__);
   return true;
@@ -154,13 +157,7 @@ bool CWinSystemGbm::DestroyWindow()
 
 void CWinSystemGbm::UpdateResolutions()
 {
-  CWinSystemBase::UpdateResolutions();
-
-  UpdateDesktopResolution(CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP),
-                          0,
-                          m_DRM->GetCurrentMode()->hdisplay,
-                          m_DRM->GetCurrentMode()->vdisplay,
-                          m_DRM->GetCurrentMode()->vrefresh);
+  RESOLUTION_INFO current = m_DRM->GetCurrentMode();
 
   auto resolutions = m_DRM->GetModes();
   if (resolutions.empty())
@@ -175,6 +172,16 @@ void CWinSystemGbm::UpdateResolutions()
     {
       CServiceBroker::GetWinSystem()->GetGfxContext().ResetOverscan(res);
       CDisplaySettings::GetInstance().AddResolutionInfo(res);
+
+      if (current.iScreenWidth == res.iScreenWidth &&
+          current.iScreenHeight == res.iScreenHeight &&
+          current.iWidth == res.iWidth &&
+          current.iHeight == res.iHeight &&
+          current.fRefreshRate == res.fRefreshRate &&
+          current.dwFlags == res.dwFlags)
+      {
+        CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP) = res;
+      }
 
       CLog::Log(LOGNOTICE, "Found resolution %dx%d for display %d with %dx%d%s @ %f Hz",
                 res.iWidth,

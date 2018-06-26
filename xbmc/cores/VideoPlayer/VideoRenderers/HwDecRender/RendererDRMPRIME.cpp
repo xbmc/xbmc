@@ -24,9 +24,11 @@
 #include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFlags.h"
 #include "ServiceBroker.h"
+#include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
 #include "windowing/gbm/DRMAtomic.h"
+#include "windowing/GraphicContext.h"
 
 const std::string SETTING_VIDEOPLAYER_USEPRIMERENDERER = "videoplayer.useprimerenderer";
 
@@ -80,6 +82,20 @@ bool CRendererDRMPRIME::Configure(const VideoPicture& picture, float fps, unsign
 
   m_bConfigured = true;
   return true;
+}
+
+void CRendererDRMPRIME::ManageRenderArea()
+{
+  CBaseRenderer::ManageRenderArea();
+
+  RESOLUTION_INFO info = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo();
+  if (info.iScreenWidth != info.iWidth)
+  {
+    CalcNormalRenderRect(0, 0, info.iScreenWidth, info.iScreenHeight,
+                         GetAspectRatio() * CDisplaySettings::GetInstance().GetPixelRatio(),
+                         CDisplaySettings::GetInstance().GetZoomAmount(),
+                         CDisplaySettings::GetInstance().GetVerticalShift());
+  }
 }
 
 void CRendererDRMPRIME::AddVideoPicture(const VideoPicture& picture, int index, double currentClock)
