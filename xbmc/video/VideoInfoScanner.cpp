@@ -262,7 +262,7 @@ namespace VIDEO
     const std::vector<std::string> &regexps = content == CONTENT_TVSHOWS ? g_advancedSettings.m_tvshowExcludeFromScanRegExps
                                                          : g_advancedSettings.m_moviesExcludeFromScanRegExps;
 
-    if (IsExcluded(strDirectory, regexps))
+    if (IsDirectoryExcluded(strDirectory, regexps))
       return true;
 
     bool ignoreFolder = !m_scanAll && settings.noupdate;
@@ -412,6 +412,7 @@ namespace VIDEO
     m_database.Open();
 
     bool FoundSomeInfo = false;
+    auto const& regexps = (content == CONTENT_TVSHOWS) ? g_advancedSettings.m_tvshowExcludeFromScanRegExps : g_advancedSettings.m_moviesExcludeFromScanRegExps;
     std::vector<int> seenPaths;
     for (int i = 0; i < (int)items.Size(); ++i)
     {
@@ -423,8 +424,7 @@ namespace VIDEO
         continue;
 
       // Discard all exclude files defined by regExExclude
-      if (IsExcluded(pItem->GetPath(), (content == CONTENT_TVSHOWS) ? g_advancedSettings.m_tvshowExcludeFromScanRegExps
-                                                                    : g_advancedSettings.m_moviesExcludeFromScanRegExps))
+      if (IsFileExcluded(pItem->GetPath(), regexps))
         continue;
 
       if (info2->Content() == CONTENT_MOVIES || info2->Content() == CONTENT_MUSICVIDEOS)
@@ -966,7 +966,7 @@ namespace VIDEO
         continue;
 
       // Discard all exclude files defined by regExExcludes
-      if (IsExcluded(items[i]->GetPath(), regexps))
+      if (IsFileExcluded(items[i]->GetPath(), regexps))
         continue;
 
       /*
