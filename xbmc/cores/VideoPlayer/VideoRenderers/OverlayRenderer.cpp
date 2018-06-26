@@ -33,6 +33,7 @@
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
 #include "threads/SingleLock.h"
+#include "utils/ColorUtils.h"
 #include "utils/MathUtils.h"
 #include "OverlayRendererUtil.h"
 #include "OverlayRendererGUI.h"
@@ -43,6 +44,12 @@
 #endif
 
 using namespace OVERLAY;
+
+static UTILS::Color bgcolors[5] = { UTILS::COLOR::BLACK,
+  UTILS::COLOR::YELLOW,
+  UTILS::COLOR::WHITE,
+  UTILS::COLOR::LIGHTGREY,
+  UTILS::COLOR::GREY };
 
 COverlay::COverlay()
 {
@@ -177,11 +184,24 @@ void CRenderer::Render(int idx)
     COverlayText *text = dynamic_cast<COverlayText*>(*it);
     if (text)
     {
+      
+      // Compute the color to be used for the overlay background (depending on the opacity)
+      UTILS::Color bgcolor = bgcolors[CServiceBroker::GetSettings().GetInt(CSettings::SETTING_SUBTITLES_BGCOLOR)];
+      int bgopacity = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_SUBTITLES_BGOPACITY);
+      if (bgopacity > 0 && bgopacity < 100)
+      {
+        bgcolor = ColorUtils::ChangeOpacity(bgcolor, bgopacity / 100.0f);
+      }
+      else if (bgopacity == 0)
+      {
+        bgcolor = UTILS::COLOR::NONE;
+      }
+      
       text->PrepareRender(CServiceBroker::GetSettings().GetString(CSettings::SETTING_SUBTITLES_FONT),
                           CServiceBroker::GetSettings().GetInt(CSettings::SETTING_SUBTITLES_COLOR),
                           CServiceBroker::GetSettings().GetInt(CSettings::SETTING_SUBTITLES_HEIGHT),
                           CServiceBroker::GetSettings().GetInt(CSettings::SETTING_SUBTITLES_STYLE),
-                          m_font, m_fontBorder);
+                          m_font, m_fontBorder, bgcolor);
       o = text;
     }
     else
