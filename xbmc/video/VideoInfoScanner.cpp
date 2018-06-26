@@ -262,7 +262,10 @@ namespace VIDEO
     const std::vector<std::string> &regexps = content == CONTENT_TVSHOWS ? g_advancedSettings.m_tvshowExcludeFromScanRegExps
                                                          : g_advancedSettings.m_moviesExcludeFromScanRegExps;
 
-    if (IsExcluded(strDirectory, regexps))
+    if (CUtil::ExcludeFileOrFolder(strDirectory, regexps))
+      return true;
+
+    if (HasNoMedia(strDirectory))
       return true;
 
     bool ignoreFolder = !m_scanAll && settings.noupdate;
@@ -422,8 +425,12 @@ namespace VIDEO
       if (!info2) // skip
         continue;
 
+      // Discard all .nomedia folders
+      if (pItem->m_bIsFolder && HasNoMedia(pItem->GetPath()))
+        continue;
+
       // Discard all exclude files defined by regExExclude
-      if (IsExcluded(pItem->GetPath(), (content == CONTENT_TVSHOWS) ? g_advancedSettings.m_tvshowExcludeFromScanRegExps
+      if (CUtil::ExcludeFileOrFolder(pItem->GetPath(), (content == CONTENT_TVSHOWS) ? g_advancedSettings.m_tvshowExcludeFromScanRegExps
                                                                     : g_advancedSettings.m_moviesExcludeFromScanRegExps))
         continue;
 
@@ -966,7 +973,7 @@ namespace VIDEO
         continue;
 
       // Discard all exclude files defined by regExExcludes
-      if (IsExcluded(items[i]->GetPath(), regexps))
+      if (CUtil::ExcludeFileOrFolder(items[i]->GetPath(), regexps))
         continue;
 
       /*
