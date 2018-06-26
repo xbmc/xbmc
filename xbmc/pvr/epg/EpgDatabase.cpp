@@ -57,9 +57,9 @@ void CPVREpgDatabase::Unlock()
 
 void CPVREpgDatabase::CreateTables(void)
 {
-  CLog::Log(LOGINFO, "EpgDB - %s - creating tables", __FUNCTION__);
+  CLog::Log(LOGINFO, "Creating EPG database tables");
 
-  CLog::Log(LOGDEBUG, "EpgDB - %s - creating table 'epg'", __FUNCTION__);
+  CLog::LogFC(LOGDEBUG, LOGEPG, "Creating table 'epg'");
 
   CSingleLock lock(m_critSection);
 
@@ -71,7 +71,7 @@ void CPVREpgDatabase::CreateTables(void)
       ")"
   );
 
-  CLog::Log(LOGDEBUG, "EpgDB - %s - creating table 'epgtags'", __FUNCTION__);
+  CLog::LogFC(LOGDEBUG, LOGEPG, "Creating table 'epgtags'");
   m_pDS->exec(
       "CREATE TABLE epgtags ("
         "idBroadcast     integer primary key, "
@@ -103,7 +103,8 @@ void CPVREpgDatabase::CreateTables(void)
         "iFlags          integer"
       ")"
   );
-  CLog::Log(LOGDEBUG, "EpgDB - %s - creating table 'lastepgscan'", __FUNCTION__);
+
+  CLog::LogFC(LOGDEBUG, LOGEPG, "Creating table 'lastepgscan'");
   m_pDS->exec("CREATE TABLE lastepgscan ("
         "idEpg integer primary key, "
         "sLastScan varchar(20)"
@@ -113,7 +114,7 @@ void CPVREpgDatabase::CreateTables(void)
 
 void CPVREpgDatabase::CreateAnalytics()
 {
-  CLog::Log(LOGDEBUG, "%s - creating indices", __FUNCTION__);
+  CLog::LogFC(LOGDEBUG, LOGEPG, "Creating EPG database indices");
 
   CSingleLock lock(m_critSection);
   m_pDS->exec("CREATE UNIQUE INDEX idx_epg_idEpg_iStartTime on epgtags(idEpg, iStartTime desc);");
@@ -148,7 +149,7 @@ void CPVREpgDatabase::UpdateTables(int iVersion)
 bool CPVREpgDatabase::DeleteEpg(void)
 {
   bool bReturn(false);
-  CLog::Log(LOGDEBUG, "EpgDB - %s - deleting all EPG data from the database", __FUNCTION__);
+  CLog::LogFC(LOGDEBUG, LOGEPG, "Deleting all EPG data from the database");
 
   CSingleLock lock(m_critSection);
 
@@ -164,7 +165,7 @@ bool CPVREpgDatabase::Delete(const CPVREpg &table)
   /* invalid channel */
   if (table.EpgID() <= 0)
   {
-    CLog::Log(LOGERROR, "EpgDB - %s - invalid channel id: %d", __FUNCTION__, table.EpgID());
+    CLog::LogF(LOGERROR, "Invalid channel id: %d", table.EpgID());
     return false;
   }
 
@@ -226,7 +227,7 @@ int CPVREpgDatabase::Get(CPVREpgContainer &container)
     }
     catch (...)
     {
-      CLog::Log(LOGERROR, "%s - couldn't load EPG data from the database", __FUNCTION__);
+      CLog::LogF(LOGERROR, "Could not load EPG data from the database");
     }
   }
 
@@ -297,7 +298,7 @@ int CPVREpgDatabase::Get(CPVREpg &epg)
     }
     catch (...)
     {
-      CLog::Log(LOGERROR, "%s - couldn't load EPG data from the database", __FUNCTION__);
+      CLog::LogF(LOGERROR, "Could not load EPG data from the database");
     }
   }
   return iReturn;
@@ -366,7 +367,7 @@ int CPVREpgDatabase::Persist(const CPVREpgInfoTag &tag, bool bSingleUpdate /* = 
 
   if (tag.EpgID() <= 0)
   {
-    CLog::Log(LOGERROR, "%s - tag '%s' does not have a valid table", __FUNCTION__, tag.Title(true).c_str());
+    CLog::LogF(LOGERROR, "Tag '%s' does not have a valid table", tag.Title(true).c_str());
     return iReturn;
   }
 

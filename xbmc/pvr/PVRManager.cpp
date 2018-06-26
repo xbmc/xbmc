@@ -157,7 +157,7 @@ CPVRManager::CPVRManager(void) :
 CPVRManager::~CPVRManager(void)
 {
   CAnnouncementManager::GetInstance().RemoveAnnouncer(this);
-  CLog::Log(LOGDEBUG,"PVRManager - destroyed");
+  CLog::LogFC(LOGDEBUG, LOGPVR, "PVR Manager instance destroyed");
 }
 
 void CPVRManager::Announce(AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
@@ -178,7 +178,7 @@ CPVRDatabasePtr CPVRManager::GetTVDatabase(void) const
 {
   CSingleLock lock(m_critSection);
   if (!m_database || !m_database->IsOpen())
-    CLog::Log(LOGERROR, "PVRManager - %s - failed to open the database", __FUNCTION__);
+    CLog::LogF(LOGERROR, "Failed to open the PVR database");
 
   return m_database;
 }
@@ -319,7 +319,7 @@ void CPVRManager::Stop(void)
   /* stop playback if needed */
   if (IsPlaying())
   {
-    CLog::Log(LOGDEBUG,"PVRManager - %s - stopping PVR playback", __FUNCTION__);
+    CLog::LogFC(LOGDEBUG, LOGPVR, "Stopping PVR playback");
     CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_STOP);
   }
 
@@ -429,7 +429,7 @@ void CPVRManager::Process(void)
   CPVRGUIProgressHandler* progressHandler = new CPVRGUIProgressHandler(g_localizeStrings.Get(19235)); // PVR manager is starting up
   while (!LoadComponents(progressHandler) && IsInitialising())
   {
-    CLog::Log(LOGERROR, "PVRManager - %s - failed to load PVR data, retrying", __FUNCTION__);
+    CLog::Log(LOGWARNING, "PVR Manager failed to load data, retrying");
     Sleep(1000);
 
     if (progressHandler && progressTimeout.IsTimePast())
@@ -459,7 +459,7 @@ void CPVRManager::Process(void)
   CLog::Log(LOGNOTICE, "PVR Manager: Started");
 
   /* main loop */
-  CLog::Log(LOGDEBUG, "PVRManager - %s - entering main loop", __FUNCTION__);
+  CLog::LogFC(LOGDEBUG, LOGPVR, "PVR Manager entering main loop");
 
   bool bRestart(false);
   while (IsStarted() && m_addons->HasCreatedClients() && !bRestart)
@@ -485,7 +485,7 @@ void CPVRManager::Process(void)
     }
     catch (...)
     {
-      CLog::Log(LOGERROR, "PVRManager - %s - an error occured while trying to execute the last update job, trying to recover", __FUNCTION__);
+      CLog::LogF(LOGERROR, "An error occured while trying to execute the last PVR update job, trying to recover");
       bRestart = true;
     }
 
@@ -493,7 +493,7 @@ void CPVRManager::Process(void)
       m_pendingUpdates.WaitForJobs(1000);
   }
 
-  CLog::Log(LOGDEBUG, "PVRManager - %s - leaving main loop", __FUNCTION__);
+  CLog::LogFC(LOGDEBUG, LOGPVR, "PVR Manager leaving main loop");
 }
 
 bool CPVRManager::SetWakeupCommand(void)
@@ -515,7 +515,7 @@ bool CPVRManager::SetWakeupCommand(void)
 
       const int iReturn = system(strExecCommand.c_str());
       if (iReturn != 0)
-        CLog::Log(LOGERROR, "%s - failed to execute wakeup command '%s': %s (%d)", __FUNCTION__, strExecCommand.c_str(), strerror(iReturn), iReturn);
+        CLog::LogF(LOGERROR, "PVR Manager failed to execute wakeup command '%s': %s (%d)", strExecCommand.c_str(), strerror(iReturn), iReturn);
 
       return iReturn == 0;
     }
@@ -555,7 +555,7 @@ bool CPVRManager::LoadComponents(CPVRGUIProgressHandler* progressHandler)
   if (!IsInitialising() || !m_addons->HasCreatedClients())
     return false;
 
-  CLog::Log(LOGDEBUG, "PVRManager - %s - active clients found. continue to start", __FUNCTION__);
+  CLog::LogFC(LOGDEBUG, LOGPVR, "PVR Manager found active clients. Continuing startup");
 
   /* load all channels and groups */
   if (progressHandler)

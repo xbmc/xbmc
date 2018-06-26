@@ -80,7 +80,7 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(bool bRadio /* = false */) :
     if (type)
       SetTimerType(type);
     else
-      CLog::Log(LOGERROR, "%s: no timer type, although timers are supported by client %d!", __FUNCTION__, m_iClientId);
+      CLog::LogF(LOGERROR, "No timer type, although timers are supported by client %d!", m_iClientId);
   }
 
   m_iWeekdays = (m_timerType && m_timerType->IsTimerRule()) ? PVR_WEEKDAY_ALLDAYS : PVR_WEEKDAY_NONE;
@@ -120,7 +120,7 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER &timer, const CPVRChannelPtr 
   m_channel(channel)
 {
   if (m_iClientIndex == PVR_TIMER_NO_CLIENT_INDEX)
-    CLog::Log(LOGERROR, "%s: invalid client index supplied by client %d (must be > 0)!", __FUNCTION__, m_iClientId);
+    CLog::LogF(LOGERROR, "Invalid client index supplied by client %d (must be > 0)!", m_iClientId);
 
   const CPVRClientPtr client = CServiceBroker::GetPVRManager().GetClient(m_iClientId);
   if (client && client->GetClientCapabilities().SupportsTimers())
@@ -161,9 +161,9 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER &timer, const CPVRChannelPtr 
     }
 
     if (!m_timerType)
-      CLog::Log(LOGERROR, "%s: no timer type, although timers are supported by client %d!", __FUNCTION__, m_iClientId);
+      CLog::LogF(LOGERROR, "No timer type, although timers are supported by client %d!", m_iClientId);
     else if (m_iEpgUid == EPG_TAG_INVALID_UID && m_timerType->IsEpgBasedOnetime())
-      CLog::Log(LOGERROR, "%s: no epg tag given for epg based timer type (%d)!", __FUNCTION__, m_timerType->GetTypeId());
+      CLog::LogF(LOGERROR, "No epg tag given for epg based timer type (%d)!", m_timerType->GetTypeId());
   }
 
   ResetChildState();
@@ -664,7 +664,7 @@ CPVRTimerInfoTagPtr CPVRTimerInfoTag::CreateInstantTimerTag(const CPVRChannelPtr
 {
   if (!channel)
   {
-    CLog::Log(LOGERROR, "%s - no channel set", __FUNCTION__);
+    CLog::LogF(LOGERROR, "No channel");
     return CPVRTimerInfoTagPtr();
   }
 
@@ -678,7 +678,7 @@ CPVRTimerInfoTagPtr CPVRTimerInfoTag::CreateInstantTimerTag(const CPVRChannelPtr
     }
     else
     {
-      CLog::Log(LOGERROR, "%s - epg tag is not recordable", __FUNCTION__);
+      CLog::LogF(LOGERROR, "EPG tag is not recordable");
       return CPVRTimerInfoTagPtr();
     }
   }
@@ -700,7 +700,7 @@ CPVRTimerInfoTagPtr CPVRTimerInfoTag::CreateInstantTimerTag(const CPVRChannelPtr
       PVR_TIMER_TYPE_IS_MANUAL, PVR_TIMER_TYPE_IS_REPEATING | PVR_TIMER_TYPE_FORBIDS_NEW_INSTANCES, channel->ClientID()));
     if (!timerType)
     {
-      CLog::Log(LOGERROR, "%s - unable to create one shot manual timer type", __FUNCTION__);
+      CLog::LogF(LOGERROR, "Unable to create one shot manual timer type");
       return CPVRTimerInfoTagPtr();
     }
 
@@ -746,7 +746,7 @@ CPVRTimerInfoTagPtr CPVRTimerInfoTag::CreateFromEpg(const CPVREpgInfoTagPtr &tag
   CPVRChannelPtr channel = tag->Channel();
   if (!channel)
   {
-    CLog::Log(LOGERROR, "%s - no channel set", __FUNCTION__);
+    CLog::LogF(LOGERROR, "EPG tag has no channel");
     return CPVRTimerInfoTagPtr();
   }
 
@@ -808,7 +808,7 @@ CPVRTimerInfoTagPtr CPVRTimerInfoTag::CreateFromEpg(const CPVREpgInfoTagPtr &tag
 
   if (!timerType)
   {
-    CLog::Log(LOGERROR, "%s - unable to create any epg-based timer type", __FUNCTION__);
+    CLog::LogF(LOGERROR, "Unable to create any epg-based timer type");
     return CPVRTimerInfoTagPtr();
   }
 

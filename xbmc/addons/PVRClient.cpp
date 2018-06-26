@@ -162,7 +162,7 @@ ADDON_STATUS CPVRClient::Create(int iClientId)
 
   /* initialise the add-on */
   bool bReadyToUse(false);
-  CLog::Log(LOGDEBUG, "PVR - %s - creating PVR add-on instance '%s'", __FUNCTION__, Name().c_str());
+  CLog::LogFC(LOGDEBUG, LOGPVR, "Creating PVR add-on instance '%s'", Name().c_str());
   if ((status = CAddonDll::Create(ADDON_INSTANCE_PVR, &m_struct, &m_struct.props)) == ADDON_STATUS_OK)
     bReadyToUse = GetAddonProperties();
 
@@ -183,7 +183,7 @@ void CPVRClient::Destroy(void)
   m_bReadyToUse = false;
 
   /* reset 'ready to use' to false */
-  CLog::Log(LOGDEBUG, "PVR - %s - destroying PVR add-on '%s'", __FUNCTION__, GetFriendlyName().c_str());
+  CLog::LogFC(LOGDEBUG, LOGPVR, "Destroying PVR add-on instance '%s'", GetFriendlyName().c_str());
 
   /* destroy the add-on */
   CAddonDll::Destroy();
@@ -407,7 +407,7 @@ bool CPVRClient::GetAddonProperties(void)
     if (retval == PVR_ERROR_NOT_IMPLEMENTED)
     {
       // begin compat section
-      CLog::Log(LOGWARNING, "%s - Addon %s does not support timer types. It will work, but not benefit from the timer features introduced with PVR Addon API 2.0.0", __FUNCTION__, strFriendlyName.c_str());
+      CLog::LogF(LOGWARNING, "Add-on %s does not support timer types. It will work, but not benefit from the timer features introduced with PVR Addon API 2.0.0", strFriendlyName.c_str());
 
       // Create standard timer types (mostly) matching the timer functionality available in Isengard.
       // This is for migration only and does not make changes to the addons obsolete. Addons should
@@ -473,7 +473,7 @@ bool CPVRClient::GetAddonProperties(void)
       {
         if (types_array[i].iId == PVR_TIMER_TYPE_NONE)
         {
-          CLog::Log(LOGERROR, "PVR - invalid timer type supplied by add-on '%s'. Please contact the developer of this add-on: %s", GetFriendlyName().c_str(), Author().c_str());
+          CLog::LogF(LOGERROR, "Invalid timer type supplied by add-on '%s'. Please contact the developer of this add-on: %s", GetFriendlyName().c_str(), Author().c_str());
           continue;
         }
 
@@ -1257,7 +1257,7 @@ PVR_ERROR CPVRClient::DoAddonCall(const char* strFunctionName, std::function<PVR
 
   // Log error, if any.
   if (error != PVR_ERROR_NO_ERROR && error != PVR_ERROR_NOT_IMPLEMENTED)
-    CLog::Log(LOGERROR, "CPVRClient - %s - addon '%s' returned an error: %s", strFunctionName, GetFriendlyName().c_str(), ToString(error));
+    CLog::LogFunction(LOGERROR, strFunctionName, "Add-on '%s' returned an error: %s", GetFriendlyName().c_str(), ToString(error));
 
   return error;
 }
@@ -1276,12 +1276,12 @@ PVR_ERROR CPVRClient::OpenLiveStream(const CPVRChannelPtr &channel)
 
     if (!CanPlayChannel(channel))
     {
-      CLog::Log(LOGDEBUG, "add-on '%s' can not play channel '%s'", GetFriendlyName().c_str(), channel->ChannelName().c_str());
+      CLog::LogFC(LOGDEBUG, LOGPVR, "Add-on '%s' can not play channel '%s'", GetFriendlyName().c_str(), channel->ChannelName().c_str());
       return PVR_ERROR_SERVER_ERROR;
     }
     else
     {
-      CLog::Log(LOGDEBUG, "opening live stream for channel '%s'", channel->ChannelName().c_str());
+      CLog::LogFC(LOGDEBUG, LOGPVR, "Opening live stream for channel '%s'", channel->ChannelName().c_str());
       PVR_CHANNEL tag;
       WriteClientChannelInfo(channel, tag);
       return addon->OpenLiveStream(tag) ? PVR_ERROR_NO_ERROR : PVR_ERROR_NOT_IMPLEMENTED;
@@ -1296,7 +1296,7 @@ PVR_ERROR CPVRClient::OpenRecordedStream(const CPVRRecordingPtr &recording)
 
     PVR_RECORDING tag;
     WriteClientRecordingInfo(*recording, tag);
-    CLog::Log(LOGDEBUG, "opening stream for recording '%s'", recording->m_strTitle.c_str());
+    CLog::LogFC(LOGDEBUG, LOGPVR, "Opening stream for recording '%s'", recording->m_strTitle.c_str());
     return addon->OpenRecordedStream(tag) ? PVR_ERROR_NO_ERROR : PVR_ERROR_NOT_IMPLEMENTED;
   }, m_clientCapabilities.SupportsRecordings());
 }
@@ -1437,20 +1437,20 @@ void CPVRClient::cb_transfer_channel_group(void *kodiInstance, const ADDON_HANDL
 {
   if (!handle)
   {
-    CLog::Log(LOGERROR, "PVR - %s - invalid handler data", __FUNCTION__);
+    CLog::LogF(LOGERROR, "Invalid handler data");
     return;
   }
 
   CPVRChannelGroups *kodiGroups = static_cast<CPVRChannelGroups *>(handle->dataAddress);
   if (!group || !kodiGroups)
   {
-    CLog::Log(LOGERROR, "PVR - %s - invalid handler data", __FUNCTION__);
+    CLog::LogF(LOGERROR, "Invalid handler data");
     return;
   }
 
   if (strlen(group->strGroupName) == 0)
   {
-    CLog::Log(LOGERROR, "PVR - %s - empty group name", __FUNCTION__);
+    CLog::LogF(LOGERROR, "Empty group name");
     return;
   }
 
@@ -1463,7 +1463,7 @@ void CPVRClient::cb_transfer_channel_group_member(void *kodiInstance, const ADDO
 {
   if (!handle)
   {
-    CLog::Log(LOGERROR, "PVR - %s - invalid handler data", __FUNCTION__);
+    CLog::LogF(LOGERROR, "Invalid handler data");
     return;
   }
 
@@ -1471,14 +1471,14 @@ void CPVRClient::cb_transfer_channel_group_member(void *kodiInstance, const ADDO
   CPVRChannelGroup *group = static_cast<CPVRChannelGroup *>(handle->dataAddress);
   if (!member || !client || !group)
   {
-    CLog::Log(LOGERROR, "PVR - %s - invalid handler data", __FUNCTION__);
+    CLog::LogF(LOGERROR, "Invalid handler data");
     return;
   }
 
   CPVRChannelPtr channel  = CServiceBroker::GetPVRManager().ChannelGroups()->GetByUniqueID(member->iChannelUniqueId, client->GetID());
   if (!channel)
   {
-    CLog::Log(LOGERROR, "PVR - %s - cannot find group '%s' or channel '%d'", __FUNCTION__, member->strGroupName, member->iChannelUniqueId);
+    CLog::LogF(LOGERROR, "Cannot find group '%s' or channel '%d'", member->strGroupName, member->iChannelUniqueId);
   }
   else if (group->IsRadio() == channel->IsRadio())
   {
@@ -1491,7 +1491,7 @@ void CPVRClient::cb_transfer_epg_entry(void *kodiInstance, const ADDON_HANDLE ha
 {
   if (!handle)
   {
-    CLog::Log(LOGERROR, "PVR - %s - invalid handler data", __FUNCTION__);
+    CLog::LogF(LOGERROR, "Invalid handler data");
     return;
   }
 
@@ -1499,7 +1499,7 @@ void CPVRClient::cb_transfer_epg_entry(void *kodiInstance, const ADDON_HANDLE ha
   CPVREpg *kodiEpg = static_cast<CPVREpg *>(handle->dataAddress);
   if (!epgentry || !client || !kodiEpg)
   {
-    CLog::Log(LOGERROR, "PVR - %s - invalid handler data", __FUNCTION__);
+    CLog::LogF(LOGERROR, "Invalid handler data");
     return;
   }
 
@@ -1511,7 +1511,7 @@ void CPVRClient::cb_transfer_channel_entry(void *kodiInstance, const ADDON_HANDL
 {
   if (!handle)
   {
-    CLog::Log(LOGERROR, "PVR - %s - invalid handler data", __FUNCTION__);
+    CLog::LogF(LOGERROR, "Invalid handler data");
     return;
   }
 
@@ -1519,7 +1519,7 @@ void CPVRClient::cb_transfer_channel_entry(void *kodiInstance, const ADDON_HANDL
   CPVRChannelGroupInternal *kodiChannels = static_cast<CPVRChannelGroupInternal *>(handle->dataAddress);
   if (!channel || !client || !kodiChannels)
   {
-    CLog::Log(LOGERROR, "PVR - %s - invalid handler data", __FUNCTION__);
+    CLog::LogF(LOGERROR, "Invalid handler data");
     return;
   }
 
@@ -1532,7 +1532,7 @@ void CPVRClient::cb_transfer_recording_entry(void *kodiInstance, const ADDON_HAN
 {
   if (!handle)
   {
-    CLog::Log(LOGERROR, "PVR - %s - invalid handler data", __FUNCTION__);
+    CLog::LogF(LOGERROR, "Invalid handler data");
     return;
   }
 
@@ -1540,7 +1540,7 @@ void CPVRClient::cb_transfer_recording_entry(void *kodiInstance, const ADDON_HAN
   CPVRRecordings *kodiRecordings = static_cast<CPVRRecordings *>(handle->dataAddress);
   if (!recording || !client || !kodiRecordings)
   {
-    CLog::Log(LOGERROR, "PVR - %s - invalid handler data", __FUNCTION__);
+    CLog::LogF(LOGERROR, "Invalid handler data");
     return;
   }
 
@@ -1553,7 +1553,7 @@ void CPVRClient::cb_transfer_timer_entry(void *kodiInstance, const ADDON_HANDLE 
 {
   if (!handle)
   {
-    CLog::Log(LOGERROR, "PVR - %s - invalid handler data", __FUNCTION__);
+    CLog::LogF(LOGERROR, "Invalid handler data");
     return;
   }
 
@@ -1561,7 +1561,7 @@ void CPVRClient::cb_transfer_timer_entry(void *kodiInstance, const ADDON_HANDLE 
   CPVRTimersContainer *kodiTimers = static_cast<CPVRTimersContainer *>(handle->dataAddress);
   if (!timer || !client || !kodiTimers)
   {
-    CLog::Log(LOGERROR, "PVR - %s - invalid handler data", __FUNCTION__);
+    CLog::LogF(LOGERROR, "Invalid handler data");
     return;
   }
 
@@ -1578,7 +1578,7 @@ void CPVRClient::cb_add_menu_hook(void *kodiInstance, PVR_MENUHOOK *hook)
   CPVRClient *client = static_cast<CPVRClient*>(kodiInstance);
   if (!hook || !client)
   {
-    CLog::Log(LOGERROR, "PVR - %s - invalid handler data", __FUNCTION__);
+    CLog::LogF(LOGERROR, "Invalid handler data");
     return;
   }
 
@@ -1598,7 +1598,7 @@ void CPVRClient::cb_recording(void *kodiInstance, const char *strName, const cha
   CPVRClient *client = static_cast<CPVRClient*>(kodiInstance);
   if (!client || !strFileName)
   {
-    CLog::Log(LOGERROR, "PVR - %s - invalid handler data", __FUNCTION__);
+    CLog::LogF(LOGERROR, "Invalid handler data");
     return;
   }
 
@@ -1613,8 +1613,8 @@ void CPVRClient::cb_recording(void *kodiInstance, const char *strName, const cha
   CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, strLine1, strLine2, 5000, false);
   CServiceBroker::GetEventLog().Add(EventPtr(new CNotificationEvent(client->Name(), strLine1, client->Icon(), strLine2)));
 
-  CLog::Log(LOGDEBUG, "PVR - %s - recording %s on client '%s'. name='%s' filename='%s'",
-      __FUNCTION__, bOnOff ? "started" : "finished", client->Name().c_str(), strName, strFileName);
+  CLog::LogFC(LOGDEBUG, LOGPVR, "Recording %s on client '%s'. name='%s' filename='%s'",
+              bOnOff ? "started" : "finished", client->Name().c_str(), strName, strFileName);
 }
 
 void CPVRClient::cb_trigger_channel_update(void *kodiInstance)
@@ -1647,7 +1647,7 @@ void CPVRClient::cb_trigger_epg_update(void *kodiInstance, unsigned int iChannel
   CPVRClient *client = static_cast<CPVRClient*>(kodiInstance);
   if (!client)
   {
-    CLog::Log(LOGERROR, "PVR - %s - invalid handler data", __FUNCTION__);
+    CLog::LogF(LOGERROR, "Invalid handler data");
     return;
   }
 
@@ -1669,7 +1669,7 @@ void CPVRClient::cb_connection_state_change(void* kodiInstance, const char* strC
   CPVRClient *client = static_cast<CPVRClient*>(kodiInstance);
   if (!client || !strConnectionString)
   {
-    CLog::Log(LOGERROR, "PVR - %s - invalid handler data", __FUNCTION__);
+    CLog::LogF(LOGERROR, "Invalid handler data");
     return;
   }
 
@@ -1677,7 +1677,7 @@ void CPVRClient::cb_connection_state_change(void* kodiInstance, const char* strC
   if (prevState == newState)
     return;
 
-  CLog::Log(LOGDEBUG, "PVR - %s - state for connection '%s' on client '%s' changed from '%d' to '%d'", __FUNCTION__, strConnectionString, client->Name().c_str(), prevState, newState);
+  CLog::LogFC(LOGDEBUG, LOGPVR, "State for connection '%s' on client '%s' changed from '%d' to '%d'", strConnectionString, client->Name().c_str(), prevState, newState);
 
   client->SetConnectionState(newState);
 
@@ -1693,7 +1693,7 @@ void CPVRClient::cb_epg_event_state_change(void* kodiInstance, EPG_TAG* tag, EPG
   CPVRClient *client = static_cast<CPVRClient*>(kodiInstance);
   if (!client || !tag)
   {
-    CLog::Log(LOGERROR, "PVR - %s - invalid handler data", __FUNCTION__);
+    CLog::LogF(LOGERROR, "Invalid handler data");
     return;
   }
 

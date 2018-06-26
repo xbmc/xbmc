@@ -49,7 +49,7 @@ namespace PVR
     }
     else
     {
-      CLog::Log(LOGERROR, "CPVRItem - %s - unsupported item type!", __FUNCTION__);
+      CLog::LogF(LOGERROR, "Unsupported item type!");
     }
     return CPVREpgInfoTagPtr();
   }
@@ -72,7 +72,7 @@ namespace PVR
     }
     else
     {
-      CLog::Log(LOGERROR, "CPVRItem - %s - unsupported item type!", __FUNCTION__);
+      CLog::LogF(LOGERROR, "Unsupported item type!");
     }
     return CPVREpgInfoTagPtr();
   }
@@ -93,7 +93,7 @@ namespace PVR
     }
     else
     {
-      CLog::Log(LOGERROR, "CPVRItem - %s - unsupported item type!", __FUNCTION__);
+      CLog::LogF(LOGERROR, "Unsupported item type!");
     }
     return CPVRChannelPtr();
   }
@@ -122,7 +122,7 @@ namespace PVR
     }
     else
     {
-      CLog::Log(LOGERROR, "CPVRItem - %s - unsupported item type!", __FUNCTION__);
+      CLog::LogF(LOGERROR, "Unsupported item type!");
     }
     return CPVRTimerInfoTagPtr();
   }
@@ -139,7 +139,7 @@ namespace PVR
     }
     else
     {
-      CLog::Log(LOGERROR, "CPVRItem - %s - unsupported item type!", __FUNCTION__);
+      CLog::LogF(LOGERROR, "Unsupported item type!");
     }
     return CPVRRecordingPtr();
   }
@@ -161,7 +161,7 @@ namespace PVR
     }
     else
     {
-      CLog::Log(LOGERROR, "CPVRItem - %s - unsupported item type!", __FUNCTION__);
+      CLog::LogF(LOGERROR, "Unsupported item type!");
     }
     return false;
   }

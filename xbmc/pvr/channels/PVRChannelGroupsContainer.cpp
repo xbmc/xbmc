@@ -54,7 +54,7 @@ bool CPVRChannelGroupsContainer::Update(bool bChannelsOnly /* = false */)
   m_bUpdateChannelsOnly = bChannelsOnly;
   lock.Leave();
 
-  CLog::Log(LOGDEBUG, "CPVRChannelGroupsContainer - %s - updating %s", __FUNCTION__, bChannelsOnly ? "channels" : "channel groups");
+  CLog::LogFC(LOGDEBUG, LOGPVR, "Updating %s", bChannelsOnly ? "channels" : "channel groups");
   bool bReturn = m_groupsTV->Update(bChannelsOnly) && m_groupsRadio->Update(bChannelsOnly);
 
   lock.Enter();
@@ -198,7 +198,7 @@ bool CPVRChannelGroupsContainer::GetDirectory(const std::string& strPath, CFileI
     }
     else
     {
-      CLog::Log(LOGERROR, "CPVRChannelGroupsContainer - %s - unable to obtain members of channel group '%s'", __FUNCTION__, strGroupName.c_str());
+      CLog::LogF(LOGERROR, "Unable to obtain members of channel group '%s'", strGroupName.c_str());
       return false;
     }
 
@@ -222,7 +222,7 @@ bool CPVRChannelGroupsContainer::GetDirectory(const std::string& strPath, CFileI
     }
     else
     {
-      CLog::Log(LOGERROR, "CPVRChannelGroupsContainer - %s - unable to obtain members of channel group '%s'", __FUNCTION__, strGroupName.c_str());
+      CLog::LogF(LOGERROR, "Unable to obtain members of channel group '%s'", strGroupName.c_str());
       return false;
     }
 
@@ -256,7 +256,7 @@ bool CPVRChannelGroupsContainer::FilterDirectory(const CURL &url, CFileItemList 
       }
       else
       {
-        CLog::Log(LOGERROR, "CPVRChannelGroupsContainer - %s - unsupported value '%s' for url parameter 'view'", __FUNCTION__, view.c_str());
+        CLog::LogF(LOGERROR, "Unsupported value '%s' for channel list URL parameter 'view'", view.c_str());
         return false;
       }
     }
@@ -286,7 +286,7 @@ CPVRChannelPtr CPVRChannelGroupsContainer::GetByUniqueID(int iUniqueChannelId, i
 
 void CPVRChannelGroupsContainer::SearchMissingChannelIcons(void) const
 {
-  CLog::Log(LOGINFO, "PVRChannelGroupsContainer - %s - starting channel icon search", __FUNCTION__);
+  CLog::Log(LOGINFO, "Starting PVR channel icon search");
 
   CPVRChannelGroupPtr channelgrouptv  = GetGroupAllTV();
   CPVRChannelGroupPtr channelgroupradio = GetGroupAllRadio();

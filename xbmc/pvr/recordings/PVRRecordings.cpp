@@ -169,7 +169,7 @@ void CPVRRecordings::Update(void)
   m_bIsUpdating = true;
   lock.Leave();
 
-  CLog::Log(LOGDEBUG, "CPVRRecordings - %s - updating recordings", __FUNCTION__);
+  CLog::LogFC(LOGDEBUG, LOGPVR, "Updating recordings");
   UpdateFromClients();
 
   lock.Enter();
@@ -230,7 +230,7 @@ bool CPVRRecordings::DeleteRecording(const CFileItem &item)
 {
   if (!item.IsPVRRecording())
   {
-    CLog::Log(LOGERROR, "CPVRRecordings - %s - cannot delete file: no valid recording tag", __FUNCTION__);
+    CLog::LogF(LOGERROR, "Cannot delete item: no valid recording tag");
     return false;
   }
 
@@ -242,7 +242,7 @@ bool CPVRRecordings::Undelete(const CFileItem &item)
 {
   if (!item.IsDeletedPVRRecording())
   {
-    CLog::Log(LOGERROR, "CPVRRecordings - %s - cannot undelete file: no valid recording tag", __FUNCTION__);
+    CLog::LogF(LOGERROR, "Cannot undelete item: no valid recording tag");
     return false;
   }
 
@@ -254,7 +254,7 @@ bool CPVRRecordings::RenameRecording(CFileItem &item, std::string &strNewName)
 {
   if (!item.IsUsablePVRRecording())
   {
-    CLog::Log(LOGERROR, "CPVRRecordings - %s - cannot rename file: no valid recording tag", __FUNCTION__);
+    CLog::LogF(LOGERROR, "Cannot rename item: no valid recording tag");
     return false;
   }
 
@@ -292,7 +292,7 @@ bool CPVRRecordings::GetDirectory(const std::string& strPath, CFileItemList &ite
       bGrouped = false;
     else
     {
-      CLog::Log(LOGERROR, "CPVRRecordings - %s - unsupported value '%s' for url parameter 'view'", __FUNCTION__, view.c_str());
+      CLog::LogF(LOGERROR, "Unsupported value '%s' for url parameter 'view'", view.c_str());
       return false;
     }
   }
@@ -506,7 +506,7 @@ bool CPVRRecordings::ChangeRecordingsPlayCount(const CFileItemPtr &item, int cou
   {
     bResult = true;
 
-    CLog::Log(LOGDEBUG, "CPVRRecordings - %s - item path %s", __FUNCTION__, item->GetPath().c_str());
+    CLog::LogFC(LOGDEBUG, LOGPVR, "Item path %s", item->GetPath().c_str());
     CFileItemList items;
     if (item->m_bIsFolder)
     {
@@ -515,15 +515,15 @@ bool CPVRRecordings::ChangeRecordingsPlayCount(const CFileItemPtr &item, int cou
     else
       items.Add(item);
 
-    CLog::Log(LOGDEBUG, "CPVRRecordings - %s - will set watched for %d items", __FUNCTION__, items.Size());
+    CLog::LogFC(LOGDEBUG, LOGPVR, "Will set watched for %d items", items.Size());
     for (int i = 0; i < items.Size(); ++i)
     {
-      CLog::Log(LOGDEBUG, "CPVRRecordings - %s - setting watched for item %d", __FUNCTION__, i);
+      CLog::LogFC(LOGDEBUG, LOGPVR, "Setting watched for item %d", i);
 
       CFileItemPtr pItem=items[i];
       if (pItem->m_bIsFolder)
       {
-        CLog::Log(LOGDEBUG, "CPVRRecordings - %s - path %s is a folder, will call recursively", __FUNCTION__, pItem->GetPath().c_str());
+        CLog::LogFC(LOGDEBUG, LOGPVR, "Path %s is a folder, will call recursively", pItem->GetPath().c_str());
         if (pItem->GetLabel() != "..")
         {
           ChangeRecordingsPlayCount(pItem, count);
@@ -599,7 +599,7 @@ CVideoDatabase& CPVRRecordings::GetVideoDatabase()
     m_database->Open();
 
     if (!m_database->IsOpen())
-      CLog::Log(LOGERROR, "CPVRRecordings - %s - failed to open the video database", __FUNCTION__);
+      CLog::LogF(LOGERROR, "Failed to open the video database");
   }
 
   return *m_database;

@@ -54,6 +54,8 @@
 #define LOGDATABASE   (1 << (LOGMASKBIT + 12))
 #define LOGAVTIMING   (1 << (LOGMASKBIT + 13))
 #define LOGWINDOWING  (1 << (LOGMASKBIT + 14))
+#define LOGPVR        (1 << (LOGMASKBIT + 15))
+#define LOGEPG        (1 << (LOGMASKBIT + 16))
 
 #include "utils/params_check_macros.h"
 

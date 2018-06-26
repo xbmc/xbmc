@@ -324,7 +324,7 @@ bool CPVREpg::Load(void)
 
   if (!database)
   {
-    CLog::Log(LOGERROR, "EPG - %s - could not open the database", __FUNCTION__);
+    CLog::LogF(LOGERROR, "Could not open the EPG database");
     return bReturn;
   }
 
@@ -333,7 +333,7 @@ bool CPVREpg::Load(void)
   CSingleLock lock(m_critSection);
   if (iEntriesLoaded <= 0)
   {
-    CLog::Log(LOGDEBUG, "EPG - %s - no database entries found for table '%s'.", __FUNCTION__, m_strName.c_str());
+    CLog::LogFC(LOGDEBUG, LOGEPG, "No database entries found for table '%s'.", m_strName.c_str());
   }
   else
   {
@@ -479,7 +479,7 @@ bool CPVREpg::UpdateEntry(const CPVREpgInfoTagPtr &tag, EPG_EVENT_STATE newState
   }
   else
   {
-    CLog::Log(LOGERROR, "EPG - %s - unknown epg event state value: %d", __FUNCTION__, newState);
+    CLog::LogF(LOGERROR, "Unknown epg event state value: %d", newState);
     bRet = false;
   }
 
@@ -536,7 +536,7 @@ bool CPVREpg::Update(const time_t start, const time_t end, int iUpdateTime, bool
     m_bLoaded = true;
   }
   else
-    CLog::Log(LOGERROR, "EPG - %s - failed to update table '%s'", __FUNCTION__, Name().c_str());
+    CLog::LogF(LOGERROR, "Failed to update table '%s'", Name().c_str());
 
   CSingleLock lock(m_critSection);
   m_bUpdatePending = false;
@@ -582,7 +582,7 @@ bool CPVREpg::Persist(void)
   CPVREpgDatabasePtr database = CServiceBroker::GetPVRManager().EpgContainer().GetEpgDatabase();
   if (!database)
   {
-    CLog::Log(LOGERROR, "EPG - %s - could not open the database", __FUNCTION__);
+    CLog::LogF(LOGERROR, "Could not open the EPG database");
     return false;
   }
 
@@ -694,7 +694,7 @@ bool CPVREpg::UpdateFromScraper(time_t start, time_t end)
 {
   if (m_strScraperName.empty())
   {
-    CLog::Log(LOGERROR, "EPG - %s - no EPG scraper defined for table '%s'", __FUNCTION__, m_strName.c_str());
+    CLog::LogF(LOGERROR, "No EPG scraper defined for table '%s'", m_strName.c_str());
   }
   else if (m_strScraperName == "client")
   {
@@ -712,27 +712,29 @@ bool CPVREpg::UpdateFromScraper(time_t start, time_t end)
       {
         if (!client->GetClientCapabilities().SupportsEPG())
         {
-          CLog::Log(LOGERROR, "EPG - %s - the backend for channel '%s' on client '%i' does not support EPGs", __FUNCTION__, channel->ChannelName().c_str(), channel->ClientID());
+          CLog::LogF(LOGERROR, "The backend for channel '%s' on client '%i' does not support EPGs",
+                     channel->ChannelName().c_str(), channel->ClientID());
         }
         else
         {
-          CLog::Log(LOGDEBUG, "EPG - %s - updating EPG for channel '%s' from client '%i'", __FUNCTION__, channel->ChannelName().c_str(), channel->ClientID());
+          CLog::LogFC(LOGDEBUG, LOGEPG, "Updating EPG for channel '%s' from client '%i'",
+                      channel->ChannelName().c_str(), channel->ClientID());
           return (client->GetEPGForChannel(channel, this, start, end) == PVR_ERROR_NO_ERROR);
         }
       }
       else
       {
-        CLog::Log(LOGERROR, "EPG - %s - client '%i' not found, can't update", __FUNCTION__, channel->ClientID());
+        CLog::LogF(LOGERROR, "Client '%i' not found, can't update", channel->ClientID());
       }
     }
     else
     {
-      CLog::Log(LOGERROR, "EPG - %s - channel not found, can't update", __FUNCTION__);
+      CLog::LogF(LOGERROR, "Channel not found, can't update");
     }
   }
   else // other non-empty scraper name...
   {
-    CLog::Log(LOGERROR, "Loading the EPG via scraper has not been implemented yet!");
+    CLog::LogF(LOGERROR, "Loading the EPG via scraper is not yet implemented!");
     //! @todo Add Support for Web EPG Scrapers here
   }
 

@@ -127,7 +127,7 @@ CPVRRecording::CPVRRecording(const PVR_RECORDING &recording, unsigned int iClien
       bool bSupportsRadio = client && client->GetClientCapabilities().SupportsRadio();
       if (bSupportsRadio && client && client->GetClientCapabilities().SupportsTV())
       {
-        CLog::Log(LOGWARNING,"CPVRRecording::CPVRRecording - unable to determine channel type. Defaulting to TV.");
+        CLog::Log(LOGWARNING, "Unable to determine channel type. Defaulting to TV.");
         m_bRadio = false; // Assume TV.
       }
       else
@@ -389,7 +389,7 @@ void CPVRRecording::Update(const CPVRRecording &tag)
   std::string strShow = StringUtils::Format("%s - ", g_localizeStrings.Get(20364).c_str());
   if (StringUtils::StartsWithNoCase(m_strPlotOutline, strShow))
   {
-    CLog::Log(LOGDEBUG,"CPVRRecording::Update - PVR addon provides episode name in strPlotOutline which is deprecated");
+    CLog::Log(LOGWARNING, "PVR addon provides episode name in strPlotOutline which is deprecated");
     std::string strEpisode = m_strPlotOutline;
     std::string strTitle = m_strDirectory;
 
