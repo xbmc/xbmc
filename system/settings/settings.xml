@@ -640,6 +640,23 @@
           </dependencies>
           <control type="list" format="string" />
         </setting>
+        <setting id="subtitles.bgcolor" type="integer" parent="subtitles.font" label="745" help="36228">
+          <level>3</level>
+          <default>0</default> <!-- Black -->
+          <constraints>
+            <options>
+              <option label="731">0</option> <!-- Black -->
+              <option label="760">1</option> <!-- Yellow -->
+              <option label="761">2</option> <!-- White -->
+              <option label="766">3</option> <!-- Light grey -->
+              <option label="767">4</option> <!-- Grey -->
+            </options>
+          </constraints>
+          <dependencies>
+            <dependency type="enable" on="property" name="IsUsingTTFSubtitles" setting="subtitles.font" />
+          </dependencies>
+          <control type="list" format="string" />
+        </setting>
         <setting id="subtitles.overrideassfonts" type="boolean" label="21368" help="36190">
           <level>3</level>
           <default>false</default>
