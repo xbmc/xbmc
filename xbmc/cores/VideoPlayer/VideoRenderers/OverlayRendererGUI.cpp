@@ -35,14 +35,20 @@
 
 using namespace OVERLAY;
 
-static UTILS::Color colors[8] = { 0xFFFFFF00
-                                , 0xFFFFFFFF
-                                , 0xFF0099FF
-                                , 0xFF00FF00
-                                , 0xFFCCFF00
-                                , 0xFF00FFFF
-                                , 0xFFE5E5E5
-                                , 0xFFC0C0C0 };
+static UTILS::Color colors[8] = { UTILS::COLOR::YELLOW,
+                                  UTILS::COLOR::WHITE,
+                                  UTILS::COLOR::BLUE,
+                                  UTILS::COLOR::BRIGHTGREEN,
+                                  UTILS::COLOR::YELLOWGREEN,
+                                  UTILS::COLOR::CYAN,
+                                  UTILS::COLOR::LIGHTGREY,
+                                  UTILS::COLOR::GREY };
+
+static UTILS::Color bgcolors[5] = { UTILS::COLOR::BLACK,
+                                    UTILS::COLOR::YELLOW,
+                                    UTILS::COLOR::WHITE,
+                                    UTILS::COLOR::LIGHTGREY,
+                                    UTILS::COLOR::GREY };
 
 CGUITextLayout* COverlayText::GetFontLayout(const std::string &font, int color, int height, int style,
                                             const std::string &fontcache, const std::string &fontbordercache)
