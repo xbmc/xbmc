@@ -657,6 +657,14 @@
           </dependencies>
           <control type="list" format="string" />
         </setting>
+        <setting id="subtitles.bgopacity" type="integer" parent="subtitles.font" label="746" help="36230">
+          <level>3</level>
+          <default>0</default>
+          <dependencies>
+            <dependency type="enable" on="property" name="IsUsingTTFSubtitles" setting="subtitles.font" />
+          </dependencies>
+          <control type="slider" format="percentage" range="0,100" />
+        </setting>
         <setting id="subtitles.overrideassfonts" type="boolean" label="21368" help="36190">
           <level>3</level>
           <default>false</default>

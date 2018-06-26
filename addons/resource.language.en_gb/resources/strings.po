@@ -3359,7 +3359,9 @@ msgctxt "#745"
 msgid "Background colour"
 msgstr ""
 
-#empty string 746
+msgctxt "#746"
+msgid "Background opacity"
+msgstr ""
 
 msgctxt "#747"
 msgid "Error loading image"
@@ -18494,7 +18496,11 @@ msgctxt "#36229"
 msgid "Display signal quality information in the codec information window (if supported by the add-on and backend)."
 msgstr ""
 
-#empty string with id 36230
+#. Description of setting with label #746 "Background Opacity"
+#: system/settings/settings.xml
+msgctxt "#36230"
+msgid "Set the the subtitle background opacity."
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36231"
