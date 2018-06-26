@@ -171,10 +171,7 @@ msgctxt "#31030"
 msgid "System memory usage"
 msgstr ""
 
-#: /xml/SettingsSystemInfo.xml
-msgctxt "#31031"
-msgid "Version info"
-msgstr ""
+#empty string with id 31031
 
 #: /xml/EventLog.xml /xml/Includes_MediaMenu.xml /xml/SmartPlaylistEditor.xml
 msgctxt "#31032"

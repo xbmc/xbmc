@@ -126,63 +126,51 @@
 					<orientation>vertical</orientation>
 					<control type="label">
 						<description>CPU Text</description>
-						<width>730</width>
+						<width>1420</width>
 						<height>80</height>
-						<label>$LOCALIZE[13271] $INFO[System.CPUUsage]</label>
+						<label>[B]$LOCALIZE[13271][/B] $INFO[System.CPUUsage]</label>
 						<aligny>top</aligny>
 						<textoffsety>40</textoffsety>
 						<shadowcolor>black</shadowcolor>
-						<font>font27</font>
+						<font>font10</font>
 					</control>
 					<control type="progress">
 						<description>CPU BAR</description>
-						<width>730</width>
+						<width>1420</width>
 						<height>16</height>
 						<info>System.CPUUsage</info>
 					</control>
 					<control type="label">
 						<description>Memory Text</description>
-						<width>730</width>
+						<width>1420</width>
 						<height>40</height>
-						<label>$LOCALIZE[31030]: $INFO[system.memory(used)] [B]/[/B] $INFO[system.memory(total)] [B]-[/B] $INFO[system.memory(used.percent)]</label>
-						<aligny>center</aligny>
+						<label>[B]$LOCALIZE[31030]:[/B] $INFO[system.memory(used)] [B]/[/B] $INFO[system.memory(total)] [B]-[/B] $INFO[system.memory(used.percent)]</label>
+						<aligny>top</aligny>
 						<shadowcolor>black</shadowcolor>
-						<font>font27</font>
+						<font>font10</font>
 					</control>
 					<control type="progress">
 						<description>Memory BAR</description>
-						<width>730</width>
+						<width>1420</width>
 						<height>16</height>
 						<info>system.memory(used)</info>
 					</control>
 				</control>
-				<control type="label">
-					<top>34</top>
-					<left>1210</left>
-					<width>auto</width>
-					<height>50</height>
-					<aligny>bottom</aligny>
-					<textoffsety>10</textoffsety>
-					<label>$LOCALIZE[31031]:</label>
-					<shadowcolor>black</shadowcolor>
-					<font>font25_title</font>
-				</control>
 				<control type="grouplist">
 					<description>Kodi build version</description>
 					<itemgap>10</itemgap>
-					<top>80</top>
-					<left>1210</left>
-					<width>820</width>
-					<height>45</height>
+					<top>150</top>
+					<left>420</left>
+					<width>1420</width>
 					<orientation>horizontal</orientation>
 					<control type="label">
 						<description>Build label</description>
 						<width>auto</width>
 						<height>50</height>
 						<aligny>bottom</aligny>
-						<font>font12</font>
+						<font>font10</font>
 						<textoffsety>10</textoffsety>
-						<label>$LOCALIZE[144]</label>
+						<label>[B]$LOCALIZE[144][/B]</label>
 						<shadowcolor>black</shadowcolor>
 					</control>
 					<control type="label" id="52">
@@ -190,7 +178,7 @@
 						<height>50</height>
 						<aligny>bottom</aligny>
 						<textoffsety>10</textoffsety>
-						<font>font12</font>
+						<font>font10</font>
 						<width>auto</width>
 						<textcolor>button_focus</textcolor>
 						<shadowcolor>black</shadowcolor>
@@ -199,22 +187,29 @@
 				<control type="grouplist">
 					<description>Build date</description>
 					<itemgap>10</itemgap>
-					<top>125</top>
-					<left>1210</left>
-					<width>800</width>
+					<top>150</top>
+					<left>1440</left>
+					<width>400</width>
+					<align>right</align>
 					<orientation>horizontal</orientation>
 					<control type="label">
 						<description>kodi Compiled Text</description>
 						<width>auto</width>
-						<height>25</height>
-						<label>$LOCALIZE[174]</label>
-						<font>font12</font>
+						<height>50</height>
+						<align>right</align>
+						<aligny>bottom</aligny>
+						<font>font10</font>
+						<textoffsety>10</textoffsety>
+						<label>[B]$LOCALIZE[174][/B]</label>
 						<shadowcolor>black</shadowcolor>
 					</control>
 					<control type="label" id="53">
 						<description>Kodi Build Date</description>
+						<height>50</height>
+						<aligny>bottom</aligny>
+						<textoffsety>10</textoffsety>
+						<font>font10</font>
 						<width>auto</width>
-						<font>font12</font>
 						<textcolor>button_focus</textcolor>
 						<shadowcolor>black</shadowcolor>
 					</control>
