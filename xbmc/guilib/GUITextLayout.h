@@ -87,6 +87,12 @@ public:
   float GetTextWidth() const { return m_textWidth; };
 
   float GetTextWidth(const std::wstring &text) const;
+  
+  /*! \brief Returns the precalculated height of the text to be rendered (in constant time).
+   \return height of text
+  */
+  float GetTextHeight() const { return m_textHeight; };
+  
   bool Update(const std::string &text, float maxWidth = 0, bool forceUpdate = false, bool forceLTRReadingOrder = false);
   bool UpdateW(const std::wstring &text, float maxWidth = 0, bool forceUpdate = false, bool forceLTRReadingOrder = false);
 
