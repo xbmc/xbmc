@@ -118,8 +118,9 @@ Change to Kodi's source code directory:
 cd $HOME/kodi
 ```
 
-Build and install missing dependencies from repositories (*libfmt*, *rapidjson* and *waylandpp*):
+Build and install missing dependencies from repositories (*flatbuffers*, *libfmt*, *rapidjson* and *waylandpp*):
 ```
+sudo make -C tools/depends/target/flatbuffers PREFIX=/usr/local
 sudo make -C tools/depends/target/libfmt PREFIX=/usr/local
 sudo make -C tools/depends/target/rapidjson PREFIX=/usr/local
 sudo make -C tools/depends/target/waylandpp PREFIX=/usr/local

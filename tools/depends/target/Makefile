@@ -15,7 +15,7 @@ DEPENDS = \
 	taglib libusb libnfs \
 	pythonmodule-pil pythonmodule-pycryptodome pythonmodule-setuptools \
 	libxslt ffmpeg platform crossguid \
-        libdvdread libdvdnav libdvdcss p8-platform
+	libdvdread libdvdnav libdvdcss p8-platform flatbuffers
 
 
 FFMPEG_DEPENDS = gnutls
