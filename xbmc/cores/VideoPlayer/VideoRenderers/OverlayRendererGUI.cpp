@@ -24,13 +24,13 @@
 #include "filesystem/File.h"
 #include "ServiceBroker.h"
 #include "Util.h"
-#include "utils/Color.h"
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
-#include "guilib/GUITextLayout.h"
 #include "guilib/GUIFontManager.h"
 #include "guilib/GUIFont.h"
+#include "guilib/GUITextLayout.h"
+#include "guilib/GUITexture.h"
 #include "cores/VideoPlayer/DVDCodecs/Overlay/DVDOverlayText.h"
 
 using namespace OVERLAY;
@@ -43,12 +43,6 @@ static UTILS::Color colors[8] = { UTILS::COLOR::YELLOW,
                                   UTILS::COLOR::CYAN,
                                   UTILS::COLOR::LIGHTGREY,
                                   UTILS::COLOR::GREY };
-
-static UTILS::Color bgcolors[5] = { UTILS::COLOR::BLACK,
-                                    UTILS::COLOR::YELLOW,
-                                    UTILS::COLOR::WHITE,
-                                    UTILS::COLOR::LIGHTGREY,
-                                    UTILS::COLOR::GREY };
 
 CGUITextLayout* COverlayText::GetFontLayout(const std::string &font, int color, int height, int style,
                                             const std::string &fontcache, const std::string &fontbordercache)
@@ -161,8 +155,8 @@ COverlayText::~COverlayText()
   delete m_layout;
 }
 
-void COverlayText::PrepareRender(const std::string &font, int color, int height, int style,
-                                 const std::string &fontcache, const std::string &fontbordercache)
+void COverlayText::PrepareRender(const std::string &font, int color, int height, int style, const std::string &fontcache,
+                                 const std::string &fontbordercache, const UTILS::Color bgcolor)
 {
   if (!m_layout)
     m_layout = GetFontLayout(font, color, height, style, fontcache, fontbordercache);
@@ -176,6 +170,8 @@ void COverlayText::PrepareRender(const std::string &font, int color, int height,
   float width_max = (float)res.Overscan.right - res.Overscan.left;
   m_layout->Update(m_text, width_max * 0.9f, false, true); // true to force LTR reading order (most Hebrew subs are this format)
   m_layout->GetTextExtent(m_width, m_height);
+  
+  m_bgcolor = bgcolor;
 }
 
 void COverlayText::Render(OVERLAY::SRenderState &state)
@@ -213,6 +209,13 @@ void COverlayText::Render(OVERLAY::SRenderState &state)
   // clamp inside screen
   y = std::max(y, (float) res.Overscan.top);
   y = std::min(y, res.Overscan.bottom - m_height);
+  
+  // draw the overlay background
+  if (m_bgcolor != UTILS::COLOR::NONE)
+  {
+    CRect backgroundbox(x - m_layout->GetTextWidth() * 0.52f, y, x + m_layout->GetTextWidth() * 0.52f, y + m_layout->GetTextHeight());
+    CGUITexture::DrawQuad(backgroundbox, m_bgcolor);
+  }
 
   m_layout->RenderOutline(x, y, 0, 0xFF000000, XBFONT_CENTER_X, width_max);
   CServiceBroker::GetWinSystem()->GetGfxContext().RemoveTransform();
