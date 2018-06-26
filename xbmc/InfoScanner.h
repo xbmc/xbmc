@@ -64,10 +64,9 @@ public:
 
   /*! \brief Check if the folder is excluded from scanning process
    \param strDirectory Directory to scan
-   \param regexps Regular expression to exclude from the scan
-   \return true if there is a .nomedia file or one of the regexps is a match
+   \return true if there is a .nomedia file
    */
-  bool IsExcluded(const std::string& strDirectory, const std::vector<std::string> &regexps);
+  bool HasNoMedia(const std::string& strDirectory) const;
 
   //! \brief Set whether or not to show a progress dialog.
   void ShowDialog(bool show) { m_showDialog = show; }
@@ -85,7 +84,4 @@ protected:
   bool m_bRunning = false; //!< Whether or not scanner is running
   bool m_bCanInterrupt = false; //!< Whether or not scanner is currently interruptable
   bool m_bClean = false; //!< Whether or not to perform cleaning during scanning
-
-private:
-  bool HasNoMedia(const std::string& strDirectory) const;
 };

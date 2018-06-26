@@ -28,18 +28,12 @@
 bool CInfoScanner::HasNoMedia(const std::string &strDirectory) const
 {
   std::string noMediaFile = URIUtils::AddFileToFolder(strDirectory, ".nomedia");
-  return XFILE::CFile::Exists(noMediaFile);
-}
 
-bool CInfoScanner::IsExcluded(const std::string& strDirectory, const std::vector<std::string> &regexps)
-{
-  if (CUtil::ExcludeFileOrFolder(strDirectory, regexps))
-    return true;
-
-  if (!URIUtils::IsPlugin(strDirectory) && HasNoMedia(strDirectory))
+  if (!URIUtils::IsPlugin(strDirectory) && XFILE::CFile::Exists(noMediaFile))
   {
     CLog::Log(LOGWARNING, "Skipping item '%s' with '.nomedia' file in parent directory, it won't be added to the library.", CURL::GetRedacted(strDirectory).c_str());
     return true;
   }
+
   return false;
 }
