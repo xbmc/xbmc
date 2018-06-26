@@ -415,7 +415,7 @@ void CNetworkWin10::queryInterfaceList()
 
       wchar_t* guidStr = nullptr;
       StringFromIID(adapter.NetworkAdapterId(), &guidStr);
-      adapters[guidStr] = winrt::detach_abi(adapter);
+      adapters[guidStr] = reinterpret_cast<IUnknown*>(winrt::detach_abi(adapter));
 
       CoTaskMemFree(guidStr);
     }
