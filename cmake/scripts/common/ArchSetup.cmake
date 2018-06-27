@@ -157,7 +157,8 @@ if(PLATFORM_DEFINES)
   add_options(ALL_LANGUAGES ALL_BUILDS ${PLATFORM_DEFINES})
 endif()
 
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-  add_options (ALL_LANGUAGES DEBUG "-g" "-D_DEBUG" "-Wall")
+if(NOT MSVC)
+  add_options(ALL_LANGUAGES ALL_BUILDS "-Wall")
+  add_options(ALL_LANGUAGES DEBUG "-g" "-D_DEBUG")
 endif()
 
