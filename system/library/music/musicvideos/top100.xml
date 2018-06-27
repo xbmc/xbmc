@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<node order="50" type="filter">
+	<label>271</label>
+	<icon>DefaultMusicTop100Songs.png</icon>
+	<content>musicvideos</content>
+	<order direction="descending">playcount</order>
+	<limit>100</limit>
+</node>
