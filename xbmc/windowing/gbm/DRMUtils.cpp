@@ -189,9 +189,9 @@ bool CDRMUtils::FindConnector()
 {
   for(auto i = 0; i < m_drm_resources->count_connectors; i++)
   {
-    m_connector->connector = drmModeGetConnector(m_fd,
-                                                      m_drm_resources->connectors[i]);
-    if(m_connector->connector->connection == DRM_MODE_CONNECTED)
+    m_connector->connector = drmModeGetConnector(m_fd, m_drm_resources->connectors[i]);
+    if((m_connector->connector->encoder_id > 0) &&
+        m_connector->connector->connection == DRM_MODE_CONNECTED)
     {
       CLog::Log(LOGDEBUG, "CDRMUtils::%s - found connector: %d", __FUNCTION__,
                                                                  m_connector->connector->connector_id);
