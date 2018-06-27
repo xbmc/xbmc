@@ -885,10 +885,8 @@ std::string CCPUInfo::GetCoresUsageString() const
     {
       if (!strCores.empty())
         strCores += ' ';
-      if (it->second.m_fPct < 10.0)
-        strCores += StringUtils::Format("#%d: %1.0f%%", it->first, it->second.m_fPct);
-      else
-        strCores += StringUtils::Format("#%d: %3.0f%%", it->first, it->second.m_fPct);
+
+      strCores += StringUtils::Format("#%d: %3.0f%%", it->first, it->second.m_fPct);
     }
   }
   else
