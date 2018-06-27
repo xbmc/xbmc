@@ -642,11 +642,6 @@ void CWinEventsWin10::Announce(AnnouncementFlag flag, const char * sender, const
     {
       try
       {
-        // if something wrong with main view then Activated() will throw an 
-        // exception instead of std::terminate what Dispatcher() does
-        auto token = CoreApplication::MainView().Activated([](auto&&, auto&&) {});
-        CoreApplication::MainView().Activated(token);
-
         auto dispatcher = CoreApplication::MainView().Dispatcher();
         if (dispatcher)
         {

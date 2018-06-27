@@ -20,12 +20,12 @@
 
 #include "WinLibraryDirectory.h"
 #include "FileItem.h"
+#include "URL.h"
 #include "platform/win10/AsyncHelpers.h"
 #include "platform/win32/CharsetConverter.h"
-#include "URL.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/log.h"
 #include <string>
 #include <winrt/Windows.Storage.FileProperties.h>
 
@@ -37,10 +37,10 @@ using namespace winrt::Windows::Storage::Search;
 using namespace winrt::Windows::Foundation::Collections;
 namespace winrt
 {
-  using namespace Windows::Foundation;
+using namespace Windows::Foundation;
 }
 
-bool CWinLibraryDirectory::GetStoragePath(std::string library, std::string & path)
+bool CWinLibraryDirectory::GetStoragePath(std::string library, std::string& path)
 {
   CURL url;
   url.SetProtocol("win-lib");
@@ -59,35 +59,39 @@ StorageFolder CWinLibraryDirectory::GetRootFolder(const CURL& url)
     return nullptr;
 
   std::string lib = url.GetHostName();
-  if (lib == "music")
-    return KnownFolders::MusicLibrary();
-  if (lib == "video")
-    return KnownFolders::VideosLibrary();
-  if (lib == "pictures")
-    return KnownFolders::PicturesLibrary();
-  if (lib == "photos")
-    return KnownFolders::CameraRoll();
-  if (lib == "documents")
-    return KnownFolders::DocumentsLibrary();
-  if (lib == "removable")
-    return KnownFolders::RemovableDevices();
+  try
+  {
+    if (lib == "music")
+      return KnownFolders::MusicLibrary();
+    if (lib == "video")
+      return KnownFolders::VideosLibrary();
+    if (lib == "pictures")
+      return KnownFolders::PicturesLibrary();
+    if (lib == "photos")
+      return KnownFolders::CameraRoll();
+    if (lib == "documents")
+      return KnownFolders::DocumentsLibrary();
+    if (lib == "removable")
+      return KnownFolders::RemovableDevices();
+  }
+  catch (const winrt::hresult_error& ex)
+  {
+    std::string strError = KODI::PLATFORM::WINDOWS::FromW(ex.message().c_str());
+    CLog::LogF(LOGERROR, "unexpected error occurs during WinRT API call: {}", strError);
+  }
 
   return nullptr;
 }
 
-bool CWinLibraryDirectory::IsValid(const CURL & url)
+bool CWinLibraryDirectory::IsValid(const CURL& url)
 {
   if (!url.IsProtocol("win-lib"))
     return false;
 
   std::string lib = url.GetHostName();
 
-  if ( lib == "music"
-    || lib == "video"
-    || lib == "pictures"
-    || lib == "photos"
-    || lib == "documents"
-    || lib == "removable")
+  if (lib == "music" || lib == "video" || lib == "pictures" || lib == "photos" ||
+      lib == "documents" || lib == "removable")
     return true;
   else
     return false;
@@ -96,7 +100,7 @@ bool CWinLibraryDirectory::IsValid(const CURL & url)
 CWinLibraryDirectory::CWinLibraryDirectory() = default;
 CWinLibraryDirectory::~CWinLibraryDirectory(void) = default;
 
-bool CWinLibraryDirectory::GetDirectory(const CURL &url, CFileItemList &items)
+bool CWinLibraryDirectory::GetDirectory(const CURL& url, CFileItemList& items)
 {
   items.Clear();
 
@@ -115,7 +119,8 @@ bool CWinLibraryDirectory::GetDirectory(const CURL &url, CFileItemList &items)
     std::string itemName = FromW(item.Name().c_str());
 
     CFileItemPtr pItem(new CFileItem(itemName));
-    pItem->m_bIsFolder = (item.Attributes() & FileAttributes::Directory) == FileAttributes::Directory;
+    pItem->m_bIsFolder =
+        (item.Attributes() & FileAttributes::Directory) == FileAttributes::Directory;
     IStorageItemProperties storageItemProperties = item.as<IStorageItemProperties>();
     if (item != nullptr)
     {
@@ -176,16 +181,17 @@ bool CWinLibraryDirectory::Remove(const CURL& url)
   bool exists = false;
   auto folder = GetFolder(url);
   if (!folder)
-      return false;
+    return false;
   try
   {
     Wait(folder.DeleteAsync(StorageDeleteOption::PermanentDelete));
     exists = true;
   }
-  catch(const winrt::hresult_error& ex)
+  catch (const winrt::hresult_error& ex)
   {
     std::string error = FromW(ex.message().c_str());
-    CLog::LogF(LOGERROR, __FUNCTION__, "unable remove folder '%s' with error", url.Get(), error.c_str());
+    CLog::LogF(LOGERROR, __FUNCTION__, "unable remove folder '%s' with error", url.Get(),
+               error.c_str());
     exists = false;
   }
   return exists;
@@ -229,7 +235,8 @@ StorageFolder CWinLibraryDirectory::GetFolder(const CURL& url)
     catch (const winrt::hresult_error& ex)
     {
       std::string error = FromW(ex.message().c_str());
-      CLog::LogF(LOGERROR, "unable to get folder '%s' with error", url.GetRedacted().c_str(), error.c_str());
+      CLog::LogF(LOGERROR, "unable to get folder '%s' with error", url.GetRedacted().c_str(),
+                 error.c_str());
     }
     return nullptr;
   }

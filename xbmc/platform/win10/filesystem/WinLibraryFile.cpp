@@ -384,14 +384,14 @@ StorageFile CWinLibraryFile::GetFile(const CURL& url)
 bool CWinLibraryFile::IsInList(const CURL& url, const IStorageItemAccessList& list)
 {
   auto token = GetTokenFromList(url, list);
-  return token != nullptr && !token.empty();
+  return !token.empty();
 }
 
 winrt::hstring CWinLibraryFile::GetTokenFromList(const CURL& url, const IStorageItemAccessList& list)
 {
   AccessListEntryView listview = list.Entries();
   if (listview.Size() == 0)
-    return nullptr;
+    return winrt::hstring();
 
   using KODI::PLATFORM::WINDOWS::ToW;
   std::wstring filePathW = ToW(url.Get());
@@ -404,7 +404,7 @@ winrt::hstring CWinLibraryFile::GetTokenFromList(const CURL& url, const IStorage
     }
   }
 
-  return nullptr;
+  return winrt::hstring();
 }
 
 int CWinLibraryFile::Stat(const StorageFile& file, struct __stat64* statData)

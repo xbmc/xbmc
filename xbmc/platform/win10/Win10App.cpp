@@ -183,7 +183,9 @@ void App::OnSuspending(const winrt::IInspectable&, const SuspendingEventArgs& ar
 
   Concurrency::create_task([this, deferral]()
   {
-    DX::Windowing()->TrimDevice();
+    auto windowing = DX::Windowing();
+    if (windowing)
+      windowing->TrimDevice();
     // Insert your code here.
     deferral.Complete();
   });

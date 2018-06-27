@@ -380,7 +380,7 @@ void DX::DeviceResources::CreateDeviceResources()
     ComPtr<ID3D11InfoQueue> d3dInfoQueue;
     if (SUCCEEDED(m_d3dDebug.As(&d3dInfoQueue)))
     {
-      D3D11_MESSAGE_ID hide[] =
+      std::vector<D3D11_MESSAGE_ID> hide =
       {
         D3D11_MESSAGE_ID_GETVIDEOPROCESSORFILTERRANGE_UNSUPPORTED,        // avoid GETVIDEOPROCESSORFILTERRANGE_UNSUPPORTED (dx bug)
         D3D11_MESSAGE_ID_DEVICE_RSSETSCISSORRECTS_NEGATIVESCISSOR         // avoid warning for some labels out of screen
@@ -389,8 +389,8 @@ void DX::DeviceResources::CreateDeviceResources()
 
       D3D11_INFO_QUEUE_FILTER filter;
       ZeroMemory(&filter, sizeof(filter));
-      filter.DenyList.NumIDs = _countof(hide);
-      filter.DenyList.pIDList = hide;
+      filter.DenyList.NumIDs = hide.size();
+      filter.DenyList.pIDList = hide.data();
       d3dInfoQueue->AddStorageFilterEntries(&filter);
     }
   }
@@ -504,7 +504,7 @@ HRESULT DX::DeviceResources::CreateSwapChain(DXGI_SWAP_CHAIN_DESC1& desc, DXGI_S
 #else
   hr = m_dxgiFactory->CreateSwapChainForCoreWindow(
     m_d3dDevice.Get(),
-    winrt::get_abi(m_coreWindow),
+    winrt::get_unknown(m_coreWindow),
     &desc,
     nullptr,
     ppSwapChain
