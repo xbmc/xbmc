@@ -468,7 +468,7 @@ void CCurlFile::Close()
   m_inError = false;
 }
 
-void CCurlFile::SetCommonOptions(CReadState* state)
+void CCurlFile::SetCommonOptions(CReadState* state, bool failOnError /* = true */)
 {
   CURL_HANDLE* h = state->m_easyHandle;
 
@@ -521,7 +521,7 @@ void CCurlFile::SetCommonOptions(CReadState* state)
   // resolves. Unfortunately, c-ares does not yet support IPv6.
   g_curlInterface.easy_setopt(h, CURLOPT_NOSIGNAL, CURL_ON);
 
-  if (m_state->m_failOnError)
+  if (failOnError)
   {
     // not interested in failed requests
     g_curlInterface.easy_setopt(h, CURLOPT_FAILONERROR, 1);
@@ -824,6 +824,8 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
           m_cipherlist = value;
         else if (name == "connection-timeout")
           m_connecttimeout = strtol(value.c_str(), NULL, 10);
+        else if (name == "failonerror")
+          m_failOnError = value == "true";
         else if (name == "redirect-limit")
           m_redirectlimit = strtol(value.c_str(), NULL, 10);
         else if (name == "postdata")
@@ -1014,15 +1016,14 @@ bool CCurlFile::Open(const CURL& url)
                                 &m_state->m_multiHandle);
 
   // setup common curl options
-  m_state->m_failOnError = !g_advancedSettings.CanLogComponent(LOGCURL);
-  SetCommonOptions(m_state);
+  SetCommonOptions(m_state, m_failOnError && !g_advancedSettings.CanLogComponent(LOGCURL));
   SetRequestHeaders(m_state);
   m_state->m_sendRange = m_seekable;
   m_state->m_bRetry = m_allowRetry;
 
   m_httpresponse = m_state->Connect(m_bufferSize);
 
-  if (m_httpresponse <= 0 || m_httpresponse >= 400)
+  if (m_httpresponse <= 0 || (m_failOnError && m_httpresponse >= 400))
   {
     std::string error;
     if (m_httpresponse >= 400 && g_advancedSettings.CanLogComponent(LOGCURL))

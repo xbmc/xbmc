@@ -126,7 +126,6 @@ namespace XFILE
           bool m_sendRange;
           bool m_bLastError;
           bool m_bRetry;
-          bool m_failOnError = true;
 
           char* m_readBuffer;
 
@@ -154,7 +153,7 @@ namespace XFILE
 
     protected:
       void ParseAndCorrectUrl(CURL &url);
-      void SetCommonOptions(CReadState* state);
+      void SetCommonOptions(CReadState* state, bool failOnError = true);
       void SetRequestHeaders(CReadState* state);
       void SetCorrectHeaders(CReadState* state);
       bool Service(const std::string& strURL, std::string& strHTML);
@@ -199,6 +198,7 @@ namespace XFILE
       bool m_postdataset;
       bool m_allowRetry;
       bool m_verifyPeer = true;
+      bool m_failOnError = true;
 
       CRingBuffer m_buffer; // our ringhold buffer
       char* m_overflowBuffer; // in the rare case we would overflow the above buffer
