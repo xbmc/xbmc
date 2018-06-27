@@ -31,6 +31,9 @@
   <section id="system">
     <category id="display">
       <group id="1">
+        <setting id="videoscreen.screen">
+          <visible>false</visible>
+        </setting>
         <setting id="videoscreen.limitedrange" type="boolean" label="36042" help="36359">
           <level>3</level>
           <default>false</default>
