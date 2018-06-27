@@ -43,17 +43,13 @@ Two methods exist to install the required Ubuntu packages:
 -----------------------------------------------------------------------------
 3a. Use a single command to get all build dependencies
 -----------------------------------------------------------------------------
-[NOTICE] Supported on Ubuntu >= 11.10 (oneiric)
+[NOTICE] Supported on Ubuntu >= 16.04
 
 You can get all build dependencies used for building the packages on the PPA
 
 Add the unstable PPA:
 
-For <= 12.04 lts:
-    $ sudo apt-get install python-software-properties
-    $ sudo add-apt-repository ppa:team-xbmc/xbmc-nightly
-
-For >= 14.04 lts:
+For >= 16.04 lts:
     $ sudo apt-get install software-properties-common
     $ sudo add-apt-repository -s ppa:team-xbmc/xbmc-nightly
 
@@ -80,7 +76,7 @@ Tip: For those with multiple computers at home is to try out distcc
 3b. Alternative: Manual dependency installation
 -----------------------------------------------------------------------------
 
-For Ubuntu (all versions >= 7.04):
+For Ubuntu (all versions >= 16.04):
     $ sudo apt-get install automake bison build-essential cmake curl cvs \
       default-jre fp-compiler gawk gdc gettext git-core gperf libasound2-dev libass-dev \
       libbz2-dev libcap-dev libcdio-dev libcurl3 \
@@ -92,33 +88,6 @@ For Ubuntu (all versions >= 7.04):
       libva-dev libvdpau-dev libxml2-dev libxmu-dev libxrandr-dev \
       libxrender-dev libxslt1-dev libxt-dev mesa-utils nasm pmount python-dev python-imaging \
       python-sqlite rapidjson-dev swig uuid-dev yasm zlib1g-dev liblirc-dev
-
-For >= 10.10:
-    $ sudo apt-get install autopoint libltdl-dev
-
-Note: Ubuntu Precise users also need a upgraded GCC, else compile will fail.
-
-For >= 12.10:
-    $ sudo apt-get install libtag1-dev
-
-On 8.10 and older versions, libcurl is outdated and thus Kodi will not compile properly.
-In this case you will have to manually compile the latest version.
-    $ wget http://curl.sourceforge.net/download/curl-7.19.7.tar.gz
-    $ tar -xzf curl-7.19.7.tar.gz
-    $ cd curl-7.19.7
-    $ ./configure --disable-ipv6 --without-libidn --disable-ldap --prefix=/usr
-    $ make
-    $ sudo make install
-
-For <= 12.04
-Kodi needs a new version of taglib other than what is available at this time.
-Use prepackaged from the Kodi build-depends PPA.
-0.  $ sudo apt-get install libtag1-dev
-
-We also supply a Makefile in lib/taglib to make it easy to install into /usr/local.
-1.  $ sudo apt-get remove libtag1-dev
-    $ make -C lib/taglib
-    $ sudo make -C lib/taglib install
 
 [NOTICE] crossguid / libcrossguid-dev all Linux distributions.
 Kodi now requires crossguid which is not available in Ubuntu repositories at this time.
