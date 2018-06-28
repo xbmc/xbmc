@@ -39,14 +39,14 @@
 						<left>105</left>
 						<top>0</top>
 						<bottom>0</bottom>
-						<right>100</right>
+						<right>40</right>
 						<aligny>center</aligny>
 						<scroll>true</scroll>
 						<label>$INFO[ListItem.Label]</label>
 						<shadowcolor>text_shadow</shadowcolor>
 					</control>
 					<control type="label">
-						<left>40</left>
+						<left>105</left>
 						<top>0</top>
 						<bottom>0</bottom>
 						<right>40</right>
@@ -68,13 +68,13 @@
 						<left>105</left>
 						<top>0</top>
 						<bottom>0</bottom>
-						<right>100</right>
+						<right>40</right>
 						<aligny>center</aligny>
 						<label>$INFO[ListItem.Label]</label>
 						<shadowcolor>text_shadow</shadowcolor>
 					</control>
 					<control type="label">
-						<left>40</left>
+						<left>105</left>
 						<top>0</top>
 						<bottom>0</bottom>
 						<right>40</right>
@@ -103,14 +103,14 @@
 						<left>105</left>
 						<top>0</top>
 						<bottom>0</bottom>
-						<right>100</right>
+						<right>40</right>
 						<aligny>center</aligny>
 						<scroll>true</scroll>
 						<label>$INFO[ListItem.Label]</label>
 						<shadowcolor>text_shadow</shadowcolor>
 					</control>
 					<control type="label">
-						<left>40</left>
+						<left>105</left>
 						<top>0</top>
 						<bottom>0</bottom>
 						<right>40</right>
@@ -132,13 +132,13 @@
 						<left>105</left>
 						<top>0</top>
 						<bottom>0</bottom>
-						<right>100</right>
+						<right>40</right>
 						<aligny>center</aligny>
 						<label>$INFO[ListItem.Label]</label>
 						<shadowcolor>text_shadow</shadowcolor>
 					</control>
 					<control type="label">
-						<left>40</left>
+						<left>105</left>
 						<top>0</top>
 						<bottom>0</bottom>
 						<right>40</right>
@@ -212,14 +212,14 @@
 			<control type="label">
 				<left>35</left>
 				<height>80</height>
-				<right>90</right>
+				<right>40</right>
 				<aligny>center</aligny>
 				<scroll>true</scroll>
 				<label>$INFO[ListItem.Label]</label>
 				<shadowcolor>text_shadow</shadowcolor>
 			</control>
 			<control type="label">
-				<left>40</left>
+				<left>35</left>
 				<height>80</height>
 				<right>40</right>
 				<align>right</align>
@@ -232,13 +232,13 @@
 			<control type="label">
 				<left>35</left>
 				<height>80</height>
-				<right>90</right>
+				<right>40</right>
 				<aligny>center</aligny>
 				<label>$INFO[ListItem.Label]</label>
 				<shadowcolor>text_shadow</shadowcolor>
 			</control>
 			<control type="label">
-				<left>40</left>
+				<left>35</left>
 				<height>80</height>
 				<right>40</right>
 				<align>right</align>
@@ -268,13 +268,13 @@
 			<control type="label">
 				<left>75</left>
 				<height>80</height>
-				<right>100</right>
+				<right>40</right>
 				<aligny>center</aligny>
 				<scroll>true</scroll>
 				<label>$INFO[ListItem.Label]</label>
 			</control>
 			<control type="label">
-				<left>40</left>
+				<left>75</left>
 				<height>80</height>
 				<right>40</right>
 				<align>right</align>
@@ -294,13 +294,13 @@
 			<control type="label">
 				<left>75</left>
 				<height>80</height>
-				<right>100</right>
+				<right>40</right>
 				<aligny>center</aligny>
 				<scroll>true</scroll>
 				<label>$INFO[ListItem.Label]</label>
 			</control>
 			<control type="label">
-				<left>40</left>
+				<left>75</left>
 				<height>80</height>
 				<right>40</right>
 				<align>right</align>
