@@ -12,7 +12,7 @@ diff --git a/configure b/configure
 index a1818dc..1cf2a7c 100755
 --- a/configure
 +++ b/configure
-@@ -6124,6 +6124,7 @@
+@@ -6125,6 +6125,7 @@
                                 check_lib openssl openssl/ssl.h SSL_library_init -lssl -lcrypto ||
                                 check_lib openssl openssl/ssl.h SSL_library_init -lssl32 -leay32 ||
                                 check_lib openssl openssl/ssl.h SSL_library_init -lssl -lcrypto -lws2_32 -lgdi32 ||
