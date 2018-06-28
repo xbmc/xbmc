@@ -269,19 +269,28 @@ bool CWinLibraryFile::IsInAccessList(const CURL& url)
   static std::string localPath;
   static std::string packagePath;
 
-  if (localPath.empty())
-    localPath = FromW(ApplicationData::Current().LocalFolder().Path().c_str());
+  try
+  {
+    if (localPath.empty())
+      localPath = FromW(ApplicationData::Current().LocalFolder().Path().c_str());
 
-  if (packagePath.empty())
-    packagePath = FromW(Package::Current().InstalledLocation().Path().c_str());
+    if (packagePath.empty())
+      packagePath = FromW(Package::Current().InstalledLocation().Path().c_str());
 
-  // don't check files inside local folder and installation folder
-  if ( StringUtils::StartsWithNoCase(url.Get(), localPath)
-    || StringUtils::StartsWithNoCase(url.Get(), packagePath))
-    return false;
+    // don't check files inside local folder and installation folder
+    if ( StringUtils::StartsWithNoCase(url.Get(), localPath)
+      || StringUtils::StartsWithNoCase(url.Get(), packagePath))
+      return false;
 
-  return IsInList(url, StorageApplicationPermissions::FutureAccessList())
-      || IsInList(url, StorageApplicationPermissions::MostRecentlyUsedList());
+    return IsInList(url, StorageApplicationPermissions::FutureAccessList())
+        || IsInList(url, StorageApplicationPermissions::MostRecentlyUsedList());
+  }
+  catch (const winrt::hresult_error& ex)
+  {
+    std::string strError = FromW(ex.message().c_str());
+    CLog::LogF(LOGERROR, "unexpected error occurs during WinRT API call: {}", strError);
+  }
+  return false;
 }
 
 bool CWinLibraryFile::OpenIntenal(const CURL &url, FileAccessMode mode)
