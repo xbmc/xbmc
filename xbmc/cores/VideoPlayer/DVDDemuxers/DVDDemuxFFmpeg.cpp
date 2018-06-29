@@ -1597,7 +1597,7 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
       default:
       {
         // if analyzing streams is skipped, unknown streams may become valid later
-        if (m_streaminfo || IsVideoReady())
+        if (IsVideoReady())
         {
           CLog::Log(LOGDEBUG, "CDVDDemuxFFmpeg::AddStream - discarding unknown stream with id: %d", pStream->index);
           pStream->discard = AVDISCARD_ALL;
@@ -2061,7 +2061,7 @@ bool CDVDDemuxFFmpeg::IsVideoReady()
   AVStream *st;
   bool hasVideo = false;
 
-  if(!m_checkvideo)
+  if (!m_checkvideo)
     return true;
 
   if (m_program == 0 && !m_pFormatContext->nb_programs)
