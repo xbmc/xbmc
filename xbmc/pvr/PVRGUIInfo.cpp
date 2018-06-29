@@ -250,8 +250,8 @@ void CPVRGUIInfo::UpdateDescrambleData(void)
 
 void CPVRGUIInfo::UpdateMisc(void)
 {
+  CSingleLock lock(m_critSection);
   bool bStarted = CServiceBroker::GetPVRManager().IsStarted();
-  /* safe to fetch these unlocked, since they're updated from the same thread as this one */
   std::string strPlayingClientName     = bStarted ? CServiceBroker::GetPVRManager().GetPlayingClientName() : "";
   bool       bHasTVRecordings          = bStarted && CServiceBroker::GetPVRManager().Recordings()->GetNumTVRecordings() > 0;
   bool       bHasRadioRecordings       = bStarted && CServiceBroker::GetPVRManager().Recordings()->GetNumRadioRecordings() > 0;
@@ -267,7 +267,6 @@ void CPVRGUIInfo::UpdateMisc(void)
   std::string strPlayingTVGroup        = (bStarted && bIsPlayingTV) ? CServiceBroker::GetPVRManager().GetPlayingGroup(false)->GroupName() : "";
   std::string strPlayingRadioGroup     = (bStarted && bIsPlayingRadio) ? CServiceBroker::GetPVRManager().GetPlayingGroup(true)->GroupName() : "";
 
-  CSingleLock lock(m_critSection);
   m_strPlayingClientName      = strPlayingClientName;
   m_bHasTVRecordings          = bHasTVRecordings;
   m_bHasRadioRecordings       = bHasRadioRecordings;
