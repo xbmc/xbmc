@@ -217,22 +217,6 @@ static void SinkInputInfoCallback(pa_context *c, const pa_sink_input_info *i, in
     p->UpdateInternalVolume(&(i->volume));
 }
 
-static void SinkInputInfoChangedCallback(pa_context *c, pa_subscription_event_type_t t, uint32_t idx, void *userdata)
-{
-  CAESinkPULSE* p = static_cast<CAESinkPULSE*>(userdata);
-  if (!p || !p->IsInitialized())
-    return;
-
-   if (idx != pa_stream_get_index(p->GetInternalStream()))
-     return;
-
-   pa_operation* op = pa_context_get_sink_input_info(c, idx, SinkInputInfoCallback, p);
-   if (op == NULL)
-     CLog::Log(LOGERROR, "PulseAudio: Failed to sync volume");
-   else
-    pa_operation_unref(op);
-}
-
 static void SinkChangedCallback(pa_context *c, pa_subscription_event_type_t t, uint32_t idx, void *userdata)
 {
   CAESinkPULSE* p = static_cast<CAESinkPULSE*>(userdata);
@@ -254,7 +238,22 @@ static void SinkChangedCallback(pa_context *c, pa_subscription_event_type_t t, u
     }
     else if ((t & PA_SUBSCRIPTION_EVENT_TYPE_MASK) == PA_SUBSCRIPTION_EVENT_CHANGE)
     {
-      CLog::Log(LOGDEBUG, "Sink changed");
+      // when we get a sink input event volume might have changed
+      if (t & PA_SUBSCRIPTION_EVENT_SINK_INPUT)
+      {
+        if (idx != pa_stream_get_index(p->GetInternalStream()))
+          return;
+
+        pa_operation* op = pa_context_get_sink_input_info(c, idx, SinkInputInfoCallback, p);
+        if (op == NULL)
+          CLog::Log(LOGERROR, "PulseAudio: Failed to sync volume");
+        else
+          pa_operation_unref(op);
+      }
+      else // legacy just for tracking
+      {
+        CLog::Log(LOGDEBUG, "Sink changed");
+      }
     }
   }
 }
@@ -819,17 +818,10 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
     CSingleLock lock(m_sec);
     // Register Callback for Sink changes
     pa_context_set_subscribe_callback(m_Context, SinkChangedCallback, this);
-    const pa_subscription_mask_t mask = PA_SUBSCRIPTION_MASK_SINK;
+    const pa_subscription_mask_t mask = pa_subscription_mask_t (PA_SUBSCRIPTION_MASK_SINK | PA_SUBSCRIPTION_MASK_SINK_INPUT);
     pa_operation *op = pa_context_subscribe(m_Context, mask, NULL, this);
     if (op != NULL)
       pa_operation_unref(op);
-
-    // Register Callback for Sink Info changes - this handles volume
-    pa_context_set_subscribe_callback(m_Context, SinkInputInfoChangedCallback, this);
-    const pa_subscription_mask_t mask_input = PA_SUBSCRIPTION_MASK_SINK_INPUT;
-    pa_operation* op_sinfo = pa_context_subscribe(m_Context, mask_input, NULL, this);
-    if (op_sinfo != NULL)
-      pa_operation_unref(op_sinfo);
   }
 
   pa_threaded_mainloop_unlock(m_MainLoop);
