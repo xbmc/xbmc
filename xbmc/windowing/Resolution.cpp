@@ -64,7 +64,7 @@ float RESOLUTION_INFO::DisplayRatio() const
   return iWidth * fPixelRatio / iHeight;
 }
 
-RESOLUTION CResolutionUtils::ChooseBestResolution(float fps, int width, bool is3D)
+RESOLUTION CResolutionUtils::ChooseBestResolution(float fps, int width, int height, bool is3D)
 {
   RESOLUTION res = CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution();
   float weight;
@@ -73,7 +73,7 @@ RESOLUTION CResolutionUtils::ChooseBestResolution(float fps, int width, bool is3
   {
     if (!FindResolutionFromOverride(fps, width, is3D, res, weight, true)) //if that fails find it from a fallback
     {
-      FindResolutionFromWhitelist(fps, width, is3D, res); //find a refreshrate from whitelist
+      FindResolutionFromWhitelist(fps, width, height, is3D, res); //find a refreshrate from whitelist
     }
   }
 
@@ -82,7 +82,7 @@ RESOLUTION CResolutionUtils::ChooseBestResolution(float fps, int width, bool is3
   return res;
 }
 
-void CResolutionUtils::FindResolutionFromWhitelist(float fps, int width, bool is3D, RESOLUTION &resolution)
+void CResolutionUtils::FindResolutionFromWhitelist(float fps, int width, int height, bool is3D, RESOLUTION &resolution)
 {
   RESOLUTION_INFO curr = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(resolution);
 
@@ -96,8 +96,8 @@ void CResolutionUtils::FindResolutionFromWhitelist(float fps, int width, bool is
     const RESOLUTION_INFO info = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(i);
 
     // allow resolutions that are exact and have the correct refresh rate
-    if (info.iScreenWidth == width &&
-        info.iScreen == curr.iScreen &&
+    if (((height == info.iScreenHeight && width <= info.iScreenWidth) ||
+         (width == info.iScreenWidth && height <= info.iScreenHeight)) &&
         (info.dwFlags & D3DPRESENTFLAG_MODEMASK) == (curr.dwFlags & D3DPRESENTFLAG_MODEMASK) &&
         MathUtils::FloatEquals(info.fRefreshRate, fps, 0.01f))
     {
@@ -115,8 +115,8 @@ void CResolutionUtils::FindResolutionFromWhitelist(float fps, int width, bool is
     const RESOLUTION_INFO info = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(i);
 
     // allow resolutions that are exact and have double the refresh rate
-    if (info.iScreenWidth == width &&
-        info.iScreen == curr.iScreen &&
+    if (((height == info.iScreenHeight && width <= info.iScreenWidth) ||
+         (width == info.iScreenWidth && height <= info.iScreenHeight)) &&
         (info.dwFlags & D3DPRESENTFLAG_MODEMASK) == (curr.dwFlags & D3DPRESENTFLAG_MODEMASK) &&
         MathUtils::FloatEquals(info.fRefreshRate, fps * 2, 0.01f))
     {
@@ -137,7 +137,6 @@ void CResolutionUtils::FindResolutionFromWhitelist(float fps, int width, bool is
 
     // allow resolutions that are desktop resolution but have the correct refresh rate
     if (info.iScreenWidth == desktop_info.iWidth &&
-        info.iScreen == desktop_info.iScreen &&
         (info.dwFlags & D3DPRESENTFLAG_MODEMASK) == (desktop_info.dwFlags & D3DPRESENTFLAG_MODEMASK) &&
         MathUtils::FloatEquals(info.fRefreshRate, fps, 0.01f))
     {
@@ -158,7 +157,6 @@ void CResolutionUtils::FindResolutionFromWhitelist(float fps, int width, bool is
 
     // allow resolutions that are desktop resolution but have double the refresh rate
     if (info.iScreenWidth == desktop_info.iWidth &&
-        info.iScreen == desktop_info.iScreen &&
         (info.dwFlags & D3DPRESENTFLAG_MODEMASK) == (desktop_info.dwFlags & D3DPRESENTFLAG_MODEMASK) &&
         MathUtils::FloatEquals(info.fRefreshRate, fps * 2, 0.01f))
     {
