@@ -39,10 +39,9 @@ CBaseRenderer* CRendererDRMPRIMEGLES::Create(CVideoBuffer* buffer)
   return nullptr;
 }
 
-bool CRendererDRMPRIMEGLES::Register()
+void CRendererDRMPRIMEGLES::Register()
 {
   VIDEOPLAYER::CRendererFactory::RegisterRenderer("drm_prime_gles", CRendererDRMPRIMEGLES::Create);
-  return true;
 }
 
 bool CRendererDRMPRIMEGLES::Configure(const VideoPicture &picture, float fps, unsigned int orientation)

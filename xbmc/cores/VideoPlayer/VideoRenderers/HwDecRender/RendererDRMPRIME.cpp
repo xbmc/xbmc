@@ -25,6 +25,7 @@
 #include "cores/VideoPlayer/VideoRenderers/RenderFlags.h"
 #include "ServiceBroker.h"
 #include "settings/DisplaySettings.h"
+#include "settings/lib/Setting.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
 #include "windowing/gbm/DRMAtomic.h"
@@ -55,10 +56,18 @@ CBaseRenderer* CRendererDRMPRIME::Create(CVideoBuffer* buffer)
   return nullptr;
 }
 
-bool CRendererDRMPRIME::Register()
+void CRendererDRMPRIME::Register()
 {
-  VIDEOPLAYER::CRendererFactory::RegisterRenderer("drm_prime", CRendererDRMPRIME::Create);
-  return true;
+  CWinSystemGbmGLESContext* winSystem = dynamic_cast<CWinSystemGbmGLESContext*>(CServiceBroker::GetWinSystem());
+  if (winSystem && winSystem->GetDrm()->GetPrimaryPlane()->plane &&
+      std::dynamic_pointer_cast<CDRMAtomic>(winSystem->GetDrm()))
+  {
+    VIDEOPLAYER::CRendererFactory::RegisterRenderer("drm_prime", CRendererDRMPRIME::Create);
+    return;
+  }
+
+  CServiceBroker::GetSettings().SetInt(SETTING_VIDEOPLAYER_USEPRIMERENDERER, 1);
+  CServiceBroker::GetSettings().GetSetting(SETTING_VIDEOPLAYER_USEPRIMERENDERER)->SetVisible(false);
 }
 
 bool CRendererDRMPRIME::Configure(const VideoPicture& picture, float fps, unsigned int orientation)
@@ -250,30 +259,15 @@ void CRendererDRMPRIME::SetVideoPlane(CVideoBufferDRMPRIME* buffer)
     uint32_t src_w = buffer->GetWidth() << 16;
     uint32_t src_h = buffer->GetHeight() << 16;
 
-    if(std::dynamic_pointer_cast<CDRMAtomic>(m_DRM))
-    {
-      m_DRM->AddProperty(m_DRM->GetPrimaryPlane(), "FB_ID",   buffer->m_fb_id);
-      m_DRM->AddProperty(m_DRM->GetPrimaryPlane(), "CRTC_ID", m_DRM->GetCrtc()->crtc->crtc_id);
-      m_DRM->AddProperty(m_DRM->GetPrimaryPlane(), "SRC_X",   src_x);
-      m_DRM->AddProperty(m_DRM->GetPrimaryPlane(), "SRC_Y",   src_y);
-      m_DRM->AddProperty(m_DRM->GetPrimaryPlane(), "SRC_W",   src_w);
-      m_DRM->AddProperty(m_DRM->GetPrimaryPlane(), "SRC_H",   src_h);
-      m_DRM->AddProperty(m_DRM->GetPrimaryPlane(), "CRTC_X",  crtc_x);
-      m_DRM->AddProperty(m_DRM->GetPrimaryPlane(), "CRTC_Y",  crtc_y);
-      m_DRM->AddProperty(m_DRM->GetPrimaryPlane(), "CRTC_W",  crtc_w);
-      m_DRM->AddProperty(m_DRM->GetPrimaryPlane(), "CRTC_H",  crtc_h);
-    }
-    else
-    {
-      // show the video frame FB on the video plane
-      ret = drmModeSetPlane(m_DRM->GetFileDescriptor(), m_DRM->GetPrimaryPlane()->plane->plane_id, m_DRM->GetCrtc()->crtc->crtc_id, buffer->m_fb_id, 0,
-                            crtc_x, crtc_y, crtc_w, crtc_h,
-                            src_x, src_y, src_w, src_h);
-      if (ret < 0)
-      {
-        CLog::Log(LOGERROR, "CRendererDRMPRIME::%s - failed to set drm plane %d, buffer = %d, ret = %d", __FUNCTION__, m_DRM->GetPrimaryPlane()->plane->plane_id, buffer->m_fb_id, ret);
-        return;
-      }
-    }
+    m_DRM->AddProperty(m_DRM->GetPrimaryPlane(), "FB_ID",   buffer->m_fb_id);
+    m_DRM->AddProperty(m_DRM->GetPrimaryPlane(), "CRTC_ID", m_DRM->GetCrtc()->crtc->crtc_id);
+    m_DRM->AddProperty(m_DRM->GetPrimaryPlane(), "SRC_X",   src_x);
+    m_DRM->AddProperty(m_DRM->GetPrimaryPlane(), "SRC_Y",   src_y);
+    m_DRM->AddProperty(m_DRM->GetPrimaryPlane(), "SRC_W",   src_w);
+    m_DRM->AddProperty(m_DRM->GetPrimaryPlane(), "SRC_H",   src_h);
+    m_DRM->AddProperty(m_DRM->GetPrimaryPlane(), "CRTC_X",  crtc_x);
+    m_DRM->AddProperty(m_DRM->GetPrimaryPlane(), "CRTC_Y",  crtc_y);
+    m_DRM->AddProperty(m_DRM->GetPrimaryPlane(), "CRTC_W",  crtc_w);
+    m_DRM->AddProperty(m_DRM->GetPrimaryPlane(), "CRTC_H",  crtc_h);
   }
 }

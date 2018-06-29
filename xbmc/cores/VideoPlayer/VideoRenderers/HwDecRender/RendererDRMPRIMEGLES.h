@@ -31,7 +31,7 @@ public:
 
   // Registration
   static CBaseRenderer* Create(CVideoBuffer* buffer);
-  static bool Register();
+  static void Register();
 
   // CLinuxRendererGLES overrides
   bool Configure(const VideoPicture &picture, float fps, unsigned int orientation) override;

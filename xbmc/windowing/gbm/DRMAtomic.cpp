@@ -32,10 +32,11 @@
 #include "DRMAtomic.h"
 #include "WinSystemGbmGLESContext.h"
 
+#include <drm_fourcc.h>
+
 void CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool videoLayer)
 {
   uint32_t blob_id;
-  struct plane *plane;
 
   if (flags & DRM_MODE_ATOMIC_ALLOW_MODESET)
   {
@@ -58,38 +59,26 @@ void CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool video
     {
       return;
     }
-
-    if (!videoLayer)
-    {
-      // disable overlay plane on modeset
-      AddProperty(m_overlay_plane, "FB_ID", 0);
-      AddProperty(m_overlay_plane, "CRTC_ID", 0);
-    }
   }
-
-  if (videoLayer)
-    plane = m_overlay_plane;
-  else
-    plane = m_primary_plane;
 
   if (rendered)
   {
-    AddProperty(plane, "FB_ID", fb_id);
-    AddProperty(plane, "CRTC_ID", m_crtc->crtc->crtc_id);
-    AddProperty(plane, "SRC_X", 0);
-    AddProperty(plane, "SRC_Y", 0);
-    AddProperty(plane, "SRC_W", m_width << 16);
-    AddProperty(plane, "SRC_H", m_height << 16);
-    AddProperty(plane, "CRTC_X", 0);
-    AddProperty(plane, "CRTC_Y", 0);
-    AddProperty(plane, "CRTC_W", m_mode->hdisplay);
-    AddProperty(plane, "CRTC_H", m_mode->vdisplay);
+    AddProperty(m_overlay_plane, "FB_ID", fb_id);
+    AddProperty(m_overlay_plane, "CRTC_ID", m_crtc->crtc->crtc_id);
+    AddProperty(m_overlay_plane, "SRC_X", 0);
+    AddProperty(m_overlay_plane, "SRC_Y", 0);
+    AddProperty(m_overlay_plane, "SRC_W", m_width << 16);
+    AddProperty(m_overlay_plane, "SRC_H", m_height << 16);
+    AddProperty(m_overlay_plane, "CRTC_X", 0);
+    AddProperty(m_overlay_plane, "CRTC_Y", 0);
+    AddProperty(m_overlay_plane, "CRTC_W", m_mode->hdisplay);
+    AddProperty(m_overlay_plane, "CRTC_H", m_mode->vdisplay);
   }
   else if (videoLayer && !CServiceBroker::GetGUI()->GetWindowManager().HasVisibleControls())
   {
     // disable gui plane when video layer is active and gui has no visible controls
-    AddProperty(plane, "FB_ID", 0);
-    AddProperty(plane, "CRTC_ID", 0);
+    AddProperty(m_overlay_plane, "FB_ID", 0);
+    AddProperty(m_overlay_plane, "CRTC_ID", 0);
   }
 
   auto ret = drmModeAtomicCommit(m_fd, m_req, flags | DRM_MODE_ATOMIC_TEST_ONLY, nullptr);
@@ -130,6 +119,11 @@ void CDRMAtomic::FlipPage(struct gbm_bo *bo, bool rendered, bool videoLayer)
 
   if (rendered)
   {
+    if (videoLayer)
+      m_overlay_plane->format = DRM_FORMAT_ARGB8888;
+    else
+      m_overlay_plane->format = DRM_FORMAT_XRGB8888;
+
     drm_fb = CDRMUtils::DrmFbGetFromBo(bo);
     if (!drm_fb)
     {
