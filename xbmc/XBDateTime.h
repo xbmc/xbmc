@@ -220,7 +220,7 @@ public:
   bool IsValid() const;
 
   static void ResetTimezoneBias(void);
-  static CDateTimeSpan GetTimezoneBias(void);
+  static CDateTimeSpan GetTimezoneBias(bool forceUpdate = false);
 
 private:
   bool ToFileTime(const SYSTEMTIME& time, FILETIME& fileTime) const;

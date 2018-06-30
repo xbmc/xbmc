@@ -137,6 +137,7 @@ CPVREpgContainer::CPVREpgContainer(void) :
   m_iLastEpgCleanup = 0;
   m_iNextEpgActiveTagCheck = 0;
   m_iNextEpgUpdate = 0;
+  m_lastTimeBias = CDateTime::GetTimezoneBias(true);
 }
 
 CPVREpgContainer::~CPVREpgContainer(void)
@@ -367,6 +368,15 @@ void CPVREpgContainer::Process(void)
     {
       CSingleLock lock(m_critSection);
       bUpdateEpg = (iNow >= m_iNextEpgUpdate);
+      if (!bUpdateEpg)
+      {
+        // check for relative time change (timezone or daylight savings)
+        if (m_lastTimeBias != CDateTime::GetTimezoneBias(true))
+        {
+          bUpdateEpg = true;
+          CLog::LogFC(LOGDEBUG, LOGEPG, "Relative time change detected -- updating epg");
+        }
+      }
     }
 
     /* update the EPG */
@@ -661,8 +671,10 @@ bool CPVREpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
   unsigned int iUpdatedTables(0);
   bool bShowProgress(false);
   int pendingUpdates(0);
+  bool bForceNotify(false);
 
   /* set start and end time */
+  CDateTimeSpan startTimeBias = CDateTime::GetTimezoneBias(true);
   time_t start;
   time_t end;
   CDateTime::GetUTCDateTime().GetAsTime(start);
@@ -740,10 +752,12 @@ bool CPVREpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
     m_iNextEpgUpdate += g_advancedSettings.m_iEpgUpdateCheckInterval;
     if (m_pendingUpdates == pendingUpdates)
       m_pendingUpdates = 0;
+    bForceNotify = (m_lastTimeBias != startTimeBias);
+    m_lastTimeBias = startTimeBias;
   }
 
   /* notify observers */
-  if (iUpdatedTables > 0)
+  if (bForceNotify || iUpdatedTables > 0)
   {
     SetChanged();
     CSingleExit ex(m_critSection);

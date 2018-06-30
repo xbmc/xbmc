@@ -19,6 +19,7 @@
  */
 
 #include <cstdlib>
+#include <atomic>
 
 #include "XBDateTime.h"
 #include "LangInfo.h"
@@ -894,18 +895,18 @@ bool CDateTime::SetFromUTCDateTime(const CDateTime &dateTime)
   return m_state == valid;
 }
 
-static bool bGotTimezoneBias = false;
+static std::atomic<bool> bGotTimezoneBias(false);
 
 void CDateTime::ResetTimezoneBias(void)
 {
   bGotTimezoneBias = false;
 }
 
-CDateTimeSpan CDateTime::GetTimezoneBias(void)
+CDateTimeSpan CDateTime::GetTimezoneBias(bool forceUpdate /* = false */ )
 {
   static CDateTimeSpan timezoneBias;
 
-  if (!bGotTimezoneBias)
+  if (forceUpdate || !bGotTimezoneBias)
   {
     bGotTimezoneBias = true;
     TIME_ZONE_INFORMATION tz;

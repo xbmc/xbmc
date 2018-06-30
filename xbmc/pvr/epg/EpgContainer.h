@@ -270,6 +270,7 @@ namespace PVR
     time_t       m_iNextEpgActiveTagCheck; /*!< the time the EPG will be checked for active tag updates */
     unsigned int m_iNextEpgId;             /*!< the next epg ID that will be given to a new table when the db isn't being used */
     EPGMAP       m_epgs;                   /*!< the EPGs in this container */
+    CDateTimeSpan m_lastTimeBias;          /*!< the timezone bias of the last EPG update (includes daylight savings) */
     //@}
 
     CCriticalSection               m_critSection;    /*!< a critical section for changes to this container */
