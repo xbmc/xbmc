@@ -552,8 +552,6 @@ void CDVDDemuxClient::SetStreamProps(CDemuxStream *stream, std::map<int, std::sh
   toStream->externalInterfaces = stream->externalInterfaces;
   toStream->language = stream->language;
 
-  toStream->realtime = stream->realtime;
-
   CLog::Log(LOGDEBUG,"CDVDDemuxClient::RequestStream(): added/updated stream %d with codec_id %d",
       toStream->uniqueId,
       toStream->codec);

@@ -4728,8 +4728,10 @@ void CVideoPlayer::UpdatePlayState(double timeout)
     state.canpause = m_pInputStream->CanPause();
     state.canseek = m_pInputStream->CanSeek();
 
+    bool realtime = m_pInputStream->IsRealtime();
+
     if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_USEDISPLAYASCLOCK) &&
-        !m_pInputStream->IsRealtime())
+        !realtime)
     {
       state.cantempo = true;
     }
@@ -4737,6 +4739,8 @@ void CVideoPlayer::UpdatePlayState(double timeout)
     {
       state.cantempo = false;
     }
+
+    m_processInfo->SetStateRealtime(realtime);
   }
 
   if (m_Edl.HasCut())

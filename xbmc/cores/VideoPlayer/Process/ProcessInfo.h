@@ -95,6 +95,8 @@ public:
   // player states
   void SetStateSeeking(bool active);
   bool IsSeeking();
+  void SetStateRealtime(bool state);
+  bool IsRealtimeStream();
   void SetSpeed(float speed);
   void SetNewSpeed(float speed);
   float GetNewSpeed();
@@ -170,6 +172,7 @@ protected:
   int64_t m_time;
   int64_t m_timeMax;
   int64_t m_timeMin;
+  bool m_realTimeStream;
 
   // settings
   CCriticalSection m_settingsSection;
