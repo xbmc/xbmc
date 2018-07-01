@@ -39,6 +39,7 @@ class CRPProcessInfo;
 class IGUIRenderSettings;
 class IRenderBuffer;
 class IRenderBufferPool;
+struct VideoStreamBuffer;
 
 /*!
  * \brief Renders video frames provided by the game loop
@@ -81,8 +82,7 @@ public:
                  unsigned int nominalHeight,
                  unsigned int maxWidth,
                  unsigned int maxHeight);
-  bool GetVideoBuffer(
-      unsigned int width, unsigned int height, AVPixelFormat& format, uint8_t*& data, size_t& size);
+  std::vector<VideoStreamBuffer> GetVideoBuffers(unsigned int width, unsigned int height);
   void AddFrame(const uint8_t* data,
                 size_t size,
                 unsigned int width,
@@ -189,6 +189,9 @@ private:
 
   void CheckFlush();
 
+  void GetVideoFrame(IRenderBuffer*& readableBuffer, std::vector<uint8_t>& cachedFrame);
+  void FreeVideoFrame(IRenderBuffer* readableBuffer, std::vector<uint8_t> cachedFrame);
+
   // Construction parameters
   CRPProcessInfo& m_processInfo;
   CRenderContext& m_renderContext;
@@ -210,6 +213,7 @@ private:
   std::vector<uint8_t> m_cachedFrame;
   unsigned int m_cachedWidth = 0;
   unsigned int m_cachedHeight = 0;
+  unsigned int m_cachedRotationCCW{0};
 
   // State parameters
   enum class RENDER_STATE
