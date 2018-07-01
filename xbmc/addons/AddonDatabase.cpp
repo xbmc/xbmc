@@ -1071,7 +1071,7 @@ bool CAddonDatabase::AddPackage(const std::string& addonID,
                                 const std::string& packageFileName,
                                 const std::string& hash)
 {
-  std::string sql = PrepareSQL("insert into package(id, addonID, filename, hash)"
+  std::string sql = PrepareSQL("insert or ignore into package(id, addonID, filename, hash)"
                               "values(NULL, '%s', '%s', '%s')",
                               addonID.c_str(), packageFileName.c_str(), hash.c_str());
   return ExecuteQuery(sql);
