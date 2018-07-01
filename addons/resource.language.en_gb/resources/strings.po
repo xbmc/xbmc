@@ -21347,7 +21347,7 @@ msgstr ""
 
 #empty strings from id 39028 to 39029
 
-#. Media source, a filter and smart playlist rule option 
+#. Media source, a filter and smart playlist rule option
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
 #: xbmc/dialogs/GUIDialogSmartPlaylistRule.cpp
 #: xbmc/playlists/SmartPlaylist.cpp
