@@ -603,8 +603,6 @@ msgctxt "#31133"
 msgid "Select Resolution"
 msgstr ""
 
-#empty string with id 31134
-
 #: /xml/DialogSeekBar.xml
 msgctxt "#31134"
 msgid "Remaining"
