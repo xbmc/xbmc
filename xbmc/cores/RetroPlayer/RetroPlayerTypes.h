@@ -18,5 +18,18 @@ namespace RETRO
 class IRenderBufferPool;
 using RenderBufferPoolPtr = std::shared_ptr<IRenderBufferPool>;
 using RenderBufferPoolVector = std::vector<RenderBufferPoolPtr>;
+
+enum class DataAccess
+{
+  READ_ONLY,
+  WRITE_ONLY,
+  READ_WRITE
+};
+
+enum class DataAlignment
+{
+  DATA_UNALIGNED,
+  DATA_ALIGNED,
+};
 } // namespace RETRO
 } // namespace KODI
