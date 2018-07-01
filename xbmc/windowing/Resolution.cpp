@@ -96,8 +96,8 @@ void CResolutionUtils::FindResolutionFromWhitelist(float fps, int width, int hei
     const RESOLUTION_INFO info = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(i);
 
     // allow resolutions that are exact and have the correct refresh rate
-    if (((height == info.iScreenHeight && width <= info.iScreenWidth) ||
-         (width == info.iScreenWidth && height <= info.iScreenHeight)) &&
+    if (((height == info.iHeight && width <= info.iWidth) ||
+         (width == info.iWidth && height <= info.iHeight)) &&
         (info.dwFlags & D3DPRESENTFLAG_MODEMASK) == (curr.dwFlags & D3DPRESENTFLAG_MODEMASK) &&
         MathUtils::FloatEquals(info.fRefreshRate, fps, 0.01f))
     {
@@ -115,8 +115,8 @@ void CResolutionUtils::FindResolutionFromWhitelist(float fps, int width, int hei
     const RESOLUTION_INFO info = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(i);
 
     // allow resolutions that are exact and have double the refresh rate
-    if (((height == info.iScreenHeight && width <= info.iScreenWidth) ||
-         (width == info.iScreenWidth && height <= info.iScreenHeight)) &&
+    if (((height == info.iHeight && width <= info.iWidth) ||
+         (width == info.iWidth && height <= info.iHeight)) &&
         (info.dwFlags & D3DPRESENTFLAG_MODEMASK) == (curr.dwFlags & D3DPRESENTFLAG_MODEMASK) &&
         MathUtils::FloatEquals(info.fRefreshRate, fps * 2, 0.01f))
     {
@@ -136,7 +136,7 @@ void CResolutionUtils::FindResolutionFromWhitelist(float fps, int width, int hei
     const RESOLUTION_INFO desktop_info = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(CDisplaySettings::GetInstance().GetCurrentResolution());
 
     // allow resolutions that are desktop resolution but have the correct refresh rate
-    if (info.iScreenWidth == desktop_info.iWidth &&
+    if (info.iWidth == desktop_info.iWidth &&
         (info.dwFlags & D3DPRESENTFLAG_MODEMASK) == (desktop_info.dwFlags & D3DPRESENTFLAG_MODEMASK) &&
         MathUtils::FloatEquals(info.fRefreshRate, fps, 0.01f))
     {
@@ -156,7 +156,7 @@ void CResolutionUtils::FindResolutionFromWhitelist(float fps, int width, int hei
     const RESOLUTION_INFO desktop_info = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(CDisplaySettings::GetInstance().GetCurrentResolution());
 
     // allow resolutions that are desktop resolution but have double the refresh rate
-    if (info.iScreenWidth == desktop_info.iWidth &&
+    if (info.iWidth == desktop_info.iWidth &&
         (info.dwFlags & D3DPRESENTFLAG_MODEMASK) == (desktop_info.dwFlags & D3DPRESENTFLAG_MODEMASK) &&
         MathUtils::FloatEquals(info.fRefreshRate, fps * 2, 0.01f))
     {
@@ -189,8 +189,8 @@ bool CResolutionUtils::FindResolutionFromOverride(float fps, int width, bool is3
     {
       RESOLUTION_INFO info = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo((RESOLUTION)j);
 
-      if (info.iScreenWidth  == curr.iScreenWidth &&
-          info.iScreenHeight == curr.iScreenHeight &&
+      if (info.iScreenWidth  == curr.iWidth &&
+          info.iScreenHeight == curr.iHeight &&
           (info.dwFlags & D3DPRESENTFLAG_MODEMASK) == (curr.dwFlags & D3DPRESENTFLAG_MODEMASK))
       {
         if (info.fRefreshRate <= override.refreshmax &&
