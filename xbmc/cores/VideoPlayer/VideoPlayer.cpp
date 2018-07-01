@@ -660,7 +660,6 @@ CVideoPlayer::CVideoPlayer(IPlayerCallback& callback)
   m_offset_pts = 0.0;
   m_playSpeed = DVD_PLAYSPEED_NORMAL;
   m_streamPlayerSpeed = DVD_PLAYSPEED_NORMAL;
-  m_canTempo = false;
   m_caching = CACHESTATE_DONE;
   m_HasVideo = false;
   m_HasAudio = false;
@@ -777,7 +776,6 @@ bool CVideoPlayer::CloseFile(bool reopen)
 
   m_HasVideo = false;
   m_HasAudio = false;
-  m_canTempo = false;
 
   CLog::Log(LOGNOTICE, "VideoPlayer: finished waiting");
   m_renderManager.UnInit();
@@ -865,16 +863,6 @@ bool CVideoPlayer::OpenInputStream()
   m_clock.Reset();
   m_dvd.Clear();
   m_errorCount = 0;
-
-  if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_USEDISPLAYASCLOCK) &&
-      !m_pInputStream->IsRealtime())
-  {
-    m_canTempo = true;
-  }
-  else
-  {
-    m_canTempo = false;
-  }
 
   return true;
 }
@@ -2208,6 +2196,16 @@ void CVideoPlayer::HandlePlaySpeed()
       }
     }
   }
+  
+  // reset tempo
+  if (!m_State.cantempo)
+  {
+    float currentTempo = m_processInfo->GetNewTempo();
+    if (currentTempo != 1.0)
+    {
+      SetTempo(1.0);
+    }
+  }
 }
 
 bool CVideoPlayer::CheckPlayerInit(CCurrentStream& current)
@@ -3511,7 +3509,7 @@ void CVideoPlayer::FrameAdvance(int frames)
 
 bool CVideoPlayer::SupportsTempo()
 {
-  return m_canTempo;
+  return m_State.cantempo;
 }
 
 bool CVideoPlayer::OpenStream(CCurrentStream& current, int64_t demuxerId, int iStream, int source, bool reset /*= true*/)
@@ -4627,8 +4625,8 @@ int CVideoPlayer::AddSubtitleFile(const std::string& filename, const std::string
 
 void CVideoPlayer::UpdatePlayState(double timeout)
 {
-  if(m_State.timestamp != 0 &&
-     m_State.timestamp + DVD_MSEC_TO_TIME(timeout) > m_clock.GetAbsoluteClock())
+  if (m_State.timestamp != 0 &&
+      m_State.timestamp + DVD_MSEC_TO_TIME(timeout) > m_clock.GetAbsoluteClock())
     return;
 
   SPlayerState state(m_State);
@@ -4729,6 +4727,20 @@ void CVideoPlayer::UpdatePlayState(double timeout)
 
     state.canpause = m_pInputStream->CanPause();
     state.canseek = m_pInputStream->CanSeek();
+
+    bool realtime = m_pInputStream->IsRealtime();
+
+    if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_USEDISPLAYASCLOCK) &&
+        !realtime)
+    {
+      state.cantempo = true;
+    }
+    else
+    {
+      state.cantempo = false;
+    }
+
+    m_processInfo->SetStateRealtime(realtime);
   }
 
   if (m_Edl.HasCut())

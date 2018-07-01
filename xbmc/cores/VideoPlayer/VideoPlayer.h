@@ -104,6 +104,7 @@ struct SPlayerState
     chapters.clear();
     canpause = false;
     canseek = false;
+    cantempo = false;
     caching = false;
     cache_bytes = 0;
     cache_level = 0.0;
@@ -133,6 +134,7 @@ struct SPlayerState
 
   bool canpause;            // pvr: can pause the current playing item
   bool canseek;             // pvr: can seek in the current playing item
+  bool cantempo;
   bool caching;
 
   int64_t cache_bytes;   // number of bytes current's cached
@@ -534,7 +536,6 @@ protected:
     double lastseekpts;
     double lastabstime;
   } m_SpeedState;
-  std::atomic_bool m_canTempo;
 
   int m_errorCount;
   double m_offset_pts;

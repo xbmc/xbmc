@@ -351,7 +351,6 @@ void CInputStreamPVRBase::UpdateStreamMap()
     dStream->codec = (AVCodecID)stream.iCodecId;
     dStream->uniqueId = stream.iPID;
     dStream->language = stream.strLanguage;
-    dStream->realtime = true;
 
     newStreamMap[stream.iPID] = dStream;
   }

@@ -489,6 +489,20 @@ bool CProcessInfo::IsSeeking()
   return m_stateSeeking;
 }
 
+void CProcessInfo::SetStateRealtime(bool state)
+{
+  CSingleLock lock(m_renderSection);
+
+  m_realTimeStream = state;
+}
+
+bool CProcessInfo::IsRealtimeStream()
+{
+  CSingleLock lock(m_stateSection);
+
+  return m_realTimeStream;
+}
+
 void CProcessInfo::SetSpeed(float speed)
 {
   CSingleLock lock(m_stateSection);
