@@ -448,6 +448,10 @@ msgctxt "#31132"
 msgid "Select Program"
 msgstr "Pasirinkite programą"
 
+msgctxt "#31133"
+msgid "Select Resolution"
+msgstr "Pasirinkti raišką"
+
 msgctxt "#31134"
 msgid "Remaining"
 msgstr "Liko"
@@ -555,3 +559,15 @@ msgstr "Žaiskite asmeninius žaidimus arba atsisiųskite vieną iš daugelio ž
 msgctxt "#31163"
 msgid "Show Fanart background"
 msgstr "Rodyti Fanart fone"
+
+msgctxt "#31164"
+msgid "Choose kind of profile identification"
+msgstr "Pasirinkite profilio identifikacijos būdą"
+
+msgctxt "#31165"
+msgid "Profile name"
+msgstr "Profilio vardas"
+
+msgctxt "#31166"
+msgid "Profile avatar"
+msgstr "Profilio avataras"

@@ -266,7 +266,7 @@ msgstr "Možnosti napájení"
 
 msgctxt "#31075"
 msgid "Movie sets"
-msgstr "Kolekce filmů"
+msgstr "Sbírky filmů"
 
 msgctxt "#31079"
 msgid "Cast not available"
@@ -322,7 +322,7 @@ msgstr "Vyberte svůj uživatelský profil Kodi[CR]pro přihlášení a pokračo
 
 msgctxt "#31099"
 msgid "IconWall"
-msgstr "Zeď ikon"
+msgstr "Stěna ikon"
 
 msgctxt "#31100"
 msgid "Shift"
@@ -330,7 +330,7 @@ msgstr "Posun"
 
 msgctxt "#31101"
 msgid "InfoWall"
-msgstr "Zeď informací"
+msgstr "Infostěna"
 
 msgctxt "#31102"
 msgid "Wall"
@@ -422,7 +422,7 @@ msgstr "Stiskněte nahoru pro zobrazení informací o herci"
 
 msgctxt "#31126"
 msgid "Press OK to read plot"
-msgstr "Stiskněte OK pro přečtení děje"
+msgstr "Stisknutím OK si přečtete zápletku"
 
 msgctxt "#31127"
 msgid "Show icons"
@@ -447,6 +447,10 @@ msgstr "Zvolte balíček fanatrů vzhledu"
 msgctxt "#31132"
 msgid "Select Program"
 msgstr "Vybrat program"
+
+msgctxt "#31133"
+msgid "Select Resolution"
+msgstr "Vyberte rozlišení"
 
 msgctxt "#31134"
 msgid "Remaining"
@@ -555,3 +559,7 @@ msgstr "Hrajte své vlastní hry nebo si stáhněte jeden z mnoha doplňků her 
 msgctxt "#31163"
 msgid "Show Fanart background"
 msgstr "Zobrazit fanart na pozadí"
+
+msgctxt "#31165"
+msgid "Profile name"
+msgstr "Název profilu"

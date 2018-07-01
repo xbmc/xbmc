@@ -555,3 +555,7 @@ msgstr "Gioca ai tuoi giochi personali o scarica uno dei tanti giochi Add-on dal
 msgctxt "#31163"
 msgid "Show Fanart background"
 msgstr "Mostra sfondo Fanart"
+
+msgctxt "#31165"
+msgid "Profile name"
+msgstr "Nome profilo"

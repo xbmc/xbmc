@@ -555,3 +555,7 @@ msgstr "Spilaðu þína eigin leiki eða náðu í einhverja af fjölmörgum lei
 msgctxt "#31163"
 msgid "Show Fanart background"
 msgstr "Birta aðdáendamynd sem bakgrunn"
+
+msgctxt "#31165"
+msgid "Profile name"
+msgstr "Nafn notanda"

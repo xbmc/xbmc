@@ -535,3 +535,7 @@ msgstr "Mostra els indicadors multimèdia"
 msgctxt "#31161"
 msgid "Numeric pad"
 msgstr "Teclat numèric"
+
+msgctxt "#31165"
+msgid "Profile name"
+msgstr "Nom del perfil"

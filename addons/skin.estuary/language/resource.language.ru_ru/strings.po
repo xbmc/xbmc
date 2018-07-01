@@ -448,6 +448,10 @@ msgctxt "#31132"
 msgid "Select Program"
 msgstr "Выбрать программу"
 
+msgctxt "#31133"
+msgid "Select Resolution"
+msgstr "Выберите разрешение"
+
 msgctxt "#31134"
 msgid "Remaining"
 msgstr "Осталось"
@@ -555,3 +559,7 @@ msgstr "Играйте в свои личные игры или загрузит
 msgctxt "#31163"
 msgid "Show Fanart background"
 msgstr "Показать фанатный фон"
+
+msgctxt "#31165"
+msgid "Profile name"
+msgstr "Название профиля"

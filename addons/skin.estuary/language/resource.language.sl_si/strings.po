@@ -219,3 +219,7 @@ msgstr "Uredi kategorije"
 msgctxt "#31161"
 msgid "Numeric pad"
 msgstr "Številčnica"
+
+msgctxt "#31165"
+msgid "Profile name"
+msgstr "Ime profila"

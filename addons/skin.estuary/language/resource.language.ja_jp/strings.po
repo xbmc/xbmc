@@ -423,3 +423,7 @@ msgstr "残り"
 msgctxt "#31144"
 msgid "Enter add-on browser"
 msgstr "アドオンブラウザー"
+
+msgctxt "#31165"
+msgid "Profile name"
+msgstr "プロファイル名"

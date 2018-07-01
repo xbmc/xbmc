@@ -555,3 +555,7 @@ msgstr "Speel uw persoonlijke spellen, of download één van de vele speladd-ons
 msgctxt "#31163"
 msgid "Show Fanart background"
 msgstr "Toon fanartachtergrond"
+
+msgctxt "#31165"
+msgid "Profile name"
+msgstr "Profielnaam"

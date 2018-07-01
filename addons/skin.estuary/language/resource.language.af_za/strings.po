@@ -535,3 +535,7 @@ msgstr "Wys media vlaggies"
 msgctxt "#31161"
 msgid "Numeric pad"
 msgstr "Nommer blok"
+
+msgctxt "#31165"
+msgid "Profile name"
+msgstr "Profiel naam"

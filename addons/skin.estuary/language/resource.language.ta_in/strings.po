@@ -43,3 +43,7 @@ msgstr "உள்ளூர் வசன வரிகள் இருக்கி
 msgctxt "#31100"
 msgid "Shift"
 msgstr "மாற்று"
+
+msgctxt "#31165"
+msgid "Profile name"
+msgstr "சுயவிவர பெயர்"

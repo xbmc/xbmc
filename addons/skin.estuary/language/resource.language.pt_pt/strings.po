@@ -503,3 +503,7 @@ msgstr "Editar categorias"
 msgctxt "#31158"
 msgid "Touch mode"
 msgstr "Modo de toque"
+
+msgctxt "#31165"
+msgid "Profile name"
+msgstr "Nome do perfil"

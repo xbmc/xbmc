@@ -448,6 +448,10 @@ msgctxt "#31132"
 msgid "Select Program"
 msgstr "Pilih Program"
 
+msgctxt "#31133"
+msgid "Select Resolution"
+msgstr "Pilih Resolusi"
+
 msgctxt "#31134"
 msgid "Remaining"
 msgstr "Berbaki"
@@ -555,3 +559,7 @@ msgstr "Main game sendiri ataupun muat turun salah satu add-on game daripada rep
 msgctxt "#31163"
 msgid "Show Fanart background"
 msgstr "Menunjuk latar balakang seni peminat"
+
+msgctxt "#31165"
+msgid "Profile name"
+msgstr "Nama profil"

@@ -120,6 +120,10 @@ msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
 msgstr "Ez da gogokorik aurkitu. Elementuak gehitu ditzakezu edozein multimedia ikuspegitik zerrenda honetara laster-menua erabiliz."
 
+msgctxt "#31026"
+msgid "Timeshift"
+msgstr "Denbora aldaketa"
+
 msgctxt "#31028"
 msgid "Show fanart"
 msgstr "Irakutsi fanart-a"
@@ -440,6 +444,14 @@ msgctxt "#31131"
 msgid "Choose skin fanart pack"
 msgstr "Aukeratu azalaren fanart paketea"
 
+msgctxt "#31132"
+msgid "Select Program"
+msgstr "Hautatu Programa"
+
+msgctxt "#31133"
+msgid "Select Resolution"
+msgstr "Hautatu Bereizmena"
+
 msgctxt "#31134"
 msgid "Remaining"
 msgstr "Geratzen dena"
@@ -547,3 +559,7 @@ msgstr "Jokatu zure joko pertsonaletan edo deskargatu biltegi ofizialeko joko ge
 msgctxt "#31163"
 msgid "Show Fanart background"
 msgstr "Irakutsi fanart atzean"
+
+msgctxt "#31165"
+msgid "Profile name"
+msgstr "Profilaren izena"

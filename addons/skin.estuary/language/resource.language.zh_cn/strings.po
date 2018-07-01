@@ -555,3 +555,7 @@ msgstr "玩你自己珍藏的游戏或者从官方仓库中下载游戏插件"
 msgctxt "#31163"
 msgid "Show Fanart background"
 msgstr "显示同人画背景"
+
+msgctxt "#31165"
+msgid "Profile name"
+msgstr "用户配置名称"

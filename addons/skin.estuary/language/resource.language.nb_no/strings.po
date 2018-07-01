@@ -555,3 +555,7 @@ msgstr "Spill personlige spill eller last ned en av de mange spilltilleggene fra
 msgctxt "#31163"
 msgid "Show Fanart background"
 msgstr "Vis brukerkunstbidrag-bakgrunn"
+
+msgctxt "#31165"
+msgid "Profile name"
+msgstr "Profilnavn"

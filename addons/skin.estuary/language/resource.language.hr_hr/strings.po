@@ -555,3 +555,7 @@ msgstr "Igrajte svoje igre ili preuzmite jednu od mnogih dodataka igra iz služb
 msgctxt "#31163"
 msgid "Show Fanart background"
 msgstr "Prikaži poster obožavatelja kao pozadinu"
+
+msgctxt "#31165"
+msgid "Profile name"
+msgstr "Naziv profila"

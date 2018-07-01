@@ -75,3 +75,7 @@ msgstr "Phụ đề sẵn có trong máy"
 msgctxt "#31097"
 msgid "Channel options"
 msgstr "Thiết lập kênh"
+
+msgctxt "#31165"
+msgid "Profile name"
+msgstr "Tên tài khoản"

@@ -448,6 +448,10 @@ msgctxt "#31132"
 msgid "Select Program"
 msgstr "Programm auswählen"
 
+msgctxt "#31133"
+msgid "Select Resolution"
+msgstr "Auflösung wählen"
+
 msgctxt "#31134"
 msgid "Remaining"
 msgstr "Verbleibend"
@@ -555,3 +559,7 @@ msgstr "Spielen oder eines von vielen Spiele-Addons aus dem offiziellen Reposito
 msgctxt "#31163"
 msgid "Show Fanart background"
 msgstr "Fanart-Hintergrund anzeigen"
+
+msgctxt "#31165"
+msgid "Profile name"
+msgstr "Profil-Name"

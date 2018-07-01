@@ -55,3 +55,7 @@ msgstr "Зерунвонҳои маҳаллӣ дастрасанд"
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Shift"
+
+msgctxt "#31165"
+msgid "Profile name"
+msgstr "Номи профил"

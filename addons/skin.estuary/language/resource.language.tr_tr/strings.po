@@ -555,3 +555,7 @@ msgstr "Kişisel oyunlarınızı oynayın veya resmi depodaki birçok oyun eklen
 msgctxt "#31163"
 msgid "Show Fanart background"
 msgstr "Arka plan fanartını göster"
+
+msgctxt "#31165"
+msgid "Profile name"
+msgstr "Profil adı"

@@ -335,3 +335,7 @@ msgstr "Декорации"
 msgctxt "#31161"
 msgid "Numeric pad"
 msgstr "Нумеричка тастатура"
+
+msgctxt "#31165"
+msgid "Profile name"
+msgstr "Име на профил"

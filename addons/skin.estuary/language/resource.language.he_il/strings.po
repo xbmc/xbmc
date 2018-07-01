@@ -555,3 +555,7 @@ msgstr "שחק את המשחקים האישיים שלך או הורד אחד מ
 msgctxt "#31163"
 msgid "Show Fanart background"
 msgstr "הצג רקע פאנארט"
+
+msgctxt "#31165"
+msgid "Profile name"
+msgstr "שם משתמש"

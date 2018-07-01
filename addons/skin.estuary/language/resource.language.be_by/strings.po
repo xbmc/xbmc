@@ -59,3 +59,7 @@ msgstr "Shift"
 msgctxt "#31137"
 msgid "PVR info"
 msgstr "Звесткі PVR"
+
+msgctxt "#31165"
+msgid "Profile name"
+msgstr "Profile name"

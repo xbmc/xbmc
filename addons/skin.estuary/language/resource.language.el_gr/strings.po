@@ -507,3 +507,7 @@ msgstr "Λειτουργία αφής"
 msgctxt "#31161"
 msgid "Numeric pad"
 msgstr "Αριθμητικό πληκτρολόγιο"
+
+msgctxt "#31165"
+msgid "Profile name"
+msgstr "Όνομα προφίλ"

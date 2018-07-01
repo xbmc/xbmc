@@ -535,3 +535,7 @@ msgstr "Mostrar banderas de medios"
 msgctxt "#31161"
 msgid "Numeric pad"
 msgstr "Teclado numérico"
+
+msgctxt "#31165"
+msgid "Profile name"
+msgstr "Nombre de perfil"

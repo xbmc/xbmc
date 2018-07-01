@@ -555,3 +555,7 @@ msgstr "執行您收藏的遊戲，或下載官方的眾多遊戲附加元件"
 msgctxt "#31163"
 msgid "Show Fanart background"
 msgstr "顯示劇照背景"
+
+msgctxt "#31165"
+msgid "Profile name"
+msgstr "設定檔名稱"
