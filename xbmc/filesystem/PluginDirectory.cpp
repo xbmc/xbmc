@@ -170,9 +170,9 @@ bool CPluginDirectory::StartScript(const std::string& strPath, bool retrievingDi
   CLog::Log(LOGDEBUG, "%s - calling plugin %s('%s','%s','%s','%s')", __FUNCTION__, m_addon->Name().c_str(), argv[0].c_str(), argv[1].c_str(), argv[2].c_str(), argv[3].c_str());
   bool success = false;
   std::string file = m_addon->LibPath();
-  bool reuseLanguageInvoker = true;
+  bool reuseLanguageInvoker = false;
   if (m_addon->ExtraInfo().find("reuselanguageinvoker") != m_addon->ExtraInfo().end())
-    reuseLanguageInvoker = m_addon->ExtraInfo().at("reuselanguageinvoker") != "false";
+    reuseLanguageInvoker = m_addon->ExtraInfo().at("reuselanguageinvoker") == "true";
 
   int id = CScriptInvocationManager::GetInstance().ExecuteAsync(file, m_addon, argv, reuseLanguageInvoker, handle);
   if (id >= 0)
