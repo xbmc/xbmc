@@ -36,14 +36,6 @@ CRPBaseRenderer::CRPBaseRenderer(const CRenderSettings &renderSettings, CRenderC
   m_bufferPool(std::move(bufferPool)),
   m_renderSettings(renderSettings)
 {
-  m_oldDestRect.SetRect(0.0f, 0.0f, 0.0f, 0.0f);
-
-  for(int i=0; i < 4; i++)
-  {
-    m_rotatedDestCoords[i].x = 0;
-    m_rotatedDestCoords[i].y = 0;
-  }
-
   m_bufferPool->RegisterRenderer(this);
 }
 
@@ -180,7 +172,8 @@ void CRPBaseRenderer::ManageRenderArea()
   CRenderUtils::CalculateViewMode(viewMode, rotationDegCCW, m_sourceWidth, m_sourceHeight, screenWidth, screenHeight, pixelRatio, zoomAmount);
 
   // Calculate destination dimensions
-  CRenderUtils::CalcNormalRenderRect(viewRect, GetAspectRatio() * pixelRatio, zoomAmount, m_dimensions);
+  CRect destRect;
+  CRenderUtils::CalcNormalRenderRect(viewRect, GetAspectRatio() * pixelRatio, zoomAmount, destRect);
 
   m_sourceRect.x1 = 0.0f;
   m_sourceRect.y1 = 0.0f;
@@ -189,17 +182,10 @@ void CRPBaseRenderer::ManageRenderArea()
 
   // Clip as needed
   if (!(m_context.IsFullScreenVideo() || m_context.IsCalibrating()))
-    CRenderUtils::ClipRect(viewRect, m_sourceRect, m_dimensions);
+    CRenderUtils::ClipRect(viewRect, m_sourceRect, destRect);
 
-  const CRect &destRect = m_dimensions;
-  if (m_oldDestRect != destRect || m_oldRenderOrientation != rotationDegCCW)
-  {
-    // Adapt the drawing rect points if we have to rotate and either destRect
-    // or orientation changed
-    m_rotatedDestCoords = CRenderUtils::ReorderDrawPoints(destRect, rotationDegCCW, GetAspectRatio());
-    m_oldDestRect = destRect;
-    m_oldRenderOrientation = rotationDegCCW;
-  }
+  // Adapt the drawing rect points if we have to rotate
+  m_rotatedDestCoords = CRenderUtils::ReorderDrawPoints(destRect, rotationDegCCW, GetAspectRatio());
 }
 
 void CRPBaseRenderer::MarkDirty()
