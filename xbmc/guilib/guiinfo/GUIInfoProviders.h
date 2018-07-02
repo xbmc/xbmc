@@ -36,6 +36,8 @@
 #include "guilib/guiinfo/VisualisationGUIInfo.h"
 #include "guilib/guiinfo/WeatherGUIInfo.h"
 
+#include "threads/CriticalSection.h"
+
 class CFileItem;
 class CGUIListItem;
 
@@ -147,6 +149,7 @@ public:
   CLibraryGUIInfo& GetLibraryInfoProvider() { return m_libraryGUIInfo; }
 
 private:
+  CCriticalSection m_providerSection;
   std::vector<IGUIInfoProvider *> m_providers;
 
   CAddonsGUIInfo m_addonsGUIInfo;
