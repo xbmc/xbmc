@@ -85,9 +85,9 @@ bool CLanguageInvokerThread::stop(bool wait)
   {
     // stop the language-specific invoker
     result = m_invoker->Stop(wait);
-    // stop the thread
-    CThread::StopThread(wait);
   }
+  // stop the thread
+  CThread::StopThread(wait);
 
   return result;
 }
