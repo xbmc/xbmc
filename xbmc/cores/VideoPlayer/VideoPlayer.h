@@ -340,7 +340,7 @@ public:
   void SetProgram(int progId) override;
   int GetProgramsCount() override;
 
-  TextCacheStruct_t* GetTeletextCache() override;
+  std::shared_ptr<TextCacheStruct_t> GetTeletextCache() override;
   void LoadPage(int p, int sp, unsigned char* buffer) override;
 
   std::string GetRadioText(unsigned int line) override;

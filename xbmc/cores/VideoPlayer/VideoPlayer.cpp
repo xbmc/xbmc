@@ -3379,7 +3379,7 @@ void CVideoPlayer::SetSubtitleVisibleInternal(bool bVisible)
     std::static_pointer_cast<CDVDInputStreamNavigator>(m_pInputStream)->EnableSubtitleStream(bVisible);
 }
 
-TextCacheStruct_t* CVideoPlayer::GetTeletextCache()
+std::shared_ptr<TextCacheStruct_t> CVideoPlayer::GetTeletextCache()
 {
   if (m_CurrentTeletext.id < 0)
     return 0;
