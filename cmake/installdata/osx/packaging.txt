@@ -1,4 +1,4 @@
-LICENSE.gpl
+LICENSE.md
 privacy-policy.txt
 xbmc/platform/darwin/Credits.html
 tools/darwin/packaging/media/osx/icon.iconset/*
