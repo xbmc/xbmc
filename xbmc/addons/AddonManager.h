@@ -75,7 +75,7 @@ namespace ADDON
     bool Init();
     void DeInit();
 
-    CAddonMgr();
+    CAddonMgr() = default;
     CAddonMgr(const CAddonMgr&) = delete;
     virtual ~CAddonMgr();
 
@@ -294,7 +294,7 @@ namespace ADDON
   private:
     CAddonMgr& operator=(CAddonMgr const&) = delete;
     /* libcpluff */
-    cp_context_t *m_cp_context;
+    cp_context_t *m_cp_context = nullptr;
     VECADDONS    m_updateableAddons;
 
     /*! \brief Check whether this addon is supported on the current platform

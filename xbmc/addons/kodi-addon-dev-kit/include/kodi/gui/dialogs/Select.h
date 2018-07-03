@@ -40,7 +40,7 @@ typedef struct SSelectionEntry
   ///
   /// There becomes selected always set to false.
   ///
-  SSelectionEntry() : selected(false) { }
+  SSelectionEntry() = default;
   //----------------------------------------------------------------------------
 
   /// Entry identfication string
@@ -51,7 +51,7 @@ typedef struct SSelectionEntry
 
   /// Place where entry can be preselected and after return the from user
   /// selected is set.
-  bool selected;
+  bool selected = false;
 } SSelectionEntry;
 //------------------------------------------------------------------------------
 

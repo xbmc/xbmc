@@ -86,6 +86,6 @@ private:
 
   CFileItemPtr m_item;
   ADDON::AddonPtr m_localAddon;
-  bool m_addonEnabled;
+  bool m_addonEnabled = false;
 };
 

@@ -319,8 +319,7 @@ namespace addon
     /// Used by an add-on that only supports visualizations.
     ///
     CInstanceVisualization()
-      : IAddonInstance(ADDON_INSTANCE_VISUALIZATION),
-        m_presetLockedByUser(false)
+      : IAddonInstance(ADDON_INSTANCE_VISUALIZATION)
     {
       if (CAddonBase::m_interface->globalSingleInstance != nullptr)
         throw std::logic_error("kodi::addon::CInstanceVisualization: Cannot create multiple instances of add-on.");
@@ -342,8 +341,7 @@ namespace addon
     /// @warning Only use `instance` from the CreateInstance call
     ///
     explicit CInstanceVisualization(KODI_HANDLE instance)
-      : IAddonInstance(ADDON_INSTANCE_VISUALIZATION),
-        m_presetLockedByUser(false)
+      : IAddonInstance(ADDON_INSTANCE_VISUALIZATION)
     {
       if (CAddonBase::m_interface->globalSingleInstance != nullptr)
         throw std::logic_error("kodi::addon::CInstanceVisualization: Creation of multiple together with single instance way is not allowed!");
@@ -759,7 +757,7 @@ namespace addon
       return addon->toAddon.addonInstance->IsLocked();
     }
 
-    bool m_presetLockedByUser;
+    bool m_presetLockedByUser = false;
     AddonInstance_Visualization* m_instanceData;
   };
 
