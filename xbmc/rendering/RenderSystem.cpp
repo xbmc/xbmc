@@ -26,8 +26,6 @@
 #include "Util.h"
 
 CRenderSystemBase::CRenderSystemBase()
-  : m_stereoView(RENDER_STEREO_VIEW_OFF)
-  , m_stereoMode(RENDER_STEREO_MODE_OFF)
 {
   m_bRenderCreated = false;
   m_bVSync = true;
