@@ -230,11 +230,7 @@ char* CLibcdio::GetDeviceFileName()
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 CCdIoSupport::CCdIoSupport()
-: i(0),
-  j(0),
-  cdio(nullptr),
-  m_nNumTracks(CDIO_INVALID_TRACK),
-  m_nFirstTrackNum(CDIO_INVALID_TRACK)
+: cdio(nullptr)
 {
   m_cdio = CLibcdio::GetInstance();
   m_nFirstData = -1;        /* # of first data track */
