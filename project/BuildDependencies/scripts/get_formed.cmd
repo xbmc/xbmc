@@ -35,7 +35,7 @@ FOR /F "eol=; tokens=1" %%f IN (%SCRIPT_PATH%\0_package.native-%NATIVEPLATFORM%.
   CALL :processFile %%f
   REM Apparently there's a quirk in cmd so this means if error level => 1
   IF ERRORLEVEL 1 (
-    ECHO One ore more packages failed to download
+    ECHO One or more packages failed to download
     EXIT /B 7
   )
 )
