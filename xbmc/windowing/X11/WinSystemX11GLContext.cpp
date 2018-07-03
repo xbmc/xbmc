@@ -240,7 +240,7 @@ XVisualInfo* CWinSystemX11GLContext::GetVisual()
 
   int vMask = VisualScreenMask | VisualDepthMask | VisualClassMask;
 
-  vTemplate.screen = m_nScreen;
+  vTemplate.screen = m_screen;
   vTemplate.depth = 24;
   vTemplate.c_class = TrueColor;
 
@@ -260,7 +260,7 @@ bool CWinSystemX11GLContext::RefreshGLContext(bool force)
   bool success = false;
   if (m_pGLContext)
   {
-    success = m_pGLContext->Refresh(force, m_nScreen, m_glWindow, m_newGlContext);
+    success = m_pGLContext->Refresh(force, m_screen, m_glWindow, m_newGlContext);
     return success;
   }
 
@@ -283,7 +283,7 @@ bool CWinSystemX11GLContext::RefreshGLContext(bool force)
   if (gli != "GLX")
   {
     m_pGLContext = new CGLContextEGL(m_dpy);
-    success = m_pGLContext->Refresh(force, m_nScreen, m_glWindow, m_newGlContext);
+    success = m_pGLContext->Refresh(force, m_screen, m_glWindow, m_newGlContext);
     if (success)
     {
       if (!isNvidia)
@@ -308,7 +308,7 @@ bool CWinSystemX11GLContext::RefreshGLContext(bool force)
 
   // fallback for vdpau
   m_pGLContext = X11::GLXContextCreate(m_dpy);
-  success = m_pGLContext->Refresh(force, m_nScreen, m_glWindow, m_newGlContext);
+  success = m_pGLContext->Refresh(force, m_screen, m_glWindow, m_newGlContext);
   if (success)
   {
     X11::VDPAURegister();

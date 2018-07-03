@@ -219,10 +219,9 @@ void CWinSystemAmlogic::UpdateResolutions()
     CServiceBroker::GetWinSystem()->GetGfxContext().ResetOverscan(resolutions[i]);
     CDisplaySettings::GetInstance().GetResolutionInfo(res_index) = resolutions[i];
 
-    CLog::Log(LOGNOTICE, "Found resolution %d x %d for display %d with %d x %d%s @ %f Hz\n",
+    CLog::Log(LOGNOTICE, "Found resolution %d x %d with %d x %d%s @ %f Hz\n",
       resolutions[i].iWidth,
       resolutions[i].iHeight,
-      resolutions[i].iScreen,
       resolutions[i].iScreenWidth,
       resolutions[i].iScreenHeight,
       resolutions[i].dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "",

@@ -79,8 +79,6 @@ public:
   bool UseLimitedColor() override;
 
   void UpdateResolutions() override;
-  int GetNumScreens() override;
-  int GetCurrentScreen() override;
 
   bool CanDoWindowed() override;
   bool Minimize() override;

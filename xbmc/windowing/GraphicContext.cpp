@@ -431,7 +431,6 @@ void CGraphicContext::SetVideoResolutionInternal(RESOLUTION res, bool forceUpdat
   // SetFullScreen() is called, so set them anyway and remember the old values.
   int origScreenWidth = m_iScreenWidth;
   int origScreenHeight = m_iScreenHeight;
-  int origScreenId = m_iScreenId;
   float origFPSOverride = m_fFPSOverride;
 
   UpdateInternalStateWithResolution(res);
@@ -471,7 +470,6 @@ void CGraphicContext::SetVideoResolutionInternal(RESOLUTION res, bool forceUpdat
     // Reset old state
     m_iScreenWidth = origScreenWidth;
     m_iScreenHeight = origScreenHeight;
-    m_iScreenId = origScreenId;
     m_fFPSOverride = origFPSOverride;
     if (IsValidResolution(lastRes))
     {
@@ -529,7 +527,6 @@ void CGraphicContext::UpdateInternalStateWithResolution(RESOLUTION res)
 
   m_iScreenWidth = info_mod.iWidth;
   m_iScreenHeight = info_mod.iHeight;
-  m_iScreenId = info_mod.iScreen;
   m_Resolution = res;
   m_fFPSOverride = 0;
 }
@@ -616,8 +613,6 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
 {
   // For now these are all on the first screen.
   RESOLUTION_INFO& info = CDisplaySettings::GetInstance().GetResolutionInfo(res);
-
-  info.iScreen = 0;
 
   // 1080i
   switch (res)
@@ -1130,7 +1125,7 @@ void CGraphicContext::ToggleFullScreen()
     if (CDisplaySettings::GetInstance().GetCurrentResolution() > RES_DESKTOP)
       uiRes = CDisplaySettings::GetInstance().GetCurrentResolution();
     else
-      uiRes = (RESOLUTION) CServiceBroker::GetWinSystem()->DesktopResolution(CServiceBroker::GetWinSystem()->GetCurrentScreen());
+      uiRes = RES_DESKTOP;
   }
 
   CDisplaySettings::GetInstance().SetCurrentResolution(uiRes, true);

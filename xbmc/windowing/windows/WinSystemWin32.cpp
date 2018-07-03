@@ -888,7 +888,7 @@ void CWinSystemWin32::UpdateResolutions()
   uint32_t dwFlags = details->Interlaced ? D3DPRESENTFLAG_INTERLACED : 0;
 
   RESOLUTION_INFO& info = CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP);
-  UpdateDesktopResolution(info, 0, w, h, refreshRate, dwFlags);
+  UpdateDesktopResolution(info, w, h, refreshRate, dwFlags);
   info.strOutput = strOuput;
 
   CLog::Log(LOGNOTICE, "Primary mode: %s", info.strMode.c_str());
@@ -913,7 +913,7 @@ void CWinSystemWin32::UpdateResolutions()
     dwFlags = (devmode.dmDisplayFlags & DM_INTERLACED) ? D3DPRESENTFLAG_INTERLACED : 0;
 
     RESOLUTION_INFO res;
-    UpdateDesktopResolution(res, 0, devmode.dmPelsWidth, devmode.dmPelsHeight, refresh, dwFlags);
+    UpdateDesktopResolution(res, devmode.dmPelsWidth, devmode.dmPelsHeight, refresh, dwFlags);
     GetGfxContext().ResetOverscan(res);
     res.strOutput = strOuput;
 

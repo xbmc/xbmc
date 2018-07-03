@@ -99,7 +99,6 @@ static void fetchDisplayModes()
         s_res_cur_displayMode.iHeight = s_res_cur_displayMode.iScreenHeight = m.getPhysicalHeight();
         s_res_cur_displayMode.fRefreshRate = m.getRefreshRate();
         s_res_cur_displayMode.dwFlags= D3DPRESENTFLAG_PROGRESSIVE;
-        s_res_cur_displayMode.iScreen       = 0;
         s_res_cur_displayMode.bFullScreen   = true;
         s_res_cur_displayMode.iSubtitles    = (int)(0.965 * s_res_cur_displayMode.iHeight);
         s_res_cur_displayMode.fPixelRatio   = 1.0f;
@@ -117,7 +116,6 @@ static void fetchDisplayModes()
           res.iHeight = res.iScreenHeight = m.getPhysicalHeight();
           res.fRefreshRate = m.getRefreshRate();
           res.dwFlags= D3DPRESENTFLAG_PROGRESSIVE;
-          res.iScreen       = 0;
           res.bFullScreen   = true;
           res.iSubtitles    = (int)(0.965 * res.iHeight);
           res.fPixelRatio   = 1.0f;
@@ -226,7 +224,6 @@ bool CAndroidUtils::GetNativeResolution(RESOLUTION_INFO *res) const
     res->strId = "-1";
     res->fRefreshRate = currentRefreshRate();
     res->dwFlags= D3DPRESENTFLAG_PROGRESSIVE;
-    res->iScreen       = 0;
     res->bFullScreen   = true;
     res->iWidth = m_width;
     res->iHeight = m_height;

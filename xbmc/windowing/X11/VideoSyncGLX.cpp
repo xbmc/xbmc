@@ -50,7 +50,7 @@ void CVideoSyncGLX::OnResetDisplay()
 
 bool CVideoSyncGLX::Setup(PUPDATECLOCK func)
 {
-  CSingleLock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
+  CSingleLock lock(m_winSystem.GetGfxContext());
 
   m_glXWaitVideoSyncSGI = NULL;
   m_glXGetVideoSyncSGI = NULL;
@@ -99,9 +99,9 @@ bool CVideoSyncGLX::Setup(PUPDATECLOCK func)
     return false;
   }
 
-  bool          ExtensionFound = false;
-  std::istringstream Extensions(glXQueryExtensionsString(m_Dpy, m_winSystem.GetCurrentScreen()));
-  std::string        ExtensionStr;
+  bool ExtensionFound = false;
+  std::istringstream Extensions(glXQueryExtensionsString(m_Dpy, m_winSystem.GetScreen()));
+  std::string ExtensionStr;
 
   while (!ExtensionFound)
   {
@@ -119,7 +119,7 @@ bool CVideoSyncGLX::Setup(PUPDATECLOCK func)
     return false;
   }
 
-  m_vInfo = glXChooseVisual(m_Dpy, m_winSystem.GetCurrentScreen(), singleBufferAttributes);
+  m_vInfo = glXChooseVisual(m_Dpy, m_winSystem.GetScreen(), singleBufferAttributes);
   if (!m_vInfo)
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXChooseVisual returned NULL");
@@ -255,7 +255,7 @@ void CVideoSyncGLX::Cleanup()
   CLog::Log(LOGDEBUG, "CVideoReferenceClock: Cleaning up GLX");
 
   {
-    CSingleLock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
+    CSingleLock lock(m_winSystem.GetGfxContext());
 
     if (m_vInfo)
     {
@@ -281,6 +281,6 @@ void CVideoSyncGLX::Cleanup()
 
 float CVideoSyncGLX::GetFps()
 {
-  m_fps = CServiceBroker::GetWinSystem()->GetGfxContext().GetFPS();
+  m_fps = m_winSystem.GetGfxContext().GetFPS();
   return m_fps;
 }

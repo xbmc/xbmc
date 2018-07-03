@@ -359,10 +359,10 @@ void CWinSystemX11::UpdateResolutions()
   else
   {
     m_userOutput = "No Output";
-    m_nScreen = DefaultScreen(m_dpy);
-    int w = DisplayWidth(m_dpy, m_nScreen);
-    int h = DisplayHeight(m_dpy, m_nScreen);
-    UpdateDesktopResolution(CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP), 0, w, h, 0.0);
+    m_screen = DefaultScreen(m_dpy);
+    int w = DisplayWidth(m_dpy, m_screen);
+    int h = DisplayHeight(m_dpy, m_screen);
+    UpdateDesktopResolution(CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP), w, h, 0.0);
   }
 
   // erase previous stored modes
@@ -382,7 +382,6 @@ void CWinSystemX11::UpdateResolutions()
       CLog::Log(LOGINFO, "ID:%s Name:%s Refresh:%f Width:%d Height:%d",
                 mode.id.c_str(), mode.name.c_str(), mode.hz, mode.w, mode.h);
       RESOLUTION_INFO res;
-      res.iScreen = 0; // not used by X11
       res.dwFlags = 0;
       res.iWidth  = mode.w;
       res.iHeight = mode.h;
@@ -529,7 +528,7 @@ bool CWinSystemX11::Minimize()
     CApplicationMessenger::GetInstance().PostMsg(TMSG_TOGGLEFULLSCREEN);
   }
 
-  XIconifyWindow(m_dpy, m_mainWindow, m_nScreen);
+  XIconifyWindow(m_dpy, m_mainWindow, m_screen);
 
   m_minimized = true;
   return true;
@@ -708,7 +707,7 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const std:
       out = g_xrandr.GetOutput(m_currentOutput);
     if (out)
     {
-      m_nScreen = out->screen;
+      m_screen = out->screen;
       x0 = out->x;
       y0 = out->y;
     }
@@ -1055,7 +1054,7 @@ void CWinSystemX11::UpdateCrtc()
   float fps = 0.0f;
   Window child;
   XGetWindowAttributes(m_dpy, m_mainWindow, &winattr);
-  XTranslateCoordinates(m_dpy, m_mainWindow, RootWindow(m_dpy, m_nScreen), winattr.x, winattr.y,
+  XTranslateCoordinates(m_dpy, m_mainWindow, RootWindow(m_dpy, m_screen), winattr.x, winattr.y,
                         &posx, &posy, &child);
 
   m_crtc = g_xrandr.GetCrtc(posx+winattr.width/2, posy+winattr.height/2, fps);

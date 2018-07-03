@@ -396,7 +396,6 @@ bool CRPIUtils::ProbeResolutions(std::vector<RESOLUTION_INFO> &resolutions)
 
     if ((tv_state.state & ( VC_HDMI_HDMI | VC_HDMI_DVI )) != 0) // hdtv
     {
-      m_desktopRes.iScreen      = 0;
       m_desktopRes.bFullScreen  = true;
       m_desktopRes.iWidth       = tv_state.display.hdmi.width;
       m_desktopRes.iHeight      = tv_state.display.hdmi.height;
@@ -411,7 +410,6 @@ bool CRPIUtils::ProbeResolutions(std::vector<RESOLUTION_INFO> &resolutions)
     }
     else if ((tv_state.state & ( VC_SDTV_NTSC | VC_SDTV_PAL )) != 0) // sdtv
     {
-      m_desktopRes.iScreen      = 0;
       m_desktopRes.bFullScreen  = true;
       m_desktopRes.iWidth       = tv_state.display.sdtv.width;
       m_desktopRes.iHeight      = tv_state.display.sdtv.height;
@@ -423,7 +421,6 @@ bool CRPIUtils::ProbeResolutions(std::vector<RESOLUTION_INFO> &resolutions)
     }
     else if ((tv_state.state & VC_LCD_ATTACHED_DEFAULT) != 0) // lcd
     {
-      m_desktopRes.iScreen      = 0;
       m_desktopRes.bFullScreen  = true;
       m_desktopRes.iWidth       = tv_state.display.sdtv.width;
       m_desktopRes.iHeight      = tv_state.display.sdtv.height;
@@ -543,7 +540,6 @@ void CRPIUtils::GetSupportedModes(HDMI_RES_GROUP_T group, std::vector<RESOLUTION
     {
       RESOLUTION_INFO res;
 
-      res.iScreen       = 0;
       res.bFullScreen   = true;
       res.dwFlags       = MAKEFLAGS(group, tv->code, tv->scan_mode);
       res.fRefreshRate  = (float)tv->frame_rate;

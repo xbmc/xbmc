@@ -42,7 +42,7 @@ RESOLUTION_INFO::RESOLUTION_INFO(int width, int height, float aspect, const std:
   fPixelRatio = aspect ? ((float)width)/height / aspect : 1.0f;
   bFullScreen = true;
   fRefreshRate = 0;
-  dwFlags = iSubtitles = iScreen = 0;
+  dwFlags = iSubtitles = 0;
 }
 
 RESOLUTION_INFO::RESOLUTION_INFO(const RESOLUTION_INFO& res) :
@@ -52,7 +52,7 @@ RESOLUTION_INFO::RESOLUTION_INFO(const RESOLUTION_INFO& res) :
   strId(res.strId)
 {
   bFullScreen = res.bFullScreen;
-  iScreen = res.iScreen; iWidth = res.iWidth; iHeight = res.iHeight;
+  iWidth = res.iWidth; iHeight = res.iHeight;
   iScreenWidth = res.iScreenWidth; iScreenHeight = res.iScreenHeight;
   iSubtitles = res.iSubtitles; dwFlags = res.dwFlags;
   fPixelRatio = res.fPixelRatio; fRefreshRate = res.fRefreshRate;
@@ -191,8 +191,7 @@ bool CResolutionUtils::FindResolutionFromOverride(float fps, int width, bool is3
 
       if (info.iScreenWidth  == curr.iScreenWidth &&
           info.iScreenHeight == curr.iScreenHeight &&
-          (info.dwFlags & D3DPRESENTFLAG_MODEMASK) == (curr.dwFlags & D3DPRESENTFLAG_MODEMASK) &&
-          info.iScreen == curr.iScreen)
+          (info.dwFlags & D3DPRESENTFLAG_MODEMASK) == (curr.dwFlags & D3DPRESENTFLAG_MODEMASK))
       {
         if (info.fRefreshRate <= override.refreshmax &&
             info.fRefreshRate >= override.refreshmin)

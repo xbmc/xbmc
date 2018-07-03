@@ -49,8 +49,6 @@ public:
   void FinishWindowResize(int newWidth, int newHeight) override;
   bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays) override;
   void UpdateResolutions() override;
-  int  GetNumScreens() override { return 1; }
-  int  GetCurrentScreen() override { return m_nScreen; }
   void ShowOSMouse(bool show) override;
 
   void NotifyAppActiveChange(bool bActivated) override;
@@ -67,6 +65,7 @@ public:
 
   // Local to WinSystemX11 only
   Display*  GetDisplay() { return m_dpy; }
+  int GetScreen() { return m_screen; }
   void NotifyXRREvent();
   void GetConnectedOutputs(std::vector<std::string> *outputs);
   bool IsCurrentOutput(std::string output);
@@ -85,6 +84,7 @@ protected:
   void OnLostDevice();
 
   Window m_glWindow, m_mainWindow;
+  int m_screen = 0;
   Display *m_dpy;
   Cursor m_invisibleCursor;
   Pixmap m_icon;

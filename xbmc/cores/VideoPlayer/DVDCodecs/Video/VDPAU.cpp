@@ -190,7 +190,7 @@ bool CVDPAUContext::CreateContext()
 {
   CLog::Log(LOGNOTICE,"VDPAU::CreateContext - creating decoder context");
 
-  int mScreen;
+  int screen;
   { CSingleLock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
 
     if (!m_display)
@@ -199,13 +199,13 @@ bool CVDPAUContext::CreateContext()
     if (!m_display)
       return false;
 
-    mScreen = CServiceBroker::GetWinSystem()->GetCurrentScreen();
+    screen = static_cast<CWinSystemX11*>(CServiceBroker::GetWinSystem())->GetScreen();
   }
 
   VdpStatus vdp_st;
   // Create Device
   vdp_st = dl_vdp_device_create_x11(m_display,
-                                    mScreen,
+                                    screen,
                                    &m_vdpDevice,
                                    &m_vdpProcs.vdp_get_proc_address);
 
