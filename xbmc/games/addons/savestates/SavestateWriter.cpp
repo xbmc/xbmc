@@ -33,11 +33,6 @@
 using namespace KODI;
 using namespace GAME;
 
-CSavestateWriter::CSavestateWriter() :
-  m_fps(0.0)
-{
-}
-
 CSavestateWriter::~CSavestateWriter() = default;
 
 bool CSavestateWriter::Initialize(const CGameClient* gameClient, uint64_t frameHistoryCount)

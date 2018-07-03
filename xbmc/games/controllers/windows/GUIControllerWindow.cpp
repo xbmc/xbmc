@@ -47,9 +47,7 @@ using namespace GAME;
 using namespace KODI::MESSAGING;
 
 CGUIControllerWindow::CGUIControllerWindow(void) :
-  CGUIDialog(WINDOW_DIALOG_GAME_CONTROLLERS, "DialogGameControllers.xml"),
-  m_controllerList(nullptr),
-  m_featureList(nullptr)
+  CGUIDialog(WINDOW_DIALOG_GAME_CONTROLLERS, "DialogGameControllers.xml")
 {
   // initialize CGUIWindow
   m_loadType = KEEP_IN_MEMORY;

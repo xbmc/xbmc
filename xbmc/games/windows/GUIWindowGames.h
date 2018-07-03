@@ -52,7 +52,7 @@ namespace GAME
     void OnItemInfo(int itemNumber);
     bool PlayGame(const CFileItem &item);
 
-    CGUIDialogProgress *m_dlgProgress;
+    CGUIDialogProgress *m_dlgProgress = nullptr;
   };
 }
 }
