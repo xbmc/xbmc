@@ -30,8 +30,7 @@
 
 
 CGUIDialogBusyNoCancel::CGUIDialogBusyNoCancel(void)
-  : CGUIDialog(WINDOW_DIALOG_BUSY_NOCANCEL, "DialogBusy.xml", DialogModalityType::MODAL),
-    m_bLastVisible(false)
+  : CGUIDialog(WINDOW_DIALOG_BUSY_NOCANCEL, "DialogBusy.xml", DialogModalityType::MODAL)
 {
   m_loadType = LOAD_ON_GUI_INIT;
   m_progress = -1;
