@@ -112,14 +112,9 @@ protected:
 
   struct SInfo
   {
-    SInfo()
-    : pts(DVD_NOPTS_VALUE)
-    , passthrough(false)
-    {}
-
     std::string      info;
-    double           pts;
-    bool             passthrough;
+    double           pts = DVD_NOPTS_VALUE;
+    bool             passthrough = false;
   };
 
   CCriticalSection m_info_section;

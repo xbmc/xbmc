@@ -149,13 +149,8 @@ protected:
   struct SPlane
   {
     SOverlays o;
-    int w;
-    int h;
-
-    SPlane()
-    : w(0)
-    , h(0)
-    {}
+    int w = 0;
+    int h = 0;
   };
 
   SPlane m_planes[2];
