@@ -28,7 +28,6 @@ namespace XFILE
   class CPosixFile : public IFile
   {
   public:
-    CPosixFile();
     ~CPosixFile() override;
 
     bool Open(const CURL& url) override;
@@ -51,10 +50,10 @@ namespace XFILE
     int Stat(struct __stat64* buffer) override;
 
   protected:
-    int     m_fd;
-    int64_t m_filePos;
-    int64_t m_lastDropPos;
-    bool    m_allowWrite;
+    int     m_fd = -1;
+    int64_t m_filePos = -1;
+    int64_t m_lastDropPos = -1;
+    bool    m_allowWrite = false;
   };
 
 }

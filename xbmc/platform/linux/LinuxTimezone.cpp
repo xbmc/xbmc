@@ -36,7 +36,7 @@
 
 #include <algorithm>
 
-CLinuxTimezone::CLinuxTimezone() : m_IsDST(0)
+CLinuxTimezone::CLinuxTimezone()
 {
    char* line = NULL;
    size_t linelen = 0;

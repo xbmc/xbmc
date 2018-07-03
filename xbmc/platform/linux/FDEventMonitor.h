@@ -39,15 +39,15 @@ public:
 
   struct MonitoredFD
   {
-    int fd; /**< File descriptor to be monitored */
-    short events; /**< Events to be monitored (see poll(2)) */
+    int fd = -1; /**< File descriptor to be monitored */
+    short events = 0; /**< Events to be monitored (see poll(2)) */
 
-    EventCallback callback; /** Callback to be called on events */
-    void *callbackData; /** data parameter for EventCallback */
+    EventCallback callback = nullptr; /** Callback to be called on events */
+    void *callbackData = nullptr; /** data parameter for EventCallback */
 
     MonitoredFD(int fd_, short events_, EventCallback callback_, void *callbackData_) :
       fd(fd_), events(events_), callback(callback_), callbackData(callbackData_) {}
-    MonitoredFD() : fd(-1), events(0), callback(NULL), callbackData(NULL) {}
+    MonitoredFD() = default;
   };
 
   CFDEventMonitor();
@@ -77,8 +77,8 @@ private:
   std::vector<int> m_monitoredFDbyPollDescs;
   std::vector<struct pollfd> m_pollDescs;
 
-  int m_nextID;
-  int m_wakeupfd;
+  int m_nextID = 0;
+  int m_wakeupfd = -1;
 
   CCriticalSection m_mutex;
   CCriticalSection m_pollMutex;

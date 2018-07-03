@@ -47,7 +47,7 @@ private:
 };
 }
 
-CZeroconfBrowserAvahi::CZeroconfBrowserAvahi() : mp_client ( 0 ), mp_poll ( 0 )
+CZeroconfBrowserAvahi::CZeroconfBrowserAvahi()
 {
   if ( ! ( mp_poll = avahi_threaded_poll_new() ) )
   {

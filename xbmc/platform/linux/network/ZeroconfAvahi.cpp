@@ -67,7 +67,7 @@ struct CZeroconfAvahi::ServiceInfo
   AvahiEntryGroup* mp_group;
 };
 
-CZeroconfAvahi::CZeroconfAvahi(): mp_client(0), mp_poll (0), m_shutdown(false),m_thread_id(0)
+CZeroconfAvahi::CZeroconfAvahi()
 {
     if (! (mp_poll = avahi_threaded_poll_new()))
     {

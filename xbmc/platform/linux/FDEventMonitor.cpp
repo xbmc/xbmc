@@ -27,9 +27,7 @@
 #include "FDEventMonitor.h"
 
 CFDEventMonitor::CFDEventMonitor() :
-  CThread("FDEventMonitor"),
-  m_nextID(0),
-  m_wakeupfd(-1)
+  CThread("FDEventMonitor")
 {
 }
 
