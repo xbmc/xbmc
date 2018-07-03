@@ -28,8 +28,7 @@
 #define SETTINGS_XML_ROOT   "settings"
 
 CSettingsBase::CSettingsBase()
-  : m_initialized(false)
-  , m_settingsManager(new CSettingsManager())
+  : m_settingsManager(new CSettingsManager())
 { }
 
 CSettingsBase::~CSettingsBase()

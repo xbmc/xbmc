@@ -82,20 +82,20 @@ private:
   /*!
   * @brief The currently selected content type
   */
-  CONTENT_TYPE m_content;
+  CONTENT_TYPE m_content = CONTENT_NONE;
   /*!
   * @brief The selected content type at dialog creation
   */
-  CONTENT_TYPE m_originalContent;
+  CONTENT_TYPE m_originalContent = CONTENT_NONE;
   /*!
   * @brief The currently selected scraper
   */
   ADDON::ScraperPtr m_scraper;
 
-  bool m_showScanSettings;
-  bool m_scanRecursive;
-  bool m_useDirectoryNames;
-  bool m_containsSingleItem;
-  bool m_exclude;
-  bool m_noUpdating;
+  bool m_showScanSettings = false;
+  bool m_scanRecursive = false;
+  bool m_useDirectoryNames = false;
+  bool m_containsSingleItem = false;
+  bool m_exclude = false;
+  bool m_noUpdating = false;
 };

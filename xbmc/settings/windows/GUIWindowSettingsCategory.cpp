@@ -59,9 +59,7 @@ static const SettingGroup s_settingGroupMap[] = { { SETTINGS_SYSTEM,      "syste
 
 CGUIWindowSettingsCategory::CGUIWindowSettingsCategory()
     : CGUIDialogSettingsManagerBase(WINDOW_SETTINGS_SYSTEM, "SettingsCategory.xml"),
-      m_settings(CServiceBroker::GetSettings()),
-      m_iSection(0),
-      m_returningFromSkinLoad(false)
+      m_settings(CServiceBroker::GetSettings())
 {
   // set the correct ID range...
   m_idRange.clear();
