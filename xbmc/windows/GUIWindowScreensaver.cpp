@@ -29,8 +29,7 @@
 #include "settings/Settings.h"
 
 CGUIWindowScreensaver::CGUIWindowScreensaver(void)
-  : CGUIWindow(WINDOW_SCREENSAVER, ""),
-    m_addon(nullptr)
+  : CGUIWindow(WINDOW_SCREENSAVER, "")
 {
 }
 

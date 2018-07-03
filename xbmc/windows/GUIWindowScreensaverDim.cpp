@@ -28,10 +28,7 @@
 #include "guilib/GUITexture.h"
 
 CGUIWindowScreensaverDim::CGUIWindowScreensaverDim(void)
-  : CGUIDialog(WINDOW_SCREENSAVER_DIM, "", DialogModalityType::MODELESS),
-    m_dimLevel(100.0f),
-    m_newDimLevel(100.0f),
-    m_visible(false)
+  : CGUIDialog(WINDOW_SCREENSAVER_DIM, "", DialogModalityType::MODELESS)
 {
   m_needsScaling = false;
   m_animations.push_back(CAnimation::CreateFader(0, 100, 0, 1000, ANIM_TYPE_WINDOW_OPEN));
