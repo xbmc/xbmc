@@ -130,7 +130,6 @@ uint64_t CXBTFFrame::GetHeaderSize() const
 
 CXBTFFile::CXBTFFile()
   : m_path(),
-    m_loop(0),
     m_frames()
 { }
 

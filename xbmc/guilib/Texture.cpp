@@ -44,8 +44,6 @@
 /*                                                                      */
 /************************************************************************/
 CBaseTexture::CBaseTexture(unsigned int width, unsigned int height, unsigned int format)
- : m_hasAlpha( true ),
-   m_mipmapping( false )
 {
   m_pixels = NULL;
   m_loadedToGPU = false;

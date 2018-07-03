@@ -57,10 +57,10 @@ private:
   mutable unsigned int m_lastSysHeatInfoTime;
   mutable CTemperature m_gpuTemp;
   mutable CTemperature m_cpuTemp;
-  int m_fanSpeed;
-  float m_fps;
-  unsigned int m_frameCounter;
-  unsigned int m_lastFPSTime;
+  int m_fanSpeed = 0;
+  float m_fps = 0.0;
+  unsigned int m_frameCounter = 0;
+  unsigned int m_lastFPSTime = 0;
 };
 
 } // namespace GUIINFO

@@ -26,7 +26,6 @@ class IImage
 {
 public:
 
-  IImage():m_width(0), m_height(0), m_originalWidth(0), m_originalHeight(0), m_orientation(0), m_hasAlpha(false) {};
   virtual ~IImage() = default;
 
   /*!
@@ -77,11 +76,11 @@ public:
 
 protected:
 
-  unsigned int m_width;
-  unsigned int m_height;
-  unsigned int m_originalWidth;   ///< original image width before scaling or cropping
-  unsigned int m_originalHeight;  ///< original image height before scaling or cropping
-  unsigned int m_orientation;
-  bool m_hasAlpha;
+  unsigned int m_width = 0;
+  unsigned int m_height = 0;
+  unsigned int m_originalWidth = 0;   ///< original image width before scaling or cropping
+  unsigned int m_originalHeight = 0;  ///< original image height before scaling or cropping
+  unsigned int m_orientation = 0;
+  bool m_hasAlpha = false;
 
 };

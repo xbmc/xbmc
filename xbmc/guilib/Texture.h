@@ -142,8 +142,8 @@ protected:
   bool m_loadedToGPU;
   unsigned int m_format;
   int m_orientation;
-  bool m_hasAlpha;
-  bool m_mipmapping;
+  bool m_hasAlpha =  true ;
+  bool m_mipmapping =  false ;
   TEXTURE_SCALING m_scalingMethod = TEXTURE_SCALING::LINEAR;
   bool m_bCacheMemory = false;
 };

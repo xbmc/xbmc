@@ -96,7 +96,7 @@ public:
 
 private:
   std::string m_path;
-  uint32_t m_loop;
+  uint32_t m_loop = 0;
   std::vector<CXBTFFrame> m_frames;
 };
 

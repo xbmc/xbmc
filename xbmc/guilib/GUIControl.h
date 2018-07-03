@@ -343,7 +343,7 @@ protected:
   float m_height;
   float m_width;
   CRect m_hitRect;
-  UTILS::Color m_hitColor;
+  UTILS::Color m_hitColor = 0xffffffff;
   KODI::GUILIB::GUIINFO::CGUIInfoColor m_diffuseColor;
   int m_controlID;
   int m_parentID;

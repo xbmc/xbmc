@@ -44,9 +44,7 @@
 using namespace KODI::GUILIB::GUIINFO;
 
 CPlayerGUIInfo::CPlayerGUIInfo()
-: m_AfterSeekTimeout(0),
-  m_seekOffset(0),
-  m_playerShowTime(false),
+: m_playerShowTime(false),
   m_playerShowInfo(false)
 {
 }

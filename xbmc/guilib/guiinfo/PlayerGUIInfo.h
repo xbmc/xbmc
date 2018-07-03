@@ -58,8 +58,8 @@ public:
 private:
   std::unique_ptr<CFileItem> m_currentItem;
 
-  unsigned int m_AfterSeekTimeout;
-  mutable int m_seekOffset;
+  unsigned int m_AfterSeekTimeout = 0;
+  mutable int m_seekOffset = 0;
   std::atomic_bool m_playerShowTime;
   std::atomic_bool m_playerShowInfo;
 

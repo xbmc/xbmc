@@ -35,9 +35,7 @@
 
 using namespace KODI::GUILIB;
 
-CGUIControl::CGUIControl() :
-  m_hitColor(0xffffffff),
-  m_diffuseColor(0xffffffff)
+CGUIControl::CGUIControl()
 {
   m_hasProcessed = false;
   m_bHasFocus = false;
@@ -65,7 +63,6 @@ CGUIControl::CGUIControl() :
 
 CGUIControl::CGUIControl(int parentID, int controlID, float posX, float posY, float width, float height)
 : m_hitRect(posX, posY, posX + width, posY + height),
-  m_hitColor(0xffffffff),
   m_diffuseColor(0xffffffff)
 {
   m_posX = posX;
