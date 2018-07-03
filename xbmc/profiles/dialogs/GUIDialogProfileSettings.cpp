@@ -52,8 +52,7 @@
 #define SETTING_PROFILE_MEDIA_SOURCES "profile.mediasources"
 
 CGUIDialogProfileSettings::CGUIDialogProfileSettings()
-    : CGUIDialogSettingsManualBase(WINDOW_DIALOG_PROFILE_SETTINGS, "DialogSettings.xml"),
-      m_needsSaving(false)
+    : CGUIDialogSettingsManualBase(WINDOW_DIALOG_PROFILE_SETTINGS, "DialogSettings.xml")
 { }
 
 CGUIDialogProfileSettings::~CGUIDialogProfileSettings() = default;
