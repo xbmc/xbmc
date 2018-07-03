@@ -133,7 +133,7 @@ private:
   CCriticalSection* mp_crit_sec;
   typedef std::map<std::string, PublishInfo> tServiceMap;
   tServiceMap m_service_map;
-  bool m_started;
+  bool m_started = false;
 
   //protects singleton creation/destruction
   static std::atomic_flag sm_singleton_guard;

@@ -52,7 +52,7 @@ class CZeroconfBrowserDummy : public CZeroconfBrowser
 std::atomic_flag CZeroconfBrowser::sm_singleton_guard = ATOMIC_FLAG_INIT;
 CZeroconfBrowser* CZeroconfBrowser::smp_instance = 0;
 
-CZeroconfBrowser::CZeroconfBrowser():mp_crit_sec(new CCriticalSection),m_started(false)
+CZeroconfBrowser::CZeroconfBrowser():mp_crit_sec(new CCriticalSection)
 {
 #ifdef HAS_FILESYSTEM_SMB
   AddServiceType("_smb._tcp.");
@@ -175,12 +175,9 @@ void CZeroconfBrowser::ReleaseInstance()
 }
 
 
-CZeroconfBrowser::ZeroconfService::ZeroconfService():m_port(0){}
-
 CZeroconfBrowser::ZeroconfService::ZeroconfService(const std::string& fcr_name, const std::string& fcr_type, const std::string& fcr_domain):
   m_name(fcr_name),
-  m_domain(fcr_domain),
-  m_port(0)
+  m_domain(fcr_domain)
 {
   SetType(fcr_type);
 }

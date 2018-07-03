@@ -123,12 +123,12 @@ private:
 
   bool LoadCert(std::string &skey, std::string &scert);
 
-  uint16_t m_port;
-  struct MHD_Daemon *m_daemon_ip6;
-  struct MHD_Daemon *m_daemon_ip4;
-  bool m_running;
-  size_t m_thread_stacksize;
-  bool m_authenticationRequired;
+  uint16_t m_port = 0;
+  struct MHD_Daemon *m_daemon_ip6 = nullptr;
+  struct MHD_Daemon *m_daemon_ip4 = nullptr;
+  bool m_running = false;
+  size_t m_thread_stacksize = 0;
+  bool m_authenticationRequired = false;
   std::string m_authenticationUsername;
   std::string m_authenticationPassword;
   std::string m_key;

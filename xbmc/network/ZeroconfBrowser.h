@@ -42,7 +42,7 @@ public:
     public:
       typedef std::map<std::string, std::string> tTxtRecordMap;
 
-      ZeroconfService();
+      ZeroconfService() = default;
       ZeroconfService(const std::string& fcr_name, const std::string& fcr_type, const std::string& fcr_domain);
 
       /// easy conversion to string and back (used in czeronfdiretory to store this service)
@@ -85,7 +85,7 @@ public:
 
       //2 entries below store 1 ip:port pair for this service
       std::string m_ip;
-      int        m_port;
+      int        m_port = 0;
 
       //used for mdns in case dns resolution fails
       //we store the hostname and resolve with mdns functions again
@@ -163,7 +163,7 @@ private:
   CCriticalSection* mp_crit_sec;
   typedef std::set<std::string> tServices;
   tServices m_services;
-  bool m_started;
+  bool m_started = false;
 
   //protects singleton creation/destruction
   static std::atomic_flag sm_singleton_guard;

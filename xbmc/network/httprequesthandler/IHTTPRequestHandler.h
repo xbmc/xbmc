@@ -249,5 +249,5 @@ protected:
   std::map<std::string, std::string> m_postFields;
 
 private:
-  bool m_ranged;
+  bool m_ranged = false;
 };

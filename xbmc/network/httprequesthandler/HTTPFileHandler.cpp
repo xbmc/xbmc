@@ -26,16 +26,12 @@
 CHTTPFileHandler::CHTTPFileHandler()
   : IHTTPRequestHandler(),
     m_url(),
-    m_canHandleRanges(true),
-    m_canBeCached(true),
     m_lastModified()
 { }
 
 CHTTPFileHandler::CHTTPFileHandler(const HTTPRequest &request)
   : IHTTPRequestHandler(request),
     m_url(),
-    m_canHandleRanges(true),
-    m_canBeCached(true),
     m_lastModified()
 { }
 

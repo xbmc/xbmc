@@ -53,8 +53,8 @@ protected:
 private:
   std::string m_url;
 
-  bool m_canHandleRanges;
-  bool m_canBeCached;
+  bool m_canHandleRanges = true;
+  bool m_canBeCached = true;
 
   CDateTime m_lastModified;
 
