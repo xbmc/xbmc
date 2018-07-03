@@ -79,14 +79,14 @@ void CEpgUpdateRequest::Deliver()
 class CEpgTagStateChange
 {
 public:
-  CEpgTagStateChange() : m_state(EPG_EVENT_CREATED) {}
+  CEpgTagStateChange() = default;
   CEpgTagStateChange(const CPVREpgInfoTagPtr tag, EPG_EVENT_STATE eNewState) : m_epgtag(tag), m_state(eNewState) {}
 
   void Deliver();
 
 private:
   CPVREpgInfoTagPtr m_epgtag;
-  EPG_EVENT_STATE m_state;
+  EPG_EVENT_STATE m_state = EPG_EVENT_CREATED;
 };
 
 void CEpgTagStateChange::Deliver()
@@ -116,7 +116,6 @@ void CEpgTagStateChange::Deliver()
 CPVREpgContainer::CPVREpgContainer(void) :
   CThread("EPGUpdater"),
   m_database(new CPVREpgDatabase),
-  m_bUpdateNotificationPending(false),
   m_settings({
     CSettings::SETTING_EPG_IGNOREDBFORCLIENT,
     CSettings::SETTING_EPG_EPGUPDATE,

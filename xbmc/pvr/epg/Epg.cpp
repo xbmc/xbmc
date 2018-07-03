@@ -41,36 +41,18 @@ using namespace PVR;
 
 CPVREpg::CPVREpg(int iEpgID, const std::string &strName /* = "" */, const std::string &strScraperName /* = "" */, bool bLoadedFromDb /* = false */) :
     m_bChanged(!bLoadedFromDb),
-    m_bTagsChanged(false),
-    m_bLoaded(false),
-    m_bUpdatePending(false),
     m_iEpgID(iEpgID),
     m_strName(strName),
-    m_strScraperName(strScraperName),
-    m_bUpdateLastScanTime(false)
+    m_strScraperName(strScraperName)
 {
 }
 
 CPVREpg::CPVREpg(const CPVRChannelPtr &channel, bool bLoadedFromDb /* = false */) :
     m_bChanged(!bLoadedFromDb),
-    m_bTagsChanged(false),
-    m_bLoaded(false),
-    m_bUpdatePending(false),
     m_iEpgID(channel->EpgID()),
     m_strName(channel->ChannelName()),
     m_strScraperName(channel->EPGScraper()),
-    m_pvrChannel(channel),
-    m_bUpdateLastScanTime(false)
-{
-}
-
-CPVREpg::CPVREpg(void) :
-    m_bChanged(false),
-    m_bTagsChanged(false),
-    m_bLoaded(false),
-    m_bUpdatePending(false),
-    m_iEpgID(0),
-    m_bUpdateLastScanTime(false)
+    m_pvrChannel(channel)
 {
 }
 

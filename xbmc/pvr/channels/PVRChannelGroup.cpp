@@ -45,54 +45,22 @@
 
 using namespace PVR;
 
-CPVRChannelGroup::CPVRChannelGroup(void) :
-    m_bRadio(false),
-    m_iGroupType(PVR_GROUP_TYPE_DEFAULT),
-    m_iGroupId(-1),
-    m_bLoaded(false),
-    m_bChanged(false),
-    m_bUsingBackendChannelOrder(false),
-    m_bUsingBackendChannelNumbers(false),
-    m_bSelectedGroup(false),
-    m_bPreventSortAndRenumber(false),
-    m_iLastWatched(0),
-    m_bHidden(false),
-    m_iPosition(0)
+CPVRChannelGroup::CPVRChannelGroup(void)
 {
   OnInit();
 }
 
 CPVRChannelGroup::CPVRChannelGroup(bool bRadio, unsigned int iGroupId, const std::string &strGroupName) :
     m_bRadio(bRadio),
-    m_iGroupType(PVR_GROUP_TYPE_DEFAULT),
     m_iGroupId(iGroupId),
-    m_strGroupName(strGroupName),
-    m_bLoaded(false),
-    m_bChanged(false),
-    m_bUsingBackendChannelOrder(false),
-    m_bUsingBackendChannelNumbers(false),
-    m_bSelectedGroup(false),
-    m_bPreventSortAndRenumber(false),
-    m_iLastWatched(0),
-    m_bHidden(false),
-    m_iPosition(0)
+    m_strGroupName(strGroupName)
 {
   OnInit();
 }
 
 CPVRChannelGroup::CPVRChannelGroup(const PVR_CHANNEL_GROUP &group) :
     m_bRadio(group.bIsRadio),
-    m_iGroupType(PVR_GROUP_TYPE_DEFAULT),
-    m_iGroupId(-1),
     m_strGroupName(group.strGroupName),
-    m_bLoaded(false),
-    m_bChanged(false),
-    m_bUsingBackendChannelOrder(false),
-    m_bUsingBackendChannelNumbers(false),
-    m_bSelectedGroup(false),
-    m_bPreventSortAndRenumber(false),
-    m_iLastWatched(0),
-    m_bHidden(false),
     m_iPosition(group.iPosition)
 {
   OnInit();

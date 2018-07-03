@@ -42,9 +42,7 @@ using namespace KODI::MESSAGING::HELPERS;
 #define SETTING_RECORDING_LIFETIME "recording.lifetime"
 
 CGUIDialogPVRRecordingSettings::CGUIDialogPVRRecordingSettings() :
-  CGUIDialogSettingsManualBase(WINDOW_DIALOG_PVR_RECORDING_SETTING, "DialogSettings.xml"),
-  m_iPlayCount(0),
-  m_iLifetime(0)
+  CGUIDialogSettingsManualBase(WINDOW_DIALOG_PVR_RECORDING_SETTING, "DialogSettings.xml")
 {
   m_loadType = LOAD_EVERY_TIME;
 }

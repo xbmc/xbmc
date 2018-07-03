@@ -76,12 +76,12 @@ namespace PVR
     bool PersistChannel(const CFileItemPtr &pItem, const CPVRChannelGroupPtr &group, unsigned int *iChannelNumber);
     void SetItemsUnchanged(void);
 
-    bool m_bIsRadio;
-    bool m_bMovingMode;
-    bool m_bContainsChanges;
-    bool m_bAllowNewChannel;
+    bool m_bIsRadio = false;
+    bool m_bMovingMode = false;
+    bool m_bContainsChanges = false;
+    bool m_bAllowNewChannel = false;
 
-    int m_iSelected;
+    int m_iSelected = 0;
     CFileItemList* m_channelItems;
     CGUIViewControl m_viewControl;
 

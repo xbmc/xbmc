@@ -203,8 +203,8 @@ namespace PVR
     CPVRChannelGroups *m_groupsRadio; /*!< all radio channel groups */
     CPVRChannelGroups *m_groupsTV;    /*!< all TV channel groups */
     CCriticalSection   m_critSection;
-    bool               m_bUpdateChannelsOnly;
-    bool               m_bIsUpdating;
+    bool               m_bUpdateChannelsOnly = false;
+    bool               m_bIsUpdating = false;
     CPVRChannelGroupPtr m_lastPlayedGroups[2]; /*!< used to store the last played groups */
 
   private :
@@ -213,6 +213,6 @@ namespace PVR
 
     bool FilterDirectory(const CURL &url, CFileItemList &results) const;
 
-    bool m_bLoaded;
+    bool m_bLoaded = false;
   };
 }

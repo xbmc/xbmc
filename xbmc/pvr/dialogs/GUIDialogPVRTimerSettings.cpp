@@ -76,20 +76,7 @@ using namespace PVR;
 
 CGUIDialogPVRTimerSettings::CGUIDialogPVRTimerSettings() :
   CGUIDialogSettingsManualBase(WINDOW_DIALOG_PVR_TIMER_SETTING, "DialogSettings.xml"),
-  m_bIsRadio(false),
-  m_bIsNewTimer(true),
-  m_bTimerActive(false),
-  m_bFullTextEpgSearch(true),
-  m_bStartAnyTime(false),
-  m_bEndAnyTime(false),
-  m_iWeekdays(PVR_WEEKDAY_NONE),
-  m_iPreventDupEpisodes(0),
-  m_iMarginStart(0),
-  m_iMarginEnd(0),
-  m_iPriority(0),
-  m_iLifetime(0),
-  m_iMaxRecordings(0),
-  m_iRecordingGroup(0)
+  m_iWeekdays(PVR_WEEKDAY_NONE)
 {
   m_loadType = LOAD_EVERY_TIME;
 }

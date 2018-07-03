@@ -40,32 +40,32 @@ namespace PVR
   private:
     CFileItemPtr m_rdsItem;
 
-    bool m_InfoPresent;
-    bool m_LabelInfoNewsPresent;
+    bool m_InfoPresent = false;
+    bool m_LabelInfoNewsPresent = false;
     std::string m_LabelInfoNews;
 
-    bool m_LabelInfoNewsLocalPresent;
+    bool m_LabelInfoNewsLocalPresent = false;
     std::string m_LabelInfoNewsLocal;
 
-    bool m_LabelInfoWeatherPresent;
+    bool m_LabelInfoWeatherPresent = false;
     std::string m_LabelInfoWeather;
 
-    bool m_LabelInfoLotteryPresent;
+    bool m_LabelInfoLotteryPresent = false;
     std::string m_LabelInfoLottery;
 
-    bool m_LabelInfoSportPresent;
+    bool m_LabelInfoSportPresent = false;
     std::string m_LabelInfoSport;
 
-    bool m_LabelInfoStockPresent;
+    bool m_LabelInfoStockPresent = false;
     std::string m_LabelInfoStock;
 
-    bool m_LabelInfoOtherPresent;
+    bool m_LabelInfoOtherPresent = false;
     std::string m_LabelInfoOther;
 
-    bool m_LabelInfoCinemaPresent;
+    bool m_LabelInfoCinemaPresent = false;
     std::string m_LabelInfoCinema;
 
-    bool m_LabelInfoHoroscopePresent;
+    bool m_LabelInfoHoroscopePresent = false;
     std::string m_LabelInfoHoroscope;
   };
 }

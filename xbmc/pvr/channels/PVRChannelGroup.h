@@ -42,15 +42,14 @@ namespace PVR
 
   struct PVRChannelGroupMember
   {
-    PVRChannelGroupMember()
-    : iClientPriority(0) {}
+    PVRChannelGroupMember() = default;
 
     PVRChannelGroupMember(const CPVRChannelPtr _channel, const CPVRChannelNumber &_channelNumber, int _iClientPriority)
     : channel(_channel), channelNumber(_channelNumber), iClientPriority(_iClientPriority) {}
 
     CPVRChannelPtr channel;
     CPVRChannelNumber channelNumber; // the number this channel has in the group
-    int iClientPriority;
+    int iClientPriority = 0;
   };
 
   typedef std::vector<PVRChannelGroupMember> PVR_CHANNEL_GROUP_SORTED_MEMBERS;
@@ -523,19 +522,19 @@ namespace PVR
      */
     bool UpdateClientPriorities();
 
-    bool             m_bRadio;                      /*!< true if this container holds radio channels, false if it holds TV channels */
-    int              m_iGroupType;                  /*!< The type of this group */
-    int              m_iGroupId;                    /*!< The ID of this group in the database */
+    bool             m_bRadio = false;                      /*!< true if this container holds radio channels, false if it holds TV channels */
+    int              m_iGroupType = PVR_GROUP_TYPE_DEFAULT;                  /*!< The type of this group */
+    int              m_iGroupId = -1;                    /*!< The ID of this group in the database */
     std::string      m_strGroupName;                /*!< The name of this group */
-    bool             m_bLoaded;                     /*!< True if this container is loaded, false otherwise */
-    bool             m_bChanged;                    /*!< true if anything changed in this group that hasn't been persisted, false otherwise */
-    bool             m_bUsingBackendChannelOrder;   /*!< true to use the channel order from backends, false otherwise */
-    bool             m_bUsingBackendChannelNumbers; /*!< true to use the channel numbers from 1 backend, false otherwise */
-    bool             m_bSelectedGroup;              /*!< true when this is the selected group, false otherwise */
-    bool             m_bPreventSortAndRenumber;     /*!< true when sorting and renumbering should not be done after adding/updating channels to the group */
-    time_t           m_iLastWatched;                /*!< last time group has been watched */
-    bool             m_bHidden;                     /*!< true if this group is hidden, false otherwise */
-    int              m_iPosition;                   /*!< the position of this group within the group list */
+    bool             m_bLoaded = false;                     /*!< True if this container is loaded, false otherwise */
+    bool             m_bChanged = false;                    /*!< true if anything changed in this group that hasn't been persisted, false otherwise */
+    bool             m_bUsingBackendChannelOrder = false;   /*!< true to use the channel order from backends, false otherwise */
+    bool             m_bUsingBackendChannelNumbers = false; /*!< true to use the channel numbers from 1 backend, false otherwise */
+    bool             m_bSelectedGroup = false;              /*!< true when this is the selected group, false otherwise */
+    bool             m_bPreventSortAndRenumber = false;     /*!< true when sorting and renumbering should not be done after adding/updating channels to the group */
+    time_t           m_iLastWatched = 0;                /*!< last time group has been watched */
+    bool             m_bHidden = false;                     /*!< true if this group is hidden, false otherwise */
+    int              m_iPosition = 0;                   /*!< the position of this group within the group list */
     PVR_CHANNEL_GROUP_SORTED_MEMBERS m_sortedMembers; /*!< members sorted by channel number */
     PVR_CHANNEL_GROUP_MEMBERS        m_members;       /*!< members with key clientid+uniqueid */
     CCriticalSection m_critSection;

@@ -87,8 +87,7 @@ void CPVRTimersContainer::InsertTimer(const CPVRTimerInfoTagPtr &newTimer)
 }
 
 CPVRTimers::CPVRTimers(void)
-: m_bIsUpdating(false),
-  m_settings({
+: m_settings({
     CSettings::SETTING_PVRPOWERMANAGEMENT_DAILYWAKEUP,
     CSettings::SETTING_PVRPOWERMANAGEMENT_PREWAKEUP,
     CSettings::SETTING_PVRPOWERMANAGEMENT_BACKENDIDLETIME,

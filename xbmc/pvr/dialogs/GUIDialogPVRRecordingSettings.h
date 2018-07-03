@@ -59,7 +59,7 @@ namespace PVR
 
     CPVRRecordingPtr m_recording;
     std::string m_strTitle;
-    int m_iPlayCount;
-    int m_iLifetime;
+    int m_iPlayCount = 0;
+    int m_iLifetime = 0;
   };
 } // namespace PVR

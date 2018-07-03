@@ -37,11 +37,9 @@ namespace PVR
   struct GridItem
   {
     CFileItemPtr item;
-    float originWidth;
-    float width;
-    int progIndex;
-
-    GridItem() : originWidth(0.0f), width(0.0f), progIndex(-1) {}
+    float originWidth = 0.0f;
+    float width = 0.0f;
+    int progIndex = -1;
   };
 
   class CGUIEPGGridContainerModel
@@ -50,7 +48,6 @@ namespace PVR
     static const int MINSPERBLOCK = 5; // minutes
     static const int MAXBLOCKS = 33 * 24 * 60 / MINSPERBLOCK; //! 33 days of 5 minute blocks (31 days for upcoming data + 1 day for past data + 1 day for fillers)
 
-    CGUIEPGGridContainerModel() : m_blocks(0) {}
     virtual ~CGUIEPGGridContainerModel() { Reset(); }
 
     void Refresh(const std::unique_ptr<CFileItemList> &items, const CDateTime &gridStart, const CDateTime &gridEnd, int iRulerUnit, int iBlocksPerPage, float fBlockSize);
@@ -115,6 +112,6 @@ namespace PVR
     std::vector<ItemsPtr> m_epgItemsPtr;
     std::vector<std::vector<GridItem> > m_gridIndex;
 
-    int m_blocks;
+    int m_blocks = 0;
   };
 }

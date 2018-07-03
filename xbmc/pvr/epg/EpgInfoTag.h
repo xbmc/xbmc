@@ -497,16 +497,16 @@ namespace PVR
      */
     CDateTime GetCurrentPlayingTime(void) const;
 
-    bool                     m_bNotify;            /*!< notify on start */
-    int                      m_iClientId;          /*!< client id */
-    int                      m_iBroadcastId;       /*!< database ID */
-    int                      m_iGenreType;         /*!< genre type */
-    int                      m_iGenreSubType;      /*!< genre subtype */
-    int                      m_iParentalRating;    /*!< parental rating */
-    int                      m_iStarRating;        /*!< star rating */
-    int                      m_iSeriesNumber;      /*!< series number */
-    int                      m_iEpisodeNumber;     /*!< episode number */
-    int                      m_iEpisodePart;       /*!< episode part number */
+    bool                     m_bNotify = false;            /*!< notify on start */
+    int                      m_iClientId = -1;          /*!< client id */
+    int                      m_iBroadcastId = -1;       /*!< database ID */
+    int                      m_iGenreType = 0;         /*!< genre type */
+    int                      m_iGenreSubType = 0;      /*!< genre subtype */
+    int                      m_iParentalRating = 0;    /*!< parental rating */
+    int                      m_iStarRating = 0;        /*!< star rating */
+    int                      m_iSeriesNumber = 0;      /*!< series number */
+    int                      m_iEpisodeNumber = 0;     /*!< episode number */
+    int                      m_iEpisodePart = 0;       /*!< episode part number */
     unsigned int             m_iUniqueBroadcastID; /*!< unique broadcast ID */
     unsigned int             m_iUniqueChannelID;   /*!< unique channel ID */
     std::string              m_strTitle;           /*!< title */
@@ -516,7 +516,7 @@ namespace PVR
     std::vector<std::string> m_cast;               /*!< cast */
     std::vector<std::string> m_directors;          /*!< director(s) */
     std::vector<std::string> m_writers;            /*!< writer(s) */
-    int                      m_iYear;              /*!< year */
+    int                      m_iYear = 0;              /*!< year */
     std::string              m_strIMDBNumber;      /*!< imdb number */
     std::vector<std::string> m_genre;              /*!< genre */
     std::string              m_strEpisodeName;     /*!< episode name */
@@ -528,7 +528,7 @@ namespace PVR
 
     PVR::CPVRTimerInfoTagPtr m_timer;
 
-    CPVREpg *                m_epg;                /*!< the schedule that this event belongs to */
+    CPVREpg *                m_epg = nullptr;                /*!< the schedule that this event belongs to */
 
     unsigned int             m_iFlags;             /*!< the flags applicable to this EPG entry */
     std::string              m_strSeriesLink;      /*!< series link */

@@ -285,25 +285,25 @@ namespace PVR
 
     std::string           m_strTitle;            /*!< @brief name of this timer */
     std::string           m_strEpgSearchString;  /*!< @brief a epg data match string for epg-based timer rules. Format is backend-dependent, for example regexp */
-    bool                  m_bFullTextEpgSearch;  /*!< @brief indicates whether only epg episode title can be matched by the pvr backend or "more" (backend-dependent") data. */
+    bool                  m_bFullTextEpgSearch = false;  /*!< @brief indicates whether only epg episode title can be matched by the pvr backend or "more" (backend-dependent") data. */
     std::string           m_strDirectory;        /*!< @brief directory where the recording must be stored */
     std::string           m_strSummary;          /*!< @brief summary string with the time to show inside a GUI list */
-    PVR_TIMER_STATE       m_state;               /*!< @brief the state of this timer */
+    PVR_TIMER_STATE       m_state = PVR_TIMER_STATE_SCHEDULED;               /*!< @brief the state of this timer */
     int                   m_iClientId;           /*!< @brief ID of the backend */
     unsigned int          m_iClientIndex;        /*!< @brief index number of the tag, given by the backend, PVR_TIMER_NO_CLIENT_INDEX for new */
     unsigned int          m_iParentClientIndex;  /*!< @brief for timers scheduled by a timer rule, the index number of the parent, given by the backend, PVR_TIMER_NO_PARENT for no parent */
     int                   m_iClientChannelUid;   /*!< @brief channel uid */
-    bool                  m_bStartAnyTime;       /*!< @brief Ignore start date and time clock. Record at 'Any Time' */
-    bool                  m_bEndAnyTime;         /*!< @brief Ignore end date and time clock. Record at 'Any Time' */
+    bool                  m_bStartAnyTime = false;       /*!< @brief Ignore start date and time clock. Record at 'Any Time' */
+    bool                  m_bEndAnyTime = false;         /*!< @brief Ignore end date and time clock. Record at 'Any Time' */
     int                   m_iPriority;           /*!< @brief priority of the timer */
     int                   m_iLifetime;           /*!< @brief lifetime of the timer in days */
-    int                   m_iMaxRecordings;      /*!< @brief (optional) backend setting for maximum number of recordings to keep*/
+    int                   m_iMaxRecordings = 0;      /*!< @brief (optional) backend setting for maximum number of recordings to keep*/
     unsigned int          m_iWeekdays;           /*!< @brief bit based store of weekdays for timer rules */
     unsigned int          m_iPreventDupEpisodes; /*!< @brief only record new episodes for epg-based timer rules */
-    unsigned int          m_iRecordingGroup;     /*!< @brief (optional) if set, the addon/backend stores the recording to a group (sub-folder) */
+    unsigned int          m_iRecordingGroup = 0;     /*!< @brief (optional) if set, the addon/backend stores the recording to a group (sub-folder) */
     std::string           m_strFileNameAndPath;  /*!< @brief file name is only for reference */
     bool                  m_bIsRadio;            /*!< @brief is radio channel if set */
-    unsigned int          m_iTimerId;            /*!< @brief id that won't change as long as XBMC is running */
+    unsigned int          m_iTimerId = 0;            /*!< @brief id that won't change as long as XBMC is running */
 
     unsigned int          m_iMarginStart;        /*!< @brief (optional) if set, the backend starts the recording iMarginStart minutes before startTime. */
     unsigned int          m_iMarginEnd;          /*!< @brief (optional) if set, the backend ends the recording iMarginEnd minutes after endTime. */

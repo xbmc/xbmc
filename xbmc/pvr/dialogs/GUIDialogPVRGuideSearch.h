@@ -59,8 +59,8 @@ namespace PVR
     int  GetSpinValue(int controlID);
     std::string GetEditValue(int controlID);
 
-    bool m_bConfirmed;
-    bool m_bCanceled;
+    bool m_bConfirmed = false;
+    bool m_bCanceled = false;
     CPVREpgSearchFilter *m_searchFilter;
     std::map<int, CPVRChannelNumber> m_channelNumbersMap;
   };

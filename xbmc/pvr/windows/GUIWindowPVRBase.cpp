@@ -54,7 +54,6 @@ namespace PVR
 class CGUIPVRChannelGroupsSelector
 {
 public:
-  CGUIPVRChannelGroupsSelector() : m_control(nullptr) {};
   virtual ~CGUIPVRChannelGroupsSelector() = default;
 
   bool Initialize(CGUIWindow* parent, bool bRadio);
@@ -64,7 +63,7 @@ public:
   bool SelectChannelGroup(const CPVRChannelGroupPtr &newGroup);
 
 private:
-  CGUIControl *m_control;
+  CGUIControl *m_control = nullptr;
   std::vector<CPVRChannelGroupPtr> m_channelGroups;
 };
 
