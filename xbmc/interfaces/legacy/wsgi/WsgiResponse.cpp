@@ -31,9 +31,7 @@ namespace XBMCAddon
   namespace xbmcwsgi
   {
     WsgiResponse::WsgiResponse()
-      : m_called(false),
-        m_status(MHD_HTTP_INTERNAL_SERVER_ERROR),
-        m_responseHeaders(),
+      : m_responseHeaders(),
         m_body()
     { }
 

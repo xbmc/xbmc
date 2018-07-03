@@ -78,7 +78,7 @@ namespace JSONRPC
      \brief Whether the type has been set
      based on the referenced type
      */
-    bool referencedTypeSet;
+    bool referencedTypeSet = false;
 
     /*!
      \brief Array of reference types
@@ -94,7 +94,7 @@ namespace JSONRPC
     /*!
      \brief JSON schema type of the parameter's value
      */
-    JSONSchemaType type;
+    JSONSchemaType type = AnyValue;
 
     /*!
      \brief JSON schema type definitions in case
@@ -106,7 +106,7 @@ namespace JSONRPC
      \brief Whether or not the parameter is
      optional
      */
-    bool optional;
+    bool optional = true;
 
     /*!
      \brief Default value of the parameter
@@ -129,29 +129,29 @@ namespace JSONRPC
      \brief Whether to exclude the defined Minimum
      value from the valid range or not
      */
-    bool exclusiveMinimum;
+    bool exclusiveMinimum = false;
 
     /*!
      \brief  Whether to exclude the defined Maximum
      value from the valid range or not
      */
-    bool exclusiveMaximum;
+    bool exclusiveMaximum = false;
 
     /*!
      \brief Integer by which the value (of type
      Integer) must be divisible without rest
      */
-    unsigned int divisibleBy;
+    unsigned int divisibleBy = 0;
 
     /*!
      \brief Minimum length for String types
      */
-    int minLength;
+    int minLength = -1;
 
     /*!
      \brief Maximum length for String types
      */
-    int maxLength;
+    int maxLength = -1;
 
     /*!
      \brief (Optional) List of allowed values
@@ -167,18 +167,18 @@ namespace JSONRPC
     /*!
      \brief Minimum amount of items in the array
      */
-    unsigned int minItems;
+    unsigned int minItems = 0;
 
     /*!
      \brief Maximum amount of items in the array
      */
-    unsigned int maxItems;
+    unsigned int maxItems = 0;
 
     /*!
      \brief Whether every value in the array
      must be unique or not
      */
-    bool uniqueItems;
+    bool uniqueItems = false;
 
     /*!
      \brief List of json schema definitions for
@@ -217,7 +217,7 @@ namespace JSONRPC
      \brief Whether the type can have additional properties
      or not
      */
-    bool hasAdditionalProperties;
+    bool hasAdditionalProperties = false;
 
     /*!
      \brief Type definition for additional properties
@@ -257,12 +257,12 @@ namespace JSONRPC
      \brief Definition of the type of
      request/response
      */
-    TransportLayerCapability transportneed;
+    TransportLayerCapability transportneed = Response;
     /*!
      \brief Definition of the permissions needed
      to execute the method
      */
-    OperationPermission permission;
+    OperationPermission permission = ReadData;
     /*!
      \brief Description of the method
      */

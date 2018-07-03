@@ -33,7 +33,7 @@ namespace XBMCAddon
   {
 
     Keyboard::Keyboard(const String& line /* = nullString*/, const String& heading/* = nullString*/, bool hidden/* = false*/)
-      : strDefault(line), strHeading(heading), bHidden(hidden), bConfirmed(false)
+      : strDefault(line), strHeading(heading), bHidden(hidden)
     {
     }
 

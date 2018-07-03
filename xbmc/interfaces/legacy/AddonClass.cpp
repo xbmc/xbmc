@@ -42,7 +42,7 @@ namespace XBMCAddon
 #endif
   }
 
-  AddonClass::AddonClass() : refs(0L), m_isDeallocating(false),
+  AddonClass::AddonClass() : refs(0L),
                              languageHook(NULL)
   {
 #ifdef XBMC_ADDON_DEBUG_MEMORY

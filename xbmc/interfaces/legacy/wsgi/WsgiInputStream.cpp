@@ -28,15 +28,12 @@ namespace XBMCAddon
   {
     WsgiInputStreamIterator::WsgiInputStreamIterator()
       : m_data(),
-        m_offset(0),
-        m_remaining(0),
         m_line()
     { }
 
 #ifndef SWIG
     WsgiInputStreamIterator::WsgiInputStreamIterator(const String& data, bool end /* = false */)
       : m_data(data),
-        m_offset(0),
         m_remaining(end ? 0 : data.size()),
         m_line()
     { }

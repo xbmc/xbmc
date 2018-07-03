@@ -55,20 +55,18 @@ namespace XBMCAddon
     class Action : public AddonClass
     {
     public:
-      Action() : id(-1), fAmount1(0.0f), fAmount2(0.0f),
-                 fRepeat(0.0f), buttonCode(0), strAction("")
-      { }
+      Action() = default;
 
 #ifndef SWIG
       explicit Action(const CAction& caction) { setFromCAction(caction); }
 
       void setFromCAction(const CAction& caction);
 
-      long id;
-      float fAmount1;
-      float fAmount2;
-      float fRepeat;
-      unsigned long buttonCode;
+      long id = -1;
+      float fAmount1 = 0.0f;
+      float fAmount2 = 0.0f;
+      float fRepeat = 0.0f;
+      unsigned long buttonCode = 0;
       std::string strAction;
 
       // Not sure if this is correct but it's here for now.
@@ -204,7 +202,7 @@ namespace XBMCAddon
     class Window : public AddonCallback
     {
       friend class WindowDialogMixin;
-      bool isDisposed;
+      bool isDisposed = false;
 
       void doAddControl(Control* pControl, CCriticalSection* gcontext, bool wait);
       void doRemoveControl(Control* pControl, CCriticalSection* gcontext, bool wait);
@@ -212,19 +210,19 @@ namespace XBMCAddon
     protected:
 #ifndef SWIG
       InterceptorBase* window;
-      int iWindowId;
+      int iWindowId = -1;
 
       std::vector<AddonClass::Ref<Control> > vecControls;
-      int iOldWindowId;
-      int iCurrentControlId;
-      bool bModal;
+      int iOldWindowId = 0;
+      int iCurrentControlId = 3000;
+      bool bModal = false;
       CEvent m_actionEvent;
 
-      bool canPulse;
+      bool canPulse = false;
 
       // I REALLY hate this ... but it's the simplest fix right now.
-      bool existingWindow;
-      bool destroyAfterDeInit;
+      bool existingWindow = true;
+      bool destroyAfterDeInit = false;
 
       /**
        * This only takes a boolean to allow subclasses to explicitly use it. A
