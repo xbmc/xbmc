@@ -34,9 +34,7 @@ constexpr int TOUCH_HOLD_TIMEOUT = 1000;
 }
 
 CGenericTouchInputHandler::CGenericTouchInputHandler()
-     : m_holdTimer(new CTimer(this)),
-       m_gestureState(TouchGestureUnknown),
-       m_gestureStateOld(TouchGestureUnknown)
+     : m_holdTimer(new CTimer(this))
 {
 }
 

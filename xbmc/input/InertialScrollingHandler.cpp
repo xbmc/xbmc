@@ -41,10 +41,7 @@
 #define MAXIMUM_DELAY_FOR_INERTIA 200
 
 CInertialScrollingHandler::CInertialScrollingHandler()
-: m_bScrolling(false)
-, m_bAborting(false)
-, m_iLastGesturePoint(CPoint(0,0))
-, m_inertialStartTime(0)
+: m_iLastGesturePoint(CPoint(0,0))
 {
 }
 
