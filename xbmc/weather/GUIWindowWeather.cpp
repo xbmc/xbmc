@@ -59,7 +59,7 @@ FIXME'S
 */
 
 CGUIWindowWeather::CGUIWindowWeather(void)
-    : CGUIWindow(WINDOW_WEATHER, "MyWeather.xml"), m_maxLocation(0)
+    : CGUIWindow(WINDOW_WEATHER, "MyWeather.xml")
 {
   m_loadType = KEEP_IN_MEMORY;
 }
