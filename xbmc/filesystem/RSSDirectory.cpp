@@ -46,23 +46,15 @@ namespace {
 
   struct SResource
   {
-    SResource()
-      : width(0)
-      , height(0)
-      , bitrate(0)
-      , duration(0)
-      , size(0)
-    {}
-
     std::string tag;
     std::string path;
     std::string mime;
     std::string lang;
-    int        width;
-    int        height;
-    int        bitrate;
-    int        duration;
-    int64_t    size;
+    int        width = 0;
+    int        height = 0;
+    int        bitrate = 0;
+    int        duration = 0;
+    int64_t    size = 0;
   };
 
   typedef std::vector<SResource> SResources;

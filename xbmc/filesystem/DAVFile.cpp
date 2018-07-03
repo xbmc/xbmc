@@ -32,7 +32,6 @@ using namespace XCURL;
 
 CDAVFile::CDAVFile(void)
   : CCurlFile()
-  , m_lastResponseCode(0)
 {
 }
 

@@ -42,11 +42,6 @@
 
 using namespace XFILE;
 
-CCacheStrategy::CCacheStrategy() : m_bEndOfInput(false)
-{
-}
-
-
 CCacheStrategy::~CCacheStrategy() = default;
 
 void CCacheStrategy::EndOfInput() {
@@ -67,9 +62,7 @@ CSimpleFileCache::CSimpleFileCache()
   : m_cacheFileRead(new CacheLocalFile())
   , m_cacheFileWrite(new CacheLocalFile())
   , m_hDataAvailEvent(NULL)
-  , m_nStartPosition(0)
-  , m_nWritePosition(0)
-  , m_nReadPosition(0) {
+{
 }
 
 CSimpleFileCache::~CSimpleFileCache()

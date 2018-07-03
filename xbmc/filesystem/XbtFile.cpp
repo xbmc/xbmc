@@ -47,13 +47,9 @@ namespace XFILE
 
 CXbtFile::CXbtFile()
   : m_url(),
-    m_open(false),
     m_xbtfReader(nullptr),
     m_xbtfFile(),
     m_frameStartPositions(),
-    m_frameIndex(0),
-    m_positionWithinFrame(0),
-    m_positionTotal(0),
     m_unpackedFrames()
 { }
 

@@ -122,8 +122,7 @@ public:
   bool         Exists(const std::string &name);
 
 protected:
-  PipesManager();
-  int    m_nGenIdHelper;
+  int    m_nGenIdHelper = 1;
   std::map<std::string, XFILE::Pipe *> m_pipes;
 
   CCriticalSection m_lock;

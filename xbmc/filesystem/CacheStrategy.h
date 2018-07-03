@@ -35,7 +35,6 @@ class IFile; // forward declaration
 
 class CCacheStrategy{
 public:
-  CCacheStrategy();
   virtual ~CCacheStrategy();
 
   virtual int Open() = 0;
@@ -69,7 +68,7 @@ public:
 
   CEvent m_space;
 protected:
-  bool  m_bEndOfInput;
+  bool  m_bEndOfInput = false;
 };
 
 /**
@@ -104,9 +103,9 @@ protected:
   IFile*   m_cacheFileRead;
   IFile*   m_cacheFileWrite;
   CEvent*  m_hDataAvailEvent;
-  volatile int64_t m_nStartPosition;
-  volatile int64_t m_nWritePosition;
-  volatile int64_t m_nReadPosition;
+  volatile int64_t m_nStartPosition = 0;
+  volatile int64_t m_nWritePosition = 0;
+  volatile int64_t m_nReadPosition = 0;
 };
 
 class CDoubleCache : public CCacheStrategy{

@@ -84,8 +84,8 @@ private:
   CEvent         m_fetchComplete;
 
   std::atomic<bool> m_cancelled;
-  bool          m_success;      // set by script in EndOfDirectory
-  int    m_totalItems;   // set by script in AddDirectoryItem
+  bool          m_success = false;      // set by script in EndOfDirectory
+  int    m_totalItems = 0;   // set by script in AddDirectoryItem
 
   class CScriptObserver : public CThread
   {

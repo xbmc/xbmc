@@ -39,11 +39,8 @@ public:
   class CHints
   {
   public:
-    CHints() : flags(DIR_FLAG_DEFAULTS)
-    {
-    };
     std::string mask;
-    int flags;
+    int flags = DIR_FLAG_DEFAULTS;
   };
 
   static bool GetDirectory(const CURL& url

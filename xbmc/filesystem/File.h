@@ -209,7 +209,7 @@ private:
   IFile* m_file;
   char*  m_buffer;
   int    m_backsize;
-  int    m_frontsize;
+  int    m_frontsize = 0;
 };
 
 // very basic file input stream

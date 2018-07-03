@@ -265,10 +265,6 @@ int	Pipe::GetAvailableRead()
   return m_buffer.getMaxReadSize();
 }
 
-PipesManager::PipesManager() : m_nGenIdHelper(1)
-{
-}
-
 PipesManager::~PipesManager() = default;
 
 PipesManager &PipesManager::GetInstance()

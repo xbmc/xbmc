@@ -73,8 +73,6 @@ void CPluginDirectory::CScriptObserver::Abort()
 CPluginDirectory::CPluginDirectory()
   : m_fetchComplete(true)
   , m_cancelled(false)
-  , m_success(false)
-  , m_totalItems(0)
 {
   m_listItems = new CFileItemList;
   m_fileResult = new CFileItem;
