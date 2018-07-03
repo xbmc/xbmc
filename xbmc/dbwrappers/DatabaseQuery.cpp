@@ -412,10 +412,6 @@ std::string CDatabaseQueryRule::FormatWhereClause(const std::string &negate, con
   return query;
 }
 
-CDatabaseQueryRuleCombination::CDatabaseQueryRuleCombination()
-  : m_type(CombinationAnd)
-{ }
-
 void CDatabaseQueryRuleCombination::clear()
 {
   m_combinations.clear();

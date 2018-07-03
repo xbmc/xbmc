@@ -117,7 +117,6 @@ public:
 class CDatabaseQueryRuleCombination
 {
 public:
-  CDatabaseQueryRuleCombination();
   virtual ~CDatabaseQueryRuleCombination() = default;
 
   typedef enum {
@@ -143,7 +142,7 @@ protected:
   friend class CGUIDialogSmartPlaylistEditor;
   friend class CGUIDialogMediaFilter;
 
-  Combination m_type;
+  Combination m_type = CombinationAnd;
   CDatabaseQueryRuleCombinations m_combinations;
   CDatabaseQueryRules m_rules;
 };
