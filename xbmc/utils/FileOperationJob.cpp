@@ -36,15 +36,11 @@
 using namespace XFILE;
 
 CFileOperationJob::CFileOperationJob()
-  : m_action(ActionCopy),
-    m_items(),
+  : m_items(),
     m_strDestFile(),
     m_avgSpeed(),
     m_currentOperation(),
-    m_currentFile(),
-    m_displayProgress(false),
-    m_heading(0),
-    m_line(0)
+    m_currentFile()
 { }
 
 CFileOperationJob::CFileOperationJob(FileAction action, CFileItemList & items,

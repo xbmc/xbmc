@@ -150,7 +150,7 @@ private:
 
   int GetMatchRank(const std::string& locale) const;
 
-  bool m_valid;
+  bool m_valid = false;
   std::string m_language;
   std::string m_territory;
   std::string m_codeset;

@@ -31,8 +31,7 @@ namespace XUTILS
     /**
      * Create buffer with zero size
      */
-    auto_buffer(void) : p(0), s(0)
-    {}
+    auto_buffer(void) = default;
     /**
      * Create buffer with specified size
      * @param size of created buffer
@@ -100,7 +99,7 @@ namespace XUTILS
     auto_buffer(const auto_buffer& other) = delete; // disallow copy constructor
     auto_buffer& operator=(const auto_buffer& other) = delete; // disallow assignment
 
-    void* p;
-    size_t s;
+    void* p = 0;
+    size_t s = 0;
   };
 }

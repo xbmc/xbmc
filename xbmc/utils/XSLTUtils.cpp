@@ -38,8 +38,7 @@ void err(void *ctx, const char *msg, ...) {
   return;
 }
 
-XSLTUtils::XSLTUtils() :
-m_xmlInput(nullptr), m_xmlOutput(nullptr), m_xmlStylesheet(nullptr), m_xsltStylesheet(nullptr)
+XSLTUtils::XSLTUtils()
 {
   // initialize libxslt
   xmlSubstituteEntitiesDefault(1);

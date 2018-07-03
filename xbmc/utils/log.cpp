@@ -47,14 +47,13 @@ namespace
 class CLogGlobals
 {
 public:
-  CLogGlobals(void) : m_repeatCount(0), m_repeatLogLevel(-1), m_logLevel(LOG_LEVEL_DEBUG), m_extraLogLevels(0) {}
   ~CLogGlobals() = default;
   PlatformInterfaceForCLog m_platform;
-  int         m_repeatCount;
-  int         m_repeatLogLevel;
+  int         m_repeatCount = 0;
+  int         m_repeatLogLevel = -1;
   std::string m_repeatLine;
-  int         m_logLevel;
-  int         m_extraLogLevels;
+  int         m_logLevel = LOG_LEVEL_DEBUG;
+  int         m_extraLogLevels = 0;
   CCriticalSection critSec;
 };
 

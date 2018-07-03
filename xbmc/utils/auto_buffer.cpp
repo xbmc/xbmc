@@ -24,7 +24,7 @@
 
 using namespace XUTILS;
 
-auto_buffer::auto_buffer(size_t size) : p(0), s(0)
+auto_buffer::auto_buffer(size_t size)
 {
   if (!size)
     return;

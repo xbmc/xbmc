@@ -61,10 +61,10 @@ public:
   void Serialize(CVariant& value) const override;
   bool IsWorseThan(const CStreamDetail &that) const override;
 
-  int m_iWidth;
-  int m_iHeight;
-  float m_fAspect;
-  int m_iDuration;
+  int m_iWidth = 0;
+  int m_iHeight = 0;
+  float m_fAspect = 0.0;
+  int m_iDuration = 0;
   std::string m_strCodec;
   std::string m_strStereoMode;
   std::string m_strLanguage;
@@ -79,7 +79,7 @@ public:
   void Serialize(CVariant& value) const override;
   bool IsWorseThan(const CStreamDetail &that) const override;
 
-  int m_iChannels;
+  int m_iChannels = -1;
   std::string m_strCodec;
   std::string m_strLanguage;
 };

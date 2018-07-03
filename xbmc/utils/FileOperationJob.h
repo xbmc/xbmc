@@ -87,11 +87,11 @@ private:
 
   static inline bool CanBeRenamed(const std::string &strFileA, const std::string &strFileB);
 
-  FileAction m_action;
+  FileAction m_action = ActionCopy;
   CFileItemList m_items;
   std::string m_strDestFile;
   std::string m_avgSpeed, m_currentOperation, m_currentFile;
-  bool m_displayProgress;
-  int m_heading;
-  int m_line;
+  bool m_displayProgress = false;
+  int m_heading = 0;
+  int m_line = 0;
 };

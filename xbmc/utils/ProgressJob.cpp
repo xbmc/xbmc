@@ -29,20 +29,12 @@
 #include "utils/Variant.h"
 
 CProgressJob::CProgressJob()
-  : m_modal(false),
-    m_autoClose(true),
-    m_updateProgress(true),
-    m_updateInformation(true),
-    m_progress(NULL),
+  : m_progress(NULL),
     m_progressDialog(NULL)
 { }
 
 CProgressJob::CProgressJob(CGUIDialogProgressBarHandle* progressBar)
-  : m_modal(false),
-    m_autoClose(true),
-    m_updateProgress(true),
-    m_updateInformation(true),
-    m_progress(progressBar),
+  : m_progress(progressBar),
     m_progressDialog(NULL)
 { }
 

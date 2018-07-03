@@ -38,11 +38,6 @@
 #define CONTENT_RANGE_FORMAT_TOTAL          HEADER_CONTENT_RANGE_FORMAT_BYTES HEADER_CONTENT_RANGE_VALUE
 #define CONTENT_RANGE_FORMAT_TOTAL_UNKNOWN  HEADER_CONTENT_RANGE_FORMAT_BYTES HEADER_CONTENT_RANGE_VALUE_UNKNOWN
 
-CHttpRange::CHttpRange()
-  : m_first(1),
-    m_last(0)
-{ }
-
 CHttpRange::CHttpRange(uint64_t firstPosition, uint64_t lastPosition)
   : m_first(firstPosition),
     m_last(lastPosition)

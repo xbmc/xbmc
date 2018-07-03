@@ -34,9 +34,9 @@ namespace xbmcutil
       static bool ctorCalled;
       static bool dtorCalled;
 
-      int somethingToAccess;
+      int somethingToAccess = 0;
 
-      TestGlobalPattern1() : somethingToAccess(0) { ctorCalled = true; }
+      TestGlobalPattern1() { ctorCalled = true; }
       ~TestGlobalPattern1()
       {
         std::cout << "Clean shutdown of TestGlobalPattern1" << std::endl << std::flush;

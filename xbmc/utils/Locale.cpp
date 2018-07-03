@@ -24,16 +24,14 @@
 const CLocale CLocale::Empty;
 
 CLocale::CLocale()
-  : m_valid(false),
-    m_language(),
+  : m_language(),
     m_territory(),
     m_codeset(),
     m_modifier()
 { }
 
 CLocale::CLocale(const std::string& language)
-  : m_valid(false),
-    m_language(),
+  : m_language(),
     m_territory(),
     m_codeset(),
     m_modifier()
@@ -42,8 +40,7 @@ CLocale::CLocale(const std::string& language)
 }
 
 CLocale::CLocale(const std::string& language, const std::string& territory)
-  : m_valid(false),
-    m_language(language),
+  : m_language(language),
     m_territory(territory),
     m_codeset(),
     m_modifier()
@@ -52,8 +49,7 @@ CLocale::CLocale(const std::string& language, const std::string& territory)
 }
 
 CLocale::CLocale(const std::string& language, const std::string& territory, const std::string& codeset)
-  : m_valid(false),
-    m_language(language),
+  : m_language(language),
     m_territory(territory),
     m_codeset(codeset),
     m_modifier()
@@ -62,8 +58,7 @@ CLocale::CLocale(const std::string& language, const std::string& territory, cons
 }
 
 CLocale::CLocale(const std::string& language, const std::string& territory, const std::string& codeset, const std::string& modifier)
-  : m_valid(false),
-    m_language(language),
+  : m_language(language),
     m_territory(territory),
     m_codeset(codeset),
     m_modifier(modifier)
