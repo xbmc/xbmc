@@ -54,10 +54,10 @@ namespace XbmcThreads
     CountingLockable& operator=(const CountingLockable&) = delete;
   protected:
     L mutex;
-    unsigned int count;
+    unsigned int count = 0;
 
   public:
-    inline CountingLockable() : count(0) {}
+    inline CountingLockable() = default;
 
     // boost::thread Lockable concept
     inline void lock() { mutex.lock(); count++; }

@@ -539,9 +539,9 @@ public:
   CEvent& event;
   bool result;
 
-  volatile bool waiting;
+  volatile bool waiting = false;
 
-  mass_waiter() : event(*g_event), waiting(false) {}
+  mass_waiter() : event(*g_event) {}
 
   void Run() override
   {
@@ -558,9 +558,9 @@ public:
   CEvent& event;
   bool result;
 
-  volatile bool waiting;
+  volatile bool waiting = false;
 
-  poll_mass_waiter() : event(*g_event), waiting(false) {}
+  poll_mass_waiter() : event(*g_event) {}
 
   void Run() override
   {
