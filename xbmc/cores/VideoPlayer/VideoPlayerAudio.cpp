@@ -69,7 +69,6 @@ CVideoPlayerAudio::CVideoPlayerAudio(CDVDClock* pClock, CDVDMessageQueue& parent
   m_paused = false;
   m_syncState = IDVDStreamPlayer::SYNC_STARTING;
   m_synctype = SYNC_DISCON;
-  m_setsynctype = SYNC_DISCON;
   m_prevsynctype = -1;
   m_prevskipped = false;
   m_maxspeedadjust = 0.0;
@@ -142,14 +141,12 @@ void CVideoPlayerAudio::OpenStream(CDVDStreamInfo &hints, CDVDAudioCodec* codec)
   m_audioClock = 0;
   m_stalled = m_messageQueue.GetPacketCount(CDVDMsg::DEMUXER_PACKET) == 0;
 
-  m_synctype = SYNC_DISCON;
-  m_setsynctype = SYNC_DISCON;
-  if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_USEDISPLAYASCLOCK))
-    m_setsynctype = SYNC_RESAMPLE;
-  else if (m_processInfo.IsRealtimeStream())
-    m_setsynctype = SYNC_RESAMPLE;
-
   m_prevsynctype = -1;
+  m_synctype = SYNC_DISCON;
+  if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_USEDISPLAYASCLOCK))
+    m_synctype = SYNC_RESAMPLE;
+  else if (m_processInfo.IsRealtimeStream())
+    m_synctype = SYNC_RESAMPLE;
 
   m_prevskipped = false;
 
@@ -465,11 +462,12 @@ bool CVideoPlayerAudio::ProcessDecoderOutput(DVDAudioFrame &audioframe)
     }
 
     // if stream switches to realtime, disable pass through
+    // or switch to resample
     if (m_processInfo.IsRealtimeStream() && m_synctype != SYNC_RESAMPLE)
     {
+      m_synctype = SYNC_RESAMPLE;
       if (SwitchCodecIfNeeded())
       {
-        m_synctype = SYNC_RESAMPLE;
         audioframe.nb_frames = 0;
         return false;
       }
@@ -487,7 +485,7 @@ bool CVideoPlayerAudio::ProcessDecoderOutput(DVDAudioFrame &audioframe)
 
       m_audioSink.Destroy(false);
 
-      if (!m_audioSink.Create(audioframe, m_streaminfo.codec, m_setsynctype == SYNC_RESAMPLE))
+      if (!m_audioSink.Create(audioframe, m_streaminfo.codec, m_synctype == SYNC_RESAMPLE))
         CLog::Log(LOGERROR, "%s - failed to create audio renderer", __FUNCTION__);
 
       m_audioSink.SetDynamicRangeCompression((long)(m_processInfo.GetVideoSettings().m_VolumeAmplification * 100));
@@ -549,8 +547,6 @@ bool CVideoPlayerAudio::ProcessDecoderOutput(DVDAudioFrame &audioframe)
 
 void CVideoPlayerAudio::SetSyncType(bool passthrough)
 {
-  //set the synctype from the gui
-  m_synctype = m_setsynctype;
   if (passthrough && m_synctype == SYNC_RESAMPLE)
     m_synctype = SYNC_DISCON;
 
