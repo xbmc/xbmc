@@ -180,7 +180,7 @@ git checkout <feature-branch>           // switch back to feature branch
 ```
 
 ### 5.6. Check branch status
-Show you the branch name, status in relation to remote origin branch, unstaged changes, etc.:
+Shows branch name, status in relation to remote origin branch, unstaged changes, etc:
 ```
 git status
 ```
@@ -233,7 +233,7 @@ git reset --hard origin/<feature-branch> // reset feature branch
 ### 6.3. Push local feature branch to origin and sync remote feature branch with it
 ```
 git checkout <feature-branch> // switch to feature branch
-git push origin               // fetch origin changes
+git push origin               // push updated feature branch to your personal remote repo
 ```
 
 **WARNING:** Be **very careful** updating to and from origin. It can cause loss of work, specially if you work on more than one machine. Make sure your remote origin repo **always** holds the most up-to-date version of your code. **No, seriously**. Make a mental rule: *remote origin repo always holds the most up-to-date version of my code!* and **stick to it!** It's almost always possible to recover lost work with `git` but it's hard and unnecessary work if you follow some simple rules.
@@ -243,9 +243,9 @@ git push origin               // fetch origin changes
 ## 7. Working with commits
 All commit manipulating operations (commit, amend or fix a commit, etc.), start by adding your changes before committing:
 ```
-git add path/to/file/filename // stage single file
-git add .                     // stage all files on current directory
-git add *                     // stage all files in current directory and subdirectories
+git add path/to/file/filename // add single file
+git add .                     // add all files on current directory
+git add *                     // add all files in current directory and subdirectories
 ```
 
 ### 7.1. Create commit
@@ -371,15 +371,15 @@ git checkout <branch-name-or-pull-request-ID-or-whatever>
 If you want to try it, issue:
 ```
 git fetch upstream pull/14072/head:PR14072 // branch name can be anything
-git checkout PR14072
+git checkout PR14072                       // switch to branch
 ```
 
 and see the original version of this documentation in all its glorious might.
 
-### 9.3. Fetch a pull request or commit and apply them to another branch:
+### 9.3. Fetch a pull request or commit and apply them to another branch
 Also very useful is the ability to fetch a complete pull request or a single commit and apply it to your **current** branch, instead of creating a new branch like the method outlined above.
 
-Similarly to the method above, find the PR you want to fetch, **[PR14072](https://github.com/xbmc/xbmc/pull/14072)** for instance. Append `.patch` to the URL. GitHub will generate a formatted patch and show you the formatted output. Copy that URL and choose your next move below.
+Similarly to the method above, find the PR you want to fetch, **[PR14072](https://github.com/xbmc/xbmc/pull/14072)** for instance, and append `.patch` to the URL. GitHub will generate a formatted patch and show you the output. Copy that URL and choose your next move below.
 
 Apply the changes to your branch but do not commit them (changes will be kept unstaged):
 ```
