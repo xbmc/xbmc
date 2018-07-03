@@ -37,7 +37,6 @@ class CVariant;
 
 struct SActorInfo
 {
-  SActorInfo() : order(-1) {};
   bool operator<(const SActorInfo &right) const
   {
     return order < right.order;
@@ -46,17 +45,17 @@ struct SActorInfo
   std::string strRole;
   CScraperUrl thumbUrl;
   std::string thumb;
-  int        order;
+  int        order = -1;
 };
 
 class CRating
 {
 public:
-  CRating(): rating(0.0f), votes(0) {}
-  explicit CRating(float r): rating(r), votes(0) {}
+  CRating() = default;
+  explicit CRating(float r): rating(r) {}
   CRating(float r, int v): rating(r), votes(v) {}
-  float rating;
-  int votes;
+  float rating = 0.0f;
+  int votes = 0;
 };
 typedef std::map<std::string, CRating> RatingMap;
 

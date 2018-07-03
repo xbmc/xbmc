@@ -103,8 +103,6 @@ CGUIDialogSubtitles::CGUIDialogSubtitles(void)
     : CGUIDialog(WINDOW_DIALOG_SUBTITLES, "DialogSubtitles.xml")
     , m_subtitles(new CFileItemList)
     , m_serviceItems(new CFileItemList)
-    , m_pausedOnRun(false)
-    , m_updateSubsList(false)
 {
   m_loadType = KEEP_IN_MEMORY;
 }

@@ -69,7 +69,7 @@ protected:
   std::string    m_currentService;
   std::string    m_status;
   std::string     m_strManualSearch;
-  bool           m_pausedOnRun;
-  bool           m_updateSubsList; ///< true if we need to update our subs list
+  bool           m_pausedOnRun = false;
+  bool           m_updateSubsList = false; ///< true if we need to update our subs list
   std::string     m_LastAutoDownloaded; ///< Last video file path which automatically downloaded subtitle
 };

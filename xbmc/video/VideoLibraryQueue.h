@@ -162,6 +162,6 @@ private:
   VideoLibraryJobMap m_jobs;
   CCriticalSection m_critical;
 
-  bool m_modal;
-  bool m_cleaning;
+  bool m_modal = false;
+  bool m_cleaning = false;
 };
