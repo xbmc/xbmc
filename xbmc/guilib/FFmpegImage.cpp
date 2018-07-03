@@ -35,17 +35,7 @@ extern "C"
 #include "libavutil/pixdesc.h"
 }
 
-Frame::Frame() :
-  m_pImage(nullptr),
-  m_delay(0),
-  m_imageSize(0),
-  m_height(0),
-  m_width(0)
-{}
-
-
 Frame::Frame(const Frame& src) :
-  m_pImage(nullptr),
   m_delay(src.m_delay),
   m_imageSize(src.m_imageSize),
   m_height(src.m_height),

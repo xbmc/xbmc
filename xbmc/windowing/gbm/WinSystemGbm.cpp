@@ -40,7 +40,6 @@
 CWinSystemGbm::CWinSystemGbm() :
   m_DRM(nullptr),
   m_GBM(new CGBMUtils),
-  m_delayDispReset(false),
   m_libinput(new CLibInputHandler)
 {
   std::string envSink;

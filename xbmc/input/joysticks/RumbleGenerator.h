@@ -63,8 +63,8 @@ namespace JOYSTICK
     const std::vector<std::string> m_motors;
 
     // Test param
-    IInputReceiver* m_receiver;
-    RUMBLE_TYPE     m_type;
+    IInputReceiver* m_receiver = nullptr;
+    RUMBLE_TYPE     m_type = RUMBLE_UNKNOWN;
   };
 }
 }

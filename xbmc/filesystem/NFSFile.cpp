@@ -58,11 +58,6 @@ CNfsConnection::CNfsConnection()
 , m_exportPath("")
 , m_hostName("")
 , m_resolvedHostName("")
-, m_readChunkSize(0)
-, m_writeChunkSize(0)
-, m_OpenConnections(0)
-, m_IdleTimeout(0)
-, m_lastAccessedTime(0)
 , m_pLibNfs(new DllLibNfs())
 {
 }
@@ -501,8 +496,7 @@ void CNfsConnection::AddIdleConnection()
 CNfsConnection gNfsConnection;
 
 CNFSFile::CNFSFile()
-: m_fileSize(0)
-, m_pFileHandle(NULL)
+: m_pFileHandle(NULL)
 , m_pNfsContext(NULL)
 {
   gNfsConnection.AddActiveConnection();

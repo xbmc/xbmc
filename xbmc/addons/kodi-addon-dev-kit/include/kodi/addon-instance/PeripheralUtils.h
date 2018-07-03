@@ -98,10 +98,7 @@ namespace addon
   public:
     Peripheral(PERIPHERAL_TYPE type = PERIPHERAL_TYPE_UNKNOWN, const std::string& strName = "") :
       m_type(type),
-      m_strName(strName),
-      m_vendorId(0),
-      m_productId(0),
-      m_index(0)
+      m_strName(strName)
     {
     }
 
@@ -150,9 +147,9 @@ namespace addon
   private:
     PERIPHERAL_TYPE  m_type;
     std::string      m_strName;
-    uint16_t         m_vendorId;
-    uint16_t         m_productId;
-    unsigned int     m_index;
+    uint16_t         m_vendorId = 0;
+    uint16_t         m_productId = 0;
+    unsigned int     m_index = 0;
   };
 
   typedef PeripheralVector<Peripheral, PERIPHERAL_INFO> Peripherals;
@@ -260,12 +257,7 @@ namespace addon
     Joystick(const std::string& provider = "", const std::string& strName = "") :
       Peripheral(PERIPHERAL_TYPE_JOYSTICK, strName),
       m_provider(provider),
-      m_requestedPort(NO_PORT_REQUESTED),
-      m_buttonCount(0),
-      m_hatCount(0),
-      m_axisCount(0),
-      m_motorCount(0),
-      m_supportsPowerOff(false)
+      m_requestedPort(NO_PORT_REQUESTED)
     {
     }
 
@@ -346,11 +338,11 @@ namespace addon
   private:
     std::string                   m_provider;
     int                           m_requestedPort;
-    unsigned int                  m_buttonCount;
-    unsigned int                  m_hatCount;
-    unsigned int                  m_axisCount;
-    unsigned int                  m_motorCount;
-    bool                          m_supportsPowerOff;
+    unsigned int                  m_buttonCount = 0;
+    unsigned int                  m_hatCount = 0;
+    unsigned int                  m_axisCount = 0;
+    unsigned int                  m_motorCount = 0;
+    bool                          m_supportsPowerOff = false;
   };
 
   typedef PeripheralVector<Joystick, JOYSTICK_INFO> Joysticks;
@@ -403,12 +395,7 @@ namespace addon
      */
     DriverPrimitive(JOYSTICK_DRIVER_PRIMITIVE_TYPE type, unsigned int driverIndex) :
       m_type(type),
-      m_driverIndex(driverIndex),
-      m_hatDirection(JOYSTICK_DRIVER_HAT_UNKNOWN),
-      m_center(0),
-      m_semiAxisDirection(JOYSTICK_DRIVER_SEMIAXIS_UNKNOWN),
-      m_range(1),
-      m_relPointerDirection(JOYSTICK_DRIVER_RELPOINTER_UNKNOWN)
+      m_driverIndex(driverIndex)
     {
     }
 
@@ -416,16 +403,7 @@ namespace addon
     /*!
      * \brief Construct an invalid driver primitive
      */
-    DriverPrimitive(void) :
-      m_type(JOYSTICK_DRIVER_PRIMITIVE_TYPE_UNKNOWN),
-      m_driverIndex(0),
-      m_hatDirection(JOYSTICK_DRIVER_HAT_UNKNOWN),
-      m_center(0),
-      m_semiAxisDirection(JOYSTICK_DRIVER_SEMIAXIS_UNKNOWN),
-      m_range(1),
-      m_relPointerDirection(JOYSTICK_DRIVER_RELPOINTER_UNKNOWN)
-    {
-    }
+    DriverPrimitive(void) = default;
 
     /*!
      * \brief Construct a driver primitive representing a joystick button
@@ -442,11 +420,7 @@ namespace addon
     DriverPrimitive(unsigned int hatIndex, JOYSTICK_DRIVER_HAT_DIRECTION direction) :
       m_type(JOYSTICK_DRIVER_PRIMITIVE_TYPE_HAT_DIRECTION),
       m_driverIndex(hatIndex),
-      m_hatDirection(direction),
-      m_center(0),
-      m_semiAxisDirection(JOYSTICK_DRIVER_SEMIAXIS_UNKNOWN),
-      m_range(1),
-      m_relPointerDirection(JOYSTICK_DRIVER_RELPOINTER_UNKNOWN)
+      m_hatDirection(direction)
     {
     }
 
@@ -457,11 +431,9 @@ namespace addon
     DriverPrimitive(unsigned int axisIndex, int center, JOYSTICK_DRIVER_SEMIAXIS_DIRECTION direction, unsigned int range) :
       m_type(JOYSTICK_DRIVER_PRIMITIVE_TYPE_SEMIAXIS),
       m_driverIndex(axisIndex),
-      m_hatDirection(JOYSTICK_DRIVER_HAT_UNKNOWN),
       m_center(center),
       m_semiAxisDirection(direction),
-      m_range(range),
-      m_relPointerDirection(JOYSTICK_DRIVER_RELPOINTER_UNKNOWN)
+      m_range(range)
     {
     }
 
@@ -478,13 +450,7 @@ namespace addon
      */
     DriverPrimitive(std::string keycode) :
       m_type(JOYSTICK_DRIVER_PRIMITIVE_TYPE_KEY),
-      m_driverIndex(0),
-      m_hatDirection(JOYSTICK_DRIVER_HAT_UNKNOWN),
-      m_center(0),
-      m_semiAxisDirection(JOYSTICK_DRIVER_SEMIAXIS_UNKNOWN),
-      m_range(1),
-      m_keycode(std::move(keycode)),
-      m_relPointerDirection(JOYSTICK_DRIVER_RELPOINTER_UNKNOWN)
+      m_keycode(std::move(keycode))
     {
     }
 
@@ -502,23 +468,12 @@ namespace addon
      */
     DriverPrimitive(JOYSTICK_DRIVER_RELPOINTER_DIRECTION direction) :
       m_type(JOYSTICK_DRIVER_PRIMITIVE_TYPE_RELPOINTER_DIRECTION),
-      m_driverIndex(0),
-      m_hatDirection(JOYSTICK_DRIVER_HAT_UNKNOWN),
-      m_center(0),
-      m_semiAxisDirection(JOYSTICK_DRIVER_SEMIAXIS_UNKNOWN),
-      m_range(1),
       m_relPointerDirection(direction)
     {
     }
 
     explicit DriverPrimitive(const JOYSTICK_DRIVER_PRIMITIVE& primitive) :
-      m_type(primitive.type),
-      m_driverIndex(0),
-      m_hatDirection(JOYSTICK_DRIVER_HAT_UNKNOWN),
-      m_center(0),
-      m_semiAxisDirection(JOYSTICK_DRIVER_SEMIAXIS_UNKNOWN),
-      m_range(1),
-      m_relPointerDirection(JOYSTICK_DRIVER_RELPOINTER_UNKNOWN)
+      m_type(primitive.type)
     {
       switch (m_type)
       {
@@ -678,14 +633,14 @@ namespace addon
     }
 
   private:
-    JOYSTICK_DRIVER_PRIMITIVE_TYPE     m_type;
-    unsigned int                       m_driverIndex;
-    JOYSTICK_DRIVER_HAT_DIRECTION      m_hatDirection;
-    int                                m_center;
-    JOYSTICK_DRIVER_SEMIAXIS_DIRECTION m_semiAxisDirection;
-    unsigned int                       m_range;
+    JOYSTICK_DRIVER_PRIMITIVE_TYPE     m_type = JOYSTICK_DRIVER_PRIMITIVE_TYPE_UNKNOWN;
+    unsigned int                       m_driverIndex = 0;
+    JOYSTICK_DRIVER_HAT_DIRECTION      m_hatDirection = JOYSTICK_DRIVER_HAT_UNKNOWN;
+    int                                m_center = 0;
+    JOYSTICK_DRIVER_SEMIAXIS_DIRECTION m_semiAxisDirection = JOYSTICK_DRIVER_SEMIAXIS_UNKNOWN;
+    unsigned int                       m_range = 1;
     std::string                        m_keycode;
-    JOYSTICK_DRIVER_RELPOINTER_DIRECTION m_relPointerDirection;
+    JOYSTICK_DRIVER_RELPOINTER_DIRECTION m_relPointerDirection = JOYSTICK_DRIVER_RELPOINTER_UNKNOWN;
   };
 
   typedef PeripheralVector<DriverPrimitive, JOYSTICK_DRIVER_PRIMITIVE> DriverPrimitives;

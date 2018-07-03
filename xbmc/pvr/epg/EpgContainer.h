@@ -281,7 +281,7 @@ namespace PVR
     std::list<CEpgTagStateChange> m_epgTagChanges; /*!< list of updated epg tags announced by addon */
     CCriticalSection m_epgTagChangesLock;          /*!< protect changed epg tags list */
 
-    bool m_bUpdateNotificationPending; /*!< true while an epg updated notification to observers is pending. */
+    bool m_bUpdateNotificationPending = false; /*!< true while an epg updated notification to observers is pending. */
     CPVRSettings m_settings;
   };
 }

@@ -29,8 +29,6 @@ namespace ADDON
 class CAddonBuilder
 {
 public:
-  CAddonBuilder() : m_built(false), m_extPoint(nullptr) {}
-
   std::shared_ptr<IAddon> Build();
   void SetId(std::string id) { m_addonInfo.m_id = std::move(id); }
   void SetName(std::string name) { m_addonInfo.m_name = std::move(name); }
@@ -68,9 +66,9 @@ public:
 private:
   static std::shared_ptr<IAddon> FromProps(CAddonInfo addonInfo);
 
-  bool m_built;
+  bool m_built = false;
   CAddonInfo m_addonInfo;
-  cp_extension_t* m_extPoint;
+  cp_extension_t* m_extPoint = nullptr;
 };
 
 };

@@ -32,6 +32,6 @@ public:
 
 protected:
   void Open_Internal(const std::string &param = "") override;
-  bool m_bLastVisible;
+  bool m_bLastVisible = false;
   float m_progress;
 };

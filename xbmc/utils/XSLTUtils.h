@@ -55,8 +55,8 @@ public:
 
 
 private:
-  xmlDocPtr m_xmlInput;
-  xmlDocPtr m_xmlOutput;
-  xmlDocPtr m_xmlStylesheet;
-  xsltStylesheetPtr m_xsltStylesheet;
+  xmlDocPtr m_xmlInput = nullptr;
+  xmlDocPtr m_xmlOutput = nullptr;
+  xmlDocPtr m_xmlStylesheet = nullptr;
+  xsltStylesheetPtr m_xsltStylesheet = nullptr;
 };

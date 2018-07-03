@@ -135,13 +135,13 @@ namespace XBMCAddon
   class DelayedCallGuard
   {
     LanguageHook* languageHook;
-    bool clearOnExit;
+    bool clearOnExit = false;
 
   public:
-    inline explicit DelayedCallGuard(LanguageHook* languageHook_) : languageHook(languageHook_), clearOnExit(false)
+    inline explicit DelayedCallGuard(LanguageHook* languageHook_) : languageHook(languageHook_)
     { if (languageHook) languageHook->DelayedCallOpen(); }
 
-    inline DelayedCallGuard() : languageHook(LanguageHook::GetLanguageHook()), clearOnExit(false)
+    inline DelayedCallGuard() : languageHook(LanguageHook::GetLanguageHook())
     { if (languageHook) languageHook->DelayedCallOpen(); }
 
     inline ~DelayedCallGuard()

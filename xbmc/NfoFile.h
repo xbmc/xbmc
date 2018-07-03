@@ -35,7 +35,6 @@
 class CNfoFile
 {
 public:
-  CNfoFile() : m_headPos(0), m_type(ADDON::ADDON_UNKNOWN) {}
   virtual ~CNfoFile() { Close(); }
 
   CInfoScanner::INFO_TYPE Create(const std::string&,
@@ -68,9 +67,9 @@ public:
 
 private:
   std::string m_doc;
-  size_t m_headPos;
+  size_t m_headPos = 0;
   ADDON::ScraperPtr m_info;
-  ADDON::TYPE m_type;
+  ADDON::TYPE m_type = ADDON::ADDON_UNKNOWN;
   CScraperUrl m_scurl;
 
   int Load(const std::string&);

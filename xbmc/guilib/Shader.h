@@ -172,7 +172,7 @@ namespace Shaders {
     void Free();
 
     GLint m_lastProgram;
-    bool m_validated;
+    bool m_validated = false;
   };
 
 

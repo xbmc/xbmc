@@ -76,13 +76,7 @@ typedef struct {
 } HttpFileDownloadContext;
 
 CWebServer::CWebServer()
-  : m_port(0),
-    m_daemon_ip6(nullptr),
-    m_daemon_ip4(nullptr),
-    m_running(false),
-    m_thread_stacksize(0),
-    m_authenticationRequired(false),
-    m_authenticationUsername("kodi"),
+  : m_authenticationUsername("kodi"),
     m_authenticationPassword(""),
     m_key(),
     m_cert()

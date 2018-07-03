@@ -80,8 +80,8 @@ public:
   void SetOpenThreshold(int threshold);
 
 protected:
-  int64_t m_pos;
-  int64_t m_length;
+  int64_t m_pos = 0;
+  int64_t m_length = -1;
 
   XFILE::Pipe *m_pipe;
 

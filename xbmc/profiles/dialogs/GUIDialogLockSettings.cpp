@@ -52,12 +52,7 @@
 
 CGUIDialogLockSettings::CGUIDialogLockSettings()
     : CGUIDialogSettingsManualBase(WINDOW_DIALOG_LOCK_SETTINGS, "DialogSettings.xml"),
-      m_changed(false),
-      m_details(true),
-      m_conditionalDetails(false),
-      m_getUser(false),
-      m_saveUserDetails(NULL),
-      m_buttonLabel(20091)
+      m_saveUserDetails(NULL)
 { }
 
 CGUIDialogLockSettings::~CGUIDialogLockSettings() = default;

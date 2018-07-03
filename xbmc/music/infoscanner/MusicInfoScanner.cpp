@@ -72,9 +72,7 @@ using namespace ADDON;
 using KODI::UTILITY::CDigest;
 
 CMusicInfoScanner::CMusicInfoScanner()
-: m_needsCleanup(false),
-  m_scanType(0),
-  m_fileCountReader(this, "MusicFileCounter")
+: m_fileCountReader(this, "MusicFileCounter")
 {
   m_bStop = false;
   m_currentItem=0;

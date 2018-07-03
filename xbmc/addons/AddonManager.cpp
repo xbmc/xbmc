@@ -290,10 +290,6 @@ static bool LoadManifest(std::set<std::string>& system, std::set<std::string>& o
   return true;
 }
 
-CAddonMgr::CAddonMgr()
-  : m_cp_context(nullptr)
-{ }
-
 CAddonMgr::~CAddonMgr()
 {
   DeInit();

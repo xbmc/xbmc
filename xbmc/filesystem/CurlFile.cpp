@@ -412,11 +412,7 @@ CCurlFile::~CCurlFile()
 }
 
 CCurlFile::CCurlFile()
- : m_writeOffset(0)
- , m_proxytype(PROXY_HTTP)
- , m_proxyport(3128)
- , m_overflowBuffer(NULL)
- , m_overflowSize(0)
+ : m_overflowBuffer(NULL)
 {
   m_opened = false;
   m_forWrite = false;

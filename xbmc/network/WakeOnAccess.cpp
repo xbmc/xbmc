@@ -190,7 +190,6 @@ CWakeOnAccess::WakeUpEntry::WakeUpEntry (bool isAwake)
   , wait_online1_sec(DEFAULT_WAIT_FOR_ONLINE_SEC_1)
   , wait_online2_sec(DEFAULT_WAIT_FOR_ONLINE_SEC_2)
   , wait_services_sec(DEFAULT_WAIT_FOR_SERVICES_SEC)
-  , ping_port(0), ping_mode(0)
 {
   nextWake = CDateTime::GetCurrentDateTime();
 
@@ -447,7 +446,6 @@ private:
 CWakeOnAccess::CWakeOnAccess()
   : m_netinit_sec(DEFAULT_NETWORK_INIT_SEC)    // wait for network to connect
   , m_netsettle_ms(DEFAULT_NETWORK_SETTLE_MS)  // wait for network to settle
-  , m_enabled(false)
 {
 }
 

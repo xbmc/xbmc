@@ -34,8 +34,7 @@ using namespace XFILE;
 //////////////////////////////////////////////////////////////////////
 //*********************************************************************************************
 CISOFile::CISOFile()
-  : m_bOpened(false)
-  , m_hFile(INVALID_HANDLE_VALUE)
+  : m_hFile(INVALID_HANDLE_VALUE)
 {
 }
 

@@ -53,5 +53,5 @@ protected:
 
 private:
   int m_videoStream;
-  bool m_viewModeChanged;
+  bool m_viewModeChanged = false;
 };

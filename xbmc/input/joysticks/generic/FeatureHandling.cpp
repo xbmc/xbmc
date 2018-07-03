@@ -87,7 +87,6 @@ unsigned int CJoystickFeature::MotionTimeMs() const
 
 CScalarFeature::CScalarFeature(const FeatureName& name, IInputHandler* handler, IButtonMap* buttonMap) :
   CJoystickFeature(name, handler, buttonMap),
-  m_inputType(INPUT_TYPE::UNKNOWN),
   m_bDigitalState(false),
   m_analogState(0.0f),
   m_bActivated(false),

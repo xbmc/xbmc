@@ -38,6 +38,6 @@ protected:
   EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event) override;
 
 private:
-  ADDON::CScreenSaver* m_addon;
+  ADDON::CScreenSaver* m_addon = nullptr;
 };
 

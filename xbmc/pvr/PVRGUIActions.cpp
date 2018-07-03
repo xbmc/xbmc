@@ -75,7 +75,7 @@ namespace PVR
     bool Execute(const CFileItemPtr &item);
 
   protected:
-    AsyncRecordingAction() : m_bSuccess(false) {}
+    AsyncRecordingAction() = default;
 
   private:
     // IRunnable implementation
@@ -85,7 +85,7 @@ namespace PVR
     virtual bool DoRun(const CFileItemPtr &item) = 0;
 
     CFileItemPtr m_item;
-    bool m_bSuccess;
+    bool m_bSuccess = false;
   };
 
   bool AsyncRecordingAction::Execute(const CFileItemPtr &item)
@@ -159,8 +159,7 @@ namespace PVR
   };
 
   CPVRGUIActions::CPVRGUIActions()
-  : m_bChannelScanRunning(false),
-    m_settings({
+  : m_settings({
       CSettings::SETTING_LOOKANDFEEL_STARTUPACTION,
       CSettings::SETTING_PVRMANAGER_PRESELECTPLAYINGCHANNEL,
       CSettings::SETTING_PVRRECORD_INSTANTRECORDTIME,

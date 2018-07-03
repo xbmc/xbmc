@@ -45,38 +45,16 @@ CPVREpgInfoTagPtr CPVREpgInfoTag::CreateDefaultTag()
 }
 
 CPVREpgInfoTag::CPVREpgInfoTag(void) :
-    m_bNotify(false),
-    m_iClientId(-1),
-    m_iBroadcastId(-1),
-    m_iGenreType(0),
-    m_iGenreSubType(0),
-    m_iParentalRating(0),
-    m_iStarRating(0),
-    m_iSeriesNumber(0),
-    m_iEpisodeNumber(0),
-    m_iEpisodePart(0),
     m_iUniqueBroadcastID(EPG_TAG_INVALID_UID),
     m_iUniqueChannelID(PVR_CHANNEL_INVALID_UID),
-    m_iYear(0),
-    m_epg(nullptr),
     m_iFlags(EPG_TAG_FLAG_UNDEFINED)
 {
 }
 
 CPVREpgInfoTag::CPVREpgInfoTag(CPVREpg *epg, const PVR::CPVRChannelPtr &channel, const std::string &strTableName /* = "" */, const std::string &strIconPath /* = "" */) :
-    m_bNotify(false),
     m_iClientId(channel ? channel->ClientID() : -1),
-    m_iBroadcastId(-1),
-    m_iGenreType(0),
-    m_iGenreSubType(0),
-    m_iParentalRating(0),
-    m_iStarRating(0),
-    m_iSeriesNumber(0),
-    m_iEpisodeNumber(0),
-    m_iEpisodePart(0),
     m_iUniqueBroadcastID(EPG_TAG_INVALID_UID),
     m_iUniqueChannelID(channel ? channel->UniqueID() : PVR_CHANNEL_INVALID_UID),
-    m_iYear(0),
     m_strIconPath(strIconPath),
     m_epg(epg),
     m_iFlags(EPG_TAG_FLAG_UNDEFINED),
@@ -88,9 +66,6 @@ CPVREpgInfoTag::CPVREpgInfoTag(CPVREpg *epg, const PVR::CPVRChannelPtr &channel,
 CPVREpgInfoTag::CPVREpgInfoTag(const EPG_TAG &data, int iClientId) :
     m_bNotify(data.bNotify),
     m_iClientId(iClientId),
-    m_iBroadcastId(-1),
-    m_iGenreType(0),
-    m_iGenreSubType(0),
     m_iParentalRating(data.iParentalRating),
     m_iStarRating(data.iStarRating),
     m_iSeriesNumber(data.iSeriesNumber),
@@ -102,7 +77,6 @@ CPVREpgInfoTag::CPVREpgInfoTag(const EPG_TAG &data, int iClientId) :
     m_startTime(data.startTime + g_advancedSettings.m_iPVRTimeCorrection),
     m_endTime(data.endTime + g_advancedSettings.m_iPVRTimeCorrection),
     m_firstAired(data.firstAired + g_advancedSettings.m_iPVRTimeCorrection),
-    m_epg(nullptr),
     m_iFlags(data.iFlags)
 {
   SetGenre(data.iGenreType, data.iGenreSubType, data.strGenreDescription);

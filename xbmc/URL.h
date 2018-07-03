@@ -36,7 +36,7 @@ public:
     Parse(strURL);
   }
 
-  CURL():m_iPort(0) {}
+  CURL() = default;
   virtual ~CURL(void);
 
   // explicit equals operator for std::string comparison
@@ -197,7 +197,7 @@ public:
   void RemoveProtocolOption(const std::string &key);
 
 protected:
-  int m_iPort;
+  int m_iPort = 0;
   std::string m_strHostName;
   std::string m_strShareName;
   std::string m_strDomain;

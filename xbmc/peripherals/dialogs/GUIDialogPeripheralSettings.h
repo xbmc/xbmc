@@ -51,7 +51,7 @@ protected:
   void InitializeSettings() override;
 
   CFileItem *m_item;
-  bool m_initialising;
+  bool m_initialising = false;
   std::map<std::string, std::shared_ptr<CSetting>> m_settingsMap;
 };
 }

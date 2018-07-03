@@ -35,9 +35,7 @@
 
 using namespace ANNOUNCEMENT;
 
-CGUIWindowHome::CGUIWindowHome(void) : CGUIWindow(WINDOW_HOME, "Home.xml"),
-                                       m_recentlyAddedRunning(false),
-                                       m_cumulativeUpdateFlag(0)
+CGUIWindowHome::CGUIWindowHome(void) : CGUIWindow(WINDOW_HOME, "Home.xml")
 {
   m_updateRA = (Audio | Video | Totals);
   m_loadType = KEEP_IN_MEMORY;

@@ -205,7 +205,7 @@ namespace XBMCAddon
                                  const char* _shadowColor, const char* _focusedColor) :
       textOffsetX(_textOffsetX), textOffsetY(_textOffsetY),
       align(alignment), strFont("font13"), textColor(0xffffffff), disabledColor(0x60ffffff),
-      iAngle(angle), shadowColor(0), focusedColor(0xffffffff)
+      iAngle(angle), focusedColor(0xffffffff)
     {
       dwPosX = x;
       dwPosY = y;

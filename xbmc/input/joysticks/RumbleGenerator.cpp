@@ -38,9 +38,7 @@ using namespace JOYSTICK;
 
 CRumbleGenerator::CRumbleGenerator() :
   CThread("RumbleGenerator"),
-  m_motors(GetMotors(ControllerID())),
-  m_receiver(nullptr),
-  m_type(RUMBLE_UNKNOWN)
+  m_motors(GetMotors(ControllerID()))
 {
 }
 

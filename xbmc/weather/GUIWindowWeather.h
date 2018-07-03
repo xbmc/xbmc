@@ -39,5 +39,5 @@ protected:
   void ClearProperties();
   void SetLocation(int loc);
 
-  unsigned int m_maxLocation;
+  unsigned int m_maxLocation = 0;
 };

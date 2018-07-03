@@ -40,11 +40,6 @@
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 
-CPlayerController::CPlayerController()
-  : m_sliderAction(0)
-{
-}
-
 CPlayerController::~CPlayerController() = default;
 
 CPlayerController& CPlayerController::GetInstance()

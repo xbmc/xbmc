@@ -43,8 +43,6 @@
 #include "platform/linux/XTimeUtils.h"
 #endif
 
-#define AE_MIN_PERIODSIZE 256
-
 #define ALSA_OPTIONS (SND_PCM_NO_AUTO_FORMAT | SND_PCM_NO_AUTO_CHANNELS | SND_PCM_NO_AUTO_RESAMPLE)
 
 #define ALSA_MAX_CHANNELS 16
@@ -86,13 +84,7 @@ static unsigned int ALSASampleRateList[] =
 };
 
 CAESinkALSA::CAESinkALSA() :
-  m_bufferSize(0),
-  m_formatSampleRateMul(0.0),
-  m_passthrough(false),
-  m_pcm(NULL),
-  m_timeout(0),
-  m_fragmented(false),
-  m_originalPeriodSize(AE_MIN_PERIODSIZE)
+  m_pcm(NULL)
 {
   /* ensure that ALSA has been initialized */
   if (!snd_config)

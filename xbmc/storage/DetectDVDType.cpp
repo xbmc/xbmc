@@ -59,9 +59,6 @@ std::string CDetectDVDMedia::m_diskLabel = "";
 std::string CDetectDVDMedia::m_diskPath = "";
 
 CDetectDVDMedia::CDetectDVDMedia() : CThread("DetectDVDMedia"),
-  m_bStartup(true),  // Do not autorun on startup
-  m_bAutorun(false),
-  m_dwLastTrayState(0),
   m_cdio(CLibcdio::GetInstance())
 {
   m_bStop = false;

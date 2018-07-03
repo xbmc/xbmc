@@ -310,7 +310,7 @@ protected:
 private:
   char buffer[7][CDIO_CD_FRAMESIZE_RAW];  /* for CD-Data */
   static signature_t sigs[17];
-  int i, j;                               /* index */
+  int i = 0, j = 0;                               /* index */
   int m_nStartTrack;                      /* first sector of track */
   int m_nIsofsSize;                       /* size of session */
   int m_nJolietLevel;
@@ -321,8 +321,8 @@ private:
   int m_nUDFVerMajor;
 
   CdIo* cdio;
-  track_t m_nNumTracks;
-  track_t m_nFirstTrackNum;
+  track_t m_nNumTracks = CDIO_INVALID_TRACK;
+  track_t m_nFirstTrackNum = CDIO_INVALID_TRACK;
 
   std::string m_strDiscLabel;
 

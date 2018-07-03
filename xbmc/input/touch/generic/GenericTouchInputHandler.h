@@ -94,6 +94,6 @@ private:
   std::array<Pointer, MAX_POINTERS> m_pointers;
   std::set<std::unique_ptr<IGenericTouchGestureDetector>> m_detectors;
 
-  TouchGestureState m_gestureState;
-  TouchGestureState m_gestureStateOld;
+  TouchGestureState m_gestureState = TouchGestureUnknown;
+  TouchGestureState m_gestureStateOld = TouchGestureUnknown;
 };

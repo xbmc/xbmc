@@ -32,10 +32,7 @@ using namespace PVR;
 
 CPVRChannelGroupsContainer::CPVRChannelGroupsContainer(void) :
     m_groupsRadio(new CPVRChannelGroups(true)),
-    m_groupsTV(new CPVRChannelGroups(false)),
-    m_bUpdateChannelsOnly(false),
-    m_bIsUpdating(false),
-    m_bLoaded(false)
+    m_groupsTV(new CPVRChannelGroups(false))
 {
 }
 

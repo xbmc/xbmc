@@ -53,8 +53,7 @@ using namespace ANNOUNCEMENT;
 using namespace KODI::MESSAGING;
 
 CPVRManagerJobQueue::CPVRManagerJobQueue()
-: m_triggerEvent(false),
-  m_bStopped(true)
+: m_triggerEvent(false)
 {
 }
 
@@ -139,17 +138,13 @@ CPVRManager::CPVRManager(void) :
     m_guiInfo(new CPVRGUIInfo),
     m_guiActions(new CPVRGUIActions),
     m_database(new CPVRDatabase),
-    m_bFirstStart(true),
-    m_bEpgsCreated(false),
-    m_managerState(ManagerStateStopped),
     m_parentalTimer(new CStopWatch),
     m_settings({
       CSettings::SETTING_PVRPOWERMANAGEMENT_ENABLED,
       CSettings::SETTING_PVRPOWERMANAGEMENT_SETWAKEUPCMD,
       CSettings::SETTING_PVRPARENTAL_ENABLED,
       CSettings::SETTING_PVRPARENTAL_DURATION
-    }),
-    m_playingClientId(-1)
+    })
 {
   CAnnouncementManager::GetInstance().AddAnnouncer(this);
 }

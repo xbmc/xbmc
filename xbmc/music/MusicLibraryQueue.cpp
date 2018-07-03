@@ -37,10 +37,7 @@
 
 CMusicLibraryQueue::CMusicLibraryQueue()
   : CJobQueue(false, 1, CJob::PRIORITY_LOW),
-    m_jobs(),
-    m_modal(false),
-    m_exporting(false),
-    m_cleaning(false)
+    m_jobs()
 { }
 
 CMusicLibraryQueue::~CMusicLibraryQueue()

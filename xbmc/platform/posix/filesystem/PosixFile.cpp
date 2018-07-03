@@ -37,10 +37,6 @@
 
 using namespace XFILE;
 
-CPosixFile::CPosixFile() :
-  m_fd(-1), m_filePos(-1), m_lastDropPos(-1), m_allowWrite(false)
-{ }
-
 CPosixFile::~CPosixFile()
 {
   if (m_fd >= 0)

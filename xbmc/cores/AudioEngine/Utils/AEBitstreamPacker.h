@@ -48,18 +48,18 @@ private:
 
   /* we keep the trueHD and dtsHD buffers separate so that we can handle a fast stream switch */
   uint8_t      *m_trueHD;
-  unsigned int  m_trueHDPos;
+  unsigned int  m_trueHDPos = 0;
 
   uint8_t      *m_dtsHD;
-  unsigned int  m_dtsHDSize;
+  unsigned int  m_dtsHDSize = 0;
 
   uint8_t      *m_eac3;
-  unsigned int  m_eac3Size;
-  unsigned int  m_eac3FramesCount;
-  unsigned int  m_eac3FramesPerBurst;
+  unsigned int  m_eac3Size = 0;
+  unsigned int  m_eac3FramesCount = 0;
+  unsigned int  m_eac3FramesPerBurst = 0;
 
-  unsigned int  m_dataSize;
+  unsigned int  m_dataSize = 0;
   uint8_t       m_packedBuffer[MAX_IEC61937_PACKET];
-  unsigned int m_pauseDuration;
+  unsigned int m_pauseDuration = 0;
 };
 

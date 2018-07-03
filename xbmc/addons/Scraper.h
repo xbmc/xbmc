@@ -70,7 +70,7 @@ TYPE ScraperTypeFromContent(const CONTENT_TYPE &content);
 class CScraperError
 {
 public:
-  CScraperError() : m_fAborted(true) {}
+  CScraperError() = default;
   CScraperError(const std::string &sTitle, const std::string &sMessage) :
     m_fAborted(false), m_sTitle(sTitle), m_sMessage(sMessage) {}
 
@@ -79,7 +79,7 @@ public:
   const std::string &Message() const { return m_sMessage; }
 
 private:
-  bool m_fAborted;
+  bool m_fAborted = true;
   std::string m_sTitle;
   std::string m_sMessage;
 };

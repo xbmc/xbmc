@@ -44,8 +44,6 @@ namespace PVR
   class CPVRTimersContainer
   {
   public:
-    CPVRTimersContainer() : m_iLastId(0) {}
-
     /*!
      * @brief Add a timer tag to this container or update the tag if already present in this container.
      * @param The timer tag
@@ -74,7 +72,7 @@ namespace PVR
     void InsertTimer(const CPVRTimerInfoTagPtr &newTimer);
 
     CCriticalSection m_critSection;
-    unsigned int m_iLastId;
+    unsigned int m_iLastId = 0;
     MapTags m_tags;
   };
 
@@ -318,7 +316,7 @@ namespace PVR
     std::vector<CFileItemPtr> GetActiveRecordings(const TimerKind &eKind) const;
     int AmountActiveRecordings(const TimerKind &eKind) const;
 
-    bool m_bIsUpdating;
+    bool m_bIsUpdating = false;
     CPVRSettings m_settings;
   };
 

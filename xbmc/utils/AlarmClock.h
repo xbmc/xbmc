@@ -72,7 +72,7 @@ private:
   std::map<std::string,SAlarmClockEvent> m_event;
   CCriticalSection m_events;
 
-  bool m_bIsRunning;
+  bool m_bIsRunning = false;
 };
 
 extern CAlarmClock g_alarmClock;

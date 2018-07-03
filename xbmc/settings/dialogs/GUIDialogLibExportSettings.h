@@ -63,5 +63,5 @@ private:
   static int GetExportItemsFromSetting(SettingConstPtr setting);
 
   CLibExportSettings m_settings;
-  bool m_destinationChecked;
+  bool m_destinationChecked = false;
 };

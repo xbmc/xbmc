@@ -47,7 +47,7 @@ class CEvent
 {
   bool manualReset;
   volatile bool signaled;
-  unsigned int numWaits;
+  unsigned int numWaits = 0;
 
   CCriticalSection groupListMutex; // lock for the groups list
   std::unique_ptr<std::vector<XbmcThreads::CEventGroup*>> groups;
@@ -74,7 +74,7 @@ class CEvent
 
 public:
   inline CEvent(bool manual = false, bool signaled_ = false) :
-    manualReset(manual), signaled(signaled_), numWaits(0), condVar(actualCv,signaled) {}
+    manualReset(manual), signaled(signaled_), condVar(actualCv,signaled) {}
 
   inline void Reset() { CSingleLock lock(mutex); signaled = false; }
   void Set();

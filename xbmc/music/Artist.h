@@ -125,7 +125,7 @@ class CArtistCredit
   friend class CMusicDatabase;
 
 public:
-  CArtistCredit() : idArtist(-1), m_bScrapedMBID(false) { }
+  CArtistCredit() = default;
   explicit CArtistCredit(std::string strArtist) : m_strArtist(strArtist) { }
   CArtistCredit(std::string strArtist, std::string strMusicBrainzArtistID)
     : m_strArtist(strArtist), m_strMusicBrainzArtistID(strMusicBrainzArtistID) {  }

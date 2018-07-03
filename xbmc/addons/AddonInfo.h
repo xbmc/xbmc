@@ -113,7 +113,7 @@ namespace ADDON
   class CAddonInfo
   {
   public:
-    CAddonInfo();
+    CAddonInfo() = default;
     CAddonInfo(std::string id, TYPE type);
 
     void SetMainType(TYPE type) { m_mainType = type; }
@@ -163,7 +163,7 @@ namespace ADDON
     friend class ADDON::CAddonBuilder;
 
     std::string m_id;
-    TYPE m_mainType;
+    TYPE m_mainType = ADDON_UNKNOWN;
 
     AddonVersion m_version{"0.0.0"};
     AddonVersion m_minversion{"0.0.0"};
@@ -185,7 +185,7 @@ namespace ADDON
     CDateTime m_lastUpdated;
     CDateTime m_lastUsed;
     std::string m_origin;
-    uint64_t m_packageSize;
+    uint64_t m_packageSize = 0;
     std::string m_language;
     std::string m_libname;
     InfoMap m_extrainfo;

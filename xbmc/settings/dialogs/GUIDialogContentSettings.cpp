@@ -58,15 +58,7 @@ using namespace ADDON;
 
 
 CGUIDialogContentSettings::CGUIDialogContentSettings()
-  : CGUIDialogSettingsManualBase(WINDOW_DIALOG_CONTENT_SETTINGS, "DialogSettings.xml"),
-    m_content(CONTENT_NONE),
-    m_originalContent(CONTENT_NONE),
-    m_showScanSettings(false),
-    m_scanRecursive(false),
-    m_useDirectoryNames(false),
-    m_containsSingleItem(false),
-    m_exclude(false),
-    m_noUpdating(false)
+  : CGUIDialogSettingsManualBase(WINDOW_DIALOG_CONTENT_SETTINGS, "DialogSettings.xml")
 { }
 
 void CGUIDialogContentSettings::SetContent(CONTENT_TYPE content)

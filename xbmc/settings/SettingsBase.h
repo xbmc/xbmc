@@ -291,7 +291,7 @@ protected:
   */
   bool LoadHiddenValuesFromXml(const TiXmlElement* root);
 
-  bool m_initialized;
+  bool m_initialized = false;
   CSettingsManager* m_settingsManager;
   CCriticalSection m_critical;
 private:

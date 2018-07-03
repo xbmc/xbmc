@@ -96,8 +96,8 @@ namespace XBMCAddon
 
     protected:
       String m_data;
-      mutable unsigned long m_offset;
-      mutable unsigned long m_remaining;
+      mutable unsigned long m_offset = 0;
+      mutable unsigned long m_remaining = 0;
 
     private:
       String m_line;

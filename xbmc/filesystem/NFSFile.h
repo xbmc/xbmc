@@ -102,13 +102,13 @@ private:
   std::string m_exportPath;//current connected export path
   std::string m_hostName;//current connected host
   std::string m_resolvedHostName;//current connected host - as ip
-  uint64_t m_readChunkSize;//current read chunksize of connected server
-  uint64_t m_writeChunkSize;//current write chunksize of connected server
-  int m_OpenConnections;//number of open connections
-  unsigned int m_IdleTimeout;//timeout for idle connection close and dyunload
+  uint64_t m_readChunkSize = 0;//current read chunksize of connected server
+  uint64_t m_writeChunkSize = 0;//current write chunksize of connected server
+  int m_OpenConnections = 0;//number of open connections
+  unsigned int m_IdleTimeout = 0;//timeout for idle connection close and dyunload
   tFileKeepAliveMap m_KeepAliveTimeouts;//mapping filehandles to its idle timeout
   tOpenContextMap m_openContextMap;//unique map for tracking all open contexts
-  uint64_t m_lastAccessedTime;//last access time for m_pNfsContext
+  uint64_t m_lastAccessedTime = 0;//last access time for m_pNfsContext
   DllLibNfs *m_pLibNfs;//the lib
   std::list<std::string> m_exportList;//list of exported paths of current connected servers
   CCriticalSection keepAliveLock;
@@ -155,7 +155,7 @@ namespace XFILE
   protected:
     CURL m_url;
     bool IsValidFile(const std::string& strFileName);
-    int64_t m_fileSize;
+    int64_t m_fileSize = 0;
     struct nfsfh *m_pFileHandle;
     struct nfs_context *m_pNfsContext;//current nfs context
     std::string m_exportPath;

@@ -92,9 +92,9 @@ class CGUIDialogKeyboardGeneric : public CGUIDialog, public CGUIKeyboard
     std::vector<std::wstring> m_words;
     std::string m_hzcode;
     int         m_pos;
-    int         m_num;
+    int         m_num = 0;
     float       m_listwidth;
-    CGUIFont   *m_listfont;
+    CGUIFont   *m_listfont = nullptr;
     CCriticalSection  m_CS;
 
     char_callback_t m_pCharCallback;

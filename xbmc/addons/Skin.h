@@ -77,16 +77,13 @@ typedef std::shared_ptr<CSkinSettingString> CSkinSettingStringPtr;
 class CSkinSettingBool : public CSkinSetting
 {
 public:
-  CSkinSettingBool()
-    : value(false)
-  { }
   ~CSkinSettingBool() override = default;
 
   std::string GetType() const override { return "bool"; }
 
   bool Deserialize(const TiXmlElement* element) override;
 
-  bool value;
+  bool value = false;
 
 protected:
   bool SerializeSetting(TiXmlElement* element) const override;

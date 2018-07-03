@@ -59,10 +59,7 @@ const std::string SETTING_ARTISTSCRAPER_SETTINGS = "artistscrapersettings";
 const std::string SETTING_APPLYTOITEMS = "applysettingstoitems";
 
 CGUIDialogInfoProviderSettings::CGUIDialogInfoProviderSettings()
-  : CGUIDialogSettingsManualBase(WINDOW_DIALOG_INFOPROVIDER_SETTINGS, "DialogSettings.xml"),
-    m_showSingleScraper(false),
-    m_singleScraperType(CONTENT_NONE),
-    m_applyToItems(INFOPROVIDER_THISITEM)
+  : CGUIDialogSettingsManualBase(WINDOW_DIALOG_INFOPROVIDER_SETTINGS, "DialogSettings.xml")
 { }
 
 bool CGUIDialogInfoProviderSettings::Show()

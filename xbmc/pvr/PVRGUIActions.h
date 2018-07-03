@@ -496,7 +496,7 @@ namespace PVR
 
     CCriticalSection m_critSection;
     CPVRChannelSwitchingInputHandler m_channelNumberInputHandler;
-    bool m_bChannelScanRunning;
+    bool m_bChannelScanRunning = false;
     CPVRSettings m_settings;
     CPVRGUIChannelNavigator m_channelNavigator;
     std::string m_selectedItemPathTV;

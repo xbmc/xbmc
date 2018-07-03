@@ -217,13 +217,13 @@ protected:
   class UITransform
   {
   public:
-    UITransform() : matrix(), scaleX(1.0f), scaleY(1.0f) {};
+    UITransform() : matrix() {};
     UITransform(const TransformMatrix &m, const float sX = 1.0f, const float sY = 1.0f) : matrix(m), scaleX(sX), scaleY(sY) { };
     void Reset() { matrix.Reset(); scaleX = scaleY = 1.0f; };
 
     TransformMatrix matrix;
-    float scaleX;
-    float scaleY;
+    float scaleX = 1.0f;
+    float scaleY = 1.0f;
   };
 
   UITransform m_guiTransform;

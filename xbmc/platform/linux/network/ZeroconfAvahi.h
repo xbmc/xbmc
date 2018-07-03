@@ -79,13 +79,13 @@ private:
   //helper that actually does the work of publishing
   void addService(tServiceMap::mapped_type fp_service_info, AvahiClient* fp_client);
 
-  AvahiClient* mp_client;
-  AvahiThreadedPoll* mp_poll;
+  AvahiClient* mp_client = 0;
+  AvahiThreadedPoll* mp_poll = 0;
 
   //this holds all published and unpublished services including info on howto create them
   tServiceMap m_services;
 
   //2 variables below are needed for workaround of avahi bug (see destructor for details)
-  bool m_shutdown;
-  pthread_t m_thread_id;
+  bool m_shutdown = false;
+  pthread_t m_thread_id = 0;
 };

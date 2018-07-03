@@ -42,11 +42,11 @@ namespace XbmcThreads
    */
   class EndTime
   {
-    unsigned int startTime;
-    unsigned int totalWaitTime;
+    unsigned int startTime = 0;
+    unsigned int totalWaitTime = 0;
   public:
     static const unsigned int InfiniteValue;
-    inline EndTime() : startTime(0), totalWaitTime(0) {}
+    inline EndTime() = default;
     inline explicit EndTime(unsigned int millisecondsIntoTheFuture) : startTime(SystemClockMillis()), totalWaitTime(millisecondsIntoTheFuture) {}
 
     inline void Set(unsigned int millisecondsIntoTheFuture) { startTime = SystemClockMillis(); totalWaitTime = millisecondsIntoTheFuture; }

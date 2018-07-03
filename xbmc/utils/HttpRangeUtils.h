@@ -28,7 +28,7 @@
 class CHttpRange
 {
 public:
-  CHttpRange();
+  CHttpRange() = default;
   CHttpRange(uint64_t firstPosition, uint64_t lastPosition);
   virtual ~CHttpRange() = default;
 
@@ -47,8 +47,8 @@ public:
   virtual bool IsValid() const;
 
 protected:
-  uint64_t m_first;
-  uint64_t m_last;
+  uint64_t m_first = 1;
+  uint64_t m_last = 0;
 };
 
 typedef std::vector<CHttpRange> HttpRanges;

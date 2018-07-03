@@ -79,8 +79,8 @@ namespace XBMCAddon
       bool Finalize(HTTPPythonRequest* request) const;
 
     private:
-      bool m_called;
-      int m_status;
+      bool m_called = false;
+      int m_status = MHD_HTTP_INTERNAL_SERVER_ERROR;
       std::multimap<std::string, std::string> m_responseHeaders;
 
       WsgiResponseBody m_body;

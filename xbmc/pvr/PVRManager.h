@@ -67,7 +67,7 @@ namespace PVR
     CCriticalSection m_critSection;
     CEvent m_triggerEvent;
     std::vector<CJob *> m_pendingUpdates;
-    bool m_bStopped;
+    bool m_bStopped = true;
   };
 
   class CPVRManager : private CThread, public Observable, public ANNOUNCEMENT::IAnnouncer
@@ -533,11 +533,11 @@ namespace PVR
 
     CPVRDatabasePtr                 m_database;                    /*!< the database for all PVR related data */
     CCriticalSection                m_critSection;                 /*!< critical section for all changes to this class, except for changes to triggers */
-    bool                            m_bFirstStart;                 /*!< true when the PVR manager was started first, false otherwise */
-    bool                            m_bEpgsCreated;                /*!< true if epg data for channels has been created */
+    bool                            m_bFirstStart = true;                 /*!< true when the PVR manager was started first, false otherwise */
+    bool                            m_bEpgsCreated = false;                /*!< true if epg data for channels has been created */
 
     CCriticalSection                m_managerStateMutex;
-    ManagerState                    m_managerState;
+    ManagerState                    m_managerState = ManagerStateStopped;
     std::unique_ptr<CStopWatch>     m_parentalTimer;
 
     CCriticalSection                m_startStopMutex; // mutex for protecting pvr manager's start/restart/stop sequence */
@@ -551,6 +551,6 @@ namespace PVR
     CPVRRecordingPtr m_playingRecording;
     CPVREpgInfoTagPtr m_playingEpgTag;
     std::string m_strPlayingClientName;
-    int m_playingClientId;
+    int m_playingClientId = -1;
   };
 }

@@ -285,7 +285,7 @@ namespace PVR
     bool IsValid(void) const;
 
   private:
-    CPVREpg(void);
+    CPVREpg(void) = default;
 
     /*!
      * @brief Update the EPG from a scraper set in the channel tag.
@@ -328,11 +328,11 @@ namespace PVR
     std::map<CDateTime, CPVREpgInfoTagPtr> m_tags;
     std::map<int, CPVREpgInfoTagPtr>       m_changedTags;
     std::map<int, CPVREpgInfoTagPtr>       m_deletedTags;
-    bool                                m_bChanged;        /*!< true if anything changed that needs to be persisted, false otherwise */
-    bool                                m_bTagsChanged;    /*!< true when any tags are changed and not persisted, false otherwise */
-    bool                                m_bLoaded;         /*!< true when the initial entries have been loaded */
-    bool                                m_bUpdatePending;  /*!< true if manual update is pending */
-    int                                 m_iEpgID;          /*!< the database ID of this table */
+    bool                                m_bChanged = false;        /*!< true if anything changed that needs to be persisted, false otherwise */
+    bool                                m_bTagsChanged = false;    /*!< true when any tags are changed and not persisted, false otherwise */
+    bool                                m_bLoaded = false;         /*!< true when the initial entries have been loaded */
+    bool                                m_bUpdatePending = false;  /*!< true if manual update is pending */
+    int                                 m_iEpgID = 0;          /*!< the database ID of this table */
     std::string                         m_strName;         /*!< the name of this table */
     std::string                         m_strScraperName;  /*!< the name of the scraper to use */
     mutable CDateTime                   m_nowActiveStart;  /*!< the start time of the tag that is currently active */
@@ -342,6 +342,6 @@ namespace PVR
     PVR::CPVRChannelPtr                 m_pvrChannel;      /*!< the channel this EPG belongs to */
 
     CCriticalSection                    m_critSection;     /*!< critical section for changes in this table */
-    bool                                m_bUpdateLastScanTime;
+    bool                                m_bUpdateLastScanTime = false;
   };
 }

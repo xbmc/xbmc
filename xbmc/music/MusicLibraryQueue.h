@@ -142,7 +142,7 @@ private:
   MusicLibraryJobMap m_jobs;
   CCriticalSection m_critical;
 
-  bool m_modal;
-  bool m_exporting;
-  bool m_cleaning;
+  bool m_modal = false;
+  bool m_exporting = false;
+  bool m_cleaning = false;
 };

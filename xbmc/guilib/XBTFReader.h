@@ -44,7 +44,7 @@ public:
 
 private:
   std::string m_path;
-  FILE* m_file;
+  FILE* m_file = nullptr;
 };
 
 typedef std::shared_ptr<CXBTFReader> CXBTFReaderPtr;

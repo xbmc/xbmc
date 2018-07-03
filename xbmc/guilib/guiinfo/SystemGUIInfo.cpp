@@ -58,11 +58,7 @@ using namespace KODI::GUILIB;
 using namespace KODI::GUILIB::GUIINFO;
 
 CSystemGUIInfo::CSystemGUIInfo()
-: m_lastSysHeatInfoTime(-SYSTEM_HEAT_UPDATE_INTERVAL),
-  m_fanSpeed(0),
-  m_fps(0.0),
-  m_frameCounter(0),
-  m_lastFPSTime(0)
+: m_lastSysHeatInfoTime(-SYSTEM_HEAT_UPDATE_INTERVAL)
 {
 }
 

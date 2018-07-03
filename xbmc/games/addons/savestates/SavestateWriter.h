@@ -36,7 +36,6 @@ namespace GAME
   class CSavestateWriter
   {
   public:
-    CSavestateWriter();
     ~CSavestateWriter();
 
     bool Initialize(const CGameClient* gameClient, uint64_t frameHistoryCount);
@@ -48,7 +47,7 @@ namespace GAME
 
   private:
     CSavestate         m_savestate;
-    double             m_fps; //! @todo
+    double             m_fps = 0.0; //! @todo
     CSavestateDatabase m_db;
   };
 }

@@ -39,15 +39,6 @@
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 
-CSeekHandler::CSeekHandler()
-: m_seekDelay(500),
-  m_requireSeek(false),
-  m_analogSeek(false),
-  m_seekSize(0),
-  m_seekStep(0)
-{
-}
-
 CSeekHandler::~CSeekHandler()
 {
   m_seekDelays.clear();

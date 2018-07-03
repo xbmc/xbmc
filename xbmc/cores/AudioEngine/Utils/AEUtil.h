@@ -53,18 +53,12 @@ enum AVSync
 
 struct AEDelayStatus
 {
-  AEDelayStatus()
-  : delay(0.0)
-  , maxcorrection(0.0)
-  , tick(0)
-  {}
-
   void   SetDelay(double d);
   double GetDelay();
 
-  double delay;  // delay in sink currently
-  double maxcorrection; // time correction must not be greater than sink delay
-  int64_t tick;  // timestamp when delay was calculated
+  double delay = 0.0;  // delay in sink currently
+  double maxcorrection = 0.0; // time correction must not be greater than sink delay
+  int64_t tick = 0;  // timestamp when delay was calculated
 };
 
 /**
@@ -87,18 +81,13 @@ struct AEDelayStatus
 class CAESpinSection
 {
 public:
-  CAESpinSection()
-  : m_enter(0)
-  , m_leave(0)
-  {}
-
   void enter() { m_enter++; }
   void leave() { m_leave = m_enter; }
 
 protected:
   friend class CAESpinLock;
-  volatile unsigned int m_enter;
-  volatile unsigned int m_leave;
+  volatile unsigned int m_enter = 0;
+  volatile unsigned int m_leave = 0;
 };
 
 class CAESpinLock

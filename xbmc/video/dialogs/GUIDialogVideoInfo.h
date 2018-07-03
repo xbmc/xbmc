@@ -109,10 +109,10 @@ protected:
 
   CFileItemPtr m_movieItem;
   CFileItemList *m_castList;
-  bool m_bViewReview;
-  bool m_bRefresh;
-  bool m_bRefreshAll;
-  bool m_hasUpdatedThumb;
-  bool m_hasUpdatedUserrating;
-  int m_startUserrating;
+  bool m_bViewReview = false;
+  bool m_bRefresh = false;
+  bool m_bRefreshAll = true;
+  bool m_hasUpdatedThumb = false;
+  bool m_hasUpdatedUserrating = false;
+  int m_startUserrating = -1;
 };

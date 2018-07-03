@@ -43,7 +43,7 @@ public:
   int64_t Seek(int64_t iFilePosition, int iWhence = SEEK_SET) override;
   void Close() override;
 protected:
-  bool m_bOpened;
+  bool m_bOpened = false;
   HANDLE m_hFile;
   udf25 m_udfIsoReaderLocal;
 };

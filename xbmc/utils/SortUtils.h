@@ -168,16 +168,11 @@ typedef enum {
 ///@}
 
 typedef struct SortDescription {
-  SortBy sortBy;
-  SortOrder sortOrder;
-  SortAttribute sortAttributes;
-  int limitStart;
-  int limitEnd;
-
-  SortDescription()
-    : sortBy(SortByNone), sortOrder(SortOrderAscending), sortAttributes(SortAttributeNone),
-      limitStart(0), limitEnd(-1)
-  { }
+  SortBy sortBy = SortByNone;
+  SortOrder sortOrder = SortOrderAscending;
+  SortAttribute sortAttributes = SortAttributeNone;
+  int limitStart = 0;
+  int limitEnd = -1;
 } SortDescription;
 
 typedef struct GUIViewSortDetails

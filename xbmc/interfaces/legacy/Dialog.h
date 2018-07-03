@@ -631,15 +631,15 @@ namespace XBMCAddon
     ///
     class DialogProgress : public AddonClass
     {
-      CGUIDialogProgress* dlg;
-      bool                open;
+      CGUIDialogProgress* dlg = nullptr;
+      bool                open = false;
 
     protected:
       void deallocating() override;
 
     public:
 
-      DialogProgress() : dlg(NULL), open(false) {}
+      DialogProgress() = default;
       ~DialogProgress() override;
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -875,16 +875,16 @@ namespace XBMCAddon
     ///
     class DialogProgressBG : public AddonClass
     {
-      CGUIDialogExtendedProgressBar* dlg;
-      CGUIDialogProgressBarHandle* handle;
-      bool open;
+      CGUIDialogExtendedProgressBar* dlg = nullptr;
+      CGUIDialogProgressBarHandle* handle = nullptr;
+      bool open = false;
 
     protected:
       void deallocating() override;
 
     public:
 
-      DialogProgressBG() : dlg(NULL), handle(NULL), open(false) {}
+      DialogProgressBG() = default;
       ~DialogProgressBG() override;
 
 #ifdef DOXYGEN_SHOULD_USE_THIS

@@ -69,7 +69,7 @@ namespace XBMCAddon
   {
   private:
     mutable std::atomic<long> refs;
-    bool m_isDeallocating;
+    bool m_isDeallocating = false;
 
     // no copying
     inline AddonClass(const AddonClass&) = delete;

@@ -52,8 +52,7 @@ using namespace GAME;
 #define CONTROL_BTNSORTASC          4
 
 CGUIWindowGames::CGUIWindowGames() :
-  CGUIMediaWindow(WINDOW_GAMES, "MyGames.xml"),
-  m_dlgProgress(nullptr)
+  CGUIMediaWindow(WINDOW_GAMES, "MyGames.xml")
 {
 }
 

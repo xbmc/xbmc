@@ -71,7 +71,7 @@ namespace XBMCAddon
       String strHeading;
       bool bHidden;
       String strText;
-      bool bConfirmed;
+      bool bConfirmed = false;
 #endif
 
       Keyboard(const String& line = emptyString, const String& heading = emptyString, bool hidden = false);

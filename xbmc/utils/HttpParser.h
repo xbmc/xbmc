@@ -54,7 +54,6 @@
 class HttpParser
 {
 public:
-    HttpParser();
     ~HttpParser();
 
     enum status_t {
@@ -78,14 +77,14 @@ private:
     bool parseRequestLine();
 
     std::string _data;
-    unsigned _headerStart;
-    unsigned _parsedTo;
-    int _state;
-    unsigned _keyIndex;
-    unsigned _valueIndex;
-    unsigned _contentLength;
-    unsigned _contentStart;
-    unsigned _uriIndex;
+    unsigned _headerStart = 0;
+    unsigned _parsedTo =  0 ;
+    int _state =  0 ;
+    unsigned _keyIndex = 0;
+    unsigned _valueIndex = 0;
+    unsigned _contentLength = 0;
+    unsigned _contentStart = 0;
+    unsigned _uriIndex = 0;
 
     typedef std::vector<unsigned> IntArray;
     IntArray _keys;
@@ -106,6 +105,6 @@ private:
         p_error=12 // here an error has occurred and the parse failed.
     };
 
-    status_t _status;
+    status_t _status =  Incomplete ;
 };
 

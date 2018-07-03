@@ -30,11 +30,11 @@ namespace XBMCAddon
     struct PyContextState
     {
       inline explicit PyContextState(bool pcreatedByGilRelease = false) :
-        value(0), state(NULL), gilReleasedDepth(0), createdByGilRelease(pcreatedByGilRelease) {}
+        state(NULL), createdByGilRelease(pcreatedByGilRelease) {}
 
-      int value;
+      int value = 0;
       PyThreadState* state;
-      int gilReleasedDepth;
+      int gilReleasedDepth = 0;
       bool createdByGilRelease;
     };
 

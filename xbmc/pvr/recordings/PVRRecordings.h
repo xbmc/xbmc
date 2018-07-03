@@ -36,7 +36,6 @@ namespace PVR
   class CPVRRecordings
   {
   public:
-    CPVRRecordings(void);
     virtual ~CPVRRecordings(void);
 
     /**
@@ -102,14 +101,14 @@ namespace PVR
     typedef PVR_RECORDINGMAP::const_iterator PVR_RECORDINGMAP_CITR;
 
     CCriticalSection m_critSection;
-    bool m_bIsUpdating;
+    bool m_bIsUpdating = false;
     PVR_RECORDINGMAP m_recordings;
-    unsigned int m_iLastId;
+    unsigned int m_iLastId = 0;
     std::unique_ptr<CVideoDatabase> m_database;
-    bool m_bDeletedTVRecordings;
-    bool m_bDeletedRadioRecordings;
-    unsigned int m_iTVRecordings;
-    unsigned int m_iRadioRecordings;
+    bool m_bDeletedTVRecordings = false;
+    bool m_bDeletedRadioRecordings = false;
+    unsigned int m_iTVRecordings = 0;
+    unsigned int m_iRadioRecordings = 0;
 
     void UpdateFromClients(void);
     std::string TrimSlashes(const std::string &strOrig) const;

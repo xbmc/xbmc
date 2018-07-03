@@ -34,7 +34,7 @@
 
 using namespace KODI::MESSAGING;
 
-CAlarmClock::CAlarmClock() : CThread("AlarmClock"), m_bIsRunning(false)
+CAlarmClock::CAlarmClock() : CThread("AlarmClock")
 {
 }
 

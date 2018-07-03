@@ -37,9 +37,7 @@
 
 CVideoLibraryQueue::CVideoLibraryQueue()
   : CJobQueue(false, 1, CJob::PRIORITY_LOW),
-    m_jobs(),
-    m_modal(false),
-    m_cleaning(false)
+    m_jobs()
 { }
 
 CVideoLibraryQueue::~CVideoLibraryQueue()

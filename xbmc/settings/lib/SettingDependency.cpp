@@ -53,7 +53,6 @@ CSettingDependencyCondition::CSettingDependencyCondition(const std::string &strP
                             CSettingsManager *settingsManager /* = nullptr */)
   : CSettingConditionItem(settingsManager)
   , m_target(SettingDependencyTarget::Property)
-  , m_operator(SettingDependencyOperator::Equals)
 {
   m_name = strProperty;
   m_value = value;

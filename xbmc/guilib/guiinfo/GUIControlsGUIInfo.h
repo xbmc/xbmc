@@ -21,6 +21,7 @@
 #pragma once
 
 #include "guilib/guiinfo/GUIInfoProvider.h"
+#include "guilib/WindowIDs.h"
 
 #include <map>
 
@@ -36,7 +37,6 @@ class CGUIInfo;
 class CGUIControlsGUIInfo : public CGUIInfoProvider
 {
 public:
-  CGUIControlsGUIInfo();
   ~CGUIControlsGUIInfo() override = default;
 
   // KODI::GUILIB::GUIINFO::IGUIInfoProvider implementation
@@ -57,8 +57,8 @@ public:
   void ResetContainerMovingCache();
 
 private:
-  int m_nextWindowID;
-  int m_prevWindowID;
+  int m_nextWindowID = WINDOW_INVALID;
+  int m_prevWindowID = WINDOW_INVALID;
 
   std::map<int, int> m_containerMoves;  // direction of list moving
 };

@@ -65,8 +65,7 @@ void CEGLUtils::LogError(const std::string& what)
 CEGLContextUtils::CEGLContextUtils() :
   m_eglDisplay(EGL_NO_DISPLAY),
   m_eglSurface(EGL_NO_SURFACE),
-  m_eglContext(EGL_NO_CONTEXT),
-  m_eglConfig(0)
+  m_eglContext(EGL_NO_CONTEXT)
 {
 }
 

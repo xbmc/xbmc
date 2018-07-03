@@ -87,14 +87,8 @@ CPVRTimerTypePtr CPVRTimerType::CreateFromAttributes(
 }
 
 CPVRTimerType::CPVRTimerType() :
-  m_iClientId(-1),
   m_iTypeId(PVR_TIMER_TYPE_NONE),
-  m_iAttributes(PVR_TIMER_TYPE_ATTRIBUTE_NONE),
-  m_iPriorityDefault(50),
-  m_iLifetimeDefault(365),
-  m_iMaxRecordingsDefault(0),
-  m_iPreventDupEpisodesDefault(0),
-  m_iRecordingGroupDefault(0)
+  m_iAttributes(PVR_TIMER_TYPE_ATTRIBUTE_NONE)
 {
 }
 

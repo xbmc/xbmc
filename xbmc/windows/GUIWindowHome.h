@@ -45,6 +45,6 @@ private:
   int m_updateRA; // flag for which recently added items needs to be queried
   void AddRecentlyAddedJobs(int flag);
 
-  bool m_recentlyAddedRunning;
-  int m_cumulativeUpdateFlag;
+  bool m_recentlyAddedRunning = false;
+  int m_cumulativeUpdateFlag = 0;
 };

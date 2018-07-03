@@ -217,15 +217,14 @@ void CGLSLPixelShader::Free()
 //////////////////////////////////////////////////////////////////////
 // CGLSLShaderProgram
 //////////////////////////////////////////////////////////////////////
-CGLSLShaderProgram::CGLSLShaderProgram() : m_validated(false)
+CGLSLShaderProgram::CGLSLShaderProgram()
 {
   m_pFP = new CGLSLPixelShader();
   m_pVP = new CGLSLVertexShader();
 }
 
 CGLSLShaderProgram::CGLSLShaderProgram(const std::string& vert,
-                                       const std::string& frag) :
-  m_validated(false)
+                                       const std::string& frag)
 {
   m_pFP = new CGLSLPixelShader();
   m_pFP->LoadSource(frag);

@@ -27,11 +27,6 @@
 using namespace KODI;
 using namespace GAME;
 
-CSavestateReader::CSavestateReader() :
-  m_frameCount(0)
-{
-}
-
 CSavestateReader::~CSavestateReader() = default;
 
 bool CSavestateReader::Initialize(const std::string& path, const CGameClient* gameClient)

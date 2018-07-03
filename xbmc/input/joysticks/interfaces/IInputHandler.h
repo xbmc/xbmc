@@ -37,8 +37,6 @@ namespace JOYSTICK
   class IInputHandler
   {
   public:
-    IInputHandler(void) : m_receiver(nullptr) { }
-
     virtual ~IInputHandler() = default;
 
     /*!
@@ -160,7 +158,7 @@ namespace JOYSTICK
     IInputReceiver* InputReceiver(void) { return m_receiver; }
 
   private:
-    IInputReceiver* m_receiver;
+    IInputReceiver* m_receiver = nullptr;
   };
 }
 }

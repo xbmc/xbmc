@@ -34,8 +34,7 @@ using namespace XFILE;
 //////////////////////////////////////////////////////////////////////
 //*********************************************************************************************
 CUDFFile::CUDFFile()
-  : m_bOpened(false)
-  , m_hFile(INVALID_HANDLE_VALUE)
+  : m_hFile(INVALID_HANDLE_VALUE)
 {
 }
 

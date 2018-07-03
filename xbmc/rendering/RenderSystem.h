@@ -101,8 +101,8 @@ protected:
   std::string   m_RenderVersion;
   int          m_RenderVersionMinor;
   int          m_RenderVersionMajor;
-  RENDER_STEREO_VIEW m_stereoView;
-  RENDER_STEREO_MODE m_stereoMode;
+  RENDER_STEREO_VIEW m_stereoView = RENDER_STEREO_VIEW_OFF;
+  RENDER_STEREO_MODE m_stereoMode = RENDER_STEREO_MODE_OFF;
   bool m_limitedColorRange = false;
 
   std::unique_ptr<CGUIImage> m_splashImage;

@@ -28,8 +28,6 @@
 
 CGUIWindowTestPattern::CGUIWindowTestPattern(void)
     : CGUIWindow(WINDOW_TEST_PATTERN, "")
-    , m_white(1.0)
-    , m_black(0.0)
 {
   m_pattern = 0;
   m_bounceX = 0;

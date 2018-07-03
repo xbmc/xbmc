@@ -27,7 +27,6 @@
 #include "ServiceBroker.h"
 
 CALSADeviceMonitor::CALSADeviceMonitor() :
-  m_fdMonitorId(0),
   m_udev(NULL),
   m_udevMonitor(NULL)
 {

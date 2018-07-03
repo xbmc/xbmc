@@ -29,7 +29,7 @@
 class EmbeddedArtInfo : public IArchivable
 {
 public:
-  EmbeddedArtInfo() : m_size(0) { }
+  EmbeddedArtInfo() = default;
   EmbeddedArtInfo(size_t size, const std::string &mime, const std::string& type = "");
 
   // implementation of IArchivable
@@ -41,7 +41,7 @@ public:
   bool Matches(const EmbeddedArtInfo &right) const;
   void SetType(const std::string& type) { m_type = type; }
 
-  size_t m_size;
+  size_t m_size = 0;
   std::string m_mime;
   std::string m_type;
 };

@@ -56,8 +56,8 @@ public:
     unsigned int wait_online2_sec; // extended wait
     unsigned int wait_services_sec;
 
-    unsigned short ping_port; // where to ping
-    unsigned short ping_mode; // how to ping
+    unsigned short ping_port = 0; // where to ping
+    unsigned short ping_mode = 0; // how to ping
 
     CDateTime nextWake;
     std::string upnpUuid; // empty unless upnpmode
@@ -84,7 +84,7 @@ private:
 
   unsigned int m_netinit_sec, m_netsettle_ms; //time to wait for network connection
 
-  bool m_enabled;
+  bool m_enabled = false;
 
   bool WakeUpHost(const std::string& hostName, const std::string& customMessage, bool upnpMode);
   bool WakeUpHost(const WakeUpEntry& server);

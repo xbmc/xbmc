@@ -34,21 +34,21 @@ class Frame
 public:
   friend class CFFmpegImage;
 
-  Frame();
+  Frame() = default;
   virtual ~Frame();
 
   int GetPitch() const { return m_pitch; }
 
-  unsigned char* m_pImage;
-  unsigned int m_delay;
+  unsigned char* m_pImage = nullptr;
+  unsigned int m_delay = 0;
 
 private:
   Frame(const Frame& src);
 
   int m_pitch = 0;
-  unsigned int m_imageSize;
-  unsigned int m_height;
-  unsigned int m_width;
+  unsigned int m_imageSize = 0;
+  unsigned int m_height = 0;
+  unsigned int m_width = 0;
 };
 
 

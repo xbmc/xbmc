@@ -42,16 +42,6 @@
 
 using namespace PVR;
 
-CPVRRecordings::CPVRRecordings(void) :
-    m_bIsUpdating(false),
-    m_iLastId(0),
-    m_bDeletedTVRecordings(false),
-    m_bDeletedRadioRecordings(false),
-    m_iTVRecordings(0),
-    m_iRadioRecordings(0)
-{
-}
-
 CPVRRecordings::~CPVRRecordings()
 {
   if (m_database && m_database->IsOpen())

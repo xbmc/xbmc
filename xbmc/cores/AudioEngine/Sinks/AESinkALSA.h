@@ -34,6 +34,8 @@
 // being destructed before CALSA*Monitor below.
 #include "platform/linux/FDEventMonitor.h"
 
+#define AE_MIN_PERIODSIZE 256
+
 class CAESinkALSA : public IAESink
 {
 public:
@@ -76,15 +78,15 @@ private:
   std::string m_initDevice;
   AEAudioFormat m_initFormat;
   AEAudioFormat m_format;
-  unsigned int m_bufferSize;
-  double m_formatSampleRateMul;
-  bool m_passthrough;
+  unsigned int m_bufferSize = 0;
+  double m_formatSampleRateMul = 0.0;
+  bool m_passthrough = false;
   std::string m_device;
   snd_pcm_t *m_pcm;
-  int m_timeout;
+  int m_timeout = 0;
   // support fragmentation, e.g. looping in the sink to get a certain amount of data onto the device
-  bool m_fragmented;
-  unsigned int m_originalPeriodSize;
+  bool m_fragmented = false;
+  unsigned int m_originalPeriodSize = AE_MIN_PERIODSIZE;
 
 #if HAVE_LIBUDEV
   static CALSADeviceMonitor m_deviceMonitor;

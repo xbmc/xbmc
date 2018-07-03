@@ -79,8 +79,7 @@ namespace
 {
 struct JobControlPackage
 {
-  JobControlPackage() :
-    ready (false)
+  JobControlPackage()
   {
     // We're not ready to wait yet
     jobCreatedMutex.lock();
@@ -91,7 +90,7 @@ struct JobControlPackage
     jobCreatedMutex.unlock();
   }
 
-  bool ready;
+  bool ready = false;
   XbmcThreads::ConditionVariable jobCreatedCond;
   CCriticalSection jobCreatedMutex;
 };

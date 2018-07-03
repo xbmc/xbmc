@@ -65,8 +65,6 @@ using namespace XFILE;
 
 CGUIDialogMediaSource::CGUIDialogMediaSource(void)
     : CGUIDialog(WINDOW_DIALOG_MEDIA_SOURCE, "DialogMediaSource.xml")
-    , m_confirmed(false)
-    , m_bNameChanged(false)
 {
   m_paths = new CFileItemList;
   m_loadType = KEEP_IN_MEMORY;

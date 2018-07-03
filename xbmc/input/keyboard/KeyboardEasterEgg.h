@@ -35,7 +35,6 @@ namespace KEYBOARD
   class CKeyboardEasterEgg : public IKeyboardDriverHandler
   {
   public:
-    CKeyboardEasterEgg(void);
     ~CKeyboardEasterEgg() override = default;
 
     // implementation of IKeyboardDriverHandler
@@ -45,7 +44,7 @@ namespace KEYBOARD
   private:
     static std::vector<XBMCVKey> m_sequence;
 
-    unsigned int m_state;
+    unsigned int m_state = 0;
   };
 }
 }

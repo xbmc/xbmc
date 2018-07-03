@@ -63,6 +63,6 @@ protected:
   std::string m_type;
   std::string m_name;
   CFileItemList* m_paths;
-  bool m_confirmed;
-  bool m_bNameChanged;
+  bool m_confirmed = false;
+  bool m_bNameChanged = false;
 };

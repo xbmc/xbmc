@@ -59,28 +59,9 @@ static const uint32_t DTSSampleRates[DTS_SFREQ_COUNT] =
 };
 
 CAEStreamParser::CAEStreamParser() :
-  m_bufferSize    (0),
-  m_skipBytes     (0),
-  m_coreOnly      (false),
-  m_needBytes     (0),
-  m_syncFunc      (&CAEStreamParser::DetectType),
-  m_hasSync       (false),
-  m_coreSize      (0),
-  m_dtsBlocks     (0),
-  m_fsize         (0),
-  m_fsizeMain     (0),
-  m_substreams    (0)
+  m_syncFunc      (&CAEStreamParser::DetectType)
 {
   av_crc_init(m_crcTrueHD, 0, 16, 0x2D, sizeof(m_crcTrueHD));
-}
-
-CAEStreamInfo::CAEStreamInfo() :
-  m_type(STREAM_TYPE_NULL),
-  m_dataIsLE(true),
-  m_dtsPeriod(0),
-  m_repeat(0),
-  m_ac3FrameSize(0)
-{
 }
 
 double CAEStreamInfo::GetDuration()

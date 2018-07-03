@@ -104,12 +104,8 @@ int64_t DllLibbluray::file_write(BD_FILE_H *file, const uint8_t *buf, int64_t si
 
 struct SDirState
 {
-  SDirState()
-    : curr(0)
-  {}
-
   CFileItemList list;
-  int           curr;
+  int           curr = 0;
 };
 
 void DllLibbluray::dir_close(BD_DIR_H *dir)

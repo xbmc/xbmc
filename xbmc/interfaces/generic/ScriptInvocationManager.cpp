@@ -39,10 +39,6 @@
 
 using namespace XFILE;
 
-CScriptInvocationManager::CScriptInvocationManager()
-  : m_nextId(0)
-{ }
-
 CScriptInvocationManager::~CScriptInvocationManager()
 {
   Uninitialize();

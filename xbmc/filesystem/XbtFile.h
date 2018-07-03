@@ -61,14 +61,14 @@ private:
   static bool GetFile(const CURL& url, CXBTFFile& file);
 
   CURL m_url;
-  bool m_open;
+  bool m_open = false;
   CXBTFReaderPtr m_xbtfReader;
   CXBTFFile m_xbtfFile;
 
   std::vector<uint64_t> m_frameStartPositions;
-  size_t m_frameIndex;
-  uint64_t m_positionWithinFrame;
-  int64_t m_positionTotal;
+  size_t m_frameIndex = 0;
+  uint64_t m_positionWithinFrame = 0;
+  int64_t m_positionTotal = 0;
 
   std::vector<uint8_t*> m_unpackedFrames;
 };

@@ -53,14 +53,14 @@ private:
   void SetDetailSettingsEnabled(bool enabled);
   void SetSettingLockCodeLabel();
 
-  bool m_changed;
+  bool m_changed = false;
 
   CProfile::CLock m_locks;
   std::string m_user;
   std::string m_url;
-  bool m_details;
-  bool m_conditionalDetails;
-  bool m_getUser;
+  bool m_details = true;
+  bool m_conditionalDetails = false;
+  bool m_getUser = false;
   bool* m_saveUserDetails;
-  int m_buttonLabel;
+  int m_buttonLabel = 20091;
 };

@@ -34,7 +34,7 @@ protected:
   void UpdateVisibility() override;
 
 private:
-  float m_dimLevel;
-  float m_newDimLevel;
-  bool m_visible;
+  float m_dimLevel = 100.0f;
+  float m_newDimLevel = 100.0f;
+  bool m_visible = false;
 };

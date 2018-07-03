@@ -36,7 +36,6 @@ namespace GAME
   class CSavestateReader
   {
   public:
-    CSavestateReader();
     ~CSavestateReader();
 
     bool Initialize(const std::string& path, const CGameClient* gameClient);
@@ -46,7 +45,7 @@ namespace GAME
   private:
     CSavestate         m_savestate;
     CSavestateDatabase m_db;
-    uint64_t           m_frameCount;
+    uint64_t           m_frameCount = 0;
   };
 }
 }

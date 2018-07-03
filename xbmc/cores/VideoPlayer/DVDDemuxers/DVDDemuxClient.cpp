@@ -31,13 +31,6 @@
 class CDemuxStreamClientInternal
 {
 public:
-  CDemuxStreamClientInternal()
-  : m_parser(nullptr)
-  , m_context(nullptr)
-  , m_parser_split(false)
-  {
-  }
-
   ~CDemuxStreamClientInternal()
   {
     DisposeParser();
@@ -57,9 +50,9 @@ public:
     }
   }
 
-  AVCodecParserContext *m_parser;
-  AVCodecContext *m_context;
-  bool m_parser_split;
+  AVCodecParserContext *m_parser = nullptr;
+  AVCodecContext *m_context = nullptr;
+  bool m_parser_split = false;
 };
 
 template <class T>

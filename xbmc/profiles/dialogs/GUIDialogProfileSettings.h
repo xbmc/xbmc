@@ -60,7 +60,7 @@ protected:
   void UpdateProfileImage();
   void updateProfileDirectory();
 
-  bool m_needsSaving;
+  bool m_needsSaving = false;
   std::string m_name;
   std::string m_thumb;
   std::string m_directory;

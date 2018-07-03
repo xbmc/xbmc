@@ -57,8 +57,7 @@ bool InfoBoolComparator(const InfoPtr &right, const InfoPtr &left)
 
 CGUIInfoManager::CGUIInfoManager(void)
 : m_currentFile(new CFileItem),
-  m_bools(&InfoBoolComparator),
-  m_refreshCounter(0)
+  m_bools(&InfoBoolComparator)
 {
 }
 

@@ -89,8 +89,8 @@ private:
 
   static bool m_bIsRunning;
   std::string m_strOutputFile;
-  int m_iMaxFrameCount;
-  int m_iFrameCount;
+  int m_iMaxFrameCount = 200;
+  int m_iFrameCount = 0;
 };
 
 #define GUIPROFILER_VISIBILITY_BEGIN(x) { if (CGUIControlProfiler::IsRunning()) CGUIControlProfiler::Instance().BeginVisibility(x); }

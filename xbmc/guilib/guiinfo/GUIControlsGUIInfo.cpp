@@ -50,12 +50,6 @@
 using namespace KODI::GUILIB;
 using namespace KODI::GUILIB::GUIINFO;
 
-CGUIControlsGUIInfo::CGUIControlsGUIInfo()
-: m_nextWindowID(WINDOW_INVALID),
-  m_prevWindowID(WINDOW_INVALID)
-{
-}
-
 void CGUIControlsGUIInfo::SetContainerMoving(int id, bool next, bool scrolling)
 {
   // magnitude 2 indicates a scroll, sign indicates direction

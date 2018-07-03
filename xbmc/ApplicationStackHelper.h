@@ -204,6 +204,6 @@ protected:
   StackPartInformationPtr GetStackPartInformation(std::string key);
 
   std::unique_ptr<CFileItemList> m_currentStack;
-  int m_currentStackPosition;
-  bool m_currentStackIsDiscImageStack;
+  int m_currentStackPosition = 0;
+  bool m_currentStackIsDiscImageStack = false;
 };

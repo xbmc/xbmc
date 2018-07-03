@@ -248,8 +248,8 @@ protected:
   int m_currentItem;
   int m_itemCount;
   bool m_bStop;
-  bool m_needsCleanup;
-  int m_scanType; // 0 - load from files, 1 - albums, 2 - artists
+  bool m_needsCleanup = false;
+  int m_scanType = 0; // 0 - load from files, 1 - albums, 2 - artists
   int m_idSourcePath;
   CMusicDatabase m_musicDatabase;
 

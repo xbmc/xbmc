@@ -38,11 +38,6 @@ std::vector<XBMCVKey> CKeyboardEasterEgg::m_sequence = {
   XBMCVK_A,
 };
 
-CKeyboardEasterEgg::CKeyboardEasterEgg(void) :
-  m_state(0)
-{
-}
-
 bool CKeyboardEasterEgg::OnKeyPress(const CKey& key)
 {
   bool bHandled = false;

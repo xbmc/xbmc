@@ -69,11 +69,6 @@ using namespace KODI::MESSAGING;
 
 CGUIDialogPVRChannelManager::CGUIDialogPVRChannelManager(void) :
     CGUIDialog(WINDOW_DIALOG_PVR_CHANNEL_MANAGER, "DialogPVRChannelManager.xml"),
-    m_bIsRadio(false),
-    m_bMovingMode(false),
-    m_bContainsChanges(false),
-    m_bAllowNewChannel(false),
-    m_iSelected(0),
     m_channelItems(new CFileItemList)
 {
 }

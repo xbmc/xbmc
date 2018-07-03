@@ -41,9 +41,6 @@
 #define XML_EVENTLOG_LEVEL_HIGHER   "showhigherlevels"
 
 CViewStateSettings::CViewStateSettings()
-  : m_settingLevel(SettingLevel::Standard),
-    m_eventLevel(EventLevel::Basic),
-    m_eventShowHigherLevels(true)
 {
   AddViewState("musicnavartists");
   AddViewState("musicnavalbums");
