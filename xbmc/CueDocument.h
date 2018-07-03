@@ -34,22 +34,15 @@ class CCueDocument
   class CCueTrack
   {
   public:
-    CCueTrack()
-      : iTrackNumber(0)
-      , iStartTime(0)
-      , iEndTime(0)
-    {
-    }
     std::string strArtist;
     std::string strTitle;
     std::string strFile;
-    int iTrackNumber;
-    int iStartTime;
-    int iEndTime;
+    int iTrackNumber = 0;
+    int iStartTime = 0;
+    int iEndTime = 0;
     ReplayGain::Info replayGain;
   };
 public:
-  CCueDocument(void);
   ~CCueDocument(void);
   // USED
   bool ParseFile(const std::string &strFilePath);
@@ -69,12 +62,12 @@ private:
   std::string m_strArtist;  // album artist
   std::string m_strAlbum;  // album title
   std::string m_strGenre;  // album genre
-  int m_iYear;            //album year
-  int m_iTrack;   // current track
-  int m_iDiscNumber;  // Disc number
+  int m_iYear = 0;            //album year
+  int m_iTrack = 0;   // current track
+  int m_iDiscNumber = 0;  // Disc number
   ReplayGain::Info m_albumReplayGain;
 
-  bool m_bOneFilePerTrack;
+  bool m_bOneFilePerTrack = false;
 
   // cuetrack array
   typedef std::vector<CCueTrack> Tracks;

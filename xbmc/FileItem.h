@@ -800,12 +800,12 @@ private:
 
   VECFILEITEMS m_items;
   MAPFILEITEMS m_map;
-  bool m_ignoreURLOptions;
-  bool m_fastLookup;
+  bool m_ignoreURLOptions = false;
+  bool m_fastLookup = false;
   SortDescription m_sortDescription;
-  bool m_sortIgnoreFolders;
-  CACHE_TYPE m_cacheToDisc;
-  bool m_replaceListing;
+  bool m_sortIgnoreFolders = false;
+  CACHE_TYPE m_cacheToDisc = CACHE_IF_SLOW;
+  bool m_replaceListing = false;
   std::string m_content;
 
   std::vector<GUIViewSortDetails> m_sortDetails;

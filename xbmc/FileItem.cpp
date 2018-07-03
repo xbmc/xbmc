@@ -1886,22 +1886,12 @@ bool CFileItem::LoadTracksFromCueDocument(CFileItemList& scannedItems)
 //////////////////////////////////////////////////////////////////////////////////
 
 CFileItemList::CFileItemList()
-: CFileItem("", true),
-  m_ignoreURLOptions(false),
-  m_fastLookup(false),
-  m_sortIgnoreFolders(false),
-  m_cacheToDisc(CACHE_IF_SLOW),
-  m_replaceListing(false)
+: CFileItem("", true)
 {
 }
 
 CFileItemList::CFileItemList(const std::string& strPath)
-: CFileItem(strPath, true),
-  m_ignoreURLOptions(false),
-  m_fastLookup(false),
-  m_sortIgnoreFolders(false),
-  m_cacheToDisc(CACHE_IF_SLOW),
-  m_replaceListing(false)
+: CFileItem(strPath, true)
 {
 }
 

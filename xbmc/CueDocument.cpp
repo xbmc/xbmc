@@ -156,14 +156,6 @@ private:
   size_t m_pos;
 };
 
-CCueDocument::CCueDocument()
-  : m_iYear(0)
-  , m_iTrack(0)
-  , m_iDiscNumber(0)
-  , m_bOneFilePerTrack(false)
-{
-}
-
 CCueDocument::~CCueDocument() = default;
 
 ////////////////////////////////////////////////////////////////////////////////////

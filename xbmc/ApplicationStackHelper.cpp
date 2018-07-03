@@ -32,8 +32,6 @@ using namespace XFILE;
 
 CApplicationStackHelper::CApplicationStackHelper(void)
   : m_currentStack(new CFileItemList)
-  , m_currentStackPosition(0)
-  , m_currentStackIsDiscImageStack(false)
 {
 }
 

@@ -210,7 +210,7 @@ private:
 
   typedef std::set<INFO::InfoPtr, bool(*)(const INFO::InfoPtr&, const INFO::InfoPtr&)> INFOBOOLTYPE;
   INFOBOOLTYPE m_bools;
-  unsigned int m_refreshCounter;
+  unsigned int m_refreshCounter = 0;
   std::vector<INFO::CSkinVariableString> m_skinVariableStrings;
 
   CCriticalSection m_critInfo;
