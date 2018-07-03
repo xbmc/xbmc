@@ -91,10 +91,10 @@ namespace XbmcCommons
   class Buffer
   {
     std::shared_ptr<unsigned char> bufferRef;
-    unsigned char* buffer;
-    size_t mposition;
-    size_t mcapacity;
-    size_t mlimit;
+    unsigned char* buffer = nullptr;
+    size_t mposition = 0;
+    size_t mcapacity = 0;
+    size_t mlimit = 0;
 
     inline void check(size_t count) const
     {
@@ -106,7 +106,7 @@ namespace XbmcCommons
     /**
      * Construct an uninitialized buffer instance, perhaps as an lvalue.
      */
-    inline Buffer() : buffer(NULL), mposition(0), mcapacity(0), mlimit(0) { clear(); }
+    inline Buffer() { clear(); }
 
     /**
      * Construct a buffer given an externally managed memory buffer.
