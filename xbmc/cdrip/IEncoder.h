@@ -27,13 +27,6 @@
 class IEncoder
 {
 public:
-  IEncoder() :
-    m_iTrackLength(0),
-    m_iInChannels(0),
-    m_iInSampleRate(0),
-    m_iInBitsPerSample(0)
-  {
-  }
   virtual ~IEncoder() = default;
   virtual bool Init(AddonToKodiFuncTable_AudioEncoder& callbacks) = 0;
   virtual int Encode(int nNumBytesRead, uint8_t* pbtStream) = 0;
@@ -49,9 +42,9 @@ public:
   std::string m_strTrack;
   std::string m_strYear;
   std::string m_strFile;
-  int m_iTrackLength;
-  int m_iInChannels;
-  int m_iInSampleRate;
-  int m_iInBitsPerSample;
+  int m_iTrackLength = 0;
+  int m_iInChannels = 0;
+  int m_iInSampleRate = 0;
+  int m_iInBitsPerSample = 0;
 };
 

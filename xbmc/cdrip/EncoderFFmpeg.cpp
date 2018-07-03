@@ -47,12 +47,9 @@ CEncoderFFmpeg::CEncoderFFmpeg():
   m_SwrCtx    (NULL),
   m_Stream    (NULL),
   m_Buffer    (NULL),
-  m_BufferSize(0),
   m_BufferFrame(NULL),
   m_ResampledBuffer(NULL),
-  m_ResampledBufferSize(0),
-  m_ResampledFrame(NULL),
-  m_NeedConversion(false)
+  m_ResampledFrame(NULL)
 {
   memset(&m_callbacks, 0, sizeof(m_callbacks));
 }

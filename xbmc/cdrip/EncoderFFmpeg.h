@@ -60,12 +60,12 @@ private:
   unsigned int      m_NeededFrames;
   unsigned int      m_NeededBytes;
   uint8_t          *m_Buffer;
-  unsigned int      m_BufferSize;
+  unsigned int      m_BufferSize = 0;
   AVFrame          *m_BufferFrame;
   uint8_t          *m_ResampledBuffer;
-  unsigned int      m_ResampledBufferSize;
+  unsigned int      m_ResampledBufferSize = 0;
   AVFrame          *m_ResampledFrame;
-  bool              m_NeedConversion;
+  bool              m_NeedConversion = false;
 
   AddonToKodiFuncTable_AudioEncoder m_callbacks;
 
