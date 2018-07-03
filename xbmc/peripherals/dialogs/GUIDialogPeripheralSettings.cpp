@@ -37,8 +37,7 @@ using namespace PERIPHERALS;
 
 CGUIDialogPeripheralSettings::CGUIDialogPeripheralSettings()
   : CGUIDialogSettingsManualBase(WINDOW_DIALOG_PERIPHERAL_SETTINGS, "DialogSettings.xml"),
-    m_item(NULL),
-    m_initialising(false)
+    m_item(NULL)
 { }
 
 CGUIDialogPeripheralSettings::~CGUIDialogPeripheralSettings()

@@ -325,22 +325,11 @@ namespace PERIPHERALS
   {
   public:
     explicit PeripheralScanResult(const PeripheralBusType busType) :
-      m_type(PERIPHERAL_UNKNOWN),
-      m_iVendorId(0),
-      m_iProductId(0),
-      m_mappedType(PERIPHERAL_UNKNOWN),
       m_busType(busType),
-      m_mappedBusType(busType),
-      m_iSequence(0) {}
+      m_mappedBusType(busType)
+      {}
 
-    PeripheralScanResult(void) :
-      m_type(PERIPHERAL_UNKNOWN),
-      m_iVendorId(0),
-      m_iProductId(0),
-      m_mappedType(PERIPHERAL_UNKNOWN),
-      m_busType(PERIPHERAL_BUS_UNKNOWN),
-      m_mappedBusType(PERIPHERAL_BUS_UNKNOWN),
-      m_iSequence(0) {}
+    PeripheralScanResult(void) = default;
 
     bool operator ==(const PeripheralScanResult& right) const
     {
@@ -356,15 +345,15 @@ namespace PERIPHERALS
       return !(*this == right);
     }
 
-    PeripheralType    m_type;
+    PeripheralType    m_type = PERIPHERAL_UNKNOWN;
     std::string        m_strLocation;
-    int               m_iVendorId;
-    int               m_iProductId;
-    PeripheralType    m_mappedType;
+    int               m_iVendorId = 0;
+    int               m_iProductId = 0;
+    PeripheralType    m_mappedType = PERIPHERAL_UNKNOWN;
     std::string        m_strDeviceName;
-    PeripheralBusType m_busType;
-    PeripheralBusType m_mappedBusType;
-    unsigned int      m_iSequence; // when more than one adapter of the same type is found
+    PeripheralBusType m_busType = PERIPHERAL_BUS_UNKNOWN;
+    PeripheralBusType m_mappedBusType = PERIPHERAL_BUS_UNKNOWN;
+    unsigned int      m_iSequence = 0; // when more than one adapter of the same type is found
   };
 
   struct PeripheralScanResults
