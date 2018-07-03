@@ -30,15 +30,8 @@
 #include <cassert>
 
 CAEEncoderFFmpeg::CAEEncoderFFmpeg():
-  m_BitRate       (0    ),
   m_CodecCtx      (NULL ),
-  m_SwrCtx        (NULL ),
-  m_BufferSize    (0    ),
-  m_OutputSize    (0    ),
-  m_OutputRatio   (0.0  ),
-  m_SampleRateMul (0.0  ),
-  m_NeededFrames  (0    ),
-  m_NeedConversion(false)
+  m_SwrCtx        (NULL )
 {
 }
 

@@ -52,10 +52,10 @@ private:
   struct CTLHandle
   {
     snd_hctl_t *handle;
-    int useCount;
+    int useCount = 0;
 
-    explicit CTLHandle(snd_hctl_t *handle_) : handle(handle_), useCount(0) {}
-    CTLHandle() : handle(NULL), useCount(0) {}
+    explicit CTLHandle(snd_hctl_t *handle_) : handle(handle_) {}
+    CTLHandle() : handle(NULL) {}
   };
 
   std::map<std::string, CTLHandle> m_ctlHandles;

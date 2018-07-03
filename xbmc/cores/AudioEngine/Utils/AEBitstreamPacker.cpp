@@ -34,15 +34,8 @@
 
 CAEBitstreamPacker::CAEBitstreamPacker() :
   m_trueHD   (NULL),
-  m_trueHDPos(0),
   m_dtsHD    (NULL),
-  m_dtsHDSize(0),
-  m_eac3     (NULL),
-  m_eac3Size (0),
-  m_eac3FramesCount(0),
-  m_eac3FramesPerBurst(0),
-  m_dataSize (0),
-  m_pauseDuration(0)
+  m_eac3     (NULL)
 {
   Reset();
 }
