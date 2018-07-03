@@ -103,7 +103,7 @@ private:
   std::string m_strFileName;
   float m_fWidth;
   float m_fHeight;
-  UTILS::Color m_alpha;
+  UTILS::Color m_alpha = 0;
   // stuff relative to middle position
   float m_fPosX;
   float m_fPosY;

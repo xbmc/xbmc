@@ -201,14 +201,6 @@ static void ErrNonfatal(const char* const msg, int a1, int a2)
 }
 
 //--------------------------------------------------------------------------
-// Constructor.
-//--------------------------------------------------------------------------
-CExifParse::CExifParse () : m_ExifInfo(nullptr),
-        m_FocalPlaneUnits(0.0), m_LargestExifOffset(0),
-        m_ExifImageWidth(0), m_MotorolaOrder(false), m_DateFound(false)
-{}
-
-//--------------------------------------------------------------------------
 // Convert a 16 bit unsigned value from file's native byte order
 //--------------------------------------------------------------------------
 int CExifParse::Get16(const void* const Short, const bool motorolaOrder)

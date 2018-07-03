@@ -5,20 +5,19 @@
 class CExifParse
 {
   public:
-    CExifParse();
    ~CExifParse(void) = default;
     bool Process(const unsigned char* const Data, const unsigned short length, ExifInfo_t *info);
     static int Get16(const void* const Short, const bool motorolaOrder=true);
     static int Get32(const void* const Long,  const bool motorolaOrder=true);
 
   private:
-    ExifInfo_t *m_ExifInfo;
+    ExifInfo_t *m_ExifInfo = nullptr;
     double m_FocalPlaneXRes;
-    double m_FocalPlaneUnits;
-    unsigned m_LargestExifOffset;          // Last exif data referenced (to check if thumbnail is at end)
-    int m_ExifImageWidth;
-    bool m_MotorolaOrder;
-    bool m_DateFound;
+    double m_FocalPlaneUnits = 0.0;
+    unsigned m_LargestExifOffset = 0;          // Last exif data referenced (to check if thumbnail is at end)
+    int m_ExifImageWidth = 0;
+    bool m_MotorolaOrder = false;
+    bool m_DateFound = false;
 
 //    void    LocaliseDate        (void);
 //    void    GetExposureTime     (const float exposureTime);
