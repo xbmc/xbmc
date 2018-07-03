@@ -18,7 +18,7 @@
  *
  */
 
-#include "DialogGameViewMode.h"
+#include "DialogGameStretchMode.h"
 #include "cores/RetroPlayer/guibridge/GUIGameVideoHandle.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
@@ -30,7 +30,7 @@
 using namespace KODI;
 using namespace GAME;
 
-const std::vector<CDialogGameViewMode::ViewModeProperties> CDialogGameViewMode::m_allViewModes =
+const std::vector<CDialogGameStretchMode::ViewModeProperties> CDialogGameStretchMode::m_allViewModes =
 {
   { 630,   RETRO::VIEWMODE::Normal },
 //  { 631,   RETRO::VIEWMODE::Zoom }, //! @todo RetroArch allows trimming some outer pixels
@@ -39,17 +39,17 @@ const std::vector<CDialogGameViewMode::ViewModeProperties> CDialogGameViewMode::
   { 635,   RETRO::VIEWMODE::Original },
 };
 
-CDialogGameViewMode::CDialogGameViewMode() :
-  CDialogGameVideoSelect(WINDOW_DIALOG_GAME_VIEW_MODE)
+CDialogGameStretchMode::CDialogGameStretchMode() :
+  CDialogGameVideoSelect(WINDOW_DIALOG_GAME_STRETCH_MODE)
 {
 }
 
-std::string CDialogGameViewMode::GetHeading()
+std::string CDialogGameStretchMode::GetHeading()
 {
   return g_localizeStrings.Get(35233); // "Stretch mode"
 }
 
-void CDialogGameViewMode::PreInit()
+void CDialogGameStretchMode::PreInit()
 {
   m_viewModes.clear();
 
@@ -82,7 +82,7 @@ void CDialogGameViewMode::PreInit()
   }
 }
 
-void CDialogGameViewMode::GetItems(CFileItemList &items)
+void CDialogGameStretchMode::GetItems(CFileItemList &items)
 {
   for (const auto &viewMode : m_viewModes)
   {
@@ -92,7 +92,7 @@ void CDialogGameViewMode::GetItems(CFileItemList &items)
   }
 }
 
-void CDialogGameViewMode::OnItemFocus(unsigned int index)
+void CDialogGameStretchMode::OnItemFocus(unsigned int index)
 {
   if (index < m_viewModes.size())
   {
@@ -107,7 +107,7 @@ void CDialogGameViewMode::OnItemFocus(unsigned int index)
   }
 }
 
-unsigned int CDialogGameViewMode::GetFocusedItem() const
+unsigned int CDialogGameStretchMode::GetFocusedItem() const
 {
   CGameSettings &gameSettings = CMediaSettings::GetInstance().GetCurrentGameSettings();
 
@@ -121,7 +121,7 @@ unsigned int CDialogGameViewMode::GetFocusedItem() const
   return 0;
 }
 
-void CDialogGameViewMode::PostExit()
+void CDialogGameStretchMode::PostExit()
 {
   m_viewModes.clear();
 }
