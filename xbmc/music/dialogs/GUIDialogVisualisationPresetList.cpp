@@ -31,8 +31,7 @@
 #include "utils/Variant.h"
 
 CGUIDialogVisualisationPresetList::CGUIDialogVisualisationPresetList()
-    : CGUIDialogSelect(WINDOW_DIALOG_VIS_PRESET_LIST),
-      m_viz(nullptr)
+    : CGUIDialogSelect(WINDOW_DIALOG_VIS_PRESET_LIST)
 {
   m_loadType = KEEP_IN_MEMORY;
 }

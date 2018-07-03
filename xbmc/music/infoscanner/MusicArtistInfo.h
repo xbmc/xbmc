@@ -31,7 +31,7 @@ namespace MUSIC_GRABBER
 class CMusicArtistInfo
 {
 public:
-  CMusicArtistInfo() : m_bLoaded(false) {}
+  CMusicArtistInfo() = default;
   CMusicArtistInfo(const std::string& strArtist, const CScraperUrl& strArtistURL);
   virtual ~CMusicArtistInfo() = default;
   bool Loaded() const { return m_bLoaded; }
@@ -46,6 +46,6 @@ public:
 protected:
   CArtist m_artist;
   CScraperUrl m_artistURL;
-  bool m_bLoaded;
+  bool m_bLoaded = false;
 };
 }

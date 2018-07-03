@@ -37,7 +37,6 @@ public:
   class Info
   {
   public:
-    Info();
     void SetGain(float aGain);
     void SetGain(const std::string& aStrGain);
     float Gain() const;
@@ -48,8 +47,8 @@ public:
     bool HasPeak() const;
     bool Valid() const;
   private:
-    float m_gain;   // measured in milliBels
-    float m_peak;   // 1.0 == full digital scale
+    float m_gain = REPLAY_GAIN_NO_GAIN;   // measured in milliBels
+    float m_peak = REPLAY_GAIN_NO_PEAK;   // 1.0 == full digital scale
   };
   const Info& Get(Type aType) const;
   void Set(Type aType, const Info& aInfo);

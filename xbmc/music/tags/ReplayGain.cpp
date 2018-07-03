@@ -108,12 +108,6 @@ void ReplayGain::Set(const std::string& strReplayGain)
 // class ReplayGain::Info
 ///////////////////////////////////////////////////////////////
 
-ReplayGain::Info::Info()
-  : m_gain(REPLAY_GAIN_NO_GAIN)
-  , m_peak(REPLAY_GAIN_NO_PEAK)
-{
-}
-
 void ReplayGain::Info::SetGain(float aGain)
 {
   m_gain = aGain;

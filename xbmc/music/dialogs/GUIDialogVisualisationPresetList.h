@@ -39,5 +39,5 @@ protected:
 
 private:
   void SetVisualisation(CGUIVisualisationControl *addon);
-  CGUIVisualisationControl* m_viz;
+  CGUIVisualisationControl* m_viz = nullptr;
 };

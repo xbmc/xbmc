@@ -96,8 +96,8 @@ private:
   ADDON::ScraperPtr m_artistscraper;
 
   std::string m_strArtistInfoPath;
-  bool m_showSingleScraper;
-  CONTENT_TYPE m_singleScraperType;
+  bool m_showSingleScraper = false;
+  CONTENT_TYPE m_singleScraperType = CONTENT_NONE;
   bool m_fetchInfo;
-  unsigned int m_applyToItems;
+  unsigned int m_applyToItems = INFOPROVIDER_THISITEM;
 };

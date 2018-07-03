@@ -34,7 +34,7 @@ namespace MUSIC_GRABBER
 class CMusicAlbumInfo
 {
 public:
-  CMusicAlbumInfo() : m_bLoaded(false), m_relevance(-1) {}
+  CMusicAlbumInfo() = default;
   CMusicAlbumInfo(const std::string& strAlbumInfo, const CScraperUrl& strAlbumURL);
   CMusicAlbumInfo(const std::string& strAlbum, const std::string& strArtist, const std::string& strAlbumInfo, const CScraperUrl& strAlbumURL);
   virtual ~CMusicAlbumInfo() = default;
@@ -53,9 +53,9 @@ public:
   bool Load(XFILE::CCurlFile& http, const ADDON::ScraperPtr& scraper);
 
 protected:
-  bool m_bLoaded;
+  bool m_bLoaded = false;
   CAlbum m_album;
-  float m_relevance;
+  float m_relevance = -1;
   std::string m_strTitle2;
   CScraperUrl m_albumURL;
 };
