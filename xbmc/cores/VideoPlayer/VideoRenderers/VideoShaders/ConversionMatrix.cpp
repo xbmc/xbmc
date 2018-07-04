@@ -585,9 +585,9 @@ bool CConvertMatrix::GetRGBYuvCoefs(AVColorSpace colspace, float (&coefs)[3])
       break;
     case AVCOL_SPC_BT2020_NCL:
     case AVCOL_SPC_BT2020_CL:
-      coefs[0] = ST240YCbCr.Kr;
-      coefs[1] = 1 - ST240YCbCr.Kr - ST240YCbCr.Kb;
-      coefs[2] = ST240YCbCr.Kb;
+      coefs[0] = BT2020YCbCr.Kr;
+      coefs[1] = 1 - BT2020YCbCr.Kr - BT2020YCbCr.Kb;
+      coefs[2] = BT2020YCbCr.Kb;
       break;
     default:
       return false;
