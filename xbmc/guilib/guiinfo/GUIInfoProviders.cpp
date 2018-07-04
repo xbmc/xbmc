@@ -22,7 +22,6 @@
 #include "guilib/guiinfo/IGUIInfoProvider.h"
 
 #include <algorithm>
-#include "threads/SingleLock.h"
 
 using namespace KODI::GUILIB::GUIINFO;
 
@@ -60,8 +59,6 @@ CGUIInfoProviders::~CGUIInfoProviders()
 
 void CGUIInfoProviders::RegisterProvider(IGUIInfoProvider *provider, bool bAppend /* = true */)
 {
-  CSingleLock lock(m_providerSection);
-
   auto it = std::find(m_providers.begin(), m_providers.end(), provider);
   if (it == m_providers.end())
   {
@@ -74,8 +71,6 @@ void CGUIInfoProviders::RegisterProvider(IGUIInfoProvider *provider, bool bAppen
 
 void CGUIInfoProviders::UnregisterProvider(IGUIInfoProvider *provider)
 {
-  CSingleLock lock(m_providerSection);
-
   auto it = std::find(m_providers.begin(), m_providers.end(), provider);
   if (it != m_providers.end())
     m_providers.erase(it);
@@ -83,7 +78,6 @@ void CGUIInfoProviders::UnregisterProvider(IGUIInfoProvider *provider)
 
 bool CGUIInfoProviders::InitCurrentItem(CFileItem *item)
 {
-  CSingleLock lock(m_providerSection);
   bool bReturn = false;
 
   for (const auto& provider : m_providers)
@@ -95,8 +89,6 @@ bool CGUIInfoProviders::InitCurrentItem(CFileItem *item)
 
 bool CGUIInfoProviders::GetLabel(std::string& value, const CFileItem *item, int contextWindow, const CGUIInfo &info, std::string *fallback) const
 {
-  CSingleLock lock(m_providerSection);
-
   for (const auto& provider : m_providers)
   {
     if (provider->GetLabel(value, item, contextWindow, info, fallback))
@@ -107,8 +99,6 @@ bool CGUIInfoProviders::GetLabel(std::string& value, const CFileItem *item, int 
 
 bool CGUIInfoProviders::GetInt(int& value, const CGUIListItem *item, int contextWindow, const CGUIInfo &info) const
 {
-  CSingleLock lock(m_providerSection);
-
   for (const auto& provider : m_providers)
   {
     if (provider->GetInt(value, item, contextWindow, info))
@@ -119,8 +109,6 @@ bool CGUIInfoProviders::GetInt(int& value, const CGUIListItem *item, int context
 
 bool CGUIInfoProviders::GetBool(bool& value, const CGUIListItem *item, int contextWindow, const CGUIInfo &info) const
 {
-  CSingleLock lock(m_providerSection);
-
   for (const auto& provider : m_providers)
   {
     if (provider->GetBool(value, item, contextWindow, info))
@@ -131,8 +119,6 @@ bool CGUIInfoProviders::GetBool(bool& value, const CGUIListItem *item, int conte
 
 void CGUIInfoProviders::UpdateAVInfo(const AudioStreamInfo& audioInfo, const VideoStreamInfo& videoInfo)
 {
-  CSingleLock lock(m_providerSection);
-
   for (const auto& provider : m_providers)
   {
     provider->UpdateAVInfo(audioInfo, videoInfo);
