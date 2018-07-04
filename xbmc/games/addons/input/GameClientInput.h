@@ -60,6 +60,9 @@ namespace GAME
     void Initialize();
     void Deinitialize();
 
+    void Start();
+    void Stop();
+
     // Input functions
     bool AcceptsInput() const;
 

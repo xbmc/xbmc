@@ -269,6 +269,8 @@ bool CGameClient::OpenFile(const CFileItem& file, RETRO::IStreamManager& streamM
 
   CloseFile();
 
+  Streams().Initialize(streamManager);
+
   GAME_ERROR error = GAME_ERROR_FAILED;
 
   try { LogError(error = m_struct.toAddon.LoadGame(path.c_str()), "LoadGame()"); }
@@ -277,11 +279,15 @@ bool CGameClient::OpenFile(const CFileItem& file, RETRO::IStreamManager& streamM
   if (error != GAME_ERROR_NO_ERROR)
   {
     NotifyError(error);
+    Streams().Deinitialize();
     return false;
   }
 
   if (!InitializeGameplay(file.GetPath(), streamManager, input))
+  {
+    Streams().Deinitialize();
     return false;
+  }
 
   return true;
 }
@@ -297,6 +303,8 @@ bool CGameClient::OpenStandalone(RETRO::IStreamManager& streamManager, IGameInpu
 
   CloseFile();
 
+  Streams().Initialize(streamManager);
+
   GAME_ERROR error = GAME_ERROR_FAILED;
 
   try { LogError(error = m_struct.toAddon.LoadStandalone(), "LoadStandalone()"); }
@@ -305,11 +313,15 @@ bool CGameClient::OpenStandalone(RETRO::IStreamManager& streamManager, IGameInpu
   if (error != GAME_ERROR_NO_ERROR)
   {
     NotifyError(error);
+    Streams().Deinitialize();
     return false;
   }
 
   if (!InitializeGameplay("", streamManager, input))
+  {
+    Streams().Deinitialize();
     return false;
+  }
 
   return true;
 }
@@ -318,7 +330,7 @@ bool CGameClient::InitializeGameplay(const std::string& gamePath, RETRO::IStream
 {
   if (LoadGameInfo())
   {
-    Streams().Initialize(streamManager);
+    Input().Start();
 
     m_bIsPlaying      = true;
     m_gamePath        = gamePath;
@@ -464,16 +476,18 @@ void CGameClient::CloseFile()
     m_inGameSaves->Save();
     m_inGameSaves.reset();
 
+    m_bIsPlaying = false;
+    m_gamePath.clear();
+    m_serializeSize = 0;
+    m_input = nullptr;
+
+    Input().Stop();
+
     try { LogError(m_struct.toAddon.UnloadGame(), "UnloadGame()"); }
     catch (...) { LogException("UnloadGame()"); }
+
+    Streams().Deinitialize();
   }
-
-  m_bIsPlaying = false;
-  m_gamePath.clear();
-  m_serializeSize = 0;
-  m_input = nullptr;
-
-  Streams().Deinitialize();
 }
 
 void CGameClient::RunFrame()
