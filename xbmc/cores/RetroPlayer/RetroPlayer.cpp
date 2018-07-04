@@ -193,11 +193,11 @@ bool CRetroPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options
   }
   else
   {
+    m_input.reset();
+    m_streamManager.reset();
     if (m_gameClient)
       m_gameClient->Unload();
     m_gameClient.reset();
-    m_input.reset();
-    m_streamManager.reset();
   }
 
   return bSuccess;
@@ -209,6 +209,8 @@ bool CRetroPlayer::CloseFile(bool reopen /* = false */)
 
   m_autoSave.reset();
 
+  UnregisterWindowCallbacks();
+
   CSingleLock lock(m_mutex);
 
   if (m_gameClient)
@@ -218,21 +220,23 @@ bool CRetroPlayer::CloseFile(bool reopen /* = false */)
       CLog::Log(LOGDEBUG, "RetroPlayer[SAVE]: Saved state to %s", CURL::GetRedacted(savePath).c_str());
     else
       CLog::Log(LOGDEBUG, "RetroPlayer[SAVE]: Failed to save state at close");
-
-    UnregisterWindowCallbacks();
-    m_gameClient->CloseFile();
-    m_gameClient->Unload();
-    m_gameClient.reset();
-    m_callback.OnPlayBackEnded();
   }
+
+  if (m_gameClient)
+    m_gameClient->CloseFile();
 
   m_input.reset();
   m_streamManager.reset();
+
+  if (m_gameClient)
+    m_gameClient->Unload();
+  m_gameClient.reset();
 
   m_renderManager.reset();
   m_processInfo.reset();
 
   CLog::Log(LOGDEBUG, "RetroPlayer[PLAYER]: Playback ended");
+  m_callback.OnPlayBackEnded();
 
   return true;
 }
