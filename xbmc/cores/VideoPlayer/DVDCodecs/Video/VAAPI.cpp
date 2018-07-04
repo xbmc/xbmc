@@ -493,7 +493,7 @@ CDecoder::CDecoder(CProcessInfo& processInfo) :
   m_vaapiConfig.context = 0;
   m_vaapiConfig.configId = VA_INVALID_ID;
   m_vaapiConfig.processInfo = &m_processInfo;
-  m_avctx = NULL;
+  m_avctx = nullptr;
   m_getBufferError = 0;
 }
 
@@ -3128,7 +3128,7 @@ void CFFmpegPostproc::ClearRef(CVaapiProcessedPicture &pic)
   av_frame_free(&pic.frame);
   m_refsToPics--;
 
-  if (m_pOut && m_refsToPics <= 0)
+  if (m_pOut && m_refsToPics <= 0 && m_cbDispose)
     (m_pOut->*m_cbDispose)(this);
 }
 

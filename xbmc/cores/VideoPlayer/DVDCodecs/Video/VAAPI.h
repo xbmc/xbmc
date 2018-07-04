@@ -482,7 +482,7 @@ public:
   void Discard(COutput *output, ReadyToDispose cb) override;
 protected:
   CVaapiDecodedPicture m_pic;
-  ReadyToDispose m_cbDispose;
+  ReadyToDispose m_cbDispose = nullptr;
   COutput *m_pOut;
   int m_refsToSurfaces = 0;
 };
@@ -519,7 +519,7 @@ protected:
   int m_currentIdx;
   int m_frameCount;
   EINTERLACEMETHOD m_vppMethod;
-  ReadyToDispose m_cbDispose;
+  ReadyToDispose m_cbDispose = nullptr;
   COutput *m_pOut = nullptr;
 };
 
@@ -555,7 +555,7 @@ protected:
   VideoPicture m_DVDPic;
   double m_frametime;
   double m_lastOutPts;
-  ReadyToDispose m_cbDispose;
+  ReadyToDispose m_cbDispose = nullptr;
   COutput *m_pOut;
   int m_refsToPics = 0;
 };
