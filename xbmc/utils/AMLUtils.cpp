@@ -455,7 +455,6 @@ bool aml_mode_to_resolution(const char *mode, RESOLUTION_INFO *res)
     }
   }
 
-  res->iScreen       = 0;
   res->bFullScreen   = true;
   res->iSubtitles    = (int)(0.965 * res->iHeight);
   res->fPixelRatio   = 1.0f;

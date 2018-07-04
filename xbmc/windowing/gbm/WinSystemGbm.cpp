@@ -182,10 +182,9 @@ void CWinSystemGbm::UpdateResolutions()
         CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP) = res;
       }
 
-      CLog::Log(LOGNOTICE, "Found resolution %dx%d for display %d with %dx%d%s @ %f Hz",
+      CLog::Log(LOGNOTICE, "Found resolution %dx%d with %dx%d%s @ %f Hz",
                 res.iWidth,
                 res.iHeight,
-                res.iScreen,
                 res.iScreenWidth,
                 res.iScreenHeight,
                 res.dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "",

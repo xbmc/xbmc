@@ -424,23 +424,6 @@ bool CWinSystemWayland::CanDoWindowed()
   return true;
 }
 
-int CWinSystemWayland::GetNumScreens()
-{
-  // Multiple screen/resolution support in core Kodi badly needs refactoring, but as
-  // it touches a lot of code we just do it like X11 for the moment:
-  // Pretend that there is only one screen, show more screens with
-  // custom names in the GUI using an #ifdef in DisplaySettings
-  // - otherwise we would just get a selection between "Full Screen #1" and
-  // "Full Screen #2" etc. instead of actual monitor names.
-  return 1;
-}
-
-int CWinSystemWayland::GetCurrentScreen()
-{
-  // See GetNumScreens()
-  return 1;
-}
-
 void CWinSystemWayland::GetConnectedOutputs(std::vector<std::string>* outputs)
 {
   CSingleLock lock(m_outputsMutex);

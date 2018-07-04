@@ -572,10 +572,10 @@ DisplayMode CDisplaySettings::GetCurrentDisplayMode() const
   if (GetCurrentResolution() == RES_WINDOW)
     return DM_WINDOWED;
 
-  return GetCurrentResolutionInfo().iScreen;
+  return DM_FULLSCREEN;
 }
 
-RESOLUTION CDisplaySettings::FindBestMatchingResolution(const std::map<RESOLUTION, RESOLUTION_INFO> &resolutionInfos, int screen, int width, int height, float refreshrate, unsigned flags)
+RESOLUTION CDisplaySettings::FindBestMatchingResolution(const std::map<RESOLUTION, RESOLUTION_INFO> &resolutionInfos, int width, int height, float refreshrate, unsigned flags)
 {
   // find the closest match to these in our res vector.  If we have the screen, we score the res
   RESOLUTION bestRes = RES_DESKTOP;
@@ -586,8 +586,7 @@ RESOLUTION CDisplaySettings::FindBestMatchingResolution(const std::map<RESOLUTIO
   {
     const RESOLUTION_INFO &info = it->second;
 
-    if ( info.iScreen               != screen
-    ||  (info.dwFlags & D3DPRESENTFLAG_MODEMASK) != flags)
+    if ((info.dwFlags & D3DPRESENTFLAG_MODEMASK) != flags)
       continue;
 
     float score = 10 * (square_error((float)info.iScreenWidth, (float)width) +
@@ -613,7 +612,6 @@ RESOLUTION CDisplaySettings::GetResolutionFromString(const std::string &strResol
   else if (strResolution.size() >= 20)
   {
     // format: WWWWWHHHHHRRR.RRRRRP333, where W = width, H = height, R = refresh, P = interlace, 3 = stereo mode
-    int screen = CDisplaySettings::GetInstance().GetCurrentDisplayMode();
     int width = std::strtol(StringUtils::Mid(strResolution, 0,5).c_str(), NULL, 10);
     int height = std::strtol(StringUtils::Mid(strResolution, 5,5).c_str(), NULL, 10);
     float refresh = (float)std::strtod(StringUtils::Mid(strResolution, 10,9).c_str(), NULL);
@@ -632,7 +630,7 @@ RESOLUTION CDisplaySettings::GetResolutionFromString(const std::string &strResol
     for (size_t resolution = RES_DESKTOP; resolution < CDisplaySettings::GetInstance().ResolutionInfoSize(); resolution++)
       resolutionInfos.insert(std::make_pair((RESOLUTION)resolution, CDisplaySettings::GetInstance().GetResolutionInfo(resolution)));
 
-    return FindBestMatchingResolution(resolutionInfos, screen, width, height, refresh, flags);
+    return FindBestMatchingResolution(resolutionInfos, width, height, refresh, flags);
   }
 
   return RES_DESKTOP;
@@ -663,12 +661,6 @@ RESOLUTION CDisplaySettings::GetResolutionForScreen()
   DisplayMode mode = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_VIDEOSCREEN_SCREEN);
   if (mode == DM_WINDOWED)
     return RES_WINDOW;
-
-  for (int idx=0; idx < CServiceBroker::GetWinSystem()->GetNumScreens(); idx++)
-  {
-    if (CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP + idx).iScreen == mode)
-      return (RESOLUTION)(RES_DESKTOP + idx);
-  }
 
   return RES_DESKTOP;
 }
@@ -726,8 +718,8 @@ void CDisplaySettings::SettingOptionsRefreshRatesFiller(SettingConstPtr setting,
   }
 
   RESOLUTION_INFO resInfo = CDisplaySettings::GetInstance().GetResolutionInfo(res);
-  // The only meaningful parts of res here are iScreen, iScreenWidth, iScreenHeight
-  std::vector<REFRESHRATE> refreshrates = CServiceBroker::GetWinSystem()->RefreshRates(resInfo.iScreen, resInfo.iScreenWidth, resInfo.iScreenHeight, resInfo.dwFlags);
+  // The only meaningful parts of res here are iScreenWidth, iScreenHeight
+  std::vector<REFRESHRATE> refreshrates = CServiceBroker::GetWinSystem()->RefreshRates(resInfo.iScreenWidth, resInfo.iScreenHeight, resInfo.dwFlags);
 
   bool match = false;
   for (std::vector<REFRESHRATE>::const_iterator refreshrate = refreshrates.begin(); refreshrate != refreshrates.end(); ++refreshrate)
@@ -739,7 +731,7 @@ void CDisplaySettings::SettingOptionsRefreshRatesFiller(SettingConstPtr setting,
   }
 
   if (!match)
-    current = GetStringFromResolution(res, CServiceBroker::GetWinSystem()->DefaultRefreshRate(resInfo.iScreen, refreshrates).RefreshRate);
+    current = GetStringFromResolution(res, CServiceBroker::GetWinSystem()->DefaultRefreshRate(refreshrates).RefreshRate);
 }
 
 void CDisplaySettings::SettingOptionsResolutionsFiller(SettingConstPtr setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
@@ -754,7 +746,7 @@ void CDisplaySettings::SettingOptionsResolutionsFiller(SettingConstPtr setting, 
   else
   {
     std::map<RESOLUTION, RESOLUTION_INFO> resolutionInfos;
-    std::vector<RESOLUTION_WHR> resolutions = CServiceBroker::GetWinSystem()->ScreenResolutions(info.iScreen, info.fRefreshRate);
+    std::vector<RESOLUTION_WHR> resolutions = CServiceBroker::GetWinSystem()->ScreenResolutions(info.fRefreshRate);
     for (std::vector<RESOLUTION_WHR>::const_iterator resolution = resolutions.begin(); resolution != resolutions.end(); ++resolution)
     {
       list.push_back(std::make_pair(
@@ -765,13 +757,13 @@ void CDisplaySettings::SettingOptionsResolutionsFiller(SettingConstPtr setting, 
       resolutionInfos.insert(std::make_pair((RESOLUTION)resolution->ResInfo_Index, CDisplaySettings::GetInstance().GetResolutionInfo(resolution->ResInfo_Index)));
     }
 
-    current = FindBestMatchingResolution(resolutionInfos, info.iScreen,
+    current = FindBestMatchingResolution(resolutionInfos,
                                          info.iScreenWidth, info.iScreenHeight,
                                          info.fRefreshRate, info.dwFlags);
   }
 }
 
-void CDisplaySettings::SettingOptionsScreensFiller(SettingConstPtr setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
+void CDisplaySettings::SettingOptionsDispModeFiller(SettingConstPtr setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
 {
   // The user should only be able to disable windowed modes with the canwindowed
   // setting. When the user sets canwindowed to true but the windowing system
@@ -780,25 +772,7 @@ void CDisplaySettings::SettingOptionsScreensFiller(SettingConstPtr setting, std:
   if (g_advancedSettings.m_canWindowed && CServiceBroker::GetWinSystem()->CanDoWindowed())
     list.push_back(std::make_pair(g_localizeStrings.Get(242), DM_WINDOWED));
 
-#if defined(HAVE_X11) || defined(HAVE_WAYLAND) || defined(TARGET_DARWIN_OSX) || defined(TARGET_WINDOWS) || defined(TARGET_DARWIN_IOS)
-  list.push_back(std::make_pair(g_localizeStrings.Get(244), 0));
-#else
-
-  for (int idx = 0; idx < CServiceBroker::GetWinSystem()->GetNumScreens(); idx++)
-  {
-    int screen = CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP + idx).iScreen;
-    list.push_back(std::make_pair(StringUtils::Format(g_localizeStrings.Get(241).c_str(), screen + 1), screen));
-  }
-
-  RESOLUTION res = CDisplaySettings::GetInstance().GetDisplayResolution();
-  if (res == RES_WINDOW)
-    current = DM_WINDOWED;
-  else
-  {
-    RESOLUTION_INFO resInfo = CDisplaySettings::GetInstance().GetResolutionInfo(res);
-    current = resInfo.iScreen;
-  }
-#endif
+  list.push_back(std::make_pair(g_localizeStrings.Get(244), DM_FULLSCREEN));
 }
 
 void CDisplaySettings::SettingOptionsStereoscopicModesFiller(SettingConstPtr setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)

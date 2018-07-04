@@ -59,13 +59,12 @@ bool CWinSystemBase::DestroyWindowSystem()
   return false;
 }
 
-void CWinSystemBase::UpdateDesktopResolution(RESOLUTION_INFO& newRes, int screen, int width, int height, float refreshRate, uint32_t dwFlags)
+void CWinSystemBase::UpdateDesktopResolution(RESOLUTION_INFO& newRes, int width, int height, float refreshRate, uint32_t dwFlags)
 {
   newRes.Overscan.left = 0;
   newRes.Overscan.top = 0;
   newRes.Overscan.right = width;
   newRes.Overscan.bottom = height;
-  newRes.iScreen = screen;
   newRes.bFullScreen = true;
   newRes.iSubtitles = (int)(0.965 * height);
   newRes.dwFlags = dwFlags;
@@ -84,10 +83,6 @@ void CWinSystemBase::UpdateDesktopResolution(RESOLUTION_INFO& newRes, int screen
     newRes.strMode += "tab";
   if (dwFlags & D3DPRESENTFLAG_MODE3DSBS)
     newRes.strMode += "sbs";
-  if (screen > 0)
-    newRes.strMode = StringUtils::Format("%s #%d", newRes.strMode.c_str(), screen + 1);
-  if (refreshRate > 1)
-    newRes.strMode += " - Full Screen";
 }
 
 void CWinSystemBase::UpdateResolutions()
@@ -116,15 +111,6 @@ void CWinSystemBase::SetWindowResolution(int width, int height)
   window.iScreenHeight = height;
   window.iSubtitles = (int)(0.965 * window.iHeight);
   CServiceBroker::GetWinSystem()->GetGfxContext().ResetOverscan(window);
-}
-
-int CWinSystemBase::DesktopResolution(int screen)
-{
-  for (int idx = 0; idx < GetNumScreens(); idx++)
-    if (CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP + idx).iScreen == screen)
-      return RES_DESKTOP + idx;
-  // Uh? something's wrong, fallback to default res of main screen
-  return RES_DESKTOP;
 }
 
 static void AddResolution(std::vector<RESOLUTION_WHR> &resolutions, unsigned int addindex, float bestRefreshrate)
@@ -164,15 +150,14 @@ static bool resSortPredicate(RESOLUTION_WHR i, RESOLUTION_WHR j)
           || (i.width == j.width && i.height == j.height && i.flags < j.flags) );
 }
 
-std::vector<RESOLUTION_WHR> CWinSystemBase::ScreenResolutions(int screen, float refreshrate)
+std::vector<RESOLUTION_WHR> CWinSystemBase::ScreenResolutions(float refreshrate)
 {
   std::vector<RESOLUTION_WHR> resolutions;
 
   for (unsigned int idx = RES_CUSTOM; idx < CDisplaySettings::GetInstance().ResolutionInfoSize(); idx++)
   {
     RESOLUTION_INFO info = CDisplaySettings::GetInstance().GetResolutionInfo(idx);
-    if (info.iScreen == screen)
-      AddResolution(resolutions, idx, refreshrate);
+    AddResolution(resolutions, idx, refreshrate);
   }
 
   // Can't assume a sort order
@@ -198,16 +183,17 @@ static bool rrSortPredicate(REFRESHRATE i, REFRESHRATE j)
   return (i.RefreshRate < j.RefreshRate);
 }
 
-std::vector<REFRESHRATE> CWinSystemBase::RefreshRates(int screen, int width, int height, uint32_t dwFlags)
+std::vector<REFRESHRATE> CWinSystemBase::RefreshRates(int width, int height, uint32_t dwFlags)
 {
   std::vector<REFRESHRATE> refreshrates;
 
   for (unsigned int idx = RES_DESKTOP; idx < CDisplaySettings::GetInstance().ResolutionInfoSize(); idx++)
-    if (   CDisplaySettings::GetInstance().GetResolutionInfo(idx).iScreen == screen
-        && CDisplaySettings::GetInstance().GetResolutionInfo(idx).iScreenWidth  == width
-        && CDisplaySettings::GetInstance().GetResolutionInfo(idx).iScreenHeight == height
-        && (CDisplaySettings::GetInstance().GetResolutionInfo(idx).dwFlags & D3DPRESENTFLAG_MODEMASK) == (dwFlags & D3DPRESENTFLAG_MODEMASK))
+  {
+    if (CDisplaySettings::GetInstance().GetResolutionInfo(idx).iScreenWidth  == width &&
+        CDisplaySettings::GetInstance().GetResolutionInfo(idx).iScreenHeight == height &&
+        (CDisplaySettings::GetInstance().GetResolutionInfo(idx).dwFlags & D3DPRESENTFLAG_MODEMASK) == (dwFlags & D3DPRESENTFLAG_MODEMASK))
       AddRefreshRate(refreshrates, idx);
+  }
 
   // Can't assume a sort order
   sort(refreshrates.begin(), refreshrates.end(), rrSortPredicate);
@@ -215,11 +201,11 @@ std::vector<REFRESHRATE> CWinSystemBase::RefreshRates(int screen, int width, int
   return refreshrates;
 }
 
-REFRESHRATE CWinSystemBase::DefaultRefreshRate(int screen, std::vector<REFRESHRATE> rates)
+REFRESHRATE CWinSystemBase::DefaultRefreshRate(std::vector<REFRESHRATE> rates)
 {
   REFRESHRATE bestmatch = rates[0];
   float bestfitness = -1.0f;
-  float targetfps = CDisplaySettings::GetInstance().GetResolutionInfo(DesktopResolution(screen)).fRefreshRate;
+  float targetfps = CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP).fRefreshRate;
 
   for (unsigned i = 0; i < rates.size(); i++)
   {

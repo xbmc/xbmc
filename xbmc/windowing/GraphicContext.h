@@ -197,7 +197,6 @@ protected:
 
   int m_iScreenHeight = 576;
   int m_iScreenWidth = 720;
-  int m_iScreenId = 0;
   std::string m_strMediaDir;
   CRect m_videoRect;
   bool m_bFullScreenRoot = true;

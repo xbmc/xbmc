@@ -124,16 +124,13 @@ public:
   // resolution interfaces
   unsigned int GetWidth() { return m_nWidth; }
   unsigned int GetHeight() { return m_nHeight; }
-  virtual int GetNumScreens() { return 0; }
-  virtual int GetCurrentScreen() { return 0; }
   virtual bool CanDoWindowed() { return true; }
   bool IsFullScreen() { return m_bFullScreen; }
   virtual void UpdateResolutions();
   void SetWindowResolution(int width, int height);
-  int DesktopResolution(int screen);
-  std::vector<RESOLUTION_WHR> ScreenResolutions(int screen, float refreshrate);
-  std::vector<REFRESHRATE> RefreshRates(int screen, int width, int height, uint32_t dwFlags);
-  REFRESHRATE DefaultRefreshRate(int screen, std::vector<REFRESHRATE> rates);
+  std::vector<RESOLUTION_WHR> ScreenResolutions(float refreshrate);
+  std::vector<REFRESHRATE> RefreshRates(int width, int height, uint32_t dwFlags);
+  REFRESHRATE DefaultRefreshRate(std::vector<REFRESHRATE> rates);
   virtual bool HasCalibration(const RESOLUTION_INFO &resInfo) { return true; };
 
   // text input interface
@@ -155,7 +152,7 @@ public:
   CGraphicContext& GetGfxContext();
 
 protected:
-  void UpdateDesktopResolution(RESOLUTION_INFO& newRes, int screen, int width, int height, float refreshRate, uint32_t dwFlags = 0);
+  void UpdateDesktopResolution(RESOLUTION_INFO& newRes, int width, int height, float refreshRate, uint32_t dwFlags = 0);
   virtual std::unique_ptr<KODI::WINDOWING::IOSScreenSaver> GetOSScreenSaverImpl() { return nullptr; }
 
   int m_nWidth = 0;
@@ -164,7 +161,6 @@ protected:
   int m_nLeft = 0;
   bool m_bWindowCreated = false;
   bool m_bFullScreen = false;
-  int m_nScreen = 0;
   bool m_bBlankOtherDisplay = false;
   float m_fRefreshRate = 0.0f;
   std::unique_ptr<KODI::WINDOWING::COSScreenSaverManager> m_screenSaverManager;

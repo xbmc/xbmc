@@ -164,9 +164,8 @@ bool CWinEventsSDL::MessagePump()
         // Under newer osx versions sdl is so fucked up that it even fires resize events
         // that exceed the screen size (maybe some HiDP incompatibility in old SDL?)
         // ensure to ignore those events because it will mess with windowed size
-        int RES_SCREEN = CServiceBroker::GetWinSystem()->DesktopResolution(CServiceBroker::GetWinSystem()->GetCurrentScreen());
-        if((event.resize.w > CDisplaySettings::GetInstance().GetResolutionInfo(RES_SCREEN).iWidth) ||
-           (event.resize.h > CDisplaySettings::GetInstance().GetResolutionInfo(RES_SCREEN).iHeight))
+        if((event.resize.w > CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP).iWidth) ||
+           (event.resize.h > CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP).iHeight))
         {
           break;
         }

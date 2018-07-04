@@ -85,8 +85,6 @@ public:
   void FinishWindowResize(int newWidth, int newHeight) override;
   void UpdateResolutions() override;
   void NotifyAppFocusChange(bool bGaining) override;
-  int  GetNumScreens() override { return m_displays.size(); };
-  int  GetCurrentScreen() override;
   void ShowOSMouse(bool show) override;
   bool HasInertialGestures() override { return true; }//if win32 has touchscreen - it uses the win32 gesture api for inertial scrolling
   bool Minimize() override;

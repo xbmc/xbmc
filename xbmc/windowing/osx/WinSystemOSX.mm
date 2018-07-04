@@ -568,7 +568,7 @@ static void DisplayReconfigured(CGDirectDisplayID display,
       return;
 
     NSScreen* pScreen = nil;
-    unsigned int screenIdx = CDisplaySettings::GetInstance().GetResolutionInfo(res).iScreen;
+    unsigned int screenIdx = 0;
 
     if ( screenIdx < [[NSScreen screens] count] )
     {
@@ -959,7 +959,7 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     {
       // This is Cocoa Windowed FullScreen Mode
       // Get the screen rect of our current display
-      NSScreen* pScreen = [[NSScreen screens] objectAtIndex:res.iScreen];
+      NSScreen* pScreen = [[NSScreen screens] objectAtIndex:0];
       NSRect    screenRect = [pScreen frame];
 
       // remove frame origin offset of original display
@@ -1002,7 +1002,7 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
 
       // Blank other displays if requested.
       if (blankOtherDisplays)
-        BlankOtherDisplays(res.iScreen);
+        BlankOtherDisplays(0);
     }
     else
     {
@@ -1014,7 +1014,7 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
 
       // This is OpenGL FullScreen Mode
       // create our new context (sharing with the current one)
-      newContext = (NSOpenGLContext*)CreateFullScreenContext(res.iScreen, (void*)cur_context);
+      newContext = (NSOpenGLContext*)CreateFullScreenContext(0, (void*)cur_context);
       if (!newContext)
         return false;
 
@@ -1028,7 +1028,7 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
       if (blankOtherDisplays == true)
         CGCaptureAllDisplays();
       else
-        CGDisplayCapture(GetDisplayID(res.iScreen));
+        CGDisplayCapture(GetDisplayID(0));
 
       // If we don't hide menu bar, it will get events and interrupt the program.
       SetMenuBarVisible(false);
@@ -1421,7 +1421,7 @@ void CWinSystemOSX::FillInVideoModes()
           res.strOutput = [dispName UTF8String];
         }
 
-        UpdateDesktopResolution(res, 0, w, h, refreshrate);
+        UpdateDesktopResolution(res, w, h, refreshrate);
 
         // overwrite the mode str because  UpdateDesktopResolution adds a
         // "Full Screen". Since the current resolution is there twice

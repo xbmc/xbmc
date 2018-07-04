@@ -608,7 +608,6 @@ void CDRMUtils::DestroyDrm()
 RESOLUTION_INFO CDRMUtils::GetResolutionInfo(drmModeModeInfoPtr mode)
 {
   RESOLUTION_INFO res;
-  res.iScreen = 0;
   res.iScreenWidth = mode->hdisplay;
   res.iScreenHeight = mode->vdisplay;
   res.iWidth = res.iScreenWidth;

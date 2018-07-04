@@ -25,10 +25,7 @@
 
 typedef int DisplayMode;
 #define DM_WINDOWED     -1
-#define DM_FULLSCREEN1   0
-#define DM_FULLSCREEN2   1
-// DM_FULLSCREEN3        2
-// etc.
+#define DM_FULLSCREEN    0
 
 enum RESOLUTION {
   RES_INVALID        = -1,
@@ -78,7 +75,6 @@ struct RESOLUTION_INFO
 {
   OVERSCAN Overscan;
   bool bFullScreen;
-  int iScreen;
   int iWidth;
   int iHeight;
   int iBlanking; /**< number of pixels of padding between stereoscopic frames */
