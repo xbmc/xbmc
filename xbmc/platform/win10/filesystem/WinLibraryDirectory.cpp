@@ -230,7 +230,12 @@ StorageFolder CWinLibraryDirectory::GetFolder(const CURL& url)
     try
     {
       std::wstring wStrPath = ToW(folderPath);
-      return Wait(rootFolder.GetFolderAsync(wStrPath));
+
+      auto item = Wait(rootFolder.TryGetItemAsync(wStrPath));
+      if (item && item.IsOfType(StorageItemTypes::Folder))
+        return item.as<StorageFolder>();
+
+      return nullptr;
     }
     catch (const winrt::hresult_error& ex)
     {
