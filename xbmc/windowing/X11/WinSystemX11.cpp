@@ -350,10 +350,10 @@ void CWinSystemX11::UpdateResolutions()
       mode = g_xrandr.GetPreferredMode(m_userOutput);
     m_bIsRotated = out->isRotated;
     if (!m_bIsRotated)
-      UpdateDesktopResolution(CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP), 0, mode.w, mode.h, mode.hz);
+      UpdateDesktopResolution(CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP), mode.w, mode.h, mode.hz, 0);
     else
-      UpdateDesktopResolution(CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP), 0, mode.h, mode.w, mode.hz);
-    CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP).strId     = mode.id;
+      UpdateDesktopResolution(CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP), mode.h, mode.w, mode.hz, 0);
+    CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP).strId = mode.id;
     CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP).strOutput = m_userOutput;
   }
   else
@@ -362,7 +362,7 @@ void CWinSystemX11::UpdateResolutions()
     m_screen = DefaultScreen(m_dpy);
     int w = DisplayWidth(m_dpy, m_screen);
     int h = DisplayHeight(m_dpy, m_screen);
-    UpdateDesktopResolution(CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP), w, h, 0.0);
+    UpdateDesktopResolution(CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP), w, h, 0.0, 0);
   }
 
   // erase previous stored modes

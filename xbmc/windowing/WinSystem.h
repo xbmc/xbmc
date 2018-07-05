@@ -152,7 +152,7 @@ public:
   CGraphicContext& GetGfxContext();
 
 protected:
-  void UpdateDesktopResolution(RESOLUTION_INFO& newRes, int width, int height, float refreshRate, uint32_t dwFlags = 0);
+  void UpdateDesktopResolution(RESOLUTION_INFO& newRes, int width, int height, float refreshRate, uint32_t dwFlags);
   virtual std::unique_ptr<KODI::WINDOWING::IOSScreenSaver> GetOSScreenSaverImpl() { return nullptr; }
 
   int m_nWidth = 0;
