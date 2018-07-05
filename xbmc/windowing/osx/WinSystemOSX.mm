@@ -1137,7 +1137,7 @@ void CWinSystemOSX::UpdateResolutions()
 
   int dispIdx = GetDisplayIndex(CServiceBroker::GetSettings().GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR));
   GetScreenResolution(&w, &h, &fps, dispIdx);
-  UpdateDesktopResolution(CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP), 0, w, h, fps);
+  UpdateDesktopResolution(CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP), w, h, fps, 0);
   NSString *dispName = screenNameForDisplay(GetDisplayID(dispIdx));
 
   CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP).strOutput = [dispName UTF8String];
@@ -1421,7 +1421,7 @@ void CWinSystemOSX::FillInVideoModes()
           res.strOutput = [dispName UTF8String];
         }
 
-        UpdateDesktopResolution(res, w, h, refreshrate);
+        UpdateDesktopResolution(res, w, h, refreshrate, 0);
 
         // overwrite the mode str because  UpdateDesktopResolution adds a
         // "Full Screen". Since the current resolution is there twice
