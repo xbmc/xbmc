@@ -1,18 +1,18 @@
 set(SOURCES DialogGameAdvancedSettings.cpp
             DialogGameOSD.cpp
+            DialogGameStretchMode.cpp
             DialogGameVideoFilter.cpp
             DialogGameVideoRotation.cpp
             DialogGameVideoSelect.cpp
-            DialogGameViewMode.cpp
             DialogGameVolume.cpp
 )
 
 set(HEADERS DialogGameAdvancedSettings.h
             DialogGameOSD.h
+            DialogGameStretchMode.h
             DialogGameVideoFilter.h
             DialogGameVideoRotation.h
             DialogGameVideoSelect.h
-            DialogGameViewMode.h
             DialogGameVolume.h
 )
 

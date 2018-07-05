@@ -21,6 +21,7 @@
 #pragma once
 
 #include "addons/RepositoryUpdater.h"
+#include "games/GameTypes.h"
 #include "guilib/GUIDialog.h"
 
 namespace KODI
@@ -60,7 +61,10 @@ namespace GAME
     void ShowButtonCaptureDialog(void);
 
     IControllerList* m_controllerList = nullptr;
-    IFeatureList*    m_featureList = nullptr;
+    IFeatureList* m_featureList = nullptr;
+
+    // Game paremeters
+    GameClientPtr m_gameClient;
   };
 }
 }

@@ -29,11 +29,11 @@ namespace KODI
 {
 namespace GAME
 {
-  class CDialogGameViewMode : public CDialogGameVideoSelect
+  class CDialogGameStretchMode : public CDialogGameVideoSelect
   {
   public:
-    CDialogGameViewMode();
-    ~CDialogGameViewMode() override = default;
+    CDialogGameStretchMode();
+    ~CDialogGameStretchMode() override = default;
 
   protected:
     // implementation of CDialogGameVideoSelect

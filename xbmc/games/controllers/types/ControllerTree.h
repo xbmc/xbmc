@@ -82,6 +82,15 @@ namespace GAME
     /*!
      * \brief Check to see if a controller is compatible with a controller port
      *
+     * \param controllerId The ID of the controller
+     *
+     * \return True if the controller is compatible with a port, false otherwise
+     */
+    bool IsControllerAccepted(const std::string &controllerId) const;
+
+    /*!
+     * \brief Check to see if a controller is compatible with a controller port
+     *
      * \param portAddress The port address
      * \param controllerId The ID of the controller
      *
@@ -166,6 +175,15 @@ namespace GAME
     /*!
      * \brief Check to see if a controller is compatible with this tree
      *
+     * \param controllerId The ID of the controller
+     *
+     * \return True if the controller is compatible with the tree, false otherwise
+     */
+    bool IsControllerAccepted(const std::string &controllerId) const;
+
+    /*!
+     * \brief Check to see if a controller is compatible with this tree
+     *
      * \param portAddress The port address
      * \param controllerId The ID of the controller
      *
@@ -206,6 +224,7 @@ namespace GAME
     const ControllerPortVec &Ports() const { return m_ports; }
     void SetPorts(ControllerPortVec ports);
 
+    bool IsControllerAccepted(const std::string &controllerId) const;
     bool IsControllerAccepted(const std::string &portAddress,
                               const std::string &controllerId) const;
 
