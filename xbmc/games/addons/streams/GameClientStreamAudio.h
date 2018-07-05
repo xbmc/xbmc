@@ -40,7 +40,7 @@ class CGameClientStreamAudio : public IGameClientStream
 {
 public:
   CGameClientStreamAudio(double sampleRate);
-  ~CGameClientStreamAudio() override = default;
+  ~CGameClientStreamAudio() override { CloseStream(); }
 
   // Implementation of IGameClientStream
   bool OpenStream(RETRO::IRetroPlayerStream* stream,
@@ -53,10 +53,10 @@ private:
   static RETRO::AudioStreamProperties* TranslateProperties(const game_stream_audio_properties &properties, double sampleRate);
 
   // Construction parameters
-  double m_sampleRate;
+  const double m_sampleRate;
 
   // Stream parameters
-  RETRO::IRetroPlayerStream* m_stream;
+  RETRO::IRetroPlayerStream* m_stream = nullptr;
 };
 
 } // namespace GAME

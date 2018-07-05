@@ -60,7 +60,10 @@ CGameClientInput::~CGameClientInput()
 void CGameClientInput::Initialize()
 {
   LoadTopology();
+}
 
+void CGameClientInput::Start()
+{
   // Open keyboard
   //! @todo Move to player manager
   if (SupportsKeyboard())
@@ -103,6 +106,11 @@ void CGameClientInput::Initialize()
 }
 
 void CGameClientInput::Deinitialize()
+{
+  Stop();
+}
+
+void CGameClientInput::Stop()
 {
   m_hardware.reset();
 

@@ -39,7 +39,7 @@ class CGameClientStreamVideo : public IGameClientStream
 {
 public:
   CGameClientStreamVideo() = default;
-  ~CGameClientStreamVideo() override = default;
+  ~CGameClientStreamVideo() override { CloseStream(); }
 
   // Implementation of IGameClientStream
   bool OpenStream(RETRO::IRetroPlayerStream* stream,
@@ -52,7 +52,7 @@ private:
   static RETRO::VideoStreamProperties* TranslateProperties(const game_stream_video_properties &properties);
 
   // Stream parameters
-  RETRO::IRetroPlayerStream* m_stream;
+  RETRO::IRetroPlayerStream* m_stream = nullptr;
 };
 
 } // namespace GAME
