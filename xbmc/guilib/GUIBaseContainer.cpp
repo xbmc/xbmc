@@ -1075,6 +1075,11 @@ void CGUIBaseContainer::ScrollToOffset(int offset)
     else
       m_scrollTimer.Stop();
   }
+  else
+  {
+    m_scrollTimer.Stop();
+    m_scroller.Update(~0U);
+  }
   SetOffset(offset);
 }
 
