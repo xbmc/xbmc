@@ -18,15 +18,6 @@ if(OPENGL_FOUND)
   list(APPEND HEADERS RPRendererOpenGL.h)
 endif()
 
-if(MMAL_FOUND)
-  list(APPEND SOURCES MMALProcess.cpp
-                      MMALRenderer.cpp
-                      RPRendererMMAL.cpp)
-  list(APPEND HEADERS MMALProcess.h
-                      MMALRenderer.h
-                      RPRendererMMAL.h)
-endif()
-
 if(CORE_PLATFORM_NAME_LC STREQUAL gbm)
   list(APPEND SOURCES RPRendererGBM.cpp)
   list(APPEND HEADERS RPRendererGBM.h)
