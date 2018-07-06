@@ -176,7 +176,7 @@ bool CPeripheralBusUSB::PerformDeviceScan(PeripheralScanResults &results)
   return true;
 }
 
-const PeripheralType CPeripheralBusUSB::GetType(int iDeviceClass)
+PeripheralType CPeripheralBusUSB::GetType(int iDeviceClass)
 {
   switch (iDeviceClass)
   {

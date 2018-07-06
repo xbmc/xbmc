@@ -123,7 +123,7 @@ bool CViewStateSettings::Load(const TiXmlNode *settings)
   if (pElement != NULL)
   {
     int settingLevel;
-    if (XMLUtils::GetInt(pElement, XML_SETTINGLEVEL, settingLevel, (const int)SettingLevel::Basic, (const int)SettingLevel::Expert))
+    if (XMLUtils::GetInt(pElement, XML_SETTINGLEVEL, settingLevel, static_cast<int>(SettingLevel::Basic), static_cast<int>(SettingLevel::Expert)))
       m_settingLevel = (SettingLevel)settingLevel;
     else
       m_settingLevel = SettingLevel::Standard;
@@ -132,7 +132,7 @@ bool CViewStateSettings::Load(const TiXmlNode *settings)
     if (pEventLogNode != NULL)
     {
       int eventLevel;
-      if (XMLUtils::GetInt(pEventLogNode, XML_EVENTLOG_LEVEL, eventLevel, (const int)EventLevel::Basic, (const int)EventLevel::Error))
+      if (XMLUtils::GetInt(pEventLogNode, XML_EVENTLOG_LEVEL, eventLevel, static_cast<int>(EventLevel::Basic), static_cast<int>(EventLevel::Error)))
         m_eventLevel = (EventLevel)eventLevel;
       else
         m_eventLevel = EventLevel::Basic;
