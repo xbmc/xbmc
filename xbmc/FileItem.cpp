@@ -2882,7 +2882,7 @@ bool CFileItemList::Load(int windowID)
       return true;
     }
   }
-  catch(std::out_of_range ex)
+  catch(const std::out_of_range&)
   {
     CLog::Log(LOGERROR, "Corrupt archive: %s", CURL::GetRedacted(path).c_str());
   }
