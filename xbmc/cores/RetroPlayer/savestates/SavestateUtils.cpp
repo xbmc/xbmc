@@ -14,7 +14,7 @@
 #define METADATA_EXTENSION       ".xml"
 
 using namespace KODI;
-using namespace GAME;
+using namespace RETRO;
 
 std::string CSavestateUtils::MakePath(const CSavestate& save)
 {

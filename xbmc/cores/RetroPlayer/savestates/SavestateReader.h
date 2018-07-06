@@ -19,13 +19,16 @@ namespace KODI
 namespace GAME
 {
   class CGameClient;
+}
 
+namespace RETRO
+{
   class CSavestateReader
   {
   public:
     ~CSavestateReader();
 
-    bool Initialize(const std::string& path, const CGameClient* gameClient);
+    bool Initialize(const std::string& path, const GAME::CGameClient* gameClient);
     bool ReadSave(uint8_t *data, size_t size);
     uint64_t GetFrameCount(void) const { return m_frameCount; }
 

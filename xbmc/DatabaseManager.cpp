@@ -15,7 +15,6 @@
 #include "video/VideoDatabase.h"
 #include "pvr/PVRDatabase.h"
 #include "pvr/epg/EpgDatabase.h"
-#include "games/addons/savestates/SavestateDatabase.h"
 #include "settings/AdvancedSettings.h"
 
 using namespace PVR;

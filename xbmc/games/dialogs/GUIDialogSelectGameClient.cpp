@@ -9,11 +9,11 @@
 #include "GUIDialogSelectGameClient.h"
 #include "addons/AddonInstaller.h"
 #include "addons/AddonManager.h"
+#include "cores/RetroPlayer/savestates/Savestate.h"
+#include "cores/RetroPlayer/savestates/SavestateDatabase.h"
+#include "cores/RetroPlayer/savestates/SavestateUtils.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "filesystem/AddonsDirectory.h"
-#include "games/addons/savestates/Savestate.h"
-#include "games/addons/savestates/SavestateDatabase.h"
-#include "games/addons/savestates/SavestateUtils.h"
 #include "games/addons/GameClient.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
@@ -37,11 +37,11 @@ std::string CGUIDialogSelectGameClient::ShowAndGetGameClient(const std::string &
   LogGameClients(candidates, installable);
 
   std::string extension = URIUtils::GetExtension(gamePath);
-  std::string xmlPath = CSavestateUtils::MakeMetadataPath(gamePath);
+  std::string xmlPath = RETRO::CSavestateUtils::MakeMetadataPath(gamePath);
 
   // Load savestate
-  CSavestate save;
-  CSavestateDatabase db;
+  RETRO::CSavestate save;
+  RETRO::CSavestateDatabase db;
   CLog::Log(LOGDEBUG, "Select game client dialog: Loading savestate metadata %s", CURL::GetRedacted(xmlPath).c_str());
   const bool bLoaded = db.GetSavestate(xmlPath, save);
 

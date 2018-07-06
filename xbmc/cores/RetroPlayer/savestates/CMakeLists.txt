@@ -13,4 +13,4 @@ set(HEADERS Savestate.h
             SavestateUtils.h
             SavestateWriter.h)
 
-core_add_library(gamesavestates)
+core_add_library(retroplayer_savestates)

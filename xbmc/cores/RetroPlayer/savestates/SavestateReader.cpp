@@ -12,11 +12,11 @@
 #include "utils/log.h"
 
 using namespace KODI;
-using namespace GAME;
+using namespace RETRO;
 
 CSavestateReader::~CSavestateReader() = default;
 
-bool CSavestateReader::Initialize(const std::string& path, const CGameClient* gameClient)
+bool CSavestateReader::Initialize(const std::string& path, const GAME::CGameClient* gameClient)
 {
   bool bSuccess = false;
 

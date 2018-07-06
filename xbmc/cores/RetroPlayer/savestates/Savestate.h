@@ -17,7 +17,7 @@ class CVariant;
 
 namespace KODI
 {
-namespace GAME
+namespace RETRO
 {
   enum class SAVETYPE
   {

@@ -7,9 +7,9 @@
  */
 
 #include "SavestateWriter.h"
+#include "SavestateUtils.h"
 #include "filesystem/File.h"
 #include "games/addons/GameClient.h"
-#include "games/addons/savestates/SavestateUtils.h"
 #include "pictures/Picture.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"
@@ -18,11 +18,11 @@
 #include "XBDateTime.h"
 
 using namespace KODI;
-using namespace GAME;
+using namespace RETRO;
 
 CSavestateWriter::~CSavestateWriter() = default;
 
-bool CSavestateWriter::Initialize(const CGameClient* gameClient, uint64_t frameHistoryCount)
+bool CSavestateWriter::Initialize(const GAME::CGameClient* gameClient, uint64_t frameHistoryCount)
 {
   //! @todo Handle savestates for standalone game clients
   if (gameClient->GetGamePath().empty())

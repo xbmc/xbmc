@@ -10,8 +10,8 @@
 
 #include "FileItem.h"
 #include "Util.h"
+#include "cores/RetroPlayer/savestates/SavestateDefines.h"
 #include "cores/RetroPlayer/RetroPlayerUtils.h"
-#include "games/addons/savestates/SavestateDefines.h"
 #include "games/tags/GameInfoTag.h"
 #include "settings/MediaSettings.h"
 #include "utils/StringUtils.h"

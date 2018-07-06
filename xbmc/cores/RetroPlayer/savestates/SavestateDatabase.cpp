@@ -19,7 +19,7 @@
 #include "FileItem.h"
 
 using namespace KODI;
-using namespace GAME;
+using namespace RETRO;
 
 CSavestateDatabase::CSavestateDatabase() = default;
 

@@ -19,13 +19,16 @@ namespace KODI
 namespace GAME
 {
   class CGameClient;
+}
 
+namespace RETRO
+{
   class CSavestateWriter
   {
   public:
     ~CSavestateWriter();
 
-    bool Initialize(const CGameClient* gameClient, uint64_t frameHistoryCount);
+    bool Initialize(const GAME::CGameClient* gameClient, uint64_t frameHistoryCount);
     bool WriteSave(const uint8_t *data, size_t size);
     void WriteThumb();
     bool CommitToDatabase();

@@ -10,5 +10,6 @@ xbmc/cores/RetroPlayer/process                                  cores/RetroPlaye
 xbmc/cores/RetroPlayer/rendering                                cores/RetroPlayer/rendering
 xbmc/cores/RetroPlayer/rendering/VideoRenderers                 cores/RetroPlayer/rendering/VideoRenderers
 xbmc/cores/RetroPlayer/rendering/VideoShaders                   cores/RetroPlayer/rendering/VideoShaders
+xbmc/cores/RetroPlayer/savestates                               cores/RetroPlayer/savestates
 xbmc/cores/RetroPlayer/streams                                  cores/RetroPlayer/streams
 xbmc/cores/RetroPlayer/streams/memory                           cores/RetroPlayer/streams/memory

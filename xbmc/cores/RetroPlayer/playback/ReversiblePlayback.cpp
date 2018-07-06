@@ -7,12 +7,12 @@
  */
 
 #include "ReversiblePlayback.h"
+#include "cores/RetroPlayer/savestates/Savestate.h"
+#include "cores/RetroPlayer/savestates/SavestateReader.h"
+#include "cores/RetroPlayer/savestates/SavestateWriter.h"
 #include "cores/RetroPlayer/streams/memory/BasicMemoryStream.h"
 #include "cores/RetroPlayer/streams/memory/DeltaPairMemoryStream.h"
 #include "games/addons/GameClient.h"
-#include "games/addons/savestates/Savestate.h"
-#include "games/addons/savestates/SavestateReader.h"
-#include "games/addons/savestates/SavestateWriter.h"
 #include "games/GameServices.h"
 #include "games/GameSettings.h"
 #include "threads/SingleLock.h"
@@ -29,8 +29,8 @@ using namespace RETRO;
 CReversiblePlayback::CReversiblePlayback(GAME::CGameClient* gameClient, double fps, size_t serializeSize) :
   m_gameClient(gameClient),
   m_gameLoop(this, fps),
-  m_savestateWriter(new GAME::CSavestateWriter),
-  m_savestateReader(new GAME::CSavestateReader),
+  m_savestateWriter(new CSavestateWriter),
+  m_savestateReader(new CSavestateReader),
   m_totalFrameCount(0),
   m_pastFrameCount(0),
   m_futureFrameCount(0),

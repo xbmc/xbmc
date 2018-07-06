@@ -12,7 +12,7 @@
 
 namespace KODI
 {
-namespace GAME
+namespace RETRO
 {
   class CSavestate;
 

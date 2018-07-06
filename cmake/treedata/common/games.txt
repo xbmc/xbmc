@@ -1,7 +1,6 @@
 xbmc/games                         games
 xbmc/games/addons                  games/addons
 xbmc/games/addons/input            games/addons/input
-xbmc/games/addons/savestates       games/addons/savestates
 xbmc/games/addons/streams          games/addons/streams
 xbmc/games/controllers             games/controllers
 xbmc/games/controllers/dialogs     games/controllers/dialogs

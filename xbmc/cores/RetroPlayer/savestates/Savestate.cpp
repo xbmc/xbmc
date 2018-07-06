@@ -16,7 +16,7 @@
 #include <tinyxml.h>
 
 using namespace KODI;
-using namespace GAME;
+using namespace RETRO;
 
 void CSavestate::Reset()
 {
@@ -96,7 +96,7 @@ bool CSavestate::Serialize(const std::string& path) const
   if (m_type == SAVETYPE::SLOT)
     XMLUtils::SetInt(pElement, SAVESTATE_FIELD_SLOT, m_slot);
   XMLUtils::SetString(pElement, SAVESTATE_FIELD_LABEL, m_label);
-  XMLUtils::SetLong(pElement, SAVESTATE_FIELD_SIZE, m_size);
+  XMLUtils::SetLong(pElement, SAVESTATE_FIELD_SIZE, static_cast<long>(m_size));
   XMLUtils::SetString(pElement, SAVESTATE_FIELD_GAMECLIENT, m_gameClient);
   XMLUtils::SetString(pElement, SAVESTATE_FIELD_GAME_PATH, m_gamePath);
   XMLUtils::SetString(pElement, SAVESTATE_FIELD_GAME_CRC, m_gameCRC);
