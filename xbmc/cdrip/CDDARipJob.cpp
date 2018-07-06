@@ -227,7 +227,7 @@ CEncoder* CCDDARipJob::SetupEncoder(CFile& reader)
 
 std::string CCDDARipJob::SetupTempFile()
 {
-  char tmp[MAX_PATH];
+  char tmp[MAX_PATH + 1];
 #if defined(TARGET_WINDOWS)
   using namespace KODI::PLATFORM::WINDOWS;
   wchar_t tmpW[MAX_PATH];
