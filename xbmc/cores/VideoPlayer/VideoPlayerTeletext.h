@@ -46,7 +46,7 @@ public:
   bool IsInited() const override { return true; }
   bool IsStalled() const override { return true; }
 
-  TextCacheStruct_t* GetTeletextCache() { return &m_TXTCache; }
+  std::shared_ptr<TextCacheStruct_t> GetTeletextCache() { return std::make_shared<TextCacheStruct_t>(m_TXTCache); }
   void LoadPage(int p, int sp, unsigned char* buffer);
 
 protected:

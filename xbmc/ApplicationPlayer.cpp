@@ -475,7 +475,7 @@ bool CApplicationPlayer::CanPause()
   return (player && player->CanPause());
 }
 
-TextCacheStruct_t* CApplicationPlayer::GetTeletextCache()
+std::shared_ptr<TextCacheStruct_t> CApplicationPlayer::GetTeletextCache()
 {
   std::shared_ptr<IPlayer> player = GetInternal();
   if (player)
