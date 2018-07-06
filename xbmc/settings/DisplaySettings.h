@@ -78,7 +78,7 @@ public:
 
   const RESOLUTION_INFO& GetCurrentResolutionInfo() const { return GetResolutionInfo(m_currentResolution); }
   RESOLUTION_INFO& GetCurrentResolutionInfo() { return GetResolutionInfo(m_currentResolution); }
-  const RESOLUTION GetResFromString(const std::string &strResolution) { return GetResolutionFromString(strResolution); }
+  RESOLUTION GetResFromString(const std::string &strResolution) { return GetResolutionFromString(strResolution); }
 
   void ApplyCalibrations();
   void UpdateCalibrations();

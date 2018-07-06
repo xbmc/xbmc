@@ -285,7 +285,7 @@ void CScraperParser::ParseExpression(const std::string& input, std::string& dest
 
       if (iOptional > -1) // check that required param is there
       {
-        char temp[4];
+        char temp[12];
         sprintf(temp,"\\%i",iOptional);
         std::string szParam = reg.GetReplaceString(temp);
         CRegExp reg2;

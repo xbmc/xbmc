@@ -44,7 +44,7 @@ namespace PERIPHERALS
     bool PerformDeviceScan(PeripheralScanResults &results) override;
 
   protected:
-    static const PeripheralType GetType(int iDeviceClass);
+    static PeripheralType GetType(int iDeviceClass);
 
     void Process(void) override;
     bool WaitForUpdate(void);
