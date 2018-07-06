@@ -7059,10 +7059,20 @@ void CGUIInfoManager::OnApplicationMessage(KODI::MESSAGING::ThreadMessage* pMsg)
 
 void CGUIInfoManager::RegisterInfoProvider(IGUIInfoProvider *provider)
 {
+  if (!CServiceBroker::GetWinSystem())
+    return;
+
+  CSingleLock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
+
   m_infoProviders.RegisterProvider(provider, false);
 }
 
 void CGUIInfoManager::UnregisterInfoProvider(IGUIInfoProvider *provider)
 {
+  if (!CServiceBroker::GetWinSystem())
+    return;
+
+  CSingleLock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
+
   m_infoProviders.UnregisterProvider(provider);
 }
