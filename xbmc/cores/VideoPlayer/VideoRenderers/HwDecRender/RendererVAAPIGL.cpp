@@ -298,6 +298,9 @@ void CRendererVAAPI::ReleaseBuffer(int idx)
     glDeleteSync(m_fences[idx]);
     m_fences[idx] = GL_NONE;
   }
-  m_vaapiTextures[idx]->Unmap();
+  if (m_isVAAPIBuffer)
+  {
+    m_vaapiTextures[idx]->Unmap();
+  }
   CLinuxRendererGL::ReleaseBuffer(idx);
 }
