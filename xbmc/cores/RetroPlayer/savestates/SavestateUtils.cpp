@@ -7,21 +7,14 @@
  */
 
 #include "SavestateUtils.h"
-#include "Savestate.h"
 #include "utils/URIUtils.h"
 
 #define SAVESTATE_EXTENSION      ".sav"
-#define METADATA_EXTENSION       ".xml"
 
 using namespace KODI;
 using namespace RETRO;
 
-std::string CSavestateUtils::MakePath(const CSavestate& save)
+std::string CSavestateUtils::MakePath(const std::string &gamePath)
 {
-  return URIUtils::ReplaceExtension(save.GamePath(), SAVESTATE_EXTENSION);
-}
-
-std::string CSavestateUtils::MakeMetadataPath(const std::string &gamePath)
-{
-  return URIUtils::ReplaceExtension(gamePath, METADATA_EXTENSION);
+  return URIUtils::ReplaceExtension(gamePath, SAVESTATE_EXTENSION);
 }

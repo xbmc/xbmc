@@ -7,16 +7,15 @@
  */
 
 #include "ReversiblePlayback.h"
-#include "cores/RetroPlayer/savestates/Savestate.h"
-#include "cores/RetroPlayer/savestates/SavestateReader.h"
-#include "cores/RetroPlayer/savestates/SavestateWriter.h"
-#include "cores/RetroPlayer/streams/memory/BasicMemoryStream.h"
+#include "cores/RetroPlayer/savestates/ISavestate.h"
+#include "cores/RetroPlayer/savestates/SavestateDatabase.h"
 #include "cores/RetroPlayer/streams/memory/DeltaPairMemoryStream.h"
 #include "games/addons/GameClient.h"
 #include "games/GameServices.h"
 #include "games/GameSettings.h"
 #include "threads/SingleLock.h"
 #include "utils/MathUtils.h"
+#include "utils/URIUtils.h"
 #include "ServiceBroker.h"
 
 #include <algorithm>
@@ -29,8 +28,7 @@ using namespace RETRO;
 CReversiblePlayback::CReversiblePlayback(GAME::CGameClient* gameClient, double fps, size_t serializeSize) :
   m_gameClient(gameClient),
   m_gameLoop(this, fps),
-  m_savestateWriter(new CSavestateWriter),
-  m_savestateReader(new CSavestateReader),
+  m_savestateDatabase(new CSavestateDatabase),
   m_totalFrameCount(0),
   m_pastFrameCount(0),
   m_futureFrameCount(0),
@@ -109,104 +107,89 @@ void CReversiblePlayback::PauseAsync()
 
 std::string CReversiblePlayback::CreateSavestate()
 {
-  std::string empty;
+  const size_t memorySize = m_gameClient->SerializeSize();
 
   // Game client must support serialization
-  if (m_gameClient->SerializeSize() == 0)
-    return empty;
+  if (memorySize == 0)
+    return "";
 
-  if (!m_savestateWriter->Initialize(m_gameClient, m_totalFrameCount))
-    return empty;
+  //! @todo Handle savestates for standalone game clients
+  if (m_gameClient->GetGamePath().empty())
+  {
+    return "";
+  }
 
-  std::unique_ptr<IMemoryStream> memoryStream;
-  bool bHasMemoryStream = false;
+  const CDateTime now = CDateTime::GetCurrentDateTime();
+  const std::string label = now.GetAsLocalizedDateTime();
+  const std::string gameFileName = URIUtils::GetFileName(m_gameClient->GetGamePath());
+  const uint64_t timestampFrames = m_totalFrameCount;
+  const double timestampWallClock = (m_totalFrameCount / m_gameClient->GetFrameRate()); //! @todo Accumulate playtime instead of deriving it
+  const std::string gameClientId = m_gameClient->ID();
+  const std::string gameClientVersion = m_gameClient->Version().asString();
+
+  std::unique_ptr<ISavestate> savestate = m_savestateDatabase->CreateSavestate();
+
+  savestate->SetType(SAVE_TYPE::AUTO);
+  savestate->SetLabel(label);
+  savestate->SetCreated(now);
+  savestate->SetGameFileName(gameFileName);
+  savestate->SetTimestampFrames(timestampFrames);
+  savestate->SetTimestampWallClock(timestampWallClock);
+  savestate->SetGameClientID(gameClientId);
+  savestate->SetGameClientVersion(gameClientVersion);
+
+  uint8_t *memoryData = savestate->GetMemoryBuffer(memorySize);
 
   {
     CSingleLock lock(m_mutex);
-    if (m_memoryStream)
+    if (m_memoryStream && m_memoryStream->CurrentFrame() != nullptr)
     {
-      memoryStream = std::move(m_memoryStream);
-      bHasMemoryStream = true;
+      std::memcpy(memoryData, m_memoryStream->CurrentFrame(), memorySize);
     }
     else
     {
       lock.Leave();
-      memoryStream.reset(new CBasicMemoryStream);
-      memoryStream->Init(m_gameClient->SerializeSize(), 1);
+      if (!m_gameClient->Serialize(memoryData, memorySize))
+        return "";
     }
   }
 
-  // If memory stream is empty, ask the game client for a frame
-  if (memoryStream->CurrentFrame() == nullptr)
-  {
-    if (m_gameClient->Serialize(memoryStream->BeginFrame(), memoryStream->FrameSize()))
-      memoryStream->SubmitFrame();
-  }
+  savestate->Finalize();
 
-  bool bSuccess = false;
+  if (!m_savestateDatabase->AddSavestate(m_gameClient->GetGamePath(), *savestate))
+    return "";
 
-  if (m_savestateWriter->WriteSave(memoryStream->CurrentFrame(), memoryStream->FrameSize()))
-  {
-    m_savestateWriter->WriteThumb();
-
-    if (m_savestateWriter->CommitToDatabase())
-      bSuccess = true;
-    else
-      m_savestateWriter->CleanUpTransaction();
-  }
-
-  if (bHasMemoryStream)
-  {
-    CSingleLock lock(m_mutex);
-    m_memoryStream = std::move(memoryStream);
-  }
-
-  return bSuccess ? m_savestateWriter->GetPath() : "";
+  return m_gameClient->GetGamePath();
 }
 
 bool CReversiblePlayback::LoadSavestate(const std::string& path)
 {
+  const size_t memorySize = m_gameClient->SerializeSize();
+
   // Game client must support serialization
-  if (m_gameClient->SerializeSize() == 0)
+  if (memorySize == 0)
     return false;
-
-  if (!m_savestateReader->Initialize(path, m_gameClient))
-    return false;
-
-  std::unique_ptr<IMemoryStream> memoryStream;
-  bool bHasMemoryStream = false;
-
-  {
-    CSingleLock lock(m_mutex);
-    if (m_memoryStream)
-    {
-      memoryStream = std::move(m_memoryStream);
-      bHasMemoryStream = true;
-    }
-    else
-    {
-      lock.Leave();
-      memoryStream.reset(new CBasicMemoryStream);
-      memoryStream->Init(m_gameClient->SerializeSize(), 1);
-    }
-  }
 
   bool bSuccess = false;
 
-  if (m_savestateReader->ReadSave(memoryStream->BeginFrame(), memoryStream->FrameSize()))
+  std::unique_ptr<ISavestate> savestate = m_savestateDatabase->CreateSavestate();
+  if (m_savestateDatabase->GetSavestate(path, *savestate) && savestate->GetMemorySize() == memorySize)
   {
-    memoryStream->SubmitFrame();
+    {
+      CSingleLock lock(m_mutex);
+      if (m_memoryStream)
+      {
+        m_memoryStream->SetFrameCounter(savestate->TimestampFrames());
+        std::memcpy(m_memoryStream->BeginFrame(), savestate->GetMemoryData(), memorySize);
+        m_memoryStream->SubmitFrame();
+      }
+    }
 
-    m_gameClient->Deserialize(memoryStream->CurrentFrame(), memoryStream->FrameSize());
-    m_totalFrameCount = m_savestateReader->GetFrameCount();
-
-    bSuccess = true;
-  }
-
-  if (bHasMemoryStream)
-  {
-    CSingleLock lock(m_mutex);
-    m_memoryStream = std::move(memoryStream);
+    if (m_gameClient->Deserialize(savestate->GetMemoryData(), memorySize))
+    {
+      m_totalFrameCount = savestate->TimestampFrames();
+      bSuccess = true;
+    }
   }
 
   return bSuccess;

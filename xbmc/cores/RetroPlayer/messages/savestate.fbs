@@ -1,0 +1,47 @@
+//
+//  Copyright (C) 2018 Team Kodi
+//  This file is part of Kodi - https://kodi.tv
+//
+//  SPDX-License-Identifier: MIT
+//  See LICENSES/README.md for more information.
+//
+
+namespace KODI.RETRO;
+
+// Savestate schema
+// Version 1
+
+file_identifier "SAV_";
+
+enum SaveType : uint8 {
+  Unknown,
+  Auto,
+  Manual
+}
+
+table Savestate {
+  // Schema version
+  version:uint8;
+
+  // Savestate properties
+  type:SaveType;
+  slot:uint8;
+  label:string;
+  created:string; // RFC 1123 date time
+
+  // Game properties
+  game_file_name:string;
+
+  // Environment properties
+  timestamp_frames:uint64;
+  timestamp_wall_clock_ns:uint64;
+
+  // Emulator properties
+  emulator_addon_id:string;
+  emulator_version:string; // Semantic version
+
+  // Memory properties
+  memory_data:[uint8];
+}
+
+root_type Savestate;

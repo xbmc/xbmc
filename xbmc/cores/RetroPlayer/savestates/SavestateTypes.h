@@ -8,19 +8,21 @@
 
 #pragma once
 
-#include "Savestate.h"
-
-#include <string>
-
 namespace KODI
 {
 namespace RETRO
 {
-  class CSavestateTranslator
+  /*!
+   * \brief Type of save action, either:
+   *
+   *   - automatic (saving was not prompted by the user)
+   *   - manual (user manually prompted the save)
+   */
+  enum class SAVE_TYPE
   {
-  public:
-    static SAVETYPE TranslateType(const std::string& type);
-    static std::string TranslateType(const SAVETYPE& type);
+    UNKNOWN,
+    AUTO,
+    MANUAL,
   };
 }
 }

@@ -26,8 +26,7 @@ namespace GAME
 
 namespace RETRO
 {
-  class CSavestateReader;
-  class CSavestateWriter;
+  class CSavestateDatabase;
   class IMemoryStream;
 
   class CReversiblePlayback : public IPlayback,
@@ -77,8 +76,7 @@ namespace RETRO
     CCriticalSection m_mutex;
 
     // Savestate functionality
-    std::unique_ptr<CSavestateWriter> m_savestateWriter;
-    std::unique_ptr<CSavestateReader> m_savestateReader;
+    std::unique_ptr<CSavestateDatabase> m_savestateDatabase;
 
     // Playback stats
     uint64_t m_totalFrameCount;

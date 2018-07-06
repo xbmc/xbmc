@@ -18,7 +18,8 @@
 #include "cores/RetroPlayer/playback/ReversiblePlayback.h"
 #include "cores/RetroPlayer/process/RPProcessInfo.h"
 #include "cores/RetroPlayer/rendering/RPRenderManager.h"
-#include "cores/RetroPlayer/savestates/Savestate.h"
+#include "cores/RetroPlayer/savestates/ISavestate.h"
+#include "cores/RetroPlayer/savestates/SavestateDatabase.h"
 #include "cores/RetroPlayer/savestates/SavestateUtils.h"
 #include "cores/RetroPlayer/streams/RPStreamManager.h"
 #include "dialogs/GUIDialogYesNo.h"
@@ -42,6 +43,7 @@
 #include "utils/log.h"
 #include "utils/MathUtils.h"
 #include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
 #include "FileItem.h"
 #include "ServiceBroker.h"
 #include "URL.h"
@@ -144,16 +146,16 @@ bool CRetroPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options
 
   if (bSuccess && !bStandalone)
   {
-    std::string savestatePath = CSavestateUtils::MakeMetadataPath(fileCopy.GetPath());
+    CSavestateDatabase savestateDb;
 
-    CSavestate save;
-    if (save.Deserialize(savestatePath))
+    std::unique_ptr<ISavestate> save = savestateDb.CreateSavestate();
+    if (savestateDb.GetSavestate(fileCopy.GetPath(), *save))
     {
       // Check if game client is the same
-      if (save.GameClient() != m_gameClient->ID())
+      if (save->GameClientID() != m_gameClient->ID())
       {
         ADDON::AddonPtr addon;
-        if (CServiceBroker::GetAddonMgr().GetAddon(save.GameClient(), addon))
+        if (CServiceBroker::GetAddonMgr().GetAddon(save->GameClientID(), addon))
         {
           // Warn the user that continuing with a different game client will
           // overwrite the save
@@ -555,15 +557,10 @@ void CRetroPlayer::CreatePlayback(bool bRestoreState)
     const bool bStandalone = m_gameClient->GetGamePath().empty();
     if (!bStandalone)
     {
-      std::string savestatePath = CSavestateUtils::MakeMetadataPath(m_gameClient->GetGamePath());
-      if (!savestatePath.empty())
-      {
-        std::string redactedSavestatePath = CURL::GetRedacted(savestatePath);
-        CLog::Log(LOGDEBUG, "RetroPlayer[SAVE]: Loading savestate %s", redactedSavestatePath.c_str());
+      CLog::Log(LOGDEBUG, "RetroPlayer[SAVE]: Loading savestate");
 
-        if (!SetPlayerState(savestatePath))
-          CLog::Log(LOGERROR, "RetroPlayer[SAVE]: Failed to load savestate");
-      }
+      if (!SetPlayerState(m_gameClient->GetGamePath()))
+        CLog::Log(LOGERROR, "RetroPlayer[SAVE]: Failed to load savestate");
     }
   }
 

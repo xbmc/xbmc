@@ -7,30 +7,92 @@
  */
 
 #include "SavestateDatabase.h"
-#include "Savestate.h"
-#include "SavestateDefines.h"
+#include "SavestateFlatBuffer.h"
 #include "SavestateUtils.h"
-#include "ServiceBroker.h"
-#include "addons/AddonManager.h"
-#include "games/GameTypes.h"
-#include "games/tags/GameInfoTag.h"
-#include "utils/StringUtils.h"
-#include "utils/Variant.h"
-#include "FileItem.h"
+#include "filesystem/File.h"
+#include "utils/log.h"
+#include "URL.h"
 
 using namespace KODI;
 using namespace RETRO;
 
 CSavestateDatabase::CSavestateDatabase() = default;
 
-bool CSavestateDatabase::AddSavestate(const CSavestate& save)
+std::unique_ptr<ISavestate> CSavestateDatabase::CreateSavestate()
 {
-  return save.Serialize(CSavestateUtils::MakeMetadataPath(save.GamePath()));
+  std::unique_ptr<ISavestate> savestate;
+
+  savestate.reset(new CSavestateFlatBuffer);
+
+  return savestate;
 }
 
-bool CSavestateDatabase::GetSavestate(const std::string& path, CSavestate& save)
+bool CSavestateDatabase::AddSavestate(const std::string &gamePath, const ISavestate& save)
 {
-  return save.Deserialize(path);
+  bool bSuccess = false;
+
+  const std::string savestatePath = CSavestateUtils::MakePath(gamePath);
+
+  CLog::Log(LOGDEBUG, "Saving savestate to %s", CURL::GetRedacted(savestatePath).c_str());
+
+  const uint8_t *data = nullptr;
+  size_t size = 0;
+  if (save.Serialize(data, size))
+  {
+    XFILE::CFile file;
+    if (file.OpenForWrite(savestatePath))
+    {
+      const ssize_t written = file.Write(data, size);
+      if (written == static_cast<ssize_t>(size))
+      {
+        CLog::Log(LOGDEBUG, "Wrote savestate of %u bytes", size);
+        bSuccess = true;
+      }
+    }
+    else
+      CLog::Log(LOGERROR, "Failed to open savestate for writing");
+  }
+
+  return bSuccess;
+}
+
+bool CSavestateDatabase::GetSavestate(const std::string& gamePath, ISavestate& save)
+{
+  bool bSuccess = false;
+
+  const std::string savestatePath = CSavestateUtils::MakePath(gamePath);
+
+  CLog::Log(LOGDEBUG, "Loading savestate from %s", CURL::GetRedacted(savestatePath).c_str());
+
+  std::vector<uint8_t> savestateData;
+
+  XFILE::CFile savestateFile;
+  if (savestateFile.Open(savestatePath, XFILE::READ_TRUNCATED))
+  {
+    int64_t size = savestateFile.GetLength();
+    if (size > 0)
+    {
+      savestateData.resize(static_cast<size_t>(size));
+
+      const ssize_t readLength = savestateFile.Read(savestateData.data(), savestateData.size());
+      if (readLength != static_cast<ssize_t>(savestateData.size()))
+      {
+        CLog::Log(LOGERROR, "Failed to read savestate %s of size %d bytes",
+          CURL::GetRedacted(savestatePath).c_str(),
+          size);
+        savestateData.clear();
+      }
+    }
+    else
+      CLog::Log(LOGERROR, "Failed to get savestate length: %s", CURL::GetRedacted(savestatePath).c_str());
+  }
+  else
+    CLog::Log(LOGERROR, "Failed to open savestate file %s", CURL::GetRedacted(savestatePath).c_str());
+
+  if (!savestateData.empty())
+    bSuccess = save.Deserialize(std::move(savestateData));
+
+  return bSuccess;
 }
 
 bool CSavestateDatabase::GetSavestatesNav(CFileItemList& items, const std::string& gamePath, const std::string& gameClient /* = "" */)
@@ -55,35 +117,4 @@ bool CSavestateDatabase::ClearSavestatesOfGame(const std::string& gamePath, cons
 {
   //! @todo
   return false;
-}
-
-CFileItem* CSavestateDatabase::CreateFileItem(const CVariant& object) const
-{
-  using namespace ADDON;
-
-  CSavestate save;
-  save.Deserialize(object);
-  CFileItem* item = new CFileItem(save.Label());
-
-  item->SetPath(save.Path());
-  if (!save.Thumbnail().empty())
-    item->SetArt("thumb", save.Thumbnail());
-  else
-  {
-    AddonPtr addon;
-    if (CServiceBroker::GetAddonMgr().GetAddon(save.GameClient(), addon, ADDON_GAMEDLL))
-      item->SetArt("thumb", addon->Icon());
-  }
-
-  // Use the slot number as the second label
-  if (save.Type() == SAVETYPE::SLOT)
-    item->SetLabel2(StringUtils::Format("%u", save.Slot()));
-
-  item->m_dateTime = save.Timestamp();
-  item->SetProperty(FILEITEM_PROPERTY_SAVESTATE_DURATION, static_cast<uint64_t>(save.PlaytimeWallClock()));
-  item->GetGameInfoTag()->SetGameClient(save.GameClient());
-  item->m_dwSize = save.Size();
-  item->m_bIsFolder = false;
-
-  return item;
 }

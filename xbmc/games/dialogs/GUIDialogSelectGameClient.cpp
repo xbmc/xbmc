@@ -9,9 +9,8 @@
 #include "GUIDialogSelectGameClient.h"
 #include "addons/AddonInstaller.h"
 #include "addons/AddonManager.h"
-#include "cores/RetroPlayer/savestates/Savestate.h"
+#include "cores/RetroPlayer/savestates/ISavestate.h"
 #include "cores/RetroPlayer/savestates/SavestateDatabase.h"
-#include "cores/RetroPlayer/savestates/SavestateUtils.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "filesystem/AddonsDirectory.h"
 #include "games/addons/GameClient.h"
@@ -37,19 +36,19 @@ std::string CGUIDialogSelectGameClient::ShowAndGetGameClient(const std::string &
   LogGameClients(candidates, installable);
 
   std::string extension = URIUtils::GetExtension(gamePath);
-  std::string xmlPath = RETRO::CSavestateUtils::MakeMetadataPath(gamePath);
 
   // Load savestate
-  RETRO::CSavestate save;
   RETRO::CSavestateDatabase db;
-  CLog::Log(LOGDEBUG, "Select game client dialog: Loading savestate metadata %s", CURL::GetRedacted(xmlPath).c_str());
-  const bool bLoaded = db.GetSavestate(xmlPath, save);
+  std::unique_ptr<RETRO::ISavestate> save = db.CreateSavestate();
+
+  CLog::Log(LOGDEBUG, "Select game client dialog: Loading savestate metadata");
+  const bool bLoaded = db.GetSavestate(gamePath, *save);
 
   // Get savestate game client
   std::string saveGameClient;
   if (bLoaded)
   {
-    saveGameClient = save.GameClient();
+    saveGameClient = save->GameClientID();
     CLog::Log(LOGDEBUG, "Select game client dialog: Auto-selecting %s", saveGameClient.c_str());
   }
 
