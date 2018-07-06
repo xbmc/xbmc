@@ -1731,9 +1731,10 @@ private:
   CCodecIds(void)
   {
     // get ids and names
-    AVCodec* codec = NULL;
+    const AVCodec* codec = nullptr;
+    void* i = nullptr;
     xbmc_codec_t tmp;
-    while ((codec = av_codec_next(codec)))
+    while ((codec = av_codec_iterate(&i)))
     {
       if (av_codec_is_decoder(codec))
       {
