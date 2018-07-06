@@ -65,6 +65,8 @@ bool CGUIDialogVideoOSD::OnAction(const CAction &action)
     Close();
     return true;
   }
+  else if (action.GetID() == ACTION_TRIGGER_OSD)
+    return true;
 
   return CGUIDialog::OnAction(action);
 }
