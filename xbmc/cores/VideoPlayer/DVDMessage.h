@@ -251,7 +251,7 @@ public:
   , m_params(params)
   {}
 
-  float GetSpeed() const { return m_params.m_speed; }
+  int GetSpeed() const { return m_params.m_speed; }
   bool IsTempo() const { return m_params.m_isTempo; }
 
 private:

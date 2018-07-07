@@ -135,7 +135,7 @@ void CGUIWrappingListContainer::ValidateOffset()
   ResetExtraItems();
   if (m_items.size())
   {
-    unsigned int numItems = m_items.size();
+    size_t numItems = m_items.size();
     while (m_items.size() < minItems)
     {
       // add additional copies of items, as we require extras at render time

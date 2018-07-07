@@ -53,7 +53,7 @@ namespace ADDON
       return m_providedSubContent.size() > 1;
     }
 
-    int ProvidedSubContents() const
+    size_t ProvidedSubContents() const
     {
       return m_providedSubContent.size();
     }

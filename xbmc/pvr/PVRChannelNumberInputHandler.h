@@ -96,7 +96,7 @@ protected:
    * @brief Get the currently entered number of digits.
    * @return the number of digits.
    */
-  int GetCurrentDigitCount() const { return m_inputBuffer.size(); }
+  size_t GetCurrentDigitCount() const { return m_inputBuffer.size(); }
 
   CCriticalSection m_mutex;
 
