@@ -2057,13 +2057,6 @@ bool CApplication::OnAction(const CAction &action)
   {
     if (m_appPlayer.OnAction(action))
       return true;
-
-    // Player ignored action; popup the OSD
-    if ((action.GetID() == ACTION_MOUSE_MOVE && (action.GetAmount(2) || action.GetAmount(3)))  // filter "false" mouse move from touch
-        || action.GetID() == ACTION_MOUSE_LEFT_CLICK)
-    {
-      CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_TRIGGER_OSD)));
-    }
   }
 
   // stop : stops playing current audio song
