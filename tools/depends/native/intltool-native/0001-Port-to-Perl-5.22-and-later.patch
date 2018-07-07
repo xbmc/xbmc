@@ -1,0 +1,57 @@
+---
+ intltool-update.in | 22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
+
+diff --git a/intltool-update.in b/intltool-update.in
+index df591c6..df7723f 100644
+--- a/intltool-update.in
++++ b/intltool-update.in
+@@ -1061,13 +1061,13 @@ sub SubstituteVariable
+ 	}
+     }
+ 
+-    if ($str =~ /^(.*)\${?([A-Z_]+)}?(.*)$/)
++    if ($str =~ /^(.*)\$[{]?([A-Z_]+)}?(.*)$/)
+     {
+ 	my $rest = $3;
+ 	my $untouched = $1;
+ 	my $sub = "";
+         # Ignore recursive definitions of variables
+-        $sub = $varhash{$2} if defined $varhash{$2} and $varhash{$2} !~ /\${?$2}?/;
++        $sub = $varhash{$2} if defined $varhash{$2} and $varhash{$2} !~ /\$[{]?$2}?/;
+ 
+ 	return SubstituteVariable ("$untouched$sub$rest");
+     }
+@@ -1189,10 +1189,10 @@ sub FindPackageName
+ 	$name    =~ s/\(+$//g;
+ 	$version =~ s/\(+$//g;
+ 
+-	$varhash{"PACKAGE_NAME"} = $name if (not $name =~ /\${?AC_PACKAGE_NAME}?/);
+-	$varhash{"PACKAGE"} = $name if (not $name =~ /\${?PACKAGE}?/);
+-	$varhash{"PACKAGE_VERSION"} = $version if (not $name =~ /\${?AC_PACKAGE_VERSION}?/);
+-	$varhash{"VERSION"} = $version if (not $name =~ /\${?VERSION}?/);
++	$varhash{"PACKAGE_NAME"} = $name if (not $name =~ /\$[{]?AC_PACKAGE_NAME}?/);
++	$varhash{"PACKAGE"} = $name if (not $name =~ /\$[{]?PACKAGE}?/);
++	$varhash{"PACKAGE_VERSION"} = $version if (not $name =~ /\$[{]?AC_PACKAGE_VERSION}?/);
++	$varhash{"VERSION"} = $version if (not $name =~ /\$[{]?VERSION}?/);
+     }
+ 
+     if ($conf_source =~ /^AC_INIT\(([^,\)]+),([^,\)]+)[,]?([^,\)]+)?/m)
+@@ -1218,11 +1218,11 @@ sub FindPackageName
+ 	$version =~ s/\(+$//g;
+         $bugurl  =~ s/\(+$//g if (defined $bugurl);
+ 
+-	$varhash{"PACKAGE_NAME"} = $name if (not $name =~ /\${?AC_PACKAGE_NAME}?/);
+-	$varhash{"PACKAGE"} = $name if (not $name =~ /\${?PACKAGE}?/);
+-	$varhash{"PACKAGE_VERSION"} = $version if (not $name =~ /\${?AC_PACKAGE_VERSION}?/);
+-	$varhash{"VERSION"} = $version if (not $name =~ /\${?VERSION}?/);
+-        $varhash{"PACKAGE_BUGREPORT"} = $bugurl if (defined $bugurl and not $bugurl =~ /\${?\w+}?/);
++	$varhash{"PACKAGE_NAME"} = $name if (not $name =~ /\$[{]?AC_PACKAGE_NAME}?/);
++	$varhash{"PACKAGE"} = $name if (not $name =~ /\$[{]?PACKAGE}?/);
++	$varhash{"PACKAGE_VERSION"} = $version if (not $name =~ /\$[{]?AC_PACKAGE_VERSION}?/);
++	$varhash{"VERSION"} = $version if (not $name =~ /\$[{]?VERSION}?/);
++        $varhash{"PACKAGE_BUGREPORT"} = $bugurl if (defined $bugurl and not $bugurl =~ /\$[{]?\w+}?/);
+     }
+ 
+     # \s makes this not work, why?
+-- 
