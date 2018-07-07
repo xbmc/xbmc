@@ -131,7 +131,7 @@ void CGUIDialogTextViewer::ShowForFile(const std::string& path, bool useMonoFont
       pDialog->UseMonoFont(useMonoFont);
       pDialog->Open();
     }
-    catch(std::bad_alloc& ie)
+    catch(const std::bad_alloc&)
     {
       CLog::Log(LOGERROR, "Not enough memory to load text file %s", path.c_str());
     }
