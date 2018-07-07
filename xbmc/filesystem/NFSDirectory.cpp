@@ -38,6 +38,17 @@ using namespace XFILE;
 #include <limits.h>
 #include <nfsc/libnfs-raw-nfs.h>
 
+#if defined(TARGET_WINDOWS)
+#define S_IFLNK 0120000
+#define S_ISBLK(m) (0)
+#define S_ISSOCK(m) (0)
+#define S_ISLNK(m) ((m & S_IFLNK) != 0)
+#define S_ISCHR(m) ((m & _S_IFCHR) != 0)
+#define S_ISDIR(m) ((m & _S_IFDIR) != 0)
+#define S_ISFIFO(m) ((m & _S_IFIFO) != 0)
+#define S_ISREG(m) ((m & _S_IFREG) != 0)
+#endif
+
 CNFSDirectory::CNFSDirectory(void)
 {
   gNfsConnection.AddActiveConnection();
