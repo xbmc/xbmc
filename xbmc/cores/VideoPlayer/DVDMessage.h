@@ -252,7 +252,7 @@ public:
   {}
 
   float GetSpeed() const { return m_params.m_speed; }
-  float IsTempo() const { return m_params.m_isTempo; }
+  bool IsTempo() const { return m_params.m_isTempo; }
 
 private:
 
