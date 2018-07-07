@@ -44,7 +44,7 @@ CRenderBufferGBM::~CRenderBufferGBM()
   DeleteTexture();
 }
 
-bool CRenderBufferGBM::Allocate(AVPixelFormat format, unsigned int width, unsigned int height, size_t size)
+bool CRenderBufferGBM::Allocate(AVPixelFormat format, unsigned int width, unsigned int height)
 {
   // Initialize IRenderBuffer
   m_format = format;

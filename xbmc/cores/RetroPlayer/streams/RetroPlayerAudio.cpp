@@ -52,7 +52,7 @@ CRetroPlayerAudio::~CRetroPlayerAudio()
 
 bool CRetroPlayerAudio::OpenStream(const StreamProperties& properties)
 {
-  const AudioStreamProperties& audioProperties = reinterpret_cast<const AudioStreamProperties&>(properties);
+  const AudioStreamProperties& audioProperties = static_cast<const AudioStreamProperties&>(properties);
 
   const AEDataFormat pcmFormat = CAudioTranslator::TranslatePCMFormat(audioProperties.format);
   if (pcmFormat == AE_FMT_INVALID)
@@ -118,7 +118,7 @@ bool CRetroPlayerAudio::OpenStream(const StreamProperties& properties)
 
 void CRetroPlayerAudio::AddStreamData(const StreamPacket &packet)
 {
-  const AudioStreamPacket& audioPacket = reinterpret_cast<const AudioStreamPacket&>(packet);
+  const AudioStreamPacket& audioPacket = static_cast<const AudioStreamPacket&>(packet);
 
   if (m_bAudioEnabled)
   {

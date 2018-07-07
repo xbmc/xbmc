@@ -56,11 +56,9 @@ RenderBufferPoolVector CWinRendererFactory::CreateBufferPools(CRenderContext &co
 
 // --- CWinRenderBuffer --------------------------------------------------------
 
-CWinRenderBuffer::CWinRenderBuffer(AVPixelFormat pixFormat, DXGI_FORMAT dxFormat, unsigned int width, unsigned int height) :
+CWinRenderBuffer::CWinRenderBuffer(AVPixelFormat pixFormat, DXGI_FORMAT dxFormat) :
   m_pixFormat(pixFormat),
   m_targetDxFormat(dxFormat),
-  m_width(width),
-  m_height(height),
   m_targetPixFormat(GetPixFormat(dxFormat))
 {
 }
@@ -185,7 +183,7 @@ bool CWinRenderBufferPool::IsCompatible(const CRenderVideoSettings &renderSettin
 
 IRenderBuffer *CWinRenderBufferPool::CreateRenderBuffer(void *header /* = nullptr */)
 {
-  return new CWinRenderBuffer(m_format, m_targetDxFormat, m_width, m_height);
+  return new CWinRenderBuffer(m_format, m_targetDxFormat);
 }
 
 bool CWinRenderBufferPool::ConfigureDX(DXGI_FORMAT dxFormat)

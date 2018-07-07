@@ -105,23 +105,13 @@ namespace RETRO
     unsigned int m_sourceHeight = 0;
     unsigned int m_renderOrientation = 0; // Degrees counter-clockwise
 
-    /*!
-     * \brief Orientation of the previous frame
-     *
-     * For drawing the texture with glVertex4f (holds all 4 corner points of the
-     * destination rect with correct orientation based on m_renderOrientation.
-     */
-    unsigned int m_oldRenderOrientation = 0;
-
     // Rendering properties
     CRenderSettings m_renderSettings;
-    CRect m_dimensions;
     IRenderBuffer *m_renderBuffer = nullptr;
 
     // Geometry properties
-    std::array<CPoint, 4> m_rotatedDestCoords;
-    CRect m_oldDestRect; // destrect of the previous frame
-    CRect m_sourceRect; // original size of the video
+    CRect m_sourceRect;
+    std::array<CPoint, 4> m_rotatedDestCoords{};
 
   private:
     /*!

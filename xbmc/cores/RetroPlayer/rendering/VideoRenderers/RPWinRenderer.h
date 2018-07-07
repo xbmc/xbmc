@@ -54,7 +54,7 @@ namespace RETRO
   class CWinRenderBuffer : public CRenderBufferSysMem
   {
   public:
-    CWinRenderBuffer(AVPixelFormat pixFormat, DXGI_FORMAT dxFormat, unsigned int width, unsigned int height);
+    CWinRenderBuffer(AVPixelFormat pixFormat, DXGI_FORMAT dxFormat);
     ~CWinRenderBuffer() override = default;
 
     // implementation of IRenderBuffer via CRenderBufferSysMem
@@ -75,8 +75,6 @@ namespace RETRO
     // Construction parameters
     const AVPixelFormat m_pixFormat;
     const DXGI_FORMAT m_targetDxFormat;
-    const unsigned int m_width;
-    const unsigned int m_height;
 
     AVPixelFormat m_targetPixFormat;
     std::unique_ptr<CD3DTexture> m_intermediateTarget;

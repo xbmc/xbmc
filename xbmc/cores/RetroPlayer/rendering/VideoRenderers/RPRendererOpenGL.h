@@ -49,9 +49,7 @@ namespace RETRO
                         GLuint pixeltype,
                         GLuint internalformat,
                         GLuint pixelformat,
-                        GLuint bpp,
-                        unsigned int width,
-                        unsigned int height);
+                        GLuint bpp);
     ~CRenderBufferOpenGL() override = default;
 
     // implementation of IRenderBuffer via CRenderBufferOpenGLES

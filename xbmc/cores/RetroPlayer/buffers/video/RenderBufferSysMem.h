@@ -25,6 +25,10 @@
 #include <stdint.h>
 #include <vector>
 
+extern "C" {
+#include "libavutil/pixfmt.h"
+}
+
 namespace KODI
 {
 namespace RETRO
@@ -36,9 +40,12 @@ namespace RETRO
     virtual ~CRenderBufferSysMem() = default;
 
     // implementation of IRenderBuffer
-    bool Allocate(AVPixelFormat format, unsigned int width, unsigned int height, size_t size) override;
+    bool Allocate(AVPixelFormat format, unsigned int width, unsigned int height) override;
     size_t GetFrameSize() const override;
     uint8_t *GetMemory() override;
+
+    // Utility functions
+    static size_t GetBufferSize(AVPixelFormat format, unsigned int width, unsigned int height);
 
   protected:
     std::vector<uint8_t> m_data;

@@ -94,6 +94,19 @@ AVPixelFormat CGameClientTranslator::TranslatePixelFormat(GAME_PIXEL_FORMAT form
   return AV_PIX_FMT_NONE;
 }
 
+GAME_PIXEL_FORMAT CGameClientTranslator::TranslatePixelFormat(AVPixelFormat format)
+{
+  switch (format)
+  {
+  case AV_PIX_FMT_0RGB32: return GAME_PIXEL_FORMAT_0RGB8888;
+  case AV_PIX_FMT_RGB565: return GAME_PIXEL_FORMAT_RGB565;
+  case AV_PIX_FMT_RGB555: return GAME_PIXEL_FORMAT_0RGB1555;
+  default:
+    break;
+  }
+  return GAME_PIXEL_FORMAT_UNKNOWN;
+}
+
 RETRO::PCMFormat CGameClientTranslator::TranslatePCMFormat(GAME_PCM_FORMAT format)
 {
   switch (format)

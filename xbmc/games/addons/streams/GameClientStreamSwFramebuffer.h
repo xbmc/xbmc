@@ -17,43 +17,23 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-
 #pragma once
 
-#include "IGameClientStream.h"
-
-struct game_stream_video_properties;
+#include "GameClientStreamVideo.h"
 
 namespace KODI
 {
-namespace RETRO
-{
-  class IRetroPlayerStream;
-  struct VideoStreamProperties;
-}
-
 namespace GAME
 {
 
-class CGameClientStreamVideo : public IGameClientStream
+class CGameClientStreamSwFramebuffer : public CGameClientStreamVideo
 {
 public:
-  CGameClientStreamVideo() = default;
-  ~CGameClientStreamVideo() override { CloseStream(); }
+  CGameClientStreamSwFramebuffer() = default;
+  ~CGameClientStreamSwFramebuffer() override = default;
 
-  // Implementation of IGameClientStream
-  bool OpenStream(RETRO::IRetroPlayerStream* stream,
-                  const game_stream_properties& properties) override;
-  void CloseStream() override;
-  void AddData(const game_stream_packet& packet) override;
-
-protected:
-  // Stream parameters
-  RETRO::IRetroPlayerStream* m_stream = nullptr;
-
-private:
-  // Utility functions
-  static RETRO::VideoStreamProperties* TranslateProperties(const game_stream_video_properties &properties);
+  // Implementation of IGameClientStream via CGameClientStreamVideo
+  bool GetBuffer(unsigned int width, unsigned int height, game_stream_buffer &buffer) override;
 };
 
 } // namespace GAME

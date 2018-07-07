@@ -44,7 +44,7 @@ namespace RETRO
     ~CRenderBufferGBM() override;
 
     // implementation of IRenderBuffer via CRenderBufferSysMem
-    bool Allocate(AVPixelFormat format, unsigned int width, unsigned int height, size_t size) override;
+    bool Allocate(AVPixelFormat format, unsigned int width, unsigned int height) override;
     size_t GetFrameSize() const override;
     uint8_t *GetMemory() override;
     void ReleaseMemory() override;

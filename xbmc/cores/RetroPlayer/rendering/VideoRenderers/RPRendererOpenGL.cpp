@@ -48,16 +48,12 @@ CRenderBufferOpenGL::CRenderBufferOpenGL(CRenderContext &context,
                                          GLuint pixeltype,
                                          GLuint internalformat,
                                          GLuint pixelformat,
-                                         GLuint bpp,
-                                         unsigned int width,
-                                         unsigned int height) :
+                                         GLuint bpp) :
   CRenderBufferOpenGLES(context,
                         pixeltype,
                         internalformat,
                         pixelformat,
-                        bpp,
-                        width,
-                        height)
+                        bpp)
 {
 }
 
@@ -92,9 +88,7 @@ IRenderBuffer *CRenderBufferPoolOpenGL::CreateRenderBuffer(void *header /* = nul
                                  m_pixeltype,
                                  m_internalformat,
                                  m_pixelformat,
-                                 m_bpp,
-                                 m_width,
-                                 m_height);
+                                 m_bpp);
 }
 
 bool CRenderBufferPoolOpenGL::ConfigureInternal()
