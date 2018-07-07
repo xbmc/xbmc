@@ -51,7 +51,7 @@ protected:
   bool SelectItemFromPoint(const CPoint &point) override;
   void SelectItem(int item) override;
   void Reset() override;
-  unsigned int GetNumItems() const override { return m_items.size() - m_extraItems; };
+  size_t GetNumItems() const override { return m_items.size() - m_extraItems; };
   int GetCurrentPage() const override;
   void SetPageControlRange() override;
   void UpdatePageControl(int offset) override;

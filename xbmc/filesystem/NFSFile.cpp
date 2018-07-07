@@ -51,6 +51,13 @@
 #define CONTEXT_NEW      1    //new context created
 #define CONTEXT_CACHED   2    //context cached and therefore already mounted (no new mount needed)
 
+#if defined(TARGET_WINDOWS)
+#define S_IRGRP 0
+#define S_IROTH 0
+#define S_IWUSR _S_IWRITE
+#define S_IRUSR _S_IREAD
+#endif
+
 using namespace XFILE;
 
 CNfsConnection::CNfsConnection()

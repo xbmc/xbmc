@@ -29,22 +29,6 @@
 #include <map>
 #include "DllLibNfs.h" // for define NFSSTAT
 
-#ifdef TARGET_WINDOWS
-#define S_IRGRP 0
-#define S_IROTH 0
-#define S_IWUSR _S_IWRITE
-#define S_IRUSR _S_IREAD
-#define	S_IFLNK 0120000
-
-#define S_ISBLK(m) (0)
-#define S_ISSOCK(m) (0)
-#define S_ISLNK(m) ((m & S_IFLNK) != 0)
-#define S_ISCHR(m) ((m & _S_IFCHR) != 0)
-#define S_ISDIR(m) ((m & _S_IFDIR) != 0)
-#define S_ISFIFO(m) ((m & _S_IFIFO) != 0)
-#define S_ISREG(m) ((m & _S_IFREG) != 0)
-#endif
-
 class DllLibNfs;
 
 class CNfsConnection : public CCriticalSection

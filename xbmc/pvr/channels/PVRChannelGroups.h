@@ -59,7 +59,7 @@ namespace PVR
     /*!
      * @return Amount of groups in this container
      */
-    int Size(void) const { CSingleLock lock(m_critSection); return m_groups.size(); }
+    size_t Size(void) const { CSingleLock lock(m_critSection); return m_groups.size(); }
 
     /*!
      * @brief Update a group or add it if it's not in here yet.

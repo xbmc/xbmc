@@ -129,7 +129,7 @@ protected:
   virtual bool SelectItemFromPoint(const CPoint &point) { return false; };
   virtual int GetCursorFromPoint(const CPoint &point, CPoint *itemPoint = NULL) const { return -1; };
   virtual void Reset();
-  virtual unsigned int GetNumItems() const { return m_items.size(); };
+  virtual size_t GetNumItems() const { return m_items.size(); };
   virtual int GetCurrentPage() const;
   bool InsideLayout(const CGUIListItemLayout *layout, const CPoint &point) const;
   void OnFocus() override;
