@@ -32,6 +32,12 @@ namespace JOYSTICK
     virtual ~IButtonSequence() = default;
 
     virtual bool OnButtonPress(const FeatureName& feature) = 0;
+
+    /*!
+     * \brief Returns true if a sequence is being captured to prevent input
+     *        from falling through to the application
+     */
+    virtual bool IsCapturing() = 0;
   };
 }
 }

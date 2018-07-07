@@ -77,26 +77,31 @@ bool CJoystickEasterEgg::OnButtonPress(const FeatureName& feature)
   {
     const auto& sequence = it->second;
 
-    // Update state
+    // Reset state if it previously finished
+    if (m_state >= sequence.size())
+      m_state = 0;
+
     if (feature == sequence[m_state])
       m_state++;
     else
       m_state = 0;
 
-    // Capture input when finished with arrows (2 x up/down/left/right)
-    if (m_state > 8)
+    if (IsCapturing())
     {
       bHandled = true;
 
       if (m_state >= sequence.size())
-      {
         OnFinish();
-        m_state = 0;
-      }
     }
   }
 
   return bHandled;
+}
+
+bool CJoystickEasterEgg::IsCapturing()
+{
+  // Capture input when finished with arrows (2 x up/down/left/right)
+  return m_state > 8;
 }
 
 void CJoystickEasterEgg::OnFinish(void)
