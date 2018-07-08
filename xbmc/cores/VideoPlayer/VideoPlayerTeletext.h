@@ -46,7 +46,7 @@ public:
   bool IsInited() const override { return true; }
   bool IsStalled() const override { return true; }
 
-  std::shared_ptr<TextCacheStruct_t> GetTeletextCache() { return std::make_shared<TextCacheStruct_t>(m_TXTCache); }
+  std::shared_ptr<TextCacheStruct_t> GetTeletextCache() { return m_TXTCache; }
   void LoadPage(int p, int sp, unsigned char* buffer);
 
 protected:
@@ -61,7 +61,7 @@ private:
   void AllocateCache(int magazine);
 
   int m_speed;
-  TextCacheStruct_t  m_TXTCache;
+  std::shared_ptr<TextCacheStruct_t> m_TXTCache = std::make_shared<TextCacheStruct_t>();
   CCriticalSection m_critSection;
   CDVDMessageQueue m_messageQueue;
 };
