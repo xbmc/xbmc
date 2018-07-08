@@ -292,7 +292,7 @@ bool CDVDDemuxFFmpeg::Open(std::shared_ptr<CDVDInputStream> pInput, bool streami
     if (StringUtils::StartsWith(content, "audio/l16"))
       iformat = av_find_input_format("s16be");
 
-    if( iformat == NULL )
+    if (iformat == nullptr)
     {
       // let ffmpeg decide which demuxer we have to open
 
@@ -1597,7 +1597,7 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
       default:
       {
         // if analyzing streams is skipped, unknown streams may become valid later
-        if (IsVideoReady())
+        if (m_streaminfo && IsVideoReady())
         {
           CLog::Log(LOGDEBUG, "CDVDDemuxFFmpeg::AddStream - discarding unknown stream with id: %d", pStream->index);
           pStream->discard = AVDISCARD_ALL;
