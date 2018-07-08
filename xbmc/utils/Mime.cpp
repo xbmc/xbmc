@@ -536,7 +536,7 @@ std::string CMime::GetMimeType(const std::string &extension)
 
 std::string CMime::GetMimeType(const CFileItem &item)
 {
-  std::string path = item.GetPath();
+  std::string path = item.GetDynPath();
   if (item.HasVideoInfoTag() && !item.GetVideoInfoTag()->GetPath().empty())
     path = item.GetVideoInfoTag()->GetPath();
   else if (item.HasMusicInfoTag() && !item.GetMusicInfoTag()->GetURL().empty())
