@@ -104,23 +104,6 @@ VECSOURCES& CGUIViewStateWindowGames::GetSources()
   AddOrReplace(*pGameSources, CGUIViewState::GetSources());
 
   return *pGameSources;
-  /*
-  m_sources.clear();
-
-  // Files
-  {
-    CMediaSource share;
-    share.strPath = "sources://games/";
-    share.strName = g_localizeStrings.Get(744); // Files
-    share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
-    share.m_strThumbnailImage = "DefaultFolder.png";
-    m_sources.push_back(share);
-  }
-
-  // Add-ons
-  AddAddonsSource("game", g_localizeStrings.Get(27016), "DefaultAddonGame.png"); // Game Add-ons
-  return CGUIViewState::GetSources();
-  */
 }
 
 void CGUIViewStateWindowGames::SaveViewState()
