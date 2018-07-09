@@ -99,8 +99,8 @@ CDVDTeletextData::CDVDTeletextData(CProcessInfo &processInfo)
   m_messageQueue.SetMaxDataSize(40 * 256 * 1024);
 
   /* Initialize Data structures */
-  memset(&m_TXTCache.astCachetable, 0,    sizeof(m_TXTCache.astCachetable));
-  memset(&m_TXTCache.astP29,        0,    sizeof(m_TXTCache.astP29));
+  memset(&m_TXTCache->astCachetable, 0,    sizeof(m_TXTCache->astCachetable));
+  memset(&m_TXTCache->astP29,        0,    sizeof(m_TXTCache->astP29));
   ResetTeletextCache();
 }
 
@@ -157,9 +157,9 @@ void CDVDTeletextData::ResetTeletextCache()
   {
     for (int j = 0; j < 0x80; j++)
     {
-      if (m_TXTCache.astCachetable[i][j])
+      if (m_TXTCache->astCachetable[i][j])
       {
-        TextPageinfo_t *p = &(m_TXTCache.astCachetable[i][j]->pageinfo);
+        TextPageinfo_t *p = &(m_TXTCache->astCachetable[i][j]->pageinfo);
         if (p->p24)
           free(p->p24);
 
@@ -175,53 +175,53 @@ void CDVDTeletextData::ResetTeletextCache()
           }
           free(p->ext);
         }
-        delete m_TXTCache.astCachetable[i][j];
-        m_TXTCache.astCachetable[i][j] = 0;
+        delete m_TXTCache->astCachetable[i][j];
+        m_TXTCache->astCachetable[i][j] = 0;
       }
     }
   }
 
   for (int i = 0; i < 9; i++)
   {
-    if (m_TXTCache.astP29[i])
+    if (m_TXTCache->astP29[i])
     {
-      if (m_TXTCache.astP29[i]->p27)
-        free(m_TXTCache.astP29[i]->p27);
+      if (m_TXTCache->astP29[i]->p27)
+        free(m_TXTCache->astP29[i]->p27);
 
       for (int d26 = 0; d26 < 16; d26++)
       {
-        if (m_TXTCache.astP29[i]->p26[d26])
-          free(m_TXTCache.astP29[i]->p26[d26]);
+        if (m_TXTCache->astP29[i]->p26[d26])
+          free(m_TXTCache->astP29[i]->p26[d26]);
       }
-      free(m_TXTCache.astP29[i]);
-      m_TXTCache.astP29[i] = 0;
+      free(m_TXTCache->astP29[i]);
+      m_TXTCache->astP29[i] = 0;
     }
-    m_TXTCache.CurrentPage[i]    = -1;
-    m_TXTCache.CurrentSubPage[i] = -1;
+    m_TXTCache->CurrentPage[i]    = -1;
+    m_TXTCache->CurrentSubPage[i] = -1;
   }
 
-  memset(&m_TXTCache.SubPageTable,  0xFF, sizeof(m_TXTCache.SubPageTable));
-  memset(&m_TXTCache.astP29,        0,    sizeof(m_TXTCache.astP29));
-  memset(&m_TXTCache.BasicTop,      0,    sizeof(m_TXTCache.BasicTop));
-  memset(&m_TXTCache.ADIPTable,     0,    sizeof(m_TXTCache.ADIPTable));
-  memset(&m_TXTCache.FlofPages,     0,    sizeof(m_TXTCache.FlofPages));
-  memset(&m_TXTCache.SubtitlePages, 0,    sizeof(m_TXTCache.SubtitlePages));
-  memset(&m_TXTCache.astCachetable, 0,    sizeof(m_TXTCache.astCachetable));
-  memset(&m_TXTCache.TimeString,    0x20, 8);
+  memset(&m_TXTCache->SubPageTable,  0xFF, sizeof(m_TXTCache->SubPageTable));
+  memset(&m_TXTCache->astP29,        0,    sizeof(m_TXTCache->astP29));
+  memset(&m_TXTCache->BasicTop,      0,    sizeof(m_TXTCache->BasicTop));
+  memset(&m_TXTCache->ADIPTable,     0,    sizeof(m_TXTCache->ADIPTable));
+  memset(&m_TXTCache->FlofPages,     0,    sizeof(m_TXTCache->FlofPages));
+  memset(&m_TXTCache->SubtitlePages, 0,    sizeof(m_TXTCache->SubtitlePages));
+  memset(&m_TXTCache->astCachetable, 0,    sizeof(m_TXTCache->astCachetable));
+  memset(&m_TXTCache->TimeString,    0x20, 8);
 
-  m_TXTCache.NationalSubset           = NAT_DEFAULT;/* default */
-  m_TXTCache.NationalSubsetSecondary  = NAT_DEFAULT;
-  m_TXTCache.ZapSubpageManual         = false;
-  m_TXTCache.PageUpdate               = false;
-  m_TXTCache.ADIP_PgMax               = -1;
-  m_TXTCache.BTTok                    = false;
-  m_TXTCache.CachedPages              = 0;
-  m_TXTCache.PageReceiving            = -1;
-  m_TXTCache.Page                     = 0x100;
-  m_TXTCache.SubPage                  = m_TXTCache.SubPageTable[m_TXTCache.Page];
-  m_TXTCache.line30                   = "";
-  if (m_TXTCache.SubPage == 0xff)
-    m_TXTCache.SubPage = 0;
+  m_TXTCache->NationalSubset           = NAT_DEFAULT;/* default */
+  m_TXTCache->NationalSubsetSecondary  = NAT_DEFAULT;
+  m_TXTCache->ZapSubpageManual         = false;
+  m_TXTCache->PageUpdate               = false;
+  m_TXTCache->ADIP_PgMax               = -1;
+  m_TXTCache->BTTok                    = false;
+  m_TXTCache->CachedPages              = 0;
+  m_TXTCache->PageReceiving            = -1;
+  m_TXTCache->Page                     = 0x100;
+  m_TXTCache->SubPage                  = m_TXTCache->SubPageTable[m_TXTCache->Page];
+  m_TXTCache->line30                   = "";
+  if (m_TXTCache->SubPage == 0xff)
+    m_TXTCache->SubPage = 0;
 }
 
 void CDVDTeletextData::Process()
@@ -296,8 +296,8 @@ void CDVDTeletextData::Process()
             magazine      = dehamming[vtxt_row[0]] & 7;
             if (!magazine) magazine = 8;
 
-            if (packet_number == 0 && m_TXTCache.CurrentPage[magazine] != -1 && m_TXTCache.CurrentSubPage[magazine] != -1)
-              SavePage(m_TXTCache.CurrentPage[magazine], m_TXTCache.CurrentSubPage[magazine], pagedata[magazine]);
+            if (packet_number == 0 && m_TXTCache->CurrentPage[magazine] != -1 && m_TXTCache->CurrentSubPage[magazine] != -1)
+              SavePage(m_TXTCache->CurrentPage[magazine], m_TXTCache->CurrentSubPage[magazine], pagedata[magazine]);
 
             /* analyze row */
             if (packet_number == 0)
@@ -308,15 +308,15 @@ void CDVDTeletextData::Process()
 
               if (b2 == 0xFF || b3 == 0xFF)
               {
-                m_TXTCache.CurrentPage[magazine] = m_TXTCache.PageReceiving = -1;
+                m_TXTCache->CurrentPage[magazine] = m_TXTCache->PageReceiving = -1;
                 continue;
               }
 
-              m_TXTCache.CurrentPage[magazine] = m_TXTCache.PageReceiving = magazine<<8 | b2<<4 | b3;
+              m_TXTCache->CurrentPage[magazine] = m_TXTCache->PageReceiving = magazine<<8 | b2<<4 | b3;
 
               if (b2 == 0x0f && b3 == 0x0f)
               {
-                m_TXTCache.CurrentSubPage[magazine] = -1; /* ?ff: ignore data transmissions */
+                m_TXTCache->CurrentSubPage[magazine] = -1; /* ?ff: ignore data transmissions */
                 continue;
               }
 
@@ -328,38 +328,38 @@ void CDVDTeletextData::Process()
 
               if (b1 == 0xFF || b2 == 0xFF || b3 == 0xFF || b4 == 0xFF)
               {
-                m_TXTCache.CurrentSubPage[magazine] = -1;
+                m_TXTCache->CurrentSubPage[magazine] = -1;
                 continue;
               }
 
               b1 &= 3;
               b3 &= 7;
 
-              if (IsDec(m_TXTCache.PageReceiving)) /* ignore other subpage bits for hex pages */
-                m_TXTCache.CurrentSubPage[magazine] = b3<<4 | b4;
+              if (IsDec(m_TXTCache->PageReceiving)) /* ignore other subpage bits for hex pages */
+                m_TXTCache->CurrentSubPage[magazine] = b3<<4 | b4;
               else
-                m_TXTCache.CurrentSubPage[magazine] = b4; /* max 16 subpages for hex pages */
+                m_TXTCache->CurrentSubPage[magazine] = b4; /* max 16 subpages for hex pages */
 
               /* store current subpage for this page */
-              m_TXTCache.SubPageTable[m_TXTCache.CurrentPage[magazine]] = m_TXTCache.CurrentSubPage[magazine];
+              m_TXTCache->SubPageTable[m_TXTCache->CurrentPage[magazine]] = m_TXTCache->CurrentSubPage[magazine];
 
               AllocateCache(magazine);
-              LoadPage(m_TXTCache.CurrentPage[magazine], m_TXTCache.CurrentSubPage[magazine], pagedata[magazine]);
-              pageinfo_thread = &(m_TXTCache.astCachetable[m_TXTCache.CurrentPage[magazine]][m_TXTCache.CurrentSubPage[magazine]]->pageinfo);
+              LoadPage(m_TXTCache->CurrentPage[magazine], m_TXTCache->CurrentSubPage[magazine], pagedata[magazine]);
+              pageinfo_thread = &(m_TXTCache->astCachetable[m_TXTCache->CurrentPage[magazine]][m_TXTCache->CurrentSubPage[magazine]]->pageinfo);
               if (!pageinfo_thread)
                 continue;
 
-              if ((m_TXTCache.PageReceiving & 0xff) == 0xfe) /* ?fe: magazine organization table (MOT) */
+              if ((m_TXTCache->PageReceiving & 0xff) == 0xfe) /* ?fe: magazine organization table (MOT) */
                 pageinfo_thread->function = FUNC_MOT;
 
               /* check controlbits */
               if (dehamming[vtxt_row[5]] & 8)   /* C4 -> erase page */
               {
-                memset(m_TXTCache.astCachetable[m_TXTCache.CurrentPage[magazine]][m_TXTCache.CurrentSubPage[magazine]]->data, ' ', 23*40);
+                memset(m_TXTCache->astCachetable[m_TXTCache->CurrentPage[magazine]][m_TXTCache->CurrentSubPage[magazine]]->data, ' ', 23*40);
                 memset(pagedata[magazine],' ', 23*40);
               }
 //              if (dehamming[vtxt_row[9]] & 8)   /* C8 -> update page */
-//                doupdate = m_TXTCache.PageReceiving;
+//                doupdate = m_TXTCache->PageReceiving;
 
               pageinfo_thread->boxed = !!(dehamming[vtxt_row[7]] & 0x0c);
 
@@ -376,9 +376,9 @@ void CDVDTeletextData::Process()
                 int i = 0, found = -1, use = -1;
                 for (; i < 8; i++)
                 {
-                  if (use == -1 && !m_TXTCache.SubtitlePages[i].page)
+                  if (use == -1 && !m_TXTCache->SubtitlePages[i].page)
                     use = i;
-                  else if (m_TXTCache.SubtitlePages[i].page == m_TXTCache.PageReceiving)
+                  else if (m_TXTCache->SubtitlePages[i].page == m_TXTCache->PageReceiving)
                   {
                     found = i;
                     use = i;
@@ -386,32 +386,32 @@ void CDVDTeletextData::Process()
                   }
                 }
                 if (found == -1 && use != -1)
-                  m_TXTCache.SubtitlePages[use].page = m_TXTCache.PageReceiving;
+                  m_TXTCache->SubtitlePages[use].page = m_TXTCache->PageReceiving;
                 if (use != -1)
-                  m_TXTCache.SubtitlePages[use].language = CountryConversionTable[pageinfo_thread->national];
+                  m_TXTCache->SubtitlePages[use].language = CountryConversionTable[pageinfo_thread->national];
               }
 
               /* check parity, copy line 0 to cache (start and end 8 bytes are not needed and used otherwise) */
-              unsigned char *p = m_TXTCache.astCachetable[m_TXTCache.CurrentPage[magazine]][m_TXTCache.CurrentSubPage[magazine]]->p0;
+              unsigned char *p = m_TXTCache->astCachetable[m_TXTCache->CurrentPage[magazine]][m_TXTCache->CurrentSubPage[magazine]]->p0;
               for (int i = 10; i < 42-8; i++)
                 *p++ = deparity[vtxt_row[i]];
 
-              if (!IsDec(m_TXTCache.PageReceiving))
+              if (!IsDec(m_TXTCache->PageReceiving))
                 continue; /* valid hex page number: just copy headline, ignore TimeString */
 
               /* copy TimeString */
-              p = m_TXTCache.TimeString;
+              p = m_TXTCache->TimeString;
               for (int i = 42-8; i < 42; i++)
                 *p++ = deparity[vtxt_row[i]];
             }
             else if (packet_number == 29 && dehamming[vtxt_row[2]]== 0) /* packet 29/0 replaces 28/0 for a whole magazine */
             {
-              Decode_p2829(vtxt_row, &(m_TXTCache.astP29[magazine]));
+              Decode_p2829(vtxt_row, &(m_TXTCache->astP29[magazine]));
             }
-            else if (m_TXTCache.CurrentPage[magazine] != -1 && m_TXTCache.CurrentSubPage[magazine] != -1)
+            else if (m_TXTCache->CurrentPage[magazine] != -1 && m_TXTCache->CurrentSubPage[magazine] != -1)
               /* packet>0, 0 has been correctly received, buffer allocated */
             {
-              pageinfo_thread = &(m_TXTCache.astCachetable[m_TXTCache.CurrentPage[magazine]][m_TXTCache.CurrentSubPage[magazine]]->pageinfo);
+              pageinfo_thread = &(m_TXTCache->astCachetable[m_TXTCache->CurrentPage[magazine]][m_TXTCache->CurrentSubPage[magazine]]->pageinfo);
               if (!pageinfo_thread)
                 continue;
 
@@ -432,14 +432,14 @@ void CDVDTeletextData::Process()
                 }
                 if (p)
                 {
-                  if (IsDec(m_TXTCache.CurrentPage[magazine]))
+                  if (IsDec(m_TXTCache->CurrentPage[magazine]))
                   {
                     for (int i = 2; i < 42; i++)
                     {
                       *p++ = vtxt_row[i] & 0x7f; /* allow values with parity errors as some channels don't care :( */
                     }
                   }
-                  else if ((m_TXTCache.CurrentPage[magazine] & 0xff) == 0xfe)
+                  else if ((m_TXTCache->CurrentPage[magazine] & 0xff) == 0xfe)
                   {
                     for (int i = 2; i < 42; i++)
                     {
@@ -474,7 +474,7 @@ void CDVDTeletextData::Process()
                         if (b4 == 0)
                           b4 = 8;
                         if (b2 <= 9 && b3 <= 9)
-                          m_TXTCache.FlofPages[m_TXTCache.CurrentPage[magazine] ][i] = b4<<8 | b2<<4 | b3;
+                          m_TXTCache->FlofPages[m_TXTCache->CurrentPage[magazine] ][i] = b4<<8 | b2<<4 | b3;
                       }
                     }
 
@@ -486,7 +486,7 @@ void CDVDTeletextData::Process()
                       do
                       {
                         for (;
-                            l >= 2 && 0 == m_TXTCache.FlofPages[m_TXTCache.CurrentPage[magazine]][l];
+                            l >= 2 && 0 == m_TXTCache->FlofPages[m_TXTCache->CurrentPage[magazine]][l];
                             l--)
                           ; /* find used linkindex */
                         for (;
@@ -500,9 +500,9 @@ void CDVDTeletextData::Process()
                           a1 = a; /* first non-space */
                         if (a >= 0 && l >= 2)
                         {
-                          strncpy(m_TXTCache.ADIPTable[m_TXTCache.FlofPages[m_TXTCache.CurrentPage[magazine]][l]], (const char*) &p[a1], 12);
+                          strncpy(m_TXTCache->ADIPTable[m_TXTCache->FlofPages[m_TXTCache->CurrentPage[magazine]][l]], (const char*) &p[a1], 12);
                           if (e-a1 < 11)
-                            m_TXTCache.ADIPTable[m_TXTCache.FlofPages[m_TXTCache.CurrentPage[magazine]][l]][e-a1+1] = '\0';
+                            m_TXTCache->ADIPTable[m_TXTCache->FlofPages[m_TXTCache->CurrentPage[magazine]][l]][e-a1+1] = '\0';
                         }
                         e = a - 1;
                         l--;
@@ -551,9 +551,9 @@ void CDVDTeletextData::Process()
                       // sorry.. i dont understand whats going wrong here :)
                       continue;
                     }
-                    else if (m_TXTCache.astCachetable[p->page][0])  /* link valid && linked page cached */
+                    else if (m_TXTCache->astCachetable[p->page][0])  /* link valid && linked page cached */
                     {
-                      TextPageinfo_t *pageinfo_link = &(m_TXTCache.astCachetable[p->page][0]->pageinfo);
+                      TextPageinfo_t *pageinfo_link = &(m_TXTCache->astCachetable[p->page][0]->pageinfo);
                       if (p->local)
                         pageinfo_link->function = p->drcs ? FUNC_DRCS : FUNC_POP;
                       else
@@ -615,20 +615,20 @@ void CDVDTeletextData::Process()
               }
               else if (packet_number == 30)
               {
-                m_TXTCache.line30 = "";
+                m_TXTCache->line30 = "";
                 for (int i=26-4; i <= 45-4; i++) /* station ID */
-                  m_TXTCache.line30.append(1, deparity[vtxt_row[i]]);
+                  m_TXTCache->line30.append(1, deparity[vtxt_row[i]]);
               }
             }
 
             /* set update flag */
-            if (m_TXTCache.CurrentPage[magazine] == m_TXTCache.Page && m_TXTCache.CurrentSubPage[magazine] != -1)
+            if (m_TXTCache->CurrentPage[magazine] == m_TXTCache->Page && m_TXTCache->CurrentSubPage[magazine] != -1)
             {
-              SavePage(m_TXTCache.CurrentPage[magazine], m_TXTCache.CurrentSubPage[magazine], pagedata[magazine]);
-              m_TXTCache.PageUpdate = true;
+              SavePage(m_TXTCache->CurrentPage[magazine], m_TXTCache->CurrentSubPage[magazine], pagedata[magazine]);
+              m_TXTCache->PageUpdate = true;
 //              doupdate = 0;
-              if (!m_TXTCache.ZapSubpageManual)
-                m_TXTCache.SubPage = m_TXTCache.CurrentSubPage[magazine];
+              if (!m_TXTCache->ZapSubpageManual)
+                m_TXTCache->SubPage = m_TXTCache->CurrentSubPage[magazine];
             }
           }
         }
@@ -719,7 +719,7 @@ void CDVDTeletextData::Decode_p2829(unsigned char *vtxt_row, TextExtData_t **ptE
 void CDVDTeletextData::SavePage(int p, int sp, unsigned char* buffer)
 {
   CSingleLock lock(m_critSection);
-  TextCachedPage_t* pg = m_TXTCache.astCachetable[p][sp];
+  TextCachedPage_t* pg = m_TXTCache->astCachetable[p][sp];
   if (!pg)
   {
     CLog::Log(LOGERROR, "CDVDTeletextData: trying to save a not allocated page!!");
@@ -732,7 +732,7 @@ void CDVDTeletextData::SavePage(int p, int sp, unsigned char* buffer)
 void CDVDTeletextData::LoadPage(int p, int sp, unsigned char* buffer)
 {
   CSingleLock lock(m_critSection);
-  TextCachedPage_t* pg = m_TXTCache.astCachetable[p][sp];
+  TextCachedPage_t* pg = m_TXTCache->astCachetable[p][sp];
   if (!pg)
   {
     CLog::Log(LOGERROR, "CDVDTeletextData: trying to load a not allocated page!!");
@@ -745,7 +745,7 @@ void CDVDTeletextData::LoadPage(int p, int sp, unsigned char* buffer)
 void CDVDTeletextData::ErasePage(int magazine)
 {
   CSingleLock lock(m_critSection);
-  TextCachedPage_t* pg = m_TXTCache.astCachetable[m_TXTCache.CurrentPage[magazine]][m_TXTCache.CurrentSubPage[magazine]];
+  TextCachedPage_t* pg = m_TXTCache->astCachetable[m_TXTCache->CurrentPage[magazine]][m_TXTCache->CurrentSubPage[magazine]];
   if (pg)
   {
     memset(&(pg->pageinfo), 0, sizeof(TextPageinfo_t));  /* struct pageinfo */
@@ -757,13 +757,13 @@ void CDVDTeletextData::ErasePage(int magazine)
 void CDVDTeletextData::AllocateCache(int magazine)
 {
   /* check cachetable and allocate memory if needed */
-  if (m_TXTCache.astCachetable[m_TXTCache.CurrentPage[magazine]][m_TXTCache.CurrentSubPage[magazine]] == 0)
+  if (m_TXTCache->astCachetable[m_TXTCache->CurrentPage[magazine]][m_TXTCache->CurrentSubPage[magazine]] == 0)
   {
-    m_TXTCache.astCachetable[m_TXTCache.CurrentPage[magazine]][m_TXTCache.CurrentSubPage[magazine]] = new TextCachedPage_t;
-    if (m_TXTCache.astCachetable[m_TXTCache.CurrentPage[magazine]][m_TXTCache.CurrentSubPage[magazine]] )
+    m_TXTCache->astCachetable[m_TXTCache->CurrentPage[magazine]][m_TXTCache->CurrentSubPage[magazine]] = new TextCachedPage_t;
+    if (m_TXTCache->astCachetable[m_TXTCache->CurrentPage[magazine]][m_TXTCache->CurrentSubPage[magazine]] )
     {
       ErasePage(magazine);
-      m_TXTCache.CachedPages++;
+      m_TXTCache->CachedPages++;
     }
   }
 }
