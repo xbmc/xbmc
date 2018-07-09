@@ -404,6 +404,18 @@ void CMusicDatabase::CreateViews()
               "     song_artist.idRole = role.idRole");
 }
 
+void CMusicDatabase::SplitPath(const std::string& strFileNameAndPath, std::string& strPath, std::string& strFileName)
+{
+  URIUtils::Split(strFileNameAndPath, strPath, strFileName);
+  // Keep protocol options as part of the path
+  if (URIUtils::IsURL(strFileNameAndPath))
+  {
+    CURL url(strFileNameAndPath);
+    if (!url.GetProtocolOptions().empty())
+      strPath += "|" + url.GetProtocolOptions();
+  }
+}
+
 bool CMusicDatabase::AddAlbum(CAlbum& album, int idSource)
 {
   BeginTransaction();
@@ -564,7 +576,7 @@ int CMusicDatabase::AddSong(const int idAlbum,
     if (NULL == m_pDS.get()) return -1;
 
     std::string strPath, strFileName;
-    URIUtils::Split(strPathAndFileName, strPath, strFileName);
+    SplitPath(strPathAndFileName, strPath, strFileName);
     int idPath = AddPath(strPath);
 
     if (!strMusicBrainzTrackID.empty())
@@ -760,7 +772,7 @@ int CMusicDatabase::UpdateSong(int idSong,
 
   std::string strSQL;
   std::string strPath, strFileName;
-  URIUtils::Split(strPathAndFileName, strPath, strFileName);
+  SplitPath(strPathAndFileName, strPath, strFileName);
   int idPath = AddPath(strPath);
 
   strSQL = PrepareSQL("UPDATE song SET idPath = %i, strArtistDisp = '%s', strGenres = '%s', "
@@ -2337,7 +2349,7 @@ bool CMusicDatabase::GetSongByFileName(const std::string& strFileNameAndPath, CS
   if (NULL == m_pDS.get()) return false;
 
   std::string strPath, strFileName;
-  URIUtils::Split(strFileNameAndPath, strPath, strFileName);
+  SplitPath(strFileNameAndPath, strPath, strFileName);
   URIUtils::AddSlashAtEnd(strPath);
 
   std::string strSQL = PrepareSQL("select idSong from songview "
@@ -7342,7 +7354,7 @@ int CMusicDatabase::GetSongIDFromPath(const std::string &filePath)
     if (NULL == m_pDS.get()) return -1;
 
     std::string strPath, strFileName;
-    URIUtils::Split(filePath, strPath, strFileName);
+    SplitPath(filePath, strPath, strFileName);
     URIUtils::AddSlashAtEnd(strPath);
 
     std::string sql = PrepareSQL("select idSong from song join path on song.idPath = path.idPath where song.strFileName='%s' and path.strPath='%s'", strFileName.c_str(), strPath.c_str());
