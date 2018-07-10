@@ -170,7 +170,7 @@ public class SyncProgramsJobService extends JobService
         if (cursor != null && cursor.moveToNext())
         {
           Channel channel = Channel.fromCursor(cursor);
-          if (!channel.isBrowsable())
+          if (channel.isBrowsable())
           {
             Log.d(TAG, "Channel is not browsable: " + channelId);
             deletePrograms(channelId, medias);
