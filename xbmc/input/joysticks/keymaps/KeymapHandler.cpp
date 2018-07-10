@@ -98,6 +98,9 @@ bool CKeymapHandler::OnButtonPress(const FeatureName& feature, bool bPressed)
 
 void CKeymapHandler::OnButtonHold(const FeatureName& feature, unsigned int holdTimeMs)
 {
+  if (m_easterEgg && m_easterEgg->IsCapturing())
+    return;
+
   const std::string keyName = CJoystickUtils::MakeKeyName(feature);
 
   IKeyHandler *handler = GetKeyHandler(keyName);

@@ -40,7 +40,8 @@ namespace JOYSTICK
     virtual ~CJoystickEasterEgg() = default;
 
     // implementation of IButtonSequence
-    virtual bool OnButtonPress(const FeatureName& feature) override;
+    bool OnButtonPress(const FeatureName& feature) override;
+    bool IsCapturing() override;
 
     static void OnFinish(void);
 
