@@ -38,6 +38,12 @@ public:
   CGameSettings(CSettings &settings);
   ~CGameSettings() override;
 
+  // General settings
+  bool GamesEnabled();
+  void ToggleGames();
+  bool RewindEnabled();
+  unsigned int MaxRewindTimeSec();
+
   // Inherited from ISettingCallback
   virtual void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
 
