@@ -21,6 +21,7 @@
 #include "RetroPlayerAutoSave.h"
 #include "games/addons/GameClient.h"
 #include "games/addons/playback/IGameClientPlayback.h"
+#include "games/GameSettings.h"
 #include "utils/log.h"
 #include "URL.h"
 
@@ -29,9 +30,11 @@ using namespace RETRO;
 
 #define AUTOSAVE_DURATION_SECS    10 // Auto-save every 10 seconds
 
-CRetroPlayerAutoSave::CRetroPlayerAutoSave(GAME::CGameClient &gameClient) :
+CRetroPlayerAutoSave::CRetroPlayerAutoSave(GAME::CGameClient &gameClient,
+                                           GAME::CGameSettings &settings) :
   CThread("CRetroPlayerAutoSave"),
-  m_gameClient(gameClient)
+  m_gameClient(gameClient),
+  m_settings(settings)
 {
   CLog::Log(LOGDEBUG, "RetroPlayer[SAVE]: Initializing autosave");
 
@@ -55,6 +58,9 @@ void CRetroPlayerAutoSave::Process()
 
     if (m_bStop)
       break;
+
+    if (!m_settings.AutosaveEnabled())
+      continue;
 
     if (m_gameClient.GetPlayback()->GetSpeed() > 0.0)
     {

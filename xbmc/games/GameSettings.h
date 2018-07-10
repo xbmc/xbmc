@@ -41,6 +41,7 @@ public:
   // General settings
   bool GamesEnabled();
   void ToggleGames();
+  bool AutosaveEnabled();
   bool RewindEnabled();
   unsigned int MaxRewindTimeSec();
 

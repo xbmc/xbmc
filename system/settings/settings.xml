@@ -1974,6 +1974,11 @@
           <default>false</default>
           <control type="toggle" />
         </setting>
+        <setting id="gamesgeneral.enableautosave" type="boolean" label="35253" help="35254">
+          <level>0</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
         <setting id="gamesgeneral.enablerewind" type="boolean" label="35203" help="35204">
           <level>0</level>
           <default>true</default>

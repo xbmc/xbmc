@@ -30,6 +30,7 @@ using namespace GAME;
 namespace
 {
   const std::string SETTING_GAMES_ENABLE = "gamesgeneral.enable";
+  const std::string SETTING_GAMES_ENABLEAUTOSAVE = "gamesgeneral.enableautosave";
   const std::string SETTING_GAMES_ENABLEREWIND = "gamesgeneral.enablerewind";
   const std::string SETTING_GAMES_REWINDTIME = "gamesgeneral.rewindtime";
 }
@@ -56,6 +57,11 @@ bool CGameSettings::GamesEnabled()
 void CGameSettings::ToggleGames()
 {
   m_settings.ToggleBool(SETTING_GAMES_ENABLE);
+}
+
+bool CGameSettings::AutosaveEnabled()
+{
+  return m_settings.GetBool(SETTING_GAMES_ENABLEAUTOSAVE);
 }
 
 bool CGameSettings::RewindEnabled()

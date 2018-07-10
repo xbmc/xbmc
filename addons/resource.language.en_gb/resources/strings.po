@@ -17437,7 +17437,17 @@ msgctxt "#35252"
 msgid "Edit game source"
 msgstr ""
 
-#empty strings from id 35253 to 35255
+#: system/settings/settings.xml
+msgctxt "#35253"
+msgid "Enable autosave if supported"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#35254"
+msgid "Save the game automatically during game play, if supported. Resume playing where you left off."
+msgstr ""
+
+#empty string with id 35255
 
 #. Error message when a game client fails to install when a game is being launched
 #: xbmc/games/dialogs/GUIDialogSelectGameClient.cpp
