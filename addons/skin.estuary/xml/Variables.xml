@@ -435,4 +435,250 @@
 		<value condition="!System.IsMaster">$LOCALIZE[20045]</value>
 		<value>$LOCALIZE[20046]</value>
 	</variable>
+	<variable name="TVCategoriesTypeVar">
+		<value condition="String.IsEmpty(Skin.String(tv_categories))">$LOCALIZE[602]</value>		
+		<value condition="String.IsEqual(Skin.String(tv_categories),0)">$LOCALIZE[602]</value>
+		<value condition="String.IsEqual(Skin.String(tv_categories),1)">$LOCALIZE[536]</value>
+		<value condition="String.IsEqual(Skin.String(tv_categories),2)">$LOCALIZE[351]</value> <!-- this is OFF -->
+	</variable>
+	<variable name="MovieCategoriesTypeVar">
+		<value condition="String.IsEmpty(Skin.String(movie_categories))">$LOCALIZE[602]</value>		
+		<value condition="String.IsEqual(Skin.String(movie_categories),0)">$LOCALIZE[602]</value>
+		<value condition="String.IsEqual(Skin.String(movie_categories),1)">$LOCALIZE[536]</value>
+		<value condition="String.IsEqual(Skin.String(movie_categories),2)">$LOCALIZE[351]</value>
+	</variable>
+	<variable name="MusicCategoriesTypeVar">
+		<value condition="String.IsEmpty(Skin.String(music_categories))">$LOCALIZE[602]</value>		
+		<value condition="String.IsEqual(Skin.String(music_categories),0)">$LOCALIZE[602]</value>
+		<value condition="String.IsEqual(Skin.String(music_categories),1)">$LOCALIZE[536]</value>
+		<value condition="String.IsEqual(Skin.String(music_categories),2)">$LOCALIZE[351]</value>
+	</variable>
+	<variable name="MusicVideoCategoriesTypeVar">
+		<value condition="String.IsEmpty(Skin.String(musicvideo_categories))">$LOCALIZE[602]</value>		
+		<value condition="String.IsEqual(Skin.String(musicvideo_categories),0)">$LOCALIZE[602]</value>
+		<value condition="String.IsEqual(Skin.String(musicvideo_categories),1)">$LOCALIZE[536]</value>
+		<value condition="String.IsEqual(Skin.String(musicvideo_categories),2)">$LOCALIZE[351]</value>
+	</variable>
+	<variable name="PVRCategoriesTypeVar">
+		<value condition="String.IsEmpty(Skin.String(pvr_categories))">$LOCALIZE[602]</value>		
+		<value condition="String.IsEqual(Skin.String(pvr_categories),0)">$LOCALIZE[602]</value>
+		<value condition="String.IsEqual(Skin.String(pvr_categories),1)">$LOCALIZE[536]</value>
+		<value condition="String.IsEqual(Skin.String(pvr_categories),2)">$LOCALIZE[351]</value>
+	</variable>
+	<variable name="RadioCategoriesTypeVar">
+		<value condition="String.IsEmpty(Skin.String(radio_categories))">$LOCALIZE[602]</value>		
+		<value condition="String.IsEqual(Skin.String(radio_categories),0)">$LOCALIZE[602]</value>
+		<value condition="String.IsEqual(Skin.String(radio_categories),1)">$LOCALIZE[536]</value>
+		<value condition="String.IsEqual(Skin.String(radio_categories),2)">$LOCALIZE[351]</value>
+	</variable>
+	<variable name="AddonCategoriesTypeVar">
+		<value condition="String.IsEmpty(Skin.String(addon_categories))">$LOCALIZE[602]</value>		
+		<value condition="String.IsEqual(Skin.String(addon_categories),0)">$LOCALIZE[602]</value>
+		<value condition="String.IsEqual(Skin.String(addon_categories),1)">$LOCALIZE[536]</value>
+		<value condition="String.IsEqual(Skin.String(addon_categories),2)">$LOCALIZE[351]</value>
+	</variable>
+	<variable name="PictureSourcesTypeVar">
+		<value condition="String.IsEmpty(Skin.String(picture_sources))">$LOCALIZE[602]</value>		
+		<value condition="String.IsEqual(Skin.String(picture_sources),0)">$LOCALIZE[602]</value>
+		<value condition="String.IsEqual(Skin.String(picture_sources),1)">$LOCALIZE[536]</value>
+		<value condition="String.IsEqual(Skin.String(picture_sources),2)">$LOCALIZE[351]</value>
+	</variable>
+	<variable name="VideoCategoriesTypeVar">
+		<value condition="String.IsEmpty(Skin.String(video_categories))">$LOCALIZE[602]</value>		
+		<value condition="String.IsEqual(Skin.String(video_categories),0)">$LOCALIZE[602]</value>
+		<value condition="String.IsEqual(Skin.String(video_categories),1)">$LOCALIZE[536]</value>
+		<value condition="String.IsEqual(Skin.String(video_categories),2)">$LOCALIZE[351]</value>
+	</variable>
+	<variable name="VideoSourcesTypeVar">
+		<value condition="String.IsEmpty(Skin.String(video_sources))">$LOCALIZE[602]</value>		
+		<value condition="String.IsEqual(Skin.String(video_sources),0)">$LOCALIZE[602]</value>
+		<value condition="String.IsEqual(Skin.String(video_sources),1)">$LOCALIZE[536]</value>
+		<value condition="String.IsEqual(Skin.String(video_sources),2)">$LOCALIZE[351]</value>
+	</variable>
+	<variable name="VideoPlaylistsTypeVar">
+		<value condition="String.IsEmpty(Skin.String(video_playlists))">$LOCALIZE[602]</value>		
+		<value condition="String.IsEqual(Skin.String(video_playlists),0)">$LOCALIZE[602]</value>
+		<value condition="String.IsEqual(Skin.String(video_playlists),1)">$LOCALIZE[536]</value>
+		<value condition="String.IsEqual(Skin.String(video_playlists),2)">$LOCALIZE[351]</value>
+	</variable>
+	<variable name="HomeMenuSlot1Var">
+		<value condition="String.IsEqual(Skin.String(homemenu_slot1),0)">$LOCALIZE[351]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot1),1)">$LOCALIZE[342]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot1),2)">$LOCALIZE[20343]</value>	
+		<value condition="String.IsEqual(Skin.String(homemenu_slot1),3)">$LOCALIZE[2]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot1),4)">$LOCALIZE[20389]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot1),5)">$LOCALIZE[19020]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot1),6)">$LOCALIZE[19021]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot1),7)">$LOCALIZE[15016]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot1),8)">$LOCALIZE[24001]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot1),9)">$LOCALIZE[1]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot1),10)">$LOCALIZE[3]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot1),11)">$LOCALIZE[10134]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot1),12)">$LOCALIZE[8]</value>
+	</variable>
+	<variable name="HomeMenuSlot2Var">
+		<value condition="String.IsEqual(Skin.String(homemenu_slot2),0)">$LOCALIZE[351]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot2),1)">$LOCALIZE[342]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot2),2)">$LOCALIZE[20343]</value>	
+		<value condition="String.IsEqual(Skin.String(homemenu_slot2),3)">$LOCALIZE[2]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot2),4)">$LOCALIZE[20389]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot2),5)">$LOCALIZE[19020]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot2),6)">$LOCALIZE[19021]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot2),7)">$LOCALIZE[15016]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot2),8)">$LOCALIZE[24001]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot2),9)">$LOCALIZE[1]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot2),10)">$LOCALIZE[3]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot2),11)">$LOCALIZE[10134]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot2),12)">$LOCALIZE[8]</value>
+	</variable>
+	<variable name="HomeMenuSlot3Var">
+		<value condition="String.IsEqual(Skin.String(homemenu_slot3),0)">$LOCALIZE[351]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot3),1)">$LOCALIZE[342]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot3),2)">$LOCALIZE[20343]</value>	
+		<value condition="String.IsEqual(Skin.String(homemenu_slot3),3)">$LOCALIZE[2]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot3),4)">$LOCALIZE[20389]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot3),5)">$LOCALIZE[19020]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot3),6)">$LOCALIZE[19021]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot3),7)">$LOCALIZE[15016]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot3),8)">$LOCALIZE[24001]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot3),9)">$LOCALIZE[1]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot3),10)">$LOCALIZE[3]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot3),11)">$LOCALIZE[10134]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot3),12)">$LOCALIZE[8]</value>
+	</variable>
+	<variable name="HomeMenuSlot4Var">
+		<value condition="String.IsEqual(Skin.String(homemenu_slot4),0)">$LOCALIZE[351]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot4),1)">$LOCALIZE[342]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot4),2)">$LOCALIZE[20343]</value>	
+		<value condition="String.IsEqual(Skin.String(homemenu_slot4),3)">$LOCALIZE[2]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot4),4)">$LOCALIZE[20389]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot4),5)">$LOCALIZE[19020]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot4),6)">$LOCALIZE[19021]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot4),7)">$LOCALIZE[15016]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot4),8)">$LOCALIZE[24001]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot4),9)">$LOCALIZE[1]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot4),10)">$LOCALIZE[3]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot4),11)">$LOCALIZE[10134]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot4),12)">$LOCALIZE[8]</value>
+	</variable>
+	<variable name="HomeMenuSlot5Var">
+		<value condition="String.IsEqual(Skin.String(homemenu_slot5),0)">$LOCALIZE[351]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot5),1)">$LOCALIZE[342]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot5),2)">$LOCALIZE[20343]</value>	
+		<value condition="String.IsEqual(Skin.String(homemenu_slot5),3)">$LOCALIZE[2]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot5),4)">$LOCALIZE[20389]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot5),5)">$LOCALIZE[19020]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot5),6)">$LOCALIZE[19021]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot5),7)">$LOCALIZE[15016]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot5),8)">$LOCALIZE[24001]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot5),9)">$LOCALIZE[1]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot5),10)">$LOCALIZE[3]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot5),11)">$LOCALIZE[10134]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot5),12)">$LOCALIZE[8]</value>
+	</variable>
+	<variable name="HomeMenuSlot6Var">
+		<value condition="String.IsEqual(Skin.String(homemenu_slot6),0)">$LOCALIZE[351]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot6),1)">$LOCALIZE[342]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot6),2)">$LOCALIZE[20343]</value>	
+		<value condition="String.IsEqual(Skin.String(homemenu_slot6),3)">$LOCALIZE[2]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot6),4)">$LOCALIZE[20389]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot6),5)">$LOCALIZE[19020]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot6),6)">$LOCALIZE[19021]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot6),7)">$LOCALIZE[15016]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot6),8)">$LOCALIZE[24001]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot6),9)">$LOCALIZE[1]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot6),10)">$LOCALIZE[3]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot6),11)">$LOCALIZE[10134]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot6),12)">$LOCALIZE[8]</value>
+	</variable>
+	<variable name="HomeMenuSlot7Var">
+		<value condition="String.IsEqual(Skin.String(homemenu_slot7),0)">$LOCALIZE[351]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot7),1)">$LOCALIZE[342]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot7),2)">$LOCALIZE[20343]</value>	
+		<value condition="String.IsEqual(Skin.String(homemenu_slot7),3)">$LOCALIZE[2]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot7),4)">$LOCALIZE[20389]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot7),5)">$LOCALIZE[19020]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot7),6)">$LOCALIZE[19021]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot7),7)">$LOCALIZE[15016]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot7),8)">$LOCALIZE[24001]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot7),9)">$LOCALIZE[1]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot7),10)">$LOCALIZE[3]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot7),11)">$LOCALIZE[10134]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot7),12)">$LOCALIZE[8]</value>
+	</variable>
+	<variable name="HomeMenuSlot8Var">
+		<value condition="String.IsEqual(Skin.String(homemenu_slot8),0)">$LOCALIZE[351]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot8),1)">$LOCALIZE[342]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot8),2)">$LOCALIZE[20343]</value>	
+		<value condition="String.IsEqual(Skin.String(homemenu_slot8),3)">$LOCALIZE[2]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot8),4)">$LOCALIZE[20389]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot8),5)">$LOCALIZE[19020]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot8),6)">$LOCALIZE[19021]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot8),7)">$LOCALIZE[15016]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot8),8)">$LOCALIZE[24001]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot8),9)">$LOCALIZE[1]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot8),10)">$LOCALIZE[3]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot8),11)">$LOCALIZE[10134]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot8),12)">$LOCALIZE[8]</value>
+	</variable>
+	<variable name="HomeMenuSlot9Var">
+		<value condition="String.IsEqual(Skin.String(homemenu_slot9),0)">$LOCALIZE[351]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot9),1)">$LOCALIZE[342]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot9),2)">$LOCALIZE[20343]</value>	
+		<value condition="String.IsEqual(Skin.String(homemenu_slot9),3)">$LOCALIZE[2]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot9),4)">$LOCALIZE[20389]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot9),5)">$LOCALIZE[19020]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot9),6)">$LOCALIZE[19021]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot9),7)">$LOCALIZE[15016]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot9),8)">$LOCALIZE[24001]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot9),9)">$LOCALIZE[1]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot9),10)">$LOCALIZE[3]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot9),11)">$LOCALIZE[10134]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot9),12)">$LOCALIZE[8]</value>
+	</variable>
+	<variable name="HomeMenuSlot10Var">
+		<value condition="String.IsEqual(Skin.String(homemenu_slot10),0)">$LOCALIZE[351]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot10),1)">$LOCALIZE[342]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot10),2)">$LOCALIZE[20343]</value>	
+		<value condition="String.IsEqual(Skin.String(homemenu_slot10),3)">$LOCALIZE[2]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot10),4)">$LOCALIZE[20389]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot10),5)">$LOCALIZE[19020]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot10),6)">$LOCALIZE[19021]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot10),7)">$LOCALIZE[15016]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot10),8)">$LOCALIZE[24001]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot10),9)">$LOCALIZE[1]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot10),10)">$LOCALIZE[3]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot10),11)">$LOCALIZE[10134]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot10),12)">$LOCALIZE[8]</value>
+	</variable>
+	<variable name="HomeMenuSlot11Var">
+		<value condition="String.IsEqual(Skin.String(homemenu_slot11),0)">$LOCALIZE[351]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot11),1)">$LOCALIZE[342]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot11),2)">$LOCALIZE[20343]</value>	
+		<value condition="String.IsEqual(Skin.String(homemenu_slot11),3)">$LOCALIZE[2]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot11),4)">$LOCALIZE[20389]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot11),5)">$LOCALIZE[19020]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot11),6)">$LOCALIZE[19021]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot11),7)">$LOCALIZE[15016]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot11),8)">$LOCALIZE[24001]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot11),9)">$LOCALIZE[1]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot11),10)">$LOCALIZE[3]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot11),11)">$LOCALIZE[10134]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot11),12)">$LOCALIZE[8]</value>
+	</variable>
+	<variable name="HomeMenuSlot12Var">
+		<value condition="String.IsEqual(Skin.String(homemenu_slot12),0)">$LOCALIZE[351]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot12),1)">$LOCALIZE[342]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot12),2)">$LOCALIZE[20343]</value>	
+		<value condition="String.IsEqual(Skin.String(homemenu_slot12),3)">$LOCALIZE[2]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot12),4)">$LOCALIZE[20389]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot12),5)">$LOCALIZE[19020]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot12),6)">$LOCALIZE[19021]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot12),7)">$LOCALIZE[15016]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot12),8)">$LOCALIZE[24001]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot12),9)">$LOCALIZE[1]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot12),10)">$LOCALIZE[3]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot12),11)">$LOCALIZE[10134]</value>
+		<value condition="String.IsEqual(Skin.String(homemenu_slot12),12)">$LOCALIZE[8]</value>
+	</variable>
 </includes>

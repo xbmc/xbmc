@@ -83,7 +83,7 @@
 				<onright>60</onright>
 				<onup>600</onup>
 				<ondown>600</ondown>
-				<visible>Container(9000).HasFocus(3)</visible>
+				<visible>Container(9000).HasFocus(4)</visible>
 				<control type="radiobutton" id="605">
 					<label>$LOCALIZE[31002]</label>
 					<include>DefaultSettingButton</include>
@@ -138,105 +138,623 @@
 				<pagecontrol>60</pagecontrol>
 				<ondown>610</ondown>
 				<visible>Container(9000).HasFocus(2)</visible>
-				<control type="radiobutton" id="621">
-					<label>$LOCALIZE[31008]</label>
+				<control type="button" id="611">
+					<label>$LOCALIZE[40166]</label>
+					<label2>$VAR[HomeMenuSlot1Var]</label2>
 					<include>DefaultSettingButton</include>
-					<selected>!Skin.HasSetting(home_no_categories_widget)</selected>
-					<onclick>Skin.ToggleSetting(home_no_categories_widget)</onclick>
+					<visible>System.GetBool(gamesgeneral.enable) | !String.IsEqual(Skin.String(homemenu_slot1),7)</visible>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot1),0)">Skin.SetString(homemenu_slot1,1)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot1),1)">Skin.SetString(homemenu_slot1,2)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot1),2)">Skin.SetString(homemenu_slot1,3)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot1),3)">Skin.SetString(homemenu_slot1,4)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot1),4)">Skin.SetString(homemenu_slot1,5)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot1),5)">Skin.SetString(homemenu_slot1,6)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot1),6) + System.GetBool(gamesgeneral.enable)">Skin.SetString(homemenu_slot1,7)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot1),6) + !System.GetBool(gamesgeneral.enable)">Skin.SetString(homemenu_slot1,8)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot1),7)">Skin.SetString(homemenu_slot1,8)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot1),8)">Skin.SetString(homemenu_slot1,9)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot1),9)">Skin.SetString(homemenu_slot1,10)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot1),10)">Skin.SetString(homemenu_slot1,11)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot1),11)">Skin.SetString(homemenu_slot1,12)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot1),12)">Skin.SetString(homemenu_slot1,0)</onclick>
 				</control>
-				<control type="radiobutton" id="611">
-					<label>$LOCALIZE[342]</label>
+				<control type="button" id="612">
+					<label>$LOCALIZE[40166]</label>
+					<label2>$VAR[HomeMenuSlot2Var]</label2>
 					<include>DefaultSettingButton</include>
-					<selected>!Skin.HasSetting(HomeMenuNoMovieButton)</selected>
-					<onclick>Skin.ToggleSetting(HomeMenuNoMovieButton)</onclick>
+					<visible>System.GetBool(gamesgeneral.enable) | !String.IsEqual(Skin.String(homemenu_slot2),7)</visible>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot2),0)">Skin.SetString(homemenu_slot2,1)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot2),1)">Skin.SetString(homemenu_slot2,2)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot2),2)">Skin.SetString(homemenu_slot2,3)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot2),3)">Skin.SetString(homemenu_slot2,4)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot2),4)">Skin.SetString(homemenu_slot2,5)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot2),5)">Skin.SetString(homemenu_slot2,6)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot2),6) + System.GetBool(gamesgeneral.enable)">Skin.SetString(homemenu_slot2,7)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot2),6) + !System.GetBool(gamesgeneral.enable)">Skin.SetString(homemenu_slot2,8)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot2),7)">Skin.SetString(homemenu_slot2,8)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot2),8)">Skin.SetString(homemenu_slot2,9)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot2),9)">Skin.SetString(homemenu_slot2,10)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot2),10)">Skin.SetString(homemenu_slot2,11)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot2),11)">Skin.SetString(homemenu_slot2,12)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot2),12)">Skin.SetString(homemenu_slot2,0)</onclick>
 				</control>
-				<control type="button" id="6110">
-					<label>- $LOCALIZE[31157]</label>
+				<control type="button" id="613">
+					<label>$LOCALIZE[40166]</label>
+					<label2>$VAR[HomeMenuSlot3Var]</label2>
+					<include>DefaultSettingButton</include>
+					<visible>System.GetBool(gamesgeneral.enable) | !String.IsEqual(Skin.String(homemenu_slot3),7)</visible>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot3),0)">Skin.SetString(homemenu_slot3,1)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot3),1)">Skin.SetString(homemenu_slot3,2)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot3),2)">Skin.SetString(homemenu_slot3,3)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot3),3)">Skin.SetString(homemenu_slot3,4)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot3),4)">Skin.SetString(homemenu_slot3,5)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot3),5)">Skin.SetString(homemenu_slot3,6)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot3),6) + System.GetBool(gamesgeneral.enable)">Skin.SetString(homemenu_slot3,7)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot3),6) + !System.GetBool(gamesgeneral.enable)">Skin.SetString(homemenu_slot3,8)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot3),7)">Skin.SetString(homemenu_slot3,8)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot3),8)">Skin.SetString(homemenu_slot3,9)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot3),9)">Skin.SetString(homemenu_slot3,10)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot3),10)">Skin.SetString(homemenu_slot3,11)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot3),11)">Skin.SetString(homemenu_slot3,12)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot3),12)">Skin.SetString(homemenu_slot3,0)</onclick>
+				</control>
+				<control type="button" id="614">
+					<label>$LOCALIZE[40166]</label>
+					<label2>$VAR[HomeMenuSlot4Var]</label2>
+					<include>DefaultSettingButton</include>
+					<visible>System.GetBool(gamesgeneral.enable) | !String.IsEqual(Skin.String(homemenu_slot4),7)</visible>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot4),0)">Skin.SetString(homemenu_slot4,1)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot4),1)">Skin.SetString(homemenu_slot4,2)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot4),2)">Skin.SetString(homemenu_slot4,3)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot4),3)">Skin.SetString(homemenu_slot4,4)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot4),4)">Skin.SetString(homemenu_slot4,5)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot4),5)">Skin.SetString(homemenu_slot4,6)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot4),6) + System.GetBool(gamesgeneral.enable)">Skin.SetString(homemenu_slot4,7)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot4),6) + !System.GetBool(gamesgeneral.enable)">Skin.SetString(homemenu_slot4,8)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot4),7)">Skin.SetString(homemenu_slot4,8)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot4),8)">Skin.SetString(homemenu_slot4,9)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot4),9)">Skin.SetString(homemenu_slot4,10)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot4),10)">Skin.SetString(homemenu_slot4,11)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot4),11)">Skin.SetString(homemenu_slot4,12)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot4),12)">Skin.SetString(homemenu_slot4,0)</onclick>
+				</control>
+				<control type="button" id="615">
+					<label>$LOCALIZE[40166]</label>
+					<label2>$VAR[HomeMenuSlot5Var]</label2>
+					<include>DefaultSettingButton</include>
+					<visible>System.GetBool(gamesgeneral.enable) | !String.IsEqual(Skin.String(homemenu_slot5),7)</visible>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot5),0)">Skin.SetString(homemenu_slot5,1)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot5),1)">Skin.SetString(homemenu_slot5,2)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot5),2)">Skin.SetString(homemenu_slot5,3)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot5),3)">Skin.SetString(homemenu_slot5,4)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot5),4)">Skin.SetString(homemenu_slot5,5)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot5),5)">Skin.SetString(homemenu_slot5,6)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot5),6) + System.GetBool(gamesgeneral.enable)">Skin.SetString(homemenu_slot5,7)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot5),6) + !System.GetBool(gamesgeneral.enable)">Skin.SetString(homemenu_slot5,8)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot5),7)">Skin.SetString(homemenu_slot5,8)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot5),8)">Skin.SetString(homemenu_slot5,9)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot5),9)">Skin.SetString(homemenu_slot5,10)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot5),10)">Skin.SetString(homemenu_slot5,11)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot5),11)">Skin.SetString(homemenu_slot5,12)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot5),12)">Skin.SetString(homemenu_slot5,0)</onclick>
+				</control>
+				<control type="button" id="616">
+					<label>$LOCALIZE[40166]</label>
+					<label2>$VAR[HomeMenuSlot6Var]</label2>
+					<include>DefaultSettingButton</include>
+					<visible>System.GetBool(gamesgeneral.enable) | !String.IsEqual(Skin.String(homemenu_slot6),7)</visible>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot6),0)">Skin.SetString(homemenu_slot6,1)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot6),1)">Skin.SetString(homemenu_slot6,2)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot6),2)">Skin.SetString(homemenu_slot6,3)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot6),3)">Skin.SetString(homemenu_slot6,4)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot6),4)">Skin.SetString(homemenu_slot6,5)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot6),5)">Skin.SetString(homemenu_slot6,6)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot6),6) + System.GetBool(gamesgeneral.enable)">Skin.SetString(homemenu_slot6,7)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot6),6) + !System.GetBool(gamesgeneral.enable)">Skin.SetString(homemenu_slot6,8)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot6),7)">Skin.SetString(homemenu_slot6,8)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot6),8)">Skin.SetString(homemenu_slot6,9)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot6),9)">Skin.SetString(homemenu_slot6,10)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot6),10)">Skin.SetString(homemenu_slot6,11)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot6),11)">Skin.SetString(homemenu_slot6,12)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot6),12)">Skin.SetString(homemenu_slot6,0)</onclick>
+				</control>
+				<control type="button" id="617">
+					<label>$LOCALIZE[40166]</label>
+					<label2>$VAR[HomeMenuSlot7Var]</label2>
+					<include>DefaultSettingButton</include>
+					<visible>System.GetBool(gamesgeneral.enable) | !String.IsEqual(Skin.String(homemenu_slot7),7)</visible>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot7),0)">Skin.SetString(homemenu_slot7,1)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot7),1)">Skin.SetString(homemenu_slot7,2)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot7),2)">Skin.SetString(homemenu_slot7,3)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot7),3)">Skin.SetString(homemenu_slot7,4)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot7),4)">Skin.SetString(homemenu_slot7,5)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot7),5)">Skin.SetString(homemenu_slot7,6)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot7),6) + System.GetBool(gamesgeneral.enable)">Skin.SetString(homemenu_slot7,7)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot7),6) + !System.GetBool(gamesgeneral.enable)">Skin.SetString(homemenu_slot7,8)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot7),7)">Skin.SetString(homemenu_slot7,8)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot7),8)">Skin.SetString(homemenu_slot7,9)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot7),9)">Skin.SetString(homemenu_slot7,10)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot7),10)">Skin.SetString(homemenu_slot7,11)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot7),11)">Skin.SetString(homemenu_slot7,12)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot7),12)">Skin.SetString(homemenu_slot7,0)</onclick>
+				</control>
+				<control type="button" id="618">
+					<label>$LOCALIZE[40166]</label>
+					<label2>$VAR[HomeMenuSlot8Var]</label2>
+					<include>DefaultSettingButton</include>
+					<visible>System.GetBool(gamesgeneral.enable) | !String.IsEqual(Skin.String(homemenu_slot8),7)</visible>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot8),0)">Skin.SetString(homemenu_slot8,1)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot8),1)">Skin.SetString(homemenu_slot8,2)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot8),2)">Skin.SetString(homemenu_slot8,3)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot8),3)">Skin.SetString(homemenu_slot8,4)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot8),4)">Skin.SetString(homemenu_slot8,5)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot8),5)">Skin.SetString(homemenu_slot8,6)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot8),6) + System.GetBool(gamesgeneral.enable)">Skin.SetString(homemenu_slot8,7)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot8),6) + !System.GetBool(gamesgeneral.enable)">Skin.SetString(homemenu_slot8,8)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot8),7)">Skin.SetString(homemenu_slot8,8)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot8),8)">Skin.SetString(homemenu_slot8,9)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot8),9)">Skin.SetString(homemenu_slot8,10)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot8),10)">Skin.SetString(homemenu_slot8,11)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot8),11)">Skin.SetString(homemenu_slot8,12)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot8),12)">Skin.SetString(homemenu_slot8,0)</onclick>
+				</control>
+				<control type="button" id="619">
+					<label>$LOCALIZE[40166]</label>
+					<label2>$VAR[HomeMenuSlot9Var]</label2>
+					<include>DefaultSettingButton</include>
+					<visible>System.GetBool(gamesgeneral.enable) | !String.IsEqual(Skin.String(homemenu_slot9),7)</visible>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot9),0)">Skin.SetString(homemenu_slot9,1)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot9),1)">Skin.SetString(homemenu_slot9,2)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot9),2)">Skin.SetString(homemenu_slot9,3)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot9),3)">Skin.SetString(homemenu_slot9,4)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot9),4)">Skin.SetString(homemenu_slot9,5)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot9),5)">Skin.SetString(homemenu_slot9,6)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot9),6) + System.GetBool(gamesgeneral.enable)">Skin.SetString(homemenu_slot9,7)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot9),6) + !System.GetBool(gamesgeneral.enable)">Skin.SetString(homemenu_slot9,8)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot9),7)">Skin.SetString(homemenu_slot9,8)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot9),8)">Skin.SetString(homemenu_slot9,9)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot9),9)">Skin.SetString(homemenu_slot9,10)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot9),10)">Skin.SetString(homemenu_slot9,11)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot9),11)">Skin.SetString(homemenu_slot9,12)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot9),12)">Skin.SetString(homemenu_slot9,0)</onclick>
+				</control>
+				<control type="button" id="620">
+					<label>$LOCALIZE[40166]</label>
+					<label2>$VAR[HomeMenuSlot10Var]</label2>
+					<include>DefaultSettingButton</include>
+					<visible>System.GetBool(gamesgeneral.enable) | !String.IsEqual(Skin.String(homemenu_slot10),7)</visible>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot10),0)">Skin.SetString(homemenu_slot10,1)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot10),1)">Skin.SetString(homemenu_slot10,2)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot10),2)">Skin.SetString(homemenu_slot10,3)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot10),3)">Skin.SetString(homemenu_slot10,4)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot10),4)">Skin.SetString(homemenu_slot10,5)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot10),5)">Skin.SetString(homemenu_slot10,6)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot10),6) + System.GetBool(gamesgeneral.enable)">Skin.SetString(homemenu_slot10,7)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot10),6) + !System.GetBool(gamesgeneral.enable)">Skin.SetString(homemenu_slot10,8)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot10),7)">Skin.SetString(homemenu_slot10,8)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot10),8)">Skin.SetString(homemenu_slot10,9)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot10),9)">Skin.SetString(homemenu_slot10,10)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot10),10)">Skin.SetString(homemenu_slot10,11)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot10),11)">Skin.SetString(homemenu_slot10,12)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot10),12)">Skin.SetString(homemenu_slot10,0)</onclick>
+				</control>
+				<control type="button" id="621">
+					<label>$LOCALIZE[40166]</label>
+					<label2>$VAR[HomeMenuSlot11Var]</label2>
+					<include>DefaultSettingButton</include>
+					<visible>System.GetBool(gamesgeneral.enable) | !String.IsEqual(Skin.String(homemenu_slot11),7)</visible>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot11),0)">Skin.SetString(homemenu_slot11,1)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot11),1)">Skin.SetString(homemenu_slot11,2)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot11),2)">Skin.SetString(homemenu_slot11,3)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot11),3)">Skin.SetString(homemenu_slot11,4)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot11),4)">Skin.SetString(homemenu_slot11,5)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot11),5)">Skin.SetString(homemenu_slot11,6)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot11),6) + System.GetBool(gamesgeneral.enable)">Skin.SetString(homemenu_slot11,7)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot11),6) + !System.GetBool(gamesgeneral.enable)">Skin.SetString(homemenu_slot11,8)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot11),7)">Skin.SetString(homemenu_slot11,8)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot11),8)">Skin.SetString(homemenu_slot11,9)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot11),9)">Skin.SetString(homemenu_slot11,10)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot11),10)">Skin.SetString(homemenu_slot11,11)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot11),11)">Skin.SetString(homemenu_slot11,12)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot11),12)">Skin.SetString(homemenu_slot11,0)</onclick>
+				</control>
+				<control type="button" id="622">
+					<label>$LOCALIZE[40166]</label>
+					<label2>$VAR[HomeMenuSlot12Var]</label2>
+					<include>DefaultSettingButton</include>
+					<visible>System.GetBool(gamesgeneral.enable) | !String.IsEqual(Skin.String(homemenu_slot12),7)</visible>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot12),0)">Skin.SetString(homemenu_slot12,1)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot12),1)">Skin.SetString(homemenu_slot12,2)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot12),2)">Skin.SetString(homemenu_slot12,3)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot12),3)">Skin.SetString(homemenu_slot12,4)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot12),4)">Skin.SetString(homemenu_slot12,5)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot12),5)">Skin.SetString(homemenu_slot12,6)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot12),6) + System.GetBool(gamesgeneral.enable)">Skin.SetString(homemenu_slot12,7)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot12),6) + !System.GetBool(gamesgeneral.enable)">Skin.SetString(homemenu_slot12,8)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot12),7)">Skin.SetString(homemenu_slot12,8)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot12),8)">Skin.SetString(homemenu_slot12,9)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot12),9)">Skin.SetString(homemenu_slot12,10)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot12),10)">Skin.SetString(homemenu_slot12,11)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot12),11)">Skin.SetString(homemenu_slot12,12)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(homemenu_slot12),12)">Skin.SetString(homemenu_slot12,0)</onclick>
+				</control>
+			</control>
+			<control type="grouplist" id="800">
+				<top>160</top>
+				<left>0</left>
+				<right>0</right>
+				<bottom>140</bottom>
+				<onleft>9000</onleft>
+				<onright>60</onright>
+				<onup>800</onup>
+				<ondown>800</ondown>
+				<pagecontrol>60</pagecontrol>
+				<visible>Container(9000).HasFocus(3)</visible>
+				<control type="button" id="801">
+					<label>$LOCALIZE[20342]</label>
+					<include>DefaultSettingButton</include>
+				</control>
+				<control type="button" id="8010">
+					<label>- $LOCALIZE[31148]</label>
+					<label2>$VAR[MovieCategoriesTypeVar]</label2>
+					<include>DefaultSettingButton</include>
+					<onclick condition="String.IsEmpty(Skin.String(movie_categories))">Skin.SetString(movie_categories,1)</onclick>					
+					<onclick condition="String.IsEqual(Skin.String(movie_categories),2)">Skin.SetString(movie_categories,0)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(movie_categories),1)">Skin.SetString(movie_categories,2)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(movie_categories),0)">Skin.SetString(movie_categories,1)</onclick>
+				</control>
+				<control type="button" id="8017">
+					<label>-- $LOCALIZE[31157]</label>
 					<include>DefaultSettingButton</include>
 					<onclick condition="System.HasAddon(plugin.library.node.editor)">ActivateWindow(programs,plugin://plugin.library.node.editor/?ltype=video,return)</onclick>
 					<onclick condition="!System.HasAddon(plugin.library.node.editor)">InstallAddon(plugin.library.node.editor)</onclick>
 					<enable>!Skin.HasSetting(HomeMenuNoMovieButton)</enable>
 				</control>
-				<control type="radiobutton" id="612">
+				<control type="radiobutton" id="8011">
+					<label>- $LOCALIZE[31010]</label>
+					<include>DefaultSettingButton</include>
+					<selected>!Skin.HasSetting(no_movie_inprogress)</selected>
+					<onclick>Skin.ToggleSetting(no_movie_inprogress)</onclick>
+				</control>
+				<control type="radiobutton" id="8012">
+					<label>- $LOCALIZE[20386]</label>
+					<include>DefaultSettingButton</include>
+					<selected>!Skin.HasSetting(no_movie_recent)</selected>
+					<onclick>Skin.ToggleSetting(no_movie_recent)</onclick>
+				</control>
+				<control type="radiobutton" id="8013">
+					<label>- $LOCALIZE[31007]</label>
+					<include>DefaultSettingButton</include>
+					<selected>!Skin.HasSetting(no_movie_unwatched)</selected>
+					<onclick>Skin.ToggleSetting(no_movie_unwatched)</onclick>
+				</control>
+				<control type="radiobutton" id="8014">
+					<label>- $LOCALIZE[31006]</label>
+					<include>DefaultSettingButton</include>
+					<selected>!Skin.HasSetting(no_movie_random)</selected>
+					<onclick>Skin.ToggleSetting(no_movie_random)</onclick>
+				</control>
+				<control type="radiobutton" id="8015">
+					<label>- $LOCALIZE[135]</label>
+					<include>DefaultSettingButton</include>
+					<selected>!Skin.HasSetting(no_movie_genres)</selected>
+					<onclick>Skin.ToggleSetting(no_movie_genres)</onclick>
+				</control>
+				<control type="radiobutton" id="8016">
+					<label>- $LOCALIZE[31075]</label>
+					<include>DefaultSettingButton</include>
+					<selected>!Skin.HasSetting(no_movie_sets)</selected>
+					<onclick>Skin.ToggleSetting(no_movie_sets)</onclick>
+				</control>
+				<control type="button" id="802">
 					<label>$LOCALIZE[20343]</label>
 					<include>DefaultSettingButton</include>
-					<selected>!Skin.HasSetting(HomeMenuNoTVShowButton)</selected>
-					<onclick>Skin.ToggleSetting(HomeMenuNoTVShowButton)</onclick>
 				</control>
-				<control type="button" id="6120">
-					<label>- $LOCALIZE[31157]</label>
+				<control type="button" id="8020">
+					<label>- $LOCALIZE[31148]</label>
+					<label2>$VAR[TVCategoriesTypeVar]</label2>
+					<include>DefaultSettingButton</include>
+					<onclick condition="String.IsEmpty(Skin.String(tv_categories))">Skin.SetString(tv_categories,1)</onclick>					
+					<onclick condition="String.IsEqual(Skin.String(tv_categories),2)">Skin.SetString(tv_categories,0)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(tv_categories),1)">Skin.SetString(tv_categories,2)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(tv_categories),0)">Skin.SetString(tv_categories,1)</onclick>
+				</control>
+				<control type="button" id="8027">
+					<label>-- $LOCALIZE[31157]</label>
 					<include>DefaultSettingButton</include>
 					<onclick condition="System.HasAddon(plugin.library.node.editor)">ActivateWindow(programs,plugin://plugin.library.node.editor/?ltype=video,return)</onclick>
 					<onclick condition="!System.HasAddon(plugin.library.node.editor)">InstallAddon(plugin.library.node.editor)</onclick>
 					<enable>!Skin.HasSetting(HomeMenuNoTVShowButton)</enable>
 				</control>
-				<control type="radiobutton" id="613">
+				<control type="radiobutton" id="8021">
+					<label>- $LOCALIZE[626]</label>
+					<include>DefaultSettingButton</include>
+					<selected>!Skin.HasSetting(no_tv_inprogress)</selected>
+					<onclick>Skin.ToggleSetting(no_tv_inprogress)</onclick>
+				</control>
+				<control type="radiobutton" id="8022">
+					<label>- $LOCALIZE[20387]</label>
+					<include>DefaultSettingButton</include>
+					<selected>!Skin.HasSetting(no_tv_recent)</selected>
+					<onclick>Skin.ToggleSetting(no_tv_recent)</onclick>
+				</control>
+				<control type="radiobutton" id="8023">
+					<label>- $LOCALIZE[31122]</label>
+					<include>DefaultSettingButton</include>
+					<selected>!Skin.HasSetting(no_tv_unwatched)</selected>
+					<onclick>Skin.ToggleSetting(no_tv_unwatched)</onclick>
+				</control>
+				<control type="radiobutton" id="8024">
+					<label>- $LOCALIZE[31122] / $LOCALIZE[626]</label>
+					<include>DefaultSettingButton</include>
+					<selected>Skin.HasSetting(tv_unwatched_inprogress)</selected>
+					<onclick>Skin.ToggleSetting(tv_unwatched_inprogress)</onclick>
+				</control>
+				<control type="radiobutton" id="8025">
+					<label>- $LOCALIZE[135]</label>
+					<include>DefaultSettingButton</include>
+					<selected>!Skin.HasSetting(no_tv_genres)</selected>
+					<onclick>Skin.ToggleSetting(no_tv_genres)</onclick>
+				</control>
+				<control type="radiobutton" id="8026">
+					<label>- $LOCALIZE[20388]</label>
+					<include>DefaultSettingButton</include>
+					<selected>!Skin.HasSetting(no_tv_studios)</selected>
+					<onclick>Skin.ToggleSetting(no_tv_studios)</onclick>
+				</control>
+				<control type="button" id="803">
 					<label>$LOCALIZE[2]</label>
 					<include>DefaultSettingButton</include>
-					<selected>!Skin.HasSetting(HomeMenuNoMusicButton)</selected>
-					<onclick>Skin.ToggleSetting(HomeMenuNoMusicButton)</onclick>
 				</control>
-				<control type="button" id="6130">
-					<label>- $LOCALIZE[31157]</label>
+				<control type="button" id="8030">
+					<label>- $LOCALIZE[31148]</label>
+					<label2>$VAR[MusicCategoriesTypeVar]</label2>
+					<include>DefaultSettingButton</include>
+					<onclick condition="String.IsEmpty(Skin.String(music_categories))">Skin.SetString(music_categories,1)</onclick>					
+					<onclick condition="String.IsEqual(Skin.String(music_categories),2)">Skin.SetString(music_categories,0)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(music_categories),1)">Skin.SetString(music_categories,2)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(music_categories),0)">Skin.SetString(music_categories,1)</onclick>
+				</control>
+				<control type="button" id="8037">
+					<label>-- $LOCALIZE[31157]</label>
 					<include>DefaultSettingButton</include>
 					<onclick condition="System.HasAddon(plugin.library.node.editor)">ActivateWindow(programs,plugin://plugin.library.node.editor/?ltype=music,return)</onclick>
 					<onclick condition="!System.HasAddon(plugin.library.node.editor)">InstallAddon(plugin.library.node.editor)</onclick>
 					<enable>!Skin.HasSetting(HomeMenuNoMusicButton)</enable>
 				</control>
-				<control type="radiobutton" id="6131">
-					<label>$LOCALIZE[20389]</label>
+				<control type="radiobutton" id="8031">
+					<label>- $LOCALIZE[517]</label>
 					<include>DefaultSettingButton</include>
-					<selected>!Skin.HasSetting(HomeMenuNoMusicVideoButton)</selected>
-					<onclick>Skin.ToggleSetting(HomeMenuNoMusicVideoButton)</onclick>
+					<selected>!Skin.HasSetting(no_music_recentlyplayed)</selected>
+					<onclick>Skin.ToggleSetting(no_music_recentlyplayed)</onclick>
 				</control>
-				<control type="radiobutton" id="618">
+				<control type="radiobutton" id="8032">
+					<label>- $LOCALIZE[359]</label>
+					<include>DefaultSettingButton</include>
+					<selected>!Skin.HasSetting(no_music_recentlyadded)</selected>
+					<onclick>Skin.ToggleSetting(no_music_recentlyadded)</onclick>
+				</control>
+				<control type="radiobutton" id="8033">
+					<label>- $LOCALIZE[31012]</label>
+					<include>DefaultSettingButton</include>
+					<selected>!Skin.HasSetting(no_music_randomalbums)</selected>
+					<onclick>Skin.ToggleSetting(no_music_randomalbums)</onclick>
+				</control>
+				<control type="radiobutton" id="8034">
+					<label>- $LOCALIZE[31013]</label>
+					<include>DefaultSettingButton</include>
+					<selected>!Skin.HasSetting(no_music_randomartists)</selected>
+					<onclick>Skin.ToggleSetting(no_music_randomartists)</onclick>
+				</control>
+				<control type="radiobutton" id="8035">
+					<label>- $LOCALIZE[31014]</label>
+					<include>DefaultSettingButton</include>
+					<selected>!Skin.HasSetting(no_music_unplayed)</selected>
+					<onclick>Skin.ToggleSetting(no_music_unplayed)</onclick>
+				</control>
+				<control type="radiobutton" id="8036">
+					<label>- $LOCALIZE[31011]</label>
+					<include>DefaultSettingButton</include>
+					<selected>!Skin.HasSetting(no_music_mostplayed)</selected>
+					<onclick>Skin.ToggleSetting(no_music_mostplayed)</onclick>
+				</control>
+				<control type="button" id="806">
+					<label>20389</label>
+					<include>DefaultSettingButton</include>
+				</control>
+				<control type="button" id="8060">
+					<label>- $LOCALIZE[31148]</label>
+					<label2>$VAR[MusicVideoCategoriesTypeVar]</label2>
+					<include>DefaultSettingButton</include>
+					<onclick condition="String.IsEmpty(Skin.String(musicvideo_categories))">Skin.SetString(musicvideo_categories,1)</onclick>					
+					<onclick condition="String.IsEqual(Skin.String(musicvideo_categories),2)">Skin.SetString(musicvideo_categories,0)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(musicvideo_categories),1)">Skin.SetString(musicvideo_categories,2)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(musicvideo_categories),0)">Skin.SetString(musicvideo_categories,1)</onclick>
+				</control>
+				<control type="button" id="8066">
+					<label>-- $LOCALIZE[31157]</label>
+					<include>DefaultSettingButton</include>
+					<onclick condition="System.HasAddon(plugin.library.node.editor)">ActivateWindow(programs,plugin://plugin.library.node.editor/?ltype=music,return)</onclick>
+					<onclick condition="!System.HasAddon(plugin.library.node.editor)">InstallAddon(plugin.library.node.editor)</onclick>
+					<enable>!Skin.HasSetting(HomeMenuNoMusicVideoButton)</enable>
+				</control>
+				<control type="radiobutton" id="8061">
+					<label>- $LOCALIZE[20390]</label>
+					<include>DefaultSettingButton</include>
+					<selected>!Skin.HasSetting(no_musicvideo_recent)</selected>
+					<onclick>Skin.ToggleSetting(no_musicvideo_recent)</onclick>
+				</control>
+				<control type="radiobutton" id="8062">
+					<label>- $LOCALIZE[31151]</label>
+					<include>DefaultSettingButton</include>
+					<selected>!Skin.HasSetting(no_musicvideo_unwatched)</selected>
+					<onclick>Skin.ToggleSetting(no_musicvideo_unwatched)</onclick>
+				</control>
+				<control type="radiobutton" id="8063">
+					<label>- $LOCALIZE[31013]</label>
+					<include>DefaultSettingButton</include>
+					<selected>!Skin.HasSetting(no_mvartist_random)</selected>
+					<onclick>Skin.ToggleSetting(no_mvartist_random)</onclick>
+				</control>
+				<control type="radiobutton" id="8064">
+					<label>- $LOCALIZE[31152]</label>
+					<include>DefaultSettingButton</include>
+					<selected>!Skin.HasSetting(no_musicvideo_random)</selected>
+					<onclick>Skin.ToggleSetting(no_musicvideo_random)</onclick>
+				</control>
+				<control type="radiobutton" id="8065">
+					<label>- $LOCALIZE[20388]</label>
+					<include>DefaultSettingButton</include>
+					<selected>!Skin.HasSetting(no_musicvideo_studio)</selected>
+					<onclick>Skin.ToggleSetting(no_musicvideo_studio)</onclick>
+				</control>
+				<control type="button" id="804">
 					<label>$LOCALIZE[19020]</label>
 					<include>DefaultSettingButton</include>
-					<selected>!Skin.HasSetting(HomeMenuNoTVButton)</selected>
-					<onclick>Skin.ToggleSetting(HomeMenuNoTVButton)</onclick>
 				</control>
-				<control type="radiobutton" id="619">
+				<control type="button" id="8040">
+					<label>- $LOCALIZE[31148]</label>
+					<label2>$VAR[PVRCategoriesTypeVar]</label2>
+					<include>DefaultSettingButton</include>
+					<onclick condition="String.IsEmpty(Skin.String(pvr_categories))">Skin.SetString(pvr_categories,1)</onclick>					
+					<onclick condition="String.IsEqual(Skin.String(pvr_categories),2)">Skin.SetString(pvr_categories,0)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(pvr_categories),1)">Skin.SetString(pvr_categories,2)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(pvr_categories),0)">Skin.SetString(pvr_categories,1)</onclick>
+				</control>
+				<control type="radiobutton" id="8041">
+					<label>- $LOCALIZE[31016]</label>
+					<include>DefaultSettingButton</include>
+					<selected>!Skin.HasSetting(no_pvr_channels)</selected>
+					<onclick>Skin.ToggleSetting(no_pvr_channels)</onclick>
+				</control>
+				<control type="radiobutton" id="8042">
+					<label>- $LOCALIZE[31015]</label>
+					<include>DefaultSettingButton</include>
+					<selected>!Skin.HasSetting(no_pvr_recordings)</selected>
+					<onclick>Skin.ToggleSetting(no_pvr_recordings)</onclick>
+				</control>
+				<control type="button" id="807">
 					<label>$LOCALIZE[19021]</label>
 					<include>DefaultSettingButton</include>
-					<selected>!Skin.HasSetting(HomeMenuNoRadioButton)</selected>
-					<onclick>Skin.ToggleSetting(HomeMenuNoRadioButton)</onclick>
 				</control>
-				<control type="radiobutton" id="614">
-					<label>$LOCALIZE[24001]</label>
+				<control type="button" id="8070">
+					<label>- $LOCALIZE[31148]</label>
+					<label2>$VAR[RadioCategoriesTypeVar]</label2>
 					<include>DefaultSettingButton</include>
-					<selected>!Skin.HasSetting(HomeMenuNoProgramsButton)</selected>
-					<onclick>Skin.ToggleSetting(HomeMenuNoProgramsButton)</onclick>
+					<onclick condition="String.IsEmpty(Skin.String(radio_categories))">Skin.SetString(radio_categories,1)</onclick>					
+					<onclick condition="String.IsEqual(Skin.String(radio_categories),2)">Skin.SetString(radio_categories,0)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(radio_categories),1)">Skin.SetString(radio_categories,2)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(radio_categories),0)">Skin.SetString(radio_categories,1)</onclick>
 				</control>
-				<control type="radiobutton" id="615">
+				<control type="radiobutton" id="8071">
+					<label>- $LOCALIZE[31016]</label>
+					<include>DefaultSettingButton</include>
+					<selected>!Skin.HasSetting(no_radio_channels)</selected>
+					<onclick>Skin.ToggleSetting(no_radio_channels)</onclick>
+				</control>
+				<control type="radiobutton" id="8072">
+					<label>- $LOCALIZE[31015]</label>
+					<include>DefaultSettingButton</include>
+					<selected>!Skin.HasSetting(no_radio_recordings)</selected>
+					<onclick>Skin.ToggleSetting(no_radio_recordings)</onclick>
+				</control>
+				<control type="button" id="808">
+					<label>$LOCALIZE[10821]</label>
+					<include>DefaultSettingButton</include>
+					<visible>System.GetBool(gamesgeneral.enable)</visible>
+				</control>				
+				<control type="radiobutton" id="8081">
+					<label>- $LOCALIZE[35049]</label>
+					<include>DefaultSettingButton</include>
+					<selected>!Skin.HasSetting(no_games)</selected>
+					<onclick>Skin.ToggleSetting(no_games)</onclick>
+					<visible>System.GetBool(gamesgeneral.enable)</visible>
+				</control>
+				<control type="button" id="805">
+					<label>$LOCALIZE[24000]</label>
+					<include>DefaultSettingButton</include>
+				</control>
+				<control type="button" id="8050">
+					<label>- $LOCALIZE[31148]</label>
+					<label2>$VAR[AddonCategoriesTypeVar]</label2>
+					<include>DefaultSettingButton</include>
+					<onclick condition="String.IsEmpty(Skin.String(addon_categories))">Skin.SetString(addon_categories,1)</onclick>					
+					<onclick condition="String.IsEqual(Skin.String(addon_categories),2)">Skin.SetString(addon_categories,0)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(addon_categories),1)">Skin.SetString(addon_categories,2)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(addon_categories),0)">Skin.SetString(addon_categories,1)</onclick>
+				</control>
+				<control type="radiobutton" id="8051">
+					<label>- $LOCALIZE[1037]</label>
+					<include>DefaultSettingButton</include>
+					<selected>!Skin.HasSetting(no_addon_video)</selected>
+					<onclick>Skin.ToggleSetting(no_addon_video)</onclick>
+				</control>
+				<control type="radiobutton" id="8052">
+					<label>- $LOCALIZE[1038]</label>
+					<include>DefaultSettingButton</include>
+					<selected>!Skin.HasSetting(no_addon_audio)</selected>
+					<onclick>Skin.ToggleSetting(no_addon_audio)</onclick>
+				</control>
+				<control type="radiobutton" id="8053">
+					<label>- $LOCALIZE[35049]</label>
+					<include>DefaultSettingButton</include>
+					<selected>!Skin.HasSetting(no_addon_games)</selected>
+					<onclick>Skin.ToggleSetting(no_addon_games)</onclick>
+					<visible>System.GetBool(gamesgeneral.enable)</visible>
+				</control>
+				<control type="radiobutton" id="8054">
+					<label>- $LOCALIZE[1043]</label>
+					<include>DefaultSettingButton</include>
+					<selected>!Skin.HasSetting(no_addon_program)</selected>
+					<onclick>Skin.ToggleSetting(no_addon_program)</onclick>
+				</control>
+				<control type="radiobutton" id="8055">
+					<label>- $LOCALIZE[20244]</label>
+					<include>DefaultSettingButton</include>
+					<selected>!Skin.HasSetting(no_addon_android)</selected>
+					<onclick>Skin.ToggleSetting(no_addon_android)</onclick>
+					<visible>System.Platform.Android</visible>
+				</control>
+				<control type="radiobutton" id="8056">
+					<label>- $LOCALIZE[1039]</label>
+					<include>DefaultSettingButton</include>
+					<selected>!Skin.HasSetting(no_addon_image)</selected>
+					<onclick>Skin.ToggleSetting(no_addon_image)</onclick>
+				</control>
+				<control type="button" id="809">
 					<label>$LOCALIZE[1]</label>
 					<include>DefaultSettingButton</include>
-					<selected>!Skin.HasSetting(HomeMenuNoPicturesButton)</selected>
-					<onclick>Skin.ToggleSetting(HomeMenuNoPicturesButton)</onclick>
 				</control>
-				<control type="radiobutton" id="616">
+				<control type="button" id="8090">
+					<label>- $LOCALIZE[20094]</label>
+					<label2>$VAR[PictureSourcesTypeVar]</label2>
+					<include>DefaultSettingButton</include>
+					<onclick condition="String.IsEmpty(Skin.String(picture_sources))">Skin.SetString(picture_sources,1)</onclick>					
+					<onclick condition="String.IsEqual(Skin.String(picture_sources),2)">Skin.SetString(picture_sources,0)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(picture_sources),1)">Skin.SetString(picture_sources,2)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(picture_sources),0)">Skin.SetString(picture_sources,1)</onclick>
+				</control>
+				<control type="button" id="810">
 					<label>$LOCALIZE[3]</label>
 					<include>DefaultSettingButton</include>
-					<selected>!Skin.HasSetting(HomeMenuNoVideosButton)</selected>
-					<onclick>Skin.ToggleSetting(HomeMenuNoVideosButton)</onclick>
 				</control>
-				<control type="radiobutton" id="620">
-					<label>$LOCALIZE[15016]</label>
-					<visible>System.GetBool(gamesgeneral.enable)</visible>
+				<control type="radiobutton" id="8100">
+					<label>- $LOCALIZE[31148]</label>
 					<include>DefaultSettingButton</include>
-					<selected>!Skin.HasSetting(HomeMenuNoGamesButton)</selected>
-					<onclick>Skin.ToggleSetting(HomeMenuNoGamesButton)</onclick>
+					<selected>!Skin.HasSetting(no_video_categories)</selected>
+					<onclick>Skin.ToggleSetting(no_video_categories)</onclick>
 				</control>
-				<control type="radiobutton" id="6160">
-					<label>$LOCALIZE[10134]</label>
+				<control type="radiobutton" id="8101">
+					<label>- $LOCALIZE[20094]</label>
 					<include>DefaultSettingButton</include>
-					<selected>!Skin.HasSetting(HomeMenuNoFavButton)</selected>
-					<onclick>Skin.ToggleSetting(HomeMenuNoFavButton)</onclick>
+					<selected>!Skin.HasSetting(no_video_sources)</selected>
+					<onclick>Skin.ToggleSetting(no_video_sources)</onclick>
 				</control>
-				<control type="radiobutton" id="617">
-					<label>$LOCALIZE[8]</label>
+				<control type="radiobutton" id="8103">
+					<label>- $LOCALIZE[136]</label>
 					<include>DefaultSettingButton</include>
-					<selected>!Skin.HasSetting(HomeMenuNoWeatherButton)</selected>
-					<onclick>Skin.ToggleSetting(HomeMenuNoWeatherButton)</onclick>
+					<selected>!Skin.HasSetting(no_video_playlists)</selected>
+					<onclick>Skin.ToggleSetting(no_video_playlists)</onclick>
 				</control>
 			</control>
 			<control type="image">
@@ -309,6 +827,10 @@
 						<onclick>noop</onclick>
 					</item>
 					<item id="3">
+						<label>$LOCALIZE[31148]</label>
+						<onclick>noop</onclick>
+					</item>
+					<item id="4">
 						<label>$LOCALIZE[31159]</label>
 						<onclick>noop</onclick>
 					</item>

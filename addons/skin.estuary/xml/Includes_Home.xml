@@ -403,6 +403,92 @@
 			</control>
 		</definition>
 	</include>
+	<include name="WidgetListCategoriesIcons">
+		<param name="item_limit">20</param>
+		<param name="icon">$INFO[ListItem.Icon]</param>
+		<param name="icon_height">80</param>
+		<param name="pvr_submenu">false</param>
+		<param name="pvr_type">TV</param>
+		<param name="visible">true</param>
+		<definition>
+			<include content="CategoryLabel">
+				<param name="label">$PARAM[widget_header]</param>
+				<param name="list_id" value="$PARAM[list_id]"/>
+				<param name="visible" value="$PARAM[visible] + !Control.HasFocus($PARAM[list_id])"/>
+			</include>
+			<include content="CategoryLabel">
+				<param name="label">$PARAM[widget_header]: $INFO[Container($PARAM[list_id]).Listitem.Label]</param>
+				<param name="list_id" value="$PARAM[list_id]"/>
+				<param name="visible" value="$PARAM[visible] + Control.HasFocus($PARAM[list_id])"/>
+			</include>
+			<include content="BusyListSpinner">
+				<param name="list_id" value="$PARAM[list_id]"/>
+				<param name="visible" value="$PARAM[visible]"/>
+			</include>
+			<control type="panel" id="$PARAM[list_id]">
+				<left></left>
+				<top>110</top>
+				<right>0</right>
+				<height>180</height>
+				<include content="WidgetListCommon">
+					<param name="list_id" value="$PARAM[list_id]"/>
+				</include>
+				<visible>$PARAM[visible]</visible>
+				<visible>Integer.IsGreater(Container($PARAM[list_id]).NumItems,0) | Container($PARAM[list_id]).IsUpdating</visible>
+				<itemlayout width="95" height="115">
+					<control type="group">
+						<left>90</left>
+						<top>10</top>
+						<control type="image">
+							<width>80</width>
+							<height>80</height>
+							<texture>dialogs/dialog-bg-nobo.png</texture>
+							<bordertexture border="21">overlays/shadow.png</bordertexture>
+						</control>
+						<control type="image">
+							<width>80</width>
+							<height>$PARAM[icon_height]</height>
+							<texture fallback="DefaultFolder.png">$PARAM[icon]</texture>
+							<aspectratio>keep</aspectratio>
+						</control>
+					</control>
+				</itemlayout>
+				<focusedlayout width="80" height="115">
+					<control type="group">
+						<depth>DepthContentPopout</depth>
+						<left>90</left>
+						<top>10</top>
+						<control type="image">
+							<width>80</width>
+							<height>80</height>
+							<texture>dialogs/dialog-bg-nobo.png</texture>
+							<bordertexture border="21">overlays/shadow.png</bordertexture>
+						</control>
+						<control type="image">
+							<width>80</width>
+							<height>80</height>
+							<texture colordiffuse="button_focus">colors/grey.png</texture>
+							<include>Animation_FocusTextureFade</include>
+						</control>
+						<control type="image">
+							<width>80</width>
+							<height>$PARAM[icon_height]</height>
+							<texture fallback="DefaultFolder.png">$PARAM[icon]</texture>
+							<aspectratio>keep</aspectratio>
+						</control>
+					</control>
+				</focusedlayout>
+				<include condition="!$PARAM[pvr_submenu]" content="SubmenuContent">
+					<param name="widget_target" value="$PARAM[widget_target]"/>
+					<param name="item_limit" value="$PARAM[item_limit]"/>
+					<param name="content_path" value="$PARAM[content_path]"/>
+				</include>
+				<include condition="$PARAM[pvr_submenu]" content="PVRSubMenuContent">
+					<param name="pvr_type" value="$PARAM[pvr_type]"/>
+				</include>
+			</control>
+		</definition>
+	</include>
 	<include name="SubmenuContent">
 		<content target="$PARAM[widget_target]" limit="$PARAM[item_limit]">$PARAM[content_path]</content>
 	</include>
@@ -942,5 +1028,109 @@
 				<animation effect="slide" end="6,0" time="300" tween="sine" easing="inout" condition="!Control.HasFocus($PARAM[scrollbar_id])">conditional</animation>
 			</control>
 		</control>
+	</include>
+	<include name="HomeMenuItem">
+		<param name="menuitem_number" />
+		<definition>
+			<item>
+				<label>$LOCALIZE[342]</label>
+				<onclick condition="Library.HasContent(movies)">ActivateWindow(Videos,videodb://movies/titles/,return)</onclick>
+				<onclick condition="!Library.HasContent(movies)">ActivateWindow(Videos,sources://video/,return)</onclick>
+				<property name="menu_id">$NUMBER[5000]</property>
+				<thumb>icons/sidemenu/movies.png</thumb>
+				<property name="id">movies</property>
+				<visible>String.IsEqual($PARAM[menuitem_number],1)</visible>
+			</item>
+			<item>
+				<label>$LOCALIZE[20343]</label>
+				<onclick condition="Library.HasContent(tvshows)">ActivateWindow(Videos,videodb://tvshows/titles/,return)</onclick>
+				<onclick condition="!Library.HasContent(tvshows)">ActivateWindow(Videos,sources://video/,return)</onclick>
+				<property name="menu_id">$NUMBER[6000]</property>
+				<thumb>icons/sidemenu/tv.png</thumb>
+				<property name="id">tvshows</property>
+				<visible>String.IsEqual($PARAM[menuitem_number],2)</visible>
+			</item>
+			<item>
+				<label>$LOCALIZE[2]</label>
+				<onclick>ActivateWindow(Music,root,return)</onclick>
+				<property name="menu_id">$NUMBER[7000]</property>
+				<thumb>icons/sidemenu/music.png</thumb>
+				<property name="id">music</property>
+				<visible>String.IsEqual($PARAM[menuitem_number],3)</visible>
+			</item>
+			<item>
+				<label>$LOCALIZE[20389]</label>
+				<property name="menu_id">$NUMBER[16000]</property>
+				<onclick>ActivateWindow(Videos,musicvideos,return)</onclick>
+				<thumb>icons/sidemenu/musicvideos.png</thumb>
+				<property name="id">musicvideos</property>
+				<visible>String.IsEqual($PARAM[menuitem_number],4)</visible>
+			</item>
+			<item>
+				<label>$LOCALIZE[19020]</label>
+				<property name="menu_id">$NUMBER[12000]</property>
+				<onclick>ActivateWindow(TVChannels)</onclick>
+				<thumb>icons/sidemenu/livetv.png</thumb>
+				<property name="id">livetv</property>
+				<visible>String.IsEqual($PARAM[menuitem_number],5)</visible>
+			</item>
+			<item>
+				<label>$LOCALIZE[19021]</label>
+				<property name="menu_id">$NUMBER[13000]</property>
+				<onclick>ActivateWindow(RadioChannels)</onclick>
+				<thumb>icons/sidemenu/radio.png</thumb>
+				<property name="id">radio</property>
+				<visible>String.IsEqual($PARAM[menuitem_number],6)</visible>
+			</item>
+			<item>
+				<label>$LOCALIZE[15016]</label>
+				<onclick>ActivateWindow(games)</onclick>
+				<property name="menu_id">$NUMBER[17000]</property>
+				<thumb>icons/sidemenu/games.png</thumb>
+				<property name="id">games</property>
+				<visible>String.IsEqual($PARAM[menuitem_number],7) + System.GetBool(gamesgeneral.enable)</visible>
+			</item>
+			<item>
+				<label>$LOCALIZE[24001]</label>
+				<property name="menu_id">$NUMBER[8000]</property>
+				<onclick>ActivateWindow(1100)</onclick>
+				<thumb>icons/sidemenu/addons.png</thumb>
+				<property name="id">addons</property>
+				<visible>String.IsEqual($PARAM[menuitem_number],8)</visible>
+			</item>
+			<item>
+				<label>$LOCALIZE[1]</label>
+				<onclick>ActivateWindow(Pictures)</onclick>
+				<property name="menu_id">$NUMBER[4000]</property>
+				<thumb>icons/sidemenu/pictures.png</thumb>
+				<property name="id">pictures</property>
+				<visible>String.IsEqual($PARAM[menuitem_number],9)</visible>
+			</item>
+			<item>
+				<label>$LOCALIZE[3]</label>
+				<onclick>ActivateWindow(Videos,root)</onclick>
+				<property name="menu_id">$NUMBER[11000]</property>
+				<thumb>icons/sidemenu/videos.png</thumb>
+				<property name="id">video</property>
+				<visible>String.IsEqual($PARAM[menuitem_number],10)</visible>
+			</item>
+			<item>
+				<label>$LOCALIZE[10134]</label>
+				<onclick>ActivateWindow(favourites)</onclick>
+				<property name="menu_id">$NUMBER[14000]</property>
+				<thumb>icons/sidemenu/favourites.png</thumb>
+				<property name="id">favorites</property>
+				<visible>String.IsEqual($PARAM[menuitem_number],11)</visible>
+			</item>
+			<item>
+				<label>$LOCALIZE[8]</label>
+				<onclick condition="!String.IsEmpty(Weather.Plugin)">ActivateWindow(Weather)</onclick>
+				<onclick condition="String.IsEmpty(Weather.Plugin)">ReplaceWindow(servicesettings,weather)</onclick>
+				<property name="menu_id">$NUMBER[15000]</property>
+				<thumb>icons/sidemenu/weather.png</thumb>
+				<property name="id">weather</property>
+				<visible>String.IsEqual($PARAM[menuitem_number],12)</visible>
+			</item>
+		</definition>
 	</include>
 </includes>
