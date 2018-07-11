@@ -8,6 +8,7 @@ LIST_BINARY_EXTENSIONS="dylib so"
 export CODESIGN_ALLOCATE=`xcodebuild -find codesign_allocate`
 
 GEN_ENTITLEMENTS="$NATIVEPREFIX/bin/gen_entitlements.py"
+IOS11_ENTITLEMENTS="$XBMC_DEPENDS/share/ios11_entitlements.xml"
 LDID="$NATIVEPREFIX/bin/ldid"
 
 if [ ! -f ${GEN_ENTITLEMENTS} ]; then
@@ -23,10 +24,21 @@ if [ "${PLATFORM_NAME}" == "iphoneos" ] || [ "${PLATFORM_NAME}" == "appletvos" ]
 
   #do fake sign - needed for jailbroken ios5.1 devices for some reason
   if [ -f ${LDID} ]; then
-    find ${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/ -name "*.dylib" | xargs ${LDID} -S
-    find ${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/ -name "*.so" | xargs ${LDID} -S
-    ${LDID} -S ${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/Kodi
-    ${LDID} -S ${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/PlugIns/TVOSTopShelf.appex/TVOSTopShelf
+    find ${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/ -name "*.dylib" | xargs ${LDID} -S${IOS11_ENTITLEMENTS}
+    find ${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/ -name "*.so" | xargs ${LDID} -S${IOS11_ENTITLEMENTS}
+    ${LDID} -S${IOS11_ENTITLEMENTS} ${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/${APP_NAME}
+    
+    #repackage python eggs
+    EGGS=`find ${CODESIGNING_FOLDER_PATH} -name "*.egg" -type f`
+        for i in $EGGS; do
+          echo $i
+          mkdir del
+          unzip $i -d del
+          find ./del/ -name "*.so" -type f |  xargs ${LDID} -S${IOS11_ENTITLEMENTS}
+          rm $i
+          cd del && zip -r $i ./* &&  cd ..
+          rm -r ./del/
+        done
   fi
 
   # pull the CFBundleIdentifier out of the built xxx.app
