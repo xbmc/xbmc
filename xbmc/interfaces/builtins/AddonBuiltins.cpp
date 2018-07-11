@@ -293,6 +293,15 @@ static int AddonSettings(const std::vector<std::string>& params)
   return 0;
 }
 
+/*! \brief Open the settings for a given add-on.
+*  \param params The parameters.
+*/
+static int InstallFromZip(const std::vector<std::string>& params)
+{
+  CGUIWindowAddonBrowser::InstallFromZip();
+  return 0;
+}
+
 /*! \brief Stop a running script.
  *  \param params The parameters.
  *  \details params[0] = The add-on ID of the script to stop
@@ -440,6 +449,7 @@ CBuiltins::CommandMap CAddonBuiltins::GetOperations() const
            {"addon.default.set",          {"Open a select dialog to allow choosing the default addon of the given type", 1, SetDefaultAddon}},
            {"addon.opensettings",         {"Open a settings dialog for the addon of the given id", 1, AddonSettings}},
            {"installaddon",               {"Install the specified plugin/script", 1, InstallAddon}},
+           {"installfromzip",             { "Open the install from zip dialog", 0, InstallFromZip}},
            {"runaddon",                   {"Run the specified plugin/script", 1, RunAddon}},
 #ifdef TARGET_DARWIN
            {"runapplescript",             {"Run the specified AppleScript command", 1, RunScript<true>}},

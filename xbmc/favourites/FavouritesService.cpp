@@ -207,7 +207,10 @@ std::string CFavouritesService::GetExecutePath(const CFileItem &item, const std:
   else if (item.IsAddonsPath() && item.GetPath().size() > 9) // addons://<foo>
   {
     CURL url(item.GetPath());
-    execute = StringUtils::Format("RunAddon(%s)", url.GetFileName().c_str());
+    if (url.GetHostName() == "install")
+      execute = "installfromzip";
+    else
+      execute = StringUtils::Format("RunAddon(%s)", url.GetFileName().c_str());
   }
   else if (item.IsAndroidApp() && item.GetPath().size() > 26) // androidapp://sources/apps/<foo>
     execute = StringUtils::Format("StartAndroidActivity(%s)", StringUtils::Paramify(item.GetPath().substr(26)).c_str());
