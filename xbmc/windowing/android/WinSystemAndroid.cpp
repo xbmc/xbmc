@@ -188,14 +188,13 @@ void CWinSystemAndroid::UpdateResolutions()
     resDesktop = curDisplay;
   }
 
-  RESOLUTION ResDesktop = RES_INVALID;
-  RESOLUTION res_index  = RES_DESKTOP;
+  RESOLUTION res_index  = RES_CUSTOM;
 
   for (size_t i = 0; i < resolutions.size(); i++)
   {
     // if this is a new setting,
     // create a new empty setting to fill in.
-    if ((int)CDisplaySettings::GetInstance().ResolutionInfoSize() <= res_index)
+    while ((int)CDisplaySettings::GetInstance().ResolutionInfoSize() <= res_index)
     {
       RESOLUTION_INFO res;
       CDisplaySettings::GetInstance().AddResolutionInfo(res);
@@ -204,14 +203,6 @@ void CWinSystemAndroid::UpdateResolutions()
     CServiceBroker::GetWinSystem()->GetGfxContext().ResetOverscan(resolutions[i]);
     CDisplaySettings::GetInstance().GetResolutionInfo(res_index) = resolutions[i];
 
-    CLog::Log(LOGNOTICE, "Found resolution %d x %d with %d x %d%s @ %f Hz\n",
-      resolutions[i].iWidth,
-      resolutions[i].iHeight,
-      resolutions[i].iScreenWidth,
-      resolutions[i].iScreenHeight,
-      resolutions[i].dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "",
-      resolutions[i].fRefreshRate);
-
     if(resDesktop.iWidth == resolutions[i].iWidth &&
        resDesktop.iHeight == resolutions[i].iHeight &&
        resDesktop.iScreenWidth == resolutions[i].iScreenWidth &&
@@ -219,22 +210,9 @@ void CWinSystemAndroid::UpdateResolutions()
        (resDesktop.dwFlags & D3DPRESENTFLAG_MODEMASK) == (resolutions[i].dwFlags & D3DPRESENTFLAG_MODEMASK) &&
        fabs(resDesktop.fRefreshRate - resolutions[i].fRefreshRate) < FLT_EPSILON)
     {
-      ResDesktop = res_index;
+      CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP) = resolutions[i];
     }
-
     res_index = (RESOLUTION)((int)res_index + 1);
-  }
-
-  // set RES_DESKTOP
-  if (ResDesktop != RES_INVALID)
-  {
-    CLog::Log(LOGNOTICE, "Found (%dx%d%s@%f) at %d, setting to RES_DESKTOP at %d",
-      resDesktop.iWidth, resDesktop.iHeight,
-      resDesktop.dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "",
-      resDesktop.fRefreshRate,
-      (int)ResDesktop, (int)RES_DESKTOP);
-
-    CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP) = CDisplaySettings::GetInstance().GetResolutionInfo(ResDesktop);
   }
 
   unsigned int num_codecs = CJNIMediaCodecList::getCodecCount();
