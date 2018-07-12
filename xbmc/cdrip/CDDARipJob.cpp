@@ -68,7 +68,7 @@ bool CCDDARipJob::DoWork()
 
   // init ripper
   CFile reader;
-  CEncoder* encoder;
+  CEncoder* encoder = nullptr;
   if (!reader.Open(m_input,READ_CACHED) || !(encoder=SetupEncoder(reader)))
   {
     CLog::Log(LOGERROR, "Error: CCDDARipper::Init failed");
