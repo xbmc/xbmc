@@ -2171,10 +2171,10 @@ bool CActiveAE::RunStages()
       }// for
 
       // finally clamp samples
-      if(out && needClamp)
+      if (out && needClamp)
       {
         int nb_floats = out->pkt->nb_samples * out->pkt->config.channels / out->pkt->planes;
-        for(int i=0; i<out->pkt->planes; i++)
+        for (int i=0; i<out->pkt->planes; i++)
         {
           CAEUtil::ClampArray((float*)out->pkt->data[i], nb_floats);
         }
@@ -2242,13 +2242,17 @@ bool CActiveAE::RunStages()
 
         if (m_mode == MODE_TRANSCODE && m_encoder)
         {
-          CSampleBuffer *buf = m_encoderBuffers->GetFreeBuffer();
-          buf->pkt->nb_samples = m_encoder->Encode(out->pkt->data[0], out->pkt->planes*out->pkt->linesize,
-                                                   buf->pkt->data[0], buf->pkt->planes*buf->pkt->linesize);
+          CSampleBuffer *buf = nullptr;
+          if (out->pkt->nb_samples)
+          {
+            buf = m_encoderBuffers->GetFreeBuffer();
+            buf->pkt->nb_samples = m_encoder->Encode(out->pkt->data[0], out->pkt->planes*out->pkt->linesize,
+                                                     buf->pkt->data[0], buf->pkt->planes*buf->pkt->linesize);
 
-          // set pts of last sample
-          buf->pkt_start_offset = buf->pkt->nb_samples;
-          buf->timestamp = out->timestamp;
+            // set pts of last sample
+            buf->pkt_start_offset = buf->pkt->nb_samples;
+            buf->timestamp = out->timestamp;
+          }
 
           out->Return();
           out = buf;
