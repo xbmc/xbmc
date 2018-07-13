@@ -156,6 +156,11 @@ bool CDRMAtomic::InitDrm()
     return false;
   }
 
+  if (!CDRMAtomic::ResetPlanes())
+  {
+    CLog::Log(LOGDEBUG, "CDRMAtomic::%s - failed to reset planes", __FUNCTION__);
+  }
+
   CLog::Log(LOGDEBUG, "CDRMAtomic::%s - initialized atomic DRM", __FUNCTION__);
   return true;
 }
@@ -194,6 +199,42 @@ bool CDRMAtomic::AddProperty(struct drm_object *object, const char *name, uint64
     CLog::Log(LOGERROR, "CDRMAtomic::%s - could not add property %s", __FUNCTION__, name);
     return false;
   }
+
+  return true;
+}
+
+bool CDRMAtomic::ResetPlanes()
+{
+  drmModePlaneResPtr plane_resources = drmModeGetPlaneResources(m_fd);
+  if (!plane_resources)
+  {
+    CLog::Log(LOGERROR, "CDRMAtomic::%s - drmModeGetPlaneResources failed: %s", __FUNCTION__, strerror(errno));
+    return false;
+  }
+
+  for (uint32_t i = 0; i < plane_resources->count_planes; i++)
+  {
+    drmModePlanePtr plane = drmModeGetPlane(m_fd, plane_resources->planes[i]);
+    if (!plane)
+      continue;
+
+    drm_object object;
+
+    if (!CDRMUtils::GetProperties(m_fd, plane->plane_id, DRM_MODE_OBJECT_PLANE, &object))
+    {
+      CLog::Log(LOGERROR, "CDRMAtomic::%s - could not get plane %u properties: %s", __FUNCTION__, plane->plane_id, strerror(errno));\
+      drmModeFreePlane(plane);
+      continue;
+    }
+
+    AddProperty(&object, "FB_ID", 0);
+    AddProperty(&object, "CRTC_ID", 0);
+
+    CDRMUtils::FreeProperties(&object);
+    drmModeFreePlane(plane);
+  }
+
+  drmModeFreePlaneResources(plane_resources);
 
   return true;
 }

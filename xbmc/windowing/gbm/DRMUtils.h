@@ -101,6 +101,8 @@ protected:
   bool OpenDrm();
   uint32_t GetPropertyId(struct drm_object *object, const char *name);
   drm_fb* DrmFbGetFromBo(struct gbm_bo *bo);
+  static bool GetProperties(int fd, uint32_t id, uint32_t type, struct drm_object *object);
+  static void FreeProperties(struct drm_object *object);
 
   int m_fd;
   struct connector *m_connector = nullptr;

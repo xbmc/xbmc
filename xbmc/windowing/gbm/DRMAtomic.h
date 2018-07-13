@@ -36,6 +36,7 @@ public:
 
 private:
   void DrmAtomicCommit(int fb_id, int flags, bool rendered, bool videoLayer);
+  bool ResetPlanes();
 
   bool m_need_modeset;
   bool m_active = true;
