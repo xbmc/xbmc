@@ -454,7 +454,7 @@ void CGUIDialogFileBrowser::Update(const std::string &strDirectory)
   strSelectedItem = m_history.GetSelectedItem(strPath2==""?"empty":strPath2);
 
   bool bSelectedFound = false;
-  for (int i = 0; i < (int)m_vecItems->Size(); ++i)
+  for (int i = 0; i < m_vecItems->Size(); ++i)
   {
     CFileItemPtr pItem = (*m_vecItems)[i];
     strPath2 = pItem->GetPath();
@@ -529,7 +529,7 @@ void CGUIDialogFileBrowser::FrameMove()
 
 void CGUIDialogFileBrowser::OnClick(int iItem)
 {
-  if ( iItem < 0 || iItem >= (int)m_vecItems->Size() ) return ;
+  if ( iItem < 0 || iItem >= m_vecItems->Size() ) return ;
   CFileItemPtr pItem = (*m_vecItems)[iItem];
   std::string strPath = pItem->GetPath();
 
