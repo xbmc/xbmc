@@ -226,7 +226,7 @@ void URIUtils::Split(const std::string& strFileNameAndPath,
     while (i > 0)
     {
       char ch = strFileName[i];
-      if (ch == '?') break;
+      if (ch == '?' || ch == '|') break;
       else i--;
     }
     if (i > 0)

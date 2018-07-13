@@ -629,6 +629,8 @@ private:
    */
   virtual void CreateViews();
 
+  void SplitPath(const std::string& strFileNameAndPath, std::string& strPath, std::string& strFileName);
+
   CSong GetSongFromDataset();
   CSong GetSongFromDataset(const dbiplus::sql_record* const record, int offset = 0);
   CArtist GetArtistFromDataset(dbiplus::Dataset* pDS, int offset = 0, bool needThumb = true);
