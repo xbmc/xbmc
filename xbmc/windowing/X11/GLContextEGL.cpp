@@ -49,6 +49,8 @@ CGLContextEGL::~CGLContextEGL()
 
 bool CGLContextEGL::Refresh(bool force, int screen, Window glWindow, bool &newContext)
 {
+  m_sync.cont = 0;
+
   // refresh context
   if (m_eglContext && !force)
   {
@@ -214,6 +216,7 @@ bool CGLContextEGL::Refresh(bool force, int screen, Window glWindow, bool &newCo
     CLog::Log(LOGERROR, "EGL Error: vInfo is NULL!");
   }
 
+  eglGetSyncValuesCHROMIUM = (PFNEGLGETSYNCVALUESCHROMIUMPROC)eglGetProcAddress("eglGetSyncValuesCHROMIUM");
   return retVal;
 }
 
@@ -331,7 +334,65 @@ void CGLContextEGL::SwapBuffers()
   if ((m_eglDisplay == EGL_NO_DISPLAY) || (m_eglSurface == EGL_NO_SURFACE))
     return;
 
+  uint64_t ust1, ust2;
+  uint64_t msc1, msc2;
+  uint64_t sbc1, sbc2;
+
+  eglGetSyncValuesCHROMIUM(m_eglDisplay, m_eglSurface, &ust1, &msc1, &sbc1);
+
   eglSwapBuffers(m_eglDisplay, m_eglSurface);
+
+  eglGetSyncValuesCHROMIUM(m_eglDisplay, m_eglSurface, &ust2, &msc2, &sbc2);
+
+  if ((msc1 - m_sync.msc1) > 2)
+  {
+    m_sync.cont = 0;
+  }
+
+  struct timespec nowTs;
+  uint64_t now;
+  clock_gettime(CLOCK_MONOTONIC, &nowTs);
+  now = nowTs.tv_sec * 1000000000 + nowTs.tv_nsec;
+
+  // we want to block in SwapBuffers
+  // if a vertical retrace occurs 5 times in a row outside
+  // of this function, we take action
+  if (m_sync.cont < 5)
+  {
+    if ((msc1 - m_sync.msc1) == 2)
+    {
+      m_sync.cont = 0;
+    }
+    else if ((msc1 - m_sync.msc1) == 1)
+    {
+      m_sync.interval = (ust1 - m_sync.ust1) / (msc1 - m_sync.msc1);
+      m_sync.cont++;
+    }
+  }
+  else if ((m_sync.cont == 5) && (msc2 == msc1))
+  {
+    // if no vertical retrace has occurred in eglSwapBuffers,
+    // sleep until next vertical retrace
+    uint64_t sleeptime = m_sync.interval - (now / 1000 - ust2);
+    usleep(sleeptime);
+    m_sync.cont++;
+    msc2++;
+  }
+  else if ((m_sync.cont > 5) && (msc2 == m_sync.msc2))
+  {
+    // sleep until next vertical retrace
+    // this avoids blocking outside of this function
+    uint64_t sleeptime = m_sync.interval - (now / 1000 - ust2);
+    usleep(sleeptime);
+    msc2++;
+  }
+
+  m_sync.ust1 = ust1;
+  m_sync.ust2 = ust2;
+  m_sync.msc1 = msc1;
+  m_sync.msc2 = msc2;
+  m_sync.sbc2 = sbc2;
+
 }
 
 void CGLContextEGL::QueryExtensions()
