@@ -322,8 +322,8 @@ void CGUIWindowSettingsScreenCalibration::UpdateFromControl(int iControl)
     CGUIControl *pControl = GetControl(CONTROL_PIXEL_RATIO);
     if (pControl)
     {
-      float fWidth = (float)pControl->GetWidth();
-      float fHeight = (float)pControl->GetHeight();
+      float fWidth = pControl->GetWidth();
+      float fHeight = pControl->GetHeight();
       info.fPixelRatio = fHeight / fWidth;
       // recenter our control...
       pControl->SetPosition((info.iWidth - pControl->GetWidth()) / 2,

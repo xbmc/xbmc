@@ -1031,7 +1031,7 @@ void CGUIDialogSettingsManualBase::setSettingDetails(std::shared_ptr<CSetting> s
   else if (level > SettingLevel::Expert)
     level = SettingLevel::Expert;
 
-  setting->SetLevel(static_cast<SettingLevel>(level));
+  setting->SetLevel(level);
   setting->SetVisible(visible);
   if (help >= 0)
     setting->SetHelp(help);

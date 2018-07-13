@@ -80,7 +80,7 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
   {
     case GUI_MSG_WINDOW_INIT:
     {
-      m_iSection = (int)message.GetParam2() - (int)CGUIDialogSettingsManagerBase::GetID();
+      m_iSection = message.GetParam2() - CGUIDialogSettingsManagerBase::GetID();
       CGUIDialogSettingsManagerBase::OnMessage(message);
       m_returningFromSkinLoad = false;
 

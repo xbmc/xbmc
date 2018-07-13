@@ -1179,7 +1179,7 @@ void CSettingsManager::UpdateSettingByDependency(const std::string &settingId, S
 
     case SettingDependencyType::Update:
     {
-      SettingType type = (SettingType)setting->GetType();
+      SettingType type = setting->GetType();
       if (type == SettingType::Integer)
       {
         auto settingInt = std::static_pointer_cast<CSettingInt>(setting);

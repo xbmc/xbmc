@@ -1068,7 +1068,7 @@ void CGUIControlSliderSetting::Update(bool updateDisplayOnly /* = false */)
       std::shared_ptr<const CSettingNumber> settingNumber = std::static_pointer_cast<CSettingNumber>(m_pSetting);
       double value;
       if (updateDisplayOnly)
-        value = (float)m_pSlider->GetFloatValue();
+        value = m_pSlider->GetFloatValue();
       else
       {
         value = std::static_pointer_cast<CSettingNumber>(m_pSetting)->GetValue();
