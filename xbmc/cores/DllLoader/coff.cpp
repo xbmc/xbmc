@@ -376,7 +376,7 @@ int CoffLoader::LoadSections(FILE *fp)
 
   for (int SctnCnt = 0; SctnCnt < NumOfSections; SctnCnt++)
   {
-    SectionHeader_t *ScnHdr = (SectionHeader_t *)(SectionHeader + SctnCnt);
+    SectionHeader_t *ScnHdr = SectionHeader + SctnCnt;
     SectionData[SctnCnt] = ((char*)hModule + ScnHdr->VirtualAddress);
 
     if (fseek(fp, ScnHdr->PtrToRawData, SEEK_SET) != 0)
