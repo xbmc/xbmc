@@ -45,10 +45,6 @@ const uint8_t* find_start_code(const uint8_t *p, const uint8_t *end, uint32_t *s
 // This is part of FFmpeg
 //  * License as published by the Free Software Foundation; either
 //  * version 2.1 of the License, or (at your option) any later version.
-#define BS_RB16(x)                          \
-  ((((const uint8_t*)(x))[0] <<  8) |        \
-   ((const uint8_t*)(x)) [1])
-
 #define BS_RB24(x)                          \
   ((((const uint8_t*)(x))[0] << 16) |        \
    (((const uint8_t*)(x))[1] <<  8) |        \
