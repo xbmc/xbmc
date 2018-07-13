@@ -726,7 +726,7 @@ void CMusicInfoTag::Serialize(CVariant& value) const
     CVariant contributor;
     contributor["name"] = role.GetArtist();
     contributor["role"] = role.GetRoleDesc();
-    contributor["roleid"] = (int)(role.GetRoleId());
+    contributor["roleid"] = role.GetRoleId();
     contributor["artistid"] = (int)(role.GetArtistId());
     value["contributors"].push_back(contributor);
   }

@@ -301,7 +301,7 @@ void CMusicInfoLoader::SaveCache(const std::string& strFileName, CFileItemList& 
   if (file.OpenForWrite(strFileName))
   {
     CArchive ar(&file, CArchive::store);
-    ar << (int)items.Size();
+    ar << items.Size();
     for (int i = 0; i < iSize; i++)
     {
       CFileItemPtr pItem = items[i];

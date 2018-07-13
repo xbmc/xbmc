@@ -468,7 +468,7 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
         }
 
         CPlayList playlist = *pPlayList;
-        for (int i = 0; i < (int)playlist.size(); ++i)
+        for (int i = 0; i < playlist.size(); ++i)
         {
           AddItemToPlayList(playlist[i], queuedItems);
         }
