@@ -779,8 +779,8 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   // Read control properties from XML
   //
 
-  if (!pControlNode->Attribute("id", (int*) &id))
-    XMLUtils::GetInt(pControlNode, "id", (int&) id);       // backward compatibility - not desired
+  if (!pControlNode->Attribute("id", &id))
+    XMLUtils::GetInt(pControlNode, "id", id);       // backward compatibility - not desired
   //! @todo Perhaps we should check here whether id is valid for focusable controls
   //! such as buttons etc.  For labels/fadelabels/images it does not matter
 

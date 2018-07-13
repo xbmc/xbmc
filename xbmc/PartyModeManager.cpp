@@ -179,7 +179,7 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
   if (m_iMatchingSongs < 50)
     m_songsInHistory = 0;
   else
-    m_songsInHistory = (int)(m_iMatchingSongs/2);
+    m_songsInHistory = m_iMatchingSongs/2;
   if (m_songsInHistory > 200)
     m_songsInHistory = 200;
 

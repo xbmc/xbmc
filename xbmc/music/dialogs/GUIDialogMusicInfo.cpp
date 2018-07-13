@@ -414,7 +414,7 @@ bool CGUIDialogMusicInfo::OnMessage(CGUIMessage& message)
           CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControl);
           CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
           int iItem = msg.GetParam1();
-          if (iItem < 0 || iItem >= static_cast<int>(m_albumSongs->Size()))
+          if (iItem < 0 || iItem >= m_albumSongs->Size())
             break;
           OnAlbumInfo(m_albumSongs->Get(iItem)->GetMusicInfoTag()->GetDatabaseId());
 

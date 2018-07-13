@@ -925,7 +925,7 @@ unsigned int CAESinkPULSE::AddPackets(uint8_t **data, unsigned int frames, unsig
   while ((length = pa_stream_writable_size(m_Stream)) < m_periodSize)
     pa_threaded_mainloop_wait(m_MainLoop);
 
-  length =  std::min((unsigned int)length, available);
+  length =  std::min(length, available);
 
   int error = pa_stream_write(m_Stream, buffer, length, NULL, 0, PA_SEEK_RELATIVE);
   pa_threaded_mainloop_unlock(m_MainLoop);
@@ -935,7 +935,7 @@ unsigned int CAESinkPULSE::AddPackets(uint8_t **data, unsigned int frames, unsig
     CLog::Log(LOGERROR, "CPulseAudioDirectSound::AddPackets - pa_stream_write failed\n");
     return 0;
   }
-  unsigned int res = (unsigned int)(length / m_format.m_frameSize);
+  unsigned int res = length / m_format.m_frameSize;
 
   return res;
 }

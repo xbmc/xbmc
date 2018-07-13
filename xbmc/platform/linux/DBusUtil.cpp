@@ -144,7 +144,7 @@ CVariant CDBusUtil::ParseType(DBusMessageIter *itr)
     break;
   case DBUS_TYPE_DOUBLE:
     dbus_message_iter_get_basic(itr, &doublev);
-    value = (double)doublev;
+    value = doublev;
     break;
   case DBUS_TYPE_ARRAY:
     DBusMessageIter array;

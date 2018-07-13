@@ -92,7 +92,7 @@ namespace XBMCAddon
           CServiceBroker::GetPlaylistPlayer().ClearPlaylist(this->iPlayList);
 
           // add each item of the playlist to the playlistplayer
-          for (int i=0; i < (int)pPlayList->size(); ++i)
+          for (int i=0; i < pPlayList->size(); ++i)
           {
             CFileItemPtr playListItem =(*pPlayList)[i];
             if (playListItem->GetLabel().empty())

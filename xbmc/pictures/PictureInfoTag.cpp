@@ -266,7 +266,7 @@ void CPictureInfoTag::GetStringFromArchive(CArchive &ar, char *string, size_t le
 {
   std::string temp;
   ar >> temp;
-  length = std::min((size_t)temp.size(), length - 1);
+  length = std::min(temp.size(), length - 1);
   if (!temp.empty())
     memcpy(string, temp.c_str(), length);
   string[length] = 0;

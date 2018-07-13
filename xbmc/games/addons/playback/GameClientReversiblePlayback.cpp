@@ -254,7 +254,7 @@ void CGameClientReversiblePlayback::RewindFrames(uint64_t frames)
     UpdatePlaybackStats();
   }
 
-  m_totalFrameCount -= std::min(m_totalFrameCount, static_cast<uint64_t>(frames));
+  m_totalFrameCount -= std::min(m_totalFrameCount, frames);
 }
 
 void CGameClientReversiblePlayback::AdvanceFrames(uint64_t frames)

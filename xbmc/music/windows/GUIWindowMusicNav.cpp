@@ -848,7 +848,7 @@ bool CGUIWindowMusicNav::GetSongsFromPlayList(const std::string& strPlayList, CF
     }
     CPlayList playlist = *pPlayList;
     // convert playlist items to songs
-    for (int i = 0; i < (int)playlist.size(); ++i)
+    for (int i = 0; i < playlist.size(); ++i)
     {
       items.Add(playlist[i]);
     }

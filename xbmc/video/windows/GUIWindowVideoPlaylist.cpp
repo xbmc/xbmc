@@ -112,7 +112,7 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
       if (g_application.GetAppPlayer().IsPlayingVideo() && CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST_VIDEO)
       {
         int iSong = CServiceBroker::GetPlaylistPlayer().GetCurrentSong();
-        if (iSong >= 0 && iSong <= (int)m_vecItems->Size())
+        if (iSong >= 0 && iSong <= m_vecItems->Size())
           m_viewControl.SetSelectedItem(iSong);
       }
 
@@ -324,7 +324,7 @@ void CGUIWindowVideoPlaylist::UpdateButtons()
 
 bool CGUIWindowVideoPlaylist::OnPlayMedia(int iItem, const std::string &player)
 {
-  if ( iItem < 0 || iItem >= (int)m_vecItems->Size() ) return false;
+  if ( iItem < 0 || iItem >= m_vecItems->Size() ) return false;
   if (g_partyModeManager.IsEnabled())
     g_partyModeManager.Play(iItem);
   else

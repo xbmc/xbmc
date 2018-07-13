@@ -298,7 +298,7 @@ bool CGUISpinControl::OnMessage(CGUIMessage& message)
 
     case GUI_MSG_MOVE_OFFSET:
       {
-        int count = (int)message.GetParam1();
+        int count = message.GetParam1();
         while (count < 0)
         {
           MoveUp();
@@ -420,11 +420,11 @@ void CGUISpinControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyr
     {
       if (m_bShowRange)
       {
-        text = StringUtils::Format("(%i/%i) %s", m_iValue + 1, (int)m_vecLabels.size(), std::string(m_vecLabels[m_iValue]).c_str() );
+        text = StringUtils::Format("(%i/%i) %s", m_iValue + 1, (int)m_vecLabels.size(), m_vecLabels[m_iValue].c_str() );
       }
       else
       {
-        text = StringUtils::Format("%s", std::string(m_vecLabels[m_iValue]).c_str() );
+        text = StringUtils::Format("%s", m_vecLabels[m_iValue].c_str() );
       }
     }
     else text = StringUtils::Format("?%i?", m_iValue);

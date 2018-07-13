@@ -268,7 +268,7 @@ bool CGUIWindowPictures::Update(const std::string &strDirectory, bool updateFilt
 
 bool CGUIWindowPictures::OnClick(int iItem, const std::string &player)
 {
-  if ( iItem < 0 || iItem >= (int)m_vecItems->Size() ) return true;
+  if ( iItem < 0 || iItem >= m_vecItems->Size() ) return true;
   CFileItemPtr pItem = m_vecItems->Get(iItem);
 
   if (pItem->IsCBZ() || pItem->IsCBR())
@@ -312,7 +312,7 @@ bool CGUIWindowPictures::OnPlayMedia(int iItem, const std::string &player)
 
 bool CGUIWindowPictures::ShowPicture(int iItem, bool startSlideShow)
 {
-  if ( iItem < 0 || iItem >= (int)m_vecItems->Size() ) return false;
+  if ( iItem < 0 || iItem >= m_vecItems->Size() ) return false;
   CFileItemPtr pItem = m_vecItems->Get(iItem);
   std::string strPicture = pItem->GetPath();
 
@@ -331,7 +331,7 @@ bool CGUIWindowPictures::ShowPicture(int iItem, bool startSlideShow)
     g_application.StopPlaying();
 
   pSlideShow->Reset();
-  for (int i = 0; i < (int)m_vecItems->Size();++i)
+  for (int i = 0; i < m_vecItems->Size();++i)
   {
     CFileItemPtr pItem = m_vecItems->Get(i);
     if (!pItem->m_bIsFolder && !(URIUtils::IsRAR(pItem->GetPath()) ||
@@ -566,7 +566,7 @@ void CGUIWindowPictures::LoadPlayList(const std::string& strPlayList)
 
     // convert playlist items into slideshow items
     pSlideShow->Reset();
-    for (int i = 0; i < (int)playlist.size(); ++i)
+    for (int i = 0; i < playlist.size(); ++i)
     {
       CFileItemPtr pItem = playlist[i];
       //CLog::Log(LOGDEBUG,"-- playlist item: %s", pItem->GetPath().c_str());

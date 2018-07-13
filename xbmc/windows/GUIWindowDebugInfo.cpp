@@ -140,7 +140,7 @@ void CGUIWindowDebugInfo::Process(unsigned int currentTime, CDirtyRegionList &di
     {
       std::string windowName = CWindowTranslator::TranslateWindow(window->GetID());
       if (!windowName.empty())
-        windowName += " (" + std::string(window->GetProperty("xmlfile").asString()) + ")";
+        windowName += " (" + window->GetProperty("xmlfile").asString() + ")";
       else
         windowName = window->GetProperty("xmlfile").asString();
       info += "Window: " + windowName + "\n";

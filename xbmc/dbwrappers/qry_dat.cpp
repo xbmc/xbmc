@@ -400,7 +400,7 @@ unsigned short field_value::get_asUShort() const {
 int field_value::get_asInt() const {
     switch (field_type) {
     case ft_String: {
-      return (int)atoi(str_value.c_str());
+      return atoi(str_value.c_str());
     }
     case ft_Boolean:{
       return (int)bool_value;

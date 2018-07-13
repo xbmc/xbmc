@@ -224,7 +224,7 @@ bool CGUIMediaWindow::OnAction(const CAction &action)
 
   if (action.GetID() >= ACTION_FILTER_SMS2 && action.GetID() <= ACTION_FILTER_SMS9)
   {
-    std::string filter = StringUtils::Format("%i", (int)(action.GetID() - ACTION_FILTER_SMS2 + 2));
+    std::string filter = StringUtils::Format("%i", action.GetID() - ACTION_FILTER_SMS2 + 2);
     CGUIMessage message(GUI_MSG_NOTIFY_ALL, GetID(), 0, GUI_MSG_FILTER_ITEMS, 1); // 1 for append
     message.SetStringParam(filter);
     OnMessage(message);
@@ -486,7 +486,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
       if (message.GetParam1())  // we have an id
         viewMode = m_viewControl.GetViewModeByID(message.GetParam1());
       else if (message.GetParam2())
-        viewMode = m_viewControl.GetNextViewMode((int)message.GetParam2());
+        viewMode = m_viewControl.GetNextViewMode(message.GetParam2());
 
       if (m_guiState.get())
         m_guiState->SaveViewAsControl(viewMode);
@@ -499,9 +499,9 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
       if (m_guiState.get())
       {
         if (message.GetParam1())
-          m_guiState->SetCurrentSortMethod((int)message.GetParam1());
+          m_guiState->SetCurrentSortMethod(message.GetParam1());
         else if (message.GetParam2())
-          m_guiState->SetNextSortMethod((int)message.GetParam2());
+          m_guiState->SetNextSortMethod(message.GetParam2());
       }
       UpdateFileList();
       return true;
@@ -991,7 +991,7 @@ void CGUIMediaWindow::OnCacheFileItems(CFileItemList &items)
  */
 bool CGUIMediaWindow::OnClick(int iItem, const std::string &player)
 {
-  if (iItem < 0 || iItem >= (int)m_vecItems->Size())
+  if (iItem < 0 || iItem >= m_vecItems->Size())
     return true;
 
   const CProfilesManager &profileManager = CServiceBroker::GetProfileManager();
@@ -1405,7 +1405,7 @@ void CGUIMediaWindow::SetHistoryForPath(const std::string& strDirectory)
     bool originalPath = true;
     while (URIUtils::GetParentPath(strPath, strParentPath))
     {
-      for (int i = 0; i < (int)items.Size(); ++i)
+      for (int i = 0; i < items.Size(); ++i)
       {
         CFileItemPtr pItem = items[i];
         std::string path(pItem->GetPath());

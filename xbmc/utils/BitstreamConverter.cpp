@@ -29,6 +29,8 @@
 #include "BitstreamReader.h"
 #include "BitstreamWriter.h"
 
+#include <algorithm>
+
 enum {
   AVC_NAL_SLICE=1,
   AVC_NAL_DPA,
@@ -1053,7 +1055,7 @@ int CBitstreamConverter::isom_write_avcc(AVIOContext *pb, const uint8_t *data, i
       {
         uint32_t size;
         uint8_t  nal_type;
-        size = FFMIN(BS_RB32(buf), end - buf - 4);
+        size = std::min<uint32_t>(BS_RB32(buf), end - buf - 4);
         buf += 4;
         nal_type = buf[0] & 0x1f;
         if (nal_type == 7) /* SPS */

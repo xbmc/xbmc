@@ -458,7 +458,7 @@ bool CPeripheral::SetSetting(const std::string &strKey, const std::string &strVa
       }
     }
     else if ((*it).second.m_setting->GetType() == SettingType::Integer)
-      bChanged = SetSetting(strKey, (int) (strValue.empty() ? 0 : atoi(strValue.c_str())));
+      bChanged = SetSetting(strKey, strValue.empty() ? 0 : atoi(strValue.c_str()));
     else if ((*it).second.m_setting->GetType() == SettingType::Number)
       bChanged = SetSetting(strKey, (float) (strValue.empty() ? 0 : atof(strValue.c_str())));
     else if ((*it).second.m_setting->GetType() == SettingType::Boolean)

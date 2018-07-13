@@ -91,7 +91,7 @@ bool CGUIEditControl::OnMessage(CGUIMessage &message)
 {
   if (message.GetMessage() == GUI_MSG_SET_TYPE)
   {
-    SetInputType((INPUT_TYPE)message.GetParam1(), (int)message.GetParam2());
+    SetInputType((INPUT_TYPE)message.GetParam1(), message.GetParam2());
     return true;
   }
   else if (message.GetMessage() == GUI_MSG_ITEM_SELECTED)
@@ -138,7 +138,7 @@ bool CGUIEditControl::OnAction(const CAction &action)
     else if (action.GetID() == ACTION_MOVE_RIGHT ||
              action.GetID() == ACTION_CURSOR_RIGHT)
     {
-      if ((unsigned int) m_cursorPos < m_text2.size())
+      if (m_cursorPos < m_text2.size())
       {
         m_cursorPos++;
         UpdateText(false);
@@ -257,7 +257,7 @@ bool CGUIEditControl::OnAction(const CAction &action)
         {
           ClearMD5();
           m_edit.clear();
-          m_text2.insert(m_text2.begin() + m_cursorPos++, static_cast<wchar_t>(action.GetUnicode()));
+          m_text2.insert(m_text2.begin() + m_cursorPos++, action.GetUnicode());
           break;
         }
       }

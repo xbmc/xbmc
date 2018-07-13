@@ -451,7 +451,7 @@ ssize_t CFileCache::Read(void* lpBuf, size_t uiBufSize)
 
 retry:
   // attempt to read
-  iRc = m_pCache->ReadFromCache((char *)lpBuf, (size_t)uiBufSize);
+  iRc = m_pCache->ReadFromCache((char *)lpBuf, uiBufSize);
   if (iRc > 0)
   {
     m_readPos += iRc;

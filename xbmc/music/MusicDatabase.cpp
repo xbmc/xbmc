@@ -1219,7 +1219,7 @@ int CMusicDatabase::AddArtist(const std::string& strArtist, const std::string& s
       m_pDS->query(strSQL);
       if (m_pDS->num_rows() > 0)
       {
-        int idArtist = (int)m_pDS->fv("idArtist").get_asInt();
+        int idArtist = m_pDS->fv("idArtist").get_asInt();
         bool update = m_pDS->fv("strArtist").get_asString().compare(strMusicBrainzArtistID) == 0;
         m_pDS->close();
         if (update)
@@ -1239,7 +1239,7 @@ int CMusicDatabase::AddArtist(const std::string& strArtist, const std::string& s
       m_pDS->query(strSQL);
       if (m_pDS->num_rows() > 0)
       {
-        int idArtist = (int)m_pDS->fv("idArtist").get_asInt();
+        int idArtist = m_pDS->fv("idArtist").get_asInt();
         m_pDS->close();
         // 1.b.a) We found an artist by name but with no MusicBrainz ID set, update it and assume it is our artist, flag when mbid scraped
         strSQL = PrepareSQL("UPDATE artist SET strArtist = '%s', strMusicBrainzArtistID = '%s', bScrapedMBID = %i WHERE idArtist = %i",
@@ -1263,7 +1263,7 @@ int CMusicDatabase::AddArtist(const std::string& strArtist, const std::string& s
       m_pDS->query(strSQL);
       if (m_pDS->num_rows() > 0)
       {
-        int idArtist = (int)m_pDS->fv("idArtist").get_asInt();
+        int idArtist = m_pDS->fv("idArtist").get_asInt();
         m_pDS->close();
         return idArtist;
       }

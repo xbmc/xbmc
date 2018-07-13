@@ -189,7 +189,7 @@ void doMethod(Node method, MethodType methodType)
 <%  }
     }
     // now actually invoke the method
-    if (returns != "void") { %>    ${SwigTypeParser.SwigType_lstr(returns)} apiResult;<%   }
+    if (returns != "void") { %>    ${SwigTypeParser.SwigType_str(returns)} apiResult;<%   }
 %>
     try
     {
@@ -209,7 +209,7 @@ void doMethod(Node method, MethodType methodType)
     if (!destructor) {
     if (constructor || !clazz) {  %>      XBMCAddon::SetLanguageHookGuard slhg(XBMCAddon::Python::PythonLanguageHook::GetIfExists(PyThreadState_Get()->interp).get());<% println() }
 %>      <%
-    if (returns != "void") { %>apiResult = (${SwigTypeParser.SwigType_lstr(returns)})<% }
+    if (returns != "void") { %>apiResult = <% }
     if (clazz && !constructor) {
       %>((${clazz}*)retrieveApiInstance((PyObject*)self,&Ty${classNameAsVariable}_Type,"${Helper.callingName(method)}","${clazz}"))-> <%
     }
@@ -471,7 +471,7 @@ void doClassMethodInfo(Node clazz, List initTypeCalls)
      String returns = Helper.getPropertyReturnSwigType(it);
 %>   if (strcmp((char*)name, "${it.@sym_name}") == 0)
       {
-        ${SwigTypeParser.SwigType_lstr(returns)} apiResult = (${SwigTypeParser.SwigType_lstr(returns)})theObj->${it.@sym_name};
+        ${SwigTypeParser.SwigType_lstr(returns)} apiResult = theObj->${it.@sym_name};
         ${Helper.getOutConversion(returns, 'result', it)}
       }
       else<%

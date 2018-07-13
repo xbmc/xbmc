@@ -409,7 +409,7 @@ void CSettingList::Reset()
   CExclusiveLock lock(m_critical);
   SettingList values;
   for (auto it : m_defaults)
-    values.push_back(SettingPtr(it->Clone(it->GetId())));
+    values.push_back(it->Clone(it->GetId()));
 
   SetValue(values);
 }
@@ -477,7 +477,7 @@ void CSettingList::SetDefault(const SettingList &values)
   {
     m_values.clear();
     for (auto it : m_defaults)
-      m_values.push_back(SettingPtr(it->Clone(it->GetId())));
+      m_values.push_back(it->Clone(it->GetId()));
   }
 }
 

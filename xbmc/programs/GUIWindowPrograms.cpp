@@ -141,7 +141,7 @@ bool CGUIWindowPrograms::Update(const std::string &strDirectory, bool updateFilt
 
 bool CGUIWindowPrograms::OnPlayMedia(int iItem, const std::string&)
 {
-  if ( iItem < 0 || iItem >= (int)m_vecItems->Size() ) return false;
+  if ( iItem < 0 || iItem >= m_vecItems->Size() ) return false;
   CFileItemPtr pItem = m_vecItems->Get(iItem);
 
 #ifdef HAS_DVD_DRIVE

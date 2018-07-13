@@ -800,8 +800,8 @@ bool CEventClient::GetMousePos(float& x, float& y)
   CSingleLock lock(m_critSection);
   if (m_bMouseMoved)
   {
-    x = (float)((m_iMouseX / 65535.0f) * CServiceBroker::GetWinSystem()->GetGfxContext().GetWidth());
-    y = (float)((m_iMouseY / 65535.0f) * CServiceBroker::GetWinSystem()->GetGfxContext().GetHeight());
+    x = (m_iMouseX / 65535.0f) * CServiceBroker::GetWinSystem()->GetGfxContext().GetWidth();
+    y = (m_iMouseY / 65535.0f) * CServiceBroker::GetWinSystem()->GetGfxContext().GetHeight();
     m_bMouseMoved = false;
     return true;
   }

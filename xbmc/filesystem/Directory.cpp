@@ -188,7 +188,7 @@ bool CDirectory::GetDirectory(const CURL& url, std::shared_ptr<IDirectory> pDire
       pDirectory->SetFlags(hints.flags);
 
       bool result = false, cancel = false;
-      CURL authUrl = CURL(realURL);
+      CURL authUrl = realURL;
 
       while (!result && !cancel)
       {

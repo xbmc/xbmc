@@ -319,7 +319,7 @@ void CBaseRenderer::CalculateFrameAspectRatio(unsigned int desired_width, unsign
   // This indicates either a scaling has taken place (which we didn't ask for) or it has
   // found an aspect ratio parameter from the file, and is changing the frame size based
   // on that.
-  if (m_sourceWidth == (unsigned int) desired_width && m_sourceHeight == (unsigned int) desired_height)
+  if (m_sourceWidth == desired_width && m_sourceHeight == desired_height)
     return ;
 
   // mplayer is scaling in one or both directions.  We must alter our Source Pixel Ratio

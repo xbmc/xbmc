@@ -146,29 +146,29 @@ extern "C" void __stdcall init_emu_environ()
   {
     // using external python, it's build looking for xxx/lib/python2.7
     // so point it to frameworks which is where python2.7 is located
-    dll_putenv(std::string("PYTHONPATH=" +
+    dll_putenv(("PYTHONPATH=" +
       CSpecialProtocol::TranslatePath("special://frameworks")).c_str());
-    dll_putenv(std::string("PYTHONHOME=" +
+    dll_putenv(("PYTHONHOME=" +
       CSpecialProtocol::TranslatePath("special://frameworks")).c_str());
-    dll_putenv(std::string("PATH=.;" +
+    dll_putenv(("PATH=.;" +
       CSpecialProtocol::TranslatePath("special://xbmc") + ";" +
       CSpecialProtocol::TranslatePath("special://frameworks")).c_str());
   }
   else
   {
-    dll_putenv(std::string("PYTHONPATH=" +
+    dll_putenv(("PYTHONPATH=" +
       CSpecialProtocol::TranslatePath("special://xbmc/system/python/DLLs") + ";" +
       CSpecialProtocol::TranslatePath("special://xbmc/system/python/Lib")).c_str());
-    dll_putenv(std::string("PYTHONHOME=" +
+    dll_putenv(("PYTHONHOME=" +
       CSpecialProtocol::TranslatePath("special://xbmc/system/python")).c_str());
-    dll_putenv(std::string("PATH=.;" + CSpecialProtocol::TranslatePath("special://xbmc") + ";" +
+    dll_putenv(("PATH=.;" + CSpecialProtocol::TranslatePath("special://xbmc") + ";" +
       CSpecialProtocol::TranslatePath("special://xbmc/system/python")).c_str());
   }
 
 #if defined(TARGET_ANDROID)
   std::string apkPath = getenv("KODI_ANDROID_APK");
   apkPath += "/assets/python2.7";
-  dll_putenv(std::string("PYTHONHOME=" + apkPath).c_str());
+  dll_putenv(("PYTHONHOME=" + apkPath).c_str());
   dll_putenv("PYTHONOPTIMIZE=");
   dll_putenv("PYTHONNOUSERSITE=1");
   dll_putenv("PYTHONPATH=");
@@ -684,7 +684,7 @@ extern "C"
   {
     if (g_emuFileWrapper.DescriptorIsEmulatedFile(fd))
     {
-      return (__off_t)dll_lseeki64(fd, (__off_t)lPos, iWhence);
+      return (__off_t)dll_lseeki64(fd, lPos, iWhence);
     }
     else if (!IS_STD_DESCRIPTOR(fd))
     {
@@ -1977,7 +1977,7 @@ extern "C"
 
   char*** dll___p__environ()
   {
-    static char*** t = (char***)&dll__environ;
+    static char*** t = &dll__environ;
     return (char***)&t;
   }
 

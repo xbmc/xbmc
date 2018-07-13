@@ -1237,11 +1237,11 @@ bool CTagLoaderTagLib::Load(const std::string& strFileName, CMusicInfoTag& tag, 
     ape = mpegFile->APETag(false);
   }
   else if (oggFlacFile)
-    xiph = dynamic_cast<Ogg::XiphComment *>(oggFlacFile->tag());
+    xiph = oggFlacFile->tag();
   else if (oggVorbisFile)
-    xiph = dynamic_cast<Ogg::XiphComment *>(oggVorbisFile->tag());
+    xiph = oggVorbisFile->tag();
   else if (oggOpusFile)
-    xiph = dynamic_cast<Ogg::XiphComment *>(oggOpusFile->tag());
+    xiph = oggOpusFile->tag();
   else if (ttaFile)
     id3v2 = ttaFile->ID3v2Tag(false);
   else if (aiffFile)

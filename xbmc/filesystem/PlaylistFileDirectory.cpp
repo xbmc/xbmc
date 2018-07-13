@@ -44,7 +44,7 @@ namespace XFILE
 
       CPlayList playlist = *pPlayList;
       // convert playlist items to songs
-      for (int i = 0; i < (int)playlist.size(); ++i)
+      for (int i = 0; i < playlist.size(); ++i)
       {
         CFileItemPtr item = playlist[i];
         item->m_iprogramCount = i;  // hack for playlist order

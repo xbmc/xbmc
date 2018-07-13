@@ -91,7 +91,7 @@ bool CFTPDirectory::GetDirectory(const CURL& url2, CFileItemList &items)
 
       CFileItemPtr pItem(new CFileItem(name));
 
-      pItem->m_bIsFolder = (bool)(parse.getFlagtrycwd() != 0);
+      pItem->m_bIsFolder = parse.getFlagtrycwd() != 0;
       std::string filePath = path + name;
       if (pItem->m_bIsFolder)
         URIUtils::AddSlashAtEnd(filePath);

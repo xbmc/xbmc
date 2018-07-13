@@ -619,7 +619,7 @@ void CDateTime::Archive(CArchive& ar)
   {
     Reset();
     int state;
-    ar >> (int &)state;
+    ar >> state;
     m_state = CDateTime::STATE(state);
     if (m_state==valid)
     {

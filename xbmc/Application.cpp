@@ -2239,9 +2239,9 @@ bool CApplication::OnAction(const CAction &action)
         step *= action.GetRepeat() * 50; // 50 fps
 #endif
       if (action.GetID() == ACTION_VOLUME_UP)
-        volume += (float)(action.GetAmount() * action.GetAmount() * step);
+        volume += action.GetAmount() * action.GetAmount() * step;
       else if (action.GetID() == ACTION_VOLUME_DOWN)
-        volume -= (float)(action.GetAmount() * action.GetAmount() * step);
+        volume -= action.GetAmount() * action.GetAmount() * step;
       else
         volume = action.GetAmount() * step;
       if (volume != m_volumeLevel)
@@ -3058,7 +3058,7 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
   {
     double fallback = 0.0f;
     if(item.GetProperty("StartPercent").isString())
-      fallback = (double)atof(item.GetProperty("StartPercent").asString().c_str());
+      fallback = atof(item.GetProperty("StartPercent").asString().c_str());
     options.startpercent = item.GetProperty("StartPercent").asDouble(fallback);
   }
 
@@ -3151,7 +3151,7 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
   if (!(options.startpercent > 0.0f || options.starttime > 0.0f) && (item.IsBDFile() || item.IsDiscImage()))
   {
     //check if we must show the simplified bd menu
-    if (!CGUIDialogSimpleMenu::ShowPlaySelection(const_cast<CFileItem&>(item)))
+    if (!CGUIDialogSimpleMenu::ShowPlaySelection(item))
       return false;
   }
 
@@ -4565,13 +4565,13 @@ void CApplication::VolumeChanged()
 int CApplication::GetSubtitleDelay()
 {
   // converts subtitle delay to a percentage
-  return int(((float)(m_appPlayer.GetVideoSettings().m_SubtitleDelay + g_advancedSettings.m_videoSubsDelayRange)) / (2 * g_advancedSettings.m_videoSubsDelayRange)*100.0f + 0.5f);
+  return int(((m_appPlayer.GetVideoSettings().m_SubtitleDelay + g_advancedSettings.m_videoSubsDelayRange)) / (2 * g_advancedSettings.m_videoSubsDelayRange)*100.0f + 0.5f);
 }
 
 int CApplication::GetAudioDelay()
 {
   // converts audio delay to a percentage
-  return int(((float)(m_appPlayer.GetVideoSettings().m_AudioDelay + g_advancedSettings.m_videoAudioDelayRange)) / (2 * g_advancedSettings.m_videoAudioDelayRange)*100.0f + 0.5f);
+  return int(((m_appPlayer.GetVideoSettings().m_AudioDelay + g_advancedSettings.m_videoAudioDelayRange)) / (2 * g_advancedSettings.m_videoAudioDelayRange)*100.0f + 0.5f);
 }
 
 // Returns the total time in seconds of the current media.  Fractional

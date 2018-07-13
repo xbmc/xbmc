@@ -241,7 +241,7 @@ void CGUIDialogSelect::Sort(bool bSortOrder /*=true*/)
 
 void CGUIDialogSelect::SetSelected(int iSelected)
 {
-  if (iSelected < 0 || iSelected >= (int)m_vecList->Size() ||
+  if (iSelected < 0 || iSelected >= m_vecList->Size() ||
       m_vecList->Get(iSelected).get() == NULL)
     return;
 
