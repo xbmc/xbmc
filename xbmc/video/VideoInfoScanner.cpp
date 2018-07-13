@@ -416,7 +416,7 @@ namespace VIDEO
 
     bool FoundSomeInfo = false;
     std::vector<int> seenPaths;
-    for (int i = 0; i < (int)items.Size(); ++i)
+    for (int i = 0; i < items.Size(); ++i)
     {
       CFileItemPtr pItem = items[i];
 

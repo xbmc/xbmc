@@ -161,7 +161,7 @@ bool CThumbExtractor::DoWork()
       }
 
       if (info->m_iFileId < 0)
-        db.SetStreamDetailsForFile(info->m_streamDetails, !info->m_strFileNameAndPath.empty() ? info->m_strFileNameAndPath : static_cast<const std::string&>(m_item.GetPath()));
+        db.SetStreamDetailsForFile(info->m_streamDetails, !info->m_strFileNameAndPath.empty() ? info->m_strFileNameAndPath : m_item.GetPath());
       else
         db.SetStreamDetailsForFileId(info->m_streamDetails, info->m_iFileId);
 

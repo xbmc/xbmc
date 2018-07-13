@@ -191,19 +191,19 @@ void CGUIDialogCMSSettings::OnSettingChanged(std::shared_ptr<const CSetting> set
   if (settingId == SETTING_VIDEO_CMSENABLE)
     CServiceBroker::GetSettings().SetBool(SETTING_VIDEO_CMSENABLE, (std::static_pointer_cast<const CSettingBool>(setting)->GetValue()));
   else if (settingId == SETTING_VIDEO_CMSMODE)
-    CServiceBroker::GetSettings().SetInt(SETTING_VIDEO_CMSMODE, static_cast<int>(std::static_pointer_cast<const CSettingInt>(setting)->GetValue()));
+    CServiceBroker::GetSettings().SetInt(SETTING_VIDEO_CMSMODE, std::static_pointer_cast<const CSettingInt>(setting)->GetValue());
   else if (settingId == SETTING_VIDEO_CMS3DLUT)
-    CServiceBroker::GetSettings().SetString(SETTING_VIDEO_CMS3DLUT, static_cast<std::string>(std::static_pointer_cast<const CSettingString>(setting)->GetValue()));
+    CServiceBroker::GetSettings().SetString(SETTING_VIDEO_CMS3DLUT, std::static_pointer_cast<const CSettingString>(setting)->GetValue());
   else if (settingId == SETTING_VIDEO_CMSWHITEPOINT)
-    CServiceBroker::GetSettings().SetInt(SETTING_VIDEO_CMSWHITEPOINT, static_cast<int>(std::static_pointer_cast<const CSettingInt>(setting)->GetValue()));
+    CServiceBroker::GetSettings().SetInt(SETTING_VIDEO_CMSWHITEPOINT, std::static_pointer_cast<const CSettingInt>(setting)->GetValue());
   else if (settingId == SETTING_VIDEO_CMSPRIMARIES)
-    CServiceBroker::GetSettings().SetInt(SETTING_VIDEO_CMSPRIMARIES, static_cast<int>(std::static_pointer_cast<const CSettingInt>(setting)->GetValue()));
+    CServiceBroker::GetSettings().SetInt(SETTING_VIDEO_CMSPRIMARIES, std::static_pointer_cast<const CSettingInt>(setting)->GetValue());
   else if (settingId == SETTING_VIDEO_CMSGAMMAMODE)
-    CServiceBroker::GetSettings().SetInt(SETTING_VIDEO_CMSGAMMAMODE, static_cast<int>(std::static_pointer_cast<const CSettingInt>(setting)->GetValue()));
+    CServiceBroker::GetSettings().SetInt(SETTING_VIDEO_CMSGAMMAMODE, std::static_pointer_cast<const CSettingInt>(setting)->GetValue());
   else if (settingId == SETTING_VIDEO_CMSGAMMA)
     CServiceBroker::GetSettings().SetInt(SETTING_VIDEO_CMSGAMMA, static_cast<float>(std::static_pointer_cast<const CSettingNumber>(setting)->GetValue())*100);
   else if (settingId == SETTING_VIDEO_CMSLUTSIZE)
-    CServiceBroker::GetSettings().SetInt(SETTING_VIDEO_CMSLUTSIZE, static_cast<int>(std::static_pointer_cast<const CSettingInt>(setting)->GetValue()));
+    CServiceBroker::GetSettings().SetInt(SETTING_VIDEO_CMSLUTSIZE, std::static_pointer_cast<const CSettingInt>(setting)->GetValue());
 }
 
 bool CGUIDialogCMSSettings::OnBack(int actionID)
