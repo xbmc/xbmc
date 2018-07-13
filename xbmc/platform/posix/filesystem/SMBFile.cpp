@@ -564,7 +564,7 @@ int64_t CSMBFile::Seek(int64_t iFilePosition, int iWhence)
     return -1;
   }
 
-  return (int64_t)pos;
+  return pos;
 }
 
 void CSMBFile::Close()

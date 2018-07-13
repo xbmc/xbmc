@@ -515,7 +515,7 @@ std::vector<std::string> CNetworkLinux::GetNameServers(void)
 
    for (int i = 0; i < _res.nscount; i ++)
    {
-      std::string ns = inet_ntoa(((struct sockaddr_in *)&_res.nsaddr_list[i])->sin_addr);
+      std::string ns = inet_ntoa(_res.nsaddr_list[i].sin_addr);
       result.push_back(ns);
    }
 #endif
