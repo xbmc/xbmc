@@ -71,15 +71,13 @@ static bool IsDownmixDecoder(const std::string &name)
   return false;
 }
 
-static bool IsDecoderBlacklisted(const std::string &name)
+static bool IsDecoderWhitelisted(const std::string &name)
 {
-  static const char *blacklistDecoders[] = {
-    "OMX.google",
-    "OMX.MTK",
+  static const char *whitelistDecoders[] = {
     // End of list
     NULL
   };
-  for (const char **ptr = blacklistDecoders; *ptr; ptr++)
+  for (const char **ptr = whitelistDecoders; *ptr; ptr++)
   {
     if (!strnicmp(*ptr, name.c_str(), strlen(*ptr)))
       return true;
@@ -224,7 +222,7 @@ bool CDVDAudioCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
 
       std::string codecName = codec_info.getName();
 
-      if (IsDecoderBlacklisted(codecName))
+      if (!IsDecoderWhitelisted(codecName))
         continue;
 
       if (m_hints.channels > 2 && !stereoDownmixAllowed && IsDownmixDecoder(codecName))
