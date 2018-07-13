@@ -199,7 +199,7 @@ size_t CCurlFile::CReadState::WriteCallback(char *buffer, size_t size, size_t ni
   if (m_overflowSize)
   {
     // we have our overflow buffer - first get rid of as much as we can
-    unsigned int maxWriteable = std::min((unsigned int)m_buffer.getMaxWriteSize(), m_overflowSize);
+    unsigned int maxWriteable = std::min(m_buffer.getMaxWriteSize(), m_overflowSize);
     if (maxWriteable)
     {
       if (!m_buffer.WriteData(m_overflowBuffer, maxWriteable))
@@ -220,7 +220,7 @@ size_t CCurlFile::CReadState::WriteCallback(char *buffer, size_t size, size_t ni
     }
   }
   // ok, now copy the data into our ring buffer
-  unsigned int maxWriteable = std::min((unsigned int)m_buffer.getMaxWriteSize(), amount);
+  unsigned int maxWriteable = std::min(m_buffer.getMaxWriteSize(), amount);
   if (maxWriteable)
   {
     if (!m_buffer.WriteData(buffer, maxWriteable))
@@ -1179,7 +1179,7 @@ bool CCurlFile::CReadState::ReadString(char *szLine, int iLineLength)
     return false;
 
   // ensure only available data is considered
-  want = std::min((unsigned int)m_buffer.getMaxReadSize(), want);
+  want = std::min(m_buffer.getMaxReadSize(), want);
 
   /* check if we finished prematurely */
   if (!m_stillRunning && (m_fileSize == 0 || m_filePos != m_fileSize) && !want)
@@ -1200,7 +1200,7 @@ bool CCurlFile::CReadState::ReadString(char *szLine, int iLineLength)
   } while (((pLine - 1)[0] != '\n') && ((unsigned int)(pLine - szLine) < want));
   pLine[0] = 0;
   m_filePos += (pLine - szLine);
-  return (bool)((pLine - szLine) > 0);
+  return (pLine - szLine) > 0;
 }
 
 bool CCurlFile::ReOpen(const CURL& url)
@@ -1545,7 +1545,7 @@ int8_t CCurlFile::CReadState::FillBuffer(unsigned int want)
 
   // only attempt to fill buffer if transactions still running and buffer
   // doesnt exceed required size already
-  while ((unsigned int)m_buffer.getMaxReadSize() < want && m_buffer.getMaxWriteSize() > 0 )
+  while (m_buffer.getMaxReadSize() < want && m_buffer.getMaxWriteSize() > 0 )
   {
     if (m_cancelled)
       return FILLBUFFER_NO_DATA;
@@ -1553,7 +1553,7 @@ int8_t CCurlFile::CReadState::FillBuffer(unsigned int want)
     /* if there is data in overflow buffer, try to use that first */
     if (m_overflowSize)
     {
-      unsigned amount = std::min((unsigned int)m_buffer.getMaxWriteSize(), m_overflowSize);
+      unsigned amount = std::min(m_buffer.getMaxWriteSize(), m_overflowSize);
       m_buffer.WriteData(m_overflowBuffer, amount);
 
       if (amount < m_overflowSize)

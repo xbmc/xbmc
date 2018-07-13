@@ -244,7 +244,7 @@ std::string CMultiPathDirectory::ConstructMultiPath(const std::set<std::string> 
 
 void CMultiPathDirectory::MergeItems(CFileItemList &items)
 {
-  CLog::Log(LOGDEBUG, "CMultiPathDirectory::MergeItems, items = %i", (int)items.Size());
+  CLog::Log(LOGDEBUG, "CMultiPathDirectory::MergeItems, items = %i", items.Size());
   unsigned int time = XbmcThreads::SystemClockMillis();
   if (items.Size() == 0)
     return;

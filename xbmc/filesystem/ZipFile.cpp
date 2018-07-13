@@ -299,7 +299,7 @@ ssize_t CZipFile::Read(void* lpBuf, size_t uiBufSize)
   // flush what might be left in the string buffer
   if (m_iDataInStringBuffer > 0)
   {
-    size_t iMax = static_cast<size_t>((uiBufSize>m_iDataInStringBuffer?m_iDataInStringBuffer:uiBufSize));
+    size_t iMax = uiBufSize>m_iDataInStringBuffer?m_iDataInStringBuffer:uiBufSize;
     memcpy(lpBuf,m_szStartOfStringBuffer,iMax);
     uiBufSize -= iMax;
     m_iDataInStringBuffer -= iMax;
