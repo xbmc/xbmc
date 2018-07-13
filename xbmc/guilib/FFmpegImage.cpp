@@ -686,9 +686,9 @@ bool CFFmpegImage::CreateThumbnailFromSurface(unsigned char* bufferin, unsigned 
   }
   tdm.frame_input->pts = 1;
   tdm.frame_input->quality = tdm.avOutctx->global_quality;
-  tdm.frame_input->data[0] = (uint8_t*) tdm.frame_temporary->data[0];
-  tdm.frame_input->data[1] = (uint8_t*) tdm.frame_temporary->data[1];
-  tdm.frame_input->data[2] = (uint8_t*) tdm.frame_temporary->data[2];
+  tdm.frame_input->data[0] = tdm.frame_temporary->data[0];
+  tdm.frame_input->data[1] = tdm.frame_temporary->data[1];
+  tdm.frame_input->data[2] = tdm.frame_temporary->data[2];
   tdm.frame_input->height = height;
   tdm.frame_input->width = width;
   tdm.frame_input->linesize[0] = tdm.frame_temporary->linesize[0];

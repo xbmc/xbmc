@@ -451,7 +451,7 @@ CGUIControl *CGUIControlGroup::GetFocusedControl() const
 CGUIControl *CGUIControlGroup::GetFirstFocusableControl(int id)
 {
   if (!CanFocus()) return NULL;
-  if (id && id == (int) GetID()) return this; // we're focusable and they want us
+  if (id && id == GetID()) return this; // we're focusable and they want us
   for (auto *pControl : m_children)
   {
     CGUIControlGroup *group(dynamic_cast<CGUIControlGroup*>(pControl));
@@ -460,7 +460,7 @@ CGUIControl *CGUIControlGroup::GetFirstFocusableControl(int id)
       CGUIControl *control = group->GetFirstFocusableControl(id);
       if (control) return control;
     }
-    if ((!id || (int) pControl->GetID() == id) && pControl->CanFocus())
+    if ((!id || pControl->GetID() == id) && pControl->CanFocus())
       return pControl;
   }
   return NULL;

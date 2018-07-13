@@ -903,7 +903,7 @@ bool CGUIWindow::ControlGroupHasFocus(int groupID, int controlID)
     {
       CGUIMessage message(GUI_MSG_ITEM_SELECTED, GetID(), group->GetID());
       group->OnMessage(message);
-      return (controlID == static_cast<int>(message.GetParam1()));
+      return (controlID == message.GetParam1());
     }
   }
   return false;

@@ -248,7 +248,7 @@ RENDER_STEREO_MODE CStereoscopicsManager::GetStereoModeByUserChoice() const
 
   int iItem = pDlgSelect->GetSelectedItem();
   if (iItem > -1 && pDlgSelect->IsConfirmed())
-    mode = static_cast<RENDER_STEREO_MODE>(selectableModes[iItem]);
+    mode = selectableModes[iItem];
   else
     mode = GetStereoMode();
 
