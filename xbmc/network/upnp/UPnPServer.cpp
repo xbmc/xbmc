@@ -549,7 +549,7 @@ CUPnPServer::OnBrowseMetadata(PLT_ActionReference&          action,
     CFileItemPtr                   item;
     NPT_Reference<CThumbLoader>    thumb_loader;
 
-    CLog::Log(LOGINFO, "Received UPnP Browse Metadata request for object '%s'", (const char*)object_id);
+    CLog::Log(LOGINFO, "Received UPnP Browse Metadata request for object '%s'", object_id);
 
     if(NPT_FAILED(ObjectIDValidate(id))) {
         action->SetError(701, "Incorrect ObjectID.");
@@ -748,7 +748,7 @@ CUPnPServer::BuildResponse(PLT_ActionReference&          action,
     NPT_COMPILER_UNUSED(sort_criteria);
 
     CLog::Log(LOGDEBUG, "Building UPnP response with filter '%s', starting @ %d with %d requested",
-        (const char*)filter,
+        filter,
         starting_index,
         requested_count);
 
@@ -857,8 +857,8 @@ CUPnPServer::OnSearchContainer(PLT_ActionReference&          action,
                                const PLT_HttpRequestContext& context)
 {
     CLog::Log(LOGDEBUG, "Received Search request for object '%s' with search '%s'",
-        (const char*)object_id,
-        (const char*)search_criteria);
+        object_id,
+        search_criteria);
 
     NPT_String id = object_id;
     if (id.StartsWith("musicdb://")) {

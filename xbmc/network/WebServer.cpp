@@ -1015,7 +1015,7 @@ ssize_t CWebServer::ContentReaderCallback(void *cls, uint64_t pos, char *buf, si
 
   // seek to the position if necessary
   if (context->file->GetPosition() < 0 || context->writePosition != static_cast<uint64_t>(context->file->GetPosition()))
-    context->file->Seek(static_cast<uint64_t>(context->writePosition));
+    context->file->Seek(context->writePosition);
 
   // read data from the file
   ssize_t res = context->file->Read(buf, static_cast<size_t>(maximum));
