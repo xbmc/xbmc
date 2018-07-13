@@ -238,8 +238,8 @@ void CRenderer::Render(COverlay* o, float adjust_height)
     if(align == COverlay::ALIGN_SCREEN
     || align == COverlay::ALIGN_SUBTITLE)
     {
-      scale_x = (float)m_rv.Width();
-      scale_y = (float)m_rv.Height();
+      scale_x = m_rv.Width();
+      scale_y = m_rv.Height();
     }
 
     if(align == COverlay::ALIGN_VIDEO)

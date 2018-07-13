@@ -204,8 +204,8 @@ COverlayTextureGL::COverlayTextureGL(CDVDOverlayImage* o)
 
   if(o->source_width && o->source_height)
   {
-    float center_x = (float)(0.5f * o->width  + o->x) / o->source_width;
-    float center_y = (float)(0.5f * o->height + o->y) / o->source_height;
+    float center_x = (0.5f * o->width  + o->x) / o->source_width;
+    float center_y = (0.5f * o->height + o->y) / o->source_height;
 
     m_width  = (float)o->width  / o->source_width;
     m_height = (float)o->height / o->source_height;

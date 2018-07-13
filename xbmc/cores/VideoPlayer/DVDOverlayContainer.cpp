@@ -144,7 +144,7 @@ bool CDVDOverlayContainer::ContainsOverlayType(DVDOverlayType type)
   VecOverlaysIter it = m_overlays.begin();
   while (!result && it != m_overlays.end())
   {
-    if (((CDVDOverlay*)*it)->IsOverlayType(type)) result = true;
+    if ((*it)->IsOverlayType(type)) result = true;
     ++it;
   }
 

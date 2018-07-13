@@ -1845,7 +1845,7 @@ bool CVideoPlayer::GetCachingTimes(double& level, double& delay, double& offset)
 
   delay  = 0.0;
   level  = 0.0;
-  offset = (double)(cached + queued) / length;
+  offset = (cached + queued) / length;
 
   if (currate == 0)
     return true;
@@ -2949,7 +2949,7 @@ void CVideoPlayer::HandleMessages()
         }
 
         m_OmxPlayerState.av_clock.OMXSetSpeed(speed);
-        CLog::Log(LOGDEBUG, "%s::%s CDVDMsg::PLAYER_SETSPEED speed : %d (%d)", "CVideoPlayer", __FUNCTION__, speed, static_cast<int>(m_playSpeed));
+        CLog::Log(LOGDEBUG, "%s::%s CDVDMsg::PLAYER_SETSPEED speed : %d (%d)", "CVideoPlayer", __FUNCTION__, speed, m_playSpeed);
       }
 
       if (static_cast<CDVDMsgPlayerSetSpeed*>(pMsg)->IsTempo())
@@ -5109,7 +5109,7 @@ void CVideoPlayer::GetSubtitleStreamInfo(int index, SubtitleStreamInfo &info)
 {
   CSingleLock lock(m_content.m_section);
 
-  if (index < 0 || index > (int) GetSubtitleCount() - 1)
+  if (index < 0 || index > GetSubtitleCount() - 1)
     return;
 
   SelectionStream& s = m_content.m_selectionStreams.Get(STREAM_SUBTITLE, index);

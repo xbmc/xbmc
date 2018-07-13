@@ -131,7 +131,7 @@ public:
       else if(e->IsElementType(ELEMENT_TYPE_PROPERTY))
         AddElement(new CElementProperty(*static_cast<CElementProperty*>(e)));
       else
-        AddElement(new CElement(*static_cast<CElement*>(e)));
+        AddElement(new CElement(*e));
     }
   }
 
