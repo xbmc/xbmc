@@ -99,7 +99,7 @@ bool CGUIAddonWindow::OnMessage(CGUIMessage& message)
 
     case GUI_MSG_SETFOCUS:
     {
-      if (m_viewControl.HasControl(message.GetControlId()) && m_viewControl.GetCurrentControl() != (int)message.GetControlId())
+      if (m_viewControl.HasControl(message.GetControlId()) && m_viewControl.GetCurrentControl() != message.GetControlId())
       {
         m_viewControl.SetFocused();
         return true;
@@ -143,7 +143,7 @@ bool CGUIAddonWindow::OnMessage(CGUIMessage& message)
         return true;
       }
 
-      if (CBOnClick && iControl && iControl != (int)this->GetID())
+      if (CBOnClick && iControl && iControl != this->GetID())
       {
         CGUIControl* controlClicked = this->GetControl(iControl);
 

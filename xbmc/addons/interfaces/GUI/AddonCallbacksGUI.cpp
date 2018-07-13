@@ -437,7 +437,7 @@ bool CAddonCallbacksGUI::Window_Close(void *addonData, GUIHANDLE handle)
   if (pAddonWindow->IsDialog())
     static_cast<CGUIAddonWindowDialog*>(pAddonWindow)->PulseActionEvent();
   else
-    static_cast<CGUIAddonWindow*>(pAddonWindow)->PulseActionEvent();
+    pAddonWindow->PulseActionEvent();
 
   Lock();
   // if it's a dialog, we have to close it a bit different

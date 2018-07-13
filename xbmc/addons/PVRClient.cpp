@@ -855,7 +855,7 @@ PVR_ERROR CPVRClient::GetChannels(CPVRChannelGroup &channels, bool radio)
   return DoAddonCall(__FUNCTION__, [this, &channels, radio](const AddonInstance* addon) {
     ADDON_HANDLE_STRUCT handle;
     handle.callerAddress = this;
-    handle.dataAddress = (CPVRChannelGroup*) &channels;
+    handle.dataAddress = &channels;
     return addon->GetChannels(&handle, radio);
   }, (radio && m_clientCapabilities.SupportsRadio()) || (!radio && m_clientCapabilities.SupportsTV()));
 }

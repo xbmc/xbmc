@@ -192,7 +192,7 @@ void* Interface_GUIWindow::create(void* kodiBase, const char* xml_filename,
   CServiceBroker::GetGUI()->GetWindowManager().Add(window);
   Interface_GUIGeneral::unlock();
 
-  if (!dynamic_cast<CGUIWindow*>(CServiceBroker::GetGUI()->GetWindowManager().GetWindow(id)))
+  if (!CServiceBroker::GetGUI()->GetWindowManager().GetWindow(id))
   {
     CLog::Log(LOGERROR, "Interface_GUIWindow::%s - Requested window id '%i' does not exist for addon '%s'",
                           __FUNCTION__, id, addon->ID().c_str());
@@ -215,7 +215,7 @@ void Interface_GUIWindow::destroy(void* kodiBase, void* handle)
   }
 
   Interface_GUIGeneral::lock();
-  CGUIWindow *pWindow = dynamic_cast<CGUIWindow*>(CServiceBroker::GetGUI()->GetWindowManager().GetWindow(pAddonWindow->GetID()));
+  CGUIWindow *pWindow = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(pAddonWindow->GetID());
   if (pWindow)
   {
     // first change to an existing window
@@ -1028,7 +1028,7 @@ CGUIAddonWindow::CGUIAddonWindow(int id, const std::string& strXML, CAddonDll* a
 
 CGUIControl* CGUIAddonWindow::GetAddonControl(int controlId, CGUIControl::GUICONTROLTYPES type, const std::string& typeName)
 {
-  CGUIControl* pGUIControl = dynamic_cast<CGUIControl*>(GetControl(controlId));
+  CGUIControl* pGUIControl = GetControl(controlId);
   if (!pGUIControl)
   {
     CLog::Log(LOGERROR, "CGUIAddonGUI_Window::%s: %s - Requested GUI control Id '%i' for '%s' not present!",
@@ -1081,7 +1081,7 @@ bool CGUIAddonWindow::OnMessage(CGUIMessage& message)
     case GUI_MSG_FOCUSED:
     {
       if (m_viewControl.HasControl(message.GetControlId()) &&
-          m_viewControl.GetCurrentControl() != (int)message.GetControlId())
+          m_viewControl.GetCurrentControl() != message.GetControlId())
       {
         m_viewControl.SetFocused();
         return true;
@@ -1104,9 +1104,9 @@ bool CGUIAddonWindow::OnMessage(CGUIMessage& message)
     case GUI_MSG_CLICKED:
     {
       int iControl = message.GetSenderId();
-      if (iControl && iControl != static_cast<int>(this->GetID()))
+      if (iControl && iControl != this->GetID())
       {
-        CGUIControl* controlClicked = dynamic_cast<CGUIControl*>(this->GetControl(iControl));
+        CGUIControl* controlClicked = this->GetControl(iControl);
 
         // The old python way used to check list AND SELECITEM method or if its a button, checkmark.
         // Its done this way for now to allow other controls without a python version like togglebutton to still raise a onAction event
