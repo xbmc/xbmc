@@ -277,7 +277,7 @@ namespace PythonBindings
         throw XBMCAddon::WrongTypeException("Incorrect type passed to \"%s\", was expecting a \"%s\" but received a \"%s\"",
                                  methodNameForErrorString,expectedType,typeInfo->swigType);
     }
-    return const_cast<XBMCAddon::AddonClass*>(reinterpret_cast<const PyHolder*>(pythonObj)->pSelf);
+    return const_cast<XBMCAddon::AddonClass*>(pythonObj->pSelf);
   }
 
   /**

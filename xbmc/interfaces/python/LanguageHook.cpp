@@ -87,7 +87,7 @@ namespace XBMCAddon
       CSingleLock lock(hooksMutex);
       std::map<PyInterpreterState*,AddonClass::Ref<PythonLanguageHook> >::iterator iter = hooks.find(interp);
       if (iter != hooks.end())
-        return AddonClass::Ref<PythonLanguageHook>(iter->second);
+        return iter->second;
 
       // if we got here then we need to use the global one.
       if (g_languageHook.isNull())

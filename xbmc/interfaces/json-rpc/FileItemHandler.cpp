@@ -298,7 +298,7 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
       else if (item->HasPVRTimerInfoTag() && item->GetPVRTimerInfoTag()->m_iTimerId > 0)
          object[ID] = item->GetPVRTimerInfoTag()->m_iTimerId;
       else if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetDatabaseId() > 0)
-        object[ID] = (int)item->GetMusicInfoTag()->GetDatabaseId();
+        object[ID] = item->GetMusicInfoTag()->GetDatabaseId();
       else if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_iDbId > 0)
         object[ID] = item->GetVideoInfoTag()->m_iDbId;
 

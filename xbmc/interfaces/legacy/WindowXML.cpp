@@ -333,7 +333,7 @@ namespace XBMCAddon
       case GUI_MSG_FOCUSED:
         {
           if (A(m_viewControl).HasControl(message.GetControlId()) &&
-              A(m_viewControl).GetCurrentControl() != (int)message.GetControlId())
+              A(m_viewControl).GetCurrentControl() != message.GetControlId())
           {
             A(m_viewControl).SetFocused();
             return true;
@@ -373,9 +373,9 @@ namespace XBMCAddon
             return true;
           }
 
-          if(iControl && iControl != (int)interceptor->GetID()) // pCallbackWindow &&  != this->GetID())
+          if(iControl && iControl != interceptor->GetID()) // pCallbackWindow &&  != this->GetID())
           {
-            CGUIControl* controlClicked = (CGUIControl*)interceptor->GetControl(iControl);
+            CGUIControl* controlClicked = interceptor->GetControl(iControl);
 
             // The old python way used to check list AND SELECITEM method
             //   or if its a button, radiobutton.

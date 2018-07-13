@@ -271,7 +271,7 @@ namespace XBMCAddon
       MaybeLock lock(gc);
 
       // check if control exists
-      CGUIControl* pGUIControl = (CGUIControl*)ref(window)->GetControl(iControlId);
+      CGUIControl* pGUIControl = ref(window)->GetControl(iControlId);
       if (!pGUIControl)
       {
         // control does not exist.
