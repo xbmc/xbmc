@@ -1083,7 +1083,7 @@ void CActiveAESink::GenerateNoise()
       }
       while(R1 == 0.0f);
 
-      noise[i] = (float) sqrt( -2.0f * log( R1 )) * cos( 2.0f * PI * R2 ) * 0.00001f;
+      noise[i] = sqrt( -2.0f * log( R1 )) * cos( 2.0f * PI * R2 ) * 0.00001f;
     }
   }
 
