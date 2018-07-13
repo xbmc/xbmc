@@ -29,6 +29,7 @@
 #include "threads/SystemClock.h"
 #include "utils/Base64.h"
 
+#include <algorithm>
 #include <vector>
 #include <climits>
 #include <cassert>
@@ -51,7 +52,6 @@
 using namespace XFILE;
 using namespace XCURL;
 
-#define XMIN(a,b) ((a)<(b)?(a):(b))
 #define FITS_INT(a) (((a) <= INT_MAX) && ((a) >= INT_MIN))
 
 curl_proxytype proxyType2CUrlProxyType[] = {
@@ -186,7 +186,7 @@ size_t CCurlFile::CReadState::ReadCallback(char *buffer, size_t size, size_t nit
     return CURL_READFUNC_PAUSE;
   }
 
-  int64_t retSize = XMIN(m_fileSize - m_filePos, int64_t(nitems * size));
+  int64_t retSize = std::min(m_fileSize - m_filePos, int64_t(nitems * size));
   memcpy(buffer, m_readBuffer + m_filePos, retSize);
   m_filePos += retSize;
 
@@ -199,7 +199,7 @@ size_t CCurlFile::CReadState::WriteCallback(char *buffer, size_t size, size_t ni
   if (m_overflowSize)
   {
     // we have our overflow buffer - first get rid of as much as we can
-    unsigned int maxWriteable = XMIN((unsigned int)m_buffer.getMaxWriteSize(), m_overflowSize);
+    unsigned int maxWriteable = std::min((unsigned int)m_buffer.getMaxWriteSize(), m_overflowSize);
     if (maxWriteable)
     {
       if (!m_buffer.WriteData(m_overflowBuffer, maxWriteable))
@@ -220,7 +220,7 @@ size_t CCurlFile::CReadState::WriteCallback(char *buffer, size_t size, size_t ni
     }
   }
   // ok, now copy the data into our ring buffer
-  unsigned int maxWriteable = XMIN((unsigned int)m_buffer.getMaxWriteSize(), amount);
+  unsigned int maxWriteable = std::min((unsigned int)m_buffer.getMaxWriteSize(), amount);
   if (maxWriteable)
   {
     if (!m_buffer.WriteData(buffer, maxWriteable))
@@ -1179,7 +1179,7 @@ bool CCurlFile::CReadState::ReadString(char *szLine, int iLineLength)
     return false;
 
   // ensure only available data is considered
-  want = XMIN((unsigned int)m_buffer.getMaxReadSize(), want);
+  want = std::min((unsigned int)m_buffer.getMaxReadSize(), want);
 
   /* check if we finished prematurely */
   if (!m_stillRunning && (m_fileSize == 0 || m_filePos != m_fileSize) && !want)
@@ -1516,7 +1516,7 @@ ssize_t CCurlFile::CReadState::Read(void* lpBuf, size_t uiBufSize)
   }
 
   /* ensure only available data is considered */
-  unsigned int want = (unsigned int)XMIN(m_buffer.getMaxReadSize(), uiBufSize);
+  unsigned int want = std::min<unsigned int>(m_buffer.getMaxReadSize(), uiBufSize);
 
   /* xfer data to caller */
   if (m_buffer.ReadData((char *)lpBuf, want))
@@ -1553,7 +1553,7 @@ int8_t CCurlFile::CReadState::FillBuffer(unsigned int want)
     /* if there is data in overflow buffer, try to use that first */
     if (m_overflowSize)
     {
-      unsigned amount = XMIN((unsigned int)m_buffer.getMaxWriteSize(), m_overflowSize);
+      unsigned amount = std::min((unsigned int)m_buffer.getMaxWriteSize(), m_overflowSize);
       m_buffer.WriteData(m_overflowBuffer, amount);
 
       if (amount < m_overflowSize)
