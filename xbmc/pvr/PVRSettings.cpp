@@ -82,7 +82,7 @@ void CPVRSettings::OnSettingChanged(std::shared_ptr<const CSetting> setting)
     return;
 
   CSingleLock lock(m_critSection);
-  m_settings[setting->GetId()] = SettingPtr(setting->Clone(setting->GetId()));
+  m_settings[setting->GetId()] = setting->Clone(setting->GetId());
 }
 
 bool CPVRSettings::GetBoolValue(const std::string &settingName) const

@@ -252,7 +252,7 @@ void CGUIDialogPVRChannelsOSD::Clear()
 
 void CGUIDialogPVRChannelsOSD::GotoChannel(int item)
 {
-  if (item < 0 || item >= (int)m_vecItems->Size())
+  if (item < 0 || item >= m_vecItems->Size())
     return;
 
   Close();
@@ -261,7 +261,7 @@ void CGUIDialogPVRChannelsOSD::GotoChannel(int item)
 
 void CGUIDialogPVRChannelsOSD::ShowInfo(int item)
 {
-  if (item < 0 || item >= (int)m_vecItems->Size())
+  if (item < 0 || item >= m_vecItems->Size())
     return;
 
   CServiceBroker::GetPVRManager().GUIActions()->ShowEPGInfo(m_vecItems->Get(item));

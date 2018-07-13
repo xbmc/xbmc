@@ -118,7 +118,7 @@ bool CGUIDialogPVRGroupManager::ActionButtonNewGroup(CGUIMessage &message)
       if (strGroupName != "")
       {
         /* add the group if it doesn't already exist */
-        CPVRChannelGroups *groups = static_cast<CPVRChannelGroups*>(CServiceBroker::GetPVRManager().ChannelGroups()->Get(m_bIsRadio));
+        CPVRChannelGroups *groups = CServiceBroker::GetPVRManager().ChannelGroups()->Get(m_bIsRadio);
         if (groups->AddGroup(strGroupName))
         {
           CServiceBroker::GetPVRManager().ChannelGroups()->Get(m_bIsRadio)->GetByName(strGroupName)->SetGroupType(PVR_GROUP_TYPE_USER_DEFINED);
@@ -155,7 +155,7 @@ bool CGUIDialogPVRGroupManager::ActionButtonDeleteGroup(CGUIMessage &message)
 
     if (pDialog->IsConfirmed())
     {
-      if (static_cast<CPVRChannelGroups*>(CServiceBroker::GetPVRManager().ChannelGroups()->Get(m_bIsRadio))->DeleteGroup(*m_selectedGroup))
+      if (CServiceBroker::GetPVRManager().ChannelGroups()->Get(m_bIsRadio)->DeleteGroup(*m_selectedGroup))
         Update();
     }
 

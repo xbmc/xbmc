@@ -1729,7 +1729,7 @@ int CPVRGUIInfo::GetElapsedTime(void) const
   if (m_playingEpgTag || m_iTimeshiftStartTime)
   {
     CDateTime current(m_iTimeshiftPlayTime);
-    CDateTime start = m_playingEpgTag ? CDateTime(m_playingEpgTag->StartAsUTC())
+    CDateTime start = m_playingEpgTag ? m_playingEpgTag->StartAsUTC()
                                       : CDateTime(m_iTimeshiftStartTime);
     CDateTimeSpan time = current > start ? current - start : CDateTimeSpan(0, 0, 0, 0);
     return time.GetSecondsTotal();
