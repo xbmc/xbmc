@@ -2,51 +2,83 @@
 <window>
 	<defaultcontrol always="true">50</defaultcontrol>
 	<backgroundcolor>background</backgroundcolor>
-	<views>50,52,53,54,55,500</views>
+	<views>55,51,52,53,54,500,50</views>
 	<menucontrol>9000</menucontrol>
-	<controls>`
+	<controls>
 		<include>DefaultBackground</include>
 		<control type="group">
 			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="$EXP[infodialog_active]">Conditional</animation>
 			<include>View_50_List</include>
+			<include>View_51_Poster</include>
 			<include>View_52_IconWall</include>
 			<include>View_53_Shift</include>
-			<control type="group">
-				<left>50</left>
-				<include>View_54_InfoWall</include>
-			</control>
+			<include>View_54_InfoWall</include>
 			<include>View_55_WideList</include>
 			<include>View_500_Wall</include>
 			<include>CommonScrollbars</include>
 			<control type="group">
+				<depth>DepthContentPanel</depth>
 				<include>OpenClose_Left</include>
-				<visible>Control.Isvisible(54)</visible>
-				<include>Visible_Left</include>
-				<visible>Container.Content(games)</visible>
-				<include content="ContentPanel">
-					<param name="width" value="656" />
-				</include>
-				<control type="textbox">
-					<left>40</left>
-					<top>360</top>
-					<width>529</width>
-					<height>413</height>
-					<align>center</align>
-					<aligny>center</aligny>
-					<font>font27</font>
-					<textcolor>80FFFFFF</textcolor>
-					<label>$LOCALIZE[19055]</label>
-					<visible>!ListItem.IsParentFolder + ListItem.IsFolder</visible>
-				</control>
-			</control>
-			<control type="group">
-				<include>OpenClose_Left</include>
-				<visible>Control.IsVisible(50) | Control.IsVisible(55)</visible>
+				<visible>Control.IsVisible(55)</visible>
 				<include>Visible_Left</include>
 				<include>ListThumbInfoPanel</include>
 			</control>
+			<control type="group">
+				<depth>DepthContentPanel</depth>
+				<include>OpenClose_Left</include>
+				<visible>Control.IsVisible(50) | Control.Isvisible(54) | [Control.IsVisible(501) + String.IsEqual(Skin.AspectRatio,21:9)]</visible>
+				<include>Visible_Left</include>
+				<include content="ContentPanel">
+					<param name="width" value="656" />
+				</include>
+				<control type="group">
+					<width>550</width>
+					<control type="textbox">
+						<top>120</top>
+						<left>30</left>
+						<width>550</width>
+						<aligny>center</aligny>
+						<height>110</height>
+						<font>font36_title</font>
+						<label>$INFO[ListItem.Label]</label>
+					</control>
+					<control type="textbox">
+						<left>30</left>
+						<top>240</top>
+						<width>525</width>
+						<bottom>100</bottom>
+						<visible>!ListItem.IsCollection</visible>
+						<label>$INFO[ListItem.Tagline,[I],[/I][CR][CR]]$INFO[ListItem.Plot][CR][CR]</label>
+						<autoscroll delay="10000" time="3000" repeat="10000">Skin.HasSetting(autoscroll)</autoscroll>
+					</control>
+					<control type="textbox">
+						<left>30</left>
+						<top>360</top>
+						<width>530</width>
+						<height>413</height>
+						<align>center</align>
+						<aligny>center</aligny>
+						<font>font27</font>
+						<textcolor>80FFFFFF</textcolor>
+						<label>$LOCALIZE[19055]</label>
+						<visible>String.IsEmpty(Listitem.Plot) + String.IsEmpty(Listitem.Tagline) + !ListItem.IsCollection + !ListItem.IsParentFolder</visible>
+					</control>
+					<control type="group">
+						<left>20</left>
+						<top>245</top>
+						<visible>ListItem.IsCollection + String.IsEmpty(ListItem.Plot)</visible>
+						<include content="InfoList">
+							<param name="bottom" value="108" />
+							<param name="width" value="540" />
+							<param name="sortby" value="year" />
+							<param name="sortorder" value="descending" />
+							<param name="font" value="font13" />
+						</include>
+					</control>
+				</control>
+			</control>
 			<include content="TopBar">
-				<param name="breadcrumbs_label" value="$LOCALIZE[15016]" />
+				<param name="breadcrumbs_label" value="$VAR[BreadcrumbsGameVar]" />
 			</include>
 			<include content="BottomBar">
 				<param name="info_visible" value="true" />
@@ -63,18 +95,18 @@
 						<label>$LOCALIZE[31020]</label>
 						<visible>Control.IsVisible(621) | Control.IsVisible(624)</visible>
 					</control>
-					<control type="button" id="624">
-						<include>MediaMenuItemsCommon</include>
-						<label>$LOCALIZE[10140]</label>
-						<onclick>Addon.OpenSettings($INFO[Container.PluginName])</onclick>
-						<visible>!String.IsEmpty(Container.PluginName)</visible>
-					</control>
 					<control type="button" id="621">
 						<description>Get more</description>
 						<include>MediaMenuItemsCommon</include>
 						<label>$LOCALIZE[21452]</label>
 						<onclick>ActivateWindow(addonbrowser,addons://more/game/,return)</onclick>
 						<visible>Container.Content(addons)</visible>
+					</control>
+					<control type="button" id="624">
+						<include>MediaMenuItemsCommon</include>
+						<label>$LOCALIZE[10140]</label>
+						<onclick>Addon.OpenSettings($INFO[Container.PluginName])</onclick>
+						<visible>!String.IsEmpty(Container.PluginName)</visible>
 					</control>
 					<include>MediaMenuNowPlaying</include>
 				</control>
