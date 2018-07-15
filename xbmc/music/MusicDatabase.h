@@ -380,7 +380,6 @@ public:
   int AddGenre(std::string& strGenre);
   std::string GetGenreById(int id);
   int GetGenreByName(const std::string& strGenre);
-  bool GetGenresJSON(CFileItemList& items, bool bSources = false);
 
   /////////////////////////////////////////////////
   // Link tables
@@ -461,12 +460,22 @@ public:
   bool GetSongsByWhere(const std::string &baseDir, const Filter &filter, CFileItemList& items, const SortDescription &sortDescription = SortDescription());
   bool GetSongsFullByWhere(const std::string &baseDir, const Filter &filter, CFileItemList& items, const SortDescription &sortDescription = SortDescription(), bool artistData = false);
   bool GetAlbumsByWhere(const std::string &baseDir, const Filter &filter, CFileItemList &items, const SortDescription &sortDescription = SortDescription(), bool countOnly = false);
-  bool GetAlbumsByWhere(const std::string &baseDir, const Filter &filter, VECALBUMS& albums, int& total, const SortDescription &sortDescription = SortDescription(), bool countOnly = false);
   bool GetArtistsByWhere(const std::string& strBaseDir, const Filter &filter, CFileItemList& items, const SortDescription &sortDescription = SortDescription(), bool countOnly = false);
   bool GetRandomSong(CFileItem* item, int& idSong, const Filter &filter);
   int GetSongsCount(const Filter &filter = Filter());
   unsigned int GetSongIDs(const Filter &filter, std::vector<std::pair<int,int> > &songIDs);
   bool GetFilter(CDbUrl &musicUrl, Filter &filter, SortDescription &sorting) override;
+
+  /////////////////////////////////////////////////
+  // JSON-RPC 
+  /////////////////////////////////////////////////
+  bool GetGenresJSON(CFileItemList& items, bool bSources = false);
+  bool GetArtistsByWhereJSON(const std::set<std::string>& fields, const std::string& baseDir,
+    CVariant& result, int& total, const SortDescription& sortDescription = SortDescription());
+  bool GetAlbumsByWhereJSON(const std::set<std::string>& fields, const std::string& baseDir,
+    CVariant& result, int& total, const SortDescription& sortDescription = SortDescription());
+  bool GetSongsByWhereJSON(const std::set<std::string>& fields, const std::string& baseDir,
+    CVariant& result, int& total, const SortDescription& sortDescription = SortDescription());
 
   /////////////////////////////////////////////////
   // Scraper
@@ -648,6 +657,7 @@ private:
   void GetFileItemFromDataset(CFileItem* item, const CMusicDbUrl &baseUrl);
   void GetFileItemFromDataset(const dbiplus::sql_record* const record, CFileItem* item, const CMusicDbUrl &baseUrl);
   void GetFileItemFromArtistCredits(VECARTISTCREDITS& artistCredits, CFileItem* item);
+    
   bool CleanupSongs(CGUIDialogProgress* progressDialog = nullptr);
   bool CleanupSongsByIds(const std::string &strSongIds);
   bool CleanupPaths();
@@ -786,5 +796,58 @@ private:
     artist_dtDateAdded,
     artist_enumCount // end of the enum, do not add past here
   } ArtistFields;
+
+  // Fields fetched by GetArtistsByWhereJSON,  order same as in JSONtoDBArtist
+  static enum _JoinToArtistFields
+  {
+    joinToArtist_isSong = 0,
+    joinToArtist_idSourceAlbum,
+    joinToArtist_idSourceSong,
+    joinToArtist_idSongGenreAlbum,
+    joinToArtist_idSongGenreSong,
+    joinToArtist_strSongGenreAlbum,
+    joinToArtist_strSongGenreSong,
+    joinToArtist_idArt,
+    joinToArtist_artType,
+    joinToArtist_artURL,
+    joinToArtist_idRole,
+    joinToArtist_strRole,
+    joinToArtist_iOrderRole,
+    joinToArtist_isalbumartist,
+    joinToArtist_thumbnail,
+    joinToArtist_fanart,
+    joinToArtist_enumCount // end of the enum, do not add past here
+  } JoinToArtistFields;
+
+  // Fields fetched by GetAlbumsByWhereJSON,  order same as in JSONtoDBAlbum
+  static enum _JoinToAlbumFields
+  {
+    joinToAlbum_idArtist = 0,
+    joinToAlbum_strArtist,
+    joinToAlbum_strArtistMBID,
+    joinToAlbum_idSongGenre,
+    joinToAlbum_strSongGenre,
+    joinToAlbum_enumCount // end of the enum, do not add past here
+  } JoinToAlbumFields;
+
+  // Fields fetched by GetSongsByWhereJSON,  order same as in JSONtoDBSong
+  static enum _JoinToSongFields
+  {
+    // Used by GetSongsByWhereJSON 
+    joinToSongs_idAlbumArtist = 0,
+    joinToSongs_strAlbumArtist,
+    joinToSongs_strAlbumArtistMBID,
+    joinToSongs_iOrderAlbumArtist,
+    joinToSongs_idArtist,
+    joinToSongs_strArtist,
+    joinToSongs_strArtistMBID,
+    joinToSongs_iOrderArtist,
+    joinToSongs_idRole,
+    joinToSongs_strRole,
+    joinToSongs_iOrderRole,
+    joinToSongs_idGenre,
+    joinToSongs_iOrderGenre,
+    joinToSongs_enumCount // end of the enum, do not add past here
+  } JoinToSongFields;
 
 };

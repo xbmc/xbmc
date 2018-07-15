@@ -58,6 +58,36 @@ public:
     std::string limit;
   };
 
+  
+  typedef struct DatasetFieldInfo {
+    DatasetFieldInfo(bool fetch, bool output, int recno)
+      : fetch(fetch),
+      output(output),
+      recno(recno)
+    { }
+
+    bool fetch;
+    bool output;
+    int recno;
+    std::string strField;
+  } DatasetFieldInfo;
+
+  class DatasetLayout
+  {
+  public:
+    DatasetLayout(size_t totalfields);
+    void SetField(int fieldNo, const std::string &strField, bool bOutput = false);
+    void AdjustRecordNumbers(int offset);
+    bool GetFetch(int fieldno);
+    bool GetOutput(int fieldno);
+    int GetRecNo(int fieldno);
+    const std::string GetFields();
+    bool HasFilterFields();
+
+  private:
+    std::vector<DatasetFieldInfo> m_fields;
+  };
+
   class ExistsSubQuery
   {
   public:

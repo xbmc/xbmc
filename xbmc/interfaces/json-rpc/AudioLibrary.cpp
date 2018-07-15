@@ -30,6 +30,7 @@
 #include "music/tags/MusicInfoTag.h"
 #include "music/Artist.h"
 #include "music/Album.h"
+#include "music/MusicThumbLoader.h"
 #include "music/Song.h"
 #include "messaging/ApplicationMessenger.h"
 #include "filesystem/Directory.h"
@@ -82,30 +83,29 @@ JSONRPC_STATUS CAudioLibrary::GetArtists(const std::string &method, ITransportLa
   if (parameterObject["allroles"].isBoolean())
     allroles = parameterObject["allroles"].asBoolean();
 
-  int genreID = -1, albumID = -1, songID = -1;
   const CVariant &filter = parameterObject["filter"];
 
   if (allroles)
     musicUrl.AddOption("roleid", -1000); //All roles, any negative parameter overrides implicit roleid=1 filter required for backward compatibility
   else if (filter.isMember("roleid"))
-    musicUrl.AddOption("roleid", (int)filter["roleid"].asInteger());
+    musicUrl.AddOption("roleid", static_cast<int>(filter["roleid"].asInteger()));
   else if (filter.isMember("role"))
     musicUrl.AddOption("role", filter["role"].asString());
   // Only one of (song) genreid/genre, albumid/album or songid/song or rules type filter is allowed by filter syntax
   if (filter.isMember("genreid"))  //Deprecated. Use "songgenre" or "artistgenre"
-    genreID = (int)filter["genreid"].asInteger();
+    musicUrl.AddOption("genreid", static_cast<int>(filter["genreid"].asInteger()));
   else if (filter.isMember("genre"))
     musicUrl.AddOption("genre", filter["genre"].asString());
   if (filter.isMember("songgenreid"))
-    genreID = (int)filter["songgenreid"].asInteger();
+    musicUrl.AddOption("genreid", static_cast<int>(filter["songgenreid"].asInteger()));
   else if (filter.isMember("songgenre"))
     musicUrl.AddOption("genre", filter["songgenre"].asString());
   else if (filter.isMember("albumid"))
-    albumID = (int)filter["albumid"].asInteger();
+    musicUrl.AddOption("albumid", static_cast<int>(filter["albumid"].asInteger()));
   else if (filter.isMember("album"))
     musicUrl.AddOption("album", filter["album"].asString());
   else if (filter.isMember("songid"))
-    songID = (int)filter["songid"].asInteger();
+    musicUrl.AddOption("songid", static_cast<int>(filter["songid"].asInteger()));
   else if (filter.isObject())
   {
     std::string xsp;
@@ -118,32 +118,29 @@ JSONRPC_STATUS CAudioLibrary::GetArtists(const std::string &method, ITransportLa
   bool albumArtistsOnly = !CServiceBroker::GetSettings().GetBool(CSettings::SETTING_MUSICLIBRARY_SHOWCOMPILATIONARTISTS);
   if (parameterObject["albumartistsonly"].isBoolean())
     albumArtistsOnly = parameterObject["albumartistsonly"].asBoolean();
+  musicUrl.AddOption("albumartistsonly", albumArtistsOnly);
 
   SortDescription sorting;
   ParseLimits(parameterObject, sorting.limitStart, sorting.limitEnd);
   if (!ParseSorting(parameterObject, sorting.sortBy, sorting.sortOrder, sorting.sortAttributes))
     return InvalidParams;
 
-  CFileItemList items;
+  int total;
+  std::set<std::string> fields;
+  if (parameterObject.isMember("properties") && parameterObject["properties"].isArray())
+  {
+    for (CVariant::const_iterator_array field = parameterObject["properties"].begin_array();
+      field != parameterObject["properties"].end_array(); field++)
+      fields.insert(field->asString());
+  }
+
   musicdatabase.SetTranslateBlankArtist(false);
-  if (!musicdatabase.GetArtistsNav(musicUrl.ToString(), items, albumArtistsOnly, genreID, albumID, songID, CDatabase::Filter(), sorting))
+  if (!musicdatabase.GetArtistsByWhereJSON(fields, musicUrl.ToString(), result, total, sorting))
     return InternalError;
 
-  // Add "artist" to "properties" array by default
-  CVariant param = parameterObject;
-  if (!param.isMember("properties"))
-    param["properties"] = CVariant(CVariant::VariantTypeArray);
-  param["properties"].append("artist");
+  int start, end;
+  HandleLimits(parameterObject, result, total, start, end);
 
-  //Get roleids, songgenreids, sources etc, if needed
-  JSONRPC_STATUS ret = GetAdditionalArtistDetails(parameterObject, items, musicdatabase);
-  if (ret != OK)
-    return ret;
-
-  int size = items.Size();
-  if (items.HasProperty("total") && items.GetProperty("total").asInteger() > size)
-    size = (int)items.GetProperty("total").asInteger();
-  HandleFileItemList("artistid", false, "artists", items, param, result, size, false);
   return OK;
 }
 
@@ -203,16 +200,16 @@ JSONRPC_STATUS CAudioLibrary::GetAlbums(const std::string &method, ITransportLay
   if (allroles)
     musicUrl.AddOption("roleid", -1000); //All roles, override implicit roleid=1 filter required for backward compatibility
   else if (filter.isMember("roleid"))
-    musicUrl.AddOption("roleid", (int)filter["roleid"].asInteger());
+    musicUrl.AddOption("roleid", static_cast<int>(filter["roleid"].asInteger()));
   else if (filter.isMember("role"))
     musicUrl.AddOption("role", filter["role"].asString());
   // Only one of genreid/genre, artistid/artist or rules type filter is allowed by filter syntax
   if (filter.isMember("artistid"))
-    musicUrl.AddOption("artistid", (int)filter["artistid"].asInteger());
+    musicUrl.AddOption("artistid", static_cast<int>(filter["artistid"].asInteger()));
   else if (filter.isMember("artist"))
     musicUrl.AddOption("artist", filter["artist"].asString());
   else if (filter.isMember("genreid"))
-    musicUrl.AddOption("genreid", (int)filter["genreid"].asInteger());
+    musicUrl.AddOption("genreid", static_cast<int>(filter["genreid"].asInteger()));
   else if (filter.isMember("genre"))
     musicUrl.AddOption("genre", filter["genre"].asString());
   else if (filter.isObject())
@@ -230,32 +227,69 @@ JSONRPC_STATUS CAudioLibrary::GetAlbums(const std::string &method, ITransportLay
     return InvalidParams;
 
   int total;
-  VECALBUMS albums;
-  if (!musicdatabase.GetAlbumsByWhere(musicUrl.ToString(), CDatabase::Filter(), albums, total, sorting))
-    return InternalError;
-
-  CFileItemList items;
-  items.Reserve(albums.size());
-  for (unsigned int index = 0; index < albums.size(); index++)
+  std::set<std::string> fields;
+  if (parameterObject.isMember("properties") && parameterObject["properties"].isArray())
   {
-    CMusicDbUrl itemUrl = musicUrl;
-    std::string path = StringUtils::Format("%li/", albums[index].idAlbum);
-    itemUrl.AppendPath(path);
-
-    CFileItemPtr pItem;
-    FillAlbumItem(albums[index], itemUrl.ToString(), pItem);
-    items.Add(pItem);
+    for (CVariant::const_iterator_array field = parameterObject["properties"].begin_array(); 
+      field != parameterObject["properties"].end_array(); field++)
+      fields.insert(field->asString());
   }
 
-  //Get song genres (genreIDs and/or genre strings) and sources
-  JSONRPC_STATUS ret = GetAdditionalAlbumDetails(parameterObject, items, musicdatabase);
-  if (ret != OK)
-    return ret;
+  if (!musicdatabase.GetAlbumsByWhereJSON(fields, musicUrl.ToString(), result, total, sorting))
+    return InternalError;
 
-  int size = items.Size();
-  if (total > size)
-    size = total;
-  HandleFileItemList("albumid", false, "albums", items, parameterObject, result, size, false);
+  if (!result.isNull())
+  {
+    bool bFetchArt = fields.find("art") != fields.end();
+    bool bFetchFanart = fields.find("fanart") != fields.end();
+    if (bFetchArt || bFetchFanart)
+    {
+      CThumbLoader* thumbLoader = new CMusicThumbLoader();
+      thumbLoader->OnLoaderStart();
+
+      std::set<std::string> artfields;
+      if (bFetchArt)
+        artfields.insert("art");
+      if (bFetchFanart)
+        artfields.insert("fanart");
+
+      for (unsigned int index = 0; index < result["albums"].size(); index++)
+      {
+        CFileItem item;
+        item.GetMusicInfoTag()->SetDatabaseId(result["albums"][index]["albumid"].asInteger(), MediaTypeAlbum);
+
+        // Could use FillDetails, but it does unnecessary serialization of empty MusiInfoTag
+        // CFileItemPtr itemptr(new CFileItem(item));
+        // FillDetails(item.GetMusicInfoTag(), itemptr, artfields, result["albums"][index], thumbLoader);
+
+        thumbLoader->FillLibraryArt(item);
+
+        if (bFetchFanart)
+        {
+          if (item.HasArt("fanart"))
+            result["albums"][index]["fanart"] = CTextureUtils::GetWrappedImageURL(item.GetArt("fanart"));
+          else
+            result["albums"][index]["fanart"] = "";
+        }
+        if (bFetchArt)
+        {
+          CGUIListItem::ArtMap artMap = item.GetArt();
+          CVariant artObj(CVariant::VariantTypeObject);
+          for (CGUIListItem::ArtMap::const_iterator artIt = artMap.begin(); artIt != artMap.end(); ++artIt)
+          {
+            if (!artIt->second.empty())
+              artObj[artIt->first] = CTextureUtils::GetWrappedImageURL(artIt->second);
+          }
+          result["albums"][index]["art"] = artObj;
+        }
+      }
+
+      delete thumbLoader;
+    }
+  }
+
+  int start, end;
+  HandleLimits(parameterObject, result, total, start, end);
 
   return OK;
 }
@@ -314,20 +348,20 @@ JSONRPC_STATUS CAudioLibrary::GetSongs(const std::string &method, ITransportLaye
   if (allroles)
     musicUrl.AddOption("roleid", -1000); //All roles, override implicit roleid=1 filter required for backward compatibility
   else if (filter.isMember("roleid"))
-    musicUrl.AddOption("roleid", (int)filter["roleid"].asInteger());
+    musicUrl.AddOption("roleid", static_cast<int>(filter["roleid"].asInteger()));
   else if (filter.isMember("role"))
     musicUrl.AddOption("role", filter["role"].asString());
   // Only one of genreid/genre, artistid/artist, albumid/album or rules type filter is allowed by filter syntax
   if (filter.isMember("artistid"))
-    musicUrl.AddOption("artistid", (int)filter["artistid"].asInteger());
+    musicUrl.AddOption("artistid", static_cast<int>(filter["artistid"].asInteger()));
   else if (filter.isMember("artist"))
     musicUrl.AddOption("artist", filter["artist"].asString());
   else if (filter.isMember("genreid"))
-    musicUrl.AddOption("genreid", (int)filter["genreid"].asInteger());
+    musicUrl.AddOption("genreid", static_cast<int>(filter["genreid"].asInteger()));
   else if (filter.isMember("genre"))
     musicUrl.AddOption("genre", filter["genre"].asString());
   else if (filter.isMember("albumid"))
-    musicUrl.AddOption("albumid", (int)filter["albumid"].asInteger());
+    musicUrl.AddOption("albumid", static_cast<int>(filter["albumid"].asInteger()));
   else if (filter.isMember("album"))
     musicUrl.AddOption("album", filter["album"].asString());
   else if (filter.isObject())
@@ -344,33 +378,87 @@ JSONRPC_STATUS CAudioLibrary::GetSongs(const std::string &method, ITransportLaye
   if (!ParseSorting(parameterObject, sorting.sortBy, sorting.sortOrder, sorting.sortAttributes))
     return InvalidParams;
 
-  // Check if any properties from songartistview wanted, only then query artist data for songs
-  // "displayArtist" is held in songview
-  std::set<std::string> checkProperties;
-  checkProperties.insert("artist");
-  checkProperties.insert("artistid");
-  checkProperties.insert("musicbrainzartistid");
-  checkProperties.insert("contributors");
-  checkProperties.insert("displaycomposer");
-  checkProperties.insert("displayconductor");
-  checkProperties.insert("displayorchestra");
-  checkProperties.insert("displaylyricist");
-  std::set<std::string> additionalProperties;
-  bool artistData = CheckForAdditionalProperties(parameterObject["properties"], checkProperties, additionalProperties);
+  int total;
+  std::set<std::string> fields;
+  if (parameterObject.isMember("properties") && parameterObject["properties"].isArray())
+  {
+    for (CVariant::const_iterator_array field = parameterObject["properties"].begin_array();
+      field != parameterObject["properties"].end_array(); field++)
+      fields.insert(field->asString());
+  }
 
-  CFileItemList items;
-  if (!musicdatabase.GetSongsFullByWhere(musicUrl.ToString(), CDatabase::Filter(), items, sorting, artistData))
+  if (!musicdatabase.GetSongsByWhereJSON(fields, musicUrl.ToString(), result, total, sorting))
     return InternalError;
 
-  JSONRPC_STATUS ret = GetAdditionalSongDetails(parameterObject, items, musicdatabase);
-  if (ret != OK)
-    return ret;
+  if (!result.isNull())
+  {
+    bool bFetchArt = fields.find("art") != fields.end();
+    bool bFetchFanart = fields.find("fanart") != fields.end();
+    bool bFetchThumb = fields.find("thumbnail") != fields.end();
+    if (bFetchArt || bFetchFanart || bFetchThumb)
+    {
+      CThumbLoader* thumbLoader = new CMusicThumbLoader();
+      thumbLoader->OnLoaderStart();
 
-  int size = items.Size();
-  if (items.HasProperty("total") && items.GetProperty("total").asInteger() > size)
-    size = (int)items.GetProperty("total").asInteger();
-  HandleFileItemList("songid", true, "songs", items, parameterObject, result, size, false);
+      std::set<std::string> artfields;
+      if (bFetchArt)
+        artfields.insert("art");
+      if (bFetchFanart)
+        artfields.insert("fanart");
+      if (bFetchThumb)
+        artfields.insert("thumbnail");
 
+      for (unsigned int index = 0; index < result["songs"].size(); index++)
+      {
+        CFileItem item;
+        // Only needs song and album id (if we have it) set to get art
+        // Getting art is quicker if "albumid" has been fetched
+        item.GetMusicInfoTag()->SetDatabaseId(result["songs"][index]["songid"].asInteger(), MediaTypeSong);
+        if (result["songs"][index].isMember("albumid"))
+          item.GetMusicInfoTag()->SetAlbumId(result["songs"][index]["albumid"].asInteger());
+        else
+          item.GetMusicInfoTag()->SetAlbumId(-1);
+
+        // Could use FillDetails, but it does unnecessary serialization of empty MusiInfoTag
+        // CFileItemPtr itemptr(new CFileItem(item));
+        // FillDetails(item.GetMusicInfoTag(), itemptr, artfields, result["songs"][index], thumbLoader);
+
+        thumbLoader->FillLibraryArt(item);
+
+        if (bFetchThumb)
+        {
+          if (item.HasArt("thumb"))
+            result["songs"][index]["thumbnail"] = CTextureUtils::GetWrappedImageURL(item.GetArt("thumb"));
+          else
+            result["songs"][index]["thumbnail"] = "";
+        }
+        if (bFetchFanart)
+        {
+          if (item.HasArt("fanart"))
+            result["songs"][index]["fanart"] = CTextureUtils::GetWrappedImageURL(item.GetArt("fanart"));
+          else
+            result["songs"][index]["fanart"] = "";
+        }
+        if (bFetchArt)
+        {
+          CGUIListItem::ArtMap artMap = item.GetArt();
+          CVariant artObj(CVariant::VariantTypeObject);
+          for (CGUIListItem::ArtMap::const_iterator artIt = artMap.begin(); artIt != artMap.end(); ++artIt)
+          {
+            if (!artIt->second.empty())
+              artObj[artIt->first] = CTextureUtils::GetWrappedImageURL(artIt->second);
+          }
+          result["songs"][index]["art"] = artObj;
+        }
+      }
+
+      delete thumbLoader;
+    }
+  }
+
+  int start, end;
+  HandleLimits(parameterObject, result, total, start, end);
+  
   return OK;
 }
 
