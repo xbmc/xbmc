@@ -62,6 +62,7 @@
 #include "utils/FileUtils.h"
 #include "utils/LegacyPathTranslation.h"
 #include "utils/log.h"
+#include "utils/Random.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/XMLUtils.h"
@@ -5422,8 +5423,12 @@ bool CMusicDatabase::GetArtistsByWhereJSON(const std::set<std::string>& fields, 
 
       m_pDS->next();
     }
-
     m_pDS->close(); // cleanup recordset data
+
+    // Ensure random order of output when results set is sorted to process multi-value joins
+    if (sortDescription.sortBy == SortByRandom && joinLayout.HasFilterFields())
+      KODI::UTILS::RandomShuffle(result["artists"].begin_array(), result["artists"].end_array());
+
     return true;
   }
   catch (...)
@@ -5864,8 +5869,12 @@ bool CMusicDatabase::GetAlbumsByWhereJSON(const std::set<std::string>& fields, c
       }
       m_pDS->next();
     }
-
     m_pDS->close(); // cleanup recordset data
+
+    // Ensure random order of output when results set is sorted to process multi-value joins
+    if (sortDescription.sortBy == SortByRandom && joinLayout.HasFilterFields())
+      KODI::UTILS::RandomShuffle(result["albums"].begin_array(), result["albums"].end_array());
+
     return true;
   }
   catch (...)
@@ -6559,9 +6568,12 @@ bool CMusicDatabase::GetSongsByWhereJSON(const std::set<std::string>& fields, co
       }
       m_pDS->next();
     }
-
-
     m_pDS->close(); // cleanup recordset data
+
+    // Ensure random order of output when results set is sorted to process multi-value joins
+    if (sortDescription.sortBy == SortByRandom && joinLayout.HasFilterFields())
+      KODI::UTILS::RandomShuffle(result["songs"].begin_array(), result["songs"].end_array());
+
     return true;
   }
   catch (...)
