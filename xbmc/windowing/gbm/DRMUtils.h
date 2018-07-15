@@ -89,16 +89,16 @@ public:
   struct plane* GetOverlayPlane() const { return m_overlay_plane; }
   struct crtc* GetCrtc() const { return m_crtc; }
 
-  RESOLUTION_INFO GetCurrentMode();
-  std::vector<RESOLUTION_INFO> GetModes();
-  bool SetMode(const RESOLUTION_INFO& res);
-  void WaitVBlank();
+  virtual RESOLUTION_INFO GetCurrentMode();
+  virtual std::vector<RESOLUTION_INFO> GetModes();
+  virtual bool SetMode(const RESOLUTION_INFO& res);
+  virtual void WaitVBlank();
 
   virtual bool AddProperty(struct drm_object *object, const char *name, uint64_t value) { return false; }
   virtual bool SetProperty(struct drm_object *object, const char *name, uint64_t value) { return false; }
 
 protected:
-  bool OpenDrm();
+  bool OpenDrm(bool needConnector);
   uint32_t GetPropertyId(struct drm_object *object, const char *name);
   drm_fb* DrmFbGetFromBo(struct gbm_bo *bo);
 

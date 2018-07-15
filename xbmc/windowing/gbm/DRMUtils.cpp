@@ -420,7 +420,7 @@ bool CDRMUtils::FindPlanes()
   return true;
 }
 
-bool CDRMUtils::OpenDrm()
+bool CDRMUtils::OpenDrm(bool needConnector)
 {
   static constexpr const char *modules[] =
   {
@@ -450,20 +450,27 @@ bool CDRMUtils::OpenDrm()
       {
         if(!GetResources())
         {
+          drmClose(m_fd);
+          m_fd = -1;
           continue;
         }
 
-        if(!FindConnector())
+        if (needConnector)
         {
-          continue;
+          if(!FindConnector())
+          {
+            drmClose(m_fd);
+            m_fd = -1;
+            continue;
+          }
+
+          drmModeFreeConnector(m_connector->connector);
+          m_connector->connector = nullptr;
+          FreeProperties(m_connector);
         }
 
         drmModeFreeResources(m_drm_resources);
         m_drm_resources = nullptr;
-
-        drmModeFreeConnector(m_connector->connector);
-        m_connector->connector = nullptr;
-        FreeProperties(m_connector);
 
         m_module = module;
         m_device_path = device;
