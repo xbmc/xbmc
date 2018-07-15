@@ -10,7 +10,7 @@
 
 #include "JoystickTypes.h"
 #include "input/mouse/MouseTypes.h"
-#include "input/XBMC_keysym.h"
+#include "input/keyboard/KeyboardTypes.h"
 
 #include <stdint.h>
 
@@ -94,7 +94,7 @@ namespace JOYSTICK
     /*!
      * \brief Construct a driver primitive representing a key on a keyboard
      */
-    CDriverPrimitive(XBMCKey keycode);
+    CDriverPrimitive(KEYBOARD::KeySymbol keycode);
 
     /*!
      * \brief Construct a driver primitive representing a mouse button
@@ -153,7 +153,7 @@ namespace JOYSTICK
     /*!
      * \brief The keybord symbol (valid for keys)
      */
-    XBMCKey Keycode() const { return m_keycode; }
+    KEYBOARD::KeySymbol Keycode() const { return m_keycode; }
 
     /*!
      * \brief The mouse button ID (valid for mouse buttons)
@@ -183,7 +183,7 @@ namespace JOYSTICK
     int                m_center = 0;
     SEMIAXIS_DIRECTION m_semiAxisDirection = SEMIAXIS_DIRECTION::ZERO;
     unsigned int       m_range = 1;
-    XBMCKey            m_keycode = XBMCK_UNKNOWN;
+    KEYBOARD::KeySymbol m_keycode = XBMCK_UNKNOWN;
     RELATIVE_POINTER_DIRECTION m_pointerDirection = RELATIVE_POINTER_DIRECTION::NONE;
   };
 }

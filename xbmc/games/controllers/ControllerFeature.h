@@ -10,7 +10,7 @@
 
 #include "ControllerTypes.h"
 #include "input/joysticks/JoystickTypes.h"
-#include "input/XBMC_keysym.h"
+#include "input/keyboard/KeyboardTypes.h"
 
 #include <string>
 
@@ -43,7 +43,7 @@ public:
 
   // Input properties
   JOYSTICK::INPUT_TYPE InputType(void) const { return m_inputType; }
-  XBMCKey Keycode() const { return m_keycode; }
+  KEYBOARD::KeySymbol Keycode() const { return m_keycode; }
 
   bool Deserialize(const TiXmlElement* pElement,
                    const CController* controller,
@@ -58,7 +58,7 @@ private:
   std::string m_strName;
   int m_labelId = -1;
   JOYSTICK::INPUT_TYPE m_inputType = JOYSTICK::INPUT_TYPE::UNKNOWN;
-  XBMCKey m_keycode = XBMCK_UNKNOWN;
+  KEYBOARD::KeySymbol m_keycode = XBMCK_UNKNOWN;
 };
 
 }
