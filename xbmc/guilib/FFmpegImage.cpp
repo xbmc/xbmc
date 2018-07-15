@@ -97,7 +97,7 @@ static int mem_file_read(void *h, uint8_t* buf, int size)
   size_t tocopy = std::min((size_t)size, (size_t)unread);
   memcpy(buf, mbuf->data + mbuf->pos, tocopy);
   mbuf->pos += tocopy;
-  return tocopy;
+  return static_cast<int>(tocopy);
 }
 
 static int64_t mem_file_seek(void *h, int64_t pos, int whence)
@@ -164,7 +164,7 @@ bool CFFmpegImage::LoadImageFromMemory(unsigned char* buffer, unsigned int bufSi
   return !(m_pFrame == nullptr);
 }
 
-bool CFFmpegImage::Initialize(unsigned char* buffer, unsigned int bufSize)
+bool CFFmpegImage::Initialize(unsigned char* buffer, size_t bufSize)
 {
   int bufferSize = 4096;
   uint8_t* fbuffer = (uint8_t*)av_malloc(bufferSize + AV_INPUT_BUFFER_PADDING_SIZE);

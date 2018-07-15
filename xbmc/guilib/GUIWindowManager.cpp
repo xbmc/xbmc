@@ -530,7 +530,7 @@ bool CGUIWindowManager::SendMessage(CGUIMessage& message)
   // don't use an iterator for this loop, as some messages mean that m_activeDialogs is altered,
   // which will invalidate any iterator
   CSingleLock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
-  unsigned int topWindow = m_activeDialogs.size();
+  size_t topWindow = m_activeDialogs.size();
   while (topWindow)
   {
     CGUIWindow* dialog = m_activeDialogs[--topWindow];
@@ -1079,7 +1079,7 @@ bool CGUIWindowManager::OnAction(const CAction &action) const
 bool CGUIWindowManager::HandleAction(CAction const& action) const
 {
   CSingleLock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
-  unsigned int topmost = m_activeDialogs.size();
+  size_t topmost = m_activeDialogs.size();
   while (topmost)
   {
     CGUIWindow *dialog = m_activeDialogs[--topmost];
@@ -1463,7 +1463,7 @@ void CGUIWindowManager::DispatchThreadMessages()
 
   CSingleLock lock(m_critSection);
 
-  for(int msgCount = m_vecThreadMessages.size(); !m_vecThreadMessages.empty() && msgCount > 0; --msgCount)
+  while (!m_vecThreadMessages.empty())
   {
     // pop up one message per time to make messages be processed by order.
     // this will ensure rule No.2 & No.3

@@ -82,7 +82,7 @@ public:
                                   unsigned int &bufferoutSize) override;
   void ReleaseThumbnailBuffer() override;
 
-  bool Initialize(unsigned char* buffer, unsigned int bufSize);
+  bool Initialize(unsigned char* buffer, size_t bufSize);
 
   std::shared_ptr<Frame> ReadFrame();
 
