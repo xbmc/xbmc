@@ -510,7 +510,7 @@ bool CGUIDialogAddonInfo::ShowDependencyList(const std::vector<ADDON::Dependency
     else
     {
       CFileItemPtr item(new CFileItem(it.id));
-      item->SetLabel2(g_localizeStrings.Get(161));
+      item->SetLabel2(g_localizeStrings.Get(10005)); // Not available
       items.Add(item);
     }
   }

@@ -1051,9 +1051,9 @@ std::string CSysInfo::GetHddSpaceInfo(int& percent, int drive, bool shortText)
   else
   {
     if (shortText)
-      strRet = "N/A";
+      strRet = g_localizeStrings.Get(10006); // N/A
     else
-      strRet = g_localizeStrings.Get(161);
+      strRet = g_localizeStrings.Get(10005); // Not available
   }
   return strRet;
 }
