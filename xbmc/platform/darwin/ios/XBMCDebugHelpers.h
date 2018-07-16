@@ -5,7 +5,7 @@
  *      Created by Stephan Diederich on 21.09.08.
  *  Copyright 2008 University Heidelberg. All rights reserved.
  *
- *  Copyright (C) 2008-2013 Team Kodi
+ *  Copyright (C) 2008-2018 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later

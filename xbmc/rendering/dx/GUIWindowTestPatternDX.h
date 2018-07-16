@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2013 Team Kodi
+ *  Copyright (C) 2005-2018 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *      Test patterns designed by Ofer LaOr - hometheater.co.il
