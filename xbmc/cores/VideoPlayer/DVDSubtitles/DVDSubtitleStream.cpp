@@ -63,7 +63,7 @@ bool CDVDSubtitleStream::Open(const std::string& strFile)
       if (totalread == buf.size())
         buf.resize(buf.size() + chunksize);
 
-      read = pInputStream->Read((uint8_t*)buf.get() + totalread, buf.size() - totalread);
+      read = pInputStream->Read((uint8_t*)buf.get() + totalread, static_cast<int>(buf.size() - totalread));
       if (read > 0)
         totalread += read;
     } while (read > 0);
@@ -109,7 +109,7 @@ bool CDVDSubtitleStream::IsIncompatible(CDVDInputStream* pInputStream, XUTILS::a
 
   static const uint8_t vobsub[] = { 0x00, 0x00, 0x01, 0xBA };
 
-  int read = pInputStream->Read((uint8_t*)buf.get(), buf.size());
+  int read = pInputStream->Read(reinterpret_cast<uint8_t*>(buf.get()), static_cast<int>(buf.size()));
 
   if (read < 0)
   {
