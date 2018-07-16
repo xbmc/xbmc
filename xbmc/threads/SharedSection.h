@@ -61,7 +61,6 @@ class CExclusiveLock : public XbmcThreads::UniqueLock<CSharedSection>
 {
 public:
   inline explicit CExclusiveLock(CSharedSection& cs) : XbmcThreads::UniqueLock<CSharedSection>(cs) {}
-  inline explicit CExclusiveLock(const CSharedSection& cs) : XbmcThreads::UniqueLock<CSharedSection> ((CSharedSection&)cs) {}
 
   inline bool IsOwner() const { return owns_lock(); }
   inline void Leave() { unlock(); }
