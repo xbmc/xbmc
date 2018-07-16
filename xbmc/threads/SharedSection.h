@@ -51,7 +51,6 @@ class CSharedLock : public XbmcThreads::SharedLock<CSharedSection>
 {
 public:
   inline explicit CSharedLock(CSharedSection& cs) : XbmcThreads::SharedLock<CSharedSection>(cs) {}
-  inline explicit CSharedLock(const CSharedSection& cs) : XbmcThreads::SharedLock<CSharedSection>((CSharedSection&)cs) {}
 
   inline bool IsOwner() const { return owns_lock(); }
   inline void Enter() { lock(); }
