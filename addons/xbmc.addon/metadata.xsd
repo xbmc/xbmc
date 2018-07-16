@@ -16,7 +16,6 @@
         <xs:element name="email" type="xs:string" minOccurs="0" maxOccurs="1"/>
         <xs:element name="broken" type="xs:string" minOccurs="0" maxOccurs="1"/>
         <xs:element name="news" type="xs:string" minOccurs="0" maxOccurs="1"/>
-        <xs:element name="reuselanguageinvoker" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
         <xs:element name="assets" type="assetsList" minOccurs="0" maxOccurs="1"/>
       </xs:choice>
       <xs:attribute name="point" type="xs:string" use="required"/>
