@@ -40,7 +40,6 @@ extern "C"
 #define BD_EVENT_ENC_ERROR    -3
 
 class CDVDOverlayImage;
-class DllLibbluray;
 class IVideoPlayer;
 
 class CDVDInputStreamBluray
@@ -133,7 +132,6 @@ protected:
   static void OverlayInit (SPlane& plane, int w, int h);
 
   IVideoPlayer* m_player;
-  DllLibbluray* m_dll;
   BLURAY* m_bd;
   BLURAY_TITLE_INFO* m_title;
   uint32_t m_playlist;

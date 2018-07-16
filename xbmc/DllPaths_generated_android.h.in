@@ -36,8 +36,5 @@
 /* VideoPlayer */
 #define DLL_PATH_LIBDVDNAV     "libdvdnav-@ARCH@.so"
 
-/* libbluray */
-#define DLL_PATH_LIBBLURAY     "@BLURAY_SONAME@"
-
 /* Android's libui for gralloc */
 #define DLL_PATH_LIBUI         "libui.so"

@@ -134,9 +134,11 @@ set(HEADERS AddonsDirectory.h
             ZipManager.h)
 
 if(BLURAY_FOUND)
-  list(APPEND SOURCES BlurayDirectory.cpp
+  list(APPEND SOURCES BlurayCallback.cpp
+                      BlurayDirectory.cpp
                       BlurayFile.cpp)
-  list(APPEND HEADERS BlurayDirectory.h
+  list(APPEND HEADERS BlurayCallback.h
+                      BlurayDirectory.h
                       BlurayFile.h)
 endif()
 

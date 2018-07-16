@@ -30,20 +30,13 @@ if(NOT BLURAY_VERSION AND EXISTS ${BLURAY_INCLUDE_DIR}/libbluray/bluray-version.
   unset(_bluray_version_str)
 endif()
 
-include(FindPackageHandleStandardArgs)
-if(NOT WIN32)
-  find_library(BLURAY_LIBRARY NAMES bluray
-                              PATHS ${PC_BLURAY_LIBDIR})
+find_library(BLURAY_LIBRARY NAMES bluray libbluray
+                            PATHS ${PC_BLURAY_LIBDIR})
 
-  find_package_handle_standard_args(Bluray
-                                    REQUIRED_VARS BLURAY_LIBRARY BLURAY_INCLUDE_DIR BLURAY_VERSION
-                                    VERSION_VAR BLURAY_VERSION)
-else()
-  # Dynamically loaded DLL
-  find_package_handle_standard_args(Bluray
-                                    REQUIRED_VARS BLURAY_INCLUDE_DIR
-                                    VERSION_VAR BLURAY_VERSION)
-endif()
+include(FindPackageHandleStandardArgs)
+find_package_handle_standard_args(Bluray
+                                  REQUIRED_VARS BLURAY_LIBRARY BLURAY_INCLUDE_DIR BLURAY_VERSION
+                                  VERSION_VAR BLURAY_VERSION)
 
 if(BLURAY_FOUND)
   set(BLURAY_LIBRARIES ${BLURAY_LIBRARY})

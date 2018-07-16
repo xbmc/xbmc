@@ -18,11 +18,12 @@
  *
  */
 #include "BlurayDirectory.h"
+
+#include "filesystem/BlurayCallback.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
 #include "URL.h"
-#include "DllLibbluray.h"
 #include "FileItem.h"
 #include "LangInfo.h"
 #include "video/VideoInfoTag.h"
@@ -37,14 +38,18 @@
 #include "File.h"
 #include "utils/RegExp.h"
 
+#include <libbluray/bluray.h>
+#include <libbluray/bluray-version.h>
+#include <libbluray/filesystem.h>
+#include <libbluray/log_control.h>
+
 namespace XFILE
 {
 
 #define MAIN_TITLE_LENGTH_PERCENT 70 /** Minimum length of main titles, based on longest title */
 
 CBlurayDirectory::CBlurayDirectory()
-  : m_dll(NULL)
-  , m_bd(NULL)
+  : m_bd(NULL)
 {
 }
 
@@ -57,11 +62,9 @@ void CBlurayDirectory::Dispose()
 {
   if(m_bd)
   {
-    m_dll->bd_close(m_bd);
+    bd_close(m_bd);
     m_bd = NULL;
   }
-  delete m_dll;
-  m_dll = NULL;
 }
 
 std::string CBlurayDirectory::GetBlurayTitle()
@@ -82,7 +85,7 @@ std::string CBlurayDirectory::GetDiscInfoString(DiscInfo info)
   {
     if (!m_blurayInitialized)
       return "";
-    const BLURAY_DISC_INFO* disc_info = m_dll->bd_get_disc_info(m_bd);
+    const BLURAY_DISC_INFO* disc_info = bd_get_disc_info(m_bd);
     if (!disc_info || !disc_info->bluray_detected)
       return "";
 
@@ -99,7 +102,7 @@ std::string CBlurayDirectory::GetDiscInfoString(DiscInfo info)
     if (!m_blurayInitialized)
       return "";
 
-    const BLURAY_DISC_INFO* disc_info = m_dll->bd_get_disc_info(m_bd);
+    const BLURAY_DISC_INFO* disc_info = bd_get_disc_info(m_bd);
     if (!disc_info || !disc_info->bluray_detected)
       return "";
 
@@ -159,11 +162,11 @@ void CBlurayDirectory::GetTitles(bool main, CFileItemList &items)
 
   if (!main || titleList.empty())
   {
-    uint32_t numTitles = m_dll->bd_get_titles(m_bd, TITLES_RELEVANT, 0);
+    uint32_t numTitles = bd_get_titles(m_bd, TITLES_RELEVANT, 0);
 
     for (uint32_t i = 0; i < numTitles; i++)
     {
-      BLURAY_TITLE_INFO* t = m_dll->bd_get_title_info(m_bd, i, 0);
+      BLURAY_TITLE_INFO* t = bd_get_title_info(m_bd, i, 0);
 
       if (!t)
       {
@@ -186,7 +189,7 @@ void CBlurayDirectory::GetTitles(bool main, CFileItemList &items)
       continue;
 
     items.Add(GetTitle(title, main ? g_localizeStrings.Get(25004) /* Main Title */ : g_localizeStrings.Get(25005) /* Title */));
-    m_dll->bd_free_title_info(title);
+    bd_free_title_info(title);
   }
 }
 
@@ -255,17 +258,10 @@ CURL CBlurayDirectory::GetUnderlyingCURL(const CURL& url)
 
 bool CBlurayDirectory::InitializeBluray(const std::string &root)
 {
-  m_dll = new DllLibbluray();
-  if (!m_dll->Load())
-  {
-    CLog::Log(LOGERROR, "CBlurayDirectory::InitializeBluray - failed to load dll");
-    return false;
-  }
+  bd_set_debug_handler(CBlurayCallback::bluray_logger);
+  bd_set_debug_mask(DBG_CRIT | DBG_BLURAY | DBG_NAV);
 
-  m_dll->bd_set_debug_handler(DllLibbluray::bluray_logger);
-  m_dll->bd_set_debug_mask(DBG_CRIT | DBG_BLURAY | DBG_NAV);
-
-  m_bd = m_dll->bd_init();
+  m_bd = bd_init();
 
   if (!m_bd)
   {
@@ -275,9 +271,9 @@ bool CBlurayDirectory::InitializeBluray(const std::string &root)
 
   std::string langCode;
   g_LangCodeExpander.ConvertToISO6392T(g_langInfo.GetDVDMenuLanguage(), langCode);
-  m_dll->bd_set_player_setting_str(m_bd, BLURAY_PLAYER_SETTING_MENU_LANG, langCode.c_str());
+  bd_set_player_setting_str(m_bd, BLURAY_PLAYER_SETTING_MENU_LANG, langCode.c_str());
 
-  if (!m_dll->bd_open_files(m_bd, const_cast<std::string*>(&root), DllLibbluray::dir_open, DllLibbluray::file_open))
+  if (!bd_open_files(m_bd, const_cast<std::string*>(&root), CBlurayCallback::dir_open, CBlurayCallback::file_open))
   {
     CLog::Log(LOGERROR, "CBlurayDirectory::InitializeBluray - failed to open %s", CURL::GetRedacted(root).c_str());
     return false;
@@ -334,7 +330,7 @@ std::vector<BLURAY_TITLE_INFO*> CBlurayDirectory::GetUserPlaylists()
           {
             unsigned long int plNum = strtoul(playlist.c_str(), nullptr, 10);
 
-            BLURAY_TITLE_INFO* t = m_dll->bd_get_playlist_info(m_bd, static_cast<uint32_t>(plNum), 0);
+            BLURAY_TITLE_INFO* t = bd_get_playlist_info(m_bd, static_cast<uint32_t>(plNum), 0);
             if (t)
               userTitles.emplace_back(t);
           }
