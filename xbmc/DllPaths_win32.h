@@ -27,7 +27,3 @@
 
 /* VideoPlayer */
 #define DLL_PATH_LIBDVDNAV     "special://xbmcbin/libdvdnav.dll"
-
-/* libbluray */
-#define DLL_PATH_LIBBLURAY     "special://xbmcbin/libbluray.dll"
-

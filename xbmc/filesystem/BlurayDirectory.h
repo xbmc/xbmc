@@ -24,7 +24,6 @@
 #include "FileItem.h"
 #include "URL.h"
 
-class  DllLibbluray;
 typedef struct bluray BLURAY;
 typedef struct bd_title_info BLURAY_TITLE_INFO;
 
@@ -58,7 +57,6 @@ private:
   CURL         GetUnderlyingCURL(const CURL& url);
   std::string  HexToString(const uint8_t * buf, int count);
   CURL          m_url;
-  DllLibbluray* m_dll;
   BLURAY*       m_bd;
   bool          m_blurayInitialized = false;
 };

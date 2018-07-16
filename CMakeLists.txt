@@ -145,6 +145,7 @@ endif()
 set(optional_deps Alsa
                   Avahi
                   Bluetooth
+                  Bluray
                   CAP
                   CCache
                   CEC
@@ -162,8 +163,7 @@ set(optional_deps Alsa
                   ${PLATFORM_OPTIONAL_DEPS})
 
 # Optional, dyloaded deps. Keep in alphabetical order please
-set(dyload_optional Bluray
-                    NFS
+set(dyload_optional NFS
                     Plist)
 
 # Required tools

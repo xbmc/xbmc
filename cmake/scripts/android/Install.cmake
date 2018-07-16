@@ -152,6 +152,7 @@ foreach(lib IN LISTS required_dyload dyload_optional ITEMS Shairplay)
   endif()
 endforeach()
 add_bundle_file(${ASS_LIBRARY} ${libdir} "")
+add_bundle_file(${BLURAY_LIBRARY} ${libdir} "")
 add_bundle_file(${SMBCLIENT_LIBRARY} ${libdir} "")
 
 # Main targets from Makefile.in

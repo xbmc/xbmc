@@ -32,8 +32,6 @@ enum BDPlaybackMode
 
 #include "settings/lib/ISettingCallback.h"
 
-class DllLibbluray;
-
 class CDiscSettings : public ISettingCallback
 {
 public:
@@ -42,10 +40,7 @@ public:
   static CDiscSettings& GetInstance();
   void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
 
-protected:
-  CDiscSettings();
-  ~CDiscSettings() override;
-
-  DllLibbluray*       m_dll;
-
+private:
+  CDiscSettings() = default;
+  ~CDiscSettings() = default;
 };
