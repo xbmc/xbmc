@@ -201,16 +201,14 @@ bool CPVREpgDatabase::Delete(const CPVREpgInfoTag &tag)
   return DeleteValues("epgtags", filter);
 }
 
-int CPVREpgDatabase::Get(CPVREpgContainer &container)
+std::vector<CPVREpgPtr> CPVREpgDatabase::Get(const CPVREpgContainer &container)
 {
-  int iReturn(-1);
+  std::vector<CPVREpgPtr> result;
 
   CSingleLock lock(m_critSection);
   std::string strQuery = PrepareSQL("SELECT idEpg, sName, sScraperName FROM epg;");
   if (ResultQuery(strQuery))
   {
-    iReturn = 0;
-
     try
     {
       while (!m_pDS->eof())
@@ -219,8 +217,7 @@ int CPVREpgDatabase::Get(CPVREpgContainer &container)
         std::string strName        = m_pDS->fv("sName").get_asString().c_str();
         std::string strScraperName = m_pDS->fv("sScraperName").get_asString().c_str();
 
-        container.InsertFromDatabase(iEpgID, strName, strScraperName);
-        ++iReturn;
+        result.emplace_back(new CPVREpg(iEpgID, strName, strScraperName, true));
         m_pDS->next();
       }
       m_pDS->close();
@@ -231,18 +228,17 @@ int CPVREpgDatabase::Get(CPVREpgContainer &container)
     }
   }
 
-  return iReturn;
+  return result;
 }
 
-int CPVREpgDatabase::Get(CPVREpg &epg)
+std::vector<CPVREpgInfoTagPtr> CPVREpgDatabase::Get(const CPVREpg &epg)
 {
-  int iReturn(-1);
+  std::vector<CPVREpgInfoTagPtr> result;
 
   CSingleLock lock(m_critSection);
   std::string strQuery = PrepareSQL("SELECT * FROM epgtags WHERE idEpg = %u;", epg.EpgID());
   if (ResultQuery(strQuery))
   {
-    iReturn = 0;
     try
     {
       while (!m_pDS->eof())
@@ -289,8 +285,7 @@ int CPVREpgDatabase::Get(CPVREpg &epg)
         newTag->m_strIconPath        = m_pDS->fv("sIconPath").get_asString().c_str();
         newTag->m_iFlags             = m_pDS->fv("iFlags").get_asInt();
 
-        epg.AddEntry(*newTag);
-        ++iReturn;
+        result.emplace_back(newTag);
 
         m_pDS->next();
       }
@@ -301,7 +296,7 @@ int CPVREpgDatabase::Get(CPVREpg &epg)
       CLog::LogF(LOGERROR, "Could not load EPG data from the database");
     }
   }
-  return iReturn;
+  return result;
 }
 
 bool CPVREpgDatabase::GetLastEpgScanTime(int iEpgId, CDateTime *lastScan)
