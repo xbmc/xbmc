@@ -685,10 +685,7 @@ msgctxt "#160"
 msgid "Free"
 msgstr ""
 
-#: addons/skin.estuary/xml/DialogPVRRadioRDSInfo.xml
-msgctxt "#161"
-msgid "Unavailable"
-msgstr ""
+#empty string with id 161
 
 msgctxt "#162"
 msgid "Tray open"
@@ -1958,11 +1955,7 @@ msgctxt "#415"
 msgid "Downloading thumbnail..."
 msgstr ""
 
-#: xbmc/music/dialogs/GUIDialogMusicInfo.cpp
-#: addons/skin.estuary/xml/DialogFullScreenInfo.xml
-msgctxt "#416"
-msgid "Not available"
-msgstr ""
+#empty string with id 416
 
 msgctxt "#417"
 msgid "View: Big icons"
@@ -4785,7 +4778,23 @@ msgctxt "#10004"
 msgid "Settings"
 msgstr ""
 
-#empty strings from id 10005 to 10006
+#: addons/skin.estouchy/xml/DialogAddonInfo.xml
+#: addons/skin.estuary/xml/DialogPVRRadioRDSInfo.xml
+#: addons/skin.estuary/xml/DialogSeekBar.xml
+#: xbmc/LangInfo.cpp
+#: xbmc/addons/Scraper.cpp
+#: xbmc/addons/addons/GUIDialogAddonInfo.cpp
+#: xbmc/guilib/guiinfo/SystemGUIInfo.cpp
+#: xbmc/utils/SystemInfo.cpp
+msgctxt "#10005"
+msgid "Not available"
+msgstr ""
+
+#. Abbreviation of "Not Available"
+#: xbmc/utils/SystemInfo.cpp
+msgctxt "#10006"
+msgid "N/A"
+msgstr ""
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#10007"

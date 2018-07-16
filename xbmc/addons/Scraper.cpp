@@ -1243,7 +1243,7 @@ EPISODELIST CScraper::GetEpisodeList(XFILE::CCurlFile &fcurl, const CScraperUrl 
         ep.iEpisode = atoi(strEpNum.c_str());
         ep.iSubepisode = (dot != std::string::npos) ? atoi(strEpNum.substr(dot + 1).c_str()) : 0;
         if (!XMLUtils::GetString(pxeMovie, "title", scurlEp.strTitle) || scurlEp.strTitle.empty())
-          scurlEp.strTitle = g_localizeStrings.Get(416);
+          scurlEp.strTitle = g_localizeStrings.Get(10005); // Not available
         XMLUtils::GetString(pxeMovie, "id", scurlEp.strId);
 
         for (; pxeLink && pxeLink->FirstChild(); pxeLink = pxeLink->NextSiblingElement("url"))

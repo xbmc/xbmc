@@ -324,7 +324,7 @@
 						<top>-207</top>
 						<right>80</right>
 						<height>290</height>
-						<label fallback="416">$INFO[VideoPlayer.Tagline,[B],[/B][CR]]$INFO[VideoPlayer.Plot]</label>
+						<label fallback="10005">$INFO[VideoPlayer.Tagline,[B],[/B][CR]]$INFO[VideoPlayer.Plot]</label>
 						<align>left</align>
 						<autoscroll delay="5000" repeat="7500" time="5000"></autoscroll>
 					</control>

@@ -34,7 +34,7 @@
 					<width>704</width>
 					<height>25</height>
 					<aligny>center</aligny>
-					<label fallback="161">$INFO[RDS.Artist]</label>
+					<label fallback="10005">$INFO[RDS.Artist]</label>
 					<scrollout>false</scrollout>
 					<pauseatend>2000</pauseatend>
 					<visible>String.IsEmpty(RDS.Band)</visible>
@@ -93,7 +93,7 @@
 					<width>704</width>
 					<height>25</height>
 					<aligny>center</aligny>
-					<label fallback="161">$INFO[RDS.Title]</label>
+					<label fallback="10005">$INFO[RDS.Title]</label>
 					<scrollout>false</scrollout>
 					<pauseatend>2000</pauseatend>
 				</control>
@@ -137,7 +137,7 @@
 					<width>704</width>
 					<height>25</height>
 					<aligny>center</aligny>
-					<label fallback="161">$INFO[RDS.Composer]</label>
+					<label fallback="10005">$INFO[RDS.Composer]</label>
 					<scrollout>false</scrollout>
 					<pauseatend>2000</pauseatend>
 				</control>
@@ -157,7 +157,7 @@
 					<width>704</width>
 					<height>25</height>
 					<aligny>center</aligny>
-					<label fallback="161">$INFO[RDS.Title]</label>
+					<label fallback="10005">$INFO[RDS.Title]</label>
 					<scrollout>false</scrollout>
 					<pauseatend>2000</pauseatend>
 				</control>
@@ -178,7 +178,7 @@
 					<width>704</width>
 					<height>29</height>
 					<pagecontrol></pagecontrol>
-					<label fallback="161">$INFO[RDS.Artist]</label>
+					<label fallback="10005">$INFO[RDS.Artist]</label>
 					<autoscroll time="2000" delay="3000" repeat="5000">true</autoscroll>
 					<visible>String.IsEmpty(RDS.Band) + !String.IsEmpty(RDS.Artist)</visible>
 				</control>
@@ -242,7 +242,7 @@
 					<width>300</width>
 					<height>25</height>
 					<aligny>center</aligny>
-					<label fallback="161">$INFO[RDS.Conductor]</label>
+					<label fallback="10005">$INFO[RDS.Conductor]</label>
 					<scrollout>false</scrollout>
 					<pauseatend>2000</pauseatend>
 					<visible>!String.IsEmpty(RDS.Conductor)</visible>

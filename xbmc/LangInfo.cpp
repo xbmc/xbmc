@@ -452,7 +452,7 @@ bool CLangInfo::Load(const std::string& strLanguage)
       CRegion region(m_defaultRegion);
       region.m_strName = XMLUtils::GetAttribute(pRegion, "name");
       if (region.m_strName.empty())
-        region.m_strName="N/A";
+        region.m_strName=g_localizeStrings.Get(10005); // Not available
 
       if (pRegion->Attribute("locale"))
         region.m_strRegionLocaleName = pRegion->Attribute("locale");
@@ -916,7 +916,7 @@ void CLangInfo::GetRegionNames(std::vector<std::string>& array)
   {
     std::string strName=region.first;
     if (strName=="N/A")
-      strName=g_localizeStrings.Get(416);
+      strName=g_localizeStrings.Get(10005); // Not available
     array.emplace_back(std::move(strName));
   }
 }
