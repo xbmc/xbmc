@@ -36,6 +36,7 @@
 
 #include "StringUtils.h"
 #include "CharsetConverter.h"
+#include "LangInfo.h"
 #include "utils/fstrcmp.h"
 #include "Util.h"
 #include <functional>
@@ -1278,4 +1279,9 @@ std::string StringUtils::FormatFileSize(uint64_t bytes)
   unsigned int decimals = value < 9.995 ? 2 : (value < 99.95 ? 1 : 0);
   auto frmt = "%.0" + Format("%u", decimals) + "f%s";
   return Format(frmt.c_str(), value, units[i].c_str());
+}
+
+const std::locale& StringUtils::GetOriginalLocale() noexcept
+{
+  return g_langInfo.GetOriginalLocale();
 }

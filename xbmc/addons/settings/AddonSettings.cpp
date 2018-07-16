@@ -24,6 +24,7 @@
 #include "AddonSettings.h"
 #include "FileItem.h"
 #include "GUIInfoManager.h"
+#include "LangInfo.h"
 #include "ServiceBroker.h"
 #include "addons/Addon.h"
 #include "addons/settings/GUIDialogAddonSettings.h"

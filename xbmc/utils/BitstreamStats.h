@@ -20,12 +20,7 @@
 
 #pragma once
 
-#include <string>
-#ifdef TARGET_POSIX
-#include "platform/linux/PlatformDefs.h"
-#else
 #include <stdint.h>
-#endif
 
 class BitstreamStats final
 {

@@ -22,6 +22,7 @@
 
 #include "addons/kodi-addon-dev-kit/include/kodi/General.h"
 
+#include "LangInfo.h"
 #include "Application.h"
 #include "CompileInfo.h"
 #include "ServiceBroker.h"

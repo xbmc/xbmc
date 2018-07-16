@@ -25,6 +25,7 @@
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
 
+#include <map>
 #include <string>
 
 using namespace KODI;

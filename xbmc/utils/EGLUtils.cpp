@@ -21,11 +21,11 @@
 #include "EGLUtils.h"
 #include "log.h"
 
+#include "StringUtils.h"
 #include "guilib/IDirtyRegionSolver.h"
 #include "settings/AdvancedSettings.h"
 
 #include <EGL/eglext.h>
-#include <string.h>
 
 std::set<std::string> CEGLUtils::GetClientExtensions()
 {

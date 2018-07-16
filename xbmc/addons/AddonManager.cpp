@@ -20,6 +20,7 @@
 
 #include "AddonManager.h"
 
+#include "LangInfo.h"
 #include "ServiceBroker.h"
 #include "events/AddonManagementEvent.h"
 #include "events/EventLog.h"
