@@ -441,7 +441,7 @@ static int PlayMedia(const std::vector<std::string>& params)
     if ( CGUIWindowVideoBase::ShowResumeMenu(item) == false )
       return false;
   }
-  if (item.m_bIsFolder)
+  if (item.m_bIsFolder || item.IsPlayList() || item.IsSmartPlayList())
   {
     CFileItemList items;
     std::string extensions = CServiceBroker::GetFileExtensionProvider().GetVideoExtensions() + "|" + CServiceBroker::GetFileExtensionProvider().GetMusicExtensions();
