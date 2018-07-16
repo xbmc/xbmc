@@ -71,7 +71,7 @@ namespace PVR
   protected:
     void InsertTimer(const CPVRTimerInfoTagPtr &newTimer);
 
-    CCriticalSection m_critSection;
+    mutable CCriticalSection m_critSection;
     unsigned int m_iLastId = 0;
     MapTags m_tags;
   };

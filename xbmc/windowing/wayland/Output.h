@@ -143,8 +143,8 @@ private:
   wayland::output_t m_output;
   std::function<void()> m_doneHandler;
 
-  CCriticalSection m_geometryCriticalSection;
-  CCriticalSection m_iteratorCriticalSection;
+  mutable CCriticalSection m_geometryCriticalSection;
+  mutable CCriticalSection m_iteratorCriticalSection;
 
   CPointInt m_position;
   CSizeInt m_physicalSize;

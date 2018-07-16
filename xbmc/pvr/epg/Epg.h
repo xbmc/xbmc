@@ -341,7 +341,7 @@ namespace PVR
 
     PVR::CPVRChannelPtr                 m_pvrChannel;      /*!< the channel this EPG belongs to */
 
-    CCriticalSection                    m_critSection;     /*!< critical section for changes in this table */
+    mutable CCriticalSection            m_critSection;     /*!< critical section for changes in this table */
     bool                                m_bUpdateLastScanTime = false;
   };
 }

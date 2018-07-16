@@ -136,5 +136,5 @@ private:
   bool  m_nonLinearStretched;   // current non-linear stretch
 
   bool m_resolutionChangeAborted;
-  CCriticalSection m_critical;
+  mutable CCriticalSection m_critical;
 };

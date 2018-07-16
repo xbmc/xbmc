@@ -73,7 +73,7 @@ protected:
   typedef std::map<uint32_t, LocStr>::const_iterator ciStrings;
   typedef std::map<uint32_t, LocStr>::iterator       iStrings;
 
-  CSharedSection m_stringsMutex;
+  mutable CSharedSection m_stringsMutex;
   CSharedSection m_addonStringsMutex;
 };
 

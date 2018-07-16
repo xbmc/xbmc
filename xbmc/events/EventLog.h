@@ -70,5 +70,5 @@ private:
   typedef std::map<std::string, EventPtr> EventsMap;
   EventsList m_events;
   EventsMap m_eventsMap;
-  CCriticalSection m_critical;
+  mutable CCriticalSection m_critical;
 };

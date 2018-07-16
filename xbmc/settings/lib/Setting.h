@@ -117,7 +117,7 @@ protected:
   SettingDependencies m_dependencies;
   std::set<CSettingUpdate> m_updates;
   bool m_changed = false;
-  CSharedSection m_critical;
+  mutable CSharedSection m_critical;
 };
 
 template<typename TValue, SettingType TSettingType>

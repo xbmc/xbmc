@@ -53,7 +53,7 @@ private:
   std::vector<std::string> m_mimeTypeOffers;
   std::string m_matchedMimeType;
 
-  CCriticalSection m_currentSelectionMutex;
+  mutable CCriticalSection m_currentSelectionMutex;
 };
 
 }

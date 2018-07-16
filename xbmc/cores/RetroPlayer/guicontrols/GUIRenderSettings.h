@@ -62,7 +62,7 @@ namespace RETRO
     CRect m_renderDimensions;
 
     // Synchronization parameters
-    CCriticalSection m_mutex;
+    mutable CCriticalSection m_mutex;
   };
 }
 }

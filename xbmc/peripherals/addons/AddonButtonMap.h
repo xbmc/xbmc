@@ -169,6 +169,6 @@ namespace PERIPHERALS
     FeatureMap          m_features;
     DriverMap           m_driverMap;
     JoystickPrimitiveVector m_ignoredPrimitives;
-    CCriticalSection    m_mutex;
+    mutable CCriticalSection m_mutex;
   };
 }

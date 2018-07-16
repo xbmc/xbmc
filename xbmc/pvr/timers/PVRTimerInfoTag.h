@@ -315,7 +315,7 @@ namespace PVR
     std::string GetWeekdaysString() const;
     void UpdateEpgInfoTag(void);
 
-    CCriticalSection      m_critSection;
+    mutable CCriticalSection m_critSection;
     CDateTime             m_StartTime; /*!< start time */
     CDateTime             m_StopTime;  /*!< stop time */
     CDateTime             m_FirstDay;  /*!< if it is a manual timer rule the first date it starts */

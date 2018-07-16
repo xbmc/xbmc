@@ -42,5 +42,5 @@ public:
 
 private:
   std::set<IGUIVolumeBarCallback*> m_callbacks;
-  CCriticalSection m_callbackMutex;
+  mutable CCriticalSection m_callbackMutex;
 };

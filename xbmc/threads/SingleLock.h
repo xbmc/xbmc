@@ -37,7 +37,6 @@ class CSingleLock : public XbmcThreads::UniqueLock<CCriticalSection>
 {
 public:
   inline explicit CSingleLock(CCriticalSection& cs) : XbmcThreads::UniqueLock<CCriticalSection>(cs) {}
-  inline explicit CSingleLock(const CCriticalSection& cs) : XbmcThreads::UniqueLock<CCriticalSection> ((CCriticalSection&)cs) {}
 
   inline void Leave() { unlock(); }
   inline void Enter() { lock(); }

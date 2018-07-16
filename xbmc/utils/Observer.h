@@ -111,5 +111,5 @@ protected:
 
   std::atomic<bool>       m_bObservableChanged{false}; /*!< true when the observable is marked as changed, false otherwise */
   std::vector<Observer *> m_observers;                 /*!< all observers */
-  CCriticalSection        m_obsCritSection;            /*!< mutex */
+  mutable CCriticalSection m_obsCritSection; /*!< mutex */
 };

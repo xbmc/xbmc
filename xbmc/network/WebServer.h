@@ -133,6 +133,6 @@ private:
   std::string m_authenticationPassword;
   std::string m_key;
   std::string m_cert;
-  CCriticalSection m_critSection;
+  mutable CCriticalSection m_critSection;
   std::vector<IHTTPRequestHandler *> m_requestHandlers;
 };

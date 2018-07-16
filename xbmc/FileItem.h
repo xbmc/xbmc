@@ -810,5 +810,5 @@ private:
 
   std::vector<GUIViewSortDetails> m_sortDetails;
 
-  CCriticalSection m_lock;
+  mutable CCriticalSection m_lock;
 };

@@ -61,6 +61,6 @@ private:
   std::string m_userDataFolder;
   CFileItemList m_favourites;
   CEventSource<FavouritesUpdated> m_events;
-  CCriticalSection m_criticalSection;
+  mutable CCriticalSection m_criticalSection;
 };
 

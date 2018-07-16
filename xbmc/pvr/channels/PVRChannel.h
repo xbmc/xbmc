@@ -469,6 +469,6 @@ namespace PVR
     std::string      m_strClientEncryptionName; /*!< the name of the encryption system used by this channel */
     //@}
 
-    CCriticalSection m_critSection;
+    mutable CCriticalSection m_critSection;
   };
 }

@@ -191,7 +191,7 @@ namespace PVR
     time_t                          m_iTimeshiftPlayTime;
     unsigned int                    m_iTimeshiftOffset;
 
-    CCriticalSection                m_critSection;
+    mutable CCriticalSection m_critSection;
 
     /**
      * The various backend-related fields will only be updated when this

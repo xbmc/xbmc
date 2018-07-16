@@ -146,7 +146,7 @@ private:
   void PrunePackageCache();
   int64_t EnumeratePackageFolder(std::map<std::string,CFileItemList*>& result);
 
-  CCriticalSection m_critSection;
+  mutable CCriticalSection m_critSection;
   JobMap m_downloadJobs;
   CEvent m_idle;
 };

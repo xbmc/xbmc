@@ -57,7 +57,7 @@ namespace RETRO
     };
 
     std::vector<RenderBufferPools> m_pools;
-    CCriticalSection m_critSection;
+    mutable CCriticalSection m_critSection;
   };
 }
 }

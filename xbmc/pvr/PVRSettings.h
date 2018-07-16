@@ -59,7 +59,7 @@ namespace PVR
 
     void Init(const std::set<std::string> &settingNames);
 
-    CCriticalSection m_critSection;
+    mutable CCriticalSection m_critSection;
     std::map<std::string, std::shared_ptr<CSetting>> m_settings;
   };
 }

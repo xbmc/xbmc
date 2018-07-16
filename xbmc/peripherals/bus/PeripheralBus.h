@@ -197,7 +197,7 @@ namespace PERIPHERALS
     bool                       m_bNeedsPolling; /*!< true when this bus needs to be polled for new devices, false when it uses callbacks to notify this bus of changed */
     CPeripherals&              m_manager;
     const PeripheralBusType    m_type;
-    CCriticalSection           m_critSection;
+    mutable CCriticalSection   m_critSection;
     CEvent                     m_triggerEvent;
   };
   using PeripheralBusPtr = std::shared_ptr<CPeripheralBus>;

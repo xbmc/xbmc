@@ -73,7 +73,7 @@ namespace XFILE
     typedef std::map<std::string, CDir*>::const_iterator ciCache;
     void Delete(iCache i);
 
-    CCriticalSection m_cs;
+    mutable CCriticalSection m_cs;
 
     unsigned int m_accessCounter;
 

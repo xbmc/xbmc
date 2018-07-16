@@ -76,5 +76,5 @@ private:
 
   std::vector<CPlayerCoreConfig *> m_vecPlayerConfigs;
   std::vector<CPlayerSelectionRule *> m_vecCoreSelectionRules;
-  CCriticalSection m_section;
+  mutable CCriticalSection m_section;
 };

@@ -532,11 +532,11 @@ namespace PVR
     CPVRManagerJobQueue             m_pendingUpdates;              /*!< vector of pending pvr updates */
 
     CPVRDatabasePtr                 m_database;                    /*!< the database for all PVR related data */
-    CCriticalSection                m_critSection;                 /*!< critical section for all changes to this class, except for changes to triggers */
+    mutable CCriticalSection        m_critSection;                 /*!< critical section for all changes to this class, except for changes to triggers */
     bool                            m_bFirstStart = true;                 /*!< true when the PVR manager was started first, false otherwise */
     bool                            m_bEpgsCreated = false;                /*!< true if epg data for channels has been created */
 
-    CCriticalSection                m_managerStateMutex;
+    mutable CCriticalSection        m_managerStateMutex;
     ManagerState                    m_managerState = ManagerStateStopped;
     std::unique_ptr<CStopWatch>     m_parentalTimer;
 

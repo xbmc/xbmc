@@ -499,7 +499,7 @@ protected:
   std::vector<std::string> m_incompatibleAddons;  /*!< Result of addon migration */
 
 private:
-  CCriticalSection m_critSection;                 /*!< critical section for all changes to this class, except for changes to triggers */
+  mutable CCriticalSection m_critSection; /*!< critical section for all changes to this class, except for changes to triggers */
 
   CCriticalSection m_frameMoveGuard;              /*!< critical section for synchronizing GUI actions from inside and outside (python) */
   std::atomic_uint m_WaitingExternalCalls;        /*!< counts threads wich are waiting to be processed in FrameMove */

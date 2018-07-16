@@ -533,7 +533,7 @@ namespace PVR
     unsigned int             m_iFlags;             /*!< the flags applicable to this EPG entry */
     std::string              m_strSeriesLink;      /*!< series link */
 
-    CCriticalSection         m_critSection;
+    mutable CCriticalSection m_critSection;
     PVR::CPVRChannelPtr      m_channel;
     PVR::CPVRRecordingPtr    m_recording;
   };

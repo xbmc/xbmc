@@ -114,7 +114,7 @@ protected:
     bool             passthrough = false;
   };
 
-  CCriticalSection m_info_section;
+  mutable CCriticalSection m_info_section;
   SInfo            m_info;
 };
 

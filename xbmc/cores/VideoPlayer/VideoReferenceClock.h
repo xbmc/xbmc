@@ -62,7 +62,7 @@ class CVideoReferenceClock : CThread
 
     CEvent m_vsyncStopEvent;
 
-    CCriticalSection m_CritSection;
+    mutable CCriticalSection m_CritSection;
 
     std::unique_ptr<CVideoSync> m_pVideoSync;
 };

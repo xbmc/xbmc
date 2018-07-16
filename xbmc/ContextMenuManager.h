@@ -60,7 +60,7 @@ private:
 
   ADDON::CAddonMgr& m_addonMgr;
 
-  CCriticalSection m_criticalSection;
+  mutable CCriticalSection m_criticalSection;
   std::vector<CContextMenuItem> m_addonItems;
   std::vector<std::shared_ptr<IContextMenuItem>> m_items;
 };

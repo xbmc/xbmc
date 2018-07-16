@@ -367,7 +367,7 @@ namespace PVR
      */
     PVR_ERROR ForCreatedClients(const char* strFunctionName, PVRClientFunction function, std::vector<int> &failedClients) const;
 
-    CCriticalSection m_critSection;
+    mutable CCriticalSection m_critSection;
     CPVRClientMap m_clientMap;
   };
 }
