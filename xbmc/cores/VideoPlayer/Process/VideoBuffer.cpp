@@ -428,6 +428,7 @@ void CVideoBufferManager::ReleasePool(IVideoBufferPool *pool)
       m_discardedPools.push_back(*it);
       m_pools.erase(it);
       pool->Discard(this, &CVideoBufferManager::ReadyForDisposal);
+      break;
     }
   }
 }
