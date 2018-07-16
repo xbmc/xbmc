@@ -68,6 +68,6 @@ class CPyThreadState
 class GilSafeSingleLock : public CPyThreadState, public CSingleLock
 {
 public:
-  explicit GilSafeSingleLock(const CCriticalSection& critSec) : CPyThreadState(true), CSingleLock(critSec) { CPyThreadState::Restore(); }
+  explicit GilSafeSingleLock(CCriticalSection& critSec) : CPyThreadState(true), CSingleLock(critSec) { CPyThreadState::Restore(); }
 };
 

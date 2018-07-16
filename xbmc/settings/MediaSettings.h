@@ -125,5 +125,5 @@ private:
   int m_musicNeedsUpdate; ///< if a database update means an update is required (set to the version number of the db)
   int m_videoNeedsUpdate; ///< if a database update means an update is required (set to the version number of the db)
 
-  CCriticalSection m_critical;
+  mutable CCriticalSection m_critical;
 };

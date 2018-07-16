@@ -81,7 +81,7 @@ namespace PVR
     unsigned int m_iTimerInfoToggleStart;
     unsigned int m_iTimerInfoToggleCurrent;
 
-    CCriticalSection m_critSection;
+    mutable CCriticalSection m_critSection;
   };
 
   class CPVRGUIAnyTimerInfo : public CPVRGUITimerInfo

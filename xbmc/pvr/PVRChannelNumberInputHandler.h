@@ -98,7 +98,7 @@ protected:
    */
   size_t GetCurrentDigitCount() const { return m_inputBuffer.size(); }
 
-  CCriticalSection m_mutex;
+  mutable CCriticalSection m_mutex;
 
 private:
   void ExecuteAction();

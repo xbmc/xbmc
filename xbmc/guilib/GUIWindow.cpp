@@ -1038,7 +1038,7 @@ void CGUIWindow::SetProperty(const std::string &strKey, const CVariant &value)
 
 CVariant CGUIWindow::GetProperty(const std::string &strKey) const
 {
-  CSingleLock lock(*this);
+  CSingleLock lock(const_cast<CGUIWindow&>(*this));
   std::map<std::string, CVariant, icompare>::const_iterator iter = m_mapProperties.find(strKey);
   if (iter == m_mapProperties.end())
     return CVariant(CVariant::VariantTypeNull);

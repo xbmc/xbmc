@@ -168,7 +168,7 @@ private:
   void CloseFile(bool reopen = false);
 
   std::shared_ptr<IPlayer> m_pPlayer;
-  CCriticalSection m_playerLock;
+  mutable CCriticalSection m_playerLock;
   CSeekHandler m_seekHandler;
 
   // cache player state

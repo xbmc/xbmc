@@ -84,7 +84,7 @@ private:
   unsigned int     m_currentLimit;
   std::vector<CGUIStaticItemPtr> m_items;
   std::vector<InfoTagType> m_itemTypes;
-  CCriticalSection m_section;
+  mutable CCriticalSection m_section;
 
   bool UpdateURL();
   bool UpdateLimit();

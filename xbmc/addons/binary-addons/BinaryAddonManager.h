@@ -149,7 +149,7 @@ namespace ADDON
     void DisableEvent(const std::string& addonId);
     void InstalledChangeEvent();
 
-    CCriticalSection m_critSection;
+    mutable CCriticalSection m_critSection;
 
     typedef std::map<std::string, BinaryAddonBasePtr> BinaryAddonMgrBaseList;
     BinaryAddonMgrBaseList m_installedAddons;

@@ -234,7 +234,7 @@ namespace PVR
     float m_channelScrollSpeed;
     float m_channelScrollOffset;
 
-    CCriticalSection m_critSection;
+    mutable CCriticalSection m_critSection;
     std::unique_ptr<CGUIEPGGridContainerModel> m_gridModel;
     std::unique_ptr<CGUIEPGGridContainerModel> m_updatedGridModel;
     std::unique_ptr<CGUIEPGGridContainerModel> m_outdatedGridModel;

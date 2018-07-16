@@ -1103,7 +1103,7 @@ namespace PVR
     std::string            m_strUserPath;         /*!< @brief translated path to the user profile */
     std::string            m_strClientPath;       /*!< @brief translated path to this add-on */
 
-    CCriticalSection m_critSection;
+    mutable CCriticalSection m_critSection;
 
     AddonInstance_PVR m_struct;
   };

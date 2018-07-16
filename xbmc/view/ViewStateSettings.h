@@ -68,7 +68,7 @@ private:
   SettingLevel m_settingLevel = SettingLevel::Standard;
   EventLevel m_eventLevel = EventLevel::Basic;
   bool m_eventShowHigherLevels = true;
-  CCriticalSection m_critical;
+  mutable CCriticalSection m_critical;
 
   void AddViewState(const std::string& strTagName, int defaultView = DEFAULT_VIEW_LIST, SortBy defaultSort = SortByLabel);
 };

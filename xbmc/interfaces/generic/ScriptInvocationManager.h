@@ -158,5 +158,5 @@ private:
 
   std::map<std::string, int> m_scriptPaths;
   int m_nextId = 0;
-  CCriticalSection m_critSection;
+  mutable CCriticalSection m_critSection;
 };

@@ -113,7 +113,7 @@ namespace PVR
      */
     void ShowInfo(bool bForce);
 
-    CCriticalSection m_critSection;
+    mutable CCriticalSection m_critSection;
     CPVRChannelPtr m_playingChannel;
     CPVRChannelPtr m_currentChannel;
     int m_iChannelEntryJobId = -1;

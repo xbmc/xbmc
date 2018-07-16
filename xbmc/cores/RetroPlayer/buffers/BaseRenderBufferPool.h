@@ -71,7 +71,7 @@ namespace RETRO
     std::deque<std::unique_ptr<IRenderBuffer>> m_free;
 
     std::vector<CRPBaseRenderer*> m_renderers;
-    CCriticalSection m_rendererMutex;
+    mutable CCriticalSection m_rendererMutex;
     CCriticalSection m_bufferMutex;
   };
 }

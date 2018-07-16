@@ -171,7 +171,7 @@ namespace PERIPHERALS
     bool m_bDeviceRemoved;
     CPeripheralCecAdapterUpdateThread*m_queryThread;
     CEC::ICECCallbacks m_callbacks;
-    CCriticalSection m_critSection;
+    mutable CCriticalSection m_critSection;
     CEC::libcec_configuration m_configuration;
     bool m_bActiveSourcePending;
     bool m_bStandbyPending;

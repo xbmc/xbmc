@@ -176,7 +176,7 @@ namespace PERIPHERALS
     CCriticalSection m_buttonMapMutex;
 
     /* @brief Thread synchronization */
-    CCriticalSection    m_critSection;
+    mutable CCriticalSection m_critSection;
 
     AddonInstance_Peripheral m_struct;
 

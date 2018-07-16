@@ -180,5 +180,5 @@ protected:
   COMXCoreTunnel    m_omx_tunnel_splitter_analog;
   COMXCoreTunnel    m_omx_tunnel_splitter_hdmi;
 
-  CCriticalSection m_critSection;
+  mutable CCriticalSection m_critSection;
 };

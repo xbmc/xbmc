@@ -59,6 +59,6 @@ private:
 
   CPeripherals *m_manager = nullptr;
   CFileItemList m_peripherals;
-  CCriticalSection m_peripheralsMutex;
+  mutable CCriticalSection m_peripheralsMutex;
 };
 }

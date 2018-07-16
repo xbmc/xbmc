@@ -82,7 +82,7 @@ namespace PERIPHERALS
     std::set<void*> m_activeLocks;
     CEvent m_scanEvent;
     CEvent m_scanFinishedEvent;
-    CCriticalSection m_handleMutex;
+    mutable CCriticalSection m_handleMutex;
     CCriticalSection m_lockMutex;
     CCriticalSection m_pollMutex; // Prevent two poll handles from polling at once
   };

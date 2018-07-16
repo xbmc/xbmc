@@ -309,7 +309,7 @@ namespace ADDON
     std::set<std::string> m_disabled;
     std::set<std::string> m_updateBlacklist;
     static std::map<TYPE, IAddonMgrCallback*> m_managers;
-    CCriticalSection m_critSection;
+    mutable CCriticalSection m_critSection;
     CAddonDatabase m_database;
     CEventSource<AddonEvent> m_events;
     CBlockingEventSource<AddonEvent> m_unloadEvents;

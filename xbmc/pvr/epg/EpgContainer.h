@@ -272,7 +272,7 @@ namespace PVR
     EPGMAP       m_epgs;                   /*!< the EPGs in this container */
     //@}
 
-    CCriticalSection               m_critSection;    /*!< a critical section for changes to this container */
+    mutable CCriticalSection       m_critSection;    /*!< a critical section for changes to this container */
     CEvent                         m_updateEvent;    /*!< trigger when an update finishes */
 
     std::list<CEpgUpdateRequest> m_updateRequests; /*!< list of update requests triggered by addon */

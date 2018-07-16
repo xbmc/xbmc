@@ -147,7 +147,7 @@ protected:
   CBaseRenderer *m_pRenderer = nullptr;
   OVERLAY::CRenderer m_overlays;
   CDebugRenderer m_debugRenderer;
-  CCriticalSection m_statelock;
+  mutable CCriticalSection m_statelock;
   CCriticalSection m_presentlock;
   CCriticalSection m_datalock;
   bool m_bTriggerUpdateResolution = false;

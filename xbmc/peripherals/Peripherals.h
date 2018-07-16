@@ -358,7 +358,7 @@ namespace PERIPHERALS
     std::vector<PeripheralBusPtr> m_busses;
     std::vector<PeripheralDeviceMapping> m_mappings;
     std::unique_ptr<CEventScanner> m_eventScanner;
-    CCriticalSection m_critSectionBusses;
-    CCriticalSection m_critSectionMappings;
+    mutable CCriticalSection m_critSectionBusses;
+    mutable CCriticalSection m_critSectionMappings;
   };
 }

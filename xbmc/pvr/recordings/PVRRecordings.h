@@ -100,7 +100,7 @@ namespace PVR
     typedef PVR_RECORDINGMAP::iterator PVR_RECORDINGMAP_ITR;
     typedef PVR_RECORDINGMAP::const_iterator PVR_RECORDINGMAP_CITR;
 
-    CCriticalSection m_critSection;
+    mutable CCriticalSection m_critSection;
     bool m_bIsUpdating = false;
     PVR_RECORDINGMAP m_recordings;
     unsigned int m_iLastId = 0;

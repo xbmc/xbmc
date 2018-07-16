@@ -215,7 +215,7 @@ private:
   unsigned int m_lastUsedProfile;
   unsigned int m_currentProfile; // do not modify directly, use SetCurrentProfileId() function instead
   int m_nextProfileId; // for tracking the next available id to give to a new profile to ensure id's are not re-used
-  CCriticalSection m_critical;
+  mutable CCriticalSection m_critical;
 
   // Event properties
   std::unique_ptr<CEventLogManager> m_eventLogs;

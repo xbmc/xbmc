@@ -185,7 +185,7 @@ private:
 
   unsigned int m_jobsAtOnce;
   CJob::PRIORITY m_priority;
-  CCriticalSection m_section;
+  mutable CCriticalSection m_section;
   bool m_lifo;
 };
 
@@ -378,7 +378,7 @@ private:
   Processing m_processing;
   Workers    m_workers;
 
-  CCriticalSection m_section;
+  mutable CCriticalSection m_section;
   CEvent           m_jobEvent;
   bool             m_running;
 };

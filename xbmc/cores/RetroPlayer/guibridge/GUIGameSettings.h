@@ -61,7 +61,7 @@ namespace RETRO
     CRenderSettings m_renderSettings;
 
     // Synchronization parameters
-    CCriticalSection m_mutex;
+    mutable CCriticalSection m_mutex;
   };
 }
 }

@@ -61,5 +61,5 @@ private:
   std::string m_rendererUUID;
   int m_rendererPort;
 
-  CCriticalSection m_critical;
+  mutable CCriticalSection m_critical;
 };

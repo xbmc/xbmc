@@ -48,7 +48,7 @@ public:
   void SetProgress(int currentItem, int itemCount);
 
 private:
-  CCriticalSection  m_critSection;
+  mutable CCriticalSection m_critSection;
   float             m_fPercentage;
   std::string       m_strTitle;
   std::string       m_strText;
