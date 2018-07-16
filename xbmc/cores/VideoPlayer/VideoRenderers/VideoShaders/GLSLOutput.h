@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2007-2015 Team XBMC
+ *  Copyright (C) 2007-2015 Team Kodi
  *  Copyright (C) 2015 Lauri Mylläri
  *  This file is part of Kodi - https://kodi.tv
  *

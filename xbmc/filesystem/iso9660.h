@@ -1,6 +1,6 @@
 /*
  *  Copyright (C) 2003 by The Joker / Avalaunch team
- *  Copyright (C) 2003-2013 Team XBMC
+ *  Copyright (C) 2003-2013 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2011-2014 Team XBMC
+ *  Copyright (C) 2011-2014 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
