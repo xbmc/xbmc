@@ -18,6 +18,8 @@
  *
  */
 #include "BlurayDirectory.h"
+
+#include "filesystem/BlurayCallback.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
@@ -262,7 +264,7 @@ bool CBlurayDirectory::InitializeBluray(const std::string &root)
     return false;
   }
 
-  m_dll->bd_set_debug_handler(DllLibbluray::bluray_logger);
+  m_dll->bd_set_debug_handler(CBlurayCallback::bluray_logger);
   m_dll->bd_set_debug_mask(DBG_CRIT | DBG_BLURAY | DBG_NAV);
 
   m_bd = m_dll->bd_init();
@@ -277,7 +279,7 @@ bool CBlurayDirectory::InitializeBluray(const std::string &root)
   g_LangCodeExpander.ConvertToISO6392T(g_langInfo.GetDVDMenuLanguage(), langCode);
   m_dll->bd_set_player_setting_str(m_bd, BLURAY_PLAYER_SETTING_MENU_LANG, langCode.c_str());
 
-  if (!m_dll->bd_open_files(m_bd, const_cast<std::string*>(&root), DllLibbluray::dir_open, DllLibbluray::file_open))
+  if (!m_dll->bd_open_files(m_bd, const_cast<std::string*>(&root), CBlurayCallback::dir_open, CBlurayCallback::file_open))
   {
     CLog::Log(LOGERROR, "CBlurayDirectory::InitializeBluray - failed to open %s", CURL::GetRedacted(root).c_str());
     return false;

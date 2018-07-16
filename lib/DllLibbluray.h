@@ -192,17 +192,4 @@ class DllLibbluray : public DllDynamic, DllLibblurayInterface
     RESOLVE_METHOD(bd_mouse_select)
     RESOLVE_METHOD(bd_get_sound_effect)
   END_METHOD_RESOLVE()
-
-public:
-  static void       file_close(BD_FILE_H *file);
-  static int64_t    file_seek(BD_FILE_H *file, int64_t offset, int32_t origin);
-  static int64_t    file_tell(BD_FILE_H *file);
-  static int        file_eof(BD_FILE_H *file);
-  static int64_t    file_read(BD_FILE_H *file, uint8_t *buf, int64_t size);
-  static int64_t    file_write(BD_FILE_H *file, const uint8_t *buf, int64_t size);
-  static void      dir_close(BD_DIR_H *dir);
-  static int       dir_read(BD_DIR_H *dir, BD_DIRENT *entry);
-  static BD_FILE_H *file_open(void * handle, const char * rel_path);
-  static BD_DIR_H *dir_open(void * handle, const char * rel_path);
-  static void      bluray_logger(const char* msg);
 };
