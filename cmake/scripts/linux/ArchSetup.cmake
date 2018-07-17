@@ -108,10 +108,6 @@ if(CMAKE_BUILD_TYPE STREQUAL Coverage)
   set(COVERAGE_EXCLUDES */test/* lib/* */lib/*)
 endif()
 
-if(ENABLE_MIR)
-  set(ENABLE_VDPAU OFF CACHE BOOL "Disabling VDPAU since no Mir support" FORCE)
-endif()
-
 if(ENABLE_GBM)
   set(ENABLE_VDPAU OFF CACHE BOOL "Disabling VDPAU" FORCE)
 endif()
