@@ -1,7 +1,6 @@
-<!--- Provide a general summary of your change in the Pull Request title above -->
-
 ## Description
-<!--- Describe your change in detail -->
+<!--- Provide a general summary of your change in the Pull Request title above -->
+<!--- Describe your change in detail here -->
 
 ## Motivation and Context
 <!--- Why is this change required? What problem does it solve? -->
@@ -16,19 +15,20 @@
 
 ## Types of change
 <!--- What type of change does your code introduce? Put an `x` in all the boxes that apply like this: [X] -->
-- [ ] Bug fix (non-breaking change which fixes an issue)
-- [ ] Improvement (non-breaking change which improves existing functionality)
-- [ ] New feature (non-breaking change which adds functionality)
-- [ ] Breaking change (fix or feature that would cause existing functionality to change)
-- [ ] Cosmetic change (non-breaking change that doesn't touch code)
-- [ ] None of the above (please explain below)
+- [ ] **Bug fix** (non-breaking change which fixes an issue)
+- [ ] **Clean up** (non-breaking change which removes non-working, unmaintained functionality)
+- [ ] **Improvement** (non-breaking change which improves existing functionality)
+- [ ] **New feature** (non-breaking change which adds functionality)
+- [ ] **Breaking change** (fix or feature that will cause existing functionality to change)
+- [ ] **Cosmetic change** (non-breaking change that doesn't touch code)
+- [ ] **None of the above** (please explain below)
 
 ## Checklist:
 <!--- Go over all the following points, and put an `X` in all the boxes that apply like this: [X] -->
 <!--- If you're unsure about any of these, don't hesitate to ask. We're here to help! -->
-- [ ] My code follows the **[Code Guidelines](CODE_GUIDELINES.md)** of this project 
+- [ ] My code follows the **[Code Guidelines](https://github.com/xbmc/xbmc/blob/master/docs/CODE_GUIDELINES.md)** of this project 
 - [ ] My change requires a change to the documentation, either Doxygen or wiki
 - [ ] I have updated the documentation accordingly
-- [ ] I have read the **[Contributing](CONTRIBUTING.md)** document
+- [ ] I have read the **[Contributing](https://github.com/xbmc/xbmc/blob/master/docs/CONTRIBUTING.md)** document
 - [ ] I have added tests to cover my change
 - [ ] All new and existing tests passed
