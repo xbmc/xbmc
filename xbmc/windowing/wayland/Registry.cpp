@@ -133,8 +133,8 @@ void CRegistry::Bind()
     auto it = m_boundNames.find(name);
     if (it != m_boundNames.end())
     {
-      m_boundNames.erase(it);
       it->second.get().removeHandler(name);
+      m_boundNames.erase(it);
     }
   };
 
