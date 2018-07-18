@@ -21,9 +21,10 @@
 #include "JoystickEasterEgg.h"
 #include "ServiceBroker.h"
 #include "games/controllers/ControllerIDs.h"
+#include "games/GameServices.h"
+#include "games/GameSettings.h"
 #include "guilib/GUIAudioManager.h"
 #include "guilib/WindowIDs.h"
-#include "settings/Settings.h"
 
 using namespace KODI;
 using namespace JOYSTICK;
@@ -106,9 +107,10 @@ bool CJoystickEasterEgg::IsCapturing()
 
 void CJoystickEasterEgg::OnFinish(void)
 {
-  CServiceBroker::GetSettings().ToggleBool(CSettings::SETTING_GAMES_ENABLE);
+  GAME::CGameSettings &gameSettings = CServiceBroker::GetGameServices().GameSettings();
+  gameSettings.ToggleGames();
 
-  WINDOW_SOUND sound = CServiceBroker::GetSettings().GetBool(CSettings::SETTING_GAMES_ENABLE) ? SOUND_INIT : SOUND_DEINIT;
+  WINDOW_SOUND sound = gameSettings.GamesEnabled() ? SOUND_INIT : SOUND_DEINIT;
   g_audioManager.PlayWindowSound(WINDOW_DIALOG_KAI_TOAST, sound);
 
   //! @todo Shake screen

@@ -20,17 +20,23 @@
 
 #pragma once
 
-#include "games/GameTypes.h"
 #include "threads/Thread.h"
 
 namespace KODI
 {
+namespace GAME
+{
+  class CGameClient;
+  class CGameSettings;
+}
+
 namespace RETRO
 {
   class CRetroPlayerAutoSave : protected CThread
   {
   public:
-    explicit CRetroPlayerAutoSave(GAME::CGameClient &gameClient);
+    explicit CRetroPlayerAutoSave(GAME::CGameClient &gameClient,
+                                  GAME::CGameSettings &settings);
 
     ~CRetroPlayerAutoSave() override;
 
@@ -39,8 +45,9 @@ namespace RETRO
     virtual void Process() override;
 
   private:
-    // Construction parameter
+    // Construction parameters
     GAME::CGameClient &m_gameClient;
+    GAME::CGameSettings &m_settings;
   };
 }
 }

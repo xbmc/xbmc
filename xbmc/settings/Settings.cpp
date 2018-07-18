@@ -426,9 +426,6 @@ const std::string CSettings::SETTING_GENERAL_ADDONBROKENFILTER = "general.addonb
 const std::string CSettings::SETTING_SOURCE_VIDEOS = "source.videos";
 const std::string CSettings::SETTING_SOURCE_MUSIC = "source.music";
 const std::string CSettings::SETTING_SOURCE_PICTURES = "source.pictures";
-const std::string CSettings::SETTING_GAMES_ENABLE = "gamesgeneral.enable";
-const std::string CSettings::SETTING_GAMES_ENABLEREWIND = "gamesgeneral.enablerewind";
-const std::string CSettings::SETTING_GAMES_REWINDTIME = "gamesgeneral.rewindtime";
 
 bool CSettings::Initialize()
 {

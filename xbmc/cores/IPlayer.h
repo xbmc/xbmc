@@ -37,6 +37,7 @@ struct TextCacheStruct_t;
 class TiXmlElement;
 class CStreamDetails;
 class CAction;
+class IPlayerCallback;
 
 class CPlayerOptions
 {
