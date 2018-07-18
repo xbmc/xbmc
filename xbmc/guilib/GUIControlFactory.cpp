@@ -546,7 +546,7 @@ bool CGUIControlFactory::GetColor(const TiXmlNode *control, const char *strTag, 
   const TiXmlElement* node = control->FirstChildElement(strTag);
   if (node && node->FirstChild())
   {
-    value = g_colorManager.GetColor(node->FirstChild()->Value());
+    value = CServiceBroker::GetGUI()->GetColorManager().GetColor(node->FirstChild()->Value());
     return true;
   }
   return false;

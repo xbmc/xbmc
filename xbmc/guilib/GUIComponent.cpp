@@ -19,6 +19,7 @@
  */
 
 #include "GUIComponent.h"
+#include "GUIColorManager.h"
 #include "GUIInfoManager.h"
 #include "GUILargeTextureManager.h"
 #include "GUIWindowManager.h"
@@ -35,6 +36,7 @@ CGUIComponent::CGUIComponent()
   m_pLargeTextureManager.reset(new CGUILargeTextureManager());
   m_stereoscopicsManager.reset(new CStereoscopicsManager(CServiceBroker::GetSettings()));
   m_guiInfoManager.reset(new CGUIInfoManager());
+  m_guiColorManager.reset(new CGUIColorManager());
 }
 
 CGUIComponent::~CGUIComponent()
@@ -84,6 +86,11 @@ CStereoscopicsManager &CGUIComponent::GetStereoscopicsManager()
 CGUIInfoManager &CGUIComponent::GetInfoManager()
 {
   return *m_guiInfoManager;
+}
+
+CGUIColorManager &CGUIComponent::GetColorManager()
+{
+  return *m_guiColorManager;
 }
 
 bool CGUIComponent::ConfirmDelete(std::string path)

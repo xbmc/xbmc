@@ -33,6 +33,8 @@
 #include <map>
 #include <string>
 
+#include "GUIComponent.h"
+#include "ServiceBroker.h"
 #include "utils/Color.h"
 
 class CXBMCTinyXML;
@@ -54,10 +56,3 @@ protected:
 
   std::map<std::string, UTILS::Color> m_colors;
 };
-
-/*!
- \ingroup textures
- \brief
- */
-extern CGUIColorManager g_colorManager;
-

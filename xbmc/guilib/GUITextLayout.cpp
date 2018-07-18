@@ -427,7 +427,7 @@ void CGUITextLayout::ParseText(const std::wstring &text, uint32_t defaultStyle, 
       {
         std::string t;
         g_charsetConverter.wToUTF8(text.substr(pos + 5, finish - pos - 5), t);
-        UTILS::Color color = g_colorManager.GetColor(t);
+        UTILS::Color color = CServiceBroker::GetGUI()->GetColorManager().GetColor(t);
         const auto& it = std::find(colors.begin(), colors.end(), color);
         if (it == colors.end())
         { // create new color
