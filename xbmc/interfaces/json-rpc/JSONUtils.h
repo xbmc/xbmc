@@ -100,9 +100,9 @@ namespace JSONRPC
       // parse the sort attributes
       sortAttributes = SortAttributeNone;
       if (parameterObject["sort"]["ignorearticle"].asBoolean())
-        sortAttributes = SortAttributeIgnoreArticle;
-      else
-        sortAttributes = SortAttributeNone;
+        sortAttributes = static_cast<SortAttribute>(sortAttributes | SortAttributeIgnoreArticle);
+      if (parameterObject["sort"]["useartistsortname"].asBoolean())
+        sortAttributes = static_cast<SortAttribute>(sortAttributes | SortAttributeUseArtistSortName);
 
       // parse the sort order
       sortOrder = SortUtils::SortOrderFromString(order);

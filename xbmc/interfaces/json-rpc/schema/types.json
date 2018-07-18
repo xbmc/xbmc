@@ -111,7 +111,8 @@
                   "bitrate", "random" ]
       },
       "order": { "type": "string", "default": "ascending", "enum": [ "ascending", "descending" ] },
-      "ignorearticle": { "type": "boolean", "default": false }
+      "ignorearticle": { "type": "boolean", "default": false },
+      "useartistsortname": { "type": "boolean", "default": false }	  
     }
   },
   "Library.Id": {
@@ -1623,7 +1624,7 @@
   },
   "Application.Property.Name": {
     "type": "string",
-    "enum": [ "volume", "muted", "name", "version" ]
+    "enum": [ "volume", "muted", "name", "version", "volume", "sorttokens", "language" ]
   },
   "Application.Property.Value": {
     "type": "object",
@@ -1639,7 +1640,9 @@
           "tag": { "type": "string", "enum": [ "prealpha", "alpha", "beta", "releasecandidate", "stable" ], "required": true },
           "tagversion": { "type": "string" }
         }
-      }
+      },
+      "sorttokens": { "$ref": "Array.String", "description": "Articles ignored during sorting when ignorearticle is enabled." },
+      "language": { "type": "string", "minLength": 1, "description": "Current language code and region e.g. en_GB" }
     }
   },
   "Favourite.Fields.Favourite": {
