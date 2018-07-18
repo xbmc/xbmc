@@ -80,7 +80,7 @@ class CEpgTagStateChange
 {
 public:
   CEpgTagStateChange() = default;
-  CEpgTagStateChange(const CPVREpgInfoTagPtr tag, EPG_EVENT_STATE eNewState) : m_epgtag(tag), m_state(eNewState) {}
+  CEpgTagStateChange(const CPVREpgInfoTagPtr &tag, EPG_EVENT_STATE eNewState) : m_epgtag(tag), m_state(eNewState) {}
 
   void Deliver();
 
@@ -315,8 +315,11 @@ void CPVREpgContainer::LoadFromDB(void)
   m_database->Lock();
   m_iNextEpgId = m_database->GetLastEPGId();
   m_database->DeleteEpgEntries(cleanupTime);
-  m_database->Get(*this);
+  const std::vector<CPVREpgPtr> result = m_database->Get(*this);
   m_database->Unlock();
+
+  for (const auto& entry : result)
+    InsertFromDatabase(entry);
 
   for (const auto &epgEntry : m_epgs)
   {
@@ -518,13 +521,13 @@ std::vector<CPVREpgInfoTagPtr> CPVREpgContainer::GetEpgTagsForTimer(const CPVRTi
   return std::vector<CPVREpgInfoTagPtr>();
 }
 
-void CPVREpgContainer::InsertFromDatabase(int iEpgID, const std::string &strName, const std::string &strScraperName)
+void CPVREpgContainer::InsertFromDatabase(const CPVREpgPtr &newEpg)
 {
   // table might already have been created when pvr channels were loaded
-  CPVREpgPtr epg = GetById(iEpgID);
+  CPVREpgPtr epg = GetById(newEpg->EpgID());
   if (epg)
   {
-    if (epg->Name() != strName || epg->ScraperName() != strScraperName)
+    if (epg->Name() != newEpg->Name() || epg->ScraperName() != newEpg->ScraperName())
     {
       // current table data differs from the info in the db
       epg->SetChanged();
@@ -534,13 +537,10 @@ void CPVREpgContainer::InsertFromDatabase(int iEpgID, const std::string &strName
   else
   {
     // create a new epg table
-    epg.reset(new CPVREpg(iEpgID, strName, strScraperName, true));
-    if (epg)
-    {
-      m_epgs.insert(std::make_pair(iEpgID, epg));
-      SetChanged();
-      epg->RegisterObserver(this);
-    }
+    epg = newEpg;
+    m_epgs.insert(std::make_pair(epg->EpgID(), epg));
+    SetChanged();
+    epg->RegisterObserver(this);
   }
 }
 
@@ -868,7 +868,7 @@ void CPVREpgContainer::UpdateRequest(int iClientID, unsigned int iUniqueChannelI
   m_updateRequests.emplace_back(CEpgUpdateRequest(iClientID, iUniqueChannelID));
 }
 
-void CPVREpgContainer::UpdateFromClient(const CPVREpgInfoTagPtr tag, EPG_EVENT_STATE eNewState)
+void CPVREpgContainer::UpdateFromClient(const CPVREpgInfoTagPtr &tag, EPG_EVENT_STATE eNewState)
 {
   CSingleLock lock(m_epgTagChangesLock);
   m_epgTagChanges.emplace_back(CEpgTagStateChange(tag, eNewState));

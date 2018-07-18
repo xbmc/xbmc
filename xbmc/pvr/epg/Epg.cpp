@@ -310,15 +310,18 @@ bool CPVREpg::Load(void)
     return bReturn;
   }
 
-  int iEntriesLoaded = database->Get(*this);
+  const std::vector<CPVREpgInfoTagPtr> result = database->Get(*this);
 
   CSingleLock lock(m_critSection);
-  if (iEntriesLoaded <= 0)
+  if (result.empty())
   {
     CLog::LogFC(LOGDEBUG, LOGEPG, "No database entries found for table '%s'.", m_strName.c_str());
   }
   else
   {
+    for (const auto& entry : result)
+      AddEntry(*entry);
+
     m_lastScanTime = GetLastScanTime();
     bReturn = true;
   }

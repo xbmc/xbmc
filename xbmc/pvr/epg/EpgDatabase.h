@@ -111,17 +111,17 @@ namespace PVR
 
     /*!
      * @brief Get all EPG tables from the database. Does not get the EPG tables' entries.
-     * @param container The container to fill.
-     * @return The amount of entries that was added.
+     * @param container The container to get the EPG tables for.
+     * @return The entries.
      */
-    int Get(CPVREpgContainer &container);
+    std::vector<CPVREpgPtr> Get(const CPVREpgContainer &container);
 
     /*!
      * @brief Get all EPG entries for a table.
      * @param epg The EPG table to get the entries for.
-     * @return The amount of entries that was added.
+     * @return The entries.
      */
-    int Get(CPVREpg &epg);
+    std::vector<CPVREpgInfoTagPtr> Get(const CPVREpg &epg);
 
     /*!
      * @brief Get the last stored EPG scan time.
