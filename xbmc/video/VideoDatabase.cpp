@@ -4310,7 +4310,8 @@ bool CVideoDatabase::GetVideoSettings(int idFile, CVideoSettings &settings)
 
 void CVideoDatabase::SetVideoSettings(const CFileItem &item, const CVideoSettings &settings)
 {
-  SetVideoSettings(GetFileId(item), settings);
+  int idFile = AddFile(item);
+  SetVideoSettings(idFile, settings);
 }
 
 /// \brief Sets the settings for a particular video file
@@ -5598,24 +5599,63 @@ bool CVideoDatabase::UpdateVideoSortTitle(int idDb, const std::string& strNewSor
 }
 
 /// \brief EraseVideoSettings() Erases the videoSettings table and reconstructs it
-void CVideoDatabase::EraseVideoSettings(const std::string &path /* = ""*/)
+void CVideoDatabase::EraseVideoSettings(const CFileItem &item)
+{
+  int idFile = GetFileId(item);
+  if (idFile < 0)
+    return;
+
+  try
+  {
+    std::string sql = PrepareSQL("DELETE FROM settings WHERE idFile=%i", idFile);
+
+    CLog::Log(LOGINFO, "Deleting settings information for files %s", item.GetPath().c_str());
+    m_pDS->exec(sql);
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+  }
+}
+
+void CVideoDatabase::EraseAllVideoSettings()
 {
   try
   {
     std::string sql = "DELETE FROM settings";
 
-    if (!path.empty())
-    {
-      Filter pathFilter;
-      pathFilter.AppendWhere(PrepareSQL("idFile IN (SELECT idFile FROM files INNER JOIN path ON path.idPath = files.idPath AND path.strPath LIKE \"%s%%\")", path.c_str()));
-      sql += std::string(" WHERE ") + pathFilter.where.c_str();
-
-      CLog::Log(LOGINFO, "Deleting settings information for all files under %s", path.c_str());
-    }
-    else
-      CLog::Log(LOGINFO, "Deleting settings information for all files");
-
+    CLog::Log(LOGINFO, "Deleting all video settings");
     m_pDS->exec(sql);
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+  }
+}
+
+void CVideoDatabase::EraseAllVideoSettings(std::string path)
+{
+  std::string itemsToDelete;
+
+  try
+  {
+    std::string sql = PrepareSQL("SELECT files.idFile FROM files WHERE idFile IN (SELECT idFile FROM files INNER JOIN path ON path.idPath = files.idPath AND path.strPath LIKE \"%s%%\")", path.c_str());
+    m_pDS->query(sql);
+    while (!m_pDS->eof())
+    {
+      std::string file = m_pDS->fv("files.idFile").get_asString() + ",";
+      itemsToDelete += file;
+      m_pDS->next();
+    }
+    m_pDS->close();
+
+    if (!itemsToDelete.empty())
+    {
+      itemsToDelete = "(" + StringUtils::TrimRight(itemsToDelete, ",") + ")";
+
+      sql = "DELETE FROM settings WHERE idFile IN " + itemsToDelete;
+      m_pDS->exec(sql);
+    }
   }
   catch (...)
   {

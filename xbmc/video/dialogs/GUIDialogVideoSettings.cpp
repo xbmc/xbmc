@@ -241,7 +241,7 @@ void CGUIDialogVideoSettings::Save()
     CVideoDatabase db;
     if (!db.Open())
       return;
-    db.EraseVideoSettings();
+    db.EraseAllVideoSettings();
     db.Close();
 
     CMediaSettings::GetInstance().GetDefaultVideoSettings() = g_application.GetAppPlayer().GetVideoSettings();
