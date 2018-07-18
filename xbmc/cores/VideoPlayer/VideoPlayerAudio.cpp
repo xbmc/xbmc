@@ -282,7 +282,6 @@ void CVideoPlayerAudio::Process()
       if (priority)
         continue;
 
-      // Flush as the audio output may keep looping if we don't
       if (m_processInfo.IsTempoAllowed(static_cast<float>(m_speed)/DVD_PLAYSPEED_NORMAL) &&
           !m_stalled && m_syncState == IDVDStreamPlayer::SYNC_INSYNC)
       {
@@ -364,7 +363,10 @@ void CVideoPlayerAudio::Process()
         if (speed != m_speed)
         {
           if (m_syncState == IDVDStreamPlayer::SYNC_INSYNC)
+          {
             m_audioSink.Resume();
+            m_stalled = false;
+          }
         }
       }
       else

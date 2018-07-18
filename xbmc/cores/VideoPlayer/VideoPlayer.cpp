@@ -1822,7 +1822,7 @@ void CVideoPlayer::ProcessRadioRDSData(CDemuxStream* pStream, DemuxPacket* pPack
 
 bool CVideoPlayer::GetCachingTimes(double& level, double& delay, double& offset)
 {
-  if(!m_pInputStream || !m_pDemuxer)
+  if (!m_pInputStream || !m_pDemuxer)
     return false;
 
   XFILE::SCacheStatus status;
@@ -1900,6 +1900,13 @@ void CVideoPlayer::HandlePlaySpeed()
           (!m_VideoPlayerVideo->AcceptsData() && m_CurrentVideo.id >= 0))
         SetCaching(CACHESTATE_INIT);
     }
+
+    // if audio stream stalled, wait until demux queue filled 10%
+    if (m_pInputStream->IsRealtime() &&
+        (m_CurrentAudio.id < 0 || m_VideoPlayerAudio->GetLevel() > 10))
+    {
+      SetCaching(CACHESTATE_INIT);
+    }
   }
 
   if (m_caching == CACHESTATE_INIT)
@@ -1940,13 +1947,14 @@ void CVideoPlayer::HandlePlaySpeed()
       {
         if (m_pInputStream->IsRealtime())
         {
-          if ((m_CurrentAudio.id >= 0 && m_CurrentAudio.syncState == IDVDStreamPlayer::SYNC_INSYNC && m_VideoPlayerAudio->IsStalled()) ||
+          if ((m_CurrentAudio.id >= 0 && m_CurrentAudio.syncState == IDVDStreamPlayer::SYNC_INSYNC &&
+               m_VideoPlayerAudio->IsStalled()) ||
               (m_CurrentVideo.id >= 0 && m_CurrentVideo.syncState == IDVDStreamPlayer::SYNC_INSYNC &&
                m_processInfo->GetLevelVQ() == 0))
           {
             CLog::Log(LOGDEBUG, "Stream stalled, start buffering. Audio: %d - Video: %d",
                                  m_VideoPlayerAudio->GetLevel(), m_processInfo->GetLevelVQ());
-            FlushBuffers(DVD_NOPTS_VALUE, true, true);
+            SetCaching(CACHESTATE_FULL);
           }
         }
         else
@@ -2048,8 +2056,11 @@ void CVideoPlayer::HandlePlaySpeed()
         if (m_CurrentVideo.starttime != DVD_NOPTS_VALUE && (m_CurrentVideo.packets > 0))
         {
           if (m_CurrentVideo.starttime - m_CurrentVideo.cachetotal < clock)
+          {
             clock = m_CurrentVideo.starttime - m_CurrentVideo.cachetotal;
-          else if (m_CurrentVideo.starttime > m_CurrentAudio.starttime)
+          }
+          else if (m_CurrentVideo.starttime > m_CurrentAudio.starttime &&
+                   !m_pInputStream->IsRealtime())
           {
             int audioLevel = m_VideoPlayerAudio->GetLevel();
             //@todo hardcoded 8 seconds in message queue
