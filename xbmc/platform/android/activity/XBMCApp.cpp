@@ -1078,10 +1078,10 @@ void CXBMCApp::onActivityResult(int requestCode, int resultCode, CJNIIntent resu
   {
     if ((*it)->GetRequestCode() == requestCode)
     {
-      m_activityResultEvents.erase(it);
       (*it)->SetResultCode(resultCode);
       (*it)->SetResultData(resultData);
       (*it)->Set();
+      m_activityResultEvents.erase(it);
       break;
     }
   }
