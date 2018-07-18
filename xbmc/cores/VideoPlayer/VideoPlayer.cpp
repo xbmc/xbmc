@@ -3188,7 +3188,7 @@ void CVideoPlayer::Seek(bool bPlus, bool bLargeStep, bool bChapterOverride)
   bool restore = true;
 
   int64_t time = GetTime();
-  if(g_application.CurrentFileItem().IsStack() &&
+  if(g_application.CurrentFileItem().IsType("stack://") &&
      (seekTarget > m_processInfo->GetMaxTime() || seekTarget < 0))
   {
     g_application.SeekTime((seekTarget - time) * 0.001 + g_application.GetTime());

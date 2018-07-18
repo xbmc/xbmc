@@ -1245,7 +1245,7 @@ int CMusicInfoScanner::GetPathHash(const CFileItemList &items, std::string &hash
     digest.Update((unsigned char *)&pItem->m_dwSize, sizeof(pItem->m_dwSize));
     FILETIME time = pItem->m_dateTime;
     digest.Update((unsigned char *)&time, sizeof(FILETIME));
-    if (pItem->IsAudio() && !pItem->IsPlayList() && !pItem->IsNFO())
+    if (pItem->IsAudio() && !pItem->IsPlayList() && !pItem->IsType(".nfo"))
       count++;
   }
   hash = digest.Finalize();
@@ -2260,7 +2260,7 @@ int CMusicInfoScanner::CountFiles(const CFileItemList &items, bool recursive)
 
     if (recursive && pItem->m_bIsFolder)
       count+=CountFilesRecursively(pItem->GetPath());
-    else if (pItem->IsAudio() && !pItem->IsPlayList() && !pItem->IsNFO())
+    else if (pItem->IsAudio() && !pItem->IsPlayList() && !pItem->IsType(".nfo"))
       count++;
   }
   return count;

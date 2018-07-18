@@ -271,10 +271,10 @@ bool CGUIWindowPictures::OnClick(int iItem, const std::string &player)
   if ( iItem < 0 || iItem >= m_vecItems->Size() ) return true;
   CFileItemPtr pItem = m_vecItems->Get(iItem);
 
-  if (pItem->IsCBZ() || pItem->IsCBR())
+  if (pItem->IsType(".cbz") || pItem->IsType(".cbr"))
   {
     CURL pathToUrl;
-    if (pItem->IsCBZ())
+    if (pItem->IsType(".cbz"))
       pathToUrl = URIUtils::CreateArchivePath("zip", pItem->GetURL(), "");
     else
       pathToUrl = URIUtils::CreateArchivePath("rar", pItem->GetURL(), "");
@@ -297,7 +297,7 @@ bool CGUIWindowPictures::GetDirectory(const std::string &strDirectory, CFileItem
   if (items.GetLabel().empty() && m_rootDir.IsSource(items.GetPath(), CMediaSourceSettings::GetInstance().GetSources("pictures"), &label))
     items.SetLabel(label);
 
-  if (items.GetContent().empty() && !items.IsVirtualDirectoryRoot() && !items.IsPlugin())
+  if (items.GetContent().empty() && !items.IsVirtualDirectoryRoot() && !items.IsType("plugin://"))
     items.SetContent("images");
   return true;
 }
@@ -465,7 +465,7 @@ void CGUIWindowPictures::GetContextButtons(int itemNumber, CContextButtons &butt
     {
       if (item)
       {
-        if (!(item->m_bIsFolder || item->IsZIP() || item->IsRAR() || item->IsCBZ() || item->IsCBR() || item->IsScript()))
+        if (!(item->m_bIsFolder || item->IsZIP() || item->IsRAR() || item->IsType(".cbz") || item->IsType(".cbr") || item->IsType("script://")))
         {
           if (item->IsPicture())
             buttons.Add(CONTEXT_BUTTON_INFO, 13406); // picture info
@@ -483,7 +483,7 @@ void CGUIWindowPictures::GetContextButtons(int itemNumber, CContextButtons &butt
         }
       }
 
-      if (!item->IsPlugin() && !item->IsScript() && !m_vecItems->IsPlugin())
+      if (!item->IsType("plugin://") && !item->IsType("script://") && !m_vecItems->IsType("plugin://"))
         buttons.Add(CONTEXT_BUTTON_SWITCH_MEDIA, 523);
     }
   }
@@ -570,7 +570,7 @@ void CGUIWindowPictures::LoadPlayList(const std::string& strPlayList)
     {
       CFileItemPtr pItem = playlist[i];
       //CLog::Log(LOGDEBUG,"-- playlist item: %s", pItem->GetPath().c_str());
-      if (pItem->IsPicture() && !(pItem->IsZIP() || pItem->IsRAR() || pItem->IsCBZ() || pItem->IsCBR()))
+      if (pItem->IsPicture() && !(pItem->IsZIP() || pItem->IsRAR() || pItem->IsType(".cbz") || pItem->IsType(".cbr")))
         pSlideShow->Add(pItem.get());
     }
 
@@ -586,12 +586,12 @@ void CGUIWindowPictures::OnItemInfo(int itemNumber)
   CFileItemPtr item = m_vecItems->Get(itemNumber);
   if (!item)
     return;
-  if (!m_vecItems->IsPlugin() && (item->IsPlugin() || item->IsScript()))
+  if (!m_vecItems->IsType("plugin://") && (item->IsType("plugin://") || item->IsType("script://")))
   {
     CGUIDialogAddonInfo::ShowForItem(item);
     return;
   }
-  if (item->m_bIsFolder || item->IsZIP() || item->IsRAR() || item->IsCBZ() || item->IsCBR() || !item->IsPicture())
+  if (item->m_bIsFolder || item->IsZIP() || item->IsRAR() || item->IsType(".cbz") || item->IsType(".cbr") || !item->IsPicture())
     return;
   CGUIDialogPictureInfo *pictureInfo = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogPictureInfo>(WINDOW_DIALOG_PICTURE_INFO);
   if (pictureInfo)

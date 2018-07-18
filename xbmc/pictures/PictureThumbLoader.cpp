@@ -80,11 +80,11 @@ bool CPictureThumbLoader::LoadItemCached(CFileItem* pItem)
   }
 
   std::string thumb;
-  if (pItem->IsPicture() && !pItem->IsZIP() && !pItem->IsRAR() && !pItem->IsCBZ() && !pItem->IsCBR() && !pItem->IsPlayList())
+  if (pItem->IsPicture() && !pItem->IsZIP() && !pItem->IsRAR() && !pItem->IsType(".cbz") && !pItem->IsType(".cbr") && !pItem->IsPlayList())
   { // load the thumb from the image file
     thumb = pItem->HasArt("thumb") ? pItem->GetArt("thumb") : CTextureUtils::GetWrappedThumbURL(pItem->GetPath());
   }
-  else if (pItem->IsVideo() && !pItem->IsZIP() && !pItem->IsRAR() && !pItem->IsCBZ() && !pItem->IsCBR() && !pItem->IsPlayList())
+  else if (pItem->IsVideo() && !pItem->IsZIP() && !pItem->IsRAR() && !pItem->IsType(".cbz") && !pItem->IsType(".cbr") && !pItem->IsPlayList())
   { // video
     CVideoThumbLoader loader;
     if (!loader.FillThumb(*pItem))
@@ -141,7 +141,7 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
 
   CTextureDatabase db;
   db.Open();
-  if (pItem->IsCBR() || pItem->IsCBZ())
+  if (pItem->IsType(".cbr") || pItem->IsType(".cbz"))
   {
     std::string strTBN(URIUtils::ReplaceExtension(pItem->GetPath(),".tbn"));
     if (CFile::Exists(strTBN))
@@ -152,23 +152,23 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
       return;
     }
   }
-  if ((pItem->m_bIsFolder || pItem->IsCBR() || pItem->IsCBZ()) && !pItem->m_bIsShareOrDrive
+  if ((pItem->m_bIsFolder || pItem->IsType(".cbr") || pItem->IsType(".cbz")) && !pItem->m_bIsShareOrDrive
       && !pItem->IsParentFolder() && !pItem->IsPath("add"))
   {
     // first check for a folder.jpg
     std::string thumb = "folder.jpg";
     CURL pathToUrl = pItem->GetURL();
-    if (pItem->IsCBR())
+    if (pItem->IsType(".cbr"))
     {
       pathToUrl = URIUtils::CreateArchivePath("rar",pItem->GetURL(),"");
       thumb = "cover.jpg";
     }
-    if (pItem->IsCBZ())
+    if (pItem->IsType(".cbz"))
     {
       pathToUrl = URIUtils::CreateArchivePath("zip",pItem->GetURL(),"");
       thumb = "cover.jpg";
     }
-    if (pItem->IsMultiPath())
+    if (pItem->IsType("multipath://"))
       pathToUrl = CURL(CMultiPathDirectory::GetFirstPath(pItem->GetPath()));
     thumb = URIUtils::AddFileToFolder(pathToUrl.Get(), thumb);
     if (CFile::Exists(thumb))
@@ -178,7 +178,7 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
       pItem->SetArt("thumb", thumb);
       return;
     }
-    if (!pItem->IsPlugin())
+    if (!pItem->IsType("plugin://"))
     {
       // we load the directory, grab 4 random thumb files (if available) and then generate
       // the thumb.
@@ -202,7 +202,7 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
 
       if (items.IsEmpty())
       {
-        if (pItem->IsCBZ() || pItem->IsCBR())
+        if (pItem->IsType(".cbz") || pItem->IsType(".cbr"))
         {
           CDirectory::GetDirectory(pathToUrl, items, CServiceBroker::GetFileExtensionProvider().GetPictureExtensions(), DIR_FLAG_NO_FILE_DIRS);
           for (int i=0;i<items.Size();++i)
@@ -223,7 +223,7 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
       // randomize them
       items.Randomize();
 
-      if (items.Size() < 4 || pItem->IsCBR() || pItem->IsCBZ())
+      if (items.Size() < 4 || pItem->IsType(".cbr") || pItem->IsType(".cbz"))
       { // less than 4 items, so just grab the first thumb
         items.Sort(SortByLabel, SortOrderAscending);
         std::string thumb = CTextureUtils::GetWrappedThumbURL(items[0]->GetPath());

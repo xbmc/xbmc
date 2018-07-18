@@ -80,7 +80,7 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
 
     SetSortOrder(SortOrderNone);
   }
-  else if (items.IsVideoDb())
+  else if (items.IsType("videodb://"))
   {
     NODE_TYPE NodeType=CVideoDatabaseDirectory::GetDirectoryChildType(items.GetPath());
     CQueryParams params;
@@ -334,7 +334,7 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
 
 void CGUIViewStateWindowVideoNav::SaveViewState()
 {
-  if (m_items.IsVideoDb())
+  if (m_items.IsType("videodb://"))
   {
     NODE_TYPE NodeType = CVideoDatabaseDirectory::GetDirectoryChildType(m_items.GetPath());
     CQueryParams params;

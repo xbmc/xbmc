@@ -251,7 +251,7 @@ void CGUIDialogVideoInfo::OnInitWindow()
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_REFRESH, (profileManager.GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser) && !StringUtils::StartsWithNoCase(m_movieItem->GetVideoInfoTag()->GetUniqueID(), "xx"));
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_GET_THUMB, (profileManager.GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser) && !StringUtils::StartsWithNoCase(m_movieItem->GetVideoInfoTag()->GetUniqueID().c_str() + 2, "plugin"));
   // Disable video user rating button for plugins as they don't have tables to save this
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_USERRATING, !m_movieItem->IsPlugin());
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_USERRATING, !m_movieItem->IsType("plugin://"));
 
   VIDEODB_CONTENT_TYPE type = static_cast<VIDEODB_CONTENT_TYPE>(m_movieItem->GetVideoContentType());
   if (type == VIDEODB_CONTENT_TVSHOWS || type == VIDEODB_CONTENT_MOVIES)
@@ -1066,7 +1066,7 @@ void CGUIDialogVideoInfo::AddItemPathToFileBrowserSources(VECSOURCES &sources, c
 
 int CGUIDialogVideoInfo::ManageVideoItem(const CFileItemPtr &item)
 {
-  if (item == nullptr || !item->IsVideoDb() || !item->HasVideoInfoTag() || item->GetVideoInfoTag()->m_iDbId < 0)
+  if (item == nullptr || !item->IsType("videodb://") || !item->HasVideoInfoTag() || item->GetVideoInfoTag()->m_iDbId < 0)
     return -1;
 
   CVideoDatabase database;
@@ -1423,7 +1423,7 @@ bool CGUIDialogVideoInfo::DeleteVideoItem(const CFileItemPtr &item, bool unavail
       item->SetPath(strDeletePath);
 
       // HACK: stacked files need to be treated as folders in order to be deleted
-      if (item->IsStack())
+      if (item->IsType("stack://"))
         item->m_bIsFolder = true;
 
       CGUIComponent *gui = CServiceBroker::GetGUI();

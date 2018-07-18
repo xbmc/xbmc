@@ -595,10 +595,10 @@ CUPnPServer::OnBrowseMetadata(PLT_ActionReference&          action,
             else parent = "sources://video/"; // this can only match video sources
         }
 
-        if (item->IsVideoDb()) {
+        if (item->IsType("videodb://")) {
             thumb_loader = NPT_Reference<CThumbLoader>(new CVideoThumbLoader());
         }
-        else if (item->IsMusicDb()) {
+        else if (item->IsType("musicdb://")) {
             thumb_loader = NPT_Reference<CThumbLoader>(new CMusicThumbLoader());
         }
         if (!thumb_loader.IsNull()) {
@@ -1037,7 +1037,7 @@ CUPnPServer::OnUpdateObject(PLT_ActionReference&             action,
     NPT_CHECK_LABEL(FindServiceById("urn:upnp-org:serviceId:ContentDirectory", service), error);
     NPT_CHECK_LABEL(service->PauseEventing(), error);
 
-    if (updated.IsVideoDb()) {
+    if (updated.IsType("videodb://")) {
         CVideoDatabase db;
         NPT_CHECK_LABEL(!db.Open(), error);
 
@@ -1108,7 +1108,7 @@ CUPnPServer::OnUpdateObject(PLT_ActionReference&             action,
             updated.SetFromVideoInfoTag(tag);
         }
 
-    } else if (updated.IsMusicDb()) {
+    } else if (updated.IsType("musicdb://")) {
       //! @todo implement this
 
     } else {
@@ -1119,9 +1119,9 @@ CUPnPServer::OnUpdateObject(PLT_ActionReference&             action,
 
     if (updatelisting) {
         updated.SetPath(path);
-        if (updated.IsVideoDb())
+        if (updated.IsType("videodb://"))
              CUtil::DeleteVideoDatabaseDirectoryCache();
-        else if (updated.IsMusicDb())
+        else if (updated.IsType("musicdb://"))
              CUtil::DeleteMusicDatabaseDirectoryCache();
 
         CFileItemPtr msgItem(new CFileItem(updated));
@@ -1310,7 +1310,7 @@ CUPnPServer::SortItems(CFileItemList& items, const char* sort_criteria)
 void
 CUPnPServer::DefaultSortItems(CFileItemList& items)
 {
-  CGUIViewState* viewState = CGUIViewState::GetViewState(items.IsVideoDb() ? WINDOW_VIDEO_NAV : -1, items);
+  CGUIViewState* viewState = CGUIViewState::GetViewState(items.IsType("videodb://") ? WINDOW_VIDEO_NAV : -1, items);
   if (viewState)
   {
     SortDescription sorting = viewState->GetSortMethod();

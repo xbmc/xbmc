@@ -95,7 +95,7 @@ std::shared_ptr<CDVDInputStream> CDVDFactoryInputStream::CreateInputStream(IVide
 
   if (fileitem.IsDVDFile(false, true))
     return std::shared_ptr<CDVDInputStreamNavigator>(new CDVDInputStreamNavigator(pPlayer, fileitem));
-  else if (fileitem.IsPVRChannel() && StringUtils::StartsWithNoCase(file, "pvr://"))
+  else if (fileitem.HasPVRChannelInfoTag() && StringUtils::StartsWithNoCase(file, "pvr://"))
     return std::shared_ptr<CInputStreamPVRChannel>(new CInputStreamPVRChannel(pPlayer, fileitem));
   else if (fileitem.IsUsablePVRRecording() && StringUtils::StartsWithNoCase(file, "pvr://"))
     return std::shared_ptr<CInputStreamPVRRecording>(new CInputStreamPVRRecording(pPlayer, fileitem));

@@ -419,7 +419,7 @@ bool CVideoGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
         return true;
       case LISTITEM_FILENAME:
       case LISTITEM_FILE_EXTENSION:
-        if (item->IsVideoDb())
+        if (item->IsType("videodb://"))
           value = URIUtils::GetFileName(tag->m_strFileNameAndPath);
         else
           value = URIUtils::GetFileName(item->GetPath());
@@ -432,7 +432,7 @@ bool CVideoGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
         return true;
       case LISTITEM_FOLDERNAME:
       case LISTITEM_PATH:
-        if (item->IsVideoDb())
+        if (item->IsType("videodb://"))
         {
           if (item->m_bIsFolder)
             value = tag->m_strPath;
@@ -451,7 +451,7 @@ bool CVideoGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
         }
         return true;
       case LISTITEM_FILENAME_AND_PATH:
-        if (item->IsVideoDb())
+        if (item->IsType("videodb://"))
           value = tag->m_strFileNameAndPath;
         else
           value = item->GetPath();

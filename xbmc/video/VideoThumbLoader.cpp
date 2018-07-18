@@ -64,10 +64,10 @@ CThumbExtractor::CThumbExtractor(const CFileItem& item,
   m_pos = pos;
   m_fillStreamDetails = fillStreamDetails;
 
-  if (item.IsVideoDb() && item.HasVideoInfoTag())
+  if (item.IsType("videodb://") && item.HasVideoInfoTag())
     m_item.SetPath(item.GetVideoInfoTag()->m_strFileNameAndPath);
 
-  if (m_item.IsStack())
+  if (m_item.IsType("stack://"))
     m_item.SetPath(CStackDirectory::GetFirstStackedFile(m_item.GetPath()));
 }
 
@@ -90,7 +90,7 @@ bool CThumbExtractor::DoWork()
   if (m_item.IsLiveTV()
   // Due to a pvr addon api design flaw (no support for multiple concurrent streams
   // per addon instance), pvr recording thumbnail extraction does not work (reliably).
-  ||  m_item.IsPVRRecording()
+  ||  m_item.HasPVRRecordingInfoTag()
   ||  URIUtils::IsUPnP(m_item.GetPath())
   ||  URIUtils::IsBluray(m_item.GetPath())
   ||  m_item.IsBDFile()
@@ -136,7 +136,7 @@ bool CThumbExtractor::DoWork()
       }
     }
   }
-  else if (!m_item.IsPlugin() &&
+  else if (!m_item.IsType("plugin://") &&
            (!m_item.HasVideoInfoTag() ||
            !m_item.GetVideoInfoTag()->HasStreamDetails()))
   {
@@ -214,7 +214,7 @@ void CVideoThumbLoader::OnLoaderFinish()
 static void SetupRarOptions(CFileItem& item, const std::string& path)
 {
   std::string path2(path);
-  if (item.IsVideoDb() && item.HasVideoInfoTag())
+  if (item.IsType("videodb://") && item.HasVideoInfoTag())
     path2 = item.GetVideoInfoTag()->m_strFileNameAndPath;
   CURL url(path2);
   std::string opts = url.GetOptions();
@@ -225,7 +225,7 @@ static void SetupRarOptions(CFileItem& item, const std::string& path)
   else
     opts = "?flags=8";
   url.SetOptions(opts);
-  if (item.IsVideoDb() && item.HasVideoInfoTag())
+  if (item.IsType("videodb://") && item.HasVideoInfoTag())
     item.GetVideoInfoTag()->m_strFileNameAndPath = url.Get();
   else
     item.SetPath(url.Get());
@@ -591,7 +591,7 @@ std::string CVideoThumbLoader::GetLocalArt(const CFileItem &item, const std::str
 std::string CVideoThumbLoader::GetEmbeddedThumbURL(const CFileItem &item)
 {
   std::string path(item.GetPath());
-  if (item.IsVideoDb() && item.HasVideoInfoTag())
+  if (item.IsType("videodb://") && item.HasVideoInfoTag())
     path = item.GetVideoInfoTag()->m_strFileNameAndPath;
   if (URIUtils::IsStack(path))
     path = CStackDirectory::GetFirstStackedFile(path);
@@ -674,7 +674,7 @@ void CVideoThumbLoader::DetectAndAddMissingItemData(CFileItem &item)
   if (stereoMode.empty())
   {
     std::string path = item.GetPath();
-    if (item.IsVideoDb() && item.HasVideoInfoTag())
+    if (item.IsType("videodb://") && item.HasVideoInfoTag())
       path = item.GetVideoInfoTag()->GetPath();
 
     // check for custom stereomode setting in video settings

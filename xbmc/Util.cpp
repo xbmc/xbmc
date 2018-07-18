@@ -519,11 +519,6 @@ std::string CUtil::GetHomePath(std::string strTarget)
   return ::GetHomePath(strTarget, strPath);
 }
 
-bool CUtil::IsPVR(const std::string& strFile)
-{
-  return StringUtils::StartsWithNoCase(strFile, "pvr:");
-}
-
 bool CUtil::IsLiveTV(const std::string& strFile)
 {
   if (StringUtils::StartsWithNoCase(strFile, "pvr://channels"))
@@ -2282,7 +2277,7 @@ void CUtil::ScanForExternalDemuxSub(const std::string& videoPath, std::vector<st
   if (item.IsInternetStream()
     || item.IsPlayList()
     || item.IsLiveTV()
-    || item.IsPVR()
+    || item.IsType("pvr://")
     || !item.IsVideo())
     return;
 
@@ -2306,7 +2301,7 @@ void CUtil::ScanForExternalAudio(const std::string& videoPath, std::vector<std::
   if ( item.IsInternetStream()
    ||  item.IsPlayList()
    ||  item.IsLiveTV()
-   ||  item.IsPVR()
+   ||  item.IsType("pvr://")
    || !item.IsVideo())
     return;
 

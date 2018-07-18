@@ -76,7 +76,7 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
 
   const CURL url=items.GetURL();
 
-  if (items.IsAddonsPath())
+  if (items.IsType("addons://"))
     return new CGUIViewStateAddonBrowser(items);
 
   if (items.HasSortDetails())
@@ -596,7 +596,7 @@ CGUIViewStateFromItems::CGUIViewStateFromItems(const CFileItemList &items) : CGU
 
   SetViewAsControl(DEFAULT_VIEW_LIST);
 
-  if (items.IsPlugin())
+  if (items.IsType("plugin://"))
   {
     CURL url(items.GetPath());
     AddonPtr addon;

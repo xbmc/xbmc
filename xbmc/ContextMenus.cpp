@@ -28,7 +28,7 @@ namespace CONTEXTMENU
   bool CEjectDisk::IsVisible(const CFileItem& item) const
   {
 #ifdef HAS_DVD_DRIVE
-    return item.IsRemovable() && (item.IsDVD() || item.IsCDDA());
+    return item.IsRemovable() && (item.IsDVD() || item.IsType("cdda://"));
 #else
     return false;
 #endif
@@ -45,7 +45,7 @@ namespace CONTEXTMENU
   bool CEjectDrive::IsVisible(const CFileItem& item) const
   {
     // Must be HDD
-    return item.IsRemovable() && !item.IsDVD() && !item.IsCDDA();
+    return item.IsRemovable() && !item.IsDVD() && !item.IsType("cdda://");
   }
 
   bool CEjectDrive::Execute(const CFileItemPtr& item) const

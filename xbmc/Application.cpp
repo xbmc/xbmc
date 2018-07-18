@@ -2026,7 +2026,7 @@ bool CApplication::OnAction(const CAction &action)
 
   // Now check with the player if action can be handled.
   bool bIsPlayingPVRChannel = (CServiceBroker::GetPVRManager().IsStarted() &&
-                               CurrentFileItem().IsPVRChannel());
+                               CurrentFileItem().HasPVRChannelInfoTag());
 
   bool bNotifyPlayer = false;
   if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
@@ -2945,7 +2945,7 @@ bool CApplication::PlayMedia(CFileItem& item, const std::string &player, int iPl
       }
     }
   }
-  else if (item.IsPVR())
+  else if (item.IsType("pvr://"))
   {
     return CServiceBroker::GetPVRManager().GUIActions()->PlayMedia(CFileItemPtr(new CFileItem(item)));
   }
@@ -3049,7 +3049,7 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
   // if we have a stacked set of files, we need to setup our stack routines for
   // "seamless" seeking and total time of the movie etc.
   // will recall with restart set to true
-  if (item.IsStack())
+  if (item.IsType("stack://"))
     return PlayStack(item, bRestart);
 
   CPlayerOptions options;
@@ -3247,7 +3247,7 @@ void CApplication::PlaybackCleanup()
   }
 
   // DVD ejected while playing in vis ?
-  if (!m_appPlayer.IsPlayingAudio() && (m_itemCurrentFile->IsCDDA() || m_itemCurrentFile->IsOnDVD()) && !g_mediaManager.IsDiscInDrive() && CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_VISUALISATION)
+  if (!m_appPlayer.IsPlayingAudio() && (m_itemCurrentFile->IsType("cdda://") || m_itemCurrentFile->IsOnDVD()) && !g_mediaManager.IsDiscInDrive() && CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_VISUALISATION)
   {
     // yes, disable vis
     m_ServiceManager->GetSettings().Save();    // save vis settings
@@ -4182,7 +4182,7 @@ bool CApplication::ExecuteXBMCAction(std::string actionStr, const CGUIListItemPt
     }
     CFileItem item(actionStr, false);
 #ifdef HAS_PYTHON
-    if (item.IsPythonScript())
+    if (item.IsType(".py"))
     { // a python script
       CScriptInvocationManager::GetInstance().ExecuteAsync(item.GetPath());
     }

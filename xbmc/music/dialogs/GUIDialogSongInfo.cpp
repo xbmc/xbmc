@@ -245,7 +245,7 @@ void CGUIDialogSongInfo::OnInitWindow()
   CONTROL_ENABLE_ON_CONDITION(CONTROL_ALBUMINFO, m_albumId > 0);
 
   // Disable music user rating button for plugins as they don't have tables to save this
-  if (m_song->IsPlugin())
+  if (m_song->IsType("plugin://"))
     CONTROL_DISABLE(CONTROL_USERRATING);
   else
     CONTROL_ENABLE(CONTROL_USERRATING);
@@ -379,7 +379,7 @@ void CGUIDialogSongInfo::OnGetArt()
   if (type == "thumb")
   { // Local thumb type art held in <filename>.tbn (for non-library items)
     localThumb = m_song->GetUserMusicThumb(true);
-    if (m_song->IsMusicDb())
+    if (m_song->IsType("musicdb://"))
     {
       CFileItem item(m_song->GetMusicInfoTag()->GetURL(), false);
       localThumb = item.GetUserMusicThumb(true);
@@ -499,7 +499,7 @@ void CGUIDialogSongInfo::ShowFor(CFileItem* pItem)
 {
   if (pItem->m_bIsFolder)
     return;
-  if (!pItem->IsMusicDb())
+  if (!pItem->IsType("musicdb://"))
     pItem->LoadMusicTag();
   if (!pItem->HasMusicInfoTag())
     return;

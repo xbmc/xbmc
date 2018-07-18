@@ -32,7 +32,7 @@ using namespace XFILE::VIDEODATABASEDIRECTORY;
 
 bool CVideoFileItemListModifier::CanModify(const CFileItemList &items) const
 {
-  if (items.IsVideoDb())
+  if (items.IsType("videodb://"))
     return true;
 
   return false;
@@ -48,7 +48,7 @@ bool CVideoFileItemListModifier::Modify(CFileItemList &items) const
 //  depending on the child node
 void CVideoFileItemListModifier::AddQueuingFolder(CFileItemList& items)
 {
-  if (!items.IsVideoDb())
+  if (!items.IsType("videodb://"))
     return;
 
   auto directoryNode = CDirectoryNode::ParseURL(items.GetPath());

@@ -117,7 +117,7 @@ bool CProgramThumbLoader::FillThumb(CFileItem &item)
 
 std::string CProgramThumbLoader::GetLocalThumb(const CFileItem &item)
 {
-  if (item.IsAddonsPath())
+  if (item.IsType("addons://"))
     return "";
 
   // look for the thumb

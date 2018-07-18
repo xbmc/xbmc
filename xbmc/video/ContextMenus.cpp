@@ -37,7 +37,7 @@ bool CVideoInfo::IsVisible(const CFileItem& item) const
   if (!item.HasVideoInfoTag())
     return false;
 
-  if (item.IsPVRRecording())
+  if (item.HasPVRRecordingInfoTag())
     return false; // pvr recordings have its own implementation for this
 
   return item.GetVideoInfoTag()->m_type == m_mediaType;
@@ -72,7 +72,7 @@ bool CMarkWatched::IsVisible(const CFileItem& item) const
   if (item.m_bIsFolder) // Only allow video db content, video and recording folders to be updated recursively
   {
     if (item.HasVideoInfoTag())
-      return item.IsVideoDb();
+      return item.IsType("videodb://");
     else if (item.GetProperty("IsVideoFolder").asBoolean())
       return true;
     else
@@ -98,7 +98,7 @@ bool CMarkUnWatched::IsVisible(const CFileItem& item) const
   if (item.m_bIsFolder) // Only allow video db content, video and recording folders to be updated recursively
   {
     if (item.HasVideoInfoTag())
-      return item.IsVideoDb();
+      return item.IsType("videodb://");
     else if (item.GetProperty("IsVideoFolder").asBoolean())
       return true;
     else
@@ -132,7 +132,7 @@ bool CResume::IsVisible(const CFileItem& itemIn) const
 
 static void SetPathAndPlay(CFileItem& item)
 {
-  if (item.IsVideoDb())
+  if (item.IsType("videodb://"))
   {
     item.SetProperty("original_listitem_url", item.GetPath());
     item.SetPath(item.GetVideoInfoTag()->m_strFileNameAndPath);
@@ -149,7 +149,7 @@ bool CResume::Execute(const CFileItemPtr& itemIn) const
 {
   CFileItem item(itemIn->GetItemToPlay());
 #ifdef HAS_DVD_DRIVE
-  if (item.IsDVD() || item.IsCDDA())
+  if (item.IsDVD() || item.IsType("cdda://"))
     return MEDIA_DETECT::CAutorun::PlayDisc(item.GetPath(), true, false);
 #endif
 
@@ -177,14 +177,14 @@ bool CPlay::IsVisible(const CFileItem& itemIn) const
   if (item.m_bIsFolder)
     return false; //! @todo implement
 
-  return item.IsVideo() || item.IsLiveTV() || item.IsDVD() || item.IsCDDA();
+  return item.IsVideo() || item.IsLiveTV() || item.IsDVD() || item.IsType("cdda://");
 }
 
 bool CPlay::Execute(const CFileItemPtr& itemIn) const
 {
   CFileItem item(itemIn->GetItemToPlay());
 #ifdef HAS_DVD_DRIVE
-  if (item.IsDVD() || item.IsCDDA())
+  if (item.IsDVD() || item.IsType("cdda://"))
     return MEDIA_DETECT::CAutorun::PlayDisc(item.GetPath(), true, true);
 #endif
   SetPathAndPlay(item);

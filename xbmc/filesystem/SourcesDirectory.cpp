@@ -77,18 +77,18 @@ bool CSourcesDirectory::GetDirectory(const VECSOURCES &sources, CFileItemList &i
     else if (   pItem->IsPath("special://musicplaylists/")
              || pItem->IsPath("special://videoplaylists/"))
       strIcon = "DefaultPlaylist.png";
-    else if (   pItem->IsVideoDb()
-             || pItem->IsMusicDb()
-             || pItem->IsPlugin()
+    else if (   pItem->IsType("videodb://")
+             || pItem->IsType("musicdb://")
+             || pItem->IsType("plugin://")
              || pItem->IsPath("musicsearch://"))
       strIcon = "DefaultFolder.png";
     else if (pItem->IsRemote())
       strIcon = "DefaultNetwork.png";
-    else if (pItem->IsISO9660())
+    else if (pItem->IsType("iso9660://"))
       strIcon = "DefaultDVDRom.png";
     else if (pItem->IsDVD())
       strIcon = "DefaultDVDFull.png";
-    else if (pItem->IsCDDA())
+    else if (pItem->IsType("cdda://"))
       strIcon = "DefaultCDDA.png";
     else if (pItem->IsRemovable() && CServiceBroker::GetGUI()->GetTextureManager().HasTexture("DefaultRemovableDisk.png"))
       strIcon = "DefaultRemovableDisk.png";

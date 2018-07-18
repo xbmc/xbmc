@@ -613,12 +613,12 @@ void CGUIWindowFileManager::OnClick(int iList, int iItem)
     if (!Update(iList, strPath))
       ShowShareErrorMessage(pItem.get());
   }
-  else if (pItem->IsZIP() || pItem->IsCBZ()) // mount zip archive
+  else if (pItem->IsZIP() || pItem->IsType(".cbz")) // mount zip archive
   {
     CURL pathToUrl = URIUtils::CreateArchivePath("zip", pItem->GetURL(), "");
     Update(iList, pathToUrl.Get());
   }
-  else if (pItem->IsRAR() || pItem->IsCBR())
+  else if (pItem->IsRAR() || pItem->IsType(".cbr"))
   {
     CURL pathToUrl = URIUtils::CreateArchivePath("rar", pItem->GetURL(), "");
     Update(iList, pathToUrl.Get());
@@ -662,7 +662,7 @@ void CGUIWindowFileManager::OnStart(CFileItem *pItem, const std::string &player)
     return ;
   }
 #ifdef HAS_PYTHON
-  if (pItem->IsPythonScript())
+  if (pItem->IsType(".py"))
   {
     CScriptInvocationManager::GetInstance().ExecuteAsync(pItem->GetPath());
     return ;

@@ -286,13 +286,13 @@ void CGUIWindowMusicBase::OnItemInfo(int iItem)
 
   CFileItemPtr item = m_vecItems->Get(iItem);
 
-  if (item->IsVideoDb())
+  if (item->IsType("videodb://"))
   { // Music video on a mixed current playlist
     OnContextButton(iItem, CONTEXT_BUTTON_INFO);
     return;
   }
 
-  if (!m_vecItems->IsPlugin() && (item->IsPlugin() || item->IsScript()))
+  if (!m_vecItems->IsType("plugin://") && (item->IsType("plugin://") || item->IsType("script://")))
   {
     CGUIDialogAddonInfo::ShowForItem(item);
     return;
@@ -417,7 +417,7 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
   // fast lookup is needed here
   queuedItems.SetFastLookup(true);
 
-  if (pItem->IsMusicDb() && pItem->m_bIsFolder && !pItem->IsParentFolder())
+  if (pItem->IsType("musicdb://") && pItem->m_bIsFolder && !pItem->IsParentFolder())
   { // we have a music database folder, just grab the "all" item underneath it
     CMusicDatabaseDirectory dir;
     if (!dir.ContainsSongs(pItem->GetPath()))
@@ -479,12 +479,12 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
     { // just queue the internet stream, it will be expanded on play
       queuedItems.Add(pItem);
     }
-    else if (pItem->IsPlugin() && pItem->GetProperty("isplayable") == "true")
+    else if (pItem->IsType("plugin://") && pItem->GetProperty("isplayable") == "true")
     {
       // python files can be played
       queuedItems.Add(pItem);
     }
-    else if (!pItem->IsNFO() && (pItem->IsAudio() || pItem->IsVideo()))
+    else if (!pItem->IsType(".nfo") && (pItem->IsAudio() || pItem->IsVideo()))
     {
       CFileItemPtr itemCheck = queuedItems.Get(pItem->GetPath());
       if (!itemCheck || itemCheck->m_lStartOffset != pItem->m_lStartOffset)
@@ -503,7 +503,7 @@ void CGUIWindowMusicBase::UpdateButtons()
 
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTNSCAN,
                               !(m_vecItems->IsVirtualDirectoryRoot() ||
-                                m_vecItems->IsMusicDb()));
+                                m_vecItems->IsType("musicdb://")));
 
   if (g_application.IsMusicScanning())
     SET_CONTROL_LABEL(CONTROL_BTNSCAN, 14056); // Stop Scan
@@ -525,7 +525,7 @@ void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &but
 
     if (item && !item->IsParentFolder())
     {
-      if (item->CanQueue() && !item->IsAddonsPath() && !item->IsScript())
+      if (item->CanQueue() && !item->IsType("addons://") && !item->IsType("script://"))
       {
         buttons.Add(CONTEXT_BUTTON_QUEUE_ITEM, 13347); //queue
 
@@ -561,18 +561,18 @@ void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &but
         else if (item->IsPlayList() || m_vecItems->IsPlayList())
           buttons.Add(CONTEXT_BUTTON_EDIT, 586);
       }
-      if (!m_vecItems->IsMusicDb() && !m_vecItems->IsInternetStream()           &&
-          !item->IsPath("add") && !item->IsParentFolder() &&
-          !item->IsPlugin() && !item->IsMusicDb()         &&
-          !item->IsLibraryFolder() &&
-          !StringUtils::StartsWithNoCase(item->GetPath(), "addons://")              &&
+      if (!m_vecItems->IsType("musicdb://") && !m_vecItems->IsInternetStream() &&
+          !item->IsPath("add") && !item->IsParentFolder()                      &&
+          !item->IsType("plugin://") && !item->IsType("musicdb://")            &&
+          !item->IsLibraryFolder()                                             &&
+          !StringUtils::StartsWithNoCase(item->GetPath(), "addons://")         &&
           (profileManager.GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser))
       {
         buttons.Add(CONTEXT_BUTTON_SCAN, 13352);
       }
 #ifdef HAS_DVD_DRIVE
       // enable Rip CD Audio or Track button if we have an audio disc
-      if (g_mediaManager.IsDiscInDrive() && m_vecItems->IsCDDA())
+      if (g_mediaManager.IsDiscInDrive() && m_vecItems->IsType("cdda://"))
       {
         // those cds can also include Audio Tracks: CDExtra and MixedMode!
         MEDIA_DETECT::CCdInfo *pCdInfo = g_mediaManager.GetCdInfo();
@@ -583,7 +583,7 @@ void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &but
     }
 
     // enable CDDB lookup if the current dir is CDDA
-    if (g_mediaManager.IsDiscInDrive() && m_vecItems->IsCDDA() &&
+    if (g_mediaManager.IsDiscInDrive() && m_vecItems->IsType("cdda://") &&
        (profileManager.GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser))
     {
       buttons.Add(CONTEXT_BUTTON_CDDB, 16002);
@@ -710,7 +710,7 @@ void CGUIWindowMusicBase::OnRipCD()
 {
   if(g_mediaManager.IsAudio())
   {
-    if (!g_application.CurrentFileItem().IsCDDA())
+    if (!g_application.CurrentFileItem().IsType("cdda://"))
     {
 #ifdef HAS_CDDA_RIPPER
       CCDDARipper::GetInstance().RipCD();
@@ -725,7 +725,7 @@ void CGUIWindowMusicBase::OnRipTrack(int iItem)
 {
   if(g_mediaManager.IsAudio())
   {
-    if (!g_application.CurrentFileItem().IsCDDA())
+    if (!g_application.CurrentFileItem().IsType("cdda://"))
     {
 #ifdef HAS_CDDA_RIPPER
       CFileItemPtr item = m_vecItems->Get(iItem);
@@ -753,7 +753,7 @@ void CGUIWindowMusicBase::PlayItem(int iItem)
 #endif
 
   // if its a folder, build a playlist
-  if (pItem->m_bIsFolder && !pItem->IsPlugin())
+  if (pItem->m_bIsFolder && !pItem->IsType("plugin://"))
   {
     // make a copy so that we can alter the queue state
     CFileItemPtr item(new CFileItem(*m_vecItems->Get(iItem)));
@@ -865,8 +865,8 @@ bool CGUIWindowMusicBase::OnPlayMedia(int iItem, const std::string &player)
 /// \param items File items to fill
 void CGUIWindowMusicBase::OnRetrieveMusicInfo(CFileItemList& items)
 {
-  if (items.GetFolderCount()==items.Size() || items.IsMusicDb() ||
-     (!CServiceBroker::GetSettings().GetBool(CSettings::SETTING_MUSICFILES_USETAGS) && !items.IsCDDA()))
+  if (items.GetFolderCount()==items.Size() || items.IsType("musicdb://") ||
+     (!CServiceBroker::GetSettings().GetBool(CSettings::SETTING_MUSICFILES_USETAGS) && !items.IsType("cdda://")))
   {
     return;
   }
@@ -1002,7 +1002,7 @@ bool CGUIWindowMusicBase::GetDirectory(const std::string &strDirectory, CFileIte
 bool CGUIWindowMusicBase::CheckFilterAdvanced(CFileItemList &items) const
 {
   std::string content = items.GetContent();
-  if ((items.IsMusicDb() || CanContainFilter(m_strFilterPath)) &&
+  if ((items.IsType("musicdb://") || CanContainFilter(m_strFilterPath)) &&
       (StringUtils::EqualsNoCase(content, "artists") ||
        StringUtils::EqualsNoCase(content, "albums")  ||
        StringUtils::EqualsNoCase(content, "songs")))
@@ -1120,7 +1120,7 @@ void CGUIWindowMusicBase::OnPrepareFileItems(CFileItemList &items)
 {
   CGUIMediaWindow::OnPrepareFileItems(items);
 
-  if (!items.IsMusicDb() && !items.IsSmartPlayList())
+  if (!items.IsType("musicdb://") && !items.IsSmartPlayList())
     RetrieveMusicInfo();
 }
 

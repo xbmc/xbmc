@@ -64,7 +64,7 @@ bool CGUIDialogSimpleMenu::ShowPlaySelection(CFileItem& item)
     return true;
 
   std::string path;
-  if (item.IsVideoDb())
+  if (item.IsType("videodb://"))
     path = item.GetVideoInfoTag()->m_strFileNameAndPath;
   else
     path = item.GetPath();

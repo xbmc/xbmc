@@ -116,7 +116,7 @@ bool CGUIWindowGames::OnClickMsg(int controlId, int actionId)
   }
   case ACTION_SHOW_INFO:
   {
-    if (!m_vecItems->IsPlugin())
+    if (!m_vecItems->IsType("plugin://"))
     {
       if (pItem->HasAddonInfo())
       {
@@ -185,7 +185,7 @@ void CGUIWindowGames::GetContextButtons(int itemNumber, CContextButtons &buttons
 
   if (item && !item->GetProperty("pluginreplacecontextitems").asBoolean())
   {
-    if (m_vecItems->IsVirtualDirectoryRoot() || m_vecItems->IsSourcesPath())
+    if (m_vecItems->IsVirtualDirectoryRoot() || m_vecItems->IsType("sources://"))
     {
       // Context buttons for a sources path, like "Add Source", "Remove Source", etc.
       CGUIDialogContextMenu::GetContextButtons("games", item, buttons);
@@ -213,7 +213,7 @@ bool CGUIWindowGames::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   CFileItemPtr item = m_vecItems->Get(itemNumber);
   if (item)
   {
-    if (m_vecItems->IsVirtualDirectoryRoot() || m_vecItems->IsSourcesPath())
+    if (m_vecItems->IsVirtualDirectoryRoot() || m_vecItems->IsType("sources://"))
     {
       if (CGUIDialogContextMenu::OnContextButton("games", item, button))
       {
@@ -269,7 +269,7 @@ bool CGUIWindowGames::GetDirectory(const std::string &strDirectory, CFileItemLis
   if (items.GetContent().empty())
   {
     if (!items.IsVirtualDirectoryRoot() && // Don't set content for root directory
-        !items.IsPlugin())                 // Don't set content for plugins
+        !items.IsType("plugin://"))        // Don't set content for plugins
     {
       content = "games";
     }
@@ -317,9 +317,9 @@ void CGUIWindowGames::OnItemInfo(int itemNumber)
   if (!item)
     return;
 
-  if (!m_vecItems->IsPlugin())
+  if (!m_vecItems->IsType("plugin://"))
   {
-    if (item->IsPlugin() || item->IsScript())
+    if (item->IsType("plugin://") || item->IsType("script://"))
       CGUIDialogAddonInfo::ShowForItem(item);
   }
 

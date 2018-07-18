@@ -388,7 +388,7 @@ bool CGUIWindowMusicNav::OnClick(int iItem, const std::string &player /* = "" */
     }
     return true;
   }
-  if (item->IsMusicDb() && !item->m_bIsFolder)
+  if (item->IsType("musicdb://") && !item->m_bIsFolder)
     m_musicdatabase.SetPropertiesForFileItem(*item);
 
   return CGUIWindowMusicBase::OnClick(iItem, player);
@@ -421,7 +421,7 @@ bool CGUIWindowMusicNav::GetDirectory(const std::string &strDirectory, CFileItem
   }
 
   // update our content in the info manager
-  if (StringUtils::StartsWithNoCase(strDirectory, "videodb://") || items.IsVideoDb())
+  if (StringUtils::StartsWithNoCase(strDirectory, "videodb://") || items.IsType("videodb://"))
   {
     CVideoDatabaseDirectory dir;
     VIDEODATABASEDIRECTORY::NODE_TYPE node = dir.GetDirectoryChildType(items.GetPath());
@@ -447,7 +447,7 @@ bool CGUIWindowMusicNav::GetDirectory(const std::string &strDirectory, CFileItem
     else
       items.SetContent("");
   }
-  else if (StringUtils::StartsWithNoCase(strDirectory, "musicdb://") || items.IsMusicDb())
+  else if (StringUtils::StartsWithNoCase(strDirectory, "musicdb://") || items.IsType("musicdb://"))
   {
     CMusicDatabaseDirectory dir;
     NODE_TYPE node = dir.GetDirectoryChildType(items.GetPath());
@@ -487,10 +487,10 @@ bool CGUIWindowMusicNav::GetDirectory(const std::string &strDirectory, CFileItem
     items.SetContent("playlists");
   else if (URIUtils::PathEquals(strDirectory, "plugin://music/"))
     items.SetContent("plugins");
-  else if (items.IsAddonsPath())
+  else if (items.IsType("addons://"))
     items.SetContent("addons");
-  else if (!items.IsSourcesPath() && !items.IsVirtualDirectoryRoot() &&
-           !items.IsLibraryFolder() && !items.IsPlugin() && !items.IsSmartPlayList())
+  else if (!items.IsType("sources://") && !items.IsVirtualDirectoryRoot() &&
+           !items.IsLibraryFolder() && !items.IsType("plugin://") && !items.IsSmartPlayList())
     items.SetContent("files");
 
   return bResult;
@@ -544,7 +544,7 @@ void CGUIWindowMusicNav::UpdateButtons()
 
   SET_CONTROL_SELECTED(GetID(),CONTROL_BTNPARTYMODE, g_partyModeManager.IsEnabled());
 
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_UPDATE_LIBRARY, !m_vecItems->IsAddonsPath() && !m_vecItems->IsPlugin() && !m_vecItems->IsScript());
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_UPDATE_LIBRARY, !m_vecItems->IsType("addons://") && !m_vecItems->IsType("plugin://") && !m_vecItems->IsType("script://"));
 }
 
 void CGUIWindowMusicNav::PlayItem(int iItem)
@@ -593,7 +593,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
       CGUIDialogContextMenu::GetContextButtons("music", item, buttons);
 #ifdef HAS_DVD_DRIVE
       // enable Rip CD an audio disc
-      if (g_mediaManager.IsDiscInDrive() && item->IsCDDA())
+      if (g_mediaManager.IsDiscInDrive() && item->IsType("cdda://"))
       {
         // those cds can also include Audio Tracks: CDExtra and MixedMode!
         MEDIA_DETECT::CCdInfo *pCdInfo = g_mediaManager.GetCdInfo();
@@ -608,7 +608,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
 #endif
       if (!inPlaylists && !m_vecItems->IsInternetStream() &&
         !item->IsPath("add") && !item->IsParentFolder() &&
-        !item->IsPlugin() &&
+        !item->IsType("plugin://") &&
         !StringUtils::StartsWithNoCase(item->GetPath(), "addons://") &&
         (profileManager.GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser))
       {
@@ -624,8 +624,8 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
 
       if (!item->IsParentFolder() && !dir.IsAllItem(item->GetPath()))
       {
-        if (item->m_bIsFolder && !item->IsVideoDb() &&
-          !item->IsPlugin() && !StringUtils::StartsWithNoCase(item->GetPath(), "musicsearch://"))
+        if (item->m_bIsFolder && !item->IsType("videodb://") &&
+          !item->IsType("plugin://") && !StringUtils::StartsWithNoCase(item->GetPath(), "musicsearch://"))
         {
           if (item->IsAlbum())
             // enable query all albums button only in album view
@@ -673,7 +673,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
         }
         if (item->HasVideoInfoTag() && !item->m_bIsFolder)
         {
-          if ((profileManager.GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser) && !item->IsPlugin())
+          if ((profileManager.GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser) && !item->IsType("plugin://"))
           {
             buttons.Add(CONTEXT_BUTTON_RENAME, 16105);
             buttons.Add(CONTEXT_BUTTON_DELETE, 646);
@@ -706,7 +706,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   {
   case CONTEXT_BUTTON_INFO:
     {
-      if (!item->IsVideoDb())
+      if (!item->IsType("videodb://"))
         return CGUIWindowMusicBase::OnContextButton(itemNumber,button);
 
       // music videos - artists
@@ -787,7 +787,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     }
 
   case CONTEXT_BUTTON_RENAME:
-    if (!item->IsVideoDb() && !item->IsReadOnly())
+    if (!item->IsType("videodb://") && !item->IsReadOnly())
       OnRenameItem(itemNumber);
 
     CGUIDialogVideoInfo::UpdateVideoItemTitle(item);
@@ -803,7 +803,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       if (gui && gui->ConfirmDelete(item->GetPath()))
         CFileUtils::DeleteItem(item);
     }
-    else if (!item->IsVideoDb())
+    else if (!item->IsType("videodb://"))
       OnDeleteItem(itemNumber);
     else
     {

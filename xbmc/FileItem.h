@@ -198,28 +198,16 @@ public:
   bool IsAudioBook() const;
 
   bool IsGame() const;
-  bool IsCUESheet() const;
   bool IsInternetStream(const bool bStrictCheck = false) const;
   bool IsPlayList() const;
   bool IsSmartPlayList() const;
   bool IsLibraryFolder() const;
-  bool IsPythonScript() const;
-  bool IsPlugin() const;
-  bool IsScript() const;
-  bool IsAddonsPath() const;
-  bool IsSourcesPath() const;
-  bool IsNFO() const;
   bool IsDiscImage() const;
   bool IsOpticalMediaFile() const;
   bool IsDVDFile(bool bVobs = true, bool bIfos = true) const;
   bool IsBDFile() const;
   bool IsRAR() const;
-  bool IsAPK() const;
   bool IsZIP() const;
-  bool IsCBZ() const;
-  bool IsCBR() const;
-  bool IsISO9660() const;
-  bool IsCDDA() const;
   bool IsDVD() const;
   bool IsOnDVD() const;
   bool IsOnLAN() const;
@@ -228,19 +216,15 @@ public:
   bool IsRemote() const;
   bool IsSmb() const;
   bool IsURL() const;
-  bool IsStack() const;
-  bool IsMultiPath() const;
-  bool IsMusicDb() const;
-  bool IsVideoDb() const;
-  bool IsEPG() const;
-  bool IsPVRChannel() const;
-  bool IsPVRRecording() const;
   bool IsUsablePVRRecording() const;
   bool IsDeletedPVRRecording() const;
   bool IsInProgressPVRRecording() const;
-  bool IsPVRTimer() const;
-  bool IsPVRRadioRDS() const;
+
+  //! \brief Check if path item points to has a given extension or protocol type.
+  //! \param[in] ext Extension or protocol type
+  //! \details If ext contains a '.', it is an extension, else it is a protocol.
   bool IsType(const char *ext) const;
+
   bool IsVirtualDirectoryRoot() const;
   bool IsReadOnly() const;
   bool CanQueue() const;
@@ -248,10 +232,8 @@ public:
   bool IsParentFolder() const;
   bool IsFileFolder(EFileFolderType types = EFILEFOLDER_MASK_ALL) const;
   bool IsRemovable() const;
-  bool IsPVR() const;
   bool IsLiveTV() const;
   bool IsRSS() const;
-  bool IsAndroidApp() const;
 
   void RemoveExtension();
   void CleanString();

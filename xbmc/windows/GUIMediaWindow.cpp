@@ -358,7 +358,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
       else if (message.GetParam1() == GUI_MSG_REMOVED_MEDIA)
       {
         if ((m_vecItems->IsVirtualDirectoryRoot() ||
-             m_vecItems->IsSourcesPath()) && IsActive())
+             m_vecItems->IsType("sources://")) && IsActive())
         {
           int iItem = m_viewControl.GetSelectedItem();
           Refresh();
@@ -382,7 +382,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
       else if (message.GetParam1()==GUI_MSG_UPDATE_SOURCES)
       { // State of the sources changed, so update our view
         if ((m_vecItems->IsVirtualDirectoryRoot() ||
-             m_vecItems->IsSourcesPath()) && IsActive())
+             m_vecItems->IsType("sources://")) && IsActive())
         {
           if (m_vecItemsUpdating)
           {
@@ -438,7 +438,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
         if (IsActive())
         {
           if((message.GetStringParam() == m_vecItems->GetPath()) ||
-             (m_vecItems->IsMultiPath() && XFILE::CMultiPathDirectory::HasPath(m_vecItems->GetPath(), message.GetStringParam())))
+             (m_vecItems->IsType("multipath://") && XFILE::CMultiPathDirectory::HasPath(m_vecItems->GetPath(), message.GetStringParam())))
             Refresh();
         }
       }
@@ -1031,7 +1031,7 @@ bool CGUIMediaWindow::OnClick(int iItem, const std::string &player)
     delete pFileDirectory;
   }
 
-  if (pItem->IsScript())
+  if (pItem->IsType("script://"))
   {
     // execute the script
     CURL url(pItem->GetPath());
@@ -1102,13 +1102,13 @@ bool CGUIMediaWindow::OnClick(int iItem, const std::string &player)
 
     return true;
   }
-  else if (pItem->IsPlugin() && !pItem->GetProperty("isplayable").asBoolean())
+  else if (pItem->IsType("plugin://") && !pItem->GetProperty("isplayable").asBoolean())
   {
     bool resume = pItem->m_lStartOffset == STARTOFFSET_RESUME;
     return XFILE::CPluginDirectory::RunScriptWithParams(pItem->GetPath(), resume);
   }
 #if defined(TARGET_ANDROID)
-  else if (pItem->IsAndroidApp())
+  else if (pItem->IsType("androidapp://"))
   {
     std::string appName = URIUtils::GetFileName(pItem->GetPath());
     CLog::Log(LOGDEBUG, "CGUIMediaWindow::OnClick Trying to run: %s",appName.c_str());
@@ -1135,7 +1135,7 @@ bool CGUIMediaWindow::OnClick(int iItem, const std::string &player)
 
     bool autoplay = m_guiState.get() && m_guiState->AutoPlayNextItem();
 
-    if (m_vecItems->IsPlugin())
+    if (m_vecItems->IsType("plugin://"))
     {
       CURL url(m_vecItems->GetPath());
       AddonPtr addon;

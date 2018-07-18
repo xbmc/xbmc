@@ -411,7 +411,7 @@ void CGUIWindowVideoPlaylist::GetContextButtons(int itemNumber, CContextButtons 
 
       // check what players we have, if we have multiple display play with option
       std::vector<std::string> players;
-      if (item->IsVideoDb())
+      if (item->IsType("videodb://"))
       {
         CFileItem item2(item->GetVideoInfoTag()->m_strFileNameAndPath, false);
         playerCoreFactory.GetPlayers(item2, players);
@@ -459,7 +459,7 @@ bool CGUIWindowVideoPlaylist::OnContextButton(int itemNumber, CONTEXT_BUTTON but
       const CPlayerCoreFactory &playerCoreFactory = CServiceBroker::GetPlayerCoreFactory();
 
       std::vector<std::string> players;
-      if (item->IsVideoDb())
+      if (item->IsType("videodb://"))
       {
         CFileItem item2(*item->GetVideoInfoTag());
         playerCoreFactory.GetPlayers(item2, players);

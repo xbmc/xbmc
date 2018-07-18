@@ -904,7 +904,7 @@ int CVideoDatabase::AddFile(const std::string& strFileNameAndPath)
 
 int CVideoDatabase::AddFile(const CFileItem& item)
 {
-  if (item.IsVideoDb() && item.HasVideoInfoTag())
+  if (item.IsType("videodb://") && item.HasVideoInfoTag())
   {
     if (item.GetVideoInfoTag()->m_iFileId != -1)
       return item.GetVideoInfoTag()->m_iFileId;
@@ -1086,7 +1086,7 @@ int CVideoDatabase::GetFileId(const std::string& strFilenameAndPath)
 
 int CVideoDatabase::GetFileId(const CFileItem &item)
 {
-  if (item.IsVideoDb() && item.HasVideoInfoTag())
+  if (item.IsType("videodb://") && item.HasVideoInfoTag())
   {
     if (item.GetVideoInfoTag()->m_iFileId != -1)
       return item.GetVideoInfoTag()->m_iFileId;
@@ -5371,7 +5371,7 @@ bool CVideoDatabase::GetPlayCounts(const std::string &strPath, CFileItemList &it
       CFileItemPtr item = items.Get(path);
       if (item)
       {
-        if (!items.IsPlugin() || !item->GetVideoInfoTag()->IsPlayCountSet())
+        if (!items.IsType("plugin://") || !item->GetVideoInfoTag()->IsPlayCountSet())
           item->GetVideoInfoTag()->SetPlayCount(m_pDS->fv(1).get_asInt());
 
         if (!item->GetVideoInfoTag()->GetResumePoint().IsSet())

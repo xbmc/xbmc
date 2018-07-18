@@ -433,7 +433,7 @@ static int PlayMedia(const std::vector<std::string>& params)
     }
   }
 
-  if (!item.m_bIsFolder && item.IsPlugin())
+  if (!item.m_bIsFolder && item.IsType("plugin://"))
     item.SetProperty("IsPlayable", true);
 
   if ( askToResume == true )

@@ -35,15 +35,15 @@ namespace PVR
 {
   CPVREpgInfoTagPtr CPVRItem::GetEpgInfoTag() const
   {
-    if (m_item->IsEPG())
+    if (m_item->HasEPGInfoTag())
     {
       return m_item->GetEPGInfoTag();
     }
-    else if (m_item->IsPVRChannel())
+    else if (m_item->HasPVRChannelInfoTag())
     {
       return m_item->GetPVRChannelInfoTag()->GetEPGNow();
     }
-    else if (m_item->IsPVRTimer())
+    else if (m_item->HasPVRTimerInfoTag())
     {
       return m_item->GetPVRTimerInfoTag()->GetEpgInfoTag();
     }
@@ -56,15 +56,15 @@ namespace PVR
 
   CPVREpgInfoTagPtr CPVRItem::GetNextEpgInfoTag() const
   {
-    if (m_item->IsEPG())
+    if (m_item->HasEPGInfoTag())
     {
       return m_item->GetEPGInfoTag()->GetNextEvent();
     }
-    else if (m_item->IsPVRChannel())
+    else if (m_item->HasPVRChannelInfoTag())
     {
       return m_item->GetPVRChannelInfoTag()->GetEPGNext();
     }
-    else if (m_item->IsPVRTimer())
+    else if (m_item->HasPVRRecordingInfoTag())
     {
       const CPVREpgInfoTagPtr current = m_item->GetPVRTimerInfoTag()->GetEpgInfoTag();
       if (current)
@@ -79,15 +79,15 @@ namespace PVR
 
   CPVRChannelPtr CPVRItem::GetChannel() const
   {
-    if (m_item->IsPVRChannel())
+    if (m_item->HasPVRChannelInfoTag())
     {
       return m_item->GetPVRChannelInfoTag();
     }
-    else if (m_item->IsEPG())
+    else if (m_item->HasEPGInfoTag())
     {
       return m_item->GetEPGInfoTag()->Channel();
     }
-    else if (m_item->IsPVRTimer())
+    else if (m_item->HasPVRTimerInfoTag())
     {
       return m_item->GetPVRTimerInfoTag()->Channel();
     }
@@ -100,15 +100,15 @@ namespace PVR
 
   CPVRTimerInfoTagPtr CPVRItem::GetTimerInfoTag() const
   {
-    if (m_item->IsPVRTimer())
+    if (m_item->HasPVRTimerInfoTag())
     {
       return m_item->GetPVRTimerInfoTag();
     }
-    else if (m_item->IsEPG())
+    else if (m_item->HasEPGInfoTag())
     {
       return m_item->GetEPGInfoTag()->Timer();
     }
-    else if (m_item->IsPVRChannel())
+    else if (m_item->HasPVRChannelInfoTag())
     {
       CPVRTimerInfoTagPtr timer;
       const CPVREpgInfoTagPtr epgTag(m_item->GetPVRChannelInfoTag()->GetEPGNow());
@@ -129,11 +129,11 @@ namespace PVR
 
   CPVRRecordingPtr CPVRItem::GetRecording() const
   {
-    if (m_item->IsPVRRecording())
+    if (m_item->HasPVRRecordingInfoTag())
     {
       return m_item->GetPVRRecordingInfoTag();
     }
-    else if (m_item->IsEPG())
+    else if (m_item->HasEPGInfoTag())
     {
       return m_item->GetEPGInfoTag()->Recording();
     }
@@ -146,16 +146,16 @@ namespace PVR
 
   bool CPVRItem::IsRadio() const
   {
-    if (m_item->IsPVRChannel())
+    if (m_item->HasPVRChannelInfoTag())
     {
       return m_item->GetPVRChannelInfoTag()->IsRadio();
     }
-    else if (m_item->IsEPG())
+    else if (m_item->HasEPGInfoTag())
     {
       const CPVRChannelPtr channel(m_item->GetEPGInfoTag()->Channel());
       return (channel && channel->IsRadio());
     }
-    else if (m_item->IsPVRRecording())
+    else if (m_item->HasPVRRecordingInfoTag())
     {
       return m_item->GetPVRRecordingInfoTag()->IsRadio();
     }

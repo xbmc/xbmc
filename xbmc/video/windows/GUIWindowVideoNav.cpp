@@ -166,7 +166,7 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
             // We are here if the item is filtered out in the nav window
             std::string path = message.GetStringParam(0);
             CFileItem item(path, URIUtils::HasSlashAtEnd(path));
-            if (item.IsVideoDb())
+            if (item.IsType("videodb://"))
             {
               *(item.GetVideoInfoTag()) = XFILE::CVideoDatabaseFile::GetVideoTag(CURL(item.GetPath()));
               if (!item.GetVideoInfoTag()->IsEmpty())
@@ -256,7 +256,7 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
 
 SelectFirstUnwatchedItem CGUIWindowVideoNav::GetSettingSelectFirstUnwatchedItem()
 {
-  if (m_vecItems->IsVideoDb())
+  if (m_vecItems->IsType("videodb://"))
   {
     NODE_TYPE nodeType = CVideoDatabaseDirectory::GetDirectoryChildType(m_vecItems->GetPath());
 
@@ -377,7 +377,7 @@ bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItem
   bool bResult = CGUIWindowVideoBase::GetDirectory(strDirectory, items);
   if (bResult)
   {
-    if (items.IsVideoDb())
+    if (items.IsType("videodb://"))
     {
       XFILE::CVideoDatabaseDirectory dir;
       CQueryParams params;
@@ -541,7 +541,7 @@ bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItem
       std::string label;
       if (items.GetLabel().empty() && m_rootDir.IsSource(items.GetPath(), CMediaSourceSettings::GetInstance().GetSources("video"), &label))
         items.SetLabel(label);
-      if (!items.IsSourcesPath() && !items.IsLibraryFolder())
+      if (!items.IsType("sources://") && !items.IsLibraryFolder())
         LoadVideoInfo(items);
     }
 
@@ -568,7 +568,7 @@ void CGUIWindowVideoNav::LoadVideoInfo(CFileItemList &items, CVideoDatabase &dat
 {
   //! @todo this could possibly be threaded as per the music info loading,
   //!       we could also cache the info
-  if (!items.GetContent().empty() && !items.IsPlugin())
+  if (!items.GetContent().empty() && !items.IsType("plugin://"))
     return; // don't load for listings that have content set and weren't created from plugins
 
   std::string content = items.GetContent();
@@ -576,7 +576,7 @@ void CGUIWindowVideoNav::LoadVideoInfo(CFileItemList &items, CVideoDatabase &dat
   if (content.empty())
   {
     content = database.GetContentForPath(items.GetPath());
-    items.SetContent((content.empty() && !items.IsPlugin()) ? "files" : content);
+    items.SetContent((content.empty() && !items.IsType("plugin://")) ? "files" : content);
   }
 
   /*
@@ -698,7 +698,7 @@ void CGUIWindowVideoNav::UpdateButtons()
   else if (m_vecItems->IsPath("sources://video/"))
     strLabel = g_localizeStrings.Get(744);
   // everything else is from a videodb:// path
-  else if (m_vecItems->IsVideoDb())
+  else if (m_vecItems->IsType("videodb://"))
   {
     CVideoDatabaseDirectory dir;
     dir.GetLabel(m_vecItems->GetPath(), strLabel);
@@ -715,7 +715,7 @@ void CGUIWindowVideoNav::UpdateButtons()
 
   SET_CONTROL_SELECTED(GetID(),CONTROL_BTNPARTYMODE, g_partyModeManager.IsEnabled());
 
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_UPDATE_LIBRARY, !m_vecItems->IsAddonsPath() && !m_vecItems->IsPlugin() && !m_vecItems->IsScript());
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_UPDATE_LIBRARY, !m_vecItems->IsType("addons://") && !m_vecItems->IsType("plugin://") && !m_vecItems->IsType("script://"));
 }
 
 bool CGUIWindowVideoNav::GetFilteredItems(const std::string &filter, CFileItemList &items)
@@ -809,7 +809,7 @@ void CGUIWindowVideoNav::OnItemInfo(const CFileItem& fileItem, ADDON::ScraperPtr
   if (!scraper || scraper->Content() == CONTENT_NONE)
   {
     m_database.Open(); // since we can be called from the music library without being inited
-    if (fileItem.IsVideoDb())
+    if (fileItem.IsType("videodb://"))
       scraper = m_database.GetScraperForPath(fileItem.GetVideoInfoTag()->m_strPath);
     else
     {
@@ -827,7 +827,7 @@ void CGUIWindowVideoNav::OnDeleteItem(CFileItemPtr pItem)
   if (m_vecItems->IsParentFolder())
     return;
 
-  if (!m_vecItems->IsVideoDb() && !pItem->IsVideoDb())
+  if (!m_vecItems->IsType("videodb://") && !pItem->IsType("videodb://"))
   {
     if (!pItem->IsPath("newsmartplaylist://video") &&
         !pItem->IsPath("special://videoplaylists/") &&
@@ -920,7 +920,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
       database.Open();
       ADDON::ScraperPtr info = database.GetScraperForPath(item->GetPath());
 
-      if (!item->IsLiveTV() && !item->IsAddonsPath() && !URIUtils::IsUPnP(item->GetPath()))
+      if (!item->IsLiveTV() && !item->IsType("addons://") && !URIUtils::IsUPnP(item->GetPath()))
       {
         if (info && info->Content() != CONTENT_NONE)
         {
@@ -974,7 +974,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
       // can we update the database?
       if (profileManager.GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser)
       {
-        if (!g_application.IsVideoScanning() && item->IsVideoDb() && item->HasVideoInfoTag() &&
+        if (!g_application.IsVideoScanning() && item->IsType("videodb://") && item->HasVideoInfoTag() &&
            (item->GetVideoInfoTag()->m_type == MediaTypeMovie ||          // movies
             item->GetVideoInfoTag()->m_type == MediaTypeTvShow ||         // tvshows
             item->GetVideoInfoTag()->m_type == MediaTypeSeason ||         // seasons
@@ -999,7 +999,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
         }
       }
 
-      if (!m_vecItems->IsVideoDb() && !m_vecItems->IsVirtualDirectoryRoot())
+      if (!m_vecItems->IsType("videodb://") && !m_vecItems->IsVirtualDirectoryRoot())
       { // non-video db items, file operations are allowed
         if ((CServiceBroker::GetSettings().GetBool(CSettings::SETTING_FILELISTS_ALLOWFILEDELETION) &&
             CUtil::SupportsWriteFileOperations(item->GetPath())) ||
@@ -1010,7 +1010,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
           buttons.Add(CONTEXT_BUTTON_RENAME, 118);
         }
         // add "Set/Change content" to folders
-        if (item->m_bIsFolder && !item->IsVideoDb() && !item->IsPlayList() && !item->IsSmartPlayList() && !item->IsLibraryFolder() && !item->IsLiveTV() && !item->IsPlugin() && !item->IsAddonsPath() && !URIUtils::IsUPnP(item->GetPath()))
+        if (item->m_bIsFolder && !item->IsType("videodb://") && !item->IsPlayList() && !item->IsSmartPlayList() && !item->IsLibraryFolder() && !item->IsLiveTV() && !item->IsType("plugin://") && !item->IsType("addons://") && !URIUtils::IsUPnP(item->GetPath()))
         {
           if (info && info->Content() != CONTENT_NONE)
             buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20442);
@@ -1037,7 +1037,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   if (CGUIDialogContextMenu::OnContextButton("video", item, button))
   {
     //! @todo should we search DB for entries from plugins?
-    if (button == CONTEXT_BUTTON_REMOVE_SOURCE && !item->IsPlugin()
+    if (button == CONTEXT_BUTTON_REMOVE_SOURCE && !item->IsType("plugin://")
         && !item->IsLiveTV() &&!item->IsRSS() && !URIUtils::IsUPnP(item->GetPath()))
     {
       // if the source has been properly removed, remove the cached source list because the list has changed
@@ -1130,7 +1130,7 @@ bool CGUIWindowVideoNav::OnAddMediaSource()
 bool CGUIWindowVideoNav::OnClick(int iItem, const std::string &player)
 {
   CFileItemPtr item = m_vecItems->Get(iItem);
-  if (!item->m_bIsFolder && item->IsVideoDb() && !item->Exists())
+  if (!item->m_bIsFolder && item->IsType("videodb://") && !item->Exists())
   {
     CLog::Log(LOGDEBUG, "%s called on '%s' but file doesn't exist", __FUNCTION__, item->GetPath().c_str());
 
@@ -1292,7 +1292,7 @@ bool CGUIWindowVideoNav::ApplyWatchedFilter(CFileItemList &items)
   ||  node == NODE_TYPE_RECENTLY_ADDED_MOVIES
   ||  node == NODE_TYPE_RECENTLY_ADDED_MUSICVIDEOS)
     filterWatched = true;
-  if (!items.IsVideoDb())
+  if (!items.IsType("videodb://"))
     filterWatched = true;
   if (items.GetContent() == "tvshows" &&
      (items.IsSmartPlayList() || items.IsLibraryFolder()))

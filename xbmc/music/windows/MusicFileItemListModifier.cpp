@@ -31,7 +31,7 @@ using namespace XFILE::MUSICDATABASEDIRECTORY;
 
 bool CMusicFileItemListModifier::CanModify(const CFileItemList &items) const
 {
-  if (items.IsMusicDb())
+  if (items.IsType("musicdb://"))
     return true;
 
   return false;
@@ -47,7 +47,7 @@ bool CMusicFileItemListModifier::Modify(CFileItemList &items) const
 //  depending on the child node
 void CMusicFileItemListModifier::AddQueuingFolder(CFileItemList& items)
 {
-  if (!items.IsMusicDb())
+  if (!items.IsType("musicdb://"))
     return;
 
   auto directoryNode = CDirectoryNode::ParseURL(items.GetPath());

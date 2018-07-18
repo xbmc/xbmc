@@ -148,9 +148,9 @@ GetMimeType(const CFileItem& item,
 
     /* fallback to generic mime type if not found */
     if (mime.IsEmpty()) {
-        if (item.IsVideo() || item.IsVideoDb() )
+        if (item.IsVideo() || item.IsType("videodb://") )
             mime = "video/" + ext;
-        else if (item.IsAudio() || item.IsMusicDb() )
+        else if (item.IsAudio() || item.IsType("musicdb://") )
             mime = "audio/" + ext;
         else if (item.IsPicture() )
             mime = "image/" + ext;
@@ -392,14 +392,14 @@ BuildObject(CFileItem&                    item,
         object->m_ObjectID = item.GetPath().c_str();
 
         /* Setup object type */
-        if (item.IsMusicDb() || item.IsAudio()) {
+        if (item.IsType("musicdb://") || item.IsAudio()) {
             object->m_ObjectClass.type = "object.item.audioItem.musicTrack";
 
             if (item.HasMusicInfoTag()) {
                 CMusicInfoTag *tag = item.GetMusicInfoTag();
                 PopulateObjectFromTag(*tag, *object, &file_path, &resource, quirks, upnp_service);
             }
-        } else if (item.IsVideoDb() || item.IsVideo()) {
+        } else if (item.IsType("videodb://") || item.IsVideo()) {
             object->m_ObjectClass.type = "object.item.videoItem";
 
             if(quirks & ECLIENTQUIRKS_UNKNOWNSERIES)
@@ -467,7 +467,7 @@ BuildObject(CFileItem&                    item,
         container->m_ChildrenCount = -1;
 
         /* this might be overkill, but hey */
-        if (item.IsMusicDb()) {
+        if (item.IsType("musicdb://")) {
             MUSICDATABASEDIRECTORY::NODE_TYPE node = CMusicDatabaseDirectory::GetDirectoryType(item.GetPath());
             switch(node) {
                 case MUSICDATABASEDIRECTORY::NODE_TYPE_ARTIST: {
@@ -511,7 +511,7 @@ BuildObject(CFileItem&                    item,
                 default:
                   break;
             }
-        } else if (item.IsVideoDb()) {
+        } else if (item.IsType("videodb://")) {
             VIDEODATABASEDIRECTORY::NODE_TYPE node = CVideoDatabaseDirectory::GetDirectoryType(item.GetPath());
             CVideoInfoTag &tag = *item.GetVideoInfoTag();
             switch(node) {

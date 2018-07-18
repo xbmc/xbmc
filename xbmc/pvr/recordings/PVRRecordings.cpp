@@ -218,7 +218,7 @@ bool CPVRRecordings::DeleteDirectory(const CFileItem& directory)
 
 bool CPVRRecordings::DeleteRecording(const CFileItem &item)
 {
-  if (!item.IsPVRRecording())
+  if (!item.HasPVRRecordingInfoTag())
   {
     CLog::LogF(LOGERROR, "Cannot delete item: no valid recording tag");
     return false;

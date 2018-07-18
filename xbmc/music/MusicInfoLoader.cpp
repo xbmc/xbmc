@@ -84,7 +84,7 @@ void CMusicInfoLoader::OnLoaderStart()
 bool CMusicInfoLoader::LoadAdditionalTagInfo(CFileItem* pItem)
 {
   if (!pItem || (pItem->m_bIsFolder && !pItem->IsAudio()) ||
-      pItem->IsPlayList() || pItem->IsNFO() || pItem->IsInternetStream())
+      pItem->IsPlayList() || pItem->IsType(".nfo") || pItem->IsInternetStream())
     return false;
 
   if (pItem->GetProperty("hasfullmusictag") == "true")
@@ -158,7 +158,7 @@ bool CMusicInfoLoader::LoadItem(CFileItem* pItem)
 bool CMusicInfoLoader::LoadItemCached(CFileItem* pItem)
 {
   if ((pItem->m_bIsFolder && !pItem->IsAudio()) ||
-       pItem->IsPlayList() || pItem->IsNFO() || pItem->IsInternetStream())
+       pItem->IsPlayList() || pItem->IsType(".nfo") || pItem->IsInternetStream())
     return false;
 
   // Get thumb for item
@@ -173,7 +173,7 @@ bool CMusicInfoLoader::LoadItemLookup(CFileItem* pItem)
     m_pProgressCallback->SetProgressAdvance();
 
   if ((pItem->m_bIsFolder && !pItem->IsAudio()) || pItem->IsPlayList() ||
-       pItem->IsNFO() || pItem->IsInternetStream())
+       pItem->IsType(".nfo") || pItem->IsInternetStream())
     return false;
 
   if (!pItem->HasMusicInfoTag() || !pItem->GetMusicInfoTag()->Loaded())
@@ -213,7 +213,7 @@ bool CMusicInfoLoader::LoadItemLookup(CFileItem* pItem)
         if (!it->second.strThumb.empty())
           pItem->SetArt("thumb", it->second.strThumb);
       }
-      else if (pItem->IsMusicDb())
+      else if (pItem->IsType("musicdb:///"))
       { // a music db item that doesn't have tag loaded - grab details from the database
         XFILE::MUSICDATABASEDIRECTORY::CQueryParams param;
         XFILE::MUSICDATABASEDIRECTORY::CDirectoryNode::GetDatabaseInfo(pItem->GetPath(),param);
@@ -225,7 +225,7 @@ bool CMusicInfoLoader::LoadItemLookup(CFileItem* pItem)
             pItem->SetArt("thumb", song.strThumb);
         }
       }
-      else if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_MUSICFILES_USETAGS) || pItem->IsCDDA())
+      else if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_MUSICFILES_USETAGS) || pItem->IsType("cdda://"))
       { // Nothing found, load tag from file,
         // always try to load cddb info
         // get correct tag parser

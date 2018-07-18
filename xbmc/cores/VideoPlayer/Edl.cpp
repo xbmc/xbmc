@@ -100,7 +100,7 @@ bool CEdl::ReadEditDecisionLists(const CFileItem& fileItem, const float fFrameRa
    */
   const std::string strMovie = fileItem.GetDynPath();
   if ((URIUtils::IsHD(strMovie) || URIUtils::IsOnLAN(strMovie)) &&
-      !fileItem.IsPVRRecording() &&
+      !fileItem.HasPVRRecordingInfoTag() &&
       !URIUtils::IsInternetStream(strMovie))
   {
     CLog::Log(LOGDEBUG, "%s - Checking for edit decision lists (EDL) on local drive or remote share for: %s",
@@ -125,14 +125,14 @@ bool CEdl::ReadEditDecisionLists(const CFileItem& fileItem, const float fFrameRa
   /*
    * PVR Recordings
    */
-  else if (fileItem.IsPVRRecording())
+  else if (fileItem.HasPVRRecordingInfoTag())
   {
     CLog::Log(LOGDEBUG, "%s - Checking for edit decision list (EDL) for PVR recording: %s",
       __FUNCTION__, strMovie.c_str());
 
     bFound = ReadPvr(fileItem);
   }
-  else if (fileItem.IsEPG())
+  else if (fileItem.HasEPGInfoTag())
   {
     CLog::Log(LOGDEBUG, "%s - Checking for edit decision list (EDL) for EPG entry: %s",
       __FUNCTION__, strMovie.c_str());

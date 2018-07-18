@@ -275,7 +275,7 @@ bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
         return true;
       case LISTITEM_FILENAME:
       case LISTITEM_FILE_EXTENSION:
-        if (item->IsMusicDb())
+        if (item->IsType("musicdb://"))
           value = URIUtils::GetFileName(tag->GetURL());
         else
           value = URIUtils::GetFileName(item->GetPath());
@@ -288,7 +288,7 @@ bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
         return true;
       case LISTITEM_FOLDERNAME:
       case LISTITEM_PATH:
-        if (item->IsMusicDb())
+        if (item->IsType("musicdb://"))
           value = URIUtils::GetDirectory(tag->GetURL());
         else
           URIUtils::GetParentPath(item->GetPath(), value);
@@ -302,7 +302,7 @@ bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
         }
         return true;
       case LISTITEM_FILENAME_AND_PATH:
-        if (item->IsMusicDb())
+        if (item->IsType("musicdb://"))
           value = tag->GetURL();
         else
           value = item->GetPath();

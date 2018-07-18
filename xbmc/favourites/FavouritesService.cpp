@@ -202,9 +202,9 @@ std::string CFavouritesService::GetExecutePath(const CFileItem &item, const std:
       execute = StringUtils::Format("ActivateWindow(%s,%s,return)", contextWindow.c_str(), StringUtils::Paramify(item.GetPath()).c_str());
   }
   //! @todo STRING_CLEANUP
-  else if (item.IsScript() && item.GetPath().size() > 9) // script://<foo>
+  else if (item.IsType("script://") && item.GetPath().size() > 9) // script://<foo>
     execute = StringUtils::Format("RunScript(%s)", StringUtils::Paramify(item.GetPath().substr(9)).c_str());
-  else if (item.IsAddonsPath() && item.GetPath().size() > 9) // addons://<foo>
+  else if (item.IsType("addons://") && item.GetPath().size() > 9) // addons://<foo>
   {
     CURL url(item.GetPath());
     if (url.GetHostName() == "install")
@@ -212,13 +212,13 @@ std::string CFavouritesService::GetExecutePath(const CFileItem &item, const std:
     else
       execute = StringUtils::Format("RunAddon(%s)", url.GetFileName().c_str());
   }
-  else if (item.IsAndroidApp() && item.GetPath().size() > 26) // androidapp://sources/apps/<foo>
+  else if (item.IsType("androidapp://") && item.GetPath().size() > 26) // androidapp://sources/apps/<foo>
     execute = StringUtils::Format("StartAndroidActivity(%s)", StringUtils::Paramify(item.GetPath().substr(26)).c_str());
   else  // assume a media file
   {
-    if (item.IsVideoDb() && item.HasVideoInfoTag())
+    if (item.IsType("videodb://") && item.HasVideoInfoTag())
       execute = StringUtils::Format("PlayMedia(%s)", StringUtils::Paramify(item.GetVideoInfoTag()->m_strFileNameAndPath).c_str());
-    else if (item.IsMusicDb() && item.HasMusicInfoTag())
+    else if (item.IsType("musicdb://") && item.HasMusicInfoTag())
       execute = StringUtils::Format("PlayMedia(%s)", StringUtils::Paramify(item.GetMusicInfoTag()->GetURL()).c_str());
     else if (item.IsPicture())
       execute = StringUtils::Format("ShowPicture(%s)", StringUtils::Paramify(item.GetPath()).c_str());

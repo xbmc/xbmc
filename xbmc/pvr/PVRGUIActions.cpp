@@ -220,7 +220,7 @@ namespace PVR
 
   bool CPVRGUIActions::ShowRecordingInfo(const CFileItemPtr &item) const
   {
-    if (!item->IsPVRRecording())
+    if (!item->HasPVRRecordingInfoTag())
     {
       CLog::LogF(LOGERROR, "No recording!");
       return false;
@@ -946,7 +946,7 @@ namespace PVR
 
   bool CPVRGUIActions::DeleteRecording(const CFileItemPtr &item) const
   {
-    if ((!item->IsPVRRecording() && !item->m_bIsFolder) || item->IsParentFolder())
+    if ((!item->HasPVRRecordingInfoTag() && !item->m_bIsFolder) || item->IsParentFolder())
       return false;
 
     if (!ConfirmDeleteRecording(item))
@@ -1397,7 +1397,7 @@ namespace PVR
 
     if (item)
     {
-      if (item->IsEPG())
+      if (item->HasEPGInfoTag())
       {
         if (item->GetEPGInfoTag()->HasChannel())
         {
@@ -1407,7 +1407,7 @@ namespace PVR
         else
           return false;
       }
-      else if (item->IsPVRChannel())
+      else if (item->HasPVRChannelInfoTag())
       {
         iClientID = item->GetPVRChannelInfoTag()->ClientID();
         menuCategory = PVR_MENUHOOK_CHANNEL;
@@ -1422,7 +1422,7 @@ namespace PVR
         iClientID = item->GetPVRRecordingInfoTag()->m_iClientId;
         menuCategory = PVR_MENUHOOK_RECORDING;
       }
-      else if (item->IsPVRTimer())
+      else if (item->HasPVRTimerInfoTag())
       {
         iClientID = item->GetPVRTimerInfoTag()->m_iClientId;
         menuCategory = PVR_MENUHOOK_TIMER;
