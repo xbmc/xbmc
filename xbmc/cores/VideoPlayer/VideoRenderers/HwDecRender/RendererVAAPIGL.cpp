@@ -208,13 +208,17 @@ bool CRendererVAAPI::UploadTexture(int index)
 
   if (!m_isVAAPIBuffer)
   {
-    YuvImage &dst = m_buffers[index].image;
-    YuvImage src;
-    pic->GetPlanes(src.plane);
-    pic->GetStrides(src.stride);
-    UnBindPbo(m_buffers[index]);
-    CVideoBuffer::CopyNV12Picture(&dst, &src);
-    BindPbo(m_buffers[index]);
+    if (!m_buffers[index].loaded)
+    {
+      YuvImage &dst = m_buffers[index].image;
+      YuvImage src;
+      pic->GetPlanes(src.plane);
+      pic->GetStrides(src.stride);
+      UnBindPbo(m_buffers[index]);
+      CVideoBuffer::CopyNV12Picture(&dst, &src);
+      BindPbo(m_buffers[index]);
+    }
+    CalculateTextureSourceRects(index, 3);
     return UploadNV12Texture(index);
   }
 
