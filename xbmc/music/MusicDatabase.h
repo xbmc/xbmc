@@ -692,6 +692,15 @@ private:
   std::string SortnameBuildSQL(const std::string& strAlias, const SortAttribute& sortAttributes, 
     const std::string& strField, const std::string& strSortField);
 
+  /*! \brief Build SQL for sorting field naturally and case insensitvely (in SQLite).
+  \param strField field name
+  \param sortOrder the sort order
+  \return SQL string e.g.   
+  CASE WHEN CAST(strTitle AS INTEGER) = 0 THEN 100000000 
+  ELSE CAST(strTitle AS INTEGER) END DESC, strTitle COLLATE NOCASE DESC
+  */
+  std::string AlphanumericSortSQL(const std::string& strField, const SortOrder& sortOrder);
+
   /*! \brief Checks that source table matches sources.xml
   returns true when they do 
   */

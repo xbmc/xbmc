@@ -4878,7 +4878,7 @@ bool CMusicDatabase::GetArtistsByWhereJSON(const std::set<std::string>& fields, 
     if (sortDescription.sortOrder == SortOrderDescending)
       DESC = " DESC";
     if (sortDescription.sortBy == SortByRandom)
-      orderfields.emplace_back("RANDOM()");
+      orderfields.emplace_back(PrepareSQL("RANDOM()")); // Adjust syntax
     else if (sortDescription.sortBy == SortByArtist)
       orderfields.emplace_back("strArtist");
     else if (sortDescription.sortBy == SortByDateAdded)
@@ -4899,8 +4899,11 @@ bool CMusicDatabase::GetArtistsByWhereJSON(const std::set<std::string>& fields, 
           "strArtist", "strSortName");
         if (!artistsortSQL.empty())
           name = "artistsortname";
+        // Natural number case insensitve sort
+        extFilter.AppendOrder(AlphanumericSortSQL(name, sortDescription.sortOrder));
       }
-      extFilter.AppendOrder(name + DESC);
+      else
+        extFilter.AppendOrder(name + DESC);
     }
 
     std::string strSQL;
@@ -5539,7 +5542,7 @@ bool CMusicDatabase::GetAlbumsByWhereJSON(const std::set<std::string>& fields, c
     if (sortDescription.sortOrder == SortOrderDescending)
       DESC = " DESC";
     if (sortDescription.sortBy == SortByRandom)
-      orderfields.emplace_back("RANDOM()");
+      orderfields.emplace_back(PrepareSQL("RANDOM()")); //Adjust styntax
     else if (sortDescription.sortBy == SortByAlbum ||
       sortDescription.sortBy == SortByLabel ||
       sortDescription.sortBy == SortByTitle)
@@ -5624,8 +5627,16 @@ bool CMusicDatabase::GetAlbumsByWhereJSON(const std::set<std::string>& fields, c
           "strArtists", "strArtistSort");
         if (!artistsortSQL.empty())
           name = "artistsortname";
+        // Natural number case insensitve sort
+        extFilter.AppendOrder(AlphanumericSortSQL(name, sortDescription.sortOrder));
       }
-      extFilter.AppendOrder(name + DESC);
+      else if (name.compare("strAlbum") == 0 || 
+               name.compare("strType") == 0 ||
+               name.compare("strGenres") == 0)
+        // Natural number case insensitve sort
+        extFilter.AppendOrder(AlphanumericSortSQL(name, sortDescription.sortOrder));
+      else
+        extFilter.AppendOrder(name + DESC);
     }
     
     std::string strSQL;
@@ -6039,7 +6050,7 @@ bool CMusicDatabase::GetSongsByWhereJSON(const std::set<std::string>& fields, co
     if (sortDescription.sortOrder == SortOrderDescending)
       DESC = " DESC";
     if (sortDescription.sortBy == SortByRandom)
-      orderfields.emplace_back("RANDOM()");
+      orderfields.emplace_back(PrepareSQL("RANDOM()")); //Adjust styntax
     else if (sortDescription.sortBy == SortByLabel)
     {
       orderfields.emplace_back("song.iTrack");
@@ -6133,7 +6144,16 @@ bool CMusicDatabase::GetSongsByWhereJSON(const std::set<std::string>& fields, co
           "song.strArtistDisp", "song.strArtistSort");
         if (!artistsortSQL.empty())
           name = "artistsortname";
+        // Natural number case insensitve sort
+        extFilter.AppendOrder(AlphanumericSortSQL(name, sortDescription.sortOrder));
       }
+      else if (name.compare("strTitle") == 0  || 
+               name.compare("strAlbum") == 0 || 
+               name.compare("song.strGenres") == 0)
+        // Natural number case insensitve sort
+        extFilter.AppendOrder(AlphanumericSortSQL(name, sortDescription.sortOrder));
+      else
+
       extFilter.AppendOrder(name + DESC);
     }
 
@@ -6707,6 +6727,23 @@ std::string CMusicDatabase::SortnameBuildSQL(const std::string& strAlias, const 
   }
 
   return artistsortSQL;
+}
+
+std::string CMusicDatabase::AlphanumericSortSQL(const std::string& strField, const SortOrder& sortOrder)
+{
+  /*
+  Make sort of initial numbers natural, and case insensitive in SQLite.
+  Collation NOCASE ould be more efficient done in table create.
+  MySQL uses case insensitive utf8_general_ci collation defined for tables.
+  Use PrepareSQL to adjust syntax removing NOCASE and add AS UNSIGNED INTEGER
+  */
+  std::string DESC;
+  if (sortOrder == SortOrderDescending)
+    DESC = " DESC";
+  return PrepareSQL("CASE WHEN CAST(%s AS INTEGER) = 0 "
+    "THEN 100000000 ELSE CAST(%s AS INTEGER) END%s, "
+    "%s COLLATE NOCASE%s",
+    strField.c_str(), strField.c_str(), DESC.c_str(), strField.c_str(), DESC.c_str());
 }
 
 void CMusicDatabase::UpdateTables(int version)
