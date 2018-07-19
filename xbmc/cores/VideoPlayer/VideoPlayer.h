@@ -537,7 +537,6 @@ protected:
     double lastabstime;
   } m_SpeedState;
 
-  int m_errorCount;
   double m_offset_pts;
 
   CDVDMessageQueue m_messenger;
