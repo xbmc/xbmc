@@ -656,7 +656,6 @@ CVideoPlayer::CVideoPlayer(IPlayerCallback& callback)
   m_State.Clear();
 
   m_bAbortRequest = false;
-  m_errorCount = 0;
   m_offset_pts = 0.0;
   m_playSpeed = DVD_PLAYSPEED_NORMAL;
   m_streamPlayerSpeed = DVD_PLAYSPEED_NORMAL;
@@ -815,7 +814,7 @@ bool CVideoPlayer::OpenInputStream()
   }
 
   m_pInputStream = CDVDFactoryInputStream::CreateInputStream(this, m_item, true);
-  if(m_pInputStream == NULL)
+  if (m_pInputStream == nullptr)
   {
     CLog::Log(LOGERROR, "CVideoPlayer::OpenInputStream - unable to create input stream for [%s]", CURL::GetRedacted(m_item.GetPath()).c_str());
     return false;
@@ -828,9 +827,8 @@ bool CVideoPlayer::OpenInputStream()
   }
 
   // find any available external subtitles for non dvd files
-  if (!m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD)
-  &&  !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER)
-  &&  !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV))
+  if (!m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) &&
+      !m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
   {
     // find any available external subtitles
     std::vector<std::string> filenames;
@@ -838,21 +836,21 @@ bool CVideoPlayer::OpenInputStream()
 
     // load any subtitles from file item
     std::string key("subtitle:1");
-    for(unsigned s = 1; m_item.HasProperty(key); key = StringUtils::Format("subtitle:%u", ++s))
+    for (unsigned s = 1; m_item.HasProperty(key); key = StringUtils::Format("subtitle:%u", ++s))
       filenames.push_back(m_item.GetProperty(key).asString());
 
-    for(unsigned int i=0;i<filenames.size();i++)
+    for (unsigned int i=0;i<filenames.size();i++)
     {
       // if vobsub subtitle:
       if (URIUtils::HasExtension(filenames[i], ".idx"))
       {
         std::string strSubFile;
-        if ( CUtil::FindVobSubPair( filenames, filenames[i], strSubFile ) )
+        if (CUtil::FindVobSubPair( filenames, filenames[i], strSubFile))
           AddSubtitleFile(filenames[i], strSubFile);
       }
       else
       {
-        if ( !CUtil::IsVobSub(filenames, filenames[i] ) )
+        if (!CUtil::IsVobSub(filenames, filenames[i] ))
         {
           AddSubtitleFile(filenames[i]);
         }
@@ -862,7 +860,6 @@ bool CVideoPlayer::OpenInputStream()
 
   m_clock.Reset();
   m_dvd.Clear();
-  m_errorCount = 0;
 
   return true;
 }
@@ -901,10 +898,11 @@ bool CVideoPlayer::OpenDemuxStream()
   m_pDemuxer->GetPrograms(m_programs);
   UpdateContent();
   m_demuxerSpeed = DVD_PLAYSPEED_NORMAL;
+  m_processInfo->SetStateRealtime(false);
 
   int64_t len = m_pInputStream->GetLength();
   int64_t tim = m_pDemuxer->GetStreamLength();
-  if(len > 0 && tim > 0)
+  if (len > 0 && tim > 0)
     m_pInputStream->SetReadRate((unsigned int) (len * 1000 / tim));
 
   m_offset_pts = 0;
@@ -1602,9 +1600,6 @@ void CVideoPlayer::Process()
       break;
     }
 
-    // it's a valid data packet, reset error counter
-    m_errorCount = 0;
-
     // see if we can find something better to play
     CheckBetterStream(m_CurrentAudio,    pStream);
     CheckBetterStream(m_CurrentVideo,    pStream);
@@ -1618,7 +1613,7 @@ void CVideoPlayer::Process()
       if (m_pCCDemuxer)
       {
         bool first = true;
-        while(!m_bAbortRequest)
+        while (!m_bAbortRequest)
         {
           DemuxPacket *pkt = m_pCCDemuxer->Read(first ? pPacket : NULL);
           if (!pkt)
