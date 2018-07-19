@@ -545,6 +545,9 @@ bool CNetworkServices::StartWebserver()
 
 #ifdef HAS_ZEROCONF
   std::vector<std::pair<std::string, std::string> > txt;
+  txt.push_back(std::make_pair("txtvers", "1"));
+  txt.push_back(std::make_pair("uuid", CServiceBroker::GetSettings().GetString(CSettings::SETTING_SERVICES_DEVICEUUID)));
+
   // publish web frontend and API services
 #ifdef HAS_WEB_INTERFACE
   CZeroconf::GetInstance()->PublishService("servers.webserver", "_http._tcp", CSysInfo::GetDeviceName(), webPort, txt);
@@ -709,6 +712,9 @@ bool CNetworkServices::StartJSONRPCServer()
 
 #ifdef HAS_ZEROCONF
   std::vector<std::pair<std::string, std::string> > txt;
+  txt.push_back(std::make_pair("txtvers", "1"));
+  txt.push_back(std::make_pair("uuid", CServiceBroker::GetSettings().GetString(CSettings::SETTING_SERVICES_DEVICEUUID)));
+
   CZeroconf::GetInstance()->PublishService("servers.jsonrpc-tpc", "_xbmc-jsonrpc._tcp", CSysInfo::GetDeviceName(), g_advancedSettings.m_jsonTcpPort, txt);
 #endif // HAS_ZEROCONF
 

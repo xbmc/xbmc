@@ -306,6 +306,7 @@ const std::string CSettings::SETTING_WEATHER_CURRENTLOCATION = "weather.currentl
 const std::string CSettings::SETTING_WEATHER_ADDON = "weather.addon";
 const std::string CSettings::SETTING_WEATHER_ADDONSETTINGS = "weather.addonsettings";
 const std::string CSettings::SETTING_SERVICES_DEVICENAME = "services.devicename";
+const std::string CSettings::SETTING_SERVICES_DEVICEUUID = "services.deviceuuid";
 const std::string CSettings::SETTING_SERVICES_UPNP = "services.upnp";
 const std::string CSettings::SETTING_SERVICES_UPNPSERVER = "services.upnpserver";
 const std::string CSettings::SETTING_SERVICES_UPNPANNOUNCE = "services.upnpannounce";
@@ -656,6 +657,14 @@ void CSettings::InitializeDefaults()
 
   if (g_application.IsStandAlone())
     std::static_pointer_cast<CSettingInt>(GetSettingsManager()->GetSetting(CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNSTATE))->SetDefault(POWERSTATE_SHUTDOWN);
+
+  // Initialize deviceUUID if not already set, used in zeroconf advertisements.
+  std::shared_ptr<CSettingString> deviceUUID = std::static_pointer_cast<CSettingString>(GetSettingsManager()->GetSetting(CSettings::SETTING_SERVICES_DEVICEUUID));
+  if (deviceUUID->GetValue().empty())
+  {
+    const std::string& uuid = StringUtils::CreateUUID();
+    std::static_pointer_cast<CSettingString>(GetSettingsManager()->GetSetting(CSettings::SETTING_SERVICES_DEVICEUUID))->SetValue(uuid);
+  }
 }
 
 void CSettings::InitializeOptionFillers()
