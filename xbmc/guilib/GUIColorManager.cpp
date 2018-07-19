@@ -29,8 +29,6 @@
 #include "utils/URIUtils.h"
 #include "utils/XBMCTinyXML.h"
 
-CGUIColorManager g_colorManager;
-
 CGUIColorManager::CGUIColorManager(void) = default;
 
 CGUIColorManager::~CGUIColorManager(void)

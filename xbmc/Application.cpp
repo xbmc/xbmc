@@ -1550,7 +1550,7 @@ bool CApplication::LoadSkin(const std::string& skinID)
   CServiceBroker::GetWinSystem()->GetGfxContext().SetMediaDir(skin->Path());
   g_directoryCache.ClearSubPaths(skin->Path());
 
-  g_colorManager.Load(m_ServiceManager->GetSettings().GetString(CSettings::SETTING_LOOKANDFEEL_SKINCOLORS));
+  CServiceBroker::GetGUI()->GetColorManager().Load(m_ServiceManager->GetSettings().GetString(CSettings::SETTING_LOOKANDFEEL_SKINCOLORS));
 
   g_SkinInfo->LoadIncludes();
 
@@ -1654,7 +1654,7 @@ void CApplication::UnloadSkin(bool forReload /* = false */)
 
   g_fontManager.Clear();
 
-  g_colorManager.Clear();
+  CServiceBroker::GetGUI()->GetColorManager().Clear();
 
   CServiceBroker::GetGUI()->GetInfoManager().Clear();
 

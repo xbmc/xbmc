@@ -35,7 +35,7 @@ bool CGUIInfoColor::Update()
 
   // Expand the infolabel, and then convert it to a color
   std::string infoLabel(CServiceBroker::GetGUI()->GetInfoManager().GetLabel(m_info));
-  UTILS::Color color = !infoLabel.empty() ? g_colorManager.GetColor(infoLabel.c_str()) : 0;
+  UTILS::Color color = !infoLabel.empty() ? CServiceBroker::GetGUI()->GetColorManager().GetColor(infoLabel.c_str()) : 0;
   if (m_color != color)
   {
     m_color = color;
@@ -68,5 +68,5 @@ void CGUIInfoColor::Parse(const std::string &label, int context)
 
   m_info = infoMgr.TranslateString(label2);
   if (!m_info)
-    m_color = g_colorManager.GetColor(label);
+    m_color = CServiceBroker::GetGUI()->GetColorManager().GetColor(label);
 }
