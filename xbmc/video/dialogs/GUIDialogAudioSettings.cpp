@@ -172,7 +172,7 @@ void CGUIDialogAudioSettings::Save()
   if (!db.Open())
     return;
 
-  db.EraseVideoSettings();
+  db.EraseAllVideoSettings();
   db.Close();
 
   CMediaSettings::GetInstance().GetDefaultVideoSettings() = g_application.GetAppPlayer().GetVideoSettings();

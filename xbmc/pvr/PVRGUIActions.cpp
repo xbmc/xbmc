@@ -1599,8 +1599,8 @@ namespace PVR
 
       if (videoDatabase.Open())
       {
-        videoDatabase.EraseVideoSettings("pvr://channels/");
-        videoDatabase.EraseVideoSettings(CPVRRecordingsPath::PATH_RECORDINGS);
+        videoDatabase.EraseAllVideoSettings("pvr://channels/");
+        videoDatabase.EraseAllVideoSettings(CPVRRecordingsPath::PATH_RECORDINGS);
         videoDatabase.Close();
       }
     }

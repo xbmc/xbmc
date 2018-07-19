@@ -3520,14 +3520,18 @@ void CApplication::RequestVideoSettings(const CFileItem &fileItem)
 
 void CApplication::StoreVideoSettings(const CFileItem &fileItem, CVideoSettings vs)
 {
-  if (vs != CMediaSettings::GetInstance().GetDefaultVideoSettings())
+  CVideoDatabase dbs;
+  if (dbs.Open())
   {
-    CVideoDatabase dbs;
-    if (dbs.Open())
+    if (vs != CMediaSettings::GetInstance().GetDefaultVideoSettings())
     {
       dbs.SetVideoSettings(fileItem, vs);
-      dbs.Close();
     }
+    else
+    {
+      dbs.EraseVideoSettings(fileItem);
+    }
+    dbs.Close();
   }
 }
 

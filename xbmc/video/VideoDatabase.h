@@ -600,11 +600,21 @@ public:
   void SetVideoSettings(int idFile, const CVideoSettings &settings);
 
   /**
-   * Erases settings for all files beginning with the specified path. Defaults
-   * to an empty path, meaning all settings will be erased.
-   * @param path partial path, e.g. pvr://channels
+   * Erases video settings for file item
+   * @param fileitem
    */
-  void EraseVideoSettings(const std::string &path = "");
+  void EraseVideoSettings(const CFileItem &item);
+
+  /**
+   * Erases all video settings
+   */
+  void EraseAllVideoSettings();
+
+  /**
+   * Erases video settings for files starting with path
+   * @param path pattern
+   */
+  void EraseAllVideoSettings(std::string path);
 
   bool GetStackTimes(const std::string &filePath, std::vector<uint64_t> &times);
   void SetStackTimes(const std::string &filePath, const std::vector<uint64_t> &times);
