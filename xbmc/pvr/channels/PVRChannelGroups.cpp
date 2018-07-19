@@ -137,8 +137,9 @@ CFileItemPtr CPVRChannelGroups::GetByPath(const std::string &strInPath) const
 {
   std::string strPath = strInPath;
   URIUtils::RemoveSlashAtEnd(strPath);
-
   std::string strCheckPath;
+
+  CSingleLock lock(m_critSection);
   for (const auto& group: m_groups)
   {
     // check if the path matches
@@ -176,6 +177,8 @@ CPVRChannelGroupPtr CPVRChannelGroups::GetById(int iGroupId) const
 std::vector<CPVRChannelGroupPtr> CPVRChannelGroups::GetGroupsByChannel(const CPVRChannelPtr &channel, bool bExcludeHidden /* = false */) const
 {
   std::vector<CPVRChannelGroupPtr> groups;
+
+  CSingleLock lock(m_critSection);
   for (CPVRChannelGroupPtr group : m_groups)
   {
     if ((!bExcludeHidden || !group->IsHidden()) && group->IsGroupMember(channel))
@@ -200,11 +203,13 @@ CPVRChannelGroupPtr CPVRChannelGroups::GetByName(const std::string &strName) con
 void CPVRChannelGroups::RemoveFromAllGroups(const CPVRChannelPtr &channel)
 {
   CSingleLock lock(m_critSection);
-  for (std::vector<CPVRChannelGroupPtr>::const_iterator it = m_groups.begin(); it != m_groups.end(); ++it)
+  const CPVRChannelGroupPtr allGroup = GetGroupAll();
+
+  for (const auto& group : m_groups)
   {
-    // only delete the channel from non-system groups
-    if (!(*it)->IsInternalGroup())
-      (*it)->RemoveFromGroup(channel);
+    // only delete the channel from non-system groups and if it was deleted from "all" group
+    if (!group->IsInternalGroup() && !allGroup->IsGroupMember(channel))
+      group->RemoveFromGroup(channel);
   }
 }
 
@@ -341,27 +346,25 @@ CPVRChannelGroupPtr CPVRChannelGroups::GetGroupAll(void) const
 {
   CSingleLock lock(m_critSection);
   if (!m_groups.empty())
-    return m_groups.at(0);
+    return m_groups.front();
 
-  CPVRChannelGroupPtr empty;
-  return empty;
+  return CPVRChannelGroupPtr();
 }
 
 CPVRChannelGroupPtr CPVRChannelGroups::GetLastGroup(void) const
 {
   CSingleLock lock(m_critSection);
   if (!m_groups.empty())
-    return m_groups.at(m_groups.size() - 1);
+    return m_groups.back();
 
-  CPVRChannelGroupPtr empty;
-  return empty;
+  return CPVRChannelGroupPtr();
 }
 
 CPVRChannelGroupPtr CPVRChannelGroups::GetLastPlayedGroup(int iChannelID /* = -1 */) const
 {
-  CSingleLock lock(m_critSection);
-
   CPVRChannelGroupPtr group;
+
+  CSingleLock lock(m_critSection);
   for (std::vector<CPVRChannelGroupPtr>::const_iterator it = m_groups.begin(); it != m_groups.end(); ++it)
   {
     if ((*it)->LastWatched() > 0 && (!group || (*it)->LastWatched() > group->LastWatched()) &&
@@ -374,8 +377,9 @@ CPVRChannelGroupPtr CPVRChannelGroups::GetLastPlayedGroup(int iChannelID /* = -1
 
 std::vector<CPVRChannelGroupPtr> CPVRChannelGroups::GetMembers(bool bExcludeHidden /* = false */) const
 {
-  CSingleLock lock(m_critSection);
   std::vector<CPVRChannelGroupPtr> groups;
+
+  CSingleLock lock(m_critSection);
   for (CPVRChannelGroupPtr group : m_groups)
   {
     if (!bExcludeHidden || !group->IsHidden())
@@ -387,8 +391,8 @@ std::vector<CPVRChannelGroupPtr> CPVRChannelGroups::GetMembers(bool bExcludeHidd
 int CPVRChannelGroups::GetGroupList(CFileItemList* results, bool bExcludeHidden /* = false */) const
 {
   int iReturn(0);
-  CSingleLock lock(m_critSection);
 
+  CSingleLock lock(m_critSection);
   for (std::vector<CPVRChannelGroupPtr>::const_iterator it = m_groups.begin(); it != m_groups.end(); ++it)
   {
     // exclude hidden groups if desired
@@ -558,6 +562,7 @@ bool CPVRChannelGroups::DeleteGroup(const CPVRChannelGroup &group)
 bool CPVRChannelGroups::CreateChannelEpgs(void)
 {
   bool bReturn(false);
+
   CSingleLock lock(m_critSection);
   for (std::vector<CPVRChannelGroupPtr>::iterator it = m_groups.begin(); it != m_groups.end(); ++it)
   {
