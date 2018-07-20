@@ -23,6 +23,8 @@
 #include <map>
 #include <string>
 
+#include "GUIComponent.h"
+#include "ServiceBroker.h"
 #include "cores/AudioEngine/Interfaces/AESound.h"
 #include "settings/lib/ISettingCallback.h"
 #include "threads/CriticalSection.h"
@@ -93,4 +95,3 @@ private:
   IAESound* LoadWindowSound(TiXmlNode* pWindowNode, const std::string& strIdentifier);
 };
 
-extern CGUIAudioManager g_audioManager;

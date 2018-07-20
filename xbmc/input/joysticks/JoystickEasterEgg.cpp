@@ -111,7 +111,9 @@ void CJoystickEasterEgg::OnFinish(void)
   gameSettings.ToggleGames();
 
   WINDOW_SOUND sound = gameSettings.GamesEnabled() ? SOUND_INIT : SOUND_DEINIT;
-  g_audioManager.PlayWindowSound(WINDOW_DIALOG_KAI_TOAST, sound);
+  CGUIComponent* gui = CServiceBroker::GetGUI();
+  if (gui)
+    gui->GetAudioManager().PlayWindowSound(WINDOW_DIALOG_KAI_TOAST, sound);
 
   //! @todo Shake screen
 }

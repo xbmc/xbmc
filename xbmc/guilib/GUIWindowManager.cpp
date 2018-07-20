@@ -840,7 +840,7 @@ void CGUIWindowManager::ActivateWindow_Internal(int iWindowID, const std::vector
   if (!force && HasModalDialog(true))
   {
     CLog::Log(LOGINFO, "Activate of window '%i' refused because there are active modal dialogs", iWindowID);
-    g_audioManager.PlayActionSound(CAction(ACTION_ERROR));
+    CServiceBroker::GetGUI()->GetAudioManager().PlayActionSound(CAction(ACTION_ERROR));
     return;
   }
 

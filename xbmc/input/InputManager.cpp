@@ -690,18 +690,21 @@ bool CInputManager::AlwaysProcess(const CAction& action)
 bool CInputManager::ExecuteInputAction(const CAction &action)
 {
   bool bResult = false;
+  CGUIComponent* gui = CServiceBroker::GetGUI();
 
   // play sound before the action unless the button is held,
   // where we execute after the action as held actions aren't fired every time.
   if (action.GetHoldTime())
   {
     bResult = g_application.OnAction(action);
-    if (bResult)
-      g_audioManager.PlayActionSound(action);
+    if (bResult && gui)
+      gui->GetAudioManager().PlayActionSound(action);
   }
   else
   {
-    g_audioManager.PlayActionSound(action);
+    if (gui)
+      gui->GetAudioManager().PlayActionSound(action);
+
     bResult = g_application.OnAction(action);
   }
   return bResult;

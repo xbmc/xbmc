@@ -35,8 +35,6 @@
 #include "cores/AudioEngine/Interfaces/AE.h"
 #include "utils/log.h"
 
-CGUIAudioManager g_audioManager;
-
 CGUIAudioManager::CGUIAudioManager()
 {
   m_bEnabled = false;

@@ -52,7 +52,10 @@ JSONRPC_STATUS CInputOperations::SendAction(int actionID, bool wakeScreensaver /
   if(!wakeScreensaver || !handleScreenSaver())
   {
     g_application.ResetSystemIdleTimer();
-    g_audioManager.PlayActionSound(actionID);
+    CGUIComponent* gui = CServiceBroker::GetGUI();
+    if (gui)
+      gui->GetAudioManager().PlayActionSound(actionID);
+
     if (waitResult)
       CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(actionID)));
     else

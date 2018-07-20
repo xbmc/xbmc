@@ -18,6 +18,7 @@
  *
  */
 
+#include "GUIAudioManager.h"
 #include "GUIComponent.h"
 #include "GUIColorManager.h"
 #include "GUIInfoManager.h"
@@ -37,6 +38,7 @@ CGUIComponent::CGUIComponent()
   m_stereoscopicsManager.reset(new CStereoscopicsManager(CServiceBroker::GetSettings()));
   m_guiInfoManager.reset(new CGUIInfoManager());
   m_guiColorManager.reset(new CGUIColorManager());
+  m_guiAudioManager.reset(new CGUIAudioManager());
 }
 
 CGUIComponent::~CGUIComponent()
@@ -91,6 +93,11 @@ CGUIInfoManager &CGUIComponent::GetInfoManager()
 CGUIColorManager &CGUIComponent::GetColorManager()
 {
   return *m_guiColorManager;
+}
+
+CGUIAudioManager &CGUIComponent::GetAudioManager()
+{
+  return *m_guiAudioManager;
 }
 
 bool CGUIComponent::ConfirmDelete(std::string path)
