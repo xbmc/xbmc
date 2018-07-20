@@ -169,7 +169,7 @@ public class SyncProgramsJobService extends JobService
       {
         if (cursor != null && cursor.moveToNext())
         {
-            XBMCJsonRPC jsonrpc = new XBMCJsonRPC();
+          XBMCJsonRPC jsonrpc = new XBMCJsonRPC();
             if (uri.isEmpty())
             {
               // Suggestion channel
@@ -189,7 +189,7 @@ public class SyncProgramsJobService extends JobService
               medias = createPrograms(channelId, jsonrpc.getMedias(files));
             }
             jsonrpc = null;
-          }
+         
           XBMCDatabase.saveMedias(getApplicationContext(), channelId, medias);
         }
       }
