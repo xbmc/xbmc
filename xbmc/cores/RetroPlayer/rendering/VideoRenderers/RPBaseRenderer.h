@@ -93,7 +93,6 @@ namespace RETRO
     // Stream properties
     bool m_bConfigured = false;
     AVPixelFormat m_format = AV_PIX_FMT_NONE;
-    unsigned int m_renderOrientation = 0; // Degrees counter-clockwise
 
     // Rendering properties
     CRenderSettings m_renderSettings;

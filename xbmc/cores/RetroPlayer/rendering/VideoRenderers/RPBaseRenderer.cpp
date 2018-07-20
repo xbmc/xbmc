@@ -57,7 +57,6 @@ bool CRPBaseRenderer::IsCompatible(const CRenderVideoSettings &settings) const
 bool CRPBaseRenderer::Configure(AVPixelFormat format)
 {
   m_format = format;
-  m_renderOrientation = 0; //! @todo
 
   if (!m_bufferPool->IsConfigured())
   {
@@ -144,7 +143,7 @@ void CRPBaseRenderer::ManageRenderArea(const IRenderBuffer &renderBuffer)
   // Get texture parameters
   const unsigned int sourceWidth = renderBuffer.GetWidth();
   const unsigned int sourceHeight = renderBuffer.GetHeight();
-  const unsigned int sourceRotationDegCCW = m_renderOrientation; //! @todo
+  const unsigned int sourceRotationDegCCW = renderBuffer.GetRotation();
   const float sourceAspectRatio = static_cast<float>(sourceWidth) / static_cast<float>(sourceHeight);
 
   const VIEWMODE viewMode = m_renderSettings.VideoSettings().GetRenderViewMode();

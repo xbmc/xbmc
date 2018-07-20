@@ -192,6 +192,10 @@ void CRPRenderManager::AddFrame(const uint8_t* data, size_t size, unsigned int w
       renderBuffer->Release();
     m_renderBuffers = std::move(renderBuffers);
 
+    // Apply rotation to render buffers
+    for (auto renderBuffer : m_renderBuffers)
+      renderBuffer->SetRotation(orientationDegCCW);
+
     // Cache frame if it arrived after being paused
     if (m_speed == 0.0)
     {
