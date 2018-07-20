@@ -101,20 +101,21 @@ void CStorageProvider::GetRemovableDrives(VECSOURCES &removableDrives)
     auto devicesView = Wait(winrt::Windows::Storage::KnownFolders::RemovableDevices().GetFoldersAsync());
     for (unsigned i = 0; i < devicesView.Size(); i++)
     {
-      CMediaSource source;
       auto device = devicesView.GetAt(i);
+      if (device.Path().empty())
+        continue;
+      CMediaSource source;
       source.strName = FromW(device.DisplayName().c_str());
-      std::string driveLetter = FromW(device.Name().c_str()).substr(0, 1);
-      std::string root = driveLetter + ":\\";
+      std::string driveLetter = FromW(device.Path().c_str());
 
       // skip exiting in case if we have direct access
-      auto exiting = std::find_if(removableDrives.begin(), removableDrives.end(), [&root](CMediaSource& m) {
-        return m.strPath == root;
+      auto exiting = std::find_if(removableDrives.begin(), removableDrives.end(), [&driveLetter](CMediaSource& m) {
+        return m.strPath == driveLetter;
       });
       if (exiting != removableDrives.end())
         continue;
 
-      UINT uDriveType = GetDriveTypeA(root.c_str());
+      UINT uDriveType = GetDriveTypeA(driveLetter.c_str());
       source.strPath = "win-lib://removable/" + driveLetter + "/";
       source.m_iDriveType = (
         (uDriveType == DRIVE_FIXED) ? CMediaSource::SOURCE_TYPE_LOCAL :
