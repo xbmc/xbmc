@@ -136,9 +136,8 @@ bool CPVRChannelGroupInternal::Update(void)
 
 bool CPVRChannelGroupInternal::AddToGroup(const CPVRChannelPtr &channel, const CPVRChannelNumber &channelNumber, bool bUseBackendChannelNumbers)
 {
-  CSingleLock lock(m_critSection);
-
   bool bReturn(false);
+  CSingleLock lock(m_critSection);
 
   /* get the group member, because we need the channel ID in this group, and the channel from this group */
   PVRChannelGroupMember& groupMember = GetByUniqueID(channel->StorageId());
@@ -257,8 +256,6 @@ bool CPVRChannelGroupInternal::IsGroupMember(const CPVRChannelPtr &channel) cons
 bool CPVRChannelGroupInternal::AddAndUpdateChannels(const CPVRChannelGroup &channels, bool bUseBackendChannelNumbers)
 {
   bool bReturn(false);
-  SetPreventSortAndRenumber();
-
   CSingleLock lock(m_critSection);
 
   /* go through the channel list and check for updated or new channels */
@@ -284,11 +281,34 @@ bool CPVRChannelGroupInternal::AddAndUpdateChannels(const CPVRChannelGroup &chan
     }
   }
 
-  SetPreventSortAndRenumber(false);
   if (m_bChanged)
     SortAndRenumber();
 
   return bReturn;
+}
+
+std::vector<CPVRChannelPtr> CPVRChannelGroupInternal::RemoveDeletedChannels(const CPVRChannelGroup &channels)
+{
+  std::vector<CPVRChannelPtr> removedChannels = CPVRChannelGroup::RemoveDeletedChannels(channels);
+
+  if (!removedChannels.empty())
+  {
+    CPVRChannelGroups* groups = CServiceBroker::GetPVRManager().ChannelGroups()->Get(m_bRadio);
+    for (const auto& channel : removedChannels)
+    {
+      /* remove this channel from all non-system groups */
+      groups->RemoveFromAllGroups(channel);
+
+      /* do we have valid data from channel's client? */
+      if (!IsMissingChannelsFromClient(channel->ClientID()))
+      {
+        /* since channel was not found in the internal group, it was deleted from the backend */
+        channel->Delete();
+      }
+    }
+  }
+
+  return removedChannels;
 }
 
 bool CPVRChannelGroupInternal::UpdateGroupEntries(const CPVRChannelGroup &channels)
@@ -320,6 +340,7 @@ bool CPVRChannelGroupInternal::CreateChannelEpgs(bool bForce /* = false */)
 {
   if (!CServiceBroker::GetPVRManager().EpgContainer().IsStarted())
     return false;
+
   {
     CSingleLock lock(m_critSection);
     for (PVR_CHANNEL_GROUP_MEMBERS::iterator it = m_members.begin(); it != m_members.end(); ++it)
