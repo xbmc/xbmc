@@ -95,24 +95,14 @@ bool CRPRenderManager::Configure(AVPixelFormat format, unsigned int nominalWidth
             maxWidth,
             maxHeight);
 
-  CSingleLock lock(m_stateMutex);
-
   // Immutable parameters
   m_format = format;
   m_maxWidth = maxWidth;
   m_maxHeight = maxHeight;
 
-  // Mutable parameters
-  m_width = nominalWidth;
-  m_height = nominalHeight;
+  CSingleLock lock(m_stateMutex);
 
-  if (m_state == RENDER_STATE::UNCONFIGURED)
-    m_state = RENDER_STATE::CONFIGURING;
-  else if (m_state != RENDER_STATE::CONFIGURING)
-  {
-    Flush();
-    m_state = RENDER_STATE::RECONFIGURING;
-  }
+  m_state = RENDER_STATE::CONFIGURING;
 
   return true;
 }
@@ -125,13 +115,6 @@ bool CRPRenderManager::GetVideoBuffer(unsigned int width, unsigned int height, A
 
   if (m_bFlush || m_state != RENDER_STATE::CONFIGURED)
     return false;
-
-  if (width != m_width || height != m_height)
-  {
-    // Reconfigure
-    Configure(m_format, width, height, m_maxWidth, m_maxHeight);
-    return false;
-  }
 
   // Get buffers from visible renderers
   for (IRenderBufferPool *bufferPool : m_processInfo.GetBufferManager().GetBufferPools())
@@ -167,13 +150,6 @@ void CRPRenderManager::AddFrame(const uint8_t* data, size_t size, unsigned int w
   // Validate parameters
   if (data == nullptr || size == 0 || width == 0 || height == 0)
     return;
-
-  if (width != m_width || height != m_height)
-  {
-    // Reconfigure
-    Configure(m_format, width, height, m_maxWidth, m_maxHeight);
-    return;
-  }
 
   // Get render buffers to copy the frame into
   std::vector<IRenderBuffer*> renderBuffers;
@@ -239,6 +215,8 @@ void CRPRenderManager::AddFrame(const uint8_t* data, size_t size, unsigned int w
           std::memcpy(cachedFrame.data(), data, size);
         }
         m_cachedFrame = std::move(cachedFrame);
+        m_cachedWidth = width;
+        m_cachedHeight = height;
       }
     }
   }
@@ -268,16 +246,6 @@ void CRPRenderManager::FrameMove()
 
       CLog::Log(LOGINFO, "RetroPlayer[RENDER]: Renderer configured on first frame");
     }
-    else if (m_state == RENDER_STATE::RECONFIGURING)
-    {
-      CLog::Log(LOGDEBUG, "RetroPlayer[RENDER]: Reconfiguring %u renderer(s)", m_renderers.size());
-
-      // Reconfigure any existing renderers
-      for (auto &renderer : m_renderers)
-        renderer->Configure(m_format, m_width, m_height);
-
-      m_state = RENDER_STATE::CONFIGURED;
-    }
 
     if (m_state == RENDER_STATE::CONFIGURED)
       bIsConfigured = true;
@@ -301,6 +269,8 @@ void CRPRenderManager::CheckFlush()
       m_renderBuffers.clear();
 
       m_cachedFrame.clear();
+      m_cachedWidth = 0;
+      m_cachedHeight = 0;
 
       m_bHasCachedFrame = false;
     }
@@ -502,7 +472,7 @@ std::shared_ptr<CRPBaseRenderer> CRPRenderManager::GetRenderer(IRenderBufferPool
               m_processInfo.GetRenderSystemName(bufferPool).c_str());
 
     renderer.reset(m_processInfo.CreateRenderer(bufferPool, renderSettings));
-    if (renderer && renderer->Configure(m_format, m_width, m_height))
+    if (renderer && renderer->Configure(m_format))
     {
       // Ensure we have a render buffer for this renderer
       CreateRenderBuffer(renderer->GetBufferPool());
@@ -567,13 +537,13 @@ void CRPRenderManager::CreateRenderBuffer(IRenderBufferPool *bufferPool)
 
   if (!HasRenderBuffer(bufferPool) && m_bHasCachedFrame)
   {
-    IRenderBuffer *renderBuffer = CreateFromCache(m_cachedFrame, bufferPool, m_bufferMutex);
+    IRenderBuffer *renderBuffer = CreateFromCache(m_cachedFrame, m_cachedWidth, m_cachedHeight, bufferPool, m_bufferMutex);
     if (renderBuffer != nullptr)
       m_renderBuffers.emplace_back(renderBuffer);
   }
 }
 
-IRenderBuffer *CRPRenderManager::CreateFromCache(std::vector<uint8_t> &cachedFrame, IRenderBufferPool *bufferPool, CCriticalSection &mutex)
+IRenderBuffer *CRPRenderManager::CreateFromCache(std::vector<uint8_t> &cachedFrame, unsigned int width, unsigned int height, IRenderBufferPool *bufferPool, CCriticalSection &mutex)
 {
   // Take ownership of cached frame
   std::vector<uint8_t> ownedFrame = std::move(cachedFrame);
@@ -582,11 +552,11 @@ IRenderBuffer *CRPRenderManager::CreateFromCache(std::vector<uint8_t> &cachedFra
   {
     CLog::Log(LOGERROR, "RetroPlayer[RENDER]: Creating render buffer for renderer");
 
-    IRenderBuffer *renderBuffer = bufferPool->GetBuffer(m_width, m_height);
+    IRenderBuffer *renderBuffer = bufferPool->GetBuffer(width, height);
     if (renderBuffer != nullptr)
     {
       CSingleExit exit(mutex);
-      CopyFrame(renderBuffer, m_format, ownedFrame.data(), ownedFrame.size(), m_width, m_height);
+      CopyFrame(renderBuffer, m_format, ownedFrame.data(), ownedFrame.size(), width, height);
     }
 
     // Return ownership of cached frame

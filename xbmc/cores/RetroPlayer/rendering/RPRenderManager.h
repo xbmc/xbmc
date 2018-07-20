@@ -153,13 +153,15 @@ namespace RETRO
      * empty.
      *
      * \param cachedFrame The cached frame
+     * \param width The width of the cached frame
+     * \param height The height of the cached frame
      * \param bufferPool The buffer pool used to create the render buffer
      * \param mutex The locked mutex, to be unlocked during memory copy
      *
      * \return The render buffer if one was created from the cached frame,
      *         otherwise nullptr
      */
-    IRenderBuffer *CreateFromCache(std::vector<uint8_t> &cachedFrame, IRenderBufferPool *bufferPool, CCriticalSection &mutex);
+    IRenderBuffer *CreateFromCache(std::vector<uint8_t> &cachedFrame, unsigned int width, unsigned int height, IRenderBufferPool *bufferPool, CCriticalSection &mutex);
 
     /*!
      * \brief Utility function to copy a frame and rescale pixels if necessary
@@ -182,8 +184,6 @@ namespace RETRO
     AVPixelFormat m_format = AV_PIX_FMT_NONE;
     unsigned int m_maxWidth = 0;
     unsigned int m_maxHeight = 0;
-    unsigned int m_width = 0; //! @todo Remove me when dimension changing is implemented
-    unsigned int m_height = 0; //! @todo Remove me when dimension changing is implemented
 
     // Render resources
     std::set<std::shared_ptr<CRPBaseRenderer>> m_renderers;
@@ -191,13 +191,14 @@ namespace RETRO
     std::vector<IRenderBuffer*> m_renderBuffers;
     std::map<AVPixelFormat, SwsContext*> m_scalers;
     std::vector<uint8_t> m_cachedFrame;
+    unsigned int m_cachedWidth = 0;
+    unsigned int m_cachedHeight = 0;
 
     // State parameters
     enum class RENDER_STATE
     {
       UNCONFIGURED,
       CONFIGURING,
-      RECONFIGURING,
       CONFIGURED,
     };
     RENDER_STATE m_state = RENDER_STATE::UNCONFIGURED;

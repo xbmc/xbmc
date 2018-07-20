@@ -308,7 +308,7 @@ void CRPWinRenderer::Render(CD3DTexture *target)
       // Use the picked output shader to render to the target
       if (outputShader != nullptr)
       {
-        outputShader->Render(*intermediateTarget, m_sourceWidth, m_sourceHeight,
+        outputShader->Render(*intermediateTarget,
           m_sourceRect, destPoints, viewPort, target,
           m_context.UseLimitedColor() ? 1 : 0);
       }

@@ -418,10 +418,10 @@ void CRPRendererOpenGLES::Render(uint8_t alpha)
 
   CRect rect = m_sourceRect;
 
-  rect.x1 /= m_sourceWidth;
-  rect.x2 /= m_sourceWidth;
-  rect.y1 /= m_sourceHeight;
-  rect.y2 /= m_sourceHeight;
+  rect.x1 /= renderBuffer->GetWidth();
+  rect.x2 /= renderBuffer->GetWidth();
+  rect.y1 /= renderBuffer->GetHeight();
+  rect.y2 /= renderBuffer->GetHeight();
 
   const uint32_t color = (alpha << 24) | 0xFFFFFF;
 

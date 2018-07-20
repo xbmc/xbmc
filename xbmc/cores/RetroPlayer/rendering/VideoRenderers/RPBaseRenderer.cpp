@@ -54,11 +54,9 @@ bool CRPBaseRenderer::IsCompatible(const CRenderVideoSettings &settings) const
   return true;
 }
 
-bool CRPBaseRenderer::Configure(AVPixelFormat format, unsigned int width, unsigned int height)
+bool CRPBaseRenderer::Configure(AVPixelFormat format)
 {
   m_format = format;
-  m_sourceWidth = width;
-  m_sourceHeight = height;
   m_renderOrientation = 0; //! @todo
 
   if (!m_bufferPool->IsConfigured())
@@ -71,8 +69,6 @@ bool CRPBaseRenderer::Configure(AVPixelFormat format, unsigned int width, unsign
       return false;
     }
   }
-
-  ManageRenderArea();
 
   if (ConfigureInternal())
     m_bConfigured = true;
@@ -114,6 +110,8 @@ void CRPBaseRenderer::RenderFrame(bool clear, uint8_t alpha)
   if (!m_bConfigured || m_renderBuffer == nullptr)
     return;
 
+  ManageRenderArea(*m_renderBuffer);
+
   RenderInternal(clear, alpha);
   PostRender();
 
@@ -124,17 +122,6 @@ void CRPBaseRenderer::Flush()
 {
   SetBuffer(nullptr);
   FlushInternal();
-}
-
-float CRPBaseRenderer::GetAspectRatio() const
-{
-  return static_cast<float>(m_sourceWidth) / static_cast<float>(m_sourceHeight);
-}
-
-unsigned int CRPBaseRenderer::GetRotationDegCCW() const
-{
-  unsigned int renderOrientation = m_renderSettings.VideoSettings().GetRenderRotation();
-  return (renderOrientation + m_renderOrientation) % 360;
 }
 
 void CRPBaseRenderer::SetScalingMethod(SCALINGMETHOD method)
@@ -152,10 +139,16 @@ void CRPBaseRenderer::SetRenderRotation(unsigned int rotationDegCCW)
   m_renderSettings.VideoSettings().SetRenderRotation(rotationDegCCW);
 }
 
-void CRPBaseRenderer::ManageRenderArea()
+void CRPBaseRenderer::ManageRenderArea(const IRenderBuffer &renderBuffer)
 {
+  // Get texture parameters
+  const unsigned int sourceWidth = renderBuffer.GetWidth();
+  const unsigned int sourceHeight = renderBuffer.GetHeight();
+  const unsigned int sourceRotationDegCCW = m_renderOrientation; //! @todo
+  const float sourceAspectRatio = static_cast<float>(sourceWidth) / static_cast<float>(sourceHeight);
+
   const VIEWMODE viewMode = m_renderSettings.VideoSettings().GetRenderViewMode();
-  const unsigned int rotationDegCCW = GetRotationDegCCW();
+  const unsigned int rotationDegCCW = (sourceRotationDegCCW + m_renderSettings.VideoSettings().GetRenderRotation()) % 360;
 
   // Get screen parameters
   float screenWidth;
@@ -169,16 +162,16 @@ void CRPBaseRenderer::ManageRenderArea()
   // Calculate pixel ratio and zoom amount
   float pixelRatio = 1.0f;
   float zoomAmount = 1.0f;
-  CRenderUtils::CalculateViewMode(viewMode, rotationDegCCW, m_sourceWidth, m_sourceHeight, screenWidth, screenHeight, pixelRatio, zoomAmount);
+  CRenderUtils::CalculateViewMode(viewMode, rotationDegCCW, sourceWidth, sourceHeight, screenWidth, screenHeight, pixelRatio, zoomAmount);
 
   // Calculate destination dimensions
   CRect destRect;
-  CRenderUtils::CalcNormalRenderRect(viewRect, GetAspectRatio() * pixelRatio, zoomAmount, destRect);
+  CRenderUtils::CalcNormalRenderRect(viewRect, sourceAspectRatio * pixelRatio, zoomAmount, destRect);
 
   m_sourceRect.x1 = 0.0f;
   m_sourceRect.y1 = 0.0f;
-  m_sourceRect.x2 = static_cast<float>(m_sourceWidth);
-  m_sourceRect.y2 = static_cast<float>(m_sourceHeight);
+  m_sourceRect.x2 = static_cast<float>(sourceWidth);
+  m_sourceRect.y2 = static_cast<float>(sourceHeight);
 
   // Clip as needed
   if (!(m_context.IsFullScreenVideo() || m_context.IsCalibrating()))
@@ -201,8 +194,6 @@ void CRPBaseRenderer::PreRender(bool clear)
   // Clear screen
   if (clear)
     m_context.Clear(m_context.UseLimitedColor() ? 0x101010 : 0);
-
-  ManageRenderArea();
 }
 
 void CRPBaseRenderer::PostRender()

@@ -52,7 +52,7 @@ namespace RETRO
     IRenderBufferPool *GetBufferPool() { return m_bufferPool.get(); }
 
     // Player functions
-    bool Configure(AVPixelFormat format, unsigned int width, unsigned int height);
+    bool Configure(AVPixelFormat format);
     void FrameMove();
     /*!
      * \brief Performs whatever necessary before rendering the frame
@@ -86,14 +86,6 @@ namespace RETRO
     virtual void RenderInternal(bool clear, uint8_t alpha) = 0;
     virtual void FlushInternal() { }
 
-    /*!
-     * \brief Calculate driven dimensions
-     */
-    virtual void ManageRenderArea();
-
-    float GetAspectRatio() const;
-    unsigned int GetRotationDegCCW() const;
-
     // Construction parameters
     CRenderContext &m_context;
     std::shared_ptr<IRenderBufferPool> m_bufferPool;
@@ -101,8 +93,6 @@ namespace RETRO
     // Stream properties
     bool m_bConfigured = false;
     AVPixelFormat m_format = AV_PIX_FMT_NONE;
-    unsigned int m_sourceWidth = 0;
-    unsigned int m_sourceHeight = 0;
     unsigned int m_renderOrientation = 0; // Degrees counter-clockwise
 
     // Rendering properties
@@ -114,6 +104,11 @@ namespace RETRO
     std::array<CPoint, 4> m_rotatedDestCoords{};
 
   private:
+    /*!
+     * \brief Calculate driven dimensions
+     */
+    virtual void ManageRenderArea(const IRenderBuffer &renderBuffer);
+
     /*!
      * \brief Performs whatever nessesary after a frame has been rendered
      */
