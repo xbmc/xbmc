@@ -340,20 +340,6 @@ StorageFile CWinLibraryFile::GetFile(const CURL& url)
       return nullptr;
 
     std::string filePath = URIUtils::FixSlashesAndDups(url.GetFileName(), '\\');
-    if (url.GetHostName() == "removable")
-    {
-      // here filePath has the form e\path\file.ext where first segment is
-      // drive letter, we should make path form like regular e:\path\file.ext
-      auto index = filePath.find('\\');
-      if (index == std::string::npos)
-      {
-        CLog::LogF(LOGDEBUG, "wrong file path '%s'", url.GetRedacted().c_str());
-        return nullptr;
-      }
-
-      filePath = filePath.insert(index, 1, ':');
-    }
-
     try
     {
       std::wstring wpath = ToW(filePath);
