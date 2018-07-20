@@ -95,6 +95,8 @@ bool CRPRenderManager::Configure(AVPixelFormat format, unsigned int nominalWidth
             maxWidth,
             maxHeight);
 
+  CSingleLock lock(m_stateMutex);
+
   // Immutable parameters
   m_format = format;
   m_maxWidth = maxWidth;
@@ -104,11 +106,9 @@ bool CRPRenderManager::Configure(AVPixelFormat format, unsigned int nominalWidth
   m_width = nominalWidth;
   m_height = nominalHeight;
 
-  CSingleLock lock(m_stateMutex);
-
   if (m_state == RENDER_STATE::UNCONFIGURED)
     m_state = RENDER_STATE::CONFIGURING;
-  else
+  else if (m_state != RENDER_STATE::CONFIGURING)
   {
     Flush();
     m_state = RENDER_STATE::RECONFIGURING;
@@ -119,12 +119,19 @@ bool CRPRenderManager::Configure(AVPixelFormat format, unsigned int nominalWidth
 
 bool CRPRenderManager::GetVideoBuffer(unsigned int width, unsigned int height, AVPixelFormat &format, uint8_t *&data, size_t &size)
 {
-  if (m_bFlush || m_state != RENDER_STATE::CONFIGURED)
-    return false;
-
   for (IRenderBuffer *buffer : m_pendingBuffers)
     buffer->Release();
   m_pendingBuffers.clear();
+
+  if (m_bFlush || m_state != RENDER_STATE::CONFIGURED)
+    return false;
+
+  if (width != m_width || height != m_height)
+  {
+    // Reconfigure
+    Configure(m_format, width, height, m_maxWidth, m_maxHeight);
+    return false;
+  }
 
   // Get buffers from visible renderers
   for (IRenderBufferPool *bufferPool : m_processInfo.GetBufferManager().GetBufferPools())
