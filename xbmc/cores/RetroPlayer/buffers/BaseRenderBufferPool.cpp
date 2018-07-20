@@ -82,28 +82,20 @@ IRenderBuffer *CBaseRenderBufferPool::GetBuffer(unsigned int width, unsigned int
   {
     CSingleLock lock(m_bufferMutex);
 
-    while (!m_free.empty())
+    for (auto it = m_free.begin(); it != m_free.end(); ++it)
     {
-      renderBuffer = m_free.front().release();
-      m_free.pop_front();
+      std::unique_ptr<IRenderBuffer> &buffer = m_free.front();
 
       // Only return buffers of the same dimensions
-      const unsigned int bufferWidth = renderBuffer->GetWidth();
-      const unsigned int bufferHeight = renderBuffer->GetHeight();
+      const unsigned int bufferWidth = buffer->GetWidth();
+      const unsigned int bufferHeight = buffer->GetHeight();
 
       if (bufferWidth == width && bufferHeight == height)
       {
+        renderBuffer = buffer.release();
         renderBuffer->SetHeader(header);
+        m_free.erase(it);
         break;
-      }
-      else
-      {
-        CLog::Log(LOGDEBUG, "RetroPlayer[RENDER]: Discarding render buffer of size %ux%u",
-                  bufferWidth,
-                  bufferHeight);
-
-        std::unique_ptr<IRenderBuffer> bufferPtr(renderBuffer);
-        renderBuffer = nullptr;
       }
     }
 
