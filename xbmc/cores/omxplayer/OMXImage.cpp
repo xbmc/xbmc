@@ -485,7 +485,6 @@ COMXImageFile::COMXImageFile()
   m_orientation   = 0;
   m_width         = 0;
   m_height        = 0;
-  m_filename      = "";
 }
 
 COMXImageFile::~COMXImageFile()
@@ -603,7 +602,7 @@ OMX_IMAGE_CODINGTYPE COMXImageFile::GetCodingType(unsigned int &width, unsigned 
 
   if(!m_image_size)
   {
-    CLog::Log(LOGERROR, "%s::%s %s m_image_size unexpected (%lu)\n", CLASSNAME, __func__, m_filename, m_image_size);
+    CLog::Log(LOGERROR, "%s::%s %s m_image_size unexpected (%lu)\n", CLASSNAME, __func__, GetFilename(), m_image_size);
     return OMX_IMAGE_CodingMax;
   }
 
@@ -879,10 +878,10 @@ OMX_IMAGE_CODINGTYPE COMXImageFile::GetCodingType(unsigned int &width, unsigned 
 bool COMXImageFile::ReadFile(const std::string& inputFile, int orientation)
 {
   XFILE::CFile      m_pFile;
-  m_filename = CURL::GetRedacted(inputFile).c_str();
+  m_filename = CURL::GetRedacted(inputFile);
   if(!m_pFile.Open(inputFile, 0))
   {
-    CLog::Log(LOGERROR, "%s::%s %s not found\n", CLASSNAME, __func__, m_filename);
+    CLog::Log(LOGERROR, "%s::%s %s not found\n", CLASSNAME, __func__, GetFilename());
     return false;
   }
 
@@ -894,13 +893,13 @@ bool COMXImageFile::ReadFile(const std::string& inputFile, int orientation)
 
   if(!m_image_size)
   {
-    CLog::Log(LOGERROR, "%s::%s %s m_image_size zero\n", CLASSNAME, __func__, m_filename);
+    CLog::Log(LOGERROR, "%s::%s %s m_image_size zero\n", CLASSNAME, __func__, GetFilename());
     return false;
   }
   m_image_buffer = (uint8_t *)malloc(m_image_size);
   if(!m_image_buffer)
   {
-    CLog::Log(LOGERROR, "%s::%s %s m_image_buffer null (%lu)\n", CLASSNAME, __func__, m_filename, m_image_size);
+    CLog::Log(LOGERROR, "%s::%s %s m_image_buffer null (%lu)\n", CLASSNAME, __func__, GetFilename(), m_image_size);
     return false;
   }
 
@@ -910,7 +909,7 @@ bool COMXImageFile::ReadFile(const std::string& inputFile, int orientation)
   OMX_IMAGE_CODINGTYPE eCompressionFormat = GetCodingType(m_width, m_height, orientation);
   if(eCompressionFormat != OMX_IMAGE_CodingJPEG || m_width < 1 || m_height < 1)
   {
-    CLog::Log(LOGDEBUG, "%s::%s %s GetCodingType=0x%x (%dx%d)\n", CLASSNAME, __func__, m_filename, eCompressionFormat, m_width, m_height);
+    CLog::Log(LOGDEBUG, "%s::%s %s GetCodingType=0x%x (%dx%d)\n", CLASSNAME, __func__, GetFilename(), eCompressionFormat, m_width, m_height);
     return false;
   }
 

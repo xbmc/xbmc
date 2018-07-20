@@ -98,7 +98,7 @@ public:
   unsigned int GetHeight() { return m_height; };
   unsigned long GetImageSize() { return m_image_size; };
   const uint8_t *GetImageBuffer() { return (const uint8_t *)m_image_buffer; };
-  const char *GetFilename() { return m_filename; };
+  const char *GetFilename() { return m_filename.c_str(); };
 protected:
   OMX_IMAGE_CODINGTYPE GetCodingType(unsigned int &width, unsigned int &height, int orientation);
   uint8_t           *m_image_buffer;
@@ -106,7 +106,7 @@ protected:
   unsigned int      m_width;
   unsigned int      m_height;
   int               m_orientation;
-  const char *      m_filename;
+  std::string       m_filename;
 };
 
 class COMXImageDec
