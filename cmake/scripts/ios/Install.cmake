@@ -66,7 +66,8 @@ add_custom_command(TARGET ${APP_NAME_LC} POST_BUILD
             "WRAPPER_EXTENSION=app"
             "SRCROOT=${CMAKE_BINARY_DIR}"
             ${CMAKE_SOURCE_DIR}/tools/darwin/Support/copyframeworks-ios.command
-    COMMAND "NATIVEPREFIX=${NATIVEPREFIX}"
+    COMMAND "XBMC_DEPENDS=${DEPENDS_PATH}"
+            "NATIVEPREFIX=${NATIVEPREFIX}"
             "PLATFORM_NAME=${PLATFORM}"
             "CODESIGNING_FOLDER_PATH=$<TARGET_FILE_DIR:${APP_NAME_LC}>"
             "BUILT_PRODUCTS_DIR=$<TARGET_FILE_DIR:${APP_NAME_LC}>/.."
