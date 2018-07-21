@@ -97,7 +97,6 @@ namespace RETRO
     // Functions called from render thread
     void FrameMove();
     void Flush();
-    void TriggerUpdateResolution();
 
     // Implementation of IRenderManager
     void RenderWindow(bool bClear, const RESOLUTION_INFO &coordsRes) override;
@@ -162,8 +161,6 @@ namespace RETRO
      */
     IRenderBuffer *CreateFromCache(std::vector<uint8_t> &cachedFrame, IRenderBufferPool *bufferPool, CCriticalSection &mutex);
 
-    void UpdateResolution();
-
     /*!
      * \brief Utility function to copy a frame and rescale pixels if necessary
      */
@@ -206,7 +203,6 @@ namespace RETRO
     RENDER_STATE m_state = RENDER_STATE::UNCONFIGURED;
     bool m_bHasCachedFrame = false; // Invariant: m_cachedFrame is empty if false
     std::set<std::string> m_failedShaderPresets;
-    bool m_bTriggerUpdateResolution = false;
     std::atomic<bool> m_bFlush = {false};
 
     // Playback parameters

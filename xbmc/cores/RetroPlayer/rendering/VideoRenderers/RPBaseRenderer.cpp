@@ -185,7 +185,7 @@ void CRPBaseRenderer::ManageRenderArea()
     CRenderUtils::ClipRect(viewRect, m_sourceRect, destRect);
 
   // Adapt the drawing rect points if we have to rotate
-  m_rotatedDestCoords = CRenderUtils::ReorderDrawPoints(destRect, rotationDegCCW, GetAspectRatio());
+  m_rotatedDestCoords = CRenderUtils::ReorderDrawPoints(destRect, rotationDegCCW);
 }
 
 void CRPBaseRenderer::MarkDirty()

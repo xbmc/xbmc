@@ -176,7 +176,7 @@ void CRenderUtils::ClipRect(const CRect &viewRect, CRect &sourceRect, CRect &des
   }
 }
 
-std::array<CPoint, 4> CRenderUtils::ReorderDrawPoints(const CRect &destRect, unsigned int orientationDegCCW, float aspectRatio)
+std::array<CPoint, 4> CRenderUtils::ReorderDrawPoints(const CRect &destRect, unsigned int orientationDegCCW)
 {
   std::array<CPoint, 4> rotatedDestCoords{};
 

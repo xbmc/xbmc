@@ -320,11 +320,6 @@ void CRPRenderManager::Flush()
   m_bFlush = true;
 }
 
-void CRPRenderManager::TriggerUpdateResolution()
-{
-  m_bTriggerUpdateResolution = true;
-}
-
 void CRPRenderManager::RenderWindow(bool bClear, const RESOLUTION_INFO &coordsRes)
 {
   std::shared_ptr<CRPBaseRenderer> renderer = GetRenderer(nullptr);
@@ -605,25 +600,6 @@ IRenderBuffer *CRPRenderManager::CreateFromCache(std::vector<uint8_t> &cachedFra
   }
 
   return nullptr;
-}
-
-void CRPRenderManager::UpdateResolution()
-{
-  /* @todo
-  if (m_bTriggerUpdateResolution)
-  {
-    if (m_renderContext.IsFullScreenVideo() && m_renderContext.IsFullScreenRoot())
-    {
-      if (CServiceBroker::GetSettings().GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) != ADJUST_REFRESHRATE_OFF && m_fps > 0.0f)
-      {
-        RESOLUTION res = CResolutionUtils::ChooseBestResolution(static_cast<float>(m_framerate), 0, false);
-        m_renderContext.SetVideoResolution(res);
-      }
-      m_bTriggerUpdateResolution = false;
-      m_playerPort->VideoParamsChange();
-    }
-  }
-  */
 }
 
 void CRPRenderManager::CopyFrame(IRenderBuffer *renderBuffer, AVPixelFormat format, const uint8_t *data, size_t size, unsigned int width, unsigned int height)
