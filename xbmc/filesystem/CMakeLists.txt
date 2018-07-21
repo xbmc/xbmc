@@ -149,14 +149,6 @@ if(ENABLE_OPTICAL)
                       CDDAFile.h)
 endif()
 
-if(NFS_FOUND)
-  list(APPEND SOURCES NFSDirectory.cpp
-                      NFSFile.cpp)
-  list(APPEND HEADERS DllLibNfs.h
-                      NFSDirectory.h
-                      NFSFile.h)
-endif()
-
 if(ENABLE_UPNP)
   list(APPEND SOURCES NptXbmcFile.cpp
                       UPnPDirectory.cpp

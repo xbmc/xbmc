@@ -163,8 +163,7 @@ set(optional_deps Alsa
                   ${PLATFORM_OPTIONAL_DEPS})
 
 # Optional, dyloaded deps. Keep in alphabetical order please
-set(dyload_optional NFS
-                    Plist)
+set(dyload_optional Plist)
 
 # Required tools
 find_package(TexturePacker REQUIRED)
