@@ -5,6 +5,7 @@
     <xs:complexType>
       <xs:sequence>
         <xs:element name="provides" type="providesList"/>
+        <xs:element name="medialibraryscanpath" type="pathType" minOccurs="0" maxOccurs="unbounded"/>
       </xs:sequence>
       <xs:attribute name="point" type="xs:string" use="required"/>
       <xs:attribute name="id" type="simpleIdentifier"/>
@@ -28,5 +29,21 @@
   <xs:simpleType name="providesList">
     <xs:list itemType="providesType"/>
   </xs:simpleType>
+  <xs:simpleType name="contentType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="albums"/>
+      <xs:enumeration value="artists"/>
+      <xs:enumeration value="movies"/>
+      <xs:enumeration value="tvshows"/>
+      <xs:enumeration value="musicvideos"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="pathType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="content" type="contentType" use="required"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
 </xs:schema>
 
