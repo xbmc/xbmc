@@ -751,10 +751,11 @@ ssize_t CNFSFile::Write(const void* lpBuf, size_t uiBufSize)
       chunkSize = leftBytes;//write last chunk with correct size
     }
     //write chunk
+    //! @bug libnfs < 2.0.0 isn't const correct
     writtenBytes = gNfsConnection.GetImpl()->nfs_write(m_pNfsContext,
                                   m_pFileHandle,
                                   chunkSize,
-                                  (char *)lpBuf + numberOfBytesWritten);
+                                  const_cast<char*>((const char *)lpBuf) + numberOfBytesWritten);
     //decrease left bytes
     leftBytes-= writtenBytes;
     //increase overall written bytes

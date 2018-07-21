@@ -283,37 +283,37 @@ bool CZipManager::ExtractArchive(const CURL& archive, const std::string& strPath
 // Read local file header
 void CZipManager::readHeader(const char* buffer, SZipEntry& info)
 {
-  info.header = Endian_SwapLE32(*(unsigned int*)buffer);
-  info.version = Endian_SwapLE16(*(unsigned short*)(buffer+4));
-  info.flags = Endian_SwapLE16(*(unsigned short*)(buffer+6));
-  info.method = Endian_SwapLE16(*(unsigned short*)(buffer+8));
-  info.mod_time = Endian_SwapLE16(*(unsigned short*)(buffer+10));
-  info.mod_date = Endian_SwapLE16(*(unsigned short*)(buffer+12));
-  info.crc32 = Endian_SwapLE32(*(unsigned int*)(buffer+14));
-  info.csize = Endian_SwapLE32(*(unsigned int*)(buffer+18));
-  info.usize = Endian_SwapLE32(*(unsigned int*)(buffer+22));
-  info.flength = Endian_SwapLE16(*(unsigned short*)(buffer+26));
-  info.elength = Endian_SwapLE16(*(unsigned short*)(buffer+28));
+  info.header = Endian_SwapLE32(*(const unsigned int*)buffer);
+  info.version = Endian_SwapLE16(*(const unsigned short*)(buffer+4));
+  info.flags = Endian_SwapLE16(*(const unsigned short*)(buffer+6));
+  info.method = Endian_SwapLE16(*(const unsigned short*)(buffer+8));
+  info.mod_time = Endian_SwapLE16(*(const unsigned short*)(buffer+10));
+  info.mod_date = Endian_SwapLE16(*(const unsigned short*)(buffer+12));
+  info.crc32 = Endian_SwapLE32(*(const unsigned int*)(buffer+14));
+  info.csize = Endian_SwapLE32(*(const unsigned int*)(buffer+18));
+  info.usize = Endian_SwapLE32(*(const unsigned int*)(buffer+22));
+  info.flength = Endian_SwapLE16(*(const unsigned short*)(buffer+26));
+  info.elength = Endian_SwapLE16(*(const unsigned short*)(buffer+28));
 }
 
 // Read central file header (from central directory)
 void CZipManager::readCHeader(const char* buffer, SZipEntry& info)
 {
-  info.header = Endian_SwapLE32(*(unsigned int*)buffer);
+  info.header = Endian_SwapLE32(*(const unsigned int*)buffer);
   // Skip version made by
-  info.version = Endian_SwapLE16(*(unsigned short*)(buffer+6));
-  info.flags = Endian_SwapLE16(*(unsigned short*)(buffer+8));
-  info.method = Endian_SwapLE16(*(unsigned short*)(buffer+10));
-  info.mod_time = Endian_SwapLE16(*(unsigned short*)(buffer+12));
-  info.mod_date = Endian_SwapLE16(*(unsigned short*)(buffer+14));
-  info.crc32 = Endian_SwapLE32(*(unsigned int*)(buffer+16));
-  info.csize = Endian_SwapLE32(*(unsigned int*)(buffer+20));
-  info.usize = Endian_SwapLE32(*(unsigned int*)(buffer+24));
-  info.flength = Endian_SwapLE16(*(unsigned short*)(buffer+28));
-  info.eclength = Endian_SwapLE16(*(unsigned short*)(buffer+30));
-  info.clength = Endian_SwapLE16(*(unsigned short*)(buffer+32));
+  info.version = Endian_SwapLE16(*(const unsigned short*)(buffer+6));
+  info.flags = Endian_SwapLE16(*(const unsigned short*)(buffer+8));
+  info.method = Endian_SwapLE16(*(const unsigned short*)(buffer+10));
+  info.mod_time = Endian_SwapLE16(*(const unsigned short*)(buffer+12));
+  info.mod_date = Endian_SwapLE16(*(const unsigned short*)(buffer+14));
+  info.crc32 = Endian_SwapLE32(*(const unsigned int*)(buffer+16));
+  info.csize = Endian_SwapLE32(*(const unsigned int*)(buffer+20));
+  info.usize = Endian_SwapLE32(*(const unsigned int*)(buffer+24));
+  info.flength = Endian_SwapLE16(*(const unsigned short*)(buffer+28));
+  info.eclength = Endian_SwapLE16(*(const unsigned short*)(buffer+30));
+  info.clength = Endian_SwapLE16(*(const unsigned short*)(buffer+32));
   // Skip disk number start, internal/external file attributes
-  info.lhdrOffset = Endian_SwapLE32(*(unsigned int*)(buffer+42));
+  info.lhdrOffset = Endian_SwapLE32(*(const unsigned int*)(buffer+42));
 
 }
 

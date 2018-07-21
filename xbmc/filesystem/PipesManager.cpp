@@ -172,7 +172,7 @@ bool Pipe::Write(const char *buf, int nSize, int nWaitMillis)
   int writeSize = m_buffer.getMaxWriteSize();
   if (writeSize > nSize)
   {
-    m_buffer.WriteData((char*)buf, nSize);
+    m_buffer.WriteData(buf, nSize);
     bOk = true;
   }
   else
@@ -187,7 +187,7 @@ bool Pipe::Write(const char *buf, int nSize, int nWaitMillis)
       lock.Enter();
       if (bClear && (int)m_buffer.getMaxWriteSize() >= nSize)
       {
-        m_buffer.WriteData((char*)buf, nSize);
+        m_buffer.WriteData(buf, nSize);
         bOk = true;
         break;
       }
