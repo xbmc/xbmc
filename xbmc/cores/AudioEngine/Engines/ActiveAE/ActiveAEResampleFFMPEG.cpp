@@ -198,7 +198,8 @@ int CActiveAEResampleFFMPEG::Resample(uint8_t **dst_buffer, int dst_samples, uin
     }
   }
 
-  int ret = swr_convert(m_pContext, dst_buffer, dst_samples, (const uint8_t**)src_buffer, src_samples);
+  //! @bug libavresample isn't const correct
+  int ret = swr_convert(m_pContext, dst_buffer, dst_samples, const_cast<const uint8_t**>(src_buffer), src_samples);
   if (ret < 0)
   {
     CLog::Log(LOGERROR, "CActiveAEResampleFFMPEG::Resample - resample failed");

@@ -107,12 +107,12 @@ void CAEELDParser::Parse(const uint8_t *data, size_t length, CAEDeviceInfo& info
   header.fc                  = (data[7 ] & 0x04) == 0x04;
   header.lfe                 = (data[7 ] & 0x02) == 0x02;
   header.flr                 = (data[7 ] & 0x01) == 0x01;
-  header.port_id             = Endian_SwapLE64(*((uint64_t*)(data + 8)));
+  header.port_id             = Endian_SwapLE64(*((const uint64_t*)(data + 8)));
   header.mfg_name[0]         = 'A' + ((data[16] >> 2) & 0x1F) - 1;
   header.mfg_name[1]         = 'A' + (((data[16] << 3) | (data[17] >> 5)) & 0x1F) - 1;
   header.mfg_name[2]         = 'A' + (data[17] & 0x1F) - 1;
   header.mfg_name[3]         = '\0';
-  header.product_code        = Endian_SwapLE16(*((uint16_t*)(data + 18)));
+  header.product_code        = Endian_SwapLE16(*((const uint16_t*)(data + 18)));
 
   switch (header.conn_type)
   {
