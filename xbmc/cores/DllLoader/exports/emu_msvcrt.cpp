@@ -1367,7 +1367,7 @@ extern "C"
         const size_t bufSize = size * count;
         do // fwrite() must write all data until whole buffer is written or error occurs
         {
-          const ssize_t w = pFile->Write(((int8_t*)buffer) + written, bufSize - written);
+          const ssize_t w = pFile->Write(((const int8_t*)buffer) + written, bufSize - written);
           if (w <= 0)
             break;
           written += w;
@@ -1811,10 +1811,10 @@ extern "C"
 #endif
   }
 
-  char* dll_getcwd(char *buffer, int maxlen)
+  const char* dll_getcwd(char *buffer, int maxlen)
   {
     not_implement("msvcrt.dll fake function dll_getcwd() called\n");
-    return (char*)"special://xbmc/";
+    return "special://xbmc/";
   }
 
   int dll_putenv(const char* envstring)
