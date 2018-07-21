@@ -25,10 +25,7 @@
 TEST(TestHttpResponse, General)
 {
   CHttpResponse a(HTTP::POST, HTTP::OK);
-  char *buf = new char(100);
   std::string response, content, refstr;
-  unsigned int size;
-  memset(buf, 0, sizeof(*buf));
 
   a.AddHeader("date", "Sun, 01 Jul 2012 00:00:00 -0400");
   a.AddHeader("content-type", "text/html");
@@ -40,10 +37,9 @@ TEST(TestHttpResponse, General)
              "</html>\r\n";
   a.SetContent(content.c_str(), content.length());
 
-  size = a.Create(buf);
-  EXPECT_EQ((unsigned int)210, size);
+  response = a.Create();;
+  EXPECT_EQ((unsigned int)210, response.size());
 
-  response = buf;
   refstr = "HTTP/1.1 200 OK\r\n"
            "date: Sun, 01 Jul 2012 00:00:00 -0400\r\n"
            "content-type: text/html\r\n"
