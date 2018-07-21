@@ -570,7 +570,7 @@ static void cc_decode_EIA608(cc_decoder_t *dec, uint16_t data)
 }
 
 
-void decode_cc(cc_decoder_t *dec, uint8_t *buffer, uint32_t buf_len)
+void decode_cc(cc_decoder_t *dec, const uint8_t *buffer, uint32_t buf_len)
 {
   uint32_t i;
   for (i = 0; i<buf_len; i += 3)

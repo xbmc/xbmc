@@ -645,12 +645,12 @@ bool CTeletextDecoder::InitDecoder()
     m_RenderInfo.axdrcs[i+12+1] = (m_RenderInfo.FontHeight * i + 6) / 10;
 
   /* center screen */
-  m_TypeTTF.face_id   = (FTC_FaceID) m_teletextFont.c_str();
+  m_TypeTTF.face_id   = (FTC_FaceID) const_cast<char*>(m_teletextFont.c_str());
   m_TypeTTF.height    = (FT_UShort) m_RenderInfo.FontHeight;
   m_TypeTTF.flags     = FT_LOAD_MONOCHROME;
   if (FTC_Manager_LookupFace(m_Manager, m_TypeTTF.face_id, &m_Face))
   {
-    m_TypeTTF.face_id = (FTC_FaceID) m_teletextFont.c_str();
+    m_TypeTTF.face_id = (FTC_FaceID) const_cast<char*>(m_teletextFont.c_str());
     if ((error = FTC_Manager_LookupFace(m_Manager, m_TypeTTF.face_id, &m_Face)))
     {
       CLog::Log(LOGERROR, "%s: <FTC_Manager_Lookup_Face failed with Errorcode 0x%.2X>\n", __FUNCTION__, error);
@@ -670,7 +670,7 @@ bool CTeletextDecoder::InitDecoder()
   ClearFB(GetColorRGB(TXT_ColorTransp));
   ClearBB(GetColorRGB(TXT_ColorTransp)); /* initialize backbuffer */
   /* set new colormap */
-  SetColors((unsigned short *)DefaultColors, 0, TXT_Color_SIZECOLTABLE);
+  SetColors(DefaultColors, 0, TXT_Color_SIZECOLTABLE);
 
   for (int i = 0; i < 40 * 25; i++)
   {
@@ -3965,7 +3965,7 @@ int CTeletextDecoder::NextHex(int i) /* return next existing non-decimal page nu
   return i;
 }
 
-void CTeletextDecoder::SetColors(unsigned short *pcolormap, int offset, int number)
+void CTeletextDecoder::SetColors(const unsigned short *pcolormap, int offset, int number)
 {
   int j = offset; /* index in global color table */
 

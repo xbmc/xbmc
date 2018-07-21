@@ -82,14 +82,8 @@ public:
     delete cthread;
   }
 
-  /**
-   * Gcc-4.2 requires this to be 'const' to find the right constructor.
-   * It really shouldn't be since it modifies the parameter thread
-   * to ensure only one thread instance has control of the
-   * Runnable.a
-   */
-  inline thread(const thread& other) : f(other.f), cthread(other.cthread) { ((thread&)other).f = NULL; ((thread&)other).cthread = NULL; }
-  inline thread& operator=(const thread& other) { f = other.f; ((thread&)other).f = NULL; cthread = other.cthread; ((thread&)other).cthread = NULL; return *this; }
+  inline thread(thread& other) : f(other.f), cthread(other.cthread) { other.f = NULL; other.cthread = NULL; }
+  inline thread& operator=(thread& other) { f = other.f; other.f = NULL; cthread = other.cthread; other.cthread = NULL; return *this; }
 
   void join()
   {

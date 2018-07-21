@@ -126,9 +126,7 @@ bool CWebSocketV8::Handshake(const char* data, size_t length, std::string &respo
   if (!websocketProtocol.empty())
     httpResponse.AddHeader(WS_HEADER_PROTOCOL, websocketProtocol);
 
-  char *responseBuffer;
-  int responseLength = httpResponse.Create(responseBuffer);
-  response = std::string(responseBuffer, responseLength);
+  response = response = httpResponse.Create();
 
   m_state = WebSocketStateConnected;
 

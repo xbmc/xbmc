@@ -336,13 +336,13 @@ void CLinuxRendererGLES::LoadPlane(YUVPLANE& plane, int type,
     glTexSubImage2D( m_textureTarget, 0
                    , 0, height, width, 1
                    , type, datatype
-                   , (unsigned char*)pixelData + stride * (height-1));
+                   , (const unsigned char*)pixelData + stride * (height-1));
 
   if (width  < plane.texwidth)
     glTexSubImage2D( m_textureTarget, 0
                    , width, 0, 1, height
                    , type, datatype
-                   , (unsigned char*)pixelData + bps * (width-1));
+                   , (const unsigned char*)pixelData + bps * (width-1));
 
   glBindTexture(m_textureTarget, 0);
 }

@@ -121,7 +121,7 @@ public:
   void AddHeader(const std::string &field, const std::string &value);
   void SetContent(const char* data, unsigned int length);
 
-  unsigned int Create(char *&response);
+  std::string Create();
 
 private:
   HTTP::Method m_method;

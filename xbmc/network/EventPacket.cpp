@@ -29,7 +29,7 @@ using namespace EVENTPACKET;
 /************************************************************************/
 bool CEventPacket::Parse(int datasize, const void *data)
 {
-  unsigned char* buf = (unsigned char *)data;
+  unsigned char* buf = const_cast<unsigned char*>((const unsigned char *)data);
   if (datasize < HEADER_SIZE || datasize > PACKET_SIZE)
     return false;
 

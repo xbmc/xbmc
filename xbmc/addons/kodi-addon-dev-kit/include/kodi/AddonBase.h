@@ -264,11 +264,11 @@ public:
   explicit CSettingValue(const void *settingValue) : m_settingValue(settingValue) {}
 
   bool empty() const { return (m_settingValue == nullptr) ? true : false; }
-  std::string GetString() const { return (char*)m_settingValue; }
-  int GetInt() const { return *(int*)m_settingValue; }
-  unsigned int GetUInt() const { return *(unsigned int*)m_settingValue; }
-  bool GetBoolean() const { return *(bool*)m_settingValue; }
-  float GetFloat() const { return *(float*)m_settingValue; }
+  std::string GetString() const { return (const char*)m_settingValue; }
+  int GetInt() const { return *(const int*)m_settingValue; }
+  unsigned int GetUInt() const { return *(const unsigned int*)m_settingValue; }
+  bool GetBoolean() const { return *(const bool*)m_settingValue; }
+  float GetFloat() const { return *(const float*)m_settingValue; }
 
 private:
   const void *m_settingValue;

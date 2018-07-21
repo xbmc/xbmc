@@ -484,7 +484,7 @@ void Xcddb::parseData(const char *buffer)
   // the data contained on those lines should be concatenated
   char *line;
   const char trenner[3] = {'\n', '\r', '\0'};
-  strtok((char*)buffer, trenner); // skip first line
+  strtok(const_cast<char*>(buffer), trenner); // skip first line
   while ((line = strtok(0, trenner)))
   {
     // Lines that begin with # are comments, should be ignored
@@ -774,7 +774,7 @@ bool Xcddb::writeCacheFile( const char* pBuffer, uint32_t discid )
   XFILE::CFile file;
   if (file.OpenForWrite(GetCacheFile(discid), true))
   {
-    const bool ret = ( (size_t) file.Write((void*)pBuffer, strlen(pBuffer) + 1) == strlen(pBuffer) + 1);
+    const bool ret = ( (size_t) file.Write((const void*)pBuffer, strlen(pBuffer) + 1) == strlen(pBuffer) + 1);
     file.Close();
     return ret;
   }
@@ -963,7 +963,7 @@ bool Xcddb::queryCDinfo(CCdInfo* pInfo)
   switch(m_lastError)
   {
   case 200: //Found exact match
-    strtok((char *)recv_buffer.c_str(), " ");
+    strtok(const_cast<char *>(recv_buffer.c_str()), " ");
     read_buffer = StringUtils::Format("cddb read %s %08x", strtok(NULL, " "), discid);
     break;
 

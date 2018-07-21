@@ -306,7 +306,7 @@ void CGUIVisualisationControl::UpdateTrack()
   else
     CLog::Log(LOGDEBUG, "Updating visualization albumart: %s", m_albumThumb.c_str());
 
-  m_instance->OnAction(VIS_ACTION_UPDATE_ALBUMART, (void*)(m_albumThumb.c_str()));
+  m_instance->OnAction(VIS_ACTION_UPDATE_ALBUMART, (const void*)(m_albumThumb.c_str()));
 
   const MUSIC_INFO::CMusicInfoTag* tag = CServiceBroker::GetGUI()->GetInfoManager().GetCurrentSongTag();
   if (!tag)

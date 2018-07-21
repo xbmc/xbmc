@@ -64,7 +64,7 @@ CAddonInterfaces::~CAddonInterfaces()
   delete static_cast<KodiAPI::AddOn::CAddonCallbacksAddon*>(m_helperAddOn);
   delete static_cast<KodiAPI::GUI::CAddonCallbacksGUI*>(m_helperGUI);
 
-  free((char*)m_callbacks->libBasePath);
+  free(const_cast<char*>(m_callbacks->libBasePath));
   delete m_callbacks;
 }
 

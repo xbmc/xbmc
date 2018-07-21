@@ -165,8 +165,8 @@ void cc708_reset(cc708_service_decoder *decoders)
 
 int compWindowsPriorities (const void *a, const void *b)
 {
-  e708Window *w1=*(e708Window **)a;
-  e708Window *w2=*(e708Window **)b;
+  const e708Window *w1=*(e708Window * const*)a;
+  const e708Window *w2=*(e708Window * const*)b;
   return w1->priority-w2->priority;
 }
 
@@ -1093,7 +1093,7 @@ void decode_708 (const unsigned char *data, int datalength, cc708_service_decode
     case 0:
       // only use 608 as fallback
       if (!decoders[0].parent->m_seen708)
-        decode_cc(decoders[0].parent->m_cc608decoder, (uint8_t*)data+i, 3);
+        decode_cc(decoders[0].parent->m_cc608decoder, (const uint8_t*)data+i, 3);
       break;
     case 2:
       if (cc_valid==0) // This ends the previous packet if complete

@@ -588,7 +588,7 @@ void iso9660::Reset()
 }
 
 //******************************************************************************************************************
-struct iso_dirtree *iso9660::FindFolder( char *Folder )
+struct iso_dirtree *iso9660::FindFolder(const char *Folder )
 {
   char *work;
 
@@ -630,7 +630,7 @@ struct iso_dirtree *iso9660::FindFolder( char *Folder )
 }
 
 //******************************************************************************************************************
-HANDLE iso9660::FindFirstFile9660(char *szLocalFolder, WIN32_FIND_DATA *wfdFile)
+HANDLE iso9660::FindFirstFile9660(const char *szLocalFolder, WIN32_FIND_DATA *wfdFile)
 {
   if (m_info.ISO_HANDLE == nullptr) return static_cast<HANDLE>(nullptr);
   memset( wfdFile, 0, sizeof(WIN32_FIND_DATA));
@@ -735,7 +735,7 @@ HANDLE iso9660::OpenFile(const char *filename)
   pContext->m_bUseMode2 = false;
   m_info.curr_filepos = 0;
 
-  pointer = (char*)filename;
+  pointer = const_cast<char*>(filename);
   while ( strpbrk( pointer, "\\/" ) )
     pointer = strpbrk( pointer, "\\/" ) + 1;
 

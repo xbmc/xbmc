@@ -147,7 +147,7 @@ int CEncoder::WriteStream(const void *pBuffer, uint32_t iBytes)
     m_dwWriteBufferPointer = 0;
 
     // pbtRemaining = pBuffer + bytesWritten
-    uint8_t* pbtRemaining = (uint8_t *)pBuffer + (iBytes - dwBytesRemaining);
+    const uint8_t* pbtRemaining = (const uint8_t *)pBuffer + (iBytes - dwBytesRemaining);
     if (dwBytesRemaining > WRITEBUFFER_SIZE)
     {
       // data is not going to fit in our buffer, just write it to disk

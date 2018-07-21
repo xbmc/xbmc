@@ -52,7 +52,7 @@ namespace XBMCAddonUtils
 
   static char defaultImage[1024];
 
-  const char *getDefaultImage(char* cControlType, char* cTextureType)
+  const char *getDefaultImage(const char* cControlType, const char* cTextureType)
   {
     // create an xml block so that we can resolve our defaults
     // <control type="type">

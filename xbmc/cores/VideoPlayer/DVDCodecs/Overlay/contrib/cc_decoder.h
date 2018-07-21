@@ -114,4 +114,4 @@ cc_decoder_t *cc_decoder_open();
 void cc_decoder_close(cc_decoder_t *this_obj);
 void cc_decoder_init(void);
 
-void decode_cc(cc_decoder_t *dec, uint8_t *buffer, uint32_t buf_len);
+void decode_cc(cc_decoder_t *dec, const uint8_t *buffer, uint32_t buf_len);

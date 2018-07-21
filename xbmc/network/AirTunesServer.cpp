@@ -95,7 +95,7 @@ std::map<std::string, std::string> decodeDMAP(const char *buffer, unsigned int s
     std::string tag;
     tag.append(buffer + offset, 4);
     offset += 4;
-    uint32_t length = Endian_SwapBE32(*(uint32_t *)(buffer + offset));
+    uint32_t length = Endian_SwapBE32(*(const uint32_t *)(buffer + offset));
     offset += sizeof(uint32_t);
     std::string content;
     content.append(buffer + offset, length);//possible fixme - utf8?
@@ -350,12 +350,12 @@ LAuE4Pu13aKiJnfft7hIjbK+5kyb3TysZvoyDnb3HOKvInK7vXbKuU4ISgxB2bB3HcYzQMGsz1qJ\
 
 void CAirTunesServer::AudioOutputFunctions::audio_set_metadata(void *cls, void *session, const void *buffer, int buflen)
 {
-  CAirTunesServer::SetMetadataFromBuffer((char *)buffer, buflen);
+  CAirTunesServer::SetMetadataFromBuffer((const char *)buffer, buflen);
 }
 
 void CAirTunesServer::AudioOutputFunctions::audio_set_coverart(void *cls, void *session, const void *buffer, int buflen)
 {
-  CAirTunesServer::SetCoverArtFromBuffer((char *)buffer, buflen);
+  CAirTunesServer::SetCoverArtFromBuffer((const char *)buffer, buflen);
 }
 
 char session[]="Kodi-AirTunes";

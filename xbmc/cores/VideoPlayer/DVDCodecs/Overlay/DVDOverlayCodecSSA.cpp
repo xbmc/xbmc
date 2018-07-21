@@ -108,7 +108,7 @@ int CDVDOverlayCodecSSA::Decode(DemuxPacket *pPacket)
 
       line2 = StringUtils::Format("%d,%s,%s", m_order++, layer.get(), line.substr(pos+1).c_str());
 
-      m_libass->DecodeDemuxPkt((char*)line2.c_str(), line2.length(), beg, end - beg);
+      m_libass->DecodeDemuxPkt(line2.c_str(), line2.length(), beg, end - beg);
 
       /* setup time spanning all dialogs */
       if(pts == DVD_NOPTS_VALUE || beg < pts)

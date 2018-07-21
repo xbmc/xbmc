@@ -81,16 +81,16 @@ extern "C" int debug_callback(CURL_HANDLE *handle, curl_infotype info, char *out
   StringUtils::Tokenize(strLine, vecLines, "\r\n");
   std::vector<std::string>::const_iterator it = vecLines.begin();
 
-  char *infotype;
+  const char *infotype;
   switch(info)
   {
-    case CURLINFO_TEXT         : infotype = (char *) "TEXT: "; break;
-    case CURLINFO_HEADER_IN    : infotype = (char *) "HEADER_IN: "; break;
-    case CURLINFO_HEADER_OUT   : infotype = (char *) "HEADER_OUT: "; break;
-    case CURLINFO_SSL_DATA_IN  : infotype = (char *) "SSL_DATA_IN: "; break;
-    case CURLINFO_SSL_DATA_OUT : infotype = (char *) "SSL_DATA_OUT: "; break;
-    case CURLINFO_END          : infotype = (char *) "END: "; break;
-    default                    : infotype = (char *) ""; break;
+    case CURLINFO_TEXT         : infotype = "TEXT: "; break;
+    case CURLINFO_HEADER_IN    : infotype = "HEADER_IN: "; break;
+    case CURLINFO_HEADER_OUT   : infotype = "HEADER_OUT: "; break;
+    case CURLINFO_SSL_DATA_IN  : infotype = "SSL_DATA_IN: "; break;
+    case CURLINFO_SSL_DATA_OUT : infotype = "SSL_DATA_OUT: "; break;
+    case CURLINFO_END          : infotype = "END: "; break;
+    default                    : infotype = ""; break;
   }
 
   while (it != vecLines.end())
@@ -1761,7 +1761,7 @@ int8_t CCurlFile::CReadState::FillBuffer(unsigned int want)
 
 void CCurlFile::CReadState::SetReadBuffer(const void* lpBuf, int64_t uiBufSize)
 {
-  m_readBuffer = (char*)lpBuf;
+  m_readBuffer = const_cast<char*>((const char*)lpBuf);
   m_fileSize = uiBufSize;
   m_filePos = 0;
 }

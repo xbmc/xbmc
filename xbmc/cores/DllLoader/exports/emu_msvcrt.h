@@ -143,7 +143,7 @@ extern "C"
   void dllperror(const char* s);
   char* dllstrerror(int iErr);
   int dll_mkdir(const char* dir);
-  char* dll_getcwd(char *buffer, int maxlen);
+  const char* dll_getcwd(char *buffer, int maxlen);
   int dll_putenv(const char* envstring);
   int dll_ctype(int i);
   int dll_system(const char *command);

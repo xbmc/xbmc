@@ -804,7 +804,7 @@ void MysqlDatabase::mysqlVXPrintf(
     bool isLike = false;
     if( c!='%' ){
       int amt;
-      bufpt = (char *)fmt;
+      bufpt = const_cast<char *>(fmt);
       amt = 1;
       while( (c=(*++fmt))!='%' && c!=0 ) amt++;
       isLike = mysqlStrAccumAppend(pAccum, bufpt, amt);
@@ -1018,11 +1018,11 @@ void MysqlDatabase::mysqlVXPrintf(
           while( realvalue<1.0 ){ realvalue *= 10.0; exp--; }
           if( exp>350 ){
             if( prefix=='-' ){
-              bufpt = (char *)"-Inf";
+              bufpt = const_cast<char *>("-Inf");
             }else if( prefix=='+' ){
-              bufpt = (char *)"+Inf";
+              bufpt = const_cast<char *>("+Inf");
             }else{
-              bufpt = (char *)"Inf";
+              bufpt = const_cast<char *>("Inf");
             }
             length = strlen(bufpt);
             break;
@@ -1154,7 +1154,7 @@ void MysqlDatabase::mysqlVXPrintf(
       case etDYNSTRING:
         bufpt = va_arg(ap,char*);
         if( bufpt==0 ){
-          bufpt = (char *)"";
+          bufpt = const_cast<char *>("");
         }else if( xtype==etDYNSTRING ){
           zExtra = bufpt;
         }

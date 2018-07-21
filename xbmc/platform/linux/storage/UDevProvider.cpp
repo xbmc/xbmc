@@ -52,7 +52,7 @@ static const char *get_mountpoint(const char *devnode)
     // If mount point contain characters like space, it is converted to
     // "\040". This situation should be handled.
     char *c1, *c2;
-    for (c1 = c2 = (char*)mountpoint; *c2; ++c1)
+    for (c1 = c2 = const_cast<char*>(mountpoint); *c2; ++c1)
     {
       if (*c2 == '\\')
       {

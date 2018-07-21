@@ -139,13 +139,13 @@ static void LoadTexture(GLenum target
     glTexSubImage2D( target, 0
                    , 0, height, width, 1
                    , externalFormat, GL_UNSIGNED_BYTE
-                   , (unsigned char*)pixelData + stride * (height-1));
+                   , (const unsigned char*)pixelData + stride * (height-1));
 
   if(width  < width2)
     glTexSubImage2D( target, 0
                    , width, 0, 1, height
                    , externalFormat, GL_UNSIGNED_BYTE
-                   , (unsigned char*)pixelData + bytesPerPixel * (width-1));
+                   , (const unsigned char*)pixelData + bytesPerPixel * (width-1));
 
 #ifndef HAS_GLES
   glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);

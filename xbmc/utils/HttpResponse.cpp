@@ -58,7 +58,7 @@ void CHttpResponse::SetContent(const char* data, unsigned int length)
     m_contentLength = length;
 }
 
-unsigned int CHttpResponse::Create(char *&response)
+std::string CHttpResponse::Create()
 {
   m_buffer.clear();
 
@@ -112,8 +112,7 @@ unsigned int CHttpResponse::Create(char *&response)
   if (m_content != NULL && m_contentLength > 0)
     m_buffer.append(m_content, m_contentLength);
 
-  response = (char *)m_buffer.c_str();
-  return m_buffer.size();
+  return m_buffer;
 }
 
 std::map<HTTP::StatusCode, std::string> CHttpResponse::createStatusCodes()

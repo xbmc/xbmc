@@ -60,8 +60,8 @@ TEST_F(TestAddonFactory, ShouldFailWhenAddonDoesNotHaveRequestedType)
 TEST_F(TestAddonFactory, ShouldPickFirstExtensionWhenNotRequestingSpecificType)
 {
   cp_extension_t extensions[2] = {
-      {&plugin, (char*)"xbmc.python.script", nullptr, nullptr, nullptr, nullptr},
-      {&plugin, (char*)"xbmc.python.service", nullptr, nullptr, nullptr, nullptr},
+      {&plugin, const_cast<char*>("xbmc.python.script"), nullptr, nullptr, nullptr, nullptr},
+      {&plugin, const_cast<char*>("xbmc.python.service"), nullptr, nullptr, nullptr, nullptr},
   };
   plugin.extensions = extensions;
   plugin.num_extensions = 2;
@@ -74,7 +74,7 @@ TEST_F(TestAddonFactory, ShouldPickFirstExtensionWhenNotRequestingSpecificType)
 TEST_F(TestAddonFactory, ShouldIgnoreMetadataExtension)
 {
   cp_extension_t extensions[2] = {
-      {&plugin, (char*)"kodi.addon.metadata", nullptr, nullptr, nullptr, nullptr},
+      {&plugin, const_cast<char*>("kodi.addon.metadata"), nullptr, nullptr, nullptr, nullptr},
       scriptExtension,
   };
   plugin.extensions = extensions;
@@ -88,7 +88,7 @@ TEST_F(TestAddonFactory, ShouldIgnoreMetadataExtension)
 
 TEST_F(TestAddonFactory, ShouldReturnDependencyInfoWhenNoExtensions)
 {
-  cp_plugin_import_t import{(char*)"a.b", (char*)"1.2.3", 0};
+  cp_plugin_import_t import{const_cast<char*>("a.b"), const_cast<char*>("1.2.3"), 0};
   plugin.extensions = nullptr;
   plugin.num_extensions = 0;
   plugin.num_imports = 1;
@@ -102,7 +102,7 @@ TEST_F(TestAddonFactory, ShouldReturnDependencyInfoWhenNoExtensions)
 
 TEST_F(TestAddonFactory, ShouldAcceptUnversionedDependencies)
 {
-  cp_plugin_import_t import{(char*)"a.b", nullptr, 0};
+  cp_plugin_import_t import{const_cast<char*>("a.b"), nullptr, 0};
   plugin.extensions = nullptr;
   plugin.num_extensions = 0;
   plugin.num_imports = 1;
@@ -127,22 +127,22 @@ TEST_F(TestAddonFactory, IconPathShouldBeBuiltFromPluginPath)
 TEST_F(TestAddonFactory, AssetsElementShouldOverrideImplicitArt)
 {
   cp_cfg_element_t icon{0};
-  icon.name = (char*)"icon";
-  icon.value = (char*)"foo/bar.jpg";
+  icon.name = const_cast<char*>("icon");
+  icon.value = const_cast<char*>("foo/bar.jpg");
 
   cp_cfg_element_t assets{0};
-  assets.name = (char*)"assets";
+  assets.name = const_cast<char*>("assets");
   assets.num_children = 1;
   assets.children = &icon;
 
   cp_cfg_element_t root{0};
-  root.name = (char*)"kodi.addon.metadata";
+  root.name = const_cast<char*>("kodi.addon.metadata");
   root.num_children = 1;
   root.children = &assets;
   assets.parent = &root;
   icon.parent = &assets;
 
-  cp_extension_t metadata = {&plugin, (char*)"kodi.addon.metadata", nullptr, nullptr, nullptr, &root};
+  cp_extension_t metadata = {&plugin, const_cast<char*>("kodi.addon.metadata"), nullptr, nullptr, nullptr, &root};
 
   cp_extension_t extensions[1] = {metadata};
   plugin.extensions = extensions;

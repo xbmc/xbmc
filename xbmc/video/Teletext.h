@@ -136,7 +136,7 @@ private:
   int iTripletNumber2Data(int iONr, TextCachedPage_t *pstCachedPage, unsigned char* pagedata);
   int SetNational(unsigned char sec);
   int NextHex(int i);
-  void SetColors(unsigned short *pcolormap, int offset, int number);
+  void SetColors(const unsigned short *pcolormap, int offset, int number);
   UTILS::Color GetColorRGB(enumTeletextColor ttc);
 
   static FT_Error MyFaceRequester(FTC_FaceID face_id, FT_Library library, FT_Pointer request_data, FT_Face *aface);

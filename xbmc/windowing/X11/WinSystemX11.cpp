@@ -816,7 +816,7 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const std:
 
       std::string titleString = CCompileInfo::GetAppName();
       std::string classString = titleString;
-      char *title = (char*)titleString.c_str();
+      char *title = const_cast<char*>(titleString.c_str());
 
       XStringListToTextProperty(&title, 1, &windowName);
       XStringListToTextProperty(&title, 1, &iconName);
@@ -827,8 +827,8 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const std:
       wm_hints->flags = StateHint | IconPixmapHint;
 
       class_hints = XAllocClassHint();
-      class_hints->res_class = (char*)classString.c_str();
-      class_hints->res_name = (char*)classString.c_str();
+      class_hints->res_class = const_cast<char*>(classString.c_str());
+      class_hints->res_name = const_cast<char*>(classString.c_str());
 
       XSetWMProperties(m_dpy, m_mainWindow, &windowName, &iconName,
                             NULL, 0, NULL, wm_hints,
