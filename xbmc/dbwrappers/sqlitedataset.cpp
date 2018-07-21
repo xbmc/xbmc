@@ -450,6 +450,40 @@ std::string SqliteDatabase::vprepare(const char *format, va_list args)
     sqlite3_free(p);
   }
 
+  // Strip SEPARATOR from all GROUP_CONCAT statements:
+  // before: GROUP_CONCAT(field SEPARATOR '; ')
+  // after:  GROUP_CONCAT(field, '; ')
+  pos = strResult.find("GROUP_CONCAT(");
+  while (pos != std::string::npos)
+  {
+    size_t pos2 = strResult.find(" SEPARATOR ", pos + 1);
+    if (pos2 != std::string::npos)
+      strResult.replace(pos2, 10, ",");
+    pos = strResult.find("GROUP_CONCAT(", pos + 1);
+  }
+  // Replace CONCAT with || to concatenate text fields:
+  // before: CONCAT(field1, field2)
+  // after:  field1 || field2
+  pos = strResult.find("CONCAT(");
+  while (pos != std::string::npos)
+  {
+    if (pos == 0 || strResult[pos - 1] == ' ') // Not GROUP_CONCAT
+    {
+      size_t pos2 = strResult.find(",", pos + 1);
+      if (pos2 != std::string::npos)
+      {
+        size_t pos3 = strResult.find(")", pos2 + 1);
+        if (pos3 != std::string::npos)
+        {
+          strResult.erase(pos3, 1);
+          strResult.replace(pos2, 1, " || ");
+          strResult.erase(pos, 7);
+        }
+      }
+    }
+    pos = strResult.find("CONCAT(", pos + 1);
+  }
+
   return strResult;
 }
 

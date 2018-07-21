@@ -4953,7 +4953,7 @@ bool CMusicDatabase::GetArtistsByWhereJSON(const std::set<std::string>& fields, 
             if (JSONtoDBArtist[i].fieldDB == "artistsortname")
               extFilter.AppendField(artistsortSQL);
             else
-              extFilter.AppendField(JSONtoDBArtist[i].SQL);
+              extFilter.AppendField(PrepareSQL(JSONtoDBArtist[i].SQL));
           }
           else
             // Field from artist table
@@ -5482,7 +5482,7 @@ static const translateJSONField JSONtoDBAlbum[] = {
   { "dateadded",                 "string", true,  "dateAdded",              "" },  // Scalar subquery in view
   { "lastplayed",                "string", true,  "lastPlayed",             "" },  // Scalar subquery in view
   // Scalar subquery fields
-  { "sourceid",                  "string", true,  "sourceid",               "(SELECT GROUP_CONCAT(album_source.idSource, '; ')  FROM album_source WHERE album_source.idAlbum = albumview.idAlbum) AS sources" },
+  { "sourceid",                  "string", true,  "sourceid",               "(SELECT GROUP_CONCAT(album_source.idSource SEPARATOR '; ')  FROM album_source WHERE album_source.idAlbum = albumview.idAlbum) AS sources" },
   // Single value JOIN fields
   { "thumbnail",                  "image", true,  "thumbnail",              "art.url AS thumbnail" }, // or (SELECT art.url FROM art WHERE art.media_id = album.idAlbum AND art.media_type = "album" AND art.type = "thumb") as url
   // JOIN fields (multivalue), same order as _JoinToAlbumFields
@@ -5683,19 +5683,11 @@ bool CMusicDatabase::GetAlbumsByWhereJSON(const std::set<std::string>& fields, c
             dbfieldindex.emplace_back(i);
           // Field from scaler subquery
           if (!JSONtoDBAlbum[i].SQL.empty())
-          { // Adjust "sources" SQL for MySQL syntax
-            if (JSONtoDBAlbum[i].fieldJSON == "sourceid" && 
-              StringUtils::EqualsNoCase(g_advancedSettings.m_databaseMusic.type, "mysql"))
-            { 
-              // MySQL has syntax GROUP_CONCAT(album_source.idSource SEPARATOR '; ')
-              std::string mysqlgc(JSONtoDBAlbum[i].SQL);
-              StringUtils::Replace(mysqlgc, ", '; '", " SEPARATOR '; '");
-              extFilter.AppendField(mysqlgc);
-            }
-            else if (JSONtoDBAlbum[i].fieldDB == "artistsortname")
+          { 
+            if (JSONtoDBAlbum[i].fieldDB == "artistsortname")
               extFilter.AppendField(artistsortSQL);
             else
-              extFilter.AppendField(JSONtoDBAlbum[i].SQL);
+              extFilter.AppendField(PrepareSQL(JSONtoDBAlbum[i].SQL));
           }
           else
             // Field from album table
@@ -5946,7 +5938,7 @@ static const translateJSONField JSONtoDBSong[] = {
   { "userrating",              "unsigned", true,  "song.userrating",        "" },
   { "mood",                       "array", true,  "mood",                   "" },
   { "dateadded",                 "string", true,  "dateAdded",              "" },
-  { "file",                      "string", true,  "strPathFile",            "path.strPath || strFilename AS strPathFile" }, 
+  { "file",                      "string", true,  "strPathFile",            "CONCAT(path.strPath, strFilename) AS strPathFile" }, 
   { "",                          "string", true,  "strPath",                "path.strPath AS strPath" },
   { "album",                     "string", true,  "strAlbum",               "album.strAlbum AS strAlbum" },
   { "albumreleasetype",          "string", true,  "strAlbumReleaseType",    "album.strReleaseType AS strAlbumReleaseType" },
@@ -5976,7 +5968,7 @@ static const translateJSONField JSONtoDBSong[] = {
   // Scalar subquery fields
   { "track",                    "integer", true,  "track",                  "(iTrack & 0xffff) AS track" },
   { "disc",                     "integer", true,  "disc",                   "(iTrack >> 16) AS disc" },
-  { "sourceid",                  "string", true,  "sourceid",               "(SELECT GROUP_CONCAT(album_source.idSource, '; ') FROM album_source WHERE album_source.idAlbum = song.idAlbum) AS sources" },
+  { "sourceid",                  "string", true,  "sourceid",               "(SELECT GROUP_CONCAT(album_source.idSource SEPARATOR '; ') FROM album_source WHERE album_source.idAlbum = song.idAlbum) AS sources" },
   { "",                                "", true,  "artistsortname",         "CASE WHEN song.strArtistSort IS NOT NULL THEN song.strArtistSort ELSE song.strArtistDisp END AS artistsortname"}
   /* 
   Song "thumbnail", "fanart" and "art" fields of JSON schema are fetched using
@@ -6203,27 +6195,10 @@ bool CMusicDatabase::GetSongsByWhereJSON(const std::set<std::string>& fields, co
           // Field from scaler subquery
           if (!JSONtoDBSong[i].SQL.empty())
           { 
-            if (StringUtils::EqualsNoCase(g_advancedSettings.m_databaseMusic.type, "mysql"))
-            {
-              if (JSONtoDBSong[i].fieldJSON == "sourceid")
-              { // Adjust "sources" SQL for MySQL syntax
-                // GROUP_CONCAT(album_source.idSource SEPARATOR '; ')
-                std::string mysqlgc(JSONtoDBSong[i].SQL);
-                StringUtils::Replace(mysqlgc, ", '; '", " SEPARATOR '; '");
-                extFilter.AppendField(mysqlgc);
-              }
-              else if (JSONtoDBSong[i].fieldJSON == "file")
-              { // Adjust "file" SQL for MySQL syntax
-                // String concatenation is CONCAT not ||
-                extFilter.AppendField("CONCAT(path.strPath, strFilename) as strPathFile");
-              }
-              else
-                extFilter.AppendField(JSONtoDBSong[i].SQL);
-            }
-            else if (JSONtoDBSong[i].fieldDB == "artistsortname")
+            if (JSONtoDBSong[i].fieldDB == "artistsortname")
               extFilter.AppendField(artistsortSQL);
             else
-              extFilter.AppendField(JSONtoDBSong[i].SQL);
+              extFilter.AppendField(PrepareSQL(JSONtoDBSong[i].SQL));
           }
           else
             // Field from song table
@@ -8659,7 +8634,7 @@ bool CMusicDatabase::UpdateArtistSortNames(int idArtist /*=-1*/)
 {
   // Propagate artist sort names into concatenated artist sort name string for songs and albums
   std::string strSQL;
-  // MySQL syntax for GROUP_CONCAT is different from that in SQLite
+  // MySQL syntax for GROUP_CONCAT with order is different from that in SQLite (not handled by PrepareSQL)
   bool bisMySQL = StringUtils::EqualsNoCase(g_advancedSettings.m_databaseMusic.type, "mysql");
 
   BeginMultipleExecute();
