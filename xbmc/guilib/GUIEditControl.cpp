@@ -714,7 +714,7 @@ bool CGUIEditControl::ValidateInput(const std::wstring &data) const
   if (m_inputValidator == NULL)
     return true;
 
-  return m_inputValidator(GetLabel2(), (void*)(m_inputValidatorData != NULL ? m_inputValidatorData : this));
+  return m_inputValidator(GetLabel2(), m_inputValidatorData != NULL ? m_inputValidatorData : const_cast<void*>((const void*)this));
 }
 
 void CGUIEditControl::ValidateInput()
