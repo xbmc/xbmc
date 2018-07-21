@@ -106,7 +106,7 @@ bool CDVDSubtitlesLibass::DecodeHeader(char* data, int size)
   return true;
 }
 
-bool CDVDSubtitlesLibass::DecodeDemuxPkt(char* data, int size, double start, double duration)
+bool CDVDSubtitlesLibass::DecodeDemuxPkt(const char* data, int size, double start, double duration)
 {
   CSingleLock lock(m_section);
   if(!m_track)
@@ -115,7 +115,8 @@ bool CDVDSubtitlesLibass::DecodeDemuxPkt(char* data, int size, double start, dou
     return false;
   }
 
-  ass_process_chunk(m_track, data, size, DVD_TIME_TO_MSEC(start), DVD_TIME_TO_MSEC(duration));
+  //! @bug libass isn't const correct
+  ass_process_chunk(m_track, const_cast<char*>(data), size, DVD_TIME_TO_MSEC(start), DVD_TIME_TO_MSEC(duration));
   return true;
 }
 

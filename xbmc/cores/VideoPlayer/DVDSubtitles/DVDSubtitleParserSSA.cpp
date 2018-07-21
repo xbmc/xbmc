@@ -41,7 +41,7 @@ bool CDVDSubtitleParserSSA::Open(CDVDStreamInfo &hints)
     return false;
 
   std::string buffer = m_pStream->m_stringstream.str();
-  if(!m_libass->CreateTrack((char*) buffer.c_str(), buffer.length()))
+  if(!m_libass->CreateTrack(const_cast<char*>(buffer.c_str()), buffer.length()))
     return false;
 
   //Creating the overlays by going through the list of ass_events

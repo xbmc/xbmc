@@ -71,7 +71,7 @@ bool CDVDVideoPPFFmpeg::CheckInit(int iWidth, int iHeight)
     m_iInitWidth = iWidth;
     m_iInitHeight = iHeight;
 
-    m_pMode = pp_get_mode_by_name_and_quality((char *)m_sType.c_str(), PP_QUALITY_MAX);
+    m_pMode = pp_get_mode_by_name_and_quality(m_sType.c_str(), PP_QUALITY_MAX);
   }
 
   if (m_pMode)
@@ -122,7 +122,8 @@ void CDVDVideoPPFFmpeg::Process(VideoPicture* pPicture)
 
   videoBuffer->SetDimensions(pPicture->iWidth, pPicture->iHeight, srcStrides);
   videoBuffer->GetPlanes(dstPlanes);
-  pp_postprocess((const uint8_t **)srcPlanes, srcStrides,
+  //! @bug libpostproc isn't const correct
+  pp_postprocess(const_cast<const uint8_t **>(srcPlanes), srcStrides,
                  dstPlanes, srcStrides,
                  pSource->iWidth, pSource->iHeight,
                  pSource->qp_table, pSource->qstride,
