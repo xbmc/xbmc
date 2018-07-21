@@ -294,7 +294,8 @@ bool CEncoderFFmpeg::WriteFrame()
 
   if(m_NeedConversion)
   {
-    if (swr_convert(m_SwrCtx, m_ResampledFrame->extended_data, m_NeededFrames, (const uint8_t**)m_BufferFrame->extended_data, m_NeededFrames) < 0)
+    //! @bug libavresample isn't const correct
+    if (swr_convert(m_SwrCtx, m_ResampledFrame->extended_data, m_NeededFrames, const_cast<const uint8_t**>(m_BufferFrame->extended_data), m_NeededFrames) < 0)
     {
       CLog::Log(LOGERROR, "CEncoderFFmpeg::WriteFrame - Error resampling audio");
       return false;
