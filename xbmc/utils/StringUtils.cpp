@@ -312,9 +312,9 @@ std::wstring StringUtils::FormatV(const wchar_t *fmt, va_list args)
 
 int compareWchar (const void* a, const void* b)
 {
-  if (*(wchar_t*)a <  *(wchar_t*)b)
+  if (*(const wchar_t*)a <  *(const wchar_t*)b)
     return -1;
-  else if (*(wchar_t*)a >  *(wchar_t*)b)
+  else if (*(const wchar_t*)a >  *(const wchar_t*)b)
     return 1;
   return 0;
 }
@@ -769,9 +769,9 @@ int StringUtils::FindNumber(const std::string& strInput, const std::string &strF
 // and 0 if they are identical (essentially calculates left - right)
 int64_t StringUtils::AlphaNumericCompare(const wchar_t *left, const wchar_t *right)
 {
-  wchar_t *l = (wchar_t *)left;
-  wchar_t *r = (wchar_t *)right;
-  wchar_t *ld, *rd;
+  const wchar_t *l = left;
+  const wchar_t *r = right;
+  const wchar_t *ld, *rd;
   wchar_t lc, rc;
   int64_t lnum, rnum;
   const std::collate<wchar_t>& coll = std::use_facet<std::collate<wchar_t> >(g_langInfo.GetSystemLocale());
@@ -1058,12 +1058,12 @@ int IsUTF8Letter(const unsigned char *str)
 size_t StringUtils::FindWords(const char *str, const char *wordLowerCase)
 {
   // NOTE: This assumes word is lowercase!
-  unsigned char *s = (unsigned char *)str;
+  const unsigned char *s = (const unsigned char *)str;
   do
   {
     // start with a compare
-    unsigned char *c = s;
-    unsigned char *w = (unsigned char *)wordLowerCase;
+    const unsigned char *c = s;
+    const unsigned char *w = (const unsigned char *)wordLowerCase;
     bool same = true;
     while (same && *c && *w)
     {
