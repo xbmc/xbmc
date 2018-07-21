@@ -190,9 +190,11 @@ void CSMB::Init()
     smbc_setTimeout(m_context, g_advancedSettings.m_sambaclienttimeout * 1000);
     // we do not need to strdup these, smbc_setXXX below will make their own copies
     if (CServiceBroker::GetSettings().GetString(CSettings::SETTING_SMB_WORKGROUP).length() > 0)
-      smbc_setWorkgroup(m_context, (char*)CServiceBroker::GetSettings().GetString(CSettings::SETTING_SMB_WORKGROUP).c_str());
+      //! @bug libsmbclient < 4.9 isn't const correct
+      smbc_setWorkgroup(m_context, const_cast<char*>(CServiceBroker::GetSettings().GetString(CSettings::SETTING_SMB_WORKGROUP).c_str()));
     std::string guest = "guest";
-    smbc_setUser(m_context, (char*)guest.c_str());
+    //! @bug libsmbclient < 4.8 isn't const correct
+    smbc_setUser(m_context, const_cast<char*>(guest.c_str()));
 #else
     m_context->debug = (g_advancedSettings.CanLogComponent(LOGSAMBA) ? 10 : 0);
     m_context->callbacks.auth_fn = xb_smbc_auth;
@@ -585,7 +587,7 @@ ssize_t CSMBFile::Write(const void* lpBuf, size_t uiBufSize)
   // lpBuf can be safely casted to void* since xbmc_write will only read from it.
   CSingleLock lock(smb);
 
-  return  smbc_write(m_fd, (void*)lpBuf, uiBufSize);
+  return  smbc_write(m_fd, lpBuf, uiBufSize);
 }
 
 bool CSMBFile::Delete(const CURL& url)
