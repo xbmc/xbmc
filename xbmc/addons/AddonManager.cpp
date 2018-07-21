@@ -985,7 +985,8 @@ std::string CAddonMgr::GetTranslatedString(const cp_cfg_element_t *root, const c
     if (strcmp(tag, child.name) == 0)
     {
       // see if we have a "lang" attribute
-      const char *lang = cp_lookup_cfg_value((cp_cfg_element_t*)&child, "@lang");
+      //! @bug libcpluff isn't const correct
+      const char *lang = cp_lookup_cfg_value(const_cast<cp_cfg_element_t*>(&child), "@lang");
       if (lang != NULL && g_langInfo.GetLocale().Matches(lang))
         translatedValues.insert(std::make_pair(lang, child.value != NULL ? child.value : ""));
       else if (lang == NULL || strcmp(lang, "en") == 0 || strcmp(lang, "en_GB") == 0)

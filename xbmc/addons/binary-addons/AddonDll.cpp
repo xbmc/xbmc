@@ -577,7 +577,7 @@ void CAddonDll::DeInitInterface()
   Interface_General::DeInit(&m_interface);
 
   if (m_interface.libBasePath)
-    free((char*)m_interface.libBasePath);
+    free(const_cast<char*>(m_interface.libBasePath));
   if (m_interface.toKodi)
     free((char*)m_interface.toKodi);
   if (m_interface.toAddon)
