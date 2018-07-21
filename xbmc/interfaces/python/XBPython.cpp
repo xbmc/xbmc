@@ -645,8 +645,9 @@ bool XBPython::OnScriptInitialized(ILanguageInvoker *invoker)
     // lock already exists and we need to lock it as PyEval_InitThreads
     // would not do that in that case.
     PyEval_AcquireLock();
-    char* python_argv[1] = { (char*)"" };
-    PySys_SetArgv(1, python_argv);
+    const char* python_argv[1] = { "" };
+    //! @bug libpython isn't const correct
+    PySys_SetArgv(1, const_cast<char**>(python_argv));
 
     if (!(m_mainThreadState = PyThreadState_Get()))
       CLog::Log(LOGERROR, "Python threadstate is NULL.");

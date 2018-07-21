@@ -43,7 +43,8 @@ void CContextItemAddonInvoker::onPythonModuleInitialization(void* moduleDict)
   {
     XBMCAddon::xbmcgui::ListItem* arg = new XBMCAddon::xbmcgui::ListItem(m_item);
     PyObject* pyItem = PythonBindings::makePythonInstance(arg, true);
-    if (pyItem == Py_None || PySys_SetObject((char*)"listitem", pyItem) == -1)
+    //! @bug libpython < 3.0 isn't const correct
+    if (pyItem == Py_None || PySys_SetObject(const_cast<char*>("listitem"), pyItem) == -1)
     {
       CLog::Log(LOGERROR, "CPythonInvoker(%d, %s): Failed to set sys parameter", GetId(), m_sourceFile.c_str());
       //FIXME: we should really abort execution

@@ -166,10 +166,10 @@ namespace XBMCAddon
       T * ac;
     public:
       inline Ref() : ac(NULL) {}
-      inline Ref(const T* _ac) : ac((T*)_ac) { if (ac) ac->Acquire(); refcheck; }
+      inline Ref(const T* _ac) : ac(const_cast<T*>(_ac)) { if (ac) ac->Acquire(); refcheck; }
 
       // copy semantics
-      inline Ref(Ref<T> const & oref) : ac((T*)(oref.get())) { if (ac) ac->Acquire(); refcheck; }
+      inline Ref(Ref<T> const & oref) : ac(const_cast<T*>(oref.get())) { if (ac) ac->Acquire(); refcheck; }
       template<class O> inline Ref(Ref<O> const & oref) : ac(static_cast<T*>(oref.get())) { if (ac) ac->Acquire(); refcheck; }
 
       /**
@@ -190,7 +190,7 @@ namespace XBMCAddon
        * opting for the route the boost took here figuring it has more history behind it.
        */
       inline Ref<T>& operator=(Ref<T> const & oref)
-      { T* tmp = ac; ac=((T*)oref.get()); if (ac) ac->Acquire(); if (tmp) tmp->Release(); refcheck; return *this; }
+      { T* tmp = ac; ac = const_cast<T*>(oref.get()); if (ac) ac->Acquire(); if (tmp) tmp->Release(); refcheck; return *this; }
 
       inline T* operator->() const { refcheck; return ac; }
 

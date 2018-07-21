@@ -131,7 +131,7 @@ namespace XBMCAddon
 
       // Get a reference to the main module
       // and global dictionary
-      PyObject* main_module = PyImport_AddModule((char*)"__main__");
+      PyObject* main_module = PyImport_AddModule("__main__");
       PyObject* global_dict = PyModule_GetDict(main_module);
       // Extract a reference to the function "func_name"
       // from the global dictionary
@@ -146,7 +146,7 @@ namespace XBMCAddon
       XBMC_TRACE;
       // Get a reference to the main module
       // and global dictionary
-      PyObject* main_module = PyImport_AddModule((char*)"__main__");
+      PyObject* main_module = PyImport_AddModule("__main__");
       PyObject* global_dict = PyModule_GetDict(main_module);
       // Extract a reference to the function "func_name"
       // from the global dictionary
@@ -162,7 +162,7 @@ namespace XBMCAddon
 
       // Get a reference to the main module
       // and global dictionary
-      PyObject* main_module = PyImport_AddModule((char*)"__main__");
+      PyObject* main_module = PyImport_AddModule("__main__");
       PyObject* global_dict = PyModule_GetDict(main_module);
       // Extract a reference to the function "func_name"
       // from the global dictionary

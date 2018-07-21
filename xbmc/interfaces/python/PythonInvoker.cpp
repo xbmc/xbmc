@@ -222,7 +222,7 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
 
     // we want to use sys.path so it includes site-packages
     // if this fails, default to using Py_GetPath
-    PyObject *sysMod(PyImport_ImportModule((char*)"sys")); // must call Py_DECREF when finished
+    PyObject *sysMod(PyImport_ImportModule("sys")); // must call Py_DECREF when finished
     PyObject *sysModDict(PyModule_GetDict(sysMod)); // borrowed ref, no need to delete
     PyObject *pathObj(PyDict_GetItemString(sysModDict, "path")); // borrowed ref, no need to delete
 
@@ -256,7 +256,8 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
 #else // ! TARGET_WINDOWS
     CLog::Log(LOGDEBUG, "CPythonInvoker(%d, %s): setting the Python path to %s", GetId(), m_sourceFile.c_str(), m_pythonPath.c_str());
 #endif // ! TARGET_WINDOWS
-    PySys_SetPath((char *)m_pythonPath.c_str());
+    //! @bug libpython < 3.0 isn't const correct
+    PySys_SetPath(const_cast<char*>(m_pythonPath.c_str()));
   }
   else
     // swap in my thread m_threadState
@@ -266,7 +267,7 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
   PySys_SetArgv(argc, &argv[0]);
 
   CLog::Log(LOGDEBUG, "CPythonInvoker(%d, %s): entering source directory %s", GetId(), m_sourceFile.c_str(), scriptDir.c_str());
-  PyObject* module = PyImport_AddModule((char*)"__main__");
+  PyObject* module = PyImport_AddModule("__main__");
   PyObject* moduleDict = PyModule_GetDict(module);
 
   // when we are done initing we store thread m_threadState so we can be aborted
@@ -300,7 +301,8 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
         return false;
       }
 #endif
-      PyObject* file = PyFile_FromString((char *)nativeFilename.c_str(), (char*)"r");
+      //! @bug libpython isn't const correct
+      PyObject* file = PyFile_FromString(const_cast<char*>(nativeFilename.c_str()), const_cast<char*>("r"));
       FILE *fp = PyFile_AsFile(file);
 
       if (fp != NULL)
@@ -377,8 +379,8 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
 
   if (m_threadState)
   {
-    PyObject *m = PyImport_AddModule((char*)"xbmc");
-    if (m == NULL || PyObject_SetAttrString(m, (char*)"abortRequested", PyBool_FromLong(1)))
+    PyObject *m = PyImport_AddModule("xbmc");
+    if (m == NULL || PyObject_SetAttrString(m, "abortRequested", PyBool_FromLong(1)))
       CLog::Log(LOGERROR, "CPythonInvoker(%d, %s): failed to set abortRequested", GetId(), m_sourceFile.c_str());
 
     // make sure all sub threads have finished
@@ -451,8 +453,8 @@ bool CPythonInvoker::stop(bool abort)
       }
 
       PyObject *m;
-      m = PyImport_AddModule((char*)"xbmc");
-      if (m == NULL || PyObject_SetAttrString(m, (char*)"abortRequested", PyBool_FromLong(1)))
+      m = PyImport_AddModule("xbmc");
+      if (m == NULL || PyObject_SetAttrString(m, "abortRequested", PyBool_FromLong(1)))
         CLog::Log(LOGERROR, "CPythonInvoker(%d, %s): failed to set abortRequested", GetId(), m_sourceFile.c_str());
 
       PyThreadState_Swap(old);
