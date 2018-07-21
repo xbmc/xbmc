@@ -1584,8 +1584,8 @@ bool CApplication::LoadSkin(const std::string& skinID)
   //@todo should be done by GUIComponents
   CServiceBroker::GetGUI()->GetWindowManager().Initialize();
   CTextureCache::GetInstance().Initialize();
-  g_audioManager.Enable(true);
-  g_audioManager.Load();
+  CServiceBroker::GetGUI()->GetAudioManager().Enable(true);
+  CServiceBroker::GetGUI()->GetAudioManager().Load();
 
   if (g_SkinInfo->HasSkinFile("DialogFullScreenInfo.xml"))
     CServiceBroker::GetGUI()->GetWindowManager().Add(new CGUIDialogFullScreenInfo);
@@ -1641,7 +1641,7 @@ void CApplication::UnloadSkin(bool forReload /* = false */)
   else if (!m_saveSkinOnUnloading)
     m_saveSkinOnUnloading = true;
 
-  g_audioManager.Enable(false);
+  CServiceBroker::GetGUI()->GetAudioManager().Enable(false);
 
   CServiceBroker::GetGUI()->GetWindowManager().DeInitialize();
   CTextureCache::GetInstance().Deinitialize();
@@ -2096,7 +2096,9 @@ bool CApplication::OnAction(const CAction &action)
       if (!m_appPlayer.IsPaused() && m_appPlayer.GetPlaySpeed() != 1)
         m_appPlayer.SetPlaySpeed(1);
 
-      g_audioManager.Enable(m_appPlayer.IsPaused());
+      CGUIComponent *gui = CServiceBroker::GetGUI();
+      if (gui)
+        gui->GetAudioManager().Enable(m_appPlayer.IsPaused());
       return true;
     }
     // play: unpause or set playspeed back to normal
@@ -2156,7 +2158,10 @@ bool CApplication::OnAction(const CAction &action)
       {
         // unpause, and set the playspeed back to normal
         m_appPlayer.Pause();
-        g_audioManager.Enable(m_appPlayer.IsPaused());
+
+        CGUIComponent *gui = CServiceBroker::GetGUI();
+        if (gui)
+          gui->GetAudioManager().Enable(m_appPlayer.IsPaused());
 
         m_appPlayer.SetPlaySpeed(1);
         return true;
@@ -2869,7 +2874,10 @@ void CApplication::Stop(int exitCode)
     UnregisterActionListener(&m_appPlayer.GetSeekHandler());
     UnregisterActionListener(&CPlayerController::GetInstance());
 
-    g_audioManager.DeInitialize();
+    CGUIComponent *gui = CServiceBroker::GetGUI();
+    if (gui)
+      gui->GetAudioManager().DeInitialize();
+
     // shutdown the AudioEngine
     CServiceBroker::UnregisterAE();
     m_pActiveAE->Shutdown();
@@ -3205,7 +3213,9 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
   m_appPlayer.SetMute(m_muted);
 
 #if !defined(TARGET_POSIX)
-  g_audioManager.Enable(false);
+  CGUIComponent *gui = CServiceBroker::GetGUI();
+  if (gui)
+    gui->GetAudioManager().Enable(false);
 #endif
 
   if (item.HasPVRChannelInfoTag())
@@ -3218,7 +3228,9 @@ void CApplication::PlaybackCleanup()
 {
   if (!m_appPlayer.IsPlaying())
   {
-    g_audioManager.Enable(true);
+    CGUIComponent *gui = CServiceBroker::GetGUI();
+    if (gui)
+      CServiceBroker::GetGUI()->GetAudioManager().Enable(true);
     m_appPlayer.OpenNext(m_ServiceManager->GetPlayerCoreFactory());
   }
 

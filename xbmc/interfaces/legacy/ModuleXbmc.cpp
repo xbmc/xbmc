@@ -342,9 +342,10 @@ namespace XBMCAddon
       if (!filename)
         return;
 
-      if (XFILE::CFile::Exists(filename))
+      CGUIComponent* gui = CServiceBroker::GetGUI();
+      if (XFILE::CFile::Exists(filename) && gui)
       {
-        g_audioManager.PlayPythonSound(filename,useCached);
+        gui->GetAudioManager().PlayPythonSound(filename,useCached);
       }
     }
 
@@ -352,13 +353,17 @@ namespace XBMCAddon
     {
       XBMC_TRACE;
       DelayedCallGuard dg;
-      g_audioManager.Stop();
+      CGUIComponent* gui = CServiceBroker::GetGUI();
+      if (gui)
+        gui->GetAudioManager().Stop();
     }
 
     void enableNavSounds(bool yesNo)
     {
       XBMC_TRACE;
-      g_audioManager.Enable(yesNo);
+      CGUIComponent* gui = CServiceBroker::GetGUI();
+      if (gui)
+        gui->GetAudioManager().Enable(yesNo);
     }
 
     bool getCondVisibility(const char *condition)

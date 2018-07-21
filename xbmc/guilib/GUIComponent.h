@@ -29,6 +29,7 @@ class CGUILargeTextureManager;
 class CStereoscopicsManager;
 class CGUIInfoManager;
 class CGUIColorManager;
+class CGUIAudioManager;
 
 class CGUIComponent
 {
@@ -44,6 +45,7 @@ public:
   CStereoscopicsManager &GetStereoscopicsManager();
   CGUIInfoManager &GetInfoManager();
   CGUIColorManager &GetColorManager();
+  CGUIAudioManager &GetAudioManager();
 
   bool ConfirmDelete(std::string path);
 
@@ -55,4 +57,5 @@ protected:
   std::unique_ptr<CStereoscopicsManager> m_stereoscopicsManager;
   std::unique_ptr<CGUIInfoManager> m_guiInfoManager;
   std::unique_ptr<CGUIColorManager> m_guiColorManager;
+  std::unique_ptr<CGUIAudioManager> m_guiAudioManager;
 };

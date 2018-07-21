@@ -347,7 +347,10 @@ bool CEventServer::ExecuteNextAction()
           unsigned int actionID;
           CActionTranslator::TranslateString(actionEvent.actionName, actionID);
           CAction action(actionID, 1.0f, 0.0f, actionEvent.actionName);
-          g_audioManager.PlayActionSound(action);
+          CGUIComponent* gui = CServiceBroker::GetGUI();
+          if (gui)
+            gui->GetAudioManager().PlayActionSound(action);
+
           g_application.OnAction(action);
         }
         break;
