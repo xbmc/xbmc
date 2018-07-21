@@ -1654,7 +1654,7 @@ bool CUtil::Command(const std::vector<std::string>& arrArgs, bool waitExit)
       char **args = (char **)alloca(sizeof(char *) * (arrArgs.size() + 3));
       memset(args, 0, (sizeof(char *) * (arrArgs.size() + 3)));
       for (size_t i=0; i<arrArgs.size(); i++)
-        args[i] = (char *)arrArgs[i].c_str();
+        args[i] = const_cast<char *>(arrArgs[i].c_str());
       execvp(args[0], args);
     }
   }
