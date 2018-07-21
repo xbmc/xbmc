@@ -283,9 +283,10 @@ cleanup:
   if (pyResultIterator != NULL)
   {
     // Call optional close method on iterator
-    if (PyObject_HasAttrString(pyResultIterator, (char*)"close") == 1)
+    if (PyObject_HasAttrString(pyResultIterator, "close") == 1)
     {
-      if (PyObject_CallMethod(pyResultIterator, (char*)"close", NULL) == NULL)
+      //! @bug libpython < 3.4 isn't const correct
+      if (PyObject_CallMethod(pyResultIterator, const_cast<char*>("close"), NULL) == NULL)
         CLog::Log(LOGERROR, "CHTTPPythonWsgiInvoker: failed to close iterator object for WSGI script \"%s\"", script.c_str());
     }
     Py_DECREF(pyResultIterator);

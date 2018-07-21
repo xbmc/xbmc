@@ -364,7 +364,7 @@ static const char* ConnectHostPort(SOCKET soc, const struct sockaddr_in& addr, s
   if (result != 0)
     return "set non-blocking option failed";
 
-  result = connect(soc, (struct sockaddr *)&addr, sizeof(addr)); // non-blocking connect, will fail ..
+  result = connect(soc, (const struct sockaddr *)&addr, sizeof(addr)); // non-blocking connect, will fail ..
 
   if (result < 0)
   {

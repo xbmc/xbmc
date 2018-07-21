@@ -104,7 +104,7 @@ void CHTTPFileHandler::SetLastModifiedDate(const struct __stat64 *statBuffer)
   struct tm *time;
 #ifdef HAVE_LOCALTIME_R
   struct tm result = { };
-  time = localtime_r((time_t*)&statBuffer->st_mtime, &result);
+  time = localtime_r((const time_t*)&statBuffer->st_mtime, &result);
 #else
   time = localtime((time_t *)&statBuffer->st_mtime);
 #endif
