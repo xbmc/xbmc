@@ -404,7 +404,30 @@ void CGLContextEGL::SwapBuffers()
   m_sync.msc1 = msc1;
   m_sync.msc2 = msc2;
   m_sync.sbc2 = sbc2;
+}
 
+uint64_t CGLContextEGL::GetFrameLatencyAdjustment()
+{
+  struct timespec nowTs;
+  uint64_t now;
+  clock_gettime(CLOCK_MONOTONIC, &nowTs);
+  now = nowTs.tv_sec * 1000000000 + nowTs.tv_nsec;
+  now /= 1000;
+
+  uint64_t interval = (m_sync.cont > 5) ? m_sync.interval : m_sync.ust2 - m_sync.ust1;
+  if (interval == 0)
+    return 0;
+
+  if (now < m_sync.ust2)
+  {
+    return 0;
+  }
+
+  uint64_t ret = now - m_sync.ust2;
+  while (ret > interval)
+    ret -= interval;
+
+  return ret;
 }
 
 void CGLContextEGL::QueryExtensions()
