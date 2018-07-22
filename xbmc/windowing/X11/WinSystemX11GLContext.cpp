@@ -333,6 +333,16 @@ std::unique_ptr<CVideoSync> CWinSystemX11GLContext::GetVideoSync(void *clock)
   return pVSync;
 }
 
+float CWinSystemX11GLContext::GetFrameLatencyAdjustment()
+{
+  if (m_pGLContext)
+  {
+    float micros = m_pGLContext->GetFrameLatencyAdjustment();
+    return micros / 1000;
+  }
+  return 0;
+}
+
 void CWinSystemX11GLContext::delete_CVaapiProxy::operator()(CVaapiProxy *p) const
 {
   X11::VaapiProxyDelete(p);
