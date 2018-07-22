@@ -374,12 +374,12 @@ void CGLContextEGL::SwapBuffers()
     // if no vertical retrace has occurred in eglSwapBuffers,
     // sleep until next vertical retrace
     uint64_t lastIncrement = (now / 1000 - ust2);
-    uint64_t sleeptime = m_sync.interval - lastIncrement;
     if (lastIncrement > m_sync.interval)
     {
       lastIncrement = m_sync.interval;
       CLog::Log(LOGWARNING, "CGLContextEGL::SwapBuffers: last msc time greater than interval");
     }
+    uint64_t sleeptime = m_sync.interval - lastIncrement;
     usleep(sleeptime);
     m_sync.cont++;
     msc2++;
@@ -389,12 +389,12 @@ void CGLContextEGL::SwapBuffers()
     // sleep until next vertical retrace
     // this avoids blocking outside of this function
     uint64_t lastIncrement = (now / 1000 - ust2);
-    uint64_t sleeptime = m_sync.interval - lastIncrement;
     if (lastIncrement > m_sync.interval)
     {
       lastIncrement = m_sync.interval;
       CLog::Log(LOGWARNING, "CGLContextEGL::SwapBuffers: last msc time greater than interval (1)");
     }
+    uint64_t sleeptime = m_sync.interval - lastIncrement;
     usleep(sleeptime);
     msc2++;
   }
