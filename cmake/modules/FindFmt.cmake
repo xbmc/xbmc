@@ -90,14 +90,13 @@ if(FMT_FOUND)
   set(FMT_LIBRARIES ${FMT_LIBRARY})
   set(FMT_INCLUDE_DIRS ${FMT_INCLUDE_DIR})
 
-  if(NOT TARGET Fmt::Fmt)
-    add_library(Fmt::Fmt UNKNOWN IMPORTED)
-    set_target_properties(Fmt::Fmt PROPERTIES
-                                     IMPORTED_LOCATION "${FMT_LIBRARY}"
-                                     INTERFACE_INCLUDE_DIRECTORIES "${FMT_INCLUDE_DIR}")
+  if(NOT TARGET fmt)
+    add_library(fmt UNKNOWN IMPORTED)
+    set_target_properties(fmt PROPERTIES
+                               IMPORTED_LOCATION "${FMT_LIBRARY}"
+                               INTERFACE_INCLUDE_DIRECTORIES "${FMT_INCLUDE_DIR}")
   endif()
 endif()
 
-mark_as_advanced(FMT_INCLUDE_DIR FMT_LIBRARY)
-
 endif()
+mark_as_advanced(FMT_INCLUDE_DIR FMT_LIBRARY)
