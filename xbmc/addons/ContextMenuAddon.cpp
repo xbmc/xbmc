@@ -42,7 +42,7 @@ void CContextMenuAddon::ParseMenu(
   auto menuId = CServiceBroker::GetAddonMgr().GetExtValue(elem, "@id");
   auto menuLabel = CServiceBroker::GetAddonMgr().GetExtValue(elem, "label");
   if (StringUtils::IsNaturalNumber(menuLabel))
-    menuLabel = g_localizeStrings.GetAddonString(addonInfo.ID(), atoi(menuLabel.c_str()));
+    menuLabel = g_localizeStrings.GetAddonString(addonInfo.ID(), std::stoi(menuLabel));
 
   if (menuId.empty())
   {
@@ -54,26 +54,26 @@ void CContextMenuAddon::ParseMenu(
 
   items.push_back(CContextMenuItem::CreateGroup(menuLabel, parent, menuId, addonInfo.ID()));
 
-  ELEMENTS subMenus;
-  if (CServiceBroker::GetAddonMgr().GetExtElements(elem, "menu", subMenus))
-    for (const auto& subMenu : subMenus)
-      ParseMenu(addonInfo, subMenu, menuId, anonGroupCount, items);
-
-  ELEMENTS elems;
-  if (CServiceBroker::GetAddonMgr().GetExtElements(elem, "item", elems))
+  for (unsigned int i = 0; i < elem->num_children; i++)
   {
-    for (const auto& elem : elems)
+    cp_cfg_element_t& subElem = elem->children[i];
+    const std::string elementName = subElem.name;
+    if (elementName == "menu")
+      ParseMenu(addonInfo, &subElem, menuId, anonGroupCount, items);
+
+    else if (elementName == "item")
     {
-      auto visCondition = CServiceBroker::GetAddonMgr().GetExtValue(elem, "visible");
-      auto library = CServiceBroker::GetAddonMgr().GetExtValue(elem, "@library");
-      auto label = CServiceBroker::GetAddonMgr().GetExtValue(elem, "label");
+      const auto visCondition = CServiceBroker::GetAddonMgr().GetExtValue(&subElem, "visible");
+      const auto library = CServiceBroker::GetAddonMgr().GetExtValue(&subElem, "@library");
+      auto label = CServiceBroker::GetAddonMgr().GetExtValue(&subElem, "label");
       if (StringUtils::IsNaturalNumber(label))
-        label = g_localizeStrings.GetAddonString(addonInfo.ID(), atoi(label.c_str()));
+        label = g_localizeStrings.GetAddonString(addonInfo.ID(), std::stoi(label));
 
       if (!label.empty() && !library.empty() && !visCondition.empty())
       {
-        auto menu = CContextMenuItem::CreateItem(label, menuId,
-            URIUtils::AddFileToFolder(addonInfo.Path(), library), visCondition, addonInfo.ID());
+        auto menu = CContextMenuItem::CreateItem(
+            label, menuId, URIUtils::AddFileToFolder(addonInfo.Path(), library), visCondition,
+            addonInfo.ID());
         items.push_back(menu);
       }
     }
