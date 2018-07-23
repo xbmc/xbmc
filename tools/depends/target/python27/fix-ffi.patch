@@ -1,5 +1,33 @@
---- Modules/_ctypes/malloc_closure.c.orig	2015-10-11 20:37:30.534378131 +0200
-+++ Modules/_ctypes/malloc_closure.c	2015-10-11 20:38:57.322381368 +0200
+--- a/Modules/_ctypes/cfield.c
++++ b/Modules/_ctypes/cfield.c
+@@ -1735,6 +1735,7 @@
+ */
+ 
+ /* align and size are bogus for void, but they must not be zero */
++/*
+ ffi_type ffi_type_void = { 1, 1, FFI_TYPE_VOID };
+ 
+ ffi_type ffi_type_uint8 = { 1, 1, FFI_TYPE_UINT8 };
+@@ -1751,14 +1752,14 @@
+ 
+ ffi_type ffi_type_float = { sizeof(float), FLOAT_ALIGN, FFI_TYPE_FLOAT };
+ ffi_type ffi_type_double = { sizeof(double), DOUBLE_ALIGN, FFI_TYPE_DOUBLE };
+-
++*/
+ #ifdef ffi_type_longdouble
+ #undef ffi_type_longdouble
+ #endif
+-  /* This is already defined on OSX */
++  /* This is already defined on OSX
+ ffi_type ffi_type_longdouble = { sizeof(long double), LONGDOUBLE_ALIGN,
+                                  FFI_TYPE_LONGDOUBLE };
+ 
+ ffi_type ffi_type_pointer = { sizeof(void *), VOID_P_ALIGN, FFI_TYPE_POINTER };
+-
++*/
+ /*---------------- EOF ----------------*/
+--- a/Modules/_ctypes/malloc_closure.c
++++ b/Modules/_ctypes/malloc_closure.c
 @@ -89,6 +89,7 @@
  /******************************************************************/
  
@@ -21,31 +49,3 @@
      return (void *)item;
  }
 +*/
---- Modules/_ctypes/cfield.c.orig	2015-10-11 20:34:03.034370393 +0200
-+++ Modules/_ctypes/cfield.c	2015-10-11 20:37:04.462377159 +0200
-@@ -1727,6 +1727,7 @@
- */
- 
- /* align and size are bogus for void, but they must not be zero */
-+/*
- ffi_type ffi_type_void = { 1, 1, FFI_TYPE_VOID };
- 
- ffi_type ffi_type_uint8 = { 1, 1, FFI_TYPE_UINT8 };
-@@ -1743,14 +1744,14 @@
- 
- ffi_type ffi_type_float = { sizeof(float), FLOAT_ALIGN, FFI_TYPE_FLOAT };
- ffi_type ffi_type_double = { sizeof(double), DOUBLE_ALIGN, FFI_TYPE_DOUBLE };
--
-+*/
- #ifdef ffi_type_longdouble
- #undef ffi_type_longdouble
- #endif
--  /* This is already defined on OSX */
-+  /* This is already defined on OSX
- ffi_type ffi_type_longdouble = { sizeof(long double), LONGDOUBLE_ALIGN,
-                                  FFI_TYPE_LONGDOUBLE };
- 
- ffi_type ffi_type_pointer = { sizeof(void *), VOID_P_ALIGN, FFI_TYPE_POINTER };
--
-+*/
- /*---------------- EOF ----------------*/

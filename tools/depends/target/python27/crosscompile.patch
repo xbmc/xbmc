@@ -8,7 +8,7 @@
  
  PSRCS=		\
  		Parser/acceler.c \
-@@ -514,9 +515,9 @@
+@@ -523,9 +524,9 @@
  	    *\ -s*|s*) quiet="-q";; \
  	    *) quiet="";; \
  	esac; \
@@ -20,7 +20,7 @@
  
  # Build static library
  # avoid long command lines, same as LIBRARY_OBJS
-@@ -1114,12 +1115,12 @@
+@@ -1131,12 +1132,12 @@
  		$(INSTALL_DATA) $(srcdir)/Modules/xxmodule.c \
  			$(DESTDIR)$(LIBDEST)/distutils/tests ; \
  	fi
@@ -35,7 +35,7 @@
  		$(PYTHON_FOR_BUILD) -Wi -tt -O $(DESTDIR)$(LIBDEST)/compileall.py \
  		-d $(LIBDEST) -f \
  		-x 'bad_coding|badsyntax|site-packages|lib2to3/tests/data' \
-@@ -1247,11 +1248,13 @@
+@@ -1264,11 +1265,13 @@
  # Install the dynamically loadable modules
  # This goes into $(exec_prefix)
  sharedinstall: sharedmods
@@ -54,7 +54,7 @@
  # Here are a couple of targets for MacOSX again, to install a full
 --- a/configure.ac
 +++ b/configure.ac
-@@ -328,7 +328,6 @@
+@@ -343,7 +343,6 @@
  	*)
  		# for now, limit cross builds to known configurations
  		MACHDEP="unknown"
@@ -62,7 +62,7 @@
  	esac
  	ac_sys_release=
      else
-@@ -374,7 +373,6 @@
+@@ -389,7 +388,6 @@
  	*)
  		# for now, limit cross builds to known configurations
  		MACHDEP="unknown"
@@ -120,7 +120,7 @@
          # XXX Omitted modules: gl, pure, dl, SGI-specific modules
  
          #
-@@ -2051,8 +2060,13 @@
+@@ -2043,8 +2052,13 @@
  
                  # Pass empty CFLAGS because we'll just append the resulting
                  # CFLAGS to Python's; -g or -O2 is to be avoided.
