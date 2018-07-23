@@ -1,6 +1,6 @@
 --- a/Modules/posixmodule.c
 +++ b/Modules/posixmodule.c
-@@ -162,6 +162,12 @@
+@@ -167,6 +167,12 @@
  #endif  /* ! __WATCOMC__ || __QNX__ */
  #endif /* ! __IBMC__ */
  

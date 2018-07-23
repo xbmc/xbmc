@@ -1,6 +1,6 @@
 --- a/Python/pythonrun.c
 +++ b/Python/pythonrun.c
-@@ -294,7 +294,7 @@
+@@ -301,7 +301,7 @@
          overridden = 1;
      }
  
@@ -11,7 +11,7 @@
         Python codec, and Py_FileSystemDefaultEncoding isn't
 --- a/configure.ac
 +++ b/configure.ac
-@@ -3088,7 +3088,7 @@
+@@ -3114,7 +3114,7 @@
   getentropy \
   getpriority getresuid getresgid getpwent getspnam getspent getsid getwd \
   initgroups kill killpg lchmod lchown lstat mkfifo mknod mktime mmap \

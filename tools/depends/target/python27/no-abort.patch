@@ -1,6 +1,6 @@
 --- a/Modules/posixmodule.c
 +++ b/Modules/posixmodule.c
-@@ -8643,7 +8643,7 @@
+@@ -8649,7 +8649,7 @@
  static PyObject *
  posix_abort(PyObject *self, PyObject *noargs)
  {
@@ -11,7 +11,7 @@
      return NULL;
 --- a/Python/pythonrun.c
 +++ b/Python/pythonrun.c
-@@ -1697,7 +1697,7 @@
+@@ -1706,7 +1706,7 @@
      DebugBreak();
  #endif
  #endif /* MS_WINDOWS */

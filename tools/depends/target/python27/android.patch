@@ -1,6 +1,6 @@
 --- a/Modules/posixmodule.c
 +++ b/Modules/posixmodule.c
-@@ -3985,7 +3985,7 @@
+@@ -3991,7 +3991,7 @@
      slave_fd = open(slave_name, O_RDWR | O_NOCTTY); /* open slave */
      if (slave_fd < 0)
          return posix_error();
