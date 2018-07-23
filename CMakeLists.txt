@@ -136,10 +136,6 @@ endif()
 if(CORE_SYSTEM_NAME STREQUAL android)
   list(APPEND required_deps Zip)
 endif()
-if(CORE_SYSTEM_NAME STREQUAL windowsstore)
-  #uses header only version of Fmt
-  list(REMOVE_ITEM required_deps Fmt)
-endif()
 
 # Optional dependencies. Keep in alphabetical order please
 set(optional_deps Alsa
