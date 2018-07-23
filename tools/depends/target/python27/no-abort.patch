@@ -1,5 +1,5 @@
---- orig/Modules/posixmodule.c	2016-07-30 22:35:02.016158026 +0200
-+++ arm-linux-androideabi-21/Modules/posixmodule.c	2016-08-27 13:02:46.755833610 +0200
+--- a/Modules/posixmodule.c
++++ b/Modules/posixmodule.c
 @@ -8643,7 +8643,7 @@
  static PyObject *
  posix_abort(PyObject *self, PyObject *noargs)
@@ -9,8 +9,8 @@
      /*NOTREACHED*/
      Py_FatalError("abort() called from Python code didn't abort!");
      return NULL;
---- orig/Python/pythonrun.c	2009-10-27 13:48:52.000000000 +0100
-+++ arm-linux-androideabi-21/Python/pythonrun.c	2016-08-27 13:03:38.051914732 +0200
+--- a/Python/pythonrun.c
++++ b/Python/pythonrun.c
 @@ -1697,7 +1697,7 @@
      DebugBreak();
  #endif

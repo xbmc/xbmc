@@ -1,5 +1,5 @@
---- Python/dynload_shlib.c	2014-08-13 15:13:49.879675283 +0200
-+++ Python/dynload_shlib.c	2014-08-13 19:03:57.456363680 +0200
+--- a/Python/dynload_shlib.c
++++ b/Python/dynload_shlib.c
 @@ -112,10 +112,6 @@
      dlopenflags = PyThreadState_GET()->interp->dlopenflags;
  #endif

@@ -34,17 +34,17 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); patch -p1 < ../crosscompile.patch
-	cd $(PLATFORM); patch -p0 < ../setup.patch
-	cd $(PLATFORM); patch -p0 < ../fix-datetime.patch
-	cd $(PLATFORM); patch -p0 < ../android.patch
-	cd $(PLATFORM); patch -p0 < ../no-export-path.patch
-	cd $(PLATFORM); patch -p0 < ../fix-ffi.patch
-	cd $(PLATFORM); patch -p0 < ../android-binmodule.patch
+	cd $(PLATFORM); patch -p1 < ../setup.patch
+	cd $(PLATFORM); patch -p1 < ../fix-datetime.patch
+	cd $(PLATFORM); patch -p1 < ../android.patch
+	cd $(PLATFORM); patch -p1 < ../no-export-path.patch
+	cd $(PLATFORM); patch -p1 < ../fix-ffi.patch
+	cd $(PLATFORM); patch -p1 < ../android-binmodule.patch
 	cd $(PLATFORM); patch -p1 < ../no-abort.patch
 	cd $(PLATFORM); patch -p1 < ../android-nl_langinfo.patch
 ifeq ($(OS),ios)
-	cd $(PLATFORM); patch -p0 < ../make-fork-optional.patch
-	cd $(PLATFORM); patch -p0 < ../urllib.patch
+	cd $(PLATFORM); patch -p1 < ../make-fork-optional.patch
+	cd $(PLATFORM); patch -p1 < ../urllib.patch
 	cd $(PLATFORM); sed -ie 's|MACHDEP="unknown"|MACHDEP="darwin"|' configure.ac
 endif
 	cp modules.setup $(PLATFORM)/Modules/Setup.dist

@@ -1,28 +1,5 @@
---- Modules/_ctypes/malloc_closure.c.orig	2015-10-11 20:37:30.534378131 +0200
-+++ Modules/_ctypes/malloc_closure.c	2015-10-11 20:38:57.322381368 +0200
-@@ -89,6 +89,7 @@
- /******************************************************************/
- 
- /* put the item back into the free list */
-+/*
- void ffi_closure_free(void *p)
- {
-     ITEM *item = (ITEM *)p;
-@@ -96,7 +97,6 @@
-     free_list = item;
- }
- 
--/* return one item from the free list, allocating more if needed */
- void *ffi_closure_alloc(size_t ignored, void** codeloc)
- {
-     ITEM *item;
-@@ -109,3 +109,4 @@
-     *codeloc = (void *)item;
-     return (void *)item;
- }
-+*/
---- Modules/_ctypes/cfield.c.orig	2015-10-11 20:34:03.034370393 +0200
-+++ Modules/_ctypes/cfield.c	2015-10-11 20:37:04.462377159 +0200
+--- a/Modules/_ctypes/cfield.c
++++ b/Modules/_ctypes/cfield.c
 @@ -1727,6 +1727,7 @@
  */
  
@@ -49,3 +26,26 @@
 -
 +*/
  /*---------------- EOF ----------------*/
+--- a/Modules/_ctypes/malloc_closure.c
++++ b/Modules/_ctypes/malloc_closure.c
+@@ -89,6 +89,7 @@
+ /******************************************************************/
+ 
+ /* put the item back into the free list */
++/*
+ void ffi_closure_free(void *p)
+ {
+     ITEM *item = (ITEM *)p;
+@@ -96,7 +97,6 @@
+     free_list = item;
+ }
+ 
+-/* return one item from the free list, allocating more if needed */
+ void *ffi_closure_alloc(size_t ignored, void** codeloc)
+ {
+     ITEM *item;
+@@ -109,3 +109,4 @@
+     *codeloc = (void *)item;
+     return (void *)item;
+ }
++*/

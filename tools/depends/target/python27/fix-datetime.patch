@@ -1,5 +1,5 @@
---- Modules/_testcapimodule.c.orig	2015-10-07 16:50:38.751087989 +0200
-+++ Modules/_testcapimodule.c	2015-10-07 16:50:59.119088070 +0200
+--- a/Modules/_testcapimodule.c
++++ b/Modules/_testcapimodule.c
 @@ -8,8 +8,14 @@
  #include "Python.h"
  #include <float.h>
