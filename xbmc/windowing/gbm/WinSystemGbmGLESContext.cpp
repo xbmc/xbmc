@@ -33,7 +33,15 @@
 #include "OptionalsReg.h"
 #include "utils/log.h"
 
+#include <gbm.h>
+#include <EGL/egl.h>
+#include <EGL/eglext.h>
+
 using namespace KODI;
+
+CWinSystemGbmGLESContext::CWinSystemGbmGLESContext()
+: m_pGLContext{EGL_PLATFORM_GBM_MESA, "EGL_MESA_platform_gbm"}
+{}
 
 std::unique_ptr<CWinSystemBase> CWinSystemBase::CreateWinSystem()
 {
@@ -53,16 +61,24 @@ bool CWinSystemGbmGLESContext::InitWindowSystem()
     return false;
   }
 
-  if (!m_pGLContext.CreateDisplay(m_GBM->GetDevice(),
-                                  EGL_OPENGL_ES2_BIT,
-                                  EGL_OPENGL_ES_API))
+  if (!m_pGLContext.CreatePlatformDisplay(m_GBM->GetDevice(), m_GBM->GetDevice(), EGL_OPENGL_ES2_BIT, EGL_OPENGL_ES_API))
+  {
+    return false;
+  }
+
+  const EGLint contextAttribs[] =
+  {
+    EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE
+  };
+
+  if (!m_pGLContext.CreateContext(contextAttribs))
   {
     return false;
   }
 
   bool general, deepColor;
   m_vaapiProxy.reset(GBM::VaapiProxyCreate());
-  GBM::VaapiProxyConfig(m_vaapiProxy.get(), m_pGLContext.m_eglDisplay);
+  GBM::VaapiProxyConfig(m_vaapiProxy.get(), m_pGLContext.GetEGLDisplay());
   GBM::VAAPIRegisterRender(m_vaapiProxy.get(), general, deepColor);
 
   if (general)
@@ -91,7 +107,7 @@ bool CWinSystemGbmGLESContext::CreateNewWindow(const std::string& name,
                                                bool fullScreen,
                                                RESOLUTION_INFO& res)
 {
-  m_pGLContext.Detach();
+  m_pGLContext.DestroySurface();
 
   if (!CWinSystemGbm::DestroyWindow())
   {
@@ -103,27 +119,12 @@ bool CWinSystemGbmGLESContext::CreateNewWindow(const std::string& name,
     return false;
   }
 
-  if (!m_pGLContext.CreateSurface(reinterpret_cast<EGLNativeWindowType>(m_GBM->GetSurface())))
-  {
-    return false;
-  }
-
-  const EGLint contextAttribs[] =
-  {
-    EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE
-  };
-
-  if (!m_pGLContext.CreateContext(contextAttribs))
+  if (!m_pGLContext.CreatePlatformSurface(m_GBM->GetSurface(), m_GBM->GetSurface()))
   {
     return false;
   }
 
   if (!m_pGLContext.BindContext())
-  {
-    return false;
-  }
-
-  if (!m_pGLContext.SurfaceAttrib())
   {
     return false;
   }
@@ -189,20 +190,20 @@ void CWinSystemGbmGLESContext::delete_CVaapiProxy::operator()(CVaapiProxy *p) co
 
 EGLDisplay CWinSystemGbmGLESContext::GetEGLDisplay() const
 {
-  return m_pGLContext.m_eglDisplay;
+  return m_pGLContext.GetEGLDisplay();
 }
 
 EGLSurface CWinSystemGbmGLESContext::GetEGLSurface() const
 {
-  return m_pGLContext.m_eglSurface;
+  return m_pGLContext.GetEGLSurface();
 }
 
 EGLContext CWinSystemGbmGLESContext::GetEGLContext() const
 {
-  return m_pGLContext.m_eglContext;
+  return m_pGLContext.GetEGLContext();
 }
 
 EGLConfig  CWinSystemGbmGLESContext::GetEGLConfig() const
 {
-  return m_pGLContext.m_eglConfig;
+  return m_pGLContext.GetEGLConfig();
 }

@@ -55,6 +55,17 @@ bool CWinSystemRpiGLESContext::InitWindowSystem()
   {
     return false;
   }
+
+  const EGLint contextAttribs[] =
+  {
+    EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE
+  };
+
+  if (!m_pGLContext.CreateContext(contextAttribs))
+  {
+    return false;
+  }
+
   CProcessInfoPi::Register();
   RETRO::CRPProcessInfoPi::Register();
   RETRO::CRPProcessInfoPi::RegisterRendererFactory(new RETRO::CRendererFactoryOpenGLES);
@@ -72,7 +83,7 @@ bool CWinSystemRpiGLESContext::CreateNewWindow(const std::string& name,
                                                bool fullScreen,
                                                RESOLUTION_INFO& res)
 {
-  m_pGLContext.Detach();
+  m_pGLContext.DestroySurface();
 
   if (!CWinSystemRpi::DestroyWindow())
   {
@@ -89,22 +100,7 @@ bool CWinSystemRpiGLESContext::CreateNewWindow(const std::string& name,
     return false;
   }
 
-  const EGLint contextAttribs[] =
-  {
-    EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE
-  };
-
-  if (!m_pGLContext.CreateContext(contextAttribs))
-  {
-    return false;
-  }
-
   if (!m_pGLContext.BindContext())
-  {
-    return false;
-  }
-
-  if (!m_pGLContext.SurfaceAttrib())
   {
     return false;
   }
@@ -165,22 +161,22 @@ void CWinSystemRpiGLESContext::PresentRenderImpl(bool rendered)
 
 EGLDisplay CWinSystemRpiGLESContext::GetEGLDisplay() const
 {
-  return m_pGLContext.m_eglDisplay;
+  return m_pGLContext.GetEGLDisplay();
 }
 
 EGLSurface CWinSystemRpiGLESContext::GetEGLSurface() const
 {
-  return m_pGLContext.m_eglSurface;
+  return m_pGLContext.GetEGLSurface();
 }
 
 EGLContext CWinSystemRpiGLESContext::GetEGLContext() const
 {
-  return m_pGLContext.m_eglContext;
+  return m_pGLContext.GetEGLContext();
 }
 
 EGLConfig  CWinSystemRpiGLESContext::GetEGLConfig() const
 {
-  return m_pGLContext.m_eglConfig;
+  return m_pGLContext.GetEGLConfig();
 }
 
 std::unique_ptr<CVideoSync> CWinSystemRpiGLESContext::GetVideoSync(void *clock)

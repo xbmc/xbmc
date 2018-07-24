@@ -22,6 +22,7 @@
 #include "OptionalsReg.h"
 
 #include <EGL/egl.h>
+#include <EGL/eglext.h>
 
 #include "cores/RetroPlayer/process/RPProcessInfo.h"
 #include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererOpenGL.h"

@@ -26,7 +26,13 @@
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
 
+#include <EGL/eglext.h>
+
 using namespace KODI::WINDOWING::WAYLAND;
+
+CWinSystemWaylandEGLContext::CWinSystemWaylandEGLContext()
+: m_eglContext{EGL_PLATFORM_WAYLAND_EXT, "EGL_EXT_platform_wayland"}
+{}
 
 bool CWinSystemWaylandEGLContext::InitWindowSystemEGL(EGLint renderableType, EGLint apiType)
 {
@@ -38,7 +44,7 @@ bool CWinSystemWaylandEGLContext::InitWindowSystemEGL(EGLint renderableType, EGL
     return false;
   }
 
-  if (!m_eglContext.CreateDisplay(GetConnection()->GetDisplay(), renderableType, apiType))
+  if (!m_eglContext.CreatePlatformDisplay(GetConnection()->GetDisplay(), GetConnection()->GetDisplay(), renderableType, apiType))
   {
     return false;
   }
@@ -60,15 +66,17 @@ bool CWinSystemWaylandEGLContext::CreateNewWindow(const std::string& name,
     return false;
   }
 
+  m_nativeWindow = wayland::egl_window_t{GetMainSurface(), GetBufferSize().Width(), GetBufferSize().Height()};
+
   // CWinSystemWayland::CreateNewWindow sets internal m_bufferSize
   // to the resolution that should be used for the initial surface size
   // - the compositor might want something other than the resolution given
-  if (!m_eglContext.CreateSurface(GetMainSurface(), GetBufferSize()))
+  if (!m_eglContext.CreatePlatformSurface(m_nativeWindow.c_ptr(), m_nativeWindow.c_ptr()))
   {
     return false;
   }
 
-  if (!m_eglContext.MakeCurrent())
+  if (!m_eglContext.BindContext())
   {
     return false;
   }
@@ -83,6 +91,7 @@ bool CWinSystemWaylandEGLContext::CreateNewWindow(const std::string& name,
 bool CWinSystemWaylandEGLContext::DestroyWindow()
 {
   m_eglContext.DestroySurface();
+  m_nativeWindow = {};
 
   return CWinSystemWayland::DestroyWindow();
 }
@@ -94,13 +103,20 @@ bool CWinSystemWaylandEGLContext::DestroyWindowSystem()
   return CWinSystemWayland::DestroyWindowSystem();
 }
 
+CSizeInt CWinSystemWaylandEGLContext::GetNativeWindowAttachedSize()
+{
+  int width, height;
+  m_nativeWindow.get_attached_size(width, height);
+  return {width, height};
+}
+
 void CWinSystemWaylandEGLContext::SetContextSize(CSizeInt size)
 {
   // Change EGL surface size if necessary
-  if (m_eglContext.GetAttachedSize() != size)
+  if (GetNativeWindowAttachedSize() != size)
   {
     CLog::LogF(LOGDEBUG, "Updating egl_window size to %dx%d", size.Width(), size.Height());
-    m_eglContext.Resize(size);
+    m_nativeWindow.resize(size.Width(), size.Height(), 0, 0);
   }
 }
 

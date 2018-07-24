@@ -30,7 +30,7 @@ class CVaapiProxy;
 class CWinSystemGbmGLESContext : public CWinSystemGbm, public CRenderSystemGLES
 {
 public:
-  CWinSystemGbmGLESContext() = default;
+  CWinSystemGbmGLESContext();
   virtual ~CWinSystemGbmGLESContext() = default;
 
   // Implementation of CWinSystemBase via CWinSystemGbm

@@ -33,6 +33,7 @@ public:
   static std::set<std::string> GetClientExtensions();
   static std::set<std::string> GetExtensions(EGLDisplay eglDisplay);
   static bool HasExtension(EGLDisplay eglDisplay, std::string const & name);
+  static bool HasClientExtension(std::string const & name);
   static void LogError(std::string const & what);
   template<typename T>
   static T GetRequiredProcAddress(const char * procname)
@@ -124,23 +125,63 @@ class CEGLContextUtils final
 {
 public:
   CEGLContextUtils();
+  /**
+   * \param platform platform as constant from an extension building on EGL_EXT_platform_base
+   */
+  CEGLContextUtils(EGLenum platform, std::string const& platformExtension);
   ~CEGLContextUtils();
 
-  bool CreateDisplay(EGLDisplay display,
-                     EGLint renderable_type,
-                     EGLint rendering_api);
+  bool CreateDisplay(EGLNativeDisplayType nativeDisplay, EGLint renderableType, EGLint renderingApi);
+  /**
+   * Create EGLDisplay with EGL_EXT_platform_base
+   *
+   * Falls back to \ref CreateDisplay (with nativeDisplayLegacy) on failure.
+   * The native displays to use with the platform-based and the legacy approach
+   * may be defined to have different types and/or semantics, so this function takes
+   * both as separate parameters.
+   *
+   * \param nativeDisplay native display to use with eglGetPlatformDisplayEXT
+   * \param nativeDisplayLegacy native display to use with eglGetDisplay
+   */
+  bool CreatePlatformDisplay(void* nativeDisplay, EGLNativeDisplayType nativeDisplayLegacy, EGLint renderableType, EGLint renderingApi);
 
-  bool CreateSurface(EGLNativeWindowType surface);
+  bool CreateSurface(EGLNativeWindowType nativeWindow);
+  bool CreatePlatformSurface(void* nativeWindow, EGLNativeWindowType nativeWindowLegacy);
   bool CreateContext(const EGLint* contextAttribs);
   bool BindContext();
-  bool SurfaceAttrib();
   void Destroy();
-  void Detach();
+  void DestroySurface();
+  void DestroyContext();
   bool SetVSync(bool enable);
   void SwapBuffers();
+  bool IsPlatformSupported() const;
 
-  EGLDisplay m_eglDisplay;
-  EGLSurface m_eglSurface;
-  EGLContext m_eglContext;
-  EGLConfig m_eglConfig = 0;
+  EGLDisplay GetEGLDisplay() const
+  {
+    return m_eglDisplay;
+  }
+  EGLSurface GetEGLSurface() const
+  {
+    return m_eglSurface;
+  }
+  EGLContext GetEGLContext() const
+  {
+    return m_eglContext;
+  }
+  EGLConfig GetEGLConfig() const
+  {
+    return m_eglConfig;
+  }
+
+private:
+  bool InitializeDisplay(EGLint renderableType, EGLint renderingApi);
+  void SurfaceAttrib();
+
+  EGLenum m_platform{EGL_NONE};
+  bool m_platformSupported{false};
+
+  EGLDisplay m_eglDisplay{EGL_NO_DISPLAY};
+  EGLSurface m_eglSurface{EGL_NO_SURFACE};
+  EGLContext m_eglContext{EGL_NO_CONTEXT};
+  EGLConfig m_eglConfig{};
 };
