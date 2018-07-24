@@ -595,7 +595,7 @@ JSONRPC_STATUS CAudioLibrary::GetGenres(const std::string &method, ITransportLay
   checkProperties.insert("sourceid");
   std::set<std::string> additionalProperties;
   if (CheckForAdditionalProperties(parameterObject["properties"], checkProperties, additionalProperties))
-    sourcesneeded = (additionalProperties.find("sourcid") != additionalProperties.end());
+    sourcesneeded = (additionalProperties.find("sourceid") != additionalProperties.end());
    
   CFileItemList items;
   if (!musicdatabase.GetGenresJSON(items, sourcesneeded))
@@ -628,12 +628,19 @@ JSONRPC_STATUS JSONRPC::CAudioLibrary::GetSources(const std::string& method, ITr
   CMusicDatabase musicdatabase;
   if (!musicdatabase.Open())
     return InternalError;
-  
+
+  // Add "file" to "properties" array by default
+  CVariant param = parameterObject;
+  if (!param.isMember("properties"))
+    param["properties"] = CVariant(CVariant::VariantTypeArray);
+  if (!param["properties"].isMember("file"))
+    param["properties"].append("file");
+
   CFileItemList items;
   if (!musicdatabase.GetSources(items))
     return InternalError;
 
-  HandleFileItemList("sourceid", true, "sourceid", items, parameterObject, result);
+  HandleFileItemList("sourceid", true, "sources", items, param, result);
   return OK;
 }
 
