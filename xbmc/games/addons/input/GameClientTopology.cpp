@@ -98,9 +98,9 @@ std::string CGameClientTopology::MakeAddress(const std::string &baseAddress, con
   std::ostringstream address;
 
   if (!baseAddress.empty())
-    address << baseAddress << CONTROLLER_ADDRESS_SEPARATOR;
+    address << baseAddress;
 
-  address << nodeId;
+  address << CONTROLLER_ADDRESS_SEPARATOR << nodeId;
 
   return address.str();
 }
