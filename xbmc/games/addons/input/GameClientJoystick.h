@@ -13,8 +13,6 @@
 
 #include <memory>
 
-struct KodiToAddonFuncTable_Game;
-
 namespace KODI
 {
 namespace JOYSTICK
@@ -43,10 +41,9 @@ namespace GAME
      * \param controller The game controller which is used (for controller mapping).
      * \param dllStruct The emulator or game to which the events are sent.
      */
-    CGameClientJoystick(const CGameClient &addon,
+    CGameClientJoystick(CGameClient &addon,
                         const std::string &portAddress,
-                        const ControllerPtr& controller,
-                        const KodiToAddonFuncTable_Game &dllStruct);
+                        const ControllerPtr& controller);
 
     ~CGameClientJoystick() override;
 
@@ -69,10 +66,9 @@ namespace GAME
 
   private:
     // Construction parameters
-    const CGameClient &m_gameClient;
+    CGameClient &m_gameClient;
     const std::string m_portAddress;
     const ControllerPtr       m_controller;
-    const KodiToAddonFuncTable_Game &m_dllStruct;
 
     // Input parameters
     std::unique_ptr<CPort> m_port;

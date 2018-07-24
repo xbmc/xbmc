@@ -53,7 +53,9 @@ namespace GAME
     void Stop();
 
     // Input functions
+    bool HasFeature(const std::string &controllerId, const std::string &featureName) const;
     bool AcceptsInput() const;
+    bool InputEvent(const game_input_event &event);
 
     // Topology functions
     const CControllerTree &GetControllerTree() const { return m_controllers; }
