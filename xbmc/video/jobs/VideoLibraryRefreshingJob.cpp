@@ -27,6 +27,7 @@
 #include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogYesNo.h"
+#include "filesystem/PluginDirectory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindowManager.h"
@@ -79,6 +80,12 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
   ADDON::ScraperPtr scraper = db.GetScraperForPath(m_item->GetPath(), scanSettings);
   if (scraper == nullptr)
     return false;
+
+  if (URIUtils::IsPlugin(m_item->GetPath()) && !XFILE::CPluginDirectory::IsMediaLibraryScanningAllowed(ADDON::TranslateContent(scraper->Content()), m_item->GetPath()))
+  {
+    CLog::Log(LOGNOTICE, "CVideoLibraryRefreshingJob: Plugin '%s' does not support media library scanning and refreshing", CURL::GetRedacted(m_item->GetPath()).c_str());
+    return false;
+  }
 
   // copy the scraper in case we need it again
   ADDON::ScraperPtr originalScraper(scraper);

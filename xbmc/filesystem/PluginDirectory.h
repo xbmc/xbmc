@@ -53,6 +53,21 @@ public:
   static bool RunScriptWithParams(const std::string& strPath, bool resume);
   static bool GetPluginResult(const std::string& strPath, CFileItem &resultItem, bool resume);
 
+  /*! \brief Check whether a plugin supports media library scanning.
+  \param content content type - movies, tvshows, musicvideos.
+  \param strPath full plugin url.
+  \return true if scanning at specified url is allowed, false otherwise.
+  */
+  static bool IsMediaLibraryScanningAllowed(const std::string& content, const std::string& strPath);
+
+  /*! \brief Check whether a plugin url exists by calling the plugin and checking result.
+  Applies only to plugins that support media library scanning.
+  \param content content type - movies, tvshows, musicvideos.
+  \param strPath full plugin url.
+  \return true if the plugin supports scanning and specified url exists, false otherwise.
+  */
+  static bool CheckExists(const std::string& content, const std::string& strPath);
+
   // callbacks from python
   static bool AddItem(int handle, const CFileItem *item, int totalItems);
   static bool AddItems(int handle, const CFileItemList *items, int totalItems);

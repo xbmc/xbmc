@@ -31,6 +31,7 @@
 #include "filesystem/DirectoryCache.h"
 #include "filesystem/File.h"
 #include "filesystem/MultiPathDirectory.h"
+#include "filesystem/PluginDirectory.h"
 #include "filesystem/StackDirectory.h"
 #include "GUIInfoManager.h"
 #include "guilib/GUIComponent.h"
@@ -271,6 +272,12 @@ namespace VIDEO
     bool ignoreFolder = !m_scanAll && settings.noupdate;
     if (content == CONTENT_NONE || ignoreFolder)
       return true;
+
+    if (URIUtils::IsPlugin(strDirectory) && !CPluginDirectory::IsMediaLibraryScanningAllowed(TranslateContent(content), strDirectory))
+    {
+      CLog::Log(LOGNOTICE, "VideoInfoScanner: Plugin '%s' does not support media library scanning for '%s' content", CURL::GetRedacted(strDirectory).c_str(), TranslateContent(content));
+      return true;
+    }
 
     std::string hash, dbHash;
     if (content == CONTENT_MOVIES ||content == CONTENT_MUSICVIDEOS)
@@ -848,17 +855,21 @@ namespace VIDEO
         m_pathsToScan.erase(it);
 
       std::string hash, dbHash;
+      bool allowEmptyHash = false;
       if (item->IsPlugin())
       {
         // if plugin has already calculated a hash for directory contents - use it
         // in this case we don't need to get directory listing from plugin for hash checking
         if (item->HasProperty("hash"))
+        {
           hash = item->GetProperty("hash").asString();
+          allowEmptyHash = true;
+        }
       }
       else if (g_advancedSettings.m_bVideoLibraryUseFastHash)
         hash = GetRecursiveFastHash(item->GetPath(), regexps);
 
-      if (m_database.GetPathHash(item->GetPath(), dbHash) && !hash.empty() && dbHash == hash)
+      if (m_database.GetPathHash(item->GetPath(), dbHash) && (allowEmptyHash || !hash.empty()) && StringUtils::EqualsNoCase(dbHash, hash))
       {
         // fast hashes match - no need to process anything
         bSkip = true;
@@ -877,7 +888,7 @@ namespace VIDEO
         if (hash.empty())
         {
           GetPathHash(items, hash);
-          if (dbHash == hash)
+          if (StringUtils::EqualsNoCase(dbHash, hash))
           {
             // slow hashes match - no need to process anything
             bSkip = true;

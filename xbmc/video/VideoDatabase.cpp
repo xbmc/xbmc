@@ -39,6 +39,7 @@
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "filesystem/MultiPathDirectory.h"
+#include "filesystem/PluginDirectory.h"
 #include "filesystem/StackDirectory.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
 #include "GUIInfoManager.h"
@@ -8463,6 +8464,7 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const st
   {
     if (NULL == m_pDB.get()) return;
     if (NULL == m_pDS.get()) return;
+    if (NULL == m_pDS2.get()) return;
 
     unsigned int time = XbmcThreads::SystemClockMillis();
     CLog::Log(LOGNOTICE, "%s: Starting videodatabase cleanup ..", __FUNCTION__);
@@ -8480,8 +8482,8 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const st
       sql += PrepareSQL(" AND path.idPath IN (%s)", strPaths.substr(1).c_str());
     }
 
-    m_pDS->query(sql);
-    if (m_pDS->num_rows() == 0) return;
+    m_pDS2->query(sql);
+    if (m_pDS2->num_rows() == 0) return;
 
     if (handle)
     {
@@ -8507,13 +8509,13 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const st
     VECSOURCES videoSources(*CMediaSourceSettings::GetInstance().GetSources("video"));
     g_mediaManager.GetRemovableDrives(videoSources);
 
-    int total = m_pDS->num_rows();
+    int total = m_pDS2->num_rows();
     int current = 0;
 
-    while (!m_pDS->eof())
+    while (!m_pDS2->eof())
     {
-      std::string path = m_pDS->fv("path.strPath").get_asString();
-      std::string fileName = m_pDS->fv("files.strFileName").get_asString();
+      std::string path = m_pDS2->fv("path.strPath").get_asString();
+      std::string fileName = m_pDS2->fv("files.strFileName").get_asString();
       std::string fullPath;
       ConstructPath(fullPath, path, fileName);
 
@@ -8525,11 +8527,25 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const st
       if (URIUtils::IsInArchive(fullPath))
         fullPath = CURL(fullPath).GetHostName();
 
-      // remove optical, non-existing files, files with no matching source
-      bool bIsSource;
-      if (URIUtils::IsOnDVD(fullPath) || !CFile::Exists(fullPath, false) ||
-          CUtil::GetMatchingSource(fullPath, videoSources, bIsSource) < 0)
-        filesToTestForDelete += m_pDS->fv("files.idFile").get_asString() + ",";
+      bool del = true;
+      if (URIUtils::IsPlugin(fullPath))
+      {
+        SScanSettings settings;
+        bool foundDirectly = false;
+        ScraperPtr scraper = GetScraperForPath(fullPath, settings, foundDirectly);
+        if (scraper && CPluginDirectory::CheckExists(TranslateContent(scraper->Content()), fullPath))
+          del = false;
+      }
+      else
+      {
+        // remove optical, non-existing files, files with no matching source
+        bool bIsSource;
+        if (!URIUtils::IsOnDVD(fullPath) && CFile::Exists(fullPath, false) &&
+            CUtil::GetMatchingSource(fullPath, videoSources, bIsSource) >= 0)
+          del = false;
+      }
+      if (del)
+        filesToTestForDelete += m_pDS2->fv("files.idFile").get_asString() + ",";
 
       if (handle == NULL && progress != NULL)
       {
@@ -8542,7 +8558,7 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const st
         if (progress->IsCanceled())
         {
           progress->Close();
-          m_pDS->close();
+          m_pDS2->close();
           ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnCleanFinished");
           return;
         }
@@ -8550,10 +8566,10 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const st
       else if (handle != NULL)
         handle->SetPercentage(current * 100 / (float)total);
 
-      m_pDS->next();
+      m_pDS2->next();
       current++;
     }
-    m_pDS->close();
+    m_pDS2->close();
 
     std::string filesToDelete;
 
@@ -8643,22 +8659,36 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const st
                    "AND (strSettings IS NULL OR strSettings = '') "
                    "AND (strHash IS NULL OR strHash = '') "
                    "AND (exclude IS NULL OR exclude != 1))";
-    m_pDS->query(sql);
+    m_pDS2->query(sql);
     std::string strIds;
-    while (!m_pDS->eof())
+    while (!m_pDS2->eof())
     {
-      auto pathsDeleteDecision = pathsDeleteDecisions.find(m_pDS->fv(0).get_asInt());
+      auto pathsDeleteDecision = pathsDeleteDecisions.find(m_pDS2->fv(0).get_asInt());
       // Check if we have a decision for the parent path
-      auto pathsDeleteDecisionByParent = pathsDeleteDecisions.find(m_pDS->fv(2).get_asInt());
+      auto pathsDeleteDecisionByParent = pathsDeleteDecisions.find(m_pDS2->fv(2).get_asInt());
+      std::string path = m_pDS2->fv(1).get_asString();
+
+      bool exists = false;
+      if (URIUtils::IsPlugin(path))
+      {
+        SScanSettings settings;
+        bool foundDirectly = false;
+        ScraperPtr scraper = GetScraperForPath(path, settings, foundDirectly);
+        if (scraper && CPluginDirectory::CheckExists(TranslateContent(scraper->Content()), path))
+          exists = true;
+      }
+      else
+        exists = CDirectory::Exists(path, false);
+
       if (((pathsDeleteDecision != pathsDeleteDecisions.end() && pathsDeleteDecision->second) ||
-           (pathsDeleteDecision == pathsDeleteDecisions.end() && !CDirectory::Exists(m_pDS->fv(1).get_asString(), false))) &&
+           (pathsDeleteDecision == pathsDeleteDecisions.end() && !exists)) &&
           ((pathsDeleteDecisionByParent != pathsDeleteDecisions.end() && pathsDeleteDecisionByParent->second) ||
            (pathsDeleteDecisionByParent == pathsDeleteDecisions.end())))
-        strIds += m_pDS->fv(0).get_asString() + ",";
+        strIds += m_pDS2->fv(0).get_asString() + ",";
 
-      m_pDS->next();
+      m_pDS2->next();
     }
-    m_pDS->close();
+    m_pDS2->close();
 
     if (!strIds.empty())
     {
@@ -9707,16 +9737,9 @@ void CVideoDatabase::InvalidatePathHash(const std::string& strPath)
   {
     if (info->Content() == CONTENT_TVSHOWS || settings.parent_name_root)
     {
-      if (URIUtils::IsPlugin(strPath))
-      {
-        // Check if we are already at plugin root
-        CURL url(strPath);
-        if (url.GetWithoutFilename() == strPath)
-          return;
-      }
       std::string strParent;
-      URIUtils::GetParentPath(strPath,strParent);
-      SetPathHash(strParent,"");
+      if (URIUtils::GetParentPath(strPath, strParent) && (!URIUtils::IsPlugin(strPath) || !CURL(strParent).GetHostName().empty()))
+        SetPathHash(strParent, "");
     }
   }
 }

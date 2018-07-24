@@ -25,6 +25,8 @@
 namespace ADDON
 {
 
+typedef std::map<std::string, std::vector<std::string>> ContentPathMap;
+
 class CPluginSource : public CAddon
 {
 public:
@@ -48,6 +50,11 @@ public:
     return m_providedContent.size() > 1;
   }
 
+  const ContentPathMap& MediaLibraryScanPaths() const
+  {
+    return m_mediaLibraryScanPaths;
+  }
+
   static Content Translate(const std::string &content);
 private:
   /*! \brief Set the provided content for this plugin
@@ -56,6 +63,7 @@ private:
    */
   void SetProvides(const std::string &content);
   std::set<Content> m_providedContent;
+  ContentPathMap m_mediaLibraryScanPaths;
 };
 
 } /*namespace ADDON*/

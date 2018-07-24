@@ -25,6 +25,7 @@
 #include "addons/AddonManager.h"
 #include "addons/AddonInstaller.h"
 #include "addons/IAddon.h"
+#include "addons/PluginSource.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
 #include "threads/SingleLock.h"
 #include "guilib/GUIWindowManager.h"
@@ -35,6 +36,7 @@
 #include "utils/log.h"
 #include "utils/JobManager.h"
 #include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
 #include "messaging/ApplicationMessenger.h"
 #include "URL.h"
 
@@ -603,4 +605,47 @@ float CPluginDirectory::GetProgress() const
   if (m_totalItems > 0)
     return (m_listItems->Size() * 100.0f) / m_totalItems;
   return 0.0f;
+}
+
+bool CPluginDirectory::IsMediaLibraryScanningAllowed(const std::string& content, const std::string& strPath)
+{
+  if (content.empty())
+    return false;
+
+  CURL url(strPath);
+  if (url.GetHostName().empty())
+    return false;
+  AddonPtr addon;
+  if (!CServiceBroker::GetAddonMgr().GetAddon(url.GetHostName(), addon, ADDON_PLUGIN))
+  {
+    CLog::Log(LOGERROR, "Unable to find plugin %s", url.GetHostName().c_str());
+    return false;
+  }
+  CPluginSource* plugin = dynamic_cast<CPluginSource*>(addon.get());
+  if (!plugin)
+    return false;
+
+  auto& paths = plugin->MediaLibraryScanPaths();
+  if (paths.empty())
+    return false;
+  auto it = paths.find(content);
+  if (it == paths.end())
+    return false;
+  std::string path = url.GetFileName();
+  for (const auto& p : it->second)
+    if (p.empty() || p == "/" || URIUtils::PathHasParent(path, p))
+      return true;
+  return false;
+}
+
+bool CPluginDirectory::CheckExists(const std::string& content, const std::string& strPath)
+{
+  if (!IsMediaLibraryScanningAllowed(content, strPath))
+    return false;
+  // call the plugin at specified path with option "kodi_action=check_exists"
+  // url exists if the plugin returns any fileitem with setResolvedUrl
+  CURL url(strPath);
+  url.SetOption("kodi_action", "check_exists");
+  CFileItem item;
+  return CPluginDirectory::GetPluginResult(url.Get(), item, false);
 }
