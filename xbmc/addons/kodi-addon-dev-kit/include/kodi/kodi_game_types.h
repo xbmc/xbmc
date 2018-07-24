@@ -446,19 +446,27 @@ typedef enum GAME_PORT_TYPE
   GAME_PORT_CONTROLLER,
 } GAME_PORT_TYPE;
 
-typedef struct game_controller
+typedef struct game_controller_layout
 {
-  const char*  controller_id;
+  char*        controller_id;
   bool         provides_input; // False for multitaps
+  char**       digital_buttons;
   unsigned int digital_button_count;
+  char**       analog_buttons;
   unsigned int analog_button_count;
+  char**       analog_sticks;
   unsigned int analog_stick_count;
+  char**       accelerometers;
   unsigned int accelerometer_count;
+  char**       keys;
   unsigned int key_count;
+  char**       rel_pointers;
   unsigned int rel_pointer_count;
+  char**       abs_pointers;
   unsigned int abs_pointer_count;
+  char**       motors;
   unsigned int motor_count;
-} ATTRIBUTE_PACKED game_controller;
+} ATTRIBUTE_PACKED game_controller_layout;
 
 struct game_input_port;
 
@@ -680,9 +688,10 @@ typedef struct KodiToAddonFuncTable_Game
   bool        (__cdecl* HasFeature)(const char*, const char*);
   game_input_topology* (__cdecl* GetTopology)();
   void        (__cdecl* FreeTopology)(game_input_topology*);
-  bool        (__cdecl* EnableKeyboard)(bool, const game_controller*);
-  bool        (__cdecl* EnableMouse)(bool, const game_controller*);
-  bool        (__cdecl* ConnectController)(bool, const char*, const game_controller*);
+  void        (__cdecl* SetControllerLayouts)(const game_controller_layout*, unsigned int);
+  bool        (__cdecl* EnableKeyboard)(bool, const char*);
+  bool        (__cdecl* EnableMouse)(bool, const char*);
+  bool        (__cdecl* ConnectController)(bool, const char*, const char*);
   bool        (__cdecl* InputEvent)(const game_input_event*);
   size_t      (__cdecl* SerializeSize)(void);
   GAME_ERROR  (__cdecl* Serialize)(uint8_t*, size_t);

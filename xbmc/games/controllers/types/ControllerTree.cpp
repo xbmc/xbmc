@@ -49,6 +49,22 @@ void CControllerNode::SetController(ControllerPtr controller)
   m_controller = std::move(controller);
 }
 
+void CControllerNode::GetControllers(ControllerVector &controllers) const
+{
+  const ControllerPtr &myController = m_controller;
+
+  auto it = std::find_if(controllers.begin(), controllers.end(),
+    [&myController](const ControllerPtr &controller)
+    {
+      return myController->ID() == controller->ID();
+    });
+
+  if (it == controllers.end())
+    controllers.emplace_back(m_controller);
+
+  m_hub->GetControllers(controllers);
+}
+
 void CControllerNode::SetAddress(std::string address)
 {
   m_address = std::move(address);
@@ -261,6 +277,22 @@ bool CControllerHub::IsControllerAccepted(const std::string &portAddress,
   }
 
   return bAccepted;
+}
+
+ControllerVector CControllerHub::GetControllers() const
+{
+  ControllerVector controllers;
+  GetControllers(controllers);
+  return controllers;
+}
+
+void CControllerHub::GetControllers(ControllerVector &controllers) const
+{
+  for (const CControllerPortNode &port : m_ports)
+  {
+    for (const CControllerNode &node : port.CompatibleControllers())
+      node.GetControllers(controllers);
+  }
 }
 
 const CControllerPortNode &CControllerHub::GetPort(const std::string &address) const

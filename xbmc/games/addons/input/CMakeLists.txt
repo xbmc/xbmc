@@ -1,4 +1,5 @@
-set(SOURCES GameClientDevice.cpp
+set(SOURCES GameClientController.cpp
+            GameClientDevice.cpp
             GameClientHardware.cpp
             GameClientInput.cpp
             GameClientJoystick.cpp
@@ -8,7 +9,8 @@ set(SOURCES GameClientDevice.cpp
             GameClientTopology.cpp
 )
 
-set(HEADERS GameClientDevice.h
+set(HEADERS GameClientController.h
+            GameClientDevice.h
             GameClientHardware.h
             GameClientInput.h
             GameClientJoystick.h

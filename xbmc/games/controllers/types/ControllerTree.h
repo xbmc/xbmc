@@ -49,6 +49,8 @@ namespace GAME
     const ControllerPtr &Controller() const { return m_controller; }
     void SetController(ControllerPtr controller);
 
+    void GetControllers(ControllerVector &controllers) const;
+
     /*!
      * \brief Address given to the node by the implementation
      */
@@ -222,6 +224,8 @@ namespace GAME
     bool IsControllerAccepted(const std::string &controllerId) const;
     bool IsControllerAccepted(const std::string &portAddress,
                               const std::string &controllerId) const;
+    ControllerVector GetControllers() const;
+    void GetControllers(ControllerVector &controllers) const;
 
     const CControllerPortNode &GetPort(const std::string &address) const;
 
