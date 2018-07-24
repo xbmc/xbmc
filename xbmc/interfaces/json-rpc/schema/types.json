@@ -424,8 +424,8 @@
     "extends": "Item.Details.Base",
     "properties": {
       "sourceid": { "$ref": "Library.Id", "required": true },
-	  "file": { "type": "string", "description": "The url encoded multipath string combining all paths of the source ", "required": true },
-	  "paths": { "$ref": "Array.String", "description": "The individual paths of the media source" }
+      "file": { "type": "string", "description": "The url encoded multipath string combining all paths of the source ", "required": true },
+      "paths": { "$ref": "Array.String", "description": "The individual paths of the media source" }
     }
   },
   "Library.Fields.Genre": {
