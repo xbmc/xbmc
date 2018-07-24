@@ -11,7 +11,6 @@ set(SOURCES TestAlarmClock.cpp
             TestEndianSwap.cpp
             TestFileOperationJob.cpp
             TestFileUtils.cpp
-            Testfstrcmp.cpp
             TestGlobalsHandling.cpp
             TestHTMLUtil.cpp
             TestHttpHeader.cpp

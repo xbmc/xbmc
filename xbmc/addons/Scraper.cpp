@@ -41,11 +41,11 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/XMLUtils.h"
-#include "utils/fstrcmp.h"
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
 
 #include <algorithm>
+#include <fstrcmp.h>
 #include <sstream>
 
 using namespace XFILE;
@@ -959,7 +959,7 @@ std::vector<CScraperUrl> CScraper::FindMovie(XFILE::CCurlFile &fcurl,
           yearScore =
               std::max(0.0, 1 - 0.5 * abs(atoi(sYear.c_str()) - atoi(sCompareYear.c_str())));
 
-        scurlMovie.relevance = fstrcmp(sMatchTitle.c_str(), sCompareTitle.c_str(), 0.0) + yearScore;
+        scurlMovie.relevance = fstrcmp(sMatchTitle.c_str(), sCompareTitle.c_str()) + yearScore;
 
         // reconstruct a title for the user
         if (!sCompareYear.empty())

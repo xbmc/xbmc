@@ -37,8 +37,8 @@
 #include "StringUtils.h"
 #include "CharsetConverter.h"
 #include "LangInfo.h"
-#include "utils/fstrcmp.h"
 #include "Util.h"
+#include <fstrcmp.h>
 #include <functional>
 #include <array>
 #include <iomanip>
@@ -1154,7 +1154,7 @@ bool StringUtils::ValidateUUID(const std::string &uuid)
 
 double StringUtils::CompareFuzzy(const std::string &left, const std::string &right)
 {
-  return (0.5 + fstrcmp(left.c_str(), right.c_str(), 0.0) * (left.length() + right.length())) / 2.0;
+  return (0.5 + fstrcmp(left.c_str(), right.c_str()) * (left.length() + right.length())) / 2.0;
 }
 
 int StringUtils::FindBestMatch(const std::string &str, const std::vector<std::string> &strings, double &matchscore)
