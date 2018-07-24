@@ -11,6 +11,7 @@ set(SOURCES ActorProtocol.cpp
             BooleanLogic.cpp
             CharsetConverter.cpp
             CharsetDetection.cpp
+            ColorUtils.cpp
             CPUInfo.cpp
             Crc32.cpp
             CryptThreading.cpp
@@ -88,6 +89,7 @@ set(HEADERS ActorProtocol.h
             CharsetDetection.h
             CPUInfo.h
             Color.h
+            ColorUtils.h
             Crc32.h
             CryptThreading.h
             DatabaseUtils.h

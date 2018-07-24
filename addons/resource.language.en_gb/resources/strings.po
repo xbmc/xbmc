@@ -3289,7 +3289,10 @@ msgctxt "#730"
 msgid "Port"
 msgstr ""
 
-#empty string with id 731
+#: system/settings/settings.xml
+msgctxt "#731"
+msgid "Black"
+msgstr ""
 
 msgctxt "#732"
 msgid "Save & apply"
@@ -3354,7 +3357,14 @@ msgctxt "#744"
 msgid "Files"
 msgstr ""
 
-#empty strings from id 745 to 746
+#: system/settings/settings.xml
+msgctxt "#745"
+msgid "Background colour"
+msgstr ""
+
+msgctxt "#746"
+msgid "Background opacity"
+msgstr ""
 
 msgctxt "#747"
 msgid "Error loading image"
@@ -18513,14 +18523,22 @@ msgctxt "#36227"
 msgid "Switch to full screen display when starting playback of channels and recordings."
 msgstr ""
 
-#empty string with id 36228
+#. Description of setting with label #745 "Background Colour"
+#: system/settings/settings.xml
+msgctxt "#36228"
+msgid "Set the colour to be used for the subtitle background."
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36229"
 msgid "Display signal quality information in the codec information window (if supported by the add-on and backend)."
 msgstr ""
 
-#empty string with id 36230
+#. Description of setting with label #746 "Background Opacity"
+#: system/settings/settings.xml
+msgctxt "#36230"
+msgid "Set the the subtitle background opacity."
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36231"
