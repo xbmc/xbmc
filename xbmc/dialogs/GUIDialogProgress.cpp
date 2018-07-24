@@ -182,6 +182,19 @@ bool CGUIDialogProgress::Wait(int progresstime /*= 10*/)
   return !m_bCanceled;
 }
 
+bool CGUIDialogProgress::WaitOnEvent(CEvent& event)
+{
+  while (!event.WaitMSec(1))
+  {
+    if (m_bCanceled)
+      return false;
+
+    Progress();
+  }
+
+  return !m_bCanceled;
+}
+
 void CGUIDialogProgress::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
   if (m_bInvalidated)

@@ -49,6 +49,13 @@ public:
    */
   bool Wait(int progresstime = 10);
 
+  /*! \brief Wait on an event or for the progress dialog to be canceled, while
+  regularly rendering to allow for pointer movement or progress to be shown.
+  \param event the CEvent to wait on.
+  \return true if the event completed, false if cancelled.
+  */
+  bool WaitOnEvent(CEvent& event);
+
   // Implements IProgressCallback
   void SetProgressMax(int iMax) override;
   void SetProgressAdvance(int nSteps=1) override;

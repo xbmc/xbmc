@@ -28,8 +28,10 @@
 #include "addons/PluginSource.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
 #include "threads/SingleLock.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogBusy.h"
+#include "dialogs/GUIDialogProgress.h"
 #include "settings/Settings.h"
 #include "FileItem.h"
 #include "video/VideoInfoTag.h"
@@ -509,10 +511,20 @@ bool CPluginDirectory::WaitOnScriptResult(const std::string &scriptPath, int scr
     if (!m_fetchComplete.WaitMSec(20))
     {
       CScriptObserver scriptObs(scriptId, m_fetchComplete);
-      if (!CGUIDialogBusy::WaitOnEvent(m_fetchComplete, 200))
+
+      CGUIDialogProgress* progress = nullptr;
+      CGUIWindowManager& wm = CServiceBroker::GetGUI()->GetWindowManager();
+      if (wm.IsModalDialogTopmost(WINDOW_DIALOG_PROGRESS))
+        progress = wm.GetWindow<CGUIDialogProgress>(WINDOW_DIALOG_PROGRESS);
+
+      if (progress != nullptr)
       {
-        m_cancelled = true;
+        if (!progress->WaitOnEvent(m_fetchComplete))
+          m_cancelled = true;
       }
+      else if (!CGUIDialogBusy::WaitOnEvent(m_fetchComplete, 200))
+        m_cancelled = true;
+
       scriptObs.Abort();
     }
   }
