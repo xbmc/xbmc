@@ -527,18 +527,6 @@ void CRetroPlayer::Render(bool clear, uint32_t alpha /* = 255 */, bool gui /* = 
   // Performed by callbacks
 }
 
-void CRetroPlayer::FlushRenderer()
-{
-  if (m_renderManager)
-    m_renderManager->Flush();
-}
-
-void CRetroPlayer::TriggerUpdateResolution()
-{
-  if (m_renderManager)
-    m_renderManager->TriggerUpdateResolution();
-}
-
 bool CRetroPlayer::IsRenderingVideo()
 {
   return true;

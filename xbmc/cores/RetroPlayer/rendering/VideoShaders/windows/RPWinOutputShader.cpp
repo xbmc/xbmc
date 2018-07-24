@@ -55,10 +55,10 @@ bool CRPWinOutputShader::Create(SCALINGMETHOD scalingMethod)
   return CWinShader::CreateInputLayout(layout, ARRAYSIZE(layout));
 }
 
-void CRPWinOutputShader::Render(CD3DTexture& sourceTexture, unsigned sourceWidth, unsigned sourceHeight, CRect sourceRect, const CPoint points[4]
+void CRPWinOutputShader::Render(CD3DTexture& sourceTexture, CRect sourceRect, const CPoint points[4]
   , CRect &viewPort, CD3DTexture *target, unsigned range)
 {
-  PrepareParameters(sourceWidth, sourceHeight, sourceRect, points);
+  PrepareParameters(sourceTexture.GetWidth(), sourceTexture.GetHeight(), sourceRect, points);
   SetShaderParameters(sourceTexture, range, viewPort);
   Execute({ target }, 4);
 }

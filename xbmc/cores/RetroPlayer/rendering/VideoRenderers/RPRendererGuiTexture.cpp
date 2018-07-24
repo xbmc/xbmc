@@ -102,10 +102,10 @@ void CRPRendererGuiTexture::RenderInternal(bool clear, uint8_t alpha)
 
   CRect rect = m_sourceRect;
 
-  rect.x1 /= m_sourceWidth;
-  rect.x2 /= m_sourceWidth;
-  rect.y1 /= m_sourceHeight;
-  rect.y2 /= m_sourceHeight;
+  rect.x1 /= renderBuffer->GetWidth();
+  rect.x2 /= renderBuffer->GetWidth();
+  rect.y1 /= renderBuffer->GetHeight();
+  rect.y2 /= renderBuffer->GetHeight();
 
   float u1 = rect.x1;
   float u2 = rect.x2;

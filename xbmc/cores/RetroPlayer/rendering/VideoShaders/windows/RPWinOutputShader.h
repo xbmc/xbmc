@@ -34,7 +34,7 @@ public:
   ~CRPWinOutputShader() = default;
 
   bool Create(SCALINGMETHOD scalingMethod);
-  void Render(CD3DTexture &sourceTexture, unsigned sourceWidth, unsigned sourceHeight, CRect sourceRect, const CPoint points[4]
+  void Render(CD3DTexture &sourceTexture, CRect sourceRect, const CPoint points[4]
     , CRect &viewPort, CD3DTexture *target, unsigned range = 0);
 
 private:
