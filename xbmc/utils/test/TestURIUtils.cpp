@@ -341,12 +341,6 @@ TEST_F(TestURIUtils, IsMusicDb)
   EXPECT_TRUE(URIUtils::IsMusicDb("musicdb://path/to/file"));
 }
 
-TEST_F(TestURIUtils, IsNfs)
-{
-  EXPECT_TRUE(URIUtils::IsNfs("nfs://path/to/file"));
-  EXPECT_TRUE(URIUtils::IsNfs("stack://nfs://path/to/file"));
-}
-
 TEST_F(TestURIUtils, IsOnDVD)
 {
   EXPECT_TRUE(URIUtils::IsOnDVD("dvd://path/to/file"));

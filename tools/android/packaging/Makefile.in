@@ -4,7 +4,7 @@ BUILD_TYPE:=@CMAKE_BUILD_TYPE@
 BUILD_TYPE_LC:=$(shell echo $(BUILD_TYPE) | tr A-Z a-z)
 
 OBJS = libplist.so libshairplay.so \
-  libnfs.so libass.so \
+  libass.so \
   libbluray.so libsmbclient.so
 
 PLATFORM_OBJS =

@@ -1032,21 +1032,6 @@ bool URIUtils::IsMusicDb(const std::string& strFile)
   return IsProtocol(strFile, "musicdb");
 }
 
-bool URIUtils::IsNfs(const std::string& strFile)
-{
-  if (IsStack(strFile))
-    return IsNfs(CStackDirectory::GetFirstStackedFile(strFile));
-
-  if (IsSpecial(strFile))
-    return IsNfs(CSpecialProtocol::TranslatePath(strFile));
-
-  CURL url(strFile);
-  if (HasParentInHostname(url))
-    return IsNfs(url.GetHostName());
-
-  return IsProtocol(strFile, "nfs");
-}
-
 bool URIUtils::IsVideoDb(const std::string& strFile)
 {
   return IsProtocol(strFile, "videodb");
