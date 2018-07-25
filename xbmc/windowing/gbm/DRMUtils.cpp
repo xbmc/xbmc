@@ -134,7 +134,7 @@ drm_fb * CDRMUtils::DrmFbGetFromBo(struct gbm_bo *bo)
   return fb;
 }
 
-static bool GetProperties(int fd, uint32_t id, uint32_t type, struct drm_object *object)
+bool CDRMUtils::GetProperties(int fd, uint32_t id, uint32_t type, struct drm_object *object)
 {
   drmModeObjectPropertiesPtr props = drmModeObjectGetProperties(fd, id, type);
   if (!props)
@@ -151,7 +151,7 @@ static bool GetProperties(int fd, uint32_t id, uint32_t type, struct drm_object 
   return true;
 }
 
-static void FreeProperties(struct drm_object *object)
+void CDRMUtils::FreeProperties(struct drm_object *object)
 {
   if (object->props_info)
   {
