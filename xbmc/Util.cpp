@@ -62,7 +62,6 @@
 #include "utils/RegExp.h"
 #include "windowing/GraphicContext.h"
 #include "guilib/TextureManager.h"
-#include "utils/fstrcmp.h"
 #include "storage/MediaManager.h"
 #ifdef TARGET_WINDOWS
 #include "utils/CharsetConverter.h"
@@ -97,6 +96,8 @@
 #endif
 
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemux.h"
+
+#include <fstrcmp.h>
 
 #ifdef HAS_DVD_DRIVE
 using namespace MEDIA_DETECT;
@@ -1429,7 +1430,7 @@ double CUtil::AlbumRelevance(const std::string& strAlbumTemp1, const std::string
   StringUtils::ToLower(strAlbumTemp);
   std::string strAlbum = strAlbum1;
   StringUtils::ToLower(strAlbum);
-  double fAlbumPercentage = fstrcmp(strAlbumTemp.c_str(), strAlbum.c_str(), 0.0f);
+  double fAlbumPercentage = fstrcmp(strAlbumTemp.c_str(), strAlbum.c_str());
   double fArtistPercentage = 0.0f;
   if (!strArtist1.empty())
   {
@@ -1437,7 +1438,7 @@ double CUtil::AlbumRelevance(const std::string& strAlbumTemp1, const std::string
     StringUtils::ToLower(strArtistTemp);
     std::string strArtist = strArtist1;
     StringUtils::ToLower(strArtist);
-    fArtistPercentage = fstrcmp(strArtistTemp.c_str(), strArtist.c_str(), 0.0f);
+    fArtistPercentage = fstrcmp(strArtistTemp.c_str(), strArtist.c_str());
   }
   double fRelevance = fAlbumPercentage * 0.5f + fArtistPercentage * 0.5f;
   return fRelevance;

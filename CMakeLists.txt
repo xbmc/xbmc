@@ -57,6 +57,7 @@ if(UNIX)
   option(ENABLE_INTERNAL_CROSSGUID "Enable internal crossguid?" ON)
   option(ENABLE_INTERNAL_RapidJSON "Enable internal rapidjson?" OFF)
   option(ENABLE_INTERNAL_FMT "Enable internal fmt?" OFF)
+  option(ENABLE_INTERNAL_FSTRCMP "Enable internal fstrcmp?" OFF)
 endif()
 # System options
 if(NOT WIN32)
@@ -118,6 +119,7 @@ set(required_deps ASS
                   Fmt
                   FreeType
                   FriBidi
+                  fstrcmp
                   Iconv
                   LibDvd
                   Lzo2
@@ -284,7 +286,7 @@ endif()
 
 # main library (used for main binary and tests)
 add_library(lib${APP_NAME_LC} STATIC $<TARGET_OBJECTS:compileinfo>)
-add_dependencies(lib${APP_NAME_LC} libcpluff ffmpeg dvdnav crossguid fmt ${PLATFORM_GLOBAL_TARGET_DEPS})
+add_dependencies(lib${APP_NAME_LC} libcpluff ffmpeg dvdnav crossguid fmt fstrcmp ${PLATFORM_GLOBAL_TARGET_DEPS})
 set_target_properties(lib${APP_NAME_LC} PROPERTIES PREFIX "")
 
 # Other files (IDE)

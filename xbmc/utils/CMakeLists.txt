@@ -23,7 +23,6 @@ set(SOURCES ActorProtocol.cpp
             Fanart.cpp
             FileOperationJob.cpp
             FileUtils.cpp
-            fstrcmp.c
             GroupUtils.cpp
             HTMLUtil.cpp
             HttpHeader.cpp
@@ -101,7 +100,6 @@ set(HEADERS ActorProtocol.h
             Fanart.h
             FileOperationJob.h
             FileUtils.h
-            fstrcmp.h
             Geometry.h
             GlobalsHandling.h
             GroupUtils.h
