@@ -186,7 +186,7 @@ ContextMenuView CContextMenuManager::GetAddonItems(const CFileItem& fileItem, co
         result.emplace_back(new CContextMenuItem(menu));
   }
 
-  if (&root == &MAIN || &root == &MANAGE)
+  if (&root == &MANAGE)
   {
     std::sort(result.begin(), result.end(),
         [&](const ContextMenuView::value_type& lhs, const ContextMenuView::value_type& rhs)
