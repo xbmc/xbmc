@@ -346,6 +346,8 @@ COverlay* CRenderer::Convert(CDVDOverlaySSA* o, double pts)
   // libass render in a target area which named as frame. the frame size may bigger than video size,
   // and including margins between video to frame edge. libass allow to render subtitles into the margins.
   // this has been used to show subtitles in the top or bottom "black bar" between video to frame border.
+  int sourceWidth = MathUtils::round_int(m_rs.Width());
+  int sourceHeight = MathUtils::round_int(m_rs.Height());
   int videoWidth = MathUtils::round_int(m_rd.Width());
   int videoHeight = MathUtils::round_int(m_rd.Height());
   int targetWidth = MathUtils::round_int(m_rv.Width());
@@ -374,7 +376,8 @@ COverlay* CRenderer::Convert(CDVDOverlaySSA* o, double pts)
   else
     position = 0.0;
   int changes = 0;
-  ASS_Image* images = o->m_libass->RenderImage(targetWidth, targetHeight, videoWidth, videoHeight, pts, useMargin, position, &changes);
+  ASS_Image* images = o->m_libass->RenderImage(targetWidth, targetHeight, videoWidth, videoHeight, sourceWidth, sourceHeight,
+                                               pts, useMargin, position, &changes);
 
   if(o->m_textureid)
   {
