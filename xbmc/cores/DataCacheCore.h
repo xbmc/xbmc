@@ -72,6 +72,8 @@ public:
   void SetSpeed(float tempo, float speed);
   float GetSpeed();
   float GetTempo();
+  void SetFrameAdvance(bool fa);
+  bool IsFrameAdvance();
   bool IsPlayerStateChanged();
   void SetGuiRender(bool gui);
   bool GetGuiRender();
@@ -154,6 +156,7 @@ protected:
     bool m_renderVideoLayer;
     float m_tempo;
     float m_speed;
+    bool m_frameAdvance;
   } m_stateInfo;
 
   struct STimeInfo
