@@ -1643,7 +1643,22 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
     if (m_pInput->IsStreamType(DVDSTREAM_TYPE_BLURAY))
     {
       std::static_pointer_cast<CDVDInputStreamBluray>(m_pInput)->GetStreamInfo(pStream->id, stream->language);
-      stream->dvdNavId = pStream->id;
+
+      switch (stream->type)
+      {
+      case STREAM_AUDIO:
+        stream->dvdNavId = pStream->id - 0x1100;
+        break;
+      case STREAM_VIDEO:
+        stream->dvdNavId = pStream->id - 0x1011;
+        break;
+      case STREAM_SUBTITLE:
+        stream->dvdNavId = pStream->id - 0x1200;
+        break;
+      default:
+        stream->dvdNavId = pStream->id;
+        break;
+      }
     }
 #endif
     if( m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD) )
