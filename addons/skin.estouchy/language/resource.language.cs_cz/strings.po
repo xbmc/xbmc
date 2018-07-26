@@ -114,11 +114,11 @@ msgstr "Čas ukončení"
 
 msgctxt "#31050"
 msgid "Sort: Ascending"
-msgstr "Řazení: Vzestupně"
+msgstr "Řazení: vzestupně"
 
 msgctxt "#31051"
 msgid "Sort: Descending"
-msgstr "Řazení: Sestupně"
+msgstr "Řazení: sestupně"
 
 msgctxt "#31055"
 msgid "Open playlist"
@@ -214,15 +214,15 @@ msgstr "Spravujte nainstalované doplňky · Procházejte a instalujte doplňky 
 
 msgctxt "#31408"
 msgid "Configure actions that can be used during playback · Configure how media content is played"
-msgstr "Konfigurujte akce, které mohou být použity během přehrávání · Konfigurujte způsob přehrávání médií"
+msgstr "Nastavit akce, které mohou být použity během přehrávání · Nastavit způsob přehrávání médií"
 
 msgctxt "#31409"
 msgid "Configure library sources · Show the media lists display content · Configure how library lists are navigated"
-msgstr "Konfigurujte zdroje knihovny · Upravte obsah zobrazení seznamu médií · Konfigurujte způsob navigace v seznamech knihovny"
+msgstr "Nastavit zdroje knihovny · Upravte obsah zobrazení seznamu médií · Nastavit způsob navigace v seznamech knihovny"
 
 msgctxt "#31410"
 msgid "Configure skin · Configure region · Configure control · Configure screensaver · Configure master lock"
-msgstr "Konfigurujte vzhled · Konfigurujte region · Konfigurujte ovládání · Konfigurujte spořič obrazovky · Konfigurujte hlavní zámek"
+msgstr "Nastavit vzhled · Nastavit region · Nastavit ovládání · Nastavit spořič obrazovky · Nastavit hlavní zámek"
 
 msgctxt "#31411"
 msgid "Configure your profiles · Set locking options · Enable login screen"
@@ -230,7 +230,7 @@ msgstr "Nastavte si své profily · Nastavte možnosti uzamknutí · Povolte př
 
 msgctxt "#31412"
 msgid "Display system information · Hardware statistics · Check storage availability · View network configuration"
-msgstr "Zobrazte informace o systému · Hardwarové statistiky · Zkontrolujte dostupnost úložiště · Zobrazte konfiguraci sítě"
+msgstr "Zobrazit informace o systému · Hardwarové statistiky · Zkontrolovat dostupnost úložiště · Zobrazit nastavení sítě"
 
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
@@ -326,4 +326,4 @@ msgstr "Když přehráváte hudbu nebo video, objeví se na horním okraji obraz
 
 msgctxt "#31904"
 msgid "Now Playing Title..."
-msgstr "Nyní se přehrává…"
+msgstr "Nyní je přehráváno…"
