@@ -448,6 +448,10 @@ msgctxt "#31132"
 msgid "Select Program"
 msgstr "選擇程式"
 
+msgctxt "#31133"
+msgid "Select Resolution"
+msgstr "選擇解析度"
+
 msgctxt "#31134"
 msgid "Remaining"
 msgstr "後結束"

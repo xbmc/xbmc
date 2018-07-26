@@ -64,6 +64,10 @@ msgctxt "#31053"
 msgid "Arial based"
 msgstr "بر اساس قلم Arial"
 
+msgctxt "#31067"
+msgid "Event log"
+msgstr "گزارش رخداد"
+
 msgctxt "#31069"
 msgid "Last Updated"
 msgstr "آخرین بروزرسانی"

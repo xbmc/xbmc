@@ -428,6 +428,14 @@ msgctxt "#31130"
 msgid "Main menu-related settings: Configure the home screen to your likings."
 msgstr "Definições do menu principal: Configure o ecrã inicial ao seu gosto."
 
+msgctxt "#31132"
+msgid "Select Program"
+msgstr "Seleccione Programa"
+
+msgctxt "#31133"
+msgid "Select Resolution"
+msgstr "Seleccione Resolução"
+
 msgctxt "#31134"
 msgid "Remaining"
 msgstr "Falta"
