@@ -97,6 +97,7 @@ namespace GAME
 
     // Helper functions
     static ControllerVector GetControllers(const CGameClient &gameClient);
+    static void ActivateControllers(CControllerHub &hub);
 
     // Input properties
     IGameInputCallback *m_inputCallback = nullptr;
