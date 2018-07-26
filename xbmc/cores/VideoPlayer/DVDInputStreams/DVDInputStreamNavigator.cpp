@@ -417,7 +417,7 @@ int CDVDInputStreamNavigator::ProcessBlock(uint8_t* dest_buffer, int* read)
         {
           /* this will not take effect in this event */
           CLog::Log(LOGINFO, "%s - none or invalid subtitle stream selected, defaulting to first", __FUNCTION__);
-          SetActiveSubtitleStream(0);
+          SetSubtitleStream(0);
         }
         m_bCheckButtons = true;
         iNavresult = m_pVideoPlayer->OnDiscNavResult(buf, DVDNAV_SPU_STREAM_CHANGE);
@@ -443,7 +443,7 @@ int CDVDInputStreamNavigator::ProcessBlock(uint8_t* dest_buffer, int* read)
         {
           /* this will not take effect in this event */
           CLog::Log(LOGINFO, "%s - none or invalid audio stream selected, defaulting to first", __FUNCTION__);
-          SetActiveAudioStream(0);
+          SetAudioStream(0);
         }
 
         iNavresult = m_pVideoPlayer->OnDiscNavResult(buf, DVDNAV_AUDIO_STREAM_CHANGE);
@@ -631,10 +631,10 @@ int CDVDInputStreamNavigator::ProcessBlock(uint8_t* dest_buffer, int* read)
   return iNavresult;
 }
 
-bool CDVDInputStreamNavigator::SetActiveAudioStream(int iId)
+bool CDVDInputStreamNavigator::SetAudioStream(int streamId)
 {
-  int streamId = ConvertAudioStreamId_XBMCToExternal(iId);
-  CLog::Log(LOGDEBUG, "%s - id: %d, stream: %d", __FUNCTION__, iId, streamId);
+  int dvdStreamId = ConvertAudioStreamId_XBMCToExternal(streamId);
+  CLog::Log(LOGDEBUG, "%s - id: %d, stream: %d", __FUNCTION__, dvdStreamId, streamId);
 
   if (!m_dvdnav)
     return false;
@@ -646,22 +646,22 @@ bool CDVDInputStreamNavigator::SetActiveAudioStream(int iId)
     return false;
 
   /* make sure stream is valid, if not don't allow it */
-  if (streamId < 0 || streamId >= 8)
+  if (dvdStreamId < 0 || dvdStreamId >= 8)
     return false;
-  else if ( !(vm->state.pgc->audio_control[streamId] & (1<<15)) )
-    return false;
-
-  if (vm->state.domain != VTS_DOMAIN && streamId != 0)
+  else if ( !(vm->state.pgc->audio_control[dvdStreamId] & (1<<15)) )
     return false;
 
-  vm->state.AST_REG = streamId;
+  if (vm->state.domain != VTS_DOMAIN && dvdStreamId != 0)
+    return false;
+
+  vm->state.AST_REG = dvdStreamId;
   return true;
 }
 
-bool CDVDInputStreamNavigator::SetActiveSubtitleStream(int iId)
+bool CDVDInputStreamNavigator::SetSubtitleStream(int streamId)
 {
-  int streamId = ConvertSubtitleStreamId_XBMCToExternal(iId);
-  CLog::Log(LOGDEBUG, "%s - id: %d, stream: %d", __FUNCTION__, iId, streamId);
+  int subStreamId = ConvertSubtitleStreamId_XBMCToExternal(streamId);
+  CLog::Log(LOGDEBUG, "%s - id: %d, stream: %d", __FUNCTION__, subStreamId, streamId);
 
   if (!m_dvdnav)
     return false;
@@ -673,16 +673,16 @@ bool CDVDInputStreamNavigator::SetActiveSubtitleStream(int iId)
     return false;
 
   /* make sure stream is valid, if not don't allow it */
-  if (streamId < 0 || streamId >= 32)
+  if (subStreamId < 0 || subStreamId >= 32)
     return false;
-  else if ( !(vm->state.pgc->subp_control[streamId] & (1<<31)) )
+  else if ( !(vm->state.pgc->subp_control[subStreamId] & (1<<31)) )
     return false;
 
-  if (vm->state.domain != VTS_DOMAIN && streamId != 0)
+  if (vm->state.domain != VTS_DOMAIN && subStreamId != 0)
     return false;
 
   /* set subtitle stream without modifying visibility */
-  vm->state.SPST_REG = streamId | (vm->state.SPST_REG & 0x40);
+  vm->state.SPST_REG = subStreamId | (vm->state.SPST_REG & 0x40);
 
   return true;
 }
@@ -1160,12 +1160,13 @@ int CDVDInputStreamNavigator::GetActiveAngle()
     return -1;
 }
 
-bool CDVDInputStreamNavigator::SetAngle(int angle)
+bool CDVDInputStreamNavigator::SetVideoStream(int streamId)
 {
   if (!m_dvdnav)
     return false;
 
-  dvdnav_status_t status = m_dll.dvdnav_angle_change(m_dvdnav, angle);
+  // angle numbers start by 1
+  dvdnav_status_t status = m_dll.dvdnav_angle_change(m_dvdnav, (streamId + 1));
 
   return (status == DVDNAV_STATUS_OK);
 }
@@ -1269,8 +1270,8 @@ bool CDVDInputStreamNavigator::SeekChapter(int iChapter)
     return false;
   }
 
-  SetActiveSubtitleStream(subtitle);
-  SetActiveAudioStream(audio);
+  SetSubtitleStream(subtitle);
+  SetAudioStream(audio);
   EnableSubtitleStream(enabled);
   return true;
 }

@@ -78,20 +78,21 @@ public:
   bool IsInMenu() override { return m_bInMenu; }
   double GetTimeStampCorrection() override { return (double)(m_iVobUnitCorrection * 1000) / 90; }
 
+  void EnableSubtitleStream(bool bEnable);
   int GetActiveSubtitleStream();
   int GetSubTitleStreamCount();
   SubtitleStreamInfo GetSubtitleStreamInfo(const int iId);
-
-  bool SetActiveSubtitleStream(int iId);
-  void EnableSubtitleStream(bool bEnable);
   bool IsSubtitleStreamEnabled();
+  bool SetSubtitleStream(int streamId) override;
 
   int GetActiveAudioStream();
   int GetAudioStreamCount();
-  int GetActiveAngle();
-  bool SetAngle(int angle);
-  bool SetActiveAudioStream(int iId);
   AudioStreamInfo GetAudioStreamInfo(const int iId);
+  bool SetAudioStream(int streamId) override;
+
+  int GetActiveAngle();
+  VideoStreamInfo GetVideoStreamInfo();
+  bool SetVideoStream(int streamId) override;
 
   bool GetState(std::string &xmlstate) override;
   bool SetState(const std::string &xmlstate) override;
@@ -116,7 +117,7 @@ public:
 
   void CheckButtons();
 
-  VideoStreamInfo GetVideoStreamInfo();
+  CDVDInputStream::IMenus* GetIMenus() override { return this; }
 
 protected:
 
