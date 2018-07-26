@@ -257,6 +257,7 @@ public:
   CSelectionStreams() = default;
 
   int IndexOf(StreamType type, int source, int64_t demuxerId, int id) const;
+  int IndexOf(StreamType type, int id) const;
   int Count(StreamType type) const;
   int CountSource(StreamType type, StreamSource source) const;
   SelectionStream& Get(StreamType type, int index);
