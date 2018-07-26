@@ -2751,10 +2751,10 @@ void CVideoPlayer::HandleMessages()
       SelectionStream& st = m_SelectionStreams.Get(STREAM_AUDIO, pMsg2->GetStreamId());
       if(st.source != STREAM_SOURCE_NONE)
       {
-        if(st.source == STREAM_SOURCE_NAV && m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
+        if (m_pInputStream->GetIMenus())
         {
-          std::shared_ptr<CDVDInputStreamNavigator> pStream = std::static_pointer_cast<CDVDInputStreamNavigator>(m_pInputStream);
-          if(pStream->SetActiveAudioStream(st.id))
+          CDVDInputStream::IMenus* menu = m_pInputStream->GetIMenus();
+          if (menu->SetAudioStream(st.id))
           {
             m_dvd.iSelectedAudioStream = -1;
             CloseStream(m_CurrentAudio, false);
@@ -2790,10 +2790,10 @@ void CVideoPlayer::HandleMessages()
       SelectionStream& st = m_SelectionStreams.Get(STREAM_VIDEO, pMsg2->GetStreamId());
       if (st.source != STREAM_SOURCE_NONE)
       {
-        if (st.source == STREAM_SOURCE_NAV && m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
+        if (m_pInputStream->GetIMenus())
         {
-          std::shared_ptr<CDVDInputStreamNavigator> pStream = std::static_pointer_cast<CDVDInputStreamNavigator>(m_pInputStream);
-          if (pStream->SetAngle(st.id))
+          CDVDInputStream::IMenus* menu = m_pInputStream->GetIMenus();
+          if (menu->SetVideoStream(st.id))
           {
             m_dvd.iSelectedVideoStream = st.id;
 
@@ -2827,10 +2827,10 @@ void CVideoPlayer::HandleMessages()
       SelectionStream& st = m_SelectionStreams.Get(STREAM_SUBTITLE, pMsg2->GetStreamId());
       if(st.source != STREAM_SOURCE_NONE)
       {
-        if(st.source == STREAM_SOURCE_NAV && m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
+        if (m_pInputStream->GetIMenus())
         {
-          std::shared_ptr<CDVDInputStreamNavigator> pStream = std::static_pointer_cast<CDVDInputStreamNavigator>(m_pInputStream);
-          if(pStream->SetActiveSubtitleStream(st.id))
+          CDVDInputStream::IMenus* menu = m_pInputStream->GetIMenus();
+          if (menu->SetSubtitleStream(st.id))
           {
             m_dvd.iSelectedSPUStream = -1;
             CloseStream(m_CurrentSubtitle, false);
