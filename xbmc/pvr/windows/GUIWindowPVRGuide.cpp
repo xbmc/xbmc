@@ -145,11 +145,21 @@ void CGUIWindowPVRGuideBase::Notify(const Observable &obs, const ObservableMessa
   {
     CSingleLock lock(m_critSection);
     m_bRefreshTimelineItems = true;
+    // no base class call => do async refresh
+    return;
   }
-  else
+  else if (msg == ObservableMessageChannelPlaybackStopped)
   {
-    CGUIWindowPVRBase::Notify(obs, msg);
+    if (m_guiState && m_guiState->GetSortMethod().sortBy == SortByLastPlayed)
+    {
+      // set dirty to force sync refresh
+      CSingleLock lock(m_critSection);
+      m_bRefreshTimelineItems = true;
+    }
   }
+
+  // do sync refresh if dirty
+  CGUIWindowPVRBase::Notify(obs, msg);
 }
 
 void CGUIWindowPVRGuideBase::SetInvalid()
@@ -215,8 +225,9 @@ bool CGUIWindowPVRGuideBase::GetDirectory(const std::string &strDirectory, CFile
     {
       // channel group change and not very first open of this window. force immediate update.
       m_bRefreshTimelineItems = true;
-      bRefreshTimelineItems = true;
     }
+
+    bRefreshTimelineItems = m_bRefreshTimelineItems;
   }
 
   // never call DoRefresh with locked mutex!
@@ -326,6 +337,22 @@ bool CGUIWindowPVRGuideBase::OnAction(const CAction &action)
   }
 
   return CGUIWindowPVRBase::OnAction(action);
+}
+
+void CGUIWindowPVRGuideBase::RefreshView(CGUIMessage& message, bool bInitGridControl)
+{
+  CGUIWindowPVRBase::OnMessage(message);
+
+  // force grid data update
+  {
+    CSingleLock lock(m_critSection);
+    m_bRefreshTimelineItems = true;
+  }
+
+  if (bInitGridControl)
+    InitEpgGridControl();
+
+  Refresh(true);
 }
 
 bool CGUIWindowPVRGuideBase::OnMessage(CGUIMessage& message)
@@ -488,28 +515,19 @@ bool CGUIWindowPVRGuideBase::OnMessage(CGUIMessage& message)
           }
         }
       }
-      else if (message.GetSenderId() == CONTROL_BTNVIEWASICONS)
+      else if (message.GetSenderId() == CONTROL_BTNVIEWASICONS ||
+               message.GetSenderId() == CONTROL_BTNSORTBY)
       {
-        // let's set the view mode first before update
-        CGUIWindowPVRBase::OnMessage(message);
-        Refresh(true);
+        RefreshView(message, false);
         bReturn = true;
       }
       break;
     }
+    case GUI_MSG_CHANGE_SORT_DIRECTION:
+    case GUI_MSG_CHANGE_SORT_METHOD:
     case GUI_MSG_CHANGE_VIEW_MODE:
     {
-      // let's set the view mode first before update
-      CGUIWindowPVRBase::OnMessage(message);
-
-      // force data update for the new view control
-      {
-        CSingleLock lock(m_critSection);
-        m_bRefreshTimelineItems = true;
-      }
-      InitEpgGridControl();
-
-      Refresh(true);
+      RefreshView(message, message.GetMessage() == GUI_MSG_CHANGE_VIEW_MODE);
       bReturn = true;
       break;
     }
@@ -527,6 +545,7 @@ bool CGUIWindowPVRGuideBase::OnMessage(CGUIMessage& message)
         case ObservableMessageChannelGroup:
         case ObservableMessageEpg:
         case ObservableMessageEpgContainer:
+        case ObservableMessageChannelPlaybackStopped:
         {
           Refresh(true);
           break;
@@ -609,6 +628,9 @@ bool CGUIWindowPVRGuideBase::RefreshTimelineItems()
       const CDateTime maxPastDate(currentDate - CDateTimeSpan(iPastDays, 0, 0, 0));
       if (startDate < maxPastDate)
         startDate = maxPastDate;
+
+      if (m_guiState.get())
+        timeline->Sort(m_guiState->GetSortMethod());
 
       // can be very expensive. never call with lock acquired.
       epgGridContainer->SetTimelineItems(timeline, startDate, endDate);

@@ -46,6 +46,7 @@ typedef enum
   ObservableMessageManagerStopped,
   ObservableMessageSettingsChanged,
   ObservableMessageButtonMapsChanged,
+  ObservableMessageChannelPlaybackStopped,
 } ObservableMessage;
 
 class Observer

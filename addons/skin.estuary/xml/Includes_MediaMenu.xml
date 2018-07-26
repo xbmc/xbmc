@@ -148,14 +148,12 @@
 					<label>$LOCALIZE[31022]</label>
 					<label2>[B]$INFO[Container.SortMethod][/B]</label2>
 					<onclick>SendClick(3)</onclick>
-					<visible>!Window.IsActive(MyPVRGuide.xml)</visible>
 				</control>
 				<control type="button" id="6055">
 					<include>MediaMenuItemsCommon</include>
 					<label>$LOCALIZE[31032]</label>
 					<label2>[B]$INFO[Container.SortOrder][/B]</label2>
 					<onclick>Container.SetSortDirection</onclick>
-					<visible>!Window.IsActive(MyPVRGuide.xml)</visible>
 				</control>
 				<control type="button" id="10">
 					<description>Watched Toggle</description>
@@ -167,7 +165,7 @@
 				<control type="label" id="300">
 					<label>$LOCALIZE[31021]</label>
 					<include>MediaMenuLabelCommon</include>
-					<visible>Control.IsVisible(31) |Control.IsVisible(5) |Control.IsVisible(6) |Control.IsVisible(7) |Control.IsVisible(8)</visible>
+					<visible>Control.IsVisible(31) | Control.IsVisible(5) | Control.IsVisible(6) | Control.IsVisible(7) | Control.IsVisible(8)</visible>
 				</control>
 				<control type="radiobutton" id="31">
 					<include>MediaMenuItemsCommon</include>

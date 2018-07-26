@@ -78,6 +78,9 @@ std::string ByPath(SortAttribute attributes, const SortItem &values)
 
 std::string ByLastPlayed(SortAttribute attributes, const SortItem &values)
 {
+  if (attributes & SortAttributeIgnoreLabel)
+    return values.at(FieldLastPlayed).asString();
+
   return StringUtils::Format("%s %s", values.at(FieldLastPlayed).asString().c_str(), ByLabel(attributes, values).c_str());
 }
 
