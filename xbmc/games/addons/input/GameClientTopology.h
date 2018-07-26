@@ -20,9 +20,15 @@ namespace GAME
   class CGameClientTopology
   {
   public:
-    CGameClientTopology(GameClientPortVec ports);
+    CGameClientTopology() = default;
+    CGameClientTopology(GameClientPortVec ports, int playerLimit);
 
-    CControllerTree GetControllerTree() const;
+    void Clear();
+
+    int PlayerLimit() const { return m_playerLimit; }
+
+    const CControllerTree &ControllerTree() const { return m_controllers; }
+    CControllerTree &ControllerTree() { return m_controllers; }
 
   private:
     static CControllerTree GetControllerTree(const GameClientPortVec &ports);
@@ -32,7 +38,12 @@ namespace GAME
     // Utility function
     static std::string MakeAddress(const std::string &baseAddress, const std::string &nodeId);
 
+    // Game API parameters
     GameClientPortVec m_ports;
+    int m_playerLimit = -1;
+
+    // Controller parameters
+    CControllerTree m_controllers;
   };
 }
 }
