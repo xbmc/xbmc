@@ -70,6 +70,7 @@ namespace PVR
 
     std::unique_ptr<CPVRRefreshTimelineItemsThread> m_refreshTimelineItemsThread;
     std::atomic_bool m_bRefreshTimelineItems;
+    std::atomic_bool m_bSyncRefreshTimelineItems;
 
     CPVRChannelGroupPtr m_cachedChannelGroup;
     std::unique_ptr<CFileItemList> m_newTimeline;

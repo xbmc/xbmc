@@ -36,6 +36,7 @@ CGUIWindowPVRGuideBase::CGUIWindowPVRGuideBase(bool bRadio, int id, const std::s
   m_bChannelSelectionRestored(false)
 {
   m_bRefreshTimelineItems = false;
+  m_bSyncRefreshTimelineItems = false;
   CServiceBroker::GetPVRManager().EpgContainer().RegisterObserver(this);
 }
 
@@ -44,6 +45,7 @@ CGUIWindowPVRGuideBase::~CGUIWindowPVRGuideBase()
   CServiceBroker::GetPVRManager().EpgContainer().UnregisterObserver(this);
 
   m_bRefreshTimelineItems = false;
+  m_bSyncRefreshTimelineItems = false;
   StopRefreshTimelineItemsThread();
 }
 
@@ -64,7 +66,7 @@ void CGUIWindowPVRGuideBase::InitEpgGridControl()
   if (epgGridContainer && !epgGridContainer->HasData())
   {
     CSingleLock lock(m_critSection);
-    m_bRefreshTimelineItems = true; // force data update on first window open
+    m_bSyncRefreshTimelineItems = true; // force data update on first window open
   }
 
   StartRefreshTimelineItemsThread();
@@ -142,7 +144,7 @@ void CGUIWindowPVRGuideBase::Notify(const Observable &obs, const ObservableMessa
     {
       // set dirty to force sync refresh
       CSingleLock lock(m_critSection);
-      m_bRefreshTimelineItems = true;
+      m_bSyncRefreshTimelineItems = true;
     }
   }
 
@@ -204,7 +206,7 @@ bool CGUIWindowPVRGuideBase::Update(const std::string &strDirectory, bool update
 
 bool CGUIWindowPVRGuideBase::GetDirectory(const std::string &strDirectory, CFileItemList &items)
 {
-  bool bRefreshTimelineItems = false;
+  bool bForceRefreshTimelineItems = false;
 
   {
     CSingleLock lock(m_critSection);
@@ -212,14 +214,14 @@ bool CGUIWindowPVRGuideBase::GetDirectory(const std::string &strDirectory, CFile
     if (m_cachedChannelGroup && *m_cachedChannelGroup != *GetChannelGroup())
     {
       // channel group change and not very first open of this window. force immediate update.
-      m_bRefreshTimelineItems = true;
+      m_bSyncRefreshTimelineItems = true;
     }
 
-    bRefreshTimelineItems = m_bRefreshTimelineItems;
+    bForceRefreshTimelineItems = m_bSyncRefreshTimelineItems;
   }
 
   // never call DoRefresh with locked mutex!
-  if (bRefreshTimelineItems)
+  if (bForceRefreshTimelineItems)
     m_refreshTimelineItemsThread->DoRefresh();
 
   {
@@ -334,7 +336,7 @@ void CGUIWindowPVRGuideBase::RefreshView(CGUIMessage& message, bool bInitGridCon
   // force grid data update
   {
     CSingleLock lock(m_critSection);
-    m_bRefreshTimelineItems = true;
+    m_bSyncRefreshTimelineItems = true;
   }
 
   if (bInitGridControl)
@@ -583,8 +585,9 @@ bool CGUIWindowPVRGuideBase::RefreshTimelineItems()
   {
     CSingleLock lock(m_critSection);
 
-    bRefreshTimelineItems = m_bRefreshTimelineItems;
+    bRefreshTimelineItems = m_bRefreshTimelineItems || m_bSyncRefreshTimelineItems;
     m_bRefreshTimelineItems = false;
+    m_bSyncRefreshTimelineItems = false;
   }
 
   if (bRefreshTimelineItems)
