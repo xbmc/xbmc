@@ -29,7 +29,7 @@ CRPBaseRenderer *CRendererFactoryOpenGL::CreateRenderer(const CRenderSettings &s
 
 RenderBufferPoolVector CRendererFactoryOpenGL::CreateBufferPools(CRenderContext &context)
 {
-  return { std::make_shared<CRenderBufferPoolOpenGL>(context) };
+  return { std::make_shared<CRenderBufferPoolOpenGL>() };
 }
 
 // --- CRPRendererOpenGL -------------------------------------------------------

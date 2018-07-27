@@ -8,23 +8,37 @@
 
 #pragma once
 
-#include "RenderBufferPoolOpenGLES.h"
+#include "IRenderBuffer.h"
+#include "BaseRenderBufferPool.h"
 #include "system_gl.h"
 
 namespace KODI
 {
 namespace RETRO
 {
-  class CRenderBufferPoolOpenGL : public CRenderBufferPoolOpenGLES
+  class CRenderContext;
+  class CRenderVideoSettings;
+
+  class CRenderBufferPoolOpenGL : public CBaseRenderBufferPool
   {
   public:
-    CRenderBufferPoolOpenGL(CRenderContext &context);
+    CRenderBufferPoolOpenGL() = default;
     ~CRenderBufferPoolOpenGL() override = default;
 
+    // implementation of IRenderBufferPool via CBaseRenderBufferPool
+    bool IsCompatible(const CRenderVideoSettings &renderSettings) const override;
+
   protected:
-    // implementation of CBaseRenderBufferPool via CRenderBufferPoolOpenGLES
+    // implementation of CBaseRenderBufferPool
     IRenderBuffer *CreateRenderBuffer(void *header = nullptr) override;
     bool ConfigureInternal() override;
+
+  private:
+    // Configuration parameters
+    GLuint m_pixeltype = 0;
+    GLuint m_internalformat = 0;
+    GLuint m_pixelformat = 0;
+    GLuint m_bpp = 0;
   };
 }
 }

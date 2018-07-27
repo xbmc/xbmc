@@ -13,12 +13,10 @@ using namespace KODI;
 using namespace RETRO;
 
 
-CRenderBufferOpenGL::CRenderBufferOpenGL(CRenderContext &context,
-                                         GLuint pixeltype,
+CRenderBufferOpenGL::CRenderBufferOpenGL(GLuint pixeltype,
                                          GLuint internalformat,
                                          GLuint pixelformat,
                                          GLuint bpp) :
-  m_context(context),
   m_pixeltype(pixeltype),
   m_internalformat(internalformat),
   m_pixelformat(pixelformat),

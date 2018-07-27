@@ -20,8 +20,7 @@ namespace RETRO
   class CRenderBufferOpenGL : public CRenderBufferSysMem
   {
   public:
-    CRenderBufferOpenGL(CRenderContext &context,
-                        GLuint pixeltype,
+    CRenderBufferOpenGL(GLuint pixeltype,
                         GLuint internalformat,
                         GLuint pixelformat,
                         GLuint bpp);
@@ -32,7 +31,6 @@ namespace RETRO
 
   private:
     // Construction parameters
-    CRenderContext &m_context;
     const GLuint m_pixeltype;
     const GLuint m_internalformat;
     const GLuint m_pixelformat;
