@@ -18,12 +18,33 @@ CRenderBufferOpenGL::CRenderBufferOpenGL(CRenderContext &context,
                                          GLuint internalformat,
                                          GLuint pixelformat,
                                          GLuint bpp) :
-  CRenderBufferOpenGLES(context,
-                        pixeltype,
-                        internalformat,
-                        pixelformat,
-                        bpp)
+  m_context(context),
+  m_pixeltype(pixeltype),
+  m_internalformat(internalformat),
+  m_pixelformat(pixelformat),
+  m_bpp(bpp)
 {
+}
+
+CRenderBufferOpenGL::~CRenderBufferOpenGL()
+{
+  DeleteTexture();
+}
+
+void CRenderBufferOpenGL::CreateTexture()
+{
+  glGenTextures(1, &m_textureId);
+
+  glBindTexture(m_textureTarget, m_textureId);
+
+  glTexImage2D(m_textureTarget, 0, m_internalformat, m_width, m_height, 0, m_pixelformat, m_pixeltype, NULL);
+
+  glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+  glBindTexture(m_textureTarget, 0);
 }
 
 bool CRenderBufferOpenGL::UploadTexture()
@@ -42,4 +63,12 @@ bool CRenderBufferOpenGL::UploadTexture()
   glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
 
   return true;
+}
+
+void CRenderBufferOpenGL::DeleteTexture()
+{
+  if (glIsTexture(m_textureId))
+    glDeleteTextures(1, &m_textureId);
+
+  m_textureId = 0;
 }

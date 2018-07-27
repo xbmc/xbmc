@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "RenderBufferOpenGLES.h"
+#include "cores/RetroPlayer/buffers/video/RenderBufferSysMem.h"
 #include "system_gl.h"
 
 namespace KODI
@@ -17,7 +17,7 @@ namespace RETRO
 {
   class CRenderContext;
 
-  class CRenderBufferOpenGL : public CRenderBufferOpenGLES
+  class CRenderBufferOpenGL : public CRenderBufferSysMem
   {
   public:
     CRenderBufferOpenGL(CRenderContext &context,
@@ -25,10 +25,24 @@ namespace RETRO
                         GLuint internalformat,
                         GLuint pixelformat,
                         GLuint bpp);
-    ~CRenderBufferOpenGL() override = default;
+    ~CRenderBufferOpenGL() override;
 
-    // implementation of IRenderBuffer via CRenderBufferOpenGLES
     bool UploadTexture() override;
+    GLuint TextureID() const { return m_textureId; }
+
+  private:
+    // Construction parameters
+    CRenderContext &m_context;
+    const GLuint m_pixeltype;
+    const GLuint m_internalformat;
+    const GLuint m_pixelformat;
+    const GLuint m_bpp;
+
+    const GLenum m_textureTarget = GL_TEXTURE_2D; //! @todo
+    GLuint m_textureId = 0;
+
+    void CreateTexture();
+    void DeleteTexture();
   };
 }
 }
