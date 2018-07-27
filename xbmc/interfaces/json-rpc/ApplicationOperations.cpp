@@ -19,15 +19,16 @@
  */
 
 #include "ApplicationOperations.h"
-#include "InputOperations.h"
 #include "Application.h"
-#include "messaging/ApplicationMessenger.h"
+#include "CompileInfo.h"
 #include "FileItem.h"
+#include "GUIInfoManager.h"
+#include "InputOperations.h"
+#include "LangInfo.h"
 #include "Util.h"
 #include "input/Key.h"
+#include "messaging/ApplicationMessenger.h"
 #include "utils/log.h"
-#include "GUIInfoManager.h"
-#include "CompileInfo.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include <string.h>
@@ -114,7 +115,7 @@ JSONRPC_STATUS CApplicationOperations::Quit(const std::string &method, ITranspor
 JSONRPC_STATUS CApplicationOperations::GetPropertyValue(const std::string &property, CVariant &result)
 {
   if (property == "volume")
-    result = (int)g_application.GetVolume();
+    result = static_cast<int>(g_application.GetVolume());
   else if (property == "muted")
     result = g_application.IsMuted();
   else if (property == "name")
@@ -146,6 +147,15 @@ JSONRPC_STATUS CApplicationOperations::GetPropertyValue(const std::string &prope
     else
       result["tag"] = "prealpha";
   }
+  else if (property == "sorttokens")
+  {
+    result = CVariant(CVariant::VariantTypeArray); // Ensure no tokens returns as []
+    std::set<std::string> sortTokens = g_langInfo.GetSortTokens();
+    for (const auto& token : sortTokens)
+      result.append(token);
+  }
+  else if (property == "language")
+    result = g_langInfo.GetLocale().ToShortString();
   else
     return InvalidParams;
 

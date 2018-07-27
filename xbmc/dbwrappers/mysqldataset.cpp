@@ -585,6 +585,12 @@ std::string MysqlDatabase::vprepare(const char *format, va_list args)
     pos += 6;
   }
 
+  // Remove COLLATE NOCASE the SQLite case insensitive collation.
+  // In MySQL all tables are defined with case insensitive collation utf8_general_ci
+  pos = 0;
+  while ((pos = strResult.find(" COLLATE NOCASE", pos)) != std::string::npos)
+    strResult.erase(pos++, 15);
+
   return strResult;
 }
 
