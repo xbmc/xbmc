@@ -27,6 +27,7 @@
 #include "XBDateTime.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
 #include "utils/ISerializable.h"
+#include "utils/ISortable.h"
 
 #include "pvr/PVRTypes.h"
 #include "pvr/channels/PVRChannel.h"
@@ -39,7 +40,7 @@ namespace PVR
 {
   class CPVREpg;
 
-  class CPVREpgInfoTag final : public ISerializable, public std::enable_shared_from_this<CPVREpgInfoTag>
+  class CPVREpgInfoTag final : public ISerializable, public ISortable, public std::enable_shared_from_this<CPVREpgInfoTag>
   {
     friend class CPVREpg;
     friend class CPVREpgDatabase;
@@ -75,6 +76,9 @@ namespace PVR
     bool operator !=(const CPVREpgInfoTag& right) const;
 
     void Serialize(CVariant &value) const override;
+
+    // ISortable implementation
+    void ToSortable(SortItem& sortable, Field field) const override;
 
     /*!
      * @brief Get the identifier of the client that serves this event.

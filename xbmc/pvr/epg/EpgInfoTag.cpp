@@ -194,6 +194,30 @@ void CPVREpgInfoTag::Serialize(CVariant &value) const
   value["serieslink"] = m_strSeriesLink;
 }
 
+void CPVREpgInfoTag::ToSortable(SortItem& sortable, Field field) const
+{
+  if (!m_channel)
+    return;
+
+  switch (field)
+  {
+    case FieldChannelName:
+      sortable[FieldChannelName] = m_channel->ChannelName();
+      break;
+    case FieldChannelNumber:
+      sortable[FieldChannelNumber] = m_channel->ChannelNumber().FormattedChannelNumber();
+      break;
+    case FieldLastPlayed:
+    {
+      const CDateTime lastWatched(m_channel->LastWatched());
+      sortable[FieldLastPlayed] = lastWatched.IsValid() ? lastWatched.GetAsDBDateTime() : StringUtils::Empty;
+      break;
+    }
+    default:
+      break;
+  }
+}
+
 CDateTime CPVREpgInfoTag::GetCurrentPlayingTime() const
 {
   if (CServiceBroker::GetPVRManager().GetPlayingChannel() == Channel() &&

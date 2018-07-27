@@ -78,6 +78,8 @@ namespace PVR
     void StartRefreshTimelineItemsThread();
     void StopRefreshTimelineItemsThread();
 
+    void RefreshView(CGUIMessage& message, bool bInitGridControl);
+
     std::unique_ptr<CPVRRefreshTimelineItemsThread> m_refreshTimelineItemsThread;
     std::atomic_bool m_bRefreshTimelineItems;
 

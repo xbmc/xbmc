@@ -808,6 +808,9 @@ void CPVRManager::OnPlaybackStopped(const CFileItemPtr item)
   if (item->HasPVRChannelInfoTag() && item->GetPVRChannelInfoTag() == m_playingChannel)
   {
     UpdateLastWatched(item->GetPVRChannelInfoTag());
+    SetChanged();
+    NotifyObservers(ObservableMessageChannelPlaybackStopped);
+
     m_playingChannel.reset();
     m_playingClientId = -1;
     m_strPlayingClientName.clear();

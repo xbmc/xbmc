@@ -287,6 +287,7 @@ namespace PVR
      */
     std::string Path(void) const;
 
+    // ISortable implementation
     void ToSortable(SortItem& sortable, Field field) const override;
 
     /*!

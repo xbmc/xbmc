@@ -33,8 +33,8 @@ using namespace PVR;
 CGUIViewStateWindowPVRChannels::CGUIViewStateWindowPVRChannels(const int windowId, const CFileItemList& items) : CGUIViewStatePVR(windowId, items)
 {
   AddSortMethod(SortByChannelNumber, 549, LABEL_MASKS("%L", "", "%L", ""));      // "Number"      : Filename, empty | Foldername, empty
-  AddSortMethod(SortByLabel,         551, LABEL_MASKS("%L", "", "%L", ""));      // "Name"        : Filename, empty | Foldername, empty
-  AddSortMethod(SortByLastPlayed,    568, LABEL_MASKS( "%L", "%p", "%L", "%p")); // "Last played" : Filename, LastPlayed | Foldername, LastPlayed
+  AddSortMethod(SortByChannel,       551, LABEL_MASKS("%L", "", "%L", ""));      // "Name"        : Filename, empty | Foldername, empty
+  AddSortMethod(SortByLastPlayed,    568, LABEL_MASKS("%L", "%p", "%L", "%p"));  // "Last played" : Filename, LastPlayed | Foldername, LastPlayed
 
   // Default sorting
   SetSortMethod(SortByChannelNumber);
@@ -75,6 +75,13 @@ bool CGUIViewStateWindowPVRRecordings::HideParentDirItems(void)
 
 CGUIViewStateWindowPVRGuide::CGUIViewStateWindowPVRGuide(const int windowId, const CFileItemList& items) : CGUIViewStatePVR(windowId, items)
 {
+  AddSortMethod(SortByChannelNumber,                           549, LABEL_MASKS("%L", "", "%L", ""));     // "Number"      : Filename, empty | Foldername, empty
+  AddSortMethod(SortByChannel,                                 551, LABEL_MASKS("%L", "", "%L", ""));     // "Name"        : Filename, empty | Foldername, empty
+  AddSortMethod(SortByLastPlayed,    SortAttributeIgnoreLabel, 568, LABEL_MASKS("%L", "%p", "%L", "%p")); // "Last played" : Filename, LastPlayed | Foldername, LastPlayed
+
+  // Default sorting
+  SetSortMethod(SortByChannelNumber);
+
   LoadViewState("pvr://guide/", m_windowId);
 }
 
