@@ -10,11 +10,18 @@ set(HEADERS BaseRenderBuffer.h
             RenderBufferManager.h
 )
 
-if(OPENGLES_FOUND)
+if(OPENGL_FOUND OR OPENGLES_FOUND)
   list(APPEND SOURCES RenderBufferOpenGLES.cpp
                       RenderBufferPoolOpenGLES.cpp)
   list(APPEND HEADERS RenderBufferOpenGLES.h
                       RenderBufferPoolOpenGLES.h)
+endif()
+
+if(OPENGL_FOUND)
+  list(APPEND SOURCES RenderBufferOpenGL.cpp
+                      RenderBufferPoolOpenGL.cpp)
+  list(APPEND HEADERS RenderBufferOpenGL.cpp
+                      RenderBufferPoolOpenGL.cpp)
 endif()
 
 if(GBM_HAS_BO_MAP)

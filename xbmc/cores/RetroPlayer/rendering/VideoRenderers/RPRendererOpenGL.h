@@ -30,32 +30,6 @@ namespace RETRO
     RenderBufferPoolVector CreateBufferPools(CRenderContext &context) override;
   };
 
-  class CRenderBufferOpenGL : public CRenderBufferOpenGLES
-  {
-  public:
-    CRenderBufferOpenGL(CRenderContext &context,
-                        GLuint pixeltype,
-                        GLuint internalformat,
-                        GLuint pixelformat,
-                        GLuint bpp);
-    ~CRenderBufferOpenGL() override = default;
-
-    // implementation of IRenderBuffer via CRenderBufferOpenGLES
-    bool UploadTexture() override;
-  };
-
-  class CRenderBufferPoolOpenGL : public CRenderBufferPoolOpenGLES
-  {
-  public:
-    CRenderBufferPoolOpenGL(CRenderContext &context);
-    ~CRenderBufferPoolOpenGL() override = default;
-
-  protected:
-    // implementation of CBaseRenderBufferPool via CRenderBufferPoolOpenGLES
-    IRenderBuffer *CreateRenderBuffer(void *header = nullptr) override;
-    bool ConfigureInternal() override;
-  };
-
   class CRPRendererOpenGL : public CRPRendererOpenGLES
   {
   public:
