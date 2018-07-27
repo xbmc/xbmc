@@ -239,6 +239,16 @@ bool CGUIWindowPVRGuideBase::GetDirectory(const std::string &strDirectory, CFile
   return true;
 }
 
+void CGUIWindowPVRGuideBase::FormatAndSort(CFileItemList &items)
+{
+  if (&items == m_vecItems)
+  {
+    // Speedup: Nothing to do here as sorting was already done in CGUIWindowPVRGuideBase::RefreshTimelineItems
+    return;
+  }
+  CGUIWindowPVRBase::FormatAndSort(items);
+}
+
 bool CGUIWindowPVRGuideBase::ShouldNavigateToGridContainer(int iAction)
 {
   CGUIEPGGridContainer *epgGridContainer = GetGridControl();
