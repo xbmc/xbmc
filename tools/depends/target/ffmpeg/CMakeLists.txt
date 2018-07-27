@@ -80,7 +80,7 @@ endif()
 if(CPU MATCHES arm OR CORE_PLATFORM_NAME STREQUAL rbpi)
   list(APPEND ffmpeg_conf --enable-pic --disable-armv5te --disable-armv6t2)
 elseif(CPU MATCHES mips)
-  list(APPEND ffmpeg_conf --disable-mips32r2 --disable-mipsdspr1 --disable-mipsdspr2)
+  list(APPEND ffmpeg_conf --disable-mips32r2 --disable-mipsdsp --disable-mipsdspr2)
 endif()
 
 find_package(GnuTls)
