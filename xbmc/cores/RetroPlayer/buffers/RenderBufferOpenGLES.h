@@ -32,7 +32,7 @@ namespace RETRO
 
     GLuint TextureID() const { return m_textureId; }
 
-  protected:
+  private:
     // Construction parameters
     CRenderContext &m_context;
     const GLuint m_pixeltype;
@@ -44,8 +44,6 @@ namespace RETRO
     GLuint m_textureId = 0;
 
     void CreateTexture();
-
-  private:
     void DeleteTexture();
   };
 }
