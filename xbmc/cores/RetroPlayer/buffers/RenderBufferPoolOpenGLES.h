@@ -28,7 +28,7 @@ namespace RETRO
     // implementation of IRenderBufferPool via CBaseRenderBufferPool
     bool IsCompatible(const CRenderVideoSettings &renderSettings) const override;
 
-  protected:
+  private:
     // implementation of CBaseRenderBufferPool
     IRenderBuffer *CreateRenderBuffer(void *header = nullptr) override;
     bool ConfigureInternal() override;
