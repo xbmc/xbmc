@@ -36,7 +36,7 @@ CBaseRenderer* CRendererDRMPRIME::Create(CVideoBuffer* buffer)
   if (buffer && dynamic_cast<CVideoBufferDRMPRIME*>(buffer) &&
       CServiceBroker::GetSettings().GetInt(SETTING_VIDEOPLAYER_USEPRIMERENDERER) == 0)
   {
-    CWinSystemGbmGLESContext* winSystem = dynamic_cast<CWinSystemGbmGLESContext*>(CServiceBroker::GetWinSystem());
+    CWinSystemGbmEGLContext* winSystem = dynamic_cast<CWinSystemGbmEGLContext*>(CServiceBroker::GetWinSystem());
     if (winSystem)
       return new CRendererDRMPRIME(winSystem->GetDrm());
   }
@@ -46,7 +46,7 @@ CBaseRenderer* CRendererDRMPRIME::Create(CVideoBuffer* buffer)
 
 void CRendererDRMPRIME::Register()
 {
-  CWinSystemGbmGLESContext* winSystem = dynamic_cast<CWinSystemGbmGLESContext*>(CServiceBroker::GetWinSystem());
+  CWinSystemGbmEGLContext* winSystem = dynamic_cast<CWinSystemGbmEGLContext*>(CServiceBroker::GetWinSystem());
   if (winSystem && winSystem->GetDrm()->GetPrimaryPlane()->plane &&
       std::dynamic_pointer_cast<CDRMAtomic>(winSystem->GetDrm()))
   {

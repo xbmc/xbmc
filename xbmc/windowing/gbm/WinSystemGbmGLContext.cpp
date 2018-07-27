@@ -6,45 +6,37 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodecDRMPRIME.h"
-#include "cores/VideoPlayer/VideoRenderers/HwDecRender/RendererDRMPRIME.h"
-#include "cores/VideoPlayer/VideoRenderers/HwDecRender/RendererDRMPRIMEGLES.h"
-
 #include "cores/RetroPlayer/process/gbm/RPProcessInfoGbm.h"
 #include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererGBM.h"
-#include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererOpenGLES.h"
+#include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererOpenGL.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
-#include "cores/VideoPlayer/VideoRenderers/LinuxRendererGLES.h"
+#include "cores/VideoPlayer/VideoRenderers/LinuxRendererGL.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
-
+#include "EGL/egl.h"
+#include "EGL/eglext.h"
+#include "WinSystemGbmGLContext.h"
 #include "OptionalsReg.h"
 #include "utils/log.h"
-#include "WinSystemGbmGLESContext.h"
-
-#include <gbm.h>
-#include <EGL/egl.h>
-#include <EGL/eglext.h>
 
 using namespace KODI;
 
-CWinSystemGbmGLESContext::CWinSystemGbmGLESContext()
+CWinSystemGbmGLContext::CWinSystemGbmGLContext()
 : CWinSystemGbmEGLContext(EGL_PLATFORM_GBM_MESA, "EGL_MESA_platform_gbm")
 {}
 
 std::unique_ptr<CWinSystemBase> CWinSystemBase::CreateWinSystem()
 {
-  std::unique_ptr<CWinSystemBase> winSystem(new CWinSystemGbmGLESContext());
+  std::unique_ptr<CWinSystemBase> winSystem(new CWinSystemGbmGLContext());
   return winSystem;
 }
 
-bool CWinSystemGbmGLESContext::InitWindowSystem()
+bool CWinSystemGbmGLContext::InitWindowSystem()
 {
-  CLinuxRendererGLES::Register();
+  CLinuxRendererGL::Register();
   RETRO::CRPProcessInfoGbm::Register();
-  RETRO::CRPProcessInfoGbm::RegisterRendererFactory(new RETRO::CRendererFactoryGBM);
-  RETRO::CRPProcessInfoGbm::RegisterRendererFactory(new RETRO::CRendererFactoryOpenGLES);
+  RETRO::CRPProcessInfoGbm::RegisterRendererFactory(new RETRO::CRendererFactoryOpenGL);
 
-  if (!CWinSystemGbmEGLContext::InitWindowSystemEGL(EGL_OPENGL_ES2_BIT, EGL_OPENGL_ES_API))
+  if (!CWinSystemGbmEGLContext::InitWindowSystemEGL(EGL_OPENGL_BIT, EGL_OPENGL_API))
   {
     return false;
   }
@@ -59,14 +51,10 @@ bool CWinSystemGbmGLESContext::InitWindowSystem()
     GBM::VAAPIRegister(m_vaapiProxy.get(), deepColor);
   }
 
-  CRendererDRMPRIMEGLES::Register();
-  CRendererDRMPRIME::Register();
-  CDVDVideoCodecDRMPRIME::Register();
-
   return true;
 }
 
-bool CWinSystemGbmGLESContext::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
+bool CWinSystemGbmGLContext::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
 {
   if (res.iWidth != m_nWidth ||
       res.iHeight != m_nHeight)
@@ -78,7 +66,7 @@ bool CWinSystemGbmGLESContext::SetFullScreen(bool fullScreen, RESOLUTION_INFO& r
   m_eglContext.SwapBuffers();
 
   CWinSystemGbm::SetFullScreen(fullScreen, res, blankOtherDisplays);
-  CRenderSystemGLES::ResetRenderSystem(res.iWidth, res.iHeight);
+  CRenderSystemGL::ResetRenderSystem(res.iWidth, res.iHeight);
 
   if (!m_delayDispReset)
   {
@@ -91,7 +79,7 @@ bool CWinSystemGbmGLESContext::SetFullScreen(bool fullScreen, RESOLUTION_INFO& r
   return true;
 }
 
-void CWinSystemGbmGLESContext::PresentRender(bool rendered, bool videoLayer)
+void CWinSystemGbmGLContext::PresentRender(bool rendered, bool videoLayer)
 {
   if (!m_bRenderCreated)
     return;
@@ -117,16 +105,34 @@ void CWinSystemGbmGLESContext::PresentRender(bool rendered, bool videoLayer)
   }
 }
 
-bool CWinSystemGbmGLESContext::CreateContext()
+bool CWinSystemGbmGLContext::CreateContext()
 {
+  const EGLint glMajor = 3;
+  const EGLint glMinor = 2;
+
   const EGLint contextAttribs[] = {
-    EGL_CONTEXT_CLIENT_VERSION, 2,
+    EGL_CONTEXT_MAJOR_VERSION_KHR, glMajor,
+    EGL_CONTEXT_MINOR_VERSION_KHR, glMinor,
+    EGL_CONTEXT_OPENGL_PROFILE_MASK_KHR, EGL_CONTEXT_OPENGL_CORE_PROFILE_BIT_KHR,
     EGL_NONE
   };
+
   if (!m_eglContext.CreateContext(contextAttribs))
   {
-    CLog::Log(LOGERROR, "EGL context creation failed");
-    return false;
+    const EGLint fallbackContextAttribs[] = {
+      EGL_CONTEXT_CLIENT_VERSION, 2,
+      EGL_NONE
+    };
+    if (!m_eglContext.CreateContext(fallbackContextAttribs))
+    {
+      CLog::Log(LOGERROR, "EGL context creation failed");
+      return false;
+    }
+    else
+    {
+      CLog::Log(LOGWARNING, "Your OpenGL drivers do not support OpenGL {}.{} core profile. Kodi will run in compatibility mode, but performance may suffer.", glMajor, glMinor);
+    }
   }
+
   return true;
 }
