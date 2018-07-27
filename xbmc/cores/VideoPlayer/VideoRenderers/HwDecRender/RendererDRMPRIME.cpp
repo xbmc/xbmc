@@ -50,12 +50,10 @@ void CRendererDRMPRIME::Register()
   if (winSystem && winSystem->GetDrm()->GetPrimaryPlane()->plane &&
       std::dynamic_pointer_cast<CDRMAtomic>(winSystem->GetDrm()))
   {
+    CServiceBroker::GetSettings().GetSetting(SETTING_VIDEOPLAYER_USEPRIMERENDERER)->SetVisible(true);
     VIDEOPLAYER::CRendererFactory::RegisterRenderer("drm_prime", CRendererDRMPRIME::Create);
     return;
   }
-
-  CServiceBroker::GetSettings().SetInt(SETTING_VIDEOPLAYER_USEPRIMERENDERER, 1);
-  CServiceBroker::GetSettings().GetSetting(SETTING_VIDEOPLAYER_USEPRIMERENDERER)->SetVisible(false);
 }
 
 bool CRendererDRMPRIME::Configure(const VideoPicture& picture, float fps, unsigned int orientation)

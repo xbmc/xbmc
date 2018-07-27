@@ -11,6 +11,7 @@
 #include "ServiceBroker.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
 #include "settings/Settings.h"
+#include "settings/lib/Setting.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "windowing/gbm/WinSystemGbm.h"
@@ -157,6 +158,7 @@ CDVDVideoCodec* CDVDVideoCodecDRMPRIME::Create(CProcessInfo& processInfo)
 
 void CDVDVideoCodecDRMPRIME::Register()
 {
+  CServiceBroker::GetSettings().GetSetting(CSettings::SETTING_VIDEOPLAYER_USEPRIMEDECODER)->SetVisible(true);
   CDVDFactoryCodec::RegisterHWVideoCodec("drm_prime", CDVDVideoCodecDRMPRIME::Create);
 }
 
