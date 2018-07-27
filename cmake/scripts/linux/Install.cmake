@@ -135,8 +135,7 @@ install(FILES ${CMAKE_SOURCE_DIR}/tools/Linux/firewalld-services/kodi-eventserve
         COMPONENT kodi)
 
 # Install docs
-install(FILES ${CMAKE_SOURCE_DIR}/copying.txt
-              ${CMAKE_SOURCE_DIR}/LICENSE.md
+install(FILES ${CMAKE_SOURCE_DIR}/LICENSE.md
               ${CMAKE_SOURCE_DIR}/version.txt
               ${CMAKE_SOURCE_DIR}/docs/README.Linux.md
         DESTINATION ${docdir}

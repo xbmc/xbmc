@@ -1,28 +1,16 @@
 /*
- * Copyright (C) 2000, 2001, 2002 Håkan Hjort <d95hjort@dtek.chalmers.se>
+ *  Copyright (C) 2000, 2001, 2002 Håkan Hjort <d95hjort@dtek.chalmers.se>
  *
- * The data structures in this file should represent the layout of the
- * pci and dsi packets as they are stored in the stream.  Information
- * found by reading the source to VOBDUMP is the base for the structure
- * and names of these data types.
+ *  SPDX-License-Identifier: GPL-2.0-only
+ *  See LICENSES/README.md for more information.
  *
- * VOBDUMP: a program for examining DVD .VOB files.
- * Copyright 1998, 1999 Eric Smith <eric@brouhaha.com>
+ *  The data structures in this file should represent the layout of the
+ *  pci and dsi packets as they are stored in the stream. Information
+ *  found by reading the source to VOBDUMP is the base for the structure
+ *  and names of these data types.
  *
- * VOBDUMP is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License version 2 as
- * published by the Free Software Foundation.  Note that I am not
- * granting permission to redistribute or modify VOBDUMP under the terms
- * of any later version of the General Public License.
- *
- * This program is distributed in the hope that it will be useful (or at
- * least amusing), but WITHOUT ANY WARRANTY; without even the implied
- * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
- * the GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software Foundation,
- * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ *  VOBDUMP: a program for examining DVD .VOB files.
+ *  Copyright 1998, 1999 Eric Smith <eric@brouhaha.com>
  */
 
 #pragma once
