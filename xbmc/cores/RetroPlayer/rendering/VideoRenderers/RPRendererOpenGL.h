@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "RPRendererOpenGLES.h"
+#include "RPBaseRenderer.h"
 #include "cores/RetroPlayer/process/RPProcessInfo.h"
 
 #include "system_gl.h"
@@ -30,11 +30,40 @@ namespace RETRO
     RenderBufferPoolVector CreateBufferPools(CRenderContext &context) override;
   };
 
-  class CRPRendererOpenGL : public CRPRendererOpenGLES
+  class CRPRendererOpenGL : public CRPBaseRenderer
   {
   public:
     CRPRendererOpenGL(const CRenderSettings &renderSettings, CRenderContext &context, std::shared_ptr<IRenderBufferPool> bufferPool);
-    ~CRPRendererOpenGL() override = default;
+    ~CRPRendererOpenGL() override;
+
+    // implementation of CRPBaseRenderer
+    bool Supports(RENDERFEATURE feature) const override;
+    SCALINGMETHOD GetDefaultScalingMethod() const override { return SCALINGMETHOD::NEAREST; }
+
+    static bool SupportsScalingMethod(SCALINGMETHOD method);
+
+  protected:
+    // implementation of CRPBaseRenderer
+    void RenderInternal(bool clear, uint8_t alpha) override;
+    void FlushInternal() override;
+
+    /*!
+     * \brief Set the entire backbuffer to black
+     */
+    void ClearBackBuffer();
+
+    /*!
+     * \brief Draw black bars around the video quad
+     *
+     * This is more efficient than glClear() since it only sets pixels to
+     * black that aren't going to be overwritten by the game.
+     */
+    void DrawBlackBars();
+
+    virtual void Render(uint8_t alpha);
+
+    GLenum m_textureTarget = GL_TEXTURE_2D;
+    float m_clearColour = 0.0f;
   };
 }
 }
