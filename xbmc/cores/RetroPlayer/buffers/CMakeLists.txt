@@ -24,7 +24,7 @@ if(OPENGL_FOUND)
                       RenderBufferPoolOpenGL.cpp)
 endif()
 
-if(GBM_HAS_BO_MAP)
+if(GBM_HAS_BO_MAP AND OPENGLES_FOUND)
   list(APPEND SOURCES RenderBufferGBM.cpp
                       RenderBufferPoolGBM.cpp)
   list(APPEND HEADERS RenderBufferGBM.h
