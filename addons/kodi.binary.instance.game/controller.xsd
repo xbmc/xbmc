@@ -8,7 +8,7 @@
           <xs:attribute name="point" type="xs:string" use="required"/>
           <xs:attribute name="id" type="simpleIdentifier"/>
           <xs:attribute name="name" type="xs:string"/>
-          <xs:attribute name="library" type="xs:string"/>
+          <xs:attribute name="library" type="xs:string" use="required"/>
         </xs:extension>
       </xs:complexContent>
     </xs:complexType>
