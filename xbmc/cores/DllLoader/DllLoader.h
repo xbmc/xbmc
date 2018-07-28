@@ -19,6 +19,7 @@
     !defined(__SH4__) && \
     !defined(__sparc__) && \
     !defined(__arc__) && \
+    !defined(__or1k__) && \
     !defined(__xtensa__)
 #define USE_LDT_KEEPER
 #include "ldt_keeper.h"
