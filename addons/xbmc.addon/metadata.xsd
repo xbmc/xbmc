@@ -3,20 +3,22 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
   <xs:element name="extension">
     <xs:complexType>
-      <xs:sequence>
+      <xs:choice maxOccurs="unbounded">
         <xs:element name="summary" type="translatedString" minOccurs="1" maxOccurs="unbounded"/>
         <xs:element name="description" type="translatedString" minOccurs="0" maxOccurs="unbounded"/>
-        <xs:element name="disclaimer" type="translatedString" minOccurs="0"/>
+        <xs:element name="disclaimer" type="translatedString" minOccurs="0" maxOccurs="unbounded"/>
         <xs:element name="platform" type="platformList" minOccurs="0"/>
-        <xs:element name="supportedcontent" type="contentList" minOccurs="0"/>
-        <xs:element name="language" type="xs:string"  minOccurs="0"/>
-        <xs:element name="license" type="xs:string"  minOccurs="0"/>
-        <xs:element name="forum" type="xs:string" minOccurs="0"/>
-        <xs:element name="website" type="xs:string" minOccurs="0"/>
-        <xs:element name="source" type="xs:string" minOccurs="0"/>
-        <xs:element name="email" type="xs:string" minOccurs="0"/>
-        <xs:element name="broken" type="xs:string" minOccurs="0"/>
-      </xs:sequence>
+        <xs:element name="language" type="xs:string"  minOccurs="0" maxOccurs="1"/>
+        <xs:element name="license" type="xs:string"  minOccurs="0" maxOccurs="1" />
+        <xs:element name="forum" type="xs:string" minOccurs="0" maxOccurs="1"/>
+        <xs:element name="website" type="xs:string" minOccurs="0" maxOccurs="1"/>
+        <xs:element name="source" type="xs:string" minOccurs="0" maxOccurs="1"/>
+        <xs:element name="email" type="xs:string" minOccurs="0" maxOccurs="1"/>
+        <xs:element name="broken" type="xs:string" minOccurs="0" maxOccurs="1"/>
+        <xs:element name="news" type="xs:string" minOccurs="0" maxOccurs="1"/>
+        <xs:element name="reuselanguageinvoker" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+        <xs:element name="assets" type="assetsList" minOccurs="0" maxOccurs="1"/>
+      </xs:choice>
       <xs:attribute name="point" type="xs:string" use="required"/>
       <xs:attribute name="id" type="simpleIdentifier"/>
       <xs:attribute name="name" type="xs:string"/>
@@ -30,7 +32,7 @@
   <xs:complexType name="translatedString">
     <xs:simpleContent>
       <xs:extension base="xs:string">
-        <xs:attribute name="lang" type="xs:string"/>
+        <xs:attribute name="lang" type="langIdentifier" use="required"/>
       </xs:extension>
     </xs:simpleContent>
   </xs:complexType>
@@ -42,22 +44,28 @@
       <xs:enumeration value="osx32"/>
       <xs:enumeration value="ios"/>
       <xs:enumeration value="windx"/>
+      <xs:enumeration value="windows"/>
+      <xs:enumeration value="windowsstore"/>
       <xs:enumeration value="android"/>
+      <xs:enumeration value="freebsd"/>
+      <xs:enumeration value="all"/>
     </xs:restriction>
   </xs:simpleType>
+  <xs:simpleType name="langIdentifier">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[a-z]{2}(_[A-Z]{2}(@\S+)?)?"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="assetsList">
+    <xs:choice maxOccurs="unbounded">
+        <xs:element name="icon" type="xs:string" minOccurs="0" maxOccurs="1"/>
+        <xs:element name="fanart" type="xs:string" minOccurs="0" maxOccurs="1"/>
+        <xs:element name="screenshot" type="xs:string" minOccurs="0"/>
+        <xs:element name="clearlogo" type="xs:string" minOccurs="0" maxOccurs="1"/>
+        <xs:element name="banner" type="xs:string" minOccurs="0" maxOccurs="1"/>
+    </xs:choice>
+  </xs:complexType>
   <xs:simpleType name="platformList">
     <xs:list itemType="platformType"/>
-  </xs:simpleType>
-  <xs:simpleType name="contentType">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="albums"/>
-      <xs:enumeration value="artists"/>
-      <xs:enumeration value="movies"/>
-      <xs:enumeration value="tvshows"/>
-      <xs:enumeration value="musicvideos"/>
-    </xs:restriction>
-  </xs:simpleType>
-  <xs:simpleType name="contentList">
-    <xs:list itemType="contentType"/>
   </xs:simpleType>
 </xs:schema>
