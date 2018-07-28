@@ -22,7 +22,7 @@
     <xs:restriction base="xs:string">
       <xs:enumeration value="audio"/>
       <xs:enumeration value="image"/>
-      <xs:enumeration value="executeable"/>
+      <xs:enumeration value="executable"/>
       <xs:enumeration value="video"/>
     </xs:restriction>
   </xs:simpleType>
