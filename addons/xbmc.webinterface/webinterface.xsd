@@ -7,6 +7,7 @@
       <xs:attribute name="id" type="simpleIdentifier"/>
       <xs:attribute name="name" type="xs:string"/>
       <xs:attribute name="type" type="webinterfaceType"/>
+      <xs:attribute name="library" type="xs:string"/>
       <xs:attribute name="entry" type="xs:string"/>
     </xs:complexType>
   </xs:element>
