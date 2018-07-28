@@ -75,7 +75,7 @@ const std::string &CGUIInfoLabel::GetItemLabel(const CGUIListItem *item, bool pr
       {
         std::string infoLabel;
         if (preferImages)
-          infoLabel = infoMgr.GetItemImage(static_cast<const CFileItem*>(item), 0, portion.m_info, fallback);
+          infoLabel = infoMgr.GetItemImage(item, 0, portion.m_info, fallback);
         else
           infoLabel = infoMgr.GetItemLabel(static_cast<const CFileItem *>(item), 0, portion.m_info, fallback);
         needsUpdate |= portion.NeedsUpdate(infoLabel);
