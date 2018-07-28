@@ -30,6 +30,7 @@
     defined(__sparc__) || \
     defined(__arc__) || \
     defined(_M_ARM) || \
+    defined(__or1k__) || \
     defined(__xtensa__)
   #define DISABLE_MATHUTILS_ASM_ROUND_INT
 #endif
