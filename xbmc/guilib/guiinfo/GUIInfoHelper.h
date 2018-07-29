@@ -14,7 +14,6 @@
 #include "PlayListPlayer.h"
 
 class CFileItem;
-typedef std::shared_ptr<CFileItem> CFileItemPtr;
 
 class CGUIListItem;
 typedef std::shared_ptr<CGUIListItem> CGUIListItemPtr;
@@ -36,6 +35,8 @@ CGUIWindow* GetWindow(int contextWindow);
 CGUIControl* GetActiveContainer(int containerId, int contextWindow);
 CGUIMediaWindow* GetMediaWindow(int contextWindow);
 CGUIListItemPtr GetCurrentListItem(int contextWindow, int containerId = 0, int itemOffset = 0, unsigned int itemFlags = 0);
+
+std::string GetFileInfoLabelValueFromPath(int info, const std::string& filenameAndPath);
 
 } // namespace GUIINFO
 } // namespace GUILIB
