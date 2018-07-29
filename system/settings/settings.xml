@@ -982,6 +982,9 @@
           <level>1</level>
           <default>false</default>
           <control type="toggle" />
+          <dependencies>
+            <dependency type="enable" setting="videolibrary.groupmoviesets">true</dependency>
+          </dependencies>
         </setting>
         <setting id="myvideos.flatten" type="boolean" label="20456" help="36183">
           <level>2</level>
