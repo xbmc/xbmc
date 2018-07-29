@@ -192,6 +192,16 @@ void CGUIWindowPVRGuideBase::UpdateButtons(void)
 
 bool CGUIWindowPVRGuideBase::Update(const std::string &strDirectory, bool updateFilterPath /* = true */)
 {
+  if (m_vecItemsUpdating)
+  {
+    // Prevent concurrent updates. Instead, let the timeline items refresh thread pick it up later.
+    CSingleLock lock(m_critSection);
+    m_bRefreshTimelineItems = true;
+    return true;
+  }
+
+  CUpdateGuard guard(m_vecItemsUpdating);
+
   bool bReturn = CGUIWindowPVRBase::Update(strDirectory, updateFilterPath);
 
   if (bReturn && !m_bChannelSelectionRestored)
