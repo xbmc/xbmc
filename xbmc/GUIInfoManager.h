@@ -98,7 +98,7 @@ public:
   bool GetBool(int condition, int contextWindow = 0, const CGUIListItem *item = nullptr);
 
   std::string GetItemLabel(const CFileItem *item, int contextWindow, int info, std::string *fallback = nullptr) const;
-  std::string GetItemImage(const CFileItem *item, int contextWindow, int info, std::string *fallback = nullptr) const;
+  std::string GetItemImage(const CGUIListItem *item, int contextWindow, int info, std::string *fallback = nullptr) const;
   /*! \brief Get integer value of info.
    \param value int reference to pass value of given info
    \param info id of info
@@ -186,6 +186,8 @@ private:
   std::string GetSkinVariableString(int info, bool preferImage = false, const CGUIListItem *item = nullptr) const;
 
   int AddMultiInfo(const KODI::GUILIB::GUIINFO::CGUIInfo &info);
+
+  bool IsListItemInfo(int info) const;
 
   void SetCurrentSongTag(const MUSIC_INFO::CMusicInfoTag &tag);
   void SetCurrentVideoTag(const CVideoInfoTag &tag);
