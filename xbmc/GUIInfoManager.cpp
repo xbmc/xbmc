@@ -332,6 +332,12 @@ const infomap integer_bools[] =  {{ "isequal",          INTEGER_IS_EQUAL },
 ///     Returns true if pvr channel preview is active (used channel tag different
 ///     from played tag)
 ///   }
+///   \table_row3{   <b>`Player.FrameAdvance`</b>,
+///                  \anchor Player_FrameAdvance
+///                  _boolean_,
+///     Returns true if player is in frame advance mode. Skins should hide seek bar
+///     in this mode)
+///   }
 /// \table_end
 /// @}
 const infomap player_labels[] =  {{ "hasmedia",         PLAYER_HAS_MEDIA },           // bools from here
@@ -383,7 +389,8 @@ const infomap player_labels[] =  {{ "hasmedia",         PLAYER_HAS_MEDIA },     
                                   { "istempo", PLAYER_IS_TEMPO},
                                   { "playspeed", PLAYER_PLAYSPEED},
                                   { "hasprograms", PLAYER_HAS_PROGRAMS},
-                                  { "hasresolutions", PLAYER_HAS_RESOLUTIONS}};
+                                  { "hasresolutions", PLAYER_HAS_RESOLUTIONS},
+                                  { "frameadvance", PLAYER_FRAMEADVANCE}};
 
 /// \page modules__General__List_of_gui_access
 /// @{

@@ -519,6 +519,23 @@ float CProcessInfo::GetNewSpeed()
   return m_newSpeed;
 }
 
+void CProcessInfo::SetFrameAdvance(bool fa)
+{
+  CSingleLock lock(m_stateSection);
+
+  m_frameAdvance = fa;
+
+  if (m_dataCache)
+    m_dataCache->SetFrameAdvance(fa);
+}
+
+bool CProcessInfo::IsFrameAdvance()
+{
+  CSingleLock lock(m_stateSection);
+
+  return m_frameAdvance;
+}
+
 void CProcessInfo::SetTempo(float tempo)
 {
   CSingleLock lock(m_stateSection);

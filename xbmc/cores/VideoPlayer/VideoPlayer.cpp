@@ -675,6 +675,7 @@ CVideoPlayer::CVideoPlayer(IPlayerCallback& callback)
   m_processInfo->SetDataCache(&CServiceBroker::GetDataCacheCore());
   m_processInfo->SetSpeed(1.0);
   m_processInfo->SetTempo(1.0);
+  m_processInfo->SetFrameAdvance(false);
 
   CreatePlayers();
 
@@ -1234,6 +1235,7 @@ void CVideoPlayer::Prepare()
   SetPlaySpeed(DVD_PLAYSPEED_NORMAL);
   m_processInfo->SetSpeed(1.0);
   m_processInfo->SetTempo(1.0);
+  m_processInfo->SetFrameAdvance(false);
   m_State.Clear();
   m_CurrentVideo.hint.Clear();
   m_CurrentAudio.hint.Clear();
@@ -2951,6 +2953,8 @@ void CVideoPlayer::HandleMessages()
       else
         m_processInfo->SetSpeed(static_cast<float>(speed) / DVD_PLAYSPEED_NORMAL);
 
+      m_processInfo->SetFrameAdvance(false);
+
       m_playSpeed = speed;
 
       m_caching = CACHESTATE_DONE;
@@ -2961,9 +2965,13 @@ void CVideoPlayer::HandleMessages()
     }
     else if (pMsg->IsType(CDVDMsg::PLAYER_FRAME_ADVANCE))
     {
-      int frames = static_cast<CDVDMsgInt*>(pMsg)->m_value;
-      double time = DVD_TIME_BASE / m_processInfo->GetVideoFps() * frames;
-      m_clock.Advance(time);
+      if (m_playSpeed == DVD_PLAYSPEED_PAUSE)
+      {
+        int frames = static_cast<CDVDMsgInt*>(pMsg)->m_value;
+        double time = DVD_TIME_BASE / m_processInfo->GetVideoFps() * frames;
+        m_processInfo->SetFrameAdvance(true);
+        m_clock.Advance(time);
+      }
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_GUI_ACTION))
       OnAction(static_cast<CDVDMsgType<CAction>*>(pMsg)->m_value);

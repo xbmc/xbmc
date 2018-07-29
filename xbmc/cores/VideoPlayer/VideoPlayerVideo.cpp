@@ -353,8 +353,8 @@ void CVideoPlayerVideo::Process()
       }
       // don't ask for a new frame if we can't deliver it to renderer
       else if ((m_speed != DVD_PLAYSPEED_PAUSE ||
-                m_syncState != IDVDStreamPlayer::SYNC_INSYNC) &&
-               !m_paused)
+                m_processInfo.IsFrameAdvance() ||
+                m_syncState != IDVDStreamPlayer::SYNC_INSYNC) && !m_paused)
       {
         if (ProcessDecoderOutput(frametime, pts))
         {

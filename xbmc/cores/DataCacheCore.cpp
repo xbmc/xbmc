@@ -277,6 +277,20 @@ float CDataCacheCore::GetTempo()
   return m_stateInfo.m_tempo;
 }
 
+void CDataCacheCore::SetFrameAdvance(bool fa)
+{
+  CSingleLock lock(m_stateSection);
+
+  m_stateInfo.m_frameAdvance = fa;
+}
+
+bool CDataCacheCore::IsFrameAdvance()
+{
+  CSingleLock lock(m_stateSection);
+
+  return m_stateInfo.m_frameAdvance;
+}
+
 bool CDataCacheCore::IsPlayerStateChanged()
 {
   CSingleLock lock(m_stateSection);

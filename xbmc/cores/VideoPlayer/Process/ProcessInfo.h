@@ -88,6 +88,8 @@ public:
   void SetSpeed(float speed);
   void SetNewSpeed(float speed);
   float GetNewSpeed();
+  void SetFrameAdvance(bool fa);
+  bool IsFrameAdvance();
   void SetTempo(float tempo);
   void SetNewTempo(float tempo);
   float GetNewTempo();
@@ -156,6 +158,7 @@ protected:
   float m_newTempo;
   float m_speed;
   float m_newSpeed;
+  bool m_frameAdvance;
   time_t m_startTime;
   int64_t m_time;
   int64_t m_timeMax;

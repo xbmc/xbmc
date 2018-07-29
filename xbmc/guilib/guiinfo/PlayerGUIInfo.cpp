@@ -516,6 +516,9 @@ bool CPlayerGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
     case PLAYER_HASDURATION:
       value = g_application.GetTotalTime() > 0;
       return true;
+    case PLAYER_FRAMEADVANCE:
+      value = CServiceBroker::GetDataCacheCore().IsFrameAdvance();
+      return true;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // PLAYLIST_*
