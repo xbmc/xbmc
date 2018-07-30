@@ -57,7 +57,6 @@ typedef intptr_t      ssize_t;
 #endif
 
 extern "C" char * strptime(const char *buf, const char *fmt, struct tm *tm);
-extern "C" char * strcasestr(const char* haystack, const char* needle);
 
 #endif // TARGET_WINDOWS
 
