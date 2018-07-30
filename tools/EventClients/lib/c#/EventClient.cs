@@ -24,7 +24,7 @@ using System.Net.Sockets;
 namespace XBMC
 {
 
-    public enum IconType
+    public enum IconType //public class IconType
     {
         ICON_NONE = 0x00,
         ICON_JPEG = 0x01,
@@ -32,7 +32,7 @@ namespace XBMC
         ICON_GIF = 0x03
     }
 
-    public enum ButtonFlagsType
+    public enum ButtonFlagsType //public class ButtonFlagsType
     {
         BTN_USE_NAME = 0x01,
         BTN_DOWN = 0x02,
@@ -44,12 +44,12 @@ namespace XBMC
         BTN_AXIS = 0x80
     }
 
-    public enum MouseFlagsType
+    public enum MouseFlagsType //public class MouseFlagsType
     {
         MS_ABSOLUTE = 0x01
     }
 
-    public enum LogTypeEnum
+    public enum LogTypeEnum //public class LogTypeEnum
     {
         LOGDEBUG = 0,
         LOGINFO = 1,
@@ -61,13 +61,13 @@ namespace XBMC
         LOGNONE = 7
     }
 
-    public enum ActionType
+    public enum ActionType //public class ActionType
     {
         ACTION_EXECBUILTIN = 0x01,
         ACTION_BUTTON = 0x02
     }
 
-    public class EventClient
+    public class EventClient  //public class EventClient 
     {
 
         /************************************************************************/
@@ -75,7 +75,7 @@ namespace XBMC
         /* Based upon XBMC's xbmcclient.cpp class                               */
         /************************************************************************/
 
-        private enum PacketType
+        private enum PacketType //enum type used for constant amount of options in PacketType 
         {
             PT_HELO = 0x01,
             PT_BYE = 0x02,
@@ -83,39 +83,39 @@ namespace XBMC
             PT_MOUSE = 0x04,
             PT_PING = 0x05,
             PT_BROADCAST = 0x06,  //Currently not implemented
-            PT_NOTIFICATION = 0x07,
+            PT_NOTIFICATION = 0x07, 
             PT_BLOB = 0x08,
             PT_LOG = 0x09,
             PT_ACTION = 0x0A,
             PT_DEBUG = 0xFF //Currently not implemented
         }
 
-        private const int STD_PORT = 9777;
-        private const int MAX_PACKET_SIZE = 1024;
-        private const int HEADER_SIZE = 32;
-        private const int MAX_PAYLOAD_SIZE = MAX_PACKET_SIZE - HEADER_SIZE;
+        private const int STD_PORT = 9777; 
+        private const int MAX_PACKET_SIZE = 1024; 
+        private const int HEADER_SIZE = 32; 
+        private const int MAX_PAYLOAD_SIZE = MAX_PACKET_SIZE - HEADER_SIZE; 
         private const byte MAJOR_VERSION = 2;
         private const byte MINOR_VERSION = 0;
 
         private uint uniqueToken;
-        private Socket socket;
+        private Socket socket; //Socket type socket
 
-        public bool Connect(string Address)
+        public bool Connect(string Address) //first constructor
         {
             return Connect(Address, STD_PORT, (uint)System.DateTime.Now.TimeOfDay.Milliseconds);
         }
 
-        public bool Connect(string Address, int Port)
+        public bool Connect(string Address, int Port)//second constructor
         {
             return Connect(Address, Port, (uint)System.DateTime.Now.TimeOfDay.Milliseconds);
         }
 
 
-        public bool Connect(string Address, int Port, uint UID)
+        public bool Connect(string Address, int Port, uint UID)//third constructor
         {
             try
             {
-                if (socket != null) Disconnect();
+                if (socket != null) Disconnect(); //if the socket not null
                 uniqueToken = UID;
                 socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
 
@@ -127,11 +127,11 @@ namespace XBMC
 #else
                 socket.Connect(Address, Port);
 #endif
-                return true;
+                return true; //return to connect 
             }
             catch
             {
-                return false;
+                return false; //inconnect
             }
         }
 
@@ -148,11 +148,11 @@ namespace XBMC
         {
             try
             {
-                if (socket != null)
+                if (socket != null) //if the socket is not null
                 {
-                    socket.Shutdown(SocketShutdown.Both);
+                    socket.Shutdown(SocketShutdown.Both); //shut down both of the socket
                     socket.Close();
-                    socket = null;
+                    socket = null; //socket become null
                 }
             }
             catch
@@ -163,7 +163,7 @@ namespace XBMC
         private byte[] Header(PacketType PacketType, int NumberOfPackets, int CurrentPacket, int PayloadSize)
         {
 
-            byte[] header = new byte[HEADER_SIZE];
+            byte[] header = new byte[HEADER_SIZE]; 
 
             header[0] = (byte)'X';
             header[1] = (byte)'B';
@@ -173,12 +173,12 @@ namespace XBMC
             header[4] = MAJOR_VERSION;
             header[5] = MINOR_VERSION;
 
-            if (CurrentPacket == 1)
+            if (CurrentPacket == 1) //if the CurrentPacket is 1
             {
                 header[6] = (byte)(((ushort)PacketType & 0xff00) >> 8);
                 header[7] = (byte)((ushort)PacketType & 0x00ff);
             }
-            else
+            else  
             {
                 header[6] = (byte)(((ushort)PacketType.PT_BLOB & 0xff00) >> 8);
                 header[7] = (byte)((ushort)PacketType.PT_BLOB & 0x00ff);
@@ -281,7 +281,7 @@ namespace XBMC
 
             int offset = 0;
 
-            for (int i = 0; i < DevName.Length; i++)
+            for (int i = 0; i < DevName.Length; i++) //for loop
                 payload[offset++] = (byte)DevName[i];
             payload[offset++] = (byte)'\0';
 
@@ -375,7 +375,7 @@ namespace XBMC
         private bool SendButton(string Button, ushort ButtonCode, string DeviceMap, ButtonFlagsType Flags, short Amount)
         {
 
-            if (Button.Length != 0)
+            if (Button.Length != 0) 
             {
                 if ((Flags & ButtonFlagsType.BTN_USE_NAME) == 0)
                     Flags |= ButtonFlagsType.BTN_USE_NAME;

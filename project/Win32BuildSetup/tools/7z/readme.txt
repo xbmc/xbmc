@@ -4,7 +4,7 @@
 7-Zip is a file archiver with high compression ratio.
 7za.exe is a standalone command line version of 7-Zip.
 
-7-Zip Copyright (C) 1999-2010 Igor Pavlov.
+7-Zip Copyright (C) 1999-2018 Igor Pavlov.
 
 Features of 7za.exe: 
   - High compression ratio in new 7z format

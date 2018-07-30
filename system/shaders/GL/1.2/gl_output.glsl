@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2010-2017 Team XBMC
+ *      Copyright (C) 2010-2018 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify

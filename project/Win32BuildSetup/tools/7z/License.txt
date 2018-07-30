@@ -3,7 +3,7 @@
       License for use and distribution
       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-      7-Zip Copyright (C) 1999-2010 Igor Pavlov.
+      7-Zip Copyright (C) 1999-2018 Igor Pavlov.
 
       7za.exe is distributed under the GNU LGPL license
 
