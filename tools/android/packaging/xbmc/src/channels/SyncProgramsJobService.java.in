@@ -170,36 +170,29 @@ public class SyncProgramsJobService extends JobService
         if (cursor != null && cursor.moveToNext())
         {
           Channel channel = Channel.fromCursor(cursor);
-          if (!channel.isBrowsable())
+          
+          XBMCJsonRPC jsonrpc = new XBMCJsonRPC();
+          if (uri.isEmpty())
           {
-            Log.d(TAG, "Channel is not browsable: " + channelId);
+            // Suggestion channel
+            Log.d(TAG, "Suggestion channel is browsable: " + channelId);
+
             deletePrograms(channelId, medias);
+            medias = createPrograms(channelId, jsonrpc.getSuggestions());
           }
           else
           {
-            XBMCJsonRPC jsonrpc = new XBMCJsonRPC();
-            if (uri.isEmpty())
-            {
-              // Suggestion channel
-              Log.d(TAG, "Suggestion channel is browsable: " + channelId);
+            Log.d(TAG, "Channel is browsable: " + channelId);
 
-              deletePrograms(channelId, medias);
-              medias = createPrograms(channelId, jsonrpc.getSuggestions());
-            }
-            else
-            {
-              Log.d(TAG, "Channel is browsable: " + channelId);
+            String xbmcURL = Uri.parse(uri).getFragment();
+            List<File> files = jsonrpc.getFiles(xbmcURL);
 
-              String xbmcURL = Uri.parse(uri).getFragment();
-              List<File> files = jsonrpc.getFiles(xbmcURL);
-
-              deletePrograms(channelId, medias);
-              medias = createPrograms(channelId, jsonrpc.getMedias(files));
-            }
-            jsonrpc = null;
+            deletePrograms(channelId, medias);
+            medias = createPrograms(channelId, jsonrpc.getMedias(files));
           }
-          XBMCDatabase.saveMedias(getApplicationContext(), channelId, medias);
+          jsonrpc = null;
         }
+        XBMCDatabase.saveMedias(getApplicationContext(), channelId, medias);
       }
     }
 
