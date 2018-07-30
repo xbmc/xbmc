@@ -139,8 +139,10 @@ cmake ../kodi -DCMAKE_INSTALL_PREFIX=/usr/local -DCORE_PLATFORM_NAME=wayland -DW
 
 Or configure build for GBM:
 ```
-cmake ../kodi -DCMAKE_INSTALL_PREFIX=/usr/local -DCORE_PLATFORM_NAME=gbm
+cmake ../kodi -DCMAKE_INSTALL_PREFIX=/usr/local -DCORE_PLATFORM_NAME=gbm -DGBM_RENDER_SYSTEM=gles
 ```
+
+**NOTE:** You can use `gl` instead of `gles` if you want to build with `GL`.
 
 ### 4.2. Build
 ```
