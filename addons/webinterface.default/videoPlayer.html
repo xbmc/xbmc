@@ -120,9 +120,10 @@
             $player = $('<iframe>', {
                 width: width,
                 height: height,
-                src: 'https://www.youtube.com/embed/' + yt  + '?rel=0&amp;showinfo=0&amp;autoplay=1&iv_load_policy=3',
+                src: 'https://www.youtube.com/embed/' + yt  + '?rel=0&amp;showinfo=0&amp;autoplay=1&amp;iv_load_policy=3',
                 frameborder: 0,
-                allowfullscreen: 'allowfullscreen'
+                allowfullscreen: 'allowfullscreen',
+                allow: 'autoplay; encrypted-media'
             });
             $(document).ready(function(){
                $('#switch-player').empty();

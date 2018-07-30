@@ -1,3 +1,22 @@
+[B]3.0.7[/B]
+- Fixed: Episode list changes
+
+[B]3.0.6[/B]
+- Fixed: artwork won't be scraped (again)
+- Fixed: Episode director/guest star mix-ups
+
+[B]3.0.5[/B]
+- fixed: fanart preview
+
+[B]3.0.4[/B]
+- fixed: artwork won't be scraped
+
+[B]3.0.3[/B]
+- fixed: Spaces fix 2
+
+[B]3.0.2[/B]
+- fixed: Spaces removed from json regexes
+
 [B]3.0.1[/B]
 - fixed: Uniqueids fixes
 

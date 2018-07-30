@@ -1,3 +1,15 @@
+[B]4.1.4[/B]
+changed: include some other valid MB artist types in the previous fix
+
+[B]4.1.3[/B]
+fixed: artist types sometimes scrapes incorrectly
+
+[B]4.1.2[/B]
+fixed: search results after MB API changes
+
+[B]4.1.1[/B]
+changed: dash is not replaced with /- any longer
+
 [B]4.1.0[/B]
 added: Artist type, gender and disambiguation from MusicBrainz
 
