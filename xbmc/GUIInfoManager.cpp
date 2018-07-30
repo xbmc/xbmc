@@ -1369,12 +1369,12 @@ const infomap musicpartymode[] = {{ "enabled",           MUSICPM_ENABLED },
 ///   \table_row3{   <b>`MusicPlayer.Property(Artist_Type)`</b>,
 ///                  \anchor MusicPlayer_Property_Artist_Type
 ///                  _string_,
-///     Type of the currently playing Artist - person, group, orchestra, choir etc.
+///     Type of the currently playing Artist - person\, group\, orchestra\, choir etc.
 ///   }
 ///   \table_row3{   <b>`MusicPlayer.Property(Artist_Gender)`</b>,
 ///                  \anchor MusicPlayer_Property_Artist_Gender
 ///                  _string_,
-///     Gender of the currently playing Artist - male, female, other
+///     Gender of the currently playing Artist - male\, female\, other
 ///   }
 ///   \table_row3{   <b>`MusicPlayer.Property(Artist_Disambiguation)`</b>,
 ///                  \anchor MusicPlayer_Property_Artist_Disambiguation
@@ -1502,16 +1502,16 @@ const infomap musicpartymode[] = {{ "enabled",           MUSICPM_ENABLED },
 ///                  _boolean_,
 ///     Returns true if a playlist is currently playing
 ///   }
-///   \table_row3{   <b>`MusicPlayer.Exists(relative,position)`</b>,
+///   \table_row3{   <b>`MusicPlayer.Exists(relative\,position)`</b>,
 ///                  \anchor MusicPlayer_Exists
 ///                  _boolean_,
 ///     Returns true if the currently playing playlist has a song queued at the given position.
-///     It is possible to define whether the position is relative or not, default is false.
+///     It is possible to define whether the position is relative or not\, default is false.
 ///   }
 ///   \table_row3{   <b>`MusicPlayer.HasPrevious`</b>,
 ///                  \anchor MusicPlayer_HasPrevious
 ///                  _boolean_,
-///     Returns true if the music player has a a Previous Song in the Playlist .
+///     Returns true if the music player has a a Previous Song in the Playlist.
 ///   }
 ///   \table_row3{   <b>`MusicPlayer.HasNext`</b>,
 ///                  \anchor MusicPlayer_HasNext
@@ -1579,7 +1579,7 @@ const infomap musicpartymode[] = {{ "enabled",           MUSICPM_ENABLED },
 ///                  _string_,
 ///     Total size of the current music playlist
 ///   }
-///   \table_row3{   <b>`MusicPlayer.ChannelName`</b>,g
+///   \table_row3{   <b>`MusicPlayer.ChannelName`</b>,
 ///                  \anchor MusicPlayer_ChannelName
 ///                  _string_,
 ///     Channel name of the radio programme that's currently playing (PVR).
@@ -1594,6 +1594,7 @@ const infomap musicpartymode[] = {{ "enabled",           MUSICPM_ENABLED },
 ///                  \anchor MusicPlayer_ChannelGroup
 ///                  _string_,
 ///     Channel group of the radio programme that's currently playing (PVR).
+///   }
 ///   \table_row3{   <b>`MusicPlayer.Property(propname)`</b>,
 ///                  \anchor MusicPlayer_Property_Propname
 ///                  _string_,
@@ -2266,12 +2267,11 @@ const infomap mediacontainer[] = {{ "hasfiles",         CONTAINER_HASFILES },
 ///     Number of all items in the container or grouplist with given id including parent folder item. If no id is
 ///     specified it grabs the current container.
 ///   }
-///   }
 ///   \table_row3{   <b>`Container(id).NumNonFolderItems`</b>,
 ///                  \anchor Container_NumNonFolderItems
 ///                  _boolean_,
 ///     Number of items in the container or grouplist with given id excluding all folder items (example: pvr
-///     recordings folders, parent ".." folder). If no id is specified it grabs the current container.
+///     recordings folders\, parent ".." folder). If no id is specified it grabs the current container.
 ///   }
 ///   \table_row3{   <b>`Container(id).CurrentPage`</b>,
 ///                  \anchor Container_CurrentPage
@@ -2437,14 +2437,15 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///   \table_row3{   <b>`ListItem.Thumb`</b>,
 ///                  \anchor ListItem_Thumb
 ///                  _string_,
-///     Returns the thumbnail (if it exists) of the currently selected item in a list or thumb control.
-///
-///     \deprecated but still available, returns the same as ListItem.Art(thumb).
+///     Returns the thumbnail (if it exists) of the currently selected item
+///     in a list or thumb control.
+///     @deprecated but still available\, returns
+///     the same as `ListItem.Art(thumb)`.\par
 ///   }
 ///   \table_row3{   <b>`ListItem.Icon`</b>,
 ///                  \anchor ListItem_Icon
 ///                  _string_,
-///     Returns the thumbnail (if it exists) of the currently selected item in a list or thumb control. If no thumbnail image exists, it will show the icon.
+///     Returns the thumbnail (if it exists) of the currently selected item in a list or thumb control. If no thumbnail image exists\, it will show the icon.
 ///   }
 ///   \table_row3{   <b>`ListItem.ActualIcon`</b>,
 ///                  \anchor ListItem_ActualIcon
@@ -2589,12 +2590,12 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///   \table_row3{   <b>`ListItem.Property(Artist_Type)`</b>,
 ///                  \anchor ListItem_Property_Artist_Type
 ///                  _string_,
-///     Type of the currently selected Artist - person, group, orchestra, choir etc.
+///     Type of the currently selected Artist - person\, group\, orchestra\, choir etc.
 ///   }
 ///   \table_row3{   <b>`ListItem.Property(Artist_Gender)`</b>,
 ///                  \anchor ListItem_Property_Artist_Gender
 ///                  _string_,
-///     Gender of the currently selected Artist - male, female, other
+///     Gender of the currently selected Artist - male\, female\, other
 ///   }
 ///   \table_row3{   <b>`ListItem.Property(Artist_Disambiguation)`</b>,
 ///                  \anchor ListItem_Property_Artist_Disambiguation
@@ -3655,7 +3656,7 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///   \table_row3{   <b>`ListItem.AddonType`</b>,
 ///                  \anchor ListItem_AddonType
 ///                  _string_,
-///     Returns the type (screensaver, script, skin, etc...) of the currently selected addon
+///     Returns the type (screensaver\, script\, skin\, etc...) of the currently selected addon
 ///   }
 ///   \table_row3{   <b>`ListItem.AddonInstallDate`</b>,
 ///                  \anchor ListItem_AddonInstallDate
@@ -4030,8 +4031,7 @@ const infomap skin_labels[] =    {{ "currenttheme",      SKIN_THEME },
 ///                  _boolean_,
 ///     Returns true if the window with id or title _window_ is on top of the
 ///     window stack (excludes fade out time on dialogs)
-///
-///     \deprecated use `Window.IsDialogTopmost(dialog)` instead
+///     @deprecated use `Window.IsDialogTopmost(dialog)` instead \par
 ///   }
 ///   \table_row3{   <b>`Window.IsDialogTopmost(dialog)`</b>,
 ///                  \anchor Window_IsDialogTopmost
@@ -4509,7 +4509,7 @@ const infomap playlist[] =       {{ "length",           PLAYLIST_LENGTH },
 ///   \table_row3{   <b>`PVR.ChannelNumberInput`</b>,
 ///                  \anchor PVR_ChannelNumberInput
 ///                  _string_,
-///     Returns the currently entered channel number while in numeric channel input mode, an empty string otherwise
+///     Returns the currently entered channel number while in numeric channel input mode\, an empty string otherwise
 ///   }
 ///   \table_row3{   <b>`PVR.CanRecordPlayingChannel`</b>,
 ///                  \anchor PVR_CanRecordPlayingChannel
