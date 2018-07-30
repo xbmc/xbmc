@@ -57,6 +57,11 @@ bool CRenderBufferOpenGL::UploadTexture()
   glPixelStorei(GL_UNPACK_ALIGNMENT, m_bpp);
 
   glPixelStorei(GL_UNPACK_ROW_LENGTH, stride / m_bpp);
+
+  //! @todo This is subject to change:
+  //! We want to use PBO's instead of glTexSubImage2D!
+  //! This code has been borrowed from OpenGL ES in order
+  //! to remove GL dependencies on GLES.
   glTexSubImage2D(m_textureTarget, 0, 0, 0, m_width, m_height, m_pixelformat, m_pixeltype, m_data.data());
   glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
 
