@@ -734,6 +734,11 @@ const infomap weather[] =        {{ "isfetched",        WEATHER_IS_FETCHED },
 ///                  _boolean_,
 ///     Returns true if Kodi is running on a windows based computer.
 ///   }
+///   \table_row3{   <b>`System.Platform.UWP`</b>,
+///                  \anchor System_PlatformUWP
+///                  _boolean_,
+///     Returns true if Kodi is running on Universal Windows Platform (UWP).
+///   }
 ///   \table_row3{   <b>`System.Platform.OSX`</b>,
 ///                  \anchor System_PlatformOSX
 ///                  _boolean_,
