@@ -142,7 +142,7 @@ public:
   virtual bool         Configure(const VideoPicture &picture, float fps, unsigned int orientation) override;
   virtual void         ReleaseBuffer(int idx) override;
   virtual void         UnInit();
-  virtual void         Flush() override;
+  virtual bool         Flush(bool saveBuffers) override;
   virtual bool         IsConfigured() override { return m_bConfigured; }
   virtual void         AddVideoPicture(const VideoPicture& pic, int index, double currentClock) override;
   virtual bool         IsPictureHW(const VideoPicture &picture) override { return false; };

@@ -338,10 +338,10 @@ void CWinRenderer::UnInit()
   m_outputShader.reset();
 }
 
-void CWinRenderer::Flush()
+bool CWinRenderer::Flush(bool saveBuffers)
 {
   if (!m_bConfigured)
-    return;
+    return false;
 
   for (int i = 0; i < NUM_BUFFERS; i++)
     DeleteRenderBuffer(i);
@@ -349,6 +349,8 @@ void CWinRenderer::Flush()
   m_iYV12RenderBuffer = 0;
   m_NumYV12Buffers = 0;
   m_bFilterInitialized = false;
+
+  return false;
 }
 
 bool CWinRenderer::CreateIntermediateRenderTarget(unsigned int width, unsigned int height, bool dynamic)

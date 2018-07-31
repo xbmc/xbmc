@@ -43,6 +43,7 @@ CRendererVTB::~CRendererVTB()
 {
   for (int i = 0; i < NUM_BUFFERS; ++i)
   {
+    ReleaseBuffer(i);
     DeleteTexture(i);
   }
 }
@@ -84,6 +85,7 @@ bool CRendererVTB::CreateTexture(int index)
   YuvImage &im = buf.image;
   YUVPLANE (&planes)[YuvImage::MAX_PLANES] = buf.fields[0];
 
+  ReleaseBuffer(index);
   DeleteTexture(index);
 
   memset(&im    , 0, sizeof(im));
@@ -118,9 +120,9 @@ bool CRendererVTB::CreateTexture(int index)
 
 void CRendererVTB::DeleteTexture(int index)
 {
-  YUVPLANE (&planes)[YuvImage::MAX_PLANES] = m_buffers[index].fields[0];
-
-  ReleaseBuffer(index);
+  CPictureBuffer& buf = m_buffers[index];
+  YUVPLANE (&planes)[YuvImage::MAX_PLANES] = buf.fields[0];
+  buf.loaded = false;
 
   if (planes[0].id && glIsTexture(planes[0].id))
   {

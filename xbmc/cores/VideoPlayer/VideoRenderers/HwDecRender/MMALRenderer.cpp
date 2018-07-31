@@ -967,13 +967,15 @@ void CMMALRenderer::ReleaseBuffer(int id)
   m_buffers[id] = nullptr;
 }
 
-void CMMALRenderer::Flush()
+bool CMMALRenderer::Flush(bool saveBuffers)
 {
   CSingleLock lock(m_sharedSection);
   CLog::Log(LOGDEBUG, "%s::%s", CLASSNAME, __func__);
   if (m_vout_input)
     mmal_port_flush(m_vout_input);
   ReleaseBuffers();
+
+  return false;
 }
 
 void CMMALRenderer::Update()

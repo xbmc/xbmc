@@ -77,7 +77,7 @@ public:
   bool IsConfigured() override { return m_bConfigured; }
   void AddVideoPicture(const VideoPicture &picture, int index, double currentClock) override;
   void UnInit() override;
-  void Flush() override;
+  bool Flush(bool saveBuffers) override;
   void SetBufferSize(int numBuffers) override { m_NumYV12Buffers = numBuffers; }
   void ReleaseBuffer(int idx) override;
   void RenderUpdate(int index, int index2, bool clear, unsigned int flags, unsigned int alpha) override;
@@ -129,10 +129,11 @@ protected:
   void RenderRGB(int renderBuffer, int field);      // render using vdpau/vaapi hardware
   void RenderProgressiveWeave(int renderBuffer, int field); // render using vdpau hardware
 
-  // hooks for HwDec Renderered
+  // hooks for HwDec Renderer
   virtual bool LoadShadersHook() { return false; };
   virtual bool RenderHook(int idx) { return false; };
   virtual void AfterRenderHook(int idx) {};
+  virtual bool CanSaveBuffers() { return true; };
 
   struct
   {
@@ -239,5 +240,3 @@ protected:
   bool LoadCLUT();
   void DeleteCLUT();
 };
-
-

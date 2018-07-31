@@ -2593,7 +2593,7 @@ void CVideoPlayer::HandleMessages()
       });
 
       FlushBuffers(DVD_NOPTS_VALUE, true, true);
-      m_renderManager.Flush(false);
+      m_renderManager.Flush(false, false);
       SAFE_DELETE(m_pDemuxer);
       SAFE_DELETE(m_pSubtitleDemuxer);
       SAFE_DELETE(m_pCCDemuxer);
@@ -4840,7 +4840,7 @@ void CVideoPlayer::Render(bool clear, uint32_t alpha, bool gui)
 
 void CVideoPlayer::FlushRenderer()
 {
-  m_renderManager.Flush(true);
+  m_renderManager.Flush(true, true);
 }
 
 void CVideoPlayer::SetRenderViewMode(int mode, float zoom, float par, float shift, bool stretch)

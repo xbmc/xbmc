@@ -116,9 +116,10 @@ void CRendererDRMPRIME::Reset()
   m_iLastRenderBuffer = -1;
 }
 
-void CRendererDRMPRIME::Flush()
+bool CRendererDRMPRIME::Flush(bool saveBuffers)
 {
   m_iLastRenderBuffer = -1;
+  return false;
 }
 
 void CRendererDRMPRIME::ReleaseBuffer(int index)

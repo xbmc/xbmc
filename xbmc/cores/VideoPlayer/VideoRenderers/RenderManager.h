@@ -70,7 +70,7 @@ public:
   void SetViewMode(int iViewMode);
   void PreInit();
   void UnInit();
-  bool Flush(bool wait);
+  bool Flush(bool wait, bool saveBuffers);
   bool IsConfigured() const;
   void ToggleDebug();
 

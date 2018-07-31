@@ -404,7 +404,7 @@ void CRenderManager::UnInit()
   m_initEvent.Set();
 }
 
-bool CRenderManager::Flush(bool wait)
+bool CRenderManager::Flush(bool wait, bool saveBuffers)
 {
   if (!m_pRenderer)
     return true;
@@ -421,18 +421,20 @@ bool CRenderManager::Flush(bool wait)
 
     if (m_pRenderer)
     {
-      m_pRenderer->Flush();
       m_overlays.Flush();
       m_debugRenderer.Flush();
 
-      m_queued.clear();
-      m_discard.clear();
-      m_free.clear();
-      m_presentsource = 0;
-      m_presentsourcePast = -1;
-      m_presentstep = PRESENT_IDLE;
-      for (int i = 1; i < m_QueueSize; i++)
-        m_free.push_back(i);
+      if (m_pRenderer->Flush(saveBuffers))
+      {
+        m_queued.clear();
+        m_discard.clear();
+        m_free.clear();
+        m_presentsource = 0;
+        m_presentsourcePast = -1;
+        m_presentstep = PRESENT_IDLE;
+        for (int i = 1; i < m_QueueSize; i++)
+          m_free.push_back(i);
+      }
 
       m_flushEvent.Set();
     }
