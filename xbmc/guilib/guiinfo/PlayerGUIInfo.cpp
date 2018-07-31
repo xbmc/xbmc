@@ -209,18 +209,7 @@ bool CPlayerGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
     case PLAYER_PATH:
     case PLAYER_FILENAME:
     case PLAYER_FILEPATH:
-      value = item->GetPath();
-
-      if (info.m_info == PLAYER_PATH)
-      {
-        // do this twice since we want the path outside the archive if this
-        // is to be of use.
-        if (URIUtils::IsInArchive(value))
-          value = URIUtils::GetParentPath(value);
-        value = URIUtils::GetParentPath(value);
-      }
-      else if (info.m_info == PLAYER_FILENAME)
-        value = URIUtils::GetFileName(value);
+      value = GUIINFO::GetFileInfoLabelValueFromPath(info.m_info, item->GetPath());
       return true;
     case PLAYER_TITLE:
       // use label or drop down to title from path
