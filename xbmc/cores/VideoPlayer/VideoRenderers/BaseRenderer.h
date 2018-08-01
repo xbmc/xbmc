@@ -56,7 +56,7 @@ public:
   virtual void AddVideoPicture(const VideoPicture &picture, int index, double currentClock) = 0;
   virtual bool IsPictureHW(const VideoPicture &picture) { return false; };
   virtual void UnInit() = 0;
-  virtual void Flush() {};
+  virtual bool Flush(bool saveBuffers) { return false; };
   virtual void SetBufferSize(int numBuffers) { }
   virtual void ReleaseBuffer(int idx) { }
   virtual bool NeedBuffer(int idx) { return false; }

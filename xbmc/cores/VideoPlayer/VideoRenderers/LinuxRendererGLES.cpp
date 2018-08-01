@@ -335,7 +335,7 @@ void CLinuxRendererGLES::LoadPlane(YUVPLANE& plane, int type,
   glBindTexture(m_textureTarget, 0);
 }
 
-void CLinuxRendererGLES::Flush()
+bool CLinuxRendererGLES::Flush(bool saveBuffers)
 {
   glFinish();
 
@@ -346,6 +346,8 @@ void CLinuxRendererGLES::Flush()
   m_bValidated = false;
   m_fbo.fbo.Cleanup();
   m_iYV12RenderBuffer = 0;
+
+  return false;
 }
 
 void CLinuxRendererGLES::Update()

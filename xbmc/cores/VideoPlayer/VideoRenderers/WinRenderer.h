@@ -50,7 +50,7 @@ public:
   void AddVideoPicture(const VideoPicture &picture, int index, double currentClock) override;
   void UnInit() override;
   bool IsConfigured() override { return m_bConfigured; }
-  void Flush() override;
+  bool Flush(bool saveBuffers) override;
   CRenderInfo GetRenderInfo() override;
   void RenderUpdate(int index, int index2, bool clear, unsigned int flags, unsigned int alpha) override;
   void SetBufferSize(int numBuffers) override { m_neededBuffers = numBuffers; }

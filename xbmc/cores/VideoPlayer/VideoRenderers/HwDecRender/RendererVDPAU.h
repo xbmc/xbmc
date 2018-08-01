@@ -51,6 +51,8 @@ protected:
 
   EShaderFormat GetShaderFormat() override;
 
+  bool CanSaveBuffers() override { return false; };
+
   bool m_isYuv = false;
 
   VDPAU::CInteropState m_interopState;
