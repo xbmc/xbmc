@@ -8,18 +8,18 @@ SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
 # configuration settings
-CONFIGURE=MACHINE=$(PLATFORM) ./config shared zlib --openssldir=$(PREFIX) --with-zlib-include=$(PREFIX)/include --with-zlib-lib=$(PREFIX)/lib
+CONFIGURE=MACHINE=$(PLATFORM) ./config no-shared zlib --openssldir=$(PREFIX) --with-zlib-include=$(PREFIX)/include --with-zlib-lib=$(PREFIX)/lib
 ifeq ($(OS), android)
-  CONFIGURE=./Configure shared zlib --openssldir=$(PREFIX) --with-zlib-include=$(PREFIX)/include --with-zlib-lib=$(PREFIX)/lib linux-generic32 -D__ANDROID_API__=$(NDK_LEVEL)
+  CONFIGURE=./Configure no-shared zlib --openssldir=$(PREFIX) --with-zlib-include=$(PREFIX)/include --with-zlib-lib=$(PREFIX)/lib linux-generic32 -D__ANDROID_API__=$(NDK_LEVEL)
 endif
 ifeq ($(OS), ios)
-  CONFIGURE=./Configure iphoneos-cross zlib no-asm no-krb5 --openssldir=$(PREFIX)
+  CONFIGURE=./Configure iphoneos-cross no-shared zlib no-asm no-krb5 --openssldir=$(PREFIX)
 endif
 ifeq ($(OS), osx)
   ifeq ($(CPU),x86_64)
-    CONFIGURE=./Configure darwin64-$(CPU)-cc zlib no-asm no-krb5 shared --openssldir=$(PREFIX)
+    CONFIGURE=./Configure darwin64-$(CPU)-cc zlib no-asm no-krb5 no-shared --openssldir=$(PREFIX)
   else
-    CONFIGURE=./Configure darwin-$(CPU)-cc zlib no-asm no-krb5 shared --openssldir=$(PREFIX)
+    CONFIGURE=./Configure darwin-$(CPU)-cc zlib no-asm no-krb5 no-shared --openssldir=$(PREFIX)
   endif
 endif
 LIBDYLIB=$(PLATFORM)/libssl.a
@@ -52,10 +52,6 @@ $(LIBDYLIB): $(PLATFORM)
 
 .installed-$(PLATFORM): $(LIBDYLIB)
 	$(MAKE) -C $(PLATFORM) install_sw
-	rm -f $(PREFIX)/lib/libcrypto.so*
-	rm -f $(PREFIX)/lib/libssl.so*
-	rm -rf $(PREFIX)/lib/libcrypto.*dylib*
-	rm -rf $(PREFIX)/lib/libssl.*dylib*
 	touch $@
 
 clean:
