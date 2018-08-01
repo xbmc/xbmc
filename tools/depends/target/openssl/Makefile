@@ -3,23 +3,23 @@ DEPS= ../../Makefile.include Makefile
 
 # lib name, version
 LIBNAME=openssl
-VERSION=1.0.2l
+VERSION=1.1.0h
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
 # configuration settings
-CONFIGURE=MACHINE=$(PLATFORM) ./config no-shared zlib --openssldir=$(PREFIX) --with-zlib-include=$(PREFIX)/include --with-zlib-lib=$(PREFIX)/lib
+CONFIGURE=MACHINE=$(PLATFORM) ./config no-shared zlib no-asm --prefix=$(PREFIX) --with-zlib-include=$(PREFIX)/include --with-zlib-lib=$(PREFIX)/lib
 ifeq ($(OS), android)
-  CONFIGURE=./Configure no-shared zlib --openssldir=$(PREFIX) --with-zlib-include=$(PREFIX)/include --with-zlib-lib=$(PREFIX)/lib linux-generic32 -D__ANDROID_API__=$(NDK_LEVEL)
+  CONFIGURE=./Configure no-shared zlib --prefix=$(PREFIX) --with-zlib-include=$(PREFIX)/include --with-zlib-lib=$(PREFIX)/lib linux-generic32 -D__ANDROID_API__=$(NDK_LEVEL)
 endif
 ifeq ($(OS), ios)
-  CONFIGURE=./Configure iphoneos-cross no-shared zlib no-asm no-krb5 --openssldir=$(PREFIX)
+  CONFIGURE=./Configure iphoneos-cross no-shared zlib no-asm --prefix=$(PREFIX)
 endif
 ifeq ($(OS), osx)
   ifeq ($(CPU),x86_64)
-    CONFIGURE=./Configure darwin64-$(CPU)-cc zlib no-asm no-krb5 no-shared --openssldir=$(PREFIX)
+    CONFIGURE=./Configure darwin64-$(CPU)-cc zlib no-asm no-shared --prefix=$(PREFIX)
   else
-    CONFIGURE=./Configure darwin-$(CPU)-cc zlib no-asm no-krb5 no-shared --openssldir=$(PREFIX)
+    CONFIGURE=./Configure darwin-$(CPU)-cc zlib no-asm no-shared --prefix=$(PREFIX)
   endif
 endif
 LIBDYLIB=$(PLATFORM)/libssl.a
@@ -35,12 +35,12 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	cd $(PLATFORM); AR="$(AR)" CFLAGS="$(CFLAGS)" CC="$(CC)" RANLIB=$(RANLIB) $(CONFIGURE)
 	if test "$(OS)" = "osx"; then \
 		sed -ie "s|CC= /usr/bin/gcc-4.2|CC= $(CC)|" "$(PLATFORM)/Makefile"; \
-		sed -ie "s|CFLAG= |CFLAG=$(CFLAGS) |" "$(PLATFORM)/Makefile"; \
+		sed -E -ie "s|^CFLAGS=-|CFLAGS=$(CFLAGS) -|" "$(PLATFORM)/Makefile"; \
 	fi
 	# for iphoneos-cross config a sysroot argument is added
 	# however sysroot already set in Makefile.include, so remove this
 	if test "$(OS)" = "ios"; then \
-		sed -ie "s|CFLAG= |CFLAG=$(CFLAGS) |" "$(PLATFORM)/Makefile"; \
+		sed -E -ie "s|^CFLAGS=-|CFLAGS=$(CFLAGS) -|" "$(PLATFORM)/Makefile"; \
 		sed -ie "s|-isysroot \$$(CROSS_TOP)/SDKs/\$$(CROSS_SDK) ||" "$(PLATFORM)/Makefile"; \
 		sed -ie "s|static volatile sig_atomic_t intr_signal;|static volatile intr_signal;|" "$(PLATFORM)/crypto/ui/ui_openssl.c"; \
 	fi
