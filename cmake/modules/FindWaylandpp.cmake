@@ -24,9 +24,6 @@ find_path(WAYLANDPP_INCLUDE_DIR wayland-client.hpp PATHS ${PC_WAYLANDPP_INCLUDED
 find_library(WAYLANDPP_CLIENT_LIBRARY NAMES wayland-client++
                                       PATHS ${PC_WAYLANDPP_LIBRARY_DIRS})
 
-find_library(WAYLANDPP_CLIENT_EXTRA_LIBRARY NAMES wayland-client-extra++
-                                      PATHS ${PC_WAYLANDPP_LIBRARY_DIRS})
-
 find_library(WAYLANDPP_CURSOR_LIBRARY NAMES wayland-cursor++
                                       PATHS ${PC_WAYLANDPP_LIBRARY_DIRS})
 
@@ -45,7 +42,6 @@ include (FindPackageHandleStandardArgs)
 find_package_handle_standard_args(Waylandpp
                                   REQUIRED_VARS WAYLANDPP_INCLUDE_DIR
                                                 WAYLANDPP_CLIENT_LIBRARY
-                                                WAYLANDPP_CLIENT_EXTRA_LIBRARY
                                                 WAYLANDPP_CURSOR_LIBRARY
                                                 WAYLANDPP_EGL
                                                 WAYLANDPP_SCANNER
@@ -54,7 +50,6 @@ find_package_handle_standard_args(Waylandpp
 if(WAYLANDPP_FOUND)
   set(WAYLANDPP_INCLUDE_DIRS ${WAYLANDPP_INCLUDE_DIR})
   set(WAYLANDPP_LIBRARIES ${WAYLANDPP_CLIENT_LIBRARY}
-                          ${WAYLANDPP_CLIENT_EXTRA_LIBRARY}
                           ${WAYLANDPP_CURSOR_LIBRARY}
                           ${WAYLANDPP_EGL})
   set(WAYLANDPP_DEFINITIONS -DHAVE_WAYLAND=1)
@@ -62,6 +57,5 @@ endif()
 
 mark_as_advanced(WAYLANDPP_INCLUDE_DIR
                  WAYLANDPP_CLIENT_LIBRARY
-                 WAYLANDPP_CLIENT_EXTRA_LIBRARY
                  WAYLANDPP_CURSOR_LIBRARY
                  WAYLANDPP_EGL WAYLANDPP_SCANNER)
