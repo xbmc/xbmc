@@ -4,7 +4,7 @@
   <xs:element name="extension">
     <xs:complexType>
       <xs:sequence>
-        <xs:element name="provides" type="providesList"/>
+        <xs:element name="provides" type="providesList" minOccurs="0" maxOccurs="1"/>
         <xs:element name="medialibraryscanpath" type="pathType" minOccurs="0" maxOccurs="unbounded"/>
       </xs:sequence>
       <xs:attribute name="point" type="xs:string" use="required"/>
@@ -46,4 +46,3 @@
     </xs:simpleContent>
   </xs:complexType>
 </xs:schema>
-
