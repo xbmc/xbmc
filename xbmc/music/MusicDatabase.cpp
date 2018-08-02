@@ -7700,8 +7700,12 @@ bool CMusicDatabase::GetArtistPath(const CArtist& artist, std::string &path)
 bool CMusicDatabase::GetAlbumFolder(const CAlbum& album, const std::string &strAlbumPath, std::string &strFolder)
 {
   strFolder.clear();
+  // Get a name for the album folder that is unique for the artist to use when
+  // exporting albums to separate nfo files in a folder under an artist folder
 
-  // First try to get a *unique* album folder name from the music file paths
+  // When given an album path (common to all the music files containing *only*
+  // that album) check if that folder name is *unique* looking at folders on
+  // all levels of the music file paths for the artist
   if (!strAlbumPath.empty())
   {
     // Get last folder from full path
@@ -7709,58 +7713,51 @@ bool CMusicDatabase::GetAlbumFolder(const CAlbum& album, const std::string &strA
     if (!folders.empty())
     {
       strFolder = folders.back();
-      // Check paths to see folder name derived this way is unique for the (first) albumartist.
-      // Could have different albums on different path with same first album artist and folder name
-      // or duplicate albums from separate music files on different paths
-      // At least one will have mbid, so append it to start of mbid to folder.
+      // The same folder name could be used on different paths for albums by the
+      // same first artist. The albums could be totally different or also have
+      // the same name (but different mbid). Be over cautious and look for the
+      // name any where in the music file paths
       std::string strSQL = PrepareSQL("SELECT DISTINCT album_artist.idAlbum FROM album_artist "
         "JOIN song ON album_artist.idAlbum = song.idAlbum "
         "JOIN path on path.idPath = song.idPath "
         "WHERE album_artist.iOrder = 0 "
         "AND album_artist.idArtist = %ld "
-        "AND path.strPath LIKE '%%%s%%'",
+        "AND path.strPath LIKE '%%\\%s\\%%'",
         album.artistCredits[0].GetArtistId(), strFolder.c_str());
 
       if (!m_pDS2->query(strSQL))
         return false;
       int iRowsFound = m_pDS2->num_rows();
       m_pDS2->close();
-      if (iRowsFound > 1 && !album.strMusicBrainzAlbumID.empty())
-      { // Only one of the duplicate albums can be without mbid
-        strFolder += "_" + album.strMusicBrainzAlbumID.substr(0, 4);
-      }
-      return true;
+      if (iRowsFound == 1)
+        return true;
     }
   }
-  else
-  {
-    // Create a valid unique folder name from album title
-    // @todo: Does UFT8 matter or need normalizing?
-    // @todo: Simplify punctuation removing unicode appostraphes, "..." etc.?
-    strFolder = CUtil::MakeLegalFileName(album.strAlbum, LEGAL_WIN32_COMPAT);
-    StringUtils::Replace(strFolder, " _ ", "_");
+  // Create a valid unique folder name from album title
+  // @todo: Does UFT8 matter or need normalizing?
+  // @todo: Simplify punctuation removing unicode appostraphes, "..." etc.?
+  strFolder = CUtil::MakeLegalFileName(album.strAlbum, LEGAL_WIN32_COMPAT);
+  StringUtils::Replace(strFolder, " _ ", "_");
 
-    // Check <first albumartist name>/<albumname> is unique e.g. 2 x Bruckner Symphony No. 3
-    // To have duplicate albumartist/album names at least one will have mbid, so append start of mbid to folder.
-    // This will not handle names that only differ by reserved chars e.g. "a>album" and "a?name"
-    // will be unique in db, but produce same folder name "a_name", but that kind of album and artist naming is very unlikely
-    std::string strSQL = PrepareSQL("SELECT COUNT(album_artist.idAlbum) FROM album_artist "
-      "JOIN album ON album_artist.idAlbum = album.idAlbum "
-      "WHERE album_artist.iOrder = 0 "
-      "AND album_artist.idArtist = %ld "
-      "AND album.strAlbum LIKE '%s'  ",
-      album.artistCredits[0].GetArtistId(), album.strAlbum.c_str());
-    std::string strValue = GetSingleValue(strSQL, m_pDS2);
-    if (strValue.empty())
-      return false;
-    int countalbum = static_cast<int>(strtol(strValue.c_str(), NULL, 10));
-    if (countalbum > 1 && !album.strMusicBrainzAlbumID.empty())
-    { // Only one of the duplicate albums can be without mbid
-      strFolder += "_" + album.strMusicBrainzAlbumID.substr(0, 4);
-    }
-    return !strFolder.empty();
+  // Check <first albumartist name>/<albumname> is unique e.g. 2 x Bruckner Symphony No. 3
+  // To have duplicate albumartist/album names at least one will have mbid, so append start of mbid to folder.
+  // This will not handle names that only differ by reserved chars e.g. "a>album" and "a?name"
+  // will be unique in db, but produce same folder name "a_name", but that kind of album and artist naming is very unlikely
+  std::string strSQL = PrepareSQL("SELECT COUNT(album_artist.idAlbum) FROM album_artist "
+    "JOIN album ON album_artist.idAlbum = album.idAlbum "
+    "WHERE album_artist.iOrder = 0 "
+    "AND album_artist.idArtist = %ld "
+    "AND album.strAlbum LIKE '%s'  ",
+    album.artistCredits[0].GetArtistId(), album.strAlbum.c_str());
+  std::string strValue = GetSingleValue(strSQL, m_pDS2);
+  if (strValue.empty())
+    return false;
+  int countalbum = static_cast<int>(strtol(strValue.c_str(), NULL, 10));
+  if (countalbum > 1 && !album.strMusicBrainzAlbumID.empty())
+  { // Only one of the duplicate albums can be without mbid
+    strFolder += "_" + album.strMusicBrainzAlbumID.substr(0, 4);
   }
-  return false;
+  return !strFolder.empty();
 }
 
 bool CMusicDatabase::GetArtistFolderName(const CArtist &artist, std::string &strFolder)
@@ -9786,7 +9783,7 @@ void CMusicDatabase::ExportToXML(const CLibExportSettings& settings,  CGUIDialog
     if (settings.IsSingleFile())
     {
       std::string xmlFile = URIUtils::AddFileToFolder(strFolder, "kodi_musicdb" + CDateTime::GetCurrentDateTime().GetAsDBDate() + ".xml");
-      if (!settings.m_overwrite && CFile::Exists(xmlFile))
+      if (CFile::Exists(xmlFile))
         xmlFile = URIUtils::AddFileToFolder(strFolder, "kodi_musicdb" + CDateTime::GetCurrentDateTime().GetAsSaveString() + ".xml");
       xmlDoc.SaveFile(xmlFile);
 
