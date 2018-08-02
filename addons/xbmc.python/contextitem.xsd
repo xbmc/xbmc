@@ -11,18 +11,18 @@
     </xs:complexType>
   </xs:element>
   <xs:complexType name="itemType">
-    <xs:sequence>
-      <xs:element name="label" type="xs:string"/>
-      <xs:element name="visible" type="xs:string"/>
-    </xs:sequence>
+    <xs:all>
+      <xs:element name="label" type="xs:string" minOccurs="1"/>
+      <xs:element name="visible" type="xs:string" minOccurs="1"/>
+    </xs:all>
     <xs:attribute name="library" type="xs:string" use="required"/>
   </xs:complexType>
   <xs:complexType name="menuType">
-    <xs:sequence>
+    <xs:choice maxOccurs="unbounded">
       <xs:element name="label" type="xs:string" minOccurs="0"/>
       <xs:element name="item" type="itemType" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="menu" type="menuType" minOccurs="0" maxOccurs="unbounded"/>
-    </xs:sequence>
+    </xs:choice>
     <xs:attribute name="id" type="xs:string"/>
   </xs:complexType>
   <xs:simpleType name="simpleIdentifier">
