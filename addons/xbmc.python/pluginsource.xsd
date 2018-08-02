@@ -15,7 +15,7 @@
   </xs:element>
   <xs:simpleType name="simpleIdentifier">
     <xs:restriction base="xs:string">
-      <xs:pattern value="[^.]+"/>
+      <xs:pattern value="xbmc\.python\.pluginsource"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType name="providesType">

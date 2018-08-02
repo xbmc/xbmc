@@ -14,7 +14,7 @@
   </xs:element>
   <xs:simpleType name="simpleIdentifier">
     <xs:restriction base="xs:string">
-      <xs:pattern value="[^.]+"/>
+      <xs:pattern value="xbmc\.(python\.(library|lyrics|module|script|weather)|ui\.screensaver|subtitle\.module)"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType name="providesList">

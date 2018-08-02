@@ -27,12 +27,12 @@
   </xs:complexType>
   <xs:simpleType name="pointIdentifier">
     <xs:restriction base="xs:string">
-      <xs:pattern value="kodi.context.item"/>
+      <xs:pattern value="kodi\.context\.item"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType name="menuIdentifier">
     <xs:restriction base="xs:string">
-      <xs:pattern value="kodi.core.main|kodi.core.manage"/>
+      <xs:pattern value="kodi\.core\.(manage|main)"/>
     </xs:restriction>
   </xs:simpleType>
 </xs:schema>

@@ -38,7 +38,7 @@
   </xs:complexType>
   <xs:simpleType name="simpleIdentifier">
     <xs:restriction base="xs:string">
-      <xs:pattern value="[^.]+"/>
+      <xs:pattern value="xbmc\.addon\.repository"/>
     </xs:restriction>
   </xs:simpleType>
 </xs:schema>

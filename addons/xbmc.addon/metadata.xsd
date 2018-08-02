@@ -26,7 +26,7 @@
   </xs:element>
   <xs:simpleType name="simpleIdentifier">
     <xs:restriction base="xs:string">
-      <xs:pattern value="[^.]+"/>
+      <xs:pattern value="(kodi|xbmc)\.addon\.metadata"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:complexType name="translatedString">
@@ -53,7 +53,7 @@
   </xs:simpleType>
   <xs:simpleType name="langIdentifier">
     <xs:restriction base="xs:string">
-      <xs:pattern value="[a-z]{2}(_[A-Z]{2}(@\S+)?)?"/>
+      <xs:pattern value="[a-z]{2,3}(_[A-Z]{2}(@\S+)?)?"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:complexType name="assetsList">
