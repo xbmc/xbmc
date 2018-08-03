@@ -50,7 +50,7 @@ static int ToggleRecordPlayingChannel(const std::vector<std::string>& params)
 ///   \table_row2_l{
 ///     <b>`PVR.ToggleRecordPlayingChannel`</b>
 ///     ,
-///     Will toggle recording on playing channel, if any
+///     Will toggle recording on playing channel\, if any
 ///   }
 /// \table_end
 ///

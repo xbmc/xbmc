@@ -181,9 +181,9 @@ static int WakeOnLAN(const std::vector<std::string>& params)
 ///     @param[in] showvolumebar         Add "showVolumeBar" to show volume bar (optional).
 ///   }
 ///   \table_row2_l{
-///     <b>`Skin.ToggleDebug`</b>
+///     <b>`ToggleDebug`</b>
 ///     ,
-///     Toggles skin debug info on/off
+///     Toggles debug mode on/off
 ///   }
 ///   \table_row2_l{
 ///     <b>`ToggleDPMS`</b>

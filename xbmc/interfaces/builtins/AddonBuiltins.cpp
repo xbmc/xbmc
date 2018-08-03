@@ -332,7 +332,7 @@ static int UpdateLocals(const std::vector<std::string>& params)
 
 // Note: For new Texts with comma add a "\" before!!! Is used for table text.
 //
-/// \page page_List_of_built_in_functions List of build in functions
+/// \page page_List_of_built_in_functions List of built-in functions
 /// \section built_in_functions_1 Add-on built-in's
 ///
 /// -----------------------------------------------------------------------------
@@ -366,6 +366,11 @@ static int UpdateLocals(const std::vector<std::string>& params)
 ///     ,
 ///     Install the specified plugin/script
 ///     @param[in] id                    The add-on id
+///   }
+///   \table_row2_l{
+///     <b>`InstallFromZip`</b>
+///     ,
+///     Opens the "Install from zip" dialog if "Unknown sources" is enabled. Prompts the warning message if not.
 ///   }
 ///   \table_row2_l{
 ///     <b>`RunAddon(id[\,opt])`</b>
