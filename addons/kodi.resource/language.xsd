@@ -48,7 +48,7 @@
       <xs:attribute name="point" type="xs:string" use="required"/>
       <xs:attribute name="id" type="simpleIdentifier"/>
       <xs:attribute name="name" type="xs:string"/>
-      <xs:attribute name="locale" type="xs:string"/>
+      <xs:attribute name="locale" type="langIdentifier"/>
       <xs:attribute name="language" type="xs:string"/>
       <xs:attribute name="region" type="xs:string"/>
     </xs:complexType>
@@ -56,6 +56,11 @@
   <xs:simpleType name="simpleIdentifier">
     <xs:restriction base="xs:string">
       <xs:pattern value="kodi\.resource\.language"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="langIdentifier">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[a-z]{2,3}(_[A-Z]{2}(@\S+)?)?"/>
     </xs:restriction>
   </xs:simpleType>
 </xs:schema>
