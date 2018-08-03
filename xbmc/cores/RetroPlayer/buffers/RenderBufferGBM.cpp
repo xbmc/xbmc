@@ -10,8 +10,7 @@
 #include "ServiceBroker.h"
 #include "utils/EGLImage.h"
 #include "utils/GBMBufferObject.h"
-
-#include "windowing/gbm/WinSystemGbmGLESContext.h"
+#include "windowing/gbm/WinSystemGbmEGLContext.h"
 
 using namespace KODI;
 using namespace RETRO;
@@ -22,7 +21,7 @@ CRenderBufferGBM::CRenderBufferGBM(CRenderContext &context,
   m_context(context),
   m_fourcc(fourcc),
   m_bpp(bpp),
-  m_egl(new CEGLImage(dynamic_cast<CWinSystemGbmGLESContext*>(CServiceBroker::GetWinSystem())->GetEGLDisplay())),
+  m_egl(new CEGLImage(static_cast<CWinSystemGbmEGLContext*>(CServiceBroker::GetWinSystem())->GetEGLDisplay())),
   m_bo(new CGBMBufferObject(fourcc))
 {
 }
