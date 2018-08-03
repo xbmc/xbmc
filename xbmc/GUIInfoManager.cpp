@@ -110,6 +110,11 @@ const infomap integer_bools[] =  {{ "isequal",          INTEGER_IS_EQUAL },
 ///                  _boolean_,
 ///     Returns true if the player has an audio file.
 ///   }
+///   \table_row3{   <b>`Player.HasGame`</b>,
+///                  \anchor Player_HasGame
+///                  _boolean_,
+///     Returns true if the player has a game file.
+///   }
 ///   \table_row3{   <b>`Player.HasMedia`</b>,
 ///                  \anchor Player_HasMedia
 ///                  _boolean_,
@@ -331,6 +336,38 @@ const infomap integer_bools[] =  {{ "isequal",          INTEGER_IS_EQUAL },
 ///                  _boolean_,
 ///     Returns true if pvr channel preview is active (used channel tag different
 ///     from played tag)
+///   }
+///   \table_row3{   <b>`Player.TempoEnabled`</b>,
+///                  \anchor Player_TempoEnabled
+///                  _boolean_,
+///     Returns true if player supports tempo (i.e. speed up/down normal playback speed)
+///   }
+///   \table_row3{   <b>`Player.IsTempo`</b>,
+///                  \anchor Player_IsTempo
+///                  _boolean_,
+///     Returns true if player has tempo (i.e. is playing with a playback speed higher or
+///     lower than normal playback speed)
+///   }
+///   \table_row3{   <b>`Player.PlaySpeed`</b>,
+///                  \anchor Player_PlaySpeed
+///                  _string_,
+///     Returns the player playback speed with the format %1.2f (1.00 means normal 
+///     playback speed). For Tempo, the default range is 0.80 - 1.50 (it can be changed 
+///     in advanced settings). If `Player.PlaySpeed` returns a value different from 1.00
+///     and `Player.IsTempo` is false it means the player is in ff/rw mode.
+///   }
+///   \table_row3{   <b>`Player.HasResolutions`</b>,
+///                  \anchor Player_HasResolutions
+///                  _boolean_,
+///     Returns true if the player is allowed to switch resolution and refresh rate 
+///     (i.e. if whitelist modes are configured in Kodi's System/Display settings)
+///   }
+///   \table_row3{   <b>`Player.HasPrograms`</b>,
+///                  \anchor Player_HasPrograms
+///                  _boolean_,
+///     Returns true if the media file being played has programs\, i.e. groups of streams. 
+///     Ex: if a media file has multiple streams (quality\, channels\, etc) a program represents
+///     a particular stream combo.
 ///   }
 ///   \table_row3{   <b>`Player.FrameAdvance`</b>,
 ///                  \anchor Player_FrameAdvance
