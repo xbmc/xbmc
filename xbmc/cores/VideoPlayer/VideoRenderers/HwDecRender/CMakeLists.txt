@@ -49,7 +49,7 @@ if(CORE_SYSTEM_NAME STREQUAL android)
                       RendererMediaCodecSurface.h)
 endif()
 
-if(CORE_PLATFORM_NAME_LC STREQUAL gbm)
+if(CORE_PLATFORM_NAME_LC STREQUAL gbm AND OPENGLES_FOUND)
   list(APPEND SOURCES RendererDRMPRIME.cpp
                       RendererDRMPRIMEGLES.cpp
                       DRMPRIMEEGL.cpp)

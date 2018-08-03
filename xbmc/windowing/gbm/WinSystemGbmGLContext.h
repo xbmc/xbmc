@@ -9,17 +9,17 @@
 #pragma once
 
 #include "utils/EGLUtils.h"
-#include "rendering/gles/RenderSystemGLES.h"
+#include "rendering/gl/RenderSystemGL.h"
 #include "WinSystemGbmEGLContext.h"
 #include <memory>
 
 class CVaapiProxy;
 
-class CWinSystemGbmGLESContext : public CWinSystemGbmEGLContext, public CRenderSystemGLES
+class CWinSystemGbmGLContext : public CWinSystemGbmEGLContext, public CRenderSystemGL
 {
 public:
-  CWinSystemGbmGLESContext();
-  virtual ~CWinSystemGbmGLESContext() = default;
+  CWinSystemGbmGLContext();
+  virtual ~CWinSystemGbmGLContext() = default;
 
   // Implementation of CWinSystemBase via CWinSystemGbm
   CRenderSystemBase *GetRenderSystem() override { return this; }

@@ -8,8 +8,8 @@
 
 #include "RPRendererGBM.h"
 
-#include "cores/RetroPlayer/process/gbm/RenderBufferGBM.h"
-#include "cores/RetroPlayer/process/gbm/RenderBufferPoolGBM.h"
+#include "cores/RetroPlayer/buffers/RenderBufferGBM.h"
+#include "cores/RetroPlayer/buffers/RenderBufferPoolGBM.h"
 #include "cores/RetroPlayer/rendering/RenderContext.h"
 #include "cores/RetroPlayer/rendering/RenderVideoSettings.h"
 #include "utils/GLUtils.h"

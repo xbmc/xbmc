@@ -286,8 +286,7 @@ void CWinSystemGbm::OnLostDevice()
 {
   CLog::Log(LOGDEBUG, "%s - notify display change event", __FUNCTION__);
 
-  { CSingleLock lock(m_resourceSection);
-    for (std::vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); ++i)
-      (*i)->OnLostDisplay();
-  }
+  CSingleLock lock(m_resourceSection);
+  for (auto resource : m_resources)
+    resource->OnLostDisplay();
 }

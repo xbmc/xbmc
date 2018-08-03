@@ -10,7 +10,7 @@
 
 #include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodecDRMPRIME.h"
 #include "cores/VideoPlayer/VideoRenderers/BaseRenderer.h"
-#include "windowing/gbm/WinSystemGbmGLESContext.h"
+#include "windowing/gbm/WinSystemGbmEGLContext.h"
 
 class CRendererDRMPRIME
   : public CBaseRenderer
