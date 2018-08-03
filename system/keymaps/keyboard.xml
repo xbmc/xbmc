@@ -374,6 +374,7 @@
       <escape>Fullscreen</escape>
       <c>Playlist</c>
       <v>ActivateWindow(Teletext)</v>
+      <v mod="ctrl">VideoNextStream</v>
       <text>ActivateWindow(Teletext)</text>
       <up mod="ctrl">SubtitleShiftUp</up>
       <down mod="ctrl">SubtitleShiftDown</down>

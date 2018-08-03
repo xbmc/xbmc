@@ -20788,6 +20788,7 @@ msgstr ""
 
 #. Label for an option to select the video stream to play if current video has more than one video stream
 #: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
+#: xbmc/video/PlayerController.cpp
 msgctxt "#38031"
 msgid "Video stream"
 msgstr ""
