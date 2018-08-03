@@ -17,7 +17,6 @@
 #include <EGL/egl.h>
 #include <unistd.h>
 
-#include "WinSystemGbmGLESContext.h"
 #include "guilib/gui3d.h"
 #include "utils/log.h"
 #include "settings/Settings.h"
