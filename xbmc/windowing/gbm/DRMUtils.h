@@ -12,6 +12,7 @@
 #include <xf86drm.h>
 #include <xf86drmMode.h>
 #include <gbm.h>
+#include <map>
 #include <vector>
 
 #include "windowing/Resolution.h"
@@ -35,6 +36,7 @@ struct plane : drm_object
 {
   drmModePlanePtr plane = nullptr;
   uint32_t format = DRM_FORMAT_XRGB8888;
+  std::map<uint32_t, std::vector<uint64_t>> modifiers_map;
 };
 
 struct connector : drm_object
@@ -75,6 +77,8 @@ public:
   int GetFileDescriptor() const { return m_fd; }
   struct plane* GetPrimaryPlane() const { return m_primary_plane; }
   struct plane* GetOverlayPlane() const { return m_overlay_plane; }
+  std::vector<uint64_t> *GetPrimaryPlaneModifiersForFormat(uint32_t format) { return &m_primary_plane->modifiers_map[format]; }
+  std::vector<uint64_t> *GetOverlayPlaneModifiersForFormat(uint32_t format) { return &m_overlay_plane->modifiers_map[format]; }
   struct crtc* GetCrtc() const { return m_crtc; }
 
   virtual RESOLUTION_INFO GetCurrentMode();
@@ -112,6 +116,7 @@ private:
   bool FindEncoder();
   bool FindCrtc();
   bool FindPlanes();
+  bool FindModifiersForPlane(struct plane *object);
   bool FindPreferredMode();
   bool RestoreOriginalMode();
   static void DrmFbDestroyCallback(struct gbm_bo *bo, void *data);
