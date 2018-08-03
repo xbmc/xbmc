@@ -3,38 +3,38 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
   <xs:element name="extension">
     <xs:complexType>
-      <xs:sequence>
-        <xs:element name="dir" type="dirItem" minOccurs="1" maxOccurs="unbounded"/>
-      </xs:sequence>
+      <xs:all>
+        <xs:element name="info" type="infoItem" minOccurs="1"/>
+        <xs:element name="checksum" type="checksumItem" minOccurs="1"/>
+        <xs:element name="datadir" type="datadirItem" minOccurs="1"/>
+        <xs:element name="artdir" type="xs:string"/>
+        <xs:element name="hashes" type="xs:string"/>
+      </xs:all>
       <xs:attribute name="point" type="xs:string" use="required"/>
       <xs:attribute name="id" type="simpleIdentifier"/>
       <xs:attribute name="name" type="xs:string"/>
     </xs:complexType>
   </xs:element>
-  <xs:complexType name="dirItem">
-    <xs:all>
-      <xs:element name="info" minOccurs="1">
-        <xs:complexType>
-          <xs:simpleContent>
-            <xs:extension base="xs:string">
-              <xs:attribute name="compressed" type="xs:boolean"/>
-            </xs:extension>
-          </xs:simpleContent>
-        </xs:complexType>
-      </xs:element>
-      <xs:element name="checksum" type="xs:string" minOccurs="1"/>
-      <xs:element name="datadir" minOccurs="1">
-        <xs:complexType>
-          <xs:simpleContent>
-            <xs:extension base="xs:string">
-              <xs:attribute name="zip" type="xs:boolean"/>
-            </xs:extension>
-          </xs:simpleContent>
-        </xs:complexType>
-      </xs:element>
-      <xs:element name="hashes" type="xs:boolean"/>
-    </xs:all>
-    <xs:attribute name="minversion" type="xs:string"/>
+  <xs:complexType name="checksumItem">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="verify" type="xs:string"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="infoItem">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="compressed" type="xs:boolean"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="datadirItem">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+          <xs:attribute name="zip" type="xs:boolean"/>
+      </xs:extension>
+    </xs:simpleContent>
   </xs:complexType>
   <xs:simpleType name="simpleIdentifier">
     <xs:restriction base="xs:string">
