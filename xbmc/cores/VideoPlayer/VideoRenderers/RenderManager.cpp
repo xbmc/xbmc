@@ -424,7 +424,7 @@ bool CRenderManager::Flush(bool wait, bool saveBuffers)
       m_overlays.Flush();
       m_debugRenderer.Flush();
 
-      if (m_pRenderer->Flush(saveBuffers))
+      if (!m_pRenderer->Flush(saveBuffers))
       {
         m_queued.clear();
         m_discard.clear();
