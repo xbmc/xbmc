@@ -59,10 +59,7 @@ void CLibInputPointer::ProcessButton(libinput_event_pointer *e)
   event.button.x = static_cast<uint16_t>(m_pos.X);
   event.button.y = static_cast<uint16_t>(m_pos.Y);
 
-  CLog::Log(LOGDEBUG, "CLibInputPointer::%s - event.type: %i", __FUNCTION__, event.type);
-  CLog::Log(LOGDEBUG, "CLibInputPointer::%s - event.button.button: %i", __FUNCTION__, event.button.button);
-  CLog::Log(LOGDEBUG, "CLibInputPointer::%s - event.button.x: %i", __FUNCTION__, event.button.x);
-  CLog::Log(LOGDEBUG, "CLibInputPointer::%s - event.button.y: %i", __FUNCTION__, event.button.y);
+  CLog::Log(LOGDEBUG, "CLibInputPointer::%s - event.type: %i, event.button.button: %i, event.button.x: %i, event.button.y: %i", __FUNCTION__, event.type, event.button.button, event.button.x, event.button.y);
 
   std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
   if (appPort)
@@ -92,9 +89,7 @@ void CLibInputPointer::ProcessMotion(libinput_event_pointer *e)
   event.motion.x = static_cast<uint16_t>(m_pos.X);
   event.motion.y = static_cast<uint16_t>(m_pos.Y);
 
-  CLog::Log(LOGDEBUG, "CLibInputPointer::%s - event.type: %i", __FUNCTION__, event.type);
-  CLog::Log(LOGDEBUG, "CLibInputPointer::%s - event.motion.x: %i", __FUNCTION__, event.motion.x);
-  CLog::Log(LOGDEBUG, "CLibInputPointer::%s - event.motion.y: %i", __FUNCTION__, event.motion.y);
+  CLog::Log(LOGDEBUG, "CLibInputPointer::%s - event.type: %i, event.motion.x: %i, event.motion.y: %i", __FUNCTION__, event.type, event.motion.x, event.motion.y);
 
   std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
   if (appPort)
@@ -121,9 +116,7 @@ void CLibInputPointer::ProcessAxis(libinput_event_pointer *e)
   event.button.x = static_cast<uint16_t>(m_pos.X);
   event.button.y = static_cast<uint16_t>(m_pos.Y);
 
-  CLog::Log(LOGDEBUG, "CLibInputPointer::%s - scroll: %s", __FUNCTION__, scroll == XBMC_BUTTON_WHEELUP ? "up" : "down");
-  CLog::Log(LOGDEBUG, "CLibInputPointer::%s - event.button.x: %i", __FUNCTION__, event.button.x);
-  CLog::Log(LOGDEBUG, "CLibInputPointer::%s - event.button.y: %i", __FUNCTION__, event.button.y);
+  CLog::Log(LOGDEBUG, "CLibInputPointer::%s - scroll: %s, event.button.x: %i, event.button.y: %i", __FUNCTION__, scroll == XBMC_BUTTON_WHEELUP ? "up" : "down", event.button.x, event.button.y);
 
   std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
   if (appPort)
