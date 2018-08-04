@@ -18,7 +18,6 @@
 #include "utils/log.h"
 
 #include "DRMAtomic.h"
-#include "WinSystemGbmGLESContext.h"
 
 #include <drm_fourcc.h>
 

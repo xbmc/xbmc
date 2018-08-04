@@ -9,14 +9,14 @@
 #include "GBMBufferObject.h"
 
 #include "ServiceBroker.h"
-#include "windowing/gbm/WinSystemGbmGLESContext.h"
+#include "windowing/gbm/WinSystemGbmEGLContext.h"
 
 #include <gbm.h>
 
 CGBMBufferObject::CGBMBufferObject(int format) :
   m_format(format)
 {
-  m_device = static_cast<CWinSystemGbmGLESContext*>(CServiceBroker::GetWinSystem())->GetGBMDevice();
+  m_device = static_cast<CWinSystemGbmEGLContext*>(CServiceBroker::GetWinSystem())->GetGBMDevice();
 }
 
 CGBMBufferObject::~CGBMBufferObject()
