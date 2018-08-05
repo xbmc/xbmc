@@ -16,6 +16,7 @@
 #include "EGL/eglext.h"
 #include "WinSystemGbmGLContext.h"
 #include "OptionalsReg.h"
+#include "platform/linux/XTimeUtils.h"
 #include "utils/log.h"
 
 using namespace KODI;
@@ -92,7 +93,7 @@ void CWinSystemGbmGLContext::PresentRender(bool rendered, bool videoLayer)
   }
   else
   {
-    CWinSystemGbm::WaitVBlank();
+    Sleep(10);
   }
 
   if (m_delayDispReset && m_dispResetTimer.IsTimePast())
