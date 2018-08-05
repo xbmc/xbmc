@@ -223,15 +223,16 @@ size_t DisplayBitsPerPixelForMode(CGDisplayModeRef mode)
 // mimic former behavior of deprecated CGDisplayBestModeForParameters
 CGDisplayModeRef BestMatchForMode(CGDirectDisplayID display, size_t bitsPerPixel, size_t width, size_t height, boolean_t &match)
 {
+  
   // Get a copy of the current display mode
-  CGDisplayModeRef displayMode = CGDisplayCopyDisplayMode(kCGDirectMainDisplay);
+  CGDisplayModeRef displayMode = CGDisplayCopyDisplayMode(display);
 
   // Loop through all display modes to determine the closest match.
   // CGDisplayBestModeForParameters is deprecated on 10.6 so we will emulate it's behavior
   // Try to find a mode with the requested depth and equal or greater dimensions first.
   // If no match is found, try to find a mode with greater depth and same or greater dimensions.
   // If still no match is found, just use the current mode.
-  CFArrayRef allModes = CGDisplayCopyAllDisplayModes(kCGDirectMainDisplay, NULL);
+  CFArrayRef allModes = CGDisplayCopyAllDisplayModes(display, NULL);
   for(int i = 0; i < CFArrayGetCount(allModes); i++)	{
     CGDisplayModeRef mode = (CGDisplayModeRef)CFArrayGetValueAtIndex(allModes, i);
 
