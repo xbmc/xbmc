@@ -5115,7 +5115,7 @@ bool CMusicDatabase::GetArtistsByWhereJSON(const std::set<std::string>& fields, 
           return false;
         strSongSQL = "SELECT " + songArtistFilter.fields + " FROM song_artist " + strSongSQL;
 
-        joinFilter.AppendJoin("JOIN ((" + strAlbumSQL + " UNION " + strSongSQL + ") AS albumSong) ON id = a1.idArtist");
+        joinFilter.AppendJoin("JOIN (" + strAlbumSQL + " UNION " + strSongSQL + ") AS albumSong ON id = a1.idArtist");
       }
       else
       { //Only join album_artist, so move filter elements to join filter
