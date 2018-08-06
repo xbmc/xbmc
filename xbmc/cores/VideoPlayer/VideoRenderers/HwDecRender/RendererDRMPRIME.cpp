@@ -103,11 +103,12 @@ void CRendererDRMPRIME::AddVideoPicture(const VideoPicture& picture, int index, 
 
 bool CRendererDRMPRIME::Flush(bool saveBuffers)
 {
-  for (int i = 0; i < NUM_BUFFERS; i++)
-    ReleaseBuffer(i);
+  if (!saveBuffers)
+    for (int i = 0; i < NUM_BUFFERS; i++)
+      ReleaseBuffer(i);
 
   m_iLastRenderBuffer = -1;
-  return false;
+  return saveBuffers;
 }
 
 void CRendererDRMPRIME::ReleaseBuffer(int index)
@@ -252,6 +253,9 @@ void CVideoLayerBridgeDRMPRIME::Release(CVideoBufferDRMPRIME* buffer)
 
 bool CVideoLayerBridgeDRMPRIME::Map(CVideoBufferDRMPRIME* buffer)
 {
+  if (buffer->m_fb_id)
+    return true;
+
   AVDRMFrameDescriptor* descriptor = buffer->GetDescriptor();
   uint32_t handles[4] = {0}, pitches[4] = {0}, offsets[4] = {0}, flags = 0;
   uint64_t modifier[4] = {0};
