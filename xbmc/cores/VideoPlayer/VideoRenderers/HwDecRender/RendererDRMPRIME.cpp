@@ -162,6 +162,10 @@ void CRendererDRMPRIME::RenderUpdate(int index, int index2, bool clear, unsigned
   if (!buffer)
     return;
 
+  AVDRMFrameDescriptor* descriptor = buffer->GetDescriptor();
+  if (!descriptor || !descriptor->nb_layers)
+    return;
+
   if (!m_videoLayerBridge)
   {
     CWinSystemGbmEGLContext* winSystem = static_cast<CWinSystemGbmEGLContext*>(CServiceBroker::GetWinSystem());
@@ -248,7 +252,73 @@ void CVideoLayerBridgeDRMPRIME::Release(CVideoBufferDRMPRIME* buffer)
   if (!buffer)
     return;
 
+  Unmap(buffer);
   buffer->Release();
+}
+
+bool CVideoLayerBridgeDRMPRIME::Map(CVideoBufferDRMPRIME* buffer)
+{
+  AVDRMFrameDescriptor* descriptor = buffer->GetDescriptor();
+  uint32_t handles[4] = {0}, pitches[4] = {0}, offsets[4] = {0};
+  uint64_t modifier[4] = {0};
+  int ret;
+
+  // convert Prime FD to GEM handle
+  for (int object = 0; object < descriptor->nb_objects; object++)
+  {
+    ret = drmPrimeFDToHandle(m_DRM->GetFileDescriptor(), descriptor->objects[object].fd, &buffer->m_handles[object]);
+    if (ret < 0)
+    {
+      CLog::Log(LOGERROR, "CVideoLayerBridgeDRMPRIME::%s - failed to convert prime fd %d to gem handle %u, ret = %d",
+                __FUNCTION__, descriptor->objects[object].fd, buffer->m_handles[object], ret);
+      return false;
+    }
+  }
+
+  AVDRMLayerDescriptor* layer = &descriptor->layers[0];
+
+  for (int plane = 0; plane < layer->nb_planes; plane++)
+  {
+    int object = layer->planes[plane].object_index;
+    uint32_t handle = buffer->m_handles[object];
+    if (handle && layer->planes[plane].pitch)
+    {
+      handles[plane] = handle;
+      pitches[plane] = layer->planes[plane].pitch;
+      offsets[plane] = layer->planes[plane].offset;
+      modifier[plane] = descriptor->objects[object].format_modifier;
+    }
+  }
+
+  // add the video frame FB
+  ret = drmModeAddFB2WithModifiers(m_DRM->GetFileDescriptor(), buffer->GetWidth(), buffer->GetHeight(), layer->format, handles, pitches, offsets, modifier, &buffer->m_fb_id, 0);
+  if (ret < 0)
+  {
+    CLog::Log(LOGERROR, "CVideoLayerBridgeDRMPRIME::%s - failed to add fb %d, ret = %d", __FUNCTION__, buffer->m_fb_id, ret);
+    return false;
+  }
+
+  Acquire(buffer);
+  return true;
+}
+
+void CVideoLayerBridgeDRMPRIME::Unmap(CVideoBufferDRMPRIME* buffer)
+{
+  if (buffer->m_fb_id)
+  {
+    drmModeRmFB(m_DRM->GetFileDescriptor(), buffer->m_fb_id);
+    buffer->m_fb_id = 0;
+  }
+
+  for (int i = 0; i < AV_DRM_MAX_PLANES; i++)
+  {
+    if (buffer->m_handles[i])
+    {
+      struct drm_gem_close gem_close = { .handle = buffer->m_handles[i] };
+      drmIoctl(m_DRM->GetFileDescriptor(), DRM_IOCTL_GEM_CLOSE, &gem_close);
+      buffer->m_handles[i] = 0;
+    }
+  }
 }
 
 void CVideoLayerBridgeDRMPRIME::Configure(CVideoBufferDRMPRIME* buffer)
@@ -257,61 +327,21 @@ void CVideoLayerBridgeDRMPRIME::Configure(CVideoBufferDRMPRIME* buffer)
 
 void CVideoLayerBridgeDRMPRIME::SetVideoPlane(CVideoBufferDRMPRIME* buffer, const CRect& destRect)
 {
-  buffer->m_drm_fd = m_DRM->GetFileDescriptor();
-
-  AVDRMFrameDescriptor* descriptor = buffer->GetDescriptor();
-  if (descriptor && descriptor->nb_layers)
+  if (!Map(buffer))
   {
-    uint32_t handles[4] = {0}, pitches[4] = {0}, offsets[4] = {0};
-    uint64_t modifier[4] = {0};
-    int ret;
-
-    // convert Prime FD to GEM handle
-    for (int object = 0; object < descriptor->nb_objects; object++)
-    {
-      ret = drmPrimeFDToHandle(m_DRM->GetFileDescriptor(), descriptor->objects[object].fd, &buffer->m_handles[object]);
-      if (ret < 0)
-      {
-        CLog::Log(LOGERROR, "CVideoLayerBridgeDRMPRIME::%s - failed to convert prime fd %d to gem handle %u, ret = %d", __FUNCTION__, descriptor->objects[object].fd, buffer->m_handles[object], ret);
-        return;
-      }
-    }
-
-    AVDRMLayerDescriptor* layer = &descriptor->layers[0];
-
-    for (int plane = 0; plane < layer->nb_planes; plane++)
-    {
-      int object = layer->planes[plane].object_index;
-      uint32_t handle = buffer->m_handles[object];
-      if (handle && layer->planes[plane].pitch)
-      {
-        handles[plane] = handle;
-        pitches[plane] = layer->planes[plane].pitch;
-        offsets[plane] = layer->planes[plane].offset;
-        modifier[plane] = descriptor->objects[object].format_modifier;
-      }
-    }
-
-    // add the video frame FB
-    ret = drmModeAddFB2WithModifiers(m_DRM->GetFileDescriptor(), buffer->GetWidth(), buffer->GetHeight(), layer->format, handles, pitches, offsets, modifier, &buffer->m_fb_id, 0);
-    if (ret < 0)
-    {
-      CLog::Log(LOGERROR, "CVideoLayerBridgeDRMPRIME::%s - failed to add fb %d, ret = %d", __FUNCTION__, buffer->m_fb_id, ret);
-      return;
-    }
-
-    Acquire(buffer);
-
-    struct plane* plane = m_DRM->GetPrimaryPlane();
-    m_DRM->AddProperty(plane, "FB_ID", buffer->m_fb_id);
-    m_DRM->AddProperty(plane, "CRTC_ID", m_DRM->GetCrtc()->crtc->crtc_id);
-    m_DRM->AddProperty(plane, "SRC_X", 0);
-    m_DRM->AddProperty(plane, "SRC_Y", 0);
-    m_DRM->AddProperty(plane, "SRC_W", buffer->GetWidth() << 16);
-    m_DRM->AddProperty(plane, "SRC_H", buffer->GetHeight() << 16);
-    m_DRM->AddProperty(plane, "CRTC_X", static_cast<int32_t>(destRect.x1) & ~1);
-    m_DRM->AddProperty(plane, "CRTC_Y", static_cast<int32_t>(destRect.y1) & ~1);
-    m_DRM->AddProperty(plane, "CRTC_W", (static_cast<uint32_t>(destRect.Width()) + 1) & ~1);
-    m_DRM->AddProperty(plane, "CRTC_H", (static_cast<uint32_t>(destRect.Height()) + 1) & ~1);
+    Unmap(buffer);
+    return;
   }
+
+  struct plane* plane = m_DRM->GetPrimaryPlane();
+  m_DRM->AddProperty(plane, "FB_ID", buffer->m_fb_id);
+  m_DRM->AddProperty(plane, "CRTC_ID", m_DRM->GetCrtc()->crtc->crtc_id);
+  m_DRM->AddProperty(plane, "SRC_X", 0);
+  m_DRM->AddProperty(plane, "SRC_Y", 0);
+  m_DRM->AddProperty(plane, "SRC_W", buffer->GetWidth() << 16);
+  m_DRM->AddProperty(plane, "SRC_H", buffer->GetHeight() << 16);
+  m_DRM->AddProperty(plane, "CRTC_X", static_cast<int32_t>(destRect.x1) & ~1);
+  m_DRM->AddProperty(plane, "CRTC_Y", static_cast<int32_t>(destRect.y1) & ~1);
+  m_DRM->AddProperty(plane, "CRTC_W", (static_cast<uint32_t>(destRect.Width()) + 1) & ~1);
+  m_DRM->AddProperty(plane, "CRTC_H", (static_cast<uint32_t>(destRect.Height()) + 1) & ~1);
 }

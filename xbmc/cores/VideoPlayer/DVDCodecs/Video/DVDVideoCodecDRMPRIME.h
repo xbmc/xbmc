@@ -29,7 +29,6 @@ public:
   void SetRef(AVFrame* frame);
   void Unref();
 
-  uint32_t m_drm_fd = -1;
   uint32_t m_fb_id = 0;
   uint32_t m_handles[AV_DRM_MAX_PLANES] = {0};
 

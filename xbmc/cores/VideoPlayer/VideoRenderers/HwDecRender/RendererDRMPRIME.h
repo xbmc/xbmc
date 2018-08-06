@@ -29,6 +29,8 @@ protected:
 private:
   void Acquire(CVideoBufferDRMPRIME* buffer);
   void Release(CVideoBufferDRMPRIME* buffer);
+  bool Map(CVideoBufferDRMPRIME* buffer);
+  void Unmap(CVideoBufferDRMPRIME* buffer);
 
   CVideoBufferDRMPRIME* m_buffer = nullptr;
   CVideoBufferDRMPRIME* m_prev_buffer = nullptr;
