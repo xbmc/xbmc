@@ -71,8 +71,6 @@ protected:
   void ManageRenderArea() override;
 
 private:
-  void Reset();
-
   bool m_bConfigured = false;
   int m_iLastRenderBuffer = -1;
 

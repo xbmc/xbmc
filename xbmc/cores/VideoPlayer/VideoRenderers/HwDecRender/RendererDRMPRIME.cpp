@@ -23,7 +23,7 @@ const std::string SETTING_VIDEOPLAYER_USEPRIMERENDERER = "videoplayer.useprimere
 
 CRendererDRMPRIME::~CRendererDRMPRIME()
 {
-  Reset();
+  Flush(false);
 }
 
 CBaseRenderer* CRendererDRMPRIME::Create(CVideoBuffer* buffer)
@@ -69,7 +69,7 @@ bool CRendererDRMPRIME::Configure(const VideoPicture& picture, float fps, unsign
   SetViewMode(m_videoSettings.m_ViewMode);
   ManageRenderArea();
 
-  Reset();
+  Flush(false);
 
   m_bConfigured = true;
   return true;
@@ -92,26 +92,20 @@ void CRendererDRMPRIME::ManageRenderArea()
 void CRendererDRMPRIME::AddVideoPicture(const VideoPicture& picture, int index, double currentClock)
 {
   BUFFER& buf = m_buffers[index];
-
-  // delay Release of videoBuffer after a Flush call to prevent drmModeRmFB of a videoBuffer tied to a drm plane
-  // TODO: move Release to Flush once current videoBuffer tied to a drm plane is reference counted
   if (buf.videoBuffer)
+  {
+    CLog::LogF(LOGERROR, "unreleased video buffer");
     buf.videoBuffer->Release();
-
+  }
   buf.videoBuffer = picture.videoBuffer;
   buf.videoBuffer->Acquire();
 }
 
-void CRendererDRMPRIME::Reset()
+bool CRendererDRMPRIME::Flush(bool saveBuffers)
 {
   for (int i = 0; i < NUM_BUFFERS; i++)
     ReleaseBuffer(i);
 
-  m_iLastRenderBuffer = -1;
-}
-
-bool CRendererDRMPRIME::Flush(bool saveBuffers)
-{
   m_iLastRenderBuffer = -1;
   return false;
 }
