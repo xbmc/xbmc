@@ -253,7 +253,7 @@ void CVideoLayerBridgeDRMPRIME::Release(CVideoBufferDRMPRIME* buffer)
 bool CVideoLayerBridgeDRMPRIME::Map(CVideoBufferDRMPRIME* buffer)
 {
   AVDRMFrameDescriptor* descriptor = buffer->GetDescriptor();
-  uint32_t handles[4] = {0}, pitches[4] = {0}, offsets[4] = {0};
+  uint32_t handles[4] = {0}, pitches[4] = {0}, offsets[4] = {0}, flags = 0;
   uint64_t modifier[4] = {0};
   int ret;
 
@@ -284,8 +284,12 @@ bool CVideoLayerBridgeDRMPRIME::Map(CVideoBufferDRMPRIME* buffer)
     }
   }
 
+  if (modifier[0] && modifier[0] != DRM_FORMAT_MOD_INVALID)
+    flags = DRM_MODE_FB_MODIFIERS;
+
   // add the video frame FB
-  ret = drmModeAddFB2WithModifiers(m_DRM->GetFileDescriptor(), buffer->GetWidth(), buffer->GetHeight(), layer->format, handles, pitches, offsets, modifier, &buffer->m_fb_id, 0);
+  ret = drmModeAddFB2WithModifiers(m_DRM->GetFileDescriptor(), buffer->GetWidth(), buffer->GetHeight(), layer->format,
+                                   handles, pitches, offsets, modifier, &buffer->m_fb_id, flags);
   if (ret < 0)
   {
     CLog::Log(LOGERROR, "CVideoLayerBridgeDRMPRIME::%s - failed to add fb %d, ret = %d", __FUNCTION__, buffer->m_fb_id, ret);
