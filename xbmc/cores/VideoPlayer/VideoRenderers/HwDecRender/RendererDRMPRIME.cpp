@@ -209,7 +209,7 @@ void CRendererDRMPRIME::SetVideoPlane(CVideoBufferDRMPRIME* buffer)
       ret = drmPrimeFDToHandle(m_DRM->GetFileDescriptor(), descriptor->objects[object].fd, &buffer->m_handles[object]);
       if (ret < 0)
       {
-        CLog::Log(LOGERROR, "CRendererDRMPRIME::%s - failed to retrieve the GEM handle from prime fd %d, ret = %d", __FUNCTION__, descriptor->objects[object].fd, ret);
+        CLog::Log(LOGERROR, "CRendererDRMPRIME::%s - failed to convert prime fd %d to gem handle %u, ret = %d", __FUNCTION__, descriptor->objects[object].fd, buffer->m_handles[object], ret);
         return;
       }
     }
@@ -233,28 +233,20 @@ void CRendererDRMPRIME::SetVideoPlane(CVideoBufferDRMPRIME* buffer)
     ret = drmModeAddFB2WithModifiers(m_DRM->GetFileDescriptor(), buffer->GetWidth(), buffer->GetHeight(), layer->format, handles, pitches, offsets, modifier, &buffer->m_fb_id, 0);
     if (ret < 0)
     {
-      CLog::Log(LOGERROR, "CRendererDRMPRIME::%s - failed to add drm layer %d, ret = %d", __FUNCTION__, buffer->m_fb_id, ret);
+      CLog::Log(LOGERROR, "CRendererDRMPRIME::%s - failed to add fb %d, ret = %d", __FUNCTION__, buffer->m_fb_id, ret);
       return;
     }
 
-    int32_t crtc_x = static_cast<int32_t>(m_destRect.x1) & ~1;
-    int32_t crtc_y = static_cast<int32_t>(m_destRect.y1) & ~1;
-    uint32_t crtc_w = (static_cast<uint32_t>(m_destRect.Width()) + 1) & ~1;
-    uint32_t crtc_h = (static_cast<uint32_t>(m_destRect.Height()) + 1) & ~1;
-    uint32_t src_x = 0;
-    uint32_t src_y = 0;
-    uint32_t src_w = buffer->GetWidth() << 16;
-    uint32_t src_h = buffer->GetHeight() << 16;
-
-    m_DRM->AddProperty(m_DRM->GetPrimaryPlane(), "FB_ID",   buffer->m_fb_id);
-    m_DRM->AddProperty(m_DRM->GetPrimaryPlane(), "CRTC_ID", m_DRM->GetCrtc()->crtc->crtc_id);
-    m_DRM->AddProperty(m_DRM->GetPrimaryPlane(), "SRC_X",   src_x);
-    m_DRM->AddProperty(m_DRM->GetPrimaryPlane(), "SRC_Y",   src_y);
-    m_DRM->AddProperty(m_DRM->GetPrimaryPlane(), "SRC_W",   src_w);
-    m_DRM->AddProperty(m_DRM->GetPrimaryPlane(), "SRC_H",   src_h);
-    m_DRM->AddProperty(m_DRM->GetPrimaryPlane(), "CRTC_X",  crtc_x);
-    m_DRM->AddProperty(m_DRM->GetPrimaryPlane(), "CRTC_Y",  crtc_y);
-    m_DRM->AddProperty(m_DRM->GetPrimaryPlane(), "CRTC_W",  crtc_w);
-    m_DRM->AddProperty(m_DRM->GetPrimaryPlane(), "CRTC_H",  crtc_h);
+    struct plane* plane = m_DRM->GetPrimaryPlane();
+    m_DRM->AddProperty(plane, "FB_ID", buffer->m_fb_id);
+    m_DRM->AddProperty(plane, "CRTC_ID", m_DRM->GetCrtc()->crtc->crtc_id);
+    m_DRM->AddProperty(plane, "SRC_X", 0);
+    m_DRM->AddProperty(plane, "SRC_Y", 0);
+    m_DRM->AddProperty(plane, "SRC_W", buffer->GetWidth() << 16);
+    m_DRM->AddProperty(plane, "SRC_H", buffer->GetHeight() << 16);
+    m_DRM->AddProperty(plane, "CRTC_X", static_cast<int32_t>(m_destRect.x1) & ~1);
+    m_DRM->AddProperty(plane, "CRTC_Y", static_cast<int32_t>(m_destRect.y1) & ~1);
+    m_DRM->AddProperty(plane, "CRTC_W", (static_cast<uint32_t>(m_destRect.Width()) + 1) & ~1);
+    m_DRM->AddProperty(plane, "CRTC_H", (static_cast<uint32_t>(m_destRect.Height()) + 1) & ~1);
   }
 }
