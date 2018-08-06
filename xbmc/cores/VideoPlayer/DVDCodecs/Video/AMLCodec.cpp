@@ -1187,8 +1187,17 @@ int pre_header_feeding(am_private_t *para, am_packet_t *pkt)
         } else if ((CODEC_TAG_WVC1 == para->video_codec_tag)
                 || (CODEC_TAG_VC_1 == para->video_codec_tag)
                 || (CODEC_TAG_WMVA == para->video_codec_tag)) {
-            CLog::Log(LOGDEBUG, "CODEC_TAG_WVC1 == para->video_codec_tag");
-            ret = wvc1_write_header(para, pkt);
+            if (para->extrasize > 4 && !*para->extradata && !*(para->extradata + 1) &&
+                *(para->extradata + 2) == 0x01 && *(para->extradata + 3) == 0x0f && ((*(para->extradata + 4) & 0x03) == 0x03))
+            {
+                CLog::Log(LOGDEBUG, "CODEC_TAG_WVC1 == para->video_codec_tag, using wmv3_write_header");
+                ret = wmv3_write_header(para, pkt);
+            }
+            else
+            {
+                CLog::Log(LOGDEBUG, "CODEC_TAG_WVC1 == para->video_codec_tag");
+                ret = wvc1_write_header(para, pkt);
+            }
             if (ret != PLAYER_SUCCESS) {
                 return ret;
             }
