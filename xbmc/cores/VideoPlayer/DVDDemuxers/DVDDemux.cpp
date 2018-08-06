@@ -53,6 +53,9 @@ std::string CDemuxStreamAudio::GetStreamType()
   case AV_CODEC_ID_FLAC:
     strInfo = "FLAC ";
     break;
+  case AV_CODEC_ID_OPUS:
+    strInfo = "Opus ";
+    break;
   case AV_CODEC_ID_VORBIS:
     strInfo = "Vorbis ";
     break;
