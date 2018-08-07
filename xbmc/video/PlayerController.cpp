@@ -214,6 +214,22 @@ bool CPlayerController::OnAction(const CAction &action)
         return true;
       }
 
+      case ACTION_VIDEO_NEXT_STREAM:
+      {
+        if (g_application.GetAppPlayer().GetVideoStreamCount() == 1)
+          return true;
+
+        int currentVideo = g_application.GetAppPlayer().GetVideoStream();
+
+        if (++currentVideo >= g_application.GetAppPlayer().GetVideoStreamCount())
+          currentVideo = 0;
+        g_application.GetAppPlayer().SetVideoStream(currentVideo);
+        VideoStreamInfo info;
+        g_application.GetAppPlayer().GetVideoStreamInfo(currentVideo, info);
+        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(38031), info.name, DisplTime, false, MsgTime);
+        return true;
+      }
+
       case ACTION_ZOOM_IN:
       {
         CVideoSettings vs = g_application.GetAppPlayer().GetVideoSettings();
