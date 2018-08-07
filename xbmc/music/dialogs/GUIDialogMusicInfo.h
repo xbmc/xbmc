@@ -64,12 +64,12 @@ protected:
 
   CAlbum m_album;
   CArtist m_artist;
-  int m_startUserrating;
-  bool m_hasUpdatedUserrating;
-  bool m_hasRefreshed;
-  bool m_bArtistInfo;
-  bool m_cancelled;
-  bool m_scraperAddInfo;
+  int m_startUserrating = -1;
+  bool m_hasUpdatedUserrating = false;
+  bool m_hasRefreshed = false;
+  bool m_bArtistInfo = false;
+  bool m_cancelled = false;
+  bool m_scraperAddInfo = false;
   CFileItemList* m_albumSongs;
   CFileItemPtr m_item;
   CFileItemList m_artTypeList;

@@ -66,6 +66,7 @@ void CMusicFileItemListModifier::AddQueuingFolder(CFileItemList& items)
     //  All album related nodes
   case NODE_TYPE_ALBUM:
     if (directoryNode->GetType() == NODE_TYPE_OVERVIEW) return;
+    break;
   case NODE_TYPE_ALBUM_RECENTLY_PLAYED:
   case NODE_TYPE_ALBUM_RECENTLY_ADDED:
   case NODE_TYPE_ALBUM_COMPILATIONS:

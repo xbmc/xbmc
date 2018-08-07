@@ -315,11 +315,6 @@ CGUIDialogMusicInfo::CGUIDialogMusicInfo(void)
 {
   m_albumSongs = new CFileItemList;
   m_loadType = KEEP_IN_MEMORY;
-  m_startUserrating = -1;
-  m_hasUpdatedUserrating = false;
-  m_hasRefreshed = false;
-  m_bArtistInfo = false;
-  m_cancelled = false;
   m_artTypeList.Clear();
 }
 
