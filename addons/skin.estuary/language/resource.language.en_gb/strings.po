@@ -759,3 +759,10 @@ msgstr ""
 msgctxt "#31166"
 msgid "Profile avatar"
 msgstr ""
+
+#. Label for the menu item selection prompt
+#: /xml/SkinSettings.xml
+msgctxt "#40166"
+msgid "Select menu item to display"
+msgstr ""
+
