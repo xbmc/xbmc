@@ -605,11 +605,7 @@ namespace XBMCAddon
     void Window::setCoordinateResolution(long res)
     {
       XBMC_TRACE;
-      if (res < RES_HDTV_1080i || res > RES_AUTORES)
-        throw WindowException("Invalid resolution.");
-
-      SingleLockWithDelayGuard gslock(CServiceBroker::GetWinSystem()->GetGfxContext(),languageHook);
-      ref(window)->SetCoordsRes(CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo((RESOLUTION)res));
+      throw WindowException("not implemented.");
     }
 
     void Window::setProperty(const char* key, const String& value)

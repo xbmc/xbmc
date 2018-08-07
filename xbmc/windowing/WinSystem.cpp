@@ -22,11 +22,6 @@
 CWinSystemBase::CWinSystemBase()
 {
   m_gfxContext.reset(new CGraphicContext());
-  for (int i = RES_HDTV_1080i; i <= RES_PAL60_16x9; i++)
-  {
-    m_gfxContext->ResetScreenParameters((RESOLUTION)i);
-    m_gfxContext->ResetOverscan((RESOLUTION)i, CDisplaySettings::GetInstance().GetResolutionInfo(i).Overscan);
-  }
 }
 
 CWinSystemBase::~CWinSystemBase() = default;

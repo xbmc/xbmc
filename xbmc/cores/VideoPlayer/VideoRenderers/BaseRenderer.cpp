@@ -433,7 +433,6 @@ void CBaseRenderer::SetViewMode(int viewMode)
   m_videoSettings.m_ViewMode = viewMode;
 
   // get our calibrated full screen resolution
-  RESOLUTION res = CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution();
   RESOLUTION_INFO info = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo();
   float screenWidth  = (float)(info.Overscan.right  - info.Overscan.left);
   float screenHeight = (float)(info.Overscan.bottom - info.Overscan.top);
@@ -474,17 +473,9 @@ void CBaseRenderer::SetViewMode(int viewMode)
   else if (m_videoSettings.m_ViewMode == ViewModeStretch4x3)
   { // stretch image to 4:3 ratio
     CDisplaySettings::GetInstance().SetZoomAmount(1.0);
-    if (res == RES_PAL_4x3 || res == RES_PAL60_4x3 || res == RES_NTSC_4x3 || res == RES_HDTV_480p_4x3)
-    { // stretch to the limits of the 4:3 screen.
-      // incorrect behaviour, but it's what the users want, so...
-      CDisplaySettings::GetInstance().SetPixelRatio((screenWidth / screenHeight) * info.fPixelRatio / sourceFrameRatio);
-    }
-    else
-    {
-      // now we need to set CDisplaySettings::GetInstance().GetPixelRatio() so that
-      // fOutputFrameRatio = 4:3.
-      CDisplaySettings::GetInstance().SetPixelRatio((4.0f / 3.0f) / sourceFrameRatio);
-    }
+    // now we need to set CDisplaySettings::GetInstance().GetPixelRatio() so that
+    // fOutputFrameRatio = 4:3.
+    CDisplaySettings::GetInstance().SetPixelRatio((4.0f / 3.0f) / sourceFrameRatio);
   }
   else if (m_videoSettings.m_ViewMode == ViewModeWideZoom ||
            (is43 && CServiceBroker::GetSettings().GetInt(CSettings::SETTING_VIDEOPLAYER_STRETCH43) == ViewModeWideZoom))
@@ -500,16 +491,9 @@ void CBaseRenderer::SetViewMode(int viewMode)
                      CServiceBroker::GetSettings().GetInt(CSettings::SETTING_VIDEOPLAYER_STRETCH43) == ViewModeStretch16x9Nonlin)))
   { // stretch image to 16:9 ratio
     CDisplaySettings::GetInstance().SetZoomAmount(1.0);
-    if (res == RES_PAL_4x3 || res == RES_PAL60_4x3 || res == RES_NTSC_4x3 || res == RES_HDTV_480p_4x3)
-    { // now we need to set CDisplaySettings::GetInstance().GetPixelRatio() so that
-      // outputFrameRatio = 16:9.
-      CDisplaySettings::GetInstance().SetPixelRatio((16.0f / 9.0f) / sourceFrameRatio);
-    }
-    else
-    { // stretch to the limits of the 16:9 screen.
-      // incorrect behaviour, but it's what the users want, so...
-      CDisplaySettings::GetInstance().SetPixelRatio((screenWidth / screenHeight) * info.fPixelRatio / sourceFrameRatio);
-    }
+    // stretch to the limits of the 16:9 screen.
+    // incorrect behaviour, but it's what the users want, so...
+    CDisplaySettings::GetInstance().SetPixelRatio((screenWidth / screenHeight) * info.fPixelRatio / sourceFrameRatio);
     bool nonlin = (is43 && CServiceBroker::GetSettings().GetInt(CSettings::SETTING_VIDEOPLAYER_STRETCH43) == ViewModeStretch16x9Nonlin) ||
                   m_videoSettings.m_ViewMode == ViewModeStretch16x9Nonlin;
     CDisplaySettings::GetInstance().SetNonLinearStretched(nonlin);
