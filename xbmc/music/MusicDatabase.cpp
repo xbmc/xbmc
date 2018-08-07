@@ -3093,6 +3093,9 @@ bool CMusicDatabase::CleanupSongs(CGUIDialogProgress* progressDialog /*= nullptr
     int total;
     // Count total number of songs
     total = (int)strtol(GetSingleValue("SELECT COUNT(1) FROM song", m_pDS).c_str(), nullptr, 10);
+    // No songs to clean
+    if (total == 0)
+      return true;
 
     // run through all songs and get all unique path ids
     int iLIMIT = 1000;
@@ -5235,7 +5238,6 @@ bool CMusicDatabase::GetArtistsByWhereJSON(const std::set<std::string>& fields, 
           sourceidlist.clear();
           roleidlist.clear();
           bArtDone = false;
-          bIsAlbumArtist = true;
         }
         if (m_pDS->eof())
           continue;  // Having saved the last artist stop
@@ -5856,7 +5858,7 @@ bool CMusicDatabase::GetAlbumsByWhereJSON(const std::set<std::string>& fields, c
               albumObj[JSONtoDBAlbum[dbfieldindex[i]].fieldJSON] = record->at(1 + i).get_asString();
           }
       }
-      if (bJoinAlbumArtist)
+      if (bJoinAlbumArtist && joinLayout.GetRecNo(joinToAlbum_idArtist) > -1)
       {
         if (artistId != record->at(joinLayout.GetRecNo(joinToAlbum_idArtist)).get_asInt())
         {
@@ -5873,14 +5875,15 @@ bool CMusicDatabase::GetAlbumsByWhereJSON(const std::set<std::string>& fields, c
           }
           else
           {
-            if (joinLayout.GetOutput(joinToAlbum_strArtist))
+            if (joinLayout.GetOutput(joinToAlbum_strArtist) && joinLayout.GetRecNo(joinToAlbum_strArtist) > -1)
               albumObj["artist"].append(record->at(joinLayout.GetRecNo(joinToAlbum_strArtist)).get_asString());
-            if (joinLayout.GetOutput(joinToAlbum_strArtistMBID))
+            if (joinLayout.GetOutput(joinToAlbum_strArtistMBID) && joinLayout.GetRecNo(joinToAlbum_strArtistMBID) > -1)
               albumObj["musicbrainzalbumartistid"].append(record->at(joinLayout.GetRecNo(joinToAlbum_strArtistMBID)).get_asString());
           }
         }        
       }
       if (!bSongGenreDone && joinLayout.GetRecNo(joinToAlbum_idSongGenre) > -1 &&
+          joinLayout.GetRecNo(joinToAlbum_strSongGenre) > -1 &&
           !record->at(joinLayout.GetRecNo(joinToAlbum_idSongGenre)).get_isNull())
       {
         CVariant genreObj;
@@ -7946,7 +7949,8 @@ int CMusicDatabase::GetSourceFromPath(const std::string& strPath1)
     if (m_pDS->num_rows() > 0)
       idSource = m_pDS->fv("idSource").get_asInt();
     m_pDS->close();
-    return idSource;
+    if (idSource > 0)
+      return idSource;
 
     // Check if path is a source path (of many) or a subfolder of a single source
     strSQL = PrepareSQL("SELECT DISTINCT idSource FROM source_path "
