@@ -27,7 +27,8 @@
   12.1. **[Casts](#121-casts)**  
   12.2. **[NULL vs nullptr](#122-null-vs-nullptr)**  
   12.3. **[auto](#123-auto)**  
-  12.4. **[for loops](#124-for-loops)**
+  12.4. **[for loops](#124-for-loops)**  
+  12.5. **[Default member initialization](#125-default-member-initialization)**
 
 ## 1. Motivation
 When working in a large group, the two most important values are readability and maintainability. We code for other people, not computers. To accomplish these goals, we have created a unified set of code conventions.
@@ -344,5 +345,13 @@ for (const auto& : var)
 ```
 Remove `const` if the value has to be modified.
 
-**[back to top](#table-of-contents)**
+### 12.5. Default member initialization
+Use default member initialization instead of initializer lists or constructor assignments whenever it makes sense.
+```cpp
+class Foo
+{
+  bool bar = false;
+};
+```
 
+**[back to top](#table-of-contents)**
