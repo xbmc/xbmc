@@ -24,6 +24,7 @@
 #include "URL.h"
 #include "filesystem/CurlFile.h"
 #include "filesystem/File.h"
+#include "filesystem/IFileTypes.h"
 #include "utils/URIUtils.h"
 #include "ServiceBroker.h"
 #include "addons/binary-addons/BinaryAddonManager.h"
@@ -152,7 +153,10 @@ std::shared_ptr<CDVDInputStream> CDVDFactoryInputStream::CreateInputStream(IVide
   }
 
   // our file interface handles all these types of streams
-  return std::shared_ptr<CDVDInputStreamFile>(new CDVDInputStreamFile(finalFileitem));
+  return std::shared_ptr<CDVDInputStreamFile>(new CDVDInputStreamFile(finalFileitem,
+                                                                      XFILE::READ_TRUNCATED |
+                                                                      XFILE::READ_BITRATE |
+                                                                      XFILE::READ_CHUNKED));
 }
 
 std::shared_ptr<CDVDInputStream> CDVDFactoryInputStream::CreateInputStream(IVideoPlayer* pPlayer, const CFileItem &fileitem, const std::vector<std::string>& filenames)

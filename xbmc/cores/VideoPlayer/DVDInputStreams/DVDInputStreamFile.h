@@ -13,7 +13,7 @@
 class CDVDInputStreamFile : public CDVDInputStream
 {
 public:
-  explicit CDVDInputStreamFile(const CFileItem& fileitem);
+  explicit CDVDInputStreamFile(const CFileItem& fileitem, unsigned int flags);
   ~CDVDInputStreamFile() override;
   bool Open() override;
   void Close() override;
@@ -28,6 +28,7 @@ public:
   bool GetCacheStatus(XFILE::SCacheStatus *status) override;
 
 protected:
-  XFILE::CFile* m_pFile;
-  bool m_eof;
+  XFILE::CFile* m_pFile = nullptr;
+  bool m_eof = false;
+  unsigned int m_flags = 0;
 };

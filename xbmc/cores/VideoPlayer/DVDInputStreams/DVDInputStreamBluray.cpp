@@ -1145,7 +1145,7 @@ void CDVDInputStreamBluray::SetupPlayerSettings()
 
 bool CDVDInputStreamBluray::OpenStream(CFileItem &item)
 {
-  m_pstream.reset(new CDVDInputStreamFile(item));
+  m_pstream.reset(new CDVDInputStreamFile(item, 0));
 
   if (!m_pstream->Open())
   {
