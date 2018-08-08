@@ -394,4 +394,15 @@ for (auto& : var)
 
 Use const auto& if there's no reason to modify the value.
 
+--------------------------------------------------------------------------------
+\subsection code_guidelines_6_5 default member initialization
+
+Use default member initialization instead of initializer lists or constructor assignments whenever it makes sense.
+~~~~~~~~~~~~~
+class Foo
+{
+  bool bar = false;
+};
+~~~~~~~~~~~~~
+
 */
