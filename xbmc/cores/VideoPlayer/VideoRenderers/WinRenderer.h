@@ -125,5 +125,6 @@ protected:
   Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_pCLUTView;
 
   CD3DTexture m_IntermediateTarget;
+  CD3DTexture m_smoothTarget;
   AVColorPrimaries m_srcPrimaries;
 };
