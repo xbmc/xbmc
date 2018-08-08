@@ -883,6 +883,7 @@ void CWinSystemWin32::UpdateResolutions()
 
   // erase previous stored modes
   CDisplaySettings::GetInstance().ClearCustomResolutions();
+  std::string monitorName = FromW(details->MonitorNameW);
 
   for(int mode = 0;; mode++)
   {
@@ -901,7 +902,17 @@ void CWinSystemWin32::UpdateResolutions()
     dwFlags = (devmode.dmDisplayFlags & DM_INTERLACED) ? D3DPRESENTFLAG_INTERLACED : 0;
 
     RESOLUTION_INFO res;
-    UpdateDesktopResolution(res, devmode.dmPelsWidth, devmode.dmPelsHeight, refresh, dwFlags);
+    res.iWidth = devmode.dmPelsWidth;
+    res.iHeight = devmode.dmPelsHeight;
+    res.bFullScreen = true;
+    res.dwFlags = dwFlags;
+    res.fRefreshRate = refresh;
+    res.fPixelRatio = 1.0f;
+    res.iScreenWidth = res.iWidth;
+    res.iScreenHeight = res.iHeight;
+    res.iSubtitles = (int)(0.965 * res.iHeight);
+    res.strMode = StringUtils::Format("%s: %dx%d @ %.2fHz", monitorName.c_str(), res.iWidth,
+                                      res.iHeight, res.fRefreshRate);
     GetGfxContext().ResetOverscan(res);
     res.strOutput = strOuput;
 

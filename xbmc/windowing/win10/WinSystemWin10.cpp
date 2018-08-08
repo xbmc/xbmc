@@ -397,7 +397,17 @@ void CWinSystemWin10::UpdateResolutions()
       for (auto& mode : hdmiModes)
       {
         RESOLUTION_INFO res;
-        UpdateDesktopResolution(res, mode.ResolutionWidthInRawPixels(), mode.ResolutionHeightInRawPixels(), mode.RefreshRate(), 0);
+        res.iWidth = mode.ResolutionWidthInRawPixels();
+        res.iHeight = mode.ResolutionHeightInRawPixels();
+        res.bFullScreen = true;
+        res.dwFlags = 0;
+        res.fRefreshRate = mode.RefreshRate();
+        res.fPixelRatio = 1.0f;
+        res.iScreenWidth = res.iWidth;
+        res.iScreenHeight = res.iHeight;
+        res.iSubtitles = (int)(0.965 * res.iHeight);
+        res.strMode = StringUtils::Format("Default: %dx%d @ %.2fHz",
+                                          res.iWidth, res.iHeight, res.fRefreshRate);
         GetGfxContext().ResetOverscan(res);
 
         if (AddResolution(res))
