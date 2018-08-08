@@ -38,6 +38,7 @@ public:
   // videosync
   std::unique_ptr<CVideoSync> GetVideoSync(void *clock) override;
   float GetFrameLatencyAdjustment() override;
+  uint64_t GetVblankTiming(uint64_t &msc, uint64_t &interval);
 
   XID GetWindow() const;
   void* GetGlxContext() const;

@@ -10,29 +10,23 @@
 
 #include "windowing/VideoSync.h"
 #include "guilib/DispResource.h"
+#include <atomic>
 
 class CWinSystemX11GLContext;
 
-class CVideoSyncDRM : public CVideoSync, IDispResource
+class CVideoSyncOML : public CVideoSync, IDispResource
 {
 public:
-  explicit CVideoSyncDRM(void *clock, CWinSystemX11GLContext& winSystem) :
+  explicit CVideoSyncOML(void *clock, CWinSystemX11GLContext& winSystem) :
     CVideoSync(clock), m_winSystem(winSystem) {};
   bool Setup(PUPDATECLOCK func) override;
   void Run(CEvent& stopEvent) override;
   void Cleanup() override;
   float GetFps() override;
   void OnResetDisplay() override;
-  void RefreshChanged() override;
+
 private:
-  static void EventHandler(int fd, unsigned int frame, unsigned int sec, unsigned int usec, void *data);
-  int m_fd;
-  volatile bool m_abort;
-  struct VblInfo
-  {
-    uint64_t start;
-    CVideoSyncDRM *videoSync;
-  };
+  std::atomic_bool m_abort;
   CWinSystemX11GLContext &m_winSystem;
 };
 

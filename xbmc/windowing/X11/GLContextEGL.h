@@ -24,7 +24,7 @@ public:
   void SetVSync(bool enable) override;
   void SwapBuffers() override;
   void QueryExtensions() override;
-  uint64_t GetFrameLatencyAdjustment() override;
+  uint64_t GetVblankTiming(uint64_t &msc, uint64_t &interval) override;
 
   EGLDisplay m_eglDisplay;
   EGLSurface m_eglSurface;
@@ -42,7 +42,6 @@ protected:
     uint64_t ust2 = 0;
     uint64_t msc1 = 0;
     uint64_t msc2 = 0;
-    uint64_t sbc2 = 0;
     uint64_t interval = 0;
   } m_sync;
 };
