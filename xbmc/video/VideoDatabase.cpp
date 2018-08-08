@@ -1212,7 +1212,7 @@ int CVideoDatabase::GetEpisodeId(const std::string& strFilenameAndPath, int idEp
         {
           CVideoInfoTag tag;
           int idTmpEpisode = pDS->fv("episode.idEpisode").get_asInt();
-          GetEpisodeInfo(strFilenameAndPath, tag, idTmpEpisode, VideoDbDetailsNone);
+          GetEpisodeBasicInfo(strFilenameAndPath, tag, idTmpEpisode);
           if (tag.m_iEpisode == idEpisode && (idSeason == -1 || tag.m_iSeason == idSeason)) {
             // match on the episode hint, and there's no season hint or a season hint match
             idEpisode = idTmpEpisode;
@@ -2069,6 +2069,29 @@ bool CVideoDatabase::GetSeasonInfo(int idSeason, CVideoInfoTag& details, bool al
   catch (...)
   {
     CLog::Log(LOGERROR, "%s (%i) failed", __FUNCTION__, idSeason);
+  }
+  return false;
+}
+
+bool CVideoDatabase::GetEpisodeBasicInfo(const std::string& strFilenameAndPath, CVideoInfoTag& details, int idEpisode /* = -1 */)
+{
+  try
+  {
+    if (idEpisode < 0)
+      idEpisode = GetEpisodeId(strFilenameAndPath);
+
+    if (idEpisode < 0)
+      return false;
+
+    std::string sql = PrepareSQL("select * from episode where idEpisode=%i",idEpisode);
+    if (!m_pDS->query(sql))
+      return false;
+    details = GetBasicDetailsForEpisode(m_pDS);
+    return !details.IsEmpty();
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strFilenameAndPath.c_str());
   }
   return false;
 }
@@ -3991,6 +4014,33 @@ CVideoInfoTag CVideoDatabase::GetDetailsForTvShow(const dbiplus::sql_record* con
   return details;
 }
 
+CVideoInfoTag CVideoDatabase::GetBasicDetailsForEpisode(std::unique_ptr<Dataset> &pDS)
+{
+  return GetBasicDetailsForEpisode(pDS->get_sql_record());
+}
+
+CVideoInfoTag CVideoDatabase::GetBasicDetailsForEpisode(const dbiplus::sql_record* const record)
+{
+  CVideoInfoTag details;
+
+  if (record == nullptr)
+    return details;
+
+  unsigned int time = XbmcThreads::SystemClockMillis();
+  int idEpisode = record->at(0).get_asInt();
+
+  GetDetailsFromDB(record, VIDEODB_ID_EPISODE_MIN, VIDEODB_ID_EPISODE_MAX, DbEpisodeOffsets, details);
+  details.m_iDbId = idEpisode;
+  details.m_type = MediaTypeEpisode;
+  details.m_iFileId = record->at(VIDEODB_DETAILS_FILEID).get_asInt();
+  details.m_iIdShow = record->at(VIDEODB_DETAILS_EPISODE_TVSHOW_ID).get_asInt();
+  details.m_iIdSeason = record->at(VIDEODB_DETAILS_EPISODE_SEASON_ID).get_asInt();
+  details.m_iUserRating = record->at(VIDEODB_DETAILS_EPISODE_USER_RATING).get_asInt();
+
+  movieTime += XbmcThreads::SystemClockMillis() - time;
+  return details;
+}
+
 CVideoInfoTag CVideoDatabase::GetDetailsForEpisode(std::unique_ptr<Dataset> &pDS, int getDetails /* = VideoDbDetailsNone */)
 {
   return GetDetailsForEpisode(pDS->get_sql_record(), getDetails);
@@ -4000,16 +4050,13 @@ CVideoInfoTag CVideoDatabase::GetDetailsForEpisode(const dbiplus::sql_record* co
 {
   CVideoInfoTag details;
 
-  if (record == NULL)
+  if (record == nullptr)
     return details;
 
-  DWORD time = XbmcThreads::SystemClockMillis();
-  int idEpisode = record->at(0).get_asInt();
+  details = GetBasicDetailsForEpisode(record);
+  
+  unsigned int time = XbmcThreads::SystemClockMillis();
 
-  GetDetailsFromDB(record, VIDEODB_ID_EPISODE_MIN, VIDEODB_ID_EPISODE_MAX, DbEpisodeOffsets, details);
-  details.m_iDbId = idEpisode;
-  details.m_type = MediaTypeEpisode;
-  details.m_iFileId = record->at(VIDEODB_DETAILS_FILEID).get_asInt();
   details.m_strPath = record->at(VIDEODB_DETAILS_EPISODE_PATH).get_asString();
   std::string strFileName = record->at(VIDEODB_DETAILS_EPISODE_FILE).get_asString();
   ConstructPath(details.m_strFileNameAndPath,details.m_strPath,strFileName);
@@ -4021,12 +4068,11 @@ CVideoInfoTag CVideoDatabase::GetDetailsForEpisode(const dbiplus::sql_record* co
   details.m_genre = StringUtils::Split(record->at(VIDEODB_DETAILS_EPISODE_TVSHOW_GENRE).get_asString(), g_advancedSettings.m_videoItemSeparator);
   details.m_studio = StringUtils::Split(record->at(VIDEODB_DETAILS_EPISODE_TVSHOW_STUDIO).get_asString(), g_advancedSettings.m_videoItemSeparator);
   details.SetPremieredFromDBDate(record->at(VIDEODB_DETAILS_EPISODE_TVSHOW_AIRED).get_asString());
-  details.m_iIdShow = record->at(VIDEODB_DETAILS_EPISODE_TVSHOW_ID).get_asInt();
-  details.m_iIdSeason = record->at(VIDEODB_DETAILS_EPISODE_SEASON_ID).get_asInt();
+  
   details.SetResumePoint(record->at(VIDEODB_DETAILS_EPISODE_RESUME_TIME).get_asInt(),
                          record->at(VIDEODB_DETAILS_EPISODE_TOTAL_TIME).get_asInt(),
                          record->at(VIDEODB_DETAILS_EPISODE_PLAYER_STATE).get_asString());
-  details.m_iUserRating = record->at(VIDEODB_DETAILS_EPISODE_USER_RATING).get_asInt();
+
   details.SetRating(record->at(VIDEODB_DETAILS_EPISODE_RATING).get_asFloat(),
                     record->at(VIDEODB_DETAILS_EPISODE_VOTES).get_asInt(),
                     record->at(VIDEODB_DETAILS_EPISODE_RATING_TYPE).get_asString(), true);
