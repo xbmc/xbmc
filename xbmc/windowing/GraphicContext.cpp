@@ -387,7 +387,7 @@ void CGraphicContext::SetVideoResolutionInternal(RESOLUTION res, bool forceUpdat
   RESOLUTION lastRes = m_Resolution;
 
   // If the user asked us to guess, go with desktop
-  if (res == RES_AUTORES || !IsValidResolution(res))
+  if (!IsValidResolution(res))
   {
     res = RES_DESKTOP;
   }
@@ -549,174 +549,18 @@ void CGraphicContext::ResetOverscan(RESOLUTION res, OVERSCAN &overscan)
 {
   overscan.left = 0;
   overscan.top = 0;
-  switch (res)
-  {
-  case RES_HDTV_1080i:
-    overscan.right = 1920;
-    overscan.bottom = 1080;
-    break;
-  case RES_HDTV_720pSBS:
-    overscan.right = 640;
-    overscan.bottom = 720;
-    break;
-  case RES_HDTV_720pTB:
-    overscan.right = 1280;
-    overscan.bottom = 360;
-    break;
-  case RES_HDTV_1080pSBS:
-    overscan.right = 960;
-    overscan.bottom = 1080;
-    break;
-  case RES_HDTV_1080pTB:
-    overscan.right = 1920;
-    overscan.bottom = 540;
-    break;
-  case RES_HDTV_720p:
-    overscan.right = 1280;
-    overscan.bottom = 720;
-    break;
-  case RES_HDTV_480p_16x9:
-  case RES_HDTV_480p_4x3:
-  case RES_NTSC_16x9:
-  case RES_NTSC_4x3:
-  case RES_PAL60_16x9:
-  case RES_PAL60_4x3:
-    overscan.right = 720;
-    overscan.bottom = 480;
-    break;
-  case RES_PAL_16x9:
-  case RES_PAL_4x3:
-    overscan.right = 720;
-    overscan.bottom = 576;
-    break;
-  default:
-    RESOLUTION_INFO info = GetResInfo(res);
-    overscan.right  = info.iWidth;
-    overscan.bottom = info.iHeight;
-    break;
-  }
+
+  RESOLUTION_INFO info = GetResInfo(res);
+  overscan.right  = info.iWidth;
+  overscan.bottom = info.iHeight;
 }
 
 void CGraphicContext::ResetScreenParameters(RESOLUTION res)
 {
-  // For now these are all on the first screen.
   RESOLUTION_INFO& info = CDisplaySettings::GetInstance().GetResolutionInfo(res);
 
-  // 1080i
   switch (res)
   {
-  case RES_HDTV_1080i:
-    info.iSubtitles = (int)(0.965 * 1080);
-    info.iWidth = 1920;
-    info.iHeight = 1080;
-    info.dwFlags = D3DPRESENTFLAG_INTERLACED | D3DPRESENTFLAG_WIDESCREEN;
-    info.fPixelRatio = 1.0f;
-    info.strMode ="1080i 16:9";
-    break;
-  case RES_HDTV_720pSBS:
-    info.iSubtitles = (int)(0.965 * 720);
-    info.iWidth = 640;
-    info.iHeight = 720;
-    info.dwFlags = D3DPRESENTFLAG_PROGRESSIVE | D3DPRESENTFLAG_WIDESCREEN | D3DPRESENTFLAG_MODE3DSBS;
-    info.fPixelRatio = 2.0f;
-    info.strMode = "720pSBS 16:9";
-    break;
-  case RES_HDTV_720pTB:
-    info.iSubtitles = (int)(0.965 * 720);
-    info.iWidth = 1280;
-    info.iHeight = 720;
-    info.dwFlags = D3DPRESENTFLAG_PROGRESSIVE | D3DPRESENTFLAG_WIDESCREEN | D3DPRESENTFLAG_MODE3DTB;
-    info.fPixelRatio = 0.5f;
-    info.strMode = "720pTB 16:9";
-    break;
-  case RES_HDTV_1080pSBS:
-    info.iSubtitles = (int)(0.965 * 1080);
-    info.iWidth = 1920;
-    info.iHeight = 1080;
-    info.dwFlags = D3DPRESENTFLAG_PROGRESSIVE | D3DPRESENTFLAG_WIDESCREEN | D3DPRESENTFLAG_MODE3DSBS;
-    info.fPixelRatio = 2.0f;
-    info.strMode = "1080pSBS 16:9";
-    break;
-  case RES_HDTV_1080pTB:
-    info.iSubtitles = (int)(0.965 * 1080);
-    info.iWidth = 1920;
-    info.iHeight = 1080;
-    info.dwFlags = D3DPRESENTFLAG_PROGRESSIVE | D3DPRESENTFLAG_WIDESCREEN | D3DPRESENTFLAG_MODE3DTB;
-    info.fPixelRatio = 0.5f;
-    info.strMode = "1080pTB 16:9";
-    break;
-  case RES_HDTV_720p:
-    info.iSubtitles = (int)(0.965 * 720);
-    info.iWidth = 1280;
-    info.iHeight = 720;
-    info.dwFlags = D3DPRESENTFLAG_PROGRESSIVE | D3DPRESENTFLAG_WIDESCREEN;
-    info.fPixelRatio = 1.0f;
-    info.strMode = "720p 16:9";
-    break;
-  case RES_HDTV_480p_4x3:
-    info.iSubtitles = (int)(0.9 * 480);
-    info.iWidth = 720;
-    info.iHeight = 480;
-    info.dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
-    info.fPixelRatio = 4320.0f / 4739.0f;
-    info.strMode = "480p 4:3";
-    break;
-  case RES_HDTV_480p_16x9:
-    info.iSubtitles = (int)(0.965 * 480);
-    info.iWidth = 720;
-    info.iHeight = 480;
-    info.dwFlags = D3DPRESENTFLAG_PROGRESSIVE | D3DPRESENTFLAG_WIDESCREEN;
-    info.fPixelRatio = 4320.0f / 4739.0f*4.0f / 3.0f;
-    info.strMode = "480p 16:9";
-    break;
-  case RES_NTSC_4x3:
-    info.iSubtitles = (int)(0.9 * 480);
-    info.iWidth = 720;
-    info.iHeight = 480;
-    info.dwFlags = D3DPRESENTFLAG_INTERLACED;
-    info.fPixelRatio = 4320.0f / 4739.0f;
-    info.strMode = "NTSC 4:3";
-    break;
-  case RES_NTSC_16x9:
-    info.iSubtitles = (int)(0.965 * 480);
-    info.iWidth = 720;
-    info.iHeight = 480;
-    info.dwFlags = D3DPRESENTFLAG_INTERLACED | D3DPRESENTFLAG_WIDESCREEN;
-    info.fPixelRatio = 4320.0f / 4739.0f*4.0f / 3.0f;
-    info.strMode = "NTSC 16:9";
-    break;
-  case RES_PAL_4x3:
-    info.iSubtitles = (int)(0.9 * 576);
-    info.iWidth = 720;
-    info.iHeight = 576;
-    info.dwFlags = D3DPRESENTFLAG_INTERLACED;
-    info.fPixelRatio = 128.0f / 117.0f;
-    info.strMode = "PAL 4:3";
-    break;
-  case RES_PAL_16x9:
-    info.iSubtitles = (int)(0.965 * 576);
-    info.iWidth = 720;
-    info.iHeight = 576;
-    info.dwFlags = D3DPRESENTFLAG_INTERLACED | D3DPRESENTFLAG_WIDESCREEN;
-    info.fPixelRatio = 128.0f / 117.0f*4.0f / 3.0f;
-    info.strMode = "PAL 16:9";
-    break;
-  case RES_PAL60_4x3:
-    info.iSubtitles = (int)(0.9 * 480);
-    info.iWidth = 720;
-    info.iHeight = 480;
-    info.dwFlags = D3DPRESENTFLAG_INTERLACED;
-    info.fPixelRatio = 4320.0f / 4739.0f;
-    info.strMode = "PAL60 4:3";
-    break;
-  case RES_PAL60_16x9:
-    info.iSubtitles = (int)(0.965 * 480);
-    info.iWidth = 720;
-    info.iHeight = 480;
-    info.dwFlags = D3DPRESENTFLAG_INTERLACED | D3DPRESENTFLAG_WIDESCREEN;
-    info.fPixelRatio = 4320.0f / 4739.0f*4.0f / 3.0f;
-    info.strMode = "PAL60 16:9";
-    break;
   case RES_WINDOW:
     info.iSubtitles = (int)(0.965 * info.iHeight);
     info.fPixelRatio = 1.0;
@@ -724,6 +568,7 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
   default:
     break;
   }
+
   info.iScreenWidth  = info.iWidth;
   info.iScreenHeight = info.iHeight;
   ResetOverscan(res, info.Overscan);
@@ -1075,10 +920,6 @@ float CGraphicContext::GetFPS() const
     RESOLUTION_INFO info = GetResInfo();
     if (info.fRefreshRate > 0)
       return info.fRefreshRate;
-    if (m_Resolution == RES_PAL_4x3 || m_Resolution == RES_PAL_16x9)
-      return 50.0f;
-    if (m_Resolution == RES_HDTV_1080i)
-      return 30.0f;
   }
   return 60.0f;
 }
