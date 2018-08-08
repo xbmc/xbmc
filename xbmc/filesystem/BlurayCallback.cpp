@@ -123,7 +123,7 @@ BD_FILE_H * CBlurayCallback::file_open(void *handle, const char *rel_path)
   file->eof = file_eof;
 
   CFile* fp = new CFile();
-  if (fp->Open(strFilename))
+  if (fp->Open(strFilename, READ_TRUNCATED | READ_BITRATE | READ_CHUNKED))
   {
     file->internal = (void*)fp;
     return file;
