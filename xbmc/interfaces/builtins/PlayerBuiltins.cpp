@@ -517,22 +517,45 @@ static int Seek(const std::vector<std::string>& params)
 ///     @param[in] param                 "restart" to restart from resume point (optional)
 ///   }
 ///   \table_row2_l{
-///     <b>`PlayerControl(command[\,param])`</b>
+///     <b>`PlayerControl(control[\,param])`</b>
 ///     ,
-///     Allows control of music and videos. The command may be one of Play\, Stop\,
-///     Forward\, Rewind\, Next\, Previous\, BigSkipForward\, BigSkipBackward\,
-///     SmallSkipForward\, SmallSkipBackward\, Random\, RandomOn\, RandomOff\,
-///     Repeat\, RepeatOne\, RepeatAll\, RepeatOff\, Partymode(music) or
-///     Partymode(video) or Partymode(path to .xsp file)\, and Record. Play will
-///     either pause\, resume\, or stop ffwding or rewinding. Random toggles random
-///     playback and Repeat cycles through the repeat modes (these both take an
-///     optional second parameter\, Notify\, that notifies the user of the new
-///     state). Partymode(music/video) toggles the appropriate partymode\,
-///     defaults to music if no parameter is given\, besides the default music or
-///     video partymode you can also pass a path to a custom smartplaylist (.xsp)
-///     as parameter.
+///     Allows control of music and videos. <br>
+///     <br>
+///     | Control                 | Video playback behaviour               | Audio playback behaviour    | Added in    |
+///     |:------------------------|:---------------------------------------|:----------------------------|:------------|
+///     | Play                    | Play/Pause                             | Play/Pause                  |             | 
+///     | Stop                    | Stop                                   | Stop                        |             |
+///     | Forward                 | Fast Forward                           | Fast Forward                |             |
+///     | Rewind                  | Rewind                                 | Rewind                      |             |
+///     | Next                    | Next chapter or movie in playlists     | Next track                  |             |
+///     | Previous                | Previous chapter or movie in playlists | Previous track              |             |
+///     | TempoUp                 | Increases playback speed               | none                        | Kodi v18    |
+///     | TempoDown               | Decreases playback speed               | none                        | Kodi v18    |
+///     | BigSkipForward          | Big Skip Forward                       | Big Skip Forward            | Kodi v15    |
+///     | BigSkipBackward         | Big Skip Backward                      | Big Skip Backward           | Kodi v15    |
+///     | SmallSkipForward        | Small Skip Forward                     | Small Skip Forward          | Kodi v15    |
+///     | SmallSkipBackward       | Small Skip Backward                    | Small Skip Backward         | Kodi v15    |
+///     | SeekPercentage(n)       | Seeks to given percentage              | Seeks to given percentage   |             |
+///     | Random *                | Toggle Random Playback                 | Toggle Random Playback      |             |
+///     | RandomOn                | Sets 'Random' to 'on'                  | Sets 'Random' to 'on'       |             |
+///     | RandomOff               | Sets 'Random' to 'off'                 | Sets 'Random' to 'off'      |             |
+///     | Repeat *                | Cycles through repeat modes            | Cycles through repeat modes |             |
+///     | RepeatOne               | Repeats a single video                 | Repeats a single track      |             |
+///     | RepeatAll               | Repeat all videos in a list            | Repeats all tracks in a list|             |
+///     | RepeatOff               | Sets 'Repeat' to 'off'                 | Sets 'Repeat' to 'off'      |             |
+///     | Partymode(music) **     | none                                   | Toggles music partymode     |             |
+///     | Partymode(video) **     | Toggles video partymode                | none                        |             |
+///     | Partymode(path to .xsp) | Partymode for *.xsp-file               | Partymode for *.xsp-file    |             |
+///     | ShowVideoMenu           | Shows the DVD/BR menu if available     | none                        |             |
+///     <br>
+///     '*' = For these controls, the PlayerControl built-in function can make use of the 'notify'-parameter. For example: PlayerControl(random\, notify)
+///     '**' = If no argument is given for 'partymode'\, the control  will default to music.
+///     <br>
 ///     @param[in] control               Control to execute.
 ///     @param[in] param                 "notify" to notify user (optional\, certain controls).
+///
+///     @note 'TempoUp' or 'TempoDown' only works if "Sync playback to display" is enabled.
+///     @note 'Next' will behave differently while using video playlists. In those\, chapters will be ignored and the next movie will be played.
 ///   }
 ///   \table_row2_l{
 ///     <b>`Playlist.Clear`</b>

@@ -298,7 +298,7 @@ static int SearchVideoLibrary(const std::vector<std::string>& params)
 ///     <b>`cleanlibrary(type)`</b>
 ///     ,
 ///      Clean the video/music library
-///     @param[in] type                  "video", "movies", "tvshows", "musicvideos" or "music".
+///     @param[in] type                  "video"\, "movies"\, "tvshows"\, "musicvideos" or "music".
 ///   }
 ///   \table_row2_l{
 ///     <b>`exportlibrary(type [\, exportSingeFile\, exportThumbs\, overwrite\, exportActorThumbs])`</b>
@@ -316,9 +316,9 @@ static int SearchVideoLibrary(const std::vector<std::string>& params)
 ///     ,
 ///     Export the video/music library with extended parameters
 ///     @param[in] library               "video" or "music".
-///     @param[in] exportFiletype        "singlefile", "separate" or "library"
-///     @param[in] path                  Path to destination folder
-///     @param[in] unscraped             Add "unscraped" to include unscraped items
+///     @param[in] exportFiletype        "singlefile"\, "separate" or "library".
+///     @param[in] path                  Path to destination folder.
+///     @param[in] unscraped             Add "unscraped" to include unscraped items.
 ///     @param[in] overwrite             Add "overwrite" to overwrite exitsing files.
 ///     @param[in] artwork               Add "artwork" to include images such as thumbs and fanart.
 ///     @param[in] skipnfo               Add "skipnfo" to not include nfo files(just art).
