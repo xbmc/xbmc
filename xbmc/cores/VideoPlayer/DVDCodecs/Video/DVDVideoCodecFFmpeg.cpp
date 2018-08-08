@@ -334,6 +334,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   m_formats = m_processInfo.GetPixFormats();
   m_formats.push_back(AV_PIX_FMT_NONE); /* always add none to get a terminated list in ffmpeg world */
   m_processInfo.SetSwDeinterlacingMethods();
+  m_processInfo.SetVideoInterlaced(false);
 
   pCodec = avcodec_find_decoder(hints.codec);
 
@@ -745,7 +746,8 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecFFmpeg::GetPicture(VideoPicture* pVideoPi
   else
     m_interlaced = false;
 
-  m_processInfo.SetVideoInterlaced(m_interlaced);
+  if (!m_processInfo.GetVideoInterlaced() && m_interlaced)
+    m_processInfo.SetVideoInterlaced(m_interlaced);
 
   if (!m_started)
   {
