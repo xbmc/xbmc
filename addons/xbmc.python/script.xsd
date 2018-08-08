@@ -3,6 +3,9 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
   <xs:element name="extension">
     <xs:complexType>
+      <xs:sequence>
+        <xs:element name="provides" type="providesList" minOccurs="0" maxOccurs="1"/>
+      </xs:sequence>
       <xs:attribute name="point" type="xs:string" use="required"/>
       <xs:attribute name="id" type="simpleIdentifier"/>
       <xs:attribute name="name" type="xs:string"/>
@@ -11,7 +14,19 @@
   </xs:element>
   <xs:simpleType name="simpleIdentifier">
     <xs:restriction base="xs:string">
-      <xs:pattern value="[^.]+"/>
+      <xs:pattern value="xbmc\.(python\.(library|lyrics|module|script|weather)|ui\.screensaver|subtitle\.module)"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="providesList">
+    <xs:list itemType="providesType"/>
+  </xs:simpleType>
+  <xs:simpleType name="providesType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="audio"/>
+      <xs:enumeration value="executable"/>
+      <xs:enumeration value="game"/>
+      <xs:enumeration value="image"/>
+      <xs:enumeration value="video"/>
     </xs:restriction>
   </xs:simpleType>
 </xs:schema>

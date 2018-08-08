@@ -3,10 +3,10 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
   <xs:element name="extension">
     <xs:complexType>
-      <xs:sequence>
+      <xs:all>
         <xs:element name="charsets">
           <xs:complexType>
-            <xs:sequence>
+            <xs:all>
               <xs:element name="gui">
                 <xs:complexType>
                   <xs:simpleContent>
@@ -17,7 +17,7 @@
                 </xs:complexType>
               </xs:element>
               <xs:element name="subtitle" type="xs:string"/>
-            </xs:sequence>
+            </xs:all>
           </xs:complexType>
         </xs:element>
         <xs:element name="sorttokens" minOccurs="0">
@@ -37,25 +37,30 @@
         </xs:element>
         <xs:element name="dvd" minOccurs="0">
           <xs:complexType>
-            <xs:sequence>
+            <xs:all>
               <xs:element name="menu" type="xs:string" minOccurs="0"/>
               <xs:element name="audio" type="xs:string" minOccurs="0"/>
               <xs:element name="subtitle" type="xs:string" minOccurs="0"/>
-            </xs:sequence>
+            </xs:all>
           </xs:complexType>
         </xs:element>
-      </xs:sequence>
+      </xs:all>
       <xs:attribute name="point" type="xs:string" use="required"/>
       <xs:attribute name="id" type="simpleIdentifier"/>
       <xs:attribute name="name" type="xs:string"/>
-      <xs:attribute name="locale" type="xs:string"/>
+      <xs:attribute name="locale" type="langIdentifier"/>
       <xs:attribute name="language" type="xs:string"/>
       <xs:attribute name="region" type="xs:string"/>
     </xs:complexType>
   </xs:element>
   <xs:simpleType name="simpleIdentifier">
     <xs:restriction base="xs:string">
-      <xs:pattern value="[^.]+"/>
+      <xs:pattern value="kodi\.resource\.language"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="langIdentifier">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[a-z]{2,3}(_[A-Z]{2}(@\S+)?)?"/>
     </xs:restriction>
   </xs:simpleType>
 </xs:schema>

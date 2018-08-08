@@ -6,28 +6,33 @@
       <xs:sequence>
         <xs:element name="menu" type="menuType" minOccurs="1" maxOccurs="unbounded"/>
       </xs:sequence>
-      <xs:attribute name="point" type="xs:string" use="required"/>
-      <xs:attribute name="id" type="simpleIdentifier"/>
+      <xs:attribute name="point" type="pointIdentifier" use="required"/>
+      <xs:attribute name="id" type="menuIdentifier"/>
     </xs:complexType>
   </xs:element>
   <xs:complexType name="itemType">
-    <xs:sequence>
-      <xs:element name="label" type="xs:string"/>
-      <xs:element name="visible" type="xs:string"/>
-    </xs:sequence>
+    <xs:all>
+      <xs:element name="label" type="xs:string" minOccurs="1"/>
+      <xs:element name="visible" type="xs:string" minOccurs="1"/>
+    </xs:all>
     <xs:attribute name="library" type="xs:string" use="required"/>
   </xs:complexType>
   <xs:complexType name="menuType">
-    <xs:sequence>
+    <xs:choice maxOccurs="unbounded">
       <xs:element name="label" type="xs:string" minOccurs="0"/>
       <xs:element name="item" type="itemType" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="menu" type="menuType" minOccurs="0" maxOccurs="unbounded"/>
-    </xs:sequence>
+    </xs:choice>
     <xs:attribute name="id" type="xs:string"/>
   </xs:complexType>
-  <xs:simpleType name="simpleIdentifier">
+  <xs:simpleType name="pointIdentifier">
     <xs:restriction base="xs:string">
-      <xs:pattern value="[^.]+"/>
+      <xs:pattern value="kodi\.context\.item"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="menuIdentifier">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="kodi\.core\.(manage|main)"/>
     </xs:restriction>
   </xs:simpleType>
 </xs:schema>

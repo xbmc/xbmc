@@ -10,7 +10,7 @@
   </xs:element>
   <xs:simpleType name="simpleIdentifier">
     <xs:restriction base="xs:string">
-      <xs:pattern value="[^.]+"/>
+      <xs:pattern value="kodi\.resource\.uisounds"/>
     </xs:restriction>
   </xs:simpleType>
 </xs:schema>

@@ -3,8 +3,14 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
   <xs:element name="extension">
     <xs:complexType>
-      <xs:attribute name="point" type="xs:string" use="required"/>
+      <xs:attribute name="point" type="simpleIdentifier" use="required"/>
+      <xs:attribute name="compile" type="xs:boolean"/>
       <xs:attribute name="type" type="xs:string"/>
     </xs:complexType>
   </xs:element>
+  <xs:simpleType name="simpleIdentifier">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="kodi\.resource\.images"/>
+    </xs:restriction>
+  </xs:simpleType>
 </xs:schema>

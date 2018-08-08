@@ -21,11 +21,12 @@
       <xs:attribute name="defaultwideresolution" type="xs:string"/>
       <xs:attribute name="effectslowdown" type="xs:float"/>
       <xs:attribute name="debugging" type="xs:boolean"/>
+      <xs:attribute name="defaultthemename" type="xs:string"/>
     </xs:complexType>
   </xs:element>
   <xs:simpleType name="simpleIdentifier">
     <xs:restriction base="xs:string">
-      <xs:pattern value="[^.]+"/>
+      <xs:pattern value="xbmc\.gui\.skin"/>
     </xs:restriction>
   </xs:simpleType>
 </xs:schema>
