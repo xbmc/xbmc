@@ -27,8 +27,7 @@ namespace RETRO
   {
   public:
     CRenderBufferGBM(CRenderContext &context,
-                     int fourcc,
-                     int bpp);
+                     int fourcc);
     ~CRenderBufferGBM() override;
 
     // implementation of IRenderBuffer via CRenderBufferSysMem
@@ -46,7 +45,6 @@ namespace RETRO
     // Construction parameters
     CRenderContext &m_context;
     const int m_fourcc = 0;
-    const int m_bpp;
 
     const GLenum m_textureTarget = GL_TEXTURE_EXTERNAL_OES;
     GLuint m_textureId = 0;

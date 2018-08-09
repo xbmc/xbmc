@@ -32,8 +32,7 @@ bool CRenderBufferPoolGBM::IsCompatible(const CRenderVideoSettings &renderSettin
 IRenderBuffer *CRenderBufferPoolGBM::CreateRenderBuffer(void *header /* = nullptr */)
 {
   return new CRenderBufferGBM(m_context,
-                              m_fourcc,
-                              m_bpp);
+                              m_fourcc);
 }
 
 bool CRenderBufferPoolGBM::ConfigureInternal()
@@ -43,14 +42,12 @@ bool CRenderBufferPoolGBM::ConfigureInternal()
     case AV_PIX_FMT_0RGB32:
     {
       m_fourcc = DRM_FORMAT_ARGB8888;
-      m_bpp = sizeof(uint32_t);
       return true;
     }
     case AV_PIX_FMT_RGB555:
     case AV_PIX_FMT_RGB565:
     {
       m_fourcc = DRM_FORMAT_RGB565;
-      m_bpp = sizeof(uint16_t);
       return true;
     }
     default:
