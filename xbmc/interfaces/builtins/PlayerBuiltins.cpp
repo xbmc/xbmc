@@ -435,6 +435,8 @@ static int PlayMedia(const std::vector<std::string>& params)
     std::string extensions = CServiceBroker::GetFileExtensionProvider().GetVideoExtensions() + "|" + CServiceBroker::GetFileExtensionProvider().GetMusicExtensions();
     XFILE::CDirectory::GetDirectory(item.GetPath(), items, extensions, XFILE::DIR_FLAG_DEFAULTS);
 
+    if (!items.IsEmpty()) // fall through on non expandable playlist
+    {
     bool containsMusic = false, containsVideo = false;
     for (int i = 0; i < items.Size(); i++)
     {
@@ -466,8 +468,10 @@ static int PlayMedia(const std::vector<std::string>& params)
     CServiceBroker::GetPlaylistPlayer().Add(playlist, items);
     CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(playlist);
     CServiceBroker::GetPlaylistPlayer().Play(playOffset, "");
+    return 0;
+    }
   }
-  else if (item.IsAudio() || item.IsVideo())
+  if (item.IsAudio() || item.IsVideo())
     CServiceBroker::GetPlaylistPlayer().Play(std::make_shared<CFileItem>(item), "");
   else
     g_application.PlayMedia(item, "", PLAYLIST_NONE);
