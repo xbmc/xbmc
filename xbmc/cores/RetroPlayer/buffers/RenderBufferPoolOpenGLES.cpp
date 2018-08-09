@@ -67,13 +67,6 @@ bool CRenderBufferPoolOpenGLES::ConfigureInternal()
     return true;
   }
   case AV_PIX_FMT_RGB555:
-  {
-    m_pixeltype = GL_UNSIGNED_SHORT_5_5_5_1;
-    m_internalformat = GL_RGB;
-    m_pixelformat = GL_RGB;
-    m_bpp = sizeof(uint16_t);
-    return true;
-  }
   case AV_PIX_FMT_RGB565:
   {
     m_pixeltype = GL_UNSIGNED_SHORT_5_6_5;
