@@ -26,7 +26,7 @@ CGUIComponent::CGUIComponent()
   m_stereoscopicsManager.reset(new CStereoscopicsManager(CServiceBroker::GetSettings()));
   m_guiInfoManager.reset(new CGUIInfoManager());
   m_guiColorManager.reset(new CGUIColorManager());
-  m_guiAudioManager.reset(new CGUIAudioManager());
+  m_guiAudioManager.reset(new CGUIAudioManager(CServiceBroker::GetSettings()));
 }
 
 CGUIComponent::~CGUIComponent()

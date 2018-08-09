@@ -23,12 +23,20 @@
 #include "cores/AudioEngine/Interfaces/AE.h"
 #include "utils/log.h"
 
-CGUIAudioManager::CGUIAudioManager()
+CGUIAudioManager::CGUIAudioManager(CSettings &settings) :
+  m_settings(settings)
 {
   m_bEnabled = false;
+
+  m_settings.RegisterCallback(this, {
+    CSettings::SETTING_LOOKANDFEEL_SOUNDSKIN,
+  });
 }
 
-CGUIAudioManager::~CGUIAudioManager() = default;
+CGUIAudioManager::~CGUIAudioManager()
+{
+  m_settings.UnregisterCallback(this);
+}
 
 void CGUIAudioManager::OnSettingChanged(std::shared_ptr<const CSetting> setting)
 {
