@@ -31,6 +31,7 @@ ifeq ($(OS),ios)
   ifeq ($(TARGET_PLATFORM),appletvos)
     DEPENDS += boblight
   endif
+  DEPENDS += iosentitlements
 else
   DVDREAD_DEPS = libdvdcss
 endif
