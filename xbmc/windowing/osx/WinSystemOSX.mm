@@ -829,20 +829,7 @@ bool CWinSystemOSX::ResizeWindow(int newWidth, int newHeight, int newLeft, int n
     window = [view window];
     if (window)
     {
-      int curScreenIdx = GetDisplayIndex(GetDisplayIDFromScreen([window screen]));
-      int userScreenIdx = GetDisplayIndex(CServiceBroker::GetSettings().GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR));
-
-      if (curScreenIdx != userScreenIdx)
-      {
-        NSScreen* pScreen = [[NSScreen screens] objectAtIndex:userScreenIdx];
-        NSRect visibleRect = [pScreen visibleFrame];
-        [window setFrame:NSMakeRect(visibleRect.origin.x, visibleRect.origin.y, newWidth, newHeight) display:YES];
-      }
-      else
-      {
-        [window setContentSize:NSMakeSize(newWidth, newHeight)];
-      }
-
+      [window setContentSize:NSMakeSize(newWidth, newHeight)];
       [window update];
       [view setFrameSize:NSMakeSize(newWidth, newHeight)];
       [context update];
@@ -884,8 +871,6 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
   bool was_fullscreen = m_bFullScreen;
   NSOpenGLContext* cur_context;
 
-  m_lastDisplayNr = GetDisplayIndex(CServiceBroker::GetSettings().GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR));
-
   // Fade to black to hide resolution-switching flicker and garbage.
   CGDisplayFadeReservationToken fade_token = DisplayFadeToBlack(needtoshowme);
 
@@ -902,8 +887,9 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     needtoshowme = true;
   }
 
-  m_nWidth      = res.iWidth;
-  m_nHeight     = res.iHeight;
+  m_lastDisplayNr = GetDisplayIndex(CServiceBroker::GetSettings().GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR));
+  m_nWidth = res.iWidth;
+  m_nHeight = res.iHeight;
   m_bFullScreen = fullScreen;
 
   cur_context = [NSOpenGLContext currentContext];
@@ -947,7 +933,7 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     {
       // This is Cocoa Windowed FullScreen Mode
       // Get the screen rect of our current display
-      NSScreen* pScreen = [[NSScreen screens] objectAtIndex:0];
+      NSScreen* pScreen = [[NSScreen screens] objectAtIndex:m_lastDisplayNr];
       NSRect    screenRect = [pScreen frame];
 
       // remove frame origin offset of original display
@@ -1769,16 +1755,6 @@ void CWinSystemOSX::WindowChangedScreen()
       if (window)
       {
         m_lastDisplayNr = GetDisplayIndex(GetDisplayIDFromScreen([window screen]));
-        std::string curMonitor = CServiceBroker::GetSettings().GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR);
-        if (curMonitor != "Default")
-        {
-          NSString *dispName = screenNameForDisplay(GetDisplayID(m_lastDisplayNr));
-          if (curMonitor != [dispName UTF8String])
-          {
-            CDisplaySettings::GetInstance().SetMonitor([dispName UTF8String]);
-            UpdateResolutions();
-          }
-        }
       }
     }
   }
