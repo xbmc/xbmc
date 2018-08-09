@@ -15,7 +15,8 @@
 
 using namespace XFILE;
 
-CDVDInputStreamFile::CDVDInputStreamFile(const CFileItem& fileitem) : CDVDInputStream(DVDSTREAM_TYPE_FILE, fileitem)
+CDVDInputStreamFile::CDVDInputStreamFile(const CFileItem& fileitem, unsigned int flags)
+  : CDVDInputStream(DVDSTREAM_TYPE_FILE, fileitem), m_flags(flags)
 {
   m_pFile = NULL;
   m_eof = true;
@@ -40,7 +41,7 @@ bool CDVDInputStreamFile::Open()
   if (!m_pFile)
     return false;
 
-  unsigned int flags = READ_TRUNCATED | READ_BITRATE | READ_CHUNKED;
+  unsigned int flags = m_flags;
 
   // If this file is audio and/or video (= not a subtitle) flag to caller
   if (!m_item.IsSubtitle())
