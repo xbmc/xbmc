@@ -172,6 +172,11 @@ bool CServiceManager::InitStageTwo(const CAppParamParser &params)
                                                     *m_gameControllerManager));
 
   m_gameRenderManager.reset(new RETRO::CGUIGameRenderManager);
+  m_gameServices.reset(new GAME::CGameServices(*m_gameControllerManager,
+    *m_gameRenderManager,
+    *m_settings,
+    *m_peripherals,
+    *m_profileManager));
 
   m_fileExtensionProvider.reset(new CFileExtensionProvider(*m_addonMgr,
                                                            *m_binaryAddonManager));
@@ -192,12 +197,6 @@ bool CServiceManager::InitStageThree()
   // Peripherals depends on strings being loaded before stage 3
   m_peripherals->Initialise();
 
-  m_gameServices.reset(new GAME::CGameServices(*m_gameControllerManager,
-    *m_gameRenderManager,
-    *m_settings,
-    *m_peripherals,
-    *m_profileManager));
-
   m_contextMenuManager->Init();
   m_PVRManager->Init();
 
@@ -215,7 +214,6 @@ void CServiceManager::DeinitStageThree()
   m_playerCoreFactory.reset();
   m_PVRManager->Deinit();
   m_contextMenuManager->Deinit();
-  m_gameServices.reset();
   m_peripherals->Clear();
 }
 
@@ -226,6 +224,7 @@ void CServiceManager::DeinitStageTwo()
   m_weatherManager.reset();
   m_powerManager.reset();
   m_fileExtensionProvider.reset();
+  m_gameServices.reset();
   m_gameRenderManager.reset();
   m_peripherals.reset();
   m_inputManager.reset();
