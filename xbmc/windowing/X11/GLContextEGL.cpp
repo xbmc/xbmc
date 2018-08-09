@@ -391,10 +391,9 @@ void CGLContextEGL::SwapBuffers()
   m_sync.ust2 = ust2;
   m_sync.msc1 = msc1;
   m_sync.msc2 = msc2;
-  m_sync.sbc2 = sbc2;
 }
 
-uint64_t CGLContextEGL::GetFrameLatencyAdjustment()
+uint64_t CGLContextEGL::GetVblankTiming(uint64_t &msc, uint64_t &interval)
 {
   struct timespec nowTs;
   uint64_t now;
@@ -402,7 +401,9 @@ uint64_t CGLContextEGL::GetFrameLatencyAdjustment()
   now = nowTs.tv_sec * 1000000000 + nowTs.tv_nsec;
   now /= 1000;
 
-  uint64_t interval = (m_sync.cont > 5) ? m_sync.interval : m_sync.ust2 - m_sync.ust1;
+  msc = m_sync.msc2;
+
+  interval = (m_sync.cont > 5) ? m_sync.interval : m_sync.ust2 - m_sync.ust1;
   if (interval == 0)
     return 0;
 

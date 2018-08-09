@@ -18,7 +18,7 @@
 #include "threads/SingleLock.h"
 #include <vector>
 #include "Application.h"
-#include "VideoSyncDRM.h"
+#include "VideoSyncOML.h"
 
 #include "cores/RetroPlayer/process/X11/RPProcessInfoX11.h"
 #include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererOpenGL.h"
@@ -311,7 +311,7 @@ std::unique_ptr<CVideoSync> CWinSystemX11GLContext::GetVideoSync(void *clock)
 
   if (dynamic_cast<CGLContextEGL*>(m_pGLContext))
   {
-    pVSync.reset(new CVideoSyncDRM(clock, *this));
+    pVSync.reset(new CVideoSyncOML(clock, *this));
   }
   else
   {
@@ -325,9 +325,22 @@ float CWinSystemX11GLContext::GetFrameLatencyAdjustment()
 {
   if (m_pGLContext)
   {
-    float micros = m_pGLContext->GetFrameLatencyAdjustment();
+    uint64_t msc, interval;
+    float micros = m_pGLContext->GetVblankTiming(msc, interval);
     return micros / 1000;
   }
+  return 0;
+}
+
+uint64_t CWinSystemX11GLContext::GetVblankTiming(uint64_t &msc, uint64_t &interval)
+{
+  if (m_pGLContext)
+  {
+    float micros = m_pGLContext->GetVblankTiming(msc, interval);
+    return micros / 1000;
+  }
+  msc = 0;
+  interval = 0;
   return 0;
 }
 

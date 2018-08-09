@@ -361,20 +361,15 @@ void CWinSystemX11::UpdateResolutions()
   XOutput *out = g_xrandr.GetOutput(m_userOutput);
   if (out != NULL)
   {
-    std::vector<XMode>::iterator modeiter;
     CLog::Log(LOGINFO, "Output '%s' has %" PRIdS" modes", out->name.c_str(), out->modes.size());
 
-    for (modeiter = out->modes.begin() ; modeiter!=out->modes.end() ; modeiter++)
+    for (auto mode : out->modes)
     {
-      XMode mode = *modeiter;
       CLog::Log(LOGINFO, "ID:%s Name:%s Refresh:%f Width:%d Height:%d",
                 mode.id.c_str(), mode.name.c_str(), mode.hz, mode.w, mode.h);
       RESOLUTION_INFO res;
       res.dwFlags = 0;
-      res.iWidth  = mode.w;
-      res.iHeight = mode.h;
-      res.iScreenWidth  = mode.w;
-      res.iScreenHeight = mode.h;
+
       if (mode.IsInterlaced())
         res.dwFlags |= D3DPRESENTFLAG_INTERLACED;
 
@@ -382,13 +377,18 @@ void CWinSystemX11::UpdateResolutions()
       {
         res.iWidth  = mode.w;
         res.iHeight = mode.h;
+        res.iScreenWidth = mode.w;
+        res.iScreenHeight = mode.h;
       }
       else
       {
         res.iWidth  = mode.h;
         res.iHeight = mode.w;
+        res.iScreenWidth = mode.h;
+        res.iScreenHeight = mode.w;
       }
-      if (mode.h>0 && mode.w>0 && out->hmm>0 && out->wmm>0)
+
+      if (mode.h > 0 && mode.w > 0 && out->hmm > 0 && out->wmm > 0)
         res.fPixelRatio = ((float)out->wmm/(float)mode.w) / (((float)out->hmm/(float)mode.h));
       else
         res.fPixelRatio = 1.0f;
