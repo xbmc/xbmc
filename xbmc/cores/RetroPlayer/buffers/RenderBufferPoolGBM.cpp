@@ -47,11 +47,6 @@ bool CRenderBufferPoolGBM::ConfigureInternal()
       return true;
     }
     case AV_PIX_FMT_RGB555:
-    {
-      m_fourcc = DRM_FORMAT_RGBA5551;
-      m_bpp = sizeof(uint16_t);
-      return true;
-    }
     case AV_PIX_FMT_RGB565:
     {
       m_fourcc = DRM_FORMAT_RGB565;
