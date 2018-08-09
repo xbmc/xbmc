@@ -68,8 +68,7 @@ CWinLibraryFile::~CWinLibraryFile(void) = default;
 bool CWinLibraryFile::IsValid(const CURL & url)
 {
   return CWinLibraryDirectory::IsValid(url)
-    && !url.GetFileName().empty()
-    && !URIUtils::HasSlashAtEnd(url.GetFileName(), false);
+    && !url.GetFileName().empty();
 }
 
 bool CWinLibraryFile::Open(const CURL& url)
@@ -242,8 +241,16 @@ bool CWinLibraryFile::Exists(const CURL& url)
 
 int CWinLibraryFile::Stat(const CURL& url, struct __stat64* statData)
 {
-  auto file = GetFile(url);
-  return Stat(file, statData);
+  if (URIUtils::HasSlashAtEnd(url.GetFileName(), false))
+  {
+    // stat for directory
+    return CWinLibraryDirectory::StatDirectory(url, statData);
+  }
+  else
+  {
+    auto file = GetFile(url);
+    return Stat(file, statData);
+  }
 }
 
 int CWinLibraryFile::Stat(struct __stat64* statData)
@@ -283,6 +290,10 @@ bool CWinLibraryFile::IsInAccessList(const CURL& url)
 
 bool CWinLibraryFile::OpenIntenal(const CURL &url, FileAccessMode mode)
 {
+  // cannot open directories
+  if (URIUtils::HasSlashAtEnd(url.GetFileName(), false))
+    return false;
+
   try
   {
     if (mode == FileAccessMode::Read)
