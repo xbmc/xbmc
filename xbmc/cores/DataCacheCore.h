@@ -86,6 +86,13 @@ public:
   int64_t GetPlayTime();
 
   /*!
+   * \brief Get the current percentage of playback if a playback buffer is available.
+   *
+   *  If there is no playback buffer, percentage will be 0.
+   */
+  float GetPlayPercentage();
+
+  /*!
    * \brief Get the minumum time
    *
    * This will be zero for a typical video. With timeshift, this is the time,
