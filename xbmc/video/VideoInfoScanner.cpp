@@ -624,8 +624,7 @@ namespace VIDEO
                                           CScraperUrl* pURL,
                                           CGUIDialogProgress* pDlgProgress)
   {
-    if (pItem->m_bIsFolder || !pItem->IsVideo() || pItem->IsNFO() ||
-       (pItem->IsPlayList() && !URIUtils::HasExtension(pItem->GetPath(), ".strm")))
+    if (pItem->m_bIsFolder || !pItem->IsVideo() || pItem->IsNFO() || pItem->IsPlayList())
       return INFO_NOT_NEEDED;
 
     if (ProgressCancelled(pDlgProgress, 198, pItem->GetLabel()))
@@ -703,8 +702,7 @@ namespace VIDEO
                                                CScraperUrl* pURL,
                                                CGUIDialogProgress* pDlgProgress)
   {
-    if (pItem->m_bIsFolder || !pItem->IsVideo() || pItem->IsNFO() ||
-       (pItem->IsPlayList() && !URIUtils::HasExtension(pItem->GetPath(), ".strm")))
+    if (pItem->m_bIsFolder || !pItem->IsVideo() || pItem->IsNFO() || pItem->IsPlayList())
       return INFO_NOT_NEEDED;
 
     if (ProgressCancelled(pDlgProgress, 20394, pItem->GetLabel()))
