@@ -486,11 +486,8 @@ float CApplicationPlayer::GetPercentage() const
   std::shared_ptr<IPlayer> player = GetInternal();
   if (player)
   {
-    int64_t iTotalTime = GetTotalTime();
-
-    if (!iTotalTime)
-      return 0.0f;
-    return GetTime() * 100 / static_cast<float>(iTotalTime);
+    float fPercent = CDataCacheCore::GetInstance().GetPlayPercentage();
+    return std::max(0.0f, std::min(fPercent, 100.0f));
   }
   else
     return 0.0;

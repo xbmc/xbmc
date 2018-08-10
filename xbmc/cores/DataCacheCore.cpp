@@ -363,3 +363,18 @@ int64_t CDataCacheCore::GetMaxTime()
   CSingleLock lock(m_stateSection);
   return m_timeInfo.m_timeMax;
 }
+
+float CDataCacheCore::GetPlayPercentage()
+{
+  CSingleLock lock(m_stateSection);
+
+  // Note: To calculate accurate percentage, all time data must be consistent,
+  //       which is the case for data cache core. Calculation can not be done
+  //       outside of data cache core or a possibility to lock the data cache
+  //       core from outside would be needed.
+  int64_t iTotalTime = m_timeInfo.m_timeMax - m_timeInfo.m_timeMin;
+  if (iTotalTime <= 0)
+    return 0;
+
+  return m_timeInfo.m_time * 100 / static_cast<float>(iTotalTime);
+}
