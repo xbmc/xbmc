@@ -237,7 +237,7 @@ const infomap integer_bools[] =  {{ "isequal",          INTEGER_IS_EQUAL },
 ///   }
 ///   \table_row3{   <b>`Player.Title`</b>,
 ///                  \anchor Player_Title
-///                  _boolean_,
+///                  _string_,
 ///     Returns the musicplayer title for audio and the videoplayer title for
 ///     videos.
 ///   }
@@ -402,11 +402,11 @@ const infomap player_labels[] =  {{ "hasmedia",         PLAYER_HAS_MEDIA },     
                                   { "showtime",         PLAYER_SHOWTIME },
                                   { "showcodec",        PLAYER_SHOWCODEC },
                                   { "showinfo",         PLAYER_SHOWINFO },
-                                  { "title",            PLAYER_TITLE },
                                   { "muted",            PLAYER_MUTED },
                                   { "hasduration",      PLAYER_HASDURATION },
                                   { "passthrough",      PLAYER_PASSTHROUGH },
                                   { "cachelevel",       PLAYER_CACHELEVEL },          // labels from here
+                                  { "title",            PLAYER_TITLE },
                                   { "progress",         PLAYER_PROGRESS },
                                   { "progresscache",    PLAYER_PROGRESS_CACHE },
                                   { "volume",           PLAYER_VOLUME },
@@ -1902,7 +1902,7 @@ const infomap musicplayer[] =    {{ "title",            MUSICPLAYER_TITLE },
 ///   \table_row3{   <b>`VideoPlayer.Premiered`</b>,
 ///                  \anchor VideoPlayer_Premiered
 ///                  _string_,
-///     Release or aired date of the currently playing episode, show, movie or EPG item\, if it's in the database
+///     Release or aired date of the currently playing episode\, show\, movie or EPG item\, if it's in the database
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.Trailer`</b>,
 ///                  \anchor VideoPlayer_Trailer
