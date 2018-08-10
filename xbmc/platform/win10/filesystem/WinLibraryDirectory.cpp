@@ -216,3 +216,52 @@ StorageFolder CWinLibraryDirectory::GetFolder(const CURL& url)
 
   return rootFolder;
 }
+
+int CWinLibraryDirectory::StatDirectory(const CURL& url, struct __stat64* statData)
+{
+  if (!statData)
+    return -1;
+
+  auto dir = GetFolder(url);
+  if (dir == nullptr)
+    return -1;
+
+  /* set st_gid */
+  statData->st_gid = 0; // UNIX group ID is always zero on Win32
+  /* set st_uid */
+  statData->st_uid = 0; // UNIX user ID is always zero on Win32
+  /* set st_ino */
+  statData->st_ino = 0; // inode number is not implemented on Win32
+
+  auto requestedProps = Wait(dir.Properties().RetrievePropertiesAsync(
+      {L"System.DateAccessed", L"System.DateCreated", L"System.DateModified"}));
+
+  auto dateAccessed = requestedProps.Lookup(L"System.DateAccessed").as<winrt::IPropertyValue>();
+  if (dateAccessed)
+  {
+    statData->st_atime = winrt::clock::to_time_t(dateAccessed.GetDateTime());
+  }
+  auto dateCreated = requestedProps.Lookup(L"System.DateCreated").as<winrt::IPropertyValue>();
+  if (dateCreated)
+  {
+    statData->st_ctime = winrt::clock::to_time_t(dateCreated.GetDateTime());
+  }
+  auto dateModified = requestedProps.Lookup(L"System.DateModified").as<winrt::IPropertyValue>();
+  if (dateModified)
+  {
+    statData->st_mtime = winrt::clock::to_time_t(dateModified.GetDateTime());
+  }
+
+  statData->st_dev = 0;
+  statData->st_rdev = statData->st_dev;
+  /* set st_nlink */
+  statData->st_nlink = 0;
+  /* set st_mode */
+  statData->st_mode = _S_IREAD | _S_IFDIR | _S_IEXEC; // only read permission for directory from library
+  // copy user RWX rights to group rights
+  statData->st_mode |= (statData->st_mode & (_S_IREAD | _S_IWRITE | _S_IEXEC)) >> 3;
+  // copy user RWX rights to other rights
+  statData->st_mode |= (statData->st_mode & (_S_IREAD | _S_IWRITE | _S_IEXEC)) >> 6;
+
+  return 0;
+}
