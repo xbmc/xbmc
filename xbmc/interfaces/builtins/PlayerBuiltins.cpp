@@ -435,39 +435,43 @@ static int PlayMedia(const std::vector<std::string>& params)
     std::string extensions = CServiceBroker::GetFileExtensionProvider().GetVideoExtensions() + "|" + CServiceBroker::GetFileExtensionProvider().GetMusicExtensions();
     XFILE::CDirectory::GetDirectory(item.GetPath(), items, extensions, XFILE::DIR_FLAG_DEFAULTS);
 
-    bool containsMusic = false, containsVideo = false;
-    for (int i = 0; i < items.Size(); i++)
+    if (!items.IsEmpty()) // fall through on non expandable playlist
     {
-      bool isVideo = items[i]->IsVideo();
-      containsMusic |= !isVideo;
-      containsVideo |= isVideo;
-
-      if (containsMusic && containsVideo)
-        break;
-    }
-
-    std::unique_ptr<CGUIViewState> state(CGUIViewState::GetViewState(containsVideo ? WINDOW_VIDEO_NAV : WINDOW_MUSIC_NAV, items));
-    if (state.get())
-      items.Sort(state->GetSortMethod());
-    else
-      items.Sort(SortByLabel, SortOrderAscending);
-
-    int playlist = containsVideo? PLAYLIST_VIDEO : PLAYLIST_MUSIC;;
-    if (containsMusic && containsVideo) //mixed content found in the folder
-    {
-      for (int i = items.Size() - 1; i >= 0; i--) //remove music entries
+      bool containsMusic = false, containsVideo = false;
+      for (int i = 0; i < items.Size(); i++)
       {
-        if (!items[i]->IsVideo())
-          items.Remove(i);
-      }
-    }
+        bool isVideo = items[i]->IsVideo();
+        containsMusic |= !isVideo;
+        containsVideo |= isVideo;
 
-    CServiceBroker::GetPlaylistPlayer().ClearPlaylist(playlist);
-    CServiceBroker::GetPlaylistPlayer().Add(playlist, items);
-    CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(playlist);
-    CServiceBroker::GetPlaylistPlayer().Play(playOffset, "");
+        if (containsMusic && containsVideo)
+          break;
+      }
+
+      std::unique_ptr<CGUIViewState> state(CGUIViewState::GetViewState(containsVideo ? WINDOW_VIDEO_NAV : WINDOW_MUSIC_NAV, items));
+      if (state.get())
+        items.Sort(state->GetSortMethod());
+      else
+        items.Sort(SortByLabel, SortOrderAscending);
+
+      int playlist = containsVideo? PLAYLIST_VIDEO : PLAYLIST_MUSIC;;
+      if (containsMusic && containsVideo) //mixed content found in the folder
+      {
+        for (int i = items.Size() - 1; i >= 0; i--) //remove music entries
+        {
+          if (!items[i]->IsVideo())
+            items.Remove(i);
+        }
+      }
+
+      CServiceBroker::GetPlaylistPlayer().ClearPlaylist(playlist);
+      CServiceBroker::GetPlaylistPlayer().Add(playlist, items);
+      CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(playlist);
+      CServiceBroker::GetPlaylistPlayer().Play(playOffset, "");
+      return 0;
+    }
   }
-  else if (item.IsAudio() || item.IsVideo())
+  if (item.IsAudio() || item.IsVideo())
     CServiceBroker::GetPlaylistPlayer().Play(std::make_shared<CFileItem>(item), "");
   else
     g_application.PlayMedia(item, "", PLAYLIST_NONE);
