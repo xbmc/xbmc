@@ -19,6 +19,7 @@
 
 // forward definitions
 class CAction;
+class CSettings;
 class TiXmlNode;
 class IAESound;
 
@@ -41,7 +42,7 @@ class CGUIAudioManager : public ISettingCallback
   };
 
 public:
-  CGUIAudioManager();
+  CGUIAudioManager(CSettings &settings);
   ~CGUIAudioManager() override;
 
   void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
@@ -61,7 +62,11 @@ public:
   void Enable(bool bEnable);
   void SetVolume(float level);
   void Stop();
+
 private:
+  // Construction parameters
+  CSettings &m_settings;
+
   typedef std::map<const std::string, CSoundInfo> soundCache;
   typedef std::map<int, IAESound*              > actionSoundMap;
   typedef std::map<int, CWindowSounds          > windowSoundMap;
