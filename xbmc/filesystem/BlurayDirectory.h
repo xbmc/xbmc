@@ -21,7 +21,7 @@ namespace XFILE
 class CBlurayDirectory: public XFILE::IDirectory
 {
 public:
-  CBlurayDirectory();
+  CBlurayDirectory() = default;
   ~CBlurayDirectory() override;
   bool GetDirectory(const CURL& url, CFileItemList &items) override;
 
@@ -45,7 +45,7 @@ private:
   CURL         GetUnderlyingCURL(const CURL& url);
   std::string  HexToString(const uint8_t * buf, int count);
   CURL          m_url;
-  BLURAY*       m_bd;
+  BLURAY*       m_bd = nullptr;
   bool          m_blurayInitialized = false;
 };
 

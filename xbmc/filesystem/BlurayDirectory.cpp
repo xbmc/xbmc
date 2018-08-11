@@ -36,11 +36,6 @@ namespace XFILE
 
 #define MAIN_TITLE_LENGTH_PERCENT 70 /** Minimum length of main titles, based on longest title */
 
-CBlurayDirectory::CBlurayDirectory()
-  : m_bd(NULL)
-{
-}
-
 CBlurayDirectory::~CBlurayDirectory()
 {
   Dispose();
@@ -51,7 +46,7 @@ void CBlurayDirectory::Dispose()
   if(m_bd)
   {
     bd_close(m_bd);
-    m_bd = NULL;
+    m_bd = nullptr;
   }
 }
 

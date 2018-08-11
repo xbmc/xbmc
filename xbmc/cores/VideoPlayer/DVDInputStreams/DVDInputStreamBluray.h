@@ -23,6 +23,7 @@ extern "C"
 }
 
 #define MAX_PLAYLIST_ID 99999
+#define MAX_CLIP_ID 99999
 #define BD_EVENT_MENU_OVERLAY -1
 #define BD_EVENT_MENU_ERROR   -2
 #define BD_EVENT_ENC_ERROR    -3
@@ -38,6 +39,7 @@ class CDVDInputStreamBluray
   , public CDVDInputStream::IMenus
 {
 public:
+  CDVDInputStreamBluray() = delete;
   CDVDInputStreamBluray(IVideoPlayer* player, const CFileItem& fileitem);
   ~CDVDInputStreamBluray() override;
   bool Open() override;
@@ -119,14 +121,14 @@ protected:
   static void OverlayClear(SPlane& plane, int x, int y, int w, int h);
   static void OverlayInit (SPlane& plane, int w, int h);
 
-  IVideoPlayer* m_player;
-  BLURAY* m_bd;
-  BLURAY_TITLE_INFO* m_title;
-  uint32_t m_playlist;
-  uint32_t m_clip;
-  uint32_t m_angle;
-  bool m_menu;
-  bool m_navmode;
+  IVideoPlayer* m_player = nullptr;
+  BLURAY* m_bd = nullptr;
+  BLURAY_TITLE_INFO* m_title = nullptr;
+  uint32_t m_playlist = MAX_PLAYLIST_ID + 1;
+  uint32_t m_clip = MAX_CLIP_ID + 1;
+  uint32_t m_angle = 0;
+  bool m_menu = false;
+  bool m_navmode = false;
   int m_dispTimeBeforeRead = 0;
 
   typedef std::shared_ptr<CDVDOverlayImage> SOverlay;
@@ -147,7 +149,7 @@ protected:
     HOLD_STILL,
     HOLD_ERROR,
     HOLD_EXIT
-  } m_hold;
+  } m_hold = HOLD_NONE;
   BD_EVENT m_event;
 #ifdef HAVE_LIBBLURAY_BDJ
   struct bd_argb_buffer_s m_argb;
@@ -156,6 +158,6 @@ protected:
   private:
     bool OpenStream(CFileItem &item);
     void SetupPlayerSettings();
-    std::unique_ptr<CDVDInputStreamFile> m_pstream;
+    std::unique_ptr<CDVDInputStreamFile> m_pstream = nullptr;
     std::string m_rootPath;
 };
