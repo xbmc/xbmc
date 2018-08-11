@@ -16,11 +16,9 @@ using namespace KODI;
 using namespace RETRO;
 
 CRenderBufferGBM::CRenderBufferGBM(CRenderContext &context,
-                                   int fourcc,
-                                   int bpp) :
+                                   int fourcc) :
   m_context(context),
   m_fourcc(fourcc),
-  m_bpp(bpp),
   m_egl(new CEGLImage(static_cast<CWinSystemGbmEGLContext*>(CServiceBroker::GetWinSystem())->GetEGLDisplay())),
   m_bo(new CGBMBufferObject(fourcc))
 {

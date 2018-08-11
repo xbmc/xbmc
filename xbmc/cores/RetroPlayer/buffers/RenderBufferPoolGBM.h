@@ -35,7 +35,6 @@ namespace RETRO
 
     // Configuration parameters
     int m_fourcc = 0;
-    int m_bpp = 0;
   };
 }
 }
