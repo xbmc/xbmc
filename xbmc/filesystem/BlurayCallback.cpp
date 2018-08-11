@@ -44,7 +44,7 @@ BD_DIR_H* CBlurayCallback::dir_open(void *handle, const char* rel_path)
   if (!strBasePath)
   {
     CLog::Log(LOGDEBUG, "CBlurayCallback - Error opening dir, null handle!");
-    return NULL;
+    return nullptr;
   }
 
   std::string strDirname = URIUtils::AddFileToFolder(*strBasePath, strRelPath);
@@ -59,7 +59,7 @@ BD_DIR_H* CBlurayCallback::dir_open(void *handle, const char* rel_path)
     if (!CFile::Exists(strDirname))
       CLog::Log(LOGDEBUG, "CBlurayCallback - Error opening dir! (%s)\n", CURL::GetRedacted(strDirname).c_str());
     delete st;
-    return NULL;
+    return nullptr;
   }
 
   BD_DIR_H *dir = new BD_DIR_H;
@@ -108,7 +108,7 @@ BD_FILE_H * CBlurayCallback::file_open(void *handle, const char *rel_path)
   if (!strBasePath)
   {
     CLog::Log(LOGDEBUG, "CBlurayCallback - Error opening dir, null handle!");
-    return NULL;
+    return nullptr;
   }
 
   std::string strFilename = URIUtils::AddFileToFolder(*strBasePath, strRelPath);
@@ -134,7 +134,7 @@ BD_FILE_H * CBlurayCallback::file_open(void *handle, const char *rel_path)
   delete fp;
   delete file;
 
-  return NULL;
+  return nullptr;
 }
 
 int64_t CBlurayCallback::file_seek(BD_FILE_H *file, int64_t offset, int32_t origin)

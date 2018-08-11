@@ -71,12 +71,12 @@ void  bluray_overlay_argb_cb(void *this_gen, const struct bd_argb_overlay_s * co
 CDVDInputStreamBluray::CDVDInputStreamBluray(IVideoPlayer* player, const CFileItem& fileitem) :
   CDVDInputStream(DVDSTREAM_TYPE_BLURAY, fileitem), m_pstream(nullptr), m_rootPath("")
 {
-  m_title = NULL;
+  m_title = nullptr;
   m_clip  = (uint32_t)-1;
   m_angle = 0;
   m_playlist = (uint32_t)-1;
   m_menu  = false;
-  m_bd    = NULL;
+  m_bd    = nullptr;
   m_content = "video/x-mpegts";
   m_player  = player;
   m_navmode = false;
@@ -107,7 +107,7 @@ BLURAY_TITLE_INFO* CDVDInputStreamBluray::GetTitleLongest()
 {
   int titles = bd_get_titles(m_bd, TITLES_RELEVANT, 0);
 
-  BLURAY_TITLE_INFO *s = NULL;
+  BLURAY_TITLE_INFO *s = nullptr;
   for(int i=0; i < titles; i++)
   {
     BLURAY_TITLE_INFO *t = bd_get_title_info(m_bd, i, 0);
@@ -131,7 +131,7 @@ BLURAY_TITLE_INFO* CDVDInputStreamBluray::GetTitleFile(const std::string& filena
   if(sscanf(filename.c_str(), "%05u.mpls", &playlist) != 1)
   {
     CLog::Log(LOGERROR, "get_playlist_title - unsupported playlist file selected %s", CURL::GetRedacted(filename).c_str());
-    return NULL;
+    return nullptr;
   }
 
   return bd_get_playlist_info(m_bd, playlist, 0);
@@ -140,7 +140,7 @@ BLURAY_TITLE_INFO* CDVDInputStreamBluray::GetTitleFile(const std::string& filena
 
 bool CDVDInputStreamBluray::Open()
 {
-  if(m_player == NULL)
+  if(m_player == nullptr)
     return false;
 
   std::string strPath(m_item.GetPath());
@@ -236,7 +236,7 @@ bool CDVDInputStreamBluray::Open()
     }
   }
 
-  bd_get_event(m_bd, NULL);
+  bd_get_event(m_bd, nullptr);
 
   const BLURAY_DISC_INFO *disc_info = bd_get_disc_info(m_bd);
 
@@ -317,7 +317,7 @@ bool CDVDInputStreamBluray::Open()
 
     bd_register_overlay_proc (m_bd, this, bluray_overlay_cb);
 #ifdef HAVE_LIBBLURAY_BDJ
-    bd_register_argb_overlay_proc (m_bd, this, bluray_overlay_argb_cb, NULL);
+    bd_register_argb_overlay_proc (m_bd, this, bluray_overlay_argb_cb, nullptr);
 #endif
 
     if(bd_play(m_bd) <= 0)
@@ -357,11 +357,11 @@ void CDVDInputStreamBluray::Close()
     bd_free_title_info(m_title);
   if(m_bd)
   {
-    bd_register_overlay_proc(m_bd, NULL, NULL);
+    bd_register_overlay_proc(m_bd, nullptr, nullptr);
     bd_close(m_bd);
   }
-  m_bd = NULL;
-  m_title = NULL;
+  m_bd = nullptr;
+  m_title = nullptr;
   m_pstream.reset();
   m_rootPath.clear();
 }
@@ -412,7 +412,7 @@ void CDVDInputStreamBluray::ProcessEvent() {
 
   case BD_EVENT_SEEK:
     CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - BD_EVENT_SEEK");
-    //m_player->OnDVDNavResult(NULL, 1);
+    //m_player->OnDVDNavResult(nullptr, 1);
     //bd_read_skip_still(m_bd);
     //m_hold = HOLD_HELD;
     break;
@@ -450,7 +450,7 @@ void CDVDInputStreamBluray::ProcessEvent() {
     /* when a title ends, playlist WILL eventually change */
     if (m_title)
       bd_free_title_info(m_title);
-    m_title = NULL;
+    m_title = nullptr;
     break;
 
   case BD_EVENT_TITLE:
@@ -729,7 +729,7 @@ void CDVDInputStreamBluray::OverlayFlush(int64_t pts)
 void CDVDInputStreamBluray::OverlayCallback(const BD_OVERLAY * const ov)
 {
 #if(BD_OVERLAY_INTERFACE_VERSION >= 2)
-  if(ov == NULL || ov->cmd == BD_OVERLAY_CLOSE)
+  if(ov == nullptr || ov->cmd == BD_OVERLAY_CLOSE)
   {
     OverlayClose();
     return;
@@ -803,7 +803,7 @@ void CDVDInputStreamBluray::OverlayCallback(const BD_OVERLAY * const ov)
 #ifdef HAVE_LIBBLURAY_BDJ
 void CDVDInputStreamBluray::OverlayCallbackARGB(const struct bd_argb_overlay_s * const ov)
 {
-  if(ov == NULL || ov->cmd == BD_ARGB_OVERLAY_CLOSE)
+  if(ov == nullptr || ov->cmd == BD_ARGB_OVERLAY_CLOSE)
   {
     OverlayClose();
     return;
@@ -832,7 +832,7 @@ void CDVDInputStreamBluray::OverlayCallbackARGB(const struct bd_argb_overlay_s *
     SOverlay overlay(new CDVDOverlayImage(), std::ptr_fun(CDVDOverlay::Release));
 
     overlay->palette_colors = 0;
-    overlay->palette        = NULL;
+    overlay->palette        = nullptr;
 
     unsigned bytes = ov->stride * ov->h * 4;
     uint8_t *img = (uint8_t*) malloc(bytes);
@@ -1009,7 +1009,7 @@ CDVDInputStream::ENextStream CDVDInputStreamBluray::NextStream()
 
 void CDVDInputStreamBluray::UserInput(bd_vk_key_e vk)
 {
-  if(m_bd == NULL || !m_navmode)
+  if(m_bd == nullptr || !m_navmode)
     return;
 
   int ret = bd_user_input(m_bd, -1, vk);
@@ -1027,7 +1027,7 @@ void CDVDInputStreamBluray::UserInput(bd_vk_key_e vk)
 
 bool CDVDInputStreamBluray::MouseMove(const CPoint &point)
 {
-  if (m_bd == NULL || !m_navmode)
+  if (m_bd == nullptr || !m_navmode)
     return false;
 
   if (bd_mouse_select(m_bd, -1, (uint16_t)point.x, (uint16_t)point.y) < 0)
@@ -1041,7 +1041,7 @@ bool CDVDInputStreamBluray::MouseMove(const CPoint &point)
 
 bool CDVDInputStreamBluray::MouseClick(const CPoint &point)
 {
-  if (m_bd == NULL || !m_navmode)
+  if (m_bd == nullptr || !m_navmode)
     return false;
 
   if (bd_mouse_select(m_bd, -1, (uint16_t)point.x, (uint16_t)point.y) < 0)
@@ -1059,7 +1059,7 @@ bool CDVDInputStreamBluray::MouseClick(const CPoint &point)
 
 void CDVDInputStreamBluray::OnMenu()
 {
-  if(m_bd == NULL || !m_navmode)
+  if(m_bd == nullptr || !m_navmode)
   {
     CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::OnMenu - navigation mode not enabled");
     return;
@@ -1079,7 +1079,7 @@ void CDVDInputStreamBluray::OnMenu()
 
 bool CDVDInputStreamBluray::IsInMenu()
 {
-  if(m_bd == NULL || !m_navmode)
+  if(m_bd == nullptr || !m_navmode)
     return false;
   if(m_menu || !m_planes[BD_OVERLAY_IG].o.empty())
     return true;
@@ -1088,7 +1088,7 @@ bool CDVDInputStreamBluray::IsInMenu()
 
 void CDVDInputStreamBluray::SkipStill()
 {
-  if(m_bd == NULL || !m_navmode)
+  if(m_bd == nullptr || !m_navmode)
     return;
 
   if(m_hold == HOLD_STILL)
