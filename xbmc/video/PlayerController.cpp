@@ -196,8 +196,9 @@ bool CPlayerController::OnAction(const CAction &action)
           return true;
 
         int currentAudio = g_application.GetAppPlayer().GetAudioStream();
+        int audioStreamCount = g_application.GetAppPlayer().GetAudioStreamCount();
 
-        if (++currentAudio >= g_application.GetAppPlayer().GetAudioStreamCount())
+        if (++currentAudio >= audioStreamCount)
           currentAudio = 0;
         g_application.GetAppPlayer().SetAudioStream(currentAudio);    // Set the audio stream to the one selected
         std::string aud;
@@ -210,7 +211,9 @@ bool CPlayerController::OnAction(const CAction &action)
           aud = lan;
         else
           aud = StringUtils::Format("%s - %s", lan.c_str(), info.name.c_str());
-        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(460), aud, DisplTime, false, MsgTime);
+        std::string caption = g_localizeStrings.Get(460);
+        caption += StringUtils::Format(" (%i/%i)", currentAudio + 1, audioStreamCount);
+        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, caption, aud, DisplTime, false, MsgTime);
         return true;
       }
 
