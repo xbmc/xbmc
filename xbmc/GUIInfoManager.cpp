@@ -352,7 +352,7 @@ const infomap integer_bools[] =  {{ "isequal",          INTEGER_IS_EQUAL },
 ///                  \anchor Player_PlaySpeed
 ///                  _string_,
 ///     Returns the player playback speed with the format %1.2f (1.00 means normal 
-///     playback speed). For Tempo, the default range is 0.80 - 1.50 (it can be changed 
+///     playback speed). For Tempo\, the default range is 0.80 - 1.50 (it can be changed 
 ///     in advanced settings). If `Player.PlaySpeed` returns a value different from 1.00
 ///     and `Player.IsTempo` is false it means the player is in ff/rw mode.
 ///   }
