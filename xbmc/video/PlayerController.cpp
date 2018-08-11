@@ -220,13 +220,16 @@ bool CPlayerController::OnAction(const CAction &action)
           return true;
 
         int currentVideo = g_application.GetAppPlayer().GetVideoStream();
+        int videoStreamCount = g_application.GetAppPlayer().GetVideoStreamCount();
 
-        if (++currentVideo >= g_application.GetAppPlayer().GetVideoStreamCount())
+        if (++currentVideo >= videoStreamCount)
           currentVideo = 0;
         g_application.GetAppPlayer().SetVideoStream(currentVideo);
         VideoStreamInfo info;
         g_application.GetAppPlayer().GetVideoStreamInfo(currentVideo, info);
-        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(38031), info.name, DisplTime, false, MsgTime);
+        std::string caption = g_localizeStrings.Get(38031);
+        caption += StringUtils::Format(" (%i/%i)", currentVideo + 1, videoStreamCount);
+        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, caption, info.name, DisplTime, false, MsgTime);
         return true;
       }
 
