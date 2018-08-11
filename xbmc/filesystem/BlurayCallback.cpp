@@ -24,14 +24,14 @@ struct SDirState
 
 void CBlurayCallback::bluray_logger(const char* msg)
 {
-  CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::Logger - %s", msg);
+  CLog::Log(LOGDEBUG, "CBlurayCallback::Logger - %s", msg);
 }
 
 void CBlurayCallback::dir_close(BD_DIR_H *dir)
 {
   if (dir)
   {
-    CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - Closed dir (%p)\n", static_cast<void*>(dir));
+    CLog::Log(LOGDEBUG, "CBlurayCallback - Closed dir (%p)\n", static_cast<void*>(dir));
     delete static_cast<SDirState*>(dir->internal);
     delete dir;
   }
@@ -43,7 +43,7 @@ BD_DIR_H* CBlurayCallback::dir_open(void *handle, const char* rel_path)
   std::string* strBasePath = reinterpret_cast<std::string*>(handle);
   if (!strBasePath)
   {
-    CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - Error opening dir, null handle!");
+    CLog::Log(LOGDEBUG, "CBlurayCallback - Error opening dir, null handle!");
     return NULL;
   }
 
@@ -51,13 +51,13 @@ BD_DIR_H* CBlurayCallback::dir_open(void *handle, const char* rel_path)
   if (URIUtils::HasSlashAtEnd(strDirname))
     URIUtils::RemoveSlashAtEnd(strDirname);
 
-  CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - Opening dir %s\n", CURL::GetRedacted(strDirname).c_str());
+  CLog::Log(LOGDEBUG, "CBlurayCallback - Opening dir %s\n", CURL::GetRedacted(strDirname).c_str());
 
   SDirState *st = new SDirState();
   if (!CDirectory::GetDirectory(strDirname, st->list, "", DIR_FLAG_DEFAULTS))
   {
     if (!CFile::Exists(strDirname))
-      CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - Error opening dir! (%s)\n", CURL::GetRedacted(strDirname).c_str());
+      CLog::Log(LOGDEBUG, "CBlurayCallback - Error opening dir! (%s)\n", CURL::GetRedacted(strDirname).c_str());
     delete st;
     return NULL;
   }
@@ -107,7 +107,7 @@ BD_FILE_H * CBlurayCallback::file_open(void *handle, const char *rel_path)
   std::string* strBasePath = reinterpret_cast<std::string*>(handle);
   if (!strBasePath)
   {
-    CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - Error opening dir, null handle!");
+    CLog::Log(LOGDEBUG, "CBlurayCallback - Error opening dir, null handle!");
     return NULL;
   }
 
@@ -129,7 +129,7 @@ BD_FILE_H * CBlurayCallback::file_open(void *handle, const char *rel_path)
     return file;
   }
 
-  CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - Error opening file! (%s)", CURL::GetRedacted(strFilename).c_str());
+  CLog::Log(LOGDEBUG, "CBlurayCallback - Error opening file! (%s)", CURL::GetRedacted(strFilename).c_str());
 
   delete fp;
   delete file;
