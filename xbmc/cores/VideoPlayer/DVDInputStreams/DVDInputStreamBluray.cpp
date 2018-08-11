@@ -69,19 +69,9 @@ void  bluray_overlay_argb_cb(void *this_gen, const struct bd_argb_overlay_s * co
 #endif
 
 CDVDInputStreamBluray::CDVDInputStreamBluray(IVideoPlayer* player, const CFileItem& fileitem) :
-  CDVDInputStream(DVDSTREAM_TYPE_BLURAY, fileitem), m_pstream(nullptr), m_rootPath("")
+  CDVDInputStream(DVDSTREAM_TYPE_BLURAY, fileitem), m_player(player)
 {
-  m_title = nullptr;
-  m_clip  = (uint32_t)-1;
-  m_angle = 0;
-  m_playlist = (uint32_t)-1;
-  m_menu  = false;
-  m_bd    = nullptr;
   m_content = "video/x-mpegts";
-  m_player  = player;
-  m_navmode = false;
-  m_hold = HOLD_NONE;
-  m_angle = 0;
   memset(&m_event, 0, sizeof(m_event));
 #ifdef HAVE_LIBBLURAY_BDJ
   memset(&m_argb,  0, sizeof(m_argb));
