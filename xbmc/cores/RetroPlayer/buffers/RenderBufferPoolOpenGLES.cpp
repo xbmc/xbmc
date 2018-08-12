@@ -70,7 +70,7 @@ bool CRenderBufferPoolOpenGLES::ConfigureInternal()
   case AV_PIX_FMT_RGB565:
   {
     m_pixeltype = GL_UNSIGNED_SHORT_5_6_5;
-    m_internalformat = GL_RGB565;
+    m_internalformat = GL_RGB;
     m_pixelformat = GL_RGB;
     m_bpp = sizeof(uint16_t);
     return true;
