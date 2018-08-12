@@ -53,8 +53,17 @@ bool CGUIFontTTFGL::FirstBegin()
 {
 #if defined(HAS_GL)
   GLenum pixformat = GL_RED;
+  GLenum internalFormat;
+  unsigned int major, minor;
+  CRenderSystemGL* renderSystem = dynamic_cast<CRenderSystemGL*>(CServiceBroker::GetRenderSystem());
+  renderSystem->GetRenderVersion(major, minor);
+  if (major >= 3)
+    internalFormat = GL_R8;
+  else
+    internalFormat = GL_LUMINANCE;
 #else
   GLenum pixformat = GL_ALPHA; // deprecated
+  GLenum internalFormat = GL_ALPHA;
 #endif
 
   if (m_textureStatus == TEXTURE_REALLOCATED)
@@ -77,7 +86,7 @@ bool CGUIFontTTFGL::FirstBegin()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     // Set the texture image -- THIS WORKS, so the pixels must be wrong.
-    glTexImage2D(GL_TEXTURE_2D, 0, pixformat, m_texture->GetWidth(), m_texture->GetHeight(), 0,
+    glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, m_texture->GetWidth(), m_texture->GetHeight(), 0,
         pixformat, GL_UNSIGNED_BYTE, 0);
 
     VerifyGLState();
