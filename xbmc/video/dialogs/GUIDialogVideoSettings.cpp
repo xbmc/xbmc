@@ -476,13 +476,13 @@ std::string CGUIDialogVideoSettings::FormatFlags(StreamFlags flags)
 {
   std::vector<std::string> localizedFlags;
   if (flags & StreamFlags::FLAG_DEFAULT)
-    localizedFlags.emplace_back(g_localizeStrings.Get(39104));
-  if (flags & StreamFlags::FLAG_FORCED)
     localizedFlags.emplace_back(g_localizeStrings.Get(39105));
-  if (flags & StreamFlags::FLAG_HEARING_IMPAIRED)
+  if (flags & StreamFlags::FLAG_FORCED)
     localizedFlags.emplace_back(g_localizeStrings.Get(39106));
-  if (flags &  StreamFlags::FLAG_VISUAL_IMPAIRED)
+  if (flags & StreamFlags::FLAG_HEARING_IMPAIRED)
     localizedFlags.emplace_back(g_localizeStrings.Get(39107));
+  if (flags &  StreamFlags::FLAG_VISUAL_IMPAIRED)
+    localizedFlags.emplace_back(g_localizeStrings.Get(39108));
 
   std::string formated = StringUtils::Join(localizedFlags, ", ");
 
