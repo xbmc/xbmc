@@ -104,7 +104,7 @@ bool CWinSystemWin32::DestroyWindowSystem()
   return true;
 }
 
-bool CWinSystemWin32::CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res)
+bool CWinSystemWin32::CreateNewWindow(const std::string& name, bool fullScreen, const RESOLUTION_INFO& res)
 {
   using KODI::PLATFORM::WINDOWS::ToW;
   auto nameW = ToW(name);
@@ -290,7 +290,7 @@ bool CWinSystemWin32::BlankNonActiveMonitors(bool bBlank)
 
 bool CWinSystemWin32::CenterWindow()
 {
-  RESOLUTION_INFO DesktopRes = CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP);
+  const RESOLUTION_INFO DesktopRes = CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP);
 
   m_nLeft = (DesktopRes.iWidth / 2) - (m_nWidth / 2);
   m_nTop = (DesktopRes.iHeight / 2) - (m_nHeight / 2);
@@ -426,7 +426,7 @@ void CWinSystemWin32::CenterCursor() const
   SetCursorPos(x, y);
 }
 
-bool CWinSystemWin32::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
+bool CWinSystemWin32::SetFullScreen(bool fullScreen, const RESOLUTION_INFO& res, bool blankOtherDisplays)
 {
   CWinSystemWin32::UpdateStates(fullScreen);
   WINDOW_STATE state = GetState(fullScreen);
@@ -927,7 +927,7 @@ bool CWinSystemWin32::AddResolution(const RESOLUTION_INFO &res)
 {
   for (unsigned int i = RES_CUSTOM; i < CDisplaySettings::GetInstance().ResolutionInfoSize(); i++)
   {
-    RESOLUTION_INFO& info = CDisplaySettings::GetInstance().GetResolutionInfo(i);
+    const RESOLUTION_INFO& info = CDisplaySettings::GetInstance().GetResolutionInfo(i);
     if (info.iWidth        == res.iWidth
      && info.iHeight       == res.iHeight
      && info.iScreenWidth  == res.iScreenWidth

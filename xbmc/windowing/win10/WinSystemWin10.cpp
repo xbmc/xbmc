@@ -97,7 +97,7 @@ bool CWinSystemWin10::CanDoWindowed()
   return CSysInfo::GetWindowsDeviceFamily() == CSysInfo::Desktop;
 }
 
-bool CWinSystemWin10::CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res)
+bool CWinSystemWin10::CreateNewWindow(const std::string& name, bool fullScreen, const RESOLUTION_INFO& res)
 {
   UpdateStates(fullScreen);
   // initialize the state
@@ -197,7 +197,7 @@ void CWinSystemWin10::AdjustWindow()
   }
 }
 
-bool CWinSystemWin10::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
+bool CWinSystemWin10::SetFullScreen(bool fullScreen, const RESOLUTION_INFO& res, bool blankOtherDisplays)
 {
   CWinSystemWin10::UpdateStates(fullScreen);
   WINDOW_STATE state = GetState(fullScreen);
@@ -423,7 +423,7 @@ bool CWinSystemWin10::AddResolution(const RESOLUTION_INFO &res)
 {
   for (unsigned int i = RES_CUSTOM; i < CDisplaySettings::GetInstance().ResolutionInfoSize(); i++)
   {
-    RESOLUTION_INFO& info = CDisplaySettings::GetInstance().GetResolutionInfo(i);
+    const RESOLUTION_INFO& info = CDisplaySettings::GetInstance().GetResolutionInfo(i);
     if ( info.iWidth == res.iWidth
       && info.iHeight == res.iHeight
       && info.iScreenWidth == res.iScreenWidth

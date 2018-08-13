@@ -24,7 +24,7 @@ public:
   // Implementation of CWinSystemBase via CWinSystemGbm
   CRenderSystemBase *GetRenderSystem() override { return this; }
   bool InitWindowSystem() override;
-  bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays) override;
+  bool SetFullScreen(bool fullScreen, const RESOLUTION_INFO& res, bool blankOtherDisplays) override;
   void PresentRender(bool rendered, bool videoLayer) override;
 protected:
   void SetVSyncImpl(bool enable) override { return; };

@@ -98,7 +98,7 @@ namespace DX
     void CreateBackBuffer();
     void ResizeBuffers();
 
-    bool SetFullScreen(bool fullscreen, RESOLUTION_INFO& res);
+    bool SetFullScreen(bool fullscreen, const RESOLUTION_INFO& res);
 
     // DX resources registration
     void Register(ID3DResource *resource);

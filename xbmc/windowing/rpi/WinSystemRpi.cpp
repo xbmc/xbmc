@@ -73,7 +73,7 @@ bool CWinSystemRpi::DestroyWindowSystem()
 
 bool CWinSystemRpi::CreateNewWindow(const std::string& name,
                                     bool fullScreen,
-                                    RESOLUTION_INFO& res)
+                                    const RESOLUTION_INFO& res)
 {
   RESOLUTION_INFO current_resolution;
   current_resolution.iWidth = current_resolution.iHeight = 0;

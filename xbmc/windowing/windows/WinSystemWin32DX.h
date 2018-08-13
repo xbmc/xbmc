@@ -23,9 +23,9 @@ public:
 
   // Implementation of CWinSystemBase via CWinSystemWin32
   CRenderSystemBase *GetRenderSystem() override { return this; }
-  bool CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res) override;
+  bool CreateNewWindow(const std::string& name, bool fullScreen, const RESOLUTION_INFO& res) override;
   bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop) override;
-  bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays) override;
+  bool SetFullScreen(bool fullScreen, const RESOLUTION_INFO& res, bool blankOtherDisplays) override;
   void PresentRenderImpl(bool rendered) override;
   bool DPIChanged(WORD dpi, RECT windowRect) const override;
   void SetWindow(HWND hWnd) const;
@@ -65,7 +65,7 @@ public:
   void FixRefreshRateIfNecessary(const D3D10DDIARG_CREATERESOURCE* pResource) const;
 
 protected:
-  void SetDeviceFullScreen(bool fullScreen, RESOLUTION_INFO& res) override;
+  void SetDeviceFullScreen(bool fullScreen, const RESOLUTION_INFO& res) override;
   void ReleaseBackBuffer() override;
   void CreateBackBuffer() override;
   void ResizeDeviceBuffers() override;

@@ -40,7 +40,7 @@ void CWinSystemWin10DX::PresentRenderImpl(bool rendered)
     Sleep(40);
 }
 
-bool CWinSystemWin10DX::CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res)
+bool CWinSystemWin10DX::CreateNewWindow(const std::string& name, bool fullScreen, const RESOLUTION_INFO& res)
 {
   const MONITOR_DETAILS* monitor = GetDefaultMonitor();
   if (!monitor)
@@ -77,7 +77,7 @@ void CWinSystemWin10DX::ShowSplash(const std::string & message)
     m_coreWindow.Dispatcher().ProcessEvents(winrt::Windows::UI::Core::CoreProcessEventsOption::ProcessAllIfPresent);
 }
 
-void CWinSystemWin10DX::SetDeviceFullScreen(bool fullScreen, RESOLUTION_INFO& res)
+void CWinSystemWin10DX::SetDeviceFullScreen(bool fullScreen, const RESOLUTION_INFO& res)
 {
   m_deviceResources->SetFullScreen(fullScreen, res);
 }
@@ -138,7 +138,7 @@ void CWinSystemWin10DX::OnResize(int width, int height)
     CreateBackBuffer();
 }
 
-bool CWinSystemWin10DX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
+bool CWinSystemWin10DX::SetFullScreen(bool fullScreen, const RESOLUTION_INFO& res, bool blankOtherDisplays)
 {
   bool const result = CWinSystemWin10::SetFullScreen(fullScreen, res, blankOtherDisplays);
   CRenderSystemDX::OnResize();

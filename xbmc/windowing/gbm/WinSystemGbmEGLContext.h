@@ -22,7 +22,7 @@ public:
   bool DestroyWindowSystem() override;
   bool CreateNewWindow(const std::string& name,
                        bool fullScreen,
-                       RESOLUTION_INFO& res) override;
+                       const RESOLUTION_INFO& res) override;
 
   EGLDisplay GetEGLDisplay() const;
   EGLSurface GetEGLSurface() const;

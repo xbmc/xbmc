@@ -69,7 +69,7 @@ void CWinSystemWin32DX::PresentRenderImpl(bool rendered)
     Sleep(40);
 }
 
-bool CWinSystemWin32DX::CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res)
+bool CWinSystemWin32DX::CreateNewWindow(const std::string& name, bool fullScreen, const RESOLUTION_INFO& res)
 {
   const MONITOR_DETAILS* monitor = GetDisplayDetails(CServiceBroker::GetSettings().GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR));
   if (!monitor)
@@ -97,7 +97,7 @@ bool CWinSystemWin32DX::DestroyRenderSystem()
   return true;
 }
 
-void CWinSystemWin32DX::SetDeviceFullScreen(bool fullScreen, RESOLUTION_INFO& res)
+void CWinSystemWin32DX::SetDeviceFullScreen(bool fullScreen, const RESOLUTION_INFO& res)
 {
   m_deviceResources->SetFullScreen(fullScreen, res);
 }
@@ -181,7 +181,7 @@ void CWinSystemWin32DX::OnResize(int width, int height)
     CreateBackBuffer();
 }
 
-bool CWinSystemWin32DX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
+bool CWinSystemWin32DX::SetFullScreen(bool fullScreen, const RESOLUTION_INFO& res, bool blankOtherDisplays)
 {
   bool const result = CWinSystemWin32::SetFullScreen(fullScreen, res, blankOtherDisplays);
   CRenderSystemDX::OnResize();

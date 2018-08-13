@@ -116,7 +116,7 @@ bool CWinSystemGbm::DestroyWindowSystem()
 
 bool CWinSystemGbm::CreateNewWindow(const std::string& name,
                                     bool fullScreen,
-                                    RESOLUTION_INFO& res)
+                                    const RESOLUTION_INFO& res)
 {
   //Notify other subsystems that we change resolution
   OnLostDevice();
@@ -198,7 +198,7 @@ bool CWinSystemGbm::ResizeWindow(int newWidth, int newHeight, int newLeft, int n
   return true;
 }
 
-bool CWinSystemGbm::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
+bool CWinSystemGbm::SetFullScreen(bool fullScreen, const RESOLUTION_INFO& res, bool blankOtherDisplays)
 {
   // Notify other subsystems that we will change resolution
   OnLostDevice();

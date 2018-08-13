@@ -187,7 +187,7 @@ void DX::DeviceResources::SetViewPort(D3D11_VIEWPORT& viewPort) const
   m_deferrContext->RSSetViewports(1, &realViewPort);
 }
 
-bool DX::DeviceResources::SetFullScreen(bool fullscreen, RESOLUTION_INFO& res)
+bool DX::DeviceResources::SetFullScreen(bool fullscreen, const RESOLUTION_INFO& res)
 {
   if (!m_bDeviceCreated)
     return false;

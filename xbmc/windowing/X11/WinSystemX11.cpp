@@ -88,7 +88,7 @@ bool CWinSystemX11::DestroyWindowSystem()
   return true;
 }
 
-bool CWinSystemX11::CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res)
+bool CWinSystemX11::CreateNewWindow(const std::string& name, bool fullScreen, const RESOLUTION_INFO& res)
 {
   if(!SetFullScreen(fullScreen, res, false))
     return false;
@@ -198,7 +198,7 @@ void CWinSystemX11::FinishWindowResize(int newWidth, int newHeight)
   m_nHeight = newHeight;
 }
 
-bool CWinSystemX11::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
+bool CWinSystemX11::SetFullScreen(bool fullScreen, const RESOLUTION_INFO& res, bool blankOtherDisplays)
 {
   XOutput out;
   XMode mode;

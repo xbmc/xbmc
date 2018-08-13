@@ -116,7 +116,7 @@ bool CWinSystemIOS::DestroyWindowSystem()
   return true;
 }
 
-bool CWinSystemIOS::CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res)
+bool CWinSystemIOS::CreateNewWindow(const std::string& name, bool fullScreen, const RESOLUTION_INFO& res)
 {
   //NSLog(@"%s", __PRETTY_FUNCTION__);
 
@@ -172,7 +172,7 @@ bool CWinSystemIOS::ResizeWindow(int newWidth, int newHeight, int newLeft, int n
   return true;
 }
 
-bool CWinSystemIOS::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
+bool CWinSystemIOS::SetFullScreen(bool fullScreen, const RESOLUTION_INFO& res, bool blankOtherDisplays)
 {
   //NSLog(@"%s", __PRETTY_FUNCTION__);
 

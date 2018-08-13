@@ -255,7 +255,7 @@ bool CWinSystemWayland::DestroyWindowSystem()
 
 bool CWinSystemWayland::CreateNewWindow(const std::string& name,
                                         bool fullScreen,
-                                        RESOLUTION_INFO& res)
+                                        const RESOLUTION_INFO& res)
 {
   CLog::LogF(LOGINFO, "Starting %s size %dx%d", fullScreen ? "full screen" : "windowed", res.iWidth, res.iHeight);
 
@@ -528,7 +528,7 @@ std::shared_ptr<COutput> CWinSystemWayland::FindOutputByWaylandOutput(wayland::o
  *         when already in full screen mode since the application cannot
  *         set the size then
  */
-bool CWinSystemWayland::SetResolutionExternal(bool fullScreen, RESOLUTION_INFO const& res)
+bool CWinSystemWayland::SetResolutionExternal(bool fullScreen, const RESOLUTION_INFO const& res)
 {
   // In fullscreen modes, we never change the surface size on Kodi's request,
   // but only when the compositor tells us to. At least xdg_shell specifies
@@ -620,7 +620,7 @@ bool CWinSystemWayland::ResizeWindow(int, int, int, int)
   return SetResolutionExternal(false, res);
 }
 
-bool CWinSystemWayland::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool)
+bool CWinSystemWayland::SetFullScreen(bool fullScreen, const RESOLUTION_INFO& res, bool)
 {
   return SetResolutionExternal(fullScreen, res);
 }

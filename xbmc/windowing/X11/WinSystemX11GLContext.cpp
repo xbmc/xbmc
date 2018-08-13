@@ -165,7 +165,7 @@ bool CWinSystemX11GLContext::SetWindow(int width, int height, bool fullscreen, c
   return true;
 }
 
-bool CWinSystemX11GLContext::CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res)
+bool CWinSystemX11GLContext::CreateNewWindow(const std::string& name, bool fullScreen, const RESOLUTION_INFO& res)
 {
   if(!CWinSystemX11::CreateNewWindow(name, fullScreen, res))
     return false;
@@ -196,7 +196,7 @@ void CWinSystemX11GLContext::FinishWindowResize(int newWidth, int newHeight)
     g_application.ReloadSkin();
 }
 
-bool CWinSystemX11GLContext::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
+bool CWinSystemX11GLContext::SetFullScreen(bool fullScreen, const RESOLUTION_INFO& res, bool blankOtherDisplays)
 {
   m_newGlContext = false;
   CWinSystemX11::SetFullScreen(fullScreen, res, blankOtherDisplays);

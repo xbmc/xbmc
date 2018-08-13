@@ -31,11 +31,11 @@ public:
   // CWinSystemBase
   bool InitWindowSystem() override;
   bool DestroyWindowSystem() override;
-  bool CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res) override;
+  bool CreateNewWindow(const std::string& name, bool fullScreen, const RESOLUTION_INFO& res) override;
   bool DestroyWindow() override;
   bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop) override;
   void FinishWindowResize(int newWidth, int newHeight) override;
-  bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays) override;
+  bool SetFullScreen(bool fullScreen, const RESOLUTION_INFO& res, bool blankOtherDisplays) override;
   void UpdateResolutions() override;
   void ShowOSMouse(bool show) override;
 

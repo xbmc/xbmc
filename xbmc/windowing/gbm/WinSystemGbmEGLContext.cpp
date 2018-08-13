@@ -40,7 +40,7 @@ bool CWinSystemGbmEGLContext::InitWindowSystemEGL(EGLint renderableType, EGLint 
 
 bool CWinSystemGbmEGLContext::CreateNewWindow(const std::string& name,
                                               bool fullScreen,
-                                              RESOLUTION_INFO& res)
+                                              const RESOLUTION_INFO& res)
 {
   m_eglContext.DestroySurface();
 

@@ -42,7 +42,7 @@ bool CWinSystemWaylandEGLContext::InitWindowSystemEGL(EGLint renderableType, EGL
 
 bool CWinSystemWaylandEGLContext::CreateNewWindow(const std::string& name,
                                                   bool fullScreen,
-                                                  RESOLUTION_INFO& res)
+                                                  const RESOLUTION_INFO& res)
 {
   if (!CWinSystemWayland::CreateNewWindow(name, fullScreen, res))
   {

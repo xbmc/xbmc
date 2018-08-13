@@ -55,12 +55,12 @@ public:
 
   bool CreateNewWindow(const std::string& name,
                        bool fullScreen,
-                       RESOLUTION_INFO& res) override;
+                       const RESOLUTION_INFO& res) override;
 
   bool DestroyWindow() override;
 
   bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop) override;
-  bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays) override;
+  bool SetFullScreen(bool fullScreen, const RESOLUTION_INFO& res, bool blankOtherDisplays) override;
   void FinishModeChange(RESOLUTION res) override;
   void FinishWindowResize(int newWidth, int newHeight) override;
 

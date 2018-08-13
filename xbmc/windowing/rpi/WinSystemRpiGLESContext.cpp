@@ -69,7 +69,7 @@ bool CWinSystemRpiGLESContext::InitWindowSystem()
 
 bool CWinSystemRpiGLESContext::CreateNewWindow(const std::string& name,
                                                bool fullScreen,
-                                               RESOLUTION_INFO& res)
+                                               const RESOLUTION_INFO& res)
 {
   m_pGLContext.DestroySurface();
 
@@ -110,7 +110,7 @@ bool CWinSystemRpiGLESContext::ResizeWindow(int newWidth, int newHeight, int new
   return true;
 }
 
-bool CWinSystemRpiGLESContext::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
+bool CWinSystemRpiGLESContext::SetFullScreen(bool fullScreen, const RESOLUTION_INFO& res, bool blankOtherDisplays)
 {
   CreateNewWindow("", fullScreen, res);
   CRenderSystemGLES::ResetRenderSystem(res.iWidth, res.iHeight);

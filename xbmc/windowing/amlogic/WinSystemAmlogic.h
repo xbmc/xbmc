@@ -29,7 +29,7 @@ public:
 
   bool CreateNewWindow(const std::string& name,
                        bool fullScreen,
-                       RESOLUTION_INFO& res) override;
+                       const RESOLUTION_INFO& res) override;
 
   bool DestroyWindow() override;
   void UpdateResolutions() override;

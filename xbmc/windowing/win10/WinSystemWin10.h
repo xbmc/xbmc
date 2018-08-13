@@ -86,7 +86,7 @@ public:
   std::unique_ptr<CVideoSync> GetVideoSync(void *clock) override;
 
   bool WindowedMode() const { return m_state != WINDOW_STATE_FULLSCREEN; }
-  bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays) override;
+  bool SetFullScreen(bool fullScreen, const RESOLUTION_INFO& res, bool blankOtherDisplays) override;
 
   // CWinSystemWin10
   bool IsAlteringWindow() const { return m_IsAlteringWindow; }
@@ -100,10 +100,10 @@ public:
   bool MessagePump() override;
 
 protected:
-  bool CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res) override = 0;
+  bool CreateNewWindow(const std::string& name, bool fullScreen, const RESOLUTION_INFO& res) override = 0;
   virtual void UpdateStates(bool fullScreen);
   WINDOW_STATE GetState(bool fullScreen) const;
-  virtual void SetDeviceFullScreen(bool fullScreen, RESOLUTION_INFO& res) = 0;
+  virtual void SetDeviceFullScreen(bool fullScreen, const RESOLUTION_INFO& res) = 0;
   virtual void ReleaseBackBuffer() = 0;
   virtual void CreateBackBuffer() = 0;
   virtual void ResizeDeviceBuffers() = 0;

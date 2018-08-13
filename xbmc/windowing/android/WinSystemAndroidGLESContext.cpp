@@ -46,7 +46,7 @@ bool CWinSystemAndroidGLESContext::InitWindowSystem()
 
 bool CWinSystemAndroidGLESContext::CreateNewWindow(const std::string& name,
                                                bool fullScreen,
-                                               RESOLUTION_INFO& res)
+                                               const RESOLUTION_INFO& res)
 {
   m_pGLContext.DestroySurface();
 
@@ -82,7 +82,7 @@ bool CWinSystemAndroidGLESContext::ResizeWindow(int newWidth, int newHeight, int
   return true;
 }
 
-bool CWinSystemAndroidGLESContext::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
+bool CWinSystemAndroidGLESContext::SetFullScreen(bool fullScreen, const RESOLUTION_INFO& res, bool blankOtherDisplays)
 {
   CreateNewWindow("", fullScreen, res);
   CRenderSystemGLES::ResetRenderSystem(res.iWidth, res.iHeight);

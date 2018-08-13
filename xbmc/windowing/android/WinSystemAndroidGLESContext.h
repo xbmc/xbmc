@@ -24,10 +24,10 @@ public:
   bool InitWindowSystem() override;
   bool CreateNewWindow(const std::string& name,
                        bool fullScreen,
-                       RESOLUTION_INFO& res) override;
+                       const RESOLUTION_INFO& res) override;
 
   bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop) override;
-  bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays) override;
+  bool SetFullScreen(bool fullScreen, const RESOLUTION_INFO& res, bool blankOtherDisplays) override;
 
   virtual std::unique_ptr<CVideoSync> GetVideoSync(void *clock) override;
 
