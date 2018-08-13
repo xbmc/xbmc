@@ -438,7 +438,7 @@ void CSelectionStreams::Update(std::shared_ptr<CDVDInputStream> input, CDVDDemux
 
     int count;
     count = nav->GetAudioStreamCount();
-    for(int i=0;i<count;i++)
+    for (int i = 0; i < count; i++)
     {
       SelectionStream s;
       s.source   = source;
@@ -452,11 +452,17 @@ void CSelectionStreams::Update(std::shared_ptr<CDVDInputStream> input, CDVDDemux
       s.language = g_LangCodeExpander.ConvertToISO6392B(info.language);
       s.channels = info.channels;
       s.flags = info.flags;
+
+      if (demuxer)
+      {
+        s.demuxerId = demuxer->GetDemuxerId();
+      }
+
       Update(s);
     }
 
     count = nav->GetSubTitleStreamCount();
-    for(int i=0;i<count;i++)
+    for (int i = 0; i < count; i++)
     {
       SelectionStream s;
       s.source   = source;
@@ -469,6 +475,10 @@ void CSelectionStreams::Update(std::shared_ptr<CDVDInputStream> input, CDVDDemux
       s.name     = info.name;
       s.flags = info.flags;
       s.language = g_LangCodeExpander.ConvertToISO6392B(info.language);
+
+      if (demuxer)
+        s.demuxerId = demuxer->GetDemuxerId();
+
       Update(s);
     }
 
@@ -478,7 +488,7 @@ void CSelectionStreams::Update(std::shared_ptr<CDVDInputStream> input, CDVDDemux
       SelectionStream s;
       s.source = source;
       s.type = STREAM_VIDEO;
-      s.id = i;
+      s.id = i - 1;
       s.flags = StreamFlags::FLAG_NONE;
       s.filename = filename;
       s.channels = 0;
@@ -487,6 +497,10 @@ void CSelectionStreams::Update(std::shared_ptr<CDVDInputStream> input, CDVDDemux
       s.height = info.height;
       s.codec = info.codecName;
       s.name = StringUtils::Format("%s %i", g_localizeStrings.Get(38032).c_str(), i);
+
+      if (demuxer)
+        s.demuxerId = demuxer->GetDemuxerId();
+
       Update(s);
     }
   }
@@ -2783,7 +2797,7 @@ void CVideoPlayer::HandleMessages()
         if (st.source == STREAM_SOURCE_NAV && m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
         {
           std::shared_ptr<CDVDInputStreamNavigator> pStream = std::static_pointer_cast<CDVDInputStreamNavigator>(m_pInputStream);
-          if (pStream->SetAngle(st.id))
+          if (pStream->SetAngle(st.id + 1))
           {
             m_dvd.iSelectedVideoStream = st.id;
 
@@ -2794,6 +2808,8 @@ void CVideoPlayer::HandleMessages()
             mode.trickplay = true;
             mode.sync = true;
             m_messenger.Put(new CDVDMsgPlayerSeek(mode));
+            UpdateContentState();
+            CServiceBroker::GetDataCacheCore().SignalVideoInfoChange();
           }
         }
         else
@@ -4999,12 +5015,25 @@ void CVideoPlayer::UpdateContent()
 void CVideoPlayer::UpdateContentState()
 {
   CSingleLock lock(m_content.m_section);
-  m_content.m_videoIndex = m_SelectionStreams.IndexOf(STREAM_VIDEO, m_CurrentVideo.source,
-                                                      m_CurrentVideo.demuxerId, m_CurrentVideo.id);
-  m_content.m_audioIndex = m_SelectionStreams.IndexOf(STREAM_AUDIO, m_CurrentAudio.source,
-                                                      m_CurrentAudio.demuxerId, m_CurrentAudio.id);
-  m_content.m_subtitleIndex = m_SelectionStreams.IndexOf(STREAM_SUBTITLE, m_CurrentSubtitle.source,
-                                                         m_CurrentSubtitle.demuxerId, m_CurrentSubtitle.id);
+
+  if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
+  {
+    m_content.m_videoIndex = m_SelectionStreams.IndexOf(STREAM_VIDEO, STREAM_SOURCE_NAV,
+      m_CurrentVideo.demuxerId, m_dvd.iSelectedVideoStream);
+    m_content.m_audioIndex = m_SelectionStreams.IndexOf(STREAM_AUDIO, STREAM_SOURCE_NAV,
+      m_CurrentAudio.demuxerId, m_dvd.iSelectedAudioStream);
+    m_content.m_subtitleIndex = m_SelectionStreams.IndexOf(STREAM_SUBTITLE, STREAM_SOURCE_NAV,
+      m_CurrentSubtitle.demuxerId, m_dvd.iSelectedSPUStream);
+  }
+  else
+  {
+    m_content.m_videoIndex = m_SelectionStreams.IndexOf(STREAM_VIDEO, m_CurrentVideo.source,
+      m_CurrentVideo.demuxerId, m_CurrentVideo.id);
+    m_content.m_audioIndex = m_SelectionStreams.IndexOf(STREAM_AUDIO, m_CurrentAudio.source,
+      m_CurrentAudio.demuxerId, m_CurrentAudio.id);
+    m_content.m_subtitleIndex = m_SelectionStreams.IndexOf(STREAM_SUBTITLE, m_CurrentSubtitle.source,
+      m_CurrentSubtitle.demuxerId, m_CurrentSubtitle.id);
+  }
 }
 
 void CVideoPlayer::GetVideoStreamInfo(int streamId, VideoStreamInfo &info)

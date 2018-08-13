@@ -553,7 +553,7 @@ protected:
       state                =  DVDSTATE_NORMAL;
       iSelectedSPUStream   = -1;
       iSelectedAudioStream = -1;
-      iSelectedVideoStream = -1;
+      iSelectedVideoStream =  0;
       iDVDStillTime        =  0;
       iDVDStillStartTime   =  0;
       syncClock = false;
@@ -565,7 +565,7 @@ protected:
     unsigned int iDVDStillStartTime; // time in ticks when we started the still
     int iSelectedSPUStream;   // mpeg stream id, or -1 if disabled
     int iSelectedAudioStream; // mpeg stream id, or -1 if disabled
-    int iSelectedVideoStream; // mpeg stream id or angle, -1 if disabled
+    int iSelectedVideoStream = 0; // angle
   } m_dvd;
 
   SPlayerState m_State;
