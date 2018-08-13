@@ -9,6 +9,7 @@ SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.xz
 CWD=$(shell pwd)
 HOSTPYTHONDIR=$(CWD)/$(PLATFORM)/hostpython
+BASE_URL=https://www.python.org/ftp/python/$(VERSION)
 
 CONFIGURE=./configure --prefix=$(NATIVEPREFIX) --disable-shared --disable-framework --without-pymalloc
 ifeq ($(TARGET_PLATFORM),wayland)
