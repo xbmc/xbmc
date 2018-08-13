@@ -7,6 +7,7 @@ LIBNAME=Python
 VERSION=3.7.4
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.xz
+BASE_URL=https://www.python.org/ftp/python/$(VERSION)
 
 ifeq ($(OS),osx)
   HOSTPLATFORM=_PYTHON_HOST_PLATFORM="darwin"
