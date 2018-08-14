@@ -22,6 +22,7 @@
 #include "ColorManager.h"
 #include "threads/Event.h"
 #include "VideoShaders/ShaderFormats.h"
+#include "utils/Geometry.h"
 
 extern "C" {
 #include "libavutil/mastering_display_metadata.h"
@@ -224,6 +225,7 @@ protected:
   bool m_nonLinStretch = false;
   bool m_nonLinStretchGui = false;
   float m_pixelRatio = 0.0f;
+  CRect m_viewRect;
 
   // color management
   std::unique_ptr<CColorManager> m_ColorManager;

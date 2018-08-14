@@ -563,10 +563,10 @@ void CLinuxRendererGL::DrawBlackBars()
     vertices[quad].x = 0.0;
     vertices[quad].y = 0.0;
     vertices[quad].z = 0;
-    vertices[quad+1].x = CServiceBroker::GetWinSystem()->GetGfxContext().GetWidth();
+    vertices[quad+1].x = m_viewRect.Width();
     vertices[quad+1].y = 0;
     vertices[quad+1].z = 0;
-    vertices[quad+2].x = CServiceBroker::GetWinSystem()->GetGfxContext().GetWidth();
+    vertices[quad+2].x = m_viewRect.Width();
     vertices[quad+2].y = m_rotatedDestCoords[0].y;
     vertices[quad+2].z = 0;
     vertices[quad+3] = vertices[quad+2];
@@ -577,28 +577,28 @@ void CLinuxRendererGL::DrawBlackBars()
     count += 6;
   }
 
-  //bottom quad
-  if (m_rotatedDestCoords[2].y < CServiceBroker::GetWinSystem()->GetGfxContext().GetHeight())
+  // bottom quad
+  if (m_rotatedDestCoords[2].y < m_viewRect.Height())
   {
     GLubyte quad = count;
     vertices[quad].x = 0.0;
     vertices[quad].y = m_rotatedDestCoords[2].y;
     vertices[quad].z = 0;
-    vertices[quad+1].x = CServiceBroker::GetWinSystem()->GetGfxContext().GetWidth();
+    vertices[quad+1].x = m_viewRect.Width();
     vertices[quad+1].y = m_rotatedDestCoords[2].y;
     vertices[quad+1].z = 0;
-    vertices[quad+2].x = CServiceBroker::GetWinSystem()->GetGfxContext().GetWidth();
-    vertices[quad+2].y = CServiceBroker::GetWinSystem()->GetGfxContext().GetHeight();
+    vertices[quad+2].x = m_viewRect.Width();
+    vertices[quad+2].y = m_viewRect.Height();
     vertices[quad+2].z = 0;
     vertices[quad+3] = vertices[quad+2];
     vertices[quad+4].x = 0;
-    vertices[quad+4].y = CServiceBroker::GetWinSystem()->GetGfxContext().GetHeight();
+    vertices[quad+4].y = m_viewRect.Height();
     vertices[quad+4].z = 0;
     vertices[quad+5] = vertices[quad];
     count += 6;
   }
 
-  //left quad
+  // left quad
   if (m_rotatedDestCoords[0].x > 0.0)
   {
     GLubyte quad = count;
@@ -620,16 +620,16 @@ void CLinuxRendererGL::DrawBlackBars()
   }
 
   //right quad
-  if (m_rotatedDestCoords[2].x < CServiceBroker::GetWinSystem()->GetGfxContext().GetWidth())
+  if (m_rotatedDestCoords[2].x < m_viewRect.Width())
   {
     GLubyte quad = count;
     vertices[quad].x = m_rotatedDestCoords[1].x;
     vertices[quad].y = m_rotatedDestCoords[1].y;
     vertices[quad].z = 0;
-    vertices[quad+1].x = CServiceBroker::GetWinSystem()->GetGfxContext().GetWidth();
+    vertices[quad+1].x = m_viewRect.Width();
     vertices[quad+1].y = m_rotatedDestCoords[1].y;
     vertices[quad+1].z = 0;
-    vertices[quad+2].x = CServiceBroker::GetWinSystem()->GetGfxContext().GetWidth();
+    vertices[quad+2].x = m_viewRect.Width();
     vertices[quad+2].y = m_rotatedDestCoords[2].y;
     vertices[quad+2].z = 0;
     vertices[quad+3] = vertices[quad+2];
@@ -695,14 +695,19 @@ void CLinuxRendererGL::UpdateVideoFilter()
     }
   }
 
+  CRect srcRect, dstRect, viewRect;
+  GetVideoRect(srcRect, dstRect, viewRect);
+
   if (m_scalingMethodGui == m_videoSettings.m_ScalingMethod &&
+      viewRect.Height() == m_viewRect.Height() &&
+      viewRect.Width() == m_viewRect.Width() &&
       !nonLinStretchChanged && !cmsChanged)
     return;
   else
     m_reloadShaders = 1;
 
-  //recompile YUV shader when non-linear stretch is turned on/off
-  //or when it's on and the scaling method changed
+  // recompile YUV shader when non-linear stretch is turned on/off
+  // or when it's on and the scaling method changed
   if (m_nonLinStretch || nonLinStretchChanged)
     m_reloadShaders = 1;
 
@@ -725,6 +730,7 @@ void CLinuxRendererGL::UpdateVideoFilter()
 
   m_scalingMethodGui = m_videoSettings.m_ScalingMethod;
   m_scalingMethod = m_scalingMethodGui;
+  m_viewRect = viewRect;
 
   if (!Supports(m_scalingMethod))
   {
@@ -744,7 +750,7 @@ void CLinuxRendererGL::UpdateVideoFilter()
   if (m_scalingMethod == VS_SCALINGMETHOD_AUTO)
   {
     bool scaleSD = m_sourceHeight < 720 && m_sourceWidth < 1280;
-    bool scaleUp = (int)m_sourceHeight < CServiceBroker::GetWinSystem()->GetGfxContext().GetHeight() && (int)m_sourceWidth < CServiceBroker::GetWinSystem()->GetGfxContext().GetWidth();
+    bool scaleUp = (int)m_sourceHeight < m_viewRect.Height() && (int)m_sourceWidth < m_viewRect.Width();
     bool scaleFps = m_fps < g_advancedSettings.m_videoAutoScaleMaxFps + 0.01f;
 
     if (Supports(VS_SCALINGMETHOD_LANCZOS3_FAST) && scaleSD && scaleUp && scaleFps)
