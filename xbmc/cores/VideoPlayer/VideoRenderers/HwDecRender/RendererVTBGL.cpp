@@ -83,13 +83,13 @@ bool CRendererVTB::CreateTexture(int index)
 {
   CPictureBuffer &buf = m_buffers[index];
   YuvImage &im = buf.image;
-  YUVPLANE (&planes)[YuvImage::MAX_PLANES] = buf.fields[0];
+  CYuvPlane (&planes)[YuvImage::MAX_PLANES] = buf.fields[0];
 
   ReleaseBuffer(index);
   DeleteTexture(index);
 
   memset(&im    , 0, sizeof(im));
-  memset(&planes, 0, sizeof(YUVPLANE[YuvImage::MAX_PLANES]));
+  memset(&planes, 0, sizeof(CYuvPlane[YuvImage::MAX_PLANES]));
 
   im.bpp    = 1;
   im.width  = m_sourceWidth;
@@ -121,7 +121,7 @@ bool CRendererVTB::CreateTexture(int index)
 void CRendererVTB::DeleteTexture(int index)
 {
   CPictureBuffer& buf = m_buffers[index];
-  YUVPLANE (&planes)[YuvImage::MAX_PLANES] = buf.fields[0];
+  CYuvPlane (&planes)[YuvImage::MAX_PLANES] = buf.fields[0];
   buf.loaded = false;
 
   if (planes[0].id && glIsTexture(planes[0].id))
@@ -140,7 +140,7 @@ void CRendererVTB::DeleteTexture(int index)
 bool CRendererVTB::UploadTexture(int index)
 {
   CPictureBuffer &buf = m_buffers[index];
-  YUVPLANE (&planes)[YuvImage::MAX_PLANES] = m_buffers[index].fields[0];
+  CYuvPlane (&planes)[YuvImage::MAX_PLANES] = m_buffers[index].fields[0];
 
   VTB::CVideoBufferVTB *vb = dynamic_cast<VTB::CVideoBufferVTB*>(buf.videoBuffer);
   if (!vb)

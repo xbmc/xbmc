@@ -113,33 +113,15 @@ CLinuxRendererGL::CLinuxRendererGL()
 {
   m_textureTarget = GL_TEXTURE_2D;
 
-  m_renderMethod = RENDER_GLSL;
-  m_renderQuality = RQ_SINGLEPASS;
   m_iFlags = 0;
   m_format = AV_PIX_FMT_NONE;
 
-  m_iYV12RenderBuffer = 0;
-  m_currentField = FIELD_FULL;
-  m_reloadShaders = 0;
-  m_pYUVShader = nullptr;
-  m_pVideoFilterShader = nullptr;
-  m_scalingMethod = VS_SCALINGMETHOD_LINEAR;
-  m_scalingMethodGui = (ESCALINGMETHOD)-1;
   m_useDithering = CServiceBroker::GetSettings().GetBool("videoscreen.dither");
   m_ditherDepth = CServiceBroker::GetSettings().GetInt("videoscreen.ditherdepth");
   m_fullRange = !CServiceBroker::GetWinSystem()->UseLimitedColor();
 
   m_fbo.width = 0.0;
   m_fbo.height = 0.0;
-  m_NumYV12Buffers = 0;
-  m_bConfigured = false;
-  m_bValidated = false;
-  m_clearColour = 0.0f;
-  m_pboSupported = false;
-  m_pboUsed = false;
-  m_nonLinStretch = false;
-  m_nonLinStretchGui = false;
-  m_pixelRatio = 0.0f;
 
   m_ColorManager.reset(new CColorManager());
   m_tCLUTTex = 0;
@@ -323,7 +305,7 @@ void CLinuxRendererGL::ReleaseBuffer(int idx)
   }
 }
 
-void CLinuxRendererGL::GetPlaneTextureSize(YUVPLANE& plane)
+void CLinuxRendererGL::GetPlaneTextureSize(CYuvPlane& plane)
 {
   /* texture is assumed to be bound */
   GLint width  = 0
@@ -353,7 +335,7 @@ void CLinuxRendererGL::CalculateTextureSourceRects(int source, int num_planes)
   {
     for(int plane = 0; plane < num_planes; plane++)
     {
-      YUVPLANE& p = buf.fields[field][plane];
+      CYuvPlane& p = buf.fields[field][plane];
 
       p.rect = m_sourceRect;
       p.width  = im->width;
@@ -415,7 +397,7 @@ void CLinuxRendererGL::CalculateTextureSourceRects(int source, int num_planes)
   }
 }
 
-void CLinuxRendererGL::LoadPlane(YUVPLANE& plane, int type,
+void CLinuxRendererGL::LoadPlane(CYuvPlane& plane, int type,
                                  unsigned width, unsigned height,
                                  int stride, int bpp, void* data)
 {
@@ -1050,7 +1032,7 @@ bool CLinuxRendererGL::Render(unsigned int flags, int renderBuffer)
 void CLinuxRendererGL::RenderSinglePass(int index, int field)
 {
   CPictureBuffer &buf = m_buffers[index];
-  YUVPLANE (&planes)[YuvImage::MAX_PLANES] = m_buffers[index].fields[field];
+  CYuvPlane (&planes)[YuvImage::MAX_PLANES] = m_buffers[index].fields[field];
 
   AVColorPrimaries srcPrim = GetSrcPrimaries(buf.m_srcPrimaries, buf.image.width, buf.image.height);
   if (srcPrim != m_srcPrimaries)
@@ -1216,7 +1198,7 @@ void CLinuxRendererGL::RenderSinglePass(int index, int field)
 void CLinuxRendererGL::RenderToFBO(int index, int field, bool weave /*= false*/)
 {
   CPictureBuffer &buf = m_buffers[index];
-  YUVPLANE (&planes)[YuvImage::MAX_PLANES] = m_buffers[index].fields[field];
+  CYuvPlane (&planes)[YuvImage::MAX_PLANES] = m_buffers[index].fields[field];
 
   AVColorPrimaries srcPrim = GetSrcPrimaries(buf.m_srcPrimaries, buf.image.width, buf.image.height);
   if (srcPrim != m_srcPrimaries)
@@ -1584,7 +1566,7 @@ void CLinuxRendererGL::RenderProgressiveWeave(int index, int field)
 
 void CLinuxRendererGL::RenderRGB(int index, int field)
 {
-  YUVPLANE &plane = m_buffers[index].fields[FIELD_FULL][0];
+  CYuvPlane &plane = m_buffers[index].fields[FIELD_FULL][0];
 
   glActiveTextureARB(GL_TEXTURE0);
 
@@ -1941,7 +1923,7 @@ bool CLinuxRendererGL::CreateYV12Texture(int index)
   for (int f = FIELD_FULL; f<=FIELD_BOT ; f++)
   {
     int fieldshift = (f==FIELD_FULL) ? 0 : 1;
-    YUVPLANE (&planes)[YuvImage::MAX_PLANES] = m_buffers[index].fields[f];
+    CYuvPlane (&planes)[YuvImage::MAX_PLANES] = m_buffers[index].fields[f];
 
     planes[0].texwidth  = im.width;
     planes[0].texheight = im.height >> fieldshift;
@@ -1959,7 +1941,7 @@ bool CLinuxRendererGL::CreateYV12Texture(int index)
 
     for (int p = 0; p < 3; p++)
     {
-      YUVPLANE &plane = planes[p];
+      CYuvPlane &plane = planes[p];
       if (plane.texwidth * plane.texheight == 0)
         continue;
 
@@ -2245,7 +2227,7 @@ bool CLinuxRendererGL::CreateNV12Texture(int index)
   for (int f = FIELD_FULL; f<=FIELD_BOT ; f++)
   {
     int fieldshift = (f==FIELD_FULL) ? 0 : 1;
-    YUVPLANE (&planes)[YuvImage::MAX_PLANES] = buf.fields[f];
+    CYuvPlane (&planes)[YuvImage::MAX_PLANES] = buf.fields[f];
 
     planes[0].texwidth  = im.width;
     planes[0].texheight = im.height >> fieldshift;
@@ -2263,7 +2245,7 @@ bool CLinuxRendererGL::CreateNV12Texture(int index)
 
     for(int p = 0; p < 2; p++)
     {
-      YUVPLANE &plane = planes[p];
+      CYuvPlane &plane = planes[p];
       if (plane.texwidth * plane.texheight == 0)
         continue;
 
@@ -2503,7 +2485,7 @@ bool CLinuxRendererGL::CreateYUV422PackedTexture(int index)
   for (int f = FIELD_FULL; f<=FIELD_BOT ; f++)
   {
     int fieldshift = (f==FIELD_FULL) ? 0 : 1;
-    YUVPLANE (&planes)[YuvImage::MAX_PLANES] = buf.fields[f];
+    CYuvPlane (&planes)[YuvImage::MAX_PLANES] = buf.fields[f];
 
     planes[0].texwidth  = im.width / 2;
     planes[0].texheight = im.height >> fieldshift;
@@ -2518,7 +2500,7 @@ bool CLinuxRendererGL::CreateYUV422PackedTexture(int index)
       planes[p].pixpertex_y = 1;
     }
 
-    YUVPLANE &plane = planes[0];
+    CYuvPlane &plane = planes[0];
     if (plane.texwidth * plane.texheight == 0)
       continue;
 

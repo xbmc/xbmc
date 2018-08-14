@@ -92,6 +92,7 @@ public:
   bool Supports(ESCALINGMETHOD method) override;
 
 protected:
+
   bool Render(unsigned int flags, int renderBuffer);
   void ClearBackBuffer();
   void DrawBlackBars();
@@ -129,6 +130,16 @@ protected:
   void RenderRGB(int renderBuffer, int field);      // render using vdpau/vaapi hardware
   void RenderProgressiveWeave(int renderBuffer, int field); // render using vdpau hardware
 
+  struct CYuvPlane;
+  struct CPictureBuffer;
+
+  void BindPbo(CPictureBuffer& buff);
+  void UnBindPbo(CPictureBuffer& buff);
+  void LoadPlane(CYuvPlane& plane, int type,
+                 unsigned width,  unsigned height,
+                 int stride, int bpp, void* data);
+  void GetPlaneTextureSize(CYuvPlane& plane);
+
   // hooks for HwDec Renderer
   virtual bool LoadShadersHook() { return false; };
   virtual bool RenderHook(int idx) { return false; };
@@ -141,33 +152,29 @@ protected:
     float width, height;
   } m_fbo;
 
-  int m_iYV12RenderBuffer;
-  int m_NumYV12Buffers;
+  int m_iYV12RenderBuffer = 0;
+  int m_NumYV12Buffers = 0;
 
-  bool m_bConfigured;
-  bool m_bValidated;
+  bool m_bConfigured = false;
+  bool m_bValidated = false;
   GLenum m_textureTarget;
-  int m_renderMethod;
-  RenderQuality m_renderQuality;
-  CRenderSystemGL *m_renderSystem;
+  int m_renderMethod = RENDER_GLSL;
+  RenderQuality m_renderQuality = RQ_SINGLEPASS;
+  CRenderSystemGL *m_renderSystem = nullptr;
 
   // Raw data used by renderer
-  int m_currentField;
-  int m_reloadShaders;
+  int m_currentField = FIELD_FULL;
+  int m_reloadShaders = 0;
 
-  struct YUVPLANE
+  struct CYuvPlane
   {
     GLuint id;
     GLuint pbo;
-
-    CRect  rect;
-
-    float  width;
-    float  height;
-
+    CRect rect;
+    float width;
+    float height;
     unsigned texwidth;
     unsigned texheight;
-
     //pixels per texel
     unsigned pixpertex_x;
     unsigned pixpertex_y;
@@ -178,7 +185,7 @@ protected:
     CPictureBuffer();
    ~CPictureBuffer();
 
-    YUVPLANE fields[MAX_FIELDS][YuvImage::MAX_PLANES];
+    CYuvPlane fields[MAX_FIELDS][YuvImage::MAX_PLANES];
     YuvImage image;
     GLuint pbo[3]; // one pbo for 3 planes
 
@@ -201,33 +208,21 @@ protected:
   // field index 0 is full image, 1 is odd scanlines, 2 is even scanlines
   CPictureBuffer m_buffers[NUM_BUFFERS];
 
-  void LoadPlane(YUVPLANE& plane, int type,
-                 unsigned width,  unsigned height,
-                 int stride, int bpp, void* data);
-
-  void GetPlaneTextureSize(YUVPLANE& plane);
-
-  Shaders::BaseYUV2RGBGLSLShader *m_pYUVShader;
-  Shaders::BaseVideoFilterShader *m_pVideoFilterShader;
-  ESCALINGMETHOD m_scalingMethod;
-  ESCALINGMETHOD m_scalingMethodGui;
+  Shaders::BaseYUV2RGBGLSLShader *m_pYUVShader = nullptr;
+  Shaders::BaseVideoFilterShader *m_pVideoFilterShader = nullptr;
+  ESCALINGMETHOD m_scalingMethod = VS_SCALINGMETHOD_LINEAR;
+  ESCALINGMETHOD m_scalingMethodGui = VS_SCALINGMETHOD_MAX;
   bool m_useDithering;
   unsigned int m_ditherDepth;
   bool m_fullRange;
   AVColorPrimaries m_srcPrimaries;
   bool m_toneMap = false;
-
-  // clear colour for "black" bars
-  float m_clearColour;
-
-  void BindPbo(CPictureBuffer& buff);
-  void UnBindPbo(CPictureBuffer& buff);
-  bool m_pboSupported;
-  bool m_pboUsed;
-
-  bool  m_nonLinStretch;
-  bool  m_nonLinStretchGui;
-  float m_pixelRatio;
+  float m_clearColour = 0.0f;
+  bool m_pboSupported = true;
+  bool m_pboUsed = false;
+  bool m_nonLinStretch = false;
+  bool m_nonLinStretchGui = false;
+  float m_pixelRatio = 0.0f;
 
   // color management
   std::unique_ptr<CColorManager> m_ColorManager;
