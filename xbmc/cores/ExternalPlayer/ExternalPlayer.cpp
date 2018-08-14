@@ -438,7 +438,7 @@ bool CExternalPlayer::ExecuteAppW32(const char* strPath, const char* strSwitches
     CloseHandle(m_processInfo.hProcess);
     m_processInfo.hProcess = 0;
   }
-  return (ret == 0);
+  return (ret == TRUE);
 }
 #endif
 
