@@ -9,7 +9,8 @@ NATIVE= m4-native gettext-native autoconf-native automake-native \
         gas-preprocessor-native python27-native zlib-native \
         pcre-native swig-native \
         libpng-native libjpeg-turbo-native liblzo2-native giflib-native \
-        distribute-native distutilscross-native JsonSchemaBuilder TexturePacker
+        distribute-native distutilscross-native JsonSchemaBuilder TexturePacker \
+        flatbuffers-native
 
 
 ifeq ($(OS),ios)
@@ -39,6 +40,7 @@ all: native
 # Dependency layout for parallel builds
 autoconf-native: m4-native
 automake-native: autoconf-native
+flatbuffers-native: cmake-native
 libtool-native: automake-native
 libpng-native: zlib-native
 meson-native: python3-native

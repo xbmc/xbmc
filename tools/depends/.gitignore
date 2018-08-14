@@ -52,3 +52,4 @@ config.site.native
 /target/cross-file.meson
 /target/libfmt/fmt-*.tar.gz
 /target/rapidjson/rapidjson-*.tar.gz
+/target/flatbuffers/*.tar.gz
