@@ -139,6 +139,7 @@ protected:
                  unsigned width,  unsigned height,
                  int stride, int bpp, void* data);
   void GetPlaneTextureSize(CYuvPlane& plane);
+  GLint GetInternalFormat(GLint format, int bpp);
 
   // hooks for HwDec Renderer
   virtual bool LoadShadersHook() { return false; };

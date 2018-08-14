@@ -1714,22 +1714,32 @@ bool CLinuxRendererGL::RenderCapture(CRenderCapture* capture)
 }
 
 
-static GLint GetInternalFormat(GLint format, int bpp)
+GLint CLinuxRendererGL::GetInternalFormat(GLint format, int bpp)
 {
+  unsigned int major, minor;
+  m_renderSystem->GetRenderVersion(major, minor);
   if (bpp == 2)
   {
-    switch (format)
+    if (format == GL_RED)
     {
-#ifdef GL_R16
-      case GL_RED:
+      if (major > 2)
         return GL_R16;
-#endif
-      default:
-        return format;
+      else
+        return GL_LUMINANCE16;
     }
   }
   else
-    return format;
+  {
+    if (format == GL_RED)
+    {
+      if (major > 2)
+        return GL_RED;
+      else
+        return GL_LUMINANCE;
+    }
+  }
+
+  return format;
 }
 
 //-----------------------------------------------------------------------------
@@ -1948,7 +1958,10 @@ bool CLinuxRendererGL::CreateYV12Texture(int index)
       glBindTexture(m_textureTarget, plane.id);
       GLint internalformat;
       internalformat = GetInternalFormat(GL_RED, im.bpp);
-      glTexImage2D(m_textureTarget, 0, internalformat, plane.texwidth, plane.texheight, 0, GL_RED, GL_UNSIGNED_BYTE, NULL);
+      if (im.bpp == 2)
+        glTexImage2D(m_textureTarget, 0, internalformat, plane.texwidth, plane.texheight, 0, GL_RED, GL_UNSIGNED_SHORT, NULL);
+      else
+        glTexImage2D(m_textureTarget, 0, internalformat, plane.texwidth, plane.texheight, 0, GL_RED, GL_UNSIGNED_BYTE, NULL);
 
       glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
       glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
