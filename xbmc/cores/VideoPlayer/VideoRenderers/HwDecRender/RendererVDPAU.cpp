@@ -278,12 +278,12 @@ bool CRendererVDPAU::CreateVDPAUTexture(int index)
 {
   CPictureBuffer &buf = m_buffers[index];
   YuvImage &im = buf.image;
-  YUVPLANE &plane = buf.fields[FIELD_FULL][0];
+  CYuvPlane &plane = buf.fields[FIELD_FULL][0];
 
   DeleteVDPAUTexture(index);
 
   memset(&im, 0, sizeof(im));
-  memset(&plane, 0, sizeof(YUVPLANE));
+  memset(&plane, 0, sizeof(CYuvPlane));
   im.height = m_sourceHeight;
   im.width = m_sourceWidth;
 
@@ -300,7 +300,7 @@ bool CRendererVDPAU::CreateVDPAUTexture(int index)
 void CRendererVDPAU::DeleteVDPAUTexture(int index)
 {
   CPictureBuffer &buf = m_buffers[index];
-  YUVPLANE &plane = buf.fields[FIELD_FULL][0];
+  CYuvPlane &plane = buf.fields[FIELD_FULL][0];
 
   plane.id = 0;
 }
@@ -310,7 +310,7 @@ bool CRendererVDPAU::UploadVDPAUTexture(int index)
   CPictureBuffer &buf = m_buffers[index];
   VDPAU::CVdpauRenderPicture *pic = dynamic_cast<VDPAU::CVdpauRenderPicture*>(buf.videoBuffer);
 
-  YUVPLANE &plane = buf.fields[FIELD_FULL][0];
+  CYuvPlane &plane = buf.fields[FIELD_FULL][0];
 
   if (!pic)
   {
@@ -355,13 +355,13 @@ bool CRendererVDPAU::CreateVDPAUTexture420(int index)
 {
   CPictureBuffer &buf = m_buffers[index];
   YuvImage &im = buf.image;
-  YUVPLANE (&planes)[YuvImage::MAX_PLANES] = buf.fields[0];
+  CYuvPlane (&planes)[YuvImage::MAX_PLANES] = buf.fields[0];
   GLuint *pbo = buf.pbo;
 
   DeleteVDPAUTexture420(index);
 
   memset(&im, 0, sizeof(im));
-  memset(&planes, 0, sizeof(YUVPLANE[YuvImage::MAX_PLANES]));
+  memset(&planes, 0, sizeof(CYuvPlane[YuvImage::MAX_PLANES]));
 
   im.cshift_x = 1;
   im.cshift_y = 1;
@@ -412,7 +412,7 @@ bool CRendererVDPAU::UploadVDPAUTexture420(int index)
   // YUV
   for (int f = FIELD_TOP; f<=FIELD_BOT ; f++)
   {
-    YUVPLANE (&planes)[YuvImage::MAX_PLANES] = buf.fields[f];
+    CYuvPlane (&planes)[YuvImage::MAX_PLANES] = buf.fields[f];
 
     planes[0].texwidth  = im.width;
     planes[0].texheight = im.height >> 1;

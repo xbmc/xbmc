@@ -152,12 +152,12 @@ bool CRendererVAAPI::CreateTexture(int index)
 
   CPictureBuffer &buf = m_buffers[index];
   YuvImage &im = buf.image;
-  YUVPLANE (&planes)[YuvImage::MAX_PLANES] = buf.fields[0];
+  CYuvPlane (&planes)[YuvImage::MAX_PLANES] = buf.fields[0];
 
   DeleteTexture(index);
 
   memset(&im, 0, sizeof(im));
-  memset(&planes, 0, sizeof(YUVPLANE[YuvImage::MAX_PLANES]));
+  memset(&planes, 0, sizeof(CYuvPlane[YuvImage::MAX_PLANES]));
   im.height = m_sourceHeight;
   im.width  = m_sourceWidth;
   im.cshift_x = 1;
@@ -214,7 +214,7 @@ bool CRendererVAAPI::UploadTexture(int index)
   m_buffers[index].m_srcTextureBits = m_vaapiTextures[index]->GetBits();
 
   YuvImage &im = buf.image;
-  YUVPLANE (&planes)[3] = buf.fields[0];
+  CYuvPlane (&planes)[3] = buf.fields[0];
 
   auto size = m_vaapiTextures[index]->GetTextureSize();
   planes[0].texwidth  = size.Width();
