@@ -10,7 +10,6 @@
 
 #include <utility>
 
-#include "ServiceBroker.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/LocalizeStrings.h"
 #include "interfaces/json-rpc/JSONRPC.h"
@@ -76,8 +75,9 @@ using namespace UPNP;
 
 using KODI::MESSAGING::HELPERS::DialogResponse;
 
-CNetworkServices::CNetworkServices(CSettings &settings)
-  : m_settings(settings)
+CNetworkServices::CNetworkServices(CNetworkBase &network, CSettings &settings)
+  : m_network(network)
+  , m_settings(settings)
 #ifdef HAS_WEB_SERVER
   , m_webserver(*new CWebServer),
   m_httpImageHandler(*new CHTTPImageHandler),
@@ -512,7 +512,7 @@ void CNetworkServices::Stop(bool bWait)
 bool CNetworkServices::StartWebserver()
 {
 #ifdef HAS_WEB_SERVER
-  if (!CServiceBroker::GetNetwork().IsAvailable())
+  if (!m_network.IsAvailable())
     return false;
 
   if (!m_settings.GetBool(CSettings::SETTING_SERVICES_WEBSERVER))
@@ -534,7 +534,7 @@ bool CNetworkServices::StartWebserver()
 #ifdef HAS_ZEROCONF
   std::vector<std::pair<std::string, std::string> > txt;
   txt.push_back(std::make_pair("txtvers", "1"));
-  txt.push_back(std::make_pair("uuid", CServiceBroker::GetSettings().GetString(CSettings::SETTING_SERVICES_DEVICEUUID)));
+  txt.push_back(std::make_pair("uuid", m_settings.GetString(CSettings::SETTING_SERVICES_DEVICEUUID)));
 
   // publish web frontend and API services
 #ifdef HAS_WEB_INTERFACE
@@ -586,7 +586,7 @@ bool CNetworkServices::StartAirPlayServer()
     return true;
 
 #ifdef HAS_AIRPLAY
-  if (!CServiceBroker::GetNetwork().IsAvailable() || !m_settings.GetBool(CSettings::SETTING_SERVICES_AIRPLAY))
+  if (!m_network.IsAvailable() || !m_settings.GetBool(CSettings::SETTING_SERVICES_AIRPLAY))
     return false;
 
   if (IsAirPlayServerRunning())
@@ -601,7 +601,7 @@ bool CNetworkServices::StartAirPlayServer()
 
 #ifdef HAS_ZEROCONF
   std::vector<std::pair<std::string, std::string> > txt;
-  CNetworkInterface* iface = CServiceBroker::GetNetwork().GetFirstConnectedInterface();
+  CNetworkInterface* iface = m_network.GetFirstConnectedInterface();
   txt.push_back(std::make_pair("deviceid", iface != NULL ? iface->GetMacAddress() : "FF:FF:FF:FF:FF:F2"));
   txt.push_back(std::make_pair("model", "Xbmc,1"));
   txt.push_back(std::make_pair("srcvers", AIRPLAY_SERVER_VERSION_STR));
@@ -648,7 +648,7 @@ bool CNetworkServices::StopAirPlayServer(bool bWait)
 bool CNetworkServices::StartAirTunesServer()
 {
 #ifdef HAS_AIRTUNES
-  if (!CServiceBroker::GetNetwork().IsAvailable() || !m_settings.GetBool(CSettings::SETTING_SERVICES_AIRPLAY))
+  if (!m_network.IsAvailable() || !m_settings.GetBool(CSettings::SETTING_SERVICES_AIRPLAY))
     return false;
 
   if (IsAirTunesServerRunning())
@@ -701,7 +701,7 @@ bool CNetworkServices::StartJSONRPCServer()
 #ifdef HAS_ZEROCONF
   std::vector<std::pair<std::string, std::string> > txt;
   txt.push_back(std::make_pair("txtvers", "1"));
-  txt.push_back(std::make_pair("uuid", CServiceBroker::GetSettings().GetString(CSettings::SETTING_SERVICES_DEVICEUUID)));
+  txt.push_back(std::make_pair("uuid", m_settings.GetString(CSettings::SETTING_SERVICES_DEVICEUUID)));
 
   CZeroconf::GetInstance()->PublishService("servers.jsonrpc-tpc", "_xbmc-jsonrpc._tcp", CSysInfo::GetDeviceName(), g_advancedSettings.m_jsonTcpPort, txt);
 #endif // HAS_ZEROCONF

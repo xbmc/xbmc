@@ -10,6 +10,7 @@
 
 #include "settings/lib/ISettingCallback.h"
 
+class CNetworkBase;
 class CSettings;
 #ifdef HAS_WEB_SERVER
 class CWebServer;
@@ -29,7 +30,7 @@ class CHTTPWebinterfaceAddonsHandler;
 class CNetworkServices : public ISettingCallback
 {
 public:
-  CNetworkServices(CSettings &settings);
+  CNetworkServices(CNetworkBase &network, CSettings &settings);
   ~CNetworkServices() override;
 
   bool OnSettingChanging(std::shared_ptr<const CSetting> setting) override;
@@ -89,6 +90,7 @@ private:
   bool ValidatePort(int port);
 
   // Construction parameters
+  CNetworkBase &m_network;
   CSettings &m_settings;
 
   // Network services

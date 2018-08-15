@@ -12,7 +12,6 @@
 #include <arpa/inet.h>
 
 #include "Network.h"
-#include "ServiceBroker.h"
 #include "messaging/ApplicationMessenger.h"
 #include "network/NetworkServices.h"
 #include "settings/Settings.h"
@@ -126,7 +125,8 @@ int NetworkAccessPoint::FreqToChannel(float frequency)
 }
 
 CNetworkBase::CNetworkBase(CSettings &settings) :
-  m_services(new CNetworkServices(settings))
+  m_settings(settings),
+  m_services(new CNetworkServices(*this, settings))
 {
   CApplicationMessenger::GetInstance().PostMsg(TMSG_NETWORKMESSAGE, SERVICES_UP, 0);
 }
@@ -513,7 +513,7 @@ std::vector<SOCKET> CreateTCPServerSocket(const int port, const bool bindLocal, 
 
 void CNetworkBase::WaitForNet()
 {
-  const int timeout = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_POWERMANAGEMENT_WAITFORNETWORK);
+  const int timeout = m_settings.GetInt(CSettings::SETTING_POWERMANAGEMENT_WAITFORNETWORK);
   if (timeout <= 0)
     return; // wait for network is disabled
 
