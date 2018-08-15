@@ -16,6 +16,8 @@
 
 namespace ADDON
 {
+  class CAddonMgr;
+  class CBinaryAddonManager;
 
   class CVFSEntry;
   typedef std::shared_ptr<CVFSEntry> VFSEntryPtr;
@@ -23,6 +25,8 @@ namespace ADDON
   class CVFSAddonCache
   {
   public:
+    CVFSAddonCache(CAddonMgr &addonManager,
+                   CBinaryAddonManager &binaryAddonManager);
     virtual ~CVFSAddonCache();
     void Init();
     void Deinit();
@@ -35,6 +39,11 @@ namespace ADDON
 
     CCriticalSection m_critSection;
     std::vector<VFSEntryPtr> m_addonsInstances;
+
+  private:
+    // Construction parameters
+    ADDON::CAddonMgr &m_addonManager;
+    ADDON::CBinaryAddonManager &m_binaryAddonManager;
   };
 
   //! \brief A virtual filesystem entry add-on.

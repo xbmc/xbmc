@@ -144,7 +144,8 @@ bool CServiceManager::InitStageTwo(const CAppParamParser &params)
 
   m_repositoryUpdater.reset(new ADDON::CRepositoryUpdater(*m_addonMgr));
 
-  m_vfsAddonCache.reset(new ADDON::CVFSAddonCache());
+  m_vfsAddonCache.reset(new ADDON::CVFSAddonCache(*m_addonMgr,
+                                                  *m_binaryAddonManager));
   m_vfsAddonCache->Init();
 
   m_PVRManager.reset(new PVR::CPVRManager());
