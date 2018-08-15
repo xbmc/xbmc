@@ -9,7 +9,6 @@
 #include "FavouritesService.h"
 #include "filesystem/File.h"
 #include "Util.h"
-#include "profiles/ProfilesManager.h"
 #include "FileItem.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
