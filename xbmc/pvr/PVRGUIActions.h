@@ -23,6 +23,7 @@ class CFileItem;
 typedef std::shared_ptr<CFileItem> CFileItemPtr;
 
 class CGUIWindow;
+class CNetworkBase;
 
 namespace PVR
 {
@@ -64,7 +65,7 @@ namespace PVR
   class CPVRGUIActions
   {
   public:
-    CPVRGUIActions();
+    CPVRGUIActions(CNetworkBase &network);
     virtual ~CPVRGUIActions() = default;
 
     /*!
@@ -481,6 +482,11 @@ namespace PVR
     bool AllLocalBackendsIdle(CPVRTimerInfoTagPtr& causingEvent) const;
     bool EventOccursOnLocalBackend(const CFileItemPtr& item) const;
     bool IsNextEventWithinBackendIdleTime(void) const;
+
+    /** @name Construction parameters */
+    //@{
+    CNetworkBase &m_network;
+    //@}
 
     mutable CCriticalSection m_critSection;
     CPVRChannelSwitchingInputHandler m_channelNumberInputHandler;
