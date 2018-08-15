@@ -94,20 +94,21 @@ protected:
                             float inputFrameRatio, float zoomAmount, float verticalShift);
   void CalculateFrameAspectRatio(unsigned int desired_width, unsigned int desired_height);
   virtual void ManageRenderArea();
-  virtual void ReorderDrawPoints();//might be overwritten (by egl e.x.)
+  virtual void ReorderDrawPoints();
   virtual EShaderFormat GetShaderFormat();
+  void MarkDirty();
+
+  //@todo drop those
   void saveRotatedCoords();//saves the current state of m_rotatedDestCoords
   void syncDestRectToRotatedPoints();//sync any changes of m_destRect to m_rotatedDestCoords
   void restoreRotatedCoords();//restore the current state of m_rotatedDestCoords from saveRotatedCoords
-  void MarkDirty();
 
-  unsigned int m_sourceWidth;
-  unsigned int m_sourceHeight;
-  float m_sourceFrameRatio;
-  float m_fps;
+  unsigned int m_sourceWidth = 720;
+  unsigned int m_sourceHeight = 480;
+  float m_sourceFrameRatio = 1.0f;
+  float m_fps = 0.0f;
 
-  unsigned int m_renderOrientation; // orientation of the video in degrees counter clockwise
-  unsigned int m_oldRenderOrientation; // orientation of the previous frame
+  unsigned int m_renderOrientation = 0; // orientation of the video in degrees counter clockwise
   // for drawing the texture with glVertex4f (holds all 4 corner points of the destination rect
   // with correct orientation based on m_renderOrientation
   // 0 - top left, 1 - top right, 2 - bottom right, 3 - bottom left
@@ -115,12 +116,11 @@ protected:
   CPoint m_savedRotatedDestCoords[4];//saved points from saveRotatedCoords call
 
   CRect m_destRect;
-  CRect m_oldDestRect; // destrect of the previous frame
   CRect m_sourceRect;
   CRect m_viewRect;
 
   // rendering flags
-  unsigned m_iFlags;
+  unsigned m_iFlags = 0;
   AVPixelFormat m_format = AV_PIX_FMT_NONE;
 
   CVideoSettings m_videoSettings;
