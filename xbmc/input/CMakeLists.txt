@@ -35,6 +35,7 @@ set(HEADERS hardware/IHardwareInput.h
             CustomControllerTranslator.h
             GamepadTranslator.h
             IButtonMapper.h
+            IInputEventSource.h
             IKeymap.h
             IKeymapEnvironment.h
             InertialScrollingHandler.h

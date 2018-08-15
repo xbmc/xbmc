@@ -11,6 +11,7 @@
 #include "Application.h"
 #include "ServiceBroker.h"
 #include "CustomControllerTranslator.h"
+#include "IInputEventSource.h"
 #include "InputManager.h"
 #include "IRTranslator.h"
 #include "JoystickMapper.h"
@@ -96,11 +97,15 @@ void CInputManager::Deinitialize()
 {
 }
 
-bool CInputManager::ProcessPeripherals(float frameTime)
+bool CInputManager::ProcessExternalEvent(float frameTime)
 {
-  CKey key;
-  if (CServiceBroker::GetPeripherals().GetNextKeypress(frameTime, key))
-    return OnKey(key);
+  for (auto externalEventSource : m_externalEvents)
+  {
+    CKey key;
+    if (externalEventSource->GetNextKeypress(frameTime, key))
+      return OnKey(key);
+  }
+
   return false;
 }
 
@@ -312,7 +317,7 @@ bool CInputManager::Process(int windowId, float frameTime)
 {
   // process input actions
   ProcessEventServer(windowId, frameTime);
-  ProcessPeripherals(frameTime);
+  ProcessExternalEvent(frameTime);
   ProcessQueuedActions();
 
   // Inform the environment of the new active window ID
@@ -885,4 +890,14 @@ void CInputManager::RegisterMouseDriverHandler(MOUSE::IMouseDriverHandler* handl
 void CInputManager::UnregisterMouseDriverHandler(MOUSE::IMouseDriverHandler* handler)
 {
   m_mouseHandlers.erase(std::remove(m_mouseHandlers.begin(), m_mouseHandlers.end(), handler), m_mouseHandlers.end());
+}
+
+void CInputManager::RegisterExternalEvents(IInputEventSource *events)
+{
+  m_externalEvents.push_back(events);
+}
+
+void CInputManager::UnregisterExternalEvents(IInputEventSource *events)
+{
+  m_externalEvents.erase(std::remove(m_externalEvents.begin(), m_externalEvents.end(), events), m_externalEvents.end());
 }
