@@ -18,13 +18,11 @@ public:
   bool OnMessage(CGUIMessage& message) override;
   void FrameMove() override;
 private:
-  float GetSeekPercent() const;
+  int GetProgress() const;
   int GetEpgEventProgress() const;
-  int GetEpgEventSeekPercent() const;
   int GetTimeshiftProgress() const;
-  int GetTimeshiftSeekPercent() const;
 
-  unsigned int m_lastPercent = ~0U;
-  unsigned int m_lastEpgEventPercent = ~0U;
-  unsigned int m_lastTimeshiftPercent = ~0U;
+  int m_lastProgress = 0;
+  int m_lastEpgEventProgress = 0;
+  int m_lastTimeshiftProgress = 0;
 };

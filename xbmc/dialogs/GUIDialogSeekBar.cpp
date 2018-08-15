@@ -55,106 +55,83 @@ void CGUIDialogSeekBar::FrameMove()
     return;
   }
 
-  unsigned int percent = g_application.GetAppPlayer().GetSeekHandler().InProgress()
-    ? std::lrintf(GetSeekPercent())
-    : std::lrintf(g_application.GetPercentage());
+  int progress = GetProgress();
+  if (progress != m_lastProgress)
+    CONTROL_SELECT_ITEM(POPUP_SEEK_PROGRESS, m_lastProgress = progress);
 
-  if (percent != m_lastPercent)
-    CONTROL_SELECT_ITEM(POPUP_SEEK_PROGRESS, m_lastPercent = percent);
+  int epgEventProgress = GetEpgEventProgress();
+  if (epgEventProgress != m_lastEpgEventProgress)
+    CONTROL_SELECT_ITEM(POPUP_SEEK_EPG_EVENT_PROGRESS, m_lastEpgEventProgress = epgEventProgress);
 
-  unsigned int epgEventPercent = g_application.GetAppPlayer().GetSeekHandler().InProgress()
-    ? GetEpgEventSeekPercent()
-    : GetEpgEventProgress();
-
-  if (epgEventPercent != m_lastEpgEventPercent)
-    CONTROL_SELECT_ITEM(POPUP_SEEK_EPG_EVENT_PROGRESS, m_lastEpgEventPercent = epgEventPercent);
-
-  unsigned int timeshiftPercent = g_application.GetAppPlayer().GetSeekHandler().InProgress()
-    ? GetTimeshiftSeekPercent()
-    : GetTimeshiftProgress();
-
-  if (timeshiftPercent != m_lastTimeshiftPercent)
-    CONTROL_SELECT_ITEM(POPUP_SEEK_TIMESHIFT_PROGRESS, m_lastTimeshiftPercent = timeshiftPercent);
+  int timeshiftProgress = GetTimeshiftProgress();
+  if (timeshiftProgress != m_lastTimeshiftProgress)
+    CONTROL_SELECT_ITEM(POPUP_SEEK_TIMESHIFT_PROGRESS, m_lastTimeshiftProgress = timeshiftProgress);
 
   CGUIDialog::FrameMove();
 }
 
-float CGUIDialogSeekBar::GetSeekPercent() const
+int CGUIDialogSeekBar::GetProgress() const
 {
-  int totaltime = std::lrint(g_application.GetTotalTime());
-  if (totaltime == 0)
-    return 0.0f;
+  CGUIInfoManager& infoMgr = CServiceBroker::GetGUI()->GetInfoManager();
 
-  float percentPlayTime = static_cast<float>(std::lrint(g_application.GetTime() * 1000)) / totaltime * 0.1f;
-  float percentPerSecond = 100.0f / static_cast<float>(totaltime);
-  float percent = percentPlayTime + percentPerSecond * g_application.GetAppPlayer().GetSeekHandler().GetSeekSize();
+  int progress = 0;
 
-  if (percent > 100.0f)
-    percent = 100.0f;
-  if (percent < 0.0f)
-    percent = 0.0f;
+  if (g_application.GetAppPlayer().GetSeekHandler().GetSeekSize() != 0)
+    infoMgr.GetInt(progress, PLAYER_SEEKBAR);
+  else
+    infoMgr.GetInt(progress, PLAYER_PROGRESS);
 
-  return percent;
+  return progress;
 }
 
 int CGUIDialogSeekBar::GetEpgEventProgress() const
 {
-  int value = 0;
-  CServiceBroker::GetGUI()->GetInfoManager().GetInt(value, PVR_EPG_EVENT_PROGRESS);
-  return value;
-}
+  CGUIInfoManager& infoMgr = CServiceBroker::GetGUI()->GetInfoManager();
 
-int CGUIDialogSeekBar::GetEpgEventSeekPercent() const
-{
+  int progress = 0;
+  infoMgr.GetInt(progress, PVR_EPG_EVENT_PROGRESS);
+
   int seekSize = g_application.GetAppPlayer().GetSeekHandler().GetSeekSize();
   if (seekSize != 0)
   {
-    CGUIInfoManager& infoMgr = CServiceBroker::GetGUI()->GetInfoManager();
-
-    int progress = 0;
-    infoMgr.GetInt(progress, PVR_EPG_EVENT_PROGRESS);
-
     int total = 0;
     infoMgr.GetInt(total, PVR_EPG_EVENT_DURATION);
 
     float totalTime = static_cast<float>(total);
+    if (totalTime == 0.0f)
+      return 0;
+
     float percentPerSecond = 100.0f / totalTime;
     float percent = progress + percentPerSecond * seekSize;
+    percent = std::max(0.0f, std::min(percent, 100.0f));
     return std::lrintf(percent);
   }
-  else
-  {
-    return GetEpgEventProgress();
-  }
+
+  return progress;
 }
 
 int CGUIDialogSeekBar::GetTimeshiftProgress() const
 {
-  int value = 0;
-  CServiceBroker::GetGUI()->GetInfoManager().GetInt(value, PVR_TIMESHIFT_PROGRESS_PLAY_POS);
-  return value;
-}
+  CGUIInfoManager& infoMgr = CServiceBroker::GetGUI()->GetInfoManager();
 
-int CGUIDialogSeekBar::GetTimeshiftSeekPercent() const
-{
+  int progress = 0;
+  infoMgr.GetInt(progress, PVR_TIMESHIFT_PROGRESS_PLAY_POS);
+
   int seekSize = g_application.GetAppPlayer().GetSeekHandler().GetSeekSize();
   if (seekSize != 0)
   {
-    CGUIInfoManager& infoMgr = CServiceBroker::GetGUI()->GetInfoManager();
-
-    int progress = 0;
-    infoMgr.GetInt(progress, PVR_TIMESHIFT_PROGRESS_PLAY_POS);
-
     int total = 0;
     infoMgr.GetInt(total, PVR_TIMESHIFT_PROGRESS_DURATION);
 
     float totalTime = static_cast<float>(total);
+    if (totalTime == 0.0f)
+      return 0;
+
     float percentPerSecond = 100.0f / totalTime;
     float percent = progress + percentPerSecond * seekSize;
+    percent = std::max(0.0f, std::min(percent, 100.0f));
     return std::lrintf(percent);
   }
-  else
-  {
-    return GetTimeshiftProgress();
-  }
+
+  return progress;
 }
