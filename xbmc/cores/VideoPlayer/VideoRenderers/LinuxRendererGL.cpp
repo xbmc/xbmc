@@ -557,7 +557,7 @@ void CLinuxRendererGL::DrawBlackBars()
   glUniform4f(uniCol, m_clearColour / 255.0f, m_clearColour / 255.0f, m_clearColour / 255.0f, 1.0f);
 
   //top quad
-  if (m_rotatedDestCoords[0].y > 0.0)
+  if (m_destRect.y1 > 0.0)
   {
     GLubyte quad = count;
     vertices[quad].x = 0.0;
@@ -567,25 +567,25 @@ void CLinuxRendererGL::DrawBlackBars()
     vertices[quad+1].y = 0;
     vertices[quad+1].z = 0;
     vertices[quad+2].x = m_viewRect.Width();
-    vertices[quad+2].y = m_rotatedDestCoords[0].y;
+    vertices[quad+2].y = m_destRect.y1;
     vertices[quad+2].z = 0;
     vertices[quad+3] = vertices[quad+2];
     vertices[quad+4].x = 0;
-    vertices[quad+4].y = m_rotatedDestCoords[0].y;
+    vertices[quad+4].y = m_destRect.y1;
     vertices[quad+4].z = 0;
     vertices[quad+5] = vertices[quad];
     count += 6;
   }
 
   // bottom quad
-  if (m_rotatedDestCoords[2].y < m_viewRect.Height())
+  if (m_destRect.y2 < m_viewRect.Height())
   {
     GLubyte quad = count;
     vertices[quad].x = 0.0;
-    vertices[quad].y = m_rotatedDestCoords[2].y;
+    vertices[quad].y = m_destRect.y2;
     vertices[quad].z = 0;
     vertices[quad+1].x = m_viewRect.Width();
-    vertices[quad+1].y = m_rotatedDestCoords[2].y;
+    vertices[quad+1].y = m_destRect.y2;
     vertices[quad+1].z = 0;
     vertices[quad+2].x = m_viewRect.Width();
     vertices[quad+2].y = m_viewRect.Height();
@@ -599,42 +599,42 @@ void CLinuxRendererGL::DrawBlackBars()
   }
 
   // left quad
-  if (m_rotatedDestCoords[0].x > 0.0)
+  if (m_destRect.x1 > 0.0)
   {
     GLubyte quad = count;
     vertices[quad].x = 0.0;
-    vertices[quad].y = m_rotatedDestCoords[0].y;
+    vertices[quad].y = m_destRect.y1;
     vertices[quad].z = 0;
-    vertices[quad+1].x = m_rotatedDestCoords[0].x;
-    vertices[quad+1].y = m_rotatedDestCoords[0].y;
+    vertices[quad+1].x = m_destRect.x1;
+    vertices[quad+1].y = m_destRect.y1;
     vertices[quad+1].z = 0;
-    vertices[quad+2].x = m_rotatedDestCoords[3].x;
-    vertices[quad+2].y = m_rotatedDestCoords[3].y;
+    vertices[quad+2].x = m_destRect.x1;
+    vertices[quad+2].y = m_destRect.y2;
     vertices[quad+2].z = 0;
     vertices[quad+3] = vertices[quad+2];
     vertices[quad+4].x = 0;
-    vertices[quad+4].y = m_rotatedDestCoords[3].y;
+    vertices[quad+4].y = m_destRect.y2;
     vertices[quad+4].z = 0;
     vertices[quad+5] = vertices[quad];
     count += 6;
   }
 
-  //right quad
-  if (m_rotatedDestCoords[2].x < m_viewRect.Width())
+  // right quad
+  if (m_destRect.x2 < m_viewRect.Width())
   {
     GLubyte quad = count;
-    vertices[quad].x = m_rotatedDestCoords[1].x;
-    vertices[quad].y = m_rotatedDestCoords[1].y;
+    vertices[quad].x = m_destRect.x2;
+    vertices[quad].y = m_destRect.y1;
     vertices[quad].z = 0;
     vertices[quad+1].x = m_viewRect.Width();
-    vertices[quad+1].y = m_rotatedDestCoords[1].y;
+    vertices[quad+1].y = m_destRect.y1;
     vertices[quad+1].z = 0;
     vertices[quad+2].x = m_viewRect.Width();
-    vertices[quad+2].y = m_rotatedDestCoords[2].y;
+    vertices[quad+2].y = m_destRect.y2;
     vertices[quad+2].z = 0;
     vertices[quad+3] = vertices[quad+2];
-    vertices[quad+4].x = m_rotatedDestCoords[1].x;
-    vertices[quad+4].y = m_rotatedDestCoords[2].y;
+    vertices[quad+4].x = m_destRect.x2;
+    vertices[quad+4].y = m_destRect.y2;
     vertices[quad+4].z = 0;
     vertices[quad+5] = vertices[quad];
     count += 6;
