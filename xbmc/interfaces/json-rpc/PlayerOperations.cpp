@@ -569,7 +569,9 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
       return InvalidParams;
 
     CFileItemList *l = new CFileItemList; //don't delete,
-    l->Add(std::make_shared<CFileItem>(channel));
+    CFileItem item(channel);
+    CServiceBroker::GetPVRManager().FillStreamFileItem(item);
+    l->Add(std::make_shared<CFileItem>(item));
     CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, -1, -1, static_cast<void*>(l));
 
     return ACK;
