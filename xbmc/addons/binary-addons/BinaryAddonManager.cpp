@@ -10,7 +10,6 @@
 #include "BinaryAddonBase.h"
 
 #include "addons/AddonManager.h"
-#include "filesystem/SpecialProtocol.h"
 #include "filesystem/Directory.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
@@ -51,7 +50,7 @@ void CBinaryAddonManager::DeInit()
 {
   /* If temporary directory was used from addon delete them */
   if (XFILE::CDirectory::Exists(m_tempAddonBasePath))
-    XFILE::CDirectory::RemoveRecursive(CSpecialProtocol::TranslatePath(m_tempAddonBasePath));
+    XFILE::CDirectory::RemoveRecursive(m_tempAddonBasePath);
 
   m_addonManager.Events().Unsubscribe(this);
 }
