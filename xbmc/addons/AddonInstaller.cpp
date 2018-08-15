@@ -311,7 +311,7 @@ bool CAddonInstaller::CheckDependencies(const AddonPtr &addon,
     const AddonVersion &version = it.requiredVersion;
     bool optional = it.optional;
     AddonPtr dep;
-    bool haveAddon = CServiceBroker::GetAddonMgr().GetAddon(addonID, dep);
+    bool haveAddon = CServiceBroker::GetAddonMgr().GetAddon(addonID, dep, ADDON_UNKNOWN, false);
     if ((haveAddon && !dep->MeetsVersion(version)) || (!haveAddon && !optional))
     {
       // we have it but our version isn't good enough, or we don't have it and we need it
@@ -328,6 +328,11 @@ bool CAddonInstaller::CheckDependencies(const AddonPtr &addon,
         return false;
       }
     }
+
+    // need to enable the dependency
+    if (dep && CServiceBroker::GetAddonMgr().IsAddonDisabled(addonID))
+      if (!CServiceBroker::GetAddonMgr().EnableAddon(addonID))
+        return false;
 
     // at this point we have our dep, or the dep is optional (and we don't have it) so check that it's OK as well
     //! @todo should we assume that installed deps are OK?
