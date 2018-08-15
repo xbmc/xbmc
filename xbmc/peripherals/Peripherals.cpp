@@ -36,15 +36,16 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "FileItem.h"
 #include "bus/virtual/PeripheralBusApplication.h"
-#include "input/joysticks/interfaces/IButtonMapper.h"
-#include "interfaces/AnnouncementManager.h"
 #include "filesystem/Directory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
 #include "GUIUserMessages.h"
+#include "input/joysticks/interfaces/IButtonMapper.h"
+#include "input/InputManager.h"
 #include "input/Key.h"
+#include "interfaces/AnnouncementManager.h"
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/ThreadMessage.h"
 #include "peripherals/dialogs/GUIDialogPeripherals.h"
@@ -82,10 +83,14 @@ CPeripherals::CPeripherals(CInputManager &inputManager,
   settingSet.insert(CSettings::SETTING_INPUT_TESTRUMBLE);
   settingSet.insert(CSettings::SETTING_LOCALE_LANGUAGE);
   CServiceBroker::GetSettings().RegisterCallback(this, settingSet);
+
+  m_inputManager.RegisterExternalEvents(this);
 }
 
 CPeripherals::~CPeripherals()
 {
+  m_inputManager.UnregisterExternalEvents(this);
+
   // Unregister settings
   CServiceBroker::GetSettings().UnregisterCallback(this);
 
