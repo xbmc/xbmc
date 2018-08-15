@@ -23,6 +23,7 @@
 #include "GUIInfoManager.h"
 #include "music/MusicDatabase.h"
 #include "pvr/PVRManager.h"
+#include "pvr/PVRGUIActions.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/epg/EpgInfoTag.h"
@@ -557,39 +558,31 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
   }
   else if (parameterObject["item"].isMember("channelid"))
   {
-    if (!CServiceBroker::GetPVRManager().IsStarted())
-      return FailedToExecute;
-
-    CPVRChannelGroupsContainerPtr channelGroupContainer = CServiceBroker::GetPVRManager().ChannelGroups();
+    const CPVRChannelGroupsContainerPtr channelGroupContainer = CServiceBroker::GetPVRManager().ChannelGroups();
     if (!channelGroupContainer)
       return FailedToExecute;
 
-    CPVRChannelPtr channel = channelGroupContainer->GetChannelById((int)parameterObject["item"]["channelid"].asInteger());
-    if (channel == NULL)
+    const CPVRChannelPtr channel = channelGroupContainer->GetChannelById(static_cast<int>(parameterObject["item"]["channelid"].asInteger()));
+    if (!channel)
       return InvalidParams;
 
-    CFileItemList *l = new CFileItemList; //don't delete,
-    l->Add(std::make_shared<CFileItem>(channel));
-    CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, -1, -1, static_cast<void*>(l));
+    if (!CServiceBroker::GetPVRManager().GUIActions()->PlayMedia(std::make_shared<CFileItem>(channel)))
+      return FailedToExecute;
 
     return ACK;
   }
   else if (parameterObject["item"].isMember("recordingid"))
   {
-    if (!CServiceBroker::GetPVRManager().IsStarted())
-      return FailedToExecute;
-
-    CPVRRecordingsPtr recordingsContainer = CServiceBroker::GetPVRManager().Recordings();
+    const CPVRRecordingsPtr recordingsContainer = CServiceBroker::GetPVRManager().Recordings();
     if (!recordingsContainer)
       return FailedToExecute;
 
-    CFileItemPtr fileItem = recordingsContainer->GetById((int)parameterObject["item"]["recordingid"].asInteger());
-    if (fileItem == NULL)
+    const CFileItemPtr fileItem = recordingsContainer->GetById(static_cast<int>(parameterObject["item"]["recordingid"].asInteger()));
+    if (!fileItem)
       return InvalidParams;
 
-    CFileItemList *l = new CFileItemList; //don't delete,
-    l->Add(std::make_shared<CFileItem>(*fileItem));
-    CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, -1, -1, static_cast<void*>(l));
+    if (!CServiceBroker::GetPVRManager().GUIActions()->PlayMedia(fileItem))
+      return FailedToExecute;
 
     return ACK;
   }
