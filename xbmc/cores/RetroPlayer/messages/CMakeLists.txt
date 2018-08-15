@@ -17,3 +17,7 @@ add_custom_target(retroplayer_messages DEPENDS ${FLATC_OUTPUTS})
 set_target_properties(retroplayer_messages PROPERTIES FOLDER "Generated Messages"
                                                       INCLUDE_DIRECTORIES ${CMAKE_CURRENT_BINARY_DIR}
                                                       SOURCES ${FLATC_OUTPUTS})
+
+if(TARGET flatbuffers)
+  add_dependencies(retroplayer_messages flatbuffers)
+endif()
