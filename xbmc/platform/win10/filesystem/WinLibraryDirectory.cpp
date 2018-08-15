@@ -233,23 +233,39 @@ int CWinLibraryDirectory::StatDirectory(const CURL& url, struct __stat64* statDa
   /* set st_ino */
   statData->st_ino = 0; // inode number is not implemented on Win32
 
+  statData->st_atime = 0;
+  statData->st_ctime = 0;
+  statData->st_mtime = 0;
+
   auto requestedProps = Wait(dir.Properties().RetrievePropertiesAsync(
       {L"System.DateAccessed", L"System.DateCreated", L"System.DateModified"}));
 
-  auto dateAccessed = requestedProps.Lookup(L"System.DateAccessed").as<winrt::IPropertyValue>();
-  if (dateAccessed)
+  if (requestedProps.HasKey(L"System.DateAccessed") && 
+      requestedProps.Lookup(L"System.DateAccessed"))
   {
-    statData->st_atime = winrt::clock::to_time_t(dateAccessed.GetDateTime());
+    auto dateAccessed = requestedProps.Lookup(L"System.DateAccessed").as<winrt::IPropertyValue>();
+    if (dateAccessed)
+    {
+      statData->st_atime = winrt::clock::to_time_t(dateAccessed.GetDateTime());
+    }
   }
-  auto dateCreated = requestedProps.Lookup(L"System.DateCreated").as<winrt::IPropertyValue>();
-  if (dateCreated)
+  if (requestedProps.HasKey(L"System.DateCreated") && 
+      requestedProps.Lookup(L"System.DateCreated"))
   {
-    statData->st_ctime = winrt::clock::to_time_t(dateCreated.GetDateTime());
+    auto dateCreated = requestedProps.Lookup(L"System.DateCreated").as<winrt::IPropertyValue>();
+    if (dateCreated)
+    {
+      statData->st_ctime = winrt::clock::to_time_t(dateCreated.GetDateTime());
+    }
   }
-  auto dateModified = requestedProps.Lookup(L"System.DateModified").as<winrt::IPropertyValue>();
-  if (dateModified)
+  if (requestedProps.HasKey(L"System.DateModified") && 
+      requestedProps.Lookup(L"System.DateModified"))
   {
-    statData->st_mtime = winrt::clock::to_time_t(dateModified.GetDateTime());
+    auto dateModified = requestedProps.Lookup(L"System.DateModified").as<winrt::IPropertyValue>();
+    if (dateModified)
+    {
+      statData->st_mtime = winrt::clock::to_time_t(dateModified.GetDateTime());
+    }
   }
 
   statData->st_dev = 0;
