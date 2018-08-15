@@ -62,7 +62,6 @@ bool CServiceManager::InitForTesting()
 
   m_databaseManager.reset(new CDatabaseManager);
 
-  m_binaryAddonManager.reset(new ADDON::CBinaryAddonManager());
   m_addonMgr.reset(new ADDON::CAddonMgr());
   if (!m_addonMgr->Init())
   {
@@ -70,6 +69,7 @@ bool CServiceManager::InitForTesting()
     return false;
   }
 
+  m_binaryAddonManager.reset(new ADDON::CBinaryAddonManager(*m_addonMgr));
   if (!m_binaryAddonManager->Init())
   {
     CLog::Log(LOGFATAL, "CServiceManager::%s: Unable to initialize CBinaryAddonManager", __FUNCTION__);
@@ -128,7 +128,6 @@ bool CServiceManager::InitStageTwo(const CAppParamParser &params)
   m_Platform.reset(CPlatform::CreateInstance());
   m_Platform->Init();
 
-  m_binaryAddonManager.reset(new ADDON::CBinaryAddonManager()); /* Need to constructed before, GetRunningInstance() of binary CAddonDll need to call them */
   m_addonMgr.reset(new ADDON::CAddonMgr());
   if (!m_addonMgr->Init())
   {
@@ -136,6 +135,7 @@ bool CServiceManager::InitStageTwo(const CAppParamParser &params)
     return false;
   }
 
+  m_binaryAddonManager.reset(new ADDON::CBinaryAddonManager(*m_addonMgr));
   if (!m_binaryAddonManager->Init())
   {
     CLog::Log(LOGFATAL, "CServiceManager::%s: Unable to initialize CBinaryAddonManager", __FUNCTION__);
