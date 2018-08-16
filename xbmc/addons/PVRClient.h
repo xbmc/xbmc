@@ -799,13 +799,6 @@ namespace PVR
     static const char *ToString(const PVR_ERROR error);
 
     /*!
-     * @brief Check whether timeshifting is active for the currently playing stream, if any.
-     * @param bTimeshifting True, if timeshifting is active, false otherwise.
-     * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
-     */
-    PVR_ERROR IsTimeshifting(bool &bTimeshifting) const;
-
-    /*!
      * @brief Check whether the currently playing stream, if any, is a real-time stream.
      * @param bRealTime True if real-time, false otherwise.
      * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.

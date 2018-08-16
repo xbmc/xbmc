@@ -92,19 +92,15 @@ void CPVRGUIInfo::ResetProperties(void)
 void CPVRGUIInfo::ResetTimeshiftData()
 {
   CSingleLock lock(m_critSection);
-  if (m_bHasTimeshiftData)
-  {
-    m_bHasTimeshiftData = false;
-    m_bIsTimeshifting = false;
-    m_iStartTime = 0;
-    m_iTimeshiftStartTime = 0;
-    m_iTimeshiftEndTime = 0;
-    m_iTimeshiftPlayTime = 0;
-    m_iTimeshiftOffset = 0;
-    m_iTimeshiftProgressStartTime = 0;
-    m_iTimeshiftProgressEndTime = 0;
-    m_iTimeshiftProgressDuration = 0;
-  }
+
+  m_iStartTime = 0;
+  m_iTimeshiftStartTime = 0;
+  m_iTimeshiftEndTime = 0;
+  m_iTimeshiftPlayTime = 0;
+  m_iTimeshiftOffset = 0;
+  m_iTimeshiftProgressStartTime = 0;
+  m_iTimeshiftProgressEndTime = 0;
+  m_iTimeshiftProgressDuration = 0;
 }
 
 void CPVRGUIInfo::ClearQualityInfo(PVR_SIGNAL_STATUS &qualityInfo)
@@ -356,7 +352,6 @@ void CPVRGUIInfo::UpdateTimeshiftData(void)
     return;
   }
 
-  bool bIsTimeshifting = CServiceBroker::GetPVRManager().IsTimeshifting();
   time_t now = std::time(nullptr);
   time_t iStartTime;
   int64_t iPlayTime, iMinTime, iMaxTime;
@@ -376,7 +371,6 @@ void CPVRGUIInfo::UpdateTimeshiftData(void)
     iMaxTime = iPlayTime;
   }
 
-  m_bIsTimeshifting = bIsTimeshifting;
   m_iStartTime = iStartTime;
   m_iTimeshiftStartTime = iStartTime + iMinTime / 1000;
   m_iTimeshiftEndTime = iStartTime + iMaxTime / 1000;
@@ -397,8 +391,6 @@ void CPVRGUIInfo::UpdateTimeshiftData(void)
   }
 
   UpdateTimeshiftProgressData();
-
-  m_bHasTimeshiftData = true;
 }
 
 bool CPVRGUIInfo::InitCurrentItem(CFileItem *item)
@@ -1451,7 +1443,7 @@ bool CPVRGUIInfo::GetPVRBool(const CFileItem *item, const CGUIInfo &info, bool& 
       bValue = m_bIsPlayingEncryptedStream;
       return true;
     case PVR_IS_TIMESHIFTING:
-      bValue = m_bIsTimeshifting;
+      bValue = (m_iTimeshiftOffset > static_cast<unsigned int>(g_advancedSettings.m_iPVRTimeshiftThreshold));
       return true;
     case PVR_CAN_RECORD_PLAYING_CHANNEL:
       bValue = m_bCanRecordPlayingChannel;

@@ -192,12 +192,6 @@ namespace PVR
     bool IsPlayingEpgTag(const CPVREpgInfoTagPtr &epgTag) const;
 
     /*!
-     * @brief Check whether the currently playing livetv stream is timeshifted.
-     * @return True if there is a playing stream and if it is timeshifted, false otherwise.
-     */
-    bool IsTimeshifting() const;
-
-    /*!
      * @return True while the PVRManager is initialising.
      */
     inline bool IsInitialising(void) const

@@ -208,10 +208,9 @@ void CPVREpgInfoTag::ToSortable(SortItem& sortable, Field field) const
 
 CDateTime CPVREpgInfoTag::GetCurrentPlayingTime() const
 {
-  if (CServiceBroker::GetPVRManager().GetPlayingChannel() == Channel() &&
-      CServiceBroker::GetPVRManager().IsTimeshifting())
+  if (CServiceBroker::GetPVRManager().GetPlayingChannel() == Channel())
   {
-    // timeshifting; start time valid?
+    // start time valid?
     time_t startTime = CServiceBroker::GetDataCacheCore().GetStartTime();
     if (startTime > 0)
     {
@@ -219,7 +218,6 @@ CDateTime CPVREpgInfoTag::GetCurrentPlayingTime() const
     }
   }
 
-  // not timeshifting
   return CDateTime::GetUTCDateTime();
 }
 
