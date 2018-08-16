@@ -106,7 +106,8 @@ bool CAndroidJoystickState::Initialize(const CJNIViewInputDevice& inputDevice)
     // check if the axis ID belongs to a D-pad, analogue stick or trigger
     if (axisId == AMOTION_EVENT_AXIS_HAT_X || axisId == AMOTION_EVENT_AXIS_HAT_Y ||
              axisId == AMOTION_EVENT_AXIS_X || axisId == AMOTION_EVENT_AXIS_Y ||
-             axisId == AMOTION_EVENT_AXIS_Z || axisId == AMOTION_EVENT_AXIS_RZ ||
+             axisId == AMOTION_EVENT_AXIS_Z || axisId == AMOTION_EVENT_AXIS_RX ||
+             axisId == AMOTION_EVENT_AXIS_RY || axisId == AMOTION_EVENT_AXIS_RZ ||
              axisId == AMOTION_EVENT_AXIS_LTRIGGER || axisId == AMOTION_EVENT_AXIS_RTRIGGER ||
              axisId == AMOTION_EVENT_AXIS_GAS || axisId == AMOTION_EVENT_AXIS_BRAKE ||
              axisId == AMOTION_EVENT_AXIS_THROTTLE || axisId == AMOTION_EVENT_AXIS_RUDDER || axisId == AMOTION_EVENT_AXIS_WHEEL)
@@ -134,8 +135,10 @@ bool CAndroidJoystickState::Initialize(const CJNIViewInputDevice& inputDevice)
   // add the usual suspects
   m_buttons.push_back({ { AKEYCODE_BUTTON_A } });
   m_buttons.push_back({ { AKEYCODE_BUTTON_B } });
+  m_buttons.push_back({ { AKEYCODE_BUTTON_C } });
   m_buttons.push_back({ { AKEYCODE_BUTTON_X } });
   m_buttons.push_back({ { AKEYCODE_BUTTON_Y } });
+  m_buttons.push_back({ { AKEYCODE_BUTTON_Z } });
   m_buttons.push_back({ { AKEYCODE_BACK } });
   m_buttons.push_back({ { AKEYCODE_MENU } });
   m_buttons.push_back({ { AKEYCODE_HOME } });
@@ -144,6 +147,8 @@ bool CAndroidJoystickState::Initialize(const CJNIViewInputDevice& inputDevice)
   m_buttons.push_back({ { AKEYCODE_BUTTON_START } });
   m_buttons.push_back({ { AKEYCODE_BUTTON_L1 } });
   m_buttons.push_back({ { AKEYCODE_BUTTON_R1 } });
+  m_buttons.push_back({ { AKEYCODE_BUTTON_L2 } });
+  m_buttons.push_back({ { AKEYCODE_BUTTON_R2 } });
   m_buttons.push_back({ { AKEYCODE_BUTTON_THUMBL } });
   m_buttons.push_back({ { AKEYCODE_BUTTON_THUMBR } });
 
