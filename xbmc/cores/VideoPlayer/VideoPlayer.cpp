@@ -2839,6 +2839,7 @@ void CVideoPlayer::HandleMessages()
           if(pStream->SetActiveSubtitleStream(st.id))
           {
             m_dvd.iSelectedSPUStream = -1;
+            m_dvd.iSelectedLogicalSPUStream = -1;
             CloseStream(m_CurrentSubtitle, false);
           }
         }
@@ -4115,9 +4116,15 @@ int CVideoPlayer::OnDiscNavResult(void* pData, int iMessage)
         SetSubtitleVisibleInternal(visible);
 
         if (iStream >= 0)
+        {
           m_dvd.iSelectedSPUStream = (iStream & ~0x80);
+          m_dvd.iSelectedLogicalSPUStream = (event->logical & ~0x80);
+        }
         else
+        {
           m_dvd.iSelectedSPUStream = -1;
+          m_dvd.iSelectedLogicalSPUStream = -1;
+        }
 
         m_CurrentSubtitle.stream = NULL;
       }
@@ -5023,7 +5030,7 @@ void CVideoPlayer::UpdateContentState()
     m_content.m_audioIndex = m_SelectionStreams.IndexOf(STREAM_AUDIO, STREAM_SOURCE_NAV,
       m_CurrentAudio.demuxerId, m_dvd.iSelectedAudioStream);
     m_content.m_subtitleIndex = m_SelectionStreams.IndexOf(STREAM_SUBTITLE, STREAM_SOURCE_NAV,
-      m_CurrentSubtitle.demuxerId, m_dvd.iSelectedSPUStream);
+      m_CurrentSubtitle.demuxerId, m_dvd.iSelectedLogicalSPUStream);
   }
   else
   {
