@@ -39,7 +39,6 @@
 #include "video/windows/GUIWindowVideoBase.h"
 
 using namespace XFILE;
-using namespace ANNOUNCEMENT;
 using namespace KODI::MESSAGING;
 using namespace PVR;
 
@@ -216,23 +215,23 @@ bool CDirectoryProvider::Update(bool forceRefresh)
   return changed; //! @todo Also returned changed if properties are changed (if so, need to update scroll to letter).
 }
 
-void CDirectoryProvider::Announce(AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
+void CDirectoryProvider::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
 {
   // we are only interested in library, player and GUI changes
-  if ((flag & (VideoLibrary | AudioLibrary | Player | GUI)) == 0)
+  if ((flag & (ANNOUNCEMENT::VideoLibrary | ANNOUNCEMENT::AudioLibrary | ANNOUNCEMENT::Player | ANNOUNCEMENT::GUI)) == 0)
     return;
 
   {
     CSingleLock lock(m_section);
     // we don't need to refresh anything if there are no fitting
     // items in this list provider for the announcement flag
-    if (((flag & VideoLibrary) &&
+    if (((flag & ANNOUNCEMENT::VideoLibrary) &&
          (std::find(m_itemTypes.begin(), m_itemTypes.end(), InfoTagType::VIDEO) == m_itemTypes.end())) ||
-        ((flag & AudioLibrary) &&
+        ((flag & ANNOUNCEMENT::AudioLibrary) &&
          (std::find(m_itemTypes.begin(), m_itemTypes.end(), InfoTagType::AUDIO) == m_itemTypes.end())))
       return;
 
-    if (flag & Player)
+    if (flag & ANNOUNCEMENT::Player)
     {
       if (strcmp(message, "OnPlay") == 0 ||
           strcmp(message, "OnResume") == 0 ||
@@ -326,7 +325,7 @@ void CDirectoryProvider::Reset()
   if (m_isAnnounced)
   {
     m_isAnnounced = false;
-    CAnnouncementManager::GetInstance().RemoveAnnouncer(this);
+    CServiceBroker::GetAnnouncementManager()->RemoveAnnouncer(this);
     CServiceBroker::GetFavouritesService().Events().Unsubscribe(this);
     CServiceBroker::GetAddonMgr().Events().Unsubscribe(this);
     CServiceBroker::GetPVRManager().Events().Unsubscribe(this);
@@ -439,7 +438,7 @@ bool CDirectoryProvider::UpdateURL()
   if (!m_isAnnounced)
   {
     m_isAnnounced = true;
-    CAnnouncementManager::GetInstance().AddAnnouncer(this);
+    CServiceBroker::GetAnnouncementManager()->AddAnnouncer(this);
     CServiceBroker::GetAddonMgr().Events().Subscribe(this, &CDirectoryProvider::OnAddonEvent);
     CServiceBroker::GetPVRManager().Events().Subscribe(this, &CDirectoryProvider::OnPVRManagerEvent);
     CServiceBroker::GetFavouritesService().Events().Subscribe(this, &CDirectoryProvider::OnFavouritesEvent);

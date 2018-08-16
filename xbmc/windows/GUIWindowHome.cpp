@@ -21,19 +21,17 @@
 #include "ServiceBroker.h"
 #include "utils/StringUtils.h"
 
-using namespace ANNOUNCEMENT;
-
 CGUIWindowHome::CGUIWindowHome(void) : CGUIWindow(WINDOW_HOME, "Home.xml")
 {
   m_updateRA = (Audio | Video | Totals);
   m_loadType = KEEP_IN_MEMORY;
 
-  CAnnouncementManager::GetInstance().AddAnnouncer(this);
+  CServiceBroker::GetAnnouncementManager()->AddAnnouncer(this);
 }
 
 CGUIWindowHome::~CGUIWindowHome(void)
 {
-  CAnnouncementManager::GetInstance().RemoveAnnouncer(this);
+  CServiceBroker::GetAnnouncementManager()->RemoveAnnouncer(this);
 }
 
 bool CGUIWindowHome::OnAction(const CAction &action)
@@ -61,14 +59,14 @@ void CGUIWindowHome::OnInitWindow()
   CGUIWindow::OnInitWindow();
 }
 
-void CGUIWindowHome::Announce(AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
+void CGUIWindowHome::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
 {
   int ra_flag = 0;
 
   CLog::Log(LOGDEBUG, "GOT ANNOUNCEMENT, type: %i, from %s, message %s",(int)flag, sender, message);
 
   // we are only interested in library changes
-  if ((flag & (VideoLibrary | AudioLibrary)) == 0)
+  if ((flag & (ANNOUNCEMENT::VideoLibrary | ANNOUNCEMENT::AudioLibrary)) == 0)
     return;
 
   if (data.isMember("transaction") && data["transaction"].asBoolean())
@@ -86,9 +84,9 @@ void CGUIWindowHome::Announce(AnnouncementFlag flag, const char *sender, const c
   // always update the full list except on an OnUpdate
   if (!onUpdate)
   {
-    if (flag & VideoLibrary)
+    if (flag & ANNOUNCEMENT::VideoLibrary)
       ra_flag |= Video;
-    else if (flag & AudioLibrary)
+    else if (flag & ANNOUNCEMENT::AudioLibrary)
       ra_flag |= Audio;
   }
 

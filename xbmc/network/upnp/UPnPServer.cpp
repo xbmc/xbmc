@@ -71,7 +71,7 @@ CUPnPServer::CUPnPServer(const char* friendly_name, const char* uuid /*= NULL*/,
 
 CUPnPServer::~CUPnPServer()
 {
-    ANNOUNCEMENT::CAnnouncementManager::GetInstance().RemoveAnnouncer(this);
+    CServiceBroker::GetAnnouncementManager()->RemoveAnnouncer(this);
 }
 
 /*----------------------------------------------------------------------
@@ -108,7 +108,7 @@ CUPnPServer::SetupServices()
     OnScanCompleted(VideoLibrary);
 
     // now safe to start passing on new notifications
-    ANNOUNCEMENT::CAnnouncementManager::GetInstance().AddAnnouncer(this);
+    CServiceBroker::GetAnnouncementManager()->AddAnnouncer(this);
 
     return result;
 }
@@ -1076,7 +1076,7 @@ CUPnPServer::OnUpdateObject(PLT_ActionReference&             action,
               CVariant data;
               data["id"] = updated.GetVideoInfoTag()->m_iDbId;
               data["type"] = updated.GetVideoInfoTag()->m_type;
-              ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnUpdate", data);
+              CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnUpdate", data);
             }
             updatelisting = true;
         }

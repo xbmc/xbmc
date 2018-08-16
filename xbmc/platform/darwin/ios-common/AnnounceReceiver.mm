@@ -190,12 +190,12 @@ CAnnounceReceiver *CAnnounceReceiver::GetInstance()
 
 void CAnnounceReceiver::Initialize()
 {
-  ANNOUNCEMENT::CAnnouncementManager::GetInstance().AddAnnouncer(GetInstance());
+  CServiceBroker::GetAnnouncementManager()->AddAnnouncer(GetInstance());
 }
 
 void CAnnounceReceiver::DeInitialize()
 {
-  ANNOUNCEMENT::CAnnouncementManager::GetInstance().RemoveAnnouncer(GetInstance());
+  CServiceBroker::GetAnnouncementManager()->RemoveAnnouncer(GetInstance());
 }
 
 void CAnnounceReceiver::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)

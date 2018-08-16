@@ -28,7 +28,6 @@
 using namespace KODI;
 using namespace MESSAGING;
 using namespace PERIPHERALS;
-using namespace ANNOUNCEMENT;
 using namespace CEC;
 
 #define CEC_LIB_SUPPORTED_VERSION LIBCEC_VERSION_TO_UINT(4, 0, 0)
@@ -68,7 +67,7 @@ CPeripheralCecAdapter::~CPeripheralCecAdapter(void)
 {
   {
     CSingleLock lock(m_critSection);
-    CAnnouncementManager::GetInstance().RemoveAnnouncer(this);
+    CServiceBroker::GetAnnouncementManager()->RemoveAnnouncer(this);
     m_bStop = true;
   }
 
@@ -117,16 +116,16 @@ void CPeripheralCecAdapter::ResetMembers(void)
   m_configuration.Clear();
 }
 
-void CPeripheralCecAdapter::Announce(AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
+void CPeripheralCecAdapter::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
 {
-  if (flag == System && !strcmp(sender, "xbmc") && !strcmp(message, "OnQuit") && m_bIsReady)
+  if (flag == ANNOUNCEMENT::System && !strcmp(sender, "xbmc") && !strcmp(message, "OnQuit") && m_bIsReady)
   {
     CSingleLock lock(m_critSection);
     m_iExitCode = static_cast<int>(data["exitcode"].asInteger(EXITCODE_QUIT));
-    CAnnouncementManager::GetInstance().RemoveAnnouncer(this);
+    CServiceBroker::GetAnnouncementManager()->RemoveAnnouncer(this);
     StopThread(false);
   }
-  else if (flag == GUI && !strcmp(sender, "xbmc") && !strcmp(message, "OnScreensaverDeactivated") && m_bIsReady)
+  else if (flag == ANNOUNCEMENT::GUI && !strcmp(sender, "xbmc") && !strcmp(message, "OnScreensaverDeactivated") && m_bIsReady)
   {
     bool bIgnoreDeactivate(false);
     if (data["shuttingdown"].isBoolean())
@@ -144,7 +143,7 @@ void CPeripheralCecAdapter::Announce(AnnouncementFlag flag, const char *sender, 
       ActivateSource();
     }
   }
-  else if (flag == GUI && !strcmp(sender, "xbmc") && !strcmp(message, "OnScreensaverActivated") && m_bIsReady)
+  else if (flag == ANNOUNCEMENT::GUI && !strcmp(sender, "xbmc") && !strcmp(message, "OnScreensaverActivated") && m_bIsReady)
   {
     // Don't put devices to standby if application is currently playing
     if (!g_application.GetAppPlayer().IsPlaying() && m_bPowerOffScreensaver)
@@ -154,7 +153,7 @@ void CPeripheralCecAdapter::Announce(AnnouncementFlag flag, const char *sender, 
         StandbyDevices();
     }
   }
-  else if (flag == System && !strcmp(sender, "xbmc") && !strcmp(message, "OnSleep"))
+  else if (flag == ANNOUNCEMENT::System && !strcmp(sender, "xbmc") && !strcmp(message, "OnSleep"))
   {
     // this will also power off devices when we're the active source
     {
@@ -163,7 +162,7 @@ void CPeripheralCecAdapter::Announce(AnnouncementFlag flag, const char *sender, 
     }
     StopThread();
   }
-  else if (flag == System && !strcmp(sender, "xbmc") && !strcmp(message, "OnWake"))
+  else if (flag == ANNOUNCEMENT::System && !strcmp(sender, "xbmc") && !strcmp(message, "OnWake"))
   {
     CLog::Log(LOGDEBUG, "%s - reconnecting to the CEC adapter after standby mode", __FUNCTION__);
     if (ReopenConnection())
@@ -178,13 +177,13 @@ void CPeripheralCecAdapter::Announce(AnnouncementFlag flag, const char *sender, 
         ActivateSource();
     }
   }
-  else if (flag == Player && !strcmp(sender, "xbmc") && !strcmp(message, "OnStop"))
+  else if (flag == ANNOUNCEMENT::Player && !strcmp(sender, "xbmc") && !strcmp(message, "OnStop"))
   {
     CSingleLock lock(m_critSection);
     m_preventActivateSourceOnPlay = CDateTime::GetCurrentDateTime();
     m_bOnPlayReceived = false;
   }
-  else if (flag == Player && !strcmp(sender, "xbmc") && (!strcmp(message, "OnPlay") || !strcmp(message, "OnResume")))
+  else if (flag == ANNOUNCEMENT::Player && !strcmp(sender, "xbmc") && (!strcmp(message, "OnPlay") || !strcmp(message, "OnResume")))
   {
     // activate the source when playback started, and the option is enabled
     bool bActivateSource(false);
@@ -329,7 +328,7 @@ void CPeripheralCecAdapter::Process(void)
     m_bActiveSourceBeforeStandby = false;
   }
 
-  CAnnouncementManager::GetInstance().AddAnnouncer(this);
+  CServiceBroker::GetAnnouncementManager()->AddAnnouncer(this);
 
   m_queryThread = new CPeripheralCecAdapterUpdateThread(this, &m_configuration);
   m_queryThread->Create(false);
@@ -1677,7 +1676,7 @@ bool CPeripheralCecAdapter::ReopenConnection(bool bAsync /* = false */)
   {
     CSingleLock lock(m_critSection);
     m_iExitCode = EXITCODE_RESTARTAPP;
-    CAnnouncementManager::GetInstance().RemoveAnnouncer(this);
+    CServiceBroker::GetAnnouncementManager()->RemoveAnnouncer(this);
     StopThread(false);
   }
   StopThread();

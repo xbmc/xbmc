@@ -28,8 +28,6 @@ namespace ANNOUNCEMENT
     CAnnouncementManager();
     ~CAnnouncementManager() override;
 
-    static CAnnouncementManager& GetInstance();
-
     void Start();
     void Deinitialize();
 

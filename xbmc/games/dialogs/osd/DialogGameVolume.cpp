@@ -74,12 +74,12 @@ void CDialogGameVolume::OnInitWindow()
   if (dialogVolumeBar != nullptr)
     dialogVolumeBar->RegisterCallback(this);
 
-  ANNOUNCEMENT::CAnnouncementManager::GetInstance().AddAnnouncer(this);
+  CServiceBroker::GetAnnouncementManager()->AddAnnouncer(this);
 }
 
 void CDialogGameVolume::OnDeinitWindow(int nextWindowID)
 {
-  ANNOUNCEMENT::CAnnouncementManager::GetInstance().RemoveAnnouncer(this);
+  CServiceBroker::GetAnnouncementManager()->RemoveAnnouncer(this);
 
   CGUIDialogVolumeBar *dialogVolumeBar = dynamic_cast<CGUIDialogVolumeBar*>(CServiceBroker::GetGUI()->GetWindowManager().GetWindow(WINDOW_DIALOG_VOLUME_BAR));
   if (dialogVolumeBar != nullptr)

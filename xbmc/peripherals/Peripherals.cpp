@@ -68,10 +68,8 @@ using namespace PERIPHERALS;
 using namespace XFILE;
 using namespace KODI::MESSAGING;
 
-CPeripherals::CPeripherals(ANNOUNCEMENT::CAnnouncementManager &announcements,
-                           CInputManager &inputManager,
+CPeripherals::CPeripherals(CInputManager &inputManager,
                            GAME::CControllerManager &controllerProfiles) :
-  m_announcements(announcements),
   m_inputManager(inputManager),
   m_controllerProfiles(controllerProfiles),
   m_eventScanner(new CEventScanner(*this))
@@ -130,13 +128,13 @@ void CPeripherals::Initialise()
   m_eventScanner->Start();
 
   MESSAGING::CApplicationMessenger::GetInstance().RegisterReceiver(this);
-  m_announcements.AddAnnouncer(this);
+  CServiceBroker::GetAnnouncementManager()->AddAnnouncer(this);
 #endif
 }
 
 void CPeripherals::Clear()
 {
-  m_announcements.RemoveAnnouncer(this);
+  CServiceBroker::GetAnnouncementManager()->RemoveAnnouncer(this);
 
   m_eventScanner->Stop();
 

@@ -34,8 +34,6 @@
 extern HWND g_hWnd;
 #endif
 
-using namespace ANNOUNCEMENT;
-
 CPowerManager::CPowerManager() = default;
 
 CPowerManager::~CPowerManager() = default;
@@ -119,7 +117,7 @@ bool CPowerManager::Reboot()
 
   if (success)
   {
-    CAnnouncementManager::GetInstance().Announce(System, "xbmc", "OnRestart");
+    CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::System, "xbmc", "OnRestart");
 
     CGUIDialogBusy* dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogBusy>(WINDOW_DIALOG_BUSY);
     if (dialog)
@@ -164,7 +162,7 @@ void CPowerManager::ProcessEvents()
 
 void CPowerManager::OnSleep()
 {
-  CAnnouncementManager::GetInstance().Announce(System, "xbmc", "OnSleep");
+  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::System, "xbmc", "OnSleep");
 
   CGUIDialogBusy* dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogBusy>(WINDOW_DIALOG_BUSY);
   if (dialog)
@@ -211,7 +209,7 @@ void CPowerManager::OnWake()
   CServiceBroker::GetPVRManager().OnWake();
   RestorePlayerState();
 
-  CAnnouncementManager::GetInstance().Announce(System, "xbmc", "OnWake");
+  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::System, "xbmc", "OnWake");
 }
 
 void CPowerManager::OnLowBattery()
@@ -220,7 +218,7 @@ void CPowerManager::OnLowBattery()
 
   CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(13050), "");
 
-  CAnnouncementManager::GetInstance().Announce(System, "xbmc", "OnLowBattery");
+  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::System, "xbmc", "OnLowBattery");
 }
 
 void CPowerManager::StorePlayerState()

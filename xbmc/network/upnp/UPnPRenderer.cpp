@@ -37,7 +37,6 @@
 
 NPT_SET_LOCAL_LOGGER("xbmc.upnp.renderer")
 
-using namespace ANNOUNCEMENT;
 using namespace KODI::MESSAGING;
 
 namespace UPNP
@@ -50,7 +49,7 @@ CUPnPRenderer::CUPnPRenderer(const char* friendly_name, bool show_ip /*= false*/
                              const char* uuid /*= NULL*/, unsigned int port /*= 0*/)
     : PLT_MediaRenderer(friendly_name, show_ip, uuid, port)
 {
-    CAnnouncementManager::GetInstance().AddAnnouncer(this);
+    CServiceBroker::GetAnnouncementManager()->AddAnnouncer(this);
 }
 
 /*----------------------------------------------------------------------
@@ -58,7 +57,7 @@ CUPnPRenderer::CUPnPRenderer(const char* friendly_name, bool show_ip /*= false*/
 +---------------------------------------------------------------------*/
 CUPnPRenderer::~CUPnPRenderer()
 {
-    CAnnouncementManager::GetInstance().RemoveAnnouncer(this);
+    CServiceBroker::GetAnnouncementManager()->RemoveAnnouncer(this);
 }
 
 /*----------------------------------------------------------------------
@@ -230,7 +229,7 @@ CUPnPRenderer::ProcessHttpGetRequest(NPT_HttpRequest&              request,
 |   CUPnPRenderer::Announce
 +---------------------------------------------------------------------*/
 void
-CUPnPRenderer::Announce(AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
+CUPnPRenderer::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
 {
     if (strcmp(sender, "xbmc") != 0)
       return;
@@ -238,7 +237,7 @@ CUPnPRenderer::Announce(AnnouncementFlag flag, const char *sender, const char *m
     NPT_AutoLock lock(m_state);
     PLT_Service *avt, *rct;
 
-    if (flag == Player) {
+    if (flag == ANNOUNCEMENT::Player) {
         if (NPT_FAILED(FindServiceByType("urn:schemas-upnp-org:service:AVTransport:1", avt)))
             return;
         if (strcmp(message, "OnPlay") == 0 || strcmp(message, "OnResume") == 0 ) {
@@ -267,7 +266,7 @@ CUPnPRenderer::Announce(AnnouncementFlag flag, const char *sender, const char *m
             avt->SetStateVariable("TransportPlaySpeed", NPT_String::FromInteger(data["player"]["speed"].asInteger()));
         }
     }
-    else if (flag == Application && strcmp(message, "OnVolumeChanged") == 0) {
+    else if (flag == ANNOUNCEMENT::Application && strcmp(message, "OnVolumeChanged") == 0) {
         if (NPT_FAILED(FindServiceByType("urn:schemas-upnp-org:service:RenderingControl:1", rct)))
             return;
 

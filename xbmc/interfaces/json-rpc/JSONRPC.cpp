@@ -21,9 +21,9 @@
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
+#include "ServiceBroker.h"
 #include "TextureDatabase.h"
 
-using namespace ANNOUNCEMENT;
 using namespace JSONRPC;
 
 bool CJSONRPC::m_initialized = false;
@@ -158,8 +158,8 @@ JSONRPC_STATUS CJSONRPC::GetConfiguration(const std::string &method, ITransportL
 {
   int flags = client->GetAnnouncementFlags();
 
-  for (int i = 1; i <= ANNOUNCE_ALL; i *= 2)
-    result["notifications"][AnnouncementFlagToString((AnnouncementFlag)i)] = (flags & i) == i;
+  for (int i = 1; i <= ANNOUNCEMENT::ANNOUNCE_ALL; i *= 2)
+    result["notifications"][AnnouncementFlagToString((ANNOUNCEMENT::AnnouncementFlag)i)] = (flags & i) == i;
 
   return OK;
 }
@@ -172,33 +172,33 @@ JSONRPC_STATUS CJSONRPC::SetConfiguration(const std::string &method, ITransportL
   if (parameterObject.isMember("notifications"))
   {
     CVariant notifications = parameterObject["notifications"];
-    if ((notifications["Player"].isNull() && (oldFlags & Player)) ||
+    if ((notifications["Player"].isNull() && (oldFlags & ANNOUNCEMENT::Player)) ||
         (notifications["Player"].isBoolean() && notifications["Player"].asBoolean()))
-      flags |= Player;
-    if ((notifications["Playlist"].isNull() && (oldFlags & Playlist)) ||
+      flags |= ANNOUNCEMENT::Player;
+    if ((notifications["Playlist"].isNull() && (oldFlags & ANNOUNCEMENT::Playlist)) ||
         (notifications["Playlist"].isBoolean() && notifications["Playlist"].asBoolean()))
-      flags |= Playlist;
-    if ((notifications["GUI"].isNull() && (oldFlags & GUI)) ||
+      flags |= ANNOUNCEMENT::Playlist;
+    if ((notifications["GUI"].isNull() && (oldFlags & ANNOUNCEMENT::GUI)) ||
         (notifications["GUI"].isBoolean() && notifications["GUI"].asBoolean()))
-      flags |= GUI;
-    if ((notifications["System"].isNull() && (oldFlags & System)) ||
+      flags |= ANNOUNCEMENT::GUI;
+    if ((notifications["System"].isNull() && (oldFlags & ANNOUNCEMENT::System)) ||
         (notifications["System"].isBoolean() && notifications["System"].asBoolean()))
-      flags |= System;
-    if ((notifications["VideoLibrary"].isNull() && (oldFlags & VideoLibrary)) ||
+      flags |= ANNOUNCEMENT::System;
+    if ((notifications["VideoLibrary"].isNull() && (oldFlags & ANNOUNCEMENT::VideoLibrary)) ||
         (notifications["VideoLibrary"].isBoolean() && notifications["VideoLibrary"].asBoolean()))
-      flags |= VideoLibrary;
-    if ((notifications["AudioLibrary"].isNull() && (oldFlags & AudioLibrary)) ||
+      flags |= ANNOUNCEMENT::VideoLibrary;
+    if ((notifications["AudioLibrary"].isNull() && (oldFlags & ANNOUNCEMENT::AudioLibrary)) ||
         (notifications["AudioLibrary"].isBoolean() && notifications["AudioLibrary"].asBoolean()))
-      flags |= AudioLibrary;
-    if ((notifications["Application"].isNull() && (oldFlags & Other)) ||
+      flags |= ANNOUNCEMENT::AudioLibrary;
+    if ((notifications["Application"].isNull() && (oldFlags & ANNOUNCEMENT::Other)) ||
         (notifications["Application"].isBoolean() && notifications["Application"].asBoolean()))
-      flags |= Application;
-    if ((notifications["Input"].isNull() && (oldFlags & Input)) ||
+      flags |= ANNOUNCEMENT::Application;
+    if ((notifications["Input"].isNull() && (oldFlags & ANNOUNCEMENT::Input)) ||
         (notifications["Input"].isBoolean() && notifications["Input"].asBoolean()))
-      flags |= Input;
-    if ((notifications["Other"].isNull() && (oldFlags & Other)) ||
+      flags |= ANNOUNCEMENT::Input;
+    if ((notifications["Other"].isNull() && (oldFlags & ANNOUNCEMENT::Other)) ||
         (notifications["Other"].isBoolean() && notifications["Other"].asBoolean()))
-      flags |= Other;
+      flags |= ANNOUNCEMENT::Other;
   }
 
   if (!client->SetAnnouncementFlags(flags))
@@ -210,12 +210,12 @@ JSONRPC_STATUS CJSONRPC::SetConfiguration(const std::string &method, ITransportL
 JSONRPC_STATUS CJSONRPC::NotifyAll(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant& parameterObject, CVariant &result)
 {
   if (parameterObject["data"].isNull())
-    CAnnouncementManager::GetInstance().Announce(Other, parameterObject["sender"].asString().c_str(),
+    CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Other, parameterObject["sender"].asString().c_str(),
       parameterObject["message"].asString().c_str());
   else
   {
     CVariant data = parameterObject["data"];
-    CAnnouncementManager::GetInstance().Announce(Other, parameterObject["sender"].asString().c_str(),
+    CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Other, parameterObject["sender"].asString().c_str(),
       parameterObject["message"].asString().c_str(), data);
   }
 

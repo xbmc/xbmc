@@ -42,7 +42,6 @@ using namespace winrt::Windows::UI::Core;
 using namespace winrt::Windows::UI::Input;
 using namespace winrt::Windows::UI::ViewManagement;
 
-using namespace ANNOUNCEMENT;
 using namespace PERIPHERALS;
 using namespace KODI::MESSAGING;
 
@@ -153,7 +152,7 @@ void CWinEventsWin10::InitEventHandlers(const CoreWindow& window)
       m_smtc.ButtonPressed(CWinEventsWin10::OnSystemMediaButtonPressed);
     }
     m_smtc.IsEnabled(true);;
-    CAnnouncementManager::GetInstance().AddAnnouncer(this);
+    CServiceBroker::GetAnnouncementManager()->AddAnnouncer(this);
   }
   if (CSysInfo::GetWindowsDeviceFamily() == CSysInfo::WindowsDeviceFamily::Xbox)
   {
@@ -594,9 +593,9 @@ void CWinEventsWin10::OnSystemMediaButtonPressed(const SystemMediaTransportContr
   }
 }
 
-void CWinEventsWin10::Announce(AnnouncementFlag flag, const char * sender, const char * message, const CVariant & data)
+void CWinEventsWin10::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char * sender, const char * message, const CVariant & data)
 {
-  if (flag & AnnouncementFlag::Player)
+  if (flag & ANNOUNCEMENT::Player)
   {
     double speed = 1.0;
     if (data.isMember("player") && data["player"].isMember("speed"))

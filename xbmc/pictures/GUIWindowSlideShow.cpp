@@ -151,7 +151,7 @@ void CGUIWindowSlideShow::AnnouncePlayerPlay(const CFileItemPtr& item)
   CVariant param;
   param["player"]["speed"] = m_bSlideShow && !m_bPause ? 1 : 0;
   param["player"]["playerid"] = PLAYLIST_PICTURE;
-  ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::Player, "xbmc", "OnPlay", item, param);
+  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "xbmc", "OnPlay", item, param);
 }
 
 void CGUIWindowSlideShow::AnnouncePlayerPause(const CFileItemPtr& item)
@@ -159,7 +159,7 @@ void CGUIWindowSlideShow::AnnouncePlayerPause(const CFileItemPtr& item)
   CVariant param;
   param["player"]["speed"] = 0;
   param["player"]["playerid"] = PLAYLIST_PICTURE;
-  ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::Player, "xbmc", "OnPause", item, param);
+  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "xbmc", "OnPause", item, param);
 }
 
 void CGUIWindowSlideShow::AnnouncePlayerStop(const CFileItemPtr& item)
@@ -167,14 +167,14 @@ void CGUIWindowSlideShow::AnnouncePlayerStop(const CFileItemPtr& item)
   CVariant param;
   param["player"]["playerid"] = PLAYLIST_PICTURE;
   param["end"] = true;
-  ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::Player, "xbmc", "OnStop", item, param);
+  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "xbmc", "OnStop", item, param);
 }
 
 void CGUIWindowSlideShow::AnnouncePlaylistClear()
 {
   CVariant data;
   data["playlistid"] = PLAYLIST_PICTURE;
-  ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::Playlist, "xbmc", "OnClear", data);
+  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Playlist, "xbmc", "OnClear", data);
 }
 
 void CGUIWindowSlideShow::AnnouncePlaylistAdd(const CFileItemPtr& item, int pos)
@@ -182,7 +182,7 @@ void CGUIWindowSlideShow::AnnouncePlaylistAdd(const CFileItemPtr& item, int pos)
   CVariant data;
   data["playlistid"] = PLAYLIST_PICTURE;
   data["position"] = pos;
-  ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::Playlist, "xbmc", "OnAdd", item, data);
+  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Playlist, "xbmc", "OnAdd", item, data);
 }
 
 void CGUIWindowSlideShow::AnnouncePropertyChanged(const std::string &strProperty, const CVariant &value)
@@ -193,7 +193,7 @@ void CGUIWindowSlideShow::AnnouncePropertyChanged(const std::string &strProperty
   CVariant data;
   data["player"]["playerid"] = PLAYLIST_PICTURE;
   data["property"][strProperty] = value;
-  ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::Player, "xbmc", "OnPropertyChanged", data);
+  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "xbmc", "OnPropertyChanged", data);
 }
 
 bool CGUIWindowSlideShow::IsPlaying() const
@@ -1226,7 +1226,7 @@ void CGUIWindowSlideShow::RunSlideShow(const std::string &strPath,
     CVariant param;
     param["player"]["speed"] = 0;
     param["player"]["playerid"] = PLAYLIST_PICTURE;
-    ANNOUNCEMENT::CAnnouncementManager::GetInstance().Announce(ANNOUNCEMENT::Player, "xbmc", "OnPlay", GetCurrentSlide(), param);
+    CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "xbmc", "OnPlay", GetCurrentSlide(), param);
   }
 
   CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_SLIDESHOW);

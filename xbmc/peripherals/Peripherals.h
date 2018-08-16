@@ -42,11 +42,6 @@ namespace JOYSTICK
 }
 }
 
-namespace ANNOUNCEMENT
-{
-  class CAnnouncementManager;
-}
-
 namespace PERIPHERALS
 {
   class CEventScanner;
@@ -58,8 +53,7 @@ namespace PERIPHERALS
                         public ANNOUNCEMENT::IAnnouncer
   {
   public:
-    explicit CPeripherals(ANNOUNCEMENT::CAnnouncementManager &announcements,
-                          CInputManager &inputManager,
+    explicit CPeripherals(CInputManager &inputManager,
                           KODI::GAME::CControllerManager &controllerProfiles);
 
     ~CPeripherals() override;
@@ -336,7 +330,6 @@ namespace PERIPHERALS
     void OnDeviceChanged();
 
     // Construction parameters
-    ANNOUNCEMENT::CAnnouncementManager &m_announcements;
     CInputManager &m_inputManager;
     KODI::GAME::CControllerManager &m_controllerProfiles;
 

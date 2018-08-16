@@ -18,7 +18,6 @@
 #include "video/VideoDatabase.h"
 #include "pvr/channels/PVRChannel.h"
 #include "PlayListPlayer.h"
-#include "ServiceBroker.h"
 
 #define LOOKUP_PROPERTY "database-lookup"
 
@@ -31,11 +30,6 @@ CAnnouncementManager::CAnnouncementManager() : CThread("Announce")
 CAnnouncementManager::~CAnnouncementManager()
 {
   Deinitialize();
-}
-
-CAnnouncementManager& CAnnouncementManager::GetInstance()
-{
-  return CServiceBroker::GetAnnouncementManager();
 }
 
 void CAnnouncementManager::Start()

@@ -12,6 +12,21 @@
 
 using namespace KODI;
 
+// announcement
+std::shared_ptr<ANNOUNCEMENT::CAnnouncementManager> CServiceBroker::m_pAnnouncementManager;
+std::shared_ptr<ANNOUNCEMENT::CAnnouncementManager> CServiceBroker::GetAnnouncementManager()
+{
+  return m_pAnnouncementManager;
+}
+void CServiceBroker::RegisterAnnouncementManager(std::shared_ptr<ANNOUNCEMENT::CAnnouncementManager> port)
+{
+  m_pAnnouncementManager = port;
+}
+void CServiceBroker::UnregisterAnnouncementManager()
+{
+  m_pAnnouncementManager.reset();
+}
+
 ADDON::CAddonMgr &CServiceBroker::GetAddonMgr()
 {
   return g_application.m_ServiceManager->GetAddonMgr();
@@ -30,11 +45,6 @@ ADDON::CBinaryAddonCache &CServiceBroker::GetBinaryAddonCache()
 ADDON::CVFSAddonCache &CServiceBroker::GetVFSAddonCache()
 {
   return g_application.m_ServiceManager->GetVFSAddonCache();
-}
-
-ANNOUNCEMENT::CAnnouncementManager &CServiceBroker::GetAnnouncementManager()
-{
-  return g_application.m_ServiceManager->GetAnnouncementManager();
 }
 
 #ifdef HAS_PYTHON
