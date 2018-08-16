@@ -974,7 +974,7 @@ bool CWinSystemWin32::Show(bool raise)
       windowAfter = g_advancedSettings.m_alwaysOnTop ? HWND_TOPMOST : HWND_NOTOPMOST;
   }
 
-  SetWindowPos(m_hWnd, windowAfter, 0, 0, 0, 0, SWP_NOMOVE|SWP_NOSIZE|SWP_SHOWWINDOW);
+  SetWindowPos(m_hWnd, windowAfter, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW | SWP_ASYNCWINDOWPOS);
   UpdateWindow(m_hWnd);
 
   if (raise)
