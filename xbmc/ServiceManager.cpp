@@ -181,7 +181,8 @@ bool CServiceManager::InitStageTwo(const CAppParamParser &params)
   m_powerManager->Initialize();
   m_powerManager->SetDefaults();
 
-  m_weatherManager.reset(new CWeatherManager());
+  m_weatherManager.reset(new CWeatherManager(*m_settings,
+                                             *m_addonMgr));
 
   init_level = 2;
   return true;
