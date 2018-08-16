@@ -9,7 +9,7 @@
 #pragma once
 
 #include "powermanagement/IPowerSyscall.h"
-#include "powermanagement/PowerManager.h"
+#include "powermanagement/PowerTypes.h"
 #include "threads/Event.h"
 #include "threads/Thread.h"
 #include <atomic>

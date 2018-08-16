@@ -11,6 +11,7 @@
 #include <list>
 #include <memory>
 
+#include "PowerTypes.h"
 #include "Application.h"
 #include "ServiceBroker.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
@@ -25,6 +26,7 @@
 #include "pvr/PVRManager.h"
 #include "ServiceBroker.h"
 #include "settings/lib/Setting.h"
+#include "settings/lib/SettingsManager.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
 #include "weather/WeatherManager.h"
@@ -34,7 +36,11 @@
 extern HWND g_hWnd;
 #endif
 
-CPowerManager::CPowerManager() = default;
+CPowerManager::CPowerManager(CSettings &settings) :
+  m_settings(settings)
+{
+  m_settings.GetSettingsManager()->RegisterSettingOptionsFiller("shutdownstates", SettingOptionsShutdownStatesFiller);
+}
 
 CPowerManager::~CPowerManager() = default;
 
@@ -45,7 +51,7 @@ void CPowerManager::Initialize()
 
 void CPowerManager::SetDefaults()
 {
-  int defaultShutdown = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNSTATE);
+  int defaultShutdown = m_settings.GetInt(CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNSTATE);
 
   switch (defaultShutdown)
   {
@@ -84,7 +90,7 @@ void CPowerManager::SetDefaults()
     break;
   }
 
-  std::static_pointer_cast<CSettingInt>(CServiceBroker::GetSettings().GetSetting(CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNSTATE))->SetDefault(defaultShutdown);
+  std::static_pointer_cast<CSettingInt>(m_settings.GetSetting(CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNSTATE))->SetDefault(defaultShutdown);
 }
 
 bool CPowerManager::Powerdown()
