@@ -9,7 +9,6 @@
 #pragma once
 
 #include "powermanagement/IPowerSyscall.h"
-#include "powermanagement/PowerManager.h"
 
 class CPowerSyscall : public CAbstractPowerSyscall
 {
