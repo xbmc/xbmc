@@ -254,11 +254,6 @@ void CWinSystemGbm::FlipPage(bool rendered, bool videoLayer)
   }
 }
 
-void CWinSystemGbm::WaitVBlank()
-{
-  m_DRM->WaitVBlank();
-}
-
 bool CWinSystemGbm::UseLimitedColor()
 {
   return CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOSCREEN_LIMITEDRANGE);

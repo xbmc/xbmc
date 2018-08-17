@@ -39,7 +39,6 @@ public:
   bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays) override;
 
   void FlipPage(bool rendered, bool videoLayer);
-  void WaitVBlank();
 
   bool CanDoWindowed() override { return false; }
   void UpdateResolutions() override;

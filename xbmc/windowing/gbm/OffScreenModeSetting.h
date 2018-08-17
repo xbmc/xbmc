@@ -10,10 +10,6 @@
 
 #include "DRMUtils.h"
 
-#ifdef TARGET_POSIX
-#include "platform/linux/XTimeUtils.h"
-#endif
-
 class COffScreenModeSetting : public CDRMUtils
 {
 public:
@@ -28,7 +24,6 @@ public:
   RESOLUTION_INFO GetCurrentMode() override;
   std::vector<RESOLUTION_INFO> GetModes() override;
   bool SetMode(const RESOLUTION_INFO& res) override { return true; }
-  void WaitVBlank() override { Sleep(20); }
 
 private:
   const int DISPLAY_WIDTH = 1280;

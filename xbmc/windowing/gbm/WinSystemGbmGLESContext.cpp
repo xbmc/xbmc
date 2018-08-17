@@ -18,6 +18,7 @@
 #include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
 
 #include "OptionalsReg.h"
+#include "platform/linux/XTimeUtils.h"
 #include "utils/log.h"
 #include "WinSystemGbmGLESContext.h"
 
@@ -104,7 +105,7 @@ void CWinSystemGbmGLESContext::PresentRender(bool rendered, bool videoLayer)
   }
   else
   {
-    CWinSystemGbm::WaitVBlank();
+    Sleep(10);
   }
 
   if (m_delayDispReset && m_dispResetTimer.IsTimePast())

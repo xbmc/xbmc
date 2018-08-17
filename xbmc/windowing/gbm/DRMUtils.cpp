@@ -31,14 +31,6 @@ CDRMUtils::CDRMUtils()
 {
 }
 
-void CDRMUtils::WaitVBlank()
-{
-  drmVBlank vbl;
-  vbl.request.type = DRM_VBLANK_RELATIVE;
-  vbl.request.sequence = 1;
-  drmWaitVBlank(m_fd, &vbl);
-}
-
 bool CDRMUtils::SetMode(const RESOLUTION_INFO& res)
 {
   m_mode = &m_connector->connector->modes[atoi(res.strId.c_str())];
