@@ -155,6 +155,7 @@ CActiveAEBufferPoolResample::CActiveAEBufferPoolResample(const AEAudioFormat& in
   m_forceResampler = false;
   m_stereoUpmix = false;
   m_normalize = true;
+  m_boostcenter = AE_OUTPUT_BOOST_CENTER_OFF;
   m_changeResampler = false;
   m_lastSamplePts = 0;
 }
@@ -203,6 +204,7 @@ bool CActiveAEBufferPoolResample::Create(unsigned int totaltime, bool remap, boo
                                 m_normalize,
                                 remap ? &m_format.m_channelLayout : NULL,
                                 m_resampleQuality,
+                                m_boostcenter,
                                 m_forceResampler);
 
     m_changeResampler = false;
@@ -235,6 +237,7 @@ void CActiveAEBufferPoolResample::ChangeResampler()
                                 m_normalize,
                                 m_remap ? &m_format.m_channelLayout : NULL,
                                 m_resampleQuality,
+                                m_boostcenter,
                                 m_forceResampler);
 
   m_changeResampler = false;
@@ -387,7 +390,7 @@ bool CActiveAEBufferPoolResample::ResampleBuffers(int64_t timestamp)
   return busy;
 }
 
-void CActiveAEBufferPoolResample::ConfigureResampler(bool normalizelevels, bool stereoupmix, AEQuality quality)
+void CActiveAEBufferPoolResample::ConfigureResampler(bool normalizelevels, bool stereoupmix, AEQuality quality, int boostcenter)
 {
   bool normalize = true;
   if ((m_format.m_channelLayout.Count() < m_inputFormat.m_channelLayout.Count()) && !normalizelevels)
@@ -400,6 +403,10 @@ void CActiveAEBufferPoolResample::ConfigureResampler(bool normalizelevels, bool 
     m_changeResampler = true;
   }
 
+  if (m_boostcenter != boostcenter)
+    m_changeResampler = true;
+
+  m_boostcenter = boostcenter;
   m_resampleQuality = quality;
   m_normalize = normalize;
 }
