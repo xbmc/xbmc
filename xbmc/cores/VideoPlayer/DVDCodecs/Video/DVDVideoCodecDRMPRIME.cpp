@@ -16,9 +16,6 @@
 #include "utils/log.h"
 #include "windowing/gbm/WinSystemGbm.h"
 
-#include <xf86drm.h>
-#include <xf86drmMode.h>
-
 extern "C" {
 #include "libavcodec/avcodec.h"
 #include "libavutil/pixdesc.h"
@@ -47,22 +44,6 @@ void CVideoBufferDRMPRIME::SetRef(AVFrame* frame)
 
 void CVideoBufferDRMPRIME::Unref()
 {
-  if (m_fb_id)
-  {
-    drmModeRmFB(m_drm_fd, m_fb_id);
-    m_fb_id = 0;
-  }
-
-  for (int i = 0; i < AV_DRM_MAX_PLANES; i++)
-  {
-    if (m_handles[i])
-    {
-      struct drm_gem_close gem_close = { .handle = m_handles[i] };
-      drmIoctl(m_drm_fd, DRM_IOCTL_GEM_CLOSE, &gem_close);
-      m_handles[i] = 0;
-    }
-  }
-
   av_frame_unref(m_pFrame);
 }
 

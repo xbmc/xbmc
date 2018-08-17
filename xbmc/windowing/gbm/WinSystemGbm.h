@@ -16,6 +16,7 @@
 #include "threads/CriticalSection.h"
 #include "windowing/WinSystem.h"
 #include "DRMUtils.h"
+#include "VideoLayerBridge.h"
 
 class IDispResource;
 
@@ -50,6 +51,9 @@ public:
   virtual void Register(IDispResource *resource);
   virtual void Unregister(IDispResource *resource);
 
+  std::shared_ptr<CVideoLayerBridge> GetVideoLayerBridge() const { return m_videoLayerBridge; };
+  void RegisterVideoLayerBridge(std::shared_ptr<CVideoLayerBridge> bridge) { m_videoLayerBridge = bridge; };
+
   std::string GetModule() const { return m_DRM->GetModule(); }
   std::string GetDevicePath() const { return m_DRM->GetDevicePath(); }
   struct gbm_device *GetGBMDevice() const { return m_GBM->GetDevice(); }
@@ -60,6 +64,7 @@ protected:
 
   std::shared_ptr<CDRMUtils> m_DRM;
   std::unique_ptr<CGBMUtils> m_GBM;
+  std::shared_ptr<CVideoLayerBridge> m_videoLayerBridge;
 
   CCriticalSection m_resourceSection;
   std::vector<IDispResource*>  m_resources;

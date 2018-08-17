@@ -29,7 +29,6 @@ public:
   void SetRef(AVFrame* frame);
   void Unref();
 
-  uint32_t m_drm_fd = -1;
   uint32_t m_fb_id = 0;
   uint32_t m_handles[AV_DRM_MAX_PLANES] = {0};
 
@@ -55,7 +54,7 @@ public:
   void Reset() override;
   CDVDVideoCodec::VCReturn GetPicture(VideoPicture* pVideoPicture) override;
   const char* GetName() override { return m_name.c_str(); };
-  unsigned GetAllowedReferences() override { return 4; };
+  unsigned GetAllowedReferences() override { return 5; };
   void SetCodecControl(int flags) override { m_codecControlFlags = flags; };
 
 protected:

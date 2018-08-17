@@ -235,11 +235,23 @@ bool CWinSystemGbm::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
 
 void CWinSystemGbm::FlipPage(bool rendered, bool videoLayer)
 {
+  if (m_videoLayerBridge && !videoLayer)
+  {
+    // disable video plane when video layer no longer is active
+    m_videoLayerBridge->Disable();
+  }
+
   struct gbm_bo *bo = m_GBM->LockFrontBuffer();
 
   m_DRM->FlipPage(bo, rendered, videoLayer);
 
   m_GBM->ReleaseBuffer();
+
+  if (m_videoLayerBridge && !videoLayer)
+  {
+    // delete video layer bridge when video layer no longer is active
+    m_videoLayerBridge.reset();
+  }
 }
 
 void CWinSystemGbm::WaitVBlank()
