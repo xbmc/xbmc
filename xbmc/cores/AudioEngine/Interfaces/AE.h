@@ -15,6 +15,10 @@
 
 #include "cores/AudioEngine/Utils/AEAudioFormat.h"
 
+extern "C" {
+#include "libavutil/samplefmt.h"
+}
+
 typedef std::pair<std::string, std::string> AEDevice;
 typedef std::vector<AEDevice> AEDeviceList;
 
@@ -50,6 +54,16 @@ enum AEQuality
   AE_QUALITY_REALLYHIGH = 100, /* Uncompromised optional quality level,
                                usually with unmeasurable and unnoticeable improvement */
   AE_QUALITY_GPU        = 101, /* GPU acceleration */
+};
+
+struct SampleConfig
+{
+  AVSampleFormat fmt;
+  uint64_t channel_layout;
+  int channels;
+  int sample_rate;
+  int bits_per_sample;
+  int dither_bits;
 };
 
 /**

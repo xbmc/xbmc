@@ -1084,19 +1084,25 @@ void CActiveAESink::GenerateNoise()
 
   SampleConfig config = m_sampleOfSilence.pkt->config;
   IAEResample *resampler = CAEResampleFactory::Create(AERESAMPLEFACTORY_QUICK_RESAMPLE);
-  resampler->Init(config.channel_layout,
-                 config.channels,
-                 config.sample_rate,
-                 config.fmt,
-                 config.bits_per_sample,
-                 config.dither_bits,
-                 config.channel_layout,
-                 config.channels,
-                 config.sample_rate,
-                 AV_SAMPLE_FMT_FLT,
-                 CAEUtil::DataFormatToUsedBits(m_sinkFormat.m_dataFormat),
-                 CAEUtil::DataFormatToDitherBits(m_sinkFormat.m_dataFormat),
-                 false, false, nullptr, AE_QUALITY_UNKNOWN, false);
+
+  SampleConfig dstConfig, srcConfig;
+  dstConfig.channel_layout = config.channel_layout;
+  dstConfig.channels = config.channels;
+  dstConfig.sample_rate = config.sample_rate;
+  dstConfig.fmt = config.fmt;
+  dstConfig.bits_per_sample = config.bits_per_sample;
+  dstConfig.dither_bits = config.dither_bits;
+
+  srcConfig.channel_layout = config.channel_layout;
+  srcConfig.channels = config.channels;
+  srcConfig.sample_rate = config.sample_rate;
+  srcConfig.fmt = AV_SAMPLE_FMT_FLT;
+  srcConfig.bits_per_sample = CAEUtil::DataFormatToUsedBits(m_sinkFormat.m_dataFormat);
+  srcConfig.dither_bits = CAEUtil::DataFormatToDitherBits(m_sinkFormat.m_dataFormat);
+
+  resampler->Init(dstConfig, srcConfig,
+                  false, false, M_SQRT1_2, nullptr, AE_QUALITY_UNKNOWN, false);
+
   resampler->Resample(m_sampleOfSilence.pkt->data, m_sampleOfSilence.pkt->max_nb_samples,
                      (uint8_t**)&noise, m_sampleOfSilence.pkt->max_nb_samples, 1.0);
 

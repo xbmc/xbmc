@@ -849,7 +849,7 @@ bool PAPlayer::QueueData(StreamInfo *si)
     }
 
     unsigned int frames = samples/si->m_audioFormat.m_channelLayout.Count();
-    unsigned int added = si->m_stream->AddData(&data, 0, frames, 0);
+    unsigned int added = si->m_stream->AddData(&data, 0, frames, nullptr);
     si->m_framesSent += added;
   }
   else
@@ -861,7 +861,7 @@ bool PAPlayer::QueueData(StreamInfo *si)
     uint8_t *data = si->m_decoder.GetRawData(size);
     if (data && size)
     {
-      int added = si->m_stream->AddData(&data, 0, size, 0);
+      int added = si->m_stream->AddData(&data, 0, size, nullptr);
       if (added != size)
       {
         CLog::Log(LOGERROR, "PAPlayer::QueueData - unknown error");

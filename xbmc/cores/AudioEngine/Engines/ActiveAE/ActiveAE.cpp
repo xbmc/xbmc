@@ -3147,21 +3147,12 @@ bool CActiveAE::ResampleSound(CActiveAESound *sound)
   }
 
   IAEResample *resampler = CAEResampleFactory::Create(AERESAMPLEFACTORY_QUICK_RESAMPLE);
-  resampler->Init(dst_config.channel_layout,
-                  dst_config.channels,
-                  dst_config.sample_rate,
-                  dst_config.fmt,
-                  dst_config.bits_per_sample,
-                  dst_config.dither_bits,
-                  orig_config.channel_layout,
-                  orig_config.channels,
-                  orig_config.sample_rate,
-                  orig_config.fmt,
-                  orig_config.bits_per_sample,
-                  orig_config.dither_bits,
+
+  resampler->Init(dst_config, orig_config,
                   false,
                   true,
-                  outChannels.Count() > 0 ? &outChannels : NULL,
+                  M_SQRT1_2,
+                  outChannels.Count() > 0 ? &outChannels : nullptr,
                   m_settings.resampleQuality,
                   false);
 

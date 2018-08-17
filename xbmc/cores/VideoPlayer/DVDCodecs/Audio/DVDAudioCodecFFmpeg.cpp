@@ -7,22 +7,15 @@
  */
 
 #include "DVDAudioCodecFFmpeg.h"
-#ifdef TARGET_POSIX
-#include "XMemUtils.h"
-#include "platform/linux/XTimeUtils.h"
-#endif
 #include "../../DVDStreamInfo.h"
 #include "utils/log.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
 #include "DVDCodecs/DVDCodecs.h"
+
 extern "C" {
 #include "libavutil/opt.h"
 }
-
-#include "settings/Settings.h"
-#if defined(TARGET_DARWIN)
-#include "cores/AudioEngine/Utils/AEUtil.h"
-#endif
 
 CDVDAudioCodecFFmpeg::CDVDAudioCodecFFmpeg(CProcessInfo &processInfo) : CDVDAudioCodec(processInfo)
 {
@@ -120,6 +113,7 @@ bool CDVDAudioCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 
   m_iSampleFormat = AV_SAMPLE_FMT_NONE;
   m_matrixEncoding = AV_MATRIX_ENCODING_NONE;
+  m_hasDownmix = false;
 
   m_codecName = "ff-" + std::string(m_pCodecContext->codec->name);
 
@@ -205,6 +199,12 @@ void CDVDAudioCodecFFmpeg::GetData(DVDAudioFrame &frame)
     frame.pts = (double)bpts * DVD_TIME_BASE / AV_TIME_BASE;
   else
     frame.pts = DVD_NOPTS_VALUE;
+
+  frame.hasDownmix = m_hasDownmix;
+  if (frame.hasDownmix)
+  {
+    frame.centerMixLevel = m_downmixInfo.center_mix_level;
+  }
 }
 
 int CDVDAudioCodecFFmpeg::GetData(uint8_t** dst)
@@ -222,6 +222,11 @@ int CDVDAudioCodecFFmpeg::GetData(uint8_t** dst)
           if (sd->type == AV_FRAME_DATA_MATRIXENCODING)
           {
             m_matrixEncoding = *(enum AVMatrixEncoding*)sd->data;
+          }
+          else if (sd->type == AV_FRAME_DATA_DOWNMIX_INFO)
+          {
+            m_downmixInfo = *(AVDownmixInfo*)sd->data;
+            m_hasDownmix = true;
           }
         }
       }

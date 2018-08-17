@@ -249,20 +249,26 @@ bool VideoPlayerCodec::Init(const CFileItem &file, unsigned int filecache)
   {
     m_needConvert = true;
     m_pResampler = ActiveAE::CAEResampleFactory::Create();
-    m_pResampler->Init(CAEUtil::GetAVChannelLayout(m_srcFormat.m_channelLayout),
-                       m_channels,
-                       m_srcFormat.m_sampleRate,
-                       CAEUtil::GetAVSampleFormat(AE_FMT_FLOAT),
-                       CAEUtil::DataFormatToUsedBits(AE_FMT_FLOAT),
-                       CAEUtil::DataFormatToDitherBits(AE_FMT_FLOAT),
-                       CAEUtil::GetAVChannelLayout(m_srcFormat.m_channelLayout),
-                       m_channels,
-                       m_srcFormat.m_sampleRate,
-                       CAEUtil::GetAVSampleFormat(m_srcFormat.m_dataFormat),
-                       CAEUtil::DataFormatToUsedBits(m_srcFormat.m_dataFormat),
-                       CAEUtil::DataFormatToDitherBits(m_srcFormat.m_dataFormat),
+
+    SampleConfig dstConfig, srcConfig;
+    dstConfig.channel_layout = CAEUtil::GetAVChannelLayout(m_srcFormat.m_channelLayout);
+    dstConfig.channels = m_channels;
+    dstConfig.sample_rate = m_srcFormat.m_sampleRate;
+    dstConfig.fmt = CAEUtil::GetAVSampleFormat(AE_FMT_FLOAT);
+    dstConfig.bits_per_sample = CAEUtil::DataFormatToUsedBits(AE_FMT_FLOAT);
+    dstConfig.dither_bits = CAEUtil::DataFormatToDitherBits(AE_FMT_FLOAT);
+
+    srcConfig.channel_layout = CAEUtil::GetAVChannelLayout(m_srcFormat.m_channelLayout);
+    srcConfig.channels = m_channels;
+    srcConfig.sample_rate = m_srcFormat.m_sampleRate;
+    srcConfig.fmt = CAEUtil::GetAVSampleFormat(m_srcFormat.m_dataFormat);
+    srcConfig.bits_per_sample = CAEUtil::DataFormatToUsedBits(m_srcFormat.m_dataFormat);
+    srcConfig.dither_bits = CAEUtil::DataFormatToDitherBits(m_srcFormat.m_dataFormat);
+
+    m_pResampler->Init(dstConfig, srcConfig,
                        false,
                        false,
+                       M_SQRT1_2,
                        NULL,
                        AE_QUALITY_UNKNOWN,
                        false);

@@ -137,20 +137,25 @@ void CActiveAEStream::InitRemapper()
     }
 
     // initialize resampler for only doing remapping
-    m_remapper->Init(avLayout,
-                     m_format.m_channelLayout.Count(),
-                     m_format.m_sampleRate,
-                     CAEUtil::GetAVSampleFormat(m_format.m_dataFormat),
-                     CAEUtil::DataFormatToUsedBits(m_format.m_dataFormat),
-                     CAEUtil::DataFormatToDitherBits(m_format.m_dataFormat),
-                     avLayout,
-                     m_format.m_channelLayout.Count(),
-                     m_format.m_sampleRate,
-                     CAEUtil::GetAVSampleFormat(m_format.m_dataFormat),
-                     CAEUtil::DataFormatToUsedBits(m_format.m_dataFormat),
-                     CAEUtil::DataFormatToDitherBits(m_format.m_dataFormat),
+    SampleConfig dstConfig, srcConfig;
+    dstConfig.channel_layout = avLayout;
+    dstConfig.channels = m_format.m_channelLayout.Count();
+    dstConfig.sample_rate = m_format.m_sampleRate;
+    dstConfig.fmt = CAEUtil::GetAVSampleFormat(m_format.m_dataFormat);
+    dstConfig.bits_per_sample = CAEUtil::DataFormatToUsedBits(m_format.m_dataFormat);
+    dstConfig.dither_bits = CAEUtil::DataFormatToDitherBits(m_format.m_dataFormat);
+
+    srcConfig.channel_layout = avLayout;
+    srcConfig.channels = m_format.m_channelLayout.Count();
+    srcConfig.sample_rate = m_format.m_sampleRate;
+    srcConfig.fmt = CAEUtil::GetAVSampleFormat(m_format.m_dataFormat);
+    srcConfig.bits_per_sample = CAEUtil::DataFormatToUsedBits(m_format.m_dataFormat);
+    srcConfig.dither_bits = CAEUtil::DataFormatToDitherBits(m_format.m_dataFormat);
+
+    m_remapper->Init(dstConfig, srcConfig,
                      false,
                      false,
+                     M_SQRT1_2,
                      &remapLayout,
                      AE_QUALITY_LOW, // not used for remapping
                      false);
@@ -226,12 +231,18 @@ unsigned int CActiveAEStream::GetSpace()
     return m_streamFreeBuffers * m_streamSpace;
 }
 
-unsigned int CActiveAEStream::AddData(const uint8_t* const *data, unsigned int offset, unsigned int frames, double pts)
+unsigned int CActiveAEStream::AddData(const uint8_t* const *data, unsigned int offset, unsigned int frames, ExtData *extData)
 {
   Message *msg;
   unsigned int copied = 0;
   int sourceFrames = frames;
   const uint8_t* const *buf = data;
+  double pts = 0;
+
+  if (extData)
+  {
+    pts = extData->pts;
+  }
 
   m_streamIsFlushed = false;
 
@@ -279,6 +290,9 @@ unsigned int CActiveAEStream::AddData(const uint8_t* const *data, unsigned int o
       }
       copied += minFrames;
 
+      if (extData && extData->hasDownmix)
+        m_currentBuffer->centerMixLevel = extData->centerMixLevel;
+
       bool rawPktComplete = false;
       {
         CSingleLock lock(m_statsLock);
@@ -302,7 +316,7 @@ unsigned int CActiveAEStream::AddData(const uint8_t* const *data, unsigned int o
         msgData.stream = this;
         RemapBuffer();
         m_streamPort->SendOutMessage(CActiveAEDataProtocol::STREAMSAMPLE, &msgData, sizeof(MsgStreamSample));
-        m_currentBuffer = NULL;
+        m_currentBuffer = nullptr;
       }
       continue;
     }
