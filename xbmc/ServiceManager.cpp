@@ -97,9 +97,6 @@ void CServiceManager::DeinitTesting()
 
 bool CServiceManager::InitStageOne()
 {
-  m_announcementManager.reset(new ANNOUNCEMENT::CAnnouncementManager());
-  m_announcementManager->Start();
-
 #ifdef HAS_PYTHON
   m_XBPython.reset(new XBPython());
   CScriptInvocationManager::GetInstance().RegisterLanguageInvocationHandler(m_XBPython.get(), ".py");
@@ -167,8 +164,7 @@ bool CServiceManager::InitStageTwo(const CAppParamParser &params)
   m_inputManager.reset(new CInputManager(params));
   m_inputManager->InitializeInputs();
 
-  m_peripherals.reset(new PERIPHERALS::CPeripherals(*m_announcementManager,
-                                                    *m_inputManager,
+  m_peripherals.reset(new PERIPHERALS::CPeripherals(*m_inputManager,
                                                     *m_gameControllerManager));
 
   m_gameRenderManager.reset(new RETRO::CGUIGameRenderManager);
@@ -260,7 +256,6 @@ void CServiceManager::DeinitStageOne()
   CScriptInvocationManager::GetInstance().UnregisterLanguageInvocationHandler(m_XBPython.get());
   m_XBPython.reset();
 #endif
-  m_announcementManager.reset();
 }
 
 ADDON::CAddonMgr &CServiceManager::GetAddonMgr()
@@ -291,11 +286,6 @@ ADDON::CServiceAddonManager &CServiceManager::GetServiceAddons()
 ADDON::CRepositoryUpdater &CServiceManager::GetRepositoryUpdater()
 {
   return *m_repositoryUpdater;
-}
-
-ANNOUNCEMENT::CAnnouncementManager& CServiceManager::GetAnnouncementManager()
-{
-  return *m_announcementManager;
 }
 
 #ifdef HAS_PYTHON

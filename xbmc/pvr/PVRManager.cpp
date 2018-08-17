@@ -37,7 +37,6 @@
 #include "pvr/timers/PVRTimers.h"
 
 using namespace PVR;
-using namespace ANNOUNCEMENT;
 using namespace KODI::MESSAGING;
 
 CPVRManagerJobQueue::CPVRManagerJobQueue()
@@ -134,16 +133,16 @@ CPVRManager::CPVRManager(void) :
       CSettings::SETTING_PVRPARENTAL_DURATION
     })
 {
-  CAnnouncementManager::GetInstance().AddAnnouncer(this);
+  CServiceBroker::GetAnnouncementManager()->AddAnnouncer(this);
 }
 
 CPVRManager::~CPVRManager(void)
 {
-  CAnnouncementManager::GetInstance().RemoveAnnouncer(this);
+  CServiceBroker::GetAnnouncementManager()->RemoveAnnouncer(this);
   CLog::LogFC(LOGDEBUG, LOGPVR, "PVR Manager instance destroyed");
 }
 
-void CPVRManager::Announce(AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
+void CPVRManager::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
 {
   if (!IsStarted())
     return;

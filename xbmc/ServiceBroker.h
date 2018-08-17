@@ -76,11 +76,14 @@ namespace PERIPHERALS
 class CServiceBroker
 {
 public:
+  static std::shared_ptr<ANNOUNCEMENT::CAnnouncementManager> GetAnnouncementManager();
+  static void RegisterAnnouncementManager(std::shared_ptr<ANNOUNCEMENT::CAnnouncementManager> announcementManager);
+  static void UnregisterAnnouncementManager();
+
   static ADDON::CAddonMgr &GetAddonMgr();
   static ADDON::CBinaryAddonManager &GetBinaryAddonManager();
   static ADDON::CBinaryAddonCache &GetBinaryAddonCache();
   static ADDON::CVFSAddonCache &GetVFSAddonCache();
-  static ANNOUNCEMENT::CAnnouncementManager &GetAnnouncementManager();
   static XBPython &GetXBPython();
   static PVR::CPVRManager &GetPVRManager();
   static CContextMenuManager& GetContextMenuManager();
@@ -124,6 +127,7 @@ public:
   static void UnregisterAppPort();
 
 private:
+  static std::shared_ptr<ANNOUNCEMENT::CAnnouncementManager> m_pAnnouncementManager;
   static CGUIComponent* m_pGUI;
   static CWinSystemBase* m_pWinSystem;
   static IAE* m_pActiveAE;

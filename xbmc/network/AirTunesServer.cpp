@@ -54,7 +54,6 @@
 #define ZEROCONF_DACP_SERVICE "_dacp._tcp"
 
 using namespace XFILE;
-using namespace ANNOUNCEMENT;
 using namespace KODI::MESSAGING;
 
 DllLibShairplay *CAirTunesServer::m_pLibShairplay = NULL;
@@ -159,9 +158,9 @@ void CAirTunesServer::SetMetadataFromBuffer(const char *buffer, unsigned int siz
   RefreshMetadata();
 }
 
-void CAirTunesServer::Announce(AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
+void CAirTunesServer::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
 {
-  if ( (flag & Player) && strcmp(sender, "xbmc") == 0)
+  if ( (flag & ANNOUNCEMENT::Player) && strcmp(sender, "xbmc") == 0)
   {
     if ((strcmp(message, "OnPlay") == 0 || strcmp(message, "OnResume") == 0) && m_streamStarted)
     {
@@ -647,13 +646,13 @@ void CAirTunesServer::RegisterActionListener(bool doRegister)
 {
   if (doRegister)
   {
-    CAnnouncementManager::GetInstance().AddAnnouncer(this);
+    CServiceBroker::GetAnnouncementManager()->AddAnnouncer(this);
     g_application.RegisterActionListener(this);
     ServerInstance->Create();
   }
   else
   {
-    CAnnouncementManager::GetInstance().RemoveAnnouncer(this);
+    CServiceBroker::GetAnnouncementManager()->RemoveAnnouncer(this);
     g_application.UnregisterActionListener(this);
     ServerInstance->StopThread(true);
   }

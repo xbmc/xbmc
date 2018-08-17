@@ -46,7 +46,6 @@ static const bdaddr_t bt_bdaddr_local = {{0, 0, 0, 0xff, 0xff, 0xff}};
 #endif
 
 using namespace JSONRPC;
-using namespace ANNOUNCEMENT;
 
 #define RECEIVEBUFFER 1024
 
@@ -234,7 +233,7 @@ int CTCPServer::GetCapabilities()
   return Response | Announcing;
 }
 
-void CTCPServer::Announce(AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
+void CTCPServer::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
 {
   std::string str = IJSONRPCAnnouncer::AnnouncementToJSONRPC(flag, sender, message, data, g_advancedSettings.m_jsonOutputCompact);
 
@@ -261,7 +260,7 @@ bool CTCPServer::Initialize()
 
   if (started)
   {
-    CAnnouncementManager::GetInstance().AddAnnouncer(this);
+    CServiceBroker::GetAnnouncementManager()->AddAnnouncer(this);
     CLog::Log(LOGINFO, "JSONRPC Server: Successfully initialized");
     return true;
   }
@@ -493,13 +492,13 @@ void CTCPServer::Deinitialize()
   m_sdpd = NULL;
 #endif
 
-  CAnnouncementManager::GetInstance().RemoveAnnouncer(this);
+  CServiceBroker::GetAnnouncementManager()->RemoveAnnouncer(this);
 }
 
 CTCPServer::CTCPClient::CTCPClient()
 {
   m_new = true;
-  m_announcementflags = ANNOUNCE_ALL;
+  m_announcementflags = ANNOUNCEMENT::ANNOUNCE_ALL;
   m_socket = INVALID_SOCKET;
   m_beginBrackets = 0;
   m_endBrackets = 0;

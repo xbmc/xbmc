@@ -26,7 +26,7 @@ namespace ANNOUNCEMENT
     Info          = 0x400
   };
 
-  #define ANNOUNCE_ALL (Player | Playlist | GUI | System | VideoLibrary | AudioLibrary | Application | Input | ANNOUNCEMENT::PVR | Other)
+  const auto ANNOUNCE_ALL = (Player | Playlist | GUI | System | VideoLibrary | AudioLibrary | Application | Input | ANNOUNCEMENT::PVR | Other);
 
   /*!
     \brief Returns a string representation for the

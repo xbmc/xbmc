@@ -37,7 +37,6 @@
 #include "network/Zeroconf.h"
 #endif // HAS_ZEROCONF
 
-using namespace ANNOUNCEMENT;
 using namespace KODI::MESSAGING;
 using KODI::UTILITY::CDigest;
 
@@ -148,11 +147,11 @@ const char *eventStrings[] = {"playing", "paused", "loading", "stopped"};
 #define AUTH_REALM "AirPlay"
 #define AUTH_REQUIRED "WWW-Authenticate: Digest realm=\""  AUTH_REALM  "\", nonce=\"%s\"\r\n"
 
-void CAirPlayServer::Announce(AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
+void CAirPlayServer::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
 {
   CSingleLock lock(ServerInstanceLock);
 
-  if ( (flag & Player) && strcmp(sender, "xbmc") == 0 && ServerInstance)
+  if ( (flag & ANNOUNCEMENT::Player) && strcmp(sender, "xbmc") == 0 && ServerInstance)
   {
     if (strcmp(message, "OnStop") == 0)
     {
@@ -303,12 +302,12 @@ CAirPlayServer::CAirPlayServer(int port, bool nonlocal) : CThread("AirPlayServer
   m_ServerSockets = std::vector<SOCKET>();
   m_usePassword = false;
   m_origVolume = -1;
-  CAnnouncementManager::GetInstance().AddAnnouncer(this);
+  CServiceBroker::GetAnnouncementManager()->AddAnnouncer(this);
 }
 
 CAirPlayServer::~CAirPlayServer()
 {
-  CAnnouncementManager::GetInstance().RemoveAnnouncer(this);
+  CServiceBroker::GetAnnouncementManager()->RemoveAnnouncer(this);
 }
 
 void handleZeroconfAnnouncement()

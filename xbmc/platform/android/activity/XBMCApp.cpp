@@ -335,7 +335,7 @@ void CXBMCApp::onLostFocus()
 
 void CXBMCApp::Initialize()
 {
-  g_application.m_ServiceManager->GetAnnouncementManager().AddAnnouncer(CXBMCApp::get());
+  CServiceBroker::GetAnnouncementManager()->AddAnnouncer(CXBMCApp::get());
 }
 
 void CXBMCApp::Deinitialize()

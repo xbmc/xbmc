@@ -33,8 +33,7 @@
 #include "interfaces/legacy/AddonUtils.h"
 #include "interfaces/python/AddonPythonInvoker.h"
 #include "interfaces/python/PythonInvoker.h"
-
-using namespace ANNOUNCEMENT;
+#include "ServiceBroker.h"
 
 XBPython::XBPython()
 {
@@ -47,13 +46,13 @@ XBPython::XBPython()
   m_vecPlayerCallbackList.clear();
   m_vecMonitorCallbackList.clear();
 
-  CAnnouncementManager::GetInstance().AddAnnouncer(this);
+  CServiceBroker::GetAnnouncementManager()->AddAnnouncer(this);
 }
 
 XBPython::~XBPython()
 {
   XBMC_TRACE;
-  CAnnouncementManager::GetInstance().RemoveAnnouncer(this);
+  CServiceBroker::GetAnnouncementManager()->RemoveAnnouncer(this);
 }
 
 #define LOCK_AND_COPY(type, dest, src) \
@@ -66,9 +65,9 @@ XBPython::~XBPython()
 #define CHECK_FOR_ENTRY(l,v) \
   (l.hadSomethingRemoved ? (std::find(l.begin(),l.end(),v) != l.end()) : true)
 
-void XBPython::Announce(AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
+void XBPython::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
 {
-  if (flag & VideoLibrary)
+  if (flag & ANNOUNCEMENT::VideoLibrary)
   {
    if (strcmp(message, "OnScanFinished") == 0)
      OnScanFinished("video");
@@ -79,7 +78,7 @@ void XBPython::Announce(AnnouncementFlag flag, const char *sender, const char *m
    else if (strcmp(message, "OnCleanFinished") == 0)
      OnCleanFinished("video");
   }
-  else if (flag & AudioLibrary)
+  else if (flag & ANNOUNCEMENT::AudioLibrary)
   {
    if (strcmp(message, "OnScanFinished") == 0)
      OnScanFinished("music");
@@ -90,7 +89,7 @@ void XBPython::Announce(AnnouncementFlag flag, const char *sender, const char *m
    else if (strcmp(message, "OnCleanFinished") == 0)
      OnCleanFinished("music");
   }
-  else if (flag & GUI)
+  else if (flag & ANNOUNCEMENT::GUI)
   {
    if (strcmp(message, "OnScreensaverDeactivated") == 0)
      OnScreensaverDeactivated();
@@ -512,7 +511,7 @@ void XBPython::Uninitialize()
   // don't handle any more announcements as most scripts are probably already
   // stopped and executing a callback on one of their already destroyed classes
   // would lead to a crash
-  CAnnouncementManager::GetInstance().RemoveAnnouncer(this);
+  CServiceBroker::GetAnnouncementManager()->RemoveAnnouncer(this);
 
   LOCK_AND_COPY(std::vector<PyElem>,tmpvec,m_vecPyList);
   m_vecPyList.clear();
