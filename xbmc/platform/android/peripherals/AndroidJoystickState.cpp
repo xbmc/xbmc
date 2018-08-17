@@ -7,12 +7,14 @@
  */
 
 #include <algorithm>
+#include <utility>
 
 #include <android/input.h>
 
 #include "AndroidJoystickState.h"
 #include "AndroidJoystickTranslator.h"
 #include "androidjni/View.h"
+#include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 
@@ -64,6 +66,15 @@ static void MapAxisIds(int axisId, int primaryAxisId, int secondaryAxisId, std::
 CAndroidJoystickState::CAndroidJoystickState()
   : m_deviceId(-1)
 { }
+
+CAndroidJoystickState::CAndroidJoystickState(CAndroidJoystickState &&other) :
+    m_deviceId(other.m_deviceId),
+    m_buttons(std::move(other.m_buttons)),
+    m_axes(std::move(other.m_axes)),
+    m_analogState(std::move(other.m_analogState)),
+    m_digitalEvents(std::move(other.m_digitalEvents))
+{
+}
 
 CAndroidJoystickState::~CAndroidJoystickState()
 {
@@ -159,11 +170,7 @@ bool CAndroidJoystickState::Initialize(const CJNIViewInputDevice& inputDevice)
     return false;
   }
 
-  m_state.buttons.assign(GetButtonCount(), JOYSTICK_STATE_BUTTON_UNPRESSED);
-  m_state.axes.assign(GetAxisCount(), 0.0f);
-
-  m_stateBuffer.buttons.assign(GetButtonCount(), JOYSTICK_STATE_BUTTON_UNPRESSED);
-  m_stateBuffer.axes.assign(GetAxisCount(), 0.0f);
+  m_analogState.assign(GetAxisCount(), 0.0f);
 
   return true;
 }
@@ -173,11 +180,8 @@ void CAndroidJoystickState::Deinitialize(void)
   m_buttons.clear();
   m_axes.clear();
 
-  m_state.buttons.clear();
-  m_state.axes.clear();
-
-  m_stateBuffer.buttons.clear();
-  m_stateBuffer.axes.clear();
+  m_analogState.clear();
+  m_digitalEvents.clear();
 }
 
 bool CAndroidJoystickState::ProcessEvent(const AInputEvent* event)
@@ -242,33 +246,41 @@ bool CAndroidJoystickState::ProcessEvent(const AInputEvent* event)
   return false;
 }
 
-void CAndroidJoystickState::GetEvents(std::vector<kodi::addon::PeripheralEvent>& events) const
+void CAndroidJoystickState::GetEvents(std::vector<kodi::addon::PeripheralEvent>& events)
 {
   GetButtonEvents(events);
   GetAxisEvents(events);
 }
 
-void CAndroidJoystickState::GetButtonEvents(std::vector<kodi::addon::PeripheralEvent>& events) const
+void CAndroidJoystickState::GetButtonEvents(std::vector<kodi::addon::PeripheralEvent>& events)
 {
-  const std::vector<JOYSTICK_STATE_BUTTON>& buttons = m_stateBuffer.buttons;
+  CSingleLock lock(m_eventMutex);
 
-  for (unsigned int i = 0; i < buttons.size(); i++)
+  // Only report a single event per button (avoids dropping rapid presses)
+  std::vector<kodi::addon::PeripheralEvent> repeatButtons;
+
+  for (const auto &digitalEvent : m_digitalEvents)
   {
-    if (buttons[i] != m_state.buttons[i])
-      events.push_back(kodi::addon::PeripheralEvent(m_deviceId, i, buttons[i]));
+    auto HasButton = [&digitalEvent](const kodi::addon::PeripheralEvent &event)
+    {
+      if (event.Type() == PERIPHERAL_EVENT_TYPE_DRIVER_BUTTON)
+        return event.DriverIndex() == digitalEvent.DriverIndex();
+      return false;
+    };
+
+    if (std::find_if(events.begin(), events.end(), HasButton) == events.end())
+      events.emplace_back(digitalEvent);
+    else
+      repeatButtons.emplace_back(digitalEvent);
   }
 
-  m_state.buttons.assign(buttons.begin(), buttons.end());
+  m_digitalEvents.swap(repeatButtons);
 }
 
 void CAndroidJoystickState::GetAxisEvents(std::vector<kodi::addon::PeripheralEvent>& events) const
 {
-  const std::vector<JOYSTICK_STATE_AXIS>& axes = m_stateBuffer.axes;
-
-  for (unsigned int i = 0; i < axes.size(); i++)
-    events.push_back(kodi::addon::PeripheralEvent(m_deviceId, i, axes[i]));
-
-  m_state.axes.assign(axes.begin(), axes.end());
+  for (unsigned int i = 0; i < m_analogState.size(); i++)
+    events.emplace_back(m_deviceId, i, m_analogState[i]);
 }
 
 bool CAndroidJoystickState::SetButtonValue(int axisId, JOYSTICK_STATE_BUTTON buttonValue)
@@ -277,7 +289,10 @@ bool CAndroidJoystickState::SetButtonValue(int axisId, JOYSTICK_STATE_BUTTON but
   if (!GetAxesIndex({ axisId }, m_buttons, buttonIndex) || buttonIndex >= GetButtonCount())
     return false;
 
-  m_stateBuffer.buttons[buttonIndex] = buttonValue;
+  CSingleLock lock(m_eventMutex);
+
+  m_digitalEvents.emplace_back(m_deviceId, buttonIndex, buttonValue);
+
   return true;
 }
 
@@ -296,7 +311,7 @@ bool CAndroidJoystickState::SetAxisValue(const std::vector<int>& axisIds, JOYSTI
   // scale the axis value down to a value between -1.0f and 1.0f
   axisValue = Scale(axisValue, axis.max, 1.0f);
 
-  m_stateBuffer.axes[axisIndex] = axisValue;
+  m_analogState[axisIndex] = axisValue;
   return true;
 }
 

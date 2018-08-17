@@ -122,7 +122,7 @@ void CPeripheralBusAndroid::ProcessEvents()
   std::vector<kodi::addon::PeripheralEvent> events;
   {
     CSingleLock lock(m_critSectionStates);
-    for (const auto& joystickState : m_joystickStates)
+    for (auto& joystickState : m_joystickStates)
       joystickState.second.GetEvents(events);
   }
 

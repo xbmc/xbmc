@@ -9,6 +9,7 @@
 #pragma once
 
 #include "addons/kodi-addon-dev-kit/include/kodi/addon-instance/PeripheralUtils.h"
+#include "threads/CriticalSection.h"
 
 #include <string>
 #include <utility>
@@ -23,6 +24,7 @@ namespace PERIPHERALS
   {
   public:
     CAndroidJoystickState();
+    CAndroidJoystickState(CAndroidJoystickState &&other);
     virtual ~CAndroidJoystickState();
 
     int GetDeviceId() const { return m_deviceId; }
@@ -50,13 +52,13 @@ namespace PERIPHERALS
     /*!
      * Get events that have occurred since the last call to GetEvents()
      */
-    void GetEvents(std::vector<kodi::addon::PeripheralEvent>& events) const;
+    void GetEvents(std::vector<kodi::addon::PeripheralEvent>& events);
 
   private:
     bool SetButtonValue(int axisId, JOYSTICK_STATE_BUTTON buttonValue);
     bool SetAxisValue(const std::vector<int>& axisIds, JOYSTICK_STATE_AXIS axisValue);
 
-    void GetButtonEvents(std::vector<kodi::addon::PeripheralEvent>& events) const;
+    void GetButtonEvents(std::vector<kodi::addon::PeripheralEvent>& events);
     void GetAxisEvents(std::vector<kodi::addon::PeripheralEvent>& events) const;
 
     static float Contain(float value, float min, float max);
@@ -80,18 +82,14 @@ namespace PERIPHERALS
     static bool ContainsAxis(int axisId, const JoystickAxes& axes);
     static bool GetAxesIndex(const std::vector<int>& axisIds, const JoystickAxes& axes, size_t& axesIndex);
 
-    struct JoystickState
-    {
-      std::vector<JOYSTICK_STATE_BUTTON> buttons;
-      std::vector<JOYSTICK_STATE_AXIS> axes;
-    };
-
     int m_deviceId;
 
     JoystickAxes m_buttons;
     JoystickAxes m_axes;
 
-    mutable JoystickState m_state;
-    JoystickState m_stateBuffer;
+    std::vector<JOYSTICK_STATE_AXIS> m_analogState;
+
+    CCriticalSection m_eventMutex;
+    std::vector<kodi::addon::PeripheralEvent> m_digitalEvents;
   };
 }
