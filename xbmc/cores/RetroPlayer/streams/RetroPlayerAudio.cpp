@@ -124,7 +124,7 @@ void CRetroPlayerAudio::AddStreamData(const StreamPacket &packet)
         CLog::Log(LOGDEBUG, "RetroPlayer[AUDIO]: Audio delay (%0.2f ms) is too high - flushing", delaySecs * 1000);
       }
 
-      m_pAudioStream->AddData(&audioPacket.data, 0, frameCount);
+      m_pAudioStream->AddData(&audioPacket.data, 0, frameCount, nullptr);
     }
   }
 }

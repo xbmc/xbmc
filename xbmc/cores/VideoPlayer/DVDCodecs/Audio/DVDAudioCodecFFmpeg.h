@@ -16,6 +16,7 @@ extern "C" {
 #include "libavutil/avutil.h"
 #include "libavutil/channel_layout.h"
 #include "libswresample/swresample.h"
+#include "libavutil/downmix_info.h"
 }
 
 class CProcessInfo;
@@ -52,6 +53,8 @@ protected:
   CAEChannelInfo m_channelLayout;
   enum AVMatrixEncoding m_matrixEncoding = AV_MATRIX_ENCODING_NONE;
   AVFrame* m_pFrame;
+  AVDownmixInfo m_downmixInfo;
+  bool m_hasDownmix = false;
   bool m_eof;
   int m_channels;
   uint64_t m_layout;

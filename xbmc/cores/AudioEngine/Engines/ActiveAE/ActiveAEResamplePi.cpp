@@ -95,29 +95,31 @@ static int format_to_bits(AVSampleFormat fmt)
   return 0;
 }
 
-bool CActiveAEResamplePi::Init(uint64_t dst_chan_layout, int dst_channels, int dst_rate, AVSampleFormat dst_fmt, int dst_bits, int dst_dither, uint64_t src_chan_layout, int src_channels, int src_rate, AVSampleFormat src_fmt, int src_bits, int src_dither, bool upmix, bool normalize, CAEChannelInfo *remapLayout, AEQuality quality, bool force_resample)
+bool CActiveAEResamplePi::Init(SampleConfig dstConfig, SampleConfig srcConfig, bool upmix, bool normalize, double centerMix,
+                               CAEChannelInfo *remapLayout, AEQuality quality, bool force_resample)
 {
   LOGTIMEINIT("x");
 
   CLog::Log(LOGINFO,
             "%s::%s remap:%p chan:%d->%d rate:%d->%d format:%d->%d bits:%d->%d dither:%d->%d "
             "norm:%d upmix:%d",
-            CLASSNAME, __func__, static_cast<void*>(remapLayout), src_channels, dst_channels,
-            src_rate, dst_rate, src_fmt, dst_fmt, src_bits, dst_bits, src_dither, dst_dither,
+            CLASSNAME, __func__, static_cast<void*>(remapLayout), srcConfig.channels, dstConfig.channels,
+            srcConfig.sample_rate, dstConfig.sample_rate, srcConfig.fmt, dstConfig.fmt,
+            srcConfig.bits_per_sample, dstConfig.bits_per_sample, srcConfig.dither_bits, dstConfig.dither_bits,
             normalize, upmix);
 
-  m_dst_chan_layout = dst_chan_layout;
-  m_dst_channels = dst_channels;
-  m_dst_rate = dst_rate;
-  m_dst_fmt = dst_fmt;
-  m_dst_bits = dst_bits;
-  m_dst_dither_bits = dst_dither;
-  m_src_chan_layout = src_chan_layout;
-  m_src_channels = src_channels;
-  m_src_rate = src_rate;
-  m_src_fmt = src_fmt;
-  m_src_bits = src_bits;
-  m_src_dither_bits = src_dither;
+  m_dst_chan_layout = dstConfig.channel_layout;
+  m_dst_channels = dstConfig.channels;
+  m_dst_rate = dstConfig.sample_rate;
+  m_dst_fmt = dstConfig.fmt;
+  m_dst_bits = dstConfig.bits_per_sample;
+  m_dst_dither_bits = dstConfig.dither_bits;
+  m_src_chan_layout = srcConfig.channel_layout;
+  m_src_channels = srcConfig.channels;
+  m_src_rate = srcConfig.sample_rate;
+  m_src_fmt = srcConfig.fmt;
+  m_src_bits = srcConfig.bits_per_sample;
+  m_src_dither_bits = srcConfig.dither_bits;
   m_offset = 0;
   m_src_pitch = format_to_bits(m_src_fmt) >> 3;
   m_dst_pitch = format_to_bits(m_dst_fmt) >> 3;
@@ -284,8 +286,8 @@ bool CActiveAEResamplePi::Init(uint64_t dst_chan_layout, int dst_channels, int d
     m_ratio = 1.0;
   }
   // audio_mixer only supports up to 192kHz, however as long as ratio of samplerates remains the same we can lie
-  while (src_rate > 192000 || dst_rate > 192000)
-    src_rate >>= 1, dst_rate >>= 1;
+  while (srcConfig.sample_rate > 192000 || dstConfig.sample_rate > 192000)
+    srcConfig.sample_rate >>= 1, dstConfig.sample_rate >>= 1;
 
   OMX_INIT_STRUCTURE(m_pcm_input);
   m_pcm_input.nPortIndex            = m_omx_mixer.GetInputPort();
@@ -300,8 +302,8 @@ bool CActiveAEResamplePi::Init(uint64_t dst_chan_layout, int dst_channels, int d
   if (m_src_fmt >= AV_SAMPLE_FMT_U8P)
    flags |= 0x10000;
   m_pcm_input.ePCMMode              = flags == 0 ? OMX_AUDIO_PCMModeLinear : (OMX_AUDIO_PCMMODETYPE)flags;
-  m_pcm_input.nChannels             = src_channels;
-  m_pcm_input.nSamplingRate         = src_rate;
+  m_pcm_input.nChannels             = srcConfig.channels;
+  m_pcm_input.nSamplingRate         = srcConfig.sample_rate;
 
   omx_err = m_omx_mixer.SetParameter(OMX_IndexParamAudioPcm, &m_pcm_input);
   if (omx_err != OMX_ErrorNone)
@@ -323,8 +325,8 @@ bool CActiveAEResamplePi::Init(uint64_t dst_chan_layout, int dst_channels, int d
     flags |= (32 - m_dst_bits - m_dst_dither_bits) << 8;
 
   m_pcm_output.ePCMMode              = flags == 0 ? OMX_AUDIO_PCMModeLinear : (OMX_AUDIO_PCMMODETYPE)flags;
-  m_pcm_output.nChannels             = dst_channels;
-  m_pcm_output.nSamplingRate         = dst_rate;
+  m_pcm_output.nChannels             = dstConfig.channels;
+  m_pcm_output.nSamplingRate         = dstConfig.sample_rate;
 
   omx_err = m_omx_mixer.SetParameter(OMX_IndexParamAudioPcm, &m_pcm_output);
   if (omx_err != OMX_ErrorNone)

@@ -10,6 +10,7 @@
 
 #include "cores/AudioEngine/Utils/AEAudioFormat.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
+#include <cmath>
 #include <deque>
 #include <memory>
 
@@ -20,16 +21,6 @@ extern "C" {
 
 namespace ActiveAE
 {
-
-struct SampleConfig
-{
-  AVSampleFormat fmt;
-  uint64_t channel_layout;
-  int channels;
-  int sample_rate;
-  int bits_per_sample;
-  int dither_bits;
-};
 
 /**
  * the variables here follow ffmpeg naming
@@ -58,11 +49,12 @@ public:
   ~CSampleBuffer();
   CSampleBuffer *Acquire();
   void Return();
-  CSoundPacket *pkt;
-  CActiveAEBufferPool *pool;
+  CSoundPacket *pkt = nullptr;
+  CActiveAEBufferPool *pool = nullptr;
   int64_t timestamp;
-  int pkt_start_offset;
-  int refCount;
+  int pkt_start_offset = 0;
+  int refCount = 0;
+  double centerMixLevel;
 };
 
 class CActiveAEBufferPool
@@ -105,19 +97,20 @@ protected:
   void ChangeResampler();
 
   uint8_t *m_planes[16];
-  bool m_empty;
-  bool m_drain;
-  int64_t m_lastSamplePts;
-  bool m_remap;
-  CSampleBuffer *m_procSample;
-  IAEResample *m_resampler;
-  double m_resampleRatio;
-  bool m_fillPackets;
-  bool m_normalize;
-  bool m_changeResampler;
-  bool m_forceResampler;
+  bool m_empty = true;
+  bool m_drain = false;
+  int64_t m_lastSamplePts = 0;
+  bool m_remap = false;
+  CSampleBuffer *m_procSample = nullptr;
+  IAEResample *m_resampler = nullptr;
+  double m_resampleRatio = 1.0f;
+  double m_centerMixLevel = M_SQRT1_2;
+  bool m_fillPackets = false;
+  bool m_normalize = true;
+  bool m_changeResampler = false;
+  bool m_forceResampler = false;
   AEQuality m_resampleQuality;
-  bool m_stereoUpmix;
+  bool m_stereoUpmix = false;
 };
 
 class CActiveAEFilter;

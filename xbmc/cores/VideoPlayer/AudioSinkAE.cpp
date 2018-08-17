@@ -124,8 +124,17 @@ unsigned int CAudioSinkAE::AddPackets(const DVDAudioFrame &audioframe)
   unsigned int offset = audioframe.framesOut;
   do
   {
-    double pts = (offset == 0) ? audioframe.pts / DVD_TIME_BASE * 1000 : 0.0;
-    unsigned int copied = m_pAudioStream->AddData(audioframe.data, offset, frames, pts);
+    IAEStream::ExtData ext;
+    if (offset == 0)
+    {
+      ext.pts = audioframe.pts / DVD_TIME_BASE * 1000;
+    }
+    if (audioframe.hasDownmix)
+    {
+      ext.hasDownmix = true;
+      ext.centerMixLevel = audioframe.centerMixLevel;
+    }
+    unsigned int copied = m_pAudioStream->AddData(audioframe.data, offset, frames, &ext);
     offset += copied;
     frames -= copied;
     if (frames <= 0)

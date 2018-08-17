@@ -44,6 +44,8 @@ typedef struct stDVDAudioFrame
   enum AVAudioServiceType audio_service_type;
   enum AVMatrixEncoding matrix_encoding;
   int profile;
+  bool hasDownmix;
+  double centerMixLevel;
 } DVDAudioFrame;
 
 class CDVDAudioCodec

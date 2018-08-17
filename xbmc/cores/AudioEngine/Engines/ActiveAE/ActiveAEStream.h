@@ -140,7 +140,7 @@ protected:
 
 public:
   unsigned int GetSpace() override;
-  unsigned int AddData(const uint8_t* const *data, unsigned int offset, unsigned int frames, double pts = 0.0) override;
+  unsigned int AddData(const uint8_t* const *data, unsigned int offset, unsigned int frames, ExtData *extData) override;
   double GetDelay() override;
   CAESyncInfo GetSyncInfo() override;
   bool IsBuffering() override;

@@ -29,20 +29,21 @@ CActiveAEResampleFFMPEG::~CActiveAEResampleFFMPEG()
   swr_free(&m_pContext);
 }
 
-bool CActiveAEResampleFFMPEG::Init(uint64_t dst_chan_layout, int dst_channels, int dst_rate, AVSampleFormat dst_fmt, int dst_bits, int dst_dither, uint64_t src_chan_layout, int src_channels, int src_rate, AVSampleFormat src_fmt, int src_bits, int src_dither, bool upmix, bool normalize, CAEChannelInfo *remapLayout, AEQuality quality, bool force_resample)
+bool CActiveAEResampleFFMPEG::Init(SampleConfig dstConfig, SampleConfig srcConfig, bool upmix, bool normalize, double centerMix,
+                                   CAEChannelInfo *remapLayout, AEQuality quality, bool force_resample)
 {
-  m_dst_chan_layout = dst_chan_layout;
-  m_dst_channels = dst_channels;
-  m_dst_rate = dst_rate;
-  m_dst_fmt = dst_fmt;
-  m_dst_bits = dst_bits;
-  m_dst_dither_bits = dst_dither;
-  m_src_chan_layout = src_chan_layout;
-  m_src_channels = src_channels;
-  m_src_rate = src_rate;
-  m_src_fmt = src_fmt;
-  m_src_bits = src_bits;
-  m_src_dither_bits = src_dither;
+  m_dst_chan_layout = dstConfig.channel_layout;
+  m_dst_channels = dstConfig.channels;
+  m_dst_rate = dstConfig.sample_rate;
+  m_dst_fmt = dstConfig.fmt;
+  m_dst_bits = dstConfig.bits_per_sample;
+  m_dst_dither_bits = dstConfig.dither_bits;
+  m_src_chan_layout = srcConfig.channel_layout;
+  m_src_channels = srcConfig.channels;
+  m_src_rate = srcConfig.sample_rate;
+  m_src_fmt = srcConfig.fmt;
+  m_src_bits = srcConfig.bits_per_sample;
+  m_src_dither_bits = srcConfig.dither_bits;
 
   if (m_src_rate != m_dst_rate)
     m_doesResample = true;
@@ -56,7 +57,7 @@ bool CActiveAEResampleFFMPEG::Init(uint64_t dst_chan_layout, int dst_channels, i
                                                         m_src_chan_layout, m_src_fmt, m_src_rate,
                                                         0, NULL);
 
-  if(!m_pContext)
+  if (!m_pContext)
   {
     CLog::Log(LOGERROR, "CActiveAEResampleFFMPEG::Init - create context failed");
     return false;
@@ -92,6 +93,8 @@ bool CActiveAEResampleFFMPEG::Init(uint64_t dst_chan_layout, int dst_channels, i
   {
      av_opt_set_double(m_pContext, "rematrix_maxval", 1.0, 0);
   }
+
+  av_opt_set_double(m_pContext, "center_mix_level", centerMix, 0);
 
   if (remapLayout)
   {
