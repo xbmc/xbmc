@@ -72,7 +72,7 @@ IRenderBuffer *CBaseRenderBufferPool::GetBuffer(unsigned int width, unsigned int
 
     for (auto it = m_free.begin(); it != m_free.end(); ++it)
     {
-      std::unique_ptr<IRenderBuffer> &buffer = m_free.front();
+      std::unique_ptr<IRenderBuffer> &buffer = *it;
 
       // Only return buffers of the same dimensions
       const unsigned int bufferWidth = buffer->GetWidth();
