@@ -153,7 +153,7 @@ cmake ../kodi -DCMAKE_INSTALL_PREFIX=/usr/local -DCORE_PLATFORM_NAME=gbm -DGBM_R
 ```
 cmake --build . -- VERBOSE=1 -j$(getconf _NPROCESSORS_ONLN)
 ```
-**TIP:** By adding `-j<number>` to the make command, you can choose how many concurrent jobs will be used and expedite the build process. It is recommended to use `-j$(getconf _NPROCESSORS_ONLN)` to compile on all available processor cores. The build machine can also be configured to do this automatically by adding `export MAKEFLAGS="-j(getconf _NPROCESSORS_ONLN)"` to your shell config (e.g. `~/.bashrc`).
+**TIP:** By adding `-j<number>` to the make command, you can choose how many concurrent jobs will be used and expedite the build process. It is recommended to use `-j$(getconf _NPROCESSORS_ONLN)` to compile on all available processor cores. The build machine can also be configured to do this automatically by adding `export MAKEFLAGS="-j$(getconf _NPROCESSORS_ONLN)"` to your shell config (e.g. `~/.bashrc`).
 
 After the build process completes successfully you can test your shiny new Kodi build while in the build directory:
 ```

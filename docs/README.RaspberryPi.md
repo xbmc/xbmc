@@ -107,7 +107,7 @@ Build tools and dependencies:
 make -j$(getconf _NPROCESSORS_ONLN)
 ```
 
-**TIP:** By adding `-j<number>` to the make command, you can choose how many concurrent jobs will be used and expedite the build process. It is recommended to use `-j$(getconf _NPROCESSORS_ONLN)` to compile on all available processor cores. The build machine can also be configured to do this automatically by adding `export MAKEFLAGS="-j(getconf _NPROCESSORS_ONLN)"` to your shell config (e.g. `~/.bashrc`).
+**TIP:** By adding `-j<number>` to the make command, you can choose how many concurrent jobs will be used and expedite the build process. It is recommended to use `-j$(getconf _NPROCESSORS_ONLN)` to compile on all available processor cores. The build machine can also be configured to do this automatically by adding `export MAKEFLAGS="-j$(getconf _NPROCESSORS_ONLN)"` to your shell config (e.g. `~/.bashrc`).
 
 **[back to top](#table-of-contents)** | **[back to section top](#4-build-tools-and-dependencies)**
 
