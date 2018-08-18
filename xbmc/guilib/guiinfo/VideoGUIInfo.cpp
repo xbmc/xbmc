@@ -606,7 +606,7 @@ bool CVideoGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contextW
       // LISTITEM_*
       /////////////////////////////////////////////////////////////////////////////////////////////
       case LISTITEM_IS_RESUMABLE:
-        value = tag->GetResumePoint().timeInSeconds > 0;
+        value = !item->IsRealtime() && !item->IsDeleted() && tag->GetResumePoint().timeInSeconds > 0;
         return true;
       case LISTITEM_IS_COLLECTION:
         value = tag->m_type == MediaTypeVideoCollection;

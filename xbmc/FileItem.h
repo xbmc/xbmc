@@ -187,6 +187,12 @@ public:
 
   bool IsGame() const;
   bool IsCUESheet() const;
+  
+  /*!
+   \brief Check if the item contains a realtime stream
+   \return true if item is a realtime stream, false otherwise.
+   */
+  bool IsRealtime() const;
   bool IsInternetStream(const bool bStrictCheck = false) const;
   bool IsPlayList() const;
   bool IsSmartPlayList() const;

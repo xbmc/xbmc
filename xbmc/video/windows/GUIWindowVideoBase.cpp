@@ -548,8 +548,8 @@ void CGUIWindowVideoBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
 
 void CGUIWindowVideoBase::GetResumeItemOffset(const CFileItem *item, int64_t& startoffset, int& partNumber)
 {
-  // do not resume Live TV and 'deleted' items (e.g. trashed pvr recordings)
-  if (item->IsLiveTV() || item->IsDeleted())
+  // do not resume Live TV, realtime stream or 'deleted' items (e.g. trashed pvr recordings)
+  if (item->IsLiveTV() || item->IsRealtime() || item->IsDeleted())
     return;
 
   startoffset = 0;
