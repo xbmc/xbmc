@@ -79,7 +79,7 @@ private:
 };
 
 /// \brief DateTime class, which uses FILETIME as it's base.
-class CDateTime : public IArchivable
+class CDateTime final : public IArchivable
 {
 public:
   CDateTime();
