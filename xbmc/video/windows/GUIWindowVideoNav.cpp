@@ -1040,7 +1040,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_EDIT:
     {
       CONTEXT_BUTTON ret = (CONTEXT_BUTTON)CGUIDialogVideoInfo::ManageVideoItem(item);
-      if (ret >= 0)
+      if (ret != CONTEXT_BUTTON_CANCELLED)
       {
         Refresh(true);
         if (ret == CONTEXT_BUTTON_DELETE)
