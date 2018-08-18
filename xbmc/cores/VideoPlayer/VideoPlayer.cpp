@@ -4751,9 +4751,6 @@ void CVideoPlayer::UpdatePlayState(double timeout)
     state.timeMax = (double) m_Edl.RemoveCutTime(llrint(state.timeMax));
   }
 
-  if (state.timeMax <= 0)
-    state.canseek = false;
-
   if (m_caching > CACHESTATE_DONE && m_caching < CACHESTATE_PLAY)
     state.caching = true;
   else
@@ -4784,6 +4781,18 @@ void CVideoPlayer::UpdatePlayState(double timeout)
     state.cache_bytes = 0;
 
   state.timestamp = m_clock.GetAbsoluteClock();
+
+  if (state.timeMax <= 0)
+  {
+    state.timeMax = state.time;
+    state.timeMin = state.time;
+  }
+  if (state.timeMin == state.timeMax)
+  {
+    state.canseek = false;
+    state.canpause = false;
+    state.cantempo = false;
+  }
 
   m_processInfo->SetPlayTimes(state.startTime, state.time, state.timeMin, state.timeMax);
 

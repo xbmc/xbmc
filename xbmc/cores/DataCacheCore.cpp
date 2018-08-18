@@ -340,6 +340,15 @@ void CDataCacheCore::SetPlayTimes(time_t start, int64_t current, int64_t min, in
   m_timeInfo.m_timeMax = max;
 }
 
+void CDataCacheCore::GetPlayTimes(time_t &start, int64_t &current, int64_t &min, int64_t &max)
+{
+  CSingleLock lock(m_stateSection);
+  start = m_timeInfo.m_startTime;
+  current = m_timeInfo.m_time;
+  min = m_timeInfo.m_timeMin;
+  max = m_timeInfo.m_timeMax;
+}
+
 time_t CDataCacheCore::GetStartTime()
 {
   CSingleLock lock(m_stateSection);

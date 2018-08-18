@@ -1013,28 +1013,6 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
         if (pPacket->dts != DVD_NOPTS_VALUE && (pPacket->dts > m_currentPts || m_currentPts == DVD_NOPTS_VALUE))
           m_currentPts = pPacket->dts;
 
-
-        // check if stream has passed full duration, needed for live streams
-        bool bAllowDurationExt = (stream->codecpar &&
-                                  (stream->codecpar->codec_type == AVMEDIA_TYPE_VIDEO ||
-                                   stream->codecpar->codec_type == AVMEDIA_TYPE_AUDIO));
-        if(bAllowDurationExt && m_pkt.pkt.dts != (int64_t)AV_NOPTS_VALUE)
-        {
-          int64_t duration;
-          duration = m_pkt.pkt.dts;
-          if(stream->start_time != (int64_t)AV_NOPTS_VALUE)
-            duration -= stream->start_time;
-
-          if(duration > stream->duration)
-          {
-            stream->duration = duration;
-            duration = av_rescale_rnd(stream->duration, (int64_t)stream->time_base.num * AV_TIME_BASE, stream->time_base.den, AV_ROUND_NEAR_INF);
-            if ((m_pFormatContext->duration == (int64_t)AV_NOPTS_VALUE)
-                ||  (m_pFormatContext->duration != (int64_t)AV_NOPTS_VALUE && duration > m_pFormatContext->duration))
-              m_pFormatContext->duration = duration;
-          }
-        }
-
         // store internal id until we know the continuous id presented to player
         // the stream might not have been created yet
         pPacket->iStreamId = m_pkt.pkt.stream_index;
@@ -1231,7 +1209,8 @@ int CDVDDemuxFFmpeg::GetStreamLength()
   if (!m_pFormatContext)
     return 0;
 
-  if (m_pFormatContext->duration < 0)
+  if (m_pFormatContext->duration < 0 ||
+      m_pFormatContext->duration == AV_NOPTS_VALUE)
     return 0;
 
   return (int)(m_pFormatContext->duration / (AV_TIME_BASE / 1000));
