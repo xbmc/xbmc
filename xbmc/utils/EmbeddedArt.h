@@ -19,6 +19,7 @@ class EmbeddedArtInfo : public IArchivable
 public:
   EmbeddedArtInfo() = default;
   EmbeddedArtInfo(size_t size, const std::string &mime, const std::string& type = "");
+  virtual ~EmbeddedArtInfo() = default;
 
   // implementation of IArchivable
   void Archive(CArchive& ar) override;
