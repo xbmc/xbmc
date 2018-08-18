@@ -260,11 +260,11 @@ bool CActiveAEBufferPoolResample::ResampleBuffers(int64_t timestamp)
       if (hasInput && !skipInput && !m_changeResampler)
       {
         in = m_inputSamples.front();
-        if (in->centerMixLevel != m_centerMixLevel &&
-            in->pkt->nb_samples > 0)
+        if (in->centerMixLevel != m_centerMixLevel)
         {
           m_centerMixLevel = in->centerMixLevel;
           m_changeResampler = true;
+          in = nullptr;
         }
         else
           m_inputSamples.pop_front();
