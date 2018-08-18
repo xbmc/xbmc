@@ -191,7 +191,8 @@
         "type": "object",
         "properties": {
           "playerid": { "$ref": "Player.Id", "required": true },
-          "type": { "$ref": "Player.Type", "required": true }
+          "type": { "$ref": "Player.Type", "required": true },
+          "playertype": { "type": "string", "enum": [ "internal", "external", "remote" ], "required": true }
         }
       }
     }

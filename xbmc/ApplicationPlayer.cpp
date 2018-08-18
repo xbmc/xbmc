@@ -955,6 +955,17 @@ bool CApplicationPlayer::IsExternalPlaying()
   return false;
 }
 
+bool CApplicationPlayer::IsRemotePlaying()
+{
+  std::shared_ptr<IPlayer> player = GetInternal();
+  if (player)
+  {
+    if (player->IsPlaying() && player->m_type == "remote")
+      return true;
+  }
+  return false;
+}
+
 CVideoSettings CApplicationPlayer::GetVideoSettings()
 {
   std::shared_ptr<IPlayer> player = GetInternal();
