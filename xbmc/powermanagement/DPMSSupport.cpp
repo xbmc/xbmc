@@ -22,7 +22,7 @@ static const char* const MODE_NAMES[DPMSSupport::NUM_MODES] =
 
 bool DPMSSupport::CheckValidMode(PowerSavingMode mode)
 {
-  if (mode < 0 || mode > NUM_MODES)
+  if (mode > NUM_MODES)
   {
     CLog::Log(LOGERROR, "Invalid power-saving mode %d", mode);
     return false;
