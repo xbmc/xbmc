@@ -68,6 +68,7 @@ public:
   void SetVideoRender(bool video);
   bool GetVideoRender();
   void SetPlayTimes(time_t start, int64_t current, int64_t min, int64_t max);
+  void GetPlayTimes(time_t &start, int64_t &current, int64_t &min, int64_t &max);
 
   /*!
    * \brief Get the start time
