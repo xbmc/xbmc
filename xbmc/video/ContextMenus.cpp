@@ -40,7 +40,7 @@ bool CVideoInfo::Execute(const CFileItemPtr& item) const
 bool CRemoveResumePoint::IsVisible(const CFileItem& itemIn) const
 {
   CFileItem item(itemIn.GetItemToPlay());
-  if (item.IsDeleted()) // e.g. trashed pvr recording
+  if (item.IsDeleted() || item.IsRealtime()) // e.g. trashed pvr recording or realtime stream
     return false;
 
   return CGUIWindowVideoBase::HasResumeItemOffset(&item);
@@ -112,7 +112,7 @@ std::string CResume::GetLabel(const CFileItem& item) const
 bool CResume::IsVisible(const CFileItem& itemIn) const
 {
   CFileItem item(itemIn.GetItemToPlay());
-  if (item.IsDeleted()) // e.g. trashed pvr recording
+  if (item.IsDeleted() || item.IsRealtime()) // e.g. trashed pvr recording or real time stream
     return false;
 
   return CGUIWindowVideoBase::HasResumeItemOffset(&item);

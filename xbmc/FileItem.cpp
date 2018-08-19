@@ -990,6 +990,11 @@ bool CFileItem::IsInternetStream(const bool bStrictCheck /* = false */) const
   return URIUtils::IsInternetStream(m_strPath, bStrictCheck);
 }
 
+bool CFileItem::IsRealtime() const
+{
+  return HasProperty("isrealtimestream") && GetProperty("isrealtimestream").asBoolean(false);
+}
+
 bool CFileItem::IsFileFolder(EFileFolderType types) const
 {
   EFileFolderType always_type = EFILEFOLDER_TYPE_ALWAYS;
