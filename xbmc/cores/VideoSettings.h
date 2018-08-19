@@ -113,6 +113,7 @@ public:
   int m_VideoStream;
   int m_ToneMapMethod = VS_TONEMAPMETHOD_REINHARD;
   float m_ToneMapParam = 1.0;
+  int m_Orientation = 0;
 };
 
 class CCriticalSection;

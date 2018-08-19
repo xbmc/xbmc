@@ -837,9 +837,13 @@ CVideoPlayerVideo::EOutputState CVideoPlayerVideo::OutputPicture(const VideoPict
       config_framerate = 59.94;
   }
 
+  int sorient = m_processInfo.GetVideoSettings().m_Orientation;
+  int orientation = sorient != 0 ? (sorient + m_hints.orientation) % 360
+                                 : m_hints.orientation;
+
   if (!m_renderManager.Configure(*pPicture,
                                 static_cast<float>(config_framerate),
-                                m_hints.orientation,
+                                orientation,
                                 m_pVideoCodec->GetAllowedReferences()))
   {
     CLog::Log(LOGERROR, "%s - failed to configure renderer", __FUNCTION__);

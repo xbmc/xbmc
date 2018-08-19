@@ -3167,7 +3167,11 @@ msgctxt "#686"
 msgid "Verbose logging of [B]EPG[/B] component"
 msgstr ""
 
-#empty strings from id 687 to 699
+msgctxt "#687"
+msgid "From metadata"
+msgstr ""
+
+#empty strings from id 688 to 699
 
 #: xbmc/music/infoscanner/MusicInfoScanner.cpp
 #: xbmc/music/MusicDatabase.cpp
@@ -14186,6 +14190,7 @@ msgctxt "#21842"
 msgid "GPS altitude"
 msgstr ""
 
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#21843"
 msgid "Orientation"
 msgstr ""
@@ -17404,18 +17409,21 @@ msgstr ""
 
 #. Label of the thumbnail for when the video is rotated to the right
 #: xbmc/games/dialogs/osd/DialogGameVideoRotation.cpp
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#35229"
 msgid "90°"
 msgstr ""
 
 #. Label of the thumbnail for when the video is rotated upside down
 #: xbmc/games/dialogs/osd/DialogGameVideoRotation.cpp
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#35230"
 msgid "180°"
 msgstr ""
 
 #. Label of the thumbnail for when the video is rotated to the left
 #: xbmc/games/dialogs/osd/DialogGameVideoRotation.cpp
+#: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#35231"
 msgid "270°"
 msgstr ""
