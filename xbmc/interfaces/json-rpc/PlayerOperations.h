@@ -23,7 +23,9 @@ namespace JSONRPC
     None = 0,
     Video = 0x1,
     Audio = 0x2,
-    Picture = 0x4
+    Picture = 0x4,
+    External = 0x8,
+    Remote = 0x10
   };
 
   static const int PlayerImplicit = (Video | Audio | Picture);

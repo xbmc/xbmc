@@ -65,6 +65,7 @@ public:
   void RenderCaptureRelease(unsigned int captureId);
   bool RenderCaptureGetPixels(unsigned int captureId, unsigned int millis, uint8_t *buffer, unsigned int size);
   bool IsExternalPlaying();
+  bool IsRemotePlaying();
 
   // proxy calls
   void AddSubtitle(const std::string& strSubPath);
