@@ -2931,8 +2931,6 @@ bool CActiveAE::CompareFormat(AEAudioFormat &lhs, AEAudioFormat &rhs)
  * later when the engine is idle it will convert the sound to sink format
  */
 
-#define SOUNDBUFFER_SIZE 20480
-
 IAESound *CActiveAE::MakeSound(const std::string& file)
 {
   AVFormatContext *fmt_ctx = NULL;
@@ -2951,16 +2949,23 @@ IAESound *CActiveAE::MakeSound(const std::string& file)
   }
   int fileSize = sound->GetFileSize();
 
+  int bufferSize = 4096;
+  int blockSize = sound->GetChunkSize();
+  if (blockSize > 1)
+    bufferSize = blockSize;
+
   fmt_ctx = avformat_alloc_context();
-  unsigned char* buffer = (unsigned char*)av_malloc(SOUNDBUFFER_SIZE+AV_INPUT_BUFFER_PADDING_SIZE);
-  io_ctx = avio_alloc_context(buffer, SOUNDBUFFER_SIZE, 0,
-                                            sound, CActiveAESound::Read, NULL, CActiveAESound::Seek);
-  io_ctx->max_packet_size = sound->GetChunkSize();
-  if(io_ctx->max_packet_size)
-    io_ctx->max_packet_size *= SOUNDBUFFER_SIZE / io_ctx->max_packet_size;
+  unsigned char* buffer = (unsigned char*)av_malloc(bufferSize);
+  io_ctx = avio_alloc_context(buffer, bufferSize, 0,
+                              sound, CActiveAESound::Read, NULL, CActiveAESound::Seek);
+
+  io_ctx->max_packet_size = bufferSize;
 
   if(!sound->IsSeekPossible())
+  {
     io_ctx->seekable = 0;
+    io_ctx->max_packet_size = 0;
+  }
 
   fmt_ctx->pb = io_ctx;
 
