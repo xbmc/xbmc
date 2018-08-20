@@ -17,9 +17,6 @@ using namespace KODI;
 
 bool CWinSystemGbmEGLContext::InitWindowSystemEGL(EGLint renderableType, EGLint apiType)
 {
-  VIDEOPLAYER::CRendererFactory::ClearRenderer();
-  CDVDFactoryCodec::ClearHWAccels();
-
   if (!CWinSystemGbm::InitWindowSystem())
   {
     return false;
