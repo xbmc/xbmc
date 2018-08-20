@@ -420,6 +420,8 @@ bool CVideoPlayerAudio::ProcessDecoderOutput(DVDAudioFrame &audioframe)
 {
   if (audioframe.nb_frames <= audioframe.framesOut)
   {
+    audioframe.hasDownmix = false;
+
     m_pAudioCodec->GetData(audioframe);
 
     if (audioframe.nb_frames == 0)
@@ -485,6 +487,12 @@ bool CVideoPlayerAudio::ProcessDecoderOutput(DVDAudioFrame &audioframe)
     }
 
     SetSyncType(audioframe.passthrough);
+
+    // downmix
+    double clev = audioframe.hasDownmix ? audioframe.centerMixLevel : M_SQRT1_2;
+    double curDB = 20 * log10(clev);
+    audioframe.centerMixLevel = pow(10, (curDB + m_processInfo.GetVideoSettings().m_CenterMixLevel) / 20);
+    audioframe.hasDownmix = true;
   }
 
 

@@ -21489,3 +21489,15 @@ msgstr ""
 msgctxt "#39111"
 msgid "original"
 msgstr ""
+
+#. Used for a setting which allows centre channel (voice/speech) volume to be adjusted when downmixing.
+#: xbmc/video/dialogs/GUIDialogAudioSettings.cpp
+msgctxt "#39112"
+msgid "Downmix: Center Mix Level"
+msgstr ""
+
+#. Help text for 39112
+#: xbmc/video/dialogs/GUIDialogAudioSettings.cpp
+msgctxt "#39113"
+msgid "Center Mix Level in dB relative to metadata or default (-3 dB)"
+msgstr ""
