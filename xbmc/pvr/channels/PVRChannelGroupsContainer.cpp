@@ -172,14 +172,15 @@ bool CPVRChannelGroupsContainer::GetDirectory(const std::string& strPath, CFileI
     URIUtils::RemoveSlashAtEnd(strGroupName);
 
     CPVRChannelGroupPtr group;
-    if (strGroupName == "*") // all channels
+    bool bShowHiddenChannels = StringUtils::EndsWithNoCase(fileName, ".hidden");
+    if (strGroupName == "*" || bShowHiddenChannels) // all channels
       group = GetGroupAllTV();
     else
       group = GetTV()->GetByName(strGroupName);
 
     if (group)
     {
-      group->GetMembers(results, !StringUtils::EndsWithNoCase(fileName, ".hidden"));
+      group->GetMembers(results, !bShowHiddenChannels);
     }
     else
     {
@@ -196,14 +197,15 @@ bool CPVRChannelGroupsContainer::GetDirectory(const std::string& strPath, CFileI
     URIUtils::RemoveSlashAtEnd(strGroupName);
 
     CPVRChannelGroupPtr group;
-    if (strGroupName == "*") // all channels
+    bool bShowHiddenChannels = StringUtils::EndsWithNoCase(fileName, ".hidden");
+    if (strGroupName == "*" || bShowHiddenChannels) // all channels
       group = GetGroupAllRadio();
     else
       group = GetRadio()->GetByName(strGroupName);
 
     if (group)
     {
-      group->GetMembers(results, !StringUtils::EndsWithNoCase(fileName, ".hidden"));
+      group->GetMembers(results, !bShowHiddenChannels);
     }
     else
     {
