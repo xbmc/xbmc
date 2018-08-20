@@ -11,7 +11,7 @@
     <a href="https://kodi.tv/addons">add-ons</a>
   </strong>
 </p>
-
+hi
 <p align="center">
   <a href="LICENSE.md"><img alt="License" src="https://img.shields.io/badge/license-GPLv2-blue.svg?style=flat-square"></a>
   <a href="http://hits.dwyl.io/xbmc/xbmc"><img alt="HitCount" src="http://hits.dwyl.io/xbmc/xbmc.svg"></a>
