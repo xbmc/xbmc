@@ -65,6 +65,7 @@ bool CVideoSettings::operator!=(const CVideoSettings &right) const
   if (m_ToneMapMethod != right.m_ToneMapMethod) return true;
   if (m_ToneMapParam != right.m_ToneMapParam) return true;
   if (m_Orientation != right.m_Orientation) return true;
+  if (m_CenterMixLevel != right.m_CenterMixLevel) return true;
   return false;
 }
 

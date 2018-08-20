@@ -41,6 +41,7 @@
 
 #define SETTING_AUDIO_VOLUME                   "audio.volume"
 #define SETTING_AUDIO_VOLUME_AMPLIFICATION     "audio.volumeamplification"
+#define SETTING_AUDIO_CENTERMIXLEVEL           "audio.centermixlevel"
 #define SETTING_AUDIO_DELAY                    "audio.delay"
 #define SETTING_AUDIO_STREAM                   "audio.stream"
 #define SETTING_AUDIO_PASSTHROUGH              "audio.digitalanalog"
@@ -109,6 +110,12 @@ void CGUIDialogAudioSettings::OnSettingChanged(std::shared_ptr<const CSetting> s
   {
     float value = static_cast<float>(std::static_pointer_cast<const CSettingNumber>(setting)->GetValue());
     g_application.GetAppPlayer().SetDynamicRangeCompression((long)(value * 100));
+  }
+  else if (settingId == SETTING_AUDIO_CENTERMIXLEVEL)
+  {
+    CVideoSettings vs = g_application.GetAppPlayer().GetVideoSettings();
+    vs.m_CenterMixLevel = std::static_pointer_cast<const CSettingInt>(setting)->GetValue();
+    g_application.GetAppPlayer().SetVideoSettings(vs);
   }
   else if (settingId == SETTING_AUDIO_DELAY)
   {
@@ -240,6 +247,13 @@ void CGUIDialogAudioSettings::InitializeSettings()
   {
     std::shared_ptr<CSettingNumber> settingAudioVolumeAmplification = AddSlider(groupAudio, SETTING_AUDIO_VOLUME_AMPLIFICATION, 660, SettingLevel::Basic, videoSettings.m_VolumeAmplification, 14054, VOLUME_DRC_MINIMUM * 0.01f, (VOLUME_DRC_MAXIMUM - VOLUME_DRC_MINIMUM) / 6000.0f, VOLUME_DRC_MAXIMUM * 0.01f);
     settingAudioVolumeAmplification->SetDependencies(depsAudioOutputPassthroughDisabled);
+  }
+
+  // downmix: center mix level
+  {
+    AddSlider(groupAudio, SETTING_AUDIO_CENTERMIXLEVEL, 39112, SettingLevel::Basic,
+              videoSettings.m_CenterMixLevel, 14050, -10, 1, 30,
+              -1, false, false, true, 39113);
   }
 
   // audio delay setting
