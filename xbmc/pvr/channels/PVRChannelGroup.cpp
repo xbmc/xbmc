@@ -489,20 +489,28 @@ PVR_CHANNEL_GROUP_SORTED_MEMBERS CPVRChannelGroup::GetMembers(void) const
   return m_sortedMembers;
 }
 
-int CPVRChannelGroup::GetMembers(CFileItemList &results, bool bGroupMembers /* = true */) const
+int CPVRChannelGroup::GetMembers(CFileItemList &results, Include eFilter /* = Include::ONLY_VISIBLE */) const
 {
-  const CPVRChannelGroup* channels = bGroupMembers ? this : CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAll(m_bRadio).get();
   int iOrigSize = results.Size();
+  CSingleLock lock(m_critSection);
 
-  CSingleLock lock(channels->m_critSection);
-
-  for (PVR_CHANNEL_GROUP_SORTED_MEMBERS::const_iterator it = channels->m_sortedMembers.begin(); it != channels->m_sortedMembers.end(); ++it)
+  for (const auto& member : m_sortedMembers)
   {
-    if (bGroupMembers || !IsGroupMember((*it).channel))
+    switch (eFilter)
     {
-      CFileItemPtr pFileItem(new CFileItem((*it).channel));
-      results.Add(pFileItem);
+      case Include::ONLY_HIDDEN:
+        if (!member.channel->IsHidden())
+          continue;
+        break;
+      case Include::ONLY_VISIBLE:
+        if (member.channel->IsHidden())
+          continue;
+       break;
+      default:
+        break;
     }
+
+    results.Add(std::make_shared<CFileItem>(member.channel));
   }
 
   return results.Size() - iOrigSize;

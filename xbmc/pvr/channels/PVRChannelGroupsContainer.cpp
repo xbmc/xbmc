@@ -180,7 +180,7 @@ bool CPVRChannelGroupsContainer::GetDirectory(const std::string& strPath, CFileI
 
     if (group)
     {
-      group->GetMembers(results, !bShowHiddenChannels);
+      group->GetMembers(results, bShowHiddenChannels ? CPVRChannelGroup::Include::ONLY_HIDDEN : CPVRChannelGroup::Include::ONLY_VISIBLE);
     }
     else
     {
@@ -205,7 +205,7 @@ bool CPVRChannelGroupsContainer::GetDirectory(const std::string& strPath, CFileI
 
     if (group)
     {
-      group->GetMembers(results, !bShowHiddenChannels);
+      group->GetMembers(results, bShowHiddenChannels ? CPVRChannelGroup::Include::ONLY_HIDDEN : CPVRChannelGroup::Include::ONLY_VISIBLE);
     }
     else
     {
