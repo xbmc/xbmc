@@ -314,13 +314,20 @@ namespace PVR
      */
     PVR_CHANNEL_GROUP_SORTED_MEMBERS GetMembers(void) const;
 
+    enum class Include
+    {
+      ALL,
+      ONLY_HIDDEN,
+      ONLY_VISIBLE
+    };
+
     /*!
-     * @brief Get the list of channels in a group.
+     * @brief Get a filtered list of channels in this group.
      * @param results The file list to store the results in.
-     * @param bGroupMembers If true, get the channels that are in this group. Get the channels that are not in this group otherwise.
+     * @param eFilter A filter to apply to the list.
      * @return The amount of channels that were added to the list.
      */
-    virtual int GetMembers(CFileItemList &results, bool bGroupMembers = true) const;
+    int GetMembers(CFileItemList &results, Include eFilter = Include::ONLY_VISIBLE) const;
 
     /*!
      * @brief Get the list of channel numbers in a group.

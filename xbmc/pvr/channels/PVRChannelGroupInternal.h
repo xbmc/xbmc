@@ -58,11 +58,6 @@ namespace PVR
     bool RemoveFromGroup(const CPVRChannelPtr &channel) override;
 
     /*!
-     * @see CPVRChannelGroup::GetMembers
-     */
-    int GetMembers(CFileItemList &results, bool bGroupMembers = true) const override;
-
-    /*!
      * @brief Check whether the group name is still correct after the language setting changed.
      */
     void CheckGroupName(void);

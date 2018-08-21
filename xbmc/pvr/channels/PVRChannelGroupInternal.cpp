@@ -202,18 +202,6 @@ bool CPVRChannelGroupInternal::RemoveFromGroup(const CPVRChannelPtr &channel)
       Persist();
 }
 
-int CPVRChannelGroupInternal::GetMembers(CFileItemList &results, bool bGroupMembers /* = true */) const
-{
-  int iOrigSize = results.Size();
-  CSingleLock lock(m_critSection);
-
-  for (PVR_CHANNEL_GROUP_SORTED_MEMBERS::const_iterator it = m_sortedMembers.begin(); it != m_sortedMembers.end(); ++it)
-    if (bGroupMembers != (*it).channel->IsHidden())
-      results.Add(CFileItemPtr(new CFileItem((*it).channel)));
-
-  return results.Size() - iOrigSize;
-}
-
 int CPVRChannelGroupInternal::LoadFromDb(bool bCompress /* = false */)
 {
   const CPVRDatabasePtr database(CServiceBroker::GetPVRManager().GetTVDatabase());
