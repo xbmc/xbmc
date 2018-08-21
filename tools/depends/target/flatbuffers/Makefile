@@ -49,6 +49,7 @@ ifeq ($(PREFIX),)
 endif
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
+	cd $(PLATFORM); patch -p1 < ../../../native/flatbuffers-native/0001-Fix-compiler-warning.patch
 	mkdir -p $(BUILDDIR)
 	cd $(BUILDDIR); $(CMAKE) $(CMAKE_OPTIONS) ..
 
