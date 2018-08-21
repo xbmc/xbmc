@@ -62,7 +62,6 @@ bool CServiceManager::InitForTesting()
 
   m_databaseManager.reset(new CDatabaseManager);
 
-  m_binaryAddonManager.reset(new ADDON::CBinaryAddonManager());
   m_addonMgr.reset(new ADDON::CAddonMgr());
   if (!m_addonMgr->Init())
   {
@@ -70,6 +69,7 @@ bool CServiceManager::InitForTesting()
     return false;
   }
 
+  m_binaryAddonManager.reset(new ADDON::CBinaryAddonManager(*m_addonMgr));
   if (!m_binaryAddonManager->Init())
   {
     CLog::Log(LOGFATAL, "CServiceManager::%s: Unable to initialize CBinaryAddonManager", __FUNCTION__);
@@ -128,7 +128,6 @@ bool CServiceManager::InitStageTwo(const CAppParamParser &params)
   m_Platform.reset(CPlatform::CreateInstance());
   m_Platform->Init();
 
-  m_binaryAddonManager.reset(new ADDON::CBinaryAddonManager()); /* Need to constructed before, GetRunningInstance() of binary CAddonDll need to call them */
   m_addonMgr.reset(new ADDON::CAddonMgr());
   if (!m_addonMgr->Init())
   {
@@ -136,6 +135,7 @@ bool CServiceManager::InitStageTwo(const CAppParamParser &params)
     return false;
   }
 
+  m_binaryAddonManager.reset(new ADDON::CBinaryAddonManager(*m_addonMgr));
   if (!m_binaryAddonManager->Init())
   {
     CLog::Log(LOGFATAL, "CServiceManager::%s: Unable to initialize CBinaryAddonManager", __FUNCTION__);
@@ -144,15 +144,18 @@ bool CServiceManager::InitStageTwo(const CAppParamParser &params)
 
   m_repositoryUpdater.reset(new ADDON::CRepositoryUpdater(*m_addonMgr));
 
-  m_vfsAddonCache.reset(new ADDON::CVFSAddonCache());
+  m_vfsAddonCache.reset(new ADDON::CVFSAddonCache(*m_addonMgr,
+                                                  *m_binaryAddonManager));
   m_vfsAddonCache->Init();
 
-  m_PVRManager.reset(new PVR::CPVRManager());
+  m_binaryAddonCache.reset(new ADDON::CBinaryAddonCache());
+  m_binaryAddonCache->Init();
+
+  m_PVRManager.reset(new PVR::CPVRManager(*m_addonMgr,
+                                          *m_binaryAddonCache,
+                                          *m_network));
 
   m_dataCacheCore.reset(new CDataCacheCore());
-
-  m_binaryAddonCache.reset( new ADDON::CBinaryAddonCache());
-  m_binaryAddonCache->Init();
 
   m_favouritesService.reset(new CFavouritesService(m_profileManager->GetProfileUserDataFolder()));
 
@@ -172,11 +175,14 @@ bool CServiceManager::InitStageTwo(const CAppParamParser &params)
   m_fileExtensionProvider.reset(new CFileExtensionProvider(*m_addonMgr,
                                                            *m_binaryAddonManager));
 
-  m_powerManager.reset(new CPowerManager(*m_settings));
+  m_powerManager.reset(new CPowerManager(*m_settings,
+                                         *m_network,
+                                         *m_PVRManager));
   m_powerManager->Initialize();
   m_powerManager->SetDefaults();
 
-  m_weatherManager.reset(new CWeatherManager());
+  m_weatherManager.reset(new CWeatherManager(*m_settings,
+                                             *m_addonMgr));
 
   init_level = 2;
   return true;
@@ -229,9 +235,9 @@ void CServiceManager::DeinitStageTwo()
   m_contextMenuManager.reset();
   m_serviceAddons.reset();
   m_favouritesService.reset();
-  m_binaryAddonCache.reset();
   m_dataCacheCore.reset();
   m_PVRManager.reset();
+  m_binaryAddonCache.reset();
   m_vfsAddonCache.reset();
   m_repositoryUpdater.reset();
   m_binaryAddonManager.reset();

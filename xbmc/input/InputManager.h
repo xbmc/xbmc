@@ -30,6 +30,7 @@ class CJoystickMapper;
 class CKey;
 class CProfilesManager;
 class CTouchTranslator;
+class IInputEventSource;
 class IKeymapEnvironment;
 class IWindowKeymap;
 
@@ -85,12 +86,12 @@ public:
    */
   bool ProcessEventServer(int windowId, float frameTime);
 
-  /*! \brief decode an event from peripherals.
+  /*! \brief decode an event from an external source
    *
    * \param frameTime Time in seconds since last call
    * \return true if event is handled, false otherwise
    */
-  bool ProcessPeripherals(float frameTime);
+  bool ProcessExternalEvent(float frameTime);
 
   /*! \brief Process all inputs
    *
@@ -223,6 +224,9 @@ public:
   virtual void RegisterMouseDriverHandler(KODI::MOUSE::IMouseDriverHandler* handler);
   virtual void UnregisterMouseDriverHandler(KODI::MOUSE::IMouseDriverHandler* handler);
 
+  void RegisterExternalEvents(IInputEventSource *events);
+  void UnregisterExternalEvents(IInputEventSource *events);
+
 private:
 
   /*! \brief Process keyboard event and translate into an action
@@ -289,6 +293,8 @@ private:
   std::vector<KODI::MOUSE::IMouseDriverHandler*> m_mouseHandlers;
 
   std::unique_ptr<KODI::KEYBOARD::IKeyboardDriverHandler> m_keyboardEasterEgg;
+
+  std::vector<IInputEventSource*> m_externalEvents;
 };
 
 /// \}

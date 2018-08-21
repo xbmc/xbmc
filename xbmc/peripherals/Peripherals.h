@@ -14,6 +14,7 @@
 #include "IEventScannerCallback.h"
 #include "bus/PeripheralBus.h"
 #include "devices/Peripheral.h"
+#include "input/IInputEventSource.h"
 #include "interfaces/IAnnouncer.h"
 #include "messaging/IMessageTarget.h"
 #include "settings/lib/ISettingCallback.h"
@@ -50,7 +51,8 @@ namespace PERIPHERALS
                         public Observable,
                         public KODI::MESSAGING::IMessageTarget,
                         public IEventScannerCallback,
-                        public ANNOUNCEMENT::IAnnouncer
+                        public ANNOUNCEMENT::IAnnouncer,
+                        public IInputEventSource
   {
   public:
     explicit CPeripherals(CInputManager &inputManager,
@@ -210,14 +212,6 @@ namespace PERIPHERALS
     bool UnMute() { return ToggleMute(); } //! @todo CEC only supports toggling the mute status at this time
 
     /*!
-     * @brief Try to get a keypress from a peripheral.
-     * @param frameTime The current frametime.
-     * @param key The fetched key.
-     * @return True when a keypress was fetched, false otherwise.
-     */
-    bool GetNextKeypress(float frameTime, CKey &key);
-
-    /*!
      * @brief Register with the event scanner to control scan timing
      * @return A handle that unregisters itself when expired
      */
@@ -311,6 +305,9 @@ namespace PERIPHERALS
 
     // implementation of IAnnouncer
     void Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data) override;
+
+    // Implementation of IInputEventSource
+    bool GetNextKeypress(float frameTime, CKey &key) override;
 
     /*!
      * \brief Access the input manager passed to the constructor

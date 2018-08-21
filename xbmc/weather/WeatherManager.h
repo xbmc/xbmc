@@ -23,6 +23,13 @@
 #define WEATHER_LABEL_CURRENT_DEWP 27
 #define WEATHER_LABEL_CURRENT_HUMI 28
 
+class CSettings;
+
+namespace ADDON
+{
+  class CAddonMgr;
+}
+
 static const std::string ICON_ADDON_PATH = "resource://resource.images.weathericons.default";
 
 struct ForecastDay
@@ -81,7 +88,8 @@ class CWeatherManager
 : public CInfoLoader, public ISettingCallback
 {
 public:
-  CWeatherManager(void);
+  CWeatherManager(CSettings &settings,
+                  ADDON::CAddonMgr &addonManager);
   ~CWeatherManager(void) override;
   static bool GetSearchResults(const std::string &strSearch, std::string &strResult);
 
@@ -103,6 +111,9 @@ protected:
   void OnSettingAction(std::shared_ptr<const CSetting> setting) override;
 
 private:
+  // Construction parameters
+  CSettings &m_settings;
+  ADDON::CAddonMgr &m_addonManager;
 
   CWeatherInfo m_info;
 };

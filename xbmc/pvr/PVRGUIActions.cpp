@@ -146,8 +146,9 @@ namespace PVR
     }
   };
 
-  CPVRGUIActions::CPVRGUIActions()
-  : m_settings({
+  CPVRGUIActions::CPVRGUIActions(CNetworkBase &network)
+  : m_network(network),
+    m_settings({
       CSettings::SETTING_LOOKANDFEEL_STARTUPACTION,
       CSettings::SETTING_PVRMANAGER_PRESELECTPLAYINGCHANNEL,
       CSettings::SETTING_PVRRECORD_INSTANTRECORDTIME,
@@ -1781,7 +1782,7 @@ namespace PVR
       if (client)
       {
         const std::string hostname = client->GetBackendHostname();
-        if (!hostname.empty() && CServiceBroker::GetNetwork().IsLocalHost(hostname))
+        if (!hostname.empty() && m_network.IsLocalHost(hostname))
           return true;
       }
     }

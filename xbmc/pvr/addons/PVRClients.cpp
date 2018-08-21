@@ -10,7 +10,6 @@
 
 #include <utility>
 
-#include "ServiceBroker.h"
 #include "addons/BinaryAddonCache.h"
 #include "guilib/LocalizeStrings.h"
 #include "messaging/ApplicationMessenger.h"
@@ -37,16 +36,21 @@ namespace
 
 } // unnamed namespace
 
-CPVRClients::CPVRClients(void)
+CPVRClients::CPVRClients(CPVRManager &manager,
+                         CAddonMgr &addonManager,
+                         CBinaryAddonCache &addonCache) :
+  m_manager(manager),
+  m_addonManager(addonManager),
+  m_addonCache(addonCache)
 {
-  CServiceBroker::GetAddonMgr().RegisterAddonMgrCallback(ADDON_PVRDLL, this);
-  CServiceBroker::GetAddonMgr().Events().Subscribe(this, &CPVRClients::OnAddonEvent);
+  m_addonManager.RegisterAddonMgrCallback(ADDON_PVRDLL, this);
+  m_addonManager.Events().Subscribe(this, &CPVRClients::OnAddonEvent);
 }
 
 CPVRClients::~CPVRClients(void)
 {
-  CServiceBroker::GetAddonMgr().Events().Unsubscribe(this);
-  CServiceBroker::GetAddonMgr().UnregisterAddonMgrCallback(ADDON_PVRDLL);
+  m_addonManager.Events().Unsubscribe(this);
+  m_addonManager.UnregisterAddonMgrCallback(ADDON_PVRDLL);
 
   for (const auto &client : m_clientMap)
   {
@@ -80,7 +84,7 @@ void CPVRClients::Continue()
 void CPVRClients::UpdateAddons(const std::string &changedAddonId /*= ""*/)
 {
   VECADDONS addons;
-  CServiceBroker::GetAddonMgr().GetInstalledAddons(addons, ADDON_PVRDLL);
+  m_addonManager.GetInstalledAddons(addons, ADDON_PVRDLL);
 
   if (addons.empty())
     return;
@@ -89,7 +93,7 @@ void CPVRClients::UpdateAddons(const std::string &changedAddonId /*= ""*/)
   std::vector<std::pair<AddonPtr, bool>> addonsWithStatus;
   for (const auto &addon : addons)
   {
-    bool bEnabled = !CServiceBroker::GetAddonMgr().IsAddonDisabled(addon->ID());
+    bool bEnabled = !m_addonManager.IsAddonDisabled(addon->ID());
     addonsWithStatus.emplace_back(std::make_pair(addon, bEnabled));
 
     if (!bFoundChangedAddon && addon->ID() == changedAddonId)
@@ -144,7 +148,7 @@ void CPVRClients::UpdateAddons(const std::string &changedAddonId /*= ""*/)
 
   if (!addonsToCreate.empty() || !addonsToReCreate.empty() || !addonsToDestroy.empty())
   {
-    CServiceBroker::GetPVRManager().Stop();
+    m_manager.Stop();
 
     for (const auto& addon : addonsToCreate)
     {
@@ -155,7 +159,7 @@ void CPVRClients::UpdateAddons(const std::string &changedAddonId /*= ""*/)
         CLog::LogF(LOGERROR, "Failed to create add-on %s, status = %d", addon.first->Name().c_str(), status);
         if (status == ADDON_STATUS_PERMANENT_FAILURE)
         {
-          CServiceBroker::GetAddonMgr().DisableAddon(addon.first->ID());
+          m_addonManager.DisableAddon(addon.first->ID());
           CJobManager::GetInstance().AddJob(new CPVREventlogJob(true, true, addon.first->Name(), g_localizeStrings.Get(24070), addon.first->Icon()), nullptr);
         }
       }
@@ -186,7 +190,7 @@ void CPVRClients::UpdateAddons(const std::string &changedAddonId /*= ""*/)
       }
     }
 
-    CServiceBroker::GetPVRManager().Start();
+    m_manager.Start();
   }
 }
 
@@ -198,7 +202,7 @@ bool CPVRClients::RequestRestart(AddonPtr addon, bool bDataChanged)
 bool CPVRClients::StopClient(const AddonPtr &addon, bool bRestart)
 {
   // stop playback if needed
-  if (CServiceBroker::GetPVRManager().IsPlaying())
+  if (m_manager.IsPlaying())
     CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_STOP);
 
   CSingleLock lock(m_critSection);
@@ -365,8 +369,7 @@ PVR_ERROR CPVRClients::GetCreatedClients(CPVRClientMap &clientsReady, std::vecto
   clientsNotReady.clear();
 
   VECADDONS addons;
-  CBinaryAddonCache &addonCache = CServiceBroker::GetBinaryAddonCache();
-  addonCache.GetAddons(addons, ADDON::ADDON_PVRDLL);
+  m_addonCache.GetAddons(addons, ADDON::ADDON_PVRDLL);
 
   for (const auto &addon : addons)
   {
@@ -411,7 +414,7 @@ int CPVRClients::EnabledClientAmount(void) const
 
   for (const auto &client : clientMap)
   {
-    if (!CServiceBroker::GetAddonMgr().IsAddonDisabled(client.second->ID()))
+    if (!m_addonManager.IsAddonDisabled(client.second->ID()))
       ++iReturn;
   }
 
@@ -638,7 +641,7 @@ void CPVRClients::ConnectionStateChange(
     if (!client->GetAddonProperties())
       CLog::LogF(LOGERROR, "Error reading PVR client properties");
 
-    CServiceBroker::GetPVRManager().Start();
+    m_manager.Start();
   }
 }
 

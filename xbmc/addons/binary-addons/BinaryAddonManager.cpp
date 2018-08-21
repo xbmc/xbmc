@@ -9,17 +9,16 @@
 #include "BinaryAddonManager.h"
 #include "BinaryAddonBase.h"
 
-#include "ServiceBroker.h"
 #include "addons/AddonManager.h"
-#include "filesystem/SpecialProtocol.h"
 #include "filesystem/Directory.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 
 using namespace ADDON;
 
-CBinaryAddonManager::CBinaryAddonManager()
-  : m_tempAddonBasePath("special://temp/binary-addons")
+CBinaryAddonManager::CBinaryAddonManager(CAddonMgr &addonManager)
+  : m_addonManager(addonManager),
+    m_tempAddonBasePath("special://temp/binary-addons")
 {
 }
 
@@ -30,10 +29,10 @@ CBinaryAddonManager::~CBinaryAddonManager()
 
 bool CBinaryAddonManager::Init()
 {
-  CServiceBroker::GetAddonMgr().Events().Subscribe(this, &CBinaryAddonManager::OnEvent);
+  m_addonManager.Events().Subscribe(this, &CBinaryAddonManager::OnEvent);
 
   BINARY_ADDON_LIST binaryAddonList;
-  if (!CServiceBroker::GetAddonMgr().GetInstalledBinaryAddons(binaryAddonList))
+  if (!m_addonManager.GetInstalledBinaryAddons(binaryAddonList))
   {
     CLog::Log(LOGNOTICE, "CBinaryAddonManager::%s: No binary addons present and related manager, init not necessary", __FUNCTION__);
     return true;
@@ -51,9 +50,9 @@ void CBinaryAddonManager::DeInit()
 {
   /* If temporary directory was used from addon delete them */
   if (XFILE::CDirectory::Exists(m_tempAddonBasePath))
-    XFILE::CDirectory::RemoveRecursive(CSpecialProtocol::TranslatePath(m_tempAddonBasePath));
+    XFILE::CDirectory::RemoveRecursive(m_tempAddonBasePath);
 
-  CServiceBroker::GetAddonMgr().Events().Unsubscribe(this);
+  m_addonManager.Events().Unsubscribe(this);
 }
 
 bool CBinaryAddonManager::HasInstalledAddons(const TYPE &type) const
@@ -211,7 +210,7 @@ void CBinaryAddonManager::DisableEvent(const std::string& addonId)
 void CBinaryAddonManager::InstalledChangeEvent()
 {
   BINARY_ADDON_LIST binaryAddonList;
-  CServiceBroker::GetAddonMgr().GetInstalledBinaryAddons(binaryAddonList);
+  m_addonManager.GetInstalledBinaryAddons(binaryAddonList);
 
   CSingleLock lock(m_critSection);
 

@@ -29,8 +29,15 @@
 #include "pvr/epg/EpgContainer.h"
 #include "pvr/recordings/PVRRecording.h"
 
+class CNetworkBase;
 class CStopWatch;
 class CVariant;
+
+namespace ADDON
+{
+  class CAddonMgr;
+  class CBinaryAddonCache;
+}
 
 namespace PVR
 {
@@ -64,7 +71,9 @@ namespace PVR
     /*!
      * @brief Create a new CPVRManager instance, which handles all PVR related operations in XBMC.
      */
-    CPVRManager(void);
+    CPVRManager(ADDON::CAddonMgr &addonManager,
+                ADDON::CBinaryAddonCache &addonCache,
+                CNetworkBase &network);
 
     /*!
      * @brief Stop the PVRManager and destroy all objects it created.

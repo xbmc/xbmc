@@ -21,6 +21,8 @@
 namespace ADDON
 {
   struct AddonEvent;
+  class CAddonMgr;
+  class CBinaryAddonCache;
 }
 
 namespace PVR
@@ -29,6 +31,7 @@ namespace PVR
   class CPVRChannelGroup;
   class CPVRChannelGroups;
   class CPVREpg;
+  class CPVRManager;
   class CPVRRecordings;
   class CPVRTimersContainer;
 
@@ -53,7 +56,9 @@ namespace PVR
   class CPVRClients : public ADDON::IAddonMgrCallback
   {
   public:
-    CPVRClients(void);
+    CPVRClients(CPVRManager &manager,
+                ADDON::CAddonMgr &addonManager,
+                ADDON::CBinaryAddonCache &addonCache);
     ~CPVRClients(void) override;
 
     /*!
@@ -354,6 +359,11 @@ namespace PVR
      * @return PVR_ERROR_NO_ERROR on success, any other PVR_ERROR_* value otherwise.
      */
     PVR_ERROR ForCreatedClients(const char* strFunctionName, PVRClientFunction function, std::vector<int> &failedClients) const;
+
+    // Construction parameters
+    CPVRManager &m_manager;
+    ADDON::CAddonMgr &m_addonManager;
+    ADDON::CBinaryAddonCache &m_addonCache;
 
     mutable CCriticalSection m_critSection;
     CPVRClientMap m_clientMap;

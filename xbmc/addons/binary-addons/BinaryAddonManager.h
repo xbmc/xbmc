@@ -15,7 +15,7 @@
 
 namespace ADDON
 {
-
+  class CAddonMgr;
   class IAddonInstanceHandler;
 
   class CAddonDll;
@@ -28,7 +28,7 @@ namespace ADDON
   class CBinaryAddonManager
   {
   public:
-    CBinaryAddonManager();
+    CBinaryAddonManager(CAddonMgr &addonManager);
     CBinaryAddonManager(const CBinaryAddonManager&) = delete;
     ~CBinaryAddonManager();
 
@@ -136,6 +136,9 @@ namespace ADDON
     void EnableEvent(const std::string& addonId);
     void DisableEvent(const std::string& addonId);
     void InstalledChangeEvent();
+
+    // Construction parameters
+    CAddonMgr &m_addonManager;
 
     mutable CCriticalSection m_critSection;
 

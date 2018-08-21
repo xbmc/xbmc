@@ -147,6 +147,11 @@ public:
 
    // Waits for the first network interface to become available
    void WaitForNet();
+
+private:
+  // Construction parameters
+  CSettings &m_settings;
+
   std::unique_ptr<CNetworkServices> m_services;
 };
 

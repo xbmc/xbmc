@@ -9,13 +9,19 @@
 #include "URL.h"
 #include "addons/binary-addons/BinaryAddonBase.h"
 #include "addons/binary-addons/BinaryAddonManager.h"
-#include "ServiceBroker.h"
 #include "network/ZeroconfBrowser.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 
 namespace ADDON
 {
+
+CVFSAddonCache::CVFSAddonCache(ADDON::CAddonMgr &addonManager,
+                               ADDON::CBinaryAddonManager &binaryAddonManager) :
+  m_addonManager(addonManager),
+  m_binaryAddonManager(binaryAddonManager)
+{
+}
 
 CVFSAddonCache::~CVFSAddonCache()
 {
@@ -24,13 +30,13 @@ CVFSAddonCache::~CVFSAddonCache()
 
 void CVFSAddonCache::Init()
 {
-  CServiceBroker::GetAddonMgr().Events().Subscribe(this, &CVFSAddonCache::OnEvent);
+  m_addonManager.Events().Subscribe(this, &CVFSAddonCache::OnEvent);
   Update();
 }
 
 void CVFSAddonCache::Deinit()
 {
-  CServiceBroker::GetAddonMgr().Events().Unsubscribe(this);
+  m_addonManager.Events().Unsubscribe(this);
 }
 
 const std::vector<VFSEntryPtr> CVFSAddonCache::GetAddonInstances()
@@ -72,7 +78,7 @@ void CVFSAddonCache::OnEvent(const AddonEvent& event)
       typeid(event) == typeid(AddonEvents::Disabled) ||
       typeid(event) == typeid(AddonEvents::ReInstalled))
   {
-    if (CServiceBroker::GetAddonMgr().HasType(event.id, ADDON_VFS))
+    if (m_addonManager.HasType(event.id, ADDON_VFS))
       Update();
   }
   else if (typeid(event) == typeid(AddonEvents::UnInstalled))
@@ -86,7 +92,7 @@ void CVFSAddonCache::Update()
   std::vector<VFSEntryPtr> addonmap;
 
   BinaryAddonBaseList addonInfos;
-  CServiceBroker::GetBinaryAddonManager().GetAddonInfos(addonInfos, true, ADDON_VFS);
+  m_binaryAddonManager.GetAddonInfos(addonInfos, true, ADDON_VFS);
   for (const auto& addonInfo : addonInfos)
   {
     VFSEntryPtr vfs = std::make_shared<CVFSEntry>(addonInfo);

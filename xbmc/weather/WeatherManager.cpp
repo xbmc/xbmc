@@ -26,9 +26,13 @@
 
 using namespace ADDON;
 
-CWeatherManager::CWeatherManager(void) : CInfoLoader(30 * 60 * 1000) // 30 minutes
+CWeatherManager::CWeatherManager(CSettings &settings,
+                                 ADDON::CAddonMgr &addonManager) :
+  CInfoLoader(30 * 60 * 1000), // 30 minutes
+  m_settings(settings),
+  m_addonManager(addonManager)
 {
-  CServiceBroker::GetSettings().GetSettingsManager()->RegisterCallback(this, {
+  m_settings.GetSettingsManager()->RegisterCallback(this, {
     CSettings::SETTING_WEATHER_ADDON,
     CSettings::SETTING_WEATHER_ADDONSETTINGS
   });
@@ -38,7 +42,7 @@ CWeatherManager::CWeatherManager(void) : CInfoLoader(30 * 60 * 1000) // 30 minut
 
 CWeatherManager::~CWeatherManager(void)
 {
-  CServiceBroker::GetSettings().GetSettingsManager()->UnregisterCallback(this);
+  m_settings.GetSettingsManager()->UnregisterCallback(this);
 }
 
 std::string CWeatherManager::BusyInfo(int info) const
@@ -115,8 +119,8 @@ const ForecastDay &CWeatherManager::GetForecast(int day) const
  */
 void CWeatherManager::SetArea(int iLocation)
 {
-  CServiceBroker::GetSettings().SetInt(CSettings::SETTING_WEATHER_CURRENTLOCATION, iLocation);
-  CServiceBroker::GetSettings().Save();
+  m_settings.SetInt(CSettings::SETTING_WEATHER_CURRENTLOCATION, iLocation);
+  m_settings.Save();
 }
 
 /*!
@@ -125,7 +129,7 @@ void CWeatherManager::SetArea(int iLocation)
  */
 int CWeatherManager::GetArea() const
 {
-  return CServiceBroker::GetSettings().GetInt(CSettings::SETTING_WEATHER_CURRENTLOCATION);
+  return m_settings.GetInt(CSettings::SETTING_WEATHER_CURRENTLOCATION);
 }
 
 CJob *CWeatherManager::GetJob() const
@@ -164,7 +168,7 @@ void CWeatherManager::OnSettingAction(std::shared_ptr<const CSetting> setting)
   if (settingId == CSettings::SETTING_WEATHER_ADDONSETTINGS)
   {
     AddonPtr addon;
-    if (CServiceBroker::GetAddonMgr().GetAddon(CServiceBroker::GetSettings().GetString(CSettings::SETTING_WEATHER_ADDON), addon, ADDON_SCRIPT_WEATHER) && addon != NULL)
+    if (m_addonManager.GetAddon(m_settings.GetString(CSettings::SETTING_WEATHER_ADDON), addon, ADDON_SCRIPT_WEATHER) && addon != NULL)
     { //! @todo maybe have ShowAndGetInput return a bool if settings changed, then only reset weather if true.
       CGUIDialogAddonSettings::ShowForAddon(addon);
       Refresh();
