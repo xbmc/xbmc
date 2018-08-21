@@ -96,7 +96,7 @@ bool CDDSImage::ReadFile(const std::string &inputFile)
     return false;
 
   // and read it in
-  if (file.Read(m_data, m_desc.linearSize) != m_desc.linearSize)
+  if (file.Read(m_data, m_desc.linearSize) != static_cast<ssize_t>(m_desc.linearSize))
     return false;
 
   file.Close();

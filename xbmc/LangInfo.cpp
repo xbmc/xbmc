@@ -179,7 +179,7 @@ static CSpeed::Unit StringToSpeedUnit(const std::string& speedUnit)
 
 struct SortLanguage
 {
-  bool operator()(const std::pair<std::string, std::string> &left, const std::pair<std::string, std::string> &right)
+  bool operator()(const std::pair<std::string, std::string> &left, const std::pair<std::string, std::string> &right) const
   {
     std::string strLeft = left.first;
     std::string strRight = right.first;

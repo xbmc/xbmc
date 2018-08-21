@@ -62,7 +62,7 @@ namespace GAME
     /*!
      * \brief Get the width of the controller grid
      */
-    unsigned int Width() const { return m_grid.size(); }
+    unsigned int Width() const { return static_cast<unsigned int>(m_grid.size()); }
 
     /*!
      * \brief Get the height (deepest controller) of the controller grid

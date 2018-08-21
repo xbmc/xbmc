@@ -251,17 +251,17 @@ bool Interface_General::queue_notification(void* kodiBase, int type, const char*
     CGUIDialogKaiToast::eMessageType usedType;
     switch (qtype)
     {
-    case QUEUE_WARNING:
+    case QueueMsg::QUEUE_WARNING:
       usedType = CGUIDialogKaiToast::Warning;
       withSound = true;
       CLog::Log(LOGDEBUG, "Interface_General::%s - %s - Warning Message: '%s'", __FUNCTION__, addon->Name().c_str(), message);
       break;
-    case QUEUE_ERROR:
+    case QueueMsg::QUEUE_ERROR:
       usedType = CGUIDialogKaiToast::Error;
       withSound = true;
       CLog::Log(LOGDEBUG, "Interface_General::%s - %s - Error Message : '%s'", __FUNCTION__, addon->Name().c_str(), message);
       break;
-    case QUEUE_INFO:
+    case QueueMsg::QUEUE_INFO:
     default:
       usedType = CGUIDialogKaiToast::Info;
       withSound = false;

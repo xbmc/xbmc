@@ -254,6 +254,11 @@
 		case kHIDRemoteButtonCodeMenuHold:
 			return (@"Menu (hold)");
       break;
+        case kHIDRemoteButtonCodePlay:
+            return (@"Play");
+      break;
+        default:
+      break;
 	}
 	return ([NSString stringWithFormat:@"Button %x", (int)buttonCode]);
 }
