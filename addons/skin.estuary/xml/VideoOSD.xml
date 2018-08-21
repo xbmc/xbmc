@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <window>
-	<onload condition="VideoPlayer.Content(LiveTV) + !Player.PauseEnabled">SetFocus(603)</onload>
+	<onload condition="!Player.PauseEnabled">SetFocus(603)</onload>
 	<depth>DepthOSD</depth>
 	<defaultcontrol always="true">602</defaultcontrol>
 	<include>Animation_BottomSlide</include>
