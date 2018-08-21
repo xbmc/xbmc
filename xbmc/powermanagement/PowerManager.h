@@ -17,25 +17,14 @@
 
 class CFileItem;
 class CSetting;
-
-enum PowerState
-{
-  POWERSTATE_QUIT       = 0,
-  POWERSTATE_SHUTDOWN,
-  POWERSTATE_HIBERNATE,
-  POWERSTATE_SUSPEND,
-  POWERSTATE_REBOOT,
-  POWERSTATE_MINIMIZE,
-  POWERSTATE_NONE,
-  POWERSTATE_ASK
-};
+class CSettings;
 
 // This class will wrap and handle PowerSyscalls.
 // It will handle and decide if syscalls are needed.
 class CPowerManager : public IPowerEventsCallback
 {
 public:
-  CPowerManager();
+  CPowerManager(CSettings &settings);
   ~CPowerManager() override;
 
   void Initialize();
@@ -63,6 +52,9 @@ private:
   void OnLowBattery() override;
   void RestorePlayerState();
   void StorePlayerState();
+
+  // Construction parameters
+  CSettings &m_settings;
 
   std::unique_ptr<IPowerSyscall> m_instance;
   std::unique_ptr<CFileItem> m_lastPlayedFileItem;

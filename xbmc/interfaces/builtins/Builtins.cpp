@@ -25,7 +25,7 @@
 
 #include "ServiceBroker.h"
 #include "input/InputManager.h"
-#include "powermanagement/PowerManager.h"
+#include "powermanagement/PowerTypes.h"
 #include "settings/Settings.h"
 #include "Util.h"
 #include "utils/log.h"

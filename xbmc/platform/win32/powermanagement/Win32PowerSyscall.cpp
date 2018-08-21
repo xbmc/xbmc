@@ -8,7 +8,6 @@
 
 #include "Win32PowerSyscall.h"
 #include "platform/win32/WIN32Util.h"
-#include "powermanagement/PowerManager.h"
 #include "utils/log.h"
 #include "utils/SystemInfo.h"
 
