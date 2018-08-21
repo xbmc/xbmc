@@ -2816,6 +2816,13 @@ void CVideoPlayer::HandleMessages()
             UpdateContentState();
             CServiceBroker::GetDataCacheCore().SignalVideoInfoChange();
           }
+          else if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_BLURAY))
+          {
+            m_dvd.iSelectedVideoStream = st.type_index;
+            CloseStream(m_CurrentVideo, false);
+            OpenStream(m_CurrentVideo, st.demuxerId, st.id, STREAM_SOURCE_DEMUX);
+            seek = true;
+          }
         }
         else
         {
