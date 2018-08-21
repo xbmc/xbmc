@@ -79,7 +79,7 @@ static int mem_file_read(void *h, uint8_t* buf, int size)
   MemBuffer* mbuf = static_cast<MemBuffer*>(h);
   int64_t unread = mbuf->size - mbuf->pos;
   if (unread <= 0)
-    return 0;
+    return AVERROR_EOF;
 
   size_t tocopy = std::min((size_t)size, (size_t)unread);
   memcpy(buf, mbuf->data + mbuf->pos, tocopy);
@@ -173,6 +173,9 @@ bool CFFmpegImage::Initialize(unsigned char* buffer, size_t bufSize)
     CLog::LogF(LOGERROR, "Could not allocate AVIOContext");
     return false;
   }
+
+  // signal to ffmepg this is not streaming protocol
+  m_ioctx->max_packet_size = bufferSize;
 
   m_fctx = avformat_alloc_context();
   if (!m_fctx)

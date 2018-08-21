@@ -134,7 +134,11 @@ static int dvd_file_read(void *h, uint8_t* buf, int size)
     return AVERROR_EXIT;
 
   std::shared_ptr<CDVDInputStream> pInputStream = static_cast<CDVDDemuxFFmpeg*>(h)->m_pInput;
-  return pInputStream->Read(buf, size);
+  int len = pInputStream->Read(buf, size);
+  if (len == 0)
+    return AVERROR_EOF;
+  else
+    return len;
 }
 /*
 static int dvd_file_write(URLContext *h, uint8_t* buf, int size)
@@ -272,8 +276,13 @@ bool CDVDDemuxFFmpeg::Open(std::shared_ptr<CDVDInputStream> pInput, bool streami
     unsigned char* buffer = (unsigned char*)av_malloc(bufferSize);
     m_ioContext = avio_alloc_context(buffer, bufferSize, 0, this, dvd_file_read, NULL, dvd_file_seek);
 
-    if(m_pInput->Seek(0, SEEK_POSSIBLE) == 0)
+    m_ioContext->max_packet_size = bufferSize;
+
+    if (m_pInput->Seek(0, SEEK_POSSIBLE) == 0)
+    {
       m_ioContext->seekable = 0;
+      m_ioContext->max_packet_size = 0;
+    }
 
     std::string content = m_pInput->GetContent();
     StringUtils::ToLower(content);
