@@ -45,13 +45,13 @@ def usage():
     print("\t--port=PORT\t\t\tChoose what PORT to connect to (default=9777)")
     print("\t--keymap=KEYMAP\t\t\tChoose which KEYMAP to use for key presses (default=KB)")
     print('\t--button=BUTTON\t\t\tSends a key press event to Kodi, this option can be added multiple times to create a macro')
-    print('\t--action=ACTION\t\t\tSends an action to XBMC, this option can be added multiple times to create a macro')
+    print('\t-a ACTION, --action=ACTION\tSends an action to XBMC, this option can be added multiple times to create a macro')
     print('\t-d T, --delay=T\t\t\tWaits for T ms, this option can be added multiple times to create a macro')
     pass
 
 def main():
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "?pad:v", ["help", "host=", "port=", "keymap=", "button=", "action=", "delay="])
+        opts, args = getopt.getopt(sys.argv[1:], "?pa:d:v", ["help", "host=", "port=", "keymap=", "button=", "action=", "delay="])
     except getopt.GetoptError as err:
         # print help information and exit:
         print(str(err)) # will print something like "option -a not recognized"
