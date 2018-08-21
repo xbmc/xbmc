@@ -40,6 +40,8 @@ std::unique_ptr<CWinSystemBase> CWinSystemBase::CreateWinSystem()
 
 bool CWinSystemGbmGLESContext::InitWindowSystem()
 {
+  VIDEOPLAYER::CRendererFactory::ClearRenderer();
+  CDVDFactoryCodec::ClearHWAccels();
   CLinuxRendererGLES::Register();
   RETRO::CRPProcessInfoGbm::Register();
   RETRO::CRPProcessInfoGbm::RegisterRendererFactory(new RETRO::CRendererFactoryGBM);
