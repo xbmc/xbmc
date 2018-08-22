@@ -10,7 +10,6 @@
 
 #include "addons/AddonStatusHandler.h"
 #include "GUIUserMessages.h"
-#include "ServiceBroker.h"
 #include "addons/settings/AddonSettings.h"
 #include "addons/settings/GUIDialogAddonSettings.h"
 #include "events/EventLog.h"
