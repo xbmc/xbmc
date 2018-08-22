@@ -59,7 +59,7 @@ namespace PVR
      * @brief Get the minimal database version that is required to operate correctly.
      * @return The minimal database version.
      */
-    int GetSchemaVersion(void) const override { return 11; }
+    int GetSchemaVersion(void) const override { return 12; }
 
     /*!
      * @brief Get the default sqlite database filename.
