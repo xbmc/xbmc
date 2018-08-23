@@ -4555,7 +4555,7 @@ void CVideoPlayer::AddSubtitle(const std::string& strSubPath)
 bool CVideoPlayer::IsCaching() const
 {
   CSingleLock lock(m_StateSection);
-  return m_State.caching;
+  return !m_State.isInMenu && m_State.caching;
 }
 
 int CVideoPlayer::GetCacheLevel() const
