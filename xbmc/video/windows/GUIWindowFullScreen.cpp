@@ -95,14 +95,21 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
   case ACTION_MOUSE_MOVE:
     if (action.GetAmount(2) || action.GetAmount(3))
     {
-      TriggerOSD();
-      return true;
+      if (!g_application.GetAppPlayer().IsInMenu())
+      {
+        TriggerOSD();
+        return true;
+      }
     }
     break;
 
   case ACTION_MOUSE_LEFT_CLICK:
-    TriggerOSD();
-    return true;
+    if (!g_application.GetAppPlayer().IsInMenu())
+    {
+      TriggerOSD();
+      return true;
+    }
+    break;
 
   case ACTION_SHOW_GUI:
     {
