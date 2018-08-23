@@ -1583,7 +1583,7 @@ bool CVideoInfoTag::SetResumePoint(const CBookmark &resumePoint)
   return true;
 }
 
-bool CVideoInfoTag::SetResumePoint(double timeInSeconds, double totalTimeInSeconds, const std::string &playerState /* = "" */)
+bool CVideoInfoTag::SetResumePoint(double timeInSeconds, double totalTimeInSeconds, const std::string &playerState)
 {
   CBookmark resumePoint;
   resumePoint.timeInSeconds = timeInSeconds;

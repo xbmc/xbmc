@@ -93,7 +93,7 @@ CPVRRecording::CPVRRecording(const PVR_RECORDING &recording, unsigned int iClien
 
   SetGenre(recording.iGenreType, recording.iGenreSubType, recording.strGenreDescription);
   CVideoInfoTag::SetPlayCount(recording.iPlayCount);
-  CVideoInfoTag::SetResumePoint(recording.iLastPlayedPosition, recording.iDuration);
+  CVideoInfoTag::SetResumePoint(recording.iLastPlayedPosition, recording.iDuration, "");
   SetDuration(recording.iDuration);
 
   //  As the channel a recording was done on (probably long time ago) might no longer be

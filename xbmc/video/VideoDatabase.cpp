@@ -2197,7 +2197,8 @@ bool CVideoDatabase::GetFileInfo(const std::string& strFilenameAndPath, CVideoIn
     if (!details.GetResumePoint().IsSet())
     {
       details.SetResumePoint(m_pDS->fv("bookmark.timeInSeconds").get_asInt(),
-                             m_pDS->fv("bookmark.totalTimeInSeconds").get_asInt());
+                             m_pDS->fv("bookmark.totalTimeInSeconds").get_asInt(),
+                             m_pDS->fv("bookmark.playerState").get_asString());
     }
 
     // get streamdetails
@@ -3839,7 +3840,7 @@ bool CVideoDatabase::GetResumePoint(CVideoInfoTag& tag)
       m_pDS2->query( strSQL );
       if (!m_pDS2->eof())
       {
-        tag.SetResumePoint(m_pDS2->fv(0).get_asDouble(), m_pDS2->fv(1).get_asDouble());
+        tag.SetResumePoint(m_pDS2->fv(0).get_asDouble(), m_pDS2->fv(1).get_asDouble(), "");
         match = true;
       }
       m_pDS2->close();
@@ -5420,7 +5421,7 @@ bool CVideoDatabase::GetPlayCounts(const std::string &strPath, CFileItemList &it
 
         if (!item->GetVideoInfoTag()->GetResumePoint().IsSet())
         {
-          item->GetVideoInfoTag()->SetResumePoint(m_pDS->fv(2).get_asInt(), m_pDS->fv(3).get_asInt());
+          item->GetVideoInfoTag()->SetResumePoint(m_pDS->fv(2).get_asInt(), m_pDS->fv(3).get_asInt(), "");
         }
       }
       m_pDS->next();

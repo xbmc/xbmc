@@ -1260,6 +1260,7 @@ void CVideoPlayer::Prepare()
     return;
   }
 
+  bool discStateRestored = false;
   if (std::shared_ptr<CDVDInputStream::IMenus> ptr = std::dynamic_pointer_cast<CDVDInputStream::IMenus>(m_pInputStream))
   {
     CLog::Log(LOGNOTICE, "VideoPlayer: playing a file with menu's");
@@ -1267,7 +1268,7 @@ void CVideoPlayer::Prepare()
       m_playerOptions.starttime = 0;
 
     if (!m_playerOptions.state.empty())
-      ptr->SetState(m_playerOptions.state);
+      discStateRestored = ptr->SetState(m_playerOptions.state);
     else if(std::shared_ptr<CDVDInputStreamNavigator> nav = std::dynamic_pointer_cast<CDVDInputStreamNavigator>(m_pInputStream))
       nav->EnableSubtitleStream(m_processInfo->GetVideoSettings().m_SubtitleOn);
   }
@@ -1293,7 +1294,8 @@ void CVideoPlayer::Prepare()
     m_OmxPlayerState.av_clock.OMXPause();
   }
 
-  OpenDefaultStreams();
+  if (!discStateRestored)
+    OpenDefaultStreams();
 
   /*
    * Check to see if the demuxer should start at something other than time 0. This will be the case
