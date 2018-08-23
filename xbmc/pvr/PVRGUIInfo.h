@@ -57,16 +57,11 @@ namespace PVR
      */
     void ResetPlayingTag(void);
 
-    /*!
-     * @brief Get the currently playing EPG tag.
-     * @return The currently playing EPG tag or NULL if no EPG tag is playing.
-     */
-    CPVREpgInfoTagPtr GetPlayingTag() const;
-
   private:
     void ResetProperties(void);
     void ClearQualityInfo(PVR_SIGNAL_STATUS &qualityInfo);
     void ClearDescrambleInfo(PVR_DESCRAMBLE_INFO &descrambleInfo);
+    void ResetTimeshiftData();
 
     void Process(void) override;
 
@@ -77,7 +72,8 @@ namespace PVR
     void UpdateDescrambleData(void);
     void UpdateMisc(void);
     void UpdateNextTimer(void);
-    void UpdateTimeshift(void);
+    void UpdateTimeshiftData(void);
+    void UpdateTimeshiftProgressData();
 
     void UpdateTimersToggle(void);
 
@@ -121,6 +117,9 @@ namespace PVR
     void CharInfoTimeshiftEndTime(TIME_FORMAT format, std::string &strValue) const;
     void CharInfoTimeshiftPlayTime(TIME_FORMAT format, std::string &strValue) const;
     void CharInfoTimeshiftOffset(TIME_FORMAT format, std::string &strValue) const;
+    void CharInfoTimeshiftProgressDuration(TIME_FORMAT format, std::string &strValue) const;
+    void CharInfoTimeshiftProgressStartTime(TIME_FORMAT format, std::string &strValue) const;
+    void CharInfoTimeshiftProgressEndTime(TIME_FORMAT format, std::string &strValue) const;
 
     /*!
      * @brief Get the elapsed time since the start of the currently playing epg event or if
@@ -130,6 +129,12 @@ namespace PVR
     int GetElapsedTime(void) const;
 
     int GetRemainingTime(const CFileItem *item) const;
+
+    /*!
+     * @brief Get the currently playing EPG tag.
+     * @return The currently playing EPG tag or NULL if no EPG tag is playing.
+     */
+    CPVREpgInfoTagPtr GetPlayingTag() const;
 
     /** @name PVRGUIInfo data */
     //@{
@@ -172,12 +177,15 @@ namespace PVR
 
     bool                            m_bHasTimeshiftData;
     bool                            m_bIsTimeshifting;
-    time_t                          m_iLastTimeshiftUpdate;
     time_t                          m_iStartTime;
     time_t                          m_iTimeshiftStartTime;
     time_t                          m_iTimeshiftEndTime;
     time_t                          m_iTimeshiftPlayTime;
     unsigned int                    m_iTimeshiftOffset;
+
+    time_t m_iTimeshiftProgressStartTime = 0;
+    time_t m_iTimeshiftProgressEndTime = 0;
+    unsigned int m_iTimeshiftProgressDuration = 0;
 
     mutable CCriticalSection m_critSection;
 

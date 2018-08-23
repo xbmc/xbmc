@@ -101,7 +101,7 @@ namespace PVR
     int Progress(void) const;
 
     /*!
-     * @brief Get a pointer to the next event. Set by CPVREpg in a call to Sort()
+     * @brief Get a pointer to the next event.
      * @return A pointer to the next event or NULL if it's not set.
      */
     CPVREpgInfoTagPtr GetNextEvent(void) const;

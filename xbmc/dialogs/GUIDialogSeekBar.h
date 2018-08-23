@@ -21,7 +21,10 @@ private:
   float GetSeekPercent() const;
   int GetEpgEventProgress() const;
   int GetEpgEventSeekPercent() const;
+  int GetTimeshiftProgress() const;
+  int GetTimeshiftSeekPercent() const;
 
   unsigned int m_lastPercent = ~0U;
   unsigned int m_lastEpgEventPercent = ~0U;
+  unsigned int m_lastTimeshiftPercent = ~0U;
 };

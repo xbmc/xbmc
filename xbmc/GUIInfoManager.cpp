@@ -4558,6 +4558,31 @@ const infomap playlist[] =       {{ "length",           PLAYLIST_LENGTH },
 ///                  _boolean_,
 ///     Returns true if PVR is currently playing a channel and if this channel is currently recorded.
 ///   }
+///   \table_row3{   <b>`PVR.TimeshiftProgressPlayPos`</b>,
+///                  \anchor PVR_TimeshiftProgressPlayPos
+///                  _integer_,
+///     Returns the percentage of the current play position within the PVR timeshift progress.
+///   }
+///   \table_row3{   <b>`PVR.TimeshiftProgressEpgStart`</b>,
+///                  \anchor PVR_TimeshiftProgressEpgStart
+///                  _integer_,
+///     Returns the percentage of the start of the currently playing epg event within the PVR timeshift progress.
+///   }
+///   \table_row3{   <b>`PVR.TimeshiftProgressEpgEnd`</b>,
+///                  \anchor PVR_TimeshiftProgressEpgEnd
+///                  _integer_,
+///     Returns the percentage of the end of the currently playing epg event within the PVR timeshift progress.
+///   }
+///   \table_row3{   <b>`PVR.TimeshiftProgressBufferStart`</b>,
+///                  \anchor PVR_TimeshiftProgressBufferStart
+///                  _integer_,
+///     Returns the percentage of the start of the timeshift buffer within the PVR timeshift progress.
+///   }
+///   \table_row3{   <b>`PVR.TimeshiftProgressBufferEnd`</b>,
+///                  \anchor PVR_TimeshiftProgressBufferEnd
+///                  _integer_,
+///     Returns the percentage of the end of the timeshift buffer within the PVR timeshift progress.
+///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
@@ -4632,7 +4657,12 @@ const infomap pvr[] =            {{ "isrecording",              PVR_IS_RECORDING
                                   { "hasnonrecordingradiotimer",  PVR_HAS_NONRECORDING_RADIO_TIMER },
                                   { "channelnumberinput",         PVR_CHANNEL_NUMBER_INPUT },
                                   { "canrecordplayingchannel",    PVR_CAN_RECORD_PLAYING_CHANNEL },
-                                  { "isrecordingplayingchannel",  PVR_IS_RECORDING_PLAYING_CHANNEL }};
+                                  { "isrecordingplayingchannel",  PVR_IS_RECORDING_PLAYING_CHANNEL },
+                                  { "timeshiftprogressplaypos",   PVR_TIMESHIFT_PROGRESS_PLAY_POS },
+                                  { "timeshiftprogressepgstart",  PVR_TIMESHIFT_PROGRESS_EPG_START },
+                                  { "timeshiftprogressepgend",    PVR_TIMESHIFT_PROGRESS_EPG_END },
+                                  { "timeshiftprogressbufferstart", PVR_TIMESHIFT_PROGRESS_BUFFER_START },
+                                  { "timeshiftprogressbufferend", PVR_TIMESHIFT_PROGRESS_BUFFER_END }};
 
 /// \page modules__General__List_of_gui_access
 /// \section modules__General__List_of_gui_access_PvrTimes PvrTimes
@@ -4774,6 +4804,51 @@ const infomap pvr[] =            {{ "isrecording",              PVR_IS_RECORDING
 ///     Added with Leia: (secs)\, (mins)\, (hours) for total time values and (m).
 ///     Example: 3661 seconds => h=1\, hh=01\, m=1\, mm=01\, ss=01\, hours=1\, mins=61\, secs=3661
 ///   }
+///   \table_row3{   <b>`PVR.TimeshiftProgressDuration`</b>,
+///                  \anchor PVR_TimeshiftProgressDuration
+///                  _string_,
+///     Returns the duration of the PVR timeshift progress in the
+///     format hh:mm:ss. hh: will be omitted if hours value is zero.
+///   }
+///   \table_row3{   <b>`PVR.TimeshiftProgressDuration(format)`</b>,
+///                  \anchor PVR_TimeshiftProgressDuration_format
+///                  _string_,
+///     Returns the duration of the PVR timeshift progress in different formats:
+///     Hours (hh)\, minutes (mm) or seconds (ss).
+///     Also supported: (hh:mm)\, (mm:ss)\, (hh:mm:ss)\, (h:mm:ss).
+///     Added with Leia: (secs)\, (mins)\, (hours) for total time values and (m).
+///     Example: 3661 seconds => h=1\, hh=01\, m=1\, mm=01\, ss=01\, hours=1\, mins=61\, secs=3661
+///   }
+///   \table_row3{   <b>`PVR.TimeshiftProgressStartTime`</b>,
+///                  \anchor PVR_TimeshiftProgressStartTime
+///                  _string_,
+///     Returns the start time of the PVR timeshift progress in the
+///     format hh:mm:ss. hh: will be omitted if hours value is zero.
+///   }
+///   \table_row3{   <b>`PVR.TimeshiftProgressStartTime(format)`</b>,
+///                  \anchor PVR_TimeshiftProgressStartTime_format
+///                  _string_,
+///     Returns the start time of the PVR timeshift progress in different formats:
+///     Hours (hh)\, minutes (mm) or seconds (ss).
+///     Also supported: (hh:mm)\, (mm:ss)\, (hh:mm:ss)\, (h:mm:ss).
+///     Added with Leia: (secs)\, (mins)\, (hours) for total time values and (m).
+///     Example: 3661 seconds => h=1\, hh=01\, m=1\, mm=01\, ss=01\, hours=1\, mins=61\, secs=3661
+///   }
+///   \table_row3{   <b>`PVR.TimeshiftProgressEndTime`</b>,
+///                  \anchor PVR_TimeshiftProgressEndTime
+///                  _string_,
+///     Returns the end time of the PVR timeshift progress in the
+///     format hh:mm:ss. hh: will be omitted if hours value is zero.
+///   }
+///   \table_row3{   <b>`PVR.TimeshiftProgressEndTime(format)`</b>,
+///                  \anchor PVR_TimeshiftProgressEndTime_format
+///                  _string_,
+///     Returns the end time of the PVR timeshift progress in different formats:
+///     Hours (hh)\, minutes (mm) or seconds (ss).
+///     Also supported: (hh:mm)\, (mm:ss)\, (hh:mm:ss)\, (h:mm:ss).
+///     Added with Leia: (secs)\, (mins)\, (hours) for total time values and (m).
+///     Example: 3661 seconds => h=1\, hh=01\, m=1\, mm=01\, ss=01\, hours=1\, mins=61\, secs=3661
+///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
@@ -4786,7 +4861,10 @@ const infomap pvr_times[] =      {{ "epgeventduration",       PVR_EPG_EVENT_DURA
                                   { "timeshiftstart",         PVR_TIMESHIFT_START_TIME },
                                   { "timeshiftend",           PVR_TIMESHIFT_END_TIME },
                                   { "timeshiftcur",           PVR_TIMESHIFT_PLAY_TIME },
-                                  { "timeshiftoffset",        PVR_TIMESHIFT_OFFSET }};
+                                  { "timeshiftoffset",        PVR_TIMESHIFT_OFFSET },
+                                  { "timeshiftprogressduration",  PVR_TIMESHIFT_PROGRESS_DURATION },
+                                  { "timeshiftprogressstarttime", PVR_TIMESHIFT_PROGRESS_START_TIME },
+                                  { "timeshiftprogressendtime",   PVR_TIMESHIFT_PROGRESS_END_TIME }};
 
 /// \page modules__General__List_of_gui_access
 /// \section modules__General__List_of_gui_access_RDS Radio RDS
