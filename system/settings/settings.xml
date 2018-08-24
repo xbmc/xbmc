@@ -925,6 +925,7 @@
               <option label="208">1</option> <!-- SELECT_ACTION_PLAY_OR_RESUME -->
               <option label="13404">2</option> <!-- SELECT_ACTION_RESUME -->
               <option label="22081">3</option> <!-- SELECT_ACTION_INFO -->
+              <option label="13347">7</option> <!-- SELECT_ACTION_QUEUE -->
             </options>
           </constraints>
           <control type="list" format="string" />

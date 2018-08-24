@@ -6746,6 +6746,7 @@ msgctxt "#13346"
 msgid "Movie information"
 msgstr ""
 
+#: system/settings/settings.xml
 msgctxt "#13347"
 msgid "Queue item"
 msgstr ""
