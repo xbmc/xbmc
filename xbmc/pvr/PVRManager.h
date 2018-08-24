@@ -275,11 +275,6 @@ namespace PVR
     bool EpgsCreated(void) const;
 
     /*!
-     * @brief Reset the playing EPG tag.
-     */
-    void ResetPlayingTag(void);
-
-    /*!
      * @brief Inform PVR manager that playback of an item just started.
      * @param item The item that started to play.
      */

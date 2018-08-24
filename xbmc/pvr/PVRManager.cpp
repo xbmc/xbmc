@@ -673,13 +673,6 @@ bool CPVRManager::CanRecordOnPlayingChannel(void) const
   return currentChannel && currentChannel->CanRecord();
 }
 
-void CPVRManager::ResetPlayingTag(void)
-{
-  CSingleLock lock(m_critSection);
-  if (m_guiInfo)
-    m_guiInfo->ResetPlayingTag();
-}
-
 void CPVRManager::RestartParentalTimer()
 {
   if (m_parentalTimer)

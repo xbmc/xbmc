@@ -501,13 +501,7 @@ bool CPVREpg::Update(const time_t start, const time_t end, int iUpdateTime, bool
     bGrabSuccess = LoadFromClients(start, end);
 
   if (bGrabSuccess)
-  {
-    CPVRChannelPtr channel(CServiceBroker::GetPVRManager().GetPlayingChannel());
-    if (channel &&
-        channel->EpgID() == m_iEpgID)
-      CServiceBroker::GetPVRManager().ResetPlayingTag();
     m_bLoaded = true;
-  }
   else
     CLog::LogF(LOGERROR, "Failed to update table '%s'", Name().c_str());
 
