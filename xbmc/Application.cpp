@@ -3177,7 +3177,9 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
   else
     options.fullscreen = g_advancedSettings.m_fullScreenOnMovieStart && !CMediaSettings::GetInstance().DoesVideoStartWindowed();
 
-  options.preferStereo = CServiceBroker::GetActiveAE()->HasStereoAudioChannelCount();
+  // stereo streams may have lower quality, i.e. 32bit vs 16 bit
+  options.preferStereo = g_advancedSettings.m_videoPreferStereoStream &&
+                         CServiceBroker::GetActiveAE()->HasStereoAudioChannelCount();
 
   // reset VideoStartWindowed as it's a temp setting
   CMediaSettings::GetInstance().SetVideoStartWindowed(false);
