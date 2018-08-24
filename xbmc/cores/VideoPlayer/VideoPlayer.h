@@ -244,7 +244,7 @@ class CSelectionStreams
 public:
   CSelectionStreams() = default;
 
-  int IndexOf(StreamType type, int source, int64_t demuxerId, int id) const;
+  int TypeIndexOf(StreamType type, int source, int64_t demuxerId, int id) const;
   int CountTypeOfSource(StreamType type, StreamSource source) const;
   int CountType(StreamType type) const;
   SelectionStream& Get(StreamType type, int index);
