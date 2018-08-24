@@ -423,7 +423,7 @@ void CSelectionStreams::Update(SelectionStream& s)
   }
   else
   {
-    s.type_index = Count(s.type);
+    s.type_index = CountType(s.type);
     m_Streams.push_back(s);
   }
 }
@@ -568,9 +568,10 @@ int CSelectionStreams::CountSource(StreamType type, StreamSource source) const
   return count;
 }
 
-int CSelectionStreams::Count(StreamType type) const
+int CSelectionStreams::CountType(StreamType type) const
 {
-  return IndexOf(type, STREAM_SOURCE_NONE, -1, -1) + 1;
+  return std::count_if(m_Streams.begin(), m_Streams.end(), 
+    [&](const SelectionStream& stream) {return stream.type == type;});
 }
 
 //------------------------------------------------------------------------------
@@ -5063,7 +5064,7 @@ void CVideoPlayer::GetVideoStreamInfo(int streamId, VideoStreamInfo &info)
 int CVideoPlayer::GetVideoStreamCount() const
 {
   CSingleLock lock(m_content.m_section);
-  return m_content.m_selectionStreams.Count(STREAM_VIDEO);
+  return m_content.m_selectionStreams.CountType(STREAM_VIDEO);
 }
 
 int CVideoPlayer::GetVideoStream() const
@@ -5112,7 +5113,7 @@ void CVideoPlayer::GetAudioStreamInfo(int index, AudioStreamInfo &info)
 int CVideoPlayer::GetAudioStreamCount()
 {
   CSingleLock lock(m_content.m_section);
-  return m_content.m_selectionStreams.Count(STREAM_AUDIO);
+  return m_content.m_selectionStreams.CountType(STREAM_AUDIO);
 }
 
 int CVideoPlayer::GetAudioStream()
@@ -5155,7 +5156,7 @@ void CVideoPlayer::SetSubtitle(int iStream)
 int CVideoPlayer::GetSubtitleCount()
 {
   CSingleLock lock(m_content.m_section);
-  return m_content.m_selectionStreams.Count(STREAM_SUBTITLE);
+  return m_content.m_selectionStreams.CountType(STREAM_SUBTITLE);
 }
 
 int CVideoPlayer::GetSubtitle()
