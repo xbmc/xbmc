@@ -554,18 +554,10 @@ void CSelectionStreams::Update(std::shared_ptr<CDVDInputStream> input, CDVDDemux
   Update(input, demuxer, "");
 }
 
-int CSelectionStreams::CountSource(StreamType type, StreamSource source) const
+int CSelectionStreams::CountTypeOfSource(StreamType type, StreamSource source) const
 {
-  int count = 0;
-  for(size_t i=0;i<m_Streams.size();i++)
-  {
-    if(type && m_Streams[i].type != type)
-      continue;
-    if (source && m_Streams[i].source != source)
-      continue;
-    count++;
-  }
-  return count;
+  return std::count_if(m_Streams.begin(), m_Streams.end(),
+    [&](const SelectionStream& stream) {return (stream.type == type) && (stream.source == source);});
 }
 
 int CSelectionStreams::CountType(StreamType type) const
@@ -1613,7 +1605,7 @@ void CVideoPlayer::Process()
             break;
 
           first = false;
-          if (m_pCCDemuxer->GetNrOfStreams() != m_SelectionStreams.CountSource(STREAM_SUBTITLE, STREAM_SOURCE_VIDEOMUX))
+          if (m_pCCDemuxer->GetNrOfStreams() != m_SelectionStreams.CountTypeOfSource(STREAM_SUBTITLE, STREAM_SOURCE_VIDEOMUX))
           {
             m_SelectionStreams.Clear(STREAM_SUBTITLE, STREAM_SOURCE_VIDEOMUX);
             m_SelectionStreams.Update(NULL, m_pCCDemuxer, "");
