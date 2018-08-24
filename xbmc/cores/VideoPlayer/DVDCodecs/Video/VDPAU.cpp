@@ -490,7 +490,8 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
 {
   // this could be done better by querying actual hw capabilities
   // but since vdpau will be dropped anyway in v19, this should do
-  if (avctx->sw_pix_fmt != AV_PIX_FMT_YUV420P)
+  if (avctx->sw_pix_fmt != AV_PIX_FMT_YUV420P &&
+      avctx->sw_pix_fmt != AV_PIX_FMT_YUVJ420P)
     return false;
 
   // check if user wants to decode this format with VDPAU
