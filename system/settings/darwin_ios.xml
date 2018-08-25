@@ -22,6 +22,9 @@
   <section id="system">
     <category id="display">
       <group id="1">
+        <setting id="videoscreen.resolution">
+          <default>17</default> <!-- RES_CUSTOM -->
+        </setting>
         <setting id="videoscreen.fakefullscreen">
           <visible>false</visible>
         </setting>
