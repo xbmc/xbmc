@@ -458,7 +458,7 @@ msgstr "Zbývá"
 
 msgctxt "#31136"
 msgid "Click here to see latest changes..."
-msgstr "Klikněte sem pro zobrazení posledních změn..."
+msgstr "Klikněte sem pro zobrazení posledních změn…"
 
 msgctxt "#31137"
 msgid "PVR info"

@@ -48,6 +48,10 @@ msgctxt "#31007"
 msgid "Unwatched movies"
 msgstr "Ongekykte flieks"
 
+msgctxt "#31008"
+msgid "Enable category widgets"
+msgstr "Stel kategorie widget in staat"
+
 msgctxt "#31009"
 msgid "Download icons"
 msgstr "Aflaai ikone"
@@ -107,6 +111,10 @@ msgstr "Sorteer volgens"
 msgctxt "#31023"
 msgid "Viewtype"
 msgstr "Aansigtipe"
+
+msgctxt "#31024"
+msgid "Choose rating to display for media items"
+msgstr "Kies gradering om vir media items te vertoon"
 
 msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
@@ -436,6 +444,14 @@ msgctxt "#31131"
 msgid "Choose skin fanart pack"
 msgstr "Kies oortreksel ondersteunerkuns pak"
 
+msgctxt "#31132"
+msgid "Select Program"
+msgstr "Selekteer program"
+
+msgctxt "#31133"
+msgid "Select Resolution"
+msgstr "Selekteer resolusie"
+
 msgctxt "#31134"
 msgid "Remaining"
 msgstr "Oorblywend"
@@ -536,6 +552,22 @@ msgctxt "#31161"
 msgid "Numeric pad"
 msgstr "Nommer blok"
 
+msgctxt "#31162"
+msgid "Play your personal games or download one of the many game add-ons from the official repository."
+msgstr "Speel jou persoonlike speletjies of laai een van die baie speletjie byvoegsels af vanaf die offisiële stoorplek."
+
+msgctxt "#31163"
+msgid "Show Fanart background"
+msgstr "Wys Ondersteunerkuns agtergrond"
+
+msgctxt "#31164"
+msgid "Choose kind of profile identification"
+msgstr "Kies tipe profiel identifikasie"
+
 msgctxt "#31165"
 msgid "Profile name"
 msgstr "Profiel naam"
+
+msgctxt "#31166"
+msgid "Profile avatar"
+msgstr "Profiel avatar"

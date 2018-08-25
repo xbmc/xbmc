@@ -148,6 +148,18 @@ msgctxt "#31033"
 msgid "Your rating"
 msgstr "Din vurdering"
 
+msgctxt "#31034"
+msgid "Extended info"
+msgstr "Udvidet info"
+
+msgctxt "#31035"
+msgid "Pages"
+msgstr "Sider"
+
+msgctxt "#31036"
+msgid "items"
+msgstr "emner"
+
 msgctxt "#31038"
 msgid "Rewind"
 msgstr "Spol Tilbage"
@@ -155,6 +167,10 @@ msgstr "Spol Tilbage"
 msgctxt "#31039"
 msgid "Fast forward"
 msgstr "Spol Frem"
+
+msgctxt "#31041"
+msgid "Camera manufacturer"
+msgstr "Kameraproducent"
 
 msgctxt "#31042"
 msgid "Playlist options"
@@ -188,9 +204,21 @@ msgctxt "#31056"
 msgid "Go to playlist"
 msgstr "Gå til playliste"
 
+msgctxt "#31057"
+msgid "Show login screen on startup"
+msgstr "Vis login under opstart"
+
 msgctxt "#31058"
 msgid "Automatic Login on startup"
 msgstr "Automatisk login ved opstart"
+
+msgctxt "#31061"
+msgid "Main menu items"
+msgstr "Hovedmenu emner"
+
+msgctxt "#31062"
+msgid "Choose weather fanart pack"
+msgstr "Vælg vejr fanart pakke"
 
 msgctxt "#31063"
 msgid "Sections"
@@ -220,9 +248,25 @@ msgctxt "#31072"
 msgid "Power Options"
 msgstr "Strømstyring"
 
+msgctxt "#31075"
+msgid "Movie sets"
+msgstr "Filmsæt"
+
+msgctxt "#31080"
+msgid "Ends at"
+msgstr "Slutter"
+
 msgctxt "#31082"
 msgid "Lyrics add-on"
 msgstr "Add-on til Sangtekster"
+
+msgctxt "#31083"
+msgid "Lyrics add-on settings"
+msgstr "Indstillinger for sangtekst"
+
+msgctxt "#31084"
+msgid "Visualisation settings"
+msgstr "Visualisering indstillinger"
 
 msgctxt "#31089"
 msgid "Available groups"
@@ -275,6 +319,10 @@ msgstr "Indtast tekst her..."
 msgctxt "#31106"
 msgid "Teletext"
 msgstr "Tekst-tv"
+
+msgctxt "#31112"
+msgid "Toggle audio stream"
+msgstr "Lydspor"
 
 msgctxt "#31113"
 msgid "Search local library"
@@ -332,6 +380,10 @@ msgctxt "#31134"
 msgid "Remaining"
 msgstr "Tilbage"
 
+msgctxt "#31136"
+msgid "Click here to see latest changes..."
+msgstr "Klik for at se seneste ændringer..."
+
 msgctxt "#31137"
 msgid "PVR info"
 msgstr "PVR-information"
@@ -339,6 +391,10 @@ msgstr "PVR-information"
 msgctxt "#31138"
 msgid "Player process info"
 msgstr "Procesinformation for afspilning"
+
+msgctxt "#31139"
+msgid "Video decoder"
+msgstr "Videodekoder"
 
 msgctxt "#31140"
 msgid "Pixel format"
@@ -363,6 +419,10 @@ msgstr "Kategorier"
 msgctxt "#31149"
 msgid "Select genre fanart pack"
 msgstr "Vælg fankunst genrepakke"
+
+msgctxt "#31150"
+msgid "Repository"
+msgstr "Fjernlager"
 
 msgctxt "#31151"
 msgid "Unwatched music videos"
@@ -392,6 +452,10 @@ msgctxt "#31158"
 msgid "Touch mode"
 msgstr "Touchtilstand"
 
+msgctxt "#31159"
+msgid "Artwork"
+msgstr "Grafik"
+
 msgctxt "#31160"
 msgid "Show media flags"
 msgstr "Vis medieflag"
@@ -400,6 +464,14 @@ msgctxt "#31161"
 msgid "Numeric pad"
 msgstr "Numerisk tastetur"
 
+msgctxt "#31163"
+msgid "Show Fanart background"
+msgstr "Vis fanart baggrund"
+
 msgctxt "#31165"
 msgid "Profile name"
 msgstr "Profilnavn"
+
+msgctxt "#31166"
+msgid "Profile avatar"
+msgstr "Profilavatar"

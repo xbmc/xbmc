@@ -448,6 +448,10 @@ msgctxt "#31132"
 msgid "Select Program"
 msgstr "Veldu forrit"
 
+msgctxt "#31133"
+msgid "Select Resolution"
+msgstr "Veldu upplausn"
+
 msgctxt "#31134"
 msgid "Remaining"
 msgstr "Eftir"

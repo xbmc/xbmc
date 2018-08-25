@@ -560,6 +560,14 @@ msgctxt "#31163"
 msgid "Show Fanart background"
 msgstr "Visa Fanart-bakgrund"
 
+msgctxt "#31164"
+msgid "Choose kind of profile identification"
+msgstr "Välj typ av profilidentifiering"
+
 msgctxt "#31165"
 msgid "Profile name"
 msgstr "Profilnamn"
+
+msgctxt "#31166"
+msgid "Profile avatar"
+msgstr "Profil avatar"

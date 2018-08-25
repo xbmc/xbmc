@@ -560,6 +560,14 @@ msgctxt "#31163"
 msgid "Show Fanart background"
 msgstr "Menunjuk latar balakang seni peminat"
 
+msgctxt "#31164"
+msgid "Choose kind of profile identification"
+msgstr "Pilih jenis pengenalpastian profil"
+
 msgctxt "#31165"
 msgid "Profile name"
 msgstr "Nama profil"
+
+msgctxt "#31166"
+msgid "Profile avatar"
+msgstr "Avatar profil"
