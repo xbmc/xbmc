@@ -44,6 +44,10 @@ msgctxt "#31009"
 msgid "Working..."
 msgstr "Arbejder..."
 
+msgctxt "#31011"
+msgid "Recent"
+msgstr "Nyligt"
+
 msgctxt "#31013"
 msgid "Movies"
 msgstr "Film"
@@ -63,6 +67,10 @@ msgstr "PVR-information"
 msgctxt "#31018"
 msgid "Player process info"
 msgstr "Procesinformation for afspilning"
+
+msgctxt "#31019"
+msgid "Video decoder"
+msgstr "Videodekoder"
 
 msgctxt "#31020"
 msgid "Pixel format"
@@ -227,3 +235,11 @@ msgstr "Omdøb Gruppe"
 msgctxt "#31563"
 msgid "Delete Group"
 msgstr "Slet Gruppe"
+
+msgctxt "#31564"
+msgid "Show hidden"
+msgstr "Vis skjulte"
+
+msgctxt "#31565"
+msgid "Show deleted"
+msgstr "Vis slettede"
