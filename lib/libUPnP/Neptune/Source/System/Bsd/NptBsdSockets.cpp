@@ -131,48 +131,19 @@ static NPT_WinsockSystem& WinsockInitializer = NPT_WinsockSystem::Initializer;
 #undef SetPort
 #endif
 
-#ifndef TARGET_WINDOWS_STORE
-#if !defined(EWOULDBLOCK)
 #define EWOULDBLOCK  WSAEWOULDBLOCK
-#endif
-#if !defined(EINPROGRESS)
 #define EINPROGRESS  WSAEINPROGRESS
-#endif
-#if !defined(ECONNREFUSED)
 #define ECONNREFUSED WSAECONNREFUSED
-#endif
-#if !defined(ECONNABORTED)
 #define ECONNABORTED WSAECONNABORTED
-#endif
-#if !defined(ECONNRESET)
 #define ECONNRESET   WSAECONNRESET
-#endif
-#if !defined(ETIMEDOUT)
 #define ETIMEDOUT    WSAETIMEDOUT
-#endif
-#if !defined(ENETRESET)
 #define ENETRESET    WSAENETRESET
-#endif
-#if !defined(EADDRINUSE)
 #define EADDRINUSE   WSAEADDRINUSE
-#endif
-#if !defined(ENETDOWN)
 #define ENETDOWN     WSAENETDOWN
-#endif
-#if !defined(ENETUNREACH)
 #define ENETUNREACH  WSAENETUNREACH
-#endif
-#if !defined(EHOSTUNREACH)
-#define EHOSTUNREACH WSAEHOSTUNREACH
-#endif
-#if !defined(ENOTCONN)
 #define ENOTCONN     WSAENOTCONN
-#endif
-#endif
 #if !defined(EAGAIN)
 #define EAGAIN       WSAEWOULDBLOCK 
-#endif
-#if !defined(EINTR)
 #define EINTR        WSAEINTR
 #endif
 #if !defined(SHUT_RDWR)

@@ -4,17 +4,16 @@ Date: Fri, 2 Jun 2017 16:34:58 +0300
 Subject: [PATCH] [win10] uwp fixes libUPnP
 
 ---
- lib/libUPnP/CMakeLists.txt                         |  8 ++++--
  lib/libUPnP/Neptune/Source/Core/NptConfig.h        | 13 ++++++++++
  lib/libUPnP/Neptune/Source/Core/NptUtils.cpp       | 30 ++++++++++++++++++++++
  lib/libUPnP/Neptune/Source/Core/NptUtils.h         |  7 +++++
- .../Neptune/Source/System/Bsd/NptBsdSockets.cpp    |  2 ++
  .../Source/System/StdC/NptStdcEnvironment.cpp      |  2 +-
  .../System/Win32/NptWin32DynamicLibraries.cpp      |  4 +++
  .../Source/System/Win32/NptWin32MessageQueue.cpp   |  3 ++-
  .../Source/System/Win32/NptWin32MessageQueue.h     |  3 +++
+ .../Neptune/Source/System/Win32/NptWin32Queue.cpp  |  6 ++---
  .../Source/System/Win32/NptWin32SerialPort.cpp     |  2 ++
- 10 files changed, 70 insertions(+), 4 deletions(-)
+ 9 files changed, 65 insertions(+), 5 deletions(-)
 
 diff --git a/lib/libUPnP/Neptune/Source/Core/NptConfig.h b/lib/libUPnP/Neptune/Source/Core/NptConfig.h
 index d51f67f94e..130d5cc33b 100644
@@ -121,26 +120,6 @@ index 3a06d497f4..89b2e29812 100644
 +#endif
 +
  #endif // _NPT_UTILS_H_
-diff --git a/lib/libUPnP/Neptune/Source/System/Bsd/NptBsdSockets.cpp b/lib/libUPnP/Neptune/Source/System/Bsd/NptBsdSockets.cpp
-index ee86dbf4b0..a42dfbfb85 100644
---- a/lib/libUPnP/Neptune/Source/System/Bsd/NptBsdSockets.cpp
-+++ b/lib/libUPnP/Neptune/Source/System/Bsd/NptBsdSockets.cpp
-@@ -131,6 +131,7 @@ static NPT_WinsockSystem& WinsockInitializer = NPT_WinsockSystem::Initializer;
- #undef SetPort
- #endif
- 
-+#ifndef TARGET_WINDOWS_STORE
- #if !defined(EWOULDBLOCK)
- #define EWOULDBLOCK  WSAEWOULDBLOCK
- #endif
-@@ -167,6 +168,7 @@ static NPT_WinsockSystem& WinsockInitializer = NPT_WinsockSystem::Initializer;
- #if !defined(ENOTCONN)
- #define ENOTCONN     WSAENOTCONN
- #endif
-+#endif
- #if !defined(EAGAIN)
- #define EAGAIN       WSAEWOULDBLOCK 
- #endif
 diff --git a/lib/libUPnP/Neptune/Source/System/StdC/NptStdcEnvironment.cpp b/lib/libUPnP/Neptune/Source/System/StdC/NptStdcEnvironment.cpp
 index c9f9939d2b..f700b2212b 100644
 --- a/lib/libUPnP/Neptune/Source/System/StdC/NptStdcEnvironment.cpp
