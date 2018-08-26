@@ -1,5 +1,5 @@
---- sljit/sljitConfigInternal.h.orig	2016-09-25 12:41:56.067863204 +0200
-+++ sljit/sljitConfigInternal.h	2016-09-25 12:42:22.155862977 +0200
+--- a/sljit/sljitConfigInternal.h
++++ b/sljit/sljitConfigInternal.h
 @@ -310,7 +310,7 @@
  #define SLJIT_CACHE_FLUSH(from, to) \
  	sys_icache_invalidate((char*)(from), (char*)(to) - (char*)(from))
