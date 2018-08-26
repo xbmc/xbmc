@@ -1,16 +1,16 @@
---- a/ltmain.sh-org	2015-10-30 16:21:22.000000000 -0400
-+++ b/ltmain.sh	2015-10-30 16:22:21.000000000 -0400
-@@ -8715,16 +8715,6 @@ EOF
+--- a/ltmain.sh
++++ b/ltmain.sh
+@@ -10427,16 +10427,6 @@
  
        case $host in
        *-*-darwin*)
 -	# Don't allow lazy linking, it breaks C++ global constructors
 -	# But is supposedly fixed on 10.4 or later (yay!).
--	if test "$tagname" = CXX ; then
+-	if test CXX = "$tagname"; then
 -	  case ${MACOSX_DEPLOYMENT_TARGET-10.0} in
 -	    10.[0123])
--	      func_append compile_command " ${wl}-bind_at_load"
--	      func_append finalize_command " ${wl}-bind_at_load"
+-	      func_append compile_command " $wl-bind_at_load"
+-	      func_append finalize_command " $wl-bind_at_load"
 -	    ;;
 -	  esac
 -	fi
