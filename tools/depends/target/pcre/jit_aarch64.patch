@@ -1,8 +1,8 @@
 --- a/sljit/sljitConfigInternal.h
 +++ b/sljit/sljitConfigInternal.h
-@@ -310,7 +310,7 @@
+@@ -316,7 +316,7 @@
  #define SLJIT_CACHE_FLUSH(from, to) \
- 	sys_icache_invalidate((char*)(from), (char*)(to) - (char*)(from))
+ 	__builtin___clear_cache((char*)from, (char*)to)
  
 -#elif defined __ANDROID__
 +#elif (defined __ANDROID__ && !defined SLJIT_CONFIG_ARM_64)
