@@ -5120,6 +5120,9 @@ void CVideoPlayer::GetSubtitleStreamInfo(int index, SubtitleStreamInfo &info)
 {
   CSingleLock lock(m_content.m_section);
 
+  if (index == CURRENT_STREAM)
+    index = m_content.m_subtitleIndex;
+
   if (index < 0 || index > GetSubtitleCount() - 1)
     return;
 
