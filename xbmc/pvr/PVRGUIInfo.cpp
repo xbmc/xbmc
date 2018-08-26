@@ -14,7 +14,6 @@
 #include "Application.h"
 #include "GUIInfoManager.h"
 #include "ServiceBroker.h"
-#include "cores/DataCacheCore.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/guiinfo/GUIInfo.h"
@@ -52,9 +51,11 @@ CPVRGUIInfo::~CPVRGUIInfo(void)
 void CPVRGUIInfo::ResetProperties(void)
 {
   CSingleLock lock(m_critSection);
+
   m_anyTimersInfo.ResetProperties();
   m_tvTimersInfo.ResetProperties();
   m_radioTimersInfo.ResetProperties();
+  m_timesInfo.Reset();
   m_bHasTVRecordings            = false;
   m_bHasRadioRecordings         = false;
   m_iCurrentActiveClient        = 0;
@@ -68,7 +69,6 @@ void CPVRGUIInfo::ResetProperties(void)
   m_strBackendChannels          .clear();
   m_iBackendDiskTotal           = 0;
   m_iBackendDiskUsed            = 0;
-  m_iDuration                   = 0;
   m_bIsPlayingTV                = false;
   m_bIsPlayingRadio             = false;
   m_bIsPlayingRecording         = false;
@@ -78,15 +78,7 @@ void CPVRGUIInfo::ResetProperties(void)
   m_bCanRecordPlayingChannel    = false;
   m_bHasTVChannels              = false;
   m_bHasRadioChannels           = false;
-  m_bHasTimeshiftData           = false;
-  m_bIsTimeshifting             = false;
-  m_iStartTime                  = time_t(0);
-  m_iTimeshiftStartTime         = time_t(0);
-  m_iTimeshiftEndTime           = time_t(0);
-  m_iTimeshiftPlayTime          = time_t(0);
-  m_iTimeshiftOffset            = 0;
 
-  ResetPlayingTag();
   ClearQualityInfo(m_qualityInfo);
   ClearDescrambleInfo(m_descrambleInfo);
 
@@ -134,7 +126,7 @@ void CPVRGUIInfo::Notify(const Observable &obs, const ObservableMessage msg)
 
 void CPVRGUIInfo::Process(void)
 {
-  unsigned int mLoop(0);
+  unsigned int iLoop = 0;
   int toggleInterval = g_advancedSettings.m_iPVRInfoToggleInterval / 1000;
 
   /* updated on request */
@@ -169,11 +161,7 @@ void CPVRGUIInfo::Process(void)
     Sleep(0);
 
     if (!m_bStop)
-      UpdateTimeshift();
-    Sleep(0);
-
-    if (!m_bStop)
-      UpdatePlayingTag();
+      UpdateTimeshiftData();
     Sleep(0);
 
     if (!m_bStop)
@@ -185,18 +173,15 @@ void CPVRGUIInfo::Process(void)
     Sleep(0);
 
     // Update the backend cache every toggleInterval seconds
-    if (!m_bStop && mLoop % toggleInterval == 0)
+    if (!m_bStop && iLoop % toggleInterval == 0)
       UpdateBackendCache();
 
-    if (++mLoop == 1000)
-      mLoop = 0;
+    if (++iLoop == 1000)
+      iLoop = 0;
 
     if (!m_bStop)
       Sleep(1000);
   }
-
-  if (!m_bStop)
-    ResetPlayingTag();
 }
 
 void CPVRGUIInfo::UpdateQualityData(void)
@@ -272,65 +257,9 @@ void CPVRGUIInfo::UpdateMisc(void)
   m_bIsRecordingPlayingChannel = bIsRecordingPlayingChannel;
 }
 
-void CPVRGUIInfo::UpdateTimeshift(void)
+void CPVRGUIInfo::UpdateTimeshiftData(void)
 {
-  if (!CServiceBroker::GetPVRManager().IsPlayingTV() && !CServiceBroker::GetPVRManager().IsPlayingRadio())
-  {
-    // If nothing is playing (anymore), there is no need to poll the timeshift values from the clients.
-    CSingleLock lock(m_critSection);
-    if (m_bHasTimeshiftData)
-    {
-      m_bHasTimeshiftData = false;
-      m_bIsTimeshifting = false;
-      m_iStartTime = 0;
-      m_iTimeshiftStartTime = 0;
-      m_iTimeshiftEndTime = 0;
-      m_iTimeshiftPlayTime = 0;
-      m_iLastTimeshiftUpdate = 0;
-      m_iTimeshiftOffset = 0;
-    }
-    return;
-  }
-
-  bool bIsTimeshifting = CServiceBroker::GetPVRManager().IsTimeshifting();
-  time_t now = std::time(nullptr);
-  time_t iStartTime = CServiceBroker::GetDataCacheCore().GetStartTime();
-  time_t iPlayTime = CServiceBroker::GetDataCacheCore().GetPlayTime() / 1000;
-  time_t iMinTime = bIsTimeshifting ? CServiceBroker::GetDataCacheCore().GetMinTime() / 1000 : 0;
-  time_t iMaxTime = bIsTimeshifting ? CServiceBroker::GetDataCacheCore().GetMaxTime() / 1000 : 0;
-  bool bPlaying = CServiceBroker::GetDataCacheCore().GetSpeed() == 1.0;
-
-  CSingleLock lock(m_critSection);
-
-  m_iLastTimeshiftUpdate = now;
-
-  if (!iStartTime)
-  {
-    if (m_iStartTime == 0)
-      iStartTime = now;
-    else
-      iStartTime = m_iStartTime;
-  }
-
-  m_bIsTimeshifting = bIsTimeshifting;
-  m_iStartTime = iStartTime;
-  m_iTimeshiftStartTime = iStartTime + iMinTime;
-  m_iTimeshiftEndTime = iStartTime + iMaxTime;
-
-  if (m_iTimeshiftEndTime > m_iTimeshiftStartTime)
-  {
-    // timeshifting supported
-    m_iTimeshiftPlayTime = iStartTime + iPlayTime;
-  }
-  else if (bPlaying)
-  {
-    // timeshifting not supported
-    m_iTimeshiftPlayTime = now - m_iTimeshiftOffset;
-  }
-
-  m_iTimeshiftOffset = now - m_iTimeshiftPlayTime;
-
-  m_bHasTimeshiftData = true;
+  m_timesInfo.Update();
 }
 
 bool CPVRGUIInfo::InitCurrentItem(CFileItem *item)
@@ -701,32 +630,53 @@ bool CPVRGUIInfo::GetPVRLabel(const CFileItem *item, const CGUIInfo &info, std::
   switch (info.m_info)
   {
     case PVR_EPG_EVENT_DURATION:
-      CharInfoEpgEventDuration(item, static_cast<TIME_FORMAT>(info.GetData1()), strValue);
+    {
+      const CPVREpgInfoTagPtr epgTag = (item->IsPVRChannel() || item->IsEPG()) ? CPVRItem(item).GetEpgInfoTag() : nullptr;
+      strValue = m_timesInfo.GetEpgEventDuration(epgTag, static_cast<TIME_FORMAT>(info.GetData1()));
       return true;
+    }
    case PVR_EPG_EVENT_ELAPSED_TIME:
-      CharInfoEpgEventElapsedTime(item, static_cast<TIME_FORMAT>(info.GetData1()), strValue);
+    {
+      const CPVREpgInfoTagPtr epgTag = (item->IsPVRChannel() || item->IsEPG()) ? CPVRItem(item).GetEpgInfoTag() : nullptr;
+      strValue = m_timesInfo.GetEpgEventElapsedTime(epgTag, static_cast<TIME_FORMAT>(info.GetData1()));
       return true;
+    }
     case PVR_EPG_EVENT_REMAINING_TIME:
-      CharInfoEpgEventRemainingTime(item, static_cast<TIME_FORMAT>(info.GetData1()), strValue);
+    {
+      const CPVREpgInfoTagPtr epgTag = (item->IsPVRChannel() || item->IsEPG()) ? CPVRItem(item).GetEpgInfoTag() : nullptr;
+      strValue = m_timesInfo.GetEpgEventRemainingTime(epgTag, static_cast<TIME_FORMAT>(info.GetData1()));
       return true;
+    }
     case PVR_EPG_EVENT_FINISH_TIME:
-      CharInfoEpgEventFinishTime(item, static_cast<TIME_FORMAT>(info.GetData1()), strValue);
+    {
+      const CPVREpgInfoTagPtr epgTag = (item->IsPVRChannel() || item->IsEPG()) ? CPVRItem(item).GetEpgInfoTag() : nullptr;
+      strValue = m_timesInfo.GetEpgEventFinishTime(epgTag, static_cast<TIME_FORMAT>(info.GetData1()));
       return true;
+    }
     case PVR_TIMESHIFT_START_TIME:
-      CharInfoTimeshiftStartTime(static_cast<TIME_FORMAT>(info.GetData1()), strValue);
+      strValue = m_timesInfo.GetTimeshiftStartTime(static_cast<TIME_FORMAT>(info.GetData1()));
       return true;
     case PVR_TIMESHIFT_END_TIME:
-      CharInfoTimeshiftEndTime(static_cast<TIME_FORMAT>(info.GetData1()), strValue);
+      strValue = m_timesInfo.GetTimeshiftEndTime(static_cast<TIME_FORMAT>(info.GetData1()));
       return true;
     case PVR_TIMESHIFT_PLAY_TIME:
-      CharInfoTimeshiftPlayTime(static_cast<TIME_FORMAT>(info.GetData1()), strValue);
+      strValue = m_timesInfo.GetTimeshiftPlayTime(static_cast<TIME_FORMAT>(info.GetData1()));
       return true;
     case PVR_TIMESHIFT_OFFSET:
-      CharInfoTimeshiftOffset(static_cast<TIME_FORMAT>(info.GetData1()), strValue);
+      strValue = m_timesInfo.GetTimeshiftOffset(static_cast<TIME_FORMAT>(info.GetData1()));
+      return true;
+    case PVR_TIMESHIFT_PROGRESS_DURATION:
+      strValue = m_timesInfo.GetTimeshiftProgressDuration(static_cast<TIME_FORMAT>(info.GetData1()));
+      return true;
+    case PVR_TIMESHIFT_PROGRESS_START_TIME:
+      strValue = m_timesInfo.GetTimeshiftProgressStartTime(static_cast<TIME_FORMAT>(info.GetData1()));
+      return true;
+    case PVR_TIMESHIFT_PROGRESS_END_TIME:
+      strValue = m_timesInfo.GetTimeshiftProgressEndTime(static_cast<TIME_FORMAT>(info.GetData1()));
       return true;
     case PVR_EPG_EVENT_SEEK_TIME:
-      strValue = StringUtils::SecondsToTimeString(GetElapsedTime() + g_application.GetAppPlayer().GetSeekHandler().GetSeekSize(),
-                                                  static_cast<TIME_FORMAT>(info.GetData1())).c_str();
+      strValue = m_timesInfo.GetEpgEventSeekTime(g_application.GetAppPlayer().GetSeekHandler().GetSeekSize(),
+                                                     static_cast<TIME_FORMAT>(info.GetData1()));
       return true;
     case PVR_NOW_RECORDING_TITLE:
       strValue = m_anyTimersInfo.GetActiveTimerTitle();
@@ -1090,24 +1040,35 @@ bool CPVRGUIInfo::GetPVRInt(const CFileItem *item, const CGUIInfo &info, int& iV
     case PVR_EPG_EVENT_DURATION:
     {
       const CPVREpgInfoTagPtr epgTag = (item->IsPVRChannel() || item->IsEPG()) ? CPVRItem(item).GetEpgInfoTag() : nullptr;
-      if (epgTag && epgTag != m_playingEpgTag)
-        iValue = epgTag->GetDuration();
-      else
-        iValue = m_iDuration;
+      iValue = m_timesInfo.GetEpgEventDuration(epgTag);
       return true;
     }
     case PVR_EPG_EVENT_PROGRESS:
     {
       const CPVREpgInfoTagPtr epgTag = (item->IsPVRChannel() || item->IsEPG()) ? CPVRItem(item).GetEpgInfoTag() : nullptr;
-      if (epgTag && epgTag != m_playingEpgTag)
-        iValue = std::lrintf(epgTag->ProgressPercentage());
-      else
-        iValue = std::lrintf(static_cast<float>(GetElapsedTime()) / m_iDuration * 100);
+      iValue = m_timesInfo.GetEpgEventProgress(epgTag);
       return true;
     }
     case PVR_TIMESHIFT_PROGRESS:
-      iValue = std::lrintf(static_cast<float>(m_iTimeshiftPlayTime - m_iTimeshiftStartTime) /
-                           (m_iTimeshiftEndTime - m_iTimeshiftStartTime) * 100);
+      iValue = m_timesInfo.GetTimeshiftProgress();
+      return true;
+    case PVR_TIMESHIFT_PROGRESS_DURATION:
+      iValue = m_timesInfo.GetTimeshiftProgressDuration();
+      return true;
+    case PVR_TIMESHIFT_PROGRESS_PLAY_POS:
+      iValue = m_timesInfo.GetTimeshiftProgressPlayPosition();
+      return true;
+    case PVR_TIMESHIFT_PROGRESS_EPG_START:
+      iValue = m_timesInfo.GetTimeshiftProgressEpgStart();
+      return true;
+    case PVR_TIMESHIFT_PROGRESS_EPG_END:
+      iValue = m_timesInfo.GetTimeshiftProgressEpgEnd();
+      return true;
+    case PVR_TIMESHIFT_PROGRESS_BUFFER_START:
+      iValue = m_timesInfo.GetTimeshiftProgressBufferStart();
+      return true;
+    case PVR_TIMESHIFT_PROGRESS_BUFFER_END:
+      iValue = m_timesInfo.GetTimeshiftProgressBufferEnd();
       return true;
     case PVR_ACTUAL_STREAM_SIG_PROGR:
       iValue = std::lrintf(static_cast<float>(m_qualityInfo.iSignal) / 0xFFFF * 100);
@@ -1345,7 +1306,7 @@ bool CPVRGUIInfo::GetPVRBool(const CFileItem *item, const CGUIInfo &info, bool& 
       bValue = m_bIsPlayingEncryptedStream;
       return true;
     case PVR_IS_TIMESHIFTING:
-      bValue = m_bIsTimeshifting;
+      bValue = m_timesInfo.IsTimeshifting();
       return true;
     case PVR_CAN_RECORD_PLAYING_CHANNEL:
       bValue = m_bCanRecordPlayingChannel;
@@ -1387,84 +1348,6 @@ bool CPVRGUIInfo::GetRadioRDSBool(const CFileItem *item, const CGUIInfo &info, b
   }
 
   return false;
-}
-
-namespace
-{
-  std::string TimeToTimeString(time_t datetime, TIME_FORMAT format, bool withSeconds)
-  {
-    CDateTime time;
-    time.SetFromUTCDateTime(datetime);
-    return time.GetAsLocalizedTime(format, withSeconds);
-  }
-} // unnamed namespace
-
-void CPVRGUIInfo::CharInfoTimeshiftStartTime(TIME_FORMAT format, std::string &strValue) const
-{
-  strValue = TimeToTimeString(m_iTimeshiftStartTime, format, false);
-}
-
-void CPVRGUIInfo::CharInfoTimeshiftEndTime(TIME_FORMAT format, std::string &strValue) const
-{
-  strValue = TimeToTimeString(m_iTimeshiftEndTime, format, false);
-}
-
-void CPVRGUIInfo::CharInfoTimeshiftPlayTime(TIME_FORMAT format, std::string &strValue) const
-{
-  strValue = TimeToTimeString(m_iTimeshiftPlayTime, format, true);
-}
-
-void CPVRGUIInfo::CharInfoTimeshiftOffset(TIME_FORMAT format, std::string &strValue) const
-{
-  strValue = StringUtils::SecondsToTimeString(m_iTimeshiftOffset, format).c_str();
-}
-
-void CPVRGUIInfo::CharInfoEpgEventDuration(const CFileItem *item, TIME_FORMAT format, std::string &strValue) const
-{
-  int iDuration = 0;
-  const CPVREpgInfoTagPtr epgTag = (item->IsPVRChannel() || item->IsEPG()) ? CPVRItem(item).GetEpgInfoTag() : nullptr;
-  if (epgTag && epgTag != m_playingEpgTag)
-    iDuration = epgTag->GetDuration();
-  else
-    iDuration = m_iDuration;
-
-  strValue = StringUtils::SecondsToTimeString(iDuration, format).c_str();
-}
-
-void CPVRGUIInfo::CharInfoEpgEventElapsedTime(const CFileItem *item, TIME_FORMAT format, std::string &strValue) const
-{
-  int iElapsed = 0;
-  const CPVREpgInfoTagPtr epgTag = (item->IsPVRChannel() || item->IsEPG()) ? CPVRItem(item).GetEpgInfoTag() : nullptr;
-  if (epgTag && epgTag != m_playingEpgTag)
-    iElapsed = epgTag->Progress();
-  else
-    iElapsed = GetElapsedTime();
-
-  strValue = StringUtils::SecondsToTimeString(iElapsed, format).c_str();
-}
-
-int CPVRGUIInfo::GetRemainingTime(const CFileItem *item) const
-{
-  int iRemaining = 0;
-  const CPVREpgInfoTagPtr epgTag = (item->IsPVRChannel() || item->IsEPG()) ? CPVRItem(item).GetEpgInfoTag() : nullptr;
-  if (epgTag && epgTag != m_playingEpgTag)
-    iRemaining = epgTag->GetDuration() - epgTag->Progress();
-  else
-    iRemaining = m_iDuration - GetElapsedTime();
-
-  return iRemaining;
-}
-
-void CPVRGUIInfo::CharInfoEpgEventRemainingTime(const CFileItem *item, TIME_FORMAT format, std::string &strValue) const
-{
-  strValue = StringUtils::SecondsToTimeString(GetRemainingTime(item), format).c_str();
-}
-
-void CPVRGUIInfo::CharInfoEpgEventFinishTime(const CFileItem *item, TIME_FORMAT format, std::string &strValue) const
-{
-  CDateTime finish = CDateTime::GetCurrentDateTime();
-  finish += CDateTimeSpan(0, 0, 0, GetRemainingTime(item));
-  strValue = finish.GetAsLocalizedTime(format);
 }
 
 void CPVRGUIInfo::CharInfoBackendNumber(std::string &strValue) const
@@ -1708,81 +1591,4 @@ void CPVRGUIInfo::UpdateNextTimer(void)
   m_anyTimersInfo.UpdateNextTimer();
   m_tvTimersInfo.UpdateNextTimer();
   m_radioTimersInfo.UpdateNextTimer();
-}
-
-int CPVRGUIInfo::GetElapsedTime(void) const
-{
-  CSingleLock lock(m_critSection);
-
-  if (m_playingEpgTag || m_iTimeshiftStartTime)
-  {
-    CDateTime current(m_iTimeshiftPlayTime);
-    CDateTime start = m_playingEpgTag ? m_playingEpgTag->StartAsUTC()
-                                      : CDateTime(m_iTimeshiftStartTime);
-    CDateTimeSpan time = current > start ? current - start : CDateTimeSpan(0, 0, 0, 0);
-    return time.GetSecondsTotal();
-  }
-  else
-  {
-    return 0;
-  }
-}
-
-void CPVRGUIInfo::ResetPlayingTag(void)
-{
-  CSingleLock lock(m_critSection);
-  m_playingEpgTag.reset();
-  m_iDuration = 0;
-}
-
-CPVREpgInfoTagPtr CPVRGUIInfo::GetPlayingTag() const
-{
-  CSingleLock lock(m_critSection);
-  return m_playingEpgTag;
-}
-
-void CPVRGUIInfo::UpdatePlayingTag(void)
-{
-  const CPVRChannelPtr currentChannel(CServiceBroker::GetPVRManager().GetPlayingChannel());
-  const CPVREpgInfoTagPtr currentTag(CServiceBroker::GetPVRManager().GetPlayingEpgTag());
-  if (currentChannel || currentTag)
-  {
-    CPVREpgInfoTagPtr epgTag(GetPlayingTag());
-    CPVRChannelPtr channel;
-    if (epgTag)
-      channel = epgTag->Channel();
-
-    if (!epgTag || !epgTag->IsActive() ||
-        !channel || !currentChannel || *channel != *currentChannel)
-    {
-      const CPVREpgInfoTagPtr newTag(currentTag ? currentTag : currentChannel->GetEPGNow());
-
-      CSingleLock lock(m_critSection);
-      if (newTag)
-      {
-        m_playingEpgTag = newTag;
-        m_iDuration = m_playingEpgTag->GetDuration();
-      }
-      else if (m_iTimeshiftEndTime > m_iTimeshiftStartTime)
-      {
-        m_playingEpgTag.reset();
-        m_iDuration = m_iTimeshiftEndTime - m_iTimeshiftStartTime;
-      }
-      else
-      {
-        m_playingEpgTag.reset();
-        m_iDuration = 0;
-      }
-    }
-  }
-  else
-  {
-    const CPVRRecordingPtr recording(CServiceBroker::GetPVRManager().GetPlayingRecording());
-    if (recording)
-    {
-      CSingleLock lock(m_critSection);
-      m_playingEpgTag.reset();
-      m_iDuration = recording->GetDuration();
-    }
-  }
 }

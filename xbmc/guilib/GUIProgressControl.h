@@ -42,7 +42,7 @@ public:
   bool OnMessage(CGUIMessage& message) override;
   void SetPosition(float posX, float posY) override;
   void SetPercentage(float fPercent);
-  void SetInfo(int iInfo);
+  void SetInfo(int iInfo, int iInfo2 = 0);
   int GetInfo() const {return m_iInfoCode;};
 
   float GetPercentage() const;
@@ -59,7 +59,9 @@ protected:
   CRect m_guiMidClipRect;
 
   int m_iInfoCode;
+  int m_iInfoCode2 = 0;
   float m_fPercent;
+  float m_fPercent2 = 0.0f;
   bool m_bReveal;
   bool m_bChanged;
 };

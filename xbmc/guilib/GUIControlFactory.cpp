@@ -667,6 +667,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   bool  defaultAlways = false;
   std::string strTmp;
   int singleInfo = 0;
+  int singleInfo2 = 0;
   std::string strLabel;
   int iUrlSet=0;
   std::string toggleSelect;
@@ -855,6 +856,8 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   std::string infoString;
   if (XMLUtils::GetString(pControlNode, "info", infoString))
     singleInfo = CServiceBroker::GetGUI()->GetInfoManager().TranslateString(infoString);
+  if (XMLUtils::GetString(pControlNode, "info2", infoString))
+    singleInfo2 = CServiceBroker::GetGUI()->GetInfoManager().TranslateString(infoString);
 
   GetTexture(pControlNode, "texturefocus", textureFocus);
   GetTexture(pControlNode, "texturenofocus", textureNoFocus);
@@ -1288,7 +1291,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
         textureBackground, textureLeft, textureMid, textureRight,
         textureOverlay, bReveal);
 
-      static_cast<CGUIProgressControl*>(control)->SetInfo(singleInfo);
+      static_cast<CGUIProgressControl*>(control)->SetInfo(singleInfo, singleInfo2);
     }
     break;
   case CGUIControl::GUICONTROL_IMAGE:

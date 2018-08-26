@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <window>
+	<onload condition="!Player.PauseEnabled">SetFocus(603)</onload>
 	<defaultcontrol always="true">602</defaultcontrol>
 	<depth>DepthOSD</depth>
 	<controls>
@@ -62,6 +63,7 @@
 					<radioposy>0</radioposy>
 					<selected>Player.Paused</selected>
 					<onclick>PlayerControl(Play)</onclick>
+					<visible>Player.PauseEnabled</visible>
 				</control>
 				<control type="radiobutton" id="603">
 					<include content="OSDButton">
@@ -183,13 +185,13 @@
 				</control>
 			</control>
 			<control type="label">
-				<right>30</right>
+				<animation effect="slide" end="0,-20" time="150" condition="MusicPlayer.Content(LiveTV)">conditional</animation>
+				<right>20</right>
 				<top>-60</top>
-				<textoffsetx>20</textoffsetx>
 				<aligny>center</aligny>
 				<align>right</align>
-				<width>1858</width>
-				<height>60</height>
+				<width>1000</width>
+				<height>50</height>
 				<label>$VAR[MusicOSDHelpTextVar]</label>
 			</control>
 		</control>
@@ -213,55 +215,55 @@
 				<left>0</left>
 				<top>-5</top>
 				<width>100%</width>
-				<height>25</height>
+				<height>26</height>
 				<onup>8010</onup>
 				<ondown>650</ondown>
 				<texturesliderbar colordiffuse="00FFFFFF">osd/progress/nub_leftright.png</texturesliderbar>
 				<textureslidernib>osd/progress/nub_leftright.png</textureslidernib>
 				<textureslidernibfocus colordiffuse="button_focus">osd/progress/nub_leftright.png</textureslidernibfocus>
 				<info>Player.Progress</info>
-				<visible>Player.SeekEnabled + !Control.HasFocus(87) + !VideoPlayer.HasEpg</visible>
+				<visible>Player.SeekEnabled + !Control.HasFocus(87) + !MusicPlayer.Content(LiveTV)</visible>
 				<action>seek</action>
 			</control>
 			<control type="slider">
 				<left>0</left>
 				<top>-5</top>
 				<width>100%</width>
-				<height>25</height>
+				<height>26</height>
 				<onup>8010</onup>
 				<ondown>650</ondown>
 				<texturesliderbar colordiffuse="00FFFFFF">osd/progress/nub_leftright.png</texturesliderbar>
 				<textureslidernib colordiffuse="button_focus">osd/progress/nub_leftright.png</textureslidernib>
 				<textureslidernibfocus colordiffuse="button_focus">osd/progress/nub_leftright.png</textureslidernibfocus>
 				<info>Player.Progress</info>
-				<visible>Player.SeekEnabled + Control.HasFocus(87) + !VideoPlayer.HasEpg</visible>
+				<visible>Player.SeekEnabled + Control.HasFocus(87) + !MusicPlayer.Content(LiveTV)</visible>
 				<action>seek</action>
 			</control>
 			<control type="slider">
 				<left>0</left>
 				<top>-5</top>
 				<width>100%</width>
-				<height>25</height>
+				<height>26</height>
 				<onup>8010</onup>
 				<ondown>650</ondown>
 				<texturesliderbar colordiffuse="00FFFFFF">osd/progress/nub_leftright.png</texturesliderbar>
 				<textureslidernib>osd/progress/nub_leftright.png</textureslidernib>
 				<textureslidernibfocus colordiffuse="button_focus">osd/progress/nub_leftright.png</textureslidernibfocus>
-				<info>PVR.EpgEventProgress</info>
-				<visible>Player.SeekEnabled + !Control.HasFocus(87) + VideoPlayer.HasEpg</visible>
+				<info>PVR.TimeshiftProgressPlayPos</info>
+				<visible>Player.SeekEnabled + !Control.HasFocus(87) + MusicPlayer.Content(LiveTV)</visible>
 			</control>
 			<control type="slider">
 				<left>0</left>
 				<top>-5</top>
 				<width>100%</width>
-				<height>25</height>
+				<height>26</height>
 				<onup>8010</onup>
 				<ondown>650</ondown>
 				<texturesliderbar colordiffuse="00FFFFFF">osd/progress/nub_leftright.png</texturesliderbar>
 				<textureslidernib colordiffuse="button_focus">osd/progress/nub_leftright.png</textureslidernib>
 				<textureslidernibfocus colordiffuse="button_focus">osd/progress/nub_leftright.png</textureslidernibfocus>
-				<info>PVR.EpgEventProgress</info>
-				<visible>Player.SeekEnabled + Control.HasFocus(87) + VideoPlayer.HasEpg</visible>
+				<info>PVR.TimeshiftProgressPlayPos</info>
+				<visible>Player.SeekEnabled + Control.HasFocus(87) + MusicPlayer.Content(LiveTV)</visible>
 			</control>
 		</control>
 	</controls>

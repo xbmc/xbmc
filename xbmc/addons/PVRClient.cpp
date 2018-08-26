@@ -1339,15 +1339,6 @@ PVR_ERROR CPVRClient::CanSeekStream(bool &bCanSeek) const
   });
 }
 
-PVR_ERROR CPVRClient::IsTimeshifting(bool &bTimeshifting) const
-{
-  bTimeshifting = false;
-  return DoAddonCall(__FUNCTION__, [&bTimeshifting](const AddonInstance* addon) {
-    bTimeshifting = addon->IsTimeshifting();
-    return PVR_ERROR_NO_ERROR;
-  });
-}
-
 PVR_ERROR CPVRClient::GetStreamTimes(PVR_STREAM_TIMES *times)
 {
   return DoAddonCall(__FUNCTION__, [&times](const AddonInstance* addon) {
