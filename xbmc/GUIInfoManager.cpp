@@ -6837,11 +6837,13 @@ void CGUIInfoManager::UpdateAVInfo()
   {
     VideoStreamInfo video;
     AudioStreamInfo audio;
+    SubtitleStreamInfo subtitle;
 
     g_application.GetAppPlayer().GetVideoStreamInfo(CURRENT_STREAM, video);
     g_application.GetAppPlayer().GetAudioStreamInfo(CURRENT_STREAM, audio);
+    g_application.GetAppPlayer().GetSubtitleStreamInfo(CURRENT_STREAM, subtitle);
 
-    m_infoProviders.UpdateAVInfo(audio, video);
+    m_infoProviders.UpdateAVInfo(audio, video, subtitle);
   }
 }
 

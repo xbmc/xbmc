@@ -21,6 +21,7 @@ public:
   bool HasAVInfoChanges();
   void SignalVideoInfoChange();
   void SignalAudioInfoChange();
+  void SignalSubtitleInfoChange();
 
   // player video info
   void SetVideoDecoderName(std::string name, bool isHw);

@@ -105,10 +105,10 @@ bool CGUIInfoProviders::GetBool(bool& value, const CGUIListItem *item, int conte
   return false;
 }
 
-void CGUIInfoProviders::UpdateAVInfo(const AudioStreamInfo& audioInfo, const VideoStreamInfo& videoInfo)
+void CGUIInfoProviders::UpdateAVInfo(const AudioStreamInfo& audioInfo, const VideoStreamInfo& videoInfo, const SubtitleStreamInfo& subtitleInfo)
 {
   for (const auto& provider : m_providers)
   {
-    provider->UpdateAVInfo(audioInfo, videoInfo);
+    provider->UpdateAVInfo(audioInfo, videoInfo, subtitleInfo);
   }
 }

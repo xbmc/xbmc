@@ -483,13 +483,8 @@ bool CVideoGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
       value = CServiceBroker::GetDataCacheCore().GetVideoStereoMode();
       return true;
     case VIDEOPLAYER_SUBTITLES_LANG:
-      if (g_application.GetAppPlayer().GetSubtitleVisible())
-      {
-        SubtitleStreamInfo streamInfo;
-        g_application.GetAppPlayer().GetSubtitleStreamInfo(g_application.GetAppPlayer().GetSubtitle(), streamInfo);
-        value = streamInfo.language;
-        return true;
-      }
+      value = m_subtitleInfo.language;
+      return true;
       break;
     case VIDEOPLAYER_COVER:
       if (g_application.GetAppPlayer().IsPlayingVideo())
