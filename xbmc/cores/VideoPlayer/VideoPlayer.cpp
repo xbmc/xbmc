@@ -4598,9 +4598,9 @@ int CVideoPlayer::AddSubtitleFile(const std::string& filename, const std::string
       if (static_cast<StreamFlags>(info.flag) != StreamFlags::FLAG_NONE)
         stream.flags = static_cast<StreamFlags>(info.flag);
     }
-
+    UpdateContent();
     return m_SelectionStreams.TypeIndexOf(STREAM_SUBTITLE,
-      m_SelectionStreams.Source(STREAM_SOURCE_DEMUX_SUB, filename), -1, 0);
+      m_SelectionStreams.Source(STREAM_SOURCE_DEMUX_SUB, filename), v.GetDemuxerId(), 0);
   }
   if(ext == ".sub")
   {
