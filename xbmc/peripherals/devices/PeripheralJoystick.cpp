@@ -70,10 +70,18 @@ bool CPeripheralJoystick::InitialiseFeature(const PeripheralFeature feature)
   {
     if (feature == FEATURE_JOYSTICK)
     {
-      if (m_bus->InitializeProperties(*this))
-        bSuccess = true;
+      // Ensure an add-on is present to translate input
+      if (!m_manager.GetAddonWithButtonMap(this))
+      {
+        CLog::Log(LOGERROR, "CPeripheralJoystick: No button mapping add-on for %", m_strLocation.c_str());
+      }
       else
-        CLog::Log(LOGERROR, "CPeripheralJoystick: Invalid location (%s)", m_strLocation.c_str());
+      {
+        if (m_bus->InitializeProperties(*this))
+          bSuccess = true;
+        else
+          CLog::Log(LOGERROR, "CPeripheralJoystick: Invalid location (%s)", m_strLocation.c_str());
+      }
 
       if (bSuccess)
       {
