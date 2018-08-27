@@ -48,7 +48,7 @@ public:
     PLAYER_REQUEST_STATE,
     PLAYER_OPENFILE,
     PLAYER_STARTED,                 // sent whenever a sub player has finished it's first frame after open
-    PLAYER_AVCHANGE,                // signal a change in audio or video parameters
+    PLAYER_AVCHANGE,                // signal a change in audio, video or subtitle parameters
     PLAYER_ABORT,
     PLAYER_REPORT_STATE,
     PLAYER_FRAME_ADVANCE,
