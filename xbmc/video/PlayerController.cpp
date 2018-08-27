@@ -52,11 +52,12 @@ bool CPlayerController::OnAction(const CAction &action)
 
         bool subsOn = !g_application.GetAppPlayer().GetSubtitleVisible();
         g_application.GetAppPlayer().SetSubtitleVisible(subsOn);
-        std::string sub, lang;
+        std::string sub;
         if (subsOn)
         {
+          std::string lang;
           SubtitleStreamInfo info;
-          g_application.GetAppPlayer().GetSubtitleStreamInfo(g_application.GetAppPlayer().GetSubtitle(), info);
+          g_application.GetAppPlayer().GetSubtitleStreamInfo(CURRENT_STREAM, info);
           if (!g_LangCodeExpander.Lookup(info.language, lang))
             lang = g_localizeStrings.Get(13205); // Unknown
 
