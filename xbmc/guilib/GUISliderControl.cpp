@@ -17,8 +17,9 @@
 #include "GUIWindowManager.h"
 
 static const SliderAction actions[] = {
-  {"seek",    "PlayerControl(SeekPercentage(%2f))", PLAYER_PROGRESS, false},
-  {"volume",  "SetVolume(%2f)",                     PLAYER_VOLUME,   true}
+  {"seek",     "PlayerControl(SeekPercentage(%2f))", PLAYER_PROGRESS,                 false},
+  {"pvr.seek", "PVR.SeekPercentage(%2f)",            PVR_TIMESHIFT_PROGRESS_PLAY_POS, false},
+  {"volume",   "SetVolume(%2f)",                     PLAYER_VOLUME,                   true}
  };
 
 CGUISliderControl::CGUISliderControl(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& backGroundTexture, const CTextureInfo& nibTexture, const CTextureInfo& nibTextureFocus, int iType, ORIENTATION orientation)

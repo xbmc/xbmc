@@ -8,8 +8,16 @@
 
 #include "PVRBuiltins.h"
 
+#include <algorithm>
+#include <cstdlib>
+
 #include "Application.h"
+#include "guilib/GUIComponent.h"
+#include "GUIInfoManager.h"
 #include "ServiceBroker.h"
+#include "guilib/guiinfo/GUIInfoLabels.h"
+#include "utils/log.h"
+
 #include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"
 
@@ -28,6 +36,42 @@ static int SearchMissingIcons(const std::vector<std::string>& params)
 static int ToggleRecordPlayingChannel(const std::vector<std::string>& params)
 {
   CServiceBroker::GetPVRManager().GUIActions()->ToggleRecordingOnPlayingChannel();
+  return 0;
+}
+
+/*! \brief seeks to the given percentage in timeshift buffer, if timeshifting is supported.
+ *  \param params The parameters
+ *  \details params[0] = percentage to seek to in the timeshift buffer.
+ */
+static int SeekPercentage(const std::vector<std::string>& params)
+{
+  if (params.empty())
+  {
+    CLog::Log(LOGERROR,"PVR.SeekPercentage(n) - No argument given");
+  }
+  else
+  {
+    const float fTimeshiftPercentage = static_cast<float>(std::atof(params.front().c_str()));
+    if (fTimeshiftPercentage < 0 || fTimeshiftPercentage > 100)
+    {
+      CLog::Log(LOGERROR,"PVR.SeekPercentage(n) - Invalid argument (%f), must be in range 0-100", fTimeshiftPercentage);
+    }
+    else if (g_application.GetAppPlayer().IsPlaying())
+    {
+      CGUIInfoManager& infoMgr = CServiceBroker::GetGUI()->GetInfoManager();
+
+      int iTimeshiftProgressDuration = 0;
+      infoMgr.GetInt(iTimeshiftProgressDuration, PVR_TIMESHIFT_PROGRESS_DURATION);
+
+      int iTimeshiftBufferStart = 0;
+      infoMgr.GetInt(iTimeshiftBufferStart, PVR_TIMESHIFT_PROGRESS_BUFFER_START);
+
+      float fPlayerPercentage = static_cast<float>(iTimeshiftProgressDuration) / g_application.GetTotalTime() * (fTimeshiftPercentage - iTimeshiftBufferStart);
+      fPlayerPercentage = std::max(0.0f, std::min(fPlayerPercentage, 100.0f));
+
+      g_application.SeekPercentage(fPlayerPercentage);
+    }
+  }
   return 0;
 }
 
@@ -52,6 +96,11 @@ static int ToggleRecordPlayingChannel(const std::vector<std::string>& params)
 ///     ,
 ///     Will toggle recording on playing channel\, if any
 ///   }
+///   \table_row2_l{
+///     <b>`PVR.SeekPercentage`</b>
+///     ,
+///     Performs a seek to the given percentage in timeshift buffer\, if timeshifting is supported
+///   }
 /// \table_end
 ///
 
@@ -60,5 +109,6 @@ CBuiltins::CommandMap CPVRBuiltins::GetOperations() const
   return {
            {"pvr.searchmissingchannelicons",  {"Search for missing channel icons", 0, SearchMissingIcons}},
            {"pvr.togglerecordplayingchannel", {"Toggle recording on playing channel", 0, ToggleRecordPlayingChannel}},
+           {"pvr.seekpercentage",             {"Performs a seek to the given percentage in timeshift buffer", 1, SeekPercentage}},
          };
 }

@@ -250,6 +250,7 @@
 				<textureslidernib>osd/progress/nub_leftright.png</textureslidernib>
 				<textureslidernibfocus colordiffuse="button_focus">osd/progress/nub_leftright.png</textureslidernibfocus>
 				<info>PVR.TimeshiftProgressPlayPos</info>
+				<action>pvr.seek</action>
 				<visible>Player.SeekEnabled + !Control.HasFocus(87) + MusicPlayer.Content(LiveTV)</visible>
 			</control>
 			<control type="slider">
@@ -263,6 +264,7 @@
 				<textureslidernib colordiffuse="button_focus">osd/progress/nub_leftright.png</textureslidernib>
 				<textureslidernibfocus colordiffuse="button_focus">osd/progress/nub_leftright.png</textureslidernibfocus>
 				<info>PVR.TimeshiftProgressPlayPos</info>
+				<action>pvr.seek</action>
 				<visible>Player.SeekEnabled + Control.HasFocus(87) + MusicPlayer.Content(LiveTV)</visible>
 			</control>
 		</control>
