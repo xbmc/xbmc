@@ -94,7 +94,7 @@ std::string CNetworkInterfaceWin32::GetCurrentWirelessEssId(void) const
     PWLAN_CONNECTION_ATTRIBUTES pAttributes;
     DWORD dwSize = 0;
 
-    if(WlanOpenHandle(1,NULL,&dwVersion, &hClientHdl) == ERROR_SUCCESS)
+    if (WlanOpenHandle(2u, nullptr, &dwVersion, &hClientHdl) == ERROR_SUCCESS)
     {
       PWLAN_INTERFACE_INFO_LIST ppInterfaceList;
       if(WlanEnumInterfaces(hClientHdl,NULL, &ppInterfaceList ) == ERROR_SUCCESS)
@@ -294,17 +294,12 @@ std::vector<NetworkAccessPoint> CNetworkInterfaceWin32::GetAccessPoints(void) co
   if (!IsWireless())
     return result;
 
-  // According to Mozilla: "We could be executing on either Windows XP or Windows
-  // Vista, so use the lower version of the client WLAN API. It seems that the
-  // negotiated version is the Vista version irrespective of what we pass!"
-  // http://dxr.mozilla.org/mozilla-central/source/netwerk/wifi/nsWifiScannerWin.cpp#l51
-  static const int xpWlanClientVersion = 1;
   DWORD negotiated_version;
   DWORD dwResult;
   HANDLE wlan_handle = NULL;
 
   // Get the handle to the WLAN API
-  dwResult = WlanOpenHandle(xpWlanClientVersion, NULL, &negotiated_version, &wlan_handle);
+  dwResult = WlanOpenHandle(2u, nullptr, &negotiated_version, &wlan_handle);
   if (dwResult != ERROR_SUCCESS || !wlan_handle)
   {
     CLog::Log(LOGERROR, "Could not load the client WLAN API");
@@ -428,7 +423,7 @@ void CNetworkInterfaceWin32::GetSettings(NetworkAssignment& assignment, std::str
     PWLAN_CONNECTION_ATTRIBUTES pAttributes;
     DWORD dwSize = 0;
 
-    if(WlanOpenHandle(1, nullptr, &dwVersion, &hClientHdl) == ERROR_SUCCESS)
+    if (WlanOpenHandle(2u, nullptr, &dwVersion, &hClientHdl) == ERROR_SUCCESS)
     {
       PWLAN_INTERFACE_INFO_LIST ppInterfaceList;
       if(WlanEnumInterfaces(hClientHdl,NULL, &ppInterfaceList ) == ERROR_SUCCESS)
