@@ -60,26 +60,6 @@ using namespace winrt::Windows::Networking;
 using namespace winrt::Windows::Networking::Connectivity;
 using namespace KODI::PLATFORM::WINDOWS;
 
-std::string GetIpStr(struct sockaddr* sa)
-{
-  std::string strIp = "";
-
-  char buffer[INET6_ADDRSTRLEN] = { 0 };
-  switch (sa->sa_family)
-  {
-  case AF_INET:
-    inet_ntop(AF_INET, &(reinterpret_cast<const struct sockaddr_in*>(sa)->sin_addr), buffer, INET_ADDRSTRLEN);
-    break;
-  case AF_INET6:
-    inet_ntop(AF_INET6, &(reinterpret_cast<const struct sockaddr_in6*>(sa)->sin6_addr), buffer, INET6_ADDRSTRLEN);
-    break;
-  }
-
-  strIp = buffer;
-
-  return strIp;
-}
-
 std::string GetMaskByPrefix(ADDRESS_FAMILY family, uint8_t prefix)
 {
   std::string result = "";
@@ -101,7 +81,7 @@ std::string GetMaskByPrefix(ADDRESS_FAMILY family, uint8_t prefix)
       else
         sa.sin6_addr.s6_addr[j] = (unsigned long)(0xffU << (8 - i));
     }
-    result = GetIpStr(reinterpret_cast<struct sockaddr*>(&sa));
+    result = CNetworkBase::GetIpStr(reinterpret_cast<struct sockaddr*>(&sa));
   }
   else // IPv4
   {
@@ -111,7 +91,7 @@ std::string GetMaskByPrefix(ADDRESS_FAMILY family, uint8_t prefix)
     struct sockaddr_in sa;
     sa.sin_family = AF_INET;
     sa.sin_addr.s_addr = htonl(~((1 << (32 - prefix)) - 1));;
-    result = GetIpStr(reinterpret_cast<struct sockaddr*>(&sa));
+    result = CNetworkBase::GetIpStr(reinterpret_cast<struct sockaddr*>(&sa));
   }
 
   return result;
@@ -207,7 +187,7 @@ void CNetworkInterfaceWin10::GetSettings(NetworkAssignment& assignment, std::str
       {
         if (address->Address.lpSockaddr->sa_family == AF_INET)
         {
-          ipAddress = GetIpStr(address->Address.lpSockaddr);
+          ipAddress = CNetworkBase::GetIpStr(address->Address.lpSockaddr);
           networkMask = GetMaskByPrefix(AF_INET, address->OnLinkPrefixLength);
 
           break;
@@ -220,7 +200,7 @@ void CNetworkInterfaceWin10::GetSettings(NetworkAssignment& assignment, std::str
       {
         if (gwAddress->Address.lpSockaddr->sa_family == AF_INET)
         {
-          defaultGateway = GetIpStr(gwAddress->Address.lpSockaddr);
+          defaultGateway = CNetworkBase::GetIpStr(gwAddress->Address.lpSockaddr);
           break;
         }
         gwAddress = gwAddress->Next;
@@ -255,7 +235,7 @@ std::string CNetworkInterfaceWin10::GetCurrentIPAddress(void) const
   {
     if (address->Address.lpSockaddr->sa_family == AF_INET)
     {
-      result = GetIpStr(address->Address.lpSockaddr);
+      result = CNetworkBase::GetIpStr(address->Address.lpSockaddr);
       break;
     }
     address = address->Next;
@@ -315,7 +295,7 @@ std::string CNetworkInterfaceWin10::GetCurrentDefaultGateway(void) const
   {
     if (address->Address.lpSockaddr->sa_family == AF_INET)
     {
-      result = GetIpStr(address->Address.lpSockaddr);
+      result = CNetworkBase::GetIpStr(address->Address.lpSockaddr);
       break;
     }
     address = address->Next;

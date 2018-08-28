@@ -148,6 +148,18 @@ public:
 
    // Waits for the first network interface to become available
    void WaitForNet();
+
+   /*!
+    \brief  IPv6/IPv4 compatible conversion of host IP address
+    \param  struct sockaddr
+    \return Function converts binary structure sockaddr to std::string.
+            It can read sockaddr_in and sockaddr_in6, cast as (sockaddr*).
+            IPv4 address is returned in the format x.x.x.x (where x is 0-255),
+            IPv6 address is returned in it's canonised form.
+            On error (or no IPv6/v4 valid input) empty string is returned.
+    */
+   static std::string GetIpStr(const sockaddr* sa);
+
   std::unique_ptr<CNetworkServices> m_services;
 };
 

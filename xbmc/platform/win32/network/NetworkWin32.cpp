@@ -220,7 +220,7 @@ std::vector<std::string> CNetworkWin32::GetNameServers(void)
         continue;
       for (PIP_ADAPTER_DNS_SERVER_ADDRESS dnsAddress = adapter->FirstDnsServerAddress; dnsAddress; dnsAddress = dnsAddress->Next)
       {
-        std::string strIp = GetIpStr(dnsAddress->Address.lpSockaddr);
+        std::string strIp = CNetworkBase::GetIpStr(dnsAddress->Address.lpSockaddr);
         if (!strIp.empty())
           result.push_back(strIp);
       }
@@ -259,29 +259,6 @@ bool CNetworkWin32::PingHost(unsigned long host, unsigned int timeout_ms /* = 20
     return (pEchoReply->Status == IP_SUCCESS);
   }
   return false;
-}
-
-const std::string CNetworkWin32::GetIpStr(const struct sockaddr* sa)
-{
-  std::string result;
-  if (!sa)
-    return result;
-
-  char buffer[INET6_ADDRSTRLEN] = { 0 };
-  switch (sa->sa_family)
-  {
-    case AF_INET:
-      RtlIpv4AddressToStringA(&reinterpret_cast<const struct sockaddr_in *>(sa)->sin_addr, buffer);
-      break;
-    case AF_INET6:
-      RtlIpv6AddressToStringA(&reinterpret_cast<const struct sockaddr_in6 *>(sa)->sin6_addr, buffer);
-      break;
-    default:
-      return result;
-  }
-
-  result = buffer;
-  return result;
 }
 
 bool CNetworkInterfaceWin32::GetHostMacAddress(unsigned long host, std::string& mac) const
