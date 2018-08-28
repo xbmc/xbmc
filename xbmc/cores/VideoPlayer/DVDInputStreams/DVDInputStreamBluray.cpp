@@ -325,9 +325,9 @@ bool CDVDInputStreamBluray::Open()
       return false;
     }
 
-    if(bd_select_playlist(m_bd, m_title->playlist) == 0 )
+    if(!bd_select_playlist(m_bd, m_title->playlist))
     {
-      CLog::Log(LOGERROR, "CDVDInputStreamBluray::Open - failed to select title %d", m_title->idx);
+      CLog::Log(LOGERROR, "CDVDInputStreamBluray::Open - failed to select playlist %d", m_title->idx);
       return false;
     }
     m_clip = 0;
