@@ -27,20 +27,20 @@ public:
 
   // CNetworkInterface interface
 public:
-  virtual std::string& GetName() override;
-  virtual bool IsEnabled() override;
-  virtual bool IsConnected() override;
-  virtual bool IsWireless() override;
-  virtual std::string GetMacAddress() override;
-  virtual void GetMacAddressRaw(char rawMac[6]) override;
-  virtual bool GetHostMacAddress(unsigned long host_ip, std::string& mac) override;
-  virtual std::string GetCurrentIPAddress() override;
-  virtual std::string GetCurrentNetmask() override;
-  virtual std::string GetCurrentDefaultGateway() override;
-  virtual std::string GetCurrentWirelessEssId() override;
-  virtual std::vector<NetworkAccessPoint> GetAccessPoints() override;
-  virtual void GetSettings(NetworkAssignment& assignment, std::string& ipAddress, std::string& networkMask, std::string& defaultGateway, std::string& essId, std::string& key, EncMode& encryptionMode) override;
-  virtual void SetSettings(NetworkAssignment& assignment, std::string& ipAddress, std::string& networkMask, std::string& defaultGateway, std::string& essId, std::string& key, EncMode& encryptionMode) override;
+  virtual const std::string& GetName() const override;
+  virtual bool IsEnabled() const override;
+  virtual bool IsConnected() const override;
+  virtual bool IsWireless() const override;
+  virtual std::string GetMacAddress() const override;
+  virtual void GetMacAddressRaw(char rawMac[6]) const override;
+  virtual bool GetHostMacAddress(unsigned long host_ip, std::string& mac) const override;
+  virtual std::string GetCurrentIPAddress() const override;
+  virtual std::string GetCurrentNetmask() const override;
+  virtual std::string GetCurrentDefaultGateway() const override;
+  virtual std::string GetCurrentWirelessEssId() const override;
+  virtual std::vector<NetworkAccessPoint> GetAccessPoints() const override;
+  virtual void GetSettings(NetworkAssignment& assignment, std::string& ipAddress, std::string& networkMask, std::string& defaultGateway, std::string& essId, std::string& key, EncMode& encryptionMode) const override;
+  virtual void SetSettings(const NetworkAssignment& assignment, const std::string& ipAddress, const std::string& networkMask, const std::string& defaultGateway, const std::string& essId, const std::string& key, const EncMode& encryptionMode) override;
 
   std::string GetHostName();
 

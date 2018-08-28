@@ -63,31 +63,32 @@ class CNetworkInterface
 public:
    virtual ~CNetworkInterface() = default;
 
-   virtual std::string& GetName(void) = 0;
+   virtual const std::string& GetName(void) const = 0;
 
-   virtual bool IsEnabled(void) = 0;
-   virtual bool IsConnected(void) = 0;
-   virtual bool IsWireless(void) = 0;
+   virtual bool IsEnabled(void) const = 0;
+   virtual bool IsConnected(void) const = 0;
+   virtual bool IsWireless(void) const = 0;
 
-   virtual std::string GetMacAddress(void) = 0;
-   virtual void GetMacAddressRaw(char rawMac[6]) = 0;
+   virtual std::string GetMacAddress(void) const = 0;
+   virtual void GetMacAddressRaw(char rawMac[6]) const = 0;
 
-   virtual bool GetHostMacAddress(unsigned long host, std::string& mac) = 0;
+   virtual bool GetHostMacAddress(unsigned long host, std::string& mac) const = 0;
 
-   virtual std::string GetCurrentIPAddress() = 0;
-   virtual std::string GetCurrentNetmask() = 0;
-   virtual std::string GetCurrentDefaultGateway(void) = 0;
-   virtual std::string GetCurrentWirelessEssId(void) = 0;
+   virtual std::string GetCurrentIPAddress() const = 0;
+   virtual std::string GetCurrentNetmask() const = 0;
+   virtual std::string GetCurrentDefaultGateway(void) const = 0;
+   virtual std::string GetCurrentWirelessEssId(void) const = 0;
 
    // Returns the list of access points in the area
-   virtual std::vector<NetworkAccessPoint> GetAccessPoints(void) = 0;
+   virtual std::vector<NetworkAccessPoint> GetAccessPoints(void) const = 0;
 
-   virtual void GetSettings(NetworkAssignment& assignment, std::string& ipAddress, std::string& networkMask, std::string& defaultGateway, std::string& essId, std::string& key, EncMode& encryptionMode) = 0;
-   virtual void SetSettings(NetworkAssignment& assignment, std::string& ipAddress, std::string& networkMask, std::string& defaultGateway, std::string& essId, std::string& key, EncMode& encryptionMode) = 0;
+   virtual void GetSettings(NetworkAssignment& assignment, std::string& ipAddress, std::string& networkMask, std::string& defaultGateway, std::string& essId, std::string& key, EncMode& encryptionMode) const = 0;
+   virtual void SetSettings(const NetworkAssignment& assignment, const std::string& ipAddress, const std::string& networkMask, const std::string& defaultGateway, const std::string& essId, const std::string& key, const EncMode& encryptionMode) = 0;
 };
 
 class CSettings;
 class CNetworkServices;
+struct sockaddr;
 
 class CNetworkBase
 {
@@ -147,6 +148,25 @@ public:
 
    // Waits for the first network interface to become available
    void WaitForNet();
+
+   /*!
+    \brief  IPv6/IPv4 compatible conversion of host IP address
+    \param  struct sockaddr
+    \return Function converts binary structure sockaddr to std::string.
+            It can read sockaddr_in and sockaddr_in6, cast as (sockaddr*).
+            IPv4 address is returned in the format x.x.x.x (where x is 0-255),
+            IPv6 address is returned in it's canonised form.
+            On error (or no IPv6/v4 valid input) empty string is returned.
+    */
+   static std::string GetIpStr(const sockaddr* sa);
+
+   /*!
+    \brief  convert prefix length of IPv4 address to IP mask representation
+    \param  prefix length
+    \return 
+   */
+   static std::string GetMaskByPrefixLength(uint8_t prefixLength);
+
   std::unique_ptr<CNetworkServices> m_services;
 };
 

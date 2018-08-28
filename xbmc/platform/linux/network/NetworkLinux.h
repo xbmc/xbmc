@@ -21,30 +21,30 @@ public:
    CNetworkInterfaceLinux(CNetworkLinux* network, std::string interfaceName, char interfaceMacAddrRaw[6]);
    ~CNetworkInterfaceLinux(void) override;
 
-   std::string& GetName(void) override;
+   const std::string& GetName(void) const override;
 
-   bool IsEnabled(void) override;
-   bool IsConnected(void) override;
-   bool IsWireless(void) override;
+   bool IsEnabled(void) const override;
+   bool IsConnected(void) const override;
+   bool IsWireless(void) const override;
 
-   std::string GetMacAddress(void) override;
-   void GetMacAddressRaw(char rawMac[6]) override;
+   std::string GetMacAddress(void) const override;
+   void GetMacAddressRaw(char rawMac[6]) const override;
 
-   bool GetHostMacAddress(unsigned long host, std::string& mac) override;
+   bool GetHostMacAddress(unsigned long host, std::string& mac) const override;
 
-   std::string GetCurrentIPAddress() override;
-   std::string GetCurrentNetmask() override;
-   std::string GetCurrentDefaultGateway(void) override;
-   std::string GetCurrentWirelessEssId(void) override;
+   std::string GetCurrentIPAddress() const override;
+   std::string GetCurrentNetmask() const override;
+   std::string GetCurrentDefaultGateway(void) const override;
+   std::string GetCurrentWirelessEssId(void) const override;
 
-   void GetSettings(NetworkAssignment& assignment, std::string& ipAddress, std::string& networkMask, std::string& defaultGateway, std::string& essId, std::string& key, EncMode& encryptionMode) override;
-   void SetSettings(NetworkAssignment& assignment, std::string& ipAddress, std::string& networkMask, std::string& defaultGateway, std::string& essId, std::string& key, EncMode& encryptionMode) override;
+   void GetSettings(NetworkAssignment& assignment, std::string& ipAddress, std::string& networkMask, std::string& defaultGateway, std::string& essId, std::string& key, EncMode& encryptionMode) const override;
+   void SetSettings(const NetworkAssignment& assignment, const std::string& ipAddress, const std::string& networkMask, const std::string& defaultGateway, const std::string& essId, const std::string& key, const EncMode& encryptionMode) override;
 
    // Returns the list of access points in the area
-   std::vector<NetworkAccessPoint> GetAccessPoints(void) override;
+   std::vector<NetworkAccessPoint> GetAccessPoints(void) const override;
 
 private:
-   void WriteSettings(FILE* fw, NetworkAssignment assignment, std::string& ipAddress, std::string& networkMask, std::string& defaultGateway, std::string& essId, std::string& key, EncMode& encryptionMode);
+   void WriteSettings(FILE* fw, NetworkAssignment assignment, const std::string& ipAddress, const std::string& networkMask, const std::string& defaultGateway, const std::string& essId, const std::string& key, const EncMode& encryptionMode);
    std::string     m_interfaceName;
    std::string     m_interfaceMacAdr;
    char           m_interfaceMacAddrRaw[6];

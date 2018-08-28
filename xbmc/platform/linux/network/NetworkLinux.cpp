@@ -70,12 +70,12 @@ CNetworkInterfaceLinux::CNetworkInterfaceLinux(CNetworkLinux* network, std::stri
 
 CNetworkInterfaceLinux::~CNetworkInterfaceLinux(void) = default;
 
-std::string& CNetworkInterfaceLinux::GetName(void)
+const std::string& CNetworkInterfaceLinux::GetName(void) const
 {
    return m_interfaceName;
 }
 
-bool CNetworkInterfaceLinux::IsWireless()
+bool CNetworkInterfaceLinux::IsWireless() const
 {
 #if defined(TARGET_DARWIN) || defined(TARGET_FREEBSD)
   return false;
@@ -89,7 +89,7 @@ bool CNetworkInterfaceLinux::IsWireless()
    return true;
 }
 
-bool CNetworkInterfaceLinux::IsEnabled()
+bool CNetworkInterfaceLinux::IsEnabled() const
 {
    struct ifreq ifr;
    strcpy(ifr.ifr_name, m_interfaceName.c_str());
@@ -99,7 +99,7 @@ bool CNetworkInterfaceLinux::IsEnabled()
    return ((ifr.ifr_flags & IFF_UP) == IFF_UP);
 }
 
-bool CNetworkInterfaceLinux::IsConnected()
+bool CNetworkInterfaceLinux::IsConnected() const
 {
    struct ifreq ifr;
    int zero = 0;
@@ -118,17 +118,17 @@ bool CNetworkInterfaceLinux::IsConnected()
    return iRunning && (0 != memcmp(ifr.ifr_addr.sa_data+sizeof(short), &zero, sizeof(int)));
 }
 
-std::string CNetworkInterfaceLinux::GetMacAddress()
+std::string CNetworkInterfaceLinux::GetMacAddress() const
 {
   return m_interfaceMacAdr;
 }
 
-void CNetworkInterfaceLinux::GetMacAddressRaw(char rawMac[6])
+void CNetworkInterfaceLinux::GetMacAddressRaw(char rawMac[6]) const
 {
   memcpy(rawMac, m_interfaceMacAddrRaw, 6);
 }
 
-std::string CNetworkInterfaceLinux::GetCurrentIPAddress(void)
+std::string CNetworkInterfaceLinux::GetCurrentIPAddress(void) const
 {
    std::string result;
 
@@ -143,7 +143,7 @@ std::string CNetworkInterfaceLinux::GetCurrentIPAddress(void)
    return result;
 }
 
-std::string CNetworkInterfaceLinux::GetCurrentNetmask(void)
+std::string CNetworkInterfaceLinux::GetCurrentNetmask(void) const
 {
    std::string result;
 
@@ -158,7 +158,7 @@ std::string CNetworkInterfaceLinux::GetCurrentNetmask(void)
    return result;
 }
 
-std::string CNetworkInterfaceLinux::GetCurrentWirelessEssId(void)
+std::string CNetworkInterfaceLinux::GetCurrentWirelessEssId(void) const
 {
    std::string result;
 
@@ -180,7 +180,7 @@ std::string CNetworkInterfaceLinux::GetCurrentWirelessEssId(void)
    return result;
 }
 
-std::string CNetworkInterfaceLinux::GetCurrentDefaultGateway(void)
+std::string CNetworkInterfaceLinux::GetCurrentDefaultGateway(void) const
 {
    std::string result;
 
@@ -560,7 +560,7 @@ bool CNetworkLinux::PingHost(unsigned long remote_ip, unsigned int timeout_ms)
 }
 
 #if defined(TARGET_DARWIN) || defined(TARGET_FREEBSD)
-bool CNetworkInterfaceLinux::GetHostMacAddress(unsigned long host_ip, std::string& mac)
+bool CNetworkInterfaceLinux::GetHostMacAddress(unsigned long host_ip, std::string& mac) const
 {
   bool ret = false;
   size_t needed;
@@ -610,7 +610,7 @@ bool CNetworkInterfaceLinux::GetHostMacAddress(unsigned long host_ip, std::strin
   return ret;
 }
 #else
-bool CNetworkInterfaceLinux::GetHostMacAddress(unsigned long host_ip, std::string& mac)
+bool CNetworkInterfaceLinux::GetHostMacAddress(unsigned long host_ip, std::string& mac) const
 {
   struct arpreq areq;
   struct sockaddr_in* sin;
@@ -648,7 +648,7 @@ bool CNetworkInterfaceLinux::GetHostMacAddress(unsigned long host_ip, std::strin
 }
 #endif
 
-std::vector<NetworkAccessPoint> CNetworkInterfaceLinux::GetAccessPoints(void)
+std::vector<NetworkAccessPoint> CNetworkInterfaceLinux::GetAccessPoints(void) const
 {
    std::vector<NetworkAccessPoint> result;
 
@@ -884,7 +884,7 @@ std::vector<NetworkAccessPoint> CNetworkInterfaceLinux::GetAccessPoints(void)
    return result;
 }
 
-void CNetworkInterfaceLinux::GetSettings(NetworkAssignment& assignment, std::string& ipAddress, std::string& networkMask, std::string& defaultGateway, std::string& essId, std::string& key, EncMode& encryptionMode)
+void CNetworkInterfaceLinux::GetSettings(NetworkAssignment& assignment, std::string& ipAddress, std::string& networkMask, std::string& defaultGateway, std::string& essId, std::string& key, EncMode& encryptionMode)  const
 {
    ipAddress = "0.0.0.0";
    networkMask = "0.0.0.0";
@@ -969,7 +969,7 @@ void CNetworkInterfaceLinux::GetSettings(NetworkAssignment& assignment, std::str
 #endif
 }
 
-void CNetworkInterfaceLinux::SetSettings(NetworkAssignment& assignment, std::string& ipAddress, std::string& networkMask, std::string& defaultGateway, std::string& essId, std::string& key, EncMode& encryptionMode)
+void CNetworkInterfaceLinux::SetSettings(const NetworkAssignment& assignment, const std::string& ipAddress, const std::string& networkMask, const std::string& defaultGateway, const std::string& essId, const std::string& key, const EncMode& encryptionMode)
 {
 #if defined(TARGET_LINUX)
    FILE* fr = fopen("/etc/network/interfaces", "r");
@@ -1073,7 +1073,7 @@ void CNetworkInterfaceLinux::SetSettings(NetworkAssignment& assignment, std::str
 #endif
 }
 
-void CNetworkInterfaceLinux::WriteSettings(FILE* fw, NetworkAssignment assignment, std::string& ipAddress, std::string& networkMask, std::string& defaultGateway, std::string& essId, std::string& key, EncMode& encryptionMode)
+void CNetworkInterfaceLinux::WriteSettings(FILE* fw, NetworkAssignment assignment, const std::string& ipAddress, const std::string& networkMask, const std::string& defaultGateway, const std::string& essId, const std::string& key, const EncMode& encryptionMode)
 {
    if (assignment == NETWORK_DHCP)
    {
