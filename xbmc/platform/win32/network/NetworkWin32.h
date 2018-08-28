@@ -11,16 +11,18 @@
 #include <string>
 #include <vector>
 #include "network/Network.h"
-#include "Iphlpapi.h"
 #include "utils/stopwatch.h"
 #include "threads/CriticalSection.h"
+
+#include <ws2ipdef.h>
+#include <Iphlpapi.h>
 
 class CNetworkWin32;
 
 class CNetworkInterfaceWin32 : public CNetworkInterface
 {
 public:
-   CNetworkInterfaceWin32(CNetworkWin32* network, const IP_ADAPTER_INFO& adapter);
+   CNetworkInterfaceWin32(CNetworkWin32* network, const IP_ADAPTER_ADDRESSES& adapter);
    ~CNetworkInterfaceWin32(void) override;
 
    const std::string& GetName(void) const override;
@@ -33,6 +35,7 @@ public:
    void GetMacAddressRaw(char rawMac[6]) const override;
 
    bool GetHostMacAddress(unsigned long host, std::string& mac) const override;
+   bool GetHostMacAddress(const struct sockaddr& host, std::string& mac) const;
 
    std::string GetCurrentIPAddress() const override;
    std::string GetCurrentNetmask() const override;
@@ -46,7 +49,7 @@ public:
    std::vector<NetworkAccessPoint> GetAccessPoints(void) const override;
 
 private:
-   IP_ADAPTER_INFO m_adapter;
+   IP_ADAPTER_ADDRESSES m_adapter;
    CNetworkWin32* m_network;
    std::string m_adaptername;
 };
@@ -63,6 +66,7 @@ public:
    // Ping remote host
    using CNetworkBase::PingHost;
    bool PingHost(unsigned long host, unsigned int timeout_ms = 2000) override;
+   bool PingHost(const struct sockaddr& host, unsigned int timeout_ms = 2000);
 
    // Get/set the nameserver(s)
    std::vector<std::string> GetNameServers(void) override;

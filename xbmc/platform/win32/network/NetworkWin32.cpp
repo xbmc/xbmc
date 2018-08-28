@@ -27,8 +27,8 @@
 
 using namespace KODI::PLATFORM::WINDOWS;
 
-CNetworkInterfaceWin32::CNetworkInterfaceWin32(CNetworkWin32* network, const IP_ADAPTER_INFO& adapter) :
-   m_adaptername(adapter.Description)
+CNetworkInterfaceWin32::CNetworkInterfaceWin32(CNetworkWin32* network, const IP_ADAPTER_ADDRESSES& adapter)
+  : m_adaptername(adapter.AdapterName)
 {
   m_network = network;
   m_adapter = adapter;
@@ -46,7 +46,7 @@ const std::string& CNetworkInterfaceWin32::GetName(void) const
 
 bool CNetworkInterfaceWin32::IsWireless() const
 {
-  return (m_adapter.Type == IF_TYPE_IEEE80211);
+  return (m_adapter.IfType == IF_TYPE_IEEE80211);
 }
 
 bool CNetworkInterfaceWin32::IsEnabled() const
@@ -56,31 +56,33 @@ bool CNetworkInterfaceWin32::IsEnabled() const
 
 bool CNetworkInterfaceWin32::IsConnected() const
 {
-  std::string strIP = m_adapter.IpAddressList.IpAddress.String;
-  return (strIP != "0.0.0.0");
+  return m_adapter.OperStatus == IF_OPER_STATUS::IfOperStatusUp;
 }
 
 std::string CNetworkInterfaceWin32::GetMacAddress() const
 {
   std::string result;
-  const unsigned char* mAddr = m_adapter.Address;
+  const unsigned char* mAddr = m_adapter.PhysicalAddress;
   result = StringUtils::Format("%02X:%02X:%02X:%02X:%02X:%02X", mAddr[0], mAddr[1], mAddr[2], mAddr[3], mAddr[4], mAddr[5]);
   return result;
 }
 
 void CNetworkInterfaceWin32::GetMacAddressRaw(char rawMac[6]) const
 {
-  memcpy(rawMac, m_adapter.Address, 6);
+  memcpy(rawMac, m_adapter.PhysicalAddress, 6);
 }
 
 std::string CNetworkInterfaceWin32::GetCurrentIPAddress(void) const
 {
-  return m_adapter.IpAddressList.IpAddress.String;
+  return CNetworkBase::GetIpStr(m_adapter.FirstUnicastAddress->Address.lpSockaddr);
 }
 
 std::string CNetworkInterfaceWin32::GetCurrentNetmask(void) const
 {
-  return m_adapter.IpAddressList.IpMask.String;
+  if (m_adapter.FirstUnicastAddress->Address.lpSockaddr->sa_family == AF_INET)
+    return CNetworkBase::GetMaskByPrefixLength(m_adapter.FirstUnicastAddress->OnLinkPrefixLength);
+
+  return StringUtils::Format("%u", m_adapter.FirstUnicastAddress->OnLinkPrefixLength);
 }
 
 std::string CNetworkInterfaceWin32::GetCurrentWirelessEssId(void) const
@@ -94,7 +96,7 @@ std::string CNetworkInterfaceWin32::GetCurrentWirelessEssId(void) const
     PWLAN_CONNECTION_ATTRIBUTES pAttributes;
     DWORD dwSize = 0;
 
-    if(WlanOpenHandle(1,NULL,&dwVersion, &hClientHdl) == ERROR_SUCCESS)
+    if (WlanOpenHandle(2u, nullptr, &dwVersion, &hClientHdl) == ERROR_SUCCESS)
     {
       PWLAN_INTERFACE_INFO_LIST ppInterfaceList;
       if(WlanEnumInterfaces(hClientHdl,NULL, &ppInterfaceList ) == ERROR_SUCCESS)
@@ -129,7 +131,7 @@ std::string CNetworkInterfaceWin32::GetCurrentWirelessEssId(void) const
 
 std::string CNetworkInterfaceWin32::GetCurrentDefaultGateway(void) const
 {
-  return m_adapter.GatewayList.IpAddress.String;
+  return m_adapter.FirstGatewayAddress != nullptr ? CNetworkBase::GetIpStr(m_adapter.FirstGatewayAddress->Address.lpSockaddr) : "";
 }
 
 CNetworkWin32::CNetworkWin32(CSettings &settings)
@@ -169,33 +171,27 @@ void CNetworkWin32::queryInterfaceList()
   CleanInterfaceList();
   m_netrefreshTimer.StartZero();
 
-  PIP_ADAPTER_INFO adapterInfo;
-  PIP_ADAPTER_INFO adapter = NULL;
+  const ULONG flags = GAA_FLAG_SKIP_ANYCAST | GAA_FLAG_SKIP_MULTICAST | GAA_FLAG_SKIP_DNS_SERVER | GAA_FLAG_INCLUDE_PREFIX | GAA_FLAG_INCLUDE_GATEWAYS;
+  ULONG ulOutBufLen;
 
-  ULONG ulOutBufLen = sizeof (IP_ADAPTER_INFO);
-
-  adapterInfo = (IP_ADAPTER_INFO *) malloc(sizeof (IP_ADAPTER_INFO));
-  if (adapterInfo == NULL)
+  if (GetAdaptersAddresses(AF_INET, flags, nullptr, nullptr, &ulOutBufLen) != ERROR_BUFFER_OVERFLOW)
     return;
 
-  if (GetAdaptersInfo(adapterInfo, &ulOutBufLen) == ERROR_BUFFER_OVERFLOW)
-  {
-    free(adapterInfo);
-    adapterInfo = (IP_ADAPTER_INFO *) malloc(ulOutBufLen);
-    if (adapterInfo == NULL)
-      return;
-  }
+  PIP_ADAPTER_ADDRESSES adapterAddresses = static_cast<PIP_ADAPTER_ADDRESSES>(malloc(ulOutBufLen));
+  if (adapterAddresses == nullptr)
+    return;
 
-  if ((GetAdaptersInfo(adapterInfo, &ulOutBufLen)) == NO_ERROR)
+  if (GetAdaptersAddresses(AF_INET, flags, nullptr, adapterAddresses, &ulOutBufLen) == NO_ERROR)
   {
-    adapter = adapterInfo;
-    while (adapter)
+    for (PIP_ADAPTER_ADDRESSES adapter = adapterAddresses; adapter; adapter = adapter->Next)
     {
+      if (adapter->IfType == IF_TYPE_SOFTWARE_LOOPBACK || adapter->OperStatus != IF_OPER_STATUS::IfOperStatusUp)
+        continue;
       m_interfaces.push_back(new CNetworkInterfaceWin32(this, *adapter));
-      adapter = adapter->Next;
     }
   }
-  free(adapterInfo);
+  else
+    CLog::Log(LOGDEBUG, "%s - GetAdaptersAddresses() failed ...", __FUNCTION__);
 }
 
 std::vector<std::string> CNetworkWin32::GetNameServers(void)
@@ -238,73 +234,120 @@ void CNetworkWin32::SetNameServers(const std::vector<std::string>& nameServers)
 
 bool CNetworkWin32::PingHost(unsigned long host, unsigned int timeout_ms /* = 2000 */)
 {
+  struct sockaddr sockHost;
+  sockHost.sa_family = AF_INET;
+  reinterpret_cast<struct sockaddr_in&>(sockHost).sin_addr.S_un.S_addr = host;
+  return PingHost(sockHost, timeout_ms);
+}
+
+bool CNetworkWin32::PingHost(const struct sockaddr& host, unsigned int timeout_ms /* = 2000 */)
+{
   char SendData[]    = "poke";
-  HANDLE hIcmpFile   = IcmpCreateFile();
   BYTE ReplyBuffer [sizeof(ICMP_ECHO_REPLY) + sizeof(SendData)];
 
   SetLastError(ERROR_SUCCESS);
 
-  DWORD dwRetVal = IcmpSendEcho(hIcmpFile, host, SendData, sizeof(SendData),
-                                NULL, ReplyBuffer, sizeof(ReplyBuffer), timeout_ms);
+  HANDLE hIcmpFile;
+  DWORD dwRetVal;
+
+  switch (host.sa_family)
+  {
+    case AF_INET:
+      hIcmpFile = IcmpCreateFile();
+      dwRetVal = IcmpSendEcho2(hIcmpFile, nullptr, nullptr, nullptr, reinterpret_cast<const struct sockaddr_in&>(host).sin_addr.S_un.S_addr, SendData, sizeof(SendData), nullptr, ReplyBuffer, sizeof(ReplyBuffer), timeout_ms);
+      break;
+
+    case AF_INET6:
+    {
+      hIcmpFile = Icmp6CreateFile();
+      struct sockaddr_in6 source = { AF_INET6, 0, 0, in6addr_any };
+      dwRetVal = Icmp6SendEcho2(hIcmpFile, nullptr, nullptr, nullptr, &source, &const_cast<struct sockaddr_in6&>(reinterpret_cast<const struct sockaddr_in6&>(host)), SendData, sizeof(SendData), nullptr, ReplyBuffer, sizeof(ReplyBuffer), timeout_ms);
+      break;
+    }
+
+    default:
+      return false;
+  }
 
   DWORD lastErr = GetLastError();
   if (lastErr != ERROR_SUCCESS && lastErr != IP_REQ_TIMED_OUT)
-    CLog::Log(LOGERROR, "%s - IcmpSendEcho failed - %s", __FUNCTION__, CWIN32Util::WUSysMsg(lastErr).c_str());
+    CLog::Log(LOGERROR, "%s - %s failed - %s", __FUNCTION__, host.sa_family == AF_INET ? "IcmpSendEcho2" : "Icmp6SendEcho2", CWIN32Util::WUSysMsg(lastErr).c_str());
 
   IcmpCloseHandle (hIcmpFile);
 
-  if (dwRetVal != 0)
+  if (dwRetVal > 0U)
   {
-    PICMP_ECHO_REPLY pEchoReply = (PICMP_ECHO_REPLY)ReplyBuffer;
-    return (pEchoReply->Status == IP_SUCCESS);
+    PICMP_ECHO_REPLY pEchoReply = reinterpret_cast<PICMP_ECHO_REPLY>(ReplyBuffer);
+    return pEchoReply->Status == IP_SUCCESS;
   }
   return false;
 }
 
 bool CNetworkInterfaceWin32::GetHostMacAddress(unsigned long host, std::string& mac) const
 {
-  IPAddr src_ip = inet_addr(GetCurrentIPAddress().c_str());
-  BYTE bPhysAddr[6];      // for 6-byte hardware addresses
-  ULONG PhysAddrLen = 6;  // default to length of six bytes
+  struct sockaddr sockHost;
+  sockHost.sa_family = AF_INET;
+  reinterpret_cast<struct sockaddr_in&>(sockHost).sin_addr.S_un.S_addr = host;
+  return GetHostMacAddress(sockHost, mac);
+}
 
-  memset(&bPhysAddr, 0xff, sizeof (bPhysAddr));
+bool CNetworkInterfaceWin32::GetHostMacAddress(const struct sockaddr& host, std::string& mac) const
+{
+  DWORD InterfaceIndex;
+  if (GetBestInterfaceEx(&static_cast<struct sockaddr>(host), &InterfaceIndex) != NO_ERROR)
+    return false;
 
-  DWORD dwRetVal = SendARP(host, src_ip, &bPhysAddr, &PhysAddrLen);
+  NET_LUID luid = { 0 };
+  if (ConvertInterfaceIndexToLuid(InterfaceIndex, &luid) != NO_ERROR)
+    return false;
+
+  MIB_IPNET_ROW2 neighborIp = { 0 };
+  neighborIp.InterfaceLuid = luid;
+  neighborIp.InterfaceIndex;
+  neighborIp.Address.si_family = host.sa_family;
+  switch (host.sa_family)
+  {
+    case AF_INET:
+      neighborIp.Address.Ipv4 = reinterpret_cast<const struct sockaddr_in&>(host);
+      break;
+    case AF_INET6:
+      neighborIp.Address.Ipv6 = reinterpret_cast<const struct sockaddr_in6&>(host);
+      break;
+    default:
+      return false;
+  }
+
+  DWORD dwRetVal = ResolveIpNetEntry2(&neighborIp, nullptr);
   if (dwRetVal == NO_ERROR)
   {
-    if (PhysAddrLen == 6)
+    if (neighborIp.PhysicalAddressLength == 6)
     {
       mac = StringUtils::Format("%02X:%02X:%02X:%02X:%02X:%02X",
-        bPhysAddr[0], bPhysAddr[1], bPhysAddr[2],
-        bPhysAddr[3], bPhysAddr[4], bPhysAddr[5]);
+        neighborIp.PhysicalAddress[0], neighborIp.PhysicalAddress[1], neighborIp.PhysicalAddress[2],
+        neighborIp.PhysicalAddress[3], neighborIp.PhysicalAddress[4], neighborIp.PhysicalAddress[5]);
       return true;
     }
     else
-      CLog::Log(LOGERROR, "%s - SendArp completed successfully, but mac address has length != 6 (%d)", __FUNCTION__, PhysAddrLen);
+      CLog::Log(LOGERROR, "%s - ResolveIpNetEntry2 completed successfully, but mac address has length != 6 (%d)", __FUNCTION__, neighborIp.PhysicalAddressLength);
   }
   else
-    CLog::Log(LOGERROR, "%s - SendArp failed with error (%d)", __FUNCTION__, dwRetVal);
+    CLog::Log(LOGERROR, "%s - ResolveIpNetEntry2 failed with error (%d)", __FUNCTION__, dwRetVal);
 
   return false;
 }
 
 std::vector<NetworkAccessPoint> CNetworkInterfaceWin32::GetAccessPoints(void) const
 {
-   std::vector<NetworkAccessPoint> result;
+  std::vector<NetworkAccessPoint> result;
   if (!IsWireless())
     return result;
 
-  // According to Mozilla: "We could be executing on either Windows XP or Windows
-  // Vista, so use the lower version of the client WLAN API. It seems that the
-  // negotiated version is the Vista version irrespective of what we pass!"
-  // http://dxr.mozilla.org/mozilla-central/source/netwerk/wifi/nsWifiScannerWin.cpp#l51
-  static const int xpWlanClientVersion = 1;
   DWORD negotiated_version;
   DWORD dwResult;
   HANDLE wlan_handle = NULL;
 
   // Get the handle to the WLAN API
-  dwResult = WlanOpenHandle(xpWlanClientVersion, NULL, &negotiated_version, &wlan_handle);
+  dwResult = WlanOpenHandle(2u, nullptr, &negotiated_version, &wlan_handle);
   if (dwResult != ERROR_SUCCESS || !wlan_handle)
   {
     CLog::Log(LOGERROR, "Could not load the client WLAN API");
@@ -381,44 +424,37 @@ void CNetworkInterfaceWin32::GetSettings(NetworkAssignment& assignment, std::str
   encryptionMode = ENC_NONE;
   assignment = NETWORK_DISABLED;
 
+  const ULONG flags = GAA_FLAG_SKIP_ANYCAST | GAA_FLAG_SKIP_MULTICAST | GAA_FLAG_SKIP_DNS_SERVER | GAA_FLAG_INCLUDE_PREFIX | GAA_FLAG_SKIP_FRIENDLY_NAME | GAA_FLAG_INCLUDE_GATEWAYS;
+  ULONG ulOutBufLen;
 
-  PIP_ADAPTER_INFO adapterInfo;
-  PIP_ADAPTER_INFO adapter = nullptr;
-
-  ULONG ulOutBufLen = sizeof (IP_ADAPTER_INFO);
-
-  adapterInfo = (IP_ADAPTER_INFO *) malloc(sizeof (IP_ADAPTER_INFO));
-  if (adapterInfo == nullptr)
+  if (GetAdaptersAddresses(AF_INET, flags, nullptr, nullptr, &ulOutBufLen) != ERROR_BUFFER_OVERFLOW)
     return;
 
-  if (GetAdaptersInfo(adapterInfo, &ulOutBufLen) == ERROR_BUFFER_OVERFLOW)
-  {
-    free(adapterInfo);
-    adapterInfo = (IP_ADAPTER_INFO *) malloc(ulOutBufLen);
-    if (adapterInfo == nullptr)
-      return;
-  }
+  PIP_ADAPTER_ADDRESSES adapterAddresses = static_cast<PIP_ADAPTER_ADDRESSES>(malloc(ulOutBufLen));
+  if (adapterAddresses == nullptr)
+    return;
 
-  if ((GetAdaptersInfo(adapterInfo, &ulOutBufLen)) == NO_ERROR)
+  if (GetAdaptersAddresses(AF_INET, flags, nullptr, adapterAddresses, &ulOutBufLen) == NO_ERROR)
   {
-    adapter = adapterInfo;
-    while (adapter)
+    for (PIP_ADAPTER_ADDRESSES adapter = adapterAddresses; adapter; adapter = adapter->Next)
     {
-      if(m_adapter.Index == adapter->Index)
+      if(m_adapter.IfIndex == adapter->IfIndex)
       {
-        ipAddress = adapter->IpAddressList.IpAddress.String;
-        networkMask = adapter->IpAddressList.IpMask.String;
-        defaultGateway = adapter->GatewayList.IpAddress.String;
-        if (adapter->DhcpEnabled)
+        ipAddress = CNetworkBase::GetIpStr(adapter->FirstUnicastAddress->Address.lpSockaddr);
+        if (adapter->FirstUnicastAddress->Address.lpSockaddr->sa_family == AF_INET)
+          networkMask = CNetworkBase::GetMaskByPrefixLength(adapter->FirstUnicastAddress->OnLinkPrefixLength);
+        else
+          networkMask = StringUtils::Format("%u", adapter->FirstUnicastAddress->OnLinkPrefixLength);
+        defaultGateway = adapter->FirstGatewayAddress != nullptr ? CNetworkBase::GetIpStr(adapter->FirstGatewayAddress->Address.lpSockaddr) : "";
+        if (adapter->Dhcpv4Enabled)
           assignment = NETWORK_DHCP;
         else
           assignment = NETWORK_STATIC;
         break;
       }
-      adapter = adapter->Next;
     }
   }
-  free(adapterInfo);
+  free(adapterAddresses);
 
   if(IsWireless())
   {
@@ -428,7 +464,7 @@ void CNetworkInterfaceWin32::GetSettings(NetworkAssignment& assignment, std::str
     PWLAN_CONNECTION_ATTRIBUTES pAttributes;
     DWORD dwSize = 0;
 
-    if(WlanOpenHandle(1, nullptr, &dwVersion, &hClientHdl) == ERROR_SUCCESS)
+    if (WlanOpenHandle(2u, nullptr, &dwVersion, &hClientHdl) == ERROR_SUCCESS)
     {
       PWLAN_INTERFACE_INFO_LIST ppInterfaceList;
       if(WlanEnumInterfaces(hClientHdl,NULL, &ppInterfaceList ) == ERROR_SUCCESS)
