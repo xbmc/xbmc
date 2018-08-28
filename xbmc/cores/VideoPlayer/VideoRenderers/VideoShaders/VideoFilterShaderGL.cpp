@@ -69,7 +69,7 @@ ConvolutionFilterShader::ConvolutionFilterShader(ESCALINGMETHOD method, bool str
     shadername = "gl_convolution-4x4.glsl";
 
     if (m_floattex)
-      m_internalformat = GL_RGBA16F_ARB;
+      m_internalformat = GL_RGBA16F;
     else
       m_internalformat = GL_RGBA;
   }
@@ -79,7 +79,7 @@ ConvolutionFilterShader::ConvolutionFilterShader(ESCALINGMETHOD method, bool str
     shadername = "gl_convolution-6x6.glsl";
 
     if (m_floattex)
-      m_internalformat = GL_RGB16F_ARB;
+      m_internalformat = GL_RGB16F;
     else
       m_internalformat = GL_RGB;
   }

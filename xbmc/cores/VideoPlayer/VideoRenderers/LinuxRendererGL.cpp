@@ -174,10 +174,11 @@ bool CLinuxRendererGL::ValidateRenderTarget()
 {
   if (!m_bValidated)
   {
+    //!@todo remove extension check?
     if (!CServiceBroker::GetRenderSystem()->IsExtSupported("GL_ARB_texture_non_power_of_two") &&
          CServiceBroker::GetRenderSystem()->IsExtSupported("GL_ARB_texture_rectangle"))
     {
-      m_textureTarget = GL_TEXTURE_RECTANGLE_ARB;
+      m_textureTarget = GL_TEXTURE_RECTANGLE;
     }
 
     // function pointer for texture might change in
@@ -197,8 +198,8 @@ bool CLinuxRendererGL::ValidateRenderTarget()
     if (m_renderMethod < 0)
       return false;
 
-    if (m_textureTarget == GL_TEXTURE_RECTANGLE_ARB)
-      CLog::Log(LOGNOTICE, "Using GL_TEXTURE_RECTANGLE_ARB");
+    if (m_textureTarget == GL_TEXTURE_RECTANGLE)
+      CLog::Log(LOGNOTICE, "Using GL_TEXTURE_RECTANGLE");
     else
       CLog::Log(LOGNOTICE, "Using GL_TEXTURE_2D");
 
@@ -405,7 +406,7 @@ void CLinuxRendererGL::LoadPlane(CYuvPlane& plane, int type,
 {
 
   if (plane.pbo)
-    glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, plane.pbo);
+    glBindBuffer(GL_PIXEL_UNPACK_BUFFER, plane.pbo);
 
   int bps = bpp * glFormatElementByteCount(type);
 
@@ -435,7 +436,7 @@ void CLinuxRendererGL::LoadPlane(CYuvPlane& plane, int type,
   glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
   glBindTexture(m_textureTarget, 0);
   if (plane.pbo)
-    glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
+    glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
 }
 
 bool CLinuxRendererGL::Flush(bool saveBuffers)
@@ -901,7 +902,7 @@ void CLinuxRendererGL::LoadShaders(int field)
 
       if (m_scalingMethod == VS_SCALINGMETHOD_LANCZOS3_FAST || m_scalingMethod == VS_SCALINGMETHOD_SPLINE36_FAST)
       {
-        m_pYUVShader = new YUV2RGBFilterShader4(m_textureTarget == GL_TEXTURE_RECTANGLE_ARB,
+        m_pYUVShader = new YUV2RGBFilterShader4(m_textureTarget == GL_TEXTURE_RECTANGLE,
                                                 shaderFormat, m_nonLinStretch,
                                                 AVColorPrimaries::AVCOL_PRI_BT709, m_srcPrimaries,
                                                 m_toneMap,
@@ -927,7 +928,7 @@ void CLinuxRendererGL::LoadShaders(int field)
 
     if (!m_pYUVShader)
     {
-      m_pYUVShader = new YUV2RGBProgressiveShader(m_textureTarget == GL_TEXTURE_RECTANGLE_ARB, shaderFormat,
+      m_pYUVShader = new YUV2RGBProgressiveShader(m_textureTarget == GL_TEXTURE_RECTANGLE, shaderFormat,
                                                   m_nonLinStretch && m_renderQuality == RQ_SINGLEPASS,
                                                   AVColorPrimaries::AVCOL_PRI_BT709, m_srcPrimaries, m_toneMap, out);
 
@@ -1071,18 +1072,18 @@ void CLinuxRendererGL::RenderSinglePass(int index, int field)
   glDisable(GL_DEPTH_TEST);
 
   // Y
-  glActiveTextureARB(GL_TEXTURE0);
+  glActiveTexture(GL_TEXTURE0);
   glBindTexture(m_textureTarget, planes[0].id);
 
   // U
-  glActiveTextureARB(GL_TEXTURE1);
+  glActiveTexture(GL_TEXTURE1);
   glBindTexture(m_textureTarget, planes[1].id);
 
   // V
-  glActiveTextureARB(GL_TEXTURE2);
+  glActiveTexture(GL_TEXTURE2);
   glBindTexture(m_textureTarget, planes[2].id);
 
-  glActiveTextureARB(GL_TEXTURE0);
+  glActiveTexture(GL_TEXTURE0);
   VerifyGLState();
 
   m_pYUVShader->SetBlack(m_videoSettings.m_Brightness * 0.01f - 0.5f);
@@ -1253,21 +1254,21 @@ void CLinuxRendererGL::RenderToFBO(int index, int field, bool weave /*= false*/)
   glDisable(GL_DEPTH_TEST);
 
   // Y
-  glActiveTextureARB(GL_TEXTURE0);
+  glActiveTexture(GL_TEXTURE0);
   glBindTexture(m_textureTarget, planes[0].id);
   VerifyGLState();
 
   // U
-  glActiveTextureARB(GL_TEXTURE1);
+  glActiveTexture(GL_TEXTURE1);
   glBindTexture(m_textureTarget, planes[1].id);
   VerifyGLState();
 
   // V
-  glActiveTextureARB(GL_TEXTURE2);
+  glActiveTexture(GL_TEXTURE2);
   glBindTexture(m_textureTarget, planes[2].id);
   VerifyGLState();
 
-  glActiveTextureARB(GL_TEXTURE0);
+  glActiveTexture(GL_TEXTURE0);
   VerifyGLState();
 
   // make sure the yuv shader is loaded and ready to go
@@ -1439,7 +1440,7 @@ void CLinuxRendererGL::RenderToFBO(int index, int field, bool weave /*= false*/)
 
 void CLinuxRendererGL::RenderFromFBO()
 {
-  glActiveTextureARB(GL_TEXTURE0);
+  glActiveTexture(GL_TEXTURE0);
   VerifyGLState();
 
   // Use regular normalized texture coordinates
@@ -1579,7 +1580,7 @@ void CLinuxRendererGL::RenderRGB(int index, int field)
 {
   CYuvPlane &plane = m_buffers[index].fields[FIELD_FULL][0];
 
-  glActiveTextureARB(GL_TEXTURE0);
+  glActiveTexture(GL_TEXTURE0);
 
   glBindTexture(m_textureTarget, plane.id);
 
@@ -1887,13 +1888,13 @@ bool CLinuxRendererGL::CreateYV12Texture(int index)
   if (m_pboUsed)
   {
     pboSetup = true;
-    glGenBuffersARB(3, pbo);
+    glGenBuffers(3, pbo);
 
     for (int i = 0; i < 3; i++)
     {
-      glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, pbo[i]);
-      glBufferDataARB(GL_PIXEL_UNPACK_BUFFER_ARB, im.planesize[i] + PBO_OFFSET, 0, GL_STREAM_DRAW_ARB);
-      void* pboPtr = glMapBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, GL_WRITE_ONLY_ARB);
+      glBindBuffer(GL_PIXEL_UNPACK_BUFFER, pbo[i]);
+      glBufferData(GL_PIXEL_UNPACK_BUFFER, im.planesize[i] + PBO_OFFSET, 0, GL_STREAM_DRAW);
+      void* pboPtr = glMapBuffer(GL_PIXEL_UNPACK_BUFFER, GL_WRITE_ONLY);
       if (pboPtr)
       {
         im.plane[i] = (uint8_t*) pboPtr + PBO_OFFSET;
@@ -1911,14 +1912,14 @@ bool CLinuxRendererGL::CreateYV12Texture(int index)
     {
       for (int i = 0; i < 3; i++)
       {
-        glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, pbo[i]);
-        glUnmapBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB);
+        glBindBuffer(GL_PIXEL_UNPACK_BUFFER, pbo[i]);
+        glUnmapBuffer(GL_PIXEL_UNPACK_BUFFER);
       }
-      glDeleteBuffersARB(3, pbo);
+      glDeleteBuffers(3, pbo);
       memset(m_buffers[index].pbo, 0, sizeof(m_buffers[index].pbo));
     }
 
-    glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
+    glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
   }
 
   if (!pboSetup)
@@ -2080,12 +2081,12 @@ void CLinuxRendererGL::DeleteYV12Texture(int index)
     {
       if (im.plane[p])
       {
-        glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, pbo[p]);
-        glUnmapBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB);
+        glBindBuffer(GL_PIXEL_UNPACK_BUFFER, pbo[p]);
+        glUnmapBuffer(GL_PIXEL_UNPACK_BUFFER);
         im.plane[p] = NULL;
-        glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
+        glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
       }
-      glDeleteBuffersARB(1, pbo + p);
+      glDeleteBuffers(1, pbo + p);
       pbo[p] = 0;
     }
     else
@@ -2193,13 +2194,13 @@ bool CLinuxRendererGL::CreateNV12Texture(int index)
   if (m_pboUsed)
   {
     pboSetup = true;
-    glGenBuffersARB(2, pbo);
+    glGenBuffers(2, pbo);
 
     for (int i = 0; i < 2; i++)
     {
-      glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, pbo[i]);
-      glBufferDataARB(GL_PIXEL_UNPACK_BUFFER_ARB, im.planesize[i] + PBO_OFFSET, 0, GL_STREAM_DRAW_ARB);
-      void* pboPtr = glMapBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, GL_WRITE_ONLY_ARB);
+      glBindBuffer(GL_PIXEL_UNPACK_BUFFER, pbo[i]);
+      glBufferData(GL_PIXEL_UNPACK_BUFFER, im.planesize[i] + PBO_OFFSET, 0, GL_STREAM_DRAW);
+      void* pboPtr = glMapBuffer(GL_PIXEL_UNPACK_BUFFER, GL_WRITE_ONLY);
       if (pboPtr)
       {
         im.plane[i] = (uint8_t*)pboPtr + PBO_OFFSET;
@@ -2217,14 +2218,14 @@ bool CLinuxRendererGL::CreateNV12Texture(int index)
     {
       for (int i = 0; i < 2; i++)
       {
-        glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, pbo[i]);
-        glUnmapBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB);
+        glBindBuffer(GL_PIXEL_UNPACK_BUFFER, pbo[i]);
+        glUnmapBuffer(GL_PIXEL_UNPACK_BUFFER);
       }
-      glDeleteBuffersARB(2, pbo);
+      glDeleteBuffers(2, pbo);
       memset(m_buffers[index].pbo, 0, sizeof(m_buffers[index].pbo));
     }
 
-    glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
+    glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
   }
 
   if (!pboSetup)
@@ -2322,12 +2323,12 @@ void CLinuxRendererGL::DeleteNV12Texture(int index)
     {
       if (im.plane[p])
       {
-        glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, pbo[p]);
-        glUnmapBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB);
+        glBindBuffer(GL_PIXEL_UNPACK_BUFFER, pbo[p]);
+        glUnmapBuffer(GL_PIXEL_UNPACK_BUFFER);
         im.plane[p] = NULL;
-        glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
+        glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
       }
-      glDeleteBuffersARB(1, pbo + p);
+      glDeleteBuffers(1, pbo + p);
       pbo[p] = 0;
     }
     else
@@ -2408,12 +2409,12 @@ void CLinuxRendererGL::DeleteYUV422PackedTexture(int index)
   {
     if (im.plane[0])
     {
-      glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, pbo[0]);
-      glUnmapBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB);
+      glBindBuffer(GL_PIXEL_UNPACK_BUFFER, pbo[0]);
+      glUnmapBuffer(GL_PIXEL_UNPACK_BUFFER);
       im.plane[0] = NULL;
-      glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
+      glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
     }
-    glDeleteBuffersARB(1, pbo);
+    glDeleteBuffers(1, pbo);
     pbo[0] = 0;
   }
   else
@@ -2461,11 +2462,11 @@ bool CLinuxRendererGL::CreateYUV422PackedTexture(int index)
   if (m_pboUsed)
   {
     pboSetup = true;
-    glGenBuffersARB(1, pbo);
+    glGenBuffers(1, pbo);
 
-    glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, pbo[0]);
-    glBufferDataARB(GL_PIXEL_UNPACK_BUFFER_ARB, im.planesize[0] + PBO_OFFSET, 0, GL_STREAM_DRAW_ARB);
-    void* pboPtr = glMapBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, GL_WRITE_ONLY_ARB);
+    glBindBuffer(GL_PIXEL_UNPACK_BUFFER, pbo[0]);
+    glBufferData(GL_PIXEL_UNPACK_BUFFER, im.planesize[0] + PBO_OFFSET, 0, GL_STREAM_DRAW);
+    void* pboPtr = glMapBuffer(GL_PIXEL_UNPACK_BUFFER, GL_WRITE_ONLY);
     if (pboPtr)
     {
       im.plane[0] = (uint8_t*)pboPtr + PBO_OFFSET;
@@ -2479,13 +2480,13 @@ bool CLinuxRendererGL::CreateYUV422PackedTexture(int index)
 
     if (!pboSetup)
     {
-      glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, *pbo);
-      glUnmapBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB);
-      glDeleteBuffersARB(1, pbo);
+      glBindBuffer(GL_PIXEL_UNPACK_BUFFER, *pbo);
+      glUnmapBuffer(GL_PIXEL_UNPACK_BUFFER);
+      glDeleteBuffers(1, pbo);
       memset(m_buffers[index].pbo, 0, sizeof(m_buffers[index].pbo));
     }
 
-    glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
+    glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
   }
 
   if (!pboSetup)
@@ -2643,12 +2644,12 @@ void CLinuxRendererGL::BindPbo(CPictureBuffer& buff)
       continue;
     pbo = true;
 
-    glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, buff.pbo[plane]);
-    glUnmapBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB);
+    glBindBuffer(GL_PIXEL_UNPACK_BUFFER, buff.pbo[plane]);
+    glUnmapBuffer(GL_PIXEL_UNPACK_BUFFER);
     buff.image.plane[plane] = (uint8_t*)PBO_OFFSET;
   }
   if (pbo)
-    glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
+    glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
 }
 
 void CLinuxRendererGL::UnBindPbo(CPictureBuffer& buff)
@@ -2660,12 +2661,12 @@ void CLinuxRendererGL::UnBindPbo(CPictureBuffer& buff)
       continue;
     pbo = true;
 
-    glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, buff.pbo[plane]);
-    glBufferDataARB(GL_PIXEL_UNPACK_BUFFER_ARB, buff.image.planesize[plane] + PBO_OFFSET, NULL, GL_STREAM_DRAW_ARB);
-    buff.image.plane[plane] = (uint8_t*)glMapBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, GL_WRITE_ONLY_ARB) + PBO_OFFSET;
+    glBindBuffer(GL_PIXEL_UNPACK_BUFFER, buff.pbo[plane]);
+    glBufferData(GL_PIXEL_UNPACK_BUFFER, buff.image.planesize[plane] + PBO_OFFSET, NULL, GL_STREAM_DRAW);
+    buff.image.plane[plane] = (uint8_t*)glMapBuffer(GL_PIXEL_UNPACK_BUFFER, GL_WRITE_ONLY) + PBO_OFFSET;
   }
   if (pbo)
-    glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
+    glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
 }
 
 CRenderInfo CLinuxRendererGL::GetRenderInfo()
