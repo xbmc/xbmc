@@ -46,7 +46,6 @@ public:
    virtual std::vector<NetworkAccessPoint> GetAccessPoints(void) const;
 
 private:
-   void WriteSettings(FILE* fw, NetworkAssignment assignment, std::string& ipAddress, std::string& networkMask, std::string& defaultGateway, std::string& essId, std::string& key, EncMode& encryptionMode);
    IP_ADAPTER_INFO m_adapter;
    CNetworkWin32* m_network;
    std::string m_adaptername;

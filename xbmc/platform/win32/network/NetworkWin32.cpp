@@ -485,10 +485,3 @@ void CNetworkInterfaceWin32::SetSettings(const NetworkAssignment& assignment, co
 {
   return;
 }
-
-void CNetworkInterfaceWin32::WriteSettings(FILE* fw, NetworkAssignment assignment, std::string& ipAddress
-                                         , std::string& networkMask, std::string& defaultGateway
-                                         , std::string& essId, std::string& key, EncMode& encryptionMode)
-{
-  return;
-}
