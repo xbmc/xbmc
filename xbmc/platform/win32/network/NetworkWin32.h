@@ -21,29 +21,29 @@ class CNetworkInterfaceWin32 : public CNetworkInterface
 {
 public:
    CNetworkInterfaceWin32(CNetworkWin32* network, const IP_ADAPTER_INFO& adapter);
-   ~CNetworkInterfaceWin32(void);
+   ~CNetworkInterfaceWin32(void) override;
 
-   virtual const std::string& GetName(void) const;
+   const std::string& GetName(void) const override;
 
-   virtual bool IsEnabled(void) const;
-   virtual bool IsConnected(void) const;
-   virtual bool IsWireless(void) const;
+   bool IsEnabled(void) const override;
+   bool IsConnected(void) const override;
+   bool IsWireless(void) const override;
 
-   virtual std::string GetMacAddress(void) const;
-   virtual void GetMacAddressRaw(char rawMac[6]) const;
+   std::string GetMacAddress(void) const override;
+   void GetMacAddressRaw(char rawMac[6]) const override;
 
-   virtual bool GetHostMacAddress(unsigned long host, std::string& mac) const;
+   bool GetHostMacAddress(unsigned long host, std::string& mac) const override;
 
-   virtual std::string GetCurrentIPAddress() const;
-   virtual std::string GetCurrentNetmask() const;
-   virtual std::string GetCurrentDefaultGateway(void) const;
-   virtual std::string GetCurrentWirelessEssId(void) const;
+   std::string GetCurrentIPAddress() const override;
+   std::string GetCurrentNetmask() const override;
+   std::string GetCurrentDefaultGateway(void) const override;
+   std::string GetCurrentWirelessEssId(void) const override;
 
-   virtual void GetSettings(NetworkAssignment& assignment, std::string& ipAddress, std::string& networkMask, std::string& defaultGateway, std::string& essId, std::string& key, EncMode& encryptionMode) const;
-   virtual void SetSettings(const NetworkAssignment& assignment, const std::string& ipAddress, const std::string& networkMask, const std::string& defaultGateway, const std::string& essId, const std::string& key, const EncMode& encryptionMode);
+   void GetSettings(NetworkAssignment& assignment, std::string& ipAddress, std::string& networkMask, std::string& defaultGateway, std::string& essId, std::string& key, EncMode& encryptionMode) const override;
+   void SetSettings(const NetworkAssignment& assignment, const std::string& ipAddress, const std::string& networkMask, const std::string& defaultGateway, const std::string& essId, const std::string& key, const EncMode& encryptionMode) override;
 
    // Returns the list of access points in the area
-   virtual std::vector<NetworkAccessPoint> GetAccessPoints(void) const;
+   std::vector<NetworkAccessPoint> GetAccessPoints(void) const override;
 
 private:
    IP_ADAPTER_INFO m_adapter;
@@ -55,18 +55,18 @@ class CNetworkWin32 : public CNetworkBase
 {
 public:
    CNetworkWin32(CSettings &settings);
-   virtual ~CNetworkWin32(void);
+   ~CNetworkWin32(void) override;
 
    // Return the list of interfaces
-   virtual std::vector<CNetworkInterface*>& GetInterfaceList(void);
+   virtual std::vector<CNetworkInterface*>& GetInterfaceList(void) override;
 
    // Ping remote host
    using CNetworkBase::PingHost;
-   virtual bool PingHost(unsigned long host, unsigned int timeout_ms = 2000);
+   bool PingHost(unsigned long host, unsigned int timeout_ms = 2000) override;
 
    // Get/set the nameserver(s)
-   virtual std::vector<std::string> GetNameServers(void);
-   virtual void SetNameServers(const std::vector<std::string>& nameServers);
+   std::vector<std::string> GetNameServers(void) override;
+   void SetNameServers(const std::vector<std::string>& nameServers) override;
 
    friend class CNetworkInterfaceWin32;
 
