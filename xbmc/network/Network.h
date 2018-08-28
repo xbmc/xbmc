@@ -63,31 +63,32 @@ class CNetworkInterface
 public:
    virtual ~CNetworkInterface() = default;
 
-   virtual std::string& GetName(void) = 0;
+   virtual const std::string& GetName(void) const = 0;
 
-   virtual bool IsEnabled(void) = 0;
-   virtual bool IsConnected(void) = 0;
-   virtual bool IsWireless(void) = 0;
+   virtual bool IsEnabled(void) const = 0;
+   virtual bool IsConnected(void) const = 0;
+   virtual bool IsWireless(void) const = 0;
 
-   virtual std::string GetMacAddress(void) = 0;
-   virtual void GetMacAddressRaw(char rawMac[6]) = 0;
+   virtual std::string GetMacAddress(void) const = 0;
+   virtual void GetMacAddressRaw(char rawMac[6]) const = 0;
 
-   virtual bool GetHostMacAddress(unsigned long host, std::string& mac) = 0;
+   virtual bool GetHostMacAddress(unsigned long host, std::string& mac) const = 0;
 
-   virtual std::string GetCurrentIPAddress() = 0;
-   virtual std::string GetCurrentNetmask() = 0;
-   virtual std::string GetCurrentDefaultGateway(void) = 0;
-   virtual std::string GetCurrentWirelessEssId(void) = 0;
+   virtual std::string GetCurrentIPAddress() const = 0;
+   virtual std::string GetCurrentNetmask() const = 0;
+   virtual std::string GetCurrentDefaultGateway(void) const = 0;
+   virtual std::string GetCurrentWirelessEssId(void) const = 0;
 
    // Returns the list of access points in the area
-   virtual std::vector<NetworkAccessPoint> GetAccessPoints(void) = 0;
+   virtual std::vector<NetworkAccessPoint> GetAccessPoints(void) const = 0;
 
-   virtual void GetSettings(NetworkAssignment& assignment, std::string& ipAddress, std::string& networkMask, std::string& defaultGateway, std::string& essId, std::string& key, EncMode& encryptionMode) = 0;
-   virtual void SetSettings(NetworkAssignment& assignment, std::string& ipAddress, std::string& networkMask, std::string& defaultGateway, std::string& essId, std::string& key, EncMode& encryptionMode) = 0;
+   virtual void GetSettings(NetworkAssignment& assignment, std::string& ipAddress, std::string& networkMask, std::string& defaultGateway, std::string& essId, std::string& key, EncMode& encryptionMode) const = 0;
+   virtual void SetSettings(const NetworkAssignment& assignment, const std::string& ipAddress, const std::string& networkMask, const std::string& defaultGateway, const std::string& essId, const std::string& key, const EncMode& encryptionMode) = 0;
 };
 
 class CSettings;
 class CNetworkServices;
+struct sockaddr;
 
 class CNetworkBase
 {

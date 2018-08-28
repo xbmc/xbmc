@@ -39,51 +39,51 @@ CNetworkInterfaceWin32::~CNetworkInterfaceWin32(void)
 {
 }
 
-std::string& CNetworkInterfaceWin32::GetName(void)
+const std::string& CNetworkInterfaceWin32::GetName(void) const
 {
   return m_adaptername;
 }
 
-bool CNetworkInterfaceWin32::IsWireless()
+bool CNetworkInterfaceWin32::IsWireless() const
 {
   return (m_adapter.Type == IF_TYPE_IEEE80211);
 }
 
-bool CNetworkInterfaceWin32::IsEnabled()
+bool CNetworkInterfaceWin32::IsEnabled() const
 {
   return true;
 }
 
-bool CNetworkInterfaceWin32::IsConnected()
+bool CNetworkInterfaceWin32::IsConnected() const
 {
   std::string strIP = m_adapter.IpAddressList.IpAddress.String;
   return (strIP != "0.0.0.0");
 }
 
-std::string CNetworkInterfaceWin32::GetMacAddress()
+std::string CNetworkInterfaceWin32::GetMacAddress() const
 {
   std::string result;
-  unsigned char* mAddr = m_adapter.Address;
+  const unsigned char* mAddr = m_adapter.Address;
   result = StringUtils::Format("%02X:%02X:%02X:%02X:%02X:%02X", mAddr[0], mAddr[1], mAddr[2], mAddr[3], mAddr[4], mAddr[5]);
   return result;
 }
 
-void CNetworkInterfaceWin32::GetMacAddressRaw(char rawMac[6])
+void CNetworkInterfaceWin32::GetMacAddressRaw(char rawMac[6]) const
 {
   memcpy(rawMac, m_adapter.Address, 6);
 }
 
-std::string CNetworkInterfaceWin32::GetCurrentIPAddress(void)
+std::string CNetworkInterfaceWin32::GetCurrentIPAddress(void) const
 {
   return m_adapter.IpAddressList.IpAddress.String;
 }
 
-std::string CNetworkInterfaceWin32::GetCurrentNetmask(void)
+std::string CNetworkInterfaceWin32::GetCurrentNetmask(void) const
 {
   return m_adapter.IpAddressList.IpMask.String;
 }
 
-std::string CNetworkInterfaceWin32::GetCurrentWirelessEssId(void)
+std::string CNetworkInterfaceWin32::GetCurrentWirelessEssId(void) const
 {
   std::string result = "";
   if(IsWireless())
@@ -127,7 +127,7 @@ std::string CNetworkInterfaceWin32::GetCurrentWirelessEssId(void)
   return result;
 }
 
-std::string CNetworkInterfaceWin32::GetCurrentDefaultGateway(void)
+std::string CNetworkInterfaceWin32::GetCurrentDefaultGateway(void) const
 {
   return m_adapter.GatewayList.IpAddress.String;
 }
@@ -284,7 +284,7 @@ const std::string CNetworkWin32::GetIpStr(const struct sockaddr* sa)
   return result;
 }
 
-bool CNetworkInterfaceWin32::GetHostMacAddress(unsigned long host, std::string& mac)
+bool CNetworkInterfaceWin32::GetHostMacAddress(unsigned long host, std::string& mac) const
 {
   IPAddr src_ip = inet_addr(GetCurrentIPAddress().c_str());
   BYTE bPhysAddr[6];      // for 6-byte hardware addresses
@@ -311,7 +311,7 @@ bool CNetworkInterfaceWin32::GetHostMacAddress(unsigned long host, std::string& 
   return false;
 }
 
-std::vector<NetworkAccessPoint> CNetworkInterfaceWin32::GetAccessPoints(void)
+std::vector<NetworkAccessPoint> CNetworkInterfaceWin32::GetAccessPoints(void) const
 {
    std::vector<NetworkAccessPoint> result;
   if (!IsWireless())
@@ -394,7 +394,7 @@ std::vector<NetworkAccessPoint> CNetworkInterfaceWin32::GetAccessPoints(void)
 
 void CNetworkInterfaceWin32::GetSettings(NetworkAssignment& assignment, std::string& ipAddress
                                        , std::string& networkMask, std::string& defaultGateway
-                                       , std::string& essId, std::string& key, EncMode& encryptionMode)
+                                       , std::string& essId, std::string& key, EncMode& encryptionMode) const
 {
   ipAddress = "0.0.0.0";
   networkMask = "0.0.0.0";
@@ -502,9 +502,9 @@ void CNetworkInterfaceWin32::GetSettings(NetworkAssignment& assignment, std::str
   //! @todo get the key (WlanGetProfile, CryptUnprotectData?)
 }
 
-void CNetworkInterfaceWin32::SetSettings(NetworkAssignment& assignment, std::string& ipAddress
-                                       , std::string& networkMask, std::string& defaultGateway
-                                       , std::string& essId, std::string& key, EncMode& encryptionMode)
+void CNetworkInterfaceWin32::SetSettings(const NetworkAssignment& assignment, const std::string& ipAddress
+                                       , const std::string& networkMask, const std::string& defaultGateway
+                                       , const std::string& essId, const std::string& key, const EncMode& encryptionMode)
 {
   return;
 }

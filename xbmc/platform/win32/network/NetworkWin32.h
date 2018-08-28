@@ -23,27 +23,27 @@ public:
    CNetworkInterfaceWin32(CNetworkWin32* network, const IP_ADAPTER_INFO& adapter);
    ~CNetworkInterfaceWin32(void);
 
-   virtual std::string& GetName(void);
+   virtual const std::string& GetName(void) const;
 
-   virtual bool IsEnabled(void);
-   virtual bool IsConnected(void);
-   virtual bool IsWireless(void);
+   virtual bool IsEnabled(void) const;
+   virtual bool IsConnected(void) const;
+   virtual bool IsWireless(void) const;
 
-   virtual std::string GetMacAddress(void);
-   virtual void GetMacAddressRaw(char rawMac[6]);
+   virtual std::string GetMacAddress(void) const;
+   virtual void GetMacAddressRaw(char rawMac[6]) const;
 
-   virtual bool GetHostMacAddress(unsigned long host, std::string& mac);
+   virtual bool GetHostMacAddress(unsigned long host, std::string& mac) const;
 
-   virtual std::string GetCurrentIPAddress();
-   virtual std::string GetCurrentNetmask();
-   virtual std::string GetCurrentDefaultGateway(void);
-   virtual std::string GetCurrentWirelessEssId(void);
+   virtual std::string GetCurrentIPAddress() const;
+   virtual std::string GetCurrentNetmask() const;
+   virtual std::string GetCurrentDefaultGateway(void) const;
+   virtual std::string GetCurrentWirelessEssId(void) const;
 
-   virtual void GetSettings(NetworkAssignment& assignment, std::string& ipAddress, std::string& networkMask, std::string& defaultGateway, std::string& essId, std::string& key, EncMode& encryptionMode);
-   virtual void SetSettings(NetworkAssignment& assignment, std::string& ipAddress, std::string& networkMask, std::string& defaultGateway, std::string& essId, std::string& key, EncMode& encryptionMode);
+   virtual void GetSettings(NetworkAssignment& assignment, std::string& ipAddress, std::string& networkMask, std::string& defaultGateway, std::string& essId, std::string& key, EncMode& encryptionMode) const;
+   virtual void SetSettings(const NetworkAssignment& assignment, const std::string& ipAddress, const std::string& networkMask, const std::string& defaultGateway, const std::string& essId, const std::string& key, const EncMode& encryptionMode);
 
    // Returns the list of access points in the area
-   virtual std::vector<NetworkAccessPoint> GetAccessPoints(void);
+   virtual std::vector<NetworkAccessPoint> GetAccessPoints(void) const;
 
 private:
    void WriteSettings(FILE* fw, NetworkAssignment assignment, std::string& ipAddress, std::string& networkMask, std::string& defaultGateway, std::string& essId, std::string& key, EncMode& encryptionMode);

@@ -128,27 +128,27 @@ CNetworkInterfaceWin10::CNetworkInterfaceWin10(CNetworkWin10 * network, const PI
 
 CNetworkInterfaceWin10::~CNetworkInterfaceWin10(void) = default;
 
-std::string& CNetworkInterfaceWin10::GetName(void)
+const std::string& CNetworkInterfaceWin10::GetName(void) const
 {
   return m_adaptername;
 }
 
-bool CNetworkInterfaceWin10::IsWireless()
+bool CNetworkInterfaceWin10::IsWireless() const
 {
   return m_adapterAddr->IfType == IF_TYPE_IEEE80211;
 }
 
-bool CNetworkInterfaceWin10::IsEnabled()
+bool CNetworkInterfaceWin10::IsEnabled() const
 {
   return true;
 }
 
-bool CNetworkInterfaceWin10::IsConnected()
+bool CNetworkInterfaceWin10::IsConnected() const
 {
   return m_adapterAddr->OperStatus == IF_OPER_STATUS::IfOperStatusUp;
 }
 
-std::string CNetworkInterfaceWin10::GetMacAddress()
+std::string CNetworkInterfaceWin10::GetMacAddress() const
 {
   std::string result;
   unsigned char* mAddr = m_adapterAddr->PhysicalAddress;
@@ -156,12 +156,12 @@ std::string CNetworkInterfaceWin10::GetMacAddress()
   return result;
 }
 
-void CNetworkInterfaceWin10::GetMacAddressRaw(char rawMac[6])
+void CNetworkInterfaceWin10::GetMacAddressRaw(char rawMac[6]) const
 {
   memcpy(rawMac, m_adapterAddr->PhysicalAddress, 6);
 }
 
-bool CNetworkInterfaceWin10::GetHostMacAddress(unsigned long host, std::string& mac)
+bool CNetworkInterfaceWin10::GetHostMacAddress(unsigned long host, std::string& mac) const
 {
   mac = "";
   //! @todo implement raw ARP requests
@@ -170,7 +170,7 @@ bool CNetworkInterfaceWin10::GetHostMacAddress(unsigned long host, std::string& 
 
 void CNetworkInterfaceWin10::GetSettings(NetworkAssignment& assignment, std::string& ipAddress
                                        , std::string& networkMask, std::string& defaultGateway
-                                       , std::string& essId, std::string& key, EncMode& encryptionMode)
+                                       , std::string& essId, std::string& key, EncMode& encryptionMode) const
 {
   ipAddress = "0.0.0.0";
   networkMask = "0.0.0.0";
@@ -236,17 +236,17 @@ void CNetworkInterfaceWin10::GetSettings(NetworkAssignment& assignment, std::str
   free(adapterAddresses);
 }
 
-void CNetworkInterfaceWin10::SetSettings(NetworkAssignment& assignment, std::string& ipAddress, std::string& networkMask, std::string& defaultGateway, std::string& essId, std::string& key, EncMode& encryptionMode)
+void CNetworkInterfaceWin10::SetSettings(const NetworkAssignment& assignment, const std::string& ipAddress, const std::string& networkMask, const std::string& defaultGateway, const std::string& essId, const std::string& key, const EncMode& encryptionMode)
 {
 }
 
-std::vector<NetworkAccessPoint> CNetworkInterfaceWin10::GetAccessPoints(void)
+std::vector<NetworkAccessPoint> CNetworkInterfaceWin10::GetAccessPoints(void) const
 {
   std::vector<NetworkAccessPoint> accessPoints;
   return accessPoints;
 }
 
-std::string CNetworkInterfaceWin10::GetCurrentIPAddress(void)
+std::string CNetworkInterfaceWin10::GetCurrentIPAddress(void) const
 {
   std::string result = "0.0.0.0";
 
@@ -264,7 +264,7 @@ std::string CNetworkInterfaceWin10::GetCurrentIPAddress(void)
   return result;
 }
 
-std::string CNetworkInterfaceWin10::GetCurrentNetmask(void)
+std::string CNetworkInterfaceWin10::GetCurrentNetmask(void) const
 {
   std::string result = "0.0.0.0";
 
@@ -282,7 +282,7 @@ std::string CNetworkInterfaceWin10::GetCurrentNetmask(void)
   return result;
 }
 
-std::string CNetworkInterfaceWin10::GetCurrentWirelessEssId(void)
+std::string CNetworkInterfaceWin10::GetCurrentWirelessEssId(void) const
 {
   std::string result = "";
   if (!IsWireless() || !m_winRT)
@@ -306,7 +306,7 @@ std::string CNetworkInterfaceWin10::GetCurrentWirelessEssId(void)
   return result;
 }
 
-std::string CNetworkInterfaceWin10::GetCurrentDefaultGateway(void)
+std::string CNetworkInterfaceWin10::GetCurrentDefaultGateway(void) const
 {
   std::string result = "";
 
