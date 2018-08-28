@@ -365,6 +365,7 @@ void CRenderBuffer::ReleasePicture()
 
   m_planes[0] = nullptr;
   m_planes[1] = nullptr;
+  loaded = false;
 }
 
 HRESULT CRenderBuffer::GetResource(ID3D11Resource** ppResource, unsigned* index)
