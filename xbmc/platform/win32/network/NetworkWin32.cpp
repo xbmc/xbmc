@@ -234,25 +234,51 @@ void CNetworkWin32::SetNameServers(const std::vector<std::string>& nameServers)
 
 bool CNetworkWin32::PingHost(unsigned long host, unsigned int timeout_ms /* = 2000 */)
 {
+  struct sockaddr sockHost;
+  sockHost.sa_family = AF_INET;
+  reinterpret_cast<struct sockaddr_in&>(sockHost).sin_addr.S_un.S_addr = host;
+  return PingHost(sockHost, timeout_ms);
+}
+
+bool CNetworkWin32::PingHost(const struct sockaddr& host, unsigned int timeout_ms /* = 2000 */)
+{
   char SendData[]    = "poke";
-  HANDLE hIcmpFile   = IcmpCreateFile();
   BYTE ReplyBuffer [sizeof(ICMP_ECHO_REPLY) + sizeof(SendData)];
 
   SetLastError(ERROR_SUCCESS);
 
-  DWORD dwRetVal = IcmpSendEcho(hIcmpFile, host, SendData, sizeof(SendData),
-                                NULL, ReplyBuffer, sizeof(ReplyBuffer), timeout_ms);
+  HANDLE hIcmpFile;
+  DWORD dwRetVal;
+
+  switch (host.sa_family)
+  {
+    case AF_INET:
+      hIcmpFile = IcmpCreateFile();
+      dwRetVal = IcmpSendEcho2(hIcmpFile, nullptr, nullptr, nullptr, reinterpret_cast<const struct sockaddr_in&>(host).sin_addr.S_un.S_addr, SendData, sizeof(SendData), nullptr, ReplyBuffer, sizeof(ReplyBuffer), timeout_ms);
+      break;
+
+    case AF_INET6:
+    {
+      hIcmpFile = Icmp6CreateFile();
+      struct sockaddr_in6 source = { AF_INET6, 0, 0, in6addr_any };
+      dwRetVal = Icmp6SendEcho2(hIcmpFile, nullptr, nullptr, nullptr, &source, &const_cast<struct sockaddr_in6&>(reinterpret_cast<const struct sockaddr_in6&>(host)), SendData, sizeof(SendData), nullptr, ReplyBuffer, sizeof(ReplyBuffer), timeout_ms);
+      break;
+    }
+
+    default:
+      return false;
+  }
 
   DWORD lastErr = GetLastError();
   if (lastErr != ERROR_SUCCESS && lastErr != IP_REQ_TIMED_OUT)
-    CLog::Log(LOGERROR, "%s - IcmpSendEcho failed - %s", __FUNCTION__, CWIN32Util::WUSysMsg(lastErr).c_str());
+    CLog::Log(LOGERROR, "%s - %s failed - %s", __FUNCTION__, host.sa_family == AF_INET ? "IcmpSendEcho2" : "Icmp6SendEcho2", CWIN32Util::WUSysMsg(lastErr).c_str());
 
   IcmpCloseHandle (hIcmpFile);
 
-  if (dwRetVal != 0)
+  if (dwRetVal > 0U)
   {
-    PICMP_ECHO_REPLY pEchoReply = (PICMP_ECHO_REPLY)ReplyBuffer;
-    return (pEchoReply->Status == IP_SUCCESS);
+    PICMP_ECHO_REPLY pEchoReply = reinterpret_cast<PICMP_ECHO_REPLY>(ReplyBuffer);
+    return pEchoReply->Status == IP_SUCCESS;
   }
   return false;
 }
