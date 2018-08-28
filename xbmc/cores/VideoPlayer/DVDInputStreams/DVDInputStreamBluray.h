@@ -125,7 +125,7 @@ protected:
   BLURAY* m_bd = nullptr;
   BLURAY_TITLE_INFO* m_title = nullptr;
   uint32_t m_playlist = MAX_PLAYLIST_ID + 1;
-  uint32_t m_clip = MAX_CLIP_ID + 1;
+  BLURAY_CLIP_INFO* m_clip = nullptr;
   uint32_t m_angle = 0;
   bool m_menu = false;
   bool m_navmode = false;
