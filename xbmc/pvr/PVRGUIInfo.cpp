@@ -309,6 +309,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem *item, const CGUIInf
         strValue = timer->ChannelName();
         return true;
       case LISTITEM_EPG_EVENT_TITLE:
+      case LISTITEM_EPG_EVENT_ICON:
       case LISTITEM_GENRE:
       case LISTITEM_PLOT:
       case LISTITEM_PLOT_OUTLINE:
@@ -577,6 +578,9 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem *item, const CGUIInf
       case VIDEOPLAYER_WRITER:
       case LISTITEM_WRITER:
         strValue = epgTag->GetWritersLabel();
+        return true;
+      case LISTITEM_EPG_EVENT_ICON:
+        strValue = epgTag->Icon();
         return true;
       case VIDEOPLAYER_PARENTAL_RATING:
       case LISTITEM_PARENTALRATING:

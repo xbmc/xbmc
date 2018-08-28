@@ -3645,6 +3645,11 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///                  _string_,
 ///     Returns the title of the epg event associated with the item\, if any
 ///   }
+///   \table_row3{   <b>`ListItem.EpgEventIcon`</b>,
+///                  \anchor ListItem_EpgEventIcon
+///                  _string_,
+///     Returns the thumbnail for the epg event associated with the item (if it exists)
+///   }
 ///   \table_row3{   <b>`ListItem.InProgress`</b>,
 ///                  \anchor ListItem_InProgress
 ///                  _boolean_,
@@ -3898,6 +3903,7 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "episodename",      LISTITEM_EPISODENAME },
                                   { "timertype",        LISTITEM_TIMERTYPE },
                                   { "epgeventtitle",    LISTITEM_EPG_EVENT_TITLE },
+                                  { "epgeventicon",     LISTITEM_EPG_EVENT_ICON },
                                   { "timerisactive",    LISTITEM_TIMERISACTIVE },
                                   { "timerhaserror",    LISTITEM_TIMERHASERROR },
                                   { "timerhasconflict", LISTITEM_TIMERHASCONFLICT },
