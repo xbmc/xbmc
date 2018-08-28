@@ -236,7 +236,7 @@ namespace XBMCAddon
       ///-----------------------------------------------------------------------
       /// onAVChange method.
       ///
-      /// Will be called when Kodi has a video- or audiostream. Also happens when the stream changes.
+      /// Will be called when Kodi has a video, audio or subtitle stream. Also happens when the stream changes.
       ///
       onAVChange();
 #else

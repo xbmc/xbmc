@@ -53,6 +53,11 @@ void CDataCacheCore::SignalAudioInfoChange()
   m_hasAVInfoChanges = true;
 }
 
+void CDataCacheCore::SignalSubtitleInfoChange()
+{
+  m_hasAVInfoChanges = true;
+}
+
 void CDataCacheCore::SetVideoDecoderName(std::string name, bool isHw)
 {
   CSingleLock lock(m_videoPlayerSection);

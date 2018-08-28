@@ -542,6 +542,7 @@ void CSelectionStreams::Update(std::shared_ptr<CDVDInputStream> input, CDVDDemux
   }
   CServiceBroker::GetDataCacheCore().SignalAudioInfoChange();
   CServiceBroker::GetDataCacheCore().SignalVideoInfoChange();
+  CServiceBroker::GetDataCacheCore().SignalSubtitleInfoChange();
 }
 
 void CSelectionStreams::Update(std::shared_ptr<CDVDInputStream> input, CDVDDemux* demuxer)
@@ -895,6 +896,7 @@ void CVideoPlayer::CloseDemuxer()
 
   CServiceBroker::GetDataCacheCore().SignalAudioInfoChange();
   CServiceBroker::GetDataCacheCore().SignalVideoInfoChange();
+  CServiceBroker::GetDataCacheCore().SignalSubtitleInfoChange();
 }
 
 void CVideoPlayer::OpenDefaultStreams(bool reset)
@@ -3025,6 +3027,7 @@ void CVideoPlayer::HandleMessages()
     {
       CServiceBroker::GetDataCacheCore().SignalAudioInfoChange();
       CServiceBroker::GetDataCacheCore().SignalVideoInfoChange();
+      CServiceBroker::GetDataCacheCore().SignalSubtitleInfoChange();
       IPlayerCallback *cb = &m_callback;
       m_outboundEvents->Submit([=]() {
         cb->OnAVChange();
@@ -3643,6 +3646,7 @@ bool CVideoPlayer::OpenStream(CCurrentStream& current, int64_t demuxerId, int iS
   UpdateContentState();
   CServiceBroker::GetDataCacheCore().SignalAudioInfoChange();
   CServiceBroker::GetDataCacheCore().SignalVideoInfoChange();
+  CServiceBroker::GetDataCacheCore().SignalSubtitleInfoChange();
 
   return res;
 }

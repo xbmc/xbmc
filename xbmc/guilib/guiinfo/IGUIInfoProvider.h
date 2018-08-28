@@ -73,7 +73,7 @@ public:
    * @param audioInfo New audio stream info.
    * @param videoInfo New video stream info.
    */
-  virtual void UpdateAVInfo(const AudioStreamInfo& audioInfo, const VideoStreamInfo& videoInfo) = 0;
+  virtual void UpdateAVInfo(const AudioStreamInfo& audioInfo, const VideoStreamInfo& videoInfo, const SubtitleStreamInfo& subtitleInfo) = 0;
 };
 
 } // namespace GUIINFO
