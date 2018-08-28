@@ -243,8 +243,10 @@ void CGUIDialogPVRChannelsOSD::GotoChannel(int item)
   if (item < 0 || item >= m_vecItems->Size())
     return;
 
+  // Preserve the item before closing self, because this will clear m_vecItems
+  const CFileItemPtr itemptr = m_vecItems->Get(item);
   Close();
-  CServiceBroker::GetPVRManager().GUIActions()->SwitchToChannel(m_vecItems->Get(item), true /* bCheckResume */);
+  CServiceBroker::GetPVRManager().GUIActions()->SwitchToChannel(itemptr, true /* bCheckResume */);
 }
 
 void CGUIDialogPVRChannelsOSD::ShowInfo(int item)
