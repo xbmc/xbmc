@@ -3648,7 +3648,7 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///   \table_row3{   <b>`ListItem.EpgEventIcon`</b>,
 ///                  \anchor ListItem_EpgEventIcon
 ///                  _string_,
-///     Returns the thumbnail (if it exists) the epg event associated with the item\, if any
+///     Returns the thumbnail for the epg event associated with the item (if it exists)
 ///   }
 ///   \table_row3{   <b>`ListItem.InProgress`</b>,
 ///                  \anchor ListItem_InProgress
