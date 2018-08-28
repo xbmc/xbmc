@@ -277,7 +277,7 @@ enum Dummy
 ```
 
 ### 11.4. Interfaces
-Use CamelCase for interface names and they have to be prefixed with an uppercase I. Filename has to match the interface name without the prefixed I, e.g. ILogger.h
+Use CamelCase for interface names and they have to be prefixed with an uppercase I. Filename has to match the interface name without the prefixed I, e.g. Logger.h
 ```cpp
 class ILogger
 {
