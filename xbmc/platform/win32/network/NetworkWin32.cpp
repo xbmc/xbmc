@@ -27,8 +27,8 @@
 
 using namespace KODI::PLATFORM::WINDOWS;
 
-CNetworkInterfaceWin32::CNetworkInterfaceWin32(CNetworkWin32* network, const IP_ADAPTER_INFO& adapter) :
-   m_adaptername(adapter.Description)
+CNetworkInterfaceWin32::CNetworkInterfaceWin32(CNetworkWin32* network, const IP_ADAPTER_ADDRESSES& adapter)
+  : m_adaptername(adapter.AdapterName)
 {
   m_network = network;
   m_adapter = adapter;
@@ -46,7 +46,7 @@ const std::string& CNetworkInterfaceWin32::GetName(void) const
 
 bool CNetworkInterfaceWin32::IsWireless() const
 {
-  return (m_adapter.Type == IF_TYPE_IEEE80211);
+  return (m_adapter.IfType == IF_TYPE_IEEE80211);
 }
 
 bool CNetworkInterfaceWin32::IsEnabled() const
@@ -56,31 +56,33 @@ bool CNetworkInterfaceWin32::IsEnabled() const
 
 bool CNetworkInterfaceWin32::IsConnected() const
 {
-  std::string strIP = m_adapter.IpAddressList.IpAddress.String;
-  return (strIP != "0.0.0.0");
+  return m_adapter.OperStatus == IF_OPER_STATUS::IfOperStatusUp;
 }
 
 std::string CNetworkInterfaceWin32::GetMacAddress() const
 {
   std::string result;
-  const unsigned char* mAddr = m_adapter.Address;
+  const unsigned char* mAddr = m_adapter.PhysicalAddress;
   result = StringUtils::Format("%02X:%02X:%02X:%02X:%02X:%02X", mAddr[0], mAddr[1], mAddr[2], mAddr[3], mAddr[4], mAddr[5]);
   return result;
 }
 
 void CNetworkInterfaceWin32::GetMacAddressRaw(char rawMac[6]) const
 {
-  memcpy(rawMac, m_adapter.Address, 6);
+  memcpy(rawMac, m_adapter.PhysicalAddress, 6);
 }
 
 std::string CNetworkInterfaceWin32::GetCurrentIPAddress(void) const
 {
-  return m_adapter.IpAddressList.IpAddress.String;
+  return CNetworkBase::GetIpStr(m_adapter.FirstUnicastAddress->Address.lpSockaddr);
 }
 
 std::string CNetworkInterfaceWin32::GetCurrentNetmask(void) const
 {
-  return m_adapter.IpAddressList.IpMask.String;
+  if (m_adapter.FirstUnicastAddress->Address.lpSockaddr->sa_family == AF_INET)
+    return CNetworkBase::GetMaskByPrefixLength(m_adapter.FirstUnicastAddress->OnLinkPrefixLength);
+
+  return StringUtils::Format("%u", m_adapter.FirstUnicastAddress->OnLinkPrefixLength);
 }
 
 std::string CNetworkInterfaceWin32::GetCurrentWirelessEssId(void) const
@@ -129,7 +131,7 @@ std::string CNetworkInterfaceWin32::GetCurrentWirelessEssId(void) const
 
 std::string CNetworkInterfaceWin32::GetCurrentDefaultGateway(void) const
 {
-  return m_adapter.GatewayList.IpAddress.String;
+  return m_adapter.FirstGatewayAddress != nullptr ? CNetworkBase::GetIpStr(m_adapter.FirstGatewayAddress->Address.lpSockaddr) : "";
 }
 
 CNetworkWin32::CNetworkWin32(CSettings &settings)
@@ -169,33 +171,27 @@ void CNetworkWin32::queryInterfaceList()
   CleanInterfaceList();
   m_netrefreshTimer.StartZero();
 
-  PIP_ADAPTER_INFO adapterInfo;
-  PIP_ADAPTER_INFO adapter = NULL;
+  const ULONG flags = GAA_FLAG_SKIP_ANYCAST | GAA_FLAG_SKIP_MULTICAST | GAA_FLAG_SKIP_DNS_SERVER | GAA_FLAG_INCLUDE_PREFIX | GAA_FLAG_INCLUDE_GATEWAYS;
+  ULONG ulOutBufLen;
 
-  ULONG ulOutBufLen = sizeof (IP_ADAPTER_INFO);
-
-  adapterInfo = (IP_ADAPTER_INFO *) malloc(sizeof (IP_ADAPTER_INFO));
-  if (adapterInfo == NULL)
+  if (GetAdaptersAddresses(AF_INET, flags, nullptr, nullptr, &ulOutBufLen) != ERROR_BUFFER_OVERFLOW)
     return;
 
-  if (GetAdaptersInfo(adapterInfo, &ulOutBufLen) == ERROR_BUFFER_OVERFLOW)
-  {
-    free(adapterInfo);
-    adapterInfo = (IP_ADAPTER_INFO *) malloc(ulOutBufLen);
-    if (adapterInfo == NULL)
-      return;
-  }
+  PIP_ADAPTER_ADDRESSES adapterAddresses = static_cast<PIP_ADAPTER_ADDRESSES>(malloc(ulOutBufLen));
+  if (adapterAddresses == nullptr)
+    return;
 
-  if ((GetAdaptersInfo(adapterInfo, &ulOutBufLen)) == NO_ERROR)
+  if (GetAdaptersAddresses(AF_INET, flags, nullptr, adapterAddresses, &ulOutBufLen) == NO_ERROR)
   {
-    adapter = adapterInfo;
-    while (adapter)
+    for (PIP_ADAPTER_ADDRESSES adapter = adapterAddresses; adapter; adapter = adapter->Next)
     {
+      if (adapter->IfType == IF_TYPE_SOFTWARE_LOOPBACK || adapter->OperStatus != IF_OPER_STATUS::IfOperStatusUp)
+        continue;
       m_interfaces.push_back(new CNetworkInterfaceWin32(this, *adapter));
-      adapter = adapter->Next;
     }
   }
-  free(adapterInfo);
+  else
+    CLog::Log(LOGDEBUG, "%s - GetAdaptersAddresses() failed ...", __FUNCTION__);
 }
 
 std::vector<std::string> CNetworkWin32::GetNameServers(void)
@@ -290,7 +286,7 @@ bool CNetworkInterfaceWin32::GetHostMacAddress(unsigned long host, std::string& 
 
 std::vector<NetworkAccessPoint> CNetworkInterfaceWin32::GetAccessPoints(void) const
 {
-   std::vector<NetworkAccessPoint> result;
+  std::vector<NetworkAccessPoint> result;
   if (!IsWireless())
     return result;
 
@@ -376,44 +372,37 @@ void CNetworkInterfaceWin32::GetSettings(NetworkAssignment& assignment, std::str
   encryptionMode = ENC_NONE;
   assignment = NETWORK_DISABLED;
 
+  const ULONG flags = GAA_FLAG_SKIP_ANYCAST | GAA_FLAG_SKIP_MULTICAST | GAA_FLAG_SKIP_DNS_SERVER | GAA_FLAG_INCLUDE_PREFIX | GAA_FLAG_SKIP_FRIENDLY_NAME | GAA_FLAG_INCLUDE_GATEWAYS;
+  ULONG ulOutBufLen;
 
-  PIP_ADAPTER_INFO adapterInfo;
-  PIP_ADAPTER_INFO adapter = nullptr;
-
-  ULONG ulOutBufLen = sizeof (IP_ADAPTER_INFO);
-
-  adapterInfo = (IP_ADAPTER_INFO *) malloc(sizeof (IP_ADAPTER_INFO));
-  if (adapterInfo == nullptr)
+  if (GetAdaptersAddresses(AF_INET, flags, nullptr, nullptr, &ulOutBufLen) != ERROR_BUFFER_OVERFLOW)
     return;
 
-  if (GetAdaptersInfo(adapterInfo, &ulOutBufLen) == ERROR_BUFFER_OVERFLOW)
-  {
-    free(adapterInfo);
-    adapterInfo = (IP_ADAPTER_INFO *) malloc(ulOutBufLen);
-    if (adapterInfo == nullptr)
-      return;
-  }
+  PIP_ADAPTER_ADDRESSES adapterAddresses = static_cast<PIP_ADAPTER_ADDRESSES>(malloc(ulOutBufLen));
+  if (adapterAddresses == nullptr)
+    return;
 
-  if ((GetAdaptersInfo(adapterInfo, &ulOutBufLen)) == NO_ERROR)
+  if (GetAdaptersAddresses(AF_INET, flags, nullptr, adapterAddresses, &ulOutBufLen) == NO_ERROR)
   {
-    adapter = adapterInfo;
-    while (adapter)
+    for (PIP_ADAPTER_ADDRESSES adapter = adapterAddresses; adapter; adapter = adapter->Next)
     {
-      if(m_adapter.Index == adapter->Index)
+      if(m_adapter.IfIndex == adapter->IfIndex)
       {
-        ipAddress = adapter->IpAddressList.IpAddress.String;
-        networkMask = adapter->IpAddressList.IpMask.String;
-        defaultGateway = adapter->GatewayList.IpAddress.String;
-        if (adapter->DhcpEnabled)
+        ipAddress = CNetworkBase::GetIpStr(adapter->FirstUnicastAddress->Address.lpSockaddr);
+        if (adapter->FirstUnicastAddress->Address.lpSockaddr->sa_family == AF_INET)
+          networkMask = CNetworkBase::GetMaskByPrefixLength(adapter->FirstUnicastAddress->OnLinkPrefixLength);
+        else
+          networkMask = StringUtils::Format("%u", adapter->FirstUnicastAddress->OnLinkPrefixLength);
+        defaultGateway = adapter->FirstGatewayAddress != nullptr ? CNetworkBase::GetIpStr(adapter->FirstGatewayAddress->Address.lpSockaddr) : "";
+        if (adapter->Dhcpv4Enabled)
           assignment = NETWORK_DHCP;
         else
           assignment = NETWORK_STATIC;
         break;
       }
-      adapter = adapter->Next;
     }
   }
-  free(adapterInfo);
+  free(adapterAddresses);
 
   if(IsWireless())
   {

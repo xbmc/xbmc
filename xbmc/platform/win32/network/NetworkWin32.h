@@ -20,7 +20,7 @@ class CNetworkWin32;
 class CNetworkInterfaceWin32 : public CNetworkInterface
 {
 public:
-   CNetworkInterfaceWin32(CNetworkWin32* network, const IP_ADAPTER_INFO& adapter);
+   CNetworkInterfaceWin32(CNetworkWin32* network, const IP_ADAPTER_ADDRESSES& adapter);
    ~CNetworkInterfaceWin32(void) override;
 
    const std::string& GetName(void) const override;
@@ -46,7 +46,7 @@ public:
    std::vector<NetworkAccessPoint> GetAccessPoints(void) const override;
 
 private:
-   IP_ADAPTER_INFO m_adapter;
+   IP_ADAPTER_ADDRESSES m_adapter;
    CNetworkWin32* m_network;
    std::string m_adaptername;
 };
