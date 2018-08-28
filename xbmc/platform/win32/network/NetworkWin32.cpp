@@ -285,27 +285,53 @@ bool CNetworkWin32::PingHost(const struct sockaddr& host, unsigned int timeout_m
 
 bool CNetworkInterfaceWin32::GetHostMacAddress(unsigned long host, std::string& mac) const
 {
-  IPAddr src_ip = inet_addr(GetCurrentIPAddress().c_str());
-  BYTE bPhysAddr[6];      // for 6-byte hardware addresses
-  ULONG PhysAddrLen = 6;  // default to length of six bytes
+  struct sockaddr sockHost;
+  sockHost.sa_family = AF_INET;
+  reinterpret_cast<struct sockaddr_in&>(sockHost).sin_addr.S_un.S_addr = host;
+  return GetHostMacAddress(sockHost, mac);
+}
 
-  memset(&bPhysAddr, 0xff, sizeof (bPhysAddr));
+bool CNetworkInterfaceWin32::GetHostMacAddress(const struct sockaddr& host, std::string& mac) const
+{
+  DWORD InterfaceIndex;
+  if (GetBestInterfaceEx(&static_cast<struct sockaddr>(host), &InterfaceIndex) != NO_ERROR)
+    return false;
 
-  DWORD dwRetVal = SendARP(host, src_ip, &bPhysAddr, &PhysAddrLen);
+  NET_LUID luid = { 0 };
+  if (ConvertInterfaceIndexToLuid(InterfaceIndex, &luid) != NO_ERROR)
+    return false;
+
+  MIB_IPNET_ROW2 neighborIp = { 0 };
+  neighborIp.InterfaceLuid = luid;
+  neighborIp.InterfaceIndex;
+  neighborIp.Address.si_family = host.sa_family;
+  switch (host.sa_family)
+  {
+    case AF_INET:
+      neighborIp.Address.Ipv4 = reinterpret_cast<const struct sockaddr_in&>(host);
+      break;
+    case AF_INET6:
+      neighborIp.Address.Ipv6 = reinterpret_cast<const struct sockaddr_in6&>(host);
+      break;
+    default:
+      return false;
+  }
+
+  DWORD dwRetVal = ResolveIpNetEntry2(&neighborIp, nullptr);
   if (dwRetVal == NO_ERROR)
   {
-    if (PhysAddrLen == 6)
+    if (neighborIp.PhysicalAddressLength == 6)
     {
       mac = StringUtils::Format("%02X:%02X:%02X:%02X:%02X:%02X",
-        bPhysAddr[0], bPhysAddr[1], bPhysAddr[2],
-        bPhysAddr[3], bPhysAddr[4], bPhysAddr[5]);
+        neighborIp.PhysicalAddress[0], neighborIp.PhysicalAddress[1], neighborIp.PhysicalAddress[2],
+        neighborIp.PhysicalAddress[3], neighborIp.PhysicalAddress[4], neighborIp.PhysicalAddress[5]);
       return true;
     }
     else
-      CLog::Log(LOGERROR, "%s - SendArp completed successfully, but mac address has length != 6 (%d)", __FUNCTION__, PhysAddrLen);
+      CLog::Log(LOGERROR, "%s - ResolveIpNetEntry2 completed successfully, but mac address has length != 6 (%d)", __FUNCTION__, neighborIp.PhysicalAddressLength);
   }
   else
-    CLog::Log(LOGERROR, "%s - SendArp failed with error (%d)", __FUNCTION__, dwRetVal);
+    CLog::Log(LOGERROR, "%s - ResolveIpNetEntry2 failed with error (%d)", __FUNCTION__, dwRetVal);
 
   return false;
 }

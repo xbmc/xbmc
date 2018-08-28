@@ -11,9 +11,11 @@
 #include <string>
 #include <vector>
 #include "network/Network.h"
-#include "Iphlpapi.h"
 #include "utils/stopwatch.h"
 #include "threads/CriticalSection.h"
+
+#include <ws2ipdef.h>
+#include <Iphlpapi.h>
 
 class CNetworkWin32;
 
@@ -33,6 +35,7 @@ public:
    void GetMacAddressRaw(char rawMac[6]) const override;
 
    bool GetHostMacAddress(unsigned long host, std::string& mac) const override;
+   bool GetHostMacAddress(const struct sockaddr& host, std::string& mac) const;
 
    std::string GetCurrentIPAddress() const override;
    std::string GetCurrentNetmask() const override;
