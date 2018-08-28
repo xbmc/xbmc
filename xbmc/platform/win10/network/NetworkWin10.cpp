@@ -60,43 +60,6 @@ using namespace winrt::Windows::Networking;
 using namespace winrt::Windows::Networking::Connectivity;
 using namespace KODI::PLATFORM::WINDOWS;
 
-std::string GetMaskByPrefix(ADDRESS_FAMILY family, uint8_t prefix)
-{
-  std::string result = "";
-
-  if (family == AF_INET6) // IPv6
-  {
-    if (prefix > 128) // invalid prefix
-      return result;
-
-    struct sockaddr_in6 sa;
-    sa.sin6_family = AF_INET6;
-    int i, j;
-
-    memset(&sa.sin6_addr, 0x0, sizeof(sa.sin6_addr));
-    for (i = prefix, j = 0; i > 0; i -= 8, j++)
-    {
-      if (i >= 8)
-        sa.sin6_addr.s6_addr[j] = 0xff;
-      else
-        sa.sin6_addr.s6_addr[j] = (unsigned long)(0xffU << (8 - i));
-    }
-    result = CNetworkBase::GetIpStr(reinterpret_cast<struct sockaddr*>(&sa));
-  }
-  else // IPv4
-  {
-    if (prefix > 32) // invalid prefix
-      return result;
-
-    struct sockaddr_in sa;
-    sa.sin_family = AF_INET;
-    sa.sin_addr.s_addr = htonl(~((1 << (32 - prefix)) - 1));;
-    result = CNetworkBase::GetIpStr(reinterpret_cast<struct sockaddr*>(&sa));
-  }
-
-  return result;
-}
-
 CNetworkInterfaceWin10::CNetworkInterfaceWin10(CNetworkWin10 * network, const PIP_ADAPTER_ADDRESSES address, IUnknown* winRTadapter)
 {
   m_network = network;
@@ -188,7 +151,7 @@ void CNetworkInterfaceWin10::GetSettings(NetworkAssignment& assignment, std::str
         if (address->Address.lpSockaddr->sa_family == AF_INET)
         {
           ipAddress = CNetworkBase::GetIpStr(address->Address.lpSockaddr);
-          networkMask = GetMaskByPrefix(AF_INET, address->OnLinkPrefixLength);
+          networkMask = CNetworkBase::GetMaskByPrefixLength(address->OnLinkPrefixLength);
 
           break;
         }
@@ -253,7 +216,7 @@ std::string CNetworkInterfaceWin10::GetCurrentNetmask(void) const
   {
     if (address->Address.lpSockaddr->sa_family == AF_INET)
     {
-      result = GetMaskByPrefix(AF_INET, address->OnLinkPrefixLength);
+      result = CNetworkBase::GetMaskByPrefixLength(address->OnLinkPrefixLength);
       break;
     }
     address = address->Next;

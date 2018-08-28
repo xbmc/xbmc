@@ -563,3 +563,14 @@ std::string CNetworkBase::GetIpStr(const struct sockaddr* sa)
   result = buffer;
   return result;
 }
+
+std::string CNetworkBase::GetMaskByPrefixLength(uint8_t prefixLength)
+{
+  if (prefixLength > 32)
+    return "";
+
+  struct sockaddr_in sa;
+  sa.sin_family = AF_INET;
+  sa.sin_addr.s_addr = htonl(~((1 << (32u - prefixLength)) - 1));;
+  return CNetworkBase::GetIpStr(reinterpret_cast<struct sockaddr*>(&sa));
+}

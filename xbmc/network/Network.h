@@ -160,6 +160,13 @@ public:
     */
    static std::string GetIpStr(const sockaddr* sa);
 
+   /*!
+    \brief  convert prefix length of IPv4 address to IP mask representation
+    \param  prefix length
+    \return 
+   */
+   static std::string GetMaskByPrefixLength(uint8_t prefixLength);
+
   std::unique_ptr<CNetworkServices> m_services;
 };
 
