@@ -372,8 +372,9 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
       CLog::Log(LOGERROR, "CPythonInvoker(%d, %s): failed to set abortRequested", GetId(), m_sourceFile.c_str());
 
     // make sure all sub threads have finished
-    for (PyThreadState *s = m_threadState->interp->tstate_head, *old = nullptr; s != nullptr && m_threadState != nullptr;)
+    for (PyThreadState *old = nullptr; m_threadState != nullptr;)
     {
+      PyThreadState *s = m_threadState->interp->tstate_head;
       for (; s && s == m_threadState;)
         s = s->next;
 
