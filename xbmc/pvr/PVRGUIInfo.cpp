@@ -633,6 +633,15 @@ bool CPVRGUIInfo::GetPVRLabel(const CFileItem *item, const CGUIInfo &info, std::
 
   switch (info.m_info)
   {
+    case PVR_EPG_EVENT_ICON:
+    {
+      const CPVREpgInfoTagPtr epgTag = (item->IsPVRChannel() || item->IsEPG()) ? CPVRItem(item).GetEpgInfoTag() : nullptr;
+      if (epgTag)
+      {
+        strValue = epgTag->Icon();
+      }
+      return true;
+    }
     case PVR_EPG_EVENT_DURATION:
     {
       const CPVREpgInfoTagPtr epgTag = (item->IsPVRChannel() || item->IsEPG()) ? CPVRItem(item).GetEpgInfoTag() : nullptr;
