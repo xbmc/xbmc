@@ -453,7 +453,7 @@ namespace XBMCAddon
       if (g_application.GetAppPlayer().HasPlayer())
       {
         SubtitleStreamInfo info;
-        g_application.GetAppPlayer().GetSubtitleStreamInfo(g_application.GetAppPlayer().GetSubtitle(), info);
+        g_application.GetAppPlayer().GetSubtitleStreamInfo(CURRENT_STREAM, info);
 
         if (info.language.length() > 0)
           return info.language;

@@ -5128,7 +5128,10 @@ void CVideoPlayer::GetSubtitleStreamInfo(int index, SubtitleStreamInfo &info)
     index = m_content.m_subtitleIndex;
 
   if (index < 0 || index > GetSubtitleCount() - 1)
+  {
+    info.valid = false;
     return;
+  }
 
   SelectionStream& s = m_content.m_selectionStreams.Get(STREAM_SUBTITLE, index);
   if(s.name.length() > 0)
