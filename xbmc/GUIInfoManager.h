@@ -187,6 +187,7 @@ private:
 
   int AddMultiInfo(const KODI::GUILIB::GUIINFO::CGUIInfo &info);
 
+  int ResolveMultiInfo(int info) const;
   bool IsListItemInfo(int info) const;
 
   void SetCurrentSongTag(const MUSIC_INFO::CMusicInfoTag &tag);
