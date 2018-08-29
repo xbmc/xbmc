@@ -560,6 +560,8 @@ bool COMXAudio::Initialize(AEAudioFormat format, OMXClock *clock, CDVDStreamInfo
     m_output = AESINKPI_ANALOGUE;
   else if (CServiceBroker::GetSettings().GetString(CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE) == "PI:Both")
     m_output = AESINKPI_BOTH;
+  else if (CServiceBroker::GetSettings().GetString(CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE) == "Default")
+    m_output = AESINKPI_HDMI;
   else assert(0);
 
   if(hints.extrasize > 0 && hints.extradata != NULL)

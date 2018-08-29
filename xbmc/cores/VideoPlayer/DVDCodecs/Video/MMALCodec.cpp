@@ -336,6 +336,9 @@ bool CMMALVideo::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
   CSingleLock lock(m_sharedSection);
   CLog::Log(LOGDEBUG, LOGVIDEO, "%s::%s usemmal:%d options:%x %dx%d", CLASSNAME, __func__, CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_USEMMAL), hints.codecOptions, hints.width, hints.height);
 
+  // This occurs at start of m2ts files before streams have been fully identified - just ignore
+  if (!hints.width)
+    return false;
   // we always qualify even if DVDFactoryCodec does this too.
   if (!CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_USEMMAL) || (hints.codecOptions & CODEC_FORCE_SOFTWARE))
     return false;
@@ -720,7 +723,9 @@ CDVDVideoCodec::VCReturn CMMALVideo::GetPicture(VideoPicture* picture)
   picture->videoBuffer = nullptr;
 
   // we don't get an EOS response if no packets have been sent
-  if (m_packet_num == 0 && send_eos)
+  if (!drain)
+    m_got_eos = false;
+  else if (m_packet_num == 0 && send_eos)
     m_got_eos = true;
 
   if (send_eos && !m_got_eos)
