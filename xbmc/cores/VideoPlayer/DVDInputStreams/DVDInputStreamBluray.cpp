@@ -343,18 +343,26 @@ bool CDVDInputStreamBluray::Open()
 // close file and reset everything
 void CDVDInputStreamBluray::Close()
 {
-  if(m_title)
-    bd_free_title_info(m_title);
+  FreeTitleInfo();
+
   if(m_bd)
   {
     bd_register_overlay_proc(m_bd, nullptr, nullptr);
     bd_close(m_bd);
   }
+
   m_bd = nullptr;
-  m_title = nullptr;
-  m_clip = nullptr;
   m_pstream.reset();
   m_rootPath.clear();
+}
+
+void CDVDInputStreamBluray::FreeTitleInfo()
+{
+  if (m_title)
+    bd_free_title_info(m_title);
+
+  m_title = nullptr;
+  m_clip = nullptr;
 }
 
 void CDVDInputStreamBluray::ProcessEvent() {
@@ -429,10 +437,8 @@ void CDVDInputStreamBluray::ProcessEvent() {
 
     if (m_playlist <= MAX_PLAYLIST_ID)
     {
-      if(m_title)
-        bd_free_title_info(m_title);
+      FreeTitleInfo();
       m_title = bd_get_playlist_info(m_bd, m_playlist, m_angle);
-      m_clip = nullptr;
     }
     break;
 
@@ -440,10 +446,7 @@ void CDVDInputStreamBluray::ProcessEvent() {
     CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - BD_EVENT_END_OF_TITLE %d",
         m_event.param);
     /* when a title ends, playlist WILL eventually change */
-    if (m_title)
-      bd_free_title_info(m_title);
-    m_title = nullptr;
-    m_clip = nullptr;
+    FreeTitleInfo();
     break;
 
   case BD_EVENT_TITLE:
@@ -455,10 +458,8 @@ void CDVDInputStreamBluray::ProcessEvent() {
     CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - BD_EVENT_PLAYLIST %d",
         m_event.param);
     m_playlist = m_event.param;
-    if(m_title)
-      bd_free_title_info(m_title);
+    FreeTitleInfo();
     m_title = bd_get_playlist_info(m_bd, m_playlist, m_angle);
-    m_clip = nullptr;
     break;
 
   case BD_EVENT_PLAYITEM:
