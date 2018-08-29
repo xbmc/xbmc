@@ -4675,6 +4675,11 @@ const infomap pvr[] =            {{ "isrecording",              PVR_IS_RECORDING
 /// @{
 /// \table_start
 ///   \table_h3{ Labels, Type, Description }
+///   \table_row3{   <b>`PVR.EpgEventIcon`</b>,
+///                  \anchor PVR_EpgEventIcon
+///                  _string_,
+///     Returns the icon of the currently playing epg event, if any.
+///   }
 ///   \table_row3{   <b>`PVR.EpgEventDuration`</b>,
 ///                  \anchor PVR_EpgEventDuration
 ///                  _string_,
@@ -4859,7 +4864,8 @@ const infomap pvr[] =            {{ "isrecording",              PVR_IS_RECORDING
 ///
 /// -----------------------------------------------------------------------------
 /// @}
-const infomap pvr_times[] =      {{ "epgeventduration",       PVR_EPG_EVENT_DURATION },
+const infomap pvr_times[] =      {{ "epgeventicon",           PVR_EPG_EVENT_ICON },
+                                  { "epgeventduration",       PVR_EPG_EVENT_DURATION },
                                   { "epgeventelapsedtime",    PVR_EPG_EVENT_ELAPSED_TIME },
                                   { "epgeventremainingtime",  PVR_EPG_EVENT_REMAINING_TIME },
                                   { "epgeventfinishtime",     PVR_EPG_EVENT_FINISH_TIME },
