@@ -286,7 +286,11 @@ void CGUIWindowMusicBase::OnItemInfo(int iItem)
     return;
   }
 
-  CGUIDialogMusicInfo::ShowFor(item.get());
+  // Match visibility test of CMusicInfo::IsVisible
+  if (item->HasMusicInfoTag() && (item->GetMusicInfoTag()->GetType() == MediaTypeSong ||
+    item->GetMusicInfoTag()->GetType() == MediaTypeAlbum ||
+    item->GetMusicInfoTag()->GetType() == MediaTypeArtist))
+    CGUIDialogMusicInfo::ShowFor(item.get());
 }
 
 void CGUIWindowMusicBase::RefreshContent(const std::string& strContent)

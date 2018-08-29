@@ -1509,7 +1509,7 @@ bool CMusicDatabase::GetArtistDiscography(int idArtist, CFileItemList& items)
         { // Save new title (from album or discography)
           CFileItemPtr pItem(new CFileItem(strAlbum));
           pItem->SetLabel2(m_pDS->fv("iYear").get_asString());
-          pItem->GetMusicInfoTag()->SetDatabaseId(idAlbum, "album");
+          pItem->GetMusicInfoTag()->SetDatabaseId(idAlbum, MediaTypeAlbum);
 
           items.Add(pItem);
           strLastAlbum = strAlbum;
@@ -1517,7 +1517,7 @@ bool CMusicDatabase::GetArtistDiscography(int idArtist, CFileItemList& items)
         }
         else if (idAlbum > 0 && iLastID < 0)
         { // Amend previously saved discography item to set album ID
-          items[items.Size() - 1]->GetMusicInfoTag()->SetDatabaseId(idAlbum, "album");
+          items[items.Size() - 1]->GetMusicInfoTag()->SetDatabaseId(idAlbum, MediaTypeAlbum);
         }
       }
       m_pDS->next();
@@ -3941,6 +3941,7 @@ bool CMusicDatabase::GetYearsNav(const std::string& strBaseDir, CFileItemList& i
       SYSTEMTIME stTime;
       stTime.wYear = static_cast<unsigned short>(m_pDS->fv(0).get_asInt());
       pItem->GetMusicInfoTag()->SetReleaseDate(stTime);
+      pItem->GetMusicInfoTag()->SetDatabaseId(-1, "year");
 
       CMusicDbUrl itemUrl = musicUrl;
       std::string strDir = StringUtils::Format("%i/", m_pDS->fv(0).get_asInt());
