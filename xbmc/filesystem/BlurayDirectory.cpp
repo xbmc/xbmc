@@ -191,6 +191,13 @@ void CBlurayDirectory::GetRoot(CFileItemList &items)
     item->SetIconImage("DefaultVideoPlaylists.png");
     items.Add(item);
 
+    const BLURAY_DISC_INFO* disc_info = bd_get_disc_info(m_bd);
+    if (disc_info && disc_info->no_menu_support)
+    {
+      CLog::Log(LOGDEBUG, "CBlurayDirectory::GetRoot - no menu support, skipping menu entry");
+      return;
+    }
+
     path.SetFileName("menu");
     item.reset(new CFileItem());
     item->SetPath(path.Get());

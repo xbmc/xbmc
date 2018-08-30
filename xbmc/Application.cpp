@@ -3155,7 +3155,7 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
   {
     //check if we must show the simplified bd menu
     if (!CGUIDialogSimpleMenu::ShowPlaySelection(item))
-      return false;
+      return true;
   }
 
   // this really aught to be inside !bRestart, but since PlayStack
