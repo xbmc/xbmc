@@ -6614,7 +6614,22 @@ bool CGUIInfoManager::GetMultiInfoBool(const CGUIInfo &info, int contextWindow, 
           if (info.GetData2() < 0) // info labels are stored with negative numbers
           {
             int info2 = -info.GetData2();
-            if (item && item->IsFileItem() && IsListItemInfo(info2))
+            CGUIListItemPtr item2;
+
+            if (IsListItemInfo(info2))
+            {
+              int iResolvedInfo2 = ResolveMultiInfo(info2);
+              if (iResolvedInfo2 != 0)
+              {
+                const GUIINFO::CGUIInfo& resolvedInfo2 = m_multiInfo[iResolvedInfo2 - MULTI_INFO_START];
+                if (resolvedInfo2.GetInfoFlag() & INFOFLAG_LISTITEM_CONTAINER)
+                  item2 = GUIINFO::GetCurrentListItem(contextWindow, resolvedInfo2.GetData1()); // data1 contains the container id
+              }
+            }
+
+            if (item2 && item2->IsFileItem())
+              compare = GetItemImage(item2.get(), contextWindow, info2);
+            else if (item && item->IsFileItem())
               compare = GetItemImage(item, contextWindow, info2);
             else
               compare = GetImage(info2, contextWindow);
@@ -6871,6 +6886,20 @@ int CGUIInfoManager::AddMultiInfo(const CGUIInfo &info)
   if (id > MULTI_INFO_END)
     CLog::Log(LOGERROR, "%s - too many multiinfo bool/labels in this skin", __FUNCTION__);
   return id;
+}
+
+int CGUIInfoManager::ResolveMultiInfo(int info) const
+{
+  int iLastInfo = 0;
+
+  int iResolvedInfo = info;
+  while (iResolvedInfo >= MULTI_INFO_START && iResolvedInfo <= MULTI_INFO_END)
+  {
+    iLastInfo = iResolvedInfo;
+    iResolvedInfo = m_multiInfo[iResolvedInfo - MULTI_INFO_START].m_info;
+  }
+
+  return iLastInfo;
 }
 
 bool CGUIInfoManager::IsListItemInfo(int info) const
