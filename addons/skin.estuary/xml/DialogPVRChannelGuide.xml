@@ -95,6 +95,7 @@
 								<width>760</width>
 								<height>290</height>
 								<label>$INFO[ListItem.Plot]</label>
+								<autoscroll time="3000" delay="4000" repeat="5000">Skin.HasSetting(AutoScroll)</autoscroll>
 							</control>
 						</control>
 					</focusedlayout>
