@@ -66,7 +66,6 @@ CPVRChannelGroup::CPVRChannelGroup(const CPVRChannelGroup &group) :
   m_bUsingBackendChannelNumbers = group.m_bUsingBackendChannelNumbers;
   m_iLastWatched                = group.m_iLastWatched;
   m_bHidden                     = group.m_bHidden;
-  m_bSelectedGroup              = group.m_bSelectedGroup;
   m_bPreventSortAndRenumber     = group.m_bPreventSortAndRenumber;
   m_members                     = group.m_members;
   m_sortedMembers               = group.m_sortedMembers;
@@ -290,7 +289,6 @@ bool CPVRChannelGroup::SortAndRenumber(void)
     SortByChannelNumber();
 
   bool bReturn = Renumber();
-  ResetChannelNumberCache();
   return bReturn;
 }
 
@@ -846,23 +844,12 @@ bool CPVRChannelGroup::Renumber(void)
       m_bChanged = true;
       (*it).channelNumber = currentChannelNumber;
     }
+
+    (*it).channel->SetChannelNumber((*it).channelNumber);
   }
 
   SortByChannelNumber();
-  ResetChannelNumberCache();
-
   return bReturn;
-}
-
-void CPVRChannelGroup::ResetChannelNumberCache(void)
-{
-  CSingleLock lock(m_critSection);
-
-  /* set all channel numbers on members of this group */
-  for (PVR_CHANNEL_GROUP_SORTED_MEMBERS::iterator it = m_sortedMembers.begin(); it != m_sortedMembers.end(); ++it)
-  {
-    (*it).channel->SetChannelNumber((*it).channelNumber);
-  }
 }
 
 bool CPVRChannelGroup::HasChangedChannels(void) const
@@ -1151,12 +1138,6 @@ bool CPVRChannelGroup::HasChannels() const
 {
   CSingleLock lock(m_critSection);
   return !m_members.empty();
-}
-
-void CPVRChannelGroup::SetSelectedGroup(bool bSetTo)
-{
-  CSingleLock lock(m_critSection);
-  m_bSelectedGroup = bSetTo;
 }
 
 bool CPVRChannelGroup::CreateChannelEpgs(bool bForce /* = false */)
