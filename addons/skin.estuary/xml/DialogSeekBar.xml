@@ -255,12 +255,32 @@
 				<label fallback="19055">$INFO[VideoPlayer.Plot]</label>
 				<align>justify</align>
 				<autoscroll delay="5000" repeat="7500" time="5000"></autoscroll>
+				<visible>String.IsEmpty(PVR.EpgEventIcon)</visible>
+			</control>
+			<control type="textbox">
+				<left>260</left>
+				<top>10</top>
+				<right>260</right>
+				<height>160</height>
+				<label fallback="19055">$INFO[VideoPlayer.Plot]</label>
+				<align>justify</align>
+				<autoscroll delay="5000" repeat="7500" time="5000"></autoscroll>
+				<visible>!String.IsEmpty(PVR.EpgEventIcon)</visible>
+			</control>
+			<control type="image">
+				<right>30</right>
+				<top>20</top>
+				<width>200</width>
+				<height>200</height>
+				<aspectratio aligny="center">keep</aspectratio>
+				<texture fallback="DefaultTVShows.png">$INFO[PVR.EpgEventIcon]</texture>
+				<visible>!String.IsEmpty(PVR.EpgEventIcon)</visible>
 			</control>
 			<control type="label">
 				<left>260</left>
 				<top>180</top>
 				<height>25</height>
-        <label>[COLOR grey]$LOCALIZE[19031]:[/COLOR] $INFO[VideoPlayer.NextStartTime] - $INFO[VideoPlayer.NextEndTime]: $INFO[VideoPlayer.NextTitle]</label>
+				<label>[COLOR grey]$LOCALIZE[19031]:[/COLOR] $INFO[VideoPlayer.NextStartTime] - $INFO[VideoPlayer.NextEndTime]: $INFO[VideoPlayer.NextTitle]</label>
 				<visible>VideoPlayer.HasEpg</visible>
 			</control>
 		</control>
