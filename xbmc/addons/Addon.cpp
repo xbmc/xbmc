@@ -180,7 +180,7 @@ void CAddon::SaveSettings(void)
   //push the settings changes to the running addon instance
   CServiceBroker::GetAddonMgr().ReloadSettings(ID());
 #ifdef HAS_PYTHON
-  g_pythonParser.OnSettingsChanged(ID());
+  CServiceBroker::GetXBPython().OnSettingsChanged(ID());
 #endif
 }
 

@@ -3190,7 +3190,7 @@ void CApplication::OnQueueNextItem()
   // informs python script currently running that we are requesting the next track
   // (does nothing if python is not loaded)
 #ifdef HAS_PYTHON
-  g_pythonParser.OnQueueNextItem(); // currently unimplemented
+  CServiceBroker::GetXBPython().OnQueueNextItem(); // currently unimplemented
 #endif
 
   CGUIMessage msg(GUI_MSG_QUEUE_NEXT_ITEM, 0, 0);
@@ -3223,7 +3223,7 @@ void CApplication::OnPlayBackError()
 void CApplication::OnPlayBackPaused()
 {
 #ifdef HAS_PYTHON
-  g_pythonParser.OnPlayBackPaused();
+  CServiceBroker::GetXBPython().OnPlayBackPaused();
 #endif
 
   CVariant param;
@@ -3235,7 +3235,7 @@ void CApplication::OnPlayBackPaused()
 void CApplication::OnPlayBackResumed()
 {
 #ifdef HAS_PYTHON
-  g_pythonParser.OnPlayBackResumed();
+  CServiceBroker::GetXBPython().OnPlayBackResumed();
 #endif
 
   CVariant param;
@@ -3247,7 +3247,7 @@ void CApplication::OnPlayBackResumed()
 void CApplication::OnPlayBackSpeedChanged(int iSpeed)
 {
 #ifdef HAS_PYTHON
-  g_pythonParser.OnPlayBackSpeedChanged(iSpeed);
+  CServiceBroker::GetXBPython().OnPlayBackSpeedChanged(iSpeed);
 #endif
 
   CVariant param;
@@ -3259,7 +3259,8 @@ void CApplication::OnPlayBackSpeedChanged(int iSpeed)
 void CApplication::OnPlayBackSeek(int64_t iTime, int64_t seekOffset)
 {
 #ifdef HAS_PYTHON
-  g_pythonParser.OnPlayBackSeek(static_cast<int>(iTime), static_cast<int>(seekOffset));
+  CServiceBroker::GetXBPython().OnPlayBackSeek(static_cast<int>(iTime),
+                                               static_cast<int>(seekOffset));
 #endif
 
   CVariant param;
@@ -3274,7 +3275,7 @@ void CApplication::OnPlayBackSeek(int64_t iTime, int64_t seekOffset)
 void CApplication::OnPlayBackSeekChapter(int iChapter)
 {
 #ifdef HAS_PYTHON
-  g_pythonParser.OnPlayBackSeekChapter(iChapter);
+  CServiceBroker::GetXBPython().OnPlayBackSeekChapter(iChapter);
 #endif
 }
 
@@ -3859,7 +3860,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
 #ifdef HAS_PYTHON
       // informs python script currently running playback has started
       // (does nothing if python is not loaded)
-      g_pythonParser.OnPlayBackStarted(*m_itemCurrentFile);
+      CServiceBroker::GetXBPython().OnPlayBackStarted(*m_itemCurrentFile);
 #endif
 
       CVariant param;
@@ -3943,7 +3944,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
     CServiceBroker::GetGUI()->GetInfoManager().ResetCurrentItem();
     PlaybackCleanup();
 #ifdef HAS_PYTHON
-    g_pythonParser.OnPlayBackStopped();
+    CServiceBroker::GetXBPython().OnPlayBackStopped();
 #endif
      return true;
 
@@ -3962,7 +3963,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
     PlaybackCleanup();
 
 #ifdef HAS_PYTHON
-      g_pythonParser.OnPlayBackEnded();
+    CServiceBroker::GetXBPython().OnPlayBackEnded();
 #endif
     return true;
 
@@ -3979,7 +3980,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
 #ifdef HAS_PYTHON
     // informs python script currently running playback has started
     // (does nothing if python is not loaded)
-    g_pythonParser.OnAVStarted(*m_itemCurrentFile);
+    CServiceBroker::GetXBPython().OnAVStarted(*m_itemCurrentFile);
 #endif
     return true;
 
@@ -3987,7 +3988,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
 #ifdef HAS_PYTHON
     // informs python script currently running playback has started
     // (does nothing if python is not loaded)
-    g_pythonParser.OnAVChange();
+    CServiceBroker::GetXBPython().OnAVChange();
 #endif
       return true;
 
