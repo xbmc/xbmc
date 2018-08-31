@@ -857,8 +857,6 @@ bool CPVRChannelGroup::Renumber(void)
 void CPVRChannelGroup::ResetChannelNumberCache(void)
 {
   CSingleLock lock(m_critSection);
-  if (!m_bSelectedGroup)
-    return;
 
   /* set all channel numbers on members of this group */
   for (PVR_CHANNEL_GROUP_SORTED_MEMBERS::iterator it = m_sortedMembers.begin(); it != m_sortedMembers.end(); ++it)
