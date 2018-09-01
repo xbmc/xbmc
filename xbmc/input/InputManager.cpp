@@ -219,6 +219,8 @@ bool CInputManager::ProcessEventServer(int windowId, float frameTime)
 
           m_Mouse.SetActive(false);
 
+          CLog::Log(LOGDEBUG, "EventServer: key %d translated to action %s", wKeyID, actionName);
+
           return ExecuteInputAction(CAction(actionID, fAmount, 0.0f, actionName));
         }
         else

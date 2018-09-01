@@ -26,6 +26,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
 #include "ServiceBroker.h"
+#include "utils/log.h"
 
 using namespace EVENTCLIENT;
 using namespace EVENTPACKET;
@@ -388,6 +389,8 @@ bool CEventClient::OnPacketBUTTON(CEventPacket *packet)
 
   float famount = 0;
   bool active = (flags & PTB_DOWN) ? true : false;
+  
+  CLog::Log(LOGDEBUG, "EventClient: button code %d %s", bcode, active ? "pressed" : "released");
 
   if(flags & PTB_USE_AMOUNT)
   {
