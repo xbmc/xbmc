@@ -44,7 +44,7 @@
 						<param name="texture" value="osd/fullscreen/buttons/previous.png"/>
 					</include>
 					<onclick>PlayerControl(Previous)</onclick>
-					<visible>!MusicPlayer.Content(livetv)</visible>
+					<visible>[MusicPlayer.HasPrevious | Player.SeekEnabled] + !MusicPlayer.Content(livetv)</visible>
 				</control>
 				<control type="radiobutton" id="602">
 					<textureradioonfocus colordiffuse="white">osd/fullscreen/buttons/play.png</textureradioonfocus>
