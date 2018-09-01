@@ -36,9 +36,10 @@ namespace PVR
     static const int MINSPERBLOCK = 5; // minutes
     static const int MAXBLOCKS = 33 * 24 * 60 / MINSPERBLOCK; //! 33 days of 5 minute blocks (31 days for upcoming data + 1 day for past data + 1 day for fillers)
 
-    virtual ~CGUIEPGGridContainerModel() { Reset(); }
+    CGUIEPGGridContainerModel() = default;
+    virtual ~CGUIEPGGridContainerModel() = default;
 
-    void Refresh(const std::unique_ptr<CFileItemList> &items, const CDateTime &gridStart, const CDateTime &gridEnd, int iRulerUnit, int iBlocksPerPage, float fBlockSize);
+    void Initialize(const std::unique_ptr<CFileItemList> &items, const CDateTime &gridStart, const CDateTime &gridEnd, int iRulerUnit, int iBlocksPerPage, float fBlockSize);
     void SetInvalid();
 
     static const int INVALID_INDEX = -1;
@@ -83,7 +84,6 @@ namespace PVR
 
   private:
     void FreeItemsMemory();
-    void Reset();
 
     struct ItemsPtr
     {

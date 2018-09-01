@@ -143,7 +143,6 @@ CGUIEPGGridContainer::CGUIEPGGridContainer(const CGUIEPGGridContainer &other)
   m_channelScrollOffset(other.m_channelScrollOffset),
   m_gridModel(new CGUIEPGGridContainerModel(*other.m_gridModel)),
   m_updatedGridModel(other.m_updatedGridModel ? new CGUIEPGGridContainerModel(*other.m_updatedGridModel) : nullptr),
-  m_outdatedGridModel(other.m_outdatedGridModel ? new CGUIEPGGridContainerModel(*other.m_outdatedGridModel) : nullptr),
   m_item(GetItem(m_channelCursor)) // pointer to grid model internal data.
 {
 }
@@ -736,7 +735,6 @@ void CGUIEPGGridContainer::UpdateItems()
   m_lastChannel = nullptr;
 
   // always use asynchronously precalculated grid data.
-  m_outdatedGridModel = std::move(m_gridModel); // destructing grid data can be very expensive, thus this will be done asynchronously, not here.
   m_gridModel = std::move(m_updatedGridModel);
 
   if (prevSelectedEpgTag)
@@ -1726,18 +1724,16 @@ void CGUIEPGGridContainer::SetTimelineItems(const std::unique_ptr<CFileItemList>
     fBlockSize = m_blockSize;
   }
 
-  std::unique_ptr<CGUIEPGGridContainerModel> oldOutdatedGridModel;
   std::unique_ptr<CGUIEPGGridContainerModel> oldUpdatedGridModel;
   std::unique_ptr<CGUIEPGGridContainerModel> newUpdatedGridModel(new CGUIEPGGridContainerModel);
   // can be very expensive. never call with lock acquired.
-  newUpdatedGridModel->Refresh(items, gridStart, gridEnd, iRulerUnit, iBlocksPerPage, fBlockSize);
+  newUpdatedGridModel->Initialize(items, gridStart, gridEnd, iRulerUnit, iBlocksPerPage, fBlockSize);
 
   {
     CSingleLock lock(m_critSection);
 
     // grid contains CFileItem instances. CFileItem dtor locks global graphics mutex.
     // by increasing its refcount make sure, old data are not deleted while we're holding own mutex.
-    oldOutdatedGridModel = std::move(m_outdatedGridModel);
     oldUpdatedGridModel = std::move(m_updatedGridModel);
 
     m_updatedGridModel = std::move(newUpdatedGridModel);

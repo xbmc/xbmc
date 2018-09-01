@@ -14,6 +14,7 @@
 #include "ServiceBroker.h"
 #include "settings/Settings.h"
 #include "utils/Variant.h"
+#include "utils/log.h"
 
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannel.h"
@@ -36,28 +37,13 @@ void CGUIEPGGridContainerModel::SetInvalid()
     ruler->SetInvalid();
 }
 
-void CGUIEPGGridContainerModel::Reset()
+void CGUIEPGGridContainerModel::Initialize(const std::unique_ptr<CFileItemList> &items, const CDateTime &gridStart, const CDateTime &gridEnd, int iRulerUnit, int iBlocksPerPage, float fBlockSize)
 {
-  for (auto &channel : m_gridIndex)
+  if (!m_channelItems.empty())
   {
-    for (const auto &block : channel)
-    {
-      if (block.item)
-        block.item->ClearProperties();
-    }
-    channel.clear();
+    CLog::LogF(LOGERROR, "Already initialized!");
+    return;
   }
-  m_gridIndex.clear();
-
-  m_channelItems.clear();
-  m_programmeItems.clear();
-  m_rulerItems.clear();
-  m_epgItemsPtr.clear();
-}
-
-void CGUIEPGGridContainerModel::Refresh(const std::unique_ptr<CFileItemList> &items, const CDateTime &gridStart, const CDateTime &gridEnd, int iRulerUnit, int iBlocksPerPage, float fBlockSize)
-{
-  Reset();
 
   ////////////////////////////////////////////////////////////////////////
   // Create programme & channel items
