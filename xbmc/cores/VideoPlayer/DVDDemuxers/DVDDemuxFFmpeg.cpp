@@ -1394,7 +1394,7 @@ void CDVDDemuxFFmpeg::DisposeStreams()
 CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
 {
   AVStream* pStream = m_pFormatContext->streams[streamIdx];
-  if (pStream)
+  if (pStream && pStream->discard != AVDISCARD_ALL)
   {
     // Video (mp4) from GoPro cameras can have a 'meta' track used for a file repair containing
     // 'fdsc' data, this is also called the SOS track.
