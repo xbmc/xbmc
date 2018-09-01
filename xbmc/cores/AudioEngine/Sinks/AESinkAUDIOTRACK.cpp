@@ -259,6 +259,7 @@ int CAESinkAUDIOTRACK::AudioTrackWrite(char* audioData, int sizeInBytes, int64_t
 CAEDeviceInfo CAESinkAUDIOTRACK::m_info;
 std::set<unsigned int> CAESinkAUDIOTRACK::m_sink_sampleRates;
 bool CAESinkAUDIOTRACK::m_sinkSupportsFloat = false;
+bool CAESinkAUDIOTRACK::m_sinkSupportsMultiChannelFloat = false;
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 CAESinkAUDIOTRACK::CAESinkAUDIOTRACK()
@@ -389,7 +390,12 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
   {
     m_passthrough = false;
     m_format.m_sampleRate     = m_sink_sampleRate;
-    if (m_sinkSupportsFloat && m_format.m_channelLayout.Count() == 2)
+    if (m_sinkSupportsMultiChannelFloat)
+    {
+      m_encoding = CJNIAudioFormat::ENCODING_PCM_FLOAT;
+      m_format.m_dataFormat     = AE_FMT_FLOAT;
+    }
+    else if (m_sinkSupportsFloat && m_format.m_channelLayout.Count() == 2)
     {
       m_encoding = CJNIAudioFormat::ENCODING_PCM_FLOAT;
       m_format.m_dataFormat     = AE_FMT_FLOAT;
@@ -999,12 +1005,17 @@ void CAESinkAUDIOTRACK::UpdateAvailablePCMCapabilities()
 
   int encoding = CJNIAudioFormat::ENCODING_PCM_16BIT;
   m_sinkSupportsFloat = VerifySinkConfiguration(native_sampleRate, CJNIAudioFormat::CHANNEL_OUT_STEREO, CJNIAudioFormat::ENCODING_PCM_FLOAT);
+  m_sinkSupportsMultiChannelFloat = VerifySinkConfiguration(native_sampleRate, CJNIAudioFormat::CHANNEL_OUT_7POINT1_SURROUND, CJNIAudioFormat::ENCODING_PCM_FLOAT);
 
   if (m_sinkSupportsFloat)
   {
     encoding = CJNIAudioFormat::ENCODING_PCM_FLOAT;
     m_info.m_dataFormats.push_back(AE_FMT_FLOAT);
     CLog::Log(LOGNOTICE, "Float is supported");
+  }
+  if (m_sinkSupportsMultiChannelFloat)
+  {
+    CLog::Log(LOGNOTICE, "Multi channel Float is supported");
   }
 
   // Still AML API 21 and 22 get hardcoded samplerates - we can drop that
