@@ -437,15 +437,22 @@ bool CEventClient::OnPacketBUTTON(CEventPacket *packet)
 
         /* if last event had an amount, we must resend without amount */
         if(it2->m_bUseAmount && it2->m_fAmount != 0.0)
+        {
           m_buttonQueue.push_back(state);
+        }
 
         /* if the last event was waiting for a repeat interval, it has executed already.*/
         if(it2->m_bRepeat)
         {
           if(it2->m_iNextRepeat > 0)
+          {
             m_buttonQueue.erase(it2);
+          }
           else
+          {
             it2->m_bRepeat = false;
+            it2->m_bActive = false;
+          }
         }
 
       }
