@@ -174,7 +174,7 @@ bool CGLSLPixelShader::Compile()
   glShaderSource(m_pixelShader, 1, &ptr, 0);
   glCompileShader(m_pixelShader);
   glGetShaderiv(m_pixelShader, GL_COMPILE_STATUS, params);
-  if (params[0]!=GL_TRUE)
+  if (params[0] != GL_TRUE)
   {
     GLchar log[LOG_SIZE];
     CLog::Log(LOGERROR, "GL: Error compiling pixel shader");
@@ -186,9 +186,13 @@ bool CGLSLPixelShader::Compile()
   else
   {
     GLchar log[LOG_SIZE];
-    CLog::Log(LOGDEBUG, "GL: Pixel Shader compilation log:");
-    glGetShaderInfoLog(m_pixelShader, LOG_SIZE, NULL, log);
-    CLog::Log(LOGDEBUG, "%s", log);
+    GLsizei length;
+    glGetShaderInfoLog(m_pixelShader, LOG_SIZE, &length, log);
+    if (length > 0)
+    {
+      CLog::Log(LOGDEBUG, "GL: Pixel Shader compilation log:");
+      CLog::Log(LOGDEBUG, "%s", log);
+    }
     m_lastLog = log;
     m_compiled = true;
   }
