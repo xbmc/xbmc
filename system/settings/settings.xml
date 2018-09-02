@@ -1265,7 +1265,14 @@
       </group>
     </category>
     <category id="pvrmenu" label="19181" help="36211">
-      <group id="1" label="14301">
+      <group id="1" label="128">
+        <setting id="pvrmenu.usesimpletimeshiftosd" type="boolean" label="19303" help="36235">
+          <level>2</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
+      </group>
+      <group id="2" label="14301">
         <setting id="pvrmenu.displaychannelinfo" type="integer" label="19178" help="36212">
           <level>2</level>
           <default>5</default>
@@ -1279,7 +1286,7 @@
           </control>
         </setting>
       </group>
-      <group id="2" label="14302">
+      <group id="3" label="14302">
         <setting id="pvrmenu.iconpath" type="path" label="19018" help="36216">
           <level>2</level>
           <default></default>

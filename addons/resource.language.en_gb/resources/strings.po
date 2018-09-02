@@ -10913,7 +10913,13 @@ msgctxt "#19302"
 msgid "Do you want to record the selected programme or to switch to the current programme?"
 msgstr ""
 
-#empty strings from id 19303 to 19498
+#. pvr setting "Use simple timeshift OSD" value
+#: system/settings/settings.xml
+msgctxt "#19303"
+msgid "Use simple timeshift OSD"
+msgstr ""
+
+#empty strings from id 19304 to 19498
 
 #. label for epg genre value
 #: xbmc/epg/Epg.cpp
@@ -18568,7 +18574,13 @@ msgctxt "#36234"
 msgid "Duration of instant recordings when pressing the record button. This value will be taken into account if \"Instant recording action\" is set to \"Record for a fixed period of time\""
 msgstr ""
 
-#empty strings from id 36235 to 36236
+#. help text for pvr setting "Use simple timeshift OSD"
+#: system/settings/settings.xml
+msgctxt "#36235"
+msgid "Normal timeshift OSD always shows the complete timeshift buffer along with with the currently playing show, whereas the simple timeshift OSD only shows the currently playing show with no visual feedback how far in the timeshift buffer you can jump from the currently playing position."
+msgstr ""
+
+#empty string with id 36236
 
 #: system/settings/settings.xml
 msgctxt "#36237"
