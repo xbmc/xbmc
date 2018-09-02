@@ -190,9 +190,7 @@ bool CRenderSystemGLES::IsExtSupported(const char* extension) const
     name += extension;
     name += " ";
 
-    bool supported = m_RenderExtensions.find(name) != std::string::npos;
-    CLog::Log(LOGDEBUG, "GLES: Extension Support Test - %s %s", extension, supported ? "YES" : "NO");
-    return supported;
+    return m_RenderExtensions.find(name) != std::string::npos;
   }
 }
 
