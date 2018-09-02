@@ -183,16 +183,6 @@ bool CRenderSystemGLES::IsExtSupported(const char* extension) const
     // GLES has FBO as a core element, not an extension!
     return true;
   }
-  else if (strcmp( extension, "GL_TEXTURE_NPOT" ) == 0)
-  {
-    // GLES supports non-power-of-two textures as standard.
-	return true;
-	/* Note: The wrap mode can only be GL_CLAMP_TO_EDGE and the minification filter can only be
-	 * GL_NEAREST or GL_LINEAR (in other words, not mipmapped). The extension GL_OES_texture_npot
-	 * relaxes these restrictions and allows wrap modes of GL_REPEAT and GL_MIRRORED_REPEAT and
-	 * also	allows npot textures to be mipmapped with the full set of minification filters
-	 */
-  }
   else
   {
     std::string name;
