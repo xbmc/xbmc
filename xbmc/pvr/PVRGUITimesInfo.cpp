@@ -13,6 +13,7 @@
 #include "ServiceBroker.h"
 #include "cores/DataCacheCore.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
 #include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
 
@@ -142,11 +143,13 @@ void CPVRGUITimesInfo::UpdateTimeshiftProgressData()
 {
   // Note: General idea of the ts progress is always to be able to visualise both the complete
   //       ts buffer and the complete playing epg event (if any) side by side with the same time
-  //       scale. Ts progress start and end times will be calculated accordingly.
+  //       scale. TS progress start and end times will be calculated accordingly.
   //       + Start is usually ts buffer start, except if start time of playing epg event is
   //         before ts buffer start, then progress start is epg event start.
   //       + End is usually ts buffer end, except if end time of playing epg event is
   //         after ts buffer end, then progress end is epg event end.
+  //       In simple timeshift mode (settings value), progress start is always the start time of
+  //       playing epg event and progress end is always the end time of playing epg event.
 
   CSingleLock lock(m_critSection);
 
@@ -158,9 +161,10 @@ void CPVRGUITimesInfo::UpdateTimeshiftProgressData()
   {
     time_t start = 0;
     m_playingEpgTag->StartAsUTC().GetAsTime(start);
-    if (start < m_iTimeshiftStartTime)
+    if (start < m_iTimeshiftStartTime ||
+        CServiceBroker::GetSettings().GetBool(CSettings::SETTING_PVRMENU_USESIMPLETIMESHIFTOSD))
     {
-      // playing event started before start of ts buffer
+      // playing event started before start of ts buffer or simple ts osd to be used
       m_iTimeshiftProgressStartTime = start;
       bUpdatedStartTime = true;
     }
@@ -180,9 +184,10 @@ void CPVRGUITimesInfo::UpdateTimeshiftProgressData()
   {
     time_t end = 0;
     m_playingEpgTag->EndAsUTC().GetAsTime(end);
-    if (end > m_iTimeshiftEndTime)
+    if (end > m_iTimeshiftEndTime ||
+        CServiceBroker::GetSettings().GetBool(CSettings::SETTING_PVRMENU_USESIMPLETIMESHIFTOSD))
     {
-      // playing event will end after end of ts buffer
+      // playing event will end after end of ts buffer or simple ts osd to be used
       m_iTimeshiftProgressEndTime = end;
       bUpdatedEndTime = true;
     }
