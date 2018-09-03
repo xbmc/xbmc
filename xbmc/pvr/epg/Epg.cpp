@@ -199,6 +199,32 @@ CPVREpgInfoTagPtr CPVREpg::GetTagNext() const
   return CPVREpgInfoTagPtr();
 }
 
+CPVREpgInfoTagPtr CPVREpg::GetTagPrevious() const
+{
+  CPVREpgInfoTagPtr nowTag(GetTagNow());
+  if (nowTag)
+  {
+    CSingleLock lock(m_critSection);
+    std::map<CDateTime, CPVREpgInfoTagPtr>::const_iterator it = m_tags.find(nowTag->StartAsUTC());
+    if (it != m_tags.end() && it != m_tags.begin())
+    {
+      --it;
+      return it->second;
+    }
+  }
+  else if (Size() > 0)
+  {
+    /* return the first event that is in the past */
+    for (std::map<CDateTime, CPVREpgInfoTagPtr>::const_reverse_iterator it = m_tags.rbegin(); it != m_tags.rend(); ++it)
+    {
+      if (it->second->WasActive())
+        return it->second;
+    }
+  }
+
+  return CPVREpgInfoTagPtr();
+}
+
 bool CPVREpg::CheckPlayingEvent(void)
 {
   CPVREpgInfoTagPtr previousTag(GetTagNow(false));

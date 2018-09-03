@@ -556,12 +556,20 @@ CPVREpgInfoTagPtr CPVRChannel::GetEPGNow() const
 
 CPVREpgInfoTagPtr CPVRChannel::GetEPGNext() const
 {
-  CPVREpgPtr epg = GetEPG();
+  const CPVREpgPtr epg = GetEPG();
   if (epg)
     return epg->GetTagNext();
 
-  CPVREpgInfoTagPtr empty;
-  return empty;
+  return CPVREpgInfoTagPtr();
+}
+
+CPVREpgInfoTagPtr CPVRChannel::GetEPGPrevious() const
+{
+  const CPVREpgPtr epg = GetEPG();
+  if (epg)
+    return epg->GetTagPrevious();
+
+  return CPVREpgInfoTagPtr();
 }
 
 bool CPVRChannel::SetEPGEnabled(bool bEPGEnabled)

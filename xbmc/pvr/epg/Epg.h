@@ -152,6 +152,12 @@ namespace PVR
     CPVREpgInfoTagPtr GetTagNext() const;
 
     /*!
+     * @brief Get the event that occured previously
+     * @return The previous event or NULL if it wasn't found.
+     */
+    CPVREpgInfoTagPtr GetTagPrevious() const;
+
+    /*!
      * Get the event that occurs between the given begin and end time.
      * @param beginTime Minimum start time in UTC of the event.
      * @param endTime Maximum end time in UTC of the event.

@@ -359,6 +359,20 @@ namespace PVR
     void SetSelectedItemPath(bool bRadio, const std::string &path);
 
     /*!
+     * @brief Seek to the start of the next epg event in timeshift buffer, relative to the currently playing event.
+     *        If there is no next event, seek to the end of the currently playing event (to the 'live' position).
+     */
+    void SeekForward();
+
+    /*!
+     * @brief Seek to the start of the previous epg event in timeshift buffer, relative to the currently playing event
+     *        or if there is no previous event or if playback time is greater than given threshold, seek to the start
+     *        of the playing event.
+     * @param iThreshold the value in seconds to trigger seek to start of current event instead of start of previous event.
+     */
+    void SeekBackward(unsigned int iThreshold);
+
+    /*!
      * @brief Get the currently active channel number input handler.
      * @return the handler.
      */
