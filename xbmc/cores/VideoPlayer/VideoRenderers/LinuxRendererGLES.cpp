@@ -55,8 +55,6 @@ CLinuxRendererGLES::CPictureBuffer::~CPictureBuffer() = default;
 
 CLinuxRendererGLES::CLinuxRendererGLES()
 {
-  CLog::Log(LOGINFO, "Constructing CLinuxRendererGLES");
-
   m_textureTarget = GL_TEXTURE_2D;
 
   m_renderMethod = RENDER_GLSL;
@@ -469,13 +467,13 @@ void CLinuxRendererGLES::UpdateVideoFilter()
     {
       if (!m_fbo.fbo.Initialize())
       {
-        CLog::Log(LOGERROR, "GL: Error initializing FBO");
+        CLog::Log(LOGERROR, "GLES: Error initializing FBO");
         break;
       }
 
       if (!m_fbo.fbo.CreateAndBindToTexture(GL_TEXTURE_2D, m_sourceWidth, m_sourceHeight, GL_RGBA))
       {
-        CLog::Log(LOGERROR, "GL: Error creating texture and binding to FBO");
+        CLog::Log(LOGERROR, "GLES: Error creating texture and binding to FBO");
         break;
       }
     }
@@ -483,7 +481,7 @@ void CLinuxRendererGLES::UpdateVideoFilter()
     m_pVideoFilterShader = new ConvolutionFilterShader(m_scalingMethod);
     if (!m_pVideoFilterShader->CompileAndLink())
     {
-      CLog::Log(LOGERROR, "GL: Error compiling and linking video filter shader");
+      CLog::Log(LOGERROR, "GLES: Error compiling and linking video filter shader");
       break;
     }
     SetTextureFilter(GL_LINEAR);
@@ -494,14 +492,14 @@ void CLinuxRendererGLES::UpdateVideoFilter()
   case VS_SCALINGMETHOD_LANCZOS_SOFTWARE:
   case VS_SCALINGMETHOD_SINC_SOFTWARE:
   case VS_SCALINGMETHOD_SINC8:
-    CLog::Log(LOGERROR, "GL: TODO: This scaler has not yet been implemented");
+    CLog::Log(LOGERROR, "GLES: TODO: This scaler has not yet been implemented");
     break;
 
   default:
     break;
   }
 
-  CLog::Log(LOGERROR, "GL: Falling back to bilinear due to failure to init scaler");
+  CLog::Log(LOGERROR, "GLES: Falling back to bilinear due to failure to init scaler");
   if (m_pVideoFilterShader)
   {
     delete m_pVideoFilterShader;
@@ -520,7 +518,7 @@ void CLinuxRendererGLES::LoadShaders(int field)
   if (!LoadShadersHook())
   {
     int requestedMethod = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_VIDEOPLAYER_RENDERMETHOD);
-    CLog::Log(LOGDEBUG, "GL: Requested render method: %d", requestedMethod);
+    CLog::Log(LOGDEBUG, "GLES: Requested render method: %d", requestedMethod);
 
     ReleaseShaders();
 
@@ -532,7 +530,7 @@ void CLinuxRendererGLES::LoadShaders(int field)
         if (glCreateProgram())
         {
           // create regular scan shader
-          CLog::Log(LOGNOTICE, "GL: Selecting Single Pass YUV 2 RGB shader");
+          CLog::Log(LOGNOTICE, "GLES: Selecting Single Pass YUV 2 RGB shader");
 
           EShaderFormat shaderFormat = GetShaderFormat();
           m_pYUVProgShader = new YUV2RGBProgressiveShader(m_iFlags, shaderFormat);
@@ -550,7 +548,7 @@ void CLinuxRendererGLES::LoadShaders(int field)
           else
           {
             ReleaseShaders();
-            CLog::Log(LOGERROR, "GL: Error enabling YUV2RGB GLSL shader");
+            CLog::Log(LOGERROR, "GLES: Error enabling YUV2RGB GLSL shader");
             m_renderMethod = -1;
             break;
           }
@@ -559,7 +557,7 @@ void CLinuxRendererGLES::LoadShaders(int field)
       default:
         {
           m_renderMethod = -1 ;
-          CLog::Log(LOGERROR, "GL: render method not supported");
+          CLog::Log(LOGERROR, "GLES: render method not supported");
         }
     }
   }
@@ -588,7 +586,7 @@ void CLinuxRendererGLES::ReleaseShaders()
 
 void CLinuxRendererGLES::UnInit()
 {
-  CLog::Log(LOGDEBUG, "LinuxRendererGL: Cleaning up GL resources");
+  CLog::Log(LOGDEBUG, "LinuxRendererGLES: Cleaning up GLES resources");
   CSingleLock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
 
   glFinish();
@@ -810,12 +808,12 @@ void CLinuxRendererGLES::RenderToFBO(int index, int field, bool weave /*= false*
   {
     if (!m_fbo.fbo.Initialize())
     {
-      CLog::Log(LOGERROR, "GL: Error initializing FBO");
+      CLog::Log(LOGERROR, "GLES: Error initializing FBO");
       return;
     }
     if (!m_fbo.fbo.CreateAndBindToTexture(GL_TEXTURE_2D, m_sourceWidth, m_sourceHeight, GL_RGBA))
     {
-      CLog::Log(LOGERROR, "GL: Error creating texture and binding to FBO");
+      CLog::Log(LOGERROR, "GLES: Error creating texture and binding to FBO");
       return;
     }
   }
@@ -844,7 +842,7 @@ void CLinuxRendererGLES::RenderToFBO(int index, int field, bool weave /*= false*
   // make sure the yuv shader is loaded and ready to go
   if (!pYUVShader || (!pYUVShader->OK()))
   {
-    CLog::Log(LOGERROR, "GL: YUV shader not active, cannot do multipass render");
+    CLog::Log(LOGERROR, "GLES: YUV shader not active, cannot do multipass render");
     return;
   }
 
@@ -880,7 +878,7 @@ void CLinuxRendererGLES::RenderToFBO(int index, int field, bool weave /*= false*
 
   if (!pYUVShader->Enable())
   {
-    CLog::Log(LOGERROR, "GL: Error enabling YUV shader");
+    CLog::Log(LOGERROR, "GLES: Error enabling YUV shader");
   }
 
   m_fbo.width  = planes[0].rect.x2 - planes[0].rect.x1;
@@ -1235,7 +1233,7 @@ bool CLinuxRendererGLES::CreateYV12Texture(int index)
         format = GL_LUMINANCE;
       internalformat = GetInternalFormat(format, im.bpp);
 
-      CLog::Log(LOGDEBUG,  "GL: Creating YUV NPOT texture of size %d x %d", plane.texwidth, plane.texheight);
+      CLog::Log(LOGDEBUG,  "GLES: Creating YUV NPOT texture of size %d x %d", plane.texwidth, plane.texheight);
 
       glTexImage2D(m_textureTarget, 0, internalformat, plane.texwidth, plane.texheight, 0, format, GL_UNSIGNED_BYTE, NULL);
 
