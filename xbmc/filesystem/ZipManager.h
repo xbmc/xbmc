@@ -18,7 +18,6 @@
 #define CHDR_SIZE 46
 #define ECDREC_SIZE 22
 
-#include <memory.h>
 #include <string>
 #include <vector>
 #include <map>
@@ -48,26 +47,6 @@ struct SZipEntry {
   SZipEntry()
   {
     name[0] = '\0';
-  }
-
-  SZipEntry(const SZipEntry& SNewItem)
-  {
-    memcpy(&header,&SNewItem.header,sizeof(unsigned int));
-    memcpy(&version,&SNewItem.version,sizeof(unsigned short));
-    memcpy(&flags,&SNewItem.flags,sizeof(unsigned short));
-    memcpy(&method,&SNewItem.method,sizeof(unsigned short));
-    memcpy(&mod_time,&SNewItem.mod_time,sizeof(unsigned short));
-    memcpy(&mod_date,&SNewItem.mod_date,sizeof(unsigned short));
-    memcpy(&crc32,&SNewItem.crc32,sizeof(unsigned int));
-    memcpy(&csize,&SNewItem.csize,sizeof(unsigned int));
-    memcpy(&usize,&SNewItem.usize,sizeof(unsigned int));
-    memcpy(&flength,&SNewItem.flength,sizeof(unsigned short));
-    memcpy(&elength,&SNewItem.elength,sizeof(unsigned short));
-    memcpy(&eclength,&SNewItem.eclength,sizeof(unsigned short));
-    memcpy(&clength,&SNewItem.clength,sizeof(unsigned short));
-    memcpy(&lhdrOffset,&SNewItem.lhdrOffset,sizeof(unsigned int));
-    memcpy(&offset,&SNewItem.offset,sizeof(int64_t));
-    memcpy(name,SNewItem.name,255*sizeof(char));
   }
 };
 
