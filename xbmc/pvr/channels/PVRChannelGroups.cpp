@@ -463,17 +463,8 @@ CPVRChannelGroupPtr CPVRChannelGroups::GetSelectedGroup(void) const
 
 void CPVRChannelGroups::SetSelectedGroup(const CPVRChannelGroupPtr &group)
 {
-  // update the selected group
-  {
-    CSingleLock lock(m_critSection);
-    if (m_selectedGroup)
-      m_selectedGroup->SetSelectedGroup(false);
-    m_selectedGroup = group;
-    group->SetSelectedGroup(true);
-  }
-
-  // update the channel number cache
-  group->Renumber();
+  CSingleLock lock(m_critSection);
+  m_selectedGroup = group;
 }
 
 bool CPVRChannelGroups::AddGroup(const std::string &strName)
