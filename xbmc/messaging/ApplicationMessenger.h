@@ -46,8 +46,6 @@
 #define TMSG_MEDIA_UNPAUSE                TMSG_MASK_PLAYLISTPLAYER + 16
 #define TMSG_MEDIA_PAUSE_IF_PLAYING       TMSG_MASK_PLAYLISTPLAYER + 17
 
-
-
 #define TMSG_SHUTDOWN                     TMSG_MASK_APPLICATION + 0
 #define TMSG_POWERDOWN                    TMSG_MASK_APPLICATION + 1
 #define TMSG_QUIT                         TMSG_MASK_APPLICATION + 2
@@ -86,13 +84,9 @@
 #define TMSG_GUI_INFOBOOL                 TMSG_MASK_GUIINFOMANAGER + 1
 #define TMSG_UPDATE_CURRENT_ITEM          TMSG_MASK_GUIINFOMANAGER + 2
 
-
 #define TMSG_CECTOGGLESTATE               TMSG_MASK_PERIPHERALS + 1
 #define TMSG_CECACTIVATESOURCE            TMSG_MASK_PERIPHERALS + 2
 #define TMSG_CECSTANDBY                   TMSG_MASK_PERIPHERALS + 3
-
-
-
 
 #define TMSG_GUI_DIALOG_OPEN              TMSG_MASK_WINDOWMANAGER + 1
 #define TMSG_GUI_ACTIVATE_WINDOW          TMSG_MASK_WINDOWMANAGER + 2
@@ -317,6 +311,17 @@ public:
    * \param [in] messageId defined further up in this file
    */
   void PostMsg(uint32_t messageId);
+
+  /*!
+   * \brief Send a non-blocking message and return immediately
+   *
+   * If and what the response is depends entirely on the message being sent and
+   * should be documented on the message.
+   *
+   * \param [in] messageId defined further up in this file
+   * \param [in] param3 value depends on the message being sent
+   */
+  void PostMsg(uint32_t messageId, int64_t param3);
 
   /*!
    * \brief Send a non-blocking message and return immediately
