@@ -18,7 +18,6 @@
 #define CHDR_SIZE 46
 #define ECDREC_SIZE 22
 
-#include <memory.h>
 #include <string>
 #include <vector>
 #include <map>
@@ -28,61 +27,26 @@ class CURL;
 static const std::string PATH_TRAVERSAL(R"_((^|\/|\\)\.{2}($|\/|\\))_");
 
 struct SZipEntry {
-  unsigned int header;
-  unsigned short version;
-  unsigned short flags;
-  unsigned short method;
-  unsigned short mod_time;
-  unsigned short mod_date;
-  unsigned int crc32;
-  unsigned int csize; // compressed size
-  unsigned int usize; // uncompressed size
-  unsigned short flength; // filename length
-  unsigned short elength; // extra field length (local file header)
-  unsigned short eclength; // extra field length (central file header)
-  unsigned short clength; // file comment length (central file header)
-  unsigned int lhdrOffset; // Relative offset of local header
-  int64_t offset;         // offset in file to compressed data
+  unsigned int header = 0;
+  unsigned short version = 0;
+  unsigned short flags = 0;
+  unsigned short method = 0;
+  unsigned short mod_time = 0;
+  unsigned short mod_date = 0;
+  unsigned int crc32 = 0;
+  unsigned int csize = 0; // compressed size
+  unsigned int usize = 0; // uncompressed size
+  unsigned short flength = 0; // filename length
+  unsigned short elength = 0; // extra field length (local file header)
+  unsigned short eclength = 0; // extra field length (central file header)
+  unsigned short clength = 0; // file comment length (central file header)
+  unsigned int lhdrOffset = 0; // Relative offset of local header
+  int64_t offset = 0;         // offset in file to compressed data
   char name[255];
 
   SZipEntry()
   {
-    header = 0;
-    version = 0;
-    flags = 0;
-    method = 0;
-    mod_time = 0;
-    mod_date = 0;
-    crc32 = 0;
-    csize = 0;
-    usize = 0;
-    flength = 0;
-    elength = 0;
-    eclength = 0;
-    clength = 0;
-    lhdrOffset = 0;
-    offset = 0;
     name[0] = '\0';
-  }
-
-  SZipEntry(const SZipEntry& SNewItem)
-  {
-    memcpy(&header,&SNewItem.header,sizeof(unsigned int));
-    memcpy(&version,&SNewItem.version,sizeof(unsigned short));
-    memcpy(&flags,&SNewItem.flags,sizeof(unsigned short));
-    memcpy(&method,&SNewItem.method,sizeof(unsigned short));
-    memcpy(&mod_time,&SNewItem.mod_time,sizeof(unsigned short));
-    memcpy(&mod_date,&SNewItem.mod_date,sizeof(unsigned short));
-    memcpy(&crc32,&SNewItem.crc32,sizeof(unsigned int));
-    memcpy(&csize,&SNewItem.csize,sizeof(unsigned int));
-    memcpy(&usize,&SNewItem.usize,sizeof(unsigned int));
-    memcpy(&flength,&SNewItem.flength,sizeof(unsigned short));
-    memcpy(&elength,&SNewItem.elength,sizeof(unsigned short));
-    memcpy(&eclength,&SNewItem.eclength,sizeof(unsigned short));
-    memcpy(&clength,&SNewItem.clength,sizeof(unsigned short));
-    memcpy(&lhdrOffset,&SNewItem.lhdrOffset,sizeof(unsigned int));
-    memcpy(&offset,&SNewItem.offset,sizeof(int64_t));
-    memcpy(name,SNewItem.name,255*sizeof(char));
   }
 };
 

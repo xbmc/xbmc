@@ -236,7 +236,7 @@ bool CZipManager::GetZipEntry(const CURL& url, SZipEntry& item)
   {
     if (std::string(it2->name) == strFileName)
     {
-      memcpy(&item,&(*it2),sizeof(SZipEntry));
+      item = *it2;
       return true;
     }
   }
