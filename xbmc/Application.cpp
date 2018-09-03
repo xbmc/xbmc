@@ -2010,8 +2010,8 @@ bool CApplication::OnAction(const CAction &action)
   }
 
   // Now check with the playlist player if action can be handled.
-  // In case of the action PREV_ITEM, we only allow the playlist player to take it if we're less than 3 seconds into playback.
-  if (!(action.GetID() == ACTION_PREV_ITEM && m_appPlayer.CanSeek() && GetTime() > 3) )
+  // In case of ACTION_PREV_ITEM, we only allow the playlist player to take it if we're less than ACTION_PREV_ITEM_THRESHOLD seconds into playback.
+  if (!(action.GetID() == ACTION_PREV_ITEM && m_appPlayer.CanSeek() && GetTime() > ACTION_PREV_ITEM_THRESHOLD) )
   {
     if (CServiceBroker::GetPlaylistPlayer().OnAction(action))
       return true;
@@ -2059,7 +2059,7 @@ bool CApplication::OnAction(const CAction &action)
     return true;
   }
 
-  // In case the playlist player nor the player didn't handle PREV_ITEM, because we are past the 3 secs limit.
+  // In case the playlist player nor the player didn't handle PREV_ITEM, because we are past the ACTION_PREV_ITEM_THRESHOLD secs limit.
   // If so, we just jump to the start of the track.
   if (action.GetID() == ACTION_PREV_ITEM && m_appPlayer.CanSeek())
   {
