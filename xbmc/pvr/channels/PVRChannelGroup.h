@@ -388,20 +388,6 @@ namespace PVR
     int GetEPGAll(CFileItemList &results, bool bIncludeChannelsWithoutEPG = false) const;
 
     /*!
-     * @brief Get all entries that are active now.
-     * @param results The fileitem list to store the results in.
-     * @return The amount of entries that were added.
-     */
-    int GetEPGNow(CFileItemList &results) const { return GetEPGNowOrNext(results, false); }
-
-    /*!
-     * @brief Get all entries that will be active next.
-     * @param results The fileitem list to store the results in.
-     * @return The amount of entries that were added.
-     */
-    int GetEPGNext(CFileItemList &results) const { return GetEPGNowOrNext(results, true); }
-
-    /*!
      * @brief Get the start time of the first entry.
      * @return The start time.
      */
@@ -536,12 +522,5 @@ namespace PVR
 
   private:
     CDateTime GetEPGDate(EpgDateType epgDateType) const;
-    /*!
-     * @brief Get all entries that will be active next.
-     * @param results The fileitem list to store the results in.
-     * @param bGetNext True to get the next item, false to get the current one
-     * @return The amount of entries that were added.
-     */
-    int GetEPGNowOrNext(CFileItemList &results, bool bGetNext) const;
   };
 }
