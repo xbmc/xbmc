@@ -4677,6 +4677,7 @@ void CVideoPlayer::UpdatePlayState(double timeout)
   state.isInMenu = false;
   state.hasMenu = false;
 
+  bool hasITimes = false;
   if (m_pInputStream)
   {
     CDVDInputStream::ITimes* pTimes = m_pInputStream->GetITimes();
@@ -4685,6 +4686,8 @@ void CVideoPlayer::UpdatePlayState(double timeout)
     CDVDInputStream::ITimes::Times times;
     if (pTimes && pTimes->GetTimes(times))
     {
+      hasITimes = true;
+
       state.startTime = times.startTime;
       state.time = (m_clock.GetClock(false) - times.ptsStart) * 1000 / DVD_TIME_BASE;
       state.timeMax = (times.ptsEnd - times.ptsStart) * 1000 / DVD_TIME_BASE;
@@ -4786,16 +4789,19 @@ void CVideoPlayer::UpdatePlayState(double timeout)
 
   state.timestamp = m_clock.GetAbsoluteClock();
 
-  if (state.timeMax <= 0)
+  if (!hasITimes)
   {
-    state.timeMax = state.time;
-    state.timeMin = state.time;
-  }
-  if (state.timeMin == state.timeMax)
-  {
-    state.canseek = false;
-    state.canpause = false;
-    state.cantempo = false;
+    if (state.timeMax <= 0)
+    {
+      state.timeMax = state.time;
+      state.timeMin = state.time;
+    }
+    if (state.timeMin == state.timeMax)
+    {
+      state.canseek = false;
+      state.canpause = false;
+      state.cantempo = false;
+    }
   }
 
   m_processInfo->SetPlayTimes(state.startTime, state.time, state.timeMin, state.timeMax);
