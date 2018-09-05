@@ -921,34 +921,6 @@ void CPVRChannelGroup::OnSettingChanged(std::shared_ptr<const CSetting> setting)
   }
 }
 
-int CPVRChannelGroup::GetEPGNowOrNext(CFileItemList &results, bool bGetNext) const
-{
-  int iInitialSize = results.Size();
-  CPVREpgInfoTagPtr epgNext;
-  CPVRChannelPtr channel;
-  CSingleLock lock(m_critSection);
-
-  for (PVR_CHANNEL_GROUP_SORTED_MEMBERS::const_iterator it = m_sortedMembers.begin(); it != m_sortedMembers.end(); ++it)
-  {
-    channel = (*it).channel;
-    CPVREpgPtr epg = channel->GetEPG();
-    if (epg && !channel->IsHidden())
-    {
-      epgNext = bGetNext ? epg->GetTagNext() : epg->GetTagNow();
-      if (epgNext)
-      {
-        CFileItemPtr entry(new CFileItem(epgNext));
-        entry->SetLabel2(epgNext->StartAsLocalTime().GetAsLocalizedTime("", false));
-        entry->SetPath(channel->Path());
-        entry->SetArt("thumb", channel->IconPath());
-        results.Add(entry);
-      }
-    }
-  }
-
-  return results.Size() - iInitialSize;
-}
-
 int CPVRChannelGroup::GetEPGAll(CFileItemList &results, bool bIncludeChannelsWithoutEPG /* = false */) const
 {
   int iInitialSize = results.Size();

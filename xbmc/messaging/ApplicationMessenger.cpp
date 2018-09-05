@@ -169,6 +169,11 @@ void CApplicationMessenger::PostMsg(uint32_t messageId)
   SendMsg(ThreadMessage{ messageId }, false);
 }
 
+void CApplicationMessenger::PostMsg(uint32_t messageId, int64_t param3)
+{
+  SendMsg(ThreadMessage{ messageId, param3 }, false);
+}
+
 void CApplicationMessenger::PostMsg(uint32_t messageId, int param1, int param2, void* payload)
 {
   SendMsg(ThreadMessage{ messageId, param1, param2, payload }, false);

@@ -924,7 +924,8 @@ void PLAYLIST::CPlayListPlayer::OnApplicationMessage(KODI::MESSAGING::ThreadMess
     g_application.WakeUpScreenSaverAndDPMS();
 
     // stop playing file
-    if (g_application.GetAppPlayer().IsPlaying()) g_application.StopPlaying();
+    if (g_application.GetAppPlayer().IsPlaying())
+      g_application.StopPlaying();
   }
   break;
 
@@ -954,9 +955,16 @@ void PLAYLIST::CPlayListPlayer::OnApplicationMessage(KODI::MESSAGING::ThreadMess
       g_application.GetAppPlayer().Pause();
     }
     break;
+
+  case TMSG_MEDIA_SEEK_TIME:
+  {
+    CApplicationPlayer& player = g_application.GetAppPlayer();
+    if (player.IsPlaying() || player.IsPaused())
+      player.SeekTime(pMsg->param3);
+
+    break;
+  }
   default:
     break;
   }
 }
-
-

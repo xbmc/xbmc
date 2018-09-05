@@ -168,8 +168,25 @@ bool CPVRActionListener::OnAction(const CAction &action)
       return false;
     }
 
-    case ACTION_MOVE_UP:
     case ACTION_NEXT_ITEM:
+    {
+      if (!bIsPlayingPVR)
+        return false;
+
+      CServiceBroker::GetPVRManager().GUIActions()->SeekForward();
+      return true;
+    }
+
+    case ACTION_PREV_ITEM:
+    {
+      if (!bIsPlayingPVR)
+        return false;
+
+      CServiceBroker::GetPVRManager().GUIActions()->SeekBackward(CApplication::ACTION_PREV_ITEM_THRESHOLD);
+      return true;
+    }
+
+    case ACTION_MOVE_UP:
     case ACTION_CHANNEL_UP:
     {
       if (!bIsPlayingPVR)
@@ -180,7 +197,6 @@ bool CPVRActionListener::OnAction(const CAction &action)
     }
 
     case ACTION_MOVE_DOWN:
-    case ACTION_PREV_ITEM:
     case ACTION_CHANNEL_DOWN:
     {
       if (!bIsPlayingPVR)

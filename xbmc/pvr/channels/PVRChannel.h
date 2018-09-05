@@ -357,22 +357,32 @@ namespace PVR
     bool ClearEPG(void) const;
 
     /*!
-     * @brief Get the EPG tag that is active on this channel now.
+     * @brief Get the EPG tag that is now active on this channel.
      *
-     * Get the EPG tag that is active on this channel now.
+     * Get the EPG tag that is now active on this channel.
      * Will return an empty tag if there is none.
      *
-     * @return The EPG tag that is active on this channel now.
+     * @return The EPG tag that is now active.
      */
     CPVREpgInfoTagPtr GetEPGNow() const;
 
     /*!
-     * @brief Get the EPG tag that is active on this channel next.
+     * @brief Get the EPG tag that was previously active on this channel.
      *
-     * Get the EPG tag that is active on this channel next.
+     * Get the EPG tag that was previously active on this channel.
      * Will return an empty tag if there is none.
      *
-     * @return The EPG tag that is active on this channel next.
+     * @return The EPG tag that was previously activ.
+     */
+    CPVREpgInfoTagPtr GetEPGPrevious() const;
+
+    /*!
+     * @brief Get the EPG tag that will be next active on this channel.
+     *
+     * Get the EPG tag that will be next active on this channel.
+     * Will return an empty tag if there is none.
+     *
+     * @return The EPG tag that will be next active.
      */
     CPVREpgInfoTagPtr GetEPGNext() const;
 

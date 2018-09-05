@@ -12,6 +12,7 @@
 #include "FileItem.h"
 #include "ServiceBroker.h"
 #include "addons/PVRClient.h"
+#include "cores/DataCacheCore.h"
 #include "dialogs/GUIDialogBusy.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogNumeric.h"
@@ -1820,6 +1821,84 @@ namespace PVR
 
     CSingleLock lock(m_critSection);
     return bRadio ? m_selectedItemPathRadio : m_selectedItemPathTV;
+  }
+
+  void CPVRGUIActions::SeekForward()
+  {
+    time_t playbackStartTime = CServiceBroker::GetDataCacheCore().GetStartTime();
+    if (playbackStartTime > 0)
+    {
+      const CPVRChannelPtr playingChannel = CServiceBroker::GetPVRManager().GetPlayingChannel();
+      if (playingChannel)
+      {
+        time_t nextTime = 0;
+        CPVREpgInfoTagPtr next = playingChannel->GetEPGNext();
+        if (next)
+        {
+          next->StartAsUTC().GetAsTime(nextTime);
+        }
+        else
+        {
+          // if there is no next event, jump to end of currently playing event
+          next = playingChannel->GetEPGNow();
+          if (next)
+            next->EndAsUTC().GetAsTime(nextTime);
+        }
+
+        int64_t seekTime = 0;
+        if (nextTime != 0)
+        {
+          seekTime = (nextTime - playbackStartTime) * 1000;
+        }
+        else
+        {
+          // no epg; jump to end of buffer
+          seekTime = CServiceBroker::GetDataCacheCore().GetMaxTime();
+        }
+        CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_SEEK_TIME, seekTime);
+      }
+    }
+  }
+
+  void CPVRGUIActions::SeekBackward(unsigned int iThreshold)
+  {
+    time_t playbackStartTime = CServiceBroker::GetDataCacheCore().GetStartTime();
+    if (playbackStartTime > 0)
+    {
+      const CPVRChannelPtr playingChannel = CServiceBroker::GetPVRManager().GetPlayingChannel();
+      if (playingChannel)
+      {
+        time_t prevTime = 0;
+        CPVREpgInfoTagPtr prev = playingChannel->GetEPGNow();
+        if (prev)
+        {
+          prev->StartAsUTC().GetAsTime(prevTime);
+
+          // if playback time of current event is above threshold jump to start of current event
+          int64_t playTime = CServiceBroker::GetDataCacheCore().GetPlayTime() / 1000;
+          if ((playbackStartTime + playTime - prevTime) <= iThreshold)
+          {
+            // jump to start of previous event
+            prevTime = 0;
+            prev = playingChannel->GetEPGPrevious();
+            if (prev)
+              prev->StartAsUTC().GetAsTime(prevTime);
+          }
+        }
+
+        int64_t seekTime = 0;
+        if (prevTime != 0)
+        {
+          seekTime = (prevTime - playbackStartTime) * 1000;
+        }
+        else
+        {
+          // no epg; jump to begin of buffer
+          seekTime = CServiceBroker::GetDataCacheCore().GetMinTime();
+        }
+        CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_SEEK_TIME, seekTime);
+      }
+    }
   }
 
   CPVRChannelNumberInputHandler &CPVRGUIActions::GetChannelNumberInputHandler()

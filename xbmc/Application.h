@@ -123,6 +123,10 @@ friend class CAppInboundProtocol;
 
 public:
 
+  // If playback time of current item is greater than this value, ACTION_PREV_ITEM will seek to start
+  // of currently playing item, otherwise it will seek to start of the previous item in playlist
+  static const unsigned int ACTION_PREV_ITEM_THRESHOLD = 3; // seconds;
+
   enum ESERVERS
   {
     ES_WEBSERVER = 1,
