@@ -32,6 +32,9 @@ namespace fs = KODI::PLATFORM::FILESYSTEM;
 
 void TestBasicEnvironment::SetUp()
 {
+  m_pSettings.reset(new CSettings());
+  CServiceBroker::RegisterSettings(m_pSettings);
+
   XFILE::CFile *f;
 
   /* NOTE: The below is done to fix memleak warning about uninitialized variable
@@ -92,15 +95,18 @@ void TestBasicEnvironment::SetUp()
   if (!g_application.m_ServiceManager->InitForTesting())
     exit(1);
 
-  CServiceBroker::GetSettings().Initialize();
+  CServiceBroker::GetSettings()->Initialize();
 }
 
 void TestBasicEnvironment::TearDown()
 {
   XFILE::CDirectory::RemoveRecursive(m_tempPath);
 
-  CServiceBroker::GetSettings().Uninitialize();
+  CServiceBroker::GetSettings()->Uninitialize();
   g_application.m_ServiceManager->DeinitTesting();
+
+  CServiceBroker::UnregisterSettings();
+  m_pSettings.reset();
 }
 
 void TestBasicEnvironment::SetUpError()

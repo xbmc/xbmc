@@ -124,7 +124,7 @@ bool CWinSystemAmlogic::CreateNewWindow(const std::string& name,
     return true;
   }
 
-  int delay = CServiceBroker::GetSettings().GetInt("videoscreen.delayrefreshchange");
+  int delay = CServiceBroker::GetSettings()->GetInt("videoscreen.delayrefreshchange");
   if (delay > 0)
   {
     m_delayDispReset = true;

@@ -53,7 +53,7 @@ bool CWeatherGUIInfo::GetLabel(std::string& value, const CFileItem *item, int co
       URIUtils::RemoveExtension(value);
       return true;
     case WEATHER_PLUGIN:
-      value = CServiceBroker::GetSettings().GetString(CSettings::SETTING_WEATHER_ADDON);
+      value = CServiceBroker::GetSettings()->GetString(CSettings::SETTING_WEATHER_ADDON);
       return true;
   }
 

@@ -52,10 +52,9 @@ CServiceManager::~CServiceManager()
 
 bool CServiceManager::InitForTesting()
 {
-  m_settings.reset(new CSettings());
-  m_network.reset(new CNetwork(*m_settings));
+  m_network.reset(new CNetwork());
 
-  m_profileManager.reset(new CProfilesManager(*m_settings));
+  m_profileManager.reset(new CProfilesManager());
   CProfile profile("special://temp");
   m_profileManager.get()->AddProfile(profile);
   m_profileManager.get()->CreateProfileFolders();
@@ -92,7 +91,6 @@ void CServiceManager::DeinitTesting()
   m_databaseManager.reset();
   m_profileManager.reset();
   m_network.reset();
-  m_settings.reset();
 }
 
 bool CServiceManager::InitStageOne()
@@ -104,8 +102,7 @@ bool CServiceManager::InitStageOne()
 
   m_playlistPlayer.reset(new PLAYLIST::CPlayListPlayer());
 
-  m_settings.reset(new CSettings());
-  m_network.reset(new CNetwork(*m_settings));
+  m_network.reset(new CNetwork());
 
   init_level = 1;
   return true;
@@ -113,7 +110,7 @@ bool CServiceManager::InitStageOne()
 
 bool CServiceManager::InitStageOnePointFive()
 {
-  m_profileManager.reset(new CProfilesManager(*m_settings));
+  m_profileManager.reset(new CProfilesManager());
   if (!m_profileManager->Load())
     return false;
 
@@ -172,7 +169,7 @@ bool CServiceManager::InitStageTwo(const CAppParamParser &params)
   m_fileExtensionProvider.reset(new CFileExtensionProvider(*m_addonMgr,
                                                            *m_binaryAddonManager));
 
-  m_powerManager.reset(new CPowerManager(*m_settings));
+  m_powerManager.reset(new CPowerManager());
   m_powerManager->Initialize();
   m_powerManager->SetDefaults();
 
@@ -190,15 +187,13 @@ bool CServiceManager::InitStageThree()
 
   m_gameServices.reset(new GAME::CGameServices(*m_gameControllerManager,
     *m_gameRenderManager,
-    *m_settings,
     *m_peripherals,
     *m_profileManager));
 
   m_contextMenuManager->Init();
   m_PVRManager->Init();
 
-  m_playerCoreFactory.reset(new CPlayerCoreFactory(*m_settings,
-                                                   *m_profileManager));
+  m_playerCoreFactory.reset(new CPlayerCoreFactory(*m_profileManager));
 
   init_level = 3;
   return true;
@@ -250,7 +245,6 @@ void CServiceManager::DeinitStageOne()
   init_level = 0;
 
   m_network.reset();
-  m_settings.reset();
   m_playlistPlayer.reset();
 #ifdef HAS_PYTHON
   CScriptInvocationManager::GetInstance().UnregisterLanguageInvocationHandler(m_XBPython.get());
@@ -318,11 +312,6 @@ CPlatform& CServiceManager::GetPlatform()
 PLAYLIST::CPlayListPlayer& CServiceManager::GetPlaylistPlayer()
 {
   return *m_playlistPlayer;
-}
-
-CSettings& CServiceManager::GetSettings()
-{
-  return *m_settings;
 }
 
 GAME::CControllerManager& CServiceManager::GetGameControllerManager()

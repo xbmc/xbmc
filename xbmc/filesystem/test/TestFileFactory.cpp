@@ -20,7 +20,7 @@ class TestFileFactory : public testing::Test
 protected:
   TestFileFactory()
   {
-    if (CServiceBroker::GetSettings().Initialize())
+    if (CServiceBroker::GetSettings()->Initialize())
     {
       std::vector<std::string> advancedsettings =
         CXBMCTestUtils::Instance().getAdvancedSettingsFiles();
@@ -28,20 +28,20 @@ protected:
         CXBMCTestUtils::Instance().getGUISettingsFiles();
 
       for (const auto& it : guisettings)
-        CServiceBroker::GetSettings().Load(it);
+        CServiceBroker::GetSettings()->Load(it);
 
       for (const auto& it : advancedsettings)
         g_advancedSettings.ParseSettingsFile(it);
 
-      CServiceBroker::GetSettings().SetLoaded();
+      CServiceBroker::GetSettings()->SetLoaded();
     }
   }
 
   ~TestFileFactory() override
   {
     g_advancedSettings.Clear();
-    CServiceBroker::GetSettings().Unload();
-    CServiceBroker::GetSettings().Uninitialize();
+    CServiceBroker::GetSettings()->Unload();
+    CServiceBroker::GetSettings()->Uninitialize();
   }
 };
 

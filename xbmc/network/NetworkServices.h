@@ -29,7 +29,7 @@ class CHTTPWebinterfaceAddonsHandler;
 class CNetworkServices : public ISettingCallback
 {
 public:
-  CNetworkServices(CSettings &settings);
+  CNetworkServices();
   ~CNetworkServices() override;
 
   bool OnSettingChanging(std::shared_ptr<const CSetting> setting) override;
@@ -89,7 +89,7 @@ private:
   bool ValidatePort(int port);
 
   // Construction parameters
-  CSettings &m_settings;
+  std::shared_ptr<CSettings> m_settings;
 
   // Network services
 #ifdef HAS_WEB_SERVER

@@ -810,7 +810,7 @@ bool CDXVABufferPool::HasRefs()
 
 IHardwareDecoder* CDecoder::Create(CDVDStreamInfo &hint, CProcessInfo &processInfo, AVPixelFormat fmt)
 {
-  if (DXVA::CDecoder::Supports(fmt) && CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_USEDXVA2))
+  if (DXVA::CDecoder::Supports(fmt) && CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEDXVA2))
     return new CDecoder(processInfo);
 
   return nullptr;

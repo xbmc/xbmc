@@ -417,7 +417,7 @@ char* Interface_General::get_current_skin_id(void* kodiBase)
     return nullptr;
   }
 
-  return strdup(CServiceBroker::GetSettings().GetString(CSettings::SETTING_LOOKANDFEEL_SKIN).c_str());
+  return strdup(CServiceBroker::GetSettings()->GetString(CSettings::SETTING_LOOKANDFEEL_SKIN).c_str());
 }
 
 void Interface_General::kodi_version(void* kodiBase, char** compile_name, int* major, int* minor, char** revision, char** tag, char** tagversion)

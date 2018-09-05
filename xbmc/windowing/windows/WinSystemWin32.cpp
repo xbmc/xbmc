@@ -860,7 +860,7 @@ void CWinSystemWin32::UpdateResolutions()
   CWinSystemBase::UpdateResolutions();
   GetConnectedDisplays(m_displays);
 
-  MONITOR_DETAILS* details = GetDisplayDetails(CServiceBroker::GetSettings().GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR));
+  MONITOR_DETAILS* details = GetDisplayDetails(CServiceBroker::GetSettings()->GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR));
   if (!details)
     return;
 
@@ -1023,7 +1023,7 @@ void CWinSystemWin32::OnDisplayReset()
 
 void CWinSystemWin32::OnDisplayBack()
 {
-  int delay = CServiceBroker::GetSettings().GetInt("videoscreen.delayrefreshchange");
+  int delay = CServiceBroker::GetSettings()->GetInt("videoscreen.delayrefreshchange");
   if (delay > 0)
   {
     m_delayDispReset = true;
@@ -1111,7 +1111,7 @@ std::string CWinSystemWin32::GetClipboardText()
 
 bool CWinSystemWin32::UseLimitedColor()
 {
-  return CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOSCREEN_LIMITEDRANGE);
+  return CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_VIDEOSCREEN_LIMITEDRANGE);
 }
 
 void CWinSystemWin32::NotifyAppFocusChange(bool bGaining)
@@ -1142,7 +1142,7 @@ void CWinSystemWin32::NotifyAppFocusChange(bool bGaining)
 
 void CWinSystemWin32::UpdateStates(bool fullScreen)
 {
-  m_fullscreenState = CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN)
+  m_fullscreenState = CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN)
     ? WINDOW_FULLSCREEN_STATE_FULLSCREEN_WINDOW
     : WINDOW_FULLSCREEN_STATE_FULLSCREEN;
   m_windowState = WINDOW_WINDOW_STATE_WINDOWED; // currently only this allowed

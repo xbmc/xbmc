@@ -125,8 +125,8 @@ int NetworkAccessPoint::FreqToChannel(float frequency)
   return 0; // unknown
 }
 
-CNetworkBase::CNetworkBase(CSettings &settings) :
-  m_services(new CNetworkServices(settings))
+CNetworkBase::CNetworkBase() :
+  m_services(new CNetworkServices())
 {
   CApplicationMessenger::GetInstance().PostMsg(TMSG_NETWORKMESSAGE, SERVICES_UP, 0);
 }
@@ -513,7 +513,7 @@ std::vector<SOCKET> CreateTCPServerSocket(const int port, const bool bindLocal, 
 
 void CNetworkBase::WaitForNet()
 {
-  const int timeout = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_POWERMANAGEMENT_WAITFORNETWORK);
+  const int timeout = CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_POWERMANAGEMENT_WAITFORNETWORK);
   if (timeout <= 0)
     return; // wait for network is disabled
 

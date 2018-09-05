@@ -266,8 +266,8 @@ bool CGUIWindowPVRRecordingsBase::OnMessage(CGUIMessage &message)
       }
       else if (message.GetSenderId() == CONTROL_BTNGROUPITEMS)
       {
-        CServiceBroker::GetSettings().ToggleBool(CSettings::SETTING_PVRRECORD_GROUPRECORDINGS);
-        CServiceBroker::GetSettings().Save();
+        CServiceBroker::GetSettings()->ToggleBool(CSettings::SETTING_PVRRECORD_GROUPRECORDINGS);
+        CServiceBroker::GetSettings()->Save();
         Refresh(true);
       }
       else if (message.GetSenderId() == CONTROL_BTNSHOWDELETED)
@@ -283,7 +283,7 @@ bool CGUIWindowPVRRecordingsBase::OnMessage(CGUIMessage &message)
       else if (message.GetSenderId() == CONTROL_BTNSHOWMODE)
       {
         CMediaSettings::GetInstance().CycleWatchedMode("recordings");
-        CServiceBroker::GetSettings().Save();
+        CServiceBroker::GetSettings()->Save();
         OnFilterItems(GetProperty("filter").asString());
         UpdateButtons();
         return true;

@@ -105,9 +105,9 @@ bool CZeroconf::Start()
   CSingleLock lock(*mp_crit_sec);
   if(!IsZCdaemonRunning())
   {
-    CServiceBroker::GetSettings().SetBool(CSettings::SETTING_SERVICES_ZEROCONF, false);
-    if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_SERVICES_AIRPLAY))
-      CServiceBroker::GetSettings().SetBool(CSettings::SETTING_SERVICES_AIRPLAY, false);
+    CServiceBroker::GetSettings()->SetBool(CSettings::SETTING_SERVICES_ZEROCONF, false);
+    if (CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_SERVICES_AIRPLAY))
+      CServiceBroker::GetSettings()->SetBool(CSettings::SETTING_SERVICES_AIRPLAY, false);
     return false;
   }
   if(m_started)

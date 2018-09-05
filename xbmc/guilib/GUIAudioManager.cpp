@@ -23,19 +23,20 @@
 #include "cores/AudioEngine/Interfaces/AE.h"
 #include "utils/log.h"
 
-CGUIAudioManager::CGUIAudioManager(CSettings &settings) :
-  m_settings(settings)
+CGUIAudioManager::CGUIAudioManager()
 {
+  m_settings = CServiceBroker::GetSettings();
+
   m_bEnabled = false;
 
-  m_settings.RegisterCallback(this, {
+  m_settings->RegisterCallback(this, {
     CSettings::SETTING_LOOKANDFEEL_SOUNDSKIN,
   });
 }
 
 CGUIAudioManager::~CGUIAudioManager()
 {
-  m_settings.UnregisterCallback(this);
+  m_settings->UnregisterCallback(this);
 }
 
 void CGUIAudioManager::OnSettingChanged(std::shared_ptr<const CSetting> setting)
@@ -216,7 +217,7 @@ void CGUIAudioManager::UnLoad()
 
 std::string GetSoundSkinPath()
 {
-  auto setting = std::static_pointer_cast<CSettingString>(CServiceBroker::GetSettings().GetSetting(CSettings::SETTING_LOOKANDFEEL_SOUNDSKIN));
+  auto setting = std::static_pointer_cast<CSettingString>(CServiceBroker::GetSettings()->GetSetting(CSettings::SETTING_LOOKANDFEEL_SOUNDSKIN));
   auto value = setting->GetValue();
   if (value.empty())
     return "";
@@ -405,7 +406,7 @@ IAESound* CGUIAudioManager::LoadWindowSound(TiXmlNode* pWindowNode, const std::s
 void CGUIAudioManager::Enable(bool bEnable)
 {
   // always deinit audio when we don't want gui sounds
-  if (CServiceBroker::GetSettings().GetString(CSettings::SETTING_LOOKANDFEEL_SOUNDSKIN).empty())
+  if (CServiceBroker::GetSettings()->GetString(CSettings::SETTING_LOOKANDFEEL_SOUNDSKIN).empty())
     bEnable = false;
 
   CSingleLock lock(m_cs);

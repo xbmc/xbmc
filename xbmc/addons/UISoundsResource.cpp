@@ -24,7 +24,7 @@ bool CUISoundsResource::IsAllowed(const std::string& file) const
 
 bool CUISoundsResource::IsInUse() const
 {
-  return CServiceBroker::GetSettings().GetString(CSettings::SETTING_LOOKANDFEEL_SOUNDSKIN) == ID();
+  return CServiceBroker::GetSettings()->GetString(CSettings::SETTING_LOOKANDFEEL_SOUNDSKIN) == ID();
 }
 
 void CUISoundsResource::OnPostInstall(bool update, bool modal)

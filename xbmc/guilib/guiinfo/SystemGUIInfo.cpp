@@ -280,7 +280,7 @@ bool CSystemGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
       return true;
     case SYSTEM_STEREOSCOPIC_MODE:
     {
-      int iStereoMode = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_VIDEOSCREEN_STEREOSCOPICMODE);
+      int iStereoMode = CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_VIDEOSCREEN_STEREOSCOPICMODE);
       value = StringUtils::Format("%i", iStereoMode);
       return true;
     }
@@ -547,7 +547,7 @@ bool CSystemGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
       value = g_application.IsIdleShutdownInhibited();
       return true;
     case SYSTEM_HAS_SHUTDOWN:
-      value = (CServiceBroker::GetSettings().GetInt(CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNTIME) > 0);
+      value = (CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNTIME) > 0);
       return true;
     case SYSTEM_LOGGEDON:
       value = !(CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_LOGIN_SCREEN);
@@ -611,7 +611,7 @@ bool CSystemGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
       value = g_alarmClock.HasAlarm(info.GetData3());
       return true;
     case SYSTEM_GET_BOOL:
-      value = CServiceBroker::GetSettings().GetBool(info.GetData3());
+      value = CServiceBroker::GetSettings()->GetBool(info.GetData3());
       return true;
     case SYSTEM_SETTING:
     {

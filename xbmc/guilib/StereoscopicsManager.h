@@ -36,7 +36,7 @@ class CStereoscopicsManager : public ISettingCallback,
                               public IMsgTargetCallback
 {
 public:
-  CStereoscopicsManager(CSettings &settings);
+  CStereoscopicsManager();
 
   ~CStereoscopicsManager(void) override;
 
@@ -90,7 +90,7 @@ private:
   static int ConvertVideoToGuiStereoMode(const std::string &mode);
 
   // Construction parameters
-  CSettings &m_settings;
+  std::shared_ptr<CSettings> m_settings;
 
   // Stereoscopic parameters
   RENDER_STEREO_MODE m_stereoModeSetByUser;

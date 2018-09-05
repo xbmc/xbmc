@@ -319,7 +319,7 @@ bool CRecentlyAddedJob::UpdateTotal()
 
   CMusicDbUrl musicUrl;
   musicUrl.FromString("musicdb://artists/");
-  musicUrl.AddOption("albumartistsonly", !CServiceBroker::GetSettings().GetBool(CSettings::SETTING_MUSICLIBRARY_SHOWCOMPILATIONARTISTS));
+  musicUrl.AddOption("albumartistsonly", !CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_MUSICLIBRARY_SHOWCOMPILATIONARTISTS));
 
   CFileItemList items;
   CDatabase::Filter filter;

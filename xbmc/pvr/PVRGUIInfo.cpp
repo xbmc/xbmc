@@ -189,7 +189,7 @@ void CPVRGUIInfo::UpdateQualityData(void)
   PVR_SIGNAL_STATUS qualityInfo;
   ClearQualityInfo(qualityInfo);
 
-  if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_PVRPLAYBACK_SIGNALQUALITY))
+  if (CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_PVRPLAYBACK_SIGNALQUALITY))
   {
     bool bIsPlayingRecording = CServiceBroker::GetPVRManager().IsPlayingRecording();
     if (!bIsPlayingRecording)
@@ -467,7 +467,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem *item, const CGUIInf
         // associated with the epg event of a timer, if any, and not the title of the timer.
         if (epgTag)
           strValue = epgTag->Title();
-        if (strValue.empty() && !CServiceBroker::GetSettings().GetBool(CSettings::SETTING_EPG_HIDENOINFOAVAILABLE))
+        if (strValue.empty() && !CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_EPG_HIDENOINFOAVAILABLE))
           strValue = g_localizeStrings.Get(19055); // no information available
         return true;
     }
@@ -843,7 +843,7 @@ namespace
   {
     if (epgTag)
       return epgTag->Title();
-    else if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_EPG_HIDENOINFOAVAILABLE))
+    else if (CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_EPG_HIDENOINFOAVAILABLE))
       return std::string();
     else
       return g_localizeStrings.Get(19055); // no information available

@@ -75,8 +75,7 @@ using namespace XFILE;
 
 static CProfile EmptyProfile;
 
-CProfilesManager::CProfilesManager(CSettings &settings) :
-    m_settings(settings),
+CProfilesManager::CProfilesManager() :
     m_usingLoginScreen(false),
     m_profileLoadedForLogin(false),
     m_autoLoginProfile(-1),
@@ -85,32 +84,34 @@ CProfilesManager::CProfilesManager(CSettings &settings) :
     m_nextProfileId(0),
     m_eventLogs(new CEventLogManager)
 {
-  if (m_settings.IsLoaded())
+  m_settings = CServiceBroker::GetSettings();
+
+  if (m_settings->IsLoaded())
     OnSettingsLoaded();
 
-  m_settings.GetSettingsManager()->RegisterSettingsHandler(this);
+  m_settings->GetSettingsManager()->RegisterSettingsHandler(this);
 
   std::set<std::string> settingSet = {
     CSettings::SETTING_EVENTLOG_SHOW
   };
 
-  m_settings.GetSettingsManager()->RegisterCallback(this, settingSet);
+  m_settings->GetSettingsManager()->RegisterCallback(this, settingSet);
 }
 
 CProfilesManager::~CProfilesManager()
 {
-  m_settings.GetSettingsManager()->UnregisterCallback(this);
-  m_settings.GetSettingsManager()->UnregisterSettingsHandler(this);
+  m_settings->GetSettingsManager()->UnregisterCallback(this);
+  m_settings->GetSettingsManager()->UnregisterSettingsHandler(this);
 }
 
 void CProfilesManager::OnSettingsLoaded()
 {
   // check them all
-  std::string strDir = m_settings.GetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH);
+  std::string strDir = m_settings->GetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH);
   if (strDir == "set default" || strDir.empty())
   {
     strDir = "special://profile/playlists/";
-    m_settings.SetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH, strDir.c_str());
+    m_settings->SetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH, strDir.c_str());
   }
 
   CDirectory::Create(strDir);
@@ -297,25 +298,25 @@ bool CProfilesManager::LoadProfile(unsigned int index)
     g_SkinInfo->SaveSettings();
 
   // unload any old settings
-  CServiceBroker::GetSettings().Unload();
+  CServiceBroker::GetSettings()->Unload();
 
   SetCurrentProfileId(index);
   m_profileLoadedForLogin = false;
 
   // load the new settings
-  if (!CServiceBroker::GetSettings().Load())
+  if (!CServiceBroker::GetSettings()->Load())
   {
     CLog::Log(LOGFATAL, "CProfilesManager: unable to load settings for profile \"%s\"", m_profiles.at(index).getName().c_str());
     return false;
   }
-  CServiceBroker::GetSettings().SetLoaded();
+  CServiceBroker::GetSettings()->SetLoaded();
 
   CreateProfileFolders();
 
   CServiceBroker::GetDatabaseManager().Initialize();
   CServiceBroker::GetInputManager().LoadKeymaps();
 
-  CServiceBroker::GetInputManager().SetMouseEnabled(CServiceBroker::GetSettings().GetBool(CSettings::SETTING_INPUT_ENABLEMOUSE));
+  CServiceBroker::GetInputManager().SetMouseEnabled(CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_INPUT_ENABLEMOUSE));
 
   CGUIComponent* gui = CServiceBroker::GetGUI();
   if (gui)
@@ -331,8 +332,8 @@ bool CProfilesManager::LoadProfile(unsigned int index)
     CXBMCTinyXML doc;
     if (doc.LoadFile(URIUtils::AddFileToFolder(GetUserDataFolder(), "guisettings.xml")))
     {
-      CServiceBroker::GetSettings().LoadSetting(doc.RootElement(), CSettings::SETTING_MASTERLOCK_MAXRETRIES);
-      CServiceBroker::GetSettings().LoadSetting(doc.RootElement(), CSettings::SETTING_MASTERLOCK_STARTUPLOCK);
+      CServiceBroker::GetSettings()->LoadSetting(doc.RootElement(), CSettings::SETTING_MASTERLOCK_MAXRETRIES);
+      CServiceBroker::GetSettings()->LoadSetting(doc.RootElement(), CSettings::SETTING_MASTERLOCK_STARTUPLOCK);
     }
   }
 
@@ -484,7 +485,7 @@ bool CProfilesManager::DeleteProfile(unsigned int index)
   if (index == m_currentProfile)
   {
     LoadProfile(0);
-    m_settings.Save();
+    m_settings->Save();
   }
 
   CFileItemPtr item = CFileItemPtr(new CFileItem(URIUtils::AddFileToFolder(GetUserDataFolder(), strDirectory)));

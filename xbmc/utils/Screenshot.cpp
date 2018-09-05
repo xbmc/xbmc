@@ -239,7 +239,7 @@ void CScreenShot::TakeScreenshot()
   std::string strDir;
 
   // check to see if we have a screenshot folder yet
-  std::shared_ptr<CSettingPath> screenshotSetting = std::static_pointer_cast<CSettingPath>(CServiceBroker::GetSettings().GetSetting(CSettings::SETTING_DEBUG_SCREENSHOTPATH));
+  std::shared_ptr<CSettingPath> screenshotSetting = std::static_pointer_cast<CSettingPath>(CServiceBroker::GetSettings()->GetSetting(CSettings::SETTING_DEBUG_SCREENSHOTPATH));
   if (screenshotSetting != NULL)
   {
     strDir = screenshotSetting->GetValue();

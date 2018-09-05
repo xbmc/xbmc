@@ -83,28 +83,28 @@ protected:
      */
     /*
     //! @todo implement
-    CSettingsCategory *loc = CServiceBroker::GetSettings().AddCategory(7, "locale", 14090);
-    CServiceBroker::GetSettings().AddString(loc, CSettings::SETTING_LOCALE_LANGUAGE,248,"english",
+    CSettingsCategory *loc = CServiceBroker::GetSettings()->AddCategory(7, "locale", 14090);
+    CServiceBroker::GetSettings()->AddString(loc, CSettings::SETTING_LOCALE_LANGUAGE,248,"english",
                             SPIN_CONTROL_TEXT);
-    CServiceBroker::GetSettings().AddString(loc, CSettings::SETTING_LOCALE_COUNTRY, 20026, "USA",
+    CServiceBroker::GetSettings()->AddString(loc, CSettings::SETTING_LOCALE_COUNTRY, 20026, "USA",
                             SPIN_CONTROL_TEXT);
-    CServiceBroker::GetSettings().AddString(loc, CSettings::SETTING_LOCALE_CHARSET, 14091, "DEFAULT",
+    CServiceBroker::GetSettings()->AddString(loc, CSettings::SETTING_LOCALE_CHARSET, 14091, "DEFAULT",
                             SPIN_CONTROL_TEXT); // charset is set by the
                                                 // language file
 
     // Add default settings for subtitles
-    CSettingsCategory *sub = CServiceBroker::GetSettings().AddCategory(5, "subtitles", 287);
-    CServiceBroker::GetSettings().AddString(sub, CSettings::SETTING_SUBTITLES_CHARSET, 735, "DEFAULT",
+    CSettingsCategory *sub = CServiceBroker::GetSettings()->AddCategory(5, "subtitles", 287);
+    CServiceBroker::GetSettings()->AddString(sub, CSettings::SETTING_SUBTITLES_CHARSET, 735, "DEFAULT",
                             SPIN_CONTROL_TEXT);
     */
-    CServiceBroker::GetSettings().Initialize();
+    CServiceBroker::GetSettings()->Initialize();
     g_charsetConverter.reset();
     g_charsetConverter.clear();
   }
 
   ~TestCharsetConverter() override
   {
-    CServiceBroker::GetSettings().Unload();
+    CServiceBroker::GetSettings()->Unload();
   }
 
   std::string refstra1, refstra2, varstra1;

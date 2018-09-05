@@ -511,8 +511,8 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
   auto entry = settings_map.find(avctx->codec_id);
   if (entry != settings_map.end())
   {
-    bool enabled = CServiceBroker::GetSettings().GetBool(entry->second) &&
-                   CServiceBroker::GetSettings().GetSetting(entry->second)->IsVisible();
+    bool enabled = CServiceBroker::GetSettings()->GetBool(entry->second) &&
+                   CServiceBroker::GetSettings()->GetSetting(entry->second)->IsVisible();
     if (!enabled)
       return false;
   }
@@ -1182,7 +1182,7 @@ void CDecoder::ReturnRenderPicture(CVaapiRenderPicture *renderPic)
 
 IHardwareDecoder* CDecoder::Create(CDVDStreamInfo &hint, CProcessInfo &processInfo, AVPixelFormat fmt)
 {
-  if (fmt == AV_PIX_FMT_VAAPI_VLD && CServiceBroker::GetSettings().GetBool(SETTING_VIDEOPLAYER_USEVAAPI))
+  if (fmt == AV_PIX_FMT_VAAPI_VLD && CServiceBroker::GetSettings()->GetBool(SETTING_VIDEOPLAYER_USEVAAPI))
     return new VAAPI::CDecoder(processInfo);
 
   return nullptr;
@@ -1201,13 +1201,13 @@ void CDecoder::Register(IVaapiWinSystem *winSystem, bool deepColor)
   CDVDFactoryCodec::RegisterHWAccel("vaapi", CDecoder::Create);
   config.context->Release(nullptr);
 
-  CServiceBroker::GetSettings().GetSetting(SETTING_VIDEOPLAYER_USEVAAPI)->SetVisible(true);
-  CServiceBroker::GetSettings().GetSetting(SETTING_VIDEOPLAYER_USEVAAPIMPEG4)->SetVisible(true);
-  CServiceBroker::GetSettings().GetSetting(SETTING_VIDEOPLAYER_USEVAAPIVC1)->SetVisible(true);
-  CServiceBroker::GetSettings().GetSetting(SETTING_VIDEOPLAYER_USEVAAPIMPEG2)->SetVisible(true);
-  CServiceBroker::GetSettings().GetSetting(SETTING_VIDEOPLAYER_USEVAAPIVP8)->SetVisible(true);
-  CServiceBroker::GetSettings().GetSetting(SETTING_VIDEOPLAYER_USEVAAPIVP9)->SetVisible(true);
-  CServiceBroker::GetSettings().GetSetting(SETTING_VIDEOPLAYER_USEVAAPIHEVC)->SetVisible(true);
+  CServiceBroker::GetSettings()->GetSetting(SETTING_VIDEOPLAYER_USEVAAPI)->SetVisible(true);
+  CServiceBroker::GetSettings()->GetSetting(SETTING_VIDEOPLAYER_USEVAAPIMPEG4)->SetVisible(true);
+  CServiceBroker::GetSettings()->GetSetting(SETTING_VIDEOPLAYER_USEVAAPIVC1)->SetVisible(true);
+  CServiceBroker::GetSettings()->GetSetting(SETTING_VIDEOPLAYER_USEVAAPIMPEG2)->SetVisible(true);
+  CServiceBroker::GetSettings()->GetSetting(SETTING_VIDEOPLAYER_USEVAAPIVP8)->SetVisible(true);
+  CServiceBroker::GetSettings()->GetSetting(SETTING_VIDEOPLAYER_USEVAAPIVP9)->SetVisible(true);
+  CServiceBroker::GetSettings()->GetSetting(SETTING_VIDEOPLAYER_USEVAAPIHEVC)->SetVisible(true);
 }
 
 //-----------------------------------------------------------------------------
@@ -2023,7 +2023,7 @@ void COutput::InitCycle()
     }
     if (!m_pp)
     {
-      const bool preferVaapiRender = CServiceBroker::GetSettings().GetBool(SETTING_VIDEOPLAYER_PREFERVAAPIRENDER);
+      const bool preferVaapiRender = CServiceBroker::GetSettings()->GetBool(SETTING_VIDEOPLAYER_PREFERVAAPIRENDER);
       // For 1080p/i or below, always use CVppPostproc even when not deinterlacing
       // Reason is: mesa cannot dynamically switch surfaces between use for VAAPI post-processing
       // and use for direct export, so we run into trouble if we or the user want to switch
@@ -3149,7 +3149,7 @@ bool CFFmpegPostproc::UpdateDeintMethod(EINTERLACEMETHOD method)
   else if (method == VS_INTERLACEMETHOD_RENDER_BOB)
     return true;
   else if (method == VS_INTERLACEMETHOD_NONE &&
-           !CServiceBroker::GetSettings().GetBool(SETTING_VIDEOPLAYER_PREFERVAAPIRENDER))
+           !CServiceBroker::GetSettings()->GetBool(SETTING_VIDEOPLAYER_PREFERVAAPIRENDER))
     return true;
 
   return false;

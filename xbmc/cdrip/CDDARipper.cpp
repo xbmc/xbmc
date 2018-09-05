@@ -72,7 +72,7 @@ bool CCDDARipper::RipTrack(CFileItem* pItem)
 
   AddJob(new CCDDARipJob(pItem->GetPath(),strFile,
                          *pItem->GetMusicInfoTag(),
-                         CServiceBroker::GetSettings().GetInt(CSettings::SETTING_AUDIOCDS_ENCODER)));
+                         CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_AUDIOCDS_ENCODER)));
 
   return true;
 }
@@ -124,11 +124,11 @@ bool CCDDARipper::RipCD()
     if (item->GetPath().find(".cdda") == std::string::npos)
       continue;
 
-    bool eject = CServiceBroker::GetSettings().GetBool(CSettings::SETTING_AUDIOCDS_EJECTONRIP) &&
+    bool eject = CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_AUDIOCDS_EJECTONRIP) &&
                  i == vecItems.Size()-1;
     AddJob(new CCDDARipJob(item->GetPath(),strFile,
                            *item->GetMusicInfoTag(),
-                           CServiceBroker::GetSettings().GetInt(CSettings::SETTING_AUDIOCDS_ENCODER), eject));
+                           CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_AUDIOCDS_ENCODER), eject));
   }
 
   return true;
@@ -136,7 +136,7 @@ bool CCDDARipper::RipCD()
 
 bool CCDDARipper::CreateAlbumDir(const MUSIC_INFO::CMusicInfoTag& infoTag, std::string& strDirectory, int& legalType)
 {
-  std::shared_ptr<CSettingPath> recordingpathSetting = std::static_pointer_cast<CSettingPath>(CServiceBroker::GetSettings().GetSetting(CSettings::SETTING_AUDIOCDS_RECORDINGPATH));
+  std::shared_ptr<CSettingPath> recordingpathSetting = std::static_pointer_cast<CSettingPath>(CServiceBroker::GetSettings()->GetSetting(CSettings::SETTING_AUDIOCDS_RECORDINGPATH));
   if (recordingpathSetting != NULL)
   {
     strDirectory = recordingpathSetting->GetValue();
@@ -192,7 +192,7 @@ std::string CCDDARipper::GetAlbumDirName(const MUSIC_INFO::CMusicInfoTag& infoTa
   // use audiocds.trackpathformat setting to format
   // directory name where CD tracks will be stored,
   // use only format part ending at the last '/'
-  strAlbumDir = CServiceBroker::GetSettings().GetString(CSettings::SETTING_AUDIOCDS_TRACKPATHFORMAT);
+  strAlbumDir = CServiceBroker::GetSettings()->GetString(CSettings::SETTING_AUDIOCDS_TRACKPATHFORMAT);
   size_t pos = strAlbumDir.find_last_of("/\\");
   if (pos == std::string::npos)
     return ""; // no directory
@@ -259,7 +259,7 @@ std::string CCDDARipper::GetTrackName(CFileItem *item)
 
   // get track file name format from audiocds.trackpathformat setting,
   // use only format part starting from the last '/'
-  std::string strFormat = CServiceBroker::GetSettings().GetString(CSettings::SETTING_AUDIOCDS_TRACKPATHFORMAT);
+  std::string strFormat = CServiceBroker::GetSettings()->GetString(CSettings::SETTING_AUDIOCDS_TRACKPATHFORMAT);
   size_t pos = strFormat.find_last_of("/\\");
   if (pos != std::string::npos)
     strFormat.erase(0, pos+1);
@@ -272,7 +272,7 @@ std::string CCDDARipper::GetTrackName(CFileItem *item)
   if (track.empty())
     track = StringUtils::Format("%s%02i", "Track-", trackNumber);
 
- const BinaryAddonBasePtr addonInfo = CServiceBroker::GetBinaryAddonManager().GetInstalledAddonInfo(CServiceBroker::GetSettings().GetString(CSettings::SETTING_AUDIOCDS_ENCODER), ADDON_AUDIOENCODER);
+ const BinaryAddonBasePtr addonInfo = CServiceBroker::GetBinaryAddonManager().GetInstalledAddonInfo(CServiceBroker::GetSettings()->GetString(CSettings::SETTING_AUDIOCDS_ENCODER), ADDON_AUDIOENCODER);
   if (addonInfo)
     track += addonInfo->Type(ADDON_AUDIOENCODER)->GetValue("@extension").asString();
 

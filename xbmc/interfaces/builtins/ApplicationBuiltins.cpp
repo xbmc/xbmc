@@ -112,8 +112,8 @@ static int SetVolume(const std::vector<std::string>& params)
  */
 static int ToggleDebug(const std::vector<std::string>& params)
 {
-  bool debug = CServiceBroker::GetSettings().GetBool(CSettings::SETTING_DEBUG_SHOWLOGINFO);
-  CServiceBroker::GetSettings().SetBool(CSettings::SETTING_DEBUG_SHOWLOGINFO, !debug);
+  bool debug = CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_DEBUG_SHOWLOGINFO);
+  CServiceBroker::GetSettings()->SetBool(CSettings::SETTING_DEBUG_SHOWLOGINFO, !debug);
   g_advancedSettings.SetDebugMode(!debug);
 
   return 0;

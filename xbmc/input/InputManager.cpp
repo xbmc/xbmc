@@ -67,7 +67,7 @@ CInputManager::CInputManager(const CAppParamParser &params) :
   // Register settings
   std::set<std::string> settingSet;
   settingSet.insert(CSettings::SETTING_INPUT_ENABLEMOUSE);
-  CServiceBroker::GetSettings().RegisterCallback(this, settingSet);
+  CServiceBroker::GetSettings()->RegisterCallback(this, settingSet);
 }
 
 CInputManager::~CInputManager()
@@ -75,7 +75,7 @@ CInputManager::~CInputManager()
   Deinitialize();
 
   // Unregister settings
-  CServiceBroker::GetSettings().UnregisterCallback(this);
+  CServiceBroker::GetSettings()->UnregisterCallback(this);
 
   UnregisterKeyboardDriverHandler(m_keyboardEasterEgg.get());
 
@@ -89,7 +89,7 @@ void CInputManager::InitializeInputs()
   m_Keyboard.Initialize();
 
   m_Mouse.Initialize();
-  m_Mouse.SetEnabled(CServiceBroker::GetSettings().GetBool(CSettings::SETTING_INPUT_ENABLEMOUSE));
+  m_Mouse.SetEnabled(CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_INPUT_ENABLEMOUSE));
 }
 
 void CInputManager::Deinitialize()

@@ -54,7 +54,7 @@ private:
 class CNetworkLinux : public CNetworkBase
 {
 public:
-   CNetworkLinux(CSettings &settings);
+   CNetworkLinux();
    ~CNetworkLinux(void) override;
 
    // Return the list of interfaces

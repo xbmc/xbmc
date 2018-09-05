@@ -14,7 +14,6 @@
 #include <string>
 
 class CProfilesManager;
-class CSettings;
 
 namespace PERIPHERALS
 {
@@ -38,7 +37,6 @@ namespace GAME
   public:
     CGameServices(CControllerManager &controllerManager,
                   RETRO::CGUIGameRenderManager &renderManager,
-                  CSettings &settings,
                   PERIPHERALS::CPeripherals &peripheralManager,
                   const CProfilesManager &profileManager);
     ~CGameServices();

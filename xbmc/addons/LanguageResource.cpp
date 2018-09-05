@@ -118,7 +118,7 @@ CLanguageResource::CLanguageResource(
 
 bool CLanguageResource::IsInUse() const
 {
-  return StringUtils::EqualsNoCase(CServiceBroker::GetSettings().GetString(CSettings::SETTING_LOCALE_LANGUAGE), ID());
+  return StringUtils::EqualsNoCase(CServiceBroker::GetSettings()->GetString(CSettings::SETTING_LOCALE_LANGUAGE), ID());
 }
 
 void CLanguageResource::OnPostInstall(bool update, bool modal)
@@ -133,7 +133,7 @@ void CLanguageResource::OnPostInstall(bool update, bool modal)
     if (IsInUse())
       g_langInfo.SetLanguage(ID());
     else
-      CServiceBroker::GetSettings().SetString(CSettings::SETTING_LOCALE_LANGUAGE, ID());
+      CServiceBroker::GetSettings()->SetString(CSettings::SETTING_LOCALE_LANGUAGE, ID());
   }
 }
 

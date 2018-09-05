@@ -48,26 +48,26 @@ CActiveAESettings::CActiveAESettings(CActiveAE &ae) : m_audioEngine(ae)
   settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_STREAMSILENCE);
   settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_STREAMNOISE);
   settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_MAINTAINORIGINALVOLUME);
-  CServiceBroker::GetSettings().GetSettingsManager()->RegisterCallback(this, settingSet);
+  CServiceBroker::GetSettings()->GetSettingsManager()->RegisterCallback(this, settingSet);
 
-  CServiceBroker::GetSettings().GetSettingsManager()->RegisterSettingOptionsFiller("aequalitylevels",
+  CServiceBroker::GetSettings()->GetSettingsManager()->RegisterSettingOptionsFiller("aequalitylevels",
                                                                                    SettingOptionsAudioQualityLevelsFiller);
-  CServiceBroker::GetSettings().GetSettingsManager()->RegisterSettingOptionsFiller("audiodevices",
+  CServiceBroker::GetSettings()->GetSettingsManager()->RegisterSettingOptionsFiller("audiodevices",
                                                                                    SettingOptionsAudioDevicesFiller);
-  CServiceBroker::GetSettings().GetSettingsManager()->RegisterSettingOptionsFiller("audiodevicespassthrough",
+  CServiceBroker::GetSettings()->GetSettingsManager()->RegisterSettingOptionsFiller("audiodevicespassthrough",
                                                                                    SettingOptionsAudioDevicesPassthroughFiller);
-  CServiceBroker::GetSettings().GetSettingsManager()->RegisterSettingOptionsFiller("audiostreamsilence",
+  CServiceBroker::GetSettings()->GetSettingsManager()->RegisterSettingOptionsFiller("audiostreamsilence",
                                                                                    SettingOptionsAudioStreamsilenceFiller);
 }
 
 CActiveAESettings::~CActiveAESettings()
 {
   CSingleLock lock(m_cs);
-  CServiceBroker::GetSettings().GetSettingsManager()->UnregisterSettingOptionsFiller("aequalitylevels");
-  CServiceBroker::GetSettings().GetSettingsManager()->UnregisterSettingOptionsFiller("audiodevices");
-  CServiceBroker::GetSettings().GetSettingsManager()->UnregisterSettingOptionsFiller("audiodevicespassthrough");
-  CServiceBroker::GetSettings().GetSettingsManager()->UnregisterSettingOptionsFiller("audiostreamsilence");
-  CServiceBroker::GetSettings().GetSettingsManager()->UnregisterCallback(this);
+  CServiceBroker::GetSettings()->GetSettingsManager()->UnregisterSettingOptionsFiller("aequalitylevels");
+  CServiceBroker::GetSettings()->GetSettingsManager()->UnregisterSettingOptionsFiller("audiodevices");
+  CServiceBroker::GetSettings()->GetSettingsManager()->UnregisterSettingOptionsFiller("audiodevicespassthrough");
+  CServiceBroker::GetSettings()->GetSettingsManager()->UnregisterSettingOptionsFiller("audiostreamsilence");
+  CServiceBroker::GetSettings()->GetSettingsManager()->UnregisterCallback(this);
   m_instance = nullptr;
 }
 

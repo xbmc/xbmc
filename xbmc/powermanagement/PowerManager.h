@@ -24,7 +24,7 @@ class CSettings;
 class CPowerManager : public IPowerEventsCallback
 {
 public:
-  CPowerManager(CSettings &settings);
+  CPowerManager();
   ~CPowerManager() override;
 
   void Initialize();
@@ -54,7 +54,7 @@ private:
   void StorePlayerState();
 
   // Construction parameters
-  CSettings &m_settings;
+  std::shared_ptr<CSettings> m_settings;
 
   std::unique_ptr<IPowerSyscall> m_instance;
   std::unique_ptr<CFileItem> m_lastPlayedFileItem;

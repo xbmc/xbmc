@@ -157,7 +157,7 @@ void CSkinSettings::MigrateSettings(const ADDON::SkinPtr& skin)
     skin->SaveSettings();
 
     // save the guisettings.xml
-    CServiceBroker::GetSettings().Save();
+    CServiceBroker::GetSettings()->Save();
   }
 }
 

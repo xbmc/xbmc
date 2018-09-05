@@ -74,9 +74,21 @@ PLAYLIST::CPlayListPlayer &CServiceBroker::GetPlaylistPlayer()
   return g_application.m_ServiceManager->GetPlaylistPlayer();
 }
 
-CSettings& CServiceBroker::GetSettings()
+std::shared_ptr<CSettings> CServiceBroker::m_pSettings;
+
+std::shared_ptr<CSettings> CServiceBroker::GetSettings()
 {
-  return g_application.m_ServiceManager->GetSettings();
+  return m_pSettings;
+}
+
+void CServiceBroker::RegisterSettings(std::shared_ptr<CSettings> settings)
+{
+  m_pSettings = settings;
+}
+
+void CServiceBroker::UnregisterSettings()
+{
+  m_pSettings.reset();
 }
 
 GAME::CControllerManager& CServiceBroker::GetGameControllerManager()

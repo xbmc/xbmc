@@ -44,7 +44,7 @@ bool CPeripheralBusApplication::PerformDeviceScan(PeripheralScanResults& results
       results.m_results.push_back(result);
   }
 
-  bool bHasMouse = CServiceBroker::GetSettings().GetBool(CSettings::SETTING_INPUT_ENABLEMOUSE);
+  bool bHasMouse = CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_INPUT_ENABLEMOUSE);
 
   //! @todo Fix game clients to handle mouse disconnecting
   //! For now mouse is always connected

@@ -494,7 +494,7 @@ void OMXClock::OMXSetSpeedAdjust(double adjust, bool lock /* = true */)
   if(lock)
     Lock();
   // we only support resampling (and hence clock adjustment) in this mode
-  if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_USEDISPLAYASCLOCK))
+  if (CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEDISPLAYASCLOCK))
   {
     m_speedAdjust = adjust;
     OMXSetSpeed(m_omx_speed, false, true);

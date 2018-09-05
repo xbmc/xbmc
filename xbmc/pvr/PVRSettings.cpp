@@ -23,21 +23,21 @@ using namespace PVR;
 CPVRSettings::CPVRSettings(const std::set<std::string> &settingNames)
 {
   Init(settingNames);
-  CServiceBroker::GetSettings().GetSettingsManager()->RegisterSettingsHandler(this);
-  CServiceBroker::GetSettings().RegisterCallback(this, settingNames);
+  CServiceBroker::GetSettings()->GetSettingsManager()->RegisterSettingsHandler(this);
+  CServiceBroker::GetSettings()->RegisterCallback(this, settingNames);
 }
 
 CPVRSettings::~CPVRSettings()
 {
-  CServiceBroker::GetSettings().UnregisterCallback(this);
-  CServiceBroker::GetSettings().GetSettingsManager()->UnregisterSettingsHandler(this);
+  CServiceBroker::GetSettings()->UnregisterCallback(this);
+  CServiceBroker::GetSettings()->GetSettingsManager()->UnregisterSettingsHandler(this);
 }
 
 void CPVRSettings::Init(const std::set<std::string> &settingNames)
 {
   for (auto settingName : settingNames)
   {
-    SettingPtr setting = CServiceBroker::GetSettings().GetSetting(settingName);
+    SettingPtr setting = CServiceBroker::GetSettings()->GetSetting(settingName);
     if (!setting)
     {
       CLog::LogF(LOGERROR, "Unknown PVR setting '%s'", settingName.c_str());

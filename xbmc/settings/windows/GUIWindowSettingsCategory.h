@@ -45,7 +45,7 @@ protected:
    */
   void FocusElement(const std::string& elementId);
 
-  CSettings& m_settings;
+  std::shared_ptr<CSettings> m_settings;
   int m_iSection = 0;
   bool m_returningFromSkinLoad = false; // true if we are returning from loading the skin
 };

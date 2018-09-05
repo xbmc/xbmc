@@ -165,7 +165,7 @@ void CGUIDialogTeletext::SetCoordinates()
   top = CServiceBroker::GetWinSystem()->GetGfxContext().ScaleFinalYCoord(0, 0);
   bottom = CServiceBroker::GetWinSystem()->GetGfxContext().ScaleFinalYCoord(0, (float)m_coordsRes.iHeight);
 
-  if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_TELETEXTSCALE))
+  if (CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_TELETEXTSCALE))
   {
     /* Fixed aspect ratio to 4:3 for teletext */
     float width = right - left;

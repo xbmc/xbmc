@@ -90,7 +90,7 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
 
       // is this the first time the window is opened?
       if (m_vecItems->GetPath() == "?" && message.GetStringParam().empty())
-        message.SetStringParam(CServiceBroker::GetSettings().GetString(CSettings::SETTING_MYMUSIC_DEFAULTLIBVIEW));
+        message.SetStringParam(CServiceBroker::GetSettings()->GetString(CSettings::SETTING_MYMUSIC_DEFAULTLIBVIEW));
 
       if (!CGUIWindowMusicBase::OnMessage(message))
         return false;
@@ -325,10 +325,10 @@ bool CGUIWindowMusicNav::ManageInfoProvider(const CFileItemPtr item)
           scraper->SaveSettings();
           // Set default scraper
           if (content == CONTENT_ARTISTS)
-            CServiceBroker::GetSettings().SetString(CSettings::SETTING_MUSICLIBRARY_ARTISTSSCRAPER, scraper->ID());
+            CServiceBroker::GetSettings()->SetString(CSettings::SETTING_MUSICLIBRARY_ARTISTSSCRAPER, scraper->ID());
           else
-            CServiceBroker::GetSettings().SetString(CSettings::SETTING_MUSICLIBRARY_ALBUMSSCRAPER, scraper->ID());
-          CServiceBroker::GetSettings().Save();
+            CServiceBroker::GetSettings()->SetString(CSettings::SETTING_MUSICLIBRARY_ALBUMSSCRAPER, scraper->ID());
+          CServiceBroker::GetSettings()->Save();
           // Clear all item specifc settings
           if (content == CONTENT_ARTISTS)
             result = m_musicdatabase.SetScraperAll("musicdb://artists/", nullptr);
@@ -634,9 +634,9 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
               nodetype == NODE_TYPE_OVERVIEW ||
               nodetype == NODE_TYPE_TOP100))
           {
-            if (!item->IsPath(CServiceBroker::GetSettings().GetString(CSettings::SETTING_MYMUSIC_DEFAULTLIBVIEW)))
+            if (!item->IsPath(CServiceBroker::GetSettings()->GetString(CSettings::SETTING_MYMUSIC_DEFAULTLIBVIEW)))
               buttons.Add(CONTEXT_BUTTON_SET_DEFAULT, 13335); // set default
-            if (!CServiceBroker::GetSettings().GetString(CSettings::SETTING_MYMUSIC_DEFAULTLIBVIEW).empty())
+            if (!CServiceBroker::GetSettings()->GetString(CSettings::SETTING_MYMUSIC_DEFAULTLIBVIEW).empty())
               buttons.Add(CONTEXT_BUTTON_CLEAR_DEFAULT, 13403); // clear default
           }
 
@@ -676,7 +676,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
           && (item->IsPlayList() || item->IsSmartPlayList()))
           buttons.Add(CONTEXT_BUTTON_DELETE, 117);
 
-        if (!item->IsReadOnly() && CServiceBroker::GetSettings().GetBool("filelists.allowfiledeletion"))
+        if (!item->IsReadOnly() && CServiceBroker::GetSettings()->GetBool("filelists.allowfiledeletion"))
         {
           buttons.Add(CONTEXT_BUTTON_DELETE, 117);
           buttons.Add(CONTEXT_BUTTON_RENAME, 118);
@@ -749,13 +749,13 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     return true;
 
   case CONTEXT_BUTTON_SET_DEFAULT:
-    CServiceBroker::GetSettings().SetString(CSettings::SETTING_MYMUSIC_DEFAULTLIBVIEW, GetQuickpathName(item->GetPath()));
-    CServiceBroker::GetSettings().Save();
+    CServiceBroker::GetSettings()->SetString(CSettings::SETTING_MYMUSIC_DEFAULTLIBVIEW, GetQuickpathName(item->GetPath()));
+    CServiceBroker::GetSettings()->Save();
     return true;
 
   case CONTEXT_BUTTON_CLEAR_DEFAULT:
-    CServiceBroker::GetSettings().SetString(CSettings::SETTING_MYMUSIC_DEFAULTLIBVIEW, "");
-    CServiceBroker::GetSettings().Save();
+    CServiceBroker::GetSettings()->SetString(CSettings::SETTING_MYMUSIC_DEFAULTLIBVIEW, "");
+    CServiceBroker::GetSettings()->Save();
     return true;
 
   case CONTEXT_BUTTON_GO_TO_ARTIST:
