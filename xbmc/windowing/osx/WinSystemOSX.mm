@@ -386,7 +386,7 @@ NSString* screenNameForDisplay(CGDirectDisplayID displayID)
 
   if (screenName == nil)
   {
-    screenName = [NSString stringWithFormat:@"%i", displayID];
+    screenName = [[NSString alloc] initWithFormat:@"%i", displayID];
   }
   return [screenName autorelease];
 }
