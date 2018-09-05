@@ -290,8 +290,7 @@
 				<usecontrolcoords>true</usecontrolcoords>
 				<control type="group">
 					<width>150</width>
-					<top>-5</top>
-					<visible>String.IsEqual($PARAM[infolabel_prefix]ListItem.DBtype,tvshow)</visible>
+					<visible>System.HasAddon(resource.images.studios.white) + String.IsEqual($PARAM[infolabel_prefix]ListItem.DBtype,tvshow)</visible>
 					<include content="MediaFlag">
 						<param name="texture" value="$INFO[$PARAM[infolabel_prefix]ListItem.Studio,resource://resource.images.studios.white/,.png]" />
 					</include>
