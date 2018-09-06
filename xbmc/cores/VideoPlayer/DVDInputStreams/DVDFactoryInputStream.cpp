@@ -94,6 +94,7 @@ std::shared_ptr<CDVDInputStream> CDVDFactoryInputStream::CreateInputStream(IVide
 #endif
   else if(StringUtils::StartsWithNoCase(file, "rtp://") ||
           StringUtils::StartsWithNoCase(file, "rtsp://") ||
+          StringUtils::StartsWithNoCase(file, "rtsps://") ||
           StringUtils::StartsWithNoCase(file, "sdp://") ||
           StringUtils::StartsWithNoCase(file, "udp://") ||
           StringUtils::StartsWithNoCase(file, "tcp://") ||
