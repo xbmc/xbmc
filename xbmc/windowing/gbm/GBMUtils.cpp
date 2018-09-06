@@ -48,13 +48,15 @@ bool CGBMUtils::CreateSurface(int width, int height, const uint64_t *modifiers, 
                                                 GBM_FORMAT_ARGB8888,
                                                 modifiers,
                                                 modifiers_count);
-#else
-  m_surface = gbm_surface_create(m_device,
-                                 width,
-                                 height,
-                                 GBM_FORMAT_ARGB8888,
-                                 GBM_BO_USE_SCANOUT | GBM_BO_USE_RENDERING);
 #endif
+  if (!m_surface)
+  {
+    m_surface = gbm_surface_create(m_device,
+                                   width,
+                                   height,
+                                   GBM_FORMAT_ARGB8888,
+                                   GBM_BO_USE_SCANOUT | GBM_BO_USE_RENDERING);
+  }
 
   if (!m_surface)
   {
