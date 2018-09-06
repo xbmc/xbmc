@@ -96,9 +96,9 @@ void CPlayerCoreFactory::GetPlayers(std::vector<std::string>&players, const bool
 
 void CPlayerCoreFactory::GetPlayers(const CFileItem& item, std::vector<std::string>&players) const
 {
-  CURL url(item.GetPath());
+  CURL url(item.GetDynPath());
 
-  CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers(%s)", CURL::GetRedacted(item.GetPath()).c_str());
+  CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers(%s)", CURL::GetRedacted(item.GetDynPath()).c_str());
 
   std::vector<std::string>validPlayers;
   GetPlayers(validPlayers);
