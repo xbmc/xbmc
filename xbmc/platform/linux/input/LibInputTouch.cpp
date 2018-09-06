@@ -55,7 +55,7 @@ void CLibInputTouch::SetPosition(int slot, CPoint point)
 
 void CLibInputTouch::ProcessTouchDown(libinput_event_touch *e)
 {
-  int slot = libinput_event_touch_get_slot(e);
+  int slot = libinput_event_touch_get_seat_slot(e);
 
   SetPosition(slot, GetPos(e));
   SetEvent(slot, TouchInputDown);
@@ -64,7 +64,7 @@ void CLibInputTouch::ProcessTouchDown(libinput_event_touch *e)
 
 void CLibInputTouch::ProcessTouchMotion(libinput_event_touch *e)
 {
-  int slot = libinput_event_touch_get_slot(e);
+  int slot = libinput_event_touch_get_seat_slot(e);
   uint64_t nanotime = libinput_event_touch_get_time_usec(e) * 1000LL;
 
   SetPosition(slot, GetPos(e));
@@ -78,7 +78,7 @@ void CLibInputTouch::ProcessTouchMotion(libinput_event_touch *e)
 
 void CLibInputTouch::ProcessTouchUp(libinput_event_touch *e)
 {
-  int slot = libinput_event_touch_get_slot(e);
+  int slot = libinput_event_touch_get_seat_slot(e);
 
   SetEvent(slot, TouchInputUp);
   CLog::Log(LOGDEBUG, "CLibInputTouch::%s - touch input up", __FUNCTION__);
@@ -86,7 +86,7 @@ void CLibInputTouch::ProcessTouchUp(libinput_event_touch *e)
 
 void CLibInputTouch::ProcessTouchCancel(libinput_event_touch *e)
 {
-  int slot = libinput_event_touch_get_slot(e);
+  int slot = libinput_event_touch_get_seat_slot(e);
   uint64_t nanotime = libinput_event_touch_get_time_usec(e) * 1000LL;
 
   CLog::Log(LOGDEBUG, "CLibInputTouch::%s - touch input cancel", __FUNCTION__);
