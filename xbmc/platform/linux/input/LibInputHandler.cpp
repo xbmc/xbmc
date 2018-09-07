@@ -17,6 +17,7 @@
 #include <fcntl.h>
 #include <linux/input.h>
 #include <string.h>
+#include <sys/epoll.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
 
@@ -107,12 +108,34 @@ void CLibInputHandler::Start()
 
 void CLibInputHandler::Process()
 {
+  int epollFd = epoll_create1(0);
+  if (epollFd < 0)
+  {
+    CLog::Log(LOGERROR, "CLibInputHandler::%s - failed to create epoll file descriptor: %s", __FUNCTION__, strerror(-errno));
+    return;
+  }
+
+  epoll_event event;
+  event.events = EPOLLIN;
+  event.data.fd = m_liFd;
+
+  auto ret = epoll_ctl(epollFd, EPOLL_CTL_ADD, m_liFd, &event);
+  if (ret < 0)
+  {
+    CLog::Log(LOGERROR, "CLibInputHandler::%s - failed to add file descriptor to epoll: %s", __FUNCTION__, strerror(-errno));
+    close(epollFd);
+    return;
+  }
+
   while (!m_bStop)
   {
-    auto ret = libinput_dispatch(m_li);
+    epoll_wait(epollFd, &event, 1, -1);
+
+    ret = libinput_dispatch(m_li);
     if (ret < 0)
     {
       CLog::Log(LOGERROR, "CLibInputHandler::%s - libinput_dispatch failed: %s", __FUNCTION__, strerror(-errno));
+      close(epollFd);
       return;
     }
 
@@ -122,8 +145,13 @@ void CLibInputHandler::Process()
       ProcessEvent(ev);
       libinput_event_destroy(ev);
     }
+  }
 
-    Sleep(10);
+  ret = close(epollFd);
+  if (ret < 0)
+  {
+    CLog::Log(LOGERROR, "CLibInputHandler::%s - failed to close epoll file descriptor: %s", __FUNCTION__, strerror(-errno));
+    return;
   }
 }
 
