@@ -450,10 +450,21 @@ void CDVDInputStreamBluray::ProcessEvent() {
     break;
 
   case BD_EVENT_TITLE:
-    CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - BD_EVENT_TITLE %d",
-        m_event.param);
-    break;
+  {
+    CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - BD_EVENT_TITLE %d", m_event.param);
+    const BLURAY_DISC_INFO* disc_info = bd_get_disc_info(m_bd);
 
+    if (m_event.param == BLURAY_TITLE_FIRST_PLAY)
+      m_title = disc_info->first_play;
+    else if (m_event.param == BLURAY_TITLE_TOP_MENU)
+      m_title = disc_info->top_menu;
+    else if (m_event.param <= disc_info->num_titles)
+      m_title = disc_info->titles[m_event.param];
+    else
+      m_title = nullptr;
+
+    break;
+  }
   case BD_EVENT_PLAYLIST:
     CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - BD_EVENT_PLAYLIST %d",
         m_event.param);
@@ -1014,6 +1025,10 @@ bool CDVDInputStreamBluray::MouseMove(const CPoint &point)
   if (m_bd == nullptr || !m_navmode)
     return false;
 
+  // Disable mouse selection for BD-J menus, since it's not implemented in libbluray as of version 1.0.2
+  if (m_title && m_title->bdj == 1)
+    return false;
+
   if (bd_mouse_select(m_bd, -1, static_cast<uint16_t>(point.x), static_cast<uint16_t>(point.y)) < 0)
   {
     CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::MouseMove - mouse select failed");
@@ -1026,6 +1041,10 @@ bool CDVDInputStreamBluray::MouseMove(const CPoint &point)
 bool CDVDInputStreamBluray::MouseClick(const CPoint &point)
 {
   if (m_bd == nullptr || !m_navmode)
+    return false;
+
+  // Disable mouse selection for BD-J menus, since it's not implemented in libbluray as of version 1.0.2
+  if (m_title && m_title->bdj == 1)
     return false;
 
   if (bd_mouse_select(m_bd, -1, static_cast<uint16_t>(point.x), static_cast<uint16_t>(point.y)) < 0)
