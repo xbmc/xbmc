@@ -4672,8 +4672,9 @@ void CVideoPlayer::UpdatePlayState(double timeout)
     state.timeMax = m_pDemuxer->GetStreamLength();
   }
 
-  state.canpause = true;
-  state.canseek = true;
+  state.canpause = false;
+  state.canseek = false;
+  state.cantempo = false;
   state.isInMenu = false;
   state.hasMenu = false;
 
@@ -4732,7 +4733,6 @@ void CVideoPlayer::UpdatePlayState(double timeout)
     }
 
     state.canpause = m_pInputStream->CanPause();
-    state.canseek = m_pInputStream->CanSeek();
 
     bool realtime = m_pInputStream->IsRealtime();
 
@@ -4794,8 +4794,12 @@ void CVideoPlayer::UpdatePlayState(double timeout)
   if (state.timeMin == state.timeMax)
   {
     state.canseek = false;
-    state.canpause = false;
     state.cantempo = false;
+  }
+  else
+  {
+    state.canseek = true;
+    state.canpause = true;
   }
 
   m_processInfo->SetPlayTimes(state.startTime, state.time, state.timeMin, state.timeMax);

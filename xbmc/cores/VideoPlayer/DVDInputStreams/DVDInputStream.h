@@ -155,8 +155,8 @@ public:
   virtual ENextStream NextStream() { return NEXTSTREAM_NONE; }
   virtual void Abort() {}
   virtual int GetBlockSize() { return 0; }
-  virtual bool CanSeek() { return true; }
-  virtual bool CanPause() { return true; }
+  virtual bool CanSeek() { return true; } //! @todo drop this
+  virtual bool CanPause() { return false; }
 
   /*! \brief Indicate expected read rate in bytes per second.
    *  This could be used to throttle caching rate. Should
