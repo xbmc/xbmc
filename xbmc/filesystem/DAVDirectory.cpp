@@ -71,7 +71,7 @@ void CDAVDirectory::ParseResponse(const TiXmlElement *pElement, CFileItem &item)
               else
               if (CDAVCommon::ValueWithoutNamespace(pPropChild, "displayname") && !pPropChild->NoChildren())
               {
-                item.SetLabel(pPropChild->FirstChild()->ValueStr());
+                item.SetLabel(CURL::Decode(pPropChild->FirstChild()->ValueStr()));
               }
               else
               if (!item.m_dateTime.IsValid() && CDAVCommon::ValueWithoutNamespace(pPropChild, "creationdate") && !pPropChild->NoChildren())
