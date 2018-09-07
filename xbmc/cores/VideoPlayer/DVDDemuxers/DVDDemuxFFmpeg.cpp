@@ -1394,7 +1394,7 @@ void CDVDDemuxFFmpeg::DisposeStreams()
 CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
 {
   AVStream* pStream = m_pFormatContext->streams[streamIdx];
-  if (pStream)
+  if (pStream && pStream->discard != AVDISCARD_ALL)
   {
     // Video (mp4) from GoPro cameras can have a 'meta' track used for a file repair containing
     // 'fdsc' data, this is also called the SOS track.
@@ -1630,8 +1630,24 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
 #ifdef HAVE_LIBBLURAY
     if (m_pInput->IsStreamType(DVDSTREAM_TYPE_BLURAY))
     {
-      std::static_pointer_cast<CDVDInputStreamBluray>(m_pInput)->GetStreamInfo(pStream->id, stream->language);
       stream->dvdNavId = pStream->id;
+
+      auto it = std::find_if(m_streams.begin(), m_streams.end(),
+        [&stream](const std::pair<int, CDemuxStream*>& v)
+        {return (v.second->dvdNavId == stream->dvdNavId) && (v.second->type == stream->type); });
+
+      if (it != m_streams.end())
+      {
+        if (stream->codec == AV_CODEC_ID_AC3 && it->second->codec == AV_CODEC_ID_TRUEHD)
+          CLog::Log(LOGDEBUG, "CDVDDemuxFFmpeg::AddStream - discarding duplicated bluray stream (truehd ac3 core)");
+        else
+          CLog::Log(LOGDEBUG, "CDVDDemuxFFmpeg::AddStream - discarding duplicate bluray stream %s", stream->codecName);
+
+        pStream->discard = AVDISCARD_ALL;
+        delete stream;
+        return nullptr;
+      }
+      std::static_pointer_cast<CDVDInputStreamBluray>(m_pInput)->GetStreamInfo(pStream->id, stream->language);
     }
 #endif
     if( m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD) )
