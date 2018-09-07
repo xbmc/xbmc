@@ -26,6 +26,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
 #include "ServiceBroker.h"
+#include "utils/log.h"
 
 using namespace EVENTCLIENT;
 using namespace EVENTPACKET;
@@ -388,6 +389,8 @@ bool CEventClient::OnPacketBUTTON(CEventPacket *packet)
 
   float famount = 0;
   bool active = (flags & PTB_DOWN) ? true : false;
+  
+  CLog::Log(LOGDEBUG, "EventClient: button code %d %s", bcode, active ? "pressed" : "released");
 
   if(flags & PTB_USE_AMOUNT)
   {
@@ -437,15 +440,22 @@ bool CEventClient::OnPacketBUTTON(CEventPacket *packet)
 
         /* if last event had an amount, we must resend without amount */
         if(it2->m_bUseAmount && it2->m_fAmount != 0.0)
+        {
           m_buttonQueue.push_back(state);
+        }
 
         /* if the last event was waiting for a repeat interval, it has executed already.*/
         if(it2->m_bRepeat)
         {
           if(it2->m_iNextRepeat > 0)
+          {
             m_buttonQueue.erase(it2);
+          }
           else
+          {
             it2->m_bRepeat = false;
+            it2->m_bActive = false;
+          }
         }
 
       }
