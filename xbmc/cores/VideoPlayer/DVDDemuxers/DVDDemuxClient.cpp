@@ -292,6 +292,15 @@ DemuxPacket* CDVDDemuxClient::Read()
     }
   }
 
+  if (!IsVideoReady())
+  {
+    m_packet.reset();
+    DemuxPacket *pPacket = CDVDDemuxUtils::AllocateDemuxPacket(0);
+    pPacket->demuxerId = m_demuxerId;
+    return pPacket;
+  }
+
+  //! @todo drop this block
   CDVDInputStream::IDisplayTime *inputStream = m_pInput->GetIDisplayTime();
   if (inputStream)
   {
@@ -310,6 +319,7 @@ DemuxPacket* CDVDDemuxClient::Read()
       m_packet->dispTime += DVD_TIME_TO_MSEC(m_packet->dts - m_dtsAtDisplayTime);
     }
   }
+
   return m_packet.release();
 }
 
@@ -552,6 +562,17 @@ std::shared_ptr<CDemuxStream> CDVDDemuxClient::GetStreamInternal(int iStreamId)
 int CDVDDemuxClient::GetNrOfStreams() const
 {
   return m_streams.size();
+}
+
+bool CDVDDemuxClient::IsVideoReady()
+{
+  for (const auto& stream : m_streams)
+  {
+    if (stream.second->type == STREAM_VIDEO &&
+        stream.second->ExtraData == nullptr)
+      return false;
+  }
+  return true;
 }
 
 std::string CDVDDemuxClient::GetFileName()
