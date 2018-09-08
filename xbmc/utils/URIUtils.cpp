@@ -335,15 +335,10 @@ bool URIUtils::GetParentPath(const std::string& strPath, std::string& strParent)
   }
   else if (url.IsProtocol("plugin"))
   {
-    if (!url.GetOptions().empty())
-    {
-      url.SetOptions("");
-      strParent = url.Get();
-      return true;
-    }
     if (!url.GetFileName().empty())
     {
       url.SetFileName("");
+      url.SetOptions("");
       strParent = url.Get();
       return true;
     }
