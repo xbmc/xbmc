@@ -8,8 +8,10 @@
 
 #include "GUIDialogPVRChannelGuide.h"
 
+#include "ContextMenuManager.h"
 #include "FileItem.h"
 #include "ServiceBroker.h"
+#include "dialogs/GUIDialogContextMenu.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
 #include "view/ViewState.h"
@@ -28,32 +30,25 @@ CGUIDialogPVRChannelGuide::CGUIDialogPVRChannelGuide()
   m_vecItems.reset(new CFileItemList);
 }
 
-CGUIDialogPVRChannelGuide::~CGUIDialogPVRChannelGuide() = default;
-
-bool CGUIDialogPVRChannelGuide::OnMessage(CGUIMessage& message)
+bool CGUIDialogPVRChannelGuide::OnAction(const CAction &action)
 {
-  switch (message.GetMessage())
+  switch (action.GetID())
   {
-  case GUI_MSG_CLICKED:
-    {
-      int iControl = message.GetSenderId();
+    case ACTION_SHOW_INFO:
+    case ACTION_SELECT_ITEM:
+    case ACTION_MOUSE_LEFT_CLICK:
+      ShowInfo(m_viewControl.GetSelectedItem());
+      return true;
 
-      if (m_viewControl.HasControl(iControl))   // list/thumb control
-      {
-        int iItem = m_viewControl.GetSelectedItem();
-        int iAction = message.GetParam1();
+    case ACTION_CONTEXT_MENU:
+    case ACTION_MOUSE_RIGHT_CLICK:
+      return OnContextMenu(m_viewControl.GetSelectedItem());
 
-        if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK || iAction == ACTION_SHOW_INFO)
-        {
-          ShowInfo(iItem);
-          return true;
-        }
-      }
-    }
-    break;
+    default:
+      break;
   }
 
-  return CGUIDialog::OnMessage(message);
+  return CGUIDialog::OnAction(action);
 }
 
 void CGUIDialogPVRChannelGuide::Open(const CPVRChannelPtr &channel)
@@ -119,6 +114,46 @@ void CGUIDialogPVRChannelGuide::ShowInfo(int item)
     return;
 
   CServiceBroker::GetPVRManager().GUIActions()->ShowEPGInfo(m_vecItems->Get(item));
+}
+
+bool CGUIDialogPVRChannelGuide::OnContextMenu(int itemIdx)
+{
+  auto InRange = [](size_t i, std::pair<size_t, size_t> range){ return i >= range.first && i < range.second; };
+
+  if (itemIdx < 0 || itemIdx >= m_vecItems->Size())
+    return false;
+
+  const CFileItemPtr item = m_vecItems->Get(itemIdx);
+  if (!item)
+    return false;
+
+  CContextButtons buttons;
+
+  // Add the global menu
+  const ContextMenuView globalMenu = CServiceBroker::GetContextMenuManager().GetItems(*item, CContextMenuManager::MAIN);
+  auto globalMenuRange = std::make_pair(buttons.size(), buttons.size() + globalMenu.size());
+  for (const auto& menu : globalMenu)
+    buttons.emplace_back(~buttons.size(), menu->GetLabel(*item));
+
+  // Add addon menus
+  const ContextMenuView addonMenu = CServiceBroker::GetContextMenuManager().GetAddonItems(*item, CContextMenuManager::MAIN);
+  auto addonMenuRange = std::make_pair(buttons.size(), buttons.size() + addonMenu.size());
+  for (const auto& menu : addonMenu)
+    buttons.emplace_back(~buttons.size(), menu->GetLabel(*item));
+
+  if (buttons.empty())
+    return true;
+
+  int idx = CGUIDialogContextMenu::Show(buttons);
+  if (idx < 0 || idx >= static_cast<int>(buttons.size()))
+    return false;
+
+  Close();
+
+  if (InRange(idx, globalMenuRange))
+    return CONTEXTMENU::LoopFrom(*globalMenu[idx - globalMenuRange.first], item);
+
+  return CONTEXTMENU::LoopFrom(*addonMenu[idx - addonMenuRange.first], item);
 }
 
 void CGUIDialogPVRChannelGuide::OnWindowLoaded()

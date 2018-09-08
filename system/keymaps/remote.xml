@@ -632,9 +632,6 @@
   <PVRChannelGuide>
     <remote>
       <back>Close</back>
-      <menu>Close</menu>
-      <contentsmenu>Close</contentsmenu>
-      <rootmenu>Close</rootmenu>
       <start>Close</start>
       <guide>Close</guide>
       <zero>Number0</zero>

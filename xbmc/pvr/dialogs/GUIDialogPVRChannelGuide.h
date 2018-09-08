@@ -21,8 +21,8 @@ namespace PVR
   {
   public:
     CGUIDialogPVRChannelGuide(void);
-    ~CGUIDialogPVRChannelGuide(void) override;
-    bool OnMessage(CGUIMessage& message) override;
+    ~CGUIDialogPVRChannelGuide(void) override = default;
+    bool OnAction(const CAction &action) override;
     void OnWindowLoaded() override;
     void OnWindowUnload() override;
 
@@ -39,6 +39,7 @@ namespace PVR
 
   private:
     void ShowInfo(int iItem);
+    bool OnContextMenu(int iItem);
     void Clear();
 
     CPVRChannelPtr m_channel;
