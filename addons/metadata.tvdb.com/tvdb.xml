@@ -145,6 +145,9 @@
 
 			</xsl:stylesheet>
 		</XSLT>
+		<RegExp input="$$6" output="\1" dest="6">
+			<expression noclean="1" fixchars="1"/>
+		</RegExp>
 	</GetSearchResultsAuth>
 
 	<!-- input : $$1=series html -->
@@ -237,7 +240,7 @@
 			<RegExp input="$$1" output="&lt;episodeguide&gt;&lt;url post=&quot;yes&quot; cache=&quot;auth.json&quot;&gt;https://api.thetvdb.com/login?{&quot;apikey&quot;:&quot;439DFEBA9D3059C6&quot;,&quot;id&quot;:\1}|Content-Type=application/json&lt;/url&gt;&lt;/episodeguide&gt;" dest="4+">
 				<expression noclean="1">"id":\s*?(\d+),</expression>
 			</RegExp>
-			<expression noclean="1"/>
+			<expression noclean="1" fixchars="1"/>
 		</RegExp>
 	</GetDetails>
 	<GetFallbackDetails dest="3" clearbuffers="no">
@@ -260,7 +263,7 @@
 				</RegExp>
 				<expression>missingplot</expression>
 			</RegExp>
-			<expression noclean="1"/>
+			<expression noclean="1" fixchars="1"/>
 		</RegExp>
 	</GetFallbackDetails>
 	<GetActors dest="3" clearbuffers="no">
@@ -276,7 +279,7 @@
 			<RegExp input="$$1" output="&lt;actor&gt;&lt;name&gt;\1&lt;/name&gt;&lt;role&gt;\2&lt;/role&gt;&lt;order&gt;\3&lt;/order&gt;&lt;/actor&gt;" dest="5+">
 				<expression repeat="yes" fixchars="1,2">"name":\s*?"([^}]+)",\s*?"role":\s*?"([^}]+)",\s*?"sortOrder":\s*?(\d+),\s*?"image":\s*?(?:""|null),</expression>
 			</RegExp>
-			<expression noclean="1"/>
+			<expression noclean="1" fixchars="1"/>
 		</RegExp>
 	</ParseActors>
 	<GetArt dest="3" clearbuffers="no">
@@ -443,7 +446,7 @@
 			<RegExp input="$$2" output="https://api.thetvdb.com/login?{&quot;apikey&quot;:&quot;439DFEBA9D3059C6&quot;,&quot;id&quot;:\1}|Content-Type=application/json" dest="2">
 				<expression>http://(?:www\.)?thetvdb\.com/api/.+/series/(\d+)/all/</expression>
 			</RegExp>
-		<expression noclean="1"/>
+		<expression noclean="1" fixchars="1"/>
 		</RegExp>
 	</GetEpisodeList>
 	<GetEpisodeListAuth dest="3" clearbuffers="no">
@@ -483,7 +486,7 @@
 
 				</xsl:stylesheet>
 			</XSLT>
-			<expression noclean="1"/>
+			<expression noclean="1" fixchars="1"/>
 		</RegExp>
 	</GetEpisodeListAuth>
 	<LoadEpisodeList dest="4" clearbuffers="no">
@@ -771,7 +774,7 @@
 				</RegExp>
 				<expression>(?!^\Q$INFO[fallbacklanguage]\E$)</expression>
 			</RegExp>
-			<expression noclean="1"/>
+			<expression noclean="1" fixchars="1"/>
 		</RegExp>
 	</GetEpisodeDetailsAuth>
 	<GetFallbackEpisodeDetails dest="3" clearbuffers="no">
@@ -797,7 +800,7 @@
 			<RegExp input="$$10" output="&lt;Episode&gt;\1&lt;/Episode&gt;" dest="13+">
 				<expression noclean="1"/>
 			</RegExp>
-			<expression noclean="1"/>
+			<expression noclean="1" fixchars="1"/>
 		</RegExp>
 	</GetFallbackEpisodeDetails>
 	<ParseEpisodeDetails dest="4" clearbuffers="no">		
@@ -1099,7 +1102,7 @@
 
 				</xsl:stylesheet>
 			</XSLT>
-			<expression noclean="1"/>
+			<expression noclean="1" fixchars="1"/>
 		</RegExp>
 	</ParseEpisodeDetails>
 </scraper>

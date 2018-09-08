@@ -52,6 +52,9 @@
 			<RegExp input="$$1" output="&lt;musicBrainzArtistID&gt;$$8&lt;/musicBrainzArtistID&gt;&lt;name&gt;\1&lt;/name&gt;" dest="5">
 				<expression noclean="1">&lt;artist.*?&lt;name&gt;([^&lt;]*)</expression>
 			</RegExp>
+			<RegExp input="$$1" output="&lt;sortname&gt;\1&lt;/sortname&gt;" dest="5+">
+				<expression noclean="1">&lt;artist.*?&lt;sort-name&gt;([^&lt;]*)</expression>
+			</RegExp>
 			<RegExp input="$$1" output="&lt;type&gt;\1&lt;/type&gt;" dest="5+">
 				<expression noclean="1">&lt;artist.*?\stype=&quot;([Person|Group|Orchestra|Choir|Character|Other])&quot;</expression>
 			</RegExp>
@@ -67,7 +70,22 @@
 			<RegExp input="$$8" conditional="fanarttvartistcl" output="&lt;chain function=&quot;GetFanartTvArtistClearlogoByMBID&quot;&gt;\1&lt;/chain&gt;" dest="5+">
 				<expression noclean="1">(.+)</expression>
 			</RegExp>
+			<RegExp input="$$8" conditional="fanarttvartistbanner" output="&lt;chain function=&quot;GetFanartTvArtistBannerByMBID&quot;&gt;\1&lt;/chain&gt;" dest="5+">
+				<expression noclean="1">(.+)</expression>
+			</RegExp>
 			<RegExp input="$$8" conditional="tadbthumbs" output="&lt;chain function=&quot;GetTADBArtistThumbsByMBID&quot;&gt;$$8&lt;/chain&gt;" dest="5+">
+				<expression noclean="1">(.+)</expression>
+			</RegExp>
+			<RegExp input="$$8" conditional="tadbartistclearlogo" output="&lt;chain function=&quot;GetTADBArtistClearlogoByMBID&quot;&gt;$$8&lt;/chain&gt;" dest="5+">
+				<expression noclean="1">(.+)</expression>
+			</RegExp>
+			<RegExp input="$$8" conditional="tadbartistclearart" output="&lt;chain function=&quot;GetTADBArtistClearartByMBID&quot;&gt;$$8&lt;/chain&gt;" dest="5+">
+				<expression noclean="1">(.+)</expression>
+			</RegExp>
+			<RegExp input="$$8" conditional="tadbartistlandscape" output="&lt;chain function=&quot;GetTADBArtistLandscapeByMBID&quot;&gt;$$8&lt;/chain&gt;" dest="5+">
+				<expression noclean="1">(.+)</expression>
+			</RegExp>
+			<RegExp input="$$8" conditional="tadbartistbanner" output="&lt;chain function=&quot;GetTADBArtistBannerByMBID&quot;&gt;$$8&lt;/chain&gt;" dest="5+">
 				<expression noclean="1">(.+)</expression>
 			</RegExp>
 			<RegExp input="$$8" conditional="fanarttvfanart" output="&lt;chain function=&quot;GetFanartTvArtistFanartsByMBID&quot;&gt;\1&lt;/chain&gt;" dest="5+">
