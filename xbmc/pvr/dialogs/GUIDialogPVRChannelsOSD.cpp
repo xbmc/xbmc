@@ -8,20 +8,17 @@
 
 #include "GUIDialogPVRChannelsOSD.h"
 
-#include "ContextMenuManager.h"
 #include "FileItem.h"
 #include "ServiceBroker.h"
-#include "dialogs/GUIDialogContextMenu.h"
 #include "GUIInfoManager.h"
 #include "guilib/GUIComponent.h"
-#include "guilib/GUIWindowManager.h"
+#include "guilib/GUIMessage.h"
 #include "input/Key.h"
 #include "messaging/ApplicationMessenger.h"
-#include "view/ViewState.h"
 
 #include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"
-#include "pvr/channels/PVRChannelGroupsContainer.h"
+#include "pvr/channels/PVRChannelGroup.h"
 #include "pvr/epg/EpgContainer.h"
 
 using namespace PVR;
@@ -29,18 +26,13 @@ using namespace KODI::MESSAGING;
 
 #define MAX_INVALIDATION_FREQUENCY 2000 // limit to one invalidation per X milliseconds
 
-#define CONTROL_LIST                  11
-
-CGUIDialogPVRChannelsOSD::CGUIDialogPVRChannelsOSD() :
-    CGUIDialog(WINDOW_DIALOG_PVR_OSD_CHANNELS, "DialogPVRChannelsOSD.xml")
+CGUIDialogPVRChannelsOSD::CGUIDialogPVRChannelsOSD()
+: CGUIDialogPVRItemsViewBase(WINDOW_DIALOG_PVR_OSD_CHANNELS, "DialogPVRChannelsOSD.xml")
 {
-  m_vecItems = new CFileItemList;
 }
 
 CGUIDialogPVRChannelsOSD::~CGUIDialogPVRChannelsOSD()
 {
-  delete m_vecItems;
-
   CServiceBroker::GetGUI()->GetInfoManager().UnregisterObserver(this);
   CServiceBroker::GetPVRManager().EpgContainer().UnregisterObserver(this);
 }
@@ -67,21 +59,20 @@ bool CGUIDialogPVRChannelsOSD::OnMessage(CGUIMessage& message)
     break;
   }
 
-  return CGUIDialog::OnMessage(message);
+  return CGUIDialogPVRItemsViewBase::OnMessage(message);
 }
 
 void CGUIDialogPVRChannelsOSD::OnInitWindow()
 {
-  /* Close dialog immediately if neither a TV nor a radio channel is playing */
   if (!CServiceBroker::GetPVRManager().IsPlayingTV() && !CServiceBroker::GetPVRManager().IsPlayingRadio())
   {
     Close();
     return;
   }
 
+  Init();
   Update();
-
-  CGUIDialog::OnInitWindow();
+  CGUIDialogPVRItemsViewBase::OnInitWindow();
 }
 
 void CGUIDialogPVRChannelsOSD::OnDeinitWindow(int nextWindowID)
@@ -94,9 +85,7 @@ void CGUIDialogPVRChannelsOSD::OnDeinitWindow(int nextWindowID)
     m_group.reset();
   }
 
-  CGUIDialog::OnDeinitWindow(nextWindowID);
-
-  Clear();
+  CGUIDialogPVRItemsViewBase::OnDeinitWindow(nextWindowID);
 }
 
 bool CGUIDialogPVRChannelsOSD::OnAction(const CAction &action)
@@ -114,14 +103,6 @@ bool CGUIDialogPVRChannelsOSD::OnAction(const CAction &action)
       GotoChannel(m_viewControl.GetSelectedItem());
       return true;
     }
-  case ACTION_SHOW_INFO:
-    ShowInfo(m_viewControl.GetSelectedItem());
-    return true;
-
-  case ACTION_CONTEXT_MENU:
-  case ACTION_MOUSE_RIGHT_CLICK:
-    return OnContextMenu(m_viewControl.GetSelectedItem());
-
   case ACTION_PREVIOUS_CHANNELGROUP:
   case ACTION_NEXT_CHANNELGROUP:
     {
@@ -132,6 +113,7 @@ bool CGUIDialogPVRChannelsOSD::OnAction(const CAction &action)
       const CPVRChannelGroupPtr nextGroup = action.GetID() == ACTION_NEXT_CHANNELGROUP ? m_group->GetNextGroup() : m_group->GetPreviousGroup();
       CServiceBroker::GetPVRManager().SetPlayingGroup(nextGroup);
       m_group = nextGroup;
+      Init();
       Update();
 
       // restore control states and previously selected item of group
@@ -159,18 +141,13 @@ bool CGUIDialogPVRChannelsOSD::OnAction(const CAction &action)
     }
   }
 
-  return CGUIDialog::OnAction(action);
+  return CGUIDialogPVRItemsViewBase::OnAction(action);
 }
 
 void CGUIDialogPVRChannelsOSD::Update()
 {
   CServiceBroker::GetGUI()->GetInfoManager().RegisterObserver(this);
   CServiceBroker::GetPVRManager().EpgContainer().RegisterObserver(this);
-
-  m_viewControl.SetCurrentView(DEFAULT_VIEW_LIST);
-
-  // empty the list ready for population
-  Clear();
 
   CPVRChannelPtr channel(CServiceBroker::GetPVRManager().GetPlayingChannel());
   if (channel)
@@ -198,14 +175,14 @@ void CGUIDialogPVRChannelsOSD::SetInvalid()
     VECFILEITEMS items = m_vecItems->GetList();
     for (VECFILEITEMS::iterator it = items.begin(); it != items.end(); ++it)
       (*it)->SetInvalid();
-    CGUIDialog::SetInvalid();
+    CGUIDialogPVRItemsViewBase::SetInvalid();
     m_refreshTimeout.Set(MAX_INVALIDATION_FREQUENCY);
   }
 }
 
 void CGUIDialogPVRChannelsOSD::SaveControlStates()
 {
-  CGUIDialog::SaveControlStates();
+  CGUIDialogPVRItemsViewBase::SaveControlStates();
 
   if (m_group)
     SaveSelectedItemPath(m_group->GroupID());
@@ -213,7 +190,7 @@ void CGUIDialogPVRChannelsOSD::SaveControlStates()
 
 void CGUIDialogPVRChannelsOSD::RestoreControlStates()
 {
-  CGUIDialog::RestoreControlStates();
+  CGUIDialogPVRItemsViewBase::RestoreControlStates();
 
   if (m_group)
   {
@@ -225,12 +202,6 @@ void CGUIDialogPVRChannelsOSD::RestoreControlStates()
   }
 }
 
-void CGUIDialogPVRChannelsOSD::Clear()
-{
-  m_viewControl.Clear();
-  m_vecItems->Clear();
-}
-
 void CGUIDialogPVRChannelsOSD::GotoChannel(int item)
 {
   if (item < 0 || item >= m_vecItems->Size())
@@ -240,76 +211,6 @@ void CGUIDialogPVRChannelsOSD::GotoChannel(int item)
   const CFileItemPtr itemptr = m_vecItems->Get(item);
   Close();
   CServiceBroker::GetPVRManager().GUIActions()->SwitchToChannel(itemptr, true /* bCheckResume */);
-}
-
-void CGUIDialogPVRChannelsOSD::ShowInfo(int item)
-{
-  if (item < 0 || item >= m_vecItems->Size())
-    return;
-
-  CServiceBroker::GetPVRManager().GUIActions()->ShowEPGInfo(m_vecItems->Get(item));
-}
-
-bool CGUIDialogPVRChannelsOSD::OnContextMenu(int itemIdx)
-{
-  auto InRange = [](size_t i, std::pair<size_t, size_t> range){ return i >= range.first && i < range.second; };
-
-  if (itemIdx < 0 || itemIdx >= m_vecItems->Size())
-    return false;
-
-  const CFileItemPtr item = m_vecItems->Get(itemIdx);
-  if (!item)
-    return false;
-
-  CContextButtons buttons;
-
-  // Add the global menu
-  const ContextMenuView globalMenu = CServiceBroker::GetContextMenuManager().GetItems(*item, CContextMenuManager::MAIN);
-  auto globalMenuRange = std::make_pair(buttons.size(), buttons.size() + globalMenu.size());
-  for (const auto& menu : globalMenu)
-    buttons.emplace_back(~buttons.size(), menu->GetLabel(*item));
-
-  // Add addon menus
-  const ContextMenuView addonMenu = CServiceBroker::GetContextMenuManager().GetAddonItems(*item, CContextMenuManager::MAIN);
-  auto addonMenuRange = std::make_pair(buttons.size(), buttons.size() + addonMenu.size());
-  for (const auto& menu : addonMenu)
-    buttons.emplace_back(~buttons.size(), menu->GetLabel(*item));
-
-  if (buttons.empty())
-    return true;
-
-  int idx = CGUIDialogContextMenu::Show(buttons);
-  if (idx < 0 || idx >= static_cast<int>(buttons.size()))
-    return false;
-
-  Close();
-
-  if (InRange(idx, globalMenuRange))
-    return CONTEXTMENU::LoopFrom(*globalMenu[idx - globalMenuRange.first], item);
-
-  return CONTEXTMENU::LoopFrom(*addonMenu[idx - addonMenuRange.first], item);
-}
-
-void CGUIDialogPVRChannelsOSD::OnWindowLoaded()
-{
-  CGUIDialog::OnWindowLoaded();
-  m_viewControl.Reset();
-  m_viewControl.SetParentWindow(GetID());
-  m_viewControl.AddView(GetControl(CONTROL_LIST));
-}
-
-void CGUIDialogPVRChannelsOSD::OnWindowUnload()
-{
-  CGUIDialog::OnWindowUnload();
-  m_viewControl.Reset();
-}
-
-CGUIControl *CGUIDialogPVRChannelsOSD::GetFirstFocusableControl(int id)
-{
-  if (m_viewControl.HasControl(id))
-    id = m_viewControl.GetCurrentControl();
-
-  return CGUIWindow::GetFirstFocusableControl(id);
 }
 
 void CGUIDialogPVRChannelsOSD::Notify(const Observable &obs, const ObservableMessage msg)
