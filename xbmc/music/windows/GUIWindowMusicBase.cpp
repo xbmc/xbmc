@@ -58,6 +58,7 @@
 #include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "CueDocument.h"
 #include "Autorun.h"
+#include "video/dialogs/GUIDialogVideoInfo.h"
 
 #ifdef TARGET_POSIX
 #include "platform/linux/XTimeUtils.h"
@@ -274,9 +275,9 @@ void CGUIWindowMusicBase::OnItemInfo(int iItem)
 
   CFileItemPtr item = m_vecItems->Get(iItem);
 
-  if (item->IsVideoDb())
+  if (item->IsVideo())
   { // Music video on a mixed current playlist
-    OnContextButton(iItem, CONTEXT_BUTTON_INFO);
+    CGUIDialogVideoInfo::ShowFor(*item);
     return;
   }
 
@@ -316,7 +317,7 @@ void CGUIWindowMusicBase::RetrieveMusicInfo()
   for (int i = 0; i < m_vecItems->Size(); ++i)
   {
     CFileItemPtr pItem = (*m_vecItems)[i];
-    if (pItem->m_bIsFolder || pItem->IsPlayList() || pItem->IsPicture() || pItem->IsLyrics())
+    if (pItem->m_bIsFolder || pItem->IsPlayList() || pItem->IsPicture() || pItem->IsLyrics() || pItem->IsVideo())
       continue;
 
     CMusicInfoTag& tag = *pItem->GetMusicInfoTag();
