@@ -12430,7 +12430,14 @@ msgctxt "#20225"
 msgid "Where no local album cover exists, online art will be used. Where neither is available, cover images embedded in music files will be used"
 msgstr ""
 
-#empty strings from id 20226 to 20239
+#empty strings from id 20226 to 20227
+
+#: system/settings/settings.xml
+msgctxt "#20228"
+msgid "Use artist sortname when sorting by artist"
+msgstr ""
+
+#empty strings from id 20229 to 20239
 
 #: xbmc/dialogs/GUIDialogMediaSource.cpp
 msgctxt "#20240"
@@ -18906,7 +18913,13 @@ msgctxt "#36293"
 msgid "Select the folder where artist information (nfo files and images) should be saved in."
 msgstr ""
 
-#empty strings from id 36294 to 36301
+#. Description of setting with label #20228 "Use artist sortname"
+#: system/settings/settings.xml
+msgctxt "#36294"
+msgid "When sorting music items by artist use sortname e.g. Parton, Dolly rather than name."
+msgstr ""
+
+#empty strings from id 36295 to 36301
 
 #: system/settings/settings.xml
 msgctxt "#36302"

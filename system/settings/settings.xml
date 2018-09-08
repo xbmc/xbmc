@@ -1093,6 +1093,11 @@
           <default>true</default>
           <control type="toggle" />
         </setting>
+        <setting id="musiclibrary.useartistsortname" type="boolean" label="20228" help="36294">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
         <setting id="musiclibrary.overridetags" type="boolean" label="20220" help="20221">
           <level>1</level>
           <default>false</default>
