@@ -225,7 +225,6 @@ namespace PVR
     mutable CCriticalSection m_critSection;
     std::unique_ptr<CGUIEPGGridContainerModel> m_gridModel;
     std::unique_ptr<CGUIEPGGridContainerModel> m_updatedGridModel;
-    std::unique_ptr<CGUIEPGGridContainerModel> m_outdatedGridModel;
 
     GridItem *m_item;
   };
