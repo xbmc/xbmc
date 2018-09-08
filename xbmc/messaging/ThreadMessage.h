@@ -53,6 +53,7 @@ public:
     : dwMessage{ messageId }
     , param1{ p1 }
     , param2{ p2 }
+    , param3{ 0 }
     , lpVoid{ payload }
     , strParam( param )
     , params( vecParams )
