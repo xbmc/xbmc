@@ -8,8 +8,10 @@
 
 #include "GUIDialogPVRChannelsOSD.h"
 
+#include "ContextMenuManager.h"
 #include "FileItem.h"
 #include "ServiceBroker.h"
+#include "dialogs/GUIDialogContextMenu.h"
 #include "GUIInfoManager.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
@@ -47,34 +49,6 @@ bool CGUIDialogPVRChannelsOSD::OnMessage(CGUIMessage& message)
 {
   switch (message.GetMessage())
   {
-  case GUI_MSG_CLICKED:
-    {
-      int iControl = message.GetSenderId();
-
-      if (m_viewControl.HasControl(iControl))   // list/thumb control
-      {
-        int iItem = m_viewControl.GetSelectedItem();
-        int iAction = message.GetParam1();
-
-        if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK)
-        {
-          // If direct channel number input is active, select the entered channel.
-          if (CServiceBroker::GetPVRManager().GUIActions()->GetChannelNumberInputHandler().CheckInputAndExecuteAction())
-            return true;
-
-          /* Switch to channel */
-          GotoChannel(iItem);
-          return true;
-        }
-        else if (iAction == ACTION_SHOW_INFO || iAction == ACTION_MOUSE_RIGHT_CLICK)
-        {
-          /* Show information Dialog */
-          ShowInfo(iItem);
-          return true;
-        }
-      }
-    }
-    break;
   case GUI_MSG_REFRESH_LIST:
     {
       switch(message.GetParam1())
@@ -129,6 +103,25 @@ bool CGUIDialogPVRChannelsOSD::OnAction(const CAction &action)
 {
   switch (action.GetID())
   {
+  case ACTION_SELECT_ITEM:
+  case ACTION_MOUSE_LEFT_CLICK:
+    {
+      // If direct channel number input is active, select the entered channel.
+      if (CServiceBroker::GetPVRManager().GUIActions()->GetChannelNumberInputHandler().CheckInputAndExecuteAction())
+        return true;
+
+      /* Switch to channel */
+      GotoChannel(m_viewControl.GetSelectedItem());
+      return true;
+    }
+  case ACTION_SHOW_INFO:
+    ShowInfo(m_viewControl.GetSelectedItem());
+    return true;
+
+  case ACTION_CONTEXT_MENU:
+  case ACTION_MOUSE_RIGHT_CLICK:
+    return OnContextMenu(m_viewControl.GetSelectedItem());
+
   case ACTION_PREVIOUS_CHANNELGROUP:
   case ACTION_NEXT_CHANNELGROUP:
     {
@@ -156,7 +149,7 @@ bool CGUIDialogPVRChannelsOSD::OnAction(const CAction &action)
   case REMOTE_8:
   case REMOTE_9:
     {
-      AppendChannelNumberCharacter((action.GetID() - REMOTE_0) +'0');
+      AppendChannelNumberCharacter((action.GetID() - REMOTE_0) + '0');
       return true;
     }
   case ACTION_CHANNEL_NUMBER_SEP:
@@ -255,6 +248,46 @@ void CGUIDialogPVRChannelsOSD::ShowInfo(int item)
     return;
 
   CServiceBroker::GetPVRManager().GUIActions()->ShowEPGInfo(m_vecItems->Get(item));
+}
+
+bool CGUIDialogPVRChannelsOSD::OnContextMenu(int itemIdx)
+{
+  auto InRange = [](size_t i, std::pair<size_t, size_t> range){ return i >= range.first && i < range.second; };
+
+  if (itemIdx < 0 || itemIdx >= m_vecItems->Size())
+    return false;
+
+  const CFileItemPtr item = m_vecItems->Get(itemIdx);
+  if (!item)
+    return false;
+
+  CContextButtons buttons;
+
+  // Add the global menu
+  const ContextMenuView globalMenu = CServiceBroker::GetContextMenuManager().GetItems(*item, CContextMenuManager::MAIN);
+  auto globalMenuRange = std::make_pair(buttons.size(), buttons.size() + globalMenu.size());
+  for (const auto& menu : globalMenu)
+    buttons.emplace_back(~buttons.size(), menu->GetLabel(*item));
+
+  // Add addon menus
+  const ContextMenuView addonMenu = CServiceBroker::GetContextMenuManager().GetAddonItems(*item, CContextMenuManager::MAIN);
+  auto addonMenuRange = std::make_pair(buttons.size(), buttons.size() + addonMenu.size());
+  for (const auto& menu : addonMenu)
+    buttons.emplace_back(~buttons.size(), menu->GetLabel(*item));
+
+  if (buttons.empty())
+    return true;
+
+  int idx = CGUIDialogContextMenu::Show(buttons);
+  if (idx < 0 || idx >= static_cast<int>(buttons.size()))
+    return false;
+
+  Close();
+
+  if (InRange(idx, globalMenuRange))
+    return CONTEXTMENU::LoopFrom(*globalMenu[idx - globalMenuRange.first], item);
+
+  return CONTEXTMENU::LoopFrom(*addonMenu[idx - addonMenuRange.first], item);
 }
 
 void CGUIDialogPVRChannelsOSD::OnWindowLoaded()

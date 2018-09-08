@@ -47,6 +47,7 @@ namespace PVR
   private:
     void GotoChannel(int iItem);
     void ShowInfo(int item);
+    bool OnContextMenu(int iItem);
     void Clear();
     void Update();
     void SaveSelectedItemPath(int iGroupID);
