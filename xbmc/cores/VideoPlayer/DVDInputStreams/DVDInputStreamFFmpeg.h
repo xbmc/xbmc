@@ -30,9 +30,6 @@ public:
 
   const CFileItem& GetItem() const { return m_item; }
 
-  bool CanSeek() override { return m_can_seek; }
-  bool CanPause() override { return m_can_pause; }
-
   std::string GetProxyType() const;
   std::string GetProxyHost() const;
   uint16_t GetProxyPort() const;
@@ -40,7 +37,5 @@ public:
   std::string GetProxyPassword() const;
 
 protected:
-  bool m_can_pause;
-  bool m_can_seek;
-  bool m_aborted;
+  bool m_aborted = false;
 };

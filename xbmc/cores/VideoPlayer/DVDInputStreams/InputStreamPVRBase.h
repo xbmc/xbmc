@@ -46,7 +46,7 @@ public:
   CDVDInputStream::ITimes* GetITimes() override { return this; }
   bool GetTimes(Times &times) override;
 
-  bool CanSeek() override;
+  bool CanSeek() override; //! @todo drop this
   bool CanPause() override;
   void Pause(bool bPaused);
 

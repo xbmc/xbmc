@@ -53,7 +53,7 @@ public:
   bool Pause(double dTime) override;
   int64_t GetLength() override;
   bool IsEOF() override;
-  bool CanSeek() override;
+  bool CanSeek() override; //! @todo drop this
   bool CanPause() override;
 
   // IDisplayTime
