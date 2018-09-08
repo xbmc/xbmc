@@ -1,3 +1,13 @@
+[B]3.1.1[/B]
+Fixed: further fixes to search results
+
+[B]3.1.0[/B]
+Added: scraping extra artwork from theaudiobdb.com
+
+[B]3.0.0[/B]
+Fixed: albums won't be found on MusicBrainz
+Added: scraping discart from fanart.tv
+
 [B]2.7.3[/B]
 Fixed: albums without year on MusicBrainz won't be found
 

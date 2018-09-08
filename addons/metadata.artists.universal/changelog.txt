@@ -1,3 +1,12 @@
+[B]4.2.1[/B]
+fixed: dependency error
+
+[B]4.2.0[/B]
+added: scraping extra artwork from theaudiodb.com
+
+[B]4.1.5[/B]
+added: artist sort name from Musicbrainz and artist banner from fanart.tv
+
 [B]4.1.4[/B]
 changed: include some other valid MB artist types in the previous fix
 

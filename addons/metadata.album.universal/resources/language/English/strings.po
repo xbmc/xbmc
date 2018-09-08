@@ -67,3 +67,19 @@ msgstr ""
 msgctxt "#30012"
 msgid "MusicBrainz Mirror"
 msgstr ""
+
+msgctxt "#30013"
+msgid "Grab Album Discart from fanart.tv"
+msgstr ""
+
+msgctxt "#30014"
+msgid "Grab Album Back Cover from theaudiodb.com"
+msgstr ""
+
+msgctxt "#30015"
+msgid "Grab Album Discart from theaudiodb.com"
+msgstr ""
+
+msgctxt "#30016"
+msgid "Grab Album Spine from theaudiodb.com"
+msgstr ""

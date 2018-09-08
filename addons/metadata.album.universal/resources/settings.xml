@@ -16,9 +16,13 @@
       <setting label="30000" type="bool" id="fanarttvalbumthumbs" default="true"/>
       <setting label="30010" type="bool" id="tadbalbumthumbs" default="true"/>
       <setting label="30008" type="bool" id="allmusicalbumthumbs" default="false"/>
+	  <setting label="30013" type="bool" id="fanarttvalbumdiscart" default="false"/>
+	  <setting label="30015" type="bool" id="tadbalbumdiscart" default="false"/>
+	  <setting label="30014" type="bool" id="tadbalbumback" default="false"/>
+	  <setting label="30016" type="bool" id="tadbalbumspine" default="false"/>
   </category>
 
   <category label="30011">
-      <setting label="30012" type="text" id="mbsite" default="http://musicbrainz.org"/>
+      <setting label="30012" type="text" id="mbsite" default="https://musicbrainz.org"/>
   </category>
 </settings>
