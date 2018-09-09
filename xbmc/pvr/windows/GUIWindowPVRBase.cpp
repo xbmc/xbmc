@@ -333,9 +333,9 @@ void CGUIWindowPVRBase::SetInvalid()
 {
   if (m_refreshTimeout.IsTimePast())
   {
-    VECFILEITEMS items = m_vecItems->GetList();
-    for (VECFILEITEMS::iterator it = items.begin(); it != items.end(); ++it)
-      (*it)->SetInvalid();
+    for (const auto& item : *m_vecItems)
+      item->SetInvalid();
+
     CGUIMediaWindow::SetInvalid();
     m_refreshTimeout.Set(MAX_INVALIDATION_FREQUENCY);
   }

@@ -679,7 +679,7 @@ void CGUIWindowPVRGuideBase::OnInputDone()
   const CPVRChannelNumber channelNumber = GetChannelNumber();
   if (channelNumber.IsValid())
   {
-    for (const CFileItemPtr event : m_vecItems->GetList())
+    for (const CFileItemPtr event : *m_vecItems)
     {
       const CPVREpgInfoTagPtr tag(event->GetEPGInfoTag());
       if (tag->HasChannel() && tag->Channel()->ChannelNumber() == channelNumber)

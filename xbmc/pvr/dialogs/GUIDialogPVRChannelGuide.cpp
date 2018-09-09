@@ -10,87 +10,48 @@
 
 #include "FileItem.h"
 #include "ServiceBroker.h"
-#include "guilib/GUIWindowManager.h"
-#include "input/Key.h"
-#include "view/ViewState.h"
 
-#include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"
-#include "pvr/epg/Epg.h"
+#include "pvr/channels/PVRChannel.h"
+#include "pvr/epg/EpgInfoTag.h"
 
 using namespace PVR;
 
-#define CONTROL_LIST  11
-
 CGUIDialogPVRChannelGuide::CGUIDialogPVRChannelGuide()
-    : CGUIDialog(WINDOW_DIALOG_PVR_CHANNEL_GUIDE, "DialogPVRChannelGuide.xml")
+  : CGUIDialogPVRItemsViewBase(WINDOW_DIALOG_PVR_CHANNEL_GUIDE, "DialogPVRChannelGuide.xml")
 {
-  m_vecItems.reset(new CFileItemList);
-}
-
-CGUIDialogPVRChannelGuide::~CGUIDialogPVRChannelGuide() = default;
-
-bool CGUIDialogPVRChannelGuide::OnMessage(CGUIMessage& message)
-{
-  switch (message.GetMessage())
-  {
-  case GUI_MSG_CLICKED:
-    {
-      int iControl = message.GetSenderId();
-
-      if (m_viewControl.HasControl(iControl))   // list/thumb control
-      {
-        int iItem = m_viewControl.GetSelectedItem();
-        int iAction = message.GetParam1();
-
-        if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK || iAction == ACTION_SHOW_INFO)
-        {
-          ShowInfo(iItem);
-          return true;
-        }
-      }
-    }
-    break;
-  }
-
-  return CGUIDialog::OnMessage(message);
 }
 
 void CGUIDialogPVRChannelGuide::Open(const CPVRChannelPtr &channel)
 {
   m_channel = channel;
-  CGUIDialog::Open();
+  CGUIDialogPVRItemsViewBase::Open();
 }
 
 void CGUIDialogPVRChannelGuide::OnInitWindow()
 {
-  // no user-specific channel is set use current playing channel
+  // no user-specific channel is set; use current playing channel
   if (!m_channel)
     m_channel = CServiceBroker::GetPVRManager().GetPlayingChannel();
 
-  // no channel at all, close the dialog
   if (!m_channel)
   {
     Close();
     return;
   }
 
-  m_viewControl.SetCurrentView(DEFAULT_VIEW_LIST);
-
-  // empty the list ready for population
-  Clear();
+  Init();
 
   m_channel->GetEPG(*m_vecItems);
   m_viewControl.SetItems(*m_vecItems);
 
-  // call init
-  CGUIDialog::OnInitWindow();
+  CGUIDialogPVRItemsViewBase::OnInitWindow();
 
   // select the active entry
   unsigned int iSelectedItem = 0;
   for (int iEpgPtr = 0; iEpgPtr < m_vecItems->Size(); ++iEpgPtr)
   {
-    CFileItemPtr entry = m_vecItems->Get(iEpgPtr);
+    const CFileItemPtr entry = m_vecItems->Get(iEpgPtr);
     if (entry->HasEPGInfoTag() && entry->GetEPGInfoTag()->IsActive())
     {
       iSelectedItem = iEpgPtr;
@@ -102,43 +63,6 @@ void CGUIDialogPVRChannelGuide::OnInitWindow()
 
 void CGUIDialogPVRChannelGuide::OnDeinitWindow(int nextWindowID)
 {
-  CGUIDialog::OnDeinitWindow(nextWindowID);
+  CGUIDialogPVRItemsViewBase::OnDeinitWindow(nextWindowID);
   m_channel.reset();
-  Clear();
-}
-
-void CGUIDialogPVRChannelGuide::Clear()
-{
-  m_viewControl.Clear();
-  m_vecItems->Clear();
-}
-
-void CGUIDialogPVRChannelGuide::ShowInfo(int item)
-{
-  if (item < 0 || item >= m_vecItems->Size())
-    return;
-
-  CServiceBroker::GetPVRManager().GUIActions()->ShowEPGInfo(m_vecItems->Get(item));
-}
-
-void CGUIDialogPVRChannelGuide::OnWindowLoaded()
-{
-  CGUIDialog::OnWindowLoaded();
-  m_viewControl.Reset();
-  m_viewControl.SetParentWindow(GetID());
-  m_viewControl.AddView(GetControl(CONTROL_LIST));
-}
-
-void CGUIDialogPVRChannelGuide::OnWindowUnload()
-{
-  CGUIDialog::OnWindowUnload();
-  m_viewControl.Reset();
-}
-
-CGUIControl *CGUIDialogPVRChannelGuide::GetFirstFocusableControl(int id)
-{
-  if (m_viewControl.HasControl(id))
-    id = m_viewControl.GetCurrentControl();
-
-  return CGUIWindow::GetFirstFocusableControl(id);
 }

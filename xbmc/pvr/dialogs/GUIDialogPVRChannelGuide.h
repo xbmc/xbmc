@@ -8,23 +8,18 @@
 
 #pragma once
 
-#include "guilib/GUIDialog.h"
-#include "view/GUIViewControl.h"
-
 #include "pvr/PVRTypes.h"
+#include "pvr/dialogs/GUIDialogPVRItemsViewBase.h"
 
 class CFileItemList;
 
 namespace PVR
 {
-  class CGUIDialogPVRChannelGuide : public CGUIDialog
+  class CGUIDialogPVRChannelGuide : public CGUIDialogPVRItemsViewBase
   {
   public:
     CGUIDialogPVRChannelGuide(void);
-    ~CGUIDialogPVRChannelGuide(void) override;
-    bool OnMessage(CGUIMessage& message) override;
-    void OnWindowLoaded() override;
-    void OnWindowUnload() override;
+    ~CGUIDialogPVRChannelGuide(void) override = default;
 
     void Open(const CPVRChannelPtr &channel);
 
@@ -32,15 +27,7 @@ namespace PVR
     void OnInitWindow() override;
     void OnDeinitWindow(int nextWindowID) override;
 
-    CGUIControl *GetFirstFocusableControl(int id) override;
-
-    std::unique_ptr<CFileItemList> m_vecItems;
-    CGUIViewControl m_viewControl;
-
   private:
-    void ShowInfo(int iItem);
-    void Clear();
-
     CPVRChannelPtr m_channel;
   };
 }
