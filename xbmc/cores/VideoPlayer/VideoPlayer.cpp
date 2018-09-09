@@ -1931,7 +1931,11 @@ void CVideoPlayer::HandlePlaySpeed()
           {
             CLog::Log(LOGDEBUG, "Stream stalled, start buffering. Audio: %d - Video: %d",
                                  m_VideoPlayerAudio->GetLevel(), m_processInfo->GetLevelVQ());
-            SetCaching(CACHESTATE_FULL);
+
+            if (m_VideoPlayerAudio->AcceptsData() && m_VideoPlayerVideo->AcceptsData())
+              SetCaching(CACHESTATE_FULL);
+            else
+              FlushBuffers(DVD_NOPTS_VALUE, false, true);
           }
         }
         else
