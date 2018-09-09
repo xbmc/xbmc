@@ -124,7 +124,7 @@ bool CDVDInputStreamNavigator::Open()
     return false;
   }
 
-  int region = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_DVDS_PLAYERREGION);
+  int region = CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_DVDS_PLAYERREGION);
   int mask = 0;
   if(region > 0)
     mask = 1 << (region-1);
@@ -202,7 +202,7 @@ bool CDVDInputStreamNavigator::Open()
   }
 
   // jump directly to title menu
-  if(CServiceBroker::GetSettings().GetBool(CSettings::SETTING_DVDS_AUTOMENU))
+  if(CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_DVDS_AUTOMENU))
   {
     int len, event;
     uint8_t buf[2048];

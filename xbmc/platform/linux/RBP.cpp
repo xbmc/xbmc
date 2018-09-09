@@ -117,7 +117,7 @@ bool CRBP::Initialize()
   if (m_gpu_mem < 128)
     setenv("V3D_DOUBLE_BUFFER", "1", 1);
 
-  m_gui_resolution_limit = CServiceBroker::GetSettings().GetInt("videoscreen.limitgui");
+  m_gui_resolution_limit = CServiceBroker::GetSettings()->GetInt("videoscreen.limitgui");
   if (!m_gui_resolution_limit)
     m_gui_resolution_limit = m_gpu_mem < 128 ? 720:1080;
 

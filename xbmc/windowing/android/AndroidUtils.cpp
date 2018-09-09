@@ -152,7 +152,7 @@ CAndroidUtils::CAndroidUtils()
   }
 
   CLog::Log(LOGDEBUG, "CAndroidUtils: maximum/current resolution: %dx%d", m_width, m_height);
-  int limit = CServiceBroker::GetSettings().GetInt("videoscreen.limitgui");
+  int limit = CServiceBroker::GetSettings()->GetInt("videoscreen.limitgui");
   switch (limit)
   {
     case 0: // auto

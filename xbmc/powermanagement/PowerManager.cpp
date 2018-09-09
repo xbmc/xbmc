@@ -36,10 +36,10 @@
 extern HWND g_hWnd;
 #endif
 
-CPowerManager::CPowerManager(CSettings &settings) :
-  m_settings(settings)
+CPowerManager::CPowerManager()
 {
-  m_settings.GetSettingsManager()->RegisterSettingOptionsFiller("shutdownstates", SettingOptionsShutdownStatesFiller);
+  m_settings = CServiceBroker::GetSettings();
+  m_settings->GetSettingsManager()->RegisterSettingOptionsFiller("shutdownstates", SettingOptionsShutdownStatesFiller);
 }
 
 CPowerManager::~CPowerManager() = default;
@@ -51,7 +51,7 @@ void CPowerManager::Initialize()
 
 void CPowerManager::SetDefaults()
 {
-  int defaultShutdown = m_settings.GetInt(CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNSTATE);
+  int defaultShutdown = m_settings->GetInt(CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNSTATE);
 
   switch (defaultShutdown)
   {
@@ -90,7 +90,7 @@ void CPowerManager::SetDefaults()
     break;
   }
 
-  std::static_pointer_cast<CSettingInt>(m_settings.GetSetting(CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNSTATE))->SetDefault(defaultShutdown);
+  std::static_pointer_cast<CSettingInt>(m_settings->GetSetting(CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNSTATE))->SetDefault(defaultShutdown);
 }
 
 bool CPowerManager::Powerdown()

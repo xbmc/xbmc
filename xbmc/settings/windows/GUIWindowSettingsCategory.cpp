@@ -120,7 +120,7 @@ bool CGUIWindowSettingsCategory::OnAction(const CAction &action)
         return false;
 
       CViewStateSettings::GetInstance().CycleSettingLevel();
-      CServiceBroker::GetSettings().Save();
+      CServiceBroker::GetSettings()->Save();
 
       // try to keep the current position
       std::string oldCategory;
@@ -178,7 +178,7 @@ SettingSectionPtr CGUIWindowSettingsCategory::GetSection()
   for (size_t index = 0; index < SettingGroupSize; index++)
   {
     if (s_settingGroupMap[index].id == m_iSection)
-      return m_settings.GetSection(s_settingGroupMap[index].name);
+      return m_settings->GetSection(s_settingGroupMap[index].name);
   }
 
   return NULL;
@@ -186,12 +186,12 @@ SettingSectionPtr CGUIWindowSettingsCategory::GetSection()
 
 void CGUIWindowSettingsCategory::Save()
 {
-  m_settings.Save();
+  m_settings->Save();
 }
 
 CSettingsManager* CGUIWindowSettingsCategory::GetSettingsManager() const
 {
-  return m_settings.GetSettingsManager();
+  return m_settings->GetSettingsManager();
 }
 
 void CGUIWindowSettingsCategory::FocusElement(const std::string& elementId)

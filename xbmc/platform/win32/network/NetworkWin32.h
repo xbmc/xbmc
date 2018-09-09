@@ -57,7 +57,7 @@ private:
 class CNetworkWin32 : public CNetworkBase
 {
 public:
-   CNetworkWin32(CSettings &settings);
+   CNetworkWin32();
    ~CNetworkWin32(void) override;
 
    // Return the list of interfaces

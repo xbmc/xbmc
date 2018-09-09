@@ -42,7 +42,7 @@ class CGUIAudioManager : public ISettingCallback
   };
 
 public:
-  CGUIAudioManager(CSettings &settings);
+  CGUIAudioManager();
   ~CGUIAudioManager() override;
 
   void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
@@ -65,7 +65,7 @@ public:
 
 private:
   // Construction parameters
-  CSettings &m_settings;
+  std::shared_ptr<CSettings> m_settings;
 
   typedef std::map<const std::string, CSoundInfo> soundCache;
   typedef std::map<int, IAESound*              > actionSoundMap;

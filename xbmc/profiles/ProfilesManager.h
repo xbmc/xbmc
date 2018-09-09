@@ -26,7 +26,7 @@ class CProfilesManager : protected ISettingsHandler,
                          protected ISettingCallback
 {
 public:
-  CProfilesManager(CSettings &settings);
+  CProfilesManager();
   CProfilesManager(const CProfilesManager&) = delete;
   CProfilesManager& operator=(CProfilesManager const&) = delete;
   ~CProfilesManager() override;
@@ -194,7 +194,7 @@ private:
   void FinalizeLoadProfile();
 
   // Construction parameters
-  CSettings &m_settings;
+  std::shared_ptr<CSettings> m_settings;
 
   std::vector<CProfile> m_profiles;
   bool m_usingLoginScreen;

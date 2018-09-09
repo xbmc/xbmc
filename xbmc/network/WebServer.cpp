@@ -1110,7 +1110,7 @@ struct MHD_Daemon* CWebServer::StartMHD(unsigned int flags, int port)
 
   MHD_set_panic_func(&panicHandlerForMHD, nullptr);
 
-  if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_SERVICES_WEBSERVERSSL) &&
+  if (CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_SERVICES_WEBSERVERSSL) &&
       MHD_is_feature_supported(MHD_FEATURE_SSL) == MHD_YES &&
       LoadCert(m_key, m_cert))
     // SSL enabled

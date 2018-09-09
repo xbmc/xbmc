@@ -55,7 +55,7 @@ bool CGUIWindowEventLog::OnMessage(CGUIMessage& message)
     {
       // update the event level
       CViewStateSettings::GetInstance().CycleEventLevel();
-      CServiceBroker::GetSettings().Save();
+      CServiceBroker::GetSettings()->Save();
 
       // update the listing
       Refresh();
@@ -67,7 +67,7 @@ bool CGUIWindowEventLog::OnMessage(CGUIMessage& message)
     {
       // update whether to show higher event levels
       CViewStateSettings::GetInstance().ToggleShowHigherEventLevels();
-      CServiceBroker::GetSettings().Save();
+      CServiceBroker::GetSettings()->Save();
 
       // update the listing
       Refresh();

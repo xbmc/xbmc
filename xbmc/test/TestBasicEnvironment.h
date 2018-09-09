@@ -10,7 +10,10 @@
 
 #include "gtest/gtest.h"
 
+#include <memory>
 #include <string>
+
+class CSettings;
 
 class TestBasicEnvironment : public testing::Environment
 {
@@ -20,4 +23,5 @@ public:
 private:
   void SetUpError();
   std::string m_tempPath;
+  std::shared_ptr <CSettings> m_pSettings;
 };

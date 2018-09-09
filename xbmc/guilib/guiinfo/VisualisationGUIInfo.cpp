@@ -53,7 +53,7 @@ bool CVisualisationGUIInfo::GetLabel(std::string& value, const CFileItem *item, 
     case VISUALISATION_NAME:
     {
       ADDON::AddonPtr addon;
-      value = CServiceBroker::GetSettings().GetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION);
+      value = CServiceBroker::GetSettings()->GetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION);
       if (CServiceBroker::GetAddonMgr().GetAddon(value, addon) && addon)
       {
         value = addon->Name();
@@ -91,7 +91,7 @@ bool CVisualisationGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int 
     }
     case VISUALISATION_ENABLED:
     {
-      value = !CServiceBroker::GetSettings().GetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION).empty();
+      value = !CServiceBroker::GetSettings()->GetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION).empty();
       return true;
     }
     case VISUALISATION_HAS_PRESETS:

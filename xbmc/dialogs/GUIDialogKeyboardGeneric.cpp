@@ -128,8 +128,8 @@ void CGUIDialogKeyboardGeneric::OnInitWindow()
   m_currentLayout = 0;
   m_layouts.clear();
   const KeyboardLayouts& keyboardLayouts = CKeyboardLayoutManager::GetInstance().GetLayouts();
-  std::vector<CVariant> layoutNames = CServiceBroker::GetSettings().GetList(CSettings::SETTING_LOCALE_KEYBOARDLAYOUTS);
-  std::string activeLayout = CServiceBroker::GetSettings().GetString(CSettings::SETTING_LOCALE_ACTIVEKEYBOARDLAYOUT);
+  std::vector<CVariant> layoutNames = CServiceBroker::GetSettings()->GetList(CSettings::SETTING_LOCALE_KEYBOARDLAYOUTS);
+  std::string activeLayout = CServiceBroker::GetSettings()->GetString(CSettings::SETTING_LOCALE_ACTIVEKEYBOARDLAYOUT);
 
   for (std::vector<CVariant>::const_iterator layoutName = layoutNames.begin(); layoutName != layoutNames.end(); ++layoutName)
   {
@@ -530,7 +530,7 @@ void CGUIDialogKeyboardGeneric::OnLayout()
   if (m_currentLayout >= m_layouts.size())
     m_currentLayout = 0;
   CKeyboardLayout layout = m_layouts.empty() ? CKeyboardLayout() : m_layouts[m_currentLayout];
-  CServiceBroker::GetSettings().SetString(CSettings::SETTING_LOCALE_ACTIVEKEYBOARDLAYOUT, layout.GetName());
+  CServiceBroker::GetSettings()->SetString(CSettings::SETTING_LOCALE_ACTIVEKEYBOARDLAYOUT, layout.GetName());
   UpdateButtons();
 }
 

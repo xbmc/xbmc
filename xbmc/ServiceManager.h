@@ -37,7 +37,6 @@ class CContextMenuManager;
 class XBPython;
 #endif
 class CDataCacheCore;
-class CSettings;
 class CFavouritesService;
 class CNetworkBase;
 class CWinSystemBase;
@@ -110,7 +109,6 @@ public:
   PLAYLIST::CPlayListPlayer& GetPlaylistPlayer();
   int init_level = 0;
 
-  CSettings& GetSettings();
   CFavouritesService& GetFavouritesService();
   CInputManager &GetInputManager();
   CFileExtensionProvider &GetFileExtensionProvider();
@@ -157,7 +155,6 @@ protected:
   std::unique_ptr<CDataCacheCore, delete_dataCacheCore> m_dataCacheCore;
   std::unique_ptr<CPlatform> m_Platform;
   std::unique_ptr<PLAYLIST::CPlayListPlayer> m_playlistPlayer;
-  std::unique_ptr<CSettings> m_settings;
   std::unique_ptr<KODI::GAME::CControllerManager> m_gameControllerManager;
   std::unique_ptr<KODI::GAME::CGameServices> m_gameServices;
   std::unique_ptr<KODI::RETRO::CGUIGameRenderManager> m_gameRenderManager;

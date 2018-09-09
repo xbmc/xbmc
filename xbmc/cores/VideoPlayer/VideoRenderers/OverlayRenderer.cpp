@@ -165,7 +165,7 @@ void CRenderer::Render(int idx)
 
   float total_height = 0.0f;
   float cur_height = 0.0f;
-  int subalign = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_SUBTITLES_ALIGN);
+  int subalign = CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_SUBTITLES_ALIGN);
   for (std::vector<COverlay*>::iterator it = render.begin(); it != render.end(); ++it)
   {
     COverlay* o = nullptr;
@@ -174,8 +174,8 @@ void CRenderer::Render(int idx)
     {
       
       // Compute the color to be used for the overlay background (depending on the opacity)
-      UTILS::Color bgcolor = bgcolors[CServiceBroker::GetSettings().GetInt(CSettings::SETTING_SUBTITLES_BGCOLOR)];
-      int bgopacity = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_SUBTITLES_BGOPACITY);
+      UTILS::Color bgcolor = bgcolors[CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_SUBTITLES_BGCOLOR)];
+      int bgopacity = CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_SUBTITLES_BGOPACITY);
       if (bgopacity > 0 && bgopacity < 100)
       {
         bgcolor = ColorUtils::ChangeOpacity(bgcolor, bgopacity / 100.0f);
@@ -185,10 +185,10 @@ void CRenderer::Render(int idx)
         bgcolor = UTILS::COLOR::NONE;
       }
       
-      text->PrepareRender(CServiceBroker::GetSettings().GetString(CSettings::SETTING_SUBTITLES_FONT),
-                          CServiceBroker::GetSettings().GetInt(CSettings::SETTING_SUBTITLES_COLOR),
-                          CServiceBroker::GetSettings().GetInt(CSettings::SETTING_SUBTITLES_HEIGHT),
-                          CServiceBroker::GetSettings().GetInt(CSettings::SETTING_SUBTITLES_STYLE),
+      text->PrepareRender(CServiceBroker::GetSettings()->GetString(CSettings::SETTING_SUBTITLES_FONT),
+                          CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_SUBTITLES_COLOR),
+                          CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_SUBTITLES_HEIGHT),
+                          CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_SUBTITLES_STYLE),
                           m_font, m_fontBorder, bgcolor);
       o = text;
     }
@@ -342,7 +342,7 @@ COverlay* CRenderer::Convert(CDVDOverlaySSA* o, double pts)
   int targetHeight = MathUtils::round_int(m_rv.Height());
   int useMargin;
 
-  int subalign = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_SUBTITLES_ALIGN);
+  int subalign = CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_SUBTITLES_ALIGN);
   if(subalign == SUBTITLE_ALIGN_BOTTOM_OUTSIDE
   || subalign == SUBTITLE_ALIGN_TOP_OUTSIDE
   ||(subalign == SUBTITLE_ALIGN_MANUAL && g_advancedSettings.m_videoAssFixedWorks))

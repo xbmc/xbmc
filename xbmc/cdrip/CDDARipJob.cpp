@@ -172,15 +172,15 @@ int CCDDARipJob::RipChunk(CFile& reader, CEncoder* encoder, int& percent)
 CEncoder* CCDDARipJob::SetupEncoder(CFile& reader)
 {
   CEncoder* encoder = NULL;
-  if (CServiceBroker::GetSettings().GetString(CSettings::SETTING_AUDIOCDS_ENCODER) == "audioencoder.kodi.builtin.aac" ||
-      CServiceBroker::GetSettings().GetString(CSettings::SETTING_AUDIOCDS_ENCODER) == "audioencoder.kodi.builtin.wma")
+  if (CServiceBroker::GetSettings()->GetString(CSettings::SETTING_AUDIOCDS_ENCODER) == "audioencoder.kodi.builtin.aac" ||
+      CServiceBroker::GetSettings()->GetString(CSettings::SETTING_AUDIOCDS_ENCODER) == "audioencoder.kodi.builtin.wma")
   {
     std::shared_ptr<IEncoder> enc(new CEncoderFFmpeg());
     encoder = new CEncoder(enc);
   }
   else
   {
-    const BinaryAddonBasePtr addonInfo = CServiceBroker::GetBinaryAddonManager().GetInstalledAddonInfo(CServiceBroker::GetSettings().GetString(CSettings::SETTING_AUDIOCDS_ENCODER), ADDON_AUDIOENCODER);
+    const BinaryAddonBasePtr addonInfo = CServiceBroker::GetBinaryAddonManager().GetInstalledAddonInfo(CServiceBroker::GetSettings()->GetString(CSettings::SETTING_AUDIOCDS_ENCODER), ADDON_AUDIOENCODER);
     if (addonInfo)
     {
       std::shared_ptr<IEncoder> enc = std::make_shared<CAudioEncoder>(addonInfo);

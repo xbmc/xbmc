@@ -23,7 +23,7 @@ class CGameSettings : public ISettingCallback,
                       public Observable
 {
 public:
-  CGameSettings(CSettings &settings);
+  CGameSettings();
   ~CGameSettings() override;
 
   // General settings
@@ -38,7 +38,7 @@ public:
 
 private:
   // Construction parameters
-  CSettings &m_settings;
+  std::shared_ptr<CSettings> m_settings;
 };
 
 } // namespace GAME

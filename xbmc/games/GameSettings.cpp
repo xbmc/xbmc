@@ -7,6 +7,7 @@
  */
 
 #include "GameSettings.h"
+#include "ServiceBroker.h"
 #include "settings/lib/Setting.h"
 #include "settings/Settings.h"
 
@@ -23,10 +24,11 @@ namespace
   const std::string SETTING_GAMES_REWINDTIME = "gamesgeneral.rewindtime";
 }
 
-CGameSettings::CGameSettings(CSettings &settings) :
-  m_settings(settings)
+CGameSettings::CGameSettings()
 {
-  m_settings.RegisterCallback(this, {
+  m_settings = CServiceBroker::GetSettings();
+
+  m_settings->RegisterCallback(this, {
     SETTING_GAMES_ENABLEREWIND,
     SETTING_GAMES_REWINDTIME,
   });
@@ -34,32 +36,32 @@ CGameSettings::CGameSettings(CSettings &settings) :
 
 CGameSettings::~CGameSettings()
 {
-  m_settings.UnregisterCallback(this);
+  m_settings->UnregisterCallback(this);
 }
 
 bool CGameSettings::GamesEnabled()
 {
-  return m_settings.GetBool(SETTING_GAMES_ENABLE);
+  return m_settings->GetBool(SETTING_GAMES_ENABLE);
 }
 
 void CGameSettings::ToggleGames()
 {
-  m_settings.ToggleBool(SETTING_GAMES_ENABLE);
+  m_settings->ToggleBool(SETTING_GAMES_ENABLE);
 }
 
 bool CGameSettings::AutosaveEnabled()
 {
-  return m_settings.GetBool(SETTING_GAMES_ENABLEAUTOSAVE);
+  return m_settings->GetBool(SETTING_GAMES_ENABLEAUTOSAVE);
 }
 
 bool CGameSettings::RewindEnabled()
 {
-  return m_settings.GetBool(SETTING_GAMES_ENABLEREWIND);
+  return m_settings->GetBool(SETTING_GAMES_ENABLEREWIND);
 }
 
 unsigned int CGameSettings::MaxRewindTimeSec()
 {
-  int rewindTimeSec = m_settings.GetInt(SETTING_GAMES_REWINDTIME);
+  int rewindTimeSec = m_settings->GetInt(SETTING_GAMES_REWINDTIME);
 
   return static_cast<unsigned int>(std::max(rewindTimeSec, 0));
 }

@@ -64,7 +64,7 @@ private:
 class CNetworkWin10 : public CNetworkBase
 {
 public:
-    CNetworkWin10(CSettings &settings);
+    CNetworkWin10();
     virtual ~CNetworkWin10(void);
 
     std::vector<CNetworkInterface*>& GetInterfaceList(void) override;

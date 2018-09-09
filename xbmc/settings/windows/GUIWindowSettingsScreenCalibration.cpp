@@ -126,7 +126,7 @@ bool CGUIWindowSettingsScreenCalibration::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_DEINIT:
     {
       CDisplaySettings::GetInstance().UpdateCalibrations();
-      CServiceBroker::GetSettings().Save();
+      CServiceBroker::GetSettings()->Save();
       CServiceBroker::GetWinSystem()->GetGfxContext().SetCalibrating(false);
       // reset our screen resolution to what it was initially
       CServiceBroker::GetWinSystem()->GetGfxContext().SetVideoResolution(CDisplaySettings::GetInstance().GetCurrentResolution(), false);

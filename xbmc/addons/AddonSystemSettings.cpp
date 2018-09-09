@@ -64,10 +64,10 @@ void CAddonSystemSettings::OnSettingChanged(std::shared_ptr<const CSetting> sett
   using namespace KODI::MESSAGING::HELPERS;
 
   if (setting->GetId() == CSettings::SETTING_ADDONS_ALLOW_UNKNOWN_SOURCES
-    && CServiceBroker::GetSettings().GetBool(CSettings::SETTING_ADDONS_ALLOW_UNKNOWN_SOURCES)
+    && CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_ADDONS_ALLOW_UNKNOWN_SOURCES)
     && ShowYesNoDialogText(19098, 36618) != DialogResponse::YES)
   {
-    CServiceBroker::GetSettings().SetBool(CSettings::SETTING_ADDONS_ALLOW_UNKNOWN_SOURCES, false);
+    CServiceBroker::GetSettings()->SetBool(CSettings::SETTING_ADDONS_ALLOW_UNKNOWN_SOURCES, false);
   }
 }
 
@@ -76,7 +76,7 @@ bool CAddonSystemSettings::GetActive(const TYPE& type, AddonPtr& addon)
   auto it = m_activeSettings.find(type);
   if (it != m_activeSettings.end())
   {
-    auto settingValue = CServiceBroker::GetSettings().GetString(it->second);
+    auto settingValue = CServiceBroker::GetSettings()->GetString(it->second);
     return CServiceBroker::GetAddonMgr().GetAddon(settingValue, addon, type);
   }
   return false;
@@ -87,7 +87,7 @@ bool CAddonSystemSettings::SetActive(const TYPE& type, const std::string& addonI
   auto it = m_activeSettings.find(type);
   if (it != m_activeSettings.end())
   {
-    CServiceBroker::GetSettings().SetString(it->second, addonID);
+    CServiceBroker::GetSettings()->SetString(it->second, addonID);
     return true;
   }
   return false;
@@ -105,7 +105,7 @@ bool CAddonSystemSettings::UnsetActive(const AddonPtr& addon)
   if (it == m_activeSettings.end())
     return true;
 
-  auto setting = std::static_pointer_cast<CSettingString>(CServiceBroker::GetSettings().GetSetting(it->second));
+  auto setting = std::static_pointer_cast<CSettingString>(CServiceBroker::GetSettings()->GetSetting(it->second));
   if (setting->GetValue() != addon->ID())
     return true;
 
@@ -130,7 +130,7 @@ std::vector<std::string> CAddonSystemSettings::MigrateAddons(std::function<void(
   if (getIncompatible().empty())
     return std::vector<std::string>();
 
-  if (CServiceBroker::GetSettings().GetInt(CSettings::SETTING_ADDONS_AUTOUPDATES) == AUTO_UPDATES_ON)
+  if (CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_ADDONS_AUTOUPDATES) == AUTO_UPDATES_ON)
   {
     onMigrate();
 

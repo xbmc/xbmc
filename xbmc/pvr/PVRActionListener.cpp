@@ -28,7 +28,7 @@ namespace PVR
 CPVRActionListener::CPVRActionListener()
 {
   g_application.RegisterActionListener(this);
-  CServiceBroker::GetSettings().RegisterCallback(this, {
+  CServiceBroker::GetSettings()->RegisterCallback(this, {
     CSettings::SETTING_PVRPARENTAL_ENABLED,
     CSettings::SETTING_PVRMANAGER_RESETDB,
     CSettings::SETTING_EPG_RESETEPG,
@@ -44,14 +44,14 @@ CPVRActionListener::CPVRActionListener()
 
 CPVRActionListener::~CPVRActionListener()
 {
-  CServiceBroker::GetSettings().UnregisterCallback(this);
+  CServiceBroker::GetSettings()->UnregisterCallback(this);
   g_application.UnregisterActionListener(this);
 }
 
 ChannelSwitchMode CPVRActionListener::GetChannelSwitchMode(int iAction)
 {
   if ((iAction == ACTION_MOVE_UP || iAction == ACTION_MOVE_DOWN) &&
-      CServiceBroker::GetSettings().GetBool(CSettings::SETTING_PVRPLAYBACK_CONFIRMCHANNELSWITCH))
+      CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_PVRPLAYBACK_CONFIRMCHANNELSWITCH))
     return ChannelSwitchMode::NO_SWITCH;
 
   return ChannelSwitchMode::INSTANT_OR_DELAYED_SWITCH;
@@ -152,7 +152,7 @@ bool CPVRActionListener::OnAction(const CAction &action)
         return false;
 
       // If the button that caused this action matches action "Select" ...
-      if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_PVRPLAYBACK_CONFIRMCHANNELSWITCH) &&
+      if (CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_PVRPLAYBACK_CONFIRMCHANNELSWITCH) &&
           CServiceBroker::GetPVRManager().GUIActions()->GetChannelNavigator().IsPreview())
       {
         // ... and if "confirm channel switch" setting is active and a channel
@@ -242,12 +242,12 @@ void CPVRActionListener::OnSettingChanged(std::shared_ptr<const CSetting> settin
   const std::string &settingId = setting->GetId();
   if (settingId == CSettings::SETTING_PVRPARENTAL_ENABLED)
   {
-    if (std::static_pointer_cast<const CSettingBool>(setting)->GetValue() && CServiceBroker::GetSettings().GetString(CSettings::SETTING_PVRPARENTAL_PIN).empty())
+    if (std::static_pointer_cast<const CSettingBool>(setting)->GetValue() && CServiceBroker::GetSettings()->GetString(CSettings::SETTING_PVRPARENTAL_PIN).empty())
     {
       std::string newPassword = "";
       // password set... save it
       if (CGUIDialogNumeric::ShowAndVerifyNewPassword(newPassword))
-        CServiceBroker::GetSettings().SetString(CSettings::SETTING_PVRPARENTAL_PIN, newPassword);
+        CServiceBroker::GetSettings()->SetString(CSettings::SETTING_PVRPARENTAL_PIN, newPassword);
       // password not set... disable parental
       else
         std::static_pointer_cast<CSettingBool>(std::const_pointer_cast<CSetting>(setting))->SetValue(false);

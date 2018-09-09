@@ -378,12 +378,12 @@ SortDescription CGUIViewState::SetNextSortMethod(int direction /* = 1 */)
 
 bool CGUIViewState::HideExtensions()
 {
-  return !CServiceBroker::GetSettings().GetBool(CSettings::SETTING_FILELISTS_SHOWEXTENSIONS);
+  return !CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_FILELISTS_SHOWEXTENSIONS);
 }
 
 bool CGUIViewState::HideParentDirItems()
 {
-  return !CServiceBroker::GetSettings().GetBool(CSettings::SETTING_FILELISTS_SHOWPARENTDIRITEMS);
+  return !CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_FILELISTS_SHOWPARENTDIRITEMS);
 }
 
 bool CGUIViewState::DisableAddSourceButtons()
@@ -391,7 +391,7 @@ bool CGUIViewState::DisableAddSourceButtons()
   const CProfilesManager &profileManager = CServiceBroker::GetProfileManager();
 
   if (profileManager.GetCurrentProfile().canWriteSources() || g_passwordManager.bMasterUser)
-    return !CServiceBroker::GetSettings().GetBool(CSettings::SETTING_FILELISTS_SHOWADDSOURCEBUTTONS);
+    return !CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_FILELISTS_SHOWADDSOURCEBUTTONS);
 
   return true;
 }
@@ -508,7 +508,7 @@ bool CGUIViewState::AutoPlayNextVideoItem() const
   else
     settingValue = SETTING_AUTOPLAYNEXT_UNCATEGORIZED;
 
-  return settingValue >= 0 && CServiceBroker::GetSettings().FindIntInList(CSettings::SETTING_VIDEOPLAYER_AUTOPLAYNEXTITEM, settingValue);
+  return settingValue >= 0 && CServiceBroker::GetSettings()->FindIntInList(CSettings::SETTING_VIDEOPLAYER_AUTOPLAYNEXTITEM, settingValue);
 }
 
 void CGUIViewState::LoadViewState(const std::string &path, int windowID)
@@ -518,7 +518,7 @@ void CGUIViewState::LoadViewState(const std::string &path, int windowID)
     return;
 
   CViewState state;
-  if (db.GetViewState(path, windowID, state, CServiceBroker::GetSettings().GetString(CSettings::SETTING_LOOKANDFEEL_SKIN)) ||
+  if (db.GetViewState(path, windowID, state, CServiceBroker::GetSettings()->GetString(CSettings::SETTING_LOOKANDFEEL_SKIN)) ||
       db.GetViewState(path, windowID, state, ""))
   {
     SetViewAsControl(state.m_viewMode);
@@ -537,11 +537,11 @@ void CGUIViewState::SaveViewToDb(const std::string &path, int windowID, CViewSta
   if (viewState != NULL)
     *viewState = state;
 
-  db.SetViewState(path, windowID, state, CServiceBroker::GetSettings().GetString(CSettings::SETTING_LOOKANDFEEL_SKIN));
+  db.SetViewState(path, windowID, state, CServiceBroker::GetSettings()->GetString(CSettings::SETTING_LOOKANDFEEL_SKIN));
   db.Close();
 
   if (viewState != NULL)
-    CServiceBroker::GetSettings().Save();
+    CServiceBroker::GetSettings()->Save();
 }
 
 void CGUIViewState::AddPlaylistOrder(const CFileItemList &items, LABEL_MASKS label_masks)

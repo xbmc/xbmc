@@ -8,11 +8,12 @@
 
 #pragma once
 
-#include <vector>
-
 #include "settings/lib/ISettingsHandler.h"
 #include "threads/CriticalSection.h"
+
+#include <memory>
 #include <string>
+#include <vector>
 
 // forward references
 
@@ -28,8 +29,7 @@ class IPlayerCallback;
 class CPlayerCoreFactory : public ISettingsHandler
 {
 public:
-  CPlayerCoreFactory(CSettings &settings,
-                     const CProfilesManager &profileManager);
+  CPlayerCoreFactory(const CProfilesManager &profileManager);
   CPlayerCoreFactory(const CPlayerCoreFactory&) = delete;
   CPlayerCoreFactory& operator=(CPlayerCoreFactory const&) = delete;
   ~CPlayerCoreFactory() override;
@@ -54,7 +54,7 @@ public:
 
 private:
   // Construction parameters
-  CSettings &m_settings;
+  std::shared_ptr<CSettings> m_settings;
   const CProfilesManager &m_profileManager;
 
   int GetPlayerIndex(const std::string& strCoreName) const;

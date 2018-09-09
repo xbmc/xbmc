@@ -57,7 +57,7 @@ class CNetworkAndroid : public CNetworkBase
   friend class CXBMCApp;
 
 public:
-  CNetworkAndroid(CSettings &settings);
+  CNetworkAndroid();
   ~CNetworkAndroid();
 
   // CNetwork interface

@@ -81,13 +81,13 @@ CPeripherals::CPeripherals(CInputManager &inputManager,
   settingSet.insert(CSettings::SETTING_INPUT_CONTROLLERCONFIG);
   settingSet.insert(CSettings::SETTING_INPUT_TESTRUMBLE);
   settingSet.insert(CSettings::SETTING_LOCALE_LANGUAGE);
-  CServiceBroker::GetSettings().RegisterCallback(this, settingSet);
+  CServiceBroker::GetSettings()->RegisterCallback(this, settingSet);
 }
 
 CPeripherals::~CPeripherals()
 {
   // Unregister settings
-  CServiceBroker::GetSettings().UnregisterCallback(this);
+  CServiceBroker::GetSettings()->UnregisterCallback(this);
 
   Clear();
 }
@@ -776,7 +776,7 @@ EventLockHandlePtr CPeripherals::RegisterEventLock()
 
 void CPeripherals::OnUserNotification()
 {
-  if (!CServiceBroker::GetSettings().GetBool(CSettings::SETTING_INPUT_RUMBLENOTIFY))
+  if (!CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_INPUT_RUMBLENOTIFY))
     return;
 
   PeripheralVector peripherals;
@@ -965,7 +965,7 @@ void CPeripherals::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sen
   {
     if (strcmp(message, "OnQuit") == 0)
     {
-      if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_INPUT_CONTROLLERPOWEROFF))
+      if (CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_INPUT_CONTROLLERPOWEROFF))
         PowerOffDevices();
     }
   }

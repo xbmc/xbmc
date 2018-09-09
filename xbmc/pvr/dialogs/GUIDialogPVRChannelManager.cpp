@@ -356,10 +356,10 @@ bool CGUIDialogPVRChannelManager::OnClickButtonChannelLogo(CGUIMessage &message)
 
   std::string strThumb;
   VECSOURCES shares;
-  if (CServiceBroker::GetSettings().GetString(CSettings::SETTING_PVRMENU_ICONPATH) != "")
+  if (CServiceBroker::GetSettings()->GetString(CSettings::SETTING_PVRMENU_ICONPATH) != "")
   {
     CMediaSource share1;
-    share1.strPath = CServiceBroker::GetSettings().GetString(CSettings::SETTING_PVRMENU_ICONPATH);
+    share1.strPath = CServiceBroker::GetSettings()->GetString(CSettings::SETTING_PVRMENU_ICONPATH);
     share1.strName = g_localizeStrings.Get(19066);
     shares.push_back(share1);
   }

@@ -53,6 +53,7 @@ class CProfilesManager;
 class CEventLog;
 class CGUIComponent;
 class CAppInboundProtocol;
+class CSettings;
 
 namespace KODI
 {
@@ -89,7 +90,6 @@ public:
   static CContextMenuManager& GetContextMenuManager();
   static CDataCacheCore& GetDataCacheCore();
   static PLAYLIST::CPlayListPlayer& GetPlaylistPlayer();
-  static CSettings& GetSettings();
   static KODI::GAME::CControllerManager& GetGameControllerManager();
   static KODI::GAME::CGameServices& GetGameServices();
   static KODI::RETRO::CGUIGameRenderManager& GetGameRenderManager();
@@ -113,6 +113,10 @@ public:
   static void RegisterGUI(CGUIComponent *gui);
   static void UnregisterGUI();
 
+  static void RegisterSettings(std::shared_ptr<CSettings> settings);
+  static void UnregisterSettings();
+  static std::shared_ptr<CSettings> GetSettings();
+
   static void RegisterWinSystem(CWinSystemBase *winsystem);
   static void UnregisterWinSystem();
   static CWinSystemBase* GetWinSystem();
@@ -132,4 +136,6 @@ private:
   static CWinSystemBase* m_pWinSystem;
   static IAE* m_pActiveAE;
   static std::shared_ptr<CAppInboundProtocol> m_pAppPort;
+  static std::shared_ptr<CSettings> m_pSettings;
+
 };

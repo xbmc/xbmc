@@ -199,7 +199,7 @@ void CDialogGameVideoSelect::SaveSettings()
   if (defaultSettings != currentSettings)
   {
     defaultSettings = currentSettings;
-    CServiceBroker::GetSettings().Save();
+    CServiceBroker::GetSettings()->Save();
   }
 }
 

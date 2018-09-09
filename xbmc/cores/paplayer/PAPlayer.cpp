@@ -215,7 +215,7 @@ void PAPlayer::CloseAllStreams(bool fade/* = true */)
 
 bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 {
-  m_defaultCrossfadeMS = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_MUSICPLAYER_CROSSFADE) * 1000;
+  m_defaultCrossfadeMS = CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_MUSICPLAYER_CROSSFADE) * 1000;
 
   if (m_streams.size() > 1 || !m_defaultCrossfadeMS || m_isPaused)
   {
@@ -270,12 +270,12 @@ void PAPlayer::UpdateCrossfadeTime(const CFileItem& file)
   if (file.IsCDDA())
    m_upcomingCrossfadeMS = 0;
   else
-    m_upcomingCrossfadeMS = m_defaultCrossfadeMS = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_MUSICPLAYER_CROSSFADE) * 1000;
+    m_upcomingCrossfadeMS = m_defaultCrossfadeMS = CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_MUSICPLAYER_CROSSFADE) * 1000;
 
   if (m_upcomingCrossfadeMS)
   {
     if (!m_currentStream ||
-         (file.HasMusicInfoTag() && !CServiceBroker::GetSettings().GetBool(CSettings::SETTING_MUSICPLAYER_CROSSFADEALBUMTRACKS) &&
+         (file.HasMusicInfoTag() && !CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_MUSICPLAYER_CROSSFADEALBUMTRACKS) &&
           m_currentStream->m_fileItem.HasMusicInfoTag() &&
           (m_currentStream->m_fileItem.GetMusicInfoTag()->GetAlbum() != "") &&
           (m_currentStream->m_fileItem.GetMusicInfoTag()->GetAlbum() == file.GetMusicInfoTag()->GetAlbum()) &&
@@ -466,7 +466,7 @@ inline bool PAPlayer::PrepareStream(StreamInfo *si)
   if (peak * gain <= 1.0)
     // No clipping protection needed
     si->m_stream->SetReplayGain(gain);
-  else if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_MUSICPLAYER_REPLAYGAINAVOIDCLIPPING))
+  else if (CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_MUSICPLAYER_REPLAYGAINAVOIDCLIPPING))
     // Normalise volume reducing replaygain to avoid needing clipping protection, plays file at lower level
     si->m_stream->SetReplayGain(1.0f / fabs(peak));
   else

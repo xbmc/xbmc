@@ -197,13 +197,13 @@ bool CAESinkPi::Initialize(AEAudioFormat &format, std::string &device)
   m_initDevice = device;
   m_initFormat = format;
 
-  if (m_passthrough || CServiceBroker::GetSettings().GetString(CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE) == "PI:HDMI")
+  if (m_passthrough || CServiceBroker::GetSettings()->GetString(CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE) == "PI:HDMI")
     m_output = AESINKPI_HDMI;
-  else if (CServiceBroker::GetSettings().GetString(CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE) == "PI:Analogue")
+  else if (CServiceBroker::GetSettings()->GetString(CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE) == "PI:Analogue")
     m_output = AESINKPI_ANALOGUE;
-  else if (CServiceBroker::GetSettings().GetString(CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE) == "PI:Both")
+  else if (CServiceBroker::GetSettings()->GetString(CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE) == "PI:Both")
     m_output = AESINKPI_BOTH;
-  else if (CServiceBroker::GetSettings().GetString(CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE) == "Default")
+  else if (CServiceBroker::GetSettings()->GetString(CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE) == "Default")
     m_output = AESINKPI_HDMI;
   else assert(0);
 
@@ -227,7 +227,7 @@ bool CAESinkPi::Initialize(AEAudioFormat &format, std::string &device)
 
   CLog::Log(LOGDEBUG, "%s:%s Format:%d Channels:%d Samplerate:%d framesize:%d bufsize:%d bytes/s=%.2f dest=%s", CLASSNAME, __func__,
                 m_format.m_dataFormat, channels, m_format.m_sampleRate, m_format.m_frameSize, m_format.m_frameSize * m_format.m_frames, 1.0/m_sinkbuffer_sec_per_byte,
-                CServiceBroker::GetSettings().GetString(CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE).c_str());
+                CServiceBroker::GetSettings()->GetString(CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE).c_str());
 
   // magic value used when omxplayer is playing - want sink to be disabled
   if (m_passthrough && m_format.m_streamInfo.m_sampleRate == 16000)

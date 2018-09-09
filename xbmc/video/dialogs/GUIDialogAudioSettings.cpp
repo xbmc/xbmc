@@ -67,7 +67,7 @@ void CGUIDialogAudioSettings::FrameMove()
     // these settings can change on the fly
     //! @todo (needs special handling): m_settingsManager->SetInt(SETTING_AUDIO_STREAM, g_application.GetAppPlayer().GetAudioStream());
     GetSettingsManager()->SetNumber(SETTING_AUDIO_DELAY, videoSettings.m_AudioDelay);
-    GetSettingsManager()->SetBool(SETTING_AUDIO_PASSTHROUGH, CServiceBroker::GetSettings().GetBool(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGH));
+    GetSettingsManager()->SetBool(SETTING_AUDIO_PASSTHROUGH, CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGH));
   }
 
   CGUIDialogSettingsManualBase::FrameMove();
@@ -134,7 +134,7 @@ void CGUIDialogAudioSettings::OnSettingChanged(std::shared_ptr<const CSetting> s
   else if (settingId == SETTING_AUDIO_PASSTHROUGH)
   {
     m_passthrough = std::static_pointer_cast<const CSettingBool>(setting)->GetValue();
-    CServiceBroker::GetSettings().SetBool(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGH, m_passthrough);
+    CServiceBroker::GetSettings()->SetBool(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGH, m_passthrough);
   }
 }
 
@@ -172,7 +172,7 @@ void CGUIDialogAudioSettings::Save()
 
   CMediaSettings::GetInstance().GetDefaultVideoSettings() = g_application.GetAppPlayer().GetVideoSettings();
   CMediaSettings::GetInstance().GetDefaultVideoSettings().m_AudioStream = -1;
-  CServiceBroker::GetSettings().Save();
+  CServiceBroker::GetSettings()->Save();
 }
 
 void CGUIDialogAudioSettings::SetupView()
@@ -270,7 +270,7 @@ void CGUIDialogAudioSettings::InitializeSettings()
   // audio digital/analog setting
   if (SupportsAudioFeature(IPC_AUD_SELECT_OUTPUT))
   {
-    m_passthrough = CServiceBroker::GetSettings().GetBool(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGH);
+    m_passthrough = CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGH);
     AddToggle(groupAudio, SETTING_AUDIO_PASSTHROUGH, 348, SettingLevel::Basic, m_passthrough);
   }
 

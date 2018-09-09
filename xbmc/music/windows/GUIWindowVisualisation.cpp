@@ -50,7 +50,7 @@ bool CGUIWindowVisualisation::OnAction(const CAction &action)
   case ACTION_SHOW_INFO:
     {
       m_initTimer.Stop();
-      CServiceBroker::GetSettings().SetBool(CSettings::SETTING_MYMUSIC_SONGTHUMBINVIS,
+      CServiceBroker::GetSettings()->SetBool(CSettings::SETTING_MYMUSIC_SONGTHUMBINVIS,
                                             CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetPlayerInfoProvider().ToggleShowInfo());
       return true;
     }
@@ -62,7 +62,7 @@ bool CGUIWindowVisualisation::OnAction(const CAction &action)
 
   case ACTION_SHOW_GUI:
     // save the settings
-    CServiceBroker::GetSettings().Save();
+    CServiceBroker::GetSettings()->Save();
     CServiceBroker::GetGUI()->GetWindowManager().PreviousWindow();
     return true;
     break;
@@ -141,7 +141,7 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_DEINIT:
     {
       if (IsActive()) // save any changed settings from the OSD
-        CServiceBroker::GetSettings().Save();
+        CServiceBroker::GetSettings()->Save();
 
       // close all active modal dialogs
       CServiceBroker::GetGUI()->GetWindowManager().CloseInternalModalDialogs(true);
@@ -164,7 +164,7 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
       if (infoMgr.GetCurrentSongTag())
         m_tag = *infoMgr.GetCurrentSongTag();
 
-      if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_MYMUSIC_SONGTHUMBINVIS))
+      if (CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_MYMUSIC_SONGTHUMBINVIS))
       { // always on
         m_initTimer.Stop();
       }
@@ -217,7 +217,7 @@ void CGUIWindowVisualisation::FrameMove()
   if (m_initTimer.IsRunning() && m_initTimer.GetElapsedSeconds() > (float)g_advancedSettings.m_songInfoDuration)
   {
     m_initTimer.Stop();
-    if (!CServiceBroker::GetSettings().GetBool(CSettings::SETTING_MYMUSIC_SONGTHUMBINVIS))
+    if (!CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_MYMUSIC_SONGTHUMBINVIS))
     { // reached end of fade in, fade out again
       infoMgr.GetInfoProviders().GetPlayerInfoProvider().SetShowInfo(false);
     }

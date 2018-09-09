@@ -32,7 +32,7 @@ std::unique_ptr<CFontResource> CFontResource::FromExtension(CAddonInfo addonInfo
 
 void CFontResource::OnPostInstall(bool update, bool modal)
 {
-  std::string skin = CServiceBroker::GetSettings().GetString(CSettings::SETTING_LOOKANDFEEL_SKIN);
+  std::string skin = CServiceBroker::GetSettings()->GetString(CSettings::SETTING_LOOKANDFEEL_SKIN);
   const auto& deps = CServiceBroker::GetAddonMgr().GetDepsRecursive(skin);
   for (const auto& it : deps)
     if (it.id == ID())

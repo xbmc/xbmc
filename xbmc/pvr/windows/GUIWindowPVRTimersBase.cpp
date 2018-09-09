@@ -77,7 +77,7 @@ bool CGUIWindowPVRTimersBase::Update(const std::string &strDirectory, bool updat
 
 void CGUIWindowPVRTimersBase::UpdateButtons(void)
 {
-  SET_CONTROL_SELECTED(GetID(), CONTROL_BTNHIDEDISABLEDTIMERS, CServiceBroker::GetSettings().GetBool(CSettings::SETTING_PVRTIMERS_HIDEDISABLEDTIMERS));
+  SET_CONTROL_SELECTED(GetID(), CONTROL_BTNHIDEDISABLEDTIMERS, CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_PVRTIMERS_HIDEDISABLEDTIMERS));
 
   CGUIWindowPVRBase::UpdateButtons();
 
@@ -137,8 +137,8 @@ bool CGUIWindowPVRTimersBase::OnMessage(CGUIMessage &message)
       }
       else if (message.GetSenderId() == CONTROL_BTNHIDEDISABLEDTIMERS)
       {
-        CServiceBroker::GetSettings().ToggleBool(CSettings::SETTING_PVRTIMERS_HIDEDISABLEDTIMERS);
-        CServiceBroker::GetSettings().Save();
+        CServiceBroker::GetSettings()->ToggleBool(CSettings::SETTING_PVRTIMERS_HIDEDISABLEDTIMERS);
+        CServiceBroker::GetSettings()->Save();
         Update(GetDirectoryPath());
         bReturn = true;
       }

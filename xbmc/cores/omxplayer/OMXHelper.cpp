@@ -24,23 +24,23 @@
 bool OMXPlayerUnsuitable(bool m_HasVideo, bool m_HasAudio, CDVDDemux* m_pDemuxer, std::shared_ptr<CDVDInputStream> m_pInputStream, CSelectionStreams &m_SelectionStreams)
 {
   // if no OMXPlayer acceleration then it is not suitable
-  if (!CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_USEOMXPLAYER))
+  if (!CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEOMXPLAYER))
     return true;
   // if no MMAL acceleration stick with omxplayer regardless
-  if (!CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_USEMMAL))
+  if (!CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEMMAL))
     return false;
 
   // omxplayer only handles Pi sink
-  if (CServiceBroker::GetSettings().GetString(CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE) != "PI:Analogue" &&
-      CServiceBroker::GetSettings().GetString(CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE) != "PI:HDMI" &&
-      CServiceBroker::GetSettings().GetString(CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE) != "PI:Both" &&
-      CServiceBroker::GetSettings().GetString(CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE) != "Default")
+  if (CServiceBroker::GetSettings()->GetString(CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE) != "PI:Analogue" &&
+      CServiceBroker::GetSettings()->GetString(CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE) != "PI:HDMI" &&
+      CServiceBroker::GetSettings()->GetString(CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE) != "PI:Both" &&
+      CServiceBroker::GetSettings()->GetString(CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE) != "Default")
   {
     CLog::Log(LOGNOTICE, "%s OMXPlayer unsuitable due to audio sink", __func__);
     return true;
   }
   // omxplayer doesn't handle ac3 transcode
-  if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_AUDIOOUTPUT_AC3TRANSCODE))
+  if (CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_AUDIOOUTPUT_AC3TRANSCODE))
   {
     CLog::Log(LOGNOTICE, "%s OMXPlayer unsuitable due to ac3transcode", __func__);
     return true;

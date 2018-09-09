@@ -31,7 +31,7 @@ JSONRPC_STATUS CSettingsOperations::GetSections(const std::string &method, ITran
   result["sections"] = CVariant(CVariant::VariantTypeArray);
 
   // apply the level filter
-  SettingSectionList allSections = CServiceBroker::GetSettings().GetSections();
+  SettingSectionList allSections = CServiceBroker::GetSettings()->GetSections();
   for (SettingSectionList::const_iterator itSection = allSections.begin(); itSection != allSections.end(); ++itSection)
   {
     SettingCategoryList categories = (*itSection)->GetCategories(level);
@@ -70,14 +70,14 @@ JSONRPC_STATUS CSettingsOperations::GetCategories(const std::string &method, ITr
   std::vector<SettingSectionPtr> sections;
   if (!strSection.empty())
   {
-    SettingSectionPtr section = CServiceBroker::GetSettings().GetSection(strSection);
+    SettingSectionPtr section = CServiceBroker::GetSettings()->GetSection(strSection);
     if (section == NULL)
       return InvalidParams;
 
     sections.push_back(section);
   }
   else
-    sections = CServiceBroker::GetSettings().GetSections();
+    sections = CServiceBroker::GetSettings()->GetSections();
 
   result["categories"] = CVariant(CVariant::VariantTypeArray);
 
@@ -142,14 +142,14 @@ JSONRPC_STATUS CSettingsOperations::GetSettings(const std::string &method, ITran
 
   if (doFilter)
   {
-    SettingSectionPtr section = CServiceBroker::GetSettings().GetSection(strSection);
+    SettingSectionPtr section = CServiceBroker::GetSettings()->GetSection(strSection);
     if (section == NULL)
       return InvalidParams;
 
     sections.push_back(section);
   }
   else
-    sections = CServiceBroker::GetSettings().GetSections();
+    sections = CServiceBroker::GetSettings()->GetSections();
 
   result["settings"] = CVariant(CVariant::VariantTypeArray);
 
@@ -195,7 +195,7 @@ JSONRPC_STATUS CSettingsOperations::GetSettingValue(const std::string &method, I
 {
   std::string settingId = parameterObject["setting"].asString();
 
-  SettingPtr setting = CServiceBroker::GetSettings().GetSetting(settingId);
+  SettingPtr setting = CServiceBroker::GetSettings()->GetSetting(settingId);
   if (setting == NULL ||
       !setting->IsVisible())
     return InvalidParams;
@@ -221,7 +221,7 @@ JSONRPC_STATUS CSettingsOperations::GetSettingValue(const std::string &method, I
 
   case SettingType::List:
   {
-    SerializeSettingListValues(CServiceBroker::GetSettings().GetList(settingId), value);
+    SerializeSettingListValues(CServiceBroker::GetSettings()->GetList(settingId), value);
     break;
   }
 
@@ -241,7 +241,7 @@ JSONRPC_STATUS CSettingsOperations::SetSettingValue(const std::string &method, I
   std::string settingId = parameterObject["setting"].asString();
   CVariant value = parameterObject["value"];
 
-  SettingPtr setting = CServiceBroker::GetSettings().GetSetting(settingId);
+  SettingPtr setting = CServiceBroker::GetSettings()->GetSetting(settingId);
   if (setting == NULL ||
       !setting->IsVisible())
     return InvalidParams;
@@ -285,7 +285,7 @@ JSONRPC_STATUS CSettingsOperations::SetSettingValue(const std::string &method, I
     for (CVariant::const_iterator_array itValue = value.begin_array(); itValue != value.end_array(); ++itValue)
       values.push_back(*itValue);
 
-    result = CServiceBroker::GetSettings().SetList(settingId, values);
+    result = CServiceBroker::GetSettings()->SetList(settingId, values);
     break;
   }
 
@@ -302,7 +302,7 @@ JSONRPC_STATUS CSettingsOperations::ResetSettingValue(const std::string &method,
 {
   std::string settingId = parameterObject["setting"].asString();
 
-  SettingPtr setting = CServiceBroker::GetSettings().GetSetting(settingId);
+  SettingPtr setting = CServiceBroker::GetSettings()->GetSetting(settingId);
   if (setting == NULL ||
       !setting->IsVisible())
     return InvalidParams;

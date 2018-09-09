@@ -23,10 +23,10 @@ CGUIComponent::CGUIComponent()
   m_pWindowManager.reset(new CGUIWindowManager());
   m_pTextureManager.reset(new CGUITextureManager());
   m_pLargeTextureManager.reset(new CGUILargeTextureManager());
-  m_stereoscopicsManager.reset(new CStereoscopicsManager(CServiceBroker::GetSettings()));
+  m_stereoscopicsManager.reset(new CStereoscopicsManager());
   m_guiInfoManager.reset(new CGUIInfoManager());
   m_guiColorManager.reset(new CGUIColorManager());
-  m_guiAudioManager.reset(new CGUIAudioManager(CServiceBroker::GetSettings()));
+  m_guiAudioManager.reset(new CGUIAudioManager());
 }
 
 CGUIComponent::~CGUIComponent()

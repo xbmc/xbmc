@@ -70,7 +70,7 @@ std::unique_ptr<CWinSystemBase> CWinSystemBase::CreateWinSystem()
 
 int CWinSystemIOS::GetDisplayIndexFromSettings()
 {
-  std::string currentScreen = CServiceBroker::GetSettings().GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR);
+  std::string currentScreen = CServiceBroker::GetSettings()->GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR);
   
   int screenIdx = 0;
   if (currentScreen == CONST_EXTERNAL)

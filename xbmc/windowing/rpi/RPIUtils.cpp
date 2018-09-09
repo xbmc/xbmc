@@ -128,7 +128,7 @@ bool CRPIUtils::SetNativeResolution(const RESOLUTION_INFO res, EGLSurface m_nati
       /* inform TV of any 3D settings. Note this property just applies to next hdmi mode change, so no need to call for 2D modes */
       HDMI_PROPERTY_PARAM_T property;
       property.property = HDMI_PROPERTY_3D_STRUCTURE;
-      if (CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOSCREEN_FRAMEPACKING) && CServiceBroker::GetSettings().GetBool(CSettings::SETTING_VIDEOPLAYER_SUPPORTMVC) && res.fRefreshRate <= 30.0f)
+      if (CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_VIDEOSCREEN_FRAMEPACKING) && CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_SUPPORTMVC) && res.fRefreshRate <= 30.0f)
         property.param1 = HDMI_3D_FORMAT_FRAME_PACKING;
       else if (stereo_mode == RENDER_STEREO_MODE_SPLIT_VERTICAL)
         property.param1 = HDMI_3D_FORMAT_SBS_HALF;

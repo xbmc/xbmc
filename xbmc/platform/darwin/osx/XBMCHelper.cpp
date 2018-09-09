@@ -98,7 +98,7 @@ bool XBMCHelper::OnSettingChanging(std::shared_ptr<const CSetting> setting)
     if (remoteMode != APPLE_REMOTE_DISABLED)
     {
       // if starting the event server fails, we have to revert the change
-      if (!CServiceBroker::GetSettings().SetBool("services.esenabled", true))
+      if (!CServiceBroker::GetSettings()->SetBool("services.esenabled", true))
         return false;
     }
 
@@ -171,9 +171,9 @@ void XBMCHelper::Configure()
 
   // Read the new configuration.
   m_errorStarting = false;
-  m_mode = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_INPUT_APPLEREMOTEMODE);
-  m_sequenceDelay = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_INPUT_APPLEREMOTESEQUENCETIME);
-  m_port = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_SERVICES_ESPORT);
+  m_mode = CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_INPUT_APPLEREMOTEMODE);
+  m_sequenceDelay = CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_INPUT_APPLEREMOTESEQUENCETIME);
+  m_port = CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_SERVICES_ESPORT);
 
 
   // Don't let it enable if sofa control or remote buddy is around.
@@ -184,7 +184,7 @@ void XBMCHelper::Configure()
       m_errorStarting = true;
 
     m_mode = APPLE_REMOTE_DISABLED;
-    CServiceBroker::GetSettings().SetInt(CSettings::SETTING_INPUT_APPLEREMOTEMODE, APPLE_REMOTE_DISABLED);
+    CServiceBroker::GetSettings()->SetInt(CSettings::SETTING_INPUT_APPLEREMOTEMODE, APPLE_REMOTE_DISABLED);
   }
 
   // New configuration.
@@ -259,7 +259,7 @@ void XBMCHelper::Configure()
 void XBMCHelper::HandleLaunchAgent()
 {
   bool oldAlwaysOn = m_alwaysOn;
-  m_alwaysOn = CServiceBroker::GetSettings().GetBool(CSettings::SETTING_INPUT_APPLEREMOTEALWAYSON);
+  m_alwaysOn = CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_INPUT_APPLEREMOTEALWAYSON);
 
   // Installation/uninstallation.
   if (oldAlwaysOn == false && m_alwaysOn == true)

@@ -324,7 +324,7 @@ bool CPlayerController::OnAction(const CAction &action)
       case ACTION_SUBTITLE_VSHIFT_UP:
       {
         RESOLUTION_INFO res_info = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo();
-        int subalign = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_SUBTITLES_ALIGN);
+        int subalign = CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_SUBTITLES_ALIGN);
         if ((subalign == SUBTITLE_ALIGN_BOTTOM_OUTSIDE) || (subalign == SUBTITLE_ALIGN_TOP_INSIDE))
         {
           res_info.iSubtitles ++;
@@ -351,7 +351,7 @@ bool CPlayerController::OnAction(const CAction &action)
       case ACTION_SUBTITLE_VSHIFT_DOWN:
       {
         RESOLUTION_INFO res_info =  CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo();
-        int subalign = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_SUBTITLES_ALIGN);
+        int subalign = CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_SUBTITLES_ALIGN);
         if ((subalign == SUBTITLE_ALIGN_BOTTOM_OUTSIDE) || (subalign == SUBTITLE_ALIGN_TOP_INSIDE))
         {
           res_info.iSubtitles--;
@@ -378,7 +378,7 @@ bool CPlayerController::OnAction(const CAction &action)
       case ACTION_SUBTITLE_ALIGN:
       {
         RESOLUTION_INFO res_info = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo();
-        int subalign = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_SUBTITLES_ALIGN);
+        int subalign = CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_SUBTITLES_ALIGN);
 
         subalign++;
         if (subalign > SUBTITLE_ALIGN_TOP_OUTSIDE)
@@ -386,7 +386,7 @@ bool CPlayerController::OnAction(const CAction &action)
 
         res_info.iSubtitles = res_info.iHeight - 1;
 
-        CServiceBroker::GetSettings().SetInt(CSettings::SETTING_SUBTITLES_ALIGN, subalign);
+        CServiceBroker::GetSettings()->SetInt(CSettings::SETTING_SUBTITLES_ALIGN, subalign);
         CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info,
                                               g_localizeStrings.Get(21460),
                                               g_localizeStrings.Get(21461 + subalign),
@@ -464,7 +464,7 @@ bool CPlayerController::OnAction(const CAction &action)
 
       case ACTION_PLAYER_RESOLUTION_SELECT:
       {
-        std::vector<CVariant> indexList = CServiceBroker::GetSettings().GetList(CSettings::SETTING_VIDEOSCREEN_WHITELIST);
+        std::vector<CVariant> indexList = CServiceBroker::GetSettings()->GetList(CSettings::SETTING_VIDEOSCREEN_WHITELIST);
 
         CGUIDialogSelect *dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
         if (dialog)

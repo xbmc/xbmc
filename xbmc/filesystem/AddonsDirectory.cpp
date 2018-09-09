@@ -629,7 +629,7 @@ static void RootDirectory(CFileItemList& items)
     item->SetIconImage("DefaultNetwork.png");
     items.Add(item);
   }
-  if (CServiceBroker::GetSettings().GetInt(CSettings::SETTING_ADDONS_AUTOUPDATES) == ADDON::AUTO_UPDATES_ON
+  if (CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_ADDONS_AUTOUPDATES) == ADDON::AUTO_UPDATES_ON
       && HasRecentlyUpdatedAddons())
   {
     CFileItemPtr item(new CFileItem("addons://recently_updated/", true));

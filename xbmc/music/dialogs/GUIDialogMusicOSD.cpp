@@ -39,8 +39,8 @@ bool CGUIDialogMusicOSD::OnMessage(CGUIMessage &message)
         std::string addonID;
         if (CGUIWindowAddonBrowser::SelectAddonID(ADDON::ADDON_VIZ, addonID, true) == 1)
         {
-          CServiceBroker::GetSettings().SetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION, addonID);
-          CServiceBroker::GetSettings().Save();
+          CServiceBroker::GetSettings()->SetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION, addonID);
+          CServiceBroker::GetSettings()->Save();
           CServiceBroker::GetGUI()->GetWindowManager().SendMessage(GUI_MSG_VISUALISATION_RELOAD, 0, 0);
         }
       }

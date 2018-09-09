@@ -116,8 +116,8 @@ CLinuxRendererGL::CLinuxRendererGL()
   m_iFlags = 0;
   m_format = AV_PIX_FMT_NONE;
 
-  m_useDithering = CServiceBroker::GetSettings().GetBool("videoscreen.dither");
-  m_ditherDepth = CServiceBroker::GetSettings().GetInt("videoscreen.ditherdepth");
+  m_useDithering = CServiceBroker::GetSettings()->GetBool("videoscreen.dither");
+  m_ditherDepth = CServiceBroker::GetSettings()->GetInt("videoscreen.ditherdepth");
   m_fullRange = !CServiceBroker::GetWinSystem()->UseLimitedColor();
 
   m_fbo.width = 0.0;
@@ -874,7 +874,7 @@ void CLinuxRendererGL::LoadShaders(int field)
 
   if (!LoadShadersHook())
   {
-    int requestedMethod = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_VIDEOPLAYER_RENDERMETHOD);
+    int requestedMethod = CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_VIDEOPLAYER_RENDERMETHOD);
     CLog::Log(LOGDEBUG, "GL: Requested render method: %d", requestedMethod);
 
     if (m_pYUVShader)
@@ -2603,7 +2603,7 @@ bool CLinuxRendererGL::Supports(ESCALINGMETHOD method)
     // if scaling is below level, avoid hq scaling
     float scaleX = fabs(((float)m_sourceWidth - m_destRect.Width())/m_sourceWidth)*100;
     float scaleY = fabs(((float)m_sourceHeight - m_destRect.Height())/m_sourceHeight)*100;
-    int minScale = CServiceBroker::GetSettings().GetInt(CSettings::SETTING_VIDEOPLAYER_HQSCALERS);
+    int minScale = CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_VIDEOPLAYER_HQSCALERS);
     if (scaleX < minScale && scaleY < minScale)
       return false;
 
