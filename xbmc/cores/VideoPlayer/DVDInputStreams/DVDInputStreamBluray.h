@@ -131,7 +131,7 @@ protected:
 
   IVideoPlayer* m_player = nullptr;
   BLURAY* m_bd = nullptr;
-  BLURAY_TITLE_INFO* m_title = nullptr;
+  BLURAY_TITLE_INFO* m_titleInfo = nullptr;
   uint32_t m_playlist = MAX_PLAYLIST_ID + 1;
   BLURAY_CLIP_INFO* m_clip = nullptr;
   uint32_t m_angle = 0;
