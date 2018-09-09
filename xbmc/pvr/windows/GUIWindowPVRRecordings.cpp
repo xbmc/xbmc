@@ -331,11 +331,10 @@ void CGUIWindowPVRRecordingsBase::OnPrepareFileItems(CFileItemList& items)
     return;
 
   CFileItemList files;
-  VECFILEITEMS vecItems = items.GetList();
-  for (VECFILEITEMS::const_iterator it = vecItems.begin(); it != vecItems.end(); ++it)
+  for (const auto& item : items)
   {
-    if (!(*it)->m_bIsFolder)
-      files.Add((*it));
+    if (!item->m_bIsFolder)
+      files.Add(item);
   }
 
   if (!files.IsEmpty())

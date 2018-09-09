@@ -39,26 +39,23 @@ CGUIDialogPVRChannelsOSD::~CGUIDialogPVRChannelsOSD()
 
 bool CGUIDialogPVRChannelsOSD::OnMessage(CGUIMessage& message)
 {
-  switch (message.GetMessage())
+  if (message.GetMessage() == GUI_MSG_REFRESH_LIST)
   {
-  case GUI_MSG_REFRESH_LIST:
+    switch (message.GetParam1())
     {
-      switch(message.GetParam1())
-      {
-        case ObservableMessageCurrentItem:
-          m_viewControl.SetItems(*m_vecItems);
-          return true;
-        case ObservableMessageEpg:
-        case ObservableMessageEpgContainer:
-        case ObservableMessageEpgActiveItem:
-          if (IsActive())
-            SetInvalid();
-          return true;
-      }
+      case ObservableMessageCurrentItem:
+        m_viewControl.SetItems(*m_vecItems);
+        return true;
+      case ObservableMessageEpg:
+      case ObservableMessageEpgContainer:
+      case ObservableMessageEpgActiveItem:
+        if (IsActive())
+          SetInvalid();
+        return true;
+      default:
+        break;
     }
-    break;
   }
-
   return CGUIDialogPVRItemsViewBase::OnMessage(message);
 }
 
@@ -92,19 +89,19 @@ bool CGUIDialogPVRChannelsOSD::OnAction(const CAction &action)
 {
   switch (action.GetID())
   {
-  case ACTION_SELECT_ITEM:
-  case ACTION_MOUSE_LEFT_CLICK:
+    case ACTION_SELECT_ITEM:
+    case ACTION_MOUSE_LEFT_CLICK:
     {
       // If direct channel number input is active, select the entered channel.
       if (CServiceBroker::GetPVRManager().GUIActions()->GetChannelNumberInputHandler().CheckInputAndExecuteAction())
         return true;
 
-      /* Switch to channel */
+      // Switch to channel
       GotoChannel(m_viewControl.GetSelectedItem());
       return true;
     }
-  case ACTION_PREVIOUS_CHANNELGROUP:
-  case ACTION_NEXT_CHANNELGROUP:
+    case ACTION_PREVIOUS_CHANNELGROUP:
+    case ACTION_NEXT_CHANNELGROUP:
     {
       // save control states and currently selected item of group
       SaveControlStates();
@@ -120,25 +117,27 @@ bool CGUIDialogPVRChannelsOSD::OnAction(const CAction &action)
       RestoreControlStates();
       return true;
     }
-  case REMOTE_0:
-  case REMOTE_1:
-  case REMOTE_2:
-  case REMOTE_3:
-  case REMOTE_4:
-  case REMOTE_5:
-  case REMOTE_6:
-  case REMOTE_7:
-  case REMOTE_8:
-  case REMOTE_9:
+    case REMOTE_0:
+    case REMOTE_1:
+    case REMOTE_2:
+    case REMOTE_3:
+    case REMOTE_4:
+    case REMOTE_5:
+    case REMOTE_6:
+    case REMOTE_7:
+    case REMOTE_8:
+    case REMOTE_9:
     {
       AppendChannelNumberCharacter((action.GetID() - REMOTE_0) + '0');
       return true;
     }
-  case ACTION_CHANNEL_NUMBER_SEP:
+    case ACTION_CHANNEL_NUMBER_SEP:
     {
       AppendChannelNumberCharacter(CPVRChannelNumber::SEPARATOR);
       return true;
     }
+    default:
+      break;
   }
 
   return CGUIDialogPVRItemsViewBase::OnAction(action);
@@ -147,12 +146,14 @@ bool CGUIDialogPVRChannelsOSD::OnAction(const CAction &action)
 void CGUIDialogPVRChannelsOSD::Update()
 {
   CServiceBroker::GetGUI()->GetInfoManager().RegisterObserver(this);
-  CServiceBroker::GetPVRManager().EpgContainer().RegisterObserver(this);
 
-  CPVRChannelPtr channel(CServiceBroker::GetPVRManager().GetPlayingChannel());
+  CPVRManager& pvrMgr = CServiceBroker::GetPVRManager();
+  pvrMgr.EpgContainer().RegisterObserver(this);
+
+  const CPVRChannelPtr channel = pvrMgr.GetPlayingChannel();
   if (channel)
   {
-    CPVRChannelGroupPtr group = CServiceBroker::GetPVRManager().GetPlayingGroup(channel->IsRadio());
+    const CPVRChannelGroupPtr group = pvrMgr.GetPlayingGroup(channel->IsRadio());
     if (group)
     {
       group->GetMembers(*m_vecItems);
@@ -161,7 +162,7 @@ void CGUIDialogPVRChannelsOSD::Update()
       if (!m_group)
       {
         m_group = group;
-        m_viewControl.SetSelectedItem(CServiceBroker::GetPVRManager().GUIActions()->GetSelectedItemPath(channel->IsRadio()));
+        m_viewControl.SetSelectedItem(pvrMgr.GUIActions()->GetSelectedItemPath(channel->IsRadio()));
         SaveSelectedItemPath(group->GroupID());
       }
     }
@@ -172,9 +173,9 @@ void CGUIDialogPVRChannelsOSD::SetInvalid()
 {
   if (m_refreshTimeout.IsTimePast())
   {
-    VECFILEITEMS items = m_vecItems->GetList();
-    for (VECFILEITEMS::iterator it = items.begin(); it != items.end(); ++it)
-      (*it)->SetInvalid();
+    for (const auto& item : *m_vecItems)
+      item->SetInvalid();
+
     CGUIDialogPVRItemsViewBase::SetInvalid();
     m_refreshTimeout.Set(MAX_INVALIDATION_FREQUENCY);
   }
@@ -194,11 +195,11 @@ void CGUIDialogPVRChannelsOSD::RestoreControlStates()
 
   if (m_group)
   {
-    std::string path = GetLastSelectedItemPath(m_group->GroupID());
-    if (!path.empty())
-      m_viewControl.SetSelectedItem(path);
-    else
+    const std::string path = GetLastSelectedItemPath(m_group->GroupID());
+    if (path.empty())
       m_viewControl.SetSelectedItem(0);
+    else
+      m_viewControl.SetSelectedItem(path);
   }
 }
 
@@ -215,7 +216,7 @@ void CGUIDialogPVRChannelsOSD::GotoChannel(int item)
 
 void CGUIDialogPVRChannelsOSD::Notify(const Observable &obs, const ObservableMessage msg)
 {
-  CGUIMessage m(GUI_MSG_REFRESH_LIST, GetID(), 0, msg);
+  const CGUIMessage m(GUI_MSG_REFRESH_LIST, GetID(), 0, msg);
   CApplicationMessenger::GetInstance().SendGUIMessage(m);
 }
 
@@ -226,10 +227,11 @@ void CGUIDialogPVRChannelsOSD::SaveSelectedItemPath(int iGroupID)
 
 std::string CGUIDialogPVRChannelsOSD::GetLastSelectedItemPath(int iGroupID) const
 {
-  std::map<int, std::string>::const_iterator it = m_groupSelectedItemPaths.find(iGroupID);
+  const auto it = m_groupSelectedItemPaths.find(iGroupID);
   if (it != m_groupSelectedItemPaths.end())
     return it->second;
-  return "";
+
+  return std::string();
 }
 
 void CGUIDialogPVRChannelsOSD::GetChannelNumbers(std::vector<std::string>& channelNumbers)
@@ -244,7 +246,7 @@ void CGUIDialogPVRChannelsOSD::OnInputDone()
   if (channelNumber.IsValid())
   {
     int itemIndex = 0;
-    for (const CFileItemPtr channel : m_vecItems->GetList())
+    for (const CFileItemPtr channel : *m_vecItems)
     {
       if (channel->GetPVRChannelInfoTag()->ChannelNumber() == channelNumber)
       {

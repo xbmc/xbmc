@@ -1673,7 +1673,7 @@ bool CApplication::LoadCustomWindows()
     CFileItemList items;
     if (CDirectory::GetDirectory(skinPath, items, ".xml", DIR_FLAG_NO_FILE_DIRS))
     {
-      for (const auto &item : items.GetList())
+      for (const auto &item : items)
       {
         if (item->m_bIsFolder)
           continue;

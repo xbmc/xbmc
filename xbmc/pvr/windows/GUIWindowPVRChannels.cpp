@@ -314,7 +314,7 @@ void CGUIWindowPVRChannelsBase::OnInputDone()
   if (channelNumber.IsValid())
   {
     int itemIndex = 0;
-    for (const CFileItemPtr channel : m_vecItems->GetList())
+    for (const CFileItemPtr channel : *m_vecItems)
     {
       if (channel->GetPVRChannelInfoTag()->ChannelNumber() == channelNumber)
       {

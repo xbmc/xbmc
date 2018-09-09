@@ -201,7 +201,7 @@ void CGUIDialogVideoBookmarks::UpdateItem(unsigned int chapterIdx)
   CSingleLock lock(m_refreshSection);
 
   int itemPos = 0;
-  for (auto& item : m_vecItems->GetList())
+  for (const auto& item : *m_vecItems)
   {
     if (chapterIdx == item->GetProperty("chapter").asInteger())
       break;

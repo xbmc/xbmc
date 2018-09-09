@@ -202,13 +202,12 @@ void CPVRChannelGroup::SearchAndSetChannelIcons(bool bUpdateDb /* = false */)
 
   /* create a map for fast lookup of normalized file base name */
   std::map<std::string, std::string> fileItemMap;
-  const VECFILEITEMS &items = fileItemList.GetList();
-  for(VECFILEITEMS::const_iterator it = items.begin(); it != items.end(); ++it)
+  for (const auto& item : fileItemList)
   {
-    std::string baseName = URIUtils::GetFileName((*it)->GetPath());
+    std::string baseName = URIUtils::GetFileName(item->GetPath());
     URIUtils::RemoveExtension(baseName);
     StringUtils::ToLower(baseName);
-    fileItemMap.insert(std::make_pair(baseName, (*it)->GetPath()));
+    fileItemMap.insert(std::make_pair(baseName, item->GetPath()));
   }
 
   CPVRGUIProgressHandler* progressHandler = new CPVRGUIProgressHandler(g_localizeStrings.Get(19286)); // Searching for channel icons

@@ -194,12 +194,8 @@ bool CPVRRecordings::DeleteDirectory(const CFileItem& directory)
   XFILE::CDirectory::GetDirectory(directory.GetPath(), items, "", XFILE::DIR_FLAG_DEFAULTS);
 
   bool allDeleted = true;
-
-  VECFILEITEMS itemList = items.GetList();
-  CFileItem item;
-
-  for (const auto item : itemList)
-    allDeleted &= Delete(*(item.get()));
+  for (const auto& item : items)
+    allDeleted &= Delete(*item);
 
   return allDeleted;
 }
