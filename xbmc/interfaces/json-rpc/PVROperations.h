@@ -9,7 +9,7 @@
 #pragma once
 
 #include "FileItemHandler.h"
-#include "pvr/channels/PVRChannelGroup.h"
+#include "pvr/PVRTypes.h"
 
 class CVariant;
 
@@ -40,5 +40,8 @@ namespace JSONRPC
   private:
     static JSONRPC_STATUS GetPropertyValue(const std::string &property, CVariant &result);
     static void FillChannelGroupDetails(const PVR::CPVRChannelGroupPtr &channelGroup, const CVariant &parameterObject, CVariant &result, bool append = false);
+    static PVR::CPVRChannelGroupPtr GetChannelGroup(const CVariant &parameterObject);
+    static PVR::CPVRChannelPtr GetChannel(const CVariant &parameterObject);
+    static PVR::CPVREpgInfoTagPtr GetEpgTag(const CVariant &parameterObject);
   };
 }
