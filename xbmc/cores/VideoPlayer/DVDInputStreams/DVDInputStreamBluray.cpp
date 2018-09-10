@@ -426,6 +426,17 @@ void CDVDInputStreamBluray::ProcessEvent() {
   case BD_EVENT_STILL:
     CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - BD_EVENT_STILL %d",
         m_event.param);
+
+    pid = m_event.param;
+
+    if (pid == 1)
+    {
+      m_hold = HOLD_PAUSE;
+    }
+    else
+      m_hold = HOLD_HELD; //HOLD_NONE
+
+    m_player->OnDiscNavResult(static_cast<void*>(&pid), BD_EVENT_STILL);
     break;
 
     /* playback position */
@@ -577,8 +588,9 @@ int CDVDInputStreamBluray::Read(uint8_t* buf, int buf_size)
   {
     do {
 
-      if(m_hold == HOLD_HELD)
-        return 0;
+      if (m_hold == HOLD_PAUSE ||
+          m_hold == HOLD_HELD)
+         return 0;
 
       if(  m_hold == HOLD_ERROR
         || m_hold == HOLD_EXIT)
@@ -1009,7 +1021,7 @@ CDVDInputStream::ENextStream CDVDInputStreamBluray::NextStream()
   while(bd_get_event(m_bd, &m_event))
     ProcessEvent();
 
-  if(m_hold == HOLD_STILL)
+  if(m_hold == HOLD_STILL || m_hold == HOLD_PAUSE)
     return NEXTSTREAM_RETRY;
 
   m_hold = HOLD_DATA;
@@ -1108,7 +1120,8 @@ void CDVDInputStreamBluray::SkipStill()
   if(m_bd == nullptr || !m_navmode)
     return;
 
-  if(m_hold == HOLD_STILL)
+  if ( m_hold == HOLD_STILL
+    || m_hold == HOLD_PAUSE)
   {
     m_hold = HOLD_HELD;
     bd_read_skip_still(m_bd);
