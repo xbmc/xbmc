@@ -618,10 +618,18 @@ bool CUtil::GetDirectoryName(const std::string& strFileName, std::string& strDes
 
 void CUtil::GetDVDDriveIcon(const std::string& strPath, std::string& strIcon)
 {
-  if ( !g_mediaManager.IsDiscInDrive() )
+  if (!g_mediaManager.IsDiscInDrive(strPath))
   {
     strIcon = "DefaultDVDEmpty.png";
     return ;
+  }
+
+  CFileItem item = CFileItem(strPath, false);
+
+  if (item.IsBluray())
+  {
+    strIcon = "DefaultBluray.png";
+    return;
   }
 
   if ( URIUtils::IsDVD(strPath) )
