@@ -125,7 +125,10 @@ void CPVRGUITimesInfo::UpdateTimeshiftData()
   {
     // timeshifting supported
     m_iTimeshiftPlayTime = iStartTime + iPlayTime / 1000;
-    m_iTimeshiftOffset = (iMaxTime - iPlayTime) / 1000;
+    if (iMaxTime > iPlayTime)
+      m_iTimeshiftOffset = (iMaxTime - iPlayTime) / 1000;
+    else
+      m_iTimeshiftOffset = 0;
   }
   else
   {

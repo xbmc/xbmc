@@ -180,7 +180,7 @@ void CPVRGUIInfo::Process(void)
       iLoop = 0;
 
     if (!m_bStop)
-      Sleep(1000);
+      Sleep(500);
   }
 }
 
