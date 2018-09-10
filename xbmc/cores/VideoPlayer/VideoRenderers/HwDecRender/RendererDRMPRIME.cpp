@@ -150,9 +150,6 @@ void CRendererDRMPRIME::Update()
 
 void CRendererDRMPRIME::RenderUpdate(int index, int index2, bool clear, unsigned int flags, unsigned int alpha)
 {
-  if (m_iLastRenderBuffer == index)
-    return;
-
   CVideoBufferDRMPRIME* buffer = dynamic_cast<CVideoBufferDRMPRIME*>(m_buffers[index].videoBuffer);
   if (!buffer)
     return;
