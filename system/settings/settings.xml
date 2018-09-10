@@ -2015,7 +2015,7 @@
         <setting id="gamesgeneral.enable" type="boolean">
           <visible>false</visible>
           <level>0</level>
-          <default>false</default>
+          <default>true</default>
           <control type="toggle" />
         </setting>
         <setting id="gamesgeneral.enableautosave" type="boolean" label="35253" help="35254">
