@@ -170,7 +170,15 @@ JSONRPC_STATUS CPVROperations::GetBroadcastDetails(const std::string &method, IT
   if (!CServiceBroker::GetPVRManager().IsStarted())
     return FailedToExecute;
 
-  const CPVREpgInfoTagPtr epgTag = CServiceBroker::GetPVRManager().EpgContainer().GetTagById(CPVRChannelPtr(), parameterObject["broadcastid"].asUnsignedInteger());
+  const CPVRChannelGroupsContainerPtr channelGroupContainer = CServiceBroker::GetPVRManager().ChannelGroups();
+  if (!channelGroupContainer)
+    return FailedToExecute;
+
+  const CPVRChannelPtr channel = channelGroupContainer->GetChannelById(static_cast<int>(parameterObject["channelid"].asInteger()));
+  if (!channel)
+    return InvalidParams;
+
+  const CPVREpgInfoTagPtr epgTag = CServiceBroker::GetPVRManager().EpgContainer().GetTagById(channel, parameterObject["broadcastid"].asUnsignedInteger());
 
   if (!epgTag)
     return InvalidParams;
@@ -322,7 +330,15 @@ JSONRPC_STATUS CPVROperations::AddTimer(const std::string &method, ITransportLay
   if (!CServiceBroker::GetPVRManager().IsStarted())
     return FailedToExecute;
 
-  const CPVREpgInfoTagPtr epgTag = CServiceBroker::GetPVRManager().EpgContainer().GetTagById(CPVRChannelPtr(), parameterObject["broadcastid"].asUnsignedInteger());
+  const CPVRChannelGroupsContainerPtr channelGroupContainer = CServiceBroker::GetPVRManager().ChannelGroups();
+  if (!channelGroupContainer)
+    return FailedToExecute;
+
+  const CPVRChannelPtr channel = channelGroupContainer->GetChannelById(static_cast<int>(parameterObject["channelid"].asInteger()));
+  if (!channel)
+    return InvalidParams;
+
+  const CPVREpgInfoTagPtr epgTag = CServiceBroker::GetPVRManager().EpgContainer().GetTagById(channel, parameterObject["broadcastid"].asUnsignedInteger());
 
   if (!epgTag)
     return InvalidParams;
@@ -364,7 +380,15 @@ JSONRPC_STATUS CPVROperations::ToggleTimer(const std::string &method, ITransport
   if (!CServiceBroker::GetPVRManager().IsStarted())
     return FailedToExecute;
 
-  const CPVREpgInfoTagPtr epgTag = CServiceBroker::GetPVRManager().EpgContainer().GetTagById(CPVRChannelPtr(), parameterObject["broadcastid"].asUnsignedInteger());
+  const CPVRChannelGroupsContainerPtr channelGroupContainer = CServiceBroker::GetPVRManager().ChannelGroups();
+  if (!channelGroupContainer)
+    return FailedToExecute;
+
+  const CPVRChannelPtr channel = channelGroupContainer->GetChannelById(static_cast<int>(parameterObject["channelid"].asInteger()));
+  if (!channel)
+    return InvalidParams;
+
+  const CPVREpgInfoTagPtr epgTag = CServiceBroker::GetPVRManager().EpgContainer().GetTagById(channel, parameterObject["broadcastid"].asUnsignedInteger());
 
   if (!epgTag)
     return InvalidParams;
