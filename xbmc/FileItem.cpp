@@ -194,7 +194,22 @@ CFileItem::CFileItem(const CPVRRecordingPtr& record)
   m_pvrRecordingInfoTag = record;
   m_strPath = record->m_strFileNameAndPath;
   SetLabel(record->m_strTitle);
-  m_strLabel2 = record->RecordingTimeAsLocalTime().GetAsLocalizedDateTime(true, false);
+  m_dateTime = record->RecordingTimeAsLocalTime();
+  m_strLabel2 = m_dateTime.GetAsLocalizedDateTime(true, false);
+
+  // Set art
+  if (!record->m_strIconPath.empty())
+  {
+    SetIconImage(record->m_strIconPath);
+    SetArt("icon", record->m_strIconPath);
+  }
+
+  if (!record->m_strThumbnailPath.empty())
+    SetArt("thumb", record->m_strThumbnailPath);
+
+  if (!record->m_strFanartPath.empty())
+    SetArt("fanart", record->m_strFanartPath);
+
   FillInMimeType(false);
 }
 
