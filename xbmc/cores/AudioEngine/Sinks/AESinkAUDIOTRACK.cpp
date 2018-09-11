@@ -70,6 +70,7 @@ static int AEStreamFormatToATFormat(const CAEStreamInfo::DataType& dt)
     case CAEStreamInfo::STREAM_TYPE_DTSHD_CORE:
       return CJNIAudioFormat::ENCODING_DTS;
     case CAEStreamInfo::STREAM_TYPE_DTSHD:
+    case CAEStreamInfo::STREAM_TYPE_DTSHD_MA:
       return CJNIAudioFormat::ENCODING_DTS_HD;
     case CAEStreamInfo::STREAM_TYPE_EAC3:
       return CJNIAudioFormat::ENCODING_E_AC3;
@@ -344,7 +345,7 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
     m_encoding = AEStreamFormatToATFormat(m_format.m_streamInfo.m_type);
     m_format.m_channelLayout = AE_CH_LAYOUT_2_0;
 
-    if (m_format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_DTSHD ||
+    if (m_format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_DTSHD_MA ||
         m_format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD)
     {
       m_format.m_channelLayout = AE_CH_LAYOUT_7_1;
@@ -358,6 +359,7 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
     {
       m_format.m_dataFormat     = AE_FMT_S16LE;
       if (m_format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_DTSHD ||
+          m_format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_DTSHD_MA ||
           m_format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD)
         m_sink_sampleRate = 192000;
 
@@ -404,7 +406,7 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
   if (m_encoding == CJNIAudioFormat::ENCODING_IEC61937)
   {
     // keep above channel output if we do IEC61937 and got DTSHD or TrueHD by AudioEngine
-    if (m_format.m_streamInfo.m_type != CAEStreamInfo::STREAM_TYPE_DTSHD && m_format.m_streamInfo.m_type != CAEStreamInfo::STREAM_TYPE_TRUEHD)
+    if (m_format.m_streamInfo.m_type != CAEStreamInfo::STREAM_TYPE_DTSHD_MA && m_format.m_streamInfo.m_type != CAEStreamInfo::STREAM_TYPE_TRUEHD)
       atChannelMask = CJNIAudioFormat::CHANNEL_OUT_STEREO;
   }
 
@@ -439,6 +441,7 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
           m_format.m_frames = m_min_buffer_size;
           rawlength_in_seconds = 8 * m_format.m_streamInfo.GetDuration() / 1000; // on average
           break;
+        case CAEStreamInfo::STREAM_TYPE_DTSHD_MA:
         case CAEStreamInfo::STREAM_TYPE_DTSHD:
           // normal frame is max  2012 bytes + 2764 sub frame
           m_min_buffer_size = 66432; //according to the buffer model of ISO/IEC13818-1
@@ -923,6 +926,7 @@ void CAESinkAUDIOTRACK::UpdateAvailablePassthroughCapabilities()
       m_sink_sampleRates.insert(192000);
       m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_EAC3);
       m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD);
+      m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD_MA);
       m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_TRUEHD);
     }
     std::copy(m_sink_sampleRates.begin(), m_sink_sampleRates.end(), std::back_inserter(m_info.m_sampleRates));
@@ -937,6 +941,7 @@ void CAESinkAUDIOTRACK::UpdateAvailablePassthroughCapabilities()
         {
           CLog::Log(LOGDEBUG, "Firmware implements DTS-HD RAW");
           m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD);
+          m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD_MA);
         }
       }
       if (CJNIAudioFormat::ENCODING_DOLBY_TRUEHD != -1)
@@ -973,6 +978,7 @@ void CAESinkAUDIOTRACK::UpdateAvailablePassthroughCapabilities()
           if (VerifySinkConfiguration(192000, atChannelMask, CJNIAudioFormat::ENCODING_IEC61937))
           {
             m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD);
+            m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD_MA);
             m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_TRUEHD);
             CLog::Log(LOGDEBUG, "8 Channel PT via IEC61937 is supported");
           }
