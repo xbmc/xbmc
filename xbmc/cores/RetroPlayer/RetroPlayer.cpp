@@ -434,8 +434,11 @@ void CRetroPlayer::FrameMove()
 
   if (m_gameClient)
   {
+    const int windowId = CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow();
+    const bool bFullscreen = (windowId == WINDOW_FULLSCREEN_GAME);
+
     const int activeId = CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindowOrDialog();
-    const bool bFullscreen = (activeId == WINDOW_FULLSCREEN_GAME);
+    const bool bInMenu = (activeId != WINDOW_FULLSCREEN_GAME);
 
     switch (m_state)
     {
@@ -447,7 +450,7 @@ void CRetroPlayer::FrameMove()
     }
     case State::FULLSCREEN:
     {
-      if (!bFullscreen)
+      if (bInMenu)
       {
         m_priorSpeed = m_playback->GetSpeed();
 
@@ -468,7 +471,7 @@ void CRetroPlayer::FrameMove()
     }
     case State::BACKGROUND:
     {
-      if (bFullscreen)
+      if (!bInMenu)
       {
         if (m_playback->GetSpeed() == 0.0 && m_priorSpeed != 0.0)
         {
