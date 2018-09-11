@@ -89,7 +89,7 @@ int CStaticListProvider::GetDefaultItem() const
     {
       if ((*i)->IsVisible())
       {
-        if ((*i)->m_iprogramCount == m_defaultItem && (*i)->IsVisible())
+        if ((*i)->m_iprogramCount == m_defaultItem)
           return offset;
         offset++;
       }
