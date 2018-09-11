@@ -200,6 +200,7 @@ public:
   bool IsDiscImage() const;
   bool IsOpticalMediaFile() const;
   bool IsDVDFile(bool bVobs = true, bool bIfos = true) const;
+  bool IsDVDFolder() const;
   bool IsBDFile() const;
   bool IsBluray() const;
   bool IsRAR() const;
