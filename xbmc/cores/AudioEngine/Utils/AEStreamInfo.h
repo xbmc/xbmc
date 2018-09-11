@@ -36,7 +36,8 @@ public:
     STREAM_TYPE_DTSHD_CORE,
     STREAM_TYPE_EAC3,
     STREAM_TYPE_MLP,
-    STREAM_TYPE_TRUEHD
+    STREAM_TYPE_TRUEHD,
+    STREAM_TYPE_DTSHD_MA
   };
   DataType m_type = STREAM_TYPE_NULL;
   unsigned int m_sampleRate;

@@ -154,6 +154,8 @@ const char* CAEUtil::StreamTypeToStr(const enum CAEStreamInfo::DataType dataType
       return "STREAM_TYPE_AC3";
     case CAEStreamInfo::STREAM_TYPE_DTSHD:
       return "STREAM_TYPE_DTSHD";
+    case CAEStreamInfo::STREAM_TYPE_DTSHD_MA:
+      return "STREAM_TYPE_DTSHD_MA";
     case CAEStreamInfo::STREAM_TYPE_DTSHD_CORE:
       return "STREAM_TYPE_DTSHD_CORE";
     case CAEStreamInfo::STREAM_TYPE_DTS_1024:

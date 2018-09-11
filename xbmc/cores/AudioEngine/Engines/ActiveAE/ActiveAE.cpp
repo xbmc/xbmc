@@ -2666,6 +2666,8 @@ bool CActiveAE::SupportsRaw(AEAudioFormat &format)
     return false;
   if (format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_DTSHD && !m_settings.dtshdpassthrough)
     return false;
+  if (format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_DTSHD_MA && !m_settings.dtshdpassthrough)
+    return false;
 
   if (!m_sink.SupportsFormat(CServiceBroker::GetSettings()->GetString(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGHDEVICE), format))
     return false;
