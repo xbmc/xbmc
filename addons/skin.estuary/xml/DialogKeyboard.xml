@@ -632,8 +632,8 @@
 				<content>$VAR[AutoCompletionContentVar]</content>
 			</control>
 			<control type="label" id="313">
-				<left>60</left>
-				<top>690</top>
+				<centerleft>50%</centerleft>
+				<top>290</top>
 				<width>1480</width>
 				<height>90</height>
 				<font>font37</font>
@@ -643,22 +643,22 @@
 			<control type="group">
 				<visible>Control.IsVisible(313)</visible>
 				<control type="image">
-					<left>20</left>
-					<top>690</top>
+					<centerleft>50%</centerleft>
+					<top>290</top>
 					<width>1560</width>
 					<height>90</height>
 					<texture border="40">buttons/dialogbutton-nofo.png</texture>
 				</control>
 				<control type="image">
-					<left>20</left>
-					<top>770</top>
+					<centerleft>50%</centerleft>
+					<top>370</top>
 					<width>1560</width>
 					<height>90</height>
 					<texture border="40">buttons/dialogbutton-nofo.png</texture>
 				</control>
 				<control type="label" id="314">
-					<left>60</left>
-					<top>770</top>
+					<centerleft>50%</centerleft>
+					<top>370</top>
 					<width>1480</width>
 					<height>90</height>
 					<font>font37</font>
