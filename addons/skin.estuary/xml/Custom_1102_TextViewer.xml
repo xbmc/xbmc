@@ -22,6 +22,7 @@
 				<pagecontrol>3000</pagecontrol>
 				<font>font37</font>
 				<label>$INFO[Window(home).Property(TextViewer_Text)]</label>
+				<autoscroll delay="4000" repeat="7500" time="4000">true</autoscroll>
 			</control>
 			<control type="scrollbar" id="3000">
 				<include>HiddenObject</include>
