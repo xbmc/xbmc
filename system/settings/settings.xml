@@ -2023,6 +2023,12 @@
           <default>true</default>
           <control type="toggle" />
         </setting>
+        <setting id="gamesgeneral.showosdhelp" type="boolean">
+          <visible>false</visible>
+          <level>0</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
         <setting id="gamesgeneral.enableautosave" type="boolean" label="35253" help="35254">
           <level>0</level>
           <default>true</default>

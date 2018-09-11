@@ -313,7 +313,7 @@ bool CGameClient::InitializeGameplay(const std::string& gamePath, RETRO::IStream
 {
   if (LoadGameInfo())
   {
-    Input().Start();
+    Input().Start(input);
 
     m_bIsPlaying      = true;
     m_gamePath        = gamePath;

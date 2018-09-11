@@ -35,6 +35,7 @@ namespace GAME
   class CGameClientJoystick;
   class CGameClientKeyboard;
   class CGameClientMouse;
+  class IGameInputCallback;
 
   class CGameClientInput : protected CGameClientSubsystem,
                            public Observer
@@ -48,7 +49,7 @@ namespace GAME
     void Initialize();
     void Deinitialize();
 
-    void Start();
+    void Start(IGameInputCallback *input);
     void Stop();
 
     // Input functions
@@ -98,6 +99,7 @@ namespace GAME
     static ControllerVector GetControllers(const CGameClient &gameClient);
 
     // Input properties
+    IGameInputCallback *m_inputCallback = nullptr;
     CControllerTree m_controllers;
     JoystickMap m_joysticks;
     PortMap m_portMap;

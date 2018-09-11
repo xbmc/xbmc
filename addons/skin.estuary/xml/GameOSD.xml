@@ -1,184 +1,232 @@
 <?xml version="1.0" encoding="utf-8"?>
 <window>
-	<defaultcontrol always="true">100</defaultcontrol>
+	<defaultcontrol always="true">1103</defaultcontrol>
 	<include>Animation_DialogPopupOpenClose</include>
+	<depth>DepthOSD</depth>
 	<controls>
-		<control type="group">
-			<centerleft>50%</centerleft>
-			<height>400</height>
-			<centertop>50%</centertop>
-			<width>700</width>
+		<control type="group" id="1">
 			<visible>!Window.IsActive(1101) + !Window.IsActive(GameVideoFilter) + !Window.IsActive(GameViewMode) + !Window.IsActive(GameControllers) + !Window.IsActive(GameVideoRotation)</visible>
-			<animation effect="fade" time="200">VisibleChange</animation>
-			<include content="DialogBackgroundCommons">
-				<param name="width" value="700" />
-				<param name="height" value="400" />
-				<param name="header_label" value="$LOCALIZE[35221]" />
-				<param name="header_id" value="1" />
-			</include>
-			<control type="group">
-				<top>80</top>
-				<control type="list" id="100">
-					<defaultcontrol always="true">101</defaultcontrol>
-					<height>320</height>
-					<orientation>vertical</orientation>
-					<itemlayout condition="!Control.IsVisible(200)" width="700" height="80">
-						<control type="image">
-							<left>8</left>
-							<top>8</top>
-							<width>64</width>
-							<height>64</height>
-							<info>ListItem.Icon</info>
-						</control>
-						<control type="label">
-							<left>80</left>
-							<width>600</width>
-							<height>80</height>
-							<info>ListItem.Label</info>
+			<control type="group" id="10">
+				<visible>System.GetBool(gamesgeneral.showosdhelp)</visible>
+				<defaultcontrol always="true">1103</defaultcontrol>
+				<centerleft>50%</centerleft>
+				<height>910</height>
+				<centertop>50%</centertop>
+				<width>700</width>
+				<animation effect="fade" time="200">VisibleChange</animation>
+				<include content="DialogBackgroundCommons">
+					<param name="width" value="700" />
+					<param name="height" value="910" />
+					<param name="header_label" value="$LOCALIZE[35221]" />
+					<param name="header_id" value="2" />
+				</include>
+				<control type="group" id="1000">
+					<top>80</top>
+					<control type="group" id="1100">
+						<control type="textbox" id="1101">
+							<description>Help text</description>
+							<top>30</top>
+							<left>30</left>
+							<right>30</right>
+							<height>130</height>
 							<font>font13</font>
-							<align>left</align>
-							<aligny>center</aligny>
 						</control>
-						<control type="label">
-							<right>20</right>
-							<width>600</width>
-							<height>80</height>
-							<info>ListItem.Label2</info>
-							<font>font13</font>
-							<align>right</align>
-							<aligny>center</aligny>
-							<textcolor>grey</textcolor>
+						<control type="gamecontroller" id="1102">
+							<top>160</top>
+							<left>30</left>
+							<width>640</width>
+							<height>640</height>
 						</control>
-					</itemlayout>
-					<itemlayout condition="Control.IsVisible(200)" width="688" height="80">
-						<control type="image">
-							<left>8</left>
-							<top>8</top>
-							<width>64</width>
-							<height>64</height>
-							<info>ListItem.Icon</info>
+						<control type="button">
+							<description>Button to close the dialog</description>
+							<top>0</top>
+							<bottom>0</bottom>
+							<left>0</left>
+							<right>0</right>
+							<texturefocus />
+							<texturenofocus />
+							<onclick>Action(close)</onclick>
 						</control>
-						<control type="label">
-							<left>80</left>
-							<width>600</width>
-							<height>80</height>
-							<info>ListItem.Label</info>
-							<font>font13</font>
-							<align>left</align>
-							<aligny>center</aligny>
-						</control>
-						<control type="label">
-							<right>20</right>
-							<width>600</width>
-							<height>80</height>
-							<info>ListItem.Label2</info>
-							<font>font13</font>
-							<align>right</align>
-							<aligny>center</aligny>
-							<textcolor>grey</textcolor>
-						</control>
-					</itemlayout>
-					<focusedlayout condition="!Control.IsVisible(200)" width="700" height="80">
-						<control type="image">
-							<texture colordiffuse="button_focus">lists/focus.png</texture>
-							<visible>Control.HasFocus(100)</visible>
-						</control>
-						<control type="image">
-							<left>8</left>
-							<top>8</top>
-							<width>64</width>
-							<height>64</height>
-							<info>ListItem.Icon</info>
-						</control>
-						<control type="label">
-							<left>80</left>
-							<width>600</width>
-							<height>80</height>
-							<info>ListItem.Label</info>
-							<font>font13</font>
-							<align>left</align>
-							<aligny>center</aligny>
-						</control>
-						<control type="label">
-							<right>20</right>
-							<width>600</width>
-							<height>80</height>
-							<info>ListItem.Label2</info>
-							<font>font13</font>
-							<align>right</align>
-							<aligny>center</aligny>
-							<textcolor>grey</textcolor>
-						</control>
-					</focusedlayout>
-					<focusedlayout condition="Control.IsVisible(200)" width="688" height="80">
-						<control type="image">
-							<texture colordiffuse="button_focus">lists/focus.png</texture>
-							<visible>Control.HasFocus(100)</visible>
-						</control>
-						<control type="image">
-							<left>8</left>
-							<top>8</top>
-							<width>64</width>
-							<height>64</height>
-							<info>ListItem.Icon</info>
-						</control>
-						<control type="label">
-							<left>80</left>
-							<width>600</width>
-							<height>80</height>
-							<info>ListItem.Label</info>
-							<font>font13</font>
-							<align>left</align>
-							<aligny>center</aligny>
-						</control>
-						<control type="label">
-							<right>20</right>
-							<width>600</width>
-							<height>80</height>
-							<info>ListItem.Label2</info>
-							<font>font13</font>
-							<align>right</align>
-							<aligny>center</aligny>
-							<textcolor>grey</textcolor>
-						</control>
-					</focusedlayout>
-					<content>
-						<item id="101">
-							<description>Pause / Resume button</description>
-							<label>$LOCALIZE[35224]</label>
-							<label2>Select + X</label2>
-							<icon>osd/fullscreen/buttons/play.png</icon>
-							<onclick>Play</onclick>
-						</item>
-						<item id="102">
-							<description>Reset button</description>
-							<label>$LOCALIZE[13007]</label>
-							<icon>osd/fullscreen/buttons/reset.png</icon>
-							<onclick>PlayerControl(Reset)</onclick>
-						</item>
-						<item id="103">
-							<description>Stop button</description>
-							<label>$LOCALIZE[35222]</label>
-							<label2>Select + Start</label2>
-							<icon>osd/fullscreen/buttons/stop.png</icon>
-							<onclick>Stop</onclick>
-						</item>
-						<item id="108">
-							<description>Settings button</description>
-							<label>$LOCALIZE[5]</label>
-							<icon>osd/fullscreen/buttons/settings.png</icon>
-							<onclick>SetProperty(settingslist_content,games,home)</onclick>
-							<onclick>SetProperty(settingslist_header,$LOCALIZE[5],home)</onclick>
-							<onclick>ActivateWindow(1101)</onclick>
-						</item>
-					</content>
-					<pagecontrol>200</pagecontrol>
+					</control>
 				</control>
-				<control type="scrollbar" id="200">
-					<top>-10</top>
-					<right>0</right>
-					<width>12</width>
-					<orientation>vertical</orientation>
+			</control>
+			<control type="group" id="20">
+				<visible>!System.GetBool(gamesgeneral.showosdhelp)</visible>
+				<centerleft>50%</centerleft>
+				<height>400</height>
+				<centertop>50%</centertop>
+				<width>700</width>
+				<animation effect="fade" time="200">VisibleChange</animation>
+				<include content="DialogBackgroundCommons">
+					<param name="width" value="700" />
+					<param name="height" value="400" />
+					<param name="header_label" value="$LOCALIZE[35221]" />
+					<param name="header_id" value="3" />
+				</include>
+				<control type="group" id="2000">
+					<top>80</top>
+					<control type="list" id="1103">
+						<defaultcontrol always="true">2101</defaultcontrol>
+						<height max="400">auto</height>
+						<orientation>vertical</orientation>
+						<itemlayout condition="!Control.IsVisible(2200)" width="700" height="80">
+							<control type="image">
+								<left>8</left>
+								<top>8</top>
+								<width>64</width>
+								<height>64</height>
+								<info>ListItem.Icon</info>
+							</control>
+							<control type="label">
+								<left>80</left>
+								<width>600</width>
+								<height>80</height>
+								<info>ListItem.Label</info>
+								<font>font13</font>
+								<align>left</align>
+								<aligny>center</aligny>
+							</control>
+							<control type="label">
+								<right>20</right>
+								<width>600</width>
+								<height>80</height>
+								<info>ListItem.Label2</info>
+								<font>font13</font>
+								<align>right</align>
+								<aligny>center</aligny>
+								<textcolor>grey</textcolor>
+							</control>
+						</itemlayout>
+						<itemlayout condition="Control.IsVisible(2200)" width="688" height="80">
+							<control type="image">
+								<left>8</left>
+								<top>8</top>
+								<width>64</width>
+								<height>64</height>
+								<info>ListItem.Icon</info>
+							</control>
+							<control type="label">
+								<left>80</left>
+								<width>600</width>
+								<height>80</height>
+								<info>ListItem.Label</info>
+								<font>font13</font>
+								<align>left</align>
+								<aligny>center</aligny>
+							</control>
+							<control type="label">
+								<right>20</right>
+								<width>600</width>
+								<height>80</height>
+								<info>ListItem.Label2</info>
+								<font>font13</font>
+								<align>right</align>
+								<aligny>center</aligny>
+								<textcolor>grey</textcolor>
+							</control>
+						</itemlayout>
+						<focusedlayout condition="!Control.IsVisible(2200)" width="700" height="80">
+							<control type="image">
+								<texture colordiffuse="button_focus">lists/focus.png</texture>
+								<visible>Control.HasFocus(1103)</visible>
+							</control>
+							<control type="image">
+								<left>8</left>
+								<top>8</top>
+								<width>64</width>
+								<height>64</height>
+								<info>ListItem.Icon</info>
+							</control>
+							<control type="label">
+								<left>80</left>
+								<width>600</width>
+								<height>80</height>
+								<info>ListItem.Label</info>
+								<font>font13</font>
+								<align>left</align>
+								<aligny>center</aligny>
+							</control>
+							<control type="label">
+								<right>20</right>
+								<width>600</width>
+								<height>80</height>
+								<info>ListItem.Label2</info>
+								<font>font13</font>
+								<align>right</align>
+								<aligny>center</aligny>
+								<textcolor>grey</textcolor>
+							</control>
+						</focusedlayout>
+						<focusedlayout condition="Control.IsVisible(2200)" width="688" height="80">
+							<control type="image">
+								<texture colordiffuse="button_focus">lists/focus.png</texture>
+								<visible>Control.HasFocus(1103)</visible>
+							</control>
+							<control type="image">
+								<left>8</left>
+								<top>8</top>
+								<width>64</width>
+								<height>64</height>
+								<info>ListItem.Icon</info>
+							</control>
+							<control type="label">
+								<left>80</left>
+								<width>600</width>
+								<height>80</height>
+								<info>ListItem.Label</info>
+								<font>font13</font>
+								<align>left</align>
+								<aligny>center</aligny>
+							</control>
+							<control type="label">
+								<right>20</right>
+								<width>600</width>
+								<height>80</height>
+								<info>ListItem.Label2</info>
+								<font>font13</font>
+								<align>right</align>
+								<aligny>center</aligny>
+								<textcolor>grey</textcolor>
+							</control>
+						</focusedlayout>
+						<content>
+							<item id="2101">
+								<description>Pause / Resume button</description>
+								<label>$LOCALIZE[35224]</label>
+								<label2>Select + X</label2>
+								<icon>osd/fullscreen/buttons/play.png</icon>
+								<onclick>Play</onclick>
+							</item>
+							<item id="2102">
+								<description>Reset button</description>
+								<label>$LOCALIZE[13007]</label>
+								<icon>osd/fullscreen/buttons/reset.png</icon>
+								<onclick>PlayerControl(Reset)</onclick>
+							</item>
+							<item id="2103">
+								<description>Stop button</description>
+								<label>$LOCALIZE[35222]</label>
+								<label2>Select + Start</label2>
+								<icon>osd/fullscreen/buttons/stop.png</icon>
+								<onclick>Stop</onclick>
+							</item>
+							<item id="2108">
+								<description>Settings button</description>
+								<label>$LOCALIZE[5]</label>
+								<icon>osd/fullscreen/buttons/settings.png</icon>
+								<onclick>SetProperty(settingslist_content,games,home)</onclick>
+								<onclick>SetProperty(settingslist_header,$LOCALIZE[5],home)</onclick>
+								<onclick>ActivateWindow(1101)</onclick>
+							</item>
+						</content>
+						<pagecontrol>2200</pagecontrol>
+					</control>
+					<control type="scrollbar" id="2200">
+						<top>-10</top>
+						<right>0</right>
+						<width>12</width>
+						<orientation>vertical</orientation>
+					</control>
 				</control>
 			</control>
 		</control>

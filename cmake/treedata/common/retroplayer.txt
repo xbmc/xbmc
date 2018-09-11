@@ -4,6 +4,7 @@ xbmc/cores/RetroPlayer/buffers                                  cores/RetroPlaye
 xbmc/cores/RetroPlayer/buffers/video                            cores/RetroPlayer/buffers/video
 xbmc/cores/RetroPlayer/guibridge                                cores/RetroPlayer/guibridge
 xbmc/cores/RetroPlayer/guicontrols                              cores/RetroPlayer/guicontrols
+xbmc/cores/RetroPlayer/guiplayback                              cores/RetroPlayer/guiplayback
 xbmc/cores/RetroPlayer/guiwindows                               cores/RetroPlayer/guiwindows
 xbmc/cores/RetroPlayer/playback                                 cores/RetroPlayer/playback
 xbmc/cores/RetroPlayer/process                                  cores/RetroPlayer/process
