@@ -35,6 +35,12 @@ CDVDAudioCodecPassthrough::~CDVDAudioCodecPassthrough(void)
 bool CDVDAudioCodecPassthrough::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
   m_parser.SetCoreOnly(false);
+
+  // DTS-HD HRA is currently not supported on a wide range of AVRs when transmited
+  // with 8 channels 192 khz - use the core for now
+  if (hints.codec == AV_CODEC_ID_DTS && hints.profile == FF_PROFILE_DTS_HD_HRA)
+    m_parser.SetCoreOnly(true);
+
   switch (m_format.m_streamInfo.m_type)
   {
     case CAEStreamInfo::STREAM_TYPE_AC3:
