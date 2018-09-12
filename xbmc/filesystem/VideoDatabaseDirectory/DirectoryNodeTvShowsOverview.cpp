@@ -34,18 +34,18 @@ NODE_TYPE CDirectoryNodeTvShowsOverview::GetChildType() const
   if (GetName()=="0")
     return NODE_TYPE_EPISODES;
 
-  for (unsigned int i = 0; i < sizeof(TvShowChildren) / sizeof(Node); ++i)
-    if (GetName() == TvShowChildren[i].id)
-      return TvShowChildren[i].node;
+  for (const Node& node : TvShowChildren)
+    if (GetName() == node.id)
+      return node.node;
 
   return NODE_TYPE_NONE;
 }
 
 std::string CDirectoryNodeTvShowsOverview::GetLocalizedName() const
 {
-  for (unsigned int i = 0; i < sizeof(TvShowChildren) / sizeof(Node); ++i)
-    if (GetName() == TvShowChildren[i].id)
-      return g_localizeStrings.Get(TvShowChildren[i].label);
+  for (const Node& node : TvShowChildren)
+    if (GetName() == node.id)
+      return g_localizeStrings.Get(node.label);
   return "";
 }
 
@@ -55,12 +55,12 @@ bool CDirectoryNodeTvShowsOverview::GetContent(CFileItemList& items) const
   if (!videoUrl.FromString(BuildPath()))
     return false;
 
-  for (unsigned int i = 0; i < sizeof(TvShowChildren) / sizeof(Node); ++i)
+  for (const Node& node : TvShowChildren)
   {
-    CFileItemPtr pItem(new CFileItem(g_localizeStrings.Get(TvShowChildren[i].label)));
+    CFileItemPtr pItem(new CFileItem(g_localizeStrings.Get(node.label)));
 
     CVideoDbUrl itemUrl = videoUrl;
-    std::string strDir = StringUtils::Format("%s/", TvShowChildren[i].id.c_str());
+    std::string strDir = StringUtils::Format("%s/", node.id.c_str());
     itemUrl.AppendPath(strDir);
     pItem->SetPath(itemUrl.ToString());
 

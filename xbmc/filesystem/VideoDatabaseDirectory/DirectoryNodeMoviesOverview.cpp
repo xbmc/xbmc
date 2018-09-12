@@ -35,18 +35,18 @@ CDirectoryNodeMoviesOverview::CDirectoryNodeMoviesOverview(const std::string& st
 
 NODE_TYPE CDirectoryNodeMoviesOverview::GetChildType() const
 {
-  for (unsigned int i = 0; i < sizeof(MovieChildren) / sizeof(Node); ++i)
-    if (GetName() == MovieChildren[i].id)
-      return MovieChildren[i].node;
+  for (const Node& node : MovieChildren)
+    if (GetName() == node.id)
+      return node.node;
 
   return NODE_TYPE_NONE;
 }
 
 std::string CDirectoryNodeMoviesOverview::GetLocalizedName() const
 {
-  for (unsigned int i = 0; i < sizeof(MovieChildren) / sizeof(Node); ++i)
-    if (GetName() == MovieChildren[i].id)
-      return g_localizeStrings.Get(MovieChildren[i].label);
+  for (const Node& node : MovieChildren)
+    if (GetName() == node.id)
+      return g_localizeStrings.Get(node.label);
   return "";
 }
 
