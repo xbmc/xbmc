@@ -421,6 +421,39 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
     hr = pDevice->Activate(pClient.GetAddressOf());
     if (SUCCEEDED(hr))
     {
+      /* Test format DTS-HD-HR */
+      wfxex.Format.cbSize               = sizeof(WAVEFORMATEXTENSIBLE)-sizeof(WAVEFORMATEX);
+      wfxex.Format.nSamplesPerSec       = 192000;
+      wfxex.dwChannelMask               = KSAUDIO_SPEAKER_5POINT1;
+      wfxex.Format.wFormatTag           = WAVE_FORMAT_EXTENSIBLE;
+      wfxex.SubFormat                   = KSDATAFORMAT_SUBTYPE_IEC61937_DTS_HD;
+      wfxex.Format.wBitsPerSample       = 16;
+      wfxex.Samples.wValidBitsPerSample = 16;
+      wfxex.Format.nChannels            = 2;
+      wfxex.Format.nBlockAlign          = wfxex.Format.nChannels * (wfxex.Format.wBitsPerSample >> 3);
+      wfxex.Format.nAvgBytesPerSec      = wfxex.Format.nSamplesPerSec * wfxex.Format.nBlockAlign;
+      hr = pClient->IsFormatSupported(AUDCLNT_SHAREMODE_EXCLUSIVE, &wfxex.Format, NULL);
+      if (hr == AUDCLNT_E_EXCLUSIVE_MODE_NOT_ALLOWED)
+      {
+        CLog::LogF(LOGNOTICE,
+                   "Exclusive mode is not allowed on device \"%s\", check device settings.",
+                   details.strDescription);
+        SafeRelease(&pDevice);
+        continue;
+      }
+      if (SUCCEEDED(hr) || details.eDeviceType == AE_DEVTYPE_HDMI)
+      {
+        if(FAILED(hr))
+        {
+          CLog::LogF(LOGNOTICE, "stream type \"%s\" on device \"%s\" seems to be not supported.",
+                     CAEUtil::StreamTypeToStr(CAEStreamInfo::STREAM_TYPE_DTSHD),
+                     details.strDescription);
+        }
+
+        deviceInfo.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD);
+        add192 = true;
+      }
+
       /* Test format DTS-HD */
       wfxex.Format.cbSize               = sizeof(WAVEFORMATEXTENSIBLE)-sizeof(WAVEFORMATEX);
       wfxex.Format.nSamplesPerSec       = 192000;
@@ -446,11 +479,11 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
         if(FAILED(hr))
         {
           CLog::LogF(LOGNOTICE, "stream type \"%s\" on device \"%s\" seems to be not supported.",
-                     CAEUtil::StreamTypeToStr(CAEStreamInfo::STREAM_TYPE_DTSHD),
+                     CAEUtil::StreamTypeToStr(CAEStreamInfo::STREAM_TYPE_DTSHD_MA),
                      details.strDescription);
         }
 
-        deviceInfo.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD);
+        deviceInfo.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD_MA);
         add192 = true;
       }
 
