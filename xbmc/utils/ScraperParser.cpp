@@ -570,8 +570,8 @@ void CScraperParser::ConvertJSON(std::string &string)
 void CScraperParser::ClearBuffers()
 {
   //clear all m_param strings
-  for (int i=0;i<MAX_SCRAPER_BUFFERS;++i)
-    m_param[i].clear();
+  for (std::string& param : m_param)
+    param.clear();
 }
 
 void CScraperParser::GetBufferParams(bool* result, const char* attribute, bool defvalue)
