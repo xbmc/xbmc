@@ -348,7 +348,7 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
 
     std::wstring deviceId = KODI::PLATFORM::WINDOWS::ToW(details.strDeviceId);
 
-    /* Test format DTS-HD */
+    /* Test format DTS-HD-MA */
     wfxex.Format.cbSize = sizeof(WAVEFORMATEXTENSIBLE) - sizeof(WAVEFORMATEX);
     wfxex.Format.nSamplesPerSec = 192000;
     wfxex.dwChannelMask = KSAUDIO_SPEAKER_7POINT1_SURROUND;
@@ -357,6 +357,33 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
     wfxex.Format.wBitsPerSample = 16;
     wfxex.Samples.wValidBitsPerSample = 16;
     wfxex.Format.nChannels = 8;
+    wfxex.Format.nBlockAlign = wfxex.Format.nChannels * (wfxex.Format.wBitsPerSample >> 3);
+    wfxex.Format.nAvgBytesPerSec = wfxex.Format.nSamplesPerSec * wfxex.Format.nBlockAlign;
+
+    hr2 = xaudio2->CreateMasteringVoice(&mMasterVoice, wfxex.Format.nChannels, wfxex.Format.nSamplesPerSec,
+                                        0, deviceId.c_str(), nullptr, AudioCategory_Media);
+    hr = xaudio2->CreateSourceVoice(&mSourceVoice, &wfxex.Format);
+
+    if (FAILED(hr))
+    {
+      CLog::Log(LOGNOTICE, __FUNCTION__": stream type \"%s\" on device \"%s\" seems to be not supported.", CAEUtil::StreamTypeToStr(CAEStreamInfo::STREAM_TYPE_DTSHD_MA), details.strDescription.c_str());
+    }
+    else
+    {
+      deviceInfo.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD_MA);
+      add192 = true;
+    }
+    SafeDestroyVoice(&mSourceVoice);
+
+    /* Test format DTS-HD-HR */
+    wfxex.Format.cbSize = sizeof(WAVEFORMATEXTENSIBLE) - sizeof(WAVEFORMATEX);
+    wfxex.Format.nSamplesPerSec = 192000;
+    wfxex.dwChannelMask = KSAUDIO_SPEAKER_5POINT1;
+    wfxex.Format.wFormatTag = WAVE_FORMAT_EXTENSIBLE;
+    wfxex.SubFormat = KSDATAFORMAT_SUBTYPE_IEC61937_DTS_HD;
+    wfxex.Format.wBitsPerSample = 16;
+    wfxex.Samples.wValidBitsPerSample = 16;
+    wfxex.Format.nChannels = 2;
     wfxex.Format.nBlockAlign = wfxex.Format.nChannels * (wfxex.Format.wBitsPerSample >> 3);
     wfxex.Format.nAvgBytesPerSec = wfxex.Format.nSamplesPerSec * wfxex.Format.nBlockAlign;
 
@@ -377,6 +404,8 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
 
     /* Test format Dolby TrueHD */
     wfxex.SubFormat = KSDATAFORMAT_SUBTYPE_IEC61937_DOLBY_MLP;
+    wfxex.Format.nChannels = 8;
+    wfxex.dwChannelMask = KSAUDIO_SPEAKER_7POINT1_SURROUND;
 
     hr = xaudio2->CreateSourceVoice(&mSourceVoice, &wfxex.Format);
     if (FAILED(hr))
