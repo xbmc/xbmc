@@ -122,6 +122,7 @@ public:
   static const std::string& GetKernelCpuFamily(void);
   std::string GetCPUModel();
   std::string GetCPUBogoMips();
+  std::string GetCPUSoC();
   std::string GetCPUHardware();
   std::string GetCPURevision();
   std::string GetCPUSerial();

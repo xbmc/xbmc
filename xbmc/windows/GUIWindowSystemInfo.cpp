@@ -147,6 +147,8 @@ void CGUIWindowSystemInfo::FrameMove()
     SET_CONTROL_LABEL(i++, g_sysinfo.GetCPUModel());
 #if defined(__arm__) && defined(TARGET_LINUX)
     SET_CONTROL_LABEL(i++, g_sysinfo.GetCPUBogoMips());
+    if (!g_sysinfo.GetCPUSoC().empty())
+      SET_CONTROL_LABEL(i++, g_sysinfo.GetCPUSoC());
     SET_CONTROL_LABEL(i++, g_sysinfo.GetCPUHardware());
     SET_CONTROL_LABEL(i++, g_sysinfo.GetCPURevision());
     SET_CONTROL_LABEL(i++, g_sysinfo.GetCPUSerial());

@@ -498,6 +498,13 @@ std::string CSysInfo::GetCPUBogoMips()
   return "BogoMips: " + g_cpuInfo.getCPUBogoMips();
 }
 
+std::string CSysInfo::GetCPUSoC()
+{
+  if (!g_cpuInfo.getCPUSoC().empty())
+    return "SoC: " + g_cpuInfo.getCPUSoC();
+  return "";
+}
+
 std::string CSysInfo::GetCPUHardware()
 {
   return "Hardware: " + g_cpuInfo.getCPUHardware();
