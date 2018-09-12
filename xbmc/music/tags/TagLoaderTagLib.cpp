@@ -99,13 +99,13 @@ void SetFlacArt(FLAC::File *flacFile, EmbeddedArt *art, CMusicInfoTag &tag)
     else // anything else is taken as second priority
       cover[1] = picture;
   }
-  for (unsigned int i = 0; i < 2; i++)
+  for (const FLAC::Picture* const c : cover)
   {
-    if (cover[i])
+    if (c)
     {
-      tag.SetCoverArtInfo(cover[i]->data().size(), cover[i]->mimeType().to8Bit(true));
+      tag.SetCoverArtInfo(c->data().size(), c->mimeType().to8Bit(true));
       if (art)
-        art->Set(reinterpret_cast<const uint8_t*>(cover[i]->data().data()), cover[i]->data().size(), cover[i]->mimeType().to8Bit(true));
+        art->Set(reinterpret_cast<const uint8_t*>(c->data().data()), c->data().size(), c->mimeType().to8Bit(true));
       return; // one is enough
     }
   }
@@ -440,14 +440,14 @@ bool CTagLoaderTagLib::ParseTag(ID3v2::Tag *id3v2, EmbeddedArt *art, MUSIC_INFO:
   } // for
 
   // Process the extracted picture frames; 0 = CoverArt, 1 = Other, 2 = First Found picture
-  for (int i = 0; i < 3; ++i)
-    if (pictures[i])
+  for (const ID3v2::AttachedPictureFrame* const picture : pictures)
+    if (picture)
     {
-      std::string  mime =            pictures[i]->mimeType().to8Bit(true);
-      TagLib::uint size =            pictures[i]->picture().size();
+      std::string  mime =            picture->mimeType().to8Bit(true);
+      TagLib::uint size =            picture->picture().size();
       tag.SetCoverArtInfo(size, mime);
       if (art)
-        art->Set(reinterpret_cast<const uint8_t*>(pictures[i]->picture().data()), size, mime);
+        art->Set(reinterpret_cast<const uint8_t*>(picture->picture().data()), size, mime);
 
       // Stop after we find the first picture for now.
       break;
@@ -743,13 +743,13 @@ bool CTagLoaderTagLib::ParseTag(Ogg::XiphComment *xiph, EmbeddedArt *art, CMusic
     else // anything else is taken as second priority
       cover[1] = picture;
   }
-  for (unsigned int i = 0; i < 2; i++)
+  for (const FLAC::Picture* const c : cover)
   {
-    if (cover[i])
+    if (c)
     {
-      tag.SetCoverArtInfo(cover[i]->data().size(), cover[i]->mimeType().to8Bit(true));
+      tag.SetCoverArtInfo(c->data().size(), c->mimeType().to8Bit(true));
       if (art)
-        art->Set(reinterpret_cast<const uint8_t*>(cover[i]->data().data()), cover[i]->data().size(), cover[i]->mimeType().to8Bit(true));
+        art->Set(reinterpret_cast<const uint8_t*>(c->data().data()), c->data().size(), c->mimeType().to8Bit(true));
       break; // one is enough
     }
   }

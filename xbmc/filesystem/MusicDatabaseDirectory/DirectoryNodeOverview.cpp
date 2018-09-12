@@ -43,17 +43,17 @@ CDirectoryNodeOverview::CDirectoryNodeOverview(const std::string& strName, CDire
 
 NODE_TYPE CDirectoryNodeOverview::GetChildType() const
 {
-  for (unsigned int i = 0; i < sizeof(OverviewChildren) / sizeof(Node); ++i)
-    if (GetName() == OverviewChildren[i].id)
-      return OverviewChildren[i].node;
+  for (const Node& node : OverviewChildren)
+    if (GetName() == node.id)
+      return node.node;
   return NODE_TYPE_NONE;
 }
 
 std::string CDirectoryNodeOverview::GetLocalizedName() const
 {
-  for (unsigned int i = 0; i < sizeof(OverviewChildren) / sizeof(Node); ++i)
-    if (GetName() == OverviewChildren[i].id)
-      return g_localizeStrings.Get(OverviewChildren[i].label);
+  for (const Node& node : OverviewChildren)
+    if (GetName() == node.id)
+      return g_localizeStrings.Get(node.label);
   return "";
 }
 

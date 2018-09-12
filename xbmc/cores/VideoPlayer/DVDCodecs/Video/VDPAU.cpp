@@ -49,7 +49,6 @@ CDecoder::Desc decoder_profiles[] = {
 {"HEVC_MAIN", VDP_DECODER_PROFILE_HEVC_MAIN},
 #endif
 };
-const size_t decoder_profile_count = sizeof(decoder_profiles)/sizeof(CDecoder::Desc);
 
 static struct SInterlaceMapping
 {
@@ -271,15 +270,15 @@ void CVDPAUContext::SpewHardwareAvailable()  //Copyright (c) 2008 Wladimir J. va
   CLog::Log(LOGNOTICE,"VDPAU Decoder capabilities:");
   CLog::Log(LOGNOTICE,"name          level macbs width height");
   CLog::Log(LOGNOTICE,"------------------------------------");
-  for(unsigned int x=0; x<decoder_profile_count; ++x)
+  for(const CDecoder::Desc& decoder_profile : decoder_profiles)
   {
     VdpBool is_supported = false;
     uint32_t max_level, max_macroblocks, max_width, max_height;
-    rv = m_vdpProcs.vdp_decoder_query_caps(m_vdpDevice, decoder_profiles[x].id,
+    rv = m_vdpProcs.vdp_decoder_query_caps(m_vdpDevice, decoder_profile.id,
                                 &is_supported, &max_level, &max_macroblocks, &max_width, &max_height);
     if(rv == VDP_STATUS_OK && is_supported)
     {
-      CLog::Log(LOGNOTICE,"%-16s %2i %5i %5i %5i\n", decoder_profiles[x].name,
+      CLog::Log(LOGNOTICE,"%-16s %2i %5i %5i %5i\n", decoder_profile.name,
                 max_level, max_macroblocks, max_width, max_height);
     }
   }

@@ -215,9 +215,9 @@ bool CWinEventsX11::Init(Display *dpy, Window win)
     CLog::Log(LOGWARNING,"CWinEventsX11::Init - no input method found");
 
   // build Keysym lookup table
-  for (unsigned int i = 0; i < sizeof(SymMappingsX11)/(2*sizeof(uint32_t)); ++i)
+  for (const auto& symMapping : SymMappingsX11)
   {
-    m_symLookupTable[SymMappingsX11[i][0]] = SymMappingsX11[i][1];
+    m_symLookupTable[symMapping[0]] = symMapping[1];
   }
 
   // register for xrandr events

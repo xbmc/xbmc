@@ -66,15 +66,15 @@ static struct sndio_formats formats[] =
 static AEDataFormat lookupDataFormat(unsigned int bits, unsigned int bps,
                                      unsigned int sig, unsigned int le, unsigned int msb)
 {
-  for (size_t i = 0; i < nitems(formats); i++)
+  for (const sndio_formats& format : formats)
   {
-    if (bits == formats[i].bits &&
-        bps == formats[i].bps &&
-        sig == formats[i].sig &&
-        le == formats[i].le &&
-        msb == formats[i].msb)
+    if (bits == format.bits &&
+        bps == format.bps &&
+        sig == format.sig &&
+        le == format.le &&
+        msb == format.msb)
     {
-      return formats[i].fmt;
+      return format.fmt;
     }
   }
   return AE_FMT_INVALID;
@@ -88,15 +88,15 @@ void CAESinkSNDIO::AudioFormatToPar(AEAudioFormat& format)
   m_par.xrun = SIO_IGNORE;
   m_par.pchan = format.m_channelLayout.Count();
 
-  for (size_t i = 0; i < nitems(formats); i++)
+  for (const sndio_formats& f : formats)
   {
-    if (formats[i].fmt == format.m_dataFormat)
+    if (f.fmt == format.m_dataFormat)
     {
-      m_par.bits = formats[i].bits;
-      m_par.sig = formats[i].sig;
-      m_par.le = formats[i].le;
-      m_par.msb = formats[i].msb;
-      m_par.bps = formats[i].bps;
+      m_par.bits = f.bits;
+      m_par.sig = f.sig;
+      m_par.le = f.le;
+      m_par.msb = f.msb;
+      m_par.bps = f.bps;
       return;
     }
   }

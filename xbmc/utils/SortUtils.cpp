@@ -953,18 +953,18 @@ const sort_map table[] = {
 
 SORT_METHOD SortUtils::TranslateOldSortMethod(SortBy sortBy, bool ignoreArticle)
 {
-  for (size_t i = 0; i < sizeof(table) / sizeof(sort_map); i++)
+  for (const sort_map& t : table)
   {
-    if (table[i].sort == sortBy)
+    if (t.sort == sortBy)
     {
-      if (ignoreArticle == ((table[i].flags & SortAttributeIgnoreArticle) == SortAttributeIgnoreArticle))
-        return table[i].old;
+      if (ignoreArticle == ((t.flags & SortAttributeIgnoreArticle) == SortAttributeIgnoreArticle))
+        return t.old;
     }
   }
-  for (size_t i = 0; i < sizeof(table) / sizeof(sort_map); i++)
+  for (const sort_map& t : table)
   {
-    if (table[i].sort == sortBy)
-      return table[i].old;
+    if (t.sort == sortBy)
+      return t.old;
   }
   return SORT_METHOD_NONE;
 }
@@ -972,12 +972,12 @@ SORT_METHOD SortUtils::TranslateOldSortMethod(SortBy sortBy, bool ignoreArticle)
 SortDescription SortUtils::TranslateOldSortMethod(SORT_METHOD sortBy)
 {
   SortDescription description;
-  for (size_t i = 0; i < sizeof(table) / sizeof(sort_map); i++)
+  for (const sort_map& t : table)
   {
-    if (table[i].old == sortBy)
+    if (t.old == sortBy)
     {
-      description.sortBy = table[i].sort;
-      description.sortAttributes = table[i].flags;
+      description.sortBy = t.sort;
+      description.sortAttributes = t.flags;
       break;
     }
   }
@@ -986,10 +986,10 @@ SortDescription SortUtils::TranslateOldSortMethod(SORT_METHOD sortBy)
 
 int SortUtils::GetSortLabel(SortBy sortBy)
 {
-  for (size_t i = 0; i < sizeof(table) / sizeof(sort_map); i++)
+  for (const sort_map& t : table)
   {
-    if (table[i].sort == sortBy)
-      return table[i].label;
+    if (t.sort == sortBy)
+      return t.label;
   }
   return 16018; // None
 }

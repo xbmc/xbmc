@@ -29,8 +29,6 @@ ReleaseTypeInfo releaseTypes[] = {
   { CAlbum::Single, "single" }
 };
 
-#define RELEASE_TYPES_SIZE sizeof(releaseTypes) / sizeof(ReleaseTypeInfo)
-
 CAlbum::CAlbum(const CFileItem& item)
 {
   Reset();
@@ -421,9 +419,8 @@ void CAlbum::SetLastPlayed(const std::string& strLastPlayed)
 
 std::string CAlbum::ReleaseTypeToString(CAlbum::ReleaseType releaseType)
 {
-  for (size_t i = 0; i < RELEASE_TYPES_SIZE; i++)
+  for (const ReleaseTypeInfo& releaseTypeInfo : releaseTypes)
   {
-    const ReleaseTypeInfo& releaseTypeInfo = releaseTypes[i];
     if (releaseTypeInfo.type == releaseType)
       return releaseTypeInfo.name;
   }
@@ -433,9 +430,8 @@ std::string CAlbum::ReleaseTypeToString(CAlbum::ReleaseType releaseType)
 
 CAlbum::ReleaseType CAlbum::ReleaseTypeFromString(const std::string& strReleaseType)
 {
-  for (size_t i = 0; i < RELEASE_TYPES_SIZE; i++)
+  for (const ReleaseTypeInfo& releaseTypeInfo : releaseTypes)
   {
-    const ReleaseTypeInfo& releaseTypeInfo = releaseTypes[i];
     if (releaseTypeInfo.name == strReleaseType)
       return releaseTypeInfo.type;
   }

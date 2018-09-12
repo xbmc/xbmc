@@ -616,8 +616,8 @@ std::string CCharsetConverter::getCharsetNameByLabel(const std::string& charsetL
 
 void CCharsetConverter::reset(void)
 {
-  for (int i = 0; i < NumberOfStdConversionTypes; i++)
-    CInnerConverter::m_stdConversion[i].Reset();
+  for (CConverterType& conversion : CInnerConverter::m_stdConversion)
+    conversion.Reset();
 }
 
 void CCharsetConverter::resetSystemCharset(void)

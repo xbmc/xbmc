@@ -24,11 +24,11 @@ constexpr bool isValidFilePtr(FILE* f)
 CEmuFileWrapper::CEmuFileWrapper()
 {
   // since we always use dlls we might just initialize it directly
-  for (int i = 0; i < MAX_EMULATED_FILES; i++)
+  for (EmuFileObject& file : m_files)
   {
-    memset(&m_files[i], 0, sizeof(EmuFileObject));
-    m_files[i].used = false;
-    m_files[i].fd = -1;
+    memset(&file, 0, sizeof(EmuFileObject));
+    file.used = false;
+    file.fd = -1;
   }
 }
 
@@ -40,20 +40,20 @@ CEmuFileWrapper::~CEmuFileWrapper()
 void CEmuFileWrapper::CleanUp()
 {
   CSingleLock lock(m_criticalSection);
-  for (int i = 0; i < MAX_EMULATED_FILES; i++)
+  for (EmuFileObject& file : m_files)
   {
-    if (m_files[i].used)
+    if (file.used)
     {
-      m_files[i].file_xbmc->Close();
-      delete m_files[i].file_xbmc;
+      file.file_xbmc->Close();
+      delete file.file_xbmc;
 
-      if (m_files[i].file_lock)
+      if (file.file_lock)
       {
-        delete m_files[i].file_lock;
-        m_files[i].file_lock = nullptr;
+        delete file.file_lock;
+        file.file_lock = nullptr;
       }
-      m_files[i].used = false;
-      m_files[i].fd = -1;
+      file.used = false;
+      file.fd = -1;
     }
   }
 }

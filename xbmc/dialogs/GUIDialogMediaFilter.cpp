@@ -125,8 +125,6 @@ static const CGUIDialogMediaFilter::Filter filterList[] = {
   { "songs",        FieldSource,      39030,    SettingType::List,    "list",   "string",   CDatabaseQueryRule::OPERATOR_EQUALS }
 };
 
-#define NUM_FILTERS sizeof(filterList) / sizeof(CGUIDialogMediaFilter::Filter)
-
 CGUIDialogMediaFilter::CGUIDialogMediaFilter()
   : CGUIDialogSettingsManualBase(WINDOW_DIALOG_MEDIA_FILTER, "DialogSettings.xml"),
     m_dbUrl(NULL),
@@ -393,12 +391,10 @@ void CGUIDialogMediaFilter::InitializeSettings()
     return;
   }
 
-  for (unsigned int index = 0; index < NUM_FILTERS; index++)
+  for (Filter filter : filterList)
   {
-    if (filterList[index].mediaType != m_mediaType)
+    if (filter.mediaType != m_mediaType)
       continue;
-
-    Filter filter = filterList[index];
 
     // check the smartplaylist if it contains a matching rule
     for (CDatabaseQueryRules::iterator rule = m_filter->m_ruleCombination.m_rules.begin(); rule != m_filter->m_ruleCombination.m_rules.end(); rule++)

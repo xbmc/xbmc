@@ -25,10 +25,10 @@ CDebugRenderer::CDebugRenderer()
 
 CDebugRenderer::~CDebugRenderer()
 {
-  for (int i=0; i<4; i++)
+  for (CDVDOverlayText* overlayText : m_overlay)
   {
-    if (m_overlay[i])
-      m_overlay[i]->Release();
+    if (overlayText)
+      overlayText->Release();
   }
 }
 

@@ -84,8 +84,6 @@ static PythonModule PythonModules[] =
   { "xbmcwsgi",       initModule_xbmcwsgi }
 };
 
-#define PythonModulesSize sizeof(PythonModules) / sizeof(PythonModule)
-
 CHTTPPythonWsgiInvoker::CHTTPPythonWsgiInvoker(ILanguageInvocationHandler* invocationHandler, HTTPPythonRequest* request)
   : CHTTPPythonInvoker(invocationHandler, request),
     m_wsgiResponse(NULL)
@@ -298,8 +296,8 @@ std::map<std::string, CPythonInvoker::PythonModuleInitialization> CHTTPPythonWsg
   static std::map<std::string, PythonModuleInitialization> modules;
   if (modules.empty())
   {
-    for (size_t i = 0; i < PythonModulesSize; i++)
-      modules.insert(std::make_pair(PythonModules[i].name, PythonModules[i].initialization));
+    for (const PythonModule& pythonModule : PythonModules)
+      modules.insert(std::make_pair(pythonModule.name, pythonModule.initialization));
   }
 
   return modules;

@@ -5843,9 +5843,9 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
       }
       else if (prop.num_params() == 2)
       {
-        for (size_t i = 0; i < sizeof(string_bools) / sizeof(infomap); ++i)
+        for (const infomap& string_bool : string_bools)
         {
-          if (prop.name == string_bools[i].str)
+          if (prop.name == string_bool.str)
           {
             int data1 = TranslateSingleString(prop.param(0), listItemDependent);
             // pipe our original string through the localize parsing then make it lowercase (picks up $LBRACKET etc.)
@@ -5856,84 +5856,84 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
             {
               int data2 = TranslateSingleString(prop.param(1), listItemDependent);
               if (data2 > 0)
-                return AddMultiInfo(CGUIInfo(string_bools[i].val, data1, -data2));
+                return AddMultiInfo(CGUIInfo(string_bool.val, data1, -data2));
             }
-            return AddMultiInfo(CGUIInfo(string_bools[i].val, data1, label));
+            return AddMultiInfo(CGUIInfo(string_bool.val, data1, label));
           }
         }
       }
     }
     if (cat.name == "integer")
     {
-      for (size_t i = 0; i < sizeof(integer_bools) / sizeof(infomap); ++i)
+      for (const infomap& integer_bool : integer_bools)
       {
-        if (prop.name == integer_bools[i].str)
+        if (prop.name == integer_bool.str)
         {
           int data1 = TranslateSingleString(prop.param(0), listItemDependent);
           int data2 = atoi(prop.param(1).c_str());
-          return AddMultiInfo(CGUIInfo(integer_bools[i].val, data1, data2));
+          return AddMultiInfo(CGUIInfo(integer_bool.val, data1, data2));
         }
       }
     }
     else if (cat.name == "player")
     {
-      for (size_t i = 0; i < sizeof(player_labels) / sizeof(infomap); ++i)
+      for (const infomap& player_label : player_labels)
       {
-        if (prop.name == player_labels[i].str)
-          return player_labels[i].val;
+        if (prop.name == player_label.str)
+          return player_label.val;
       }
-      for (size_t i = 0; i < sizeof(player_times) / sizeof(infomap); ++i)
+      for (const infomap& player_time : player_times)
       {
-        if (prop.name == player_times[i].str)
-          return AddMultiInfo(CGUIInfo(player_times[i].val, TranslateTimeFormat(prop.param())));
+        if (prop.name == player_time.str)
+          return AddMultiInfo(CGUIInfo(player_time.val, TranslateTimeFormat(prop.param())));
       }
       if (prop.name == "process" && prop.num_params())
       {
-        for (size_t i = 0; i < sizeof(player_process) / sizeof(infomap); ++i)
+        for (const infomap& player_proces : player_process)
         {
-          if (StringUtils::EqualsNoCase(prop.param(), player_process[i].str))
-            return player_process[i].val;
+          if (StringUtils::EqualsNoCase(prop.param(), player_proces.str))
+            return player_proces.val;
         }
       }
       if (prop.num_params() == 1)
       {
-        for (size_t i = 0; i < sizeof(player_param) / sizeof(infomap); ++i)
+        for (const infomap& i : player_param)
         {
-          if (prop.name == player_param[i].str)
-            return AddMultiInfo(CGUIInfo(player_param[i].val, prop.param()));
+          if (prop.name == i.str)
+            return AddMultiInfo(CGUIInfo(i.val, prop.param()));
         }
       }
     }
     else if (cat.name == "weather")
     {
-      for (size_t i = 0; i < sizeof(weather) / sizeof(infomap); ++i)
+      for (const infomap& i : weather)
       {
-        if (prop.name == weather[i].str)
-          return weather[i].val;
+        if (prop.name == i.str)
+          return i.val;
       }
     }
     else if (cat.name == "network")
     {
-      for (size_t i = 0; i < sizeof(network_labels) / sizeof(infomap); ++i)
+      for (const infomap& network_label : network_labels)
       {
-        if (prop.name == network_labels[i].str)
-          return network_labels[i].val;
+        if (prop.name == network_label.str)
+          return network_label.val;
       }
     }
     else if (cat.name == "musicpartymode")
     {
-      for (size_t i = 0; i < sizeof(musicpartymode) / sizeof(infomap); ++i)
+      for (const infomap& i : musicpartymode)
       {
-        if (prop.name == musicpartymode[i].str)
-          return musicpartymode[i].val;
+        if (prop.name == i.str)
+          return i.val;
       }
     }
     else if (cat.name == "system")
     {
-      for (size_t i = 0; i < sizeof(system_labels) / sizeof(infomap); ++i)
+      for (const infomap& system_label : system_labels)
       {
-        if (prop.name == system_labels[i].str)
-          return system_labels[i].val;
+        if (prop.name == system_label.str)
+          return system_label.val;
       }
       if (prop.num_params() == 1)
       {
@@ -5944,10 +5944,10 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
           StringUtils::ToLower(paramCopy);
           return AddMultiInfo(CGUIInfo(SYSTEM_GET_BOOL, paramCopy));
         }
-        for (size_t i = 0; i < sizeof(system_param) / sizeof(infomap); ++i)
+        for (const infomap& i : system_param)
         {
-          if (prop.name == system_param[i].str)
-            return AddMultiInfo(CGUIInfo(system_param[i].val, param));
+          if (prop.name == i.str)
+            return AddMultiInfo(CGUIInfo(i.val, param));
         }
         if (prop.name == "memory")
         {
@@ -6058,10 +6058,10 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
     }
     else if (cat.name == "musicplayer")
     {
-      for (size_t i = 0; i < sizeof(player_times) / sizeof(infomap); ++i) //! @todo remove these, they're repeats
+      for (const infomap& player_time : player_times) //! @todo remove these, they're repeats
       {
-        if (prop.name == player_times[i].str)
-          return AddMultiInfo(CGUIInfo(player_times[i].val, TranslateTimeFormat(prop.param())));
+        if (prop.name == player_time.str)
+          return AddMultiInfo(CGUIInfo(player_time.val, TranslateTimeFormat(prop.param())));
       }
       if (prop.name == "content" && prop.num_params())
         return AddMultiInfo(CGUIInfo(MUSICPLAYER_CONTENT, prop.param(), 0));
@@ -6078,60 +6078,60 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
     {
       if (prop.name != "starttime") // player.starttime is semantically different from videoplayer.starttime which has its own implementation!
       {
-        for (size_t i = 0; i < sizeof(player_times) / sizeof(infomap); ++i) //! @todo remove these, they're repeats
+        for (const infomap& player_time : player_times) //! @todo remove these, they're repeats
         {
-          if (prop.name == player_times[i].str)
-            return AddMultiInfo(CGUIInfo(player_times[i].val, TranslateTimeFormat(prop.param())));
+          if (prop.name == player_time.str)
+            return AddMultiInfo(CGUIInfo(player_time.val, TranslateTimeFormat(prop.param())));
         }
       }
       if (prop.name == "content" && prop.num_params())
       {
         return AddMultiInfo(CGUIInfo(VIDEOPLAYER_CONTENT, prop.param(), 0));
       }
-      for (size_t i = 0; i < sizeof(videoplayer) / sizeof(infomap); ++i)
+      for (const infomap& i : videoplayer)
       {
-        if (prop.name == videoplayer[i].str)
-          return videoplayer[i].val;
+        if (prop.name == i.str)
+          return i.val;
       }
     }
     else if (cat.name == "retroplayer")
     {
-      for (size_t i = 0; i < sizeof(retroplayer) / sizeof(infomap); ++i)
+      for (const infomap& i : retroplayer)
       {
-        if (prop.name == retroplayer[i].str)
-          return retroplayer[i].val;
+        if (prop.name == i.str)
+          return i.val;
       }
     }
     else if (cat.name == "slideshow")
     {
-      for (size_t i = 0; i < sizeof(slideshow) / sizeof(infomap); ++i)
+      for (const infomap& i : slideshow)
       {
-        if (prop.name == slideshow[i].str)
-          return slideshow[i].val;
+        if (prop.name == i.str)
+          return i.val;
       }
     }
     else if (cat.name == "container")
     {
-      for (size_t i = 0; i < sizeof(mediacontainer) / sizeof(infomap); ++i) // these ones don't have or need an id
+      for (const infomap& i : mediacontainer) // these ones don't have or need an id
       {
-        if (prop.name == mediacontainer[i].str)
-          return mediacontainer[i].val;
+        if (prop.name == i.str)
+          return i.val;
       }
       int id = atoi(cat.param().c_str());
-      for (size_t i = 0; i < sizeof(container_bools) / sizeof(infomap); ++i) // these ones can have an id (but don't need to?)
+      for (const infomap& container_bool : container_bools) // these ones can have an id (but don't need to?)
       {
-        if (prop.name == container_bools[i].str)
-          return id ? AddMultiInfo(CGUIInfo(container_bools[i].val, id)) : container_bools[i].val;
+        if (prop.name == container_bool.str)
+          return id ? AddMultiInfo(CGUIInfo(container_bool.val, id)) : container_bool.val;
       }
-      for (size_t i = 0; i < sizeof(container_ints) / sizeof(infomap); ++i) // these ones can have an int param on the property
+      for (const infomap& container_int : container_ints) // these ones can have an int param on the property
       {
-        if (prop.name == container_ints[i].str)
-          return AddMultiInfo(CGUIInfo(container_ints[i].val, id, atoi(prop.param().c_str())));
+        if (prop.name == container_int.str)
+          return AddMultiInfo(CGUIInfo(container_int.val, id, atoi(prop.param().c_str())));
       }
-      for (size_t i = 0; i < sizeof(container_str) / sizeof(infomap); ++i) // these ones have a string param on the property
+      for (const infomap& i : container_str) // these ones have a string param on the property
       {
-        if (prop.name == container_str[i].str)
-          return AddMultiInfo(CGUIInfo(container_str[i].val, id, prop.param()));
+        if (prop.name == i.str)
+          return AddMultiInfo(CGUIInfo(i.val, id, prop.param()));
       }
       if (prop.name == "sortdirection")
       {
@@ -6155,26 +6155,26 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
     }
     else if (cat.name == "visualisation")
     {
-      for (size_t i = 0; i < sizeof(visualisation) / sizeof(infomap); ++i)
+      for (const infomap& i : visualisation)
       {
-        if (prop.name == visualisation[i].str)
-          return visualisation[i].val;
+        if (prop.name == i.str)
+          return i.val;
       }
     }
     else if (cat.name == "fanart")
     {
-      for (size_t i = 0; i < sizeof(fanart_labels) / sizeof(infomap); ++i)
+      for (const infomap& fanart_label : fanart_labels)
       {
-        if (prop.name == fanart_labels[i].str)
-          return fanart_labels[i].val;
+        if (prop.name == fanart_label.str)
+          return fanart_label.val;
       }
     }
     else if (cat.name == "skin")
     {
-      for (size_t i = 0; i < sizeof(skin_labels) / sizeof(infomap); ++i)
+      for (const infomap& skin_label : skin_labels)
       {
-        if (prop.name == skin_labels[i].str)
-          return skin_labels[i].val;
+        if (prop.name == skin_label.str)
+          return skin_label.val;
       }
       if (prop.num_params())
       {
@@ -6199,26 +6199,26 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
         if (winID != WINDOW_INVALID)
           return AddMultiInfo(CGUIInfo(WINDOW_PROPERTY, winID, prop.param()));
       }
-      for (size_t i = 0; i < sizeof(window_bools) / sizeof(infomap); ++i)
+      for (const infomap& window_bool : window_bools)
       {
-        if (prop.name == window_bools[i].str)
+        if (prop.name == window_bool.str)
         { //! @todo The parameter for these should really be on the first not the second property
           if (prop.param().find("xml") != std::string::npos)
-            return AddMultiInfo(CGUIInfo(window_bools[i].val, 0, prop.param()));
+            return AddMultiInfo(CGUIInfo(window_bool.val, 0, prop.param()));
           int winID = prop.param().empty() ? WINDOW_INVALID : CWindowTranslator::TranslateWindow(prop.param());
-          return AddMultiInfo(CGUIInfo(window_bools[i].val, winID, 0));
+          return AddMultiInfo(CGUIInfo(window_bool.val, winID, 0));
         }
       }
     }
     else if (cat.name == "control")
     {
-      for (size_t i = 0; i < sizeof(control_labels) / sizeof(infomap); ++i)
+      for (const infomap& control_label : control_labels)
       {
-        if (prop.name == control_labels[i].str)
+        if (prop.name == control_label.str)
         { //! @todo The parameter for these should really be on the first not the second property
           int controlID = atoi(prop.param().c_str());
           if (controlID)
-            return AddMultiInfo(CGUIInfo(control_labels[i].val, controlID, 0));
+            return AddMultiInfo(CGUIInfo(control_label.val, controlID, 0));
           return 0;
         }
       }
@@ -6232,11 +6232,11 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
     else if (cat.name == "playlist")
     {
       int ret = -1;
-      for (size_t i = 0; i < sizeof(playlist) / sizeof(infomap); ++i)
+      for (const infomap& i : playlist)
       {
-        if (prop.name == playlist[i].str)
+        if (prop.name == i.str)
         {
-          ret = playlist[i].val;
+          ret = i.val;
           break;
         }
       }
@@ -6259,15 +6259,15 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
     }
     else if (cat.name == "pvr")
     {
-      for (size_t i = 0; i < sizeof(pvr) / sizeof(infomap); ++i)
+      for (const infomap& i : pvr)
       {
-        if (prop.name == pvr[i].str)
-          return pvr[i].val;
+        if (prop.name == i.str)
+          return i.val;
       }
-      for (size_t i = 0; i < sizeof(pvr_times) / sizeof(infomap); ++i)
+      for (const infomap& pvr_time : pvr_times)
       {
-        if (prop.name == pvr_times[i].str)
-          return AddMultiInfo(CGUIInfo(pvr_times[i].val, TranslateTimeFormat(prop.param())));
+        if (prop.name == pvr_time.str)
+          return AddMultiInfo(CGUIInfo(pvr_time.val, TranslateTimeFormat(prop.param())));
       }
     }
     else if (cat.name == "rds")
@@ -6275,10 +6275,10 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
       if (prop.name == "getline")
         return AddMultiInfo(CGUIInfo(RDS_GET_RADIOTEXT_LINE, atoi(prop.param(0).c_str())));
 
-      for (size_t i = 0; i < sizeof(rds) / sizeof(infomap); ++i)
+      for (const infomap& rd : rds)
       {
-        if (prop.name == rds[i].str)
-          return rds[i].val;
+        if (prop.name == rd.str)
+          return rd.val;
       }
     }
   }
@@ -6342,13 +6342,13 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
     else if (info[0].name == "control")
     {
       const Property &prop = info[1];
-      for (size_t i = 0; i < sizeof(control_labels) / sizeof(infomap); ++i)
+      for (const infomap& control_label : control_labels)
       {
-        if (prop.name == control_labels[i].str)
+        if (prop.name == control_label.str)
         { //! @todo The parameter for these should really be on the first not the second property
           int controlID = atoi(prop.param().c_str());
           if (controlID)
-            return AddMultiInfo(CGUIInfo(control_labels[i].val, controlID, atoi(info[2].param(0).c_str())));
+            return AddMultiInfo(CGUIInfo(control_label.val, controlID, atoi(info[2].param(0).c_str())));
           return 0;
         }
       }
@@ -6387,11 +6387,11 @@ int CGUIInfoManager::TranslateListItem(const Property& cat, const Property& prop
 
   if (ret == 0)
   {
-    for (size_t i = 0; i < sizeof(listitem_labels) / sizeof(infomap); ++i) // these ones don't have or need an id
+    for (const infomap& listitem_label : listitem_labels) // these ones don't have or need an id
     {
-      if (prop.name == listitem_labels[i].str)
+      if (prop.name == listitem_label.str)
       {
-        ret = listitem_labels[i].val;
+        ret = listitem_label.val;
         break;
       }
     }
@@ -6422,10 +6422,10 @@ int CGUIInfoManager::TranslateListItem(const Property& cat, const Property& prop
 
 int CGUIInfoManager::TranslateMusicPlayerString(const std::string &info) const
 {
-  for (size_t i = 0; i < sizeof(musicplayer) / sizeof(infomap); ++i)
+  for (const infomap& i : musicplayer)
   {
-    if (info == musicplayer[i].str)
-      return musicplayer[i].val;
+    if (info == i.str)
+      return i.val;
   }
   return 0;
 }

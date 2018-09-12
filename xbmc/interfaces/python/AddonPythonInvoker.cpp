@@ -90,8 +90,6 @@ static PythonModule PythonModules[] =
     { "xbmcvfs",    initModule_xbmcvfs    }
   };
 
-#define PythonModulesSize sizeof(PythonModules) / sizeof(PythonModule)
-
 CAddonPythonInvoker::CAddonPythonInvoker(ILanguageInvocationHandler *invocationHandler)
   : CPythonInvoker(invocationHandler)
 { }
@@ -103,8 +101,8 @@ std::map<std::string, CPythonInvoker::PythonModuleInitialization> CAddonPythonIn
   static std::map<std::string, PythonModuleInitialization> modules;
   if (modules.empty())
   {
-    for (size_t i = 0; i < PythonModulesSize; i++)
-      modules.insert(std::make_pair(PythonModules[i].name, PythonModules[i].initialization));
+    for (const PythonModule& pythonModule : PythonModules)
+      modules.insert(std::make_pair(pythonModule.name, pythonModule.initialization));
   }
 
   return modules;

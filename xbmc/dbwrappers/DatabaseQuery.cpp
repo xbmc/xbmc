@@ -40,8 +40,6 @@ static const operatorField operators[] = {
   { "between",         CDatabaseQueryRule::OPERATOR_BETWEEN,           21456 }
 };
 
-static const size_t NUM_OPERATORS = sizeof(operators) / sizeof(operatorField);
-
 CDatabaseQueryRule::CDatabaseQueryRule()
 {
   m_field = 0;
@@ -184,29 +182,29 @@ bool CDatabaseQueryRule::Save(CVariant &obj) const
 
 CDatabaseQueryRule::SEARCH_OPERATOR CDatabaseQueryRule::TranslateOperator(const char *oper)
 {
-  for (unsigned int i = 0; i < NUM_OPERATORS; i++)
-    if (StringUtils::EqualsNoCase(oper, operators[i].string)) return operators[i].op;
+  for (const operatorField& o : operators)
+    if (StringUtils::EqualsNoCase(oper, o.string)) return o.op;
   return OPERATOR_CONTAINS;
 }
 
 std::string CDatabaseQueryRule::TranslateOperator(SEARCH_OPERATOR oper)
 {
-  for (unsigned int i = 0; i < NUM_OPERATORS; i++)
-    if (oper == operators[i].op) return operators[i].string;
+  for (const operatorField& o : operators)
+    if (oper == o.op) return o.string;
   return "contains";
 }
 
 std::string CDatabaseQueryRule::GetLocalizedOperator(SEARCH_OPERATOR oper)
 {
-  for (unsigned int i = 0; i < NUM_OPERATORS; i++)
-    if (oper == operators[i].op) return g_localizeStrings.Get(operators[i].localizedString);
+  for (const operatorField& o : operators)
+    if (oper == o.op) return g_localizeStrings.Get(o.localizedString);
   return g_localizeStrings.Get(16018);
 }
 
 void CDatabaseQueryRule::GetAvailableOperators(std::vector<std::string> &operatorList)
 {
-  for (unsigned int index = 0; index < NUM_OPERATORS; index++)
-    operatorList.push_back(operators[index].string);
+  for (const operatorField& o : operators)
+    operatorList.push_back(o.string);
 }
 
 std::string CDatabaseQueryRule::GetParameter() const

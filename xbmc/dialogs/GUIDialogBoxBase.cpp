@@ -107,8 +107,8 @@ void CGUIDialogBoxBase::Process(unsigned int currentTime, CDirtyRegionList &dirt
       CSingleLock lock(m_section);
       heading = m_strHeading;
       text = m_text;
-      for (int i = 0; i < DIALOG_MAX_CHOICES; ++i)
-        choices.push_back(m_strChoices[i]);
+      for (const std::string& choice : m_strChoices)
+        choices.push_back(choice);
     }
     SET_CONTROL_LABEL(CONTROL_HEADING, heading);
     if (m_hasTextbox)
@@ -157,8 +157,8 @@ void CGUIDialogBoxBase::OnDeinitWindow(int nextWindowID)
     CSingleLock lock(m_section);
     m_strHeading.clear();
     m_text.clear();
-    for (int i = 0 ; i < DIALOG_MAX_CHOICES ; ++i)
-      m_strChoices[i].clear();
+    for (std::string& choice : m_strChoices)
+      choice.clear();
   }
 
   CGUIDialog::OnDeinitWindow(nextWindowID);

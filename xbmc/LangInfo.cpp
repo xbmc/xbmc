@@ -56,8 +56,6 @@ static std::string shortDateFormats[] = {
   "YYYY.MM.DD"
 };
 
-#define SHORT_DATE_FORMATS_SIZE   sizeof(shortDateFormats) / sizeof(std::string)
-
 static std::string longDateFormats[] = {
   "DDDD, D MMMM YYYY",
   "DDDD, DD MMMM YYYY",
@@ -75,8 +73,6 @@ static std::string longDateFormats[] = {
   "DD. MMMM. YYYY",
   "YYYY. MMMM. D"
 };
-
-#define LONG_DATE_FORMATS_SIZE    sizeof(longDateFormats) / sizeof(std::string)
 
 #define TIME_FORMAT_MM_SS         ":mm:ss"
 #define TIME_FORMAT_SINGLE_12     "h" TIME_FORMAT_MM_SS
@@ -103,7 +99,6 @@ static TemperatureInfo temperatureInfo[] = {
   { CTemperature::UnitNewton,     "n" }
 };
 
-#define TEMPERATURE_INFO_SIZE     sizeof(temperatureInfo) / sizeof(TemperatureInfo)
 #define TEMP_UNIT_STRINGS         20027
 
 typedef struct SpeedInfo {
@@ -126,7 +121,6 @@ static SpeedInfo speedInfo[] = {
   { CSpeed::UnitFurlongPerFortnight,  "fpf" }
 };
 
-#define SPEED_INFO_SIZE           sizeof(speedInfo) / sizeof(SpeedInfo)
 #define SPEED_UNIT_STRINGS        20200
 
 #define SETTING_REGIONAL_DEFAULT  "regional"
@@ -152,9 +146,8 @@ static CTemperature::Unit StringToTemperatureUnit(const std::string& temperature
   std::string unit(temperatureUnit);
   StringUtils::ToLower(unit);
 
-  for (size_t i = 0; i < TEMPERATURE_INFO_SIZE; i++)
+  for (const TemperatureInfo& info : temperatureInfo)
   {
-    const TemperatureInfo& info = temperatureInfo[i];
     if (info.name == unit)
       return info.unit;
   }
@@ -167,9 +160,8 @@ static CSpeed::Unit StringToSpeedUnit(const std::string& speedUnit)
   std::string unit(speedUnit);
   StringUtils::ToLower(unit);
 
-  for (size_t i = 0; i < SPEED_INFO_SIZE; i++)
+  for (const SpeedInfo& info : speedInfo)
   {
-    const SpeedInfo& info = speedInfo[i];
     if (info.name == unit)
       return info.unit;
   }
@@ -1177,9 +1169,8 @@ void CLangInfo::SettingOptionsShortDateFormatsFiller(SettingConstPtr setting, st
     current = SETTING_REGIONAL_DEFAULT;
   }
 
-  for (size_t i = 0; i < SHORT_DATE_FORMATS_SIZE; i++)
+  for (const std::string& shortDateFormat : shortDateFormats)
   {
-    const std::string& shortDateFormat = shortDateFormats[i];
     list.push_back(std::make_pair(now.GetAsLocalizedDate(shortDateFormat), shortDateFormat));
 
     if (!match && shortDateFormatSetting == shortDateFormat)
@@ -1207,9 +1198,8 @@ void CLangInfo::SettingOptionsLongDateFormatsFiller(SettingConstPtr setting, std
     current = SETTING_REGIONAL_DEFAULT;
   }
 
-  for (size_t i = 0; i < LONG_DATE_FORMATS_SIZE; i++)
+  for (const std::string& longDateFormat : longDateFormats)
   {
-    const std::string& longDateFormat = longDateFormats[i];
     list.push_back(std::make_pair(now.GetAsLocalizedDate(longDateFormat), longDateFormat));
 
     if (!match && longDateFormatSetting == longDateFormat)
@@ -1335,9 +1325,8 @@ void CLangInfo::SettingOptionsTemperatureUnitsFiller(SettingConstPtr setting, st
     current = SETTING_REGIONAL_DEFAULT;
   }
 
-  for (size_t i = 0; i < TEMPERATURE_INFO_SIZE; i++)
+  for (const TemperatureInfo& info : temperatureInfo)
   {
-    const TemperatureInfo& info = temperatureInfo[i];
     list.push_back(std::make_pair(GetTemperatureUnitString(info.unit), info.name));
 
     if (!match && temperatureUnitSetting == info.name)
@@ -1363,9 +1352,8 @@ void CLangInfo::SettingOptionsSpeedUnitsFiller(SettingConstPtr setting, std::vec
     current = SETTING_REGIONAL_DEFAULT;
   }
 
-  for (size_t i = 0; i < SPEED_INFO_SIZE; i++)
+  for (const SpeedInfo& info : speedInfo)
   {
-    const SpeedInfo& info = speedInfo[i];
     list.push_back(std::make_pair(GetSpeedUnitString(info.unit), info.name));
 
     if (!match && speedUnitSetting == info.name)

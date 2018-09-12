@@ -1077,9 +1077,9 @@ bool GetResource(const PLT_MediaObject* entry, CFileItem& item)
       , "text/ssa"
       , "text/sub"
       , "text/idx" };
-    for(unsigned type = 0; type < ARRAY_SIZE(allowed); type++)
+    for(const char* const type : allowed)
     {
-      if(info.Match(PLT_ProtocolInfo("*", "*", allowed[type], "*")))
+      if(info.Match(PLT_ProtocolInfo("*", "*", type, "*")))
       {
         std::string prop = StringUtils::Format("subtitle:%d", ++subs);
         item.SetProperty(prop, (const char*)res.m_Uri);

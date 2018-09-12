@@ -141,13 +141,13 @@ void CDVDTeletextData::ResetTeletextCache()
   CSingleLock lock(m_critSection);
 
   /* Reset Data structures */
-  for (int i = 0; i < 0x900; i++)
+  for (auto& pages : m_TXTCache->astCachetable)
   {
-    for (int j = 0; j < 0x80; j++)
+    for (TextCachedPage_t*& page : pages)
     {
-      if (m_TXTCache->astCachetable[i][j])
+      if (page)
       {
-        TextPageinfo_t *p = &(m_TXTCache->astCachetable[i][j]->pageinfo);
+        TextPageinfo_t *p = &(page->pageinfo);
         if (p->p24)
           free(p->p24);
 
@@ -156,15 +156,15 @@ void CDVDTeletextData::ResetTeletextCache()
           if (p->ext->p27)
             free(p->ext->p27);
 
-          for (int d26 = 0; d26 < 16; d26++)
+          for (unsigned char* const d26 : p->ext->p26)
           {
-            if (p->ext->p26[d26])
-              free(p->ext->p26[d26]);
+            if (d26)
+              free(d26);
           }
           free(p->ext);
         }
-        delete m_TXTCache->astCachetable[i][j];
-        m_TXTCache->astCachetable[i][j] = 0;
+        delete page;
+        page = 0;
       }
     }
   }
@@ -176,10 +176,10 @@ void CDVDTeletextData::ResetTeletextCache()
       if (m_TXTCache->astP29[i]->p27)
         free(m_TXTCache->astP29[i]->p27);
 
-      for (int d26 = 0; d26 < 16; d26++)
+      for (unsigned char* const d26 : m_TXTCache->astP29[i]->p26)
       {
-        if (m_TXTCache->astP29[i]->p26[d26])
-          free(m_TXTCache->astP29[i]->p26[d26]);
+        if (d26)
+          free(d26);
       }
       free(m_TXTCache->astP29[i]);
       m_TXTCache->astP29[i] = 0;

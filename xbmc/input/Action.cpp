@@ -46,8 +46,8 @@ CAction::CAction(int actionID, unsigned int state, float posX, float posY, float
 CAction::CAction(int actionID, wchar_t unicode)
 {
   m_id = actionID;
-  for (unsigned int i = 0; i < max_amounts; i++)
-    m_amount[i] = 0;
+  for (float& amount : m_amount)
+    amount = 0;
   m_repeat = 0;
   m_buttonCode = 0;
   m_unicode = unicode;
@@ -102,8 +102,8 @@ CAction::CAction(int actionID, const std::string &name):
   m_name(name)
 {
   m_id = actionID;
-  for (unsigned int i = 0; i < max_amounts; i++)
-    m_amount[i] = 0;
+  for (float& amount : m_amount)
+    amount = 0;
   m_repeat = 0;
   m_buttonCode = 0;
   m_unicode = 0;

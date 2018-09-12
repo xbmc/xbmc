@@ -474,10 +474,10 @@ bool CGUIPassword::LockSource(const std::string& strType, const std::string& str
 void CGUIPassword::LockSources(bool lock)
 {
   // lock or unlock all sources (those with locks)
-  const char* strType[] = {"programs", "music", "video", "pictures", "files", "games"};
-  for (unsigned int i = 0; i < sizeof(strType) / sizeof(*strType); ++i)
+  const char* strTypes[] = {"programs", "music", "video", "pictures", "files", "games"};
+  for (const char* const strType : strTypes)
   {
-    VECSOURCES *shares = CMediaSourceSettings::GetInstance().GetSources(strType[i]);
+    VECSOURCES *shares = CMediaSourceSettings::GetInstance().GetSources(strType);
     for (IVECSOURCES it=shares->begin();it != shares->end();++it)
       if (it->m_iLockMode != LOCK_MODE_EVERYONE)
         it->m_iHasLock = lock ? 2 : 1;
@@ -489,16 +489,16 @@ void CGUIPassword::LockSources(bool lock)
 void CGUIPassword::RemoveSourceLocks()
 {
   // remove lock from all sources
-  const char* strType[] = {"programs", "music", "video", "pictures", "files", "games"};
-  for (unsigned int i = 0; i < sizeof(strType) / sizeof(*strType); ++i)
+  const char* strTypes[] = {"programs", "music", "video", "pictures", "files", "games"};
+  for (const char* const strType : strTypes)
   {
-    VECSOURCES *shares = CMediaSourceSettings::GetInstance().GetSources(strType[i]);
+    VECSOURCES *shares = CMediaSourceSettings::GetInstance().GetSources(strType);
     for (IVECSOURCES it=shares->begin();it != shares->end();++it)
       if (it->m_iLockMode != LOCK_MODE_EVERYONE) // remove old info
       {
         it->m_iHasLock = 0;
         it->m_iLockMode = LOCK_MODE_EVERYONE;
-        CMediaSourceSettings::GetInstance().UpdateSource(strType[i], it->strName, "lockmode", "0"); // removes locks from xml
+        CMediaSourceSettings::GetInstance().UpdateSource(strType, it->strName, "lockmode", "0"); // removes locks from xml
       }
   }
   CMediaSourceSettings::GetInstance().Save();
