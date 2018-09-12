@@ -60,9 +60,8 @@ static const ContentMapping content[] = {{"unknown", CONTENT_NONE, 231},
 
 std::string TranslateContent(const CONTENT_TYPE &type, bool pretty /*=false*/)
 {
-  for (unsigned int index = 0; index < ARRAY_SIZE(content); ++index)
+  for (const ContentMapping& map : content)
   {
-    const ContentMapping &map = content[index];
     if (type == map.type)
     {
       if (pretty && map.pretty)
@@ -76,9 +75,8 @@ std::string TranslateContent(const CONTENT_TYPE &type, bool pretty /*=false*/)
 
 CONTENT_TYPE TranslateContent(const std::string &string)
 {
-  for (unsigned int index = 0; index < ARRAY_SIZE(content); ++index)
+  for (const ContentMapping& map : content)
   {
-    const ContentMapping &map = content[index];
     if (string == map.name)
       return map.type;
   }
