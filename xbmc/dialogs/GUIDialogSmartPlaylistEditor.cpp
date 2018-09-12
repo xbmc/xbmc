@@ -63,8 +63,6 @@ static const translateType types[] = { { CGUIDialogSmartPlaylistEditor::TYPE_SON
                                        { CGUIDialogSmartPlaylistEditor::TYPE_EPISODES, "episodes", 20360 }
                                      };
 
-#define NUM_TYPES (sizeof(types) / sizeof(translateType))
-
 CGUIDialogSmartPlaylistEditor::CGUIDialogSmartPlaylistEditor(void)
     : CGUIDialog(WINDOW_DIALOG_SMART_PLAYLIST_EDITOR, "SmartPlaylistEditor.xml")
 {
@@ -503,27 +501,27 @@ void CGUIDialogSmartPlaylistEditor::OnDeinitWindow(int nextWindowID)
 
 CGUIDialogSmartPlaylistEditor::PLAYLIST_TYPE CGUIDialogSmartPlaylistEditor::ConvertType(const std::string &type)
 {
-  for (unsigned int i = 0; i < NUM_TYPES; i++)
-    if (type == types[i].string)
-      return types[i].type;
+  for (const translateType& t : types)
+    if (type == t.string)
+      return t.type;
   assert(false);
   return TYPE_SONGS;
 }
 
 std::string CGUIDialogSmartPlaylistEditor::GetLocalizedType(PLAYLIST_TYPE type)
 {
-  for (unsigned int i = 0; i < NUM_TYPES; i++)
-    if (types[i].type == type)
-      return g_localizeStrings.Get(types[i].localizedString);
+  for (const translateType& t : types)
+    if (t.type == type)
+      return g_localizeStrings.Get(t.localizedString);
   assert(false);
   return "";
 }
 
 std::string CGUIDialogSmartPlaylistEditor::ConvertType(PLAYLIST_TYPE type)
 {
-  for (unsigned int i = 0; i < NUM_TYPES; i++)
-    if (types[i].type == type)
-      return types[i].string;
+  for (const translateType& t : types)
+    if (t.type == type)
+      return t.string;
   assert(false);
   return "songs";
 }
