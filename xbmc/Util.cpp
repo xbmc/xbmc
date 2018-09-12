@@ -2227,10 +2227,10 @@ std::string CUtil::GetVobSubSubFromIdx(const std::string& vobSubIdx)
   // look inside a .rar or .zip in the same directory
   const std::string archTypes[] = { "rar", "zip" };
   std::string vobSubFilename = URIUtils::GetFileName(vobSub);
-  for (unsigned int i = 0; i < ARRAY_SIZE(archTypes); i++)
+  for (const std::string& archType : archTypes)
   {
-    vobSub = URIUtils::CreateArchivePath(archTypes[i],
-                                         CURL(URIUtils::ReplaceExtension(vobSubIdx, std::string(".") + archTypes[i])),
+    vobSub = URIUtils::CreateArchivePath(archType,
+                                         CURL(URIUtils::ReplaceExtension(vobSubIdx, std::string(".") + archType)),
                                          vobSubFilename).Get();
     if (CFile::Exists(vobSub))
       return vobSub;
