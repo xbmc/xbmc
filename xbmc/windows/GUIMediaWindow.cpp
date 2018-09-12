@@ -707,7 +707,7 @@ bool CGUIMediaWindow::GetDirectory(const std::string &strDirectory, CFileItemLis
             CURL::GetRedacted(strDirectory).c_str());
   CLog::Log(LOGDEBUG,"  ParentPath = [%s]", CURL::GetRedacted(strParentPath).c_str());
 
-  if (pathToUrl.IsProtocol("plugin"))
+  if (pathToUrl.IsProtocol("plugin") && !pathToUrl.GetHostName().empty())
     CServiceBroker::GetAddonMgr().UpdateLastUsed(pathToUrl.GetHostName());
 
   // see if we can load a previously cached folder
