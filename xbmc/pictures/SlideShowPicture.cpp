@@ -526,8 +526,8 @@ void CSlideShowPic::Process(unsigned int currentTime, CDirtyRegionList &dirtyreg
         m_fZoomLeft = (fOffsetX - minx) / w;
       if (maxx + m_fZoomLeft*w < fOffsetX + fScreenWidth)
         m_fZoomLeft = (fScreenWidth + fOffsetX - maxx) / w;
-      for (int i = 0; i < 4; i++)
-        x[i] += w * m_fZoomLeft;
+      for (float& i : x)
+        i += w * m_fZoomLeft;
     }
     if (h >= fScreenHeight)
     { // must have no black bars
@@ -535,8 +535,8 @@ void CSlideShowPic::Process(unsigned int currentTime, CDirtyRegionList &dirtyreg
         m_fZoomTop = (fOffsetY - miny) / h;
       if (maxy + m_fZoomTop*h < fOffsetY + fScreenHeight)
         m_fZoomTop = (fScreenHeight + fOffsetY - maxy) / h;
-      for (int i = 0; i < 4; i++)
-        y[i] += m_fZoomTop * h;
+      for (float& i : y)
+        i += m_fZoomTop * h;
     }
   }
   // add offset from display effects
