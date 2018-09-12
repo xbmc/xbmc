@@ -632,8 +632,8 @@ static uint32_t build_rgba(const BD_PG_PALETTE_ENTRY &e)
 void CDVDInputStreamBluray::OverlayClose()
 {
 #if(BD_OVERLAY_INTERFACE_VERSION >= 2)
-  for(unsigned i = 0; i < 2; ++i)
-    m_planes[i].o.clear();
+  for(SPlane& plane : m_planes)
+    plane.o.clear();
   CDVDOverlayGroup* group   = new CDVDOverlayGroup();
   group->bForced = true;
   m_player->OnDiscNavResult(static_cast<void*>(group), BD_EVENT_MENU_OVERLAY);
@@ -701,9 +701,9 @@ void CDVDInputStreamBluray::OverlayFlush(int64_t pts)
   group->iPTSStartTime = static_cast<double>(pts);
   group->iPTSStopTime  = 0;
 
-  for(unsigned i = 0; i < 2; ++i)
+  for(SPlane& plane : m_planes)
   {
-    for(SOverlays::iterator it = m_planes[i].o.begin(); it != m_planes[i].o.end(); ++it)
+    for(SOverlays::iterator it = plane.o.begin(); it != plane.o.end(); ++it)
       group->m_overlays.push_back((*it)->Acquire());
   }
 

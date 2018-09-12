@@ -91,8 +91,8 @@ void CRenderer::Flush()
 {
   CSingleLock lock(m_section);
 
-  for(int i = 0; i < NUM_BUFFERS; i++)
-    Release(m_buffers[i]);
+  for(std::vector<SElement>& buffer : m_buffers)
+    Release(buffer);
 
   ReleaseCache();
 

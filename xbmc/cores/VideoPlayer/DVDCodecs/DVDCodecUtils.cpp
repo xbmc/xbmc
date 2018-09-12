@@ -25,9 +25,9 @@ bool CDVDCodecUtils::IsVP3CompatibleWidth(int width)
   // 769-784, 849-864, 929-944, 1009–1024, 1793–1808, 1873–1888, 1953–1968 and 2033-2048 pixel.
   // This relates to the following macroblock sizes.
   int unsupported[] = {49, 54, 59, 64, 113, 118, 123, 128};
-  for (unsigned int i = 0; i < sizeof(unsupported) / sizeof(int); i++)
+  for (int u : unsupported)
   {
-    if (unsupported[i] == (width + 15) / 16)
+    if (u == (width + 15) / 16)
       return false;
   }
   return true;
