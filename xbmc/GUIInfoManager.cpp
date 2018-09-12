@@ -375,9 +375,15 @@ const infomap integer_bools[] =  {{ "isequal",          INTEGER_IS_EQUAL },
 ///     Returns true if player is in frame advance mode. Skins should hide seek bar
 ///     in this mode)
 ///   }
+///   \table_row3{   <b>`Player.Icon`</b>,
+///                  \anchor Player_Icon
+///                  _string_,
+///     Returns the thumbnail of the currently playing item. If no thumbnail image exists\,
+///     the icon will be returned\, if available.
+///   }
 /// \table_end
 /// @}
-const infomap player_labels[] =  {{ "hasmedia",         PLAYER_HAS_MEDIA },           // bools from here
+const infomap player_labels[] =  {{ "hasmedia",         PLAYER_HAS_MEDIA },
                                   { "hasaudio",         PLAYER_HAS_AUDIO },
                                   { "hasvideo",         PLAYER_HAS_VIDEO },
                                   { "hasgame",          PLAYER_HAS_GAME },
@@ -405,7 +411,7 @@ const infomap player_labels[] =  {{ "hasmedia",         PLAYER_HAS_MEDIA },     
                                   { "muted",            PLAYER_MUTED },
                                   { "hasduration",      PLAYER_HASDURATION },
                                   { "passthrough",      PLAYER_PASSTHROUGH },
-                                  { "cachelevel",       PLAYER_CACHELEVEL },          // labels from here
+                                  { "cachelevel",       PLAYER_CACHELEVEL },
                                   { "title",            PLAYER_TITLE },
                                   { "progress",         PLAYER_PROGRESS },
                                   { "progresscache",    PLAYER_PROGRESS_CACHE },
@@ -421,13 +427,14 @@ const infomap player_labels[] =  {{ "hasmedia",         PLAYER_HAS_MEDIA },     
                                   { "isinternetstream", PLAYER_ISINTERNETSTREAM },
                                   { "pauseenabled",     PLAYER_CAN_PAUSE },
                                   { "seekenabled",      PLAYER_CAN_SEEK },
-                                  { "channelpreviewactive", PLAYER_IS_CHANNEL_PREVIEW_ACTIVE},
-                                  { "tempoenabled", PLAYER_SUPPORTS_TEMPO},
-                                  { "istempo", PLAYER_IS_TEMPO},
-                                  { "playspeed", PLAYER_PLAYSPEED},
-                                  { "hasprograms", PLAYER_HAS_PROGRAMS},
-                                  { "hasresolutions", PLAYER_HAS_RESOLUTIONS},
-                                  { "frameadvance", PLAYER_FRAMEADVANCE}};
+                                  { "channelpreviewactive", PLAYER_IS_CHANNEL_PREVIEW_ACTIVE },
+                                  { "tempoenabled",     PLAYER_SUPPORTS_TEMPO },
+                                  { "istempo",          PLAYER_IS_TEMPO },
+                                  { "playspeed",        PLAYER_PLAYSPEED },
+                                  { "hasprograms",      PLAYER_HAS_PROGRAMS },
+                                  { "hasresolutions",   PLAYER_HAS_RESOLUTIONS },
+                                  { "frameadvance",     PLAYER_FRAMEADVANCE },
+                                  { "icon",             PLAYER_ICON }};
 
 /// \page modules__General__List_of_gui_access
 /// @{

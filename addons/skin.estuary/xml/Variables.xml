@@ -51,8 +51,8 @@
 	<variable name="NowPlayingPosterVar">
 		<value condition="!String.IsEmpty(Player.Art(poster))">$INFO[Player.Art(poster)]</value>
 		<value condition="!String.IsEmpty(Player.Art(tvshow.poster))">$INFO[Player.Art(tvshow.poster)]</value>
-		<value condition="String.IsEmpty(Player.Art(thumb)) + VideoPlayer.Content(livetv)">DefaultTVShows.png</value>
-		<value>$INFO[Player.Art(thumb)]</value>
+		<value condition="String.IsEmpty(Player.Icon) + VideoPlayer.Content(livetv)">DefaultTVShows.png</value>
+		<value>$INFO[Player.Icon]</value>
 	</variable>
 	<variable name="ShiftThumbVar">
 		<value condition="ListItem.IsParentFolder">DefaultFolderBackSquare.png</value>
