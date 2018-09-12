@@ -53,13 +53,13 @@ public:
     currentUVIndex.clear();
     currentDewPoint.clear();
 
-    for (int i = 0; i < NUM_DAYS; i++)
+    for (ForecastDay& f : forecast)
     {
-      forecast[i].m_icon.clear();
-      forecast[i].m_overview.clear();
-      forecast[i].m_day.clear();
-      forecast[i].m_high.clear();
-      forecast[i].m_low.clear();
+      f.m_icon.clear();
+      f.m_overview.clear();
+      f.m_day.clear();
+      f.m_high.clear();
+      f.m_low.clear();
     }
   };
 
