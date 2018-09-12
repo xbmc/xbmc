@@ -501,7 +501,7 @@ extern "C" {
     int             iMaxRecordings;                            /*!< @brief (optional) maximum number of recordings this timer shall create. > 0 number of recordings, < 0 addon defined integer list reference, == 0 disabled */
     unsigned int    iRecordingGroup;                           /*!< @brief (optional) integer ref to addon/backend defined list of recording groups*/
     time_t          firstDay;                                  /*!< @brief (optional) the first day this timer is active, for repeating timers */
-    unsigned int    iWeekdays;                                 /*!< @brief (optional) week days, for repeating timers */
+    unsigned int    iWeekdays;                                 /*!< @brief (optional) week days, for repeating timers (see PVR_WEEKDAY_* constant values) */
     unsigned int    iPreventDuplicateEpisodes;                 /*!< @brief (optional) 1 if backend should only record new episodes in case of a repeating epg-based timer, 0 if all episodes shall be recorded (no duplicate detection). Actual algorithm for
                                                                     duplicate detection is defined by the backend. Addons may define own values for different duplicate detection algorithms, thus this is not just a bool.*/
     unsigned int    iEpgUid;                                   /*!< @brief (optional) EPG event id associated with this timer. Event ids must be unique for a channel. Valid ids must be greater than EPG_TAG_INVALID_UID. */
@@ -528,7 +528,7 @@ extern "C" {
     char   strPlot[PVR_ADDON_DESC_STRING_LENGTH];         /*!< @brief (optional) plot */
     char   strGenreDescription[PVR_ADDON_DESC_STRING_LENGTH]; /*!< @brief (optional) genre. Will be used only when iGenreType = EPG_GENRE_USE_STRING */
     char   strChannelName[PVR_ADDON_NAME_STRING_LENGTH];  /*!< @brief (optional) channel name */
-    char   strIconPath[PVR_ADDON_URL_STRING_LENGTH];      /*!< @brief (optional) icon path */
+    char   strIconPath[PVR_ADDON_URL_STRING_LENGTH];      /*!< @brief (optional) channel logo (icon) path */
     char   strThumbnailPath[PVR_ADDON_URL_STRING_LENGTH]; /*!< @brief (optional) thumbnail path */
     char   strFanartPath[PVR_ADDON_URL_STRING_LENGTH];    /*!< @brief (optional) fanart path */
     time_t recordingTime;                                 /*!< @brief (optional) start time of the recording */
@@ -584,8 +584,8 @@ extern "C" {
   {
     time_t startTime; /*!< @brief For recordings, this must be zero. For Live TV, this is a reference time in units of time_t (UTC) from which time elapsed starts. Ideally start of tv show, but can be any other value. */
     int64_t ptsStart; /*!< @brief the pts of startTime */
-    int64_t ptsBegin; /*!< @brief earliest pts player can seek back. Value is seconds, relative to ptsStart. For recordings, this must be zero. For Live TV, this must be zero if not timeshifting and must point to begin of the timeshift buffer, otherwise. */
-    int64_t ptsEnd;   /*!< @brief latest pts player can seek forward. Value is seconds, relative to ptsStart. For recordings, this must be the total length in seconds. For Live TV, this must be zero if not timeshifting and must point to end of the timeshift buffer, otherwise. */
+    int64_t ptsBegin; /*!< @brief earliest pts player can seek back. Value is in micro seconds, relative to ptsStart. For recordings, this must be zero. For Live TV, this must be zero if not timeshifting and must point to begin of the timeshift buffer, otherwise. */
+    int64_t ptsEnd;   /*!< @brief latest pts player can seek forward. Value is in micro seconds, relative to ptsStart. For recordings, this must be the total length. For Live TV, this must be zero if not timeshifting and must point to end of the timeshift buffer, otherwise. */
   } ATTRIBUTE_PACKED PVR_STREAM_TIMES;
 
   typedef struct AddonToKodiFuncTable_PVR

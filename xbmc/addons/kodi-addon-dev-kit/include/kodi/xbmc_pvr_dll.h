@@ -676,7 +676,9 @@ extern "C"
   void OnPowerSavingDeactivated();
 
   /*!
-   * Get stream times. Intermediate, will be moved to inputstream
+   * Get stream times.
+   * @param times A pointer to the data to be filled by the implementation.
+   * @return PVR_ERROR_NO_ERROR on success.
    */
   PVR_ERROR GetStreamTimes(PVR_STREAM_TIMES *times);
 
