@@ -9,6 +9,7 @@
 #pragma once
 
 #include "addons/kodi-addon-dev-kit/include/kodi/kodi_game_types.h"
+#include "addons/Addon.h"
 #include "games/GameTypes.h"
 
 #include <string>
@@ -35,7 +36,7 @@ public:
   CGameClientProperties(const CGameClient& parent, AddonProps_Game& props);
   ~CGameClientProperties(void) { ReleaseResources(); }
 
-  void InitializeProperties(void);
+  bool InitializeProperties(void);
 
 private:
   // Release mutable resources
@@ -45,7 +46,7 @@ private:
   const char* GetLibraryPath(void);
 
   // List of proxy DLLs needed to load the game client
-  const char** GetProxyDllPaths(void);
+  const char** GetProxyDllPaths(const ADDON::VECADDONS &addons);
 
   // Number of proxy DLLs needed to load the game client
   unsigned int GetProxyDllCount(void) const;
@@ -66,6 +67,7 @@ private:
   unsigned int GetExtensionCount(void) const;
 
   // Helper functions
+  bool GetProxyAddons(ADDON::VECADDONS &addons);
   void AddProxyDll(const GameClientPtr& gameClient);
   bool HasProxyDll(const std::string& strLibPath) const;
 

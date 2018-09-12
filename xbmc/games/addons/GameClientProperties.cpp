@@ -15,6 +15,8 @@
 #include "dialogs/GUIDialogYesNo.h"
 #include "filesystem/Directory.h"
 #include "filesystem/SpecialProtocol.h"
+#include "guilib/LocalizeStrings.h"
+#include "messaging/helpers/DialogOKHelper.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/Variant.h"
@@ -49,12 +51,16 @@ void CGameClientProperties::ReleaseResources(void)
   m_extensions.clear();
 }
 
-void CGameClientProperties::InitializeProperties(void)
+bool CGameClientProperties::InitializeProperties(void)
 {
   ReleaseResources();
 
+  ADDON::VECADDONS addons;
+  if (!GetProxyAddons(addons))
+    return false;
+
   m_properties.game_client_dll_path     = GetLibraryPath();
-  m_properties.proxy_dll_paths          = GetProxyDllPaths();
+  m_properties.proxy_dll_paths          = GetProxyDllPaths(addons);
   m_properties.proxy_dll_count          = GetProxyDllCount();
   m_properties.resource_directories     = GetResourceDirectories();
   m_properties.resource_directory_count = GetResourceDirectoryCount();
@@ -62,6 +68,8 @@ void CGameClientProperties::InitializeProperties(void)
   m_properties.supports_vfs             = m_parent.SupportsVFS();
   m_properties.extensions               = GetExtensions();
   m_properties.extension_count          = GetExtensionCount();
+
+  return true;
 }
 
 const char* CGameClientProperties::GetLibraryPath(void)
@@ -75,34 +83,12 @@ const char* CGameClientProperties::GetLibraryPath(void)
   return m_strLibraryPath.c_str();
 }
 
-const char** CGameClientProperties::GetProxyDllPaths(void)
+const char** CGameClientProperties::GetProxyDllPaths(const ADDON::VECADDONS &addons)
 {
   if (m_proxyDllPaths.empty())
   {
-    // Add all game client dependencies
-    //! @todo Compare helper version with required dependency
-    const auto& dependencies = m_parent.GetDependencies();
-    for (auto it = dependencies.begin(); it != dependencies.end(); ++it)
-    {
-      const std::string& strAddonId = it->id;
-      AddonPtr addon;
-      if (CServiceBroker::GetAddonMgr().GetAddon(strAddonId, addon, ADDON_GAMEDLL, false))
-      {
-        // If add-on is disabled, ask the user to enable it
-        if (CServiceBroker::GetAddonMgr().IsAddonDisabled(addon->ID()))
-        {
-          // Failed to play game
-          // This game depends on a disabled add-on. Would you like to enable it?
-          if (CGUIDialogYesNo::ShowAndGetInput(CVariant{ 35210 }, CVariant{ 35215 }))
-            CServiceBroker::GetAddonMgr().EnableAddon(addon->ID());
-          else
-            addon.reset();
-        }
-      }
-
-      if (addon)
-        AddProxyDll(std::static_pointer_cast<CGameClient>(addon));
-    }
+    for (const auto &addon : addons)
+      AddProxyDll(std::static_pointer_cast<CGameClient>(addon));
   }
 
   if (!m_proxyDllPaths.empty())
@@ -194,6 +180,73 @@ const char** CGameClientProperties::GetExtensions(void)
 unsigned int CGameClientProperties::GetExtensionCount(void) const
 {
   return static_cast<unsigned int>(m_extensions.size());
+}
+
+bool CGameClientProperties::GetProxyAddons(ADDON::VECADDONS &addons)
+{
+  ADDON::VECADDONS ret;
+  std::vector<std::string> missingDependencies; // ID or name of missing dependencies
+
+  for (const auto &dependency : m_parent.GetDependencies())
+  {
+    AddonPtr addon;
+    if (CServiceBroker::GetAddonMgr().GetAddon(dependency.id, addon, ADDON_UNKNOWN, false))
+    {
+      // If add-on is disabled, ask the user to enable it
+      if (CServiceBroker::GetAddonMgr().IsAddonDisabled(dependency.id))
+      {
+        // "Failed to play game"
+        // "This game depends on a disabled add-on. Would you like to enable it?"
+        if (CGUIDialogYesNo::ShowAndGetInput(CVariant{ 35210 }, CVariant{ 35215 }))
+        {
+          if (!CServiceBroker::GetAddonMgr().EnableAddon(dependency.id))
+          {
+            CLog::Log(LOGERROR, "Failed to enable add-on %s", dependency.id.c_str());
+            missingDependencies.emplace_back(addon->Name());
+            addon.reset();
+          }
+        }
+        else
+        {
+          CLog::Log(LOGERROR, "User chose to not enable add-on %s", dependency.id.c_str());
+          missingDependencies.emplace_back(addon->Name());
+          addon.reset();
+        }
+      }
+
+      if (addon && addon->Type() == ADDON_GAMEDLL)
+        ret.emplace_back(std::move(addon));
+    }
+    else
+    {
+      if (dependency.optional)
+      {
+        CLog::Log(LOGDEBUG, "Missing optional dependency %s", dependency.id.c_str());
+      }
+      else
+      {
+        CLog::Log(LOGERROR, "Missing mandatory dependency %s", dependency.id.c_str());
+        missingDependencies.emplace_back(dependency.id);
+      }
+    }
+  }
+
+  if (!missingDependencies.empty())
+  {
+    std::string strDependencies = StringUtils::Join(missingDependencies, ", ");
+    std::string dialogText = StringUtils::Format(g_localizeStrings.Get(35223), strDependencies);
+
+    // "Failed to play game"
+    // "Add-on is incompatible due to unmet dependencies."
+    // ""
+    // "Missing: {0:s}"
+    MESSAGING::HELPERS::ShowOKDialogLines(CVariant{ 35210 }, CVariant{ 24104 }, CVariant{ "" }, CVariant{ dialogText });
+
+    return false;
+  }
+
+  addons = std::move(ret);
+  return true;
 }
 
 void CGameClientProperties::AddProxyDll(const GameClientPtr& gameClient)
