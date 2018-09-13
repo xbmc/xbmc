@@ -73,7 +73,7 @@ bool CPeripheralJoystick::InitialiseFeature(const PeripheralFeature feature)
       // Ensure an add-on is present to translate input
       if (!m_manager.GetAddonWithButtonMap(this))
       {
-        CLog::Log(LOGERROR, "CPeripheralJoystick: No button mapping add-on for %", m_strLocation.c_str());
+        CLog::Log(LOGERROR, "CPeripheralJoystick: No button mapping add-on for %s", m_strLocation.c_str());
       }
       else
       {
