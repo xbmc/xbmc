@@ -3092,8 +3092,12 @@ void CVideoDatabase::DeleteResumeBookMark(const CFileItem& item)
     return;
 
   int fileID = item.GetVideoInfoTag()->m_iFileId;
-  if (fileID < -1)
-    return;
+  if (fileID < 0)
+  {
+    fileID = GetFileId(item.GetPath());
+    if (fileID < 0)
+      return;
+  }
 
   try
   {
@@ -5378,16 +5382,13 @@ bool CVideoDatabase::GetPlayCounts(const std::string &strPath, CFileItemList &it
 
     return ret;
   }
-  int pathID;
-  if (URIUtils::IsPlugin(strPath))
+  int pathID = -1;
+  if (!URIUtils::IsPlugin(strPath))
   {
-    CURL url(strPath);
-    pathID = GetPathId(url.GetWithoutFilename());
-  }
-  else
     pathID = GetPathId(strPath);
-  if (pathID < 0)
-    return false; // path (and thus files) aren't in the database
+    if (pathID < 0)
+      return false; // path (and thus files) aren't in the database
+  }
 
   try
   {
@@ -5395,36 +5396,64 @@ bool CVideoDatabase::GetPlayCounts(const std::string &strPath, CFileItemList &it
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    //! @todo also test a single query for the above and below
-    std::string sql = PrepareSQL(
+    std::string sql =
       "SELECT"
       "  files.strFilename, files.playCount,"
       "  bookmark.timeInSeconds, bookmark.totalTimeInSeconds "
       "FROM files"
       "  LEFT JOIN bookmark ON"
-      "    files.idFile = bookmark.idFile AND bookmark.type = %i"
-      "  WHERE files.idPath=%i", (int)CBookmark::RESUME, pathID);
+      "    files.idFile = bookmark.idFile AND bookmark.type = %i ";
 
-    if (RunQuery(sql) <= 0)
-      return false;
-
-    items.SetFastLookup(true); // note: it's possibly quicker the other way around (map on db returned items)?
-    while (!m_pDS->eof())
+    if (URIUtils::IsPlugin(strPath))
     {
-      std::string path;
-      ConstructPath(path, strPath, m_pDS->fv(0).get_asString());
-      CFileItemPtr item = items.Get(path);
-      if (item)
+      for (auto& item : items)
       {
-        if (!items.IsPlugin() || !item->GetVideoInfoTag()->IsPlayCountSet())
-          item->GetVideoInfoTag()->SetPlayCount(m_pDS->fv(1).get_asInt());
+        if (!item || item->m_bIsFolder || !item->GetProperty("IsPlayable").asBoolean())
+          continue;
 
-        if (!item->GetVideoInfoTag()->GetResumePoint().IsSet())
+        std::string path, filename;
+        SplitPath(item->GetPath(), path, filename);
+        m_pDS->query(PrepareSQL(sql +
+          "INNER JOIN path ON files.idPath = path.idPath "
+          "WHERE files.strFilename='%s' AND path.strPath='%s'",
+          (int)CBookmark::RESUME, filename.c_str(), path.c_str()));
+
+        if (!m_pDS->eof())
         {
-          item->GetVideoInfoTag()->SetResumePoint(m_pDS->fv(2).get_asInt(), m_pDS->fv(3).get_asInt(), "");
+          if (!item->GetVideoInfoTag()->IsPlayCountSet())
+            item->GetVideoInfoTag()->SetPlayCount(m_pDS->fv(1).get_asInt());
+          if (!item->GetVideoInfoTag()->GetResumePoint().IsSet())
+            item->GetVideoInfoTag()->SetResumePoint(m_pDS->fv(2).get_asInt(), m_pDS->fv(3).get_asInt(), "");
         }
+        m_pDS->close();
       }
-      m_pDS->next();
+    }
+    else
+    {
+      //! @todo also test a single query for the above and below
+      sql = PrepareSQL(sql + "WHERE files.idPath=%i", (int)CBookmark::RESUME, pathID);
+
+      if (RunQuery(sql) <= 0)
+        return false;
+
+      items.SetFastLookup(true); // note: it's possibly quicker the other way around (map on db returned items)?
+      while (!m_pDS->eof())
+      {
+        std::string path;
+        ConstructPath(path, strPath, m_pDS->fv(0).get_asString());
+        CFileItemPtr item = items.Get(path);
+        if (item)
+        {
+          if (!items.IsPlugin() || !item->GetVideoInfoTag()->IsPlayCountSet())
+            item->GetVideoInfoTag()->SetPlayCount(m_pDS->fv(1).get_asInt());
+
+          if (!item->GetVideoInfoTag()->GetResumePoint().IsSet())
+          {
+            item->GetVideoInfoTag()->SetResumePoint(m_pDS->fv(2).get_asInt(), m_pDS->fv(3).get_asInt(), "");
+          }
+        }
+        m_pDS->next();
+      }
     }
 
     return true;
@@ -9750,9 +9779,7 @@ void CVideoDatabase::SplitPath(const std::string& strFileNameAndPath, std::strin
   else if (URIUtils::IsPlugin(strFileNameAndPath))
   {
     CURL url(strFileNameAndPath);
-    strPath = url.GetWithoutOptions();
-    if (strPath == strFileNameAndPath)
-      strPath = url.GetWithoutFilename();
+    strPath = url.GetOptions().empty() ? url.GetWithoutFilename() : url.GetWithoutOptions();
     strFileName = strFileNameAndPath;
   }
   else
