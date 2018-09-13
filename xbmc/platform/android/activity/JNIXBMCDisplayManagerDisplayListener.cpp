@@ -32,9 +32,9 @@ void CJNIXBMCDisplayManagerDisplayListener::RegisterNatives(JNIEnv* env)
   {
     JNINativeMethod methods[] =
     {
-      {"_onDisplayAdded", "(I)V", (void*)&CJNIXBMCDisplayManagerDisplayListener::_onDisplayAdded},
-      {"_onDisplayChanged", "(I)V", (void*)&CJNIXBMCDisplayManagerDisplayListener::_onDisplayChanged},
-      {"_onDisplayRemoved", "(I)V", (void*)&CJNIXBMCDisplayManagerDisplayListener::_onDisplayRemoved},
+      {"_onDisplayAdded", "(I)V", reinterpret_cast<void*>(&CJNIXBMCDisplayManagerDisplayListener::_onDisplayAdded)},
+      {"_onDisplayChanged", "(I)V", reinterpret_cast<void*>(&CJNIXBMCDisplayManagerDisplayListener::_onDisplayChanged)},
+      {"_onDisplayRemoved", "(I)V", reinterpret_cast<void*>(&CJNIXBMCDisplayManagerDisplayListener::_onDisplayRemoved)},
     };
 
     env->RegisterNatives(cClass, methods, sizeof(methods)/sizeof(methods[0]));
