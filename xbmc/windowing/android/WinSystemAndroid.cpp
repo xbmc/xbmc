@@ -49,6 +49,9 @@ CWinSystemAndroid::CWinSystemAndroid()
 
   m_stereo_mode = RENDER_STEREO_MODE_OFF;
 
+  m_dispResetState = RESET_NOTWAITING;
+  m_dispResetTimer = new CTimer(this);
+
   m_android = nullptr;
 
   m_winEvents.reset(new CWinEventsAndroid());
@@ -61,6 +64,7 @@ CWinSystemAndroid::~CWinSystemAndroid()
   {
     m_nativeWindow = nullptr;
   }
+  delete m_dispResetTimer, m_dispResetTimer = nullptr;
 }
 
 bool CWinSystemAndroid::InitWindowSystem()
@@ -189,17 +193,34 @@ void CWinSystemAndroid::UpdateResolutions()
   }
 }
 
+void CWinSystemAndroid::OnTimeout()
+{
+  m_dispResetState = RESET_WAITEVENT;
+  SetHDMIState(true);
+}
+
 void CWinSystemAndroid::SetHDMIState(bool connected)
 {
+  CSingleLock lock(m_resourceSection);
+  if (connected && m_dispResetState == RESET_WAITEVENT)
   {
-    CSingleLock lock(m_resourceSection);
-    for (std::vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); ++i)
+    for (auto resource : m_resources)
+      resource->OnResetDisplay();
+  }
+  else if (!connected)
+  {
+    int delay = CServiceBroker::GetSettings()->GetInt("videoscreen.delayrefreshchange");
+    if (delay > 0)
     {
-      if (connected)
-        (*i)->OnResetDisplay();
-      else
-        (*i)->OnLostDisplay();
+       m_dispResetState = RESET_WAITTIMER;
+       m_dispResetTimer->Stop();
+       m_dispResetTimer->Start(delay * 100);
     }
+    else
+      m_dispResetState = RESET_WAITEVENT;
+
+    for (auto resource : m_resources)
+      resource->OnLostDisplay();
   }
 }
 
