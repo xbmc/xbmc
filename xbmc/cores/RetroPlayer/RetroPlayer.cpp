@@ -378,9 +378,7 @@ bool CRetroPlayer::OnAction(const CAction &action)
       m_playback->SetSpeed(0.0);
 
       CLog::Log(LOGDEBUG, "RetroPlayer[PLAYER]: Sending reset command via ACTION_PLAYER_RESET");
-      ResetPlayback();
       m_gameClient->Input().HardwareReset();
-      CreatePlayback(false);
 
       // If rewinding or paused, begin playback
       if (speed <= 0.0f)
