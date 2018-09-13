@@ -70,6 +70,7 @@
 #define PLAYER_HAS_PROGRAMS          63
 #define PLAYER_HAS_RESOLUTIONS       64
 #define PLAYER_FRAMEADVANCE          65
+#define PLAYER_ICON                  66
 
 #define WEATHER_CONDITIONS_TEXT     100
 #define WEATHER_TEMPERATURE         101

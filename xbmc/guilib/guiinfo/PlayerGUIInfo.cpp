@@ -285,6 +285,13 @@ bool CPlayerGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
     case PLAYER_ITEM_ART:
       value = item->GetArt(info.GetData3());
       return true;
+    case PLAYER_ICON:
+      value = item->GetArt("thumb");
+      if (value.empty())
+        value = item->GetIconImage();
+      if (fallback)
+        *fallback = item->GetIconImage();
+      return true;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // PLAYER_PROCESS_*

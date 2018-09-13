@@ -245,7 +245,7 @@
 				<width>200</width>
 				<height>200</height>
 				<aspectratio aligny="center">keep</aspectratio>
-				<texture>$INFO[Player.Art(thumb)]</texture>
+				<texture>$INFO[Player.Icon]</texture>
 			</control>
 			<control type="textbox">
 				<left>260</left>
