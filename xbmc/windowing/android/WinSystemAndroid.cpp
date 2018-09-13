@@ -48,7 +48,6 @@ CWinSystemAndroid::CWinSystemAndroid()
   m_displayHeight = 0;
 
   m_stereo_mode = RENDER_STEREO_MODE_OFF;
-  m_delayDispReset = false;
 
   m_android = nullptr;
 
@@ -116,37 +115,12 @@ bool CWinSystemAndroid::CreateNewWindow(const std::string& name,
     return true;
   }
 
-  int delay = CServiceBroker::GetSettings()->GetInt("videoscreen.delayrefreshchange");
-  if (delay > 0)
-  {
-    m_delayDispReset = true;
-    m_dispResetTimer.Set(delay * 100);
-  }
-
-  {
-    CSingleLock lock(m_resourceSection);
-    for (std::vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); ++i)
-    {
-      (*i)->OnLostDisplay();
-    }
-  }
-
   m_stereo_mode = stereo_mode;
   m_bFullScreen = fullScreen;
 
   m_nativeWindow = CXBMCApp::GetNativeWindow(2000);
 
   m_android->SetNativeResolution(res);
-
-  if (!m_delayDispReset)
-  {
-    CSingleLock lock(m_resourceSection);
-    // tell any shared resources
-    for (std::vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); ++i)
-    {
-      (*i)->OnResetDisplay();
-    }
-  }
 
   return true;
 }
@@ -212,6 +186,20 @@ void CWinSystemAndroid::UpdateResolutions()
 
     std::string codecname = codec_info.getName();
     CLog::Log(LOGNOTICE, "Mediacodec: %s", codecname.c_str());
+  }
+}
+
+void CWinSystemAndroid::SetHDMIState(bool connected)
+{
+  {
+    CSingleLock lock(m_resourceSection);
+    for (std::vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); ++i)
+    {
+      if (connected)
+        (*i)->OnResetDisplay();
+      else
+        (*i)->OnLostDisplay();
+    }
   }
 }
 

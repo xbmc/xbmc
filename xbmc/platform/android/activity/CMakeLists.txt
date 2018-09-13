@@ -17,6 +17,7 @@ set(SOURCES android_main.cpp
             JNIXBMCNsdManagerResolveListener.cpp
             JNIXBMCJsonHandler.cpp
             JNIXBMCFile.cpp
+            JNIXBMCDisplayManagerDisplayListener.cpp
             ${NDKROOT}/sources/android/native_app_glue/android_native_app_glue.c
             ${NDKROOT}/sources/android/cpufeatures/cpu-features.c)
 
@@ -41,6 +42,7 @@ set(HEADERS AndroidExtra.h
             JNIXBMCNsdManagerResolveListener.h
             JNIXBMCJsonHandler.h
             JNIXBMCFile.h
+            JNIXBMCDisplayManagerDisplayListener.h
             XBMCApp.h)
 
 core_add_library(platform_android_activity)

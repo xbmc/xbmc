@@ -31,6 +31,7 @@
 #include <androidjni/Context.h>
 #include <androidjni/Cursor.h>
 #include <androidjni/Display.h>
+#include <androidjni/DisplayManager.h>
 #include <androidjni/Environment.h>
 #include <androidjni/File.h>
 #include <androidjni/Intent.h>
@@ -84,7 +85,7 @@
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "windowing/android/VideoSyncAndroid.h"
-#include "windowing/WinSystem.h"
+#include "windowing/android/WinSystemAndroid.h"
 #include "windowing/WinEvents.h"
 #include "platform/xbmc.h"
 
@@ -118,6 +119,7 @@ int CXBMCApp::m_batteryLevel = 0;
 bool CXBMCApp::m_hasFocus = false;
 bool CXBMCApp::m_headsetPlugged = false;
 bool CXBMCApp::m_hdmiPlugged = true;
+bool CXBMCApp::m_hdmiReportedState = true;
 IInputDeviceCallbacks* CXBMCApp::m_inputDeviceCallbacks = nullptr;
 IInputDeviceEventHandler* CXBMCApp::m_inputDeviceEventHandler = nullptr;
 bool CXBMCApp::m_hasReqVisible = false;
@@ -336,9 +338,20 @@ void CXBMCApp::onLostFocus()
   m_hasFocus = false;
 }
 
+void CXBMCApp::RegisterDisplayListener(CVariant* variant)
+{
+  CJNIDisplayManager displayManager(getSystemService("display"));
+  if (displayManager)
+  {
+    android_printf("CXBMCApp: installing DisplayManager::DisplayListener");
+    displayManager.registerDisplayListener(CXBMCApp::get()->getDisplayListener());
+  }
+}
+
 void CXBMCApp::Initialize()
 {
   CServiceBroker::GetAnnouncementManager()->AddAnnouncer(CXBMCApp::get());
+  runNativeOnUiThread(RegisterDisplayListener, nullptr);
 }
 
 void CXBMCApp::Deinitialize()
@@ -522,6 +535,11 @@ void CXBMCApp::SetDisplayModeCallback(CVariant* variant)
     CJNIWindowManagerLayoutParams params = window.getAttributes();
     if (params.getpreferredDisplayModeId() != mode)
     {
+      if (g_application.GetAppPlayer().IsPlaying())
+      {
+        dynamic_cast<CWinSystemAndroid*>(CServiceBroker::GetWinSystem())->SetHDMIState(false);
+        m_hdmiReportedState = false;
+      }
       params.setpreferredDisplayModeId(mode);
       params.setpreferredRefreshRate(rate);
       window.setAttributes(params);
@@ -963,7 +981,12 @@ void CXBMCApp::onReceive(CJNIIntent intent)
     {
       CLog::Log(LOGDEBUG, "-- HDMI state: %s",  newstate ? "on" : "off");
       m_hdmiPlugged = newstate;
-      CServiceBroker::GetActiveAE()->DeviceChange();
+      //CServiceBroker::GetActiveAE()->DeviceChange();
+      if (m_hdmiPlugged != m_hdmiReportedState)
+      {
+        dynamic_cast<CWinSystemAndroid*>(CServiceBroker::GetWinSystem())->SetHDMIState(m_hdmiPlugged);
+        m_hdmiReportedState = m_hdmiPlugged;
+      }
     }
   }
   else if (action == "android.intent.action.SCREEN_OFF")
@@ -1314,12 +1337,29 @@ bool CXBMCApp::onInputDeviceEvent(const AInputEvent* event)
 }
 
 
+void CXBMCApp::onDisplayAdded(int displayId)
+{
+  android_printf("%s: ", __PRETTY_FUNCTION__);
+}
+
+void CXBMCApp::onDisplayChanged(int displayId)
+{
+  android_printf("%s: ", __PRETTY_FUNCTION__);
+}
+
+void CXBMCApp::onDisplayRemoved(int displayId)
+{
+  android_printf("%s: ", __PRETTY_FUNCTION__);
+}
+
 void CXBMCApp::surfaceChanged(CJNISurfaceHolder holder, int format, int width, int height)
 {
+  android_printf("%s: ", __PRETTY_FUNCTION__);
 }
 
 void CXBMCApp::surfaceCreated(CJNISurfaceHolder holder)
 {
+  android_printf("%s: ", __PRETTY_FUNCTION__);
   m_window = ANativeWindow_fromSurface(xbmc_jnienv(), holder.getSurface().get_raw());
   if (m_window == NULL)
   {
@@ -1334,6 +1374,7 @@ void CXBMCApp::surfaceCreated(CJNISurfaceHolder holder)
 
 void CXBMCApp::surfaceDestroyed(CJNISurfaceHolder holder)
 {
+  android_printf("%s: ", __PRETTY_FUNCTION__);
   // If we have exited XBMC, it no longer exists.
   if (!m_exiting)
   {

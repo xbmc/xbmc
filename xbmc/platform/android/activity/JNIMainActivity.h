@@ -45,4 +45,8 @@ protected:
   virtual void onVolumeChanged(int volume)=0;
   virtual void doFrame(int64_t frameTimeNanos)=0;
   virtual void onVisibleBehindCanceled() = 0;
+
+  virtual void onDisplayAdded(int displayId)=0;
+  virtual void onDisplayChanged(int displayId)=0;
+  virtual void onDisplayRemoved(int displayId)=0;
 };

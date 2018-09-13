@@ -66,14 +66,6 @@ bool CWinSystemAndroidGLESContext::CreateNewWindow(const std::string& name,
     return false;
   }
 
-  if (!m_delayDispReset)
-  {
-    CSingleLock lock(m_resourceSection);
-    // tell any shared resources
-    for (std::vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); ++i)
-      (*i)->OnResetDisplay();
-  }
-
   return true;
 }
 
@@ -98,14 +90,6 @@ void CWinSystemAndroidGLESContext::SetVSyncImpl(bool enable)
 
 void CWinSystemAndroidGLESContext::PresentRenderImpl(bool rendered)
 {
-  if (m_delayDispReset && m_dispResetTimer.IsTimePast())
-  {
-    m_delayDispReset = false;
-    CSingleLock lock(m_resourceSection);
-    // tell any shared resources
-    for (std::vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); ++i)
-      (*i)->OnResetDisplay();
-  }
   // Ignore EGL_BAD_SURFACE: It seems to happen during/after mode changes, but
   // we can't actually do anything about it
   if (rendered && !m_pGLContext.TrySwapBuffers() && eglGetError() != EGL_BAD_SURFACE)

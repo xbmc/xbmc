@@ -34,6 +34,8 @@ public:
   bool DestroyWindow() override;
   void UpdateResolutions() override;
 
+  void SetHDMIState(bool connected);
+
   bool HasCursor() override { return false; };
 
   bool Hide() override;
@@ -58,9 +60,6 @@ protected:
   int m_displayHeight;
 
   RENDER_STEREO_MODE m_stereo_mode;
-
-  bool m_delayDispReset;
-  XbmcThreads::EndTime m_dispResetTimer;
 
   CCriticalSection m_resourceSection;
   std::vector<IDispResource*> m_resources;
