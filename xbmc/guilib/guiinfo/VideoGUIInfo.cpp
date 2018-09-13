@@ -14,7 +14,6 @@
 #include "FileItem.h"
 #include "ServiceBroker.h"
 #include "URL.h"
-#include "Util.h"
 #include "cores/DataCacheCore.h"
 #include "cores/VideoPlayer/VideoRenderers/BaseRenderer.h"
 #include "guilib/GUIComponent.h"
@@ -94,6 +93,9 @@ bool CVideoGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
       case PLAYER_PATH:
       case PLAYER_FILENAME:
       case PLAYER_FILEPATH:
+        if (item->HasMusicInfoTag()) // special handling for music videos, which have both a videotag and a musictag
+          break;
+
         value = tag->m_strFileNameAndPath;
         if (value.empty())
           value = item->GetPath();
@@ -102,14 +104,10 @@ bool CVideoGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
       case PLAYER_TITLE:
       case VIDEOPLAYER_TITLE:
         value = tag->m_strTitle;
-        if (value.empty())
-          value = item->GetLabel();
-        if (value.empty())
-          value = CUtil::GetTitleFromPath(item->GetPath());
-        return true;
+        return !value.empty();
       case LISTITEM_TITLE:
         value = tag->m_strTitle;
-        return !value.empty();
+        return true;
       case VIDEOPLAYER_ORIGINALTITLE:
       case LISTITEM_ORIGINALTITLE:
         value = tag->m_strOriginalTitle;
@@ -417,6 +415,8 @@ bool CVideoGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
       case LISTITEM_FILE_EXTENSION:
         if (item->IsVideoDb())
           value = URIUtils::GetFileName(tag->m_strFileNameAndPath);
+        else if (item->HasMusicInfoTag()) // special handling for music videos, which have both a videotag and a musictag
+          break;
         else
           value = URIUtils::GetFileName(item->GetPath());
 
@@ -435,6 +435,8 @@ bool CVideoGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
           else
             URIUtils::GetParentPath(tag->m_strFileNameAndPath, value);
         }
+        else if (item->HasMusicInfoTag()) // special handling for music videos, which have both a videotag and a musictag
+          break;
         else
           URIUtils::GetParentPath(item->GetPath(), value);
 
@@ -449,6 +451,8 @@ bool CVideoGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
       case LISTITEM_FILENAME_AND_PATH:
         if (item->IsVideoDb())
           value = tag->m_strFileNameAndPath;
+        else if (item->HasMusicInfoTag()) // special handling for music videos, which have both a videotag and a musictag
+          break;
         else
           value = item->GetPath();
 
