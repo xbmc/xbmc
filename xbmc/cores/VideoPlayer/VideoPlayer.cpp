@@ -4013,8 +4013,11 @@ int CVideoPlayer::OnDiscNavResult(void* pData, int iMessage)
       {
         // else notify the player we have received a still frame
 
-        m_dvd.iDVDStillTime = *(int*)pData;
+        m_dvd.iDVDStillTime = *static_cast<int*>(pData);
         m_dvd.iDVDStillStartTime = XbmcThreads::SystemClockMillis();
+
+        if (m_dvd.iDVDStillTime != 0)
+          m_dvd.iDVDStillTime *= 1000;
 
         /* adjust for the output delay in the video queue */
         unsigned int time = 0;
@@ -4028,6 +4031,25 @@ int CVideoPlayer::OnDiscNavResult(void* pData, int iMessage)
         CLog::Log(LOGDEBUG,
           "BD_EVENT_STILL_TIME - waiting %i sec, with delay of %d sec",
           m_dvd.iDVDStillTime, time / 1000);
+      }
+    }
+    break;
+    case BD_EVENT_STILL:
+    {
+      bool on = static_cast<bool>(*static_cast<int*>(pData));
+      if (on && m_dvd.state != DVDSTATE_STILL)
+      {
+        m_dvd.state = DVDSTATE_STILL;
+        m_dvd.iDVDStillStartTime = XbmcThreads::SystemClockMillis();
+        m_dvd.iDVDStillTime = 0;
+        CLog::Log(LOGDEBUG, "CDVDPlayer::OnDVDNavResult - libbluray DVDSTATE_STILL start");
+      }
+      else if (!on && m_dvd.state == DVDSTATE_STILL)
+      {
+        m_dvd.state = DVDSTATE_NORMAL;
+        m_dvd.iDVDStillStartTime = 0;
+        m_dvd.iDVDStillTime = 0;
+        CLog::Log(LOGDEBUG, "CDVDPlayer::OnDVDNavResult - libbluray DVDSTATE_STILL end");
       }
     }
     break;
