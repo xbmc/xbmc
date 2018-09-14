@@ -107,8 +107,8 @@ const char *WASAPIErrToStr(HRESULT err)
     {
       wfxex.Format.wFormatTag = WAVE_FORMAT_EXTENSIBLE;
       if (format.m_dataFormat == AE_FMT_RAW &&
-        ((format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_AC3) ||
-        (format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_EAC3) ||
+         ((format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_AC3) ||
+          (format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_EAC3) ||
           (format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_DTSHD_CORE) ||
           (format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_DTS_2048) ||
           (format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_DTS_1024) ||
@@ -127,8 +127,9 @@ const char *WASAPIErrToStr(HRESULT err)
           CLog::Log(LOGERROR, "Invalid sample rate supplied for RAW format");
       }
       else if (format.m_dataFormat == AE_FMT_RAW &&
-        ((format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_DTSHD) ||
-        (format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD)))
+        ((format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_DTSHD_MA) ||
+        (format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD) ||
+        (format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_DTSHD)))
       {
         // IEC 61937 transmissions over HDMI
         wfxex.Format.nSamplesPerSec = 192000L;
@@ -143,10 +144,15 @@ const char *WASAPIErrToStr(HRESULT err)
           wfxex.Format.nChannels = 8; // Four IEC 60958 Lines.
           wfxex.dwChannelMask = KSAUDIO_SPEAKER_7POINT1_SURROUND;
           break;
-        case CAEStreamInfo::STREAM_TYPE_DTSHD:
+        case CAEStreamInfo::STREAM_TYPE_DTSHD_MA:
           wfxex.SubFormat = KSDATAFORMAT_SUBTYPE_IEC61937_DTS_HD;
           wfxex.Format.nChannels = 8; // Four IEC 60958 Lines.
           wfxex.dwChannelMask = KSAUDIO_SPEAKER_7POINT1_SURROUND;
+          break;
+        case CAEStreamInfo::STREAM_TYPE_DTSHD:
+          wfxex.SubFormat = KSDATAFORMAT_SUBTYPE_IEC61937_DTS_HD;
+          wfxex.Format.nChannels = 2; // One IEC 60958 Lines.
+          wfxex.dwChannelMask = KSAUDIO_SPEAKER_5POINT1;
           break;
         }
 

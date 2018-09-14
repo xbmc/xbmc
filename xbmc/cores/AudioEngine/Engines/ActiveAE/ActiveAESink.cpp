@@ -142,6 +142,7 @@ bool CActiveAESink::SupportsFormat(const std::string &device, AEAudioFormat &for
                 break;
 
               case CAEStreamInfo::STREAM_TYPE_DTSHD:
+              case CAEStreamInfo::STREAM_TYPE_DTSHD_MA:
                 samplerate = 192000;
                 break;
 

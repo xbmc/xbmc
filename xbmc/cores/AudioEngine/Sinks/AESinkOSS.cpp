@@ -350,7 +350,7 @@ inline CAEChannelInfo CAESinkOSS::GetChannelLayout(const AEAudioFormat& format)
   {
     switch (format.m_streamInfo.m_type)
     {
-    case CAEStreamInfo::STREAM_TYPE_DTSHD:
+    case CAEStreamInfo::STREAM_TYPE_DTSHD_MA:
     case CAEStreamInfo::STREAM_TYPE_TRUEHD:
       count = 8;
       break;
@@ -360,6 +360,7 @@ inline CAEChannelInfo CAESinkOSS::GetChannelLayout(const AEAudioFormat& format)
     case CAEStreamInfo::STREAM_TYPE_DTS_2048:
     case CAEStreamInfo::STREAM_TYPE_AC3:
     case CAEStreamInfo::STREAM_TYPE_EAC3:
+    case CAEStreamInfo::STREAM_TYPE_DTSHD:
       count = 2;
       break;
     default:
@@ -494,6 +495,7 @@ void CAESinkOSS::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
       info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_512);
       info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_EAC3);
       info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD);
+      info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTSHD_MA);
       info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_TRUEHD);
       info.m_dataFormats.push_back(AE_FMT_RAW);
     }
