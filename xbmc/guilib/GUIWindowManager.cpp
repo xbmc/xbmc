@@ -832,15 +832,6 @@ void CGUIWindowManager::ActivateWindow_Internal(int iWindowID, const std::vector
     return;
   }
 
-  // pause game when leaving fullscreen or resume game when entering fullscreen
-  if (g_application.GetAppPlayer().IsPlayingGame())
-  {
-    if (GetActiveWindow() == WINDOW_FULLSCREEN_GAME && !g_application.GetAppPlayer().IsPaused())
-      g_application.OnAction(ACTION_PAUSE);
-    else if (iWindowID == WINDOW_FULLSCREEN_GAME && g_application.GetAppPlayer().IsPaused())
-      g_application.OnAction(ACTION_PAUSE);
-  }
-
   CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetGUIControlsInfoProvider().SetNextWindow(iWindowID);
 
   // deactivate any window
