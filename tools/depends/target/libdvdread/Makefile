@@ -3,8 +3,8 @@ include DVDREAD-VERSION
 DEPS = DVDREAD-VERSION Makefile
 
 # configuration settings
-config = --prefix=$(PREFIX) --disable-shared --enable-static --with-pic
-EXTRA_CFLAGS = -D_XBMC
+config = --prefix=$(PREFIX) --disable-shared --enable-static --with-pic --with-libdvdcss
+EXTRA_CFLAGS = -D_XBMC -DHAVE_DVDCSS_DVDCSS_H
 
 ifeq ($(CROSS_COMPILING), yes)
   DEPS += ../../Makefile.include
@@ -21,15 +21,11 @@ else
   endif
 endif
 
-ifneq ($(OS),ios)
-  config += --with-libdvdcss
-  EXTRA_CFLAGS += -DHAVE_DVDCSS_DVDCSS_H
-endif
 ifeq ($(OS),osx)
   EXTRA_CFLAGS +=  -D__DARWIN__
 endif
 ifeq ($(OS),ios)
-  EXTRA_CFLAGS +=  -D__DARWIN__ -UHAVE_DVDCSS_DVDCSS_H
+  EXTRA_CFLAGS +=  -D__DARWIN__
 endif
 
 RETRIEVE_TOOL := curl -Ls --create-dirs --retry 10 --retry-delay 3

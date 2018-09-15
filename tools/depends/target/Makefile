@@ -27,13 +27,11 @@ else
 endif
 
 ifeq ($(OS),ios)
-  EXCLUDED_DEPENDS = libcec libusb libdvdcss
+  EXCLUDED_DEPENDS = libcec libusb
   ifeq ($(TARGET_PLATFORM),appletvos)
     DEPENDS += boblight
   endif
   DEPENDS += iosentitlements
-else
-  DVDREAD_DEPS = libdvdcss
 endif
 
 ifeq ($(OS),osx)
@@ -115,7 +113,7 @@ platform: p8-platform
 libcec: p8-platform
 crossguid: $(CROSSGUID_DEPS)
 libdvdnav: libdvdread
-libdvdread: $(DVDREAD_DEPS)
+libdvdread: libdvdcss
 wayland: expat libffi
 waylandpp: wayland $(WAYLANDPP_DEPS)
 dbus: expat
