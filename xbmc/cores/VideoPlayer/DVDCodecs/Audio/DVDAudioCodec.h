@@ -40,7 +40,6 @@ typedef struct stDVDAudioFrame
   AEAudioFormat format;
   int bits_per_sample;
   bool passthrough;
-  AEAudioFormat audioFormat;
   enum AVAudioServiceType audio_service_type;
   enum AVMatrixEncoding matrix_encoding;
   int profile;
