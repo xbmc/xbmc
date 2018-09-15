@@ -1,6 +1,6 @@
 --- a/configure.ac
 +++ b/configure.ac
-@@ -1517,7 +1517,7 @@
+@@ -1623,7 +1623,7 @@
  
      if test "$PKGCONFIG" != "no" ; then
        SSL_LIBS=`CURL_EXPORT_PCDIR([$OPENSSL_PCDIR]) dnl

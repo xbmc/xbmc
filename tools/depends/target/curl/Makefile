@@ -3,7 +3,7 @@ DEPS= ../../Makefile.include Makefile 01-pkg-config-openssl.patch
 
 # lib name, version
 LIBNAME=curl
-VERSION=7.56.1
+VERSION=7.61.1
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.bz2
 # configuration settings
