@@ -1975,7 +1975,18 @@ const std::vector<std::string> CCurlFile::GetPropertyValues(XFILE::FileProperty 
 
 double CCurlFile::GetDownloadSpeed()
 {
-  double res = 0.0f;
-  g_curlInterface.easy_getinfo(m_state->m_easyHandle, CURLINFO_SPEED_DOWNLOAD, &res);
-  return res;
+#if LIBCURL_VERSION_NUM >= 0x073a00 // 0.7.58.0
+  double speed = 0.0;
+  if (g_curlInterface.easy_getinfo(m_state->m_easyHandle, CURLINFO_SPEED_DOWNLOAD, &speed) == CURLE_OK)
+    return speed;
+#else
+  double time = 0.0, size = 0.0;
+  if (g_curlInterface.easy_getinfo(m_state->m_easyHandle, CURLINFO_TOTAL_TIME, &time) == CURLE_OK
+    && g_curlInterface.easy_getinfo(m_state->m_easyHandle, CURLINFO_SIZE_DOWNLOAD, &size) == CURLE_OK
+    && time > 0.0)
+  {
+    return size / time;
+  }
+#endif
+  return 0.0;
 }
