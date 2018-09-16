@@ -53,9 +53,4 @@ if(OPENGLES_FOUND AND (CORE_PLATFORM_NAME_LC STREQUAL android OR
                       FrameBufferObject.cpp)
 endif()
 
-if(ARCH MATCHES arm)
-  list(APPEND SOURCES yuv2rgb.neon.S)
-  list(APPEND HEADERS yuv2rgb.neon.h)
-endif()
-
 core_add_library(videorenderers)
