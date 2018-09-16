@@ -30,11 +30,6 @@
 #include "cores/IPlayer.h"
 #include "windowing/WinSystem.h"
 
-#if defined(__ARM_NEON__) && !defined(__LP64__)
-#include "yuv2rgb.neon.h"
-#include "utils/CPUInfo.h"
-#endif
-
 #if defined(EGL_KHR_reusable_sync) && !defined(EGL_EGLEXT_PROTOTYPES)
 static PFNEGLCREATESYNCKHRPROC eglCreateSyncKHR;
 static PFNEGLDESTROYSYNCKHRPROC eglDestroySyncKHR;
