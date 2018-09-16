@@ -11,6 +11,12 @@
 #include "../OSScreenSaver.h"
 
 #include <cstdint>
+#include <memory>
+
+namespace sdbus
+{
+class IProxy;
+}
 
 namespace KODI
 {
@@ -24,11 +30,13 @@ namespace LINUX
 class COSScreenSaverFreedesktop : public IOSScreenSaver
 {
 public:
+  COSScreenSaverFreedesktop();
   static bool IsAvailable();
   void Inhibit() override;
   void Uninhibit() override;
 
 private:
+  std::unique_ptr<sdbus::IProxy> m_proxy;
   bool m_inhibited{false};
   std::uint32_t m_cookie;
 };
