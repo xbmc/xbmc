@@ -97,14 +97,10 @@ bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
       case PLAYER_TITLE:
       case MUSICPLAYER_TITLE:
         value = tag->GetTitle();
-        if (value.empty())
-          value = item->GetLabel();
-        if (value.empty())
-          value = CUtil::GetTitleFromPath(item->GetPath());
-        return true;
+        return !value.empty();
       case LISTITEM_TITLE:
         value = tag->GetTitle();
-        return !value.empty();
+        return true;
       case MUSICPLAYER_PLAYCOUNT:
       case LISTITEM_PLAYCOUNT:
         if (tag->GetPlayCount() > 0)
@@ -273,6 +269,8 @@ bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
       case LISTITEM_FILE_EXTENSION:
         if (item->IsMusicDb())
           value = URIUtils::GetFileName(tag->GetURL());
+        else if (item->HasVideoInfoTag()) // special handling for music videos, which have both a videotag and a musictag
+          break;
         else
           value = URIUtils::GetFileName(item->GetPath());
 
@@ -286,6 +284,8 @@ bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
       case LISTITEM_PATH:
         if (item->IsMusicDb())
           value = URIUtils::GetDirectory(tag->GetURL());
+        else if (item->HasVideoInfoTag()) // special handling for music videos, which have both a videotag and a musictag
+          break;
         else
           URIUtils::GetParentPath(item->GetPath(), value);
 
@@ -300,6 +300,8 @@ bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
       case LISTITEM_FILENAME_AND_PATH:
         if (item->IsMusicDb())
           value = tag->GetURL();
+        else if (item->HasVideoInfoTag()) // special handling for music videos, which have both a videotag and a musictag
+          break;
         else
           value = item->GetPath();
 
