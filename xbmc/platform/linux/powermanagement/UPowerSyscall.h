@@ -8,16 +8,21 @@
 
 #pragma once
 
-#include "DBusUtil.h"
 #include "powermanagement/IPowerSyscall.h"
 
 #include <list>
+#include <memory>
 #include <string>
+
+namespace sdbus
+{
+class IProxy;
+}
 
 class CUPowerSource
 {
 public:
-  CUPowerSource(const char *powerSource);
+  CUPowerSource(std::string powerSource);
   ~CUPowerSource();
 
   void    Update();
@@ -34,27 +39,24 @@ class CUPowerSyscall : public CAbstractPowerSyscall
 {
 public:
   CUPowerSyscall();
-  bool Powerdown() override;
-  bool Suspend() override;
-  bool Hibernate() override;
-  bool Reboot() override;
-  bool CanPowerdown() override;
-  bool CanSuspend() override;
-  bool CanHibernate() override;
-  bool CanReboot() override;
+  bool Powerdown() override { return false; }
+  bool Suspend() override { return false; }
+  bool Hibernate() override { return false; }
+  bool Reboot() override { return false; }
+  bool CanPowerdown() override { return false; }
+  bool CanSuspend() override { return false; }
+  bool CanHibernate() override { return false; }
+  bool CanReboot() override { return false; }
   int  BatteryLevel() override;
   bool PumpPowerEvents(IPowerEventsCallback *callback) override;
   static bool HasUPower();
-protected:
-  bool m_CanPowerdown;
-  bool m_CanSuspend;
-  bool m_CanHibernate;
-  bool m_CanReboot;
 
+protected:
   void UpdateCapabilities();
+
 private:
   std::list<CUPowerSource> m_powerSources;
-  CDBusConnection m_connection;
+  std::unique_ptr<sdbus::IProxy> m_proxy;
 
   bool m_lowBattery;
   void EnumeratePowerSources();

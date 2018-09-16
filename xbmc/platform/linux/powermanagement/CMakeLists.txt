@@ -3,7 +3,7 @@ set(SOURCES LinuxPowerSyscall.cpp)
 set(HEADERS FallbackPowerSyscall.h
             LinuxPowerSyscall.h)
 
-if(DBUS_FOUND)
+if(SDBUSCPP_FOUND)
   list(APPEND SOURCES LogindUPowerSyscall.cpp
                       UPowerSyscall.cpp)
   list(APPEND HEADERS LogindUPowerSyscall.h

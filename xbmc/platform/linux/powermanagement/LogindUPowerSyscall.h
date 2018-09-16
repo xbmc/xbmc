@@ -9,8 +9,16 @@
 
 #pragma once
 
-#include "DBusUtil.h"
 #include "powermanagement/IPowerSyscall.h"
+
+#include <memory>
+
+#include <sdbus-c++/Types.h>
+
+namespace sdbus
+{
+class IProxy;
+}
 
 class CLogindUPowerSyscall : public CAbstractPowerSyscall
 {
@@ -30,7 +38,9 @@ public:
   // we don't require UPower because everything except the battery level works fine without it
   static bool HasLogind();
 private:
-  CDBusConnection m_connection;
+  std::unique_ptr<sdbus::IProxy> m_proxy;
+  bool m_OnSuspend{false};
+  bool m_OnResume{false};
   bool m_canPowerdown;
   bool m_canSuspend;
   bool m_canHibernate;
@@ -38,15 +48,14 @@ private:
   bool m_hasUPower;
   bool m_lowBattery;
   int m_batteryLevel;
-  int m_delayLockSleepFd = -1; // file descriptor for the logind sleep delay lock
-  int m_delayLockShutdownFd = -1; // file descriptor for the logind powerdown delay lock
+  sdbus::UnixFd m_delayLockSleepFd; // file descriptor for the logind sleep delay lock
+  sdbus::UnixFd m_delayLockShutdownFd; // file descriptor for the logind powerdown delay lock
   void UpdateBatteryLevel();
   void InhibitDelayLockSleep();
-  void InhibitDelayLockShutdown();  
-  int InhibitDelayLock(const char *what);
+  void InhibitDelayLockShutdown();
   void ReleaseDelayLockSleep();
   void ReleaseDelayLockShutdown();
-  void ReleaseDelayLock(int lockFd, const char *what);
-  static bool LogindSetPowerState(const char *state);
-  static bool LogindCheckCapability(const char *capability);
+  bool LogindSetPowerState(std::string state);
+  bool LogindCheckCapability(std::string capability);
+  void PrepareForSleep();
 };
