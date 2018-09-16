@@ -181,7 +181,7 @@ int CLinuxRendererGLES::NextYV12Texture()
   return (m_iYV12RenderBuffer + 1) % m_NumYV12Buffers;
 }
 
-void CLinuxRendererGLES::AddVideoPicture(const VideoPicture &picture, int index, double currentClock)
+void CLinuxRendererGLES::AddVideoPicture(const VideoPicture &picture, int index)
 {
   CPictureBuffer &buf = m_buffers[index];
   if (buf.videoBuffer)

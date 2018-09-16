@@ -89,7 +89,7 @@ void CRendererDRMPRIME::ManageRenderArea()
   }
 }
 
-void CRendererDRMPRIME::AddVideoPicture(const VideoPicture& picture, int index, double currentClock)
+void CRendererDRMPRIME::AddVideoPicture(const VideoPicture& picture, int index)
 {
   BUFFER& buf = m_buffers[index];
   if (buf.videoBuffer)

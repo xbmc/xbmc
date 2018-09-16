@@ -79,7 +79,7 @@ bool CRendererMediaCodecSurface::RenderCapture(CRenderCapture* capture)
   return true;
 }
 
-void CRendererMediaCodecSurface::AddVideoPicture(const VideoPicture &picture, int index, double currentClock)
+void CRendererMediaCodecSurface::AddVideoPicture(const VideoPicture &picture, int index)
 {
   ReleaseBuffer(index);
 

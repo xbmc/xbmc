@@ -259,7 +259,7 @@ int CWinRenderer::NextBuffer() const
   return -1;
 }
 
-void CWinRenderer::AddVideoPicture(const VideoPicture &picture, int index, double currentClock)
+void CWinRenderer::AddVideoPicture(const VideoPicture &picture, int index)
 {
   m_renderBuffers[index].AppendPicture(picture);
   m_renderBuffers[index].frameIdx = m_frameIdx;

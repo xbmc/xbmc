@@ -57,7 +57,7 @@ bool CRendererMediaCodec::Register()
   return true;
 }
 
-void CRendererMediaCodec::AddVideoPicture(const VideoPicture &picture, int index, double currentClock)
+void CRendererMediaCodec::AddVideoPicture(const VideoPicture &picture, int index)
 {
   CPictureBuffer &buf = m_buffers[index];
   CMediaCodecVideoBuffer *videoBuffer;
