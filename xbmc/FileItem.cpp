@@ -145,7 +145,6 @@ CFileItem::CFileItem(const CPVREpgInfoTagPtr& tag)
   m_epgInfoTag = tag;
   m_strPath = tag->Path();
   SetLabel(tag->Title());
-  m_strLabel2 = tag->Plot();
   m_dateTime = tag->StartAsLocalTime();
 
   if (!tag->Icon().empty())
@@ -167,9 +166,6 @@ CFileItem::CFileItem(const CPVRChannelPtr& channel)
   m_bIsFolder = false;
   m_pvrChannelInfoTag = channel;
   SetLabel(channel->ChannelName());
-  m_strLabel2 = epgNow ? epgNow->Title() :
-      CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_EPG_HIDENOINFOAVAILABLE) ?
-                            "" : g_localizeStrings.Get(19055); // no information available
 
   if (!channel->IconPath().empty())
     SetIconImage(channel->IconPath());
@@ -195,7 +191,6 @@ CFileItem::CFileItem(const CPVRRecordingPtr& record)
   m_strPath = record->m_strFileNameAndPath;
   SetLabel(record->m_strTitle);
   m_dateTime = record->RecordingTimeAsLocalTime();
-  m_strLabel2 = m_dateTime.GetAsLocalizedDateTime(true, false);
 
   // Set art
   if (!record->m_strIconPath.empty())
@@ -221,7 +216,6 @@ CFileItem::CFileItem(const CPVRTimerInfoTagPtr& timer)
   m_pvrTimerInfoTag = timer;
   m_strPath = timer->Path();
   SetLabel(timer->Title());
-  m_strLabel2 = timer->Summary();
   m_dateTime = timer->StartAsLocalTime();
 
   if (!timer->ChannelIcon().empty())
