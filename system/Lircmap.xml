@@ -449,7 +449,7 @@
 		<skipminus>KEY_PREVIOUSSONG</skipminus>
 		<skipminus>KEY_PREVIOUS</skipminus>
 		<title>KEY_TITLE</title>
-		<title>KEY_EPG</title>
+		<guide>KEY_EPG</guide>
 		<subtitle>KEY_SUBTITLE</subtitle>
 		<language>KEY_LANGUAGE</language>
 		<mute>KEY_MUTE</mute>
@@ -564,7 +564,8 @@
 		<pageminus>KEY_CHANNELDOWN</pageminus>
 		<skipplus>KEY_NEXT</skipplus>
 		<skipminus>KEY_PREVIOUS</skipminus>
-		<title>KEY_EPG</title>
+		<guide>KEY_EPG</guide>
+		<title>KEY_TITLE</title>
 		<subtitle>KEY_SUBTITLE</subtitle>
 		<language>KEY_LANGUAGE</language>
 		<info>KEY_INFO</info>
@@ -623,7 +624,8 @@
 		<pageminus>KEY_CHANNELDOWN</pageminus>
 		<skipplus>KEY_NEXT</skipplus>
 		<skipminus>KEY_PREVIOUS</skipminus>
-		<title>KEY_EPG</title>
+		<guide>KEY_EPG</guide>
+		<title>KEY_TITLE</title>
 		<subtitle>KEY_SUBTITLE</subtitle>
 		<language>KEY_LANGUAGE</language>
 		<info>KEY_INFO</info>
@@ -682,7 +684,8 @@
 		<pageminus>KEY_CHANNELDOWN</pageminus>
 		<skipplus>KEY_NEXT</skipplus>
 		<skipminus>KEY_PREVIOUS</skipminus>
-		<title>KEY_EPG</title>
+		<guide>KEY_EPG</guide>
+		<title>KEY_TITLE</title>
 		<subtitle>KEY_SUBTITLE</subtitle>
 		<language>KEY_LANGUAGE</language>
 		<info>KEY_INFO</info>
