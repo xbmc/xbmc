@@ -22,6 +22,8 @@ using RegistrationIdentifierType = int;
 
 class ISignalHandlerData
 {
+protected:
+  ~ISignalHandlerData() {}
 public:
   virtual void Unregister(RegistrationIdentifierType id) = 0;
 };
@@ -82,7 +84,7 @@ class CSignalHandlerList
    * Extra struct so memory handling with shared_ptr and weak_ptr can be done
    * on this level
    */
-  struct Data : public ISignalHandlerData
+  struct Data final : public ISignalHandlerData
   {
     CCriticalSection m_handlerCriticalSection;
     std::map<RegistrationIdentifierType, ManagedT> m_handlers;
