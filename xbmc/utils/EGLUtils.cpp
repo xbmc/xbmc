@@ -340,19 +340,12 @@ bool CEGLContextUtils::SetVSync(bool enable)
   return (eglSwapInterval(m_eglDisplay, enable) == EGL_TRUE);
 }
 
-void CEGLContextUtils::SwapBuffers()
+bool CEGLContextUtils::TrySwapBuffers()
 {
   if (m_eglDisplay == EGL_NO_DISPLAY || m_eglSurface == EGL_NO_SURFACE)
   {
-    return;
+    return false;
   }
 
-  if (eglSwapBuffers(m_eglDisplay, m_eglSurface) != EGL_TRUE)
-  {
-    // For now we just hard fail if this fails
-    // Theoretically, EGL_CONTEXT_LOST could be handled, but it needs to be checked
-    // whether egl implementations actually use it (mesa does not)
-    CEGLUtils::LogError("eglSwapBuffers failed");
-    throw std::runtime_error("eglSwapBuffers failed");
-  }
+  return (eglSwapBuffers(m_eglDisplay, m_eglSurface) == EGL_TRUE);
 }

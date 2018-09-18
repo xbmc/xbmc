@@ -117,7 +117,9 @@ void CWinSystemAmlogicGLESContext::PresentRenderImpl(bool rendered)
   if (!rendered)
     return;
 
-  m_pGLContext.SwapBuffers();
+  // Ignore errors - eglSwapBuffers() sometimes fails during modeswaps on AML,
+  // there is probably nothing we can do about it
+  m_pGLContext.TrySwapBuffers();
 }
 
 EGLDisplay CWinSystemAmlogicGLESContext::GetEGLDisplay() const

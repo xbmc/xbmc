@@ -141,7 +141,7 @@ public:
   void DestroySurface();
   void DestroyContext();
   bool SetVSync(bool enable);
-  void SwapBuffers();
+  bool TrySwapBuffers();
   bool IsPlatformSupported() const;
 
   EGLDisplay GetEGLDisplay() const

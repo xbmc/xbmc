@@ -112,7 +112,13 @@ void CWinSystemAndroidGLESContext::PresentRenderImpl(bool rendered)
   if (!rendered)
     return;
 
-  m_pGLContext.SwapBuffers();
+  // Ignore EGL_BAD_SURFACE: It seems to happen during/after mode changes, but
+  // we can't actually do anything about it
+  if (!m_pGLContext.TrySwapBuffers() && eglGetError() != EGL_BAD_SURFACE)
+  {
+    CEGLUtils::LogError("eglSwapBuffers failed");
+    throw std::runtime_error("eglSwapBuffers failed");
+  }
 }
 
 EGLDisplay CWinSystemAndroidGLESContext::GetEGLDisplay() const
