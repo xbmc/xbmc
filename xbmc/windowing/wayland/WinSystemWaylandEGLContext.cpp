@@ -114,7 +114,14 @@ void CWinSystemWaylandEGLContext::PresentFrame(bool rendered)
 
   if (rendered)
   {
-    m_eglContext.SwapBuffers();
+    if (!m_eglContext.TrySwapBuffers())
+    {
+      // For now we just hard fail if this fails
+      // Theoretically, EGL_CONTEXT_LOST could be handled, but it needs to be checked
+      // whether egl implementations actually use it (mesa does not)
+      CEGLUtils::LogError("eglSwapBuffers failed");
+      throw std::runtime_error("eglSwapBuffers failed");
+    }
     // eglSwapBuffers() (hopefully) calls commit on the surface and flushes
     // ... well mesa does anyway
   }

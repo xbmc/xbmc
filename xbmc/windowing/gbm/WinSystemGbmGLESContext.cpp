@@ -78,7 +78,11 @@ bool CWinSystemGbmGLESContext::SetFullScreen(bool fullScreen, RESOLUTION_INFO& r
     CreateNewWindow("", fullScreen, res);
   }
 
-  m_eglContext.SwapBuffers();
+  if (!m_eglContext.TrySwapBuffers())
+  {
+    CEGLUtils::LogError("eglSwapBuffers failed");
+    throw std::runtime_error("eglSwapBuffers failed");
+  }
 
   CWinSystemGbm::SetFullScreen(fullScreen, res, blankOtherDisplays);
   CRenderSystemGLES::ResetRenderSystem(res.iWidth, res.iHeight);
@@ -102,7 +106,13 @@ void CWinSystemGbmGLESContext::PresentRender(bool rendered, bool videoLayer)
   if (rendered || videoLayer)
   {
     if (rendered)
-      m_eglContext.SwapBuffers();
+    {
+      if (!m_eglContext.TrySwapBuffers())
+      {
+        CEGLUtils::LogError("eglSwapBuffers failed");
+        throw std::runtime_error("eglSwapBuffers failed");
+      }
+    }
     CWinSystemGbm::FlipPage(rendered, videoLayer);
   }
   else
