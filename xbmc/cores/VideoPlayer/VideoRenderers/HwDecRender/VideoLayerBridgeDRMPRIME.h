@@ -26,6 +26,7 @@ public:
 
   virtual void Configure(CVideoBufferDRMPRIME* buffer);
   virtual void SetVideoPlane(CVideoBufferDRMPRIME* buffer, const CRect& destRect);
+  virtual void UpdateVideoPlane();
 
 protected:
   std::shared_ptr<CDRMUtils> m_DRM;
