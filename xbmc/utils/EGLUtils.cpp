@@ -332,6 +332,11 @@ void CEGLContextUtils::DestroySurface()
 
 bool CEGLContextUtils::SetVSync(bool enable)
 {
+  if (m_eglDisplay == EGL_NO_DISPLAY)
+  {
+    return false;
+  }
+
   return (eglSwapInterval(m_eglDisplay, enable) == EGL_TRUE);
 }
 
