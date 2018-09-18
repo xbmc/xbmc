@@ -85,6 +85,7 @@ public:
   virtual std::vector<RESOLUTION_INFO> GetModes();
   virtual bool SetMode(const RESOLUTION_INFO& res);
 
+  bool SupportsProperty(struct drm_object *object, const char *name);
   virtual bool AddProperty(struct drm_object *object, const char *name, uint64_t value) { return false; }
   virtual bool SetProperty(struct drm_object *object, const char *name, uint64_t value) { return false; }
 
