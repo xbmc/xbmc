@@ -10,6 +10,7 @@
 #include "WinSystemAndroidGLESContext.h"
 #include "utils/log.h"
 #include "threads/SingleLock.h"
+#include "platform/android/activity/XBMCApp.h"
 
 std::unique_ptr<CWinSystemBase> CWinSystemBase::CreateWinSystem()
 {
@@ -91,12 +92,8 @@ bool CWinSystemAndroidGLESContext::SetFullScreen(bool fullScreen, RESOLUTION_INF
 
 void CWinSystemAndroidGLESContext::SetVSyncImpl(bool enable)
 {
-  m_iVSyncMode = enable ? 10:0;
-  if (!m_pGLContext.SetVSync(enable))
-  {
-    m_iVSyncMode = 0;
-    CLog::Log(LOGERROR, "%s,Could not set egl vsync", __FUNCTION__);
-  }
+  // We use Choreographer for timing
+  m_pGLContext.SetVSync(false);
 }
 
 void CWinSystemAndroidGLESContext::PresentRenderImpl(bool rendered)
@@ -109,16 +106,14 @@ void CWinSystemAndroidGLESContext::PresentRenderImpl(bool rendered)
     for (std::vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); ++i)
       (*i)->OnResetDisplay();
   }
-  if (!rendered)
-    return;
-
   // Ignore EGL_BAD_SURFACE: It seems to happen during/after mode changes, but
   // we can't actually do anything about it
-  if (!m_pGLContext.TrySwapBuffers() && eglGetError() != EGL_BAD_SURFACE)
+  if (rendered && !m_pGLContext.TrySwapBuffers() && eglGetError() != EGL_BAD_SURFACE)
   {
     CEGLUtils::LogError("eglSwapBuffers failed");
     throw std::runtime_error("eglSwapBuffers failed");
   }
+  CXBMCApp::get()->WaitVSync(1000);
 }
 
 EGLDisplay CWinSystemAndroidGLESContext::GetEGLDisplay() const

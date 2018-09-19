@@ -152,7 +152,7 @@ public:
   static void SetSystemVolume(float percent);
 
   static void SetRefreshRate(float rate);
-  static void SetDisplayMode(int mode);
+  static void SetDisplayMode(int mode, float rate);
   static int GetDPI();
 
   static CRect MapRenderToDroid(const CRect& srcRect);
@@ -184,6 +184,7 @@ public:
   void ProcessSlow();
 
   static bool WaitVSync(unsigned int milliSeconds);
+  static int64_t GetNextFrameTime(){ return m_frameTimeNanos; };
 
   bool getVideosurfaceInUse();
   void setVideosurfaceInUse(bool videosurfaceInUse);
@@ -237,6 +238,8 @@ private:
   bool XBMC_SetupDisplay();
 
   static uint32_t m_playback_state;
+  static int64_t m_frameTimeNanos;
+  static float m_refreshRate;
 
 public:
   // CJNISurfaceHolderCallback interface
