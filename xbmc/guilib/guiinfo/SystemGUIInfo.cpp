@@ -352,7 +352,7 @@ bool CSystemGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
     }
     case NETWORK_DHCP_ADDRESS:
     {
-      // wtf?
+      // return empty string - not implemented
       std::string dhcpserver;
       value = dhcpserver;
       return true;
@@ -425,7 +425,8 @@ bool CSystemGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
       value = false;
       return true;
     case SYSTEM_ETHERNET_LINK_ACTIVE:
-      // wtf: not implementated - always returns true?!
+      // not implemented - always returning true is bad practice though
+      // as someone might base assumptions on this response
       value = true;
       return true;
     case SYSTEM_PLATFORM_LINUX:

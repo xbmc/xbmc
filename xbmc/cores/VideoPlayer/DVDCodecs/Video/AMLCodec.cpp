@@ -354,7 +354,7 @@ void dumpfile_write(am_private_t *para, void* buf, int bufsiz)
 {
   if (!buf)
   {
-    CLog::Log(LOGERROR, "dumpfile_write: wtf ? buf is null, bufsiz(%d)", bufsiz);
+    CLog::Log(LOGERROR, "dumpfile_write: buf is null, bufsiz(%d)", bufsiz);
     return;
   }
 

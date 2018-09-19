@@ -39,9 +39,9 @@ void xb_smbc_auth(const char *srv, const char *shr, char *wg, int wglen,
   return ;
 }
 
-// WTF is this ?, we get the original server cache only
-// to set the server cache to this function which call the
-// original one anyway. Seems quite silly.
+// We get the original server cache only
+// to set the server cache to this function, which calls the
+// original one anyway. Seems quite suboptimal.
 smbc_get_cached_srv_fn orig_cache;
 SMBCSRV* xb_smbc_cache(SMBCCTX* c, const char* server, const char* share, const char* workgroup, const char* username)
 {
