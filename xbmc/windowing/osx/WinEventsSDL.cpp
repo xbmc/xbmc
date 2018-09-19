@@ -149,7 +149,7 @@ bool CWinEventsSDL::MessagePump()
       }
       case SDL_VIDEORESIZE:
       {
-        // Under newer osx versions sdl is so fucked up that it even fires resize events
+        // Under newer osx versions sdl is coded in a way that it even fires resize events
         // that exceed the screen size (maybe some HiDP incompatibility in old SDL?)
         // ensure to ignore those events because it will mess with windowed size
         if((event.resize.w > CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP).iWidth) ||
