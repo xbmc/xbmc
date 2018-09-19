@@ -199,7 +199,7 @@ void CWinSystemAndroid::OnTimeout()
   SetHDMIState(true);
 }
 
-void CWinSystemAndroid::SetHDMIState(bool connected)
+void CWinSystemAndroid::SetHDMIState(bool connected, uint32_t timeoutMs)
 {
   CSingleLock lock(m_resourceSection);
   if (connected && m_dispResetState == RESET_WAITEVENT)
@@ -209,12 +209,16 @@ void CWinSystemAndroid::SetHDMIState(bool connected)
   }
   else if (!connected)
   {
-    int delay = CServiceBroker::GetSettings()->GetInt("videoscreen.delayrefreshchange");
+    int delay = CServiceBroker::GetSettings()->GetInt("videoscreen.delayrefreshchange") * 100;
+
+    if (timeoutMs > delay)
+      delay = timeoutMs;
+
     if (delay > 0)
     {
        m_dispResetState = RESET_WAITTIMER;
        m_dispResetTimer->Stop();
-       m_dispResetTimer->Start(delay * 100);
+       m_dispResetTimer->Start(delay);
     }
     else
       m_dispResetState = RESET_WAITEVENT;

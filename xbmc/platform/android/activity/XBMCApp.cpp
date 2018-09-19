@@ -516,6 +516,11 @@ void CXBMCApp::SetRefreshRateCallback(CVariant* rateVariant)
     CJNIWindowManagerLayoutParams params = window.getAttributes();
     if (params.getpreferredRefreshRate() != rate)
     {
+      if (g_application.GetAppPlayer().IsPlaying())
+      {
+        dynamic_cast<CWinSystemAndroid*>(CServiceBroker::GetWinSystem())->SetHDMIState(false, 1000);
+        m_hdmiReportedState = false;
+      }
       params.setpreferredRefreshRate(rate);
       if (params.getpreferredRefreshRate() > 0.0)
         window.setAttributes(params);
