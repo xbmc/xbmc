@@ -1527,8 +1527,6 @@ namespace PVR
         return false;
     }
 
-    CDateTime::ResetTimezoneBias();
-
     CLog::LogFC(LOGDEBUG, LOGPVR, "PVR clearing %s database", bResetEPGOnly ? "EPG" : "PVR and EPG");
 
     pDlgProgress->SetHeading(CVariant{313}); // "Cleaning database"

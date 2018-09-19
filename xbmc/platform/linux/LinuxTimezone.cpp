@@ -142,8 +142,6 @@ void CLinuxTimezone::OnSettingChanged(std::shared_ptr<const CSetting> setting)
   if (settingId == CSettings::SETTING_LOCALE_TIMEZONE)
   {
     SetTimezone(std::static_pointer_cast<const CSettingString>(setting)->GetValue());
-
-    CDateTime::ResetTimezoneBias();
   }
   else if (settingId == CSettings::SETTING_LOCALE_TIMEZONECOUNTRY)
   {
@@ -156,7 +154,6 @@ void CLinuxTimezone::OnSettingChanged(std::shared_ptr<const CSetting> setting)
 void CLinuxTimezone::OnSettingsLoaded()
 {
   SetTimezone(CServiceBroker::GetSettings()->GetString(CSettings::SETTING_LOCALE_TIMEZONE));
-  CDateTime::ResetTimezoneBias();
 }
 
 std::vector<std::string> CLinuxTimezone::GetCounties()

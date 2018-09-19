@@ -292,7 +292,7 @@ CDateTime CDateTime::GetCurrentDateTime()
 CDateTime CDateTime::GetUTCDateTime()
 {
   CDateTime time(GetCurrentDateTime());
-  time += GetTimezoneBias();
+  LocalFileTimeToFileTime(&time.m_time,&time.m_time);
   return time;
 }
 
@@ -875,43 +875,11 @@ std::string CDateTime::GetAsSaveString() const
 bool CDateTime::SetFromUTCDateTime(const CDateTime &dateTime)
 {
   CDateTime tmp(dateTime);
-  tmp -= GetTimezoneBias();
+  FileTimeToLocalFileTime(&tmp.m_time,&tmp.m_time);
 
   m_time = tmp.m_time;
   m_state = tmp.m_state;
   return m_state == valid;
-}
-
-static bool bGotTimezoneBias = false;
-
-void CDateTime::ResetTimezoneBias(void)
-{
-  bGotTimezoneBias = false;
-}
-
-CDateTimeSpan CDateTime::GetTimezoneBias(void)
-{
-  static CDateTimeSpan timezoneBias;
-
-  if (!bGotTimezoneBias)
-  {
-    bGotTimezoneBias = true;
-    TIME_ZONE_INFORMATION tz;
-    switch(GetTimeZoneInformation(&tz))
-    {
-      case TIME_ZONE_ID_DAYLIGHT:
-        timezoneBias = CDateTimeSpan(0, 0, tz.Bias + tz.DaylightBias, 0);
-        break;
-      case TIME_ZONE_ID_STANDARD:
-        timezoneBias = CDateTimeSpan(0, 0, tz.Bias + tz.StandardBias, 0);
-        break;
-      case TIME_ZONE_ID_UNKNOWN:
-        timezoneBias = CDateTimeSpan(0, 0, tz.Bias, 0);
-        break;
-    }
-  }
-
-  return timezoneBias;
 }
 
 bool CDateTime::SetFromUTCDateTime(const time_t &dateTime)
@@ -1506,7 +1474,7 @@ std::string CDateTime::GetAsLocalizedTime(TIME_FORMAT format, bool withSeconds /
 CDateTime CDateTime::GetAsUTCDateTime() const
 {
   CDateTime time(m_time);
-  time += GetTimezoneBias();
+  LocalFileTimeToFileTime(&time.m_time,&time.m_time);
   return time;
 }
 
@@ -1553,7 +1521,7 @@ std::string CDateTime::GetAsW3CDateTime(bool asUtc /* = false */) const
   if (asUtc)
     return result + "Z";
 
-  CDateTimeSpan bias = GetTimezoneBias();
+  CDateTimeSpan bias = w3cDate - CDateTime(st);
   return result + StringUtils::Format("%c%02i:%02i", (bias.GetSecondsTotal() >= 0 ? '+' : '-'), abs(bias.GetHours()), abs(bias.GetMinutes())).c_str();
 }
 
