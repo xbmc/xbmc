@@ -144,7 +144,7 @@ public:
   virtual void         UnInit();
   virtual bool         Flush(bool saveBuffers) override;
   virtual bool         IsConfigured() override { return m_bConfigured; }
-  virtual void         AddVideoPicture(const VideoPicture& pic, int index, double currentClock) override;
+  virtual void         AddVideoPicture(const VideoPicture& pic, int index) override;
   virtual bool         IsPictureHW(const VideoPicture &picture) override { return false; };
   virtual CRenderInfo GetRenderInfo() override;
 

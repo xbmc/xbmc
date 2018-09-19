@@ -22,7 +22,7 @@ public:
   static bool Register();
 
   virtual bool RenderCapture(CRenderCapture* capture) override;
-  virtual void AddVideoPicture(const VideoPicture &picture, int index, double currentClock) override;
+  virtual void AddVideoPicture(const VideoPicture &picture, int index) override;
   virtual void ReleaseBuffer(int idx) override;
   virtual bool Configure(const VideoPicture &picture, float fps, unsigned int orientation) override;
   virtual bool IsConfigured() override { return m_bConfigured; };
@@ -44,6 +44,15 @@ protected:
   virtual void ReorderDrawPoints() override;
 
 private:
-  bool m_bConfigured;
+  void Reset();
+  void ReleaseVideoBuffer(int idx, bool render);
+
+  bool m_bConfigured = false;
   CRect m_surfDestRect;
+  int m_lastIndex = -1;
+
+  struct BUFFER
+  {
+    CVideoBuffer *videoBuffer = nullptr;
+  } m_buffers[4];
 };

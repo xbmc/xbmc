@@ -272,7 +272,7 @@ bool CLinuxRendererGL::ConfigChanged(const VideoPicture &picture)
   return false;
 }
 
-void CLinuxRendererGL::AddVideoPicture(const VideoPicture &picture, int index, double currentClock)
+void CLinuxRendererGL::AddVideoPicture(const VideoPicture &picture, int index)
 {
   CPictureBuffer &buf = m_buffers[index];
   if (buf.videoBuffer)

@@ -908,7 +908,7 @@ bool CRenderManager::AddVideoPicture(const VideoPicture& picture, volatile std::
     if (!m_pRenderer)
       return false;
 
-    m_pRenderer->AddVideoPicture(picture, index, m_dvdClock.GetClock());
+    m_pRenderer->AddVideoPicture(picture, index);
   }
 
 

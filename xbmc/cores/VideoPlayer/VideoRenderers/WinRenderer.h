@@ -47,7 +47,7 @@ public:
 
   // Player functions
   bool Configure(const VideoPicture &picture, float fps, unsigned int orientation) override;
-  void AddVideoPicture(const VideoPicture &picture, int index, double currentClock) override;
+  void AddVideoPicture(const VideoPicture &picture, int index) override;
   void UnInit() override;
   bool IsConfigured() override { return m_bConfigured; }
   bool Flush(bool saveBuffers) override;
