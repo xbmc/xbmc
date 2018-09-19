@@ -95,6 +95,9 @@
         <setting id="audiooutput.atempothreshold">
           <default>100</default> <!-- disabled -->
         </setting>
+        <setting id="audiooutput.audiodevice">
+          <default>PI:HDMI</default>
+        </setting>
       </group>
       <group id="3">
         <setting id="audiooutput.ac3transcode" help="37024">
