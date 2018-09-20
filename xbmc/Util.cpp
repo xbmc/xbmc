@@ -2007,6 +2007,9 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie, std::vector<st
   const std::vector<std::string> common_sub_dirs = { "subs", "subtitles", "vobsubs", "sub", "vobsub", "subtitle" };
   GetItemsToScan(strBasePath, CServiceBroker::GetFileExtensionProvider().GetSubtitleExtensions(), common_sub_dirs, items);
 
+  if (URIUtils::IsInRAR(strMovie))
+    ExcludeMovieRar(strMovie, items);
+
   if (!CMediaSettings::GetInstance().GetAdditionalSubtitleDirectoryChecked() && !CServiceBroker::GetSettings()->GetString(CSettings::SETTING_SUBTITLES_CUSTOMPATH).empty()) // to avoid checking non-existent directories (network) every time..
   {
     if (!CServiceBroker::GetNetwork().IsAvailable() && !URIUtils::IsHD(CServiceBroker::GetSettings()->GetString(CSettings::SETTING_SUBTITLES_CUSTOMPATH)))
@@ -2291,6 +2294,9 @@ void CUtil::ScanForExternalDemuxSub(const std::string& videoPath, std::vector<st
   const std::string DemuxSubExtensions = ".sup";
   GetItemsToScan(strBasePath, DemuxSubExtensions, common_sub_dirs, items);
 
+  if (URIUtils::IsInRAR(videoPath))
+    ExcludeMovieRar(videoPath, items);
+
   std::vector<std::string> exts = StringUtils::Split(DemuxSubExtensions, "|");
   ScanPathsForAssociatedItems(strSubtitle, items, exts, vecSubtitles);
 }
@@ -2314,8 +2320,26 @@ void CUtil::ScanForExternalAudio(const std::string& videoPath, std::vector<std::
   const std::vector<std::string> common_sub_dirs = { "audio", "tracks"};
   GetItemsToScan(strBasePath, CServiceBroker::GetFileExtensionProvider().GetMusicExtensions(), common_sub_dirs, items);
 
+  if (URIUtils::IsInRAR(videoPath))
+    ExcludeMovieRar(videoPath, items);
+
   std::vector<std::string> exts = StringUtils::Split(CServiceBroker::GetFileExtensionProvider().GetMusicExtensions(), "|");
   ScanPathsForAssociatedItems(strAudio, items, exts, vecAudio);
+}
+
+void CUtil::ExcludeMovieRar(const std::string& strMovie, CFileItemList& items)
+{
+  std::string strRarFileName = URIUtils::ReplaceExtension(CURL(URIUtils::GetRealPath(strMovie)).GetHostName(), "");
+  if (StringUtils::StartsWith(URIUtils::GetExtension(strRarFileName), ".part"))
+    strRarFileName = URIUtils::ReplaceExtension(strRarFileName, "") + ".part";
+  else
+    strRarFileName += ".r";
+
+  for (int i = items.Size() - 1; i > 0; i--)
+  {
+    if (StringUtils::StartsWith(items[i]->GetPath(), strRarFileName))
+      items.Remove(i);
+  }
 }
 
 bool CUtil::CanBindPrivileged()
