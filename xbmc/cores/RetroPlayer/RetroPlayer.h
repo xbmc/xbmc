@@ -73,13 +73,14 @@ namespace RETRO
     std::string CreateSavestate() override;
 
   private:
-    void SetSpeedInternal(double speed);
+    void SetSpeedInternal(double speed, bool bCloseOSD);
 
     /*!
      * \brief Called when the speed changes
      * \param newSpeed The new speed, possibly equal to the previous speed
+     * \param bCloseOSD If true, the OSD will be closed
      */
-    void OnSpeedChange(double newSpeed);
+    void OnSpeedChange(double newSpeed, bool bCloseOSD);
 
     // Playback functions
     void CreatePlayback(bool bRestoreState);
@@ -108,7 +109,8 @@ namespace RETRO
     {
       STARTING,
       FULLSCREEN,
-      BACKGROUND,
+      IN_MENU,
+      BACKGROUND_PLAY,
     };
 
     State                              m_state = State::STARTING;

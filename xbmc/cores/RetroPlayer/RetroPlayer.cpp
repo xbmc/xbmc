@@ -171,7 +171,7 @@ bool CRetroPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options
   {
     CreatePlayback(m_gameServices.GameSettings().AutosaveEnabled());
     RegisterWindowCallbacks();
-    SetSpeedInternal(1.0);
+    SetSpeedInternal(1.0, true);
     m_callback.OnPlayBackStarted(fileCopy);
     m_callback.OnAVStarted(fileCopy);
     if (!bStandalone)
@@ -329,7 +329,7 @@ void CRetroPlayer::SeekTime(int64_t iTime /* = 0 */)
     return;
 
   m_playback->SeekTimeMs(static_cast<unsigned int>(iTime));
-  OnSpeedChange(m_playback->GetSpeed());
+  OnSpeedChange(m_playback->GetSpeed(), false);
 }
 
 bool CRetroPlayer::SeekTimeRelative(int64_t iTime)
@@ -362,7 +362,7 @@ void CRetroPlayer::SetSpeed(float speed)
       m_callback.OnPlayBackPaused();
   }
 
-  SetSpeedInternal(static_cast<double>(speed));
+  SetSpeedInternal(static_cast<double>(speed), speed != 0.0f);
 }
 
 bool CRetroPlayer::OnAction(const CAction &action)
@@ -390,7 +390,7 @@ bool CRetroPlayer::OnAction(const CAction &action)
   }
   case ACTION_SHOW_OSD:
   {
-    if (m_gameClient && m_playback->GetSpeed() == 0.0)
+    if (m_gameClient && m_state != State::FULLSCREEN)
     {
       CLog::Log(LOGDEBUG, "RetroPlayer[PLAYER]: Closing OSD via ACTION_SHOW_OSD");
       CloseOSD();
@@ -432,8 +432,12 @@ void CRetroPlayer::FrameMove()
 
   if (m_gameClient)
   {
+    const int windowId = CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow();
+    const bool bFullscreen = (windowId == WINDOW_FULLSCREEN_GAME);
+
     const int activeId = CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindowOrDialog();
-    const bool bFullscreen = (activeId == WINDOW_FULLSCREEN_GAME);
+    const bool bInMenu = (activeId != WINDOW_FULLSCREEN_GAME);
+    const bool bPlayInBackground = (activeId == WINDOW_DIALOG_GAME_VOLUME);
 
     switch (m_state)
     {
@@ -445,28 +449,33 @@ void CRetroPlayer::FrameMove()
     }
     case State::FULLSCREEN:
     {
-      if (!bFullscreen)
+      if (bInMenu)
       {
-        m_priorSpeed = m_playback->GetSpeed();
-
-        if (m_priorSpeed != 0.0)
+        if (bPlayInBackground)
+          m_state = State::BACKGROUND_PLAY;
+        else
         {
-          IPlayerCallback *callback = &m_callback;
-          CJobManager::GetInstance().Submit([callback]()
-            {
-              callback->OnPlayBackPaused();
-            }, CJob::PRIORITY_NORMAL);
+          m_priorSpeed = m_playback->GetSpeed();
+
+          if (m_priorSpeed != 0.0)
+          {
+            IPlayerCallback *callback = &m_callback;
+            CJobManager::GetInstance().Submit([callback]()
+              {
+                callback->OnPlayBackPaused();
+              }, CJob::PRIORITY_NORMAL);
+          }
+
+          SetSpeedInternal(0.0, false);
+
+          m_state = State::IN_MENU;
         }
-
-        SetSpeedInternal(0.0);
-
-        m_state = State::BACKGROUND;
       }
       break;
     }
-    case State::BACKGROUND:
+    case State::IN_MENU:
     {
-      if (bFullscreen)
+      if (bPlayInBackground || !bInMenu)
       {
         if (m_playback->GetSpeed() == 0.0 && m_priorSpeed != 0.0)
         {
@@ -476,13 +485,44 @@ void CRetroPlayer::FrameMove()
               callback->OnPlayBackResumed();
             }, CJob::PRIORITY_NORMAL);
 
-          SetSpeedInternal(m_priorSpeed);
+          SetSpeedInternal(m_priorSpeed, false);
         }
 
-        m_state = State::FULLSCREEN;
+        if (bPlayInBackground)
+          m_state = State::BACKGROUND_PLAY;
+        else
+          m_state = State::FULLSCREEN;
       }
       break;
     }
+    case State::BACKGROUND_PLAY:
+    {
+      if (!bPlayInBackground)
+      {
+        if (!bInMenu)
+          m_state = State::FULLSCREEN;
+        else
+        {
+          m_priorSpeed = m_playback->GetSpeed();
+
+          if (m_priorSpeed != 0.0)
+          {
+            IPlayerCallback *callback = &m_callback;
+            CJobManager::GetInstance().Submit([callback]()
+                                              {
+                                                callback->OnPlayBackPaused();
+                                              }, CJob::PRIORITY_NORMAL);
+          }
+
+          SetSpeedInternal(0.0, false);
+
+          m_state = State::IN_MENU;
+        }
+      }
+      break;
+    }
+    default:
+      break;
     }
 
     m_processInfo->SetPlayTimes(0, GetTime(), 0, GetTotalTime());
@@ -517,9 +557,9 @@ std::string CRetroPlayer::CreateSavestate()
   return m_playback->CreateSavestate();
 }
 
-void CRetroPlayer::SetSpeedInternal(double speed)
+void CRetroPlayer::SetSpeedInternal(double speed, bool bCloseOSD)
 {
-  OnSpeedChange(speed);
+  OnSpeedChange(speed, bCloseOSD);
 
   if (speed == 0.0)
     m_playback->PauseAsync();
@@ -527,13 +567,14 @@ void CRetroPlayer::SetSpeedInternal(double speed)
     m_playback->SetSpeed(speed);
 }
 
-void CRetroPlayer::OnSpeedChange(double newSpeed)
+void CRetroPlayer::OnSpeedChange(double newSpeed, bool bCloseOSD)
 {
   m_streamManager->EnableAudio(newSpeed == 1.0);
   m_input->SetSpeed(newSpeed);
   m_renderManager->SetSpeed(newSpeed);
   m_processInfo->SetSpeed(static_cast<float>(newSpeed));
-  if (newSpeed != 0.0)
+
+  if (bCloseOSD)
   {
     CLog::Log(LOGDEBUG, "RetroPlayer[PLAYER]: Closing OSD via speed change (%f)", newSpeed);
     CloseOSD();
