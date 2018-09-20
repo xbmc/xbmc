@@ -56,37 +56,37 @@ namespace PVR
 
     /*!
      * @brief Check whether this add-on supports TV channels.
-     * @return True if recordings are supported, false otherwise.
+     * @return True if supported, false otherwise.
      */
     bool SupportsTV() const { return m_addonCapabilities && m_addonCapabilities->bSupportsTV; }
 
     /*!
      * @brief Check whether this add-on supports radio channels.
-     * @return True if recordings are supported, false otherwise.
+     * @return True if supported, false otherwise.
      */
     bool SupportsRadio() const { return m_addonCapabilities && m_addonCapabilities->bSupportsRadio; }
 
     /*!
      * @brief Check whether this add-on supports channel groups.
-     * @return True if recordings are supported, false otherwise.
+     * @return True if supported, false otherwise.
      */
     bool SupportsChannelGroups() const { return m_addonCapabilities && m_addonCapabilities->bSupportsChannelGroups; }
 
     /*!
      * @brief Check whether this add-on supports scanning for new channels on the backend.
-     * @return True if recordings are supported, false otherwise.
+     * @return True if supported, false otherwise.
      */
     bool SupportsChannelScan() const { return m_addonCapabilities && m_addonCapabilities->bSupportsChannelScan; }
 
     /*!
      * @brief Check whether this add-on supports the following functions: DeleteChannel, RenameChannel, DialogChannelSettings and DialogAddChannel.
-     * @return True if recordings are supported, false otherwise.
+     * @return True if supported, false otherwise.
      */
     bool SupportsChannelSettings() const { return m_addonCapabilities && m_addonCapabilities->bSupportsChannelSettings; }
 
     /*!
      * @brief Check whether this add-on supports descramble information for playing channels.
-     * @return True if recordings are supported, false otherwise.
+     * @return True if supported, false otherwise.
      */
     bool SupportsDescrambleInfo() const { return m_addonCapabilities && m_addonCapabilities->bSupportsDescrambleInfo; }
 
@@ -98,9 +98,15 @@ namespace PVR
 
     /*!
      * @brief Check whether this add-on provides EPG information.
-     * @return True if recordings are supported, false otherwise.
+     * @return True if supported, false otherwise.
      */
     bool SupportsEPG() const { return m_addonCapabilities && m_addonCapabilities->bSupportsEPG; }
+
+    /*!
+     * @brief Check whether this add-on supports asynchronous transfer of epg events.
+     * @return True if supported, false otherwise.
+     */
+    bool SupportsAsyncEPGTransfer() const { return m_addonCapabilities && m_addonCapabilities->bSupportsAsyncEPGTransfer; }
 
     /////////////////////////////////////////////////////////////////////////////////
     //
@@ -110,7 +116,7 @@ namespace PVR
 
     /*!
      * @brief Check whether this add-on supports the creation and editing of timers.
-     * @return True if recordings are supported, false otherwise.
+     * @return True if supported, false otherwise.
      */
     bool SupportsTimers() const { return m_addonCapabilities && m_addonCapabilities->bSupportsTimers; }
 
@@ -122,7 +128,7 @@ namespace PVR
 
     /*!
      * @brief Check whether this add-on supports recordings.
-     * @return True if recordings are supported, false otherwise.
+     * @return True if supported, false otherwise.
      */
     bool SupportsRecordings() const { return m_addonCapabilities && m_addonCapabilities->bSupportsRecordings; }
 

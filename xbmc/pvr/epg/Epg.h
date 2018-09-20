@@ -161,9 +161,10 @@ namespace PVR
      * Get the event that occurs between the given begin and end time.
      * @param beginTime Minimum start time in UTC of the event.
      * @param endTime Maximum end time in UTC of the event.
+     * @param bUpdateFromClient if true, try to fetch the event from the client if not found locally.
      * @return The found tag or NULL if it wasn't found.
      */
-    CPVREpgInfoTagPtr GetTagBetween(const CDateTime &beginTime, const CDateTime &endTime) const;
+    CPVREpgInfoTagPtr GetTagBetween(const CDateTime &beginTime, const CDateTime &endTime, bool bUpdateFromClient = false);
 
     /*!
      * Get all events occurring between the given begin and end time.
@@ -286,9 +287,10 @@ namespace PVR
      * @todo not implemented yet for non-pvr EPGs
      * @param start Get entries with a start date after this time.
      * @param end Get entries with an end date before this time.
+     * @param bForceUpdate Force update from client even if it's not the time to
      * @return True if the update was successful, false otherwise.
      */
-    bool UpdateFromScraper(time_t start, time_t end);
+    bool UpdateFromScraper(time_t start, time_t end, bool bForceUpdate);
 
     /*!
      * @brief Fix overlapping events from the tables.
@@ -307,9 +309,10 @@ namespace PVR
      * @brief Load all EPG entries from clients into a temporary table and update this table with the contents of that temporary table.
      * @param start Only get entries after this start time. Use 0 to get all entries before "end".
      * @param end Only get entries before this end time. Use 0 to get all entries after "begin". If both "begin" and "end" are 0, all entries will be updated.
+     * @param bForceUpdate Force update from client even if it's not the time to
      * @return True if the update was successful, false otherwise.
      */
-    bool LoadFromClients(time_t start, time_t end);
+    bool LoadFromClients(time_t start, time_t end, bool bForceUpdate);
 
     /*!
      * @brief Update the contents of this table with the contents provided in "epg"
