@@ -458,11 +458,6 @@ void CDVDInputStreamBluray::ProcessEvent() {
         m_event.param);
     /* when a title ends, playlist WILL eventually change */
     FreeTitleInfo();
-    if (m_event.param == BLURAY_TITLE_TOP_MENU)
-    {
-      m_title = nullptr;
-      m_menu = false;
-    }
     break;
 
   case BD_EVENT_TITLE:
@@ -483,7 +478,6 @@ void CDVDInputStreamBluray::ProcessEvent() {
     else
       m_title = nullptr;
 
-    m_menu = false;
     break;
   }
   case BD_EVENT_PLAYLIST:
@@ -741,11 +735,8 @@ void CDVDInputStreamBluray::OverlayFlush(int64_t pts)
   }
 
   m_player->OnDiscNavResult(static_cast<void*>(group), BD_EVENT_MENU_OVERLAY);
-  if (group->m_overlays.empty())
-    m_menu = false;
-  else
-    m_menu = true;
   group->Release();
+  m_menu = true;
 #endif
 }
 
