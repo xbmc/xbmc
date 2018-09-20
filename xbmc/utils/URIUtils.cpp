@@ -335,10 +335,20 @@ bool URIUtils::GetParentPath(const std::string& strPath, std::string& strParent)
   }
   else if (url.IsProtocol("plugin"))
   {
+    if (!url.GetOptions().empty())
+    {
+      //! @todo Make a new python call to get the plugin content type and remove this temporary hack
+      // When a plugin provides multiple types, it has "plugin://addon.id/?content_type=xxx" root URL
+      if (url.GetFileName().empty() && url.HasOption("content_type") && url.GetOptions().find('&') == std::string::npos)
+        url.SetHostName("");
+      //
+      url.SetOptions("");
+      strParent = url.Get();
+      return true;
+    }
     if (!url.GetFileName().empty())
     {
       url.SetFileName("");
-      url.SetOptions("");
       strParent = url.Get();
       return true;
     }
