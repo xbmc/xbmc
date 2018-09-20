@@ -737,22 +737,6 @@ bool CApplication::InitDirectoriesLinux()
 */
 
 #if defined(TARGET_POSIX) && !defined(TARGET_DARWIN)
-  std::string userName;
-  if (getenv("USER"))
-    userName = getenv("USER");
-  else
-    userName = "root";
-
-  std::string userHome;
-  if (getenv("HOME"))
-    userHome = getenv("HOME");
-  else
-    userHome = "/root";
-
-  std::string binaddonAltDir;
-  if (getenv("KODI_BINADDON_PATH"))
-    binaddonAltDir = getenv("KODI_BINADDON_PATH");
-
   std::string appPath;
   std::string appName = CCompileInfo::GetAppName();
   std::string dotLowerAppName = "." + appName;
@@ -760,6 +744,37 @@ bool CApplication::InitDirectoriesLinux()
   const char* envAppHome = "KODI_HOME";
   const char* envAppBinHome = "KODI_BIN_HOME";
   const char* envAppTemp = "KODI_TEMP";
+
+  std::string userName;
+  if (getenv("USER"))
+    userName = getenv("USER");
+  else
+    userName = "root";
+
+  std::string userHome;
+  if (getenv("KODI_DATA"))
+    userHome = getenv("KODI_DATA");
+  else if (getenv("HOME"))
+  {
+    userHome = getenv("HOME");
+    userHome.append("/" + dotLowerAppName);
+  }
+  else
+  {
+    userHome = "/root";
+    userHome.append("/" + dotLowerAppName);
+  }
+
+  std::string strTempPath;
+  if (getenv(envAppTemp))
+    strTempPath = getenv(envAppTemp);
+  else
+    strTempPath = userHome + "/temp";
+
+
+  std::string binaddonAltDir;
+  if (getenv("KODI_BINADDON_PATH"))
+    binaddonAltDir = getenv("KODI_BINADDON_PATH");
 
   auto appBinPath = CUtil::GetHomePath(envAppBinHome);
   // overridden by user
@@ -793,13 +808,8 @@ bool CApplication::InitDirectoriesLinux()
     CSpecialProtocol::SetXBMCBinPath(appBinPath);
     CSpecialProtocol::SetXBMCAltBinAddonPath(binaddonAltDir);
     CSpecialProtocol::SetXBMCPath(appPath);
-    CSpecialProtocol::SetHomePath(userHome + "/" + dotLowerAppName);
-    CSpecialProtocol::SetMasterProfilePath(userHome + "/" + dotLowerAppName + "/userdata");
-
-    std::string strTempPath = userHome;
-    strTempPath = URIUtils::AddFileToFolder(strTempPath, dotLowerAppName + "/temp");
-    if (getenv(envAppTemp))
-      strTempPath = getenv(envAppTemp);
+    CSpecialProtocol::SetHomePath(userHome);
+    CSpecialProtocol::SetMasterProfilePath(userHome + "/userdata");
     CSpecialProtocol::SetTempPath(strTempPath);
     CSpecialProtocol::SetLogPath(strTempPath);
 
