@@ -44,7 +44,6 @@ namespace RETRO
     void OnInitWindow() override;
 
   private:
-    void ToggleOSD();
     void TriggerOSD();
     CGUIDialog *GetOSD();
 
