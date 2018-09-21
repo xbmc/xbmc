@@ -505,7 +505,7 @@ bool CApplication::Create(const CAppParamParser &params)
   CLog::Log(LOGNOTICE, "Local hostname: %s", hostname.c_str());
   std::string lowerAppName = CCompileInfo::GetAppName();
   StringUtils::ToLower(lowerAppName);
-  CLog::Log(LOGNOTICE, "Log File is located: %s/%s.log", CSpecialProtocol::TranslatePath("special://logpath").c_str(), lowerAppName.c_str());
+  CLog::Log(LOGNOTICE, "Log File is located: %s.log", CSpecialProtocol::TranslatePath("special://logpath/" + lowerAppName).c_str());
   CRegExp::LogCheckUtf8Support();
   CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
 
