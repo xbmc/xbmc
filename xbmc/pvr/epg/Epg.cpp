@@ -254,16 +254,50 @@ CPVREpgInfoTagPtr CPVREpg::GetTagByBroadcastId(unsigned int iUniqueBroadcastId) 
   return CPVREpgInfoTagPtr();
 }
 
-CPVREpgInfoTagPtr CPVREpg::GetTagBetween(const CDateTime &beginTime, const CDateTime &endTime) const
+CPVREpgInfoTagPtr CPVREpg::GetTagBetween(const CDateTime &beginTime, const CDateTime &endTime, bool bUpdateFromClient /* = false */)
 {
+  CPVREpgInfoTagPtr tag;
+
   CSingleLock lock(m_critSection);
   for (std::map<CDateTime, CPVREpgInfoTagPtr>::const_iterator it = m_tags.begin(); it != m_tags.end(); ++it)
   {
     if (it->second->StartAsUTC() >= beginTime && it->second->EndAsUTC() <= endTime)
-      return it->second;
+    {
+      tag = it->second;
+      break;
+    }
   }
 
-  return CPVREpgInfoTagPtr();
+  if (!tag && bUpdateFromClient)
+  {
+    // not found locally; try to fetch from client
+    time_t b;
+    beginTime.GetAsTime(b);
+    time_t e;
+    endTime.GetAsTime(e);
+
+    const CPVRChannelPtr channel = Channel();
+    if (channel)
+    {
+      CPVREpg tmpEpg(channel);
+      if (tmpEpg.UpdateFromScraper(b, e, true))
+        tag = tmpEpg.GetTagBetween(beginTime, endTime, false);
+    }
+    else
+    {
+      CPVREpg tmpEpg(m_iEpgID, m_strName, m_strScraperName);
+      if (tmpEpg.UpdateFromScraper(b, e, true))
+       tag = tmpEpg.GetTagBetween(beginTime, endTime, false);
+    }
+
+    if (tag)
+    {
+      m_tags.insert(make_pair(tag->StartAsUTC(), tag));
+      UpdateEntry(tag, !CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_EPG_IGNOREDBFORCLIENT));
+    }
+  }
+
+  return tag;
 }
 
 std::vector<CPVREpgInfoTagPtr> CPVREpg::GetTagsBetween(const CDateTime &beginTime, const CDateTime &endTime) const
@@ -524,7 +558,7 @@ bool CPVREpg::Update(const time_t start, const time_t end, int iUpdateTime, bool
     bUpdate = true;
 
   if (bUpdate)
-    bGrabSuccess = LoadFromClients(start, end);
+    bGrabSuccess = LoadFromClients(start, end, bForceUpdate);
 
   if (bGrabSuccess)
     m_bLoaded = true;
@@ -683,7 +717,7 @@ bool CPVREpg::FixOverlappingEvents(bool bUpdateDb /* = false */)
   return bReturn;
 }
 
-bool CPVREpg::UpdateFromScraper(time_t start, time_t end)
+bool CPVREpg::UpdateFromScraper(time_t start, time_t end, bool bForceUpdate)
 {
   if (m_strScraperName.empty())
   {
@@ -707,6 +741,11 @@ bool CPVREpg::UpdateFromScraper(time_t start, time_t end)
         {
           CLog::LogF(LOGERROR, "The backend for channel '%s' on client '%i' does not support EPGs",
                      channel->ChannelName().c_str(), channel->ClientID());
+        }
+        else if (!bForceUpdate && client->GetClientCapabilities().SupportsAsyncEPGTransfer())
+        {
+          // nothing to do. client will provide epg updates asynchrounously
+          return true;
         }
         else
         {
@@ -784,20 +823,20 @@ const std::string &CPVREpg::ConvertGenreIdToString(int iID, int iSubID)
   return g_localizeStrings.Get(iLabelId);
 }
 
-bool CPVREpg::LoadFromClients(time_t start, time_t end)
+bool CPVREpg::LoadFromClients(time_t start, time_t end, bool bForceUpdate)
 {
   bool bReturn(false);
   CPVRChannelPtr channel = Channel();
   if (channel)
   {
     CPVREpg tmpEpg(channel);
-    if (tmpEpg.UpdateFromScraper(start, end))
+    if (tmpEpg.UpdateFromScraper(start, end, bForceUpdate))
       bReturn = UpdateEntries(tmpEpg, !CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_EPG_IGNOREDBFORCLIENT));
   }
   else
   {
     CPVREpg tmpEpg(m_iEpgID, m_strName, m_strScraperName);
-    if (tmpEpg.UpdateFromScraper(start, end))
+    if (tmpEpg.UpdateFromScraper(start, end, bForceUpdate))
       bReturn = UpdateEntries(tmpEpg, !CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_EPG_IGNOREDBFORCLIENT));
   }
 
