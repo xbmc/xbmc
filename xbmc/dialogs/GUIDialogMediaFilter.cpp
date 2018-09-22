@@ -391,10 +391,12 @@ void CGUIDialogMediaFilter::InitializeSettings()
     return;
   }
 
-  for (Filter filter : filterList)
+  for (const Filter& f : filterList)
   {
-    if (filter.mediaType != m_mediaType)
+    if (f.mediaType != m_mediaType)
       continue;
+
+    Filter filter = f;
 
     // check the smartplaylist if it contains a matching rule
     for (CDatabaseQueryRules::iterator rule = m_filter->m_ruleCombination.m_rules.begin(); rule != m_filter->m_ruleCombination.m_rules.end(); rule++)
