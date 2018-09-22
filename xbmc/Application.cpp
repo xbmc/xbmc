@@ -3020,18 +3020,16 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
   {
 #ifdef HAS_DVD_DRIVE
     // Display the Play Eject dialog if there is any optical disc drive
-    if (g_mediaManager.HasOpticalDrive())
-    {
-      if (CGUIDialogPlayEject::ShowAndGetInput(item))
-        // PlayDiscAskResume takes path to disc. No parameter means default DVD drive.
-        // Can't do better as CGUIDialogPlayEject calls CMediaManager::IsDiscInDrive, which assumes default DVD drive anyway
-        return MEDIA_DETECT::CAutorun::PlayDiscAskResume();
-    }
-    else
+    if (CGUIDialogPlayEject::ShowAndGetInput(item))
+      // PlayDiscAskResume takes path to disc. No parameter means default DVD drive.
+      // Can't do better as CGUIDialogPlayEject calls CMediaManager::IsDiscInDrive, which assumes default DVD drive anyway
+      return MEDIA_DETECT::CAutorun::PlayDiscAskResume();
+#else
+    // Display "No optical disc drive detected" dialog
+    HELPERS::ShowOKDialogText(CVariant{435}, CVariant{436});
 #endif
-      HELPERS::ShowOKDialogText(CVariant{435}, CVariant{436});
 
-    return true;
+    return false;
   }
 
   if (item.IsPlayList())
