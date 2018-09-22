@@ -8,7 +8,7 @@ SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
 # configuration settings
-CONFIGURE=./configure --prefix=$(PREFIX) --disable-werror
+CONFIGURE=./configure --prefix=$(PREFIX) --disable-shared --disable-utils --disable-werror
 
 LIBDYLIB=$(PLATFORM)/lib/.libs/$(LIBNAME).a
 

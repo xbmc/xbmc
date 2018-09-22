@@ -152,8 +152,7 @@ endif()
 if(NFS_FOUND)
   list(APPEND SOURCES NFSDirectory.cpp
                       NFSFile.cpp)
-  list(APPEND HEADERS DllLibNfs.h
-                      NFSDirectory.h
+  list(APPEND HEADERS NFSDirectory.h
                       NFSFile.h)
 endif()
 

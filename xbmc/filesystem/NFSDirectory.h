@@ -11,6 +11,8 @@
 #include "IDirectory.h"
 #include "NFSFile.h"
 
+struct nfsdirent;
+
 namespace XFILE
 {
   class CNFSDirectory : public IDirectory
