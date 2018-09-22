@@ -1111,13 +1111,6 @@ bool CFileItem::IsDVDFile(bool bVobs /*= true*/, bool bIfos /*= true*/) const
   return false;
 }
 
-bool CFileItem::IsDVDFolder() const
-{
-  CFileItem item = CFileItem(GetOpticalMediaPath(), false);
-
-  return item.IsDVDFile();
-}
-
 bool CFileItem::IsBDFile() const
 {
   std::string strFileName = URIUtils::GetFileName(m_strPath);
@@ -1391,14 +1384,6 @@ void CFileItem::FillInDefaultIcon()
       else if (IsParentFolder())
       {
         SetIconImage("DefaultFolderBack.png");
-      }
-      else if (IsBluray())
-      {
-        SetIconImage("DefaultBluray.png");
-      }
-      else if (IsDVDFolder())
-      {
-        SetIconImage("DefaultDVDFull.png");
       }
       else
       {
