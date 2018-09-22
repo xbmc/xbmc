@@ -154,7 +154,6 @@ set(optional_deps Alsa
                   LircClient
                   MDNS
                   MicroHttpd
-                  NFS
                   PulseAudio
                   Python
                   SmbClient

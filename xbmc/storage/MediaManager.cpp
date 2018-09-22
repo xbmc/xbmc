@@ -185,12 +185,6 @@ void CMediaManager::GetNetworkLocations(VECSOURCES &locations, bool autolocation
     locations.push_back(share);
 #endif
 
-#ifdef HAS_FILESYSTEM_NFS
-    share.strPath = "nfs://";
-    share.strName = g_localizeStrings.Get(20259);
-    locations.push_back(share);
-#endif// HAS_FILESYSTEM_NFS
-
 #ifdef HAS_UPNP
     if (CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_SERVICES_UPNP))
     {

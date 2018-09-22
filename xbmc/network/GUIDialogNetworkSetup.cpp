@@ -465,7 +465,4 @@ void CGUIDialogNetworkSetup::UpdateAvailableProtocols()
          { true,  true,  true,  true, false, 443,  "rsss", 20305}};
 
   m_protocols.insert(m_protocols.end(), defaults.begin(), defaults.end());
-#ifdef HAS_FILESYSTEM_NFS
-  m_protocols.emplace_back(Protocol{true, false, false, false, true, 0, "nfs", 20259});
-#endif
 }

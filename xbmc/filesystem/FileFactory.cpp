@@ -33,9 +33,6 @@
 #endif
 #include "XbtFile.h"
 #include "ZipFile.h"
-#ifdef HAS_FILESYSTEM_NFS
-#include "NFSFile.h"
-#endif
 #if defined(TARGET_ANDROID)
 #include "platform/android/filesystem/AndroidAppFile.h"
 #endif
@@ -146,9 +143,6 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
 #else
     else if (url.IsProtocol("smb")) return new CSMBFile();
 #endif
-#endif
-#ifdef HAS_FILESYSTEM_NFS
-    else if (url.IsProtocol("nfs")) return new CNFSFile();
 #endif
 #ifdef HAS_UPNP
     else if (url.IsProtocol("upnp")) return new CUPnPFile();
