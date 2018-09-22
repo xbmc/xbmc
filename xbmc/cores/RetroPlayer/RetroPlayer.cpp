@@ -13,6 +13,7 @@
 #include "cores/DataCacheCore.h"
 #include "cores/IPlayerCallback.h"
 #include "cores/RetroPlayer/guibridge/GUIGameRenderManager.h"
+#include "cores/RetroPlayer/guiplayback/GUIPlaybackControl.h"
 #include "cores/RetroPlayer/playback/IPlayback.h"
 #include "cores/RetroPlayer/playback/RealtimePlayback.h"
 #include "cores/RetroPlayer/playback/ReversiblePlayback.h"
@@ -37,6 +38,7 @@
 #include "guilib/WindowIDs.h"
 #include "input/Action.h"
 #include "input/ActionIDs.h"
+#include "messaging/ApplicationMessenger.h"
 #include "settings/MediaSettings.h"
 #include "threads/SingleLock.h"
 #include "utils/JobManager.h"
@@ -169,13 +171,19 @@ bool CRetroPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options
 
   if (bSuccess)
   {
+    // Switch to fullscreen
+    MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_SWITCHTOFULLSCREEN);
+
+    // Initialize gameplay
     CreatePlayback(m_gameServices.GameSettings().AutosaveEnabled());
     RegisterWindowCallbacks();
-    SetSpeedInternal(1.0);
+    m_playbackControl.reset(new CGUIPlaybackControl(*this));
     m_callback.OnPlayBackStarted(fileCopy);
     m_callback.OnAVStarted(fileCopy);
     if (!bStandalone)
       m_autoSave.reset(new CRetroPlayerAutoSave(*this, m_gameServices.GameSettings()));
+
+    // Set video framerate
     m_processInfo->SetVideoFps(static_cast<float>(m_gameClient->GetFrameRate()));
   }
   else
@@ -197,6 +205,8 @@ bool CRetroPlayer::CloseFile(bool reopen /* = false */)
   m_autoSave.reset();
 
   UnregisterWindowCallbacks();
+
+  m_playbackControl.reset();
 
   CSingleLock lock(m_mutex);
 
@@ -329,7 +339,6 @@ void CRetroPlayer::SeekTime(int64_t iTime /* = 0 */)
     return;
 
   m_playback->SeekTimeMs(static_cast<unsigned int>(iTime));
-  OnSpeedChange(m_playback->GetSpeed());
 }
 
 bool CRetroPlayer::SeekTimeRelative(int64_t iTime)
@@ -360,9 +369,24 @@ void CRetroPlayer::SetSpeed(float speed)
       m_callback.OnPlayBackResumed();
     else if (speed == 0.0f)
       m_callback.OnPlayBackPaused();
-  }
 
-  SetSpeedInternal(static_cast<double>(speed));
+    SetSpeedInternal(static_cast<double>(speed));
+
+    if (speed == 0.0f)
+    {
+      const int dialogId = CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindowOrDialog();
+      if (dialogId == WINDOW_FULLSCREEN_GAME)
+      {
+        CLog::Log(LOGDEBUG, "RetroPlayer[PLAYER]: Opening OSD via speed change (%f)", speed);
+        OpenOSD();
+      }
+    }
+    else
+    {
+      CLog::Log(LOGDEBUG, "RetroPlayer[PLAYER]: Closing OSD via speed change (%f)", speed);
+      CloseOSD();
+    }
+  }
 }
 
 bool CRetroPlayer::OnAction(const CAction &action)
@@ -390,7 +414,7 @@ bool CRetroPlayer::OnAction(const CAction &action)
   }
   case ACTION_SHOW_OSD:
   {
-    if (m_gameClient && m_playback->GetSpeed() == 0.0)
+    if (m_gameClient)
     {
       CLog::Log(LOGDEBUG, "RetroPlayer[PLAYER]: Closing OSD via ACTION_SHOW_OSD");
       CloseOSD();
@@ -430,63 +454,11 @@ void CRetroPlayer::FrameMove()
   if (m_renderManager)
     m_renderManager->FrameMove();
 
-  if (m_gameClient)
-  {
-    const int activeId = CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindowOrDialog();
-    const bool bFullscreen = (activeId == WINDOW_FULLSCREEN_GAME);
+  if (m_playbackControl)
+    m_playbackControl->FrameMove();
 
-    switch (m_state)
-    {
-    case State::STARTING:
-    {
-      if (bFullscreen)
-        m_state = State::FULLSCREEN;
-      break;
-    }
-    case State::FULLSCREEN:
-    {
-      if (!bFullscreen)
-      {
-        m_priorSpeed = m_playback->GetSpeed();
-
-        if (m_priorSpeed != 0.0)
-        {
-          IPlayerCallback *callback = &m_callback;
-          CJobManager::GetInstance().Submit([callback]()
-            {
-              callback->OnPlayBackPaused();
-            }, CJob::PRIORITY_NORMAL);
-        }
-
-        SetSpeedInternal(0.0);
-
-        m_state = State::BACKGROUND;
-      }
-      break;
-    }
-    case State::BACKGROUND:
-    {
-      if (bFullscreen)
-      {
-        if (m_playback->GetSpeed() == 0.0 && m_priorSpeed != 0.0)
-        {
-          IPlayerCallback *callback = &m_callback;
-          CJobManager::GetInstance().Submit([callback]()
-            {
-              callback->OnPlayBackResumed();
-            }, CJob::PRIORITY_NORMAL);
-
-          SetSpeedInternal(m_priorSpeed);
-        }
-
-        m_state = State::FULLSCREEN;
-      }
-      break;
-    }
-    }
-
+  if (m_processInfo)
     m_processInfo->SetPlayTimes(0, GetTime(), 0, GetTotalTime());
-  }
 }
 
 void CRetroPlayer::Render(bool clear, uint32_t alpha /* = 255 */, bool gui /* = true */)
@@ -505,6 +477,40 @@ std::string CRetroPlayer::GameClientID() const
     return m_gameClient->ID();
 
   return "";
+}
+
+void CRetroPlayer::SetPlaybackSpeed(double speed)
+{
+  if (m_playback)
+  {
+    if (m_playback->GetSpeed() != speed)
+    {
+      if (speed == 1.0)
+      {
+        IPlayerCallback *callback = &m_callback;
+        CJobManager::GetInstance().Submit([callback]()
+          {
+            callback->OnPlayBackResumed();
+          }, CJob::PRIORITY_NORMAL);
+      }
+      else if (speed == 0.0)
+      {
+        IPlayerCallback *callback = &m_callback;
+        CJobManager::GetInstance().Submit([callback]()
+          {
+            callback->OnPlayBackPaused();
+          }, CJob::PRIORITY_NORMAL);
+      }
+    }
+  }
+
+  SetSpeedInternal(speed);
+}
+
+void CRetroPlayer::EnableInput(bool bEnable)
+{
+  if (m_input)
+    m_input->EnableInput(bEnable);
 }
 
 bool CRetroPlayer::IsAutoSaveEnabled() const
@@ -533,11 +539,6 @@ void CRetroPlayer::OnSpeedChange(double newSpeed)
   m_input->SetSpeed(newSpeed);
   m_renderManager->SetSpeed(newSpeed);
   m_processInfo->SetSpeed(static_cast<float>(newSpeed));
-  if (newSpeed != 0.0)
-  {
-    CLog::Log(LOGDEBUG, "RetroPlayer[PLAYER]: Closing OSD via speed change (%f)", newSpeed);
-    CloseOSD();
-  }
 }
 
 void CRetroPlayer::CreatePlayback(bool bRestoreState)
@@ -572,6 +573,11 @@ void CRetroPlayer::ResetPlayback()
     m_playback->Deinitialize();
 
   m_playback.reset(new CRealtimePlayback);
+}
+
+void CRetroPlayer::OpenOSD()
+{
+  CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_DIALOG_GAME_OSD);
 }
 
 void CRetroPlayer::CloseOSD()

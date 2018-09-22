@@ -1,9 +1,10 @@
-set(SOURCES ReversiblePlayback.cpp
-            GameLoop.cpp)
+set(SOURCES GameLoop.cpp
+            ReversiblePlayback.cpp)
 
-set(HEADERS RealtimePlayback.h
-            ReversiblePlayback.h
-            GameLoop.h
-            IPlayback.h)
+set(HEADERS GameLoop.h
+            IPlayback.h
+            IPlaybackControl.h
+            RealtimePlayback.h
+            ReversiblePlayback.h)
 
 core_add_library(retroplayer_playback)

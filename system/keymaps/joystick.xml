@@ -153,7 +153,7 @@
       <!-- Reset is disabled until player can undo a reset -->
       <!--<b hotkey="back">PlayerControl(Reset)</b> -->
       <x hotkey="back">OSD</x>
-      <y hotkey="back">FullScreen</y>
+      <y hotkey="back">OSD</y>
       <start hotkey="back">Stop</start>
       <!--
       <rightbumper hotkey="back">Save</rightbumper>

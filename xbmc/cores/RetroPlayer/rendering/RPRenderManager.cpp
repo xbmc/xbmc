@@ -19,7 +19,6 @@
 #include "cores/RetroPlayer/process/RPProcessInfo.h"
 #include "cores/RetroPlayer/rendering/VideoRenderers/RPBaseRenderer.h"
 #include "utils/TransformMatrix.h"
-#include "messaging/ApplicationMessenger.h"
 #include "threads/SingleLock.h"
 #include "utils/Color.h"
 #include "utils/log.h"
@@ -231,8 +230,6 @@ void CRPRenderManager::FrameMove()
     if (m_state == RENDER_STATE::CONFIGURING)
     {
       m_processInfo.ConfigureRenderSystem(m_format);
-
-      MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_SWITCHTOFULLSCREEN);
 
       m_state = RENDER_STATE::CONFIGURED;
 

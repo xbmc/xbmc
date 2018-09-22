@@ -148,7 +148,8 @@ bool CServiceBroker::IsBinaryAddonCacheUp()
 
 bool CServiceBroker::IsServiceManagerUp()
 {
-  return g_application.m_ServiceManager->init_level == 3;
+  return g_application.m_ServiceManager &&
+         g_application.m_ServiceManager->init_level == 3;
 }
 
 CWinSystemBase* CServiceBroker::m_pWinSystem = nullptr;

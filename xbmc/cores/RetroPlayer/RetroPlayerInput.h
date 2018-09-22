@@ -27,8 +27,10 @@ namespace RETRO
     ~CRetroPlayerInput() override;
 
     void SetSpeed(double speed);
+    void EnableInput(bool bEnabled);
 
-    // implementation of IGameAudioCallback
+    // implementation of IGameInputCallback
+    bool AcceptsInput() const override { return m_bEnabled; }
     void PollInput() override;
 
   private:
@@ -37,6 +39,7 @@ namespace RETRO
 
     // Input variables
     PERIPHERALS::EventPollHandlePtr m_inputPollHandle;
+    bool m_bEnabled = false;
   };
 }
 }

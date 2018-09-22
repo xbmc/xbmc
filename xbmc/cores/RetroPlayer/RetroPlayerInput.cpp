@@ -37,6 +37,11 @@ void CRetroPlayerInput::SetSpeed(double speed)
     m_inputPollHandle->Deactivate();
 }
 
+void CRetroPlayerInput::EnableInput(bool bEnabled)
+{
+  m_bEnabled = bEnabled;
+}
+
 void CRetroPlayerInput::PollInput()
 {
   m_inputPollHandle->HandleEvents(true);

@@ -11,6 +11,8 @@
 #include "cores/RetroPlayer/guibridge/GUIGameRenderManager.h"
 #include "cores/RetroPlayer/guibridge/GUIRenderHandle.h"
 #include "windowing/GraphicContext.h" //! @todo Remove me
+#include "games/GameServices.h"
+#include "games/GameSettings.h"
 #include "guilib/GUIDialog.h"
 #include "guilib/GUIControl.h"
 #include "guilib/GUIComponent.h"
@@ -177,6 +179,11 @@ void CGameWindowFullScreen::OnInitWindow()
   CServiceBroker::GetWinSystem()->GetGfxContext().SetFullScreenVideo(true); //! @todo
 
   CGUIWindow::OnInitWindow();
+
+  // Show OSD help
+  GAME::CGameSettings &gameSettings = CServiceBroker::GetGameServices().GameSettings();
+  if (gameSettings.ShowOSDHelp())
+    TriggerOSD();
 }
 
 void CGameWindowFullScreen::OnDeinitWindow(int nextWindowID)
