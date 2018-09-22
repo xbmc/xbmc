@@ -91,6 +91,9 @@ void CGameClientInput::Start(IGameInputCallback *input)
 
   // Ensure hardware is open to receive events
   m_hardware.reset(new CGameClientHardware(m_gameClient));
+
+  if (CServiceBroker::IsServiceManagerUp())
+    CServiceBroker::GetPeripherals().RegisterObserver(this);
 }
 
 void CGameClientInput::Deinitialize()
@@ -100,6 +103,9 @@ void CGameClientInput::Deinitialize()
 
 void CGameClientInput::Stop()
 {
+  if (CServiceBroker::IsServiceManagerUp())
+    CServiceBroker::GetPeripherals().UnregisterObserver(this);
+
   m_hardware.reset();
 
   std::vector<std::string> ports;
