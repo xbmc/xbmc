@@ -10,6 +10,7 @@
 
 #include "CPUInfo.h"
 #include "utils/log.h"
+#include "utils/SysfsUtils.h"
 #include "utils/Temperature.h"
 #include <string>
 #include <string.h>
@@ -419,6 +420,21 @@ CCPUInfo::CCPUInfo(void)
       }
     }
     fclose(fCPUInfo);
+    // new socs use the sysfs soc interface to describe the hardware
+    if (SysfsUtils::Has("/sys/bus/soc/devices/soc0"))
+    {
+      std::string machine, family, soc_id;
+      if (SysfsUtils::Has("/sys/bus/soc/devices/soc0/machine"))
+        SysfsUtils::GetString("/sys/bus/soc/devices/soc0/machine", machine);
+      if (SysfsUtils::Has("/sys/bus/soc/devices/soc0/family"))
+        SysfsUtils::GetString("/sys/bus/soc/devices/soc0/family", family);
+      if (SysfsUtils::Has("/sys/bus/soc/devices/soc0/soc_id"))
+        SysfsUtils::GetString("/sys/bus/soc/devices/soc0/soc_id", soc_id);
+      if (m_cpuHardware.empty() && !machine.empty())
+        m_cpuHardware = machine;
+      if (!family.empty() && !soc_id.empty())
+        m_cpuSoC = family + " " + soc_id;
+    }
     //  /proc/cpuinfo is not reliable on some Android platforms
     //  At least we should get the correct cpu count for multithreaded decoding
 #if defined(TARGET_ANDROID)

@@ -54,6 +54,7 @@ struct CoreInfo
   std::string m_strVendor;
   std::string m_strModel;
   std::string m_strBogoMips;
+  std::string m_strSoC;
   std::string m_strHardware;
   std::string m_strRevision;
   std::string m_strSerial;
@@ -72,6 +73,7 @@ public:
   bool getTemperature(CTemperature& temperature);
   std::string& getCPUModel() { return m_cpuModel; }
   std::string& getCPUBogoMips() { return m_cpuBogoMips; }
+  std::string& getCPUSoC() { return m_cpuSoC; }
   std::string& getCPUHardware() { return m_cpuHardware; }
   std::string& getCPURevision() { return m_cpuRevision; }
   std::string& getCPUSerial() { return m_cpuSerial; }
@@ -115,6 +117,7 @@ private:
   XbmcThreads::EndTime m_nextUsedReadTime;
   std::string  m_cpuModel;
   std::string  m_cpuBogoMips;
+  std::string  m_cpuSoC;
   std::string  m_cpuHardware;
   std::string  m_cpuRevision;
   std::string  m_cpuSerial;
