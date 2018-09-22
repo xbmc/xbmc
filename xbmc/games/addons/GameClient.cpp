@@ -187,7 +187,8 @@ bool CGameClient::Initialize(void)
   if (!CDirectory::Exists(savestatesDir))
     CDirectory::Create(savestatesDir);
 
-  AddonProperties().InitializeProperties();
+  if (!AddonProperties().InitializeProperties())
+    return false;
 
   m_struct.toKodi.kodiInstance = this;
   m_struct.toKodi.CloseGame = cb_close_game;
