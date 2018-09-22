@@ -15,9 +15,13 @@
 #include "threads/CriticalSection.h"
 #include <list>
 #include <map>
-#include "DllLibNfs.h" // for define NFSSTAT
 
-class DllLibNfs;
+#if defined(TARGET_WINDOWS)
+struct __stat64;
+#define NFSSTAT struct __stat64
+#else
+#define NFSSTAT struct stat
+#endif
 
 class CNfsConnection : public CCriticalSection
 {
@@ -43,7 +47,6 @@ public:
   struct nfs_context *GetNfsContext() {return m_pNfsContext;}
   uint64_t GetMaxReadChunkSize() {return m_readChunkSize;}
   uint64_t GetMaxWriteChunkSize() {return m_writeChunkSize;}
-  DllLibNfs *GetImpl() {return m_pLibNfs;}
   std::list<std::string> GetExportList(const CURL &url);
   //this functions splits the url into the exportpath (feed to mount) and the rest of the path
   //relative to the mounted export
@@ -58,7 +61,6 @@ public:
   void AddIdleConnection();
   void CheckIfIdle();
   void Deinit();
-  bool HandleDyLoad();//loads the lib if needed
   //adds the filehandle to the keep alive list or resets
   //the timeout for this filehandle if already in list
   void resetKeepAlive(std::string _exportPath, struct nfsfh  *_pFileHandle);
@@ -81,7 +83,6 @@ private:
   tFileKeepAliveMap m_KeepAliveTimeouts;//mapping filehandles to its idle timeout
   tOpenContextMap m_openContextMap;//unique map for tracking all open contexts
   uint64_t m_lastAccessedTime = 0;//last access time for m_pNfsContext
-  DllLibNfs *m_pLibNfs;//the lib
   std::list<std::string> m_exportList;//list of exported paths of current connected servers
   CCriticalSection keepAliveLock;
   CCriticalSection openContextLock;

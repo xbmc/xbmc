@@ -23,20 +23,13 @@ find_path(NFS_INCLUDE_DIR nfsc/libnfs.h
 
 set(NFS_VERSION ${PC_NFS_VERSION})
 
-include(FindPackageHandleStandardArgs)
-if(NOT WIN32)
-  find_library(NFS_LIBRARY NAMES nfs
-                           PATHS ${PC_NFS_LIBDIR})
+find_library(NFS_LIBRARY NAMES nfs libnfs
+                         PATHS ${PC_NFS_LIBDIR})
 
-  find_package_handle_standard_args(NFS
-                                    REQUIRED_VARS NFS_LIBRARY NFS_INCLUDE_DIR
-                                    VERSION_VAR NFS_VERSION)
-else()
-  # Dynamically loaded DLL
-  find_package_handle_standard_args(NFS
-                                    REQUIRED_VARS NFS_INCLUDE_DIR
-                                    VERSION_VAR NFS_VERSION)
-endif()
+include(FindPackageHandleStandardArgs)
+find_package_handle_standard_args(NFS
+                                  REQUIRED_VARS NFS_LIBRARY NFS_INCLUDE_DIR
+                                  VERSION_VAR NFS_VERSION)
 
 if(NFS_FOUND)
   set(NFS_LIBRARIES ${NFS_LIBRARY})

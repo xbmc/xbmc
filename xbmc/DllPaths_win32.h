@@ -9,7 +9,6 @@
 #pragma once
 
 /* libraries */
-#define DLL_PATH_LIBNFS        "special://xbmcbin/libnfs.dll"
 #define DLL_PATH_LIBPLIST      "special://xbmcbin/libplist.dll"
 #define DLL_PATH_LIBSHAIRPLAY  "special://xbmcbin/shairplay.dll"
 
