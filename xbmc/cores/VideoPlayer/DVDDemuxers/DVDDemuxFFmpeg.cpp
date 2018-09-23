@@ -318,11 +318,8 @@ bool CDVDDemuxFFmpeg::Open(std::shared_ptr<CDVDInputStream> pInput, bool streami
         pd.buf = probe_buffer.get();
         pd.filename = strFile.c_str();
 
-        // av_probe_input_buffer might have changed the buffer_size beyond our allocated amount
-        int buffer_size = std::min(probeBufferSize, m_ioContext->buffer_size);
-        buffer_size = m_ioContext->max_packet_size ? m_ioContext->max_packet_size : buffer_size;
         // read data using avformat's buffers
-        pd.buf_size = avio_read(m_ioContext, pd.buf, buffer_size);
+        pd.buf_size = avio_read(m_ioContext, pd.buf, probeBufferSize);
         if (pd.buf_size <= 0)
         {
           CLog::Log(LOGERROR, "%s - error reading from input stream, %s", __FUNCTION__, CURL::GetRedacted(strFile).c_str());
