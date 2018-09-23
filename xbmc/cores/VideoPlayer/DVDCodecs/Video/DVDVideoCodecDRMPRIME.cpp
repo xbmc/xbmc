@@ -47,6 +47,41 @@ void CVideoBufferDRMPRIME::Unref()
   av_frame_unref(m_pFrame);
 }
 
+int CVideoBufferDRMPRIME::GetColorEncoding() const
+{
+  switch (m_pFrame->colorspace)
+  {
+    case AVCOL_SPC_BT2020_CL:
+    case AVCOL_SPC_BT2020_NCL:
+      return DRM_COLOR_YCBCR_BT2020;
+    case AVCOL_SPC_SMPTE170M:
+    case AVCOL_SPC_BT470BG:
+    case AVCOL_SPC_FCC:
+      return DRM_COLOR_YCBCR_BT601;
+    case AVCOL_SPC_BT709:
+      return DRM_COLOR_YCBCR_BT709;
+    case AVCOL_SPC_RESERVED:
+    case AVCOL_SPC_UNSPECIFIED:
+    default:
+      if (m_pFrame->width > 1024 || m_pFrame->height >= 600)
+        return DRM_COLOR_YCBCR_BT709;
+      else
+        return DRM_COLOR_YCBCR_BT601;
+  }
+}
+
+int CVideoBufferDRMPRIME::GetColorRange() const
+{
+  switch (m_pFrame->color_range)
+  {
+    case AVCOL_RANGE_JPEG:
+      return DRM_COLOR_YCBCR_FULL_RANGE;
+    case AVCOL_RANGE_MPEG:
+    default:
+      return DRM_COLOR_YCBCR_LIMITED_RANGE;
+  }
+}
+
 //------------------------------------------------------------------------------
 
 class CVideoBufferPoolDRMPRIME

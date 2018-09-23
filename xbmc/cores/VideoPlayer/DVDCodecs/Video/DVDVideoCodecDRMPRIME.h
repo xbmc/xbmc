@@ -18,6 +18,17 @@ extern "C" {
 #include "libavutil/hwcontext_drm.h"
 }
 
+// Color enums is copied from linux include/drm/drm_color_mgmt.h (strangely not part of uapi)
+enum drm_color_encoding {
+  DRM_COLOR_YCBCR_BT601,
+  DRM_COLOR_YCBCR_BT709,
+  DRM_COLOR_YCBCR_BT2020,
+};
+enum drm_color_range {
+  DRM_COLOR_YCBCR_LIMITED_RANGE,
+  DRM_COLOR_YCBCR_FULL_RANGE,
+};
+
 class CVideoBufferPoolDRMPRIME;
 
 class CVideoBufferDRMPRIME
@@ -35,6 +46,8 @@ public:
   AVDRMFrameDescriptor* GetDescriptor() const { return reinterpret_cast<AVDRMFrameDescriptor*>(m_pFrame->data[0]); }
   uint32_t GetWidth() const { return m_pFrame->width; }
   uint32_t GetHeight() const { return m_pFrame->height; }
+  int GetColorEncoding() const;
+  int GetColorRange() const;
 protected:
   AVFrame* m_pFrame = nullptr;
 };
