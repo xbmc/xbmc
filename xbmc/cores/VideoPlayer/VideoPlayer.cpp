@@ -4876,6 +4876,7 @@ void CVideoPlayer::SetVideoSettings(CVideoSettings& settings)
   m_processInfo->SetVideoSettings(settings);
   m_renderManager.SetVideoSettings(settings);
   m_renderManager.SetDelay(static_cast<int>(settings.m_AudioDelay * 1000.0f));
+  m_VideoPlayerVideo->EnableSubtitle(settings.m_SubtitleOn);
   m_VideoPlayerVideo->SetSubtitleDelay(static_cast<int>(-settings.m_SubtitleDelay * DVD_TIME_BASE));
 }
 
