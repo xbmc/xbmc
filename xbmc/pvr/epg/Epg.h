@@ -24,8 +24,6 @@
 /** EPG container for CPVREpgInfoTag instances */
 namespace PVR
 {
-  typedef std::map<unsigned int, CPVREpgPtr> EPGMAP;
-
   class CPVREpg : public Observable
   {
     friend class CPVREpgDatabase;

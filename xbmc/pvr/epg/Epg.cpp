@@ -17,7 +17,6 @@
 #include "ServiceBroker.h"
 #include "guilib/LocalizeStrings.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/Settings.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 
@@ -293,7 +292,7 @@ CPVREpgInfoTagPtr CPVREpg::GetTagBetween(const CDateTime &beginTime, const CDate
     if (tag)
     {
       m_tags.insert(make_pair(tag->StartAsUTC(), tag));
-      UpdateEntry(tag, !CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_EPG_IGNOREDBFORCLIENT));
+      UpdateEntry(tag, !CServiceBroker::GetPVRManager().EpgContainer().IgnoreDB());
     }
   }
 
@@ -402,7 +401,7 @@ bool CPVREpg::UpdateEntries(const CPVREpg &epg, bool bStoreInDb /* = true */)
 
 CDateTime CPVREpg::GetLastScanTime(void)
 {
-  bool bIgnore = CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_EPG_IGNOREDBFORCLIENT);
+  bool bIgnore = CServiceBroker::GetPVRManager().EpgContainer().IgnoreDB();
   CPVREpgDatabasePtr database = CServiceBroker::GetPVRManager().EpgContainer().GetEpgDatabase();
 
   CDateTime lastScanTime;
@@ -603,7 +602,7 @@ int CPVREpg::Get(CFileItemList &results, const CPVREpgSearchFilter &filter) cons
 
 bool CPVREpg::Persist(void)
 {
-  if (CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_EPG_IGNOREDBFORCLIENT) || !NeedsSave())
+  if (CServiceBroker::GetPVRManager().EpgContainer().IgnoreDB() || !NeedsSave())
     return true;
 
   CPVREpgDatabasePtr database = CServiceBroker::GetPVRManager().EpgContainer().GetEpgDatabase();
@@ -831,13 +830,13 @@ bool CPVREpg::LoadFromClients(time_t start, time_t end, bool bForceUpdate)
   {
     CPVREpg tmpEpg(channel);
     if (tmpEpg.UpdateFromScraper(start, end, bForceUpdate))
-      bReturn = UpdateEntries(tmpEpg, !CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_EPG_IGNOREDBFORCLIENT));
+      bReturn = UpdateEntries(tmpEpg, !CServiceBroker::GetPVRManager().EpgContainer().IgnoreDB());
   }
   else
   {
     CPVREpg tmpEpg(m_iEpgID, m_strName, m_strScraperName);
     if (tmpEpg.UpdateFromScraper(start, end, bForceUpdate))
-      bReturn = UpdateEntries(tmpEpg, !CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_EPG_IGNOREDBFORCLIENT));
+      bReturn = UpdateEntries(tmpEpg, !CServiceBroker::GetPVRManager().EpgContainer().IgnoreDB());
   }
 
   return bReturn;
