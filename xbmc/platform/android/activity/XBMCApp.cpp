@@ -1182,9 +1182,9 @@ void CXBMCApp::doFrame(int64_t frameTimeNanos)
     m_syncImpl->FrameCallback(frameTimeNanos);
 
   // Calculate the time, when next surface buffer should be rendered
-  m_frameTimeNanos = CurrentHostCounter();
+  m_frameTimeNanos = frameTimeNanos;
   if (m_refreshRate)
-    m_frameTimeNanos += (1500000000ll / m_refreshRate);
+    m_frameTimeNanos += static_cast<int64_t>(1500000000ll / m_refreshRate);
 
   m_vsyncEvent.Set();
 }
