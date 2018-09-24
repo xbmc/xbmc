@@ -85,7 +85,7 @@ unzip $HOME/Downloads/sdk-tools-linux-4333796.zip -d $HOME/android-tools/android
 
 Extract Android NDK:
 ```
-unzip $HOME/Downloads/android-ndk-r16b-linux-x86_64.zip -d $HOME/android-tools
+unzip $HOME/Downloads/android-ndk-r16-linux-x86_64.zip -d $HOME/android-tools
 ```
 
 ### 3.2. Configure Android SDK
@@ -103,12 +103,12 @@ To be able to build Kodi and the libraries it depends on for the Android platfor
 
 Change to Android NDK tools directory:
 ```
-cd $HOME/android-tools/android-ndk-r16b/build/tools
+cd $HOME/android-tools/android-ndk-r16/build/tools
 ```
 
 Set up the aarch64 toolchain:
 ```
-./make-standalone-toolchain.sh --install-dir=$HOME/android-tools/aarch64-linux-androideabi-4.9-vanilla/android-21 --platform=android-21 --toolchain=arm-linux-androideabi-4.9 --stl=libc++
+./make-standalone-toolchain.sh --install-dir=$HOME/android-tools/aarch64-linux-android-4.9-vanilla/android-21 --platform=android-21 --toolchain=aarch64-linux-android-4.9 --stl=libc++
 ```
 
 Set up the arm toolchain:
@@ -118,7 +118,7 @@ Set up the arm toolchain:
 
 Set up the x86 toolchain:
 ```
-./make-standalone-toolchain.sh --install-dir=$HOME/android-tools/x86-linux-androideabi-4.9-vanilla/android-21 --platform=android-21 --toolchain=arm-linux-androideabi-4.9 --stl=libc++
+./make-standalone-toolchain.sh --install-dir=$HOME/android-tools/x86-linux-android-4.9-vanilla/android-21 --platform=android-21 --toolchain=x86-linux-android-4.9 --stl=libc++
 ```
 
 **NOTE:** You only need the toolchain for your target architecture but toolchains are installed in different directories and will not interfere with each other.
@@ -137,7 +137,7 @@ keytool -genkey -keystore ~/.android/debug.keystore -v -alias androiddebugkey -d
 * Whenever you want to compile/develop you need to mount the image
   * `open ~/android-dev.dmg`
 * Once you have your hdd image with case sensitive hfs+ file system execute all the steps inside of this filesystem. You need to adapt all paths in this guide so that they match your local environment. As an example here is a configure line that demonstrates possible paths:
-  * `./configure --with-tarballs=/Users/Shared/xbmc-depends/tarballs --host=arm-linux-androideabi --with-sdk-path=/Volumes/android-dev/android/android-sdk-macosx --with-ndk-path=/Volumes/android-dev/android/android-ndk-r16b --with-toolchain=/Volumes/android-dev/android/android-toolchain-arm/android-21 --prefix=/Volumes/android-dev/android/xbmc-depends`
+  * `./configure --with-tarballs=/Users/Shared/xbmc-depends/tarballs --host=arm-linux-androideabi --with-sdk-path=/Volumes/android-dev/android/android-sdk-macosx --with-ndk-path=/Volumes/android-dev/android/android-ndk-r16 --with-toolchain=/Volumes/android-dev/android/android-toolchain-arm/android-21 --prefix=/Volumes/android-dev/android/xbmc-depends`
   
 **[back to top](#table-of-contents)** | **[back to section top](#3-prerequisites)**
 
@@ -163,17 +163,17 @@ cd $HOME/kodi/tools/depends
 
 Configure build for aarch64:
 ```
-./configure --with-tarballs=$HOME/android-tools/xbmc-tarballs --host=aarch64-linux-android --with-sdk-path=$HOME/android-tools/android-sdk-linux --with-ndk-path=$HOME/android-tools/android-ndk-r16b --with-toolchain=$HOME/android-tools/aarch64-linux-androideabi-4.9-vanilla/android-21 --prefix=$HOME/android-tools/xbmc-depends
+./configure --with-tarballs=$HOME/android-tools/xbmc-tarballs --host=aarch64-linux-android --with-sdk-path=$HOME/android-tools/android-sdk-linux --with-ndk-path=$HOME/android-tools/android-ndk-r16 --with-toolchain=$HOME/android-tools/aarch64-linux-android-4.9-vanilla/android-21 --prefix=$HOME/android-tools/xbmc-depends
 ```
 
 Or configure build for arm:
 ```
-./configure --with-tarballs=$HOME/android-tools/xbmc-tarballs --host=arm-linux-androideabi --with-sdk-path=$HOME/android-tools/android-sdk-linux --with-ndk-path=$HOME/android-tools/android-ndk-r16b --with-toolchain=$HOME/android-tools/arm-linux-androideabi-4.9-vanilla/android-21 --prefix=$HOME/android-tools/xbmc-depends
+./configure --with-tarballs=$HOME/android-tools/xbmc-tarballs --host=arm-linux-androideabi --with-sdk-path=$HOME/android-tools/android-sdk-linux --with-ndk-path=$HOME/android-tools/android-ndk-r16 --with-toolchain=$HOME/android-tools/arm-linux-androideabi-4.9-vanilla/android-21 --prefix=$HOME/android-tools/xbmc-depends
 ```
 
 Or configure build for x86:
 ```
-./configure --with-tarballs=$HOME/android-tools/xbmc-tarballs --host=i686-linux-android --with-sdk-path=$HOME/android-tools/android-sdk-linux --with-ndk-path=$HOME/android-tools/android-ndk-r16b --with-toolchain=$HOME/android-tools/x86-linux-androideabi-4.9-vanilla/android-21 --prefix=$HOME/android-tools/xbmc-depends
+./configure --with-tarballs=$HOME/android-tools/xbmc-tarballs --host=i686-linux-android --with-sdk-path=$HOME/android-tools/android-sdk-linux --with-ndk-path=$HOME/android-tools/android-ndk-r16 --with-toolchain=$HOME/android-tools/x86-linux-android-4.9-vanilla/android-21 --prefix=$HOME/android-tools/xbmc-depends
 ```
 
 Build tools and dependencies:
