@@ -39,13 +39,13 @@ Paths below are examples. If you want to build Kodi, follow our **[build guides]
  
 ### Android
 **arm**  
-`./configure --with-tarballs=/opt/xbmc-tarballs --host=arm-linux-androideabi --with-sdk-path=/opt/android-sdk-linux --with-ndk-path=/opt/android-ndk-r16b --with-toolchain=/opt/arm-linux-androideabi-4.9-vanilla/android-21 --prefix=/opt/xbmc-depends`
+`./configure --with-tarballs=$HOME/android-tools/xbmc-tarballs --host=arm-linux-androideabi --with-sdk-path=$HOME/android-tools/android-sdk-linux --with-ndk-path=$HOME/android-tools/android-ndk-r18 --with-toolchain=$HOME/android-tools/arm-linux-androideabi-vanilla/android-21 --prefix=$HOME/android-tools/xbmc-depends`
 
 **aarch64**  
-`./configure --with-tarballs=/opt/xbmc-tarballs --host=aarch64-linux-android-4.9 --with-sdk-path=/opt/android-sdk-linux --with-ndk-path=/opt/android-ndk-r16b --with-toolchain=/opt/aarch64-linux-android-4.9-vanilla/android-21 --prefix=/opt/xbmc-depends`
+`./configure --with-tarballs=$HOME/android-tools/xbmc-tarballs --host=aarch64-linux-android --with-sdk-path=$HOME/android-tools/android-sdk-linux --with-ndk-path=$HOME/android-tools/android-ndk-r18 --with-toolchain=$HOME/android-tools/aarch64-linux-android-vanilla/android-21 --prefix=$HOME/android-tools/xbmc-depends`
 
 **x86**  
-`./configure --with-tarballs=/opt/xbmc-tarballs --host=i686-linux-android --with-sdk-path=/opt/android-sdk-linux --with-ndk-path=/opt/android-ndk-r16b --with-toolchain=/opt/x86-linux-4.9-vanilla/android-21 --prefix=/opt/xbmc-depends`
+`./configure --with-tarballs=$HOME/android-tools/xbmc-tarballs --host=i686-linux-android --with-sdk-path=$HOME/android-tools/android-sdk-linux --with-ndk-path=$HOME/android-tools/android-ndk-r18 --with-toolchain=$HOME/android-tools/x86-linux-android-vanilla/android-21 --prefix=$HOME/android-tools/xbmc-depends`
 
 ### Linux
 **ARM (codesourcery/lenaro/etc)**  
