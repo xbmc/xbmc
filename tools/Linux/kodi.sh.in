@@ -83,6 +83,8 @@ if [ ! -x ${KODI_BINARY} ]; then
     exit 2
 fi
 
+APPORT_CORE="/var/crash/$(echo -n ${KODI_BINARY}|tr / _).$(id -u).crash"
+
 migrate_home()
 {
   [ "$(basename $0)" = "xbmc" ] && echo "WARNING: Running ${bin_name} as "xbmc" is deprecated and will be removed in later versions, please switch to using the ${bin_name} binary"
@@ -143,6 +145,14 @@ print_crash_report()
       systemd-coredumpctl dump -o core $(basename ${KODI_BINARY}) > /dev/null 2>&1
     elif command_exists coredumpctl; then
       coredumpctl dump -o core $(basename ${KODI_BINARY})  > /dev/null 2>&1
+    elif command_exists apport-unpack && test -f "${APPORT_CORE}"; then
+      TMP_DIR="$(mktemp -d -p ${HOME})"
+      if [ -d "${TMP_DIR}" ]; then
+        rm -f "${HOME}/core"
+        apport-unpack "${APPORT_CORE}" "${TMP_DIR}"
+        mv "${TMP_DIR}/CoreDump" "${HOME}/core"
+        rm -rf "${TMP_DIR}"
+      fi
     fi
     single_stacktrace "$PWD" 1
     # Find in plugins directories
@@ -195,6 +205,7 @@ fi
 LOOP=1
 while [ $(( $LOOP )) = "1" ]
 do
+  [ -f "${APPORT_CORE}" ] && rm -f "${APPORT_CORE}"
   LOOP=0
   ${KODI_BINARY} $SAVED_ARGS
   RET=$?
