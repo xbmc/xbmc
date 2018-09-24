@@ -272,11 +272,6 @@ int CPVREpgInfoTag::Progress(void) const
   return iDuration;
 }
 
-CPVREpgInfoTagPtr CPVREpgInfoTag::GetNextEvent(void) const
-{
-  return GetTable()->GetNextEvent(*this);
-}
-
 void CPVREpgInfoTag::SetUniqueBroadcastID(unsigned int iUniqueBroadcastID)
 {
   m_iUniqueBroadcastID = iUniqueBroadcastID;

@@ -268,8 +268,6 @@ namespace PVR
      */
     static const std::string &ConvertGenreIdToString(int iID, int iSubID);
 
-    CPVREpgInfoTagPtr GetNextEvent(const CPVREpgInfoTag& tag) const;
-
     size_t Size(void) const;
 
     bool NeedsSave(void) const;

@@ -101,12 +101,6 @@ namespace PVR
     int Progress(void) const;
 
     /*!
-     * @brief Get a pointer to the next event.
-     * @return A pointer to the next event or NULL if it's not set.
-     */
-    CPVREpgInfoTagPtr GetNextEvent(void) const;
-
-    /*!
      * @brief The table this event belongs to
      * @return The table this event belongs to
      */

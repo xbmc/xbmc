@@ -843,17 +843,6 @@ bool CPVREpg::LoadFromClients(time_t start, time_t end, bool bForceUpdate)
   return bReturn;
 }
 
-CPVREpgInfoTagPtr CPVREpg::GetNextEvent(const CPVREpgInfoTag& tag) const
-{
-  CSingleLock lock(m_critSection);
-  std::map<CDateTime, CPVREpgInfoTagPtr>::const_iterator it = m_tags.find(tag.StartAsUTC());
-  if (it != m_tags.end() && ++it != m_tags.end())
-    return it->second;
-
-  CPVREpgInfoTagPtr retVal;
-  return retVal;
-}
-
 CPVRChannelPtr CPVREpg::Channel(void) const
 {
   CSingleLock lock(m_critSection);
