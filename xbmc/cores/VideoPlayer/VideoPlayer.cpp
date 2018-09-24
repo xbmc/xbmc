@@ -1044,7 +1044,7 @@ bool CVideoPlayer::ReadPacket(DemuxPacket*& packet, CDemuxStream*& stream)
       if (stream->source == STREAM_SOURCE_NONE)
       {
         m_SelectionStreams.Clear(STREAM_NONE, STREAM_SOURCE_DEMUX_SUB);
-        m_SelectionStreams.Update(NULL, m_pSubtitleDemuxer);
+        m_SelectionStreams.Update(NULL, m_pSubtitleDemuxer.get());
         UpdateContent();
       }
       return true;
@@ -2525,7 +2525,8 @@ void CVideoPlayer::OnExit()
 
   // destroy objects
   SAFE_DELETE(m_pDemuxer);
-  SAFE_DELETE(m_pSubtitleDemuxer);
+  m_pSubtitleDemuxer.reset();
+  m_subtitleDemuxerMap.clear();
   SAFE_DELETE(m_pCCDemuxer);
   if (m_pInputStream.use_count() > 1)
     throw std::runtime_error("m_pInputStream reference count is greater than 1");
@@ -2603,7 +2604,8 @@ void CVideoPlayer::HandleMessages()
       FlushBuffers(DVD_NOPTS_VALUE, true, true);
       m_renderManager.Flush(false, false);
       SAFE_DELETE(m_pDemuxer);
-      SAFE_DELETE(m_pSubtitleDemuxer);
+      m_pSubtitleDemuxer.reset();
+      m_subtitleDemuxerMap.clear();
       SAFE_DELETE(m_pCCDemuxer);
       if (m_pInputStream.use_count() > 1)
         throw std::runtime_error("m_pInputStream reference count is greater than 1");
@@ -3533,19 +3535,21 @@ bool CVideoPlayer::OpenStream(CCurrentStream& current, int64_t demuxerId, int iS
   if(STREAM_SOURCE_MASK(source) == STREAM_SOURCE_DEMUX_SUB)
   {
     int index = m_SelectionStreams.TypeIndexOf(current.type, source, demuxerId, iStream);
-    if(index < 0)
+    if (index < 0)
       return false;
-    SelectionStream st = m_SelectionStreams.Get(current.type, index);
+    const SelectionStream& st = m_SelectionStreams.Get(current.type, index);
 
-    if(!m_pSubtitleDemuxer || m_pSubtitleDemuxer->GetFileName() != st.filename)
+    CLog::Log(LOGNOTICE, "Opening Subtitle file: %s", CURL::GetRedacted(st.filename).c_str());
+    m_pSubtitleDemuxer.reset();
+    const auto demux = m_subtitleDemuxerMap.find(demuxerId);
+    if (demux == m_subtitleDemuxerMap.end())
     {
-      CLog::Log(LOGNOTICE, "Opening Subtitle file: %s", st.filename.c_str());
-      SAFE_DELETE(m_pSubtitleDemuxer);
-      std::unique_ptr<CDVDDemuxVobsub> demux(new CDVDDemuxVobsub());
-      if(!demux->Open(st.filename, source, st.filename2))
-        return false;
-      m_pSubtitleDemuxer = demux.release();
+      CLog::Log(LOGNOTICE, "No demuxer found for file %s",
+                CURL::GetRedacted(st.filename).c_str());
+      return false;
     }
+
+    m_pSubtitleDemuxer = demux->second;
 
     double pts = m_VideoPlayerVideo->GetCurrentPts();
     if(pts == DVD_NOPTS_VALUE)
@@ -4604,14 +4608,14 @@ int CVideoPlayer::AddSubtitleFile(const std::string& filename, const std::string
         return -1;
     }
 
-    CDVDDemuxVobsub v;
-    if (!v.Open(filename, STREAM_SOURCE_NONE, vobsubfile))
+    auto v = std::make_shared<CDVDDemuxVobsub>();
+    if (!v->Open(filename, STREAM_SOURCE_NONE, vobsubfile))
       return -1;
-    m_SelectionStreams.Update(NULL, &v, vobsubfile);
+    m_SelectionStreams.Update(NULL, v.get(), vobsubfile);
 
     ExternalStreamInfo info = CUtil::GetExternalStreamDetailsFromFilename(m_item.GetPath(), vobsubfile);
 
-    for (auto sub : v.GetStreams())
+    for (auto sub : v->GetStreams())
     {
       if (sub->type != STREAM_SUBTITLE)
         continue;
@@ -4631,8 +4635,10 @@ int CVideoPlayer::AddSubtitleFile(const std::string& filename, const std::string
         stream.flags = static_cast<StreamFlags>(info.flag);
     }
     UpdateContent();
+    // the demuxer id is unique
+    m_subtitleDemuxerMap[v->GetDemuxerId()] = v;
     return m_SelectionStreams.TypeIndexOf(STREAM_SUBTITLE,
-      m_SelectionStreams.Source(STREAM_SOURCE_DEMUX_SUB, filename), v.GetDemuxerId(), 0);
+      m_SelectionStreams.Source(STREAM_SOURCE_DEMUX_SUB, filename), v->GetDemuxerId(), 0);
   }
   if(ext == ".sub")
   {

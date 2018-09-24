@@ -29,6 +29,7 @@
 #include "threads/Thread.h"
 #include "utils/StreamDetails.h"
 #include "guilib/DispResource.h"
+#include <unordered_map>
 
 #ifdef TARGET_RASPBERRY_PI
 #include "OMXCore.h"
@@ -541,7 +542,8 @@ protected:
 
   std::shared_ptr<CDVDInputStream> m_pInputStream;
   CDVDDemux* m_pDemuxer;
-  CDVDDemux* m_pSubtitleDemuxer;
+  std::shared_ptr<CDVDDemux> m_pSubtitleDemuxer;
+  std::unordered_map<int64_t, std::shared_ptr<CDVDDemux>> m_subtitleDemuxerMap;
   CDVDDemuxCC* m_pCCDemuxer;
 
   CRenderManager m_renderManager;
