@@ -276,10 +276,7 @@ void CWinRenderer::Update()
 
 void CWinRenderer::RenderUpdate(int index, int index2, bool clear, unsigned int flags, unsigned int alpha)
 {
-  if (index2 >= 0)
-    m_iYV12RenderBuffer = index2;
-  else
-    m_iYV12RenderBuffer = index;
+  m_iYV12RenderBuffer = index;
 
   if (clear)
     CServiceBroker::GetWinSystem()->GetGfxContext().Clear(DX::Windowing()->UseLimitedColor() ? 0x101010 : 0);
@@ -290,35 +287,7 @@ void CWinRenderer::RenderUpdate(int index, int index2, bool clear, unsigned int 
   DX::Windowing()->SetAlphaBlendEnable(alpha < 255);
   ManageTextures();
   ManageRenderArea();
-
-  CD3DTexture* backBuffer = DX::Windowing()->GetBackBuffer();
-
-  Render(flags, backBuffer);
-
-  if (index2 > 0 && backBuffer)
-  {
-    m_iYV12RenderBuffer = index;
-
-    if (!m_smoothTarget.Get() || m_smoothTarget.GetWidth() != backBuffer->GetWidth() ||
-        m_smoothTarget.GetHeight() != backBuffer->GetHeight())
-    {
-      m_smoothTarget.Release();
-      m_smoothTarget.Create(backBuffer->GetWidth(), backBuffer->GetHeight(), 1, D3D11_USAGE_DEFAULT,
-                            backBuffer->GetFormat());
-    }
-
-    if (m_smoothTarget.Get())
-    {
-      Render(flags, &m_smoothTarget);
-
-      DX::Windowing()->SetAlphaBlendEnable(true);
-      CRect texCoord = {0, 0, 1, 1};
-      CRect trgCoord = {0, 0, static_cast<float>(backBuffer->GetWidth()),
-                        static_cast<float>(backBuffer->GetHeight())};
-      CD3DTexture::DrawQuad(trgCoord, 0x80FFFFFF, &m_smoothTarget, &texCoord,
-                            SHADER_METHOD_RENDER_TEXTURE_BLEND);
-    }
-  }
+  Render(flags, DX::Windowing()->GetBackBuffer());
 }
 
 void CWinRenderer::PreInit()
