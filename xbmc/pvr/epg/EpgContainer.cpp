@@ -333,7 +333,7 @@ bool CPVREpgContainer::PersistAll(void)
   auto copy = m_epgs;
   m_critSection.unlock();
 
-  for (EPGMAP::const_iterator it = copy.begin(); it != copy.end() && !m_bStop; ++it)
+  for (EPGMAP::const_iterator it = copy.begin(); it != copy.end(); ++it)
   {
     CPVREpgPtr epg = it->second;
     if (epg && epg->NeedsSave())
@@ -455,6 +455,9 @@ void CPVREpgContainer::Process(void)
 
     Sleep(1000);
   }
+
+  // store data on exit
+  PersistAll();
 }
 
 CPVREpgPtr CPVREpgContainer::GetById(int iEpgId) const
