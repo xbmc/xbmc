@@ -391,7 +391,7 @@ namespace PVR
     void OnPlaybackStarted(const CFileItemPtr &item);
 
     /*!
-     * @brief Inform GUI actions manager that playback of an item was stopped due to user interaction.
+     * @brief Inform GUI actions that playback of an item was stopped due to user interaction.
      * @param item The item that stopped to play.
      */
     void OnPlaybackStopped(const CFileItemPtr &item);

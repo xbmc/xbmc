@@ -10,7 +10,6 @@
 
 #include <utility>
 
-#include "Application.h"
 #include "ServiceBroker.h"
 #include "guilib/LocalizeStrings.h"
 #include "settings/AdvancedSettings.h"
@@ -323,7 +322,7 @@ void CPVREpgContainer::Process(void)
   bool bUpdateEpg = true;
   bool bHasPendingUpdates = false;
 
-  while (!m_bStop && !g_application.m_bStop)
+  while (!m_bStop)
   {
     CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(iNow);
     {
@@ -518,7 +517,7 @@ CPVREpgPtr CPVREpgContainer::CreateChannelEpg(const CPVRChannelPtr &channel)
   if (!channel)
     return epg;
 
-  WaitForUpdateFinish(true);
+  WaitForUpdateFinish();
   LoadFromDB();
 
   if (channel->EpgID() > 0)
@@ -597,21 +596,17 @@ bool CPVREpgContainer::IgnoreDB() const
 
 bool CPVREpgContainer::InterruptUpdate(void) const
 {
-  bool bReturn = false;
   CSingleLock lock(m_critSection);
-  bReturn = g_application.m_bStop || m_bStop || m_bPreventUpdates;
-
-  return bReturn ||
-    (m_settings.GetBoolValue(CSettings::SETTING_EPG_PREVENTUPDATESWHILEPLAYINGTV) &&
-     g_application.GetAppPlayer().IsPlaying());
+  return m_bStop ||
+         m_bPreventUpdates ||
+         (m_bPlaying && m_settings.GetBoolValue(CSettings::SETTING_EPG_PREVENTUPDATESWHILEPLAYINGTV));
 }
 
-void CPVREpgContainer::WaitForUpdateFinish(bool bInterrupt /* = true */)
+void CPVREpgContainer::WaitForUpdateFinish()
 {
   {
     CSingleLock lock(m_critSection);
-    if (bInterrupt)
-      m_bPreventUpdates = true;
+    m_bPreventUpdates = true;
 
     if (!m_bIsUpdating)
       return;
@@ -855,6 +850,18 @@ int CPVREpgContainer::GetPastDaysToDisplay() const
 int CPVREpgContainer::GetFutureDaysToDisplay() const
 {
   return m_settings.GetIntValue(CSettings::SETTING_EPG_FUTURE_DAYSTODISPLAY);
+}
+
+void CPVREpgContainer::OnPlaybackStarted(const CFileItemPtr &item)
+{
+  CSingleLock lock(m_critSection);
+  m_bPlaying = true;
+}
+
+void CPVREpgContainer::OnPlaybackStopped(const CFileItemPtr &item)
+{
+  CSingleLock lock(m_critSection);
+  m_bPlaying = false;
 }
 
 } // namespace PVR

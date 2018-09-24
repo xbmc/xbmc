@@ -170,6 +170,19 @@ namespace PVR
      */
     int GetFutureDaysToDisplay() const;
 
+    /*!
+     * @brief Inform the epg container that playback of an item just started.
+     * @param item The item that started to play.
+     */
+    void OnPlaybackStarted(const CFileItemPtr &item);
+
+    /*!
+     * @brief Inform the epg container that playback of an item was stopped due to user interaction.
+     * @param item The item that stopped to play.
+     */
+    void OnPlaybackStopped(const CFileItemPtr &item);
+
+
   private:
     /*!
      * @brief Notify EPG table observers when the currently active tag changed.
@@ -236,6 +249,7 @@ namespace PVR
     bool m_bStarted = false;                   /*!< true if EpgContainer has fully started */
     bool m_bLoaded = false;                    /*!< true after epg data is initially loaded from the database */
     bool m_bPreventUpdates = false;            /*!< true to prevent EPG updates */
+    bool m_bPlaying = false;                   /*!< true if Kodi is currently playing something */
     int m_pendingUpdates = 0;                  /*!< count of pending manual updates */
     time_t m_iLastEpgCleanup = 0;              /*!< the time the EPG was cleaned up */
     time_t m_iNextEpgUpdate = 0;               /*!< the time the EPG will be updated */
