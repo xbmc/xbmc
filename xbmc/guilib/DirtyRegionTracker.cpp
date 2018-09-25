@@ -33,14 +33,6 @@ void CDirtyRegionTracker::SelectAlgorithm()
       CLog::Log(LOGDEBUG, "guilib: Fill viewport on change for solving rendering passes");
       m_solver = new CFillViewportOnChangeRegionSolver();
       break;
-    case DIRTYREGION_SOLVER_COST_REDUCTION:
-      CLog::Log(LOGDEBUG, "guilib: Cost reduction as algorithm for solving rendering passes");
-      m_solver = new CGreedyDirtyRegionSolver();
-      break;
-    case DIRTYREGION_SOLVER_UNION:
-      m_solver = new CUnionDirtyRegionSolver();
-      CLog::Log(LOGDEBUG, "guilib: Union as algorithm for solving rendering passes");
-      break;
     case DIRTYREGION_SOLVER_FILL_VIEWPORT_ALWAYS:
     default:
       CLog::Log(LOGDEBUG, "guilib: Fill viewport always for solving rendering passes");
