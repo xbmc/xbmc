@@ -22,6 +22,9 @@
 #include "utils/log.h"
 #include "cores/AudioEngine/AESinkFactory.h"
 #include "cores/AudioEngine/Sinks/AESinkPi.h"
+#ifdef HAS_ALSA
+  #include "cores/AudioEngine/Sinks/AESinkALSA.h"
+#endif // HAS_ALSA
 #include "platform/linux/powermanagement/LinuxPowerSyscall.h"
 
 #include <EGL/egl.h>
@@ -43,6 +46,9 @@ CWinSystemRpi::CWinSystemRpi() :
 
   AE::CAESinkFactory::ClearSinks();
   CAESinkPi::Register();
+  #ifdef HAS_ALSA
+    CAESinkALSA::Register();
+  #endif // HAS_ALSA
   CLinuxPowerSyscall::Register();
   m_lirc.reset(OPTIONALS::LircRegister());
   m_libinput->Start();
