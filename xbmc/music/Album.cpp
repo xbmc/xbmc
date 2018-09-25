@@ -34,7 +34,7 @@ CAlbum::CAlbum(const CFileItem& item)
   Reset();
   const CMusicInfoTag& tag = *item.GetMusicInfoTag();
   SYSTEMTIME stTime;
-  tag.GetReleaseDate(stTime);
+  tag.GetOriginalReleaseDate(stTime);
   strAlbum = tag.GetAlbum();
   strMusicBrainzAlbumID = tag.GetMusicBrainzAlbumID();
   strReleaseGroupMBID = tag.GetMusicBrainzReleaseGroupID();

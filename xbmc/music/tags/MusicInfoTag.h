@@ -48,10 +48,12 @@ public:
   int GetTrackAndDiscNumber() const;
   int GetDuration() const;  // may be set even if Loaded() returns false
   int GetYear() const;
+  int GetOriginalYear() const;
   int GetDatabaseId() const;
   const std::string &GetType() const;
 
   void GetReleaseDate(SYSTEMTIME& dateTime) const;
+  void GetOriginalReleaseDate(SYSTEMTIME& dateTime) const;
   std::string GetYearString() const;
   const std::string& GetMusicBrainzTrackID() const;
   const std::vector<std::string>& GetMusicBrainzArtistID() const;
@@ -94,8 +96,10 @@ public:
   void SetGenre(const std::string& strGenre, bool bTrim = false);
   void SetGenre(const std::vector<std::string>& genres, bool bTrim = false);
   void SetYear(int year);
+  void SetOriginalYear(int year);
   void SetDatabaseId(long id, const std::string &type);
   void SetReleaseDate(SYSTEMTIME& dateTime);
+  void SetOriginalReleaseDate(SYSTEMTIME& dateTime);
   void SetTrackNumber(int iTrack);
   void SetDiscNumber(int iDiscNumber);
   void SetTrackAndDiscNumber(int iTrackAndDisc);
@@ -213,6 +217,7 @@ protected:
   int m_iTimesPlayed;
   int m_iAlbumId;
   SYSTEMTIME m_dwReleaseDate;
+  SYSTEMTIME m_dwOriginalReleaseDate;
   CAlbum::ReleaseType m_albumReleaseType;
 
   EmbeddedArtInfo m_coverArt; ///< art information

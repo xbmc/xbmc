@@ -20,7 +20,7 @@ CSong::CSong(CFileItem& item)
 {
   CMusicInfoTag& tag = *item.GetMusicInfoTag();
   SYSTEMTIME stTime;
-  tag.GetReleaseDate(stTime);
+  tag.GetOriginalReleaseDate(stTime);
   strTitle = tag.GetTitle();
   genre = tag.GetGenre();
   std::vector<std::string> artist = tag.GetArtist();

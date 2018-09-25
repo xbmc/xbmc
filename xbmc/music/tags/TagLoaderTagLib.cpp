@@ -178,6 +178,8 @@ bool CTagLoaderTagLib::ParseTag(ASF::Tag *asf, EmbeddedArt *art, CMusicInfoTag& 
     {} // Known unsupported, suppress warnings
     else if (it->first == "WM/Year")
       tag.SetYear(atoi(it->second.front().toString().toCString(true)));
+    else if (it->first == "WM/OriginalReleaseYear")
+      tag.SetOriginalYear(atoi(it->second.front().toString().toCString(true)));
     else if (it->first == "MusicBrainz/Artist Id")
       tag.SetMusicBrainzArtistID(SplitMBID(GetASFStringList(it->second)));
     else if (it->first == "MusicBrainz/Album Id")
@@ -495,6 +497,8 @@ bool CTagLoaderTagLib::ParseTag(APE::Tag *ape, EmbeddedArt *art, CMusicInfoTag& 
       tag.SetDiscNumber(it->second.toString().toInt());
     else if (it->first == "YEAR")
       tag.SetYear(it->second.toString().toInt());
+    else if (it->first == "ORIGINALYEAR")
+      tag.SetYear(it->second.toString().toInt());
     else if (it->first == "GENRE")
       SetGenre(tag, StringListToVectorString(it->second.toStringList()));
     else if (it->first == "MOOD")
@@ -608,6 +612,8 @@ bool CTagLoaderTagLib::ParseTag(Ogg::XiphComment *xiph, EmbeddedArt *art, CMusic
       tag.SetYear(it->second.front().toInt());
     else if (it->first == "DATE")
       tag.SetYear(it->second.front().toInt());
+    else if (it->first == "ORIGINALYEAR")
+      tag.SetOriginalYear(it->second.front().toInt());
     else if (it->first == "GENRE")
       SetGenre(tag, StringListToVectorString(it->second));
     else if (it->first == "MOOD")

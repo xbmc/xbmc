@@ -133,9 +133,27 @@ void CMusicInfoTag::GetReleaseDate(SYSTEMTIME& dateTime) const
   memcpy(&dateTime, &m_dwReleaseDate, sizeof(m_dwReleaseDate));
 }
 
+void CMusicInfoTag::GetOriginalReleaseDate(SYSTEMTIME& dateTime) const
+{
+  /* Fall back to ReleaseDate if OriginalReleaseDate is unset. */
+  if (m_dwOriginalReleaseDate.wYear > 0)
+    memcpy(&dateTime, &m_dwOriginalReleaseDate, sizeof(m_dwOriginalReleaseDate));
+  else
+    this->GetReleaseDate(dateTime);
+}
+
 int CMusicInfoTag::GetYear() const
 {
   return m_dwReleaseDate.wYear;
+}
+
+int CMusicInfoTag::GetOriginalYear() const
+{
+  /* Fall back to Year if OriginalYear is unset. */
+  if (m_dwOriginalReleaseDate.wYear > 0)
+    return m_dwOriginalReleaseDate.wYear;
+  else
+    return this->GetYear();
 }
 
 int CMusicInfoTag::GetDatabaseId() const
@@ -344,6 +362,12 @@ void CMusicInfoTag::SetYear(int year)
   m_dwReleaseDate.wYear = year;
 }
 
+void CMusicInfoTag::SetOriginalYear(int year)
+{
+  memset(&m_dwOriginalReleaseDate, 0, sizeof(m_dwOriginalReleaseDate));
+  m_dwOriginalReleaseDate.wYear = year;
+}
+
 void CMusicInfoTag::SetDatabaseId(long id, const std::string &type)
 {
   m_iDbId = id;
@@ -353,6 +377,11 @@ void CMusicInfoTag::SetDatabaseId(long id, const std::string &type)
 void CMusicInfoTag::SetReleaseDate(SYSTEMTIME& dateTime)
 {
   memcpy(&m_dwReleaseDate, &dateTime, sizeof(m_dwReleaseDate) );
+}
+
+void CMusicInfoTag::SetOriginalReleaseDate(SYSTEMTIME& dateTime)
+{
+  memcpy(&m_dwOriginalReleaseDate, &dateTime, sizeof(m_dwOriginalReleaseDate));
 }
 
 void CMusicInfoTag::SetTrackNumber(int iTrack)
