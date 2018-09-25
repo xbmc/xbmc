@@ -18,6 +18,9 @@ class CStreamDetails;
 class CVideoDatabase;
 class EmbeddedArt;
 
+using ArtMap = std::map<std::string, std::string>;
+using ArtCache = std::map<std::pair<MediaType, int>, ArtMap>;
+
 /*!
  \ingroup thumbs,jobs
  \brief Thumb extractor job class
@@ -122,13 +125,13 @@ public:
 
 protected:
   CVideoDatabase *m_videoDatabase;
-  typedef std::map<int, std::map<std::string, std::string> > ArtCache;
-  ArtCache m_showArt;
-  ArtCache m_seasonArt;
+  ArtCache m_artCache;
 
   /*! \brief Tries to detect missing data/info from a file and adds those
    \param item The CFileItem to process
    \return void
    */
   void DetectAndAddMissingItemData(CFileItem &item);
+
+  const ArtMap& GetArtFromCache(const std::string &mediaType, const int id);
 };
