@@ -9,6 +9,8 @@
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "ActiveAEResampleFFMPEG.h"
 #include "utils/log.h"
+#include "ServiceBroker.h"
+#include "settings/Settings.h"
 
 extern "C" {
 #include "libavutil/channel_layout.h"
@@ -61,6 +63,12 @@ bool CActiveAEResampleFFMPEG::Init(SampleConfig dstConfig, SampleConfig srcConfi
   {
     CLog::Log(LOGERROR, "CActiveAEResampleFFMPEG::Init - create context failed");
     return false;
+  }
+
+  double mix_lfe = static_cast<float>(CServiceBroker::GetSettings()->GetInt("audiooutput.mixlfe")) / 100.0f;
+  if (mix_lfe)
+  {
+    av_opt_set_double(m_pContext, "lfe_mix_level", mix_lfe, 0);
   }
 
   if(quality == AE_QUALITY_HIGH)

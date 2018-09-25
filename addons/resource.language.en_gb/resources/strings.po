@@ -19720,6 +19720,18 @@ msgstr ""
 
 #empty strings from id 36443 to 36459
 
+msgctxt "#36457"
+msgid "Include LFE in stereo downmix"
+msgstr ""
+
+msgctxt "#36458"
+msgid "Include low frequency effects channel in stereo downmix. 100% - Full LFE volume. 10% to 90% - reduced LFE volume. 0% - LFE excluded from stereo downmix. Note: To avoid damaging your speakers only enable LFE downmix if your speakers can handle very low bass frequencies."
+msgstr ""
+
+msgctxt "#36459"
+msgid "%i %%"
+msgstr ""
+
 #. Description of settings with label #14112 "Enable event logging"
 #: system/settings/settings.xml
 msgctxt "#36460"
