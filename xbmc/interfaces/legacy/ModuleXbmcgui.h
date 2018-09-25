@@ -78,7 +78,7 @@ namespace XBMCAddon
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
     ///
-    /// \ingroup python_xbmcgui_window
+    /// \ingroup python_xbmcgui
     /// @brief \python_func{ getScreenHeight() }
     ///-------------------------------------------------------------------------
     /// Returns the height of this screen.
@@ -95,7 +95,7 @@ namespace XBMCAddon
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
     ///
-    /// \ingroup python_xbmcgui_window
+    /// \ingroup python_xbmcgui
     /// @brief \python_func{ getScreenWidth() }
     ///-------------------------------------------------------------------------
     /// Returns the width of this screen.
