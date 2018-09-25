@@ -283,7 +283,7 @@ void CPVREpg::AddEntry(const CPVREpgInfoTag &tag)
       newTag = it->second;
     else
     {
-      newTag.reset(new CPVREpgInfoTag(this, m_pvrChannel, m_strName, m_pvrChannel ? m_pvrChannel->IconPath() : ""));
+      newTag = std::make_shared<CPVREpgInfoTag>(m_pvrChannel, this, m_strName);
       m_tags.insert(std::make_pair(tag.StartAsUTC(), newTag));
     }
 
@@ -399,7 +399,7 @@ bool CPVREpg::UpdateEntry(const CPVREpgInfoTagPtr &tag, bool bUpdateDatabase)
     }
     else
     {
-      infoTag.reset(new CPVREpgInfoTag(this, m_pvrChannel, m_strName, m_pvrChannel ? m_pvrChannel->IconPath() : ""));
+      infoTag = std::make_shared<CPVREpgInfoTag>(m_pvrChannel, this, m_strName);
       infoTag->SetUniqueBroadcastID(tag->UniqueBroadcastID());
       m_tags.insert(std::make_pair(tag->StartAsUTC(), infoTag));
       bNewTag = true;
