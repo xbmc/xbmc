@@ -873,6 +873,11 @@ PLT_MediaObject::FromDidl(NPT_XmlElementNode* entry)
 
     PLT_XmlHelper::GetChildText(entry, "uniqueidentifier", m_XbmcInfo.unique_identifier, didl_namespace_xbmc, 256);
 
+    PLT_XmlHelper::GetChildText(entry, "userrating", str, didl_namespace_xbmc, 256);
+    NPT_Int32 iuser_rating;
+    if (NPT_FAILED(str.ToInteger(iuser_rating))) iuser_rating = 0;
+    m_XbmcInfo.user_rating = iuser_rating;
+
     PLT_XmlHelper::GetChildText(entry, "trailer", m_XbmcInfo.trailer, didl_namespace_xbmc, 256);
 
     // re serialize the entry didl as a we might need to pass it to a renderer
