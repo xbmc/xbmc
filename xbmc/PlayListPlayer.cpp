@@ -25,7 +25,6 @@
 #include "input/Key.h"
 #include "URL.h"
 #include "messaging/ApplicationMessenger.h"
-#include "filesystem/VideoDatabaseFile.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "ServiceBroker.h"
 
@@ -296,9 +295,6 @@ bool CPlayListPlayer::Play(int iSong, std::string player, bool bAutoPlay /* = fa
 
   m_iCurrentSong = iSong;
   CFileItemPtr item = playlist[m_iCurrentSong];
-  if (item->IsVideoDb() && !item->HasVideoInfoTag())
-    *(item->GetVideoInfoTag()) = XFILE::CVideoDatabaseFile::GetVideoTag(CURL(item->GetPath()));
-
   playlist.SetPlayed(true);
 
   m_bPlaybackStarted = false;
