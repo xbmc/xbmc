@@ -42,7 +42,21 @@ CWinSystemRpi::CWinSystemRpi() :
   m_rpi = new CRPIUtils();
 
   AE::CAESinkFactory::ClearSinks();
+
   CAESinkPi::Register();
+  std::string envSink;
+  if (getenv("KODI_AE_SINK"))
+    envSink = getenv("KODI_AE_SINK");
+
+  if (StringUtils::EqualsNoCase(envSink, "PULSE"))
+  {
+    OPTIONALS::PulseAudioRegister();
+  }
+  else
+  {
+    OPTIONALS::ALSARegister();
+  }
+
   CLinuxPowerSyscall::Register();
   m_lirc.reset(OPTIONALS::LircRegister());
   m_libinput->Start();
