@@ -353,7 +353,10 @@ void CLinuxRendererGLES::Update()
 
 void CLinuxRendererGLES::RenderUpdate(int index, int index2, bool clear, unsigned int flags, unsigned int alpha)
 {
-  m_iYV12RenderBuffer = index;
+  if (index2 >= 0)
+    m_iYV12RenderBuffer = index2;
+  else
+    m_iYV12RenderBuffer = index;
 
   if (!m_bConfigured)
     return;
@@ -403,7 +406,21 @@ void CLinuxRendererGLES::RenderUpdate(int index, int index2, bool clear, unsigne
   if ((flags & RENDER_FLAG_TOP) && (flags & RENDER_FLAG_BOT))
     CLog::Log(LOGERROR, "GLES: Cannot render stipple!");
   else
-    Render(flags, index);
+  {
+    Render(flags, m_iYV12RenderBuffer);
+
+    if (index2 >= 0)
+    {
+      m_iYV12RenderBuffer = index;
+      glEnable(GL_BLEND);
+      glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+      if (m_pYUVProgShader)
+        m_pYUVProgShader->SetAlpha(0.5f);
+      if (m_pYUVBobShader)
+        m_pYUVBobShader->SetAlpha(0.5f);
+      Render(flags, m_iYV12RenderBuffer);
+    }
+  }
 
   VerifyGLState();
   glEnable(GL_BLEND);
