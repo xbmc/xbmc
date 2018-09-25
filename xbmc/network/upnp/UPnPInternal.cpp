@@ -307,6 +307,7 @@ PopulateObjectFromTag(CVideoInfoTag&         tag,
     for (const auto& country : tag.m_country)
       object.m_XbmcInfo.countries.Add(country.c_str());
     object.m_XbmcInfo.user_rating = tag.m_iUserRating;
+    object.m_XbmcInfo.trailer = tag.m_strTrailer.c_str();
 
     for (unsigned int index = 0; index < tag.m_genre.size(); index++)
       object.m_Affiliation.genres.Add(tag.m_genre.at(index).c_str());
@@ -812,6 +813,7 @@ PopulateTagFromObject(CVideoInfoTag&         tag,
     for (unsigned int index = 0; index < object.m_XbmcInfo.countries.GetItemCount(); index++)
       tag.m_country.push_back(object.m_XbmcInfo.countries.GetItem(index)->GetChars());
     tag.m_iUserRating = object.m_XbmcInfo.user_rating;
+    tag.SetTrailer(object.m_XbmcInfo.trailer.GetChars());
 
     for (unsigned int index = 0; index < object.m_Affiliation.genres.GetItemCount(); index++)
     {
