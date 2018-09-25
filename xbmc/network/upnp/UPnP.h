@@ -70,6 +70,9 @@ public:
                               const CBookmark& bookmark,
                               const bool updatePlayCount);
 
+    static bool SetUserRating(const CFileItem& item,
+                              const int old_rating);
+
     static void RegisterUserdata(void* ptr);
     static void UnregisterUserdata(void* ptr);
 private:

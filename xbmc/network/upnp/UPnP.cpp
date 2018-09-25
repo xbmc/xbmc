@@ -251,6 +251,22 @@ public:
         return InvokeUpdateObject(path.c_str(), (const char*)curr_value, (const char*)new_value);
     }
 
+    bool SetUserRating(const CFileItem& item, const int old_rating)
+    {
+      if (!item.HasVideoInfoTag() || item.GetPath().empty())
+      {
+        return false;
+      }
+
+      NPT_String curr_value;
+      NPT_String new_value;
+
+      curr_value.Append(NPT_String::Format("<xbmc:userrating>%d</xbmc:userrating>", old_rating));
+      new_value.Append(NPT_String::Format("<xbmc:userrating>%d</xbmc:userrating>", item.GetVideoInfoTag()->m_iUserRating));
+
+      return InvokeUpdateObject(item.GetPath().c_str(), static_cast<const char*>(curr_value), static_cast<const char*>(new_value));
+    }
+
     bool InvokeUpdateObject(const char* id, const char* curr_value, const char* new_value)
     {
         CURL url(id);
@@ -522,6 +538,21 @@ CUPnP::SaveFileState(const CFileItem& item, const CBookmark& bookmark, const boo
         return browser->SaveFileState(item, bookmark, updatePlayCount);
     }
     return false;
+}
+
+/*----------------------------------------------------------------------
+|   CUPnP::SetUserRating
++---------------------------------------------------------------------*/
+bool
+CUPnP::SetUserRating(const CFileItem& item, const int old_rating)
+{
+  if (upnp && upnp->m_MediaBrowser)
+  {
+    // dynamic_cast is safe here, avoids polluting CUPnP.h header file
+    CMediaBrowser* browser = dynamic_cast<CMediaBrowser*>(upnp->m_MediaBrowser);
+    return browser->SetUserRating(item, old_rating);
+  }
+  return false;
 }
 
 /*----------------------------------------------------------------------
