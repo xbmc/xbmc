@@ -1,0 +1,96 @@
+From c8c9c30735f2ffaf3fd3c9f1f5d24a094a0e1aaf Mon Sep 17 00:00:00 2001
+From: Jeff Grieger <jeff@griegers.com>
+Date: Tue, 25 Sep 2018 11:00:00 +0200
+Subject: [PATCH] platinum: add xbmc:trailer for movie trailers
+
+---
+ lib/libUPnP/Platinum/Source/Devices/MediaServer/PltDidl.cpp           |  2 ++
+ lib/libUPnP/Platinum/Source/Devices/MediaServer/PltDidl.h             |  2 ++
+ lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp      | 10 ++++++++++
+ lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.h        |  1 +
+ lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.h |  2 +-
+ 5 files changed, 16 insertions(+), 1 deletion(-)
+
+--- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltDidl.cpp
++++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltDidl.cpp
+@@ -179,6 +179,8 @@
+           mask |= PLT_FILTER_MASK_XBMC_COUNTRY;
+         } else if (NPT_String::CompareN(s + i, PLT_FILTER_FIELD_XBMC_USERRATING, len, true) == 0) {
+           mask |= PLT_FILTER_MASK_XBMC_USERRATING;
++        } else if (NPT_String::CompareN(s + i, PLT_FILTER_FIELD_XBMC_TRAILER, len, true) == 0) {
++          mask |= PLT_FILTER_MASK_XBMC_TRAILER;
+         }
+ 
+         if (next_comma < 0) {
+--- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltDidl.h
++++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltDidl.h
+@@ -103,6 +103,7 @@
+ #define PLT_FILTER_MASK_XBMC_COUNTRY                NPT_UINT64_C(0x0002000000000000)
+ #define PLT_FILTER_MASK_XBMC_USERRATING             NPT_UINT64_C(0x0004000000000000)
+ #define PLT_FILTER_MASK_XBMC_LASTPLAYERSTATE        NPT_UINT64_C(0x0008000000000000)
++#define PLT_FILTER_MASK_XBMC_TRAILER                NPT_UINT64_C(0x0010000000000000)
+ 
+ #define PLT_FILTER_FIELD_TITLE                      "dc:title"
+ #define PLT_FILTER_FIELD_CREATOR                    "dc:creator"
+@@ -156,6 +157,7 @@
+ #define PLT_FILTER_FIELD_XBMC_UNIQUE_IDENTIFIER     "xbmc:uniqueidentifier"
+ #define PLT_FILTER_FIELD_XBMC_COUNTRY               "xbmc:country"
+ #define PLT_FILTER_FIELD_XBMC_USERRATING            "xbmc:userrating"
++#define PLT_FILTER_FIELD_XBMC_TRAILER               "xbmc:trailer"
+ 
+ extern const char* didl_header;
+ extern const char* didl_footer;
+--- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp
++++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp
+@@ -264,6 +264,7 @@
+     m_XbmcInfo.unique_identifier = "";
+     m_XbmcInfo.countries.Clear();
+     m_XbmcInfo.user_rating = 0;
++    m_XbmcInfo.trailer = "";
+ 
+     m_Didl = "";
+ 
+@@ -633,6 +634,13 @@
+       didl += "</xbmc:lastPlayerState>";
+     }
+ 
++    // trailer
++    if ((mask & PLT_FILTER_MASK_XBMC_TRAILER) && !m_XbmcInfo.trailer.IsEmpty()) {
++      didl += "<xbmc:trailer>";
++      PLT_Didl::AppendXmlEscape(didl, m_XbmcInfo.trailer);
++      didl += "</xbmc:trailer>";
++    }
++
+     // class is required
+     didl += "<upnp:class";
+ 	if (!m_ObjectClass.friendly_name.IsEmpty()) {
+@@ -865,6 +873,8 @@
+ 
+     PLT_XmlHelper::GetChildText(entry, "uniqueidentifier", m_XbmcInfo.unique_identifier, didl_namespace_xbmc, 256);
+ 
++    PLT_XmlHelper::GetChildText(entry, "trailer", m_XbmcInfo.trailer, didl_namespace_xbmc, 256);
++
+     // re serialize the entry didl as a we might need to pass it to a renderer
+     // we may have modified the tree to "fix" issues, so as not to break a renderer
+     // (don't write xml prefix as this didl could be part of a larger document)
+--- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.h
++++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.h
+@@ -173,6 +173,7 @@
+   NPT_String unique_identifier;
+   NPT_List<NPT_String> countries;
+   NPT_Int32 user_rating;
++  NPT_String trailer;
+ } PLT_XbmcInfo;
+ 
+ typedef struct {
+--- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.h
++++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.h
+@@ -70,7 +70,7 @@
+ typedef NPT_Reference<PLT_CapabilitiesData> PLT_CapabilitiesDataReference;
+ 
+ // explicitely specify res otherwise WMP won't return a URL!
+-#define PLT_DEFAULT_FILTER  "dc:date,dc:description,upnp:longDescription,upnp:genre,res,res@duration,res@size,upnp:albumArtURI,upnp:rating,upnp:lastPlaybackPosition,upnp:lastPlaybackTime,upnp:playbackCount,upnp:originalTrackNumber,upnp:episodeNumber,upnp:programTitle,upnp:seriesTitle,upnp:album,upnp:artist,upnp:author,upnp:director,dc:publisher,searchable,childCount,dc:title,dc:creator,upnp:actor,res@resolution,upnp:episodeCount,upnp:episodeSeason,xbmc:lastPlayerState,xbmc:dateadded,xbmc:rating,xbmc:votes,xbmc:artwork,xbmc:uniqueidentifier,xbmc:country,xbmc:userrating"
++#define PLT_DEFAULT_FILTER  "dc:date,dc:description,upnp:longDescription,upnp:genre,res,res@duration,res@size,upnp:albumArtURI,upnp:rating,upnp:lastPlaybackPosition,upnp:lastPlaybackTime,upnp:playbackCount,upnp:originalTrackNumber,upnp:episodeNumber,upnp:programTitle,upnp:seriesTitle,upnp:album,upnp:artist,upnp:author,upnp:director,dc:publisher,searchable,childCount,dc:title,dc:creator,upnp:actor,res@resolution,upnp:episodeCount,upnp:episodeSeason,xbmc:lastPlayerState,xbmc:dateadded,xbmc:rating,xbmc:votes,xbmc:artwork,xbmc:uniqueidentifier,xbmc:country,xbmc:userrating,xbmc:trailer"
+ 
+ /*----------------------------------------------------------------------
+ |   PLT_MediaContainerListener
