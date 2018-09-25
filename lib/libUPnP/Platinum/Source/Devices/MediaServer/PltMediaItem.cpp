@@ -264,6 +264,7 @@ PLT_MediaObject::Reset()
     m_XbmcInfo.unique_identifier = "";
     m_XbmcInfo.countries.Clear();
     m_XbmcInfo.user_rating = 0;
+    m_XbmcInfo.trailer = "";
 
     m_Didl = "";
 
@@ -633,6 +634,13 @@ PLT_MediaObject::ToDidl(NPT_UInt64 mask, NPT_String& didl)
       didl += "</xbmc:lastPlayerState>";
     }
 
+    // trailer
+    if ((mask & PLT_FILTER_MASK_XBMC_TRAILER) && !m_XbmcInfo.trailer.IsEmpty()) {
+      didl += "<xbmc:trailer>";
+      PLT_Didl::AppendXmlEscape(didl, m_XbmcInfo.trailer);
+      didl += "</xbmc:trailer>";
+    }
+
     // class is required
     didl += "<upnp:class";
 	if (!m_ObjectClass.friendly_name.IsEmpty()) {
@@ -864,6 +872,8 @@ PLT_MediaObject::FromDidl(NPT_XmlElementNode* entry)
     m_XbmcInfo.artwork.FromDidl(children);
 
     PLT_XmlHelper::GetChildText(entry, "uniqueidentifier", m_XbmcInfo.unique_identifier, didl_namespace_xbmc, 256);
+
+    PLT_XmlHelper::GetChildText(entry, "trailer", m_XbmcInfo.trailer, didl_namespace_xbmc, 256);
 
     // re serialize the entry didl as a we might need to pass it to a renderer
     // we may have modified the tree to "fix" issues, so as not to break a renderer

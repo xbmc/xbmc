@@ -173,6 +173,7 @@ typedef struct {
   NPT_String unique_identifier;
   NPT_List<NPT_String> countries;
   NPT_Int32 user_rating;
+  NPT_String trailer;
 } PLT_XbmcInfo;
 
 typedef struct {

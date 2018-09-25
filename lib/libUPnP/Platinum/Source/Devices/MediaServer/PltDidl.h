@@ -103,6 +103,7 @@
 #define PLT_FILTER_MASK_XBMC_COUNTRY                NPT_UINT64_C(0x0002000000000000)
 #define PLT_FILTER_MASK_XBMC_USERRATING             NPT_UINT64_C(0x0004000000000000)
 #define PLT_FILTER_MASK_XBMC_LASTPLAYERSTATE        NPT_UINT64_C(0x0008000000000000)
+#define PLT_FILTER_MASK_XBMC_TRAILER                NPT_UINT64_C(0x0010000000000000)
 
 #define PLT_FILTER_FIELD_TITLE                      "dc:title"
 #define PLT_FILTER_FIELD_CREATOR                    "dc:creator"
@@ -156,6 +157,7 @@
 #define PLT_FILTER_FIELD_XBMC_UNIQUE_IDENTIFIER     "xbmc:uniqueidentifier"
 #define PLT_FILTER_FIELD_XBMC_COUNTRY               "xbmc:country"
 #define PLT_FILTER_FIELD_XBMC_USERRATING            "xbmc:userrating"
+#define PLT_FILTER_FIELD_XBMC_TRAILER               "xbmc:trailer"
 
 extern const char* didl_header;
 extern const char* didl_footer;
