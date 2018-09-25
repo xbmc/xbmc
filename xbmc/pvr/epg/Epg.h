@@ -36,21 +36,18 @@ namespace PVR
      * @param strScraperName The name of the scraper to use.
      * @param bLoadedFromDb True if this table was loaded from the database, false otherwise.
      */
-    CPVREpg(int iEpgID, const std::string &strName = "", const std::string &strScraperName = "", bool bLoadedFromDb = false);
+    CPVREpg(int iEpgID, const std::string &strName, const std::string &strScraperName, bool bLoadedFromDb);
 
     /*!
      * @brief Create a new EPG instance for a channel.
      * @param channel The channel to create the EPG for.
-     * @param bLoadedFromDb True if this table was loaded from the database, false otherwise.
      */
-    CPVREpg(const PVR::CPVRChannelPtr &channel, bool bLoadedFromDb = false);
+    CPVREpg(const CPVRChannelPtr &channel);
 
     /*!
      * @brief Destroy this EPG instance.
      */
     ~CPVREpg(void) override;
-
-    CPVREpg &operator =(const CPVREpg &right);
 
     /*!
      * @brief Load all entries for this table from the database.
@@ -62,36 +59,34 @@ namespace PVR
      * @brief The channel this EPG belongs to.
      * @return The channel this EPG belongs to
      */
-    PVR::CPVRChannelPtr Channel(void) const;
+    CPVRChannelPtr Channel(void) const;
 
+    /*!
+     * @brief The id of the channel this EPG belongs to.
+     * @return The channel id or -1 if no channel
+     */
     int ChannelID(void) const;
 
     /*!
      * @brief Channel the channel tag linked to this EPG table.
      * @param channel The new channel tag.
      */
-    void SetChannel(const PVR::CPVRChannelPtr &channel);
+    void SetChannel(const CPVRChannelPtr &channel);
 
     /*!
      * @brief Get the name of the scraper to use for this table.
      * @return The name of the scraper to use for this table.
      */
-    const std::string &ScraperName(void) const { return m_strScraperName; }
-
-    /*!
-     * @brief Specify if EPG should be manually updated on the next cycle
-     * @param bUpdatePending True if EPG should be manually updated
-     */
-    void SetUpdatePending(bool bUpdatePending = true);
+    const std::string &ScraperName(void) const;
 
     /*!
      * @brief Returns if there is a manual update pending for this EPG
-     * @returns True if there are is a manual update pending, false otherwise
+     * @return True if there is a manual update pending, false otherwise
      */
     bool UpdatePending(void) const;
 
     /*!
-     * @brief Clear the current tag and schedule manual update
+     * @brief Clear the current tags and schedule manual update
      */
     void ForceUpdate(void);
 
@@ -99,19 +94,13 @@ namespace PVR
      * @brief Get the name of this table.
      * @return The name of this table.
      */
-    const std::string &Name(void) const { return m_strName; }
-
-    /*!
-     * @brief Changed the name of this table.
-     * @param strName The new name.
-     */
-    void SetName(const std::string &strName);
+    const std::string &Name(void) const;
 
     /*!
      * @brief Get the database ID of this table.
      * @return The database ID of this table.
      */
-    int EpgID(void) const { return m_iEpgID; }
+    int EpgID(void) const;
 
     /*!
      * @brief Check whether this EPG contains valid entries.
@@ -122,9 +111,9 @@ namespace PVR
     /*!
      * @brief Remove all entries from this EPG that finished before the given time
      *        and that have no timers set.
-     * @param Time Delete entries with an end time before this time in UTC.
+     * @param time Delete entries with an end time before this time in UTC.
      */
-    void Cleanup(const CDateTime &Time);
+    void Cleanup(const CDateTime &time);
 
     /*!
      * @brief Remove all entries from this EPG that finished before the given time
@@ -156,7 +145,7 @@ namespace PVR
     CPVREpgInfoTagPtr GetTagPrevious() const;
 
     /*!
-     * Get the event that occurs between the given begin and end time.
+     * @brief Get the event that occurs between the given begin and end time.
      * @param beginTime Minimum start time in UTC of the event.
      * @param endTime Maximum end time in UTC of the event.
      * @param bUpdateFromClient if true, try to fetch the event from the client if not found locally.
@@ -165,7 +154,7 @@ namespace PVR
     CPVREpgInfoTagPtr GetTagBetween(const CDateTime &beginTime, const CDateTime &endTime, bool bUpdateFromClient = false);
 
     /*!
-     * Get all events occurring between the given begin and end time.
+     * @brief Get all events occurring between the given begin and end time.
      * @param beginTime Minimum start time in UTC of the event.
      * @param endTime Maximum end time in UTC of the event.
      * @return The tags found or an empty vector if none was found.
@@ -249,12 +238,14 @@ namespace PVR
     CDateTime GetLastDate(void) const;
 
     /*!
+     * @brief Get the time the EPG data were last updated.
      * @return The last time this table was scanned.
      */
     CDateTime GetLastScanTime(void);
 
     /*!
      * @brief Notify observers when the currently active tag changed.
+     * @return True if the playing tag has changed, false otherwise.
      */
     bool CheckPlayingEvent(void);
 
@@ -264,19 +255,24 @@ namespace PVR
      * @param iSubID The genre sub ID.
      * @return A human readable name.
      */
-    static const std::string &ConvertGenreIdToString(int iID, int iSubID);
+    static const std::string& ConvertGenreIdToString(int iID, int iSubID);
 
-    size_t Size(void) const;
-
+    /*!
+     * @brief Check whether this EPG has unsaved data.
+     * @return True if this EPG contains unsaved data, false otherwise.
+     */
     bool NeedsSave(void) const;
 
     /*!
-     * @return True when this EPG is valid and can be updated, false otherwise.
+     * @brief Check whether this EPG is valid.
+     * @return True if this EPG is valid and can be updated, false otherwise.
      */
     bool IsValid(void) const;
 
   private:
-    CPVREpg(void) = default;
+    CPVREpg(void) = delete;
+    CPVREpg(const CPVREpg&) = delete;
+    CPVREpg& operator =(const CPVREpg&) = delete;
 
     /*!
      * @brief Update the EPG from a scraper set in the channel tag.
@@ -332,7 +328,7 @@ namespace PVR
 
     CDateTime                           m_lastScanTime;    /*!< the last time the EPG has been updated */
 
-    PVR::CPVRChannelPtr                 m_pvrChannel;      /*!< the channel this EPG belongs to */
+    CPVRChannelPtr                      m_pvrChannel;      /*!< the channel this EPG belongs to */
 
     mutable CCriticalSection            m_critSection;     /*!< critical section for changes in this table */
     bool                                m_bUpdateLastScanTime = false;

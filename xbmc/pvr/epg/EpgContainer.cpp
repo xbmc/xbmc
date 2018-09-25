@@ -528,7 +528,7 @@ CPVREpgPtr CPVREpgContainer::CreateChannelEpg(const CPVRChannelPtr &channel)
     if (channel->EpgID() <= 0)
       channel->SetEpgID(NextEpgId());
 
-    epg.reset(new CPVREpg(channel, false));
+    epg.reset(new CPVREpg(channel));
 
     CSingleLock lock(m_critSection);
     m_epgs.insert(std::make_pair(static_cast<unsigned int>(epg->EpgID()), epg));
