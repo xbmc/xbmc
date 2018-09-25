@@ -144,12 +144,6 @@ bool CEGLContextUtils::InitializeDisplay(EGLint renderableType, EGLint rendering
     return false;
   }
 
-  EGLint surfaceType = EGL_WINDOW_BIT;
-  // for the non-trivial dirty region modes, we need the EGL buffer to be preserved across updates
-  if (g_advancedSettings.m_guiAlgorithmDirtyRegions == DIRTYREGION_SOLVER_COST_REDUCTION ||
-      g_advancedSettings.m_guiAlgorithmDirtyRegions == DIRTYREGION_SOLVER_UNION)
-    surfaceType |= EGL_SWAP_BEHAVIOR_PRESERVED_BIT;
-
   EGLint attribs[] =
   {
     EGL_RED_SIZE, 8,
@@ -160,7 +154,7 @@ bool CEGLContextUtils::InitializeDisplay(EGLint renderableType, EGLint rendering
     EGL_STENCIL_SIZE, 0,
     EGL_SAMPLE_BUFFERS, 0,
     EGL_SAMPLES, 0,
-    EGL_SURFACE_TYPE, surfaceType,
+    EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
     EGL_RENDERABLE_TYPE, renderableType,
     EGL_NONE
   };
@@ -220,24 +214,6 @@ bool CEGLContextUtils::BindContext()
   return true;
 }
 
-void CEGLContextUtils::SurfaceAttrib()
-{
-  if (m_eglDisplay == EGL_NO_DISPLAY || m_eglSurface == EGL_NO_SURFACE)
-  {
-    throw std::logic_error("Setting surface attributes requires a surface");
-  }
-
-  // for the non-trivial dirty region modes, we need the EGL buffer to be preserved across updates
-  if (g_advancedSettings.m_guiAlgorithmDirtyRegions == DIRTYREGION_SOLVER_COST_REDUCTION ||
-      g_advancedSettings.m_guiAlgorithmDirtyRegions == DIRTYREGION_SOLVER_UNION)
-  {
-    if (eglSurfaceAttrib(m_eglDisplay, m_eglSurface, EGL_SWAP_BEHAVIOR, EGL_BUFFER_PRESERVED) != EGL_TRUE)
-    {
-      CEGLUtils::LogError("failed to set EGL_BUFFER_PRESERVED swap behavior");
-    }
-  }
-}
-
 bool CEGLContextUtils::CreateSurface(EGLNativeWindowType nativeWindow)
 {
   if (m_eglDisplay == EGL_NO_DISPLAY)
@@ -256,8 +232,6 @@ bool CEGLContextUtils::CreateSurface(EGLNativeWindowType nativeWindow)
     CEGLUtils::LogError("failed to create window surface");
     return false;
   }
-
-  SurfaceAttrib();
 
   return true;
 }
@@ -291,8 +265,6 @@ bool CEGLContextUtils::CreatePlatformSurface(void* nativeWindow, EGLNativeWindow
   {
     return CreateSurface(nativeWindowLegacy);
   }
-
-  SurfaceAttrib();
 
   return true;
 }
