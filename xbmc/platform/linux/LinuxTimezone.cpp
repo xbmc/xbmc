@@ -13,6 +13,9 @@
 #include "PlatformDefs.h"
 #include "LinuxTimezone.h"
 #include "utils/SystemInfo.h"
+#ifdef HAS_DBUS
+#include "SystemdUtils.h"
+#endif
 
 #include "ServiceBroker.h"
 #include "Util.h"
@@ -141,6 +144,9 @@ void CLinuxTimezone::OnSettingChanged(std::shared_ptr<const CSetting> setting)
   const std::string &settingId = setting->GetId();
   if (settingId == CSettings::SETTING_LOCALE_TIMEZONE)
   {
+#ifdef HAS_DBUS
+    CSystemdUtils::SetTimezone(std::static_pointer_cast<const CSettingString>(setting)->GetValue());
+#endif
     SetTimezone(std::static_pointer_cast<const CSettingString>(setting)->GetValue());
 
     CDateTime::ResetTimezoneBias();

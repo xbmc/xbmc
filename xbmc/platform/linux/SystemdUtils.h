@@ -28,4 +28,5 @@ public:
   static bool DisableUnit(const char **arrayString, unsigned int length);
   static bool StartUnit(const std::string& unit);
   static bool StopUnit(const std::string& unit);
+  static bool SetTimezone(const std::string& timezone);
 };
