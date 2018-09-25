@@ -153,32 +153,42 @@ JSONRPC_STATUS CPlayerOperations::GetItem(const std::string &method, ITransportL
       }
       else if (player == Video)
       {
-        if (!CVideoLibrary::FillFileItem(g_application.CurrentFile(), fileItem, parameterObject))
+        if (!CVideoLibrary::FillFileItem(fileItem->GetPath(), fileItem, parameterObject))
         {
+          // Fallback to item details held by GUI but ensure path unchanged
+          //! @todo  remove this once there is no route to playback that updates
+          // GUI item without also updating app item e.g. start playback of a
+          // non-library item via JSON 
           const CVideoInfoTag *currentVideoTag = CServiceBroker::GetGUI()->GetInfoManager().GetCurrentMovieTag();
           if (currentVideoTag != NULL)
           {
             std::string originalLabel = fileItem->GetLabel();
+            std::string originalPath = fileItem->GetPath();
             fileItem->SetFromVideoInfoTag(*currentVideoTag);
             if (fileItem->GetLabel().empty())
               fileItem->SetLabel(originalLabel);
+            fileItem->SetPath(originalPath);   // Ensure path unchanged
           }
-          fileItem->SetPath(g_application.CurrentFileItem().GetPath());
         }
       }
       else
       {
-        if (!CAudioLibrary::FillFileItem(g_application.CurrentFile(), fileItem, parameterObject))
+        if (!CAudioLibrary::FillFileItem(fileItem->GetPath(), fileItem, parameterObject))
         {
+          // Fallback to item details held by GUI but ensure path unchanged
+          //! @todo  remove this once there is no route to playback that updates
+          // GUI item without also updating app item e.g. start playback of a
+          // non-library item via JSON 
           const MUSIC_INFO::CMusicInfoTag *currentMusicTag = CServiceBroker::GetGUI()->GetInfoManager().GetCurrentSongTag();
           if (currentMusicTag != NULL)
           {
             std::string originalLabel = fileItem->GetLabel();
+            std::string originalPath = fileItem->GetPath();
             fileItem->SetFromMusicInfoTag(*currentMusicTag);
             if (fileItem->GetLabel().empty())
               fileItem->SetLabel(originalLabel);
+            fileItem->SetPath(originalPath);   // Ensure path unchanged
           }
-          fileItem->SetPath(g_application.CurrentFileItem().GetPath());
         }
       }
 
