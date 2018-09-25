@@ -77,6 +77,8 @@
 
 using namespace KODI::MESSAGING;
 
+static const std::string SETTING_VIDEOPLAYER_NOTIFYCOMMERCIALSKIP = "videoplayer.notifycommercialskip";
+
 //------------------------------------------------------------------------------
 // selection streams
 //------------------------------------------------------------------------------
@@ -1322,8 +1324,11 @@ void CVideoPlayer::Prepare()
         CLog::Log(LOGDEBUG, "%s - Start position set to end of first commercial break: %d", __FUNCTION__, starttime);
       }
 
-      std::string strTimeString = StringUtils::SecondsToTimeString(cut.end / 1000, TIME_FORMAT_MM_SS);
-      CGUIDialogKaiToast::QueueNotification(g_localizeStrings.Get(25011), strTimeString);
+      if (CServiceBroker::GetSettings()->GetBool(SETTING_VIDEOPLAYER_NOTIFYCOMMERCIALSKIP))
+      {
+        std::string strTimeString = StringUtils::SecondsToTimeString(cut.end / 1000, TIME_FORMAT_MM_SS);
+        CGUIDialogKaiToast::QueueNotification(g_localizeStrings.Get(25011), strTimeString);
+      }
     }
   }
 
@@ -2416,8 +2421,11 @@ void CVideoPlayer::CheckAutoSceneSkip()
     // marker for commbrak may be inaccurate. allow user to skip into break from the back
     if (m_playSpeed >= 0 && m_Edl.GetLastCutTime() != cut.start && clock < cut.end - 1000)
     {
-      std::string strTimeString = StringUtils::SecondsToTimeString((cut.end - cut.start) / 1000, TIME_FORMAT_MM_SS);
-      CGUIDialogKaiToast::QueueNotification(g_localizeStrings.Get(25011), strTimeString);
+      if (CServiceBroker::GetSettings()->GetBool(SETTING_VIDEOPLAYER_NOTIFYCOMMERCIALSKIP))
+      {
+        std::string strTimeString = StringUtils::SecondsToTimeString((cut.end - cut.start) / 1000, TIME_FORMAT_MM_SS);
+        CGUIDialogKaiToast::QueueNotification(g_localizeStrings.Get(25011), strTimeString);
+      }
 
       m_Edl.SetLastCutTime(cut.start);
 

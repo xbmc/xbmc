@@ -15538,7 +15538,12 @@ msgctxt "#25013"
 msgid "Auto-skip on"
 msgstr ""
 
-#empty strings from id 25014 to 29800
+#: system/settings/settings.xml
+msgctxt "#25014"
+msgid "Notify about commercial auto-skip"
+msgstr ""
+
+#empty strings from id 25015 to 29800
 
 #: unused
 msgctxt "#29801"

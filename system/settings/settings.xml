@@ -45,6 +45,11 @@
             <formatlabel>14046</formatlabel>
           </control>
         </setting>
+        <setting id="videoplayer.notifycommercialskip" type="boolean" label="25014">
+          <level>1</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
       </group>
       <group id="2" label="19177">
         <setting id="videoplayer.adjustrefreshrate" type="integer" label="170" help="36164">
