@@ -23,6 +23,8 @@ static const char *get_mountpoint(const char *devnode)
   const char *delim = " ";
   const char *mountpoint = NULL;
   FILE *fp = fopen("/proc/mounts", "r");
+  if (fp == NULL)
+    return NULL;
 
   while (fgets(buf, sizeof (buf), fp))
   {
