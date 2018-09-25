@@ -444,6 +444,12 @@ bool CDVDDemuxFFmpeg::Open(std::shared_ptr<CDVDInputStream> pInput, bool streami
   }
   else if (!iformat || (strcmp(iformat->name, "mpegts") != 0))
   {
+    if (m_streaminfo == false)
+    {
+	av_opt_set_int(m_pFormatContext, "analyzeduration", 500000, 0);
+	m_checkvideo = true;
+	skipCreateStreams = true;
+    }
     m_streaminfo = true;
   }
 
