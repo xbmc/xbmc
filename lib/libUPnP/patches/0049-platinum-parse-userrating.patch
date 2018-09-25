@@ -1,0 +1,23 @@
+From 4ef31402024662a24c47ef26e518069b3f6cf415 Mon Sep 17 00:00:00 2001
+From: Jeff Grieger <jeff@griegers.com>
+Date: Tue, 25 Sep 2018 11:00:00 +0200
+Subject: [PATCH] platinum: parse userrating
+
+---
+ lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+--- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp
++++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaItem.cpp
+@@ -873,6 +873,11 @@
+ 
+     PLT_XmlHelper::GetChildText(entry, "uniqueidentifier", m_XbmcInfo.unique_identifier, didl_namespace_xbmc, 256);
+ 
++    PLT_XmlHelper::GetChildText(entry, "userrating", str, didl_namespace_xbmc, 256);
++    NPT_Int32 iuser_rating;
++    if (NPT_FAILED(str.ToInteger(iuser_rating))) iuser_rating = 0;
++    m_XbmcInfo.user_rating = iuser_rating;
++
+     PLT_XmlHelper::GetChildText(entry, "trailer", m_XbmcInfo.trailer, didl_namespace_xbmc, 256);
+ 
+     // re serialize the entry didl as a we might need to pass it to a renderer
