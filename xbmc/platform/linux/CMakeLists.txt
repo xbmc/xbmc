@@ -33,10 +33,12 @@ endif()
 if(DBUS_FOUND)
   list(APPEND SOURCES DBusMessage.cpp
                       DBusReserve.cpp
-                      DBusUtil.cpp)
+                      DBusUtil.cpp
+                      SystemdUtils.cpp)
   list(APPEND HEADERS DBusMessage.h
                       DBusReserve.h
-                      DBusUtil.h)
+                      DBusUtil.h
+                      SystemdUtils.h)
 endif()
 
 if(CORE_PLATFORM_NAME_LC STREQUAL rbpi)

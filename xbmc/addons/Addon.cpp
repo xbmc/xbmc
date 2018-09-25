@@ -34,6 +34,9 @@
 #ifdef HAS_PYTHON
 #include "interfaces/python/XBPython.h"
 #endif
+#ifdef HAS_DBUS
+#include "SystemdUtils.h"
+#endif
 
 using XFILE::CDirectory;
 using XFILE::CFile;
@@ -384,11 +387,32 @@ void OnPreInstall(const AddonPtr& addon)
 
 void OnPostInstall(const AddonPtr& addon, bool update, bool modal)
 {
+#ifdef HAS_DBUS
+  AddonPtr localAddon;
+  if (CServiceBroker::GetAddonMgr().GetAddon(addon->ID(), localAddon, ADDON_SERVICE))
+  {
+    std::string addonService = addon->ID() + ".service";
+    CSystemdUtils::StopUnit(addonService);
+    CSystemdUtils::StartUnit(addonService);
+  }
+#endif
+
   addon->OnPostInstall(update, modal);
 }
 
 void OnPreUnInstall(const AddonPtr& addon)
 {
+#ifdef HAS_DBUS
+  AddonPtr localAddon;
+  if (CServiceBroker::GetAddonMgr().GetAddon(addon->ID(), localAddon, ADDON_SERVICE))
+  {
+    std::string addonService = addon->ID() + ".service";
+    const char* addonServiceArray[] = { addonService.c_str() };
+    CSystemdUtils::StopUnit(addonService);
+    CSystemdUtils::DisableUnit(addonServiceArray, 1);
+  }
+#endif
+
   addon->OnPreUnInstall();
 }
 

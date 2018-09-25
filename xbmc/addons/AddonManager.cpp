@@ -21,6 +21,10 @@
 #include "utils/URIUtils.h"
 #include "utils/XMLUtils.h"
 
+#ifdef HAS_DBUS
+#include "SystemdUtils.h"
+#endif
+
 #include <array>
 
 using namespace XFILE;
@@ -854,6 +858,17 @@ bool CAddonMgr::DisableAddon(const std::string& id)
   AddonPtr addon;
   if (GetAddon(id, addon, ADDON_UNKNOWN, false) && addon != NULL)
   {
+#ifdef HAS_DBUS
+    AddonPtr localAddon;
+    if (GetAddon(id, localAddon, ADDON_SERVICE, false))
+    {
+      std::string addonService = addon->ID() + ".service";
+      const char* addonServiceArray[] = { addonService.c_str() };
+      CSystemdUtils::StopUnit(addonService);
+      CSystemdUtils::DisableUnit(addonServiceArray, 1);
+    }
+#endif
+
     CServiceBroker::GetEventLog().Add(EventPtr(new CAddonManagementEvent(addon, 24141)));
   }
 
@@ -882,6 +897,18 @@ bool CAddonMgr::EnableSingle(const std::string& id)
   if (!m_database.DisableAddon(id, false))
     return false;
   m_disabled.erase(id);
+
+#ifdef HAS_DBUS
+  AddonPtr localAddon;
+  if (GetAddon(id, localAddon, ADDON_SERVICE))
+  {
+    std::string addonService = addon->ID() + ".service";
+    std::string addonServiceFullPath = StringUtils::Format("%s/system.d/%s.service", addon->Path().c_str(), addon->ID().c_str());
+    const char* addonServiceArrayFullPath[] = { addonServiceFullPath.c_str() };
+    CSystemdUtils::EnableUnit(addonServiceArrayFullPath, 1);
+    CSystemdUtils::StartUnit(addonService);
+  }
+#endif
 
   CServiceBroker::GetEventLog().Add(EventPtr(new CAddonManagementEvent(addon, 24064)));
 
