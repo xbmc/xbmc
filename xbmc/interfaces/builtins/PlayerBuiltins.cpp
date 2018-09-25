@@ -552,7 +552,7 @@ static int Seek(const std::vector<std::string>& params)
 ///     | Partymode(path to .xsp) | Partymode for *.xsp-file               | Partymode for *.xsp-file    |             |
 ///     | ShowVideoMenu           | Shows the DVD/BR menu if available     | none                        |             |
 ///     <br>
-///     '*' = For these controls, the PlayerControl built-in function can make use of the 'notify'-parameter. For example: PlayerControl(random\, notify)
+///     '*' = For these controls\, the PlayerControl built-in function can make use of the 'notify'-parameter. For example: PlayerControl(random\, notify)
 ///     '**' = If no argument is given for 'partymode'\, the control  will default to music.
 ///     <br>
 ///     @param[in] control               Control to execute.
