@@ -379,6 +379,7 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
 {
   int num_codecs;
   bool needSecureDecoder(false);
+  int profile(0);
 
   m_opened = false;
   // allow only 1 instance here
@@ -456,6 +457,22 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
       m_formatname = "amc-vp8";
       break;
     case AV_CODEC_ID_VP9:
+      switch(hints.profile)
+      {
+        case FF_PROFILE_VP9_0:
+          profile = CJNIMediaCodecInfoCodecProfileLevel::VP9Profile0;
+          break;
+        case FF_PROFILE_VP9_1:
+          profile = CJNIMediaCodecInfoCodecProfileLevel::VP9Profile1;
+          break;
+        case FF_PROFILE_VP9_2:
+          profile = CJNIMediaCodecInfoCodecProfileLevel::VP9Profile2;
+          break;
+        case FF_PROFILE_VP9_3:
+          profile = CJNIMediaCodecInfoCodecProfileLevel::VP9Profile3;
+          break;
+        default:;
+      }
       m_mime = "video/x-vnd.on2.vp9";
       m_formatname = "amc-vp9";
       break;
@@ -465,6 +482,8 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
       switch(hints.profile)
       {
         case FF_PROFILE_H264_HIGH_10:
+          profile = CJNIMediaCodecInfoCodecProfileLevel::AVCProfileHigh10;
+          break;
         case FF_PROFILE_H264_HIGH_10_INTRA:
           // No known h/w decoder supporting Hi10P
           goto FAIL;
@@ -634,6 +653,17 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
     }
 
     std::vector<int> color_formats = codec_caps.colorFormats();
+
+    if (profile)
+    {
+      std::vector<CJNIMediaCodecInfoCodecProfileLevel> profileLevels = codec_caps.profileLevels();
+      if (std::find_if(profileLevels.cbegin(), profileLevels.cend(),
+        [&](const CJNIMediaCodecInfoCodecProfileLevel profileLevel){ return profileLevel.profile() == profile; }) == profileLevels.cend())
+      {
+        CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Open: profile not supported: %d", profile);
+        continue;
+      }
+    }
 
     std::vector<std::string> types = codec_info.getSupportedTypes();
     // return the 1st one we find, that one is typically 'the best'
