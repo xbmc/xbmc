@@ -27,7 +27,7 @@ datarootdir="@datarootdir@"
 LIBDIR="@libdir@"
 APP_BINARY=$LIBDIR/${bin_name}/@APP_BINARY@
 CRASHLOG_DIR=${CRASHLOG_DIR:-$HOME}
-USERDATA_DIR="${HOME}/.${bin_name}"
+KODI_DATA=${KODI_DATA:-"${HOME}/.${bin_name}"} # mapped to special://home/
 WINDOWING=${WINDOWING:-"auto"}
 
 # Workaround for high CPU load with nvidia GFX
@@ -90,10 +90,10 @@ migrate_home()
   [ "$(basename $0)" = "xbmc" ] && echo "WARNING: Running ${bin_name} as "xbmc" is deprecated and will be removed in later versions, please switch to using the ${bin_name} binary"
 
   #check if data migration is needed
-  if [ -d "${HOME}/.xbmc" ] && [ ! -d "${USERDATA_DIR}" ]; then
-      echo "INFO: migrating userdata folder. Renaming ${HOME}/.xbmc to $USERDATA_DIR"
-      mv ${HOME}/.xbmc $USERDATA_DIR
-      touch ${USERDATA_DIR}/.kodi_data_was_migrated
+  if [ -d "${HOME}/.xbmc" ] && [ ! -d "${KODI_DATA}" ]; then
+      echo "INFO: migrating userdata folder. Renaming ${HOME}/.xbmc to $KODI_DATA"
+      mv ${HOME}/.xbmc $KODI_DATA
+      touch ${KODI_DATA}/.kodi_data_was_migrated
   fi
 }
 
@@ -176,9 +176,9 @@ print_crash_report()
   echo >> $FILE
   echo "################# LOG FILE ##################" >> $FILE
   echo >> $FILE
-  if [ -f $USERDATA_DIR/temp/@APP_NAME_LC@.log ]
+  if [ -f $KODI_DATA/temp/@APP_NAME_LC@.log ]
   then
-    cat $USERDATA_DIR/temp/@APP_NAME_LC@.log >> $FILE
+    cat $KODI_DATA/temp/@APP_NAME_LC@.log >> $FILE
     echo >> $FILE
   else
     echo "Logfile not found in the usual place." >> $FILE
