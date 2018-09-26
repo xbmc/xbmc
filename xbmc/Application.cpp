@@ -365,7 +365,7 @@ bool CApplication::Create(const CAppParamParser &params)
 
   m_ServiceManager.reset(new CServiceManager());
 
-  if (!m_ServiceManager->InitStageOne())
+  if (!m_ServiceManager->InitStageOne(params))
   {
     return false;
   }
@@ -1846,7 +1846,7 @@ void CApplication::Render()
 
 void CApplication::SetStandAlone(bool value)
 {
-  g_advancedSettings.m_handleMounting = m_bStandalone = value;
+  m_bStandalone = value;
 }
 
 bool CApplication::OnAction(const CAction &action)
@@ -2740,7 +2740,6 @@ bool CApplication::Cleanup()
       m_ServiceManager->DeinitStageTwo();
 
     CServiceBroker::GetSettings()->Uninitialize();
-    g_advancedSettings.Clear();
 
     CSpecialProtocol::UnregisterProfileManager();
     m_ServiceManager->DeinitStageOnePointFive();

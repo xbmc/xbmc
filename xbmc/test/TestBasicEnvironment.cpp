@@ -30,6 +30,19 @@
 
 namespace fs = KODI::PLATFORM::FILESYSTEM;
 
+namespace
+{
+  class TestServiceManager : public CServiceManager
+  {
+  public:
+    TestServiceManager()
+    {
+      m_advancedSettings.reset(new CAdvancedSettings());
+      m_advancedSettings->Initialize();
+    }
+  };
+} // unnamed namespace
+
 void TestBasicEnvironment::SetUp()
 {
   m_pSettings.reset(new CSettings());
@@ -37,12 +50,7 @@ void TestBasicEnvironment::SetUp()
 
   XFILE::CFile *f;
 
-  /* NOTE: The below is done to fix memleak warning about uninitialized variable
-   * in xbmcutil::GlobalsSingleton<CAdvancedSettings>::getInstance().
-   */
-  g_advancedSettings.Initialize();
-
-  g_application.m_ServiceManager.reset(new CServiceManager());
+  g_application.m_ServiceManager.reset(new TestServiceManager());
 
   if (!CXBMCTestUtils::Instance().SetReferenceFileBasePath())
     SetUpError();

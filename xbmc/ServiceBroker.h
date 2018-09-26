@@ -34,6 +34,7 @@ namespace PLAYLIST
   class CPlayListPlayer;
 }
 
+class CAdvancedSettings;
 class CContextMenuManager;
 class XBPython;
 class CDataCacheCore;
@@ -80,6 +81,8 @@ public:
   static std::shared_ptr<ANNOUNCEMENT::CAnnouncementManager> GetAnnouncementManager();
   static void RegisterAnnouncementManager(std::shared_ptr<ANNOUNCEMENT::CAnnouncementManager> announcementManager);
   static void UnregisterAnnouncementManager();
+
+  static CAdvancedSettings &GetAdvancedSettings();
 
   static ADDON::CAddonMgr &GetAddonMgr();
   static ADDON::CBinaryAddonManager &GetBinaryAddonManager();
@@ -137,5 +140,4 @@ private:
   static IAE* m_pActiveAE;
   static std::shared_ptr<CAppInboundProtocol> m_pAppPort;
   static std::shared_ptr<CSettings> m_pSettings;
-
 };

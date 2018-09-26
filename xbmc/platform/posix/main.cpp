@@ -25,7 +25,6 @@
 #include "PlayListPlayer.h"
 #include "platform/MessagePrinter.h"
 #include "platform/xbmc.h"
-#include "settings/AdvancedSettings.h"
 #include "utils/log.h"
 
 #ifdef HAS_LIRC
@@ -88,8 +87,6 @@ int main(int argc, char* argv[])
 
   setlocale(LC_NUMERIC, "C");
 
-  // Initialize before CAppParamParser so it can set the log level
-  g_advancedSettings.Initialize();
   CAppParamParser appParamParser;
   appParamParser.Parse(argv, argc);
 

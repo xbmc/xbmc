@@ -10,20 +10,29 @@
 
 #include "FileItem.h"
 
+#include <string>
+
+class CAdvancedSettings;
+
 class CAppParamParser
 {
-  public:
-    CAppParamParser();
-    void Parse(const char* const* argv, int nArgs);
+public:
+  CAppParamParser();
+  void Parse(const char* const* argv, int nArgs);
+  void SetAdvancedSettings(CAdvancedSettings& advancedSettings) const;
 
-    const CFileItemList &Playlist() const { return m_playlist; }
+  const CFileItemList &Playlist() const { return m_playlist; }
 
-  private:
-    bool m_testmode;
-    void ParseArg(const std::string &arg);
-    void DisplayHelp();
-    void DisplayVersion();
-    void EnableDebugMode();
+  int m_logLevel;
+  bool m_startFullScreen = false;
 
-    CFileItemList m_playlist;
+private:
+  void ParseArg(const std::string &arg);
+  void DisplayHelp();
+  void DisplayVersion();
+
+  bool m_testmode = false;
+  bool m_standAlone = false;
+  std::string m_settingsFile;
+  CFileItemList m_playlist;
 };

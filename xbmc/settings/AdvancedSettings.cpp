@@ -13,6 +13,7 @@
 #include <string>
 #include <vector>
 
+#include "AppParamParser.h"
 #include "Application.h"
 #include "ServiceBroker.h"
 #include "filesystem/File.h"
@@ -90,6 +91,12 @@ void CAdvancedSettings::OnSettingChanged(std::shared_ptr<const CSetting> setting
     m_extraLogEnabled = std::static_pointer_cast<const CSettingBool>(setting)->GetValue();
   else if (settingId == CSettings::SETTING_DEBUG_SETEXTRALOGLEVEL)
     setExtraLogLevel(CSettingUtils::GetList(std::static_pointer_cast<const CSettingList>(setting)));
+}
+
+void CAdvancedSettings::Initialize(const CAppParamParser &params)
+{
+  Initialize();
+  params.SetAdvancedSettings(*this);
 }
 
 void CAdvancedSettings::Initialize()
@@ -858,8 +865,8 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
       if (setting != NULL)
         setting->SetVisible(false);
     }
-    g_advancedSettings.m_logLevel = std::max(g_advancedSettings.m_logLevel, g_advancedSettings.m_logLevelHint);
-    CLog::SetLogLevel(g_advancedSettings.m_logLevel);
+    m_logLevel = std::max(m_logLevel, m_logLevelHint);
+    CLog::SetLogLevel(m_logLevel);
   }
 
   XMLUtils::GetString(pRootElement, "cddbaddress", m_cddbAddress);

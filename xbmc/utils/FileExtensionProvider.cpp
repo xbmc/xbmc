@@ -22,13 +22,13 @@ const std::vector<TYPE> ADDON_TYPES = {
   ADDON_AUDIODECODER
 };
 
-CFileExtensionProvider::CFileExtensionProvider(ADDON::CAddonMgr &addonManager,
+CFileExtensionProvider::CFileExtensionProvider(CAdvancedSettings &advancedSettings,
+                                               ADDON::CAddonMgr &addonManager,
                                                ADDON::CBinaryAddonManager &binaryAddonManager) :
+  m_advancedSettings(advancedSettings),
   m_addonManager(addonManager),
   m_binaryAddonManager(binaryAddonManager)
 {
-  m_advancedSettings = g_advancedSettingsRef;
-
   SetAddonExtensions();
 
   m_addonManager.Events().Subscribe(this, &CFileExtensionProvider::OnAddonEvent);
@@ -38,18 +38,17 @@ CFileExtensionProvider::~CFileExtensionProvider()
 {
   m_addonManager.Events().Unsubscribe(this);
 
-  m_advancedSettings.reset();
   m_addonExtensions.clear();
 }
 
 std::string CFileExtensionProvider::GetDiscStubExtensions() const
 {
-  return m_advancedSettings->m_discStubExtensions;
+  return m_advancedSettings.m_discStubExtensions;
 }
 
 std::string CFileExtensionProvider::GetMusicExtensions() const
 {
-  std::string extensions(m_advancedSettings->m_musicExtensions);
+  std::string extensions(m_advancedSettings.m_musicExtensions);
   extensions += '|' + GetAddonExtensions(ADDON_VFS);
   extensions += '|' + GetAddonExtensions(ADDON_AUDIODECODER);
 
@@ -58,7 +57,7 @@ std::string CFileExtensionProvider::GetMusicExtensions() const
 
 std::string CFileExtensionProvider::GetPictureExtensions() const
 {
-  std::string extensions(m_advancedSettings->m_pictureExtensions);
+  std::string extensions(m_advancedSettings.m_pictureExtensions);
   extensions += '|' + GetAddonExtensions(ADDON_VFS);
   extensions += '|' + GetAddonExtensions(ADDON_IMAGEDECODER);
 
@@ -67,7 +66,7 @@ std::string CFileExtensionProvider::GetPictureExtensions() const
 
 std::string CFileExtensionProvider::GetSubtitleExtensions() const
 {
-  std::string extensions(m_advancedSettings->m_subtitlesExtensions);
+  std::string extensions(m_advancedSettings.m_subtitlesExtensions);
   extensions += '|' + GetAddonExtensions(ADDON_VFS);
 
   return extensions;
@@ -75,7 +74,7 @@ std::string CFileExtensionProvider::GetSubtitleExtensions() const
 
 std::string CFileExtensionProvider::GetVideoExtensions() const
 {
-  std::string extensions(m_advancedSettings->m_videoExtensions);
+  std::string extensions(m_advancedSettings.m_videoExtensions);
   if (!extensions.empty())
     extensions += '|';
   extensions += GetAddonExtensions(ADDON_VFS);

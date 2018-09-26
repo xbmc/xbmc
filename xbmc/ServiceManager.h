@@ -13,18 +13,19 @@
 
 class CAppParamParser;
 
-namespace ADDON {
-class CAddonMgr;
-class CBinaryAddonManager;
-class CBinaryAddonCache;
-class CVFSAddonCache;
-class CServiceAddonManager;
-class CRepositoryUpdater;
+namespace ADDON
+{
+  class CAddonMgr;
+  class CBinaryAddonManager;
+  class CBinaryAddonCache;
+  class CVFSAddonCache;
+  class CServiceAddonManager;
+  class CRepositoryUpdater;
 }
 
 namespace PVR
 {
-class CPVRManager;
+  class CPVRManager;
 }
 
 namespace PLAYLIST
@@ -32,6 +33,7 @@ namespace PLAYLIST
   class CPlayListPlayer;
 }
 
+class CAdvancedSettings;
 class CContextMenuManager;
 #ifdef HAS_PYTHON
 class XBPython;
@@ -76,7 +78,7 @@ public:
   ~CServiceManager();
 
   bool InitForTesting();
-  bool InitStageOne();
+  bool InitStageOne(const CAppParamParser &params);
   bool InitStageOnePointFive(); // Services that need our DllLoaders emu env
   bool InitStageTwo(const CAppParamParser &params);
   bool InitStageThree();
@@ -85,6 +87,9 @@ public:
   void DeinitStageTwo();
   void DeinitStageOnePointFive();
   void DeinitStageOne();
+
+  CAdvancedSettings& GetAdvancedSettings();
+
   ADDON::CAddonMgr& GetAddonMgr();
   ADDON::CBinaryAddonManager& GetBinaryAddonManager();
   ADDON::CBinaryAddonCache& GetBinaryAddonCache();
@@ -141,6 +146,7 @@ protected:
     void operator()(CFavouritesService *p) const;
   };
 
+  std::unique_ptr<CAdvancedSettings> m_advancedSettings;
   std::unique_ptr<ADDON::CAddonMgr> m_addonMgr;
   std::unique_ptr<ADDON::CBinaryAddonManager> m_binaryAddonManager;
   std::unique_ptr<ADDON::CBinaryAddonCache> m_binaryAddonCache;

@@ -12,6 +12,8 @@
 #include "addons/AddonEvents.h"
 #include "settings/AdvancedSettings.h"
 
+class CAdvancedSettings;
+
 namespace ADDON
 {
   class CAddonMgr;
@@ -21,7 +23,8 @@ namespace ADDON
 class CFileExtensionProvider
 {
 public:
-  CFileExtensionProvider(ADDON::CAddonMgr &addonManager,
+  CFileExtensionProvider(CAdvancedSettings &advancedSettings,
+                         ADDON::CAddonMgr &addonManager,
                          ADDON::CBinaryAddonManager &binaryAddonManager);
   ~CFileExtensionProvider();
 
@@ -64,11 +67,11 @@ private:
   void OnAddonEvent(const ADDON::AddonEvent& event);
 
   // Construction properties
+  CAdvancedSettings &m_advancedSettings;
   ADDON::CAddonMgr &m_addonManager;
   ADDON::CBinaryAddonManager &m_binaryAddonManager;
 
   // File extension properties
   std::map<ADDON::TYPE, std::string> m_addonExtensions;
-  std::shared_ptr<CAdvancedSettings> m_advancedSettings;
   std::map<ADDON::TYPE, std::string> m_addonFileFolderExtensions;
 };
