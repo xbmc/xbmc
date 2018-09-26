@@ -103,8 +103,12 @@ void CGUITextBox::UpdateInfo(const CGUIListItem *item)
   float textHeight = m_font ? m_font->GetTextHeight(m_lines.size()) : m_itemHeight * m_lines.size();
   float maxHeight = m_height ? m_height : textHeight;
   m_renderHeight = m_minHeight ? CLAMP(textHeight, m_minHeight, maxHeight) : m_height;
-  m_itemsPerPage = (unsigned int)(m_renderHeight / m_itemHeight);
-
+  m_itemsPerPage = static_cast<unsigned int>(m_renderHeight / m_itemHeight);
+  if (m_cutLastLine && !(m_label.align & XBFONT_CENTER_Y))
+  {
+    unsigned int visibleLines = std::min(static_cast<unsigned int>(m_lines.size()), m_itemsPerPage);
+    m_renderHeight = m_font ? m_font->GetTextHeight(visibleLines) : m_itemHeight * visibleLines;
+  }
   UpdatePageControl();
 }
 
@@ -324,6 +328,11 @@ void CGUITextBox::UpdatePageControl()
 bool CGUITextBox::CanFocus() const
 {
   return false;
+}
+
+void CGUITextBox::SetCutLastLine(bool cutLastLine)
+{
+  m_cutLastLine = cutLastLine;
 }
 
 void CGUITextBox::SetPageControl(int pageControl)

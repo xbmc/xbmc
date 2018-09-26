@@ -671,6 +671,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   std::string strLabel;
   int iUrlSet=0;
   std::string toggleSelect;
+  bool cutLastLine = false;
 
   float spinWidth = 16;
   float spinHeight = 16;
@@ -866,6 +867,8 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
 
   XMLUtils::GetString(pControlNode, "usealttexture", toggleSelect);
   XMLUtils::GetString(pControlNode, "selected", toggleSelect);
+
+  XMLUtils::GetBoolean(pControlNode, "cutlastline", cutLastLine);
 
   XMLUtils::GetBoolean(pControlNode, "haspath", bHasPath);
 
@@ -1413,6 +1416,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
       CGUITextBox* tcontrol = static_cast<CGUITextBox*>(control);
 
       tcontrol->SetPageControl(pageControl);
+      tcontrol->SetCutLastLine(cutLastLine);
       if (infoLabels.size())
         tcontrol->SetInfo(infoLabels[0]);
       tcontrol->SetAutoScrolling(pControlNode);

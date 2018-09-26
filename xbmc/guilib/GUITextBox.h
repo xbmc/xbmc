@@ -45,6 +45,7 @@ public:
   void SetPageControl(int pageControl);
 
   bool CanFocus() const override;
+  void SetCutLastLine(bool cutLastLine);
   void SetInfo(const KODI::GUILIB::GUIINFO::CGUIInfoLabel &info);
   void SetAutoScrolling(const TiXmlNode *node);
   void SetAutoScrolling(int delay, int time, int repeatTime, const std::string &condition = "");
@@ -93,5 +94,6 @@ protected:
   int m_pageControl;
 
   KODI::GUILIB::GUIINFO::CGUIInfoLabel m_info;
+  bool m_cutLastLine = false;
 };
 
