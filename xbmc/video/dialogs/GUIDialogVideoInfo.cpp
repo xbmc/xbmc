@@ -647,12 +647,19 @@ std::string CGUIDialogVideoInfo::ChooseArtType(const CFileItem &videoItem, std::
   for (std::vector<std::string>::const_iterator i = artTypes.begin(); i != artTypes.end(); ++i)
   {
     std::string type = *i;
+    if (videoItem.GetVideoInfoTag()->m_type == MediaTypeVideoCollection &&
+        !StringUtils::StartsWith(type, "set"))
+      continue;
+    else if (videoItem.GetVideoInfoTag()->m_type != MediaTypeVideoCollection &&
+             StringUtils::StartsWith(type, "set"))
+      continue;
+
     CFileItemPtr item(new CFileItem(type, false));
     if (type == "banner")
       item->SetLabel(g_localizeStrings.Get(20020));
-    else if (type == "fanart")
+    else if (type == "fanart" || type == "setfanart")
       item->SetLabel(g_localizeStrings.Get(20445));
-    else if (type == "poster")
+    else if (type == "poster" || type == "set")
       item->SetLabel(g_localizeStrings.Get(20021));
     else if (type == "thumb")
       item->SetLabel(g_localizeStrings.Get(21371));
