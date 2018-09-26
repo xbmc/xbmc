@@ -92,6 +92,50 @@ static int SetAddon(const std::vector<std::string>& params)
   return 0;
 }
 
+/*! \brief Select and choose a value for a skin setting.
+ *  \param params The parameters.
+ *  \details params[0] = Header of the dialog.
+ *  \details params[1] = Names of skin settings.
+ */
+static int SkinSelect(const std::vector<std::string>& params)
+{
+  std::vector<std::pair<std::string, std::string>> settings;
+
+  auto pDlgSelect = static_cast<CGUIDialogSelect*>(CServiceBroker::GetGUI()->GetWindowManager().GetWindow(WINDOW_DIALOG_SELECT));
+  pDlgSelect->Reset();
+  pDlgSelect->SetHeading(CVariant{atoi(params[0].c_str())});
+
+  for (auto param = params.begin() + 2; param < params.end(); ++param)
+  {
+    if (param->find('|') != std::string::npos)
+    {
+      std::vector<std::string> values = StringUtils::Split(*param, '|', 2);
+      std::string label = g_localizeStrings.Get(atoi(values[0].c_str()));
+      settings.push_back(std::make_pair(label, values[1]));
+      pDlgSelect->Add(label);
+    }
+  }
+
+  pDlgSelect->Open();
+  if (pDlgSelect->IsConfirmed())
+  {
+    unsigned int item = pDlgSelect->GetSelectedItem();
+    int settingLabel = CSkinSettings::GetInstance().TranslateString(params[1] + ".Label");
+    int settingValue = CSkinSettings::GetInstance().TranslateString(params[1] + ".Value");
+    std::string value1 = settings[item].first;
+    std::string value2 = settings[item].second;
+
+    CSkinSettings::GetInstance().SetString(settingLabel, value1);
+    if (value2 == "-")
+      CSkinSettings::GetInstance().Reset(params[1] + ".Value");
+    else
+      CSkinSettings::GetInstance().SetString(settingValue, value2);
+    CServiceBroker::GetSettings()->Save();
+
+  }
+  return 0;
+}
+
 /*! \brief Select and set a skin bool setting.
  *  \param params The parameters.
  *  \details params[0] = Names of skin settings.
@@ -546,6 +590,7 @@ CBuiltins::CommandMap CSkinBuiltins::GetOperations() const
            {"skin.reset",         {"Resets a skin setting to default", 1, SkinReset}},
            {"skin.resetsettings", {"Resets all skin settings", 0, SkinResetAll}},
            {"skin.setaddon",      {"Prompts and set an addon", 2, SetAddon}},
+           {"skin.select",        {"Prompts and choose a value for a skin setting", 3, SkinSelect}},
            {"skin.selectbool",    {"Prompts and set a skin setting", 2, SelectBool}},
            {"skin.setbool",       {"Sets a skin setting on", 1, SetBool}},
            {"skin.setfile",       {"Prompts and sets a file", 1, SetFile}},
