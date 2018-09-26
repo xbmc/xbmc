@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<layout label="30000" image="layout.png" mask="mask.png">
+  <category name="face" label="35074">
+    <button name="a" type="digital" label="30001"/>
+    <button name="b" type="digital" label="30002"/>
+    <button name="x" type="digital" label="30003"/>
+    <button name="y" type="digital" label="30004"/>
+    <button name="start" type="digital" label="30005"/>
+    <button name="select" type="digital" label="30006"/>
+    <button name="up" type="digital" label="30007"/>
+    <button name="right" type="digital" label="30008"/>
+    <button name="down" type="digital" label="30009"/>
+    <button name="left" type="digital" label="30010"/>
+  </category>
+  <category name="shoulder" label="35075">
+    <button name="leftbumper" type="digital" label="30011"/>
+    <button name="rightbumper" type="digital" label="30012"/>
+  </category>
+</layout>
