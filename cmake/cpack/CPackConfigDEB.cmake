@@ -182,7 +182,7 @@ install(FILES ${CPACK_PACKAGE_DIRECTORY}/deb/kodi-ps3remote.1.gz
         COMPONENT kodi-eventclients-ps3)
 install(FILES ${CPACK_PACKAGE_DIRECTORY}/deb/kodi-send.1.gz
         DESTINATION share/man/man1
-        COMPONENT kodi-eventclients-xbmc-send)
+        COMPONENT kodi-eventclients-kodi-send)
 install(FILES ${CPACK_PACKAGE_DIRECTORY}/deb/kodi-wiiremote.1.gz
         DESTINATION share/man/man1
         COMPONENT kodi-eventclients-wiiremote)
