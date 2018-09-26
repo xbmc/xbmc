@@ -945,9 +945,8 @@ int CPVRChannelGroup::GetEPGAll(CFileItemList &results, bool bIncludeChannelsWit
       if (bIncludeChannelsWithoutEPG && iAdded == 0)
       {
         // Add dummy EPG tag associated with this channel
-        epgTag = CPVREpgInfoTag::CreateDefaultTag();
-        epgTag->SetChannel(channel);
-        results.Add(CFileItemPtr(new CFileItem(epgTag)));
+        epgTag = std::make_shared<CPVREpgInfoTag>(channel);
+        results.Add(std::make_shared<CFileItem>(epgTag));
       }
     }
   }

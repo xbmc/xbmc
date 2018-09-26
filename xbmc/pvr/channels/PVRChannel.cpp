@@ -133,7 +133,7 @@ bool CPVRChannel::Delete(void)
   {
     CPVRChannelPtr empty;
     epg->SetChannel(empty);
-    CServiceBroker::GetPVRManager().EpgContainer().DeleteEpg(*epg, true);
+    CServiceBroker::GetPVRManager().EpgContainer().DeleteEpg(epg, true);
     CSingleLock lock(m_critSection);
     m_bEPGCreated = false;
   }
