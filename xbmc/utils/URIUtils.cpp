@@ -587,6 +587,9 @@ bool URIUtils::IsRemote(const std::string& strFile)
   if(HasParentInHostname(url))
     return IsRemote(url.GetHostName());
 
+  if (IsAddonsPath(strFile))
+    return false;
+
   if (!url.IsLocal())
     return true;
 

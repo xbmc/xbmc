@@ -376,6 +376,7 @@ TEST_F(TestURIUtils, IsRemote)
 {
   EXPECT_TRUE(URIUtils::IsRemote("http://path/to/file"));
   EXPECT_TRUE(URIUtils::IsRemote("https://path/to/file"));
+  EXPECT_FALSE(URIUtils::IsRemote("addons://user/"));
 }
 
 TEST_F(TestURIUtils, IsSmb)
