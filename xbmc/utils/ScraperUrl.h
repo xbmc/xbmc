@@ -61,8 +61,9 @@ public:
    \param thumbs [out] vector of thumb URLs to fill
    \param type the type of thumb URLs to fetch, if empty (the default) picks any
    \param season number of season that we want thumbs for, -1 indicates no season (the default)
+   \param unique avoid adding duplicate URLs when adding to a thumbs vector with existing items
    */
-  void GetThumbURLs(std::vector<std::string> &thumbs, const std::string &type = "", int season = -1) const;
+  void GetThumbURLs(std::vector<std::string> &thumbs, const std::string &type = "", int season = -1, bool unique = false) const;
   void Clear();
   static bool Get(const SUrlEntry&, std::string&, XFILE::CCurlFile& http,
                  const std::string& cacheContext);

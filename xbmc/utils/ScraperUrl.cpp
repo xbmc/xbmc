@@ -20,6 +20,7 @@
 #include "utils/Mime.h"
 #include "utils/log.h"
 
+#include <algorithm>
 #include <cstring>
 #include <sstream>
 
@@ -370,7 +371,7 @@ std::string CScraperUrl::GetThumbURL(const CScraperUrl::SUrlEntry &entry)
   return entry.m_url + "|Referer=" + CURL::Encode(entry.m_spoof);
 }
 
-void CScraperUrl::GetThumbURLs(std::vector<std::string> &thumbs, const std::string &type, int season) const
+void CScraperUrl::GetThumbURLs(std::vector<std::string> &thumbs, const std::string &type, int season, bool unique) const
 {
   for (std::vector<SUrlEntry>::const_iterator iter = m_url.begin(); iter != m_url.end(); ++iter)
   {
@@ -379,7 +380,9 @@ void CScraperUrl::GetThumbURLs(std::vector<std::string> &thumbs, const std::stri
       if ((iter->m_type == CScraperUrl::URL_TYPE_GENERAL && season == -1)
        || (iter->m_type == CScraperUrl::URL_TYPE_SEASON && iter->m_season == season))
       {
-        thumbs.push_back(GetThumbURL(*iter));
+        std::string url = GetThumbURL(*iter);
+        if (!unique || std::find(thumbs.begin(), thumbs.end(), url) == thumbs.end())
+          thumbs.push_back(url);
       }
     }
   }
