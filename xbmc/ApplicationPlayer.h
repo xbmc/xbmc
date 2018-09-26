@@ -35,6 +35,7 @@ public:
 
   // player management
   void ClosePlayer();
+  void ResetPlayer();
   std::string GetCurrentPlayer();
   float GetPlaySpeed();
   float GetPlayTempo();

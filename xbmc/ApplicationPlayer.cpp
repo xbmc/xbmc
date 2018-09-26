@@ -37,10 +37,15 @@ void CApplicationPlayer::ClosePlayer()
   if (player)
   {
     CloseFile();
-    // we need to do this directly on the member
-    CSingleLock lock(m_playerLock);
-    m_pPlayer.reset();
+    ResetPlayer();
   }
+}
+
+void CApplicationPlayer::ResetPlayer()
+{
+  // we need to do this directly on the member
+  CSingleLock lock(m_playerLock);
+  m_pPlayer.reset();
 }
 
 void CApplicationPlayer::CloseFile(bool reopen)
