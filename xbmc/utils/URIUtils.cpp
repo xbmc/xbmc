@@ -14,6 +14,7 @@
 #include "filesystem/StackDirectory.h"
 #include "network/DNSNameCache.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 #include "URL.h"
 #include "utils/FileExtensionProvider.h"
 #include "ServiceBroker.h"
@@ -486,22 +487,10 @@ CURL URIUtils::SubstitutePath(const CURL& url, bool reverse /* = false */)
 
 std::string URIUtils::SubstitutePath(const std::string& strPath, bool reverse /* = false */)
 {
-  for (CAdvancedSettings::StringMapping::iterator i = g_advancedSettings.m_pathSubstitutions.begin();
-      i != g_advancedSettings.m_pathSubstitutions.end(); ++i)
+  for (const auto& pathPair : CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_pathSubstitutions)
   {
-    std::string fromPath;
-    std::string toPath;
-
-    if (!reverse)
-    {
-      fromPath = i->first;  // Fake path
-      toPath = i->second;   // Real path
-    }
-    else
-    {
-      fromPath = i->second; // Real path
-      toPath = i->first;    // Fake path
-    }
+    const std::string fromPath = reverse ? pathPair.second : pathPair.first;
+    const std::string toPath = reverse ? pathPair.first : pathPair.second;
 
     if (strncmp(strPath.c_str(), fromPath.c_str(), HasSlashAtEnd(fromPath) ? fromPath.size() - 1 : fromPath.size()) == 0)
     {

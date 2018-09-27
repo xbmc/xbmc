@@ -10,6 +10,7 @@
 #include "log.h"
 #include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 #include "rendering/RenderSystem.h"
 
 void _VerifyGLState(const char* szfile, const char* szfunction, int lineno){
@@ -23,7 +24,7 @@ void _VerifyGLState(const char* szfile, const char* szfunction, int lineno){
                   matrix[ixx*4+3]);                                     \
       }                                                                 \
   }
-  if (g_advancedSettings.m_logLevel < LOG_LEVEL_DEBUG_FREEMEM)
+  if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_logLevel < LOG_LEVEL_DEBUG_FREEMEM)
     return;
   GLenum err = glGetError();
   if (err==GL_NO_ERROR)

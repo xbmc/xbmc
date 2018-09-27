@@ -17,6 +17,7 @@
 #include "ServiceBroker.h"
 #include "guilib/LocalizeStrings.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 
@@ -495,7 +496,7 @@ bool CPVREpg::Update(const time_t start, const time_t end, int iUpdateTime, bool
 
   /* enforce advanced settings update interval override for TV Channels with no EPG data */
   if (m_tags.empty() && !bUpdate && ChannelID() > 0 && !Channel()->IsRadio())
-    iUpdateTime = g_advancedSettings.m_iEpgUpdateEmptyTagsInterval;
+    iUpdateTime = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iEpgUpdateEmptyTagsInterval;
 
   if (!bForceUpdate)
   {

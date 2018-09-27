@@ -12,6 +12,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "FileItem.h"
 #include "guilib/WindowIDs.h"
 #include "guilib/LocalizeStrings.h"
@@ -83,7 +84,7 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
   std::string strTrack=CServiceBroker::GetSettings()->GetString(CSettings::SETTING_MUSICFILES_LIBRARYTRACKFORMAT);
   if (strTrack.empty())
     strTrack = CServiceBroker::GetSettings()->GetString(CSettings::SETTING_MUSICFILES_TRACKFORMAT);
-  std::string strAlbum = g_advancedSettings.m_strMusicLibraryAlbumFormat;
+  std::string strAlbum = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_strMusicLibraryAlbumFormat;
   if (strAlbum.empty())
     strAlbum = "%B"; // album
   CLog::Log(LOGDEBUG,"Custom album format = [%s]", strAlbum.c_str());
@@ -356,7 +357,7 @@ CGUIViewStateMusicSmartPlaylist::CGUIViewStateMusicSmartPlaylist(const CFileItem
   }
   else if (items.GetContent() == "albums")
   {
-    std::string strAlbum = g_advancedSettings.m_strMusicLibraryAlbumFormat;
+    std::string strAlbum = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_strMusicLibraryAlbumFormat;
     if (strAlbum.empty())
       strAlbum = "%B"; // album
     // album
@@ -513,7 +514,7 @@ void CGUIViewStateWindowMusicNav::SaveViewState()
 
 void CGUIViewStateWindowMusicNav::AddOnlineShares()
 {
-  if (!g_advancedSettings.m_bVirtualShares)
+  if (!CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bVirtualShares)
     return;
 
   VECSOURCES *musicSources = CMediaSourceSettings::GetInstance().GetSources("music");

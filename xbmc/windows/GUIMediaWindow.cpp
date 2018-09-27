@@ -48,6 +48,7 @@
 #include "profiles/ProfilesManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "storage/MediaManager.h"
 #include "threads/IRunnable.h"
 #include "threads/SystemClock.h"
@@ -763,11 +764,11 @@ bool CGUIMediaWindow::GetDirectory(const std::string &strDirectory, CFileItemLis
 
   //! @todo Do we want to limit the directories we apply the video ones to?
   if (iWindow == WINDOW_VIDEO_NAV)
-    regexps = g_advancedSettings.m_videoExcludeFromListingRegExps;
+    regexps = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoExcludeFromListingRegExps;
   if (iWindow == WINDOW_MUSIC_NAV)
-    regexps = g_advancedSettings.m_audioExcludeFromListingRegExps;
+    regexps = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_audioExcludeFromListingRegExps;
   if (iWindow == WINDOW_PICTURES)
-    regexps = g_advancedSettings.m_pictureExcludeFromListingRegExps;
+    regexps = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_pictureExcludeFromListingRegExps;
 
   if (regexps.size())
   {
@@ -881,7 +882,7 @@ bool CGUIMediaWindow::Update(const std::string &strDirectory, bool updateFilterP
     pItem->SetLabel(strLabel);
     pItem->SetLabelPreformatted(true);
     pItem->m_bIsFolder = true;
-    pItem->SetSpecialSort(g_advancedSettings.m_addSourceOnTop ?
+    pItem->SetSpecialSort(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_addSourceOnTop ?
                                              SortSpecialOnTop : SortSpecialOnBottom);
     m_vecItems->Add(pItem);
   }

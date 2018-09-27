@@ -6,7 +6,9 @@
  *  See LICENSES/README.md for more information.
  */
 #include "UDisksProvider.h"
+#include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
@@ -269,7 +271,7 @@ void CUDisksProvider::DeviceAdded(const char *object, IStorageEventsCallback *ca
     device = new CUDiskDevice(object);
   m_AvailableDevices[object] = device;
 
-  if (g_advancedSettings.m_handleMounting)
+  if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_handleMounting)
     device->Mount();
 
   CLog::Log(LOGDEBUG, LOGDBUS, "UDisks: DeviceAdded - %s", device->toString().c_str());
@@ -312,7 +314,7 @@ void CUDisksProvider::DeviceChanged(const char *object, IStorageEventsCallback *
     bool mounted = device->m_isMounted;
     /* make sure to not silently remount ejected usb thumb drives
        that user wants to eject, but make sure to mount blurays */
-    if (!mounted && g_advancedSettings.m_handleMounting && device->m_isOptical)
+    if (!mounted && CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_handleMounting && device->m_isOptical)
       device->Mount();
 
     device->Update();

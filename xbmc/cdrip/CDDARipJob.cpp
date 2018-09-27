@@ -22,6 +22,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
 #include "storage/MediaManager.h"
 #include "addons/AddonManager.h"
@@ -191,17 +192,16 @@ CEncoder* CCDDARipJob::SetupEncoder(CFile& reader)
     return NULL;
 
   // we have to set the tags before we init the Encoder
-  std::string strTrack = StringUtils::Format("%li", strtol(m_input.substr(13, m_input.size() - 13 - 5).c_str(),NULL,10));
+  const std::string strTrack = StringUtils::Format("%li", strtol(m_input.substr(13, m_input.size() - 13 - 5).c_str(), nullptr, 10));
+
+  const std::string itemSeparator = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator;
 
   encoder->SetComment(std::string("Ripped with ") + CSysInfo::GetAppName());
-  encoder->SetArtist(StringUtils::Join(m_tag.GetArtist(),
-                                      g_advancedSettings.m_musicItemSeparator));
+  encoder->SetArtist(StringUtils::Join(m_tag.GetArtist(), itemSeparator));
   encoder->SetTitle(m_tag.GetTitle());
   encoder->SetAlbum(m_tag.GetAlbum());
-  encoder->SetAlbumArtist(StringUtils::Join(m_tag.GetAlbumArtist(),
-                                      g_advancedSettings.m_musicItemSeparator));
-  encoder->SetGenre(StringUtils::Join(m_tag.GetGenre(),
-                                      g_advancedSettings.m_musicItemSeparator));
+  encoder->SetAlbumArtist(StringUtils::Join(m_tag.GetAlbumArtist(), itemSeparator));
+  encoder->SetGenre(StringUtils::Join(m_tag.GetGenre(), itemSeparator));
   encoder->SetTrack(strTrack);
   encoder->SetTrackLength(static_cast<int>(reader.GetLength()));
   encoder->SetYear(m_tag.GetYearString());

@@ -7,9 +7,11 @@
  */
 
 #include "TextureCacheJob.h"
+#include "ServiceBroker.h"
 #include "TextureCache.h"
 #include "guilib/Texture.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
 #include "filesystem/File.h"
@@ -167,7 +169,7 @@ std::string CTextureCacheJob::DecodeImageURL(const std::string &url, unsigned in
       additional_info = "flipped";
 
     if (thumbURL.GetOption("size") == "thumb")
-      width = height = g_advancedSettings.m_imageRes;
+      width = height = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_imageRes;
     else
     {
       if (thumbURL.HasOption("width") && StringUtils::IsInteger(thumbURL.GetOption("width")))

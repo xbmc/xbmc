@@ -12,6 +12,7 @@
 #include "cores/VideoPlayer/DVDCodecs/Video/VDPAU.h"
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/log.h"
 #include "utils/GLUtils.h"
 
@@ -169,7 +170,7 @@ bool CRendererVDPAU::Supports(ESCALINGMETHOD method)
         && method != VS_SCALINGMETHOD_LANCZOS3)
       return true;
     else
-      return g_advancedSettings.m_videoEnableHighQualityHwScalers;
+      return CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoEnableHighQualityHwScalers;
   }
 
   return false;

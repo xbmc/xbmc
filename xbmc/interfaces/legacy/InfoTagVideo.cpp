@@ -7,8 +7,10 @@
  */
 
 #include "InfoTagVideo.h"
+#include "ServiceBroker.h"
 #include "utils/StringUtils.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 
 namespace XBMCAddon
 {
@@ -37,17 +39,17 @@ namespace XBMCAddon
 
     String InfoTagVideo::getDirector()
     {
-      return StringUtils::Join(infoTag->m_director, g_advancedSettings.m_videoItemSeparator);
+      return StringUtils::Join(infoTag->m_director, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator);
     }
 
     String InfoTagVideo::getWritingCredits()
     {
-      return StringUtils::Join(infoTag->m_writingCredits, g_advancedSettings.m_videoItemSeparator);
+      return StringUtils::Join(infoTag->m_writingCredits, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator);
     }
 
     String InfoTagVideo::getGenre()
     {
-      return StringUtils::Join(infoTag->m_genre, g_advancedSettings.m_videoItemSeparator);
+      return StringUtils::Join(infoTag->m_genre, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator);
     }
 
     String InfoTagVideo::getTagLine()

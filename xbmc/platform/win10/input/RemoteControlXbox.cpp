@@ -11,6 +11,7 @@
 #include "input/remote/IRRemote.h"
 #include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 #include "threads/SystemClock.h"
 #include "utils/log.h"
 
@@ -108,7 +109,7 @@ void CRemoteControlXbox::HandleAcceleratorKey(const CoreDispatcher& sender, cons
     else
     {
       m_repeatCount++;
-      if (m_repeatCount > g_advancedSettings.m_remoteDelay)
+      if (m_repeatCount > CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_remoteDelay)
       {
         newEvent.keybutton.holdtime = XbmcThreads::SystemClockMillis() - m_firstClickTime;
         if (appPort)

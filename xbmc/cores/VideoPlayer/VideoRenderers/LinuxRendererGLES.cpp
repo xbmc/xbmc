@@ -18,6 +18,7 @@
 #include "settings/DisplaySettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "VideoShaders/YUV2RGBShaderGLES.h"
 #include "VideoShaders/VideoFilterShaderGLES.h"
 #include "rendering/MatrixGL.h"
@@ -1510,7 +1511,7 @@ bool CLinuxRendererGLES::Supports(ESCALINGMETHOD method)
       && method != VS_SCALINGMETHOD_LANCZOS3)
         return true;
       else
-        return g_advancedSettings.m_videoEnableHighQualityHwScalers;
+        return CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoEnableHighQualityHwScalers;
     }
   }
 

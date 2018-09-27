@@ -29,9 +29,10 @@
 #include "Application.h"
 #include "guilib/GUIWindowManager.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFlags.h"
-#include "settings/DisplaySettings.h"
-#include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/DisplaySettings.h"
+#include "settings/SettingsComponent.h"
+#include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
 
 #include "platform/linux/RBP.h"
@@ -214,7 +215,7 @@ void CMMALVideo::dec_output_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buf
       // we don't keep up when running at 60fps in the background so switch to half rate
       if (m_fps > 40.0f && !CServiceBroker::GetWinSystem()->GetGfxContext().IsFullScreenVideo() && !(m_num_decoded & 1))
         wanted = false;
-      if (g_advancedSettings.m_omxDecodeStartWithValidFrame && (buffer->flags & MMAL_BUFFER_HEADER_FLAG_CORRUPTED))
+      if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_omxDecodeStartWithValidFrame && (buffer->flags & MMAL_BUFFER_HEADER_FLAG_CORRUPTED))
         wanted = false;
       m_num_decoded++;
       CLog::Log(LOGDEBUG, LOGVIDEO,
@@ -586,7 +587,7 @@ bool CMMALVideo::AddData(const DemuxPacket &packet)
   uint8_t* pData = packet.pData;
   int iSize = packet.iSize;
   CSingleLock lock(m_sharedSection);
-  //if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+  //if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->CanLogComponent(LOGVIDEO))
   //  CLog::Log(LOGDEBUG, "%s::%s - %-8p %-6d dts:%.3f pts:%.3f ready_queue(%d)",
   //    CLASSNAME, __func__, pData, iSize, dts == DVD_NOPTS_VALUE ? 0.0 : packet.dts*1e-6, packet.pts == DVD_NOPTS_VALUE ? 0.0 : packet.pts*1e-6, m_output_ready.size());
 

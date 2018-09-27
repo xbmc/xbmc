@@ -17,9 +17,10 @@
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
 #include "rendering/RenderSystem.h"
-#include "settings/Settings.h"
 #include "settings/lib/Setting.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "Application.h"
 #include "utils/MathUtils.h"
 #include "utils/TimeUtils.h"
@@ -670,7 +671,7 @@ long CDecoder::ReleasePicReference()
 
 void CDecoder::SetWidthHeight(int width, int height)
 {
-  m_vdpauConfig.upscale = g_advancedSettings.m_videoVDPAUScaling;
+  m_vdpauConfig.upscale = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoVDPAUScaling;
 
   //pick the smallest dimensions, so we downscale with vdpau and upscale with opengl when appropriate
   //this requires the least amount of gpu memory bandwidth
@@ -2172,7 +2173,7 @@ void CMixer::SetDeinterlacing()
     ||  method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_HALF)
     {
       VdpBool enabled[] = {1,0,0};
-      if (g_advancedSettings.m_videoVDPAUtelecine)
+      if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoVDPAUtelecine)
         enabled[2] = 1;
       vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
     }
@@ -2180,7 +2181,7 @@ void CMixer::SetDeinterlacing()
          ||  method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL_HALF)
     {
       VdpBool enabled[] = {1,1,0};
-      if (g_advancedSettings.m_videoVDPAUtelecine)
+      if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoVDPAUtelecine)
         enabled[2] = 1;
       vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
     }
@@ -2207,7 +2208,7 @@ void CMixer::SetDeintSkipChroma()
   VdpStatus vdp_st;
 
   uint8_t val;
-  if (g_advancedSettings.m_videoVDPAUdeintSkipChromaHD && m_config.outHeight >= 720)
+  if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoVDPAUdeintSkipChromaHD && m_config.outHeight >= 720)
     val = 1;
   else
     val = 0;
@@ -2390,7 +2391,7 @@ void CMixer::Init()
   m_PostProc = false;
   m_vdpError = false;
 
-  m_config.upscale = g_advancedSettings.m_videoVDPAUScaling;
+  m_config.upscale = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoVDPAUScaling;
   m_config.useInteropYuv = !CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEVDPAUMIXER);
 
   CreateVdpauMixer();

@@ -20,6 +20,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
@@ -223,18 +224,18 @@ void CSeekHandler::FrameMove()
   }
 }
 
-void CSeekHandler::SettingOptionsSeekStepsFiller(SettingConstPtr setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
+void CSeekHandler::SettingOptionsSeekStepsFiller(SettingConstPtr setting, std::vector<std::pair<std::string, int>> &list, int &current, void *data)
 {
   std::string label;
-  for (std::vector<int>::iterator it = g_advancedSettings.m_seekSteps.begin(); it != g_advancedSettings.m_seekSteps.end(); ++it) {
-    int seconds = *it;
+  for (int seconds : CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_seekSteps)
+  {
     if (seconds > 60)
       label = StringUtils::Format(g_localizeStrings.Get(14044).c_str(), seconds / 60);
     else
       label = StringUtils::Format(g_localizeStrings.Get(14045).c_str(), seconds);
 
-    list.insert(list.begin(), make_pair("-" + label, seconds*-1));
-    list.push_back(make_pair(label, seconds));
+    list.insert(list.begin(), std::make_pair("-" + label, seconds * -1));
+    list.push_back(std::make_pair(label, seconds));
   }
 }
 

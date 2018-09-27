@@ -22,6 +22,7 @@
 #include "messaging/ApplicationMessenger.h"
 #include "pvr/PVRManager.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
 #include "settings/Settings.h"
 #include "Util.h"
@@ -1040,7 +1041,8 @@ const std::string& CLangInfo::GetSpeedUnitString(CSpeed::Unit speedUnit)
 std::set<std::string> CLangInfo::GetSortTokens() const
 {
   std::set<std::string> sortTokens = m_sortTokens;
-  sortTokens.insert(g_advancedSettings.m_vecTokens.begin(), g_advancedSettings.m_vecTokens.end());
+  sortTokens.insert(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_vecTokens.begin(),
+                    CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_vecTokens.end());
 
   return sortTokens;
 }

@@ -10,6 +10,7 @@
 #include "filesystem/File.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "test/TestUtils.h"
 #include "utils/StringUtils.h"
 
@@ -31,7 +32,7 @@ protected:
         CServiceBroker::GetSettings()->Load(it);
 
       for (const auto& it : advancedsettings)
-        g_advancedSettings.ParseSettingsFile(it);
+        CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->ParseSettingsFile(it);
 
       CServiceBroker::GetSettings()->SetLoaded();
     }
@@ -39,7 +40,7 @@ protected:
 
   ~TestFileFactory() override
   {
-    g_advancedSettings.Clear();
+    CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->Clear();
     CServiceBroker::GetSettings()->Unload();
     CServiceBroker::GetSettings()->Uninitialize();
   }

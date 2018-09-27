@@ -11,7 +11,9 @@
 #include "gtest/gtest.h"
 
 #include "filesystem/MultiPathDirectory.h"
+#include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 #include "URL.h"
 #include "utils/URIUtils.h"
 
@@ -23,7 +25,7 @@ protected:
   TestURIUtils() = default;
   ~TestURIUtils() override
   {
-    g_advancedSettings.m_pathSubstitutions.clear();
+    CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_pathSubstitutions.clear();
   }
 };
 
@@ -187,15 +189,15 @@ TEST_F(TestURIUtils, SubstitutePath)
 
   from = "C:\\My Videos";
   to = "https://myserver/some%20other%20path";
-  g_advancedSettings.m_pathSubstitutions.push_back(std::make_pair(from, to));
+  CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_pathSubstitutions.push_back(std::make_pair(from, to));
 
   from = "/this/path1";
   to = "/some/other/path2";
-  g_advancedSettings.m_pathSubstitutions.push_back(std::make_pair(from, to));
+  CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_pathSubstitutions.push_back(std::make_pair(from, to));
 
   from = "davs://otherserver/my%20music%20path";
   to = "D:\\Local Music\\MP3 Collection";
-  g_advancedSettings.m_pathSubstitutions.push_back(std::make_pair(from, to));
+  CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_pathSubstitutions.push_back(std::make_pair(from, to));
 
   ref = "https://myserver/some%20other%20path/sub%20dir/movie%20name.avi";
   var = URIUtils::SubstitutePath("C:\\My Videos\\sub dir\\movie name.avi");

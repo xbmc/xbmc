@@ -11,6 +11,7 @@
 #include <stdio.h>
 
 #include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 #include "Application.h"
 #include "AppInboundProtocol.h"
 #include "ServiceBroker.h"
@@ -406,8 +407,8 @@ using namespace KODI::MESSAGING;
 
   if (readyToRun)
   {
-    CServiceBroker::GetAdvancedSettings().m_startFullScreen = true;
-    CServiceBroker::GetAdvancedSettings().m_canWindowed = false;
+    CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_startFullScreen = true;
+    CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_canWindowed = false;
     xbmcAlive = TRUE;
     try
     {

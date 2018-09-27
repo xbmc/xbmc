@@ -18,6 +18,7 @@
 #include "interfaces/AnnouncementManager.h"
 #include "playlists/SmartPlayList.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
@@ -264,7 +265,7 @@ std::string CJSONRPC::MethodCall(const std::string &inputString, ITransportLayer
 
   std::string str;
   if (hasResponse)
-    CJSONVariantWriter::Write(outputroot, str, g_advancedSettings.m_jsonOutputCompact);
+    CJSONVariantWriter::Write(outputroot, str, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_jsonOutputCompact);
 
   return str;
 }

@@ -23,7 +23,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
-
+#include "settings/SettingsComponent.h"
 
 #if defined(TARGET_POSIX)
 #include "platform/linux/XTimeUtils.h"
@@ -854,7 +854,7 @@ void CRenderManager::UpdateLatencyTweak()
   float refresh = fps;
   if (CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution() == RES_WINDOW)
     refresh = 0; // No idea about refresh rate when windowed, just get the default latency
-  m_latencyTweak = g_advancedSettings.GetLatencyTweak(refresh);
+  m_latencyTweak = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->GetLatencyTweak(refresh);
 }
 
 void CRenderManager::UpdateResolution()

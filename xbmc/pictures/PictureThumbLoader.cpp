@@ -21,6 +21,7 @@
 #include "utils/URIUtils.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "video/VideoThumbLoader.h"
 #include "URL.h"
 
@@ -232,8 +233,8 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
         {
           CTextureDetails details;
           details.file = relativeCacheFile;
-          details.width = g_advancedSettings.m_imageRes;
-          details.height = g_advancedSettings.m_imageRes;
+          details.width = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_imageRes;
+          details.height = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_imageRes;
           CTextureCache::GetInstance().AddCachedTexture(thumb, details);
           db.SetTextureForPath(pItem->GetPath(), "thumb", thumb);
           pItem->SetArt("thumb", CTextureCache::GetCachedPath(relativeCacheFile));

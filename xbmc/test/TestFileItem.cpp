@@ -8,7 +8,9 @@
 
 #include "FileItem.h"
 #include "URL.h"
+#include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 
 #include "gtest/gtest.h"
 
@@ -32,8 +34,8 @@ public:
 AdvancedSettingsResetBase::AdvancedSettingsResetBase()
 {
   // Force all settings to be reset to defaults
-  g_advancedSettings.OnSettingsUnloaded();
-  g_advancedSettings.Initialize();
+  CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->OnSettingsUnloaded();
+  CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->Initialize();
 }
 
 class TestFileItemSpecifiedArtJpg : public AdvancedSettingsResetBase,

@@ -18,6 +18,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
 #include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
@@ -239,7 +240,7 @@ void CPVRChannelGroup::SearchAndSetChannelIcons(bool bUpdateDb /* = false */)
         (itItem = fileItemMap.find(strLegalChannelName)) != fileItemMap.end() ||
         (itItem = fileItemMap.find(strChannelUid)) != fileItemMap.end())
     {
-      channel->SetIconPath(itItem->second, g_advancedSettings.m_bPVRAutoScanIconsUserSet);
+      channel->SetIconPath(itItem->second, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bPVRAutoScanIconsUserSet);
     }
 
     if (bUpdateDb)

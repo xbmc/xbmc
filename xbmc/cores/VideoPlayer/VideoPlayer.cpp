@@ -45,9 +45,11 @@
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 #include "FileItem.h"
 #include "GUIUserMessages.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "settings/MediaSettings.h"
 #include "utils/log.h"
 #include "utils/StreamDetails.h"
@@ -3177,14 +3179,15 @@ void CVideoPlayer::Seek(bool bPlus, bool bLargeStep, bool bChapterOverride)
   }
 
   int64_t seekTarget;
-  if (g_advancedSettings.m_videoUseTimeSeeking && m_processInfo->GetMaxTime() > 2000*g_advancedSettings.m_videoTimeSeekForwardBig)
+  const std::shared_ptr<CAdvancedSettings> advancedSettings = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
+  if (advancedSettings->m_videoUseTimeSeeking && m_processInfo->GetMaxTime() > 2000 * advancedSettings->m_videoTimeSeekForwardBig)
   {
     if (bLargeStep)
-      seekTarget = bPlus ? g_advancedSettings.m_videoTimeSeekForwardBig :
-                           g_advancedSettings.m_videoTimeSeekBackwardBig;
+      seekTarget = bPlus ? advancedSettings->m_videoTimeSeekForwardBig :
+                           advancedSettings->m_videoTimeSeekBackwardBig;
     else
-      seekTarget = bPlus ? g_advancedSettings.m_videoTimeSeekForward :
-                           g_advancedSettings.m_videoTimeSeekBackward;
+      seekTarget = bPlus ? advancedSettings->m_videoTimeSeekForward :
+                           advancedSettings->m_videoTimeSeekBackward;
     seekTarget *= 1000;
     seekTarget += GetTime();
   }
@@ -3192,10 +3195,10 @@ void CVideoPlayer::Seek(bool bPlus, bool bLargeStep, bool bChapterOverride)
   {
     int percent;
     if (bLargeStep)
-      percent = bPlus ? g_advancedSettings.m_videoPercentSeekForwardBig : g_advancedSettings.m_videoPercentSeekBackwardBig;
+      percent = bPlus ? advancedSettings->m_videoPercentSeekForwardBig : advancedSettings->m_videoPercentSeekBackwardBig;
     else
-      percent = bPlus ? g_advancedSettings.m_videoPercentSeekForward : g_advancedSettings.m_videoPercentSeekBackward;
-    seekTarget = (int64_t)(m_processInfo->GetMaxTime()*(GetPercentage()+percent)/100);
+      percent = bPlus ? advancedSettings->m_videoPercentSeekForward : advancedSettings->m_videoPercentSeekBackward;
+    seekTarget = static_cast<int64_t>(m_processInfo->GetMaxTime() * (GetPercentage() + percent) / 100);
   }
 
   bool restore = true;

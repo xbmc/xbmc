@@ -20,6 +20,7 @@
 #include "input/Key.h"
 #include "music/tags/MusicInfoTag.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 #include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
@@ -302,7 +303,7 @@ void CGUIVisualisationControl::UpdateTrack()
 
   std::string artist(tag->GetArtistString());
   std::string albumArtist(tag->GetAlbumArtistString());
-  std::string genre(StringUtils::Join(tag->GetGenre(), g_advancedSettings.m_musicItemSeparator));
+  std::string genre(StringUtils::Join(tag->GetGenre(), CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator));
 
   VisTrack track = {0};
   track.title       = tag->GetTitle().c_str();

@@ -8,7 +8,9 @@
 
 #include "XMLUtils.h"
 #include "ScraperUrl.h"
+#include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 #include "CharsetConverter.h"
 #include "utils/CharsetDetection.h"
 #include "utils/StringUtils.h"
@@ -187,7 +189,7 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL, std::string& strHTML, XFILE::CCur
 
   if (!scrURL.m_cache.empty())
   {
-    strCachePath = URIUtils::AddFileToFolder(g_advancedSettings.m_cachePath,
+    strCachePath = URIUtils::AddFileToFolder(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_cachePath,
                               "scrapers", cacheContext, scrURL.m_cache);
     if (XFILE::CFile::Exists(strCachePath))
     {
@@ -287,7 +289,7 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL, std::string& strHTML, XFILE::CCur
 
   if (!scrURL.m_cache.empty())
   {
-    std::string strCachePath = URIUtils::AddFileToFolder(g_advancedSettings.m_cachePath,
+    std::string strCachePath = URIUtils::AddFileToFolder(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_cachePath,
                               "scrapers", cacheContext, scrURL.m_cache);
     XFILE::CFile file;
     if (!file.OpenForWrite(strCachePath, true) || file.Write(strHTML.data(), strHTML.size()) != static_cast<ssize_t>(strHTML.size()))

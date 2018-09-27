@@ -13,6 +13,7 @@
 #include "URL.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "File.h"
 #include "threads/SystemClock.h"
 #include "utils/Base64.h"
@@ -60,7 +61,7 @@ extern "C" int debug_callback(CURL_HANDLE *handle, curl_infotype info, char *out
   if (info == CURLINFO_DATA_IN || info == CURLINFO_DATA_OUT)
     return 0;
 
-  if (!g_advancedSettings.CanLogComponent(LOGCURL))
+  if (!CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->CanLogComponent(LOGCURL))
     return 0;
 
   std::string strLine;
@@ -460,7 +461,7 @@ void CCurlFile::SetCommonOptions(CReadState* state, bool failOnError /* = true *
 
   g_curlInterface.easy_setopt(h, CURLOPT_DEBUGFUNCTION, debug_callback);
 
-  if( g_advancedSettings.m_logLevel >= LOG_LEVEL_DEBUG )
+  if( CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_logLevel >= LOG_LEVEL_DEBUG )
     g_curlInterface.easy_setopt(h, CURLOPT_VERBOSE, CURL_ON);
   else
     g_curlInterface.easy_setopt(h, CURLOPT_VERBOSE, CURL_OFF);
@@ -588,9 +589,9 @@ void CCurlFile::SetCommonOptions(CReadState* state, bool failOnError /* = true *
   if (m_userAgent.length() > 0)
     g_curlInterface.easy_setopt(h, CURLOPT_USERAGENT, m_userAgent.c_str());
   else /* set some default agent as shoutcast doesn't return proper stuff otherwise */
-    g_curlInterface.easy_setopt(h, CURLOPT_USERAGENT, g_advancedSettings.m_userAgent.c_str());
+    g_curlInterface.easy_setopt(h, CURLOPT_USERAGENT, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_userAgent.c_str());
 
-  if (g_advancedSettings.m_curlDisableIPV6)
+  if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_curlDisableIPV6)
     g_curlInterface.easy_setopt(h, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
 
   if (!m_proxyhost.empty())
@@ -610,7 +611,7 @@ void CCurlFile::SetCommonOptions(CReadState* state, bool failOnError /* = true *
     g_curlInterface.easy_setopt(h, CURLOPT_CUSTOMREQUEST, m_customrequest.c_str());
 
   if (m_connecttimeout == 0)
-    m_connecttimeout = g_advancedSettings.m_curlconnecttimeout;
+    m_connecttimeout = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_curlconnecttimeout;
 
   // set our timeouts, we abort connection after m_timeout, and reads after no data for m_timeout seconds
   g_curlInterface.easy_setopt(h, CURLOPT_CONNECTTIMEOUT, m_connecttimeout);
@@ -619,7 +620,7 @@ void CCurlFile::SetCommonOptions(CReadState* state, bool failOnError /* = true *
   g_curlInterface.easy_setopt(h, CURLOPT_LOW_SPEED_LIMIT, 1);
 
   if (m_lowspeedtime == 0)
-    m_lowspeedtime = g_advancedSettings.m_curllowspeedtime;
+    m_lowspeedtime = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_curllowspeedtime;
 
   // Set the lowspeed time very low as it seems Curl takes much longer to detect a lowspeed condition
   g_curlInterface.easy_setopt(h, CURLOPT_LOW_SPEED_TIME, m_lowspeedtime);
@@ -1003,7 +1004,7 @@ bool CCurlFile::Open(const CURL& url)
                                 &m_state->m_multiHandle);
 
   // setup common curl options
-  SetCommonOptions(m_state, m_failOnError && !g_advancedSettings.CanLogComponent(LOGCURL));
+  SetCommonOptions(m_state, m_failOnError && !CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->CanLogComponent(LOGCURL));
   SetRequestHeaders(m_state);
   m_state->m_sendRange = m_seekable;
   m_state->m_bRetry = m_allowRetry;
@@ -1013,7 +1014,7 @@ bool CCurlFile::Open(const CURL& url)
   if (m_httpresponse <= 0 || (m_failOnError && m_httpresponse >= 400))
   {
     std::string error;
-    if (m_httpresponse >= 400 && g_advancedSettings.CanLogComponent(LOGCURL))
+    if (m_httpresponse >= 400 && CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->CanLogComponent(LOGCURL))
     {
       error.resize(256);
       ReadString(&error[0], 255);
@@ -1388,7 +1389,7 @@ int CCurlFile::Stat(const CURL& url, struct __stat64* buffer)
 
   SetCommonOptions(m_state);
   SetRequestHeaders(m_state);
-  g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_TIMEOUT, g_advancedSettings.m_curlconnecttimeout);
+  g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_TIMEOUT, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_curlconnecttimeout);
   g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_NOBODY, 1);
   g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_FILETIME , 1);
 
@@ -1419,7 +1420,7 @@ int CCurlFile::Stat(const CURL& url, struct __stat64* buffer)
     /* somehow curl doesn't reset CURLOPT_NOBODY properly so reset everything */
     SetCommonOptions(m_state);
     SetRequestHeaders(m_state);
-    g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_TIMEOUT, g_advancedSettings.m_curlconnecttimeout);
+    g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_TIMEOUT, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_curlconnecttimeout);
     g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_FILETIME, 1);
 #if LIBCURL_VERSION_NUM >= 0x072000 // 0.7.32
     g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_XFERINFOFUNCTION, transfer_abort_callback);
@@ -1636,7 +1637,7 @@ int8_t CCurlFile::CReadState::FillBuffer(unsigned int want)
         m_bLastError = true; // Flag error for the next run
 
         // Retry immediately or leave it up to the caller?
-        if ((m_bRetry && retry < g_advancedSettings.m_curlretries) || (bRetryNow && retry == 0))
+        if ((m_bRetry && retry < CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_curlretries) || (bRetryNow && retry == 0))
         {
           retry++;
 

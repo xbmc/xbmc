@@ -18,6 +18,7 @@
 #include "filesystem/SpecialProtocol.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "Util.h"
@@ -142,8 +143,8 @@ void CSMB::Init()
 
         // use user-configured charset. if no charset is specified,
         // samba tries to use charset 850 but falls back to ASCII in case it is not available
-        if (g_advancedSettings.m_sambadoscodepage.length() > 0)
-          fprintf(f, "\tdos charset = %s\n", g_advancedSettings.m_sambadoscodepage.c_str());
+        if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_sambadoscodepage.length() > 0)
+          fprintf(f, "\tdos charset = %s\n", CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_sambadoscodepage.c_str());
 
         // include users configuration if available
         fprintf(f, "\tinclude = %s/.smb/user.conf\n", home.c_str());
@@ -169,13 +170,13 @@ void CSMB::Init()
     setenv("HOME", truehome.c_str(), 1);
 
 #ifdef DEPRECATED_SMBC_INTERFACE
-    smbc_setDebug(m_context, g_advancedSettings.CanLogComponent(LOGSAMBA) ? 10 : 0);
+    smbc_setDebug(m_context, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->CanLogComponent(LOGSAMBA) ? 10 : 0);
     smbc_setFunctionAuthData(m_context, xb_smbc_auth);
     orig_cache = smbc_getFunctionGetCachedServer(m_context);
     smbc_setFunctionGetCachedServer(m_context, xb_smbc_cache);
     smbc_setOptionOneSharePerServer(m_context, false);
     smbc_setOptionBrowseMaxLmbCount(m_context, 0);
-    smbc_setTimeout(m_context, g_advancedSettings.m_sambaclienttimeout * 1000);
+    smbc_setTimeout(m_context, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_sambaclienttimeout * 1000);
     // we do not need to strdup these, smbc_setXXX below will make their own copies
     if (CServiceBroker::GetSettings()->GetString(CSettings::SETTING_SMB_WORKGROUP).length() > 0)
       //! @bug libsmbclient < 4.9 isn't const correct
@@ -184,13 +185,13 @@ void CSMB::Init()
     //! @bug libsmbclient < 4.8 isn't const correct
     smbc_setUser(m_context, const_cast<char*>(guest.c_str()));
 #else
-    m_context->debug = (g_advancedSettings.CanLogComponent(LOGSAMBA) ? 10 : 0);
+    m_context->debug = (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->CanLogComponent(LOGSAMBA) ? 10 : 0);
     m_context->callbacks.auth_fn = xb_smbc_auth;
     orig_cache = m_context->callbacks.get_cached_srv_fn;
     m_context->callbacks.get_cached_srv_fn = xb_smbc_cache;
     m_context->options.one_share_per_server = false;
     m_context->options.browse_max_lmb_count = 0;
-    m_context->timeout = g_advancedSettings.m_sambaclienttimeout * 1000;
+    m_context->timeout = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_sambaclienttimeout * 1000;
     // we need to strdup these, they will get free'd on smbc_free_context
     if (CServiceBroker::GetSettings()->GetString(CSettings::SETTING_SMB_WORKGROUP).length() > 0)
       m_context->workgroup = strdup(CServiceBroker::GetSettings()->GetString(CSettings::SETTING_SMB_WORKGROUP).c_str());

@@ -4344,7 +4344,8 @@ void CApplication::ProcessSlow()
 
   // Check if we need to shutdown (if enabled).
 #if defined(TARGET_DARWIN)
-  if (CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNTIME) && CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_fullScreen)
+  if (CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNTIME) &&
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_fullScreen)
 #else
   if (CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNTIME))
 #endif

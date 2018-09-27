@@ -29,6 +29,7 @@
 #include "settings/DisplaySettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "storage/MediaManager.h"
 #include "utils/AlarmClock.h"
 #include "utils/CPUInfo.h"
@@ -93,7 +94,7 @@ CTemperature CSystemGUIInfo::GetGPUTemperature() const
 #elif defined(TARGET_WINDOWS_STORE)
   return CTemperature::CreateFromCelsius(0);
 #else
-  std::string cmd = g_advancedSettings.m_gpuTempCmd;
+  std::string cmd = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_gpuTempCmd;
   int ret = 0;
   FILE* p = NULL;
 
@@ -553,7 +554,7 @@ bool CSystemGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
       value = !(CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_LOGIN_SCREEN);
       return true;
     case SYSTEM_SHOW_EXIT_BUTTON:
-      value = g_advancedSettings.m_showExitButton;
+      value = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_showExitButton;
       return true;
     case SYSTEM_HAS_LOGINSCREEN:
       value = CServiceBroker::GetProfileManager().UsingLoginScreen();

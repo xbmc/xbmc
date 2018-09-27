@@ -21,6 +21,7 @@
 #include "guilib/guiinfo/GUIInfoLabels.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
 
@@ -127,7 +128,7 @@ void CPVRGUIInfo::Notify(const Observable &obs, const ObservableMessage msg)
 void CPVRGUIInfo::Process(void)
 {
   unsigned int iLoop = 0;
-  int toggleInterval = g_advancedSettings.m_iPVRInfoToggleInterval / 1000;
+  int toggleInterval = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iPVRInfoToggleInterval / 1000;
 
   /* updated on request */
   CServiceBroker::GetPVRManager().RegisterObserver(this);

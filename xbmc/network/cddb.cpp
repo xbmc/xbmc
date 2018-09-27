@@ -10,7 +10,9 @@
 #include "cddb.h"
 #include "CompileInfo.h"
 #include "network/DNSNameCache.h"
+#include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "filesystem/File.h"
@@ -33,7 +35,7 @@ Xcddb::Xcddb()
 #else
     : m_cddb_socket(close, -1)
 #endif
-    , m_cddb_ip_address(g_advancedSettings.m_cddbAddress)
+    , m_cddb_ip_address(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_cddbAddress)
 {
   m_lastError = 0;
 }

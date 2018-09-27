@@ -21,6 +21,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "guilib/LocalizeStrings.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
 #include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
@@ -1017,7 +1018,7 @@ bool COMXAudio::ApplyVolume(void)
   fVolume = CAEUtil::GainToScale(CAEUtil::PercentToGain(fVolume));
 
   // the analogue volume is too quiet for some. Allow use of an advancedsetting to boost this (at risk of distortion) (deprecated)
-  double gain = pow(10, (g_advancedSettings.m_ac3Gain - 12.0f) / 20.0);
+  double gain = pow(10, (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_ac3Gain - 12.0f) / 20.0);
 
   const float* coeff = m_downmix_matrix;
 
@@ -1243,8 +1244,8 @@ void COMXAudio::UpdateAttenuation()
   {
     float alpha_h = -1.0f/(0.025f*log10f(0.999f));
     float alpha_r = -1.0f/(0.100f*log10f(0.900f));
-    float decay  = powf(10.0f, -1.0f / (alpha_h * g_advancedSettings.m_limiterHold));
-    float attack = powf(10.0f, -1.0f / (alpha_r * g_advancedSettings.m_limiterRelease));
+    float decay  = powf(10.0f, -1.0f / (alpha_h * CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_limiterHold));
+    float attack = powf(10.0f, -1.0f / (alpha_r * CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_limiterRelease));
     // if we are going to clip imminently then deal with it now
     if (imminent_maxlevel > m_maxLevel)
       m_maxLevel = imminent_maxlevel;

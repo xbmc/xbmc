@@ -19,6 +19,7 @@
 #include "platform/darwin/osx/CocoaInterface.h"
 #endif
 #include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/GUIRSSControl.h"
 #include "threads/SingleLock.h"
@@ -122,7 +123,7 @@ void CRssReader::Process()
     m_strColors[iFeed].clear();
 
     CCurlFile http;
-    http.SetUserAgent(g_advancedSettings.m_userAgent);
+    http.SetUserAgent(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_userAgent);
     http.SetTimeout(2);
     std::string strXML;
     std::string strUrl = m_vecUrls[iFeed];

@@ -14,6 +14,7 @@
 #include "cores/DataCacheCore.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
 
@@ -399,5 +400,5 @@ int CPVRGUITimesInfo::GetEpgEventProgress(const CPVREpgInfoTagPtr& epgTag) const
 bool CPVRGUITimesInfo::IsTimeshifting() const
 {
   CSingleLock lock(m_critSection);
-  return (m_iTimeshiftOffset > static_cast<unsigned int>(g_advancedSettings.m_iPVRTimeshiftThreshold));
+  return (m_iTimeshiftOffset > static_cast<unsigned int>(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iPVRTimeshiftThreshold));
 }

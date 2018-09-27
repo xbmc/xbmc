@@ -20,6 +20,7 @@
 #include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "system.h"
 #include "utils/Log.h"
 #include "utils/StringUtils.h"
@@ -990,10 +991,10 @@ static bool CheckCompatibility(AVCodecContext *avctx)
   // The advanced setting lets the user override the autodetection (in case of false positive or negative)
 
   bool checkcompat;
-  if (!g_advancedSettings.m_DXVACheckCompatibilityPresent)
+  if (!CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_DXVACheckCompatibilityPresent)
     checkcompat = IsL41LimitedATI();  // ATI UVD and UVD+ cards can only do L4.1 - corresponds roughly to series 3xxx
   else
-    checkcompat = g_advancedSettings.m_DXVACheckCompatibility;
+    checkcompat = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_DXVACheckCompatibility;
 
   if (checkcompat && !CheckH264L41(avctx))
   {

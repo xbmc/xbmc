@@ -17,6 +17,7 @@
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "xbmc/windowing/GraphicContext.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/BitstreamConverter.h"
 #include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
 
@@ -587,7 +588,7 @@ bool COMXVideo::Open(CDVDStreamInfo &hints, OMXClock *clock, bool hdmi_clock_syn
   }
   OMX_PARAM_BRCMVIDEODECODEERRORCONCEALMENTTYPE concanParam;
   OMX_INIT_STRUCTURE(concanParam);
-  if(g_advancedSettings.m_omxDecodeStartWithValidFrame)
+  if(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_omxDecodeStartWithValidFrame)
     concanParam.bStartWithValidFrame = OMX_TRUE;
   else
     concanParam.bStartWithValidFrame = OMX_FALSE;

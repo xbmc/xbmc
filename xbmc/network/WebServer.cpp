@@ -22,6 +22,7 @@
 #include "network/httprequesthandler/IHTTPRequestHandler.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "ServiceBroker.h"
 #include "threads/SingleLock.h"
 #include "URL.h"
@@ -1253,7 +1254,7 @@ void CWebServer::UnregisterRequestHandler(IHTTPRequestHandler *handler)
 
 void CWebServer::LogRequest(const HTTPRequest& request) const
 {
-  if (!g_advancedSettings.CanLogComponent(LOGWEBSERVER))
+  if (!CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->CanLogComponent(LOGWEBSERVER))
     return;
 
   std::multimap<std::string, std::string> headerValues;
@@ -1278,7 +1279,7 @@ void CWebServer::LogRequest(const HTTPRequest& request) const
 
 void CWebServer::LogResponse(const HTTPRequest& request, int responseStatus) const
 {
-  if (!g_advancedSettings.CanLogComponent(LOGWEBSERVER))
+  if (!CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->CanLogComponent(LOGWEBSERVER))
     return;
 
   std::multimap<std::string, std::string> headerValues;

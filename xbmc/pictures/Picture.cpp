@@ -10,8 +10,10 @@
 
 #include "Picture.h"
 #include "URL.h"
+#include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "FileItem.h"
 #include "filesystem/File.h"
 #include "utils/log.h"
@@ -200,20 +202,23 @@ bool CPicture::CacheTexture(uint8_t *pixels, uint32_t width, uint32_t height, ui
   uint32_t &dest_width, uint32_t &dest_height, const std::string &dest,
   CPictureScalingAlgorithm::Algorithm scalingAlgorithm /* = CPictureScalingAlgorithm::NoAlgorithm */)
 {
+  const std::shared_ptr<CAdvancedSettings> advancedSettings = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
+
   // if no max width or height is specified, don't resize
   if (dest_width == 0)
     dest_width = width;
   if (dest_height == 0)
     dest_height = height;
   if (scalingAlgorithm == CPictureScalingAlgorithm::NoAlgorithm)
-    scalingAlgorithm = g_advancedSettings.m_imageScalingAlgorithm;
+    scalingAlgorithm = advancedSettings->m_imageScalingAlgorithm;
 
-  uint32_t max_height = g_advancedSettings.m_imageRes;
-  if (g_advancedSettings.m_fanartRes > g_advancedSettings.m_imageRes)
+  uint32_t max_height = advancedSettings->m_imageRes;
+  if (advancedSettings->m_fanartRes > advancedSettings->m_imageRes)
   { // 16x9 images larger than the fanart res use that rather than the image res
-    if (fabsf((float)width / (float)height / (16.0f/9.0f) - 1.0f) <= 0.01f && height >= g_advancedSettings.m_fanartRes)
+    if (fabsf(static_cast<float>(width) / static_cast<float>(height) / (16.0f / 9.0f) - 1.0f) <= 0.01f &&
+        height >= advancedSettings->m_fanartRes)
     {
-      max_height = g_advancedSettings.m_fanartRes;
+      max_height = advancedSettings->m_fanartRes;
     }
   }
   uint32_t max_width = max_height * 16/9;
@@ -263,13 +268,15 @@ bool CPicture::CreateTiledThumb(const std::vector<std::string> &files, const std
   unsigned int num_across = (unsigned int)ceil(sqrt((float)files.size()));
   unsigned int num_down = (files.size() + num_across - 1) / num_across;
 
-  unsigned int tile_width = g_advancedSettings.m_imageRes / num_across;
-  unsigned int tile_height = g_advancedSettings.m_imageRes / num_down;
+  unsigned int imageRes = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_imageRes;
+
+  unsigned int tile_width = imageRes / num_across;
+  unsigned int tile_height = imageRes / num_down;
   unsigned int tile_gap = 1;
   bool success = false;
 
   // create a buffer for the resulting thumb
-  uint32_t *buffer = (uint32_t *)calloc(g_advancedSettings.m_imageRes * g_advancedSettings.m_imageRes, 4);
+  uint32_t *buffer = static_cast<uint32_t *>(calloc(imageRes * imageRes, 4));
   if (!buffer)
     return false;
   for (unsigned int i = 0; i < files.size(); ++i)
@@ -294,12 +301,12 @@ bool CPicture::CreateTiledThumb(const std::vector<std::string> &files, const std
           // drop into the texture
           unsigned int posX = x*tile_width + (tile_width - width)/2;
           unsigned int posY = y*tile_height + (tile_height - height)/2;
-          uint32_t *dest = buffer + posX + posY*g_advancedSettings.m_imageRes;
+          uint32_t *dest = buffer + posX + posY * imageRes;
           uint32_t *src = scaled;
           for (unsigned int y = 0; y < height; ++y)
           {
             memcpy(dest, src, width*4);
-            dest += g_advancedSettings.m_imageRes;
+            dest += imageRes;
             src += width;
           }
         }
@@ -310,8 +317,7 @@ bool CPicture::CreateTiledThumb(const std::vector<std::string> &files, const std
   }
   // now save to a file
   if (success)
-    success = CreateThumbnailFromSurface((uint8_t *)buffer, g_advancedSettings.m_imageRes, g_advancedSettings.m_imageRes,
-                                      g_advancedSettings.m_imageRes * 4, thumb);
+    success = CreateThumbnailFromSurface((uint8_t *)buffer, imageRes, imageRes, imageRes * 4, thumb);
 
   free(buffer);
   return success;

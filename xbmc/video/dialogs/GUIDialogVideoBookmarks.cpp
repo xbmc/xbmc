@@ -33,12 +33,13 @@
 #include "TextureCache.h"
 #include "messaging/ApplicationMessenger.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include <string>
 #include <vector>
 
 using namespace KODI::MESSAGING;
 
-#define BOOKMARK_THUMB_WIDTH g_advancedSettings.m_imageRes
+#define BOOKMARK_THUMB_WIDTH CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_imageRes
 
 #define CONTROL_ADD_BOOKMARK           2
 #define CONTROL_CLEAR_BOOKMARKS        3
