@@ -8,8 +8,8 @@
 
 #include "GUIAudioManager.h"
 #include "ServiceBroker.h"
-#include "input/ActionIDs.h"
-#include "input/ActionTranslator.h"
+#include "input/actions/ActionIDs.h"
+#include "input/actions/ActionTranslator.h"
 #include "input/Key.h"
 #include "input/WindowTranslator.h"
 #include "settings/lib/Setting.h"

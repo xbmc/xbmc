@@ -9,7 +9,7 @@
 #include "Action.h"
 #include "ActionIDs.h"
 #include "ActionTranslator.h"
-#include "Key.h"
+#include "input/Key.h"
 
 CAction::CAction() :
   m_id(ACTION_NONE)

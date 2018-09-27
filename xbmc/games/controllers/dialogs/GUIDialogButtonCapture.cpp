@@ -8,10 +8,10 @@
 
 #include "GUIDialogButtonCapture.h"
 #include "games/controllers/ControllerIDs.h"
+#include "input/actions/ActionIDs.h"
 #include "input/joysticks/interfaces/IButtonMap.h"
 #include "input/joysticks/JoystickUtils.h"
 #include "input/IKeymap.h"
-#include "input/ActionIDs.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "peripherals/Peripherals.h"
 #include "utils/Variant.h"

@@ -27,7 +27,7 @@ namespace KEYBOARD
      *
      * \param key The key to look up
      *
-     * \return The action ID from Action.h, or ACTION_NONE if no action is
+     * \return The action ID from ActionIDs.h, or ACTION_NONE if no action is
      *         mapped to the specified key
      */
     virtual unsigned int GetActionID(const CKey& key) = 0;

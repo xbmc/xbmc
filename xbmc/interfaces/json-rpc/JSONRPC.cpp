@@ -13,7 +13,7 @@
 #include "addons/Addon.h"
 #include "addons/IAddon.h"
 #include "dbwrappers/DatabaseQuery.h"
-#include "input/ActionTranslator.h"
+#include "input/actions/ActionTranslator.h"
 #include "input/WindowTranslator.h"
 #include "interfaces/AnnouncementManager.h"
 #include "playlists/SmartPlayList.h"

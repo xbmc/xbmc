@@ -11,8 +11,8 @@
 #include "games/GameServices.h"
 #include "games/GameSettings.h"
 #include "guilib/WindowIDs.h"
-#include "input/Action.h"
-#include "input/ActionIDs.h"
+#include "input/actions/Action.h"
+#include "input/actions/ActionIDs.h"
 #include "ServiceBroker.h"
 
 using namespace KODI;

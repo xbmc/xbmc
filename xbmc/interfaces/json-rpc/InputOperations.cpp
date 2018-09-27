@@ -13,7 +13,7 @@
 #include "guilib/GUIWindow.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/GUIKeyboardFactory.h"
-#include "input/ActionTranslator.h"
+#include "input/actions/ActionTranslator.h"
 #include "input/Key.h"
 #include "utils/Variant.h"
 

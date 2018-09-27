@@ -11,8 +11,6 @@
 #include <algorithm>
 #include <utility>
 
-#include "ActionIDs.h"
-#include "ActionTranslator.h"
 #include "AppTranslator.h"
 #include "CustomControllerTranslator.h"
 #include "GamepadTranslator.h"
@@ -23,6 +21,8 @@
 #include "WindowTranslator.h"
 #include "filesystem/Directory.h"
 #include "guilib/WindowIDs.h"
+#include "input/actions/ActionIDs.h"
+#include "input/actions/ActionTranslator.h"
 #include "input/mouse/MouseTranslator.h"
 #include "utils/log.h"
 #include "utils/XBMCTinyXML.h"

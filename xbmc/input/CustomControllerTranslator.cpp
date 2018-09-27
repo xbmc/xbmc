@@ -7,9 +7,9 @@
  */
 
 #include "CustomControllerTranslator.h"
-#include "ActionIDs.h"
-#include "ActionTranslator.h"
 #include "WindowTranslator.h" //! @todo
+#include "input/actions/ActionIDs.h"
+#include "input/actions/ActionTranslator.h"
 #include "utils/log.h"
 #include "utils/XBMCTinyXML.h"
 
