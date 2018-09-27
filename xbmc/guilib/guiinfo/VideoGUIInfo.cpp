@@ -102,9 +102,15 @@ bool CVideoGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
         value = GUIINFO::GetFileInfoLabelValueFromPath(info.m_info, value);
         return true;
       case PLAYER_TITLE:
-      case VIDEOPLAYER_TITLE:
         value = tag->m_strTitle;
         return !value.empty();
+      case VIDEOPLAYER_TITLE:
+        value = tag->m_strTitle;
+        if (value.empty())
+          value = item->GetLabel();
+        if (value.empty())
+          value = CUtil::GetTitleFromPath(item->GetPath());
+        return true;
       case LISTITEM_TITLE:
         value = tag->m_strTitle;
         return true;
