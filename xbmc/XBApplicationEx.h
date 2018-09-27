@@ -11,6 +11,7 @@
 #include "guilib/IWindowManagerCallback.h"
 
 class CAppParamParser;
+class CFileItemList;
 
 // Do not change the numbering, external scripts depend on them
 enum {
@@ -18,6 +19,12 @@ enum {
   EXITCODE_POWERDOWN = 64,
   EXITCODE_RESTARTAPP= 65,
   EXITCODE_REBOOT    = 66,
+};
+
+enum EnqueueOperation {
+  EOpReplace,
+  EOpNext,
+  EOpLast
 };
 
 class CXBApplicationEx : public IWindowManagerCallback
@@ -37,6 +44,7 @@ public:
   virtual bool Cleanup() { return true; }
 
 public:
+  void EnqueuePlayList(const CFileItemList &playlist, EnqueueOperation op);
   int Run(const CAppParamParser &params);
   void Destroy();
 
