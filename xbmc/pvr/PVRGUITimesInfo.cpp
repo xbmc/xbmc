@@ -399,5 +399,5 @@ int CPVRGUITimesInfo::GetEpgEventProgress(const CPVREpgInfoTagPtr& epgTag) const
 bool CPVRGUITimesInfo::IsTimeshifting() const
 {
   CSingleLock lock(m_critSection);
-  return (m_iTimeshiftOffset > static_cast<unsigned int>(g_advancedSettings.m_iPVRTimeshiftThreshold));
+  return (m_iTimeshiftOffset > static_cast<unsigned int>(CServiceBroker::GetAdvancedSettings().m_iPVRTimeshiftThreshold));
 }

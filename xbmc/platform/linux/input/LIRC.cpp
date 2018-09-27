@@ -138,7 +138,7 @@ void CLirc::ProcessCode(char *buf)
       appPort->OnEvent(newEvent);
     return;
   }
-  else if (repeat > g_advancedSettings.m_remoteDelay)
+  else if (repeat > CServiceBroker::GetAdvancedSettings().m_remoteDelay)
   {
     XBMC_Event newEvent;
     newEvent.type = XBMC_BUTTON;

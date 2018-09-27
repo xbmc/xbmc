@@ -335,7 +335,7 @@ void CPVREpgContainer::Process(void)
       m_bIsInitialising = false;
 
     /* clean up old entries */
-    if (!m_bStop && iNow >= m_iLastEpgCleanup + g_advancedSettings.m_iEpgCleanupInterval)
+    if (!m_bStop && iNow >= m_iLastEpgCleanup + CServiceBroker::GetAdvancedSettings().m_iEpgCleanupInterval)
       RemoveOldEntries();
 
     /* check for pending manual EPG updates */
@@ -621,8 +621,7 @@ bool CPVREpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
 {
   bool bInterrupted = false;
   unsigned int iUpdatedTables = 0;
-  bool bShowProgress = false;
-  int pendingUpdates = 0;
+  const CAdvancedSettings& advancedSettings = CServiceBroker::GetAdvancedSettings();
 
   /* set start and end time */
   time_t start;
@@ -630,7 +629,10 @@ bool CPVREpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
   CDateTime::GetUTCDateTime().GetAsTime(start);
   end = start + GetFutureDaysToDisplay() * 24 * 60 * 60;
   start -= GetPastDaysToDisplay() * 24 * 60 * 60;
-  bShowProgress = g_advancedSettings.m_bEpgDisplayUpdatePopup && (m_bIsInitialising || g_advancedSettings.m_bEpgDisplayIncrementalUpdatePopup);
+
+  bool bShowProgress = (m_bIsInitialising || advancedSettings.m_bEpgDisplayIncrementalUpdatePopup) &&
+                       advancedSettings.m_bEpgDisplayUpdatePopup;
+  int pendingUpdates = 0;
 
   {
     CSingleLock lock(m_critSection);
@@ -698,13 +700,13 @@ bool CPVREpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
     /* the update has been interrupted. try again later */
     time_t iNow;
     CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(iNow);
-    m_iNextEpgUpdate = iNow + g_advancedSettings.m_iEpgRetryInterruptedUpdateInterval;
+    m_iNextEpgUpdate = iNow + advancedSettings.m_iEpgRetryInterruptedUpdateInterval;
   }
   else
   {
     CSingleLock lock(m_critSection);
     CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(m_iNextEpgUpdate);
-    m_iNextEpgUpdate += g_advancedSettings.m_iEpgUpdateCheckInterval;
+    m_iNextEpgUpdate += advancedSettings.m_iEpgUpdateCheckInterval;
     if (m_pendingUpdates == pendingUpdates)
       m_pendingUpdates = 0;
   }
@@ -797,7 +799,7 @@ bool CPVREpgContainer::CheckPlayingEvents(void)
       bFoundChanges = epgEntry.second->CheckPlayingEvent() || bFoundChanges;
 
     CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(iNextEpgActiveTagCheck);
-    iNextEpgActiveTagCheck += g_advancedSettings.m_iEpgActiveTagCheckInterval;
+    iNextEpgActiveTagCheck += CServiceBroker::GetAdvancedSettings().m_iEpgActiveTagCheckInterval;
 
     /* pvr tags always start on the full minute */
     if (CServiceBroker::GetPVRManager().IsStarted())

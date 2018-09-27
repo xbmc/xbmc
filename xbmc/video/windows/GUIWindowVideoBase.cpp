@@ -223,7 +223,7 @@ void CGUIWindowVideoBase::OnItemInfo(const CFileItem& fileItem, ADDON::ScraperPt
         CFileItemPtr item2 = items[i];
 
         if (item2->IsVideo() && !item2->IsPlayList() &&
-            !CUtil::ExcludeFileOrFolder(item2->GetPath(), g_advancedSettings.m_moviesExcludeFromScanRegExps))
+            !CUtil::ExcludeFileOrFolder(item2->GetPath(), CServiceBroker::GetAdvancedSettings().m_moviesExcludeFromScanRegExps))
         {
           item.SetPath(item2->GetPath());
           item.m_bIsFolder = false;
@@ -828,7 +828,7 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
 
         // allow a folder to be ad-hoc queued and played by the default player
         if (item->m_bIsFolder || (item->IsPlayList() &&
-           !g_advancedSettings.m_playlistAsFolders))
+           !CServiceBroker::GetAdvancedSettings().m_playlistAsFolders))
         {
           buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 208);
         }
@@ -840,7 +840,7 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
         }
       }
 
-      if (!item->m_bIsFolder && !(item->IsPlayList() && !g_advancedSettings.m_playlistAsFolders))
+      if (!item->m_bIsFolder && !(item->IsPlayList() && !CServiceBroker::GetAdvancedSettings().m_playlistAsFolders))
       {
         const CPlayerCoreFactory &playerCoreFactory = CServiceBroker::GetPlayerCoreFactory();
 
@@ -1399,7 +1399,7 @@ void CGUIWindowVideoBase::AddToDatabase(int iItem)
 
   // set movie info
   movie.m_strTitle = strTitle;
-  movie.m_genre = StringUtils::Split(strGenre, g_advancedSettings.m_videoItemSeparator);
+  movie.m_genre = StringUtils::Split(strGenre, CServiceBroker::GetAdvancedSettings().m_videoItemSeparator);
 
   // everything is ok, so add to database
   m_database.Open();
@@ -1410,7 +1410,7 @@ void CGUIWindowVideoBase::AddToDatabase(int iItem)
 
   // done...
   HELPERS::ShowOKDialogLines(CVariant{20177}, CVariant{movie.m_strTitle},
-                                CVariant{StringUtils::Join(movie.m_genre, g_advancedSettings.m_videoItemSeparator)},
+                                CVariant{StringUtils::Join(movie.m_genre, CServiceBroker::GetAdvancedSettings().m_videoItemSeparator)},
                                 CVariant{movie.GetUniqueID()});
 
   // library view cache needs to be cleared

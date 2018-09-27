@@ -165,14 +165,14 @@ void CWinEventsWin10::UpdateWindowSize()
 {
   auto size = DX::DeviceResources::Get()->GetOutputSize();
 
-  CLog::Log(LOGDEBUG, __FUNCTION__": window resize event %f x %f (as:%s)", size.Width, size.Height, g_advancedSettings.m_fullScreen ? "true" : "false");
+  CLog::Log(LOGDEBUG, __FUNCTION__": window resize event %f x %f (as:%s)", size.Width, size.Height, CServiceBroker::GetAdvancedSettings().m_fullScreen ? "true" : "false");
 
   auto appView = ApplicationView::GetForCurrentView();
   appView.SetDesiredBoundsMode(ApplicationViewBoundsMode::UseCoreWindow);
 
   // seems app has lost FS mode it may occurs if an user use core window's button
-  if (g_advancedSettings.m_fullScreen && !appView.IsFullScreenMode())
-    g_advancedSettings.m_fullScreen = false;
+  if (CServiceBroker::GetAdvancedSettings().m_fullScreen && !appView.IsFullScreenMode())
+    CServiceBroker::GetAdvancedSettings().m_fullScreen = false;
 
   XBMC_Event newEvent;
   memset(&newEvent, 0, sizeof(newEvent));

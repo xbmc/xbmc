@@ -592,7 +592,7 @@ bool CNetworkServices::StartAirPlayServer()
   if (IsAirPlayServerRunning())
     return true;
 
-  if (!CAirPlayServer::StartServer(g_advancedSettings.m_airPlayPort, true))
+  if (!CAirPlayServer::StartServer(CServiceBroker::GetAdvancedSettings().m_airPlayPort, true))
     return false;
 
   if (!CAirPlayServer::SetCredentials(m_settings->GetBool(CSettings::SETTING_SERVICES_USEAIRPLAYPASSWORD),
@@ -612,7 +612,7 @@ bool CNetworkServices::StartAirPlayServer()
   // we have implemented it anyways).
   txt.push_back(std::make_pair("features", "0x20F7"));
 
-  CZeroconf::GetInstance()->PublishService("servers.airplay", "_airplay._tcp", CSysInfo::GetDeviceName(), g_advancedSettings.m_airPlayPort, txt);
+  CZeroconf::GetInstance()->PublishService("servers.airplay", "_airplay._tcp", CSysInfo::GetDeviceName(), CServiceBroker::GetAdvancedSettings().m_airPlayPort, txt);
 #endif // HAS_ZEROCONF
 
   return true;
@@ -654,7 +654,7 @@ bool CNetworkServices::StartAirTunesServer()
   if (IsAirTunesServerRunning())
     return true;
 
-  if (!CAirTunesServer::StartServer(g_advancedSettings.m_airTunesPort, true,
+  if (!CAirTunesServer::StartServer(CServiceBroker::GetAdvancedSettings().m_airTunesPort, true,
                                     m_settings->GetBool(CSettings::SETTING_SERVICES_USEAIRPLAYPASSWORD),
                                     m_settings->GetString(CSettings::SETTING_SERVICES_AIRPLAYPASSWORD)))
   {
@@ -695,7 +695,7 @@ bool CNetworkServices::StartJSONRPCServer()
   if (IsJSONRPCServerRunning())
     return true;
 
-  if (!CTCPServer::StartServer(g_advancedSettings.m_jsonTcpPort, m_settings->GetBool(CSettings::SETTING_SERVICES_ESALLINTERFACES)))
+  if (!CTCPServer::StartServer(CServiceBroker::GetAdvancedSettings().m_jsonTcpPort, m_settings->GetBool(CSettings::SETTING_SERVICES_ESALLINTERFACES)))
     return false;
 
 #ifdef HAS_ZEROCONF
@@ -703,7 +703,7 @@ bool CNetworkServices::StartJSONRPCServer()
   txt.push_back(std::make_pair("txtvers", "1"));
   txt.push_back(std::make_pair("uuid", CServiceBroker::GetSettings()->GetString(CSettings::SETTING_SERVICES_DEVICEUUID)));
 
-  CZeroconf::GetInstance()->PublishService("servers.jsonrpc-tpc", "_xbmc-jsonrpc._tcp", CSysInfo::GetDeviceName(), g_advancedSettings.m_jsonTcpPort, txt);
+  CZeroconf::GetInstance()->PublishService("servers.jsonrpc-tpc", "_xbmc-jsonrpc._tcp", CSysInfo::GetDeviceName(), CServiceBroker::GetAdvancedSettings().m_jsonTcpPort, txt);
 #endif // HAS_ZEROCONF
 
   return true;

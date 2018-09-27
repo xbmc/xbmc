@@ -345,7 +345,7 @@ COverlay* CRenderer::Convert(CDVDOverlaySSA* o, double pts)
   int subalign = CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_SUBTITLES_ALIGN);
   if(subalign == SUBTITLE_ALIGN_BOTTOM_OUTSIDE
   || subalign == SUBTITLE_ALIGN_TOP_OUTSIDE
-  ||(subalign == SUBTITLE_ALIGN_MANUAL && g_advancedSettings.m_videoAssFixedWorks))
+  ||(subalign == SUBTITLE_ALIGN_MANUAL && CServiceBroker::GetAdvancedSettings().m_videoAssFixedWorks))
     useMargin = 1;
   else
     useMargin = 0;
@@ -355,7 +355,7 @@ COverlay* CRenderer::Convert(CDVDOverlaySSA* o, double pts)
   if(subalign == SUBTITLE_ALIGN_TOP_INSIDE
   || subalign == SUBTITLE_ALIGN_TOP_OUTSIDE)
     position = 100.0;
-  else if (subalign == SUBTITLE_ALIGN_MANUAL && g_advancedSettings.m_videoAssFixedWorks)
+  else if (subalign == SUBTITLE_ALIGN_MANUAL && CServiceBroker::GetAdvancedSettings().m_videoAssFixedWorks)
   {
     RESOLUTION_INFO res;
     res = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution());

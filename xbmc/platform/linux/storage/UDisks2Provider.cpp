@@ -10,6 +10,7 @@
 
 #include "PosixMountProvider.h"
 #include "guilib/LocalizeStrings.h"
+#include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
@@ -398,7 +399,7 @@ void CUDisks2Provider::FilesystemAdded(Filesystem *fs, bool isNew)
     m_filesystems[fs->m_object] = fs;
   }
 
-  if (fs->IsReady() && !fs->m_isMounted && g_advancedSettings.m_handleMounting)
+  if (fs->IsReady() && !fs->m_isMounted && CServiceBroker::GetAdvancedSettings().m_handleMounting)
   {
     fs->Mount();
   }

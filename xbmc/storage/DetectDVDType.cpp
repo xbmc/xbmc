@@ -241,7 +241,7 @@ void CDetectDVDMedia::DetectMediaType()
 
   if (m_pCdInfo->IsISOUDF(1))
   {
-    if (!g_advancedSettings.m_detectAsUdf)
+    if (!CServiceBroker::GetAdvancedSettings().m_detectAsUdf)
     {
       strNewUrl = "iso9660://";
       m_isoReader.Scan();

@@ -167,7 +167,7 @@ std::string CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFile
     if (music && music->GetArtistString().size())
       value = music->GetArtistString();
     if (movie && movie->m_artist.size())
-      value = StringUtils::Join(movie->m_artist, g_advancedSettings.m_videoItemSeparator);
+      value = StringUtils::Join(movie->m_artist, CServiceBroker::GetAdvancedSettings().m_videoItemSeparator);
     break;
   case 'T':
     if (music && music->GetTitle().size())
@@ -187,9 +187,9 @@ std::string CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFile
     break;
   case 'G':
     if (music && music->GetGenre().size())
-      value = StringUtils::Join(music->GetGenre(), g_advancedSettings.m_musicItemSeparator);
+      value = StringUtils::Join(music->GetGenre(), CServiceBroker::GetAdvancedSettings().m_musicItemSeparator);
     if (movie && movie->m_genre.size())
-      value = StringUtils::Join(movie->m_genre, g_advancedSettings.m_videoItemSeparator);
+      value = StringUtils::Join(movie->m_genre, CServiceBroker::GetAdvancedSettings().m_videoItemSeparator);
     break;
   case 'Y':
     if (music)
@@ -290,7 +290,7 @@ std::string CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFile
   case 'U':
     if (movie && !movie->m_studio.empty())
     {// Studios
-      value = StringUtils::Join(movie ->m_studio, g_advancedSettings.m_videoItemSeparator);
+      value = StringUtils::Join(movie ->m_studio, CServiceBroker::GetAdvancedSettings().m_videoItemSeparator);
     }
     break;
   case 'V': // Playcount

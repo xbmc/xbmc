@@ -31,7 +31,7 @@ protected:
         CServiceBroker::GetSettings()->Load(it);
 
       for (const auto& it : advancedsettings)
-        g_advancedSettings.ParseSettingsFile(it);
+        CServiceBroker::GetAdvancedSettings().ParseSettingsFile(it);
 
       CServiceBroker::GetSettings()->SetLoaded();
     }
@@ -39,7 +39,7 @@ protected:
 
   ~TestFileFactory() override
   {
-    g_advancedSettings.Clear();
+    CServiceBroker::GetAdvancedSettings().Clear();
     CServiceBroker::GetSettings()->Unload();
     CServiceBroker::GetSettings()->Uninitialize();
   }

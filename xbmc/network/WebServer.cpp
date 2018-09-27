@@ -1253,7 +1253,7 @@ void CWebServer::UnregisterRequestHandler(IHTTPRequestHandler *handler)
 
 void CWebServer::LogRequest(const HTTPRequest& request) const
 {
-  if (!g_advancedSettings.CanLogComponent(LOGWEBSERVER))
+  if (!CServiceBroker::GetAdvancedSettings().CanLogComponent(LOGWEBSERVER))
     return;
 
   std::multimap<std::string, std::string> headerValues;
@@ -1278,7 +1278,7 @@ void CWebServer::LogRequest(const HTTPRequest& request) const
 
 void CWebServer::LogResponse(const HTTPRequest& request, int responseStatus) const
 {
-  if (!g_advancedSettings.CanLogComponent(LOGWEBSERVER))
+  if (!CServiceBroker::GetAdvancedSettings().CanLogComponent(LOGWEBSERVER))
     return;
 
   std::multimap<std::string, std::string> headerValues;

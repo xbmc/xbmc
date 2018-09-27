@@ -239,7 +239,7 @@ void CPVRChannelGroup::SearchAndSetChannelIcons(bool bUpdateDb /* = false */)
         (itItem = fileItemMap.find(strLegalChannelName)) != fileItemMap.end() ||
         (itItem = fileItemMap.find(strChannelUid)) != fileItemMap.end())
     {
-      channel->SetIconPath(itItem->second, g_advancedSettings.m_bPVRAutoScanIconsUserSet);
+      channel->SetIconPath(itItem->second, CServiceBroker::GetAdvancedSettings().m_bPVRAutoScanIconsUserSet);
     }
 
     if (bUpdateDb)

@@ -15,6 +15,7 @@
 #include <algorithm>
 
 #include "AESinkALSA.h"
+#include "ServiceBroker.h"
 #include "cores/AudioEngine/AESinkFactory.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/AudioEngine/Utils/AEELDParser.h"
@@ -447,7 +448,7 @@ snd_pcm_chmap_t* CAESinkALSA::SelectALSAChannelMap(const CAEChannelInfo& info)
       chmap = CopyALSAchmap(&supportedMaps[best]->map);
   }
 
-  if (chmap && g_advancedSettings.CanLogComponent(LOGAUDIO))
+  if (chmap && CServiceBroker::GetAdvancedSettings().CanLogComponent(LOGAUDIO))
     CLog::Log(LOGDEBUG, "CAESinkALSA::SelectALSAChannelMap - Selected ALSA map \"%s\"", ALSAchmapToString(chmap).c_str());
 
   snd_pcm_free_chmaps(supportedMaps);
@@ -1594,7 +1595,7 @@ bool CAESinkALSA::GetELD(snd_hctl_t *hctl, int device, CAEDeviceInfo& info, bool
 
 void CAESinkALSA::sndLibErrorHandler(const char *file, int line, const char *function, int err, const char *fmt, ...)
 {
-  if(!g_advancedSettings.CanLogComponent(LOGAUDIO))
+  if(!CServiceBroker::GetAdvancedSettings().CanLogComponent(LOGAUDIO))
     return;
 
   va_list arg;

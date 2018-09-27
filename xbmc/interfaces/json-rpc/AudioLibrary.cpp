@@ -742,7 +742,7 @@ JSONRPC_STATUS CAudioLibrary::SetAlbumDetails(const std::string &method, ITransp
       CopyStringArray(parameterObject["musicbrainzalbumartistid"], mbids);
     // When display artist is not provided and yet artists is changing make by concatenation
     if (!ParameterNotNull(parameterObject, "displayartist"))
-      album.strArtistDesc = StringUtils::Join(artists, g_advancedSettings.m_musicItemSeparator);
+      album.strArtistDesc = StringUtils::Join(artists, CServiceBroker::GetAdvancedSettings().m_musicItemSeparator);
     album.SetArtistCredits(artists, std::vector<std::string>(), mbids);
     // On updatealbum artists will be changed
     album.bArtistSongMerge = true;
@@ -841,7 +841,7 @@ JSONRPC_STATUS CAudioLibrary::SetSongDetails(const std::string &method, ITranspo
       CopyStringArray(parameterObject["musicbrainzartistid"], mbids);
     // When display artist is not provided and yet artists is changing make by concatenation
     if (!ParameterNotNull(parameterObject, "displayartist"))
-      song.strArtistDesc = StringUtils::Join(artists, g_advancedSettings.m_musicItemSeparator);
+      song.strArtistDesc = StringUtils::Join(artists, CServiceBroker::GetAdvancedSettings().m_musicItemSeparator);
     song.SetArtistCredits(artists, std::vector<std::string>(), mbids);
   }
 

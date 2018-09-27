@@ -69,7 +69,7 @@ CWinSystemWin32::CWinSystemWin32()
   CAESinkDirectSound::Register();
   CAESinkWASAPI::Register();
   CWin32PowerSyscall::Register();
-  if (g_advancedSettings.m_bScanIRServer)
+  if (CServiceBroker::GetAdvancedSettings().m_bScanIRServer)
   {
     m_irss.reset(new CIRServerSuite());
     m_irss->Initialize();
@@ -343,7 +343,7 @@ void CWinSystemWin32::AdjustWindow(bool forceResize)
   }
   else // m_state == WINDOW_STATE_WINDOWED
   {
-    windowAfter = g_advancedSettings.m_alwaysOnTop ? HWND_TOPMOST : HWND_NOTOPMOST;
+    windowAfter = CServiceBroker::GetAdvancedSettings().m_alwaysOnTop ? HWND_TOPMOST : HWND_NOTOPMOST;
 
     rc.left = m_nLeft;
     rc.right = m_nLeft + m_nWidth;
@@ -971,7 +971,7 @@ bool CWinSystemWin32::Show(bool raise)
     if (m_bFullScreen)
       windowAfter = HWND_TOP;
     else
-      windowAfter = g_advancedSettings.m_alwaysOnTop ? HWND_TOPMOST : HWND_NOTOPMOST;
+      windowAfter = CServiceBroker::GetAdvancedSettings().m_alwaysOnTop ? HWND_TOPMOST : HWND_NOTOPMOST;
   }
 
   SetWindowPos(m_hWnd, windowAfter, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW | SWP_ASYNCWINDOWPOS);

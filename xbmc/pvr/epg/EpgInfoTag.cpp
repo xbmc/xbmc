@@ -48,9 +48,9 @@ CPVREpgInfoTag::CPVREpgInfoTag(const EPG_TAG &data, int iClientId)
   m_iUniqueBroadcastID(data.iUniqueBroadcastId),
   m_iUniqueChannelID(data.iUniqueChannelId),
   m_iYear(data.iYear),
-  m_startTime(data.startTime + g_advancedSettings.m_iPVRTimeCorrection),
-  m_endTime(data.endTime + g_advancedSettings.m_iPVRTimeCorrection),
-  m_firstAired(data.firstAired + g_advancedSettings.m_iPVRTimeCorrection),
+  m_startTime(data.startTime + CServiceBroker::GetAdvancedSettings().m_iPVRTimeCorrection),
+  m_endTime(data.endTime + CServiceBroker::GetAdvancedSettings().m_iPVRTimeCorrection),
+  m_firstAired(data.firstAired + CServiceBroker::GetAdvancedSettings().m_iPVRTimeCorrection),
   m_iFlags(data.iFlags)
 {
   SetGenre(data.iGenreType, data.iGenreSubType, data.strGenreDescription);
@@ -400,17 +400,17 @@ const std::string CPVREpgInfoTag::GetCastLabel() const
 
 const std::string CPVREpgInfoTag::GetDirectorsLabel() const
 {
-  return StringUtils::Join(m_directors, g_advancedSettings.m_videoItemSeparator);
+  return StringUtils::Join(m_directors, CServiceBroker::GetAdvancedSettings().m_videoItemSeparator);
 }
 
 const std::string CPVREpgInfoTag::GetWritersLabel() const
 {
-  return StringUtils::Join(m_writers, g_advancedSettings.m_videoItemSeparator);
+  return StringUtils::Join(m_writers, CServiceBroker::GetAdvancedSettings().m_videoItemSeparator);
 }
 
 const std::string CPVREpgInfoTag::GetGenresLabel() const
 {
-  return StringUtils::Join(m_genre, g_advancedSettings.m_videoItemSeparator);
+  return StringUtils::Join(m_genre, CServiceBroker::GetAdvancedSettings().m_videoItemSeparator);
 }
 
 int CPVREpgInfoTag::Year(void) const
@@ -438,7 +438,7 @@ void CPVREpgInfoTag::SetGenre(int iGenreType, int iGenreSubType, const char* str
     else
     {
       /* Determine the genre description from the type and subtype IDs */
-      m_genre = StringUtils::Split(CPVREpg::ConvertGenreIdToString(iGenreType, iGenreSubType), g_advancedSettings.m_videoItemSeparator);
+      m_genre = StringUtils::Split(CPVREpg::ConvertGenreIdToString(iGenreType, iGenreSubType), CServiceBroker::GetAdvancedSettings().m_videoItemSeparator);
     }
   }
 }
@@ -642,7 +642,7 @@ bool CPVREpgInfoTag::Update(const CPVREpgInfoTag &tag, bool bUpdateBroadcastId /
       else
       {
         /* Determine genre description by type/subtype */
-        m_genre = StringUtils::Split(CPVREpg::ConvertGenreIdToString(tag.m_iGenreType, tag.m_iGenreSubType), g_advancedSettings.m_videoItemSeparator);
+        m_genre = StringUtils::Split(CPVREpg::ConvertGenreIdToString(tag.m_iGenreType, tag.m_iGenreSubType), CServiceBroker::GetAdvancedSettings().m_videoItemSeparator);
       }
       m_firstAired         = tag.m_firstAired;
       m_iParentalRating    = tag.m_iParentalRating;

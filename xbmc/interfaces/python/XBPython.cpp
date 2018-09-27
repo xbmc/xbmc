@@ -102,7 +102,7 @@ void XBPython::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender,
   }
 
   std::string jsonData;
-  if (CJSONVariantWriter::Write(data, jsonData, g_advancedSettings.m_jsonOutputCompact))
+  if (CJSONVariantWriter::Write(data, jsonData, CServiceBroker::GetAdvancedSettings().m_jsonOutputCompact))
     OnNotification(sender, std::string(ANNOUNCEMENT::AnnouncementFlagToString(flag)) + "." + std::string(message), jsonData);
 }
 

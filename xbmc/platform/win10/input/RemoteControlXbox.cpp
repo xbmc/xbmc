@@ -108,7 +108,7 @@ void CRemoteControlXbox::HandleAcceleratorKey(const CoreDispatcher& sender, cons
     else
     {
       m_repeatCount++;
-      if (m_repeatCount > g_advancedSettings.m_remoteDelay)
+      if (m_repeatCount > CServiceBroker::GetAdvancedSettings().m_remoteDelay)
       {
         newEvent.keybutton.holdtime = XbmcThreads::SystemClockMillis() - m_firstClickTime;
         if (appPort)

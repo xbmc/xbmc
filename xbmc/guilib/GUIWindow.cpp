@@ -324,7 +324,7 @@ void CGUIWindow::CenterWindow()
 
 void CGUIWindow::DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
-  if (!IsControlDirty() && g_advancedSettings.m_guiSmartRedraw)
+  if (!IsControlDirty() && CServiceBroker::GetAdvancedSettings().m_guiSmartRedraw)
     return;
 
   CServiceBroker::GetWinSystem()->GetGfxContext().SetRenderingResolution(m_coordsRes, m_needsScaling);

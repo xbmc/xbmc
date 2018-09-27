@@ -371,7 +371,7 @@ static int SetStereoMode(const std::vector<std::string>& params)
  */
 static int ToggleDirty(const std::vector<std::string>&)
 {
-  g_advancedSettings.ToggleDirtyRegionVisualization();
+  CServiceBroker::GetAdvancedSettings().ToggleDirtyRegionVisualization();
 
   return 0;
 }

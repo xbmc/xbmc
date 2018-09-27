@@ -76,7 +76,7 @@ CPVRRecording::CPVRRecording(const PVR_RECORDING &recording, unsigned int iClien
   if (recording.iYear > 0)
     SetYear(recording.iYear);
   m_iClientId                      = iClientId;
-  m_recordingTime                  = recording.recordingTime + g_advancedSettings.m_iPVRTimeCorrection;
+  m_recordingTime                  = recording.recordingTime + CServiceBroker::GetAdvancedSettings().m_iPVRTimeCorrection;
   m_iPriority                      = recording.iPriority;
   m_iLifetime                      = recording.iLifetime;
   // Deleted recording is placed at the root of the deleted view
@@ -477,11 +477,11 @@ void CPVRRecording::SetGenre(int iGenreType, int iGenreSubType, const std::strin
   if ((iGenreType == EPG_GENRE_USE_STRING) && !strGenre.empty())
   {
     /* Type and sub type are not given. Use the provided genre description if available. */
-    m_genre = StringUtils::Split(strGenre, g_advancedSettings.m_videoItemSeparator);
+    m_genre = StringUtils::Split(strGenre, CServiceBroker::GetAdvancedSettings().m_videoItemSeparator);
   }
   else
   {
     /* Determine the genre description from the type and subtype IDs */
-    m_genre = StringUtils::Split(CPVREpg::ConvertGenreIdToString(iGenreType, iGenreSubType), g_advancedSettings.m_videoItemSeparator);
+    m_genre = StringUtils::Split(CPVREpg::ConvertGenreIdToString(iGenreType, iGenreSubType), CServiceBroker::GetAdvancedSettings().m_videoItemSeparator);
   }
 }

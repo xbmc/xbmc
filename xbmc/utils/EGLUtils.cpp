@@ -11,6 +11,7 @@
 
 #include "StringUtils.h"
 #include "guilib/IDirtyRegionSolver.h"
+#include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
 
 #include <EGL/eglext.h>
@@ -146,8 +147,9 @@ bool CEGLContextUtils::InitializeDisplay(EGLint renderableType, EGLint rendering
 
   EGLint surfaceType = EGL_WINDOW_BIT;
   // for the non-trivial dirty region modes, we need the EGL buffer to be preserved across updates
-  if (g_advancedSettings.m_guiAlgorithmDirtyRegions == DIRTYREGION_SOLVER_COST_REDUCTION ||
-      g_advancedSettings.m_guiAlgorithmDirtyRegions == DIRTYREGION_SOLVER_UNION)
+  int guiAlgorithmDirtyRegions = CServiceBroker::GetAdvancedSettings().m_guiAlgorithmDirtyRegions;
+  if (guiAlgorithmDirtyRegions == DIRTYREGION_SOLVER_COST_REDUCTION ||
+      guiAlgorithmDirtyRegions == DIRTYREGION_SOLVER_UNION)
     surfaceType |= EGL_SWAP_BEHAVIOR_PRESERVED_BIT;
 
   EGLint attribs[] =
@@ -228,8 +230,9 @@ void CEGLContextUtils::SurfaceAttrib()
   }
 
   // for the non-trivial dirty region modes, we need the EGL buffer to be preserved across updates
-  if (g_advancedSettings.m_guiAlgorithmDirtyRegions == DIRTYREGION_SOLVER_COST_REDUCTION ||
-      g_advancedSettings.m_guiAlgorithmDirtyRegions == DIRTYREGION_SOLVER_UNION)
+  int guiAlgorithmDirtyRegions = CServiceBroker::GetAdvancedSettings().m_guiAlgorithmDirtyRegions;
+  if (guiAlgorithmDirtyRegions == DIRTYREGION_SOLVER_COST_REDUCTION ||
+      guiAlgorithmDirtyRegions == DIRTYREGION_SOLVER_UNION)
   {
     if (eglSurfaceAttrib(m_eglDisplay, m_eglSurface, EGL_SWAP_BEHAVIOR, EGL_BUFFER_PRESERVED) != EGL_TRUE)
     {

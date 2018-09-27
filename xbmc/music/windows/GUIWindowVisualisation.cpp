@@ -214,7 +214,7 @@ void CGUIWindowVisualisation::FrameMove()
     m_initTimer.StartZero();
     infoMgr.GetInfoProviders().GetPlayerInfoProvider().SetShowInfo(true);
   }
-  if (m_initTimer.IsRunning() && m_initTimer.GetElapsedSeconds() > (float)g_advancedSettings.m_songInfoDuration)
+  if (m_initTimer.IsRunning() && m_initTimer.GetElapsedSeconds() > (float)CServiceBroker::GetAdvancedSettings().m_songInfoDuration)
   {
     m_initTimer.Stop();
     if (!CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_MYMUSIC_SONGTHUMBINVIS))

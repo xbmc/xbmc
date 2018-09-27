@@ -8,6 +8,7 @@
 
 #include "log.h"
 #include "CompileInfo.h"
+#include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
 #include "threads/CriticalSection.h"
 #include "threads/SingleLock.h"
@@ -91,7 +92,7 @@ void CLog::LogString(int logLevel, std::string&& logString)
 
 void CLog::LogString(int logLevel, int component, std::string&& logString)
 {
-  if (g_advancedSettings.CanLogComponent(component) && IsLogLevelLogged(logLevel))
+  if (CServiceBroker::GetAdvancedSettings().CanLogComponent(component) && IsLogLevelLogged(logLevel))
     LogString(logLevel, std::move(logString));
 }
 

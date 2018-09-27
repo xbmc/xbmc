@@ -16,6 +16,7 @@
 #include "pvr/PVRDatabase.h"
 #include "pvr/epg/EpgDatabase.h"
 #include "settings/AdvancedSettings.h"
+#include "ServiceBroker.h"
 
 using namespace PVR;
 
@@ -37,15 +38,17 @@ void CDatabaseManager::Initialize()
 
   CLog::Log(LOGDEBUG, "%s, updating databases...", __FUNCTION__);
 
+  CAdvancedSettings& advancedSettings = CServiceBroker::GetAdvancedSettings();
+
   // NOTE: Order here is important. In particular, CTextureDatabase has to be updated
   //       before CVideoDatabase.
   { CAddonDatabase db; UpdateDatabase(db); }
   { CViewDatabase db; UpdateDatabase(db); }
   { CTextureDatabase db; UpdateDatabase(db); }
-  { CMusicDatabase db; UpdateDatabase(db, &g_advancedSettings.m_databaseMusic); }
-  { CVideoDatabase db; UpdateDatabase(db, &g_advancedSettings.m_databaseVideo); }
-  { CPVRDatabase db; UpdateDatabase(db, &g_advancedSettings.m_databaseTV); }
-  { CPVREpgDatabase db; UpdateDatabase(db, &g_advancedSettings.m_databaseEpg); }
+  { CMusicDatabase db; UpdateDatabase(db, &advancedSettings.m_databaseMusic); }
+  { CVideoDatabase db; UpdateDatabase(db, &advancedSettings.m_databaseVideo); }
+  { CPVRDatabase db; UpdateDatabase(db, &advancedSettings.m_databaseTV); }
+  { CPVREpgDatabase db; UpdateDatabase(db, &advancedSettings.m_databaseEpg); }
 
   CLog::Log(LOGDEBUG, "%s, updating databases... DONE", __FUNCTION__);
 

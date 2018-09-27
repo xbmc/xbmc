@@ -11,6 +11,7 @@
 #include <algorithm>
 #include <cstdlib>
 
+#include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/StringUtils.h"
 
@@ -18,7 +19,7 @@ namespace PVR
 {
 
 CPVRChannelNumberInputHandler::CPVRChannelNumberInputHandler()
-: CPVRChannelNumberInputHandler(g_advancedSettings.m_iPVRNumericChannelSwitchTimeout, CHANNEL_NUMBER_INPUT_MAX_DIGITS)
+: CPVRChannelNumberInputHandler(CServiceBroker::GetAdvancedSettings().m_iPVRNumericChannelSwitchTimeout, CHANNEL_NUMBER_INPUT_MAX_DIGITS)
 {
 }
 

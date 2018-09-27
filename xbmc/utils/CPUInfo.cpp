@@ -93,6 +93,7 @@
 #endif
 
 #ifdef TARGET_POSIX
+#include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
 #endif
 
@@ -629,7 +630,7 @@ bool CCPUInfo::getTemperature(CTemperature& temperature)
 #else
   int         ret   = 0;
   FILE        *p    = NULL;
-  std::string  cmd   = g_advancedSettings.m_cpuTempCmd;
+  std::string  cmd   = CServiceBroker::GetAdvancedSettings().m_cpuTempCmd;
 
   temperature.SetValid(false);
 

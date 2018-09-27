@@ -587,7 +587,7 @@ bool COMXVideo::Open(CDVDStreamInfo &hints, OMXClock *clock, bool hdmi_clock_syn
   }
   OMX_PARAM_BRCMVIDEODECODEERRORCONCEALMENTTYPE concanParam;
   OMX_INIT_STRUCTURE(concanParam);
-  if(g_advancedSettings.m_omxDecodeStartWithValidFrame)
+  if(CServiceBroker::GetAdvancedSettings().m_omxDecodeStartWithValidFrame)
     concanParam.bStartWithValidFrame = OMX_TRUE;
   else
     concanParam.bStartWithValidFrame = OMX_FALSE;

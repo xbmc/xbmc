@@ -854,7 +854,7 @@ void CRenderManager::UpdateLatencyTweak()
   float refresh = fps;
   if (CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution() == RES_WINDOW)
     refresh = 0; // No idea about refresh rate when windowed, just get the default latency
-  m_latencyTweak = g_advancedSettings.GetLatencyTweak(refresh);
+  m_latencyTweak = CServiceBroker::GetAdvancedSettings().GetLatencyTweak(refresh);
 }
 
 void CRenderManager::UpdateResolution()

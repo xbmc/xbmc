@@ -381,7 +381,3 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
   private:
     void setExtraLogLevel(const std::vector<CVariant> &components);
 };
-
-// TODO: Remove this; change code to use CServiceBroker::GetAdvancedSettings() directly
-#include "ServiceBroker.h"
-#define g_advancedSettings CServiceBroker::GetAdvancedSettings()

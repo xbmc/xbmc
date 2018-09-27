@@ -158,9 +158,9 @@ int CPlayerCoreFactory::GetPlayerIndex(const std::string& strCoreName) const
     // Dereference "*default*player" aliases
     std::string strRealCoreName;
     if (StringUtils::EqualsNoCase(strCoreName, "audiodefaultplayer"))
-      strRealCoreName = g_advancedSettings.m_audioDefaultPlayer;
+      strRealCoreName = CServiceBroker::GetAdvancedSettings().m_audioDefaultPlayer;
     else if (StringUtils::EqualsNoCase(strCoreName, "videodefaultplayer"))
-      strRealCoreName = g_advancedSettings.m_videoDefaultPlayer;
+      strRealCoreName = CServiceBroker::GetAdvancedSettings().m_videoDefaultPlayer;
     else
       strRealCoreName = strCoreName;
 
