@@ -163,7 +163,7 @@ bool CGameUtils::HasGameExtension(const std::string &path)
   // Look for a game client that supports this extension
   VECADDONS gameClients;
   CBinaryAddonCache& addonCache = CServiceBroker::GetBinaryAddonCache();
-  addonCache.GetAddons(gameClients, ADDON_GAMEDLL);
+  addonCache.GetInstalledAddons(gameClients, ADDON_GAMEDLL);
   for (auto& gameClient : gameClients)
   {
     GameClientPtr gc(std::static_pointer_cast<CGameClient>(gameClient));
