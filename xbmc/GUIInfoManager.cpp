@@ -1186,7 +1186,11 @@ const infomap system_labels[] =  {{ "hasnetwork",       SYSTEM_ETHERNET_LINK_ACT
 ///   \table_row3{   <b>`System.AddonIsEnabled(id)`</b>,
 ///                  \anchor AddonIsEnabled
 ///                  _boolean_,
-///     Returns true if the specified addon is enabled on the system.
+///     @return **True** if the specified addon is enabled on the system..
+///     @param id - The addon Id
+///     <p><hr>
+///     @skinning_v19 **[New Boolean Condition]** \link System_AddonIsEnabled `System.AddonIsEnabled(id)`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.HasCoreId(id)`</b>,
 ///                  \anchor System_HasCoreId
