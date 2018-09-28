@@ -560,6 +560,14 @@ msgctxt "#31163"
 msgid "Show Fanart background"
 msgstr "Birta aðdáendamynd sem bakgrunn"
 
+msgctxt "#31164"
+msgid "Choose kind of profile identification"
+msgstr "Veldu gerð notandaauðkenningar"
+
 msgctxt "#31165"
 msgid "Profile name"
 msgstr "Nafn notanda"
+
+msgctxt "#31166"
+msgid "Profile avatar"
+msgstr "Notandatáknmynd"
