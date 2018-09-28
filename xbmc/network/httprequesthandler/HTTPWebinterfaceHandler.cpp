@@ -13,6 +13,7 @@
 #include "addons/Webinterface.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
+#include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
@@ -60,6 +61,9 @@ int CHTTPWebinterfaceHandler::ResolveUrl(const std::string &url, std::string &pa
       return MHD_HTTP_FOUND;
     }
   }
+
+  if (!CFileUtils::CheckFileAccessAllowed(path))
+    return MHD_HTTP_NOT_FOUND;
 
   if (!XFILE::CFile::Exists(path))
     return MHD_HTTP_NOT_FOUND;

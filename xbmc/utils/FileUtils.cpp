@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: GPL-2.0-or-later
  *  See LICENSES/README.md for more information.
  */
+
 #include "FileUtils.h"
 #include "ServiceBroker.h"
 #include "guilib/GUIKeyboardFactory.h"
@@ -13,9 +14,9 @@
 #include "JobManager.h"
 #include "FileOperationJob.h"
 #include "URIUtils.h"
-#include "filesystem/StackDirectory.h"
 #include "filesystem/MultiPathDirectory.h"
-#include <vector>
+#include "filesystem/SpecialProtocol.h"
+#include "filesystem/StackDirectory.h"
 #include "settings/MediaSourceSettings.h"
 #include "Util.h"
 #include "StringUtils.h"
@@ -23,6 +24,13 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/Variant.h"
+
+#if defined(TARGET_WINDOWS)
+#include "platform/win32/WIN32Util.h"
+#include "utils/CharsetConverter.h"
+#endif
+
+#include <vector>
 
 using namespace XFILE;
 
@@ -201,4 +209,101 @@ CDateTime CFileUtils::GetModificationDate(const std::string& strFileNameAndPath,
     CLog::Log(LOGERROR, "%s unable to extract modification date for file (%s)", __FUNCTION__, strFileNameAndPath.c_str());
   }
   return dateAdded;
+}
+
+bool CFileUtils::CheckFileAccessAllowed(const std::string &filePath)
+{
+  // DENY access to paths matching
+  const std::vector<std::string> blacklist = {
+    "passwords.xml",
+    "sources.xml",
+    "guisettings.xml",
+    "advancedsettings.xml",
+    "server.key",
+    "/.ssh/",
+  };
+  // ALLOW kodi paths
+  const std::vector<std::string> whitelist = {
+    CSpecialProtocol::TranslatePath("special://home"),
+    CSpecialProtocol::TranslatePath("special://xbmc")
+  };
+
+  // image urls come in the form of image://... sometimes with a / appended at the end
+  // strip this off to get the real file path
+  bool isImage = false;
+  std::string decodePath = CURL::Decode(filePath);
+  size_t pos = decodePath.find("image://");
+  if (pos != std::string::npos)
+  {
+    isImage = true;
+    decodePath.erase(pos, 8);
+    URIUtils::RemoveSlashAtEnd(decodePath);
+  }
+
+  // check blacklist
+  for (const auto &b : blacklist)
+  {
+    if (decodePath.find(b) != std::string::npos)
+    {
+      CLog::Log(LOGERROR,"%s denied access to %s",  __FUNCTION__, decodePath.c_str());
+      return false;
+    }
+  }
+
+#if defined(TARGET_POSIX)
+  std::string whiteEntry;
+  char *fullpath = realpath(decodePath.c_str(), nullptr);
+
+  // if this is a locally existing file, check access permissions
+  if (fullpath)
+  {
+    const std::string realPath = fullpath;
+    free(fullpath);
+
+    // check whitelist
+    for (const auto &w : whitelist)
+    {
+      char *realtemp = realpath(w.c_str(), nullptr);
+      if (realtemp)
+      {
+        whiteEntry = realtemp;
+        free(realtemp);
+      }
+      if (StringUtils::StartsWith(realPath, whiteEntry))
+        return true;
+    }
+    // check sources with realPath
+    return CFileUtils::RemoteAccessAllowed(realPath);
+  }
+#elif defined(TARGET_WINDOWS)
+  CURL url(decodePath);
+  if (url.GetProtocol().empty())
+  {
+    std::wstring decodePathW;
+    g_charsetConverter.utf8ToW(decodePath, decodePathW, false);
+    CWIN32Util::AddExtraLongPathPrefix(decodePathW);
+    DWORD bufSize = GetFullPathNameW(decodePathW.c_str(), 0, nullptr, nullptr);
+    if (bufSize > 0)
+    {
+      std::wstring fullpathW;
+      fullpathW.resize(bufSize);
+      if (GetFullPathNameW(decodePathW.c_str(), bufSize, const_cast<wchar_t*>(fullpathW.c_str()), nullptr) <= bufSize - 1)
+      {
+        CWIN32Util::RemoveExtraLongPathPrefix(fullpathW);
+        std::string fullpath;
+        g_charsetConverter.wToUTF8(fullpathW, fullpath, false);
+        for (const std::string& whiteEntry : whitelist)
+        {
+          if (StringUtils::StartsWith(fullpath, whiteEntry))
+            return true;
+        }
+        return CFileUtils::RemoteAccessAllowed(fullpath);
+      }
+    }
+  }
+#endif
+  // if it isn't a local file, it must be a vfs entry
+  if (! isImage)
+    return CFileUtils::RemoteAccessAllowed(decodePath);
+  return true;
 }
