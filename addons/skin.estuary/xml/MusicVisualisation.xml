@@ -3,7 +3,7 @@
 	<defaultcontrol></defaultcontrol>
 	<backgroundcolor>background</backgroundcolor>
 	<controls>
-		<control type="visualisation">
+		<control type="visualisation" id="2">
 			<include>FullScreenDimensions</include>
 			<visible>Player.HasAudio</visible>
 		</control>
