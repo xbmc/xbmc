@@ -95,9 +95,15 @@ bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
         value = GUIINFO::GetFileInfoLabelValueFromPath(info.m_info, value);
         return true;
       case PLAYER_TITLE:
-      case MUSICPLAYER_TITLE:
         value = tag->GetTitle();
         return !value.empty();
+      case MUSICPLAYER_TITLE:
+        value = tag->GetTitle();
+        if (value.empty())
+          value = item->GetLabel();
+        if (value.empty())
+          value = CUtil::GetTitleFromPath(item->GetPath());
+        return true;
       case LISTITEM_TITLE:
         value = tag->GetTitle();
         return true;
