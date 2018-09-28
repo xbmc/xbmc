@@ -11,13 +11,16 @@
 #include "ActionTranslator.h"
 #include "Key.h"
 
+CAction::CAction() :
+  m_id(ACTION_NONE)
+{
+}
+
 CAction::CAction(int actionID, float amount1 /* = 1.0f */, float amount2 /* = 0.0f */, const std::string &name /* = "" */, unsigned int holdTime /*= 0*/)
 {
   m_id = actionID;
   m_amount[0] = amount1;
   m_amount[1] = amount2;
-  for (unsigned int i = 2; i < max_amounts; i++)
-    m_amount[i] = 0;
   m_name = name;
   m_repeat = 0;
   m_buttonCode = 0;
@@ -35,8 +38,6 @@ CAction::CAction(int actionID, unsigned int state, float posX, float posY, float
   m_amount[3] = offsetY;
   m_amount[4] = velocityX;
   m_amount[5] = velocityY;
-  for (unsigned int i = 6; i < max_amounts; i++)
-    m_amount[i] = 0;
   m_repeat = 0;
   m_buttonCode = 0;
   m_unicode = 0;
@@ -46,8 +47,6 @@ CAction::CAction(int actionID, unsigned int state, float posX, float posY, float
 CAction::CAction(int actionID, wchar_t unicode)
 {
   m_id = actionID;
-  for (float& amount : m_amount)
-    amount = 0;
   m_repeat = 0;
   m_buttonCode = 0;
   m_unicode = unicode;
@@ -59,8 +58,6 @@ CAction::CAction(int actionID, const std::string &name, const CKey &key):
 {
   m_id = actionID;
   m_amount[0] = 1; // digital button (could change this for repeat acceleration)
-  for (unsigned int i = 1; i < max_amounts; i++)
-    m_amount[i] = 0;
   m_repeat = key.GetRepeat();
   m_buttonCode = key.GetButtonCode();
   m_unicode = key.GetUnicode();
@@ -102,8 +99,6 @@ CAction::CAction(int actionID, const std::string &name):
   m_name(name)
 {
   m_id = actionID;
-  for (float& amount : m_amount)
-    amount = 0;
   m_repeat = 0;
   m_buttonCode = 0;
   m_unicode = 0;
@@ -125,6 +120,12 @@ CAction& CAction::operator=(const CAction& rhs)
     m_text = rhs.m_text;
   }
   return *this;
+}
+
+void CAction::ClearAmount()
+{
+  for (float& amount : m_amount)
+    amount = 0;
 }
 
 bool CAction::IsMouse() const

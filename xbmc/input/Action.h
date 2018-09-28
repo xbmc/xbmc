@@ -21,6 +21,7 @@ class CKey;
 class CAction
 {
 public:
+  CAction();
   CAction(int actionID, float amount1 = 1.0f, float amount2 = 0.0f, const std::string &name = "", unsigned int holdTime = 0);
   CAction(int actionID, wchar_t unicode);
   CAction(int actionID, unsigned int state, float posX, float posY, float offsetX, float offsetY, float velocityX = 0.0f, float velocityY = 0.0f, const std::string &name = "");
@@ -63,6 +64,10 @@ public:
    */
   float GetAmount(unsigned int index = 0) const { return (index < max_amounts) ? m_amount[index] : 0; };
 
+  /*! \brief Reset all amount values to zero
+   */
+  void ClearAmount();
+
   /*! \brief Unicode value associated with this action
    \return unicode value associated with this action, for keyboard input.
    */
@@ -90,12 +95,12 @@ private:
   std::string   m_name;
 
   static const unsigned int max_amounts = 6; // Must be at least 6
-  float        m_amount[max_amounts];
+  float        m_amount[max_amounts] = {};
 
-  float        m_repeat;
-  unsigned int m_holdTime;
-  unsigned int m_buttonCode;
-  wchar_t      m_unicode;
+  float        m_repeat = 0.0f;
+  unsigned int m_holdTime = 0;
+  unsigned int m_buttonCode = 0;
+  wchar_t      m_unicode = 0;
   std::string  m_text;
 };
 

@@ -155,10 +155,8 @@
       <x hotkey="back">OSD</x>
       <y hotkey="back">OSD</y>
       <start hotkey="back">Stop</start>
-      <!--
-      <rightbumper hotkey="back">Save</rightbumper>
-      <leftbumper hotkey="back">Load</leftbumper>
-      -->
+      <rightbumper hotkey="back">AnalogFastForward</rightbumper>
+      <leftbumper hotkey="back">AnalogRewind</leftbumper>
       <righttrigger hotkey="back">AnalogFastForward</righttrigger>
       <lefttrigger hotkey="back">AnalogRewind</lefttrigger>
       <!--

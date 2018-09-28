@@ -10,6 +10,7 @@
 
 #include "input/joysticks/interfaces/IKeyHandler.h"
 #include "input/joysticks/JoystickTypes.h"
+#include "input/Action.h"
 
 #include <map>
 #include <string>
@@ -44,10 +45,39 @@ namespace JOYSTICK
   private:
     void Reset();
 
-    bool HandleActions(std::vector<const KeymapAction*> actions, int windowId, float magnitude, unsigned int holdTimeMs);
-    bool HandleRelease(std::vector<const KeymapAction*> actions, int windowId);
+    /*!
+     * \brief Process actions to see if an action should be dispatched
+     *
+     * \param actions All actions from the keymap defined for the current window
+     * \param windowId The current window ID
+     * \param magnitude The magnitude or distance of the feature being handled
+     * \param holdTimeMs The time which the feature has been past the hold threshold
+     *
+     * \return The action to dispatch, or action with ID ACTION_NONE if no action should be dispatched
+     */
+    CAction ProcessActions(std::vector<const KeymapAction*> actions, int windowId, float magnitude, unsigned int holdTimeMs);
 
-    bool HandleAction(const KeymapAction& action, int windowId, float magnitude, unsigned int holdTimeMs);
+    /*!
+     * \brief Process actions after release event to see if an action should be dispatched
+     *
+     * \param actions All actions from the keymap defined for the current window
+     * \param windowId The current window ID
+     *
+     * \return The action to dispatch, or action with ID ACTION_NONE if no action should be dispatched
+     */
+    CAction ProcessRelease(std::vector<const KeymapAction*> actions, int windowId);
+
+    /*!
+     * \brief Process an action to see if it should be dispatched
+     *
+     * \param action The action chosen to be dispatched
+     * \param windowId The current window ID
+     * \param magnitude The magnitude or distance of the feature being handled
+     * \param holdTimeMs The time which the feature has been past the hold threshold
+     *
+     * \return The action to dispatch, or action with ID ACTION_NONE if no action should be dispatched
+     */
+    CAction ProcessAction(const KeymapAction& action, int windowId, float magnitude, unsigned int holdTimeMs);
 
     // Check criteria for sending a repeat action
     bool SendRepeatAction(unsigned int holdTimeMs);
@@ -69,6 +99,7 @@ namespace JOYSTICK
     bool m_bActionSent;
     unsigned int m_lastActionMs;
     int m_activeWindowId = -1; // Window that activated the key
+    CAction m_lastAction;
   };
 }
 }
