@@ -132,6 +132,11 @@ void CGUIControllerList::OnFocus(unsigned int controllerIndex)
     CGUIGameController* pController = dynamic_cast<CGUIGameController*>(m_guiWindow->GetControl(CONTROL_GAME_CONTROLLER));
     if (pController)
       pController->ActivateController(controller);
+
+    // Update controller description
+    CGUIMessage msg(GUI_MSG_LABEL_SET, m_guiWindow->GetID(), CONTROL_CONTROLLER_DESCRIPTION);
+    msg.SetLabel(controller->Description());
+    m_guiWindow->OnMessage(msg);
   }
 }
 

@@ -27,6 +27,7 @@
 #define CONTROL_GET_MORE                    20
 #define CONTROL_FIX_SKIPPING                21
 #define CONTROL_GAME_CONTROLLER             31
+#define CONTROL_CONTROLLER_DESCRIPTION      32
 
 #define MAX_CONTROLLER_COUNT  100 // large enough
 #define MAX_FEATURE_COUNT     200 // large enough
