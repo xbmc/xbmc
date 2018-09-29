@@ -165,6 +165,12 @@ doSomething(e);
 doSomething(f);
 ~~~~~~~~~~~~~
 
+Initializer lists have spaces between elements, but no surrounding spaces.
+
+~~~~~~~~~~~~~
+const char *aStringArray[] = {"one", "two", "three"};
+~~~~~~~~~~~~~
+
 --------------------------------------------------------------------------------
 \subsection code_guidelines_3_1 No vertical alignment
 
