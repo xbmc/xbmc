@@ -133,6 +133,7 @@ if(CORE_SYSTEM_NAME STREQUAL freebsd)
 endif()
 
 core_add_library(audioengine)
+add_platform_override(${CORE_LIBRARY} AEDefines.h PLATFORMS android)
 target_include_directories(${CORE_LIBRARY} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 if(NOT CORE_SYSTEM_NAME STREQUAL windows AND NOT CORE_SYSTEM_NAME STREQUAL windowsstore)
   if(HAVE_SSE)
