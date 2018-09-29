@@ -173,6 +173,10 @@ for (int i = 0; i < x; ++i)
   doSomething(e);
   doSomething(f);
 ```
+Initializer lists have spaces between elements, but no surrounding spaces.
+```cpp
+const char *aStringArray[] = {"one", "two", "three"};
+```
 
 **[back to top](#table-of-contents)**
 
