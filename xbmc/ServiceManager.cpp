@@ -56,8 +56,8 @@ bool CServiceManager::InitForTesting()
 
   m_profileManager.reset(new CProfilesManager());
   CProfile profile("special://temp");
-  m_profileManager.get()->AddProfile(profile);
-  m_profileManager.get()->CreateProfileFolders();
+  m_profileManager->AddProfile(profile);
+  m_profileManager->CreateProfileFolders();
 
   m_databaseManager.reset(new CDatabaseManager);
 
@@ -155,7 +155,7 @@ bool CServiceManager::InitStageTwo(const CAppParamParser &params)
 
   m_serviceAddons.reset(new ADDON::CServiceAddonManager(*m_addonMgr));
 
-  m_contextMenuManager.reset(new CContextMenuManager(*m_addonMgr.get()));
+  m_contextMenuManager.reset(new CContextMenuManager(*m_addonMgr));
 
   m_gameControllerManager.reset(new GAME::CControllerManager);
   m_inputManager.reset(new CInputManager(params));
@@ -254,22 +254,22 @@ void CServiceManager::DeinitStageOne()
 
 ADDON::CAddonMgr &CServiceManager::GetAddonMgr()
 {
-  return *m_addonMgr.get();
+  return *m_addonMgr;
 }
 
 ADDON::CBinaryAddonCache &CServiceManager::GetBinaryAddonCache()
 {
-  return *m_binaryAddonCache.get();
+  return *m_binaryAddonCache;
 }
 
 ADDON::CBinaryAddonManager &CServiceManager::GetBinaryAddonManager()
 {
-  return *m_binaryAddonManager.get();
+  return *m_binaryAddonManager;
 }
 
 ADDON::CVFSAddonCache &CServiceManager::GetVFSAddonCache()
 {
-  return *m_vfsAddonCache.get();
+  return *m_vfsAddonCache;
 }
 
 ADDON::CServiceAddonManager &CServiceManager::GetServiceAddons()

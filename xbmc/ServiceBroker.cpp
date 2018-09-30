@@ -74,6 +74,23 @@ PLAYLIST::CPlayListPlayer &CServiceBroker::GetPlaylistPlayer()
   return g_application.m_ServiceManager->GetPlaylistPlayer();
 }
 
+CSettingsComponent* CServiceBroker::m_pSettingsComponent = nullptr;
+
+void CServiceBroker::RegisterSettingsComponent(CSettingsComponent *settings)
+{
+  m_pSettingsComponent = settings;
+}
+
+void CServiceBroker::UnregisterSettingsComponent()
+{
+  m_pSettingsComponent = nullptr;
+}
+
+CSettingsComponent* CServiceBroker::GetSettingsComponent()
+{
+  return m_pSettingsComponent;
+}
+
 std::shared_ptr<CSettings> CServiceBroker::m_pSettings;
 
 std::shared_ptr<CSettings> CServiceBroker::GetSettings()

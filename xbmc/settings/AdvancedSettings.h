@@ -24,6 +24,7 @@
 #define CACHE_BUFFER_MODE_NONE          3
 #define CACHE_BUFFER_MODE_REMOTE        4
 
+class CAppParamParser;
 class CProfilesManager;
 class CVariant;
 
@@ -112,6 +113,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
 
     void Initialize();
+    void Initialize(const CAppParamParser &params);
     bool Initialized() { return m_initialized; };
     void AddSettingsFile(const std::string &filename);
     bool Load(const CProfilesManager &profileManager);
@@ -380,5 +382,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     void setExtraLogLevel(const std::vector<CVariant> &components);
 };
 
-XBMC_GLOBAL_REF(CAdvancedSettings,g_advancedSettings);
-#define g_advancedSettings XBMC_GLOBAL_USE(CAdvancedSettings)
+// TODO: Remove this; change code to use CServiceBroker::GetSettingsComponent()->GetAdvancedSettings() directly
+#include "ServiceBroker.h"
+#include "settings/SettingsComponent.h"
+#define g_advancedSettings (*(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()))

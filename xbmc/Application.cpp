@@ -81,6 +81,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/DisplaySettings.h"
 #include "settings/MediaSettings.h"
+#include "settings/SettingsComponent.h"
 #include "settings/SkinSettings.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/CPUInfo.h"
@@ -274,7 +275,7 @@ void CApplication::HandlePortEvents()
       case XBMC_VIDEORESIZE:
         if (CServiceBroker::GetGUI()->GetWindowManager().Initialized())
         {
-          if (!g_advancedSettings.m_fullScreen)
+          if (!CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_fullScreen)
           {
             CServiceBroker::GetWinSystem()->GetGfxContext().ApplyWindowResize(newEvent.resize.w, newEvent.resize.h);
             CServiceBroker::GetSettings()->SetInt(CSettings::SETTING_WINDOW_WIDTH, newEvent.resize.w);
@@ -354,6 +355,9 @@ bool CApplication::Create(const CAppParamParser &params)
 {
   // Grab a handle to our thread to be used later in identifying the render thread.
   m_threadID = CThread::GetCurrentThreadId();
+
+  m_pSettingsComponent.reset(new CSettingsComponent());
+  m_pSettingsComponent->Init(params);
 
   m_pSettings.reset(new CSettings());
   CServiceBroker::RegisterSettings(m_pSettings);
@@ -628,7 +632,7 @@ bool CApplication::CreateGUI()
   // update the window resolution
   CServiceBroker::GetWinSystem()->SetWindowResolution(CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_WINDOW_WIDTH), CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_WINDOW_HEIGHT));
 
-  if (g_advancedSettings.m_startFullScreen && CDisplaySettings::GetInstance().GetCurrentResolution() == RES_WINDOW)
+  if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_startFullScreen && CDisplaySettings::GetInstance().GetCurrentResolution() == RES_WINDOW)
   {
     // defer saving resolution after window was created
     CDisplaySettings::GetInstance().SetCurrentResolution(RES_DESKTOP);
@@ -1846,7 +1850,7 @@ void CApplication::Render()
 
 void CApplication::SetStandAlone(bool value)
 {
-  g_advancedSettings.m_handleMounting = m_bStandalone = value;
+  m_bStandalone = value;
 }
 
 bool CApplication::OnAction(const CAction &action)
@@ -2671,7 +2675,7 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
       m_skipGuiRender = true;
 #endif
 
-    if (g_advancedSettings.m_guiSmartRedraw && m_guiRefreshTimer.IsTimePast())
+    if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiSmartRedraw && m_guiRefreshTimer.IsTimePast())
     {
       CServiceBroker::GetGUI()->GetWindowManager().SendMessage(GUI_MSG_REFRESH_TIMER, 0, 0);
       m_guiRefreshTimer.Set(500);
@@ -2740,7 +2744,6 @@ bool CApplication::Cleanup()
       m_ServiceManager->DeinitStageTwo();
 
     CServiceBroker::GetSettings()->Uninitialize();
-    g_advancedSettings.Clear();
 
     CSpecialProtocol::UnregisterProfileManager();
     m_ServiceManager->DeinitStageOnePointFive();
@@ -2768,6 +2771,9 @@ bool CApplication::Cleanup()
     }
 
     m_pAnnouncementManager.reset();
+
+    m_pSettingsComponent->Deinit();
+    m_pSettingsComponent.reset();
 
     return true;
   }
@@ -3178,21 +3184,21 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
   if (item.IsVideo() && playlist == PLAYLIST_VIDEO && CServiceBroker::GetPlaylistPlayer().GetPlaylist(playlist).size() > 1)
   { // playing from a playlist by the looks
     // don't switch to fullscreen if we are not playing the first item...
-    options.fullscreen = !CServiceBroker::GetPlaylistPlayer().HasPlayedFirstFile() && g_advancedSettings.m_fullScreenOnMovieStart && !CMediaSettings::GetInstance().DoesVideoStartWindowed();
+    options.fullscreen = !CServiceBroker::GetPlaylistPlayer().HasPlayedFirstFile() && CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_fullScreenOnMovieStart && !CMediaSettings::GetInstance().DoesVideoStartWindowed();
   }
   else if(m_stackHelper.IsPlayingRegularStack())
   {
     //! @todo - this will fail if user seeks back to first file in stack
     if(m_stackHelper.GetCurrentPartNumber() == 0 || m_stackHelper.GetRegisteredStack(item)->m_lStartOffset != 0)
-      options.fullscreen = g_advancedSettings.m_fullScreenOnMovieStart && !CMediaSettings::GetInstance().DoesVideoStartWindowed();
+      options.fullscreen = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_fullScreenOnMovieStart && !CMediaSettings::GetInstance().DoesVideoStartWindowed();
     else
       options.fullscreen = false;
   }
   else
-    options.fullscreen = g_advancedSettings.m_fullScreenOnMovieStart && !CMediaSettings::GetInstance().DoesVideoStartWindowed();
+    options.fullscreen = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_fullScreenOnMovieStart && !CMediaSettings::GetInstance().DoesVideoStartWindowed();
 
   // stereo streams may have lower quality, i.e. 32bit vs 16 bit
-  options.preferStereo = g_advancedSettings.m_videoPreferStereoStream &&
+  options.preferStereo = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoPreferStereoStream &&
                          CServiceBroker::GetActiveAE()->HasStereoAudioChannelCount();
 
   // reset VideoStartWindowed as it's a temp setting
@@ -3356,21 +3362,23 @@ void CApplication::OnPlayerCloseFile(const CFileItem &file, const CBookmark &boo
 
   percent = bookmark.timeInSeconds / bookmark.totalTimeInSeconds * 100;
 
-  if ((fileItem.IsAudio() && g_advancedSettings.m_audioPlayCountMinimumPercent > 0 &&
-       percent >= g_advancedSettings.m_audioPlayCountMinimumPercent) ||
-      (fileItem.IsVideo() && g_advancedSettings.m_videoPlayCountMinimumPercent > 0 &&
-       percent >= g_advancedSettings.m_videoPlayCountMinimumPercent))
+  const std::shared_ptr<CAdvancedSettings> advancedSettings = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
+
+  if ((fileItem.IsAudio() && advancedSettings->m_audioPlayCountMinimumPercent > 0 &&
+       percent >= advancedSettings->m_audioPlayCountMinimumPercent) ||
+      (fileItem.IsVideo() && advancedSettings->m_videoPlayCountMinimumPercent > 0 &&
+       percent >= advancedSettings->m_videoPlayCountMinimumPercent))
   {
     playCountUpdate = true;
   }
 
-  if (g_advancedSettings.m_videoIgnorePercentAtEnd > 0 &&
+  if (advancedSettings->m_videoIgnorePercentAtEnd > 0 &&
       bookmark.totalTimeInSeconds - bookmark.timeInSeconds <
-        0.01f * g_advancedSettings.m_videoIgnorePercentAtEnd * bookmark.totalTimeInSeconds)
+        0.01f * advancedSettings->m_videoIgnorePercentAtEnd * bookmark.totalTimeInSeconds)
   {
     resumeBookmark.timeInSeconds = -1.0f;
   }
-  else if (bookmark.timeInSeconds > g_advancedSettings.m_videoIgnoreSecondsAtStart)
+  else if (bookmark.timeInSeconds > advancedSettings->m_videoIgnoreSecondsAtStart)
   {
     resumeBookmark = bookmark;
     if (m_stackHelper.GetRegisteredStack(file) != nullptr)
@@ -4336,7 +4344,7 @@ void CApplication::ProcessSlow()
 
   // Check if we need to shutdown (if enabled).
 #if defined(TARGET_DARWIN)
-  if (CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNTIME) && g_advancedSettings.m_fullScreen)
+  if (CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNTIME) && CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_fullScreen)
 #else
   if (CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNTIME))
 #endif
@@ -4593,13 +4601,13 @@ void CApplication::VolumeChanged()
 int CApplication::GetSubtitleDelay()
 {
   // converts subtitle delay to a percentage
-  return int(((m_appPlayer.GetVideoSettings().m_SubtitleDelay + g_advancedSettings.m_videoSubsDelayRange)) / (2 * g_advancedSettings.m_videoSubsDelayRange)*100.0f + 0.5f);
+  return int(((m_appPlayer.GetVideoSettings().m_SubtitleDelay + CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoSubsDelayRange)) / (2 * CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoSubsDelayRange)*100.0f + 0.5f);
 }
 
 int CApplication::GetAudioDelay()
 {
   // converts audio delay to a percentage
-  return int(((m_appPlayer.GetVideoSettings().m_AudioDelay + g_advancedSettings.m_videoAudioDelayRange)) / (2 * g_advancedSettings.m_videoAudioDelayRange)*100.0f + 0.5f);
+  return int(((m_appPlayer.GetVideoSettings().m_AudioDelay + CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoAudioDelayRange)) / (2 * CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoAudioDelayRange)*100.0f + 0.5f);
 }
 
 // Returns the total time in seconds of the current media.  Fractional

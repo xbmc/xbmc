@@ -24,8 +24,8 @@
 using namespace KODI::MESSAGING;
 
 CAppParamParser::CAppParamParser()
+: m_logLevel(LOG_LEVEL_NORMAL)
 {
-  m_testmode = false;
 }
 
 void CAppParamParser::Parse(const char* const* argv, int nArgs)
@@ -63,40 +63,54 @@ void CAppParamParser::DisplayHelp()
   exit(0);
 }
 
-void CAppParamParser::EnableDebugMode()
-{
-  g_advancedSettings.m_logLevel     = LOG_LEVEL_DEBUG;
-  g_advancedSettings.m_logLevelHint = LOG_LEVEL_DEBUG;
-  CLog::SetLogLevel(g_advancedSettings.m_logLevel);
-}
-
 void CAppParamParser::ParseArg(const std::string &arg)
 {
   if (arg == "-fs" || arg == "--fullscreen")
-    g_advancedSettings.m_startFullScreen = true;
+    m_startFullScreen = true;
   else if (arg == "-h" || arg == "--help")
     DisplayHelp();
   else if (arg == "-v" || arg == "--version")
     DisplayVersion();
   else if (arg == "--standalone")
+  {
+    m_standAlone = true;
     g_application.SetStandAlone(true);
+  }
   else if (arg == "-p" || arg  == "--portable")
     g_application.EnablePlatformDirectories(false);
   else if (arg == "--debug")
-    EnableDebugMode();
+    m_logLevel = LOG_LEVEL_DEBUG;
   else if (arg == "--test")
     m_testmode = true;
   else if (arg.substr(0, 11) == "--settings=")
-    g_advancedSettings.AddSettingsFile(arg.substr(11));
+    m_settingsFile = arg.substr(11);
   else if (arg.length() != 0 && arg[0] != '-')
   {
     if (m_testmode)
       g_application.SetEnableTestMode(true);
 
-    CFileItemPtr pItem(new CFileItem(arg));
-    pItem->SetPath(arg);
+    const CFileItemPtr item = std::make_shared<CFileItem>(arg);
+    item->SetPath(arg);
 
-    m_playlist.Add(pItem);
+    m_playlist.Add(item);
   }
 }
 
+void CAppParamParser::SetAdvancedSettings(CAdvancedSettings& advancedSettings) const
+{
+  if (m_logLevel == LOG_LEVEL_DEBUG)
+  {
+    advancedSettings.m_logLevel = LOG_LEVEL_DEBUG;
+    advancedSettings.m_logLevelHint = LOG_LEVEL_DEBUG;
+    CLog::SetLogLevel(LOG_LEVEL_DEBUG);
+  }
+
+  if (!m_settingsFile.empty())
+    advancedSettings.AddSettingsFile(m_settingsFile);
+
+  if (m_startFullScreen)
+    advancedSettings.m_startFullScreen = true;
+
+  if (m_standAlone)
+    advancedSettings.m_handleMounting = true;
+}

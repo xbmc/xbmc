@@ -7,7 +7,6 @@
  */
 
 #include "Application.h"
-#include "settings/AdvancedSettings.h"
 
 #ifdef TARGET_RASPBERRY_PI
 #include "platform/linux/RBP.h"
@@ -30,11 +29,6 @@
 extern "C" int XBMC_Run(bool renderGUI, const CAppParamParser &params)
 {
   int status = -1;
-
-  if (!g_advancedSettings.Initialized())
-  {
-    g_advancedSettings.Initialize();
-  }
 
   if (!g_application.Create(params))
   {

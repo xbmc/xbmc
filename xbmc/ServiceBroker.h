@@ -54,6 +54,7 @@ class CEventLog;
 class CGUIComponent;
 class CAppInboundProtocol;
 class CSettings;
+class CSettingsComponent;
 
 namespace KODI
 {
@@ -113,6 +114,11 @@ public:
   static void RegisterGUI(CGUIComponent *gui);
   static void UnregisterGUI();
 
+  static void RegisterSettingsComponent(CSettingsComponent *settings);
+  static void UnregisterSettingsComponent();
+  static CSettingsComponent* GetSettingsComponent();
+
+  // @todo move seetings to settingscomponent
   static void RegisterSettings(std::shared_ptr<CSettings> settings);
   static void UnregisterSettings();
   static std::shared_ptr<CSettings> GetSettings();
@@ -136,6 +142,6 @@ private:
   static CWinSystemBase* m_pWinSystem;
   static IAE* m_pActiveAE;
   static std::shared_ptr<CAppInboundProtocol> m_pAppPort;
+  static CSettingsComponent* m_pSettingsComponent;
   static std::shared_ptr<CSettings> m_pSettings;
-
 };

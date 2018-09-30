@@ -14,6 +14,7 @@
 #include "filesystem/SpecialProtocol.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "Application.h"
 #include "AppParamParser.h"
 #include "windowing/WinSystem.h"
@@ -30,17 +31,17 @@
 
 namespace fs = KODI::PLATFORM::FILESYSTEM;
 
+TestBasicEnvironment::TestBasicEnvironment() = default;
+
 void TestBasicEnvironment::SetUp()
 {
+  m_pSettingsComponent.reset(new CSettingsComponent());
+  m_pSettingsComponent->Init(CAppParamParser());
+
   m_pSettings.reset(new CSettings());
   CServiceBroker::RegisterSettings(m_pSettings);
 
   XFILE::CFile *f;
-
-  /* NOTE: The below is done to fix memleak warning about uninitialized variable
-   * in xbmcutil::GlobalsSingleton<CAdvancedSettings>::getInstance().
-   */
-  g_advancedSettings.Initialize();
 
   g_application.m_ServiceManager.reset(new CServiceManager());
 
@@ -107,6 +108,9 @@ void TestBasicEnvironment::TearDown()
 
   CServiceBroker::UnregisterSettings();
   m_pSettings.reset();
+
+  m_pSettingsComponent->Deinit();
+  m_pSettingsComponent.reset();
 }
 
 void TestBasicEnvironment::SetUpError()

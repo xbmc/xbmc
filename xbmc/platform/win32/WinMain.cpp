@@ -12,7 +12,6 @@
 #include "threads/platform/win/Win32Exception.h"
 #include "platform/win32/CharsetConverter.h"
 #include "platform/xbmc.h"
-#include "settings/AdvancedSettings.h"
 #include "utils/CPUInfo.h"
 #include "platform/Environment.h"
 #include "utils/CharsetConverter.h" // Required to initialize converters before usage
@@ -116,9 +115,6 @@ INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT)
 
   int status;
   {
-    // Initialize before CAppParamParser so it can set the log level
-    g_advancedSettings.Initialize();
-
     CAppParamParser appParamParser;
     appParamParser.Parse(argv, argc);
     // Create and run the app

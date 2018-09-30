@@ -11,8 +11,11 @@
 #include <string>
 #include <vector>
 
+#include "ServiceBroker.h"
 #include "addons/AddonManager.h"
 #include "addons/binary-addons/BinaryAddonBase.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 
 using namespace ADDON;
 
@@ -24,11 +27,10 @@ const std::vector<TYPE> ADDON_TYPES = {
 
 CFileExtensionProvider::CFileExtensionProvider(ADDON::CAddonMgr &addonManager,
                                                ADDON::CBinaryAddonManager &binaryAddonManager) :
+  m_advancedSettings(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()),
   m_addonManager(addonManager),
   m_binaryAddonManager(binaryAddonManager)
 {
-  m_advancedSettings = g_advancedSettingsRef;
-
   SetAddonExtensions();
 
   m_addonManager.Events().Subscribe(this, &CFileExtensionProvider::OnAddonEvent);

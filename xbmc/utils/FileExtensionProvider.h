@@ -64,11 +64,11 @@ private:
   void OnAddonEvent(const ADDON::AddonEvent& event);
 
   // Construction properties
+  std::shared_ptr<CAdvancedSettings> m_advancedSettings;
   ADDON::CAddonMgr &m_addonManager;
   ADDON::CBinaryAddonManager &m_binaryAddonManager;
 
   // File extension properties
   std::map<ADDON::TYPE, std::string> m_addonExtensions;
-  std::shared_ptr<CAdvancedSettings> m_advancedSettings;
   std::map<ADDON::TYPE, std::string> m_addonFileFolderExtensions;
 };
