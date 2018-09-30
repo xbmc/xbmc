@@ -29,9 +29,9 @@ namespace RETRO
     virtual bool HasVideoFilter() const { return true; }
 
     /*!
-     * \brief Returns true if this render target has a view mode set
+     * \brief Returns true if this render target has a stretch mode set
      */
-    virtual bool HasViewMode() const { return true; }
+    virtual bool HasStretchMode() const { return true; }
 
     /*!
      * \brief Returns true if this render target has a video rotation set

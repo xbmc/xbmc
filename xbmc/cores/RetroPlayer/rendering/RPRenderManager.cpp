@@ -424,7 +424,7 @@ std::shared_ptr<CRPBaseRenderer> CRPRenderManager::GetRenderer(const IGUIRenderS
   if (renderer)
   {
     renderer->SetScalingMethod(effectiveRenderSettings.VideoSettings().GetScalingMethod());
-    renderer->SetViewMode(effectiveRenderSettings.VideoSettings().GetRenderViewMode());
+    renderer->SetStretchMode(effectiveRenderSettings.VideoSettings().GetRenderStretchMode());
     renderer->SetRenderRotation(effectiveRenderSettings.VideoSettings().GetRenderRotation());
   }
 
@@ -616,8 +616,8 @@ CRenderVideoSettings CRPRenderManager::GetEffectiveSettings(const IGUIRenderSett
   {
     if (settings->HasVideoFilter())
       effectiveSettings.SetVideoFilter(settings->GetSettings().VideoSettings().GetVideoFilter());
-    if (settings->HasViewMode())
-      effectiveSettings.SetRenderViewMode(settings->GetSettings().VideoSettings().GetRenderViewMode());
+    if (settings->HasStretchMode())
+      effectiveSettings.SetRenderStretchMode(settings->GetSettings().VideoSettings().GetRenderStretchMode());
     if (settings->HasRotation())
       effectiveSettings.SetRenderRotation(settings->GetSettings().VideoSettings().GetRenderRotation());
   }

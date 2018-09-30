@@ -116,9 +116,9 @@ void CRPBaseRenderer::SetScalingMethod(SCALINGMETHOD method)
   m_renderSettings.VideoSettings().SetScalingMethod(method);
 }
 
-void CRPBaseRenderer::SetViewMode(VIEWMODE viewMode)
+void CRPBaseRenderer::SetStretchMode(STRETCHMODE stretchMode)
 {
-  m_renderSettings.VideoSettings().SetRenderViewMode(viewMode);
+  m_renderSettings.VideoSettings().SetRenderStretchMode(stretchMode);
 }
 
 void CRPBaseRenderer::SetRenderRotation(unsigned int rotationDegCCW)
@@ -134,7 +134,7 @@ void CRPBaseRenderer::ManageRenderArea(const IRenderBuffer &renderBuffer)
   const unsigned int sourceRotationDegCCW = renderBuffer.GetRotation();
   const float sourceAspectRatio = static_cast<float>(sourceWidth) / static_cast<float>(sourceHeight);
 
-  const VIEWMODE viewMode = m_renderSettings.VideoSettings().GetRenderViewMode();
+  const STRETCHMODE stretchMode = m_renderSettings.VideoSettings().GetRenderStretchMode();
   const unsigned int rotationDegCCW = (sourceRotationDegCCW + m_renderSettings.VideoSettings().GetRenderRotation()) % 360;
 
   // Get screen parameters
@@ -149,11 +149,21 @@ void CRPBaseRenderer::ManageRenderArea(const IRenderBuffer &renderBuffer)
   // Calculate pixel ratio and zoom amount
   float pixelRatio = 1.0f;
   float zoomAmount = 1.0f;
-  CRenderUtils::CalculateViewMode(viewMode, rotationDegCCW, sourceWidth, sourceHeight, screenWidth, screenHeight, pixelRatio, zoomAmount);
+  CRenderUtils::CalculateStretchMode(stretchMode,
+                                     rotationDegCCW,
+                                     sourceWidth,
+                                     sourceHeight,
+                                     screenWidth,
+                                     screenHeight,
+                                     pixelRatio,
+                                     zoomAmount);
 
   // Calculate destination dimensions
   CRect destRect;
-  CRenderUtils::CalcNormalRenderRect(viewRect, sourceAspectRatio * pixelRatio, zoomAmount, destRect);
+  CRenderUtils::CalcNormalRenderRect(viewRect,
+                                     sourceAspectRatio * pixelRatio,
+                                     zoomAmount,
+                                     destRect);
 
   m_sourceRect.x1 = 0.0f;
   m_sourceRect.y1 = 0.0f;

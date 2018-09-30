@@ -33,18 +33,18 @@ namespace GAME
     void PostExit() override;
 
   private:
-    struct ViewModeProperties
+    struct StretchModeProperties
     {
       int stringIndex;
-      RETRO::VIEWMODE viewMode;
+      RETRO::STRETCHMODE stretchMode;
     };
 
-    std::vector<ViewModeProperties> m_viewModes;
+    std::vector<StretchModeProperties> m_stretchModes;
 
     /*!
-     * \brief The list of all the view modes along with their properties
+     * \brief The list of all the stretch modes along with their properties
      */
-    static const std::vector<ViewModeProperties> m_allViewModes;
+    static const std::vector<StretchModeProperties> m_allStretchModes;
   };
 }
 }

@@ -14,13 +14,20 @@
 using namespace KODI;
 using namespace RETRO;
 
-void CRenderUtils::CalculateViewMode(VIEWMODE viewMode, unsigned int rotationDegCCW, unsigned int sourceWidth, unsigned int sourceHeight, float screenWidth, float screenHeight, float &pixelRatio, float &zoomAmount)
+void CRenderUtils::CalculateStretchMode(STRETCHMODE stretchMode,
+                                        unsigned int rotationDegCCW,
+                                        unsigned int sourceWidth,
+                                        unsigned int sourceHeight,
+                                        float screenWidth,
+                                        float screenHeight,
+                                        float &pixelRatio,
+                                        float &zoomAmount)
 {
   const float sourceFrameRatio = static_cast<float>(sourceWidth) / static_cast<float>(sourceHeight);
 
-  switch (viewMode)
+  switch (stretchMode)
   {
-  case VIEWMODE::Normal:
+  case STRETCHMODE::Normal:
   {
     switch (rotationDegCCW)
     {
@@ -38,7 +45,7 @@ void CRenderUtils::CalculateViewMode(VIEWMODE viewMode, unsigned int rotationDeg
 
     break;
   }
-  case VIEWMODE::Stretch4x3:
+  case STRETCHMODE::Stretch4x3:
   {
     // Stretch to 4:3 ratio
     pixelRatio = (4.0f / 3.0f) / sourceFrameRatio;
@@ -46,7 +53,7 @@ void CRenderUtils::CalculateViewMode(VIEWMODE viewMode, unsigned int rotationDeg
 
     break;
   }
-  case VIEWMODE::Fullscreen:
+  case STRETCHMODE::Fullscreen:
   {
     // Stretch to the limits of the screen
     pixelRatio = (screenWidth / screenHeight) / sourceFrameRatio;
@@ -54,7 +61,7 @@ void CRenderUtils::CalculateViewMode(VIEWMODE viewMode, unsigned int rotationDeg
 
     break;
   }
-  case VIEWMODE::Original:
+  case STRETCHMODE::Original:
   {
     switch (rotationDegCCW)
     {
@@ -100,7 +107,10 @@ void CRenderUtils::CalculateViewMode(VIEWMODE viewMode, unsigned int rotationDeg
   }
 }
 
-void CRenderUtils::CalcNormalRenderRect(const CRect &viewRect, float outputFrameRatio, float zoomAmount, CRect &destRect)
+void CRenderUtils::CalcNormalRenderRect(const CRect &viewRect,
+                                        float outputFrameRatio,
+                                        float zoomAmount,
+                                        CRect &destRect)
 {
   const float offsetX = viewRect.x1;
   const float offsetY = viewRect.y1;
@@ -144,7 +154,9 @@ void CRenderUtils::CalcNormalRenderRect(const CRect &viewRect, float outputFrame
   destRect.y2 = destRect.y1 + MathUtils::round_int(newHeight);
 }
 
-void CRenderUtils::ClipRect(const CRect &viewRect, CRect &sourceRect, CRect &destRect)
+void CRenderUtils::ClipRect(const CRect &viewRect,
+                            CRect &sourceRect,
+                            CRect &destRect)
 {
   const float offsetX = viewRect.x1;
   const float offsetY = viewRect.y1;
@@ -164,7 +176,8 @@ void CRenderUtils::ClipRect(const CRect &viewRect, CRect &sourceRect, CRect &des
   }
 }
 
-std::array<CPoint, 4> CRenderUtils::ReorderDrawPoints(const CRect &destRect, unsigned int orientationDegCCW)
+std::array<CPoint, 4> CRenderUtils::ReorderDrawPoints(const CRect &destRect,
+                                                      unsigned int orientationDegCCW)
 {
   std::array<CPoint, 4> rotatedDestCoords{};
 

@@ -23,7 +23,7 @@ enum class SCALINGMETHOD
 };
 
 // NOTE: Only append
-enum class VIEWMODE
+enum class STRETCHMODE
 {
   Normal = 0,
   Stretch4x3 = 1,

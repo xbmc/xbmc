@@ -19,7 +19,7 @@ namespace RETRO
   class CRetroPlayerUtils
   {
   public:
-    static std::string ViewModeToDescription(VIEWMODE viewMode);
+    static std::string StretchModeToDescription(STRETCHMODE stretchMode);
   };
 }
 }

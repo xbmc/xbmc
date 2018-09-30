@@ -18,13 +18,13 @@
 using namespace KODI;
 using namespace GAME;
 
-const std::vector<CDialogGameStretchMode::ViewModeProperties> CDialogGameStretchMode::m_allViewModes =
+const std::vector<CDialogGameStretchMode::StretchModeProperties> CDialogGameStretchMode::m_allStretchModes =
 {
-  { 630,   RETRO::VIEWMODE::Normal },
-//  { 631,   RETRO::VIEWMODE::Zoom }, //! @todo RetroArch allows trimming some outer pixels
-  { 632,   RETRO::VIEWMODE::Stretch4x3 },
-  { 35232, RETRO::VIEWMODE::Fullscreen },
-  { 635,   RETRO::VIEWMODE::Original },
+  { 630,   RETRO::STRETCHMODE::Normal },
+//  { 631,   RETRO::STRETCHMODE::Zoom }, //! @todo RetroArch allows trimming some outer pixels
+  { 632,   RETRO::STRETCHMODE::Stretch4x3 },
+  { 35232, RETRO::STRETCHMODE::Fullscreen },
+  { 635,   RETRO::STRETCHMODE::Original },
 };
 
 CDialogGameStretchMode::CDialogGameStretchMode() :
@@ -39,21 +39,21 @@ std::string CDialogGameStretchMode::GetHeading()
 
 void CDialogGameStretchMode::PreInit()
 {
-  m_viewModes.clear();
+  m_stretchModes.clear();
 
-  for (const auto &viewMode : m_allViewModes)
+  for (const auto &stretchMode : m_allStretchModes)
   {
     bool bSupported = false;
 
-    switch (viewMode.viewMode)
+    switch (stretchMode.stretchMode)
     {
-      case RETRO::VIEWMODE::Normal:
-      case RETRO::VIEWMODE::Original:
+      case RETRO::STRETCHMODE::Normal:
+      case RETRO::STRETCHMODE::Original:
         bSupported = true;
         break;
 
-      case RETRO::VIEWMODE::Stretch4x3:
-      case RETRO::VIEWMODE::Fullscreen:
+      case RETRO::STRETCHMODE::Stretch4x3:
+      case RETRO::STRETCHMODE::Fullscreen:
         if (m_gameVideoHandle)
         {
           bSupported = m_gameVideoHandle->SupportsRenderFeature(RETRO::RENDERFEATURE::STRETCH) ||
@@ -66,30 +66,30 @@ void CDialogGameStretchMode::PreInit()
     }
 
     if (bSupported)
-      m_viewModes.emplace_back(viewMode);
+      m_stretchModes.emplace_back(stretchMode);
   }
 }
 
 void CDialogGameStretchMode::GetItems(CFileItemList &items)
 {
-  for (const auto &viewMode : m_viewModes)
+  for (const auto &stretchMode : m_stretchModes)
   {
-    CFileItemPtr item = std::make_shared<CFileItem>(g_localizeStrings.Get(viewMode.stringIndex));
-    item->SetProperty("game.viewmode", CVariant{ static_cast<int>(viewMode.viewMode) });
+    CFileItemPtr item = std::make_shared<CFileItem>(g_localizeStrings.Get(stretchMode.stringIndex));
+    item->SetProperty("game.stretchmode", CVariant{ static_cast<int>(stretchMode.stretchMode) });
     items.Add(std::move(item));
   }
 }
 
 void CDialogGameStretchMode::OnItemFocus(unsigned int index)
 {
-  if (index < m_viewModes.size())
+  if (index < m_stretchModes.size())
   {
-    const RETRO::VIEWMODE viewMode = m_viewModes[index].viewMode;
+    const RETRO::STRETCHMODE stretchMode = m_stretchModes[index].stretchMode;
 
     CGameSettings &gameSettings = CMediaSettings::GetInstance().GetCurrentGameSettings();
-    if (gameSettings.ViewMode() != viewMode)
+    if (gameSettings.StretchMode() != stretchMode)
     {
-      gameSettings.SetViewMode(viewMode);
+      gameSettings.SetStretchMode(stretchMode);
       gameSettings.NotifyObservers(ObservableMessageSettingsChanged);
     }
   }
@@ -99,10 +99,10 @@ unsigned int CDialogGameStretchMode::GetFocusedItem() const
 {
   CGameSettings &gameSettings = CMediaSettings::GetInstance().GetCurrentGameSettings();
 
-  for (unsigned int i = 0; i < m_viewModes.size(); i++)
+  for (unsigned int i = 0; i < m_stretchModes.size(); i++)
   {
-    const RETRO::VIEWMODE viewMode = m_viewModes[i].viewMode;
-    if (viewMode == gameSettings.ViewMode())
+    const RETRO::STRETCHMODE stretchMode = m_stretchModes[i].stretchMode;
+    if (stretchMode == gameSettings.StretchMode())
       return i;
   }
 
@@ -111,5 +111,5 @@ unsigned int CDialogGameStretchMode::GetFocusedItem() const
 
 void CDialogGameStretchMode::PostExit()
 {
-  m_viewModes.clear();
+  m_stretchModes.clear();
 }

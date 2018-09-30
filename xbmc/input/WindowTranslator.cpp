@@ -145,7 +145,7 @@ const CWindowTranslator::WindowMapByName CWindowTranslator::WindowMappingByName 
     { "radiotimerrules"          , WINDOW_RADIO_TIMER_RULES},
     { "gameosd"                  , WINDOW_DIALOG_GAME_OSD },
     { "gamevideofilter"          , WINDOW_DIALOG_GAME_VIDEO_FILTER },
-    { "gameviewmode"             , WINDOW_DIALOG_GAME_STRETCH_MODE },
+    { "gamestretchmode"          , WINDOW_DIALOG_GAME_STRETCH_MODE },
     { "gamevolume"               , WINDOW_DIALOG_GAME_VOLUME },
     { "gameadvancedsettings"     , WINDOW_DIALOG_GAME_ADVANCED_SETTINGS },
     { "gamevideorotation"        , WINDOW_DIALOG_GAME_VIDEO_ROTATION },
