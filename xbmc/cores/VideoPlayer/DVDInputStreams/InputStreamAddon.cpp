@@ -373,6 +373,11 @@ CDemuxStream* CInputStreamAddon::GetStream(int streamId) const
   demuxStream->flags = static_cast<StreamFlags>(stream.m_flags);
   demuxStream->language = stream.m_language;
 
+  if (GetAddonBase()->Version() >= AddonVersion("2.0.8"))
+  {
+    demuxStream->codec_fourcc = stream.m_codecFourCC;
+  }
+
   if (stream.m_ExtraData && stream.m_ExtraSize)
   {
     demuxStream->ExtraData = new uint8_t[stream.m_ExtraSize];
