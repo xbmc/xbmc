@@ -817,10 +817,11 @@ msgctxt "#185"
 msgid "Searching album"
 msgstr ""
 
+#: addons/skin.estuary/xml/DialogPVRGroupManager.xml
 #: xbmc/addons/GUIViewStateAddonBrowser.cpp
 #: xbmc/addons/GUIDialogAddonInfo.cpp
 #: xbmc/dialogs/GUIDialogSelect.cpp
-#: addons/skin.estuary/xml/DialogPVRGroupManager.xml
+#: xbmc/games/controllers/windows/GUIControllerWindow.cpp
 #: xbmc/settings/dialogs/GUIDialogLibExportSettings.cpp
 msgctxt "#186"
 msgid "OK"
@@ -13891,12 +13892,13 @@ msgstr ""
 
 #: xbmc/addons/GUIViewStateAddonBrowser.cpp
 #: xbmc/filesystem/AddonsDirectory.cpp
-#: addons/skin.estuary/xml/MyPrograms.xml
+#: addons/skin.estuary/xml/DialogGameControllers.xml
 #: addons/skin.estuary/xml/Includes.xml
-#: addons/skin.estuary/xml/MyVideoNav.xml
-#: addons/skin.estuary/xml/MyPics.xml
-#: addons/skin.estuary/xml/MyMusicNav.xml
 #: addons/skin.estuary/xml/MyGames.xml
+#: addons/skin.estuary/xml/MyMusicNav.xml
+#: addons/skin.estuary/xml/MyPics.xml
+#: addons/skin.estuary/xml/MyPrograms.xml
+#: addons/skin.estuary/xml/MyVideoNav.xml
 msgctxt "#21452"
 msgid "Get more..."
 msgstr ""
@@ -14928,6 +14930,7 @@ msgstr ""
 
 #. Used as a title in the progress dialog when installing an add-on
 #: xbmc/addons/AddonInstaller.cpp
+#: xbmc/games/controllers/windows/ControllerInstaller.cpp
 msgctxt "#24057"
 msgid "Installing {0:s}..."
 msgstr ""
@@ -15075,6 +15078,7 @@ msgstr ""
 
 #. Used as a text in the progress dialog when installing an add-on
 #: xbmc/addons/AddonInstaller.cpp
+#: xbmc/games/controllers/windows/ControllerInstaller.cpp
 msgctxt "#24086"
 msgid "Installing add-on..."
 msgstr ""
@@ -16856,7 +16860,13 @@ msgctxt "#35020"
 msgid "Press all analog buttons now to detect them:[CR][CR]{0:s}"
 msgstr ""
 
-#empty strings from id 35021 to 35046
+#. Button in the controller configuration dialog to install all controller profiles
+#: addons/skin.estuary/xml/DialogGameControllers.xml
+msgctxt "#35021"
+msgid "Get all"
+msgstr ""
+
+#empty strings from id 35022 to 35046
 
 #. Name of setting to configure peripheral add-ons
 #: system/settings/settings.xml
@@ -16880,6 +16890,7 @@ msgstr ""
 #. Name of controller add-ons
 #: addons/skin.estuary/xml/DialogGameControllers.xml
 #: xbmc/addons/Addon.cpp
+#: xbmc/games/controllers/windows/ControllerInstaller.cpp
 #: xbmc/games/controllers/windows/GUIControllerWindow.cpp
 msgctxt "#35050"
 msgid "Controller profiles"
@@ -16942,6 +16953,7 @@ msgid "Would you like to reset this controller profile for all attached devices?
 msgstr ""
 
 #. Notice that all controller profiles are installed
+#: xbmc/games/controllers/windows/ControllerInstaller.cpp
 #: xbmc/games/controllers/windows/GUIControllerWindow.cpp
 msgctxt "#35062"
 msgid "All available controller profiles are installed."
@@ -17503,6 +17515,7 @@ msgstr ""
 
 #. Error message when a game client fails to install when a game is being launched
 #: xbmc/games/dialogs/GUIDialogSelectGameClient.cpp
+#: xbmc/games/controllers/windows/ControllerInstaller.cpp
 msgctxt "#35256"
 msgid "Failed to install add-on."
 msgstr ""
@@ -21393,6 +21406,7 @@ msgid "installed"
 msgstr ""
 
 #: xbmc/addons/GUIDialogAddonInfo.cpp
+#: xbmc/games/controllers/windows/ControllerInstaller.cpp
 msgctxt "#39020"
 msgid "The following additional add-ons will be installed"
 msgstr ""

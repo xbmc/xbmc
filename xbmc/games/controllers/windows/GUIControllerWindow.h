@@ -12,10 +12,13 @@
 #include "games/GameTypes.h"
 #include "guilib/GUIDialog.h"
 
+#include <memory>
+
 namespace KODI
 {
 namespace GAME
 {
+  class CControllerInstaller;
   class IControllerList;
   class IFeatureList;
 
@@ -44,6 +47,7 @@ namespace GAME
 
     // Action for the available button
     void GetMoreControllers(void);
+    void GetAllControllers();
     void ResetController(void);
     void ShowHelp(void);
     void ShowButtonCaptureDialog(void);
@@ -53,6 +57,9 @@ namespace GAME
 
     // Game paremeters
     GameClientPtr m_gameClient;
+
+    // Controller parameters
+    std::unique_ptr<CControllerInstaller> m_installer;
   };
 }
 }

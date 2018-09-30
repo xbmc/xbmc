@@ -1,9 +1,11 @@
-set(SOURCES GUIConfigurationWizard.cpp
+set(SOURCES ControllerInstaller.cpp
+            GUIConfigurationWizard.cpp
             GUIControllerList.cpp
             GUIControllerWindow.cpp
             GUIFeatureList.cpp)
 
-set(HEADERS GUIConfigurationWizard.h
+set(HEADERS ControllerInstaller.h
+            GUIConfigurationWizard.h
             GUIControllerDefines.h
             GUIControllerList.h
             GUIControllerWindow.h
