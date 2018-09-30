@@ -179,21 +179,6 @@ bool CGUIControllerList::RefreshControllers(void)
   CGameServices& gameServices = CServiceBroker::GetGameServices();
   ControllerVector newControllers = gameServices.GetControllers();
 
-  // Don't show an empty feature list in the GUI
-  auto HasButtonForFeature = [this](const CControllerFeature &feature)
-    {
-      return m_featureList->HasButton(feature.Type());
-    };
-
-  auto HasButtonForController = [&](const ControllerPtr &controller)
-    {
-      const auto &features = controller->Features();
-      auto it = std::find_if(features.begin(), features.end(), HasButtonForFeature);
-      return it == features.end();
-    };
-
-  newControllers.erase(std::remove_if(newControllers.begin(), newControllers.end(), HasButtonForController), newControllers.end());
-
   // Filter by current game add-on
   if (m_gameClient)
   {

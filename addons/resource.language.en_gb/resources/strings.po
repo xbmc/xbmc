@@ -16866,7 +16866,13 @@ msgctxt "#35021"
 msgid "Get all"
 msgstr ""
 
-#empty strings from id 35022 to 35046
+#. Message shown in the controller dialog when there is nothing to map, for example hubs (multitaps) have no buttons
+#: xbmc/games/controllers/windows/GUIFeatureList.cpp
+msgctxt "#35022"
+msgid "Nothing to map"
+msgstr ""
+
+#empty strings from id 35023 to 35046
 
 #. Name of setting to configure peripheral add-ons
 #: system/settings/settings.xml
