@@ -403,8 +403,7 @@ void CDisplaySettings::SetCurrentResolution(RESOLUTION resolution, bool save /* 
     std::string mode = GetStringFromResolution(resolution);
     CServiceBroker::GetSettingsComponent()->GetSettings()->SetString(CSettings::SETTING_VIDEOSCREEN_SCREENMODE, mode.c_str());
   }
-
-  if (resolution != m_currentResolution)
+  else if (resolution != m_currentResolution)
   {
     m_currentResolution = resolution;
     SetChanged();
