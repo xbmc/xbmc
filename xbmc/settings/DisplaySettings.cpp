@@ -279,8 +279,10 @@ bool CDisplaySettings::OnSettingChanging(std::shared_ptr<const CSetting> setting
     }
 
     std::string screenmode = GetStringFromResolution(newRes);
-    CServiceBroker::GetSettingsComponent()->GetSettings()->SetString(CSettings::SETTING_VIDEOSCREEN_SCREENMODE, screenmode);
+    if (!CServiceBroker::GetSettingsComponent()->GetSettings()->SetString(CSettings::SETTING_VIDEOSCREEN_SCREENMODE, screenmode))
+      return false;
   }
+
   if (settingId == CSettings::SETTING_VIDEOSCREEN_SCREENMODE)
   {
     RESOLUTION oldRes = GetCurrentResolution();
