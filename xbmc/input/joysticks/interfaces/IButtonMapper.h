@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include "input/joysticks/JoystickTypes.h"
+
 #include <map>
 #include <string>
 
@@ -50,6 +52,15 @@ namespace JOYSTICK
      *         timeout from the previous command.
      */
     virtual bool NeedsCooldown(void) const = 0;
+
+    /*!
+     * \brief Return true if the button mapper accepts primitives of the given type
+     *
+     * \param type The primitive type
+     *
+     * \return True if the button mapper can map the primitive type, false otherwise
+     */
+    virtual bool AcceptsPrimitive(PRIMITIVE_TYPE type) const = 0;
 
     /*!
      * \brief Handle button/hat press or axis threshold

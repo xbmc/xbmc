@@ -49,6 +49,19 @@ bool CGUIDialogAxisDetection::MapPrimitiveInternal(JOYSTICK::IButtonMap* buttonM
   return true;
 }
 
+bool CGUIDialogAxisDetection::AcceptsPrimitive(JOYSTICK::PRIMITIVE_TYPE type) const
+{
+  switch (type)
+  {
+  case JOYSTICK::PRIMITIVE_TYPE::SEMIAXIS:
+    return true;
+  default:
+    break;
+  }
+
+  return false;
+}
+
 void CGUIDialogAxisDetection::OnLateAxis(const JOYSTICK::IButtonMap* buttonMap, unsigned int axisIndex)
 {
   AddAxis(buttonMap->DeviceName(), axisIndex);

@@ -364,16 +364,25 @@ CButtonMapping::CButtonMapping(IButtonMapper* buttonMapper, IButtonMap* buttonMa
 
 bool CButtonMapping::OnButtonMotion(unsigned int buttonIndex, bool bPressed)
 {
+  if (!m_buttonMapper->AcceptsPrimitive(PRIMITIVE_TYPE::BUTTON))
+    return false;
+
   return GetButton(buttonIndex).OnMotion(bPressed);
 }
 
 bool CButtonMapping::OnHatMotion(unsigned int hatIndex, HAT_STATE state)
 {
+  if (!m_buttonMapper->AcceptsPrimitive(PRIMITIVE_TYPE::HAT))
+    return false;
+
   return GetHat(hatIndex).OnMotion(state);
 }
 
 bool CButtonMapping::OnAxisMotion(unsigned int axisIndex, float position, int center, unsigned int range)
 {
+  if (!m_buttonMapper->AcceptsPrimitive(PRIMITIVE_TYPE::SEMIAXIS))
+    return false;
+
   return GetAxis(axisIndex, position).OnMotion(position);
 }
 
@@ -389,21 +398,33 @@ void CButtonMapping::ProcessAxisMotions(void)
 
 bool CButtonMapping::OnKeyPress(const CKey& key)
 {
+  if (!m_buttonMapper->AcceptsPrimitive(PRIMITIVE_TYPE::KEY))
+    return false;
+
   return GetKey(static_cast<XBMCKey>(key.GetKeycode())).OnMotion(true);
 }
 
 bool CButtonMapping::OnPosition(int x, int y)
 {
+  if (!m_buttonMapper->AcceptsPrimitive(PRIMITIVE_TYPE::RELATIVE_POINTER))
+    return false;
+
   return GetPointer().OnMotion(x, y);
 }
 
 bool CButtonMapping::OnButtonPress(MOUSE::BUTTON_ID button)
 {
+  if (!m_buttonMapper->AcceptsPrimitive(PRIMITIVE_TYPE::MOUSE_BUTTON))
+    return false;
+
   return GetMouseButton(button).OnMotion(true);
 }
 
 void CButtonMapping::OnButtonRelease(MOUSE::BUTTON_ID button)
 {
+  if (!m_buttonMapper->AcceptsPrimitive(PRIMITIVE_TYPE::MOUSE_BUTTON))
+    return;
+
   GetMouseButton(button).OnMotion(false);
 }
 
