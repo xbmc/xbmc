@@ -590,6 +590,9 @@ bool URIUtils::IsRemote(const std::string& strFile)
   if (IsAddonsPath(strFile))
     return false;
 
+  if (IsSourcesPath(strFile))
+    return false;
+
   if (!url.IsLocal())
     return true;
 
