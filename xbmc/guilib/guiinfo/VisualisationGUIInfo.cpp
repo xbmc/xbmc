@@ -86,6 +86,7 @@ bool CVisualisationGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int 
       {
         CGUIVisualisationControl *pVis = static_cast<CGUIVisualisationControl*>(msg.GetPointer());
         value = pVis->IsLocked();
+        return true;
       }
       break;
     }
