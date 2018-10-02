@@ -497,7 +497,7 @@ namespace PVR
       if (timer && (!item.GetEPGInfoTag() || !URIUtils::PathEquals(item.GetPath(), CPVRTimersPath::PATH_ADDTIMER)) && !timer->IsRecording())
       {
         const CPVRTimerTypePtr timerType(timer->GetTimerType());
-        return  timerType && !timerType->IsReadOnly();
+        return  timerType && timerType->AllowsDelete();
       }
 
       return false;

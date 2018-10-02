@@ -153,6 +153,7 @@ extern "C" {
   const unsigned int PVR_TIMER_TYPE_REQUIRES_EPG_SERIES_ON_CREATE     = 0x00800000; /*!< @brief this type should not appear on any create menus unless associated with an EPG tag with 'series' attributes (EPG_TAG.iFlags & EPG_TAG_FLAG_IS_SERIES || EPG_TAG.iSeriesNumber > 0 || EPG_TAG.iEpisodeNumber > 0 || EPG_TAG.iEpisodePartNumber > 0). Implies PVR_TIMER_TYPE_REQUIRES_EPG_TAG_ON_CREATE */
   const unsigned int PVR_TIMER_TYPE_SUPPORTS_ANY_CHANNEL              = 0x01000000; /*!< @brief this type supports 'any channel', for example when defining a timer rule that should match any channel instaed of a particular channel */
   const unsigned int PVR_TIMER_TYPE_REQUIRES_EPG_SERIESLINK_ON_CREATE = 0x02000000; /*!< @brief this type should not appear on any create menus which don't provide an associated EPG tag with a series link */
+  const unsigned int PVR_TIMER_TYPE_SUPPORTS_READONLY_DELETE          = 0x04000000; /*!< @brief this type allows deletion of an otherwise read-only timer */
 
   /*!
    * @brief PVR timer weekdays (PVR_TIMER.iWeekdays values)
