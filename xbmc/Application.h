@@ -57,7 +57,6 @@ class IActionListener;
 class CGUIComponent;
 class CAppInboundProtocol;
 class CSettingsComponent;
-class CSettings;
 
 namespace ADDON
 {
@@ -402,7 +401,6 @@ protected:
   bool NotifyActionListeners(const CAction &action) const;
 
   std::shared_ptr<ANNOUNCEMENT::CAnnouncementManager> m_pAnnouncementManager;
-  std::shared_ptr<CSettings> m_pSettings; // @todo move to settingscomponent
   std::unique_ptr<CSettingsComponent> m_pSettingsComponent;
   std::unique_ptr<CGUIComponent> m_pGUI;
   std::unique_ptr<CWinSystemBase> m_pWinSystem;

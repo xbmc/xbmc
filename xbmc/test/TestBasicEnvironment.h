@@ -27,5 +27,4 @@ private:
   void SetUpError();
   std::string m_tempPath;
   std::unique_ptr<CSettingsComponent> m_pSettingsComponent;
-  std::shared_ptr<CSettings> m_pSettings;
 };

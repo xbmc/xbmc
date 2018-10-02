@@ -10,10 +10,12 @@
 
 #include "AdvancedSettings.h"
 #include "ServiceBroker.h"
+#include "Settings.h"
 
 CSettingsComponent::CSettingsComponent()
 {
   m_advancedSettings.reset(new CAdvancedSettings());
+  m_settings.reset(new CSettings());
 }
 
 CSettingsComponent::~CSettingsComponent()
@@ -31,6 +33,11 @@ void CSettingsComponent::Deinit()
 {
   CServiceBroker::UnregisterSettingsComponent();
   m_advancedSettings->Clear();
+}
+
+std::shared_ptr<CSettings> CSettingsComponent::GetSettings()
+{
+  return m_settings;
 }
 
 std::shared_ptr<CAdvancedSettings> CSettingsComponent::GetAdvancedSettings()

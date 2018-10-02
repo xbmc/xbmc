@@ -247,8 +247,6 @@ CApplication::~CApplication(void)
   delete m_pInertialScrollingHandler;
 
   m_actionListeners.clear();
-
-  CServiceBroker::UnregisterSettings();
 }
 
 bool CApplication::OnEvent(XBMC_Event& newEvent)
@@ -358,9 +356,6 @@ bool CApplication::Create(const CAppParamParser &params)
 
   m_pSettingsComponent.reset(new CSettingsComponent());
   m_pSettingsComponent->Init(params);
-
-  m_pSettings.reset(new CSettings());
-  CServiceBroker::RegisterSettings(m_pSettings);
 
   // Announement service
   m_pAnnouncementManager = std::make_shared<ANNOUNCEMENT::CAnnouncementManager>();

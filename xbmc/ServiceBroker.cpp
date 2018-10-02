@@ -91,21 +91,11 @@ CSettingsComponent* CServiceBroker::GetSettingsComponent()
   return m_pSettingsComponent;
 }
 
-std::shared_ptr<CSettings> CServiceBroker::m_pSettings;
-
+// @todo to be removed with next commit
+#include "settings/SettingsComponent.h"
 std::shared_ptr<CSettings> CServiceBroker::GetSettings()
 {
-  return m_pSettings;
-}
-
-void CServiceBroker::RegisterSettings(std::shared_ptr<CSettings> settings)
-{
-  m_pSettings = settings;
-}
-
-void CServiceBroker::UnregisterSettings()
-{
-  m_pSettings.reset();
+  return m_pSettingsComponent->GetSettings();;
 }
 
 GAME::CControllerManager& CServiceBroker::GetGameControllerManager()

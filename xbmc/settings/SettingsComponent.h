@@ -12,17 +12,21 @@
 
 class CAppParamParser;
 class CAdvancedSettings;
+class CSettings;
 
 class CSettingsComponent
 {
 public:
   CSettingsComponent();
   virtual ~CSettingsComponent();
+
   void Init(const CAppParamParser &params);
   void Deinit();
 
+  std::shared_ptr<CSettings> GetSettings();
   std::shared_ptr<CAdvancedSettings> GetAdvancedSettings();
 
 protected:
+  std::shared_ptr<CSettings> m_settings;
   std::shared_ptr<CAdvancedSettings> m_advancedSettings;
 };

@@ -118,9 +118,7 @@ public:
   static void UnregisterSettingsComponent();
   static CSettingsComponent* GetSettingsComponent();
 
-  // @todo move seetings to settingscomponent
-  static void RegisterSettings(std::shared_ptr<CSettings> settings);
-  static void UnregisterSettings();
+  // @todo to be removed with next commit
   static std::shared_ptr<CSettings> GetSettings();
 
   static void RegisterWinSystem(CWinSystemBase *winsystem);
@@ -143,5 +141,4 @@ private:
   static IAE* m_pActiveAE;
   static std::shared_ptr<CAppInboundProtocol> m_pAppPort;
   static CSettingsComponent* m_pSettingsComponent;
-  static std::shared_ptr<CSettings> m_pSettings;
 };

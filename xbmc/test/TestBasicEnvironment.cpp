@@ -38,9 +38,6 @@ void TestBasicEnvironment::SetUp()
   m_pSettingsComponent.reset(new CSettingsComponent());
   m_pSettingsComponent->Init(CAppParamParser());
 
-  m_pSettings.reset(new CSettings());
-  CServiceBroker::RegisterSettings(m_pSettings);
-
   XFILE::CFile *f;
 
   g_application.m_ServiceManager.reset(new CServiceManager());
@@ -105,9 +102,6 @@ void TestBasicEnvironment::TearDown()
 
   CServiceBroker::GetSettings()->Uninitialize();
   g_application.m_ServiceManager->DeinitTesting();
-
-  CServiceBroker::UnregisterSettings();
-  m_pSettings.reset();
 
   m_pSettingsComponent->Deinit();
   m_pSettingsComponent.reset();

@@ -27,7 +27,6 @@
 #include "interfaces/python/XBPython.h"
 #include "pvr/PVRManager.h"
 #include "network/Network.h"
-#include "settings/Settings.h"
 #include "utils/FileExtensionProvider.h"
 #include "windowing/WinSystem.h"
 #include "powermanagement/PowerManager.h"
