@@ -15,7 +15,7 @@ CGameSettings &CGameSettings::operator=(const CGameSettings &rhs)
   if (this != &rhs)
   {
     m_videoFilter = rhs.m_videoFilter;
-    m_viewMode = rhs.m_viewMode;
+    m_stretchMode = rhs.m_stretchMode;
     m_rotationDegCCW = rhs.m_rotationDegCCW;
   }
   return *this;
@@ -24,14 +24,14 @@ CGameSettings &CGameSettings::operator=(const CGameSettings &rhs)
 void CGameSettings::Reset()
 {
   m_videoFilter.clear();
-  m_viewMode = RETRO::VIEWMODE::Normal;
+  m_stretchMode = RETRO::STRETCHMODE::Normal;
   m_rotationDegCCW = 0;
 }
 
 bool CGameSettings::operator==(const CGameSettings &rhs) const
 {
   return m_videoFilter == rhs.m_videoFilter &&
-         m_viewMode == rhs.m_viewMode &&
+         m_stretchMode == rhs.m_stretchMode &&
          m_rotationDegCCW == rhs.m_rotationDegCCW;
 }
 
@@ -44,11 +44,11 @@ void CGameSettings::SetVideoFilter(const std::string &videoFilter)
   }
 }
 
-void CGameSettings::SetViewMode(RETRO::VIEWMODE viewMode)
+void CGameSettings::SetStretchMode(RETRO::STRETCHMODE stretchMode)
 {
-  if (viewMode != m_viewMode)
+  if (stretchMode != m_stretchMode)
   {
-    m_viewMode = viewMode;
+    m_stretchMode = stretchMode;
     SetChanged();
   }
 }

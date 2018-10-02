@@ -127,9 +127,9 @@ bool CMediaSettings::Load(const TiXmlNode *settings)
     if (XMLUtils::GetString(pElement, "videofilter", videoFilter))
       m_defaultGameSettings.SetVideoFilter(videoFilter);
 
-    int viewMode;
-    if (XMLUtils::GetInt(pElement, "viewmode", viewMode, static_cast<int>(RETRO::VIEWMODE::Normal), static_cast<int>(RETRO::VIEWMODE::Max)))
-      m_defaultGameSettings.SetViewMode(static_cast<RETRO::VIEWMODE>(viewMode));
+    int stretchMode;
+    if (XMLUtils::GetInt(pElement, "stretchmode", stretchMode, static_cast<int>(RETRO::STRETCHMODE::Normal), static_cast<int>(RETRO::STRETCHMODE::Max)))
+      m_defaultGameSettings.SetStretchMode(static_cast<RETRO::STRETCHMODE>(stretchMode));
 
     int rotation;
     if (XMLUtils::GetInt(pElement, "rotation", rotation, 0, 270) && rotation >= 0)
@@ -229,7 +229,7 @@ bool CMediaSettings::Save(TiXmlNode *settings) const
     return false;
 
   XMLUtils::SetString(pNode, "videofilter", m_defaultGameSettings.VideoFilter());
-  XMLUtils::SetInt(pNode, "viewmode", static_cast<int>(m_defaultGameSettings.ViewMode()));
+  XMLUtils::SetInt(pNode, "stretchmode", static_cast<int>(m_defaultGameSettings.StretchMode()));
   XMLUtils::SetInt(pNode, "rotation", m_defaultGameSettings.RotationDegCCW());
 
   // mymusic

@@ -2118,10 +2118,10 @@ const infomap videoplayer[] =    {{ "title",            VIDEOPLAYER_TITLE },
 /// @{
 /// \table_start
 ///   \table_h3{ Labels, Type, Description }
-///   \table_row3{   <b>`ViewMode`</b>,
-///                  \anchor RetroPlayer_ViewMode
+///   \table_row3{   <b>`StretchMode`</b>,
+///                  \anchor RetroPlayer_StretchMode
 ///                  _string_,
-///     Returns the view mode of the currently-playing game.\n
+///     Returns the stretch mode of the currently-playing game.\n
 ///     The following values are possible:
 ///     - normal
 ///     - 4:3
@@ -2132,7 +2132,7 @@ const infomap videoplayer[] =    {{ "title",            VIDEOPLAYER_TITLE },
 ///
 /// -----------------------------------------------------------------------------
 /// @}
-const infomap retroplayer[] =  {{ "viewmode",            RETROPLAYER_VIEWMODE},
+const infomap retroplayer[] =  {{ "stretchmode",            RETROPLAYER_STRETCHMODE},
 };
 
 const infomap player_process[] =

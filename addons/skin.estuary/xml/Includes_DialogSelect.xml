@@ -189,7 +189,7 @@
 							<width>444</width>
 							<height>250</height>
 							<videofilter>$INFO[ListItem.Property(game.videofilter)]</videofilter>
-							<viewmode>$INFO[ListItem.Property(game.viewmode)]</viewmode>
+							<stretchmode>$INFO[ListItem.Property(game.stretchmode)]</stretchmode>
 							<rotation>$INFO[ListItem.Property(game.videorotation)]</rotation>
 						</control>
 						<control type="label">
@@ -220,7 +220,7 @@
 							<width>444</width>
 							<height>250</height>
 							<videofilter>$INFO[ListItem.Property(game.videofilter)]</videofilter>
-							<viewmode>$INFO[ListItem.Property(game.viewmode)]</viewmode>
+							<stretchmode>$INFO[ListItem.Property(game.stretchmode)]</stretchmode>
 							<rotation>$INFO[ListItem.Property(game.videorotation)]</rotation>
 						</control>
 						<control type="label">
@@ -295,7 +295,7 @@
 							<width>444</width>
 							<height>250</height>
 							<videofilter>$INFO[ListItem.Property(game.videofilter)]</videofilter>
-							<viewmode>$INFO[ListItem.Property(game.viewmode)]</viewmode>
+							<stretchmode>$INFO[ListItem.Property(game.stretchmode)]</stretchmode>
 							<rotation>$INFO[ListItem.Property(game.videorotation)]</rotation>
 						</control>
 						<control type="label">
@@ -326,7 +326,7 @@
 							<width>444</width>
 							<height>250</height>
 							<videofilter>$INFO[ListItem.Property(game.videofilter)]</videofilter>
-							<viewmode>$INFO[ListItem.Property(game.viewmode)]</viewmode>
+							<stretchmode>$INFO[ListItem.Property(game.stretchmode)]</stretchmode>
 							<rotation>$INFO[ListItem.Property(game.videorotation)]</rotation>
 						</control>
 						<control type="label">

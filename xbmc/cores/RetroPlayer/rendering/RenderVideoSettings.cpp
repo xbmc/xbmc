@@ -17,14 +17,14 @@ using namespace RETRO;
 void CRenderVideoSettings::Reset()
 {
   m_scalingMethod = SCALINGMETHOD::AUTO;
-  m_viewMode = VIEWMODE::Normal;
+  m_stretchMode = STRETCHMODE::Normal;
   m_rotationDegCCW = 0;
 }
 
 bool CRenderVideoSettings::operator==(const CRenderVideoSettings &rhs) const
 {
   return m_scalingMethod == rhs.m_scalingMethod &&
-         m_viewMode == rhs.m_viewMode &&
+         m_stretchMode == rhs.m_stretchMode &&
          m_rotationDegCCW == rhs.m_rotationDegCCW;
 }
 
@@ -33,8 +33,8 @@ bool CRenderVideoSettings::operator<(const CRenderVideoSettings &rhs) const
   if (m_scalingMethod < rhs.m_scalingMethod) return true;
   if (m_scalingMethod > rhs.m_scalingMethod) return false;
 
-  if (m_viewMode < rhs.m_viewMode) return true;
-  if (m_viewMode > rhs.m_viewMode) return false;
+  if (m_stretchMode < rhs.m_stretchMode) return true;
+  if (m_stretchMode > rhs.m_stretchMode) return false;
 
   if (m_rotationDegCCW < rhs.m_rotationDegCCW) return true;
   if (m_rotationDegCCW > rhs.m_rotationDegCCW) return false;

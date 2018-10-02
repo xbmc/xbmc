@@ -28,7 +28,7 @@ namespace RETRO
 
     // implementation of IGUIRenderSettings
     bool HasVideoFilter() const override;
-    bool HasViewMode() const override;
+    bool HasStretchMode() const override;
     bool HasRotation() const override;
     CRenderSettings GetSettings() const override;
     CRect GetDimensions() const override;
@@ -38,7 +38,7 @@ namespace RETRO
     void SetSettings(CRenderSettings settings);
     void SetDimensions(const CRect &dimensions);
     void SetVideoFilter(const std::string &videoFilter);
-    void SetViewMode(VIEWMODE viewMode);
+    void SetStretchMode(STRETCHMODE stretchMode);
     void SetRotationDegCCW(unsigned int rotationDegCCW);
 
   private:

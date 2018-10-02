@@ -1143,9 +1143,9 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
       GetInfoLabel(pControlNode, "videofilter", videoFilter, parentID);
       static_cast<RETRO::CGUIGameControl*>(control)->SetVideoFilter(videoFilter);
 
-      GUIINFO::CGUIInfoLabel viewMode;
-      GetInfoLabel(pControlNode, "viewmode", viewMode, parentID);
-      static_cast<RETRO::CGUIGameControl*>(control)->SetViewMode(viewMode);
+      GUIINFO::CGUIInfoLabel stretchMode;
+      GetInfoLabel(pControlNode, "stretchmode", stretchMode, parentID);
+      static_cast<RETRO::CGUIGameControl*>(control)->SetStretchMode(stretchMode);
 
       GUIINFO::CGUIInfoLabel rotation;
       GetInfoLabel(pControlNode, "rotation", rotation, parentID);

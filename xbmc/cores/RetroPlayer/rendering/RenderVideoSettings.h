@@ -40,15 +40,15 @@ namespace RETRO
     SCALINGMETHOD GetScalingMethod() const { return m_scalingMethod; }
     void SetScalingMethod(SCALINGMETHOD method) { m_scalingMethod = method; }
 
-    VIEWMODE GetRenderViewMode() const { return m_viewMode; }
-    void SetRenderViewMode(VIEWMODE mode) { m_viewMode = mode; }
+    STRETCHMODE GetRenderStretchMode() const { return m_stretchMode; }
+    void SetRenderStretchMode(STRETCHMODE mode) { m_stretchMode = mode; }
 
     unsigned int GetRenderRotation() const { return m_rotationDegCCW; }
     void SetRenderRotation(unsigned int rotationDegCCW) { m_rotationDegCCW = rotationDegCCW; }
 
   private:
     SCALINGMETHOD m_scalingMethod;
-    VIEWMODE m_viewMode;
+    STRETCHMODE m_stretchMode;
     unsigned int m_rotationDegCCW;
   };
 }
