@@ -13,6 +13,7 @@
 #include "threads/SingleLock.h"
 #include "windowing/GraphicContext.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "windowing/VideoSync.h"
 #include "windowing/WinSystem.h"
 
@@ -41,7 +42,7 @@ CVideoReferenceClock::~CVideoReferenceClock()
 
 void CVideoReferenceClock::Start()
 {
-  if(CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEDISPLAYASCLOCK) && !IsRunning())
+  if(CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEDISPLAYASCLOCK) && !IsRunning())
     Create();
 }
 

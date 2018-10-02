@@ -14,6 +14,7 @@
 #include "Socket.h"
 #include "EventPacket.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 
 #include <list>
 #include <map>
@@ -145,8 +146,9 @@ namespace EVENTCLIENT
 
     void RefreshSettings()
     {
-      m_iRepeatDelay = CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_SERVICES_ESINITIALDELAY);
-      m_iRepeatSpeed = CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_SERVICES_ESCONTINUOUSDELAY);
+      const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+      m_iRepeatDelay = settings->GetInt(CSettings::SETTING_SERVICES_ESINITIALDELAY);
+      m_iRepeatSpeed = settings->GetInt(CSettings::SETTING_SERVICES_ESCONTINUOUSDELAY);
     }
 
     SOCKETS::CAddress& Address()

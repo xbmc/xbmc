@@ -39,6 +39,7 @@
 #import "platform/darwin/ios/IOSScreenManager.h"
 #include "platform/darwin/DarwinUtils.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #import <dlfcn.h>
 
 #define CONST_TOUCHSCREEN "Touchscreen"
@@ -70,7 +71,7 @@ std::unique_ptr<CWinSystemBase> CWinSystemBase::CreateWinSystem()
 
 int CWinSystemIOS::GetDisplayIndexFromSettings()
 {
-  std::string currentScreen = CServiceBroker::GetSettings()->GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR);
+  std::string currentScreen = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR);
   
   int screenIdx = 0;
   if (currentScreen == CONST_EXTERNAL)

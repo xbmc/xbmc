@@ -14,6 +14,7 @@
 #include "input/Key.h"
 #include "input/InputManager.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "ServiceBroker.h"
 
 #define CONTROL_VIS_BUTTON       500
@@ -39,8 +40,9 @@ bool CGUIDialogMusicOSD::OnMessage(CGUIMessage &message)
         std::string addonID;
         if (CGUIWindowAddonBrowser::SelectAddonID(ADDON::ADDON_VIZ, addonID, true) == 1)
         {
-          CServiceBroker::GetSettings()->SetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION, addonID);
-          CServiceBroker::GetSettings()->Save();
+          const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+          settings->SetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION, addonID);
+          settings->Save();
           CServiceBroker::GetGUI()->GetWindowManager().SendMessage(GUI_MSG_VISUALISATION_RELOAD, 0, 0);
         }
       }

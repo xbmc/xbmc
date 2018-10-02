@@ -49,6 +49,7 @@
 #include "URL.h"
 #include "filesystem/File.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "FileItem.h"
 #include "filesystem/Directory.h"
 
@@ -186,23 +187,25 @@ extern "C" void __stdcall init_emu_environ()
 
 extern "C" void __stdcall update_emu_environ()
 {
+  const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+
   // Use a proxy, if the GUI was configured as such
-  if (CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_NETWORK_USEHTTPPROXY)
-      && !CServiceBroker::GetSettings()->GetString(CSettings::SETTING_NETWORK_HTTPPROXYSERVER).empty()
-      && CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_NETWORK_HTTPPROXYPORT) > 0
-      && CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_NETWORK_HTTPPROXYTYPE) == 0)
+  if (settings->GetBool(CSettings::SETTING_NETWORK_USEHTTPPROXY)
+      && !settings->GetString(CSettings::SETTING_NETWORK_HTTPPROXYSERVER).empty()
+      && settings->GetInt(CSettings::SETTING_NETWORK_HTTPPROXYPORT) > 0
+      && settings->GetInt(CSettings::SETTING_NETWORK_HTTPPROXYTYPE) == 0)
   {
     std::string strProxy;
-    if (!CServiceBroker::GetSettings()->GetString(CSettings::SETTING_NETWORK_HTTPPROXYUSERNAME).empty() &&
-        !CServiceBroker::GetSettings()->GetString(CSettings::SETTING_NETWORK_HTTPPROXYPASSWORD).empty())
+    if (!settings->GetString(CSettings::SETTING_NETWORK_HTTPPROXYUSERNAME).empty() &&
+        !settings->GetString(CSettings::SETTING_NETWORK_HTTPPROXYPASSWORD).empty())
     {
       strProxy = StringUtils::Format("%s:%s@",
-                                     CServiceBroker::GetSettings()->GetString(CSettings::SETTING_NETWORK_HTTPPROXYUSERNAME).c_str(),
-                                     CServiceBroker::GetSettings()->GetString(CSettings::SETTING_NETWORK_HTTPPROXYPASSWORD).c_str());
+                                     settings->GetString(CSettings::SETTING_NETWORK_HTTPPROXYUSERNAME).c_str(),
+                                     settings->GetString(CSettings::SETTING_NETWORK_HTTPPROXYPASSWORD).c_str());
     }
 
-    strProxy += CServiceBroker::GetSettings()->GetString(CSettings::SETTING_NETWORK_HTTPPROXYSERVER);
-    strProxy += StringUtils::Format(":%d", CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_NETWORK_HTTPPROXYPORT));
+    strProxy += settings->GetString(CSettings::SETTING_NETWORK_HTTPPROXYSERVER);
+    strProxy += StringUtils::Format(":%d", settings->GetInt(CSettings::SETTING_NETWORK_HTTPPROXYPORT));
 
     CEnvironment::setenv( "HTTP_PROXY", "http://" + strProxy, true );
     CEnvironment::setenv( "HTTPS_PROXY", "http://" + strProxy, true );

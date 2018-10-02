@@ -24,6 +24,7 @@
 #include "settings/DisplaySettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "FileItem.h"
 #include "utils/CPUInfo.h"
 #include "guilib/LocalizeStrings.h"
@@ -256,7 +257,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 
       CGUIWindow::OnMessage(message);
 
-      CServiceBroker::GetSettings()->Save();
+      CServiceBroker::GetSettingsComponent()->GetSettings()->Save();
 
       CServiceBroker::GetWinSystem()->GetGfxContext().SetFullScreenVideo(false);
 

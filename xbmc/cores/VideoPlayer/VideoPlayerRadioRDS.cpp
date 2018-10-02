@@ -46,6 +46,7 @@
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRRadioRDSInfoTag.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
 #include "utils/CharsetConverter.h"
 #include "utils/StringUtils.h"
@@ -929,12 +930,12 @@ unsigned int CDVDRadioRDSData::DecodeTA_TP(uint8_t *msgElement)
   bool traffic_announcement = (msgElement[3] & 1) != 0;
   bool traffic_programme    = (msgElement[3] & 2) != 0;
 
-  if (traffic_announcement && !m_TA_TP_TrafficAdvisory && traffic_programme && dsn == 0 && CServiceBroker::GetSettings()->GetBool("pvrplayback.trafficadvisory"))
+  if (traffic_announcement && !m_TA_TP_TrafficAdvisory && traffic_programme && dsn == 0 && CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool("pvrplayback.trafficadvisory"))
   {
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(19021), g_localizeStrings.Get(29930));
     m_TA_TP_TrafficAdvisory = true;
     m_TA_TP_TrafficVolume = g_application.GetVolume();
-    float trafAdvVol = (float)CServiceBroker::GetSettings()->GetInt("pvrplayback.trafficadvisoryvolume");
+    float trafAdvVol = (float)CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt("pvrplayback.trafficadvisoryvolume");
     if (trafAdvVol)
       g_application.SetVolume(m_TA_TP_TrafficVolume+trafAdvVol);
 
@@ -943,7 +944,7 @@ unsigned int CDVDRadioRDSData::DecodeTA_TP(uint8_t *msgElement)
     CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::PVR, "xbmc", "RDSRadioTA", data);
   }
 
-  if (!traffic_announcement && m_TA_TP_TrafficAdvisory && CServiceBroker::GetSettings()->GetBool("pvrplayback.trafficadvisory"))
+  if (!traffic_announcement && m_TA_TP_TrafficAdvisory && CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool("pvrplayback.trafficadvisory"))
   {
     m_TA_TP_TrafficAdvisory = false;
     g_application.SetVolume(m_TA_TP_TrafficVolume);

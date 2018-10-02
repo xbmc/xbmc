@@ -23,6 +23,7 @@
 #include "utils/LabelFormatter.h"
 #include "utils/StringUtils.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/Variant.h"
 
 #include <utility>
@@ -346,7 +347,7 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
   }
 
   // sort the items
-  items.Sort(SortByLabel, SortOrderAscending, CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING) ? SortAttributeIgnoreArticle : SortAttributeNone);
+  items.Sort(SortByLabel, SortOrderAscending, CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING) ? SortAttributeIgnoreArticle : SortAttributeNone);
 
   CGUIDialogSelect* pDialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
   pDialog->Reset();

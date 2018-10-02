@@ -12,6 +12,7 @@
 #include "LangInfo.h"
 #include "ServiceBroker.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "weather/WeatherManager.h"
@@ -53,7 +54,7 @@ bool CWeatherGUIInfo::GetLabel(std::string& value, const CFileItem *item, int co
       URIUtils::RemoveExtension(value);
       return true;
     case WEATHER_PLUGIN:
-      value = CServiceBroker::GetSettings()->GetString(CSettings::SETTING_WEATHER_ADDON);
+      value = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_WEATHER_ADDON);
       return true;
   }
 

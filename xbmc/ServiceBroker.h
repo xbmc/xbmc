@@ -37,7 +37,6 @@ namespace PLAYLIST
 class CContextMenuManager;
 class XBPython;
 class CDataCacheCore;
-class CSettings;
 class IAE;
 class CFavouritesService;
 class CInputManager;
@@ -53,7 +52,6 @@ class CProfilesManager;
 class CEventLog;
 class CGUIComponent;
 class CAppInboundProtocol;
-class CSettings;
 class CSettingsComponent;
 
 namespace KODI
@@ -117,9 +115,6 @@ public:
   static void RegisterSettingsComponent(CSettingsComponent *settings);
   static void UnregisterSettingsComponent();
   static CSettingsComponent* GetSettingsComponent();
-
-  // @todo to be removed with next commit
-  static std::shared_ptr<CSettings> GetSettings();
 
   static void RegisterWinSystem(CWinSystemBase *winsystem);
   static void UnregisterWinSystem();

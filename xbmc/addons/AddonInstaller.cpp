@@ -20,8 +20,8 @@
 #include "guilib/LocalizeStrings.h"
 #include "filesystem/Directory.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/SettingsComponent.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "messaging/helpers/DialogOKHelper.h"
@@ -625,7 +625,7 @@ bool CAddonInstallJob::DoWork()
   }
 
   g_localizeStrings.LoadAddonStrings(URIUtils::AddFileToFolder(m_addon->Path(), "resources/language/"),
-      CServiceBroker::GetSettings()->GetString(CSettings::SETTING_LOCALE_LANGUAGE), m_addon->ID());
+      CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_LOCALE_LANGUAGE), m_addon->ID());
 
   ADDON::OnPostInstall(m_addon, m_isUpdate, IsModal());
 
@@ -637,7 +637,7 @@ bool CAddonInstallJob::DoWork()
       database.SetLastUpdated(m_addon->ID(), CDateTime::GetCurrentDateTime());
   }
 
-  bool notify = (CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_ADDONS_NOTIFICATIONS)
+  bool notify = (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_ADDONS_NOTIFICATIONS)
         || !m_isAutoUpdate) && !IsModal();
   CServiceBroker::GetEventLog().Add(
       EventPtr(new CAddonManagementEvent(m_addon, m_isUpdate ? 24065 : 24084)), notify, false);

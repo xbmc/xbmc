@@ -10,10 +10,10 @@
 #include "ServiceBroker.h"
 #include "filesystem/MusicDatabaseDirectory/DirectoryNode.h"
 #include "FileItem.h"
-#include "music/MusicDbUrl.h"
-#include "settings/Settings.h"
 #include "guilib/LocalizeStrings.h"
+#include "music/MusicDbUrl.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 
 using namespace XFILE::MUSICDATABASEDIRECTORY;
@@ -48,7 +48,7 @@ void CMusicFileItemListModifier::AddQueuingFolder(CFileItemList& items)
     return;
 
   // always show "all" items by default
-  if (!CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_MUSICLIBRARY_SHOWALLITEMS))
+  if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_MUSICLIBRARY_SHOWALLITEMS))
     return;
 
   // no need for "all" item when only one item

@@ -326,7 +326,7 @@ void CLangInfo::OnSettingChanged(std::shared_ptr<const CSetting> setting)
   else if (settingId == CSettings::SETTING_LOCALE_LANGUAGE)
   {
     if (!SetLanguage(std::static_pointer_cast<const CSettingString>(setting)->GetValue()))
-      std::static_pointer_cast<CSettingString>(CServiceBroker::GetSettings()->GetSetting(CSettings::SETTING_LOCALE_LANGUAGE))->Reset();
+      std::static_pointer_cast<CSettingString>(CServiceBroker::GetSettingsComponent()->GetSettings()->GetSetting(CSettings::SETTING_LOCALE_LANGUAGE))->Reset();
   }
   else if (settingId == CSettings::SETTING_LOCALE_COUNTRY)
     SetCurrentRegion(std::static_pointer_cast<const CSettingString>(setting)->GetValue());
@@ -341,7 +341,7 @@ void CLangInfo::OnSettingChanged(std::shared_ptr<const CSetting> setting)
     Set24HourClock(std::static_pointer_cast<const CSettingString>(setting)->GetValue());
 
     // update the time format
-    CServiceBroker::GetSettings()->SetString(CSettings::SETTING_LOCALE_TIMEFORMAT, PrepareTimeFormat(GetTimeFormat(), m_use24HourClock));
+    CServiceBroker::GetSettingsComponent()->GetSettings()->SetString(CSettings::SETTING_LOCALE_TIMEFORMAT, PrepareTimeFormat(GetTimeFormat(), m_use24HourClock));
   }
   else if (settingId == CSettings::SETTING_LOCALE_TEMPERATUREUNIT)
     SetTemperatureUnit(std::static_pointer_cast<const CSettingString>(setting)->GetValue());
@@ -352,12 +352,13 @@ void CLangInfo::OnSettingChanged(std::shared_ptr<const CSetting> setting)
 void CLangInfo::OnSettingsLoaded()
 {
   // set the temperature and speed units based on the settings
-  SetShortDateFormat(CServiceBroker::GetSettings()->GetString(CSettings::SETTING_LOCALE_SHORTDATEFORMAT));
-  SetLongDateFormat(CServiceBroker::GetSettings()->GetString(CSettings::SETTING_LOCALE_LONGDATEFORMAT));
-  Set24HourClock(CServiceBroker::GetSettings()->GetString(CSettings::SETTING_LOCALE_USE24HOURCLOCK));
-  SetTimeFormat(CServiceBroker::GetSettings()->GetString(CSettings::SETTING_LOCALE_TIMEFORMAT));
-  SetTemperatureUnit(CServiceBroker::GetSettings()->GetString(CSettings::SETTING_LOCALE_TEMPERATUREUNIT));
-  SetSpeedUnit(CServiceBroker::GetSettings()->GetString(CSettings::SETTING_LOCALE_SPEEDUNIT));
+  const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+  SetShortDateFormat(settings->GetString(CSettings::SETTING_LOCALE_SHORTDATEFORMAT));
+  SetLongDateFormat(settings->GetString(CSettings::SETTING_LOCALE_LONGDATEFORMAT));
+  Set24HourClock(settings->GetString(CSettings::SETTING_LOCALE_USE24HOURCLOCK));
+  SetTimeFormat(settings->GetString(CSettings::SETTING_LOCALE_TIMEFORMAT));
+  SetTemperatureUnit(settings->GetString(CSettings::SETTING_LOCALE_TEMPERATUREUNIT));
+  SetSpeedUnit(settings->GetString(CSettings::SETTING_LOCALE_SPEEDUNIT));
 }
 
 bool CLangInfo::Load(const std::string& strLanguage)
@@ -507,7 +508,7 @@ bool CLangInfo::Load(const std::string& strLanguage)
       pRegion=pRegion->NextSiblingElement("region");
     }
 
-    const std::string& strName = CServiceBroker::GetSettings()->GetString(CSettings::SETTING_LOCALE_COUNTRY);
+    const std::string& strName = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_LOCALE_COUNTRY);
     SetCurrentRegion(strName);
   }
   g_charsetConverter.reinitCharsetsFromSettings();
@@ -584,7 +585,7 @@ void CLangInfo::SetDefaults()
 
 std::string CLangInfo::GetGuiCharSet() const
 {
-  std::shared_ptr<CSettingString> charsetSetting = std::static_pointer_cast<CSettingString>(CServiceBroker::GetSettings()->GetSetting(CSettings::SETTING_LOCALE_CHARSET));
+  std::shared_ptr<CSettingString> charsetSetting = std::static_pointer_cast<CSettingString>(CServiceBroker::GetSettingsComponent()->GetSettings()->GetSetting(CSettings::SETTING_LOCALE_CHARSET));
   if (charsetSetting == NULL || charsetSetting->IsDefault())
     return m_strGuiCharSet;
 
@@ -593,7 +594,7 @@ std::string CLangInfo::GetGuiCharSet() const
 
 std::string CLangInfo::GetSubtitleCharSet() const
 {
-  std::shared_ptr<CSettingString> charsetSetting = std::static_pointer_cast<CSettingString>(CServiceBroker::GetSettings()->GetSetting(CSettings::SETTING_SUBTITLES_CHARSET));
+  std::shared_ptr<CSettingString> charsetSetting = std::static_pointer_cast<CSettingString>(CServiceBroker::GetSettingsComponent()->GetSettings()->GetSetting(CSettings::SETTING_SUBTITLES_CHARSET));
   if (charsetSetting->IsDefault())
     return m_strSubtitleCharSet;
 
@@ -608,7 +609,7 @@ LanguageResourcePtr CLangInfo::GetLanguageAddon(const std::string& locale /* = "
 
   std::string addonId = ADDON::CLanguageResource::GetAddonId(locale);
   if (addonId.empty())
-    addonId = CServiceBroker::GetSettings()->GetString(CSettings::SETTING_LOCALE_LANGUAGE);
+    addonId = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_LOCALE_LANGUAGE);
 
   ADDON::AddonPtr addon;
   if (CServiceBroker::GetAddonMgr().GetAddon(addonId, addon, ADDON::ADDON_RESOURCE_LANGUAGE, true) && addon != NULL)
@@ -629,13 +630,13 @@ std::string CLangInfo::GetEnglishLanguageName(const std::string& locale /* = "" 
 bool CLangInfo::SetLanguage(std::string language /* = "" */, bool reloadServices /* = true */)
 {
   if (language.empty())
-    language = CServiceBroker::GetSettings()->GetString(CSettings::SETTING_LOCALE_LANGUAGE);
+    language = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_LOCALE_LANGUAGE);
 
   ADDON::AddonPtr addon;
   if (!CServiceBroker::GetAddonMgr().GetAddon(language, addon, ADDON::ADDON_RESOURCE_LANGUAGE, false))
   {
     CLog::Log(LOGWARNING, "CLangInfo: could not find language add-on '%s', loading default..", language.c_str());
-    language = std::static_pointer_cast<const CSettingString>(CServiceBroker::GetSettings()->GetSetting(
+    language = std::static_pointer_cast<const CSettingString>(CServiceBroker::GetSettingsComponent()->GetSettings()->GetSetting(
         CSettings::SETTING_LOCALE_LANGUAGE))->GetDefault();
 
     if (!CServiceBroker::GetAddonMgr().GetAddon(language, addon, ADDON::ADDON_RESOURCE_LANGUAGE, false))
@@ -662,10 +663,10 @@ bool CLangInfo::SetLanguage(std::string language /* = "" */, bool reloadServices
   ADDON::VECADDONS addons;
   if (CServiceBroker::GetAddonMgr().GetInstalledAddons(addons))
   {
-    auto locale = CServiceBroker::GetSettings()->GetString(CSettings::SETTING_LOCALE_LANGUAGE);
+    const std::string locale = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_LOCALE_LANGUAGE);
     for (const auto& addon : addons)
     {
-      auto path = URIUtils::AddFileToFolder(addon->Path(), "resources", "language/");
+      const std::string path = URIUtils::AddFileToFolder(addon->Path(), "resources", "language/");
       g_localizeStrings.LoadAddonStrings(path, locale, addon->ID());
     }
   }
@@ -916,22 +917,23 @@ void CLangInfo::SetCurrentRegion(const std::string& strName)
 
   m_currentRegion->SetGlobalLocale();
 
-  if (CServiceBroker::GetSettings()->GetString(CSettings::SETTING_LOCALE_SHORTDATEFORMAT) == SETTING_REGIONAL_DEFAULT)
+  const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+  if (settings->GetString(CSettings::SETTING_LOCALE_SHORTDATEFORMAT) == SETTING_REGIONAL_DEFAULT)
     SetShortDateFormat(m_currentRegion->m_strDateFormatShort);
-  if (CServiceBroker::GetSettings()->GetString(CSettings::SETTING_LOCALE_LONGDATEFORMAT) == SETTING_REGIONAL_DEFAULT)
+  if (settings->GetString(CSettings::SETTING_LOCALE_LONGDATEFORMAT) == SETTING_REGIONAL_DEFAULT)
     SetLongDateFormat(m_currentRegion->m_strDateFormatLong);
-  if (CServiceBroker::GetSettings()->GetString(CSettings::SETTING_LOCALE_USE24HOURCLOCK) == SETTING_REGIONAL_DEFAULT)
+  if (settings->GetString(CSettings::SETTING_LOCALE_USE24HOURCLOCK) == SETTING_REGIONAL_DEFAULT)
   {
     Set24HourClock(m_currentRegion->m_strTimeFormat);
 
     // update the time format
-    SetTimeFormat(CServiceBroker::GetSettings()->GetString(CSettings::SETTING_LOCALE_TIMEFORMAT));
+    SetTimeFormat(settings->GetString(CSettings::SETTING_LOCALE_TIMEFORMAT));
   }
-  if (CServiceBroker::GetSettings()->GetString(CSettings::SETTING_LOCALE_TIMEFORMAT) == SETTING_REGIONAL_DEFAULT)
+  if (settings->GetString(CSettings::SETTING_LOCALE_TIMEFORMAT) == SETTING_REGIONAL_DEFAULT)
     SetTimeFormat(m_currentRegion->m_strTimeFormat);
-  if (CServiceBroker::GetSettings()->GetString(CSettings::SETTING_LOCALE_TEMPERATUREUNIT) == SETTING_REGIONAL_DEFAULT)
+  if (settings->GetString(CSettings::SETTING_LOCALE_TEMPERATUREUNIT) == SETTING_REGIONAL_DEFAULT)
     SetTemperatureUnit(m_currentRegion->m_tempUnit);
-  if (CServiceBroker::GetSettings()->GetString(CSettings::SETTING_LOCALE_SPEEDUNIT) == SETTING_REGIONAL_DEFAULT)
+  if (settings->GetString(CSettings::SETTING_LOCALE_SPEEDUNIT) == SETTING_REGIONAL_DEFAULT)
     SetSpeedUnit(m_currentRegion->m_speedUnit);
 }
 

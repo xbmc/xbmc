@@ -6806,7 +6806,7 @@ bool CVideoDatabase::GetItems(const std::string &strBaseDir, VIDEODB_CONTENT_TYP
   else if (StringUtils::EqualsNoCase(itemType, "studios"))
     return GetStudiosNav(strBaseDir, items, mediaType, filter);
   else if (StringUtils::EqualsNoCase(itemType, "sets"))
-    return GetSetsNav(strBaseDir, items, mediaType, filter, !CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_VIDEOLIBRARY_GROUPSINGLEITEMSETS));
+    return GetSetsNav(strBaseDir, items, mediaType, filter, !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOLIBRARY_GROUPSINGLEITEMSETS));
   else if (StringUtils::EqualsNoCase(itemType, "countries"))
     return GetCountriesNav(strBaseDir, items, mediaType, filter);
   else if (StringUtils::EqualsNoCase(itemType, "tags"))
@@ -6981,7 +6981,7 @@ bool CVideoDatabase::GetTvShowsNav(const std::string& strBaseDir, CFileItemList&
     videoUrl.AddOption("tagid", idTag);
 
   Filter filter;
-  if (!CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_VIDEOLIBRARY_SHOWEMPTYTVSHOWS))
+  if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOLIBRARY_SHOWEMPTYTVSHOWS))
     filter.AppendWhere("totalCount IS NOT NULL AND totalCount > 0");
   return GetTvShowsByWhere(videoUrl.ToString(), filter, items, sortDescription, getDetails);
 }
@@ -8178,7 +8178,7 @@ void CVideoDatabase::GetMoviesByName(const std::string& strSearch, CFileItemList
       int setId = m_pDS->fv("movie.idSet").get_asInt();
       CFileItemPtr pItem(new CFileItem(m_pDS->fv(1).get_asString()));
       std::string path;
-      if (setId <= 0 || !CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_VIDEOLIBRARY_GROUPMOVIESETS))
+      if (setId <= 0 || !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOLIBRARY_GROUPMOVIESETS))
         path = StringUtils::Format("videodb://movies/titles/%i", movieId);
       else
         path = StringUtils::Format("videodb://movies/sets/%i/%i", setId, movieId);
@@ -10199,7 +10199,7 @@ bool CVideoDatabase::GetFilter(CDbUrl &videoUrl, Filter &filter, SortDescription
         sorting.sortBy = xsp.GetOrder();
       if (xsp.GetOrderDirection() != SortOrderNone)
         sorting.sortOrder = xsp.GetOrderDirection();
-      if (CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING))
+      if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING))
         sorting.sortAttributes = SortAttributeIgnoreArticle;
     }
   }

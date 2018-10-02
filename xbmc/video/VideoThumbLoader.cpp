@@ -377,6 +377,7 @@ bool CVideoThumbLoader::LoadItemLookup(CFileItem* pItem)
     if (StringUtils::StartsWith(url, "image://video@") && !CTextureCache::GetInstance().HasCachedImage(url))
       pItem->SetArt("thumb", "");
 
+    const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
     if (!pItem->HasArt("thumb"))
     {
       // create unique thumb for auto generated thumbs
@@ -396,8 +397,8 @@ bool CVideoThumbLoader::LoadItemLookup(CFileItem* pItem)
             m_videoDatabase->SetArtForItem(info->m_iDbId, info->m_type, "thumb", thumbURL);
         }
       }
-      else if (CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_MYVIDEOS_EXTRACTTHUMB) &&
-               CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS))
+      else if (settings->GetBool(CSettings::SETTING_MYVIDEOS_EXTRACTTHUMB) &&
+               settings->GetBool(CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS))
       {
         CFileItem item(*pItem);
         std::string path(item.GetPath());
@@ -413,7 +414,7 @@ bool CVideoThumbLoader::LoadItemLookup(CFileItem* pItem)
     }
 
     // flag extraction
-    if (CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS) &&
+    if (settings->GetBool(CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS) &&
        (!pItem->HasVideoInfoTag()                     ||
         !pItem->GetVideoInfoTag()->HasStreamDetails() ) )
     {

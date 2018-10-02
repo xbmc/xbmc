@@ -11,6 +11,7 @@
 #include <assert.h>
 #include "ServiceBroker.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/log.h"
 
 #include "cores/omxplayer/OMXImage.h"
@@ -117,7 +118,7 @@ bool CRBP::Initialize()
   if (m_gpu_mem < 128)
     setenv("V3D_DOUBLE_BUFFER", "1", 1);
 
-  m_gui_resolution_limit = CServiceBroker::GetSettings()->GetInt("videoscreen.limitgui");
+  m_gui_resolution_limit = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt("videoscreen.limitgui");
   if (!m_gui_resolution_limit)
     m_gui_resolution_limit = m_gpu_mem < 128 ? 720:1080;
 

@@ -15,6 +15,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/Color.h"
 
 static int teletextFadeAmount = 0;
@@ -165,7 +166,7 @@ void CGUIDialogTeletext::SetCoordinates()
   top = CServiceBroker::GetWinSystem()->GetGfxContext().ScaleFinalYCoord(0, 0);
   bottom = CServiceBroker::GetWinSystem()->GetGfxContext().ScaleFinalYCoord(0, (float)m_coordsRes.iHeight);
 
-  if (CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_TELETEXTSCALE))
+  if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_TELETEXTSCALE))
   {
     /* Fixed aspect ratio to 4:3 for teletext */
     float width = right - left;

@@ -25,6 +25,7 @@
 #include "FileItem.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "guilib/LocalizeStrings.h"
 #include "PasswordManager.h"
 #include "URL.h"
@@ -287,7 +288,7 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
       extraShares.push_back(share1);
     }
 
-    if (CServiceBroker::GetSettings()->GetString(CSettings::SETTING_AUDIOCDS_RECORDINGPATH) != "")
+    if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_AUDIOCDS_RECORDINGPATH) != "")
     {
       share1.strPath = "special://recordings/";
       share1.strName = g_localizeStrings.Get(21883);
@@ -384,7 +385,7 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
 #endif
 
     share1.m_ignore = true;
-    if (CServiceBroker::GetSettings()->GetString(CSettings::SETTING_DEBUG_SCREENSHOTPATH) != "")
+    if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_DEBUG_SCREENSHOTPATH) != "")
     {
       share1.strPath = "special://screenshots/";
       share1.strName = g_localizeStrings.Get(20008);

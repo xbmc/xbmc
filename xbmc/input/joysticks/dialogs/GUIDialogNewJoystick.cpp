@@ -13,6 +13,7 @@
 #include "guilib/WindowIDs.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 
 using namespace KODI;
 using namespace JOYSTICK;
@@ -28,7 +29,7 @@ void CGUIDialogNewJoystick::ShowAsync()
 
   if (IsRunning())
     bShow = false;
-  else if (!CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_INPUT_ASKNEWCONTROLLERS))
+  else if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_INPUT_ASKNEWCONTROLLERS))
     bShow = false;
   else if (CServiceBroker::GetGUI()->GetWindowManager().IsWindowActive(WINDOW_DIALOG_GAME_CONTROLLERS, false))
     bShow = false;
@@ -49,6 +50,6 @@ void CGUIDialogNewJoystick::Process()
   }
   else
   {
-    CServiceBroker::GetSettings()->SetBool(CSettings::SETTING_INPUT_ASKNEWCONTROLLERS, false);
+    CServiceBroker::GetSettingsComponent()->GetSettings()->SetBool(CSettings::SETTING_INPUT_ASKNEWCONTROLLERS, false);
   }
 }

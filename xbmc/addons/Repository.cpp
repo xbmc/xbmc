@@ -27,7 +27,6 @@
 #include "filesystem/File.h"
 #include "filesystem/ZipFile.h"
 #include "messaging/helpers/DialogHelper.h"
-#include "settings/Settings.h"
 #include "TextureDatabase.h"
 #include "URL.h"
 #include "utils/Base64.h"

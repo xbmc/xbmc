@@ -27,6 +27,7 @@
 #include "File.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "SpecialProtocol.h"
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
@@ -629,7 +630,7 @@ static void RootDirectory(CFileItemList& items)
     item->SetIconImage("DefaultNetwork.png");
     items.Add(item);
   }
-  if (CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_ADDONS_AUTOUPDATES) == ADDON::AUTO_UPDATES_ON
+  if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_ADDONS_AUTOUPDATES) == ADDON::AUTO_UPDATES_ON
       && HasRecentlyUpdatedAddons())
   {
     CFileItemPtr item(new CFileItem("addons://recently_updated/", true));

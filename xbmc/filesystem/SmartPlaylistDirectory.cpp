@@ -17,6 +17,7 @@
 #include "music/MusicDatabase.h"
 #include "playlists/SmartPlayList.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/SortUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -57,7 +58,7 @@ namespace XFILE
     sorting.sortBy = playlist.GetOrder();
     sorting.sortOrder = playlist.GetOrderAscending() ? SortOrderAscending : SortOrderDescending;
     sorting.sortAttributes = playlist.GetOrderAttributes();
-    if (CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING))
+    if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING))
       sorting.sortAttributes = (SortAttribute)(sorting.sortAttributes | SortAttributeIgnoreArticle);
     items.SetSortIgnoreFolders((sorting.sortAttributes & SortAttributeIgnoreFolders) == SortAttributeIgnoreFolders);
 
@@ -277,7 +278,7 @@ namespace XFILE
 
     // sort grouped list by label
     if (items.Size() > 1 && !group.empty())
-      items.Sort(SortByLabel, SortOrderAscending, CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING) ? SortAttributeIgnoreArticle : SortAttributeNone);
+      items.Sort(SortByLabel, SortOrderAscending, CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING) ? SortAttributeIgnoreArticle : SortAttributeNone);
 
     // go through and set the playlist order
     for (int i = 0; i < items.Size(); i++)

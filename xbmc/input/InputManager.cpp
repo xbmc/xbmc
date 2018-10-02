@@ -39,6 +39,7 @@
 #include "utils/StringUtils.h"
 #include "Util.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
 #include "AppParamParser.h"
 #include "AppInboundProtocol.h"
@@ -67,7 +68,7 @@ CInputManager::CInputManager(const CAppParamParser &params) :
   // Register settings
   std::set<std::string> settingSet;
   settingSet.insert(CSettings::SETTING_INPUT_ENABLEMOUSE);
-  CServiceBroker::GetSettings()->RegisterCallback(this, settingSet);
+  CServiceBroker::GetSettingsComponent()->GetSettings()->RegisterCallback(this, settingSet);
 }
 
 CInputManager::~CInputManager()
@@ -75,7 +76,7 @@ CInputManager::~CInputManager()
   Deinitialize();
 
   // Unregister settings
-  CServiceBroker::GetSettings()->UnregisterCallback(this);
+  CServiceBroker::GetSettingsComponent()->GetSettings()->UnregisterCallback(this);
 
   UnregisterKeyboardDriverHandler(m_keyboardEasterEgg.get());
 
@@ -89,7 +90,7 @@ void CInputManager::InitializeInputs()
   m_Keyboard.Initialize();
 
   m_Mouse.Initialize();
-  m_Mouse.SetEnabled(CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_INPUT_ENABLEMOUSE));
+  m_Mouse.SetEnabled(CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_INPUT_ENABLEMOUSE));
 }
 
 void CInputManager::Deinitialize()

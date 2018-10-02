@@ -28,6 +28,7 @@
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingsManager.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/log.h"
 #include "weather/WeatherManager.h"
 #include "windowing/WinSystem.h"
@@ -38,7 +39,7 @@ extern HWND g_hWnd;
 
 CPowerManager::CPowerManager()
 {
-  m_settings = CServiceBroker::GetSettings();
+  m_settings = CServiceBroker::GetSettingsComponent()->GetSettings();
   m_settings->GetSettingsManager()->RegisterSettingOptionsFiller("shutdownstates", SettingOptionsShutdownStatesFiller);
 }
 

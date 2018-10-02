@@ -31,7 +31,7 @@
 CPlayerCoreFactory::CPlayerCoreFactory(const CProfilesManager &profileManager) :
   m_profileManager(profileManager)
 {
-  m_settings = CServiceBroker::GetSettings();
+  m_settings = CServiceBroker::GetSettingsComponent()->GetSettings();
 
   if (m_settings->IsLoaded())
     OnSettingsLoaded();

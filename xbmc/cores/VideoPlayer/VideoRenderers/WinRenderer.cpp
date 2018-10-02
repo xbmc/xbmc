@@ -95,8 +95,9 @@ CWinRenderer::CWinRenderer() : CBaseRenderer()
 
   m_colorManager = std::make_unique<CColorManager>();
   m_outputShader.reset();
-  m_useDithering = CServiceBroker::GetSettings()->GetBool("videoscreen.dither");
-  m_ditherDepth = CServiceBroker::GetSettings()->GetInt("videoscreen.ditherdepth");
+  const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+  m_useDithering = settings->GetBool("videoscreen.dither");
+  m_ditherDepth = settings->GetInt("videoscreen.ditherdepth");
 
   PreInit();
 }
@@ -297,7 +298,7 @@ void CWinRenderer::PreInit()
   m_bConfigured = false;
   UnInit();
 
-  m_iRequestedMethod = CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_VIDEOPLAYER_RENDERMETHOD);
+  m_iRequestedMethod = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_VIDEOPLAYER_RENDERMETHOD);
 
   m_processor = std::make_unique<DXVA::CProcessorHD>();
   if (!m_processor->PreInit())
@@ -1060,7 +1061,7 @@ bool CWinRenderer::Supports(ESCALINGMETHOD method)
         // if scaling is below level, avoid hq scaling
         float scaleX = fabs((static_cast<float>(m_sourceWidth) - m_destRect.Width())/m_sourceWidth)*100;
         float scaleY = fabs((static_cast<float>(m_sourceHeight) - m_destRect.Height())/m_sourceHeight)*100;
-        int minScale = CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_VIDEOPLAYER_HQSCALERS);
+        int minScale = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_VIDEOPLAYER_HQSCALERS);
         if (scaleX < minScale && scaleY < minScale)
           return false;
         return true;

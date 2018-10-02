@@ -15,6 +15,7 @@
 #include "URL.h"
 #include "filesystem/Directory.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -272,7 +273,7 @@ bool CPVRRecordings::GetDirectory(const std::string& strPath, CFileItemList &ite
   }
   else
   {
-    bGrouped = CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_PVRRECORD_GROUPRECORDINGS);
+    bGrouped = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_PVRRECORD_GROUPRECORDINGS);
   }
 
   CPVRRecordingsPath recPath(url.GetWithoutOptions());

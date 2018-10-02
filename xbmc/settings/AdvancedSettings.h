@@ -379,5 +379,5 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     std::string m_userAgent;
 
   private:
-    void setExtraLogLevel(const std::vector<CVariant> &components);
+    void SetExtraLogLevel(const std::vector<CVariant> &components);
 };

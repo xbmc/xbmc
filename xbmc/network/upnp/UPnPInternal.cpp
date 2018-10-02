@@ -14,6 +14,7 @@
 #include "URL.h"
 #include "Util.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
@@ -28,7 +29,6 @@
 #include "music/tags/MusicInfoTag.h"
 #include "TextureDatabase.h"
 #include "ThumbLoader.h"
-#include "settings/Settings.h"
 #include "utils/LangCodeExpander.h"
 
 #include <algorithm>
@@ -609,7 +609,7 @@ BuildObject(CFileItem&                    item,
     // to look for external subtitles
     if (upnp_server != NULL && item.IsVideo() &&
        (upnp_service == UPnPPlayer || upnp_service == UPnPRenderer ||
-        CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_SERVICES_UPNPLOOKFOREXTERNALSUBTITLES)))
+        CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_SERVICES_UPNPLOOKFOREXTERNALSUBTITLES)))
     {
         // find any available external subtitles
         std::vector<std::string> filenames;
@@ -639,7 +639,7 @@ BuildObject(CFileItem&                    item,
         else if (!subtitles.empty())
         {
             /* trying to find subtitle with prefered language settings */
-            std::string preferredLanguage = (CServiceBroker::GetSettings()->GetSetting("locale.subtitlelanguage"))->ToString();
+            std::string preferredLanguage = (CServiceBroker::GetSettingsComponent()->GetSettings()->GetSetting("locale.subtitlelanguage"))->ToString();
             std::string preferredLanguageCode;
             g_LangCodeExpander.ConvertToISO6392B(preferredLanguage, preferredLanguageCode);
 

@@ -23,8 +23,9 @@
 #include "DVDDemuxers/DVDDemuxUtils.h"
 #include "DVDCodecs/DVDCodecUtils.h"
 #include "settings/DisplaySettings.h"
-#include "settings/Settings.h"
 #include "settings/MediaSettings.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFlags.h"
 #include "cores/VideoPlayer/VideoRenderers/HwDecRender/MMALRenderer.h"
 #include "windowing/GraphicContext.h"
@@ -93,7 +94,7 @@ OMXPlayerVideo::~OMXPlayerVideo()
 bool OMXPlayerVideo::OpenStream(CDVDStreamInfo hints)
 {
   m_hints       = hints;
-  m_hdmi_clock_sync = (CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) != ADJUST_REFRESHRATE_OFF);
+  m_hdmi_clock_sync = (CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) != ADJUST_REFRESHRATE_OFF);
   m_syncState = IDVDStreamPlayer::SYNC_STARTING;
   m_flush       = false;
   m_stalled     = m_messageQueue.GetPacketCount(CDVDMsg::DEMUXER_PACKET) == 0;

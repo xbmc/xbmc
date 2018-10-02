@@ -17,6 +17,7 @@
 #include "guilib/WindowIDs.h"
 #include "profiles/ProfilesManager.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
 
 #include <utility>
@@ -90,8 +91,8 @@ EventPtr CEventLog::Get(const std::string& eventPtrIdentifier) const
 void CEventLog::Add(const EventPtr& eventPtr)
 {
   if (eventPtr == nullptr || eventPtr->GetIdentifier().empty() ||
-      !CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_EVENTLOG_ENABLED) ||
-     (eventPtr->GetLevel() == EventLevel::Information && !CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_EVENTLOG_ENABLED_NOTIFICATIONS)))
+      !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_EVENTLOG_ENABLED) ||
+     (eventPtr->GetLevel() == EventLevel::Information && !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_EVENTLOG_ENABLED_NOTIFICATIONS)))
     return;
 
   CSingleLock lock(m_critical);

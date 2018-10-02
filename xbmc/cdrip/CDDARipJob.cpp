@@ -20,8 +20,8 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
-#include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
 #include "storage/MediaManager.h"
@@ -172,16 +172,16 @@ int CCDDARipJob::RipChunk(CFile& reader, CEncoder* encoder, int& percent)
 
 CEncoder* CCDDARipJob::SetupEncoder(CFile& reader)
 {
-  CEncoder* encoder = NULL;
-  if (CServiceBroker::GetSettings()->GetString(CSettings::SETTING_AUDIOCDS_ENCODER) == "audioencoder.kodi.builtin.aac" ||
-      CServiceBroker::GetSettings()->GetString(CSettings::SETTING_AUDIOCDS_ENCODER) == "audioencoder.kodi.builtin.wma")
+  CEncoder* encoder = nullptr;
+  const std::string audioEncoder = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_AUDIOCDS_ENCODER);
+  if (audioEncoder == "audioencoder.kodi.builtin.aac" || audioEncoder == "audioencoder.kodi.builtin.wma")
   {
     std::shared_ptr<IEncoder> enc(new CEncoderFFmpeg());
     encoder = new CEncoder(enc);
   }
   else
   {
-    const BinaryAddonBasePtr addonInfo = CServiceBroker::GetBinaryAddonManager().GetInstalledAddonInfo(CServiceBroker::GetSettings()->GetString(CSettings::SETTING_AUDIOCDS_ENCODER), ADDON_AUDIOENCODER);
+    const BinaryAddonBasePtr addonInfo = CServiceBroker::GetBinaryAddonManager().GetInstalledAddonInfo(audioEncoder, ADDON_AUDIOENCODER);
     if (addonInfo)
     {
       std::shared_ptr<IEncoder> enc = std::make_shared<CAudioEncoder>(addonInfo);
@@ -208,7 +208,7 @@ CEncoder* CCDDARipJob::SetupEncoder(CFile& reader)
 
   // init encoder
   if (!encoder->Init(m_output.c_str(), m_channels, m_rate, m_bps))
-    delete encoder, encoder = NULL;
+    delete encoder, encoder = nullptr;
 
   return encoder;
 }

@@ -14,6 +14,7 @@
 #include "settings/DisplaySettings.h"
 #include "settings/lib/Setting.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
 #if HAS_GLES
 #include "guilib/GUIFontTTFGL.h"
@@ -217,7 +218,7 @@ std::string CWinSystemBase::GetClipboardText(void)
 
 int CWinSystemBase::NoOfBuffers(void)
 {
-  int buffers = CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_VIDEOSCREEN_NOOFBUFFERS);
+  int buffers = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_VIDEOSCREEN_NOOFBUFFERS);
   return buffers;
 }
 

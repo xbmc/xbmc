@@ -93,14 +93,14 @@ void TestBasicEnvironment::SetUp()
   if (!g_application.m_ServiceManager->InitForTesting())
     exit(1);
 
-  CServiceBroker::GetSettings()->Initialize();
+  CServiceBroker::GetSettingsComponent()->GetSettings()->Initialize();
 }
 
 void TestBasicEnvironment::TearDown()
 {
   XFILE::CDirectory::RemoveRecursive(m_tempPath);
 
-  CServiceBroker::GetSettings()->Uninitialize();
+  CServiceBroker::GetSettingsComponent()->GetSettings()->Uninitialize();
   g_application.m_ServiceManager->DeinitTesting();
 
   m_pSettingsComponent->Deinit();

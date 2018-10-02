@@ -12,6 +12,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "music/MusicDatabase.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 
 using namespace XFILE::MUSICDATABASEDIRECTORY;
 
@@ -45,7 +46,7 @@ bool CDirectoryNodeArtist::GetContent(CFileItemList& items) const
   CQueryParams params;
   CollectQueryParams(params);
 
-  bool bSuccess = musicdatabase.GetArtistsNav(BuildPath(), items, !CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_MUSICLIBRARY_SHOWCOMPILATIONARTISTS), params.GetGenreId());
+  bool bSuccess = musicdatabase.GetArtistsNav(BuildPath(), items, !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_MUSICLIBRARY_SHOWCOMPILATIONARTISTS), params.GetGenreId());
 
   musicdatabase.Close();
 

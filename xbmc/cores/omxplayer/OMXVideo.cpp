@@ -420,7 +420,7 @@ bool COMXVideo::Open(CDVDStreamInfo &hints, OMXClock *clock, bool hdmi_clock_syn
           break;
       }
     }
-    if (CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_SUPPORTMVC))
+    if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_SUPPORTMVC))
     {
       m_codingType = OMX_VIDEO_CodingMVC;
       m_video_codec_name = "omx-mvc";
@@ -576,7 +576,7 @@ bool COMXVideo::Open(CDVDStreamInfo &hints, OMXClock *clock, bool hdmi_clock_syn
   }
 
   // request portsettingschanged on refresh rate change
-  if (CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) == ADJUST_REFRESHRATE_ALWAYS)
+  if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) == ADJUST_REFRESHRATE_ALWAYS)
   {
     notifications.nIndex = OMX_IndexParamPortDefinition;
     omx_err = m_omx_decoder.SetParameter((OMX_INDEXTYPE)OMX_IndexConfigRequestCallback, &notifications);

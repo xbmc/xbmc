@@ -125,7 +125,7 @@ void CFileItem::FillMusicInfoTag(const CPVRChannelPtr& channel, const CPVREpgInf
       musictag->SetGenre(tag->Genre());
       musictag->SetDuration(tag->GetDuration());
     }
-    else if (CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_EPG_HIDENOINFOAVAILABLE))
+    else if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_EPG_HIDENOINFOAVAILABLE))
     {
       musictag->SetTitle(g_localizeStrings.Get(19055)); // no information available
     }
@@ -2864,7 +2864,7 @@ void CFileItemList::StackFiles()
         // item->m_bIsFolder = true;  // don't treat stacked files as folders
         // the label may be in a different char set from the filename (eg over smb
         // the label is converted from utf8, but the filename is not)
-        if (!CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_FILELISTS_SHOWEXTENSIONS))
+        if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_FILELISTS_SHOWEXTENSIONS))
           URIUtils::RemoveExtension(stackName);
 
         item1->SetLabel(stackName);
@@ -3000,7 +3000,7 @@ std::string CFileItem::GetUserMusicThumb(bool alwaysCheckRemote /* = false */, b
   }
 
   // if a folder, check for folder.jpg
-  if (m_bIsFolder && !IsFileFolder() && (!IsRemote() || alwaysCheckRemote || CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_MUSICFILES_FINDREMOTETHUMBS)))
+  if (m_bIsFolder && !IsFileFolder() && (!IsRemote() || alwaysCheckRemote || CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_MUSICFILES_FINDREMOTETHUMBS)))
   {
     std::vector<std::string> thumbs = StringUtils::Split(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicThumbs, "|");
     for (std::vector<std::string>::const_iterator i = thumbs.begin(); i != thumbs.end(); ++i)

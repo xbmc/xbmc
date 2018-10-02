@@ -10,6 +10,7 @@
 #include "ServiceBroker.h"
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
 #include <string.h>
 
@@ -223,7 +224,7 @@ bool CWinSystemGbm::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     m_GBM->ReleaseBuffer();
   }
 
-  int delay = CServiceBroker::GetSettings()->GetInt("videoscreen.delayrefreshchange");
+  int delay = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt("videoscreen.delayrefreshchange");
   if (delay > 0)
   {
     m_delayDispReset = true;
@@ -256,7 +257,7 @@ void CWinSystemGbm::FlipPage(bool rendered, bool videoLayer)
 
 bool CWinSystemGbm::UseLimitedColor()
 {
-  return CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_VIDEOSCREEN_LIMITEDRANGE);
+  return CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOSCREEN_LIMITEDRANGE);
 }
 
 bool CWinSystemGbm::Hide()

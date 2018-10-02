@@ -15,6 +15,7 @@
 #include "utils/log.h"
 #include "VTB.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
 #include "ServiceBroker.h"
 
@@ -129,7 +130,7 @@ void CVideoBufferPoolVTB::Return(int id)
 
 IHardwareDecoder* CDecoder::Create(CDVDStreamInfo &hint, CProcessInfo &processInfo, AVPixelFormat fmt)
 {
-  if (fmt == AV_PIX_FMT_VIDEOTOOLBOX && CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEVTB))
+  if (fmt == AV_PIX_FMT_VIDEOTOOLBOX && CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEVTB))
     return new VTB::CDecoder(processInfo);
 
   return nullptr;
@@ -161,7 +162,7 @@ void CDecoder::Close()
 
 bool CDecoder::Open(AVCodecContext *avctx, AVCodecContext* mainctx, enum AVPixelFormat fmt)
 {
-  if (!CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEVTB))
+  if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEVTB))
     return false;
 
   AVBufferRef *deviceRef =  av_hwdevice_ctx_alloc(AV_HWDEVICE_TYPE_VIDEOTOOLBOX);

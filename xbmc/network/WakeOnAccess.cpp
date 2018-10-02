@@ -796,7 +796,7 @@ void CWakeOnAccess::SetEnabled(bool enabled)
 
 void CWakeOnAccess::LoadFromXML()
 {
-  bool enabled = CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_POWERMANAGEMENT_WAKEONACCESS);
+  bool enabled = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_POWERMANAGEMENT_WAKEONACCESS);
 
   CXBMCTinyXML xmlDoc;
   if (!xmlDoc.LoadFile(GetSettingFile()))

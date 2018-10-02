@@ -1523,7 +1523,7 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
       }
       case AVMEDIA_TYPE_SUBTITLE:
       {
-        if (pStream->codecpar->codec_id == AV_CODEC_ID_DVB_TELETEXT && CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_TELETEXTENABLED))
+        if (pStream->codecpar->codec_id == AV_CODEC_ID_DVB_TELETEXT && CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_TELETEXTENABLED))
         {
           CDemuxStreamTeletext* st = new CDemuxStreamTeletext();
           stream = st;
@@ -1885,7 +1885,7 @@ unsigned int CDVDDemuxFFmpeg::HLSSelectProgram()
 {
   unsigned int prog = UINT_MAX;
 
-  int bandwidth = CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_NETWORK_BANDWIDTH) * 1000;
+  int bandwidth = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_NETWORK_BANDWIDTH) * 1000;
   if (bandwidth <= 0)
     bandwidth = INT_MAX;
 

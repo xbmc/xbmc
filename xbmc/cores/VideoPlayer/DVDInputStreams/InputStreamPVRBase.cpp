@@ -14,6 +14,7 @@
 #include "cores/VideoPlayer/Interface/Addon/DemuxPacket.h"
 #include "pvr/PVRManager.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/log.h"
 
 CInputStreamPVRBase::CInputStreamPVRBase(IVideoPlayer* pPlayer, const CFileItem& fileitem)
@@ -322,7 +323,7 @@ void CInputStreamPVRBase::UpdateStreamMap()
       dStream = streamSubtitle;
     }
     else if (stream.iCodecType == XBMC_CODEC_TYPE_RDS &&
-             CServiceBroker::GetSettings()->GetBool("pvrplayback.enableradiords"))
+             CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool("pvrplayback.enableradiords"))
     {
       std::shared_ptr<CDemuxStreamRadioRDS> streamRadioRDS;
 

@@ -133,7 +133,7 @@ CNetworkServices::CNetworkServices()
     CSettings::SETTING_SMB_MAXPROTOCOL,
     CSettings::SETTING_SMB_LEGACYSECURITY
   };
-  m_settings = CServiceBroker::GetSettings();
+  m_settings = CServiceBroker::GetSettingsComponent()->GetSettings();
   m_settings->GetSettingsManager()->RegisterCallback(this, settingSet);
 }
 
@@ -535,7 +535,7 @@ bool CNetworkServices::StartWebserver()
 #ifdef HAS_ZEROCONF
   std::vector<std::pair<std::string, std::string> > txt;
   txt.push_back(std::make_pair("txtvers", "1"));
-  txt.push_back(std::make_pair("uuid", CServiceBroker::GetSettings()->GetString(CSettings::SETTING_SERVICES_DEVICEUUID)));
+  txt.push_back(std::make_pair("uuid", CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_SERVICES_DEVICEUUID)));
 
   // publish web frontend and API services
 #ifdef HAS_WEB_INTERFACE
@@ -702,7 +702,7 @@ bool CNetworkServices::StartJSONRPCServer()
 #ifdef HAS_ZEROCONF
   std::vector<std::pair<std::string, std::string> > txt;
   txt.push_back(std::make_pair("txtvers", "1"));
-  txt.push_back(std::make_pair("uuid", CServiceBroker::GetSettings()->GetString(CSettings::SETTING_SERVICES_DEVICEUUID)));
+  txt.push_back(std::make_pair("uuid", CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_SERVICES_DEVICEUUID)));
 
   CZeroconf::GetInstance()->PublishService("servers.jsonrpc-tpc", "_xbmc-jsonrpc._tcp", CSysInfo::GetDeviceName(), CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_jsonTcpPort, txt);
 #endif // HAS_ZEROCONF

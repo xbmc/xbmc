@@ -14,6 +14,7 @@
 #include "FileItem.h"
 #include "DirectoryCache.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/log.h"
 #include "utils/Job.h"
 #include "utils/JobManager.h"
@@ -266,7 +267,7 @@ bool CDirectory::GetDirectory(const CURL& url, std::shared_ptr<IDirectory> pDire
     }
     // filter hidden files
     //! @todo we shouldn't be checking the gui setting here, callers should use getHidden instead
-    if (!CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_FILELISTS_SHOWHIDDEN) && !(hints.flags & DIR_FLAG_GET_HIDDEN))
+    if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_FILELISTS_SHOWHIDDEN) && !(hints.flags & DIR_FLAG_GET_HIDDEN))
     {
       for (int i = 0; i < items.Size(); ++i)
       {

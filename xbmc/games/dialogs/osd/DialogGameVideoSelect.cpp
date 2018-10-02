@@ -19,6 +19,7 @@
 #include "settings/GameSettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "view/GUIViewControl.h"
 #include "view/ViewState.h"
 #include "Application.h"
@@ -199,7 +200,7 @@ void CDialogGameVideoSelect::SaveSettings()
   if (defaultSettings != currentSettings)
   {
     defaultSettings = currentSettings;
-    CServiceBroker::GetSettings()->Save();
+    CServiceBroker::GetSettingsComponent()->GetSettings()->Save();
   }
 }
 

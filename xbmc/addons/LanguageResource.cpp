@@ -12,6 +12,7 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/GUIWindowManager.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "messaging/helpers/DialogHelper.h"
@@ -118,7 +119,7 @@ CLanguageResource::CLanguageResource(
 
 bool CLanguageResource::IsInUse() const
 {
-  return StringUtils::EqualsNoCase(CServiceBroker::GetSettings()->GetString(CSettings::SETTING_LOCALE_LANGUAGE), ID());
+  return StringUtils::EqualsNoCase(CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_LOCALE_LANGUAGE), ID());
 }
 
 void CLanguageResource::OnPostInstall(bool update, bool modal)
@@ -133,7 +134,7 @@ void CLanguageResource::OnPostInstall(bool update, bool modal)
     if (IsInUse())
       g_langInfo.SetLanguage(ID());
     else
-      CServiceBroker::GetSettings()->SetString(CSettings::SETTING_LOCALE_LANGUAGE, ID());
+      CServiceBroker::GetSettingsComponent()->GetSettings()->SetString(CSettings::SETTING_LOCALE_LANGUAGE, ID());
   }
 }
 

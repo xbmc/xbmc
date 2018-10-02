@@ -752,7 +752,7 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
   else if(url2.IsProtocol("http") ||
     url2.IsProtocol("https"))
   {
-    std::shared_ptr<CSettings> s = CServiceBroker::GetSettings();
+    std::shared_ptr<CSettings> s = CServiceBroker::GetSettingsComponent()->GetSettings();
     if (!s)
       return;
 

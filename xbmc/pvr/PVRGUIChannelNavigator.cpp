@@ -12,6 +12,7 @@
 #include "ServiceBroker.h"
 #include "guilib/GUIComponent.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "settings/lib/SettingsManager.h"
 
 #include "pvr/PVRGUIActions.h"
@@ -80,7 +81,7 @@ namespace PVR
 
     if (IsPreview() && eSwitchMode == ChannelSwitchMode::INSTANT_OR_DELAYED_SWITCH)
     {
-      int iTimeout = CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_PVRPLAYBACK_CHANNELENTRYTIMEOUT);
+      int iTimeout = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_PVRPLAYBACK_CHANNELENTRYTIMEOUT);
       if (iTimeout > 0)
       {
         // delayed switch
@@ -136,7 +137,7 @@ namespace PVR
 
   void CPVRGUIChannelNavigator::ShowInfo(bool bForce)
   {
-    int iTimeout = CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_PVRMENU_DISPLAYCHANNELINFO);
+    int iTimeout = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_PVRMENU_DISPLAYCHANNELINFO);
 
     if (bForce || iTimeout > 0)
     {

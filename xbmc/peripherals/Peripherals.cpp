@@ -50,6 +50,7 @@
 #include "peripherals/dialogs/GUIDialogPeripherals.h"
 #include "settings/lib/Setting.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
 #include "Util.h"
 #include "utils/log.h"
@@ -81,13 +82,13 @@ CPeripherals::CPeripherals(CInputManager &inputManager,
   settingSet.insert(CSettings::SETTING_INPUT_CONTROLLERCONFIG);
   settingSet.insert(CSettings::SETTING_INPUT_TESTRUMBLE);
   settingSet.insert(CSettings::SETTING_LOCALE_LANGUAGE);
-  CServiceBroker::GetSettings()->RegisterCallback(this, settingSet);
+  CServiceBroker::GetSettingsComponent()->GetSettings()->RegisterCallback(this, settingSet);
 }
 
 CPeripherals::~CPeripherals()
 {
   // Unregister settings
-  CServiceBroker::GetSettings()->UnregisterCallback(this);
+  CServiceBroker::GetSettingsComponent()->GetSettings()->UnregisterCallback(this);
 
   Clear();
 }
@@ -776,7 +777,7 @@ EventLockHandlePtr CPeripherals::RegisterEventLock()
 
 void CPeripherals::OnUserNotification()
 {
-  if (!CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_INPUT_RUMBLENOTIFY))
+  if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_INPUT_RUMBLENOTIFY))
     return;
 
   PeripheralVector peripherals;
@@ -965,7 +966,7 @@ void CPeripherals::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sen
   {
     if (strcmp(message, "OnQuit") == 0)
     {
-      if (CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_INPUT_CONTROLLERPOWEROFF))
+      if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_INPUT_CONTROLLERPOWEROFF))
         PowerOffDevices();
     }
   }

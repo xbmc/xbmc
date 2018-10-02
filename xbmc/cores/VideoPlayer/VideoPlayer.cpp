@@ -44,13 +44,12 @@
 #include "cores/FFmpeg.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
-#include "settings/AdvancedSettings.h"
-#include "settings/SettingsComponent.h"
 #include "FileItem.h"
 #include "GUIUserMessages.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "settings/MediaSettings.h"
 #include "utils/log.h"
 #include "utils/StreamDetails.h"
 #include "utils/StreamUtils.h"
@@ -110,11 +109,12 @@ public:
    */
   explicit PredicateSubtitleFilter(const std::string& lang, int subStream)
   : audiolang(lang),
-    original(StringUtils::EqualsNoCase(CServiceBroker::GetSettings()->GetString(CSettings::SETTING_LOCALE_SUBTITLELANGUAGE), "original")),
-    nosub(StringUtils::EqualsNoCase(CServiceBroker::GetSettings()->GetString(CSettings::SETTING_LOCALE_SUBTITLELANGUAGE), "none")),
-    onlyforced(StringUtils::EqualsNoCase(CServiceBroker::GetSettings()->GetString(CSettings::SETTING_LOCALE_SUBTITLELANGUAGE), "forced_only")),
     currentSubStream(subStream)
   {
+    const std::string subtitleLang = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_LOCALE_SUBTITLELANGUAGE);
+    original = StringUtils::EqualsNoCase(subtitleLang, "original");
+    nosub = StringUtils::EqualsNoCase(subtitleLang, "none");
+    onlyforced = StringUtils::EqualsNoCase(subtitleLang, "forced_only");
   };
 
   bool operator()(const SelectionStream& ss) const
@@ -171,10 +171,11 @@ public:
     PREDICATE_RETURN(lh.type_index == currentAudioStream
                      , rh.type_index == currentAudioStream);
 
+    const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
 
-    if (!StringUtils::EqualsNoCase(CServiceBroker::GetSettings()->GetString(CSettings::SETTING_LOCALE_AUDIOLANGUAGE), "mediadefault"))
+    if (!StringUtils::EqualsNoCase(settings->GetString(CSettings::SETTING_LOCALE_AUDIOLANGUAGE), "mediadefault"))
     {
-      if (!StringUtils::EqualsNoCase(CServiceBroker::GetSettings()->GetString(CSettings::SETTING_LOCALE_AUDIOLANGUAGE), "original"))
+      if (!StringUtils::EqualsNoCase(settings->GetString(CSettings::SETTING_LOCALE_AUDIOLANGUAGE), "original"))
       {
         std::string audio_language = g_langInfo.GetAudioLanguage();
         PREDICATE_RETURN(g_LangCodeExpander.CompareISO639Codes(audio_language, lh.language)
@@ -186,16 +187,16 @@ public:
           rh.flags & StreamFlags::FLAG_ORIGINAL);
       }
 
-      bool hearingimp = CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_ACCESSIBILITY_AUDIOHEARING);
+      bool hearingimp = settings->GetBool(CSettings::SETTING_ACCESSIBILITY_AUDIOHEARING);
       PREDICATE_RETURN(!hearingimp ? !(lh.flags & StreamFlags::FLAG_HEARING_IMPAIRED) : lh.flags & StreamFlags::FLAG_HEARING_IMPAIRED
                        , !hearingimp ? !(rh.flags & StreamFlags::FLAG_HEARING_IMPAIRED) : rh.flags & StreamFlags::FLAG_HEARING_IMPAIRED);
 
-      bool visualimp = CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_ACCESSIBILITY_AUDIOVISUAL);
+      bool visualimp = settings->GetBool(CSettings::SETTING_ACCESSIBILITY_AUDIOVISUAL);
       PREDICATE_RETURN(!visualimp ? !(lh.flags & StreamFlags::FLAG_VISUAL_IMPAIRED) : lh.flags & StreamFlags::FLAG_VISUAL_IMPAIRED
                        , !visualimp ? !(rh.flags & StreamFlags::FLAG_VISUAL_IMPAIRED) : rh.flags & StreamFlags::FLAG_VISUAL_IMPAIRED);
     }
 
-    if (CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_PREFERDEFAULTFLAG))
+    if (settings->GetBool(CSettings::SETTING_VIDEOPLAYER_PREFERDEFAULTFLAG))
     {
       PREDICATE_RETURN(lh.flags & StreamFlags::FLAG_DEFAULT,
                        rh.flags & StreamFlags::FLAG_DEFAULT);
@@ -242,7 +243,7 @@ private:
 public:
   explicit PredicateSubtitlePriority(const std::string& lang, int stream, bool ison)
   : audiolang(lang),
-    original(StringUtils::EqualsNoCase(CServiceBroker::GetSettings()->GetString(CSettings::SETTING_LOCALE_SUBTITLELANGUAGE), "original")),
+    original(StringUtils::EqualsNoCase(CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_LOCALE_SUBTITLELANGUAGE), "original")),
     subson(ison),
     filter(lang, stream),
     subStream(stream)
@@ -294,7 +295,7 @@ public:
       PREDICATE_RETURN(g_LangCodeExpander.CompareISO639Codes(subtitle_language, lh.language)
                      , g_LangCodeExpander.CompareISO639Codes(subtitle_language, rh.language));
 
-      bool hearingimp = CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_ACCESSIBILITY_SUBHEARING);
+      bool hearingimp = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_ACCESSIBILITY_SUBHEARING);
       PREDICATE_RETURN(!hearingimp ? !(lh.flags & StreamFlags::FLAG_HEARING_IMPAIRED) : lh.flags & StreamFlags::FLAG_HEARING_IMPAIRED
                      , !hearingimp ? !(rh.flags & StreamFlags::FLAG_HEARING_IMPAIRED) : rh.flags & StreamFlags::FLAG_HEARING_IMPAIRED);
     }
@@ -654,7 +655,7 @@ CVideoPlayer::CVideoPlayer(IPlayerCallback& callback)
   m_OmxPlayerState.threshold           = 0.2f;
   m_OmxPlayerState.interlace_method    = VS_INTERLACEMETHOD_MAX;
 #ifdef TARGET_RASPBERRY_PI
-  m_omxplayer_mode                     = CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEOMXPLAYER);
+  m_omxplayer_mode                     = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEOMXPLAYER);
 #else
   m_omxplayer_mode                     = false;
 #endif
@@ -1278,7 +1279,7 @@ void CVideoPlayer::Prepare()
   {
     if (!m_OmxPlayerState.av_clock.OMXInitialize(&m_clock))
       m_bAbortRequest = true;
-    if (CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) != ADJUST_REFRESHRATE_OFF)
+    if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) != ADJUST_REFRESHRATE_OFF)
       m_OmxPlayerState.av_clock.HDMIClockSync();
     m_OmxPlayerState.av_clock.OMXStateIdle();
     m_OmxPlayerState.av_clock.OMXStateExecute();
@@ -1592,7 +1593,7 @@ void CVideoPlayer::Process()
     CheckBetterStream(m_CurrentRadioRDS, pStream);
 
     // demux video stream
-    if (CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_SUBTITLES_PARSECAPTIONS) && CheckIsCurrent(m_CurrentVideo, pStream, pPacket))
+    if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_SUBTITLES_PARSECAPTIONS) && CheckIsCurrent(m_CurrentVideo, pStream, pPacket))
     {
       if (m_pCCDemuxer)
       {
@@ -3708,7 +3709,7 @@ bool CVideoPlayer::OpenVideoStream(CDVDStreamInfo& hint, bool reset)
     // set framerate if not set by demuxer
     if (hint.fpsrate == 0 || hint.fpsscale == 0)
     {
-      int fpsidx = CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_PVRPLAYBACK_FPS);
+      int fpsidx = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_PVRPLAYBACK_FPS);
       if (fpsidx == 1)
       {
         hint.fpsscale = 1000;
@@ -3743,7 +3744,7 @@ bool CVideoPlayer::OpenVideoStream(CDVDStreamInfo& hint, bool reset)
   if (m_playerOptions.fullscreen && CServiceBroker::GetWinSystem()->GetGfxContext().IsFullScreenRoot() &&
       hint.fpsrate != 0 && hint.fpsscale != 0)
   {
-    if (CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) != ADJUST_REFRESHRATE_OFF)
+    if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) != ADJUST_REFRESHRATE_OFF)
     {
       double framerate = DVD_TIME_BASE / CDVDCodecUtils::NormalizeFrameduration((double)DVD_TIME_BASE * hint.fpsscale / hint.fpsrate);
       m_renderManager.TriggerUpdateResolution(static_cast<float>(framerate), hint.width, hint.stereo_mode);
@@ -4773,7 +4774,7 @@ void CVideoPlayer::UpdatePlayState(double timeout)
 
     bool realtime = m_pInputStream->IsRealtime();
 
-    if (CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEDISPLAYASCLOCK) &&
+    if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEDISPLAYASCLOCK) &&
         !realtime)
     {
       state.cantempo = true;

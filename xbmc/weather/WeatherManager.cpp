@@ -18,6 +18,7 @@
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingsManager.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/XMLUtils.h"
@@ -28,7 +29,7 @@ using namespace ADDON;
 
 CWeatherManager::CWeatherManager(void) : CInfoLoader(30 * 60 * 1000) // 30 minutes
 {
-  CServiceBroker::GetSettings()->GetSettingsManager()->RegisterCallback(this, {
+  CServiceBroker::GetSettingsComponent()->GetSettings()->GetSettingsManager()->RegisterCallback(this, {
     CSettings::SETTING_WEATHER_ADDON,
     CSettings::SETTING_WEATHER_ADDONSETTINGS
   });
@@ -38,7 +39,7 @@ CWeatherManager::CWeatherManager(void) : CInfoLoader(30 * 60 * 1000) // 30 minut
 
 CWeatherManager::~CWeatherManager(void)
 {
-  CServiceBroker::GetSettings()->GetSettingsManager()->UnregisterCallback(this);
+  CServiceBroker::GetSettingsComponent()->GetSettings()->GetSettingsManager()->UnregisterCallback(this);
 }
 
 std::string CWeatherManager::BusyInfo(int info) const
@@ -115,8 +116,9 @@ const ForecastDay &CWeatherManager::GetForecast(int day) const
  */
 void CWeatherManager::SetArea(int iLocation)
 {
-  CServiceBroker::GetSettings()->SetInt(CSettings::SETTING_WEATHER_CURRENTLOCATION, iLocation);
-  CServiceBroker::GetSettings()->Save();
+  const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+  settings->SetInt(CSettings::SETTING_WEATHER_CURRENTLOCATION, iLocation);
+  settings->Save();
 }
 
 /*!
@@ -125,7 +127,7 @@ void CWeatherManager::SetArea(int iLocation)
  */
 int CWeatherManager::GetArea() const
 {
-  return CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_WEATHER_CURRENTLOCATION);
+  return CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_WEATHER_CURRENTLOCATION);
 }
 
 CJob *CWeatherManager::GetJob() const
@@ -164,7 +166,7 @@ void CWeatherManager::OnSettingAction(std::shared_ptr<const CSetting> setting)
   if (settingId == CSettings::SETTING_WEATHER_ADDONSETTINGS)
   {
     AddonPtr addon;
-    if (CServiceBroker::GetAddonMgr().GetAddon(CServiceBroker::GetSettings()->GetString(CSettings::SETTING_WEATHER_ADDON), addon, ADDON_SCRIPT_WEATHER) && addon != NULL)
+    if (CServiceBroker::GetAddonMgr().GetAddon(CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_WEATHER_ADDON), addon, ADDON_SCRIPT_WEATHER) && addon != NULL)
     { //! @todo maybe have ShowAndGetInput return a bool if settings changed, then only reset weather if true.
       CGUIDialogAddonSettings::ShowForAddon(addon);
       Refresh();

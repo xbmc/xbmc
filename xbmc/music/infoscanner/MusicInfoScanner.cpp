@@ -77,7 +77,7 @@ void CMusicInfoScanner::Process()
   CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::AudioLibrary, "xbmc", "OnScanStarted");
   try
   {
-    if (m_showDialog && !CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_MUSICLIBRARY_BACKGROUNDUPDATE))
+    if (m_showDialog && !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_MUSICLIBRARY_BACKGROUNDUPDATE))
     {
       CGUIDialogExtendedProgressBar* dialog =
         CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogExtendedProgressBar>(WINDOW_DIALOG_EXT_PROGRESS);
@@ -380,7 +380,7 @@ void CMusicInfoScanner::FetchArtistInfo(const std::string& strDirectory,
   if (strDirectory.empty())
   {
     m_musicDatabase.Open();
-    m_musicDatabase.GetArtistsNav("musicdb://artists/", items, !CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_MUSICLIBRARY_SHOWCOMPILATIONARTISTS), -1);
+    m_musicDatabase.GetArtistsNav("musicdb://artists/", items, !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_MUSICLIBRARY_SHOWCOMPILATIONARTISTS), -1);
     m_musicDatabase.Close();
   }
   else
@@ -940,7 +940,7 @@ void MUSIC_INFO::CMusicInfoScanner::ScrapeInfoAddedAlbums()
   if (ADDON::CAddonSystemSettings::GetInstance().GetActive(ADDON::ADDON_SCRAPER_ARTISTS, addon))
     artistScraper = std::dynamic_pointer_cast<ADDON::CScraper>(addon);
 
-  bool albumartistsonly = !CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_MUSICLIBRARY_SHOWCOMPILATIONARTISTS);
+  bool albumartistsonly = !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_MUSICLIBRARY_SHOWCOMPILATIONARTISTS);
 
   if (!albumScraper || !artistScraper)
     return;
@@ -1298,7 +1298,7 @@ CMusicInfoScanner::UpdateDatabaseAlbumInfo(CAlbum& album,
 
   if (albumDownloadStatus == INFO_ADDED)
   {
-    bool overridetags = CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_MUSICLIBRARY_OVERRIDETAGS);
+    bool overridetags = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_MUSICLIBRARY_OVERRIDETAGS);
     album.MergeScrapedAlbum(albumInfo.GetAlbum(), overridetags);
     m_musicDatabase.UpdateAlbum(album);
     albumInfo.SetLoaded(true);
@@ -1365,7 +1365,7 @@ CMusicInfoScanner::UpdateDatabaseArtistInfo(CArtist& artist,
 
   if (artistDownloadStatus == INFO_ADDED)
   {
-    artist.MergeScrapedArtist(artistInfo.GetArtist(), CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_MUSICLIBRARY_OVERRIDETAGS));
+    artist.MergeScrapedArtist(artistInfo.GetArtist(), CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_MUSICLIBRARY_OVERRIDETAGS));
     m_musicDatabase.UpdateArtist(artist);
     artistInfo.SetLoaded();
   }
@@ -1472,7 +1472,7 @@ CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album,
       CLog::Log(LOGERROR,"Unable to find an url in nfo file: %s", strNfo.c_str());
   }
 
-  if (!scraper.CheckValidOrFallback(CServiceBroker::GetSettings()->GetString(CSettings::SETTING_MUSICLIBRARY_ALBUMSSCRAPER)))
+  if (!scraper.CheckValidOrFallback(CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_MUSICLIBRARY_ALBUMSSCRAPER)))
   { // the current scraper is invalid, as is the default - bail
     CLog::Log(LOGERROR, "%s - current and default scrapers are invalid.  Pick another one", __FUNCTION__);
     return INFO_ERROR;
@@ -1647,7 +1647,7 @@ void CMusicInfoScanner::GetAlbumArtwork(long id, const CAlbum &album)
     // b) thumb is embedded in music file and "prefer online album art" enabled
     if (artURL.empty() ||
         (StringUtils::StartsWith(artURL, "image://") &&
-         CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_MUSICLIBRARY_PREFERONLINEALBUMART)))
+         CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_MUSICLIBRARY_PREFERONLINEALBUMART)))
     {
       std::string thumb = CScraperUrl::GetThumbURL(album.thumbURL.GetFirstThumb());
       if (!thumb.empty())
@@ -2033,7 +2033,7 @@ bool CMusicInfoScanner::SetAlbumArtwork(CAlbum& album, std::vector<std::string>&
     if (artfolder.empty())
       return false; // No local or scraped art to process
   }
-  else if (CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_MUSICLIBRARY_PREFERONLINEALBUMART))
+  else if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_MUSICLIBRARY_PREFERONLINEALBUMART))
   {
     // When "prefer online album art" enabled, and we have a scraped cover then
     // if the thumb is embedded replace it by adding "thumb" to the missing types

@@ -23,6 +23,7 @@
 #include "input/Key.h"
 #include "profiles/ProfilesManager.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "Util.h"
 #include "utils/SortUtils.h"
 #include "utils/StringUtils.h"
@@ -216,7 +217,7 @@ void CGUIDialogSmartPlaylistEditor::OnRuleList(int item)
 
 void CGUIDialogSmartPlaylistEditor::OnOK()
 {
-  std::string systemPlaylistsPath = CServiceBroker::GetSettings()->GetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH);
+  std::string systemPlaylistsPath = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH);
   // save our playlist
   if (m_path.empty())
   {

@@ -12,6 +12,7 @@
 #include "addons/Skin.h"
 #include "guilib/LocalizeStrings.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "settings/SkinSettings.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -50,12 +51,12 @@ bool CSkinGUIInfo::GetLabel(std::string& value, const CFileItem *item, int conte
     }
     case SKIN_THEME:
     {
-      value = CServiceBroker::GetSettings()->GetString(CSettings::SETTING_LOOKANDFEEL_SKINTHEME);
+      value = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_LOOKANDFEEL_SKINTHEME);
       return true;
     }
     case SKIN_COLOUR_THEME:
     {
-      value = CServiceBroker::GetSettings()->GetString(CSettings::SETTING_LOOKANDFEEL_SKINCOLORS);
+      value = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_LOOKANDFEEL_SKINCOLORS);
       return true;
     }
     case SKIN_ASPECT_RATIO:
@@ -69,7 +70,7 @@ bool CSkinGUIInfo::GetLabel(std::string& value, const CFileItem *item, int conte
     }
     case SKIN_FONT:
     {
-      value = CServiceBroker::GetSettings()->GetString(CSettings::SETTING_LOOKANDFEEL_FONT);
+      value = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_LOOKANDFEEL_FONT);
       return true;
     }
   }
@@ -106,7 +107,7 @@ bool CSkinGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contextWi
     }
     case SKIN_HAS_THEME:
     {
-      std::string theme = CServiceBroker::GetSettings()->GetString(CSettings::SETTING_LOOKANDFEEL_SKINTHEME);
+      std::string theme = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_LOOKANDFEEL_SKINTHEME);
       URIUtils::RemoveExtension(theme);
       value = StringUtils::EqualsNoCase(theme, info.GetData3());
       return true;

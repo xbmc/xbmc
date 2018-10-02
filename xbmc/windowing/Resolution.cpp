@@ -75,7 +75,7 @@ void CResolutionUtils::FindResolutionFromWhitelist(float fps, int width, int hei
 {
   RESOLUTION_INFO curr = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(resolution);
 
-  std::vector<CVariant> indexList = CServiceBroker::GetSettings()->GetList(CSettings::SETTING_VIDEOSCREEN_WHITELIST);
+  std::vector<CVariant> indexList = CServiceBroker::GetSettingsComponent()->GetSettings()->GetList(CSettings::SETTING_VIDEOSCREEN_WHITELIST);
 
   CLog::Log(LOGDEBUG, "Trying to find exact refresh rate");
 
@@ -238,6 +238,6 @@ float CResolutionUtils::RefreshWeight(float refresh, float fps)
 
 bool CResolutionUtils::HasWhitelist()
 {
-  std::vector<CVariant> indexList = CServiceBroker::GetSettings()->GetList(CSettings::SETTING_VIDEOSCREEN_WHITELIST);
+  std::vector<CVariant> indexList = CServiceBroker::GetSettingsComponent()->GetSettings()->GetList(CSettings::SETTING_VIDEOSCREEN_WHITELIST);
   return !indexList.empty();
 }

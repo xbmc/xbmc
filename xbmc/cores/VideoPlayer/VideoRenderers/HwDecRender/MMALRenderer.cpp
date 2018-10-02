@@ -554,7 +554,7 @@ bool CMMALRenderer::CheckConfigurationVout(uint32_t width, uint32_t height, uint
       return false;
     }
 
-    if (!m_queue_render && !CServiceBroker::GetSettings()->GetBool("videoplayer.usedisplayasclock"))
+    if (!m_queue_render && !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool("videoplayer.usedisplayasclock"))
     {
       m_queue_render = mmal_queue_create();
       CThread::Create();

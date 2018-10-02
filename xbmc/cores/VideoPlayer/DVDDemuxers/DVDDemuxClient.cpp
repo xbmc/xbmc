@@ -10,7 +10,6 @@
 #include "DVDDemuxClient.h"
 #include "DVDDemuxUtils.h"
 #include "utils/log.h"
-#include "settings/Settings.h"
 #include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
 
 #define FF_MAX_EXTRADATA_SIZE ((1 << 28) - AV_INPUT_BUFFER_PADDING_SIZE)

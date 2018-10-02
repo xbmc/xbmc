@@ -13,6 +13,7 @@
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
@@ -54,10 +55,11 @@ CDVDSubtitlesLibass::CDVDSubtitlesLibass()
     return;
 
   //Setting default font to the Arial in \media\fonts (used if FontConfig fails)
-  strPath = URIUtils::AddFileToFolder("special://home/media/Fonts/", CServiceBroker::GetSettings()->GetString(CSettings::SETTING_SUBTITLES_FONT));
+  const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+  strPath = URIUtils::AddFileToFolder("special://home/media/Fonts/", settings->GetString(CSettings::SETTING_SUBTITLES_FONT));
   if (!XFILE::CFile::Exists(strPath))
-    strPath = URIUtils::AddFileToFolder("special://xbmc/media/Fonts/", CServiceBroker::GetSettings()->GetString(CSettings::SETTING_SUBTITLES_FONT));
-  int fc = !CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_SUBTITLES_OVERRIDEASSFONTS);
+    strPath = URIUtils::AddFileToFolder("special://xbmc/media/Fonts/", settings->GetString(CSettings::SETTING_SUBTITLES_FONT));
+  int fc = !settings->GetBool(CSettings::SETTING_SUBTITLES_OVERRIDEASSFONTS);
 
   ass_set_margins(m_renderer, 0, 0, 0, 0);
   ass_set_use_margins(m_renderer, 0);

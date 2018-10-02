@@ -21,6 +21,7 @@
 #include "GUIUserMessages.h"
 #include "favourites/FavouritesService.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "settings/MediaSettings.h"
 #include "input/Key.h"
 #include "guilib/LocalizeStrings.h"
@@ -117,7 +118,7 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
         {
           CServiceBroker::GetPlaylistPlayer().SetShuffle(PLAYLIST_VIDEO, !(CServiceBroker::GetPlaylistPlayer().IsShuffled(PLAYLIST_VIDEO)));
           CMediaSettings::GetInstance().SetVideoPlaylistShuffled(CServiceBroker::GetPlaylistPlayer().IsShuffled(PLAYLIST_VIDEO));
-          CServiceBroker::GetSettings()->Save();
+          CServiceBroker::GetSettingsComponent()->GetSettings()->Save();
           UpdateButtons();
           Refresh();
         }
@@ -160,7 +161,7 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
 
         // save settings
         CMediaSettings::GetInstance().SetVideoPlaylistRepeat(CServiceBroker::GetPlaylistPlayer().GetRepeat(PLAYLIST_VIDEO) == PLAYLIST::REPEAT_ALL);
-        CServiceBroker::GetSettings()->Save();
+        CServiceBroker::GetSettingsComponent()->GetSettings()->Save();
 
         UpdateButtons();
       }
@@ -367,7 +368,7 @@ void CGUIWindowVideoPlaylist::SavePlayList()
     strNewFileName = CUtil::MakeLegalFileName(strNewFileName);
     strNewFileName += ".m3u";
     std::string strPath = URIUtils::AddFileToFolder(
-      CServiceBroker::GetSettings()->GetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH),
+      CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH),
       "video",
       strNewFileName);
 

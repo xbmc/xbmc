@@ -83,7 +83,7 @@ bool CPictureThumbLoader::LoadItemCached(CFileItem* pItem)
       {
         thumb = thumbURL;
       }
-      else if (CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_MYVIDEOS_EXTRACTTHUMB) && CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS))
+      else if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_MYVIDEOS_EXTRACTTHUMB) && CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS))
       {
         CFileItem item(*pItem);
         CThumbExtractor* extract = new CThumbExtractor(item, pItem->GetPath(), true, thumbURL);

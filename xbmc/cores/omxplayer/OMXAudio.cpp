@@ -152,7 +152,7 @@ bool COMXAudio::PortSettingsChanged()
     // round up to power of 2
     m_pcm_output.nChannels = m_OutputChannels > 4 ? 8 : m_OutputChannels > 2 ? 4 : m_OutputChannels;
     /* limit samplerate (through resampling) if requested */
-    m_pcm_output.nSamplingRate = std::min(std::max((int)m_pcm_output.nSamplingRate, 8000), CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_AUDIOOUTPUT_SAMPLERATE));
+    m_pcm_output.nSamplingRate = std::min(std::max((int)m_pcm_output.nSamplingRate, 8000), CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_AUDIOOUTPUT_SAMPLERATE));
 
     m_pcm_output.nPortIndex = m_omx_mixer.GetOutputPort();
     omx_err = m_omx_mixer.SetParameter(OMX_IndexParamAudioPcm, &m_pcm_output);
@@ -245,7 +245,7 @@ bool COMXAudio::PortSettingsChanged()
   {
     // By default audio_render is the clock master, and if output samples don't fit the timestamps, it will speed up/slow down the clock.
     // This tends to be better for maintaining audio sync and avoiding audio glitches, but can affect video/display sync
-    if(CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEDISPLAYASCLOCK) || m_output == AESINKPI_BOTH)
+    if(CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEDISPLAYASCLOCK) || m_output == AESINKPI_BOTH)
     {
       OMX_CONFIG_BOOLEANTYPE configBool;
       OMX_INIT_STRUCTURE(configBool);
@@ -271,7 +271,7 @@ bool COMXAudio::PortSettingsChanged()
   {
     // By default audio_render is the clock master, and if output samples don't fit the timestamps, it will speed up/slow down the clock.
     // This tends to be better for maintaining audio sync and avoiding audio glitches, but can affect video/display sync
-    if(CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEDISPLAYASCLOCK))
+    if(CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEDISPLAYASCLOCK))
     {
       OMX_CONFIG_BOOLEANTYPE configBool;
       OMX_INIT_STRUCTURE(configBool);
@@ -555,13 +555,14 @@ bool COMXAudio::Initialize(AEAudioFormat format, OMXClock *clock, CDVDStreamInfo
 
   SetCodingType(format);
 
-  if (m_Passthrough || CServiceBroker::GetSettings()->GetString(CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE) == "PI:HDMI")
+  const std::string audioDevice = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE);
+  if (m_Passthrough || audioDevice == "PI:HDMI")
     m_output = AESINKPI_HDMI;
-  else if (CServiceBroker::GetSettings()->GetString(CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE) == "PI:Analogue")
+  else if (audioDevice == "PI:Analogue")
     m_output = AESINKPI_ANALOGUE;
-  else if (CServiceBroker::GetSettings()->GetString(CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE) == "PI:Both")
+  else if (audioDevice == "PI:Both")
     m_output = AESINKPI_BOTH;
-  else if (CServiceBroker::GetSettings()->GetString(CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE) == "Default")
+  else if (audioDevice == "Default")
     m_output = AESINKPI_HDMI;
   else assert(0);
 
@@ -585,11 +586,12 @@ bool COMXAudio::Initialize(AEAudioFormat format, OMXClock *clock, CDVDStreamInfo
 
   if (!m_Passthrough)
   {
-    bool upmix = CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_AUDIOOUTPUT_STEREOUPMIX);
-    bool normalize = !CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_AUDIOOUTPUT_MAINTAINORIGINALVOLUME);
+    const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+    bool upmix = settings->GetBool(CSettings::SETTING_AUDIOOUTPUT_STEREOUPMIX);
+    bool normalize = !settings->GetBool(CSettings::SETTING_AUDIOOUTPUT_MAINTAINORIGINALVOLUME);
     void *remapLayout = NULL;
 
-    CAEChannelInfo stdLayout = (enum AEStdChLayout)CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_AUDIOOUTPUT_CHANNELS);
+    CAEChannelInfo stdLayout = (enum AEStdChLayout)settings->GetInt(CSettings::SETTING_AUDIOOUTPUT_CHANNELS);
 
     // ignore layout setting for analogue
     if (m_output == AESINKPI_ANALOGUE || m_output == AESINKPI_BOTH)
@@ -598,7 +600,7 @@ bool COMXAudio::Initialize(AEAudioFormat format, OMXClock *clock, CDVDStreamInfo
     CAEChannelInfo resolvedMap = channelMap;
     resolvedMap.ResolveChannels(stdLayout);
 
-    if (CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_AUDIOOUTPUT_CONFIG) == AE_CONFIG_FIXED || (upmix && channelMap.Count() <= 2))
+    if (settings->GetInt(CSettings::SETTING_AUDIOOUTPUT_CONFIG) == AE_CONFIG_FIXED || (upmix && channelMap.Count() <= 2))
       resolvedMap = stdLayout;
 
     uint64_t m_dst_chan_layout = GetAVChannelLayout(resolvedMap);

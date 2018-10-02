@@ -513,7 +513,7 @@ void CLinuxRendererGLES::LoadShaders(int field)
 
   if (!LoadShadersHook())
   {
-    int requestedMethod = CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_VIDEOPLAYER_RENDERMETHOD);
+    int requestedMethod = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_VIDEOPLAYER_RENDERMETHOD);
     CLog::Log(LOGDEBUG, "GLES: Requested render method: %d", requestedMethod);
 
     ReleaseShaders();
@@ -1500,7 +1500,7 @@ bool CLinuxRendererGLES::Supports(ESCALINGMETHOD method)
     // if scaling is below level, avoid hq scaling
     float scaleX = fabs(((float)m_sourceWidth - m_destRect.Width())/m_sourceWidth)*100;
     float scaleY = fabs(((float)m_sourceHeight - m_destRect.Height())/m_sourceHeight)*100;
-    int minScale = CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_VIDEOPLAYER_HQSCALERS);
+    int minScale = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_VIDEOPLAYER_HQSCALERS);
     if (scaleX < minScale && scaleY < minScale)
       return false;
 

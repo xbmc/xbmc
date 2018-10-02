@@ -8,7 +8,6 @@
 
 #include "threads/SystemClock.h"
 #include "GUILargeTextureManager.h"
-#include "settings/Settings.h"
 #include "guilib/Texture.h"
 #include "threads/SingleLock.h"
 #include "utils/TimeUtils.h"

@@ -32,7 +32,6 @@
 #include "utils/log.h"
 
 #include "DVDCodecs/DVDFactoryCodec.h"
-#include "settings/AdvancedSettings.h"
 #include "platform/android/activity/XBMCApp.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFlags.h"
@@ -40,6 +39,7 @@
 #include "cores/VideoPlayer/Process/VideoBuffer.h"
 #include "platform/android/activity/AndroidFeatures.h"
 #include "platform/android/activity/JNIXBMCSurfaceTextureOnFrameAvailableListener.h"
+#include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "system.h"
@@ -406,11 +406,11 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
     CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Open - %s\n", "Surface does not support orientation before API 23");
     goto FAIL;
   }
-  else if (!CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODEC) &&
-           !CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODECSURFACE))
+  else if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODEC) &&
+           !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODECSURFACE))
     goto FAIL;
 
-  m_render_surface = CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODECSURFACE);
+  m_render_surface = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODECSURFACE);
   m_state = MEDIACODEC_STATE_UNINITIALIZED;
   m_noPictureLoop = 0;
   m_codecControlFlags = 0;
