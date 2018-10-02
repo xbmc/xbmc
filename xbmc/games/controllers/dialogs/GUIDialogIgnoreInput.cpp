@@ -20,6 +20,20 @@
 using namespace KODI;
 using namespace GAME;
 
+bool CGUIDialogIgnoreInput::AcceptsPrimitive(JOYSTICK::PRIMITIVE_TYPE type) const
+{
+  switch (type)
+  {
+  case JOYSTICK::PRIMITIVE_TYPE::BUTTON:
+  case JOYSTICK::PRIMITIVE_TYPE::SEMIAXIS:
+    return true;
+  default:
+    break;
+  }
+
+  return false;
+}
+
 std::string CGUIDialogIgnoreInput::GetDialogText()
 {
   // "Some controllers have buttons and axes that interfere with mapping. Press

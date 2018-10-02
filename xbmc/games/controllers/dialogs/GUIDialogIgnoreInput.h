@@ -25,6 +25,9 @@ namespace GAME
 
     virtual ~CGUIDialogIgnoreInput() = default;
 
+    // specialization of IButtonMapper via CGUIDialogButtonCapture
+    bool AcceptsPrimitive(JOYSTICK::PRIMITIVE_TYPE type) const override;
+
   protected:
     // implementation of CGUIDialogButtonCapture
     virtual std::string GetDialogText() override;

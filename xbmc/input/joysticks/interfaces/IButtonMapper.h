@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include "input/joysticks/JoystickTypes.h"
+
 #include <map>
 #include <string>
 
@@ -43,13 +45,22 @@ namespace JOYSTICK
     virtual std::string ControllerID(void) const = 0;
 
     /*!
-    * \brief Return true if the button mapper wants a cooldown between button
-    *        mapping commands
-    *
-    * \return True to only send button mapping commands that occur after a small
-    *         timeout from the previous command.
-    */
+     * \brief Return true if the button mapper wants a cooldown between button
+     *        mapping commands
+     *
+     * \return True to only send button mapping commands that occur after a small
+     *         timeout from the previous command.
+     */
     virtual bool NeedsCooldown(void) const = 0;
+
+    /*!
+     * \brief Return true if the button mapper accepts primitives of the given type
+     *
+     * \param type The primitive type
+     *
+     * \return True if the button mapper can map the primitive type, false otherwise
+     */
+    virtual bool AcceptsPrimitive(PRIMITIVE_TYPE type) const = 0;
 
     /*!
      * \brief Handle button/hat press or axis threshold
