@@ -346,7 +346,7 @@ drmModePlanePtr CDRMUtils::FindPlane(drmModePlaneResPtr resources, int crtc_inde
         {
           switch (type)
           {
-            case VIDEO_PLANE:
+            case KODI_VIDEO_PLANE:
             {
               if (SupportsFormat(plane, DRM_FORMAT_NV12) ||
                   SupportsFormat(plane, DRM_FORMAT_YUV420))
@@ -359,7 +359,7 @@ drmModePlanePtr CDRMUtils::FindPlane(drmModePlaneResPtr resources, int crtc_inde
 
               break;
             }
-            case GUI_PLANE:
+            case KODI_GUI_PLANE:
             {
               uint32_t plane_id = 0;
               if (m_primary_plane->plane)
@@ -402,14 +402,14 @@ bool CDRMUtils::FindPlanes()
     return false;
   }
 
-  m_primary_plane->plane = FindPlane(plane_resources, m_crtc_index, VIDEO_PLANE);
-  m_overlay_plane->plane = FindPlane(plane_resources, m_crtc_index, GUI_PLANE);
+  m_primary_plane->plane = FindPlane(plane_resources, m_crtc_index, KODI_VIDEO_PLANE);
+  m_overlay_plane->plane = FindPlane(plane_resources, m_crtc_index, KODI_GUI_PLANE);
 
   if (m_overlay_plane->plane == nullptr && m_primary_plane->plane != nullptr)
   {
     drmModeFreePlane(m_primary_plane->plane);
     m_primary_plane->plane = nullptr;
-    m_overlay_plane->plane = FindPlane(plane_resources, m_crtc_index, GUI_PLANE);
+    m_overlay_plane->plane = FindPlane(plane_resources, m_crtc_index, KODI_GUI_PLANE);
   }
 
   drmModeFreePlaneResources(plane_resources);

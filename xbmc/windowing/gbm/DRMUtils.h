@@ -27,8 +27,8 @@ namespace GBM
 
 enum EPLANETYPE
 {
-  VIDEO_PLANE,
-  GUI_PLANE
+  KODI_VIDEO_PLANE,
+  KODI_GUI_PLANE
 };
 
 struct drm_object
