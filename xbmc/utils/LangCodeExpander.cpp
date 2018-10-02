@@ -331,7 +331,13 @@ bool CLangCodeExpander::ConvertToISO6391(const std::string& lang, std::string& c
     }
 
     if (tmp.length() == 3)
+    {
+      // there's only an iso639-2 code that is identical to the language name, e.g. Yao
+      if (StringUtils::EqualsNoCase(tmp, lang))
+        return false;
+
       return ConvertToISO6391(tmp, code);
+    }
   }
 
   return false;
