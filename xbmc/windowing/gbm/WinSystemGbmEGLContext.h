@@ -8,8 +8,10 @@
 
 #pragma once
 
+#include "settings/lib/ISettingCallback.h"
 #include "utils/EGLUtils.h"
 #include "WinSystemGbm.h"
+
 #include <memory>
 
 namespace KODI
@@ -21,11 +23,9 @@ namespace GBM
 
 class CVaapiProxy;
 
-class CWinSystemGbmEGLContext : public CWinSystemGbm
+class CWinSystemGbmEGLContext : public CWinSystemGbm, public ISettingCallback
 {
 public:
-  virtual ~CWinSystemGbmEGLContext() = default;
-
   bool DestroyWindowSystem() override;
   bool CreateNewWindow(const std::string& name,
                        bool fullScreen,
@@ -35,10 +35,12 @@ public:
   EGLSurface GetEGLSurface() const;
   EGLContext GetEGLContext() const;
   EGLConfig  GetEGLConfig() const;
+
+  void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
+
 protected:
-  CWinSystemGbmEGLContext(EGLenum platform, std::string const& platformExtension) :
-    m_eglContext(platform, platformExtension)
-  {}
+  CWinSystemGbmEGLContext(EGLenum platform, std::string const& platformExtension);
+  ~CWinSystemGbmEGLContext();
 
   /**
    * Inheriting classes should override InitWindowSystem() without parameters

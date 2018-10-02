@@ -10,10 +10,37 @@
 #include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
 
 #include "OptionalsReg.h"
+#include "ServiceBroker.h"
+#include "settings/DisplaySettings.h"
+#include "settings/lib/Setting.h"
+#include "settings/lib/SettingsManager.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/log.h"
 #include "WinSystemGbmEGLContext.h"
 
 using namespace KODI::WINDOWING::GBM;
+
+CWinSystemGbmEGLContext::CWinSystemGbmEGLContext(EGLenum platform, std::string const& platformExtension) :
+  m_eglContext(platform, platformExtension)
+{
+  std::set<std::string> settingSet;
+  settingSet.insert(CEGLContextUtils::SETTING_VIDEOSCREEN_MSAA);
+  CServiceBroker::GetSettingsComponent()->GetSettings()->GetSettingsManager()->RegisterCallback(this, settingSet);
+}
+
+CWinSystemGbmEGLContext::~CWinSystemGbmEGLContext()
+{
+  CSettingsComponent *settingsComponent = CServiceBroker::GetSettingsComponent();
+  if (!settingsComponent)
+    return;
+
+  const std::shared_ptr<CSettings> settings = settingsComponent->GetSettings();
+  if (!settings)
+    return;
+
+  settings->GetSettingsManager()->UnregisterCallback(this);
+}
 
 bool CWinSystemGbmEGLContext::InitWindowSystemEGL(EGLint renderableType, EGLint apiType)
 {
@@ -35,6 +62,9 @@ bool CWinSystemGbmEGLContext::InitWindowSystemEGL(EGLint renderableType, EGLint 
     return false;
   }
 
+  if (CEGLUtils::HasExtension(m_eglContext.GetEGLDisplay(), "EGL_KHR_no_config_context"))
+    CServiceBroker::GetSettingsComponent()->GetSettings()->GetSetting(CEGLContextUtils::SETTING_VIDEOSCREEN_MSAA)->SetVisible(true);
+
   return true;
 }
 
@@ -50,6 +80,14 @@ bool CWinSystemGbmEGLContext::CreateNewWindow(const std::string& name,
   }
 
   if (!CWinSystemGbm::CreateNewWindow(name, fullScreen, res))
+  {
+    return false;
+  }
+
+  // we need to provide an alpha format to egl to workaround a mesa bug
+  int visualId = CDRMUtils::FourCCWithAlpha(CWinSystemGbm::GetDrm()->GetOverlayPlane()->format);
+
+  if (!m_eglContext.ChooseConfig(EGL_OPENGL_ES2_BIT, visualId))
   {
     return false;
   }
@@ -102,4 +140,22 @@ EGLContext CWinSystemGbmEGLContext::GetEGLContext() const
 EGLConfig  CWinSystemGbmEGLContext::GetEGLConfig() const
 {
   return m_eglContext.GetEGLConfig();
+}
+
+void CWinSystemGbmEGLContext::OnSettingChanged(std::shared_ptr<const CSetting> setting)
+{
+  if (setting == nullptr)
+    return;
+
+  const std::string &settingId = setting->GetId();
+  if (settingId == CEGLContextUtils::SETTING_VIDEOSCREEN_MSAA)
+  {
+    CLog::Log(LOGDEBUG, "MSAA setting changed - creating a new window");
+
+    auto res = CDisplaySettings::GetInstance().GetCurrentResolution();
+    auto info = CDisplaySettings::GetInstance().GetResolutionInfo(res);
+
+    if (!SetFullScreen(true, info, false))
+      CLog::Log(LOGDEBUG, "failed to create new window");
+  }
 }

@@ -14,6 +14,9 @@
 #include <stdexcept>
 #include <vector>
 
+#include "settings/lib/ISettingsHandler.h"
+#include "settings/Settings.h"
+
 #include <EGL/egl.h>
 
 class CEGLUtils
@@ -158,7 +161,7 @@ private:
   int m_writePosition{};
 };
 
-class CEGLContextUtils final
+class CEGLContextUtils : public ISettingsHandler
 {
 public:
   CEGLContextUtils();
@@ -185,6 +188,7 @@ public:
   bool CreateSurface(EGLNativeWindowType nativeWindow);
   bool CreatePlatformSurface(void* nativeWindow, EGLNativeWindowType nativeWindowLegacy);
   bool CreateContext(CEGLAttributesVec contextAttribs);
+  bool ChooseConfig(EGLint renderableType, EGLint visualId);
   bool BindContext();
   void Destroy();
   void DestroySurface();
@@ -210,9 +214,11 @@ public:
     return m_eglConfig;
   }
 
+  static const std::string SETTING_VIDEOSCREEN_MSAA;
+  static void SettingOptionsMsaaFiller(std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data);
+
 private:
   bool InitializeDisplay(EGLint renderableType, EGLint renderingApi, EGLint visualId = 0);
-  bool ChooseConfig(EGLint renderableType, EGLint visualId);
   void SurfaceAttrib();
 
   EGLenum m_platform{EGL_NONE};

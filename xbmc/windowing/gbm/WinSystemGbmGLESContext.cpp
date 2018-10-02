@@ -71,11 +71,11 @@ bool CWinSystemGbmGLESContext::InitWindowSystem()
 
 bool CWinSystemGbmGLESContext::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
 {
-  if (res.iWidth != m_nWidth ||
-      res.iHeight != m_nHeight)
+  CLog::Log(LOGDEBUG, "CWinSystemGbmGLESContext::%s - creating a new window", __FUNCTION__);
+
+  if (!CreateNewWindow("", fullScreen, res))
   {
-    CLog::Log(LOGDEBUG, "CWinSystemGbmGLESContext::%s - resolution changed, creating a new window", __FUNCTION__);
-    CreateNewWindow("", fullScreen, res);
+    return false;
   }
 
   if (!m_eglContext.TrySwapBuffers())

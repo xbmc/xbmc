@@ -7349,7 +7349,18 @@ msgctxt "#13521"
 msgid "Choose art type"
 msgstr ""
 
-#empty strings from id 13522 to 13549
+#empty strings from id 13522 to 13539
+
+#: system/settings/settings.xml
+msgctxt "#13540"
+msgid "MSAA (Multisample anti-aliasing)"
+msgstr ""
+
+msgctxt "#13541"
+msgid "Multisample anti-aliasing is the most common type of anti-aliasing that balances out quality and performance. Anti-aliasing is a technique used to smooth otherwise jagged lines or textures by blending the color of an edge with the color of pixels around it. The result should be a more pleasing and realistic appearance, depending on the intensity of the effect."
+msgstr ""
+
+#empty strings from id 13542 to 13549
 
 #: system/settings/settings.xml
 msgctxt "#13550"

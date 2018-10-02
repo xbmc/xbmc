@@ -13,6 +13,7 @@
 #include "guilib/IDirtyRegionSolver.h"
 #include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/lib/SettingsManager.h"
 #include "settings/SettingsComponent.h"
 
 #include <EGL/eglext.h>
@@ -74,6 +75,9 @@ std::array<std::pair<EGLint, const char*>, 32> eglAttributes =
 #undef X
 }
 
+const std::string CEGLContextUtils::SETTING_VIDEOSCREEN_MSAA = "videoscreen.msaa";
+static std::vector<std::pair<std::string, int>> msaaList;
+
 std::set<std::string> CEGLUtils::GetClientExtensions()
 {
   const char* extensions = eglQueryString(EGL_NO_DISPLAY, EGL_EXTENSIONS);
@@ -123,6 +127,8 @@ CEGLContextUtils::CEGLContextUtils(EGLenum platform, std::string const& platform
 : m_platform{platform}
 {
   m_platformSupported = CEGLUtils::HasClientExtension("EGL_EXT_platform_base") && CEGLUtils::HasClientExtension(platformExtension);
+
+  CServiceBroker::GetSettingsComponent()->GetSettings()->GetSettingsManager()->RegisterSettingOptionsFiller("msaa", SettingOptionsMsaaFiller);
 }
 
 bool CEGLContextUtils::IsPlatformSupported() const
@@ -133,6 +139,16 @@ bool CEGLContextUtils::IsPlatformSupported() const
 CEGLContextUtils::~CEGLContextUtils()
 {
   Destroy();
+
+  CSettingsComponent *settingsComponent = CServiceBroker::GetSettingsComponent();
+  if (!settingsComponent)
+    return;
+
+  const std::shared_ptr<CSettings> settings = settingsComponent->GetSettings();
+  if (!settings)
+    return;
+
+  settings->GetSettingsManager()->UnregisterSettingOptionsFiller("msaa");
 }
 
 bool CEGLContextUtils::CreateDisplay(EGLNativeDisplayType nativeDisplay, EGLint renderableType, EGLint renderingApi)
@@ -225,6 +241,11 @@ bool CEGLContextUtils::ChooseConfig(EGLint renderableType, EGLint visualId)
 {
   EGLint numMatched{0};
 
+  if (m_eglDisplay == EGL_NO_DISPLAY)
+  {
+    throw std::logic_error("Choosing an EGLConfig requires an EGL display");
+  }
+
   EGLint surfaceType = EGL_WINDOW_BIT;
   // for the non-trivial dirty region modes, we need the EGL buffer to be preserved across updates
   int guiAlgorithmDirtyRegions = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiAlgorithmDirtyRegions;
@@ -232,15 +253,13 @@ bool CEGLContextUtils::ChooseConfig(EGLint renderableType, EGLint visualId)
       guiAlgorithmDirtyRegions == DIRTYREGION_SOLVER_UNION)
     surfaceType |= EGL_SWAP_BEHAVIOR_PRESERVED_BIT;
 
-  CEGLAttributes<10> attribs;
+  CEGLAttributes<8> attribs;
   attribs.Add({{EGL_RED_SIZE, 8},
                {EGL_GREEN_SIZE, 8},
                {EGL_BLUE_SIZE, 8},
                {EGL_ALPHA_SIZE, 2},
                {EGL_DEPTH_SIZE, 16},
                {EGL_STENCIL_SIZE, 0},
-               {EGL_SAMPLE_BUFFERS, 0},
-               {EGL_SAMPLES, 0},
                {EGL_SURFACE_TYPE, surfaceType},
                {EGL_RENDERABLE_TYPE, renderableType}});
 
@@ -260,9 +279,35 @@ bool CEGLContextUtils::ChooseConfig(EGLint renderableType, EGLint visualId)
     return false;
   }
 
+  if (msaaList.size() == 0)
+  {
+    for (const auto &eglConfig: eglConfigs)
+    {
+      EGLint samples{-1};
+      if (eglGetConfigAttrib(m_eglDisplay, eglConfig, EGL_SAMPLES, &samples) != EGL_TRUE)
+        CEGLUtils::LogError("failed to query EGL attibute EGL_SAMPLES");
+
+      msaaList.emplace_back(std::make_pair(StringUtils::Format("{0:d}x", samples), samples));
+    }
+
+    auto last = std::unique(msaaList.begin(), msaaList.end());
+    msaaList.erase(last, msaaList.end());
+    std::sort(msaaList.begin(), msaaList.end());
+    std::reverse(msaaList.begin(), msaaList.end());
+  }
+
+  int msaaSetting = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(SETTING_VIDEOSCREEN_MSAA);
+
   for (const auto &eglConfig: eglConfigs)
   {
     m_eglConfig = eglConfig;
+
+    EGLint samples{-1};
+    if (eglGetConfigAttrib(m_eglDisplay, m_eglConfig, EGL_SAMPLES, &samples) != EGL_TRUE)
+      CEGLUtils::LogError("failed to query EGL attibute EGL_SAMPLES");
+
+    if (samples != msaaSetting)
+      continue;
 
     if (visualId == 0)
       break;
@@ -475,4 +520,9 @@ bool CEGLContextUtils::TrySwapBuffers()
   }
 
   return (eglSwapBuffers(m_eglDisplay, m_eglSurface) == EGL_TRUE);
+}
+
+void CEGLContextUtils::SettingOptionsMsaaFiller(std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, int> > &list, int &current, void *data)
+{
+  list = msaaList;
 }
