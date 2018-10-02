@@ -16,8 +16,6 @@
 #include "GUIControllerWindow.h"
 #include "GUIFeatureList.h"
 #include "addons/AddonManager.h"
-#include "cores/RetroPlayer/guibridge/GUIGameRenderManager.h"
-#include "cores/RetroPlayer/guibridge/GUIGameSettingsHandle.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "games/addons/input/GameClientInput.h"
 #include "games/addons/GameClient.h"
@@ -43,12 +41,13 @@ using namespace KODI;
 using namespace ADDON;
 using namespace GAME;
 
-CGUIControllerList::CGUIControllerList(CGUIWindow* window, IFeatureList* featureList) :
+CGUIControllerList::CGUIControllerList(CGUIWindow* window, IFeatureList* featureList, GameClientPtr gameClient) :
   m_guiWindow(window),
   m_featureList(featureList),
   m_controllerList(nullptr),
   m_controllerButton(nullptr),
-  m_focusedController(-1) // Initially unfocused
+  m_focusedController(-1), // Initially unfocused
+  m_gameClient(std::move(gameClient))
 {
   assert(m_featureList != nullptr);
 }
@@ -61,19 +60,6 @@ bool CGUIControllerList::Initialize(void)
   if (m_controllerButton)
     m_controllerButton->SetVisible(false);
 
-  // Get active game add-on
-  GameClientPtr gameClient;
-  {
-    auto gameSettingsHandle = CServiceBroker::GetGameRenderManager().RegisterGameSettingsDialog();
-    if (gameSettingsHandle)
-    {
-      ADDON::AddonPtr addon;
-      if (CServiceBroker::GetAddonMgr().GetAddon(gameSettingsHandle->GameClientID(), addon, ADDON::ADDON_GAMEDLL))
-        gameClient = std::static_pointer_cast<CGameClient>(addon);
-    }
-  }
-  m_gameClient = std::move(gameClient);
-
   CServiceBroker::GetAddonMgr().Events().Subscribe(this, &CGUIControllerList::OnEvent);
   Refresh();
 
@@ -84,8 +70,6 @@ bool CGUIControllerList::Initialize(void)
 void CGUIControllerList::Deinitialize(void)
 {
   CServiceBroker::GetAddonMgr().Events().Unsubscribe(this);
-
-  m_gameClient.reset();
 
   CleanupButtons();
 

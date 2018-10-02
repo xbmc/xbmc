@@ -9,6 +9,8 @@
 #include "GUIFeatureList.h"
 #include "GUIConfigurationWizard.h"
 #include "GUIControllerDefines.h"
+#include "games/addons/input/GameClientInput.h"
+#include "games/addons/GameClient.h"
 #include "games/controllers/guicontrols/GUIFeatureControls.h"
 #include "games/controllers/guicontrols/GUIFeatureButton.h"
 #include "games/controllers/guicontrols/GUIFeatureFactory.h"
@@ -27,12 +29,13 @@
 using namespace KODI;
 using namespace GAME;
 
-CGUIFeatureList::CGUIFeatureList(CGUIWindow* window) :
+CGUIFeatureList::CGUIFeatureList(CGUIWindow* window, GameClientPtr gameClient) :
   m_window(window),
   m_guiList(nullptr),
   m_guiButtonTemplate(nullptr),
   m_guiGroupTitle(nullptr),
   m_guiFeatureSeparator(nullptr),
+  m_gameClient(std::move(gameClient)),
   m_wizard(new CGUIConfigurationWizard)
 {
 }
@@ -177,7 +180,7 @@ void CGUIFeatureList::CleanupButtons(void)
     m_guiList->ClearAll();
 }
 
-std::vector<CGUIFeatureList::FeatureGroup> CGUIFeatureList::GetFeatureGroups(const std::vector<CControllerFeature>& features)
+std::vector<CGUIFeatureList::FeatureGroup> CGUIFeatureList::GetFeatureGroups(const std::vector<CControllerFeature>& features) const
 {
   std::vector<FeatureGroup> groups;
 
@@ -185,6 +188,13 @@ std::vector<CGUIFeatureList::FeatureGroup> CGUIFeatureList::GetFeatureGroups(con
   std::vector<std::string> groupNames;
   for (const CControllerFeature& feature : features)
   {
+    // Skip features not supported by the game client
+    if (m_gameClient)
+    {
+      if (!m_gameClient->Input().HasFeature(m_controller->ID(), feature.Name()))
+        continue;
+    }
+
     bool bAdded = false;
 
     if (!groups.empty())

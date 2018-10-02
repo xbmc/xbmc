@@ -19,14 +19,17 @@ using namespace GAME;
 
 #define CONTROLLER_ADDRESS_SEPARATOR  "/"
 
-CGameClientTopology::CGameClientTopology(GameClientPortVec ports) :
-  m_ports(std::move(ports))
+CGameClientTopology::CGameClientTopology(GameClientPortVec ports, int playerLimit) :
+  m_ports(std::move(ports)),
+  m_playerLimit(playerLimit),
+  m_controllers(GetControllerTree(m_ports))
 {
 }
 
-CControllerTree CGameClientTopology::GetControllerTree() const
+void CGameClientTopology::Clear()
 {
-  return GetControllerTree(m_ports);
+  m_ports.clear();
+  m_controllers.Clear();
 }
 
 CControllerTree CGameClientTopology::GetControllerTree(const GameClientPortVec &ports)

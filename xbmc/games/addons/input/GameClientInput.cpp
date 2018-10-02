@@ -34,7 +34,8 @@ using namespace GAME;
 CGameClientInput::CGameClientInput(CGameClient &gameClient,
                                    AddonInstance_Game &addonStruct,
                                    CCriticalSection &clientAccess) :
-  CGameClientSubsystem(gameClient, addonStruct, clientAccess)
+  CGameClientSubsystem(gameClient, addonStruct, clientAccess),
+  m_topology(new CGameClientTopology)
 {
 }
 
@@ -46,45 +47,49 @@ CGameClientInput::~CGameClientInput()
 void CGameClientInput::Initialize()
 {
   LoadTopology();
+
+  ActivateControllers(m_topology->ControllerTree());
 }
 
 void CGameClientInput::Start(IGameInputCallback *input)
 {
   m_inputCallback = input;
 
+  const CControllerTree &controllers = m_topology->ControllerTree();
+
   // Open keyboard
   //! @todo Move to player manager
   if (SupportsKeyboard())
   {
-    auto it = std::find_if(m_controllers.Ports().begin(), m_controllers.Ports().end(),
+    auto it = std::find_if(controllers.Ports().begin(), controllers.Ports().end(),
       [](const CControllerPortNode &port)
       {
         return port.PortType() == PORT_TYPE::KEYBOARD;
       });
 
-    OpenKeyboard(it->CompatibleControllers().at(0).Controller());
+    OpenKeyboard(it->ActiveController().Controller());
   }
 
   // Open mouse
   //! @todo Move to player manager
   if (SupportsMouse())
   {
-    auto it = std::find_if(m_controllers.Ports().begin(), m_controllers.Ports().end(),
+    auto it = std::find_if(controllers.Ports().begin(), controllers.Ports().end(),
       [](const CControllerPortNode &port)
       {
         return port.PortType() == PORT_TYPE::MOUSE;
       });
 
-    OpenMouse(it->CompatibleControllers().at(0).Controller());
+    OpenMouse(it->ActiveController().Controller());
   }
 
   // Open joysticks
   //! @todo Move to player manager
-  for (const auto &port : m_controllers.Ports())
+  for (const auto &port : controllers.Ports())
   {
     if (port.PortType() == PORT_TYPE::CONTROLLER && !port.CompatibleControllers().empty())
     {
-      ControllerPtr controller = port.CompatibleControllers().at(0).Controller();
+      ControllerPtr controller = port.ActiveController().Controller();
       OpenJoystick(port.Address(), controller);
     }
   }
@@ -99,6 +104,8 @@ void CGameClientInput::Start(IGameInputCallback *input)
 void CGameClientInput::Deinitialize()
 {
   Stop();
+
+  m_topology->Clear();
 }
 
 void CGameClientInput::Stop()
@@ -123,12 +130,47 @@ void CGameClientInput::Stop()
   m_inputCallback = nullptr;
 }
 
+bool CGameClientInput::HasFeature(const std::string &controllerId, const std::string &featureName) const
+{
+  bool bHasFeature = false;
+
+  try
+  {
+    bHasFeature = m_struct.toAddon.HasFeature(controllerId.c_str(), featureName.c_str());
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "GAME: %s: exception caught in HasFeature()", m_gameClient.ID().c_str());
+
+    // Fail gracefully
+    bHasFeature = true;
+  }
+
+  return bHasFeature;
+}
+
 bool CGameClientInput::AcceptsInput() const
 {
   if (m_inputCallback != nullptr)
     return m_inputCallback->AcceptsInput();
 
   return false;
+}
+
+bool CGameClientInput::InputEvent(const game_input_event &event)
+{
+  bool bHandled = false;
+
+  try
+  {
+    bHandled = m_struct.toAddon.InputEvent(&event);
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "GAME: %s: exception caught in InputEvent()", m_gameClient.ID().c_str());
+  }
+
+  return bHandled;
 }
 
 void CGameClientInput::LoadTopology()
@@ -142,6 +184,7 @@ void CGameClientInput::LoadTopology()
   }
 
   GameClientPortVec hardwarePorts;
+  int playerLimit = -1;
 
   if (topologyStruct != nullptr)
   {
@@ -154,7 +197,7 @@ void CGameClientInput::LoadTopology()
         hardwarePorts.emplace_back(new CGameClientPort(ports[i]));
     }
 
-    m_playerLimit = topologyStruct->player_limit;
+    playerLimit = topologyStruct->player_limit;
 
     try { m_struct.toAddon.FreeTopology(topologyStruct); }
     catch (...) { m_gameClient.LogException("FreeTopology()"); }
@@ -165,30 +208,47 @@ void CGameClientInput::LoadTopology()
   if (hardwarePorts.empty())
     hardwarePorts.emplace_back(new CGameClientPort(GetControllers(m_gameClient)));
 
-  CGameClientTopology topology(std::move(hardwarePorts));
-  m_controllers = topology.GetControllerTree();
+  m_topology.reset(new CGameClientTopology(std::move(hardwarePorts), playerLimit));
+}
+
+void CGameClientInput::ActivateControllers(CControllerHub &hub)
+{
+  for (auto &port : hub.Ports())
+  {
+    port.SetActiveController(0);
+    ActivateControllers(port.ActiveController().Hub());
+  }
+}
+
+const CControllerTree &CGameClientInput::GetControllerTree() const
+{
+  return m_topology->ControllerTree();
 }
 
 bool CGameClientInput::SupportsKeyboard() const
 {
-  auto it = std::find_if(m_controllers.Ports().begin(), m_controllers.Ports().end(),
+  const CControllerTree &controllers = m_topology->ControllerTree();
+
+  auto it = std::find_if(controllers.Ports().begin(), controllers.Ports().end(),
     [](const CControllerPortNode &port)
     {
       return port.PortType() == PORT_TYPE::KEYBOARD;
     });
 
-  return it != m_controllers.Ports().end() && !it->CompatibleControllers().empty();
+  return it != controllers.Ports().end() && !it->CompatibleControllers().empty();
 }
 
 bool CGameClientInput::SupportsMouse() const
 {
-  auto it = std::find_if(m_controllers.Ports().begin(), m_controllers.Ports().end(),
+  const CControllerTree &controllers = m_topology->ControllerTree();
+
+  auto it = std::find_if(controllers.Ports().begin(), controllers.Ports().end(),
     [](const CControllerPortNode &port)
     {
       return port.PortType() == PORT_TYPE::MOUSE;
     });
 
-  return it != m_controllers.Ports().end() && !it->CompatibleControllers().empty();
+  return it != controllers.Ports().end() && !it->CompatibleControllers().empty();
 }
 
 bool CGameClientInput::OpenKeyboard(const ControllerPtr &controller)
@@ -241,7 +301,7 @@ bool CGameClientInput::OpenKeyboard(const ControllerPtr &controller)
 
   if (bSuccess)
   {
-    m_keyboard.reset(new CGameClientKeyboard(m_gameClient, controllerId, m_struct.toAddon, keyboards.at(0).get()));
+    m_keyboard.reset(new CGameClientKeyboard(m_gameClient, controllerId, keyboards.at(0).get()));
     return true;
   }
 
@@ -319,7 +379,7 @@ bool CGameClientInput::OpenMouse(const ControllerPtr &controller)
 
   if (bSuccess)
   {
-    m_mouse.reset(new CGameClientMouse(m_gameClient, controllerId, m_struct.toAddon, mice.at(0).get()));
+    m_mouse.reset(new CGameClientMouse(m_gameClient, controllerId, mice.at(0).get()));
     return true;
   }
 
@@ -357,7 +417,9 @@ bool CGameClientInput::OpenJoystick(const std::string &portAddress, const Contro
     return false;
   }
 
-  const CControllerPortNode &port = m_controllers.GetPort(portAddress);
+  const CControllerTree &controllerTree = m_topology->ControllerTree();
+
+  const CControllerPortNode &port = controllerTree.GetPort(portAddress);
   if (!port.IsControllerAccepted(portAddress, controller->ID()))
   {
     CLog::Log(LOGERROR, "Failed to open port: Invalid controller \"%s\" on port \"%s\"",
@@ -402,7 +464,7 @@ bool CGameClientInput::OpenJoystick(const std::string &portAddress, const Contro
   {
     PERIPHERALS::EventLockHandlePtr lock = CServiceBroker::GetPeripherals().RegisterEventLock();
 
-    m_joysticks[portAddress].reset(new CGameClientJoystick(m_gameClient, portAddress, controller, m_struct.toAddon));
+    m_joysticks[portAddress].reset(new CGameClientJoystick(m_gameClient, portAddress, controller));
     ProcessJoysticks();
 
     return true;
@@ -547,7 +609,8 @@ CGameClientInput::PortMap CGameClientInput::MapJoysticks(const PERIPHERALS::Peri
       break;
 
     // Check topology player limit
-    if (m_playerLimit >= 0 && static_cast<int>(i) >= m_playerLimit)
+    const int playerLimit = m_topology->PlayerLimit();
+    if (playerLimit >= 0 && static_cast<int>(i) >= playerLimit)
       break;
 
     // Dereference iterators

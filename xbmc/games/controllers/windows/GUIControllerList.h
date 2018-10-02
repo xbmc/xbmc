@@ -30,7 +30,7 @@ namespace GAME
   class CGUIControllerList : public IControllerList
   {
   public:
-    CGUIControllerList(CGUIWindow* window, IFeatureList* featureList);
+    CGUIControllerList(CGUIWindow* window, IFeatureList* featureList, GameClientPtr gameClient);
     virtual ~CGUIControllerList(void) { Deinitialize(); }
 
     // implementation of IControllerList

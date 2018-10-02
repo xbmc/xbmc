@@ -35,6 +35,7 @@ namespace GAME
   class CGameClientJoystick;
   class CGameClientKeyboard;
   class CGameClientMouse;
+  class CGameClientTopology;
   class IGameInputCallback;
 
   class CGameClientInput : protected CGameClientSubsystem,
@@ -53,10 +54,12 @@ namespace GAME
     void Stop();
 
     // Input functions
+    bool HasFeature(const std::string &controllerId, const std::string &featureName) const;
     bool AcceptsInput() const;
+    bool InputEvent(const game_input_event &event);
 
     // Topology functions
-    const CControllerTree &GetControllerTree() const { return m_controllers; }
+    const CControllerTree &GetControllerTree() const;
     bool SupportsKeyboard() const;
     bool SupportsMouse() const;
 
@@ -97,16 +100,16 @@ namespace GAME
 
     // Helper functions
     static ControllerVector GetControllers(const CGameClient &gameClient);
+    static void ActivateControllers(CControllerHub &hub);
 
     // Input properties
     IGameInputCallback *m_inputCallback = nullptr;
-    CControllerTree m_controllers;
+    std::unique_ptr<CGameClientTopology> m_topology;
     JoystickMap m_joysticks;
     PortMap m_portMap;
     std::unique_ptr<CGameClientKeyboard> m_keyboard;
     std::unique_ptr<CGameClientMouse> m_mouse;
     std::unique_ptr<CGameClientHardware> m_hardware;
-    int m_playerLimit = -1; // No limit
   };
 } // namespace GAME
 } // namespace KODI

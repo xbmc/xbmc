@@ -10,8 +10,6 @@
 
 #include "input/keyboard/interfaces/IKeyboardInputHandler.h"
 
-struct KodiToAddonFuncTable_Game;
-
 namespace KODI
 {
 namespace KEYBOARD
@@ -39,9 +37,8 @@ namespace GAME
      * \param dllStruct The emulator or game to which the events are sent.
      * \param inputProvider The interface providing us with keyboard input.
      */
-    CGameClientKeyboard(const CGameClient &gameClient,
+    CGameClientKeyboard(CGameClient &gameClient,
                         std::string controllerId,
-                        const KodiToAddonFuncTable_Game &dllStruct,
                         KEYBOARD::IKeyboardInputProvider *inputProvider);
 
     /*!
@@ -57,9 +54,8 @@ namespace GAME
 
   private:
     // Construction parameters
-    const CGameClient &m_gameClient;
+    CGameClient &m_gameClient;
     const std::string m_controllerId;
-    const KodiToAddonFuncTable_Game &m_dllStruct;
     KEYBOARD::IKeyboardInputProvider *const m_inputProvider;
   };
 }

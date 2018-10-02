@@ -207,7 +207,7 @@ void CGUIControllerWindow::OnInitWindow(void)
 
   if (!m_featureList)
   {
-    m_featureList = new CGUIFeatureList(this);
+    m_featureList = new CGUIFeatureList(this, m_gameClient);
     if (!m_featureList->Initialize())
     {
       delete m_featureList;
@@ -217,7 +217,7 @@ void CGUIControllerWindow::OnInitWindow(void)
 
   if (!m_controllerList && m_featureList)
   {
-    m_controllerList = new CGUIControllerList(this, m_featureList);
+    m_controllerList = new CGUIControllerList(this, m_featureList, m_gameClient);
     if (!m_controllerList->Initialize())
     {
       delete m_controllerList;
