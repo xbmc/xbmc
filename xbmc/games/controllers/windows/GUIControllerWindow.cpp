@@ -7,10 +7,10 @@
  */
 
 #include "GUIControllerWindow.h"
+#include "ControllerInstaller.h"
 #include "GUIControllerDefines.h"
 #include "GUIControllerList.h"
 #include "GUIFeatureList.h"
-#include "IConfigurationWindow.h"
 #include "addons/GUIWindowAddonBrowser.h"
 #include "addons/IAddon.h"
 #include "addons/AddonManager.h"
@@ -22,23 +22,19 @@
 #include "guilib/GUIControl.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/WindowIDs.h"
+#include "messaging/helpers/DialogOKHelper.h"
 #include "ServiceBroker.h"
 
-// To check for button mapping support
-#include "messaging/helpers/DialogOKHelper.h"
-#include "peripherals/bus/virtual/PeripheralBusAddon.h"
+// To enable button mapping support
 #include "peripherals/Peripherals.h"
-#include "utils/log.h"
-
-// To check for installable controllers
-#include "addons/AddonDatabase.h"
 
 using namespace KODI;
 using namespace GAME;
 using namespace KODI::MESSAGING;
 
 CGUIControllerWindow::CGUIControllerWindow(void) :
-  CGUIDialog(WINDOW_DIALOG_GAME_CONTROLLERS, "DialogGameControllers.xml")
+  CGUIDialog(WINDOW_DIALOG_GAME_CONTROLLERS, "DialogGameControllers.xml"),
+  m_installer(new CControllerInstaller)
 {
   // initialize CGUIWindow
   m_loadType = KEEP_IN_MEMORY;
@@ -102,6 +98,11 @@ bool CGUIControllerWindow::OnMessage(CGUIMessage& message)
       else if (controlId == CONTROL_GET_MORE)
       {
         GetMoreControllers();
+        bHandled = true;
+      }
+      else if (controlId == CONTROL_GET_ALL)
+      {
+        GetAllControllers();
         bHandled = true;
       }
       else if (controlId == CONTROL_RESET_BUTTON)
@@ -285,9 +286,16 @@ void CGUIControllerWindow::UpdateButtons(void)
 
   VECADDONS addons;
   if (m_gameClient)
+  {
     SET_CONTROL_HIDDEN(CONTROL_GET_MORE);
+    SET_CONTROL_HIDDEN(CONTROL_GET_ALL);
+  }
   else
-    CONTROL_ENABLE_ON_CONDITION(CONTROL_GET_MORE, CServiceBroker::GetAddonMgr().GetInstallableAddons(addons, ADDON::ADDON_GAME_CONTROLLER) && !addons.empty());
+  {
+    const bool bEnable = CServiceBroker::GetAddonMgr().GetInstallableAddons(addons, ADDON::ADDON_GAME_CONTROLLER) && !addons.empty();
+    CONTROL_ENABLE_ON_CONDITION(CONTROL_GET_MORE, bEnable);
+    CONTROL_ENABLE_ON_CONDITION(CONTROL_GET_ALL, bEnable);
+  }
 }
 
 void CGUIControllerWindow::GetMoreControllers(void)
@@ -300,6 +308,14 @@ void CGUIControllerWindow::GetMoreControllers(void)
     HELPERS::ShowOKDialogText(CVariant{ 35050 }, CVariant{ 35062 });
     return;
   }
+}
+
+void CGUIControllerWindow::GetAllControllers()
+{
+  if (m_installer->IsRunning())
+    return;
+
+  m_installer->Create(false);
 }
 
 void CGUIControllerWindow::ResetController(void)

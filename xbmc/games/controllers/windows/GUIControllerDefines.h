@@ -21,12 +21,16 @@
 #define CONTROL_FEATURE_GROUP_TITLE         8
 #define CONTROL_FEATURE_SEPARATOR           9
 #define CONTROL_CONTROLLER_BUTTON_TEMPLATE  10
+#define CONTROL_GAME_CONTROLLER             31
+#define CONTROL_CONTROLLER_DESCRIPTION      32
+
+// GUI button IDs
 #define CONTROL_HELP_BUTTON                 17
 #define CONTROL_CLOSE_BUTTON                18
 #define CONTROL_RESET_BUTTON                19
 #define CONTROL_GET_MORE                    20
 #define CONTROL_FIX_SKIPPING                21
-#define CONTROL_GAME_CONTROLLER             31
+#define CONTROL_GET_ALL                     22
 
 #define MAX_CONTROLLER_COUNT  100 // large enough
 #define MAX_FEATURE_COUNT     200 // large enough

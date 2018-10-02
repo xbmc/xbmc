@@ -109,32 +109,29 @@ void CGUIFeatureList::Load(const ControllerPtr& controller)
       buttons = GetButtons(itGroup->features, m_buttonCount);
     }
 
-    if (!buttons.empty())
+    // Just in case
+    if (m_buttonCount + buttons.size() >= MAX_FEATURE_COUNT)
+      break;
+
+    // Add a separator if the group list isn't empty
+    if (m_guiFeatureSeparator && m_guiList->GetTotalSize() > 0)
     {
-      // Just in case
-      if (m_buttonCount + buttons.size() >= MAX_FEATURE_COUNT)
-        break;
-
-      // Add a separator if the group list isn't empty
-      if (m_guiFeatureSeparator && m_guiList->GetTotalSize() > 0)
-      {
-        CGUIFeatureSeparator* pSeparator = new CGUIFeatureSeparator(*m_guiFeatureSeparator, m_buttonCount);
-        m_guiList->AddControl(pSeparator);
-      }
-
-      // Add the group title
-      if (m_guiGroupTitle && !groupName.empty())
-      {
-        CGUIFeatureGroupTitle* pGroupTitle = new CGUIFeatureGroupTitle(*m_guiGroupTitle, groupName, m_buttonCount);
-        m_guiList->AddControl(pGroupTitle);
-      }
-
-      // Add the buttons
-      for (CGUIButtonControl* pButton : buttons)
-        m_guiList->AddControl(pButton);
-
-      m_buttonCount += buttons.size();
+      CGUIFeatureSeparator* pSeparator = new CGUIFeatureSeparator(*m_guiFeatureSeparator, m_buttonCount);
+      m_guiList->AddControl(pSeparator);
     }
+
+    // Add the group title
+    if (m_guiGroupTitle && !groupName.empty())
+    {
+      CGUIFeatureGroupTitle* pGroupTitle = new CGUIFeatureGroupTitle(*m_guiGroupTitle, groupName, m_buttonCount);
+      m_guiList->AddControl(pGroupTitle);
+    }
+
+    // Add the buttons
+    for (CGUIButtonControl* pButton : buttons)
+      m_guiList->AddControl(pButton);
+
+    m_buttonCount += buttons.size();
   }
 }
 
@@ -228,6 +225,14 @@ std::vector<CGUIFeatureList::FeatureGroup> CGUIFeatureList::GetFeatureGroups(con
       group.features.emplace_back(feature);
       groups.emplace_back(std::move(group));
     }
+  }
+
+  // If there are no features, add an empty group
+  if (groups.empty())
+  {
+    FeatureGroup group;
+    group.groupName = g_localizeStrings.Get(35022); // "Nothing to map"
+    groups.emplace_back(std::move(group));
   }
 
   return groups;
