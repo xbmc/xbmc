@@ -45,6 +45,7 @@
 #include "profiles/ProfilesManager.h"
 #include "pvr/PVRSettings.h"
 #include "pvr/windows/GUIWindowPVRGuide.h"
+#include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/DisplaySettings.h"
 #include "settings/MediaSettings.h"
@@ -777,7 +778,7 @@ void CSettings::InitializeISettingsHandlers()
 {
   // register ISettingsHandler implementations
   // The order of these matters! Handlers are processed in the order they were registered.
-  GetSettingsManager()->RegisterSettingsHandler(&g_advancedSettings);
+  GetSettingsManager()->RegisterSettingsHandler(&CServiceBroker::GetAdvancedSettings());
   GetSettingsManager()->RegisterSettingsHandler(&CMediaSourceSettings::GetInstance());
 #ifdef HAS_UPNP
   GetSettingsManager()->RegisterSettingsHandler(&CUPnPSettings::GetInstance());
@@ -795,7 +796,7 @@ void CSettings::InitializeISettingsHandlers()
 void CSettings::UninitializeISettingsHandlers()
 {
   // unregister ISettingCallback implementations
-  GetSettingsManager()->UnregisterCallback(&g_advancedSettings);
+  GetSettingsManager()->UnregisterCallback(&CServiceBroker::GetAdvancedSettings());
   GetSettingsManager()->UnregisterCallback(&CMediaSettings::GetInstance());
   GetSettingsManager()->UnregisterCallback(&CDisplaySettings::GetInstance());
   GetSettingsManager()->UnregisterCallback(&g_application.GetAppPlayer().GetSeekHandler());
@@ -842,7 +843,7 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert(CSettings::SETTING_DEBUG_SHOWLOGINFO);
   settingSet.insert(CSettings::SETTING_DEBUG_EXTRALOGGING);
   settingSet.insert(CSettings::SETTING_DEBUG_SETEXTRALOGLEVEL);
-  GetSettingsManager()->RegisterCallback(&g_advancedSettings, settingSet);
+  GetSettingsManager()->RegisterCallback(&CServiceBroker::GetAdvancedSettings(), settingSet);
 
   settingSet.clear();
   settingSet.insert(CSettings::SETTING_MUSICLIBRARY_CLEANUP);
@@ -961,7 +962,7 @@ void CSettings::InitializeISettingCallbacks()
 
 void CSettings::UninitializeISettingCallbacks()
 {
-  GetSettingsManager()->UnregisterCallback(&g_advancedSettings);
+  GetSettingsManager()->UnregisterCallback(&CServiceBroker::GetAdvancedSettings());
   GetSettingsManager()->UnregisterCallback(&CMediaSettings::GetInstance());
   GetSettingsManager()->UnregisterCallback(&CDisplaySettings::GetInstance());
   GetSettingsManager()->UnregisterCallback(&g_application.GetAppPlayer().GetSeekHandler());

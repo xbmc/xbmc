@@ -388,14 +388,15 @@ void CUtil::CleanString(const std::string& strFileName,
   if (strFileName == "..")
    return;
 
-  const std::vector<std::string> &regexps = g_advancedSettings.m_videoCleanStringRegExps;
+  const CAdvancedSettings& advancedSettings = CServiceBroker::GetAdvancedSettings();
+  const std::vector<std::string> &regexps = advancedSettings.m_videoCleanStringRegExps;
 
   CRegExp reTags(true, CRegExp::autoUtf8);
   CRegExp reYear(false, CRegExp::autoUtf8);
 
-  if (!reYear.RegComp(g_advancedSettings.m_videoCleanDateTimeRegExp))
+  if (!reYear.RegComp(advancedSettings.m_videoCleanDateTimeRegExp))
   {
-    CLog::Log(LOGERROR, "%s: Invalid datetime clean RegExp:'%s'", __FUNCTION__, g_advancedSettings.m_videoCleanDateTimeRegExp.c_str());
+    CLog::Log(LOGERROR, "%s: Invalid datetime clean RegExp:'%s'", __FUNCTION__, advancedSettings.m_videoCleanDateTimeRegExp.c_str());
   }
   else
   {

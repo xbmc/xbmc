@@ -169,7 +169,7 @@ bool CRendererVDPAU::Supports(ESCALINGMETHOD method)
         && method != VS_SCALINGMETHOD_LANCZOS3)
       return true;
     else
-      return g_advancedSettings.m_videoEnableHighQualityHwScalers;
+      return CServiceBroker::GetAdvancedSettings().m_videoEnableHighQualityHwScalers;
   }
 
   return false;

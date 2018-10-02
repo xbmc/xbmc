@@ -38,7 +38,7 @@
 
 using namespace KODI::MESSAGING;
 
-#define BOOKMARK_THUMB_WIDTH g_advancedSettings.m_imageRes
+#define BOOKMARK_THUMB_WIDTH CServiceBroker::GetAdvancedSettings().m_imageRes
 
 #define CONTROL_ADD_BOOKMARK           2
 #define CONTROL_CLEAR_BOOKMARKS        3

@@ -114,7 +114,7 @@ static int ToggleDebug(const std::vector<std::string>& params)
 {
   bool debug = CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_DEBUG_SHOWLOGINFO);
   CServiceBroker::GetSettings()->SetBool(CSettings::SETTING_DEBUG_SHOWLOGINFO, !debug);
-  g_advancedSettings.SetDebugMode(!debug);
+  CServiceBroker::GetAdvancedSettings().SetDebugMode(!debug);
 
   return 0;
 }

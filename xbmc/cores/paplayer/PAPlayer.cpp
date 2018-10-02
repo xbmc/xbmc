@@ -1023,12 +1023,13 @@ void PAPlayer::Seek(bool bPlus, bool bLargeStep, bool bChapterOverride)
   if (!CanSeek()) return;
 
   long long seek;
-  if (g_advancedSettings.m_musicUseTimeSeeking && m_playerGUIData.m_totalTime > 2 * g_advancedSettings.m_musicTimeSeekForwardBig)
+  const CAdvancedSettings& advancedSettings = CServiceBroker::GetAdvancedSettings();
+  if (advancedSettings.m_musicUseTimeSeeking && m_playerGUIData.m_totalTime > 2 * advancedSettings.m_musicTimeSeekForwardBig)
   {
     if (bLargeStep)
-      seek = bPlus ? g_advancedSettings.m_musicTimeSeekForwardBig : g_advancedSettings.m_musicTimeSeekBackwardBig;
+      seek = bPlus ? advancedSettings.m_musicTimeSeekForwardBig : advancedSettings.m_musicTimeSeekBackwardBig;
     else
-      seek = bPlus ? g_advancedSettings.m_musicTimeSeekForward : g_advancedSettings.m_musicTimeSeekBackward;
+      seek = bPlus ? advancedSettings.m_musicTimeSeekForward : advancedSettings.m_musicTimeSeekBackward;
     seek *= 1000;
     seek += m_playerGUIData.m_time;
   }
@@ -1036,9 +1037,9 @@ void PAPlayer::Seek(bool bPlus, bool bLargeStep, bool bChapterOverride)
   {
     float percent;
     if (bLargeStep)
-      percent = bPlus ? (float)g_advancedSettings.m_musicPercentSeekForwardBig : (float)g_advancedSettings.m_musicPercentSeekBackwardBig;
+      percent = bPlus ? static_cast<float>(advancedSettings.m_musicPercentSeekForwardBig) : static_cast<float>(advancedSettings.m_musicPercentSeekBackwardBig);
     else
-      percent = bPlus ? (float)g_advancedSettings.m_musicPercentSeekForward : (float)g_advancedSettings.m_musicPercentSeekBackward;
+      percent = bPlus ? static_cast<float>(advancedSettings.m_musicPercentSeekForward) : static_cast<float>(advancedSettings.m_musicPercentSeekBackward);
     seek = static_cast<long long>(GetTotalTime64() * (GetPercentage() + percent) / 100);
   }
 

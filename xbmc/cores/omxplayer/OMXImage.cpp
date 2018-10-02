@@ -149,13 +149,15 @@ bool COMXImage::ClampLimits(unsigned int &width, unsigned int &height, unsigned 
 
   if (max_width == 0 || max_height == 0)
   {
-    max_height = g_advancedSettings.m_imageRes;
+    const CAdvancedSettings& advancedSettings = CServiceBroker::GetAdvancedSettings();
 
-    if (g_advancedSettings.m_fanartRes > g_advancedSettings.m_imageRes)
+    max_height = advancedSettings.m_imageRes;
+
+    if (advancedSettings.m_fanartRes > advancedSettings.m_imageRes)
     { // 16x9 images larger than the fanart res use that rather than the image res
-      if (fabsf(aspect / (16.0f/9.0f) - 1.0f) <= 0.01f && m_height >= g_advancedSettings.m_fanartRes)
+      if (fabsf(aspect / (16.0f/9.0f) - 1.0f) <= 0.01f && m_height >= advancedSettings.m_fanartRes)
       {
-        max_height = g_advancedSettings.m_fanartRes;
+        max_height = advancedSettings.m_fanartRes;
       }
     }
     max_width = max_height * 16/9;

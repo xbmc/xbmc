@@ -52,12 +52,15 @@ CServiceManager::~CServiceManager()
 
 bool CServiceManager::InitForTesting()
 {
+  m_advancedSettings.reset(new CAdvancedSettings());
+  m_advancedSettings->Initialize();
+
   m_network.reset(new CNetwork());
 
   m_profileManager.reset(new CProfilesManager());
   CProfile profile("special://temp");
-  m_profileManager.get()->AddProfile(profile);
-  m_profileManager.get()->CreateProfileFolders();
+  m_profileManager->AddProfile(profile);
+  m_profileManager->CreateProfileFolders();
 
   m_databaseManager.reset(new CDatabaseManager);
 
@@ -75,7 +78,8 @@ bool CServiceManager::InitForTesting()
     return false;
   }
 
-  m_fileExtensionProvider.reset(new CFileExtensionProvider(*m_addonMgr,
+  m_fileExtensionProvider.reset(new CFileExtensionProvider(*m_advancedSettings,
+                                                           *m_addonMgr,
                                                            *m_binaryAddonManager));
 
   init_level = 1;
@@ -91,10 +95,15 @@ void CServiceManager::DeinitTesting()
   m_databaseManager.reset();
   m_profileManager.reset();
   m_network.reset();
+  m_advancedSettings->Clear();
+  m_advancedSettings.reset();
 }
 
-bool CServiceManager::InitStageOne()
+bool CServiceManager::InitStageOne(const CAppParamParser &params)
 {
+  m_advancedSettings.reset(new CAdvancedSettings());
+  m_advancedSettings->Initialize(params);
+
 #ifdef HAS_PYTHON
   m_XBPython.reset(new XBPython());
   CScriptInvocationManager::GetInstance().RegisterLanguageInvocationHandler(m_XBPython.get(), ".py");
@@ -155,7 +164,7 @@ bool CServiceManager::InitStageTwo(const CAppParamParser &params)
 
   m_serviceAddons.reset(new ADDON::CServiceAddonManager(*m_addonMgr));
 
-  m_contextMenuManager.reset(new CContextMenuManager(*m_addonMgr.get()));
+  m_contextMenuManager.reset(new CContextMenuManager(*m_addonMgr));
 
   m_gameControllerManager.reset(new GAME::CControllerManager);
   m_inputManager.reset(new CInputManager(params));
@@ -166,7 +175,8 @@ bool CServiceManager::InitStageTwo(const CAppParamParser &params)
 
   m_gameRenderManager.reset(new RETRO::CGUIGameRenderManager);
 
-  m_fileExtensionProvider.reset(new CFileExtensionProvider(*m_addonMgr,
+  m_fileExtensionProvider.reset(new CFileExtensionProvider(*m_advancedSettings,
+                                                           *m_addonMgr,
                                                            *m_binaryAddonManager));
 
   m_powerManager.reset(new CPowerManager());
@@ -250,26 +260,34 @@ void CServiceManager::DeinitStageOne()
   CScriptInvocationManager::GetInstance().UnregisterLanguageInvocationHandler(m_XBPython.get());
   m_XBPython.reset();
 #endif
+
+  m_advancedSettings->Clear();
+  m_advancedSettings.reset();
+}
+
+CAdvancedSettings &CServiceManager::GetAdvancedSettings()
+{
+  return *m_advancedSettings;
 }
 
 ADDON::CAddonMgr &CServiceManager::GetAddonMgr()
 {
-  return *m_addonMgr.get();
+  return *m_addonMgr;
 }
 
 ADDON::CBinaryAddonCache &CServiceManager::GetBinaryAddonCache()
 {
-  return *m_binaryAddonCache.get();
+  return *m_binaryAddonCache;
 }
 
 ADDON::CBinaryAddonManager &CServiceManager::GetBinaryAddonManager()
 {
-  return *m_binaryAddonManager.get();
+  return *m_binaryAddonManager;
 }
 
 ADDON::CVFSAddonCache &CServiceManager::GetVFSAddonCache()
 {
-  return *m_vfsAddonCache.get();
+  return *m_vfsAddonCache;
 }
 
 ADDON::CServiceAddonManager &CServiceManager::GetServiceAddons()

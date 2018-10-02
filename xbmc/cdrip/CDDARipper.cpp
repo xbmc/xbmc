@@ -226,7 +226,7 @@ std::string CCDDARipper::GetAlbumDirName(const MUSIC_INFO::CMusicInfoTag& infoTa
   // replace %G with genre
   if (strAlbumDir.find("%G") != std::string::npos)
   {
-    std::string strGenre = StringUtils::Join(infoTag.GetGenre(), g_advancedSettings.m_musicItemSeparator);
+    std::string strGenre = StringUtils::Join(infoTag.GetGenre(), CServiceBroker::GetAdvancedSettings().m_musicItemSeparator);
     if (strGenre.empty())
       strGenre = "Unknown Genre";
     else

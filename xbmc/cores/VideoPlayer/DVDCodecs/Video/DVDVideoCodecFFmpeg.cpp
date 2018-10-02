@@ -391,9 +391,10 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 
   // advanced setting override for skip loop filter (see avcodec.h for valid options)
   //! @todo allow per video setting?
-  if (g_advancedSettings.m_iSkipLoopFilter != 0)
+  int iSkipLoopFilter = CServiceBroker::GetAdvancedSettings().m_iSkipLoopFilter;
+  if (iSkipLoopFilter != 0)
   {
-    m_pCodecContext->skip_loop_filter = (AVDiscard)g_advancedSettings.m_iSkipLoopFilter;
+    m_pCodecContext->skip_loop_filter = static_cast<AVDiscard>(iSkipLoopFilter);
   }
 
   // set any special options
@@ -862,7 +863,7 @@ bool CDVDVideoCodecFFmpeg::SetPictureParams(VideoPicture* pVideoPicture)
 
   if (m_processInfo.GetVideoSettings().m_PostProcess)
   {
-    m_postProc.SetType(g_advancedSettings.m_videoPPFFmpegPostProc, false);
+    m_postProc.SetType(CServiceBroker::GetAdvancedSettings().m_videoPPFFmpegPostProc, false);
     m_postProc.Process(pVideoPicture);
   }
 
@@ -1148,7 +1149,7 @@ int CDVDVideoCodecFFmpeg::FilterOpen(const std::string& filters, bool scale)
     return result;
   }
 
-  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+  if (CServiceBroker::GetAdvancedSettings().CanLogComponent(LOGVIDEO))
   {
     char* graphDump = avfilter_graph_dump(m_pFilterGraph, nullptr);
     if (graphDump)

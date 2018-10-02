@@ -26,7 +26,7 @@ CGUIWindowSplash::~CGUIWindowSplash(void) = default;
 
 void CGUIWindowSplash::OnInitWindow()
 {
-  if (!g_advancedSettings.m_splashImage)
+  if (!CServiceBroker::GetAdvancedSettings().m_splashImage)
     return;
 
   m_image = std::unique_ptr<CGUIImage>(new CGUIImage(0, 0, 0, 0, CServiceBroker::GetWinSystem()->GetGfxContext().GetWidth(), CServiceBroker::GetWinSystem()->GetGfxContext().GetHeight(), CTextureInfo(CUtil::GetSplashPath())));

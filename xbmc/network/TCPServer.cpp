@@ -235,7 +235,7 @@ int CTCPServer::GetCapabilities()
 
 void CTCPServer::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
 {
-  std::string str = IJSONRPCAnnouncer::AnnouncementToJSONRPC(flag, sender, message, data, g_advancedSettings.m_jsonOutputCompact);
+  std::string str = IJSONRPCAnnouncer::AnnouncementToJSONRPC(flag, sender, message, data, CServiceBroker::GetAdvancedSettings().m_jsonOutputCompact);
 
   for (unsigned int i = 0; i < m_connections.size(); i++)
   {

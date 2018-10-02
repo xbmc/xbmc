@@ -10,6 +10,7 @@
 
 #include <cstdlib>
 
+#include "ServiceBroker.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
 #include "dbwrappers/dataset.h"
 #include "settings/AdvancedSettings.h"
@@ -24,7 +25,7 @@ using namespace PVR;
 bool CPVREpgDatabase::Open()
 {
   CSingleLock lock(m_critSection);
-  return CDatabase::Open(g_advancedSettings.m_databaseEpg);
+  return CDatabase::Open(CServiceBroker::GetAdvancedSettings().m_databaseEpg);
 }
 
 void CPVREpgDatabase::Close()

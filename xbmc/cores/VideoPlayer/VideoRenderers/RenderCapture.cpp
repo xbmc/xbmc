@@ -41,7 +41,7 @@ bool CRenderCaptureBase::UseOcclusionQuery()
 {
   if (m_flags & CAPTUREFLAG_IMMEDIATELY)
     return false;
-  else if (g_advancedSettings.m_videoCaptureUseOcclusionQuery == 0)
+  else if (CServiceBroker::GetAdvancedSettings().m_videoCaptureUseOcclusionQuery == 0)
     return false;
   else
     return true;

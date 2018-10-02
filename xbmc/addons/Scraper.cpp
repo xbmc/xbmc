@@ -208,7 +208,7 @@ std::string CScraper::GetPathSettings()
 
 void CScraper::ClearCache()
 {
-  std::string strCachePath = URIUtils::AddFileToFolder(g_advancedSettings.m_cachePath, "scrapers");
+  std::string strCachePath = URIUtils::AddFileToFolder(CServiceBroker::GetAdvancedSettings().m_cachePath, "scrapers");
 
   // create scraper cache dir if needed
   if (!CDirectory::Exists(strCachePath))
@@ -644,7 +644,7 @@ CMusicArtistInfo FromFileItem<CMusicArtistInfo>(const CFileItem &item)
   info = CMusicArtistInfo(sTitle, url);
   if (item.HasProperty("artist.genre"))
     info.GetArtist().genre = StringUtils::Split(item.GetProperty("artist.genre").asString(),
-                                                g_advancedSettings.m_musicItemSeparator);
+                                                CServiceBroker::GetAdvancedSettings().m_musicItemSeparator);
   if (item.HasProperty("artist.born"))
     info.GetArtist().strBorn = item.GetProperty("artist.born").asString();
 
@@ -679,8 +679,8 @@ static std::string FromString(const CFileItem &item, const std::string &key)
 static std::vector<std::string> FromArray(const CFileItem &item, const std::string &key, int sep)
 {
   return StringUtils::Split(item.GetProperty(key).asString(),
-                            sep ? g_advancedSettings.m_videoItemSeparator
-                                : g_advancedSettings.m_musicItemSeparator);
+                            sep ? CServiceBroker::GetAdvancedSettings().m_videoItemSeparator
+                                : CServiceBroker::GetAdvancedSettings().m_musicItemSeparator);
 }
 
 static void ParseThumbs(CScraperUrl &scurl,
@@ -1148,7 +1148,7 @@ std::vector<CMusicArtistInfo> CScraper::FindArtist(CCurlFile &fcurl, const std::
         XMLUtils::GetString(pxeArtist, "genre", genre);
         if (!genre.empty())
           ari.GetArtist().genre =
-              StringUtils::Split(genre, g_advancedSettings.m_musicItemSeparator);
+              StringUtils::Split(genre, CServiceBroker::GetAdvancedSettings().m_musicItemSeparator);
         XMLUtils::GetString(pxeArtist, "year", ari.GetArtist().strBorn);
 
         vcari.push_back(ari);

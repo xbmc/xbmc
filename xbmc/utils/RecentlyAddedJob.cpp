@@ -153,7 +153,7 @@ bool CRecentlyAddedJob::UpdateVideo()
       home->SetProperty("LatestMusicVideo." + value + ".Plot"        , item->GetVideoInfoTag()->m_strPlot);
       home->SetProperty("LatestMusicVideo." + value + ".RunningTime" , item->GetVideoInfoTag()->GetDuration() / 60);
       home->SetProperty("LatestMusicVideo." + value + ".Path"        , item->GetVideoInfoTag()->m_strFileNameAndPath);
-      home->SetProperty("LatestMusicVideo." + value + ".Artist"      , StringUtils::Join(item->GetVideoInfoTag()->m_artist, g_advancedSettings.m_videoItemSeparator));
+      home->SetProperty("LatestMusicVideo." + value + ".Artist"      , StringUtils::Join(item->GetVideoInfoTag()->m_artist, CServiceBroker::GetAdvancedSettings().m_videoItemSeparator));
 
       if (!item->HasArt("thumb"))
         loader.LoadItem(item.get());

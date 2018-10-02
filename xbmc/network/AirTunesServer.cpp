@@ -499,7 +499,7 @@ void  CAirTunesServer::AudioOutputFunctions::audio_destroy(void *cls, void *sess
 void shairplay_log(void *cls, int level, const char *msg)
 {
   int xbmcLevel = LOGINFO;
-  if(!g_advancedSettings.CanLogComponent(LOGAIRTUNES))
+  if(!CServiceBroker::GetAdvancedSettings().CanLogComponent(LOGAIRTUNES))
     return;
 
   switch(level)
@@ -687,7 +687,7 @@ bool CAirTunesServer::Initialize(const std::string &password)
       unsigned short port = (unsigned short)m_port;
 
       m_pLibShairplay->raop_set_log_level(m_pRaop, RAOP_LOG_WARNING);
-      if(g_advancedSettings.CanLogComponent(LOGAIRTUNES))
+      if(CServiceBroker::GetAdvancedSettings().CanLogComponent(LOGAIRTUNES))
       {
         m_pLibShairplay->raop_set_log_level(m_pRaop, RAOP_LOG_DEBUG);
       }

@@ -7,6 +7,7 @@
  */
 
 #include "AESinkXAudio.h"
+#include "ServiceBroker.h"
 #include "cores/AudioEngine/AESinkFactory.h"
 #include "cores/AudioEngine/Sinks/windows/AESinkFactoryWin.h"
 #include "cores/AudioEngine/Utils/AEDeviceInfo.h"
@@ -655,7 +656,7 @@ bool CAESinkXAudio::InitializeInternal(std::string deviceId, AEAudioFormat &form
   if (format.m_dataFormat == AE_FMT_RAW) //No sense in trying other formats for passthrough.
     return false;
 
-  if (g_advancedSettings.CanLogComponent(LOGAUDIO))
+  if (CServiceBroker::GetAdvancedSettings().CanLogComponent(LOGAUDIO))
     CLog::Log(LOGDEBUG, __FUNCTION__": CreateSourceVoice failed (%s) - trying to find a compatible format", WASAPIErrToStr(hr));
 
   int closestMatch;

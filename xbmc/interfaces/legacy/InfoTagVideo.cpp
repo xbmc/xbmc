@@ -7,6 +7,7 @@
  */
 
 #include "InfoTagVideo.h"
+#include "ServiceBroker.h"
 #include "utils/StringUtils.h"
 #include "settings/AdvancedSettings.h"
 
@@ -37,17 +38,17 @@ namespace XBMCAddon
 
     String InfoTagVideo::getDirector()
     {
-      return StringUtils::Join(infoTag->m_director, g_advancedSettings.m_videoItemSeparator);
+      return StringUtils::Join(infoTag->m_director, CServiceBroker::GetAdvancedSettings().m_videoItemSeparator);
     }
 
     String InfoTagVideo::getWritingCredits()
     {
-      return StringUtils::Join(infoTag->m_writingCredits, g_advancedSettings.m_videoItemSeparator);
+      return StringUtils::Join(infoTag->m_writingCredits, CServiceBroker::GetAdvancedSettings().m_videoItemSeparator);
     }
 
     String InfoTagVideo::getGenre()
     {
-      return StringUtils::Join(infoTag->m_genre, g_advancedSettings.m_videoItemSeparator);
+      return StringUtils::Join(infoTag->m_genre, CServiceBroker::GetAdvancedSettings().m_videoItemSeparator);
     }
 
     String InfoTagVideo::getTagLine()

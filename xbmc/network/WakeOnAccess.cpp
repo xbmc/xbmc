@@ -684,22 +684,23 @@ void CWakeOnAccess::QueueMACDiscoveryForAllRemotes()
   AddHostsFromVecSource(ms.GetSources("pictures"), hosts);
   AddHostsFromVecSource(ms.GetSources("programs"), hosts);
 
+  const CAdvancedSettings& advancedSettings = CServiceBroker::GetAdvancedSettings();
+
   // add mysql servers
-  AddHostFromDatabase(g_advancedSettings.m_databaseVideo, hosts);
-  AddHostFromDatabase(g_advancedSettings.m_databaseMusic, hosts);
-  AddHostFromDatabase(g_advancedSettings.m_databaseEpg, hosts);
-  AddHostFromDatabase(g_advancedSettings.m_databaseTV, hosts);
+  AddHostFromDatabase(advancedSettings.m_databaseVideo, hosts);
+  AddHostFromDatabase(advancedSettings.m_databaseMusic, hosts);
+  AddHostFromDatabase(advancedSettings.m_databaseEpg, hosts);
+  AddHostFromDatabase(advancedSettings.m_databaseTV, hosts);
 
   // add from path substitutions ..
-  for (CAdvancedSettings::StringMapping::iterator i = g_advancedSettings.m_pathSubstitutions.begin(); i != g_advancedSettings.m_pathSubstitutions.end(); ++i)
+  for (const auto& pathPair : advancedSettings.m_pathSubstitutions)
   {
-    CURL url(i->second);
-
+    CURL url(pathPair.second);
     AddHost (url.GetHostName(), hosts);
   }
 
-  for (std::vector<std::string>::const_iterator it = hosts.begin(); it != hosts.end(); ++it)
-    QueueMACDiscoveryForHost(*it);
+  for (const std::string& host : hosts)
+    QueueMACDiscoveryForHost(host);
 }
 
 void CWakeOnAccess::SaveMACDiscoveryResult(const std::string& host, const std::string& mac)

@@ -10,6 +10,7 @@
 
 #include "input/XBMC_keysym.h"
 #include "input/XBMC_vkeys.h"
+#include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
 #include "Util.h"
 
@@ -149,7 +150,7 @@ namespace KODI
 
         // Only include the multimedia keys if they have been enabled in the
         // advanced settings
-        if (g_advancedSettings.m_enableMultimediaKeys)
+        if (CServiceBroker::GetAdvancedSettings().m_enableMultimediaKeys)
         {
           VK_keymap[VK_BROWSER_BACK] = XBMCK_BROWSER_BACK;
           VK_keymap[VK_BROWSER_FORWARD] = XBMCK_BROWSER_FORWARD;

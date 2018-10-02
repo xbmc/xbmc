@@ -108,7 +108,7 @@ void CVideoFileItemListModifier::AddQueuingFolder(CFileItemList& items)
   if (pItem)
   {
     pItem->m_bIsFolder = true;
-    pItem->SetSpecialSort(g_advancedSettings.m_bVideoLibraryAllItemsOnBottom ? SortSpecialOnBottom : SortSpecialOnTop);
+    pItem->SetSpecialSort(CServiceBroker::GetAdvancedSettings().m_bVideoLibraryAllItemsOnBottom ? SortSpecialOnBottom : SortSpecialOnTop);
     pItem->SetCanQueue(false);
     items.Add(pItem);
   }

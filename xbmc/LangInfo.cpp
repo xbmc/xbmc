@@ -1040,7 +1040,7 @@ const std::string& CLangInfo::GetSpeedUnitString(CSpeed::Unit speedUnit)
 std::set<std::string> CLangInfo::GetSortTokens() const
 {
   std::set<std::string> sortTokens = m_sortTokens;
-  sortTokens.insert(g_advancedSettings.m_vecTokens.begin(), g_advancedSettings.m_vecTokens.end());
+  sortTokens.insert(CServiceBroker::GetAdvancedSettings().m_vecTokens.begin(), CServiceBroker::GetAdvancedSettings().m_vecTokens.end());
 
   return sortTokens;
 }

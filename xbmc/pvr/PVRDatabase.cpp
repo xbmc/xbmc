@@ -26,7 +26,7 @@ using namespace PVR;
 bool CPVRDatabase::Open()
 {
   CSingleLock lock(m_critSection);
-  return CDatabase::Open(g_advancedSettings.m_databaseTV);
+  return CDatabase::Open(CServiceBroker::GetAdvancedSettings().m_databaseTV);
 }
 
 void CPVRDatabase::Close()
@@ -415,7 +415,7 @@ bool CPVRDatabase::RemoveStaleChannelsFromGroup(const CPVRChannelGroup &group)
 
     // XXX work around for frodo: fix this up so it uses one query for all db types
     // mysql doesn't support subqueries when deleting and sqlite doesn't support joins when deleting
-    if (StringUtils::EqualsNoCase(g_advancedSettings.m_databaseTV.type, "mysql"))
+    if (StringUtils::EqualsNoCase(CServiceBroker::GetAdvancedSettings().m_databaseTV.type, "mysql"))
     {
       const  std::string strQuery = PrepareSQL("DELETE m FROM map_channelgroups_channels m LEFT JOIN channels c ON (c.idChannel = m.idChannel) WHERE c.idChannel IS NULL");
       bDelete = ExecuteQuery(strQuery);

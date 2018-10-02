@@ -180,7 +180,7 @@ static void ParseItemMRSS(CFileItem* item, SResources& resources, TiXmlElement* 
     else if(scheme == "urn:boxee:source")
       item->SetProperty("boxee:provider_source", text);
     else
-      vtag->m_genre = StringUtils::Split(text, g_advancedSettings.m_videoItemSeparator);
+      vtag->m_genre = StringUtils::Split(text, CServiceBroker::GetAdvancedSettings().m_videoItemSeparator);
   }
   else if(name == "rating")
   {
@@ -206,7 +206,7 @@ static void ParseItemMRSS(CFileItem* item, SResources& resources, TiXmlElement* 
     }
   }
   else if(name == "copyright")
-    vtag->m_studio = StringUtils::Split(text, g_advancedSettings.m_videoItemSeparator);
+    vtag->m_studio = StringUtils::Split(text, CServiceBroker::GetAdvancedSettings().m_videoItemSeparator);
   else if(name == "keywords")
     item->SetProperty("keywords", text);
 

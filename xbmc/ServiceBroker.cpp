@@ -27,6 +27,11 @@ void CServiceBroker::UnregisterAnnouncementManager()
   m_pAnnouncementManager.reset();
 }
 
+CAdvancedSettings &CServiceBroker::GetAdvancedSettings()
+{
+  return g_application.m_ServiceManager->GetAdvancedSettings();
+}
+
 ADDON::CAddonMgr &CServiceBroker::GetAddonMgr()
 {
   return g_application.m_ServiceManager->GetAddonMgr();

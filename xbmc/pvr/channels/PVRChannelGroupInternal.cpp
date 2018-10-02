@@ -294,7 +294,7 @@ bool CPVRChannelGroupInternal::UpdateGroupEntries(const CPVRChannelGroup &channe
   if (CPVRChannelGroup::UpdateGroupEntries(channels))
   {
     /* try to find channel icons */
-    if (g_advancedSettings.m_bPVRChannelIconsAutoScan)
+    if (CServiceBroker::GetAdvancedSettings().m_bPVRChannelIconsAutoScan)
       SearchAndSetChannelIcons();
 
     CServiceBroker::GetPVRManager().Timers()->UpdateChannels();

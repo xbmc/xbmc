@@ -92,9 +92,9 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER &timer, const CPVRChannelPtr 
   m_bIsRadio(channel && channel->IsRadio()),
   m_iMarginStart(timer.iMarginStart),
   m_iMarginEnd(timer.iMarginEnd),
-  m_StartTime(timer.startTime + g_advancedSettings.m_iPVRTimeCorrection),
-  m_StopTime(timer.endTime + g_advancedSettings.m_iPVRTimeCorrection),
-  m_FirstDay(timer.firstDay + g_advancedSettings.m_iPVRTimeCorrection),
+  m_StartTime(timer.startTime + CServiceBroker::GetAdvancedSettings().m_iPVRTimeCorrection),
+  m_StopTime(timer.endTime + CServiceBroker::GetAdvancedSettings().m_iPVRTimeCorrection),
+  m_FirstDay(timer.firstDay + CServiceBroker::GetAdvancedSettings().m_iPVRTimeCorrection),
   m_strSeriesLink(timer.strSeriesLink),
   m_iEpgUid(timer.iEpgUid),
   m_channel(channel)

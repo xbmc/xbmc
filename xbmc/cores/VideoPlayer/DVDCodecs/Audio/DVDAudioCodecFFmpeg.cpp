@@ -7,6 +7,7 @@
  */
 
 #include "DVDAudioCodecFFmpeg.h"
+#include "ServiceBroker.h"
 #include "../../DVDStreamInfo.h"
 #include "utils/log.h"
 #include "settings/AdvancedSettings.h"
@@ -94,8 +95,9 @@ bool CDVDAudioCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
     }
   }
 
-  if (g_advancedSettings.m_audioApplyDrc >= 0.0)
-    av_opt_set_double(m_pCodecContext, "drc_scale", g_advancedSettings.m_audioApplyDrc, AV_OPT_SEARCH_CHILDREN);
+  float applyDrc = CServiceBroker::GetAdvancedSettings().m_audioApplyDrc;
+  if (applyDrc >= 0.0)
+    av_opt_set_double(m_pCodecContext, "drc_scale", applyDrc, AV_OPT_SEARCH_CHILDREN);
 
   if (avcodec_open2(m_pCodecContext, pCodec, NULL) < 0)
   {

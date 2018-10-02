@@ -333,7 +333,7 @@ bool CDVDDemuxFFmpeg::Open(std::shared_ptr<CDVDInputStream> pInput, bool streami
         // the advancedsetting is for allowing the user to force outputting the
         // 44.1 kHz DTS wav file as PCM, so that an A/V receiver can decode
         // it (this is temporary until we handle 44.1 kHz passthrough properly)
-        if (trySPDIFonly || (iformat && strcmp(iformat->name, "wav") == 0 && !g_advancedSettings.m_VideoPlayerIgnoreDTSinWAV))
+        if (trySPDIFonly || (iformat && strcmp(iformat->name, "wav") == 0 && !CServiceBroker::GetAdvancedSettings().m_VideoPlayerIgnoreDTSinWAV))
         {
           // check for spdif and dts
           // This is used with wav files and audio CDs that may contain
@@ -427,7 +427,7 @@ bool CDVDDemuxFFmpeg::Open(std::shared_ptr<CDVDInputStream> pInput, bool streami
   }
 
   // Avoid detecting framerate if advancedsettings.xml says so
-  if (g_advancedSettings.m_videoFpsDetect == 0)
+  if (CServiceBroker::GetAdvancedSettings().m_videoFpsDetect == 0)
       m_pFormatContext->fps_probe_size = 0;
 
   // analyse very short to speed up mjpeg playback start
@@ -754,7 +754,7 @@ AVDictionary *CDVDDemuxFFmpeg::GetFFMpegOptionsFromInput()
     if (!hasUserAgent)
     {
       // set default xbmc user-agent.
-      av_dict_set(&options, "user_agent", g_advancedSettings.m_userAgent.c_str(), 0);
+      av_dict_set(&options, "user_agent", CServiceBroker::GetAdvancedSettings().m_userAgent.c_str(), 0);
     }
 
     if (!headers.empty())

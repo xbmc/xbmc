@@ -7,6 +7,7 @@
  */
 
 #include "ProcessInfo.h"
+#include "ServiceBroker.h"
 #include "cores/DataCacheCore.h"
 #include "settings/AdvancedSettings.h"
 #include "threads/SingleLock.h"
@@ -577,7 +578,7 @@ float CProcessInfo::MaxTempoPlatform()
 bool CProcessInfo::IsTempoAllowed(float tempo)
 {
   if (tempo > MinTempoPlatform() &&
-      (tempo < MaxTempoPlatform() || tempo < g_advancedSettings.m_maxTempo))
+      (tempo < MaxTempoPlatform() || tempo < CServiceBroker::GetAdvancedSettings().m_maxTempo))
     return true;
 
   return false;

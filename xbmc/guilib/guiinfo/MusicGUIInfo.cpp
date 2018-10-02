@@ -176,7 +176,7 @@ bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
         return true;
       case MUSICPLAYER_GENRE:
       case LISTITEM_GENRE:
-        value =  StringUtils::Join(tag->GetGenre(), g_advancedSettings.m_musicItemSeparator);
+        value =  StringUtils::Join(tag->GetGenre(), CServiceBroker::GetAdvancedSettings().m_musicItemSeparator);
         return true;
       case MUSICPLAYER_LYRICS:
         value = tag->GetLyrics();

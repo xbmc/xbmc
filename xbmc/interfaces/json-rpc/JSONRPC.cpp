@@ -264,7 +264,7 @@ std::string CJSONRPC::MethodCall(const std::string &inputString, ITransportLayer
 
   std::string str;
   if (hasResponse)
-    CJSONVariantWriter::Write(outputroot, str, g_advancedSettings.m_jsonOutputCompact);
+    CJSONVariantWriter::Write(outputroot, str, CServiceBroker::GetAdvancedSettings().m_jsonOutputCompact);
 
   return str;
 }
