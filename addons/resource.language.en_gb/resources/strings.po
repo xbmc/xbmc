@@ -17490,7 +17490,13 @@ msgctxt "#35235"
 msgid "Press {0:s} to open the in-game menu."
 msgstr ""
 
-#empty strings from id 35236 to 35249
+#. Additional help text shown when the user first plays a game. This will be removed in the future.
+#: addons/skin.estuary/xml/GameOSD.xml
+msgctxt "#35236"
+msgid "In this release, only controllers can be used to play games."
+msgstr ""
+
+#empty strings from id 35237 to 35249
 
 #: xbmc/windows/GUIMediaWindow.cpp
 msgctxt "#35250"
