@@ -7,10 +7,9 @@
  */
 
 #include "EGLImage.h"
+
 #include "EGLUtils.h"
 #include "log.h"
-
-/* --- CEGLImage -------------------------------------------*/
 
 namespace
 {
@@ -67,11 +66,13 @@ bool CEGLImage::CreateImage(EglAttrs imageAttrs)
                {EGL_HEIGHT, imageAttrs.height},
                {EGL_LINUX_DRM_FOURCC_EXT, static_cast<EGLint>(imageAttrs.format)}});
 
-  /* this should be configurable at a later point */
-  attribs.Add({{EGL_YUV_COLOR_SPACE_HINT_EXT, EGL_ITU_REC709_EXT},
-               {EGL_SAMPLE_RANGE_HINT_EXT, EGL_YUV_NARROW_RANGE_EXT},
-               {EGL_YUV_CHROMA_VERTICAL_SITING_HINT_EXT, EGL_YUV_CHROMA_SITING_0_EXT},
-               {EGL_YUV_CHROMA_HORIZONTAL_SITING_HINT_EXT, EGL_YUV_CHROMA_SITING_0_EXT}});
+  if (imageAttrs.colorSpace != 0 && imageAttrs.colorRange != 0)
+  {
+    attribs.Add({{EGL_YUV_COLOR_SPACE_HINT_EXT, imageAttrs.colorSpace},
+                 {EGL_SAMPLE_RANGE_HINT_EXT, imageAttrs.colorRange},
+                 {EGL_YUV_CHROMA_VERTICAL_SITING_HINT_EXT, EGL_YUV_CHROMA_SITING_0_EXT},
+                 {EGL_YUV_CHROMA_HORIZONTAL_SITING_HINT_EXT, EGL_YUV_CHROMA_SITING_0_EXT}});
+  }
 
   for (int i = 0; i < MAX_NUM_PLANES; i++)
   {

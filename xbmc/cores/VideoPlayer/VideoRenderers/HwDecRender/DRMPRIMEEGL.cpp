@@ -8,6 +8,8 @@
 
 #include "DRMPRIMEEGL.h"
 
+#include "utils/log.h"
+
 void CDRMPRIMETexture::Init(EGLDisplay eglDisplay)
 {
   m_eglImage.reset(new CEGLImage(eglDisplay));
@@ -40,6 +42,8 @@ bool CDRMPRIMETexture::Map(CVideoBufferDRMPRIME *buffer)
     attribs.width = m_texWidth;
     attribs.height = m_texHeight;
     attribs.format = layer->format;
+    attribs.colorSpace = GetColorSpace(buffer->GetColorEncoding());
+    attribs.colorRange = GetColorRange(buffer->GetColorRange());
     attribs.planes = planes;
 
     if (!m_eglImage->CreateImage(attribs))
@@ -72,4 +76,38 @@ void CDRMPRIMETexture::Unmap()
 
   m_primebuffer->Release();
   m_primebuffer = nullptr;
+}
+
+int CDRMPRIMETexture::GetColorSpace(int colorSpace)
+{
+  switch(colorSpace)
+  {
+    case DRM_COLOR_YCBCR_BT2020:
+      return EGL_ITU_REC2020_EXT;
+    case DRM_COLOR_YCBCR_BT601:
+      return EGL_ITU_REC601_EXT;
+    case DRM_COLOR_YCBCR_BT709:
+      return EGL_ITU_REC709_EXT;
+    default:
+      CLog::Log(LOGERROR, "CEGLImage::%s - failed to get colorspace for: %d", __FUNCTION__, colorSpace);
+      break;
+  }
+
+  return -1;
+}
+
+int CDRMPRIMETexture::GetColorRange(int colorRange)
+{
+  switch(colorRange)
+  {
+    case DRM_COLOR_YCBCR_FULL_RANGE:
+      return EGL_YUV_FULL_RANGE_EXT;
+    case DRM_COLOR_YCBCR_LIMITED_RANGE:
+      return EGL_YUV_NARROW_RANGE_EXT;
+    default:
+      CLog::Log(LOGERROR, "CEGLImage::%s - failed to get colorrange for: %d", __FUNCTION__, colorRange);
+      break;
+  }
+
+  return -1;
 }
