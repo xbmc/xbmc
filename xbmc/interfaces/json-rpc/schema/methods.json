@@ -1540,7 +1540,8 @@
     "params": [
       { "name": "setid", "$ref": "Library.Id", "required": true },
       { "name": "title", "$ref": "Optional.String" },
-      { "name": "art", "type": [ "null", { "$ref": "Media.Artwork.Set", "required": true } ], "default": null }
+      { "name": "art", "type": [ "null", { "$ref": "Media.Artwork.Set", "required": true } ], "default": null },
+      { "name": "plot", "$ref": "Optional.String" }
     ],
     "returns": "string"
   },
