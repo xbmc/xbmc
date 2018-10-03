@@ -781,7 +781,7 @@ namespace PVR
         return false;
       }
     }
-    else if (timer->HasTimerType() && timer->GetTimerType()->IsReadOnly())
+    else if (timer->HasTimerType() && !timer->GetTimerType()->AllowsDelete())
     {
       return false;
     }

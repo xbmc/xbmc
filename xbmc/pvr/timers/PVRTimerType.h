@@ -141,6 +141,12 @@ namespace PVR
     bool IsReadOnly() const { return (m_iAttributes & PVR_TIMER_TYPE_IS_READONLY) > 0; }
 
     /*!
+     * @brief Check whether this type allows deletion.
+     * @return True if type allows deletion, false otherwise.
+     */
+    bool AllowsDelete() const { return !IsReadOnly() || SupportsReadOnlyDelete(); }
+
+    /*!
      * @brief Check whether this type forbids creation of new timers of this type.
      * @return True if new instances are forbidden, false otherwise.
      */
@@ -279,6 +285,12 @@ namespace PVR
      * @return True if any channel is supported, false otherwise.
      */
     bool SupportsAnyChannel() const { return (m_iAttributes & PVR_TIMER_TYPE_SUPPORTS_ANY_CHANNEL) > 0; }
+
+    /*!
+     * @brief Check whether this type supports deletion of an otherwise read-only timer.
+     * @return True if read-only deletion is supported, false otherwise.
+     */
+    bool SupportsReadOnlyDelete() const { return (m_iAttributes & PVR_TIMER_TYPE_SUPPORTS_READONLY_DELETE) > 0; }
 
     /*!
      * @brief Obtain a list with all possible values for the priority attribute.
