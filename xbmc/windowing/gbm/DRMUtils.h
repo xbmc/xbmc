@@ -28,7 +28,8 @@ namespace GBM
 enum EPLANETYPE
 {
   KODI_VIDEO_PLANE,
-  KODI_GUI_PLANE
+  KODI_GUI_PLANE,
+  KODI_GUI_10_PLANE
 };
 
 struct drm_object
@@ -42,7 +43,7 @@ struct drm_object
 struct plane : drm_object
 {
   drmModePlanePtr plane = nullptr;
-  uint32_t format = DRM_FORMAT_XRGB8888;
+  uint32_t format{0};
   std::map<uint32_t, std::vector<uint64_t>> modifiers_map;
 };
 
