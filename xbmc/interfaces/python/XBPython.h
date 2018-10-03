@@ -102,6 +102,13 @@ public:
   void UnloadExtensionLibs();
 
 private:
+  /**
+   * Check minimum required version of Python cryptography module
+   *
+   * If version is below 1.7, there could be random OpenSSL errors, see
+   * https://github.com/pyca/pyopenssl/issues/542#issuecomment-312968275
+   */
+  bool CheckCryptographyVersion();
   void Finalize();
 
   CCriticalSection    m_critSection;

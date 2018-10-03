@@ -553,6 +553,34 @@ void XBPython::Process()
   }
 }
 
+bool XBPython::CheckCryptographyVersion()
+{
+  PyObject* cryptoMod{PyImport_ImportModule("cryptography")};
+  if (!cryptoMod)
+  {
+    return true;
+  }
+  
+  PyObject* cryptoModDict{PyModule_GetDict(cryptoMod)};
+  PyObject* versionPyString{PyDict_GetItemString(cryptoModDict, "__version__")};
+  std::string version {PyString_AsString(versionPyString)};
+
+  Py_DECREF(cryptoMod);
+  
+  std::vector<std::string> versionParts{StringUtils::Split(version, '.')};
+
+  // Python cryptography < 1.7 has issues with pyOpenSSL integration, leading to all sorts
+  // of weird bugs - check here to save on some troubleshooting
+  // https://github.com/pyca/pyopenssl/issues/542
+  if (versionParts.size() < 2 || std::stoi(versionParts[0]) < 1 || (std::stoi(versionParts[0]) == 1 && std::stoi(versionParts[1]) < 7))
+  {
+    CLog::Log(LOGERROR, "Python cryptography module version {} is too old, at least version 1.7 needed", version);
+    return false;
+  }
+  
+  return true;
+}
+
 bool XBPython::OnScriptInitialized(ILanguageInvoker *invoker)
 {
   if (invoker == NULL)
@@ -638,7 +666,14 @@ bool XBPython::OnScriptInitialized(ILanguageInvoker *invoker)
 
     if (!(m_mainThreadState = PyThreadState_Get()))
       CLog::Log(LOGERROR, "Python threadstate is NULL.");
+
+    bool cryptoOk = CheckCryptographyVersion();
     PyEval_ReleaseLock();
+    if (!cryptoOk)
+    {
+      Finalize();
+      return false;
+    }
 
     m_bInitialized = true;
   }
