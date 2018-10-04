@@ -1,0 +1,145 @@
+/*!
+
+\page window_ids WindowIDs
+
+This page shows the window names, the window definition, the window ID and the specific XML file in use.
+
+@note Window names are case-insensitive
+
+| Name                    | Definition                           | WindowID  | XML Filename                        |
+|:------------------------|:-------------------------------------|:----------|:------------------------------------|
+| Home                    | WINDOW_HOME                          | 10000     | Home.xml                            |
+| Programs                | WINDOW_PROGRAMS                      | 10001     | MyPrograms.xml                      |
+| Pictures                | WINDOW_PICTURES                      | 10002     | MyPics.xml                          |
+| FileManager             | WINDOW_FILES                         | 10003     | FileManager.xml                     |
+| Settings                | WINDOW_SETTINGS_MENU                 | 10004     | Settings.xml                        |
+| SystemInfo              | WINDOW_SYSTEM_INFORMATION            | 10007     | SettingsSystemInfo.xml              |
+| TestPattern             | WINDOW_TEST_PATTERN                  | 10008     | none                                |
+| ScreenCalibration       | WINDOW_SCREEN_CALIBRATION            | 10011     | SettingsScreenCalibration.xml       |
+| SystemSettings          | WINDOW_SETTINGS_SYSTEM               | 10016     | SettingsCategory.xml                |
+| ServiceSettings         | WINDOW_SETTINGS_SERVICE              | 10018     | SettingsCategory.xml                |
+| PVRSettings             | WINDOW_SETTINGS_MYPVR                | 10021     | SettingsCategory.xml                |
+| GameSettings            | WINDOW_SETTINGS_MYGAMES              | 10022     | SettingsCategory.xml                |
+| Videos                  | WINDOW_VIDEO_NAV                     | 10025     | MyVideoNav.xml                      |
+| VideoPlaylist           | WINDOW_VIDEO_PLAYLIST                | 10028     | MyPlaylist.xml                      |
+| LoginScreen             | WINDOW_LOGIN_SCREEN                  | 10029     | LoginScreen.xml                     |
+| PlayerSettings          | WINDOW_SETTINGS_PLAYER               | 10030     | SettingsCategory.xml                |
+| MediaSettings           | WINDOW_SETTINGS_MEDIA                | 10031     | SettingsCategory.xml                |
+| InterfaceSettings       | WINDOW_SETTINGS_INTERFACE            | 10032     | SettingsCategory.xml                |
+| Profiles                | WINDOW_SETTINGS_PROFILES             | 10034     | SettingsProfile.xml                 |
+| SkinSettings            | WINDOW_SKIN_SETTINGS                 | 10035     | SkinSettings.xml                    |
+| AddonBrowser            | WINDOW_ADDON_BROWSER                 | 10040     | AddonBrowser.xml                    |
+| EventLog                | WINDOW_EVENT_LOG                     | 10050     | EventLog.xml                        |
+| Pointer                 | WINDOW_DIALOG_POINTER                | 10099     | Pointer.xml                         |
+| YesNoDialog             | WINDOW_DIALOG_YES_NO                 | 10100     | DialogConfirm.xml                   |
+| ProgressDialog          | WINDOW_DIALOG_PROGRESS               | 10101     | DialogConfirm.xml                   |
+| VirtualKeyboard         | WINDOW_DIALOG_KEYBOARD               | 10103     | DialogKeyboard.xml                  |
+| VolumeBar               | WINDOW_DIALOG_VOLUME_BAR             | 10104     | DialogVolumeBar.xml                 |
+| SubMenu                 | WINDOW_DIALOG_SUB_MENU               | 10105     | DialogSubMenu.xml                   |
+| ContextMenu             | WINDOW_DIALOG_CONTEXT_MENU           | 10106     | DialogContextMenu.xml               |
+| Notification            | WINDOW_DIALOG_KAI_TOAST              | 10107     | DialogNotification.xml              |
+| NumericInput            | WINDOW_DIALOG_NUMERIC                | 10109     | DialogNumeric.xml                   |
+| GamepadInput            | WINDOW_DIALOG_GAMEPAD                | 10110     | DialogSelect.xml                    |
+| ShutdownMenu            | WINDOW_DIALOG_BUTTON_MENU            | 10111     | DialogButtonMenu.xml                |
+| PlayerControls          | WINDOW_DIALOG_PLAYER_CONTROLS        | 10114     | PlayerControls.xml                  |
+| SeekBar                 | WINDOW_DIALOG_SEEK_BAR               | 10115     | DialogSeekBar.xml                   |
+| PlayerProcessInfo       | WINDOW_DIALOG_PLAYER_PROCESS_INFO    | 10116     | DialogPlayerProcessInfo.xml         |
+| MusicOSD                | WINDOW_DIALOG_MUSIC_OSD              | 10120     | MusicOSD.xml                        |   
+|                         | WINDOW_DIALOG_VIS_SETTINGS           | 10121     |                                     |
+| VisualisationPresetList | WINDOW_DIALOG_VIS_PRESET_LIST        | 10122     | DialogSelect.xml                    |
+| OSDVideoSettings        | WINDOW_DIALOG_VIDEO_OSD_SETTINGS     | 10123     | DialogSettings.xml                  |
+| OSDAudioSettings        | WINDOW_DIALOG_AUDIO_OSD_SETTINGS     | 10124     | DialogSettings.xml                  |
+| VideoBookmarks          | WINDOW_DIALOG_VIDEO_BOOKMARKS        | 10125     | VideoOSDBookmarks.xml               |
+| FileBrowser             | WINDOW_DIALOG_FILE_BROWSER           | 10126     | FileBrowser.xml                     |
+| NetworkSetup            | WINDOW_DIALOG_NETWORK_SETUP          | 10128     | DialogSettings.xml                  |
+| MediaSource             | WINDOW_DIALOG_MEDIA_SOURCE           | 10129     | DialogMediaSource.xml               |
+| ProfileSettings         | WINDOW_DIALOG_PROFILE_SETTINGS       | 10130     | DialogSettings.xml                  |
+| LockSettings            | WINDOW_DIALOG_LOCK_SETTINGS          | 10131     | DialogSettings.xml                  |
+| ContentSettings         | WINDOW_DIALOG_CONTENT_SETTINGS       | 10132     | DialogSettings.xml                  |
+| LibexportSettings       | WINDOW_DIALOG_LIBEXPORT_SETTINGS     | 10133     | DialogSettings.xml                  |
+| Favourites              | WINDOW_DIALOG_FAVOURITES             | 10134     | DialogFavourites.xml                |
+| SongInformation         | WINDOW_DIALOG_SONG_INFO              | 10135     | DialogMusicInfo.xml                 |
+| SmartPlaylistEditor     | WINDOW_DIALOG_SMART_PLAYLIST_EDITOR  | 10136     | SmartPlaylistEditor.xml             |
+| SmartPlaylistRule       | WINDOW_DIALOG_SMART_PLAYLIST_RULE    | 10137     | SmartPlaylistRule.xml               |
+| BusyDialog              | WINDOW_DIALOG_BUSY                   | 10138     | DialogBusy.xml                      |
+| PictureInfo             | WINDOW_DIALOG_PICTURE_INFO           | 10139     | DialogPictureInfo.xml               |
+| AddonSettings           | WINDOW_DIALOG_ADDON_SETTINGS         | 10140     | DialogAddonSettings.xml             |
+| AccessPoints            | WINDOW_DIALOG_ACCESS_POINTS          | 10141     | DialogAccessPoints.xml              |
+| FullscreenInfo          | WINDOW_DIALOG_FULLSCREEN_INFO        | 10142     | DialogFullScreenInfo.xml            |
+| SliderDialog            | WINDOW_DIALOG_SLIDER                 | 10145     | DialogSlider.xml                    |
+| AddonInformation        | WINDOW_DIALOG_ADDON_INFO             | 10146     | DialogAddonInfo.xml                 |
+| TextViewer              | WINDOW_DIALOG_TEXT_VIEWER            | 10147     | DialogTextViewer.xml                |
+|                         | WINDOW_DIALOG_PLAY_EJECT             | 10148     | DialogConfirm.xml                   |
+|                         | WINDOW_DIALOG_PERIPHERALS            | 10149     | DialogSelect.xml                    |
+| PeripheralSettings      | WINDOW_DIALOG_PERIPHERAL_SETTINGS    | 10150     | DialogSettings.xml                  |
+| ExtendedProgressDialog  | WINDOW_DIALOG_EXT_PROGRESS           | 10151     | DialogExtendedProgressBar.xml       |
+| MediaFilter             | WINDOW_DIALOG_MEDIA_FILTER           | 10152     | DialogSettings.xml                  |
+| SubtitleSearch          | WINDOW_DIALOG_SUBTITLES              | 10153     | DialogSubtitles.xml                 |
+|                         | WINDOW_DIALOG_KEYBOARD_TOUCH         | 10156     |                                     |
+| OSDCMSSettings          | WINDOW_DIALOG_CMS_OSD_SETTINGS       | 10157     | DialogSettings.xml                  |
+| InfoproviderSettings    | WINDOW_DIALOG_INFOPROVIDER_SETTINGS  | 10158     | DialogSettings.xml                  |
+| OSDSubtitleSettings     | WINDOW_DIALOG_SUBTITLE_OSD_SETTINGS  | 10159     | DialogSettings.xml                  |
+| BusyDialogNoCancel      | WINDOW_DIALOG_BUSY_NOCANCEL          | 10160     | DialogBusy.xml                      |
+| MusicPlaylist           | WINDOW_MUSIC_PLAYLIST                | 10500     | MyPlaylist.xml                      |
+| Music                   | WINDOW_MUSIC_NAV                     | 10502     | MyMusicNav.xml                      |
+| MusicPlaylistEditor     | WINDOW_MUSIC_PLAYLIST_EDITOR         | 10503     | MyMusicPlaylistEditor.xml           |
+| Teletext                | WINDOW_DIALOG_OSD_TELETEXT           | 10550     |                                     |
+| PVRGuideInfo            | WINDOW_DIALOG_PVR_GUIDE_INFO         | 10600     | DialogPVRInfo.xml                   |
+| PVRRecordingInfo        | WINDOW_DIALOG_PVR_RECORDING_INFO     | 10601     | DialogPVRInfo.xml                   |
+| PVRTimerSetting         | WINDOW_DIALOG_PVR_TIMER_SETTING      | 10602     | DialogSettings.xml                  |
+| PVRGroupManager         | WINDOW_DIALOG_PVR_GROUP_MANAGER      | 10603     | DialogPVRGroupManager.xml           |
+| PVRChannelManager       | WINDOW_DIALOG_PVR_CHANNEL_MANAGER    | 10604     | DialogPVRChannelManager.xml         |
+| PVRGuideSearch          | WINDOW_DIALOG_PVR_GUIDE_SEARCH       | 10605     | DialogPVRGuideSearch.xml            |
+| PVRChannelScan          | WINDOW_DIALOG_PVR_CHANNEL_SCAN       | 10606     | none (unused)                       |
+| PVRUpdateProgress       | WINDOW_DIALOG_PVR_UPDATE_PROGRESS    | 10607     | none (unused)                       |
+| PVROSDChannels          | WINDOW_DIALOG_PVR_OSD_CHANNELS       | 10608     | DialogPVRChannelsOSD.xml            |
+| PVRChannelGuide         | WINDOW_DIALOG_PVR_CHANNEL_GUIDE      | 10609     | DialogPVRChannelGuide.xml           |
+| PVRRadioRDSInfo         | WINDOW_DIALOG_PVR_RADIO_RDS_INFO     | 10610     | DialogPVRRadioRDSInfo.xml           |
+| PVRRecordingSettings    | WINDOW_DIALOG_PVR_RECORDING_SETTING  | 10611     | DialogSettings.xml                  |
+|                         | WINDOW_DIALOG_PVR_CLIENT_PRIORITIES  | 10612     | DialogSettings.xml                  |
+| TVChannels              | WINDOW_TV_CHANNELS                   | 10700     | MyPVRChannels.xml                   |
+| TVRecordings            | WINDOW_TV_RECORDINGS                 | 10701     | MyPVRRecordings.xml                 |
+| TVGuide                 | WINDOW_TV_GUIDE                      | 10702     | MyPVRGuide.xml                      |
+| TVTimers                | WINDOW_TV_TIMERS                     | 10703     | MyPVRTimers.xml                     |
+| TVSearch                | WINDOW_TV_SEARCH                     | 10704     | MyPVRSearch.xml                     |
+| RadioChannels           | WINDOW_RADIO_CHANNELS                | 10705     | MyPVRChannels.xml                   |
+| RadioRecordings         | WINDOW_RADIO_RECORDINGS              | 10706     | MyPVRRecordings.xml                 |
+| RadioGuide              | WINDOW_RADIO_GUIDE                   | 10707     | MyPVRGuide.xml                      |
+| RadioTimers             | WINDOW_RADIO_TIMERS                  | 10708     | MyPVRTimers.xml                     |
+| RadioSearch             | WINDOW_RADIO_SEARCH                  | 10709     | MyPVRSearch.xml                     |
+| TVTimerRules            | WINDOW_TV_TIMER_RULES                | 10710     | MyPVRTimers.xml                     |
+| RadioTimerRules         | WINDOW_RADIO_TIMER_RULES             | 10711     | MyPVRTimers.xml                     |
+| FullscreenLiveTV        | WINDOW_FULLSCREEN_LIVETV             | 10800     | None (shortcut to fullscreenvideo)  |
+| FullscreenRadio         | WINDOW_FULLSCREEN_RADIO              | 10801     | None (shortcut to visualisation)    |
+| FullscreenLivetvPreview | WINDOW_FULLSCREEN_LIVETV_PREVIEW     | 10802     | None (shortcut to fullscreenlivetv) |
+| FullscreenRadioPreview  | WINDOW_FULLSCREEN_RADIO_PREVIEW      | 10803     | None (shortcut to fullscreenradio)  |
+| FullscreenLivetvInput   | WINDOW_FULLSCREEN_LIVETV_INPUT       | 10804     | None (shortcut to fullscreenlivetv) |
+| FullscreenRadioInput    | WINDOW_FULLSCREEN_RADIO_INPUT        | 10805     | None (shortcut to fullscreenradio)  |
+| GameControllers         | WINDOW_DIALOG_GAME_CONTROLLERS       | 10820     | DialogGameControllers.xml           |
+| Games                   | WINDOW_GAMES                         | 10821     | MyGames.xml                         |
+| GameOSD                 | WINDOW_DIALOG_GAME_OSD               | 10822     | GameOSD.xml                         |
+| GameVideoFilter         | WINDOW_DIALOG_GAME_VIDEO_FILTER      | 10823     | DialogSelect.xml                    |
+| GameStretchMode         | WINDOW_DIALOG_GAME_STRETCH_MODE      | 10824     | DialogSelect.xml                    |
+| GameVolume              | WINDOW_DIALOG_GAME_VOLUME            | 10825     | DialogVolumeBar.xml                 |
+| GameAdvancedSettings    | WINDOW_DIALOG_GAME_ADVANCED_SETTINGS | 10826     | DialogAddonSettings.xml             |
+| GameVideoRotation       | WINDOW_DIALOG_GAME_VIDEO_ROTATION    | 10827     | DialogSelect.xml                    |
+| Custom Skin Windows     | -                                    | -         | custom*.xml                         |
+| SelectDialog            | WINDOW_DIALOG_SELECT                 | 12000     | DialogSelect.xml                    |
+| MusicInformation        | WINDOW_DIALOG_MUSIC_INFO             | 12001     | DialogMusicInfo.xml                 |
+| OKDialog                | WINDOW_DIALOG_OK                     | 12002     | DialogConfirm.xml                   |
+| MovieInformation        | WINDOW_DIALOG_VIDEO_INFO             | 12003     | DialogVideoInfo.xml                 |
+| FullscreenVideo         | WINDOW_FULLSCREEN_VIDEO              | 12005     | VideoFullScreen.xml                 |
+| Visualisation           | WINDOW_VISUALISATION                 | 12006     | MusicVisualisation.xml              |
+| Slideshow               | WINDOW_SLIDESHOW                     | 12007     | SlideShow.xml                       |
+| Weather                 | WINDOW_WEATHER                       | 12600     | MyWeather.xml                       |
+| Screensaver             | WINDOW_SCREENSAVER                   | 12900     | none                                |
+| VideoOSD                | WINDOW_DIALOG_VIDEO_OSD              | 12901     | VideoOSD.xml                        |
+| VideoMenu               | WINDOW_VIDEO_MENU                    | 12902     | none                                |
+| VideoTimeSeek           | WINDOW_VIDEO_TIME_SEEK               | 12905     | none                                |
+| FullscreenGame          | WINDOW_FULLSCREEN_GAME               | 12906     | none                                |
+| Splash                  | WINDOW_SPLASH                        | 12997     | none                                |
+| StartWindow             | WINDOW_START                         | 12998     | shortcut to the current startwindow |
+| Startup                 | WINDOW_STARTUP_ANIM                  | 12999     | Startup.xml                         |
+
+
+*/
