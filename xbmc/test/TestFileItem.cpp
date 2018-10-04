@@ -6,10 +6,13 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "AppParamParser.h"
 #include "FileItem.h"
 #include "URL.h"
 #include "ServiceBroker.h"
+#include "settings/lib/SettingsManager.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 
 #include "gtest/gtest.h"
@@ -33,9 +36,11 @@ public:
 
 AdvancedSettingsResetBase::AdvancedSettingsResetBase()
 {
-  // Force all settings to be reset to defaults
-  CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->OnSettingsUnloaded();
-  CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->Initialize();
+  // Force all advanced settings to be reset to defaults
+  CSettingsComponent* settings = CServiceBroker::GetSettingsComponent();
+  CSettingsManager* settingsMgr = settings->GetSettings()->GetSettingsManager();
+  settings->GetAdvancedSettings()->Uninitialize(*settingsMgr);
+  settings->GetAdvancedSettings()->Initialize(CAppParamParser(), *settingsMgr);
 }
 
 class TestFileItemSpecifiedArtJpg : public AdvancedSettingsResetBase,

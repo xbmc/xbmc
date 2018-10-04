@@ -26,6 +26,7 @@
 
 class CAppParamParser;
 class CProfilesManager;
+class CSettingsManager;
 class CVariant;
 
 class TiXmlElement;
@@ -112,12 +113,11 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
 
     void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
 
-    void Initialize();
-    void Initialize(const CAppParamParser &params);
-    bool Initialized() { return m_initialized; };
+    void Initialize(const CAppParamParser &params, CSettingsManager& settingsMgr);
+    void Uninitialize(CSettingsManager& settingsMgr);
+    bool Initialized() const { return m_initialized; };
     void AddSettingsFile(const std::string &filename);
     bool Load(const CProfilesManager &profileManager);
-    void Clear();
 
     static void GetCustomTVRegexps(TiXmlElement *pRootElement, SETTINGS_TVSHOWLIST& settings);
     static void GetCustomRegexps(TiXmlElement *pRootElement, std::vector<std::string> &settings);
@@ -380,4 +380,6 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
 
   private:
     void SetExtraLogLevel(const std::vector<CVariant> &components);
+    void Initialize();
+    void Clear();
 };

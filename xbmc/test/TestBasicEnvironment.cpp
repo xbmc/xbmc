@@ -35,8 +35,10 @@ TestBasicEnvironment::TestBasicEnvironment() = default;
 
 void TestBasicEnvironment::SetUp()
 {
+  CAppParamParser params;
+  params.m_platformDirectories = false;
   m_pSettingsComponent.reset(new CSettingsComponent());
-  m_pSettingsComponent->Init(CAppParamParser());
+  m_pSettingsComponent->Init(params);
 
   XFILE::CFile *f;
 
@@ -62,8 +64,6 @@ void TestBasicEnvironment::SetUp()
   /* Create a temporary directory and set it to be used throughout the
    * test suite run.
    */
-
-  g_application.EnablePlatformDirectories(false);
 
   std::error_code ec;
   m_tempPath = fs::create_temp_directory(ec);
@@ -92,15 +92,12 @@ void TestBasicEnvironment::SetUp()
 
   if (!g_application.m_ServiceManager->InitForTesting())
     exit(1);
-
-  CServiceBroker::GetSettingsComponent()->GetSettings()->Initialize();
 }
 
 void TestBasicEnvironment::TearDown()
 {
   XFILE::CDirectory::RemoveRecursive(m_tempPath);
 
-  CServiceBroker::GetSettingsComponent()->GetSettings()->Uninitialize();
   g_application.m_ServiceManager->DeinitTesting();
 
   m_pSettingsComponent->Deinit();

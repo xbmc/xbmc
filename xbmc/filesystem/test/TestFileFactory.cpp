@@ -21,30 +21,25 @@ class TestFileFactory : public testing::Test
 protected:
   TestFileFactory()
   {
-    if (CServiceBroker::GetSettingsComponent()->GetSettings()->Initialize())
-    {
-      std::vector<std::string> advancedsettings =
-        CXBMCTestUtils::Instance().getAdvancedSettingsFiles();
-      std::vector<std::string> guisettings =
-        CXBMCTestUtils::Instance().getGUISettingsFiles();
+    std::vector<std::string> advancedsettings =
+      CXBMCTestUtils::Instance().getAdvancedSettingsFiles();
+    std::vector<std::string> guisettings =
+      CXBMCTestUtils::Instance().getGUISettingsFiles();
 
-      const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-      for (const auto& it : guisettings)
-        settings->Load(it);
+    const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+    for (const auto& it : guisettings)
+      settings->Load(it);
 
-      const std::shared_ptr<CAdvancedSettings> advancedSettings = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
-      for (const auto& it : advancedsettings)
-        advancedSettings->ParseSettingsFile(it);
+    const std::shared_ptr<CAdvancedSettings> advancedSettings = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
+    for (const auto& it : advancedsettings)
+      advancedSettings->ParseSettingsFile(it);
 
-      settings->SetLoaded();
-    }
+    settings->SetLoaded();
   }
 
   ~TestFileFactory() override
   {
-    CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->Clear();
     CServiceBroker::GetSettingsComponent()->GetSettings()->Unload();
-    CServiceBroker::GetSettingsComponent()->GetSettings()->Uninitialize();
   }
 };
 

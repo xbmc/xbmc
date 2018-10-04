@@ -29,4 +29,10 @@ public:
 protected:
   std::shared_ptr<CSettings> m_settings;
   std::shared_ptr<CAdvancedSettings> m_advancedSettings;
+
+private:
+  bool InitDirectoriesLinux(bool bPlatformDirectories);
+  bool InitDirectoriesOSX(bool bPlatformDirectories);
+  bool InitDirectoriesWin32(bool bPlatformDirectories);
+  void CreateUserDirs() const;
 };

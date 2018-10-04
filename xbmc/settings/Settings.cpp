@@ -46,11 +46,9 @@
 #include "pvr/PVRSettings.h"
 #include "pvr/windows/GUIWindowPVRGuide.h"
 #include "ServiceBroker.h"
-#include "settings/AdvancedSettings.h"
 #include "settings/DisplaySettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/MediaSourceSettings.h"
-#include "settings/SettingsComponent.h"
 #include "settings/SettingConditions.h"
 #include "settings/SettingUtils.h"
 #include "settings/SkinSettings.h"
@@ -703,7 +701,6 @@ void CSettings::InitializeOptionFillers()
   GetSettingsManager()->RegisterSettingOptionsFiller("timezones", CLinuxTimezone::SettingOptionsTimezonesFiller);
 #endif
   GetSettingsManager()->RegisterSettingOptionsFiller("keyboardlayouts", CKeyboardLayoutManager::SettingOptionsKeyboardLayoutsFiller);
-  GetSettingsManager()->RegisterSettingOptionsFiller("loggingcomponents", CAdvancedSettings::SettingOptionsLoggingComponentsFiller);
   GetSettingsManager()->RegisterSettingOptionsFiller("pvrrecordmargins", PVR::CPVRSettings::MarginTimeFiller);
 }
 
@@ -755,9 +752,7 @@ void CSettings::UninitializeOptionFillers()
 
 void CSettings::InitializeConditions()
 {
-  const CProfilesManager &profileManager = CServiceBroker::GetProfileManager();
-
-  CSettingConditions::Initialize(profileManager);
+  CSettingConditions::Initialize();
 
   // add basic conditions
   const std::set<std::string> &simpleConditions = CSettingConditions::GetSimpleConditions();
@@ -779,7 +774,6 @@ void CSettings::InitializeISettingsHandlers()
 {
   // register ISettingsHandler implementations
   // The order of these matters! Handlers are processed in the order they were registered.
-  GetSettingsManager()->RegisterSettingsHandler(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings().get());
   GetSettingsManager()->RegisterSettingsHandler(&CMediaSourceSettings::GetInstance());
 #ifdef HAS_UPNP
   GetSettingsManager()->RegisterSettingsHandler(&CUPnPSettings::GetInstance());
@@ -809,7 +803,6 @@ void CSettings::UninitializeISettingsHandlers()
   GetSettingsManager()->UnregisterSettingsHandler(&CUPnPSettings::GetInstance());
 #endif
   GetSettingsManager()->UnregisterSettingsHandler(&CMediaSourceSettings::GetInstance());
-  GetSettingsManager()->UnregisterSettingsHandler(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings().get());
 }
 
 void CSettings::InitializeISubSettings()
@@ -838,12 +831,6 @@ void CSettings::InitializeISettingCallbacks()
 {
   // register any ISettingCallback implementations
   std::set<std::string> settingSet;
-  settingSet.insert(CSettings::SETTING_DEBUG_SHOWLOGINFO);
-  settingSet.insert(CSettings::SETTING_DEBUG_EXTRALOGGING);
-  settingSet.insert(CSettings::SETTING_DEBUG_SETEXTRALOGLEVEL);
-  GetSettingsManager()->RegisterCallback(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings().get(), settingSet);
-
-  settingSet.clear();
   settingSet.insert(CSettings::SETTING_MUSICLIBRARY_CLEANUP);
   settingSet.insert(CSettings::SETTING_MUSICLIBRARY_EXPORT);
   settingSet.insert(CSettings::SETTING_MUSICLIBRARY_IMPORT);
@@ -960,7 +947,6 @@ void CSettings::InitializeISettingCallbacks()
 
 void CSettings::UninitializeISettingCallbacks()
 {
-  GetSettingsManager()->UnregisterCallback(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings().get());
   GetSettingsManager()->UnregisterCallback(&CMediaSettings::GetInstance());
   GetSettingsManager()->UnregisterCallback(&CDisplaySettings::GetInstance());
   GetSettingsManager()->UnregisterCallback(&g_application.GetAppPlayer().GetSeekHandler());

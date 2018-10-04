@@ -87,7 +87,7 @@ void App::Run()
     appParamParser.m_startFullScreen = fullscreen;
 
     if (CSysInfo::GetWindowsDeviceFamily() == CSysInfo::Xbox)
-      g_application.SetStandAlone(true);
+      appParamParser.m_standAlone = true;
 
     // Create and run the app
     XBMC_Run(true, appParamParser);

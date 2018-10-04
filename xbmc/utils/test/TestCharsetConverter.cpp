@@ -98,7 +98,6 @@ protected:
     CServiceBroker::GetSettingsComponent()->GetSettings()->AddString(sub, CSettings::SETTING_SUBTITLES_CHARSET, 735, "DEFAULT",
                             SPIN_CONTROL_TEXT);
     */
-    CServiceBroker::GetSettingsComponent()->GetSettings()->Initialize();
     g_charsetConverter.reset();
     g_charsetConverter.clear();
   }

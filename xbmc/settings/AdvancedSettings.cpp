@@ -23,6 +23,7 @@
 #include "network/DNSNameCache.h"
 #include "profiles/ProfilesManager.h"
 #include "settings/lib/Setting.h"
+#include "settings/lib/SettingsManager.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/SettingUtils.h"
@@ -95,10 +96,30 @@ void CAdvancedSettings::OnSettingChanged(std::shared_ptr<const CSetting> setting
     SetExtraLogLevel(CSettingUtils::GetList(std::static_pointer_cast<const CSettingList>(setting)));
 }
 
-void CAdvancedSettings::Initialize(const CAppParamParser &params)
+void CAdvancedSettings::Initialize(const CAppParamParser &params, CSettingsManager& settingsMgr)
 {
   Initialize();
+
   params.SetAdvancedSettings(*this);
+
+  settingsMgr.RegisterSettingOptionsFiller("loggingcomponents", SettingOptionsLoggingComponentsFiller);
+  settingsMgr.RegisterSettingsHandler(this);
+  std::set<std::string> settingSet;
+  settingSet.insert(CSettings::SETTING_DEBUG_SHOWLOGINFO);
+  settingSet.insert(CSettings::SETTING_DEBUG_EXTRALOGGING);
+  settingSet.insert(CSettings::SETTING_DEBUG_SETEXTRALOGLEVEL);
+  settingsMgr.RegisterCallback(this, settingSet);
+}
+
+void CAdvancedSettings::Uninitialize(CSettingsManager& settingsMgr)
+{
+  settingsMgr.UnregisterCallback(this);
+  settingsMgr.UnregisterSettingsHandler(this);
+  settingsMgr.UnregisterSettingOptionsFiller("loggingcomponents");
+
+  Clear();
+
+  m_initialized = false;
 }
 
 void CAdvancedSettings::Initialize()

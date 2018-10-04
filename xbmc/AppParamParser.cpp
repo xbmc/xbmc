@@ -7,24 +7,20 @@
  */
 
 #include "AppParamParser.h"
-#include "PlayListPlayer.h"
-#include "Application.h"
+#include "FileItem.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"
 #include "utils/SystemInfo.h"
 #include "utils/StringUtils.h"
-#ifdef TARGET_WINDOWS
-#include "WIN32Util.h"
-#endif
-#ifndef TARGET_WINDOWS
-#include "platform/linux/XTimeUtils.h"
-#endif
 #include <stdlib.h>
 
-using namespace KODI::MESSAGING;
-
 CAppParamParser::CAppParamParser()
-: m_logLevel(LOG_LEVEL_NORMAL)
+: m_logLevel(LOG_LEVEL_NORMAL),
+  m_playlist(new CFileItemList())
+{
+}
+
+CAppParamParser::~CAppParamParser()
 {
 }
 
@@ -34,6 +30,10 @@ void CAppParamParser::Parse(const char* const* argv, int nArgs)
   {
     for (int i = 1; i < nArgs; i++)
       ParseArg(argv[i]);
+
+    // testmode is only valid if at least one item to play was given
+    if (m_playlist->IsEmpty())
+      m_testmode = false;
   }
 }
 
@@ -72,12 +72,9 @@ void CAppParamParser::ParseArg(const std::string &arg)
   else if (arg == "-v" || arg == "--version")
     DisplayVersion();
   else if (arg == "--standalone")
-  {
     m_standAlone = true;
-    g_application.SetStandAlone(true);
-  }
   else if (arg == "-p" || arg  == "--portable")
-    g_application.EnablePlatformDirectories(false);
+    m_platformDirectories = false;
   else if (arg == "--debug")
     m_logLevel = LOG_LEVEL_DEBUG;
   else if (arg == "--test")
@@ -86,13 +83,9 @@ void CAppParamParser::ParseArg(const std::string &arg)
     m_settingsFile = arg.substr(11);
   else if (arg.length() != 0 && arg[0] != '-')
   {
-    if (m_testmode)
-      g_application.SetEnableTestMode(true);
-
     const CFileItemPtr item = std::make_shared<CFileItem>(arg);
     item->SetPath(arg);
-
-    m_playlist.Add(item);
+    m_playlist->Add(item);
   }
 }
 
@@ -113,4 +106,9 @@ void CAppParamParser::SetAdvancedSettings(CAdvancedSettings& advancedSettings) c
 
   if (m_standAlone)
     advancedSettings.m_handleMounting = true;
+}
+
+const CFileItemList& CAppParamParser::GetPlaylist() const
+{
+  return *m_playlist;
 }

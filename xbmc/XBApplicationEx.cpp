@@ -46,9 +46,9 @@ int CXBApplicationEx::Run(const CAppParamParser &params)
   unsigned int frameTime = 0;
   const unsigned int noRenderFrameTime = 15;  // Simulates ~66fps
 
-  if (params.Playlist().Size() > 0)
+  if (params.GetPlaylist().Size() > 0)
   {
-    CServiceBroker::GetPlaylistPlayer().Add(0, params.Playlist());
+    CServiceBroker::GetPlaylistPlayer().Add(0, params.GetPlaylist());
     CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(0);
     KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_PLAYLISTPLAYER_PLAY, -1);
   }

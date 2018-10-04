@@ -310,32 +310,9 @@ public:
 
   int GlobalIdleTime();
 
-  void EnablePlatformDirectories(bool enable=true)
-  {
-    m_bPlatformDirectories = enable;
-  }
-
-  bool PlatformDirectoriesEnabled()
-  {
-    return m_bPlatformDirectories;
-  }
-
-  void SetStandAlone(bool value);
-
-  bool IsStandAlone()
-  {
-    return m_bStandalone;
-  }
-
-  void SetEnableTestMode(bool value)
-  {
-    m_bTestMode = value;
-  }
-
-  bool IsEnableTestMode()
-  {
-    return m_bTestMode;
-  }
+  bool PlatformDirectoriesEnabled() { return m_bPlatformDirectories; }
+  bool IsStandAlone() { return m_bStandalone; }
+  bool IsEnableTestMode() { return m_bTestMode; }
 
   bool IsAppFocused() const { return m_AppFocused; }
 
@@ -482,10 +459,6 @@ protected:
   bool PlayStack(CFileItem& item, bool bRestart);
 
   float NavigationIdleTime();
-  bool InitDirectoriesLinux();
-  bool InitDirectoriesOSX();
-  bool InitDirectoriesWin32();
-  void CreateUserDirs() const;
   void HandlePortEvents();
 
   /*! \brief Helper method to determine how to handle TMSG_SHUTDOWN

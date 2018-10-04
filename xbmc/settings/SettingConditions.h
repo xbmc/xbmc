@@ -19,7 +19,7 @@ class CProfilesManager;
 class CSettingConditions
 {
 public:
-  static void Initialize(const CProfilesManager &profileManager);
+  static void Initialize();
   static void Deinitialize();
 
   static const CProfile& GetCurrentProfile();

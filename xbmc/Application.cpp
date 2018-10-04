@@ -10,6 +10,7 @@
 #include "network/Network.h"
 #include "threads/SystemClock.h"
 #include "Application.h"
+#include "AppParamParser.h"
 #include "AppInboundProtocol.h"
 #include "dialogs/GUIDialogBusy.h"
 #include "events/EventLog.h"
@@ -356,6 +357,10 @@ bool CApplication::Create(const CAppParamParser &params)
   // Grab a handle to our thread to be used later in identifying the render thread.
   m_threadID = CThread::GetCurrentThreadId();
 
+  m_bPlatformDirectories = params.m_platformDirectories;
+  m_bTestMode = params.m_testmode;
+  m_bStandalone = params.m_standAlone;
+
   m_pSettingsComponent.reset(new CSettingsComponent());
   m_pSettingsComponent->Init(params);
 
@@ -401,13 +406,6 @@ bool CApplication::Create(const CAppParamParser &params)
     }
   #endif
 
-  // only the InitDirectories* for the current platform should return true
-  bool inited = InitDirectoriesLinux();
-  if (!inited)
-    inited = InitDirectoriesOSX();
-  if (!inited)
-    inited = InitDirectoriesWin32();
-
   // copy required files
   CopyUserDataIfNeeded("special://masterprofile/", "RssFeeds.xml");
   CopyUserDataIfNeeded("special://masterprofile/", "favourites.xml");
@@ -424,6 +422,15 @@ bool CApplication::Create(const CAppParamParser &params)
     return false;
   }
 
+#ifdef TARGET_POSIX //! @todo Win32 has no special://home/ mapping by default, so we
+  //!       must create these here. Ideally this should be using special://home/ and
+  //!      be platform agnostic (i.e. unify the InitDirectories*() functions)
+  if (!m_bPlatformDirectories)
+#endif
+  {
+    CDirectory::Create("special://xbmc/addons");
+  }
+
   // Init our DllLoaders emu env
   init_emu_environ();
 
@@ -431,6 +438,7 @@ bool CApplication::Create(const CAppParamParser &params)
     return false;
 
   CSpecialProtocol::RegisterProfileManager(m_ServiceManager->GetProfileManager());
+  XFILE::IDirectory::RegisterProfileManager(m_ServiceManager->GetProfileManager());
 
   CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
   CLog::Log(LOGNOTICE, "Starting %s (%s). Platform: %s %s %d-bit", CSysInfo::GetAppName().c_str(), CSysInfo::GetVersion().c_str(),
@@ -529,8 +537,6 @@ bool CApplication::Create(const CAppParamParser &params)
 
   // Initialize default Settings - don't move
   CLog::Log(LOGNOTICE, "load settings...");
-  if (!CServiceBroker::GetSettingsComponent()->GetSettings()->Initialize())
-    return false;
 
   // load the actual values
   const std::shared_ptr<CSettings> settings = m_pSettingsComponent->GetSettings();
@@ -719,285 +725,12 @@ bool CApplication::DestroyWindow()
   return ret;
 }
 
-bool CApplication::InitDirectoriesLinux()
-{
-/*
-   The following is the directory mapping for Platform Specific Mode:
-
-   special://xbmc/          => [read-only] system directory (/usr/share/kodi)
-   special://home/          => [read-write] user's directory that will override special://kodi/ system-wide
-                               installations like skins, screensavers, etc.
-                               ($HOME/.kodi)
-                               NOTE: XBMC will look in both special://xbmc/addons and special://home/addons for addons.
-   special://masterprofile/ => [read-write] userdata of master profile. It will by default be
-                               mapped to special://home/userdata ($HOME/.kodi/userdata)
-   special://profile/       => [read-write] current profile's userdata directory.
-                               Generally special://masterprofile for the master profile or
-                               special://masterprofile/profiles/<profile_name> for other profiles.
-
-   NOTE: All these root directories are lowercase. Some of the sub-directories
-         might be mixed case.
-*/
-
-#if defined(TARGET_POSIX) && !defined(TARGET_DARWIN)
-  std::string appPath;
-  std::string appName = CCompileInfo::GetAppName();
-  std::string dotLowerAppName = "." + appName;
-  StringUtils::ToLower(dotLowerAppName);
-  const char* envAppHome = "KODI_HOME";
-  const char* envAppBinHome = "KODI_BIN_HOME";
-  const char* envAppTemp = "KODI_TEMP";
-
-  std::string userName;
-  if (getenv("USER"))
-    userName = getenv("USER");
-  else
-    userName = "root";
-
-  std::string userHome;
-  if (getenv("KODI_DATA"))
-    userHome = getenv("KODI_DATA");
-  else if (getenv("HOME"))
-  {
-    userHome = getenv("HOME");
-    userHome.append("/" + dotLowerAppName);
-  }
-  else
-  {
-    userHome = "/root";
-    userHome.append("/" + dotLowerAppName);
-  }
-
-  std::string strTempPath;
-  if (getenv(envAppTemp))
-    strTempPath = getenv(envAppTemp);
-  else
-    strTempPath = userHome + "/temp";
-
-
-  std::string binaddonAltDir;
-  if (getenv("KODI_BINADDON_PATH"))
-    binaddonAltDir = getenv("KODI_BINADDON_PATH");
-
-  auto appBinPath = CUtil::GetHomePath(envAppBinHome);
-  // overridden by user
-  if (getenv(envAppHome))
-    appPath = getenv(envAppHome);
-  else
-  {
-    // use build time default
-    appPath = INSTALL_PATH;
-    /* Check if binaries and arch independent data files are being kept in
-     * separate locations. */
-    if (!CDirectory::Exists(URIUtils::AddFileToFolder(appPath, "userdata")))
-    {
-      /* Attempt to locate arch independent data files. */
-      appPath = CUtil::GetHomePath(appBinPath);
-      if (!CDirectory::Exists(URIUtils::AddFileToFolder(appPath, "userdata")))
-      {
-        fprintf(stderr, "Unable to find path to %s data files!\n", appName.c_str());
-        exit(1);
-      }
-    }
-  }
-
-  /* Set some environment variables */
-  setenv(envAppBinHome, appBinPath.c_str(), 0);
-  setenv(envAppHome, appPath.c_str(), 0);
-
-  if (m_bPlatformDirectories)
-  {
-    // map our special drives
-    CSpecialProtocol::SetXBMCBinPath(appBinPath);
-    CSpecialProtocol::SetXBMCAltBinAddonPath(binaddonAltDir);
-    CSpecialProtocol::SetXBMCPath(appPath);
-    CSpecialProtocol::SetHomePath(userHome);
-    CSpecialProtocol::SetMasterProfilePath(userHome + "/userdata");
-    CSpecialProtocol::SetTempPath(strTempPath);
-    CSpecialProtocol::SetLogPath(strTempPath);
-
-    CreateUserDirs();
-
-  }
-  else
-  {
-    URIUtils::AddSlashAtEnd(appPath);
-
-    CSpecialProtocol::SetXBMCBinPath(appBinPath);
-    CSpecialProtocol::SetXBMCAltBinAddonPath(binaddonAltDir);
-    CSpecialProtocol::SetXBMCPath(appPath);
-    CSpecialProtocol::SetHomePath(URIUtils::AddFileToFolder(appPath, "portable_data"));
-    CSpecialProtocol::SetMasterProfilePath(URIUtils::AddFileToFolder(appPath, "portable_data/userdata"));
-
-    std::string strTempPath = appPath;
-    strTempPath = URIUtils::AddFileToFolder(strTempPath, "portable_data/temp");
-    if (getenv(envAppTemp))
-      strTempPath = getenv(envAppTemp);
-    CSpecialProtocol::SetTempPath(strTempPath);
-    CSpecialProtocol::SetLogPath(strTempPath);
-    CreateUserDirs();
-  }
-  CSpecialProtocol::SetXBMCBinAddonPath(appBinPath + "/addons");
-
-  return true;
-#else
-  return false;
-#endif
-}
-
-bool CApplication::InitDirectoriesOSX()
-{
-#if defined(TARGET_DARWIN)
-  std::string userName;
-  if (getenv("USER"))
-    userName = getenv("USER");
-  else
-    userName = "root";
-
-  std::string userHome;
-  if (getenv("HOME"))
-    userHome = getenv("HOME");
-  else
-    userHome = "/root";
-
-  std::string binaddonAltDir;
-  if (getenv("KODI_BINADDON_PATH"))
-    binaddonAltDir = getenv("KODI_BINADDON_PATH");
-
-  std::string appPath = CUtil::GetHomePath();
-  setenv("KODI_HOME", appPath.c_str(), 0);
-
-#if defined(TARGET_DARWIN_IOS)
-  std::string fontconfigPath;
-  fontconfigPath = appPath + "/system/players/VideoPlayer/etc/fonts/fonts.conf";
-  setenv("FONTCONFIG_FILE", fontconfigPath.c_str(), 0);
-#endif
-
-  // setup path to our internal dylibs so loader can find them
-  std::string frameworksPath = CUtil::GetFrameworksPath();
-  CSpecialProtocol::SetXBMCFrameworksPath(frameworksPath);
-
-  // OSX always runs with m_bPlatformDirectories == true
-  if (m_bPlatformDirectories)
-  {
-    // map our special drives
-    CSpecialProtocol::SetXBMCBinPath(appPath);
-    CSpecialProtocol::SetXBMCAltBinAddonPath(binaddonAltDir);
-    CSpecialProtocol::SetXBMCPath(appPath);
-    #if defined(TARGET_DARWIN_IOS)
-      std::string appName = CCompileInfo::GetAppName();
-      CSpecialProtocol::SetHomePath(userHome + "/" + CDarwinUtils::GetAppRootFolder() + "/" + appName);
-      CSpecialProtocol::SetMasterProfilePath(userHome + "/" + CDarwinUtils::GetAppRootFolder() + "/" + appName + "/userdata");
-    #else
-      std::string appName = CCompileInfo::GetAppName();
-      CSpecialProtocol::SetHomePath(userHome + "/Library/Application Support/" + appName);
-      CSpecialProtocol::SetMasterProfilePath(userHome + "/Library/Application Support/" + appName + "/userdata");
-    #endif
-
-    std::string dotLowerAppName = "." + appName;
-    StringUtils::ToLower(dotLowerAppName);
-    // location for temp files
-    #if defined(TARGET_DARWIN_IOS)
-      std::string strTempPath = URIUtils::AddFileToFolder(userHome,  std::string(CDarwinUtils::GetAppRootFolder()) + "/" + appName + "/temp");
-    #else
-      std::string strTempPath = URIUtils::AddFileToFolder(userHome, dotLowerAppName + "/");
-      CDirectory::Create(strTempPath);
-      strTempPath = URIUtils::AddFileToFolder(userHome, dotLowerAppName + "/temp");
-    #endif
-    CSpecialProtocol::SetTempPath(strTempPath);
-
-    // xbmc.log file location
-    #if defined(TARGET_DARWIN_IOS)
-      strTempPath = userHome + "/" + std::string(CDarwinUtils::GetAppRootFolder());
-    #else
-      strTempPath = userHome + "/Library/Logs";
-    #endif
-    CSpecialProtocol::SetLogPath(strTempPath);
-    CreateUserDirs();
-  }
-  else
-  {
-    URIUtils::AddSlashAtEnd(appPath);
-
-    CSpecialProtocol::SetXBMCBinPath(appPath);
-    CSpecialProtocol::SetXBMCAltBinAddonPath(binaddonAltDir);
-    CSpecialProtocol::SetXBMCPath(appPath);
-    CSpecialProtocol::SetHomePath(URIUtils::AddFileToFolder(appPath, "portable_data"));
-    CSpecialProtocol::SetMasterProfilePath(URIUtils::AddFileToFolder(appPath, "portable_data/userdata"));
-
-    std::string strTempPath = URIUtils::AddFileToFolder(appPath, "portable_data/temp");
-    CSpecialProtocol::SetTempPath(strTempPath);
-    CSpecialProtocol::SetLogPath(strTempPath);
-  }
-  CSpecialProtocol::SetXBMCBinAddonPath(appPath + "/addons");
-  return true;
-#else
-  return false;
-#endif
-}
-
-bool CApplication::InitDirectoriesWin32()
-{
-#ifdef TARGET_WINDOWS
-  std::string xbmcPath = CUtil::GetHomePath();
-  CEnvironment::setenv("KODI_HOME", xbmcPath);
-  CSpecialProtocol::SetXBMCBinPath(xbmcPath);
-  CSpecialProtocol::SetXBMCPath(xbmcPath);
-  CSpecialProtocol::SetXBMCBinAddonPath(xbmcPath + "/addons");
-
-  std::string strWin32UserFolder = CWIN32Util::GetProfilePath();
-  CSpecialProtocol::SetLogPath(strWin32UserFolder);
-  CSpecialProtocol::SetHomePath(strWin32UserFolder);
-  CSpecialProtocol::SetMasterProfilePath(URIUtils::AddFileToFolder(strWin32UserFolder, "userdata"));
-  CSpecialProtocol::SetTempPath(URIUtils::AddFileToFolder(strWin32UserFolder,"cache"));
-
-  CEnvironment::setenv("KODI_PROFILE_USERDATA", CSpecialProtocol::TranslatePath("special://masterprofile/"));
-
-  CreateUserDirs();
-
-  return true;
-#else
-  return false;
-#endif
-}
-
-void CApplication::CreateUserDirs() const
-{
-  CDirectory::Create("special://home/");
-  CDirectory::Create("special://home/addons");
-  CDirectory::Create("special://home/addons/packages");
-  CDirectory::Create("special://home/addons/temp");
-  CDirectory::Create("special://home/media");
-  CDirectory::Create("special://home/system");
-  CDirectory::Create("special://masterprofile/");
-  CDirectory::Create("special://temp/");
-  CDirectory::Create("special://logpath");
-  CDirectory::Create("special://temp/temp"); // temp directory for python and dllGetTempPathA
-
-  //Let's clear our archive cache before starting up anything more
-  auto archiveCachePath = CSpecialProtocol::TranslatePath("special://temp/archive_cache/");
-  if (CDirectory::Exists(archiveCachePath))
-    if (!CDirectory::RemoveRecursive(archiveCachePath))
-      CLog::Log(LOGWARNING, "Failed to remove the archive cache at %s", archiveCachePath.c_str());
-  CDirectory::Create(archiveCachePath);
-
-}
-
 bool CApplication::Initialize()
 {
 #if defined(HAS_DVD_DRIVE) && !defined(TARGET_WINDOWS) // somehow this throws an "unresolved external symbol" on win32
   // turn off cdio logging
   cdio_loglevel_default = CDIO_LOG_ERROR;
 #endif
-
-#ifdef TARGET_POSIX //! @todo Win32 has no special://home/ mapping by default, so we
-              //!       must create these here. Ideally this should be using special://home/ and
-              //!      be platform agnostic (i.e. unify the InitDirectories*() functions)
-  if (!m_bPlatformDirectories)
-#endif
-  {
-    CDirectory::Create("special://xbmc/addons");
-  }
 
   // load the language and its translated strings
   if (!LoadLanguage(false))
@@ -1850,11 +1583,6 @@ void CApplication::Render()
   CServiceBroker::GetWinSystem()->GetGfxContext().Flip(hasRendered, m_appPlayer.IsRenderingVideoLayer());
 
   CTimeUtils::UpdateFrameTime(hasRendered);
-}
-
-void CApplication::SetStandAlone(bool value)
-{
-  m_bStandalone = value;
 }
 
 bool CApplication::OnAction(const CAction &action)
@@ -2748,8 +2476,7 @@ bool CApplication::Cleanup()
     if (m_ServiceManager)
       m_ServiceManager->DeinitStageTwo();
 
-    CServiceBroker::GetSettingsComponent()->GetSettings()->Uninitialize();
-
+    XFILE::IDirectory::UnregisterProfileManager();
     CSpecialProtocol::UnregisterProfileManager();
     m_ServiceManager->DeinitStageOnePointFive();
 
