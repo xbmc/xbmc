@@ -469,7 +469,7 @@ EBufferFormat CWinRenderer::SelectBufferFormat(AVPixelFormat format, const Rende
       return BUFFER_FMT_YUV420P16;
     // is they still used?
     case AV_PIX_FMT_YUYV422:
-      return BUFFER_FMT_YUV420P16;
+      return BUFFER_FMT_YUYV422;
     case AV_PIX_FMT_UYVY422:
       return BUFFER_FMT_UYVY422;
     default:
@@ -928,8 +928,8 @@ void CWinRenderer::RenderHW(DWORD flags, CD3DTexture* target)
   if (target != DX::Windowing()->GetBackBuffer())
   {
     // rendering capture
-    targetRect.x2 = target->GetWidth();
-    targetRect.y2 = target->GetHeight();
+    targetRect.x2 = static_cast<float>(target->GetWidth());
+    targetRect.y2 = static_cast<float>(target->GetHeight());
   }
   CWIN32Util::CropSource(src, dst, targetRect, m_renderOrientation);
 

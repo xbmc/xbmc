@@ -738,6 +738,35 @@ bool CRenderBuffer::CopyBuffer()
     sync->wait();
     return true;
   }
+
+  if ( buffer_format == AV_PIX_FMT_YUYV422
+    || buffer_format == AV_PIX_FMT_UYVY422)
+  {
+    uint8_t* bufData[3];
+    int srcLines[3];
+    videoBuffer->GetPlanes(bufData);
+    videoBuffer->GetStrides(srcLines);
+
+    uint8_t* src = bufData[PLANE_Y];
+    uint8_t* dst = static_cast<uint8_t*>(m_rects[PLANE_Y].pData);
+    int srcLine = srcLines[PLANE_Y];
+    int dstLine = m_rects[PLANE_Y].RowPitch;
+
+    if (srcLine == dstLine)
+    {
+      memcpy(dst, src, dstLine * m_height);
+    }
+    else
+    {
+      for (unsigned i = 0; i < m_height; i++)
+      {
+        memcpy(dst, src, std::min(srcLine, dstLine));
+        src += srcLine;
+        dst += dstLine;
+      }
+    }
+    return true;
+  }
   return false;
 }
 
