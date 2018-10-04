@@ -97,42 +97,42 @@ game_controller_layout CGameClientController::TranslateController() const
   if (!m_digitalButtons.empty())
   {
     controllerStruct.digital_buttons = const_cast<char**>(m_digitalButtons.data());
-    controllerStruct.digital_button_count = m_digitalButtons.size();
+    controllerStruct.digital_button_count = static_cast<unsigned int>(m_digitalButtons.size());
   }
   if (!m_analogButtons.empty())
   {
     controllerStruct.analog_buttons = const_cast<char**>(m_analogButtons.data());
-    controllerStruct.analog_button_count = m_analogButtons.size();
+    controllerStruct.analog_button_count = static_cast<unsigned int>(m_analogButtons.size());
   }
   if (!m_analogSticks.empty())
   {
     controllerStruct.analog_sticks = const_cast<char**>(m_analogSticks.data());
-    controllerStruct.analog_stick_count = m_analogSticks.size();
+    controllerStruct.analog_stick_count = static_cast<unsigned int>(m_analogSticks.size());
   }
   if (!m_accelerometers.empty())
   {
     controllerStruct.accelerometers = const_cast<char**>(m_accelerometers.data());
-    controllerStruct.accelerometer_count = m_accelerometers.size();
+    controllerStruct.accelerometer_count = static_cast<unsigned int>(m_accelerometers.size());
   }
   if (!m_keys.empty())
   {
     controllerStruct.keys = const_cast<char**>(m_keys.data());
-    controllerStruct.key_count = m_keys.size();
+    controllerStruct.key_count = static_cast<unsigned int>(m_keys.size());
   }
   if (!m_relPointers.empty())
   {
     controllerStruct.rel_pointers = const_cast<char**>(m_relPointers.data());
-    controllerStruct.rel_pointer_count = m_relPointers.size();
+    controllerStruct.rel_pointer_count = static_cast<unsigned int>(m_relPointers.size());
   }
   if (!m_absPointers.empty())
   {
     controllerStruct.abs_pointers = const_cast<char**>(m_absPointers.data());
-    controllerStruct.abs_pointer_count = m_absPointers.size();
+    controllerStruct.abs_pointer_count = static_cast<unsigned int>(m_absPointers.size());
   }
   if (!m_motors.empty())
   {
     controllerStruct.motors = const_cast<char**>(m_motors.data());
-    controllerStruct.motor_count = m_motors.size();
+    controllerStruct.motor_count = static_cast<unsigned int>(m_motors.size());
   }
 
   return controllerStruct;
