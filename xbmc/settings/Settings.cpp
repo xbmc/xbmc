@@ -794,23 +794,20 @@ void CSettings::InitializeISettingsHandlers()
 
 void CSettings::UninitializeISettingsHandlers()
 {
-  // unregister ISettingCallback implementations
-  GetSettingsManager()->UnregisterCallback(&g_advancedSettings);
-  GetSettingsManager()->UnregisterCallback(&CMediaSettings::GetInstance());
-  GetSettingsManager()->UnregisterCallback(&CDisplaySettings::GetInstance());
-  GetSettingsManager()->UnregisterCallback(&g_application.GetAppPlayer().GetSeekHandler());
-  GetSettingsManager()->UnregisterCallback(&g_application);
-  GetSettingsManager()->UnregisterCallback(&g_charsetConverter);
-  GetSettingsManager()->UnregisterCallback(&g_langInfo);
-  GetSettingsManager()->UnregisterCallback(&g_passwordManager);
-  GetSettingsManager()->UnregisterCallback(&CRssManager::GetInstance());
+  // unregister ISettingsHandler implementations
+  GetSettingsManager()->UnregisterSettingsHandler(&CMediaSettings::GetInstance());
 #if defined(TARGET_LINUX)
-  GetSettingsManager()->UnregisterCallback(&g_timezone);
+  GetSettingsManager()->UnregisterSettingsHandler(&g_timezone);
 #endif // defined(TARGET_LINUX)
-#if defined(TARGET_DARWIN_OSX)
-  GetSettingsManager()->UnregisterCallback(&XBMCHelper::GetInstance());
+  GetSettingsManager()->UnregisterSettingsHandler(&g_application);
+  GetSettingsManager()->UnregisterSettingsHandler(&g_langInfo);
+  GetSettingsManager()->UnregisterSettingsHandler(&CRssManager::GetInstance());
+  GetSettingsManager()->UnregisterSettingsHandler(&CWakeOnAccess::GetInstance());
+#ifdef HAS_UPNP
+  GetSettingsManager()->UnregisterSettingsHandler(&CUPnPSettings::GetInstance());
 #endif
-  GetSettingsManager()->UnregisterCallback(&CWakeOnAccess::GetInstance());
+  GetSettingsManager()->UnregisterSettingsHandler(&CMediaSourceSettings::GetInstance());
+  GetSettingsManager()->UnregisterSettingsHandler(&g_advancedSettings);
 }
 
 void CSettings::InitializeISubSettings()
