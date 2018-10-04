@@ -255,7 +255,14 @@ ALIASES                = "table_start=<table width= 100% style= border bgcolor= 
                          "python_v15=\xrefitem python_v15 \"v15 Python API changes\" \"\"" \
                          "python_v16=\xrefitem python_v16 \"v16 Python API changes\" \"\"" \
                          "python_v17=\xrefitem python_v17 \"v17 Python API changes\" \"\"" \
-                         "python_v18=\xrefitem python_v18 \"v18 Python API changes\" \"\""
+                         "python_v18=\xrefitem python_v18 \"v18 Python API changes\" \"\"" \
+                         "skinning_v12=\xrefitem skinning_v12 \"v12 Skinning engine changes\" \"\"" \
+                         "skinning_v13=\xrefitem skinning_v13 \"v13 Skinning engine changes\" \"\"" \
+                         "skinning_v14=\xrefitem skinning_v14 \"v14 Skinning engine changes\" \"\"" \
+                         "skinning_v15=\xrefitem skinning_v15 \"v15 Skinning engine changes\" \"\"" \
+                         "skinning_v16=\xrefitem skinning_v16 \"v16 Skinning engine changes\" \"\"" \
+                         "skinning_v17=\xrefitem skinning_v17 \"v17 Skinning engine changes\" \"\"" \
+                         "skinning_v18=\xrefitem skinning_v18 \"v18 Skinning engine changes\" \"\""
 
 # This tag can be used to specify a number of word-keyword mappings (TCL only).
 # A mapping has the form "name=value". For example adding "class=itcl::class"

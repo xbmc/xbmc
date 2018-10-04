@@ -26,4 +26,6 @@ Guideline for Kodi's developers to create documentation
 \page revisions Revisions
 
 \subpage python_revisions
+
+\subpage skinning_revisions
 */
