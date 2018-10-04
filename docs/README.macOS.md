@@ -122,17 +122,21 @@ Change to Kodi's source code directory:
 cd $HOME/kodi
 ```
 
-Build all add-ons:
+There are multiple possibilities to choose which addons are built. The following 3 examples will give an idea.
+
+(1) Build all add-ons:
 ```
 make -j$(getconf _NPROCESSORS_ONLN) -C tools/depends/target/binary-addons
 ```
+OR
 
-Build specific add-ons:
+(2) Build specific add-ons:
 ```
 make -j$(getconf _NPROCESSORS_ONLN) -C tools/depends/target/binary-addons ADDONS="audioencoder.flac pvr.vdr.vnsi audiodecoder.snesapu"
 ```
+OR
 
-Build a specific group of add-ons:
+(3) Build a specific group of add-ons:
 ```
 make -j$(getconf _NPROCESSORS_ONLN) -C tools/depends/target/binary-addons ADDONS="pvr.*"
 ```
