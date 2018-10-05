@@ -10551,7 +10551,7 @@ msgstr ""
 #. Label for context menu entry to open settings dialog for a timer (read-only)
 #: xbmc/pvr/PVRContextMenus.cpp
 msgctxt "#19241"
-msgid "View timer information"
+msgid "View timer"
 msgstr ""
 
 #. Label for context menu entry to open settings dialog for a timer
@@ -10920,7 +10920,13 @@ msgctxt "#19303"
 msgid "Use simple timeshift OSD"
 msgstr ""
 
-#empty strings from id 19304 to 19498
+#. Label for context menu entry to open settings dialog for a timer rule (read-only)
+#: xbmc/pvr/PVRContextMenus.cpp
+msgctxt "#19304"
+msgid "View timer rule"
+msgstr ""
+
+#empty strings from id 19305 to 19498
 
 #. label for epg genre value
 #: xbmc/epg/Epg.cpp
@@ -14062,7 +14068,13 @@ msgctxt "#21482"
 msgid "Subtitle track count"
 msgstr ""
 
-#empty strings from id 21483 to 21601
+#. Label for controls used to view something (e.g. a context menu entry to open read-only timer settings dialog)
+#: xbmc/pvr/PVRContextMenus.cpp
+msgctxt "#21483"
+msgid "View"
+msgstr ""
+
+#empty strings from id 21484 to 21601
 
 #: xbmc/Util.cpp
 msgctxt "#21602"

@@ -52,7 +52,7 @@ namespace PVR
     DECL_STATICCONTEXTMENUITEM(StartRecording);
     DECL_STATICCONTEXTMENUITEM(StopRecording);
     DECL_STATICCONTEXTMENUITEM(AddTimerRule);
-    DECL_STATICCONTEXTMENUITEM(EditTimerRule);
+    DECL_CONTEXTMENUITEM(EditTimerRule);
     DECL_STATICCONTEXTMENUITEM(DeleteTimerRule);
     DECL_CONTEXTMENUITEM(EditTimer);
     DECL_CONTEXTMENUITEM(DeleteTimer);
@@ -381,6 +381,23 @@ namespace PVR
     ///////////////////////////////////////////////////////////////////////////////
     // Edit timer rule
 
+    std::string EditTimerRule::GetLabel(const CFileItem &item) const
+    {
+      const CPVRTimerInfoTagPtr timer(GetTimerInfoTagFromItem(item));
+      if (timer && !URIUtils::PathEquals(item.GetPath(), CPVRTimersPath::PATH_ADDTIMER))
+      {
+        const CPVRTimerInfoTagPtr parentTimer(CServiceBroker::GetPVRManager().Timers()->GetTimerRule(timer));
+        if (parentTimer)
+        {
+          const CPVRTimerTypePtr parentTimerType(parentTimer->GetTimerType());
+          if (parentTimerType && !parentTimerType->IsReadOnly())
+            return g_localizeStrings.Get(19243); /* Edit timer rule */
+        }
+      }
+
+      return g_localizeStrings.Get(19304); /* View timer rule */
+    }
+
     bool EditTimerRule::IsVisible(const CFileItem &item) const
     {
       const CPVRTimerInfoTagPtr timer(GetTimerInfoTagFromItem(item));
@@ -402,7 +419,14 @@ namespace PVR
     {
       const CPVRTimerInfoTagPtr timer(GetTimerInfoTagFromItem(item));
       if (timer && !URIUtils::PathEquals(item.GetPath(), CPVRTimersPath::PATH_ADDTIMER))
-        return timer->GetTimerRuleId() != PVR_TIMER_NO_PARENT;
+      {
+        const CPVRTimerInfoTagPtr parentTimer(CServiceBroker::GetPVRManager().Timers()->GetTimerRule(timer));
+        if (parentTimer)
+        {
+          const CPVRTimerTypePtr parentTimerType(parentTimer->GetTimerType());
+          return parentTimerType && parentTimerType->AllowsDelete();
+        }
+      }
 
       return false;
     }
@@ -425,13 +449,21 @@ namespace PVR
       if (timer)
       {
         const CPVRTimerTypePtr timerType(timer->GetTimerType());
-        if (timerType && !timerType->IsReadOnly() && timer->GetTimerRuleId() == PVR_TIMER_NO_PARENT)
+        if (timerType)
         {
           const CPVREpgInfoTagPtr epg(item.GetEPGInfoTag());
-          if (epg)
-            return g_localizeStrings.Get(19242); /* Edit timer */
+          if (!timerType->IsReadOnly() && timer->GetTimerRuleId() == PVR_TIMER_NO_PARENT)
+          {
+            if (epg)
+              return g_localizeStrings.Get(19242); /* Edit timer */
+            else
+              return g_localizeStrings.Get(21450); /* Edit */
+          }
           else
-            return g_localizeStrings.Get(21450); /* Edit */
+          {
+            if (!epg)
+              return g_localizeStrings.Get(21483); /* View */
+          }
         }
       }
 
@@ -441,13 +473,7 @@ namespace PVR
     bool EditTimer::IsVisible(const CFileItem &item) const
     {
       const CPVRTimerInfoTagPtr timer(GetTimerInfoTagFromItem(item));
-      if (timer && (!item.GetEPGInfoTag() || !URIUtils::PathEquals(item.GetPath(), CPVRTimersPath::PATH_ADDTIMER)))
-      {
-        const CPVRTimerTypePtr timerType(timer->GetTimerType());
-        return timerType && !timerType->IsReadOnly() && timer->GetTimerRuleId() == PVR_TIMER_NO_PARENT;
-      }
-
-      return false;
+      return timer && (!item.GetEPGInfoTag() || !URIUtils::PathEquals(item.GetPath(), CPVRTimersPath::PATH_ADDTIMER));
     }
 
     bool EditTimer::Execute(const CFileItemPtr &item) const
@@ -565,7 +591,7 @@ namespace PVR
       std::make_shared<CONTEXTMENUITEM::FindSimilar>(19003), /* Find similar */
       std::make_shared<CONTEXTMENUITEM::ToggleTimerState>(),
       std::make_shared<CONTEXTMENUITEM::AddTimerRule>(19061), /* Add timer */
-      std::make_shared<CONTEXTMENUITEM::EditTimerRule>(19243), /* Edit timer rule */
+      std::make_shared<CONTEXTMENUITEM::EditTimerRule>(),
       std::make_shared<CONTEXTMENUITEM::DeleteTimerRule>(19295), /* Delete timer rule */
       std::make_shared<CONTEXTMENUITEM::EditTimer>(),
       std::make_shared<CONTEXTMENUITEM::RenameTimer>(118), /* Rename */
