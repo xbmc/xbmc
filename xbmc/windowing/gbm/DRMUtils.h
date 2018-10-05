@@ -124,6 +124,7 @@ private:
   bool RestoreOriginalMode();
   static void DrmFbDestroyCallback(struct gbm_bo *bo, void *data);
   RESOLUTION_INFO GetResolutionInfo(drmModeModeInfoPtr mode);
+  bool CheckConnector(int connectorId);
 
   int m_crtc_index;
   std::string m_module;
