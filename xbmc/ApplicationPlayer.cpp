@@ -120,6 +120,14 @@ bool CApplicationPlayer::OpenFile(const CFileItem& item, const CPlayerOptions& o
       return true;
     }
   }
+  else if (player && player->m_name != newPlayer)
+  {
+    CloseFile();
+    {
+      CSingleLock lock(m_playerLock);
+      m_pPlayer.reset();
+    }
+  }
 
   if (!player)
   {
