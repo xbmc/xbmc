@@ -44,6 +44,7 @@ namespace RETRO
     // implementation of CRPBaseRenderer
     bool Supports(RENDERFEATURE feature) const override;
     SCALINGMETHOD GetDefaultScalingMethod() const override { return SCALINGMETHOD::NEAREST; }
+    void Deinitialize() override;
 
     static bool SupportsScalingMethod(SCALINGMETHOD method);
 
@@ -66,7 +67,10 @@ namespace RETRO
     void DrawBlackBars();
 
     virtual void Render(uint8_t alpha);
-
+    
+    GLuint m_mainIndexVBO;
+    GLuint m_mainVertexVBO;
+    GLuint m_blackbarsVertexVBO;
     GLenum m_textureTarget = GL_TEXTURE_2D;
     float m_clearColour = 0.0f;
   };

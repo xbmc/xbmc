@@ -44,6 +44,9 @@ RenderBufferPoolVector CRendererFactoryOpenGLES::CreateBufferPools(CRenderContex
 CRPRendererOpenGLES::CRPRendererOpenGLES(const CRenderSettings &renderSettings, CRenderContext &context, std::shared_ptr<IRenderBufferPool> bufferPool) :
   CRPBaseRenderer(renderSettings, context, std::move(bufferPool))
 {
+  glGenBuffers(1, &m_mainIndexVBO);
+  glGenBuffers(1, &m_mainVertexVBO);
+  glGenBuffers(1, &m_blackbarsVertexVBO);
 }
 
 CRPRendererOpenGLES::~CRPRendererOpenGLES()
@@ -219,10 +222,7 @@ void CRPRendererOpenGLES::DrawBlackBars()
     count += 6;
   }
 
-  GLuint vertexVBO;
-
-  glGenBuffers(1, &vertexVBO);
-  glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
+  glBindBuffer(GL_ARRAY_BUFFER, m_blackbarsVertexVBO);
   glBufferData(GL_ARRAY_BUFFER, sizeof(Svertex)*count, &vertices[0], GL_STATIC_DRAW);
 
   glVertexAttribPointer(posLoc, 3, GL_FLOAT, GL_FALSE, sizeof(Svertex), 0);
@@ -232,7 +232,6 @@ void CRPRendererOpenGLES::DrawBlackBars()
 
   glDisableVertexAttribArray(posLoc);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
-  glDeleteBuffers(1, &vertexVBO);
 
   m_context.DisableGUIShader();
 }
@@ -267,8 +266,6 @@ void CRPRendererOpenGLES::Render(uint8_t alpha)
 
   GLubyte colour[4];
   GLubyte idx[4] = {0, 1, 3, 2}; // Determines order of triangle strip
-  GLuint vertexVBO;
-  GLuint indexVBO;
   struct PackedVertex
   {
     float x, y, z;
@@ -299,8 +296,7 @@ void CRPRendererOpenGLES::Render(uint8_t alpha)
   vertex[1].u1 = vertex[2].u1 = rect.x2;
   vertex[2].v1 = vertex[3].v1 = rect.y2;
 
-  glGenBuffers(1, &vertexVBO);
-  glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
+  glBindBuffer(GL_ARRAY_BUFFER, m_mainVertexVBO);
   glBufferData(GL_ARRAY_BUFFER, sizeof(PackedVertex)*4, &vertex[0], GL_STATIC_DRAW);
 
   glVertexAttribPointer(vertLoc, 3, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, x)));
@@ -309,8 +305,7 @@ void CRPRendererOpenGLES::Render(uint8_t alpha)
   glEnableVertexAttribArray(vertLoc);
   glEnableVertexAttribArray(loc);
 
-  glGenBuffers(1, &indexVBO);
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVBO);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_mainIndexVBO);
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLubyte)*4, idx, GL_STATIC_DRAW);
 
   glUniform4f(uniColLoc,(colour[0] / 255.0f), (colour[1] / 255.0f), (colour[2] / 255.0f), (colour[3] / 255.0f));
@@ -320,9 +315,14 @@ void CRPRendererOpenGLES::Render(uint8_t alpha)
   glDisableVertexAttribArray(loc);
 
   glBindBuffer(GL_ARRAY_BUFFER, 0);
-  glDeleteBuffers(1, &vertexVBO);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-  glDeleteBuffers(1, &indexVBO);
 
   m_context.DisableGUIShader();
+}
+
+void CRPRendererOpenGLES::Deinitialize()
+{
+  glDeleteBuffers(1, &m_mainIndexVBO);
+  glDeleteBuffers(1, &m_mainVertexVBO);
+  glDeleteBuffers(1, &m_blackbarsVertexVBO);
 }
