@@ -510,7 +510,6 @@ void CProfileManager::CreateProfileFolders()
 {
   CDirectory::Create(GetDatabaseFolder());
   CDirectory::Create(GetCDDBFolder());
-  CDirectory::Create(GetLibraryFolder());
 
   // create Thumbnails/*
   CDirectory::Create(GetThumbnailsFolder());
