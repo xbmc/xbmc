@@ -830,10 +830,11 @@ namespace PVR
   bool CPVRGUIActions::ConfirmDeleteTimer(const CPVRTimerInfoTagPtr &timer, bool &bDeleteRule) const
   {
     bool bConfirmed(false);
+    const CPVRTimerInfoTagPtr parentTimer(CServiceBroker::GetPVRManager().Timers()->GetTimerRule(timer));
 
-    if (timer->GetTimerRuleId() != PVR_TIMER_NO_PARENT)
+    if (parentTimer && parentTimer->HasTimerType() && parentTimer->GetTimerType()->AllowsDelete())
     {
-      // timer was scheduled by a timer rule. prompt user for confirmation for deleting the timer rule, including scheduled timers.
+      // timer was scheduled by a deletable timer rule. prompt user for confirmation for deleting the timer rule, including scheduled timers.
       bool bCancel(false);
       bDeleteRule = CGUIDialogYesNo::ShowAndGetInput(CVariant{122}, // "Confirm delete"
                                                      CVariant{840}, // "Do you want to delete only this timer or also the timer rule that has scheduled it?"
