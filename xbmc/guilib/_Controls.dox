@@ -11,6 +11,7 @@ manual will explain each and every control in detail.
 - \subpage skin_Edit_control - used as an input control for the osd keyboard and other input fields.
 - \subpage Fade_Label_Control - used to show multiple pieces of text in the same position, by fading from one to the other.
 - \subpage Fixed_List_Container - used for a list of items with a fixed focus. Same as the \ref Wrap_List_Container "Wrap List Container" except it doesn't wrap.
+- \subpage Game_Control - used to display the currently playing game, with optional effects, whilst in the GUI.
 - \subpage Group_Control -  used to group controls together.
 - \subpage Group_List_Control - special case of the group control that forms a scrolling list of controls.
 - \subpage Image_Control - used to show an image.
