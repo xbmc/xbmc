@@ -174,7 +174,7 @@ You can check `Users/Shared/xbmc-depends` directory content with:
 ls -l /Users/Shared/xbmc-depends
 ```
 
-**Start Xcode, open the Kodi project file** (`kodi.xcodeproj`) located in `$HOME/kodi-build` and hit `Build`.
+**Start Xcode, open the Kodi project file** (`kodi.xcodeproj`) located in `$HOME` and hit `Build`.
 
 **WARNING:** If you have selected a specific SDK version in **[step 4](#4-configure-and-build-tools-and-dependencies)** then you might need to adapt the active target to use the same SDK version, otherwise build will fail. Be sure to select a device configuration. Building for simulator is **not** supported.
 
