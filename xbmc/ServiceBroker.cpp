@@ -8,6 +8,8 @@
 
 #include "ServiceBroker.h"
 #include "Application.h"
+#include "profiles/ProfilesManager.h"
+#include "settings/SettingsComponent.h"
 #include "windowing/WinSystem.h"
 
 using namespace KODI;
@@ -198,14 +200,15 @@ CDatabaseManager& CServiceBroker::GetDatabaseManager()
   return g_application.m_ServiceManager->GetDatabaseManager();
 }
 
+// @todo to be removed with next commit
 CProfilesManager& CServiceBroker::GetProfileManager()
 {
-  return g_application.m_ServiceManager->GetProfileManager();
+  return *m_pSettingsComponent->GetProfilesManager();
 }
 
 CEventLog& CServiceBroker::GetEventLog()
 {
-  return g_application.m_ServiceManager->GetEventLog();
+  return m_pSettingsComponent->GetProfilesManager()->GetEventLog();
 }
 
 CGUIComponent* CServiceBroker::m_pGUI = nullptr;

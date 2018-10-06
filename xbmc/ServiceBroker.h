@@ -105,6 +105,7 @@ public:
   static CWeatherManager& GetWeatherManager();
   static CPlayerCoreFactory &GetPlayerCoreFactory();
   static CDatabaseManager &GetDatabaseManager();
+  // @todo to be removed with next commit
   static CProfilesManager &GetProfileManager();
   static CEventLog &GetEventLog();
 

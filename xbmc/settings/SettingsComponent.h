@@ -12,6 +12,7 @@
 
 class CAppParamParser;
 class CAdvancedSettings;
+class CProfilesManager;
 class CSettings;
 
 class CSettingsComponent
@@ -21,14 +22,17 @@ public:
   virtual ~CSettingsComponent();
 
   void Init(const CAppParamParser &params);
+  bool Load();
   void Deinit();
 
   std::shared_ptr<CSettings> GetSettings();
   std::shared_ptr<CAdvancedSettings> GetAdvancedSettings();
+  std::shared_ptr<CProfilesManager> GetProfilesManager();
 
 protected:
   std::shared_ptr<CSettings> m_settings;
   std::shared_ptr<CAdvancedSettings> m_advancedSettings;
+  std::shared_ptr<CProfilesManager> m_profilesManager;
 
 private:
   bool InitDirectoriesLinux(bool bPlatformDirectories);

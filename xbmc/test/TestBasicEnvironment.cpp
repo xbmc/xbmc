@@ -12,6 +12,7 @@
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
+#include "profiles/ProfilesManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -89,6 +90,10 @@ void TestBasicEnvironment::SetUp()
     TearDown();
     SetUpError();
   }
+
+  const CProfile profile("special://temp");
+  m_pSettingsComponent->GetProfilesManager()->AddProfile(profile);
+  m_pSettingsComponent->GetProfilesManager()->CreateProfileFolders();
 
   if (!g_application.m_ServiceManager->InitForTesting())
     exit(1);

@@ -22,6 +22,7 @@
 #ifdef TARGET_WINDOWS
 #include "platform/Environment.h"
 #endif
+#include "profiles/ProfilesManager.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -33,6 +34,7 @@ CSettingsComponent::CSettingsComponent()
 {
   m_advancedSettings.reset(new CAdvancedSettings());
   m_settings.reset(new CSettings());
+  m_profilesManager.reset(new CProfilesManager());
 }
 
 CSettingsComponent::~CSettingsComponent()
@@ -54,12 +56,41 @@ void CSettingsComponent::Init(const CAppParamParser &params)
   m_advancedSettings->Initialize(params, *m_settings->GetSettingsManager());
   URIUtils::RegisterAdvancedSettings(*m_advancedSettings);
 
+  m_profilesManager->Initialize(m_settings);
+
   CServiceBroker::RegisterSettingsComponent(this);
+}
+
+bool CSettingsComponent::Load()
+{
+  if (!m_profilesManager->Load())
+  {
+    CLog::Log(LOGFATAL, "unable to load profile");
+    return false;
+  }
+
+  CSpecialProtocol::RegisterProfileManager(*m_profilesManager);
+  XFILE::IDirectory::RegisterProfileManager(*m_profilesManager);
+
+  if (!m_settings->Load())
+  {
+    CLog::Log(LOGFATAL, "unable to load settings");
+    return false;
+  }
+
+  m_settings->SetLoaded();
+  return true;
 }
 
 void CSettingsComponent::Deinit()
 {
   CServiceBroker::UnregisterSettingsComponent();
+
+  m_settings->Unload();
+
+  XFILE::IDirectory::UnregisterProfileManager();
+  CSpecialProtocol::UnregisterProfileManager();
+  m_profilesManager->Uninitialize();
 
   URIUtils::UnregisterAdvancedSettings();
   m_advancedSettings->Uninitialize(*m_settings->GetSettingsManager());
@@ -75,6 +106,11 @@ std::shared_ptr<CSettings> CSettingsComponent::GetSettings()
 std::shared_ptr<CAdvancedSettings> CSettingsComponent::GetAdvancedSettings()
 {
   return m_advancedSettings;
+}
+
+std::shared_ptr<CProfilesManager> CSettingsComponent::GetProfilesManager()
+{
+  return m_profilesManager;
 }
 
 bool CSettingsComponent::InitDirectoriesLinux(bool bPlatformDirectories)

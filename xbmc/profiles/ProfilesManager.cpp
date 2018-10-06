@@ -85,7 +85,15 @@ CProfilesManager::CProfilesManager() :
     m_nextProfileId(0),
     m_eventLogs(new CEventLogManager)
 {
-  m_settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+}
+
+CProfilesManager::~CProfilesManager()
+{
+}
+
+void CProfilesManager::Initialize(const std::shared_ptr<CSettings>& settings)
+{
+  m_settings = settings;
 
   if (m_settings->IsLoaded())
     OnSettingsLoaded();
@@ -99,7 +107,7 @@ CProfilesManager::CProfilesManager() :
   m_settings->GetSettingsManager()->RegisterCallback(this, settingSet);
 }
 
-CProfilesManager::~CProfilesManager()
+void CProfilesManager::Uninitialize()
 {
   m_settings->GetSettingsManager()->UnregisterCallback(this);
   m_settings->GetSettingsManager()->UnregisterSettingsHandler(this);
@@ -134,13 +142,10 @@ void CProfilesManager::OnSettingsCleared()
 
 bool CProfilesManager::Load()
 {
-  return Load(PROFILES_FILE);
-}
-
-bool CProfilesManager::Load(const std::string &file)
-{
-  CSingleLock lock(m_critical);
   bool ret = true;
+  const std::string file = PROFILES_FILE;
+
+  CSingleLock lock(m_critical);
 
   // clear out our profiles
   m_profiles.clear();
@@ -213,17 +218,14 @@ bool CProfilesManager::Load(const std::string &file)
 
 bool CProfilesManager::Save() const
 {
-  return Save(PROFILES_FILE);
-}
+  const std::string file = PROFILES_FILE;
 
-bool CProfilesManager::Save(const std::string &file) const
-{
   CSingleLock lock(m_critical);
 
   CXBMCTinyXML xmlDoc;
   TiXmlElement xmlRootElement(XML_PROFILES);
   TiXmlNode *pRoot = xmlDoc.InsertEndChild(xmlRootElement);
-  if (pRoot == NULL)
+  if (pRoot == nullptr)
     return false;
 
   XMLUtils::SetInt(pRoot, XML_LAST_LOADED, m_currentProfile);
@@ -231,8 +233,8 @@ bool CProfilesManager::Save(const std::string &file) const
   XMLUtils::SetInt(pRoot, XML_AUTO_LOGIN, m_autoLoginProfile);
   XMLUtils::SetInt(pRoot, XML_NEXTID, m_nextProfileId);
 
-  for (std::vector<CProfile>::const_iterator profile = m_profiles.begin(); profile != m_profiles.end(); ++profile)
-    profile->Save(pRoot);
+  for (const auto& profile : m_profiles)
+    profile.Save(pRoot);
 
   // save the file
   return xmlDoc.SaveFile(file);
@@ -298,6 +300,7 @@ bool CProfilesManager::LoadProfile(unsigned int index)
   if (g_SkinInfo != nullptr && !m_profileLoadedForLogin)
     g_SkinInfo->SaveSettings();
 
+  // @todo: why is m_settings not used here?
   const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
 
   // unload any old settings

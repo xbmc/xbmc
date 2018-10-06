@@ -78,13 +78,11 @@ public:
 
   bool InitForTesting();
   bool InitStageOne();
-  bool InitStageOnePointFive(); // Services that need our DllLoaders emu env
-  bool InitStageTwo(const CAppParamParser &params);
-  bool InitStageThree();
+  bool InitStageTwo(const CAppParamParser &params, const std::string& profilesUserDataFolder);
+  bool InitStageThree(const std::shared_ptr<CProfilesManager>& profilesManager);
   void DeinitTesting();
   void DeinitStageThree();
   void DeinitStageTwo();
-  void DeinitStageOnePointFive();
   void DeinitStageOne();
 
   ADDON::CAddonMgr& GetAddonMgr();
@@ -122,10 +120,6 @@ public:
   CPlayerCoreFactory &GetPlayerCoreFactory();
 
   CDatabaseManager &GetDatabaseManager();
-
-  CProfilesManager &GetProfileManager();
-
-  CEventLog &GetEventLog();
 
 protected:
   struct delete_dataCacheCore
@@ -169,5 +163,4 @@ protected:
   std::unique_ptr<CWeatherManager> m_weatherManager;
   std::unique_ptr<CPlayerCoreFactory> m_playerCoreFactory;
   std::unique_ptr<CDatabaseManager> m_databaseManager;
-  std::unique_ptr<CProfilesManager> m_profileManager;
 };
