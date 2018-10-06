@@ -141,5 +141,12 @@ This page shows the window names, the window definition, the window ID and the s
 | StartWindow             | WINDOW_START                         | 12998     | shortcut to the current startwindow |
 | Startup                 | WINDOW_STARTUP_ANIM                  | 12999     | Startup.xml                         |
 
-
+@skinning_v18
+- Windows added:
+ - *Games*
+ - *GameSettings*
+ - *OSDSubtitleSettings*
+- Windows changed:
+ - *DialogPVRGuideOSD.xml* -> *DialogPVRChannelGuide.xml*
+ - *PVROSDGuide* -> *PVRChannelGuide*
 */
