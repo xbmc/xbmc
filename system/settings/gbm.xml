@@ -48,5 +48,20 @@
         </setting>
       </group>
     </category>
+    <category id="input">
+      <group id="4" label="35150">
+        <setting id="input.libinputkeyboardlayout" type="string" label="310" help="36436">
+          <level>0</level>
+          <default>us</default>
+          <visible>true</visible>
+          <constraints>
+            <options>libinputkeyboardlayout</options>
+          </constraints>
+          <control type="list" format="string">
+            <multiselect>false</multiselect>
+          </control>
+        </setting>
+      </group>
+    </category>
   </section>
 </settings>

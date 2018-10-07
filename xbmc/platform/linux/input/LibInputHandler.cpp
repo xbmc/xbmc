@@ -9,6 +9,7 @@
 #include "LibInputHandler.h"
 #include "LibInputKeyboard.h"
 #include "LibInputPointer.h"
+#include "LibInputSettings.h"
 #include "LibInputTouch.h"
 
 #include "utils/log.h"
@@ -90,6 +91,7 @@ CLibInputHandler::CLibInputHandler() : CThread("libinput")
   m_keyboard.reset(new CLibInputKeyboard());
   m_pointer.reset(new CLibInputPointer());
   m_touch.reset(new CLibInputTouch());
+  m_settings.reset(new CLibInputSettings(this));
 }
 
 CLibInputHandler::~CLibInputHandler()
@@ -98,6 +100,11 @@ CLibInputHandler::~CLibInputHandler()
 
   libinput_unref(m_li);
   udev_unref(m_udev);
+}
+
+bool CLibInputHandler::SetKeymap(const std::string& layout)
+{
+  return m_keyboard->SetKeymap(layout);
 }
 
 void CLibInputHandler::Start()

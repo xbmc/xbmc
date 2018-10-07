@@ -19747,7 +19747,13 @@ msgctxt "#36435"
 msgid "Use VideoPlayer for decoding of video files with MMAL acceleration."
 msgstr ""
 
-#empty strings from id 36436 to 36441
+#. Description for setting #310: "Keyboard layouts"
+#: system/settings/settings.xml
+msgctxt "#36436"
+msgid "Select OS keyboard layout."
+msgstr ""
+
+#empty strings from id 36437 to 36441
 
 #. Description of setting "System -> Audio output -> Volume control steps" with label #1302
 #: system/settings/settings.xml

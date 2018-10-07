@@ -17,6 +17,7 @@
 
 class CLibInputKeyboard;
 class CLibInputPointer;
+class CLibInputSettings;
 class CLibInputTouch;
 
 class CLibInputHandler : CThread
@@ -26,6 +27,8 @@ public:
   ~CLibInputHandler();
 
   void Start();
+
+  bool SetKeymap(const std::string& layout);
 
 private:
   void Process() override;
@@ -39,6 +42,7 @@ private:
 
   std::unique_ptr<CLibInputKeyboard> m_keyboard;
   std::unique_ptr<CLibInputPointer> m_pointer;
+  std::unique_ptr<CLibInputSettings> m_settings;
   std::unique_ptr<CLibInputTouch> m_touch;
   std::vector<libinput_device*> m_devices;
 };
