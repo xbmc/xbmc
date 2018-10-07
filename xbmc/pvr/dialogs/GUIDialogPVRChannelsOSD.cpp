@@ -96,9 +96,13 @@ bool CGUIDialogPVRChannelsOSD::OnAction(const CAction &action)
       if (CServiceBroker::GetPVRManager().GUIActions()->GetChannelNumberInputHandler().CheckInputAndExecuteAction())
         return true;
 
-      // Switch to channel
-      GotoChannel(m_viewControl.GetSelectedItem());
-      return true;
+      if (m_viewControl.HasControl(GetFocusedControlID()))
+      {
+        // Switch to channel
+        GotoChannel(m_viewControl.GetSelectedItem());
+        return true;
+      }
+      break;
     }
     case ACTION_PREVIOUS_CHANNELGROUP:
     case ACTION_NEXT_CHANNELGROUP:
