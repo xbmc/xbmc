@@ -1490,7 +1490,7 @@ namespace PVR
       }
 
       int selection = 0;
-      if (hookIDs.size() > 1)
+      if (!hookIDs.empty())
       {
         pDialog->Open();
         selection = pDialog->GetSelectedItem();
