@@ -21,6 +21,26 @@ cmake ... -DENABLE_VAAPI=ON -DENABLE_VDPAU=OFF ...
 
 Unfortunately, Kodi's CMake gazillion options are not fully documented yet. For more information and an updated list of options, please check the main **[CMakeLists.txt](../CMakeLists.txt)**.
 
+## Buildsystem variables
+The buildsystem uses the following variables (which can be passed into it when executing cmake with the -D`<variable-name>=<value>` format) to manipulate the build process (see READMEs in sub-directories for additional variables):
+- `CMAKE_BUILD_TYPE` specifies the type of the build. This can be either *Debug* or *Release* (default is *Release*)
+- `CMAKE_TOOLCHAIN_FILE` can be used to pass a toolchain file
+- `ARCH_DEFINES` specifies the platform-specific C/C++ preprocessor defines (defaults to empty)
+
+## Building
+To trigger the cmake-based buildsystem the following command must be executed with `<path>` set to this directory (absolute or relative) allowing for in-source and out-of-source builds
+
+`cmake <path> -G <generator>`
+
+CMake supports multiple generators. See [here] (https://cmake.org/cmake/help/v3.1/manual/cmake-generators.7.html) for a list.
+
+In case of additional options the call might look like this:
+
+cmake `<path>` [-G `<generator>`] \  
+      -DCMAKE_BUILD_TYPE=Release \  
+      -DARCH_DEFINES="-DTARGET_LINUX" \  
+      -DCMAKE_INSTALL_PREFIX="`<path-to-install-directory`"
+
 ## Tests
 Kodi uses Google Test as its testing framework. Each test file is scanned for tests and these are added to CTest, which is the native test driver for CMake.
 
