@@ -44,58 +44,83 @@ CSettingsComponent::~CSettingsComponent()
 
 void CSettingsComponent::Init(const CAppParamParser &params)
 {
-  // only the InitDirectories* for the current platform should return true
-  bool inited = InitDirectoriesLinux(params.m_platformDirectories);
-  if (!inited)
-    inited = InitDirectoriesOSX(params.m_platformDirectories);
-  if (!inited)
-    inited = InitDirectoriesWin32(params.m_platformDirectories);
+  if (m_state == State::DEINITED)
+  {
+    // only the InitDirectories* for the current platform should return true
+    bool inited = InitDirectoriesLinux(params.m_platformDirectories);
+    if (!inited)
+      inited = InitDirectoriesOSX(params.m_platformDirectories);
+    if (!inited)
+      inited = InitDirectoriesWin32(params.m_platformDirectories);
 
-  m_settings->Initialize();
+    m_settings->Initialize();
 
-  m_advancedSettings->Initialize(params, *m_settings->GetSettingsManager());
-  URIUtils::RegisterAdvancedSettings(*m_advancedSettings);
+    m_advancedSettings->Initialize(params, *m_settings->GetSettingsManager());
+    URIUtils::RegisterAdvancedSettings(*m_advancedSettings);
 
-  m_profilesManager->Initialize(m_settings);
+    m_profilesManager->Initialize(m_settings);
 
-  CServiceBroker::RegisterSettingsComponent(this);
+    CServiceBroker::RegisterSettingsComponent(this);
+
+    m_state = State::INITED;
+  }
 }
 
 bool CSettingsComponent::Load()
 {
-  if (!m_profilesManager->Load())
+  if (m_state == State::INITED)
   {
-    CLog::Log(LOGFATAL, "unable to load profile");
+    if (!m_profilesManager->Load())
+    {
+      CLog::Log(LOGFATAL, "unable to load profile");
+      return false;
+    }
+
+    CSpecialProtocol::RegisterProfileManager(*m_profilesManager);
+    XFILE::IDirectory::RegisterProfileManager(*m_profilesManager);
+
+    if (!m_settings->Load())
+    {
+      CLog::Log(LOGFATAL, "unable to load settings");
+      return false;
+    }
+
+    m_settings->SetLoaded();
+
+    m_state = State::LOADED;
+    return true;
+  }
+  else if (m_state == State::LOADED)
+  {
+    return true;
+  }
+  else
+  {
     return false;
   }
-
-  CSpecialProtocol::RegisterProfileManager(*m_profilesManager);
-  XFILE::IDirectory::RegisterProfileManager(*m_profilesManager);
-
-  if (!m_settings->Load())
-  {
-    CLog::Log(LOGFATAL, "unable to load settings");
-    return false;
-  }
-
-  m_settings->SetLoaded();
-  return true;
 }
 
 void CSettingsComponent::Deinit()
 {
-  CServiceBroker::UnregisterSettingsComponent();
+  if (m_state >= State::INITED)
+  {
+    CServiceBroker::UnregisterSettingsComponent();
 
-  m_settings->Unload();
+    if (m_state == State::LOADED)
+    {
+      m_settings->Unload();
 
-  XFILE::IDirectory::UnregisterProfileManager();
-  CSpecialProtocol::UnregisterProfileManager();
-  m_profilesManager->Uninitialize();
+      XFILE::IDirectory::UnregisterProfileManager();
+      CSpecialProtocol::UnregisterProfileManager();
+    }
+    m_profilesManager->Uninitialize();
 
-  URIUtils::UnregisterAdvancedSettings();
-  m_advancedSettings->Uninitialize(*m_settings->GetSettingsManager());
+    URIUtils::UnregisterAdvancedSettings();
+    m_advancedSettings->Uninitialize(*m_settings->GetSettingsManager());
 
-  m_settings->Uninitialize();
+    m_settings->Uninitialize();
+  }
+  m_state = State::DEINITED;
 }
 
 std::shared_ptr<CSettings> CSettingsComponent::GetSettings()
