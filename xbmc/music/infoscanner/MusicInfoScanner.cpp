@@ -42,6 +42,7 @@
 #include "NfoFile.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "TextureCache.h"
 #include "threads/SystemClock.h"
 #include "Util.h"
@@ -76,7 +77,7 @@ void CMusicInfoScanner::Process()
   CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::AudioLibrary, "xbmc", "OnScanStarted");
   try
   {
-    if (m_showDialog && !CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_MUSICLIBRARY_BACKGROUNDUPDATE))
+    if (m_showDialog && !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_MUSICLIBRARY_BACKGROUNDUPDATE))
     {
       CGUIDialogExtendedProgressBar* dialog =
         CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogExtendedProgressBar>(WINDOW_DIALOG_EXT_PROGRESS);
@@ -252,7 +253,7 @@ void CMusicInfoScanner::Process()
       }
     }
     //propagate artist sort names to albums and songs
-    if (g_advancedSettings.m_bMusicLibraryArtistSortOnUpdate)
+    if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bMusicLibraryArtistSortOnUpdate)
       m_musicDatabase.UpdateArtistSortNames();
   }
   catch (...)
@@ -301,7 +302,7 @@ void CMusicInfoScanner::Start(const std::string& strDirectory, int flags)
   }
   m_musicDatabase.Close();
 
-  m_bClean = g_advancedSettings.m_bMusicLibraryCleanOnUpdate;
+  m_bClean = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bMusicLibraryCleanOnUpdate;
 
   m_scanType = 0;
   m_bRunning = true;
@@ -379,7 +380,7 @@ void CMusicInfoScanner::FetchArtistInfo(const std::string& strDirectory,
   if (strDirectory.empty())
   {
     m_musicDatabase.Open();
-    m_musicDatabase.GetArtistsNav("musicdb://artists/", items, !CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_MUSICLIBRARY_SHOWCOMPILATIONARTISTS), -1);
+    m_musicDatabase.GetArtistsNav("musicdb://artists/", items, !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_MUSICLIBRARY_SHOWCOMPILATIONARTISTS), -1);
     m_musicDatabase.Close();
   }
   else
@@ -467,7 +468,7 @@ bool CMusicInfoScanner::DoScan(const std::string& strDirectory)
   m_seenPaths.insert(strDirectory);
 
   // Discard all excluded files defined by m_musicExcludeRegExps
-  const std::vector<std::string> &regexps = g_advancedSettings.m_audioExcludeFromScanRegExps;
+  const std::vector<std::string> &regexps = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_audioExcludeFromScanRegExps;
 
   if (CUtil::ExcludeFileOrFolder(strDirectory, regexps))
     return true;
@@ -549,7 +550,7 @@ bool CMusicInfoScanner::DoScan(const std::string& strDirectory)
 CInfoScanner::INFO_RET CMusicInfoScanner::ScanTags(const CFileItemList& items,
                                                    CFileItemList& scannedItems)
 {
-  std::vector<std::string> regexps = g_advancedSettings.m_audioExcludeFromScanRegExps;
+  std::vector<std::string> regexps = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_audioExcludeFromScanRegExps;
 
   for (int i = 0; i < items.Size(); ++i)
   {
@@ -786,7 +787,7 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
       album.strAlbum = songsByAlbumName->first;
 
       //Split the albumartist sort string to try and get sort names for individual artists
-      std::vector<std::string> sortnames = StringUtils::Split(albumartistsort, g_advancedSettings.m_musicItemSeparator);
+      std::vector<std::string> sortnames = StringUtils::Split(albumartistsort, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator);
       if (sortnames.size() != common.size())
           // Split artist sort names further using multiple possible delimiters, over single separator applied in Tag loader
         sortnames = StringUtils::SplitMulti(sortnames, { ";", ":", "|", "#" });
@@ -939,7 +940,7 @@ void MUSIC_INFO::CMusicInfoScanner::ScrapeInfoAddedAlbums()
   if (ADDON::CAddonSystemSettings::GetInstance().GetActive(ADDON::ADDON_SCRAPER_ARTISTS, addon))
     artistScraper = std::dynamic_pointer_cast<ADDON::CScraper>(addon);
 
-  bool albumartistsonly = !CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_MUSICLIBRARY_SHOWCOMPILATIONARTISTS);
+  bool albumartistsonly = !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_MUSICLIBRARY_SHOWCOMPILATIONARTISTS);
 
   if (!albumScraper || !artistScraper)
     return;
@@ -1297,7 +1298,7 @@ CMusicInfoScanner::UpdateDatabaseAlbumInfo(CAlbum& album,
 
   if (albumDownloadStatus == INFO_ADDED)
   {
-    bool overridetags = CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_MUSICLIBRARY_OVERRIDETAGS);
+    bool overridetags = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_MUSICLIBRARY_OVERRIDETAGS);
     album.MergeScrapedAlbum(albumInfo.GetAlbum(), overridetags);
     m_musicDatabase.UpdateAlbum(album);
     albumInfo.SetLoaded(true);
@@ -1364,7 +1365,7 @@ CMusicInfoScanner::UpdateDatabaseArtistInfo(CArtist& artist,
 
   if (artistDownloadStatus == INFO_ADDED)
   {
-    artist.MergeScrapedArtist(artistInfo.GetArtist(), CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_MUSICLIBRARY_OVERRIDETAGS));
+    artist.MergeScrapedArtist(artistInfo.GetArtist(), CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_MUSICLIBRARY_OVERRIDETAGS));
     m_musicDatabase.UpdateArtist(artist);
     artistInfo.SetLoaded();
   }
@@ -1471,7 +1472,7 @@ CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album,
       CLog::Log(LOGERROR,"Unable to find an url in nfo file: %s", strNfo.c_str());
   }
 
-  if (!scraper.CheckValidOrFallback(CServiceBroker::GetSettings()->GetString(CSettings::SETTING_MUSICLIBRARY_ALBUMSSCRAPER)))
+  if (!scraper.CheckValidOrFallback(CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_MUSICLIBRARY_ALBUMSSCRAPER)))
   { // the current scraper is invalid, as is the default - bail
     CLog::Log(LOGERROR, "%s - current and default scrapers are invalid.  Pick another one", __FUNCTION__);
     return INFO_ERROR;
@@ -1646,7 +1647,7 @@ void CMusicInfoScanner::GetAlbumArtwork(long id, const CAlbum &album)
     // b) thumb is embedded in music file and "prefer online album art" enabled
     if (artURL.empty() ||
         (StringUtils::StartsWith(artURL, "image://") &&
-         CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_MUSICLIBRARY_PREFERONLINEALBUMART)))
+         CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_MUSICLIBRARY_PREFERONLINEALBUMART)))
     {
       std::string thumb = CScraperUrl::GetThumbURL(album.thumbURL.GetFirstThumb());
       if (!thumb.empty())
@@ -1798,7 +1799,7 @@ CMusicInfoScanner::DownloadArtistInfo(const CArtist& artist,
               strTemp += " ("+scraper.GetArtist(i).GetArtist().strBorn+")";
             if (!scraper.GetArtist(i).GetArtist().genre.empty())
             {
-              std::string genres = StringUtils::Join(scraper.GetArtist(i).GetArtist().genre, g_advancedSettings.m_musicItemSeparator);
+              std::string genres = StringUtils::Join(scraper.GetArtist(i).GetArtist().genre, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator);
               if (!genres.empty())
                 strTemp = StringUtils::Format("[%s] %s", genres.c_str(), strTemp.c_str());
             }
@@ -1912,14 +1913,14 @@ std::vector<std::string> CMusicInfoScanner::GetArtTypesToScan(const MediaType& m
   if (mediaType == MediaTypeArtist)
   {
     arttypes = { "thumb", "fanart" };
-    arttypes.insert(arttypes.end(), g_advancedSettings.m_musicArtistExtraArt.begin(),
-      g_advancedSettings.m_musicArtistExtraArt.end());
+    arttypes.insert(arttypes.end(), CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicArtistExtraArt.begin(),
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicArtistExtraArt.end());
   }
   else if (mediaType == MediaTypeAlbum)
   {
     arttypes = { "thumb" };
-    arttypes.insert(arttypes.end(), g_advancedSettings.m_musicAlbumExtraArt.begin(),
-      g_advancedSettings.m_musicAlbumExtraArt.end());
+    arttypes.insert(arttypes.end(), CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicAlbumExtraArt.begin(),
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicAlbumExtraArt.end());
   }
 
   return arttypes;
@@ -2032,7 +2033,7 @@ bool CMusicInfoScanner::SetAlbumArtwork(CAlbum& album, std::vector<std::string>&
     if (artfolder.empty())
       return false; // No local or scraped art to process
   }
-  else if (CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_MUSICLIBRARY_PREFERONLINEALBUMART))
+  else if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_MUSICLIBRARY_PREFERONLINEALBUMART))
   {
     // When "prefer online album art" enabled, and we have a scraped cover then
     // if the thumb is embedded replace it by adding "thumb" to the missing types
@@ -2135,7 +2136,7 @@ void CMusicInfoScanner::SetDiscSetArtwork(CAlbum& album, const std::vector<std::
   arttypes = GetArtTypesToScan(MediaTypeAlbum);
 
   // Check that there are art types other than thumb to process
-  bool extratype = !g_advancedSettings.m_musicAlbumExtraArt.empty();
+  bool extratype = !CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicAlbumExtraArt.empty();
 
   std::string firstDiscThumb;
   int iDiscThumb = 10000;

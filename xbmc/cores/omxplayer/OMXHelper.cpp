@@ -8,8 +8,9 @@
 
 #include "VideoPlayer.h"
 #include "ServiceBroker.h"
-#include "settings/Settings.h"
 #include "settings/MediaSettings.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "DVDInputStreams/DVDInputStream.h"
 #include "cores/omxplayer/OMXPlayerAudio.h"
 #include "cores/omxplayer/OMXPlayerVideo.h"
@@ -23,24 +24,27 @@
 
 bool OMXPlayerUnsuitable(bool m_HasVideo, bool m_HasAudio, CDVDDemux* m_pDemuxer, std::shared_ptr<CDVDInputStream> m_pInputStream, CSelectionStreams &m_SelectionStreams)
 {
+  const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+
   // if no OMXPlayer acceleration then it is not suitable
-  if (!CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEOMXPLAYER))
+  if (!settings->GetBool(CSettings::SETTING_VIDEOPLAYER_USEOMXPLAYER))
     return true;
   // if no MMAL acceleration stick with omxplayer regardless
-  if (!CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEMMAL))
+  if (!settings->GetBool(CSettings::SETTING_VIDEOPLAYER_USEMMAL))
     return false;
 
   // omxplayer only handles Pi sink
-  if (CServiceBroker::GetSettings()->GetString(CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE) != "PI:Analogue" &&
-      CServiceBroker::GetSettings()->GetString(CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE) != "PI:HDMI" &&
-      CServiceBroker::GetSettings()->GetString(CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE) != "PI:Both" &&
-      CServiceBroker::GetSettings()->GetString(CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE) != "Default")
+  const std::string audioDevice = settings->GetString(CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE);
+  if (audioDevice != "PI:Analogue" &&
+      audioDevice != "PI:HDMI" &&
+      audioDevice != "PI:Both" &&
+      audioDevice != "Default")
   {
     CLog::Log(LOGNOTICE, "%s OMXPlayer unsuitable due to audio sink", __func__);
     return true;
   }
   // omxplayer doesn't handle ac3 transcode
-  if (CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_AUDIOOUTPUT_AC3TRANSCODE))
+  if (settings->GetBool(CSettings::SETTING_AUDIOOUTPUT_AC3TRANSCODE))
   {
     CLog::Log(LOGNOTICE, "%s OMXPlayer unsuitable due to ac3transcode", __func__);
     return true;

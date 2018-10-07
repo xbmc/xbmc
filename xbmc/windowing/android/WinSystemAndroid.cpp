@@ -16,8 +16,9 @@
 #include "ServiceBroker.h"
 #include "windowing/GraphicContext.h"
 #include "windowing/Resolution.h"
-#include "settings/Settings.h"
 #include "settings/DisplaySettings.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "guilib/DispResource.h"
 #include "utils/log.h"
 #include "threads/SingleLock.h"
@@ -209,7 +210,7 @@ void CWinSystemAndroid::SetHDMIState(bool connected, uint32_t timeoutMs)
   }
   else if (!connected)
   {
-    int delay = CServiceBroker::GetSettings()->GetInt("videoscreen.delayrefreshchange") * 100;
+    int delay = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt("videoscreen.delayrefreshchange") * 100;
 
     if (timeoutMs > delay)
       delay = timeoutMs;

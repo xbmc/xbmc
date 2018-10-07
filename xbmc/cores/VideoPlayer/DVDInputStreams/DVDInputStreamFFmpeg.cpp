@@ -11,6 +11,7 @@
 #include "filesystem/CurlFile.h"
 #include "playlists/PlayListM3U.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"

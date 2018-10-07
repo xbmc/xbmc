@@ -21,7 +21,9 @@
 #include "utils/Variant.h"
 #include "utils/StringUtils.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 #include "Util.h"
+#include "ServiceBroker.h"
 
 namespace XBMCAddon
 {
@@ -582,11 +584,11 @@ namespace XBMCAddon
           else if (key == "musicbrainztrackid")
             musictag.SetMusicBrainzTrackID(value);
           else if (key == "musicbrainzartistid")
-            musictag.SetMusicBrainzArtistID(StringUtils::Split(value, g_advancedSettings.m_musicItemSeparator));
+            musictag.SetMusicBrainzArtistID(StringUtils::Split(value, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator));
           else if (key == "musicbrainzalbumid")
             musictag.SetMusicBrainzAlbumID(value);
           else if (key == "musicbrainzalbumartistid")
-            musictag.SetMusicBrainzAlbumArtistID(StringUtils::Split(value, g_advancedSettings.m_musicItemSeparator));
+            musictag.SetMusicBrainzAlbumArtistID(StringUtils::Split(value, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator));
           else if (key == "comment")
             musictag.SetComment(value);
           else if (key == "date")
@@ -856,7 +858,7 @@ namespace XBMCAddon
       {
         if (value.empty())
           value = alt.former();
-        return StringUtils::Split(value, g_advancedSettings.m_videoItemSeparator);
+        return StringUtils::Split(value, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator);
       }
 
       std::vector<std::string> els;

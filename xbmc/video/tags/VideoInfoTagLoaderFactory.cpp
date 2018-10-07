@@ -13,6 +13,7 @@
 #include "FileItem.h"
 #include "ServiceBroker.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 
 using namespace VIDEO;
 
@@ -39,7 +40,7 @@ IVideoInfoTagLoader* CVideoInfoTagLoaderFactory::CreateLoader(const CFileItem& i
     return nfo;
   delete nfo;
 
-  if (CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_MYVIDEOS_USETAGS) &&
+  if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_MYVIDEOS_USETAGS) &&
       (item.IsType(".mkv") || item.IsType(".mp4") || item.IsType(".avi")))
   {
     CVideoTagLoaderFFmpeg* ff = new CVideoTagLoaderFFmpeg(item, info, lookInFolder);

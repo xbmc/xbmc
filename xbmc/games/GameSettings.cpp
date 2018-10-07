@@ -10,6 +10,7 @@
 #include "ServiceBroker.h"
 #include "settings/lib/Setting.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 
 #include <algorithm>
 
@@ -27,7 +28,7 @@ namespace
 
 CGameSettings::CGameSettings()
 {
-  m_settings = CServiceBroker::GetSettings();
+  m_settings = CServiceBroker::GetSettingsComponent()->GetSettings();
 
   m_settings->RegisterCallback(this, {
     SETTING_GAMES_ENABLEREWIND,

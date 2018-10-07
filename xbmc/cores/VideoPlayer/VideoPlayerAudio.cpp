@@ -13,6 +13,7 @@
 #include "DVDCodecs/DVDFactoryCodec.h"
 #include "cores/VideoPlayer/Interface/Addon/DemuxPacket.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "system.h"
 #include "utils/log.h"
 #include "utils/MathUtils.h"
@@ -76,7 +77,7 @@ CVideoPlayerAudio::~CVideoPlayerAudio()
 bool CVideoPlayerAudio::OpenStream(CDVDStreamInfo hints)
 {
   CLog::Log(LOGNOTICE, "Finding audio codec for: %i", hints.codec);
-  bool allowpassthrough = !CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEDISPLAYASCLOCK);
+  bool allowpassthrough = !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEDISPLAYASCLOCK);
   if (m_processInfo.IsRealtimeStream())
     allowpassthrough = false;
 
@@ -131,7 +132,7 @@ void CVideoPlayerAudio::OpenStream(CDVDStreamInfo &hints, CDVDAudioCodec* codec)
 
   m_prevsynctype = -1;
   m_synctype = SYNC_DISCON;
-  if (CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEDISPLAYASCLOCK))
+  if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEDISPLAYASCLOCK))
     m_synctype = SYNC_RESAMPLE;
   else if (m_processInfo.IsRealtimeStream())
     m_synctype = SYNC_RESAMPLE;
@@ -602,7 +603,7 @@ bool CVideoPlayerAudio::AcceptsData() const
 bool CVideoPlayerAudio::SwitchCodecIfNeeded()
 {
   CLog::Log(LOGDEBUG, "CVideoPlayerAudio: stream props changed, checking for passthrough");
-  bool allowpassthrough = !CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEDISPLAYASCLOCK);
+  bool allowpassthrough = !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEDISPLAYASCLOCK);
   if (m_processInfo.IsRealtimeStream() || m_synctype == SYNC_RESAMPLE)
     allowpassthrough = false;
 

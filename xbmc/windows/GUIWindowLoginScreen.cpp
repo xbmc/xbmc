@@ -26,6 +26,7 @@
 #include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
@@ -238,7 +239,7 @@ bool CGUIWindowLoginScreen::OnPopupMenu(int iItem)
   if (choice == 2)
   {
     if (g_passwordManager.CheckLock(profileManager.GetMasterProfile().getLockMode(), profileManager.GetMasterProfile().getLockCode(), 20075))
-      g_passwordManager.iMasterLockRetriesLeft = CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_MASTERLOCK_MAXRETRIES);
+      g_passwordManager.iMasterLockRetriesLeft = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_MASTERLOCK_MAXRETRIES);
     else // be inconvenient
       CApplicationMessenger::GetInstance().PostMsg(TMSG_SHUTDOWN);
 

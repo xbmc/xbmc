@@ -21,6 +21,7 @@
 #include "music/tags/MusicInfoTag.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 
@@ -302,7 +303,7 @@ void CGUIVisualisationControl::UpdateTrack()
 
   std::string artist(tag->GetArtistString());
   std::string albumArtist(tag->GetAlbumArtistString());
-  std::string genre(StringUtils::Join(tag->GetGenre(), g_advancedSettings.m_musicItemSeparator));
+  std::string genre(StringUtils::Join(tag->GetGenre(), CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator));
 
   VisTrack track = {0};
   track.title       = tag->GetTitle().c_str();
@@ -369,7 +370,7 @@ bool CGUIVisualisationControl::GetPresetList(std::vector<std::string> &vecpreset
 
 bool CGUIVisualisationControl::InitVisualization()
 {
-  const ADDON::BinaryAddonBasePtr addonBase = CServiceBroker::GetBinaryAddonManager().GetInstalledAddonInfo(CServiceBroker::GetSettings()->GetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION), ADDON::ADDON_VIZ);
+  const ADDON::BinaryAddonBasePtr addonBase = CServiceBroker::GetBinaryAddonManager().GetInstalledAddonInfo(CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION), ADDON::ADDON_VIZ);
   if (!addonBase)
     return false;
 

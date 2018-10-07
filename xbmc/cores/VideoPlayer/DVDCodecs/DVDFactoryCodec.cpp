@@ -28,9 +28,6 @@
 
 
 #include "DVDStreamInfo.h"
-#include "settings/AdvancedSettings.h"
-#include "settings/Settings.h"
-#include "cores/VideoSettings.h"
 #include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
 

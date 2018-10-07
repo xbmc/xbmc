@@ -23,6 +23,7 @@
 #endif
 #endif
 #include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 #include "GUIUserMessages.h"
 #include "utils/URIUtils.h"
 #include "guilib/GUIComponent.h"
@@ -241,7 +242,7 @@ void CDetectDVDMedia::DetectMediaType()
 
   if (m_pCdInfo->IsISOUDF(1))
   {
-    if (!g_advancedSettings.m_detectAsUdf)
+    if (!CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_detectAsUdf)
     {
       strNewUrl = "iso9660://";
       m_isoReader.Scan();

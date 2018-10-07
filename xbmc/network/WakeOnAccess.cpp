@@ -23,6 +23,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/lib/Setting.h"
 #include "utils/JobManager.h"
@@ -684,22 +685,23 @@ void CWakeOnAccess::QueueMACDiscoveryForAllRemotes()
   AddHostsFromVecSource(ms.GetSources("pictures"), hosts);
   AddHostsFromVecSource(ms.GetSources("programs"), hosts);
 
+  const std::shared_ptr<CAdvancedSettings> advancedSettings = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
+
   // add mysql servers
-  AddHostFromDatabase(g_advancedSettings.m_databaseVideo, hosts);
-  AddHostFromDatabase(g_advancedSettings.m_databaseMusic, hosts);
-  AddHostFromDatabase(g_advancedSettings.m_databaseEpg, hosts);
-  AddHostFromDatabase(g_advancedSettings.m_databaseTV, hosts);
+  AddHostFromDatabase(advancedSettings->m_databaseVideo, hosts);
+  AddHostFromDatabase(advancedSettings->m_databaseMusic, hosts);
+  AddHostFromDatabase(advancedSettings->m_databaseEpg, hosts);
+  AddHostFromDatabase(advancedSettings->m_databaseTV, hosts);
 
   // add from path substitutions ..
-  for (CAdvancedSettings::StringMapping::iterator i = g_advancedSettings.m_pathSubstitutions.begin(); i != g_advancedSettings.m_pathSubstitutions.end(); ++i)
+  for (const auto& pathPair : advancedSettings->m_pathSubstitutions)
   {
-    CURL url(i->second);
-
+    CURL url(pathPair.second);
     AddHost (url.GetHostName(), hosts);
   }
 
-  for (std::vector<std::string>::const_iterator it = hosts.begin(); it != hosts.end(); ++it)
-    QueueMACDiscoveryForHost(*it);
+  for (const std::string& host : hosts)
+    QueueMACDiscoveryForHost(host);
 }
 
 void CWakeOnAccess::SaveMACDiscoveryResult(const std::string& host, const std::string& mac)
@@ -794,7 +796,7 @@ void CWakeOnAccess::SetEnabled(bool enabled)
 
 void CWakeOnAccess::LoadFromXML()
 {
-  bool enabled = CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_POWERMANAGEMENT_WAKEONACCESS);
+  bool enabled = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_POWERMANAGEMENT_WAKEONACCESS);
 
   CXBMCTinyXML xmlDoc;
   if (!xmlDoc.LoadFile(GetSettingFile()))

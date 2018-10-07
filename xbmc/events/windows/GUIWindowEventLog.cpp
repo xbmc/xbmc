@@ -18,6 +18,7 @@
 #include "guilib/WindowIDs.h"
 #include "input/Key.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "view/ViewStateSettings.h"
@@ -55,7 +56,7 @@ bool CGUIWindowEventLog::OnMessage(CGUIMessage& message)
     {
       // update the event level
       CViewStateSettings::GetInstance().CycleEventLevel();
-      CServiceBroker::GetSettings()->Save();
+      CServiceBroker::GetSettingsComponent()->GetSettings()->Save();
 
       // update the listing
       Refresh();
@@ -67,7 +68,7 @@ bool CGUIWindowEventLog::OnMessage(CGUIMessage& message)
     {
       // update whether to show higher event levels
       CViewStateSettings::GetInstance().ToggleShowHigherEventLevels();
-      CServiceBroker::GetSettings()->Save();
+      CServiceBroker::GetSettingsComponent()->GetSettings()->Save();
 
       // update the listing
       Refresh();

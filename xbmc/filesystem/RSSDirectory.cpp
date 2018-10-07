@@ -16,6 +16,7 @@
 #include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
 #include "URL.h"
 #include "utils/FileExtensionProvider.h"
@@ -180,7 +181,7 @@ static void ParseItemMRSS(CFileItem* item, SResources& resources, TiXmlElement* 
     else if(scheme == "urn:boxee:source")
       item->SetProperty("boxee:provider_source", text);
     else
-      vtag->m_genre = StringUtils::Split(text, g_advancedSettings.m_videoItemSeparator);
+      vtag->m_genre = StringUtils::Split(text, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator);
   }
   else if(name == "rating")
   {
@@ -206,7 +207,7 @@ static void ParseItemMRSS(CFileItem* item, SResources& resources, TiXmlElement* 
     }
   }
   else if(name == "copyright")
-    vtag->m_studio = StringUtils::Split(text, g_advancedSettings.m_videoItemSeparator);
+    vtag->m_studio = StringUtils::Split(text, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator);
   else if(name == "keywords")
     item->SetProperty("keywords", text);
 
@@ -446,7 +447,7 @@ static void ParseItem(CFileItem* item, TiXmlElement* root, const std::string& pa
   else if(FindMime(resources, "image/"))
     mime = "image/";
 
-  int maxrate = CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_NETWORK_BANDWIDTH);
+  int maxrate = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_NETWORK_BANDWIDTH);
   if(maxrate == 0)
     maxrate = INT_MAX;
 

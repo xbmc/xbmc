@@ -20,8 +20,9 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
-#include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
 #include "storage/MediaManager.h"
 #include "addons/AddonManager.h"
@@ -171,16 +172,16 @@ int CCDDARipJob::RipChunk(CFile& reader, CEncoder* encoder, int& percent)
 
 CEncoder* CCDDARipJob::SetupEncoder(CFile& reader)
 {
-  CEncoder* encoder = NULL;
-  if (CServiceBroker::GetSettings()->GetString(CSettings::SETTING_AUDIOCDS_ENCODER) == "audioencoder.kodi.builtin.aac" ||
-      CServiceBroker::GetSettings()->GetString(CSettings::SETTING_AUDIOCDS_ENCODER) == "audioencoder.kodi.builtin.wma")
+  CEncoder* encoder = nullptr;
+  const std::string audioEncoder = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_AUDIOCDS_ENCODER);
+  if (audioEncoder == "audioencoder.kodi.builtin.aac" || audioEncoder == "audioencoder.kodi.builtin.wma")
   {
     std::shared_ptr<IEncoder> enc(new CEncoderFFmpeg());
     encoder = new CEncoder(enc);
   }
   else
   {
-    const BinaryAddonBasePtr addonInfo = CServiceBroker::GetBinaryAddonManager().GetInstalledAddonInfo(CServiceBroker::GetSettings()->GetString(CSettings::SETTING_AUDIOCDS_ENCODER), ADDON_AUDIOENCODER);
+    const BinaryAddonBasePtr addonInfo = CServiceBroker::GetBinaryAddonManager().GetInstalledAddonInfo(audioEncoder, ADDON_AUDIOENCODER);
     if (addonInfo)
     {
       std::shared_ptr<IEncoder> enc = std::make_shared<CAudioEncoder>(addonInfo);
@@ -191,24 +192,23 @@ CEncoder* CCDDARipJob::SetupEncoder(CFile& reader)
     return NULL;
 
   // we have to set the tags before we init the Encoder
-  std::string strTrack = StringUtils::Format("%li", strtol(m_input.substr(13, m_input.size() - 13 - 5).c_str(),NULL,10));
+  const std::string strTrack = StringUtils::Format("%li", strtol(m_input.substr(13, m_input.size() - 13 - 5).c_str(), nullptr, 10));
+
+  const std::string itemSeparator = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator;
 
   encoder->SetComment(std::string("Ripped with ") + CSysInfo::GetAppName());
-  encoder->SetArtist(StringUtils::Join(m_tag.GetArtist(),
-                                      g_advancedSettings.m_musicItemSeparator));
+  encoder->SetArtist(StringUtils::Join(m_tag.GetArtist(), itemSeparator));
   encoder->SetTitle(m_tag.GetTitle());
   encoder->SetAlbum(m_tag.GetAlbum());
-  encoder->SetAlbumArtist(StringUtils::Join(m_tag.GetAlbumArtist(),
-                                      g_advancedSettings.m_musicItemSeparator));
-  encoder->SetGenre(StringUtils::Join(m_tag.GetGenre(),
-                                      g_advancedSettings.m_musicItemSeparator));
+  encoder->SetAlbumArtist(StringUtils::Join(m_tag.GetAlbumArtist(), itemSeparator));
+  encoder->SetGenre(StringUtils::Join(m_tag.GetGenre(), itemSeparator));
   encoder->SetTrack(strTrack);
   encoder->SetTrackLength(static_cast<int>(reader.GetLength()));
   encoder->SetYear(m_tag.GetYearString());
 
   // init encoder
   if (!encoder->Init(m_output.c_str(), m_channels, m_rate, m_bps))
-    delete encoder, encoder = NULL;
+    delete encoder, encoder = nullptr;
 
   return encoder;
 }

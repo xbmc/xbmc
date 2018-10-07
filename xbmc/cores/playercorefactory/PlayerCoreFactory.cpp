@@ -18,6 +18,7 @@
 #include "settings/lib/SettingsManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "PlayerCoreConfig.h"
 #include "PlayerSelectionRule.h"
 #include "guilib/LocalizeStrings.h"
@@ -30,7 +31,7 @@
 CPlayerCoreFactory::CPlayerCoreFactory(const CProfilesManager &profileManager) :
   m_profileManager(profileManager)
 {
-  m_settings = CServiceBroker::GetSettings();
+  m_settings = CServiceBroker::GetSettingsComponent()->GetSettings();
 
   if (m_settings->IsLoaded())
     OnSettingsLoaded();
@@ -158,9 +159,9 @@ int CPlayerCoreFactory::GetPlayerIndex(const std::string& strCoreName) const
     // Dereference "*default*player" aliases
     std::string strRealCoreName;
     if (StringUtils::EqualsNoCase(strCoreName, "audiodefaultplayer"))
-      strRealCoreName = g_advancedSettings.m_audioDefaultPlayer;
+      strRealCoreName = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_audioDefaultPlayer;
     else if (StringUtils::EqualsNoCase(strCoreName, "videodefaultplayer"))
-      strRealCoreName = g_advancedSettings.m_videoDefaultPlayer;
+      strRealCoreName = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoDefaultPlayer;
     else
       strRealCoreName = strCoreName;
 

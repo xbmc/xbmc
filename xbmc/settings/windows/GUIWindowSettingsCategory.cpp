@@ -15,6 +15,7 @@
 #include "input/Key.h"
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "settings/lib/SettingSection.h"
 #include "settings/windows/GUIControlSettings.h"
 #include "utils/log.h"
@@ -47,7 +48,7 @@ static const SettingGroup s_settingGroupMap[] = { { SETTINGS_SYSTEM,      "syste
 
 CGUIWindowSettingsCategory::CGUIWindowSettingsCategory()
     : CGUIDialogSettingsManagerBase(WINDOW_SETTINGS_SYSTEM, "SettingsCategory.xml"),
-      m_settings(CServiceBroker::GetSettings())
+      m_settings(CServiceBroker::GetSettingsComponent()->GetSettings())
 {
   // set the correct ID range...
   m_idRange.clear();
@@ -120,7 +121,7 @@ bool CGUIWindowSettingsCategory::OnAction(const CAction &action)
         return false;
 
       CViewStateSettings::GetInstance().CycleSettingLevel();
-      CServiceBroker::GetSettings()->Save();
+      CServiceBroker::GetSettingsComponent()->GetSettings()->Save();
 
       // try to keep the current position
       std::string oldCategory;

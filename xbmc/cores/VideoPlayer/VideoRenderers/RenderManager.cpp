@@ -23,7 +23,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
-
+#include "settings/SettingsComponent.h"
 
 #if defined(TARGET_POSIX)
 #include "platform/linux/XTimeUtils.h"
@@ -675,7 +675,7 @@ RESOLUTION CRenderManager::GetResolution()
   if (m_renderState == STATE_UNCONFIGURED)
     return res;
 
-  if (CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) != ADJUST_REFRESHRATE_OFF)
+  if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) != ADJUST_REFRESHRATE_OFF)
     res = CResolutionUtils::ChooseBestResolution(m_fps, m_width, m_height, !m_stereomode.empty());
 
   return res;
@@ -854,7 +854,7 @@ void CRenderManager::UpdateLatencyTweak()
   float refresh = fps;
   if (CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution() == RES_WINDOW)
     refresh = 0; // No idea about refresh rate when windowed, just get the default latency
-  m_latencyTweak = g_advancedSettings.GetLatencyTweak(refresh);
+  m_latencyTweak = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->GetLatencyTweak(refresh);
 }
 
 void CRenderManager::UpdateResolution()
@@ -863,7 +863,7 @@ void CRenderManager::UpdateResolution()
   {
     if (CServiceBroker::GetWinSystem()->GetGfxContext().IsFullScreenVideo() && CServiceBroker::GetWinSystem()->GetGfxContext().IsFullScreenRoot())
     {
-      if (CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) != ADJUST_REFRESHRATE_OFF && m_fps > 0.0f)
+      if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) != ADJUST_REFRESHRATE_OFF && m_fps > 0.0f)
       {
         RESOLUTION res = CResolutionUtils::ChooseBestResolution(m_fps, m_width, m_height, !m_stereomode.empty());
         CServiceBroker::GetWinSystem()->GetGfxContext().SetVideoResolution(res, false);

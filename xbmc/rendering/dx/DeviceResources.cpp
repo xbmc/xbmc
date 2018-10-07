@@ -16,6 +16,7 @@
 #include "platform/win32/CharsetConverter.h"
 #include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/log.h"
 #include "utils/SystemInfo.h"
 
@@ -580,7 +581,7 @@ void DX::DeviceResources::ResizeBuffers()
     ComPtr<IDXGISwapChain1> swapChain;
     if ( m_d3dFeatureLevel >= D3D_FEATURE_LEVEL_11_0
       && !bHWStereoEnabled
-      && g_advancedSettings.m_bTry10bitOutput)
+      && CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bTry10bitOutput)
     {
       swapChainDesc.Format = DXGI_FORMAT_R10G10B10A2_UNORM;
       hr = CreateSwapChain(swapChainDesc, scFSDesc, &swapChain);
@@ -1018,7 +1019,7 @@ bool DX::DeviceResources::DoesTextureSharingWork()
     return false;
 
   // @todo proper check in run-time
-  return g_advancedSettings.m_allowUseSeparateDeviceForDecoding;
+  return CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_allowUseSeparateDeviceForDecoding;
 }
 
 #if defined(TARGET_WINDOWS_DESKTOP)

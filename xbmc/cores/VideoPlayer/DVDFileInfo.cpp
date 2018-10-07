@@ -7,9 +7,11 @@
  */
 
 #include "DVDFileInfo.h"
+#include "ServiceBroker.h"
 #include "threads/SystemClock.h"
 #include "FileItem.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 #include "pictures/Picture.h"
 #include "video/VideoInfoTag.h"
 #include "filesystem/StackDirectory.h"
@@ -244,7 +246,7 @@ bool CDVDFileInfo::ExtractThumb(const CFileItem& fileItem,
         if (iDecoderState == CDVDVideoCodec::VC_PICTURE && !(picture.iFlags & DVP_FLAG_DROPPED))
         {
           {
-            unsigned int nWidth = std::min(picture.iDisplayWidth, g_advancedSettings.m_imageRes);
+            unsigned int nWidth = std::min(picture.iDisplayWidth, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_imageRes);
             double aspect = (double)picture.iDisplayWidth / (double)picture.iDisplayHeight;
             if(hint.forced_aspect && hint.aspect != 0)
               aspect = hint.aspect;

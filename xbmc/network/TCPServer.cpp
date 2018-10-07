@@ -14,6 +14,7 @@
 #include <arpa/inet.h>
 
 #include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 #include "interfaces/json-rpc/JSONRPC.h"
 #include "interfaces/AnnouncementManager.h"
 #include "utils/log.h"
@@ -235,7 +236,7 @@ int CTCPServer::GetCapabilities()
 
 void CTCPServer::Announce(ANNOUNCEMENT::AnnouncementFlag flag, const char *sender, const char *message, const CVariant &data)
 {
-  std::string str = IJSONRPCAnnouncer::AnnouncementToJSONRPC(flag, sender, message, data, g_advancedSettings.m_jsonOutputCompact);
+  std::string str = IJSONRPCAnnouncer::AnnouncementToJSONRPC(flag, sender, message, data, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_jsonOutputCompact);
 
   for (unsigned int i = 0; i < m_connections.size(); i++)
   {

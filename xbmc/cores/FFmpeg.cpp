@@ -7,11 +7,13 @@
  */
 
 #include "cores/FFmpeg.h"
+#include "ServiceBroker.h"
 #include "utils/log.h"
 #include "threads/CriticalSection.h"
 #include "utils/StringUtils.h"
 #include "threads/Thread.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 #include <map>
 
 static thread_local CFFmpegLog* CFFmpegLogTls;
@@ -70,9 +72,9 @@ void ff_avutil_log(void* ptr, int level, const char* format, va_list va)
     maxLevel = AV_LOG_INFO;
 
   if (level > maxLevel &&
-     !g_advancedSettings.CanLogComponent(LOGFFMPEG))
+     !CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->CanLogComponent(LOGFFMPEG))
     return;
-  else if (g_advancedSettings.m_logLevel <= LOG_LEVEL_NORMAL)
+  else if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_logLevel <= LOG_LEVEL_NORMAL)
     return;
 
   int type;

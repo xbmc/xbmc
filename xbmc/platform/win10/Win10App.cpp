@@ -15,7 +15,6 @@
 #include "platform/xbmc.h"
 #include "platform/win32/CharsetConverter.h"
 #include "rendering/dx/RenderContext.h"
-#include "settings/AdvancedSettings.h"
 #include "utils/log.h"
 #include "utils/SystemInfo.h"
 #include "windowing/win10/WinEventsWin10.h"
@@ -78,19 +77,17 @@ void App::Load(const winrt::hstring&)
 void App::Run()
 {
   {
-    // Initialize before CAppParamParser so it can set the log level
-    g_advancedSettings.Initialize();
     // fix the case then window opened in FS, but current setting is RES_WINDOW
     // the proper way is make window params related to setting, but in this setting isn't loaded yet
     // perhaps we should observe setting changes and change window's Preffered props
     bool fullscreen = ApplicationView::GetForCurrentView().IsFullScreenMode();
-    g_advancedSettings.m_startFullScreen = fullscreen;
 
     CAppParamParser appParamParser;
     appParamParser.Parse(m_argv.data(), m_argv.size());
+    appParamParser.m_startFullScreen = fullscreen;
 
     if (CSysInfo::GetWindowsDeviceFamily() == CSysInfo::Xbox)
-      g_application.SetStandAlone(true);
+      appParamParser.m_standAlone = true;
 
     // Create and run the app
     XBMC_Run(true, appParamParser);

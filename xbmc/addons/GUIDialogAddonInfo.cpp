@@ -29,6 +29,7 @@
 #include "messaging/helpers/DialogOKHelper.h"
 #include "pictures/GUIWindowSlideShow.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/Digest.h"
 #include "utils/JobManager.h"
 #include "utils/FileOperationJob.h"
@@ -182,7 +183,7 @@ void CGUIDialogAddonInfo::UpdateControls()
 
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_UPDATE, isInstalled);
 
-  bool autoUpdatesOn = CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_ADDONS_AUTOUPDATES) == AUTO_UPDATES_ON;
+  bool autoUpdatesOn = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_ADDONS_AUTOUPDATES) == AUTO_UPDATES_ON;
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_AUTOUPDATE, isInstalled && autoUpdatesOn);
   SET_CONTROL_SELECTED(GetID(), CONTROL_BTN_AUTOUPDATE, isInstalled && autoUpdatesOn &&
       !CServiceBroker::GetAddonMgr().IsBlacklisted(m_localAddon->ID()));

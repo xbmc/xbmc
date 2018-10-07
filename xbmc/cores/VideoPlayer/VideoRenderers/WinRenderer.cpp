@@ -20,6 +20,7 @@
 #include "settings/DisplaySettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "ServiceBroker.h"
 #include "system.h"
 #include "threads/SingleLock.h"
@@ -94,8 +95,9 @@ CWinRenderer::CWinRenderer() : CBaseRenderer()
 
   m_colorManager = std::make_unique<CColorManager>();
   m_outputShader.reset();
-  m_useDithering = CServiceBroker::GetSettings()->GetBool("videoscreen.dither");
-  m_ditherDepth = CServiceBroker::GetSettings()->GetInt("videoscreen.ditherdepth");
+  const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+  m_useDithering = settings->GetBool("videoscreen.dither");
+  m_ditherDepth = settings->GetInt("videoscreen.ditherdepth");
 
   PreInit();
 }
@@ -296,7 +298,7 @@ void CWinRenderer::PreInit()
   m_bConfigured = false;
   UnInit();
 
-  m_iRequestedMethod = CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_VIDEOPLAYER_RENDERMETHOD);
+  m_iRequestedMethod = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_VIDEOPLAYER_RENDERMETHOD);
 
   m_processor = std::make_unique<DXVA::CProcessorHD>();
   if (!m_processor->PreInit())
@@ -526,7 +528,7 @@ void CWinRenderer::SelectPSVideoFilter()
     bool scaleSD = m_sourceHeight < 720 && m_sourceWidth < 1280;
     bool scaleUp = static_cast<int>(m_sourceHeight) < CServiceBroker::GetWinSystem()->GetGfxContext().GetHeight()
                 && static_cast<int>(m_sourceWidth) < CServiceBroker::GetWinSystem()->GetGfxContext().GetWidth();
-    bool scaleFps = m_fps < (g_advancedSettings.m_videoAutoScaleMaxFps + 0.01f);
+    bool scaleFps = m_fps < (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoAutoScaleMaxFps + 0.01f);
 
     if (m_renderMethod == RENDER_DXVA)
     {
@@ -1039,7 +1041,7 @@ bool CWinRenderer::Supports(ESCALINGMETHOD method)
       if (method == VS_SCALINGMETHOD_DXVA_HARDWARE
        || method == VS_SCALINGMETHOD_AUTO)
         return true;
-      if (!g_advancedSettings.m_DXVAAllowHqScaling || m_renderOrientation)
+      if (!CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_DXVAAllowHqScaling || m_renderOrientation)
         return false;
     }
 
@@ -1059,7 +1061,7 @@ bool CWinRenderer::Supports(ESCALINGMETHOD method)
         // if scaling is below level, avoid hq scaling
         float scaleX = fabs((static_cast<float>(m_sourceWidth) - m_destRect.Width())/m_sourceWidth)*100;
         float scaleY = fabs((static_cast<float>(m_sourceHeight) - m_destRect.Height())/m_sourceHeight)*100;
-        int minScale = CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_VIDEOPLAYER_HQSCALERS);
+        int minScale = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_VIDEOPLAYER_HQSCALERS);
         if (scaleX < minScale && scaleY < minScale)
           return false;
         return true;

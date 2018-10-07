@@ -19,6 +19,7 @@
 #include "guilib/GUIKeyboardFactory.h"
 #include "FileItem.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "GUIUserMessages.h"
 #include "input/Key.h"
 #include "guilib/LocalizeStrings.h"
@@ -374,7 +375,7 @@ void CGUIWindowMusicPlaylistEditor::OnSavePlaylist()
     PLAYLIST::CPlayListM3U playlist;
     playlist.Add(*m_playlist);
     std::string path = URIUtils::AddFileToFolder(
-      CServiceBroker::GetSettings()->GetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH),
+      CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH),
       "music",
       name + ".m3u");
 
@@ -386,7 +387,7 @@ void CGUIWindowMusicPlaylistEditor::OnSavePlaylist()
 void CGUIWindowMusicPlaylistEditor::AppendToPlaylist(CFileItemList &newItems)
 {
   OnRetrieveMusicInfo(newItems);
-  FormatItemLabels(newItems, LABEL_MASKS(CServiceBroker::GetSettings()->GetString(CSettings::SETTING_MUSICFILES_TRACKFORMAT), "%D", "%L", ""));
+  FormatItemLabels(newItems, LABEL_MASKS(CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_MUSICFILES_TRACKFORMAT), "%D", "%L", ""));
   m_playlist->Append(newItems);
   UpdatePlaylist();
 }

@@ -261,12 +261,10 @@ const CProfilesManager *CSettingConditions::m_profileManager = nullptr;
 std::set<std::string> CSettingConditions::m_simpleConditions;
 std::map<std::string, SettingConditionCheck> CSettingConditions::m_complexConditions;
 
-void CSettingConditions::Initialize(const CProfilesManager &profileManager)
+void CSettingConditions::Initialize()
 {
   if (!m_simpleConditions.empty())
     return;
-
-  m_profileManager = &profileManager;
 
   // add simple conditions
   m_simpleConditions.insert("true");
@@ -390,6 +388,9 @@ void CSettingConditions::Deinitialize()
 
 const CProfile& CSettingConditions::GetCurrentProfile()
 {
+  if (!m_profileManager)
+    m_profileManager = &CServiceBroker::GetProfileManager();
+
   if (m_profileManager)
     return m_profileManager->GetCurrentProfile();
 

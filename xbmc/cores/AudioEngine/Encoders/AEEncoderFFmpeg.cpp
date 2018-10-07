@@ -14,6 +14,7 @@
 #include "ServiceBroker.h"
 #include "utils/log.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include <string.h>
 #include <cassert>
 
@@ -80,7 +81,7 @@ bool CAEEncoderFFmpeg::Initialize(AEAudioFormat &format, bool allow_planar_input
 {
   Reset();
 
-  bool ac3 = CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_AUDIOOUTPUT_AC3PASSTHROUGH);
+  bool ac3 = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_AUDIOOUTPUT_AC3PASSTHROUGH);
 
   AVCodec *codec = NULL;
 

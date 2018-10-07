@@ -32,6 +32,7 @@
 #include "utils/log.h"
 #include "settings/SettingPath.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "settings/windows/GUIControlSettings.h"
 
 #if defined(HAS_LIBAMCODEC)
@@ -239,7 +240,7 @@ void CScreenShot::TakeScreenshot()
   std::string strDir;
 
   // check to see if we have a screenshot folder yet
-  std::shared_ptr<CSettingPath> screenshotSetting = std::static_pointer_cast<CSettingPath>(CServiceBroker::GetSettings()->GetSetting(CSettings::SETTING_DEBUG_SCREENSHOTPATH));
+  std::shared_ptr<CSettingPath> screenshotSetting = std::static_pointer_cast<CSettingPath>(CServiceBroker::GetSettingsComponent()->GetSettings()->GetSetting(CSettings::SETTING_DEBUG_SCREENSHOTPATH));
   if (screenshotSetting != NULL)
   {
     strDir = screenshotSetting->GetValue();

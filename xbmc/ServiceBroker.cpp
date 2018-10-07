@@ -74,21 +74,21 @@ PLAYLIST::CPlayListPlayer &CServiceBroker::GetPlaylistPlayer()
   return g_application.m_ServiceManager->GetPlaylistPlayer();
 }
 
-std::shared_ptr<CSettings> CServiceBroker::m_pSettings;
+CSettingsComponent* CServiceBroker::m_pSettingsComponent = nullptr;
 
-std::shared_ptr<CSettings> CServiceBroker::GetSettings()
+void CServiceBroker::RegisterSettingsComponent(CSettingsComponent *settings)
 {
-  return m_pSettings;
+  m_pSettingsComponent = settings;
 }
 
-void CServiceBroker::RegisterSettings(std::shared_ptr<CSettings> settings)
+void CServiceBroker::UnregisterSettingsComponent()
 {
-  m_pSettings = settings;
+  m_pSettingsComponent = nullptr;
 }
 
-void CServiceBroker::UnregisterSettings()
+CSettingsComponent* CServiceBroker::GetSettingsComponent()
 {
-  m_pSettings.reset();
+  return m_pSettingsComponent;
 }
 
 GAME::CControllerManager& CServiceBroker::GetGameControllerManager()
@@ -143,7 +143,8 @@ CNetworkBase& CServiceBroker::GetNetwork()
 
 bool CServiceBroker::IsBinaryAddonCacheUp()
 {
-  return g_application.m_ServiceManager->init_level > 1;
+  return g_application.m_ServiceManager &&
+         g_application.m_ServiceManager->init_level > 1;
 }
 
 bool CServiceBroker::IsServiceManagerUp()

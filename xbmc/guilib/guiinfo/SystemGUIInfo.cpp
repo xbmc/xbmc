@@ -29,6 +29,7 @@
 #include "settings/DisplaySettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "storage/MediaManager.h"
 #include "utils/AlarmClock.h"
 #include "utils/CPUInfo.h"
@@ -93,7 +94,7 @@ CTemperature CSystemGUIInfo::GetGPUTemperature() const
 #elif defined(TARGET_WINDOWS_STORE)
   return CTemperature::CreateFromCelsius(0);
 #else
-  std::string cmd = g_advancedSettings.m_gpuTempCmd;
+  std::string cmd = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_gpuTempCmd;
   int ret = 0;
   FILE* p = NULL;
 
@@ -280,7 +281,7 @@ bool CSystemGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
       return true;
     case SYSTEM_STEREOSCOPIC_MODE:
     {
-      int iStereoMode = CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_VIDEOSCREEN_STEREOSCOPICMODE);
+      int iStereoMode = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_VIDEOSCREEN_STEREOSCOPICMODE);
       value = StringUtils::Format("%i", iStereoMode);
       return true;
     }
@@ -547,13 +548,13 @@ bool CSystemGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
       value = g_application.IsIdleShutdownInhibited();
       return true;
     case SYSTEM_HAS_SHUTDOWN:
-      value = (CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNTIME) > 0);
+      value = (CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNTIME) > 0);
       return true;
     case SYSTEM_LOGGEDON:
       value = !(CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_LOGIN_SCREEN);
       return true;
     case SYSTEM_SHOW_EXIT_BUTTON:
-      value = g_advancedSettings.m_showExitButton;
+      value = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_showExitButton;
       return true;
     case SYSTEM_HAS_LOGINSCREEN:
       value = CServiceBroker::GetProfileManager().UsingLoginScreen();
@@ -611,7 +612,7 @@ bool CSystemGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
       value = g_alarmClock.HasAlarm(info.GetData3());
       return true;
     case SYSTEM_GET_BOOL:
-      value = CServiceBroker::GetSettings()->GetBool(info.GetData3());
+      value = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(info.GetData3());
       return true;
     case SYSTEM_SETTING:
     {

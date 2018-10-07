@@ -24,6 +24,7 @@
 #include "input/ButtonTranslator.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/DisplaySettings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "Util.h"
@@ -371,7 +372,7 @@ static int SetStereoMode(const std::vector<std::string>& params)
  */
 static int ToggleDirty(const std::vector<std::string>&)
 {
-  g_advancedSettings.ToggleDirtyRegionVisualization();
+  CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->ToggleDirtyRegionVisualization();
 
   return 0;
 }

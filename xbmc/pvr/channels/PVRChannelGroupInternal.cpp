@@ -15,6 +15,7 @@
 #include "messaging/helpers/DialogOKHelper.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
 
@@ -294,7 +295,7 @@ bool CPVRChannelGroupInternal::UpdateGroupEntries(const CPVRChannelGroup &channe
   if (CPVRChannelGroup::UpdateGroupEntries(channels))
   {
     /* try to find channel icons */
-    if (g_advancedSettings.m_bPVRChannelIconsAutoScan)
+    if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bPVRChannelIconsAutoScan)
       SearchAndSetChannelIcons();
 
     CServiceBroker::GetPVRManager().Timers()->UpdateChannels();

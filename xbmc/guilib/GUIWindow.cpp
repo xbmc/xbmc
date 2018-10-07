@@ -26,6 +26,7 @@
 #include "ServiceBroker.h"
 #include "messaging/ApplicationMessenger.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/Color.h"
 #include "utils/Variant.h"
 #include "utils/StringUtils.h"
@@ -324,7 +325,7 @@ void CGUIWindow::CenterWindow()
 
 void CGUIWindow::DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
-  if (!IsControlDirty() && g_advancedSettings.m_guiSmartRedraw)
+  if (!IsControlDirty() && CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiSmartRedraw)
     return;
 
   CServiceBroker::GetWinSystem()->GetGfxContext().SetRenderingResolution(m_coordsRes, m_needsScaling);

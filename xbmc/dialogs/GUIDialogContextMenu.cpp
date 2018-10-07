@@ -18,6 +18,7 @@
 #include "utils/URIUtils.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "GUIDialogMediaSource.h"
 #include "profiles/ProfilesManager.h"
 #include "profiles/dialogs/GUIDialogLockSettings.h"
@@ -243,8 +244,8 @@ void CGUIDialogContextMenu::GetContextButtons(const std::string &type, const CFi
       buttons.Add(CONTEXT_BUTTON_REMOVE_LOCK, 12335);
 
       bool maxRetryExceeded = false;
-      if (CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_MASTERLOCK_MAXRETRIES) != 0)
-        maxRetryExceeded = (share->m_iBadPwdCount >= CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_MASTERLOCK_MAXRETRIES));
+      if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_MASTERLOCK_MAXRETRIES) != 0)
+        maxRetryExceeded = (share->m_iBadPwdCount >= CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_MASTERLOCK_MAXRETRIES));
 
       if (maxRetryExceeded)
         buttons.Add(CONTEXT_BUTTON_RESET_LOCK, 12334);
@@ -449,8 +450,8 @@ bool CGUIDialogContextMenu::OnContextButton(const std::string &type, const CFile
   case CONTEXT_BUTTON_REACTIVATE_LOCK:
     {
       bool maxRetryExceeded = false;
-      if (CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_MASTERLOCK_MAXRETRIES) != 0)
-        maxRetryExceeded = (share->m_iBadPwdCount >= CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_MASTERLOCK_MAXRETRIES));
+      if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_MASTERLOCK_MAXRETRIES) != 0)
+        maxRetryExceeded = (share->m_iBadPwdCount >= CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_MASTERLOCK_MAXRETRIES));
       if (!maxRetryExceeded)
       {
         // don't prompt user for mastercode when reactivating a lock

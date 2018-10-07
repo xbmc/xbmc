@@ -23,8 +23,9 @@
 #include "windowing/GraphicContext.h"
 #include "windowing/Resolution.h"
 #include "platform/linux/powermanagement/LinuxPowerSyscall.h"
-#include "settings/Settings.h"
 #include "settings/DisplaySettings.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "guilib/DispResource.h"
 #include "utils/AMLUtils.h"
 #include "utils/log.h"
@@ -124,7 +125,7 @@ bool CWinSystemAmlogic::CreateNewWindow(const std::string& name,
     return true;
   }
 
-  int delay = CServiceBroker::GetSettings()->GetInt("videoscreen.delayrefreshchange");
+  int delay = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt("videoscreen.delayrefreshchange");
   if (delay > 0)
   {
     m_delayDispReset = true;

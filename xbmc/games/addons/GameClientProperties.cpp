@@ -17,7 +17,6 @@
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/LocalizeStrings.h"
 #include "messaging/helpers/DialogOKHelper.h"
-#include "settings/Settings.h"
 #include "utils/log.h"
 #include "utils/Variant.h"
 

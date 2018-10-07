@@ -10,8 +10,9 @@
 #include "../RenderFactory.h"
 #include "ServiceBroker.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/VDPAU.h"
-#include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/log.h"
 #include "utils/GLUtils.h"
 
@@ -115,7 +116,7 @@ bool CRendererVDPAU::Supports(ERENDERFEATURE feature)
   if(feature == RENDERFEATURE_BRIGHTNESS ||
      feature == RENDERFEATURE_CONTRAST)
   {
-    if (!m_isYuv && !CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_VIDEOSCREEN_LIMITEDRANGE))
+    if (!m_isYuv && !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOSCREEN_LIMITEDRANGE))
       return true;
 
     return (m_renderMethod & RENDER_GLSL);
@@ -160,7 +161,7 @@ bool CRendererVDPAU::Supports(ESCALINGMETHOD method)
     // if scaling is below level, avoid hq scaling
     float scaleX = fabs(((float)m_sourceWidth - m_destRect.Width())/m_sourceWidth)*100;
     float scaleY = fabs(((float)m_sourceHeight - m_destRect.Height())/m_sourceHeight)*100;
-    int minScale = CServiceBroker::GetSettings()->GetInt("videoplayer.hqscalers");
+    int minScale = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt("videoplayer.hqscalers");
     if (scaleX < minScale && scaleY < minScale)
       return false;
 
@@ -169,7 +170,7 @@ bool CRendererVDPAU::Supports(ESCALINGMETHOD method)
         && method != VS_SCALINGMETHOD_LANCZOS3)
       return true;
     else
-      return g_advancedSettings.m_videoEnableHighQualityHwScalers;
+      return CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoEnableHighQualityHwScalers;
   }
 
   return false;

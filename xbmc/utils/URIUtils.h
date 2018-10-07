@@ -12,10 +12,14 @@
 #include <vector>
 
 class CURL;
+class CAdvancedSettings;
 
 class URIUtils
 {
 public:
+  static void RegisterAdvancedSettings(const CAdvancedSettings& advancedSettings);
+  static void UnregisterAdvancedSettings();
+
   static std::string GetDirectory(const std::string &strFilePath);
 
   static std::string GetFileName(const CURL& url);
@@ -216,5 +220,7 @@ public:
 
 private:
   static std::string resolvePath(const std::string &path);
+
+  static const CAdvancedSettings* m_advancedSettings;
 };
 

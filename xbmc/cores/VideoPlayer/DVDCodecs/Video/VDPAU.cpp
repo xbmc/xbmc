@@ -17,9 +17,10 @@
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
 #include "rendering/RenderSystem.h"
-#include "settings/Settings.h"
 #include "settings/lib/Setting.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "Application.h"
 #include "utils/MathUtils.h"
 #include "utils/TimeUtils.h"
@@ -509,8 +510,8 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
     auto entry = settings_map.find(avctx->codec_id);
     if (entry != settings_map.end())
     {
-      bool enabled = CServiceBroker::GetSettings()->GetBool(entry->second) &&
-                     CServiceBroker::GetSettings()->GetSetting(entry->second)->IsVisible();
+      const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+      bool enabled = settings->GetBool(entry->second) && settings->GetSetting(entry->second)->IsVisible();
       if (!enabled)
         return false;
     }
@@ -670,7 +671,7 @@ long CDecoder::ReleasePicReference()
 
 void CDecoder::SetWidthHeight(int width, int height)
 {
-  m_vdpauConfig.upscale = g_advancedSettings.m_videoVDPAUScaling;
+  m_vdpauConfig.upscale = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoVDPAUScaling;
 
   //pick the smallest dimensions, so we downscale with vdpau and upscale with opengl when appropriate
   //this requires the least amount of gpu memory bandwidth
@@ -1279,7 +1280,7 @@ bool CDecoder::CheckStatus(VdpStatus vdp_st, int line)
 
 IHardwareDecoder* CDecoder::Create(CDVDStreamInfo &hint, CProcessInfo &processInfo, AVPixelFormat fmt)
  {
-   if (CDecoder::IsVDPAUFormat(fmt) && CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEVDPAU))
+   if (CDecoder::IsVDPAUFormat(fmt) && CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEVDPAU))
      return new VDPAU::CDecoder(processInfo);
 
    return nullptr;
@@ -1301,14 +1302,15 @@ void CDecoder::Register()
   std::transform(gpuvendor.begin(), gpuvendor.end(), gpuvendor.begin(), ::tolower);
   bool isNvidia = (gpuvendor.compare(0, 6, "nvidia") == 0);
 
-  CServiceBroker::GetSettings()->GetSetting(CSettings::SETTING_VIDEOPLAYER_USEVDPAU)->SetVisible(true);
+  const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+  settings->GetSetting(CSettings::SETTING_VIDEOPLAYER_USEVDPAU)->SetVisible(true);
 
   if (!isNvidia)
   {
-    CServiceBroker::GetSettings()->GetSetting(CSettings::SETTING_VIDEOPLAYER_USEVDPAUMPEG4)->SetVisible(true);
-    CServiceBroker::GetSettings()->GetSetting(CSettings::SETTING_VIDEOPLAYER_USEVDPAUVC1)->SetVisible(true);
-    CServiceBroker::GetSettings()->GetSetting(CSettings::SETTING_VIDEOPLAYER_USEVDPAUMPEG2)->SetVisible(true);
-    CServiceBroker::GetSettings()->GetSetting(CSettings::SETTING_VIDEOPLAYER_USEVDPAUMIXER)->SetVisible(true);
+    settings->GetSetting(CSettings::SETTING_VIDEOPLAYER_USEVDPAUMPEG4)->SetVisible(true);
+    settings->GetSetting(CSettings::SETTING_VIDEOPLAYER_USEVDPAUVC1)->SetVisible(true);
+    settings->GetSetting(CSettings::SETTING_VIDEOPLAYER_USEVDPAUMPEG2)->SetVisible(true);
+    settings->GetSetting(CSettings::SETTING_VIDEOPLAYER_USEVDPAUMIXER)->SetVisible(true);
   }
 
 }
@@ -2069,7 +2071,7 @@ void CMixer::SetColor()
   }
 
   VdpVideoMixerAttribute attributes[] = { VDP_VIDEO_MIXER_ATTRIBUTE_CSC_MATRIX };
-  if (CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_VIDEOSCREEN_LIMITEDRANGE))
+  if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOSCREEN_LIMITEDRANGE))
   {
     float studioCSC[3][4];
     GenerateStudioCSCMatrix(colorStandard, studioCSC);
@@ -2172,7 +2174,7 @@ void CMixer::SetDeinterlacing()
     ||  method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_HALF)
     {
       VdpBool enabled[] = {1,0,0};
-      if (g_advancedSettings.m_videoVDPAUtelecine)
+      if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoVDPAUtelecine)
         enabled[2] = 1;
       vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
     }
@@ -2180,7 +2182,7 @@ void CMixer::SetDeinterlacing()
          ||  method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL_HALF)
     {
       VdpBool enabled[] = {1,1,0};
-      if (g_advancedSettings.m_videoVDPAUtelecine)
+      if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoVDPAUtelecine)
         enabled[2] = 1;
       vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
     }
@@ -2194,7 +2196,7 @@ void CMixer::SetDeinterlacing()
 
   SetDeintSkipChroma();
 
-  m_config.useInteropYuv = !CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEVDPAUMIXER);
+  m_config.useInteropYuv = !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEVDPAUMIXER);
 
   std::string deintStr = GetDeintStrFromInterlaceMethod(method);
   // update deinterlacing method used in processInfo (none if progressive)
@@ -2207,7 +2209,7 @@ void CMixer::SetDeintSkipChroma()
   VdpStatus vdp_st;
 
   uint8_t val;
-  if (g_advancedSettings.m_videoVDPAUdeintSkipChromaHD && m_config.outHeight >= 720)
+  if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoVDPAUdeintSkipChromaHD && m_config.outHeight >= 720)
     val = 1;
   else
     val = 0;
@@ -2390,8 +2392,8 @@ void CMixer::Init()
   m_PostProc = false;
   m_vdpError = false;
 
-  m_config.upscale = g_advancedSettings.m_videoVDPAUScaling;
-  m_config.useInteropYuv = !CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEVDPAUMIXER);
+  m_config.upscale = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoVDPAUScaling;
+  m_config.useInteropYuv = !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEVDPAUMIXER);
 
   CreateVdpauMixer();
 

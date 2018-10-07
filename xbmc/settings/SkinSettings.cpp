@@ -15,6 +15,7 @@
 #include "addons/Skin.h"
 #include "guilib/GUIComponent.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
@@ -157,7 +158,7 @@ void CSkinSettings::MigrateSettings(const ADDON::SkinPtr& skin)
     skin->SaveSettings();
 
     // save the guisettings.xml
-    CServiceBroker::GetSettings()->Save();
+    CServiceBroker::GetSettingsComponent()->GetSettings()->Save();
   }
 }
 

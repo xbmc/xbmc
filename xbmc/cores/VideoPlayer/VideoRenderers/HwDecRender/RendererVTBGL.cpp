@@ -9,8 +9,6 @@
 #include "RendererVTBGL.h"
 #include "../RenderFactory.h"
 #include "ServiceBroker.h"
-#include "settings/Settings.h"
-#include "settings/AdvancedSettings.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/VTB.h"
 #include "utils/log.h"

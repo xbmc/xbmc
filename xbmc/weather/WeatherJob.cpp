@@ -22,6 +22,7 @@
 #include "ServiceBroker.h"
 #include "settings/lib/Setting.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/log.h"
 #include "utils/POUtils.h"
 #include "utils/StringUtils.h"
@@ -51,7 +52,7 @@ bool CWeatherJob::DoWork()
     return false;
 
   AddonPtr addon;
-  if (!CServiceBroker::GetAddonMgr().GetAddon(CServiceBroker::GetSettings()->GetString(CSettings::SETTING_WEATHER_ADDON), addon, ADDON_SCRIPT_WEATHER))
+  if (!CServiceBroker::GetAddonMgr().GetAddon(CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_WEATHER_ADDON), addon, ADDON_SCRIPT_WEATHER))
     return false;
 
   // initialize our sys.argv variables
@@ -127,7 +128,7 @@ void CWeatherJob::LoadLocalizedToken()
 {
   // We load the english strings in to get our tokens
   std::string language = LANGUAGE_DEFAULT;
-  std::shared_ptr<CSettingString> languageSetting = std::static_pointer_cast<CSettingString>(CServiceBroker::GetSettings()->GetSetting(CSettings::SETTING_LOCALE_LANGUAGE));
+  std::shared_ptr<CSettingString> languageSetting = std::static_pointer_cast<CSettingString>(CServiceBroker::GetSettingsComponent()->GetSettings()->GetSetting(CSettings::SETTING_LOCALE_LANGUAGE));
   if (languageSetting != NULL)
     language = languageSetting->GetDefault();
 

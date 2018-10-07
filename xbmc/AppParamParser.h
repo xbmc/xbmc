@@ -8,22 +8,34 @@
 
 #pragma once
 
-#include "FileItem.h"
+#include <memory>
+#include <string>
+
+class CAdvancedSettings;
+class CFileItemList;
 
 class CAppParamParser
 {
-  public:
-    CAppParamParser();
-    void Parse(const char* const* argv, int nArgs);
+public:
+  CAppParamParser();
+  ~CAppParamParser();
 
-    const CFileItemList &Playlist() const { return m_playlist; }
+  void Parse(const char* const* argv, int nArgs);
+  void SetAdvancedSettings(CAdvancedSettings& advancedSettings) const;
 
-  private:
-    bool m_testmode;
-    void ParseArg(const std::string &arg);
-    void DisplayHelp();
-    void DisplayVersion();
-    void EnableDebugMode();
+  const CFileItemList& GetPlaylist() const;
 
-    CFileItemList m_playlist;
+  int m_logLevel;
+  bool m_startFullScreen = false;
+  bool m_platformDirectories = true;
+  bool m_testmode = false;
+  bool m_standAlone = false;
+
+private:
+  void ParseArg(const std::string &arg);
+  void DisplayHelp();
+  void DisplayVersion();
+
+  std::string m_settingsFile;
+  std::unique_ptr<CFileItemList> m_playlist;
 };

@@ -32,6 +32,7 @@
 #include "PlayListPlayer.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "guilib/TextureManager.h"
 #include "Util.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
@@ -178,7 +179,7 @@ namespace XBMCAddon
     String getSkinDir()
     {
       XBMC_TRACE;
-      return CServiceBroker::GetSettings()->GetString(CSettings::SETTING_LOOKANDFEEL_SKIN);
+      return CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_LOOKANDFEEL_SKIN);
     }
 
     String getLanguage(int format /* = CLangCodeExpander::ENGLISH_NAME */, bool region /*= false*/)

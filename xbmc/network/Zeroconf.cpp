@@ -11,6 +11,7 @@
 
 #include "ServiceBroker.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "threads/Atomics.h"
 #include "threads/CriticalSection.h"
 #include "threads/SingleLock.h"
@@ -105,9 +106,10 @@ bool CZeroconf::Start()
   CSingleLock lock(*mp_crit_sec);
   if(!IsZCdaemonRunning())
   {
-    CServiceBroker::GetSettings()->SetBool(CSettings::SETTING_SERVICES_ZEROCONF, false);
-    if (CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_SERVICES_AIRPLAY))
-      CServiceBroker::GetSettings()->SetBool(CSettings::SETTING_SERVICES_AIRPLAY, false);
+    const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+    settings->SetBool(CSettings::SETTING_SERVICES_ZEROCONF, false);
+    if (settings->GetBool(CSettings::SETTING_SERVICES_AIRPLAY))
+      settings->SetBool(CSettings::SETTING_SERVICES_AIRPLAY, false);
     return false;
   }
   if(m_started)

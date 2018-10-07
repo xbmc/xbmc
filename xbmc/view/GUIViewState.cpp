@@ -34,6 +34,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "FileItem.h"
 #include "filesystem/AddonsDirectory.h"
 #include "guilib/TextureManager.h"
@@ -378,12 +379,12 @@ SortDescription CGUIViewState::SetNextSortMethod(int direction /* = 1 */)
 
 bool CGUIViewState::HideExtensions()
 {
-  return !CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_FILELISTS_SHOWEXTENSIONS);
+  return !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_FILELISTS_SHOWEXTENSIONS);
 }
 
 bool CGUIViewState::HideParentDirItems()
 {
-  return !CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_FILELISTS_SHOWPARENTDIRITEMS);
+  return !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_FILELISTS_SHOWPARENTDIRITEMS);
 }
 
 bool CGUIViewState::DisableAddSourceButtons()
@@ -391,7 +392,7 @@ bool CGUIViewState::DisableAddSourceButtons()
   const CProfilesManager &profileManager = CServiceBroker::GetProfileManager();
 
   if (profileManager.GetCurrentProfile().canWriteSources() || g_passwordManager.bMasterUser)
-    return !CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_FILELISTS_SHOWADDSOURCEBUTTONS);
+    return !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_FILELISTS_SHOWADDSOURCEBUTTONS);
 
   return true;
 }
@@ -445,7 +446,7 @@ VECSOURCES& CGUIViewState::GetSources()
 
 void CGUIViewState::AddAddonsSource(const std::string &content, const std::string &label, const std::string &thumb)
 {
-  if (!g_advancedSettings.m_bVirtualShares)
+  if (!CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bVirtualShares)
     return;
 
   CFileItemList items;
@@ -508,7 +509,7 @@ bool CGUIViewState::AutoPlayNextVideoItem() const
   else
     settingValue = SETTING_AUTOPLAYNEXT_UNCATEGORIZED;
 
-  return settingValue >= 0 && CServiceBroker::GetSettings()->FindIntInList(CSettings::SETTING_VIDEOPLAYER_AUTOPLAYNEXTITEM, settingValue);
+  return settingValue >= 0 && CServiceBroker::GetSettingsComponent()->GetSettings()->FindIntInList(CSettings::SETTING_VIDEOPLAYER_AUTOPLAYNEXTITEM, settingValue);
 }
 
 void CGUIViewState::LoadViewState(const std::string &path, int windowID)
@@ -518,7 +519,7 @@ void CGUIViewState::LoadViewState(const std::string &path, int windowID)
     return;
 
   CViewState state;
-  if (db.GetViewState(path, windowID, state, CServiceBroker::GetSettings()->GetString(CSettings::SETTING_LOOKANDFEEL_SKIN)) ||
+  if (db.GetViewState(path, windowID, state, CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_LOOKANDFEEL_SKIN)) ||
       db.GetViewState(path, windowID, state, ""))
   {
     SetViewAsControl(state.m_viewMode);
@@ -537,11 +538,12 @@ void CGUIViewState::SaveViewToDb(const std::string &path, int windowID, CViewSta
   if (viewState != NULL)
     *viewState = state;
 
-  db.SetViewState(path, windowID, state, CServiceBroker::GetSettings()->GetString(CSettings::SETTING_LOOKANDFEEL_SKIN));
+  const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+  db.SetViewState(path, windowID, state, settings->GetString(CSettings::SETTING_LOOKANDFEEL_SKIN));
   db.Close();
 
   if (viewState != NULL)
-    CServiceBroker::GetSettings()->Save();
+    settings->Save();
 }
 
 void CGUIViewState::AddPlaylistOrder(const CFileItemList &items, LABEL_MASKS label_masks)

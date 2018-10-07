@@ -27,6 +27,7 @@
 #include "input/InputManager.h"
 #include "powermanagement/PowerTypes.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "Util.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
@@ -112,7 +113,7 @@ bool CBuiltins::IsSystemPowerdownCommand(const std::string& execString)
   }
   else if (execute == "shutdown")
   {
-    switch (CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNSTATE))
+    switch (CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNSTATE))
     {
       case POWERSTATE_SHUTDOWN:
       case POWERSTATE_SUSPEND:

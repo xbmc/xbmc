@@ -8,9 +8,11 @@
 
 #include "DirtyRegionTracker.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/log.h"
 #include <stdio.h>
 #include "DirtyRegionSolvers.h"
+#include "ServiceBroker.h"
 
 CDirtyRegionTracker::CDirtyRegionTracker(int buffering)
 {
@@ -27,7 +29,7 @@ void CDirtyRegionTracker::SelectAlgorithm()
 {
   delete m_solver;
 
-  switch (g_advancedSettings.m_guiAlgorithmDirtyRegions)
+  switch (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiAlgorithmDirtyRegions)
   {
     case DIRTYREGION_SOLVER_FILL_VIEWPORT_ON_CHANGE:
       CLog::Log(LOGDEBUG, "guilib: Fill viewport on change for solving rendering passes");
@@ -72,7 +74,7 @@ CDirtyRegionList CDirtyRegionTracker::GetDirtyRegions()
 
 void CDirtyRegionTracker::CleanMarkedRegions()
 {
-  int buffering = g_advancedSettings.m_guiVisualizeDirtyRegions ? 20 : m_buffering;
+  int buffering = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiVisualizeDirtyRegions ? 20 : m_buffering;
   int i = m_markedRegions.size() - 1;
   while (i >= 0)
 	{

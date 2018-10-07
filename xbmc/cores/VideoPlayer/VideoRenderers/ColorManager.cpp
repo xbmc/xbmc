@@ -14,6 +14,7 @@
 #include "cores/VideoPlayer/VideoRenderers/RenderFlags.h"
 #include "filesystem/File.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 
@@ -45,20 +46,22 @@ CColorManager::~CColorManager()
 
 bool CColorManager::IsEnabled() const
 {
-  return CServiceBroker::GetSettings()->GetBool("videoscreen.cmsenabled") && IsValid();
+  return CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool("videoscreen.cmsenabled") && IsValid();
 }
 
 bool CColorManager::IsValid() const
 {
-  if (!CServiceBroker::GetSettings()->GetBool("videoscreen.cmsenabled"))
+  const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+
+  if (!settings->GetBool("videoscreen.cmsenabled"))
     return true;
 
-  int cmsmode = CServiceBroker::GetSettings()->GetInt("videoscreen.cmsmode");
+  int cmsmode = settings->GetInt("videoscreen.cmsmode");
   switch (cmsmode)
   {
   case CMS_MODE_3DLUT:
   {
-    std::string fileName = CServiceBroker::GetSettings()->GetString("videoscreen.cms3dlut");
+    std::string fileName = settings->GetString("videoscreen.cms3dlut");
     if (fileName.empty())
       return false;
     if (!CFile::Exists(fileName))
@@ -68,7 +71,7 @@ bool CColorManager::IsValid() const
 #if defined(HAVE_LCMS2)
   case CMS_MODE_PROFILE:
   {
-    int cmslutsize = CServiceBroker::GetSettings()->GetInt("videoscreen.cmslutsize");
+    int cmslutsize = settings->GetInt("videoscreen.cmslutsize");
     if (cmslutsize <= 0)
       return false;
     return true;
@@ -98,12 +101,14 @@ CMS_PRIMARIES videoFlagsToPrimaries(int flags)
 
 bool CColorManager::Get3dLutSize(CMS_DATA_FORMAT format, int *clutSize, int *dataSize)
 {
-  int cmsmode = CServiceBroker::GetSettings()->GetInt("videoscreen.cmsmode");
+  const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+
+  int cmsmode = settings->GetInt("videoscreen.cmsmode");
   switch (cmsmode)
   {
   case CMS_MODE_3DLUT:
   {
-    std::string fileName = CServiceBroker::GetSettings()->GetString("videoscreen.cms3dlut");
+    std::string fileName = settings->GetString("videoscreen.cms3dlut");
     if (fileName.empty())
       return false;
 
@@ -123,7 +128,7 @@ bool CColorManager::Get3dLutSize(CMS_DATA_FORMAT format, int *clutSize, int *dat
   }
   case CMS_MODE_PROFILE:
   {
-    int cmslutsize = CServiceBroker::GetSettings()->GetInt("videoscreen.cmslutsize");
+    int cmslutsize = settings->GetInt("videoscreen.cmslutsize");
     if (cmslutsize <= 0)
       return false;
 
@@ -146,13 +151,14 @@ bool CColorManager::Get3dLutSize(CMS_DATA_FORMAT format, int *clutSize, int *dat
 
 bool CColorManager::GetVideo3dLut(int videoFlags, int *cmsToken, CMS_DATA_FORMAT format, int clutSize, uint16_t *clutData)
 {
+  const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
   CMS_PRIMARIES videoPrimaries = videoFlagsToPrimaries(videoFlags);
   CLog::Log(LOGDEBUG, "ColorManager: video primaries: %d\n", (int)videoPrimaries);
-  switch (CServiceBroker::GetSettings()->GetInt("videoscreen.cmsmode"))
+  switch (settings->GetInt("videoscreen.cmsmode"))
   {
   case CMS_MODE_3DLUT:
     CLog::Log(LOGDEBUG, "ColorManager: CMS_MODE_3DLUT\n");
-    m_cur3dlutFile = CServiceBroker::GetSettings()->GetString("videoscreen.cms3dlut");
+    m_cur3dlutFile = settings->GetString("videoscreen.cms3dlut");
     if (!Load3dLut(m_cur3dlutFile, format, clutSize, clutData))
       return false;
     m_curCmsMode = CMS_MODE_3DLUT;
@@ -163,13 +169,13 @@ bool CColorManager::GetVideo3dLut(int videoFlags, int *cmsToken, CMS_DATA_FORMAT
 #if defined(HAVE_LCMS2)
     {
       // check if display profile is not loaded, or has changed
-      if (m_curIccProfile != CServiceBroker::GetSettings()->GetString("videoscreen.displayprofile"))
+      if (m_curIccProfile != settings->GetString("videoscreen.displayprofile"))
       {
         // free old profile if there is one
         if (m_hProfile)
           cmsCloseProfile(m_hProfile);
         // load profile
-        m_hProfile = LoadIccDisplayProfile(CServiceBroker::GetSettings()->GetString("videoscreen.displayprofile"));
+        m_hProfile = LoadIccDisplayProfile(settings->GetString("videoscreen.displayprofile"));
         if (!m_hProfile)
           return false;
         // detect blackpoint
@@ -177,18 +183,18 @@ bool CColorManager::GetVideo3dLut(int videoFlags, int *cmsToken, CMS_DATA_FORMAT
         {
           CLog::Log(LOGDEBUG, "ColorManager: black point: %f\n", m_blackPoint.Y);
         }
-        m_curIccProfile = CServiceBroker::GetSettings()->GetString("videoscreen.displayprofile");
+        m_curIccProfile = settings->GetString("videoscreen.displayprofile");
       }
       // create gamma curve
       cmsToneCurve* gammaCurve;
-      m_m_curIccGammaMode = (CMS_TRC_TYPE)CServiceBroker::GetSettings()->GetInt("videoscreen.cmsgammamode");
-      m_curIccGamma = CServiceBroker::GetSettings()->GetInt("videoscreen.cmsgamma");
+      m_m_curIccGammaMode = static_cast<CMS_TRC_TYPE>(settings->GetInt("videoscreen.cmsgammamode"));
+      m_curIccGamma = settings->GetInt("videoscreen.cmsgamma");
       gammaCurve =
         CreateToneCurve(m_m_curIccGammaMode, m_curIccGamma/100.0f, m_blackPoint);
 
       // create source profile
-      m_curIccWhitePoint = (CMS_WHITEPOINT)CServiceBroker::GetSettings()->GetInt("videoscreen.cmswhitepoint");
-      m_curIccPrimaries = (CMS_PRIMARIES)CServiceBroker::GetSettings()->GetInt("videoscreen.cmsprimaries");
+      m_curIccWhitePoint = static_cast<CMS_WHITEPOINT>(settings->GetInt("videoscreen.cmswhitepoint"));
+      m_curIccPrimaries = static_cast<CMS_PRIMARIES>(settings->GetInt("videoscreen.cmsprimaries"));
       CLog::Log(LOGDEBUG, "ColorManager: primaries setting: %d\n", (int)m_curIccPrimaries);
       if (m_curIccPrimaries == CMS_PRIMARIES_AUTO)
         m_curIccPrimaries = videoPrimaries;
@@ -217,7 +223,7 @@ bool CColorManager::GetVideo3dLut(int videoFlags, int *cmsToken, CMS_DATA_FORMAT
 #endif  //defined(HAVE_LCMS2)
 
   default:
-    CLog::Log(LOGDEBUG, "ColorManager: unknown CMS mode %d\n", CServiceBroker::GetSettings()->GetInt("videoscreen.cmsmode"));
+    CLog::Log(LOGDEBUG, "ColorManager: unknown CMS mode %d\n", settings->GetInt("videoscreen.cmsmode"));
     return false;
   }
 
@@ -232,31 +238,32 @@ bool CColorManager::CheckConfiguration(int cmsToken, int flags)
 {
   if (cmsToken != m_curCmsToken)
     return false;
-  if (m_curCmsMode != CServiceBroker::GetSettings()->GetInt("videoscreen.cmsmode"))
+  const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+  if (m_curCmsMode != settings->GetInt("videoscreen.cmsmode"))
     return false;   // CMS mode has changed
   switch (m_curCmsMode)
   {
   case CMS_MODE_3DLUT:
-    if (m_cur3dlutFile != CServiceBroker::GetSettings()->GetString("videoscreen.cms3dlut"))
+    if (m_cur3dlutFile != settings->GetString("videoscreen.cms3dlut"))
       return false; // different 3dlut file selected
     break;
   case CMS_MODE_PROFILE:
 #if defined(HAVE_LCMS2)
-    if (m_curIccProfile != CServiceBroker::GetSettings()->GetString("videoscreen.displayprofile"))
+    if (m_curIccProfile != settings->GetString("videoscreen.displayprofile"))
       return false; // different ICC profile selected
-    if (m_curIccWhitePoint != CServiceBroker::GetSettings()->GetInt("videoscreen.cmswhitepoint"))
+    if (m_curIccWhitePoint != settings->GetInt("videoscreen.cmswhitepoint"))
       return false; // whitepoint changed
     {
-      CMS_PRIMARIES primaries = (CMS_PRIMARIES)CServiceBroker::GetSettings()->GetInt("videoscreen.cmsprimaries");
+      CMS_PRIMARIES primaries = static_cast<CMS_PRIMARIES>(settings->GetInt("videoscreen.cmsprimaries"));
       if (primaries == CMS_PRIMARIES_AUTO) primaries = videoFlagsToPrimaries(flags);
       if (m_curIccPrimaries != primaries)
         return false; // primaries changed
     }
-    if (m_m_curIccGammaMode != (CMS_TRC_TYPE)CServiceBroker::GetSettings()->GetInt("videoscreen.cmsgammamode"))
+    if (m_m_curIccGammaMode != static_cast<CMS_TRC_TYPE>(settings->GetInt("videoscreen.cmsgammamode")))
       return false; // gamma mode changed
-    if (m_curIccGamma != CServiceBroker::GetSettings()->GetInt("videoscreen.cmsgamma"))
+    if (m_curIccGamma != settings->GetInt("videoscreen.cmsgamma"))
       return false; // effective gamma changed
-    if (m_curClutSize != 1 << CServiceBroker::GetSettings()->GetInt("videoscreen.cmslutsize"))
+    if (m_curClutSize != 1 << settings->GetInt("videoscreen.cmslutsize"))
       return false; // CLUT size changed
     // TODO: check other parameters
 #else   //defined(HAVE_LCMS2)

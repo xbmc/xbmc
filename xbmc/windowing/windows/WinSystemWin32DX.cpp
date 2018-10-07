@@ -12,6 +12,7 @@
 #include "rendering/dx/RenderContext.h"
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/SystemInfo.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
@@ -71,7 +72,7 @@ void CWinSystemWin32DX::PresentRenderImpl(bool rendered)
 
 bool CWinSystemWin32DX::CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res)
 {
-  const MONITOR_DETAILS* monitor = GetDisplayDetails(CServiceBroker::GetSettings()->GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR));
+  const MONITOR_DETAILS* monitor = GetDisplayDetails(CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR));
   if (!monitor)
     return false;
 

@@ -24,7 +24,6 @@
 #include "cores/VideoPlayer/DVDCodecs/Overlay/DVDOverlaySpu.h"
 #include "cores/VideoPlayer/DVDCodecs/Overlay/DVDOverlaySSA.h"
 #include "windowing/WinSystem.h"
-#include "settings/Settings.h"
 #include "utils/MathUtils.h"
 #include "utils/log.h"
 #include "utils/GLUtils.h"

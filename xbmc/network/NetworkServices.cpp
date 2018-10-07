@@ -24,6 +24,7 @@
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingsManager.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/log.h"
 #include "utils/RssManager.h"
 #include "utils/SystemInfo.h"
@@ -132,7 +133,7 @@ CNetworkServices::CNetworkServices()
     CSettings::SETTING_SMB_MAXPROTOCOL,
     CSettings::SETTING_SMB_LEGACYSECURITY
   };
-  m_settings = CServiceBroker::GetSettings();
+  m_settings = CServiceBroker::GetSettingsComponent()->GetSettings();
   m_settings->GetSettingsManager()->RegisterCallback(this, settingSet);
 }
 
@@ -534,7 +535,7 @@ bool CNetworkServices::StartWebserver()
 #ifdef HAS_ZEROCONF
   std::vector<std::pair<std::string, std::string> > txt;
   txt.push_back(std::make_pair("txtvers", "1"));
-  txt.push_back(std::make_pair("uuid", CServiceBroker::GetSettings()->GetString(CSettings::SETTING_SERVICES_DEVICEUUID)));
+  txt.push_back(std::make_pair("uuid", CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_SERVICES_DEVICEUUID)));
 
   // publish web frontend and API services
 #ifdef HAS_WEB_INTERFACE
@@ -592,7 +593,7 @@ bool CNetworkServices::StartAirPlayServer()
   if (IsAirPlayServerRunning())
     return true;
 
-  if (!CAirPlayServer::StartServer(g_advancedSettings.m_airPlayPort, true))
+  if (!CAirPlayServer::StartServer(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_airPlayPort, true))
     return false;
 
   if (!CAirPlayServer::SetCredentials(m_settings->GetBool(CSettings::SETTING_SERVICES_USEAIRPLAYPASSWORD),
@@ -612,7 +613,7 @@ bool CNetworkServices::StartAirPlayServer()
   // we have implemented it anyways).
   txt.push_back(std::make_pair("features", "0x20F7"));
 
-  CZeroconf::GetInstance()->PublishService("servers.airplay", "_airplay._tcp", CSysInfo::GetDeviceName(), g_advancedSettings.m_airPlayPort, txt);
+  CZeroconf::GetInstance()->PublishService("servers.airplay", "_airplay._tcp", CSysInfo::GetDeviceName(), CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_airPlayPort, txt);
 #endif // HAS_ZEROCONF
 
   return true;
@@ -654,7 +655,7 @@ bool CNetworkServices::StartAirTunesServer()
   if (IsAirTunesServerRunning())
     return true;
 
-  if (!CAirTunesServer::StartServer(g_advancedSettings.m_airTunesPort, true,
+  if (!CAirTunesServer::StartServer(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_airTunesPort, true,
                                     m_settings->GetBool(CSettings::SETTING_SERVICES_USEAIRPLAYPASSWORD),
                                     m_settings->GetString(CSettings::SETTING_SERVICES_AIRPLAYPASSWORD)))
   {
@@ -695,15 +696,15 @@ bool CNetworkServices::StartJSONRPCServer()
   if (IsJSONRPCServerRunning())
     return true;
 
-  if (!CTCPServer::StartServer(g_advancedSettings.m_jsonTcpPort, m_settings->GetBool(CSettings::SETTING_SERVICES_ESALLINTERFACES)))
+  if (!CTCPServer::StartServer(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_jsonTcpPort, m_settings->GetBool(CSettings::SETTING_SERVICES_ESALLINTERFACES)))
     return false;
 
 #ifdef HAS_ZEROCONF
   std::vector<std::pair<std::string, std::string> > txt;
   txt.push_back(std::make_pair("txtvers", "1"));
-  txt.push_back(std::make_pair("uuid", CServiceBroker::GetSettings()->GetString(CSettings::SETTING_SERVICES_DEVICEUUID)));
+  txt.push_back(std::make_pair("uuid", CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_SERVICES_DEVICEUUID)));
 
-  CZeroconf::GetInstance()->PublishService("servers.jsonrpc-tpc", "_xbmc-jsonrpc._tcp", CSysInfo::GetDeviceName(), g_advancedSettings.m_jsonTcpPort, txt);
+  CZeroconf::GetInstance()->PublishService("servers.jsonrpc-tpc", "_xbmc-jsonrpc._tcp", CSysInfo::GetDeviceName(), CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_jsonTcpPort, txt);
 #endif // HAS_ZEROCONF
 
   return true;

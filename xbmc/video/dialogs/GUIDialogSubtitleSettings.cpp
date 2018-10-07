@@ -30,6 +30,7 @@
 #include "settings/MediaSettings.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "URL.h"
 #include "utils/LangCodeExpander.h"
 #include "utils/log.h"
@@ -114,12 +115,12 @@ std::string CGUIDialogSubtitleSettings::BrowseForSubtitle()
   if (g_application.GetCurrentPlayer() == "VideoPlayer")
     strMask = ".srt|.rar|.zip|.ifo|.smi|.sub|.idx|.ass|.ssa|.txt";
   VECSOURCES shares(*CMediaSourceSettings::GetInstance().GetSources("video"));
-  if (CMediaSettings::GetInstance().GetAdditionalSubtitleDirectoryChecked() != -1 && !CServiceBroker::GetSettings()->GetString(CSettings::SETTING_SUBTITLES_CUSTOMPATH).empty())
+  if (CMediaSettings::GetInstance().GetAdditionalSubtitleDirectoryChecked() != -1 && !CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_SUBTITLES_CUSTOMPATH).empty())
   {
     CMediaSource share;
     std::vector<std::string> paths;
     paths.push_back(URIUtils::GetDirectory(strPath));
-    paths.push_back(CServiceBroker::GetSettings()->GetString(CSettings::SETTING_SUBTITLES_CUSTOMPATH));
+    paths.push_back(CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_SUBTITLES_CUSTOMPATH));
     share.FromNameAndPaths("video",g_localizeStrings.Get(21367),paths);
     shares.push_back(share);
     strPath = share.strPath;
@@ -192,7 +193,7 @@ void CGUIDialogSubtitleSettings::Save()
 
   CMediaSettings::GetInstance().GetDefaultVideoSettings() = g_application.GetAppPlayer().GetVideoSettings();
   CMediaSettings::GetInstance().GetDefaultVideoSettings().m_SubtitleStream = -1;
-  CServiceBroker::GetSettings()->Save();
+  CServiceBroker::GetSettingsComponent()->GetSettings()->Save();
 }
 
 void CGUIDialogSubtitleSettings::SetupView()
@@ -254,7 +255,7 @@ void CGUIDialogSubtitleSettings::InitializeSettings()
   // subtitle delay setting
   if (SupportsSubtitleFeature(IPC_SUBS_OFFSET))
   {
-    std::shared_ptr<CSettingNumber> settingSubtitleDelay = AddSlider(groupSubtitles, SETTING_SUBTITLE_DELAY, 22006, SettingLevel::Basic, videoSettings.m_SubtitleDelay, 0, -g_advancedSettings.m_videoSubsDelayRange, 0.1f, g_advancedSettings.m_videoSubsDelayRange, 22006, usePopup);
+    std::shared_ptr<CSettingNumber> settingSubtitleDelay = AddSlider(groupSubtitles, SETTING_SUBTITLE_DELAY, 22006, SettingLevel::Basic, videoSettings.m_SubtitleDelay, 0, -CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoSubsDelayRange, 0.1f, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoSubsDelayRange, 22006, usePopup);
     std::static_pointer_cast<CSettingControlSlider>(settingSubtitleDelay->GetControl())->SetFormatter(SettingFormatterDelay);
   }
 

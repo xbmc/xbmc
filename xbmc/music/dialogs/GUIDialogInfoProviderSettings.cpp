@@ -33,6 +33,7 @@
 #include "settings/lib/SettingsManager.h"
 #include "settings/SettingUtils.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "settings/windows/GUIControlSettings.h"
 #include "storage/MediaManager.h"
 #include "Util.h"
@@ -56,10 +57,12 @@ bool CGUIDialogInfoProviderSettings::Show()
   if (!dialog)
     return false;
 
+  const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+
   dialog->m_showSingleScraper = false;
 
   // Get current default info provider settings from service broker
-  dialog->m_fetchInfo = CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_MUSICLIBRARY_DOWNLOADINFO);
+  dialog->m_fetchInfo = settings->GetBool(CSettings::SETTING_MUSICLIBRARY_DOWNLOADINFO);
 
   ADDON::AddonPtr defaultScraper;
   // Get default album scraper (when enabled - can default scraper be disabled??)
@@ -76,7 +79,7 @@ bool CGUIDialogInfoProviderSettings::Show()
     dialog->SetArtistScraper(scraper);
   }
 
-  dialog->m_strArtistInfoPath = CServiceBroker::GetSettings()->GetString(CSettings::SETTING_MUSICLIBRARY_ARTISTSFOLDER);
+  dialog->m_strArtistInfoPath = settings->GetString(CSettings::SETTING_MUSICLIBRARY_ARTISTSFOLDER);
 
   dialog->Open();
 
@@ -116,7 +119,7 @@ int CGUIDialogInfoProviderSettings::Show(ADDON::ScraperPtr& scraper)
       scraper = dialog->GetArtistScraper();
       // Save artist information folder (here not in the caller) when applying setting as default for all artists
       if (applyToItems == INFOPROVIDERAPPLYOPTIONS::INFOPROVIDER_DEFAULT)
-        CServiceBroker::GetSettings()->SetString(CSettings::SETTING_MUSICLIBRARY_ARTISTSFOLDER, dialog->m_strArtistInfoPath);
+        CServiceBroker::GetSettingsComponent()->GetSettings()->SetString(CSettings::SETTING_MUSICLIBRARY_ARTISTSFOLDER, dialog->m_strArtistInfoPath);
     }
     if (scraper)
       scraper->SetPathSettings(dialog->m_singleScraperType, "");
@@ -249,15 +252,16 @@ void CGUIDialogInfoProviderSettings::Save()
   // Save default settings for fetching additional information and art
   CLog::Log(LOGINFO, "%s called", __FUNCTION__);
   // Save Fetch addiitional info during update
-  CServiceBroker::GetSettings()->SetBool(CSettings::SETTING_MUSICLIBRARY_DOWNLOADINFO, m_fetchInfo);
+  const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+  settings->SetBool(CSettings::SETTING_MUSICLIBRARY_DOWNLOADINFO, m_fetchInfo);
   // Save default scrapers and addon setting values
-  CServiceBroker::GetSettings()->SetString(CSettings::SETTING_MUSICLIBRARY_ALBUMSSCRAPER, m_albumscraper->ID());
+  settings->SetString(CSettings::SETTING_MUSICLIBRARY_ALBUMSSCRAPER, m_albumscraper->ID());
   m_albumscraper->SaveSettings();
-  CServiceBroker::GetSettings()->SetString(CSettings::SETTING_MUSICLIBRARY_ARTISTSSCRAPER, m_artistscraper->ID());
+  settings->SetString(CSettings::SETTING_MUSICLIBRARY_ARTISTSSCRAPER, m_artistscraper->ID());
   m_artistscraper->SaveSettings();
   // Save artist information folder
-  CServiceBroker::GetSettings()->SetString(CSettings::SETTING_MUSICLIBRARY_ARTISTSFOLDER, m_strArtistInfoPath);
-  CServiceBroker::GetSettings()->Save();
+  settings->SetString(CSettings::SETTING_MUSICLIBRARY_ARTISTSFOLDER, m_strArtistInfoPath);
+  settings->Save();
 }
 
 void CGUIDialogInfoProviderSettings::SetupView()

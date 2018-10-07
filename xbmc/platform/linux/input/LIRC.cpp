@@ -11,6 +11,7 @@
 #include "ServiceBroker.h"
 #include "profiles/ProfilesManager.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/log.h"
 #include <lirc/lirc_client.h>
 #include <fcntl.h>
@@ -138,7 +139,7 @@ void CLirc::ProcessCode(char *buf)
       appPort->OnEvent(newEvent);
     return;
   }
-  else if (repeat > g_advancedSettings.m_remoteDelay)
+  else if (repeat > CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_remoteDelay)
   {
     XBMC_Event newEvent;
     newEvent.type = XBMC_BUTTON;

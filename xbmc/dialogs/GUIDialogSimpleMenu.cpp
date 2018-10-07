@@ -15,6 +15,7 @@
 #include "GUIDialogSelect.h"
 #include "settings/DiscSettings.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/URIUtils.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
@@ -48,7 +49,7 @@ protected:
 
 bool CGUIDialogSimpleMenu::ShowPlaySelection(CFileItem& item)
 {
-  if (CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_DISC_PLAYBACK) != BD_PLAYBACK_SIMPLE_MENU)
+  if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_DISC_PLAYBACK) != BD_PLAYBACK_SIMPLE_MENU)
     return true;
 
   std::string path;

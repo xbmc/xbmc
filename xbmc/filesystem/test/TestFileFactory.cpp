@@ -10,6 +10,7 @@
 #include "filesystem/File.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "test/TestUtils.h"
 #include "utils/StringUtils.h"
 
@@ -20,28 +21,25 @@ class TestFileFactory : public testing::Test
 protected:
   TestFileFactory()
   {
-    if (CServiceBroker::GetSettings()->Initialize())
-    {
-      std::vector<std::string> advancedsettings =
-        CXBMCTestUtils::Instance().getAdvancedSettingsFiles();
-      std::vector<std::string> guisettings =
-        CXBMCTestUtils::Instance().getGUISettingsFiles();
+    std::vector<std::string> advancedsettings =
+      CXBMCTestUtils::Instance().getAdvancedSettingsFiles();
+    std::vector<std::string> guisettings =
+      CXBMCTestUtils::Instance().getGUISettingsFiles();
 
-      for (const auto& it : guisettings)
-        CServiceBroker::GetSettings()->Load(it);
+    const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+    for (const auto& it : guisettings)
+      settings->Load(it);
 
-      for (const auto& it : advancedsettings)
-        g_advancedSettings.ParseSettingsFile(it);
+    const std::shared_ptr<CAdvancedSettings> advancedSettings = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
+    for (const auto& it : advancedsettings)
+      advancedSettings->ParseSettingsFile(it);
 
-      CServiceBroker::GetSettings()->SetLoaded();
-    }
+    settings->SetLoaded();
   }
 
   ~TestFileFactory() override
   {
-    g_advancedSettings.Clear();
-    CServiceBroker::GetSettings()->Unload();
-    CServiceBroker::GetSettings()->Uninitialize();
+    CServiceBroker::GetSettingsComponent()->GetSettings()->Unload();
   }
 };
 

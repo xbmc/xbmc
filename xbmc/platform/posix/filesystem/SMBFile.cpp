@@ -18,6 +18,7 @@
 #include "filesystem/SpecialProtocol.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "Util.h"
@@ -83,6 +84,8 @@ void CSMB::Init()
 
   if (!m_context)
   {
+    const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+
     // force libsmbclient to use our own smb.conf by overriding HOME
     std::string truehome(getenv("HOME"));
     setenv("HOME", CSpecialProtocol::TranslatePath("special://home").c_str(), 1);
@@ -106,25 +109,25 @@ void CSMB::Init()
         fprintf(f, "\tlock directory = %s/.smb/\n", home.c_str());
 
         // set minimum smbclient protocol version
-        if (CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_SMB_MINPROTOCOL) > 0)
+        if (settings->GetInt(CSettings::SETTING_SMB_MINPROTOCOL) > 0)
         {
-          if (CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_SMB_MINPROTOCOL) == 1)
+          if (settings->GetInt(CSettings::SETTING_SMB_MINPROTOCOL) == 1)
             fprintf(f, "\tclient min protocol = NT1\n");
           else
-            fprintf(f, "\tclient min protocol = SMB%d\n", CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_SMB_MINPROTOCOL));
+            fprintf(f, "\tclient min protocol = SMB%d\n", settings->GetInt(CSettings::SETTING_SMB_MINPROTOCOL));
         }
 
         // set maximum smbclient protocol version
-        if (CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_SMB_MAXPROTOCOL) > 0)
+        if (settings->GetInt(CSettings::SETTING_SMB_MAXPROTOCOL) > 0)
         {
-          if (CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_SMB_MAXPROTOCOL) == 1)
+          if (settings->GetInt(CSettings::SETTING_SMB_MAXPROTOCOL) == 1)
             fprintf(f, "\tclient max protocol = NT1\n");
           else
-            fprintf(f, "\tclient max protocol = SMB%d\n", CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_SMB_MAXPROTOCOL));
+            fprintf(f, "\tclient max protocol = SMB%d\n", settings->GetInt(CSettings::SETTING_SMB_MAXPROTOCOL));
         }
 
         // set legacy security options
-        if (CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_SMB_LEGACYSECURITY) && (CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_SMB_MAXPROTOCOL) == 1))
+        if (settings->GetBool(CSettings::SETTING_SMB_LEGACYSECURITY) && (settings->GetInt(CSettings::SETTING_SMB_MAXPROTOCOL) == 1))
         {
           fprintf(f, "\tclient NTLMv2 auth = no\n");
           fprintf(f, "\tclient use spnego = no\n");
@@ -132,9 +135,9 @@ void CSMB::Init()
 
         // set wins server if there's one. name resolve order defaults to 'lmhosts host wins bcast'.
         // if no WINS server has been specified the wins method will be ignored.
-        if (CServiceBroker::GetSettings()->GetString(CSettings::SETTING_SMB_WINSSERVER).length() > 0 && !StringUtils::EqualsNoCase(CServiceBroker::GetSettings()->GetString(CSettings::SETTING_SMB_WINSSERVER), "0.0.0.0") )
+        if (settings->GetString(CSettings::SETTING_SMB_WINSSERVER).length() > 0 && !StringUtils::EqualsNoCase(settings->GetString(CSettings::SETTING_SMB_WINSSERVER), "0.0.0.0") )
         {
-          fprintf(f, "\twins server = %s\n", CServiceBroker::GetSettings()->GetString(CSettings::SETTING_SMB_WINSSERVER).c_str());
+          fprintf(f, "\twins server = %s\n", settings->GetString(CSettings::SETTING_SMB_WINSSERVER).c_str());
           fprintf(f, "\tname resolve order = bcast wins host\n");
         }
         else
@@ -142,8 +145,8 @@ void CSMB::Init()
 
         // use user-configured charset. if no charset is specified,
         // samba tries to use charset 850 but falls back to ASCII in case it is not available
-        if (g_advancedSettings.m_sambadoscodepage.length() > 0)
-          fprintf(f, "\tdos charset = %s\n", g_advancedSettings.m_sambadoscodepage.c_str());
+        if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_sambadoscodepage.length() > 0)
+          fprintf(f, "\tdos charset = %s\n", CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_sambadoscodepage.c_str());
 
         // include users configuration if available
         fprintf(f, "\tinclude = %s/.smb/user.conf\n", home.c_str());
@@ -169,31 +172,31 @@ void CSMB::Init()
     setenv("HOME", truehome.c_str(), 1);
 
 #ifdef DEPRECATED_SMBC_INTERFACE
-    smbc_setDebug(m_context, g_advancedSettings.CanLogComponent(LOGSAMBA) ? 10 : 0);
+    smbc_setDebug(m_context, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->CanLogComponent(LOGSAMBA) ? 10 : 0);
     smbc_setFunctionAuthData(m_context, xb_smbc_auth);
     orig_cache = smbc_getFunctionGetCachedServer(m_context);
     smbc_setFunctionGetCachedServer(m_context, xb_smbc_cache);
     smbc_setOptionOneSharePerServer(m_context, false);
     smbc_setOptionBrowseMaxLmbCount(m_context, 0);
-    smbc_setTimeout(m_context, g_advancedSettings.m_sambaclienttimeout * 1000);
+    smbc_setTimeout(m_context, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_sambaclienttimeout * 1000);
     // we do not need to strdup these, smbc_setXXX below will make their own copies
-    if (CServiceBroker::GetSettings()->GetString(CSettings::SETTING_SMB_WORKGROUP).length() > 0)
+    if (settings->GetString(CSettings::SETTING_SMB_WORKGROUP).length() > 0)
       //! @bug libsmbclient < 4.9 isn't const correct
-      smbc_setWorkgroup(m_context, const_cast<char*>(CServiceBroker::GetSettings()->GetString(CSettings::SETTING_SMB_WORKGROUP).c_str()));
+      smbc_setWorkgroup(m_context, const_cast<char*>(settings->GetString(CSettings::SETTING_SMB_WORKGROUP).c_str()));
     std::string guest = "guest";
     //! @bug libsmbclient < 4.8 isn't const correct
     smbc_setUser(m_context, const_cast<char*>(guest.c_str()));
 #else
-    m_context->debug = (g_advancedSettings.CanLogComponent(LOGSAMBA) ? 10 : 0);
+    m_context->debug = (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->CanLogComponent(LOGSAMBA) ? 10 : 0);
     m_context->callbacks.auth_fn = xb_smbc_auth;
     orig_cache = m_context->callbacks.get_cached_srv_fn;
     m_context->callbacks.get_cached_srv_fn = xb_smbc_cache;
     m_context->options.one_share_per_server = false;
     m_context->options.browse_max_lmb_count = 0;
-    m_context->timeout = g_advancedSettings.m_sambaclienttimeout * 1000;
+    m_context->timeout = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_sambaclienttimeout * 1000;
     // we need to strdup these, they will get free'd on smbc_free_context
-    if (CServiceBroker::GetSettings()->GetString(CSettings::SETTING_SMB_WORKGROUP).length() > 0)
-      m_context->workgroup = strdup(CServiceBroker::GetSettings()->GetString(CSettings::SETTING_SMB_WORKGROUP).c_str());
+    if (settings->GetString(CSettings::SETTING_SMB_WORKGROUP).length() > 0)
+      m_context->workgroup = strdup(settings->GetString(CSettings::SETTING_SMB_WORKGROUP).c_str());
     m_context->user = strdup("guest");
 #endif
 

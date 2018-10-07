@@ -22,6 +22,7 @@
 
 #include "utils/log.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
 #include "cores/VideoPlayer/Interface/Addon/DemuxCrypto.h"
 #include "ServiceBroker.h"
@@ -591,7 +592,7 @@ void CDVDAudioCodecAndroidMediaCodec::GetData(DVDAudioFrame &frame)
     frame.duration = ((double)frame.nb_frames * DVD_TIME_BASE) / frame.format.m_sampleRate;
   else
     frame.duration = 0.0;
-  if (frame.nb_frames > 0 && g_advancedSettings.CanLogComponent(LOGAUDIO))
+  if (frame.nb_frames > 0 && CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->CanLogComponent(LOGAUDIO))
     CLog::Log(LOGDEBUG, "MediaCodecAudio::GetData: frames:%d pts: %0.4f", frame.nb_frames, frame.pts);
 }
 

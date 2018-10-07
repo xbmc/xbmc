@@ -21,7 +21,9 @@
 #include "Util.h"
 #include "guilib/LocalizeStrings.h"
 #include "FileItem.h"
+#include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
@@ -121,7 +123,7 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         bIsDir = (aDir.type == SMBC_DIR);
 
         struct stat info = {0};
-        if ((m_flags & DIR_FLAG_NO_FILE_INFO)==0 && g_advancedSettings.m_sambastatfiles)
+        if ((m_flags & DIR_FLAG_NO_FILE_INFO)==0 && CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_sambastatfiles)
         {
           // make sure we use the authenticated path wich contains any default username
           const std::string strFullName = strAuth + smb.URLEncode(strFile);

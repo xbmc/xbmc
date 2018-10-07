@@ -16,6 +16,7 @@
 #include "messaging/ApplicationMessenger.h"
 #include "network/NetworkServices.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/log.h"
 #ifdef TARGET_WINDOWS
 #include "utils/SystemInfo.h"
@@ -513,7 +514,7 @@ std::vector<SOCKET> CreateTCPServerSocket(const int port, const bool bindLocal, 
 
 void CNetworkBase::WaitForNet()
 {
-  const int timeout = CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_POWERMANAGEMENT_WAITFORNETWORK);
+  const int timeout = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_POWERMANAGEMENT_WAITFORNETWORK);
   if (timeout <= 0)
     return; // wait for network is disabled
 

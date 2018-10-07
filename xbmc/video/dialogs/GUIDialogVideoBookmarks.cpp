@@ -33,12 +33,13 @@
 #include "TextureCache.h"
 #include "messaging/ApplicationMessenger.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include <string>
 #include <vector>
 
 using namespace KODI::MESSAGING;
 
-#define BOOKMARK_THUMB_WIDTH g_advancedSettings.m_imageRes
+#define BOOKMARK_THUMB_WIDTH CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_imageRes
 
 #define CONTROL_ADD_BOOKMARK           2
 #define CONTROL_CLEAR_BOOKMARKS        3
@@ -278,7 +279,7 @@ void CGUIDialogVideoBookmarks::OnRefreshList()
     std::string cachefile = CTextureCache::GetInstance().GetCachedPath(CTextureCache::GetInstance().GetCacheFile(chapterPath)+".jpg");
     if (XFILE::CFile::Exists(cachefile))
       item->SetArt("thumb", cachefile);
-    else if (i > m_jobsStarted && CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_MYVIDEOS_EXTRACTCHAPTERTHUMBS))
+    else if (i > m_jobsStarted && CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_MYVIDEOS_EXTRACTCHAPTERTHUMBS))
     {
       CFileItem item(m_filePath, false);
       CJob* job = new CThumbExtractor(item, m_filePath, true, chapterPath, pos * 1000, false);

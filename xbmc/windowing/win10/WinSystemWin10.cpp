@@ -19,6 +19,7 @@
 #include "ServiceBroker.h"
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/SystemInfo.h"
@@ -580,7 +581,7 @@ void CWinSystemWin10::OnDisplayReset()
 
 void CWinSystemWin10::OnDisplayBack()
 {
-  int delay = CServiceBroker::GetSettings()->GetInt("videoscreen.delayrefreshchange");
+  int delay = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt("videoscreen.delayrefreshchange");
   if (delay > 0)
   {
     m_delayDispReset = true;
@@ -617,7 +618,7 @@ std::string CWinSystemWin10::GetClipboardText()
 
 bool CWinSystemWin10::UseLimitedColor()
 {
-  return CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_VIDEOSCREEN_LIMITEDRANGE);
+  return CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOSCREEN_LIMITEDRANGE);
 }
 
 void CWinSystemWin10::NotifyAppFocusChange(bool bGaining)

@@ -13,7 +13,9 @@
 #include "FileItem.h"
 #include "utils/StringUtils.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 #include "URL.h"
+#include "ServiceBroker.h"
 
 namespace XFILE
 {
@@ -44,7 +46,7 @@ namespace XFILE
     // Load up our REs
     VECCREGEXP  RegExps;
     CRegExp     tempRE(true, CRegExp::autoUtf8);
-    const std::vector<std::string>& strRegExps = g_advancedSettings.m_videoStackRegExps;
+    const std::vector<std::string>& strRegExps = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoStackRegExps;
     std::vector<std::string>::const_iterator itRegExp = strRegExps.begin();
     while (itRegExp != strRegExps.end())
     {

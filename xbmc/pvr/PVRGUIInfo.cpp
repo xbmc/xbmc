@@ -21,6 +21,7 @@
 #include "guilib/guiinfo/GUIInfoLabels.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
 
@@ -127,7 +128,7 @@ void CPVRGUIInfo::Notify(const Observable &obs, const ObservableMessage msg)
 void CPVRGUIInfo::Process(void)
 {
   unsigned int iLoop = 0;
-  int toggleInterval = g_advancedSettings.m_iPVRInfoToggleInterval / 1000;
+  int toggleInterval = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iPVRInfoToggleInterval / 1000;
 
   /* updated on request */
   CServiceBroker::GetPVRManager().RegisterObserver(this);
@@ -189,7 +190,7 @@ void CPVRGUIInfo::UpdateQualityData(void)
   PVR_SIGNAL_STATUS qualityInfo;
   ClearQualityInfo(qualityInfo);
 
-  if (CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_PVRPLAYBACK_SIGNALQUALITY))
+  if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_PVRPLAYBACK_SIGNALQUALITY))
   {
     bool bIsPlayingRecording = CServiceBroker::GetPVRManager().IsPlayingRecording();
     if (!bIsPlayingRecording)
@@ -467,7 +468,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem *item, const CGUIInf
         // associated with the epg event of a timer, if any, and not the title of the timer.
         if (epgTag)
           strValue = epgTag->Title();
-        if (strValue.empty() && !CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_EPG_HIDENOINFOAVAILABLE))
+        if (strValue.empty() && !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_EPG_HIDENOINFOAVAILABLE))
           strValue = g_localizeStrings.Get(19055); // no information available
         return true;
     }
@@ -843,7 +844,7 @@ namespace
   {
     if (epgTag)
       return epgTag->Title();
-    else if (CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_EPG_HIDENOINFOAVAILABLE))
+    else if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_EPG_HIDENOINFOAVAILABLE))
       return std::string();
     else
       return g_localizeStrings.Get(19055); // no information available

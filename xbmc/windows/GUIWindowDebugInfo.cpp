@@ -8,6 +8,7 @@
 
 #include "GUIWindowDebugInfo.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 #include "addons/Skin.h"
 #include "utils/CPUInfo.h"
 #include "utils/log.h"
@@ -41,7 +42,7 @@ CGUIWindowDebugInfo::~CGUIWindowDebugInfo(void) = default;
 
 void CGUIWindowDebugInfo::UpdateVisibility()
 {
-  if (LOG_LEVEL_DEBUG_FREEMEM <= g_advancedSettings.m_logLevel || g_SkinInfo->IsDebugging())
+  if (LOG_LEVEL_DEBUG_FREEMEM <= CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_logLevel || g_SkinInfo->IsDebugging())
     Open();
   else
     Close();
@@ -87,7 +88,7 @@ void CGUIWindowDebugInfo::Process(unsigned int currentTime, CDirtyRegionList &di
     return;
 
   std::string info;
-  if (LOG_LEVEL_DEBUG_FREEMEM <= g_advancedSettings.m_logLevel)
+  if (LOG_LEVEL_DEBUG_FREEMEM <= CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_logLevel)
   {
     MEMORYSTATUSEX stat;
     stat.dwLength = sizeof(MEMORYSTATUSEX);

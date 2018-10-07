@@ -7,7 +7,9 @@
  */
 
 #include "AELimiter.h"
+#include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/MathUtils.h"
 #include <algorithm>
 #include <math.h>
@@ -43,8 +45,8 @@ float CAELimiter::Run(float* frame[AE_CH_MAX], int channels, int offset /*= 0*/,
   if (sample * m_attenuation > 1.0f)
   {
     m_attenuation = 1.0f / sample;
-    m_holdcounter = MathUtils::round_int(m_samplerate * g_advancedSettings.m_limiterHold);
-    m_increase = powf(std::min(sample, 10000.0f), 1.0f / (g_advancedSettings.m_limiterRelease * m_samplerate));
+    m_holdcounter = MathUtils::round_int(m_samplerate * CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_limiterHold);
+    m_increase = powf(std::min(sample, 10000.0f), 1.0f / (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_limiterRelease * m_samplerate));
   }
 
   float attenuation = m_attenuation;

@@ -26,6 +26,7 @@
 #include "GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingsManager.h"
 #include "settings/Settings.h"
@@ -89,7 +90,7 @@ static const struct StereoModeMap StringToGuiModeMap[] =
 
 CStereoscopicsManager::CStereoscopicsManager()
 {
-  m_settings = CServiceBroker::GetSettings();
+  m_settings = CServiceBroker::GetSettingsComponent()->GetSettings();
 
   m_stereoModeSetByUser = RENDER_STEREO_MODE_UNDEFINED;
   m_lastStereoModeSetByUser = RENDER_STEREO_MODE_UNDEFINED;
@@ -164,18 +165,18 @@ std::string CStereoscopicsManager::DetectStereoModeByString(const std::string &n
   std::string searchString(needle);
   CRegExp re(true);
 
-  if (!re.RegComp(g_advancedSettings.m_stereoscopicregex_3d.c_str()))
+  if (!re.RegComp(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_stereoscopicregex_3d.c_str()))
   {
-    CLog::Log(LOGERROR, "%s: Invalid RegExp for matching 3d content:'%s'", __FUNCTION__, g_advancedSettings.m_stereoscopicregex_3d.c_str());
+    CLog::Log(LOGERROR, "%s: Invalid RegExp for matching 3d content:'%s'", __FUNCTION__, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_stereoscopicregex_3d.c_str());
     return stereoMode;
   }
 
   if (re.RegFind(searchString) == -1)
     return stereoMode;    // no match found for 3d content, assume mono mode
 
-  if (!re.RegComp(g_advancedSettings.m_stereoscopicregex_sbs.c_str()))
+  if (!re.RegComp(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_stereoscopicregex_sbs.c_str()))
   {
-    CLog::Log(LOGERROR, "%s: Invalid RegExp for matching 3d SBS content:'%s'", __FUNCTION__, g_advancedSettings.m_stereoscopicregex_sbs.c_str());
+    CLog::Log(LOGERROR, "%s: Invalid RegExp for matching 3d SBS content:'%s'", __FUNCTION__, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_stereoscopicregex_sbs.c_str());
     return stereoMode;
   }
 
@@ -185,9 +186,9 @@ std::string CStereoscopicsManager::DetectStereoModeByString(const std::string &n
     return stereoMode;
   }
 
-  if (!re.RegComp(g_advancedSettings.m_stereoscopicregex_tab.c_str()))
+  if (!re.RegComp(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_stereoscopicregex_tab.c_str()))
   {
-    CLog::Log(LOGERROR, "%s: Invalid RegExp for matching 3d TAB content:'%s'", __FUNCTION__, g_advancedSettings.m_stereoscopicregex_tab.c_str());
+    CLog::Log(LOGERROR, "%s: Invalid RegExp for matching 3d TAB content:'%s'", __FUNCTION__, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_stereoscopicregex_tab.c_str());
     return stereoMode;
   }
 

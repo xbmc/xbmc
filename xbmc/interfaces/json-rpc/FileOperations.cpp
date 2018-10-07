@@ -16,6 +16,7 @@
 #include "FileItem.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSourceSettings.h"
+#include "settings/SettingsComponent.h"
 #include "Util.h"
 #include "URL.h"
 #include "utils/FileExtensionProvider.h"
@@ -79,17 +80,17 @@ JSONRPC_STATUS CFileOperations::GetDirectory(const std::string &method, ITranspo
   std::string extensions;
   if (media == "video")
   {
-    regexps = g_advancedSettings.m_videoExcludeFromListingRegExps;
+    regexps = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoExcludeFromListingRegExps;
     extensions = CServiceBroker::GetFileExtensionProvider().GetVideoExtensions();
   }
   else if (media == "music")
   {
-    regexps = g_advancedSettings.m_audioExcludeFromListingRegExps;
+    regexps = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_audioExcludeFromListingRegExps;
     extensions = CServiceBroker::GetFileExtensionProvider().GetMusicExtensions();
   }
   else if (media == "pictures")
   {
-    regexps = g_advancedSettings.m_pictureExcludeFromListingRegExps;
+    regexps = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_pictureExcludeFromListingRegExps;
     extensions = CServiceBroker::GetFileExtensionProvider().GetPictureExtensions();
   }
 
@@ -341,17 +342,17 @@ bool CFileOperations::FillFileItemList(const CVariant &parameterObject, CFileIte
 
       if (media == "video")
       {
-        regexps = g_advancedSettings.m_videoExcludeFromListingRegExps;
+        regexps = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoExcludeFromListingRegExps;
         extensions = CServiceBroker::GetFileExtensionProvider().GetVideoExtensions();
       }
       else if (media == "music")
       {
-        regexps = g_advancedSettings.m_audioExcludeFromListingRegExps;
+        regexps = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_audioExcludeFromListingRegExps;
         extensions = CServiceBroker::GetFileExtensionProvider().GetMusicExtensions();
       }
       else if (media == "pictures")
       {
-        regexps = g_advancedSettings.m_pictureExcludeFromListingRegExps;
+        regexps = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_pictureExcludeFromListingRegExps;
         extensions = CServiceBroker::GetFileExtensionProvider().GetPictureExtensions();
       }
 

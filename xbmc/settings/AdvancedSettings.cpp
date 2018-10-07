@@ -13,6 +13,7 @@
 #include <string>
 #include <vector>
 
+#include "AppParamParser.h"
 #include "Application.h"
 #include "ServiceBroker.h"
 #include "filesystem/File.h"
@@ -22,7 +23,9 @@
 #include "network/DNSNameCache.h"
 #include "profiles/ProfilesManager.h"
 #include "settings/lib/Setting.h"
+#include "settings/lib/SettingsManager.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "settings/SettingUtils.h"
 #include "utils/LangCodeExpander.h"
 #include "utils/log.h"
@@ -57,7 +60,8 @@ void CAdvancedSettings::OnSettingsLoaded()
   CLog::Log(LOGNOTICE, "Default Audio Player: %s", m_audioDefaultPlayer.c_str());
 
   // setup any logging...
-  if (CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_DEBUG_SHOWLOGINFO))
+  const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+  if (settings->GetBool(CSettings::SETTING_DEBUG_SHOWLOGINFO))
   {
     m_logLevel = std::max(m_logLevelHint, LOG_LEVEL_DEBUG_FREEMEM);
     CLog::Log(LOGNOTICE, "Enabled debug logging due to GUI setting (%d)", m_logLevel);
@@ -69,8 +73,8 @@ void CAdvancedSettings::OnSettingsLoaded()
   }
   CLog::SetLogLevel(m_logLevel);
 
-  m_extraLogEnabled = CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_DEBUG_EXTRALOGGING);
-  setExtraLogLevel(CServiceBroker::GetSettings()->GetList(CSettings::SETTING_DEBUG_SETEXTRALOGLEVEL));
+  m_extraLogEnabled = settings->GetBool(CSettings::SETTING_DEBUG_EXTRALOGGING);
+  SetExtraLogLevel(settings->GetList(CSettings::SETTING_DEBUG_SETEXTRALOGLEVEL));
 }
 
 void CAdvancedSettings::OnSettingsUnloaded()
@@ -89,7 +93,33 @@ void CAdvancedSettings::OnSettingChanged(std::shared_ptr<const CSetting> setting
   else if (settingId == CSettings::SETTING_DEBUG_EXTRALOGGING)
     m_extraLogEnabled = std::static_pointer_cast<const CSettingBool>(setting)->GetValue();
   else if (settingId == CSettings::SETTING_DEBUG_SETEXTRALOGLEVEL)
-    setExtraLogLevel(CSettingUtils::GetList(std::static_pointer_cast<const CSettingList>(setting)));
+    SetExtraLogLevel(CSettingUtils::GetList(std::static_pointer_cast<const CSettingList>(setting)));
+}
+
+void CAdvancedSettings::Initialize(const CAppParamParser &params, CSettingsManager& settingsMgr)
+{
+  Initialize();
+
+  params.SetAdvancedSettings(*this);
+
+  settingsMgr.RegisterSettingOptionsFiller("loggingcomponents", SettingOptionsLoggingComponentsFiller);
+  settingsMgr.RegisterSettingsHandler(this);
+  std::set<std::string> settingSet;
+  settingSet.insert(CSettings::SETTING_DEBUG_SHOWLOGINFO);
+  settingSet.insert(CSettings::SETTING_DEBUG_EXTRALOGGING);
+  settingSet.insert(CSettings::SETTING_DEBUG_SETEXTRALOGLEVEL);
+  settingsMgr.RegisterCallback(this, settingSet);
+}
+
+void CAdvancedSettings::Uninitialize(CSettingsManager& settingsMgr)
+{
+  settingsMgr.UnregisterCallback(this);
+  settingsMgr.UnregisterSettingsHandler(this);
+  settingsMgr.UnregisterSettingOptionsFiller("loggingcomponents");
+
+  Clear();
+
+  m_initialized = false;
 }
 
 void CAdvancedSettings::Initialize()
@@ -854,12 +884,12 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     const char* hide = pElement->Attribute("hide");
     if (hide == NULL || strnicmp("false", hide, 4) != 0)
     {
-      SettingPtr setting = CServiceBroker::GetSettings()->GetSetting(CSettings::SETTING_DEBUG_SHOWLOGINFO);
+      SettingPtr setting = CServiceBroker::GetSettingsComponent()->GetSettings()->GetSetting(CSettings::SETTING_DEBUG_SHOWLOGINFO);
       if (setting != NULL)
         setting->SetVisible(false);
     }
-    g_advancedSettings.m_logLevel = std::max(g_advancedSettings.m_logLevel, g_advancedSettings.m_logLevelHint);
-    CLog::SetLogLevel(g_advancedSettings.m_logLevel);
+    m_logLevel = std::max(m_logLevel, m_logLevelHint);
+    CLog::SetLogLevel(m_logLevel);
   }
 
   XMLUtils::GetString(pRootElement, "cddbaddress", m_cddbAddress);
@@ -1209,7 +1239,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
   }
 
   // load in the settings overrides
-  CServiceBroker::GetSettings()->LoadHidden(pRootElement);
+  CServiceBroker::GetSettingsComponent()->GetSettings()->LoadHidden(pRootElement);
 }
 
 void CAdvancedSettings::Clear()
@@ -1421,7 +1451,7 @@ void CAdvancedSettings::SettingOptionsLoggingComponentsFiller(SettingConstPtr se
   list.push_back(std::make_pair(g_localizeStrings.Get(682), LOGDATABASE));
 }
 
-void CAdvancedSettings::setExtraLogLevel(const std::vector<CVariant> &components)
+void CAdvancedSettings::SetExtraLogLevel(const std::vector<CVariant> &components)
 {
   m_extraLogLevels = 0;
   for (std::vector<CVariant>::const_iterator it = components.begin(); it != components.end(); ++it)

@@ -24,6 +24,7 @@ extern "C" {
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/LocalizeStrings.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
@@ -264,7 +265,7 @@ void CPVRClient::WriteClientRecordingInfo(const CPVRRecording &xbmcRecording, PV
   xbmcRecording.RecordingTimeAsUTC().GetAsTime(recTime);
 
   addonRecording = {{0}};
-  addonRecording.recordingTime       = recTime - g_advancedSettings.m_iPVRTimeCorrection;
+  addonRecording.recordingTime       = recTime - CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iPVRTimeCorrection;
   strncpy(addonRecording.strRecordingId, xbmcRecording.m_strRecordingId.c_str(), sizeof(addonRecording.strRecordingId) - 1);
   strncpy(addonRecording.strTitle, xbmcRecording.m_strTitle.c_str(), sizeof(addonRecording.strTitle) - 1);
   strncpy(addonRecording.strPlotOutline, xbmcRecording.m_strPlotOutline.c_str(), sizeof(addonRecording.strPlotOutline) - 1);
@@ -295,6 +296,8 @@ void CPVRClient::WriteClientTimerInfo(const CPVRTimerInfoTag &xbmcTimer, PVR_TIM
   xbmcTimer.FirstDayAsUTC().GetAsTime(firstDay);
   CPVREpgInfoTagPtr epgTag = xbmcTimer.GetEpgInfoTag();
 
+  int iPVRTimeCorrection = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iPVRTimeCorrection;
+
   addonTimer = {0};
   addonTimer.iClientIndex              = xbmcTimer.m_iClientIndex;
   addonTimer.iParentClientIndex        = xbmcTimer.m_iParentClientIndex;
@@ -311,11 +314,11 @@ void CPVRClient::WriteClientTimerInfo(const CPVRTimerInfoTag &xbmcTimer, PVR_TIM
   addonTimer.iPreventDuplicateEpisodes = xbmcTimer.m_iPreventDupEpisodes;
   addonTimer.iRecordingGroup           = xbmcTimer.m_iRecordingGroup;
   addonTimer.iWeekdays                 = xbmcTimer.m_iWeekdays;
-  addonTimer.startTime                 = start - g_advancedSettings.m_iPVRTimeCorrection;
-  addonTimer.endTime                   = end - g_advancedSettings.m_iPVRTimeCorrection;
+  addonTimer.startTime                 = start - iPVRTimeCorrection;
+  addonTimer.endTime                   = end - iPVRTimeCorrection;
   addonTimer.bStartAnyTime             = xbmcTimer.m_bStartAnyTime;
   addonTimer.bEndAnyTime               = xbmcTimer.m_bEndAnyTime;
-  addonTimer.firstDay                  = firstDay - g_advancedSettings.m_iPVRTimeCorrection;
+  addonTimer.firstDay                  = firstDay - iPVRTimeCorrection;
   addonTimer.iEpgUid                   = epgTag ? epgTag->UniqueBroadcastID() : PVR_TIMER_NO_EPG_UID;
   strncpy(addonTimer.strSummary, xbmcTimer.m_strSummary.c_str(), sizeof(addonTimer.strSummary) - 1);
   addonTimer.iMarginStart              = xbmcTimer.m_iMarginStart;
@@ -642,10 +645,12 @@ PVR_ERROR CPVRClient::GetEPGForChannel(const CPVRChannelPtr &channel, CPVREpg *e
     handle.dataAddress    = epg;
     handle.dataIdentifier = bSaveInDb ? 1 : 0; // used by the callback method CPVRClient::cb_transfer_epg_entry()
 
+    int iPVRTimeCorrection = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iPVRTimeCorrection;
+
     return addon->GetEPGForChannel(&handle,
                                    addonChannel,
-                                   start ? start - g_advancedSettings.m_iPVRTimeCorrection : 0,
-                                   end ? end - g_advancedSettings.m_iPVRTimeCorrection : 0);
+                                   start ? start - iPVRTimeCorrection : 0,
+                                   end ? end - iPVRTimeCorrection : 0);
   }, m_clientCapabilities.SupportsEPG());
 }
 

@@ -13,18 +13,19 @@
 
 class CAppParamParser;
 
-namespace ADDON {
-class CAddonMgr;
-class CBinaryAddonManager;
-class CBinaryAddonCache;
-class CVFSAddonCache;
-class CServiceAddonManager;
-class CRepositoryUpdater;
+namespace ADDON
+{
+  class CAddonMgr;
+  class CBinaryAddonManager;
+  class CBinaryAddonCache;
+  class CVFSAddonCache;
+  class CServiceAddonManager;
+  class CRepositoryUpdater;
 }
 
 namespace PVR
 {
-class CPVRManager;
+  class CPVRManager;
 }
 
 namespace PLAYLIST
@@ -85,6 +86,7 @@ public:
   void DeinitStageTwo();
   void DeinitStageOnePointFive();
   void DeinitStageOne();
+
   ADDON::CAddonMgr& GetAddonMgr();
   ADDON::CBinaryAddonManager& GetBinaryAddonManager();
   ADDON::CBinaryAddonCache& GetBinaryAddonCache();

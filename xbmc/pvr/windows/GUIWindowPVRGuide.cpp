@@ -19,6 +19,7 @@
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
 #include "view/GUIViewState.h"
 
@@ -381,7 +382,7 @@ bool CGUIWindowPVRGuideBase::OnMessage(CGUIMessage& message)
           {
             case ACTION_SELECT_ITEM:
             case ACTION_MOUSE_LEFT_CLICK:
-              switch(CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_EPG_SELECTACTION))
+              switch(CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_EPG_SELECTACTION))
               {
                 case EPG_SELECT_ACTION_CONTEXT_MENU:
                   OnPopupMenu(iItem);

@@ -11,6 +11,7 @@
 
 #include "utils/StringUtils.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "ServiceBroker.h"
 #include "guilib/LocalizeStrings.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
@@ -25,6 +26,8 @@ CActiveAESettings* CActiveAESettings::m_instance = nullptr;
 
 CActiveAESettings::CActiveAESettings(CActiveAE &ae) : m_audioEngine(ae)
 {
+  const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+
   CSingleLock lock(m_cs);
   m_instance = this;
 
@@ -48,26 +51,24 @@ CActiveAESettings::CActiveAESettings(CActiveAE &ae) : m_audioEngine(ae)
   settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_STREAMSILENCE);
   settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_STREAMNOISE);
   settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_MAINTAINORIGINALVOLUME);
-  CServiceBroker::GetSettings()->GetSettingsManager()->RegisterCallback(this, settingSet);
+  settings->GetSettingsManager()->RegisterCallback(this, settingSet);
 
-  CServiceBroker::GetSettings()->GetSettingsManager()->RegisterSettingOptionsFiller("aequalitylevels",
-                                                                                   SettingOptionsAudioQualityLevelsFiller);
-  CServiceBroker::GetSettings()->GetSettingsManager()->RegisterSettingOptionsFiller("audiodevices",
-                                                                                   SettingOptionsAudioDevicesFiller);
-  CServiceBroker::GetSettings()->GetSettingsManager()->RegisterSettingOptionsFiller("audiodevicespassthrough",
-                                                                                   SettingOptionsAudioDevicesPassthroughFiller);
-  CServiceBroker::GetSettings()->GetSettingsManager()->RegisterSettingOptionsFiller("audiostreamsilence",
-                                                                                   SettingOptionsAudioStreamsilenceFiller);
+  settings->GetSettingsManager()->RegisterSettingOptionsFiller("aequalitylevels", SettingOptionsAudioQualityLevelsFiller);
+  settings->GetSettingsManager()->RegisterSettingOptionsFiller("audiodevices", SettingOptionsAudioDevicesFiller);
+  settings->GetSettingsManager()->RegisterSettingOptionsFiller("audiodevicespassthrough", SettingOptionsAudioDevicesPassthroughFiller);
+  settings->GetSettingsManager()->RegisterSettingOptionsFiller("audiostreamsilence", SettingOptionsAudioStreamsilenceFiller);
 }
 
 CActiveAESettings::~CActiveAESettings()
 {
+  const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+
   CSingleLock lock(m_cs);
-  CServiceBroker::GetSettings()->GetSettingsManager()->UnregisterSettingOptionsFiller("aequalitylevels");
-  CServiceBroker::GetSettings()->GetSettingsManager()->UnregisterSettingOptionsFiller("audiodevices");
-  CServiceBroker::GetSettings()->GetSettingsManager()->UnregisterSettingOptionsFiller("audiodevicespassthrough");
-  CServiceBroker::GetSettings()->GetSettingsManager()->UnregisterSettingOptionsFiller("audiostreamsilence");
-  CServiceBroker::GetSettings()->GetSettingsManager()->UnregisterCallback(this);
+  settings->GetSettingsManager()->UnregisterSettingOptionsFiller("aequalitylevels");
+  settings->GetSettingsManager()->UnregisterSettingOptionsFiller("audiodevices");
+  settings->GetSettingsManager()->UnregisterSettingOptionsFiller("audiodevicespassthrough");
+  settings->GetSettingsManager()->UnregisterSettingOptionsFiller("audiostreamsilence");
+  settings->GetSettingsManager()->UnregisterCallback(this);
   m_instance = nullptr;
 }
 

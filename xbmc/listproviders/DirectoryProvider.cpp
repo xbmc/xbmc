@@ -27,6 +27,7 @@
 #include "pvr/dialogs/GUIDialogPVRGuideInfo.h"
 #include "pvr/dialogs/GUIDialogPVRRecordingInfo.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
 #include "utils/JobManager.h"
 #include "utils/log.h"
@@ -351,7 +352,7 @@ bool CDirectoryProvider::OnClick(const CGUIListItemPtr &item)
   CFileItem fileItem(*std::static_pointer_cast<CFileItem>(item));
 
   if (fileItem.HasVideoInfoTag()
-      && CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_MYVIDEOS_SELECTACTION) == SELECT_ACTION_INFO
+      && CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_MYVIDEOS_SELECTACTION) == SELECT_ACTION_INFO
       && OnInfo(item))
     return true;
 
@@ -473,7 +474,7 @@ bool CDirectoryProvider::UpdateSort()
   m_currentSort.sortOrder = sortOrder;
   m_currentSort.sortAttributes = SortAttributeIgnoreFolders;
 
-  if (CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING))
+  if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING))
     m_currentSort.sortAttributes = static_cast<SortAttribute>(m_currentSort.sortAttributes | SortAttributeIgnoreArticle);
 
   return true;

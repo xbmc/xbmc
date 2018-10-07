@@ -32,6 +32,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "input/InputManager.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "settings/lib/SettingsManager.h"
 #if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
 #include "storage/DetectDVDType.h"
@@ -84,7 +85,7 @@ CProfilesManager::CProfilesManager() :
     m_nextProfileId(0),
     m_eventLogs(new CEventLogManager)
 {
-  m_settings = CServiceBroker::GetSettings();
+  m_settings = CServiceBroker::GetSettingsComponent()->GetSettings();
 
   if (m_settings->IsLoaded())
     OnSettingsLoaded();
@@ -297,26 +298,28 @@ bool CProfilesManager::LoadProfile(unsigned int index)
   if (g_SkinInfo != nullptr && !m_profileLoadedForLogin)
     g_SkinInfo->SaveSettings();
 
+  const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+
   // unload any old settings
-  CServiceBroker::GetSettings()->Unload();
+  settings->Unload();
 
   SetCurrentProfileId(index);
   m_profileLoadedForLogin = false;
 
   // load the new settings
-  if (!CServiceBroker::GetSettings()->Load())
+  if (!settings->Load())
   {
     CLog::Log(LOGFATAL, "CProfilesManager: unable to load settings for profile \"%s\"", m_profiles.at(index).getName().c_str());
     return false;
   }
-  CServiceBroker::GetSettings()->SetLoaded();
+  settings->SetLoaded();
 
   CreateProfileFolders();
 
   CServiceBroker::GetDatabaseManager().Initialize();
   CServiceBroker::GetInputManager().LoadKeymaps();
 
-  CServiceBroker::GetInputManager().SetMouseEnabled(CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_INPUT_ENABLEMOUSE));
+  CServiceBroker::GetInputManager().SetMouseEnabled(settings->GetBool(CSettings::SETTING_INPUT_ENABLEMOUSE));
 
   CGUIComponent* gui = CServiceBroker::GetGUI();
   if (gui)
@@ -332,8 +335,8 @@ bool CProfilesManager::LoadProfile(unsigned int index)
     CXBMCTinyXML doc;
     if (doc.LoadFile(URIUtils::AddFileToFolder(GetUserDataFolder(), "guisettings.xml")))
     {
-      CServiceBroker::GetSettings()->LoadSetting(doc.RootElement(), CSettings::SETTING_MASTERLOCK_MAXRETRIES);
-      CServiceBroker::GetSettings()->LoadSetting(doc.RootElement(), CSettings::SETTING_MASTERLOCK_STARTUPLOCK);
+      settings->LoadSetting(doc.RootElement(), CSettings::SETTING_MASTERLOCK_MAXRETRIES);
+      settings->LoadSetting(doc.RootElement(), CSettings::SETTING_MASTERLOCK_STARTUPLOCK);
     }
   }
 

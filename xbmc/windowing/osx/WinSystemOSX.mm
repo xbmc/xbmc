@@ -29,6 +29,7 @@
 #include "platform/darwin/osx/powermanagement/CocoaPowerSyscall.h"
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "settings/DisplaySettings.h"
 #include "input/KeyboardStat.h"
 #include "threads/SingleLock.h"
@@ -888,7 +889,8 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     needtoshowme = true;
   }
 
-  m_lastDisplayNr = GetDisplayIndex(CServiceBroker::GetSettings()->GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR));
+  const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+  m_lastDisplayNr = GetDisplayIndex(settings->GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR));
   m_nWidth = res.iWidth;
   m_nHeight = res.iHeight;
   m_bFullScreen = fullScreen;
@@ -930,7 +932,7 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     last_window_origin = [[last_view window] frame].origin;
     last_window_level = [[last_view window] level];
 
-    if (CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN))
+    if (settings->GetBool(CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN))
     {
       // This is Cocoa Windowed FullScreen Mode
       // Get the screen rect of our current display
@@ -1035,7 +1037,7 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     // Show menubar.
     SetMenuBarVisible(true);
 
-    if (CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN))
+    if (settings->GetBool(CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN))
     {
       // restore the windowed window level
       [[last_view window] setLevel:last_window_level];
@@ -1110,7 +1112,7 @@ void CWinSystemOSX::UpdateResolutions()
   int w, h;
   double fps;
 
-  int dispIdx = GetDisplayIndex(CServiceBroker::GetSettings()->GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR));
+  int dispIdx = GetDisplayIndex(CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR));
   GetScreenResolution(&w, &h, &fps, dispIdx);
   UpdateDesktopResolution(CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP), w, h, fps, 0);
   NSString *dispName = screenNameForDisplay(GetDisplayID(dispIdx));
@@ -1286,7 +1288,7 @@ bool CWinSystemOSX::SwitchToVideoMode(int width, int height, double refreshrate)
   boolean_t match = false;
   CGDisplayModeRef dispMode = NULL;
 
-  int screenIdx = GetDisplayIndex(CServiceBroker::GetSettings()->GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR));
+  int screenIdx = GetDisplayIndex(CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR));
 
   // Figure out the screen size. (default to main screen)
   CGDirectDisplayID display_id = GetDisplayID(screenIdx);
@@ -1339,7 +1341,7 @@ bool CWinSystemOSX::SwitchToVideoMode(int width, int height, double refreshrate)
 
 void CWinSystemOSX::FillInVideoModes()
 {
-  int dispIdx = GetDisplayIndex(CServiceBroker::GetSettings()->GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR));
+  int dispIdx = GetDisplayIndex(CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR));
 
   // Add full screen settings for additional monitors
   int numDisplays = [[NSScreen screens] count];
@@ -1427,7 +1429,7 @@ bool CWinSystemOSX::FlushBuffer(void)
 
 bool CWinSystemOSX::IsObscured(void)
 {
-  if (m_bFullScreen && !CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN))
+  if (m_bFullScreen && !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN))
     return false;// in true fullscreen mode - we can't be obscured by anyone...
 
   // check once a second if we are obscured.
@@ -1775,7 +1777,7 @@ void CWinSystemOSX::AnnounceOnLostDevice()
 void CWinSystemOSX::HandleOnResetDevice()
 {
 
-  int delay = CServiceBroker::GetSettings()->GetInt("videoscreen.delayrefreshchange");
+  int delay = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt("videoscreen.delayrefreshchange");
   if (delay > 0)
   {
     m_delayDispReset = true;

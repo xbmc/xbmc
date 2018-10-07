@@ -24,7 +24,9 @@
 #define CACHE_BUFFER_MODE_NONE          3
 #define CACHE_BUFFER_MODE_REMOTE        4
 
+class CAppParamParser;
 class CProfilesManager;
+class CSettingsManager;
 class CVariant;
 
 class TiXmlElement;
@@ -111,11 +113,11 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
 
     void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
 
-    void Initialize();
-    bool Initialized() { return m_initialized; };
+    void Initialize(const CAppParamParser &params, CSettingsManager& settingsMgr);
+    void Uninitialize(CSettingsManager& settingsMgr);
+    bool Initialized() const { return m_initialized; };
     void AddSettingsFile(const std::string &filename);
     bool Load(const CProfilesManager &profileManager);
-    void Clear();
 
     static void GetCustomTVRegexps(TiXmlElement *pRootElement, SETTINGS_TVSHOWLIST& settings);
     static void GetCustomRegexps(TiXmlElement *pRootElement, std::vector<std::string> &settings);
@@ -377,8 +379,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     std::string m_userAgent;
 
   private:
-    void setExtraLogLevel(const std::vector<CVariant> &components);
+    void SetExtraLogLevel(const std::vector<CVariant> &components);
+    void Initialize();
+    void Clear();
 };
-
-XBMC_GLOBAL_REF(CAdvancedSettings,g_advancedSettings);
-#define g_advancedSettings XBMC_GLOBAL_USE(CAdvancedSettings)

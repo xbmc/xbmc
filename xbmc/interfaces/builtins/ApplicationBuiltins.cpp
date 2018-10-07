@@ -17,6 +17,7 @@
 #include "network/Network.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/FileOperationJob.h"
 #include "utils/JSONVariantParser.h"
 #include "utils/log.h"
@@ -112,9 +113,9 @@ static int SetVolume(const std::vector<std::string>& params)
  */
 static int ToggleDebug(const std::vector<std::string>& params)
 {
-  bool debug = CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_DEBUG_SHOWLOGINFO);
-  CServiceBroker::GetSettings()->SetBool(CSettings::SETTING_DEBUG_SHOWLOGINFO, !debug);
-  g_advancedSettings.SetDebugMode(!debug);
+  bool debug = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_DEBUG_SHOWLOGINFO);
+  CServiceBroker::GetSettingsComponent()->GetSettings()->SetBool(CSettings::SETTING_DEBUG_SHOWLOGINFO, !debug);
+  CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->SetDebugMode(!debug);
 
   return 0;
 }

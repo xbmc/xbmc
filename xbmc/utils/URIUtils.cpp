@@ -14,6 +14,7 @@
 #include "filesystem/StackDirectory.h"
 #include "network/DNSNameCache.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 #include "URL.h"
 #include "utils/FileExtensionProvider.h"
 #include "ServiceBroker.h"
@@ -30,6 +31,18 @@
 #include <arpa/inet.h>
 
 using namespace XFILE;
+
+const CAdvancedSettings* URIUtils::m_advancedSettings = nullptr;
+
+void URIUtils::RegisterAdvancedSettings(const CAdvancedSettings& advancedSettings)
+{
+  m_advancedSettings = &advancedSettings;
+}
+
+void URIUtils::UnregisterAdvancedSettings()
+{
+  m_advancedSettings = nullptr;
+}
 
 /* returns filename extension including period of filename */
 std::string URIUtils::GetExtension(const CURL& url)
@@ -486,22 +499,16 @@ CURL URIUtils::SubstitutePath(const CURL& url, bool reverse /* = false */)
 
 std::string URIUtils::SubstitutePath(const std::string& strPath, bool reverse /* = false */)
 {
-  for (CAdvancedSettings::StringMapping::iterator i = g_advancedSettings.m_pathSubstitutions.begin();
-      i != g_advancedSettings.m_pathSubstitutions.end(); ++i)
+  if (!m_advancedSettings)
   {
-    std::string fromPath;
-    std::string toPath;
+    // path substitution not needed / not working during Kodi bootstrap.
+    return strPath;
+  }
 
-    if (!reverse)
-    {
-      fromPath = i->first;  // Fake path
-      toPath = i->second;   // Real path
-    }
-    else
-    {
-      fromPath = i->second; // Real path
-      toPath = i->first;    // Fake path
-    }
+  for (const auto& pathPair : m_advancedSettings->m_pathSubstitutions)
+  {
+    const std::string fromPath = reverse ? pathPair.second : pathPair.first;
+    const std::string toPath = reverse ? pathPair.first : pathPair.second;
 
     if (strncmp(strPath.c_str(), fromPath.c_str(), HasSlashAtEnd(fromPath) ? fromPath.size() - 1 : fromPath.size()) == 0)
     {

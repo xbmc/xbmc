@@ -8,6 +8,7 @@
 
 #include "OverlayRendererGUI.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 
 #include "filesystem/File.h"
 #include "ServiceBroker.h"
@@ -105,7 +106,7 @@ COverlayText::COverlayText(CDVDOverlayText * src)
   StringUtils::Replace(m_text, "</b", "[/B]");
   StringUtils::Replace(m_text, "</u", "");
 
-  m_subalign = CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_SUBTITLES_ALIGN);
+  m_subalign = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_SUBTITLES_ALIGN);
   if (m_subalign == SUBTITLE_ALIGN_MANUAL)
   {
     m_align  = ALIGN_SUBTITLE;

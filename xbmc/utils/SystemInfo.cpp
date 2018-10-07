@@ -25,6 +25,7 @@
 #include "CPUInfo.h"
 #include "CompileInfo.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "platform/Filesystem.h"
 #include "utils/log.h"
 #include "utils/SysfsUtils.h"
@@ -1214,7 +1215,7 @@ std::string CSysInfo::GetUserAgent()
 
 std::string CSysInfo::GetDeviceName()
 {
-  std::string friendlyName = CServiceBroker::GetSettings()->GetString(CSettings::SETTING_SERVICES_DEVICENAME);
+  std::string friendlyName = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_SERVICES_DEVICENAME);
   if (StringUtils::EqualsNoCase(friendlyName, CCompileInfo::GetAppName()))
   {
     std::string hostname("[unknown]");

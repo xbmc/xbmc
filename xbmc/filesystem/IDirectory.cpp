@@ -18,8 +18,19 @@
 using namespace KODI::MESSAGING;
 using namespace XFILE;
 
-IDirectory::IDirectory() :
-  m_profileManager(CServiceBroker::GetProfileManager())
+const CProfilesManager *IDirectory::m_profileManager = nullptr;
+
+void IDirectory::RegisterProfileManager(const CProfilesManager &profileManager)
+{
+  m_profileManager = &profileManager;
+}
+
+void IDirectory::UnregisterProfileManager()
+{
+  m_profileManager = nullptr;
+}
+
+IDirectory::IDirectory()
 {
   m_flags = DIR_FLAG_DEFAULTS;
 }

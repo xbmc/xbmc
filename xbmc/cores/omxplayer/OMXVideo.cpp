@@ -17,6 +17,7 @@
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "xbmc/windowing/GraphicContext.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/BitstreamConverter.h"
 #include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
 
@@ -419,7 +420,7 @@ bool COMXVideo::Open(CDVDStreamInfo &hints, OMXClock *clock, bool hdmi_clock_syn
           break;
       }
     }
-    if (CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_SUPPORTMVC))
+    if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_SUPPORTMVC))
     {
       m_codingType = OMX_VIDEO_CodingMVC;
       m_video_codec_name = "omx-mvc";
@@ -575,7 +576,7 @@ bool COMXVideo::Open(CDVDStreamInfo &hints, OMXClock *clock, bool hdmi_clock_syn
   }
 
   // request portsettingschanged on refresh rate change
-  if (CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) == ADJUST_REFRESHRATE_ALWAYS)
+  if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) == ADJUST_REFRESHRATE_ALWAYS)
   {
     notifications.nIndex = OMX_IndexParamPortDefinition;
     omx_err = m_omx_decoder.SetParameter((OMX_INDEXTYPE)OMX_IndexConfigRequestCallback, &notifications);
@@ -587,7 +588,7 @@ bool COMXVideo::Open(CDVDStreamInfo &hints, OMXClock *clock, bool hdmi_clock_syn
   }
   OMX_PARAM_BRCMVIDEODECODEERRORCONCEALMENTTYPE concanParam;
   OMX_INIT_STRUCTURE(concanParam);
-  if(g_advancedSettings.m_omxDecodeStartWithValidFrame)
+  if(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_omxDecodeStartWithValidFrame)
     concanParam.bStartWithValidFrame = OMX_TRUE;
   else
     concanParam.bStartWithValidFrame = OMX_FALSE;

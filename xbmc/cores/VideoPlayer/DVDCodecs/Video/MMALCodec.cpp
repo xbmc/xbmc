@@ -23,15 +23,17 @@
 #include "DVDVideoCodec.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
-#include "settings/Settings.h"
 #include "settings/MediaSettings.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "messaging/ApplicationMessenger.h"
 #include "Application.h"
 #include "guilib/GUIWindowManager.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFlags.h"
-#include "settings/DisplaySettings.h"
-#include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/DisplaySettings.h"
+#include "settings/SettingsComponent.h"
+#include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
 
 #include "platform/linux/RBP.h"
@@ -214,7 +216,7 @@ void CMMALVideo::dec_output_port_cb(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buf
       // we don't keep up when running at 60fps in the background so switch to half rate
       if (m_fps > 40.0f && !CServiceBroker::GetWinSystem()->GetGfxContext().IsFullScreenVideo() && !(m_num_decoded & 1))
         wanted = false;
-      if (g_advancedSettings.m_omxDecodeStartWithValidFrame && (buffer->flags & MMAL_BUFFER_HEADER_FLAG_CORRUPTED))
+      if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_omxDecodeStartWithValidFrame && (buffer->flags & MMAL_BUFFER_HEADER_FLAG_CORRUPTED))
         wanted = false;
       m_num_decoded++;
       CLog::Log(LOGDEBUG, LOGVIDEO,
@@ -334,13 +336,13 @@ bool CMMALVideo::SendCodecConfigData()
 bool CMMALVideo::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
   CSingleLock lock(m_sharedSection);
-  CLog::Log(LOGDEBUG, LOGVIDEO, "%s::%s usemmal:%d options:%x %dx%d", CLASSNAME, __func__, CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEMMAL), hints.codecOptions, hints.width, hints.height);
+  CLog::Log(LOGDEBUG, LOGVIDEO, "%s::%s usemmal:%d options:%x %dx%d", CLASSNAME, __func__, CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEMMAL), hints.codecOptions, hints.width, hints.height);
 
   // This occurs at start of m2ts files before streams have been fully identified - just ignore
   if (!hints.width)
     return false;
   // we always qualify even if DVDFactoryCodec does this too.
-  if (!CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEMMAL) || (hints.codecOptions & CODEC_FORCE_SOFTWARE))
+  if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEMMAL) || (hints.codecOptions & CODEC_FORCE_SOFTWARE))
     return false;
 
   std::list<EINTERLACEMETHOD> deintMethods;
@@ -380,7 +382,7 @@ bool CMMALVideo::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
       }
       m_codingType = MMAL_ENCODING_H264;
       m_pFormatName = "mmal-h264";
-      if (CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_SUPPORTMVC))
+      if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_SUPPORTMVC))
       {
         m_codingType = MMAL_ENCODING_MVC;
         m_pFormatName= "mmal-mvc";
@@ -586,7 +588,7 @@ bool CMMALVideo::AddData(const DemuxPacket &packet)
   uint8_t* pData = packet.pData;
   int iSize = packet.iSize;
   CSingleLock lock(m_sharedSection);
-  //if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+  //if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->CanLogComponent(LOGVIDEO))
   //  CLog::Log(LOGDEBUG, "%s::%s - %-8p %-6d dts:%.3f pts:%.3f ready_queue(%d)",
   //    CLASSNAME, __func__, pData, iSize, dts == DVD_NOPTS_VALUE ? 0.0 : packet.dts*1e-6, packet.pts == DVD_NOPTS_VALUE ? 0.0 : packet.pts*1e-6, m_output_ready.size());
 

@@ -20,6 +20,7 @@
 #include "music/tags/MusicInfoTag.h"
 #include "utils/StringUtils.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 #include "music/MusicThumbLoader.h"
 #include "video/VideoThumbLoader.h"
 #include "xbmc/settings/Settings.h"
@@ -153,7 +154,7 @@ bool CRecentlyAddedJob::UpdateVideo()
       home->SetProperty("LatestMusicVideo." + value + ".Plot"        , item->GetVideoInfoTag()->m_strPlot);
       home->SetProperty("LatestMusicVideo." + value + ".RunningTime" , item->GetVideoInfoTag()->GetDuration() / 60);
       home->SetProperty("LatestMusicVideo." + value + ".Path"        , item->GetVideoInfoTag()->m_strFileNameAndPath);
-      home->SetProperty("LatestMusicVideo." + value + ".Artist"      , StringUtils::Join(item->GetVideoInfoTag()->m_artist, g_advancedSettings.m_videoItemSeparator));
+      home->SetProperty("LatestMusicVideo." + value + ".Artist"      , StringUtils::Join(item->GetVideoInfoTag()->m_artist, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator));
 
       if (!item->HasArt("thumb"))
         loader.LoadItem(item.get());
@@ -319,7 +320,7 @@ bool CRecentlyAddedJob::UpdateTotal()
 
   CMusicDbUrl musicUrl;
   musicUrl.FromString("musicdb://artists/");
-  musicUrl.AddOption("albumartistsonly", !CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_MUSICLIBRARY_SHOWCOMPILATIONARTISTS));
+  musicUrl.AddOption("albumartistsonly", !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_MUSICLIBRARY_SHOWCOMPILATIONARTISTS));
 
   CFileItemList items;
   CDatabase::Filter filter;

@@ -14,6 +14,7 @@
 #include "cores/DataCacheCore.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
 
@@ -165,7 +166,7 @@ void CPVRGUITimesInfo::UpdateTimeshiftProgressData()
     time_t start = 0;
     m_playingEpgTag->StartAsUTC().GetAsTime(start);
     if (start < m_iTimeshiftStartTime ||
-        CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_PVRMENU_USESIMPLETIMESHIFTOSD))
+        CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_PVRMENU_USESIMPLETIMESHIFTOSD))
     {
       // playing event started before start of ts buffer or simple ts osd to be used
       m_iTimeshiftProgressStartTime = start;
@@ -188,7 +189,7 @@ void CPVRGUITimesInfo::UpdateTimeshiftProgressData()
     time_t end = 0;
     m_playingEpgTag->EndAsUTC().GetAsTime(end);
     if (end > m_iTimeshiftEndTime ||
-        CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_PVRMENU_USESIMPLETIMESHIFTOSD))
+        CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_PVRMENU_USESIMPLETIMESHIFTOSD))
     {
       // playing event will end after end of ts buffer or simple ts osd to be used
       m_iTimeshiftProgressEndTime = end;
@@ -399,5 +400,5 @@ int CPVRGUITimesInfo::GetEpgEventProgress(const CPVREpgInfoTagPtr& epgTag) const
 bool CPVRGUITimesInfo::IsTimeshifting() const
 {
   CSingleLock lock(m_critSection);
-  return (m_iTimeshiftOffset > static_cast<unsigned int>(g_advancedSettings.m_iPVRTimeshiftThreshold));
+  return (m_iTimeshiftOffset > static_cast<unsigned int>(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iPVRTimeshiftThreshold));
 }

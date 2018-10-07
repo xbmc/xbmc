@@ -27,6 +27,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/lib/Setting.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "storage/MediaManager.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
@@ -278,7 +279,7 @@ bool CDisplaySettings::OnSettingChanging(std::shared_ptr<const CSetting> setting
     }
 
     std::string screenmode = GetStringFromResolution(newRes);
-    CServiceBroker::GetSettings()->SetString(CSettings::SETTING_VIDEOSCREEN_SCREENMODE, screenmode);
+    CServiceBroker::GetSettingsComponent()->GetSettings()->SetString(CSettings::SETTING_VIDEOSCREEN_SCREENMODE, screenmode);
   }
   if (settingId == CSettings::SETTING_VIDEOSCREEN_SCREENMODE)
   {
@@ -358,19 +359,20 @@ bool CDisplaySettings::OnSettingUpdate(std::shared_ptr<CSetting> setting, const 
   else if (settingId == CSettings::SETTING_VIDEOSCREEN_PREFEREDSTEREOSCOPICMODE)
   {
     std::shared_ptr<CSettingInt> stereomodeSetting = std::static_pointer_cast<CSettingInt>(setting);
-    STEREOSCOPIC_PLAYBACK_MODE playbackMode = (STEREOSCOPIC_PLAYBACK_MODE) CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_VIDEOPLAYER_STEREOSCOPICPLAYBACKMODE);
+    const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+    STEREOSCOPIC_PLAYBACK_MODE playbackMode = (STEREOSCOPIC_PLAYBACK_MODE) settings->GetInt(CSettings::SETTING_VIDEOPLAYER_STEREOSCOPICPLAYBACKMODE);
     if (stereomodeSetting->GetValue() == RENDER_STEREO_MODE_OFF)
     {
       // if preferred playback mode was OFF, update playback mode to ignore
       if (playbackMode == STEREOSCOPIC_PLAYBACK_MODE_PREFERRED)
-        CServiceBroker::GetSettings()->SetInt(CSettings::SETTING_VIDEOPLAYER_STEREOSCOPICPLAYBACKMODE, STEREOSCOPIC_PLAYBACK_MODE_IGNORE);
+        settings->SetInt(CSettings::SETTING_VIDEOPLAYER_STEREOSCOPICPLAYBACKMODE, STEREOSCOPIC_PLAYBACK_MODE_IGNORE);
       return stereomodeSetting->SetValue(RENDER_STEREO_MODE_AUTO);
     }
     else if (stereomodeSetting->GetValue() == RENDER_STEREO_MODE_MONO)
     {
       // if preferred playback mode was MONO, update playback mode
       if (playbackMode == STEREOSCOPIC_PLAYBACK_MODE_PREFERRED)
-        CServiceBroker::GetSettings()->SetInt(CSettings::SETTING_VIDEOPLAYER_STEREOSCOPICPLAYBACKMODE, STEREOSCOPIC_PLAYBACK_MODE_MONO);
+        settings->SetInt(CSettings::SETTING_VIDEOPLAYER_STEREOSCOPICPLAYBACKMODE, STEREOSCOPIC_PLAYBACK_MODE_MONO);
       return stereomodeSetting->SetValue(RENDER_STEREO_MODE_AUTO);
     }
   }
@@ -380,11 +382,12 @@ bool CDisplaySettings::OnSettingUpdate(std::shared_ptr<CSetting> setting, const 
 
 void CDisplaySettings::SetMonitor(std::string monitor)
 {
-  std::string curMonitor = CServiceBroker::GetSettings()->GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR);
+  const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+  const std::string curMonitor = settings->GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR);
   if (curMonitor != monitor)
   {
     m_resolutionChangeAborted = true;
-    CServiceBroker::GetSettings()->SetString(CSettings::SETTING_VIDEOSCREEN_MONITOR, monitor);
+    settings->SetString(CSettings::SETTING_VIDEOSCREEN_MONITOR, monitor);
   }
 }
 
@@ -396,7 +399,7 @@ void CDisplaySettings::SetCurrentResolution(RESOLUTION resolution, bool save /* 
   if (save)
   {
     std::string mode = GetStringFromResolution(resolution);
-    CServiceBroker::GetSettings()->SetString(CSettings::SETTING_VIDEOSCREEN_SCREENMODE, mode.c_str());
+    CServiceBroker::GetSettingsComponent()->GetSettings()->SetString(CSettings::SETTING_VIDEOSCREEN_SCREENMODE, mode.c_str());
   }
 
   if (resolution != m_currentResolution)
@@ -408,7 +411,7 @@ void CDisplaySettings::SetCurrentResolution(RESOLUTION resolution, bool save /* 
 
 RESOLUTION CDisplaySettings::GetDisplayResolution() const
 {
-  return GetResolutionFromString(CServiceBroker::GetSettings()->GetString(CSettings::SETTING_VIDEOSCREEN_SCREENMODE));
+  return GetResolutionFromString(CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_VIDEOSCREEN_SCREENMODE));
 }
 
 const RESOLUTION_INFO& CDisplaySettings::GetResolutionInfo(size_t index) const
@@ -646,7 +649,7 @@ std::string CDisplaySettings::GetStringFromResolution(RESOLUTION resolution, flo
 
 RESOLUTION CDisplaySettings::GetResolutionForScreen()
 {
-  DisplayMode mode = CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_VIDEOSCREEN_SCREEN);
+  DisplayMode mode = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_VIDEOSCREEN_SCREEN);
   if (mode == DM_WINDOWED)
     return RES_WINDOW;
 
@@ -757,7 +760,7 @@ void CDisplaySettings::SettingOptionsDispModeFiller(SettingConstPtr setting, std
   // setting. When the user sets canwindowed to true but the windowing system
   // does not support windowed modes, we would just shoot ourselves in the foot
   // by offering the option.
-  if (g_advancedSettings.m_canWindowed && CServiceBroker::GetWinSystem()->CanDoWindowed())
+  if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_canWindowed && CServiceBroker::GetWinSystem()->CanDoWindowed())
     list.push_back(std::make_pair(g_localizeStrings.Get(242), DM_WINDOWED));
 
   list.push_back(std::make_pair(g_localizeStrings.Get(244), DM_FULLSCREEN));
@@ -807,7 +810,7 @@ void CDisplaySettings::SettingOptionsMonitorsFiller(SettingConstPtr setting, std
   CWinSystemIOS *winSystem = dynamic_cast<CWinSystemIOS*>(CServiceBroker::GetWinSystem());
 #endif
   winSystem->GetConnectedOutputs(&monitors);
-  std::string currentMonitor = CServiceBroker::GetSettings()->GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR);
+  std::string currentMonitor = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR);
   for (unsigned int i=0; i<monitors.size(); ++i)
   {
     if(currentMonitor.compare("Default") != 0 &&
@@ -826,7 +829,7 @@ void CDisplaySettings::SettingOptionsMonitorsFiller(SettingConstPtr setting, std
 #endif
   winSystem->GetConnectedOutputs(&monitors);
   bool foundMonitor = false;
-  std::string currentMonitor = CServiceBroker::GetSettings()->GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR);
+  std::string currentMonitor = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR);
   for (auto const& monitor : monitors)
   {
     if(monitor == currentMonitor)

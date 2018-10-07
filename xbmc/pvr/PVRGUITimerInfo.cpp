@@ -12,6 +12,7 @@
 #include "ServiceBroker.h"
 #include "guilib/LocalizeStrings.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
 #include "threads/SystemClock.h"
 #include "utils/StringUtils.h"
@@ -55,7 +56,7 @@ bool CPVRGUITimerInfo::TimerInfoToggle()
     return true;
   }
 
-  if ((int) (XbmcThreads::SystemClockMillis() - m_iTimerInfoToggleStart) > g_advancedSettings.m_iPVRInfoToggleInterval)
+  if ((int) (XbmcThreads::SystemClockMillis() - m_iTimerInfoToggleStart) > CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iPVRInfoToggleInterval)
   {
     unsigned int iPrevious = m_iTimerInfoToggleCurrent;
     unsigned int iBoundary = m_iRecordingTimerAmount > 0 ? m_iRecordingTimerAmount : m_iTimerAmount;

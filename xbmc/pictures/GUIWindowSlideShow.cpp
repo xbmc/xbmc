@@ -24,6 +24,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "FileItem.h"
 #include "guilib/Texture.h"
 #include "rendering/RenderSystem.h"
@@ -916,7 +917,7 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_INIT:
     {
-      m_Resolution = (RESOLUTION) CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_PICTURES_DISPLAYRESOLUTION);
+      m_Resolution = (RESOLUTION) CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_PICTURES_DISPLAYRESOLUTION);
 
       //FIXME: Use GUI resolution for now
       if (0 /*m_Resolution != CDisplaySettings::GetInstance().GetCurrentResolution() && m_Resolution != INVALID && m_Resolution!=AUTORES*/)
@@ -1105,7 +1106,7 @@ bool CGUIWindowSlideShow::PlayVideo()
 CSlideShowPic::DISPLAY_EFFECT CGUIWindowSlideShow::GetDisplayEffect(int iSlideNumber) const
 {
   if (m_bSlideShow && !m_bPause && !m_slides.at(iSlideNumber)->IsVideo())
-    return CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_SLIDESHOW_DISPLAYEFFECTS) ? CSlideShowPic::EFFECT_RANDOM : CSlideShowPic::EFFECT_NONE;
+    return CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_SLIDESHOW_DISPLAYEFFECTS) ? CSlideShowPic::EFFECT_RANDOM : CSlideShowPic::EFFECT_NONE;
   else
     return CSlideShowPic::EFFECT_NO_TIMEOUT;
 }
@@ -1213,7 +1214,7 @@ void CGUIWindowSlideShow::RunSlideShow(const std::string &strPath,
     bRandom = bNotRandom = false;
 
   // NotRandom overrides the window setting
-  if ((!bNotRandom && CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_SLIDESHOW_SHUFFLE)) || bRandom)
+  if ((!bNotRandom && CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_SLIDESHOW_SHUFFLE)) || bRandom)
     Shuffle();
 
   if (!beginSlidePath.empty())

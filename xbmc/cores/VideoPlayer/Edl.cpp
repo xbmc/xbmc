@@ -11,6 +11,7 @@
 #include "utils/URIUtils.h"
 #include "filesystem/File.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/log.h"
 #include "utils/XBMCTinyXML.h"
 #include "PlatformDefs.h"
@@ -682,8 +683,8 @@ bool CEdl::AddCut(Cut& cut)
      * the start (autowait) and automatically rewind by a bit (autowind) at the end of the commercial
      * break.
      */
-    int autowait = g_advancedSettings.m_iEdlCommBreakAutowait * 1000; // seconds -> ms
-    int autowind = g_advancedSettings.m_iEdlCommBreakAutowind * 1000; // seconds -> ms
+    int autowait = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iEdlCommBreakAutowait * 1000; // seconds -> ms
+    int autowind = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iEdlCommBreakAutowind * 1000; // seconds -> ms
 
     if (cut.start > 0) // Only autowait if not at the start.
      cut.start += autowait;
@@ -968,13 +969,14 @@ void CEdl::MergeShortCommBreaks()
     m_vecCuts.erase(m_vecCuts.begin());
   }
 
-  if (g_advancedSettings.m_bEdlMergeShortCommBreaks)
+  const std::shared_ptr<CAdvancedSettings> advancedSettings = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
+  if (advancedSettings->m_bEdlMergeShortCommBreaks)
   {
-    for (int i = 0; i < (int)m_vecCuts.size() - 1; i++)
+    for (int i = 0; i < static_cast<int>(m_vecCuts.size()) - 1; i++)
     {
       if ((m_vecCuts[i].action == COMM_BREAK && m_vecCuts[i + 1].action == COMM_BREAK)
-      &&  (m_vecCuts[i + 1].end - m_vecCuts[i].start < g_advancedSettings.m_iEdlMaxCommBreakLength * 1000) // s to ms
-      &&  (m_vecCuts[i + 1].start - m_vecCuts[i].end < g_advancedSettings.m_iEdlMaxCommBreakGap * 1000)) // s to ms
+          &&  (m_vecCuts[i + 1].end - m_vecCuts[i].start < advancedSettings->m_iEdlMaxCommBreakLength * 1000) // s to ms
+          &&  (m_vecCuts[i + 1].start - m_vecCuts[i].end < advancedSettings->m_iEdlMaxCommBreakGap * 1000)) // s to ms
       {
         Cut commBreak;
         commBreak.action = COMM_BREAK;
@@ -1003,8 +1005,8 @@ void CEdl::MergeShortCommBreaks()
      * the maximum commercial break length being triggered.
      */
     if (!m_vecCuts.empty()
-    &&  m_vecCuts[0].action == COMM_BREAK
-    &&  m_vecCuts[0].start < g_advancedSettings.m_iEdlMaxStartGap * 1000)
+        &&  m_vecCuts[0].action == COMM_BREAK
+        &&  m_vecCuts[0].start < advancedSettings->m_iEdlMaxStartGap * 1000)
     {
       CLog::Log(LOGDEBUG, "%s - Expanding first commercial break back to start [%s - %s].", __FUNCTION__,
                 MillisecondsToTimeString(m_vecCuts[0].start).c_str(), MillisecondsToTimeString(m_vecCuts[0].end).c_str());
@@ -1014,15 +1016,15 @@ void CEdl::MergeShortCommBreaks()
     /*
      * Remove any commercial breaks shorter than the minimum (unless at the start)
      */
-    for (int i = 0; i < (int)m_vecCuts.size(); i++)
+    for (int i = 0; i < static_cast<int>(m_vecCuts.size()); i++)
     {
       if (m_vecCuts[i].action == COMM_BREAK
-      &&  m_vecCuts[i].start > 0
-      && (m_vecCuts[i].end - m_vecCuts[i].start) < g_advancedSettings.m_iEdlMinCommBreakLength * 1000)
+          &&  m_vecCuts[i].start > 0
+          && (m_vecCuts[i].end - m_vecCuts[i].start) < advancedSettings->m_iEdlMinCommBreakLength * 1000)
       {
         CLog::Log(LOGDEBUG, "%s - Removing short commercial break [%s - %s]. Minimum length: %i seconds", __FUNCTION__,
                   MillisecondsToTimeString(m_vecCuts[i].start).c_str(), MillisecondsToTimeString(m_vecCuts[i].end).c_str(),
-                  g_advancedSettings.m_iEdlMinCommBreakLength);
+                  advancedSettings->m_iEdlMinCommBreakLength);
         m_vecCuts.erase(m_vecCuts.begin() + i);
 
         i--;

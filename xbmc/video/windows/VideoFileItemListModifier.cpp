@@ -10,10 +10,11 @@
 #include "VideoFileItemListModifier.h"
 #include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "video/VideoDatabase.h"
 #include "filesystem/VideoDatabaseDirectory/DirectoryNode.h"
 #include "guilib/LocalizeStrings.h"
-#include "settings/Settings.h"
 #include "video/VideoDbUrl.h"
 
 using namespace XFILE::VIDEODATABASEDIRECTORY;
@@ -44,7 +45,7 @@ void CVideoFileItemListModifier::AddQueuingFolder(CFileItemList& items)
   CFileItemPtr pItem;
 
   // always show "all" items by default
-  if (!CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_VIDEOLIBRARY_SHOWALLITEMS))
+  if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOLIBRARY_SHOWALLITEMS))
     return;
 
   // no need for "all" item when only one item
@@ -108,7 +109,7 @@ void CVideoFileItemListModifier::AddQueuingFolder(CFileItemList& items)
   if (pItem)
   {
     pItem->m_bIsFolder = true;
-    pItem->SetSpecialSort(g_advancedSettings.m_bVideoLibraryAllItemsOnBottom ? SortSpecialOnBottom : SortSpecialOnTop);
+    pItem->SetSpecialSort(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bVideoLibraryAllItemsOnBottom ? SortSpecialOnBottom : SortSpecialOnTop);
     pItem->SetCanQueue(false);
     items.Add(pItem);
   }

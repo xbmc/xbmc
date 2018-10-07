@@ -19,6 +19,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "platform/linux/RBP.h"
 #include "utils/URIUtils.h"
 #include "windowing/WinSystem.h"
@@ -149,13 +150,15 @@ bool COMXImage::ClampLimits(unsigned int &width, unsigned int &height, unsigned 
 
   if (max_width == 0 || max_height == 0)
   {
-    max_height = g_advancedSettings.m_imageRes;
+    const std::shared_ptr<CAdvancedSettings> advancedSettings = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
 
-    if (g_advancedSettings.m_fanartRes > g_advancedSettings.m_imageRes)
+    max_height = advancedSettings->m_imageRes;
+
+    if (advancedSettings->m_fanartRes > advancedSettings->m_imageRes)
     { // 16x9 images larger than the fanart res use that rather than the image res
-      if (fabsf(aspect / (16.0f/9.0f) - 1.0f) <= 0.01f && m_height >= g_advancedSettings.m_fanartRes)
+      if (fabsf(aspect / (16.0f/9.0f) - 1.0f) <= 0.01f && m_height >= advancedSettings->m_fanartRes)
       {
-        max_height = g_advancedSettings.m_fanartRes;
+        max_height = advancedSettings->m_fanartRes;
       }
     }
     max_width = max_height * 16/9;
@@ -249,7 +252,7 @@ bool COMXImage::AllocTextureInternal(EGLDisplay egl_display, EGLContext egl_cont
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-  GLenum type = CServiceBroker::GetSettings()->GetBool("videoscreen.textures32") ? GL_UNSIGNED_BYTE:GL_UNSIGNED_SHORT_5_6_5;
+  GLenum type = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool("videoscreen.textures32") ? GL_UNSIGNED_BYTE:GL_UNSIGNED_SHORT_5_6_5;
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, tex->width, tex->height, 0, GL_RGB, type, 0);
   tex->egl_image = eglCreateImageKHR(egl_display, egl_context, EGL_GL_TEXTURE_2D_KHR, (EGLClientBuffer)tex->texture, NULL);
   if (!tex->egl_image)

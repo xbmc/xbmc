@@ -10,6 +10,7 @@
 #include "CodecFactory.h"
 #include "Application.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "FileItem.h"
 #include "ServiceBroker.h"
 #include "music/tags/MusicInfoTag.h"
@@ -64,13 +65,14 @@ bool CAudioDecoder::Create(const CFileItem &file, int64_t seekOffset)
   m_eof = false;
 
   // get correct cache size
-  unsigned int filecache = CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_CACHEAUDIO_INTERNET);
+  const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+  unsigned int filecache = settings->GetInt(CSettings::SETTING_CACHEAUDIO_INTERNET);
   if ( file.IsHD() )
-    filecache = CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_CACHE_HARDDISK);
+    filecache = settings->GetInt(CSettings::SETTING_CACHE_HARDDISK);
   else if ( file.IsOnDVD() )
-    filecache = CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_CACHEAUDIO_DVDROM);
+    filecache = settings->GetInt(CSettings::SETTING_CACHEAUDIO_DVDROM);
   else if ( file.IsOnLAN() )
-    filecache = CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_CACHEAUDIO_LAN);
+    filecache = settings->GetInt(CSettings::SETTING_CACHEAUDIO_LAN);
 
   // create our codec
   m_codec=CodecFactory::CreateCodecDemux(file, filecache * 1024);

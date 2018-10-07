@@ -18,8 +18,9 @@
 #include "utils/BitstreamConverter.h"
 #include "utils/log.h"
 #include "utils/SysfsUtils.h"
-#include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "threads/Thread.h"
 
 #define __MODULE_NAME__ "DVDVideoCodecAmlogic"
@@ -95,7 +96,7 @@ std::atomic<bool> CDVDVideoCodecAmlogic::m_InstanceGuard(false);
 
 bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
-  if (!CServiceBroker::GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEAMCODEC))
+  if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEAMCODEC))
     return false;
   if (hints.stills || hints.width == 0)
     return false;
@@ -126,7 +127,7 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
       break;
     case AV_CODEC_ID_MPEG1VIDEO:
     case AV_CODEC_ID_MPEG2VIDEO:
-      if (m_hints.width <= CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_VIDEOPLAYER_USEAMCODECMPEG2))
+      if (m_hints.width <= CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_VIDEOPLAYER_USEAMCODECMPEG2))
         goto FAIL;
       m_mpeg2_sequence_pts = 0;
       m_mpeg2_sequence = new mpeg2_sequence;
@@ -138,9 +139,9 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
       m_pFormatName = "am-mpeg2";
       break;
     case AV_CODEC_ID_H264:
-      if (m_hints.width <= CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_VIDEOPLAYER_USEAMCODECH264))
+      if (m_hints.width <= CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_VIDEOPLAYER_USEAMCODECH264))
       {
-        CLog::Log(LOGDEBUG, "CDVDVideoCodecAmlogic::h264 size check failed %d",CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_VIDEOPLAYER_USEAMCODECH264));
+        CLog::Log(LOGDEBUG, "CDVDVideoCodecAmlogic::h264 size check failed %d",CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_VIDEOPLAYER_USEAMCODECH264));
         goto FAIL;
       }
       switch(hints.profile)
@@ -182,7 +183,7 @@ bool CDVDVideoCodecAmlogic::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
     case AV_CODEC_ID_MPEG4:
     case AV_CODEC_ID_MSMPEG4V2:
     case AV_CODEC_ID_MSMPEG4V3:
-      if (m_hints.width <= CServiceBroker::GetSettings()->GetInt(CSettings::SETTING_VIDEOPLAYER_USEAMCODECMPEG4))
+      if (m_hints.width <= CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_VIDEOPLAYER_USEAMCODECMPEG4))
         goto FAIL;
       m_pFormatName = "am-mpeg4";
       break;
