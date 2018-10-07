@@ -12,6 +12,7 @@
 #include "LibInputSettings.h"
 #include "ServiceBroker.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/log.h"
 
 #include <algorithm>
@@ -155,7 +156,7 @@ CLibInputKeyboard::CLibInputKeyboard()
     return;
   }
 
-  std::string layout = CServiceBroker::GetSettings()->GetString(CLibInputSettings::SETTING_INPUT_LIBINPUTKEYBOARDLAYOUT);
+  std::string layout = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CLibInputSettings::SETTING_INPUT_LIBINPUTKEYBOARDLAYOUT);
 
   if (!SetKeymap(layout))
   {
