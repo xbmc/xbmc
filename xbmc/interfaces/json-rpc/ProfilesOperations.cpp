@@ -11,6 +11,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "GUIPassword.h"
 #include "profiles/ProfilesManager.h"
+#include "settings/SettingsComponent.h"
 #include "utils/Digest.h"
 #include "utils/Variant.h"
 #include "ServiceBroker.h"
@@ -21,13 +22,13 @@ using KODI::UTILITY::CDigest;
 
 JSONRPC_STATUS CProfilesOperations::GetProfiles(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  const CProfilesManager &profileManager = CServiceBroker::GetProfileManager();
+  const std::shared_ptr<CProfilesManager> profilesManager = CServiceBroker::GetSettingsComponent()->GetProfilesManager();
 
   CFileItemList listItems;
 
-  for (unsigned int i = 0; i < profileManager.GetNumberOfProfiles(); ++i)
+  for (unsigned int i = 0; i < profilesManager->GetNumberOfProfiles(); ++i)
   {
-    const CProfile *profile = profileManager.GetProfile(i);
+    const CProfile *profile = profilesManager->GetProfile(i);
     CFileItemPtr item(new CFileItem(profile->getName()));
     item->SetArt("thumb", profile->getThumb());
     listItems.Add(item);
@@ -43,11 +44,11 @@ JSONRPC_STATUS CProfilesOperations::GetProfiles(const std::string &method, ITran
       for (CVariant::iterator_array profileiter = result["profiles"].begin_array(); profileiter != result["profiles"].end_array(); ++profileiter)
       {
         std::string profilename = (*profileiter)["label"].asString();
-        int index = profileManager.GetProfileIndex(profilename);
-        const CProfile *profile = profileManager.GetProfile(index);
+        int index = profilesManager->GetProfileIndex(profilename);
+        const CProfile *profile = profilesManager->GetProfile(index);
         LockType locktype = LOCK_MODE_UNKNOWN;
         if (index == 0)
-          locktype = profileManager.GetMasterProfile().getLockMode();
+          locktype = profilesManager->GetMasterProfile().getLockMode();
         else
           locktype = profile->getLockMode();
         (*profileiter)["lockmode"] = locktype;
@@ -60,9 +61,9 @@ JSONRPC_STATUS CProfilesOperations::GetProfiles(const std::string &method, ITran
 
 JSONRPC_STATUS CProfilesOperations::GetCurrentProfile(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  const CProfilesManager &profileManager = CServiceBroker::GetProfileManager();
+  const std::shared_ptr<CProfilesManager> profilesManager = CServiceBroker::GetSettingsComponent()->GetProfilesManager();
 
-  const CProfile& currentProfile = profileManager.GetCurrentProfile();
+  const CProfile& currentProfile = profilesManager->GetCurrentProfile();
   CVariant profileVariant = CVariant(CVariant::VariantTypeObject);
   profileVariant["label"] = currentProfile.getName();
   for (CVariant::const_iterator_array propertyiter = parameterObject["properties"].begin_array(); propertyiter != parameterObject["properties"].end_array(); ++propertyiter)
@@ -83,16 +84,16 @@ JSONRPC_STATUS CProfilesOperations::GetCurrentProfile(const std::string &method,
 
 JSONRPC_STATUS CProfilesOperations::LoadProfile(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  const CProfilesManager &profileManager = CServiceBroker::GetProfileManager();
+  const std::shared_ptr<CProfilesManager> profilesManager = CServiceBroker::GetSettingsComponent()->GetProfilesManager();
 
   std::string profilename = parameterObject["profile"].asString();
-  int index = profileManager.GetProfileIndex(profilename);
+  int index = profilesManager->GetProfileIndex(profilename);
 
   if (index < 0)
     return InvalidParams;
 
   // get the profile
-  const CProfile *profile = profileManager.GetProfile(index);
+  const CProfile *profile = profilesManager->GetProfile(index);
   if (profile == NULL)
     return InvalidParams;
 

@@ -14,6 +14,7 @@
 #include "Util.h"
 #include "filesystem/File.h"
 #include "profiles/ProfilesManager.h"
+#include "settings/SettingsComponent.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -43,13 +44,13 @@ CMediaSourceSettings& CMediaSourceSettings::GetInstance()
 
 std::string CMediaSourceSettings::GetSourcesFile()
 {
-  const CProfilesManager &profileManager = CServiceBroker::GetProfileManager();
+  const std::shared_ptr<CProfilesManager> profilesManager = CServiceBroker::GetSettingsComponent()->GetProfilesManager();
 
   std::string file;
-  if (profileManager.GetCurrentProfile().hasSources())
-    file = profileManager.GetProfileUserDataFolder();
+  if (profilesManager->GetCurrentProfile().hasSources())
+    file = profilesManager->GetProfileUserDataFolder();
   else
-    file = profileManager.GetUserDataFolder();
+    file = profilesManager->GetUserDataFolder();
 
   return URIUtils::AddFileToFolder(file, SOURCES_FILE);
 }

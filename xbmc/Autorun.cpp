@@ -79,10 +79,8 @@ void CAutorun::ExecuteAutorun(const std::string& path, bool bypassSettings, bool
   g_application.WakeUpScreenSaverAndDPMS();  // turn off the screensaver if it's active
 
 #ifdef HAS_CDDA_RIPPER
-  const CProfilesManager &profileManager = CServiceBroker::GetProfileManager();
-
   if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_AUDIOCDS_AUTOACTION) == AUTOCD_RIP &&
-      pInfo->IsAudio(1) && !profileManager.GetCurrentProfile().musicLocked())
+      pInfo->IsAudio(1) && !CServiceBroker::GetSettingsComponent()->GetProfilesManager()->GetCurrentProfile().musicLocked())
   {
     CCDDARipper::GetInstance().RipCD();
   }
@@ -156,11 +154,11 @@ bool CAutorun::RunDisc(IDirectory* pDir, const std::string& strDrive, int& nAdde
   bool bAllowMusic = true;
   if (!g_passwordManager.IsMasterLockUnlocked(false))
   {
-    const CProfilesManager &profileManager = CServiceBroker::GetProfileManager();
+    const std::shared_ptr<CProfilesManager> profilesManager = CServiceBroker::GetSettingsComponent()->GetProfilesManager();
 
-    bAllowVideo = !profileManager.GetCurrentProfile().videoLocked();
-//    bAllowPictures = !profileManager.GetCurrentProfile().picturesLocked();
-    bAllowMusic = !profileManager.GetCurrentProfile().musicLocked();
+    bAllowVideo = !profilesManager->GetCurrentProfile().videoLocked();
+//    bAllowPictures = !profilesManager->GetCurrentProfile().picturesLocked();
+    bAllowMusic = !profilesManager->GetCurrentProfile().musicLocked();
   }
 
   // is this a root folder we have to check the content to determine a disc type

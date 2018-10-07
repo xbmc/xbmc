@@ -49,6 +49,7 @@
 #include "settings/DisplaySettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/MediaSourceSettings.h"
+#include "settings/SettingsComponent.h"
 #include "settings/SettingConditions.h"
 #include "settings/SettingUtils.h"
 #include "settings/SkinSettings.h"
@@ -452,9 +453,9 @@ bool CSettings::Initialize()
 
 bool CSettings::Load()
 {
-  const CProfilesManager &profileManager = CServiceBroker::GetProfileManager();
+  const std::shared_ptr<CProfilesManager> profilesManager = CServiceBroker::GetSettingsComponent()->GetProfilesManager();
 
-  return Load(profileManager.GetSettingsFile());
+  return Load(profilesManager->GetSettingsFile());
 }
 
 bool CSettings::Load(const std::string &file)
@@ -480,9 +481,9 @@ bool CSettings::Load(const std::string &file)
 
 bool CSettings::Save()
 {
-  const CProfilesManager &profileManager = CServiceBroker::GetProfileManager();
+  const std::shared_ptr<CProfilesManager> profilesManager = CServiceBroker::GetSettingsComponent()->GetProfilesManager();
 
-  return Save(profileManager.GetSettingsFile());
+  return Save(profilesManager->GetSettingsFile());
 }
 
 bool CSettings::Save(const std::string &file)
@@ -969,9 +970,9 @@ void CSettings::UninitializeISettingCallbacks()
 
 bool CSettings::Reset()
 {
-  const CProfilesManager &profileManager = CServiceBroker::GetProfileManager();
+  const std::shared_ptr<CProfilesManager> profilesManager = CServiceBroker::GetSettingsComponent()->GetProfilesManager();
 
-  std::string settingsFile = profileManager.GetSettingsFile();
+  const std::string settingsFile = profilesManager->GetSettingsFile();
 
   // try to delete the settings file
   if (XFILE::CFile::Exists(settingsFile, false) && !XFILE::CFile::Delete(settingsFile))

@@ -31,6 +31,7 @@
 #include "pvr/PVRManager.h"
 #include "pvr/PVRSettings.h"
 #include "settings/SettingAddon.h"
+#include "settings/SettingsComponent.h"
 #if defined(HAS_LIBAMCODEC)
 #include "utils/AMLUtils.h"
 #endif // defined(HAS_LIBAMCODEC)
@@ -389,7 +390,7 @@ void CSettingConditions::Deinitialize()
 const CProfile& CSettingConditions::GetCurrentProfile()
 {
   if (!m_profileManager)
-    m_profileManager = &CServiceBroker::GetProfileManager();
+    m_profileManager = CServiceBroker::GetSettingsComponent()->GetProfilesManager().get();
 
   if (m_profileManager)
     return m_profileManager->GetCurrentProfile();

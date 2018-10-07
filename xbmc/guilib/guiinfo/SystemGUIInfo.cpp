@@ -251,22 +251,22 @@ bool CSystemGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
       }
       return true;
     case SYSTEM_PROFILENAME:
-      value = CServiceBroker::GetProfileManager().GetCurrentProfile().getName();
+      value = CServiceBroker::GetSettingsComponent()->GetProfilesManager()->GetCurrentProfile().getName();
       return true;
     case SYSTEM_PROFILECOUNT:
-      value = StringUtils::Format("{0}", CServiceBroker::GetProfileManager().GetNumberOfProfiles());
+      value = StringUtils::Format("{0}", CServiceBroker::GetSettingsComponent()->GetProfilesManager()->GetNumberOfProfiles());
       return true;
     case SYSTEM_PROFILEAUTOLOGIN:
     {
-      CProfilesManager& profilesMgr = CServiceBroker::GetProfileManager();
-      int iProfileId = profilesMgr.GetAutoLoginProfileId();
-      if ((iProfileId < 0) || !profilesMgr.GetProfileName(iProfileId, value))
+      const std::shared_ptr<CProfilesManager> profilesManager = CServiceBroker::GetSettingsComponent()->GetProfilesManager();
+      int iProfileId = profilesManager->GetAutoLoginProfileId();
+      if ((iProfileId < 0) || !profilesManager->GetProfileName(iProfileId, value))
         value = g_localizeStrings.Get(37014); // Last used profile
       return true;
     }
     case SYSTEM_PROFILETHUMB:
     {
-      const std::string& thumb = CServiceBroker::GetProfileManager().GetCurrentProfile().getThumb();
+      const std::string& thumb = CServiceBroker::GetSettingsComponent()->GetProfilesManager()->GetCurrentProfile().getThumb();
       value = thumb.empty() ? "DefaultUser.png" : thumb;
       return true;
     }
@@ -515,7 +515,7 @@ bool CSystemGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
       value = g_application.IsDPMSActive();
       return true;
     case SYSTEM_HASLOCKS:
-      value = CServiceBroker::GetProfileManager().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE;
+      value = CServiceBroker::GetSettingsComponent()->GetProfilesManager()->GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE;
       return true;
     case SYSTEM_HAS_PVR:
       value = true;
@@ -536,7 +536,7 @@ bool CSystemGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
 #endif
       return true;
     case SYSTEM_ISMASTER:
-      value = CServiceBroker::GetProfileManager().GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && g_passwordManager.bMasterUser;
+      value = CServiceBroker::GetSettingsComponent()->GetProfilesManager()->GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && g_passwordManager.bMasterUser;
       return true;
     case SYSTEM_ISFULLSCREEN:
       value = CServiceBroker::GetWinSystem()->IsFullScreen();
@@ -557,7 +557,7 @@ bool CSystemGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
       value = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_showExitButton;
       return true;
     case SYSTEM_HAS_LOGINSCREEN:
-      value = CServiceBroker::GetProfileManager().UsingLoginScreen();
+      value = CServiceBroker::GetSettingsComponent()->GetProfilesManager()->UsingLoginScreen();
       return true;
     case SYSTEM_INTERNET_STATE:
     {

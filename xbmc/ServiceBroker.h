@@ -48,7 +48,6 @@ class CPowerManager;
 class CWeatherManager;
 class CPlayerCoreFactory;
 class CDatabaseManager;
-class CProfilesManager;
 class CEventLog;
 class CGUIComponent;
 class CAppInboundProtocol;
@@ -105,8 +104,6 @@ public:
   static CWeatherManager& GetWeatherManager();
   static CPlayerCoreFactory &GetPlayerCoreFactory();
   static CDatabaseManager &GetDatabaseManager();
-  // @todo to be removed with next commit
-  static CProfilesManager &GetProfileManager();
   static CEventLog &GetEventLog();
 
   static CGUIComponent* GetGUI();

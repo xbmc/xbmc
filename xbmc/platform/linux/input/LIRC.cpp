@@ -40,7 +40,7 @@ void CLirc::Start()
 
 void CLirc::Process()
 {
-  m_profileId = CServiceBroker::GetProfileManager().GetCurrentProfileId();
+  m_profileId = CServiceBroker::GetSettingsComponent()->GetProfilesManager()->GetCurrentProfileId();
   m_irTranslator.Load("Lircmap.xml");
 
   // make sure work-around (CheckDaemon) uses the same socket path as lirc_init
@@ -83,9 +83,10 @@ void CLirc::Process()
       }
       if (code != nullptr)
       {
-        if (m_profileId != CServiceBroker::GetProfileManager().GetCurrentProfileId())
+        int profileId = CServiceBroker::GetSettingsComponent()->GetProfilesManager()->GetCurrentProfileId();
+        if (m_profileId != profileId)
         {
-          m_profileId = CServiceBroker::GetProfileManager().GetCurrentProfileId();
+          m_profileId = profileId;
           m_irTranslator.Load("Lircmap.xml");
         }
         ProcessCode(code);

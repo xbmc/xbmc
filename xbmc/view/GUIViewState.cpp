@@ -389,9 +389,9 @@ bool CGUIViewState::HideParentDirItems()
 
 bool CGUIViewState::DisableAddSourceButtons()
 {
-  const CProfilesManager &profileManager = CServiceBroker::GetProfileManager();
+  const std::shared_ptr<CProfilesManager> profilesManager = CServiceBroker::GetSettingsComponent()->GetProfilesManager();
 
-  if (profileManager.GetCurrentProfile().canWriteSources() || g_passwordManager.bMasterUser)
+  if (profilesManager->GetCurrentProfile().canWriteSources() || g_passwordManager.bMasterUser)
     return !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_FILELISTS_SHOWADDSOURCEBUTTONS);
 
   return true;

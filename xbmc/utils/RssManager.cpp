@@ -20,6 +20,7 @@
 #include "profiles/ProfilesManager.h"
 #include "settings/lib/Setting.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/RssReader.h"
@@ -94,11 +95,11 @@ void CRssManager::Stop()
 
 bool CRssManager::Load()
 {
-  const CProfilesManager &profileManager = CServiceBroker::GetProfileManager();
+  const std::shared_ptr<CProfilesManager> profilesManager = CServiceBroker::GetSettingsComponent()->GetProfilesManager();
 
   CSingleLock lock(m_critical);
 
-  std::string rssXML = profileManager.GetUserDataItem("RssFeeds.xml");
+  std::string rssXML = profilesManager->GetUserDataItem("RssFeeds.xml");
   if (!CFile::Exists(rssXML))
     return false;
 

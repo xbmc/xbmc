@@ -23,6 +23,7 @@
 #include "profiles/dialogs/GUIDialogLockSettings.h"
 #include "profiles/ProfilesManager.h"
 #include "settings/lib/Setting.h"
+#include "settings/SettingsComponent.h"
 #include "settings/windows/GUIControlSettings.h"
 #include "storage/MediaManager.h"
 #include "Util.h"
@@ -47,9 +48,9 @@ CGUIDialogProfileSettings::~CGUIDialogProfileSettings() = default;
 
 bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool firstLogin)
 {
-  CProfilesManager &profileManager = CServiceBroker::GetProfileManager();
+  const std::shared_ptr<CProfilesManager> profilesManager = CServiceBroker::GetSettingsComponent()->GetProfilesManager();
 
-  if (firstLogin && iProfile > profileManager.GetNumberOfProfiles())
+  if (firstLogin && iProfile > profilesManager->GetNumberOfProfiles())
     return false;
 
   CGUIDialogProfileSettings *dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogProfileSettings>(WINDOW_DIALOG_PROFILE_SETTINGS);
@@ -60,7 +61,7 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool first
   dialog->m_isDefault = iProfile == 0;
   dialog->m_showDetails = !firstLogin;
 
-  const CProfile *profile = profileManager.GetProfile(iProfile);
+  const CProfile *profile = profilesManager->GetProfile(iProfile);
   if (profile == NULL)
   {
     dialog->m_name.clear();
@@ -68,7 +69,7 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool first
     dialog->m_sourcesMode = 2;
     dialog->m_locks = CProfile::CLock();
 
-    bool bLock = profileManager.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser;
+    bool bLock = profilesManager->GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser;
     dialog->m_locks.addonManager = bLock;
     dialog->m_locks.settings = (bLock) ? LOCK_LEVEL::ALL : LOCK_LEVEL::NONE;
     dialog->m_locks.files = bLock;
@@ -115,7 +116,7 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool first
   dialog->Open();
   if (dialog->m_needsSaving)
   {
-    if (iProfile >= profileManager.GetNumberOfProfiles())
+    if (iProfile >= profilesManager->GetNumberOfProfiles())
     {
       if (dialog->m_name.empty() || dialog->m_directory.empty())
         return false;
@@ -129,8 +130,8 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool first
       }*/
 
       // check for old profile settings
-      CProfile profile(dialog->m_directory, dialog->m_name, profileManager.GetNextProfileId());
-      profileManager.AddProfile(profile);
+      CProfile profile(dialog->m_directory, dialog->m_name, profilesManager->GetNextProfileId());
+      profilesManager->AddProfile(profile);
       bool exists = XFILE::CFile::Exists(URIUtils::AddFileToFolder("special://masterprofile/", dialog->m_directory, "guisettings.xml"));
 
       if (exists && !CGUIDialogYesNo::ShowAndGetInput(CVariant{20058}, CVariant{20104}))
@@ -169,7 +170,7 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool first
       if (!CGUIDialogYesNo::ShowAndGetInput(20067, 20103))
         return false;*/
 
-    CProfile *profile = profileManager.GetProfile(iProfile);
+    CProfile *profile = profilesManager->GetProfile(iProfile);
     assert(profile);
     profile->setName(dialog->m_name);
     profile->setDirectory(dialog->m_directory);
@@ -179,7 +180,7 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool first
     profile->setDatabases((dialog->m_dbMode & 2) == 2);
     profile->setSources((dialog->m_sourcesMode & 2) == 2);
     profile->SetLocks(dialog->m_locks);
-    profileManager.Save();
+    profilesManager->Save();
 
     return true;
   }
@@ -261,17 +262,17 @@ void CGUIDialogProfileSettings::OnSettingAction(std::shared_ptr<const CSetting> 
   {
     if (m_showDetails)
     {
-      const CProfilesManager &profileManager = CServiceBroker::GetProfileManager();
+      const std::shared_ptr<CProfilesManager> profilesManager = CServiceBroker::GetSettingsComponent()->GetProfilesManager();
 
-      if (profileManager.GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE && !m_isDefault)
+      if (profilesManager->GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE && !m_isDefault)
       {
         if (CGUIDialogYesNo::ShowAndGetInput(CVariant{20066}, CVariant{20118}))
           g_passwordManager.SetMasterLockMode(false);
-        if (profileManager.GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE)
+        if (profilesManager->GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE)
           return;
       }
       if (CGUIDialogLockSettings::ShowAndGetLock(m_locks, m_isDefault ? 12360 : 20068,
-              profileManager.GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE || m_isDefault))
+              profilesManager->GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE || m_isDefault))
         m_needsSaving = true;
     }
     else
@@ -323,7 +324,7 @@ void CGUIDialogProfileSettings::InitializeSettings()
     return;
   }
 
-  const CProfilesManager &profileManager = CServiceBroker::GetProfileManager();
+  const std::shared_ptr<CProfilesManager> profilesManager = CServiceBroker::GetSettingsComponent()->GetProfilesManager();
 
   AddEdit(group, SETTING_PROFILE_NAME, 20093, SettingLevel::Basic, m_name);
   AddButton(group, SETTING_PROFILE_IMAGE, 20065, SettingLevel::Basic);
@@ -332,7 +333,7 @@ void CGUIDialogProfileSettings::InitializeSettings()
     AddButton(group, SETTING_PROFILE_DIRECTORY, 20070, SettingLevel::Basic);
 
   if (m_showDetails ||
-     (m_locks.mode == LOCK_MODE_EVERYONE && profileManager.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE))
+     (m_locks.mode == LOCK_MODE_EVERYONE && profilesManager->GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE))
     AddButton(group, SETTING_PROFILE_LOCKS, 20066, SettingLevel::Basic);
 
   if (!m_isDefault && m_showDetails)
@@ -348,7 +349,7 @@ void CGUIDialogProfileSettings::InitializeSettings()
     entries.push_back(std::make_pair(20062, 0));
     entries.push_back(std::make_pair(20063, 1));
     entries.push_back(std::make_pair(20061, 2));
-    if (profileManager.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE)
+    if (profilesManager->GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE)
       entries.push_back(std::make_pair(20107, 3));
 
     AddSpinner(groupMedia, SETTING_PROFILE_MEDIA, 20060, SettingLevel::Basic, m_dbMode, entries);

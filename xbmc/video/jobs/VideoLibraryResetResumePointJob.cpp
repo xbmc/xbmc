@@ -20,6 +20,7 @@
 #include "profiles/ProfilesManager.h"
 #include "pvr/PVRManager.h"
 #include "pvr/recordings/PVRRecordings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/URIUtils.h"
 #include "video/VideoDatabase.h"
 
@@ -42,9 +43,9 @@ bool CVideoLibraryResetResumePointJob::operator==(const CJob* job) const
 
 bool CVideoLibraryResetResumePointJob::Work(CVideoDatabase &db)
 {
-  const CProfilesManager &profileManager = CServiceBroker::GetProfileManager();
+  const std::shared_ptr<CProfilesManager> profilesManager = CServiceBroker::GetSettingsComponent()->GetProfilesManager();
 
-  if (!profileManager.GetCurrentProfile().canWriteDatabases())
+  if (!profilesManager->GetCurrentProfile().canWriteDatabases())
     return false;
 
   CFileItemList items;

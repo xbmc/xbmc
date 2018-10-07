@@ -153,10 +153,10 @@ void CGUIDialogAudioSettings::OnSettingAction(std::shared_ptr<const CSetting> se
 
 void CGUIDialogAudioSettings::Save()
 {
-  const CProfilesManager &profileManager = CServiceBroker::GetProfileManager();
+  const std::shared_ptr<CProfilesManager> profilesManager = CServiceBroker::GetSettingsComponent()->GetProfilesManager();
 
   if (!g_passwordManager.CheckSettingLevelLock(SettingLevel::Expert) &&
-      profileManager.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE)
+      profilesManager->GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE)
     return;
 
   // prompt user if they are sure

@@ -652,10 +652,10 @@ CUPnP::StartServer()
 {
     if (!m_ServerHolder->m_Device.IsNull()) return false;
 
-    const CProfilesManager &profileManager = CServiceBroker::GetProfileManager();
+  const std::shared_ptr<CProfilesManager> profilesManager = CServiceBroker::GetSettingsComponent()->GetProfilesManager();
 
     // load upnpserver.xml
-    std::string filename = URIUtils::AddFileToFolder(profileManager.GetUserDataFolder(), "upnpserver.xml");
+    std::string filename = URIUtils::AddFileToFolder(profilesManager->GetUserDataFolder(), "upnpserver.xml");
     CUPnPSettings::GetInstance().Load(filename);
 
     // create the server with a XBox compatible friendlyname and UUID from upnpserver.xml if found
@@ -732,11 +732,12 @@ CUPnP::CreateRenderer(int port /* = 0 */)
 +---------------------------------------------------------------------*/
 bool CUPnP::StartRenderer()
 {
-    if (!m_RendererHolder->m_Device.IsNull()) return false;
+    if (!m_RendererHolder->m_Device.IsNull())
+      return false;
 
-    const CProfilesManager &profileManager = CServiceBroker::GetProfileManager();
+    const std::shared_ptr<CProfilesManager> profilesManager = CServiceBroker::GetSettingsComponent()->GetProfilesManager();
 
-    std::string filename = URIUtils::AddFileToFolder(profileManager.GetUserDataFolder(), "upnpserver.xml");
+    std::string filename = URIUtils::AddFileToFolder(profilesManager->GetUserDataFolder(), "upnpserver.xml");
     CUPnPSettings::GetInstance().Load(filename);
 
     m_RendererHolder->m_Device = CreateRenderer(CUPnPSettings::GetInstance().GetRendererPort());

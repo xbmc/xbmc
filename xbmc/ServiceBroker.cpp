@@ -200,12 +200,6 @@ CDatabaseManager& CServiceBroker::GetDatabaseManager()
   return g_application.m_ServiceManager->GetDatabaseManager();
 }
 
-// @todo to be removed with next commit
-CProfilesManager& CServiceBroker::GetProfileManager()
-{
-  return *m_pSettingsComponent->GetProfilesManager();
-}
-
 CEventLog& CServiceBroker::GetEventLog()
 {
   return m_pSettingsComponent->GetProfilesManager()->GetEventLog();

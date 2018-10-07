@@ -149,18 +149,18 @@ void CGUIWindowLoginScreen::FrameMove()
       m_iSelectedItem = m_viewControl.GetSelectedItem();
   }
 
-  const CProfilesManager &profileManager = CServiceBroker::GetProfileManager();
+  const std::shared_ptr<CProfilesManager> profilesManager = CServiceBroker::GetSettingsComponent()->GetProfilesManager();
 
-  std::string strLabel = StringUtils::Format(g_localizeStrings.Get(20114).c_str(), m_iSelectedItem+1, profileManager.GetNumberOfProfiles());
+  std::string strLabel = StringUtils::Format(g_localizeStrings.Get(20114).c_str(), m_iSelectedItem+1, profilesManager->GetNumberOfProfiles());
   SET_CONTROL_LABEL(CONTROL_LABEL_SELECTED_PROFILE,strLabel);
   CGUIWindow::FrameMove();
 }
 
 void CGUIWindowLoginScreen::OnInitWindow()
 {
-  const CProfilesManager &profileManager = CServiceBroker::GetProfileManager();
+  const std::shared_ptr<CProfilesManager> profilesManager = CServiceBroker::GetSettingsComponent()->GetProfilesManager();
 
-  m_iSelectedItem = static_cast<int>(profileManager.GetLastUsedProfileIndex());
+  m_iSelectedItem = static_cast<int>(profilesManager->GetLastUsedProfileIndex());
 
   // Update list/thumb control
   m_viewControl.SetCurrentView(DEFAULT_VIEW_LIST);
@@ -190,11 +190,11 @@ void CGUIWindowLoginScreen::Update()
 {
   m_vecItems->Clear();
 
-  const CProfilesManager &profileManager = CServiceBroker::GetProfileManager();
+  const std::shared_ptr<CProfilesManager> profilesManager = CServiceBroker::GetSettingsComponent()->GetProfilesManager();
 
-  for (unsigned int i = 0; i < profileManager.GetNumberOfProfiles(); ++i)
+  for (unsigned int i = 0; i < profilesManager->GetNumberOfProfiles(); ++i)
   {
-    const CProfile *profile = profileManager.GetProfile(i);
+    const CProfile *profile = profilesManager->GetProfile(i);
 
     CFileItemPtr item(new CFileItem(profile->getName()));
 
@@ -221,7 +221,7 @@ bool CGUIWindowLoginScreen::OnPopupMenu(int iItem)
   if (iItem < 0 || iItem >= m_vecItems->Size())
     return false;
 
-  const CProfilesManager &profileManager = CServiceBroker::GetProfileManager();
+  const std::shared_ptr<CProfilesManager> profilesManager = CServiceBroker::GetSettingsComponent()->GetProfilesManager();
 
   CFileItemPtr pItem = m_vecItems->Get(iItem);
   bool bSelect = pItem->IsSelected();
@@ -238,7 +238,7 @@ bool CGUIWindowLoginScreen::OnPopupMenu(int iItem)
   int choice = CGUIDialogContextMenu::ShowAndGetChoice(choices);
   if (choice == 2)
   {
-    if (g_passwordManager.CheckLock(profileManager.GetMasterProfile().getLockMode(), profileManager.GetMasterProfile().getLockCode(), 20075))
+    if (g_passwordManager.CheckLock(profilesManager->GetMasterProfile().getLockMode(), profilesManager->GetMasterProfile().getLockCode(), 20075))
       g_passwordManager.iMasterLockRetriesLeft = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_MASTERLOCK_MAXRETRIES);
     else // be inconvenient
       CApplicationMessenger::GetInstance().PostMsg(TMSG_SHUTDOWN);
@@ -251,7 +251,7 @@ bool CGUIWindowLoginScreen::OnPopupMenu(int iItem)
     CGUIDialogProfileSettings::ShowForProfile(m_viewControl.GetSelectedItem());
 
   //NOTE: this can potentially (de)select the wrong item if the filelisting has changed because of an action above.
-  if (iItem < static_cast<int>(profileManager.GetNumberOfProfiles()))
+  if (iItem < static_cast<int>(profilesManager->GetNumberOfProfiles()))
     m_vecItems->Get(iItem)->Select(bSelect);
 
   return false;
