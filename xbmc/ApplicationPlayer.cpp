@@ -126,6 +126,7 @@ bool CApplicationPlayer::OpenFile(const CFileItem& item, const CPlayerOptions& o
     {
       CSingleLock lock(m_playerLock);
       m_pPlayer.reset();
+      player.reset();
     }
   }
 
