@@ -136,7 +136,7 @@ void CLibInputHandler::Process()
 
   while (!m_bStop)
   {
-    epoll_wait(epollFd, &event, 1, -1);
+    epoll_wait(epollFd, &event, 1, 200);
 
     ret = libinput_dispatch(m_li);
     if (ret < 0)
