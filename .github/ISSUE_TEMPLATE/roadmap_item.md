@@ -1,5 +1,5 @@
 ---
-name: Roadmap sugggestion
+name: Roadmap suggestion
 about: Create a roadmap/todo suggestion item (Team Kodi members only!)
 
 ---
