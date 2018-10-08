@@ -13,7 +13,6 @@
 #include "Util.h"
 #include "addons/AddonSystemSettings.h"
 #include "addons/Skin.h"
-#include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "cores/VideoPlayer/VideoRenderers/BaseRenderer.h"
 #include "filesystem/File.h"
 #include "guilib/GUIFontManager.h"
@@ -23,7 +22,6 @@
 #if defined(TARGET_POSIX)
 #include "platform/linux/LinuxTimezone.h"
 #endif // defined(TARGET_POSIX)
-#include "network/NetworkServices.h"
 #include "network/upnp/UPnPSettings.h"
 #include "network/WakeOnAccess.h"
 #if defined(TARGET_DARWIN_OSX)
@@ -51,7 +49,6 @@
 #include "settings/MediaSourceSettings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/SettingConditions.h"
-#include "settings/SettingUtils.h"
 #include "settings/SkinSettings.h"
 #include "settings/lib/SettingsManager.h"
 #include "threads/SingleLock.h"
@@ -64,7 +61,6 @@
 #include "SeekHandler.h"
 #include "utils/Variant.h"
 #include "view/ViewStateSettings.h"
-#include "ServiceBroker.h"
 #include "DiscSettings.h"
 
 #define SETTINGS_XML_FOLDER "special://xbmc/system/settings/"

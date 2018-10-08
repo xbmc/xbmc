@@ -6,6 +6,7 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "guilib/DirtyRegion.h"
 #include "windowing/GraphicContext.h"
 #include "settings/AdvancedSettings.h"
 #include "RenderSystemGLES.h"

@@ -21,6 +21,7 @@
 
 #include <iterator>
 #include "ContextMenus.h"
+#include "dialogs/GUIDialogContextMenu.h"
 
 using namespace ADDON;
 using namespace PVR;

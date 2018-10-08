@@ -11,7 +11,6 @@
 #include <string>
 #include <vector>
 #include "threads/CriticalSection.h"
-#include "utils/GlobalsHandling.h"
 
 //  forward
 class LibraryLoader;

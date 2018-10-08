@@ -12,6 +12,7 @@
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
+#include "utils/GlobalsHandling.h"
 
 #define g_sectionLoader XBMC_GLOBAL_USE(CSectionLoader)
 

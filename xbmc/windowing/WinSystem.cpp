@@ -8,7 +8,6 @@
 
 #include "WinSystem.h"
 #include "ServiceBroker.h"
-#include "guilib/gui3d.h"
 #include "guilib/DispResource.h"
 #include "windowing/GraphicContext.h"
 #include "settings/DisplaySettings.h"

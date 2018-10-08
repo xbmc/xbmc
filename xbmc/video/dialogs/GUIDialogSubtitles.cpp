@@ -6,7 +6,6 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "GUIUserMessages.h"
 #include "Application.h"
 #include "ServiceBroker.h"
 #include "GUIDialogSubtitles.h"
@@ -22,7 +21,6 @@
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
-#include "input/Key.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"

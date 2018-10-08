@@ -13,7 +13,6 @@
 #include "cores/VideoPlayer/VideoPlayer.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "cores/DataCacheCore.h"
 #include "Application.h"
 #include "PlayListPlayer.h"
 #include "ServiceBroker.h"

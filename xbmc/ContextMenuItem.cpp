@@ -7,7 +7,6 @@
  */
 
 #include "ContextMenuItem.h"
-#include "addons/Addon.h"
 #include "addons/AddonManager.h"
 #include "addons/ContextMenuAddon.h"
 #include "addons/IAddon.h"

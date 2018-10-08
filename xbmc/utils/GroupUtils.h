@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "utils/SortUtils.h"
+#include<string>
 
 class CFileItemList;
 

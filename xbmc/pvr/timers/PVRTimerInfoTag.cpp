@@ -23,7 +23,6 @@
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/epg/Epg.h"
-#include "pvr/epg/EpgContainer.h"
 #include "pvr/timers/PVRTimers.h"
 
 using namespace PVR;

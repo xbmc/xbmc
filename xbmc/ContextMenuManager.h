@@ -13,7 +13,6 @@
 
 #include "addons/ContextMenuAddon.h"
 #include "ContextMenuItem.h"
-#include "dialogs/GUIDialogContextMenu.h"
 
 
 using ContextMenuView = std::vector<std::shared_ptr<const IContextMenuItem>>;

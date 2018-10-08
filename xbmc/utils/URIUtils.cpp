@@ -14,7 +14,6 @@
 #include "filesystem/StackDirectory.h"
 #include "network/DNSNameCache.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/SettingsComponent.h"
 #include "URL.h"
 #include "utils/FileExtensionProvider.h"
 #include "ServiceBroker.h"

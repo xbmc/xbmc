@@ -28,7 +28,6 @@
 #include "settings/SettingsComponent.h"
 #include "platform/Filesystem.h"
 #include "utils/log.h"
-#include "utils/SysfsUtils.h"
 
 #ifdef TARGET_WINDOWS
 #include "dwmapi.h"
@@ -74,6 +73,7 @@ using namespace winrt::Windows::System::Profile;
 #include <sys/param.h>
 #elif defined(TARGET_LINUX)
 #include <linux/version.h>
+#include "utils/SysfsUtils.h"
 #endif
 
 #include <system_error>

@@ -13,7 +13,6 @@
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "utils/SystemInfo.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
 
@@ -21,6 +20,7 @@
 
 #ifndef _M_X64
 #pragma comment(lib, "EasyHook32.lib")
+#include "utils/SystemInfo.h"
 #else
 #pragma comment(lib, "EasyHook64.lib")
 #endif

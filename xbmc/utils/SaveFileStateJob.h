@@ -8,9 +8,8 @@
 
 #pragma once
 
-#include "FileItem.h"
-#include "video/Bookmark.h"
-#include "cores/VideoSettings.h"
+class CBookmark;
+class CFileItem;
 
 class CSaveFileState
 {

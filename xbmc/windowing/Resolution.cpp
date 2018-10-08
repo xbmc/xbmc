@@ -7,7 +7,6 @@
  */
 
 #include "Resolution.h"
-#include "guilib/gui3d.h"
 #include "GraphicContext.h"
 #include "utils/Variant.h"
 #include "utils/log.h"

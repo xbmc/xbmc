@@ -20,7 +20,6 @@
 #include "view/GUIViewState.h"
 #include "playlists/PlayListFactory.h"
 #include "Application.h"
-#include "NfoFile.h"
 #include "PlayListPlayer.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "GUIPassword.h"

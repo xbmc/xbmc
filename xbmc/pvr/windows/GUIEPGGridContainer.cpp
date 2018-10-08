@@ -21,7 +21,6 @@
 #include "utils/MathUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
-#include "threads/SystemClock.h"
 
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/epg/Epg.h"

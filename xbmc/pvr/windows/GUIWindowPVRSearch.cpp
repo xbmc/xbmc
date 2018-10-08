@@ -10,7 +10,6 @@
 
 #include "ServiceBroker.h"
 #include "dialogs/GUIDialogBusy.h"
-#include "dialogs/GUIDialogProgress.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
@@ -24,7 +23,6 @@
 #include "pvr/PVRItem.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
-#include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/dialogs/GUIDialogPVRGuideSearch.h"
 #include "pvr/epg/EpgContainer.h"
 #include "pvr/epg/EpgSearchFilter.h"

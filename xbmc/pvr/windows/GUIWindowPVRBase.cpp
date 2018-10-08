@@ -28,8 +28,6 @@
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannelGroup.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
-#include "pvr/epg/Epg.h"
-#include "pvr/timers/PVRTimers.h"
 
 #define MAX_INVALIDATION_FREQUENCY 2000 // limit to one invalidation per X milliseconds
 

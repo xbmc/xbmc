@@ -25,7 +25,6 @@
 #include "guilib/GUIShaderDX.h"
 #include "guilib/GUITextureD3D.h"
 #include "guilib/GUIWindowManager.h"
-#include "settings/AdvancedSettings.h"
 #include "threads/SingleLock.h"
 #include "utils/MathUtils.h"
 #include "utils/log.h"

@@ -16,7 +16,6 @@
 #include "messaging/helpers/DialogOKHelper.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "threads/SingleLock.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 

@@ -18,7 +18,6 @@
 #include "interfaces/AnnouncementManager.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "music/MusicDatabase.h"
-#include "music/windows/GUIWindowMusicPlaylist.h"
 #include "PlayListPlayer.h"
 #include "playlists/PlayList.h"
 #include "playlists/SmartPlayList.h"
