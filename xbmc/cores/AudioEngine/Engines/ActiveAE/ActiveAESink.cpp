@@ -913,7 +913,6 @@ unsigned int CActiveAESink::OutputSamples(CSampleBuffer* samples)
           {
             int offset;
             int len;
-            m_packer->GetBuffer();
             for (int i=0; i<24; i++)
             {
               offset = i*2560;
