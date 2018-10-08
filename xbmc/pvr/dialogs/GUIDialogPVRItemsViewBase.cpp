@@ -56,20 +56,23 @@ void CGUIDialogPVRItemsViewBase::OnDeinitWindow(int nextWindowID)
 
 bool CGUIDialogPVRItemsViewBase::OnAction(const CAction &action)
 {
-  switch (action.GetID())
+  if (m_viewControl.HasControl(GetFocusedControlID()))
   {
-    case ACTION_SHOW_INFO:
-    case ACTION_SELECT_ITEM:
-    case ACTION_MOUSE_LEFT_CLICK:
-      ShowInfo(m_viewControl.GetSelectedItem());
-      return true;
+    switch (action.GetID())
+    {
+      case ACTION_SHOW_INFO:
+      case ACTION_SELECT_ITEM:
+      case ACTION_MOUSE_LEFT_CLICK:
+        ShowInfo(m_viewControl.GetSelectedItem());
+        return true;
 
-    case ACTION_CONTEXT_MENU:
-    case ACTION_MOUSE_RIGHT_CLICK:
-      return ContextMenu(m_viewControl.GetSelectedItem());
+      case ACTION_CONTEXT_MENU:
+      case ACTION_MOUSE_RIGHT_CLICK:
+        return ContextMenu(m_viewControl.GetSelectedItem());
 
-    default:
-      break;
+      default:
+        break;
+    }
   }
   return CGUIDialog::OnAction(action);
 }
