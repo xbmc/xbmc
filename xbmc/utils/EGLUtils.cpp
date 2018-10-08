@@ -95,7 +95,7 @@ bool CEGLContextUtils::CreateDisplay(EGLNativeDisplayType nativeDisplay, EGLint 
   return InitializeDisplay(renderableType, renderingApi);
 }
 
-bool CEGLContextUtils::CreatePlatformDisplay(void* nativeDisplay, EGLNativeDisplayType nativeDisplayLegacy, EGLint renderableType, EGLint renderingApi)
+bool CEGLContextUtils::CreatePlatformDisplay(void* nativeDisplay, EGLNativeDisplayType nativeDisplayLegacy, EGLint renderableType, EGLint renderingApi, EGLint visualId)
 {
   if (m_eglDisplay != EGL_NO_DISPLAY)
   {
@@ -125,10 +125,11 @@ bool CEGLContextUtils::CreatePlatformDisplay(void* nativeDisplay, EGLNativeDispl
   {
     return CreateDisplay(nativeDisplayLegacy, renderableType, renderingApi);
   }
-  return InitializeDisplay(renderableType, renderingApi);
+
+  return InitializeDisplay(renderableType, renderingApi, visualId);
 }
 
-bool CEGLContextUtils::InitializeDisplay(EGLint renderableType, EGLint renderingApi)
+bool CEGLContextUtils::InitializeDisplay(EGLint renderableType, EGLint renderingApi, EGLint visualId)
 {
   int major, minor;
   if (!eglInitialize(m_eglDisplay, &major, &minor))
@@ -146,6 +147,16 @@ bool CEGLContextUtils::InitializeDisplay(EGLint renderableType, EGLint rendering
     return false;
   }
 
+  if (!ChooseConfig(renderableType, visualId))
+    return false;
+
+  return true;
+}
+
+bool CEGLContextUtils::ChooseConfig(EGLint renderableType, EGLint visualId)
+{
+  EGLint numMatched{0};
+
   EGLint surfaceType = EGL_WINDOW_BIT;
   // for the non-trivial dirty region modes, we need the EGL buffer to be preserved across updates
   int guiAlgorithmDirtyRegions = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiAlgorithmDirtyRegions;
@@ -153,34 +164,47 @@ bool CEGLContextUtils::InitializeDisplay(EGLint renderableType, EGLint rendering
       guiAlgorithmDirtyRegions == DIRTYREGION_SOLVER_UNION)
     surfaceType |= EGL_SWAP_BEHAVIOR_PRESERVED_BIT;
 
-  EGLint attribs[] =
-  {
-    EGL_RED_SIZE, 8,
-    EGL_GREEN_SIZE, 8,
-    EGL_BLUE_SIZE, 8,
-    EGL_ALPHA_SIZE, 8,
-    EGL_DEPTH_SIZE, 16,
-    EGL_STENCIL_SIZE, 0,
-    EGL_SAMPLE_BUFFERS, 0,
-    EGL_SAMPLES, 0,
-    EGL_SURFACE_TYPE, surfaceType,
-    EGL_RENDERABLE_TYPE, renderableType,
-    EGL_NONE
-  };
+  CEGLAttributes<10> attribs;
+  attribs.Add({{EGL_RED_SIZE, 8},
+               {EGL_GREEN_SIZE, 8},
+               {EGL_BLUE_SIZE, 8},
+               {EGL_ALPHA_SIZE, 2},
+               {EGL_DEPTH_SIZE, 16},
+               {EGL_STENCIL_SIZE, 0},
+               {EGL_SAMPLE_BUFFERS, 0},
+               {EGL_SAMPLES, 0},
+               {EGL_SURFACE_TYPE, surfaceType},
+               {EGL_RENDERABLE_TYPE, renderableType}});
 
-  EGLint neglconfigs = 0;
-  if (eglChooseConfig(m_eglDisplay, attribs, &m_eglConfig, 1, &neglconfigs) != EGL_TRUE)
+  if (eglChooseConfig(m_eglDisplay, attribs.Get(), nullptr, 0, &numMatched) != EGL_TRUE)
   {
     CEGLUtils::LogError("failed to query number of EGL configs");
     Destroy();
     return false;
   }
 
-  if (neglconfigs <= 0)
+  std::vector<EGLConfig> eglConfigs(numMatched);
+
+  if (eglChooseConfig(m_eglDisplay, attribs.Get(), eglConfigs.data(), numMatched, &numMatched) != EGL_TRUE)
   {
-    CLog::Log(LOGERROR, "No suitable EGL configs found");
+    CEGLUtils::LogError("failed to find EGL configs with appropriate attributes");
     Destroy();
     return false;
+  }
+
+  for (const auto &eglConfig: eglConfigs)
+  {
+    m_eglConfig = eglConfig;
+
+    if (visualId == 0)
+      break;
+
+    EGLint id{0};
+    if (eglGetConfigAttrib(m_eglDisplay, m_eglConfig, EGL_NATIVE_VISUAL_ID, &id) != EGL_TRUE)
+      CEGLUtils::LogError("failed to query EGL attibute EGL_NATIVE_VISUAL_ID");
+
+    if (visualId == id)
+      break;
   }
 
   return true;

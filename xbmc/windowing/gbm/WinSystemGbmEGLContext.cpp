@@ -22,7 +22,10 @@ bool CWinSystemGbmEGLContext::InitWindowSystemEGL(EGLint renderableType, EGLint 
     return false;
   }
 
-  if (!m_eglContext.CreatePlatformDisplay(m_GBM->GetDevice(), m_GBM->GetDevice(), renderableType, apiType))
+  // we need to provide an alpha format to egl to workaround a mesa bug
+  int visualId = CDRMUtils::FourCCWithAlpha(CWinSystemGbm::GetDrm()->GetOverlayPlane()->format);
+
+  if (!m_eglContext.CreatePlatformDisplay(m_GBM->GetDevice(), m_GBM->GetDevice(), renderableType, apiType, visualId))
   {
     return false;
   }

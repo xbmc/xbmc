@@ -727,3 +727,13 @@ std::vector<RESOLUTION_INFO> CDRMUtils::GetModes()
 
   return resolutions;
 }
+
+uint32_t CDRMUtils::FourCCWithAlpha(uint32_t fourcc)
+{
+  return (fourcc & 0xFFFFFF00) | static_cast<uint32_t>('A');
+}
+
+uint32_t CDRMUtils::FourCCWithoutAlpha(uint32_t fourcc)
+{
+  return (fourcc & 0xFFFFFF00) | static_cast<uint32_t>('X');
+}

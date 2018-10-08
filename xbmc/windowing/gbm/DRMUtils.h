@@ -89,6 +89,9 @@ public:
   virtual bool AddProperty(struct drm_object *object, const char *name, uint64_t value) { return false; }
   virtual bool SetProperty(struct drm_object *object, const char *name, uint64_t value) { return false; }
 
+  static uint32_t FourCCWithAlpha(uint32_t fourcc);
+  static uint32_t FourCCWithoutAlpha(uint32_t fourcc);
+
 protected:
   bool OpenDrm(bool needConnector);
   uint32_t GetPropertyId(struct drm_object *object, const char *name);
