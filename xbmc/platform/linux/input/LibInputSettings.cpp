@@ -13,6 +13,7 @@
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingsManager.h"
 #include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/log.h"
 #include "utils/XBMCTinyXML.h"
 
@@ -26,9 +27,9 @@ CLibInputSettings::CLibInputSettings(CLibInputHandler *handler) :
 {
   std::set<std::string> settingSet;
   settingSet.insert(SETTING_INPUT_LIBINPUTKEYBOARDLAYOUT);
-  CServiceBroker::GetSettings()->GetSettingsManager()->RegisterCallback(this, settingSet);
-
-  CServiceBroker::GetSettings()->GetSettingsManager()->RegisterSettingOptionsFiller("libinputkeyboardlayout", SettingOptionsKeyboardLayoutsFiller);
+  const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+  settings->GetSettingsManager()->RegisterCallback(this, settingSet);
+  settings->GetSettingsManager()->RegisterSettingOptionsFiller("libinputkeyboardlayout", SettingOptionsKeyboardLayoutsFiller);
 
   /* load the keyboard layouts from xkeyboard-config */
   std::string xkbFile("/usr/share/X11/xkb/rules/base.xml");
@@ -98,7 +99,7 @@ CLibInputSettings::CLibInputSettings(CLibInputHandler *handler) :
 
 CLibInputSettings::~CLibInputSettings()
 {
-  std::shared_ptr<CSettings> settings = CServiceBroker::GetSettings();
+  const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
   if (settings)
   {
     settings->GetSettingsManager()->UnregisterSettingOptionsFiller("libinputkeyboardlayout");
