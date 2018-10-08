@@ -67,7 +67,7 @@ class CInputManager;
 class CFileExtensionProvider;
 class CPlayerCoreFactory;
 class CDatabaseManager;
-class CProfilesManager;
+class CProfileManager;
 class CEventLog;
 
 class CServiceManager
@@ -79,7 +79,7 @@ public:
   bool InitForTesting();
   bool InitStageOne();
   bool InitStageTwo(const CAppParamParser &params, const std::string& profilesUserDataFolder);
-  bool InitStageThree(const std::shared_ptr<CProfilesManager>& profilesManager);
+  bool InitStageThree(const std::shared_ptr<CProfileManager>& profileManager);
   void DeinitTesting();
   void DeinitStageThree();
   void DeinitStageTwo();

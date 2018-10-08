@@ -23,7 +23,7 @@
 #include "music/MusicUtils.h"
 #include "music/tags/MusicInfoTag.h"
 #include "music/windows/GUIWindowMusicBase.h"
-#include "profiles/ProfilesManager.h"
+#include "profiles/ProfileManager.h"
 #include "ServiceBroker.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/SettingsComponent.h"
@@ -240,9 +240,9 @@ void CGUIDialogSongInfo::OnInitWindow()
     CONTROL_ENABLE(CONTROL_USERRATING);
 
   // Disable the Choose Art button if the user isn't allowed it
-  const std::shared_ptr<CProfilesManager> profilesManager = CServiceBroker::GetSettingsComponent()->GetProfilesManager();
+  const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_GET_THUMB,
-    profilesManager->GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser);
+    profileManager->GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser);
 
   SET_CONTROL_HIDDEN(CONTROL_BTN_REFRESH);
   SET_CONTROL_LABEL(CONTROL_USERRATING, 38023);

@@ -28,7 +28,7 @@
 #include "Application.h"
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogOKHelper.h"
-#include "profiles/ProfilesManager.h"
+#include "profiles/ProfileManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/MediaSourceSettings.h"
@@ -893,7 +893,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
   CVideoDatabaseDirectory dir;
   NODE_TYPE node = dir.GetDirectoryChildType(m_vecItems->GetPath());
 
-  const std::shared_ptr<CProfilesManager> profilesManager = CServiceBroker::GetSettingsComponent()->GetProfilesManager();
+  const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
   if (!item)
   {
@@ -904,7 +904,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
     // get the usual shares
     CGUIDialogContextMenu::GetContextButtons("video", item, buttons);
     if (!item->IsDVD() && item->GetPath() != "add" && !item->IsParentFolder() &&
-        (profilesManager->GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser))
+        (profileManager->GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser))
     {
       CVideoDatabase database;
       database.Open();
@@ -962,7 +962,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
       GetScraperForItem(item.get(), info, settings);
 
       // can we update the database?
-      if (profilesManager->GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser)
+      if (profileManager->GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser)
       {
         if (!g_application.IsVideoScanning() && item->IsVideoDb() && item->HasVideoInfoTag() &&
            (item->GetVideoInfoTag()->m_type == MediaTypeMovie ||          // movies
@@ -1124,9 +1124,9 @@ bool CGUIWindowVideoNav::OnClick(int iItem, const std::string &player)
   {
     CLog::Log(LOGDEBUG, "%s called on '%s' but file doesn't exist", __FUNCTION__, item->GetPath().c_str());
 
-    const std::shared_ptr<CProfilesManager> profilesManager = CServiceBroker::GetSettingsComponent()->GetProfilesManager();
+    const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
-    if (profilesManager->GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser)
+    if (profileManager->GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser)
     {
       if (!CGUIDialogVideoInfo::DeleteVideoItemFromDatabase(item, true))
         return true;

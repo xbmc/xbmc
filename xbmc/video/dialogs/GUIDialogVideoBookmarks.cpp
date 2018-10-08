@@ -13,7 +13,7 @@
 #include "pictures/Picture.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include "view/ViewState.h"
-#include "profiles/ProfilesManager.h"
+#include "profiles/ProfileManager.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "settings/AdvancedSettings.h"
 #include "FileItem.h"
@@ -419,11 +419,11 @@ bool CGUIDialogVideoBookmarks::AddBookmark(CVideoInfoTag* tag)
 
   if (hasImage)
   {
-    const std::shared_ptr<CProfilesManager> profilesManager = CServiceBroker::GetSettingsComponent()->GetProfilesManager();
+    const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
     auto crc = Crc32::ComputeFromLowerCase(g_application.CurrentFile());
     bookmark.thumbNailImage = StringUtils::Format("%08x_%i.jpg", crc, (int)bookmark.timeInSeconds);
-    bookmark.thumbNailImage = URIUtils::AddFileToFolder(profilesManager->GetBookmarksThumbFolder(), bookmark.thumbNailImage);
+    bookmark.thumbNailImage = URIUtils::AddFileToFolder(profileManager->GetBookmarksThumbFolder(), bookmark.thumbNailImage);
 
     if (!CPicture::CreateThumbnailFromSurface(pixels, width, height, width * 4,
                                                          bookmark.thumbNailImage))

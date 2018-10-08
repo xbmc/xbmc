@@ -10,7 +10,7 @@
 #include "ServiceBroker.h"
 #include "filesystem/File.h"
 #include "input/remote/IRRemote.h"
-#include "profiles/ProfilesManager.h"
+#include "profiles/ProfileManager.h"
 #include "settings/SettingsComponent.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
@@ -39,7 +39,7 @@ void CIRTranslator::Load(const std::string &irMapName)
   else
     CLog::Log(LOGDEBUG, "CIRTranslator::Load - no system %s found, skipping", irMapName.c_str());
 
-  irMapPath = CServiceBroker::GetSettingsComponent()->GetProfilesManager()->GetUserDataItem(irMapName);
+  irMapPath = CServiceBroker::GetSettingsComponent()->GetProfileManager()->GetUserDataItem(irMapName);
   if (XFILE::CFile::Exists(irMapPath))
     success |= LoadIRMap(irMapPath);
   else

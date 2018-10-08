@@ -21,7 +21,7 @@
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "profiles/Profile.h"
-#include "profiles/ProfilesManager.h"
+#include "profiles/ProfileManager.h"
 #include "profiles/dialogs/GUIDialogProfileSettings.h"
 #include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"
@@ -149,18 +149,18 @@ void CGUIWindowLoginScreen::FrameMove()
       m_iSelectedItem = m_viewControl.GetSelectedItem();
   }
 
-  const std::shared_ptr<CProfilesManager> profilesManager = CServiceBroker::GetSettingsComponent()->GetProfilesManager();
+  const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
-  std::string strLabel = StringUtils::Format(g_localizeStrings.Get(20114).c_str(), m_iSelectedItem+1, profilesManager->GetNumberOfProfiles());
+  std::string strLabel = StringUtils::Format(g_localizeStrings.Get(20114).c_str(), m_iSelectedItem+1, profileManager->GetNumberOfProfiles());
   SET_CONTROL_LABEL(CONTROL_LABEL_SELECTED_PROFILE,strLabel);
   CGUIWindow::FrameMove();
 }
 
 void CGUIWindowLoginScreen::OnInitWindow()
 {
-  const std::shared_ptr<CProfilesManager> profilesManager = CServiceBroker::GetSettingsComponent()->GetProfilesManager();
+  const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
-  m_iSelectedItem = static_cast<int>(profilesManager->GetLastUsedProfileIndex());
+  m_iSelectedItem = static_cast<int>(profileManager->GetLastUsedProfileIndex());
 
   // Update list/thumb control
   m_viewControl.SetCurrentView(DEFAULT_VIEW_LIST);
@@ -190,11 +190,11 @@ void CGUIWindowLoginScreen::Update()
 {
   m_vecItems->Clear();
 
-  const std::shared_ptr<CProfilesManager> profilesManager = CServiceBroker::GetSettingsComponent()->GetProfilesManager();
+  const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
-  for (unsigned int i = 0; i < profilesManager->GetNumberOfProfiles(); ++i)
+  for (unsigned int i = 0; i < profileManager->GetNumberOfProfiles(); ++i)
   {
-    const CProfile *profile = profilesManager->GetProfile(i);
+    const CProfile *profile = profileManager->GetProfile(i);
 
     CFileItemPtr item(new CFileItem(profile->getName()));
 
@@ -221,7 +221,7 @@ bool CGUIWindowLoginScreen::OnPopupMenu(int iItem)
   if (iItem < 0 || iItem >= m_vecItems->Size())
     return false;
 
-  const std::shared_ptr<CProfilesManager> profilesManager = CServiceBroker::GetSettingsComponent()->GetProfilesManager();
+  const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
   CFileItemPtr pItem = m_vecItems->Get(iItem);
   bool bSelect = pItem->IsSelected();
@@ -238,7 +238,7 @@ bool CGUIWindowLoginScreen::OnPopupMenu(int iItem)
   int choice = CGUIDialogContextMenu::ShowAndGetChoice(choices);
   if (choice == 2)
   {
-    if (g_passwordManager.CheckLock(profilesManager->GetMasterProfile().getLockMode(), profilesManager->GetMasterProfile().getLockCode(), 20075))
+    if (g_passwordManager.CheckLock(profileManager->GetMasterProfile().getLockMode(), profileManager->GetMasterProfile().getLockCode(), 20075))
       g_passwordManager.iMasterLockRetriesLeft = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_MASTERLOCK_MAXRETRIES);
     else // be inconvenient
       CApplicationMessenger::GetInstance().PostMsg(TMSG_SHUTDOWN);
@@ -251,7 +251,7 @@ bool CGUIWindowLoginScreen::OnPopupMenu(int iItem)
     CGUIDialogProfileSettings::ShowForProfile(m_viewControl.GetSelectedItem());
 
   //NOTE: this can potentially (de)select the wrong item if the filelisting has changed because of an action above.
-  if (iItem < static_cast<int>(profilesManager->GetNumberOfProfiles()))
+  if (iItem < static_cast<int>(profileManager->GetNumberOfProfiles()))
     m_vecItems->Get(iItem)->Select(bSelect);
 
   return false;

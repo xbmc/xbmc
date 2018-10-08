@@ -9,7 +9,7 @@
 #include "MusicInfoTagLoaderCDDA.h"
 #include "network/cddb.h"
 #include "MusicInfoTag.h"
-#include "profiles/ProfilesManager.h"
+#include "profiles/ProfileManager.h"
 #include "settings/SettingsComponent.h"
 #include "storage/MediaManager.h"
 #include "utils/log.h"
@@ -46,11 +46,11 @@ bool CMusicInfoTagLoaderCDDA::Load(const std::string& strFileName, CMusicInfoTag
     if (pCdInfo == NULL)
       return bResult;
 
-    const std::shared_ptr<CProfilesManager> profilesManager = CServiceBroker::GetSettingsComponent()->GetProfilesManager();
+    const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
     // Prepare cddb
     Xcddb cddb;
-    cddb.setCacheDir(profilesManager->GetCDDBFolder());
+    cddb.setCacheDir(profileManager->GetCDDBFolder());
 
     int iTrack = atoi(strFileName.substr(13, strFileName.size() - 13 - 5).c_str());
 

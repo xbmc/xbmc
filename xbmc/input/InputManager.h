@@ -28,7 +28,7 @@ class CButtonTranslator;
 class CCustomControllerTranslator;
 class CJoystickMapper;
 class CKey;
-class CProfilesManager;
+class CProfileManager;
 class CTouchTranslator;
 class IKeymapEnvironment;
 class IWindowKeymap;

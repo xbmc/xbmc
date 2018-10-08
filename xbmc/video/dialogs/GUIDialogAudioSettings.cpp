@@ -24,7 +24,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "GUIPassword.h"
-#include "profiles/ProfilesManager.h"
+#include "profiles/ProfileManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingsManager.h"
@@ -153,10 +153,10 @@ void CGUIDialogAudioSettings::OnSettingAction(std::shared_ptr<const CSetting> se
 
 void CGUIDialogAudioSettings::Save()
 {
-  const std::shared_ptr<CProfilesManager> profilesManager = CServiceBroker::GetSettingsComponent()->GetProfilesManager();
+  const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
   if (!g_passwordManager.CheckSettingLevelLock(SettingLevel::Expert) &&
-      profilesManager->GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE)
+      profileManager->GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE)
     return;
 
   // prompt user if they are sure

@@ -21,7 +21,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "LangInfo.h"
 #include "network/DNSNameCache.h"
-#include "profiles/ProfilesManager.h"
+#include "profiles/ProfileManager.h"
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingsManager.h"
 #include "settings/Settings.h"
@@ -50,10 +50,10 @@ CAdvancedSettings::CAdvancedSettings()
 
 void CAdvancedSettings::OnSettingsLoaded()
 {
-  const std::shared_ptr<CProfilesManager> profilesManager = CServiceBroker::GetSettingsComponent()->GetProfilesManager();
+  const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
   // load advanced settings
-  Load(*profilesManager);
+  Load(*profileManager);
 
   // default players?
   CLog::Log(LOGNOTICE, "Default Video Player: %s", m_videoDefaultPlayer.c_str());
@@ -431,7 +431,7 @@ void CAdvancedSettings::Initialize()
   m_initialized = true;
 }
 
-bool CAdvancedSettings::Load(const CProfilesManager &profileManager)
+bool CAdvancedSettings::Load(const CProfileManager &profileManager)
 {
   // NOTE: This routine should NOT set the default of any of these parameters
   //       it should instead use the versions of GetString/Integer/Float that

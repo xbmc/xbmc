@@ -22,7 +22,7 @@
 #include "music/MusicLibraryQueue.h"
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogHelper.h"
-#include "profiles/ProfilesManager.h"
+#include "profiles/ProfileManager.h"
 #include "settings/lib/Setting.h"
 #include "settings/Settings.h"
 #include "storage/MediaManager.h"

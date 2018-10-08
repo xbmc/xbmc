@@ -9,7 +9,7 @@
 #include "LIRC.h"
 #include "AppInboundProtocol.h"
 #include "ServiceBroker.h"
-#include "profiles/ProfilesManager.h"
+#include "profiles/ProfileManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/log.h"
@@ -40,7 +40,7 @@ void CLirc::Start()
 
 void CLirc::Process()
 {
-  m_profileId = CServiceBroker::GetSettingsComponent()->GetProfilesManager()->GetCurrentProfileId();
+  m_profileId = CServiceBroker::GetSettingsComponent()->GetProfileManager()->GetCurrentProfileId();
   m_irTranslator.Load("Lircmap.xml");
 
   // make sure work-around (CheckDaemon) uses the same socket path as lirc_init
@@ -83,7 +83,7 @@ void CLirc::Process()
       }
       if (code != nullptr)
       {
-        int profileId = CServiceBroker::GetSettingsComponent()->GetProfilesManager()->GetCurrentProfileId();
+        int profileId = CServiceBroker::GetSettingsComponent()->GetProfileManager()->GetCurrentProfileId();
         if (m_profileId != profileId)
         {
           m_profileId = profileId;

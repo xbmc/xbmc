@@ -13,7 +13,7 @@
 #include "URL.h"
 #include "Util.h"
 #include "filesystem/File.h"
-#include "profiles/ProfilesManager.h"
+#include "profiles/ProfileManager.h"
 #include "settings/SettingsComponent.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
@@ -44,13 +44,13 @@ CMediaSourceSettings& CMediaSourceSettings::GetInstance()
 
 std::string CMediaSourceSettings::GetSourcesFile()
 {
-  const std::shared_ptr<CProfilesManager> profilesManager = CServiceBroker::GetSettingsComponent()->GetProfilesManager();
+  const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
   std::string file;
-  if (profilesManager->GetCurrentProfile().hasSources())
-    file = profilesManager->GetProfileUserDataFolder();
+  if (profileManager->GetCurrentProfile().hasSources())
+    file = profileManager->GetProfileUserDataFolder();
   else
-    file = profilesManager->GetUserDataFolder();
+    file = profileManager->GetUserDataFolder();
 
   return URIUtils::AddFileToFolder(file, SOURCES_FILE);
 }

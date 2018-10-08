@@ -17,7 +17,7 @@
 #ifdef HAS_UPNP
 #include "network/upnp/UPnP.h"
 #endif
-#include "profiles/ProfilesManager.h"
+#include "profiles/ProfileManager.h"
 #include "pvr/PVRManager.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "settings/SettingsComponent.h"
@@ -43,9 +43,9 @@ bool CVideoLibraryResetResumePointJob::operator==(const CJob* job) const
 
 bool CVideoLibraryResetResumePointJob::Work(CVideoDatabase &db)
 {
-  const std::shared_ptr<CProfilesManager> profilesManager = CServiceBroker::GetSettingsComponent()->GetProfilesManager();
+  const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
-  if (!profilesManager->GetCurrentProfile().canWriteDatabases())
+  if (!profileManager->GetCurrentProfile().canWriteDatabases())
     return false;
 
   CFileItemList items;

@@ -24,7 +24,7 @@
 #include "input/Key.h"
 #include "GUIUserMessages.h"
 #include "favourites/FavouritesService.h"
-#include "profiles/ProfilesManager.h"
+#include "profiles/ProfileManager.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -604,9 +604,9 @@ bool CGUIWindowMusicPlayList::OnContextButton(int itemNumber, CONTEXT_BUTTON but
 
   case CONTEXT_BUTTON_EDIT_PARTYMODE:
   {
-    const std::shared_ptr<CProfilesManager> profilesManager = CServiceBroker::GetSettingsComponent()->GetProfilesManager();
+    const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
-    std::string playlist = profilesManager->GetUserDataItem("PartyMode.xsp");
+    std::string playlist = profileManager->GetUserDataItem("PartyMode.xsp");
     if (CGUIDialogSmartPlaylistEditor::EditPlaylist(playlist))
     {
       // apply new rules

@@ -11,7 +11,7 @@
 #include <map>
 #include <string>
 
-class CProfilesManager;
+class CProfileManager;
 
 // static class for path translation from our special:// URLs.
 
@@ -44,7 +44,7 @@ class CURL;
 class CSpecialProtocol
 {
 public:
-  static void RegisterProfileManager(const CProfilesManager &profileManager);
+  static void RegisterProfileManager(const CProfileManager &profileManager);
   static void UnregisterProfileManager();
 
   static void SetProfilePath(const std::string &path);
@@ -68,7 +68,7 @@ public:
   static std::string TranslatePathConvertCase(const std::string& path);
 
 private:
-  static const CProfilesManager *m_profileManager;
+  static const CProfileManager *m_profileManager;
 
   static void SetPath(const std::string &key, const std::string &path);
   static std::string GetPath(const std::string &key);

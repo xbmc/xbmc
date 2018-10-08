@@ -14,7 +14,7 @@
 #include "dialogs/GUIDialogContextMenu.h"
 #include "URL.h"
 #include "FileItem.h"
-#include "profiles/ProfilesManager.h"
+#include "profiles/ProfileManager.h"
 #include "settings/lib/SettingsManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
@@ -28,7 +28,7 @@
 
 #define PLAYERCOREFACTORY_XML "playercorefactory.xml"
 
-CPlayerCoreFactory::CPlayerCoreFactory(const CProfilesManager &profileManager) :
+CPlayerCoreFactory::CPlayerCoreFactory(const CProfileManager &profileManager) :
   m_profileManager(profileManager)
 {
   m_settings = CServiceBroker::GetSettingsComponent()->GetSettings();

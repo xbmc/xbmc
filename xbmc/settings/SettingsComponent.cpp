@@ -22,7 +22,7 @@
 #ifdef TARGET_WINDOWS
 #include "platform/Environment.h"
 #endif
-#include "profiles/ProfilesManager.h"
+#include "profiles/ProfileManager.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -34,7 +34,7 @@ CSettingsComponent::CSettingsComponent()
 {
   m_advancedSettings.reset(new CAdvancedSettings());
   m_settings.reset(new CSettings());
-  m_profilesManager.reset(new CProfilesManager());
+  m_profileManager.reset(new CProfileManager());
 }
 
 CSettingsComponent::~CSettingsComponent()
@@ -58,7 +58,7 @@ void CSettingsComponent::Init(const CAppParamParser &params)
     m_advancedSettings->Initialize(params, *m_settings->GetSettingsManager());
     URIUtils::RegisterAdvancedSettings(*m_advancedSettings);
 
-    m_profilesManager->Initialize(m_settings);
+    m_profileManager->Initialize(m_settings);
 
     CServiceBroker::RegisterSettingsComponent(this);
 
@@ -70,14 +70,14 @@ bool CSettingsComponent::Load()
 {
   if (m_state == State::INITED)
   {
-    if (!m_profilesManager->Load())
+    if (!m_profileManager->Load())
     {
       CLog::Log(LOGFATAL, "unable to load profile");
       return false;
     }
 
-    CSpecialProtocol::RegisterProfileManager(*m_profilesManager);
-    XFILE::IDirectory::RegisterProfileManager(*m_profilesManager);
+    CSpecialProtocol::RegisterProfileManager(*m_profileManager);
+    XFILE::IDirectory::RegisterProfileManager(*m_profileManager);
 
     if (!m_settings->Load())
     {
@@ -113,7 +113,7 @@ void CSettingsComponent::Deinit()
       XFILE::IDirectory::UnregisterProfileManager();
       CSpecialProtocol::UnregisterProfileManager();
     }
-    m_profilesManager->Uninitialize();
+    m_profileManager->Uninitialize();
 
     URIUtils::UnregisterAdvancedSettings();
     m_advancedSettings->Uninitialize(*m_settings->GetSettingsManager());
@@ -133,9 +133,9 @@ std::shared_ptr<CAdvancedSettings> CSettingsComponent::GetAdvancedSettings()
   return m_advancedSettings;
 }
 
-std::shared_ptr<CProfilesManager> CSettingsComponent::GetProfilesManager()
+std::shared_ptr<CProfileManager> CSettingsComponent::GetProfileManager()
 {
-  return m_profilesManager;
+  return m_profileManager;
 }
 
 bool CSettingsComponent::InitDirectoriesLinux(bool bPlatformDirectories)

@@ -12,7 +12,7 @@
 
 class CAppParamParser;
 class CAdvancedSettings;
-class CProfilesManager;
+class CProfileManager;
 class CSettings;
 
 class CSettingsComponent
@@ -54,7 +54,7 @@ public:
    * @brief Get access to the profiles manager subcomponent.
    * @return the profiles manager subcomponent.
    */
-  std::shared_ptr<CProfilesManager> GetProfilesManager();
+  std::shared_ptr<CProfileManager> GetProfileManager();
 
 private:
   bool InitDirectoriesLinux(bool bPlatformDirectories);
@@ -72,5 +72,5 @@ private:
 
   std::shared_ptr<CSettings> m_settings;
   std::shared_ptr<CAdvancedSettings> m_advancedSettings;
-  std::shared_ptr<CProfilesManager> m_profilesManager;
+  std::shared_ptr<CProfileManager> m_profileManager;
 };

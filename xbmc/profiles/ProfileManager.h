@@ -22,14 +22,14 @@ class CEventLogManager;
 class CSettings;
 class TiXmlNode;
 
-class CProfilesManager : protected ISettingsHandler,
+class CProfileManager : protected ISettingsHandler,
                          protected ISettingCallback
 {
 public:
-  CProfilesManager();
-  CProfilesManager(const CProfilesManager&) = delete;
-  CProfilesManager& operator=(CProfilesManager const&) = delete;
-  ~CProfilesManager() override;
+  CProfileManager();
+  CProfileManager(const CProfileManager&) = delete;
+  CProfileManager& operator=(CProfileManager const&) = delete;
+  ~CProfileManager() override;
 
   void Initialize(const std::shared_ptr<CSettings>& settings);
   void Uninitialize();

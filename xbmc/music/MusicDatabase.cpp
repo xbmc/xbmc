@@ -38,7 +38,7 @@
 #include "network/cddb.h"
 #include "network/Network.h"
 #include "playlists/SmartPlayList.h"
-#include "profiles/ProfilesManager.h"
+#include "profiles/ProfileManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"

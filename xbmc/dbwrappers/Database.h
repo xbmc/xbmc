@@ -19,7 +19,7 @@ namespace dbiplus {
 
 class DatabaseSettings; // forward
 class CDbUrl;
-class CProfilesManager;
+class CProfileManager;
 struct SortDescription;
 
 class CDatabase
@@ -243,7 +243,7 @@ protected:
 
 protected:
   // Construction parameters
-  const CProfilesManager &m_profileManager;
+  const CProfileManager &m_profileManager;
 
 private:
   void InitSettings(DatabaseSettings &dbSettings);

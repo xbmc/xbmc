@@ -13,7 +13,7 @@
 #include <memory>
 #include <string>
 
-class CProfilesManager;
+class CProfileManager;
 
 namespace PERIPHERALS
 {
@@ -38,7 +38,7 @@ namespace GAME
     CGameServices(CControllerManager &controllerManager,
                   RETRO::CGUIGameRenderManager &renderManager,
                   PERIPHERALS::CPeripherals &peripheralManager,
-                  const CProfilesManager &profileManager);
+                  const CProfileManager &profileManager);
     ~CGameServices();
 
     ControllerPtr GetController(const std::string& controllerId);
@@ -57,7 +57,7 @@ namespace GAME
     // Construction parameters
     CControllerManager &m_controllerManager;
     RETRO::CGUIGameRenderManager &m_gameRenderManager;
-    const CProfilesManager &m_profileManager;
+    const CProfileManager &m_profileManager;
 
     // Game services
     std::unique_ptr<CGameSettings> m_gameSettings;

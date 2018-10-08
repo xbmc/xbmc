@@ -9,7 +9,7 @@
 #include "TextureCache.h"
 #include "TextureCacheJob.h"
 #include "filesystem/File.h"
-#include "profiles/ProfilesManager.h"
+#include "profiles/ProfileManager.h"
 #include "threads/SingleLock.h"
 #include "utils/Crc32.h"
 #include "settings/AdvancedSettings.h"
@@ -56,13 +56,13 @@ bool CTextureCache::IsCachedImage(const std::string &url) const
   if (!CURL::IsFullPath(url))
     return true;
 
-  const std::shared_ptr<CProfilesManager> profilesManager = CServiceBroker::GetSettingsComponent()->GetProfilesManager();
+  const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
   if (URIUtils::PathHasParent(url, "special://skin", true) ||
       URIUtils::PathHasParent(url, "special://temp", true) ||
       URIUtils::PathHasParent(url, "resource://", true) ||
       URIUtils::PathHasParent(url, "androidapp://", true)   ||
-      URIUtils::PathHasParent(url, profilesManager->GetThumbnailsFolder(), true))
+      URIUtils::PathHasParent(url, profileManager->GetThumbnailsFolder(), true))
     return true;
 
   return false;
@@ -256,9 +256,9 @@ std::string CTextureCache::GetCacheFile(const std::string &url)
 
 std::string CTextureCache::GetCachedPath(const std::string &file)
 {
-  const std::shared_ptr<CProfilesManager> profilesManager = CServiceBroker::GetSettingsComponent()->GetProfilesManager();
+  const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
-  return URIUtils::AddFileToFolder(profilesManager->GetThumbnailsFolder(), file);
+  return URIUtils::AddFileToFolder(profileManager->GetThumbnailsFolder(), file);
 }
 
 void CTextureCache::OnCachingComplete(bool success, CTextureCacheJob *job)

@@ -38,7 +38,7 @@
 #include "interfaces/AnnouncementManager.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "playlists/SmartPlayList.h"
-#include "profiles/ProfilesManager.h"
+#include "profiles/ProfileManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/MediaSourceSettings.h"

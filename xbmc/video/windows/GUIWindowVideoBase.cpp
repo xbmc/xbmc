@@ -34,7 +34,7 @@
 #include "filesystem/Directory.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "playlists/PlayList.h"
-#include "profiles/ProfilesManager.h"
+#include "profiles/ProfileManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
@@ -161,10 +161,10 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
         }
         else if (iAction == ACTION_DELETE_ITEM)
         {
-          const std::shared_ptr<CProfilesManager> profilesManager = CServiceBroker::GetSettingsComponent()->GetProfilesManager();
+          const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
           // is delete allowed?
-          if (profilesManager->GetCurrentProfile().canWriteDatabases())
+          if (profileManager->GetCurrentProfile().canWriteDatabases())
           {
             // must be at the title window
             if (GetID() == WINDOW_VIDEO_NAV)
@@ -375,10 +375,10 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItemPtr item, const ScraperPtr &info2, b
     }
   }
 
-  const std::shared_ptr<CProfilesManager> profilesManager = CServiceBroker::GetSettingsComponent()->GetProfilesManager();
+  const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
   // quietly return if Internet lookups are disabled
-  if (!profilesManager->GetCurrentProfile().canWriteDatabases() && !g_passwordManager.bMasterUser)
+  if (!profileManager->GetCurrentProfile().canWriteDatabases() && !g_passwordManager.bMasterUser)
     return false;
 
   if (!info)
@@ -1139,10 +1139,10 @@ void CGUIWindowVideoBase::OnDeleteItem(CFileItemPtr item)
   if (item->IsStack())
     item->m_bIsFolder = true;
 
-  const std::shared_ptr<CProfilesManager> profilesManager = CServiceBroker::GetSettingsComponent()->GetProfilesManager();
+  const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
-  if (profilesManager->GetCurrentProfile().getLockMode() != LOCK_MODE_EVERYONE &&
-      profilesManager->GetCurrentProfile().filesLocked())
+  if (profileManager->GetCurrentProfile().getLockMode() != LOCK_MODE_EVERYONE &&
+      profileManager->GetCurrentProfile().filesLocked())
   {
     if (!g_passwordManager.IsMasterLockUnlocked(true))
       return;
@@ -1250,9 +1250,9 @@ bool CGUIWindowVideoBase::GetDirectory(const std::string &strDirectory, CFileIte
   // add in the "New Playlist" item if we're in the playlists folder
   if ((items.GetPath() == "special://videoplaylists/") && !items.Contains("newplaylist://"))
   {
-    const std::shared_ptr<CProfilesManager> profilesManager = CServiceBroker::GetSettingsComponent()->GetProfilesManager();
+    const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
-    CFileItemPtr newPlaylist(new CFileItem(profilesManager->GetUserDataItem("PartyMode-Video.xsp"),false));
+    CFileItemPtr newPlaylist(new CFileItem(profileManager->GetUserDataItem("PartyMode-Video.xsp"),false));
     newPlaylist->SetLabel(g_localizeStrings.Get(16035));
     newPlaylist->SetLabelPreformatted(true);
     newPlaylist->SetIconImage("DefaultPartyMode.png");

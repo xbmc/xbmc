@@ -73,7 +73,7 @@
 #include "TextureCache.h"
 #include "playlists/SmartPlayList.h"
 #include "playlists/PlayList.h"
-#include "profiles/ProfilesManager.h"
+#include "profiles/ProfileManager.h"
 #include "windowing/WinSystem.h"
 #include "powermanagement/DPMSSupport.h"
 #include "powermanagement/PowerManager.h"
@@ -534,14 +534,14 @@ bool CApplication::Create(const CAppParamParser &params)
     return false;
 
   CLog::Log(LOGINFO, "creating subdirectories");
-  const std::shared_ptr<CProfilesManager> profilesManager = m_pSettingsComponent->GetProfilesManager();
+  const std::shared_ptr<CProfileManager> profileManager = m_pSettingsComponent->GetProfileManager();
   const std::shared_ptr<CSettings> settings = m_pSettingsComponent->GetSettings();
-  CLog::Log(LOGINFO, "userdata folder: %s", CURL::GetRedacted(profilesManager->GetProfileUserDataFolder()).c_str());
+  CLog::Log(LOGINFO, "userdata folder: %s", CURL::GetRedacted(profileManager->GetProfileUserDataFolder()).c_str());
   CLog::Log(LOGINFO, "recording folder: %s", CURL::GetRedacted(settings->GetString(CSettings::SETTING_AUDIOCDS_RECORDINGPATH)).c_str());
   CLog::Log(LOGINFO, "screenshots folder: %s", CURL::GetRedacted(settings->GetString(CSettings::SETTING_DEBUG_SCREENSHOTPATH)).c_str());
-  CDirectory::Create(profilesManager->GetUserDataFolder());
-  CDirectory::Create(profilesManager->GetProfileUserDataFolder());
-  profilesManager->CreateProfileFolders();
+  CDirectory::Create(profileManager->GetUserDataFolder());
+  CDirectory::Create(profileManager->GetProfileUserDataFolder());
+  profileManager->CreateProfileFolders();
 
   update_emu_environ();//apply the GUI settings
 
@@ -557,7 +557,7 @@ bool CApplication::Create(const CAppParamParser &params)
   m_pWinSystem = CWinSystemBase::CreateWinSystem();
   CServiceBroker::RegisterWinSystem(m_pWinSystem.get());
 
-  if (!m_ServiceManager->InitStageTwo(params, m_pSettingsComponent->GetProfilesManager()->GetProfileUserDataFolder()))
+  if (!m_ServiceManager->InitStageTwo(params, m_pSettingsComponent->GetProfileManager()->GetProfileUserDataFolder()))
   {
     return false;
   }
@@ -724,9 +724,9 @@ bool CApplication::Initialize()
   if (!LoadLanguage(false))
     return false;
 
-  const std::shared_ptr<CProfilesManager> profilesManager = CServiceBroker::GetSettingsComponent()->GetProfilesManager();
+  const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
-  profilesManager->GetEventLog().Add(EventPtr(new CNotificationEvent(
+  profileManager->GetEventLog().Add(EventPtr(new CNotificationEvent(
     StringUtils::Format(g_localizeStrings.Get(177).c_str(), g_sysinfo.GetAppName().c_str()),
     StringUtils::Format(g_localizeStrings.Get(178).c_str(), g_sysinfo.GetAppName().c_str()),
     "special://xbmc/media/icon256x256.png", EventLevel::Basic)));
@@ -814,14 +814,14 @@ bool CApplication::Initialize()
     CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_SPLASH);
 
     if (settings->GetBool(CSettings::SETTING_MASTERLOCK_STARTUPLOCK) &&
-        profilesManager->GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE &&
-        !profilesManager->GetMasterProfile().getLockCode().empty())
+        profileManager->GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE &&
+        !profileManager->GetMasterProfile().getLockCode().empty())
     {
       g_passwordManager.CheckStartUpLock();
     }
 
     // check if we should use the login screen
-    if (profilesManager->UsingLoginScreen())
+    if (profileManager->UsingLoginScreen())
     {
       CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_LOGIN_SCREEN);
     }
@@ -847,7 +847,7 @@ bool CApplication::Initialize()
 
   CJSONRPC::Initialize();
 
-  if (!m_ServiceManager->InitStageThree(profilesManager))
+  if (!m_ServiceManager->InitStageThree(profileManager))
   {
     CLog::Log(LOGERROR, "Application - Init3 failed");
   }
@@ -857,7 +857,7 @@ bool CApplication::Initialize()
   CLog::Log(LOGINFO, "removing tempfiles");
   CUtil::RemoveTempFiles();
 
-  if (!profilesManager->UsingLoginScreen())
+  if (!profileManager->UsingLoginScreen())
   {
     UpdateLibraries();
     SetLoggingIn(false);
@@ -870,7 +870,7 @@ bool CApplication::Initialize()
   RegisterActionListener(&CPlayerController::GetInstance());
 
   CServiceBroker::GetRepositoryUpdater().Start();
-  if (!profilesManager->UsingLoginScreen())
+  if (!profileManager->UsingLoginScreen())
     CServiceBroker::GetServiceAddons().Start();
 
   CLog::Log(LOGNOTICE, "initialize done");
@@ -2270,7 +2270,7 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
     {
       const int profile = pMsg->param1;
       if (profile >= 0)
-        CServiceBroker::GetSettingsComponent()->GetProfilesManager()->LoadProfile(static_cast<unsigned int>(profile));
+        CServiceBroker::GetSettingsComponent()->GetProfileManager()->LoadProfile(static_cast<unsigned int>(profile));
     }
 
     break;
@@ -2540,7 +2540,7 @@ void CApplication::Stop(int exitCode)
     g_sysinfo.SetTotalUptime(g_sysinfo.GetTotalUptime() + (int)(CTimeUtils::GetFrameTime() / 60000));
 
     // Update the settings information (volume, uptime etc. need saving)
-    if (CFile::Exists(CServiceBroker::GetSettingsComponent()->GetProfilesManager()->GetSettingsFile()))
+    if (CFile::Exists(CServiceBroker::GetSettingsComponent()->GetProfileManager()->GetSettingsFile()))
     {
       CLog::Log(LOGNOTICE, "Saving settings");
       CServiceBroker::GetSettingsComponent()->GetSettings()->Save();
@@ -3110,7 +3110,7 @@ void CApplication::OnPlayerCloseFile(const CFileItem &file, const CBookmark &boo
     resumeBookmark.timeInSeconds = 0.0f;
   }
 
-  if (CServiceBroker::GetSettingsComponent()->GetProfilesManager()->GetCurrentProfile().canWriteDatabases())
+  if (CServiceBroker::GetSettingsComponent()->GetProfileManager()->GetCurrentProfile().canWriteDatabases())
   {
     CSaveFileState::DoWork(fileItem, resumeBookmark, playCountUpdate);
   }
@@ -3411,10 +3411,10 @@ bool CApplication::WakeUpScreenSaver(bool bPowerOffKeyPressed /* = false */)
   {
     if (m_iScreenSaveLock == 0)
     {
-      const std::shared_ptr<CProfilesManager> profilesManager = CServiceBroker::GetSettingsComponent()->GetProfilesManager();
-      if (profilesManager->GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE &&
-          (profilesManager->UsingLoginScreen() || CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_MASTERLOCK_STARTUPLOCK)) &&
-          profilesManager->GetCurrentProfile().getLockMode() != LOCK_MODE_EVERYONE &&
+      const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
+      if (profileManager->GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE &&
+          (profileManager->UsingLoginScreen() || CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_MASTERLOCK_STARTUPLOCK)) &&
+          profileManager->GetCurrentProfile().getLockMode() != LOCK_MODE_EVERYONE &&
           m_screensaverIdInUse != "screensaver.xbmc.builtin.dim" && m_screensaverIdInUse != "screensaver.xbmc.builtin.black" && m_screensaverIdInUse != "visualization")
       {
         m_iScreenSaveLock = 2;

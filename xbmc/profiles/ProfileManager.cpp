@@ -10,7 +10,7 @@
 #include <string>
 #include <vector>
 
-#include "ProfilesManager.h"
+#include "ProfileManager.h"
 #include "DatabaseManager.h"
 #include "FileItem.h"
 #include "GUIInfoManager.h"
@@ -76,7 +76,7 @@ using namespace XFILE;
 
 static CProfile EmptyProfile;
 
-CProfilesManager::CProfilesManager() :
+CProfileManager::CProfileManager() :
     m_usingLoginScreen(false),
     m_profileLoadedForLogin(false),
     m_autoLoginProfile(-1),
@@ -87,11 +87,11 @@ CProfilesManager::CProfilesManager() :
 {
 }
 
-CProfilesManager::~CProfilesManager()
+CProfileManager::~CProfileManager()
 {
 }
 
-void CProfilesManager::Initialize(const std::shared_ptr<CSettings>& settings)
+void CProfileManager::Initialize(const std::shared_ptr<CSettings>& settings)
 {
   m_settings = settings;
 
@@ -107,13 +107,13 @@ void CProfilesManager::Initialize(const std::shared_ptr<CSettings>& settings)
   m_settings->GetSettingsManager()->RegisterCallback(this, settingSet);
 }
 
-void CProfilesManager::Uninitialize()
+void CProfileManager::Uninitialize()
 {
   m_settings->GetSettingsManager()->UnregisterCallback(this);
   m_settings->GetSettingsManager()->UnregisterSettingsHandler(this);
 }
 
-void CProfilesManager::OnSettingsLoaded()
+void CProfileManager::OnSettingsLoaded()
 {
   // check them all
   std::string strDir = m_settings->GetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH);
@@ -129,18 +129,18 @@ void CProfilesManager::OnSettingsLoaded()
   CDirectory::Create(URIUtils::AddFileToFolder(strDir,"mixed"));
 }
 
-void CProfilesManager::OnSettingsSaved() const
+void CProfileManager::OnSettingsSaved() const
 {
   // save mastercode
   Save();
 }
 
-void CProfilesManager::OnSettingsCleared()
+void CProfileManager::OnSettingsCleared()
 {
   Clear();
 }
 
-bool CProfilesManager::Load()
+bool CProfileManager::Load()
 {
   bool ret = true;
   const std::string file = PROFILES_FILE;
@@ -179,13 +179,13 @@ bool CProfilesManager::Load()
       }
       else
       {
-        CLog::Log(LOGERROR, "CProfilesManager: error loading %s, no <profiles> node", file.c_str());
+        CLog::Log(LOGERROR, "CProfileManager: error loading %s, no <profiles> node", file.c_str());
         ret = false;
       }
     }
     else
     {
-      CLog::Log(LOGERROR, "CProfilesManager: error loading %s, Line %d\n%s", file.c_str(), profilesDoc.ErrorRow(), profilesDoc.ErrorDesc());
+      CLog::Log(LOGERROR, "CProfileManager: error loading %s, Line %d\n%s", file.c_str(), profilesDoc.ErrorRow(), profilesDoc.ErrorDesc());
       ret = false;
     }
   }
@@ -216,7 +216,7 @@ bool CProfilesManager::Load()
   return ret;
 }
 
-bool CProfilesManager::Save() const
+bool CProfileManager::Save() const
 {
   const std::string file = PROFILES_FILE;
 
@@ -240,7 +240,7 @@ bool CProfilesManager::Save() const
   return xmlDoc.SaveFile(file);
 }
 
-void CProfilesManager::Clear()
+void CProfileManager::Clear()
 {
   CSingleLock lock(m_critical);
   m_usingLoginScreen = false;
@@ -251,7 +251,7 @@ void CProfilesManager::Clear()
   m_profiles.clear();
 }
 
-void CProfilesManager::PrepareLoadProfile(unsigned int profileIndex)
+void CProfileManager::PrepareLoadProfile(unsigned int profileIndex)
 {
   CContextMenuManager &contextMenuManager = CServiceBroker::GetContextMenuManager();
   ADDON::CServiceAddonManager &serviceAddons = CServiceBroker::GetServiceAddons();
@@ -269,7 +269,7 @@ void CProfilesManager::PrepareLoadProfile(unsigned int profileIndex)
     networkManager.NetworkMessage(CNetwork::SERVICES_DOWN, 1);
 }
 
-bool CProfilesManager::LoadProfile(unsigned int index)
+bool CProfileManager::LoadProfile(unsigned int index)
 {
   PrepareLoadProfile(index);
 
@@ -312,7 +312,7 @@ bool CProfilesManager::LoadProfile(unsigned int index)
   // load the new settings
   if (!settings->Load())
   {
-    CLog::Log(LOGFATAL, "CProfilesManager: unable to load settings for profile \"%s\"", m_profiles.at(index).getName().c_str());
+    CLog::Log(LOGFATAL, "CProfileManager: unable to load settings for profile \"%s\"", m_profiles.at(index).getName().c_str());
     return false;
   }
   settings->SetLoaded();
@@ -366,7 +366,7 @@ bool CProfilesManager::LoadProfile(unsigned int index)
   return true;
 }
 
-void CProfilesManager::FinalizeLoadProfile()
+void CProfileManager::FinalizeLoadProfile()
 {
   CContextMenuManager &contextMenuManager = CServiceBroker::GetContextMenuManager();
   ADDON::CServiceAddonManager &serviceAddons = CServiceBroker::GetServiceAddons();
@@ -433,7 +433,7 @@ void CProfilesManager::FinalizeLoadProfile()
   }
 }
 
-void CProfilesManager::LogOff()
+void CProfileManager::LogOff()
 {
   CNetworkBase &networkManager = CServiceBroker::GetNetwork();
 
@@ -458,7 +458,7 @@ void CProfilesManager::LogOff()
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(33102), g_localizeStrings.Get(33100));
 }
 
-bool CProfilesManager::DeleteProfile(unsigned int index)
+bool CProfileManager::DeleteProfile(unsigned int index)
 {
   CSingleLock lock(m_critical);
   const CProfile *profile = GetProfile(index);
@@ -506,7 +506,7 @@ bool CProfilesManager::DeleteProfile(unsigned int index)
   return Save();
 }
 
-void CProfilesManager::CreateProfileFolders()
+void CProfileManager::CreateProfileFolders()
 {
   CDirectory::Create(GetDatabaseFolder());
   CDirectory::Create(GetCDDBFolder());
@@ -524,7 +524,7 @@ void CProfilesManager::CreateProfileFolders()
   CDirectory::Create("special://profile/keymaps");
 }
 
-const CProfile& CProfilesManager::GetMasterProfile() const
+const CProfile& CProfileManager::GetMasterProfile() const
 {
   CSingleLock lock(m_critical);
   if (!m_profiles.empty())
@@ -534,17 +534,17 @@ const CProfile& CProfilesManager::GetMasterProfile() const
   return EmptyProfile;
 }
 
-const CProfile& CProfilesManager::GetCurrentProfile() const
+const CProfile& CProfileManager::GetCurrentProfile() const
 {
   CSingleLock lock(m_critical);
   if (m_currentProfile < m_profiles.size())
     return m_profiles[m_currentProfile];
 
-  CLog::Log(LOGERROR, "CProfilesManager: current profile index ({0}) is outside of the valid range ({1})", m_currentProfile, m_profiles.size());
+  CLog::Log(LOGERROR, "CProfileManager: current profile index ({0}) is outside of the valid range ({1})", m_currentProfile, m_profiles.size());
   return EmptyProfile;
 }
 
-const CProfile* CProfilesManager::GetProfile(unsigned int index) const
+const CProfile* CProfileManager::GetProfile(unsigned int index) const
 {
   CSingleLock lock(m_critical);
   if (index < m_profiles.size())
@@ -553,7 +553,7 @@ const CProfile* CProfilesManager::GetProfile(unsigned int index) const
   return NULL;
 }
 
-CProfile* CProfilesManager::GetProfile(unsigned int index)
+CProfile* CProfileManager::GetProfile(unsigned int index)
 {
   CSingleLock lock(m_critical);
   if (index < m_profiles.size())
@@ -562,7 +562,7 @@ CProfile* CProfilesManager::GetProfile(unsigned int index)
   return NULL;
 }
 
-int CProfilesManager::GetProfileIndex(const std::string &name) const
+int CProfileManager::GetProfileIndex(const std::string &name) const
 {
   CSingleLock lock(m_critical);
   for (int i = 0; i < static_cast<int>(m_profiles.size()); i++)
@@ -574,7 +574,7 @@ int CProfilesManager::GetProfileIndex(const std::string &name) const
   return -1;
 }
 
-void CProfilesManager::AddProfile(const CProfile &profile)
+void CProfileManager::AddProfile(const CProfile &profile)
 {
   CSingleLock lock(m_critical);
   // data integrity check - covers off migration from old profiles.xml,
@@ -584,14 +584,14 @@ void CProfilesManager::AddProfile(const CProfile &profile)
   m_profiles.push_back(profile);
 }
 
-void CProfilesManager::UpdateCurrentProfileDate()
+void CProfileManager::UpdateCurrentProfileDate()
 {
   CSingleLock lock(m_critical);
   if (m_currentProfile < m_profiles.size())
     m_profiles[m_currentProfile].setDate();
 }
 
-void CProfilesManager::LoadMasterProfileForLogin()
+void CProfileManager::LoadMasterProfileForLogin()
 {
   CSingleLock lock(m_critical);
   // save the previous user
@@ -605,7 +605,7 @@ void CProfilesManager::LoadMasterProfileForLogin()
   }
 }
 
-bool CProfilesManager::GetProfileName(const unsigned int profileId, std::string& name) const
+bool CProfileManager::GetProfileName(const unsigned int profileId, std::string& name) const
 {
   CSingleLock lock(m_critical);
   const CProfile *profile = GetProfile(profileId);
@@ -616,12 +616,12 @@ bool CProfilesManager::GetProfileName(const unsigned int profileId, std::string&
   return true;
 }
 
-std::string CProfilesManager::GetUserDataFolder() const
+std::string CProfileManager::GetUserDataFolder() const
 {
   return GetMasterProfile().getDirectory();
 }
 
-std::string CProfilesManager::GetProfileUserDataFolder() const
+std::string CProfileManager::GetProfileUserDataFolder() const
 {
   if (m_currentProfile == 0)
     return GetUserDataFolder();
@@ -629,7 +629,7 @@ std::string CProfilesManager::GetProfileUserDataFolder() const
   return URIUtils::AddFileToFolder(GetUserDataFolder(), GetCurrentProfile().getDirectory());
 }
 
-std::string CProfilesManager::GetDatabaseFolder() const
+std::string CProfileManager::GetDatabaseFolder() const
 {
   if (GetCurrentProfile().hasDatabases())
     return URIUtils::AddFileToFolder(GetProfileUserDataFolder(), "Database");
@@ -637,12 +637,12 @@ std::string CProfilesManager::GetDatabaseFolder() const
   return URIUtils::AddFileToFolder(GetUserDataFolder(), "Database");
 }
 
-std::string CProfilesManager::GetCDDBFolder() const
+std::string CProfileManager::GetCDDBFolder() const
 {
   return URIUtils::AddFileToFolder(GetDatabaseFolder(), "CDDB");
 }
 
-std::string CProfilesManager::GetThumbnailsFolder() const
+std::string CProfileManager::GetThumbnailsFolder() const
 {
   if (GetCurrentProfile().hasDatabases())
     return URIUtils::AddFileToFolder(GetProfileUserDataFolder(), "Thumbnails");
@@ -650,17 +650,17 @@ std::string CProfilesManager::GetThumbnailsFolder() const
   return URIUtils::AddFileToFolder(GetUserDataFolder(), "Thumbnails");
 }
 
-std::string CProfilesManager::GetVideoThumbFolder() const
+std::string CProfileManager::GetVideoThumbFolder() const
 {
   return URIUtils::AddFileToFolder(GetThumbnailsFolder(), "Video");
 }
 
-std::string CProfilesManager::GetBookmarksThumbFolder() const
+std::string CProfileManager::GetBookmarksThumbFolder() const
 {
   return URIUtils::AddFileToFolder(GetVideoThumbFolder(), "Bookmarks");
 }
 
-std::string CProfilesManager::GetLibraryFolder() const
+std::string CProfileManager::GetLibraryFolder() const
 {
   if (GetCurrentProfile().hasDatabases())
     return URIUtils::AddFileToFolder(GetProfileUserDataFolder(), "library");
@@ -668,7 +668,7 @@ std::string CProfilesManager::GetLibraryFolder() const
   return URIUtils::AddFileToFolder(GetUserDataFolder(), "library");
 }
 
-std::string CProfilesManager::GetSavestatesFolder() const
+std::string CProfileManager::GetSavestatesFolder() const
 {
   if (GetCurrentProfile().hasDatabases())
     return URIUtils::AddFileToFolder(GetProfileUserDataFolder(), "Savestates");
@@ -676,7 +676,7 @@ std::string CProfilesManager::GetSavestatesFolder() const
   return URIUtils::AddFileToFolder(GetUserDataFolder(), "Savestates");
 }
 
-std::string CProfilesManager::GetSettingsFile() const
+std::string CProfileManager::GetSettingsFile() const
 {
   std::string settings;
   if (m_currentProfile == 0)
@@ -685,7 +685,7 @@ std::string CProfilesManager::GetSettingsFile() const
   return "special://profile/guisettings.xml";
 }
 
-std::string CProfilesManager::GetUserDataItem(const std::string& strFile) const
+std::string CProfileManager::GetUserDataItem(const std::string& strFile) const
 {
   std::string path;
   path = "special://profile/" + strFile;
@@ -699,12 +699,12 @@ std::string CProfilesManager::GetUserDataItem(const std::string& strFile) const
   return path;
 }
 
-CEventLog& CProfilesManager::GetEventLog()
+CEventLog& CProfileManager::GetEventLog()
 {
   return m_eventLogs->GetEventLog(GetCurrentProfileId());
 }
 
-void CProfilesManager::OnSettingAction(std::shared_ptr<const CSetting> setting)
+void CProfileManager::OnSettingAction(std::shared_ptr<const CSetting> setting)
 {
   if (setting == nullptr)
     return;
@@ -714,7 +714,7 @@ void CProfilesManager::OnSettingAction(std::shared_ptr<const CSetting> setting)
     GetEventLog().ShowFullEventLog();
 }
 
-void CProfilesManager::SetCurrentProfileId(unsigned int profileId)
+void CProfileManager::SetCurrentProfileId(unsigned int profileId)
 {
   CSingleLock lock(m_critical);
   m_currentProfile = profileId;

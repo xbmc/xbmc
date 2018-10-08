@@ -46,7 +46,7 @@
 #ifdef HAS_UPNP
 #include "filesystem/UPnPDirectory.h"
 #endif
-#include "profiles/ProfilesManager.h"
+#include "profiles/ProfileManager.h"
 #include "utils/RegExp.h"
 #include "windowing/GraphicContext.h"
 #include "guilib/TextureManager.h"
@@ -663,9 +663,9 @@ void CUtil::GetDVDDriveIcon(const std::string& strPath, std::string& strIcon)
 
 void CUtil::RemoveTempFiles()
 {
-  const std::shared_ptr<CProfilesManager> profilesManager = CServiceBroker::GetSettingsComponent()->GetProfilesManager();
+  const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
-  std::string searchPath = profilesManager->GetDatabaseFolder();
+  std::string searchPath = profileManager->GetDatabaseFolder();
   CFileItemList items;
   if (!XFILE::CDirectory::GetDirectory(searchPath, items, ".tmp", DIR_FLAG_NO_FILE_DIRS))
     return;

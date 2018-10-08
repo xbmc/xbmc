@@ -21,7 +21,7 @@ class TiXmlElement;
 class CFileItem;
 class CPlayerCoreConfig;
 class CPlayerSelectionRule;
-class CProfilesManager;
+class CProfileManager;
 class CSettings;
 class IPlayer;
 class IPlayerCallback;
@@ -29,7 +29,7 @@ class IPlayerCallback;
 class CPlayerCoreFactory : public ISettingsHandler
 {
 public:
-  CPlayerCoreFactory(const CProfilesManager &profileManager);
+  CPlayerCoreFactory(const CProfileManager &profileManager);
   CPlayerCoreFactory(const CPlayerCoreFactory&) = delete;
   CPlayerCoreFactory& operator=(CPlayerCoreFactory const&) = delete;
   ~CPlayerCoreFactory() override;
@@ -55,7 +55,7 @@ public:
 private:
   // Construction parameters
   std::shared_ptr<CSettings> m_settings;
-  const CProfilesManager &m_profileManager;
+  const CProfileManager &m_profileManager;
 
   int GetPlayerIndex(const std::string& strCoreName) const;
   std::string GetPlayerName(size_t idx) const;

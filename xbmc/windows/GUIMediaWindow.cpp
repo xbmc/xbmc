@@ -45,7 +45,7 @@
 #include "messaging/helpers/DialogOKHelper.h"
 #include "network/Network.h"
 #include "playlists/PlayList.h"
-#include "profiles/ProfilesManager.h"
+#include "profiles/ProfileManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -983,7 +983,7 @@ bool CGUIMediaWindow::OnClick(int iItem, const std::string &player)
   if (iItem < 0 || iItem >= m_vecItems->Size())
     return true;
 
-  const std::shared_ptr<CProfilesManager> profilesManager = CServiceBroker::GetSettingsComponent()->GetProfilesManager();
+  const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
   CFileItemPtr pItem = m_vecItems->Get(iItem);
 
@@ -995,12 +995,12 @@ bool CGUIMediaWindow::OnClick(int iItem, const std::string &player)
 
   if (pItem->GetPath() == "add" || pItem->GetPath() == "sources://add/") // 'add source button' in empty root
   {
-    if (profilesManager->IsMasterProfile())
+    if (profileManager->IsMasterProfile())
     {
       if (!g_passwordManager.IsMasterLockUnlocked(true))
         return false;
     }
-    else if (!profilesManager->GetCurrentProfile().canWriteSources() && !g_passwordManager.IsProfileLockUnlocked())
+    else if (!profileManager->GetCurrentProfile().canWriteSources() && !g_passwordManager.IsProfileLockUnlocked())
       return false;
 
     if (OnAddMediaSource())
@@ -1041,7 +1041,7 @@ bool CGUIMediaWindow::OnClick(int iItem, const std::string &player)
     if ( pItem->m_bIsShareOrDrive )
     {
       const std::string& strLockType=m_guiState->GetLockType();
-      if (profilesManager->GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE)
+      if (profileManager->GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE)
         if (!strLockType.empty() && !g_passwordManager.IsItemUnlocked(pItem.get(), strLockType))
             return true;
 
@@ -1050,8 +1050,8 @@ bool CGUIMediaWindow::OnClick(int iItem, const std::string &player)
     }
 
     // check for the partymode playlist items - they may not exist yet
-    if ((pItem->GetPath() == profilesManager->GetUserDataItem("PartyMode.xsp")) ||
-        (pItem->GetPath() == profilesManager->GetUserDataItem("PartyMode-Video.xsp")))
+    if ((pItem->GetPath() == profileManager->GetUserDataItem("PartyMode.xsp")) ||
+        (pItem->GetPath() == profileManager->GetUserDataItem("PartyMode-Video.xsp")))
     {
       // party mode playlist item - if it doesn't exist, prompt for user to define it
       if (!XFILE::CFile::Exists(pItem->GetPath()))
@@ -1592,9 +1592,9 @@ void CGUIMediaWindow::OnDeleteItem(int iItem)
   if (item->IsPlayList())
     item->m_bIsFolder = false;
 
-  const std::shared_ptr<CProfilesManager> profilesManager = CServiceBroker::GetSettingsComponent()->GetProfilesManager();
+  const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
-  if (profilesManager->GetCurrentProfile().getLockMode() != LOCK_MODE_EVERYONE && profilesManager->GetCurrentProfile().filesLocked())
+  if (profileManager->GetCurrentProfile().getLockMode() != LOCK_MODE_EVERYONE && profileManager->GetCurrentProfile().filesLocked())
   {
     if (!g_passwordManager.IsMasterLockUnlocked(true))
       return;
@@ -1618,9 +1618,9 @@ void CGUIMediaWindow::OnRenameItem(int iItem)
   if (iItem < 0 || iItem >= m_vecItems->Size())
     return;
 
-  const std::shared_ptr<CProfilesManager> profilesManager = CServiceBroker::GetSettingsComponent()->GetProfilesManager();
+  const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
-  if (profilesManager->GetCurrentProfile().getLockMode() != LOCK_MODE_EVERYONE && profilesManager->GetCurrentProfile().filesLocked())
+  if (profileManager->GetCurrentProfile().getLockMode() != LOCK_MODE_EVERYONE && profileManager->GetCurrentProfile().filesLocked())
   {
     if (!g_passwordManager.IsMasterLockUnlocked(true))
       return;

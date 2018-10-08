@@ -20,7 +20,7 @@
 #include "PartyModeManager.h"
 #include "playlists/PlayList.h"
 #include "playlists/PlayListFactory.h"
-#include "profiles/ProfilesManager.h"
+#include "profiles/ProfileManager.h"
 #include "video/VideoDatabase.h"
 #include "video/dialogs/GUIDialogVideoInfo.h"
 #include "video/windows/GUIWindowVideoNav.h"
@@ -576,7 +576,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
     item = m_vecItems->Get(itemNumber);
   if (item)
   {
-    const std::shared_ptr<CProfilesManager> profilesManager = CServiceBroker::GetSettingsComponent()->GetProfilesManager();
+    const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
     // are we in the playlists location?
     bool inPlaylists = m_vecItems->IsPath(CUtil::MusicPlaylistsLocation()) ||
@@ -605,7 +605,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
         !item->IsPath("add") && !item->IsParentFolder() &&
         !item->IsPlugin() &&
         !StringUtils::StartsWithNoCase(item->GetPath(), "addons://") &&
-        (profilesManager->GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser))
+        (profileManager->GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser))
       {
         buttons.Add(CONTEXT_BUTTON_SCAN, 13352);
       }
@@ -669,7 +669,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
         }
         if (item->HasVideoInfoTag() && !item->m_bIsFolder)
         {
-          if ((profilesManager->GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser) && !item->IsPlugin())
+          if ((profileManager->GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser) && !item->IsPlugin())
           {
             buttons.Add(CONTEXT_BUTTON_RENAME, 16105);
             buttons.Add(CONTEXT_BUTTON_DELETE, 646);

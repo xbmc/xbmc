@@ -10,7 +10,7 @@
 #include "AppInboundProtocol.h"
 #include "IrssMessage.h"
 #include "platform/win32/CharsetConverter.h"
-#include "profiles/ProfilesManager.h"
+#include "profiles/ProfileManager.h"
 #include "settings/SettingsComponent.h"
 #include "utils/log.h"
 #include "ServiceBroker.h"
@@ -63,7 +63,7 @@ void CIRServerSuite::Initialize()
 
 void CIRServerSuite::Process()
 {
-  m_profileId = CServiceBroker::GetSettingsComponent()->GetProfilesManager()->GetCurrentProfileId();
+  m_profileId = CServiceBroker::GetSettingsComponent()->GetProfileManager()->GetCurrentProfileId();
   m_irTranslator.Load(IRSS_MAP_FILENAME);
 
   bool logging = true;
@@ -368,7 +368,7 @@ bool CIRServerSuite::HandleRemoteEvent(CIrssMessage& message)
     deviceName[devicenamelength] = '\0';
     keycode[keycodelength] = '\0';
 
-    int profileId = CServiceBroker::GetSettingsComponent()->GetProfilesManager()->GetCurrentProfileId();
+    int profileId = CServiceBroker::GetSettingsComponent()->GetProfileManager()->GetCurrentProfileId();
     if (m_profileId != profileId)
     {
       m_profileId = profileId;

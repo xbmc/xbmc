@@ -27,7 +27,7 @@
 #include "filesystem/File.h"
 #include "FileItem.h"
 #include "filesystem/MultiPathDirectory.h"
-#include "profiles/ProfilesManager.h"
+#include "profiles/ProfileManager.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/SettingsComponent.h"
 #include "input/Key.h"
@@ -419,8 +419,8 @@ void CGUIDialogFileBrowser::Update(const std::string &strDirectory)
   OnSort();
 
   if (m_Directory->GetPath().empty() && m_addNetworkShareEnabled &&
-     (CServiceBroker::GetSettingsComponent()->GetProfilesManager()->GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE ||
-      CServiceBroker::GetSettingsComponent()->GetProfilesManager()->IsMasterProfile() || g_passwordManager.bMasterUser))
+     (CServiceBroker::GetSettingsComponent()->GetProfileManager()->GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE ||
+      CServiceBroker::GetSettingsComponent()->GetProfileManager()->IsMasterProfile() || g_passwordManager.bMasterUser))
   { // we are in the virtual directory - add the "Add Network Location" item
     CFileItemPtr pItem(new CFileItem(g_localizeStrings.Get(1032)));
     pItem->SetPath("net://");

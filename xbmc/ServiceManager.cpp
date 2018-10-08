@@ -19,7 +19,7 @@
 #include "games/GameServices.h"
 #include "peripherals/Peripherals.h"
 #include "PlayListPlayer.h"
-#include "profiles/ProfilesManager.h"
+#include "profiles/ProfileManager.h"
 #include "utils/log.h"
 #include "input/InputManager.h"
 #include "interfaces/AnnouncementManager.h"
@@ -164,7 +164,7 @@ bool CServiceManager::InitStageTwo(const CAppParamParser &params, const std::str
 }
 
 // stage 3 is called after successful initialization of WindowManager
-bool CServiceManager::InitStageThree(const std::shared_ptr<CProfilesManager>& profilesManager)
+bool CServiceManager::InitStageThree(const std::shared_ptr<CProfileManager>& profileManager)
 {
   // Peripherals depends on strings being loaded before stage 3
   m_peripherals->Initialise();
@@ -172,12 +172,12 @@ bool CServiceManager::InitStageThree(const std::shared_ptr<CProfilesManager>& pr
   m_gameServices.reset(new GAME::CGameServices(*m_gameControllerManager,
     *m_gameRenderManager,
     *m_peripherals,
-    *profilesManager));
+    *profileManager));
 
   m_contextMenuManager->Init();
   m_PVRManager->Init();
 
-  m_playerCoreFactory.reset(new CPlayerCoreFactory(*profilesManager));
+  m_playerCoreFactory.reset(new CPlayerCoreFactory(*profileManager));
 
   init_level = 3;
   return true;

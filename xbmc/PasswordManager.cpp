@@ -7,7 +7,7 @@
  */
 
 #include "PasswordManager.h"
-#include "profiles/ProfilesManager.h"
+#include "profiles/ProfileManager.h"
 #include "profiles/dialogs/GUIDialogLockSettings.h"
 #include "URL.h"
 #include "utils/XMLUtils.h"
@@ -134,9 +134,9 @@ void CPasswordManager::Load()
 {
   Clear();
 
-  const std::shared_ptr<CProfilesManager> profilesManager = CServiceBroker::GetSettingsComponent()->GetProfilesManager();
+  const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
-  std::string passwordsFile = profilesManager->GetUserDataItem("passwords.xml");
+  std::string passwordsFile = profileManager->GetUserDataItem("passwords.xml");
   if (XFILE::CFile::Exists(passwordsFile))
   {
     CXBMCTinyXML doc;
@@ -185,9 +185,9 @@ void CPasswordManager::Save() const
     XMLUtils::SetPath(path, "to", i->second);
   }
 
-  const std::shared_ptr<CProfilesManager> profilesManager = CServiceBroker::GetSettingsComponent()->GetProfilesManager();
+  const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
-  doc.SaveFile(profilesManager->GetUserDataItem("passwords.xml"));
+  doc.SaveFile(profileManager->GetUserDataItem("passwords.xml"));
 }
 
 std::string CPasswordManager::GetLookupPath(const CURL &url) const

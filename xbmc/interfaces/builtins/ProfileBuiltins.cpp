@@ -16,7 +16,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "GUIPassword.h"
 #include "GUIUserMessages.h"
-#include "profiles/ProfilesManager.h"
+#include "profiles/ProfileManager.h"
 #include "ServiceBroker.h"
 #include "settings/SettingsComponent.h"
 #include "Util.h"
@@ -31,13 +31,13 @@ using namespace KODI::MESSAGING;
  */
 static int LoadProfile(const std::vector<std::string>& params)
 {
-  const std::shared_ptr<CProfilesManager> profilesManager = CServiceBroker::GetSettingsComponent()->GetProfilesManager();
+  const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
-  int index = profilesManager->GetProfileIndex(params[0]);
+  int index = profileManager->GetProfileIndex(params[0]);
   bool prompt = (params.size() == 2 && StringUtils::EqualsNoCase(params[1], "prompt"));
   bool bCanceled;
   if (index >= 0
-      && (profilesManager->GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE
+      && (profileManager->GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE
         || g_passwordManager.IsProfileLockUnlocked(index,bCanceled,prompt)))
   {
     CApplicationMessenger::GetInstance().PostMsg(TMSG_LOADPROFILE, index);
@@ -51,8 +51,8 @@ static int LoadProfile(const std::vector<std::string>& params)
  */
 static int LogOff(const std::vector<std::string>& params)
 {
-  const std::shared_ptr<CProfilesManager> profilesManager = CServiceBroker::GetSettingsComponent()->GetProfilesManager();
-  profilesManager->LogOff();
+  const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
+  profileManager->LogOff();
 
   return 0;
 }

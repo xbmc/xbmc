@@ -8,7 +8,7 @@
 
 #include "ServiceBroker.h"
 #include "Application.h"
-#include "profiles/ProfilesManager.h"
+#include "profiles/ProfileManager.h"
 #include "settings/SettingsComponent.h"
 #include "windowing/WinSystem.h"
 
@@ -202,7 +202,7 @@ CDatabaseManager& CServiceBroker::GetDatabaseManager()
 
 CEventLog& CServiceBroker::GetEventLog()
 {
-  return m_pSettingsComponent->GetProfilesManager()->GetEventLog();
+  return m_pSettingsComponent->GetProfileManager()->GetEventLog();
 }
 
 CGUIComponent* CServiceBroker::m_pGUI = nullptr;
