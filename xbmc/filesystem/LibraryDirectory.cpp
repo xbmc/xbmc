@@ -9,7 +9,7 @@
 #include "LibraryDirectory.h"
 #include "Directory.h"
 #include "playlists/SmartPlayList.h"
-#include "profiles/ProfilesManager.h"
+#include "profiles/ProfileManager.h"
 #include "SmartPlaylistDirectory.h"
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"

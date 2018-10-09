@@ -26,11 +26,12 @@
 #include "network/WebServer.h"
 #endif
 #include "peripherals/Peripherals.h"
-#include "profiles/ProfilesManager.h"
+#include "profiles/ProfileManager.h"
 #include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"
 #include "pvr/PVRSettings.h"
 #include "settings/SettingAddon.h"
+#include "settings/SettingsComponent.h"
 #if defined(HAS_LIBAMCODEC)
 #include "utils/AMLUtils.h"
 #endif // defined(HAS_LIBAMCODEC)
@@ -257,7 +258,7 @@ bool LessThanOrEqual(const std::string &condition, const std::string &value, Set
   return lhs <= rhs;
 }
 
-const CProfilesManager *CSettingConditions::m_profileManager = nullptr;
+const CProfileManager *CSettingConditions::m_profileManager = nullptr;
 std::set<std::string> CSettingConditions::m_simpleConditions;
 std::map<std::string, SettingConditionCheck> CSettingConditions::m_complexConditions;
 
@@ -389,7 +390,7 @@ void CSettingConditions::Deinitialize()
 const CProfile& CSettingConditions::GetCurrentProfile()
 {
   if (!m_profileManager)
-    m_profileManager = &CServiceBroker::GetProfileManager();
+    m_profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager().get();
 
   if (m_profileManager)
     return m_profileManager->GetCurrentProfile();

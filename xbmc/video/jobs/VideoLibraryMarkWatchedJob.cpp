@@ -17,7 +17,8 @@
 #endif
 #include "pvr/PVRManager.h"
 #include "pvr/recordings/PVRRecordings.h"
-#include "profiles/ProfilesManager.h"
+#include "profiles/ProfileManager.h"
+#include "settings/SettingsComponent.h"
 #include "ServiceBroker.h"
 #include "utils/URIUtils.h"
 #include "video/VideoDatabase.h"
@@ -43,9 +44,9 @@ bool CVideoLibraryMarkWatchedJob::operator==(const CJob* job) const
 
 bool CVideoLibraryMarkWatchedJob::Work(CVideoDatabase &db)
 {
-  const CProfilesManager &profileManager = CServiceBroker::GetProfileManager();
+  const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
-  if (!profileManager.GetCurrentProfile().canWriteDatabases())
+  if (!profileManager->GetCurrentProfile().canWriteDatabases())
     return false;
 
   CFileItemList items;

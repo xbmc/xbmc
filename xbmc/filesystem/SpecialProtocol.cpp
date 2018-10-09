@@ -11,7 +11,7 @@
 #include "URL.h"
 #include "Util.h"
 #include "windowing/GraphicContext.h"
-#include "profiles/ProfilesManager.h"
+#include "profiles/ProfileManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -24,9 +24,9 @@
 #include "utils/StringUtils.h"
 #endif
 
-const CProfilesManager *CSpecialProtocol::m_profileManager = nullptr;
+const CProfileManager *CSpecialProtocol::m_profileManager = nullptr;
 
-void CSpecialProtocol::RegisterProfileManager(const CProfilesManager &profileManager)
+void CSpecialProtocol::RegisterProfileManager(const CProfileManager &profileManager)
 {
   m_profileManager = &profileManager;
 }

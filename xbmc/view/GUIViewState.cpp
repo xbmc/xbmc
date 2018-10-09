@@ -14,7 +14,7 @@
 #include "music/GUIViewStateMusic.h"
 #include "video/GUIViewStateVideo.h"
 #include "pictures/GUIViewStatePictures.h"
-#include "profiles/ProfilesManager.h"
+#include "profiles/ProfileManager.h"
 #include "programs/GUIViewStatePrograms.h"
 #include "games/windows/GUIViewStateWindowGames.h"
 #include "PlayListPlayer.h"
@@ -389,9 +389,9 @@ bool CGUIViewState::HideParentDirItems()
 
 bool CGUIViewState::DisableAddSourceButtons()
 {
-  const CProfilesManager &profileManager = CServiceBroker::GetProfileManager();
+  const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
-  if (profileManager.GetCurrentProfile().canWriteSources() || g_passwordManager.bMasterUser)
+  if (profileManager->GetCurrentProfile().canWriteSources() || g_passwordManager.bMasterUser)
     return !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_FILELISTS_SHOWADDSOURCEBUTTONS);
 
   return true;

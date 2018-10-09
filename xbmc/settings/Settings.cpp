@@ -42,13 +42,14 @@
 #include "utils/AMLUtils.h"
 #endif // defined(HAS_LIBAMCODEC)
 #include "powermanagement/PowerTypes.h"
-#include "profiles/ProfilesManager.h"
+#include "profiles/ProfileManager.h"
 #include "pvr/PVRSettings.h"
 #include "pvr/windows/GUIWindowPVRGuide.h"
 #include "ServiceBroker.h"
 #include "settings/DisplaySettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/MediaSourceSettings.h"
+#include "settings/SettingsComponent.h"
 #include "settings/SettingConditions.h"
 #include "settings/SettingUtils.h"
 #include "settings/SkinSettings.h"
@@ -452,9 +453,9 @@ bool CSettings::Initialize()
 
 bool CSettings::Load()
 {
-  const CProfilesManager &profileManager = CServiceBroker::GetProfileManager();
+  const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
-  return Load(profileManager.GetSettingsFile());
+  return Load(profileManager->GetSettingsFile());
 }
 
 bool CSettings::Load(const std::string &file)
@@ -480,9 +481,9 @@ bool CSettings::Load(const std::string &file)
 
 bool CSettings::Save()
 {
-  const CProfilesManager &profileManager = CServiceBroker::GetProfileManager();
+  const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
-  return Save(profileManager.GetSettingsFile());
+  return Save(profileManager->GetSettingsFile());
 }
 
 bool CSettings::Save(const std::string &file)
@@ -969,9 +970,9 @@ void CSettings::UninitializeISettingCallbacks()
 
 bool CSettings::Reset()
 {
-  const CProfilesManager &profileManager = CServiceBroker::GetProfileManager();
+  const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
-  std::string settingsFile = profileManager.GetSettingsFile();
+  const std::string settingsFile = profileManager->GetSettingsFile();
 
   // try to delete the settings file
   if (XFILE::CFile::Exists(settingsFile, false) && !XFILE::CFile::Delete(settingsFile))

@@ -40,7 +40,7 @@
 #include "filesystem/File.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "messaging/helpers/DialogOKHelper.h"
-#include "profiles/ProfilesManager.h"
+#include "profiles/ProfileManager.h"
 #include "storage/MediaManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"
@@ -515,7 +515,7 @@ void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &but
 
   if (item)
   {
-    const CProfilesManager &profileManager = CServiceBroker::GetProfileManager();
+    const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
     if (item && !item->IsParentFolder())
     {
@@ -560,7 +560,7 @@ void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &but
           !item->IsPlugin() && !item->IsMusicDb()         &&
           !item->IsLibraryFolder() &&
           !StringUtils::StartsWithNoCase(item->GetPath(), "addons://")              &&
-          (profileManager.GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser))
+          (profileManager->GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser))
       {
         buttons.Add(CONTEXT_BUTTON_SCAN, 13352);
       }
@@ -578,7 +578,7 @@ void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &but
 
     // enable CDDB lookup if the current dir is CDDA
     if (g_mediaManager.IsDiscInDrive() && m_vecItems->IsCDDA() &&
-       (profileManager.GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser))
+       (profileManager->GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser))
     {
       buttons.Add(CONTEXT_BUTTON_CDDB, 16002);
     }
@@ -956,9 +956,9 @@ bool CGUIWindowMusicBase::GetDirectory(const std::string &strDirectory, CFileIte
     // add in the "New Playlist" item if we're in the playlists folder
     if ((items.GetPath() == "special://musicplaylists/") && !items.Contains("newplaylist://"))
     {
-      const CProfilesManager &profileManager = CServiceBroker::GetProfileManager();
+      const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
-      CFileItemPtr newPlaylist(new CFileItem(profileManager.GetUserDataItem("PartyMode.xsp"),false));
+      CFileItemPtr newPlaylist(new CFileItem(profileManager->GetUserDataItem("PartyMode.xsp"),false));
       newPlaylist->SetLabel(g_localizeStrings.Get(16035));
       newPlaylist->SetLabelPreformatted(true);
       newPlaylist->SetIconImage("DefaultPartyMode.png");

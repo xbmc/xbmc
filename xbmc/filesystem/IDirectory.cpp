@@ -18,9 +18,9 @@
 using namespace KODI::MESSAGING;
 using namespace XFILE;
 
-const CProfilesManager *IDirectory::m_profileManager = nullptr;
+const CProfileManager *IDirectory::m_profileManager = nullptr;
 
-void IDirectory::RegisterProfileManager(const CProfilesManager &profileManager)
+void IDirectory::RegisterProfileManager(const CProfileManager &profileManager)
 {
   m_profileManager = &profileManager;
 }

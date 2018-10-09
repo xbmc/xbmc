@@ -22,14 +22,17 @@ class CEventLogManager;
 class CSettings;
 class TiXmlNode;
 
-class CProfilesManager : protected ISettingsHandler,
+class CProfileManager : protected ISettingsHandler,
                          protected ISettingCallback
 {
 public:
-  CProfilesManager();
-  CProfilesManager(const CProfilesManager&) = delete;
-  CProfilesManager& operator=(CProfilesManager const&) = delete;
-  ~CProfilesManager() override;
+  CProfileManager();
+  CProfileManager(const CProfileManager&) = delete;
+  CProfileManager& operator=(CProfileManager const&) = delete;
+  ~CProfileManager() override;
+
+  void Initialize(const std::shared_ptr<CSettings>& settings);
+  void Uninitialize();
 
   void OnSettingsLoaded() override;
   void OnSettingsSaved() const override;
@@ -42,7 +45,6 @@ public:
     after special://masterprofile/ has been defined.
     \param file XML file to load.
     */
-  bool Load(const std::string &file);
 
   bool Save() const;
   /*! \brief Save the user profile information to disk
@@ -50,7 +52,6 @@ public:
     \param file XML file to save.
     \return true on success, false on failure to save
     */
-  bool Save(const std::string &file) const;
 
   void Clear();
 

@@ -30,7 +30,7 @@
 #include "music/MusicUtils.h"
 #include "music/tags/MusicInfoTag.h"
 #include "music/windows/GUIWindowMusicNav.h"
-#include "profiles/ProfilesManager.h"
+#include "profiles/ProfileManager.h"
 #include "ServiceBroker.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
@@ -524,11 +524,11 @@ void CGUIDialogMusicInfo::Update()
 
   }
 
-  const CProfilesManager &profileManager = CServiceBroker::GetProfileManager();
+  const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
   // Disable the Choose Art button if the user isn't allowed it
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_GET_THUMB,
-    profileManager.GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser);
+    profileManager->GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser);
 }
 
 void CGUIDialogMusicInfo::SetLabel(int iControl, const std::string& strLabel)
@@ -568,8 +568,8 @@ void CGUIDialogMusicInfo::FetchComplete()
 void CGUIDialogMusicInfo::RefreshInfo()
 {
   // Double check we have permission (button should be hidden when not)
-  const CProfilesManager &profileManager = CServiceBroker::GetProfileManager();
-  if (!profileManager.GetCurrentProfile().canWriteDatabases() && !g_passwordManager.bMasterUser)
+  const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
+  if (!profileManager->GetCurrentProfile().canWriteDatabases() && !g_passwordManager.bMasterUser)
     return;
 
   // Check if scanning
