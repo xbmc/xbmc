@@ -19,6 +19,7 @@
 #include "utils/log.h"
 #include "filesystem/SpecialProtocol.h"
 #include "windowing/GraphicContext.h"
+#include "input/Key.h"
 
 static inline void SDL_memset4(uint32_t* dst, uint32_t val, size_t len)
 {

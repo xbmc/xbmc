@@ -21,7 +21,6 @@
 #include "guilib/StereoscopicsManager.h"
 #include "GUIUserMessages.h"
 #include "music/MusicDatabase.h"
-#include "rendering/RenderSystem.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"

@@ -12,7 +12,6 @@
 #include "filesystem/VideoDatabaseDirectory.h"
 #include "filesystem/Directory.h"
 #include "VideoDatabase.h"
-#include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"

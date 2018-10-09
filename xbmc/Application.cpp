@@ -25,9 +25,7 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/TextureManager.h"
 #include "cores/IPlayer.h"
-#include "cores/VideoPlayer/DVDFileInfo.h"
 #include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
-#include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "PlayListPlayer.h"
 #include "Autorun.h"
@@ -41,8 +39,6 @@
 #include "guilib/GUIFontManager.h"
 #include "guilib/GUIColorManager.h"
 #include "guilib/StereoscopicsManager.h"
-#include "addons/BinaryAddonCache.h"
-#include "addons/LanguageResource.h"
 #include "addons/Skin.h"
 #include "addons/VFSEntry.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
@@ -114,7 +110,6 @@
 #include "interfaces/json-rpc/JSONRPC.h"
 #include "interfaces/AnnouncementManager.h"
 #include "peripherals/Peripherals.h"
-#include "peripherals/devices/PeripheralImon.h"
 #include "music/infoscanner/MusicInfoScanner.h"
 #include "music/MusicUtils.h"
 #include "music/MusicThumbLoader.h"
@@ -139,7 +134,6 @@
 #include "pvr/PVRManager.h"
 
 #include "video/dialogs/GUIDialogFullScreenInfo.h"
-#include "guilib/GUIControlFactory.h"
 #include "dialogs/GUIDialogCache.h"
 #include "dialogs/GUIDialogPlayEject.h"
 #include "utils/URIUtils.h"
@@ -148,7 +142,6 @@
 #include "addons/AddonManager.h"
 #include "addons/RepositoryUpdater.h"
 #include "music/tags/MusicInfoTag.h"
-#include "music/tags/MusicInfoTagLoaderFactory.h"
 #include "CompileInfo.h"
 
 #ifdef TARGET_WINDOWS
@@ -202,6 +195,8 @@
 #include "cores/FFmpeg.h"
 #include "utils/CharsetConverter.h"
 #include "pictures/GUIWindowSlideShow.h"
+#include "addons/AddonSystemSettings.h"
+#include "FileItem.h"
 
 using namespace ADDON;
 using namespace XFILE;

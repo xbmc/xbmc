@@ -8,14 +8,11 @@
 
 #include "GUIWindowSplash.h"
 
-#include "filesystem/File.h"
-#include "filesystem/SpecialProtocol.h"
 #include "guilib/GUIImage.h"
 #include "guilib/GUIWindowManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "Util.h"
-#include "utils/log.h"
 
 CGUIWindowSplash::CGUIWindowSplash(void) : CGUIWindow(WINDOW_SPLASH, "")
 {

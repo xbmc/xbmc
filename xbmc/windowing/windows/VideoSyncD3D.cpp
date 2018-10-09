@@ -13,9 +13,7 @@
 #include "rendering/dx/RenderContext.h"
 #include "VideoSyncD3D.h"
 #include "windowing/GraphicContext.h"
-#include "platform/win32/dxerr.h"
 #include "utils/StringUtils.h"
-#include "utils/CharsetConverter.h"
 
 void CVideoSyncD3D::OnLostDisplay()
 {

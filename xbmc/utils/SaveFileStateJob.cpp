@@ -7,7 +7,6 @@
  */
 
 #include "SaveFileStateJob.h"
-#include "settings/MediaSettings.h"
 #include "network/upnp/UPnP.h"
 #include "StringUtils.h"
 #include "utils/Variant.h"
@@ -25,6 +24,8 @@
 #include "xbmc/music/tags/MusicInfoTag.h"
 #include "Application.h"
 #include "ServiceBroker.h"
+#include "FileItem.h"
+#include "video/Bookmark.h"
 
 void CSaveFileState::DoWork(CFileItem& item,
                             CBookmark& bookmark,

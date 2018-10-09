@@ -7,12 +7,9 @@
  */
 
 #include "VideoLibraryRefreshingJob.h"
-#include "NfoFile.h"
 #include "ServiceBroker.h"
 #include "TextureDatabase.h"
 #include "addons/Scraper.h"
-#include "dialogs/GUIDialogExtendedProgressBar.h"
-#include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "filesystem/PluginDirectory.h"

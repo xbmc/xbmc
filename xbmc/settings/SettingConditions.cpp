@@ -19,8 +19,6 @@
 #endif // defined(TARGET_ANDROID)
 #include "cores/AudioEngine/Engines/ActiveAE/ActiveAESettings.h"
 #include "ServiceBroker.h"
-#include "cores/AudioEngine/Interfaces/AE.h"
-#include "guilib/LocalizeStrings.h"
 #include "GUIPassword.h"
 #if defined(HAS_WEB_SERVER)
 #include "network/WebServer.h"
@@ -36,7 +34,6 @@
 #include "utils/AMLUtils.h"
 #endif // defined(HAS_LIBAMCODEC)
 #include "utils/StringUtils.h"
-#include "utils/SystemInfo.h"
 #if defined(TARGET_DARWIN_OSX)
 #include "platform/darwin/DarwinUtils.h"
 #endif// defined(TARGET_DARWIN_OSX)

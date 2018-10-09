@@ -25,7 +25,6 @@
 #include "network/Network.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "input/Key.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "dialogs/GUIDialogTextViewer.h"
 #include "guilib/GUIKeyboardFactory.h"

@@ -14,7 +14,6 @@
 #include "settings/lib/ISettingCallback.h"
 #include "settings/lib/SettingLevel.h"
 #include "LockType.h"
-#include "SettingsLock.h"
 
 class CFileItem;
 class CMediaSource;

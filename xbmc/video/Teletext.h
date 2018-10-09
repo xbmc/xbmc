@@ -9,7 +9,6 @@
 #pragma once
 
 #include "TeletextDefines.h"
-#include "input/Key.h"
 #include "utils/Color.h"
 #include "guilib/GUITexture.h"
 
@@ -23,6 +22,8 @@
 #include FT_FREETYPE_H
 #include FT_CACHE_H
 #include FT_CACHE_SMALL_BITMAPS_H
+
+class CAction;
 
 typedef enum /* object type */
 {

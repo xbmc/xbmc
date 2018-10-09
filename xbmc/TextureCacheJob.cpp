@@ -11,7 +11,6 @@
 #include "TextureCache.h"
 #include "guilib/Texture.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/log.h"
 #include "filesystem/File.h"

@@ -10,7 +10,6 @@
 
 #include <map>
 
-#include "addons/Addon.h"
 #include "addons/Scraper.h"
 #include "settings/dialogs/GUIDialogSettingsManualBase.h"
 

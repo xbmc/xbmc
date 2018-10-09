@@ -10,7 +10,6 @@
 
 #include "XBApplicationEx.h"
 
-#include "addons/AddonSystemSettings.h"
 #include "guilib/IMsgTargetCallback.h"
 #include "windowing/Resolution.h"
 #include "utils/GlobalsHandling.h"
@@ -42,7 +41,6 @@
 #include "threads/Thread.h"
 
 #include "ApplicationPlayer.h"
-#include "FileItem.h"
 
 class CAction;
 class CFileItem;

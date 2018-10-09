@@ -6,12 +6,10 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "GUIUserMessages.h"
 #include "GUIWindowVideoNav.h"
 #include "ServiceBroker.h"
 #include "utils/FileUtils.h"
 #include "Util.h"
-#include "PlayListPlayer.h"
 #include "GUIPassword.h"
 #include "filesystem/MultiPathDirectory.h"
 #include "filesystem/VideoDatabaseDirectory.h"
