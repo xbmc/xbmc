@@ -55,5 +55,6 @@ protected:
   int m_displayTime;
   double m_dtsAtDisplayTime;
   std::unique_ptr<DemuxPacket> m_packet;
+  int m_videoStreamPlaying = -1;
 };
 
