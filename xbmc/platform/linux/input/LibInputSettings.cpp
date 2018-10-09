@@ -99,12 +99,16 @@ CLibInputSettings::CLibInputSettings(CLibInputHandler *handler) :
 
 CLibInputSettings::~CLibInputSettings()
 {
-  const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-  if (settings)
-  {
-    settings->GetSettingsManager()->UnregisterSettingOptionsFiller("libinputkeyboardlayout");
-    settings->GetSettingsManager()->UnregisterCallback(this);
-  }
+  CSettingsComponent *settingsComponent = CServiceBroker::GetSettingsComponent();
+  if (!settingsComponent)
+    return;
+
+  const std::shared_ptr<CSettings> settings = settingsComponent->GetSettings();
+  if (!settings)
+    return;
+
+  settings->GetSettingsManager()->UnregisterSettingOptionsFiller("libinputkeyboardlayout");
+  settings->GetSettingsManager()->UnregisterCallback(this);
 }
 
 void CLibInputSettings::SettingOptionsKeyboardLayoutsFiller(std::shared_ptr<const CSetting> setting, std::vector< std::pair<std::string, std::string> > &list, std::string &current, void *data)
