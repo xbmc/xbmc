@@ -87,7 +87,7 @@ namespace ADDON
     void ClearOutIdle();
     void DisconnectAll();
 
-    bool ContainsFiles(const CURL& path, CFileItemList& items);
+    bool ContainsFiles(const CURL& url, CFileItemList& items);
 
     const std::string& GetProtocols() const { return m_protocols; }
     const std::string& GetExtensions() const { return m_extensions; }
@@ -208,19 +208,19 @@ namespace ADDON
     //! \param[in] url URL to file to list.
     //! \param items List of items in file.
     //! \return True if listing succeeded, false otherwise.
-    bool GetDirectory(const CURL& strPath, CFileItemList& items) override;
+    bool GetDirectory(const CURL& url, CFileItemList& items) override;
 
     //! \brief Check if directory exists.
     //! \param[in] url URL to check.
-    bool Exists(const CURL& strPath) override;
+    bool Exists(const CURL& url) override;
 
     //! \brief Delete directory.
     //! \param[in] url URL to delete.
-    bool Remove(const CURL& strPath) override;
+    bool Remove(const CURL& url) override;
 
     //! \brief Create directory.
     //! \param[in] url URL to delete.
-    bool Create(const CURL& strPath) override;
+    bool Create(const CURL& url) override;
 
     //! \brief Static helper for doing a keyboard callback.
     static bool DoGetKeyboardInput(void* context, const char* heading,
@@ -262,7 +262,7 @@ namespace ADDON
     ~CVFSEntryIFileDirectoryWrapper() override = default;
 
     //! \brief Check if the given file should be treated as a directory.
-    //! \param[in] URL URL for file to probe.
+    //! \param[in] url URL for file to probe.
     bool ContainsFiles(const CURL& url) override
     {
       return m_addon->ContainsFiles(url, m_items);
