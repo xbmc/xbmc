@@ -184,6 +184,7 @@ bool CGUIControlsGUIInfo::GetLabel(std::string& value, const CFileItem *item, in
         value = window->CurrentDirectory().GetProperty("showtitle").asString();
         return true;
       }
+      break;
     }
     case CONTAINER_PLUGINCATEGORY:
     {
