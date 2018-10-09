@@ -21,7 +21,7 @@ about: Create a roadmap/todo suggestion item (Team Kodi members only!)
 
 
 
-###Additional context, screenshots or links**
+### Additional context, screenshots or links
 Here are some relevant links or screenshots
 <!--- Put your text below this line -->
 
