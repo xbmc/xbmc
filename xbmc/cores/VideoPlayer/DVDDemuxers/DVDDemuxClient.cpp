@@ -89,6 +89,7 @@ void CDVDDemuxClient::Dispose()
 void CDVDDemuxClient::DisposeStreams()
 {
   m_streams.clear();
+  m_videoStreamPlaying = -1;
 }
 
 bool CDVDDemuxClient::Reset()
@@ -567,7 +568,8 @@ bool CDVDDemuxClient::IsVideoReady()
 {
   for (const auto& stream : m_streams)
   {
-    if (stream.second->type == STREAM_VIDEO &&
+    if (stream.first == m_videoStreamPlaying &&
+        stream.second->type == STREAM_VIDEO &&
         stream.second->ExtraData == nullptr)
       return false;
   }
@@ -639,7 +641,11 @@ void CDVDDemuxClient::OpenStream(int id)
   // in this case we need to reset our stream properties
   if (m_IDemux && m_IDemux->OpenStream(id))
   {
-    SetStreamProps(m_IDemux->GetStream(id), m_streams, true);
+    CDemuxStream *stream(m_IDemux->GetStream(id));
+    if (stream && stream->type == STREAM_VIDEO)
+      m_videoStreamPlaying = id;
+
+    SetStreamProps(stream, m_streams, true);
   }
 }
 
