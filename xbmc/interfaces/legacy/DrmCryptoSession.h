@@ -31,15 +31,14 @@ namespace XBMCAddon
     XBMCCOMMONS_STANDARD_EXCEPTION(DRMException);
 
     //
-    /// \defgroup python_drm CryptoSession
-    /// \ingroup python_xbmcdrm
+    /// \defgroup python_xbmcdrm Library - xbmcdrm
     /// @{
-    /// @brief <b>Kodi DRM CryptoSession class.</b>
-    ///--------------------------------------------------------------------------
-    /// \python_class{ xbmcdrm.CryptoSession(UUID) }
+    /// @brief **Kodi's %DRM class.**
+    ///
+    /// \python_class{ xbmcdrm.CryptoSession(UUID, cipherAlgorithm, macAlgorithm) }
     ///
     /// @param UUID             String  16 byte UUID of the DRM system to use
-    /// @param cipherAlgorithm  String algorithm used for en- / decryption
+    /// @param cipherAlgorithm  String algorithm used for en / decryption
     /// @param macAlgorithm     String algorithm used for sign / verify
     ///
     /// @throws RuntimeException if the session can not be established
