@@ -31,20 +31,21 @@ namespace XBMCAddon
     XBMCCOMMONS_STANDARD_EXCEPTION(DRMException);
 
     //
-    /// \defgroup python_drm CryptoSession
-    /// \ingroup python_xbmcdrm
+    /// \defgroup python_xbmcdrm Library - xbmcdrm
     /// @{
-    /// @brief <b>Kodi DRM CryptoSession class.</b>
-    ///--------------------------------------------------------------------------
-    /// \python_class{ xbmcdrm.CryptoSession(UUID) }
+    /// @brief **Kodi's %DRM class.**
+    ///
+    /// \python_class{ xbmcdrm.CryptoSession(UUID, cipherAlgorithm, macAlgorithm) }
     ///
     /// @param UUID             String  16 byte UUID of the DRM system to use
-    /// @param cipherAlgorithm  String algorithm used for en- / decryption
+    /// @param cipherAlgorithm  String algorithm used for en / decryption
     /// @param macAlgorithm     String algorithm used for sign / verify
     ///
     /// @throws RuntimeException if the session can not be established
     ///
-    //
+    ///------------------------------------------------------------------------
+    /// @python_v18 New class added.
+    ///
     class CryptoSession : public AddonClass
     {
       DRM::CCryptoSession* m_cryptoSession;
@@ -68,6 +69,9 @@ namespace XBMCAddon
       ///
       /// @return     opaque key request data (challenge) which is send to key server
       ///
+      ///------------------------------------------------------------------------
+      /// @python_v18 New function added.
+      ///
       GetKeyRequest(...);
 #else
       XbmcCommons::Buffer GetKeyRequest(const XbmcCommons::Buffer &init, const String &mimeType, bool offlineKey, const std::map<String, String> &optionalParameters);
@@ -83,6 +87,9 @@ namespace XBMCAddon
       /// @param      String Name name of the property to query
       ///
       /// @return     Value of the requested property
+      ///
+      ///------------------------------------------------------------------------
+      /// @python_v18 New function added.
       ///
       GetPropertyString(...);
 #else
@@ -101,6 +108,9 @@ namespace XBMCAddon
       /// @return     String If offline keays are requested, a keySetId which can be used later
       ///                    with restoreKeys, empty for online / streaming) keys.
       ///
+      ///------------------------------------------------------------------------
+      /// @python_v18 New function added.
+      ///
       ProvideKeyResponse(...);
 #else
       String ProvideKeyResponse(const XbmcCommons::Buffer &response);
@@ -116,6 +126,9 @@ namespace XBMCAddon
       /// @param      None
       ///
       /// @return     None
+      ///
+      ///------------------------------------------------------------------------
+      /// @python_v18 New function added.
       ///
       RemoveKeys(...);
 #else
@@ -133,6 +146,9 @@ namespace XBMCAddon
       ///
       /// @return     None
       ///
+      ///------------------------------------------------------------------------
+      /// @python_v18 New function added.
+      ///
       RestoreKeys(...);
 #else
       void RestoreKeys(String keySetId);
@@ -149,6 +165,9 @@ namespace XBMCAddon
       /// @param      String value  Value of the property to query
       ///
       /// @return     Value of the requested property
+      ///
+      ///------------------------------------------------------------------------
+      /// @python_v18 New function added.
       ///
       SetPropertyString(...);
 #else
@@ -170,6 +189,9 @@ namespace XBMCAddon
       ///
       /// @return     Decrypted input data
       ///
+      ///------------------------------------------------------------------------
+      /// @python_v18 New function added.
+      ///
       Decrypt(...);
 #else
       XbmcCommons::Buffer Decrypt(const XbmcCommons::Buffer &cipherKeyId, const XbmcCommons::Buffer &input, const XbmcCommons::Buffer &iv);
@@ -188,6 +210,9 @@ namespace XBMCAddon
       ///
       /// @return     Encrypted input data
       ///
+      ///------------------------------------------------------------------------
+      /// @python_v18 New function added.
+      ///
       Encrypt(...);
 #else
       XbmcCommons::Buffer Encrypt(const XbmcCommons::Buffer &cipherKeyId, const XbmcCommons::Buffer &input, const XbmcCommons::Buffer &iv);
@@ -204,6 +229,9 @@ namespace XBMCAddon
       /// @param      [byte] message
       ///
       /// @return     [byte] Signature
+      ///
+      ///------------------------------------------------------------------------
+      /// @python_v18 New function added.
       ///
       Sign(...);
 #else
@@ -222,6 +250,9 @@ namespace XBMCAddon
       /// @param      [byte] signature
       ///
       /// @return     true if message verification succeded
+      ///
+      ///------------------------------------------------------------------------
+      /// @python_v18 New function added.
       ///
       Verify(...);
 #else

@@ -5,7 +5,7 @@
 \image html logo-python.png
 \brief \htmlonly
       <h3><span  style="text-decoration: underline;"><span  style="font-style: italic;"><span
-               style="color: rgb(102, 102, 102);">Python Script Add-On Development</span></span></span></h3>
+               style="color: rgb(102, 102, 102);">Python Add-On Development</span></span></span></h3>
        \endhtmlonly
 
 Kodi includes a built-in [Python interpreter](http://en.wikipedia.org/wiki/Python_%28programming_language%29)
@@ -39,8 +39,9 @@ uses a handful of custom modules to expose Kodi functionality to Python.
 | \ref python_xbmcgui    "xbmcgui"    | Offers classes and functions that manipulate the Graphical User Interface through windows, dialogs, and various control widgets.
 | \ref python_xbmcplugin "xbmcplugin" | Offers classes and functions that allow a developer to present information through Kodi's standard menu structure. While plugins don't have the same flexibility as scripts, they boast significantly quicker development time and a more consistent user experience.
 | \ref python_xbmcaddon  "xbmcaddon"  | Offers classes and functions that manipulate the add-on settings, information and localization.
-| \ref python_xbmcvfs    "xbmcvfs"    | Offers classes and functions offers access to the Virtual File Server (VFS) which you can use to manipulate files and folders.
+| \ref python_xbmcvfs    "xbmcvfs"    | Offers classes and functions that alow access to the Virtual File Server (VFS) which you can use to manipulate files and folders.
 | \ref python_xbmcwsgi   "xbmcwsgi"   | The [<b>Web Server Gateway Interface (WSGI)</b>](https://en.wikipedia.org/wiki/Web_Server_Gateway_Interface) is a specification for simple and universal interface between web servers and web applications or frameworks for the Python programming language.
+| \ref python_xbmcdrm    "xbmcdrm"    | Offers classes and functions to create and manipulate a DRM CryptoSession .
 
 _ _ _
 
@@ -138,6 +139,9 @@ so the distinction is more theoretical than practical.
 The [<b>Web Server Gateway Interface (WSGI)</b>](https://en.wikipedia.org/wiki/Web_Server_Gateway_Interface)
 is a specification for simple and universal interface between web servers and
 web applications or frameworks for the Python programming language.
+
+\ingroup python
+\defgroup python_xbmcdrm Library - xbmcdrm
 @}
 
 */

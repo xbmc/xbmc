@@ -206,7 +206,11 @@ namespace XBMCAddon
       ///-----------------------------------------------------------------------
       /// onPlayBackStarted method.
       ///
-      /// Will be called when Kodi starts playing a file. Video or audio might not be available at this point.
+      /// Will be called when Kodi player starts. Video or audio might not be available at this point.
+      ///
+      ///------------------------------------------------------------------------
+      /// @python_v18 Use onAVStarted() instead if you need to detect if Kodi is actually playing a media file
+      /// (i.e, if a stream is available)
       ///
       onPlayBackStarted();
 #else
@@ -221,7 +225,9 @@ namespace XBMCAddon
       ///-----------------------------------------------------------------------
       /// onAVStarted method.
       ///
-      /// Will be called when Kodi has a video- or audiostream.
+      /// Will be called when Kodi has a video or audiostream.
+      ///
+      ///------------------------------------------------------------------------
       /// @python_v18 New function added.
       ///
       onAVStarted();
@@ -238,6 +244,8 @@ namespace XBMCAddon
       /// onAVChange method.
       ///
       /// Will be called when Kodi has a video, audio or subtitle stream. Also happens when the stream changes.
+      ///
+      ///------------------------------------------------------------------------
       /// @python_v18 New function added.
       ///
       onAVChange();
