@@ -187,7 +187,6 @@ macro (build_addon target prefix libs)
   # if there's an addon.xml.in we need to generate the addon.xml
   if(EXISTS ${PROJECT_SOURCE_DIR}/${target}/addon.xml.in)
     set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS ${PROJECT_SOURCE_DIR}/${target}/addon.xml.in)
-    set(PLATFORM ${CORE_SYSTEM_NAME})
 
     file(READ ${PROJECT_SOURCE_DIR}/${target}/addon.xml.in addon_file)
 
@@ -199,6 +198,9 @@ macro (build_addon target prefix libs)
       endif()
     endif()
 
+    # TODO: remove this hack after v18
+    string(REPLACE "<platform>\@PLATFORM\@</platform>" "<platform>@PLATFORM_TAG@</platform>" addon_file "${addon_file}")
+
     string(CONFIGURE "${addon_file}" addon_file_conf @ONLY)
     file(GENERATE OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${target}/addon.xml CONTENT "${addon_file_conf}")
     if(${APP_NAME_UC}_BUILD_DIR)
@@ -209,7 +211,6 @@ macro (build_addon target prefix libs)
   # if there's an settings.xml.in we need to generate the settings.xml
   if(EXISTS ${PROJECT_SOURCE_DIR}/${target}/resources/settings.xml.in)
     set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS ${PROJECT_SOURCE_DIR}/${target}/resources/settings.xml.in)
-    set(PLATFORM ${CORE_SYSTEM_NAME})
 
     file(READ ${PROJECT_SOURCE_DIR}/${target}/resources/settings.xml.in settings_file)
     string(CONFIGURE "${settings_file}" settings_file_conf @ONLY)
