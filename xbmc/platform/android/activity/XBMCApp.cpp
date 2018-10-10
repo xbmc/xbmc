@@ -514,7 +514,7 @@ void CXBMCApp::SetRefreshRateCallback(CVariant* rateVariant)
   if (window)
   {
     CJNIWindowManagerLayoutParams params = window.getAttributes();
-    if (params.getpreferredRefreshRate() != rate)
+    if (fabs(params.getpreferredRefreshRate() - rate) > 0.001)
     {
       if (g_application.GetAppPlayer().IsPlaying())
       {
