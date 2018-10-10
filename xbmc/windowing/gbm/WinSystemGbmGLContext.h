@@ -15,6 +15,13 @@
 
 class CVaapiProxy;
 
+namespace KODI
+{
+namespace WINDOWING
+{
+namespace GBM
+{
+
 class CWinSystemGbmGLContext : public CWinSystemGbmEGLContext, public CRenderSystemGL
 {
 public:
@@ -31,3 +38,7 @@ protected:
   void PresentRenderImpl(bool rendered) override {};
   bool CreateContext() override;
 };
+
+}
+}
+}

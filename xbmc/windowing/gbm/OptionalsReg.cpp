@@ -16,6 +16,13 @@
 #include "cores/VideoPlayer/DVDCodecs/Video/VAAPI.h"
 #include "cores/VideoPlayer/VideoRenderers/HwDecRender/RendererVAAPIGLES.h"
 
+namespace KODI
+{
+namespace WINDOWING
+{
+namespace GBM
+{
+
 class CVaapiProxy : public VAAPI::IVaapiWinSystem
 {
 public:
@@ -57,59 +64,75 @@ VADisplay CVaapiProxy::GetVADisplay()
   return nullptr;
 }
 
-CVaapiProxy* GBM::VaapiProxyCreate()
+CVaapiProxy* VaapiProxyCreate()
 {
   return new CVaapiProxy();
 }
 
-void GBM::VaapiProxyDelete(CVaapiProxy *proxy)
+void VaapiProxyDelete(CVaapiProxy *proxy)
 {
   delete proxy;
 }
 
-void GBM::VaapiProxyConfig(CVaapiProxy *proxy, void *eglDpy)
+void VaapiProxyConfig(CVaapiProxy *proxy, void *eglDpy)
 {
   proxy->vaDpy = proxy->GetVADisplay();
   proxy->eglDisplay = eglDpy;
 }
 
-void GBM::VAAPIRegister(CVaapiProxy *winSystem, bool deepColor)
+void VAAPIRegister(CVaapiProxy *winSystem, bool deepColor)
 {
   VAAPI::CDecoder::Register(winSystem, deepColor);
 }
 
-void GBM::VAAPIRegisterRender(CVaapiProxy *winSystem, bool &general, bool &deepColor)
+void VAAPIRegisterRender(CVaapiProxy *winSystem, bool &general, bool &deepColor)
 {
   CRendererVAAPI::Register(winSystem, winSystem->vaDpy, winSystem->eglDisplay, general, deepColor);
 }
 
+}
+}
+}
+
 #else
+
+namespace KODI
+{
+namespace WINDOWING
+{
+namespace GBM
+{
 
 class CVaapiProxy
 {
 };
 
-CVaapiProxy* GBM::VaapiProxyCreate()
+CVaapiProxy* VaapiProxyCreate()
 {
   return nullptr;
 }
 
-void GBM::VaapiProxyDelete(CVaapiProxy *proxy)
+void VaapiProxyDelete(CVaapiProxy *proxy)
 {
 }
 
-void GBM::VaapiProxyConfig(CVaapiProxy *proxy, void *eglDpy)
-{
-
-}
-
-void GBM::VAAPIRegister(CVaapiProxy *winSystem, bool deepColor)
+void VaapiProxyConfig(CVaapiProxy *proxy, void *eglDpy)
 {
 
 }
 
-void GBM::VAAPIRegisterRender(CVaapiProxy *winSystem, bool &general, bool &deepColor)
+void VAAPIRegister(CVaapiProxy *winSystem, bool deepColor)
 {
 
 }
+
+void VAAPIRegisterRender(CVaapiProxy *winSystem, bool &general, bool &deepColor)
+{
+
+}
+
+}
+}
+}
+
 #endif

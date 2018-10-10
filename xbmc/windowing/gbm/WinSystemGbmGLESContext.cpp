@@ -26,7 +26,7 @@
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
 
-using namespace KODI;
+using namespace KODI::WINDOWING::GBM;
 
 CWinSystemGbmGLESContext::CWinSystemGbmGLESContext()
 : CWinSystemGbmEGLContext(EGL_PLATFORM_GBM_MESA, "EGL_MESA_platform_gbm")

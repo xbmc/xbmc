@@ -22,6 +22,8 @@
 
 #include "DRMUtils.h"
 
+using namespace KODI::WINDOWING::GBM;
+
 CDRMUtils::CDRMUtils()
   : m_connector(new connector)
   , m_encoder(new encoder)

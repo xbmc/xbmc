@@ -12,6 +12,8 @@
 #include "utils/log.h"
 #include "windowing/gbm/DRMUtils.h"
 
+using namespace KODI::WINDOWING::GBM;
+
 CVideoLayerBridgeDRMPRIME::CVideoLayerBridgeDRMPRIME(std::shared_ptr<CDRMUtils> drm)
   : m_DRM(drm)
 {

@@ -13,6 +13,8 @@
 
 #include <gbm.h>
 
+using namespace KODI::WINDOWING::GBM;
+
 CGBMBufferObject::CGBMBufferObject(int format) :
   m_format(format)
 {

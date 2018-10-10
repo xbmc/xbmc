@@ -21,6 +21,8 @@
 
 #include <drm_fourcc.h>
 
+using namespace KODI::WINDOWING::GBM;
+
 void CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool videoLayer)
 {
   uint32_t blob_id;

@@ -13,7 +13,7 @@
 #include "utils/log.h"
 #include "WinSystemGbmEGLContext.h"
 
-using namespace KODI;
+using namespace KODI::WINDOWING::GBM;
 
 bool CWinSystemGbmEGLContext::InitWindowSystemEGL(EGLint renderableType, EGLint apiType)
 {
@@ -81,7 +81,7 @@ bool CWinSystemGbmEGLContext::DestroyWindowSystem()
 
 void CWinSystemGbmEGLContext::delete_CVaapiProxy::operator()(CVaapiProxy *p) const
 {
-  GBM::VaapiProxyDelete(p);
+  VaapiProxyDelete(p);
 }
 
 EGLDisplay CWinSystemGbmEGLContext::GetEGLDisplay() const

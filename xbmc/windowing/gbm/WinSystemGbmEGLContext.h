@@ -12,6 +12,13 @@
 #include "WinSystemGbm.h"
 #include <memory>
 
+namespace KODI
+{
+namespace WINDOWING
+{
+namespace GBM
+{
+
 class CVaapiProxy;
 
 class CWinSystemGbmEGLContext : public CWinSystemGbm
@@ -48,3 +55,7 @@ protected:
   };
   std::unique_ptr<CVaapiProxy, delete_CVaapiProxy> m_vaapiProxy;
 };
+
+}
+}
+}

@@ -23,6 +23,8 @@
 #include "windowing/GraphicContext.h"
 #include "ServiceBroker.h"
 
+using namespace KODI::WINDOWING::GBM;
+
 const std::string SETTING_VIDEOPLAYER_USEPRIMERENDERER = "videoplayer.useprimerenderer";
 
 CRendererDRMPRIME::~CRendererDRMPRIME()

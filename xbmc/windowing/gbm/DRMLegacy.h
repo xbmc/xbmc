@@ -10,6 +10,13 @@
 
 #include "DRMUtils.h"
 
+namespace KODI
+{
+namespace WINDOWING
+{
+namespace GBM
+{
+
 class CDRMLegacy : public CDRMUtils
 {
 public:
@@ -27,3 +34,7 @@ private:
   static void PageFlipHandler(int fd, unsigned int frame, unsigned int sec,
                               unsigned int usec, void *data);
 };
+
+}
+}
+}
