@@ -153,7 +153,7 @@ macro (build_addon target prefix libs)
       endif()
     endforeach()
 
-    add_library(${target} ${${prefix}_SOURCES})
+    add_library(${target} ${${prefix}_SOURCES} ${${prefix}_HEADERS})
     target_link_libraries(${target} ${${libs}})
     set_target_properties(${target} PROPERTIES VERSION ${${prefix}_VERSION}
                                                SOVERSION ${APP_VERSION_MAJOR}.${APP_VERSION_MINOR}
