@@ -374,7 +374,7 @@ case $host in
     esac
     platform_cflags+=" -arch $use_cpu -m$platform_min_version"
     platform_ldflags+=" -arch $use_cpu -m$platform_min_version -isysroot $use_sdk_path -stdlib=libc++"
-    platform_cxxflags+=" -arch $use_cpu -m$platform_min_version -std=c++11 -stdlib=libc++"
+    platform_cxxflags+=" -arch $use_cpu -m$platform_min_version -stdlib=libc++"
     platform_includes="-isysroot $use_sdk_path"
     deps_dir="${sdk_name}_${use_cpu}-target-${build_type}"
     AC_CHECK_LIB([z], [main], has_zlib=1, AC_MSG_WARN("No zlib support in toolchain. Will build libz."); has_zlib=0)
