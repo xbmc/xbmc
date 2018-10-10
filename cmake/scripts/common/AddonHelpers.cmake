@@ -264,13 +264,16 @@ macro (build_addon target prefix libs)
                 COMPONENT ${target}-${${prefix}_VERSION})
       endif()
       if(${prefix}_CUSTOM_BINARY)
-        install(FILES ${LIBRARY_LOCATION} DESTINATION ${target} RENAME ${LIBRARY_FILENAME})
+        install(FILES ${LIBRARY_LOCATION} DESTINATION ${target} RENAME ${LIBRARY_FILENAME}
+                COMPONENT ${target}-${${prefix}_VERSION})
       endif()
       if(${prefix}_CUSTOM_DATA)
-        install(DIRECTORY ${${prefix}_CUSTOM_DATA} DESTINATION ${target}/resources)
+        install(DIRECTORY ${${prefix}_CUSTOM_DATA} DESTINATION ${target}/resources
+                COMPONENT ${target}-${${prefix}_VERSION})
       endif()
       if(${prefix}_ADDITIONAL_BINARY)
-        install(FILES ${${prefix}_ADDITIONAL_BINARY} DESTINATION ${target})
+        install(FILES ${${prefix}_ADDITIONAL_BINARY} DESTINATION ${target}
+                COMPONENT ${target}-${${prefix}_VERSION})
       endif()
     else() # NOT WIN32
       if(NOT CPACK_PACKAGE_DIRECTORY)
