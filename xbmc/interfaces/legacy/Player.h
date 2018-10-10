@@ -222,6 +222,7 @@ namespace XBMCAddon
       /// onAVStarted method.
       ///
       /// Will be called when Kodi has a video- or audiostream.
+      /// @python_v18 New function added.
       ///
       onAVStarted();
 #else
@@ -237,6 +238,7 @@ namespace XBMCAddon
       /// onAVChange method.
       ///
       /// Will be called when Kodi has a video, audio or subtitle stream. Also happens when the stream changes.
+      /// @python_v18 New function added.
       ///
       onAVChange();
 #else
@@ -623,9 +625,7 @@ namespace XBMCAddon
       ///
       /// @throws Exception          If player is not playing a file
       ///
-      ///-----------------------------------------------------------------------
       /// @python_v18 New function added.
-      ///-----------------------------------------------------------------------
       ///
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
