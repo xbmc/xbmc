@@ -148,6 +148,9 @@ bool CEGLContextUtils::InitializeDisplay(EGLint renderableType, EGLint rendering
   value = eglQueryString(m_eglDisplay, EGL_EXTENSIONS);
   CLog::Log(LOGNOTICE, "EGL_EXTENSIONS = %s", value ? value : "NULL");
 
+  value = eglQueryString(EGL_NO_DISPLAY, EGL_EXTENSIONS);
+  CLog::Log(LOGNOTICE, "EGL_CLIENT_EXTENSIONS = %s", value ? value : "NULL");
+
   if (eglBindAPI(renderingApi) != EGL_TRUE)
   {
     CEGLUtils::LogError("failed to bind EGL API");
