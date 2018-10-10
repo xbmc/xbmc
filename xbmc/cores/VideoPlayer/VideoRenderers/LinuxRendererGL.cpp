@@ -942,20 +942,6 @@ void CLinuxRendererGL::LoadShaders(int field)
     }
   }
 
-  // determine whether GPU supports NPOT textures
-  if (!m_renderSystem->IsExtSupported("GL_ARB_texture_non_power_of_two"))
-  {
-    if (!m_renderSystem->IsExtSupported("GL_ARB_texture_rectangle"))
-    {
-      CLog::Log(LOGWARNING, "GL: GL_ARB_texture_rectangle not supported and OpenGL version is not 2.x");
-    }
-    else
-      CLog::Log(LOGNOTICE, "GL: NPOT textures are supported through GL_ARB_texture_rectangle extension");
-  }
-  else
-    CLog::Log(LOGNOTICE, "GL: NPOT texture support detected");
-
-
   if (m_pboSupported)
   {
     CLog::Log(LOGNOTICE, "GL: Using GL_ARB_pixel_buffer_object");

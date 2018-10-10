@@ -107,11 +107,6 @@ bool CRenderSystemGL::InitRenderSystem()
 
   InitialiseShaders();
 
-  if (IsExtSupported("GL_ARB_texture_non_power_of_two"))
-    m_supportsNPOT = true;
-  else
-    m_supportsNPOT = false;
-
   return true;
 }
 
@@ -279,7 +274,7 @@ bool CRenderSystemGL::IsExtSupported(const char* extension) const
 
 bool CRenderSystemGL::SupportsNPOT(bool dxt) const
 {
-  return m_supportsNPOT;
+  return true;
 }
 
 void CRenderSystemGL::PresentRender(bool rendered, bool videoLayer)

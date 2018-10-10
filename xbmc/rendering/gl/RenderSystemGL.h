@@ -93,7 +93,6 @@ protected:
   bool m_bVsyncInit = false;
   int m_width;
   int m_height;
-  bool m_supportsNPOT = true;
 
   std::string m_RenderExtensions;
 
