@@ -153,7 +153,7 @@ macro (build_addon target prefix libs)
       endif()
     endforeach()
 
-    add_library(${target} ${${prefix}_SOURCES})
+    add_library(${target} ${${prefix}_SOURCES} ${${prefix}_HEADERS})
     target_link_libraries(${target} ${${libs}})
     set_target_properties(${target} PROPERTIES VERSION ${${prefix}_VERSION}
                                                SOVERSION ${APP_VERSION_MAJOR}.${APP_VERSION_MINOR}
@@ -264,13 +264,16 @@ macro (build_addon target prefix libs)
                 COMPONENT ${target}-${${prefix}_VERSION})
       endif()
       if(${prefix}_CUSTOM_BINARY)
-        install(FILES ${LIBRARY_LOCATION} DESTINATION ${target} RENAME ${LIBRARY_FILENAME})
+        install(FILES ${LIBRARY_LOCATION} DESTINATION ${target} RENAME ${LIBRARY_FILENAME}
+                COMPONENT ${target}-${${prefix}_VERSION})
       endif()
       if(${prefix}_CUSTOM_DATA)
-        install(DIRECTORY ${${prefix}_CUSTOM_DATA} DESTINATION ${target}/resources)
+        install(DIRECTORY ${${prefix}_CUSTOM_DATA} DESTINATION ${target}/resources
+                COMPONENT ${target}-${${prefix}_VERSION})
       endif()
       if(${prefix}_ADDITIONAL_BINARY)
-        install(FILES ${${prefix}_ADDITIONAL_BINARY} DESTINATION ${target})
+        install(FILES ${${prefix}_ADDITIONAL_BINARY} DESTINATION ${target}
+                COMPONENT ${target}-${${prefix}_VERSION})
       endif()
     else() # NOT WIN32
       if(NOT CPACK_PACKAGE_DIRECTORY)
