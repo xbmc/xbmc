@@ -9,7 +9,6 @@
 #include "BinaryAddonType.h"
 #include "BinaryAddonBase.h"
 
-#include "filesystem/SpecialProtocol.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "utils/XMLUtils.h"

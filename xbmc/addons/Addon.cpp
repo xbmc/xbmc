@@ -15,20 +15,15 @@
 #include <vector>
 
 #include "AddonManager.h"
-#include "addons/Service.h"
 #include "addons/settings/AddonSettings.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
-#include "guilib/LocalizeStrings.h"
 #include "RepositoryUpdater.h"
 #include "settings/Settings.h"
 #include "ServiceBroker.h"
-#include "URL.h"
-#include "Util.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
-#include "utils/Variant.h"
 #include "utils/XMLUtils.h"
 
 #ifdef HAS_PYTHON

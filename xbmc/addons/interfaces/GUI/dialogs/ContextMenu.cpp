@@ -14,7 +14,6 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "utils/log.h"
-#include "utils/Variant.h"
 #include "ServiceBroker.h"
 
 extern "C"

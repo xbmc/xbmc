@@ -8,7 +8,6 @@
 
 #include "AddonInfo.h"
 
-#include "Util.h"
 #include "guilib/LocalizeStrings.h"
 
 namespace ADDON

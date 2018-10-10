@@ -29,7 +29,6 @@
 #include "guilib/GUIProgressControl.h"
 #include "guilib/GUIRenderingControl.h"
 #include "guilib/GUIKeyboardFactory.h"
-#include "input/Key.h"
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "messaging/helpers/DialogOKHelper.h"
