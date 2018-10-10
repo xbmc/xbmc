@@ -1,5 +1,19 @@
 @ECHO OFF
 
+IF "%1"=="" (
+  ECHO ERROR! vswhere.bat: architecture not specified
+  EXIT /B 1
+)
+
+REM running vcvars more than once can cause problems; exit early if using the same configuration, error if different
+IF "%VSWHERE_SET%"=="%*" (
+  ECHO vswhere.bat: VC vars already configured for %VSWHERE_SET%
+  GOTO :EOF
+)
+IF "%VSWHERE_SET%" NEQ "" (
+  ECHO ERROR! vswhere.bat: VC vars are configured for %VSWHERE_SET%
+  EXIT /B 1
+)
 
 REM Trick to make the path absolute
 PUSHD %~dp0\..\..\..\project\BuildDependencies
@@ -64,3 +78,5 @@ IF ERRORLEVEL 1 (
   ECHO %vcvars% %vcarch% %vcstore% %sdkver%
   EXIT /B 1
 )
+
+SET VSWHERE_SET=%*
