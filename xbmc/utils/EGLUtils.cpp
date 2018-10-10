@@ -131,14 +131,22 @@ bool CEGLContextUtils::CreatePlatformDisplay(void* nativeDisplay, EGLNativeDispl
 
 bool CEGLContextUtils::InitializeDisplay(EGLint renderableType, EGLint renderingApi, EGLint visualId)
 {
-  int major, minor;
-  if (!eglInitialize(m_eglDisplay, &major, &minor))
+  if (!eglInitialize(m_eglDisplay, nullptr, nullptr))
   {
     CEGLUtils::LogError("failed to initialize EGL display");
     Destroy();
     return false;
   }
-  CLog::Log(LOGINFO, "EGL v%d.%d", major, minor);
+
+  const char *value;
+  value = eglQueryString(m_eglDisplay, EGL_VERSION);
+  CLog::Log(LOGNOTICE, "EGL_VERSION = %s", value ? value : "NULL");
+
+  value = eglQueryString(m_eglDisplay, EGL_VENDOR);
+  CLog::Log(LOGNOTICE, "EGL_VENDOR = %s", value ? value : "NULL");
+
+  value = eglQueryString(m_eglDisplay, EGL_EXTENSIONS);
+  CLog::Log(LOGNOTICE, "EGL_EXTENSIONS = %s", value ? value : "NULL");
 
   if (eglBindAPI(renderingApi) != EGL_TRUE)
   {
