@@ -160,12 +160,12 @@ cd $HOME/kodi-build
 Generate Xcode project for 64bit (**recommended**):
 ```
 /Users/Shared/xbmc-depends/x86_64-darwin17.5.0-native/bin/cmake -G Xcode -DCMAKE_TOOLCHAIN_FILE=/Users/Shared/xbmc-depends/macosx10.13_x86_64-target-debug/share/Toolchain.cmake ..
-...
+```
 
 Or generate Xcode project for 32bit:
 ```
 /Users/Shared/xbmc-depends/x86_64-darwin17.5.0-native/bin/cmake -G Xcode -DCMAKE_TOOLCHAIN_FILE=/Users/Shared/xbmc-depends/macosx10.13_i386-target-debug/share/Toolchain.cmake ..
-...
+```
 
 **WARNING:** The toolchain file location differs depending on SDK version. You have to replace `x86_64-darwin17.5.0-native` and `macosx10.13_x86_64-target-debug` or `macosx10.13_i386-target-debug` in the paths above with the correct ones on your system.
 
