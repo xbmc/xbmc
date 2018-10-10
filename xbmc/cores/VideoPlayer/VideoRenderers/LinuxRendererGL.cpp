@@ -174,13 +174,6 @@ bool CLinuxRendererGL::ValidateRenderTarget()
 {
   if (!m_bValidated)
   {
-    //!@todo remove extension check?
-    if (!CServiceBroker::GetRenderSystem()->IsExtSupported("GL_ARB_texture_non_power_of_two") &&
-         CServiceBroker::GetRenderSystem()->IsExtSupported("GL_ARB_texture_rectangle"))
-    {
-      m_textureTarget = GL_TEXTURE_RECTANGLE;
-    }
-
     // function pointer for texture might change in
     // call to LoadShaders
     glFinish();
