@@ -26,7 +26,7 @@ CDVDClock::CDVDClock()
   m_paused = false;
   m_speedAfterPause = DVD_PLAYSPEED_PAUSE;
   m_iDisc = 0;
-  m_maxspeedadjust = 0.0;
+  m_maxspeedadjust = 5.0;
   m_systemAdjust = 0;
   m_speedAdjust = 0;
   m_startClock = 0;
@@ -242,7 +242,7 @@ int CDVDClock::UpdateFramerate(double fps, double* interval /*= NULL*/)
 
   CSingleLock lock(m_speedsection);
 
-  double weight = MathUtils::round_int(rate) / (double)MathUtils::round_int(fps);
+  double weight = rate / fps;
 
   //set the speed of the videoreferenceclock based on fps, refreshrate and maximum speed adjust set by user
   if (m_maxspeedadjust > 0.05)
