@@ -184,7 +184,7 @@ public:
 
   bool CreateSurface(EGLNativeWindowType nativeWindow);
   bool CreatePlatformSurface(void* nativeWindow, EGLNativeWindowType nativeWindowLegacy);
-  bool CreateContext(const EGLint* contextAttribs);
+  bool CreateContext(CEGLAttributesVec contextAttribs);
   bool BindContext();
   void Destroy();
   void DestroySurface();

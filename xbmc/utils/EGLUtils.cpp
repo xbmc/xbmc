@@ -23,6 +23,15 @@ namespace
 #ifndef EGL_NO_CONFIG_KHR
 #define EGL_NO_CONFIG_KHR static_cast<EGLConfig>(0)
 #endif
+#ifndef EGL_CONTEXT_PRIORITY_LEVEL_IMG
+#define EGL_CONTEXT_PRIORITY_LEVEL_IMG 0x3100
+#endif
+#ifndef EGL_CONTEXT_PRIORITY_HIGH_IMG
+#define EGL_CONTEXT_PRIORITY_HIGH_IMG 0x3101
+#endif
+#ifndef EGL_CONTEXT_PRIORITY_MEDIUM_IMG
+#define EGL_CONTEXT_PRIORITY_MEDIUM_IMG 0x3102
+#endif
 
 #define X(VAL) std::make_pair(VAL, #VAL)
 std::array<std::pair<EGLint, const char*>, 32> eglAttributes =
@@ -281,7 +290,7 @@ bool CEGLContextUtils::ChooseConfig(EGLint renderableType, EGLint visualId)
   return true;
 }
 
-bool CEGLContextUtils::CreateContext(const EGLint* contextAttribs)
+bool CEGLContextUtils::CreateContext(CEGLAttributesVec contextAttribs)
 {
   if (m_eglContext != EGL_NO_CONTEXT)
   {
@@ -293,8 +302,22 @@ bool CEGLContextUtils::CreateContext(const EGLint* contextAttribs)
   if (CEGLUtils::HasExtension(m_eglDisplay, "EGL_KHR_no_config_context"))
     eglConfig = EGL_NO_CONFIG_KHR;
 
+  if (CEGLUtils::HasExtension(m_eglDisplay, "EGL_IMG_context_priority"))
+    contextAttribs.Add({{EGL_CONTEXT_PRIORITY_LEVEL_IMG, EGL_CONTEXT_PRIORITY_HIGH_IMG}});
+
   m_eglContext = eglCreateContext(m_eglDisplay, eglConfig,
-                                  EGL_NO_CONTEXT, contextAttribs);
+                                  EGL_NO_CONTEXT, contextAttribs.Get());
+
+  if (CEGLUtils::HasExtension(m_eglDisplay, "EGL_IMG_context_priority"))
+  {
+    EGLint value{EGL_CONTEXT_PRIORITY_MEDIUM_IMG};
+
+    if (eglQueryContext(m_eglDisplay, m_eglContext, EGL_CONTEXT_PRIORITY_LEVEL_IMG, &value) != EGL_TRUE)
+      CEGLUtils::LogError("failed to query EGL context attribute EGL_CONTEXT_PRIORITY_LEVEL_IMG");
+
+    if (value != EGL_CONTEXT_PRIORITY_HIGH_IMG)
+      CLog::Log(LOGDEBUG, "Failed to obtain a high priority EGL context");
+  }
 
   if (m_eglContext == EGL_NO_CONTEXT)
   {

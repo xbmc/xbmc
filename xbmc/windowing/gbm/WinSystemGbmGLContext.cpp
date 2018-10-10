@@ -123,19 +123,16 @@ bool CWinSystemGbmGLContext::CreateContext()
   const EGLint glMajor = 3;
   const EGLint glMinor = 2;
 
-  const EGLint contextAttribs[] = {
-    EGL_CONTEXT_MAJOR_VERSION_KHR, glMajor,
-    EGL_CONTEXT_MINOR_VERSION_KHR, glMinor,
-    EGL_CONTEXT_OPENGL_PROFILE_MASK_KHR, EGL_CONTEXT_OPENGL_CORE_PROFILE_BIT_KHR,
-    EGL_NONE
-  };
+  CEGLAttributesVec contextAttribs;
+  contextAttribs.Add({{EGL_CONTEXT_MAJOR_VERSION_KHR, glMajor},
+                      {EGL_CONTEXT_MINOR_VERSION_KHR, glMinor},
+                      {EGL_CONTEXT_OPENGL_PROFILE_MASK_KHR, EGL_CONTEXT_OPENGL_CORE_PROFILE_BIT_KHR}});
 
   if (!m_eglContext.CreateContext(contextAttribs))
   {
-    const EGLint fallbackContextAttribs[] = {
-      EGL_CONTEXT_CLIENT_VERSION, 2,
-      EGL_NONE
-    };
+    CEGLAttributesVec fallbackContextAttribs;
+    fallbackContextAttribs.Add({{EGL_CONTEXT_CLIENT_VERSION, 2}});
+
     if (!m_eglContext.CreateContext(fallbackContextAttribs))
     {
       CLog::Log(LOGERROR, "EGL context creation failed");
