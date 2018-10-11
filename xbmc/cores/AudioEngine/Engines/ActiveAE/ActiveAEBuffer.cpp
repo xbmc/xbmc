@@ -9,7 +9,6 @@
 #include "ActiveAE.h"
 #include "ActiveAEBuffer.h"
 #include "ActiveAEFilter.h"
-#include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/AudioEngine/AEResampleFactory.h"
 

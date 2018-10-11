@@ -9,13 +9,13 @@
 #pragma once
 
 #include "cores/AudioEngine/Utils/AEAudioFormat.h"
-#include "cores/AudioEngine/Utils/AEStreamData.h"
-#include "cores/AudioEngine/Interfaces/IAudioCallback.h"
 #include <stdint.h>
 
 extern "C" {
 #include "libavcodec/avcodec.h"
 }
+
+class IAudioCallback;
 
 /**
  * Callback interface for VideoPlayer clock needed by AE for sync
