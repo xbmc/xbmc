@@ -12,6 +12,7 @@
 #include <set>
 #include <string>
 #include <stdexcept>
+#include <vector>
 
 #include <EGL/egl.h>
 
@@ -36,6 +37,54 @@ public:
 
 private:
   CEGLUtils();
+};
+
+/**
+ * Convenience wrapper for heap-allocated EGL attribute arrays
+ *
+ * The wrapper makes sure that the key/value pairs are always written in actual
+ * pairs and  that the array is always terminated with EGL_NONE.
+ */
+class CEGLAttributesVec
+{
+public:
+  struct EGLAttribute
+  {
+    EGLint key;
+    EGLint value;
+  };
+
+  /**
+   * Add multiple attributes
+   *
+   * The array is automatically terminated with EGL_NONE
+   */
+  void Add(std::initializer_list<EGLAttribute> const& attributes)
+  {
+    for (auto const& attribute : attributes)
+    {
+      m_attributes.insert(m_attributes.begin(), attribute.value);
+      m_attributes.insert(m_attributes.begin(), attribute.key);
+    }
+  }
+
+  /**
+   * Add one attribute
+   *
+   * The array is automatically terminated with EGL_NONE
+   */
+  void Add(EGLAttribute const& attribute)
+  {
+    Add({attribute});
+  }
+
+  EGLint const * Get() const
+  {
+    return m_attributes.data();
+  }
+
+private:
+  std::vector<EGLint> m_attributes{EGL_NONE};
 };
 
 /**
