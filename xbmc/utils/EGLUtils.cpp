@@ -17,6 +17,14 @@
 
 #include <EGL/eglext.h>
 
+namespace
+{
+//! @todo remove when Raspberry Pi updates their EGL headers
+#ifndef EGL_NO_CONFIG_KHR
+#define EGL_NO_CONFIG_KHR static_cast<EGLConfig>(0)
+#endif
+}
+
 std::set<std::string> CEGLUtils::GetClientExtensions()
 {
   const char* extensions = eglQueryString(EGL_NO_DISPLAY, EGL_EXTENSIONS);
@@ -228,7 +236,12 @@ bool CEGLContextUtils::CreateContext(const EGLint* contextAttribs)
     throw std::logic_error("Do not call CreateContext when context has already been created");
   }
 
-  m_eglContext = eglCreateContext(m_eglDisplay, m_eglConfig,
+  EGLConfig eglConfig{m_eglConfig};
+
+  if (CEGLUtils::HasExtension(m_eglDisplay, "EGL_KHR_no_config_context"))
+    eglConfig = EGL_NO_CONFIG_KHR;
+
+  m_eglContext = eglCreateContext(m_eglDisplay, eglConfig,
                                   EGL_NO_CONTEXT, contextAttribs);
 
   if (m_eglContext == EGL_NO_CONTEXT)
