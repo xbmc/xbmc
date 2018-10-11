@@ -8,9 +8,20 @@
 
 #pragma once
 
+namespace KODI
+{
+namespace WINDOWING
+{
+namespace GBM
+{
+
 class CVideoLayerBridge
 {
 public:
   virtual ~CVideoLayerBridge() = default;
   virtual void Disable() {};
 };
+
+}
+}
+}

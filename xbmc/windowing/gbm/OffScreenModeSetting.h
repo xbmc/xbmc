@@ -10,6 +10,13 @@
 
 #include "DRMUtils.h"
 
+namespace KODI
+{
+namespace WINDOWING
+{
+namespace GBM
+{
+
 class COffScreenModeSetting : public CDRMUtils
 {
 public:
@@ -30,3 +37,7 @@ private:
   const int  DISPLAY_HEIGHT= 720;
   const float DISPLAY_REFRESH = 50.0f;
 };
+
+}
+}
+}

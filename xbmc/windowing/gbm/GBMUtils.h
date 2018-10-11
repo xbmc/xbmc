@@ -10,6 +10,13 @@
 
 #include <gbm.h>
 
+namespace KODI
+{
+namespace WINDOWING
+{
+namespace GBM
+{
+
 class CGBMUtils
 {
 public:
@@ -31,3 +38,7 @@ protected:
   struct gbm_bo *m_bo = nullptr;
   struct gbm_bo *m_next_bo = nullptr;
 };
+
+}
+}
+}

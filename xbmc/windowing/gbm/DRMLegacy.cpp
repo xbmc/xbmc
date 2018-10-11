@@ -23,6 +23,8 @@
 
 #include "DRMLegacy.h"
 
+using namespace KODI::WINDOWING::GBM;
+
 static int flip_happening = 0;
 
 bool CDRMLegacy::SetVideoMode(const RESOLUTION_INFO& res, struct gbm_bo *bo)

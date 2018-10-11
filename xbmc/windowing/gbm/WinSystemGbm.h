@@ -20,6 +20,13 @@
 
 class IDispResource;
 
+namespace KODI
+{
+namespace WINDOWING
+{
+namespace GBM
+{
+
 class CWinSystemGbm : public CWinSystemBase
 {
 public:
@@ -73,3 +80,7 @@ protected:
   std::unique_ptr<OPTIONALS::CLircContainer, OPTIONALS::delete_CLircContainer> m_lirc;
   std::unique_ptr<CLibInputHandler> m_libinput;
 };
+
+}
+}
+}

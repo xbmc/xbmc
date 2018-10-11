@@ -258,6 +258,9 @@ bool DPMSSupport::PlatformSpecificDisablePowerSaving()
 #elif defined(HAVE_GBM)
 #include "ServiceBroker.h"
 #include "windowing/gbm/WinSystemGbm.h"
+
+using namespace KODI::WINDOWING::GBM;
+
 void DPMSSupport::PlatformSpecificInit()
 {
   m_supportedModes.push_back(OFF);

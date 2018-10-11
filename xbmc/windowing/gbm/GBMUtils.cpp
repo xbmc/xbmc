@@ -9,6 +9,8 @@
 #include "GBMUtils.h"
 #include "utils/log.h"
 
+using namespace KODI::WINDOWING::GBM;
+
 bool CGBMUtils::CreateDevice(int fd)
 {
   if (m_device)

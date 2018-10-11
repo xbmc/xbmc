@@ -26,6 +26,7 @@
 #include "OffScreenModeSetting.h"
 #include "messaging/ApplicationMessenger.h"
 
+using namespace KODI::WINDOWING::GBM;
 
 CWinSystemGbm::CWinSystemGbm() :
   m_DRM(nullptr),

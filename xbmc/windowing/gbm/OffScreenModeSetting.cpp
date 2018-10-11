@@ -9,6 +9,8 @@
 #include "OffScreenModeSetting.h"
 #include "utils/log.h"
 
+using namespace KODI::WINDOWING::GBM;
+
 bool COffScreenModeSetting::InitDrm()
 {
   if (!CDRMUtils::OpenDrm(false))

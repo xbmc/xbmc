@@ -18,6 +18,13 @@
 #include "windowing/Resolution.h"
 #include "GBMUtils.h"
 
+namespace KODI
+{
+namespace WINDOWING
+{
+namespace GBM
+{
+
 enum EPLANETYPE
 {
   VIDEO_PLANE,
@@ -132,3 +139,7 @@ private:
   drmModeResPtr m_drm_resources = nullptr;
   drmModeCrtcPtr m_orig_crtc = nullptr;
 };
+
+}
+}
+}

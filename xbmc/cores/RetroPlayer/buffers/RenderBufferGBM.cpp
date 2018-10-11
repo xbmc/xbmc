@@ -12,6 +12,7 @@
 #include "utils/GBMBufferObject.h"
 #include "windowing/gbm/WinSystemGbmEGLContext.h"
 
+using namespace KODI::WINDOWING::GBM;
 using namespace KODI;
 using namespace RETRO;
 

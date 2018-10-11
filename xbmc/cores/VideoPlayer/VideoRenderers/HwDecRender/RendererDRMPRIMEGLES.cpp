@@ -13,6 +13,8 @@
 #include "utils/log.h"
 #include "windowing/gbm/WinSystemGbmGLESContext.h"
 
+using namespace KODI::WINDOWING::GBM;
+
 CRendererDRMPRIMEGLES::~CRendererDRMPRIMEGLES()
 {
   for (int i = 0; i < NUM_BUFFERS; ++i)

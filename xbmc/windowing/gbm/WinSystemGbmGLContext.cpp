@@ -19,7 +19,7 @@
 #include "platform/linux/XTimeUtils.h"
 #include "utils/log.h"
 
-using namespace KODI;
+using namespace KODI::WINDOWING::GBM;
 
 CWinSystemGbmGLContext::CWinSystemGbmGLContext()
 : CWinSystemGbmEGLContext(EGL_PLATFORM_GBM_MESA, "EGL_MESA_platform_gbm")
@@ -45,13 +45,13 @@ bool CWinSystemGbmGLContext::InitWindowSystem()
   }
 
   bool general, deepColor;
-  m_vaapiProxy.reset(GBM::VaapiProxyCreate());
-  GBM::VaapiProxyConfig(m_vaapiProxy.get(), m_eglContext.GetEGLDisplay());
-  GBM::VAAPIRegisterRender(m_vaapiProxy.get(), general, deepColor);
+  m_vaapiProxy.reset(VaapiProxyCreate());
+  VaapiProxyConfig(m_vaapiProxy.get(), m_eglContext.GetEGLDisplay());
+  VAAPIRegisterRender(m_vaapiProxy.get(), general, deepColor);
 
   if (general)
   {
-    GBM::VAAPIRegister(m_vaapiProxy.get(), deepColor);
+    VAAPIRegister(m_vaapiProxy.get(), deepColor);
   }
 
   return true;

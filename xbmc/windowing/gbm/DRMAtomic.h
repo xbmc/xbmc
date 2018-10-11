@@ -10,6 +10,13 @@
 
 #include "DRMUtils.h"
 
+namespace KODI
+{
+namespace WINDOWING
+{
+namespace GBM
+{
+
 class CDRMAtomic : public CDRMUtils
 {
 public:
@@ -30,3 +37,7 @@ private:
   bool m_active = true;
   drmModeAtomicReq *m_req = nullptr;
 };
+
+}
+}
+}
