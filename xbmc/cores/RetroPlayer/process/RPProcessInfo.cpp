@@ -12,7 +12,6 @@
 #include "cores/RetroPlayer/rendering/RenderContext.h"
 #include "cores/DataCacheCore.h"
 #include "windowing/GraphicContext.h"
-#include "rendering/RenderSystem.h"
 #include "settings/DisplaySettings.h"
 #include "settings/MediaSettings.h"
 #include "threads/SingleLock.h"

@@ -8,7 +8,6 @@
 
 #include "GameWindowFullScreenText.h"
 #include "video/windows/GUIWindowFullScreenDefines.h"
-#include "guilib/GUIDialog.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIWindow.h"
 
