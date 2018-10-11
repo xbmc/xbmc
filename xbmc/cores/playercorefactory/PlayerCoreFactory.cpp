@@ -8,7 +8,6 @@
 
 #include "PlayerCoreFactory.h"
 #include "threads/SingleLock.h"
-#include "cores/VideoPlayer/VideoPlayer.h"
 #include "cores/paplayer/PAPlayer.h"
 #include "cores/IPlayerCallback.h"
 #include "dialogs/GUIDialogContextMenu.h"

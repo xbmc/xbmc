@@ -10,7 +10,6 @@
 
 #include "utils/XBMCTinyXML.h"
 #include "cores/IPlayer.h"
-#include "PlayerCoreFactory.h"
 #include "cores/VideoPlayer/VideoPlayer.h"
 #include "cores/paplayer/PAPlayer.h"
 #include "cores/RetroPlayer/RetroPlayer.h"
