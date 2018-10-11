@@ -9,7 +9,6 @@
 #include "Database.h"
 #include "settings/AdvancedSettings.h"
 #include "filesystem/SpecialProtocol.h"
-#include "filesystem/File.h"
 #include "profiles/ProfileManager.h"
 #include "settings/SettingsComponent.h"
 #include "utils/log.h"
