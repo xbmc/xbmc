@@ -23,6 +23,46 @@ namespace
 #ifndef EGL_NO_CONFIG_KHR
 #define EGL_NO_CONFIG_KHR static_cast<EGLConfig>(0)
 #endif
+
+#define X(VAL) std::make_pair(VAL, #VAL)
+std::array<std::pair<EGLint, const char*>, 32> eglAttributes =
+{
+  // please keep attributes in accordance to:
+  // https://www.khronos.org/registry/EGL/sdk/docs/man/html/eglGetConfigAttrib.xhtml
+  X(EGL_ALPHA_SIZE),
+  X(EGL_ALPHA_MASK_SIZE),
+  X(EGL_BIND_TO_TEXTURE_RGB),
+  X(EGL_BIND_TO_TEXTURE_RGBA),
+  X(EGL_BLUE_SIZE),
+  X(EGL_BUFFER_SIZE),
+  X(EGL_COLOR_BUFFER_TYPE),
+  X(EGL_CONFIG_CAVEAT),
+  X(EGL_CONFIG_ID),
+  X(EGL_CONFORMANT),
+  X(EGL_DEPTH_SIZE),
+  X(EGL_GREEN_SIZE),
+  X(EGL_LEVEL),
+  X(EGL_LUMINANCE_SIZE),
+  X(EGL_MAX_PBUFFER_WIDTH),
+  X(EGL_MAX_PBUFFER_HEIGHT),
+  X(EGL_MAX_PBUFFER_PIXELS),
+  X(EGL_MAX_SWAP_INTERVAL),
+  X(EGL_MIN_SWAP_INTERVAL),
+  X(EGL_NATIVE_RENDERABLE),
+  X(EGL_NATIVE_VISUAL_ID),
+  X(EGL_NATIVE_VISUAL_TYPE),
+  X(EGL_RED_SIZE),
+  X(EGL_RENDERABLE_TYPE),
+  X(EGL_SAMPLE_BUFFERS),
+  X(EGL_SAMPLES),
+  X(EGL_STENCIL_SIZE),
+  X(EGL_SURFACE_TYPE),
+  X(EGL_TRANSPARENT_TYPE),
+  X(EGL_TRANSPARENT_RED_VALUE),
+  X(EGL_TRANSPARENT_GREEN_VALUE),
+  X(EGL_TRANSPARENT_BLUE_VALUE)
+};
+#undef X
 }
 
 std::set<std::string> CEGLUtils::GetClientExtensions()
@@ -224,6 +264,18 @@ bool CEGLContextUtils::ChooseConfig(EGLint renderableType, EGLint visualId)
 
     if (visualId == id)
       break;
+  }
+
+  CLog::Log(LOGDEBUG, "EGL Config Attributes:");
+
+  for (const auto &eglAttribute : eglAttributes)
+  {
+    EGLint value{0};
+    if (eglGetConfigAttrib(m_eglDisplay, m_eglConfig, eglAttribute.first, &value) != EGL_TRUE)
+      CEGLUtils::LogError(StringUtils::Format("failed to query EGL attibute %s", eglAttribute.second));
+
+    // we only need to print the hex value if it's an actual EGL define
+    CLog::Log(LOGDEBUG, "  %s: %s", eglAttribute.second, (value >= 0x3000 && value <= 0x3200) ? StringUtils::Format("0x%04x", value) : StringUtils::Format("%d", value));
   }
 
   return true;
