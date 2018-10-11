@@ -36,7 +36,6 @@
 #include "URL.h"
 #include "utils/Variant.h"
 #include "utils/FileExtensionProvider.h"
-#include "settings/AdvancedSettings.h"
 #include "messaging/helpers/DialogOKHelper.h"
 
 using namespace KODI::MESSAGING;
