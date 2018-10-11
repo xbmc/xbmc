@@ -21,7 +21,7 @@ macro(add_cpack_workaround target version ext)
 
   add_custom_command(TARGET addon-package POST_BUILD
                      COMMAND ${CMAKE_COMMAND} -E make_directory ${PACKAGE_DIR}
-                     COMMAND ${CMAKE_COMMAND} -E copy ${CPACK_PACKAGE_DIRECTORY}/addon-${target}-${version}.${ext} ${PACKAGE_DIR}/${target}-${version}.${ext})
+                     COMMAND ${CMAKE_COMMAND} -E copy ${CPACK_PACKAGE_DIRECTORY}/addon-${target}-${version}-${PLATFORM_TAG}.${ext} ${PACKAGE_DIR}/${target}+${PLATFORM_TAG}/${target}-${version}.${ext})
 endmacro()
 
 # Grab the version from a given add-on's addon.xml
@@ -187,7 +187,6 @@ macro (build_addon target prefix libs)
   # if there's an addon.xml.in we need to generate the addon.xml
   if(EXISTS ${PROJECT_SOURCE_DIR}/${target}/addon.xml.in)
     set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS ${PROJECT_SOURCE_DIR}/${target}/addon.xml.in)
-    set(PLATFORM ${CORE_SYSTEM_NAME})
 
     file(READ ${PROJECT_SOURCE_DIR}/${target}/addon.xml.in addon_file)
 
@@ -199,6 +198,9 @@ macro (build_addon target prefix libs)
       endif()
     endif()
 
+    # TODO: remove this hack after v18
+    string(REPLACE "<platform>\@PLATFORM\@</platform>" "<platform>@PLATFORM_TAG@</platform>" addon_file "${addon_file}")
+
     string(CONFIGURE "${addon_file}" addon_file_conf @ONLY)
     file(GENERATE OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${target}/addon.xml CONTENT "${addon_file_conf}")
     if(${APP_NAME_UC}_BUILD_DIR)
@@ -209,7 +211,6 @@ macro (build_addon target prefix libs)
   # if there's an settings.xml.in we need to generate the settings.xml
   if(EXISTS ${PROJECT_SOURCE_DIR}/${target}/resources/settings.xml.in)
     set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS ${PROJECT_SOURCE_DIR}/${target}/resources/settings.xml.in)
-    set(PLATFORM ${CORE_SYSTEM_NAME})
 
     file(READ ${PROJECT_SOURCE_DIR}/${target}/resources/settings.xml.in settings_file)
     string(CONFIGURE "${settings_file}" settings_file_conf @ONLY)
@@ -234,10 +235,10 @@ macro (build_addon target prefix libs)
     endif()
     set(CPACK_ARCHIVE_COMPONENT_INSTALL ON)
     set(CPACK_COMPONENTS_IGNORE_GROUPS 1)
-    list(APPEND CPACK_COMPONENTS_ALL ${target}-${${prefix}_VERSION})
+    list(APPEND CPACK_COMPONENTS_ALL ${target}-${${prefix}_VERSION}-${PLATFORM_TAG})
     # Pack files together to create an archive
     install(DIRECTORY ${target} ${CMAKE_CURRENT_BINARY_DIR}/${target} DESTINATION ./
-                                COMPONENT ${target}-${${prefix}_VERSION}
+                                COMPONENT ${target}-${${prefix}_VERSION}-${PLATFORM_TAG}
                                 REGEX ".+\\.xml\\.in(clude)?$" EXCLUDE)
     if(WIN32)
       if(NOT CPACK_PACKAGE_DIRECTORY)
@@ -256,24 +257,24 @@ macro (build_addon target prefix libs)
       if(${prefix}_SOURCES)
         # install the generated DLL file
         install(PROGRAMS ${LIBRARY_LOCATION} DESTINATION ${target}
-                COMPONENT ${target}-${${prefix}_VERSION})
+                COMPONENT ${target}-${${prefix}_VERSION}-${PLATFORM_TAG})
 
         # for debug builds also install the PDB file
         install(FILES $<TARGET_PDB_FILE:${target}> DESTINATION ${target}
                 CONFIGURATIONS Debug RelWithDebInfo
-                COMPONENT ${target}-${${prefix}_VERSION})
+                COMPONENT ${target}-${${prefix}_VERSION}-${PLATFORM_TAG})
       endif()
       if(${prefix}_CUSTOM_BINARY)
         install(FILES ${LIBRARY_LOCATION} DESTINATION ${target} RENAME ${LIBRARY_FILENAME}
-                COMPONENT ${target}-${${prefix}_VERSION})
+                COMPONENT ${target}-${${prefix}_VERSION}-${PLATFORM_TAG})
       endif()
       if(${prefix}_CUSTOM_DATA)
         install(DIRECTORY ${${prefix}_CUSTOM_DATA} DESTINATION ${target}/resources
-                COMPONENT ${target}-${${prefix}_VERSION})
+                COMPONENT ${target}-${${prefix}_VERSION}-${PLATFORM_TAG})
       endif()
       if(${prefix}_ADDITIONAL_BINARY)
         install(FILES ${${prefix}_ADDITIONAL_BINARY} DESTINATION ${target}
-                COMPONENT ${target}-${${prefix}_VERSION})
+                COMPONENT ${target}-${${prefix}_VERSION}-${PLATFORM_TAG})
       endif()
     else() # NOT WIN32
       if(NOT CPACK_PACKAGE_DIRECTORY)
@@ -281,11 +282,11 @@ macro (build_addon target prefix libs)
       endif()
       if(${prefix}_SOURCES)
         install(TARGETS ${target} DESTINATION ${target}
-                COMPONENT ${target}-${${prefix}_VERSION})
+                COMPONENT ${target}-${${prefix}_VERSION}-${PLATFORM_TAG})
       endif()
       if(${prefix}_CUSTOM_BINARY)
         install(FILES ${LIBRARY_LOCATION} DESTINATION ${target} RENAME ${LIBRARY_FILENAME}
-                COMPONENT ${target}-${${prefix}_VERSION})
+                COMPONENT ${target}-${${prefix}_VERSION}-${PLATFORM_TAG})
       endif()
       if(${prefix}_CUSTOM_DATA)
         install(DIRECTORY ${${prefix}_CUSTOM_DATA} DESTINATION ${target}/resources)
