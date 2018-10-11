@@ -30,7 +30,6 @@
 #include "settings/MediaSourceSettings.h"
 #include "Application.h"
 #include "music/MusicDatabase.h"
-#include "addons/AudioEncoder.h"
 #include "addons/binary-addons/BinaryAddonBase.h"
 #include "messaging/helpers/DialogOKHelper.h"
 
