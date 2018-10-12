@@ -9,7 +9,6 @@
 #include "SpecialProtocolDirectory.h"
 #include "SpecialProtocol.h"
 #include "Directory.h"
-#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "FileItem.h"
 #include "URL.h"

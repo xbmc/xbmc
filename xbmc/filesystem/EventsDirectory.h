@@ -9,7 +9,6 @@
 #pragma once
 
 #include "FileItem.h"
-#include "events/IEvent.h"
 #include "filesystem/IDirectory.h"
 
 #define PROPERTY_EVENT_IDENTIFIER  "Event.ID"

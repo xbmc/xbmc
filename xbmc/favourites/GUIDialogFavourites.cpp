@@ -16,7 +16,6 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "input/Key.h"
-#include "filesystem/File.h"
 #include "FileItem.h"
 #include "guilib/LocalizeStrings.h"
 #include "storage/MediaManager.h"

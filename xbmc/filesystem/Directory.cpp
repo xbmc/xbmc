@@ -21,7 +21,6 @@
 #include "Application.h"
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogBusy.h"
-#include "threads/SingleLock.h"
 #include "utils/URIUtils.h"
 #include "URL.h"
 #include "PasswordManager.h"

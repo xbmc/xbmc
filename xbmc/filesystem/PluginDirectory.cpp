@@ -25,7 +25,6 @@
 #include "FileItem.h"
 #include "video/VideoInfoTag.h"
 #include "utils/log.h"
-#include "utils/JobManager.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "messaging/ApplicationMessenger.h"
