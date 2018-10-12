@@ -314,7 +314,7 @@ void CPVRActionListener::OnSettingAction(std::shared_ptr<const CSetting> setting
   }
   else if (settingId == CSettings::SETTING_PVRCLIENT_MENUHOOK)
   {
-    CServiceBroker::GetPVRManager().GUIActions()->ProcessMenuHooks(CFileItemPtr());
+    CServiceBroker::GetPVRManager().GUIActions()->ProcessSettingsMenuHooks();
   }
 }
 

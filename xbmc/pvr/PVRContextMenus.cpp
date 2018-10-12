@@ -11,6 +11,7 @@
 #include "ContextMenuItem.h"
 #include "ServiceBroker.h"
 #include "addons/PVRClient.h"
+#include "addons/PVRClientMenuHooks.h"
 #include "guilib/GUIWindowManager.h"
 #include "utils/URIUtils.h"
 
@@ -539,37 +540,12 @@ namespace PVR
 
     bool PVRClientMenuHook::IsVisible(const CFileItem &item) const
     {
-      const CPVRClientPtr client = CServiceBroker::GetPVRManager().GetClient(item);
-      if (!client)
-        return false;
-
-      PVR_MENUHOOK_CAT cat = PVR_MENUHOOK_UNKNOWN;
-
-      if (item.HasPVRChannelInfoTag())
-        cat = PVR_MENUHOOK_CHANNEL;
-      else if (item.HasEPGInfoTag())
-        cat = PVR_MENUHOOK_EPG;
-      else if (item.HasPVRTimerInfoTag() &&
-               !URIUtils::PathEquals(item.GetPath(), CPVRTimersPath::PATH_ADDTIMER))
-        cat = PVR_MENUHOOK_TIMER;
-      else if (item.HasPVRRecordingInfoTag())
-      {
-        const CPVRRecordingPtr recording = item.GetPVRRecordingInfoTag();
-        if (recording->IsDeleted())
-          cat = PVR_MENUHOOK_DELETED_RECORDING;
-        else
-          cat = PVR_MENUHOOK_RECORDING;
-      }
-
-      if (cat == PVR_MENUHOOK_UNKNOWN)
-        return false;
-
-      return client->HasMenuHooks(cat);
+      return !CServiceBroker::GetPVRManager().GUIActions()->GetItemMenuHooks(item).empty();
     }
 
     bool PVRClientMenuHook::Execute(const CFileItemPtr &item) const
     {
-      return CServiceBroker::GetPVRManager().GUIActions()->ProcessMenuHooks(item);
+      return CServiceBroker::GetPVRManager().GUIActions()->ProcessItemMenuHooks(item);
     }
 
   } // namespace CONEXTMENUITEM

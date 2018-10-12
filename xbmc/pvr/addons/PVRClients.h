@@ -160,6 +160,8 @@ namespace PVR
      */
     int EnabledClientAmount(void) const;
 
+    //@}
+
     /*! @name general methods */
     //@{
 

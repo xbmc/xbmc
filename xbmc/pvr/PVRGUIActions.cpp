@@ -12,6 +12,7 @@
 #include "FileItem.h"
 #include "ServiceBroker.h"
 #include "addons/PVRClient.h"
+#include "addons/PVRClientMenuHooks.h"
 #include "cores/DataCacheCore.h"
 #include "dialogs/GUIDialogBusy.h"
 #include "dialogs/GUIDialogKaiToast.h"
@@ -1377,93 +1378,89 @@ namespace PVR
     return true;
   }
 
-  bool CPVRGUIActions::ProcessMenuHooks(const CFileItemPtr &item)
+  std::vector<CPVRClientMenuHook> CPVRGUIActions::GetItemMenuHooks(const CFileItem &item) const
   {
-    if (!CServiceBroker::GetPVRManager().IsStarted())
+    std::vector<CPVRClientMenuHook> itemHooks;
+
+    const CPVRClientPtr client = CServiceBroker::GetPVRManager().GetClient(item);
+    if (client)
+    {
+      const std::shared_ptr<CPVRClientMenuHooks> hooks = client->GetMenuHooks();
+
+      if (item.IsEPG())
+        itemHooks = hooks->GetEpgHooks();
+      else if (item.IsPVRChannel())
+        itemHooks = hooks->GetChannelHooks();
+      else if (item.IsDeletedPVRRecording())
+        itemHooks = hooks->GetDeletedRecordingHooks();
+      else if (item.IsUsablePVRRecording())
+        itemHooks = hooks->GetRecordingHooks();
+      else if (item.IsPVRTimer())
+        itemHooks = hooks->GetTimerHooks();
+    }
+
+    return itemHooks;
+  }
+
+  bool CPVRGUIActions::ProcessItemMenuHooks(const CFileItemPtr &item)
+  {
+    const CPVRClientPtr client = CServiceBroker::GetPVRManager().GetClient(*item);
+    if (!client)
       return false;
 
-    int iClientID = -1;
-    PVR_MENUHOOK_CAT menuCategory = PVR_MENUHOOK_SETTING;
+    const std::shared_ptr<CPVRClientMenuHooks> hooks = client->GetMenuHooks();
 
-    if (item)
+    const std::vector<CPVRClientMenuHook> itemHooks = GetItemMenuHooks(*item);
+    if (itemHooks.empty())
+      return true; // no matching hooks, no error
+
+    CGUIDialogSelect* pDialog= CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
+    if (!pDialog)
     {
-      if (item->IsEPG())
+      CLog::LogF(LOGERROR, "Unable to get WINDOW_DIALOG_SELECT!");
+      return false;
+    }
+
+    pDialog->Reset();
+    pDialog->SetHeading(CVariant{19196}); // "PVR client specific actions"
+
+    for (const auto& hook : itemHooks)
+    {
+      pDialog->Add(hook.GetLabel());
+    }
+
+    pDialog->Open();
+
+    int selection = pDialog->GetSelectedItem();
+    if (selection < 0)
+      return true; // cancelled
+
+    auto selectedHook = itemHooks.begin();
+    std::advance(selectedHook, selection);
+    return client->CallMenuHook(*selectedHook, item) == PVR_ERROR_NO_ERROR;
+  }
+
+  bool CPVRGUIActions::ProcessSettingsMenuHooks()
+  {
+    CPVRClientMap clients;
+    CServiceBroker::GetPVRManager().Clients()->GetCreatedClients(clients);
+
+    std::vector<std::pair<CPVRClientPtr, CPVRClientMenuHook>> settingsHooks;
+    for (const auto& client : clients)
+    {
+      for (const auto& hook : client.second->GetMenuHooks()->GetSettingsHooks())
       {
-        if (item->GetEPGInfoTag()->HasChannel())
-        {
-          iClientID = item->GetEPGInfoTag()->Channel()->ClientID();
-          menuCategory = PVR_MENUHOOK_EPG;
-        }
-        else
-          return false;
-      }
-      else if (item->IsPVRChannel())
-      {
-        iClientID = item->GetPVRChannelInfoTag()->ClientID();
-        menuCategory = PVR_MENUHOOK_CHANNEL;
-      }
-      else if (item->IsDeletedPVRRecording())
-      {
-        iClientID = item->GetPVRRecordingInfoTag()->m_iClientId;
-        menuCategory = PVR_MENUHOOK_DELETED_RECORDING;
-      }
-      else if (item->IsUsablePVRRecording())
-      {
-        iClientID = item->GetPVRRecordingInfoTag()->m_iClientId;
-        menuCategory = PVR_MENUHOOK_RECORDING;
-      }
-      else if (item->IsPVRTimer())
-      {
-        iClientID = item->GetPVRTimerInfoTag()->m_iClientId;
-        menuCategory = PVR_MENUHOOK_TIMER;
+        settingsHooks.emplace_back(std::make_pair(client.second, hook));
       }
     }
 
-    // get client id
-    if (iClientID < 0 && menuCategory == PVR_MENUHOOK_SETTING)
-    {
-      CPVRClientMap clients;
-      CServiceBroker::GetPVRManager().Clients()->GetCreatedClients(clients);
+    if (settingsHooks.empty())
+      return true;  // no settings hooks, no error
 
-      if (clients.size() == 1)
-      {
-        iClientID = clients.begin()->first;
-      }
-      else if (clients.size() > 1)
-      {
-        // have user select client
-        CGUIDialogSelect* pDialog= CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
-        if (!pDialog)
-        {
-          CLog::LogF(LOGERROR, "Unable to get WINDOW_DIALOG_SELECT!");
-          return false;
-        }
+    auto selectedHook = settingsHooks.begin();
 
-        pDialog->Reset();
-        pDialog->SetHeading(CVariant{19196}); // "PVR client specific actions"
-
-        for (const auto client : clients)
-        {
-          pDialog->Add(client.second->GetBackendName());
-        }
-
-        pDialog->Open();
-
-        int selection = pDialog->GetSelectedItem();
-        if (selection >= 0)
-        {
-          auto client = clients.begin();
-          std::advance(client, selection);
-          iClientID = client->first;
-        }
-      }
-    }
-
-    if (iClientID < 0)
-      iClientID = CServiceBroker::GetPVRManager().GetPlayingClientID();
-
-    CPVRClientPtr client;
-    if (CServiceBroker::GetPVRManager().Clients()->GetCreatedClient(iClientID, client) && client->HasMenuHooks(menuCategory))
+    // if there is only one settings hook, execute it directly, otherwise let the user select
+    if (settingsHooks.size() > 1)
     {
       CGUIDialogSelect* pDialog= CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
       if (!pDialog)
@@ -1475,34 +1472,23 @@ namespace PVR
       pDialog->Reset();
       pDialog->SetHeading(CVariant{19196}); // "PVR client specific actions"
 
-      PVR_MENUHOOKS& hooks = client->GetMenuHooks();
-      std::vector<int> hookIDs;
-      unsigned int i = 0;
-
-      for (const auto& hook : hooks)
+      for (const auto& hook : settingsHooks)
       {
-        if (hook.category == menuCategory || hook.category == PVR_MENUHOOK_ALL)
-        {
-          pDialog->Add(g_localizeStrings.GetAddonString(client->ID(), hook.iLocalizedStringId));
-          hookIDs.emplace_back(i);
-        }
-        ++i;
+        if (clients.size() == 1)
+          pDialog->Add(hook.second.GetLabel());
+        else
+          pDialog->Add(hook.first->GetBackendName() + ": " + hook.second.GetLabel());
       }
 
-      int selection = 0;
-      if (!hookIDs.empty())
-      {
-        pDialog->Open();
-        selection = pDialog->GetSelectedItem();
-      }
+      pDialog->Open();
 
-      if (selection >= 0)
-        client->CallMenuHook(hooks.at(hookIDs.at(selection)), item);
-      else
-        return false;
+      int selection = pDialog->GetSelectedItem();
+      if (selection < 0)
+        return true; // cancelled
+
+      std::advance(selectedHook, selection);
     }
-
-    return true;
+    return selectedHook->first->CallMenuHook(selectedHook->second, CFileItemPtr()) == PVR_ERROR_NO_ERROR;
   }
 
   bool CPVRGUIActions::ResetPVRDatabase(bool bResetEPGOnly)

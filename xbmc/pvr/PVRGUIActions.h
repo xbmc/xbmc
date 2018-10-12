@@ -40,6 +40,8 @@ namespace PVR
     SUCCESS
   };
 
+  class CPVRClientMenuHook;
+
   class CPVRChannelSwitchingInputHandler : public CPVRChannelNumberInputHandler
   {
   public:
@@ -306,11 +308,24 @@ namespace PVR
     bool IsRunningChannelScan() const { return m_bChannelScanRunning; }
 
     /*!
-     * @brief Open selection and progress PVR actions.
-     * @param item The selected file item for which the hook was called.
+     * @brief Get client-specific item actions
+     * @param item The item for that the hooks shall be obtained.
+     * @return the actions.
+     */
+    std::vector<CPVRClientMenuHook> GetItemMenuHooks(const CFileItem &item) const;
+
+    /*!
+     * @brief Select and invoke client-specific item actions
+     * @param item The item for that the hooks shall be processed.
      * @return true on success, false otherwise.
      */
-    bool ProcessMenuHooks(const CFileItemPtr &item);
+    bool ProcessItemMenuHooks(const CFileItemPtr &item);
+
+    /*!
+     * @brief Select and invoke client-specific settings actions
+     * @return true on success, false otherwise.
+     */
+    bool ProcessSettingsMenuHooks();
 
     /*!
      * @brief Reset the TV database to it's initial state and delete all the data.
