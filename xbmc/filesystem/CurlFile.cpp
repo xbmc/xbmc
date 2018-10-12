@@ -1220,7 +1220,7 @@ bool CCurlFile::Exists(const CURL& url)
 
   SetCommonOptions(m_state);
   SetRequestHeaders(m_state);
-  g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_TIMEOUT, 5);
+  g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_TIMEOUT, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_curlconnecttimeout);
   g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_NOBODY, 1);
   g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_WRITEDATA, NULL); /* will cause write failure*/
 
@@ -1235,16 +1235,49 @@ bool CCurlFile::Exists(const CURL& url)
   }
 
   CURLcode result = g_curlInterface.easy_perform(m_state->m_easyHandle);
-  g_curlInterface.easy_release(&m_state->m_easyHandle, NULL);
 
   if (result == CURLE_WRITE_ERROR || result == CURLE_OK)
+  {
+    g_curlInterface.easy_release(&m_state->m_easyHandle, NULL);
     return true;
+  }
 
   if (result == CURLE_HTTP_RETURNED_ERROR)
   {
     long code;
     if(g_curlInterface.easy_getinfo(m_state->m_easyHandle, CURLINFO_RESPONSE_CODE, &code) == CURLE_OK && code != 404 )
-      CLog::Log(LOGERROR, "CCurlFile::Exists - Failed: HTTP returned error %ld for %s", code, url.GetRedacted().c_str());
+    {
+      if (code == 405)
+      {
+        // If we get a Method Not Allowed response, retry with a GET Request
+        g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_NOBODY, 0);
+        
+        g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_FILETIME, 1);
+        g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_XFERINFOFUNCTION, transfer_abort_callback);
+        g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_NOPROGRESS, 0);
+        
+        curl_slist *list = NULL;
+        list = g_curlInterface.slist_append(list, "Range: bytes=0-1"); /* try to only request 1 byte */
+        g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_HTTPHEADER, list);
+        
+        CURLcode result = g_curlInterface.easy_perform(m_state->m_easyHandle);
+        g_curlInterface.slist_free_all(list);
+        
+        if (result == CURLE_WRITE_ERROR || result == CURLE_OK)
+        {
+          g_curlInterface.easy_release(&m_state->m_easyHandle, NULL);
+          return true;
+        }
+        
+        if (result == CURLE_HTTP_RETURNED_ERROR)
+        {
+          if (g_curlInterface.easy_getinfo(m_state->m_easyHandle, CURLINFO_RESPONSE_CODE, &code) == CURLE_OK && code != 404 )
+            CLog::Log(LOGERROR, "CCurlFile::Exists - Failed: HTTP returned error %ld for %s", code, url.GetRedacted().c_str());
+        }
+      }
+      else
+        CLog::Log(LOGERROR, "CCurlFile::Exists - Failed: HTTP returned error %ld for %s", code, url.GetRedacted().c_str());
+    }
   }
   else if (result != CURLE_REMOTE_FILE_NOT_FOUND && result != CURLE_FTP_COULDNT_RETR_FILE)
   {
@@ -1252,6 +1285,7 @@ bool CCurlFile::Exists(const CURL& url)
   }
 
   errno = ENOENT;
+  g_curlInterface.easy_release(&m_state->m_easyHandle, NULL);
   return false;
 }
 
