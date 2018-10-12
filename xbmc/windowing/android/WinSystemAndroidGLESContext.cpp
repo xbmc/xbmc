@@ -32,10 +32,8 @@ bool CWinSystemAndroidGLESContext::InitWindowSystem()
     return false;
   }
 
-  const EGLint contextAttribs[] =
-  {
-    EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE
-  };
+  CEGLAttributesVec contextAttribs;
+  contextAttribs.Add({{EGL_CONTEXT_CLIENT_VERSION, 2}});
 
   if (!m_pGLContext.CreateContext(contextAttribs))
   {
