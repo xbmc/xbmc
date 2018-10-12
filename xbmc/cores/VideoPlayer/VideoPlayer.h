@@ -26,8 +26,6 @@
 #include "Edl.h"
 #include "FileItem.h"
 #include "threads/SystemClock.h"
-#include "threads/Thread.h"
-#include "utils/StreamDetails.h"
 #include "guilib/DispResource.h"
 #include <unordered_map>
 

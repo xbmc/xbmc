@@ -13,10 +13,11 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "cores/IPlayer.h"
-#include "rendering/RenderSystem.h"
 #ifdef TARGET_WINDOWS
 #include "rendering/dx/DeviceResources.h"
 #include "rendering/dx/RenderContext.h"
+#else
+#include "rendering/RenderSystem.h"
 #endif
 
 extern "C" {

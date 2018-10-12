@@ -16,7 +16,6 @@
 #include "windowing/Resolution.h"
 #include "threads/CriticalSection.h"
 #include "cores/VideoSettings.h"
-#include "OverlayRenderer.h"
 #include "DebugRenderer.h"
 #include <deque>
 #include <map>

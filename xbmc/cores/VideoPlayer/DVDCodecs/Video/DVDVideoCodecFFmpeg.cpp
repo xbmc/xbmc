@@ -8,11 +8,9 @@
 
 #include "system.h"
 #include "DVDVideoCodecFFmpeg.h"
-#include "DVDDemuxers/DVDDemux.h"
 #include "DVDStreamInfo.h"
 #include "cores/VideoPlayer/Interface/Addon/TimingConstants.h"
 #include "DVDCodecs/DVDCodecs.h"
-#include "DVDCodecs/DVDCodecUtils.h"
 #include "DVDCodecs/DVDFactoryCodec.h"
 #include "ServiceBroker.h"
 #include "utils/CPUInfo.h"
@@ -22,7 +20,6 @@
 #include "cores/VideoSettings.h"
 #include "utils/log.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
-#include "cores/VideoPlayer/VideoRenderers/RenderInfo.h"
 #include "utils/StringUtils.h"
 #include <memory>
 

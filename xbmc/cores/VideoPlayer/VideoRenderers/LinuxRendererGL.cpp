@@ -33,6 +33,7 @@
 #include "utils/StringUtils.h"
 #include "RenderCapture.h"
 #include "cores/IPlayer.h"
+#include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDCodecUtils.h"
 #include "cores/FFmpeg.h"
 

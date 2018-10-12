@@ -14,6 +14,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "DVDCodecs/DVDCodecs.h"
+#include "cores/AudioEngine/Utils/AEUtil.h"
 
 extern "C" {
 #include "libavutil/opt.h"

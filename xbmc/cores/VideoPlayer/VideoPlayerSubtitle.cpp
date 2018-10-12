@@ -10,7 +10,6 @@
 #include "DVDCodecs/Overlay/DVDOverlay.h"
 #include "DVDCodecs/Overlay/DVDOverlaySpu.h"
 #include "DVDCodecs/Overlay/DVDOverlayCodec.h"
-#include "DVDClock.h"
 #include "DVDSubtitles/DVDSubtitleParser.h"
 #include "DVDCodecs/DVDFactoryCodec.h"
 #include "cores/VideoPlayer/Interface/Addon/DemuxPacket.h"

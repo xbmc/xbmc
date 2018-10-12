@@ -19,8 +19,6 @@
 #include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
 #include "utils/MathUtils.h"
-#include "utils/SystemInfo.h"
-#include "settings/AdvancedSettings.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFlags.h"
 
 
