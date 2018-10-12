@@ -136,6 +136,20 @@ int CPlayListPlayer::GetNextSong(int offset) const
   return song;
 }
 
+void CPlayListPlayer::SetSongResume(int iPlaylist, int iIndex, unsigned int iOffset)
+{
+  if (iPlaylist == PLAYLIST_NONE)
+    return;
+
+  const CPlayList& playlist = GetPlaylist(iPlaylist);
+  if (playlist.size() <= 0 || playlist.size() < iIndex + 1 )
+    return;
+
+  playlist[iIndex]->m_lStartOffset = iOffset;
+
+  return;
+}
+
 int CPlayListPlayer::GetNextSong()
 {
   if (m_iCurrentPlayList == PLAYLIST_NONE)

@@ -91,6 +91,8 @@ public:
    */
   int GetNextSong(int offset) const;
 
+  void SetSongResume(int iPlaylist, int iIndex, unsigned int iOffset);
+
   /*! \brief Set the active playlist
    \param playList Values can be PLAYLIST_NONE, PLAYLIST_MUSIC or PLAYLIST_VIDEO
    \sa GetCurrentPlaylist
