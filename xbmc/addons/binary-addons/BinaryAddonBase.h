@@ -13,7 +13,6 @@
 
 #include "addons/AddonInfo.h"
 #include "threads/CriticalSection.h"
-#include "utils/StringUtils.h"
 
 #include <memory>
 #include <string>

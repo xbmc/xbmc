@@ -14,7 +14,6 @@
 
 #include "Addon.h"
 #include "utils/Digest.h"
-#include "utils/Job.h"
 #include "utils/ProgressJob.h"
 
 struct cp_cfg_element_t;

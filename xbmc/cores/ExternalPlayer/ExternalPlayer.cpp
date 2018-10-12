@@ -8,7 +8,6 @@
 
 #include "threads/SystemClock.h"
 #include "CompileInfo.h"
-#include "threads/SingleLock.h"
 #include "ExternalPlayer.h"
 #include "windowing/WinSystem.h"
 #include "dialogs/GUIDialogOK.h"
@@ -27,7 +26,6 @@
 #include "ServiceBroker.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
 #include "cores/DataCacheCore.h"
-#include "input/InputManager.h"
 #if defined(TARGET_WINDOWS)
   #include "utils/CharsetConverter.h"
   #include "Windows.h"

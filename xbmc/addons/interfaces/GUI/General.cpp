@@ -35,7 +35,6 @@
 
 #include "ServiceBroker.h"
 #include "addons/binary-addons/AddonDll.h"
-#include "input/Key.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "utils/log.h"

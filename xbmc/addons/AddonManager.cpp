@@ -15,7 +15,6 @@
 #include "events/NotificationEvent.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
-#include "settings/AdvancedSettings.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"

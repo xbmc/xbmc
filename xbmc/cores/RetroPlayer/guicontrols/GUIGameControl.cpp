@@ -10,17 +10,11 @@
 #include "GUIRenderSettings.h"
 #include "cores/RetroPlayer/guibridge/GUIGameRenderManager.h"
 #include "cores/RetroPlayer/guibridge/GUIRenderHandle.h"
-#include "cores/RetroPlayer/rendering/RenderSettings.h"
-#include "cores/RetroPlayer/rendering/RenderVideoSettings.h"
-#include "games/GameServices.h"
-#include "windowing/GraphicContext.h"
-#include "utils/TransformMatrix.h"
 #include "settings/GameSettings.h"
 #include "settings/MediaSettings.h"
 #include "utils/Geometry.h"
 #include "utils/StringUtils.h"
 #include "Application.h"
-#include "ApplicationPlayer.h"
 #include "ServiceBroker.h"
 
 #include <sstream>

@@ -12,6 +12,7 @@
 #include <map>
 #include <string>
 #include <vector>
+#include "Utils/AEAudioFormat.h"
 #include "Utils/AEDeviceInfo.h"
 
 class IAESink;

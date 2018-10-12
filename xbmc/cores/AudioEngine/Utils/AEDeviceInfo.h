@@ -10,7 +10,6 @@
 
 #include <string>
 #include <vector>
-#include "AEAudioFormat.h"
 #include "cores/AudioEngine/Utils/AEChannelInfo.h"
 #include "cores/AudioEngine/Utils/AEStreamInfo.h"
 

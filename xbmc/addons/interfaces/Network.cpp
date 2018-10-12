@@ -10,7 +10,6 @@
 
 #include "addons/kodi-addon-dev-kit/include/kodi/Network.h"
 
-#include "PasswordManager.h"
 #include "URL.h"
 #include "addons/binary-addons/AddonDll.h"
 #include "network/DNSNameCache.h"

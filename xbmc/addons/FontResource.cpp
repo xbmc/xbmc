@@ -8,7 +8,6 @@
 #include "FontResource.h"
 
 #include "AddonManager.h"
-#include "dialogs/GUIDialogKaiToast.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/GUIWindowManager.h"

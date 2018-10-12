@@ -7,8 +7,6 @@
  */
 
 #include "GUIViewStateAddonBrowser.h"
-#include "addons/Addon.h"
-#include "addons/AddonManager.h"
 #include "FileItem.h"
 #include "filesystem/File.h"
 #include "windowing/GraphicContext.h"

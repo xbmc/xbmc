@@ -14,7 +14,6 @@
 #include <string>
 #include <vector>
 
-#include "addons/Addon.h"
 #include "addons/binary-addons/AddonDll.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
 

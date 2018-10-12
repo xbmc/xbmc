@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include "utils/Observer.h"
 #include "Addon.h"
 #include "AddonEvents.h"
 #include "threads/CriticalSection.h"

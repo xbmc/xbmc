@@ -23,7 +23,6 @@
 #include "utils/CharsetConverter.h"
 #include "utils/StringUtils.h"
 #include "utils/XMLUtils.h"
-#include "URL.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/kodi_vfs_types.h"
 #include "filesystem/SpecialProtocol.h"
 
