@@ -750,6 +750,7 @@ bool CDRMUtils::CheckConnector(int connector_id)
   connectorcheck.connector = drmModeGetConnector(m_fd, connector_id);
   while (connectorcheck.connector->connection != DRM_MODE_CONNECTED  && retryCnt > 0)
   {
+    CLog::Log(LOGDEBUG, "CDRMUtils::%s - connector is disconnected", __FUNCTION__);
     retryCnt--;
     Sleep(1000);
     drmModeFreeConnector(connectorcheck.connector);
