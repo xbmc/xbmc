@@ -744,6 +744,7 @@
 							<param name="widget_header" value="$LOCALIZE[20094]"/>
 							<param name="widget_target" value="pictures"/>
 							<param name="list_id" value="4100"/>
+							<param name="icon_height" value="110"/>
 						</include>
 					</control>
 				</control>
