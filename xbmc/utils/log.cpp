@@ -57,9 +57,13 @@ CLog::~CLog() = default;
 void CLog::Close()
 {
   CSingleLock waitLock(m_critSec);
-  g_logState->m_platform.CloseLogFile();
-  g_logState->m_repeatLine.clear();
-  delete g_logState, g_logState = nullptr;
+
+  if (g_logState)
+  {
+    g_logState->m_platform.CloseLogFile();
+    g_logState->m_repeatLine.clear();
+    delete g_logState, g_logState = nullptr;
+  }
 }
 
 void CLog::LogString(int logLevel, std::string&& logString)
