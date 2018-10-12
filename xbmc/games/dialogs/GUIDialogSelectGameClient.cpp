@@ -23,7 +23,6 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "ServiceBroker.h"
-#include "URL.h"
 
 using namespace KODI;
 using namespace KODI::MESSAGING;

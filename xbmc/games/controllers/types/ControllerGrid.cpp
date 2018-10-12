@@ -8,7 +8,6 @@
 
 #include "ControllerGrid.h"
 #include "games/controllers/Controller.h"
-#include "games/controllers/ControllerTranslator.h"
 #include "utils/log.h"
 
 #include <algorithm>
