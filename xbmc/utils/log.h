@@ -13,7 +13,7 @@
 
 #include "commons/ilog.h"
 #include "utils/StringUtils.h"
-
+#include "threads/CriticalSection.h"
 
 class CLog
 {
@@ -102,4 +102,7 @@ protected:
   static void LogString(int logLevel, std::string&& logString);
   static void LogString(int logLevel, int component, std::string&& logString);
   static bool WriteLogString(int logLevel, const std::string& logString);
+
+private:
+  static CCriticalSection m_critSec;
 };
