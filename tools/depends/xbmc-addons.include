@@ -37,7 +37,15 @@ ifneq ($(TARBALLS_LOCATION),)
 endif
 
 ifneq ($(ADDON_SRC_PREFIX),)
-  SRC_OVERRIDE = -DADDON_SRC_PREFIX=$(ADDON_SRC_PREFIX)
+  CMAKE_EXTRA += -DADDON_SRC_PREFIX=$(ADDON_SRC_PREFIX)
+endif
+
+ifneq ($(ADDONS_DEFINITION_DIR),)
+  CMAKE_EXTRA += -DADDONS_DEFINITION_DIR=$(ADDONS_DEFINITION_DIR)
+endif
+
+ifneq ($(EXTRA_CMAKE_ARGS),)
+  CMAKE_EXTRA += $(EXTRA_CMAKE_ARGS)
 endif
 
 ifeq ($(PACKAGE),1)
@@ -67,7 +75,7 @@ ifeq ($(CROSS_COMPILING),yes)
 endif
 	cd $(PLATFORM); \
          $(CMAKE) -DCMAKE_INSTALL_PREFIX=$(INSTALL_PREFIX) $(CMAKE_EXTRA) \
-         $(TOOLCHAIN) $(SRC_OVERRIDE) \
+         $(TOOLCHAIN) \
          -DADDONS_TO_BUILD="$(ADDONS)" $(ADDON_PROJECT_DIR) -DBUILD_DIR=$(BUILDDIR)/$(PLATFORM)/build ;\
          for addon in $$($(MAKE) supported_addons | awk '/^ALL_ADDONS_BUILDING: .*$$/ { first = $$1; $$1 = ""; print $$0 }'); do \
            $(MAKE) $(MAKE_PACKAGE)$$addon && echo $$addon >> $(ADDON_PROJECT_DIR)/.success || echo $$addon >> $(ADDON_PROJECT_DIR)/.failure ;\
