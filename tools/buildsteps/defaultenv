@@ -119,12 +119,6 @@ function pathChanged ()
   local ret
   local checkPath
   ret="0"
-  #no optims in release builds!
-  if [ "$Configuration" == "Release" ]
-  then
-    echo "1"
-    return
-  fi
 
   checkPath="$1"
   if [ -e $checkPath/$PATH_CHANGE_REV_FILENAME ]
