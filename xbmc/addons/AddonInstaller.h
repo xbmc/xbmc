@@ -146,12 +146,11 @@ public:
 
   bool DoWork() override;
 
-  /*! \brief Find the add-on and itshash for the given add-on ID
+  /*! \brief Find the add-on and its repository for the given add-on ID
    *  \param addonID ID of the add-on to find
-   *  \param repoID ID of the repo to use
-   *  \param addon Add-on with the given add-on ID
-   *  \param hash Hash of the add-on
-   *  \return True if the add-on and its hash were found, false otherwise.
+   *  \param[out] repo the repository to use
+   *  \param[out] addon Add-on with the given add-on ID
+   *  \return True if the add-on and its repository were found, false otherwise.
    */
   static bool GetAddon(const std::string& addonID, ADDON::RepositoryPtr& repo, ADDON::AddonPtr& addon);
 

@@ -59,7 +59,7 @@ GAME_ERROR UnloadGame(void);
 /*!
  * \brief Get timing information about the loaded game
  *
- * \param info The info structure to fill
+ * \param[out] timing_info The info structure to fill
  *
  * \return the error, or GAME_ERROR_NO_ERROR if info was filled
  */
@@ -176,8 +176,9 @@ bool EnableMouse(bool enable, const game_controller* controller);
  * \brief Connect/disconnect a controller to a port on the virtual game console
  *
  * \param connect True to connect a controller, false to disconnect
- * \param address The address of the port
+ * \param port_address The address of the port
  * \param controller The controller info if connecting, or unused if disconnecting
+ * \return True if the \p controller was (dis-)connected to the port, false otherwise
  *
  * The address is a string that allows traversal of the controller topology.
  * It is formed by alternating port IDs and controller IDs separated by "/".

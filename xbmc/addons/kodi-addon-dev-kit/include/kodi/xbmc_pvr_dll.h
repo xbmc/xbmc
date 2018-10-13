@@ -316,7 +316,7 @@ extern "C"
   /*!
    * Set the last watched position of a recording on the backend.
    * @param recording The recording.
-   * @param position The last watched position in seconds
+   * @param lastplayedposition The last watched position in seconds
    * @return PVR_ERROR_NO_ERROR if the position has been stored successfully.
    * @remarks Required if bSupportsLastPlayedPosition is set to true.
    *          Return PVR_ERROR_NOT_IMPLEMENTED if this add-on won't provide this function.
@@ -483,7 +483,7 @@ extern "C"
 
   /*!
    * Get the stream properties for a recording from the backend.
-   * @param[in] channel The recording to get the stream properties for.
+   * @param[in] recording The recording to get the stream properties for.
    * @param[inout] properties in: an array for the properties to return, out: the properties required to play the stream.
    * @param[inout] iPropertiesCount in: the size of the properties array, out: the number of properties returned.
    * @return PVR_ERROR_NO_ERROR if the stream is available.

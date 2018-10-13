@@ -222,8 +222,7 @@ namespace ADDON
     /*! \brief Retrieve an element from a given configuration element
      \param base the base configuration element.
      \param path the path to the configuration element from the base element.
-     \param element [out] returned element.
-     \return true if the configuration element is present
+     \return a pointer to the retrieved element if it was found, nullptr otherwise
      */
     cp_cfg_element_t *GetExtElement(cp_cfg_element_t *base, const char *path);
 

@@ -456,7 +456,7 @@ namespace PVR
 
     /*!
      * @brief Request the list of all group members from the backend.
-     * @param groups The group to get the members for.
+     * @param group The group to get the members for.
      * @return PVR_ERROR_NO_ERROR if the list has been fetched successfully.
      */
     PVR_ERROR GetChannelGroupMembers(CPVRChannelGroup *group);
@@ -545,7 +545,7 @@ namespace PVR
     /*!
     * @brief Set the last watched position of a recording on the backend.
     * @param recording The recording.
-    * @param position The last watched position in seconds
+    * @param lastplayedposition The last watched position in seconds
     * @return PVR_ERROR_NO_ERROR if the position has been stored successfully.
     */
     PVR_ERROR SetRecordingLastPlayedPosition(const CPVRRecording &recording, int lastplayedposition);
@@ -679,7 +679,7 @@ namespace PVR
 
     /*!
      * @brief Get the descramble information of the stream that's currently open.
-     * @param qualityinfo The descramble information.
+     * @param descrambleinfo The descramble information.
      * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
      */
     PVR_ERROR GetDescrambleInfo(PVR_DESCRAMBLE_INFO &descrambleinfo) const;

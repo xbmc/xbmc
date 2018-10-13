@@ -41,11 +41,6 @@ namespace ADDON
     explicit CRepository(CAddonInfo addonInfo) : CAddon(std::move(addonInfo)) {};
     CRepository(CAddonInfo addonInfo, DirList dirs);
 
-    /*! \brief Get the md5 hash for an addon.
-     \param the addon in question.
-     */
-    bool GetAddonHash(const AddonPtr& addon, std::string& checksum) const;
-
     enum FetchStatus
     {
       STATUS_OK,
