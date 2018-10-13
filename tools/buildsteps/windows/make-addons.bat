@@ -35,7 +35,6 @@ SET SCRIPTS_PATH=%BASE_PATH%\scripts\windows%store%
 SET ADDONS_PATH=%BASE_PATH%\addons
 SET ADDON_DEPENDS_PATH=%ADDONS_PATH%\output
 SET ADDONS_BUILD_PATH=%ADDONS_PATH%\build
-SET ADDONS_DEFINITION_PATH=%ADDONS_PATH%\addons
 
 SET ADDONS_SUCCESS_FILE=%ADDONS_PATH%\.success
 SET ADDONS_FAILURE_FILE=%ADDONS_PATH%\.failure
@@ -82,19 +81,12 @@ ECHO --------------------------------------------------
 ECHO Building addons
 ECHO --------------------------------------------------
 
-SET ADDONS_TO_BUILD=
 IF "%addon%" NEQ "" (
-  SET ADDONS_TO_BUILD=%addon%
-) ELSE (
-  SETLOCAL EnableDelayedExpansion
-  FOR /D %%a IN (%ADDONS_DEFINITION_PATH%\*) DO (
-    SET ADDONS_TO_BUILD=!ADDONS_TO_BUILD! %%~nxa
-  )
-  SETLOCAL DisableDelayedExpansion
+  SET CMAKE_EXTRA=%CMAKE_EXTRA% -DADDONS_TO_BUILD="%addon%"
 )
 
 IF "%store%" NEQ "" (
-SET STORE_ARGS=-DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=%UCRTVersion%
+  SET CMAKE_EXTRA=%CMAKE_EXTRA% -DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=%UCRTVersion%
 )
 
 rem execute cmake to generate makefiles processable by nmake
@@ -107,8 +99,7 @@ cmake "%ADDONS_PATH%" -G "NMake Makefiles" ^
       -DBUILD_DIR=%ADDONS_BUILD_PATH% ^
       -DADDON_DEPENDS_PATH=%ADDON_DEPENDS_PATH% ^
       -DPACKAGE_ZIP=ON ^
-      %STORE_ARGS% ^
-      -DADDONS_TO_BUILD="%ADDONS_TO_BUILD%"
+      %CMAKE_EXTRA%
 
 IF ERRORLEVEL 1 (
   ECHO cmake error level: %ERRORLEVEL% > %ERRORFILE%
