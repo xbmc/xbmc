@@ -2483,6 +2483,7 @@ bool CApplication::Cleanup()
       m_ServiceManager.reset();
     }
 
+    m_pAnnouncementManager->Deinitialize();
     m_pAnnouncementManager.reset();
 
     m_pSettingsComponent->Deinit();
