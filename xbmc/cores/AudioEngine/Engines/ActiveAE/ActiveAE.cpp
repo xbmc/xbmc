@@ -2932,6 +2932,9 @@ bool CActiveAE::CompareFormat(AEAudioFormat &lhs, AEAudioFormat &rhs)
       lhs.m_dataFormat != rhs.m_dataFormat ||
       lhs.m_sampleRate != rhs.m_sampleRate)
     return false;
+  else if (lhs.m_dataFormat == AE_FMT_RAW && rhs.m_dataFormat == AE_FMT_RAW &&
+           lhs.m_streamInfo.m_type != rhs.m_streamInfo.m_type)
+    return false;
   else
     return true;
 }
