@@ -19,10 +19,9 @@ ifeq ($(CMAKE),)
   CMAKE = cmake
 endif
 
-CMAKE_EXTRA =
+CMAKE_EXTRA = -DPACKAGE_ZIP=ON
 ifeq (darwin, $(findstring darwin, $(HOST)))
     INSTALL_PREFIX = ../../../../../addons/
-    CMAKE_EXTRA = -DPACKAGE_ZIP=ON
 endif
 
 ifneq ($(PREFIX),)
@@ -39,6 +38,10 @@ endif
 
 ifneq ($(ADDON_SRC_PREFIX),)
   SRC_OVERRIDE = -DADDON_SRC_PREFIX=$(ADDON_SRC_PREFIX)
+endif
+
+ifeq ($(PACKAGE),1)
+  MAKE_PACKAGE = package-
 endif
 
 all: .installed-$(PLATFORM)
@@ -67,7 +70,7 @@ endif
          $(TOOLCHAIN) $(SRC_OVERRIDE) \
          -DADDONS_TO_BUILD="$(ADDONS)" $(ADDON_PROJECT_DIR) -DBUILD_DIR=$(BUILDDIR)/$(PLATFORM)/build ;\
          for addon in $$($(MAKE) supported_addons | awk '/^ALL_ADDONS_BUILDING: .*$$/ { first = $$1; $$1 = ""; print $$0 }'); do \
-           $(MAKE) $$addon && echo $$addon >> $(ADDON_PROJECT_DIR)/.success || echo $$addon >> $(ADDON_PROJECT_DIR)/.failure ;\
+           $(MAKE) $(MAKE_PACKAGE)$$addon && echo $$addon >> $(ADDON_PROJECT_DIR)/.success || echo $$addon >> $(ADDON_PROJECT_DIR)/.failure ;\
          done
 ifneq ($(CROSS_COMPILING),yes)
 	@[ -f $(ADDON_PROJECT_DIR)/.failure ] && echo "Following Addons failed to build:" $(shell cat $(ADDON_PROJECT_DIR)/.failure) || :
