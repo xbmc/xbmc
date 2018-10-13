@@ -351,6 +351,8 @@ public:
   */
   void UnlockFrameMoveGuard();
 
+  void SetRenderGUI(bool renderGUI);
+
 protected:
   bool OnSettingsSaving() const override;
   bool Load(const TiXmlNode *settings) override;
@@ -366,7 +368,6 @@ protected:
 
   // inbound protocol
   bool OnEvent(XBMC_Event& newEvent);
-  void SetRenderGUI(bool renderGUI);
 
   /*!
    \brief Delegates the action to all registered action handlers.

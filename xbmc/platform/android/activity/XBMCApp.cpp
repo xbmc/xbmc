@@ -237,6 +237,8 @@ void CXBMCApp::onResume()
   // Re-request Visible Behind
   if ((m_playback_state & PLAYBACK_STATE_PLAYING) && (m_playback_state & PLAYBACK_STATE_VIDEO))
     RequestVisibleBehind(true);
+
+  g_application.SetRenderGUI(true);
 }
 
 void CXBMCApp::onPause()
@@ -256,6 +258,7 @@ void CXBMCApp::onPause()
     g_application.SwitchToFullScreen(true);
 
   EnableWakeLock(false);
+  g_application.SetRenderGUI(false);
   m_hasReqVisible = false;
 }
 
