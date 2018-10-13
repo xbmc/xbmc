@@ -792,8 +792,8 @@
 				<height>760</height>
 				<onleft>9000</onleft>
 				<onright>9003</onright>
-				<onup>10</onup>
-				<ondown>10</ondown>
+				<onup>9002</onup>
+				<ondown>9002</ondown>
 				<scrolltime>300</scrolltime>
 				<orientation>vertical</orientation>
 				<focusposition>1</focusposition>
@@ -2521,6 +2521,61 @@
 			<include>MenuButtonCommonValues</include>
 		</control>
 	</include>
+	<include name="YesNoDefaultButtons">
+		<control type="group">
+			<posx>145</posx>
+			<posy>240</posy>
+			<width>660</width>
+			<height>60</height>
+			<visible>Window.IsVisible(yesnodialog)</visible>
+			<control type="button" id="11">
+				<description>Yes button</description>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>200</width>
+				<include>ButtonInfoDialogsCommonValues</include>
+			</control>
+			<control type="button" id="10">
+				<description>No button</description>
+				<posx>210</posx>
+				<posy>0</posy>
+				<width>200</width>
+				<include>ButtonInfoDialogsCommonValues</include>
+			</control>
+		</control>
+	</include>
+	<include name="YesNoExtendedButtons">
+		<control type="grouplist" id="9000">
+			<posx>20</posx>
+			<posy>240</posy>
+			<width>660</width>
+			<height>60</height>
+			<itemgap>10</itemgap>
+			<align>center</align>
+			<orientation>horizontal</orientation>
+			<onleft>9000</onleft>
+			<onright>9000</onright>
+			<onup>9000</onup>
+			<ondown>9000</ondown>
+			<visible>!Window.IsVisible(yesnodialog)</visible>
+			<control type="button" id="10">
+				<description>OK button</description>
+				<width>200</width>
+				<include>ButtonInfoDialogsCommonValues</include>
+			</control>
+			<control type="button" id="11">
+				<description>Cancel button</description>
+				<width>200</width>
+				<include>ButtonInfoDialogsCommonValues</include>
+			</control>
+			<control type="button" id="12">
+				<description>Custom button</description>
+				<width>200</width>
+				<include>ButtonInfoDialogsCommonValues</include>
+			</control>
+		</control>
+	</include>
+
 	<include name="16x9_xPos_Relocation">
 		<animation effect="slide" start="0,0" end="213,0" time="0" condition="String.IsEqual(Skin.AspectRatio,16:9)">conditional</animation>
 	</include>
