@@ -422,6 +422,7 @@ bool CDRMUtils::FindPlanes()
   m_primary_plane->plane = FindPlane(plane_resources, m_crtc_index, KODI_VIDEO_PLANE);
   m_overlay_plane->plane = FindPlane(plane_resources, m_crtc_index, KODI_GUI_10_PLANE);
   m_overlay_plane->format = DRM_FORMAT_XRGB2101010;
+  m_overlay_plane->fallbackFormat = DRM_FORMAT_XRGB8888;
 
   /* fallback to 8bit plane if 10bit plane doesn't exist */
   if (m_overlay_plane->plane == nullptr)

@@ -24,7 +24,7 @@ public:
   ~CGBMUtils() = default;
   bool CreateDevice(int fd);
   void DestroyDevice();
-  bool CreateSurface(int width, int height, const uint64_t *modifiers, const int modifiers_count);
+  bool CreateSurface(int width, int height, uint32_t format, const uint64_t *modifiers, const int modifiers_count);
   void DestroySurface();
   struct gbm_bo *LockFrontBuffer();
   void ReleaseBuffer();
