@@ -10,6 +10,8 @@
 #include "URL.h"
 #include "filesystem/ImageFile.h"
 #include "network/WebServer.h"
+#include "utils/FileUtils.h"
+
 
 CHTTPImageHandler::CHTTPImageHandler(const HTTPRequest &request)
   : CHTTPFileHandler(request)
@@ -24,7 +26,7 @@ CHTTPImageHandler::CHTTPImageHandler(const HTTPRequest &request)
 
     XFILE::CImageFile imageFile;
     const CURL pathToUrl(file);
-    if (imageFile.Exists(pathToUrl))
+    if (imageFile.Exists(pathToUrl) && CFileUtils::CheckFileAccessAllowed(file))
     {
       responseStatus = MHD_HTTP_OK;
       struct __stat64 statBuffer;
