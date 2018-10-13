@@ -819,7 +819,15 @@ CFileItemPtr CAddonsDirectory::FileItemFromAddon(const AddonPtr &addon,
   if (CURL(path).GetHostName() == "search")
     strLabel = StringUtils::Format("%s - %s", CAddonInfo::TranslateType(addon->Type(), true).c_str(), addon->Name().c_str());
   item->SetLabel(strLabel);
-  item->SetArt(addon->Art());
+
+  // backwards compatibility with add-ons that don't explicitly declare "assets"
+  ArtMap addonart = addon->Art();
+  if (addonart.find("fanart") != addonart.end() &&
+      !URIUtils::IsInternetStream(addonart["fanart"]) &&
+      !CFile::Exists(addonart["fanart"]))
+    addonart.erase("fanart");
+
+  item->SetArt(std::move(addonart));
   item->SetArt("thumb", addon->Icon());
   item->SetIconImage("DefaultAddon.png");
 
