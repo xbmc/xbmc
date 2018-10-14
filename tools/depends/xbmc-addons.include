@@ -19,9 +19,10 @@ ifeq ($(CMAKE),)
   CMAKE = cmake
 endif
 
-CMAKE_EXTRA = -DPACKAGE_ZIP=ON
+CMAKE_EXTRA =
 ifeq (darwin, $(findstring darwin, $(HOST)))
     INSTALL_PREFIX = ../../../../../addons/
+    CMAKE_EXTRA = -DPACKAGE_ZIP=ON
 endif
 
 ifneq ($(PREFIX),)
