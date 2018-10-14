@@ -93,6 +93,7 @@ private:
 
   void GetPacket(uint8_t **buffer, unsigned int *bufferSize);
   unsigned int DetectType(uint8_t *data, unsigned int size);
+  bool TrySyncAC3(uint8_t *data, unsigned int size, bool resyncing);
   unsigned int SyncAC3(uint8_t *data, unsigned int size);
   unsigned int SyncDTS(uint8_t *data, unsigned int size);
   unsigned int SyncTrueHD(uint8_t *data, unsigned int size);
