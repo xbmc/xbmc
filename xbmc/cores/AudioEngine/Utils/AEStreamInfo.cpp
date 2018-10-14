@@ -286,7 +286,7 @@ unsigned int CAEStreamParser::DetectType(uint8_t *data, unsigned int size)
     if (data[0] == 0x0b && data[1] == 0x77)
     {
       unsigned int skip = SyncAC3(data, size);
-      if (m_hasSync)
+      if (m_hasSync || m_needBytes)
         return skipped + skip;
       else
         possible = skipped;
@@ -311,7 +311,7 @@ unsigned int CAEStreamParser::DetectType(uint8_t *data, unsigned int size)
   return possible ? possible : skipped;
 }
 
-bool CAEStreamParser::TrySyncAC3(uint8_t *data, unsigned int size, bool resyncing)
+bool CAEStreamParser::TrySyncAC3(uint8_t *data, unsigned int size, bool resyncing, bool wantEAC3dependent)
 {
   if (size < 8)
     return false;
@@ -343,6 +343,9 @@ bool CAEStreamParser::TrySyncAC3(uint8_t *data, unsigned int size, bool resyncin
   {
     /* Normal AC-3 */
 
+    if (wantEAC3dependent)
+      return false;
+
     uint8_t fscod = data[4] >> 6;
     uint8_t frmsizecod = data[4] & 0x3F;
     if (fscod == 3 || frmsizecod > 37)
@@ -362,15 +365,24 @@ bool CAEStreamParser::TrySyncAC3(uint8_t *data, unsigned int size, bool resyncin
     m_info.m_sampleRate = AC3FSCod[fscod];
 
     /* dont do extensive testing if we have not lost sync */
+    if (m_info.m_type == CAEStreamInfo::STREAM_TYPE_AC3 && !resyncing)
+      return true;
+
     /* this may be the main stream of EAC3 */
-    if (m_info.m_type == CAEStreamInfo::STREAM_TYPE_EAC3 && !resyncing)
-    {
-      m_fsizeMain = m_fsize;
+    unsigned int fsizeMain = m_fsize;
+    unsigned int reqBytes = fsizeMain + 8;
+    if (size < reqBytes) {
+      /* not enough data to check for E-AC3 dependent frame, request more */
+      m_needBytes = reqBytes;
       m_fsize = 0;
+      /* no need to resync => return true */
       return true;
     }
-    else if (m_info.m_type == CAEStreamInfo::STREAM_TYPE_AC3 && !resyncing)
+    if (TrySyncAC3(data + fsizeMain, size - fsizeMain, resyncing, /*wantEAC3dependent*/ true)) {
+      /* concatenate the main and dependent frames */
+      m_fsize += fsizeMain;
       return true;
+    }
 
     unsigned int crc_size;
     /* if we have enough data, validate the entire packet, else try to validate crc2 (5/8 of the packet) */
@@ -401,6 +413,13 @@ bool CAEStreamParser::TrySyncAC3(uint8_t *data, unsigned int size, bool resyncin
     if (strmtyp == 3)
       return false;
 
+    if (strmtyp != 1 && wantEAC3dependent)
+    {
+      CLog::Log(LOGDEBUG, "CAEStreamParser::TrySyncAC3 - Unexpected stream type: %d (wantEAC3dependent: %d)",
+                strmtyp, wantEAC3dependent);
+      return false;
+    }
+
     unsigned int framesize = (((data[2] & 0x7) << 8) | data[3]) + 1;
     uint8_t fscod = (data[4] >> 6) & 0x3;
     uint8_t cod = (data[4] >> 4) & 0x3;
@@ -423,14 +442,6 @@ bool CAEStreamParser::TrySyncAC3(uint8_t *data, unsigned int size, bool resyncin
     }
 
     m_fsize = framesize << 1;
-
-    // concatenate substream to independent stream
-    if (strmtyp == 1 && m_fsizeMain)
-    {
-      m_fsize += m_fsizeMain;
-    }
-    m_fsizeMain = 0;
-
     m_info.m_repeat = MAX_EAC3_BLOCKS / blocks;
 
     if (m_info.m_type == CAEStreamInfo::STREAM_TYPE_EAC3 && m_hasSync && !resyncing)
@@ -442,7 +453,6 @@ bool CAEStreamParser::TrySyncAC3(uint8_t *data, unsigned int size, bool resyncin
     m_syncFunc = &CAEStreamParser::SyncAC3;
     m_info.m_type = CAEStreamInfo::STREAM_TYPE_EAC3;
     m_info.m_ac3FrameSize = m_fsize;
-    m_fsizeMain = 0;
 
     CLog::Log(LOGINFO, "CAEStreamParser::TrySyncAC3 - E-AC3 stream detected (%d channels, %dHz)", m_info.m_channels, m_info.m_sampleRate);
     return true;
@@ -453,23 +463,16 @@ unsigned int CAEStreamParser::SyncAC3(uint8_t *data, unsigned int size)
 {
   unsigned int skip = 0;
 
-  // handle substreams
-  if (m_fsizeMain)
-  {
-    data += m_fsizeMain;
-  }
-
   for (; size - skip > 7; ++skip, ++data)
   {
     bool resyncing = (skip != 0);
-    if (TrySyncAC3(data, size - skip, resyncing))
+    if (TrySyncAC3(data, size - skip, resyncing, /*wantEAC3dependent*/ false))
       return skip;
   }
 
   // if we get here, the entire packet is invalid and we have lost sync
   CLog::Log(LOGINFO, "CAEStreamParser::SyncAC3 - AC3 sync lost");
   m_hasSync = false;
-  m_fsizeMain = 0;
   return skip;
 }
 

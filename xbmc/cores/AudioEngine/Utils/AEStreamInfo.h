@@ -87,13 +87,12 @@ private:
   unsigned int m_coreSize = 0;         /* core size for dtsHD */
   unsigned int m_dtsBlocks = 0;
   unsigned int m_fsize = 0;
-  unsigned int m_fsizeMain = 0;        /* used for EAC3 substreams */
   int m_substreams = 0;       /* used for TrueHD  */
   AVCRC m_crcTrueHD[1024];  /* TrueHD crc table */
 
   void GetPacket(uint8_t **buffer, unsigned int *bufferSize);
   unsigned int DetectType(uint8_t *data, unsigned int size);
-  bool TrySyncAC3(uint8_t *data, unsigned int size, bool resyncing);
+  bool TrySyncAC3(uint8_t *data, unsigned int size, bool resyncing, bool wantEAC3dependent);
   unsigned int SyncAC3(uint8_t *data, unsigned int size);
   unsigned int SyncDTS(uint8_t *data, unsigned int size);
   unsigned int SyncTrueHD(uint8_t *data, unsigned int size);
