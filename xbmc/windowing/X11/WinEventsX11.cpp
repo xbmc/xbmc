@@ -23,6 +23,7 @@
 #include "input/mouse/MouseStat.h"
 #include "input/InputManager.h"
 #include "ServiceBroker.h"
+#include "cores/AudioEngine/Interfaces/AE.h"
 
 using namespace KODI::MESSAGING;
 
@@ -291,19 +292,36 @@ bool CWinEventsX11::MessagePump()
 
     if (m_display && (xevent.type == m_RREventBase + RRScreenChangeNotify))
     {
-      XRRUpdateConfiguration(&xevent);
-      if (xevent.xgeneric.serial != serial)
+      if (xevent.xgeneric.serial == serial)
+        continue;
+
+      if (m_xrrEventPending)
+      {
         m_winSystem.NotifyXRREvent();
-      m_xrrEventPending = false;
-      serial = xevent.xgeneric.serial;
+        m_xrrEventPending = false;
+        serial = xevent.xgeneric.serial;
+      }
+
       continue;
     }
     else if (m_display && (xevent.type == m_RREventBase + RRNotify))
     {
-      if (xevent.xgeneric.serial != serial)
-        m_winSystem.NotifyXRREvent();
-      m_xrrEventPending = false;
-      serial = xevent.xgeneric.serial;
+      if (xevent.xgeneric.serial == serial)
+        continue;
+
+      XRRNotifyEvent* rrEvent = reinterpret_cast<XRRNotifyEvent*>(&xevent);
+      if (rrEvent->subtype == RRNotify_OutputChange)
+      {
+        XRROutputChangeNotifyEvent* changeEvent = reinterpret_cast<XRROutputChangeNotifyEvent*>(&xevent);
+        if (changeEvent->connection == RR_Connected ||
+            changeEvent->connection == RR_Disconnected)
+        {
+          m_winSystem.NotifyXRREvent();
+          CServiceBroker::GetActiveAE()->DeviceChange();
+          serial = xevent.xgeneric.serial;
+        }
+      }
+
       continue;
     }
 
