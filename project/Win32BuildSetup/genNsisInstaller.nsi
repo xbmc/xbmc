@@ -143,6 +143,7 @@ Function HandleKodiInDestDir
       StrCpy $CleanDestDir "0"
       Abort
     done:
+	MessageBox MB_OK|MB_ICONINFORMATION "All binary add-ons (e.g. pvr, visualizations, inputstream, etc) that were previously included by default in the installer have been moved to the Kodi repository. You will have to install the ones you previously used from the repository.$\nYour add-on settings are kept intact and will be used again after installing the add-on."
   ${EndIf}
 FunctionEnd
 
