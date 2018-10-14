@@ -19,7 +19,6 @@
 #include "IMsgTargetCallback.h"
 #include "IWindowManagerCallback.h"
 #include "messaging/IMessageTarget.h"
-#include "utils/GlobalsHandling.h"
 
 class CGUIDialog;
 class CGUIMediaWindow;
