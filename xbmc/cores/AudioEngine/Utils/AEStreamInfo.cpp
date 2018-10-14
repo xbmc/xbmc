@@ -216,6 +216,8 @@ int CAEStreamParser::AddData(uint8_t *data, unsigned int size, uint8_t **buffer/
 
     if (!m_needBytes)
       GetPacket(buffer, bufferSize);
+    else if (bufferSize)
+      *bufferSize = 0;
 
     return consumed;
   }
