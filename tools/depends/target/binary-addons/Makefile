@@ -1,5 +1,5 @@
 BUILDDIR := $(shell pwd)
-ADDONS := all
+ADDONS ?= all
 ADDON_SRC_PREFIX :=
 
 -include ../../Makefile.include
