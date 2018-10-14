@@ -623,6 +623,16 @@ unsigned int CAEStreamParser::SyncDTS(uint8_t *data, unsigned int size)
       m_coreSize = m_fsize;
       m_fsize += hd_size;
     }
+    else if (m_hasSync && (m_info.m_type == CAEStreamInfo::STREAM_TYPE_DTSHD_MA ||
+                           m_info.m_type == CAEStreamInfo::STREAM_TYPE_DTSHD))
+    {
+      /* We have a DTS-HD stream but the HD extension is missing for this
+       * frame. Continue to consider it as a DTS-HD stream to avoid
+       * interruptions as standard DTS frames can still be packed like they
+       * were DTS-HD. */
+      m_coreSize = m_fsize;
+      dataType = m_info.m_type;
+    }
 
     unsigned int sampleRate = DTSSampleRates[sfreq];
     if (!m_hasSync || skip || dataType != m_info.m_type || sampleRate != m_info.m_sampleRate || dtsBlocks != m_dtsBlocks)
