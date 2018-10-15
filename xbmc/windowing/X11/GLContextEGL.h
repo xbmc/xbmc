@@ -10,6 +10,7 @@
 
 #include "GLContext.h"
 #include "EGL/egl.h"
+#include "EGL/eglext.h"
 #include "EGL/eglextchromium.h"
 #include <X11/Xutil.h>
 
@@ -19,6 +20,7 @@ public:
   explicit CGLContextEGL(Display *dpy);
   ~CGLContextEGL() override;
   bool Refresh(bool force, int screen, Window glWindow, bool &newContext) override;
+  bool CreatePB() override;
   void Destroy() override;
   void Detach() override;
   void SetVSync(bool enable) override;
@@ -34,6 +36,7 @@ protected:
   bool IsSuitableVisual(XVisualInfo *vInfo);
   EGLConfig GetEGLConfig(EGLDisplay eglDisplay, XVisualInfo *vInfo);
   PFNEGLGETSYNCVALUESCHROMIUMPROC eglGetSyncValuesCHROMIUM = nullptr;
+  PFNEGLGETPLATFORMDISPLAYEXTPROC eglGetPlatformDisplayEXT = nullptr;
 
   struct Sync
   {
@@ -44,4 +47,6 @@ protected:
     uint64_t msc2 = 0;
     uint64_t interval = 0;
   } m_sync;
+
+  bool m_usePB = false;
 };
