@@ -74,7 +74,7 @@ void CNetworkInterfaceWin32::GetMacAddressRaw(char rawMac[6]) const
 
 std::string CNetworkInterfaceWin32::GetCurrentIPAddress(void) const
 {
-  return CNetworkBase::GetIpStr(m_adapter.FirstUnicastAddress->Address.lpSockaddr);
+  return m_adapter.FirstUnicastAddress != nullptr ? CNetworkBase::GetIpStr(m_adapter.FirstUnicastAddress->Address.lpSockaddr) : "";
 }
 
 std::string CNetworkInterfaceWin32::GetCurrentNetmask(void) const
