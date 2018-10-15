@@ -178,6 +178,9 @@ void CPVRClient::Destroy(void)
   /* destroy the add-on */
   CAddonDll::Destroy();
 
+  if (m_menuhooks)
+    m_menuhooks->Clear();
+
   /* reset all properties to defaults */
   ResetProperties();
 }

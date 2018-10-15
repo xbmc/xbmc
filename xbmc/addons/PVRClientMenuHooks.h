@@ -25,6 +25,8 @@ namespace PVR
 
     CPVRClientMenuHook(const std::string &addonId, const PVR_MENUHOOK &hook);
 
+    bool operator ==(const CPVRClientMenuHook& right) const;
+
     bool IsAllHook() const;
     bool IsChannelHook() const;
     bool IsTimerHook() const;
@@ -50,7 +52,8 @@ namespace PVR
 
     explicit CPVRClientMenuHooks(const std::string &addonId) : m_addonId(addonId) {}
 
-    void AddHook(const PVR_MENUHOOK &hook);
+    void AddHook(const PVR_MENUHOOK &addonHook);
+    void Clear();
 
     std::vector<CPVRClientMenuHook> GetChannelHooks() const;
     std::vector<CPVRClientMenuHook> GetTimerHooks() const;

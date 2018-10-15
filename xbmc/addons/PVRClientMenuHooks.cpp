@@ -8,6 +8,8 @@
 
 #include "PVRClientMenuHooks.h"
 
+#include "pvr/PVRContextMenus.h"
+
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
@@ -28,6 +30,17 @@ CPVRClientMenuHook::CPVRClientMenuHook(const std::string &addonId, const PVR_MEN
       hook.category != PVR_MENUHOOK_RECORDING &&
       hook.category != PVR_MENUHOOK_SETTING)
     CLog::LogF(LOGERROR, "Unknown PVR_MENUHOOK_CAT value: %d", hook.category);
+}
+
+bool CPVRClientMenuHook::operator ==(const CPVRClientMenuHook& right) const
+{
+  if (this == &right)
+    return true;
+
+  return m_addonId == right.m_addonId &&
+         m_hook->iHookId == right.m_hook->iHookId &&
+         m_hook->iLocalizedStringId == right.m_hook->iLocalizedStringId &&
+         m_hook->category == right.m_hook->category;
 }
 
 bool CPVRClientMenuHook::IsAllHook() const
@@ -80,12 +93,25 @@ std::string CPVRClientMenuHook::GetLabel() const
   return g_localizeStrings.GetAddonString(m_addonId, m_hook->iLocalizedStringId);
 }
 
-void CPVRClientMenuHooks::AddHook(const PVR_MENUHOOK &hook)
+void CPVRClientMenuHooks::AddHook(const PVR_MENUHOOK &addonHook)
 {
   if (!m_hooks)
     m_hooks.reset(new std::vector<CPVRClientMenuHook>());
 
-  m_hooks->emplace_back(CPVRClientMenuHook(m_addonId, hook));
+  const CPVRClientMenuHook hook(m_addonId, addonHook);
+  m_hooks->emplace_back(hook);
+  CPVRContextMenuManager::GetInstance().AddMenuHook(hook);
+}
+
+void CPVRClientMenuHooks::Clear()
+{
+  if (!m_hooks)
+    return;
+
+  for (const auto& hook : *m_hooks)
+    CPVRContextMenuManager::GetInstance().RemoveMenuHook(hook);
+
+  m_hooks.reset();
 }
 
 std::vector<CPVRClientMenuHook> CPVRClientMenuHooks::GetHooks(std::function<bool(const CPVRClientMenuHook& hook)> function) const

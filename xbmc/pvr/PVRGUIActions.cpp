@@ -1378,68 +1378,6 @@ namespace PVR
     return true;
   }
 
-  std::vector<CPVRClientMenuHook> CPVRGUIActions::GetItemMenuHooks(const CFileItem &item) const
-  {
-    std::vector<CPVRClientMenuHook> itemHooks;
-
-    const CPVRClientPtr client = CServiceBroker::GetPVRManager().GetClient(item);
-    if (client)
-    {
-      const std::shared_ptr<CPVRClientMenuHooks> hooks = client->GetMenuHooks();
-
-      if (item.IsEPG())
-        itemHooks = hooks->GetEpgHooks();
-      else if (item.IsPVRChannel())
-        itemHooks = hooks->GetChannelHooks();
-      else if (item.IsDeletedPVRRecording())
-        itemHooks = hooks->GetDeletedRecordingHooks();
-      else if (item.IsUsablePVRRecording())
-        itemHooks = hooks->GetRecordingHooks();
-      else if (item.IsPVRTimer())
-        itemHooks = hooks->GetTimerHooks();
-    }
-
-    return itemHooks;
-  }
-
-  bool CPVRGUIActions::ProcessItemMenuHooks(const CFileItemPtr &item)
-  {
-    const CPVRClientPtr client = CServiceBroker::GetPVRManager().GetClient(*item);
-    if (!client)
-      return false;
-
-    const std::shared_ptr<CPVRClientMenuHooks> hooks = client->GetMenuHooks();
-
-    const std::vector<CPVRClientMenuHook> itemHooks = GetItemMenuHooks(*item);
-    if (itemHooks.empty())
-      return true; // no matching hooks, no error
-
-    CGUIDialogSelect* pDialog= CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
-    if (!pDialog)
-    {
-      CLog::LogF(LOGERROR, "Unable to get WINDOW_DIALOG_SELECT!");
-      return false;
-    }
-
-    pDialog->Reset();
-    pDialog->SetHeading(CVariant{19196}); // "PVR client specific actions"
-
-    for (const auto& hook : itemHooks)
-    {
-      pDialog->Add(hook.GetLabel());
-    }
-
-    pDialog->Open();
-
-    int selection = pDialog->GetSelectedItem();
-    if (selection < 0)
-      return true; // cancelled
-
-    auto selectedHook = itemHooks.begin();
-    std::advance(selectedHook, selection);
-    return client->CallMenuHook(*selectedHook, item) == PVR_ERROR_NO_ERROR;
-  }
-
   bool CPVRGUIActions::ProcessSettingsMenuHooks()
   {
     CPVRClientMap clients;

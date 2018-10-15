@@ -40,8 +40,6 @@ namespace PVR
     SUCCESS
   };
 
-  class CPVRClientMenuHook;
-
   class CPVRChannelSwitchingInputHandler : public CPVRChannelNumberInputHandler
   {
   public:
@@ -306,20 +304,6 @@ namespace PVR
      * @return True when a channel scan is currently running, false otherwise.
      */
     bool IsRunningChannelScan() const { return m_bChannelScanRunning; }
-
-    /*!
-     * @brief Get client-specific item actions
-     * @param item The item for that the hooks shall be obtained.
-     * @return the actions.
-     */
-    std::vector<CPVRClientMenuHook> GetItemMenuHooks(const CFileItem &item) const;
-
-    /*!
-     * @brief Select and invoke client-specific item actions
-     * @param item The item for that the hooks shall be processed.
-     * @return true on success, false otherwise.
-     */
-    bool ProcessItemMenuHooks(const CFileItemPtr &item);
 
     /*!
      * @brief Select and invoke client-specific settings actions

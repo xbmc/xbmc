@@ -63,7 +63,21 @@ namespace PVR
     DECL_STATICCONTEXTMENUITEM(UndeleteRecording);
     DECL_CONTEXTMENUITEM(ToggleTimerState);
     DECL_STATICCONTEXTMENUITEM(RenameTimer);
-    DECL_STATICCONTEXTMENUITEM(PVRClientMenuHook);
+
+    class PVRClientMenuHook : public IContextMenuItem
+    {
+    public:
+      PVRClientMenuHook(const CPVRClientMenuHook& hook) : m_hook(hook) {};
+
+      std::string GetLabel(const CFileItem &item) const override;
+      bool IsVisible(const CFileItem &item) const override;
+      bool Execute(const CFileItemPtr &item) const override;
+
+      const CPVRClientMenuHook& GetHook() const { return m_hook; }
+
+    private:
+      const CPVRClientMenuHook m_hook;
+    };
 
     CPVRTimerInfoTagPtr GetTimerInfoTagFromItem(const CFileItem &item)
     {
@@ -538,14 +552,36 @@ namespace PVR
     ///////////////////////////////////////////////////////////////////////////////
     // PVR Client menu hook
 
+    std::string PVRClientMenuHook::GetLabel(const CFileItem &item) const
+    {
+      return m_hook.GetLabel();
+    }
+
     bool PVRClientMenuHook::IsVisible(const CFileItem &item) const
     {
-      return !CServiceBroker::GetPVRManager().GUIActions()->GetItemMenuHooks(item).empty();
+      if (m_hook.IsAllHook())
+        return !item.m_bIsFolder && !URIUtils::PathEquals(item.GetPath(), CPVRTimersPath::PATH_ADDTIMER);
+      else if (m_hook.IsEpgHook())
+        return item.IsEPG();
+      else if (m_hook.IsChannelHook())
+        return item.IsPVRChannel();
+      else if (m_hook.IsDeletedRecordingHook())
+        return item.IsDeletedPVRRecording();
+      else if (m_hook.IsRecordingHook())
+        return item.IsUsablePVRRecording();
+      else if (m_hook.IsTimerHook())
+        return item.IsPVRTimer();
+      else
+        return false;
     }
 
     bool PVRClientMenuHook::Execute(const CFileItemPtr &item) const
     {
-      return CServiceBroker::GetPVRManager().GUIActions()->ProcessItemMenuHooks(item);
+      const CPVRClientPtr client = CServiceBroker::GetPVRManager().GetClient(*item);
+      if (!client)
+        return false;
+
+      return client->CallMenuHook(m_hook, item) == PVR_ERROR_NO_ERROR;
     }
 
   } // namespace CONEXTMENUITEM
@@ -578,8 +614,34 @@ namespace PVR
       std::make_shared<CONTEXTMENUITEM::RenameRecording>(118), /* Rename */
       std::make_shared<CONTEXTMENUITEM::DeleteRecording>(),
       std::make_shared<CONTEXTMENUITEM::UndeleteRecording>(19290), /* Undelete */
-      std::make_shared<CONTEXTMENUITEM::PVRClientMenuHook>(19195), /* PVR client specific action */
     };
+  }
+
+  void CPVRContextMenuManager::AddMenuHook(const CPVRClientMenuHook& hook)
+  {
+    if (hook.IsSettingsHook())
+      return; // settings hooks are not handled using context menus
+
+    const auto item = std::make_shared<CONTEXTMENUITEM::PVRClientMenuHook>(hook);
+    m_items.emplace_back(item);
+    m_events.Publish(PVRContextMenuEvent(PVRContextMenuEventAction::ADD_ITEM, item));
+  }
+
+  void CPVRContextMenuManager::RemoveMenuHook(const CPVRClientMenuHook& hook)
+  {
+    if (hook.IsSettingsHook())
+      return; // settings hooks are not handled using context menus
+
+    for (auto it = m_items.begin(); it < m_items.end(); ++it)
+    {
+      const CONTEXTMENUITEM::PVRClientMenuHook* cmh = dynamic_cast<const CONTEXTMENUITEM::PVRClientMenuHook*>((*it).get());
+      if (cmh && cmh->GetHook() == hook)
+      {
+        m_events.Publish(PVRContextMenuEvent(PVRContextMenuEventAction::REMOVE_ITEM, *it));
+        m_items.erase(it);
+        return;
+      }
+    }
   }
 
 } // namespace PVR

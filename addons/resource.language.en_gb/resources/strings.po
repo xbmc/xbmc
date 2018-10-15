@@ -10277,11 +10277,7 @@ msgctxt "#19194"
 msgid "Continue?"
 msgstr ""
 
-#. label for a context menu entry for pvr client specific actions
-#: xbmc/pvr/PVRContextMenus.cpp
-msgctxt "#19195"
-msgid "Client actions"
-msgstr ""
+#empty string with id 19195
 
 #. value for "pvr client specific actions" dialog headers
 #: xbmc/pvr/PVRGUIActions.cpp
