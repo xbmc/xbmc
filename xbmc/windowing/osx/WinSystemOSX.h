@@ -103,4 +103,5 @@ protected:
   CTimer                       m_lostDeviceTimer;
   bool                         m_delayDispReset;
   XbmcThreads::EndTime         m_dispResetTimer;
+  int m_updateGLContext = 0;
 };
