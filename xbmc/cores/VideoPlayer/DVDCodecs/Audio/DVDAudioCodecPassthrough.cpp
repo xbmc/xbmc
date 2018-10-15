@@ -111,15 +111,17 @@ bool CDVDAudioCodecPassthrough::AddData(const DemuxPacket &packet)
       if (m_nextPts != DVD_NOPTS_VALUE)
       {
         m_currentPts = m_nextPts;
-        m_nextPts = DVD_NOPTS_VALUE;
+        m_nextPts = packet.pts;
       }
       else if (packet.pts != DVD_NOPTS_VALUE)
       {
         m_currentPts = packet.pts;
       }
     }
-
-    m_nextPts = packet.pts;
+    else
+    {
+      m_nextPts = packet.pts;
+    }
   }
 
   if (pData && !m_backlogSize)
