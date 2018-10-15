@@ -35,7 +35,7 @@ public:
   void Render(SRenderState& state) override;
   using COverlay::PrepareRender;
   void PrepareRender(const std::string &font, int color, int height, int style, const std::string &fontcache,
-                     const std::string &fontbordercache, const UTILS::Color bgcolor);
+                     const std::string &fontbordercache, const UTILS::Color bgcolor, const CRect &rectView);
   virtual CGUITextLayout* GetFontLayout(const std::string &font, int color, int height, int style,
                                         const std::string &fontcache, const std::string &fontbordercache);
 
@@ -43,6 +43,9 @@ public:
   std::string m_text;
   int m_subalign;
   UTILS::Color m_bgcolor = UTILS::COLOR::NONE;
+protected:
+  // target Rect for subtitles (updated on PrepareRender)
+  CRect m_rv = CRect(0, 0, 0, 0);
 };
 
 }
