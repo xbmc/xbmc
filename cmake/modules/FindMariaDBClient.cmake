@@ -21,15 +21,25 @@ else()
   set(EXTRA_FIND_ARGS)
 endif()
 
-find_path(MARIADBCLIENT_INCLUDE_DIR NAMES mariadb/mysql.h mariadb/server/mysql.h)
-find_library(MARIADBCLIENT_LIBRARY_RELEASE NAMES mariadbclient libmariadb
+if(PKG_CONFIG_FOUND)
+  pkg_check_modules(PC_MARIADBCLIENT mariadb QUIET)
+endif()
+
+
+find_path(MARIADBCLIENT_INCLUDE_DIR NAMES mariadb/mysql.h mariadb/server/mysql.h
+                                           PATHS ${PC_MARIADBCLIENT_INCLUDEDIR})
+find_library(MARIADBCLIENT_LIBRARY_RELEASE NAMES mariadbclient mariadb
+                                           PATHS ${PC_MARIADBCLIENT_LIBDIR}
                                            PATH_SUFFIXES mariadb
                                            ${EXTRA_FIND_ARGS})
-find_library(MARIADBCLIENT_LIBRARY_DEBUG NAMES mariadbclient libmariadb
+find_library(MARIADBCLIENT_LIBRARY_DEBUG NAMES mariadbclient mariadb
+                                         PATHS ${PC_MARIADBCLIENT_LIBDIR}
                                          PATH_SUFFIXES mariadb
                                          ${EXTRA_FIND_ARGS})
 
-if(MARIADBCLIENT_INCLUDE_DIR AND EXISTS "${MARIADBCLIENT_INCLUDE_DIR}/mariadb/mariadb_version.h")
+if(PC_MARIADBCLIENT_VERSION)
+  set(MARIADBCLIENT_VERSION_STRING ${PC_MARIADBCLIENT_VERSION})
+elseif(MARIADBCLIENT_INCLUDE_DIR AND EXISTS "${MARIADBCLIENT_INCLUDE_DIR}/mariadb/mariadb_version.h")
   file(STRINGS "${MARIADBCLIENT_INCLUDE_DIR}/mariadb/mariadb_version.h" mariadb_version_str REGEX "^#define[\t ]+MARIADB_CLIENT_VERSION_STR[\t ]+\".*\".*")
   string(REGEX REPLACE "^#define[\t ]+MARIADB_CLIENT_VERSION_STR[\t ]+\"([^\"]+)\".*" "\\1" MARIADBCLIENT_VERSION_STRING "${mariadb_version_str}")
   unset(mariadb_version_str)
