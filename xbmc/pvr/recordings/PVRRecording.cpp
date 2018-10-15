@@ -153,7 +153,10 @@ bool CPVRRecording::operator ==(const CPVRRecording& right) const
        m_bIsDeleted         == right.m_bIsDeleted &&
        m_iEpgEventId        == right.m_iEpgEventId &&
        m_iChannelUid        == right.m_iChannelUid &&
-       m_bRadio             == right.m_bRadio);
+       m_bRadio             == right.m_bRadio &&
+       m_genre              == right.m_genre &&
+       m_iGenreType         == right.m_iGenreType &&
+       m_iGenreSubType      == right.m_iGenreSubType);
 }
 
 bool CPVRRecording::operator !=(const CPVRRecording& right) const
@@ -176,6 +179,7 @@ void CPVRRecording::Serialize(CVariant& value) const
   value["epgeventid"] = m_iEpgEventId;
   value["channeluid"] = m_iChannelUid;
   value["radio"] = m_bRadio;
+  value["genre"] = m_genre;
 
   if (!value.isMember("art"))
     value["art"] = CVariant(CVariant::VariantTypeObject);
@@ -374,6 +378,17 @@ void CPVRRecording::Update(const CPVRRecording &tag)
   CVideoInfoTag::SetResumePoint(tag.GetLocalResumePoint());
   SetDuration(tag.GetDuration());
 
+  if (m_iGenreType == EPG_GENRE_USE_STRING)
+  {
+    /* No type/subtype. Use the provided description */
+    m_genre = tag.m_genre;
+  }
+  else
+  {
+    /* Determine genre description by type/subtype */
+    m_genre = StringUtils::Split(CPVREpg::ConvertGenreIdToString(tag.m_iGenreType, tag.m_iGenreSubType), CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator);
+  }
+
   //Old Method of identifying TV show title and subtitle using m_strDirectory and strPlotOutline (deprecated)
   std::string strShow = StringUtils::Format("%s - ", g_localizeStrings.Get(20364).c_str());
   if (StringUtils::StartsWithNoCase(m_strPlotOutline, strShow))
@@ -475,6 +490,9 @@ bool CPVRRecording::IsInProgress() const
 
 void CPVRRecording::SetGenre(int iGenreType, int iGenreSubType, const std::string &strGenre)
 {
+  m_iGenreType = iGenreType;
+  m_iGenreSubType = iGenreSubType;
+
   if ((iGenreType == EPG_GENRE_USE_STRING) && !strGenre.empty())
   {
     /* Type and sub type are not given. Use the provided genre description if available. */
@@ -485,4 +503,9 @@ void CPVRRecording::SetGenre(int iGenreType, int iGenreSubType, const std::strin
     /* Determine the genre description from the type and subtype IDs */
     m_genre = StringUtils::Split(CPVREpg::ConvertGenreIdToString(iGenreType, iGenreSubType), CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator);
   }
+}
+
+const std::string CPVRRecording::GetGenresLabel() const
+{
+  return StringUtils::Join(m_genre, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator);
 }
