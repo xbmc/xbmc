@@ -12,7 +12,6 @@
 #include <algorithm>
 
 #include "cores/DllLoader/DllLoaderContainer.h"
-#include "GUIPassword.h"
 #include "XBPython.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"

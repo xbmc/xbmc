@@ -8,7 +8,6 @@
 
 #include "PVROperations.h"
 
-#include "messaging/ApplicationMessenger.h"
 #include "ServiceBroker.h"
 
 #include "pvr/PVRGUIActions.h"
