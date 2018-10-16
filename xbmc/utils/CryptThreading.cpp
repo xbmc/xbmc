@@ -55,6 +55,7 @@ CryptThreadingInitializer::~CryptThreadingInitializer()
 {
 #if KODI_OPENSSL_NEEDS_LOCK_CALLBACK
   CSingleLock l(m_locksLock);
+  CRYPTO_set_id_callback(nullptr);
   CRYPTO_set_locking_callback(nullptr);
   m_locks.clear();
 #endif
