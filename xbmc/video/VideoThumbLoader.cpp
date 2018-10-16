@@ -231,10 +231,15 @@ std::vector<std::string> CVideoThumbLoader::GetArtTypes(const std::string &type)
     ret.push_back("poster");
     ret.push_back("fanart");
   }
-  else if (type == MediaTypeMovie || type == MediaTypeMusicVideo || type == MediaTypeVideoCollection)
+  else if (type == MediaTypeMovie || type == MediaTypeMusicVideo)
   {
     ret.push_back("poster");
     ret.push_back("fanart");
+  }
+  else if (type == MediaTypeVideoCollection)
+  {
+    ret.push_back("set");
+    ret.push_back("setfanart");
   }
   else if (type.empty()) // unknown - just throw everything in
   {
@@ -501,6 +506,14 @@ bool CVideoThumbLoader::FillLibraryArt(CFileItem &item)
         if (i != m_seasonArt.end())
           item.AppendArt(i->second, MediaTypeSeason);
       }
+    }
+
+    if (tag.m_type == MediaTypeVideoCollection)
+    {
+      if (item.HasArt("set"))
+        item.SetArt("poster", item.GetArt("set"));
+      if (item.HasArt("setfanart"))
+        item.SetArt("fanart", item.GetArt("setfanart"));
     }
     m_videoDatabase->Close();
   }
