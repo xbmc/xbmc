@@ -14,13 +14,17 @@
 #include "IListProvider.h"
 #include "favourites/FavouritesService.h"
 #include "guilib/GUIStaticItem.h"
-#include "pvr/PVREvent.h"
 #include "utils/Job.h"
 #include "threads/CriticalSection.h"
 #include "interfaces/IAnnouncer.h"
 
 class TiXmlElement;
 class CVariant;
+
+namespace PVR
+{
+  enum class PVREvent;
+}
 
 enum class InfoTagType
 {

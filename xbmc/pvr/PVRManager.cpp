@@ -365,23 +365,23 @@ void CPVRManager::SetState(CPVRManager::ManagerState state)
     switch (state)
     {
       case ManagerStateError:
-        event = ManagerError;
+        event = PVREvent::ManagerError;
         break;
       case ManagerStateStopped:
-        event = ManagerStopped;
+        event = PVREvent::ManagerStopped;
         observableMsg = ObservableMessageManagerStopped;
         break;
       case ManagerStateStarting:
-        event = ManagerStarting;
+        event = PVREvent::ManagerStarting;
         break;
       case ManagerStateStopping:
-        event = ManagerStopped;
+        event = PVREvent::ManagerStopped;
         break;
       case ManagerStateInterrupted:
-        event = ManagerInterrupted;
+        event = PVREvent::ManagerInterrupted;
         break;
       case ManagerStateStarted:
-        event = ManagerStarted;
+        event = PVREvent::ManagerStarted;
         break;
       default:
         return;

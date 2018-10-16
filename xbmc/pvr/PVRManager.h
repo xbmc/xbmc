@@ -23,7 +23,6 @@
 #include "utils/Observer.h"
 
 #include "pvr/PVRActionListener.h"
-#include "pvr/PVREvent.h"
 #include "pvr/PVRSettings.h"
 #include "pvr/PVRTypes.h"
 #include "pvr/epg/EpgContainer.h"
@@ -37,6 +36,20 @@ namespace PVR
   class CPVRClient;
   class CPVRGUIInfo;
   class CPVRGUIProgressHandler;
+
+  enum class PVREvent
+  {
+    // PVR Manager states
+    ManagerError = 0,
+    ManagerStopped,
+    ManagerStarting,
+    ManagerStopping,
+    ManagerInterrupted,
+    ManagerStarted,
+
+    // Recording events
+    RecordingsInvalidated
+  };
 
   class CPVRManagerJobQueue
   {
