@@ -40,7 +40,7 @@ void CAppParamParser::Parse(const char* const* argv, int nArgs)
 void CAppParamParser::DisplayVersion()
 {
   printf("%s Media Center %s\n", CSysInfo::GetVersion().c_str(), CSysInfo::GetAppName().c_str());
-  printf("Copyright (C) 2005-2013 Team %s - http://kodi.tv\n", CSysInfo::GetAppName().c_str());
+  printf("Copyright (C) 2005-2018 Team %s - http://kodi.tv\n", CSysInfo::GetAppName().c_str());
   exit(0);
 }
 
