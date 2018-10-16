@@ -109,6 +109,8 @@ namespace XBMCAddon
       /// Get image format
       ///
       /// @return                        Format of captured image: 'BGRA'
+      ///
+      ///
       ///-----------------------------------------------------------------------
       /// @python_v17 Image will now always be returned in BGRA
       ///
@@ -132,6 +134,8 @@ namespace XBMCAddon
       /// @return                    Captured image as a bytearray
       ///
       /// @note The size of the image is m_width * m_height * 4
+      ///
+      ///
       ///-----------------------------------------------------------------------
       /// @python_v17 Added the option to specify wait time in msec.
       ///
@@ -156,6 +160,8 @@ namespace XBMCAddon
       ///
       /// @param width               Width capture image should be rendered to
       /// @param height              Height capture image should should be rendered to
+      ///
+      ///
       ///-----------------------------------------------------------------------
       /// @python_v17 Removed the option to pass **flags**
       ///
@@ -175,24 +181,6 @@ namespace XBMCAddon
         m_buffer = new uint8_t[m_width*m_height*4];
         g_application.GetAppPlayer().RenderCapture(m_captureId, m_width, m_height, CAPTUREFLAG_CONTINUOUS);
       }
-
-#ifdef DOXYGEN_SHOULD_USE_THIS
-      ///
-      /// \ingroup python_xbmc_RenderCapture
-      /// @brief \python_func{ getCaptureState() }
-      ///-----------------------------------------------------------------------
-      /// @python_v17 Removed function completely.
-      ///
-#endif
-
-#ifdef DOXYGEN_SHOULD_USE_THIS
-      ///
-      /// \ingroup python_xbmc_RenderCapture
-      /// @brief \python_func{ waitForCaptureStateChangeEvent() }
-      ///-----------------------------------------------------------------------
-      /// @python_v17 Removed function completely.
-      ///
-#endif
 
 // hide these from swig
 #ifndef SWIG

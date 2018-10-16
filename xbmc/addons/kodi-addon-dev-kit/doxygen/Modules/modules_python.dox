@@ -151,6 +151,16 @@ web applications or frameworks for the Python programming language.
 */
 /*!
 @page python_v17 Python API v17
+\python_removed_function{
+      getCaptureState,
+      http://mirrors.kodi.tv/docs/python-docs/16.x-jarvis/xbmc.html#RenderCapture-getCaptureState,
+      <b>xbmc.RenderCapture().getCaptureState()</b> function was removed completely.
+}
+\python_removed_function{
+      waitForCaptureStateChangeEvent,
+      http://mirrors.kodi.tv/docs/python-docs/16.x-jarvis/xbmc.html#RenderCapture-waitForCaptureStateChangeEvent,
+      <b>xbmc.RenderCapture().waitForCaptureStateChangeEvent()</b> function was removed completely.
+}
 */
 /*!
 @page python_v16 Python API v16
