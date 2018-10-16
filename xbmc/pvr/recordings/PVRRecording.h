@@ -287,6 +287,30 @@ namespace PVR
     */
    void SetGenre(int iGenreType, int iGenreSubType, const std::string &strGenre);
 
+    /*!
+     * @brief Get the genre type ID of this event.
+     * @return The genre type ID.
+     */
+    int GenreType(void) const { return m_iGenreType; }
+
+    /*!
+     * @brief Get the genre subtype ID of this event.
+     * @return The genre subtype ID.
+     */
+    int GenreSubType(void) const { return m_iGenreSubType; }
+
+    /*!
+     * @brief Get the genre as human readable string.
+     * @return The genre.
+     */
+    const std::vector<std::string> Genre(void) const { return m_genre; }
+
+    /*!
+     * @brief Get the genre(s) of this event as formatted string.
+     * @return The genres label.
+     */
+   const std::string GetGenresLabel() const;
+
   private:
     CDateTime    m_recordingTime; /*!< start time of the recording */
     bool         m_bGotMetaData;
@@ -294,6 +318,8 @@ namespace PVR
     unsigned int m_iEpgEventId;   /*!< epg broadcast id associated with this recording */
     int          m_iChannelUid;   /*!< channel uid associated with this recording */
     bool         m_bRadio;        /*!< radio or tv recording */
+    int          m_iGenreType = 0;    /*!< genre type */
+    int          m_iGenreSubType = 0; /*!< genre subtype */
 
     void UpdatePath(void);
   };
