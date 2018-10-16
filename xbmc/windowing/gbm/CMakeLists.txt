@@ -5,6 +5,7 @@ set(SOURCES OptionalsReg.cpp
             DRMLegacy.cpp
             DRMAtomic.cpp
             OffScreenModeSetting.cpp
+            VTUtils.cpp
             WinSystemGbmEGLContext.cpp)
 
 set(HEADERS OptionalsReg.h
@@ -14,6 +15,7 @@ set(HEADERS OptionalsReg.h
             DRMLegacy.h
             DRMAtomic.h
             OffScreenModeSetting.h
+            VTUtils.h
             WinSystemGbmEGLContext.h)
 
 if (OPENGL_FOUND)
