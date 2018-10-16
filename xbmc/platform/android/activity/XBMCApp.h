@@ -191,7 +191,8 @@ public:
   void ProcessSlow();
 
   static bool WaitVSync(unsigned int milliSeconds);
-  static int64_t GetNextFrameTime(){ return m_frameTimeNanos; };
+  static int64_t GetNextFrameTime();
+  static float GetFrameLatencyMs();
 
   bool getVideosurfaceInUse();
   void setVideosurfaceInUse(bool videosurfaceInUse);

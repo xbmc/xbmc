@@ -128,6 +128,7 @@ std::vector<androidPackage> CXBMCApp::m_applications;
 CVideoSyncAndroid* CXBMCApp::m_syncImpl = NULL;
 CEvent CXBMCApp::m_vsyncEvent;
 std::vector<CActivityResultEvent*> CXBMCApp::m_activityResultEvents;
+
 int64_t CXBMCApp::m_frameTimeNanos = 0;
 float CXBMCApp::m_refreshRate = 0.0f;
 
@@ -1186,10 +1187,21 @@ void CXBMCApp::doFrame(int64_t frameTimeNanos)
 
   // Calculate the time, when next surface buffer should be rendered
   m_frameTimeNanos = frameTimeNanos;
-  if (m_refreshRate)
-    m_frameTimeNanos += static_cast<int64_t>(1500000000ll / m_refreshRate);
 
   m_vsyncEvent.Set();
+}
+
+int64_t CXBMCApp::GetNextFrameTime()
+{
+  if (m_refreshRate > 0.0001f)
+    return m_frameTimeNanos + static_cast<int64_t>(1500000000ll / m_refreshRate);
+  else
+    return m_frameTimeNanos;
+}
+
+float CXBMCApp::GetFrameLatencyMs()
+{
+  return (CurrentHostCounter() - m_frameTimeNanos) * 0.000001;
 }
 
 bool CXBMCApp::WaitVSync(unsigned int milliSeconds)
