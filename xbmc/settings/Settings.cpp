@@ -41,8 +41,6 @@
 #endif // defined(HAS_LIBAMCODEC)
 #include "powermanagement/PowerTypes.h"
 #include "profiles/ProfileManager.h"
-#include "pvr/PVRSettings.h"
-#include "pvr/windows/GUIWindowPVRGuide.h"
 #include "ServiceBroker.h"
 #include "settings/DisplaySettings.h"
 #include "settings/MediaSettings.h"
@@ -698,7 +696,6 @@ void CSettings::InitializeOptionFillers()
   GetSettingsManager()->RegisterSettingOptionsFiller("timezones", CLinuxTimezone::SettingOptionsTimezonesFiller);
 #endif
   GetSettingsManager()->RegisterSettingOptionsFiller("keyboardlayouts", CKeyboardLayoutManager::SettingOptionsKeyboardLayoutsFiller);
-  GetSettingsManager()->RegisterSettingOptionsFiller("pvrrecordmargins", PVR::CPVRSettings::MarginTimeFiller);
 }
 
 void CSettings::UninitializeOptionFillers()
@@ -744,7 +741,6 @@ void CSettings::UninitializeOptionFillers()
 #endif // defined(TARGET_LINUX)
   GetSettingsManager()->UnregisterSettingOptionsFiller("verticalsyncs");
   GetSettingsManager()->UnregisterSettingOptionsFiller("keyboardlayouts");
-  GetSettingsManager()->UnregisterSettingOptionsFiller("pvrrecordmargins");
 }
 
 void CSettings::InitializeConditions()
@@ -759,7 +755,7 @@ void CSettings::InitializeConditions()
   // add more complex conditions
   const std::map<std::string, SettingConditionCheck> &complexConditions = CSettingConditions::GetComplexConditions();
   for (std::map<std::string, SettingConditionCheck>::const_iterator itCondition = complexConditions.begin(); itCondition != complexConditions.end(); ++itCondition)
-    GetSettingsManager()->AddCondition(itCondition->first, itCondition->second);
+    GetSettingsManager()->AddDynamicCondition(itCondition->first, itCondition->second);
 }
 
 void CSettings::UninitializeConditions()
