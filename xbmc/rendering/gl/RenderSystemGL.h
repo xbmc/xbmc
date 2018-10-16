@@ -13,6 +13,9 @@
 #include "rendering/RenderSystem.h"
 #include "utils/Color.h"
 
+#include <array>
+#include <memory>
+
 enum ESHADERMETHOD
 {
   SM_DEFAULT = 0,
@@ -98,7 +101,7 @@ protected:
 
   GLint m_viewPort[4];
 
-  std::unique_ptr<CGLShader*[]> m_pShader;
+  std::array<std::unique_ptr<CGLShader>, SM_MAX> m_pShader;
   ESHADERMETHOD m_method = SM_DEFAULT;
   GLuint m_vertexArray = GL_NONE;
 };
