@@ -113,6 +113,9 @@ bool CWinSystemGbm::DestroyWindowSystem()
   m_GBM->DestroyDevice();
 
   CLog::Log(LOGDEBUG, "CWinSystemGbm::%s - deinitialized DRM", __FUNCTION__);
+
+  m_libinput.reset();
+
   return true;
 }
 
