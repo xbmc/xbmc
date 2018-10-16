@@ -620,8 +620,8 @@ else
 fi
 
 # add user supplied flags to the end, so they override our defaults
-platform_cflags_release="$tmp_cflags $relase_cflags $optimize_flags $target_cflags"
-platform_cxxflags_release="$tmp_cxxflags $relase_cflags $optimize_flags $target_cxxflags"
+platform_cflags_release="$tmp_cflags $release_cflags $optimize_flags $target_cflags"
+platform_cxxflags_release="$tmp_cxxflags $release_cflags $optimize_flags $target_cxxflags"
 platform_cflags_debug="$tmp_cflags $debug_cflags $target_cflags"
 platform_cxxflags_debug="$tmp_cxxflags $debug_cflags $target_cxxflags"
 platform_ldflags+=" $target_ldflags $LIBS"
