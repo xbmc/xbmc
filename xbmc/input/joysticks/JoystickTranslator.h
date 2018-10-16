@@ -9,7 +9,6 @@
 #pragma once
 
 #include "JoystickTypes.h"
-#include "input/mouse/MouseTypes.h"
 
 namespace KODI
 {

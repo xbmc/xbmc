@@ -8,8 +8,6 @@
 
 #include "KeymapEnvironment.h"
 #include "WindowTranslator.h"
-#include "guilib/GUIWindowManager.h"
-#include "Application.h"
 
 int CKeymapEnvironment::GetFallthrough(int windowId) const
 {
