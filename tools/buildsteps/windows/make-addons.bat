@@ -10,16 +10,16 @@ SET store=
 
 SETLOCAL EnableDelayedExpansion
 FOR %%b IN (%*) DO (
-  IF %%b == install (
+  IF %%~b == install (
     SET install=true
-  ) ELSE ( IF %%b == clean (
+  ) ELSE ( IF %%~b == clean (
     SET clean=true
-  ) ELSE ( IF %%b == package (
+  ) ELSE ( IF %%~b == package (
     SET package=true
-  ) ELSE ( IF %%b == win10 (
+  ) ELSE ( IF %%~b == win10 (
     SET store=store
   ) ELSE (
-    SET addon=!addon! %%b
+    SET addon=!addon! %%~b
   ))))
 )
 SETLOCAL DisableDelayedExpansion
