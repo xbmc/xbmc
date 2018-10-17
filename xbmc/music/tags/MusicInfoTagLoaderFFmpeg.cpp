@@ -10,7 +10,6 @@
 #include "MusicInfoTag.h"
 #include "filesystem/File.h"
 #include "cores/FFmpeg.h"
-#include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
 
 using namespace MUSIC_INFO;
