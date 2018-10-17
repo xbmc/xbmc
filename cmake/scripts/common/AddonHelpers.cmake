@@ -341,10 +341,11 @@ macro (build_addon target prefix libs)
   if(${APP_NAME_UC}_BUILD_DIR)
     file(GLOB_RECURSE files ${CMAKE_CURRENT_SOURCE_DIR}/${target}/*)
     if(${prefix}_CUSTOM_DATA)
+      get_filename_component(dname ${${prefix}_CUSTOM_DATA} NAME)
       add_custom_command(TARGET ${target} POST_BUILD
                          COMMAND ${CMAKE_COMMAND} -E copy_directory
                                  ${${prefix}_CUSTOM_DATA}
-                                 ${${APP_NAME_UC}_BUILD_DIR}/addons/${target}/resources)
+                                 ${${APP_NAME_UC}_BUILD_DIR}/addons/${target}/resources/${dname})
     endif()
     foreach(file ${files})
       string(REPLACE "${CMAKE_CURRENT_SOURCE_DIR}/${target}/" "" name "${file}")
