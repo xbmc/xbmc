@@ -231,7 +231,7 @@ function(add_addon_depends addon searchpath)
                                     -DCMAKE_INCLUDE_PATH=${OUTPUT_DIR}/include)
             endif()
 
-            set(DOWNLOAD_DIR ${BUILD_DIR}/download)
+            set(DOWNLOAD_DIR ${BUILD_DIR}/${id}/download)
             if(EXISTS ${dir}/${id}.sha256)
               file(STRINGS ${dir}/${id}.sha256 sha256sum)
               list(GET sha256sum 0 sha256sum)
