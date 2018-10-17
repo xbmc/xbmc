@@ -656,7 +656,8 @@ public:
     m_strIMDBNumber(kodiTag->IMDBNumber()),
     m_strEpisodeName(kodiTag->EpisodeName(true)),
     m_strIconPath(kodiTag->Icon()),
-    m_strSeriesLink(kodiTag->SeriesLink())
+    m_strSeriesLink(kodiTag->SeriesLink()),
+    m_strGenreDescription(kodiTag->GetGenresLabel())
   {
     time_t t;
     kodiTag->StartAsUTC().GetAsTime(t);
@@ -688,7 +689,7 @@ public:
     strEpisodeName = m_strEpisodeName.c_str();
     strIconPath = m_strIconPath.c_str();
     strSeriesLink = m_strSeriesLink.c_str();
-    strGenreDescription = kodiTag->GetGenresLabel().c_str();
+    strGenreDescription = m_strGenreDescription.c_str();
   }
 
   virtual ~CAddonEpgTag() = default;
@@ -705,6 +706,7 @@ private:
   std::string m_strEpisodeName;
   std::string m_strIconPath;
   std::string m_strSeriesLink;
+  std::string m_strGenreDescription;
 };
 
 PVR_ERROR CPVRClient::IsRecordable(const CConstPVREpgInfoTagPtr &tag, bool &bIsRecordable) const
