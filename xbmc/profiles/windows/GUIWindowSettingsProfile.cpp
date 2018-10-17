@@ -15,7 +15,6 @@
 #include "profiles/dialogs/GUIDialogProfileSettings.h"
 #include "messaging/ApplicationMessenger.h"
 #include "utils/URIUtils.h"
-#include "GUIPassword.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"

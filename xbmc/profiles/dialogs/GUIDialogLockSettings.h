@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include "GUIPassword.h"
 #include "profiles/Profile.h"
 #include "settings/dialogs/GUIDialogSettingsManualBase.h"
 
