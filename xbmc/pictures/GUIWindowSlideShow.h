@@ -12,7 +12,6 @@
 #include <set>
 #include "guilib/GUIDialog.h"
 #include "threads/Thread.h"
-#include "threads/CriticalSection.h"
 #include "threads/Event.h"
 #include "SlideShowPicture.h"
 #include "utils/SortUtils.h"

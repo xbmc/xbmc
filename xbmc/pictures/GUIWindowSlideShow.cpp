@@ -30,7 +30,6 @@
 #include "rendering/RenderSystem.h"
 #include "guilib/LocalizeStrings.h"
 #include "TextureDatabase.h"
-#include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/Random.h"
 #include "utils/Variant.h"

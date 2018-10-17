@@ -21,7 +21,6 @@
 #include "PictureInfoLoader.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "input/Key.h"
 #include "view/GUIViewState.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "PlayListPlayer.h"

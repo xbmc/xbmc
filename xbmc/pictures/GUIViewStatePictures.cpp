@@ -10,7 +10,6 @@
 #include "FileItem.h"
 #include "ServiceBroker.h"
 #include "view/ViewState.h"
-#include "settings/AdvancedSettings.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
