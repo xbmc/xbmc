@@ -26,6 +26,7 @@
 #include "pvr/dialogs/GUIDialogPVRGuideSearch.h"
 #include "pvr/epg/EpgContainer.h"
 #include "pvr/epg/EpgSearchFilter.h"
+#include "pvr/recordings/PVRRecording.h"
 
 using namespace PVR;
 using namespace KODI::MESSAGING;

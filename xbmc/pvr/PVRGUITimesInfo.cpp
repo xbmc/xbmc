@@ -18,7 +18,9 @@
 #include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
 
+#include "pvr/channels/PVRChannel.h"
 #include "pvr/PVRManager.h"
+#include "pvr/recordings/PVRRecording.h"
 
 using namespace PVR;
 

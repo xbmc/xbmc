@@ -17,7 +17,6 @@
 #include "utils/Observer.h"
 
 #include "pvr/PVRTypes.h"
-#include "pvr/channels/PVRChannel.h"
 #include "pvr/epg/EpgInfoTag.h"
 #include "pvr/epg/EpgSearchFilter.h"
 

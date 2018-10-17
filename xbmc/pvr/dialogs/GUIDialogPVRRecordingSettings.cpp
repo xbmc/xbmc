@@ -14,7 +14,6 @@
 #include "guilib/LocalizeStrings.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "settings/lib/Setting.h"
-#include "settings/lib/SettingsManager.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"

@@ -11,7 +11,6 @@
 #include "ServiceBroker.h"
 #include "addons/PVRClient.h"
 #include "guilib/LocalizeStrings.h"
-#include "messaging/helpers/DialogOKHelper.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"

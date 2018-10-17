@@ -26,6 +26,7 @@
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/epg/EpgContainer.h"
+#include "pvr/recordings/PVRRecording.h"
 
 using namespace PVR;
 

@@ -20,7 +20,6 @@
 
 #include "pvr/PVRGUITimerInfo.h"
 #include "pvr/PVRGUITimesInfo.h"
-#include "pvr/PVRTypes.h"
 #include "pvr/addons/PVRClients.h"
 
 namespace KODI

@@ -18,8 +18,6 @@
 #include "utils/ISortable.h"
 
 #include "pvr/PVRTypes.h"
-#include "pvr/channels/PVRChannel.h"
-#include "pvr/recordings/PVRRecording.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
 
 class CVariant;
