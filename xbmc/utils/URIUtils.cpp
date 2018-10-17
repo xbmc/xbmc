@@ -275,8 +275,6 @@ void URIUtils::GetCommonPath(std::string& strParent, const std::string& strPath)
 bool URIUtils::HasParentInHostname(const CURL& url)
 {
   return url.IsProtocol("zip")
-      || url.IsProtocol("rar")
-      || url.IsProtocol("archive")
       || url.IsProtocol("apk")
       || url.IsProtocol("bluray")
       || url.IsProtocol("udf")
