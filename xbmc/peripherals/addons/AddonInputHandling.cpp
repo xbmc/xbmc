@@ -16,7 +16,6 @@
 #include "input/mouse/generic/MouseInputHandling.h"
 #include "input/mouse/interfaces/IMouseInputHandler.h"
 #include "peripherals/addons/AddonButtonMap.h"
-#include "peripherals/devices/PeripheralJoystick.h"
 #include "peripherals/Peripherals.h"
 #include "utils/log.h"
 
