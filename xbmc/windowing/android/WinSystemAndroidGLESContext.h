@@ -31,6 +31,8 @@ public:
 
   virtual std::unique_ptr<CVideoSync> GetVideoSync(void *clock) override;
 
+  float GetFrameLatencyAdjustment() override;
+
   EGLDisplay GetEGLDisplay() const;
   EGLSurface GetEGLSurface() const;
   EGLContext GetEGLContext() const;

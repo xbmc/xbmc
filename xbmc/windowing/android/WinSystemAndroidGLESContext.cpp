@@ -98,6 +98,11 @@ void CWinSystemAndroidGLESContext::PresentRenderImpl(bool rendered)
   CXBMCApp::get()->WaitVSync(1000);
 }
 
+float CWinSystemAndroidGLESContext::GetFrameLatencyAdjustment()
+{
+  return CXBMCApp::GetFrameLatencyMs();
+}
+
 EGLDisplay CWinSystemAndroidGLESContext::GetEGLDisplay() const
 {
   return m_pGLContext.GetEGLDisplay();
