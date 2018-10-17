@@ -13,7 +13,6 @@
 #include <set>
 #include <Platinum/Source/Platinum/Platinum.h>
 
-#include "threads/SystemClock.h"
 #include "UPnP.h"
 #include "UPnPInternal.h"
 #include "UPnPRenderer.h"
@@ -35,7 +34,6 @@
 #include "guilib/GUIWindowManager.h"
 #include "utils/TimeUtils.h"
 #include "video/VideoInfoTag.h"
-#include "input/Key.h"
 #include "Util.h"
 #include "utils/SystemInfo.h"
 

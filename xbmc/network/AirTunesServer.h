@@ -21,7 +21,6 @@
 #include <list>
 #include "threads/Thread.h"
 #include "threads/CriticalSection.h"
-#include "utils/HttpParser.h"
 #include "filesystem/PipeFile.h"
 #include "interfaces/IAnnouncer.h"
 #include "interfaces/IActionListener.h"

@@ -30,7 +30,6 @@
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/StringUtils.h"
-#include "playlists/PlayList.h"
 #include "GUIUserMessages.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
 

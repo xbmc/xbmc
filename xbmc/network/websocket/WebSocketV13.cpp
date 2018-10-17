@@ -12,7 +12,6 @@
 
 #include "WebSocketV13.h"
 #include "WebSocket.h"
-#include "utils/Base64.h"
 #include "utils/HttpParser.h"
 #include "utils/HttpResponse.h"
 #include "utils/log.h"
