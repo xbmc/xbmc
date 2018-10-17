@@ -20,7 +20,6 @@
 #include "utils/URIUtils.h"
 #include "guilib/Texture.h"
 #include "guilib/imagefactory.h"
-#include "cores/FFmpeg.h"
 #if defined(TARGET_RASPBERRY_PI)
 #include "cores/omxplayer/OMXImage.h"
 #endif
