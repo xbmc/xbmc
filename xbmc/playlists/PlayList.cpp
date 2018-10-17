@@ -8,7 +8,6 @@
 
 #include "PlayList.h"
 #include "PlayListFactory.h"
-#include "video/VideoInfoTag.h"
 #include "music/tags/MusicInfoTag.h"
 #include "filesystem/File.h"
 #include "utils/log.h"
