@@ -9,7 +9,6 @@
 #include "ApplicationOperations.h"
 #include "Application.h"
 #include "CompileInfo.h"
-#include "FileItem.h"
 #include "GUIInfoManager.h"
 #include "InputOperations.h"
 #include "LangInfo.h"

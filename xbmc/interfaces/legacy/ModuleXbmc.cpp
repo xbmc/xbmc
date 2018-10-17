@@ -15,7 +15,6 @@
 #include "Application.h"
 #include "ServiceBroker.h"
 #include "messaging/ApplicationMessenger.h"
-#include "utils/URIUtils.h"
 #include "aojsonrpc.h"
 #ifndef TARGET_WINDOWS
 #include "XTimeUtils.h"
@@ -30,7 +29,6 @@
 #include "FileItem.h"
 #include "LangInfo.h"
 #include "PlayListPlayer.h"
-#include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "guilib/TextureManager.h"

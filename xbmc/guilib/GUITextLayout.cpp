@@ -8,6 +8,7 @@
 
 #include "GUITextLayout.h"
 #include "GUIFont.h"
+#include "GUIComponent.h"
 #include "GUIControl.h"
 #include "GUIColorManager.h"
 #include "utils/CharsetConverter.h"

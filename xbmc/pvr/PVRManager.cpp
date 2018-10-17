@@ -33,7 +33,6 @@
 #include "pvr/channels/PVRChannelGroupInternal.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/recordings/PVRRecordings.h"
-#include "pvr/recordings/PVRRecordingsPath.h"
 #include "pvr/timers/PVRTimers.h"
 
 using namespace PVR;

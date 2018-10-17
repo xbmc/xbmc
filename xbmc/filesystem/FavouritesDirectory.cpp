@@ -10,7 +10,6 @@
 #include "favourites/FavouritesService.h"
 #include "File.h"
 #include "Directory.h"
-#include "Util.h"
 #include "profiles/ProfileManager.h"
 #include "ServiceBroker.h"
 #include "utils/URIUtils.h"

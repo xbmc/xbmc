@@ -14,7 +14,6 @@
 #include "ServiceBroker.h"
 #include "input/Key.h"
 #include "guilib/LocalizeStrings.h"
-#include "PictureInfoTag.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
 
 #define CONTROL_PICTURE_INFO 5

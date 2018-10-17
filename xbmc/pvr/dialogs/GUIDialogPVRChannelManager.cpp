@@ -19,7 +19,6 @@
 #include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIComponent.h"
-#include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIEditControl.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"

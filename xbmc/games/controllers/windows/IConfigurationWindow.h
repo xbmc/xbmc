@@ -36,8 +36,6 @@ class CEvent;
  *      and the prompt for input ends.
  */
 
-#include "input/joysticks/JoystickTypes.h"
-
 namespace KODI
 {
 namespace GAME

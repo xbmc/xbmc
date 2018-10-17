@@ -12,7 +12,6 @@
 #include "addons/AddonSystemSettings.h"
 #include "utils/FileUtils.h"
 #include "utils/URIUtils.h"
-#include "PlayListPlayer.h"
 #include "GUIPassword.h"
 #include "music/dialogs/GUIDialogInfoProviderSettings.h"
 #include "filesystem/MusicDatabaseDirectory.h"
@@ -47,7 +46,6 @@
 #include "Util.h"
 #include "URL.h"
 #include "storage/MediaManager.h"
-#include "ContextMenuManager.h"
 
 using namespace XFILE;
 using namespace PLAYLIST;

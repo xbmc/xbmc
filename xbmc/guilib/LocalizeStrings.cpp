@@ -15,7 +15,6 @@
 #include "utils/POUtils.h"
 #include "filesystem/Directory.h"
 #include "threads/SharedSection.h"
-#include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
 
 

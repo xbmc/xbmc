@@ -21,9 +21,11 @@
 #include "utils/log.h"
 
 #include "pvr/PVRManager.h"
+#include "pvr/channels/PVRChannel.h"
 #include "pvr/epg/Epg.h"
 #include "pvr/epg/EpgContainer.h"
 #include "pvr/epg/EpgDatabase.h"
+#include "pvr/recordings/PVRRecording.h"
 #include "pvr/timers/PVRTimers.h"
 
 using namespace PVR;

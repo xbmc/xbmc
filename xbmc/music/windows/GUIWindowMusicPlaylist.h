@@ -9,7 +9,6 @@
 #pragma once
 
 #include "GUIWindowMusicBase.h"
-#include "BackgroundInfoLoader.h"
 
 class CGUIWindowMusicPlayList : public CGUIWindowMusicBase
 {

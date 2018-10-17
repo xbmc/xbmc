@@ -11,7 +11,6 @@
 #include "cores/VideoPlayer/DVDCodecs/DVDCodecs.h"
 #include "cores/VideoPlayer/DVDStreamInfo.h"
 #include "DVDVideoCodec.h"
-#include "DVDResource.h"
 #include "DVDVideoPPFFmpeg.h"
 #include <string>
 #include <vector>

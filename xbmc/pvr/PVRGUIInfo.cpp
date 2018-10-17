@@ -17,7 +17,6 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/guiinfo/GUIInfo.h"
-#include "guilib/guiinfo/GUIInfoHelper.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"

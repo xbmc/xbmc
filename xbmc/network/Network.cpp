@@ -19,7 +19,6 @@
 #include "settings/SettingsComponent.h"
 #include "utils/log.h"
 #ifdef TARGET_WINDOWS
-#include "utils/SystemInfo.h"
 #include "platform/win32/WIN32Util.h"
 #include "utils/CharsetConverter.h"
 #endif

@@ -12,7 +12,6 @@
 #include "ServiceBroker.h"
 #include "addons/PVRClient.h"
 #include "addons/PVRClientMenuHooks.h"
-#include "guilib/GUIWindowManager.h"
 #include "utils/URIUtils.h"
 
 #include "pvr/PVRGUIActions.h"

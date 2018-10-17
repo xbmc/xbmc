@@ -11,7 +11,6 @@
 #include "URL.h"
 #include "filesystem/Directory.h"
 #include "filesystem/ResourceFile.h"
-#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
 using namespace XFILE;

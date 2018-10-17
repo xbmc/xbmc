@@ -10,7 +10,6 @@
 
 #include "IConfigurationWindow.h"
 #include "addons/AddonEvents.h"
-#include "addons/Addon.h"
 #include "games/GameTypes.h"
 #include "games/controllers/ControllerTypes.h"
 

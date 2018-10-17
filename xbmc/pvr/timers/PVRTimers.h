@@ -13,7 +13,6 @@
 #include <vector>
 
 #include "XBDateTime.h"
-#include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
 #include "utils/Observer.h"
 
 #include "pvr/PVRSettings.h"

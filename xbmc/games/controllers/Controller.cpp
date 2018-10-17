@@ -11,7 +11,6 @@
 #include "ControllerLayout.h"
 #include "ControllerTopology.h"
 #include "utils/log.h"
-#include "utils/URIUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
 #include "URL.h"

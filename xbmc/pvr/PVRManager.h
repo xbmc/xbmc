@@ -27,7 +27,6 @@
 #include "pvr/PVRSettings.h"
 #include "pvr/PVRTypes.h"
 #include "pvr/epg/EpgContainer.h"
-#include "pvr/recordings/PVRRecording.h"
 
 class CStopWatch;
 class CVariant;

@@ -8,7 +8,6 @@
 
 #include "PVRJobs.h"
 
-#include "PlayListPlayer.h"
 #include "ServiceBroker.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "events/EventLog.h"

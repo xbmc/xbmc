@@ -19,7 +19,6 @@
 #include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroup.h"
-#include "pvr/epg/EpgContainer.h"
 
 using namespace PVR;
 using namespace KODI::MESSAGING;

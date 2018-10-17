@@ -13,7 +13,6 @@
 \brief
 */
 
-#include "threads/CriticalSection.h"
 #include "threads/SharedSection.h"
 
 #include <map>

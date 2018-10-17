@@ -9,13 +9,9 @@
 #pragma once
 
 #include "addons/AddonManager.h"
-#include "addons/IAddon.h"
 #include "addons/binary-addons/BinaryAddonBase.h"
-#include "guilib/IWindowManagerCallback.h"
 #include "peripherals/PeripheralTypes.h"
 #include "peripherals/bus/PeripheralBus.h"
-#include "threads/CriticalSection.h"
-#include "utils/Observer.h"
 
 #include <memory>
 #include <string>

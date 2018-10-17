@@ -18,7 +18,6 @@
 #include "PartyModeManager.h"
 #include "PlayListPlayer.h"
 #include "SeekHandler.h"
-#include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"

@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include "games/GameTypes.h"
 #include "windows/GUIMediaWindow.h"
 
 class CGUIDialogProgress;

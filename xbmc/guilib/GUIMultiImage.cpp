@@ -14,7 +14,6 @@
 #include "utils/URIUtils.h"
 #include "utils/JobManager.h"
 #include "FileItem.h"
-#include "settings/AdvancedSettings.h"
 #include "input/Key.h"
 #include "TextureCache.h"
 #include "WindowIDs.h"

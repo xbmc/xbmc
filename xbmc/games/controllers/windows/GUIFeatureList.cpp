@@ -21,10 +21,8 @@
 #include "guilib/GUIControlGroupList.h"
 #include "guilib/GUIImage.h"
 #include "guilib/GUILabelControl.h"
-#include "guilib/GUIMessage.h"
 #include "guilib/GUIWindow.h"
 #include "guilib/LocalizeStrings.h"
-#include "messaging/ApplicationMessenger.h"
 
 using namespace KODI;
 using namespace GAME;

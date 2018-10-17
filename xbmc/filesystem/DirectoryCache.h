@@ -9,7 +9,6 @@
 #pragma once
 
 #include "IDirectory.h"
-#include "Directory.h"
 #include "threads/CriticalSection.h"
 
 #include <map>

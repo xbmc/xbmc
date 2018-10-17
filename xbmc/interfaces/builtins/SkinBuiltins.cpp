@@ -9,7 +9,6 @@
 #include "SkinBuiltins.h"
 
 #include "ServiceBroker.h"
-#include "addons/Addon.h"
 #include "addons/GUIWindowAddonBrowser.h"
 #include "Application.h"
 #include "dialogs/GUIDialogFileBrowser.h"
@@ -20,7 +19,6 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "MediaSource.h"
-#include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/SkinSettings.h"

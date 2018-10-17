@@ -22,6 +22,7 @@
 #include "utils/log.h"
 
 #include "pvr/PVRManager.h"
+#include "pvr/channels/PVRChannel.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimers.h"
 

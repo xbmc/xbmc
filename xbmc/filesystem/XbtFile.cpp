@@ -27,7 +27,6 @@
 #include "filesystem/XbtManager.h"
 #include "guilib/TextureBundleXBT.h"
 #include "guilib/XBTFReader.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
 
 namespace XFILE

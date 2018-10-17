@@ -8,8 +8,6 @@
 
 #include "GUIWindowVisualisation.h"
 #include "Application.h"
-#include "messaging/ApplicationMessenger.h"
-#include "FileItem.h"
 #include "ServiceBroker.h"
 #include "music/dialogs/GUIDialogMusicOSD.h"
 #include "GUIUserMessages.h"

@@ -6,6 +6,7 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "Directory.h"
 #include "DirectoryCache.h"
 #include "FileItem.h"
 #include "threads/SingleLock.h"

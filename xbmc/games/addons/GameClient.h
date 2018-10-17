@@ -11,7 +11,6 @@
 #include "GameClientSubsystem.h"
 #include "addons/binary-addons/AddonDll.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/kodi_game_types.h"
-#include "games/GameTypes.h"
 #include "threads/CriticalSection.h"
 
 #include <atomic>

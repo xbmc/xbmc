@@ -24,6 +24,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
+#include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/VideoPlayer/Interface/Addon/DemuxCrypto.h"
 #include "ServiceBroker.h"
 

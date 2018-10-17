@@ -16,17 +16,14 @@
 #include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
-#include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 
 #include "pvr/PVRGUIActions.h"
 #include "pvr/PVRManager.h"
-#include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/epg/EpgInfoTag.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
-#include "pvr/windows/GUIWindowPVRSearch.h"
 
 using namespace PVR;
 using namespace KODI::MESSAGING;

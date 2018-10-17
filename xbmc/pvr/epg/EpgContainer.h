@@ -16,7 +16,6 @@
 #include "pvr/PVRSettings.h"
 #include "pvr/PVRTypes.h"
 #include "pvr/epg/Epg.h"
-#include "pvr/epg/EpgDatabase.h"
 
 class CFileItemList;
 

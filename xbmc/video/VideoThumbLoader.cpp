@@ -14,6 +14,7 @@
 #include "cores/VideoPlayer/DVDFileInfo.h"
 #include "FileItem.h"
 #include "ServiceBroker.h"
+#include "filesystem/Directory.h"
 #include "filesystem/DirectoryCache.h"
 #include "filesystem/StackDirectory.h"
 #include "guilib/GUIComponent.h"

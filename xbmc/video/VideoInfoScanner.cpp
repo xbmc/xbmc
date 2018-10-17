@@ -16,6 +16,7 @@
 #include "events/EventLog.h"
 #include "events/MediaLibraryEvent.h"
 #include "FileItem.h"
+#include "filesystem/Directory.h"
 #include "filesystem/DirectoryCache.h"
 #include "filesystem/File.h"
 #include "filesystem/MultiPathDirectory.h"
