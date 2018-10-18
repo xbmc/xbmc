@@ -9,7 +9,6 @@
 #pragma once
 
 #include "threads/SingleLock.h"
-#include "threads/Helpers.h"
 #include "threads/SystemClock.h"
 
 #include <condition_variable>
