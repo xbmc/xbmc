@@ -13893,7 +13893,7 @@ msgid "Internet connection required."
 msgstr ""
 
 #: xbmc/addons/GUIViewStateAddonBrowser.cpp
-#: xbmc/filesystem/AddonsDirectory.cpp
+#: xbmc/windows/GUIMediaWindow.cpp
 #: addons/skin.estuary/xml/DialogGameControllers.xml
 #: addons/skin.estuary/xml/Includes.xml
 #: addons/skin.estuary/xml/MyGames.xml

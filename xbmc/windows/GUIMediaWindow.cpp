@@ -781,6 +781,20 @@ bool CGUIMediaWindow::GetDirectory(const std::string &strDirectory, CFileItemLis
     }
   }
 
+  // Add "Get more..." link for add-on sources
+  if (StringUtils::StartsWith(strDirectory, "addons://sources/"))
+  {
+    std::string content = pathToUrl.GetFileName();
+    size_t slashPos = content.find('/');
+    if (slashPos != std::string::npos)
+      content = content.substr(0, slashPos);
+    CFileItemPtr item(new CFileItem("addons://more/" + content, true));
+    item->SetLabel(g_localizeStrings.Get(21452)); // "Get more..."
+    item->SetIconImage("DefaultAddon.png");
+    item->SetSpecialSort(SortSpecialOnBottom);
+    items.Add(std::move(item));
+  }
+
   // clear the filter
   SetProperty("filter", "");
   m_canFilterAdvanced = false;
