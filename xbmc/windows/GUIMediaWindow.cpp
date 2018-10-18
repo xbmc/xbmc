@@ -87,15 +87,19 @@ public:
   : m_dir(dir), m_url(url), m_items(items), m_useDir(useDir)
   {
   }
+
   void Run() override
   {
     m_result = m_dir.GetDirectory(m_url, m_items, m_useDir, true);
   }
+
   void Cancel() override
   {
     m_dir.CancelDirectory();
   }
-  bool m_result;
+
+  bool m_result = false;
+
 protected:
   XFILE::CVirtualDirectory &m_dir;
   CURL m_url;
