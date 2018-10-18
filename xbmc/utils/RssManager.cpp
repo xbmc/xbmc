@@ -15,7 +15,6 @@
 #include "ServiceBroker.h"
 #include "filesystem/File.h"
 #include "interfaces/builtins/Builtins.h"
-#include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "profiles/ProfileManager.h"
 #include "settings/lib/Setting.h"
