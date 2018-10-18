@@ -54,3 +54,8 @@ const char* CCompileInfo::GetSCMID()
 {
   return "@APP_SCMID@";
 }
+
+const char* CCompileInfo::GetCopyrightYears()
+{
+  return "@APP_COPYRIGHT_YEARS@";
+}
