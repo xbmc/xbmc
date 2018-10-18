@@ -13,7 +13,6 @@
 #include "MediaSettings.h"
 #include "Application.h"
 #include "PlayListPlayer.h"
-#include "dialogs/GUIDialogContextMenu.h"
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "settings/dialogs/GUIDialogLibExportSettings.h"
 #include "guilib/LocalizeStrings.h"
