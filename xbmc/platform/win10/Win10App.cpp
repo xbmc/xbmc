@@ -53,8 +53,6 @@ void App::Initialize(const CoreApplicationView& applicationView)
 
   // At this point we have access to the device.
   // We can create the device-dependent resources.
-  CWinEventsWin10::InitOSKeymap();
-
   // Initialise Winsock
   WSADATA wd;
   WSAStartup(MAKEWORD(2, 2), &wd);
