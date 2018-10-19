@@ -1374,22 +1374,26 @@ void CApplication::UnloadSkin(bool forReload /* = false */)
   else if (!m_saveSkinOnUnloading)
     m_saveSkinOnUnloading = true;
 
-  CServiceBroker::GetGUI()->GetAudioManager().Enable(false);
+  CGUIComponent *gui = CServiceBroker::GetGUI();
+  if (gui)
+  {
+    gui->GetAudioManager().Enable(false);
 
-  CServiceBroker::GetGUI()->GetWindowManager().DeInitialize();
-  CTextureCache::GetInstance().Deinitialize();
+    gui->GetWindowManager().DeInitialize();
+    CTextureCache::GetInstance().Deinitialize();
 
-  // remove the skin-dependent window
-  CServiceBroker::GetGUI()->GetWindowManager().Delete(WINDOW_DIALOG_FULLSCREEN_INFO);
+    // remove the skin-dependent window
+    gui->GetWindowManager().Delete(WINDOW_DIALOG_FULLSCREEN_INFO);
 
-  CServiceBroker::GetGUI()->GetTextureManager().Cleanup();
-  CServiceBroker::GetGUI()->GetLargeTextureManager().CleanupUnusedImages(true);
+    gui->GetTextureManager().Cleanup();
+    gui->GetLargeTextureManager().CleanupUnusedImages(true);
 
-  g_fontManager.Clear();
+    g_fontManager.Clear();
 
-  CServiceBroker::GetGUI()->GetColorManager().Clear();
+    gui->GetColorManager().Clear();
 
-  CServiceBroker::GetGUI()->GetInfoManager().Clear();
+    gui->GetInfoManager().Clear();
+  }
 
 //  The g_SkinInfo shared_ptr ought to be reset here
 // but there are too many places it's used without checking for NULL
@@ -2435,10 +2439,19 @@ bool CApplication::Cleanup()
     m_globalScreensaverInhibitor.Release();
     m_screensaverInhibitor.Release();
 
-    CServiceBroker::GetRenderSystem()->DestroyRenderSystem();
-    CServiceBroker::GetWinSystem()->DestroyWindow();
-    CServiceBroker::GetWinSystem()->DestroyWindowSystem();
-    CServiceBroker::GetGUI()->GetWindowManager().DestroyWindows();
+    CRenderSystemBase *renderSystem = CServiceBroker::GetRenderSystem();
+    if (renderSystem)
+      renderSystem->DestroyRenderSystem();
+
+    CWinSystemBase *winSystem = CServiceBroker::GetWinSystem();
+    if (winSystem)
+    {
+      winSystem->DestroyWindow();
+      winSystem->DestroyWindowSystem();
+    }
+
+    if (m_pGUI)
+      m_pGUI->GetWindowManager().DestroyWindows();
 
     CLog::Log(LOGNOTICE, "unload sections");
 
@@ -2473,8 +2486,11 @@ bool CApplication::Cleanup()
     while(1); // execution ends
 #endif
 
-    m_pGUI->Deinit();
-    m_pGUI.reset();
+    if (m_pGUI)
+    {
+      m_pGUI->Deinit();
+      m_pGUI.reset();
+    }
 
     // Cleanup was called more than once on exit during my tests
     if (m_ServiceManager)
@@ -3295,19 +3311,24 @@ bool CApplication::IsFullScreen()
 
 void CApplication::StopPlaying()
 {
-  int iWin = CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow();
-  if (m_appPlayer.IsPlaying())
+  CGUIComponent *gui = CServiceBroker::GetGUI();
+
+  if (gui)
   {
-    m_appPlayer.ClosePlayer();
+    int iWin = gui->GetWindowManager().GetActiveWindow();
+    if (m_appPlayer.IsPlaying())
+    {
+      m_appPlayer.ClosePlayer();
 
-    // turn off visualisation window when stopping
-    if ((iWin == WINDOW_VISUALISATION ||
-         iWin == WINDOW_FULLSCREEN_VIDEO ||
-         iWin == WINDOW_FULLSCREEN_GAME) &&
-         !m_bStop)
-      CServiceBroker::GetGUI()->GetWindowManager().PreviousWindow();
+      // turn off visualisation window when stopping
+      if ((iWin == WINDOW_VISUALISATION ||
+           iWin == WINDOW_FULLSCREEN_VIDEO ||
+           iWin == WINDOW_FULLSCREEN_GAME) &&
+           !m_bStop)
+        gui->GetWindowManager().PreviousWindow();
 
-    g_partyModeManager.Disable();
+      g_partyModeManager.Disable();
+    }
   }
 }
 

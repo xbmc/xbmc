@@ -13,6 +13,8 @@
 #include "utils/Color.h"
 #include "GLESShader.h"
 
+#include <array>
+
 enum ESHADERMETHOD
 {
   SM_DEFAULT,
@@ -97,7 +99,7 @@ protected:
 
   std::string m_RenderExtensions;
 
-  std::unique_ptr<CGLESShader*[]> m_pShader;
+  std::array<std::unique_ptr<CGLESShader>, SM_MAX> m_pShader;
   ESHADERMETHOD m_method = SM_DEFAULT;
 
   GLint      m_viewPort[4];

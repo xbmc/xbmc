@@ -39,7 +39,15 @@ CWeatherManager::CWeatherManager(void) : CInfoLoader(30 * 60 * 1000) // 30 minut
 
 CWeatherManager::~CWeatherManager(void)
 {
-  CServiceBroker::GetSettingsComponent()->GetSettings()->GetSettingsManager()->UnregisterCallback(this);
+  CSettingsComponent *settingsComponent = CServiceBroker::GetSettingsComponent();
+  if (!settingsComponent)
+    return;
+
+  const std::shared_ptr<CSettings> settings = settingsComponent->GetSettings();
+  if (!settings)
+    return;
+
+  settings->GetSettingsManager()->UnregisterCallback(this);
 }
 
 std::string CWeatherManager::BusyInfo(int info) const
