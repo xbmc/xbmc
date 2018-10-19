@@ -414,7 +414,10 @@ uint64_t CGLContextEGL::GetVblankTiming(uint64_t &msc, uint64_t &interval)
 
   uint64_t ret = now - m_sync.ust2;
   while (ret > interval)
+  {
     ret -= interval;
+    msc++;
+  }
 
   return ret;
 }
