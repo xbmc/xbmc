@@ -79,12 +79,14 @@
 				<include content="ContentPanel">
 					<param name="width" value="523" />
 				</include>
-				<control type="list" id="9000">
+				<control type="fixedlist" id="9000">
 					<left>1</left>
 					<top>300</top>
 					<width>462</width>
-					<height>671</height>
+					<height>855</height>
 					<pagecontrol>70</pagecontrol>
+					<movement>6</movement>
+					<focusposition>0</focusposition>
 					<onup>700</onup>
 					<ondown>700</ondown>
 					<onright>SetFocus($INFO[Container(9000).ListItem.Property(menu_id)])</onright>
@@ -222,9 +224,8 @@
 				<left>32</left>
 				<top>135</top>
 				<height>120</height>
-				<onup>SetFocus(9000,99)</onup>
-				<onup>9000</onup>
-				<ondown>SetFocus(9000,0)</ondown>
+				<onup>SetFocus(9000,99,absolute)</onup>
+				<ondown>SetFocus(9000,0,absolute)</ondown>
 				<include>OpenClose_Left</include>
 				<onright>400</onright>
 				<usecontrolcoords>true</usecontrolcoords>
@@ -235,7 +236,7 @@
 					<aligny>center</aligny>
 					<onclick>ActivateWindow(addonbrowser,root)</onclick>
 					<font>font12</font>
-					<label></label>
+					<label/>
 					<textoffsetx>40</textoffsetx>
 					<textwidth>230</textwidth>
 					<texturefocus colordiffuse="button_focus">buttons/roundbutton-fo.png</texturefocus>
@@ -257,7 +258,7 @@
 					<aligny>center</aligny>
 					<onclick>ActivateWindow(addonbrowser,addons://outdated/,return)</onclick>
 					<font>font12</font>
-					<label></label>
+					<label/>
 					<textoffsetx>40</textoffsetx>
 					<textwidth>230</textwidth>
 					<texturefocus border="30" colordiffuse="button_focus">buttons/dialogbutton-fo.png</texturefocus>
@@ -281,7 +282,7 @@
 					<aligny>center</aligny>
 					<onclick>ActivateWindow(systemsettings,addons)</onclick>
 					<font>font12</font>
-					<label></label>
+					<label/>
 					<textoffsetx>40</textoffsetx>
 					<textwidth>230</textwidth>
 					<texturefocus colordiffuse="button_focus">buttons/roundbutton-fo.png</texturefocus>
