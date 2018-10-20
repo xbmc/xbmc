@@ -215,6 +215,7 @@ void CGameClientInput::ActivateControllers(CControllerHub &hub)
 {
   for (auto &port : hub.Ports())
   {
+    port.SetConnected(true);
     port.SetActiveController(0);
     ActivateControllers(port.ActiveController().Hub());
   }
