@@ -109,6 +109,8 @@ size_t CWinEventsWin10::GetQueueSize()
 
 void CWinEventsWin10::InitEventHandlers(const CoreWindow& window)
 {
+  CWinEventsWin10::InitOSKeymap();
+
   //window->SetPointerCapture();
 
   // window
