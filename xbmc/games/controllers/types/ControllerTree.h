@@ -25,7 +25,7 @@ namespace GAME
   /*!
    * \brief Node in the controller tree
    *
-   * The node identies the controller profile, and optionally the available
+   * The node identifies the controller profile, and optionally the available
    * controller ports.
    */
   class CControllerNode
