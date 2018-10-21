@@ -286,6 +286,10 @@ bool CRepositoryUpdateJob::DoWork()
   if (database.GetRepoChecksum(m_repo->ID(), oldChecksum) == -1)
     oldChecksum = "";
 
+  std::pair<CDateTime, ADDON::AddonVersion> lastCheck = database.LastChecked(m_repo->ID());
+  if (lastCheck.second != m_repo->Version())
+    oldChecksum = "";
+
   std::string newChecksum;
   VECADDONS addons;
   auto status = m_repo->FetchIfChanged(oldChecksum, newChecksum, addons);
