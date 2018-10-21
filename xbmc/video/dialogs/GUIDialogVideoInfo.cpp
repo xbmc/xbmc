@@ -51,6 +51,7 @@
 #include "messaging/helpers/DialogOKHelper.h"
 
 #include <iterator>
+#include <string>
 
 using namespace XFILE::VIDEODATABASEDIRECTORY;
 using namespace XFILE;
@@ -1832,12 +1833,15 @@ bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const CFileItemPtr &item, const
       std::string baseDir = StringUtils::Format("videodb://movies/sets/%d", item->GetVideoInfoTag()->m_iDbId);
       if (videodb.GetMoviesNav(baseDir, items))
       {
+        std::vector<std::string> allMovieThumbs;
         for (int i=0; i < items.Size(); i++)
         {
           CVideoInfoTag* pTag = items[i]->GetVideoInfoTag();
           pTag->m_strPictureURL.Parse();
-          pTag->m_strPictureURL.GetThumbURLs(thumbs, artType);
+          pTag->m_strPictureURL.GetThumbURLs(allMovieThumbs, artType);
+          pTag->m_strPictureURL.GetThumbURLs(thumbs, "set." + artType, -1, true);
         }
+        std::copy(allMovieThumbs.begin(), allMovieThumbs.end(), std::back_inserter(thumbs));
       }
     }
     else
@@ -2092,6 +2096,19 @@ bool CGUIDialogVideoInfo::OnGetFanart(const CFileItemPtr &videoItem)
     if (videodb.GetMoviesNav(baseDir, movies))
     {
       int iFanart = 0;
+      for (int i=0; i < movies.Size(); i++)
+      {
+        movies[i]->GetVideoInfoTag()->m_strPictureURL.Parse();
+        movies[i]->GetVideoInfoTag()->m_strPictureURL.GetThumbURLs(thumbs, "set.fanart", -1, true);
+      }
+      for (auto &fanart : thumbs)
+      {
+        CFileItemPtr item(new CFileItem(StringUtils::Format("fanart://Remote{0}", iFanart++), false));
+        item->SetArt("thumb", fanart);
+        item->SetIconImage("DefaultPicture.png");
+        item->SetLabel(g_localizeStrings.Get(20441)); // "Remote fanart"
+        items.Add(item);
+      }
       for (int i=0; i < movies.Size(); i++)
       {
         // ensure the fanart is unpacked
