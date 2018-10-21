@@ -123,6 +123,9 @@ bool CRenderSystemGL::ResetRenderSystem(int width, int height)
     glBindVertexArray(m_vertexArray);
   }
 
+  ReleaseShaders();
+  InitialiseShaders();
+
   glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
 
   CalculateMaxTexturesize();

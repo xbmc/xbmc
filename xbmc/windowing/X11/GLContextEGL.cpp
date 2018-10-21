@@ -28,6 +28,8 @@ CGLContextEGL::CGLContextEGL(Display *dpy) : CGLContext(dpy)
   m_eglSurface = EGL_NO_SURFACE;
   m_eglContext = EGL_NO_CONTEXT;
   m_eglConfig = EGL_NO_CONFIG;
+
+  eglGetPlatformDisplayEXT = (PFNEGLGETPLATFORMDISPLAYEXTPROC)eglGetProcAddress("eglGetPlatformDisplayEXT");
 }
 
 CGLContextEGL::~CGLContextEGL()
@@ -58,23 +60,42 @@ bool CGLContextEGL::Refresh(bool force, int screen, Window glWindow, bool &newCo
     return true;
   }
 
-  // create context
-  bool retVal = false;
+  Destroy();
+  newContext = true;
+
+  if (eglGetPlatformDisplayEXT)
+  {
+    EGLint attribs[] =
+    {
+      EGL_PLATFORM_X11_SCREEN_EXT, screen,
+      EGL_NONE
+    };
+    m_eglDisplay = eglGetPlatformDisplayEXT(EGL_PLATFORM_X11_EXT,(EGLNativeDisplayType)m_dpy,
+                                            attribs);
+  }
+  else
+    m_eglDisplay = eglGetDisplay((EGLNativeDisplayType)m_dpy);
 
   if (m_eglDisplay == EGL_NO_DISPLAY)
   {
-    m_eglDisplay = eglGetDisplay((EGLNativeDisplayType)m_dpy);
-    if (m_eglDisplay == EGL_NO_DISPLAY)
-    {
-      CLog::Log(LOGERROR, "failed to get egl display\n");
-      return false;
-    }
-    if (!eglInitialize(m_eglDisplay, NULL, NULL))
-    {
-      CLog::Log(LOGERROR, "failed to initialize egl display\n");
-      return false;
-    }
+    CLog::Log(LOGERROR, "failed to get egl display");
+    return false;
   }
+  if (!eglInitialize(m_eglDisplay, NULL, NULL))
+  {
+    CLog::Log(LOGERROR, "failed to initialize egl\n");
+    Destroy();
+    return false;
+  }
+
+  if (!eglBindAPI(EGL_OPENGL_API))
+  {
+    CLog::Log(LOGERROR, "failed to initialize egl");
+    Destroy();
+    return false;
+  }
+
+  // create context
 
   XVisualInfo vMask;
   XVisualInfo *vInfo = nullptr;
@@ -82,130 +103,161 @@ bool CGLContextEGL::Refresh(bool force, int screen, Window glWindow, bool &newCo
   vMask.screen = screen;
   XWindowAttributes winAttr;
 
-  if (XGetWindowAttributes(m_dpy, glWindow, &winAttr))
+  if (!XGetWindowAttributes(m_dpy, glWindow, &winAttr))
   {
-    vMask.visualid = XVisualIDFromVisual(winAttr.visual);
-    vInfo = XGetVisualInfo(m_dpy, VisualScreenMask | VisualIDMask, &vMask, &availableVisuals);
-    if (!vInfo)
-    {
-      CLog::Log(LOGWARNING, "Failed to get VisualInfo of visual 0x%x", (unsigned) vMask.visualid);
-    }
-    else if(!IsSuitableVisual(vInfo))
-    {
-      CLog::Log(LOGWARNING, "Visual 0x%x of the window is not suitable, looking for another one...",
-                (unsigned) vInfo->visualid);
-      XFree(vInfo);
-      vInfo = nullptr;
-    }
-  }
-  else
     CLog::Log(LOGWARNING, "Failed to get window attributes");
+    Destroy();
+    return false;
+  }
 
-  if (vInfo)
+  vMask.visualid = XVisualIDFromVisual(winAttr.visual);
+  vInfo = XGetVisualInfo(m_dpy, VisualScreenMask | VisualIDMask, &vMask, &availableVisuals);
+  if (!vInfo)
   {
-    CLog::Log(LOGNOTICE, "Using visual 0x%x", (unsigned) vInfo->visualid);
+    CLog::Log(LOGERROR, "Failed to get VisualInfo of visual 0x%x", (unsigned) vMask.visualid);
+    Destroy();
+    return false;
+  }
 
-    if (m_eglContext)
-    {
-      eglMakeCurrent(m_eglContext, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
-      eglDestroyContext(m_eglDisplay, m_eglContext);
-      m_eglContext = EGL_NO_CONTEXT;
+  if (!IsSuitableVisual(vInfo))
+  {
+    CLog::Log(LOGWARNING, "Visual 0x%x of the window is not suitable", (unsigned) vInfo->visualid);
+    XFree(vInfo);
+    Destroy();
+    return false;
+  }
 
-      if (m_eglSurface)
-      {
-        eglDestroySurface(m_eglDisplay, m_eglSurface);
-        m_eglSurface = EGL_NO_SURFACE;
-      }
-      eglTerminate(m_eglDisplay);
-      m_eglDisplay = EGL_NO_DISPLAY;
-      XSync(m_dpy, False);
-      newContext = true;
-    }
+  CLog::Log(LOGNOTICE, "Using visual 0x%x", (unsigned) vInfo->visualid);
 
-    m_eglDisplay = eglGetDisplay((EGLNativeDisplayType)m_dpy);
-    if (m_eglDisplay == EGL_NO_DISPLAY)
-    {
-      CLog::Log(LOGERROR, "failed to get egl display");
-      return false;
-    }
-    if (!eglInitialize(m_eglDisplay, NULL, NULL))
-    {
-      CLog::Log(LOGERROR, "failed to initialize egl\n");
-      return false;
-    }
+  m_eglConfig = GetEGLConfig(m_eglDisplay, vInfo);
+  XFree(vInfo);
 
-    if (!eglBindAPI(EGL_OPENGL_API))
-    {
-      CLog::Log(LOGERROR, "failed to initialize egl");
-      XFree(vInfo);
-      return false;
-    }
+  if (m_eglConfig == EGL_NO_CONFIG)
+  {
+    CLog::Log(LOGERROR, "failed to get eglconfig for visual id");
+    Destroy();
+    return false;
+  }
 
-    if (m_eglConfig == EGL_NO_CONFIG)
-    {
-      m_eglConfig = GetEGLConfig(m_eglDisplay, vInfo);
-    }
+  m_eglSurface = eglCreateWindowSurface(m_eglDisplay, m_eglConfig, glWindow, NULL);
+  if (m_eglSurface == EGL_NO_SURFACE)
+  {
+    CLog::Log(LOGERROR, "failed to create EGL window surface %d", eglGetError());
+    Destroy();
+    return false;
+  }
 
-    if (m_eglConfig == EGL_NO_CONFIG)
-    {
-      CLog::Log(LOGERROR, "failed to get eglconfig for visual id");
-      XFree(vInfo);
-      return false;
-    }
-
-    if (m_eglSurface == EGL_NO_SURFACE)
-    {
-      m_eglSurface = eglCreateWindowSurface(m_eglDisplay, m_eglConfig, glWindow, NULL);
-      if (m_eglSurface == EGL_NO_SURFACE)
-      {
-        CLog::Log(LOGERROR, "failed to create EGL window surface %d", eglGetError());
-        XFree(vInfo);
-        return false;
-      }
-    }
-
-    EGLint contextAttributes[] =
-    {
+  EGLint contextAttributes[] =
+  {
       EGL_CONTEXT_MAJOR_VERSION_KHR, 3,
       EGL_CONTEXT_MINOR_VERSION_KHR, 2,
       EGL_CONTEXT_OPENGL_PROFILE_MASK_KHR, EGL_CONTEXT_OPENGL_CORE_PROFILE_BIT_KHR,
       EGL_NONE
+  };
+  m_eglContext = eglCreateContext(m_eglDisplay, m_eglConfig, EGL_NO_CONTEXT, contextAttributes);
+  if (m_eglContext == EGL_NO_CONTEXT)
+  {
+    EGLint contextAttributes[] =
+    {
+      EGL_CONTEXT_MAJOR_VERSION_KHR, 2,
+      EGL_NONE
     };
     m_eglContext = eglCreateContext(m_eglDisplay, m_eglConfig, EGL_NO_CONTEXT, contextAttributes);
+
     if (m_eglContext == EGL_NO_CONTEXT)
     {
-      EGLint contextAttributes[] =
-      {
-        EGL_CONTEXT_MAJOR_VERSION_KHR, 2,
-        EGL_NONE
-      };
-      m_eglContext = eglCreateContext(m_eglDisplay, m_eglConfig, EGL_NO_CONTEXT, contextAttributes);
-
-      if (m_eglContext == EGL_NO_CONTEXT)
-      {
-        CLog::Log(LOGERROR, "failed to create EGL context\n");
-        return false;
-      }
-
-      CLog::Log(LOGWARNING, "Failed to get an OpenGL context supporting core profile 3.2,  \
-                             using legacy mode with reduced feature set");
-    }
-
-    if (!eglMakeCurrent(m_eglDisplay, m_eglSurface, m_eglSurface, m_eglContext))
-    {
-      CLog::Log(LOGERROR, "Failed to make context current %p %p %p\n", m_eglDisplay, m_eglSurface, m_eglContext);
+      CLog::Log(LOGERROR, "failed to create EGL context\n");
+      Destroy();
       return false;
     }
-    XFree(vInfo);
-    retVal = true;
+
+    CLog::Log(LOGWARNING, "Failed to get an OpenGL context supporting core profile 3.2,  \
+                             using legacy mode with reduced feature set");
   }
-  else
+
+  if (!eglMakeCurrent(m_eglDisplay, m_eglSurface, m_eglSurface, m_eglContext))
   {
-    CLog::Log(LOGERROR, "EGL Error: vInfo is NULL!");
+    CLog::Log(LOGERROR, "Failed to make context current %p %p %p\n", m_eglDisplay, m_eglSurface, m_eglContext);
+    Destroy();
+    return false;
   }
 
   eglGetSyncValuesCHROMIUM = (PFNEGLGETSYNCVALUESCHROMIUMPROC)eglGetProcAddress("eglGetSyncValuesCHROMIUM");
-  return retVal;
+
+  m_usePB = false;
+  return true;
+}
+
+bool CGLContextEGL::CreatePB()
+{
+  const EGLint configAttribs[] =
+  {
+    EGL_SURFACE_TYPE, EGL_PBUFFER_BIT,
+    EGL_BLUE_SIZE, 8,
+    EGL_GREEN_SIZE, 8,
+    EGL_RED_SIZE, 8,
+    EGL_DEPTH_SIZE, 8,
+    EGL_RENDERABLE_TYPE, EGL_OPENGL_BIT,
+    EGL_NONE
+  };
+
+  const EGLint pbufferAttribs[] =
+  {
+    EGL_WIDTH, 9,
+    EGL_HEIGHT, 9,
+    EGL_NONE,
+  };
+
+  Destroy();
+
+  if (eglGetPlatformDisplayEXT)
+  {
+    m_eglDisplay = eglGetPlatformDisplayEXT(EGL_PLATFORM_X11_EXT,(EGLNativeDisplayType)m_dpy,
+                                            NULL);
+  }
+  else
+    m_eglDisplay = eglGetDisplay((EGLNativeDisplayType)m_dpy);
+
+  if (m_eglDisplay == EGL_NO_DISPLAY)
+  {
+    CLog::Log(LOGERROR, "failed to get egl display");
+    return false;
+  }
+  if (!eglInitialize(m_eglDisplay, NULL, NULL))
+  {
+    CLog::Log(LOGERROR, "failed to initialize egl\n");
+    Destroy();
+    return false;
+  }
+  if (!eglBindAPI(EGL_OPENGL_API))
+  {
+    CLog::Log(LOGERROR, "failed to initialize egl");
+    Destroy();
+    return false;
+  }
+
+  EGLint numConfigs;
+
+  eglChooseConfig(m_eglDisplay, configAttribs, &m_eglConfig, 1, &numConfigs);
+  m_eglSurface = eglCreatePbufferSurface(m_eglDisplay, m_eglConfig, pbufferAttribs);
+  if (m_eglSurface == EGL_NO_SURFACE)
+  {
+    CLog::Log(LOGERROR, "failed to create EGL window surface %d", eglGetError());
+    Destroy();
+    return false;
+  }
+
+  m_eglContext = eglCreateContext(m_eglDisplay, m_eglConfig, EGL_NO_CONTEXT, NULL);
+
+  if (!eglMakeCurrent(m_eglDisplay, m_eglSurface, m_eglSurface, m_eglContext))
+  {
+    CLog::Log(LOGERROR, "Failed to make context current %p %p %p\n", m_eglDisplay, m_eglSurface, m_eglContext);
+    Destroy();
+    return false;
+  }
+
+  m_usePB = true;
+  return true;
 }
 
 void CGLContextEGL::Destroy()
@@ -229,6 +281,8 @@ void CGLContextEGL::Destroy()
     eglTerminate(m_eglDisplay);
     m_eglDisplay = EGL_NO_DISPLAY;
   }
+
+  m_eglConfig = EGL_NO_CONFIG;
 }
 
 void CGLContextEGL::Detach()
@@ -293,7 +347,7 @@ EGLConfig CGLContextEGL::GetEGLConfig(EGLDisplay eglDisplay, XVisualInfo *vInfo)
     CLog::Log(LOGERROR, "Failed to query egl configs");
     goto Exit;
   }
-  for (EGLint i = 0;i < numConfigs;++i)
+  for (EGLint i = 0; i < numConfigs; ++i)
   {
     EGLint value;
     if (!eglGetConfigAttrib(eglDisplay, eglConfigs[i], EGL_NATIVE_VISUAL_ID, &value))
@@ -321,6 +375,13 @@ void CGLContextEGL::SwapBuffers()
 {
   if ((m_eglDisplay == EGL_NO_DISPLAY) || (m_eglSurface == EGL_NO_SURFACE))
     return;
+
+  if (m_usePB)
+  {
+    eglSwapBuffers(m_eglDisplay, m_eglSurface);
+    usleep(20 * 1000);
+    return;
+  }
 
   uint64_t ust1, ust2;
   uint64_t msc1, msc2;

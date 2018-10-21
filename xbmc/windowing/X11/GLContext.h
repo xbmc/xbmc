@@ -20,6 +20,7 @@ public:
   }
   virtual ~CGLContext() = default;
   virtual bool Refresh(bool force, int screen, Window glWindow, bool &newContext) = 0;
+  virtual bool CreatePB() { return false; };
   virtual void Destroy() = 0;
   virtual void Detach() = 0;
   virtual void SetVSync(bool enable) = 0;
