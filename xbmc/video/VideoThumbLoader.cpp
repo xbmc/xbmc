@@ -222,27 +222,38 @@ static void SetupRarOptions(CFileItem& item, const std::string& path)
 
 std::vector<std::string> CVideoThumbLoader::GetArtTypes(const std::string &type)
 {
+  const std::shared_ptr<CAdvancedSettings> advancedSettings = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
   std::vector<std::string> ret;
+  std::vector<std::string> extraart;
   if (type == MediaTypeEpisode)
-    ret.push_back("thumb");
-  else if (type == MediaTypeTvShow || type == MediaTypeSeason)
   {
-    ret.push_back("banner");
-    ret.push_back("poster");
-    ret.push_back("fanart");
+    ret = { "thumb" };
+    extraart = advancedSettings->m_videoEpisodeExtraArt;
   }
-  else if (type == MediaTypeMovie || type == MediaTypeMusicVideo || type == MediaTypeVideoCollection)
+  else if (type == MediaTypeTvShow)
   {
-    ret.push_back("poster");
-    ret.push_back("fanart");
+    ret = { "poster", "fanart", "banner" };
+    extraart = advancedSettings->m_videoTvShowExtraArt;
   }
-  else if (type.empty()) // unknown - just throw everything in
+  else if (type == MediaTypeSeason)
   {
-    ret.push_back("poster");
-    ret.push_back("banner");
-    ret.push_back("thumb");
-    ret.push_back("fanart");
+    ret = { "poster", "fanart", "banner" };
+    extraart = advancedSettings->m_videoTvSeasonExtraArt;
   }
+  else if (type == MediaTypeMovie || type == MediaTypeVideoCollection)
+  {
+    ret = { "poster", "fanart" };
+    extraart = advancedSettings->m_videoMovieExtraArt;
+  }
+  else if (type == MediaTypeMusicVideo)
+  {
+    ret = { "poster", "fanart" };
+    extraart = advancedSettings->m_videoMusicVideoExtraArt;
+  }
+  else if (type.empty()) // unknown, just the basics
+    ret = { "poster", "fanart", "banner", "thumb" };
+
+  ret.insert(ret.end(), extraart.begin(), extraart.end());
   return ret;
 }
 

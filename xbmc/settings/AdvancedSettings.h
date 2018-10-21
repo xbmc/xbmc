@@ -265,6 +265,11 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     bool m_bVideoLibraryExportAutoThumbs;
     bool m_bVideoLibraryImportWatchedState;
     bool m_bVideoLibraryImportResumePoint;
+    std::vector<std::string> m_videoEpisodeExtraArt;
+    std::vector<std::string> m_videoTvShowExtraArt;
+    std::vector<std::string> m_videoTvSeasonExtraArt;
+    std::vector<std::string> m_videoMovieExtraArt;
+    std::vector<std::string> m_videoMusicVideoExtraArt;
 
     bool m_bVideoScannerIgnoreErrors;
     int m_iVideoLibraryDateAdded;
@@ -381,4 +386,5 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     void SetExtraLogLevel(const std::vector<CVariant> &components);
     void Initialize();
     void Clear();
+    void SetExtraArtwork(const TiXmlElement* arttypes, std::vector<std::string>& artworkMap);
 };
