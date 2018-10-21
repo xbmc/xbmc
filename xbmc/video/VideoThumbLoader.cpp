@@ -251,10 +251,19 @@ std::vector<std::string> CVideoThumbLoader::GetArtTypes(const std::string &type)
         ret.push_back(artType);
     }
   }
-  else if (type == MediaTypeMovie || type == MediaTypeVideoCollection)
+  else if (type == MediaTypeMovie)
   {
     ret = {"poster", "fanart"};
     for (auto& artType : advancedSettings->m_videoMovieExtraArt)
+    {
+      if (find(ret.begin(), ret.end(), artType) == ret.end())
+        ret.push_back(artType);
+    }
+  }
+  else if (type == MediaTypeVideoCollection)
+  {
+    ret = {"poster", "fanart"};
+    for (auto& artType : advancedSettings->m_videoMovieSetExtraArt)
     {
       if (find(ret.begin(), ret.end(), artType) == ret.end())
         ret.push_back(artType);

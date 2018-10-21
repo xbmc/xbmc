@@ -321,6 +321,7 @@ void CAdvancedSettings::Initialize()
   m_videoTvShowExtraArt = {};
   m_videoTvSeasonExtraArt = {};
   m_videoMovieExtraArt = {};
+  m_videoMovieSetExtraArt = {};
   m_videoMusicVideoExtraArt = {};
 
   m_iEpgUpdateCheckInterval = 300; /* check if tables need to be updated every 5 minutes */
@@ -800,6 +801,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     SetExtraArtwork(pElement->FirstChildElement("tvshowextraart"), m_videoTvShowExtraArt);
     SetExtraArtwork(pElement->FirstChildElement("tvseasonextraart"), m_videoTvSeasonExtraArt);
     SetExtraArtwork(pElement->FirstChildElement("movieextraart"), m_videoMovieExtraArt);
+    SetExtraArtwork(pElement->FirstChildElement("moviesetextraart"), m_videoMovieSetExtraArt);
     SetExtraArtwork(pElement->FirstChildElement("musicvideoextraart"), m_videoMusicVideoExtraArt);
   }
 

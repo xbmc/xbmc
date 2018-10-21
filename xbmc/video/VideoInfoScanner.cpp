@@ -1443,6 +1443,11 @@ namespace VIDEO
     std::vector<std::string> artTypes = CVideoThumbLoader::GetArtTypes(ContentToMediaType(content, pItem->m_bIsFolder));
     bool lookForThumb = find(artTypes.begin(), artTypes.end(), "thumb") == artTypes.end() &&
                         art.find("thumb") == art.end();
+    if (content == CONTENT_MOVIES)
+    {
+      for (std::string artType : CVideoThumbLoader::GetArtTypes(MediaTypeVideoCollection))
+        artTypes.push_back("set." + artType);
+    }
     // find local art
     if (useLocal)
     {
