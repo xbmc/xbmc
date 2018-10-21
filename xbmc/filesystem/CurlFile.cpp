@@ -1442,7 +1442,11 @@ int CCurlFile::Stat(const CURL& url, struct __stat64* buffer)
   {
     long code;
     if(g_curlInterface.easy_getinfo(m_state->m_easyHandle, CURLINFO_RESPONSE_CODE, &code) == CURLE_OK && code == 404 )
+    {
+      g_curlInterface.easy_release(&m_state->m_easyHandle, NULL);
+      errno = ENOENT;
       return -1;
+    }
   }
 
   if(result == CURLE_GOT_NOTHING
