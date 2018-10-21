@@ -1,7 +1,0 @@
-*.pyo
-.project
-.pydevproject
-pysrc
-*.pyc
-.settings
-.idea

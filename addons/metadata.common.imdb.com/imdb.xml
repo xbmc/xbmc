@@ -7,8 +7,14 @@
 	</GetIMDBGenresById>
 	<ParseIMDBGenres dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
-			<RegExp input="$$1" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="2">
-				<expression repeat="yes">tt_stry_gnr&quot;\s>\s([^&lt;]+)</expression>
+			<RegExp input="$$1" output="\1" dest="6">
+				<expression noclean="1">,\s*&quot;genre&quot;:\s(&quot;[^&quot;]+&quot;),</expression>
+			</RegExp>
+			<RegExp input="$$1" output="\1" dest="6">
+				<expression noclean="1">"genre":\s\[(.*?)\]</expression>
+			</RegExp>
+			<RegExp input="$$6" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="2">
+				<expression repeat="yes">&quot;([^&quot;]+)&quot;</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
@@ -98,13 +104,13 @@
 	<ParseMetaCriticRating dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
 			<RegExp input="$$1" output="\1" dest="6">
-				<expression clear="yes" noclean="1">&lt;div\sclass=&quot;metacriticScore\sscore_mixed\stitleReviewBarSubItem&quot;(.*?)&lt;span\sclass=&quot;ghostText&quot;</expression>
+				<expression clear="yes" noclean="1">&lt;div\sclass=&quot;metascore_block&quot;(.*?)Metacritic.com&lt;/a&gt;</expression>
 			</RegExp>
 			<RegExp input="$$6" output="&lt;rating max=&quot;100&quot;&gt;\1&lt;/value&gt;" dest="2">
-				<expression clear="yes">&lt;span&gt;(\d+)&lt;/span&gt;</expression>
+				<expression clear="yes">&lt;span\sitemprop=&quot;ratingValue&quot;&gt;(\d+)&lt;/span&gt;</expression>
 			</RegExp>
 			<RegExp input="$$6" output="&lt;votes&gt;\1&lt;/votes&gt;" dest="2+">
-				<expression>&gt;(\d+)\suser&lt;/a&gt;</expression>
+				<expression>&lt;span\sitemprop=&quot;ratingCount&quot;&gt;(\d+)&lt;/span&gt;</expression>
 			</RegExp>
 			<expression noclean="1" />
 		</RegExp>
@@ -122,13 +128,13 @@
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
 			<RegExp input="$$4" output="&lt;ratings&gt;&lt;rating name=&quot;metacritic&quot; max=&quot;100&quot; $$3&gt;\1&lt;/rating&gt;&lt;/ratings&gt;" dest="2">
 				<RegExp input="$$1" output="\1" dest="6">
-					<expression clear="yes" noclean="1">&lt;div\sclass=&quot;metacriticScore\sscore_mixed\stitleReviewBarSubItem&quot;(.*?)&lt;span\sclass=&quot;ghostText&quot;</expression>
+					<expression clear="yes" noclean="1">&lt;div\sclass=&quot;metascore_block&quot;(.*?)Metacritic.com&lt;/a&gt;</expression>
 				</RegExp>
 				<RegExp input="$$6" output="&lt;value&gt;\1&lt;/value&gt;" dest="4">
-					<expression clear="yes">&lt;span&gt;(\d+)&lt;/span&gt;</expression>
+					<expression clear="yes">&lt;span\sitemprop=&quot;ratingValue&quot;&gt;(\d+)&lt;/span&gt;</expression>
 				</RegExp>
 				<RegExp input="$$6" output="&lt;votes&gt;\1&lt;/votes&gt;" dest="4+">
-					<expression>&gt;(\d+)\suser&lt;/a&gt;</expression>
+					<expression>&lt;span\sitemprop=&quot;ratingCount&quot;&gt;(\d+)&lt;/span&gt;</expression>
 				</RegExp>
 				<expression noclean="1" clear="yes"/>
 			</RegExp>

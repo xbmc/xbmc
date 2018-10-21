@@ -9,7 +9,7 @@
 			<RegExp input="$$1" output="\1" dest="17">
 				<expression>.+::.+::(.+)?</expression>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;url function=&quot;ParseTMDBCertifications&quot; cache=&quot;tmdb-cert-\1.json&quot;&gt;https://api.tmdb.org/3/movie/\1/releases?api_key=45ab4cebe57ae11c2ee50c87005ddfe8&lt;/url&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;url function=&quot;ParseTMDBCertifications&quot; cache=&quot;tmdb-cert-\1.json&quot;&gt;https://api.tmdb.org/3/movie/\1/releases?api_key=f090bb54758cabf231fb605d3e3e0468&lt;/url&gt;" dest="5">
 				<expression>(.+)::(.+)::(.+)?</expression>
 			</RegExp>
 			<expression noclean="1" />
@@ -32,11 +32,11 @@
 			<RegExp input="$$1" output="\1::\2" dest="16">
 				<expression>(.+)::(.+)</expression>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;url function=&quot;ParseTMDBTitle&quot; cache=&quot;tmdb-\2-\1.json&quot;&gt;https://api.tmdb.org/3/movie/\1?api_key=45ab4cebe57ae11c2ee50c87005ddfe8&amp;amp;language=\2&lt;/url&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;url function=&quot;ParseTMDBTitle&quot; cache=&quot;tmdb-\2-\1.json&quot;&gt;https://api.tmdb.org/3/movie/\1?api_key=f090bb54758cabf231fb605d3e3e0468&amp;amp;language=\2&lt;/url&gt;" dest="5">
 				<expression>(.+)::(.+)</expression>
 			</RegExp>
 			<RegExp input="$$1" output="$$2" dest="5">
-				<RegExp input="$$1" output="&lt;url function=&quot;ParseTMDBTitle&quot; cache=&quot;tmdb-en-\1.json&quot;&gt;https://api.tmdb.org/3/movie/\1?api_key=45ab4cebe57ae11c2ee50c87005ddfe8&amp;amp;language=en&lt;/url&gt;" dest="2">
+				<RegExp input="$$1" output="&lt;url function=&quot;ParseTMDBTitle&quot; cache=&quot;tmdb-en-\1.json&quot;&gt;https://api.tmdb.org/3/movie/\1?api_key=f090bb54758cabf231fb605d3e3e0468&amp;amp;language=en&lt;/url&gt;" dest="2">
 					<expression>(.+)::</expression>
 				</RegExp>
 				<expression>(.+)::Keep Original</expression>
@@ -64,7 +64,7 @@
 			<RegExp input="$$1" output="\1" dest="8">
 				<expression encode="1">(.+)::.+</expression>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;url function=&quot;ParseTMDBPlot&quot; cache=&quot;tmdb-\2-\1.json&quot;&gt;https://api.tmdb.org/3/movie/\1?api_key=45ab4cebe57ae11c2ee50c87005ddfe8&amp;amp;language=\2&lt;/url&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;url function=&quot;ParseTMDBPlot&quot; cache=&quot;tmdb-\2-\1.json&quot;&gt;https://api.tmdb.org/3/movie/\1?api_key=f090bb54758cabf231fb605d3e3e0468&amp;amp;language=\2&lt;/url&gt;" dest="5">
 				<expression>(.+)::(.+)</expression>
 			</RegExp>
 			<expression noclean="1" />
@@ -75,7 +75,7 @@
 			<RegExp input="$$1" output="\1" dest="9">
 				<expression clear="yes" fixchars="1">&quot;overview&quot;:&quot;(.*?)&quot;,&quot;</expression>
 			</RegExp>
-			<RegExp input="$$9" output="&lt;url function=&quot;ParseFallbackTMDBPlot&quot; cache=&quot;tmdb-en-$$8.json&quot;&gt;https://api.tmdb.org/3/movie/$$8?api_key=45ab4cebe57ae11c2ee50c87005ddfe8&amp;amp;language=en&lt;/url&gt;" dest="2">
+			<RegExp input="$$9" output="&lt;url function=&quot;ParseFallbackTMDBPlot&quot; cache=&quot;tmdb-en-$$8.json&quot;&gt;https://api.tmdb.org/3/movie/$$8?api_key=f090bb54758cabf231fb605d3e3e0468&amp;amp;language=en&lt;/url&gt;" dest="2">
 				<expression>^$</expression>
 			</RegExp>
 			<RegExp input="$$9" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="2">
@@ -98,7 +98,7 @@
 			<RegExp input="$$1" output="\1" dest="8">
 				<expression>(.+)::.+</expression>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;url function=&quot;ParseTMDBTagline&quot; cache=&quot;tmdb-\2-\1.json&quot;&gt;https://api.tmdb.org/3/movie/\1?api_key=45ab4cebe57ae11c2ee50c87005ddfe8&amp;amp;language=\2&lt;/url&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;url function=&quot;ParseTMDBTagline&quot; cache=&quot;tmdb-\2-\1.json&quot;&gt;https://api.tmdb.org/3/movie/\1?api_key=f090bb54758cabf231fb605d3e3e0468&amp;amp;language=\2&lt;/url&gt;" dest="5">
 				<expression>(.+)::(.+)</expression>
 			</RegExp>
 			<expression noclean="1" />
@@ -109,7 +109,7 @@
 			<RegExp input="$$1" output="\1" dest="9">
 				<expression clear="yes" fixchars="1">&quot;tagline&quot;:&quot;(.*?)&quot;,&quot;</expression>
 			</RegExp>
-			<RegExp input="$$9" output="&lt;url function=&quot;ParseFallbackTMDBTagline&quot; cache=&quot;tmdb-en-$$8.json&quot;&gt;https://api.tmdb.org/3/movie/$$8?api_key=45ab4cebe57ae11c2ee50c87005ddfe8&amp;amp;language=en&lt;/url&gt;" dest="2">
+			<RegExp input="$$9" output="&lt;url function=&quot;ParseFallbackTMDBTagline&quot; cache=&quot;tmdb-en-$$8.json&quot;&gt;https://api.tmdb.org/3/movie/$$8?api_key=f090bb54758cabf231fb605d3e3e0468&amp;amp;language=en&lt;/url&gt;" dest="2">
 				<expression>^$</expression>
 			</RegExp>
 			<RegExp input="$$9" output="&lt;tagline&gt;\1&lt;/tagline&gt;" dest="2">
@@ -132,7 +132,7 @@
 			<RegExp input="$$1" output="\1" dest="8">
 				<expression clear="yes" noclean="1" />
 			</RegExp>
-			<RegExp input="$$8" output="&lt;url function=&quot;ParseTMDBTags&quot; &gt;https://api.tmdb.org/3/movie/\1/keywords?api_key=45ab4cebe57ae11c2ee50c87005ddfe8&lt;/url&gt;" dest="5">
+			<RegExp input="$$8" output="&lt;url function=&quot;ParseTMDBTags&quot; &gt;https://api.tmdb.org/3/movie/\1/keywords?api_key=f090bb54758cabf231fb605d3e3e0468&lt;/url&gt;" dest="5">
 				<expression />
 			</RegExp>
 			<expression noclean="1" />
@@ -155,7 +155,7 @@
 			<RegExp input="$$1" output="\2" dest="10">
 				<expression>(.+)::(.+)</expression>
 			</RegExp>
-			<RegExp input="$$8" output="&lt;url function=&quot;GetTMDBSetID&quot; cache=&quot;tmdb-$$10-\1.json&quot;&gt;https://api.tmdb.org/3/movie/\1?api_key=45ab4cebe57ae11c2ee50c87005ddfe8&amp;amp;language=$$10&lt;/url&gt;" dest="5">
+			<RegExp input="$$8" output="&lt;url function=&quot;GetTMDBSetID&quot; cache=&quot;tmdb-$$10-\1.json&quot;&gt;https://api.tmdb.org/3/movie/\1?api_key=f090bb54758cabf231fb605d3e3e0468&amp;amp;language=$$10&lt;/url&gt;" dest="5">
 				<expression />
 			</RegExp>
 			<expression noclean="1" />
@@ -166,10 +166,10 @@
 			<RegExp input="$$1" output="\1" dest="9">
 				<expression clear="yes" noclean="1">&quot;belongs_to_collection&quot;:\{&quot;id&quot;:([0-9]+),&quot;name&quot;:&quot;([^&quot;]*)</expression>
 			</RegExp>
-			<RegExp input="$$9" output="&lt;url function=&quot;ParseTMDBBaseImageURL&quot; cache=&quot;tmdb-config.json&quot;&gt;https://api.tmdb.org/3/configuration?api_key=45ab4cebe57ae11c2ee50c87005ddfe8&lt;/url&gt;" dest="2">
+			<RegExp input="$$9" output="&lt;url function=&quot;ParseTMDBBaseImageURL&quot; cache=&quot;tmdb-config.json&quot;&gt;https://api.tmdb.org/3/configuration?api_key=f090bb54758cabf231fb605d3e3e0468&lt;/url&gt;" dest="2">
 				<expression>(.+)</expression>
 			</RegExp>
-			<RegExp input="$$9" output="&lt;url function=&quot;ParseTMDBSetOutline&quot; cache=&quot;tmdbset-$$10-\1.json&quot;&gt;https://api.tmdb.org/3/collection/\1?api_key=45ab4cebe57ae11c2ee50c87005ddfe8&amp;amp;language=$$10&amp;amp;append_to_response=images&amp;amp;include_image_language=$$10,en,null&lt;/url&gt;" dest="2+">
+			<RegExp input="$$9" output="&lt;url function=&quot;ParseTMDBSetOutline&quot; cache=&quot;tmdbset-$$10-\1.json&quot;&gt;https://api.tmdb.org/3/collection/\1?api_key=f090bb54758cabf231fb605d3e3e0468&amp;amp;language=$$10&amp;amp;append_to_response=images&amp;amp;include_image_language=$$10,en,null&lt;/url&gt;" dest="2+">
 				<expression>(.+)</expression>
 			</RegExp>
 			<expression noclean="1" />
@@ -213,7 +213,7 @@
 				</RegExp>
 				<expression noclean="1" />
 			</RegExp>
-			<RegExp input="$$9" output="&lt;url function=&quot;ParseFallbackTMDBSetOutline&quot; cache=&quot;tmdbset-en-$$6.json&quot;&gt;https://api.tmdb.org/3/collection/$$6?api_key=45ab4cebe57ae11c2ee50c87005ddfe8&amp;amp;language=en&amp;amp;append_to_response=images&amp;amp;include_image_language=$$10,en,null&lt;/url&gt;" dest="2">
+			<RegExp input="$$9" output="&lt;url function=&quot;ParseFallbackTMDBSetOutline&quot; cache=&quot;tmdbset-en-$$6.json&quot;&gt;https://api.tmdb.org/3/collection/$$6?api_key=f090bb54758cabf231fb605d3e3e0468&amp;amp;language=en&amp;amp;append_to_response=images&amp;amp;include_image_language=$$10,en,null&lt;/url&gt;" dest="2">
 				<expression>^$</expression>
 			</RegExp>
 			<expression noclean="1" />
@@ -251,10 +251,10 @@
 
 	<GetTMDBCastByIdChain dest="4"> <!-- Expected chaining format= tmdb_id-->
 		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="4">
-			<RegExp input="$$1" output="&lt;url function=&quot;ParseTMDBBaseImageURL&quot; cache=&quot;tmdb-config.json&quot;&gt;https://api.tmdb.org/3/configuration?api_key=45ab4cebe57ae11c2ee50c87005ddfe8&lt;/url&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;url function=&quot;ParseTMDBBaseImageURL&quot; cache=&quot;tmdb-config.json&quot;&gt;https://api.tmdb.org/3/configuration?api_key=f090bb54758cabf231fb605d3e3e0468&lt;/url&gt;" dest="5">
 				<expression />
 			</RegExp>
-			<RegExp input="$$1" output="&lt;url function=&quot;ParseTMDBCast&quot; cache=&quot;tmdb-cast-\1.json&quot;&gt;https://api.tmdb.org/3/movie/\1/casts?api_key=45ab4cebe57ae11c2ee50c87005ddfe8&lt;/url&gt;" dest="5+">
+			<RegExp input="$$1" output="&lt;url function=&quot;ParseTMDBCast&quot; cache=&quot;tmdb-cast-\1.json&quot;&gt;https://api.tmdb.org/3/movie/\1/casts?api_key=f090bb54758cabf231fb605d3e3e0468&lt;/url&gt;" dest="5+">
 				<expression />
 			</RegExp>
 			<expression noclean="1" />
@@ -277,7 +277,7 @@
 
 	<GetTMDBDirectorsByIdChain dest="4"> <!-- Expected chaining format= tmdb_id-->
 		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="4">
-			<RegExp input="$$1" output="&lt;url function=&quot;ParseTMDBDirectors&quot; cache=&quot;tmdb-cast-\1.json&quot;&gt;https://api.tmdb.org/3/movie/\1/casts?api_key=45ab4cebe57ae11c2ee50c87005ddfe8&lt;/url&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;url function=&quot;ParseTMDBDirectors&quot; cache=&quot;tmdb-cast-\1.json&quot;&gt;https://api.tmdb.org/3/movie/\1/casts?api_key=f090bb54758cabf231fb605d3e3e0468&lt;/url&gt;" dest="5">
 				<expression />
 			</RegExp>
 			<expression noclean="1" />
@@ -297,7 +297,7 @@
 
 	<GetTMDBWitersByIdChain dest="4"> <!-- Expected chaining format= tmdb_id-->
 		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="4">
-			<RegExp input="$$1" output="&lt;url function=&quot;ParseTMDBWriters&quot; cache=&quot;tmdb-cast-\1.json&quot;&gt;https://api.tmdb.org/3/movie/\1/casts?api_key=45ab4cebe57ae11c2ee50c87005ddfe8&lt;/url&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;url function=&quot;ParseTMDBWriters&quot; cache=&quot;tmdb-cast-\1.json&quot;&gt;https://api.tmdb.org/3/movie/\1/casts?api_key=f090bb54758cabf231fb605d3e3e0468&lt;/url&gt;" dest="5">
 				<expression />
 			</RegExp>
 			<expression noclean="1" />
@@ -317,7 +317,7 @@
 
 	<GetTMDBGenresByIdChain dest="4"> <!-- Expected chaining format= tmdb_id::language-->
 		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="4">
-			<RegExp input="$$1" output="&lt;url function=&quot;ParseTMDBGenres&quot; cache=&quot;tmdb-\2-\1.json&quot;&gt;https://api.tmdb.org/3/movie/\1?api_key=45ab4cebe57ae11c2ee50c87005ddfe8&amp;amp;language=\2&lt;/url&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;url function=&quot;ParseTMDBGenres&quot; cache=&quot;tmdb-\2-\1.json&quot;&gt;https://api.tmdb.org/3/movie/\1?api_key=f090bb54758cabf231fb605d3e3e0468&amp;amp;language=\2&lt;/url&gt;" dest="5">
 				<expression>(.+)::(.+)</expression>
 			</RegExp>
 			<expression noclean="1" />
@@ -343,7 +343,7 @@
 			<RegExp input="$$1" output="\2" dest="11">
 				<expression>(.+)::([^\|]*)</expression>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;url function=&quot;ParseTMDBRating&quot; cache=&quot;tmdb-$$11-\1.json&quot;&gt;https://api.tmdb.org/3/movie/\1?api_key=45ab4cebe57ae11c2ee50c87005ddfe8&amp;amp;language=$$11&lt;/url&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;url function=&quot;ParseTMDBRating&quot; cache=&quot;tmdb-$$11-\1.json&quot;&gt;https://api.tmdb.org/3/movie/\1?api_key=f090bb54758cabf231fb605d3e3e0468&amp;amp;language=$$11&lt;/url&gt;" dest="5">
 				<expression>^(.+)::</expression>
 			</RegExp>
 			<expression noclean="1" />
@@ -369,7 +369,7 @@
 			<RegExp input="$$1" output="\2" dest="11">
 				<expression>(.+)::([^\|]*)</expression>
 			</RegExp>			
-			<RegExp input="$$1" output="&lt;url function=&quot;ParseTMDBRatings&quot; cache=&quot;tmdb-$$11-\1.json&quot;&gt;https://api.tmdb.org/3/movie/\1?api_key=45ab4cebe57ae11c2ee50c87005ddfe8&amp;amp;language=$$11&lt;/url&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;url function=&quot;ParseTMDBRatings&quot; cache=&quot;tmdb-$$11-\1.json&quot;&gt;https://api.tmdb.org/3/movie/\1?api_key=f090bb54758cabf231fb605d3e3e0468&amp;amp;language=$$11&lt;/url&gt;" dest="5">
 				<expression noclean="1">^((tt)?\d+)</expression>
 			</RegExp>
 			<RegExp input="$$1" output="default=&quot;true&quot;" dest="3">
@@ -392,7 +392,7 @@
 
 	<GetTMDBStudioByIdChain dest="4"> <!-- Expected chaining format= tmdb_id::language_for_caching-->
 		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="4">
-			<RegExp input="$$1" output="&lt;url function=&quot;ParseTMDBStudio&quot; cache=&quot;tmdb-\2-\1.json&quot;&gt;https://api.tmdb.org/3/movie/\1?api_key=45ab4cebe57ae11c2ee50c87005ddfe8&amp;amp;language=\2&lt;/url&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;url function=&quot;ParseTMDBStudio&quot; cache=&quot;tmdb-\2-\1.json&quot;&gt;https://api.tmdb.org/3/movie/\1?api_key=f090bb54758cabf231fb605d3e3e0468&amp;amp;language=\2&lt;/url&gt;" dest="5">
 				<expression>(.+)::(.+)</expression>
 			</RegExp>
 			<expression noclean="1" />
@@ -412,7 +412,7 @@
 
 	<GetTMDBCountryByIdChain dest="4"> <!-- Expected chaining format= tmdb_id::language_for_caching-->
 		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="4">
-			<RegExp input="$$1" output="&lt;url function=&quot;ParseTMDBCountry&quot; cache=&quot;tmdb-\2-\1.json&quot;&gt;https://api.tmdb.org/3/movie/\1?api_key=45ab4cebe57ae11c2ee50c87005ddfe8&amp;amp;language=\2&lt;/url&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;url function=&quot;ParseTMDBCountry&quot; cache=&quot;tmdb-\2-\1.json&quot;&gt;https://api.tmdb.org/3/movie/\1?api_key=f090bb54758cabf231fb605d3e3e0468&amp;amp;language=\2&lt;/url&gt;" dest="5">
 				<expression>(.+)::(.+)</expression>
 			</RegExp>
 			<expression noclean="1" />
@@ -432,7 +432,7 @@
 
 	<GetTMDBTrailerByIdChain dest="4"> <!-- Expected chaining format= tmdb_id::language-->
 		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="4">
-			<RegExp input="$$1" output="&lt;url function=&quot;ParseTMDBTrailer&quot; cache=&quot;tmdb-trailer-\2-\1.json&quot;&gt;https://api.tmdb.org/3/movie/\1/trailers?api_key=45ab4cebe57ae11c2ee50c87005ddfe8&amp;amp;language=\2&lt;/url&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;url function=&quot;ParseTMDBTrailer&quot; cache=&quot;tmdb-trailer-\2-\1.json&quot;&gt;https://api.tmdb.org/3/movie/\1/trailers?api_key=f090bb54758cabf231fb605d3e3e0468&amp;amp;language=\2&lt;/url&gt;" dest="5">
 				<expression>(.+)::(.+)</expression>
 			</RegExp>
 			<expression noclean="1" />
@@ -449,7 +449,7 @@
 			<RegExp input="$$7" output="&lt;trailer&gt;plugin://plugin.video.youtube/?action=play_video&amp;amp;videoid=\1&lt;/trailer&gt;" dest="9">
 				<expression noclean="1">&quot;source&quot;:&quot;([^&quot;]*)</expression>
 			</RegExp>
-			<RegExp input="$$9" output="&lt;url function=&quot;ParseTMDBEnTrailer&quot; cache=&quot;tmdb-trailer-en-$$8.json&quot;&gt;https://api.tmdb.org/3/movie/$$8/trailers?api_key=45ab4cebe57ae11c2ee50c87005ddfe8&amp;amp;language=en&lt;/url&gt;" dest="2">
+			<RegExp input="$$9" output="&lt;url function=&quot;ParseTMDBEnTrailer&quot; cache=&quot;tmdb-trailer-en-$$8.json&quot;&gt;https://api.tmdb.org/3/movie/$$8/trailers?api_key=f090bb54758cabf231fb605d3e3e0468&amp;amp;language=en&lt;/url&gt;" dest="2">
 				<expression>^$</expression>
 			</RegExp>
 			<RegExp input="$$9" output="$$9" dest="2">
@@ -469,7 +469,7 @@
 			<RegExp input="$$7" output="&lt;trailer&gt;plugin://plugin.video.youtube/?action=play_video&amp;amp;videoid=\1&lt;/trailer&gt;" dest="9">
 				<expression noclean="1">&quot;source&quot;:&quot;([^&quot;]*)</expression>
 			</RegExp>
-			<RegExp input="$$9" output="&lt;url function=&quot;ParseTMDBAllTrailer&quot; cache=&quot;tmdb-trailer-$$8.json&quot;&gt;https://api.tmdb.org/3/movie/$$8/trailers?api_key=45ab4cebe57ae11c2ee50c87005ddfe8&lt;/url&gt;" dest="2">
+			<RegExp input="$$9" output="&lt;url function=&quot;ParseTMDBAllTrailer&quot; cache=&quot;tmdb-trailer-$$8.json&quot;&gt;https://api.tmdb.org/3/movie/$$8/trailers?api_key=f090bb54758cabf231fb605d3e3e0468&lt;/url&gt;" dest="2">
 				<expression>^$</expression>
 			</RegExp>
 			<RegExp input="$$9" output="$$9" dest="2">
@@ -495,10 +495,10 @@
 			<RegExp input="$$1" output="\2" dest="11">
 				<expression>(.+)::(.+)</expression>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;url function=&quot;ParseTMDBBaseImageURL&quot; cache=&quot;tmdb-config.json&quot;&gt;https://api.tmdb.org/3/configuration?api_key=45ab4cebe57ae11c2ee50c87005ddfe8&lt;/url&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;url function=&quot;ParseTMDBBaseImageURL&quot; cache=&quot;tmdb-config.json&quot;&gt;https://api.tmdb.org/3/configuration?api_key=f090bb54758cabf231fb605d3e3e0468&lt;/url&gt;" dest="5">
 				<expression />
 			</RegExp>
-			<RegExp input="$$1" output="&lt;url function=&quot;ParseTMDBFanart&quot; cache=&quot;tmdb-images-\1.json&quot;&gt;https://api.tmdb.org/3/movie/\1/images?api_key=45ab4cebe57ae11c2ee50c87005ddfe8&amp;amp;language=$$11&amp;amp;include_image_language=$$11,en,null&lt;/url&gt;" dest="5+">
+			<RegExp input="$$1" output="&lt;url function=&quot;ParseTMDBFanart&quot; cache=&quot;tmdb-images-\1.json&quot;&gt;https://api.tmdb.org/3/movie/\1/images?api_key=f090bb54758cabf231fb605d3e3e0468&amp;amp;language=$$11&amp;amp;include_image_language=$$11,en,null&lt;/url&gt;" dest="5+">
 				<expression>(.+)::(.+)</expression>
 			</RegExp>
 			<expression noclean="1" />
@@ -524,10 +524,10 @@
 			<RegExp input="$$1" output="\1" dest="13">
 				<expression>(.+)::(.+)</expression>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;url function=&quot;ParseTMDBBaseImageURL&quot; cache=&quot;tmdb-config.json&quot;&gt;https://api.tmdb.org/3/configuration?api_key=45ab4cebe57ae11c2ee50c87005ddfe8&lt;/url&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;url function=&quot;ParseTMDBBaseImageURL&quot; cache=&quot;tmdb-config.json&quot;&gt;https://api.tmdb.org/3/configuration?api_key=f090bb54758cabf231fb605d3e3e0468&lt;/url&gt;" dest="5">
 				<expression />
 			</RegExp>
-			<RegExp input="$$1" output="&lt;url function=&quot;ParseTMDBThumbs&quot; cache=&quot;tmdb-images-\1.json&quot;&gt;https://api.tmdb.org/3/movie/\1/images?api_key=45ab4cebe57ae11c2ee50c87005ddfe8&amp;amp;language=$$11&amp;amp;include_image_language=$$11,en,null&lt;/url&gt;" dest="5+">
+			<RegExp input="$$1" output="&lt;url function=&quot;ParseTMDBThumbs&quot; cache=&quot;tmdb-images-\1.json&quot;&gt;https://api.tmdb.org/3/movie/\1/images?api_key=f090bb54758cabf231fb605d3e3e0468&amp;amp;language=$$11&amp;amp;include_image_language=$$11,en,null&lt;/url&gt;" dest="5+">
 				<expression>(.+)::(.+)</expression>
 			</RegExp>
 			<expression noclean="1" />
@@ -553,7 +553,7 @@
 			<RegExp input="$$9" output="$$10" dest="2">
 				<expression>^$</expression>
 			</RegExp>
-			<RegExp input="$$2" output="&lt;url function=&quot;ParseFallbackTMDBThumbs&quot;&gt;https://api.tmdb.org/3/movie/$$13/images?api_key=45ab4cebe57ae11c2ee50c87005ddfe8&lt;/url&gt;" dest="2">
+			<RegExp input="$$2" output="&lt;url function=&quot;ParseFallbackTMDBThumbs&quot;&gt;https://api.tmdb.org/3/movie/$$13/images?api_key=f090bb54758cabf231fb605d3e3e0468&lt;/url&gt;" dest="2">
 				<expression>^$</expression>
 			</RegExp>
 			<expression noclean="1" />
@@ -586,11 +586,11 @@
 			<RegExp input="$$1" output="\2" dest="16">
 				<expression>(.+)::(.+)</expression>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;url function=&quot;ParseTMDBPremiered&quot; cache=&quot;tmdb-\2-\1.json&quot;&gt;https://api.tmdb.org/3/movie/\1?api_key=45ab4cebe57ae11c2ee50c87005ddfe8&amp;amp;language=\2&lt;/url&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;url function=&quot;ParseTMDBPremiered&quot; cache=&quot;tmdb-\2-\1.json&quot;&gt;https://api.tmdb.org/3/movie/\1?api_key=f090bb54758cabf231fb605d3e3e0468&amp;amp;language=\2&lt;/url&gt;" dest="5">
 				<expression>(.+)::(.+)</expression>
 			</RegExp>
 			<RegExp input="$$16" output="$$2" dest="5">
-				<RegExp input="$$1" output="&lt;url function=&quot;ParseTMDBPremiered&quot; cache=&quot;tmdb-$INFO[tmdbcertcountry]-\1.json&quot;&gt;https://api.tmdb.org/3/movie/\1?api_key=45ab4cebe57ae11c2ee50c87005ddfe8&amp;amp;language=$INFO[tmdbcertcountry]&lt;/url&gt;" dest="2">
+				<RegExp input="$$1" output="&lt;url function=&quot;ParseTMDBPremiered&quot; cache=&quot;tmdb-$INFO[tmdbcertcountry]-\1.json&quot;&gt;https://api.tmdb.org/3/movie/\1?api_key=f090bb54758cabf231fb605d3e3e0468&amp;amp;language=$INFO[tmdbcertcountry]&lt;/url&gt;" dest="2">
 					<expression/>
 				</RegExp>
 				<expression>Keep Original</expression>

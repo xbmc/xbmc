@@ -394,6 +394,30 @@
         ],
         "beta": [
             {
+                "major": "18",
+                "minor": "0",
+                "tag": "beta",
+                "tagversion":"3",
+                "revision": "20181002-c2e1b316f5",
+                "addon_support": "yes"
+            },
+            {
+                "major": "18",
+                "minor": "0",
+                "tag": "beta",
+                "tagversion":"2",
+                "revision": "20180909-7868a27c6a",
+                "addon_support": "yes"
+            },
+            {
+                "major": "18",
+                "minor": "0",
+                "tag": "beta",
+                "tagversion":"1",
+                "revision": "20180826-f21b477993",
+                "addon_support": "yes"
+            },
+            {
                 "major": "17",
                 "minor": "0",
                 "tag": "beta",

@@ -1,3 +1,12 @@
+[B]3.0.12[/B]
+- Fixed: DVD and Absolute episode ordering fixes
+
+[B]3.0.11[/B]
+- Fixed: Use first aired episode date when firstAired field is missing (thx to Smeulf)
+
+[B]3.0.10[/B]
+- Fixed: Use the year in the title as fallback when no firstAired field, to reduce mismatches
+
 [B]3.0.9[/B]
 - Fixed: Character encoding fixes (part 2)
 
