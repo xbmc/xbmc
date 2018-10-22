@@ -755,7 +755,9 @@ bool CXBMCApp::HasLaunchIntent(const std::string &package)
 }
 
 // Note intent, dataType, dataURI all default to ""
-bool CXBMCApp::StartActivity(const std::string &package, const std::string &intent, const std::string &dataType, const std::string &dataURI)
+//bool CXBMCApp::StartActivity(const std::string &package, const std::string &intent, const std::string &dataType, const std::string &dataURI)
+bool CXBMCApp::StartActivity(const std::string &package, const std::string &intent, const std::string &dataType, const std::string &dataURI, const std::string &component, const std::map<std::string, std::string> &extras, const int flags)
+
 {
   CJNIIntent newIntent = intent.empty() ?
     GetPackageManager().getLaunchIntentForPackage(package) :
@@ -776,7 +778,34 @@ bool CXBMCApp::StartActivity(const std::string &package, const std::string &inte
     newIntent.setDataAndType(jniURI, dataType);
   }
 
-  newIntent.setPackage(package);
+  // --------------------------------------------
+  if (!extras.empty())
+  {
+    for (auto const& extra: extras)
+    {
+      CLog::Log(LOGWARNING, "CXBMCApp::StartActivity - put extra in intent: %s:%s", extra.first.c_str(), extra.second.c_str());
+      newIntent.putExtra(extra.first, extra.second);
+    }
+  }
+
+  if (flags != -1)
+  {
+    newIntent.setFlags(flags);
+  }
+
+  //component = ".playbackclient.FireTvPlaybackActivity";
+  if(component != "")
+  {
+    newIntent.setClassName(package, component);
+  }
+  else
+  {
+    newIntent.setPackage(package);
+  }
+
+  //-------------------------------------
+  //newIntent.setPackage(package);
+
   startActivity(newIntent);
   if (xbmc_jnienv()->ExceptionCheck())
   {
