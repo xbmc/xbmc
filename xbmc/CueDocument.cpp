@@ -135,6 +135,11 @@ public:
         line.push_back(ch);
       }
     }
+
+    StringUtils::Trim(line);
+    if (!line.empty())
+      return true;
+    
     return false;
   }
   bool ready() const override
@@ -282,10 +287,8 @@ bool CCueDocument::Parse(CueReader& reader, const std::string& strFile)
   int numberFiles = -1;
 
   // Run through the .CUE file and extract the tracks...
-  while (true)
+  while (reader.ReadLine(strLine))
   {
-    if (!reader.ReadLine(strLine))
-      break;
     if (StringUtils::StartsWithNoCase(strLine, "INDEX 01"))
     {
       if (bCurrentFileChanged)
