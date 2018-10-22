@@ -8,6 +8,7 @@
 
 #include "VideoThumbLoader.h"
 
+#include <algorithm>
 #include <cstdlib>
 #include <utility>
 
@@ -223,36 +224,54 @@ std::vector<std::string> CVideoThumbLoader::GetArtTypes(const std::string &type)
 {
   const std::shared_ptr<CAdvancedSettings> advancedSettings = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
   std::vector<std::string> ret;
-  std::vector<std::string> extraart;
   if (type == MediaTypeEpisode)
   {
-    ret = { "thumb" };
-    extraart = advancedSettings->m_videoEpisodeExtraArt;
+    ret = {"thumb"};
+    for (auto& artType : advancedSettings->m_videoEpisodeExtraArt)
+    {
+      if (find(ret.begin(), ret.end(), artType) == ret.end())
+        ret.push_back(artType);
+    }
   }
   else if (type == MediaTypeTvShow)
   {
-    ret = { "poster", "fanart", "banner" };
-    extraart = advancedSettings->m_videoTvShowExtraArt;
+    ret = {"poster", "fanart", "banner"};
+    for (auto& artType : advancedSettings->m_videoTvShowExtraArt)
+    {
+      if (find(ret.begin(), ret.end(), artType) == ret.end())
+        ret.push_back(artType);
+    }
   }
   else if (type == MediaTypeSeason)
   {
-    ret = { "poster", "fanart", "banner" };
-    extraart = advancedSettings->m_videoTvSeasonExtraArt;
+    ret = {"poster", "fanart", "banner"};
+    for (auto& artType : advancedSettings->m_videoTvSeasonExtraArt)
+    {
+      if (find(ret.begin(), ret.end(), artType) == ret.end())
+        ret.push_back(artType);
+    }
   }
   else if (type == MediaTypeMovie || type == MediaTypeVideoCollection)
   {
-    ret = { "poster", "fanart" };
-    extraart = advancedSettings->m_videoMovieExtraArt;
+    ret = {"poster", "fanart"};
+    for (auto& artType : advancedSettings->m_videoMovieExtraArt)
+    {
+      if (find(ret.begin(), ret.end(), artType) == ret.end())
+        ret.push_back(artType);
+    }
   }
   else if (type == MediaTypeMusicVideo)
   {
-    ret = { "poster", "fanart" };
-    extraart = advancedSettings->m_videoMusicVideoExtraArt;
+    ret = {"poster", "fanart"};
+    for (auto& artType : advancedSettings->m_videoMusicVideoExtraArt)
+    {
+      if (find(ret.begin(), ret.end(), artType) == ret.end())
+        ret.push_back(artType);
+    }
   }
   else if (type.empty()) // unknown, just the basics
     ret = { "poster", "fanart", "banner", "thumb" };
 
-  ret.insert(ret.end(), extraart.begin(), extraart.end());
   return ret;
 }
 
