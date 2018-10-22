@@ -8,6 +8,7 @@
 
 #include "VTUtils.h"
 
+#include "Application.h"
 #include "platform/MessagePrinter.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
@@ -23,7 +24,16 @@ using namespace KODI::WINDOWING::GBM;
 
 bool CVTUtils::OpenTTY()
 {
-  m_ttyDevice = ttyname(STDIN_FILENO);
+  std::string tty = g_application.GetTTY();
+
+  if (!tty.empty())
+  {
+    m_ttyDevice = tty;
+  }
+  else
+  {
+    m_ttyDevice = ttyname(STDIN_FILENO);
+  }
 
   m_fd.attach(open(m_ttyDevice.c_str(), O_RDWR | O_CLOEXEC));
   if (m_fd < 0)

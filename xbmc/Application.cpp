@@ -355,6 +355,7 @@ bool CApplication::Create(const CAppParamParser &params)
   m_bPlatformDirectories = params.m_platformDirectories;
   m_bTestMode = params.m_testmode;
   m_bStandalone = params.m_standAlone;
+  m_tty = params.m_tty;
 
   m_pSettingsComponent.reset(new CSettingsComponent());
   m_pSettingsComponent->Init(params);

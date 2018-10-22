@@ -62,6 +62,7 @@ void CAppParamParser::DisplayHelp()
   printf("  --test\t\tEnable test mode. [FILE] required.\n");
   printf("  --settings=<filename>\t\tLoads specified file after advancedsettings.xml replacing any settings specified\n");
   printf("  \t\t\t\tspecified file must exist in special://xbmc/system/\n");
+  printf("  --tty=<tty>\t\tStart session on alternative tty. e.g. --tty=/dev/tty4 (GBM windowing only)\n");
   exit(0);
 }
 
@@ -83,6 +84,8 @@ void CAppParamParser::ParseArg(const std::string &arg)
     m_testmode = true;
   else if (arg.substr(0, 11) == "--settings=")
     m_settingsFile = arg.substr(11);
+  else if (arg.substr(0, 6) == "--tty=")
+    m_tty = arg.substr(6);
   else if (arg.length() != 0 && arg[0] != '-')
   {
     const CFileItemPtr item = std::make_shared<CFileItem>(arg);

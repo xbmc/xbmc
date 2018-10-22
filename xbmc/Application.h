@@ -311,6 +311,7 @@ public:
   bool PlatformDirectoriesEnabled() { return m_bPlatformDirectories; }
   bool IsStandAlone() { return m_bStandalone; }
   bool IsEnableTestMode() { return m_bTestMode; }
+  std::string GetTTY() { return m_tty; }
 
   bool IsAppFocused() const { return m_AppFocused; }
 
@@ -439,6 +440,7 @@ protected:
   unsigned int m_lastRenderTime = 0;
   bool m_skipGuiRender = false;
 
+  std::string m_tty;
   bool m_bStandalone = false;
   bool m_bTestMode = false;
   bool m_bSystemScreenSaverEnable = false;
