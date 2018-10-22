@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<playlist version="1" xmlns="http://xspf.org/ns/0/">
+
+  <!-- title of the playlist -->
+  <title>Various Music</title>
+
+  <!-- name of the author -->
+  <creator>Jane Doe</creator>
+
+  <!-- homepage of the author -->
+  <info>http://example.com/~jane</info>
+
+  <trackList>
+    <track>
+      <location>http://example.com/song_1.mp3</location>
+    </track>
+
+    <track>
+      <title>Relative local file</title>
+      <location>relative/path_to/song_2.mp3</location>
+    </track>
+
+    <track>
+      <!--Absolute Windows path -->
+      <location>file:///C:/Users/jane/Music/Gotye/Making%20Mirrors/09%20-%20Don%27t%20Worry%2C%20We%27ll%20Be%20Watching%20You.mp3</location>
+      <title>Don&#146;t Worry, We&#146;ll Be Watching You</title>
+      <creator>Gotye</creator>
+      <album>Making Mirrors</album>
+      <trackNum>9</trackNum>
+    </track>
+
+    <track>
+      <!--Absolute Linux path -->
+      <location>file:///home/jane/Music/Daft%20Punk/Homework/08%20-%20Rollin%27%20%26%20Scratchin%27.mp3</location>
+      <title>Rollin&#39; &amp; Scratchin&#39;</title>
+      <creator>Daft Punk</creator>
+      <album>Homework</album>
+      <trackNum>8</trackNum>
+    </track>
+
+    <track>
+      <title></title>
+      <location></location>
+    </track>
+
+    <track>
+      <title>Nothing to add for this entry</title>
+    </track>
+
+    <track>
+      <location>http://example.com/song_2.mp3</location>
+    </track>
+  </trackList>
+</playlist>

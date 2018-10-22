@@ -490,6 +490,7 @@ static std::map<std::string, std::string> fillMimeTypes()
   mimeTypes.insert(std::pair<std::string, std::string>("xpix",      "application/x-vnd.ls-xpix"));
   mimeTypes.insert(std::pair<std::string, std::string>("xpm",       "image/xpm"));
   mimeTypes.insert(std::pair<std::string, std::string>("x-png",     "image/png"));
+  mimeTypes.insert(std::pair<std::string, std::string>("xspf",      "application/xspf+xml"));
   mimeTypes.insert(std::pair<std::string, std::string>("xsr",       "video/x-amt-showrun"));
   mimeTypes.insert(std::pair<std::string, std::string>("xvid",      "video/x-msvideo"));
   mimeTypes.insert(std::pair<std::string, std::string>("xwd",       "image/x-xwd"));

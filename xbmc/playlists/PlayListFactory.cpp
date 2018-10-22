@@ -13,6 +13,7 @@
 #include "PlayListWPL.h"
 #include "PlayListURL.h"
 #include "PlayListXML.h"
+#include "PlayListXSPF.h"
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
 
@@ -58,6 +59,9 @@ CPlayList* CPlayListFactory::Create(const CFileItem& item)
 
     if (strMimeType == "application/vnd.ms-wpl")
       return new CPlayListWPL();
+
+    if (strMimeType == "application/xspf+xml")
+      return new CPlayListXSPF();
   }
 
   std::string path = item.GetDynPath();
@@ -88,6 +92,9 @@ CPlayList* CPlayListFactory::Create(const CFileItem& item)
 
   if (extension == ".pxml")
     return new CPlayListXML();
+
+  if (extension == ".xspf")
+    return new CPlayListXSPF();
 
   return NULL;
 
@@ -125,12 +132,12 @@ bool CPlayListFactory::IsPlaylist(const CFileItem& item)
 bool CPlayListFactory::IsPlaylist(const CURL& url)
 {
   return URIUtils::HasExtension(url,
-                                ".m3u|.b4s|.pls|.strm|.wpl|.asx|.ram|.url|.pxml");
+                                ".m3u|.b4s|.pls|.strm|.wpl|.asx|.ram|.url|.pxml|.xspf");
 }
 
 bool CPlayListFactory::IsPlaylist(const std::string& filename)
 {
   return URIUtils::HasExtension(filename,
-                     ".m3u|.b4s|.pls|.strm|.wpl|.asx|.ram|.url|.pxml");
+                     ".m3u|.b4s|.pls|.strm|.wpl|.asx|.ram|.url|.pxml|.xspf");
 }
 

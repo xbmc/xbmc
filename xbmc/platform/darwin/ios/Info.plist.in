@@ -320,6 +320,7 @@
           <string>aif</string>
           <string>aiff</string>
           <string>wpl</string>
+          <string>xspf</string>
           <string>ape</string>
           <string>mac</string>
           <string>mpc</string>
@@ -431,6 +432,7 @@
           <string>rar</string>
           <string>001</string>
           <string>wpl</string>
+          <string>xspf</string>
           <string>zip</string>
           <string>vdr</string>
           <string>dvr-ms</string>

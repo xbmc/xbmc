@@ -6,6 +6,7 @@ set(SOURCES PlayListB4S.cpp
             PlayListURL.cpp
             PlayListWPL.cpp
             PlayListXML.cpp
+            PlayListXSPF.cpp
             SmartPlayList.cpp
             SmartPlaylistFileItemListModifier.cpp)
 
@@ -17,6 +18,7 @@ set(HEADERS PlayList.h
             PlayListURL.h
             PlayListWPL.h
             PlayListXML.h
+            PlayListXSPF.h
             SmartPlayList.h
             SmartPlaylistFileItemListModifier.h)
 
