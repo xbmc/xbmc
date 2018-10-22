@@ -163,9 +163,9 @@ PeripheralPtr CPeripheralBus::GetPeripheral(const std::string &strLocation) cons
   return result;
 }
 
-int CPeripheralBus::GetPeripheralsWithFeature(PeripheralVector &results, const PeripheralFeature feature) const
+unsigned int CPeripheralBus::GetPeripheralsWithFeature(PeripheralVector &results, const PeripheralFeature feature) const
 {
-  int iReturn(0);
+  unsigned int iReturn = 0;
   CSingleLock lock(m_critSection);
   for (auto& peripheral : m_peripherals)
   {
@@ -179,14 +179,14 @@ int CPeripheralBus::GetPeripheralsWithFeature(PeripheralVector &results, const P
   return iReturn;
 }
 
-size_t CPeripheralBus::GetNumberOfPeripheralsWithId(const int iVendorId, const int iProductId) const
+unsigned int CPeripheralBus::GetNumberOfPeripheralsWithId(const int iVendorId, const int iProductId) const
 {
-  int iReturn(0);
+  unsigned int iReturn = 0;
   CSingleLock lock(m_critSection);
-  for (unsigned int iPeripheralPtr = 0; iPeripheralPtr < m_peripherals.size(); iPeripheralPtr++)
+  for (const auto& peripheral : m_peripherals)
   {
-    if (m_peripherals.at(iPeripheralPtr)->VendorId() == iVendorId &&
-        m_peripherals.at(iPeripheralPtr)->ProductId() == iProductId)
+    if (peripheral->VendorId() == iVendorId &&
+        peripheral->ProductId() == iProductId)
       iReturn++;
   }
 
@@ -325,8 +325,8 @@ PeripheralPtr CPeripheralBus::GetByPath(const std::string &strPath) const
   return result;
 }
 
-size_t CPeripheralBus::GetNumberOfPeripherals() const
+unsigned int CPeripheralBus::GetNumberOfPeripherals() const
 {
   CSingleLock lock(m_critSection);
-  return m_peripherals.size();
+  return static_cast<unsigned int>(m_peripherals.size());
 }

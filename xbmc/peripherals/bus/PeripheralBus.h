@@ -77,10 +77,10 @@ namespace PERIPHERALS
      * @param feature The feature to search for.
      * @return The number of devices that have been found.
      */
-    virtual int GetPeripheralsWithFeature(PeripheralVector &results, const PeripheralFeature feature) const;
+    virtual unsigned int GetPeripheralsWithFeature(PeripheralVector &results, const PeripheralFeature feature) const;
 
-    virtual size_t GetNumberOfPeripherals() const;
-    virtual size_t GetNumberOfPeripheralsWithId(const int iVendorId, const int iProductId) const;
+    virtual unsigned int GetNumberOfPeripherals() const;
+    virtual unsigned int GetNumberOfPeripheralsWithId(const int iVendorId, const int iProductId) const;
 
     /*!
      * @brief Get all features that are supported by devices on this bus.
