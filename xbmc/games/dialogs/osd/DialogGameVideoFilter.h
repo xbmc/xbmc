@@ -9,7 +9,6 @@
 #pragma once
 
 #include "DialogGameVideoSelect.h"
-#include "cores/GameSettings.h"
 #include "FileItem.h"
 
 namespace KODI

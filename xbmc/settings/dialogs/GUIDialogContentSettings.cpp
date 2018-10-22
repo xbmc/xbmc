@@ -29,7 +29,6 @@
 #include "settings/lib/SettingsManager.h"
 #include "settings/windows/GUIControlSettings.h"
 #include "utils/log.h"
-#include "utils/StringUtils.h"
 #include "video/VideoInfoScanner.h"
 
 #define SETTING_CONTENT_TYPE          "contenttype"

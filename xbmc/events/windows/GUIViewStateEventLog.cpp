@@ -8,10 +8,8 @@
 
 #include "GUIViewStateEventLog.h"
 #include "FileItem.h"
-#include "filesystem/File.h"
 #include "windowing/GraphicContext.h"
 #include "guilib/WindowIDs.h"
-#include "utils/StringUtils.h"
 #include "view/ViewState.h"
 
 CGUIViewStateEventLog::CGUIViewStateEventLog(const CFileItemList& items) : CGUIViewState(items)

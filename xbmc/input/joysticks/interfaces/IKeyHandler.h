@@ -8,8 +8,6 @@
 
 #pragma once
 
-#include "input/joysticks/JoystickTypes.h"
-
 namespace KODI
 {
 namespace JOYSTICK

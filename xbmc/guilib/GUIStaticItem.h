@@ -20,7 +20,6 @@
 #include "guilib/guiinfo/GUIInfoLabel.h"
 #include "interfaces/info/InfoBool.h"
 #include "FileItem.h"
-#include "GUIAction.h"
 
 class TiXmlElement;
 

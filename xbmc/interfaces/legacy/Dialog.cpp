@@ -27,7 +27,6 @@
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "WindowException.h"
-#include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "Dialog.h"
 #include "ListItem.h"

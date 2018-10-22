@@ -15,7 +15,6 @@
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
 #include "input/WindowTranslator.h"
-#include "interfaces/builtins/Builtins.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "addons/AddonManager.h"
 #include "settings/Settings.h"

@@ -12,7 +12,6 @@
 #include "EventPacket.h"
 #include "threads/SingleLock.h"
 #include "input/GamepadTranslator.h"
-#include "input/InputManager.h"
 #include "input/IRTranslator.h"
 #include "input/KeyboardTranslator.h"
 #include <map>
@@ -26,7 +25,6 @@
 #include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
 #include "ServiceBroker.h"
-#include "utils/log.h"
 
 using namespace EVENTCLIENT;
 using namespace EVENTPACKET;

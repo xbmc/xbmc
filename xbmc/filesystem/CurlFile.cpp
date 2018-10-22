@@ -8,7 +8,6 @@
 
 #include "CurlFile.h"
 #include "ServiceBroker.h"
-#include "utils/URIUtils.h"
 #include "Util.h"
 #include "URL.h"
 #include "settings/AdvancedSettings.h"
@@ -33,7 +32,6 @@
 
 #include "DllLibCurl.h"
 #include "ShoutcastFile.h"
-#include "SpecialProtocol.h"
 #include "utils/CharsetConverter.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"

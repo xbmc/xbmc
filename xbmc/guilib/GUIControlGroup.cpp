@@ -12,8 +12,6 @@
 #include <cassert>
 #include <utility>
 
-#include "guilib/guiinfo/GUIInfoLabels.h"
-
 CGUIControlGroup::CGUIControlGroup()
 {
   m_defaultControl = 0;

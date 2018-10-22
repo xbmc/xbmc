@@ -13,13 +13,11 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
-#include "input/Key.h"
 #include "music/MusicDatabase.h"
 #include "music/tags/MusicInfoTag.h"
 #include "PlayListPlayer.h"
 #include "playlists/PlayList.h"
 #include "ServiceBroker.h"
-#include "Util.h"
 #include "utils/JobManager.h"
 
 using namespace MUSIC_INFO;

@@ -11,7 +11,6 @@
 #include "games/controllers/guicontrols/GUIFeatureButton.h"
 #include "games/controllers/Controller.h"
 #include "games/controllers/ControllerFeature.h"
-#include "games/controllers/ControllerTranslator.h"
 #include "input/joysticks/interfaces/IButtonMap.h"
 #include "input/joysticks/interfaces/IButtonMapCallback.h"
 #include "input/joysticks/JoystickUtils.h"

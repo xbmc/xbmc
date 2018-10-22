@@ -7,7 +7,6 @@
  */
 
 #include "PeripheralBusAddon.h"
-#include "addons/Addon.h"
 #include "addons/AddonManager.h"
 #include "addons/binary-addons/BinaryAddonManager.h"
 #include "messaging/helpers/DialogHelper.h"

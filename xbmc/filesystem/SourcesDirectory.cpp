@@ -6,6 +6,7 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "ServiceBroker.h"
 #include "SourcesDirectory.h"
 #include "utils/URIUtils.h"
 #include "URL.h"

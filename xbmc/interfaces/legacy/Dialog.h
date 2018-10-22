@@ -17,7 +17,6 @@
 #include "ListItem.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
-#include "dialogs/GUIDialogBusy.h"
 
 #define INPUT_ALPHANUM        0
 #define INPUT_NUMERIC         1

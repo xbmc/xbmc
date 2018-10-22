@@ -20,7 +20,6 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
-#include "utils/URIUtils.h"
 #include "view/ViewStateSettings.h"
 
 #define CONTROL_BUTTON_CLEAR          20

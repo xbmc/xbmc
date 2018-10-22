@@ -13,6 +13,7 @@
 #include "filesystem/File.h"
 #include "FileItem.h"
 #include "utils/Crc32.h"
+#include "ServiceBroker.h"
 #include "guilib/TextureManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/LegacyPathTranslation.h"

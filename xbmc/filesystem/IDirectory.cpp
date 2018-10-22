@@ -13,7 +13,6 @@
 #include "PasswordManager.h"
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
-#include "ServiceBroker.h"
 
 using namespace KODI::MESSAGING;
 using namespace XFILE;

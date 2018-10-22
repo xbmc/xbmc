@@ -12,7 +12,6 @@
 #include "Util.h"
 #include "addons/AddonManager.h"
 #include "addons/binary-addons/BinaryAddonManager.h"
-#include "addons/BinaryAddonCache.h"
 #include "addons/Skin.h"
 #if defined(TARGET_ANDROID)
 #include "platform/android/activity/AndroidFeatures.h"

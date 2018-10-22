@@ -8,7 +8,6 @@
 
 #include "ViewModeSettings.h"
 
-#include "cores/IPlayer.h"
 #include "guilib/LocalizeStrings.h"
 #include "cores/VideoSettings.h"
 

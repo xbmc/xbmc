@@ -18,13 +18,11 @@
 #include "GUIUserMessages.h"
 #include "MediaSource.h"
 #include "messaging/helpers/DialogHelper.h"
-#include "music/MusicDatabase.h"
 #include "music/MusicLibraryQueue.h"
 #include "settings/LibExportSettings.h"
 #include "storage/MediaManager.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
-#include "utils/URIUtils.h"
 #include "video/VideoDatabase.h"
 
 using namespace KODI::MESSAGING;

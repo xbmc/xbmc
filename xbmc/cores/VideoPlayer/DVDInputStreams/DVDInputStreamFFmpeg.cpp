@@ -8,15 +8,9 @@
 
 #include "DVDInputStreamFFmpeg.h"
 
-#include "filesystem/CurlFile.h"
 #include "playlists/PlayListM3U.h"
-#include "settings/Settings.h"
-#include "settings/SettingsComponent.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
-#include "utils/URIUtils.h"
 
-#include <limits.h>
 
 using namespace XFILE;
 using PLAYLIST::CPlayListM3U;

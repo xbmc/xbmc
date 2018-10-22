@@ -8,8 +8,6 @@
 
 #pragma once
 
-#include "threads/Helpers.h"
-
 namespace XbmcThreads
 {
 

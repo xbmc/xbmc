@@ -12,7 +12,6 @@
 #include "games/addons/GameClientTranslator.h"
 #include "games/controllers/Controller.h"
 #include "games/controllers/ControllerTopology.h"
-#include "games/controllers/ControllerTranslator.h"
 #include "utils/StringUtils.h"
 
 #include <algorithm>

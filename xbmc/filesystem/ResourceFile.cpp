@@ -12,7 +12,6 @@
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
 #include "addons/Resource.h"
-#include "utils/URIUtils.h"
 
 using namespace ADDON;
 using namespace XFILE;

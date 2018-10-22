@@ -9,7 +9,6 @@
 #include "JoystickTranslator.h"
 #include "guilib/LocalizeStrings.h"
 #include "input/joysticks/DriverPrimitive.h"
-#include "input/mouse/MouseStat.h"
 #include "utils/StringUtils.h"
 
 using namespace KODI;

@@ -10,7 +10,6 @@
 #include <ppltasks.h>
 
 #include "WinRenderBuffer.h"
-#include "cores/VideoPlayer/VideoRenderers/RenderFlags.h"
 #include "cores/VideoPlayer/VideoRenderers/WinRenderer.h"
 #include "rendering/dx/DeviceResources.h"
 #include "rendering/dx/RenderContext.h"

@@ -16,9 +16,6 @@
 #include "input/ActionTranslator.h"
 #include "input/Key.h"
 #include "utils/Variant.h"
-#include "input/XBMC_keyboard.h"
-#include "input/XBMC_vkeys.h"
-#include "threads/SingleLock.h"
 
 using namespace JSONRPC;
 using namespace KODI::MESSAGING;

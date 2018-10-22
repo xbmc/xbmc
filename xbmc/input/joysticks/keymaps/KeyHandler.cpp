@@ -12,7 +12,6 @@
 #include "input/ActionIDs.h"
 #include "input/ActionTranslator.h"
 #include "input/IKeymap.h"
-#include "input/IKeymapEnvironment.h"
 #include "interfaces/IActionListener.h"
 
 #include <algorithm>

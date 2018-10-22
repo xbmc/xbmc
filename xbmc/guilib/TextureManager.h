@@ -16,7 +16,6 @@
 #include "threads/CriticalSection.h"
 
 #include "GUIComponent.h"
-#include "ServiceBroker.h"
 
 /************************************************************************/
 /*                                                                      */

@@ -11,7 +11,6 @@
 #include <utility>
 
 #include "EventScanner.h"
-#include "addons/PeripheralAddon.h"
 #include "addons/AddonButtonMap.h"
 #include "addons/AddonManager.h"
 #include "addons/settings/GUIDialogAddonSettings.h"
@@ -33,7 +32,6 @@
 #include "devices/PeripheralNIC.h"
 #include "devices/PeripheralNyxboard.h"
 #include "devices/PeripheralTuner.h"
-#include "dialogs/GUIDialogKaiToast.h"
 #include "FileItem.h"
 #include "bus/virtual/PeripheralBusApplication.h"
 #include "input/joysticks/interfaces/IButtonMapper.h"
@@ -41,7 +39,6 @@
 #include "filesystem/Directory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
 #include "GUIUserMessages.h"
 #include "input/Key.h"
@@ -61,6 +58,9 @@
 
 #if defined(HAVE_LIBCEC)
 #include "bus/virtual/PeripheralBusCEC.h"
+#else
+#include "dialogs/GUIDialogKaiToast.h"
+#include "guilib/LocalizeStrings.h"
 #endif
 
 using namespace KODI;

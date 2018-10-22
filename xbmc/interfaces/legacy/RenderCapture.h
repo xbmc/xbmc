@@ -9,7 +9,6 @@
 #pragma once
 
 #include "AddonClass.h"
-#include "LanguageHook.h"
 #include "Exception.h"
 #include "commons/Buffer.h"
 #include "Application.h"

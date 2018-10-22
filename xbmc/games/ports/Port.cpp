@@ -9,7 +9,6 @@
 #include "Port.h"
 #include "InputSink.h"
 #include "games/addons/GameClient.h"
-#include "games/addons/input/GameClientInput.h"
 #include "guilib/WindowIDs.h"
 #include "input/joysticks/keymaps/KeymapHandling.h"
 #include "peripherals/devices/Peripheral.h"

@@ -10,7 +10,6 @@
 #include "EventPacket.h"
 #include "EventClient.h"
 #include "Socket.h"
-#include "threads/CriticalSection.h"
 #include "Application.h"
 #include "ServiceBroker.h"
 #include "interfaces/builtins/Builtins.h"
@@ -21,7 +20,6 @@
 #include "input/Key.h"
 #include "utils/log.h"
 #include "utils/SystemInfo.h"
-#include "Util.h"
 #include <map>
 #include <queue>
 #include <cassert>

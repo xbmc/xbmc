@@ -34,7 +34,6 @@
 /* to use the same as player */
 #include "../VideoPlayer/DVDClock.h"
 #include "../VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
-#include "../VideoPlayer/DVDCodecs/DVDCodecUtils.h"
 
 using namespace KODI::MESSAGING;
 

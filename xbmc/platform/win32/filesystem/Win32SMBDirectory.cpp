@@ -10,7 +10,6 @@
 #include "FileItem.h"
 #include "platform/win32/WIN32Util.h"
 #include "platform/win32/CharsetConverter.h"
-#include "utils/SystemInfo.h"
 #include "utils/CharsetConverter.h"
 #include "URL.h"
 #include "utils/log.h"

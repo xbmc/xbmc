@@ -8,8 +8,6 @@
 
 #include "DVDVideoCodec.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"
-#include "rendering/RenderSystem.h"
-#include "windowing/WinSystem.h"
 #include <string>
 #include <vector>
 

@@ -11,7 +11,6 @@
 #include "addons/binary-addons/AddonDll.h"
 #include "addons/binary-addons/BinaryAddonBase.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/addon-instance/VideoCodec.h"
-#include "cores/VideoPlayer/DVDClock.h"
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemux.h"
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemuxUtils.h"
 #include "cores/VideoPlayer/Interface/Addon/DemuxCrypto.h"
