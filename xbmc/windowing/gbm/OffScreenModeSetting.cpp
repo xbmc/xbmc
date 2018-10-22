@@ -22,12 +22,6 @@ bool COffScreenModeSetting::InitDrm()
   return true;
 }
 
-void COffScreenModeSetting::DestroyDrm()
-{
-  close(m_fd);
-  m_fd = -1;
-}
-
 std::vector<RESOLUTION_INFO> COffScreenModeSetting::GetModes()
 {
     std::vector<RESOLUTION_INFO> resolutions;

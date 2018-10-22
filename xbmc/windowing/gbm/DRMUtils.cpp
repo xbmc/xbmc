@@ -510,13 +510,11 @@ bool CDRMUtils::OpenDrm(bool needConnector)
 
     for (auto module : modules)
     {
-      m_fd = drmOpen(module, device.c_str());
-      if (m_fd >= 0)
+      m_fd.attach(drmOpen(module, device.c_str()));
+      if (m_fd)
       {
         if(!GetResources())
         {
-          drmClose(m_fd);
-          m_fd = -1;
           continue;
         }
 
@@ -524,8 +522,6 @@ bool CDRMUtils::OpenDrm(bool needConnector)
         {
           if(!FindConnector())
           {
-            drmClose(m_fd);
-            m_fd = -1;
             continue;
           }
 
@@ -543,18 +539,17 @@ bool CDRMUtils::OpenDrm(bool needConnector)
         CLog::Log(LOGDEBUG, "CDRMUtils::%s - opened device: %s using module: %s", __FUNCTION__, device.c_str(), module);
         return true;
       }
-
-      drmClose(m_fd);
-      m_fd = -1;
     }
   }
+
+  m_fd.reset();
 
   return false;
 }
 
 bool CDRMUtils::InitDrm()
 {
-  if(m_fd >= 0)
+  if(m_fd)
   {
     /* caps need to be set before allocating connectors, encoders, crtcs, and planes */
     auto ret = drmSetClientCap(m_fd, DRM_CLIENT_CAP_UNIVERSAL_PLANES, 1);
@@ -593,7 +588,7 @@ bool CDRMUtils::InitDrm()
   drmModeFreeResources(m_drm_resources);
   m_drm_resources = nullptr;
 
-  if(m_fd < 0)
+  if(!m_fd)
   {
     return false;
   }
@@ -645,9 +640,7 @@ void CDRMUtils::DestroyDrm()
   RestoreOriginalMode();
 
   drmDropMaster(m_fd);
-  close(m_fd);
-
-  m_fd = -1;
+  m_fd.reset();
 
   drmModeFreeResources(m_drm_resources);
   m_drm_resources = nullptr;

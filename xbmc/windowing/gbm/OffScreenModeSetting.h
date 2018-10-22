@@ -26,7 +26,7 @@ public:
   bool SetVideoMode(const RESOLUTION_INFO& res, struct gbm_bo *bo) override { return false; }
   bool SetActive(bool active) override { return false; }
   bool InitDrm() override;
-  void DestroyDrm() override;
+  void DestroyDrm() override {}
 
   RESOLUTION_INFO GetCurrentMode() override;
   std::vector<RESOLUTION_INFO> GetModes() override;
