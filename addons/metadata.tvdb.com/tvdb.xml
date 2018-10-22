@@ -84,8 +84,8 @@
 	<!-- input : $$2=search url -->
 	<!-- output: <results><entity><title>*</title><year>*</year><language>*</language><url>*</url><id>*</id></entity>*</results> -->
 	<GetSearchResultsAuth dest="6" clearbuffers="no">
-		<RegExp input="$$1" output="&lt;series&gt;&lt;id&gt;\3&lt;/id&gt;&lt;seriesName&gt;\4&lt;/seriesName&gt;&lt;aliases&gt;\1&lt;/aliases&gt;&lt;firstAired&gt;\2&lt;/firstAired&gt;&lt;/series&gt;" dest="4">
-			<expression repeat="yes" fixchars="1,4">"aliases":\s*?\[([^]]*)\],\s*?"banner":\s*?"[^"]*",\s*?"firstAired":\s*?"([^"]*)",\s*?"id":\s*?(\d+),\s*?"network":\s*?"[^"]*",\s*?"overview":\s*?(?:"[^}]*"|null),\s*?"seriesName":\s*?"([^}]*)",\s*?"slug":\s*?"[^"]*"</expression>
+		<RegExp input="$$1" output="&lt;series&gt;&lt;id&gt;\3&lt;/id&gt;&lt;seriesName&gt;\4&lt;/seriesName&gt;&lt;aliases&gt;\1&lt;/aliases&gt;&lt;firstAired&gt;\2&lt;/firstAired&gt;&lt;year&gt;\5&lt;/year&gt;&lt;/series&gt;" dest="4">
+			<expression repeat="yes" fixchars="1,4">"aliases":\s*?\[([^]]*)\],\s*?"banner":\s*?"[^"]*",\s*?"firstAired":\s*?"([^"]*)",\s*?"id":\s*?(\d+),\s*?"network":\s*?"[^"]*",\s*?"overview":\s*?(?:"[^}]*"|null),\s*?"seriesName":\s*?"([^}]*?(?:\(([0-9]{4})\))?)",\s*?"slug":\s*?"[^"]*"</expression>
 		</RegExp>
 		<RegExp input="" output="" dest="6">
 			<expression/>
@@ -136,7 +136,12 @@
 					<xsl:param name="title"/>					
 					<entity>
 						<title><xsl:value-of select="$title"/></title>
-						<year><xsl:value-of select="substring(firstAired,1,4)"/></year>
+						<year>
+							<xsl:choose>
+								<xsl:when test="firstAired!=''"><xsl:value-of select="substring(firstAired,1,4)"/></xsl:when>
+								<xsl:otherwise><xsl:value-of select="year"/></xsl:otherwise>
+							</xsl:choose>
+						</year>
 						<language>$$16</language>
 						<url><xsl:attribute name="cache"><xsl:value-of select="id"/>-$INFO[language].json</xsl:attribute>https://api.thetvdb.com/series/<xsl:value-of select="id"/>|Authorization=Bearer%20$$19&amp;accept-language=$INFO[language]</url>
 						<id><xsl:value-of select="id"/></id>
@@ -175,7 +180,10 @@
 				<expression clear="yes">"seriesName":\s*?null,\s*?"aliases"</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;premiered&gt;\1&lt;/premiered&gt;" dest="4+">
-				<expression>"firstAired":\s*?"([^"]*)",</expression>
+				<expression>"firstAired":\s*?"([^"]+)",</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;url function=&quot;GetPremieredFromFirstEp&quot;&gt;https://api.thetvdb.com/series/$$2/episodes/query?airedSeason=1&amp;airedEpisode=1|Authorization=Bearer%20$$19&amp;amp;accept-language=$INFO[language]&lt;/url&gt;" dest="4+">
+				<expression>"firstAired":\s*?"",</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;runtime&gt;\1&lt;/runtime&gt;" dest="4+">
 				<expression>"runtime":\s*?"([^"]*)",</expression>
@@ -243,6 +251,14 @@
 			<expression noclean="1" fixchars="1"/>
 		</RegExp>
 	</GetDetails>
+	<GetPremieredFromFirstEp dest="3" clearbuffers="no">
+		<RegExp input="$$4" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
+			<RegExp input="$$1" output="&lt;premiered&gt;\1&lt;/premiered&gt;" dest="4">
+				<expression clear="yes">"firstAired":\s*?"([^"]+)"</expression>
+			</RegExp>
+			<expression noclean="1"/>
+		</RegExp>
+	</GetPremieredFromFirstEp>
 	<GetFallbackDetails dest="3" clearbuffers="no">
 		<RegExp input="$$4" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
 			<RegExp input="$$14" output="$$5" dest="4">
@@ -549,7 +565,7 @@
 					xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 				<xsl:output omit-xml-declaration="yes" indent="yes"/>
 				<xsl:strip-space elements="*"/>
-				<xsl:key name="EpisodesByDVDnumber" match="Episode" use="concat(DVD_season,',',substring-before(DVD_episodenumber,'.'))"/>
+				<xsl:key name="EpisodesByDVDnumber" match="Episode" use="concat(DVD_season,',',substring-before(concat(DVD_episodenumber,'.'),'.'))"/>
 				<xsl:key name="EpisodesBySeason" match="Episode" use="SeasonNumber"/>
 				<xsl:variable name="title-divider" select="' / '"/>
 
@@ -575,10 +591,10 @@
 						<xsl:choose>
 							<xsl:when test="'$INFO[dvdorder]'!='true'">
 								<xsl:choose>
-									<xsl:when test="('$INFO[absolutenumber]'='true') and ((SeasonNumber&gt;0) or (absolute_number!=''))">
+									<xsl:when test="('$INFO[absolutenumber]'='true') and ((SeasonNumber&gt;0) or ((absolute_number!='') and (absolute_number!=0)))">
 										<epnum>
 											<xsl:choose>
-												<xsl:when test="absolute_number!=''"><xsl:value-of select="absolute_number"/></xsl:when>
+												<xsl:when test="(absolute_number!='') and (absolute_number!=0)"><xsl:value-of select="absolute_number"/></xsl:when>
 												<xsl:otherwise><xsl:value-of select="substring-before(substring-after($SeasonCounts, concat('|S', SeasonNumber, '|')), '|') + EpisodeNumber"/></xsl:otherwise>
 											</xsl:choose>
 										</epnum>
@@ -590,12 +606,12 @@
 							</xsl:when>
 							<xsl:otherwise>
 								<xsl:choose>
-									<xsl:when test="(DVD_episodenumber!='') and (DVD_season!='')">
+									<xsl:when test="((DVD_episodenumber!='') and (DVD_season!='')) and ((DVD_episodenumber!=0) or (DVD_season!=0))">
 										<epnum><xsl:value-of select="DVD_episodenumber"/></epnum>
 										<season><xsl:value-of select="DVD_season"/></season>
 									</xsl:when>
 									<xsl:otherwise>
-										<epnum><xsl:value-of select="EpisodeNumber"/><xsl:if test="key('EpisodesByDVDnumber', concat(SeasonNumber,',',EpisodeNumber))">.<xsl:value-of select="count(key('EpisodesByDVDnumber', concat(SeasonNumber,',',EpisodeNumber))[(DVD_episodenumber!='') and (substring-after(DVD_episodenumber,'.')!='0')])+1"/></xsl:if></epnum>
+										<epnum><xsl:value-of select="EpisodeNumber"/><xsl:if test="key('EpisodesByDVDnumber', concat(SeasonNumber,',',EpisodeNumber))">.<xsl:value-of select="count(key('EpisodesByDVDnumber', concat(SeasonNumber,',',EpisodeNumber))[(DVD_episodenumber!='') and number(substring-after(concat(DVD_episodenumber,'.0'),'.'))&gt;0])+1"/></xsl:if></epnum>
 										<season><xsl:value-of select="SeasonNumber"/></season>
 									</xsl:otherwise>
 								</xsl:choose>
@@ -715,7 +731,7 @@
 				<expression>"dvdSeason":\s*?(?:(\d+)|null),</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;dvdEpisodeNumber&gt;\1&lt;/dvdEpisodeNumber&gt;" dest="10+">
-				<expression>"dvdEpisodeNumber":\s*?(?:(\d+)|null),</expression>
+				<expression>"dvdEpisodeNumber":\s*?(?:([\d\.]+)|null),</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;absoluteNumber&gt;\1&lt;/absoluteNumber&gt;" dest="10+">
 				<expression>"absoluteNumber":\s*?(?:(\d+)|null),</expression>
@@ -813,7 +829,7 @@
 						xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 					<xsl:output indent="yes"/>
 					<xsl:strip-space elements="*"/>
-					<xsl:key name="EpisodesByDVDnumber" match="current/Episode" use="concat(dvdSeason,',',substring-before(dvdEpisodeNumber,'.'))"/>
+					<xsl:key name="EpisodesByDVDnumber" match="current/Episode" use="concat(dvdSeason,',',substring-before(concat(dvdEpisodeNumber,'.'),'.'))"/>
 					<xsl:variable name="SeasonCounts">
 						<xsl:if test="'$INFO[absolutenumber]'='true'">$$12</xsl:if>
 					</xsl:variable>
@@ -875,10 +891,10 @@
 							<xsl:choose>
 								<xsl:when test="'$INFO[dvdorder]'!='true'">
 									<xsl:choose>
-										<xsl:when test="('$INFO[absolutenumber]'='true') and (($FirstEpisode/airedSeason&gt;0) or ($FirstEpisode/absoluteNumber!=''))">
+										<xsl:when test="('$INFO[absolutenumber]'='true') and (($FirstEpisode/airedSeason&gt;0) or (($FirstEpisode/absoluteNumber!='') and ($FirstEpisode/absoluteNumber!=0)))">
 											<episode>
 												<xsl:choose>
-													<xsl:when test="$FirstEpisode/absoluteNumber!=''"><xsl:value-of select="$FirstEpisode/absoluteNumber"/></xsl:when>
+													<xsl:when test="($FirstEpisode/absoluteNumber!='') and ($FirstEpisode/absoluteNumber!=0)"><xsl:value-of select="$FirstEpisode/absoluteNumber"/></xsl:when>
 													<xsl:otherwise><xsl:value-of select="substring-before(substring-after($SeasonCounts, concat('|S', $FirstEpisode/airedSeason, '|')), '|') + $FirstEpisode/airedEpisodeNumber"/></xsl:otherwise>
 												</xsl:choose>
 											</episode>
@@ -896,8 +912,8 @@
 								</xsl:when>
 								<xsl:otherwise>
 									<xsl:choose>
-										<xsl:when test="($FirstEpisode/dvdEpisodeNumber='') or ($FirstEpisode/dvdSeason='')">
-											<episode><xsl:value-of select="$FirstEpisode/airedEpisodeNumber"/><xsl:if test="key('EpisodesByDVDnumber', concat($FirstEpisode/airedSeason,',',$FirstEpisode/airedEpisodeNumber))">.<xsl:value-of select="count(key('EpisodesByDVDnumber', concat($FirstEpisode/airedSeason,',',$FirstEpisode/airedEpisodeNumber))[(dvdEpisodeNumber!='') and (substring-after(dvdEpisodeNumber,'.')!='0')])+1"/></xsl:if></episode>
+										<xsl:when test="(($FirstEpisode/dvdEpisodeNumber='') or ($FirstEpisode/dvdSeason='')) or (($FirstEpisode/dvdEpisodeNumber=0) and ($FirstEpisode/dvdSeason=0))">
+											<episode><xsl:value-of select="$FirstEpisode/airedEpisodeNumber"/><xsl:if test="key('EpisodesByDVDnumber', concat($FirstEpisode/airedSeason,',',$FirstEpisode/airedEpisodeNumber))">.<xsl:value-of select="count(key('EpisodesByDVDnumber', concat($FirstEpisode/airedSeason,',',$FirstEpisode/airedEpisodeNumber))[(dvdEpisodeNumber!='') and number(substring-after(concat(dvdEpisodeNumber,'.0'),'.'))&gt;0])+1"/></xsl:if></episode>
 											<season><xsl:value-of select="$FirstEpisode/airedSeason"/></season>
 										</xsl:when>
 										<xsl:otherwise>
@@ -1105,4 +1121,20 @@
 			<expression noclean="1" fixchars="1"/>
 		</RegExp>
 	</ParseEpisodeDetails>
+	<GetIMDBRatingsById dest="5" clearbuffers="no">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;\1-main.html&quot; function=&quot;ParseIMDBRatings&quot;&gt;http://www.imdb.com/title/\1/|accept-language=en-us&lt;/url&gt;&lt;/details&gt;" dest="5">
+			<expression noclean="1">^(tt\d+)</expression>
+		</RegExp>
+		<RegExp input="$$1" output="default=&quot;true&quot;" dest="3">
+			<expression clear="yes">\|default$</expression>
+		</RegExp>
+	</GetIMDBRatingsById>
+	<ParseIMDBRatings dest="5" clearbuffers="no">
+		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;ratings&gt;&lt;rating name=&quot;imdb&quot; $$3&gt;&lt;value&gt;\2&lt;/value&gt;&lt;votes&gt;\1&lt;/votes&gt;&lt;/rating&gt;&lt;/ratings&gt;" dest="2">
+				<expression>&quot;ratingCount&quot;:\s([0-9,]+),\s*&quot;bestRating&quot;:\s&quot;[^&quot;]*&quot;,\s*&quot;worstRating&quot;:\s&quot;[^&quot;]*&quot;,\s*&quot;ratingValue&quot;:\s&quot;([0-9.]+)</expression>
+			</RegExp>
+			<expression noclean="1" />
+		</RegExp>
+	</ParseIMDBRatings>
 </scraper>
