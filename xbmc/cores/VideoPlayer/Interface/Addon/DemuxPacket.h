@@ -24,7 +24,7 @@ typedef struct DemuxPacket
   uint8_t *pData = nullptr;
   int iSize = 0;
   int iStreamId = -1;
-  int64_t demuxerId; // id of the demuxer that created the packet
+  int64_t demuxerId = -1; // id of the demuxer that created the packet
   int iGroupId = -1; // the group this data belongs to, used to group data from different streams together
 
   void *pSideData = nullptr;
