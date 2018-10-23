@@ -51,6 +51,12 @@ void CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool video
       return;
     }
 
+    // Broadcast RGB is an Intel specific drm property
+    if (SupportsProperty(m_connector, "Broadcast RGB"))
+    {
+      AddProperty(m_connector, "Broadcast RGB", GetHdmiQuantizationRange());
+    }
+
     if (SupportsProperty(m_connector, "content type"))
     {
       AddProperty(m_connector, "content type", GetHdmiContentType(videoLayer));
@@ -159,6 +165,13 @@ bool CDRMAtomic::InitDrm()
 
   const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
   std::set<std::string> settingSet;
+
+  // Broadcast RGB is an Intel specific drm property
+  if (SupportsProperty(m_connector, "Broadcast RGB"))
+  {
+    settings->GetSetting(SETTING_VIDEOSCREEN_HDMIQUANTIZATIONRANGE)->SetVisible(true);
+    settingSet.insert(SETTING_VIDEOSCREEN_HDMIQUANTIZATIONRANGE);
+  }
 
   if (SupportsProperty(m_connector, "content type"))
   {
