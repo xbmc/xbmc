@@ -142,6 +142,8 @@ static std::map<std::string, std::string> fillMimeTypes()
   mimeTypes.insert(std::pair<std::string, std::string>("gzip",      "application/x-gzip"));
   mimeTypes.insert(std::pair<std::string, std::string>("h",         "text/plain"));
   mimeTypes.insert(std::pair<std::string, std::string>("hdf",       "application/x-hdf"));
+  mimeTypes.insert(std::pair<std::string, std::string>("heic",      "image/heic"));
+  mimeTypes.insert(std::pair<std::string, std::string>("heif",      "image/heif"));
   mimeTypes.insert(std::pair<std::string, std::string>("help",      "application/x-helpfile"));
   mimeTypes.insert(std::pair<std::string, std::string>("hgl",       "application/vnd.hp-hpgl"));
   mimeTypes.insert(std::pair<std::string, std::string>("hh",        "text/plain"));
