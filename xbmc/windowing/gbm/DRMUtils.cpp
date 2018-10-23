@@ -17,6 +17,8 @@
 #include <unistd.h>
 
 #include "platform/linux/XTimeUtils.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "windowing/GraphicContext.h"
@@ -24,6 +26,9 @@
 #include "DRMUtils.h"
 
 using namespace KODI::WINDOWING::GBM;
+
+const std::string CDRMUtils::SETTING_VIDEOSCREEN_HDMICONTENTTYPE = "videoscreen.hdmicontenttype";
+const std::string CDRMUtils::SETTING_VIDEOPLAYER_HDMICONTENTTYPE = "videoplayer.hdmicontenttype";
 
 CDRMUtils::CDRMUtils()
   : m_connector(new connector)
@@ -820,4 +825,14 @@ bool CDRMUtils::CheckConnector(int connector_id)
   drmModeFreeConnector(connectorcheck.connector);
 
   return finalConnectionState == DRM_MODE_CONNECTED;
+}
+
+int CDRMUtils::GetHdmiContentType(bool videoLayer)
+{
+  int contentType = 0;
+  if (videoLayer)
+    contentType = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(SETTING_VIDEOPLAYER_HDMICONTENTTYPE);
+  if (contentType == 0)
+    contentType = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(SETTING_VIDEOSCREEN_HDMICONTENTTYPE);
+  return contentType;
 }

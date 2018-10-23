@@ -122,6 +122,11 @@ public:
   static uint32_t FourCCWithAlpha(uint32_t fourcc);
   static uint32_t FourCCWithoutAlpha(uint32_t fourcc);
 
+  static const std::string SETTING_VIDEOSCREEN_HDMICONTENTTYPE;
+  static const std::string SETTING_VIDEOPLAYER_HDMICONTENTTYPE;
+
+  int GetHdmiContentType(bool videoLayer);
+
 protected:
   bool OpenDrm(bool needConnector);
   uint32_t GetPropertyId(struct drm_object *object, const char *name);

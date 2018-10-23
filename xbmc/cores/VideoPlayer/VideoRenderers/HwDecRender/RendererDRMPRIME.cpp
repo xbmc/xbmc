@@ -49,12 +49,19 @@ CBaseRenderer* CRendererDRMPRIME::Create(CVideoBuffer* buffer)
 void CRendererDRMPRIME::Register()
 {
   CWinSystemGbm* winSystem = dynamic_cast<CWinSystemGbm*>(CServiceBroker::GetWinSystem());
-  if (winSystem && winSystem->GetDrm()->GetVideoPlane()->plane &&
-      std::dynamic_pointer_cast<CDRMAtomic>(winSystem->GetDrm()))
-  {
-    CServiceBroker::GetSettingsComponent()->GetSettings()->GetSetting(SETTING_VIDEOPLAYER_USEPRIMERENDERER)->SetVisible(true);
-    VIDEOPLAYER::CRendererFactory::RegisterRenderer("drm_prime", CRendererDRMPRIME::Create);
+  if (!winSystem)
     return;
+
+  std::shared_ptr<CDRMAtomic> drm = std::dynamic_pointer_cast<CDRMAtomic>(winSystem->GetDrm());
+  if (drm && drm->GetVideoPlane()->plane)
+  {
+    const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+
+    settings->GetSetting(SETTING_VIDEOPLAYER_USEPRIMERENDERER)->SetVisible(true);
+    VIDEOPLAYER::CRendererFactory::RegisterRenderer("drm_prime", CRendererDRMPRIME::Create);
+
+    if (drm->SupportsProperty(drm->GetConnector(), "content type"))
+      settings->GetSetting(CDRMUtils::SETTING_VIDEOPLAYER_HDMICONTENTTYPE)->SetVisible(true);
   }
 }
 

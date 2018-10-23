@@ -7297,7 +7297,61 @@ msgctxt "#13465"
 msgid "EGL"
 msgstr ""
 
-#empty strings from id 13466 to 13504
+#. Option for setting HDMI Content Type
+#: system/settings/gbm.xml
+msgctxt "#13466"
+msgid "HDMI Content Type"
+msgstr ""
+
+#. Description of videoscreen setting with label #13466 "HDMI Content Type"
+#: system/settings/gbm.xml
+msgctxt "#13467"
+msgid "This option sets content type to use in HDMI infoframes."
+msgstr ""
+
+#. Description of videoplayer setting with label #13466 "HDMI Content Type"
+#: system/settings/gbm.xml
+msgctxt "#13468"
+msgid "This option sets content type to use in HDMI infoframes when video is playing using the Direct To Plane render method."
+msgstr ""
+
+#. String for options 1 of setting with label #13466 "HDMI Content Type"
+#: system/settings/gbm.xml
+msgctxt "#13469"
+msgid "Default"
+msgstr ""
+
+#. String for options 2 of setting with label #13466 "HDMI Content Type"
+#: system/settings/gbm.xml
+msgctxt "#13470"
+msgid "No Data"
+msgstr ""
+
+#. String for options 3 of setting with label #13466 "HDMI Content Type"
+#: system/settings/gbm.xml
+msgctxt "#13471"
+msgid "Graphics"
+msgstr ""
+
+#. String for options 4 of setting with label #13466 "HDMI Content Type"
+#: system/settings/gbm.xml
+msgctxt "#13472"
+msgid "Photo"
+msgstr ""
+
+#. String for options 5 of setting with label #13466 "HDMI Content Type"
+#: system/settings/gbm.xml
+msgctxt "#13473"
+msgid "Cinema"
+msgstr ""
+
+#. String for options 6 of setting with label #13466 "HDMI Content Type"
+#: system/settings/gbm.xml
+msgctxt "#13474"
+msgid "Game"
+msgstr ""
+
+#empty strings from id 13475 to 13504
 
 #: system/settings/settings.xml
 msgctxt "#13505"

@@ -9,6 +9,7 @@
 #pragma once
 
 #include "DRMUtils.h"
+#include "settings/lib/ISettingCallback.h"
 
 namespace KODI
 {
@@ -17,7 +18,7 @@ namespace WINDOWING
 namespace GBM
 {
 
-class CDRMAtomic : public CDRMUtils
+class CDRMAtomic : public CDRMUtils, public ISettingCallback
 {
 public:
   CDRMAtomic() = default;
@@ -28,6 +29,8 @@ public:
   virtual bool InitDrm() override;
   virtual void DestroyDrm() override;
   virtual bool AddProperty(struct drm_object *object, const char *name, uint64_t value) override;
+
+  void OnSettingChanged(std::shared_ptr<const CSetting> setting) override;
 
 private:
   void DrmAtomicCommit(int fb_id, int flags, bool rendered, bool videoLayer);
