@@ -752,7 +752,7 @@ EVENT_RESULT CGUIBaseContainer::OnMouseEvent(const CPoint &point, const CMouseEv
 bool CGUIBaseContainer::OnClick(int actionID)
 {
   int subItem = 0;
-  if (actionID == ACTION_SELECT_ITEM || actionID == ACTION_MOUSE_LEFT_CLICK || actionID == ACTION_PLAYER_PLAY)
+  if (actionID == ACTION_SELECT_ITEM || actionID == ACTION_MOUSE_LEFT_CLICK)
   {
     if (m_listProvider)
     { // "select" action
