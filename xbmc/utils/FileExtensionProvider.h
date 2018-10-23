@@ -55,6 +55,11 @@ public:
    */
   std::string GetFileFolderExtensions() const;
 
+  /*!
+   * @brief Returns whether a url protocol from add-ons use encoded hostnames
+   */
+  bool EncodedHostName(const std::string& protocol) const;
+
 private:
   std::string GetAddonExtensions(const ADDON::TYPE &type) const;
   std::string GetAddonFileFolderExtensions(const ADDON::TYPE &type) const;
@@ -71,4 +76,7 @@ private:
   // File extension properties
   std::map<ADDON::TYPE, std::string> m_addonExtensions;
   std::map<ADDON::TYPE, std::string> m_addonFileFolderExtensions;
+
+  // Protocols from add-ons with encoded host names
+  std::vector<std::string> m_encoded;
 };
