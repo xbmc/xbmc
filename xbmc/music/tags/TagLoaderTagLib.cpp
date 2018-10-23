@@ -59,6 +59,10 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 
+#if TAGLIB_MAJOR_VERSION <= 1 && TAGLIB_MINOR_VERSION < 11
+#include "utils/Base64.h"
+#endif
+
 using namespace TagLib;
 using namespace MUSIC_INFO;
 
