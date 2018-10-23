@@ -17,495 +17,486 @@
 #include "utils/StringUtils.h"
 #include "filesystem/CurlFile.h"
 
-static std::map<std::string, std::string> fillMimeTypes()
-{
-  std::map<std::string, std::string> mimeTypes;
-
-  mimeTypes.insert(std::pair<std::string, std::string>("3dm",       "x-world/x-3dmf"));
-  mimeTypes.insert(std::pair<std::string, std::string>("3dmf",      "x-world/x-3dmf"));
-  mimeTypes.insert(std::pair<std::string, std::string>("a",         "application/octet-stream"));
-  mimeTypes.insert(std::pair<std::string, std::string>("aab",       "application/x-authorware-bin"));
-  mimeTypes.insert(std::pair<std::string, std::string>("aam",       "application/x-authorware-map"));
-  mimeTypes.insert(std::pair<std::string, std::string>("aas",       "application/x-authorware-seg"));
-  mimeTypes.insert(std::pair<std::string, std::string>("abc",       "text/vnd.abc"));
-  mimeTypes.insert(std::pair<std::string, std::string>("acgi",      "text/html"));
-  mimeTypes.insert(std::pair<std::string, std::string>("afl",       "video/animaflex"));
-  mimeTypes.insert(std::pair<std::string, std::string>("ai",        "application/postscript"));
-  mimeTypes.insert(std::pair<std::string, std::string>("aif",       "audio/aiff"));
-  mimeTypes.insert(std::pair<std::string, std::string>("aifc",      "audio/x-aiff"));
-  mimeTypes.insert(std::pair<std::string, std::string>("aiff",      "audio/aiff"));
-  mimeTypes.insert(std::pair<std::string, std::string>("aim",       "application/x-aim"));
-  mimeTypes.insert(std::pair<std::string, std::string>("aip",       "text/x-audiosoft-intra"));
-  mimeTypes.insert(std::pair<std::string, std::string>("ani",       "application/x-navi-animation"));
-  mimeTypes.insert(std::pair<std::string, std::string>("aos",       "application/x-nokia-9000-communicator-add-on-software"));
-  mimeTypes.insert(std::pair<std::string, std::string>("apng",      "image/apng"));
-  mimeTypes.insert(std::pair<std::string, std::string>("aps",       "application/mime"));
-  mimeTypes.insert(std::pair<std::string, std::string>("arc",       "application/octet-stream"));
-  mimeTypes.insert(std::pair<std::string, std::string>("arj",       "application/arj"));
-  mimeTypes.insert(std::pair<std::string, std::string>("art",       "image/x-jg"));
-  mimeTypes.insert(std::pair<std::string, std::string>("arw",       "image/arw"));
-  mimeTypes.insert(std::pair<std::string, std::string>("asf",       "video/x-ms-asf"));
-  mimeTypes.insert(std::pair<std::string, std::string>("asm",       "text/x-asm"));
-  mimeTypes.insert(std::pair<std::string, std::string>("asp",       "text/asp"));
-  mimeTypes.insert(std::pair<std::string, std::string>("asx",       "video/x-ms-asf"));
-  mimeTypes.insert(std::pair<std::string, std::string>("au",        "audio/basic"));
-  mimeTypes.insert(std::pair<std::string, std::string>("avi",       "video/avi"));
-  mimeTypes.insert(std::pair<std::string, std::string>("avs",       "video/avs-video"));
-  mimeTypes.insert(std::pair<std::string, std::string>("bcpio",     "application/x-bcpio"));
-  mimeTypes.insert(std::pair<std::string, std::string>("bin",       "application/octet-stream"));
-  mimeTypes.insert(std::pair<std::string, std::string>("bm",        "image/bmp"));
-  mimeTypes.insert(std::pair<std::string, std::string>("bmp",       "image/bmp"));
-  mimeTypes.insert(std::pair<std::string, std::string>("boo",       "application/book"));
-  mimeTypes.insert(std::pair<std::string, std::string>("book",      "application/book"));
-  mimeTypes.insert(std::pair<std::string, std::string>("boz",       "application/x-bzip2"));
-  mimeTypes.insert(std::pair<std::string, std::string>("bsh",       "application/x-bsh"));
-  mimeTypes.insert(std::pair<std::string, std::string>("bz",        "application/x-bzip"));
-  mimeTypes.insert(std::pair<std::string, std::string>("bz2",       "application/x-bzip2"));
-  mimeTypes.insert(std::pair<std::string, std::string>("c",         "text/plain"));
-  mimeTypes.insert(std::pair<std::string, std::string>("c++",       "text/plain"));
-  mimeTypes.insert(std::pair<std::string, std::string>("cat",       "application/vnd.ms-pki.seccat"));
-  mimeTypes.insert(std::pair<std::string, std::string>("cc",        "text/plain"));
-  mimeTypes.insert(std::pair<std::string, std::string>("ccad",      "application/clariscad"));
-  mimeTypes.insert(std::pair<std::string, std::string>("cco",       "application/x-cocoa"));
-  mimeTypes.insert(std::pair<std::string, std::string>("cdf",       "application/cdf"));
-  mimeTypes.insert(std::pair<std::string, std::string>("cer",       "application/pkix-cert"));
-  mimeTypes.insert(std::pair<std::string, std::string>("cer",       "application/x-x509-ca-cert"));
-  mimeTypes.insert(std::pair<std::string, std::string>("cha",       "application/x-chat"));
-  mimeTypes.insert(std::pair<std::string, std::string>("chat",      "application/x-chat"));
-  mimeTypes.insert(std::pair<std::string, std::string>("class",     "application/java"));
-  mimeTypes.insert(std::pair<std::string, std::string>("com",       "application/octet-stream"));
-  mimeTypes.insert(std::pair<std::string, std::string>("conf",      "text/plain"));
-  mimeTypes.insert(std::pair<std::string, std::string>("cpio",      "application/x-cpio"));
-  mimeTypes.insert(std::pair<std::string, std::string>("cpp",       "text/x-c"));
-  mimeTypes.insert(std::pair<std::string, std::string>("cpt",       "application/x-cpt"));
-  mimeTypes.insert(std::pair<std::string, std::string>("crl",       "application/pkcs-crl"));
-  mimeTypes.insert(std::pair<std::string, std::string>("crt",       "application/pkix-cert"));
-  mimeTypes.insert(std::pair<std::string, std::string>("cr2",       "image/cr2"));
-  mimeTypes.insert(std::pair<std::string, std::string>("csh",       "application/x-csh"));
-  mimeTypes.insert(std::pair<std::string, std::string>("css",       "text/css"));
-  mimeTypes.insert(std::pair<std::string, std::string>("cxx",       "text/plain"));
-  mimeTypes.insert(std::pair<std::string, std::string>("dcr",       "application/x-director"));
-  mimeTypes.insert(std::pair<std::string, std::string>("deepv",     "application/x-deepv"));
-  mimeTypes.insert(std::pair<std::string, std::string>("def",       "text/plain"));
-  mimeTypes.insert(std::pair<std::string, std::string>("der",       "application/x-x509-ca-cert"));
-  mimeTypes.insert(std::pair<std::string, std::string>("dif",       "video/x-dv"));
-  mimeTypes.insert(std::pair<std::string, std::string>("dir",       "application/x-director"));
-  mimeTypes.insert(std::pair<std::string, std::string>("dl",        "video/dl"));
-  mimeTypes.insert(std::pair<std::string, std::string>("divx",      "video/x-msvideo"));
-  mimeTypes.insert(std::pair<std::string, std::string>("dng",       "image/dng"));
-  mimeTypes.insert(std::pair<std::string, std::string>("doc",       "application/msword"));
-  mimeTypes.insert(std::pair<std::string, std::string>("docx",      "application/vnd.openxmlformats-officedocument.wordprocessingml.document"));
-  mimeTypes.insert(std::pair<std::string, std::string>("dot",       "application/msword"));
-  mimeTypes.insert(std::pair<std::string, std::string>("dp",        "application/commonground"));
-  mimeTypes.insert(std::pair<std::string, std::string>("drw",       "application/drafting"));
-  mimeTypes.insert(std::pair<std::string, std::string>("dump",      "application/octet-stream"));
-  mimeTypes.insert(std::pair<std::string, std::string>("dv",        "video/x-dv"));
-  mimeTypes.insert(std::pair<std::string, std::string>("dvi",       "application/x-dvi"));
-  mimeTypes.insert(std::pair<std::string, std::string>("dwf",       "model/vnd.dwf"));
-  mimeTypes.insert(std::pair<std::string, std::string>("dwg",       "image/vnd.dwg"));
-  mimeTypes.insert(std::pair<std::string, std::string>("dxf",       "image/vnd.dwg"));
-  mimeTypes.insert(std::pair<std::string, std::string>("dxr",       "application/x-director"));
-  mimeTypes.insert(std::pair<std::string, std::string>("el",        "text/x-script.elisp"));
-  mimeTypes.insert(std::pair<std::string, std::string>("elc",       "application/x-elc"));
-  mimeTypes.insert(std::pair<std::string, std::string>("env",       "application/x-envoy"));
-  mimeTypes.insert(std::pair<std::string, std::string>("eps",       "application/postscript"));
-  mimeTypes.insert(std::pair<std::string, std::string>("es",        "application/x-esrehber"));
-  mimeTypes.insert(std::pair<std::string, std::string>("etx",       "text/x-setext"));
-  mimeTypes.insert(std::pair<std::string, std::string>("evy",       "application/envoy"));
-  mimeTypes.insert(std::pair<std::string, std::string>("exe",       "application/octet-stream"));
-  mimeTypes.insert(std::pair<std::string, std::string>("f",         "text/x-fortran"));
-  mimeTypes.insert(std::pair<std::string, std::string>("f77",       "text/x-fortran"));
-  mimeTypes.insert(std::pair<std::string, std::string>("f90",       "text/x-fortran"));
-  mimeTypes.insert(std::pair<std::string, std::string>("fdf",       "application/vnd.fdf"));
-  mimeTypes.insert(std::pair<std::string, std::string>("fif",       "image/fif"));
-  mimeTypes.insert(std::pair<std::string, std::string>("flac",      "audio/flac"));
-  mimeTypes.insert(std::pair<std::string, std::string>("fli",       "video/fli"));
-  mimeTypes.insert(std::pair<std::string, std::string>("flo",       "image/florian"));
-  mimeTypes.insert(std::pair<std::string, std::string>("flv",       "video/x-flv"));
-  mimeTypes.insert(std::pair<std::string, std::string>("flx",       "text/vnd.fmi.flexstor"));
-  mimeTypes.insert(std::pair<std::string, std::string>("fmf",       "video/x-atomic3d-feature"));
-  mimeTypes.insert(std::pair<std::string, std::string>("for",       "text/plain"));
-  mimeTypes.insert(std::pair<std::string, std::string>("for",       "text/x-fortran"));
-  mimeTypes.insert(std::pair<std::string, std::string>("fpx",       "image/vnd.fpx"));
-  mimeTypes.insert(std::pair<std::string, std::string>("frl",       "application/freeloader"));
-  mimeTypes.insert(std::pair<std::string, std::string>("funk",      "audio/make"));
-  mimeTypes.insert(std::pair<std::string, std::string>("g",         "text/plain"));
-  mimeTypes.insert(std::pair<std::string, std::string>("g3",        "image/g3fax"));
-  mimeTypes.insert(std::pair<std::string, std::string>("gif",       "image/gif"));
-  mimeTypes.insert(std::pair<std::string, std::string>("gl",        "video/x-gl"));
-  mimeTypes.insert(std::pair<std::string, std::string>("gsd",       "audio/x-gsm"));
-  mimeTypes.insert(std::pair<std::string, std::string>("gsm",       "audio/x-gsm"));
-  mimeTypes.insert(std::pair<std::string, std::string>("gsp",       "application/x-gsp"));
-  mimeTypes.insert(std::pair<std::string, std::string>("gss",       "application/x-gss"));
-  mimeTypes.insert(std::pair<std::string, std::string>("gtar",      "application/x-gtar"));
-  mimeTypes.insert(std::pair<std::string, std::string>("gz",        "application/x-compressed"));
-  mimeTypes.insert(std::pair<std::string, std::string>("gzip",      "application/x-gzip"));
-  mimeTypes.insert(std::pair<std::string, std::string>("h",         "text/plain"));
-  mimeTypes.insert(std::pair<std::string, std::string>("hdf",       "application/x-hdf"));
-  mimeTypes.insert(std::pair<std::string, std::string>("heic",      "image/heic"));
-  mimeTypes.insert(std::pair<std::string, std::string>("heif",      "image/heif"));
-  mimeTypes.insert(std::pair<std::string, std::string>("help",      "application/x-helpfile"));
-  mimeTypes.insert(std::pair<std::string, std::string>("hgl",       "application/vnd.hp-hpgl"));
-  mimeTypes.insert(std::pair<std::string, std::string>("hh",        "text/plain"));
-  mimeTypes.insert(std::pair<std::string, std::string>("hlb",       "text/x-script"));
-  mimeTypes.insert(std::pair<std::string, std::string>("hlp",       "application/hlp"));
-  mimeTypes.insert(std::pair<std::string, std::string>("hpg",       "application/vnd.hp-hpgl"));
-  mimeTypes.insert(std::pair<std::string, std::string>("hpgl",      "application/vnd.hp-hpgl"));
-  mimeTypes.insert(std::pair<std::string, std::string>("hqx",       "application/binhex"));
-  mimeTypes.insert(std::pair<std::string, std::string>("hta",       "application/hta"));
-  mimeTypes.insert(std::pair<std::string, std::string>("htc",       "text/x-component"));
-  mimeTypes.insert(std::pair<std::string, std::string>("htm",       "text/html"));
-  mimeTypes.insert(std::pair<std::string, std::string>("html",      "text/html"));
-  mimeTypes.insert(std::pair<std::string, std::string>("htmls",     "text/html"));
-  mimeTypes.insert(std::pair<std::string, std::string>("htt",       "text/webviewhtml"));
-  mimeTypes.insert(std::pair<std::string, std::string>("htx",       "text/html"));
-  mimeTypes.insert(std::pair<std::string, std::string>("ice",       "x-conference/x-cooltalk"));
-  mimeTypes.insert(std::pair<std::string, std::string>("ico",       "image/x-icon"));
-  mimeTypes.insert(std::pair<std::string, std::string>("idc",       "text/plain"));
-  mimeTypes.insert(std::pair<std::string, std::string>("ief",       "image/ief"));
-  mimeTypes.insert(std::pair<std::string, std::string>("iefs",      "image/ief"));
-  mimeTypes.insert(std::pair<std::string, std::string>("iges",      "application/iges"));
-  mimeTypes.insert(std::pair<std::string, std::string>("igs",       "application/iges"));
-  mimeTypes.insert(std::pair<std::string, std::string>("igs",       "model/iges"));
-  mimeTypes.insert(std::pair<std::string, std::string>("ima",       "application/x-ima"));
-  mimeTypes.insert(std::pair<std::string, std::string>("imap",      "application/x-httpd-imap"));
-  mimeTypes.insert(std::pair<std::string, std::string>("inf",       "application/inf"));
-  mimeTypes.insert(std::pair<std::string, std::string>("ins",       "application/x-internet-signup"));
-  mimeTypes.insert(std::pair<std::string, std::string>("ip",        "application/x-ip2"));
-  mimeTypes.insert(std::pair<std::string, std::string>("isu",       "video/x-isvideo"));
-  mimeTypes.insert(std::pair<std::string, std::string>("it",        "audio/it"));
-  mimeTypes.insert(std::pair<std::string, std::string>("iv",        "application/x-inventor"));
-  mimeTypes.insert(std::pair<std::string, std::string>("ivr",       "i-world/i-vrml"));
-  mimeTypes.insert(std::pair<std::string, std::string>("ivy",       "application/x-livescreen"));
-  mimeTypes.insert(std::pair<std::string, std::string>("jam",       "audio/x-jam"));
-  mimeTypes.insert(std::pair<std::string, std::string>("jav",       "text/x-java-source"));
-  mimeTypes.insert(std::pair<std::string, std::string>("java",      "text/x-java-source"));
-  mimeTypes.insert(std::pair<std::string, std::string>("jcm",       "application/x-java-commerce"));
-  mimeTypes.insert(std::pair<std::string, std::string>("jfif",      "image/jpeg"));
-  mimeTypes.insert(std::pair<std::string, std::string>("jp2",       "image/jp2"));
-  mimeTypes.insert(std::pair<std::string, std::string>("jfif-tbnl", "image/jpeg"));
-  mimeTypes.insert(std::pair<std::string, std::string>("jpe",       "image/jpeg"));
-  mimeTypes.insert(std::pair<std::string, std::string>("jpeg",      "image/jpeg"));
-  mimeTypes.insert(std::pair<std::string, std::string>("jpg",       "image/jpeg"));
-  mimeTypes.insert(std::pair<std::string, std::string>("jps",       "image/x-jps"));
-  mimeTypes.insert(std::pair<std::string, std::string>("js",        "application/javascript"));
-  mimeTypes.insert(std::pair<std::string, std::string>("json",      "application/json"));
-  mimeTypes.insert(std::pair<std::string, std::string>("jut",       "image/jutvision"));
-  mimeTypes.insert(std::pair<std::string, std::string>("kar",       "music/x-karaoke"));
-  mimeTypes.insert(std::pair<std::string, std::string>("ksh",       "application/x-ksh"));
-  mimeTypes.insert(std::pair<std::string, std::string>("ksh",       "text/x-script.ksh"));
-  mimeTypes.insert(std::pair<std::string, std::string>("la",        "audio/nspaudio"));
-  mimeTypes.insert(std::pair<std::string, std::string>("lam",       "audio/x-liveaudio"));
-  mimeTypes.insert(std::pair<std::string, std::string>("latex",     "application/x-latex"));
-  mimeTypes.insert(std::pair<std::string, std::string>("lha",       "application/lha"));
-  mimeTypes.insert(std::pair<std::string, std::string>("lhx",       "application/octet-stream"));
-  mimeTypes.insert(std::pair<std::string, std::string>("list",      "text/plain"));
-  mimeTypes.insert(std::pair<std::string, std::string>("lma",       "audio/nspaudio"));
-  mimeTypes.insert(std::pair<std::string, std::string>("log",       "text/plain"));
-  mimeTypes.insert(std::pair<std::string, std::string>("lsp",       "application/x-lisp"));
-  mimeTypes.insert(std::pair<std::string, std::string>("lst",       "text/plain"));
-  mimeTypes.insert(std::pair<std::string, std::string>("lsx",       "text/x-la-asf"));
-  mimeTypes.insert(std::pair<std::string, std::string>("ltx",       "application/x-latex"));
-  mimeTypes.insert(std::pair<std::string, std::string>("lzh",       "application/x-lzh"));
-  mimeTypes.insert(std::pair<std::string, std::string>("lzx",       "application/lzx"));
-  mimeTypes.insert(std::pair<std::string, std::string>("m",         "text/x-m"));
-  mimeTypes.insert(std::pair<std::string, std::string>("m1v",       "video/mpeg"));
-  mimeTypes.insert(std::pair<std::string, std::string>("m2a",       "audio/mpeg"));
-  mimeTypes.insert(std::pair<std::string, std::string>("m2v",       "video/mpeg"));
-  mimeTypes.insert(std::pair<std::string, std::string>("m3u",       "audio/x-mpegurl"));
-  mimeTypes.insert(std::pair<std::string, std::string>("man",       "application/x-troff-man"));
-  mimeTypes.insert(std::pair<std::string, std::string>("map",       "application/x-navimap"));
-  mimeTypes.insert(std::pair<std::string, std::string>("mar",       "text/plain"));
-  mimeTypes.insert(std::pair<std::string, std::string>("mbd",       "application/mbedlet"));
-  mimeTypes.insert(std::pair<std::string, std::string>("mc$",       "application/x-magic-cap-package-1.0"));
-  mimeTypes.insert(std::pair<std::string, std::string>("mcd",       "application/x-mathcad"));
-  mimeTypes.insert(std::pair<std::string, std::string>("mcf",       "text/mcf"));
-  mimeTypes.insert(std::pair<std::string, std::string>("mcp",       "application/netmc"));
-  mimeTypes.insert(std::pair<std::string, std::string>("me",        "application/x-troff-me"));
-  mimeTypes.insert(std::pair<std::string, std::string>("mht",       "message/rfc822"));
-  mimeTypes.insert(std::pair<std::string, std::string>("mhtml",     "message/rfc822"));
-  mimeTypes.insert(std::pair<std::string, std::string>("mid",       "audio/midi"));
-  mimeTypes.insert(std::pair<std::string, std::string>("midi",      "audio/midi"));
-  mimeTypes.insert(std::pair<std::string, std::string>("mif",       "application/x-mif"));
-  mimeTypes.insert(std::pair<std::string, std::string>("mime",      "message/rfc822"));
-  mimeTypes.insert(std::pair<std::string, std::string>("mjf",       "audio/x-vnd.audioexplosion.mjuicemediafile"));
-  mimeTypes.insert(std::pair<std::string, std::string>("mjpg",      "video/x-motion-jpeg"));
-  mimeTypes.insert(std::pair<std::string, std::string>("mka",       "audio/x-matroska"));
-  mimeTypes.insert(std::pair<std::string, std::string>("mkv",       "video/x-matroska"));
-  mimeTypes.insert(std::pair<std::string, std::string>("mk3d",      "video/x-matroska-3d"));
-  mimeTypes.insert(std::pair<std::string, std::string>("mm",        "application/x-meme"));
-  mimeTypes.insert(std::pair<std::string, std::string>("mme",       "application/base64"));
-  mimeTypes.insert(std::pair<std::string, std::string>("mod",       "audio/mod"));
-  mimeTypes.insert(std::pair<std::string, std::string>("moov",      "video/quicktime"));
-  mimeTypes.insert(std::pair<std::string, std::string>("mov",       "video/quicktime"));
-  mimeTypes.insert(std::pair<std::string, std::string>("movie",     "video/x-sgi-movie"));
-  mimeTypes.insert(std::pair<std::string, std::string>("mp2",       "audio/mpeg"));
-  mimeTypes.insert(std::pair<std::string, std::string>("mp3",       "audio/mpeg3"));
-  mimeTypes.insert(std::pair<std::string, std::string>("mp4",       "video/mp4"));
-  mimeTypes.insert(std::pair<std::string, std::string>("mpa",       "audio/mpeg"));
-  mimeTypes.insert(std::pair<std::string, std::string>("mpc",       "application/x-project"));
-  mimeTypes.insert(std::pair<std::string, std::string>("mpe",       "video/mpeg"));
-  mimeTypes.insert(std::pair<std::string, std::string>("mpeg",      "video/mpeg"));
-  mimeTypes.insert(std::pair<std::string, std::string>("mpg",       "video/mpeg"));
-  mimeTypes.insert(std::pair<std::string, std::string>("mpga",      "audio/mpeg"));
-  mimeTypes.insert(std::pair<std::string, std::string>("mpp",       "application/vnd.ms-project"));
-  mimeTypes.insert(std::pair<std::string, std::string>("mpt",       "application/x-project"));
-  mimeTypes.insert(std::pair<std::string, std::string>("mpv",       "application/x-project"));
-  mimeTypes.insert(std::pair<std::string, std::string>("mpx",       "application/x-project"));
-  mimeTypes.insert(std::pair<std::string, std::string>("mrc",       "application/marc"));
-  mimeTypes.insert(std::pair<std::string, std::string>("ms",        "application/x-troff-ms"));
-  mimeTypes.insert(std::pair<std::string, std::string>("mv",        "video/x-sgi-movie"));
-  mimeTypes.insert(std::pair<std::string, std::string>("my",        "audio/make"));
-  mimeTypes.insert(std::pair<std::string, std::string>("mzz",       "application/x-vnd.audioexplosion.mzz"));
-  mimeTypes.insert(std::pair<std::string, std::string>("nap",       "image/naplps"));
-  mimeTypes.insert(std::pair<std::string, std::string>("naplps",    "image/naplps"));
-  mimeTypes.insert(std::pair<std::string, std::string>("nc",        "application/x-netcdf"));
-  mimeTypes.insert(std::pair<std::string, std::string>("ncm",       "application/vnd.nokia.configuration-message"));
-  mimeTypes.insert(std::pair<std::string, std::string>("nef",       "image/nef"));
-  mimeTypes.insert(std::pair<std::string, std::string>("nfo",       "text/xml"));
-  mimeTypes.insert(std::pair<std::string, std::string>("nif",       "image/x-niff"));
-  mimeTypes.insert(std::pair<std::string, std::string>("niff",      "image/x-niff"));
-  mimeTypes.insert(std::pair<std::string, std::string>("nix",       "application/x-mix-transfer"));
-  mimeTypes.insert(std::pair<std::string, std::string>("nsc",       "application/x-conference"));
-  mimeTypes.insert(std::pair<std::string, std::string>("nvd",       "application/x-navidoc"));
-  mimeTypes.insert(std::pair<std::string, std::string>("o",         "application/octet-stream"));
-  mimeTypes.insert(std::pair<std::string, std::string>("oda",       "application/oda"));
-  mimeTypes.insert(std::pair<std::string, std::string>("ogg",       "audio/ogg"));
-  mimeTypes.insert(std::pair<std::string, std::string>("omc",       "application/x-omc"));
-  mimeTypes.insert(std::pair<std::string, std::string>("omcd",      "application/x-omcdatamaker"));
-  mimeTypes.insert(std::pair<std::string, std::string>("omcr",      "application/x-omcregerator"));
-  mimeTypes.insert(std::pair<std::string, std::string>("p",         "text/x-pascal"));
-  mimeTypes.insert(std::pair<std::string, std::string>("p10",       "application/pkcs10"));
-  mimeTypes.insert(std::pair<std::string, std::string>("p12",       "application/pkcs-12"));
-  mimeTypes.insert(std::pair<std::string, std::string>("p7a",       "application/x-pkcs7-signature"));
-  mimeTypes.insert(std::pair<std::string, std::string>("p7c",       "application/pkcs7-mime"));
-  mimeTypes.insert(std::pair<std::string, std::string>("p7m",       "application/pkcs7-mime"));
-  mimeTypes.insert(std::pair<std::string, std::string>("p7r",       "application/x-pkcs7-certreqresp"));
-  mimeTypes.insert(std::pair<std::string, std::string>("p7s",       "application/pkcs7-signature"));
-  mimeTypes.insert(std::pair<std::string, std::string>("part",      "application/pro_eng"));
-  mimeTypes.insert(std::pair<std::string, std::string>("pas",       "text/pascal"));
-  mimeTypes.insert(std::pair<std::string, std::string>("pbm",       "image/x-portable-bitmap"));
-  mimeTypes.insert(std::pair<std::string, std::string>("pcl",       "application/vnd.hp-pcl"));
-  mimeTypes.insert(std::pair<std::string, std::string>("pct",       "image/x-pict"));
-  mimeTypes.insert(std::pair<std::string, std::string>("pcx",       "image/x-pcx"));
-  mimeTypes.insert(std::pair<std::string, std::string>("pdb",       "chemical/x-pdb"));
-  mimeTypes.insert(std::pair<std::string, std::string>("pdf",       "application/pdf"));
-  mimeTypes.insert(std::pair<std::string, std::string>("pfunk",     "audio/make.my.funk"));
-  mimeTypes.insert(std::pair<std::string, std::string>("pgm",       "image/x-portable-greymap"));
-  mimeTypes.insert(std::pair<std::string, std::string>("pic",       "image/pict"));
-  mimeTypes.insert(std::pair<std::string, std::string>("pict",      "image/pict"));
-  mimeTypes.insert(std::pair<std::string, std::string>("pkg",       "application/x-newton-compatible-pkg"));
-  mimeTypes.insert(std::pair<std::string, std::string>("pko",       "application/vnd.ms-pki.pko"));
-  mimeTypes.insert(std::pair<std::string, std::string>("pl",        "text/x-script.perl"));
-  mimeTypes.insert(std::pair<std::string, std::string>("plx",       "application/x-pixclscript"));
-  mimeTypes.insert(std::pair<std::string, std::string>("pm",        "text/x-script.perl-module"));
-  mimeTypes.insert(std::pair<std::string, std::string>("pm4",       "application/x-pagemaker"));
-  mimeTypes.insert(std::pair<std::string, std::string>("pm5",       "application/x-pagemaker"));
-  mimeTypes.insert(std::pair<std::string, std::string>("png",       "image/png"));
-  mimeTypes.insert(std::pair<std::string, std::string>("pnm",       "application/x-portable-anymap"));
-  mimeTypes.insert(std::pair<std::string, std::string>("pot",       "application/vnd.ms-powerpoint"));
-  mimeTypes.insert(std::pair<std::string, std::string>("pov",       "model/x-pov"));
-  mimeTypes.insert(std::pair<std::string, std::string>("ppa",       "application/vnd.ms-powerpoint"));
-  mimeTypes.insert(std::pair<std::string, std::string>("ppm",       "image/x-portable-pixmap"));
-  mimeTypes.insert(std::pair<std::string, std::string>("pps",       "application/mspowerpoint"));
-  mimeTypes.insert(std::pair<std::string, std::string>("ppt",       "application/mspowerpoint"));
-  mimeTypes.insert(std::pair<std::string, std::string>("ppz",       "application/mspowerpoint"));
-  mimeTypes.insert(std::pair<std::string, std::string>("pre",       "application/x-freelance"));
-  mimeTypes.insert(std::pair<std::string, std::string>("prt",       "application/pro_eng"));
-  mimeTypes.insert(std::pair<std::string, std::string>("ps",        "application/postscript"));
-  mimeTypes.insert(std::pair<std::string, std::string>("psd",       "application/octet-stream"));
-  mimeTypes.insert(std::pair<std::string, std::string>("pvu",       "paleovu/x-pv"));
-  mimeTypes.insert(std::pair<std::string, std::string>("pwz",       "application/vnd.ms-powerpoint"));
-  mimeTypes.insert(std::pair<std::string, std::string>("py",        "text/x-script.phyton"));
-  mimeTypes.insert(std::pair<std::string, std::string>("pyc",       "application/x-bytecode.python"));
-  mimeTypes.insert(std::pair<std::string, std::string>("qcp",       "audio/vnd.qcelp"));
-  mimeTypes.insert(std::pair<std::string, std::string>("qd3",       "x-world/x-3dmf"));
-  mimeTypes.insert(std::pair<std::string, std::string>("qd3d",      "x-world/x-3dmf"));
-  mimeTypes.insert(std::pair<std::string, std::string>("qif",       "image/x-quicktime"));
-  mimeTypes.insert(std::pair<std::string, std::string>("qt",        "video/quicktime"));
-  mimeTypes.insert(std::pair<std::string, std::string>("qtc",       "video/x-qtc"));
-  mimeTypes.insert(std::pair<std::string, std::string>("qti",       "image/x-quicktime"));
-  mimeTypes.insert(std::pair<std::string, std::string>("qtif",      "image/x-quicktime"));
-  mimeTypes.insert(std::pair<std::string, std::string>("ra",        "audio/x-realaudio"));
-  mimeTypes.insert(std::pair<std::string, std::string>("ram",       "audio/x-pn-realaudio"));
-  mimeTypes.insert(std::pair<std::string, std::string>("ras",       "image/cmu-raster"));
-  mimeTypes.insert(std::pair<std::string, std::string>("rast",      "image/cmu-raster"));
-  mimeTypes.insert(std::pair<std::string, std::string>("rexx",      "text/x-script.rexx"));
-  mimeTypes.insert(std::pair<std::string, std::string>("rf",        "image/vnd.rn-realflash"));
-  mimeTypes.insert(std::pair<std::string, std::string>("rgb",       "image/x-rgb"));
-  mimeTypes.insert(std::pair<std::string, std::string>("rm",        "audio/x-pn-realaudio"));
-  mimeTypes.insert(std::pair<std::string, std::string>("rmi",       "audio/mid"));
-  mimeTypes.insert(std::pair<std::string, std::string>("rmm",       "audio/x-pn-realaudio"));
-  mimeTypes.insert(std::pair<std::string, std::string>("rmp",       "audio/x-pn-realaudio"));
-  mimeTypes.insert(std::pair<std::string, std::string>("rng",       "application/ringing-tones"));
-  mimeTypes.insert(std::pair<std::string, std::string>("rnx",       "application/vnd.rn-realplayer"));
-  mimeTypes.insert(std::pair<std::string, std::string>("roff",      "application/x-troff"));
-  mimeTypes.insert(std::pair<std::string, std::string>("rp",        "image/vnd.rn-realpix"));
-  mimeTypes.insert(std::pair<std::string, std::string>("rpm",       "audio/x-pn-realaudio-plugin"));
-  mimeTypes.insert(std::pair<std::string, std::string>("rt",        "text/richtext"));
-  mimeTypes.insert(std::pair<std::string, std::string>("rtf",       "text/richtext"));
-  mimeTypes.insert(std::pair<std::string, std::string>("rtx",       "text/richtext"));
-  mimeTypes.insert(std::pair<std::string, std::string>("rv",        "video/vnd.rn-realvideo"));
-  mimeTypes.insert(std::pair<std::string, std::string>("s",         "text/x-asm"));
-  mimeTypes.insert(std::pair<std::string, std::string>("s3m",       "audio/s3m"));
-  mimeTypes.insert(std::pair<std::string, std::string>("saveme",    "application/octet-stream"));
-  mimeTypes.insert(std::pair<std::string, std::string>("sbk",       "application/x-tbook"));
-  mimeTypes.insert(std::pair<std::string, std::string>("scm",       "video/x-scm"));
-  mimeTypes.insert(std::pair<std::string, std::string>("sdml",      "text/plain"));
-  mimeTypes.insert(std::pair<std::string, std::string>("sdp",       "application/sdp"));
-  mimeTypes.insert(std::pair<std::string, std::string>("sdr",       "application/sounder"));
-  mimeTypes.insert(std::pair<std::string, std::string>("sea",       "application/sea"));
-  mimeTypes.insert(std::pair<std::string, std::string>("set",       "application/set"));
-  mimeTypes.insert(std::pair<std::string, std::string>("sgm",       "text/sgml"));
-  mimeTypes.insert(std::pair<std::string, std::string>("sgml",      "text/sgml"));
-  mimeTypes.insert(std::pair<std::string, std::string>("sh",        "text/x-script.sh"));
-  mimeTypes.insert(std::pair<std::string, std::string>("shar",      "application/x-bsh"));
-  mimeTypes.insert(std::pair<std::string, std::string>("shtml",     "text/html"));
-  mimeTypes.insert(std::pair<std::string, std::string>("shtml",     "text/x-server-parsed-html"));
-  mimeTypes.insert(std::pair<std::string, std::string>("sid",       "audio/x-psid"));
-  mimeTypes.insert(std::pair<std::string, std::string>("sit",       "application/x-sit"));
-  mimeTypes.insert(std::pair<std::string, std::string>("sit",       "application/x-stuffit"));
-  mimeTypes.insert(std::pair<std::string, std::string>("skd",       "application/x-koan"));
-  mimeTypes.insert(std::pair<std::string, std::string>("skm",       "application/x-koan"));
-  mimeTypes.insert(std::pair<std::string, std::string>("skp",       "application/x-koan"));
-  mimeTypes.insert(std::pair<std::string, std::string>("skt",       "application/x-koan"));
-  mimeTypes.insert(std::pair<std::string, std::string>("sl",        "application/x-seelogo"));
-  mimeTypes.insert(std::pair<std::string, std::string>("smi",       "application/smil"));
-  mimeTypes.insert(std::pair<std::string, std::string>("smil",      "application/smil"));
-  mimeTypes.insert(std::pair<std::string, std::string>("snd",       "audio/basic"));
-  mimeTypes.insert(std::pair<std::string, std::string>("sol",       "application/solids"));
-  mimeTypes.insert(std::pair<std::string, std::string>("spc",       "text/x-speech"));
-  mimeTypes.insert(std::pair<std::string, std::string>("spl",       "application/futuresplash"));
-  mimeTypes.insert(std::pair<std::string, std::string>("spr",       "application/x-sprite"));
-  mimeTypes.insert(std::pair<std::string, std::string>("sprite",    "application/x-sprite"));
-  mimeTypes.insert(std::pair<std::string, std::string>("src",       "application/x-wais-source"));
-  mimeTypes.insert(std::pair<std::string, std::string>("ssi",       "text/x-server-parsed-html"));
-  mimeTypes.insert(std::pair<std::string, std::string>("ssm",       "application/streamingmedia"));
-  mimeTypes.insert(std::pair<std::string, std::string>("sst",       "application/vnd.ms-pki.certstore"));
-  mimeTypes.insert(std::pair<std::string, std::string>("step",      "application/step"));
-  mimeTypes.insert(std::pair<std::string, std::string>("stl",       "application/sla"));
-  mimeTypes.insert(std::pair<std::string, std::string>("stp",       "application/step"));
-  mimeTypes.insert(std::pair<std::string, std::string>("sup",       "application/x-pgs"));
-  mimeTypes.insert(std::pair<std::string, std::string>("sv4cpio",   "application/x-sv4cpio"));
-  mimeTypes.insert(std::pair<std::string, std::string>("sv4crc",    "application/x-sv4crc"));
-  mimeTypes.insert(std::pair<std::string, std::string>("svf",       "image/vnd.dwg"));
-  mimeTypes.insert(std::pair<std::string, std::string>("svr",       "application/x-world"));
-  mimeTypes.insert(std::pair<std::string, std::string>("swf",       "application/x-shockwave-flash"));
-  mimeTypes.insert(std::pair<std::string, std::string>("t",         "application/x-troff"));
-  mimeTypes.insert(std::pair<std::string, std::string>("talk",      "text/x-speech"));
-  mimeTypes.insert(std::pair<std::string, std::string>("tar",       "application/x-tar"));
-  mimeTypes.insert(std::pair<std::string, std::string>("tbk",       "application/toolbook"));
-  mimeTypes.insert(std::pair<std::string, std::string>("tcl",       "text/x-script.tcl"));
-  mimeTypes.insert(std::pair<std::string, std::string>("tcsh",      "text/x-script.tcsh"));
-  mimeTypes.insert(std::pair<std::string, std::string>("tex",       "application/x-tex"));
-  mimeTypes.insert(std::pair<std::string, std::string>("texi",      "application/x-texinfo"));
-  mimeTypes.insert(std::pair<std::string, std::string>("texinfo",   "application/x-texinfo"));
-  mimeTypes.insert(std::pair<std::string, std::string>("text",      "text/plain"));
-  mimeTypes.insert(std::pair<std::string, std::string>("tgz",       "application/x-compressed"));
-  mimeTypes.insert(std::pair<std::string, std::string>("tif",       "image/tiff"));
-  mimeTypes.insert(std::pair<std::string, std::string>("tiff",      "image/tiff"));
-  mimeTypes.insert(std::pair<std::string, std::string>("tr",        "application/x-troff"));
-  mimeTypes.insert(std::pair<std::string, std::string>("ts",        "video/mp2t"));
-  mimeTypes.insert(std::pair<std::string, std::string>("tsi",       "audio/tsp-audio"));
-  mimeTypes.insert(std::pair<std::string, std::string>("tsp",       "audio/tsplayer"));
-  mimeTypes.insert(std::pair<std::string, std::string>("tsv",       "text/tab-separated-values"));
-  mimeTypes.insert(std::pair<std::string, std::string>("turbot",    "image/florian"));
-  mimeTypes.insert(std::pair<std::string, std::string>("txt",       "text/plain"));
-  mimeTypes.insert(std::pair<std::string, std::string>("uil",       "text/x-uil"));
-  mimeTypes.insert(std::pair<std::string, std::string>("uni",       "text/uri-list"));
-  mimeTypes.insert(std::pair<std::string, std::string>("unis",      "text/uri-list"));
-  mimeTypes.insert(std::pair<std::string, std::string>("unv",       "application/i-deas"));
-  mimeTypes.insert(std::pair<std::string, std::string>("uri",       "text/uri-list"));
-  mimeTypes.insert(std::pair<std::string, std::string>("uris",      "text/uri-list"));
-  mimeTypes.insert(std::pair<std::string, std::string>("ustar",     "application/x-ustar"));
-  mimeTypes.insert(std::pair<std::string, std::string>("uu",        "text/x-uuencode"));
-  mimeTypes.insert(std::pair<std::string, std::string>("uue",       "text/x-uuencode"));
-  mimeTypes.insert(std::pair<std::string, std::string>("vcd",       "application/x-cdlink"));
-  mimeTypes.insert(std::pair<std::string, std::string>("vcs",       "text/x-vcalendar"));
-  mimeTypes.insert(std::pair<std::string, std::string>("vda",       "application/vda"));
-  mimeTypes.insert(std::pair<std::string, std::string>("vdo",       "video/vdo"));
-  mimeTypes.insert(std::pair<std::string, std::string>("vew",       "application/groupwise"));
-  mimeTypes.insert(std::pair<std::string, std::string>("viv",       "video/vivo"));
-  mimeTypes.insert(std::pair<std::string, std::string>("vivo",      "video/vivo"));
-  mimeTypes.insert(std::pair<std::string, std::string>("vmd",       "application/vocaltec-media-desc"));
-  mimeTypes.insert(std::pair<std::string, std::string>("vmf",       "application/vocaltec-media-file"));
-  mimeTypes.insert(std::pair<std::string, std::string>("voc",       "audio/voc"));
-  mimeTypes.insert(std::pair<std::string, std::string>("vos",       "video/vosaic"));
-  mimeTypes.insert(std::pair<std::string, std::string>("vox",       "audio/voxware"));
-  mimeTypes.insert(std::pair<std::string, std::string>("vqe",       "audio/x-twinvq-plugin"));
-  mimeTypes.insert(std::pair<std::string, std::string>("vqf",       "audio/x-twinvq"));
-  mimeTypes.insert(std::pair<std::string, std::string>("vql",       "audio/x-twinvq-plugin"));
-  mimeTypes.insert(std::pair<std::string, std::string>("vrml",      "application/x-vrml"));
-  mimeTypes.insert(std::pair<std::string, std::string>("vrt",       "x-world/x-vrt"));
-  mimeTypes.insert(std::pair<std::string, std::string>("vsd",       "application/x-visio"));
-  mimeTypes.insert(std::pair<std::string, std::string>("vst",       "application/x-visio"));
-  mimeTypes.insert(std::pair<std::string, std::string>("vsw",       "application/x-visio"));
-  mimeTypes.insert(std::pair<std::string, std::string>("w60",       "application/wordperfect6.0"));
-  mimeTypes.insert(std::pair<std::string, std::string>("w61",       "application/wordperfect6.1"));
-  mimeTypes.insert(std::pair<std::string, std::string>("w6w",       "application/msword"));
-  mimeTypes.insert(std::pair<std::string, std::string>("wav",       "audio/wav"));
-  mimeTypes.insert(std::pair<std::string, std::string>("wb1",       "application/x-qpro"));
-  mimeTypes.insert(std::pair<std::string, std::string>("wbmp",      "image/vnd.wap.wbmp"));
-  mimeTypes.insert(std::pair<std::string, std::string>("web",       "application/vnd.xara"));
-  mimeTypes.insert(std::pair<std::string, std::string>("webp",      "image/webp"));
-  mimeTypes.insert(std::pair<std::string, std::string>("wiz",       "application/msword"));
-  mimeTypes.insert(std::pair<std::string, std::string>("wk1",       "application/x-123"));
-  mimeTypes.insert(std::pair<std::string, std::string>("wma",       "audio/x-ms-wma"));
-  mimeTypes.insert(std::pair<std::string, std::string>("wmf",       "windows/metafile"));
-  mimeTypes.insert(std::pair<std::string, std::string>("wml",       "text/vnd.wap.wml"));
-  mimeTypes.insert(std::pair<std::string, std::string>("wmlc",      "application/vnd.wap.wmlc"));
-  mimeTypes.insert(std::pair<std::string, std::string>("wmls",      "text/vnd.wap.wmlscript"));
-  mimeTypes.insert(std::pair<std::string, std::string>("wmlsc",     "application/vnd.wap.wmlscriptc"));
-  mimeTypes.insert(std::pair<std::string, std::string>("wmv",       "video/x-ms-wmv"));
-  mimeTypes.insert(std::pair<std::string, std::string>("word",      "application/msword"));
-  mimeTypes.insert(std::pair<std::string, std::string>("wp",        "application/wordperfect"));
-  mimeTypes.insert(std::pair<std::string, std::string>("wp5",       "application/wordperfect"));
-  mimeTypes.insert(std::pair<std::string, std::string>("wp6",       "application/wordperfect"));
-  mimeTypes.insert(std::pair<std::string, std::string>("wpd",       "application/wordperfect"));
-  mimeTypes.insert(std::pair<std::string, std::string>("wq1",       "application/x-lotus"));
-  mimeTypes.insert(std::pair<std::string, std::string>("wri",       "application/mswrite"));
-  mimeTypes.insert(std::pair<std::string, std::string>("wrl",       "model/vrml"));
-  mimeTypes.insert(std::pair<std::string, std::string>("wrz",       "model/vrml"));
-  mimeTypes.insert(std::pair<std::string, std::string>("wsc",       "text/scriplet"));
-  mimeTypes.insert(std::pair<std::string, std::string>("wsrc",      "application/x-wais-source"));
-  mimeTypes.insert(std::pair<std::string, std::string>("wtk",       "application/x-wintalk"));
-  mimeTypes.insert(std::pair<std::string, std::string>("xbm",       "image/xbm"));
-  mimeTypes.insert(std::pair<std::string, std::string>("xdr",       "video/x-amt-demorun"));
-  mimeTypes.insert(std::pair<std::string, std::string>("xgz",       "xgl/drawing"));
-  mimeTypes.insert(std::pair<std::string, std::string>("xif",       "image/vnd.xiff"));
-  mimeTypes.insert(std::pair<std::string, std::string>("xl",        "application/excel"));
-  mimeTypes.insert(std::pair<std::string, std::string>("xla",       "application/excel"));
-  mimeTypes.insert(std::pair<std::string, std::string>("xlb",       "application/excel"));
-  mimeTypes.insert(std::pair<std::string, std::string>("xlc",       "application/excel"));
-  mimeTypes.insert(std::pair<std::string, std::string>("xld",       "application/excel"));
-  mimeTypes.insert(std::pair<std::string, std::string>("xlk",       "application/excel"));
-  mimeTypes.insert(std::pair<std::string, std::string>("xll",       "application/excel"));
-  mimeTypes.insert(std::pair<std::string, std::string>("xlm",       "application/excel"));
-  mimeTypes.insert(std::pair<std::string, std::string>("xls",       "application/excel"));
-  mimeTypes.insert(std::pair<std::string, std::string>("xlsx",      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
-  mimeTypes.insert(std::pair<std::string, std::string>("xlt",       "application/excel"));
-  mimeTypes.insert(std::pair<std::string, std::string>("xlv",       "application/excel"));
-  mimeTypes.insert(std::pair<std::string, std::string>("xlw",       "application/excel"));
-  mimeTypes.insert(std::pair<std::string, std::string>("xm",        "audio/xm"));
-  mimeTypes.insert(std::pair<std::string, std::string>("xml",       "text/xml"));
-  mimeTypes.insert(std::pair<std::string, std::string>("xmz",       "xgl/movie"));
-  mimeTypes.insert(std::pair<std::string, std::string>("xpix",      "application/x-vnd.ls-xpix"));
-  mimeTypes.insert(std::pair<std::string, std::string>("xpm",       "image/xpm"));
-  mimeTypes.insert(std::pair<std::string, std::string>("x-png",     "image/png"));
-  mimeTypes.insert(std::pair<std::string, std::string>("xspf",      "application/xspf+xml"));
-  mimeTypes.insert(std::pair<std::string, std::string>("xsr",       "video/x-amt-showrun"));
-  mimeTypes.insert(std::pair<std::string, std::string>("xvid",      "video/x-msvideo"));
-  mimeTypes.insert(std::pair<std::string, std::string>("xwd",       "image/x-xwd"));
-  mimeTypes.insert(std::pair<std::string, std::string>("xyz",       "chemical/x-pdb"));
-  mimeTypes.insert(std::pair<std::string, std::string>("z",         "application/x-compressed"));
-  mimeTypes.insert(std::pair<std::string, std::string>("zip",       "application/zip"));
-  mimeTypes.insert(std::pair<std::string, std::string>("zoo",       "application/octet-stream"));
-  mimeTypes.insert(std::pair<std::string, std::string>("zsh",       "text/x-script.zsh"));
-
-  return mimeTypes;
-}
-
-std::map<std::string, std::string> CMime::m_mimetypes = fillMimeTypes();
+const std::map<std::string, std::string> CMime::m_mimetypes = 
+    {{{"3dm",       "x-world/x-3dmf"},
+      {"3dmf",      "x-world/x-3dmf"},
+      {"a",         "application/octet-stream"},
+      {"aab",       "application/x-authorware-bin"},
+      {"aam",       "application/x-authorware-map"},
+      {"aas",       "application/x-authorware-seg"},
+      {"abc",       "text/vnd.abc"},
+      {"acgi",      "text/html"},
+      {"afl",       "video/animaflex"},
+      {"ai",        "application/postscript"},
+      {"aif",       "audio/aiff"},
+      {"aifc",      "audio/x-aiff"},
+      {"aiff",      "audio/aiff"},
+      {"aim",       "application/x-aim"},
+      {"aip",       "text/x-audiosoft-intra"},
+      {"ani",       "application/x-navi-animation"},
+      {"aos",       "application/x-nokia-9000-communicator-add-on-software"},
+      {"apng",      "image/apng"},
+      {"aps",       "application/mime"},
+      {"arc",       "application/octet-stream"},
+      {"arj",       "application/arj"},
+      {"art",       "image/x-jg"},
+      {"arw",       "image/arw"},
+      {"asf",       "video/x-ms-asf"},
+      {"asm",       "text/x-asm"},
+      {"asp",       "text/asp"},
+      {"asx",       "video/x-ms-asf"},
+      {"au",        "audio/basic"},
+      {"avi",       "video/avi"},
+      {"avs",       "video/avs-video"},
+      {"bcpio",     "application/x-bcpio"},
+      {"bin",       "application/octet-stream"},
+      {"bm",        "image/bmp"},
+      {"bmp",       "image/bmp"},
+      {"boo",       "application/book"},
+      {"book",      "application/book"},
+      {"boz",       "application/x-bzip2"},
+      {"bsh",       "application/x-bsh"},
+      {"bz",        "application/x-bzip"},
+      {"bz2",       "application/x-bzip2"},
+      {"c",         "text/plain"},
+      {"c++",       "text/plain"},
+      {"cat",       "application/vnd.ms-pki.seccat"},
+      {"cc",        "text/plain"},
+      {"ccad",      "application/clariscad"},
+      {"cco",       "application/x-cocoa"},
+      {"cdf",       "application/cdf"},
+      {"cer",       "application/pkix-cert"},
+      {"cer",       "application/x-x509-ca-cert"},
+      {"cha",       "application/x-chat"},
+      {"chat",      "application/x-chat"},
+      {"class",     "application/java"},
+      {"com",       "application/octet-stream"},
+      {"conf",      "text/plain"},
+      {"cpio",      "application/x-cpio"},
+      {"cpp",       "text/x-c"},
+      {"cpt",       "application/x-cpt"},
+      {"crl",       "application/pkcs-crl"},
+      {"crt",       "application/pkix-cert"},
+      {"cr2",       "image/cr2"},
+      {"csh",       "application/x-csh"},
+      {"css",       "text/css"},
+      {"cxx",       "text/plain"},
+      {"dcr",       "application/x-director"},
+      {"deepv",     "application/x-deepv"},
+      {"def",       "text/plain"},
+      {"der",       "application/x-x509-ca-cert"},
+      {"dif",       "video/x-dv"},
+      {"dir",       "application/x-director"},
+      {"dl",        "video/dl"},
+      {"divx",      "video/x-msvideo"},
+      {"dng",       "image/dng"},
+      {"doc",       "application/msword"},
+      {"docx",      "application/vnd.openxmlformats-officedocument.wordprocessingml.document"},
+      {"dot",       "application/msword"},
+      {"dp",        "application/commonground"},
+      {"drw",       "application/drafting"},
+      {"dump",      "application/octet-stream"},
+      {"dv",        "video/x-dv"},
+      {"dvi",       "application/x-dvi"},
+      {"dwf",       "model/vnd.dwf"},
+      {"dwg",       "image/vnd.dwg"},
+      {"dxf",       "image/vnd.dwg"},
+      {"dxr",       "application/x-director"},
+      {"el",        "text/x-script.elisp"},
+      {"elc",       "application/x-elc"},
+      {"env",       "application/x-envoy"},
+      {"eps",       "application/postscript"},
+      {"es",        "application/x-esrehber"},
+      {"etx",       "text/x-setext"},
+      {"evy",       "application/envoy"},
+      {"exe",       "application/octet-stream"},
+      {"f",         "text/x-fortran"},
+      {"f77",       "text/x-fortran"},
+      {"f90",       "text/x-fortran"},
+      {"fdf",       "application/vnd.fdf"},
+      {"fif",       "image/fif"},
+      {"flac",      "audio/flac"},
+      {"fli",       "video/fli"},
+      {"flo",       "image/florian"},
+      {"flv",       "video/x-flv"},
+      {"flx",       "text/vnd.fmi.flexstor"},
+      {"fmf",       "video/x-atomic3d-feature"},
+      {"for",       "text/plain"},
+      {"for",       "text/x-fortran"},
+      {"fpx",       "image/vnd.fpx"},
+      {"frl",       "application/freeloader"},
+      {"funk",      "audio/make"},
+      {"g",         "text/plain"},
+      {"g3",        "image/g3fax"},
+      {"gif",       "image/gif"},
+      {"gl",        "video/x-gl"},
+      {"gsd",       "audio/x-gsm"},
+      {"gsm",       "audio/x-gsm"},
+      {"gsp",       "application/x-gsp"},
+      {"gss",       "application/x-gss"},
+      {"gtar",      "application/x-gtar"},
+      {"gz",        "application/x-compressed"},
+      {"gzip",      "application/x-gzip"},
+      {"h",         "text/plain"},
+      {"hdf",       "application/x-hdf"},
+      {"heic",      "image/heic"},
+      {"heif",      "image/heif"},
+      {"help",      "application/x-helpfile"},
+      {"hgl",       "application/vnd.hp-hpgl"},
+      {"hh",        "text/plain"},
+      {"hlb",       "text/x-script"},
+      {"hlp",       "application/hlp"},
+      {"hpg",       "application/vnd.hp-hpgl"},
+      {"hpgl",      "application/vnd.hp-hpgl"},
+      {"hqx",       "application/binhex"},
+      {"hta",       "application/hta"},
+      {"htc",       "text/x-component"},
+      {"htm",       "text/html"},
+      {"html",      "text/html"},
+      {"htmls",     "text/html"},
+      {"htt",       "text/webviewhtml"},
+      {"htx",       "text/html"},
+      {"ice",       "x-conference/x-cooltalk"},
+      {"ico",       "image/x-icon"},
+      {"idc",       "text/plain"},
+      {"ief",       "image/ief"},
+      {"iefs",      "image/ief"},
+      {"iges",      "application/iges"},
+      {"igs",       "application/iges"},
+      {"igs",       "model/iges"},
+      {"ima",       "application/x-ima"},
+      {"imap",      "application/x-httpd-imap"},
+      {"inf",       "application/inf"},
+      {"ins",       "application/x-internet-signup"},
+      {"ip",        "application/x-ip2"},
+      {"isu",       "video/x-isvideo"},
+      {"it",        "audio/it"},
+      {"iv",        "application/x-inventor"},
+      {"ivr",       "i-world/i-vrml"},
+      {"ivy",       "application/x-livescreen"},
+      {"jam",       "audio/x-jam"},
+      {"jav",       "text/x-java-source"},
+      {"java",      "text/x-java-source"},
+      {"jcm",       "application/x-java-commerce"},
+      {"jfif",      "image/jpeg"},
+      {"jp2",       "image/jp2"},
+      {"jfif-tbnl", "image/jpeg"},
+      {"jpe",       "image/jpeg"},
+      {"jpeg",      "image/jpeg"},
+      {"jpg",       "image/jpeg"},
+      {"jps",       "image/x-jps"},
+      {"js",        "application/javascript"},
+      {"json",      "application/json"},
+      {"jut",       "image/jutvision"},
+      {"kar",       "music/x-karaoke"},
+      {"ksh",       "text/x-script.ksh"},
+      {"la",        "audio/nspaudio"},
+      {"lam",       "audio/x-liveaudio"},
+      {"latex",     "application/x-latex"},
+      {"lha",       "application/lha"},
+      {"lhx",       "application/octet-stream"},
+      {"list",      "text/plain"},
+      {"lma",       "audio/nspaudio"},
+      {"log",       "text/plain"},
+      {"lsp",       "application/x-lisp"},
+      {"lst",       "text/plain"},
+      {"lsx",       "text/x-la-asf"},
+      {"ltx",       "application/x-latex"},
+      {"lzh",       "application/x-lzh"},
+      {"lzx",       "application/lzx"},
+      {"m",         "text/x-m"},
+      {"m1v",       "video/mpeg"},
+      {"m2a",       "audio/mpeg"},
+      {"m2v",       "video/mpeg"},
+      {"m3u",       "audio/x-mpegurl"},
+      {"man",       "application/x-troff-man"},
+      {"map",       "application/x-navimap"},
+      {"mar",       "text/plain"},
+      {"mbd",       "application/mbedlet"},
+      {"mc$",       "application/x-magic-cap-package-1.0"},
+      {"mcd",       "application/x-mathcad"},
+      {"mcf",       "text/mcf"},
+      {"mcp",       "application/netmc"},
+      {"me",        "application/x-troff-me"},
+      {"mht",       "message/rfc822"},
+      {"mhtml",     "message/rfc822"},
+      {"mid",       "audio/midi"},
+      {"midi",      "audio/midi"},
+      {"mif",       "application/x-mif"},
+      {"mime",      "message/rfc822"},
+      {"mjf",       "audio/x-vnd.audioexplosion.mjuicemediafile"},
+      {"mjpg",      "video/x-motion-jpeg"},
+      {"mka",       "audio/x-matroska"},
+      {"mkv",       "video/x-matroska"},
+      {"mk3d",      "video/x-matroska-3d"},
+      {"mm",        "application/x-meme"},
+      {"mme",       "application/base64"},
+      {"mod",       "audio/mod"},
+      {"moov",      "video/quicktime"},
+      {"mov",       "video/quicktime"},
+      {"movie",     "video/x-sgi-movie"},
+      {"mp2",       "audio/mpeg"},
+      {"mp3",       "audio/mpeg3"},
+      {"mp4",       "video/mp4"},
+      {"mpa",       "audio/mpeg"},
+      {"mpc",       "application/x-project"},
+      {"mpe",       "video/mpeg"},
+      {"mpeg",      "video/mpeg"},
+      {"mpg",       "video/mpeg"},
+      {"mpga",      "audio/mpeg"},
+      {"mpp",       "application/vnd.ms-project"},
+      {"mpt",       "application/x-project"},
+      {"mpv",       "application/x-project"},
+      {"mpx",       "application/x-project"},
+      {"mrc",       "application/marc"},
+      {"ms",        "application/x-troff-ms"},
+      {"mv",        "video/x-sgi-movie"},
+      {"my",        "audio/make"},
+      {"mzz",       "application/x-vnd.audioexplosion.mzz"},
+      {"nap",       "image/naplps"},
+      {"naplps",    "image/naplps"},
+      {"nc",        "application/x-netcdf"},
+      {"ncm",       "application/vnd.nokia.configuration-message"},
+      {"nef",       "image/nef"},
+      {"nfo",       "text/xml"},
+      {"nif",       "image/x-niff"},
+      {"niff",      "image/x-niff"},
+      {"nix",       "application/x-mix-transfer"},
+      {"nsc",       "application/x-conference"},
+      {"nvd",       "application/x-navidoc"},
+      {"o",         "application/octet-stream"},
+      {"oda",       "application/oda"},
+      {"ogg",       "audio/ogg"},
+      {"omc",       "application/x-omc"},
+      {"omcd",      "application/x-omcdatamaker"},
+      {"omcr",      "application/x-omcregerator"},
+      {"p",         "text/x-pascal"},
+      {"p10",       "application/pkcs10"},
+      {"p12",       "application/pkcs-12"},
+      {"p7a",       "application/x-pkcs7-signature"},
+      {"p7c",       "application/pkcs7-mime"},
+      {"p7m",       "application/pkcs7-mime"},
+      {"p7r",       "application/x-pkcs7-certreqresp"},
+      {"p7s",       "application/pkcs7-signature"},
+      {"part",      "application/pro_eng"},
+      {"pas",       "text/pascal"},
+      {"pbm",       "image/x-portable-bitmap"},
+      {"pcl",       "application/vnd.hp-pcl"},
+      {"pct",       "image/x-pict"},
+      {"pcx",       "image/x-pcx"},
+      {"pdb",       "chemical/x-pdb"},
+      {"pdf",       "application/pdf"},
+      {"pfunk",     "audio/make.my.funk"},
+      {"pgm",       "image/x-portable-greymap"},
+      {"pic",       "image/pict"},
+      {"pict",      "image/pict"},
+      {"pkg",       "application/x-newton-compatible-pkg"},
+      {"pko",       "application/vnd.ms-pki.pko"},
+      {"pl",        "text/x-script.perl"},
+      {"plx",       "application/x-pixclscript"},
+      {"pm",        "text/x-script.perl-module"},
+      {"pm4",       "application/x-pagemaker"},
+      {"pm5",       "application/x-pagemaker"},
+      {"png",       "image/png"},
+      {"pnm",       "application/x-portable-anymap"},
+      {"pot",       "application/vnd.ms-powerpoint"},
+      {"pov",       "model/x-pov"},
+      {"ppa",       "application/vnd.ms-powerpoint"},
+      {"ppm",       "image/x-portable-pixmap"},
+      {"pps",       "application/mspowerpoint"},
+      {"ppt",       "application/mspowerpoint"},
+      {"ppz",       "application/mspowerpoint"},
+      {"pre",       "application/x-freelance"},
+      {"prt",       "application/pro_eng"},
+      {"ps",        "application/postscript"},
+      {"psd",       "application/octet-stream"},
+      {"pvu",       "paleovu/x-pv"},
+      {"pwz",       "application/vnd.ms-powerpoint"},
+      {"py",        "text/x-script.phyton"},
+      {"pyc",       "application/x-bytecode.python"},
+      {"qcp",       "audio/vnd.qcelp"},
+      {"qd3",       "x-world/x-3dmf"},
+      {"qd3d",      "x-world/x-3dmf"},
+      {"qif",       "image/x-quicktime"},
+      {"qt",        "video/quicktime"},
+      {"qtc",       "video/x-qtc"},
+      {"qti",       "image/x-quicktime"},
+      {"qtif",      "image/x-quicktime"},
+      {"ra",        "audio/x-realaudio"},
+      {"ram",       "audio/x-pn-realaudio"},
+      {"ras",       "image/cmu-raster"},
+      {"rast",      "image/cmu-raster"},
+      {"rexx",      "text/x-script.rexx"},
+      {"rf",        "image/vnd.rn-realflash"},
+      {"rgb",       "image/x-rgb"},
+      {"rm",        "audio/x-pn-realaudio"},
+      {"rmi",       "audio/mid"},
+      {"rmm",       "audio/x-pn-realaudio"},
+      {"rmp",       "audio/x-pn-realaudio"},
+      {"rng",       "application/ringing-tones"},
+      {"rnx",       "application/vnd.rn-realplayer"},
+      {"roff",      "application/x-troff"},
+      {"rp",        "image/vnd.rn-realpix"},
+      {"rpm",       "audio/x-pn-realaudio-plugin"},
+      {"rt",        "text/richtext"},
+      {"rtf",       "text/richtext"},
+      {"rtx",       "text/richtext"},
+      {"rv",        "video/vnd.rn-realvideo"},
+      {"s",         "text/x-asm"},
+      {"s3m",       "audio/s3m"},
+      {"saveme",    "application/octet-stream"},
+      {"sbk",       "application/x-tbook"},
+      {"scm",       "video/x-scm"},
+      {"sdml",      "text/plain"},
+      {"sdp",       "application/sdp"},
+      {"sdr",       "application/sounder"},
+      {"sea",       "application/sea"},
+      {"set",       "application/set"},
+      {"sgm",       "text/sgml"},
+      {"sgml",      "text/sgml"},
+      {"sh",        "text/x-script.sh"},
+      {"shar",      "application/x-bsh"},
+      {"shtml",     "text/html"},
+      {"shtml",     "text/x-server-parsed-html"},
+      {"sid",       "audio/x-psid"},
+      {"sit",       "application/x-sit"},
+      {"sit",       "application/x-stuffit"},
+      {"skd",       "application/x-koan"},
+      {"skm",       "application/x-koan"},
+      {"skp",       "application/x-koan"},
+      {"skt",       "application/x-koan"},
+      {"sl",        "application/x-seelogo"},
+      {"smi",       "application/smil"},
+      {"smil",      "application/smil"},
+      {"snd",       "audio/basic"},
+      {"sol",       "application/solids"},
+      {"spc",       "text/x-speech"},
+      {"spl",       "application/futuresplash"},
+      {"spr",       "application/x-sprite"},
+      {"sprite",    "application/x-sprite"},
+      {"src",       "application/x-wais-source"},
+      {"ssi",       "text/x-server-parsed-html"},
+      {"ssm",       "application/streamingmedia"},
+      {"sst",       "application/vnd.ms-pki.certstore"},
+      {"step",      "application/step"},
+      {"stl",       "application/sla"},
+      {"stp",       "application/step"},
+      {"sup",       "application/x-pgs"},
+      {"sv4cpio",   "application/x-sv4cpio"},
+      {"sv4crc",    "application/x-sv4crc"},
+      {"svf",       "image/vnd.dwg"},
+      {"svr",       "application/x-world"},
+      {"swf",       "application/x-shockwave-flash"},
+      {"t",         "application/x-troff"},
+      {"talk",      "text/x-speech"},
+      {"tar",       "application/x-tar"},
+      {"tbk",       "application/toolbook"},
+      {"tcl",       "text/x-script.tcl"},
+      {"tcsh",      "text/x-script.tcsh"},
+      {"tex",       "application/x-tex"},
+      {"texi",      "application/x-texinfo"},
+      {"texinfo",   "application/x-texinfo"},
+      {"text",      "text/plain"},
+      {"tgz",       "application/x-compressed"},
+      {"tif",       "image/tiff"},
+      {"tiff",      "image/tiff"},
+      {"tr",        "application/x-troff"},
+      {"ts",        "video/mp2t"},
+      {"tsi",       "audio/tsp-audio"},
+      {"tsp",       "audio/tsplayer"},
+      {"tsv",       "text/tab-separated-values"},
+      {"turbot",    "image/florian"},
+      {"txt",       "text/plain"},
+      {"uil",       "text/x-uil"},
+      {"uni",       "text/uri-list"},
+      {"unis",      "text/uri-list"},
+      {"unv",       "application/i-deas"},
+      {"uri",       "text/uri-list"},
+      {"uris",      "text/uri-list"},
+      {"ustar",     "application/x-ustar"},
+      {"uu",        "text/x-uuencode"},
+      {"uue",       "text/x-uuencode"},
+      {"vcd",       "application/x-cdlink"},
+      {"vcs",       "text/x-vcalendar"},
+      {"vda",       "application/vda"},
+      {"vdo",       "video/vdo"},
+      {"vew",       "application/groupwise"},
+      {"viv",       "video/vivo"},
+      {"vivo",      "video/vivo"},
+      {"vmd",       "application/vocaltec-media-desc"},
+      {"vmf",       "application/vocaltec-media-file"},
+      {"voc",       "audio/voc"},
+      {"vos",       "video/vosaic"},
+      {"vox",       "audio/voxware"},
+      {"vqe",       "audio/x-twinvq-plugin"},
+      {"vqf",       "audio/x-twinvq"},
+      {"vql",       "audio/x-twinvq-plugin"},
+      {"vrml",      "application/x-vrml"},
+      {"vrt",       "x-world/x-vrt"},
+      {"vsd",       "application/x-visio"},
+      {"vst",       "application/x-visio"},
+      {"vsw",       "application/x-visio"},
+      {"w60",       "application/wordperfect6.0"},
+      {"w61",       "application/wordperfect6.1"},
+      {"w6w",       "application/msword"},
+      {"wav",       "audio/wav"},
+      {"wb1",       "application/x-qpro"},
+      {"wbmp",      "image/vnd.wap.wbmp"},
+      {"web",       "application/vnd.xara"},
+      {"webp",      "image/webp"},
+      {"wiz",       "application/msword"},
+      {"wk1",       "application/x-123"},
+      {"wma",       "audio/x-ms-wma"},
+      {"wmf",       "windows/metafile"},
+      {"wml",       "text/vnd.wap.wml"},
+      {"wmlc",      "application/vnd.wap.wmlc"},
+      {"wmls",      "text/vnd.wap.wmlscript"},
+      {"wmlsc",     "application/vnd.wap.wmlscriptc"},
+      {"wmv",       "video/x-ms-wmv"},
+      {"word",      "application/msword"},
+      {"wp",        "application/wordperfect"},
+      {"wp5",       "application/wordperfect"},
+      {"wp6",       "application/wordperfect"},
+      {"wpd",       "application/wordperfect"},
+      {"wq1",       "application/x-lotus"},
+      {"wri",       "application/mswrite"},
+      {"wrl",       "model/vrml"},
+      {"wrz",       "model/vrml"},
+      {"wsc",       "text/scriplet"},
+      {"wsrc",      "application/x-wais-source"},
+      {"wtk",       "application/x-wintalk"},
+      {"xbm",       "image/xbm"},
+      {"xdr",       "video/x-amt-demorun"},
+      {"xgz",       "xgl/drawing"},
+      {"xif",       "image/vnd.xiff"},
+      {"xl",        "application/excel"},
+      {"xla",       "application/excel"},
+      {"xlb",       "application/excel"},
+      {"xlc",       "application/excel"},
+      {"xld",       "application/excel"},
+      {"xlk",       "application/excel"},
+      {"xll",       "application/excel"},
+      {"xlm",       "application/excel"},
+      {"xls",       "application/excel"},
+      {"xlsx",      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"},
+      {"xlt",       "application/excel"},
+      {"xlv",       "application/excel"},
+      {"xlw",       "application/excel"},
+      {"xm",        "audio/xm"},
+      {"xml",       "text/xml"},
+      {"xmz",       "xgl/movie"},
+      {"xpix",      "application/x-vnd.ls-xpix"},
+      {"xpm",       "image/xpm"},
+      {"x-png",     "image/png"},
+      {"xspf",      "application/xspf+xml"},
+      {"xsr",       "video/x-amt-showrun"},
+      {"xvid",      "video/x-msvideo"},
+      {"xwd",       "image/x-xwd"},
+      {"xyz",       "chemical/x-pdb"},
+      {"z",         "application/x-compressed"},
+      {"zip",       "application/zip"},
+      {"zoo",       "application/octet-stream"},
+      {"zsh",       "text/x-script.zsh"}}};
 
 std::string CMime::GetMimeType(const std::string &extension)
 {

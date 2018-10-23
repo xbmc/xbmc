@@ -42,5 +42,5 @@ public:
 private:
   static bool parseMimeType(const std::string& mimeType, std::string& type, std::string& subtype);
 
-  static std::map<std::string, std::string> m_mimetypes;
+  static const std::map<std::string, std::string> m_mimetypes;
 };
