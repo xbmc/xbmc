@@ -238,8 +238,6 @@ void CXBMCApp::onResume()
   // Re-request Visible Behind
   if ((m_playback_state & PLAYBACK_STATE_PLAYING) && (m_playback_state & PLAYBACK_STATE_VIDEO))
     RequestVisibleBehind(true);
-
-  g_application.SetRenderGUI(true);
 }
 
 void CXBMCApp::onPause()
@@ -259,7 +257,6 @@ void CXBMCApp::onPause()
     g_application.SwitchToFullScreen(true);
 
   EnableWakeLock(false);
-  g_application.SetRenderGUI(false);
   m_hasReqVisible = false;
 }
 
@@ -1389,12 +1386,14 @@ void CXBMCApp::surfaceCreated(CJNISurfaceHolder holder)
   {
     XBMC_SetupDisplay();
   }
+  g_application.SetRenderGUI(true);
 }
 
 void CXBMCApp::surfaceDestroyed(CJNISurfaceHolder holder)
 {
   android_printf("%s: ", __PRETTY_FUNCTION__);
   // If we have exited XBMC, it no longer exists.
+  g_application.SetRenderGUI(false);
   if (!m_exiting)
   {
     XBMC_DestroyDisplay();
