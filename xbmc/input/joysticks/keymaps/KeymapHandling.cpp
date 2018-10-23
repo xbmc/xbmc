@@ -95,9 +95,11 @@ void CKeymapHandling::LoadKeymaps()
 
 void CKeymapHandling::UnloadKeymaps()
 {
-  for (auto it = m_inputHandlers.rbegin(); it != m_inputHandlers.rend(); ++it)
-    m_inputProvider->UnregisterInputHandler(it->get());
-
+  if (m_inputProvider != nullptr)
+  {
+    for (auto it = m_inputHandlers.rbegin(); it != m_inputHandlers.rend(); ++it)
+      m_inputProvider->UnregisterInputHandler(it->get());
+  }
   m_inputHandlers.clear();
   m_keymaps.clear();
 }

@@ -37,6 +37,15 @@ namespace JOYSTICK
     virtual ~CKeymapHandling();
 
     /*!
+     * \brief Unregister the input provider
+     *
+     * Call this if the input provider is invalidated, such as if a user
+     * disconnects a controller. This prevents accessing the invalidated
+     * input provider when keymaps are unloaded upon destruction.
+     */
+    void UnregisterInputProvider() { m_inputProvider = nullptr; }
+
+    /*!
      * \brief
      */
     IInputReceiver *GetInputReceiver(const std::string &controllerId) const;
@@ -54,7 +63,7 @@ namespace JOYSTICK
     void UnloadKeymaps();
 
     // Construction parameter
-    IInputProvider *const m_inputProvider;
+    IInputProvider *m_inputProvider;
     const bool m_pPromiscuous;
     const IKeymapEnvironment *const m_environment;
 
