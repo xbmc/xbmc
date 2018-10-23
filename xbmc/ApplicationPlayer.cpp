@@ -1010,3 +1010,12 @@ void CApplicationPlayer::SetUpdateStreamDetails()
   if (vp)
     vp->SetUpdateStreamDetails();
 }
+
+bool CApplicationPlayer::HasGameAgent()
+{
+  std::shared_ptr<IPlayer> player = GetInternal();
+  if (player)
+    return player->HasGameAgent();
+
+  return false;
+}

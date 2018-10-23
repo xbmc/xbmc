@@ -66,6 +66,7 @@ namespace RETRO
     void FrameMove() override;
     void Render(bool clear, uint32_t alpha = 255, bool gui = true) override;
     bool IsRenderingVideo() override;
+    bool HasGameAgent() override;
 
     // Implementation of IGameCallback
     std::string GameClientID() const override;

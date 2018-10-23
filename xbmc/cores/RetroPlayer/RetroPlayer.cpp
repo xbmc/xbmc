@@ -467,6 +467,14 @@ bool CRetroPlayer::IsRenderingVideo()
   return true;
 }
 
+bool CRetroPlayer::HasGameAgent()
+{
+  if (m_gameClient)
+    return m_gameClient->Input().HasAgent();
+
+  return false;
+}
+
 std::string CRetroPlayer::GameClientID() const
 {
   if (m_gameClient)
