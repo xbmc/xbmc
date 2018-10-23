@@ -16,6 +16,8 @@
 
 #include <algorithm>
 
+CCriticalSection ImageFactory::m_createSec;
+
 using namespace ADDON;
 
 IImage* ImageFactory::CreateLoader(const std::string& strFileName)
@@ -42,6 +44,7 @@ IImage* ImageFactory::CreateLoaderFromMimeType(const std::string& strMimeType)
     std::vector<std::string> mime = StringUtils::Split(addonInfo->Type(ADDON_IMAGEDECODER)->GetValue("@mimetype").asString(), "|");
     if (std::find(mime.begin(), mime.end(), strMimeType) != mime.end())
     {
+      CSingleLock lock(m_createSec);
       CImageDecoder* result = new CImageDecoder(addonInfo);
       result->Create(strMimeType);
       return result;
