@@ -11,6 +11,7 @@
 #include <string>
 #include <vector>
 
+#include "addons/VFSEntry.h"
 #include "addons/Skin.h"
 #include "Application.h"
 #include "ServiceBroker.h"
@@ -105,15 +106,26 @@ void CGUIDialogSubtitleSettings::OnSettingChanged(std::shared_ptr<const CSetting
 
 std::string CGUIDialogSubtitleSettings::BrowseForSubtitle()
 {
+  std::string extras;
+  for (const auto& vfsAddon : CServiceBroker::GetVFSAddonCache().GetAddonInstances())
+  {
+    if (vfsAddon->ID() == "vfs.rar" || vfsAddon->ID() == "vfs.libarchive")
+      extras += '|' + vfsAddon->GetExtensions();
+  }
+
   std::string strPath;
   if (URIUtils::IsInRAR(g_application.CurrentFileItem().GetPath()) || URIUtils::IsInZIP(g_application.CurrentFileItem().GetPath()))
     strPath = CURL(g_application.CurrentFileItem().GetPath()).GetHostName();
   else
     strPath = g_application.CurrentFileItem().GetPath();
 
-  std::string strMask = ".utf|.utf8|.utf-8|.sub|.srt|.smi|.rt|.txt|.ssa|.aqt|.jss|.ass|.idx|.rar|.zip";
+  std::string strMask = ".utf|.utf8|.utf-8|.sub|.srt|.smi|.rt|.txt|.ssa|.aqt|.jss|.ass|.idx|.zip";
+
   if (g_application.GetCurrentPlayer() == "VideoPlayer")
-    strMask = ".srt|.rar|.zip|.ifo|.smi|.sub|.idx|.ass|.ssa|.txt";
+    strMask = ".srt|.zip|.ifo|.smi|.sub|.idx|.ass|.ssa|.txt";
+
+  strMask += extras;
+
   VECSOURCES shares(*CMediaSourceSettings::GetInstance().GetSources("video"));
   if (CMediaSettings::GetInstance().GetAdditionalSubtitleDirectoryChecked() != -1 && !CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_SUBTITLES_CUSTOMPATH).empty())
   {
