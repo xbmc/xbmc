@@ -122,9 +122,12 @@ public:
   static uint32_t FourCCWithAlpha(uint32_t fourcc);
   static uint32_t FourCCWithoutAlpha(uint32_t fourcc);
 
+  static const std::string SETTING_VIDEOSCREEN_HDMIOUTPUTFORMAT;
+  static const std::string SETTING_VIDEOPLAYER_HDMIOUTPUTFORMAT;
   static const std::string SETTING_VIDEOSCREEN_HDMICONTENTTYPE;
   static const std::string SETTING_VIDEOPLAYER_HDMICONTENTTYPE;
 
+  int GetHdmiOutputFormat(bool videoLayer);
   int GetHdmiContentType(bool videoLayer);
 
 protected:

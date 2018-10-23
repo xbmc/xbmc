@@ -7351,7 +7351,49 @@ msgctxt "#13474"
 msgid "Game"
 msgstr ""
 
-#empty strings from id 13475 to 13504
+#. Option for setting HDMI Output Format
+#: system/settings/gbm.xml
+msgctxt "#13475"
+msgid "HDMI Output Format"
+msgstr ""
+
+#. Description of videoscreen setting with label #13475 "HDMI Output Format"
+#: system/settings/gbm.xml
+msgctxt "#13476"
+msgid "This option sets HDMI output format to use."
+msgstr ""
+
+#. Description of videoplayer setting with label #13475 "HDMI Output Format"
+#: system/settings/gbm.xml
+msgctxt "#13477"
+msgid "This option sets HDMI output format to use when video is playing."
+msgstr ""
+
+#. String for options 1 of setting with label #13475 "HDMI Output Format"
+#: system/settings/gbm.xml
+msgctxt "#13478"
+msgid "Default"
+msgstr ""
+
+#. String for options 2 of setting with label #13475 "HDMI Output Format"
+#: system/settings/gbm.xml
+msgctxt "#13479"
+msgid "RGB"
+msgstr ""
+
+#. String for options 3 of setting with label #13475 "HDMI Output Format"
+#: system/settings/gbm.xml
+msgctxt "#13480"
+msgid "YCbCr 4:2:2"
+msgstr ""
+
+#. String for options 3 of setting with label #13475 "HDMI Output Format"
+#: system/settings/gbm.xml
+msgctxt "#13481"
+msgid "YCbCr 4:4:4"
+msgstr ""
+
+#empty strings from id 13482 to 13504
 
 #: system/settings/settings.xml
 msgctxt "#13505"

@@ -27,6 +27,8 @@
 
 using namespace KODI::WINDOWING::GBM;
 
+const std::string CDRMUtils::SETTING_VIDEOSCREEN_HDMIOUTPUTFORMAT = "videoscreen.hdmioutputformat";
+const std::string CDRMUtils::SETTING_VIDEOPLAYER_HDMIOUTPUTFORMAT = "videoplayer.hdmioutputformat";
 const std::string CDRMUtils::SETTING_VIDEOSCREEN_HDMICONTENTTYPE = "videoscreen.hdmicontenttype";
 const std::string CDRMUtils::SETTING_VIDEOPLAYER_HDMICONTENTTYPE = "videoplayer.hdmicontenttype";
 
@@ -825,6 +827,16 @@ bool CDRMUtils::CheckConnector(int connector_id)
   drmModeFreeConnector(connectorcheck.connector);
 
   return finalConnectionState == DRM_MODE_CONNECTED;
+}
+
+int CDRMUtils::GetHdmiOutputFormat(bool videoLayer)
+{
+  int outputFormat = 0;
+  if (videoLayer)
+    outputFormat = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(SETTING_VIDEOPLAYER_HDMIOUTPUTFORMAT);
+  if (outputFormat == 0)
+    outputFormat = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(SETTING_VIDEOSCREEN_HDMIOUTPUTFORMAT);
+  return outputFormat;
 }
 
 int CDRMUtils::GetHdmiContentType(bool videoLayer)
