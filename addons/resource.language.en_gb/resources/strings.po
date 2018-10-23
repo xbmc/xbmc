@@ -7393,7 +7393,37 @@ msgctxt "#13481"
 msgid "YCbCr 4:4:4"
 msgstr ""
 
-#empty strings from id 13482 to 13504
+#. Option for setting HDMI Output Format
+#: system/settings/gbm.xml
+msgctxt "#13482"
+msgid "HDMI Quantization Range"
+msgstr ""
+
+#. Description of videoscreen setting with label #13482 "HDMI Quantization Range"
+#: system/settings/gbm.xml
+msgctxt "#13483"
+msgid "This option sets HDMI quantization range to use."
+msgstr ""
+
+#. String for options 1 of setting with label #13482 "HDMI Quantization Range"
+#: system/settings/gbm.xml
+msgctxt "#13484"
+msgid "Default"
+msgstr ""
+
+#. String for options 2 of setting with label #13482 "HDMI Quantization Range"
+#: system/settings/gbm.xml
+msgctxt "#13485"
+msgid "Full"
+msgstr ""
+
+#. String for options 3 of setting with label #13482 "HDMI Quantization Range"
+#: system/settings/gbm.xml
+msgctxt "#13486"
+msgid "Limited"
+msgstr ""
+
+#empty strings from id 13487 to 13504
 
 #: system/settings/settings.xml
 msgctxt "#13505"

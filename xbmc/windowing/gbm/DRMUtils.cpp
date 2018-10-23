@@ -29,6 +29,7 @@ using namespace KODI::WINDOWING::GBM;
 
 const std::string CDRMUtils::SETTING_VIDEOSCREEN_HDMIOUTPUTFORMAT = "videoscreen.hdmioutputformat";
 const std::string CDRMUtils::SETTING_VIDEOPLAYER_HDMIOUTPUTFORMAT = "videoplayer.hdmioutputformat";
+const std::string CDRMUtils::SETTING_VIDEOSCREEN_HDMIQUANTIZATIONRANGE = "videoscreen.hdmiquantizationrange";
 const std::string CDRMUtils::SETTING_VIDEOSCREEN_HDMICONTENTTYPE = "videoscreen.hdmicontenttype";
 const std::string CDRMUtils::SETTING_VIDEOPLAYER_HDMICONTENTTYPE = "videoplayer.hdmicontenttype";
 
@@ -837,6 +838,11 @@ int CDRMUtils::GetHdmiOutputFormat(bool videoLayer)
   if (outputFormat == 0)
     outputFormat = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(SETTING_VIDEOSCREEN_HDMIOUTPUTFORMAT);
   return outputFormat;
+}
+
+int CDRMUtils::GetHdmiQuantizationRange()
+{
+  return CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(SETTING_VIDEOSCREEN_HDMIQUANTIZATIONRANGE);
 }
 
 int CDRMUtils::GetHdmiContentType(bool videoLayer)

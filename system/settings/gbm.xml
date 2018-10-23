@@ -100,6 +100,19 @@
           </constraints>
           <control type="list" format="string" />
         </setting>
+        <setting id="videoscreen.hdmiquantizationrange" type="integer" label="13482" help="13483">
+          <visible>false</visible>
+          <level>3</level>
+          <default>0</default>
+          <constraints>
+            <options>
+              <option label="13484">0</option> <!-- Default -->
+              <option label="13485">1</option> <!-- Full -->
+              <option label="13486">2</option> <!-- Limited -->
+            </options>
+          </constraints>
+          <control type="list" format="string" />
+        </setting>
         <setting id="videoscreen.hdmicontenttype" type="integer" label="13466" help="13467">
           <visible>false</visible>
           <level>3</level>
