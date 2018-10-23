@@ -35,7 +35,6 @@ namespace ADDON
 
     // addon settings
     void SaveSettings() override;
-    std::string GetSetting(const std::string& key) override;
 
     ADDON_STATUS Create(ADDON_TYPE type, void* funcTable, void* info);
     void Destroy();

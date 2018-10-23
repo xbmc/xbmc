@@ -371,11 +371,6 @@ void CAddonDll::SaveSettings()
     TransferSettings();
 }
 
-std::string CAddonDll::GetSetting(const std::string& key)
-{
-  return CAddon::GetSetting(key);
-}
-
 ADDON_STATUS CAddonDll::TransferSettings()
 {
   bool restart = false;
