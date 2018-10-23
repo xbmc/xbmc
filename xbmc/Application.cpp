@@ -2359,12 +2359,9 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
 #if defined(TARGET_ANDROID)
     if (pMsg->params.size())
     {
-      // ------------------------
       std::map<std::string, std::string> extras {};
       if(pMsg->params.size() > 5)
       {
-        //TODO fix flags: 0x10808000
-        CLog::Log(LOGWARNING, "<-----> got extra: %s", pMsg->params[5].c_str());
         std::stringstream keyValuePairs(pMsg->params[5]);
 
         while(keyValuePairs.good())
@@ -2379,7 +2376,6 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
           {
               extras[key] = value;
           }
-          CLog::Log(LOGWARNING, "<-----> put extra: %s:%s", key.c_str(), value.c_str());
         }
       }
 
@@ -2391,13 +2387,6 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
         extras,
         pMsg->params.size() > 6 ? atoi(pMsg->params[6].c_str()) : -1);
     }
-    // --------------------------------
-
-      /*CXBMCApp::StartActivity(pMsg->params[0],
-        pMsg->params.size() > 1 ? pMsg->params[1] : "",
-        pMsg->params.size() > 2 ? pMsg->params[2] : "",
-        pMsg->params.size() > 3 ? pMsg->params[3] : "");
-    }*/
 
 #endif
   }

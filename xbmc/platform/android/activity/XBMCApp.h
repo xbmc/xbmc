@@ -136,9 +136,8 @@ public:
   static bool IsHeadsetPlugged();
   static bool IsHDMIPlugged();
 
-  //static bool StartActivity(const std::string &package, const std::string &intent = std::string(), const std::string &dataType = std::string(), const std::string &dataURI = std::string());
   static bool StartActivity(const std::string &package, const std::string &intent = std::string(), const std::string &dataType = std::string(), const std::string &dataURI = std::string(), const std::string &component = std::string(), const std::map<std::string, std::string> &extras = std::map<std::string, std::string> {}, const int flags = -1);
-static std::vector <androidPackage> GetApplications();
+  static std::vector <androidPackage> GetApplications();
 
   /*!
    * \brief If external storage is available, it returns the path for the external storage (for the specified type)
