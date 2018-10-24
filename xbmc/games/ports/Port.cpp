@@ -40,9 +40,15 @@ void CPort::RegisterInput(JOYSTICK::IInputProvider *provider)
 void CPort::UnregisterInput(JOYSTICK::IInputProvider *provider)
 {
   // Unregister in reverse order
+  if (provider == nullptr)
+    m_appInput->UnregisterInputProvider();
   m_appInput.reset();
-  provider->UnregisterInputHandler(this);
-  provider->UnregisterInputHandler(m_inputSink.get());
+
+  if (provider != nullptr)
+  {
+    provider->UnregisterInputHandler(this);
+    provider->UnregisterInputHandler(m_inputSink.get());
+  }
 }
 
 std::string CPort::ControllerID() const

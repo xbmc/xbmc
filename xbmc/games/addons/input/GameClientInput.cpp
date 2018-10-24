@@ -549,10 +549,30 @@ void CGameClientInput::ProcessJoysticks()
   PERIPHERALS::PeripheralVector joysticks;
   CServiceBroker::GetPeripherals().GetPeripheralsWithFeature(joysticks, PERIPHERALS::FEATURE_JOYSTICK);
 
+  // Update expired joysticks
+  PortMap portMapCopy = m_portMap;
+  for (auto& it : portMapCopy)
+  {
+    JOYSTICK::IInputProvider* inputProvider = it.first;
+    CGameClientJoystick* gameJoystick = it.second;
+
+    const bool bExpired = std::find_if(joysticks.begin(), joysticks.end(),
+      [inputProvider](const PERIPHERALS::PeripheralPtr &joystick)
+      {
+        return inputProvider == static_cast<JOYSTICK::IInputProvider*>(joystick.get());
+      }) == joysticks.end();
+
+    if (bExpired)
+    {
+      gameJoystick->UnregisterInput(nullptr);
+      m_portMap.erase(inputProvider);
+    }
+  }
+
   // Perform the port mapping
   PortMap newPortMap = MapJoysticks(joysticks, m_joysticks);
 
-  // Update each joystick
+  // Update connected joysticks
   for (auto& peripheralJoystick : joysticks)
   {
     // Upcast to input interface
