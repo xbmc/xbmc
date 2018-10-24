@@ -23,7 +23,7 @@ using namespace Shaders;
 // BaseYUV2RGBGLSLShader - base class for GLSL YUV2RGB shaders
 //////////////////////////////////////////////////////////////////////
 
-BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(EShaderFormat format, AVColorPrimaries dstPrimaries, AVColorPrimaries srcPrimaries)
+BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(EShaderFormat format, AVColorPrimaries dstPrimaries, AVColorPrimaries srcPrimaries, bool toneMap)
 {
   m_width = 1;
   m_height = 1;
@@ -44,14 +44,8 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(EShaderFormat format, AVColorPrimar
     m_defines += "#define XBMC_YV12\n";
   else if (m_format == SHADER_NV12)
     m_defines += "#define XBMC_NV12\n";
-  else if (m_format == SHADER_YUY2)
-    m_defines += "#define XBMC_YUY2\n";
-  else if (m_format == SHADER_UYVY)
-    m_defines += "#define XBMC_UYVY\n";
   else if (m_format == SHADER_NV12_RRG)
     m_defines += "#define XBMC_NV12_RRG\n";
-  else if (m_format == SHADER_YV12)
-    m_defines += "#define XBMC_YV12\n";
   else
     CLog::Log(LOGERROR, "GLES: BaseYUV2RGBGLSLShader - unsupported format %d", m_format);
 
@@ -61,6 +55,12 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(EShaderFormat format, AVColorPrimar
   if (dstPrimaries != srcPrimaries)
   {
     m_defines += "#define XBMC_COL_CONVERSION\n";
+  }
+
+  if (toneMap)
+  {
+    m_toneMapping = true;
+    m_defines += "#define XBMC_TONE_MAPPING\n";
   }
 
   VertexShader()->LoadSource("gles_yuv2rgb.vert", m_defines);
@@ -93,6 +93,8 @@ void BaseYUV2RGBGLSLShader::OnCompiledAndLinked()
   m_hPrimMat = glGetUniformLocation(ProgramHandle(), "m_primMat");
   m_hGammaSrc = glGetUniformLocation(ProgramHandle(), "m_gammaSrc");
   m_hGammaDstInv = glGetUniformLocation(ProgramHandle(), "m_gammaDstInv");
+  m_hCoefsDst = glGetUniformLocation(ProgramHandle(), "m_coefsDst");
+  m_hToneP1 = glGetUniformLocation(ProgramHandle(), "m_toneP1");
   VerifyGLState();
 }
 
@@ -122,6 +124,33 @@ bool BaseYUV2RGBGLSLShader::OnEnabled()
     glUniform1f(m_hGammaDstInv, 1/m_pConvMatrix->GetGammaDst());
   }
 
+  if (m_toneMapping)
+  {
+    float param = 0.7;
+
+    if (m_hasLightMetadata)
+    {
+      param = log10(100) / log10(m_lightMetadata.MaxCLL);
+    }
+    else if (m_hasDisplayMetadata && m_displayMetadata.has_luminance)
+    {
+      param = log10(100) / log10(m_displayMetadata.max_luminance.num/m_displayMetadata.max_luminance.den);
+    }
+
+    // Sanity check
+    if (param < 0.1f || param > 5.0f)
+    {
+      param = 0.7f;
+    }
+
+    param *= m_toneMappingParam;
+
+    float coefs[3];
+    m_pConvMatrix->GetRGBYuvCoefs(AVColorSpace::AVCOL_SPC_BT709, coefs);
+    glUniform3f(m_hCoefsDst, coefs[0], coefs[1], coefs[2]);
+    glUniform1f(m_hToneP1, param);
+  }
+
   VerifyGLState();
 
   return true;
@@ -148,15 +177,25 @@ void BaseYUV2RGBGLSLShader::SetColParams(AVColorSpace colSpace, int bits, bool l
   m_pConvMatrix->SetColParams(colSpace, bits, limited, textureBits);
 }
 
+void BaseYUV2RGBGLSLShader::SetDisplayMetadata(bool hasDisplayMetadata, AVMasteringDisplayMetadata displayMetadata,
+                                               bool hasLightMetadata, AVContentLightMetadata lightMetadata)
+{
+  m_hasDisplayMetadata = hasDisplayMetadata;
+  m_displayMetadata = displayMetadata;
+  m_hasLightMetadata = hasLightMetadata;
+  m_lightMetadata = lightMetadata;
+}
+
 //////////////////////////////////////////////////////////////////////
 // YUV2RGBProgressiveShader - YUV2RGB with no deinterlacing
 // Use for weave deinterlacing / progressive
 //////////////////////////////////////////////////////////////////////
 
-YUV2RGBProgressiveShader::YUV2RGBProgressiveShader(EShaderFormat format, AVColorPrimaries dstPrimaries, AVColorPrimaries srcPrimaries)
-  : BaseYUV2RGBGLSLShader(format, dstPrimaries, srcPrimaries)
+YUV2RGBProgressiveShader::YUV2RGBProgressiveShader(EShaderFormat format, AVColorPrimaries dstPrimaries, AVColorPrimaries srcPrimaries, bool toneMap)
+  : BaseYUV2RGBGLSLShader(format, dstPrimaries, srcPrimaries, toneMap)
 {
   PixelShader()->LoadSource("gles_yuv2rgb_basic.frag", m_defines);
+  PixelShader()->InsertSource("gles_tonemap.frag", "void main()");
 }
 
 
@@ -164,14 +203,15 @@ YUV2RGBProgressiveShader::YUV2RGBProgressiveShader(EShaderFormat format, AVColor
 // YUV2RGBBobShader - YUV2RGB with Bob deinterlacing
 //////////////////////////////////////////////////////////////////////
 
-YUV2RGBBobShader::YUV2RGBBobShader(EShaderFormat format, AVColorPrimaries dstPrimaries, AVColorPrimaries srcPrimaries)
-  : BaseYUV2RGBGLSLShader(format, dstPrimaries, srcPrimaries)
+YUV2RGBBobShader::YUV2RGBBobShader(EShaderFormat format, AVColorPrimaries dstPrimaries, AVColorPrimaries srcPrimaries, bool toneMap)
+  : BaseYUV2RGBGLSLShader(format, dstPrimaries, srcPrimaries, toneMap)
 {
   m_hStepX = -1;
   m_hStepY = -1;
   m_hField = -1;
 
   PixelShader()->LoadSource("gles_yuv2rgb_bob.frag", m_defines);
+  PixelShader()->InsertSource("gles_tonemap.frag", "void main()");
 }
 
 void YUV2RGBBobShader::OnCompiledAndLinked()

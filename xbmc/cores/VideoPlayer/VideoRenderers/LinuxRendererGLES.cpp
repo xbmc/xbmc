@@ -150,6 +150,7 @@ bool CLinuxRendererGLES::Configure(const VideoPicture &picture, float fps, unsig
 
   m_srcPrimaries = GetSrcPrimaries(static_cast<AVColorPrimaries>(picture.color_primaries),
                                    picture.iWidth, picture.iHeight);
+  m_toneMap = false;
 
   // Calculate the input frame aspect ratio.
   CalculateFrameAspectRatio(picture.iDisplayWidth, picture.iDisplayHeight);
@@ -532,9 +533,9 @@ void CLinuxRendererGLES::LoadShaders(int field)
           CLog::Log(LOGNOTICE, "GLES: Selecting YUV 2 RGB shader");
 
           EShaderFormat shaderFormat = GetShaderFormat();
-          m_pYUVProgShader = new YUV2RGBProgressiveShader(shaderFormat, AVColorPrimaries::AVCOL_PRI_BT709, m_srcPrimaries);
+          m_pYUVProgShader = new YUV2RGBProgressiveShader(shaderFormat, AVColorPrimaries::AVCOL_PRI_BT709, m_srcPrimaries, m_toneMap);
           m_pYUVProgShader->SetConvertFullColorRange(m_fullRange);
-          m_pYUVBobShader = new YUV2RGBBobShader(shaderFormat, AVColorPrimaries::AVCOL_PRI_BT709, m_srcPrimaries);
+          m_pYUVBobShader = new YUV2RGBBobShader(shaderFormat, AVColorPrimaries::AVCOL_PRI_BT709, m_srcPrimaries, m_toneMap);
           m_pYUVBobShader->SetConvertFullColorRange(m_fullRange);
 
           if ((m_pYUVProgShader && m_pYUVProgShader->CompileAndLink())
@@ -710,6 +711,23 @@ void CLinuxRendererGLES::RenderSinglePass(int index, int field)
     m_reloadShaders = true;
   }
 
+  bool toneMap = false;
+
+  if (m_videoSettings.m_ToneMapMethod != VS_TONEMAPMETHOD_OFF)
+  {
+    if (buf.hasLightMetadata || (buf.hasDisplayMetadata && buf.displayMetadata.has_luminance))
+    {
+      toneMap = true;
+    }
+  }
+
+  if (toneMap != m_toneMap)
+  {
+    m_reloadShaders = true;
+  }
+
+  m_toneMap = toneMap;
+
   if (m_reloadShaders)
   {
     LoadShaders(field);
@@ -743,6 +761,10 @@ void CLinuxRendererGLES::RenderSinglePass(int index, int field)
   pYUVShader->SetWidth(planes[0].texwidth);
   pYUVShader->SetHeight(planes[0].texheight);
   pYUVShader->SetColParams(buf.m_srcColSpace, buf.m_srcBits, !buf.m_srcFullRange, buf.m_srcTextureBits);
+  pYUVShader->SetDisplayMetadata(buf.hasDisplayMetadata, buf.displayMetadata,
+                                 buf.hasLightMetadata, buf.lightMetadata);
+  pYUVShader->SetToneMapParam(m_videoSettings.m_ToneMapParam);
+
   if     (field == FIELD_TOP)
     pYUVShader->SetField(1);
   else if(field == FIELD_BOT)
@@ -814,6 +836,22 @@ void CLinuxRendererGLES::RenderToFBO(int index, int field, bool weave /*= false*
     m_reloadShaders = true;
   }
 
+  bool toneMap = false;
+  if (m_videoSettings.m_ToneMapMethod != VS_TONEMAPMETHOD_OFF)
+  {
+    if (buf.hasLightMetadata || (buf.hasDisplayMetadata && buf.displayMetadata.has_luminance))
+    {
+      toneMap = true;
+    }
+  }
+
+  if (toneMap != m_toneMap)
+  {
+    m_reloadShaders = true;
+  }
+
+  m_toneMap = toneMap;
+
   if (m_reloadShaders)
   {
     m_reloadShaders = 0;
@@ -870,6 +908,10 @@ void CLinuxRendererGLES::RenderToFBO(int index, int field, bool weave /*= false*
   pYUVShader->SetWidth(planes[0].texwidth);
   pYUVShader->SetHeight(planes[0].texheight);
   pYUVShader->SetColParams(buf.m_srcColSpace, buf.m_srcBits, !buf.m_srcFullRange, buf.m_srcTextureBits);
+  pYUVShader->SetDisplayMetadata(buf.hasDisplayMetadata, buf.displayMetadata,
+                                 buf.hasLightMetadata, buf.lightMetadata);
+  pYUVShader->SetToneMapParam(m_videoSettings.m_ToneMapParam);
+
   if (field == FIELD_TOP)
     pYUVShader->SetField(1);
   else if(field == FIELD_BOT)
@@ -1505,9 +1547,9 @@ bool CLinuxRendererGLES::Supports(ERENDERFEATURE feature)
       feature == RENDERFEATURE_VERTICAL_SHIFT  ||
       feature == RENDERFEATURE_PIXEL_RATIO     ||
       feature == RENDERFEATURE_POSTPROCESS     ||
-      feature == RENDERFEATURE_ROTATION)
+      feature == RENDERFEATURE_ROTATION ||
+      feature == RENDERFEATURE_TONEMAP)
     return true;
-
 
   return false;
 }
