@@ -17,6 +17,7 @@
 
 #include "windowing/Resolution.h"
 #include "GBMUtils.h"
+#include "platform/posix/utils/FileHandle.h"
 
 namespace KODI
 {
@@ -106,7 +107,7 @@ protected:
   static bool GetProperties(int fd, uint32_t id, uint32_t type, struct drm_object *object);
   static void FreeProperties(struct drm_object *object);
 
-  int m_fd;
+  KODI::UTILS::POSIX::CFileHandle m_fd;
   struct connector *m_connector = nullptr;
   struct encoder *m_encoder = nullptr;
   struct crtc *m_crtc = nullptr;
