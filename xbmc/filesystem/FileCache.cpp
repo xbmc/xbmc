@@ -94,6 +94,9 @@ CFileCache::CFileCache(const unsigned int flags)
   , m_writeRate(0)
   , m_writeRateActual(0)
   , m_forwardCacheSize(0)
+  , m_forward(0)
+  , m_bFilling(false)
+  , m_bLowSpeedDetected(false)
   , m_fileSize(0)
   , m_flags(flags)
 {
@@ -106,6 +109,9 @@ CFileCache::CFileCache(CCacheStrategy *pCache, bool bDeleteCache /* = true */)
   , m_writeRate(0)
   , m_writeRateActual(0)
   , m_forwardCacheSize(0)
+  , m_forward(0)
+  , m_bFilling(false)
+  , m_bLowSpeedDetected(false)
 {
   m_pCache = pCache;
   m_bDeleteCache = bDeleteCache;
@@ -220,6 +226,9 @@ bool CFileCache::Open(const CURL& url)
   m_writePos = 0;
   m_writeRate = 1024 * 1024;
   m_writeRateActual = 0;
+  m_forward = 0;
+  m_bFilling = true;
+  m_bLowSpeedDetected = false;
   m_seekEvent.Reset();
   m_seekEnded.Reset();
 
@@ -279,6 +288,12 @@ void CFileCache::Process()
         average.Reset(m_writePos, bCompleteReset); // Can only recalculate new average from scratch after a full reset (empty cache)
         limiter.Reset(m_writePos);
         m_nSeekResult = m_seekPos;
+        if (bCompleteReset)
+        {
+          m_forward = 0;
+          m_bFilling = true;
+          m_bLowSpeedDetected = false;
+        }
       }
 
       m_seekEnded.Set();
@@ -401,6 +416,28 @@ void CFileCache::Process()
     // under estimate write rate by a second, to
     // avoid uncertainty at start of caching
     m_writeRateActual = average.Rate(m_writePos, 1000);
+
+    // Update forward cache size
+    m_forward = m_pCache->WaitForData(0, 0);
+
+    // NOTE: Hysteresis (20-80%) for filling-logic
+    const float level = (m_forwardCacheSize == 0) ? 0.0 : (float) m_forward / m_forwardCacheSize;
+    if (level > 0.8f)
+    {
+     /* NOTE: We can only reliably test for low speed condition, when the cache is *really*
+      * filling. This is because as soon as it's full the average-
+      * rate will become approximately the current-rate which can flag false
+      * low read-rate conditions.
+      */
+      if (m_bFilling && m_writeRateActual < m_writeRate)
+        m_bLowSpeedDetected = true;
+
+      m_bFilling = false;
+    }
+    else if (level < 0.2f)
+    {
+      m_bFilling = true;
+    }
   }
 }
 
@@ -569,10 +606,11 @@ int CFileCache::IoControl(EIoControl request, void* param)
   if (request == IOCTRL_CACHE_STATUS)
   {
     SCacheStatus* status = (SCacheStatus*)param;
-    status->forward = m_pCache->WaitForData(0, 0);
-    status->level   = (m_forwardCacheSize == 0) ? 0.0 : (float) status->forward / m_forwardCacheSize;
+    status->forward = m_forward;
     status->maxrate = m_writeRate;
     status->currate = m_writeRateActual;
+    status->lowspeed = m_bLowSpeedDetected;
+    m_bLowSpeedDetected = false; // Reset flag
     return 0;
   }
 
