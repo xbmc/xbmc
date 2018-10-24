@@ -21,19 +21,13 @@ set(BUNDLE_RESOURCES ${CMAKE_SOURCE_DIR}/xbmc/platform/darwin/ios/Default-568h@2
                      ${CMAKE_SOURCE_DIR}/tools/darwin/packaging/media/ios/rounded/AppIcon76x76.png
                      ${CMAKE_SOURCE_DIR}/tools/darwin/packaging/media/ios/rounded/AppIcon76x76@2x.png)
 
-if(CMAKE_GENERATOR STREQUAL Xcode)
-  set(RESOURCE_LOCATION ${APP_NAME}.app)
-else()
-  set(RESOURCE_LOCATION ".")
-endif()
-
 target_sources(${APP_NAME_LC} PRIVATE ${BUNDLE_RESOURCES})
 foreach(file IN LISTS BUNDLE_RESOURCES)
-  set_source_files_properties(${file} PROPERTIES MACOSX_PACKAGE_LOCATION ${RESOURCE_LOCATION})
+  set_source_files_properties(${file} PROPERTIES MACOSX_PACKAGE_LOCATION .)
 endforeach()
 
 target_sources(${APP_NAME_LC} PRIVATE ${CMAKE_SOURCE_DIR}/xbmc/platform/darwin/ios/English.lproj/InfoPlist.strings)
-set_source_files_properties(${CMAKE_SOURCE_DIR}/xbmc/platform/darwin/ios/English.lproj/InfoPlist.strings PROPERTIES MACOSX_PACKAGE_LOCATION "${RESOURCE_LOCATION}/English.lproj")
+set_source_files_properties(${CMAKE_SOURCE_DIR}/xbmc/platform/darwin/ios/English.lproj/InfoPlist.strings PROPERTIES MACOSX_PACKAGE_LOCATION "./English.lproj")
 
 # Options for code signing propagated as env vars to Codesign.command via Xcode
 set(IOS_CODE_SIGN_IDENTITY "" CACHE STRING "Code Sign Identity")
