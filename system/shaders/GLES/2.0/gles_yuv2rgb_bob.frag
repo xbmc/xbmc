@@ -32,6 +32,9 @@ uniform mat4      m_yuvmat;
 uniform float     m_stepX;
 uniform float     m_stepY;
 uniform int       m_field;
+uniform mat3 m_primMat;
+uniform float m_gammaDstInv;
+uniform float m_gammaSrc;
 
 void main()
 {
@@ -71,6 +74,16 @@ void main()
   yuvBelow.rgba = vec4(texture2D(m_sampY, belowY).r, texture2D(m_sampU, belowU).g, texture2D(m_sampV, belowV).a, 1.0);
   rgbBelow   = m_yuvmat * yuvBelow;
   rgbBelow.a = m_alpha;
+
+#if defined(XBMC_COL_CONVERSION)
+  rgb.rgb = pow(rgb.rgb, vec3(m_gammaSrc));
+  rgb.rgb = m_primMat * rgb.rgb;
+  rgb.rgb = pow(rgb.rgb, vec3(m_gammaDstInv));
+
+  rgbBelow.rgb = pow(rgbBelow.rgb, vec3(m_gammaSrc));
+  rgbBelow.rgb = m_primMat * rgbBelow.rgb;
+  rgbBelow.rgb = pow(rgbBelow.rgb, vec3(m_gammaDstInv));
+#endif
 
   gl_FragColor.rgba = mix(rgb, rgbBelow, 0.5);
 }

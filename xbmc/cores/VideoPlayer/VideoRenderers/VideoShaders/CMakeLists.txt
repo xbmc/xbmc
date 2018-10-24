@@ -27,11 +27,11 @@ if(OPENGLES_FOUND AND (CORE_PLATFORM_NAME_LC STREQUAL android OR
                        CORE_PLATFORM_NAME_LC STREQUAL aml OR
                        CORE_PLATFORM_NAME_LC STREQUAL gbm OR
                        CORE_PLATFORM_NAME_LC STREQUAL wayland))
-  list(APPEND SOURCES VideoFilterShaderGLES.cpp
-                      YUVMatrix.cpp
+  list(APPEND SOURCES ConversionMatrix.cpp
+                      VideoFilterShaderGLES.cpp
                       YUV2RGBShaderGLES.cpp)
-  list(APPEND HEADERS VideoFilterShaderGLES.h
-                      YUVMatrix.h
+  list(APPEND HEADERS ConversionMatrix.h
+                      VideoFilterShaderGLES.h
                       YUV2RGBShaderGLES.h)
 endif()
 

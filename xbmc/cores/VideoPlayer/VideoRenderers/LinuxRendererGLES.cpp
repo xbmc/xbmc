@@ -529,9 +529,9 @@ void CLinuxRendererGLES::LoadShaders(int field)
           CLog::Log(LOGNOTICE, "GLES: Selecting Single Pass YUV 2 RGB shader");
 
           EShaderFormat shaderFormat = GetShaderFormat();
-          m_pYUVProgShader = new YUV2RGBProgressiveShader(m_iFlags, shaderFormat);
+          m_pYUVProgShader = new YUV2RGBProgressiveShader(shaderFormat, AVColorPrimaries::AVCOL_PRI_BT709, m_srcPrimaries);
           m_pYUVProgShader->SetConvertFullColorRange(m_fullRange);
-          m_pYUVBobShader = new YUV2RGBBobShader(m_iFlags, shaderFormat);
+          m_pYUVBobShader = new YUV2RGBBobShader(shaderFormat, AVColorPrimaries::AVCOL_PRI_BT709, m_srcPrimaries);
           m_pYUVBobShader->SetConvertFullColorRange(m_fullRange);
 
           if ((m_pYUVProgShader && m_pYUVProgShader->CompileAndLink())
@@ -697,7 +697,15 @@ void CLinuxRendererGLES::Render(unsigned int flags, int index)
 
 void CLinuxRendererGLES::RenderSinglePass(int index, int field)
 {
+  CPictureBuffer &buf = m_buffers[index];
   YUVPLANE (&planes)[YuvImage::MAX_PLANES] = m_buffers[index].fields[field];
+
+  AVColorPrimaries srcPrim = GetSrcPrimaries(buf.m_srcPrimaries, buf.image.width, buf.image.height);
+  if (srcPrim != m_srcPrimaries)
+  {
+    m_srcPrimaries = srcPrim;
+    m_reloadShaders = true;
+  }
 
   if (m_reloadShaders)
   {
@@ -721,7 +729,7 @@ void CLinuxRendererGLES::RenderSinglePass(int index, int field)
   glActiveTexture(GL_TEXTURE0);
   VerifyGLState();
 
-  Shaders::BaseYUV2RGBShader *pYUVShader;
+  Shaders::BaseYUV2RGBGLSLShader *pYUVShader;
   if (field != FIELD_FULL)
     pYUVShader = m_pYUVBobShader;
   else
@@ -731,6 +739,7 @@ void CLinuxRendererGLES::RenderSinglePass(int index, int field)
   pYUVShader->SetContrast(m_videoSettings.m_Contrast * 0.02f);
   pYUVShader->SetWidth(planes[0].texwidth);
   pYUVShader->SetHeight(planes[0].texheight);
+  pYUVShader->SetColParams(buf.m_srcColSpace, buf.m_srcBits, !buf.m_srcFullRange, buf.m_srcTextureBits);
   if     (field == FIELD_TOP)
     pYUVShader->SetField(1);
   else if(field == FIELD_BOT)
@@ -792,7 +801,15 @@ void CLinuxRendererGLES::RenderSinglePass(int index, int field)
 
 void CLinuxRendererGLES::RenderToFBO(int index, int field, bool weave /*= false*/)
 {
+  CPictureBuffer &buf = m_buffers[index];
   YUVPLANE (&planes)[YuvImage::MAX_PLANES] = m_buffers[index].fields[field];
+
+  AVColorPrimaries srcPrim = GetSrcPrimaries(buf.m_srcPrimaries, buf.image.width, buf.image.height);
+  if (srcPrim != m_srcPrimaries)
+  {
+    m_srcPrimaries = srcPrim;
+    m_reloadShaders = true;
+  }
 
   if (m_reloadShaders)
   {
@@ -834,7 +851,7 @@ void CLinuxRendererGLES::RenderToFBO(int index, int field, bool weave /*= false*
   glActiveTexture(GL_TEXTURE0);
   VerifyGLState();
 
-  Shaders::BaseYUV2RGBShader *pYUVShader = m_pYUVProgShader;
+  Shaders::BaseYUV2RGBGLSLShader *pYUVShader = m_pYUVProgShader;
   // make sure the yuv shader is loaded and ready to go
   if (!pYUVShader || (!pYUVShader->OK()))
   {
@@ -849,6 +866,7 @@ void CLinuxRendererGLES::RenderToFBO(int index, int field, bool weave /*= false*
   pYUVShader->SetContrast(m_videoSettings.m_Contrast * 0.02f);
   pYUVShader->SetWidth(planes[0].texwidth);
   pYUVShader->SetHeight(planes[0].texheight);
+  pYUVShader->SetColParams(buf.m_srcColSpace, buf.m_srcBits, !buf.m_srcFullRange, buf.m_srcTextureBits);
   if (field == FIELD_TOP)
     pYUVShader->SetField(1);
   else if(field == FIELD_BOT)
@@ -1155,6 +1173,7 @@ bool CLinuxRendererGLES::CreateYV12Texture(int index)
 {
   /* since we also want the field textures, pitch must be texture aligned */
   unsigned p;
+  CPictureBuffer &buf = m_buffers[index];
   YuvImage &im = m_buffers[index].image;
 
   DeleteYV12Texture(index);
@@ -1164,8 +1183,19 @@ bool CLinuxRendererGLES::CreateYV12Texture(int index)
   im.cshift_x = 1;
   im.cshift_y = 1;
 
-  if(m_format == AV_PIX_FMT_YUV420P16 ||
-     m_format == AV_PIX_FMT_YUV420P10)
+  switch (m_format)
+  {
+    case AV_PIX_FMT_YUV420P16:
+      buf.m_srcTextureBits = 16;
+      break;
+    case AV_PIX_FMT_YUV420P10:
+      buf.m_srcTextureBits = 10;
+      break;
+    default:
+      break;
+  }
+
+  if(buf.m_srcTextureBits > 8)
     im.bpp = 2;
   else
     im.bpp = 1;
