@@ -168,7 +168,7 @@ public:
   CEGLContextUtils(EGLenum platform, std::string const& platformExtension);
   ~CEGLContextUtils();
 
-  bool CreateDisplay(EGLNativeDisplayType nativeDisplay, EGLint renderableType, EGLint renderingApi);
+  bool CreateDisplay(EGLNativeDisplayType nativeDisplay);
   /**
    * Create EGLDisplay with EGL_EXT_platform_base
    *
@@ -180,10 +180,12 @@ public:
    * \param nativeDisplay native display to use with eglGetPlatformDisplayEXT
    * \param nativeDisplayLegacy native display to use with eglGetDisplay
    */
-  bool CreatePlatformDisplay(void* nativeDisplay, EGLNativeDisplayType nativeDisplayLegacy, EGLint renderableType, EGLint renderingApi, EGLint visualId = 0);
+  bool CreatePlatformDisplay(void* nativeDisplay, EGLNativeDisplayType nativeDisplayLegacy);
 
   bool CreateSurface(EGLNativeWindowType nativeWindow);
   bool CreatePlatformSurface(void* nativeWindow, EGLNativeWindowType nativeWindowLegacy);
+  bool InitializeDisplay(EGLint renderingApi);
+  bool ChooseConfig(EGLint renderableType, EGLint visualId = 0);
   bool CreateContext(CEGLAttributesVec contextAttribs);
   bool BindContext();
   void Destroy();
@@ -211,8 +213,6 @@ public:
   }
 
 private:
-  bool InitializeDisplay(EGLint renderableType, EGLint renderingApi, EGLint visualId = 0);
-  bool ChooseConfig(EGLint renderableType, EGLint visualId);
   void SurfaceAttrib();
 
   EGLenum m_platform{EGL_NONE};

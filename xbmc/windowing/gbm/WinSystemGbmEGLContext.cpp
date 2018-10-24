@@ -25,7 +25,17 @@ bool CWinSystemGbmEGLContext::InitWindowSystemEGL(EGLint renderableType, EGLint 
   // we need to provide an alpha format to egl to workaround a mesa bug
   int visualId = CDRMUtils::FourCCWithAlpha(CWinSystemGbm::GetDrm()->GetOverlayPlane()->format);
 
-  if (!m_eglContext.CreatePlatformDisplay(m_GBM->GetDevice(), m_GBM->GetDevice(), renderableType, apiType, visualId))
+  if (!m_eglContext.CreatePlatformDisplay(m_GBM->GetDevice(), m_GBM->GetDevice()))
+  {
+    return false;
+  }
+
+  if (!m_eglContext.InitializeDisplay(apiType))
+  {
+    return false;
+  }
+
+  if (!m_eglContext.ChooseConfig(renderableType, visualId))
   {
     return false;
   }

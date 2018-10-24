@@ -24,9 +24,17 @@ bool CWinSystemAmlogicGLESContext::InitWindowSystem()
     return false;
   }
 
-  if (!m_pGLContext.CreateDisplay(m_nativeDisplay,
-                                  EGL_OPENGL_ES2_BIT,
-                                  EGL_OPENGL_ES_API))
+  if (!m_pGLContext.CreateDisplay(m_nativeDisplay))
+  {
+    return false;
+  }
+
+  if (!m_pGLContext.InitializeDisplay(EGL_OPENGL_ES_API))
+  {
+    return false;
+  }
+
+  if (!m_pGLContext.ChooseConfig(EGL_OPENGL_ES2_BIT))
   {
     return false;
   }

@@ -135,7 +135,7 @@ CEGLContextUtils::~CEGLContextUtils()
   Destroy();
 }
 
-bool CEGLContextUtils::CreateDisplay(EGLNativeDisplayType nativeDisplay, EGLint renderableType, EGLint renderingApi)
+bool CEGLContextUtils::CreateDisplay(EGLNativeDisplayType nativeDisplay)
 {
   if (m_eglDisplay != EGL_NO_DISPLAY)
   {
@@ -149,10 +149,10 @@ bool CEGLContextUtils::CreateDisplay(EGLNativeDisplayType nativeDisplay, EGLint 
     return false;
   }
 
-  return InitializeDisplay(renderableType, renderingApi);
+  return true;
 }
 
-bool CEGLContextUtils::CreatePlatformDisplay(void* nativeDisplay, EGLNativeDisplayType nativeDisplayLegacy, EGLint renderableType, EGLint renderingApi, EGLint visualId)
+bool CEGLContextUtils::CreatePlatformDisplay(void* nativeDisplay, EGLNativeDisplayType nativeDisplayLegacy)
 {
   if (m_eglDisplay != EGL_NO_DISPLAY)
   {
@@ -180,13 +180,13 @@ bool CEGLContextUtils::CreatePlatformDisplay(void* nativeDisplay, EGLNativeDispl
 
   if (m_eglDisplay == EGL_NO_DISPLAY)
   {
-    return CreateDisplay(nativeDisplayLegacy, renderableType, renderingApi);
+    return CreateDisplay(nativeDisplayLegacy);
   }
 
-  return InitializeDisplay(renderableType, renderingApi, visualId);
+  return true;
 }
 
-bool CEGLContextUtils::InitializeDisplay(EGLint renderableType, EGLint renderingApi, EGLint visualId)
+bool CEGLContextUtils::InitializeDisplay(EGLint renderingApi)
 {
   if (!eglInitialize(m_eglDisplay, nullptr, nullptr))
   {
@@ -215,15 +215,17 @@ bool CEGLContextUtils::InitializeDisplay(EGLint renderableType, EGLint rendering
     return false;
   }
 
-  if (!ChooseConfig(renderableType, visualId))
-    return false;
-
   return true;
 }
 
 bool CEGLContextUtils::ChooseConfig(EGLint renderableType, EGLint visualId)
 {
   EGLint numMatched{0};
+
+  if (m_eglDisplay == EGL_NO_DISPLAY)
+  {
+    throw std::logic_error("Choosing an EGLConfig requires an EGL display");
+  }
 
   EGLint surfaceType = EGL_WINDOW_BIT;
   // for the non-trivial dirty region modes, we need the EGL buffer to be preserved across updates

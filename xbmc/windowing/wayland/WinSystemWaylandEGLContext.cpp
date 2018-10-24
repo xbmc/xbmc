@@ -32,7 +32,17 @@ bool CWinSystemWaylandEGLContext::InitWindowSystemEGL(EGLint renderableType, EGL
     return false;
   }
 
-  if (!m_eglContext.CreatePlatformDisplay(GetConnection()->GetDisplay(), GetConnection()->GetDisplay(), renderableType, apiType))
+  if (!m_eglContext.CreatePlatformDisplay(GetConnection()->GetDisplay(), GetConnection()->GetDisplay()))
+  {
+    return false;
+  }
+
+  if (!m_eglContext.InitializeDisplay(apiType))
+  {
+    return false;
+  }
+
+  if (!m_eglContext.ChooseConfig(renderableType))
   {
     return false;
   }
