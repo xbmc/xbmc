@@ -16,6 +16,7 @@
 #include <EGL/egl.h>
 #include <unistd.h>
 
+#include "platform/linux/XTimeUtils.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "windowing/GraphicContext.h"
@@ -35,6 +36,9 @@ CDRMUtils::CDRMUtils()
 
 bool CDRMUtils::SetMode(const RESOLUTION_INFO& res)
 {
+  if (!CheckConnector(m_connector->connector->connector_id))
+    return false;
+
   m_mode = &m_connector->connector->modes[atoi(res.strId.c_str())];
   m_width = res.iWidth;
   m_height = res.iHeight;
@@ -753,4 +757,25 @@ uint32_t CDRMUtils::FourCCWithAlpha(uint32_t fourcc)
 uint32_t CDRMUtils::FourCCWithoutAlpha(uint32_t fourcc)
 {
   return (fourcc & 0xFFFFFF00) | static_cast<uint32_t>('X');
+}
+
+bool CDRMUtils::CheckConnector(int connector_id)
+{
+  struct connector connectorcheck;
+  unsigned retryCnt = 7;
+
+  connectorcheck.connector = drmModeGetConnector(m_fd, connector_id);
+  while (connectorcheck.connector->connection != DRM_MODE_CONNECTED  && retryCnt > 0)
+  {
+    CLog::Log(LOGDEBUG, "CDRMUtils::%s - connector is disconnected", __FUNCTION__);
+    retryCnt--;
+    Sleep(1000);
+    drmModeFreeConnector(connectorcheck.connector);
+    connectorcheck.connector = drmModeGetConnector(m_fd, connector_id);
+  }
+
+  int finalConnectionState = connectorcheck.connector->connection;
+  drmModeFreeConnector(connectorcheck.connector);
+
+  return finalConnectionState == DRM_MODE_CONNECTED;
 }
