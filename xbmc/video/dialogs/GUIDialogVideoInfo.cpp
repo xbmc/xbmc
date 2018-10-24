@@ -33,6 +33,7 @@
 #include "storage/MediaManager.h"
 #include "profiles/ProfileManager.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/lib/Setting.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -376,9 +377,17 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
 void CGUIDialogVideoInfo::Update()
 {
   // setup plot text area
+  std::shared_ptr<CSettingList> setting(std::dynamic_pointer_cast<CSettingList>( 
+    CServiceBroker::GetSettingsComponent()->GetSettings()->GetSetting(CSettings::SETTING_VIDEOLIBRARY_SHOWUNWATCHEDPLOTS)));
   std::string strTmp = m_movieItem->GetVideoInfoTag()->m_strPlot;
   if (m_movieItem->GetVideoInfoTag()->m_type != MediaTypeTvShow)
-    if (m_movieItem->GetVideoInfoTag()->GetPlayCount() == 0 && !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOLIBRARY_SHOWUNWATCHEDPLOTS))
+    if (m_movieItem->GetVideoInfoTag()->GetPlayCount() == 0 && 
+        setting &&
+        (
+         (m_movieItem->GetVideoInfoTag()->m_type == MediaTypeMovie && (!setting->FindIntInList(CSettings::VIDEOLIBRARY_PLOTS_SHOW_UNWATCHED_MOVIES))) || 
+         (m_movieItem->GetVideoInfoTag()->m_type == MediaTypeEpisode && (!setting->FindIntInList(CSettings::VIDEOLIBRARY_PLOTS_SHOW_UNWATCHED_TVSHOWEPISODES)))
+        )
+       )
       strTmp = g_localizeStrings.Get(20370);
 
   StringUtils::Trim(strTmp);
