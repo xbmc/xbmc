@@ -1101,6 +1101,7 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
   }
   HandlePossibleRefreshrateChange();
 
+  m_updateGLContext = 0;
   return true;
 }
 
@@ -1422,6 +1423,12 @@ void CWinSystemOSX::FillInVideoModes()
 
 bool CWinSystemOSX::FlushBuffer(void)
 {
+  if (m_updateGLContext < 5)
+  {
+    [ (NSOpenGLContext*)m_glContext update ];
+    m_updateGLContext++;
+  }
+
   [ (NSOpenGLContext*)m_glContext flushBuffer ];
 
   return true;
