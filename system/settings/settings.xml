@@ -2090,7 +2090,7 @@
           <control type="spinner" format="string" delayed="true" />
         </setting>
         <setting id="videoscreen.whitelist" type="list[string]" parent="videoscreen.screen" label="14085" help="36356">
-          <level>1</level>
+          <level>3</level>
           <constraints>
             <options>modes</options>
             <default></default>
