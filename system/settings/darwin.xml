@@ -4,6 +4,9 @@
     <category id="display">
       <group id="1">
         <setting id="videoscreen.resolution" label="131" />
+        <setting id="videoscreen.fakefullscreen">
+          <visible>false</visible>
+        </setting>
       </group>
     </category>
     <category id="audio">
