@@ -71,7 +71,7 @@
 							<param name="bottom" value="108" />
 							<param name="width" value="540" />
 							<param name="sortby" value="year" />
-							<param name="sortorder" value="descending" />
+							<param name="sortorder" value="ascending" />
 							<param name="font" value="font13" />
 						</include>
 					</control>

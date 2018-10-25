@@ -169,7 +169,7 @@
 							<shadowcolor>text_shadow</shadowcolor>
 						</control>
 					</itemlayout>
-					<content sortby="year" sortorder="descending">$VAR[InfoListPathVar]</content>
+					<content sortby="year" sortorder="ascending">$VAR[InfoListPathVar]</content>
 				</control>
 			</control>
 		</control>
