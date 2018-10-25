@@ -84,7 +84,7 @@
 						<include content="InfoList">
 							<param name="bottom" value="0" />
 							<param name="sortby" value="year" />
-							<param name="sortorder" value="descending" />
+							<param name="sortorder" value="ascending" />
 							<param name="font" value="font13" />
 						</include>
 					</control>

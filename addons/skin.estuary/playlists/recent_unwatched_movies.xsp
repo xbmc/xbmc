@@ -3,7 +3,7 @@
     <name>Recent Unwatched Movies</name>
     <match>all</match>
     <rule field="dateadded" operator="after">
-        <value>1900-01-01</value>
+        <value>2012-01-01</value>
     </rule>
     <rule field="playcount" operator="lessthan">
         <value>1</value>

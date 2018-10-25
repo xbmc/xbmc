@@ -222,7 +222,7 @@
 						<param name="bottom" value="100" />
 						<param name="width" value="540" />
 						<param name="sortby" value="year" />
-						<param name="sortorder" value="descending" />
+						<param name="sortorder" value="ascending" />
 						<param name="font" value="font13" />
 					</include>
 				</control>
@@ -251,7 +251,7 @@
 							<param name="bottom" value="100" />
 							<param name="width" value="540" />
 							<param name="sortby" value="year" />
-							<param name="sortorder" value="descending" />
+							<param name="sortorder" value="ascending" />
 							<param name="item_label" value="$INFO[ListItem.Year,[COLOR button_focus],[/COLOR]  -  ]$INFO[ListItem.Label]" />
 							<param name="visible" value="String.IsEqual(ListItem.DBType,artist)" />
 						</include>
