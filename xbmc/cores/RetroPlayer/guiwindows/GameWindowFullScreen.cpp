@@ -20,6 +20,8 @@
 #include "guilib/WindowIDs.h"
 #include "input/Action.h"
 #include "input/ActionIDs.h"
+#include "Application.h" //! @todo Remove me
+#include "ApplicationPlayer.h" //! @todo Remove me
 #include "GUIInfoManager.h" //! @todo Remove me
 #include "ServiceBroker.h"
 
@@ -180,6 +182,17 @@ void CGameWindowFullScreen::OnInitWindow()
   GAME::CGameSettings &gameSettings = CServiceBroker::GetGameServices().GameSettings();
   if (gameSettings.ShowOSDHelp())
     TriggerOSD();
+  else
+  {
+    //! @todo We need to route this check through the GUI bridge. By adding the
+    //        dependency to the application player here, we are prevented from
+    //        having multiple players.
+    if (!g_application.GetAppPlayer().HasGameAgent())
+    {
+      gameSettings.SetShowOSDHelp(true);
+      TriggerOSD();
+    }
+  }
 }
 
 void CGameWindowFullScreen::OnDeinitWindow(int nextWindowID)

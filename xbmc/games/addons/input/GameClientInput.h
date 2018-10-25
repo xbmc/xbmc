@@ -64,6 +64,9 @@ namespace GAME
     bool SupportsKeyboard() const;
     bool SupportsMouse() const;
 
+    // Agent functions
+    bool HasAgent() const;
+
     // Keyboard functions
     bool OpenKeyboard(const ControllerPtr &controller);
     void CloseKeyboard();

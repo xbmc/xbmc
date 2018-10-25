@@ -227,6 +227,14 @@ public:
   virtual CVideoSettings GetVideoSettings() { return CVideoSettings(); };
   virtual void SetVideoSettings(CVideoSettings& settings) {};
 
+  /*!
+   * \brief Check if any players are playing a game
+   *
+   * \return True if at least one player has an input device attached to the
+   * game, false otherwise
+   */
+  virtual bool HasGameAgent() { return false; }
+
   std::string m_name;
   std::string m_type;
 

@@ -152,6 +152,11 @@ public:
 
   void SetUpdateStreamDetails();
 
+  /*!
+   * \copydoc IPlayer::HasGameAgent
+   */
+  bool HasGameAgent();
+
 private:
   std::shared_ptr<IPlayer> GetInternal() const;
   void CreatePlayer(const CPlayerCoreFactory &factory, const std::string &player, IPlayerCallback& callback);

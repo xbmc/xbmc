@@ -282,6 +282,26 @@ bool CGameClientInput::SupportsMouse() const
   return it != controllers.Ports().end() && !it->CompatibleControllers().empty();
 }
 
+bool CGameClientInput::HasAgent() const
+{
+  //! @todo We check m_portMap instead of m_joysticks because m_joysticks is
+  //        always populated with the default joystick configuration (i.e.
+  //        all ports are connected to the first controller they accept).
+  //        The game has no way of knowing which joysticks are actually being
+  //        controlled by agents -- this information is stored in m_portMap,
+  //        which is not exposed to the game.
+  if (!m_portMap.empty())
+    return true;
+
+  if (m_keyboard)
+    return true;
+
+  if (m_mouse)
+    return true;
+
+  return false;
+}
+
 bool CGameClientInput::OpenKeyboard(const ControllerPtr &controller)
 {
   using namespace JOYSTICK;
