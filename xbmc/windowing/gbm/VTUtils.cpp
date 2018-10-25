@@ -23,7 +23,23 @@ using namespace KODI::WINDOWING::GBM;
 
 bool CVTUtils::OpenTTY()
 {
-  m_ttyDevice = ttyname(STDIN_FILENO);
+  char ttyDevice[128];
+  size_t ttyDeviceLength{128};
+
+  auto ret = ttyname_r(STDIN_FILENO, ttyDevice, ttyDeviceLength);
+  if (ret > 0)
+  {
+    std::string warningMessage;
+    warningMessage.append(StringUtils::Format("ERROR: could not get a valid vt: %s\n", strerror(errno)));
+    warningMessage.append("NOTICE: if using a systemd service make sure that both TTYpath=/dev/ttyN and StandardInput=tty are set\n");
+    warningMessage.append("NOTICE: https://www.freedesktop.org/software/systemd/man/systemd.exec.html#Logging%20and%20Standard%20Input/Output");
+    CMessagePrinter::DisplayError(warningMessage);
+
+    CLog::Log(LOGWARNING, "CVTUtils::%s -  could not get a valid vt", __FUNCTION__);
+    return false;
+  }
+
+  m_ttyDevice = ttyDevice;
 
   m_fd.attach(open(m_ttyDevice.c_str(), O_RDWR | O_CLOEXEC));
   if (m_fd < 0)
@@ -42,8 +58,8 @@ bool CVTUtils::OpenTTY()
   }
 
   int kdMode{-1};
-  auto ret = ioctl(m_fd, KDGETMODE, &kdMode);
-  if (ret)
+  ret = ioctl(m_fd, KDGETMODE, &kdMode);
+  if (ret < 0)
   {
     CLog::Log(LOGERROR, "CVTUtils::%s - failed to get VT mode: %s", __FUNCTION__, strerror(errno));
     return false;
