@@ -9,7 +9,6 @@
 
 #include "../RenderFlags.h"
 #include "YUV2RGBShaderGL.h"
-#include "YUVMatrix.h"
 #include "ConversionMatrix.h"
 #include "ConvolutionKernels.h"
 #include "ServiceBroker.h"
