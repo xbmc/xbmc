@@ -14,7 +14,7 @@
 #ifdef BUILD_KODI_ADDON
 #include "../ActionIDs.h"
 #else
-#include "input/ActionIDs.h"
+#include "input/actions/ActionIDs.h"
 #endif
 
 namespace kodi

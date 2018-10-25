@@ -115,7 +115,7 @@ INPUT_TYPE CControllerTranslator::TranslateInputType(const std::string& strType)
   return INPUT_TYPE::UNKNOWN;
 }
 
-XBMCKey CControllerTranslator::TranslateKeysym(const std::string &symbol)
+KEYBOARD::KeySymbol CControllerTranslator::TranslateKeysym(const std::string &symbol)
 {
   if (symbol == "backspace") return XBMCK_BACKSPACE;
   if (symbol == "tab") return XBMCK_TAB;
@@ -260,7 +260,7 @@ XBMCKey CControllerTranslator::TranslateKeysym(const std::string &symbol)
   return XBMCK_UNKNOWN;
 }
 
-const char *CControllerTranslator::TranslateKeycode(XBMCKey keycode)
+const char *CControllerTranslator::TranslateKeycode(KEYBOARD::KeySymbol keycode)
 {
   switch (keycode)
   {

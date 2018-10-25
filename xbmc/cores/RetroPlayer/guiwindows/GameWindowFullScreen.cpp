@@ -18,8 +18,8 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h" //! @todo Remove me
 #include "guilib/WindowIDs.h"
-#include "input/Action.h"
-#include "input/ActionIDs.h"
+#include "input/actions/Action.h"
+#include "input/actions/ActionIDs.h"
 #include "Application.h" //! @todo Remove me
 #include "ApplicationPlayer.h" //! @todo Remove me
 #include "GUIInfoManager.h" //! @todo Remove me

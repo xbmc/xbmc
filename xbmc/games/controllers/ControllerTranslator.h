@@ -9,7 +9,7 @@
 #pragma once
 
 #include "input/joysticks/JoystickTypes.h"
-#include "input/XBMC_keysym.h"
+#include "input/keyboard/KeyboardTypes.h"
 
 #include <string>
 
@@ -37,7 +37,7 @@ public:
    *
    * \return The layout-independent keycode associated with the key
    */
-  static XBMCKey TranslateKeysym(const std::string &symbol);
+  static KEYBOARD::KeySymbol TranslateKeysym(const std::string &symbol);
 
   /*!
    * \brief Translate a Kodi key code to a keyboard symbol
@@ -46,7 +46,7 @@ public:
    *
    * \return The key's symbol, or an empty string if no symbol is defined for the keycode
    */
-  static const char *TranslateKeycode(XBMCKey keycode);
+  static const char *TranslateKeycode(KEYBOARD::KeySymbol keycode);
 };
 
 }

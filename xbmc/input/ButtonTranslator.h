@@ -12,8 +12,7 @@
 #include <set>
 #include <string>
 
-#include "Action.h"
-
+#include "input/actions/Action.h"
 #include "network/EventClient.h"
 
 class CKey;

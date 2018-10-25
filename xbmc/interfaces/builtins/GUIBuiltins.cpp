@@ -14,7 +14,7 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogNumeric.h"
 #include "filesystem/Directory.h"
-#include "input/ActionTranslator.h"
+#include "input/actions/ActionTranslator.h"
 #include "input/WindowTranslator.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"

@@ -7,10 +7,10 @@
  */
 
 #include "KeyHandler.h"
+#include "input/actions/ActionIDs.h"
+#include "input/actions/ActionTranslator.h"
 #include "input/joysticks/interfaces/IKeymapHandler.h"
 #include "input/joysticks/JoystickUtils.h"
-#include "input/ActionIDs.h"
-#include "input/ActionTranslator.h"
 #include "input/IKeymap.h"
 #include "interfaces/IActionListener.h"
 
