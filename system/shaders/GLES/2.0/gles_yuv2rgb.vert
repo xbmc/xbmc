@@ -32,9 +32,9 @@ uniform mat4 m_model;
 
 void main ()
 {
-  mat4 mvp    = m_proj * m_model;
+  mat4 mvp = m_proj * m_model;
   gl_Position = mvp * m_attrpos;
-  m_cordY     = m_attrcordY;
-  m_cordU     = m_attrcordU;
-  m_cordV     = m_attrcordV;
+  m_cordY = m_attrcordY;
+  m_cordU = m_attrcordU;
+  m_cordV = m_attrcordV;
 }

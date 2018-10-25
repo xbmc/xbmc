@@ -20,20 +20,22 @@
 
 #version 100
 
-precision mediump   float;
-uniform   sampler2D m_samp0;
-varying   vec4      m_cord0;
-varying   lowp vec4 m_colour;
+precision mediump float;
+uniform sampler2D m_samp0;
+varying vec4 m_cord0;
+varying lowp vec4 m_colour;
 
-// SM_FONTS shader
 void main ()
 {
-  gl_FragColor.r   = m_colour.r;
-  gl_FragColor.g   = m_colour.g;
-  gl_FragColor.b   = m_colour.b;
-  gl_FragColor.a   = m_colour.a * texture2D(m_samp0, m_cord0.xy).a;
+  vec4 rgb;
+
+  rgb.rgb = m_colour.rgb;
+  rgb.a = m_colour.a * texture2D(m_samp0, m_cord0.xy).a;
+
 #if defined(KODI_LIMITED_RANGE)
-  gl_FragColor.rgb *= (235.0-16.0) / 255.0;
-  gl_FragColor.rgb += 16.0 / 255.0;
+  rgb.rgb *= (235.0 - 16.0) / 255.0;
+  rgb.rgb += 16.0 / 255.0;
 #endif
+
+  gl_FragColor = rgb;
 }

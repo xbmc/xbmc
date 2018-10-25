@@ -25,17 +25,17 @@ precision mediump float;
 uniform sampler2D m_sampY;
 uniform sampler2D m_sampU;
 uniform sampler2D m_sampV;
-varying vec2      m_cordY;
-varying vec2      m_cordU;
-varying vec2      m_cordV;
-uniform vec2      m_step;
-uniform mat4      m_yuvmat;
+varying vec2 m_cordY;
+varying vec2 m_cordU;
+varying vec2 m_cordV;
+uniform vec2 m_step;
+uniform mat4 m_yuvmat;
 uniform mat3 m_primMat;
 uniform float m_gammaDstInv;
 uniform float m_gammaSrc;
 uniform float m_toneP1;
 uniform vec3 m_coefsDst;
-uniform float     m_alpha;
+uniform float m_alpha;
 
 void main()
 {
@@ -44,17 +44,17 @@ void main()
 
 #if defined(XBMC_YV12) || defined(XBMC_NV12)
 
-  yuv.rgba = vec4( texture2D(m_sampY, m_cordY).r
-                 , texture2D(m_sampU, m_cordU).g
-                 , texture2D(m_sampV, m_cordV).a
-                 , 1.0 );
+  yuv = vec4(texture2D(m_sampY, m_cordY).r,
+             texture2D(m_sampU, m_cordU).g,
+             texture2D(m_sampV, m_cordV).a,
+             1.0);
 
 #elif defined(XBMC_NV12_RRG)
 
-  yuv.rgba = vec4( texture2D(m_sampY, m_cordY).r
-                 , texture2D(m_sampU, m_cordU).r
-                 , texture2D(m_sampV, m_cordV).g
-                 , 1.0 );
+  yuv = vec4(texture2D(m_sampY, m_cordY).r,
+             texture2D(m_sampU, m_cordU).r,
+             texture2D(m_sampV, m_cordV).g,
+             1.0);
 
 #endif
 
