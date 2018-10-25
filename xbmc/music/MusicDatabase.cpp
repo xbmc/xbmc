@@ -5143,10 +5143,10 @@ bool CMusicDatabase::GetArtistsByWhereJSON(const std::set<std::string>& fields, 
       {
         if (!joinLayout.GetOutput(joinToArtist_thumbnail))
           // Fanart only
-          joinFilter.AppendWhere("art.type = 'fanart'");
+          joinFilter.AppendJoin("AND art.type = 'fanart'");
         else if (!joinLayout.GetOutput(joinToArtist_fanart))
           // Thumb only
-          joinFilter.AppendWhere("art.type = 'thumb'");
+          joinFilter.AppendJoin("AND art.type = 'thumb'");
       }
     }
 
