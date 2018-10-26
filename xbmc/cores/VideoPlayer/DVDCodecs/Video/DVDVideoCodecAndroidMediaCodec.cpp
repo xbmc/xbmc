@@ -396,7 +396,7 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
     CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Open - %s\n", "null size, cannot handle");
     goto FAIL;
   }
-  else if (hints.stills || hints.dvd)
+  else if (hints.stills)
   {
     // Won't work reliably
     goto FAIL;
