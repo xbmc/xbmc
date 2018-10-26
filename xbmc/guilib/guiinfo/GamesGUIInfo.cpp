@@ -55,7 +55,7 @@ bool CGamesGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
     case RETROPLAYER_STRETCHMODE:
     {
       STRETCHMODE stretchMode = CMediaSettings::GetInstance().GetCurrentGameSettings().StretchMode();
-      value = CRetroPlayerUtils::StretchModeToDescription(stretchMode);
+      value = CRetroPlayerUtils::StretchModeToIdentifier(stretchMode);
       return true;
     }
 
