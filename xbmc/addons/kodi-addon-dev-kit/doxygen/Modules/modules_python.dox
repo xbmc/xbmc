@@ -161,6 +161,12 @@ web applications or frameworks for the Python programming language.
       http://mirrors.kodi.tv/docs/python-docs/16.x-jarvis/xbmc.html#RenderCapture-waitForCaptureStateChangeEvent,
       <b>xbmc.RenderCapture().waitForCaptureStateChangeEvent()</b> function was removed completely.
 }
+\python_removed_function{
+      disableSubtitles,
+      http://mirrors.kodi.tv/docs/python-docs/16.x-jarvis/xbmc.html#Player,
+      <b>xbmc.Player().disableSubtitles()</b> function was removed completely.
+      Use \endhtmlonly \link XBMCAddon::xbmc::Player::showSubtitles() xbmc.Player().showSubtitles(...) \endlink \htmlonly instead.
+}
 */
 /*!
 @page python_v16 Python API v16
@@ -176,8 +182,12 @@ web applications or frameworks for the Python programming language.
 */
 /*!
 @page python_v12 Python API v12
+\python_removed_function{
+      executehttpapi,
+      http://mirrors.kodi.tv/docs/python-docs/12.2-frodo/xbmc.html#-executehttpapi,
+      <b>xbmc.executehttpapi()</b> function was removed completely.
+}
 */
-
 /*!
 @page python_revisions Python API Changes
 @brief Overview of changes on Python API for Kodi
