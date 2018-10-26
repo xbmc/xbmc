@@ -24,7 +24,8 @@ using namespace KODI::GUILIB::GUIINFO;
 using namespace KODI::GAME;
 using namespace KODI::RETRO;
 
-#define FILEITEM_PROPERTY_SAVESTATE_DURATION  "duration"
+//! @todo Savestates were removed from v18
+//#define FILEITEM_PROPERTY_SAVESTATE_DURATION  "duration"
 
 bool CGamesGUIInfo::InitCurrentItem(CFileItem *item)
 {
@@ -58,20 +59,7 @@ bool CGamesGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
       value = CRetroPlayerUtils::StretchModeToIdentifier(stretchMode);
       return true;
     }
-
-    ///////////////////////////////////////////////////////////////////////////////////////////////
-    // LISTITEM_*
-    ///////////////////////////////////////////////////////////////////////////////////////////////
-    case LISTITEM_DURATION:
-      if (item->HasProperty(FILEITEM_PROPERTY_SAVESTATE_DURATION))
-      {
-        int iDuration = static_cast<long>(item->GetProperty(FILEITEM_PROPERTY_SAVESTATE_DURATION).asInteger());
-        if (iDuration > 0)
-        {
-          value = StringUtils::SecondsToTimeString(iDuration, static_cast<TIME_FORMAT>(info.GetData4()));
-          return true;
-        }
-      }
+    default:
       break;
   }
 
