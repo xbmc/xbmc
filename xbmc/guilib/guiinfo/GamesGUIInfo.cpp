@@ -53,10 +53,21 @@ bool CGamesGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // RETROPLAYER_*
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    case RETROPLAYER_STRETCHMODE:
+    case RETROPLAYER_VIDEO_FILTER:
+    {
+      value = CMediaSettings::GetInstance().GetCurrentGameSettings().VideoFilter();
+      return true;
+    }
+    case RETROPLAYER_STRETCH_MODE:
     {
       STRETCHMODE stretchMode = CMediaSettings::GetInstance().GetCurrentGameSettings().StretchMode();
       value = CRetroPlayerUtils::StretchModeToIdentifier(stretchMode);
+      return true;
+    }
+    case RETROPLAYER_VIDEO_ROTATION:
+    {
+      const unsigned int rotationDegCCW = CMediaSettings::GetInstance().GetCurrentGameSettings().RotationDegCCW();
+      value = StringUtils::Format("%u", rotationDegCCW);
       return true;
     }
     default:
