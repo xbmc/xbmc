@@ -40,12 +40,6 @@
 #include "video/dialogs/GUIDialogVideoInfo.h"
 #include "video/windows/GUIWindowVideoNav.h"
 #include "profiles/windows/GUIWindowSettingsProfile.h"
-#ifdef HAS_GL
-#include "rendering/gl/GUIWindowTestPatternGL.h"
-#endif
-#ifdef HAS_DX
-#include "rendering/dx/GUIWindowTestPatternDX.h"
-#endif
 #include "settings/windows/GUIWindowSettingsScreenCalibration.h"
 #include "programs/GUIWindowPrograms.h"
 #include "pictures/GUIWindowPictures.h"
@@ -184,12 +178,6 @@ void CGUIWindowManager::CreateWindows()
   Add(new CGUIWindowFileManager);
   Add(new CGUIWindowSettings);
   Add(new CGUIWindowSystemInfo);
-#ifdef HAS_GL
-  Add(new CGUIWindowTestPatternGL);
-#endif
-#ifdef HAS_DX
-  Add(new CGUIWindowTestPatternDX);
-#endif
   Add(new CGUIWindowSettingsScreenCalibration);
   Add(new CGUIWindowSettingsCategory);
   Add(new CGUIWindowVideoNav);
@@ -407,7 +395,6 @@ bool CGUIWindowManager::DestroyWindows()
     DestroyWindow(WINDOW_VISUALISATION);
     DestroyWindow(WINDOW_SETTINGS_MENU);
     DestroyWindow(WINDOW_SETTINGS_PROFILES);
-    DestroyWindow(WINDOW_TEST_PATTERN);
     DestroyWindow(WINDOW_SCREEN_CALIBRATION);
     DestroyWindow(WINDOW_SYSTEM_INFORMATION);
     DestroyWindow(WINDOW_SCREENSAVER);
