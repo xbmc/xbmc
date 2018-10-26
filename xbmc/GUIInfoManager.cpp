@@ -2147,6 +2147,30 @@ const infomap videoplayer[] =    {{ "title",            VIDEOPLAYER_TITLE },
 ///     - 180
 ///     - 270 (Shown in the GUI as 90 degrees)
 ///   }
+///   \table_row3{   <b>`ListItem.Property(Game.VideoFilter)`</b>,
+///                  \anchor ListItem_Property_Game_VideoFilter
+///                  _string_,
+///     Returns the video filter of the list item representing a
+///     gamewindow control.\n
+///     See \link RetroPlayer_VideoFilter RetroPlayer.VideoFilter \endlink
+///     for the possible values.
+///   }
+///   \table_row3{   <b>`ListItem.Property(Game.StretchMode)`</b>,
+///                  \anchor ListItem_Property_Game_StretchMode
+///                  _string_,
+///     Returns the stretch mode of the list item representing a
+///     gamewindow control.\n
+///     See \link RetroPlayer_StretchMode RetroPlayer.StretchMode \endlink
+///     for the possible values.
+///   }
+///   \table_row3{   <b>`ListItem.Property(Game.VideoRotation)`</b>,
+///                  \anchor ListItem_Property_Game_VideoRotation
+///                  _integer_,
+///     Returns the video rotation of the list item representing a
+///     gamewindow control.\n
+///     See \link RetroPlayer_VideoRotation RetroPlayer.VideoRotation \endlink
+///     for the possible values.
+///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
