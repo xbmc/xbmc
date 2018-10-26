@@ -16,6 +16,7 @@
 #define WINDOW_FILES                      10003
 #define WINDOW_SETTINGS_MENU              10004
 #define WINDOW_SYSTEM_INFORMATION         10007
+#define WINDOW_TEST_PATTERN               10008
 #define WINDOW_SCREEN_CALIBRATION         10011
 
 #define WINDOW_SETTINGS_START             10016
