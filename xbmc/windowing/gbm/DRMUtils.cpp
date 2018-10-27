@@ -624,7 +624,29 @@ bool CDRMUtils::InitDrm()
     return false;
   }
 
-  drmSetMaster(m_fd);
+  auto ret = drmSetMaster(m_fd);
+  if (ret < 0)
+  {
+    CLog::Log(LOGWARNING, "CDRMUtils::%s - failed to set drm master, will try to authorize instead: %s", __FUNCTION__, strerror(errno));
+
+    drm_magic_t magic;
+
+    ret = drmGetMagic(m_fd, &magic);
+    if (ret < 0)
+    {
+      CLog::Log(LOGERROR, "CDRMUtils::%s - failed to get drm magic: %s", __FUNCTION__, strerror(errno));
+      return false;
+    }
+
+    ret = drmAuthMagic(m_fd, magic);
+    if (ret < 0)
+    {
+      CLog::Log(LOGERROR, "CDRMUtils::%s - failed to authorize drm magic: %s", __FUNCTION__, strerror(errno));
+      return false;
+    }
+
+    CLog::Log(LOGNOTICE, "CDRMUtils::%s - successfully authorized drm magic", __FUNCTION__);
+  }
 
   m_orig_crtc = drmModeGetCrtc(m_fd, m_crtc->crtc->crtc_id);
 
@@ -665,7 +687,12 @@ void CDRMUtils::DestroyDrm()
 {
   RestoreOriginalMode();
 
-  drmDropMaster(m_fd);
+  auto ret = drmDropMaster(m_fd);
+  if (ret < 0)
+  {
+    CLog::Log(LOGDEBUG, "CDRMUtils::%s - failed to drop drm master: %s", __FUNCTION__, strerror(errno));
+  }
+
   m_fd.reset();
 
   drmModeFreeResources(m_drm_resources);
