@@ -932,84 +932,52 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     last_window_origin = [[last_view window] frame].origin;
     last_window_level = [[last_view window] level];
 
-    if (settings->GetBool(CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN))
-    {
-      // This is Cocoa Windowed FullScreen Mode
-      // Get the screen rect of our current display
-      NSScreen* pScreen = [[NSScreen screens] objectAtIndex:m_lastDisplayNr];
-      NSRect    screenRect = [pScreen frame];
+    // This is Cocoa Windowed FullScreen Mode
+    // Get the screen rect of our current display
+    NSScreen* pScreen = [[NSScreen screens] objectAtIndex:m_lastDisplayNr];
+    NSRect    screenRect = [pScreen frame];
 
-      // remove frame origin offset of original display
-      screenRect.origin = NSZeroPoint;
+    // remove frame origin offset of original display
+    screenRect.origin = NSZeroPoint;
 
-      // make a new window to act as the windowedFullScreen
-      windowedFullScreenwindow = [[NSWindow alloc] initWithContentRect:screenRect
-        styleMask:NSBorderlessWindowMask
-        backing:NSBackingStoreBuffered
-        defer:NO
-        screen:pScreen];
+    // make a new window to act as the windowedFullScreen
+    windowedFullScreenwindow = [[NSWindow alloc] initWithContentRect:screenRect
+    styleMask:NSBorderlessWindowMask
+    backing:NSBackingStoreBuffered
+    defer:NO
+    screen:pScreen];
 
-      [windowedFullScreenwindow setBackgroundColor:[NSColor blackColor]];
-      [windowedFullScreenwindow makeKeyAndOrderFront:nil];
+    [windowedFullScreenwindow setBackgroundColor:[NSColor blackColor]];
+    [windowedFullScreenwindow makeKeyAndOrderFront:nil];
 
-      // make our window the same level as the rest to enable cmd+tab switching
-      [windowedFullScreenwindow setLevel:NSNormalWindowLevel];
-      // this will make our window topmost and hide all system messages
-      //[windowedFullScreenwindow setLevel:CGShieldingWindowLevel()];
+    // make our window the same level as the rest to enable cmd+tab switching
+    [windowedFullScreenwindow setLevel:NSNormalWindowLevel];
+    // this will make our window topmost and hide all system messages
+    //[windowedFullScreenwindow setLevel:CGShieldingWindowLevel()];
 
-      // ...and the original one beneath it and on the same screen.
-      [[last_view window] setLevel:NSNormalWindowLevel-1];
-      [[last_view window] setFrameOrigin:[pScreen frame].origin];
-      // expand the mouse bounds in SDL view to fullscreen
-      [ last_view setFrameOrigin:NSMakePoint(0.0, 0.0)];
-      [ last_view setFrameSize:NSMakeSize(m_nWidth, m_nHeight) ];
+    // ...and the original one beneath it and on the same screen.
+    [[last_view window] setLevel:NSNormalWindowLevel-1];
+    [[last_view window] setFrameOrigin:[pScreen frame].origin];
+    // expand the mouse bounds in SDL view to fullscreen
+    [ last_view setFrameOrigin:NSMakePoint(0.0, 0.0)];
+    [ last_view setFrameSize:NSMakeSize(m_nWidth, m_nHeight) ];
 
-      NSView* blankView = [[NSView alloc] init];
-      [windowedFullScreenwindow setContentView:blankView];
-      [windowedFullScreenwindow setContentSize:NSMakeSize(m_nWidth, m_nHeight)];
-      [windowedFullScreenwindow update];
-      [blankView setFrameSize:NSMakeSize(m_nWidth, m_nHeight)];
+    NSView* blankView = [[NSView alloc] init];
+    [windowedFullScreenwindow setContentView:blankView];
+    [windowedFullScreenwindow setContentSize:NSMakeSize(m_nWidth, m_nHeight)];
+    [windowedFullScreenwindow update];
+    [blankView setFrameSize:NSMakeSize(m_nWidth, m_nHeight)];
 
-      // Obtain windowed pixel format and create a new context.
-      newContext = (NSOpenGLContext*)CreateWindowedContext((void* )cur_context);
-      [newContext setView:blankView];
+    // Obtain windowed pixel format and create a new context.
+    newContext = (NSOpenGLContext*)CreateWindowedContext((void* )cur_context);
+    [newContext setView:blankView];
 
-      // Hide the menu bar.
-      SetMenuBarVisible(false);
+    // Hide the menu bar.
+    SetMenuBarVisible(false);
 
-      // Blank other displays if requested.
-      if (blankOtherDisplays)
-        BlankOtherDisplays(0);
-    }
-    else
-    {
-      // hide the window
-      [[last_view window] setFrameOrigin:[last_window_screen frame].origin];
-      // expand the mouse bounds in SDL view to fullscreen
-      [ last_view setFrameOrigin:NSMakePoint(0.0, 0.0)];
-      [ last_view setFrameSize:NSMakeSize(m_nWidth, m_nHeight) ];
-
-      // This is OpenGL FullScreen Mode
-      // create our new context (sharing with the current one)
-      newContext = (NSOpenGLContext*)CreateFullScreenContext(0, (void*)cur_context);
-      if (!newContext)
-        return false;
-
-      // clear the current context
-      [NSOpenGLContext clearCurrentContext];
-
-      // set fullscreen
-      [newContext setFullScreen];
-
-      // Capture the display before going fullscreen.
-      if (blankOtherDisplays == true)
-        CGCaptureAllDisplays();
-      else
-        CGDisplayCapture(GetDisplayID(0));
-
-      // If we don't hide menu bar, it will get events and interrupt the program.
-      SetMenuBarVisible(false);
-    }
+    // Blank other displays if requested.
+    if (blankOtherDisplays)
+      BlankOtherDisplays(0);
 
     // Hide the mouse.
     [NSCursor hide];
@@ -1037,30 +1005,22 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     // Show menubar.
     SetMenuBarVisible(true);
 
-    if (settings->GetBool(CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN))
-    {
-      // restore the windowed window level
-      [[last_view window] setLevel:last_window_level];
+    // restore the windowed window level
+    [[last_view window] setLevel:last_window_level];
 
-      // Get rid of the new window we created.
-      if (windowedFullScreenwindow != NULL)
-      {
-        [windowedFullScreenwindow close];
-        if ([windowedFullScreenwindow isReleasedWhenClosed] == NO)
-          [windowedFullScreenwindow release];
-        windowedFullScreenwindow = NULL;
-      }
-
-      // Unblank.
-      // Force the unblank when returning from fullscreen, we get called with blankOtherDisplays set false.
-      //if (blankOtherDisplays)
-      UnblankDisplays();
-    }
-    else
+    // Get rid of the new window we created.
+    if (windowedFullScreenwindow != NULL)
     {
-      // release displays
-      CGReleaseAllDisplays();
+    [windowedFullScreenwindow close];
+    if ([windowedFullScreenwindow isReleasedWhenClosed] == NO)
+      [windowedFullScreenwindow release];
+    windowedFullScreenwindow = NULL;
     }
+
+    // Unblank.
+    // Force the unblank when returning from fullscreen, we get called with blankOtherDisplays set false.
+    //if (blankOtherDisplays)
+    UnblankDisplays();
 
     // create our new context (sharing with the current one)
     NSOpenGLContext* newContext = (NSOpenGLContext*)CreateWindowedContext((void* )cur_context);
@@ -1436,9 +1396,6 @@ bool CWinSystemOSX::FlushBuffer(void)
 
 bool CWinSystemOSX::IsObscured(void)
 {
-  if (m_bFullScreen && !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN))
-    return false;// in true fullscreen mode - we can't be obscured by anyone...
-
   // check once a second if we are obscured.
   unsigned int now_time = XbmcThreads::SystemClockMillis();
   if (m_obscured_timecheck > now_time)
