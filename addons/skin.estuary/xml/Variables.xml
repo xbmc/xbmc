@@ -226,6 +226,9 @@
 	</variable>
 	<variable name="MusicOSDHelpTextVar">
 		<value condition="Control.HasFocus(620)">$LOCALIZE[31033]$INFO[MusicPlayer.UserRating, : ]</value>
+		<value condition="Control.HasFocus(62040)">$LOCALIZE[19019]</value>
+		<value condition="Control.HasFocus(62041)">$LOCALIZE[19069]</value>
+		<value condition="Control.HasFocus(62042)">$LOCALIZE[29900]</value>
 		<value condition="Control.HasFocus(704)">$LOCALIZE[486]$INFO[Playlist.Repeat, : ]</value>
 		<value condition="Control.HasFocus(607) + Playlist.IsRandom">$LOCALIZE[590]: $LOCALIZE[16041]</value>
 		<value condition="Control.HasFocus(607)">$LOCALIZE[590]: $LOCALIZE[16039]</value>
@@ -371,6 +374,10 @@
 	<variable name="PVRChannelMgrHeader">
 		<value condition="!String.IsEmpty(Window.Property(IsRadio))">$LOCALIZE[19199] - $LOCALIZE[19024]</value>
 		<value>$LOCALIZE[19199] - $LOCALIZE[19023]</value>
+	</variable>
+	<variable name="RDSInfoSubTitle">
+		<value condition="String.IsEmpty(MusicPlayer.ChannelName)">$INFO[Player.Title]</value>
+		<value>$INFO[MusicPlayer.ChannelName]$INFO[Player.Title, - ]</value>
 	</variable>
 	<variable name="PVRGroupMgrHeader">
 		<value condition="!String.IsEmpty(Window.Property(IsRadio))">$LOCALIZE[19048] - $LOCALIZE[19174]</value>

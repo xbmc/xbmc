@@ -10,6 +10,9 @@
 
 #include "guilib/GUIDialog.h"
 
+class CGUISpinControl;
+class CGUITextBox;
+
 namespace PVR
 {
   class CGUIDialogPVRRadioRDSInfo : public CGUIDialog
@@ -26,6 +29,11 @@ namespace PVR
     void OnDeinitWindow(int nextWindowID) override;
 
   private:
+    void InitControls(CGUISpinControl* spin, uint32_t iSpinLabelId, uint32_t iSpinControlId, bool& bSpinLabelPresent,
+                      CGUITextBox* textbox, const std::string& textboxValue);
+    void UpdateControls(CGUISpinControl* spin, uint32_t iSpinLabelId, uint32_t iSpinControlId, bool& bSpinLabelPresent,
+                        CGUITextBox* textbox, const std::string& textboxNewValue, std::string& textboxCurrentValue);
+
     CFileItemPtr m_rdsItem;
 
     bool m_InfoPresent = false;

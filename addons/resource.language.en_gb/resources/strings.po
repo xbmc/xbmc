@@ -16040,7 +16040,7 @@ msgstr ""
 #. Help text of boolean on/off value
 #: system/settings/settings.xml
 msgctxt "#29983"
-msgid "RDS inform you about traffic advisory messages"
+msgid "RDS informs you about traffic advisory messages"
 msgstr ""
 
 #. Boolean value on settings
