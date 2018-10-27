@@ -8,6 +8,7 @@
 
 #include "DialogGameStretchMode.h"
 #include "cores/RetroPlayer/guibridge/GUIGameVideoHandle.h"
+#include "cores/RetroPlayer/RetroPlayerUtils.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
 #include "settings/GameSettings.h"
@@ -75,7 +76,10 @@ void CDialogGameStretchMode::GetItems(CFileItemList &items)
   for (const auto &stretchMode : m_stretchModes)
   {
     CFileItemPtr item = std::make_shared<CFileItem>(g_localizeStrings.Get(stretchMode.stringIndex));
-    item->SetProperty("game.stretchmode", CVariant{ static_cast<int>(stretchMode.stretchMode) });
+
+    const std::string stretchModeId = RETRO::CRetroPlayerUtils::StretchModeToIdentifier(stretchMode.stretchMode);
+    if (!stretchModeId.empty())
+      item->SetProperty("game.stretchmode", CVariant{ stretchModeId });
     items.Add(std::move(item));
   }
 }

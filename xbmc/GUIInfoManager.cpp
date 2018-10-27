@@ -2118,21 +2118,68 @@ const infomap videoplayer[] =    {{ "title",            VIDEOPLAYER_TITLE },
 /// @{
 /// \table_start
 ///   \table_h3{ Labels, Type, Description }
-///   \table_row3{   <b>`StretchMode`</b>,
+///   \table_row3{   <b>`RetroPlayer.VideoFilter`</b>,
+///                  \anchor RetroPlayer_VideoFilter
+///                  _string_,
+///     Returns the video filter of the currently-playing game.\n
+///     The following values are possible:
+///     - nearest (Nearest neighbor\, i.e. pixelate)
+///     - linear (Bilinear filtering\, i.e. smooth blur)
+///   }
+///   \table_row3{   <b>`RetroPlayer.StretchMode`</b>,
 ///                  \anchor RetroPlayer_StretchMode
 ///                  _string_,
 ///     Returns the stretch mode of the currently-playing game.\n
 ///     The following values are possible:
-///     - normal
-///     - 4:3
-///     - fullscreen
-///     - original
+///     - normal (Show the game normally)
+///     - 4:3 (Stretch to a 4:3 aspect ratio)
+///     - fullscreen (Stretch to the full viewing area)
+///     - original (Shrink to the original resolution)
+///   }
+///   \table_row3{   <b>`RetroPlayer.VideoRotation`</b>,
+///                  \anchor RetroPlayer_VideoRotation
+///                  _integer_,
+///     Returns the video rotation of the currently-playing game
+///     in degrees counter-clockwise.\n
+///     The following values are possible:
+///     - 0
+///     - 90 (Shown in the GUI as 270 degrees)
+///     - 180
+///     - 270 (Shown in the GUI as 90 degrees)
+///   }
+///   \table_row3{   <b>`ListItem.Property(Game.VideoFilter)`</b>,
+///                  \anchor ListItem_Property_Game_VideoFilter
+///                  _string_,
+///     Returns the video filter of the list item representing a
+///     gamewindow control.\n
+///     See \link RetroPlayer_VideoFilter RetroPlayer.VideoFilter \endlink
+///     for the possible values.
+///   }
+///   \table_row3{   <b>`ListItem.Property(Game.StretchMode)`</b>,
+///                  \anchor ListItem_Property_Game_StretchMode
+///                  _string_,
+///     Returns the stretch mode of the list item representing a
+///     gamewindow control.\n
+///     See \link RetroPlayer_StretchMode RetroPlayer.StretchMode \endlink
+///     for the possible values.
+///   }
+///   \table_row3{   <b>`ListItem.Property(Game.VideoRotation)`</b>,
+///                  \anchor ListItem_Property_Game_VideoRotation
+///                  _integer_,
+///     Returns the video rotation of the list item representing a
+///     gamewindow control.\n
+///     See \link RetroPlayer_VideoRotation RetroPlayer.VideoRotation \endlink
+///     for the possible values.
 ///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
 /// @}
-const infomap retroplayer[] =  {{ "stretchmode",            RETROPLAYER_STRETCHMODE},
+const infomap retroplayer[] =
+{
+  { "videofilter",            RETROPLAYER_VIDEO_FILTER},
+  { "stretchmode",            RETROPLAYER_STRETCH_MODE},
+  { "videorotation",          RETROPLAYER_VIDEO_ROTATION},
 };
 
 const infomap player_process[] =

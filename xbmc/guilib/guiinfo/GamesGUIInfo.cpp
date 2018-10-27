@@ -24,7 +24,8 @@ using namespace KODI::GUILIB::GUIINFO;
 using namespace KODI::GAME;
 using namespace KODI::RETRO;
 
-#define FILEITEM_PROPERTY_SAVESTATE_DURATION  "duration"
+//! @todo Savestates were removed from v18
+//#define FILEITEM_PROPERTY_SAVESTATE_DURATION  "duration"
 
 bool CGamesGUIInfo::InitCurrentItem(CFileItem *item)
 {
@@ -52,26 +53,24 @@ bool CGamesGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // RETROPLAYER_*
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    case RETROPLAYER_STRETCHMODE:
+    case RETROPLAYER_VIDEO_FILTER:
     {
-      STRETCHMODE stretchMode = CMediaSettings::GetInstance().GetCurrentGameSettings().StretchMode();
-      value = CRetroPlayerUtils::StretchModeToDescription(stretchMode);
+      value = CMediaSettings::GetInstance().GetCurrentGameSettings().VideoFilter();
       return true;
     }
-
-    ///////////////////////////////////////////////////////////////////////////////////////////////
-    // LISTITEM_*
-    ///////////////////////////////////////////////////////////////////////////////////////////////
-    case LISTITEM_DURATION:
-      if (item->HasProperty(FILEITEM_PROPERTY_SAVESTATE_DURATION))
-      {
-        int iDuration = static_cast<long>(item->GetProperty(FILEITEM_PROPERTY_SAVESTATE_DURATION).asInteger());
-        if (iDuration > 0)
-        {
-          value = StringUtils::SecondsToTimeString(iDuration, static_cast<TIME_FORMAT>(info.GetData4()));
-          return true;
-        }
-      }
+    case RETROPLAYER_STRETCH_MODE:
+    {
+      STRETCHMODE stretchMode = CMediaSettings::GetInstance().GetCurrentGameSettings().StretchMode();
+      value = CRetroPlayerUtils::StretchModeToIdentifier(stretchMode);
+      return true;
+    }
+    case RETROPLAYER_VIDEO_ROTATION:
+    {
+      const unsigned int rotationDegCCW = CMediaSettings::GetInstance().GetCurrentGameSettings().RotationDegCCW();
+      value = StringUtils::Format("%u", rotationDegCCW);
+      return true;
+    }
+    default:
       break;
   }
 

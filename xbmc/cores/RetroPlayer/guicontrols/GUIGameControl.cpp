@@ -10,6 +10,7 @@
 #include "GUIRenderSettings.h"
 #include "cores/RetroPlayer/guibridge/GUIGameRenderManager.h"
 #include "cores/RetroPlayer/guibridge/GUIRenderHandle.h"
+#include "cores/RetroPlayer/RetroPlayerUtils.h"
 #include "settings/GameSettings.h"
 #include "settings/MediaSettings.h"
 #include "utils/Geometry.h"
@@ -136,11 +137,10 @@ void CGUIGameControl::UpdateInfo(const CGUIListItem *item /* = nullptr */)
     }
 
     std::string strStretchMode = m_stretchModeInfo.GetItemLabel(item);
-    if (StringUtils::IsNaturalNumber(strStretchMode))
+    if (!strStretchMode.empty())
     {
-      unsigned int stretchMode;
-      std::istringstream(std::move(strStretchMode)) >> stretchMode;
-      m_renderSettings->SetStretchMode(static_cast<STRETCHMODE>(stretchMode));
+      STRETCHMODE stretchMode = CRetroPlayerUtils::IdentifierToStretchMode(strStretchMode);
+      m_renderSettings->SetStretchMode(stretchMode);
       m_bHasStretchMode = true;
     }
 
