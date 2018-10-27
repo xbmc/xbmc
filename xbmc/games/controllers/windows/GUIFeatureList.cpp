@@ -132,7 +132,7 @@ void CGUIFeatureList::Load(const ControllerPtr& controller)
     for (CGUIButtonControl* pButton : buttons)
       m_guiList->AddControl(pButton);
 
-    m_buttonCount += buttons.size();
+    m_buttonCount += static_cast<unsigned int>(buttons.size());
   }
 }
 

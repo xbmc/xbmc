@@ -283,27 +283,27 @@ bool CPeripheralBusAddon::SupportsFeature(PeripheralFeature feature) const
   return bSupportsFeature;
 }
 
-int CPeripheralBusAddon::GetPeripheralsWithFeature(PeripheralVector &results, const PeripheralFeature feature) const
+unsigned int CPeripheralBusAddon::GetPeripheralsWithFeature(PeripheralVector &results, const PeripheralFeature feature) const
 {
-  int iReturn(0);
+  unsigned int iReturn = 0;
   CSingleLock lock(m_critSection);
   for (const auto& addon : m_addons)
     iReturn += addon->GetPeripheralsWithFeature(results, feature);
   return iReturn;
 }
 
-size_t CPeripheralBusAddon::GetNumberOfPeripherals(void) const
+unsigned int CPeripheralBusAddon::GetNumberOfPeripherals(void) const
 {
-  size_t iReturn(0);
+  unsigned int iReturn = 0;
   CSingleLock lock(m_critSection);
   for (const auto& addon : m_addons)
     iReturn += addon->GetNumberOfPeripherals();
   return iReturn;
 }
 
-size_t CPeripheralBusAddon::GetNumberOfPeripheralsWithId(const int iVendorId, const int iProductId) const
+unsigned int CPeripheralBusAddon::GetNumberOfPeripheralsWithId(const int iVendorId, const int iProductId) const
 {
-  size_t iReturn(0);
+  unsigned int iReturn = 0;
   CSingleLock lock(m_critSection);
   for (const auto& addon : m_addons)
     iReturn += addon->GetNumberOfPeripheralsWithId(iVendorId, iProductId);

@@ -58,9 +58,9 @@ namespace PERIPHERALS
     PeripheralPtr GetPeripheral(const std::string &strLocation) const override;
     PeripheralPtr GetByPath(const std::string &strPath) const override;
     bool SupportsFeature(PeripheralFeature feature) const override;
-    int GetPeripheralsWithFeature(PeripheralVector &results, const PeripheralFeature feature) const override;
-    size_t GetNumberOfPeripherals(void) const override;
-    size_t GetNumberOfPeripheralsWithId(const int iVendorId, const int iProductId) const override;
+    unsigned int GetPeripheralsWithFeature(PeripheralVector &results, const PeripheralFeature feature) const override;
+    unsigned int GetNumberOfPeripherals(void) const override;
+    unsigned int GetNumberOfPeripheralsWithId(const int iVendorId, const int iProductId) const override;
     void GetDirectory(const std::string &strPath, CFileItemList &items) const override;
     void ProcessEvents(void) override;
     void EnableButtonMapping() override;
