@@ -62,7 +62,9 @@ void CAppParamParser::DisplayHelp()
   printf("  --test\t\tEnable test mode. [FILE] required.\n");
   printf("  --settings=<filename>\t\tLoads specified file after advancedsettings.xml replacing any settings specified\n");
   printf("  \t\t\t\tspecified file must exist in special://xbmc/system/\n");
-  printf("  --tty=<tty>\t\tStart session on alternative tty. e.g. --tty=/dev/tty4 (GBM windowing only)\n");
+#if defined(HAVE_GBM)
+  printf("  --tty=<tty>\t\tStart session on alternative tty. e.g. --tty=/dev/tty4\n");
+#endif
   exit(0);
 }
 
