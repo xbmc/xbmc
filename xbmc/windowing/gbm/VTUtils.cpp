@@ -39,21 +39,19 @@ bool CVTUtils::OpenTTY()
     return false;
   }
 
-  m_ttyDevice = ttyDevice;
-
-  m_fd.attach(open(m_ttyDevice.c_str(), O_RDWR | O_CLOEXEC));
+  m_fd.attach(open(ttyDevice, O_RDWR | O_CLOEXEC));
   if (m_fd < 0)
   {
-    CMessagePrinter::DisplayError(StringUtils::Format("ERROR: failed to open tty: %s",  m_ttyDevice));
-    CLog::Log(LOGERROR, "CVTUtils::%s - failed to open tty: %s", __FUNCTION__, m_ttyDevice);
+    CMessagePrinter::DisplayError(StringUtils::Format("ERROR: failed to open tty: %s", ttyDevice));
+    CLog::Log(LOGERROR, "CVTUtils::%s - failed to open tty: %s", __FUNCTION__, ttyDevice);
     return false;
   }
 
   struct stat buf;
   if (fstat(m_fd, &buf) == -1 || major(buf.st_rdev) != TTY_MAJOR || minor(buf.st_rdev) == 0)
   {
-    CMessagePrinter::DisplayError(StringUtils::Format("ERROR: %s is not a vt",  m_ttyDevice));
-    CLog::Log(LOGERROR, "CVTUtils::%s - %s is not a vt", __FUNCTION__, m_ttyDevice);
+    CMessagePrinter::DisplayError(StringUtils::Format("ERROR: %s is not a vt", ttyDevice));
+    CLog::Log(LOGERROR, "CVTUtils::%s - %s is not a vt", __FUNCTION__, ttyDevice);
     return false;
   }
 
@@ -67,12 +65,12 @@ bool CVTUtils::OpenTTY()
 
   if (kdMode != KD_TEXT)
   {
-    CMessagePrinter::DisplayError(StringUtils::Format("ERROR: %s is already in graphics mode, is another display server running?", m_ttyDevice));
-    CLog::Log(LOGERROR, "CVTUtils::%s - %s is already in graphics mode, is another display server running?", __FUNCTION__, m_ttyDevice);
+    CMessagePrinter::DisplayError(StringUtils::Format("ERROR: %s is already in graphics mode, is another display server running?", ttyDevice));
+    CLog::Log(LOGERROR, "CVTUtils::%s - %s is already in graphics mode, is another display server running?", __FUNCTION__, ttyDevice);
     return false;
   }
 
-  CLog::Log(LOGNOTICE, "CVTUtils::%s - opened tty: %s", __FUNCTION__, m_ttyDevice.c_str());
+  CLog::Log(LOGNOTICE, "CVTUtils::%s - opened tty: %s", __FUNCTION__, ttyDevice);
 
   return true;
 }

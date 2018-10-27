@@ -27,7 +27,6 @@ public:
 
 private:
   KODI::UTILS::POSIX::CFileHandle m_fd;
-  std::string m_ttyDevice;
 };
 
 }
