@@ -161,7 +161,7 @@ void CGUIDialogAddonInfo::UpdateControls()
   bool isInstalled = NULL != m_localAddon.get();
   m_addonEnabled = m_localAddon && !CServiceBroker::GetAddonMgr().IsAddonDisabled(m_localAddon->ID());
   bool canDisable = isInstalled && CServiceBroker::GetAddonMgr().CanAddonBeDisabled(m_localAddon->ID());
-  bool canInstall = !isInstalled && m_item->GetAddonInfo()->Broken().empty();
+  bool canInstall = !isInstalled && !m_item->GetAddonInfo()->IsBroken();
   bool canUninstall = m_localAddon && CServiceBroker::GetAddonMgr().CanUninstall(m_localAddon);
 
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_INSTALL, canInstall || canUninstall);
