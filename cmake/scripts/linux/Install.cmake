@@ -264,11 +264,11 @@ if(ENABLE_EVENTCLIENTS)
             COMPONENT kodi-eventclients-wiiremote)
   endif()
 
-  # Install kodi-eventclients-xbmc-send
+  # Install kodi-eventclients-kodi-send
   install(PROGRAMS ${CMAKE_SOURCE_DIR}/tools/EventClients/Clients/KodiSend/kodi-send.py
           RENAME ${APP_NAME_LC}-send
           DESTINATION ${bindir}
-          COMPONENT kodi-eventclients-xbmc-send)
+          COMPONENT kodi-eventclients-kodi-send)
 endif()
 
 # Install XBT skin files

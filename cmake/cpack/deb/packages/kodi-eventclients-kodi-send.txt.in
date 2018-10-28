@@ -1,4 +1,4 @@
-# kodi-eventclients-xbmc-send debian package metadata
+# kodi-eventclients-kodi-send debian package metadata
 #
 # Setting PACKAGE_SHLIBDEPS to 'ON' will cause CPack to use dpkg-shlibdeps to
 # automatically generate the package dependency list and append its output to
@@ -10,7 +10,7 @@
 #
 # Remaining settings are (hopefully) self-explanatory.
 
-PACKAGE_NAME @APP_NAME_LC@-eventclients-xbmc-send
+PACKAGE_NAME @APP_NAME_LC@-eventclients-kodi-send
 PACKAGE_ARCHITECTURE all
 PACKAGE_SECTION video
 PACKAGE_PRIORITY optional
@@ -18,8 +18,8 @@ PACKAGE_SHLIBDEPS
 PACKAGE_DEPENDS @APP_NAME_LC@-eventclients-common (= @CPACK_DEBIAN_PACKAGE_VERSION@)
 PACKAGE_RECOMMENDS
 PACKAGE_SUGGESTS
-PACKAGE_BREAKS
-PACKAGE_REPLACES
-PACKAGE_PROVIDES xbmc-eventclients-xbmc-send
+PACKAGE_BREAKS kodi-eventclients-xbmc-send
+PACKAGE_REPLACES kodi-eventclients-xbmc-send
+PACKAGE_PROVIDES kodi-eventclients-kodi-send
 PACKAGE_DESCRIPTION_HEADER @APP_NAME@ Media Center (@APP_NAME@-send event client package)
 PACKAGE_DESCRIPTION_FOOTER This is the Kodi-SEND package for @APP_NAME@'s event client.
