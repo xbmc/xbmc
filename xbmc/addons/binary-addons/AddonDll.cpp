@@ -693,13 +693,16 @@ bool CAddonDll::get_setting_int(void* kodiBase, const char* id, int* value)
     return false;
   }
 
-  if (setting->GetType() != SettingType::Integer)
+  if (setting->GetType() != SettingType::Integer && setting->GetType() != SettingType::Number)
   {
     CLog::Log(LOGERROR, "kodi::General::%s - setting '%s' is not a integer in '%s'", __FUNCTION__, id, addon->Name().c_str());
     return false;
   }
 
-  *value = std::static_pointer_cast<CSettingInt>(setting)->GetValue();
+  if (setting->GetType() == SettingType::Integer)
+    *value = std::static_pointer_cast<CSettingInt>(setting)->GetValue();
+  else
+    *value = static_cast<int>(std::static_pointer_cast<CSettingNumber>(setting)->GetValue());
   return true;
 }
 
