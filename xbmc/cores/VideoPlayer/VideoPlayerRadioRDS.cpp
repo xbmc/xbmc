@@ -1488,8 +1488,6 @@ unsigned int CDVDRadioRDSData::DecodeRTPlus(uint8_t *msgElement, unsigned int le
 
     if (!str.empty())
       g_charsetConverter.unknownToUTF8(str);
-    else if (m_currentChannel)
-      str = m_currentChannel->ChannelName();
     currentMusic->SetArtist(str);
 
     str = m_RTPlus_Title;

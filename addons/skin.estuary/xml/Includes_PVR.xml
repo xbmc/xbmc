@@ -325,6 +325,29 @@
 				</control>
 			</control>
 		</control>
+  </include>
+	<include name="RDSInfoLine">
+		<control type="grouplist">
+			<visible>!String.IsEmpty($PARAM[value])</visible>
+			<height>45</height>
+			<orientation>horizontal</orientation>
+			<itemgap>10</itemgap>
+			<control type="label">
+				<width>auto</width>
+				<height>40</height>
+				<aligny>center</aligny>
+				<label>$PARAM[label]:</label>
+				<textcolor>button_focus</textcolor>
+			</control>
+			<control type="label">
+				<width>auto</width>
+				<height>40</height>
+				<align>right</align>
+				<aligny>center</aligny>
+				<label>$INFO[$PARAM[value]]</label>
+				<scroll>true</scroll>
+			</control>
+		</control>
 	</include>
 	<include name="PVRChannelNumberInput">
 		<control type="label">

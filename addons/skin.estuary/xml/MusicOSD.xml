@@ -38,7 +38,7 @@
 				<onup>87</onup>
 				<ondown>noop</ondown>
 				<onleft>5000</onleft>
-				<onright>620</onright>
+				<onright>62040</onright>
 				<control type="radiobutton" id="600">
 					<include content="OSDButton">
 						<param name="texture" value="osd/fullscreen/buttons/previous.png"/>
@@ -112,6 +112,30 @@
 				<ondown>noop</ondown>
 				<onleft>606</onleft>
 				<onright>600</onright>
+				<control type="radiobutton" id="62040">
+					<include content="OSDButton">
+						<param name="texture" value="osd/fullscreen/buttons/channels.png"/>
+					</include>
+					<onclick>Dialog.Close(MusicOSD)</onclick>
+					<onclick>ActivateWindow(PVROSDChannels)</onclick>
+					<visible>MusicPlayer.Content(LiveTV)</visible>
+				</control>
+				<control type="radiobutton" id="62041">
+					<include content="OSDButton">
+						<param name="texture" value="osd/fullscreen/buttons/guide.png"/>
+					</include>
+					<onclick>Dialog.Close(MusicOSD)</onclick>
+					<onclick>ActivateWindow(PVRChannelGuide)</onclick>
+					<visible>MusicPlayer.Content(LiveTV) + VideoPlayer.HasEPG</visible>
+				</control>
+				<control type="radiobutton" id="62042">
+					<include content="OSDButton">
+						<param name="texture" value="osd/fullscreen/buttons/information.png"/>
+					</include>
+					<onclick>Dialog.Close(MusicOSD)</onclick>
+					<onclick>ActivateWindow(PVRRadioRDSInfo)</onclick>
+					<visible>MusicPlayer.Content(LiveTV) + RDS.HasRadiotext</visible>
+				</control>
 				<control type="radiobutton" id="620">
 					<include content="OSDButton">
 						<param name="texture" value="osd/fullscreen/buttons/rating.png"/>
@@ -193,6 +217,7 @@
 				<width>1000</width>
 				<height>50</height>
 				<label>$VAR[MusicOSDHelpTextVar]</label>
+				<visible>!Player.ShowInfo</visible>
 			</control>
 		</control>
 		<control type="group">

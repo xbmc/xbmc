@@ -1,655 +1,303 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
-	<defaultcontrol always="true">10</defaultcontrol>
-	<include>Animation_DialogPopupOpenClose</include>
+	<defaultcontrol always="true">9000</defaultcontrol>
+	<onunload>ClearProperty(infobackground,home)</onunload>
 	<controls>
 		<control type="group">
-			<centerleft>50%</centerleft>
-			<width>1300</width>
+			<animation effect="fade" start="0" end="100" time="100">WindowOpen</animation>
+			<animation effect="fade" start="100" end="0" time="100">WindowClose</animation>
+			<animation effect="fade" start="100" end="75" time="0" condition="true">Conditional</animation>
+			<include>ColoredBackgroundImages</include>
+		</control>
+		<control type="group">
 			<centertop>50%</centertop>
-			<height>920</height>
-			<include content="DialogBackgroundCommons">
-				<param name="width" value="1300" />
-				<param name="height" value="920" />
-				<param name="header_label" value="" />
-				<param name="header_id" value="2" />
-			</include>
-			<control type="group">
-				<description>Normal song info group</description>
-				<left>0</left>
-				<top>70</top>
-				<visible>String.IsEmpty(RDS.IsClassical)</visible>
-				<control type="label">
-					<left>10</left>
-					<width>140</width>
-					<height>25</height>
-					<align>right</align>
-					<aligny>center</aligny>
-					<textcolor>button_focus</textcolor>
-					<label>$LOCALIZE[557]:</label>
-					<visible>String.IsEmpty(RDS.Band)</visible>
-				</control>
-				<control type="fadelabel">
-					<left>160</left>
-					<width>704</width>
-					<height>25</height>
-					<aligny>center</aligny>
-					<label fallback="10005">$INFO[RDS.Artist]</label>
-					<scrollout>false</scrollout>
-					<pauseatend>2000</pauseatend>
-					<visible>String.IsEmpty(RDS.Band)</visible>
-				</control>
-				<control type="label">
-					<left>10</left>
-					<width>140</width>
-					<height>25</height>
-					<align>right</align>
-					<aligny>center</aligny>
-					<textcolor>button_focus</textcolor>
-					<label>$LOCALIZE[29901]:</label>
-					<visible>!String.IsEmpty(RDS.Band)</visible>
-				</control>
-				<control type="fadelabel">
-					<left>160</left>
-					<width>292</width>
-					<height>25</height>
-					<aligny>center</aligny>
-					<label>$INFO[RDS.Band]</label>
-					<scrollout>false</scrollout>
-					<pauseatend>2000</pauseatend>
-					<visible>!String.IsEmpty(RDS.Band)</visible>
-				</control>
-				<control type="label">
-					<left>385</left>
-					<width>140</width>
-					<height>25</height>
-					<align>right</align>
-					<aligny>center</aligny>
-					<textcolor>button_focus</textcolor>
-					<label>$LOCALIZE[557]:</label>
-					<visible>!String.IsEmpty(RDS.Artist) + !String.IsEmpty(RDS.Band)</visible>
-				</control>
-				<control type="fadelabel">
-					<left>535</left>
-					<width>328</width>
-					<height>25</height>
-					<aligny>center</aligny>
-					<label>$INFO[RDS.Artist]</label>
-					<visible>!String.IsEmpty(RDS.Artist) + !String.IsEmpty(RDS.Band)</visible>
-				</control>
-				<control type="label">
-					<left>10</left>
-					<top>35</top>
-					<width>140</width>
-					<height>25</height>
-					<align>right</align>
-					<aligny>center</aligny>
-					<textcolor>button_focus</textcolor>
-					<label>$LOCALIZE[556]:</label>
-				</control>
-				<control type="fadelabel">
-					<left>160</left>
-					<top>35</top>
-					<width>704</width>
-					<height>25</height>
-					<aligny>center</aligny>
-					<label fallback="10005">$INFO[RDS.Title]</label>
-					<scrollout>false</scrollout>
-					<pauseatend>2000</pauseatend>
-				</control>
-				<control type="label">
-					<left>10</left>
-					<top>70</top>
-					<width>140</width>
-					<height>25</height>
-					<align>right</align>
-					<aligny>center</aligny>
-					<textcolor>button_focus</textcolor>
-					<label>$LOCALIZE[29902]:</label>
-					<visible>!String.IsEmpty(RDS.ProgStyle)</visible>
-				</control>
-				<control type="fadelabel">
-					<left>160</left>
-					<top>70</top>
-					<width>704</width>
-					<height>25</height>
-					<aligny>center</aligny>
-					<label>$INFO[RDS.ProgStyle]</label>
-					<visible>!String.IsEmpty(RDS.ProgStyle)</visible>
-				</control>
-			</control>
-			<control type="group">
-				<description>Classic concert music group</description>
-				<left>0</left>
-				<top>70</top>
-				<visible>!String.IsEmpty(RDS.IsClassical)</visible>
-				<control type="label">
-					<left>10</left>
-					<width>140</width>
-					<height>25</height>
-					<align>right</align>
-					<aligny>center</aligny>
-					<textcolor>button_focus</textcolor>
-					<label>$LOCALIZE[29903]:</label>
-				</control>
-				<control type="fadelabel">
-					<left>160</left>
-					<width>704</width>
-					<height>25</height>
-					<aligny>center</aligny>
-					<label fallback="10005">$INFO[RDS.Composer]</label>
-					<scrollout>false</scrollout>
-					<pauseatend>2000</pauseatend>
-				</control>
-				<control type="label">
-					<left>10</left>
-					<top>35</top>
-					<width>140</width>
-					<height>25</height>
-					<align>right</align>
-					<aligny>center</aligny>
-					<textcolor>button_focus</textcolor>
-					<label>$LOCALIZE[556]:</label>
-				</control>
-				<control type="fadelabel">
-					<left>160</left>
-					<top>35</top>
-					<width>704</width>
-					<height>25</height>
-					<aligny>center</aligny>
-					<label fallback="10005">$INFO[RDS.Title]</label>
-					<scrollout>false</scrollout>
-					<pauseatend>2000</pauseatend>
-				</control>
-				<control type="label">
-					<left>10</left>
-					<top>70</top>
-					<width>140</width>
-					<height>25</height>
-					<align>right</align>
-					<aligny>center</aligny>
-					<textcolor>button_focus</textcolor>
-					<label>$LOCALIZE[29904]:</label>
-					<visible>String.IsEmpty(RDS.Band) + !String.IsEmpty(RDS.Artist)</visible>
-				</control>
-				<control type="textbox">
-					<left>160</left>
-					<top>66</top>
-					<width>704</width>
-					<height>29</height>
-					<pagecontrol></pagecontrol>
-					<label fallback="10005">$INFO[RDS.Artist]</label>
-					<autoscroll time="2000" delay="3000" repeat="5000">true</autoscroll>
-					<visible>String.IsEmpty(RDS.Band) + !String.IsEmpty(RDS.Artist)</visible>
-				</control>
-				<control type="label">
-					<left>10</left>
-					<top>70</top>
-					<width>140</width>
-					<height>25</height>
-					<align>right</align>
-					<aligny>center</aligny>
-					<textcolor>button_focus</textcolor>
-					<label>$LOCALIZE[29901]:</label>
-					<visible>!String.IsEmpty(RDS.Band)</visible>
-				</control>
-				<control type="fadelabel">
-					<left>160</left>
-					<top>70</top>
-					<width>292</width>
-					<height>25</height>
-					<aligny>center</aligny>
-					<label>$INFO[RDS.Band]</label>
-					<scrollout>false</scrollout>
-					<pauseatend>2000</pauseatend>
-					<visible>!String.IsEmpty(RDS.Band)</visible>
-				</control>
-				<control type="label">
-					<left>385</left>
-					<top>70</top>
-					<width>140</width>
-					<height>25</height>
-					<align>right</align>
-					<aligny>center</aligny>
-					<textcolor>button_focus</textcolor>
-					<label>$LOCALIZE[29904]:</label>
-					<visible>!String.IsEmpty(RDS.Artist) + !String.IsEmpty(RDS.Band)</visible>
-				</control>
-				<control type="textbox">
-					<left>535</left>
-					<top>70</top>
-					<width>328</width>
-					<height>100</height>
-					<pagecontrol></pagecontrol>
-					<label>$INFO[RDS.Artist]</label>
-					<autoscroll time="2000" delay="3000" repeat="5000">true</autoscroll>
-					<visible>!String.IsEmpty(RDS.Artist) + !String.IsEmpty(RDS.Band)</visible>
-				</control>
-				<control type="label">
-					<left>10</left>
-					<top>105</top>
-					<width>140</width>
-					<height>25</height>
-					<align>right</align>
-					<aligny>center</aligny>
-					<textcolor>button_focus</textcolor>
-					<label>$LOCALIZE[29905]:</label>
-					<visible>!String.IsEmpty(RDS.Conductor)</visible>
-				</control>
-				<control type="fadelabel">
-					<left>160</left>
-					<top>105</top>
-					<width>300</width>
-					<height>25</height>
-					<aligny>center</aligny>
-					<label fallback="10005">$INFO[RDS.Conductor]</label>
-					<scrollout>false</scrollout>
-					<pauseatend>2000</pauseatend>
-					<visible>!String.IsEmpty(RDS.Conductor)</visible>
-				</control>
-				<control type="label">
-					<left>10</left>
-					<top>105</top>
-					<width>140</width>
-					<height>25</height>
-					<align>right</align>
-					<aligny>center</aligny>
-					<textcolor>button_focus</textcolor>
-					<label>$LOCALIZE[29902]:</label>
-					<visible>String.IsEmpty(RDS.Conductor) + !String.IsEmpty(RDS.ProgStyle)</visible>
-				</control>
-				<control type="fadelabel">
-					<left>160</left>
-					<top>105</top>
-					<width>704</width>
-					<height>25</height>
-					<aligny>center</aligny>
-					<label>$INFO[RDS.ProgStyle]</label>
-					<visible>String.IsEmpty(RDS.Conductor) + !String.IsEmpty(RDS.ProgStyle)</visible>
-				</control>
-				<control type="label">
-					<left>385</left>
-					<top>105</top>
-					<width>140</width>
-					<height>25</height>
-					<align>right</align>
-					<aligny>center</aligny>
-					<textcolor>button_focus</textcolor>
-					<label>$LOCALIZE[29902]:</label>
-					<visible>!String.IsEmpty(RDS.Conductor) + !String.IsEmpty(RDS.ProgStyle)</visible>
-				</control>
-				<control type="fadelabel">
-					<left>535</left>
-					<top>105</top>
-					<width>328</width>
-					<height>25</height>
-					<aligny>center</aligny>
-					<label>$INFO[RDS.ProgStyle]</label>
-					<visible>!String.IsEmpty(RDS.Conductor) + !String.IsEmpty(RDS.ProgStyle)</visible>
-				</control>
+			<height>1080</height>
+			<centerleft>50%</centerleft>
+			<width>1920</width>
+
+			<control type="image">
+				<left>120</left>
+				<top>160</top>
+				<width>840</width>
+				<height>405</height>
+				<texture border="21">dialogs/dialog-bg.png</texture>
 			</control>
 			<control type="label">
-				<left>385</left>
-				<top>175</top>
-				<width>140</width>
+				<left>150</left>
+				<top>180</top>
+				<width>780</width>
 				<height>25</height>
-				<align>right</align>
-				<aligny>center</aligny>
 				<textcolor>button_focus</textcolor>
-				<label>$LOCALIZE[558]:</label>
-				<visible>!String.IsEmpty(RDS.Album)</visible>
-			</control>
-			<control type="fadelabel">
-				<left>535</left>
-				<top>175</top>
-				<width>328</width>
-				<height>25</height>
-				<aligny>center</aligny>
-				<label>$INFO[RDS.Album]</label>
-				<scrollout>false</scrollout>
-				<pauseatend>2000</pauseatend>
-				<visible>!String.IsEmpty(RDS.Album)</visible>
-			</control>
-			<control type="label">
-				<left>10</left>
-				<top>210</top>
-				<width>140</width>
-				<height>25</height>
-				<align>right</align>
-				<aligny>center</aligny>
-				<textcolor>button_focus</textcolor>
-				<label>$LOCALIZE[29906]:</label>
-				<visible>!String.IsEmpty(RDS.ProgHost)</visible>
-			</control>
-			<control type="fadelabel">
-				<left>160</left>
-				<top>210</top>
-				<width>235</width>
-				<height>25</height>
-				<aligny>center</aligny>
-				<label>$INFO[RDS.ProgHost]</label>
-				<visible>!String.IsEmpty(RDS.ProgHost)</visible>
-			</control>
-			<control type="label">
-				<left>385</left>
-				<top>210</top>
-				<width>140</width>
-				<height>25</height>
-				<align>right</align>
-				<aligny>center</aligny>
-				<textcolor>button_focus</textcolor>
-				<label>$LOCALIZE[569]:</label>
-				<visible>!String.IsEmpty(RDS.Comment)</visible>
-			</control>
-			<control type="fadelabel">
-				<left>535</left>
-				<top>210</top>
-				<width>328</width>
-				<height>25</height>
-				<aligny>center</aligny>
-				<label>$INFO[RDS.Comment]</label>
-				<scrollout>false</scrollout>
-				<pauseatend>2000</pauseatend>
-				<visible>!String.IsEmpty(RDS.Comment)</visible>
-			</control>
-			<control type="label">
-				<left>10</left>
-				<top>245</top>
-				<width>140</width>
-				<height>25</height>
-				<align>right</align>
-				<aligny>center</aligny>
-				<textcolor>button_focus</textcolor>
-				<label>$LOCALIZE[19148]:</label>
-			</control>
-			<control type="fadelabel">
-				<left>160</left>
-				<top>245</top>
-				<width>235</width>
-				<height>25</height>
-				<aligny>center</aligny>
-				<label>$INFO[RDS.ProgStation]</label>
-			</control>
-			<control type="label">
-				<left>385</left>
-				<top>245</top>
-				<width>140</width>
-				<height>25</height>
-				<align>right</align>
-				<aligny>center</aligny>
-				<textcolor>button_focus</textcolor>
-				<label>$LOCALIZE[29907]:</label>
-				<visible>!String.IsEmpty(RDS.ProgEditStaff)</visible>
-			</control>
-			<control type="fadelabel">
-				<left>535</left>
-				<top>245</top>
-				<width>328</width>
-				<height>25</height>
-				<aligny>center</aligny>
-				<label>$INFO[RDS.ProgEditStaff]</label>
-				<visible>!String.IsEmpty(RDS.ProgEditStaff)</visible>
+				<font>font36_title</font>
+				<label>$LOCALIZE[179]</label>
 			</control>
 			<control type="grouplist">
-				<left>10</left>
-				<top>280</top>
-				<width>160</width>
-				<height>300</height>
-				<itemgap>8</itemgap>
-				<control type="label">
-					<description>Program basename</description>
-					<left>10</left>
-					<top>280</top>
-					<width>140</width>
-					<height>25</height>
-					<align>right</align>
-					<aligny>center</aligny>
-					<textcolor>button_focus</textcolor>
-					<label>$LOCALIZE[29908]:</label>
-					<visible>!String.IsEmpty(RDS.ProgNow) | !String.IsEmpty(RDS.ProgNext)</visible>
-				</control>
-				<control type="label">
-					<description>Studio basename</description>
-					<width>140</width>
-					<height>25</height>
-					<align>right</align>
-					<aligny>center</aligny>
-					<textcolor>button_focus</textcolor>
-					<label>$LOCALIZE[29909]:</label>
-					<visible>!String.IsEmpty(RDS.PhoneStudio) | !String.IsEmpty(RDS.EmailStudio) | !String.IsEmpty(RDS.SMSStudio)</visible>
-				</control>
-			</control>
-			<control type="grouplist">
-				<left>160</left>
-				<top>280</top>
-				<width>160</width>
-				<height>300</height>
-				<itemgap>8</itemgap>
-				<control type="label">
-					<width>160</width>
-					<height>25</height>
-					<aligny>center</aligny>
-					<label>$LOCALIZE[19030]:</label>
-					<visible>!String.IsEmpty(RDS.ProgNow)</visible>
-				</control>
-				<control type="label">
-					<width>160</width>
-					<height>25</height>
-					<aligny>center</aligny>
-					<label>$LOCALIZE[19031]:</label>
-					<visible>!String.IsEmpty(RDS.ProgNext)</visible>
-				</control>
-				<control type="label">
-					<width>95</width>
-					<height>25</height>
-					<aligny>center</aligny>
-					<label>$LOCALIZE[29910]:</label>
-					<visible>!String.IsEmpty(RDS.PhoneStudio)</visible>
-				</control>
-				<control type="label">
-					<width>95</width>
-					<height>25</height>
-					<aligny>center</aligny>
-					<label>$LOCALIZE[29911]:</label>
-					<visible>!String.IsEmpty(RDS.EmailStudio)</visible>
-				</control>
-				<control type="label">
-					<width>95</width>
-					<height>25</height>
-					<aligny>center</aligny>
-					<label>$LOCALIZE[29912]:</label>
-					<visible>!String.IsEmpty(RDS.SMSStudio)</visible>
-				</control>
-			</control>
-			<control type="grouplist">
-				<left>230</left>
-				<top>280</top>
-				<width>620</width>
-				<height>300</height>
-				<itemgap>8</itemgap>
-				<control type="fadelabel">
-					<width>620</width>
-					<height>25</height>
-					<aligny>center</aligny>
-					<textcolor>grey</textcolor>
-					<label>$INFO[RDS.ProgNow]</label>
-					<visible>!String.IsEmpty(RDS.ProgNow)</visible>
-				</control>
-				<control type="fadelabel">
-					<width>620</width>
-					<height>25</height>
-					<aligny>center</aligny>
-					<textcolor>grey</textcolor>
-					<label>$INFO[RDS.ProgNext]</label>
-					<visible>!String.IsEmpty(RDS.ProgNext)</visible>
-				</control>
-				<control type="fadelabel">
-					<width>215</width>
-					<height>25</height>
-					<aligny>center</aligny>
-					<textcolor>grey</textcolor>
-					<label>$INFO[RDS.PhoneStudio]</label>
-					<visible>!String.IsEmpty(RDS.PhoneStudio)</visible>
-				</control>
-				<control type="fadelabel">
-					<width>215</width>
-					<height>25</height>
-					<aligny>center</aligny>
-					<textcolor>grey</textcolor>
-					<label>$INFO[RDS.EmailStudio]</label>
-					<visible>!String.IsEmpty(RDS.EmailStudio)</visible>
-				</control>
-				<control type="fadelabel">
-					<width>215</width>
-					<height>25</height>
-					<aligny>center</aligny>
-					<textcolor>grey</textcolor>
-					<label>$INFO[RDS.SMSStudio]</label>
-					<visible>!String.IsEmpty(RDS.SMSStudio)</visible>
-				</control>
-			</control>
-			<control type="grouplist">
-				<left>385</left>
-				<top>280</top>
-				<width>520</width>
-				<height>300</height>
-				<itemgap>8</itemgap>
-				<control type="label">
-					<width>140</width>
-					<height>25</height>
-					<align>right</align>
-					<aligny>center</aligny>
-					<textcolor>button_focus</textcolor>
-					<label>$LOCALIZE[29913]:</label>
-					<visible>!String.IsEmpty(RDS.PhoneHotline) | !String.IsEmpty(RDS.EmailHotline)</visible>
-				</control>
-				<control type="label">
-					<left>385</left>
-					<top>420</top>
-					<width>140</width>
-					<height>25</height>
-					<align>right</align>
-					<aligny>center</aligny>
-					<textcolor>button_focus</textcolor>
-					<label>$LOCALIZE[29914]:</label>
-					<visible>!String.IsEmpty(RDS.ProgHomepage)</visible>
-				</control>
-			</control>
-			<control type="grouplist">
-				<left>535</left>
-				<top>280</top>
-				<width>520</width>
-				<height>300</height>
-				<itemgap>8</itemgap>
-				<control type="label">
-					<width>160</width>
-					<height>25</height>
-					<aligny>center</aligny>
-					<label>$LOCALIZE[29910]:</label>
-					<visible>!String.IsEmpty(RDS.PhoneHotline)</visible>
-				</control>
-				<control type="label">
-					<width>160</width>
-					<height>25</height>
-					<aligny>center</aligny>
-					<label>$LOCALIZE[29911]:</label>
-					<visible>!String.IsEmpty(RDS.EmailHotline)</visible>
-				</control>
-				<control type="fadelabel">
-					<width>320</width>
-					<height>25</height>
-					<aligny>center</aligny>
-					<label>$INFO[RDS.ProgHomepage]</label>
-					<visible>!String.IsEmpty(RDS.ProgHomepage)</visible>
-				</control>
-			</control>
-			<control type="grouplist">
-				<left>605</left>
-				<top>280</top>
-				<width>520</width>
-				<height>300</height>
-				<itemgap>8</itemgap>
-				<control type="fadelabel">
-					<width>248</width>
-					<height>25</height>
-					<aligny>center</aligny>
-					<textcolor>grey</textcolor>
-					<label>$INFO[RDS.PhoneHotline]</label>
-					<visible>!String.IsEmpty(RDS.PhoneHotline)</visible>
-				</control>
-				<control type="fadelabel">
-					<width>248</width>
-					<height>25</height>
-					<aligny>center</aligny>
-					<textcolor>grey</textcolor>
-					<label>$INFO[RDS.EmailHotline]</label>
-					<visible>!String.IsEmpty(RDS.EmailHotline)</visible>
-				</control>
-			</control>
-			<control type="group">
-				<description>Radio text info list</description>
-				<left>40</left>
-				<top>455</top>
-				<visible>false</visible>
-				<control type="label">
-					<left>375</left>
-					<width>110</width>
-					<height>25</height>
-					<align>right</align>
-					<aligny>center</aligny>
-					<textcolor>button_focus</textcolor>
-					<label>$LOCALIZE[29915]:</label>
-				</control>
-				<control type="spincontrol" id="21">
-					<description>Source Type</description>
-					<left>740</left>
-					<top>5</top>
-					<aligny>center</aligny>
-					<textoffsetx>10</textoffsetx>
-					<onright>21</onright>
-					<onleft>21</onleft>
-					<onup>9000</onup>
-					<ondown>9000</ondown>
-				</control>
-				<control type="spincontrol" id="60">
-					<description>Next page button</description>
-					<left>0</left>
-					<top>155</top>
-					<subtype>page</subtype>
-					<font></font>
-					<onright>9000</onright>
-					<onleft>9000</onleft>
-					<ondown>21</ondown>
-					<onup>21</onup>
-					<textcolor></textcolor>
-					<showonepage>true</showonepage>
-				</control>
-				<control type="textbox" id="22">
-					<description>Plot</description>
-					<left>0</left>
-					<top>30</top>
-					<width>800</width>
-					<height>120</height>
-					<font>font12</font>
-					<align>justify</align>
-					<pagecontrol>60</pagecontrol>
-				</control>
-			</control>
-			<control type="grouplist" id="9000">
-				<orientation>horizontal</orientation>
-				<left>0</left>
-				<width>1300</width>
-				<align>center</align>
-				<top>820</top>
-				<onleft>60</onleft>
-				<onright>60</onright>
-				<onup>21</onup>
-				<ondown>21</ondown>
-				<include content="DefaultDialogButton">
-					<param name="id" value="10" />
-					<param name="label" value="$LOCALIZE[186]" />
+				<left>150</left>
+				<top>230</top>
+				<width>780</width>
+				<height>315</height>
+				<orientation>vertical</orientation>
+				<include content="RDSInfoLine">
+					<param name="label" value="$LOCALIZE[29901]"/>
+					<param name="value" value="RDS.Band" />
+				</include>
+				<include content="RDSInfoLine">
+					<param name="label" value="$LOCALIZE[557]"/>
+					<param name="value" value="RDS.Artist" />
+				</include>
+				<include content="RDSInfoLine">
+					<param name="label" value="$LOCALIZE[556]"/>
+					<param name="value" value="RDS.Title" />
+				</include>
+				<include content="RDSInfoLine">
+					<param name="label" value="$LOCALIZE[29903]"/>
+					<param name="value" value="RDS.Composer" />
+				</include>
+				<include content="RDSInfoLine">
+					<param name="label" value="$LOCALIZE[29905]"/>
+					<param name="value" value="RDS.Conductor" />
+				</include>
+				<include content="RDSInfoLine">
+					<param name="label" value="$LOCALIZE[558]"/>
+					<param name="value" value="RDS.Album" />
+				</include>
+				<include content="RDSInfoLine">
+					<param name="label" value="$LOCALIZE[569]"/>
+					<param name="value" value="RDS.Comment" />
 				</include>
 			</control>
+
+			<control type="image">
+				<left>120</left>
+				<top>575</top>
+				<width>840</width>
+				<height>225</height>
+				<texture border="21">dialogs/dialog-bg.png</texture>
+			</control>
+			<control type="label">
+				<left>150</left>
+				<top>595</top>
+				<width>780</width>
+				<height>25</height>
+				<textcolor>button_focus</textcolor>
+				<font>font36_title</font>
+				<label>$LOCALIZE[29909]</label>
+			</control>
+			<control type="grouplist">
+				<left>150</left>
+				<top>645</top>
+				<width>780</width>
+				<height>135</height>
+				<orientation>vertical</orientation>
+				<include content="RDSInfoLine">
+					<param name="label" value="$LOCALIZE[29910]"/>
+					<param name="value" value="RDS.PhoneStudio" />
+				</include>
+				<include content="RDSInfoLine">
+					<param name="label" value="$LOCALIZE[29911]"/>
+					<param name="value" value="RDS.EmailStudio" />
+				</include>
+				<include content="RDSInfoLine">
+					<param name="label" value="$LOCALIZE[29912]"/>
+					<param name="value" value="RDS.SMSStudio" />
+				</include>
+			</control>
+
+			<control type="image">
+				<left>970</left>
+				<top>160</top>
+				<width>840</width>
+				<height>405</height>
+				<texture border="21">dialogs/dialog-bg.png</texture>
+			</control>
+			<control type="label">
+				<left>1000</left>
+				<top>180</top>
+				<width>780</width>
+				<height>25</height>
+				<textcolor>button_focus</textcolor>
+				<font>font36_title</font>
+				<label>$LOCALIZE[29908]</label>
+			</control>
+			<control type="grouplist">
+				<left>1000</left>
+				<top>230</top>
+				<width>780</width>
+				<height>315</height>
+				<orientation>vertical</orientation>
+				<include content="RDSInfoLine">
+					<param name="label" value="$LOCALIZE[19030]"/>
+					<param name="value" value="RDS.ProgNow" />
+				</include>
+				<include content="RDSInfoLine">
+					<param name="label" value="$LOCALIZE[19031]"/>
+					<param name="value" value="RDS.ProgNext" />
+				</include>
+				<include content="RDSInfoLine">
+					<param name="label" value="$LOCALIZE[29902]"/>
+					<param name="value" value="RDS.ProgStyle" />
+				</include>
+				<include content="RDSInfoLine">
+					<param name="label" value="$LOCALIZE[19148]"/>
+					<param name="value" value="RDS.ProgStation" />
+				</include>
+				<include content="RDSInfoLine">
+					<param name="label" value="$LOCALIZE[29906]"/>
+					<param name="value" value="RDS.ProgHost" />
+				</include>
+				<include content="RDSInfoLine">
+					<param name="label" value="$LOCALIZE[29907]"/>
+					<param name="value" value="RDS.ProgEditStaff" />
+				</include>
+				<include content="RDSInfoLine">
+					<param name="label" value="$LOCALIZE[29914]"/>
+					<param name="value" value="RDS.ProgHomepage" />
+				</include>
+			</control>
+
+			<control type="image">
+				<left>970</left>
+				<top>575</top>
+				<width>840</width>
+				<height>225</height>
+				<texture border="21">dialogs/dialog-bg.png</texture>
+			</control>
+			<control type="label">
+				<left>1000</left>
+				<top>595</top>
+				<width>780</width>
+				<height>25</height>
+				<textcolor>button_focus</textcolor>
+				<font>font36_title</font>
+				<label>$LOCALIZE[29913]</label>
+			</control>
+			<control type="grouplist">
+				<left>1000</left>
+				<top>645</top>
+				<width>780</width>
+				<height>135</height>
+				<orientation>vertical</orientation>
+				<include content="RDSInfoLine">
+					<param name="label" value="$LOCALIZE[29910]"/>
+					<param name="value" value="RDS.PhoneHotline" />
+				</include>
+				<include content="RDSInfoLine">
+					<param name="label" value="$LOCALIZE[29911]"/>
+					<param name="value" value="RDS.EmailHotline" />
+				</include>
+			</control>
+
+			<control type="image">
+				<left>120</left>
+				<top>810</top>
+				<width>840</width>
+				<height>260</height>
+				<texture border="21">dialogs/dialog-bg.png</texture>
+			</control>
+			<control type="group">
+				<left>150</left>
+				<top>830</top>
+				<control type="label">
+					<width>780</width>
+					<height>25</height>
+					<textcolor>button_focus</textcolor>
+					<font>font36_title</font>
+					<label>$LOCALIZE[29915]</label>
+				</control>
+				<control type="textbox">
+					<top>50</top>
+					<width>780</width>
+					<height>170</height>
+					<align>justify</align>
+					<label>$INFO[RDS.InfoNews,[COLOR button_focus]$LOCALIZE[29916]:[/COLOR] ,[CR]]$INFO[RDS.InfoNewsLocal,[COLOR button_focus]$LOCALIZE[29917]:[/COLOR] ,[CR]]$INFO[RDS.InfoStock,[COLOR button_focus]$LOCALIZE[29920]:[/COLOR] ,[CR]]$INFO[RDS.InfoSport,[COLOR button_focus]$LOCALIZE[29918]:[/COLOR] ,[CR]]$INFO[RDS.Infolottery,[COLOR button_focus]$LOCALIZE[29919]:[/COLOR] ,[CR]]$INFO[RDS.InfoWeather,[COLOR button_focus]$LOCALIZE[400]:[/COLOR] ,[CR]]$INFO[RDS.InfoCinema,$[COLOR button_focus]LOCALIZE[19602]:[/COLOR] ,[CR]]$INFO[RDS.InfoHoroscope,[COLOR button_focus]$LOCALIZE[29922]:[/COLOR] ,[CR]]$INFO[RDS.InfoOther,[COLOR button_focus]$LOCALIZE[29921]:[/COLOR] ,[CR]]</label>
+					<autoscroll delay="5000" time="3000" repeat="10000">true</autoscroll>
+				</control>
+			</control>
+
+			<control type="image">
+				<left>970</left>
+				<top>810</top>
+				<width>840</width>
+				<height>260</height>
+				<texture border="21">dialogs/dialog-bg.png</texture>
+			</control>
+			<control type="group">
+				<left>1000</left>
+				<top>830</top>
+				<control type="label">
+					<width>780</width>
+					<height>25</height>
+					<textcolor>button_focus</textcolor>
+					<font>font36_title</font>
+					<label>$LOCALIZE[14304]</label>
+				</control>
+
+				<control type="label">
+					<top>50</top>
+					<width>780</width>
+					<height>40</height>
+					<aligny>center</aligny>
+					<label>$INFO[RDS.GetLine(3)]</label>
+					<scroll>true</scroll>
+				</control>
+				<control type="label">
+					<top>90</top>
+					<width>780</width>
+					<height>40</height>
+					<aligny>center</aligny>
+					<label>$INFO[RDS.GetLine(2)]</label>
+					<scroll>true</scroll>
+				</control>
+				<control type="label">
+					<top>130</top>
+					<width>780</width>
+					<height>40</height>
+					<aligny>center</aligny>
+					<label>$INFO[RDS.GetLine(1)]</label>
+					<scroll>true</scroll>
+				</control>
+				<control type="label">
+					<top>170</top>
+					<width>780</width>
+					<height>40</height>
+					<aligny>center</aligny>
+					<label>$INFO[RDS.GetLine(0)]</label>
+					<scroll>true</scroll>
+				</control>
+
+<!--				<control type="grouplist">
+					<top>50</top>
+					<width>780</width>
+					<height>170</height>
+					<orientation>vertical</orientation>
+					<include content="RDSInfoLine">
+						<param name="value" value="RDS.GetLine(3)" />
+					</include>
+					<include content="RDSInfoLine">
+						<param name="value" value="RDS.GetLine(2)" />
+					</include>
+					<include content="RDSInfoLine">
+						<param name="value" value="RDS.GetLine(1)" />
+					</include>
+					<include content="RDSInfoLine">
+						<param name="value" value="RDS.GetLine(0)" />
+					</include>
+				</control> -->
+<!--				<control type="textbox">
+					<top>50</top>
+					<width>780</width>
+					<height>170</height>
+					<align>justify</align>
+					<label>$INFO[RDS.GetLine(3)][CR]$INFO[RDS.GetLine(2)][CR]$INFO[RDS.GetLine(1)][CR]$INFO[RDS.GetLine(0)]</label>
+				</control> -->
+			</control>
+
+			<include content="InfoDialogTopBarInfo">
+				<param name="main_label" value="$LOCALIZE[29900]" />
+				<param name="sub_label" value="[COLOR grey]$VAR[RDSInfoSubTitle][/COLOR]" />
+				<param name="posy" value="40" />
+			</include>
 		</control>
+		<include condition="Skin.HasSetting(touchmode)">TouchBackButton</include>
 	</controls>
 </window>
