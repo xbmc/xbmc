@@ -67,6 +67,7 @@ public:
   const RESOLUTION_INFO& GetCurrentResolutionInfo() const { return GetResolutionInfo(m_currentResolution); }
   RESOLUTION_INFO& GetCurrentResolutionInfo() { return GetResolutionInfo(m_currentResolution); }
   RESOLUTION GetResFromString(const std::string &strResolution) { return GetResolutionFromString(strResolution); }
+  std::string GetStringFromRes(const RESOLUTION resolution, float refreshrate = 0.0f) { return GetStringFromResolution(resolution, refreshrate); }
 
   void ApplyCalibrations();
   void UpdateCalibrations();
