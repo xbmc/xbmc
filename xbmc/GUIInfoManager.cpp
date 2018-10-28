@@ -3685,6 +3685,22 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///     @return **True** when the selected programme is being recorded (PVR).
 ///     <p>
 ///   }
+///   \table_row3{   <b>`ListItem.IsPlayable`</b>,
+///                  \anchor ListItem_IsPlayable
+///                  _boolean_,
+///     @return **True** when the selected programme can be played (PVR)
+///     <p><hr>
+///     @skinning_v19 **[New Boolean Condition]** \link ListItem_IsPlayable `ListItem.IsPlayable`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`ListItem.HasArchive`</b>,
+///                  \anchor ListItem_HasArchive
+///                  _boolean_,
+///     @return **True** when the selected channel has a server-side back buffer (PVR)
+///     <p><hr>
+///     @skinning_v19 **[New Boolean Condition]** \link ListItem_HasArchive `ListItem.HasArchive`\endlink
+///     <p>
+///   }
 ///   \table_row3{   <b>`ListItem.IsEncrypted`</b>,
 ///                  \anchor ListItem_IsEncrypted
 ///                  _boolean_,
@@ -5814,6 +5830,8 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "hasreminderrule",  LISTITEM_HASREMINDERRULE },
                                   { "hasrecording",     LISTITEM_HASRECORDING },
                                   { "isrecording",      LISTITEM_ISRECORDING },
+                                  { "isplayable",       LISTITEM_ISPLAYABLE },
+                                  { "hasarchive",       LISTITEM_HASARCHIVE },
                                   { "inprogress",       LISTITEM_INPROGRESS },
                                   { "isencrypted",      LISTITEM_ISENCRYPTED },
                                   { "progress",         LISTITEM_PROGRESS },

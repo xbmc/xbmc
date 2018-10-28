@@ -93,7 +93,8 @@ void CPVRDatabase::CreateTables()
         "sEPGScraper          varchar(32), "
         "iLastWatched         integer, "
         "iClientId            integer, " //! @todo use mapping table
-        "idEpg                integer"
+        "idEpg                integer, "
+        "bHasArchive          bool"
       ")"
   );
 
@@ -191,6 +192,9 @@ void CPVRDatabase::UpdateTables(int iVersion)
 
   if (iVersion < 33)
     m_pDS->exec(sqlCreateTimersTable);
+
+  if (iVersion < 34)
+    m_pDS->exec("ALTER TABLE channels ADD bHasArchive bool");
 }
 
 /********** Client methods **********/
@@ -283,7 +287,7 @@ int CPVRDatabase::Get(CPVRChannelGroup &results, bool bCompressDB)
 
   std::string strQuery = PrepareSQL("SELECT channels.idChannel, channels.iUniqueId, channels.bIsRadio, channels.bIsHidden, channels.bIsUserSetIcon, channels.bIsUserSetName, "
       "channels.sIconPath, channels.sChannelName, channels.bIsVirtual, channels.bEPGEnabled, channels.sEPGScraper, channels.iLastWatched, channels.iClientId, channels.bIsLocked, "
-      "map_channelgroups_channels.iChannelNumber, map_channelgroups_channels.iSubChannelNumber, channels.idEpg "
+      "map_channelgroups_channels.iChannelNumber, map_channelgroups_channels.iSubChannelNumber, channels.idEpg, channels.bHasArchive "
       "FROM map_channelgroups_channels "
       "LEFT JOIN channels ON channels.idChannel = map_channelgroups_channels.idChannel "
       "WHERE map_channelgroups_channels.idGroup = %u", results.GroupID());
@@ -311,6 +315,7 @@ int CPVRDatabase::Get(CPVRChannelGroup &results, bool bCompressDB)
         channel->m_iLastWatched            = static_cast<time_t>(m_pDS->fv("iLastWatched").get_asInt());
         channel->m_iClientId               = m_pDS->fv("iClientId").get_asInt();
         channel->m_iEpgId                  = bIgnoreEpgDB ? -1 : m_pDS->fv("idEpg").get_asInt();
+        channel->m_bHasArchive             = m_pDS->fv("bHasArchive").get_asBool();
         channel->UpdateEncryptionName();
 
         PVRChannelGroupMember newMember(channel,
@@ -798,11 +803,11 @@ bool CPVRDatabase::Persist(CPVRChannel &channel, bool bCommit)
     strQuery = PrepareSQL("INSERT INTO channels ("
         "iUniqueId, bIsRadio, bIsHidden, bIsUserSetIcon, bIsUserSetName, bIsLocked, "
         "sIconPath, sChannelName, bIsVirtual, bEPGEnabled, sEPGScraper, iLastWatched, iClientId, "
-        "idEpg) "
-        "VALUES (%i, %i, %i, %i, %i, %i, '%s', '%s', %i, %i, '%s', %u, %i, %i)",
+        "idEpg, bHasArchive) "
+        "VALUES (%i, %i, %i, %i, %i, %i, '%s', '%s', %i, %i, '%s', %u, %i, %i, %i)",
         channel.UniqueID(), (channel.IsRadio() ? 1 :0), (channel.IsHidden() ? 1 : 0), (channel.IsUserSetIcon() ? 1 : 0), (channel.IsUserSetName() ? 1 : 0), (channel.IsLocked() ? 1 : 0),
         channel.IconPath().c_str(), channel.ChannelName().c_str(), 0, (channel.EPGEnabled() ? 1 : 0), channel.EPGScraper().c_str(), static_cast<unsigned int>(channel.LastWatched()), channel.ClientID(),
-        channel.EpgID());
+        channel.EpgID(), channel.HasArchive());
   }
   else
   {
@@ -810,12 +815,12 @@ bool CPVRDatabase::Persist(CPVRChannel &channel, bool bCommit)
     strQuery = PrepareSQL("REPLACE INTO channels ("
         "iUniqueId, bIsRadio, bIsHidden, bIsUserSetIcon, bIsUserSetName, bIsLocked, "
         "sIconPath, sChannelName, bIsVirtual, bEPGEnabled, sEPGScraper, iLastWatched, iClientId, "
-        "idChannel, idEpg) "
-        "VALUES (%i, %i, %i, %i, %i, %i, '%s', '%s', %i, %i, '%s', %u, %i, %s, %i)",
+        "idChannel, idEpg, bHasArchive) "
+        "VALUES (%i, %i, %i, %i, %i, %i, '%s', '%s', %i, %i, '%s', %u, %i, %s, %i, %i)",
         channel.UniqueID(), (channel.IsRadio() ? 1 :0), (channel.IsHidden() ? 1 : 0), (channel.IsUserSetIcon() ? 1 : 0), (channel.IsUserSetName() ? 1 : 0), (channel.IsLocked() ? 1 : 0),
         channel.IconPath().c_str(), channel.ChannelName().c_str(), 0, (channel.EPGEnabled() ? 1 : 0), channel.EPGScraper().c_str(), static_cast<unsigned int>(channel.LastWatched()), channel.ClientID(),
         strValue.c_str(),
-        channel.EpgID());
+        channel.EpgID(), channel.HasArchive());
   }
 
   if (QueueInsertQuery(strQuery))

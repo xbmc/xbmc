@@ -977,7 +977,7 @@
                 "firstaired", "hastimer", "isactive", "parentalrating",
                 "wasactive", "thumbnail", "rating", "originaltitle", "cast",
                 "director", "writer", "year", "imdbnumber", "hastimerrule",
-                "hasrecording", "recording", "isseries" ]
+                "hasrecording", "recording", "isseries", "isplayable" ]
     }
   },
   "PVR.Details.Broadcast": {
@@ -1012,7 +1012,8 @@
       "hastimerrule": { "type": "boolean" },
       "hasrecording": { "type": "boolean" },
       "recording": { "type": "string" },
-      "isseries": { "type": "boolean" }
+      "isseries": { "type": "boolean" },
+      "isplayable": { "type": "boolean" }
     }
   },
   "PVR.Fields.Channel": {
@@ -1020,7 +1021,7 @@
     "items": { "type": "string",
       "enum": [ "thumbnail", "channeltype", "hidden", "locked", "channel", "lastplayed",
                 "broadcastnow", "broadcastnext", "uniqueid", "icon", "channelnumber",
-                "subchannelnumber", "isrecording" ]
+                "subchannelnumber", "isrecording", "hasarchive" ]
     }
   },
   "PVR.Details.Channel": {
@@ -1039,7 +1040,8 @@
       "icon": { "type": "string" },
       "channelnumber": { "type": "integer" },
       "subchannelnumber": { "type": "integer" },
-      "isrecording": { "type": "boolean" }
+      "isrecording": { "type": "boolean" },
+      "hasarchive": { "type": "boolean" }
     }
   },
   "PVR.Details.ChannelGroup": {
