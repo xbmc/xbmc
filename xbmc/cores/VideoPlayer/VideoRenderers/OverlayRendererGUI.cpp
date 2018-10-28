@@ -65,7 +65,7 @@ CGUITextLayout* COverlayText::GetFontLayout(const std::string &font, int color, 
       return new CGUITextLayout(subtitle_font, true, 0, border_font);
   }
 
-  return NULL;
+  return nullptr;
 }
 
 COverlayText::COverlayText(CDVDOverlayText * src)
@@ -135,7 +135,6 @@ COverlayText::COverlayText(CDVDOverlayText * src)
   m_height = 0;
 
   m_type = TYPE_GUITEXT;
-
   m_layout = nullptr;
 }
 
@@ -145,59 +144,37 @@ COverlayText::~COverlayText()
 }
 
 void COverlayText::PrepareRender(const std::string &font, int color, int height, int style, const std::string &fontcache,
-                                 const std::string &fontbordercache, const UTILS::Color bgcolor)
+                                 const std::string &fontbordercache, const UTILS::Color bgcolor, const CRect &rectView)
 {
   if (!m_layout)
     m_layout = GetFontLayout(font, color, height, style, fontcache, fontbordercache);
 
-  if (m_layout == NULL)
+  if (m_layout == nullptr)
   {
     CLog::Log(LOGERROR, "COverlayText::PrepareRender - GetFontLayout failed for font %s", font.c_str());
     return;
   }
-  RESOLUTION_INFO res = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo();
-  float width_max = (float)res.Overscan.right - res.Overscan.left;
-  m_layout->Update(m_text, width_max * 0.9f, false, true); // true to force LTR reading order (most Hebrew subs are this format)
+  
+  m_rv = rectView;
+  m_bgcolor = bgcolor;
+  
+  m_layout->Update(m_text, m_rv.Width() * 0.9f, false, true); // true to force LTR reading order (most Hebrew subs are this format)
   m_layout->GetTextExtent(m_width, m_height);
   
-  m_bgcolor = bgcolor;
 }
 
 void COverlayText::Render(OVERLAY::SRenderState &state)
 {
-  if(m_layout == NULL)
+  if(m_layout == nullptr)
     return;
-
-  CRect rd = CServiceBroker::GetWinSystem()->GetGfxContext().GetViewWindow();
-  RESOLUTION_INFO res = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo();
-
-  /* our coordinates are in screen coordinates constrained to rd, but the font is sized suitably for fullscreen,
-     so we must scale up the positioning to screen coordinates, and then scale down to our final size and position
-     on render */
-
-  /* transform matrix is scale and translate */
-  float scale = rd.Width() / (res.Overscan.right - res.Overscan.left);
-  TransformMatrix mat;
-  mat.m[0][0] = mat.m[1][1] = scale;
-  mat.m[0][3] = rd.x1;
-  mat.m[1][3] = rd.y1;
 
   float x = state.x;
   float y = state.y;
-  mat.InverseTransformPosition(x, y);
-
-  CServiceBroker::GetWinSystem()->GetGfxContext().SetTransform(mat, 1.0f, 1.0f);
-
-  float width_max = (float) res.Overscan.right - res.Overscan.left;
 
   if (m_subalign == SUBTITLE_ALIGN_MANUAL
   ||  m_subalign == SUBTITLE_ALIGN_BOTTOM_OUTSIDE
   ||  m_subalign == SUBTITLE_ALIGN_BOTTOM_INSIDE)
     y -= m_height;
-
-  // clamp inside screen
-  y = std::max(y, (float) res.Overscan.top);
-  y = std::min(y, res.Overscan.bottom - m_height);
   
   // draw the overlay background
   if (m_bgcolor != UTILS::COLOR::NONE)
@@ -206,6 +183,6 @@ void COverlayText::Render(OVERLAY::SRenderState &state)
     CGUITexture::DrawQuad(backgroundbox, m_bgcolor);
   }
 
-  m_layout->RenderOutline(x, y, 0, 0xFF000000, XBFONT_CENTER_X, width_max);
+  m_layout->RenderOutline(x, y, 0, 0xFF000000, XBFONT_CENTER_X, m_rv.Width());
   CServiceBroker::GetWinSystem()->GetGfxContext().RemoveTransform();
 }

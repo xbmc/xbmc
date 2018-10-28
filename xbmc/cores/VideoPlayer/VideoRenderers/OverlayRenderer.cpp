@@ -23,7 +23,6 @@
 #include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
 #include "utils/ColorUtils.h"
-#include "utils/MathUtils.h"
 #include "OverlayRendererUtil.h"
 #include "OverlayRendererGUI.h"
 #if defined(HAS_GL) || defined(HAS_GLES)
@@ -192,7 +191,7 @@ void CRenderer::Render(int idx)
                           settings->GetInt(CSettings::SETTING_SUBTITLES_COLOR),
                           settings->GetInt(CSettings::SETTING_SUBTITLES_HEIGHT),
                           settings->GetInt(CSettings::SETTING_SUBTITLES_STYLE),
-                          m_font, m_fontBorder, bgcolor);
+                          m_font, m_fontBorder, bgcolor, m_rv);
       o = text;
     }
     else
@@ -337,12 +336,12 @@ COverlay* CRenderer::Convert(CDVDOverlaySSA* o, double pts)
   // libass render in a target area which named as frame. the frame size may bigger than video size,
   // and including margins between video to frame edge. libass allow to render subtitles into the margins.
   // this has been used to show subtitles in the top or bottom "black bar" between video to frame border.
-  int sourceWidth = MathUtils::round_int(m_rs.Width());
-  int sourceHeight = MathUtils::round_int(m_rs.Height());
-  int videoWidth = MathUtils::round_int(m_rd.Width());
-  int videoHeight = MathUtils::round_int(m_rd.Height());
-  int targetWidth = MathUtils::round_int(m_rv.Width());
-  int targetHeight = MathUtils::round_int(m_rv.Height());
+  int sourceWidth = m_rs.Width();
+  int sourceHeight = m_rs.Height();
+  int videoWidth = m_rd.Width();
+  int videoHeight = m_rd.Height();
+  int targetWidth = m_rv.Width();
+  int targetHeight = m_rv.Height();
   int useMargin;
 
   int subalign = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_SUBTITLES_ALIGN);
