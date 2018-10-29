@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <window>
 	<onload condition="!Player.PauseEnabled">SetFocus(603)</onload>
-	<depth>DepthOSD</depth>
 	<defaultcontrol always="true">602</defaultcontrol>
 	<include>Animation_BottomSlide</include>
+	<depth>DepthOSD</depth>
 	<controls>
 		<control type="button">
 			<description>background close area</description>
@@ -128,13 +128,19 @@
 					<onright>600</onright>
 					<control type="radiobutton" id="70040">
 						<include content="OSDButton">
+							<param name="texture" value="osd/fullscreen/buttons/information.png"/>
+						</include>
+						<onclick>Info</onclick>
+					</control>
+					<control type="radiobutton" id="70041">
+						<include content="OSDButton">
 							<param name="texture" value="osd/fullscreen/buttons/channels.png"/>
 						</include>
 						<onclick>Dialog.Close(VideoOSD)</onclick>
 						<onclick>ActivateWindow(PVROSDChannels)</onclick>
 						<visible>VideoPlayer.Content(livetv)</visible>
 					</control>
-					<control type="radiobutton" id="70041">
+					<control type="radiobutton" id="70042">
 						<include content="OSDButton">
 							<param name="texture" value="osd/fullscreen/buttons/guide.png"/>
 						</include>
