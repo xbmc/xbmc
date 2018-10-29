@@ -21,11 +21,15 @@
 #include "BaseRenderer.h"
 #include "xbmc/cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
 
+extern "C" {
+#include "libavutil/mastering_display_metadata.h"
+}
+
 class CRenderCapture;
 class CRenderSystemGLES;
 
 class CBaseTexture;
-namespace Shaders { class BaseYUV2RGBShader; }
+namespace Shaders { class BaseYUV2RGBGLSLShader; }
 namespace Shaders { class BaseVideoFilterShader; }
 
 struct DRAWRECT
@@ -36,20 +40,6 @@ struct DRAWRECT
   float bottom;
 };
 
-struct YUVRANGE
-{
-  int y_min, y_max;
-  int u_min, u_max;
-  int v_min, v_max;
-};
-
-struct YUVCOEF
-{
-  float r_up, r_vp;
-  float g_up, g_vp;
-  float b_up, b_vp;
-};
-
 enum RenderMethod
 {
   RENDER_GLSL = 0x01,
@@ -58,7 +48,7 @@ enum RenderMethod
 
 enum RenderQuality
 {
-  RQ_LOW=1,
+  RQ_LOW = 1,
   RQ_SINGLEPASS,
   RQ_MULTIPASS,
   RQ_SOFTWARE
@@ -71,13 +61,6 @@ enum RenderQuality
 #define FIELD_FULL 0
 #define FIELD_TOP 1
 #define FIELD_BOT 2
-
-extern YUVRANGE yuv_range_lim;
-extern YUVRANGE yuv_range_full;
-extern YUVCOEF yuv_coef_bt601;
-extern YUVCOEF yuv_coef_bt709;
-extern YUVCOEF yuv_coef_ebu;
-extern YUVCOEF yuv_coef_smtp240m;
 
 class CEvent;
 
@@ -97,7 +80,6 @@ public:
   virtual void AddVideoPicture(const VideoPicture &picture, int index) override;
   virtual void UnInit() override;
   virtual bool Flush(bool saveBuffers) override;
-  virtual void ReorderDrawPoints() override;
   virtual void SetBufferSize(int numBuffers) override { m_NumYV12Buffers = numBuffers; }
   virtual bool IsGuiLayer() override;
   virtual void ReleaseBuffer(int idx) override;
@@ -116,7 +98,7 @@ protected:
   virtual void Render(unsigned int flags, int index);
   virtual void RenderUpdateVideo(bool clear, unsigned int flags = 0, unsigned int alpha = 255);
 
-  int  NextYV12Texture();
+  int NextYV12Texture();
   virtual bool ValidateRenderTarget();
   virtual void LoadShaders(int field=FIELD_FULL);
   virtual void ReleaseShaders();
@@ -141,9 +123,11 @@ protected:
   void CalculateTextureSourceRects(int source, int num_planes);
 
   // renderers
-  void RenderToFBO(int index, int field, bool weave = false);
+  void RenderToFBO(int index, int field);
   void RenderFromFBO();
-  void RenderSinglePass(int index, int field);    // single pass glsl renderer
+  void RenderSinglePass(int index, int field); // single pass glsl renderer
+
+  GLint GetInternalFormat(GLint format, int bpp);
 
   // hooks for HwDec Renderered
   virtual bool LoadShadersHook() { return false; };
@@ -153,32 +137,31 @@ protected:
   struct
   {
     CFrameBufferObject fbo;
-    float width, height;
+    float width{0.0};
+    float height{0.0};
   } m_fbo;
 
-  int m_iYV12RenderBuffer;
-  int m_NumYV12Buffers;
+  int m_iYV12RenderBuffer{0};
+  int m_NumYV12Buffers{0};
 
-  bool m_bConfigured;
-  bool m_bValidated;
+  bool m_bConfigured{false};
+  bool m_bValidated{false};
   GLenum m_textureTarget;
-  int m_renderMethod;
-  int m_oldRenderMethod;
-  RenderQuality m_renderQuality;
-  bool m_StrictBinding;
+  int m_renderMethod{RENDER_GLSL};
+  RenderQuality m_renderQuality{RQ_SINGLEPASS};
 
   // Raw data used by renderer
-  int m_currentField;
-  int m_reloadShaders;
-  CRenderSystemGLES *m_renderSystem;
+  int m_currentField{FIELD_FULL};
+  int m_reloadShaders{0};
+  CRenderSystemGLES *m_renderSystem{nullptr};
 
-  struct YUVPLANE
+  struct CYuvPlane
   {
     GLuint id;
-    CRect  rect;
+    CRect rect;
 
-    float  width;
-    float  height;
+    float width;
+    float height;
 
     unsigned texwidth;
     unsigned texheight;
@@ -191,18 +174,18 @@ protected:
   struct CPictureBuffer
   {
     CPictureBuffer();
-   ~CPictureBuffer();
+    ~CPictureBuffer() = default;
 
-    YUVPLANE fields[MAX_FIELDS][YuvImage::MAX_PLANES];
+    CYuvPlane fields[MAX_FIELDS][YuvImage::MAX_PLANES];
     YuvImage image;
 
-    CVideoBuffer *videoBuffer;
-    bool loaded;
+    CVideoBuffer *videoBuffer{nullptr};
+    bool loaded{false};
 
     AVColorPrimaries m_srcPrimaries;
     AVColorSpace m_srcColSpace;
-    int m_srcBits = 8;
-    int m_srcTextureBits = 8;
+    int m_srcBits{8};
+    int m_srcTextureBits{8};
     bool m_srcFullRange;
 
     bool hasDisplayMetadata = false;
@@ -215,18 +198,20 @@ protected:
   // field index 0 is full image, 1 is odd scanlines, 2 is even scanlines
   CPictureBuffer m_buffers[NUM_BUFFERS];
 
-  void LoadPlane(YUVPLANE& plane, int type,
+  void LoadPlane(CYuvPlane& plane, int type,
                  unsigned width,  unsigned height,
                  int stride, int bpp, void* data);
 
-  Shaders::BaseYUV2RGBShader     *m_pYUVProgShader;
-  Shaders::BaseYUV2RGBShader     *m_pYUVBobShader;
-  Shaders::BaseVideoFilterShader *m_pVideoFilterShader;
-  ESCALINGMETHOD m_scalingMethod;
-  ESCALINGMETHOD m_scalingMethodGui;
+  Shaders::BaseYUV2RGBGLSLShader *m_pYUVProgShader{nullptr};
+  Shaders::BaseYUV2RGBGLSLShader *m_pYUVBobShader{nullptr};
+  Shaders::BaseVideoFilterShader *m_pVideoFilterShader{nullptr};
+  ESCALINGMETHOD m_scalingMethod{VS_SCALINGMETHOD_LINEAR};
+  ESCALINGMETHOD m_scalingMethodGui{VS_SCALINGMETHOD_MAX};
   bool m_fullRange;
   AVColorPrimaries m_srcPrimaries;
+  bool m_toneMap = false;
 
   // clear colour for "black" bars
-  float m_clearColour;
+  float m_clearColour{0.0f};
+  CRect m_viewRect;
 };
