@@ -247,7 +247,30 @@ bool CGLContextEGL::CreatePB()
     return false;
   }
 
-  m_eglContext = eglCreateContext(m_eglDisplay, m_eglConfig, EGL_NO_CONTEXT, NULL);
+  EGLint contextAttributes[] =
+  {
+      EGL_CONTEXT_MAJOR_VERSION_KHR, 3,
+      EGL_CONTEXT_MINOR_VERSION_KHR, 2,
+      EGL_CONTEXT_OPENGL_PROFILE_MASK_KHR, EGL_CONTEXT_OPENGL_CORE_PROFILE_BIT_KHR,
+      EGL_NONE
+  };
+  m_eglContext = eglCreateContext(m_eglDisplay, m_eglConfig, EGL_NO_CONTEXT, contextAttributes);
+  if (m_eglContext == EGL_NO_CONTEXT)
+  {
+    EGLint contextAttributes[] =
+    {
+      EGL_CONTEXT_MAJOR_VERSION_KHR, 2,
+      EGL_NONE
+    };
+    m_eglContext = eglCreateContext(m_eglDisplay, m_eglConfig, EGL_NO_CONTEXT, contextAttributes);
+
+    if (m_eglContext == EGL_NO_CONTEXT)
+    {
+      CLog::Log(LOGERROR, "failed to create EGL context\n");
+      Destroy();
+      return false;
+    }
+  }
 
   if (!eglMakeCurrent(m_eglDisplay, m_eglSurface, m_eglSurface, m_eglContext))
   {
