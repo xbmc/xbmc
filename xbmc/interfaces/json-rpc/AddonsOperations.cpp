@@ -233,7 +233,7 @@ static CVariant Serialize(const AddonPtr& addon)
     info["optional"] = dep.optional;
     variant["dependencies"].push_back(std::move(info));
   }
-  if (addon->IsBroken())
+  if (!addon->IsBroken())
     variant["broken"] = false;
   else
     variant["broken"] = addon->Broken();
