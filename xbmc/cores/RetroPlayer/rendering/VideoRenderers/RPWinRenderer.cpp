@@ -224,11 +224,6 @@ CRPWinRenderer::CRPWinRenderer(const CRenderSettings &renderSettings, CRenderCon
 {
 }
 
-CRPWinRenderer::~CRPWinRenderer()
-{
-  Deinitialize();
-}
-
 bool CRPWinRenderer::ConfigureInternal()
 {
   CRenderSystemDX *renderingDx = static_cast<CRenderSystemDX*>(m_context.Rendering());

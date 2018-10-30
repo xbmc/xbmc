@@ -51,7 +51,9 @@ CRPRendererOpenGLES::CRPRendererOpenGLES(const CRenderSettings &renderSettings, 
 
 CRPRendererOpenGLES::~CRPRendererOpenGLES()
 {
-  Deinitialize();
+  glDeleteBuffers(1, &m_mainIndexVBO);
+  glDeleteBuffers(1, &m_mainVertexVBO);
+  glDeleteBuffers(1, &m_blackbarsVertexVBO);
 }
 
 void CRPRendererOpenGLES::RenderInternal(bool clear, uint8_t alpha)
@@ -318,11 +320,4 @@ void CRPRendererOpenGLES::Render(uint8_t alpha)
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
   m_context.DisableGUIShader();
-}
-
-void CRPRendererOpenGLES::Deinitialize()
-{
-  glDeleteBuffers(1, &m_mainIndexVBO);
-  glDeleteBuffers(1, &m_mainVertexVBO);
-  glDeleteBuffers(1, &m_blackbarsVertexVBO);
 }

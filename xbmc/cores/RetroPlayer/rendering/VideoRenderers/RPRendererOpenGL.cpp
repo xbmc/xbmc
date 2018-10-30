@@ -83,7 +83,12 @@ CRPRendererOpenGL::CRPRendererOpenGL(const CRenderSettings &renderSettings, CRen
 
 CRPRendererOpenGL::~CRPRendererOpenGL()
 {
-  Deinitialize();
+  glDeleteBuffers(1, &m_mainIndexVBO);
+  glDeleteBuffers(1, &m_mainVertexVBO);
+  glDeleteBuffers(1, &m_blackbarsVertexVBO);
+
+  glDeleteVertexArrays(1, &m_mainVAO);
+  glDeleteVertexArrays(1, &m_blackbarsVAO);
 }
 
 void CRPRendererOpenGL::RenderInternal(bool clear, uint8_t alpha)
@@ -332,14 +337,4 @@ void CRPRendererOpenGL::Render(uint8_t alpha)
   glBindBuffer(GL_ARRAY_BUFFER, 0);
 
   m_context.DisableGUIShader();
-}
-
-void CRPRendererOpenGL::Deinitialize()
-{
-  glDeleteBuffers(1, &m_mainIndexVBO);
-  glDeleteBuffers(1, &m_mainVertexVBO);
-  glDeleteBuffers(1, &m_blackbarsVertexVBO);
-
-  glDeleteVertexArrays(1, &m_mainVAO);
-  glDeleteVertexArrays(1, &m_blackbarsVAO);
 }

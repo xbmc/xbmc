@@ -49,11 +49,6 @@ CRPRendererGBM::CRPRendererGBM(const CRenderSettings &renderSettings, CRenderCon
   m_textureTarget = GL_TEXTURE_EXTERNAL_OES;
 }
 
-CRPRendererGBM::~CRPRendererGBM()
-{
-  Deinitialize();
-}
-
 void CRPRendererGBM::Render(uint8_t alpha)
 {
   CRenderBufferGBM *renderBuffer = static_cast<CRenderBufferGBM*>(m_renderBuffer);
