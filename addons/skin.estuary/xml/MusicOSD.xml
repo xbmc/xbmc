@@ -2,6 +2,7 @@
 <window>
 	<onload condition="!Player.PauseEnabled">SetFocus(603)</onload>
 	<defaultcontrol always="true">602</defaultcontrol>
+	<include>Animation_BottomSlide</include>
 	<depth>DepthOSD</depth>
 	<controls>
 		<control type="button">
@@ -18,7 +19,6 @@
 			<bottom>0</bottom>
 			<height>120</height>
 			<visible>!Window.IsActive(osdaudiosettings) + !Window.IsActive(osdvideosettings) + !Window.IsActive(playerprocessinfo)</visible>
-			<include>Animation_BottomSlide</include>
 			<animation type="Visible" reversible="false">
 				<effect type="fade" start="0" end="100" time="300"/>
 				<effect type="slide" start="0,200" end="0,0" time="300" tween="cubic" easing="out" />
@@ -114,13 +114,20 @@
 				<onright>600</onright>
 				<control type="radiobutton" id="62040">
 					<include content="OSDButton">
+						<param name="texture" value="osd/fullscreen/buttons/information.png"/>
+					</include>
+					<onclick>Info</onclick>
+					<visible>MusicPlayer.Content(LiveTV)</visible>
+				</control>
+				<control type="radiobutton" id="62041">
+					<include content="OSDButton">
 						<param name="texture" value="osd/fullscreen/buttons/channels.png"/>
 					</include>
 					<onclick>Dialog.Close(MusicOSD)</onclick>
 					<onclick>ActivateWindow(PVROSDChannels)</onclick>
 					<visible>MusicPlayer.Content(LiveTV)</visible>
 				</control>
-				<control type="radiobutton" id="62041">
+				<control type="radiobutton" id="62042">
 					<include content="OSDButton">
 						<param name="texture" value="osd/fullscreen/buttons/guide.png"/>
 					</include>
@@ -128,9 +135,9 @@
 					<onclick>ActivateWindow(PVRChannelGuide)</onclick>
 					<visible>MusicPlayer.Content(LiveTV) + VideoPlayer.HasEPG</visible>
 				</control>
-				<control type="radiobutton" id="62042">
+				<control type="radiobutton" id="62043">
 					<include content="OSDButton">
-						<param name="texture" value="osd/fullscreen/buttons/information.png"/>
+						<param name="texture" value="osd/fullscreen/buttons/rds.png"/>
 					</include>
 					<onclick>Dialog.Close(MusicOSD)</onclick>
 					<onclick>ActivateWindow(PVRRadioRDSInfo)</onclick>

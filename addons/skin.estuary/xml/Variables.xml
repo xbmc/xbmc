@@ -216,8 +216,9 @@
 		<value condition="Control.HasFocus(703)">$LOCALIZE[31106]</value>
 		<value condition="Control.HasFocus(704)">$LOCALIZE[24012]</value>
 		<value condition="Control.HasFocus(804)">$LOCALIZE[31092]</value>
-		<value condition="Control.HasFocus(70040)">$LOCALIZE[19019]</value>
-		<value condition="Control.HasFocus(70041)">$LOCALIZE[19069]</value>
+		<value condition="Control.HasFocus(70040)">$LOCALIZE[19033]</value>
+		<value condition="Control.HasFocus(70041)">$LOCALIZE[19019]</value>
+		<value condition="Control.HasFocus(70042)">$LOCALIZE[19069]</value>
 		<value condition="Control.HasFocus(70043)">$LOCALIZE[5]</value>
 		<value condition="Control.HasFocus(255)">$LOCALIZE[36501]</value>
 		<value condition="Control.HasFocus(606)+ PVR.IsRecordingPlayingChannel">$LOCALIZE[19059]</value>
@@ -226,9 +227,10 @@
 	</variable>
 	<variable name="MusicOSDHelpTextVar">
 		<value condition="Control.HasFocus(620)">$LOCALIZE[31033]$INFO[MusicPlayer.UserRating, : ]</value>
-		<value condition="Control.HasFocus(62040)">$LOCALIZE[19019]</value>
-		<value condition="Control.HasFocus(62041)">$LOCALIZE[19069]</value>
-		<value condition="Control.HasFocus(62042)">$LOCALIZE[29900]</value>
+		<value condition="Control.HasFocus(62040)">$LOCALIZE[19033]</value>
+		<value condition="Control.HasFocus(62041)">$LOCALIZE[19019]</value>
+		<value condition="Control.HasFocus(62042)">$LOCALIZE[19069]</value>
+		<value condition="Control.HasFocus(62043)">$LOCALIZE[29900]</value>
 		<value condition="Control.HasFocus(704)">$LOCALIZE[486]$INFO[Playlist.Repeat, : ]</value>
 		<value condition="Control.HasFocus(607) + Playlist.IsRandom">$LOCALIZE[590]: $LOCALIZE[16041]</value>
 		<value condition="Control.HasFocus(607)">$LOCALIZE[590]: $LOCALIZE[16039]</value>

@@ -9301,6 +9301,7 @@ msgstr ""
 #: xbmc/pvr/PVRGUIActions.cpp
 #: xbmc/pvr/PVRManager.cpp
 #: xbmc/video/windows/GUIWindowVideoBase.cpp
+#: addons/skin.estuary/xml/MusicOSD.xml
 #: addons/skin.estuary/xml/VideoOSD.xml
 msgctxt "#19033"
 msgid "Information"
@@ -15582,6 +15583,8 @@ msgstr ""
 #empty strings from id 29806 to 29899
 
 #. Header string on RDS Radiotext+ Info dialog
+#: addons/skin.estuary/xml/DialogPVRRadioRDSInfo.xml
+#: addons/skin.estuary/xml/Variables.xml
 msgctxt "#29900"
 msgid "Radiotext Plus info"
 msgstr ""
