@@ -1912,7 +1912,7 @@ std::vector<std::string> CMusicInfoScanner::GetArtTypesToScan(const MediaType& m
   // Get default types of art that are to be automatically fetched during scanning
   if (mediaType == MediaTypeArtist)
   {
-    arttypes = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicAlbumExtraArt;
+    arttypes = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicArtistExtraArt;
     arttypes.emplace_back("thumb");
     arttypes.emplace_back("fanart");
   }
