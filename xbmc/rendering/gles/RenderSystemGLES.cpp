@@ -390,7 +390,7 @@ void CRenderSystemGLES::InitialiseShaders()
     defines += "#define KODI_LIMITED_RANGE 1\n";
   }
 
-  m_pShader[SM_DEFAULT].reset(new CGLESShader("gles_shader.vert", "gles_shader_default.frag", defines));
+  m_pShader[SM_DEFAULT].reset(new CGLESShader("gles_shader_default.frag", defines));
   if (!m_pShader[SM_DEFAULT]->CompileAndLink())
   {
     m_pShader[SM_DEFAULT]->Free();
@@ -471,7 +471,6 @@ void CRenderSystemGLES::InitialiseShaders()
       m_pShader[SM_TEXTURE_RGBA_OES].reset();
       CLog::Log(LOGERROR, "GUI Shader gles_shader_rgba_oes.frag - compile and link failed");
     }
-
 
     m_pShader[SM_TEXTURE_RGBA_BOB_OES].reset(new CGLESShader("gles_shader_rgba_bob_oes.frag", defines));
     if (!m_pShader[SM_TEXTURE_RGBA_BOB_OES]->CompileAndLink())
