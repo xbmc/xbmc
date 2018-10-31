@@ -497,7 +497,7 @@ void CDisplaySettings::ApplyCalibrations()
   for (ResolutionInfos::const_iterator itCal = m_calibrations.begin(); itCal != m_calibrations.end(); ++itCal)
   {
     // find resolutions
-    for (size_t res = 0; res < m_resolutions.size(); ++res)
+    for (size_t res = RES_DESKTOP; res < m_resolutions.size(); ++res)
     {
       if (res == RES_WINDOW)
         continue;
@@ -548,23 +548,23 @@ void CDisplaySettings::ApplyCalibrations()
 void CDisplaySettings::UpdateCalibrations()
 {
   CSingleLock lock(m_critical);
-  for (size_t res = RES_DESKTOP; res < m_resolutions.size(); ++res)
-  {
-    // find calibration
-    bool found = false;
-    for (ResolutionInfos::iterator itCal = m_calibrations.begin(); itCal != m_calibrations.end(); ++itCal)
-    {
-      if (StringUtils::EqualsNoCase(itCal->strMode, m_resolutions[res].strMode))
-      {
-        //! @todo erase calibrations with default values
-        *itCal = m_resolutions[res];
-        found = true;
-        break;
-      }
-    }
 
-    if (!found)
-      m_calibrations.push_back(m_resolutions[res]);
+  // Add new (unique) resolutions
+  for (ResolutionInfos::const_iterator res(m_resolutions.cbegin() + RES_DESKTOP + 1); res != m_resolutions.cend(); ++res)
+    if (std::find_if(m_calibrations.cbegin(), m_calibrations.cend(),
+      [&](const RESOLUTION_INFO& info) { return StringUtils::EqualsNoCase(res->strMode, info.strMode); }) == m_resolutions.cend())
+        m_calibrations.push_back(*res);
+
+  for (auto &cal : m_calibrations)
+  {
+    ResolutionInfos::const_iterator res(std::find_if(m_resolutions.cbegin()+ RES_DESKTOP, m_resolutions.cend(),
+      [&](const RESOLUTION_INFO& info) { return StringUtils::EqualsNoCase(cal.strMode, info.strMode); }));
+
+    if (res != m_resolutions.cend())
+    {
+      //! @todo erase calibrations with default values
+      cal = *res;
+    }
   }
 }
 
