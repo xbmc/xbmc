@@ -157,8 +157,8 @@ bool CRendererVAAPI::CreateTexture(int index)
 
   DeleteTexture(index);
 
-  memset(&im, 0, sizeof(im));
-  memset(&planes, 0, sizeof(CYuvPlane[YuvImage::MAX_PLANES]));
+  im = {};
+  std::fill(std::begin(planes), std::end(planes), CYuvPlane{});
   im.height = m_sourceHeight;
   im.width  = m_sourceWidth;
   im.cshift_x = 1;
