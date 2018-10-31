@@ -93,9 +93,6 @@ static void process_input(struct android_app* app, struct android_poll_source* s
 extern void android_main(struct android_app* state)
 {
   {
-    // make sure that the linker doesn't strip out our glue
-    app_dummy();
-
     // revector inputPollSource.process so we can shut up
     // its useless verbose logging on new events (see ouya)
     // and fix the error in handling multiple input events.

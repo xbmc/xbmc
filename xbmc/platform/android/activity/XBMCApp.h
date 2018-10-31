@@ -244,6 +244,7 @@ private:
 
   static CVideoSyncAndroid* m_syncImpl;
   static CEvent m_vsyncEvent;
+  static CEvent m_displayChangeEvent;
 
   void XBMC_Pause(bool pause);
   void XBMC_Stop();

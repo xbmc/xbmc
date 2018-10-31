@@ -127,6 +127,7 @@ CCriticalSection CXBMCApp::m_applicationsMutex;
 std::vector<androidPackage> CXBMCApp::m_applications;
 CVideoSyncAndroid* CXBMCApp::m_syncImpl = NULL;
 CEvent CXBMCApp::m_vsyncEvent;
+CEvent CXBMCApp::m_displayChangeEvent;
 std::vector<CActivityResultEvent*> CXBMCApp::m_activityResultEvents;
 
 int64_t CXBMCApp::m_frameTimeNanos = 0;
@@ -524,9 +525,13 @@ void CXBMCApp::SetRefreshRateCallback(CVariant* rateVariant)
       }
       params.setpreferredRefreshRate(rate);
       if (params.getpreferredRefreshRate() > 0.0)
+      {
         window.setAttributes(params);
+        return;
+      }
     }
   }
+  m_displayChangeEvent.Set();
 }
 
 void CXBMCApp::SetDisplayModeCallback(CVariant* variant)
@@ -549,8 +554,10 @@ void CXBMCApp::SetDisplayModeCallback(CVariant* variant)
       params.setpreferredDisplayModeId(mode);
       params.setpreferredRefreshRate(rate);
       window.setAttributes(params);
+      return;
     }
   }
+  m_displayChangeEvent.Set();
 }
 
 void CXBMCApp::SetRefreshRate(float rate)
@@ -560,8 +567,11 @@ void CXBMCApp::SetRefreshRate(float rate)
 
   m_refreshRate = rate;
 
+  m_displayChangeEvent.Reset();
   CVariant *variant = new CVariant(rate);
   runNativeOnUiThread(SetRefreshRateCallback, variant);
+  if (g_application.IsInitialized())
+    m_displayChangeEvent.WaitMSec(5000);
 }
 
 void CXBMCApp::SetDisplayMode(int mode, float rate)
@@ -569,12 +579,16 @@ void CXBMCApp::SetDisplayMode(int mode, float rate)
   if (mode < 1.0)
     return;
 
+  m_displayChangeEvent.Reset();
+
   std::map<std::string, CVariant> vmap;
   vmap["mode"] = mode;
   vmap["rate"] = rate;
   m_refreshRate = rate;
   CVariant *variant = new CVariant(vmap);
   runNativeOnUiThread(SetDisplayModeCallback, variant);
+  if (g_application.IsInitialized())
+    m_displayChangeEvent.WaitMSec(5000);
 }
 
 int CXBMCApp::android_printf(const char *format, ...)
@@ -1352,7 +1366,6 @@ bool CXBMCApp::onInputDeviceEvent(const AInputEvent* event)
   return false;
 }
 
-
 void CXBMCApp::onDisplayAdded(int displayId)
 {
   android_printf("%s: ", __PRETTY_FUNCTION__);
@@ -1360,6 +1373,7 @@ void CXBMCApp::onDisplayAdded(int displayId)
 
 void CXBMCApp::onDisplayChanged(int displayId)
 {
+  m_displayChangeEvent.Set();
   android_printf("%s: ", __PRETTY_FUNCTION__);
 }
 
