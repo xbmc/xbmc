@@ -1528,7 +1528,7 @@ void CApplication::Render()
     return;
 
   // render gui layer
-  if (!m_skipGuiRender)
+  if (m_renderGUI && !m_skipGuiRender)
   {
     if (CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode())
     {
