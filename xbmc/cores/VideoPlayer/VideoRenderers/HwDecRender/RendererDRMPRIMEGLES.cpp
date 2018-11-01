@@ -60,8 +60,9 @@ bool CRendererDRMPRIMEGLES::CreateTexture(int index)
 
   DeleteTexture(index);
 
-  std::memset(&im, 0, sizeof(im));
-  std::memset(&plane, 0, sizeof(CYuvPlane));
+  im = {};
+  plane = {};
+
   im.height = m_sourceHeight;
   im.width  = m_sourceWidth;
   im.cshift_x = 1;
