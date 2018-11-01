@@ -35,7 +35,12 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(EShaderFormat format, AVColorPrimar
 
   m_convertFullRange = false;
 
-  if (m_format == SHADER_YV12)
+  if (m_format == SHADER_YV12 ||
+      m_format == SHADER_YV12_9 ||
+      m_format == SHADER_YV12_10 ||
+      m_format == SHADER_YV12_12 ||
+      m_format == SHADER_YV12_14 ||
+      m_format == SHADER_YV12_16)
     m_defines += "#define XBMC_YV12\n";
   else if (m_format == SHADER_NV12)
     m_defines += "#define XBMC_NV12\n";
