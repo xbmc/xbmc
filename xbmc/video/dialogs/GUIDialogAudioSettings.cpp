@@ -221,7 +221,7 @@ void CGUIDialogAudioSettings::InitializeSettings()
   }
 
   // register IsPlayingPassthrough condition
-  GetSettingsManager()->AddCondition("IsPlayingPassthrough", IsPlayingPassthrough);
+  GetSettingsManager()->AddDynamicCondition("IsPlayingPassthrough", IsPlayingPassthrough);
 
   CSettingDependency dependencyAudioOutputPassthroughDisabled(SettingDependencyType::Enable, GetSettingsManager());
   dependencyAudioOutputPassthroughDisabled.Or()

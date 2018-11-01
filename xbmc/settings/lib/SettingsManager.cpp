@@ -743,13 +743,22 @@ void CSettingsManager::AddCondition(const std::string &condition)
   m_conditions.AddCondition(condition);
 }
 
-void CSettingsManager::AddCondition(const std::string &identifier, SettingConditionCheck condition, void *data /*= nullptr*/)
+void CSettingsManager::AddDynamicCondition(const std::string &identifier, SettingConditionCheck condition, void *data /*= nullptr*/)
 {
   CExclusiveLock lock(m_critical);
   if (identifier.empty() || condition == nullptr)
     return;
 
-  m_conditions.AddCondition(identifier, condition, data);
+  m_conditions.AddDynamicCondition(identifier, condition, data);
+}
+
+void CSettingsManager::RemoveDynamicCondition(const std::string &identifier)
+{
+  CExclusiveLock lock(m_critical);
+  if (identifier.empty())
+    return;
+
+  m_conditions.RemoveDynamicCondition(identifier);
 }
 
 bool CSettingsManager::Serialize(TiXmlNode *parent) const

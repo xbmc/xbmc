@@ -391,7 +391,7 @@ void CAddonSettings::InitializeControls()
 
 void CAddonSettings::InitializeConditions()
 {
-  GetSettingsManager()->AddCondition("InfoBool", InfoBool);
+  GetSettingsManager()->AddDynamicCondition("InfoBool", InfoBool);
 }
 
 bool CAddonSettings::InitializeDefinitions(const CXBMCTinyXML& doc)

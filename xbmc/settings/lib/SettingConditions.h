@@ -85,7 +85,8 @@ public:
   virtual ~CSettingConditionsManager() = default;
 
   void AddCondition(std::string condition);
-  void AddCondition(std::string identifier, SettingConditionCheck condition, void *data = nullptr);
+  void AddDynamicCondition(std::string identifier, SettingConditionCheck condition, void *data = nullptr);
+  void RemoveDynamicCondition(std::string identifier);
 
   bool Check(std::string condition, const std::string &value = "", std::shared_ptr<const CSetting> setting = std::shared_ptr<const CSetting>()) const;
 
