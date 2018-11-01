@@ -8,12 +8,11 @@
 
 #pragma once
 
-#include "pvr/PVREvent.h"
 #include "pvr/channels/PVRChannelGroup.h"
 
 namespace PVR
 {
-  /** XBMC's internal group, the group containing all channels */
+  enum class PVREvent;
 
   class CPVRChannelGroupInternal : public CPVRChannelGroup
   {
@@ -140,6 +139,6 @@ namespace PVR
     size_t m_iHiddenChannels; /*!< the amount of hidden channels in this container */
 
   private:
-    void OnPVRManagerEvent(const PVR::PVREvent& event);
+    void OnPVRManagerEvent(const PVREvent& event);
   };
 }

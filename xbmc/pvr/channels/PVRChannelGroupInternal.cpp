@@ -334,6 +334,6 @@ bool CPVRChannelGroupInternal::CreateChannelEpgs(bool bForce /* = false */)
 
 void CPVRChannelGroupInternal::OnPVRManagerEvent(const PVR::PVREvent& event)
 {
-  if (event == ManagerStarted)
+  if (event == PVREvent::ManagerStarted)
     CServiceBroker::GetPVRManager().TriggerEpgsCreate();
 }

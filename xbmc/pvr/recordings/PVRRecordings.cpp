@@ -23,7 +23,6 @@
 #include "video/VideoDatabase.h"
 
 #include "pvr/PVRManager.h"
-#include "pvr/PVREvent.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/epg/EpgContainer.h"
 #include "pvr/epg/EpgInfoTag.h"
@@ -157,7 +156,7 @@ void CPVRRecordings::Update(void)
 
   CServiceBroker::GetPVRManager().SetChanged();
   CServiceBroker::GetPVRManager().NotifyObservers(ObservableMessageRecordings);
-  CServiceBroker::GetPVRManager().PublishEvent(RecordingsInvalidated);
+  CServiceBroker::GetPVRManager().PublishEvent(PVREvent::RecordingsInvalidated);
 }
 
 int CPVRRecordings::GetNumTVRecordings() const
@@ -510,7 +509,7 @@ bool CPVRRecordings::ChangeRecordingsPlayCount(const CFileItemPtr &item, int cou
       }
     }
 
-    CServiceBroker::GetPVRManager().PublishEvent(RecordingsInvalidated);
+    CServiceBroker::GetPVRManager().PublishEvent(PVREvent::RecordingsInvalidated);
   }
 
   return bResult;
@@ -539,7 +538,7 @@ bool CPVRRecordings::ResetResumePoint(const CFileItemPtr item)
       db.ClearBookMarksOfFile(item->GetPath(), CBookmark::RESUME);
       recording->SetResumePoint(CBookmark());
 
-      CServiceBroker::GetPVRManager().PublishEvent(RecordingsInvalidated);
+      CServiceBroker::GetPVRManager().PublishEvent(PVREvent::RecordingsInvalidated);
     }
   }
   return bResult;
