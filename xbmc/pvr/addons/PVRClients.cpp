@@ -12,9 +12,10 @@
 #include "addons/BinaryAddonCache.h"
 #include "guilib/LocalizeStrings.h"
 #include "messaging/ApplicationMessenger.h"
-#include "pvr/PVRJobs.h"
+#include "pvr/PVREventLogJob.h"
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupInternal.h"
+#include "utils/JobManager.h"
 #include "utils/log.h"
 
 #include <functional>
@@ -159,7 +160,7 @@ void CPVRClients::UpdateAddons(const std::string& changedAddonId /*= ""*/)
         if (status == ADDON_STATUS_PERMANENT_FAILURE)
         {
           CServiceBroker::GetAddonMgr().DisableAddon(addon.first->ID());
-          CJobManager::GetInstance().AddJob(new CPVREventlogJob(true, true, addon.first->Name(), g_localizeStrings.Get(24070), addon.first->Icon()), nullptr);
+          CJobManager::GetInstance().AddJob(new CPVREventLogJob(true, true, addon.first->Name(), g_localizeStrings.Get(24070), addon.first->Icon()), nullptr);
         }
       }
     }
@@ -236,8 +237,14 @@ void CPVRClients::OnAddonEvent(const AddonEvent& event)
       typeid(event) == typeid(AddonEvents::ReInstalled))
   {
     // update addons
-    if (CServiceBroker::GetAddonMgr().HasType(event.id, ADDON_PVRDLL))
-      CJobManager::GetInstance().AddJob(new CPVRUpdateAddonsJob(event.id), nullptr);
+    const std::string id = event.id;
+    if (CServiceBroker::GetAddonMgr().HasType(id, ADDON_PVRDLL))
+    {
+      CJobManager::GetInstance().Submit([this, id] {
+        UpdateAddons(id);
+        return true;
+      });
+    }
   }
 }
 
@@ -575,8 +582,10 @@ void CPVRClients::OnPowerSavingDeactivated()
   });
 }
 
-void CPVRClients::ConnectionStateChange(
-  CPVRClient* client, std::string& strConnectionString, PVR_CONNECTION_STATE newState, std::string& strMessage)
+void CPVRClients::ConnectionStateChange(CPVRClient* client,
+                                        const std::string& strConnectionString,
+                                        PVR_CONNECTION_STATE newState,
+                                        const std::string& strMessage)
 {
   if (!client)
     return;
@@ -634,7 +643,7 @@ void CPVRClients::ConnectionStateChange(
     strMsg = g_localizeStrings.Get(iMsg);
 
   // Notify user.
-  CJobManager::GetInstance().AddJob(new CPVREventlogJob(bNotify, bError, client->Name(), strMsg, client->Icon()), nullptr);
+  CJobManager::GetInstance().AddJob(new CPVREventLogJob(bNotify, bError, client->Name(), strMsg, client->Icon()), nullptr);
 
   if (newState == PVR_CONNECTION_STATE_CONNECTED)
   {

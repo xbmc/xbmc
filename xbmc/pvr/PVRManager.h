@@ -23,7 +23,6 @@
 #include <vector>
 
 class CFileItem;
-class CJob;
 class CStopWatch;
 
 namespace PVR
@@ -37,6 +36,7 @@ namespace PVR
   class CPVRGUIActions;
   class CPVRGUIInfo;
   class CPVRGUIProgressHandler;
+  class CPVRManagerJobQueue;
   class CPVRRecording;
   class CPVRRecordings;
   class CPVRTimers;
@@ -77,26 +77,6 @@ namespace PVR
 
     // Item events
     CurrentItem,
-  };
-
-  class CPVRManagerJobQueue
-  {
-  public:
-    CPVRManagerJobQueue();
-
-    void Start();
-    void Stop();
-    void Clear();
-
-    void AppendJob(CJob * job);
-    void ExecutePendingJobs();
-    bool WaitForJobs(unsigned int milliSeconds);
-
-  private:
-    CCriticalSection m_critSection;
-    CEvent m_triggerEvent;
-    std::vector<CJob *> m_pendingUpdates;
-    bool m_bStopped = true;
   };
 
   class CPVRManager : private CThread, public ANNOUNCEMENT::IAnnouncer
@@ -465,7 +445,10 @@ namespace PVR
     /*!
      * @brief Signal a connection change of a client
      */
-    void ConnectionStateChange(CPVRClient* client, std::string connectString, PVR_CONNECTION_STATE state, std::string message);
+    void ConnectionStateChange(CPVRClient* client,
+                               const std::string& connectString,
+                               PVR_CONNECTION_STATE state,
+                               const std::string& message);
 
     /*!
      * @brief Query the events available for CEventStream
@@ -565,12 +548,11 @@ namespace PVR
     CPVREpgContainer m_epgContainer;                              /*!< the epg container */
     //@}
 
-    CPVRManagerJobQueue m_pendingUpdates; /*!< vector of pending pvr updates */
-
+    std::unique_ptr<CPVRManagerJobQueue> m_pendingUpdates; /*!< vector of pending pvr updates */
     std::shared_ptr<CPVRDatabase> m_database; /*!< the database for all PVR related data */
-    mutable CCriticalSection m_critSection;   /*!< critical section for all changes to this class, except for changes to triggers */
-    bool m_bFirstStart = true;                /*!< true when the PVR manager was started first, false otherwise */
-    bool m_bEpgsCreated = false;              /*!< true if epg data for channels has been created */
+    mutable CCriticalSection m_critSection; /*!< critical section for all changes to this class, except for changes to triggers */
+    bool m_bFirstStart = true; /*!< true when the PVR manager was started first, false otherwise */
+    bool m_bEpgsCreated = false; /*!< true if epg data for channels has been created */
 
     mutable CCriticalSection m_managerStateMutex;
     ManagerState m_managerState = ManagerStateStopped;

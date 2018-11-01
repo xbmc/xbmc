@@ -15,9 +15,9 @@
 #include "messaging/ApplicationMessenger.h"
 #include "pvr/PVRDatabase.h"
 #include "pvr/PVRGUIActions.h"
+#include "pvr/PVRGUIChannelIconUpdater.h"
 #include "pvr/PVRGUIInfo.h"
 #include "pvr/PVRGUIProgressHandler.h"
-#include "pvr/PVRJobs.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroup.h"
@@ -44,10 +44,63 @@
 using namespace PVR;
 using namespace KODI::MESSAGING;
 
-CPVRManagerJobQueue::CPVRManagerJobQueue()
-: m_triggerEvent(false)
+namespace PVR
 {
-}
+template<typename F>
+class CPVRLambdaJob : public CJob
+{
+public:
+  CPVRLambdaJob() = delete;
+  CPVRLambdaJob(const std::string& type, F&& f) : m_type(type), m_f(std::forward<F>(f)) {}
+
+  bool DoWork() override
+  {
+    m_f();
+    return true;
+  }
+
+  const char* GetType() const override
+  {
+    return m_type.c_str();
+  }
+
+private:
+  std::string m_type;
+  F m_f;
+};
+
+class CPVRManagerJobQueue
+{
+public:
+  CPVRManagerJobQueue() : m_triggerEvent(false) {}
+
+  void Start();
+  void Stop();
+  void Clear();
+
+  template<typename F>
+  void Append(const std::string& type, F&& f)
+  {
+    AppendJob(new CPVRLambdaJob<F>(type, std::forward<F>(f)));
+  }
+
+  void ExecutePendingJobs();
+
+  bool WaitForJobs(unsigned int milliSeconds)
+  {
+    return m_triggerEvent.WaitMSec(milliSeconds);
+  }
+
+
+private:
+  void AppendJob(CJob* job);
+
+  CCriticalSection m_critSection;
+  CEvent m_triggerEvent;
+  std::vector<CJob*> m_pendingUpdates;
+  bool m_bStopped = true;
+};
+} // namespace PVR
 
 void CPVRManagerJobQueue::Start()
 {
@@ -73,7 +126,7 @@ void CPVRManagerJobQueue::Clear()
   m_triggerEvent.Set();
 }
 
-void CPVRManagerJobQueue::AppendJob(CJob * job)
+void CPVRManagerJobQueue::AppendJob(CJob* job)
 {
   CSingleLock lock(m_critSection);
 
@@ -93,7 +146,7 @@ void CPVRManagerJobQueue::AppendJob(CJob * job)
 
 void CPVRManagerJobQueue::ExecutePendingJobs()
 {
-  std::vector<CJob *> pendingUpdates;
+  std::vector<CJob*> pendingUpdates;
 
   {
     CSingleLock lock(m_critSection);
@@ -116,11 +169,6 @@ void CPVRManagerJobQueue::ExecutePendingJobs()
   }
 }
 
-bool CPVRManagerJobQueue::WaitForJobs(unsigned int milliSeconds)
-{
-  return m_triggerEvent.WaitMSec(milliSeconds);
-}
-
 CPVRManager::CPVRManager(void) :
     CThread("PVRManager"),
     m_channelGroups(new CPVRChannelGroupsContainer),
@@ -129,6 +177,7 @@ CPVRManager::CPVRManager(void) :
     m_addons(new CPVRClients),
     m_guiInfo(new CPVRGUIInfo),
     m_guiActions(new CPVRGUIActions),
+    m_pendingUpdates(new CPVRManagerJobQueue),
     m_database(new CPVRDatabase),
     m_parentalTimer(new CStopWatch),
     m_settings({
@@ -250,7 +299,7 @@ CPVREpgContainer& CPVRManager::EpgContainer()
 
 void CPVRManager::Clear(void)
 {
-  m_pendingUpdates.Clear();
+  m_pendingUpdates->Clear();
   m_epgContainer.Clear();
 
   CSingleLock lock(m_critSection);
@@ -282,7 +331,10 @@ void CPVRManager::Init()
 {
   // initial check for enabled addons
   // if at least one pvr addon is enabled, PVRManager start up
-  CJobManager::GetInstance().AddJob(new CPVRStartupJob(), nullptr);
+  CJobManager::GetInstance().Submit([this] {
+    Clients()->Start();
+    return true;
+  });
 }
 
 void CPVRManager::Start()
@@ -329,7 +381,7 @@ void CPVRManager::Stop(void)
   SetState(ManagerStateStopping);
 
   m_addons->Stop();
-  m_pendingUpdates.Stop();
+  m_pendingUpdates->Stop();
   m_epgContainer.Stop();
   m_guiInfo->Stop();
 
@@ -445,7 +497,7 @@ void CPVRManager::Process(void)
 
   m_guiInfo->Start();
   m_epgContainer.Start(true);
-  m_pendingUpdates.Start();
+  m_pendingUpdates->Start();
 
   SetState(ManagerStateStarted);
   CLog::Log(LOGNOTICE, "PVR Manager: Started");
@@ -473,7 +525,7 @@ void CPVRManager::Process(void)
     /* execute the next pending jobs if there are any */
     try
     {
-      m_pendingUpdates.ExecutePendingJobs();
+      m_pendingUpdates->ExecutePendingJobs();
     }
     catch (...)
     {
@@ -482,7 +534,7 @@ void CPVRManager::Process(void)
     }
 
     if (IsStarted() && !bRestart)
-      m_pendingUpdates.WaitForJobs(1000);
+      m_pendingUpdates->WaitForJobs(1000);
   }
 
   CLog::LogFC(LOGDEBUG, LOGPVR, "PVR Manager leaving main loop");
@@ -590,7 +642,11 @@ void CPVRManager::UnloadComponents()
 void CPVRManager::TriggerPlayChannelOnStartup(void)
 {
   if (IsStarted())
-    CJobManager::GetInstance().AddJob(new CPVRPlayChannelOnStartupJob(), nullptr);
+  {
+    CJobManager::GetInstance().Submit([this] {
+      return GUIActions()->PlayChannelOnStartup();
+    });
+  }
 }
 
 bool CPVRManager::IsPlaying(void) const
@@ -948,47 +1004,74 @@ bool CPVRManager::IsPlayingEpgTag(void) const
   return IsStarted() && m_playingEpgTag;
 }
 
-void CPVRManager::TriggerEpgsCreate(void)
+void CPVRManager::TriggerEpgsCreate()
 {
-  m_pendingUpdates.AppendJob(new CPVREpgsCreateJob());
+  m_pendingUpdates->Append("pvr-create-epgs", [this]() {
+    return CreateChannelEpgs();
+  });
 }
 
-void CPVRManager::TriggerRecordingsUpdate(void)
+void CPVRManager::TriggerRecordingsUpdate()
 {
-  m_pendingUpdates.AppendJob(new CPVRRecordingsUpdateJob());
+  m_pendingUpdates->Append("pvr-update-recordings", [this]() {
+    return Recordings()->Update();
+  });
 }
 
-void CPVRManager::TriggerTimersUpdate(void)
+void CPVRManager::TriggerTimersUpdate()
 {
-  m_pendingUpdates.AppendJob(new CPVRTimersUpdateJob());
+  m_pendingUpdates->Append("pvr-update-timers", [this]() {
+    return Timers()->Update();
+  });
 }
 
-void CPVRManager::TriggerChannelsUpdate(void)
+void CPVRManager::TriggerChannelsUpdate()
 {
-  m_pendingUpdates.AppendJob(new CPVRChannelsUpdateJob());
+  m_pendingUpdates->Append("pvr-update-channels", [this]() {
+    return ChannelGroups()->Update(true);
+  });
 }
 
-void CPVRManager::TriggerChannelGroupsUpdate(void)
+void CPVRManager::TriggerChannelGroupsUpdate()
 {
-  m_pendingUpdates.AppendJob(new CPVRChannelGroupsUpdateJob());
+  m_pendingUpdates->Append("pvr-update-channelgroups", [this]() {
+    return ChannelGroups()->Update(false);
+  });
 }
 
 void CPVRManager::TriggerSearchMissingChannelIcons()
 {
   if (IsStarted())
-    CJobManager::GetInstance().AddJob(new CPVRSearchMissingChannelIconsJob({m_channelGroups->GetGroupAllTV(), m_channelGroups->GetGroupAllRadio()}, true), nullptr);
+  {
+    CJobManager::GetInstance().Submit([this] {
+      CPVRGUIChannelIconUpdater updater({ChannelGroups()->GetGroupAllTV(), ChannelGroups()->GetGroupAllRadio()}, true);
+      updater.SearchAndUpdateMissingChannelIcons();
+      return true;
+    });
+  }
 }
 
 void CPVRManager::TriggerSearchMissingChannelIcons(const std::shared_ptr<CPVRChannelGroup>& group)
 {
   if (IsStarted())
-    CJobManager::GetInstance().AddJob(new CPVRSearchMissingChannelIconsJob({group}, false), nullptr);
+  {
+    CJobManager::GetInstance().Submit([group] {
+      CPVRGUIChannelIconUpdater updater({group}, false);
+      updater.SearchAndUpdateMissingChannelIcons();
+      return true;
+    });
+  }
 }
 
-void CPVRManager::ConnectionStateChange(CPVRClient* client, std::string connectString, PVR_CONNECTION_STATE state, std::string message)
+void CPVRManager::ConnectionStateChange(CPVRClient* client,
+                                        const std::string& connectString,
+                                        PVR_CONNECTION_STATE state,
+                                        const std::string& message)
 {
-  // Note: No check for started pvr manager here. This method is intended to get called even before the mgr is started.
-  CJobManager::GetInstance().AddJob(new CPVRClientConnectionJob(client, connectString, state, message), NULL);
+  CJobManager::GetInstance().Submit([this, client, connectString, state, message] {
+    Clients()->ConnectionStateChange(client, connectString, state, message);
+    return true;
+  });
 }
 
 bool CPVRManager::CreateChannelEpgs(void)

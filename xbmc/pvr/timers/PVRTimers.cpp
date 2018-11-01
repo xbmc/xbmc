@@ -11,7 +11,7 @@
 #include "ServiceBroker.h"
 #include "addons/PVRClient.h"
 #include "pvr/PVRDatabase.h"
-#include "pvr/PVRJobs.h"
+#include "pvr/PVREventLogJob.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannel.h"
@@ -354,7 +354,7 @@ bool CPVRTimers::UpdateEntries(const CPVRTimersContainer& timers, const std::vec
 
     if (!timerNotifications.empty() && CServiceBroker::GetPVRManager().IsStarted())
     {
-      CPVREventlogJob* job = new CPVREventlogJob;
+      CPVREventLogJob* job = new CPVREventLogJob;
 
       /* queue notifications / fill eventlog */
       for (const auto& entry : timerNotifications)

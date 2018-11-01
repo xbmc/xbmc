@@ -32,8 +32,8 @@
 #include "messaging/helpers/DialogOKHelper.h"
 #include "network/Network.h"
 #include "pvr/PVRDatabase.h"
+#include "pvr/PVREventLogJob.h"
 #include "pvr/PVRItem.h"
-#include "pvr/PVRJobs.h"
 #include "pvr/PVRManager.h"
 #include "pvr/PVRStreamProperties.h"
 #include "pvr/addons/PVRClients.h"
@@ -1945,7 +1945,7 @@ namespace PVR
         icon = "special://xbmc/media/icon256x256.png";
       }
 
-      CPVREventlogJob* job = new CPVREventlogJob;
+      CPVREventLogJob* job = new CPVREventLogJob;
       job->AddEvent(false, // do not display a toast, only log event
                     false, // info, no error
                     name,
