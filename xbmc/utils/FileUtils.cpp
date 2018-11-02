@@ -23,6 +23,7 @@
 #include "URL.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "storage/MediaManager.h"
 #include "utils/Variant.h"
 
 #if defined(TARGET_WINDOWS)
@@ -138,13 +139,23 @@ bool CFileUtils::RemoteAccessAllowed(const std::string &strPath)
       return true;
   }
   bool isSource;
+  // Check manually added sources (held in sources.xml)
   for (const std::string& sourceName : SourceNames)
   {
     VECSOURCES* sources = CMediaSourceSettings::GetInstance().GetSources(sourceName);
     int sourceIndex = CUtil::GetMatchingSource(realPath, *sources, isSource);
     if (sourceIndex >= 0 && sourceIndex < (int)sources->size() && sources->at(sourceIndex).m_iHasLock != 2 && sources->at(sourceIndex).m_allowSharing)
       return true;
-  }
+  }  
+  // Check auto-mounted sources
+  VECSOURCES sources;
+  g_mediaManager.GetRemovableDrives(sources);   // Sources returned allways have m_allowsharing = true
+  //! @todo Make sharing of auto-mounted sources user configurable
+  int sourceIndex = CUtil::GetMatchingSource(realPath, sources, isSource);
+  if (sourceIndex >= 0 && sourceIndex < static_cast<int>(sources.size()) && 
+      sources.at(sourceIndex).m_iHasLock != 2 && sources.at(sourceIndex).m_allowSharing)
+    return true;
+
   return false;
 }
 
