@@ -11,11 +11,8 @@
 #include <deque>
 #include <string>
 
-#include "XBDateTime.h"
 #include "utils/IArchivable.h"
 #include "utils/ISerializable.h"
-
-#include "pvr/PVRTypes.h"
 
 namespace PVR
 {
@@ -23,21 +20,8 @@ namespace PVR
 class CPVRRadioRDSInfoTag final : public IArchivable, public ISerializable
 {
 public:
-  /*!
-   * @brief Create a new empty event .
-   */
-  static CPVRRadioRDSInfoTagPtr CreateDefaultTag();
-
-private:
-  /*!
-   * @brief Create a new empty event.
-   */
   CPVRRadioRDSInfoTag(void);
 
-  CPVRRadioRDSInfoTag(const CPVRRadioRDSInfoTag& tag) = delete;
-  const CPVRRadioRDSInfoTag& operator =(const CPVRRadioRDSInfoTag& tag) = delete;
-
-public:
   bool operator ==(const CPVRRadioRDSInfoTag& tag) const;
   bool operator !=(const CPVRRadioRDSInfoTag& tag) const;
 
@@ -179,5 +163,9 @@ protected:
 
   bool m_bHaveRadiotext;
   bool m_bHaveRadiotextPlus;
+
+private:
+  CPVRRadioRDSInfoTag(const CPVRRadioRDSInfoTag& tag) = delete;
+  const CPVRRadioRDSInfoTag& operator =(const CPVRRadioRDSInfoTag& tag) = delete;
 };
 }

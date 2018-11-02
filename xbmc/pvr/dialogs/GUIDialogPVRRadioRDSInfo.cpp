@@ -8,9 +8,9 @@
 
 #include "GUIDialogPVRRadioRDSInfo.h"
 
-#include "Application.h"
 #include "FileItem.h"
 #include "GUIUserMessages.h"
+#include "ServiceBroker.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUISpinControl.h"
 #include "guilib/GUITextBox.h"
@@ -18,6 +18,8 @@
 #include "guilib/LocalizeStrings.h"
 #include "messaging/ApplicationMessenger.h"
 
+#include "pvr/PVRManager.h"
+#include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRRadioRDSInfoTag.h"
 
 using namespace PVR;
@@ -57,7 +59,11 @@ bool CGUIDialogPVRRadioRDSInfo::OnMessage(CGUIMessage& message)
     }
     else if (iControl == SPIN_CONTROL_INFO)
     {
-      const CPVRRadioRDSInfoTagPtr currentRDS = g_application.CurrentFileItem().GetPVRRadioRDSInfoTag();
+      const std::shared_ptr<CPVRChannel> channel = CServiceBroker::GetPVRManager().GetPlayingChannel();
+      if (!channel)
+        return false;
+
+      const std::shared_ptr<CPVRRadioRDSInfoTag> currentRDS = channel->GetRadioRDSInfoTag();
       if (!currentRDS)
         return false;
 
@@ -108,26 +114,30 @@ bool CGUIDialogPVRRadioRDSInfo::OnMessage(CGUIMessage& message)
     CGUISpinControl *spin = static_cast<CGUISpinControl*>(GetControl(SPIN_CONTROL_INFO));
     CGUITextBox *textbox = static_cast<CGUITextBox*>(GetControl(TEXT_INFO));
 
-    if (IsActive() && spin && textbox && message.GetParam1() == GUI_MSG_UPDATE_RADIOTEXT &&
-        g_application.GetAppPlayer().IsPlaying() &&
-        g_application.CurrentFileItem().HasPVRRadioRDSInfoTag())
+    if (spin && textbox && message.GetParam1() == GUI_MSG_UPDATE_RADIOTEXT && IsActive())
     {
-      const CPVRRadioRDSInfoTagPtr currentRDS = g_application.CurrentFileItem().GetPVRRadioRDSInfoTag();
+      const std::shared_ptr<CPVRChannel> channel = CServiceBroker::GetPVRManager().GetPlayingChannel();
+      if (channel)
+      {
+        const std::shared_ptr<CPVRRadioRDSInfoTag> currentRDS = channel->GetRadioRDSInfoTag();
+        if (currentRDS)
+        {
+          UpdateControls(spin, 29916, INFO_NEWS, m_LabelInfoNewsPresent, textbox, currentRDS->GetInfoNews(), m_LabelInfoNews);
+          UpdateControls(spin, 29917, INFO_NEWS_LOCAL, m_LabelInfoNewsLocalPresent, textbox, currentRDS->GetInfoNewsLocal(), m_LabelInfoNewsLocal);
+          UpdateControls(spin, 29918, INFO_SPORT, m_LabelInfoSportPresent, textbox, currentRDS->GetInfoSport(), m_LabelInfoSport);
+          UpdateControls(spin,   400, INFO_WEATHER, m_LabelInfoWeatherPresent, textbox, currentRDS->GetInfoWeather(), m_LabelInfoWeather);
+          UpdateControls(spin, 29919, INFO_LOTTERY, m_LabelInfoLotteryPresent, textbox, currentRDS->GetInfoLottery(), m_LabelInfoLottery);
+          UpdateControls(spin, 29920, INFO_STOCK, m_LabelInfoStockPresent, textbox, currentRDS->GetInfoStock(), m_LabelInfoStock);
+          UpdateControls(spin, 29921, INFO_OTHER, m_LabelInfoOtherPresent, textbox, currentRDS->GetInfoOther(), m_LabelInfoOther);
+          UpdateControls(spin, 19602, INFO_CINEMA, m_LabelInfoCinemaPresent, textbox, currentRDS->GetInfoCinema(), m_LabelInfoCinema);
+          UpdateControls(spin, 29922, INFO_HOROSCOPE, m_LabelInfoHoroscopePresent, textbox, currentRDS->GetInfoHoroscope(), m_LabelInfoHoroscope);
 
-      UpdateControls(spin, 29916, INFO_NEWS, m_LabelInfoNewsPresent, textbox, currentRDS->GetInfoNews(), m_LabelInfoNews);
-      UpdateControls(spin, 29917, INFO_NEWS_LOCAL, m_LabelInfoNewsLocalPresent, textbox, currentRDS->GetInfoNewsLocal(), m_LabelInfoNewsLocal);
-      UpdateControls(spin, 29918, INFO_SPORT, m_LabelInfoSportPresent, textbox, currentRDS->GetInfoSport(), m_LabelInfoSport);
-      UpdateControls(spin,   400, INFO_WEATHER, m_LabelInfoWeatherPresent, textbox, currentRDS->GetInfoWeather(), m_LabelInfoWeather);
-      UpdateControls(spin, 29919, INFO_LOTTERY, m_LabelInfoLotteryPresent, textbox, currentRDS->GetInfoLottery(), m_LabelInfoLottery);
-      UpdateControls(spin, 29920, INFO_STOCK, m_LabelInfoStockPresent, textbox, currentRDS->GetInfoStock(), m_LabelInfoStock);
-      UpdateControls(spin, 29921, INFO_OTHER, m_LabelInfoOtherPresent, textbox, currentRDS->GetInfoOther(), m_LabelInfoOther);
-      UpdateControls(spin, 19602, INFO_CINEMA, m_LabelInfoCinemaPresent, textbox, currentRDS->GetInfoCinema(), m_LabelInfoCinema);
-      UpdateControls(spin, 29922, INFO_HOROSCOPE, m_LabelInfoHoroscopePresent, textbox, currentRDS->GetInfoHoroscope(), m_LabelInfoHoroscope);
-
-      if (m_InfoPresent)
-        SET_CONTROL_VISIBLE(CONTROL_INFO_LIST);
-      else
-        SET_CONTROL_HIDDEN(CONTROL_INFO_LIST);
+          if (m_InfoPresent)
+            SET_CONTROL_VISIBLE(CONTROL_INFO_LIST);
+          else
+            SET_CONTROL_HIDDEN(CONTROL_INFO_LIST);
+        }
+      }
     }
   }
 
@@ -192,7 +202,11 @@ void CGUIDialogPVRRadioRDSInfo::OnInitWindow()
 
   SET_CONTROL_HIDDEN(CONTROL_INFO_LIST);
 
-  const CPVRRadioRDSInfoTagPtr currentRDS = g_application.CurrentFileItem().GetPVRRadioRDSInfoTag();
+  const std::shared_ptr<CPVRChannel> channel = CServiceBroker::GetPVRManager().GetPlayingChannel();
+  if (!channel)
+    return;
+
+  const std::shared_ptr<CPVRRadioRDSInfoTag> currentRDS = channel->GetRadioRDSInfoTag();
   if (!currentRDS)
     return;
 

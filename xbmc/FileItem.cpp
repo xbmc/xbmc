@@ -33,7 +33,6 @@
 #include "video/VideoDatabase.h"
 #include "music/MusicDatabase.h"
 #include "pvr/channels/PVRChannel.h"
-#include "pvr/channels/PVRRadioRDSInfoTag.h"
 #include "pvr/epg/Epg.h"
 #include "pvr/recordings/PVRRecording.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
@@ -428,7 +427,6 @@ CFileItem& CFileItem::operator=(const CFileItem& item)
   m_pvrChannelInfoTag = item.m_pvrChannelInfoTag;
   m_pvrRecordingInfoTag = item.m_pvrRecordingInfoTag;
   m_pvrTimerInfoTag = item.m_pvrTimerInfoTag;
-  m_pvrRadioRDSInfoTag = item.m_pvrRadioRDSInfoTag;
   m_addonInfo = item.m_addonInfo;
   m_eventLogEntry = item.m_eventLogEntry;
 
@@ -502,7 +500,6 @@ void CFileItem::Reset()
   m_pvrChannelInfoTag.reset();
   m_pvrRecordingInfoTag.reset();
   m_pvrTimerInfoTag.reset();
-  m_pvrRadioRDSInfoTag.reset();
   delete m_pictureInfoTag;
   m_pictureInfoTag=NULL;
   delete m_gameInfoTag;
@@ -560,13 +557,6 @@ void CFileItem::Archive(CArchive& ar)
     }
     else
       ar << 0;
-    if (m_pvrRadioRDSInfoTag)
-    {
-      ar << 1;
-      ar << *m_pvrRadioRDSInfoTag;
-    }
-    else
-      ar << 0;
     if (m_pictureInfoTag)
     {
       ar << 1;
@@ -620,9 +610,6 @@ void CFileItem::Archive(CArchive& ar)
       ar >> *GetVideoInfoTag();
     ar >> iType;
     if (iType == 1)
-      ar >> *m_pvrRadioRDSInfoTag;
-    ar >> iType;
-    if (iType == 1)
       ar >> *GetPictureInfoTag();
     ar >> iType;
     if (iType == 1)
@@ -650,9 +637,6 @@ void CFileItem::Serialize(CVariant& value) const
 
   if (m_videoInfoTag)
     (*m_videoInfoTag).Serialize(value["videoInfoTag"]);
-
-  if (m_pvrRadioRDSInfoTag)
-    m_pvrRadioRDSInfoTag->Serialize(value["rdsInfoTag"]);
 
   if (m_pictureInfoTag)
     (*m_pictureInfoTag).Serialize(value["pictureInfoTag"]);
@@ -864,11 +848,6 @@ bool CFileItem::IsInProgressPVRRecording() const
 bool CFileItem::IsPVRTimer() const
 {
   return HasPVRTimerInfoTag();
-}
-
-bool CFileItem::IsPVRRadioRDS() const
-{
-  return HasPVRRadioRDSInfoTag();
 }
 
 bool CFileItem::IsDiscStub() const
@@ -1608,11 +1587,6 @@ void CFileItem::UpdateInfo(const CFileItem &item, bool replaceLabels /*=true*/)
   if (item.HasMusicInfoTag())
   {
     *GetMusicInfoTag() = *item.GetMusicInfoTag();
-    SetInvalid();
-  }
-  if (item.HasPVRRadioRDSInfoTag())
-  {
-    m_pvrRadioRDSInfoTag = item.m_pvrRadioRDSInfoTag;
     SetInvalid();
   }
   if (item.HasPictureInfoTag())

@@ -535,7 +535,8 @@ bool CDVDRadioRDSData::OpenStream(CDVDStreamInfo hints)
 void CDVDRadioRDSData::CloseStream(bool bWaitForBuffers)
 {
   // wait until buffers are empty
-  if (bWaitForBuffers) m_messageQueue.WaitUntilEmpty();
+  if (bWaitForBuffers)
+    m_messageQueue.WaitUntilEmpty();
 
   m_messageQueue.Abort();
 
@@ -546,6 +547,8 @@ void CDVDRadioRDSData::CloseStream(bool bWaitForBuffers)
 
   m_messageQueue.End();
   m_currentInfoTag.reset();
+  m_currentChannel->SetRadioRDSInfoTag(m_currentInfoTag);
+  m_currentChannel.reset();
 }
 
 void CDVDRadioRDSData::ResetRDSCache()
@@ -609,10 +612,10 @@ void CDVDRadioRDSData::ResetRDSCache()
   m_RTPlus_Starttime = time(NULL);
   m_RTPlus_GenrePresent = false;
 
-  m_currentInfoTag = CPVRRadioRDSInfoTag::CreateDefaultTag();
+  m_currentInfoTag = std::make_shared<CPVRRadioRDSInfoTag>();
   m_currentChannel = g_application.CurrentFileItem().GetPVRChannelInfoTag();
-  g_application.CurrentFileItem().SetPVRRadioRDSInfoTag(m_currentInfoTag);
-  CServiceBroker::GetGUI()->GetInfoManager().SetCurrentItem(g_application.CurrentFileItem());
+  if (m_currentChannel)
+    m_currentChannel->SetRadioRDSInfoTag(m_currentInfoTag);
 
   // send a message to all windows to tell them to update the radiotext
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_RADIOTEXT);

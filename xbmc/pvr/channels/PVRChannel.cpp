@@ -281,6 +281,18 @@ bool CPVRChannel::SetLocked(bool bIsLocked)
   return false;
 }
 
+std::shared_ptr<CPVRRadioRDSInfoTag> CPVRChannel::GetRadioRDSInfoTag() const
+{
+  CSingleLock lock(m_critSection);
+  return m_rdsTag;
+}
+
+void CPVRChannel::SetRadioRDSInfoTag(const std::shared_ptr<CPVRRadioRDSInfoTag>& tag)
+{
+  CSingleLock lock(m_critSection);
+  m_rdsTag = tag;
+}
+
 bool CPVRChannel::IsRecording(void) const
 {
   return CServiceBroker::GetPVRManager().Timers()->IsRecordingOnChannel(*this);

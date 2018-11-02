@@ -396,18 +396,6 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem *item, const CGUIInf
     return false;
   }
 
-  if (item->HasPVRRadioRDSInfoTag())
-  {
-    switch (info.m_info)
-    {
-      case MUSICPLAYER_CHANNEL_NAME:
-        strValue = item->GetPVRRadioRDSInfoTag()->GetProgStation();
-        if (!strValue.empty())
-          return true;
-        break; // try to get channel name from channel tag
-    }
-  }
-
   CPVREpgInfoTagPtr epgTag;
   CPVRChannelPtr channel;
   if (item->IsPVRChannel() || item->IsEPG() || item->IsPVRTimer())
@@ -593,6 +581,16 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem *item, const CGUIInf
     switch (info.m_info)
     {
       case MUSICPLAYER_CHANNEL_NAME:
+      {
+        const std::shared_ptr<CPVRRadioRDSInfoTag> rdsTag = channel->GetRadioRDSInfoTag();
+        if (rdsTag)
+        {
+          strValue = rdsTag->GetProgStation();
+          if (!strValue.empty())
+            return true;
+        }
+        // fall-thru is intended
+      }
       case VIDEOPLAYER_CHANNEL_NAME:
       case LISTITEM_CHANNEL_NAME:
         strValue = channel->ChannelName();
@@ -827,7 +825,10 @@ bool CPVRGUIInfo::GetPVRLabel(const CFileItem *item, const CGUIInfo &info, std::
 
 bool CPVRGUIInfo::GetRadioRDSLabel(const CFileItem *item, const CGUIInfo &info, std::string &strValue) const
 {
-  const CPVRRadioRDSInfoTagPtr tag = item->GetPVRRadioRDSInfoTag();
+  if (!item->HasPVRChannelInfoTag())
+    return false;
+
+  const std::shared_ptr<CPVRRadioRDSInfoTag> tag = item->GetPVRChannelInfoTag()->GetRadioRDSInfoTag();
   if (tag)
   {
     switch (info.m_info)
@@ -1280,7 +1281,10 @@ bool CPVRGUIInfo::GetPVRBool(const CFileItem *item, const CGUIInfo &info, bool& 
 
 bool CPVRGUIInfo::GetRadioRDSBool(const CFileItem *item, const CGUIInfo &info, bool &bValue) const
 {
-  const CPVRRadioRDSInfoTagPtr tag = item->GetPVRRadioRDSInfoTag();
+  if (!item->HasPVRChannelInfoTag())
+    return false;
+
+  const std::shared_ptr<CPVRRadioRDSInfoTag> tag = item->GetPVRChannelInfoTag()->GetRadioRDSInfoTag();
   if (tag)
   {
     switch (info.m_info)

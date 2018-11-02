@@ -27,6 +27,7 @@ class CFileItemList;
 namespace PVR
 {
   class CPVRChannelGroupInternal;
+  class CPVRRadioRDSInfoTag;
 
   /** PVR Channel class */
   class CPVRChannel : public Observable,
@@ -147,6 +148,18 @@ namespace PVR
      * @return If recording, gets the recording if the add-on provides the epg id in recordings
      */
     CPVRRecordingPtr GetRecording(void) const;
+
+    /*!
+     * @brief Obtain the Radio RDS data for this channel, if available.
+     * @return The Radio RDS data or nullptr.
+     */
+    std::shared_ptr<CPVRRadioRDSInfoTag> GetRadioRDSInfoTag() const;
+
+    /*!
+     * @brief Set the Radio RDS data for the channel.
+     * @param tag The RDS data.
+     */
+    void SetRadioRDSInfoTag(const std::shared_ptr<CPVRRadioRDSInfoTag>& tag);
 
     /*!
      * @return True if this channel has a corresponding recording, false otherwise
@@ -443,7 +456,8 @@ namespace PVR
     std::string      m_strChannelName;          /*!< the name for this channel used by XBMC */
     time_t           m_iLastWatched;            /*!< last time channel has been watched */
     bool             m_bChanged;                /*!< true if anything in this entry was changed that needs to be persisted */
-    CPVRChannelNumber m_channelNumber;         /*!< the number this channel has in the currently selected channel group */
+    CPVRChannelNumber m_channelNumber;          /*!< the number this channel has in the currently selected channel group */
+    std::shared_ptr<CPVRRadioRDSInfoTag> m_rdsTag; /*! < the radio rds data, if available for the channel. */
     //@}
 
     /*! @name EPG related channel data

@@ -20,11 +20,6 @@
 
 using namespace PVR;
 
-CPVRRadioRDSInfoTagPtr CPVRRadioRDSInfoTag::CreateDefaultTag()
-{
-  return CPVRRadioRDSInfoTagPtr(new CPVRRadioRDSInfoTag());
-}
-
 CPVRRadioRDSInfoTag::CPVRRadioRDSInfoTag(void)
 {
   Clear();
