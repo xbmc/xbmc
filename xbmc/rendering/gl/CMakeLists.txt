@@ -1,10 +1,8 @@
-set(SOURCES GUIWindowTestPatternGL.cpp
-            RenderSystemGL.cpp
+set(SOURCES RenderSystemGL.cpp
             ../MatrixGL.cpp
             GLShader.cpp)
 
-set(HEADERS GUIWindowTestPatternGL.h
-            RenderSystemGL.h
+set(HEADERS RenderSystemGL.h
             ../MatrixGL.h
             GLShader.h)
 

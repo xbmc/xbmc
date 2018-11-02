@@ -54,7 +54,6 @@ const CWindowTranslator::WindowMapByName CWindowTranslator::WindowMappingByName 
     { "pvrosdguide"              , WINDOW_DIALOG_PVR_CHANNEL_GUIDE }, // backward compatibility to v17
     { "pvrosdteletext"           , WINDOW_DIALOG_OSD_TELETEXT },
     { "systeminfo"               , WINDOW_SYSTEM_INFORMATION },
-    { "testpattern"              , WINDOW_TEST_PATTERN },
     { "screencalibration"        , WINDOW_SCREEN_CALIBRATION },
     { "systemsettings"           , WINDOW_SETTINGS_SYSTEM },
     { "servicesettings"          , WINDOW_SETTINGS_SERVICE },
