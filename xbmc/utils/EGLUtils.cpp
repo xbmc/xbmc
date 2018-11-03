@@ -321,6 +321,15 @@ bool CEGLContextUtils::CreateContext(CEGLAttributesVec contextAttribs)
   if (CEGLUtils::HasExtension(m_eglDisplay, "EGL_IMG_context_priority"))
     contextAttribs.Add({{EGL_CONTEXT_PRIORITY_LEVEL_IMG, EGL_CONTEXT_PRIORITY_HIGH_IMG}});
 
+//! @todo remove when Raspberry Pi updates their EGL headers
+#if !defined(TARGET_RASPBERRY_PI)
+  if (CEGLUtils::HasExtension(m_eglDisplay, "EGL_KHR_create_context") &&
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_openGlDebugging)
+  {
+    contextAttribs.Add({{EGL_CONTEXT_FLAGS_KHR, EGL_CONTEXT_OPENGL_DEBUG_BIT_KHR}});
+  }
+#endif
+
   m_eglContext = eglCreateContext(m_eglDisplay, eglConfig,
                                   EGL_NO_CONTEXT, contextAttribs.Get());
 
