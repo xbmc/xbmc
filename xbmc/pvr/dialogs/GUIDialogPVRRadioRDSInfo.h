@@ -21,47 +21,38 @@ namespace PVR
     CGUIDialogPVRRadioRDSInfo(void);
     ~CGUIDialogPVRRadioRDSInfo(void) override = default;
     bool OnMessage(CGUIMessage& message) override;
-    bool HasListItems() const override { return true; }
-    CFileItemPtr GetCurrentListItem(int offset = 0) override;
 
   protected:
     void OnInitWindow() override;
-    void OnDeinitWindow(int nextWindowID) override;
 
   private:
-    void InitControls(CGUISpinControl* spin, uint32_t iSpinLabelId, uint32_t iSpinControlId, bool& bSpinLabelPresent,
-                      CGUITextBox* textbox, const std::string& textboxValue);
-    void UpdateControls(CGUISpinControl* spin, uint32_t iSpinLabelId, uint32_t iSpinControlId, bool& bSpinLabelPresent,
-                        CGUITextBox* textbox, const std::string& textboxNewValue, std::string& textboxCurrentValue);
+    class InfoControl
+    {
+    public:
+      InfoControl(uint32_t iSpinLabelId, uint32_t iSpinControlId);
+      void Init(CGUISpinControl* spin, CGUITextBox* textbox);
+      bool Update(const std::string& textboxValue);
 
-    CFileItemPtr m_rdsItem;
+    private:
+      CGUISpinControl* m_spinControl = nullptr;
+      uint32_t m_iSpinLabelId = 0;
+      uint32_t m_iSpinControlId = 0;
+      CGUITextBox* m_textbox = nullptr;
+      bool m_bSpinLabelPresent = false;
+      std::string m_textboxValue;
+    };
 
-    bool m_InfoPresent = false;
-    bool m_LabelInfoNewsPresent = false;
-    std::string m_LabelInfoNews;
+    void InitInfoControls();
+    void UpdateInfoControls();
 
-    bool m_LabelInfoNewsLocalPresent = false;
-    std::string m_LabelInfoNewsLocal;
-
-    bool m_LabelInfoWeatherPresent = false;
-    std::string m_LabelInfoWeather;
-
-    bool m_LabelInfoLotteryPresent = false;
-    std::string m_LabelInfoLottery;
-
-    bool m_LabelInfoSportPresent = false;
-    std::string m_LabelInfoSport;
-
-    bool m_LabelInfoStockPresent = false;
-    std::string m_LabelInfoStock;
-
-    bool m_LabelInfoOtherPresent = false;
-    std::string m_LabelInfoOther;
-
-    bool m_LabelInfoCinemaPresent = false;
-    std::string m_LabelInfoCinema;
-
-    bool m_LabelInfoHoroscopePresent = false;
-    std::string m_LabelInfoHoroscope;
+    InfoControl m_InfoNews;
+    InfoControl m_InfoNewsLocal;
+    InfoControl m_InfoSport;
+    InfoControl m_InfoWeather;
+    InfoControl m_InfoLottery;
+    InfoControl m_InfoStock;
+    InfoControl m_InfoOther;
+    InfoControl m_InfoCinema;
+    InfoControl m_InfoHoroscope;
   };
 }
