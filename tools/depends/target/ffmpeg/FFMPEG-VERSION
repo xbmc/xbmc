@@ -1,4 +1,4 @@
 LIBNAME=ffmpeg
 BASE_URL=https://github.com/xbmc/FFmpeg
-VERSION=4.0.2-Leia-Alpha3
+VERSION=4.0.3-Leia-Beta5
 ARCHIVE=$(LIBNAME)-$(VERSION).tar.gz
