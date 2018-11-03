@@ -73,11 +73,6 @@ CWinSystemGbm::CWinSystemGbm() :
 
 bool CWinSystemGbm::InitWindowSystem()
 {
-  if (!m_vt.OpenTTY())
-  {
-    return false;
-  }
-
   m_DRM = std::make_shared<CDRMAtomic>();
 
   if (!m_DRM->InitDrm())

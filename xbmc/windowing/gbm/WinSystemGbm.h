@@ -17,7 +17,6 @@
 #include "windowing/WinSystem.h"
 #include "DRMUtils.h"
 #include "VideoLayerBridge.h"
-#include "VTUtils.h"
 
 class IDispResource;
 
@@ -80,9 +79,6 @@ protected:
   XbmcThreads::EndTime m_dispResetTimer;
   std::unique_ptr<OPTIONALS::CLircContainer, OPTIONALS::delete_CLircContainer> m_lirc;
   std::unique_ptr<CLibInputHandler> m_libinput;
-
-private:
-  CVTUtils m_vt;
 };
 
 }
