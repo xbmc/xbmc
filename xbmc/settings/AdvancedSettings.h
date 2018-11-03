@@ -269,6 +269,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     std::vector<std::string> m_videoTvShowExtraArt;
     std::vector<std::string> m_videoTvSeasonExtraArt;
     std::vector<std::string> m_videoMovieExtraArt;
+    std::vector<std::string> m_videoMovieSetExtraArt;
     std::vector<std::string> m_videoMusicVideoExtraArt;
 
     bool m_bVideoScannerIgnoreErrors;
