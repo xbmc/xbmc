@@ -38,9 +38,74 @@ std::map<GLenum, const char*> glErrors =
   X(GL_STACK_OVERFLOW),
 #endif
 };
+
+std::map<GLenum, const char*> glErrorSource =
+{
+//! @todo remove TARGET_RASPBERRY_PI when Raspberry Pi updates their GL headers
+#if defined(HAS_GLES) && defined(TARGET_LINUX) && !defined(TARGET_RASPBERRY_PI)
+  X(GL_DEBUG_SOURCE_API_KHR),
+  X(GL_DEBUG_SOURCE_WINDOW_SYSTEM_KHR),
+  X(GL_DEBUG_SOURCE_SHADER_COMPILER_KHR),
+  X(GL_DEBUG_SOURCE_THIRD_PARTY_KHR),
+  X(GL_DEBUG_SOURCE_APPLICATION_KHR),
+  X(GL_DEBUG_SOURCE_OTHER_KHR),
+#endif
+};
+
+std::map<GLenum, const char*> glErrorType =
+{
+//! @todo remove TARGET_RASPBERRY_PI when Raspberry Pi updates their GL headers
+#if defined(HAS_GLES) && defined(TARGET_LINUX) && !defined(TARGET_RASPBERRY_PI)
+  X(GL_DEBUG_TYPE_ERROR_KHR),
+  X(GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR_KHR),
+  X(GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR_KHR),
+  X(GL_DEBUG_TYPE_PORTABILITY_KHR),
+  X(GL_DEBUG_TYPE_PERFORMANCE_KHR),
+  X(GL_DEBUG_TYPE_OTHER_KHR),
+  X(GL_DEBUG_TYPE_MARKER_KHR),
+#endif
+};
+
+std::map<GLenum, const char*> glErrorSeverity =
+{
+//! @todo remove TARGET_RASPBERRY_PI when Raspberry Pi updates their GL headers
+#if defined(HAS_GLES) && defined(TARGET_LINUX) && !defined(TARGET_RASPBERRY_PI)
+  X(GL_DEBUG_SEVERITY_HIGH_KHR),
+  X(GL_DEBUG_SEVERITY_MEDIUM_KHR),
+  X(GL_DEBUG_SEVERITY_LOW_KHR),
+  X(GL_DEBUG_SEVERITY_NOTIFICATION_KHR),
+#endif
+};
 #undef X
 
 } // namespace
+
+void KODI::UTILS::GL::GlErrorCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
+{
+  std::string sourceStr;
+  std::string typeStr;
+  std::string severityStr;
+
+  auto glSource = glErrorSource.find(source);
+  if (glSource != glErrorSource.end())
+  {
+    sourceStr = glSource->second;
+  }
+
+  auto glType = glErrorType.find(type);
+  if (glType != glErrorType.end())
+  {
+    typeStr = glType->second;
+  }
+
+  auto glSeverity = glErrorSeverity.find(severity);
+  if (glSeverity != glErrorSeverity.end())
+  {
+    severityStr = glSeverity->second;
+  }
+
+  CLog::Log(LOGDEBUG, "OpenGL(ES) Debugging:\nSource: {}\nType: {}\nSeverity: {}\nID: {}\nMessage: {}", sourceStr, typeStr, severityStr, id, message);
+}
 
 static void PrintMatrix(const GLfloat* matrix, std::string matrixName)
 {
