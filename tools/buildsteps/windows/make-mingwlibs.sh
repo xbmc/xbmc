@@ -64,8 +64,8 @@ throwerror() {
 
 checkfiles() {
   for i in $@; do
-    if [ ! -f "$PREFIX/bin/$i" ]; then
-      throwerror "$PREFIX/bin/$i"
+    if [ ! -f "$PREFIX/$i" ]; then
+      throwerror "$PREFIX/$i"
       exit 1
     fi
   done
@@ -98,7 +98,7 @@ echo "-------------------------------------------------"
 echo " building FFmpeg $TRIPLET"
 echo "-------------------------------------------------"
 ./buildffmpeg.sh $MAKECLEAN
-checkfiles avcodec-58.dll avformat-58.dll avutil-56.dll postproc-55.dll swscale-5.dll avfilter-7.dll swresample-3.dll
+checkfiles lib/avcodec.lib lib/avformat.lib lib/avutil.lib lib/postproc.lib lib/swscale.lib lib/avfilter.lib lib/swresample.lib
 echo "-------------------------------------------------"
 echo " building of FFmpeg $TRIPLET done..."
 echo "-------------------------------------------------"

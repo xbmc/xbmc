@@ -1,0 +1,20 @@
+--- a/configure
++++ b/configure
+@@ -5109,6 +5109,8 @@
+         enabled shared && ! enabled small && test_cmd $windres --version && enable gnu_windres
+         enabled x86_32 && check_ldflags -Wl,--large-address-aware
+         shlibdir_default="$bindir_default"
++        LIBPREF=""
++        LIBSUF=".lib"
+         SLIBPREF=""
+         SLIBSUF=".dll"
+         SLIBNAME_WITH_VERSION='$(SLIBPREF)$(FULLNAME)-$(LIBVERSION)$(SLIBSUF)'
+@@ -5158,6 +5160,8 @@
+         fi
+         enabled x86_32 && check_ldflags -LARGEADDRESSAWARE
+         shlibdir_default="$bindir_default"
++        LIBPREF=""
++        LIBSUF=".lib"
+         SLIBPREF=""
+         SLIBSUF=".dll"
+         SLIBNAME_WITH_VERSION='$(SLIBPREF)$(FULLNAME)-$(LIBVERSION)$(SLIBSUF)'

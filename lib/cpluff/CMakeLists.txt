@@ -46,6 +46,8 @@ target_include_directories(${PROJECT_NAME}
   $<INSTALL_INTERFACE:include>
 )
 
+target_compile_definitions(${PROJECT_NAME} PRIVATE -Dhash_delete=kazlib_hash_delete -Dhash_free=kazlib_hash_free -Dhash_insert=kazlib_hash_insert -Dlist_delete=kazlib_list_delete)
+
 target_compile_definitions(${PROJECT_NAME}
   PRIVATE
   XML_STATIC

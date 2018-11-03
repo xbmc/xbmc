@@ -7,7 +7,7 @@
 ; -> ...
 ;PLEASE KEEP THIS LIST IN ALPHABETICAL ORDER!
 crossguid-fef89a4-x64-vc140.7z
-curl-7.59.0-x64-v140.7z
+curl-7.61.1-x64-v141.7z
 dnssd-765.50.9-x64-vc140-v2.7z
 easyhook-2.7.6035.0-x64-vc140.7z
 expat-2.2.0-x64-vc140.7z
@@ -30,8 +30,8 @@ libxml2-2.9.4-x64-vc140.7z
 libxslt-1.1.29-x64-vc140.7z
 lzo-2.09-x64-vc140.7z
 mini_wdk-10.0.14393.0-x64.7z
-mysql-connector-c-6.1.9-x64-vc140.7z
-openssl-1.0.2k-x64-vc140.7z
+mariadb-connector-c-3.0.6-x64-v141.7z
+openssl-1.1.1-x64-v141.7z
 pcre-8.40-x64-vc140.7z
 pillow-4.2.1-x64-vc140.zip
 pycryptodome-3.4.7-x64-vc140.zip

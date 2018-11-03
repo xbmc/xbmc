@@ -121,7 +121,7 @@ do_print_status "$LIBNAME-$VERSION (${TRIPLET})" "$blue_color" "Configuring"
 [[ -z "$extra_ldflags" ]] && extra_ldflags=-static-libgcc
 
 $LOCALSRCDIR/configure --target-os=$FFMPEG_TARGET_OS --prefix=$FFMPEGDESTDIR --arch=$ARCH \
-  --disable-static --enable-shared $FFMPEG_OPTS_SHARED \
+  $FFMPEG_OPTS_SHARED \
   --extra-cflags="$extra_cflags" --extra-ldflags="$extra_ldflags"
 
 do_makelib
