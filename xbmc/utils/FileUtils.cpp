@@ -236,10 +236,12 @@ bool CFileUtils::CheckFileAccessAllowed(const std::string &filePath)
   // ALLOW kodi paths
   const std::vector<std::string> whitelist = {
     CSpecialProtocol::TranslatePath("special://home"),
-    CSpecialProtocol::TranslatePath("special://xbmc")
+    CSpecialProtocol::TranslatePath("special://xbmc"),
+    CSpecialProtocol::TranslatePath("special://musicartistsinfo")
   };
 
   // image urls come in the form of image://... sometimes with a / appended at the end
+  // and can be embedded in a music or video file image://music@...
   // strip this off to get the real file path
   bool isImage = false;
   std::string decodePath = CURL::Decode(filePath);
@@ -249,6 +251,8 @@ bool CFileUtils::CheckFileAccessAllowed(const std::string &filePath)
     isImage = true;
     decodePath.erase(pos, 8);
     URIUtils::RemoveSlashAtEnd(decodePath);
+    if (StringUtils::StartsWith(decodePath, "music@") || StringUtils::StartsWith(decodePath, "video@"))
+      decodePath.erase(pos, 6);
   }
 
   // check blacklist
