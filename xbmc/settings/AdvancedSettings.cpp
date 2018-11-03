@@ -433,6 +433,8 @@ void CAdvancedSettings::Initialize()
   m_extraLogEnabled = false;
   m_extraLogLevels = 0;
 
+  m_openGlDebugging = false;
+
   m_userAgent = g_sysinfo.GetUserAgent();
 
   m_initialized = true;
@@ -1228,6 +1230,8 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     for(std::vector<std::string>::iterator it = steps.begin(); it != steps.end(); ++it)
       m_seekSteps.push_back(atoi((*it).c_str()));
   }
+
+  XMLUtils::GetBoolean(pRootElement, "opengldebugging", m_openGlDebugging);
 
   // load in the settings overrides
   CServiceBroker::GetSettingsComponent()->GetSettings()->LoadHidden(pRootElement);
