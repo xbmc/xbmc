@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
-"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Kodi Translation Team\n"
@@ -350,7 +350,7 @@ msgstr "Lägg till videokällor och ange lämpligt innehållstyp för att fylla 
 
 msgctxt "#31106"
 msgid "Teletext"
-msgstr "Texttv"
+msgstr "Text-tv"
 
 msgctxt "#31107"
 msgid "WideList"
@@ -406,7 +406,7 @@ msgstr "Ställ in väderleverantör"
 
 msgctxt "#31122"
 msgid "Unwatched TV Shows"
-msgstr "Osedda TV-program"
+msgstr "Osedda tv-program"
 
 msgctxt "#31123"
 msgid "Same director"
