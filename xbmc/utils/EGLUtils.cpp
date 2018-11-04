@@ -17,6 +17,8 @@
 
 #include <EGL/eglext.h>
 
+#include <map>
+
 namespace
 {
 //! @todo remove when Raspberry Pi updates their EGL headers
@@ -34,7 +36,7 @@ namespace
 #endif
 
 #define X(VAL) std::make_pair(VAL, #VAL)
-std::array<std::pair<EGLint, const char*>, 32> eglAttributes =
+std::map<EGLint, const char*> eglAttributes =
 {
   // please keep attributes in accordance to:
   // https://www.khronos.org/registry/EGL/sdk/docs/man/html/eglGetConfigAttrib.xhtml
@@ -71,8 +73,64 @@ std::array<std::pair<EGLint, const char*>, 32> eglAttributes =
   X(EGL_TRANSPARENT_GREEN_VALUE),
   X(EGL_TRANSPARENT_BLUE_VALUE)
 };
+
+std::map<EGLenum, const char*> eglErrors =
+{
+  // please keep errors in accordance to:
+  // https://www.khronos.org/registry/EGL/sdk/docs/man/html/eglGetError.xhtml
+  X(EGL_SUCCESS),
+  X(EGL_NOT_INITIALIZED),
+  X(EGL_BAD_ACCESS),
+  X(EGL_BAD_ALLOC),
+  X(EGL_BAD_ATTRIBUTE),
+  X(EGL_BAD_CONFIG),
+  X(EGL_BAD_CONTEXT),
+  X(EGL_BAD_CURRENT_SURFACE),
+  X(EGL_BAD_DISPLAY),
+  X(EGL_BAD_MATCH),
+  X(EGL_BAD_NATIVE_PIXMAP),
+  X(EGL_BAD_NATIVE_WINDOW),
+  X(EGL_BAD_PARAMETER),
+  X(EGL_BAD_SURFACE),
+  X(EGL_CONTEXT_LOST),
+};
+
+std::map<EGLint, const char*> eglErrorType =
+{
+//! @todo remove when Raspberry Pi updates their EGL headers
+#if !defined(TARGET_RASPBERRY_PI)
+  X(EGL_DEBUG_MSG_CRITICAL_KHR),
+  X(EGL_DEBUG_MSG_ERROR_KHR),
+  X(EGL_DEBUG_MSG_WARN_KHR),
+  X(EGL_DEBUG_MSG_INFO_KHR),
+#endif
+};
 #undef X
+
+} // namespace
+
+//! @todo remove when Raspberry Pi updates their EGL headers
+#if !defined(TARGET_RASPBERRY_PI)
+void EglErrorCallback(EGLenum error, const char *command, EGLint messageType, EGLLabelKHR threadLabel, EGLLabelKHR objectLabel, const char* message)
+{
+  std::string errorStr;
+  std::string typeStr;
+
+  auto eglError = eglErrors.find(error);
+  if (eglError != eglErrors.end())
+  {
+    errorStr = eglError->second;
+  }
+
+  auto eglType = eglErrorType.find(messageType);
+  if (eglType != eglErrorType.end())
+  {
+    typeStr = eglType->second;
+  }
+
+  CLog::Log(LOGDEBUG, "EGL Debugging:\nError: {}\nCommand: {}\nType: {}\nMessage: {}", errorStr, command, typeStr, message);
 }
+#endif
 
 std::set<std::string> CEGLUtils::GetClientExtensions()
 {
@@ -112,7 +170,16 @@ bool CEGLUtils::HasClientExtension(const std::string& name)
 
 void CEGLUtils::LogError(const std::string& what)
 {
-  CLog::Log(LOGERROR, "%s (EGL error %d)", what.c_str(), eglGetError());
+  EGLenum error = eglGetError();
+  std::string errorStr = StringUtils::Format("0x%04X", error);
+
+  auto eglError = eglErrors.find(error);
+  if (eglError != eglErrors.end())
+  {
+    errorStr = eglError->second;
+  }
+
+  CLog::Log(LOGERROR, "{} ({})", what.c_str(), errorStr);
 }
 
 CEGLContextUtils::CEGLContextUtils()
@@ -122,6 +189,22 @@ CEGLContextUtils::CEGLContextUtils()
 CEGLContextUtils::CEGLContextUtils(EGLenum platform, std::string const& platformExtension)
 : m_platform{platform}
 {
+//! @todo remove when Raspberry Pi updates their EGL headers
+#if !defined(TARGET_RASPBERRY_PI)
+  if (CEGLUtils::HasClientExtension("EGL_KHR_debug"))
+  {
+    auto eglDebugMessageControl = CEGLUtils::GetRequiredProcAddress<PFNEGLDEBUGMESSAGECONTROLKHRPROC>("eglDebugMessageControlKHR");
+
+    EGLAttrib eglDebugAttribs[] = {EGL_DEBUG_MSG_CRITICAL_KHR, EGL_TRUE,
+                                   EGL_DEBUG_MSG_ERROR_KHR, EGL_TRUE,
+                                   EGL_DEBUG_MSG_WARN_KHR, EGL_TRUE,
+                                   EGL_DEBUG_MSG_INFO_KHR, EGL_TRUE,
+                                   EGL_NONE};
+
+    eglDebugMessageControl(EglErrorCallback, eglDebugAttribs);
+  }
+#endif
+
   m_platformSupported = CEGLUtils::HasClientExtension("EGL_EXT_platform_base") && CEGLUtils::HasClientExtension(platformExtension);
 }
 
