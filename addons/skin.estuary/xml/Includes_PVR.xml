@@ -325,7 +325,7 @@
 				</control>
 			</control>
 		</control>
-  </include>
+	</include>
 	<include name="RDSInfoLine">
 		<control type="grouplist">
 			<visible>!String.IsEmpty($PARAM[value])</visible>

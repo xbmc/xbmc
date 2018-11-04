@@ -11,11 +11,9 @@
 #include <deque>
 #include <string>
 
-#include "XBDateTime.h"
+#include "threads/CriticalSection.h"
 #include "utils/IArchivable.h"
 #include "utils/ISerializable.h"
-
-#include "pvr/PVRTypes.h"
 
 namespace PVR
 {
@@ -23,23 +21,10 @@ namespace PVR
 class CPVRRadioRDSInfoTag final : public IArchivable, public ISerializable
 {
 public:
-  /*!
-   * @brief Create a new empty event .
-   */
-  static CPVRRadioRDSInfoTagPtr CreateDefaultTag();
-
-private:
-  /*!
-   * @brief Create a new empty event.
-   */
   CPVRRadioRDSInfoTag(void);
 
-  CPVRRadioRDSInfoTag(const CPVRRadioRDSInfoTag& tag) = delete;
-  const CPVRRadioRDSInfoTag& operator =(const CPVRRadioRDSInfoTag& tag) = delete;
-
-public:
-  bool operator ==(const CPVRRadioRDSInfoTag& tag) const;
-  bool operator !=(const CPVRRadioRDSInfoTag& tag) const;
+  bool operator ==(const CPVRRadioRDSInfoTag& right) const;
+  bool operator !=(const CPVRRadioRDSInfoTag& right) const;
 
   void Archive(CArchive& ar) override;
   void Serialize(CVariant& value) const override;
@@ -127,19 +112,22 @@ public:
   void SetEditorialStaff(const std::string& strEditorialStaff);
   const std::string GetEditorialStaff() const;
 
-  void SetRadioStyle(const std::string& style) { m_strRadioStyle = style; }
-  const std::string GetRadioStyle() const { return m_strRadioStyle; }
-  void SetPlayingRadiotext(bool yesNo) { m_bHaveRadiotext = yesNo; }
-  bool IsPlayingRadiotext() { return m_bHaveRadiotext; }
-  void SetPlayingRadiotextPlus(bool yesNo) { m_bHaveRadiotextPlus = yesNo; }
-  bool IsPlayingRadiotextPlus() { return m_bHaveRadiotextPlus; }
+  void SetRadioStyle(const std::string& style);
+  const std::string GetRadioStyle() const;
 
-protected:
-  /*! \brief Trim whitespace off the given string
-   *  \param value string to trim
-   *  \return trimmed value, with spaces removed from left and right, as well as carriage returns from the right.
-   */
-  std::string Trim(const std::string &value) const;
+  void SetPlayingRadiotext(bool yesNo);
+  bool IsPlayingRadiotext() const;
+
+  void SetPlayingRadiotextPlus(bool yesNo);
+  bool IsPlayingRadiotextPlus() const;
+
+private:
+  CPVRRadioRDSInfoTag(const CPVRRadioRDSInfoTag& tag) = delete;
+  const CPVRRadioRDSInfoTag& operator =(const CPVRRadioRDSInfoTag& tag) = delete;
+
+  static std::string Trim(const std::string &value);
+
+  mutable CCriticalSection m_critSection;
 
   bool m_RDS_SpeechActive;
 
@@ -155,16 +143,33 @@ protected:
   int         m_iAlbumTracknumber;
   std::string m_strRadioStyle;
 
-  std::deque<std::string> m_strInfoNews;
-  std::deque<std::string> m_strInfoNewsLocal;
-  std::deque<std::string> m_strInfoSport;
-  std::deque<std::string> m_strInfoStock;
-  std::deque<std::string> m_strInfoWeather;
-  std::deque<std::string> m_strInfoLottery;
-  std::deque<std::string> m_strInfoOther;
-  std::deque<std::string> m_strInfoHoroscope;
-  std::deque<std::string> m_strInfoCinema;
-  std::deque<std::string> m_strEditorialStaff;
+  class Info
+  {
+  public:
+    Info() = default;
+
+    bool operator==(const Info &right) const;
+
+    void Clear();
+    void Add(const std::string& text);
+    const std::string& GetText() const { return m_infoText; }
+
+  private:
+    std::deque<std::string> m_data;
+    std::string m_infoText;
+  };
+
+  Info m_strInfoNews;
+  Info m_strInfoNewsLocal;
+  Info m_strInfoSport;
+  Info m_strInfoStock;
+  Info m_strInfoWeather;
+  Info m_strInfoLottery;
+  Info m_strInfoOther;
+  Info m_strInfoHoroscope;
+  Info m_strInfoCinema;
+  Info m_strEditorialStaff;
+
   std::string m_strProgStyle;
   std::string m_strProgHost;
   std::string m_strProgStation;

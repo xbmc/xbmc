@@ -396,8 +396,8 @@ namespace XBMCAddon
         throw PlayerException("Kodi is not playing any music file with RDS");
 
       std::shared_ptr<CFileItem> item = g_application.CurrentFileItemPtr();
-      if (item && item->HasPVRRadioRDSInfoTag())
-        return new InfoTagRadioRDS(item->GetPVRRadioRDSInfoTag());
+      if (item && item->HasPVRChannelInfoTag())
+        return new InfoTagRadioRDS(item->GetPVRChannelInfoTag());
 
       return new InfoTagRadioRDS();
     }
