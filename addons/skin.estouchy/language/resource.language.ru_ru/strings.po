@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
-"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Kodi Translation Team\n"
@@ -204,9 +204,33 @@ msgctxt "#31405"
 msgid "Configure & manage media sharing services · Configure & manage the weather service"
 msgstr "Настройка и управление службами общего доступа к мультимедиа · Настройка и управление службой погоды"
 
+msgctxt "#31406"
+msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
+msgstr "Настройка экрана · Настройка звука · Настройка сети · Настройка электропитания · Настройка журнала событий"
+
 msgctxt "#31407"
 msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
 msgstr "Управление дополнениями · Поиск и установка дополнений с kodi.tv · Настройки дополнений"
+
+msgctxt "#31408"
+msgid "Configure actions that can be used during playback · Configure how media content is played"
+msgstr "Настроить действия, которые можно использовать во время воспроизведения · Настроить способ воспроизведения медиаконтента"
+
+msgctxt "#31409"
+msgid "Configure library sources · Show the media lists display content · Configure how library lists are navigated"
+msgstr "Настройка источников библиотеки · Отображение содержимого · Настройка навигации по библиотеке."
+
+msgctxt "#31410"
+msgid "Configure skin · Configure region · Configure control · Configure screensaver · Configure master lock"
+msgstr "Настроить внешний вид · Настроить регион · Настроить управление · Настроить хранитель экрана · Настроить блокировку"
+
+msgctxt "#31411"
+msgid "Configure your profiles · Set locking options · Enable login screen"
+msgstr "Настройка профилей · Установка параметров блокировки · Отображение экрана входа в систему"
+
+msgctxt "#31412"
+msgid "Display system information · Hardware statistics · Check storage availability · View network configuration"
+msgstr "Отображение информации о системе · Отчет по оборудованию · Проверка доступности хранилища · Просмотр конфигурации сети"
 
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
@@ -239,6 +263,10 @@ msgstr "Использовать собственный фон"
 msgctxt "#31554"
 msgid "Background:"
 msgstr "Фон:"
+
+msgctxt "#31555"
+msgid "Configure TV settings · Change full screen info · Manage EPG data settings"
+msgstr "Настройка параметров телевизора · Изменение полноэкранной информации · Управление настройками программы телепередач"
 
 msgctxt "#31556"
 msgid "Live TV"
@@ -283,6 +311,18 @@ msgstr "Показать удаленное"
 msgctxt "#31900"
 msgid "First Run"
 msgstr "Первый запуск"
+
+msgctxt "#31901"
+msgid "There are two things to know about navigating Estouchy"
+msgstr "Есть две вещи, которые нужно знать о навигации Estouchy"
+
+msgctxt "#31902"
+msgid "The Kodi logo functions as a 'HOME' button. Whenever you touch it, you will be taken back to the home screen."
+msgstr "Логотип Kodi функционирует как кнопка «Домой». Всякий раз, когда вы касаетесь его, вы будете возвращены на главный экран."
+
+msgctxt "#31903"
+msgid "When you are playing audio or video, the item title will appear at the top of the screen. Touching it will take you to the fullscreen visualization or video window."
+msgstr "Когда вы воспроизводите аудио или видео, заголовок элемента появится в верхней части экрана. Прикосновение к нему приведет вас к полноэкранной визуализации или видеоэкрану."
 
 msgctxt "#31904"
 msgid "Now Playing Title..."

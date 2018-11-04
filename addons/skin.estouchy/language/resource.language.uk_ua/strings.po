@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
-"Report-Msgid-Bugs-To: http://trac.kodi.tv/\n"
+"Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Kodi Translation Team\n"
@@ -43,6 +43,10 @@ msgstr "Контекстне меню"
 msgctxt "#31009"
 msgid "Working..."
 msgstr "Зачекайте…"
+
+msgctxt "#31011"
+msgid "Recent"
+msgstr "Нещодавні"
 
 msgctxt "#31013"
 msgid "Movies"
@@ -195,6 +199,18 @@ msgstr "Стиль Arial"
 msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
 msgstr "Вибір обкладинки · Зміна мови та регіону · Налаштування показу файлів · Вибір заставки"
+
+msgctxt "#31405"
+msgid "Configure & manage media sharing services · Configure & manage the weather service"
+msgstr "Налаштування служб обміну мультимедіа і керування ними · Налаштування служби погоди і керування нею."
+
+msgctxt "#31406"
+msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
+msgstr "Налаштування дисплею · Налаштування звуку · Налаштування доступу до Інтернету · Налаштування енергозбереження · Налаштування ведення журналу"
+
+msgctxt "#31407"
+msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
+msgstr "Керування встановленими надбудовами • Встановлення надбудов з kodi.tv . Зміна налаштувань надбудов"
 
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
