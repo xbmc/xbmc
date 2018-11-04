@@ -88,7 +88,7 @@ class CGetDirectoryItems : public IRunnable
 {
 public:
   CGetDirectoryItems(XFILE::CVirtualDirectory &dir, CURL &url, CFileItemList &items)
-  : m_dir(dir), m_url(url), m_items(items)
+  : m_result(false), m_dir(dir), m_url(url), m_items(items)
   {
   }
   void Run() override
