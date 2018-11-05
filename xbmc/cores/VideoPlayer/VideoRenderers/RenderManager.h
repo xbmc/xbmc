@@ -65,7 +65,7 @@ public:
   bool IsVideoLayer();
   RESOLUTION GetResolution();
   void UpdateResolution();
-  void TriggerUpdateResolution(float fps, int width, std::string &stereomode);
+  void TriggerUpdateResolution(float fps, int width, int height, std::string &stereomode);
   void SetViewMode(int iViewMode);
   void PreInit();
   void UnInit();

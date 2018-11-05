@@ -876,12 +876,13 @@ void CRenderManager::UpdateResolution()
   }
 }
 
-void CRenderManager::TriggerUpdateResolution(float fps, int width, std::string &stereomode)
+void CRenderManager::TriggerUpdateResolution(float fps, int width, int height, std::string &stereomode)
 {
   if (width)
   {
     m_fps = fps;
     m_width = width;
+    m_height = height;
     m_stereomode = stereomode;
   }
   m_bTriggerUpdateResolution = true;
