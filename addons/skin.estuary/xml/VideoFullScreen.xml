@@ -33,7 +33,9 @@
 		</control>
 		<control type="group" id="1">
 			<depth>DepthOSD+</depth>
-			<visible>Player.Caching</visible>
+			<visible>Player.Caching + Integer.IsGreater(Player.CacheLevel,0)</visible>
+			<animation effect="fade" delay="300" time="200">Visible</animation>
+			<animation effect="fade" delay="200" time="150">Hidden</animation>
 			<centerleft>50%</centerleft>
 			<width>110</width>
 			<centertop>50%</centertop>
