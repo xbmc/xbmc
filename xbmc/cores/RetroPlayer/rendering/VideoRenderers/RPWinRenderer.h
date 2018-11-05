@@ -99,7 +99,7 @@ namespace RETRO
   {
   public:
     CRPWinRenderer(const CRenderSettings &renderSettings, CRenderContext &context, std::shared_ptr<IRenderBufferPool> bufferPool);
-    ~CRPWinRenderer() override;
+    ~CRPWinRenderer() override = default;
 
     // implementation of CRPBaseRenderer
     bool Supports(RENDERFEATURE feature) const override;

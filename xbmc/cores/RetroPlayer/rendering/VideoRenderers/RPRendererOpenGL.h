@@ -43,6 +43,18 @@ namespace RETRO
     static bool SupportsScalingMethod(SCALINGMETHOD method);
 
   protected:
+    struct PackedVertex
+    {
+      float x, y, z;
+      float u1, v1;
+    };
+    struct Svertex
+    {
+      float x;
+      float y;
+      float z;
+    };
+    
     // implementation of CRPBaseRenderer
     void RenderInternal(bool clear, uint8_t alpha) override;
     void FlushInternal() override;
@@ -62,6 +74,13 @@ namespace RETRO
 
     virtual void Render(uint8_t alpha);
 
+    GLuint m_mainVAO;
+    GLuint m_mainVertexVBO;
+    GLuint m_mainIndexVBO;
+
+    GLuint m_blackbarsVAO;
+    GLuint m_blackbarsVertexVBO;
+    
     GLenum m_textureTarget = GL_TEXTURE_2D;
     float m_clearColour = 0.0f;
   };

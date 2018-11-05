@@ -41,11 +41,54 @@ CRPRendererOpenGL::CRPRendererOpenGL(const CRenderSettings &renderSettings, CRen
 {
   // Initialize CRPRendererOpenGL
   m_clearColour = m_context.UseLimitedColor() ? (16.0f / 0xff) : 0.0f;
+
+  // Set up main screen VAO/VBOs
+  glGenVertexArrays(1, &m_mainVAO);
+  glBindVertexArray(m_mainVAO);
+
+  glGenBuffers(1, &m_mainVertexVBO);
+  glGenBuffers(1, &m_mainIndexVBO);
+
+  m_context.EnableGUIShader(GL_SHADER_METHOD::TEXTURE);
+  GLint vertLoc = m_context.GUIShaderGetPos();
+  GLint loc = m_context.GUIShaderGetCoord0();
+  m_context.DisableGUIShader();
+
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_mainIndexVBO);
+  glBindBuffer(GL_ARRAY_BUFFER, m_mainVertexVBO);
+  glEnableVertexAttribArray(vertLoc);
+  glVertexAttribPointer(vertLoc, 3, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, x)));
+  glEnableVertexAttribArray(loc);
+  glVertexAttribPointer(loc, 2, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, u1)));
+
+  // Set up black bars VAO/VBO
+  glGenVertexArrays(1, &m_blackbarsVAO);
+  glBindVertexArray(m_blackbarsVAO);
+
+  glGenBuffers(1, &m_blackbarsVertexVBO);
+  glBindBuffer(GL_ARRAY_BUFFER, m_blackbarsVertexVBO);
+
+  m_context.EnableGUIShader(GL_SHADER_METHOD::DEFAULT);
+  GLint posLoc = m_context.GUIShaderGetPos();
+  m_context.DisableGUIShader();
+
+  glEnableVertexAttribArray(posLoc);
+  glVertexAttribPointer(posLoc, 3, GL_FLOAT, GL_FALSE, sizeof(Svertex), 0);
+
+  // Unbind everything just to be safe
+  glBindVertexArray(0);
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
 CRPRendererOpenGL::~CRPRendererOpenGL()
 {
-  Deinitialize();
+  glDeleteBuffers(1, &m_mainIndexVBO);
+  glDeleteBuffers(1, &m_mainVertexVBO);
+  glDeleteBuffers(1, &m_blackbarsVertexVBO);
+
+  glDeleteVertexArrays(1, &m_mainVAO);
+  glDeleteVertexArrays(1, &m_blackbarsVAO);
 }
 
 void CRPRendererOpenGL::RenderInternal(bool clear, uint8_t alpha)
@@ -117,17 +160,10 @@ void CRPRendererOpenGL::DrawBlackBars()
 {
   glDisable(GL_BLEND);
 
-  struct Svertex
-  {
-    float x;
-    float y;
-    float z;
-  };
   Svertex vertices[24];
   GLubyte count = 0;
 
   m_context.EnableGUIShader(GL_SHADER_METHOD::DEFAULT);
-  GLint posLoc = m_context.GUIShaderGetPos();
   GLint uniCol = m_context.GUIShaderGetUniCol();
 
   glUniform4f(uniCol, m_clearColour / 255.0f, m_clearColour / 255.0f, m_clearColour / 255.0f, 1.0f);
@@ -216,20 +252,16 @@ void CRPRendererOpenGL::DrawBlackBars()
     count += 6;
   }
 
-  GLuint vertexVBO;
+  glBindVertexArray(m_blackbarsVAO);
 
-  glGenBuffers(1, &vertexVBO);
-  glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
+  glBindBuffer(GL_ARRAY_BUFFER, m_blackbarsVertexVBO);
   glBufferData(GL_ARRAY_BUFFER, sizeof(Svertex)*count, &vertices[0], GL_STATIC_DRAW);
-
-  glVertexAttribPointer(posLoc, 3, GL_FLOAT, GL_FALSE, sizeof(Svertex), 0);
-  glEnableVertexAttribArray(posLoc);
 
   glDrawArrays(GL_TRIANGLES, 0, count);
 
-  glDisableVertexAttribArray(posLoc);
+  // Unbind VAO/VBO just to be safe
+  glBindVertexArray(0);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
-  glDeleteBuffers(1, &vertexVBO);
 
   m_context.DisableGUIShader();
 }
@@ -264,16 +296,8 @@ void CRPRendererOpenGL::Render(uint8_t alpha)
 
   GLubyte colour[4];
   GLubyte idx[4] = {0, 1, 3, 2}; // Determines order of triangle strip
-  GLuint vertexVBO;
-  GLuint indexVBO;
-  struct PackedVertex
-  {
-    float x, y, z;
-    float u1, v1;
-  } vertex[4];
+  PackedVertex vertex[4];
 
-  GLint vertLoc = m_context.GUIShaderGetPos();
-  GLint loc = m_context.GUIShaderGetCoord0();
   GLint uniColLoc = m_context.GUIShaderGetUniCol();
 
   // Setup color values
@@ -296,30 +320,21 @@ void CRPRendererOpenGL::Render(uint8_t alpha)
   vertex[1].u1 = vertex[2].u1 = rect.x2;
   vertex[2].v1 = vertex[3].v1 = rect.y2;
 
-  glGenBuffers(1, &vertexVBO);
-  glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
+  glBindVertexArray(m_mainVAO);
+  
+  glBindBuffer(GL_ARRAY_BUFFER, m_mainVertexVBO);
   glBufferData(GL_ARRAY_BUFFER, sizeof(PackedVertex)*4, &vertex[0], GL_STATIC_DRAW);
 
-  glVertexAttribPointer(vertLoc, 3, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, x)));
-  glVertexAttribPointer(loc, 2, GL_FLOAT, 0, sizeof(PackedVertex), BUFFER_OFFSET(offsetof(PackedVertex, u1)));
-
-  glEnableVertexAttribArray(vertLoc);
-  glEnableVertexAttribArray(loc);
-
-  glGenBuffers(1, &indexVBO);
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVBO);
+  // No need to bind the index VBO, it's part of VAO state
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLubyte)*4, idx, GL_STATIC_DRAW);
 
   glUniform4f(uniColLoc,(colour[0] / 255.0f), (colour[1] / 255.0f), (colour[2] / 255.0f), (colour[3] / 255.0f));
+
   glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, 0);
 
-  glDisableVertexAttribArray(vertLoc);
-  glDisableVertexAttribArray(loc);
-
+  // Unbind VAO/VBO just to be safe
+  glBindVertexArray(0);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
-  glDeleteBuffers(1, &vertexVBO);
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-  glDeleteBuffers(1, &indexVBO);
 
   m_context.DisableGUIShader();
 }

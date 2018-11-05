@@ -67,6 +67,9 @@ namespace RETRO
 
     virtual void Render(uint8_t alpha);
 
+    GLuint m_mainIndexVBO;
+    GLuint m_mainVertexVBO;
+    GLuint m_blackbarsVertexVBO;
     GLenum m_textureTarget = GL_TEXTURE_2D;
     float m_clearColour = 0.0f;
   };

@@ -29,7 +29,7 @@ namespace RETRO
   {
   public:
     CRPRendererGBM(const CRenderSettings &renderSettings, CRenderContext &context, std::shared_ptr<IRenderBufferPool> bufferPool);
-    ~CRPRendererGBM() override;
+    ~CRPRendererGBM() override = default;
 
   protected:
     // implementation of CRPRendererOpenGLES

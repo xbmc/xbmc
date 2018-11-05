@@ -49,11 +49,6 @@ CRPRendererGBM::CRPRendererGBM(const CRenderSettings &renderSettings, CRenderCon
   m_textureTarget = GL_TEXTURE_EXTERNAL_OES;
 }
 
-CRPRendererGBM::~CRPRendererGBM()
-{
-  Deinitialize();
-}
-
 void CRPRendererGBM::Render(uint8_t alpha)
 {
   CRenderBufferGBM *renderBuffer = static_cast<CRenderBufferGBM*>(m_renderBuffer);
@@ -82,8 +77,6 @@ void CRPRendererGBM::Render(uint8_t alpha)
 
   GLubyte colour[4];
   GLubyte idx[4] = {0, 1, 3, 2}; // Determines order of triangle strip
-  GLuint vertexVBO;
-  GLuint indexVBO;
   struct PackedVertex
   {
     float x, y, z;
@@ -114,8 +107,7 @@ void CRPRendererGBM::Render(uint8_t alpha)
   vertex[1].u1 = vertex[2].u1 = rect.x2;
   vertex[2].v1 = vertex[3].v1 = rect.y2;
 
-  glGenBuffers(1, &vertexVBO);
-  glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
+  glBindBuffer(GL_ARRAY_BUFFER, m_mainVertexVBO);
   glBufferData(GL_ARRAY_BUFFER, sizeof(PackedVertex)*4, &vertex[0], GL_STATIC_DRAW);
 
   glVertexAttribPointer(vertLoc, 3, GL_FLOAT, 0, sizeof(PackedVertex), reinterpret_cast<const GLuint*>(offsetof(PackedVertex, x)));
@@ -124,8 +116,7 @@ void CRPRendererGBM::Render(uint8_t alpha)
   glEnableVertexAttribArray(vertLoc);
   glEnableVertexAttribArray(loc);
 
-  glGenBuffers(1, &indexVBO);
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVBO);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_mainIndexVBO);
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLubyte)*4, idx, GL_STATIC_DRAW);
 
   glUniform4f(uniColLoc,(colour[0] / 255.0f), (colour[1] / 255.0f), (colour[2] / 255.0f), (colour[3] / 255.0f));
@@ -135,9 +126,7 @@ void CRPRendererGBM::Render(uint8_t alpha)
   glDisableVertexAttribArray(loc);
 
   glBindBuffer(GL_ARRAY_BUFFER, 0);
-  glDeleteBuffers(1, &vertexVBO);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-  glDeleteBuffers(1, &indexVBO);
 
   m_context.DisableGUIShader();
 }
