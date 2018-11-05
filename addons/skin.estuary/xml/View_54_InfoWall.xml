@@ -155,11 +155,11 @@
 				<bordersize>20</bordersize>
 			</control>
 			<control type="image">
-				<left>136</left>
+				<left>20</left>
 				<top>138</top>
-				<width>160</width>
+				<width>276</width>
 				<height>70</height>
-				<texture flipx="true">overlays/overlay-bg.png</texture>
+				<texture>overlays/overlayfade.png</texture>
 				<visible>!ListItem.IsParentFolder</visible>
 			</control>
 			<control type="label">
