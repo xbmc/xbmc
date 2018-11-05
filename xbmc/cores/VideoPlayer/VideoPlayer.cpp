@@ -3749,6 +3749,7 @@ bool CVideoPlayer::OpenVideoStream(CDVDStreamInfo& hint, bool reset)
       double framerate = DVD_TIME_BASE / CDVDCodecUtils::NormalizeFrameduration((double)DVD_TIME_BASE * hint.fpsscale / hint.fpsrate);
       RESOLUTION res = CResolutionUtils::ChooseBestResolution(static_cast<float>(framerate), hint.width, hint.height, !hint.stereo_mode.empty());
       CServiceBroker::GetWinSystem()->GetGfxContext().SetVideoResolution(res, false);
+      m_renderManager.TriggerUpdateResolution(framerate, hint.width, hint.height, hint.stereo_mode);
     }
   }
 
@@ -4915,7 +4916,7 @@ float CVideoPlayer::GetRenderAspectRatio()
 void CVideoPlayer::TriggerUpdateResolution()
 {
   std::string stereomode;
-  m_renderManager.TriggerUpdateResolution(0, 0, stereomode);
+  m_renderManager.TriggerUpdateResolution(0, 0, 0, stereomode);
 }
 
 bool CVideoPlayer::IsRenderingVideo()
