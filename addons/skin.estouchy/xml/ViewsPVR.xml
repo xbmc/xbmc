@@ -324,6 +324,14 @@
 					<texture>epg_schedule.png</texture>
 					<visible>ListItem.HasTimer</visible>
 				</control>
+				<control type="image">
+					<posx>5</posx>
+					<posy>45</posy>
+					<width>20</width>
+					<height>20</height>
+					<texture>epg_archive.png</texture>
+					<visible>![ListItem.IsRecording | ListItem.HasTimer] + ListItem.IsPlayable</visible>
+				</control>
 			</itemlayout>
 			<focusedlayout width="40" height="65">
 				<control type="image" id="2">
@@ -369,6 +377,14 @@
 					<height>15</height>
 					<texture>epg_schedule.png</texture>
 					<visible>ListItem.HasTimer</visible>
+				</control>
+				<control type="image">
+					<posx>7</posx>
+					<posy>44</posy>
+					<width>15</width>
+					<height>15</height>
+					<texture>epg_archive.png</texture>
+					<visible>![ListItem.IsRecording | ListItem.HasTimer] + ListItem.IsPlayable</visible>
 				</control>
 			</focusedlayout>
 		</control>
