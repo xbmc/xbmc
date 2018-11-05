@@ -25,6 +25,7 @@
 #include "XBDateTime.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/xbmc_pvr_types.h"
 #include "threads/CriticalSection.h"
+#include "threads/SystemClock.h"
 #include "utils/ISerializable.h"
 
 #include "pvr/PVRTypes.h"
@@ -319,5 +320,7 @@ namespace PVR
     mutable unsigned int  m_iEpgUid;   /*!< id of epg event associated with this timer, EPG_TAG_INVALID_UID if none. */
     mutable CPVREpgInfoTagPtr m_epgTag; /*!< epg info tag matching m_iEpgUid. */
     mutable CPVRChannelPtr m_channel;
+
+    mutable XbmcThreads::EndTime m_epTagRefetchTimeout;
   };
 }

@@ -931,8 +931,10 @@ CPVREpgInfoTagPtr CPVRTimerInfoTag::GetEpgInfoTag(bool bCreate /* = true */) con
           }
         }
 
-        if (!m_epgTag)
+        if (!m_epgTag && m_epTagRefetchTimeout.IsTimePast())
         {
+          m_epTagRefetchTimeout.Set(30000); // try to fetch missing epg tag from backend at most every 30 secs
+
           time_t startTime = 0;
           time_t endTime = 0;
 
@@ -942,6 +944,7 @@ CPVREpgInfoTagPtr CPVRTimerInfoTag::GetEpgInfoTag(bool bCreate /* = true */) con
 
           if (startTime > 0 && endTime > 0)
           {
+            // try to fetch missing epg tag from backend
             const CPVREpgInfoTagPtr epgTag = epg->GetTagBetween(StartAsUTC() - CDateTimeSpan(0, 0, 2, 0), EndAsUTC() + CDateTimeSpan(0, 0, 2, 0), true);
             if (epgTag)
             {
