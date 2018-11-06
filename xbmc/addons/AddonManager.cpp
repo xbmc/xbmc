@@ -751,13 +751,13 @@ bool CAddonMgr::LoadAddon(const std::string& addonId)
 
   if (!FindAddons())
   {
-    CLog::Log(LOGERROR, "CAddonMgr: could not reload add-on %s. FindAddons failed.", addon->ID().c_str());
+    CLog::Log(LOGERROR, "CAddonMgr: could not reload add-on %s. FindAddons failed.", addonId.c_str());
     return false;
   }
 
   if (!GetAddon(addonId, addon, ADDON_UNKNOWN, false))
   {
-    CLog::Log(LOGERROR, "CAddonMgr: could not load add-on %s. No add-on with that ID is installed.", addon->ID().c_str());
+    CLog::Log(LOGERROR, "CAddonMgr: could not load add-on %s. No add-on with that ID is installed.", addonId.c_str());
     return false;
   }
 
