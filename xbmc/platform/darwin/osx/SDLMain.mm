@@ -407,7 +407,13 @@ static void setupWindowMenu(void)
   // calling into c++ code, need to use autorelease pools
   NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 
-  CDarwinStorageProvider::SetEvent();
+  NSString* volumeLabel = [note.userInfo objectForKey:@"NSWorkspaceVolumeLocalizedNameKey"];
+  const char* label = [volumeLabel UTF8String];
+
+  NSString* volumePath = [note.userInfo objectForKey:@"NSDevicePath"];
+  const char* path = [volumePath UTF8String];
+
+  CDarwinStorageProvider::VolumeMountNotification(label, path);
   [pool release];
 }
 
@@ -416,7 +422,13 @@ static void setupWindowMenu(void)
   // calling into c++ code, need to use autorelease pools
   NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 
-  CDarwinStorageProvider::SetEvent();
+  NSString* volumeLabel = [note.userInfo objectForKey:@"NSWorkspaceVolumeLocalizedNameKey"];
+  const char* label = [volumeLabel UTF8String];
+
+  NSString* volumePath = [note.userInfo objectForKey:@"NSDevicePath"];
+  const char* path = [volumePath UTF8String];
+
+  CDarwinStorageProvider::VolumeUnmountNotification(label, path);
   [pool release];
 }
 

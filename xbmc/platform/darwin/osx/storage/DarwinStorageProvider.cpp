@@ -21,7 +21,8 @@
 #endif
 #include "platform/darwin/osx/CocoaInterface.h"
 
-bool CDarwinStorageProvider::m_event = false;
+std::vector<std::pair<std::string, std::string>> CDarwinStorageProvider::m_mountsToNotify;
+std::vector<std::pair<std::string, std::string>> CDarwinStorageProvider::m_unmountsToNotify;
 
 IStorageProvider* IStorageProvider::CreateInstance()
 {
@@ -137,6 +138,7 @@ void CDarwinStorageProvider::GetRemovableDrives(VECSOURCES &removableDrives)
             CMediaSource share;
 
             share.strPath = mountpoint;
+            share.m_iDriveType = CMediaSource::SOURCE_TYPE_REMOVABLE;
             Cocoa_GetVolumeNameFromMountPoint(mountpoint.c_str(), share.strName);
             share.m_ignore = true;
             // detect if its a cd or dvd
@@ -186,19 +188,188 @@ std::vector<std::string> CDarwinStorageProvider::GetDiskUsage()
   return result;
 }
 
+#if defined(TARGET_DARWIN_OSX)
+namespace
+{
+  class DAOperationContext
+  {
+  public:
+    explicit DAOperationContext(const std::string& mountpath);
+    ~DAOperationContext();
+
+    DADiskRef GetDisk() const { return m_disk; }
+
+    void Reset();
+    bool WaitForCompletion(CFTimeInterval timeout);
+    void Completed(bool success);
+
+    static void CompletionCallback(DADiskRef disk, DADissenterRef dissenter, void* context);
+
+  private:
+    DAOperationContext() = delete;
+
+    static void CancelRunloopCallback(void* info) {}
+    CFRunLoopSourceContext m_cancelRunLoopSourceContext = { .perform = CancelRunloopCallback };
+
+    bool m_success;
+    bool m_completed;
+    const DASessionRef m_session;
+    const CFRunLoopRef m_runloop;
+    const CFRunLoopSourceRef m_cancel;
+    DADiskRef m_disk;
+  };
+
+  DAOperationContext::DAOperationContext(const std::string& mountpath)
+  : m_success(true),
+    m_completed(false),
+    m_session(DASessionCreate(kCFAllocatorDefault)),
+    m_runloop(CFRunLoopGetCurrent()),
+    m_cancel(CFRunLoopSourceCreate(kCFAllocatorDefault, 0, &m_cancelRunLoopSourceContext))
+  {
+    if (m_session && m_runloop && m_cancel)
+    {
+      CFURLRef url = CFURLCreateFromFileSystemRepresentation(kCFAllocatorDefault, (const UInt8 *)mountpath.c_str(), mountpath.size(), TRUE);
+      if (url)
+      {
+        m_disk = DADiskCreateFromVolumePath(kCFAllocatorDefault, m_session, url);
+        CFRelease(url);
+      }
+
+      DASessionScheduleWithRunLoop(m_session, m_runloop, kCFRunLoopDefaultMode);
+      CFRunLoopAddSource(m_runloop, m_cancel, kCFRunLoopDefaultMode);
+    }
+  }
+
+  DAOperationContext::~DAOperationContext()
+  {
+    if (m_session && m_runloop && m_cancel)
+    {
+      CFRunLoopRemoveSource(m_runloop, m_cancel, kCFRunLoopDefaultMode);
+      DASessionUnscheduleFromRunLoop(m_session, m_runloop, kCFRunLoopDefaultMode);
+      CFRunLoopSourceInvalidate(m_cancel);
+    }
+
+    if (m_disk)
+      CFRelease(m_disk);
+    if (m_cancel)
+      CFRelease(m_cancel);
+    if (m_runloop)
+      CFRelease(m_runloop);
+    if (m_session)
+      CFRelease(m_session);
+  }
+
+  bool DAOperationContext::WaitForCompletion(CFTimeInterval timeout)
+  {
+    while (!m_completed)
+    {
+      if (CFRunLoopRunInMode(kCFRunLoopDefaultMode, timeout, TRUE) == kCFRunLoopRunTimedOut)
+        break;
+    }
+    return m_success;
+  }
+
+  void DAOperationContext::Completed(bool success)
+  {
+    m_success = success;
+    m_completed = true;
+    CFRunLoopSourceSignal(m_cancel);
+    CFRunLoopWakeUp(m_runloop);
+  }
+
+  void DAOperationContext::Reset()
+  {
+    m_success = true;
+    m_completed = false;
+  }
+
+  void DAOperationContext::CompletionCallback(DADiskRef disk, DADissenterRef dissenter, void* context)
+  {
+    DAOperationContext* dacontext = static_cast<DAOperationContext*>(context);
+
+    bool success = true;
+    if (dissenter)
+    {
+      DAReturn status = DADissenterGetStatus(dissenter);
+      success = (status == kDAReturnSuccess || status == kDAReturnUnsupported);
+    }
+
+    dacontext->Completed(success);
+  }
+
+} // unnamed namespace
+#endif
+
 bool CDarwinStorageProvider::Eject(const std::string& mountpath)
 {
+#if defined(TARGET_DARWIN_OSX)
+  if (mountpath.empty())
+    return false;
+
+  DAOperationContext ctx(mountpath);
+  DADiskRef disk = ctx.GetDisk();
+
+  if (!disk)
+    return false;
+
+  bool success = false;
+
+  CFDictionaryRef details = DADiskCopyDescription(disk);
+  if (details)
+  {
+    // Does the device need to be unmounted first?
+    if (CFDictionaryGetValueIfPresent(details, kDADiskDescriptionVolumePathKey, NULL))
+    {
+      DADiskUnmount(disk, kDADiskUnmountOptionDefault, DAOperationContext::CompletionCallback, &ctx);
+      success = ctx.WaitForCompletion(30.0); // timeout after 30 secs
+    }
+
+    if (success)
+    {
+      ctx.Reset();
+      DADiskEject(disk, kDADiskEjectOptionDefault, DAOperationContext::CompletionCallback, &ctx);
+      success = ctx.WaitForCompletion(30.0); // timeout after 30 secs
+    }
+
+    CFRelease(details);
+  }
+  CFRelease(disk);
+
+  return success;
+#else
   return false;
+#endif
 }
 
 bool CDarwinStorageProvider::PumpDriveChangeEvents(IStorageEventsCallback *callback)
 {
-  bool event = m_event;
-  m_event = false;
-  return event;
+  bool changed = !m_mountsToNotify.empty() || !m_unmountsToNotify.empty();
+
+  if (callback)
+  {
+    for (const auto& mountToNotify : m_mountsToNotify)
+    {
+      callback->OnStorageAdded(mountToNotify.first, mountToNotify.second);
+    }
+    m_mountsToNotify.clear();
+
+    for (const auto& unmountToNotify : m_unmountsToNotify)
+    {
+      callback->OnStorageSafelyRemoved(unmountToNotify.first);
+    }
+    m_unmountsToNotify.clear();
+  }
+  return changed;
 }
 
-void CDarwinStorageProvider::SetEvent(void)
+void CDarwinStorageProvider::VolumeMountNotification(const char* label, const char* mountpoint)
 {
-  CDarwinStorageProvider::m_event = true;
+  if (label && mountpoint)
+    m_mountsToNotify.emplace_back(std::make_pair(label, mountpoint));
+}
+
+void CDarwinStorageProvider::VolumeUnmountNotification(const char* label, const char* mountpoint)
+{
+  if (label && mountpoint)
+   m_unmountsToNotify.emplace_back(std::make_pair(label, mountpoint));
 }
