@@ -34,13 +34,16 @@ bool CWinSystemGbmEGLContext::InitWindowSystemEGL(EGLint renderableType, EGLint 
 
   uint32_t visualId = m_DRM->GetOverlayPlane()->GetFormat();
 
-  if (!m_eglContext.ChooseConfig(renderableType, CDRMUtils::FourCCWithAlpha(visualId)))
+  // prefer alpha visual id, fallback to non-alpha visual id
+  if (!m_eglContext.ChooseConfig(renderableType, CDRMUtils::FourCCWithAlpha(visualId)) &&
+      !m_eglContext.ChooseConfig(renderableType, CDRMUtils::FourCCWithoutAlpha(visualId)))
   {
     // fallback to 8bit format if no EGL config was found for 10bit
     m_DRM->GetOverlayPlane()->useFallbackFormat = true;
     visualId = m_DRM->GetOverlayPlane()->GetFormat();
 
-    if (!m_eglContext.ChooseConfig(renderableType, CDRMUtils::FourCCWithAlpha(visualId)))
+    if (!m_eglContext.ChooseConfig(renderableType, CDRMUtils::FourCCWithAlpha(visualId)) &&
+        !m_eglContext.ChooseConfig(renderableType, CDRMUtils::FourCCWithoutAlpha(visualId)))
     {
       return false;
     }
