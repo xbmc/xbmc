@@ -530,6 +530,9 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
           m_vecItems->SetPath(dir);
           resetHistory = true;
         }
+        else if (m_vecItems->GetPath().empty() && URIUtils::PathEquals(dir, m_startDirectory, true))
+          m_vecItems->SetPath(dir);
+
         // check for network up
         if (URIUtils::IsRemote(m_vecItems->GetPath()) && !WaitForNetwork())
         {
