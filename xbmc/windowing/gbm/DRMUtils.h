@@ -93,7 +93,6 @@ public:
   virtual void DestroyDrm();
 
   std::string GetModule() const { return m_module; }
-  std::string GetDevicePath() const { return m_device_path; }
   int GetFileDescriptor() const { return m_fd; }
   struct plane* GetPrimaryPlane() const { return m_primary_plane; }
   struct plane* GetOverlayPlane() const { return m_overlay_plane; }
@@ -148,7 +147,6 @@ private:
 
   int m_crtc_index;
   std::string m_module;
-  std::string m_device_path;
 
   drmModeResPtr m_drm_resources = nullptr;
   drmModeCrtcPtr m_orig_crtc = nullptr;

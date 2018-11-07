@@ -250,7 +250,7 @@ bool CDVDVideoCodecDRMPRIME::Open(CDVDStreamInfo& hints, CDVDCodecOptions& optio
       pConfig->device_type == AV_HWDEVICE_TYPE_DRM)
   {
     CWinSystemGbm* winSystem = dynamic_cast<CWinSystemGbm*>(CServiceBroker::GetWinSystem());
-    if (av_hwdevice_ctx_create(&m_pCodecContext->hw_device_ctx, AV_HWDEVICE_TYPE_DRM, winSystem->GetDevicePath().c_str(), nullptr, 0) < 0)
+    if (av_hwdevice_ctx_create(&m_pCodecContext->hw_device_ctx, AV_HWDEVICE_TYPE_DRM, drmGetDeviceNameFromFd2(winSystem->GetDrm()->GetFileDescriptor()), nullptr, 0) < 0)
     {
       CLog::Log(LOGNOTICE, "CDVDVideoCodecDRMPRIME::%s - unable to create hwdevice context", __FUNCTION__);
       avcodec_free_context(&m_pCodecContext);
