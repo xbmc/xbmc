@@ -558,6 +558,12 @@ bool CDRMUtils::OpenDrm(bool needConnector)
 
       CLog::Log(LOGDEBUG, "CDRMUtils::%s - opened device: %s using module: %s", __FUNCTION__, drmGetDeviceNameFromFd2(m_fd), module);
 
+      m_renderFd.attach(drmOpenWithType(module, nullptr, DRM_NODE_RENDER));
+      if (m_renderFd)
+      {
+        CLog::Log(LOGDEBUG, "CDRMUtils::%s - opened render node: %s using module: %s", __FUNCTION__, drmGetDeviceNameFromFd2(m_renderFd), module);
+      }
+
       return true;
     }
   }
@@ -687,6 +693,7 @@ void CDRMUtils::DestroyDrm()
     CLog::Log(LOGDEBUG, "CDRMUtils::%s - failed to drop drm master: %s", __FUNCTION__, strerror(errno));
   }
 
+  m_renderFd.reset();
   m_fd.reset();
 
   drmModeFreeResources(m_drm_resources);
