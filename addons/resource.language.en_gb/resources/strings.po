@@ -6879,6 +6879,7 @@ msgctxt "#13390"
 msgid "There are no settings available\nfor this visualisation"
 msgstr ""
 
+#: xbmc/ContextMenus.h
 #: xbmc/dialogs/GUIDialogContextMenu.cpp
 #: xbmc/dialogs/GUIDialogPlayEject.cpp
 msgctxt "#13391"
@@ -7015,6 +7016,7 @@ msgctxt "#13419"
 msgid "Software"
 msgstr ""
 
+#: xbmc/ContextMenus.h
 #: xbmc/dialogs/GUIDialogContextMenu.cpp
 msgctxt "#13420"
 msgid "Remove safely"
