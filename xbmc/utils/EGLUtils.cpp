@@ -279,7 +279,7 @@ bool CEGLContextUtils::ChooseConfig(EGLint renderableType, EGLint visualId)
 
   if (visualId != 0 && visualId != id)
   {
-    CLog::Log(LOGDEBUG, "failed to find matching EGL visual id");
+    CLog::Log(LOGDEBUG, "failed to find EGL config with EGL_NATIVE_VISUAL_ID={}", visualId);
     return false;
   }
 
@@ -296,6 +296,14 @@ bool CEGLContextUtils::ChooseConfig(EGLint renderableType, EGLint visualId)
   }
 
   return true;
+}
+
+EGLint CEGLContextUtils::GetConfigAttrib(EGLint attribute) const
+{
+  EGLint value{0};
+  if (eglGetConfigAttrib(m_eglDisplay, m_eglConfig, attribute, &value) != EGL_TRUE)
+    CEGLUtils::LogError("failed to query EGL attibute");
+  return value;
 }
 
 bool CEGLContextUtils::CreateContext(CEGLAttributesVec contextAttribs)

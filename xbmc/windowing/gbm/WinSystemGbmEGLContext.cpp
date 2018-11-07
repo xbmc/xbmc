@@ -22,9 +22,6 @@ bool CWinSystemGbmEGLContext::InitWindowSystemEGL(EGLint renderableType, EGLint 
     return false;
   }
 
-  // we need to provide an alpha format to egl to workaround a mesa bug
-  int visualId = CDRMUtils::FourCCWithAlpha(CWinSystemGbm::GetDrm()->GetOverlayPlane()->format);
-
   if (!m_eglContext.CreatePlatformDisplay(m_GBM->GetDevice(), m_GBM->GetDevice()))
   {
     return false;
@@ -35,13 +32,15 @@ bool CWinSystemGbmEGLContext::InitWindowSystemEGL(EGLint renderableType, EGLint 
     return false;
   }
 
-  if (!m_eglContext.ChooseConfig(renderableType, visualId))
+  uint32_t visualId = m_DRM->GetOverlayPlane()->GetFormat();
+
+  if (!m_eglContext.ChooseConfig(renderableType, CDRMUtils::FourCCWithAlpha(visualId)))
   {
     // fallback to 8bit format if no EGL config was found for 10bit
-    CWinSystemGbm::GetDrm()->GetOverlayPlane()->useFallbackFormat = true;
-    visualId = CDRMUtils::FourCCWithAlpha(CWinSystemGbm::GetDrm()->GetOverlayPlane()->GetFormat());
+    m_DRM->GetOverlayPlane()->useFallbackFormat = true;
+    visualId = m_DRM->GetOverlayPlane()->GetFormat();
 
-    if (!m_eglContext.ChooseConfig(renderableType, visualId))
+    if (!m_eglContext.ChooseConfig(renderableType, CDRMUtils::FourCCWithAlpha(visualId)))
     {
       return false;
     }
@@ -73,10 +72,8 @@ bool CWinSystemGbmEGLContext::CreateNewWindow(const std::string& name,
     return false;
   }
 
-  std::vector<uint64_t> *modifiers = m_DRM->GetOverlayPlaneModifiersForFormat(m_DRM->GetOverlayPlane()->format);
-
-  // the gbm format needs alpha support
-  uint32_t format = CDRMUtils::FourCCWithAlpha(m_DRM->GetOverlayPlane()->GetFormat());
+  uint32_t format = m_eglContext.GetConfigAttrib(EGL_NATIVE_VISUAL_ID);
+  std::vector<uint64_t> *modifiers = m_DRM->GetOverlayPlaneModifiersForFormat(format);
 
   if (!m_GBM->CreateSurface(res.iWidth, res.iHeight, format, modifiers->data(), modifiers->size()))
   {
