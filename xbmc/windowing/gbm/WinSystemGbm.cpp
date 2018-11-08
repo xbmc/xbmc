@@ -109,54 +109,12 @@ bool CWinSystemGbm::InitWindowSystem()
 
 bool CWinSystemGbm::DestroyWindowSystem()
 {
-  m_GBM->DestroySurface();
   m_GBM->DestroyDevice();
 
   CLog::Log(LOGDEBUG, "CWinSystemGbm::%s - deinitialized DRM", __FUNCTION__);
 
   m_libinput.reset();
 
-  return true;
-}
-
-bool CWinSystemGbm::CreateNewWindow(const std::string& name,
-                                    bool fullScreen,
-                                    RESOLUTION_INFO& res)
-{
-  //Notify other subsystems that we change resolution
-  OnLostDevice();
-
-  if(!m_DRM->SetMode(res))
-  {
-    CLog::Log(LOGERROR, "CWinSystemGbm::%s - failed to set DRM mode", __FUNCTION__);
-    return false;
-  }
-
-  std::vector<uint64_t> *modifiers = m_DRM->GetOverlayPlaneModifiersForFormat(m_DRM->GetOverlayPlane()->format);
-
-  // the gbm format needs alpha support
-  uint32_t format = CDRMUtils::FourCCWithAlpha(m_DRM->GetOverlayPlane()->GetFormat());
-
-  if (!m_GBM->CreateSurface(res.iWidth, res.iHeight, format, modifiers->data(), modifiers->size()))
-  {
-    CLog::Log(LOGERROR, "CWinSystemGbm::%s - failed to initialize GBM", __FUNCTION__);
-    return false;
-  }
-
-  m_bFullScreen = fullScreen;
-  m_nWidth = res.iWidth;
-  m_nHeight = res.iHeight;
-  m_fRefreshRate = res.fRefreshRate;
-
-  CLog::Log(LOGDEBUG, "CWinSystemGbm::%s - initialized GBM", __FUNCTION__);
-  return true;
-}
-
-bool CWinSystemGbm::DestroyWindow()
-{
-  m_GBM->DestroySurface();
-
-  CLog::Log(LOGDEBUG, "CWinSystemGbm::%s - deinitialized GBM", __FUNCTION__);
   return true;
 }
 

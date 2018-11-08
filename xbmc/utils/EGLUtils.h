@@ -194,6 +194,7 @@ public:
   bool SetVSync(bool enable);
   bool TrySwapBuffers();
   bool IsPlatformSupported() const;
+  EGLint GetConfigAttrib(EGLint attribute) const;
 
   EGLDisplay GetEGLDisplay() const
   {
