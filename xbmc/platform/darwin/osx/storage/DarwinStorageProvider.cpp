@@ -208,14 +208,14 @@ namespace
   private:
     DAOperationContext() = delete;
 
-    static void CancelRunloopCallback(void* info) {}
-    CFRunLoopSourceContext m_cancelRunLoopSourceContext = { .perform = CancelRunloopCallback };
+    static void RunloopPerformCallback(void* info) {}
+    CFRunLoopSourceContext m_runLoopSourceContext = { .perform = RunloopPerformCallback };
 
     bool m_success;
     bool m_completed;
     const DASessionRef m_session;
     const CFRunLoopRef m_runloop;
-    const CFRunLoopSourceRef m_cancel;
+    const CFRunLoopSourceRef m_runloopSource;
     DADiskRef m_disk;
   };
 
@@ -223,10 +223,10 @@ namespace
   : m_success(true),
     m_completed(false),
     m_session(DASessionCreate(kCFAllocatorDefault)),
-    m_runloop(CFRunLoopGetCurrent()),
-    m_cancel(CFRunLoopSourceCreate(kCFAllocatorDefault, 0, &m_cancelRunLoopSourceContext))
+    m_runloop(CFRunLoopGetCurrent()), // not owner!
+    m_runloopSource(CFRunLoopSourceCreate(kCFAllocatorDefault, 0, &m_runLoopSourceContext))
   {
-    if (m_session && m_runloop && m_cancel)
+    if (m_session && m_runloop && m_runloopSource)
     {
       CFURLRef url = CFURLCreateFromFileSystemRepresentation(kCFAllocatorDefault, (const UInt8 *)mountpath.c_str(), mountpath.size(), TRUE);
       if (url)
@@ -236,25 +236,23 @@ namespace
       }
 
       DASessionScheduleWithRunLoop(m_session, m_runloop, kCFRunLoopDefaultMode);
-      CFRunLoopAddSource(m_runloop, m_cancel, kCFRunLoopDefaultMode);
+      CFRunLoopAddSource(m_runloop, m_runloopSource, kCFRunLoopDefaultMode);
     }
   }
 
   DAOperationContext::~DAOperationContext()
   {
-    if (m_session && m_runloop && m_cancel)
+    if (m_session && m_runloop && m_runloopSource)
     {
-      CFRunLoopRemoveSource(m_runloop, m_cancel, kCFRunLoopDefaultMode);
+      CFRunLoopRemoveSource(m_runloop, m_runloopSource, kCFRunLoopDefaultMode);
       DASessionUnscheduleFromRunLoop(m_session, m_runloop, kCFRunLoopDefaultMode);
-      CFRunLoopSourceInvalidate(m_cancel);
+      CFRunLoopSourceInvalidate(m_runloopSource);
     }
 
     if (m_disk)
       CFRelease(m_disk);
-    if (m_cancel)
-      CFRelease(m_cancel);
-    if (m_runloop)
-      CFRelease(m_runloop);
+    if (m_runloopSource)
+      CFRelease(m_runloopSource);
     if (m_session)
       CFRelease(m_session);
   }
@@ -273,7 +271,7 @@ namespace
   {
     m_success = success;
     m_completed = true;
-    CFRunLoopSourceSignal(m_cancel);
+    CFRunLoopSourceSignal(m_runloopSource);
     CFRunLoopWakeUp(m_runloop);
   }
 
@@ -333,7 +331,6 @@ bool CDarwinStorageProvider::Eject(const std::string& mountpath)
 
     CFRelease(details);
   }
-  CFRelease(disk);
 
   return success;
 #else
