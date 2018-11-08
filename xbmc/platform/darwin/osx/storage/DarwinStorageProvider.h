@@ -9,6 +9,7 @@
 #pragma once
 
 #include <string>
+#include <utility>
 #include <vector>
 
 #include "storage/IStorageProvider.h"
@@ -31,8 +32,10 @@ public:
 
   virtual bool PumpDriveChangeEvents(IStorageEventsCallback *callback);
 
-  static void SetEvent(void);
+  static void VolumeMountNotification(const char* label, const char* mountpoint);
+  static void VolumeUnmountNotification(const char* label, const char* mountpoint);
 
 private:
-  static bool m_event;
+  static std::vector<std::pair<std::string, std::string>> m_mountsToNotify; // label, mountpoint
+  static std::vector<std::pair<std::string, std::string>> m_unmountsToNotify; // label, mountpoint
 };

@@ -208,6 +208,19 @@ bool CGUIDialogContextMenu::SourcesMenu(const std::string &strType, const CFileI
 
 void CGUIDialogContextMenu::GetContextButtons(const std::string &type, const CFileItemPtr& item, CContextButtons &buttons)
 {
+  // Add buttons to the ContextMenu that should be visible for both sources and autosourced items
+  if (item && item->IsRemovable())
+  {
+    if (item->IsDVD() || item->IsCDDA())
+    {
+      buttons.Add(CONTEXT_BUTTON_EJECT_DISC, 13391); // Eject / Load
+    }
+    else // Must be HDD
+    {
+      buttons.Add(CONTEXT_BUTTON_EJECT_DRIVE, 13420); // Remove safely
+    }
+  }
+
   // Next, Add buttons to the ContextMenu that should ONLY be visible for sources and not autosourced items
   CMediaSource *share = GetShare(type, item.get());
 
@@ -260,11 +273,27 @@ void CGUIDialogContextMenu::GetContextButtons(const std::string &type, const CFi
 bool CGUIDialogContextMenu::OnContextButton(const std::string &type, const CFileItemPtr& item, CONTEXT_BUTTON button)
 {
   // buttons that are available on both sources and autosourced items
-  if (!item) return false;
+  if (!item)
+    return false;
+
+  switch (button)
+  {
+    case CONTEXT_BUTTON_EJECT_DRIVE:
+      return g_mediaManager.Eject(item->GetPath());
+#ifdef HAS_DVD_DRIVE
+    case CONTEXT_BUTTON_EJECT_DISC:
+      g_mediaManager.ToggleTray(g_mediaManager.TranslateDevicePath(item->GetPath())[0]);
+#endif
+      return true;
+    default:
+      break;
+  }
 
   // the rest of the operations require a valid share
   CMediaSource *share = GetShare(type, item.get());
-  if (!share) return false;
+  if (!share)
+    return false;
+
   switch (button)
   {
   case CONTEXT_BUTTON_EDIT_SOURCE:
