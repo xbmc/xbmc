@@ -38,6 +38,9 @@ class CProcessInfo;
 namespace VAAPI
 {
 
+void VaErrorCallback(void *user_context, const char *message);
+void VaInfoCallback(void *user_context, const char *message);
+
 //-----------------------------------------------------------------------------
 // VAAPI data structs
 //-----------------------------------------------------------------------------
