@@ -26,47 +26,26 @@ namespace GBM
 class CVaapiProxy : public VAAPI::IVaapiWinSystem
 {
 public:
-  CVaapiProxy() = default;
+  CVaapiProxy(int fd) : m_fd(fd) {};
   virtual ~CVaapiProxy() = default;
   VADisplay GetVADisplay() override;
   void *GetEGLDisplay() override { return eglDisplay; };
 
   VADisplay vaDpy;
   void *eglDisplay;
+
+private:
+  int m_fd{-1};
 };
 
 VADisplay CVaapiProxy::GetVADisplay()
 {
-  int const buf_size{128};
-  char name[buf_size];
-  int fd{-1};
-
-  // 128 is the start of the NUM in renderD<NUM>
-  for (int i = 128; i < (128 + 16); i++)
-  {
-    snprintf(name, buf_size, "/dev/dri/renderD%u", i);
-
-    fd = open(name, O_RDWR);
-
-    if (fd < 0)
-    {
-      continue;
-    }
-
-    auto display = vaGetDisplayDRM(fd);
-
-    if (display != nullptr)
-    {
-      return display;
-    }
-  }
-
-  return nullptr;
+  return vaGetDisplayDRM(m_fd);
 }
 
-CVaapiProxy* VaapiProxyCreate()
+CVaapiProxy* VaapiProxyCreate(int fd)
 {
-  return new CVaapiProxy();
+  return new CVaapiProxy(fd);
 }
 
 void VaapiProxyDelete(CVaapiProxy *proxy)
@@ -107,7 +86,7 @@ class CVaapiProxy
 {
 };
 
-CVaapiProxy* VaapiProxyCreate()
+CVaapiProxy* VaapiProxyCreate(int fd)
 {
   return nullptr;
 }

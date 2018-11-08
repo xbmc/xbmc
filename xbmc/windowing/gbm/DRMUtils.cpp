@@ -527,42 +527,42 @@ bool CDRMUtils::OpenDrm(bool needConnector)
     "meson"
   };
 
-  for(int i = 0; i < 10; ++i)
+  for (auto module : modules)
   {
-    std::string device = "/dev/dri/card";
-    device.append(std::to_string(i));
-
-    for (auto module : modules)
+    m_fd.attach(drmOpenWithType(module, nullptr, DRM_NODE_PRIMARY));
+    if (m_fd)
     {
-      m_fd.attach(drmOpen(module, device.c_str()));
-      if (m_fd)
+      if(!GetResources())
       {
-        if(!GetResources())
+        continue;
+      }
+
+      if (needConnector)
+      {
+        if(!FindConnector())
         {
           continue;
         }
 
-        if (needConnector)
-        {
-          if(!FindConnector())
-          {
-            continue;
-          }
-
-          drmModeFreeConnector(m_connector->connector);
-          m_connector->connector = nullptr;
-          FreeProperties(m_connector);
-        }
-
-        drmModeFreeResources(m_drm_resources);
-        m_drm_resources = nullptr;
-
-        m_module = module;
-        m_device_path = device;
-
-        CLog::Log(LOGDEBUG, "CDRMUtils::%s - opened device: %s using module: %s", __FUNCTION__, device.c_str(), module);
-        return true;
+        drmModeFreeConnector(m_connector->connector);
+        m_connector->connector = nullptr;
+        FreeProperties(m_connector);
       }
+
+      drmModeFreeResources(m_drm_resources);
+      m_drm_resources = nullptr;
+
+      m_module = module;
+
+      CLog::Log(LOGDEBUG, "CDRMUtils::%s - opened device: %s using module: %s", __FUNCTION__, drmGetDeviceNameFromFd2(m_fd), module);
+
+      m_renderFd.attach(drmOpenWithType(module, nullptr, DRM_NODE_RENDER));
+      if (m_renderFd)
+      {
+        CLog::Log(LOGDEBUG, "CDRMUtils::%s - opened render node: %s using module: %s", __FUNCTION__, drmGetDeviceNameFromFd2(m_renderFd), module);
+      }
+
+      return true;
     }
   }
 
@@ -691,6 +691,7 @@ void CDRMUtils::DestroyDrm()
     CLog::Log(LOGDEBUG, "CDRMUtils::%s - failed to drop drm master: %s", __FUNCTION__, strerror(errno));
   }
 
+  m_renderFd.reset();
   m_fd.reset();
 
   drmModeFreeResources(m_drm_resources);

@@ -21,7 +21,7 @@ namespace GBM
 {
 class CVaapiProxy;
 
-CVaapiProxy* VaapiProxyCreate();
+CVaapiProxy* VaapiProxyCreate(int fd);
 void VaapiProxyDelete(CVaapiProxy *proxy);
 void VaapiProxyConfig(CVaapiProxy *proxy, void *eglDpy);
 void VAAPIRegister(CVaapiProxy *winSystem, bool deepColor);

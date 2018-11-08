@@ -53,7 +53,7 @@ bool CWinSystemGbmGLESContext::InitWindowSystem()
   }
 
   bool general, deepColor;
-  m_vaapiProxy.reset(GBM::VaapiProxyCreate());
+  m_vaapiProxy.reset(GBM::VaapiProxyCreate(m_DRM->GetRenderNodeFileDescriptor()));
   GBM::VaapiProxyConfig(m_vaapiProxy.get(), m_eglContext.GetEGLDisplay());
   GBM::VAAPIRegisterRender(m_vaapiProxy.get(), general, deepColor);
 

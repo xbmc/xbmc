@@ -55,7 +55,6 @@ public:
   void RegisterVideoLayerBridge(std::shared_ptr<CVideoLayerBridge> bridge) { m_videoLayerBridge = bridge; };
 
   std::string GetModule() const { return m_DRM->GetModule(); }
-  std::string GetDevicePath() const { return m_DRM->GetDevicePath(); }
   struct gbm_device *GetGBMDevice() const { return m_GBM->GetDevice(); }
   std::shared_ptr<CDRMUtils> GetDrm() const { return m_DRM; }
 

@@ -102,8 +102,8 @@ public:
   virtual void DestroyDrm();
 
   std::string GetModule() const { return m_module; }
-  std::string GetDevicePath() const { return m_device_path; }
   int GetFileDescriptor() const { return m_fd; }
+  int GetRenderNodeFileDescriptor() const { return m_renderFd; }
   struct plane* GetPrimaryPlane() const { return m_primary_plane; }
   struct plane* GetOverlayPlane() const { return m_overlay_plane; }
   std::vector<uint64_t> *GetPrimaryPlaneModifiersForFormat(uint32_t format) { return &m_primary_plane->modifiers_map[format]; }
@@ -155,9 +155,9 @@ private:
   RESOLUTION_INFO GetResolutionInfo(drmModeModeInfoPtr mode);
   bool CheckConnector(int connectorId);
 
+  KODI::UTILS::POSIX::CFileHandle m_renderFd;
   int m_crtc_index;
   std::string m_module;
-  std::string m_device_path;
 
   drmModeResPtr m_drm_resources = nullptr;
   drmModeCrtcPtr m_orig_crtc = nullptr;
