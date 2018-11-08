@@ -1008,7 +1008,7 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
 
     // Blank other displays if requested.
     if (blankOtherDisplays)
-      BlankOtherDisplays(0);
+      BlankOtherDisplays(m_lastDisplayNr);
 
     // Hide the mouse.
     [NSCursor hide];
