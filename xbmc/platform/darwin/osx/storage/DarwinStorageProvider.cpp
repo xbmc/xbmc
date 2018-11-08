@@ -214,7 +214,7 @@ namespace
     bool m_success;
     bool m_completed;
     const DASessionRef m_session;
-    const CFRunLoopRef m_runloop;
+    const CFRunLoopRef m_runloop; // not owner!
     const CFRunLoopSourceRef m_cancel;
     DADiskRef m_disk;
   };
@@ -253,8 +253,6 @@ namespace
       CFRelease(m_disk);
     if (m_cancel)
       CFRelease(m_cancel);
-    if (m_runloop)
-      CFRelease(m_runloop);
     if (m_session)
       CFRelease(m_session);
   }
@@ -333,7 +331,6 @@ bool CDarwinStorageProvider::Eject(const std::string& mountpath)
 
     CFRelease(details);
   }
-  CFRelease(disk);
 
   return success;
 #else
