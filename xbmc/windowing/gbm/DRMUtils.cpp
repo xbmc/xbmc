@@ -73,7 +73,7 @@ drm_fb * CDRMUtils::DrmFbGetFromBo(struct gbm_bo *bo)
     struct drm_fb *fb = static_cast<drm_fb *>(gbm_bo_get_user_data(bo));
     if(fb)
     {
-      if (m_overlay_plane->format == fb->format)
+      if (m_overlay_plane->GetFormat() == fb->format)
         return fb;
       else
         DrmFbDestroyCallback(bo, gbm_bo_get_user_data(bo));
@@ -82,7 +82,7 @@ drm_fb * CDRMUtils::DrmFbGetFromBo(struct gbm_bo *bo)
 
   struct drm_fb *fb = new drm_fb;
   fb->bo = bo;
-  fb->format = m_overlay_plane->format;
+  fb->format = m_overlay_plane->GetFormat();
 
   uint32_t width,
            height,
@@ -425,15 +425,13 @@ bool CDRMUtils::FindPlanes()
 
   m_primary_plane->plane = FindPlane(plane_resources, m_crtc_index, KODI_VIDEO_PLANE);
   m_overlay_plane->plane = FindPlane(plane_resources, m_crtc_index, KODI_GUI_10_PLANE);
-  m_overlay_plane->format = DRM_FORMAT_XRGB2101010;
-  m_overlay_plane->fallbackFormat = DRM_FORMAT_XRGB8888;
 
   /* fallback to 8bit plane if 10bit plane doesn't exist */
   if (m_overlay_plane->plane == nullptr)
   {
     drmModeFreePlane(m_overlay_plane->plane);
     m_overlay_plane->plane = FindPlane(plane_resources, m_crtc_index, KODI_GUI_PLANE);
-    m_overlay_plane->format = DRM_FORMAT_XRGB8888;
+    m_overlay_plane->SetFormat(DRM_FORMAT_XRGB8888);
   }
 
   drmModeFreePlaneResources(plane_resources);

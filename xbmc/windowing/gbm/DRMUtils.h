@@ -44,9 +44,16 @@ struct drm_object
 struct plane : drm_object
 {
   drmModePlanePtr plane = nullptr;
-  uint32_t format{0};
-  uint32_t fallbackFormat{0};
   bool useFallbackFormat{false};
+  std::map<uint32_t, std::vector<uint64_t>> modifiers_map;
+
+  void SetFormat(uint32_t newFormat)
+  {
+    if (useFallbackFormat)
+      fallbackFormat = newFormat;
+    else
+      format = newFormat;
+  }
 
   uint32_t GetFormat()
   {
@@ -56,7 +63,9 @@ struct plane : drm_object
     return format;
   }
 
-  std::map<uint32_t, std::vector<uint64_t>> modifiers_map;
+private:
+  uint32_t format{DRM_FORMAT_XRGB2101010};
+  uint32_t fallbackFormat{DRM_FORMAT_XRGB8888};
 };
 
 struct connector : drm_object
