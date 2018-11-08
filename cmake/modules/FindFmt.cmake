@@ -40,6 +40,7 @@ if(ENABLE_INTERNAL_FMT)
                       PREFIX ${CORE_BUILD_DIR}/fmt
                       CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
                                  -DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}
+                                 -DCMAKE_INSTALL_LIBDIR=lib
                                  -DFMT_DOC=OFF
                                  -DFMT_TEST=OFF
                                  "${EXTRA_ARGS}"
