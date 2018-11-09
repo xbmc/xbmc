@@ -8,13 +8,12 @@
 
 #pragma once
 
-#include <vector>
-#include <map>
-
 #include "threads/CriticalSection.h"
 #include "threads/Thread.h"
-
 #include "utils/GlobalsHandling.h"
+#include <map>
+#include <sys/epoll.h>
+#include <vector>
 
 /**
  * Monitor a file descriptor with callback on poll() events.
