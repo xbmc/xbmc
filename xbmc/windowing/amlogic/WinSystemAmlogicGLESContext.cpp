@@ -102,10 +102,8 @@ bool CWinSystemAmlogicGLESContext::SetFullScreen(bool fullScreen, RESOLUTION_INF
 
 void CWinSystemAmlogicGLESContext::SetVSyncImpl(bool enable)
 {
-  m_iVSyncMode = enable ? 10:0;
   if (!m_pGLContext.SetVSync(enable))
   {
-    m_iVSyncMode = 0;
     CLog::Log(LOGERROR, "%s,Could not set egl vsync", __FUNCTION__);
   }
 }

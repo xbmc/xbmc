@@ -37,7 +37,7 @@ public:
   void UpdateResolutions() override;
   bool CanDoWindowed() override { return false; }
 
-  void ShowOSMouse(bool show) override;
+  void ShowOSMouse(bool show) override {}
   bool HasCursor() override;
 
   void NotifyAppActiveChange(bool bActivated) override;
@@ -70,13 +70,12 @@ public:
 
 protected:
   void PresentRenderImpl(bool rendered) override;
-  void SetVSyncImpl(bool enable) override;
+  void SetVSyncImpl(bool enable) override {}
 
   void        *m_glView; // EAGLView opaque
   void        *m_WorkingContext; // shared EAGLContext opaque
   bool         m_bWasFullScreenBeforeMinimize;
   std::string   m_eglext;
-  int          m_iVSyncErrors;
   CCriticalSection             m_resourceSection;
   std::vector<IDispResource*>  m_resources;
   bool         m_bIsBackgrounded;
