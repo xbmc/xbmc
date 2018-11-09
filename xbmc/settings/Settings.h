@@ -176,6 +176,7 @@ public:
   static const std::string SETTING_PVRPLAYBACK_SIGNALQUALITY;
   static const std::string SETTING_PVRPLAYBACK_CONFIRMCHANNELSWITCH;
   static const std::string SETTING_PVRPLAYBACK_CHANNELENTRYTIMEOUT;
+  static const std::string SETTING_PVRPLAYBACK_DELAYMARKLASTWATCHED;
   static const std::string SETTING_PVRPLAYBACK_FPS;
   static const std::string SETTING_PVRRECORD_INSTANTRECORDACTION;
   static const std::string SETTING_PVRRECORD_INSTANTRECORDTIME;
