@@ -10914,11 +10914,7 @@ msgctxt "#19302"
 msgid "Do you want to record the selected programme or to switch to the current programme?"
 msgstr ""
 
-#. pvr setting "Use simple timeshift OSD" value
-#: system/settings/settings.xml
-msgctxt "#19303"
-msgid "Use simple timeshift OSD"
-msgstr ""
+#empty string with id 19303
 
 #. Label for context menu entry to open settings dialog for a timer rule (read-only)
 #: xbmc/pvr/PVRContextMenus.cpp
@@ -18632,17 +18628,12 @@ msgctxt "#36234"
 msgid "Duration of instant recordings when pressing the record button. This value will be taken into account if \"Instant recording action\" is set to \"Record for a fixed period of time\""
 msgstr ""
 
-#. help text for pvr setting "Use simple timeshift OSD"
-#: system/settings/settings.xml
-msgctxt "#36235"
-msgid "Normal timeshift OSD always shows the complete timeshift buffer along with with the currently playing show, whereas the simple timeshift OSD only shows the currently playing show with no visual feedback how far in the timeshift buffer you can jump from the currently playing position."
-msgstr ""
+#empty string with id 36235
 
 #: system/settings/settings.xml
 msgctxt "#36236"
 msgid "If set to a value greater than zero last watched time of channels will be stored the given amount of time after start of channel playback. Otherwise the last watched time will be stored immediately at start of channel playback."
 msgstr ""
-
 
 #: system/settings/settings.xml
 msgctxt "#36237"
