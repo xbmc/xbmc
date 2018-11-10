@@ -3369,6 +3369,7 @@ bool CApplication::ToggleDPMS(bool manual)
       m_dpmsIsActive = false;
       m_dpmsIsManual = false;
       SetRenderGUI(true);
+      CheckOSScreenSaverInhibitionSetting();
       CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::GUI, "xbmc", "OnDPMSDeactivated");
       return m_dpms->DisablePowerSaving();
     }
@@ -3379,6 +3380,7 @@ bool CApplication::ToggleDPMS(bool manual)
         m_dpmsIsActive = true;
         m_dpmsIsManual = manual;
         SetRenderGUI(false);
+        CheckOSScreenSaverInhibitionSetting();
         CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::GUI, "xbmc", "OnDPMSActivated");
         return true;
       }
@@ -3491,7 +3493,10 @@ bool CApplication::WakeUpScreenSaver(bool bPowerOffKeyPressed /* = false */)
 void CApplication::CheckOSScreenSaverInhibitionSetting()
 {
   // Kodi screen saver overrides OS one: always inhibit OS screen saver then
-  if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_SCREENSAVER_MODE).empty() &&
+  // except when DPMS is active (inhibiting the screen saver then might also
+  // disable DPMS again)
+  if (!m_dpmsIsActive && 
+      !CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_SCREENSAVER_MODE).empty() &&
       CServiceBroker::GetWinSystem()->GetOSScreenSaver())
   {
     if (!m_globalScreensaverInhibitor)
