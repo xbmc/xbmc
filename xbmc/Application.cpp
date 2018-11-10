@@ -3560,7 +3560,7 @@ void CApplication::CheckScreenSaverAndDPMS()
     maybeScreensaver = false;
   }
 
-  if (m_screensaverActive && m_appPlayer.IsPlayingVideo() && !m_appPlayer.IsPaused())
+  if (m_screensaverActive && haveIdleActivity)
   {
     WakeUpScreenSaverAndDPMS();
     return;
