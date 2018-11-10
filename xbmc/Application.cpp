@@ -3543,7 +3543,10 @@ void CApplication::CheckScreenSaverAndDPMS()
   if (haveIdleActivity && CServiceBroker::GetWinSystem()->GetOSScreenSaver())
   {
     // Always inhibit OS screen saver during these kinds of activities
-    m_screensaverInhibitor = CServiceBroker::GetWinSystem()->GetOSScreenSaver()->CreateInhibitor();
+    if (!m_screensaverInhibitor)
+    {
+      m_screensaverInhibitor = CServiceBroker::GetWinSystem()->GetOSScreenSaver()->CreateInhibitor();
+    }
   }
   else if (m_screensaverInhibitor)
   {
