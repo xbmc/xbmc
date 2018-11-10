@@ -10277,7 +10277,11 @@ msgctxt "#19194"
 msgid "Continue?"
 msgstr ""
 
-#empty string with id 19195
+#. pvr settings "delay mark last watched" setting label
+#: system/settings/settings.xml
+msgctxt "#19195"
+msgid "Delay mark last watched"
+msgstr ""
 
 #. value for "pvr client specific actions" dialog headers
 #: xbmc/pvr/PVRGUIActions.cpp
@@ -18634,7 +18638,11 @@ msgctxt "#36235"
 msgid "Normal timeshift OSD always shows the complete timeshift buffer along with with the currently playing show, whereas the simple timeshift OSD only shows the currently playing show with no visual feedback how far in the timeshift buffer you can jump from the currently playing position."
 msgstr ""
 
-#empty string with id 36236
+#: system/settings/settings.xml
+msgctxt "#36236"
+msgid "If set to a value greater than zero last watched time of channels will be stored the given amount of time after start of channel playback. Otherwise the last watched time will be stored immediately at start of channel playback."
+msgstr ""
+
 
 #: system/settings/settings.xml
 msgctxt "#36237"

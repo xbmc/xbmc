@@ -17,6 +17,7 @@
 #include "messaging/ApplicationMessenger.h"
 #include "settings/Settings.h"
 #include "threads/SystemClock.h"
+#include "threads/Timer.h"
 #include "utils/JobManager.h"
 #include "utils/Stopwatch.h"
 #include "utils/StringUtils.h"
@@ -127,6 +128,7 @@ CPVRManager::CPVRManager(void) :
     m_database(new CPVRDatabase),
     m_parentalTimer(new CStopWatch),
     m_settings({
+      CSettings::SETTING_PVRPLAYBACK_DELAYMARKLASTWATCHED,
       CSettings::SETTING_PVRPOWERMANAGEMENT_ENABLED,
       CSettings::SETTING_PVRPOWERMANAGEMENT_SETWAKEUPCMD,
       CSettings::SETTING_PVRPARENTAL_ENABLED,
@@ -730,6 +732,33 @@ CPVRChannelGroupPtr CPVRManager::GetPlayingGroup(bool bRadio /* = false */) cons
   return CPVRChannelGroupPtr();
 }
 
+class CPVRManager::CLastWatchedUpdateTimer : public CTimer, private ITimerCallback
+{
+public:
+  explicit CLastWatchedUpdateTimer(CPVRManager& pvrMgr,
+                                   const std::shared_ptr<CPVRChannel>& channel,
+                                   const CDateTime& time)
+  : CTimer(this),
+    m_pvrMgr(pvrMgr),
+    m_channel(channel),
+    m_time(time)
+  {
+  }
+
+  // ITimerCallback implementation
+  void OnTimeout() override
+  {
+    m_pvrMgr.UpdateLastWatched(m_channel, m_time);
+  }
+
+private:
+  CLastWatchedUpdateTimer() = delete;
+
+  CPVRManager& m_pvrMgr;
+  const std::shared_ptr<CPVRChannel> m_channel;
+  const CDateTime m_time;
+};
+
 void CPVRManager::OnPlaybackStarted(const CFileItemPtr item)
 {
   m_playingChannel.reset();
@@ -746,7 +775,22 @@ void CPVRManager::OnPlaybackStarted(const CFileItemPtr item)
     m_playingClientId = m_playingChannel->ClientID();
 
     SetPlayingGroup(channel);
-    UpdateLastWatched(channel);
+
+    int iLastWatchedDelay = m_settings.GetIntValue(CSettings::SETTING_PVRPLAYBACK_DELAYMARKLASTWATCHED) * 1000;
+    if (iLastWatchedDelay > 0)
+    {
+      // Insert new / replace existing last watched update timer
+      if (m_lastWatchedUpdateTimer)
+        m_lastWatchedUpdateTimer->Stop(true);
+
+      m_lastWatchedUpdateTimer.reset(new CLastWatchedUpdateTimer(*this, channel, CDateTime::GetUTCDateTime()));
+      m_lastWatchedUpdateTimer->Start(iLastWatchedDelay);
+    }
+    else
+    {
+      // Store last watched timestamp immediately
+      UpdateLastWatched(channel, CDateTime::GetUTCDateTime());
+    }
   }
   else if (item->HasPVRRecordingInfoTag())
   {
@@ -776,7 +820,25 @@ void CPVRManager::OnPlaybackStopped(const CFileItemPtr item)
 
   if (item->HasPVRChannelInfoTag() && item->GetPVRChannelInfoTag() == m_playingChannel)
   {
-    UpdateLastWatched(item->GetPVRChannelInfoTag());
+    bool bUpdateLastWatched = true;
+
+    if (m_lastWatchedUpdateTimer)
+    {
+      if (m_lastWatchedUpdateTimer->IsRunning())
+      {
+        // If last watched timer is still running, cancel it. Channel was not watched long enough to store the value.
+        m_lastWatchedUpdateTimer->Stop(true);
+        bUpdateLastWatched = false;
+      }
+      m_lastWatchedUpdateTimer.reset();
+    }
+
+    if (bUpdateLastWatched)
+    {
+      // If last watched timer is not running (any more), channel was watched long enough to store the value.
+      UpdateLastWatched(m_playingChannel, CDateTime::GetUTCDateTime());
+    }
+
     SetChanged();
     NotifyObservers(ObservableMessageChannelPlaybackStopped);
 
@@ -918,16 +980,16 @@ bool CPVRManager::CreateChannelEpgs(void)
   return m_bEpgsCreated;
 }
 
-void CPVRManager::UpdateLastWatched(const CPVRChannelPtr &channel)
+void CPVRManager::UpdateLastWatched(const CPVRChannelPtr &channel, const CDateTime& time)
 {
-  time_t tNow;
-  CDateTime::GetCurrentDateTime().GetAsTime(tNow);
+  time_t iTime;
+  time.GetAsTime(iTime);
 
-  channel->SetLastWatched(tNow);
+  channel->SetLastWatched(iTime);
 
   // update last watched timestamp for group
   CPVRChannelGroupPtr group(GetPlayingGroup(channel->IsRadio()));
-  group->SetLastWatched(tNow);
+  group->SetLastWatched(iTime);
 
   /* update last played group */
   m_channelGroups->SetLastPlayedGroup(group);
