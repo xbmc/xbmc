@@ -444,6 +444,13 @@ void CGUIWindowFileManager::UpdateItemCounts()
 
 bool CGUIWindowFileManager::Update(int iList, const std::string &strDirectory)
 {
+  if (m_updating)
+  {
+    CLog::Log(LOGWARNING, "CGUIWindowFileManager::Update - updating in progress");
+    return true;
+  }
+  CUpdateGuard ug(m_updating);
+
   // get selected item
   int iItem = GetSelectedItem(iList);
   std::string strSelectedItem = "";

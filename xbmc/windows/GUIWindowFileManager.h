@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <atomic>
 #include <string>
 #include <vector>
 
@@ -77,7 +78,6 @@ protected:
   bool bCheckShareConnectivity;
   std::string strCheckSharePath;
 
-
   XFILE::CVirtualDirectory m_rootDir;
   CFileItemList* m_vecItems[2];
   typedef std::vector <CFileItem*> ::iterator ivecItems;
@@ -86,4 +86,20 @@ protected:
   CDirectoryHistory m_history[2];
 
   int m_errorHeading, m_errorLine;
+private:
+  std::atomic_bool m_updating = {false};
+  class CUpdateGuard
+  {
+  public:
+    CUpdateGuard(std::atomic_bool &update) : m_update(update)
+    {
+      m_update = true;
+    }
+    ~CUpdateGuard()
+    {
+      m_update = false;
+    }
+  private:
+    std::atomic_bool &m_update;
+  };
 };
