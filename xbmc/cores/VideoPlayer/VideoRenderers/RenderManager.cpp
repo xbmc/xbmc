@@ -224,6 +224,7 @@ bool CRenderManager::Configure()
     m_renderDebug = false;
     m_clockSync.Reset();
     m_dvdClock.SetVsyncAdjust(0);
+    m_overlays.SetStereoMode(m_stereomode);
 
     m_renderState = STATE_CONFIGURED;
 

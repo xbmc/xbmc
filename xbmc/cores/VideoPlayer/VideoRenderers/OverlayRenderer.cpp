@@ -331,6 +331,11 @@ void CRenderer::SetVideoRect(CRect &source, CRect &dest, CRect &view)
   m_rv = view;
 }
 
+void CRenderer::SetStereoMode(const std::string &stereomode)
+{
+  m_stereomode = stereomode;
+}
+
 COverlay* CRenderer::Convert(CDVDOverlaySSA* o, double pts)
 {
   // libass render in a target area which named as frame. the frame size may bigger than video size,
@@ -343,7 +348,19 @@ COverlay* CRenderer::Convert(CDVDOverlaySSA* o, double pts)
   int targetWidth = m_rv.Width();
   int targetHeight = m_rv.Height();
   int useMargin;
-
+  // Render subtitle of half-sbs and half-ou video in full screen, not in half screen
+  if (m_stereomode == "left_right" || m_stereomode == "right_left")
+  {
+    // only half-sbs video, sbs video don't need to change source size
+    if (static_cast<double>(sourceWidth) / sourceHeight < 1.2)
+      sourceWidth = m_rs.Width() * 2;
+  }
+  else if (m_stereomode == "top_bottom" || m_stereomode == "bottom_top")
+  {
+    // only half-ou video, ou video don't need to change source size
+    if (static_cast<double>(sourceWidth) / sourceHeight > 2.5)
+      sourceHeight = m_rs.Height() * 2;
+  }
   int subalign = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_SUBTITLES_ALIGN);
   if(subalign == SUBTITLE_ALIGN_BOTTOM_OUTSIDE
   || subalign == SUBTITLE_ALIGN_TOP_OUTSIDE
