@@ -107,7 +107,7 @@
 							<texture border="5">thumb_focus.png</texture>
 						</control>
 					</focusedlayout>
-				<content target="movies" sortby="date" limit="10">videodb://recentlyaddedmovies/</content>
+				<content target="movies" limit="10">videodb://recentlyaddedmovies/</content>
 				</control>
 				<control type="panel" id="2200">
 					<visible>Library.HasContent(TVShows) + Container(9010).HasFocus(2)</visible>
