@@ -598,6 +598,18 @@ bool URIUtils::IsRemote(const std::string& strFile)
 
   if (IsSourcesPath(strFile))
     return false;
+  
+  if (IsVideoDb(strFile) || IsMusicDb(strFile))
+    return false;
+  
+  if (IsLibraryFolder(strFile))
+    return false;
+  
+  if (IsPlugin(strFile))
+    return false;
+  
+  if (IsAndroidApp(strFile))
+    return false;
 
   if (!url.IsLocal())
     return true;
