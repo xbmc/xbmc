@@ -31,7 +31,7 @@ void CSaveFileState::DoWork(CFileItem& item,
                             CBookmark& bookmark,
                             bool updatePlayCount)
 {
-  std::string progressTrackingFile = item.GetPath();
+  std::string progressTrackingFile = item.GetDynPath();
 
   if (item.HasVideoInfoTag() && StringUtils::StartsWith(item.GetVideoInfoTag()->m_strFileNameAndPath, "removable://"))
     progressTrackingFile = item.GetVideoInfoTag()->m_strFileNameAndPath; // this variable contains removable:// suffixed by disc label+uniqueid or is empty if label not uniquely identified
