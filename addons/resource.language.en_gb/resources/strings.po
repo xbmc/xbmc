@@ -19104,7 +19104,7 @@ msgstr ""
 #. Description of setting with label #21361 "Look for remote UPnP players"
 #: system/settings/settings.xml
 msgctxt "#36326"
-msgid "Enable the UPnP control point. This allows you to stream media to any UPnP client and control it's playback."
+msgid "Enable the UPnP control point. This allows you to stream media to any UPnP client and control its playback."
 msgstr ""
 
 #. Description of settings category with label #20187 "Control"
