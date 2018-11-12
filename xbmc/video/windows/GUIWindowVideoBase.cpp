@@ -1103,7 +1103,13 @@ bool CGUIWindowVideoBase::OnPlayAndQueueMedia(const CFileItemPtr &item, std::str
   if (iPlaylist != PLAYLIST_NONE && CServiceBroker::GetPlaylistPlayer().IsShuffled(iPlaylist))
      CServiceBroker::GetPlaylistPlayer().SetShuffle(iPlaylist, false);
 
-  CFileItemPtr movieItem(new CFileItem(*item));
+  const CFileItemPtr movieItem = std::make_shared<CFileItem>(*item);
+  if (movieItem->IsVideoDb())
+  {
+    movieItem->SetPath(item->GetVideoInfoTag()->m_strFileNameAndPath);
+    movieItem->SetProperty("original_listitem_url", item->GetPath());
+  }
+  CLog::Log(LOGDEBUG, "%s %s", __FUNCTION__, CURL::GetRedacted(movieItem->GetPath()).c_str());
 
   // Call the base method to actually queue the items
   // and start playing the given item
