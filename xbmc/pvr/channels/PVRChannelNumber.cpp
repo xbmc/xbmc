@@ -16,8 +16,21 @@ const char CPVRChannelNumber::SEPARATOR = '.';
 
 std::string CPVRChannelNumber::FormattedChannelNumber() const
 {
+  return ToString(SEPARATOR);
+}
+
+std::string CPVRChannelNumber::SortableChannelNumber() const
+{
+  // Note: The subchannel separator is a character that does not work for a
+  //       SortItem (at least not on all platforms). See SortUtils::Sort for
+  //       details. Only numbers, letters and the blank are safe to use.
+  return ToString(' ');
+}
+
+std::string CPVRChannelNumber::ToString(char separator) const
+{
   if (m_iSubChannelNumber == 0)
     return StringUtils::Format("%u", m_iChannelNumber);
   else
-    return StringUtils::Format("%u%c%u", m_iChannelNumber, SEPARATOR, m_iSubChannelNumber);
+    return StringUtils::Format("%u%c%u", m_iChannelNumber, separator, m_iSubChannelNumber);
 }
