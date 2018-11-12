@@ -228,8 +228,10 @@
   <Capabilities>
     <Capability Name="internetClient" />
     <Capability Name="internetClientServer" />
-    <Capability Name="codeGeneration" />
     <Capability Name="privateNetworkClientServer" />
+    <Capability Name="allJoyn" />
+    <Capability Name="codeGeneration" />
+    <uap:Capability Name="enterpriseAuthentication" />
     <uap:Capability Name="musicLibrary" />
     <uap:Capability Name="picturesLibrary" />
     <uap:Capability Name="removableStorage" />

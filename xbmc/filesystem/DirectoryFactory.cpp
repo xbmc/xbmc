@@ -35,6 +35,7 @@
 #include "platform/win32/filesystem/Win32Directory.h"
 #ifdef TARGET_WINDOWS_STORE
 #include "platform/win10/filesystem/WinLibraryDirectory.h"
+#include "platform/win10/filesystem/UwpSMBDirectory.h"
 #endif
 #endif
 #ifdef HAS_FILESYSTEM_SMB
@@ -135,6 +136,8 @@ IDirectory* CDirectoryFactory::Create(const CURL& url)
   if (url.IsProtocol("events")) return new CEventsDirectory();
 #ifdef TARGET_WINDOWS_STORE
   if (CWinLibraryDirectory::IsValid(url)) return new CWinLibraryDirectory();
+  if (url.IsProtocol("smb"))
+    return new CUwpSMBDirectory();
 #endif
 
   bool networkAvailable = CServiceBroker::GetNetwork().IsAvailable();

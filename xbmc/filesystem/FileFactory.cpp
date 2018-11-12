@@ -14,6 +14,7 @@
 #include "platform/win32/filesystem/Win32File.h"
 #ifdef TARGET_WINDOWS_STORE
 #include "platform/win10/filesystem/WinLibraryFile.h"
+#include "platform/win10/filesystem/UwpSMBFile.h"
 #endif
 #endif // TARGET_WINDOWS
 #include "CurlFile.h"
@@ -127,6 +128,8 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
   else if (url.IsProtocol("resource")) return new CResourceFile();
 #ifdef TARGET_WINDOWS_STORE
   else if (CWinLibraryFile::IsValid(url)) return new CWinLibraryFile();
+  else if (url.IsProtocol("smb"))
+    return new CUwpSMBFile();
 #endif
 
   bool networkAvailable = CServiceBroker::GetNetwork().IsAvailable();
