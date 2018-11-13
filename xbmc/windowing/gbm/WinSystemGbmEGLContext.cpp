@@ -32,15 +32,15 @@ bool CWinSystemGbmEGLContext::InitWindowSystemEGL(EGLint renderableType, EGLint 
     return false;
   }
 
-  uint32_t visualId = m_DRM->GetOverlayPlane()->GetFormat();
+  uint32_t visualId = m_DRM->GetGuiPlane()->GetFormat();
 
   // prefer alpha visual id, fallback to non-alpha visual id
   if (!m_eglContext.ChooseConfig(renderableType, CDRMUtils::FourCCWithAlpha(visualId)) &&
       !m_eglContext.ChooseConfig(renderableType, CDRMUtils::FourCCWithoutAlpha(visualId)))
   {
     // fallback to 8bit format if no EGL config was found for 10bit
-    m_DRM->GetOverlayPlane()->useFallbackFormat = true;
-    visualId = m_DRM->GetOverlayPlane()->GetFormat();
+    m_DRM->GetGuiPlane()->useFallbackFormat = true;
+    visualId = m_DRM->GetGuiPlane()->GetFormat();
 
     if (!m_eglContext.ChooseConfig(renderableType, CDRMUtils::FourCCWithAlpha(visualId)) &&
         !m_eglContext.ChooseConfig(renderableType, CDRMUtils::FourCCWithoutAlpha(visualId)))
@@ -76,7 +76,7 @@ bool CWinSystemGbmEGLContext::CreateNewWindow(const std::string& name,
   }
 
   uint32_t format = m_eglContext.GetConfigAttrib(EGL_NATIVE_VISUAL_ID);
-  std::vector<uint64_t> *modifiers = m_DRM->GetOverlayPlaneModifiersForFormat(format);
+  std::vector<uint64_t> *modifiers = m_DRM->GetGuiPlaneModifiersForFormat(format);
 
   if (!m_GBM->CreateSurface(res.iWidth, res.iHeight, format, modifiers->data(), modifiers->size()))
   {

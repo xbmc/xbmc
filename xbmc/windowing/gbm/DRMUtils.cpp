@@ -29,8 +29,8 @@ CDRMUtils::CDRMUtils()
   : m_connector(new connector)
   , m_encoder(new encoder)
   , m_crtc(new crtc)
-  , m_primary_plane(new plane)
-  , m_overlay_plane(new plane)
+  , m_video_plane(new plane)
+  , m_gui_plane(new plane)
 {
 }
 
@@ -73,7 +73,7 @@ drm_fb * CDRMUtils::DrmFbGetFromBo(struct gbm_bo *bo)
     struct drm_fb *fb = static_cast<drm_fb *>(gbm_bo_get_user_data(bo));
     if(fb)
     {
-      if (m_overlay_plane->GetFormat() == fb->format)
+      if (m_gui_plane->GetFormat() == fb->format)
         return fb;
       else
         DrmFbDestroyCallback(bo, gbm_bo_get_user_data(bo));
@@ -82,7 +82,7 @@ drm_fb * CDRMUtils::DrmFbGetFromBo(struct gbm_bo *bo)
 
   struct drm_fb *fb = new drm_fb;
   fb->bo = bo;
-  fb->format = m_overlay_plane->GetFormat();
+  fb->format = m_gui_plane->GetFormat();
 
   uint32_t width,
            height,
@@ -365,8 +365,8 @@ drmModePlanePtr CDRMUtils::FindPlane(drmModePlaneResPtr resources, int crtc_inde
             case KODI_GUI_PLANE:
             {
               uint32_t plane_id = 0;
-              if (m_primary_plane->plane)
-                plane_id = m_primary_plane->plane->plane_id;
+              if (m_video_plane->plane)
+                plane_id = m_video_plane->plane->plane_id;
 
               if (plane->plane_id != plane_id &&
                   (plane_id == 0 || SupportsFormat(plane, DRM_FORMAT_ARGB8888)) &&
@@ -383,8 +383,8 @@ drmModePlanePtr CDRMUtils::FindPlane(drmModePlaneResPtr resources, int crtc_inde
             case KODI_GUI_10_PLANE:
             {
               uint32_t plane_id = 0;
-              if (m_primary_plane->plane)
-                plane_id = m_primary_plane->plane->plane_id;
+              if (m_video_plane->plane)
+                plane_id = m_video_plane->plane->plane_id;
 
               if (plane->plane_id != plane_id &&
                   (plane_id == 0 || SupportsFormat(plane, DRM_FORMAT_ARGB2101010)) &&
@@ -423,48 +423,48 @@ bool CDRMUtils::FindPlanes()
     return false;
   }
 
-  m_primary_plane->plane = FindPlane(plane_resources, m_crtc_index, KODI_VIDEO_PLANE);
-  m_overlay_plane->plane = FindPlane(plane_resources, m_crtc_index, KODI_GUI_10_PLANE);
+  m_video_plane->plane = FindPlane(plane_resources, m_crtc_index, KODI_VIDEO_PLANE);
+  m_gui_plane->plane = FindPlane(plane_resources, m_crtc_index, KODI_GUI_10_PLANE);
 
   /* fallback to 8bit plane if 10bit plane doesn't exist */
-  if (m_overlay_plane->plane == nullptr)
+  if (m_gui_plane->plane == nullptr)
   {
-    drmModeFreePlane(m_overlay_plane->plane);
-    m_overlay_plane->plane = FindPlane(plane_resources, m_crtc_index, KODI_GUI_PLANE);
-    m_overlay_plane->SetFormat(DRM_FORMAT_XRGB8888);
+    drmModeFreePlane(m_gui_plane->plane);
+    m_gui_plane->plane = FindPlane(plane_resources, m_crtc_index, KODI_GUI_PLANE);
+    m_gui_plane->SetFormat(DRM_FORMAT_XRGB8888);
   }
 
   drmModeFreePlaneResources(plane_resources);
 
-  // primary plane may not be available
-  if (m_primary_plane->plane)
+  // video plane may not be available
+  if (m_video_plane->plane)
   {
-    if (!GetProperties(m_fd, m_primary_plane->plane->plane_id, DRM_MODE_OBJECT_PLANE, m_primary_plane))
+    if (!GetProperties(m_fd, m_video_plane->plane->plane_id, DRM_MODE_OBJECT_PLANE, m_video_plane))
     {
-      CLog::Log(LOGERROR, "CDRMUtils::%s - could not get primary plane %u properties: %s", __FUNCTION__, m_primary_plane->plane->plane_id, strerror(errno));
+      CLog::Log(LOGERROR, "CDRMUtils::%s - could not get video plane %u properties: %s", __FUNCTION__, m_video_plane->plane->plane_id, strerror(errno));
       return false;
     }
 
-    if (!FindModifiersForPlane(m_primary_plane))
+    if (!FindModifiersForPlane(m_video_plane))
     {
-      CLog::Log(LOGDEBUG, "CDRMUtils::%s - no drm modifiers present for the primary plane", __FUNCTION__);
+      CLog::Log(LOGDEBUG, "CDRMUtils::%s - no drm modifiers present for the video plane", __FUNCTION__);
     }
   }
 
-  // overlay plane should always be available
-  if (!GetProperties(m_fd, m_overlay_plane->plane->plane_id, DRM_MODE_OBJECT_PLANE, m_overlay_plane))
+  // gui plane should always be available
+  if (!GetProperties(m_fd, m_gui_plane->plane->plane_id, DRM_MODE_OBJECT_PLANE, m_gui_plane))
   {
-    CLog::Log(LOGERROR, "CDRMUtils::%s - could not get overlay plane %u properties: %s", __FUNCTION__, m_overlay_plane->plane->plane_id, strerror(errno));
+    CLog::Log(LOGERROR, "CDRMUtils::%s - could not get gui plane %u properties: %s", __FUNCTION__, m_gui_plane->plane->plane_id, strerror(errno));
     return false;
   }
 
-  if (!FindModifiersForPlane(m_overlay_plane))
+  if (!FindModifiersForPlane(m_gui_plane))
   {
-    CLog::Log(LOGDEBUG, "CDRMUtils::%s - no drm modifiers present for the overlay plane", __FUNCTION__);
-    m_overlay_plane->modifiers_map.emplace(DRM_FORMAT_ARGB8888, std::vector<uint64_t>{DRM_FORMAT_MOD_LINEAR});
-    m_overlay_plane->modifiers_map.emplace(DRM_FORMAT_XRGB8888, std::vector<uint64_t>{DRM_FORMAT_MOD_LINEAR});
-    m_overlay_plane->modifiers_map.emplace(DRM_FORMAT_ARGB2101010, std::vector<uint64_t>{DRM_FORMAT_MOD_LINEAR});
-    m_overlay_plane->modifiers_map.emplace(DRM_FORMAT_XRGB2101010, std::vector<uint64_t>{DRM_FORMAT_MOD_LINEAR});
+    CLog::Log(LOGDEBUG, "CDRMUtils::%s - no drm modifiers present for the gui plane", __FUNCTION__);
+    m_gui_plane->modifiers_map.emplace(DRM_FORMAT_ARGB8888, std::vector<uint64_t>{DRM_FORMAT_MOD_LINEAR});
+    m_gui_plane->modifiers_map.emplace(DRM_FORMAT_XRGB8888, std::vector<uint64_t>{DRM_FORMAT_MOD_LINEAR});
+    m_gui_plane->modifiers_map.emplace(DRM_FORMAT_ARGB2101010, std::vector<uint64_t>{DRM_FORMAT_MOD_LINEAR});
+    m_gui_plane->modifiers_map.emplace(DRM_FORMAT_XRGB2101010, std::vector<uint64_t>{DRM_FORMAT_MOD_LINEAR});
   }
 
   return true;
@@ -711,15 +711,15 @@ void CDRMUtils::DestroyDrm()
   delete m_crtc;
   m_crtc = nullptr;
 
-  drmModeFreePlane(m_primary_plane->plane);
-  FreeProperties(m_primary_plane);
-  delete m_primary_plane;
-  m_primary_plane = nullptr;
+  drmModeFreePlane(m_video_plane->plane);
+  FreeProperties(m_video_plane);
+  delete m_video_plane;
+  m_video_plane = nullptr;
 
-  drmModeFreePlane(m_overlay_plane->plane);
-  FreeProperties(m_overlay_plane);
-  delete m_overlay_plane;
-  m_overlay_plane = nullptr;
+  drmModeFreePlane(m_gui_plane->plane);
+  FreeProperties(m_gui_plane);
+  delete m_gui_plane;
+  m_gui_plane = nullptr;
 }
 
 RESOLUTION_INFO CDRMUtils::GetResolutionInfo(drmModeModeInfoPtr mode)
