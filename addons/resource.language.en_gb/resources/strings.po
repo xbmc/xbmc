@@ -12723,6 +12723,7 @@ msgstr ""
 #: xbmc/media/MediaTypes.cpp
 #: addons/skin.estuary/xml/Variables.xml
 #: xbmc/view/GUIViewState.cpp
+#: system/settings/settings.xml
 msgctxt "#20342"
 msgid "Movies"
 msgstr ""
@@ -12734,6 +12735,7 @@ msgstr ""
 #: addons/skin.estuary/xml/SkinSettings.xml
 #: addons/skin.estuary/xml/Variables.xml
 #: xbmc/view/GUIViewState.cpp
+#: system/settings/settings.xml
 msgctxt "#20343"
 msgid "TV shows"
 msgstr ""
@@ -18103,7 +18105,7 @@ msgstr ""
 #. Description of setting with label #20369 "Show plot for unwatched items"
 #: system/settings/settings.xml
 msgctxt "#36141"
-msgid "Show plot information for unwatched media in the video library."
+msgid "Show plot information for unwatched media in the video library. The plot will be shown for the specific category you have selected. For example if 'Movies' is selected, the plot will be shown at the movie library, but will be hidden for TV shows and otherwise."
 msgstr ""
 
 #. Description of setting with label #14106 "Speed unit"
@@ -21575,3 +21577,4 @@ msgstr ""
 msgctxt "#39113"
 msgid "Center Mix Level in dB relative to metadata or default (-3 dB)"
 msgstr ""
+

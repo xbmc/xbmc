@@ -968,10 +968,20 @@
           <default>true</default>
           <control type="toggle" />
         </setting>
-        <setting id="videolibrary.showunwatchedplots" type="boolean" label="20369" help="36141">
+        <setting id="videolibrary.showunwatchedplots" type="list[integer]" label="20369" help="36141">
           <level>0</level>
-          <default>true</default>
-          <control type="toggle" />
+          <default>0,1</default> <!-- Show plot for both -->
+          <constraints>
+            <options>
+              <option label="20342">0</option> <!-- Show plot for unwatched movies only -->
+              <option label="20343">1</option> <!-- Show plot for unwatched tv show episodes only -->
+            </options>
+            <delimiter>,</delimiter>
+          </constraints>
+          <control type="list" format="string">
+            <multiselect>true</multiselect>
+            <hidevalue>false</hidevalue>
+          </control>
         </setting>
         <setting id="videolibrary.groupmoviesets" type="boolean" label="20458" help="36145">
           <level>1</level>
