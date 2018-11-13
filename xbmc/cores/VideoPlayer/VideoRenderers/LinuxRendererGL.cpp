@@ -558,6 +558,9 @@ void CLinuxRendererGL::DrawBlackBars()
 
   glUniform4f(uniCol, m_clearColour / 255.0f, m_clearColour / 255.0f, m_clearColour / 255.0f, 1.0f);
 
+  int osWindowWidth = CServiceBroker::GetWinSystem()->GetGfxContext().GetWidth();
+  int osWindowHeight = CServiceBroker::GetWinSystem()->GetGfxContext().GetHeight();
+
   //top quad
   if (m_destRect.y1 > 0.0)
   {
@@ -565,10 +568,10 @@ void CLinuxRendererGL::DrawBlackBars()
     vertices[quad].x = 0.0;
     vertices[quad].y = 0.0;
     vertices[quad].z = 0;
-    vertices[quad+1].x = m_viewRect.Width();
+    vertices[quad+1].x = osWindowWidth;
     vertices[quad+1].y = 0;
     vertices[quad+1].z = 0;
-    vertices[quad+2].x = m_viewRect.Width();
+    vertices[quad+2].x = osWindowWidth;
     vertices[quad+2].y = m_destRect.y1;
     vertices[quad+2].z = 0;
     vertices[quad+3] = vertices[quad+2];
@@ -580,21 +583,21 @@ void CLinuxRendererGL::DrawBlackBars()
   }
 
   // bottom quad
-  if (m_destRect.y2 < m_viewRect.Height())
+  if (m_destRect.y2 < osWindowHeight)
   {
     GLubyte quad = count;
     vertices[quad].x = 0.0;
     vertices[quad].y = m_destRect.y2;
     vertices[quad].z = 0;
-    vertices[quad+1].x = m_viewRect.Width();
+    vertices[quad+1].x = osWindowWidth;
     vertices[quad+1].y = m_destRect.y2;
     vertices[quad+1].z = 0;
-    vertices[quad+2].x = m_viewRect.Width();
-    vertices[quad+2].y = m_viewRect.Height();
+    vertices[quad+2].x = osWindowWidth;
+    vertices[quad+2].y = osWindowHeight;
     vertices[quad+2].z = 0;
     vertices[quad+3] = vertices[quad+2];
     vertices[quad+4].x = 0;
-    vertices[quad+4].y = m_viewRect.Height();
+    vertices[quad+4].y = osWindowHeight;
     vertices[quad+4].z = 0;
     vertices[quad+5] = vertices[quad];
     count += 6;
@@ -622,16 +625,16 @@ void CLinuxRendererGL::DrawBlackBars()
   }
 
   // right quad
-  if (m_destRect.x2 < m_viewRect.Width())
+  if (m_destRect.x2 < osWindowWidth)
   {
     GLubyte quad = count;
     vertices[quad].x = m_destRect.x2;
     vertices[quad].y = m_destRect.y1;
     vertices[quad].z = 0;
-    vertices[quad+1].x = m_viewRect.Width();
+    vertices[quad+1].x = osWindowWidth;
     vertices[quad+1].y = m_destRect.y1;
     vertices[quad+1].z = 0;
-    vertices[quad+2].x = m_viewRect.Width();
+    vertices[quad+2].x = osWindowWidth;
     vertices[quad+2].y = m_destRect.y2;
     vertices[quad+2].z = 0;
     vertices[quad+3] = vertices[quad+2];
