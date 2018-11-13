@@ -36,9 +36,7 @@ bool CRenderSystemGLES::InitRenderSystem()
   glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTextureSize);
 
   m_maxTextureSize = maxTextureSize;
-  m_bVSync = false;
-  m_iVSyncMode = 0;
-  m_bVsyncInit = false;
+
   // Get the GLES version number
   m_RenderVersionMajor = 0;
   m_RenderVersionMinor = 0;
@@ -210,7 +208,7 @@ void CRenderSystemGLES::PresentRender(bool rendered, bool videoLayer)
 
 void CRenderSystemGLES::SetVSync(bool enable)
 {
-  if (m_bVSync==enable && m_bVsyncInit == true)
+  if (m_bVsyncInit)
     return;
 
   if (!m_bRenderCreated)
@@ -221,20 +219,9 @@ void CRenderSystemGLES::SetVSync(bool enable)
   else
     CLog::Log(LOGINFO, "GLES: Disabling VSYNC");
 
-  m_iVSyncMode   = 0;
-  m_iVSyncErrors = 0;
-  m_bVSync       = enable;
-  m_bVsyncInit   = true;
+  m_bVsyncInit = true;
 
   SetVSyncImpl(enable);
-
-  if (!enable)
-    return;
-
-  if (!m_iVSyncMode)
-    CLog::Log(LOGERROR, "GLES: Vertical Blank Syncing unsupported");
-  else
-    CLog::Log(LOGINFO, "GLES: Selected vsync mode %d", m_iVSyncMode);
 }
 
 void CRenderSystemGLES::CaptureStateBlock()
