@@ -624,7 +624,7 @@ void CPVRChannel::ToSortable(SortItem& sortable, Field field) const
   if (field == FieldChannelName)
     sortable[FieldChannelName] = m_strChannelName;
   else if (field == FieldChannelNumber)
-    sortable[FieldChannelNumber] = m_channelNumber.FormattedChannelNumber();
+    sortable[FieldChannelNumber] = m_channelNumber.SortableChannelNumber();
   else if (field == FieldLastPlayed)
   {
     const CDateTime lastWatched(m_iLastWatched);

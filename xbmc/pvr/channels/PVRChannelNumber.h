@@ -73,7 +73,15 @@ namespace PVR
      */
     std::string FormattedChannelNumber() const;
 
+    /*!
+     * @brief Get a string representation for the channel number that can be used for SortItems.
+     * @return The sortable string in the form <channel> <subchannel>.
+     */
+    std::string SortableChannelNumber() const;
+
   private:
+    std::string ToString(char separator) const;
+
     unsigned int m_iChannelNumber = 0;
     unsigned int m_iSubChannelNumber = 0;
   };
