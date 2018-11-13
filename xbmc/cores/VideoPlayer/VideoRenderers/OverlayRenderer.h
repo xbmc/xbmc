@@ -75,6 +75,7 @@ namespace OVERLAY {
     void Release(int idx);
     bool HasOverlay(int idx);
     void SetVideoRect(CRect &source, CRect &dest, CRect &view);
+    void SetStereoMode(const std::string &stereomode);
 
   protected:
 
@@ -103,5 +104,6 @@ namespace OVERLAY {
     static unsigned int m_textureid;
     CRect m_rv, m_rs, m_rd;
     std::string m_font, m_fontBorder;
+    std::string m_stereomode;
   };
 }
