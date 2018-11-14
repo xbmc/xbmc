@@ -35,6 +35,7 @@ private:
   void ProcessEvent(libinput_event *ev);
   void DeviceAdded(libinput_device *dev);
   void DeviceRemoved(libinput_device *dev);
+  void CheckInputGroup();
 
   udev *m_udev;
   libinput *m_li;

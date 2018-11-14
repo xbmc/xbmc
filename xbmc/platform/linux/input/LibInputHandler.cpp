@@ -16,6 +16,7 @@
 
 #include <algorithm>
 #include <fcntl.h>
+#include <grp.h>
 #include <linux/input.h>
 #include <string.h>
 #include <sys/epoll.h>
@@ -63,8 +64,48 @@ static void LogHandler(libinput  __attribute__((unused)) *libinput, libinput_log
   }
 }
 
+void CLibInputHandler::CheckInputGroup()
+{
+  auto numGroups = getgroups(0, nullptr);
+  if (numGroups < 0)
+  {
+    CLog::Log(LOGERROR, "CLibInputHandler::{} - unable to retrieve groups: {}", __FUNCTION__, strerror(errno));
+    return;
+  }
+
+  std::vector<gid_t> groups(numGroups);
+
+  auto ret = getgroups(numGroups, groups.data());
+  if (ret < 0)
+  {
+    CLog::Log(LOGERROR, "CLibInputHandler::{} - unable to retrieve groups: {}", __FUNCTION__, strerror(errno));
+    return;
+  }
+
+  auto groupId = getgrnam("input");
+  if (!groupId)
+  {
+    CLog::Log(LOGWARNING, "CLibInputHandler::{} - no \"input\" group found. user input may not be available.", __FUNCTION__);
+    return;
+  }
+  else
+  {
+    for (const auto& group : groups)
+    {
+      if (group == groupId->gr_gid)
+      {
+        return;
+      }
+    }
+  }
+
+  CLog::Log(LOGWARNING, "CLibInputHandler::{} - user is not part of the \"input\" group", __FUNCTION__);
+}
+
 CLibInputHandler::CLibInputHandler() : CThread("libinput")
 {
+  CheckInputGroup();
+
   m_udev = udev_new();
   if (!m_udev)
   {
