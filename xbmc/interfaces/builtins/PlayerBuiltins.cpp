@@ -551,9 +551,13 @@ static int Seek(const std::vector<std::string>& params)
 ///     | Partymode(video) **     | Toggles video partymode                | none                        |             |
 ///     | Partymode(path to .xsp) | Partymode for *.xsp-file               | Partymode for *.xsp-file    |             |
 ///     | ShowVideoMenu           | Shows the DVD/BR menu if available     | none                        |             |
+///     | FrameAdvance(n) ***     | Advance video by _n_ frames            | none                        | Kodi v18    |
 ///     <br>
 ///     '*' = For these controls\, the PlayerControl built-in function can make use of the 'notify'-parameter. For example: PlayerControl(random\, notify)
+///     <br>
 ///     '**' = If no argument is given for 'partymode'\, the control  will default to music.
+///     <br>
+///     '***' = This only works if the player is paused.
 ///     <br>
 ///     @param[in] control               Control to execute.
 ///     @param[in] param                 "notify" to notify user (optional\, certain controls).
