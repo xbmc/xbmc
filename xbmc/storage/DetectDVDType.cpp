@@ -328,6 +328,11 @@ DWORD CDetectDVDMedia::GetTrayState()
     }
     laststatus = status;
     m_cdio->cdio_destroy(cdio);
+    
+    if (status == DRIVER_OP_UNSUPPORTED)
+    {
+      return DRIVE_NONE;
+    }
   }
   else
     return DRIVE_NOT_READY;
