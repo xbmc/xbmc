@@ -85,7 +85,7 @@ void CAddonInstaller::OnJobProgress(unsigned int jobID, unsigned int progress, u
   if (i != m_downloadJobs.end())
   {
     // update job progress
-    i->second.progress = progress;
+    i->second.progress = 100 / total * progress;
     CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM);
     msg.SetStringParam(i->first);
     lock.Leave();
