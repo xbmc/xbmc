@@ -35,7 +35,7 @@
 #define PLAYER_TIME                  27
 #define PLAYER_TIME_REMAINING        28
 #define PLAYER_DURATION              29
-#define PLAYER_SHOWCODEC             30
+// unused 30
 #define PLAYER_SHOWINFO              31
 #define PLAYER_VOLUME                32
 #define PLAYER_MUTED                 33

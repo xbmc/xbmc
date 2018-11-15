@@ -76,16 +76,136 @@ typedef struct
   int  val;
 } infomap;
 
-/// \page modules__General__List_of_gui_access List of GUI access messages
+/// \page modules__infolabels_boolean_conditions Infolabels and Boolean conditions
 /// \tableofcontents
 ///
-/// \section modules__General__List_of_gui_access_Description Description
-/// Skins can use boolean conditions with the <b><visible></b> tag or with condition
+/// \section modules__infolabels_boolean_conditions_Description Description
+/// Skins can use boolean conditions with the <b>\<visible\></b> tag or with condition
 /// attributes. Scripts can read boolean conditions with
 /// <b>xbmc.getCondVisibility(condition)</b>.
 ///
-/// Skins can use infolabels with <b>$INFO[infolabel]</b> or the <b><info></b> tag. Scripts
+/// Skins can use infolabels with <b>$INFO[infolabel]</b> or the <b>\<info\></b> tag. Scripts
 /// can read infolabels with <b>xbmc.getInfoLabel('infolabel')</b>.
+/// 
+/// @todo [docs] Improve the description and create links for functions
+/// @todo [docs] Separate boolean conditions from infolabels
+/// @todo [docs] Order items alphabetically within subsections for a better search experience
+/// @todo [docs] Order subsections alphabetically
+/// @todo [docs] Use links instead of bold values for infolabels/bools
+/// so we can use a link to point users when providing help
+/// 
+
+
+/// \page modules__infolabels_boolean_conditions
+/// \section modules_list_infolabels_booleans List of Infolabels and Boolean conditions
+/// \subsection modules__infolabels_boolean_conditions_GlobalBools Global
+/// \table_start
+///   \table_h3{ Labels, Type, Description }
+///   \table_row3{   <b>`true`</b>,
+///                  \anchor Global_True
+///                  _boolean_,
+///     @return Always evaluates to **true**.
+///     <p>
+///   }
+///   \table_row3{   <b>`false`</b>,
+///                  \anchor Global_False
+///                  _boolean_,
+///     @return Always evaluates to **false**.
+///     <p>
+///   }
+///   \table_row3{   <b>`yes`</b>,
+///                  \anchor Global_Yes
+///                  _boolean_,
+///     @return same as \link Global_True `true` \endlink.
+///     <p>
+///   }
+///   \table_row3{   <b>`no`</b>,
+///                  \anchor Global_No
+///                  _boolean_,
+///     @return same as \link Global_False `false` \endlink.
+///     <p>
+///   }
+/// \table_end
+///
+/// -----------------------------------------------------------------------------
+
+
+/// \page modules__infolabels_boolean_conditions
+/// \subsection modules__infolabels_boolean_conditions_String String
+/// \table_start
+///   \table_h3{ Labels, Type, Description }
+///   \table_row3{   <b>`String.IsEmpty(info)`</b>,
+///                  \anchor String_IsEmpty
+///                  _boolean_,
+///     @return **True** if the info is empty.
+///     @param info - infolabel
+///     @note **Example of info:** \link ListItem_Title `ListItem.Title` \endlink \, 
+///     \link ListItem_Genre `ListItem.Genre` \endlink.
+///     Please note that string can also be a `$LOCALIZE[]`.
+///     Also note that in a panelview or similar this only works on the focused item
+///     <p><hr>
+///     @skinning_v17 **[New Boolean Condition]** \link String_IsEmpty `String.IsEmpty(info)`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`String.IsEqual(info\,string)`</b>,
+///                  \anchor String_IsEqual
+///                  _boolean_,
+///     @return **True** if the info is equal to the given string.
+///     @param info - infolabel
+///     @param string - comparison string
+///     @note **Example of info:** \link ListItem_Title `ListItem.Title` \endlink \, 
+///     \link ListItem_Genre `ListItem.Genre` \endlink.
+///     Please note that string can also be a `$LOCALIZE[]`.
+///     Also note that in a panelview or similar this only works on the focused item
+///     <p><hr>
+///     @skinning_v17 **[New Boolean Condition]** \link String_IsEqual `String.IsEqual(info\,string)`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`String.StartsWith(info\,substring)`</b>,
+///                  \anchor String_StartsWith
+///                  _boolean_,
+///     @return **True** if the info starts with the given substring.
+///     @param info - infolabel
+///     @param substring - substring to check
+///     @note **Example of info:** \link ListItem_Title `ListItem.Title` \endlink \, 
+///     \link ListItem_Genre `ListItem.Genre` \endlink.
+///     Please note that string can also be a `$LOCALIZE[]`.
+///     Also note that in a panelview or similar this only works on the focused item
+///     <p><hr>
+///     @skinning_v17 **[New Boolean Condition]** \link String_StartsWith `String.StartsWith(info\,substring)`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`String.EndsWith(info\,substring)`</b>,
+///                  \anchor String_EndsWith
+///                  _boolean_,
+///     @return **True** if the info ends with the given substring.
+///     @param info - infolabel
+///     @param substring - substring to check
+///     @note **Example of info:** \link ListItem_Title `ListItem.Title` \endlink \, 
+///     \link ListItem_Genre `ListItem.Genre` \endlink.
+///     Please note that string can also be a `$LOCALIZE[]`.
+///     Also note that in a panelview or similar this only works on the focused item
+///     <p><hr>
+///     @skinning_v17 **[New Boolean Condition]** \link String_EndsWith `String.EndsWith(info\,substring)`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`String.Contains(info\,substring)`</b>,
+///                  \anchor String_Contains
+///                  _boolean_,
+///     @return **True** if the info contains the given substring.
+///     @param info - infolabel
+///     @param substring - substring to check
+///     @note **Example of info:** \link ListItem_Title `ListItem.Title` \endlink \, 
+///     \link ListItem_Genre `ListItem.Genre` \endlink.
+///     Please note that string can also be a `$LOCALIZE[]`.
+///     Also note that in a panelview or similar this only works on the focused item
+///     <p><hr>
+///     @skinning_v17 **[New Boolean Condition]** \link String_Contains `String.Contains(info\,substring)`\endlink
+///     <p>
+///   }
+/// \table_end
+///
+/// -----------------------------------------------------------------------------
 
 
 const infomap string_bools[] =   {{ "isempty",          STRING_IS_EMPTY },
@@ -94,295 +214,420 @@ const infomap string_bools[] =   {{ "isempty",          STRING_IS_EMPTY },
                                   { "endswith",         STRING_ENDS_WITH },
                                   { "contains",         STRING_CONTAINS }};
 
+
+/// \page modules__infolabels_boolean_conditions
+/// \subsection modules__infolabels_boolean_conditions_Integer Integer
+/// \table_start
+///   \table_h3{ Labels, Type, Description }
+///   \table_row3{   <b>`Integer.IsEqual(info\,number)`</b>,
+///                  \anchor Integer_IsEqual
+///                  _boolean_,
+///     @return **True** if the value of the infolabel is equal to the supplied number.
+///     @param info - infolabel
+///     @param number - number to compare
+///     @note **Example:** `Integer.IsEqual(ListItem.Year\,2000)`
+///     <p><hr>
+///     @skinning_v17 **[New Boolean Condition]** \link Integer_IsEqual `Integer.IsEqual(info\,number)`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`Integer.IsGreater(info\,number)`</b>,
+///                  \anchor Integer_IsGreater
+///                  _boolean_,
+///     @return **True** if the value of the infolabel is greater than to the supplied number.
+///     @param info - infolabel
+///     @param number - number to compare
+///     @note **Example:** `Integer.IsGreater(ListItem.Year\,2000)`
+///     <p><hr>
+///     @skinning_v17 **[New Boolean Condition]** \link Integer_IsGreater `Integer.IsGreater(info\,number)`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`Integer.IsGreaterOrEqual(info\,number)`</b>,
+///                  \anchor Integer_IsGreaterOrEqual
+///                  _boolean_,
+///     @return **True** if the value of the infolabel is greater or equal to the supplied number.
+///     @param info - infolabel
+///     @param number - number to compare
+///     @note **Example:** `Integer.IsGreaterOrEqual(ListItem.Year\,2000)`
+///     <p><hr>
+///     @skinning_v17 **[New Boolean Condition]** \link Integer_IsGreaterOrEqual `Integer.IsGreaterOrEqual(info\,number)`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`Integer.IsLess(info\,number)`</b>,
+///                  \anchor Integer_IsLess
+///                  _boolean_,
+///     @return **True** if the value of the infolabel is less than the supplied number.
+///     @param info - infolabel
+///     @param number - number to compare
+///     @note **Example:** `Integer.IsLess(ListItem.Year\,2000)`
+///     <p><hr>
+///     @skinning_v17 **[New Boolean Condition]** \link Integer_IsLess `Integer.IsLess(info\,number)`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`Integer.IsLessOrEqual(info\,number)`</b>,
+///                  \anchor Integer_IsLessOrEqual
+///                  _boolean_,
+///     @return **True** if the value of the infolabel is less or equal to the supplied number.
+///     @param info - infolabel
+///     @param number - number to compare
+///     @note **Example:** `Integer.IsLessOrEqual(ListItem.Year\,2000)`
+///     <p><hr>
+///     @skinning_v17 **[New Boolean Condition]** \link Integer_IsLessOrEqual `Integer.IsLessOrEqual(info\,number)`\endlink
+///     <p>
+///   }
+/// \table_end
+///
+/// -----------------------------------------------------------------------------
+
+
 const infomap integer_bools[] =  {{ "isequal",          INTEGER_IS_EQUAL },
                                   { "isgreater",        INTEGER_GREATER_THAN },
                                   { "isgreaterorequal", INTEGER_GREATER_OR_EQUAL },
                                   { "isless",           INTEGER_LESS_THAN },
                                   { "islessorequal",    INTEGER_LESS_OR_EQUAL }};
 
-/// \page modules__General__List_of_gui_access
-/// \section modules__General__List_of_gui_access_Player Player
-/// @{
+
+/// \page modules__infolabels_boolean_conditions
+/// \subsection modules__infolabels_boolean_conditions_Player Player
 /// \table_start
 ///   \table_h3{ Labels, Type, Description }
 ///   \table_row3{   <b>`Player.HasAudio`</b>,
 ///                  \anchor Player_HasAudio
 ///                  _boolean_,
-///     Returns true if the player has an audio file.
+///     @return **True** if the player has an audio file.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Player.HasGame`</b>,
 ///                  \anchor Player_HasGame
 ///                  _boolean_,
-///     Returns true if the player has a game file.
+///     @return **True** if the player has a game file (RETROPLAYER).
+///     <p><hr>
+///     @skinning_v18 **[New Boolean Condition]** \link Player_HasGame `Player.HasGame`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Player.HasMedia`</b>,
 ///                  \anchor Player_HasMedia
 ///                  _boolean_,
-///     Returns true if the player has an audio or video file.
+///     @return **True** if the player has an audio or video file.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Player.HasVideo`</b>,
 ///                  \anchor Player_HasVideo
 ///                  _boolean_,
-///     Returns true if the player has a video file.
+///     @return **True** if the player has a video file.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Player.Paused`</b>,
 ///                  \anchor Player_Paused
 ///                  _boolean_,
-///     Returns true if the player is paused.
+///     @return **True** if the player is paused.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Player.Playing`</b>,
 ///                  \anchor Player_Playing
 ///                  _boolean_,
-///     Returns true if the player is currently playing (ie not ffwding\,
+///     @return **True** if the player is currently playing (i.e. not ffwding\,
 ///     rewinding or paused.)
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Player.Rewinding`</b>,
 ///                  \anchor Player_Rewinding
 ///                  _boolean_,
-///     Returns true if the player is rewinding.
+///     @return **True** if the player is rewinding.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Player.Rewinding2x`</b>,
 ///                  \anchor Player_Rewinding2x
 ///                  _boolean_,
-///     Returns true if the player is rewinding at 2x.
+///     @return **True** if the player is rewinding at 2x.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Player.Rewinding4x`</b>,
 ///                  \anchor Player_Rewinding4x
 ///                  _boolean_,
-///     Returns true if the player is rewinding at 4x.
+///     @return **True** if the player is rewinding at 4x.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Player.Rewinding8x`</b>,
 ///                  \anchor Player_Rewinding8x
 ///                  _boolean_,
-///     Returns true if the player is rewinding at 8x.
+///     @return **True** if the player is rewinding at 8x.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Player.Rewinding16x`</b>,
 ///                  \anchor Player_Rewinding16x
 ///                  _boolean_,
-///     Returns true if the player is rewinding at 16x.
+///     @return **True** if the player is rewinding at 16x.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Player.Rewinding32x`</b>,
 ///                  \anchor Player_Rewinding32x
 ///                  _boolean_,
-///     Returns true if the player is rewinding at 32x.
+///     @return **True** if the player is rewinding at 32x.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Player.Forwarding`</b>,
 ///                  \anchor Player_Forwarding
 ///                  _boolean_,
-///     Returns true if the player is fast forwarding.
+///     @return **True** if the player is fast forwarding.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Player.Forwarding2x`</b>,
 ///                  \anchor Player_Forwarding2x
 ///                  _boolean_,
-///     Returns true if the player is fast forwarding at 2x.
+///     @return **True** if the player is fast forwarding at 2x.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Player.Forwarding4x`</b>,
 ///                  \anchor Player_Forwarding4x
 ///                  _boolean_,
-///     Returns true if the player is fast forwarding at 4x.
+///     @return **True** if the player is fast forwarding at 4x.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Player.Forwarding8x`</b>,
 ///                  \anchor Player_Forwarding8x
 ///                  _boolean_,
-///     Returns true if the player is fast forwarding at 8x.
+///     @return **True** if the player is fast forwarding at 8x.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Player.Forwarding16x`</b>,
 ///                  \anchor Player_Forwarding16x
 ///                  _boolean_,
-///     Returns true if the player is fast forwarding at 16x.
+///     @return **True** if the player is fast forwarding at 16x.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Player.Forwarding32x`</b>,
 ///                  \anchor Player_Forwarding32x
 ///                  _boolean_,
-///     Returns true if the player is fast forwarding at 32x.
+///     @return **True** if the player is fast forwarding at 32x.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Player.Caching`</b>,
 ///                  \anchor Player_Caching
 ///                  _boolean_,
-///     Returns true if the player is current re-caching data (internet based
+///     @return **True** if the player is current re-caching data (internet based
 ///     video playback).
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Player.DisplayAfterSeek`</b>,
 ///                  \anchor Player_DisplayAfterSeek
 ///                  _boolean_,
-///     Returns true for the first 2.5 seconds after a seek.
+///     @return **True** for the first 2.5 seconds after a seek.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Player.Seekbar`</b>,
 ///                  \anchor Player_Seekbar
 ///                  _integer_,
-///     Returns amount of percent of one seek to other position
+///     @return The percentage of one seek to other position.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Player.Seeking`</b>,
 ///                  \anchor Player_Seeking
 ///                  _boolean_,
-///     Returns true if a seek is in progress
+///     @return **True** if a seek is in progress.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Player.ShowTime`</b>,
 ///                  \anchor Player_ShowTime
 ///                  _boolean_,
-///     Returns true if the user has requested the time to show (occurs in video
-///     fullscreen)
+///     @return **True** if the user has requested the time to show (occurs in video
+///     fullscreen).
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Player.ShowInfo`</b>,
 ///                  \anchor Player_ShowInfo
 ///                  _boolean_,
-///     Returns true if the user has requested the song info to show (occurs in
-///     visualisation fullscreen and slideshow)
-///   }
-///   \table_row3{   <b>`Player.ShowCodec`</b>,
-///                  \anchor Player_ShowCodec
-///                  _boolean_,
-///     Returns true if the user has requested the codec to show (occurs in
-///     visualisation and video fullscreen)
+///     @return **True** if the user has requested the song info to show (occurs in
+///     visualisation fullscreen and slideshow).
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Player.Title`</b>,
 ///                  \anchor Player_Title
 ///                  _string_,
-///     Returns the musicplayer title for audio and the videoplayer title for
-///     videos.
+///     @return The Musicplayer title for audio and the Videoplayer title for
+///     video.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Player.Muted`</b>,
 ///                  \anchor Player_Muted
 ///                  _boolean_,
-///     Returns true if the volume is muted.
+///     @return **True** if the volume is muted.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Player.HasDuration`</b>,
 ///                  \anchor Player_HasDuration
 ///                  _boolean_,
-///     Returns true if Media isn't a true stream
+///     @return **True** if Media is not a true stream.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Player.Passthrough`</b>,
 ///                  \anchor Player_Passthrough
 ///                  _boolean_,
-///     Returns true if the player is using audio passthrough.
+///     @return **True** if the player is using audio passthrough.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Player.CacheLevel`</b>,
 ///                  \anchor Player_CacheLevel
 ///                  _string_,
-///     Get the used cache level as string with an integer number
+///     @return The used cache level as a string with an integer number.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Player.Progress`</b>,
 ///                  \anchor Player_Progress
 ///                  _integer_,
-///     Returns the progress position as percent
+///     @return The progress position as percentage.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Player.ProgressCache`</b>,
 ///                  \anchor Player_ProgressCache
 ///                  _integer_,
-///     Returns how much of the file is cached above current play percentage
+///     @return How much of the file is cached above current play percentage
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Player.Volume`</b>,
 ///                  \anchor Player_Volume
 ///                  _string_,
-///     Returns the current player volume with the format `%2.1f dB`
+///     @return The current player volume with the format `%2.1f` dB
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Player.SubtitleDelay`</b>,
 ///                  \anchor Player_SubtitleDelay
 ///                  _string_,
-///     Return the used subtitle delay with the format `%2.3f s`
+///     @return The used subtitle delay with the format `%2.3f` s
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Player.AudioDelay`</b>,
 ///                  \anchor Player_AudioDelay
 ///                  _string_,
-///     Return the used audio delay with the format `%2.3f s`
+///     @return The used audio delay with the format `%2.3f` s
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Player.Chapter`</b>,
 ///                  \anchor Player_Chapter
 ///                  _integer_,
-///     Current chapter of current playing media
+///     @return The current chapter of current playing media.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Player.ChapterCount`</b>,
 ///                  \anchor Player_ChapterCount
 ///                  _integer_,
-///     Total number of chapters of current playing media
+///     @return The total number of chapters of current playing media.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Player.ChapterName`</b>,
 ///                  \anchor Player_ChapterName
 ///                  _string_,
-///     Return the name of currently used chapter if available
+///     @return The name of currently used chapter if available.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Player.Folderpath`</b>,
 ///                  \anchor Player_Folderpath
 ///                  _string_,
-///     Returns the full path of the currently playing song or movie
+///     @return The full path of the currently playing song or movie
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Player.FilenameAndPath`</b>,
 ///                  \anchor Player_FilenameAndPath
 ///                  _string_,
-///     Returns the full path with filename of the currently playing song or movie
+///     @return The full path with filename of the currently 
+///     playing song or movie
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Player.Filename`</b>,
 ///                  \anchor Player_Filename
 ///                  _string_,
-///     Returns the filename of the currently playing media.
+///     @return The filename of the currently playing media.
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link Player_Filename `Player.Filename`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Player.IsInternetStream`</b>,
 ///                  \anchor Player_IsInternetStream
 ///                  _boolean_,
-///     Returns true if the player is playing an internet stream.
+///     @return **True** if the player is playing an internet stream.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Player.PauseEnabled`</b>,
 ///                  \anchor Player_PauseEnabled
 ///                  _boolean_,
-///     Returns true if played stream is paused
+///     @return **True** if played stream is paused.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Player.SeekEnabled`</b>,
 ///                  \anchor Player_SeekEnabled
 ///                  _boolean_,
-///     Returns true if seek on playing is enabled
+///     @return **True** if seek on playing is enabled.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Player.ChannelPreviewActive`</b>,
 ///                  \anchor Player_ChannelPreviewActive
 ///                  _boolean_,
-///     Returns true if pvr channel preview is active (used channel tag different
-///     from played tag)
+///     @return **True** if PVR channel preview is active (used 
+///     channel tag different from played tag)
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Player.TempoEnabled`</b>,
 ///                  \anchor Player_TempoEnabled
 ///                  _boolean_,
-///     Returns true if player supports tempo (i.e. speed up/down normal playback speed)
+///     @return **True** if player supports tempo (i.e. speed up/down normal 
+///     playback speed)
+///     <p><hr>
+///     @skinning_v17 **[New Boolean Condition]** \link Player_TempoEnabled `Player.TempoEnabled`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Player.IsTempo`</b>,
 ///                  \anchor Player_IsTempo
 ///                  _boolean_,
-///     Returns true if player has tempo (i.e. is playing with a playback speed higher or
+///     @return **True** if player has tempo (i.e. is playing with a playback speed higher or
 ///     lower than normal playback speed)
+///     <p><hr>
+///     @skinning_v17 **[New Boolean Condition]** \link Player_IsTempo `Player.IsTempo`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Player.PlaySpeed`</b>,
 ///                  \anchor Player_PlaySpeed
 ///                  _string_,
-///     Returns the player playback speed with the format %1.2f (1.00 means normal 
-///     playback speed). For Tempo\, the default range is 0.80 - 1.50 (it can be changed 
-///     in advanced settings). If `Player.PlaySpeed` returns a value different from 1.00
-///     and `Player.IsTempo` is false it means the player is in ff/rw mode.
+///     @return The player playback speed with the format `%1.2f` (1.00 means normal 
+///     playback speed).
+///     @note For Tempo\, the default range is 0.80 - 1.50 (it can be changed 
+///     in advanced settings). If \ref Player_PlaySpeed "Player.PlaySpeed" returns a value different from 1.00
+///     and \ref Player_IsTempo "Player.IsTempo" is false it means the player is in ff/rw mode.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Player.HasResolutions`</b>,
 ///                  \anchor Player_HasResolutions
 ///                  _boolean_,
-///     Returns true if the player is allowed to switch resolution and refresh rate 
+///     @return **True** if the player is allowed to switch resolution and refresh rate 
 ///     (i.e. if whitelist modes are configured in Kodi's System/Display settings)
+///     <p><hr>
+///     @skinning_v18 **[New Boolean Condition]** \link Player_HasResolutions `Player.HasResolutions`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Player.HasPrograms`</b>,
 ///                  \anchor Player_HasPrograms
 ///                  _boolean_,
-///     Returns true if the media file being played has programs\, i.e. groups of streams. 
-///     Ex: if a media file has multiple streams (quality\, channels\, etc) a program represents
+///     @return **True** if the media file being played has programs\, i.e. groups of streams. 
+///     @note Ex: if a media file has multiple streams (quality\, channels\, etc) a program represents
 ///     a particular stream combo.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Player.FrameAdvance`</b>,
 ///                  \anchor Player_FrameAdvance
 ///                  _boolean_,
-///     Returns true if player is in frame advance mode. Skins should hide seek bar
-///     in this mode)
+///     @return **True** if player is in frame advance mode.
+///     @note Skins should hide seek bar in this mode
+///     <p><hr>
+///     @skinning_v18 **[New Boolean Condition]** \link Player_FrameAdvance `Player.FrameAdvance`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Player.Icon`</b>,
 ///                  \anchor Player_Icon
 ///                  _string_,
-///     Returns the thumbnail of the currently playing item. If no thumbnail image exists\,
+///     @return The thumbnail of the currently playing item. If no thumbnail image exists\,
 ///     the icon will be returned\, if available.
+///     <p><hr>
+///     @skinning_v18 **[New Infolabel]** \link Player_Icon `Player.Icon`\endlink
+///     <p>  
 ///   }
-/// \table_end
-/// @}
 const infomap player_labels[] =  {{ "hasmedia",         PLAYER_HAS_MEDIA },
                                   { "hasaudio",         PLAYER_HAS_AUDIO },
                                   { "hasvideo",         PLAYER_HAS_VIDEO },
@@ -406,7 +651,6 @@ const infomap player_labels[] =  {{ "hasmedia",         PLAYER_HAS_MEDIA },
                                   { "seekbar",          PLAYER_SEEKBAR },
                                   { "seeking",          PLAYER_SEEKING },
                                   { "showtime",         PLAYER_SHOWTIME },
-                                  { "showcodec",        PLAYER_SHOWCODEC },
                                   { "showinfo",         PLAYER_SHOWINFO },
                                   { "muted",            PLAYER_MUTED },
                                   { "hasduration",      PLAYER_HASDURATION },
@@ -436,152 +680,109 @@ const infomap player_labels[] =  {{ "hasmedia",         PLAYER_HAS_MEDIA },
                                   { "frameadvance",     PLAYER_FRAMEADVANCE },
                                   { "icon",             PLAYER_ICON }};
 
-/// \page modules__General__List_of_gui_access
-/// @{
-/// \table_start
-///   \table_row3{   <b>`Player.Art(fanart)`</b>,
-///                  \anchor Player_Art_fanart
+/// \page modules__infolabels_boolean_conditions
+///   \table_row3{   <b>`Player.Art(type)`</b>,
+///                  \anchor Player_Art_type
 ///                  _string_,
-///     Fanart Image of the currently playing episode's parent TV show
+///     @return The Image for the defined art type for the current playing ListItem.
+///     @param type - The art type. The type is defined by scripts and scrappers and can have any value.
+///     Common example values for type are:
+///       - fanart
+///       - thumb
+///       - poster
+///       - banner
+///       - clearlogo
+///       - tvshow.poster
+///       - tvshow.banner
+///       - etc
+///     @todo get a way of centralize all random art strings used in core so we can point users to them
+///     while still making it clear they can have any value.
+///     <p>
 ///   }
-///   \table_row3{   <b>`Player.Art(thumb)`</b>,
-///                  \anchor Player_Art_thumb
-///                  _string_,
-///     Returns the thumbnail image of the currently playing item.
-///   }
-///   \table_row3{   <b>`Player.Art(poster)`</b>,
-///                  \anchor Player_Art_poster
-///                  _string_,
-///     Returns the poster of the currently playing movie.
-///   }
-///   \table_row3{   <b>`Player.Art(tvshow.poster)`</b>,
-///                  \anchor Player_Art_tvshowposter
-///                  _string_,
-///     Returns the tv show poster of the currently playing episode's parent TV show.
-///   }
-///   \table_row3{   <b>`Player.Art(tvshow.banner)`</b>,
-///                  \anchor Player_Art_tvshowbanner
-///                  _string_,
-///     Returns the tv show banner of the currently playing episode's parent TV show.
-///   }
-/// \table_end
-/// @}
+
+
 const infomap player_param[] =   {{ "art",              PLAYER_ITEM_ART }};
 
-/// \page modules__General__List_of_gui_access
-/// @{
-/// \table_start
+/// \page modules__infolabels_boolean_conditions
 ///   \table_row3{   <b>`Player.SeekTime`</b>,
 ///                  \anchor Player_SeekTime
 ///                  _string_,
-///     Time to which the user is seeking
+///     @return The time to which the user is seeking.
+///     <p>
 ///   }
-///   \table_row3{   <b>`Player.SeekOffset`</b>,
-///                  \anchor Player_SeekOffset
-///                  _string_,
-///     Indicates the seek offset after a seek press (eg user presses
-///     BigStepForward\, player.seekoffset returns +10:00)
-///   }
-///   \table_row3{   <b>`Player.SeekOffset(format)`</b>,
+///   \table_row3{   <b>`Player.SeekOffset([format])`</b>,
 ///                  \anchor Player_SeekOffset_format
 ///                  _string_,
-///     Returns hours (hh)\, minutes (mm) or seconds (ss).
-///     Also supported: (hh:mm)\, (mm:ss)\, (hh:mm:ss)\, (h:mm:ss).
-///     Added with Leia: (secs)\, (mins)\, (hours) for total time values and (m).
-///     Example: 3661 seconds => h=1\, hh=01\, m=1\, mm=01\, ss=01\, hours=1\, mins=61\, secs=3661
+///     @return The seek offset after a seek press in a given format.
+///     @param format [opt] The format of the return time value.
+///     See \ref TIME_FORMAT for the list of possible values.
+///     <p>
+///     @note **Example:** user presses BigStepForward\, player.seekoffset returns +10:00
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Player.SeekStepSize`</b>,
 ///                  \anchor Player_SeekStepSize
 ///                  _string_,
-///     Displays the seek step size. (v15 addition)
+///     @return The seek step size.
+///     <p>
+///     <hr>
+///     @skinning_v15 **[New Infolabel]** \link Player_SeekStepSize `Player.SeekStepSize`\endlink
+///     <p>
 ///   }
-///   \table_row3{   <b>`Player.TimeRemaining`</b>,
-///                  \anchor Player_TimeRemaining
-///                  _string_,
-///     Remaining time of current playing media
-///   }
-///   \table_row3{   <b>`Player.TimeRemaining(format)`</b>,
+///   \table_row3{   <b>`Player.TimeRemaining([format])`</b>,
 ///                  \anchor Player_TimeRemaining_format
 ///                  _string_,
-///     Returns hours (hh)\, minutes (mm) or seconds (ss).
-///     Also supported: (hh:mm)\, (mm:ss)\, (hh:mm:ss)\, (h:mm:ss).
-///     Added with Leia: (secs)\, (mins)\, (hours) for total time values and (m).
-///     Example: 3661 seconds => h=1\, hh=01\, m=1\, mm=01\, ss=01\, hours=1\, mins=61\, secs=3661
+///     @return The remaining time of current playing media in a given format.
+///     @param format [opt] The format of the return time value.
+///     See \ref TIME_FORMAT for the list of possible values.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Player.TimeSpeed`</b>,
 ///                  \anchor Player_TimeSpeed
 ///                  _string_,
-///     Both the time and the playspeed formatted up. eg 1:23 (2x)
+///     @return The time and the playspeed formatted: "1:23 (2x)".
+///     <p>
 ///   }
-///   \table_row3{   <b>`Player.Time`</b>,
-///                  \anchor Player_Time
-///                  _string_,
-///     Elapsed time of current playing media
-///   }
-///   \table_row3{   <b>`Player.Time(format)`</b>,
+///   \table_row3{   <b>`Player.Time([format])`</b>,
 ///                  \anchor Player_Time_format
 ///                  _string_,
-///     Returns hours (hh)\, minutes (mm) or seconds (ss).
-///     Also supported: (hh:mm)\, (mm:ss)\, (hh:mm:ss)\, (h:mm:ss).
-///     Added with Leia: (secs)\, (mins)\, (hours) for total time values and (m).
-///     Example: 3661 seconds => h=1\, hh=01\, m=1\, mm=01\, ss=01\, hours=1\, mins=61\, secs=3661
+///     @return The elapsed time of current playing media in a given format.
+///     @param format [opt] The format of the return time value.
+///     See \ref TIME_FORMAT for the list of possible values.
+///     <p>
 ///   }
-///   \table_row3{   <b>`Player.Duration`</b>,
-///                  \anchor Player_Duration
-///                  _string_,
-///     Total duration of the current playing media
-///   }
-///   \table_row3{   <b>`Player.Duration(format)`</b>,
+///   \table_row3{   <b>`Player.Duration([format])`</b>,
 ///                  \anchor Player_Duration_format
 ///                  _string_,
-///     Returns hours (hh)\, minutes (mm) or seconds (ss).
-///     Also supported: (hh:mm)\, (mm:ss)\, (hh:mm:ss)\, (h:mm:ss).
-///     Added with Leia: (secs)\, (mins)\, (hours) for total time values and (m).
-///     Example: 3661 seconds => h=1\, hh=01\, m=1\, mm=01\, ss=01\, hours=1\, mins=61\, secs=3661
+///     @return The total duration of the current playing media in a given format.
+///     @param format [opt] The format of the return time value.
+///     See \ref TIME_FORMAT for the list of possible values.
+///     <p>
 ///   }
-///   \table_row3{   <b>`Player.FinishTime`</b>,
-///                  \anchor Player_FinishTime
-///                  _string_,
-///     Time playing media will end
-///   }
-///   \table_row3{   <b>`Player.FinishTime(format)`</b>,
+///   \table_row3{   <b>`Player.FinishTime([format])`</b>,
 ///                  \anchor Player_FinishTime_format
 ///                  _string_,
-///     Returns hours (hh)\, minutes (mm) or seconds (ss). When 12 hour clock is used
-///     (xx) will return AM/PM. Also supported: (hh:mm)\, (mm:ss)\, (hh:mm:ss)\, (h:mm:ss).
-///     Added with Leia: (secs)\, (mins)\, (hours) for total time values and (m).
-///     Example: 3661 seconds => h=1\, hh=01\, m=1\, mm=01\, ss=01\, hours=1\, mins=61\, secs=3661
+///     @return The time at which the playing media will end (in a specified format).
+///     @param format [opt] The format of the return time value.
+///     See \ref TIME_FORMAT for the list of possible values.
+///     <p>
 ///   }
-///   \table_row3{   <b>`Player.StartTime`</b>,
-///                  \anchor Player_StartTime
-///                  _string_,
-///     Time playing media began
-///   }
-///   \table_row3{   <b>`Player.StartTime(format)`</b>,
+///   \table_row3{   <b>`Player.StartTime([format])`</b>,
 ///                  \anchor Player_StartTime_format
 ///                  _string_,
-///     Returns hours (hh)\, minutes (mm) or seconds (ss). When 12 hour clock is used
-///     (xx) will return AM/PM. Also supported: (hh:mm)\, (mm:ss)\, (hh:mm:ss)\, (h:mm:ss).
-///     Added with Leia: (secs)\, (mins)\, (hours) for total time values and (m).
-///     Example: 3661 seconds => h=1\, hh=01\, m=1\, mm=01\, ss=01\, hours=1\, mins=61\, secs=3661
+///     @return The time at which the playing media began (in a specified format).
+///     @param format [opt] The format of the return time value.
+///     See \ref TIME_FORMAT for the list of possible values.
+///     <p>
 ///   }
-///   \table_row3{   <b>`Player.SeekNumeric`</b>,
-///                  \anchor Player_SeekNumeric
-///                  _string_,
-///     Time to which the user is seeking via numeric keys.
-///   }
-///   \table_row3{   <b>`Player.SeekNumeric(format)`</b>,
+///   \table_row3{   <b>`Player.SeekNumeric([format])`</b>,
 ///                  \anchor Player_SeekNumeric_format
 ///                  _string_,
-///     Returns hours (hh)\, minutes (mm) or seconds (ss). When 12 hour clock is used
-///     (xx) will return AM/PM. Also supported: (hh:mm)\, (mm:ss)\, (hh:mm:ss)\, (h:mm:ss).
-///     Added with Leia: (secs)\, (mins)\, (hours) for total time values and (m).
-///     Example: 3661 seconds => h=1\, hh=01\, m=1\, mm=01\, ss=01\, hours=1\, mins=61\, secs=3661
+///     @return The time at which the playing media began (in a specified format).
+///     @param format [opt] The format of the return time value.
+///     See \ref TIME_FORMAT for the list of possible values.
+///     <p>
 ///   }
-/// \table_end
-///
-/// -----------------------------------------------------------------------------
-/// @}
 const infomap player_times[] =   {{ "seektime",         PLAYER_SEEKTIME },
                                   { "seekoffset",       PLAYER_SEEKOFFSET },
                                   { "seekstepsize",     PLAYER_SEEKSTEPSIZE },
@@ -593,50 +794,175 @@ const infomap player_times[] =   {{ "seektime",         PLAYER_SEEKTIME },
                                   { "starttime",        PLAYER_START_TIME },
                                   { "seeknumeric",      PLAYER_SEEKNUMERIC } };
 
-/// \page modules__General__List_of_gui_access
-/// \section modules__General__List_of_gui_access_Weather Weather
-/// @{
+
+/// \page modules__infolabels_boolean_conditions
+///   \table_row3{   <b>`Player.Process(videohwdecoder)`</b>,
+///                  \anchor Player_Process_videohwdecoder
+///                  _boolean_,
+///     @return **True** if the currently playing video is decoded in hardware.
+///     <p><hr>
+///     @skinning_v17 **[New Boolean Condition]** \link Player_Process_videohwdecoder `Player.Process(videohwdecoder)`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`Player.Process(videodecoder)`</b>,
+///                  \anchor Player_Process_videodecoder
+///                  _string_,
+///     @return The videodecoder name of the currently playing video.
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link Player_Process_videodecoder `Player.Process(videodecoder)`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`Player.Process(deintmethod)`</b>,
+///                  \anchor Player_Process_deintmethod
+///                  _string_,
+///     @return The deinterlace method of the currently playing video.
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link Player_Process_deintmethod `Player.Process(deintmethod)`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`Player.Process(pixformat)`</b>,
+///                  \anchor Player_Process_pixformat
+///                  _string_,
+///     @return The pixel format of the currently playing video.
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link Player_Process_pixformat `Player.Process(pixformat)`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`Player.Process(videowidth)`</b>,
+///                  \anchor Player_Process_videowidth
+///                  _string_,
+///     @return The width of the currently playing video.
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link Player_Process_videowidth `Player.Process(videowidth)`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`Player.Process(videoheight)`</b>,
+///                  \anchor Player_Process_videoheight
+///                  _string_,
+///     @return The width of the currently playing video.
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link Player_Process_videoheight `Player.Process(videoheight)`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`Player.Process(videofps)`</b>,
+///                  \anchor Player_Process_videofps
+///                  _string_,
+///     @return The video framerate of the currently playing video.
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link Player_Process_videofps `Player.Process(videofps)`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`Player.Process(videodar)`</b>,
+///                  \anchor Player_Process_videodar
+///                  _string_,
+///     @return The display aspect ratio of the currently playing video.
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link Player_Process_videodar `Player.Process(videodar)`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`Player.Process(audiodecoder)`</b>,
+///                  \anchor Player_Process_audiodecoder
+///                  _string_,
+///     @return The audiodecoder name of the currently playing item.
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link Player_Process_videodar `Player.Process(audiodecoder)`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`Player.Process(audiochannels)`</b>,
+///                  \anchor Player_Process_audiochannels
+///                  _string_,
+///     @return The audiodecoder name of the currently playing item.
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link Player_Process_audiochannels `Player.Process(audiochannels)`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`Player.Process(audiosamplerate)`</b>,
+///                  \anchor Player_Process_audiosamplerate
+///                  _string_,
+///     @return The samplerate of the currently playing item.
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link Player_Process_audiosamplerate `Player.Process(audiosamplerate)`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`Player.Process(audiobitspersample)`</b>,
+///                  \anchor Player_Process_audiobitspersample
+///                  _string_,
+///     @return The bits per sample of the currently playing item.
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link Player_Process_audiobitspersample `Player.Process(audiobitspersample)`\endlink
+///     <p>
+///   }
+/// \table_end
+///
+/// -----------------------------------------------------------------------------
+
+const infomap player_process[] =
+{
+  { "videodecoder", PLAYER_PROCESS_VIDEODECODER },
+  { "deintmethod", PLAYER_PROCESS_DEINTMETHOD },
+  { "pixformat", PLAYER_PROCESS_PIXELFORMAT },
+  { "videowidth", PLAYER_PROCESS_VIDEOWIDTH },
+  { "videoheight", PLAYER_PROCESS_VIDEOHEIGHT },
+  { "videofps", PLAYER_PROCESS_VIDEOFPS },
+  { "videodar", PLAYER_PROCESS_VIDEODAR },
+  { "videohwdecoder", PLAYER_PROCESS_VIDEOHWDECODER },
+  { "audiodecoder", PLAYER_PROCESS_AUDIODECODER },
+  { "audiochannels", PLAYER_PROCESS_AUDIOCHANNELS },
+  { "audiosamplerate", PLAYER_PROCESS_AUDIOSAMPLERATE },
+  { "audiobitspersample", PLAYER_PROCESS_AUDIOBITSPERSAMPLE }
+};
+
+/// \page modules__infolabels_boolean_conditions
+/// \subsection modules__infolabels_boolean_conditions_Weather Weather
 /// \table_start
 ///   \table_h3{ Labels, Type, Description }
 ///   \table_row3{   <b>`Weather.IsFetched`</b>,
 ///                  \anchor Weather_IsFetched
 ///                  _boolean_,
-///     Returns true if the weather data has been downloaded.
+///     @return **True** if the weather data has been downloaded.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Weather.Conditions`</b>,
 ///                  \anchor Weather_Conditions
 ///                  _string_,
-///     Current weather conditions as textual description – this is looked up in a background process.
+///     @return The current weather conditions as textual description.
+///     @note This is looked up in a background process.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Weather.ConditionsIcon`</b>,
 ///                  \anchor Weather_ConditionsIcon
 ///                  _string_,
-///     Current weather conditions as icon – this is looked up in a background process.
+///     @return The current weather conditions as an icon.
+///     @note This is looked up in a background process.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Weather.Temperature`</b>,
 ///                  \anchor Weather_Temperature
 ///                  _string_,
-///     Current weather temperature
+///     @return The current weather temperature.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Weather.Location`</b>,
 ///                  \anchor Weather_Location
 ///                  _string_,
-///     City/town which the above two items are for
+///     @return The city/town which the above two items are for.
+///     <p>
 ///   }
-///   \table_row3{   <b>`Weather.fanartcode`</b>,
+///   \table_row3{   <b>`Weather.Fanartcode`</b>,
 ///                  \anchor Weather_fanartcode
 ///                  _string_,
-///     Current weather fanartcode.
+///     @return The current weather fanartcode.
+///     <p>
 ///   }
-///   \table_row3{   <b>`Weather.plugin`</b>,
+///   \table_row3{   <b>`Weather.Plugin`</b>,
 ///                  \anchor Weather_plugin
 ///                  _string_,
-///     Current weather plugin.
+///     @return The current weather plugin.
+///     <p>
 ///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
-/// @}
 const infomap weather[] =        {{ "isfetched",        WEATHER_IS_FETCHED },
                                   { "conditions",       WEATHER_CONDITIONS_TEXT },         // labels from here
                                   { "temperature",      WEATHER_TEMPERATURE },
@@ -645,468 +971,614 @@ const infomap weather[] =        {{ "isfetched",        WEATHER_IS_FETCHED },
                                   { "plugin",           WEATHER_PLUGIN },
                                   { "conditionsicon",   WEATHER_CONDITIONS_ICON }};
 
-/// \page modules__General__List_of_gui_access
-/// \section modules__General__List_of_gui_access_System System
-/// @{
+/// \page modules__infolabels_boolean_conditions
+/// \subsection modules__infolabels_boolean_conditions_System System
+/// @todo some values are hardcoded in the middle of the code  - refactor to make it easier to track
 /// \table_start
 ///   \table_h3{ Labels, Type, Description }
 ///   \table_row3{   <b>`System.AlarmLessOrEqual(alarmname\,seconds)`</b>,
 ///                  \anchor System_AlarmLessOrEqual
 ///                  _boolean_,
-///     Returns true if the alarm with `alarmname` has less or equal to `seconds`
-///     left. Standard use would be system.alarmlessorequal(shutdowntimer\,119)\,
-///     which would return true when the shutdowntimer has less then 2 minutes
+///     @return **True** if the alarm with `alarmname` has less or equal to `seconds` left.
+///     @param alarmname - The name of the alarm. It can be one of the following:
+///       - shutdowntimer
+///     @param seconds - Time in seconds to compare with the alarm trigger event
+///     @note **Example:** `System.Alarmlessorequal(shutdowntimer\,119)`\,
+///     will return true when the shutdowntimer has less then 2 minutes
 ///     left.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.HasNetwork`</b>,
 ///                  \anchor System_HasNetwork
 ///                  _boolean_,
-///     Returns true if the ethernet cable is plugged in.
+///     @return **True** if the Kodi host has a network available.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.HasMediadvd`</b>,
 ///                  \anchor System_HasMediadvd
 ///                  _boolean_,
-///     Returns true if there is a CD or DVD in the DVD-ROM drive.
+///     @return **True** if there is a CD or DVD in the DVD-ROM drive.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.DVDReady`</b>,
 ///                  \anchor System_DVDReady
 ///                  _boolean_,
-///     Returns true if disc is ready to use.
+///     @return **True** if the disc is ready to use.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.TrayOpen`</b>,
 ///                  \anchor System_TrayOpen
 ///                  _boolean_,
-///     Returns true if discs tray is open
+///     @return **True** if the disc tray is open.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.HasLocks`</b>,
 ///                  \anchor System_HasLocks
 ///                  _boolean_,
-///     Returns true if system has an active lock mode.
+///     @return **True** if the system has an active lock mode.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.IsMaster`</b>,
 ///                  \anchor System_IsMaster
 ///                  _boolean_,
-///     Returns true if system is in master mode.
+///     @return **True** if the system is in master mode.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.ShowExitButton`</b>,
 ///                  \anchor System_ShowExitButton
 ///                  _boolean_,
-///     Returns true if the exit button should be shown (configurable via advanced settings).
+///     @return **True** if the exit button should be shown (configurable via advanced settings).
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.DPMSActive`</b>,
 ///                  \anchor System_DPMSActive
 ///                  _boolean_,
-///     Returns true if DPMS (VESA Display Power Management Signaling) mode is active.
-///   }
-///   \table_row3{   <b>`System.IdleTime(time)`</b>,
-///                  \anchor System_IdleTime
-///                  _boolean_,
-///     Returns true if Kodi has had no input for ?time? amount of seconds.
+///     @return **True** if DPMS (VESA Display Power Management Signaling) mode is active.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.IsStandalone`</b>,
 ///                  \anchor System_IsStandalone
 ///                  _boolean_,
-///     Returns true if Kodi is running in standalone mode.
+///     @return **True** if Kodi is running in standalone mode.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.IsFullscreen`</b>,
 ///                  \anchor System_IsFullscreen
 ///                  _boolean_,
-///     Returns true if Kodi is running fullscreen.
+///     @return **True** if Kodi is running fullscreen.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.LoggedOn`</b>,
 ///                  \anchor System_LoggedOn
 ///                  _boolean_,
-///     Returns true if a user is currently logged on under a profile
+///     @return **True** if a user is currently logged on under a profile.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.HasLoginScreen`</b>,
 ///                  \anchor System_HasLoginScreen
 ///                  _boolean_,
-///     Returns true if the profile login screen is enabled
+///     @return **True** if the profile login screen is enabled.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.HasPVR`</b>,
 ///                  \anchor System_HasPVR
 ///                  _boolean_,
-///     Returns true if PVR is supported from Kodi
-///     \note normally always true
+///     @return **True** if PVR is supported from Kodi.
+///     @note normally always true
+///     
 ///   }
-///   \table_row3{   <b>`System.HasPVRAddon(id)`</b>,
+///   \table_row3{   <b>`System.HasPVRAddon`</b>,
 ///                  \anchor System_HasPVRAddon
 ///                  _boolean_,
-///     Returns true if at least one pvr client addon is installed and enabled.
+///     @return **True** if at least one pvr client addon is installed and enabled.
+///     @param id - addon id of the PVR addon
+///     <p><hr>
+///     @skinning_v17 **[New Boolean Condition]** \link System_HasPVRAddon `System.HasPVRAddon`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.HasCMS`</b>,
 ///                  \anchor System_HasCMS
 ///                  _boolean_,
-///     Returns true if colour management is supported from Kodi
-///     \note currently only supported for OpenGL
+///     @return **True** if colour management is supported from Kodi.
+///     @note currently only supported for OpenGL
+///     <p><hr>
+///     @skinning_v17 **[New Boolean Condition]** \link System_HasCMS `System.HasCMS`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.HasActiveModalDialog`</b>,
 ///                  \anchor System_HasActiveModalDialog
 ///                  _boolean_,
-///     Returns true if a modal dialog is active
+///     @return **True** if a modal dialog is active.
+///     <p><hr>
+///     @skinning_v18 **[New Boolean Condition]** \link System_HasActiveModalDialog `System.HasActiveModalDialog`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.HasVisibleModalDialog`</b>,
 ///                  \anchor System_HasVisibleModalDialog
 ///                  _boolean_,
-///     Returns true if a modal dialog is visible
-///   }
-///   \table_row3{   <b>`System.Time(startTime\,endTime)`</b>,
-///                  \anchor System_Time
-///                  _boolean_,
-///     Returns true if the current system time is >= startTime and < endTime.
-///     endTime is optional. Time must be specified in the format HH:mm\, using
-///     a 24 hour clock.
-///   }
-///   \table_row3{   <b>`System.Date(startDate\,endDate)`</b>,
-///                  \anchor System_Date
-///                  _boolean_,
-///     Returns true if the current system date is >= startDate and < endDate.
-///     endDate is optional. Date must be specified in the format MM-DD.
+///     @return **True** if a modal dialog is visible.
+///     <p><hr>
+///     @skinning_v18 **[New Boolean Condition]** \link System_HasVisibleModalDialog `System.HasVisibleModalDialog`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.Platform.Linux`</b>,
 ///                  \anchor System_PlatformLinux
 ///                  _boolean_,
-///     Returns true if Kodi is running on a linux/unix based computer.
+///     @return **True** if Kodi is running on a linux/unix based computer.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.Platform.Linux.RaspberryPi`</b>,
 ///                  \anchor System_PlatformLinuxRaspberryPi
 ///                  _boolean_,
-///     Returns true if Kodi is running on a Raspberry Pi.
+///     @return **True** if Kodi is running on a Raspberry Pi.
+///     <p><hr>
+///     @skinning_v13 **[New Boolean Condition]** \link System_PlatformLinuxRaspberryPi `System.Platform.Linux.RaspberryPi`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.Platform.Windows`</b>,
 ///                  \anchor System_PlatformWindows
 ///                  _boolean_,
-///     Returns true if Kodi is running on a windows based computer.
+///     @return **True** if Kodi is running on a windows based computer.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.Platform.UWP`</b>,
 ///                  \anchor System_PlatformUWP
 ///                  _boolean_,
-///     Returns true if Kodi is running on Universal Windows Platform (UWP).
+///     @return **True** if Kodi is running on Universal Windows Platform (UWP).
+///     <p><hr>
+///     @skinning_v18 **[New Boolean Condition]** \link System_PlatformUWP `System.Platform.UWP`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.Platform.OSX`</b>,
 ///                  \anchor System_PlatformOSX
 ///                  _boolean_,
-///     Returns true if Kodi is running on an OSX based computer.
+///     @return **True** if Kodi is running on an OSX based computer.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.Platform.IOS`</b>,
 ///                  \anchor System_PlatformIOS
 ///                  _boolean_,
-///     Returns true if Kodi is running on an IOS device.
+///     @return **True** if Kodi is running on an IOS device.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.Platform.Darwin`</b>,
 ///                  \anchor System_PlatformDarwin
 ///                  _boolean_,
-///     Returns true if Kodi is running on an OSX or IOS system.
-///   }
-///   \table_row3{   <b>`System.Platform.ATV2`</b>,
-///                  \anchor System_PlatformATV2
-///                  _boolean_,
-///     Returns true if Kodi is running on an atv2.
+///     @return **True** if Kodi is running on an OSX or IOS system.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.Platform.Android`</b>,
 ///                  \anchor System_PlatformAndroid
 ///                  _boolean_,
-///     Returns true if Kodi is running on an android device.
+///     @return **True** if Kodi is running on an android device.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.CanPowerDown`</b>,
 ///                  \anchor System_CanPowerDown
 ///                  _boolean_,
-///     Returns true if Kodi can powerdown the system.
+///     @return **True** if Kodi can powerdown the system.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.CanSuspend`</b>,
 ///                  \anchor System_CanSuspend
 ///                  _boolean_,
-///     Returns true if Kodi can suspend the system.
+///     @return **True** if Kodi can suspend the system.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.CanHibernate`</b>,
 ///                  \anchor System_CanHibernate
 ///                  _boolean_,
-///     Returns true if Kodi can hibernate the system.
+///     @return **True** if Kodi can hibernate the system.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.HasHiddenInput`</b>,
 ///                  \anchor System_HasHiddenInput
 ///                  _boolean_,
-///     Return true when to osd keyboard/numeric dialog requests a
+///     @return **True** when to osd keyboard/numeric dialog requests a
 ///     password/pincode.
+///     <p><hr>
+///     @skinning_v16 **[New Boolean Condition]** \link System_HasHiddenInput `System.HasHiddenInput`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.CanReboot`</b>,
 ///                  \anchor System_CanReboot
 ///                  _boolean_,
-///     Returns true if Kodi can reboot the system.
+///     @return **True** if Kodi can reboot the system.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.ScreenSaverActive`</b>,
 ///                  \anchor System_ScreenSaverActive
 ///                  _boolean_,
-///     Returns true if ScreenSaver is active.
+///     @return **True** if ScreenSaver is active.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.IsInhibit`</b>,
 ///                  \anchor System_IsInhibit
 ///                  _boolean_,
-///     Returns true when shutdown on idle is disabled.
+///     @return **True** when shutdown on idle is disabled.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.HasShutdown`</b>,
 ///                  \anchor System_HasShutdown
 ///                  _boolean_,
-///     Returns true when shutdown on idle is enabled.
+///     @return **True** when shutdown on idle is enabled.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.Time`</b>,
 ///                  \anchor System_Time
 ///                  _string_,
-///     Current time
+///     @return The current time.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.Time(format)`</b>,
 ///                  \anchor System_Time_format
 ///                  _string_,
-///     Returns hours (hh)\, minutes (mm) or seconds (ss). When 12 hour clock is used
-///     (xx) will return AM/PM. Also supported: (hh:mm)\, (mm:ss)\, (hh:mm:ss)\, (h:mm:ss).
-///     Added with Leia: (secs)\, (mins)\, (hours) for total time values and (m).
-///     Example: 3661 seconds => h=1\, hh=01\, m=1\, mm=01\, ss=01\, hours=1\, mins=61\, secs=3661
+///     @return The current time in a specified format.
+///     @param format [opt] The format of the return time value.
+///     See \ref TIME_FORMAT for the list of possible values.
+///     <p>
+///   }
+///   \table_row3{   <b>`System.Time(startTime[\,endTime])`</b>,
+///                  \anchor System_Time
+///                  _boolean_,
+///     @return **True** if the current system time is >= `startTime` and < `endTime` (if defined).
+///     @param startTime - Start time
+///     @param endTime - [opt] End time
+///     <p>
+///     @note Time must be specified in the format HH:mm\, using
+///     a 24 hour clock.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.Date`</b>,
 ///                  \anchor System_Date
 ///                  _string_,
-///     Current date
+///     @return The current date.
+///     <p><hr>
+///     @skinning_v16 **[Infolabel Updated]** \link System_Date `System.Date`\endlink
+///     will now return the full day and month names. old: sat\, jul 18 2015
+///     new: saturday\, july 18 2015
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.Date(format)`</b>,
 ///                  \anchor System_Date_format
 ///                  _string_,
-///     Show current date using format\, available markings: d (day of month
-///     1-31)\, dd (day of month 01-31)\, ddd (short day of the week Mon-Sun)\,
-///     DDD (long day of the week Monday-Sunday)\, m (month 1-12)\, mm (month
-///     01-12)\, mmm (short month name Jan-Dec)\, MMM (long month name January -
-///     December)\, yy (2-digit year)\, yyyy (4-digit year). Added after dharma.
+///     @return The current date using a specified format.
+///     @param format - the format for the date. It can be one of the following
+///     values:
+///       - **d** - day of month (1-31)
+///       - **dd** - day of month (01-31)
+///       - **ddd** - short day of the week Mon-Sun
+///       - **DDD** - long day of the week Monday-Sunday
+///       - **m** - month (1-12)
+///       - **mm** - month (01-12)
+///       - **mmm** - short month name Jan-Dec
+///       - **MMM** - long month name January-December
+///       - **yy** - 2-digit year
+///       - **yyyy** - 4-digit year
+///     <p>
+///   }
+///   \table_row3{   <b>`System.Date(startDate[\,endDate])`</b>,
+///                  \anchor System_Date
+///                  _boolean_,
+///     @return **True** if the current system date is >= `startDate` and < `endDate` (if defined).
+///     @param startDate - The start date
+///     @param endDate - [opt] The end date
+///     @note Date must be specified in the format MM-DD or YY-MM-DD.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.AlarmPos`</b>,
 ///                  \anchor System_AlarmPos
 ///                  _string_,
-///     Shutdown Timer position
+///     @return The shutdown Timer position.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.BatteryLevel`</b>,
 ///                  \anchor System_BatteryLevel
 ///                  _string_,
-///     Returns the remaining battery level in range 0-100
+///     @return The remaining battery level in range 0-100.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.FreeSpace`</b>,
 ///                  \anchor System_FreeSpace
 ///                  _string_,
-///     Total Freespace on the drive
+///     @return The total Freespace on the drive.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.UsedSpace`</b>,
 ///                  \anchor System_UsedSpace
 ///                  _string_,
-///     Total Usedspace on the drive
+///     @return The total Usedspace on the drive.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.TotalSpace`</b>,
 ///                  \anchor System_TotalSpace
 ///                  _string_,
-///     Totalspace on the drive
+///     @return The total space on the drive.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.UsedSpacePercent`</b>,
 ///                  \anchor System_UsedSpacePercent
 ///                  _string_,
-///     Total Usedspace Percent on the drive
+///     @return The total Usedspace Percent on the drive.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.FreeSpacePercent`</b>,
 ///                  \anchor System_FreeSpacePercent
 ///                  _string_,
-///     Total Freespace Percent on the drive
+///     @return The total Freespace Percent on the drive.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.CPUTemperature`</b>,
 ///                  \anchor System_CPUTemperature
 ///                  _string_,
-///     Current CPU temperature
+///     @return The current CPU temperature.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.CpuUsage`</b>,
 ///                  \anchor System_CpuUsage
 ///                  _string_,
-///     Displays the cpu usage for each individual cpu core.
+///     @return The the cpu usage for each individual cpu core.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.GPUTemperature`</b>,
 ///                  \anchor System_GPUTemperature
 ///                  _string_,
-///     Current GPU temperature
+///     @return The current GPU temperature.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.FanSpeed`</b>,
 ///                  \anchor System_FanSpeed
 ///                  _string_,
-///     Current fan speed
+///     @return The current fan speed.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.BuildVersion`</b>,
 ///                  \anchor System_BuildVersion
 ///                  _string_,
-///     Version of build
+///     @return The version of build.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.BuildVersionShort`</b>,
 ///                  \anchor System_BuildVersionShort
 ///                  _string_,
-///     Shorter string with version of build
+///     @return The shorter string with version of build.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.BuildDate`</b>,
 ///                  \anchor System_BuildDate
 ///                  _string_,
-///     Date of build
+///     @return The date of build.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.FriendlyName`</b>,
 ///                  \anchor System_FriendlyName
 ///                  _string_,
-///     Returns the Kodi instance name. It will auto append (%hostname%) in case
+///     @return The Kodi instance name. 
+///     @note It will auto append (%hostname%) in case
 ///     the device name was not changed. eg. "Kodi (htpc)"
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.FPS`</b>,
 ///                  \anchor System_FPS
 ///                  _string_,
-///     Current rendering speed (frames per second)
+///     @return The current rendering speed (frames per second).
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.FreeMemory`</b>,
 ///                  \anchor System_FreeMemory
 ///                  _string_,
-///     Amount of free memory in Mb
+///     @return The amount of free memory in Mb.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.ScreenMode`</b>,
 ///                  \anchor System_ScreenMode
 ///                  _string_,
-///     Screenmode (eg windowed / fullscreen)
+///     @return The screenmode (eg windowed / fullscreen).
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.ScreenWidth`</b>,
 ///                  \anchor System_ScreenWidth
 ///                  _string_,
-///     Width of screen in pixels
+///     @return The width of screen in pixels.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.ScreenHeight`</b>,
 ///                  \anchor System_ScreenHeight
 ///                  _string_,
-///     Height of screen in pixels
+///     @return The height of screen in pixels.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.StartupWindow`</b>,
 ///                  \anchor System_StartupWindow
 ///                  _string_,
-///     The Window Kodi will load on startup
+///     @return The Window Kodi will load on startup.
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link System_StartupWindow `System.StartupWindow`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.CurrentWindow`</b>,
 ///                  \anchor System_CurrentWindow
 ///                  _string_,
-///     Current Window we are in
+///     @return The current Window in use.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.CurrentControl`</b>,
 ///                  \anchor System_CurrentControl
 ///                  _string_,
-///     Current focused control
+///     @return The current focused control
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.CurrentControlId`</b>,
 ///                  \anchor System_CurrentControlId
 ///                  _string_,
-///     ID of the currently focused control.
+///     @return The ID of the currently focused control.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.DVDLabel`</b>,
 ///                  \anchor System_DVDLabel
 ///                  _string_,
-///     Label of the disk in the DVD-ROM drive
+///     @return the label of the disk in the DVD-ROM drive.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.KernelVersion`</b>,
 ///                  \anchor System_KernelVersion
 ///                  _string_,
-///     System kernel version
+///     @return The System kernel version.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.OSVersionInfo`</b>,
 ///                  \anchor System_OSVersionInfo
 ///                  _string_,
-///     System name + kernel version
+///     @return The system name + kernel version.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.Uptime`</b>,
 ///                  \anchor System_Uptime
 ///                  _string_,
-///     System current uptime
+///     @return The system current uptime.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.TotalUptime`</b>,
 ///                  \anchor System_TotalUptime
 ///                  _string_,
-///     System total uptime
+///     @return The system total uptime.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.CpuFrequency`</b>,
 ///                  \anchor System_CpuFrequency
 ///                  _string_,
-///     System cpu frequency
+///     @return The system cpu frequency.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.ScreenResolution`</b>,
 ///                  \anchor System_ScreenResolution
 ///                  _string_,
-///     Screen resolution
+///     @return The screen resolution.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.VideoEncoderInfo`</b>,
 ///                  \anchor System_VideoEncoderInfo
 ///                  _string_,
-///     Video encoder info
+///     @return The video encoder info.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.InternetState`</b>,
 ///                  \anchor System_InternetState
 ///                  _string_,
-///     Will return the internet state\, connected or not connected and for
-///     Conditional use: Connected->TRUE\, not Connected->FALSE\, do not use
-///     to check status in a pythonscript since it is threaded.
+///     @return The internet state: connected or not connected.
+///     @warning Do not use to check status in a pythonscript since it is threaded.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.Language`</b>,
 ///                  \anchor System_Language
 ///                  _string_,
-///     Returns the current language
+///     @return the current language.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.ProfileName`</b>,
 ///                  \anchor System_ProfileName
 ///                  _string_,
-///     Returns the user name of the currently logged in Kodi user
+///     @return The user name of the currently logged in Kodi user
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.ProfileThumb`</b>,
 ///                  \anchor System_ProfileThumb
 ///                  _string_,
-///     Returns the thumbnail image of the currently logged in Kodi user
+///     @return The thumbnail image of the currently logged in Kodi user
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.ProfileCount`</b>,
 ///                  \anchor System_ProfileCount
 ///                  _string_,
-///     Returns the number of defined profiles
+///     @return The number of defined profiles.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.ProfileAutoLogin`</b>,
 ///                  \anchor System_ProfileAutoLogin
 ///                  _string_,
-///     The profile Kodi will auto login to
+///     @return The profile Kodi will auto login to.
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link System_ProfileAutoLogin `System.ProfileAutoLogin`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.StereoscopicMode`</b>,
 ///                  \anchor System_StereoscopicMode
 ///                  _string_,
-///     The prefered stereoscopic mode (settings > video > playback)
+///     @return The prefered stereoscopic mode.
+///     @note Configured in settings > video > playback).
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link System_StereoscopicMode `System.StereoscopicMode`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.TemperatureUnits`</b>,
 ///                  \anchor System_TemperatureUnits
 ///                  _string_,
-///     Returns Celsius or Fahrenheit symbol
+///     @return the Celsius or the Fahrenheit symbol.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.Progressbar`</b>,
 ///                  \anchor System_Progressbar
 ///                  _string_,
-///     Returns the percentage of the currently active progress.
+///     @return The percentage of the currently active progress.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.GetBool(boolean)`</b>,
 ///                  \anchor System_GetBool
 ///                  _string_,
-///     Returns the value of any standard system boolean setting. Will not work
-///     with settings in advancedsettings.xml
+///     @return The value of any standard system boolean setting. 
+///     @note Will not work with settings in advancedsettings.xml
+///     <p>
+///   }
+///   \table_row3{   <b>`System.Memory(type)`</b>,
+///                  \anchor System_Memory
+///                  _string_,
+///     @return The memory value depending on the requested type.
+///     @param type - Can be one of the following:
+///       - <b>free</b>
+///       - <b>free.percent</b>
+///       - <b>used</b>
+///       - <b>used.percent</b>
+///       - <b>total</b>
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.AddonTitle(id)`</b>,
 ///                  \anchor System_AddonTitle
 ///                  _string_,
-///     Returns the title of the addon with the given id
+///     @return The title of the addon with the given id
+///     @param id - the addon id
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.AddonVersion(id)`</b>,
 ///                  \anchor System_AddonVersion
 ///                  _string_,
-///     Returns the version of the addon with the given id
+///     @return The version of the addon with the given id.
+///     @param id - the addon id
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link System_AddonVersion `System.AddonVersion(id)`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`System.AddonIcon(id)`</b>,
+///                  \anchor System_AddonVersion
+///                  _string_,
+///     @return The icon of the addon with the given id.
+///     @param id - the addon id
+///     <p>
+///   }
+///   \table_row3{   <b>`System.IdleTime(time)`</b>,
+///                  \anchor System_IdleTime
+///                  _boolean_,
+///     @return **True** if Kodi has had no input for `time` amount of seconds.
+///     @param time - elapsed seconds to check for idle activity.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.PrivacyPolicy`</b>,
 ///                  \anchor System_PrivacyPolicy
 ///                  _string_,
-///     Returns the official Kodi privacy policy
+///     @return The official Kodi privacy policy.
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link System_PrivacyPolicy `System.PrivacyPolicy`\endlink
+///     <p>
 ///   }
-/// \table_end
-/// @}
 const infomap system_labels[] =  {{ "hasnetwork",       SYSTEM_ETHERNET_LINK_ACTIVE },
                                   { "hasmediadvd",      SYSTEM_MEDIA_DVD },
                                   { "dvdready",         SYSTEM_DVDREADY },
@@ -1175,98 +1647,112 @@ const infomap system_labels[] =  {{ "hasnetwork",       SYSTEM_ETHERNET_LINK_ACT
                                   { "privacypolicy",    SYSTEM_PRIVACY_POLICY },
                                   { "haspvraddon",      SYSTEM_HAS_PVR_ADDON }};
 
-/// \page modules__General__List_of_gui_access
-/// @{
-/// \table_start
+/// \page modules__infolabels_boolean_conditions
 ///   \table_row3{   <b>`System.HasAddon(id)`</b>,
 ///                  \anchor System_HasAddon
 ///                  _boolean_,
-///     Returns true if the specified addon is installed on the system.
+///     @return **True** if the specified addon is installed on the system.
+///     @param id - the addon id
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.HasCoreId(id)`</b>,
 ///                  \anchor System_HasCoreId
 ///                  _boolean_,
-///     Returns true if the cpu core with the given 'id' exists.
+///     @return **True** if the CPU core with the given 'id' exists.
+///     @param id - the id of the CPU core
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.HasAlarm(alarm)`</b>,
 ///                  \anchor System_HasAlarm
 ///                  _boolean_,
-///     Returns true if the system has the ?alarm? alarm set.
+///     @return **True** if the system has the `alarm` alarm set.
+///     @param alarm - the name of the alarm
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.CoreUsage(id)`</b>,
 ///                  \anchor System_CoreUsage
 ///                  _string_,
-///     Displays the usage of the cpu core with the given 'id'
+///     @return the usage of the CPU core with the given 'id'
+///     @param id - the id of the CPU core
+///     <p>
 ///   }
 ///   \table_row3{   <b>`System.Setting(hidewatched)`</b>,
 ///                  \anchor System_Setting
 ///                  _boolean_,
-///     Returns true if 'hide watched items' is selected.
+///     @return **True** if 'hide watched items' is selected.
+///     <p>
 ///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
-/// @}
 const infomap system_param[] =   {{ "hasalarm",         SYSTEM_HAS_ALARM },
                                   { "hascoreid",        SYSTEM_HAS_CORE_ID },
                                   { "setting",          SYSTEM_SETTING },
                                   { "hasaddon",         SYSTEM_HAS_ADDON },
                                   { "coreusage",        SYSTEM_GET_CORE_USAGE }};
 
-/// \page modules__General__List_of_gui_access
-/// \section modules__General__List_of_gui_access_Network Network
-/// @{
+/// \page modules__infolabels_boolean_conditions
+/// \subsection modules__infolabels_boolean_conditions_Network Network
 /// \table_start
 ///   \table_h3{ Labels, Type, Description }
 ///   \table_row3{   <b>`Network.IsDHCP`</b>,
 ///                  \anchor Network_IsDHCP
 ///                  _boolean_,
-///     Network type is DHCP or FIXED
+///     @return **True** if the network type is DHCP.
+///     @note Network type can be either DHCP or FIXED
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Network.IPAddress`</b>,
 ///                  \anchor Network_IPAddress
 ///                  _string_,
-///     The system's IP Address (formatted as IP: <ipaddress>)
+///     @return The system's IP Address. e.g. 192.168.1.15
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Network.LinkState`</b>,
 ///                  \anchor Network_LinkState
 ///                  _string_,
-///     Network linkstate e.g. 10mbit/100mbit etc.
+///     @return The network linkstate e.g. 10mbit/100mbit etc.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Network.MacAddress`</b>,
 ///                  \anchor Network_MacAddress
 ///                  _string_,
-///     The system's mac address
+///     @return The system's MAC address.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Network.SubnetMask`</b>,
 ///                  \anchor Network_SubnetMask
 ///                  _string_,
-///     Network subnet mask
+///     @return The network subnet mask.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Network.GatewayAddress`</b>,
 ///                  \anchor Network_GatewayAddress
 ///                  _string_,
-///     Network gateway address
+///     @return The network gateway address.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Network.DNS1Address`</b>,
 ///                  \anchor Network_DNS1Address
 ///                  _string_,
-///     Network dns 1 address
+///     @return The network DNS 1 address.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Network.DNS2Address`</b>,
 ///                  \anchor Network_DNS2Address
 ///                  _string_,
-///     Network dns 2 address
+///     @return The network DNS 2 address.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Network.DHCPAddress`</b>,
 ///                  \anchor Network_DHCPAddress
 ///                  _string_,
-///     DHCP ip address
+///     @return The DHCP IP address.
+///     <p>
 ///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
-/// @}
 const infomap network_labels[] = {{ "isdhcp",            NETWORK_IS_DHCP },
                                   { "ipaddress",         NETWORK_IP_ADDRESS }, //labels from here
                                   { "linkstate",         NETWORK_LINK_STATE },
@@ -1277,377 +1763,715 @@ const infomap network_labels[] = {{ "isdhcp",            NETWORK_IS_DHCP },
                                   { "dns2address",       NETWORK_DNS2_ADDRESS },
                                   { "dhcpaddress",       NETWORK_DHCP_ADDRESS }};
 
-/// \page modules__General__List_of_gui_access
-/// \section modules__General__List_of_gui_access_musicpartymode Music party mode
-/// @{
+/// \page modules__infolabels_boolean_conditions
+/// \subsection modules__infolabels_boolean_conditions_musicpartymode Music party mode
 /// \table_start
 ///   \table_h3{ Labels, Type, Description }
 ///   \table_row3{   <b>`MusicPartyMode.Enabled`</b>,
 ///                  \anchor MusicPartyMode_Enabled
 ///                  _boolean_,
-///     Returns true if Party Mode is enabled
+///     @return **True** if Party Mode is enabled.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`MusicPartyMode.SongsPlayed`</b>,
 ///                  \anchor MusicPartyMode_SongsPlayed
 ///                  _string_,
-///     Number of songs played during Party Mode
+///     @return The number of songs played during Party Mode.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`MusicPartyMode.MatchingSongs`</b>,
 ///                  \anchor MusicPartyMode_MatchingSongs
 ///                  _string_,
-///     Number of songs available to Party Mode
+///     @return The number of songs available to Party Mode.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`MusicPartyMode.MatchingSongsPicked`</b>,
 ///                  \anchor MusicPartyMode_MatchingSongsPicked
 ///                  _string_,
-///     Number of songs picked already for Party Mode
+///     @return The number of songs picked already for Party Mode.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`MusicPartyMode.MatchingSongsLeft`</b>,
 ///                  \anchor MusicPartyMode_MatchingSongsLeft
 ///                  _string_,
-///     Number of songs left to be picked from for Party Mode
+///     @return The number of songs left to be picked from for Party Mode.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`MusicPartyMode.RelaxedSongsPicked`</b>,
 ///                  \anchor MusicPartyMode_RelaxedSongsPicked
 ///                  _string_,
-///     Not currently used
+///     @todo Not currently used
+///     <p>
 ///   }
 ///   \table_row3{   <b>`MusicPartyMode.RandomSongsPicked`</b>,
 ///                  \anchor MusicPartyMode_RandomSongsPicked
 ///                  _string_,
-///     Number of unique random songs picked during Party Mode
+///     @return The number of unique random songs picked during Party Mode.
+///     <p>
 ///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
-/// @}
 const infomap musicpartymode[] = {{ "enabled",           MUSICPM_ENABLED },
                                   { "songsplayed",       MUSICPM_SONGSPLAYED },
                                   { "matchingsongs",     MUSICPM_MATCHINGSONGS },
                                   { "matchingsongspicked", MUSICPM_MATCHINGSONGSPICKED },
                                   { "matchingsongsleft", MUSICPM_MATCHINGSONGSLEFT },
-                                  { "relaxedsongspicked",MUSICPM_RELAXEDSONGSPICKED },
+                                  { "relaxedsongspicked", MUSICPM_RELAXEDSONGSPICKED },
                                   { "randomsongspicked", MUSICPM_RANDOMSONGSPICKED }};
 
-/// \page modules__General__List_of_gui_access
-/// \section modules__General__List_of_gui_access_MusicPlayer Music player
-/// @{
+/// \page modules__infolabels_boolean_conditions
+/// \subsection modules__infolabels_boolean_conditions_MusicPlayer Music player
 /// \table_start
 ///   \table_h3{ Labels, Type, Description }
 ///   \table_row3{   <b>`MusicPlayer.Offset(number).Exists`</b>,
 ///                  \anchor MusicPlayer_Offset
 ///                  _boolean_,
-///     Returns true if the music players playlist has a song queued in
+///     @return **True** if the music players playlist has a song queued in
 ///     position (number).
+///     @param number - song position
+///     <p>
 ///   }
 ///   \table_row3{   <b>`MusicPlayer.Title`</b>,
 ///                  \anchor MusicPlayer_Title
 ///                  _string_,
-///     Title of the currently playing song\, also available are
-///     "MusicPlayer.offset(number).Title" offset is relative to the current
-///     playing item and "MusicPlayer.Position(number).Title" position is relative
-///     to the start of the playlist
+///     @return The title of the currently playing song.
+///     <p>
+///   }
+///   \table_row3{   <b>`MusicPlayer.offset(number).Title`</b>,
+///                  \anchor MusicPlayer_Offset_Title
+///                  _string_,
+///     @return The title of the song which has an offset `number` with respect to the
+///     current playing song.
+///     @param number - the offset number with respect to the current playing song
+///     <p>
+///   }
+///   \table_row3{   <b>`MusicPlayer.Position(number).Title`</b>,
+///                  \anchor MusicPlayer_Position_Title
+///                  _string_,
+///     @return The title of the song which as an offset `number` with respect to the
+///     start of the playlist.
+///     @param number - the offset number with respect to the start of the playlist
+///     <p>
 ///   }
 ///   \table_row3{   <b>`MusicPlayer.Album`</b>,
 ///                  \anchor MusicPlayer_Album
 ///                  _string_,
-///     Album from which the current song is from\, also available are
-///     "MusicPlayer.offset(number).Album" offset is relative to the current
-///     playing item and "MusicPlayer.Position(number).Album" position is relative
-///     to the start of the playlist
+///     @return The album from which the current song is from.
+///     <p>
+///   }
+///   \table_row3{   <b>`MusicPlayer.offset(number).Album`</b>,
+///                  \anchor MusicPlayer_OffSet_Album
+///                  _string_,
+///     @return The album from which the song with offset `number` with respect to
+///     the current song is from.
+///     @param number - the offset number with respect to the current playing song
+///     <p>
+///   }
+///   \table_row3{   <b>`MusicPlayer.Position(number).Album`</b>,
+///                  \anchor MusicPlayer_Position_Album
+///                  _string_,
+///     @return The album from which the song with offset `number` with respect to
+///     the start of the playlist is from.
+///     @param number - the offset number with respect to the start of the playlist
+///     <p>
 ///   }
 ///   \table_row3{   <b>`MusicPlayer.Property(Album_Mood)`</b>,
 ///                  \anchor MusicPlayer_Property_Album_Mood
 ///                  _string_,
-///     Returns the moods of the currently playing Album
+///     @return The moods of the currently playing Album
+///     <p>
+///   }
+///   \table_row3{   <b>`MusicPlayer.Property(Role.Composer)`</b>,
+///                  \anchor MusicPlayer_Property_Role_Composer
+///                  _string_,
+///     @return The name of the person who composed the selected song.
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link MusicPlayer_Property_Role_Composer `MusicPlayer.Property(Role.Composer)`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`MusicPlayer.Property(Role.Conductor)`</b>,
+///                  \anchor MusicPlayer_Property_Role_Conductor
+///                  _string_,
+///     @return The name of the person who conducted the selected song.
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link MusicPlayer_Property_Role_Conductor `MusicPlayer.Property(Role.Conductor)`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`MusicPlayer.Property(Role.Orchestra)`</b>,
+///                  \anchor MusicPlayer_Property_Role_Orchestra
+///                  _string_,
+///     @return The name of the orchestra performing the selected song.
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link MusicPlayer_Property_Role_Orchestra `MusicPlayer.Property(Role.Orchestra)`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`MusicPlayer.Property(Role.Lyricist)`</b>,
+///                  \anchor MusicPlayer_Property_Role_Lyricist
+///                  _string_,
+///     @return The name of the person who wrote the lyrics of the selected song.
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link MusicPlayer_Property_Role_Lyricist `MusicPlayer.Property(Role.Lyricist)`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`MusicPlayer.Property(Role.Remixer)`</b>,
+///                  \anchor MusicPlayer_Property_Role_Remixer
+///                  _string_,
+///     @return The name of the person who remixed the selected song.
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link MusicPlayer_Property_Role_Remixer `MusicPlayer.Property(Role.Remixer)`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`MusicPlayer.Property(Role.Arranger)`</b>,
+///                  \anchor MusicPlayer_Property_Role_Arranger
+///                  _string_,
+///     @return The name of the person who arranged the selected song.
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link MusicPlayer_Property_Role_Arranger `MusicPlayer.Property(Role.Arranger)`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`MusicPlayer.Property(Role.Engineer)`</b>,
+///                  \anchor MusicPlayer_Property_Role_Engineer
+///                  _string_,
+///     @return The name of the person who was the engineer of the selected song.
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link MusicPlayer_Property_Role_Engineer `MusicPlayer.Property(Role.Engineer)`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`MusicPlayer.Property(Role.Producer)`</b>,
+///                  \anchor MusicPlayer_Property_Role_Producer
+///                  _string_,
+///     @return The name of the person who produced the selected song.
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link MusicPlayer_Property_Role_Producer `MusicPlayer.Property(Role.Producer)`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`MusicPlayer.Property(Role.DJMixer)`</b>,
+///                  \anchor MusicPlayer_Property_Role_DJMixer
+///                  _string_,
+///     @return The name of the dj who remixed the selected song.
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link MusicPlayer_Property_Role_DJMixer `MusicPlayer.Property(Role.DJMixer)`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`MusicPlayer.Property(Role.Mixer)`</b>,
+///                  \anchor MusicPlayer_Property_Role_Mixer
+///                  _string_,
+///     @return The name of the dj who remixed the selected song.
+///     @todo So maybe rather than a row each have one entry for Role.XXXXX with composer\, arranger etc. as listed values
+///     @note MusicPlayer.Property(Role.any_custom_role) also works\, 
+///     where any_custom_role could be an instrument violin or some other production activity e.g. sound engineer.
+///     The roles listed (composer\, arranger etc.) are standard ones but there are many possible. 
+///     Music file tagging allows for the musicians and all other people involved in the recording to be added\, Kodi
+///     will gathers and stores that data\, and it is availlable to GUI.
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link MusicPlayer_Property_Role_Mixer `MusicPlayer.Property(Role.Mixer)`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`MusicPlayer.Property(Album_Mood)`</b>,
+///                  \anchor MusicPlayer_Property_Album_Mood
+///                  _string_,
+///     @return the moods of the currently playing Album
+///     <p>
 ///   }
 ///   \table_row3{   <b>`MusicPlayer.Property(Album_Style)`</b>,
 ///                  \anchor MusicPlayer_Property_Album_Style
 ///                  _string_,
-///     Returns the styles of the currently playing Album
+///     @return the styles of the currently playing Album.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`MusicPlayer.Property(Album_Theme)`</b>,
 ///                  \anchor MusicPlayer_Property_Album_Theme
 ///                  _string_,
-///     Returns the themes of the currently playing Album
+///     @return The themes of the currently playing Album
+///     <p>
 ///   }
 ///   \table_row3{   <b>`MusicPlayer.Property(Album_Type)`</b>,
 ///                  \anchor MusicPlayer_Property_Album_Type
 ///                  _string_,
-///     Returns the album type (e.g. compilation\, enhanced\, explicit lyrics) of the
-///     currently playing album
+///     @return The album type (e.g. compilation\, enhanced\, explicit lyrics) of the
+///     currently playing album.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`MusicPlayer.Property(Album_Label)`</b>,
 ///                  \anchor MusicPlayer_Property_Album_Label
 ///                  _string_,
-///     Returns the record label of the currently playing album
+///     @return The record label of the currently playing album.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`MusicPlayer.Property(Album_Description)`</b>,
 ///                  \anchor MusicPlayer_Property_Album_Description
 ///                  _string_,
-///     Returns a review of the currently playing album
+///     @return A review of the currently playing album
+///     <p>
 ///   }
 ///   \table_row3{   <b>`MusicPlayer.Artist`</b>,
 ///                  \anchor MusicPlayer_Artist
 ///                  _string_,
-///     Artist(s) of current song\, also available are
-///     "MusicPlayer.offset(number).Artist" offset is relative to the current
-///     playing item and "MusicPlayer.Position(number).Artist" position is
-///     relative to the start of the playlist
+///     @return Artist(s) of current song.
+///     <p>
+///   }
+///   \table_row3{   <b>`MusicPlayer.offset(number).Artist`</b>,
+///                  \anchor MusicPlayer_Offset_Artist
+///                  _string_,
+///     @return Artist(s) of the song which has an offset `number` with respect
+///     to the current playing song.
+///     @param number - the offset of the song with respect to the current
+///     playing song
+///     <p>
+///   }
+///   \table_row3{   <b>`MusicPlayer.Position(number).Artist`</b>,
+///                  \anchor MusicPlayer_Position_Artist
+///                  _string_,
+///     @return Artist(s) of the song which has an offset `number` with respect
+///     to the start of the playlist.
+///     @param number - the offset of the song with respect to 
+///     the start of the playlist
+///     <p>
 ///   }
 ///   \table_row3{   <b>`MusicPlayer.AlbumArtist`</b>,
 ///                  \anchor MusicPlayer_AlbumArtist
 ///                  _string_,
-///     Album artist of the currently playing song
+///     @return The album artist of the currently playing song.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`MusicPlayer.Cover`</b>,
 ///                  \anchor MusicPlayer_Cover
 ///                  _string_,
-///     Album cover of currently playing song
+///     @return The album cover of currently playing song.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`MusicPlayer.Property(Artist_Sortname)`</b>,
 ///                  \anchor MusicPlayer_Property_Artist_Sortname
 ///                  _string_,
-///     Sortname of the currently playing Artist
+///     @return The sortname of the currently playing Artist.
+///     <p><hr>
+///     @skinning_v18 **[New Infolabel]** \link MusicPlayer_Property_Artist_Sortname `MusicPlayer.Property(Artist_Sortname)`\endlink
+///     <p> 
 ///   }
 ///   \table_row3{   <b>`MusicPlayer.Property(Artist_Type)`</b>,
 ///                  \anchor MusicPlayer_Property_Artist_Type
 ///                  _string_,
-///     Type of the currently playing Artist - person\, group\, orchestra\, choir etc.
+///     @return The type of the currently playing Artist - person\,
+///     group\, orchestra\, choir etc.
+///     <p><hr>
+///     @skinning_v18 **[New Infolabel]** \link MusicPlayer_Property_Artist_Type `MusicPlayer.Property(Artist_Type)`\endlink
+///     <p>  
 ///   }
 ///   \table_row3{   <b>`MusicPlayer.Property(Artist_Gender)`</b>,
 ///                  \anchor MusicPlayer_Property_Artist_Gender
 ///                  _string_,
-///     Gender of the currently playing Artist - male\, female\, other
+///     @return The gender of the currently playing Artist - male\,
+///     female\, other.
+///     <p><hr>
+///     @skinning_v18 **[New Infolabel]** \link MusicPlayer_Property_Artist_Gender `MusicPlayer.Property(Artist_Gender)`\endlink
+///     <p>  
 ///   }
 ///   \table_row3{   <b>`MusicPlayer.Property(Artist_Disambiguation)`</b>,
 ///                  \anchor MusicPlayer_Property_Artist_Disambiguation
 ///                  _string_,
-///     Brief description of the currently playing Artist that differentiates them
-///     from others with the same name
+///     @return A brief description of the currently playing Artist that differentiates them
+///     from others with the same name.
+///     <p><hr>
+///     @skinning_v18 **[New Infolabel]** \link MusicPlayer_Property_Artist_Disambiguation `MusicPlayer.Property(Artist_Disambiguation)`\endlink
+///     <p>  
 ///   }
 ///   \table_row3{   <b>`MusicPlayer.Property(Artist_Born)`</b>,
 ///                  \anchor MusicPlayer_Property_Artist_Born
 ///                  _string_,
-///     Date of Birth of the currently playing Artist
+///     @return The date of Birth of the currently playing Artist.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`MusicPlayer.Property(Artist_Died)`</b>,
 ///                  \anchor MusicPlayer_Property_Artist_Died
 ///                  _string_,
-///     Date of Death of the currently playing Artist
+///     @return The date of Death of the currently playing Artist.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`MusicPlayer.Property(Artist_Formed)`</b>,
 ///                  \anchor MusicPlayer_Property_Artist_Formed
 ///                  _string_,
-///     Formation date of the currently playing Artist/Band
+///     @return The Formation date of the currently playing Artist/Band.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`MusicPlayer.Property(Artist_Disbanded)`</b>,
 ///                  \anchor MusicPlayer_Property_Artist_Disbanded
 ///                  _string_,
-///     Disbanding date of the currently playing Artist/Band
+///     @return The disbanding date of the currently playing Artist/Band.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`MusicPlayer.Property(Artist_YearsActive)`</b>,
 ///                  \anchor MusicPlayer_Property_Artist_YearsActive
 ///                  _string_,
-///     Years the currently Playing artist has been active
+///     @return The years the currently Playing artist has been active.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`MusicPlayer.Property(Artist_Instrument)`</b>,
 ///                  \anchor MusicPlayer_Property_Artist_Instrument
 ///                  _string_,
-///     Instruments played by the currently playing artist
+///     @return The instruments played by the currently playing artist.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`MusicPlayer.Property(Artist_Description)`</b>,
 ///                  \anchor MusicPlayer_Property_Artist_Description
 ///                  _string_,
-///     Returns a biography of the currently playing artist
+///     @return A biography of the currently playing artist.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`MusicPlayer.Property(Artist_Mood)`</b>,
 ///                  \anchor MusicPlayer_Property_Artist_Mood
 ///                  _string_,
-///     Returns the moods of the currently playing artist
+///     @return The moods of the currently playing artist.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`MusicPlayer.Property(Artist_Style)`</b>,
 ///                  \anchor MusicPlayer_Property_Artist_Style
 ///                  _string_,
-///     Returns the styles of the currently playing artist
+///     @return The styles of the currently playing artist.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`MusicPlayer.Property(Artist_Genre)`</b>,
 ///                  \anchor MusicPlayer_Property_Artist_Genre
 ///                  _string_,
-///     Returns the genre of the currently playing artist
+///     @return The genre of the currently playing artist.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`MusicPlayer.Genre`</b>,
 ///                  \anchor MusicPlayer_Genre
 ///                  _string_,
-///     Genre(s) of current song\, also available are
-///     "MusicPlayer.offset(number).Genre" offset is relative to the current
-///     playing item and "MusicPlayer.Position(number).Genre" position is
-///     relative to the start of the playlist
+///     @return The genre(s) of current song.
+///     <p>
+///   }
+///   \table_row3{   <b>`MusicPlayer.offset(number).Genre`</b>,
+///                  \anchor MusicPlayer_OffSet_Genre
+///                  _string_,
+///     @return The genre(s) of the song with an offset `number` with respect
+///     to the current playing song.
+///     @param number - the offset song number with respect to the current playing
+///     song.
+///     <p>
+///   }
+///   \table_row3{   <b>`MusicPlayer.Position(number).Genre`</b>,
+///                  \anchor MusicPlayer_Position_Genre
+///                  _string_,
+///     @return The genre(s) of the song with an offset `number` with respect
+///     to the start of the playlist.
+///     @param number - the offset song number with respect to the start of the
+///     playlist
+///     song.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`MusicPlayer.Lyrics`</b>,
 ///                  \anchor MusicPlayer_Lyrics
 ///                  _string_,
-///     Lyrics of current song stored in ID tag info
+///     @return The lyrics of current song stored in ID tag info.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`MusicPlayer.Year`</b>,
 ///                  \anchor MusicPlayer_Year
 ///                  _string_,
-///     Year of release of current song\, also available are
-///     "MusicPlayer.offset(number).Year" offset is relative to the current
-///     playing item and "MusicPlayer.Position(number).Year" position is
-///     relative to the start of the playlist
+///     @return The year of release of current song.
+///     <p>
+///   }
+///   \table_row3{   <b>`MusicPlayer.offset(number).Year`</b>,
+///                  \anchor MusicPlayer_Offset_Year
+///                  _string_,
+///     @return The year of release of the song with an offset `number` with
+///     respect to the current playing song.
+///     @param number - the offset numbet with respect to the current song.
+///     <p>
+///   }
+///   \table_row3{   <b>`MusicPlayer.Position(number).Year`</b>,
+///                  \anchor MusicPlayer_Position_Year
+///                  _string_,
+///     @return The year of release of the song with an offset `number` with
+///     respect to the start of the playlist.
+///     @param number - the offset numbet with respect to the start of the
+///     playlist.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`MusicPlayer.Rating`</b>,
 ///                  \anchor MusicPlayer_Rating
 ///                  _string_,
-///     Numeric Rating of current song\, also available are
-///     "MusicPlayer.offset(number).Rating" offset is relative to the current
-///     playing item and "MusicPlayer.Position(number).Rating" position is
-///     relative to the start of the playlist
+///     @return The numeric Rating of current song (1-10).
+///     <p>
+///   }
+///   \table_row3{   <b>`MusicPlayer.offset(number).Rating`</b>,
+///                  \anchor MusicPlayer_OffSet_Rating
+///                  _string_,
+///     @return The numeric Rating of song with an offset `number` with
+///     respect to the current playing song.
+///     @param number - the offset with respect to the current playing song
+///     <p>
+///   }
+///   \table_row3{   <b>`MusicPlayer.Position(number).Rating`</b>,
+///                  \anchor MusicPlayer_Position_Rating
+///                  _string_,
+///     @return The numeric Rating of song with an offset `number` with
+///     respect to the start of the playlist.
+///     @param number - the offset with respect to the start of the playlist
+///     <p>
 ///   }
 ///   \table_row3{   <b>`MusicPlayer.RatingAndVotes`</b>,
 ///                  \anchor MusicPlayer_RatingAndVotes
 ///                  _string_,
-///     Returns the scraped rating and votes of currently playing song\, if it's in the database
+///     @return The scraped rating and votes of currently playing song\, if it's in the database.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`MusicPlayer.UserRating`</b>,
 ///                  \anchor MusicPlayer_UserRating
 ///                  _string_,
-///     Returns the scraped rating of the currently playing song
+///     @return The scraped rating of the currently playing song (1-10).
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link MusicPlayer_UserRating `MusicPlayer.UserRating`\endlink
+///     <p>  
 ///   }
 ///   \table_row3{   <b>`MusicPlayer.Votes`</b>,
 ///                  \anchor MusicPlayer_Votes
 ///                  _string_,
-///     Returns the scraped votes of currently playing song\, if it's in the database
+///     @return The scraped votes of currently playing song\, if it's in the database.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`MusicPlayer.DiscNumber`</b>,
 ///                  \anchor MusicPlayer_DiscNumber
 ///                  _string_,
-///     Disc Number of current song stored in ID tag info\, also available are
-///     "MusicPlayer.offset(number).DiscNumber" offset is relative to the
-///     current playing item and "MusicPlayer.Position(number).DiscNumber"
-///     position is relative to the start of the playlist
+///     @return The Disc Number of current song stored in ID tag info.
+///     <p>
+///   }
+///   \table_row3{   <b>`MusicPlayer.offset(number).DiscNumber`</b>,
+///                  \anchor MusicPlayer_Offset_DiscNumber
+///                  _string_,
+///     @return The Disc Number of current song stored in ID tag info for the
+///     song with an offset `number` with respect to the playing song.
+///     @param number - The offset value for the song with respect to the
+///     playing song.
+///     <p>
+///   }
+///   \table_row3{   <b>`MusicPlayer.Position(number).DiscNumber`</b>,
+///                  \anchor MusicPlayer_Position_DiscNumber
+///                  _string_,
+///     @return The Disc Number of current song stored in ID tag info for the
+///     song with an offset `number` with respect to the start of the playlist.
+///     @param number - The offset value for the song with respect to the
+///     start of the playlist.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`MusicPlayer.Comment`</b>,
 ///                  \anchor MusicPlayer_Comment
 ///                  _string_,
-///     Comment of current song stored in ID tag info\, also available are
-///     "MusicPlayer.offset(number).Comment" offset is relative to the current
-///     playing item and "MusicPlayer.Position(number).Comment" position is
-///     relative to the start of the playlist
+///     @return The Comment of current song stored in ID tag info.
+///     <p>
+///   }
+///   \table_row3{   <b>`MusicPlayer.offset(number).Comment`</b>,
+///                  \anchor MusicPlayer_Offset_Comment
+///                  _string_,
+///     @return The Comment of current song stored in ID tag info for the
+///     song with an offset `number` with respect to the playing song.
+///     @param number - The offset value for the song with respect to the
+///     playing song.
+///     <p>
+///   }
+///   \table_row3{   <b>`MusicPlayer.Position(number).Comment`</b>,
+///                  \anchor MusicPlayer_Position_Comment
+///                  _string_,
+///     @return The Comment of current song stored in ID tag info for the
+///     song with an offset `number` with respect to the start of the playlist.
+///     @param number - The offset value for the song with respect to the
+///     start of the playlist.
+///     <p>
+///   }
+///   \table_row3{   <b>`MusicPlayer.Contributors`</b>,
+///                  \anchor MusicPlayer_Contributors
+///                  _string_,
+///     @return The list of all people who've contributed to the currently playing song
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link MusicPlayer_Contributors `MusicPlayer.Contributors`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`MusicPlayer.ContributorAndRole`</b>,
+///                  \anchor MusicPlayer_ContributorAndRole
+///                  _string_,
+///     @return The list of all people and their role who've contributed to the currently playing song.
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link MusicPlayer_ContributorAndRole `MusicPlayer.ContributorAndRole`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`MusicPlayer.Mood`</b>,
 ///                  \anchor MusicPlayer_Mood
 ///                  _string_,
-///     Mood of the currently playing song
+///     @return The mood of the currently playing song.
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link MusicPlayer_Mood `MusicPlayer.Mood`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`MusicPlayer.PlaylistPlaying`</b>,
 ///                  \anchor MusicPlayer_PlaylistPlaying
 ///                  _boolean_,
-///     Returns true if a playlist is currently playing
+///     @return **True** if a playlist is currently playing.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`MusicPlayer.Exists(relative\,position)`</b>,
 ///                  \anchor MusicPlayer_Exists
 ///                  _boolean_,
-///     Returns true if the currently playing playlist has a song queued at the given position.
-///     It is possible to define whether the position is relative or not\, default is false.
+///     @return **True** if the currently playing playlist has a song queued at the given position.
+///     @param relative - bool - If the position is relative
+///     @param position - int - The position of the song
+///     @note It is possible to define whether the position is relative or not\, default is false.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`MusicPlayer.HasPrevious`</b>,
 ///                  \anchor MusicPlayer_HasPrevious
 ///                  _boolean_,
-///     Returns true if the music player has a a Previous Song in the Playlist.
+///     @return **True** if the music player has a a Previous Song in the Playlist.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`MusicPlayer.HasNext`</b>,
 ///                  \anchor MusicPlayer_HasNext
 ///                  _boolean_,
-///     Returns true if the music player has a next song queued in the Playlist.
+///     @return **True** if the music player has a next song queued in the Playlist.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`MusicPlayer.PlayCount`</b>,
 ///                  \anchor MusicPlayer_PlayCount
 ///                  _integer_,
-///     Returns the play count of currently playing song\, if it's in the database
+///     @return The play count of currently playing song\, if it's in the database.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`MusicPlayer.LastPlayed`</b>,
 ///                  \anchor MusicPlayer_LastPlayed
 ///                  _string_,
-///     Returns the last play date of currently playing song\, if it's in the database
+///     @return The last play date of currently playing song\, if it's in the database.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`MusicPlayer.TrackNumber`</b>,
 ///                  \anchor MusicPlayer_TrackNumber
 ///                  _string_,
-///     Track number of current song\, also available are
-///     "MusicPlayer.offset(number).TrackNumber" offset is relative to the
-///     current playing item and "MusicPlayer.Position(number).TrackNumber"
-///     position is relative to the start of the playlist
+///     @return The track number of current song.
+///     <p>
+///   }
+///   \table_row3{   <b>`MusicPlayer.offset(number).TrackNumber`</b>,
+///                  \anchor MusicPlayer_Offset_TrackNumber
+///                  _string_,
+///     @return The track number of the song with an offset `number`
+///     with respect to the current playing song.
+///     @param number - The offset number of the song with respect to the
+///     playing song
+///     <p>
+///   }
+///   \table_row3{   <b>`MusicPlayer.Position(number).TrackNumber`</b>,
+///                  \anchor MusicPlayer_Position_TrackNumber
+///                  _string_,
+///     @return The track number of the song with an offset `number`
+///     with respect to start of the playlist.
+///     @param number - The offset number of the song with respect 
+///     to start of the playlist
+///     <p>
 ///   }
 ///   \table_row3{   <b>`MusicPlayer.Duration`</b>,
 ///                  \anchor MusicPlayer_Duration
 ///                  _string_,
-///     Duration of current song\, also available are
-///     "MusicPlayer.offset(number).Duration" offset is relative to the
-///     current playing item and "MusicPlayer.Position(number).Duration"
-///     position is relative to the start of the playlist
+///     @return The duration of the current song.
+///     <p>
+///   }
+///   \table_row3{   <b>`MusicPlayer.offset(number).Duration`</b>,
+///                  \anchor MusicPlayer_Offset_Duration
+///                  _string_,
+///     @return The duration of the song with an offset `number`
+///     with respect to the current playing song.
+///     @param number - the offset number of the song with respect
+///     to the current playing song
+///     <p>
+///   }
+///   \table_row3{   <b>`MusicPlayer.Position(number).Duration`</b>,
+///                  \anchor MusicPlayer_Position_Duration
+///                  _string_,
+///     @return The duration of the song with an offset `number`
+///     with respect to the start of the playlist.
+///     @param number - the offset number of the song with respect
+///     to the start of the playlist
+///     <p>
 ///   }
 ///   \table_row3{   <b>`MusicPlayer.BitRate`</b>,
 ///                  \anchor MusicPlayer_BitRate
 ///                  _string_,
-///     Bitrate of current song
+///     @return The bitrate of current song.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`MusicPlayer.Channels`</b>,
 ///                  \anchor MusicPlayer_Channels
 ///                  _string_,
-///     Number of channels of current song
+///     @return The number of channels of current song.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`MusicPlayer.BitsPerSample`</b>,
 ///                  \anchor MusicPlayer_BitsPerSample
 ///                  _string_,
-///     Number of bits per sample of current song
+///     @return The number of bits per sample of current song.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`MusicPlayer.SampleRate`</b>,
 ///                  \anchor MusicPlayer_SampleRate
 ///                  _string_,
-///     Samplerate of current song
+///     @return The samplerate of current playing song.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`MusicPlayer.Codec`</b>,
 ///                  \anchor MusicPlayer_Codec
 ///                  _string_,
-///     Codec of current song
+///     @return The codec of current playing song.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`MusicPlayer.PlaylistPosition`</b>,
 ///                  \anchor MusicPlayer_PlaylistPosition
 ///                  _string_,
-///     Position of the current song in the current music playlist
+///     @return The position of the current song in the current music playlist.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`MusicPlayer.PlaylistLength`</b>,
 ///                  \anchor MusicPlayer_PlaylistLength
 ///                  _string_,
-///     Total size of the current music playlist
+///     @return The total size of the current music playlist.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`MusicPlayer.ChannelName`</b>,
 ///                  \anchor MusicPlayer_ChannelName
 ///                  _string_,
-///     Channel name of the radio programme that's currently playing (PVR).
+///     @return The channel name of the radio programme that's currently playing (PVR).
+///     <p>
 ///   }
 ///   \table_row3{   <b>`MusicPlayer.ChannelNumberLabel`</b>,
 ///                  \anchor MusicPlayer_ChannelNumberLabel
 ///                  _string_,
-///     Channel and subchannel number of the radio channel that's currently
+///     @return The channel and subchannel number of the radio channel that's currently
 ///     playing (PVR).
+///     <p><hr>
+///     @skinning_v14 **[New Infolabel]** \link MusicPlayer_ChannelNumberLabel `MusicPlayer.ChannelNumberLabel`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`MusicPlayer.ChannelGroup`</b>,
 ///                  \anchor MusicPlayer_ChannelGroup
 ///                  _string_,
-///     Channel group of the radio programme that's currently playing (PVR).
+///     @return The channel group of the radio programme that's currently playing (PVR).
+///     <p>
 ///   }
 ///   \table_row3{   <b>`MusicPlayer.Property(propname)`</b>,
 ///                  \anchor MusicPlayer_Property_Propname
 ///                  _string_,
-///     Get a property of the currently playing item.
+///     @return The requested property value of the currently playing item.
+///     @param propname - The requested property
+///     <p>
+///   }
+///   \table_row3{   <b>`MusicPlayer.DBID`</b>,
+///                  \anchor MusicPlayer_DBID
+///                  _string_,
+///     @return The database id of the currently playing song.
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link MusicPlayer_DBID `MusicPlayer.DBID`\endlink
+///     <p>
 ///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
-/// @}
 const infomap musicplayer[] =    {{ "title",            MUSICPLAYER_TITLE },
                                   { "album",            MUSICPLAYER_ALBUM },
                                   { "artist",           MUSICPLAYER_ARTIST },
@@ -1685,365 +2509,475 @@ const infomap musicplayer[] =    {{ "title",            MUSICPLAYER_TITLE },
                                   { "property",         MUSICPLAYER_PROPERTY },
 };
 
-/// \page modules__General__List_of_gui_access
-/// \section modules__General__List_of_gui_access_Videoplayer Video player
-/// @{
+/// \page modules__infolabels_boolean_conditions
+/// \subsection modules__infolabels_boolean_conditions_Videoplayer Video player
 /// \table_start
 ///   \table_h3{ Labels, Type, Description }
 ///   \table_row3{   <b>`VideoPlayer.UsingOverlays`</b>,
 ///                  \anchor VideoPlayer_UsingOverlays
 ///                  _boolean_,
-///     Returns true if the video player is using the hardware overlays render
-///     method. Useful\, as with hardware overlays you have no alpha blending to
+///     @return **True** if the video player is using the hardware overlays render
+///     method.
+///     @note This is useful\, as with hardware overlays you have no alpha blending to
 ///     the video image\, so shadows etc. need redoing\, or disabling.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.IsFullscreen`</b>,
 ///                  \anchor VideoPlayer_IsFullscreen
 ///                  _boolean_,
-///     Returns true if the video player is in fullscreen mode.
+///     @return **True** if the video player is in fullscreen mode.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.HasMenu`</b>,
 ///                  \anchor VideoPlayer_HasMenu
 ///                  _boolean_,
-///     Returns true if the video player has a menu (ie is playing a DVD)
+///     @return **True** if the video player has a menu (ie is playing a DVD).
+///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.HasInfo`</b>,
 ///                  \anchor VideoPlayer_HasInfo
 ///                  _boolean_,
-///     Returns true if the current playing video has information from the
+///     @return **True** if the current playing video has information from the
 ///     library or from a plugin (eg director/plot etc.)
+///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.Content(parameter)`</b>,
 ///                  \anchor VideoPlayer_Content
 ///                  _boolean_,
-///     Returns true if the current Video you are playing is contained in
-///     corresponding Video Library sections.\n
-///     The following values are accepted :
-///     - files
-///     - movies
-///     - episodes
-///     - musicvideos
-///     - livetv
+///     @return **True** if the current Video you are playing is contained in
+///     corresponding Video Library sections. The following values are accepted:
+///     - <b>files</b>
+///     - <b>movies</b>
+///     - <b>episodes</b>
+///     - <b>musicvideos</b>
+///     - <b>livetv</b>
+///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.HasSubtitles`</b>,
 ///                  \anchor VideoPlayer_HasSubtitles
 ///                  _boolean_,
-///     Returns true if there are subtitles available for video.
+///     @return **True** if there are subtitles available for video.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.HasTeletext`</b>,
 ///                  \anchor VideoPlayer_HasTeletext
 ///                  _boolean_,
-///     Returns true if teletext is usable on played TV channel
+///     @return **True** if teletext is usable on played TV channel.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.IsStereoscopic`</b>,
 ///                  \anchor VideoPlayer_IsStereoscopic
 ///                  _boolean_,
-///     Returns true when the currently playing video is a 3D (stereoscopic)
-///     video
+///     @return **True** when the currently playing video is a 3D (stereoscopic)
+///     video.
+///     <p><hr>
+///     @skinning_v13 **[New Boolean Condition]** \link VideoPlayer_IsStereoscopic `VideoPlayer.IsStereoscopic`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.SubtitlesEnabled`</b>,
 ///                  \anchor VideoPlayer_SubtitlesEnabled
 ///                  _boolean_,
-///     Returns true if subtitles are turned on for video.
+///     @return **True** if subtitles are turned on for video.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.HasEpg`</b>,
 ///                  \anchor VideoPlayer_HasEpg
 ///                  _boolean_,
-///     Returns true if epg information is available for the currently playing
+///     @return **True** if epg information is available for the currently playing
 ///     programme (PVR).
+///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.CanResumeLiveTV`</b>,
 ///                  \anchor VideoPlayer_CanResumeLiveTV
 ///                  _boolean_,
-///     Returns true if a in-progress PVR recording is playing an the respective live TV channel is available
+///     @return **True** if a in-progress PVR recording is playing an the respective
+///     live TV channel is available.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.Title`</b>,
 ///                  \anchor VideoPlayer_Title
 ///                  _string_,
-///     Title of currently playing video. If it's in the database it will return
-///     the database title\, else the filename
+///     @return The title of currently playing video.
+///     @note If it's in the database it will return the database title\, else the filename.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.OriginalTitle`</b>,
 ///                  \anchor VideoPlayer_OriginalTitle
 ///                  _string_,
-///     Original title of currently playing video. If it's in the database
+///     @return The original title of currently playing video. If it's in the database.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.TVShowTitle`</b>,
 ///                  \anchor VideoPlayer_TVShowTitle
 ///                  _string_,
-///     Title of currently playing episode's tvshow name
+///     @return The title of currently playing episode's tvshow name.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.Season`</b>,
 ///                  \anchor VideoPlayer_Season
 ///                  _string_,
-///     Season number of the currently playing episode\, if it's in the database
+///     @return The season number of the currently playing episode\, if it's in the database.
+///     <p><hr>
+///     @skinning_v15 **[Infolabel Updated]** \link VideoPlayer_Season `VideoPlayer.Season`\endlink
+///     also supports EPG.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.Episode`</b>,
 ///                  \anchor VideoPlayer_Episode
 ///                  _string_,
-///     Episode number of the currently playing episode
+///     @return The episode number of the currently playing episode.
+///     <p><hr>
+///     @skinning_v15 **[Infolabel Updated]** \link VideoPlayer_Episode `VideoPlayer.Episode`\endlink
+///     also supports EPG.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.Genre`</b>,
 ///                  \anchor VideoPlayer_Genre
 ///                  _string_,
-///     Genre(s) of current movie\, if it's in the database
+///     @return The genre(s) of current movie\, if it's in the database.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.Director`</b>,
 ///                  \anchor VideoPlayer_Director
 ///                  _string_,
-///     Director of current movie\, if it's in the database
+///     @return The director of current movie\, if it's in the database.
+///     <p><hr>
+///     @skinning_v15 **[Infolabel Updated]** \link VideoPlayer_Director `VideoPlayer.Director`\endlink
+///     also supports EPG.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.Country`</b>,
 ///                  \anchor VideoPlayer_Country
 ///                  _string_,
-///     Production country of current movie\, if it's in the database
+///     @return The production country of current movie\, if it's in the database.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.Year`</b>,
 ///                  \anchor VideoPlayer_Year
 ///                  _string_,
-///     Year of release of current movie\, if it's in the database
+///     @return The year of release of current movie\, if it's in the database.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.Cover`</b>,
 ///                  \anchor VideoPlayer_Cover
 ///                  _string_,
-///     Cover of currently playing movie
+///     @return The cover of currently playing movie.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.Rating`</b>,
 ///                  \anchor VideoPlayer_Rating
 ///                  _string_,
-///     Returns the scraped rating of current movie\, if it's in the database
+///     @return The scraped rating of current movie\, if it's in the database.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.UserRating`</b>,
 ///                  \anchor VideoPlayer_UserRating
 ///                  _string_,
-///     Returns the user rating of the currently playing item
+///     @return The user rating of the currently playing item.
+///     <p><hr>
+///     @skinning_v16 **[New Infolabel]** \link VideoPlayer_UserRating `VideoPlayer.UserRating`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.Votes`</b>,
 ///                  \anchor VideoPlayer_Votes
 ///                  _string_,
-///     Returns the scraped votes of current movie\, if it's in the database
+///     @return The scraped votes of current movie\, if it's in the database.
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link VideoPlayer_Votes `VideoPlayer.Votes`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.RatingAndVotes`</b>,
 ///                  \anchor VideoPlayer_RatingAndVotes
 ///                  _string_,
-///     Returns the scraped rating and votes of current movie\, if it's in the database
+///     @return The scraped rating and votes of current movie\, if it's in the database
+///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.mpaa`</b>,
 ///                  \anchor VideoPlayer_mpaa
 ///                  _string_,
-///     MPAA rating of current movie\, if it's in the database
+///     @return The MPAA rating of current movie\, if it's in the database.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.IMDBNumber`</b>,
 ///                  \anchor VideoPlayer_IMDBNumber
 ///                  _string_,
-///     The IMDb ID of the current movie\, if it's in the database
+///     @return The IMDb ID of the current movie\, if it's in the database.
+///     <p><hr>
+///     @skinning_v15 **[New Infolabel]** \link VideoPlayer_IMDBNumber `VideoPlayer.IMDBNumber`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.Top250`</b>,
 ///                  \anchor VideoPlayer_Top250
 ///                  _string_,
-///     IMDb Top250 position of the currently playing movie\, if it's in the database
+///     @return The IMDb Top250 position of the currently playing movie\, if it's in the database.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.EpisodeName`</b>,
 ///                  \anchor VideoPlayer_EpisodeName
 ///                  _string_,
-///     (PVR only) The name of the episode if the playing video is a TV Show\,
-///     if it's in the database
+///     @return The name of the episode if the playing video is a TV Show\,
+///     if it's in the database (PVR).
+///     <p><hr>
+///     @skinning_v15 **[New Infolabel]** \link VideoPlayer_EpisodeName `VideoPlayer.EpisodeName`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.PlaylistPosition`</b>,
 ///                  \anchor VideoPlayer_PlaylistPosition
 ///                  _string_,
-///     Position of the current song in the current video playlist
+///     @return The position of the current song in the current video playlist.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.PlaylistLength`</b>,
 ///                  \anchor VideoPlayer_PlaylistLength
 ///                  _string_,
-///     Total size of the current video playlist
+///     @return The total size of the current video playlist.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.Cast`</b>,
 ///                  \anchor VideoPlayer_Cast
 ///                  _string_,
-///     A concatenated string of cast members of the current movie\, if it's in
-///     the database
+///     @return A concatenated string of cast members of the current movie\, if it's in
+///     the database.
+///     <p><hr>
+///     @skinning_v15 **[Infolabel Updated]** \link VideoPlayer_Cast `VideoPlayer.Cast`\endlink
+///     also supports EPG.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.CastAndRole`</b>,
 ///                  \anchor VideoPlayer_CastAndRole
 ///                  _string_,
-///     A concatenated string of cast members and roles of the current movie\,
-///     if it's in the database
+///     @return A concatenated string of cast members and roles of the current movie\,
+///     if it's in the database.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.Album`</b>,
 ///                  \anchor VideoPlayer_Album
 ///                  _string_,
-///     Album from which the current Music Video is from\, if it's in the database
+///     @return The album from which the current Music Video is from\, if it's in the database.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.Artist`</b>,
 ///                  \anchor VideoPlayer_Artist
 ///                  _string_,
-///     Artist(s) of current Music Video\, if it's in the database
+///     @return The artist(s) of current Music Video\, if it's in the database.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.Studio`</b>,
 ///                  \anchor VideoPlayer_Studio
 ///                  _string_,
-///     Studio of current Music Video\, if it's in the database
+///     @return The studio of current Music Video\, if it's in the database.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.Writer`</b>,
 ///                  \anchor VideoPlayer_Writer
 ///                  _string_,
-///     Name of Writer of current playing Video\, if it's in the database
+///     @return The name of Writer of current playing Video\, if it's in the database.
+///     <p><hr>
+///     @skinning_v15 **[Infolabel Updated]** \link VideoPlayer_Writer `VideoPlayer.Writer`\endlink
+///     also supports EPG.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.Tagline`</b>,
 ///                  \anchor VideoPlayer_Tagline
 ///                  _string_,
-///     Small Summary of current playing Video\, if it's in the database
+///     @return The small Summary of current playing Video\, if it's in the database.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.PlotOutline`</b>,
 ///                  \anchor VideoPlayer_PlotOutline
 ///                  _string_,
-///     Small Summary of current playing Video\, if it's in the database
+///     @return The small Summary of current playing Video\, if it's in the database.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.Plot`</b>,
 ///                  \anchor VideoPlayer_Plot
 ///                  _string_,
-///     Complete Text Summary of current playing Video\, if it's in the database
+///     @return The complete Text Summary of current playing Video\, if it's in the database.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.Premiered`</b>,
 ///                  \anchor VideoPlayer_Premiered
 ///                  _string_,
-///     Release or aired date of the currently playing episode\, show\, movie or EPG item\, if it's in the database
+///     @return The release or aired date of the currently playing episode\, show\, movie or EPG item\,
+///     if it's in the database.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.Trailer`</b>,
 ///                  \anchor VideoPlayer_Trailer
 ///                  _string_,
-///     The path to the trailer of the currently playing movie\, if it's in the database
+///     @return The path to the trailer of the currently playing movie\, if it's in the database.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.LastPlayed`</b>,
 ///                  \anchor VideoPlayer_LastPlayed
 ///                  _string_,
-///     Last play date of current playing Video\, if it's in the database
+///     @return The last play date of current playing Video\, if it's in the database.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.PlayCount`</b>,
 ///                  \anchor VideoPlayer_PlayCount
 ///                  _string_,
-///     Playcount of current playing Video\, if it's in the database
+///     @return The playcount of current playing Video\, if it's in the database.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.VideoCodec`</b>,
 ///                  \anchor VideoPlayer_VideoCodec
 ///                  _string_,
-///     Returns the video codec of the currently playing video (common values: see
-///     \ref ListItem_VideoCodec "ListItem.VideoCodec")
+///     @return The video codec of the currently playing video (common values: see
+///     \ref ListItem_VideoCodec "ListItem.VideoCodec").
+///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.VideoResolution`</b>,
 ///                  \anchor VideoPlayer_VideoResolution
 ///                  _string_,
-///     Returns the video resolution of the currently playing video (possible
-///     values: see \ref ListItem_VideoResolution "ListItem.VideoResolution")
+///     @return The video resolution of the currently playing video (possible
+///     values: see \ref ListItem_VideoResolution "ListItem.VideoResolution").
+///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.VideoAspect`</b>,
 ///                  \anchor VideoPlayer_VideoAspect
 ///                  _string_,
-///     Returns the aspect ratio of the currently playing video (possible values:
-///     see \ref ListItem_VideoAspect "ListItem.VideoAspect")
+///     @return The aspect ratio of the currently playing video (possible values:
+///     see \ref ListItem_VideoAspect "ListItem.VideoAspect").
+///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.AudioCodec`</b>,
 ///                  \anchor VideoPlayer_AudioCodec
 ///                  _string_,
-///     Returns the audio codec of the currently playing video\, optionally 'n'
+///     @return The audio codec of the currently playing video\, optionally 'n'
 ///     defines the number of the audiostream (common values: see
-///     \ref ListItem_AudioCodec "ListItem.AudioCodec")
+///     \ref ListItem_AudioCodec "ListItem.AudioCodec").
+///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.AudioChannels`</b>,
 ///                  \anchor VideoPlayer_AudioChannels
 ///                  _string_,
-///     Returns the number of audio channels of the currently playing video
-///     (possible values: see \ref ListItem_AudioChannels "ListItem.AudioChannels")
+///     @return The number of audio channels of the currently playing video
+///     (possible values: see \ref ListItem_AudioChannels "ListItem.AudioChannels").
+///     <p><hr>
+///     @skinning_v16 **[Infolabel Updated]** \link VideoPlayer_AudioChannels `VideoPlayer.AudioChannels`\endlink
+///     if a video contains no audio\, these infolabels will now return empty.
+///     (they used to return 0)
+///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.AudioLanguage`</b>,
 ///                  \anchor VideoPlayer_AudioLanguage
 ///                  _string_,
-///     Returns the language of the audio of the currently playing video(possible
-///     values: see \ref ListItem_AudioLanguage "ListItem.AudioLanguage")
+///     @return The language of the audio of the currently playing video(possible
+///     values: see \ref ListItem_AudioLanguage "ListItem.AudioLanguage").
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link VideoPlayer_AudioLanguage `VideoPlayer.AudioLanguage`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.SubtitlesLanguage`</b>,
 ///                  \anchor VideoPlayer_SubtitlesLanguage
 ///                  _string_,
-///     Returns the language of the subtitle of the currently playing video
-///     (possible values: see \ref ListItem_SubtitleLanguage "ListItem.SubtitleLanguage")
+///     @return The language of the subtitle of the currently playing video
+///     (possible values: see \ref ListItem_SubtitleLanguage "ListItem.SubtitleLanguage").
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link VideoPlayer_SubtitlesLanguage `VideoPlayer.SubtitlesLanguage`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.StereoscopicMode`</b>,
 ///                  \anchor VideoPlayer_StereoscopicMode
 ///                  _string_,
-///     Returns the stereoscopic mode of the currently playing video (possible
-///     values: see \ref ListItem_StereoscopicMode "ListItem.StereoscopicMode")
+///     @return The stereoscopic mode of the currently playing video (possible
+///     values: see \ref ListItem_StereoscopicMode "ListItem.StereoscopicMode").
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link VideoPlayer_StereoscopicMode `VideoPlayer.StereoscopicMode`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.StartTime`</b>,
 ///                  \anchor VideoPlayer_StartTime
 ///                  _string_,
-///     Start date and time of the currently playing epg event or recording (PVR).
+///     @return The start date and time of the currently playing epg event or recording (PVR).
+///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.EndTime`</b>,
 ///                  \anchor VideoPlayer_EndTime
 ///                  _string_,
-///     End date and time of the currently playing epg event or recording (PVR).
+///     @return The end date and time of the currently playing epg event or recording (PVR).
+///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.NextTitle`</b>,
 ///                  \anchor VideoPlayer_NextTitle
 ///                  _string_,
-///     Title of the programme that will be played next (PVR).
+///     @return The title of the programme that will be played next (PVR).
+///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.NextGenre`</b>,
 ///                  \anchor VideoPlayer_NextGenre
 ///                  _string_,
-///     Genre of the programme that will be played next (PVR).
+///     @return The genre of the programme that will be played next (PVR).
+///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.NextPlot`</b>,
 ///                  \anchor VideoPlayer_NextPlot
 ///                  _string_,
-///     Plot of the programme that will be played next (PVR).
+///     @return The plot of the programme that will be played next (PVR).
+///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.NextPlotOutline`</b>,
 ///                  \anchor VideoPlayer_NextPlotOutline
 ///                  _string_,
-///     Plot outline of the programme that will be played next (PVR).
+///     @return The plot outline of the programme that will be played next (PVR).
+///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.NextStartTime`</b>,
 ///                  \anchor VideoPlayer_NextStartTime
 ///                  _string_,
-///     Start time of the programme that will be played next (PVR).
+///     @return The start time of the programme that will be played next (PVR).
+///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.NextEndTime`</b>,
 ///                  \anchor VideoPlayer_NextEndTime
 ///                  _string_,
-///     End time of the programme that will be played next (PVR).
+///     @return The end time of the programme that will be played next (PVR).
+///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.NextDuration`</b>,
 ///                  \anchor VideoPlayer_NextDuration
 ///                  _string_,
-///     Duration of the programme that will be played next (PVR).
+///     @return The duration of the programme that will be played next (PVR).
+///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.ChannelName`</b>,
 ///                  \anchor VideoPlayer_ChannelName
 ///                  _string_,
-///     Name of the currently tuned channel (PVR).
+///     @return The name of the currently tuned channel (PVR).
+///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.ChannelNumberLabel`</b>,
 ///                  \anchor VideoPlayer_ChannelNumberLabel
 ///                  _string_,
-///     Channel and subchannel number of the tv channel that's currently playing (PVR).
+///     @return The channel and subchannel number of the tv channel that's currently playing (PVR).
+///     <p><hr>
+///     @skinning_v14 **[New Infolabel]** \link VideoPlayer_ChannelNumberLabel `VideoPlayer.ChannelNumberLabel`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.ChannelGroup`</b>,
 ///                  \anchor VideoPlayer_ChannelGroup
 ///                  _string_,
-///     Group of the currently tuned channel (PVR).
+///     @return The group of the currently tuned channel (PVR).
+///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.ParentalRating`</b>,
 ///                  \anchor VideoPlayer_ParentalRating
 ///                  _string_,
-///     Parental rating of the currently playing programme (PVR).
+///     @return The parental rating of the currently playing programme (PVR).
+///     <p>
+///   }
+///   \table_row3{   <b>`VideoPlayer.DBID`</b>,
+///                  \anchor VideoPlayer_DBID
+///                  _string_,
+///     @return The database id of the currently playing video
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link VideoPlayer_DBID `VideoPlayer.DBID`\endlink
+///     <p>
 ///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
-/// @}
 const infomap videoplayer[] =    {{ "title",            VIDEOPLAYER_TITLE },
                                   { "genre",            VIDEOPLAYER_GENRE },
                                   { "country",          VIDEOPLAYER_COUNTRY },
@@ -2110,71 +3044,54 @@ const infomap videoplayer[] =    {{ "title",            VIDEOPLAYER_TITLE },
                                   { "canresumelivetv",  VIDEOPLAYER_CAN_RESUME_LIVE_TV },
                                   { "imdbnumber",       VIDEOPLAYER_IMDBNUMBER },
                                   { "episodename",      VIDEOPLAYER_EPISODENAME },
-                                  { "dbid", VIDEOPLAYER_DBID }
+                                  { "dbid",             VIDEOPLAYER_DBID }
 };
 
-/// \page modules__General__List_of_gui_access
-/// \section modules__General__List_of_gui_access_RetroPlayer RetroPlayer
-/// @{
+/// \page modules__infolabels_boolean_conditions
+/// \subsection modules__infolabels_boolean_conditions_RetroPlayer RetroPlayer
 /// \table_start
 ///   \table_h3{ Labels, Type, Description }
 ///   \table_row3{   <b>`RetroPlayer.VideoFilter`</b>,
 ///                  \anchor RetroPlayer_VideoFilter
 ///                  _string_,
-///     Returns the video filter of the currently-playing game.\n
+///     @return The video filter of the currently-playing game.
 ///     The following values are possible:
-///     - nearest (Nearest neighbor\, i.e. pixelate)
-///     - linear (Bilinear filtering\, i.e. smooth blur)
+///       - nearest (Nearest neighbor\, i.e. pixelate)
+///       - linear (Bilinear filtering\, i.e. smooth blur)
+///     <p><hr>
+///     @skinning_v18 **[New Infolabel]** \link RetroPlayer_VideoFilter `RetroPlayer.VideoFilter`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`RetroPlayer.StretchMode`</b>,
 ///                  \anchor RetroPlayer_StretchMode
 ///                  _string_,
-///     Returns the stretch mode of the currently-playing game.\n
+///     @return The stretch mode of the currently-playing game.
 ///     The following values are possible:
-///     - normal (Show the game normally)
-///     - 4:3 (Stretch to a 4:3 aspect ratio)
-///     - fullscreen (Stretch to the full viewing area)
-///     - original (Shrink to the original resolution)
+///       - normal (Show the game normally)
+///       - 4:3 (Stretch to a 4:3 aspect ratio)
+///       - fullscreen (Stretch to the full viewing area)
+///       - original (Shrink to the original resolution)
+///     <p><hr>
+///     @skinning_v18 **[New Infolabel]** \link RetroPlayer_StretchMode `RetroPlayer.StretchMode`\endlink
+///     <p>  
 ///   }
 ///   \table_row3{   <b>`RetroPlayer.VideoRotation`</b>,
 ///                  \anchor RetroPlayer_VideoRotation
 ///                  _integer_,
-///     Returns the video rotation of the currently-playing game
-///     in degrees counter-clockwise.\n
+///     @return The video rotation of the currently-playing game
+///     in degrees counter-clockwise.
 ///     The following values are possible:
-///     - 0
-///     - 90 (Shown in the GUI as 270 degrees)
-///     - 180
-///     - 270 (Shown in the GUI as 90 degrees)
-///   }
-///   \table_row3{   <b>`ListItem.Property(Game.VideoFilter)`</b>,
-///                  \anchor ListItem_Property_Game_VideoFilter
-///                  _string_,
-///     Returns the video filter of the list item representing a
-///     gamewindow control.\n
-///     See \link RetroPlayer_VideoFilter RetroPlayer.VideoFilter \endlink
-///     for the possible values.
-///   }
-///   \table_row3{   <b>`ListItem.Property(Game.StretchMode)`</b>,
-///                  \anchor ListItem_Property_Game_StretchMode
-///                  _string_,
-///     Returns the stretch mode of the list item representing a
-///     gamewindow control.\n
-///     See \link RetroPlayer_StretchMode RetroPlayer.StretchMode \endlink
-///     for the possible values.
-///   }
-///   \table_row3{   <b>`ListItem.Property(Game.VideoRotation)`</b>,
-///                  \anchor ListItem_Property_Game_VideoRotation
-///                  _integer_,
-///     Returns the video rotation of the list item representing a
-///     gamewindow control.\n
-///     See \link RetroPlayer_VideoRotation RetroPlayer.VideoRotation \endlink
-///     for the possible values.
+///       - 0
+///       - 90 (Shown in the GUI as 270 degrees)
+///       - 180
+///       - 270 (Shown in the GUI as 90 degrees)
+///     <p><hr>
+///     @skinning_v18 **[New Infolabel]** \link RetroPlayer_VideoRotation `RetroPlayer.VideoRotation`\endlink
+///     <p>  
 ///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
-/// @}
 const infomap retroplayer[] =
 {
   { "videofilter",            RETROPLAYER_VIDEO_FILTER},
@@ -2182,115 +3099,132 @@ const infomap retroplayer[] =
   { "videorotation",          RETROPLAYER_VIDEO_ROTATION},
 };
 
-const infomap player_process[] =
-{
-  { "videodecoder", PLAYER_PROCESS_VIDEODECODER },
-  { "deintmethod", PLAYER_PROCESS_DEINTMETHOD },
-  { "pixformat", PLAYER_PROCESS_PIXELFORMAT },
-  { "videowidth", PLAYER_PROCESS_VIDEOWIDTH },
-  { "videoheight", PLAYER_PROCESS_VIDEOHEIGHT },
-  { "videofps", PLAYER_PROCESS_VIDEOFPS },
-  { "videodar", PLAYER_PROCESS_VIDEODAR },
-  { "videohwdecoder", PLAYER_PROCESS_VIDEOHWDECODER },
-  { "audiodecoder", PLAYER_PROCESS_AUDIODECODER },
-  { "audiochannels", PLAYER_PROCESS_AUDIOCHANNELS },
-  { "audiosamplerate", PLAYER_PROCESS_AUDIOSAMPLERATE },
-  { "audiobitspersample", PLAYER_PROCESS_AUDIOBITSPERSAMPLE }
-};
-
-/// \page modules__General__List_of_gui_access
-/// \section modules__General__List_of_gui_access_Container Container
-/// @{
+/// \page modules__infolabels_boolean_conditions
+/// \subsection modules__infolabels_boolean_conditions_Container Container
 /// \table_start
 ///   \table_h3{ Labels, Type, Description }
 ///   \table_row3{   <b>`Container(id).HasFiles`</b>,
 ///                  \anchor Container_HasFiles
 ///                  _boolean_,
-///     Returns true if the container contains files (or current container if
+///     @return **True** if the container contains files (or current container if
 ///     id is omitted).
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Container(id).HasFolders`</b>,
 ///                  \anchor Container_HasFolders
 ///                  _boolean_,
-///     Returns true if the container contains folders (or current container if
+///     @return **True** if the container contains folders (or current container if
 ///     id is omitted).
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Container(id).IsStacked`</b>,
 ///                  \anchor Container_IsStacked
 ///                  _boolean_,
-///     Returns true if the container is currently in stacked mode (or current
+///     @return **True** if the container is currently in stacked mode (or current
 ///     container if id is omitted).
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Container.FolderPath`</b>,
 ///                  \anchor Container_FolderPath
 ///                  _string_,
-///     Returns complete path of currently displayed folder
+///     @return The complete path of currently displayed folder.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Container.FolderName`</b>,
 ///                  \anchor Container_FolderName
 ///                  _string_,
-///     Returns top most folder in currently displayed folder
+///     @return The top most folder in currently displayed folder.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Container.PluginName`</b>,
 ///                  \anchor Container_PluginName
 ///                  _string_,
-///     Returns the current plugins base folder name
+///     @return The current plugins base folder name.
+///     <p>
+///   }
+///   \table_row3{   <b>`Container.PluginCategory`</b>,
+///                  \anchor Container_PluginCategory
+///                  _string_,
+///     @return The current plugins category (set by the scripter).
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link Container_PluginCategory `Container.PluginCategory`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Container.Viewmode`</b>,
 ///                  \anchor Container_Viewmode
 ///                  _string_,
-///     Returns the current viewmode (list\, icons etc.)
+///     @return The current viewmode (list\, icons etc).
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Container.ViewCount`</b>,
 ///                  \anchor Container_ViewCount
 ///                  _integer_,
-///     Returns the number of available skin view modes for the current container listing
+///     @return The number of available skin view modes for the current container listing.
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link Container_ViewCount `Container.ViewCount`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Container(id).Totaltime`</b>,
 ///                  \anchor Container_Totaltime
 ///                  _string_,
-///     Returns the total time of all items in the current container
+///     @return The total time of all items in the current container.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Container(id).TotalWatched`</b>,
 ///                  \anchor Container_TotalWatched
 ///                  _string_,
-///     Returns the number of watched items in the current container
+///     @return The number of watched items in the container.
+///     @param id - [opt] if not supplied the current container will be used.
+///     <p><hr>
+///     @skinning_v16 **[New Infolabel]** \link Container_TotalWatched `Container(id).TotalWatched`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Container(id).TotalUnWatched`</b>,
 ///                  \anchor Container_TotalUnWatched
 ///                  _string_,
-///     Returns the number of unwatched items in the current container
+///     @return The number of unwatched items in the container.
+///     @param id - [opt] if not supplied the current container will be used.
+///     <p><hr>
+///     @skinning_v16 **[New Infolabel]** \link Container_TotalUnWatched `Container(id).TotalUnWatched`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Container.HasThumb`</b>,
 ///                  \anchor Container_HasThumb
-///                  _string_,
-///     Returns true if the current container you are in has a thumb assigned
-///     to it
+///                  _boolean_,
+///     @return **True** if the current container you are in has a thumb assigned
+///     to it.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Container.SortMethod`</b>,
 ///                  \anchor Container_SortMethod
-///                  _string_,
-///     Returns the current sort method (name\, year\, rating\, etc.)
+///                  _boolean_,
+///     @return **True** the current sort method (name\, year\, rating\, etc).
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Container.SortOrder`</b>,
 ///                  \anchor Container_SortOrder
 ///                  _string_,
-///     Returns the current sort order (Ascending/Descending)
+///     @return The current sort order (Ascending/Descending).
+///     <p><hr>
+///     @skinning_v16 **[New Infolabel]** \link Container_SortOrder `Container.SortOrder`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Container.ShowPlot`</b>,
 ///                  \anchor Container_ShowPlot
 ///                  _string_,
-///     Returns the TV Show plot of the current container and can be used at
-///     season and episode level
+///     @return The TV Show plot of the current container and can be used at
+///     season and episode level.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Container.ShowTitle`</b>,
 ///                  \anchor Container_ShowTitle
 ///                  _string_,
-///     Returns the TV Show title of the current container and can be used at
-///     season and episode level
+///     @return The TV Show title of the current container and can be used at
+///     season and episode level.
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link Container_ShowTitle `Container.ShowTitle`\endlink
+///     <p>
 ///   }
-/// \table_end
-/// @}
 const infomap mediacontainer[] = {{ "hasfiles",         CONTAINER_HASFILES },
                                   { "hasfolders",       CONTAINER_HASFOLDERS },
                                   { "isstacked",        CONTAINER_STACKED },
@@ -2309,113 +3243,133 @@ const infomap mediacontainer[] = {{ "hasfiles",         CONTAINER_HASFILES },
                                   { "showplot",         CONTAINER_SHOWPLOT },
                                   { "showtitle",        CONTAINER_SHOWTITLE }};
 
-/// \page modules__General__List_of_gui_access
-/// @{
-/// \table_start
+/// \page modules__infolabels_boolean_conditions
 ///   \table_row3{   <b>`Container(id).OnNext`</b>,
 ///                  \anchor Container_OnNext
 ///                  _boolean_,
-///     Returns true if the container with id (or current container if id is
+///     @return **True** if the container with id (or current container if id is
 ///     omitted) is moving to the next item. Allows views to be
 ///     custom-designed (such as 3D coverviews etc.)
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Container(id).OnScrollNext`</b>,
 ///                  \anchor Container_OnScrollNext
 ///                  _boolean_,
-///     Returns true if the container with id (or current container if id is
-///     omitted) is scrolling to the next item. Differs from OnNext in that
-///     OnNext triggers on movement even if there is no scroll involved.
+///     @return **True** if the container with id (or current container if id is
+///     omitted) is scrolling to the next item. Differs from \ref Container_OnNext "OnNext" in that
+///     \ref Container_OnNext "OnNext" triggers on movement even if there is no scroll involved.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Container(id).OnPrevious`</b>,
 ///                  \anchor Container_OnPrevious
 ///                  _boolean_,
-///     Returns true if the container with id (or current container if id is
+///     @return **True** if the container with id (or current container if id is
 ///     omitted) is moving to the previous item. Allows views to be
-///     custom-designed (such as 3D coverviews etc.)
+///     custom-designed (such as 3D coverviews etc).
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Container(id).OnScrollPrevious`</b>,
 ///                  \anchor Container_OnScrollPrevious
 ///                  _boolean_,
-///     Returns true if the container with id (or current container if id is
-///     omitted) is scrolling to the previous item. Differs from OnPrevious in
-///     that OnPrevious triggers on movement even if there is no scroll involved.
+///     @return **True** if the container with id (or current container if id is
+///     omitted) is scrolling to the previous item. Differs from \ref Container_OnPrevious "OnPrevious" in
+///     that \ref Container_OnPrevious "OnPrevious" triggers on movement even if there is no scroll involved.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Container(id).NumPages`</b>,
 ///                  \anchor Container_NumPages
-///                  _boolean_,
-///     Number of pages in the container with given id. If no id is specified it
+///                  _integer_,
+///     @return The number of pages in the container with given id. If no id is specified it
 ///     grabs the current container.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Container(id).NumItems`</b>,
 ///                  \anchor Container_NumItems
-///                  _boolean_,
-///     Number of items in the container or grouplist with given id excluding parent folder item. If no id is
-///     specified it grabs the current container.
+///                  _integer_,
+///     @return The number of items in the container or grouplist with given id excluding parent folder item. 
+///     @note If no id is specified it grabs the current container.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Container(id).NumAllItems`</b>,
 ///                  \anchor Container_NumAllItems
-///                  _boolean_,
-///     Number of all items in the container or grouplist with given id including parent folder item. If no id is
-///     specified it grabs the current container.
+///                  _integer_,
+///     @return The number of all items in the container or grouplist with given id including parent folder item. 
+///     @note If no id is specified it grabs the current container.
+///     <p><hr>
+///     @skinning_v18 **[New Infolabel]** \link Container_NumAllItems `Container(id).NumAllItems`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Container(id).NumNonFolderItems`</b>,
 ///                  \anchor Container_NumNonFolderItems
-///                  _boolean_,
-///     Number of items in the container or grouplist with given id excluding all folder items (example: pvr
-///     recordings folders\, parent ".." folder). If no id is specified it grabs the current container.
+///                  _integer_,
+///     @return The Number of items in the container or grouplist with given id excluding all folder items.
+///     @note **Example:** pvr recordings folders\, parent ".." folder). 
+///     If no id is specified it grabs the current container.
+///     <p><hr>
+///     @skinning_v18 **[New Infolabel]** \link Container_NumNonFolderItems `Container(id).NumNonFolderItems`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Container(id).CurrentPage`</b>,
 ///                  \anchor Container_CurrentPage
-///                  _boolean_,
-///     Current page in the container with given id. If no id is specified it
-///     grabs the current container.
+///                  _string_,
+///     @return THe current page in the container with given id.
+///     @note If no id is specified it grabs the current container.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Container(id).Scrolling`</b>,
 ///                  \anchor Container_Scrolling
 ///                  _boolean_,
-///     Returns true if the user is currently scrolling through the container
-///     with id (or current container if id is omitted). Note that this is
-///     slightly delayed from the actual scroll start. Use
-///     Container(id).OnScrollNext/OnScrollPrevious to trigger animations
+///     @return **True** if the user is currently scrolling through the container
+///     with id (or current container if id is omitted).
+///     @note This is slightly delayed from the actual scroll start. Use
+///     \ref Container_OnScrollNext "Container(id).OnScrollNext" or 
+///     \ref Container_OnScrollPrevious "Container(id).OnScrollPrevious" to trigger animations
 ///     immediately on scroll.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Container(id).HasNext`</b>,
 ///                  \anchor Container_HasNext
 ///                  _boolean_,
-///     Returns true if the container or textbox with id (id) has a next page.
+///     @return **True** if the container or textbox with id (id) has a next page.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Container.HasParent`</b>,
 ///                  \anchor Container_HasParent
 ///                  _boolean_,
-///     Return true when the container contains a parent ('..') item.
+///     @return **True** when the container contains a parent ('..') item.
+///     <p><hr>
+///     @skinning_v16 **[New Boolean Condition]** \link Container_HasParent `Container.HasParent`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Container(id).HasPrevious`</b>,
 ///                  \anchor Container_HasPrevious
 ///                  _boolean_,
-///     Returns true if the container or textbox with id (id) has a previous page.
+///     @return **True** if the container or textbox with id (id) has a previous page.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Container.CanFilter`</b>,
 ///                  \anchor Container_CanFilter
 ///                  _boolean_,
-///     Returns true when the current container can be filtered.
+///     @return **True** when the current container can be filtered.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Container.CanFilterAdvanced`</b>,
 ///                  \anchor Container_CanFilterAdvanced
 ///                  _boolean_,
-///     Returns true when advanced filtering can be applied to the current container.
+///     @return **True** when advanced filtering can be applied to the current container.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Container.Filtered`</b>,
 ///                  \anchor Container_Filtered
 ///                  _boolean_,
-///     Returns true when a mediafilter is applied to the current container.
+///     @return **True** when a mediafilter is applied to the current container.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Container(id).IsUpdating`</b>,
 ///                  \anchor Container_IsUpdating
 ///                  _boolean_,
-///     Returns true if the container with dynamic list content is currently updating.
+///     @return **True** if the container with dynamic list content is currently updating.
 ///   }
-/// \table_end
-/// @}
 const infomap container_bools[] ={{ "onnext",           CONTAINER_MOVE_NEXT },
                                   { "onprevious",       CONTAINER_MOVE_PREVIOUS },
                                   { "onscrollnext",     CONTAINER_SCROLL_NEXT },
@@ -2434,46 +3388,57 @@ const infomap container_bools[] ={{ "onnext",           CONTAINER_MOVE_NEXT },
                                   { "filtered",         CONTAINER_FILTERED },
                                   { "isupdating",       CONTAINER_ISUPDATING }};
 
-/// \page modules__General__List_of_gui_access
-/// @{
-/// \table_start
+/// \page modules__infolabels_boolean_conditions
 ///   \table_row3{   <b>`Container(id).Row`</b>,
 ///                  \anchor Container_Row
 ///                  _integer_,
-///     Returns the row number of the focused position in a panel container.
+///     @return The row number of the focused position in a panel container.
+///     <p><hr>
+///     @skinning_v16 **[New Infolabel]** \link Container_Row `Container(id).Row`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Container(id).Column`</b>,
 ///                  \anchor Container_Column
 ///                  _integer_,
-///     Returns the column number of the focused position in a panel container.
+///     @return The column number of the focused position in a panel container.
+///     <p><hr>
+///     @skinning_v16 **[New Infolabel]** \link Container_Column `Container(id).Column`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Container(id).Position`</b>,
 ///                  \anchor Container_Position
 ///                  _integer_,
-///     Returns the current focused position of container / grouplist (id) as a
+///     @return The current focused position of container / grouplist (id) as a
 ///     numeric label.
+///     <p><hr>
+///     @skinning_v16 **[Infolabel Updated]** \link Container_Position `Container(id).Position`\endlink
+///     now also returns the position for items inside a grouplist.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Container(id).CurrentItem`</b>,
 ///                  \anchor Container_CurrentItem
 ///                  _integer_,
-///     Current item in the container or grouplist with given id. If no id is
-///     specified it grabs the current container.
+///     @return The current item in the container or grouplist with given id. 
+///     @note If no id is specified it grabs the current container.
+///     <p><hr>
+///     @skinning_v15 **[New Infolabel]** \link Container_CurrentItem `Container(id).CurrentItem`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Container(id).SubItem`</b>,
 ///                  \anchor Container_SubItem
 ///                  _integer_,
-///     Sub item in the container or grouplist with given id. If no id is
-///     specified it grabs the current container.
+///     @return Sub-item in the container or grouplist with given id.
+///     @note If no id is specified it grabs the current container.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Container(id).HasFocus(item_number)`</b>,
 ///                  \anchor Container_HasFocus
 ///                  _boolean_,
-///     Returns true if the container with id (or current container if id is
+///     @return **True** if the container with id (or current container if id is
 ///     omitted) has static content and is focused on the item with id
 ///     item_number.
+///     <p>
 ///   }
-/// \table_end
-/// @}
 const infomap container_ints[] = {{ "row",              CONTAINER_ROW },
                                   { "column",           CONTAINER_COLUMN },
                                   { "position",         CONTAINER_POSITION },
@@ -2481,1323 +3446,2153 @@ const infomap container_ints[] = {{ "row",              CONTAINER_ROW },
                                   { "subitem",          CONTAINER_SUBITEM },
                                   { "hasfocus",         CONTAINER_HAS_FOCUS }};
 
-/// \page modules__General__List_of_gui_access
-/// @{
-/// \table_start
+/// \page modules__infolabels_boolean_conditions
 ///   \table_row3{   <b>`Container.Property(addoncategory)`</b>,
 ///                  \anchor Container_Property_addoncategory
 ///                  _string_,
-///     Returns the current add-on category
+///     @return The current add-on category.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Container.Property(reponame)`</b>,
 ///                  \anchor Container_Property_reponame
 ///                  _string_,
-///     Returns the current add-on repository name
+///     @return The current add-on repository name.
+///     <p>
 ///   }
-///   \table_row3{   <b>`Container.Content(parameter)`</b>,
+///   \table_row3{   <b>`Container.Content`</b>,
 ///                  \anchor Container_Content
 ///                  _string_,
-///     Returns true if the current container you are in contains the following:
-///     files\, songs\, artists\, albums\, movies\, tvshows\,
-///     seasons\, episodes\, musicvideos\, genres\, years\,
-///     actors\, playlists\, plugins\, studios\, directors\,
-///     sets\, tags (Note: these currently only work in the Video and Music
+///     @return The content of the current container.
+///     <p><hr>
+///     @skinning_v16 **[New Infolabel]** \link Container_Content `Container.Content`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`Container(id).ListItem(offset).Property`</b>,
+///                  \anchor Container_ListItem_property
+///                  _string_,
+///     @return the property of the ListItem with a given offset.
+///     @param offset - The offset for the listitem.
+///     @note `Property` has to be replaced with `Label`\, `Label2`\, `Icon` etc.
+///     @note **Example:** `Container(50).Listitem(2).Label `
+///     <p>
+///   }
+///   \table_row3{   <b>`Container(id).ListItemNoWrap(offset).Property`</b>,
+///                  \anchor Container_ListItemNoWrap
+///                  _string_,
+///     @return the same as \link Container_ListItem_property `Container(id).ListItem(offset).Property` \endlink
+///     but it won't wrap.
+///     @param offset - The offset for the listitem.
+///     @note That means if the last item of a list is focused\, `ListItemNoWrap(1)` 
+///     will be empty while `ListItem(1)` will return the first item of the list. 
+///     `Property` has to be replaced with `Label`\, `Label2`\, `Icon` etc.
+///     @note **Example:** `Container(50).ListitemNoWrap(1).Plot`
+///     <p>
+///   }
+///   \table_row3{   <b>`Container(id).ListItemPosition(x).[infolabel]`</b>,
+///                  \anchor Container_ListItemPosition
+///                  _string_,
+///     @return The infolabel for an item in a Container.
+///     @param x - the position in the container relative to the cursor position.
+///     @note **Example:** `Container(50).ListItemPosition(4).Genre`
+///     <p>
+///   }
+///   \table_row3{   <b>`Container(id).ListItemAbsolute(x).[infolabel]`</b>,
+///                  \anchor Container_ListItemAbsolute
+///                  _string_,
+///     @return The infolabel for an item in a Container.
+///     @param x - the absolute position in the container.
+///     @note **Example:** `Container(50).ListItemAbsolute(4).Genre`
+///     <p><hr>
+///     @skinning_v16 **[New Infolabel]** \link Container_ListItemAbsolute `Container(id).ListItemAbsolute(x).[infolabel]`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`Container.Content(parameter)`</b>,
+///                  \anchor Container_Content_parameter
+///                  _string_,
+///     @return **True** if the current container you are in contains the following:
+///       - <b>files</b> 
+///       - <b>songs</b> 
+///       - <b>artists</b>
+///       - <b>albums</b> 
+///       - <b>movies</b>
+///       - <b>tvshows</b>
+///       - <b>seasons</b>
+///       - <b>episodes</b> 
+///       - <b>musicvideos</b> 
+///       - <b>genres</b>
+///       - <b>years</b>
+///       - <b>actors</b>
+///       - <b>playlists</b>
+///       - <b>plugins</b>
+///       - <b>studios</b>
+///       - <b>directors</b>
+///       - <b>sets</b>
+///       - <b>tags</b>
+///     @note These currently only work in the Video and Music
 ///     Library or unless a Plugin has set the value) also available are
 ///     Addons true when a list of add-ons is shown LiveTV true when a
 ///     htsp (tvheadend) directory is shown
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Container.Art(type)`</b>,
 ///                  \anchor Container_Art
 ///                  _string_,
-///     Returns the path to the art image file for the given type of the current container
-///     Todo: list of all art types
+///     @return The path to the art image file for the given type of the current container.
+///     @param type - the art type to request.
+///     @todo List of all art types
+///     <p><hr>
+///     @skinning_v16 **[Infolabel Updated]** \link Container_Art `Container.Art(type)`\endlink
+///     <b>set.fanart</b> as possible type value.
+///     @skinning_v15 **[New Infolabel]** \link Container_Art `Container.Art(type)`\endlink
+///     <p>
 ///   }
-/// \table_end
 ///
-/// -----------------------------------------------------------------------------
-/// @}
 const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
                                   { "content",          CONTAINER_CONTENT },
                                   { "art",              CONTAINER_ART }};
 
-/// \page modules__General__List_of_gui_access
-/// \section modules__General__List_of_gui_access_ListItem ListItem
-/// @{
+/// \page modules__infolabels_boolean_conditions
+///   \table_row3{   <b>`Container.SortDirection(direction)`</b>,
+///                  \anchor Container_SortDirection
+///                  _boolean_,
+///     @return **True** if the sort direction of a container equals direction.
+///     @param direction - The direction to check. It can be:
+///       - <b>ascending</b>
+///       - <b>descending</b>
+///     <p>
+///   }
+/// \table_end
+///
+/// -----------------------------------------------------------------------------
+
+/// \page modules__infolabels_boolean_conditions
+/// \subsection modules__infolabels_boolean_conditions_ListItem ListItem
 /// \table_start
 ///   \table_h3{ Labels, Type, Description }
 ///   \table_row3{   <b>`ListItem.Thumb`</b>,
 ///                  \anchor ListItem_Thumb
 ///                  _string_,
-///     Returns the thumbnail (if it exists) of the currently selected item
+///     @return The thumbnail (if it exists) of the currently selected item
 ///     in a list or thumb control.
 ///     @deprecated but still available\, returns
-///     the same as `ListItem.Art(thumb)`.\par
+///     the same as \ref ListItem_Art_Type "ListItem.Art(thumb)"
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Icon`</b>,
 ///                  \anchor ListItem_Icon
 ///                  _string_,
-///     Returns the thumbnail (if it exists) of the currently selected item in a list or thumb control. If no thumbnail image exists\, it will show the icon.
+///     @return The thumbnail (if it exists) of the currently selected item in a list or thumb control. 
+///     @note If no thumbnail image exists\, it will show the icon.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.ActualIcon`</b>,
 ///                  \anchor ListItem_ActualIcon
 ///                  _string_,
-///     Returns the icon of the currently selected item in a list or thumb control.
+///     @return The icon of the currently selected item in a list or thumb control.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Overlay`</b>,
 ///                  \anchor ListItem_Overlay
 ///                  _string_,
-///     Returns the overlay icon status of the currently selected item in a list or thumb control.
+///     @return The overlay icon status of the currently selected item in a list or thumb control.
 ///       - compressed file -- OverlayRAR.png
 ///       - watched -- OverlayWatched.png
 ///       - unwatched -- OverlayUnwatched.png
 ///       - locked -- OverlayLocked.png
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.IsFolder`</b>,
 ///                  \anchor ListItem_IsFolder
 ///                  _boolean_,
-///     Returns whether the current ListItem is a folder
+///     @return **True** if the current ListItem is a folder.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.IsPlaying`</b>,
 ///                  \anchor ListItem_IsPlaying
 ///                  _boolean_,
-///     Returns whether the current ListItem.* info labels and images are
-///     currently Playing media
+///     @return **True** if the current ListItem.* info labels and images are
+///     currently Playing media.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.IsResumable`</b>,
 ///                  \anchor ListItem_IsResumable
 ///                  _boolean_,
-///     Returns true when the current ListItem has been partially played
+///     @return **True** when the current ListItem has been partially played.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.IsCollection`</b>,
 ///                  \anchor ListItem_IsCollection
 ///                  _boolean_,
-///     Returns true when the current ListItem is a movie set
+///     @return **True** when the current ListItem is a movie set.
+///     <p><hr>
+///     @skinning_v15 **[New Boolean Condition]** \link ListItem_IsCollection `ListItem.IsCollection`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.IsSelected`</b>,
 ///                  \anchor ListItem_IsSelected
 ///                  _boolean_,
-///     Returns whether the current ListItem is selected (f.e. currently playing
-///     in playlist window)
+///     @return **True** if the current ListItem is selected (f.e. currently playing
+///     in playlist window).
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.HasEpg`</b>,
 ///                  \anchor ListItem_HasEpg
 ///                  _boolean_,
-///     Returns true when the selected programme has epg info (PVR)
+///     @return **True** when the selected programme has epg info (PVR).
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.HasTimer`</b>,
 ///                  \anchor ListItem_HasTimer
 ///                  _boolean_,
-///     Returns true when a recording timer has been set for the selected
-///     programme (PVR)
+///     @return **True** when a recording timer has been set for the selected
+///     programme (PVR).
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.IsRecording`</b>,
 ///                  \anchor ListItem_IsRecording
 ///                  _boolean_,
-///     Returns true when the selected programme is being recorded (PVR)
+///     @return **True** when the selected programme is being recorded (PVR).
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.IsEncrypted`</b>,
 ///                  \anchor ListItem_IsEncrypted
 ///                  _boolean_,
-///     Returns true when the selected programme is encrypted (PVR)
+///     @return **True** when the selected programme is encrypted (PVR).
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.IsStereoscopic`</b>,
 ///                  \anchor ListItem_IsStereoscopic
 ///                  _boolean_,
-///     Returns true when the selected video is a 3D (stereoscopic) video
+///     @return **True** when the selected video is a 3D (stereoscopic) video.
+///     <p><hr>
+///     @skinning_v13 **[New Boolean Condition]** \link ListItem_IsStereoscopic `ListItem.IsStereoscopic`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Property(IsSpecial)`</b>,
 ///                  \anchor ListItem_Property_IsSpecial
 ///                  _boolean_,
-///     Returns whether the current Season/Episode is a Special
+///     @return **True** if the current Season/Episode is a Special.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Property(DateLabel)`</b>,
 ///                  \anchor ListItem_Property_DateLabel
-///                  _string_,
-///     Can be used in the rulerlayout of the epggrid control. Will return true
-///     if the item is a date label\, returns false if the item is a time label.
-///   }
-///   \table_row3{   <b>`ListItem.Property(Addon.Enabled)`</b>,
-///                  \anchor ListItem_Property_AddonEnabled
 ///                  _boolean_,
-///     Returns true when the selected addon is enabled (for use in the addon
+///     @return **True** if the item is a date label\, returns false if the item is a time label.
+///     @note Can be used in the rulerlayout of the epggrid control.
+///     <p>
+///   }
+///   \table_row3{   <b>`ListItem.Property(Addon.IsEnabled)`</b>,
+///                  \anchor ListItem_Property_AddonIsEnabled
+///                  _boolean_,
+///     @return **True** when the selected addon is enabled (for use in the addon
 ///     info dialog only).
+///     <p><hr>
+///     @skinning_v17 **[Boolean Condition Updated]** \link ListItem_Property_AddonIsEnabled `ListItem.Property(Addon.IsEnabled)`\endlink
+///     replaces `ListItem.Property(Addon.Enabled)`.
+///     <p>
 ///   }
-///   \table_row3{   <b>`ListItem.Property(Addon.Installed)`</b>,
-///                  \anchor ListItem_Property_AddonInstalled
+///   \table_row3{   <b>`ListItem.Property(Addon.IsInstalled)`</b>,
+///                  \anchor ListItem_Property_AddonIsInstalled
 ///                  _boolean_,
-///     Returns true when the selected addon is installed (for use in the addon
+///     @return **True** when the selected addon is installed (for use in the addon
 ///     info dialog only).
+///     <p><hr>
+///     @skinning_v17 **[Boolean Condition Updated]** \link ListItem_Property_AddonIsInstalled `ListItem.Property(Addon.IsInstalled)`\endlink
+///     replaces `ListItem.Property(Addon.Installed)`.
+///     <p>
 ///   }
-///   \table_row3{   <b>`ListItem.Property(Addon.UpdateAvail)`</b>,
-///                  \anchor ListItem_Property_AddonUpdateAvail
+///   \table_row3{   <b>`ListItem.Property(Addon.HasUpdate)`</b>,
+///                  \anchor ListItem_Property_AddonHasUpdate
 ///                  _boolean_,
-///     Returns true when there's an update available for the selected addon.
+///     @return **True** when there's an update available for the selected addon.
+///     <p><hr>
+///     @skinning_v17 **[Boolean Condition Updated]** \link ListItem_Property_AddonHasUpdate `ListItem.Property(Addon.HasUpdate)`\endlink
+///     replaces `ListItem.Property(Addon.UpdateAvail)`.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Label`</b>,
 ///                  \anchor ListItem_Label
 ///                  _string_,
-///     Returns the left label of the currently selected item in a container
+///     @return The left label of the currently selected item in a container.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Label2`</b>,
 ///                  \anchor ListItem_Label2
 ///                  _string_,
-///     Returns the right label of the currently selected item in a container
+///     @return The right label of the currently selected item in a container.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Title`</b>,
 ///                  \anchor ListItem_Title
 ///                  _string_,
-///     Returns the title of the currently selected song or movie in a container
+///     @return The title of the currently selected song\, movie\, game in a container.
+///     <p><hr>
+///     @skinning_v18 **[Infolabel Updated]** \link ListItem_Title `ListItem.Title`\endlink extended
+///     to support games
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.OriginalTitle`</b>,
 ///                  \anchor ListItem_OriginalTitle
 ///                  _string_,
-///     Returns the original title of the currently selected movie in a container
+///     @return The original title of the currently selected movie in a container.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.SortLetter`</b>,
 ///                  \anchor ListItem_SortLetter
 ///                  _string_,
-///     Returns the first letter of the current file in a container
+///     @return The first letter of the current file in a container.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.TrackNumber`</b>,
 ///                  \anchor ListItem_TrackNumber
 ///                  _string_,
-///     Returns the track number of the currently selected song in a container
+///     @return The track number of the currently selected song in a container.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Artist`</b>,
 ///                  \anchor ListItem_Artist
 ///                  _string_,
-///     Returns the artist of the currently selected song in a container
+///     @return The artist of the currently selected song in a container.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.AlbumArtist`</b>,
 ///                  \anchor ListItem_AlbumArtist
 ///                  _string_,
-///     Returns the artist of the currently selected album in a list
+///     @return The artist of the currently selected album in a list.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Property(Artist_Sortname)`</b>,
 ///                  \anchor ListItem_Property_Artist_Sortname
 ///                  _string_,
-///     Sortname of the currently selected Artist
+///     @return The sortname of the currently selected Artist.
+///     <p><hr>
+///     @skinning_v18 **[New Infolabel]** \link ListItem_Property_Artist_Sortname `ListItem.Property(Artist_Sortname)`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Property(Artist_Type)`</b>,
 ///                  \anchor ListItem_Property_Artist_Type
 ///                  _string_,
-///     Type of the currently selected Artist - person\, group\, orchestra\, choir etc.
+///     @return The type of the currently selected Artist - person\, group\, orchestra\, choir etc.
+///     <p><hr>
+///     @skinning_v18 **[New Infolabel]** \link ListItem_Property_Artist_Type `ListItem.Property(Artist_Type)`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Property(Artist_Gender)`</b>,
 ///                  \anchor ListItem_Property_Artist_Gender
 ///                  _string_,
-///     Gender of the currently selected Artist - male\, female\, other
+///     @return The Gender of the currently selected Artist - male\, female\, other.
+///     <p><hr>
+///     @skinning_v18 **[New Infolabel]** \link ListItem_Property_Artist_Gender `ListItem.Property(Artist_Gender)`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Property(Artist_Disambiguation)`</b>,
 ///                  \anchor ListItem_Property_Artist_Disambiguation
 ///                  _string_,
-///     Brief description of the currently selected Artist that differentiates them
-///     from others with the same name
+///     @return A Brief description of the currently selected Artist that differentiates them
+///     from others with the same name.
+///     <p><hr>
+///     @skinning_v18 **[New Infolabel]** \link ListItem_Property_Artist_Disambiguation `ListItem.Property(Artist_Disambiguation)`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Property(Artist_Born)`</b>,
 ///                  \anchor ListItem_Property_Artist_Born
 ///                  _string_,
-///     Date of Birth of the currently selected Artist
+///     @return The date of Birth of the currently selected Artist.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Property(Artist_Died)`</b>,
 ///                  \anchor ListItem_Property_Artist_Died
 ///                  _string_,
-///     Date of Death of the currently selected Artist
+///     @return The date of Death of the currently selected Artist.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Property(Artist_Formed)`</b>,
 ///                  \anchor ListItem_Property_Artist_Formed
 ///                  _string_,
-///     Formation date of the currently selected Band
+///     @return The formation date of the currently selected Band.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Property(Artist_Disbanded)`</b>,
 ///                  \anchor ListItem_Property_Artist_Disbanded
 ///                  _string_,
-///     Disbanding date of the currently selected Band
+///     @return The disbanding date of the currently selected Band.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Property(Artist_YearsActive)`</b>,
 ///                  \anchor ListItem_Property_Artist_YearsActive
 ///                  _string_,
-///     Years the currently selected artist has been active
+///     @return The years the currently selected artist has been active.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Property(Artist_Instrument)`</b>,
 ///                  \anchor ListItem_Property_Artist_Instrument
 ///                  _string_,
-///     Instruments played by the currently selected artist
+///     @return The instruments played by the currently selected artist.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Property(Artist_Description)`</b>,
 ///                  \anchor ListItem_Property_Artist_Description
 ///                  _string_,
-///     Returns a biography of the currently selected artist
+///     @return A biography of the currently selected artist.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Property(Artist_Mood)`</b>,
 ///                  \anchor ListItem_Property_Artist_Mood
 ///                  _string_,
-///     Returns the moods of the currently selected artist
+///     @return The moods of the currently selected artist.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Property(Artist_Style)`</b>,
 ///                  \anchor ListItem_Property_Artist_Style
 ///                  _string_,
-///     Returns the styles of the currently selected artist
+///     @return The styles of the currently selected artist.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Property(Artist_Genre)`</b>,
 ///                  \anchor ListItem_Property_Artist_Genre
 ///                  _string_,
-///     Returns the genre of the currently selected artist
+///     @return The genre of the currently selected artist.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Album`</b>,
 ///                  \anchor ListItem_Album
 ///                  _string_,
-///     Returns the album of the currently selected song in a container
+///     @return The album of the currently selected song in a container.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Property(Album_Mood)`</b>,
 ///                  \anchor ListItem_Property_Album_Mood
 ///                  _string_,
-///     Returns the moods of the currently selected Album
+///     @return The moods of the currently selected Album.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Property(Album_Style)`</b>,
 ///                  \anchor ListItem_Property_Album_Style
 ///                  _string_,
-///     Returns the styles of the currently selected Album
+///     @return The styles of the currently selected Album.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Property(Album_Theme)`</b>,
 ///                  \anchor ListItem_Property_Album_Theme
 ///                  _string_,
-///     Returns the themes of the currently selected Album
+///     @return The themes of the currently selected Album.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Property(Album_Type)`</b>,
 ///                  \anchor ListItem_Property_Album_Type
 ///                  _string_,
-///     Returns the Album Type (e.g. compilation\, enhanced\, explicit lyrics) of
-///     the currently selected Album
+///     @return The Album Type (e.g. compilation\, enhanced\, explicit lyrics) of
+///     the currently selected Album.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Property(Album_Label)`</b>,
 ///                  \anchor ListItem_Property_Album_Label
 ///                  _string_,
-///     Returns the record label of the currently selected Album
+///     @return The record label of the currently selected Album.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Property(Album_Description)`</b>,
 ///                  \anchor ListItem_Property_Album_Description
 ///                  _string_,
-///     Returns a review of the currently selected Album
+///     @return A review of the currently selected Album.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.DiscNumber`</b>,
 ///                  \anchor ListItem_DiscNumber
 ///                  _string_,
-///     Returns the disc number of the currently selected song in a container
+///     @return The disc number of the currently selected song in a container.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Year`</b>,
 ///                  \anchor ListItem_Year
 ///                  _string_,
-///     Returns the year of the currently selected song\, album or movie in a
-///     container
+///     @return The year of the currently selected song\, album\, movie\, game  in a
+///     container.
+///     <p><hr>
+///     @skinning_v18 **[Infolabel Updated]** \link ListItem_Title `ListItem.Title`\endlink extended
+///     to support games
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Premiered`</b>,
 ///                  \anchor ListItem_Premiered
 ///                  _string_,
-///     Returns the release/aired date of the currently selected episode\, show\,
-///     movie or EPG item in a container
+///     @return The release/aired date of the currently selected episode\, show\,
+///     movie or EPG item in a container.
+///     <p><hr>
+///     @skinning_v15 **[Infolabel Updated]** \link ListItem_Premiered `ListItem.Premiered`\endlink
+///     now also available for EPG items.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Genre`</b>,
 ///                  \anchor ListItem_Genre
 ///                  _string_,
-///     Returns the genre of the currently selected song\, album or movie in a
-///     container
+///     @return The genre of the currently selected song\, album or movie in a
+///     container.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Contributors`</b>,
 ///                  \anchor ListItem_Contributors
 ///                  _string_,
-///     List of all people who've contributed to the selected song
+///     @return The list of all people who've contributed to the selected song.
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link ListItem_Contributors `ListItem.Contributors`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.ContributorAndRole`</b>,
 ///                  \anchor ListItem_ContributorAndRole
 ///                  _string_,
-///     List of all people and their role who've contributed to the selected song
+///     @return The list of all people and their role who've contributed to the selected song.
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link ListItem_ContributorAndRole `ListItem.ContributorAndRole`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Director`</b>,
 ///                  \anchor ListItem_Director
 ///                  _string_,
-///     Returns the director of the currently selected movie in a container
+///     @return The director of the currently selected movie in a container.
+///     <p><hr>
+///     @skinning_v15 **[Infolabel Updated]** \link ListItem_Director `ListItem.Director`\endlink
+///     also supports EPG.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Country`</b>,
 ///                  \anchor ListItem_Country
 ///                  _string_,
-///     Returns the production country of the currently selected movie in a
-///     container
+///     @return The production country of the currently selected movie in a
+///     container.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Episode`</b>,
 ///                  \anchor ListItem_Episode
 ///                  _string_,
-///     Returns the episode number value for the currently selected episode. It
+///     @return The episode number value for the currently selected episode. It
 ///     also returns the number of total\, watched or unwatched episodes for the
 ///     currently selected tvshow or season\, based on the the current watched
 ///     filter.
+///     <p><hr>
+///     @skinning_v15 **[Infolabel Updated]** \link ListItem_Episode `ListItem.Episode`\endlink
+///     also supports EPG.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Season`</b>,
 ///                  \anchor ListItem_Season
 ///                  _string_,
-///     Returns the season value for the currently selected tvshow
+///     @return The season value for the currently selected tvshow.
+///     <p><hr>
+///     @skinning_v15 **[Infolabel Updated]** \link ListItem_Season `ListItem.Season`\endlink
+///     also supports EPG.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.TVShowTitle`</b>,
 ///                  \anchor ListItem_TVShowTitle
 ///                  _string_,
-///     Returns the name value for the currently selected tvshow in the season and
-///     episode depth of the video library
+///     @return The name value for the currently selected tvshow in the season and
+///     episode depth of the video library.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Property(TotalSeasons)`</b>,
 ///                  \anchor ListItem_Property_TotalSeasons
 ///                  _string_,
-///     Returns the total number of seasons for the currently selected tvshow
+///     @return The total number of seasons for the currently selected tvshow.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Property(TotalEpisodes)`</b>,
 ///                  \anchor ListItem_Property_TotalEpisodes
 ///                  _string_,
-///     Returns the total number of episodes for the currently selected tvshow or
-///     season
+///     @return the total number of episodes for the currently selected tvshow or
+///     season.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Property(WatchedEpisodes)`</b>,
 ///                  \anchor ListItem_Property_WatchedEpisodes
 ///                  _string_,
-///     Returns the number of watched episodes for the currently selected tvshow
-///     or season
+///     @return The number of watched episodes for the currently selected tvshow
+///     or season.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Property(UnWatchedEpisodes)`</b>,
 ///                  \anchor ListItem_Property_UnWatchedEpisodes
 ///                  _string_,
-///     Returns the number of unwatched episodes for the currently selected tvshow
-///     or season
+///     @return The number of unwatched episodes for the currently selected tvshow
+///     or season.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Property(NumEpisodes)`</b>,
 ///                  \anchor ListItem_Property_NumEpisodes
 ///                  _string_,
-///     Returns the number of total\, watched or unwatched episodes for the
+///     @return The number of total\, watched or unwatched episodes for the
 ///     currently selected tvshow or season\, based on the the current watched filter.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.PictureAperture`</b>,
 ///                  \anchor ListItem_PictureAperture
 ///                  _string_,
-///     Returns the F-stop used to take the selected picture. This is the value of the
-///     EXIF FNumber tag (hex code 0x829D).
+///     @return The F-stop used to take the selected picture.
+///     @note This is the value of the EXIF FNumber tag (hex code 0x829D).
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.PictureAuthor`</b>,
 ///                  \anchor ListItem_PictureAuthor
 ///                  _string_,
-///     Returns the name of the person involved in writing about the selected picture.
-///     This is the value of the IPTC Writer tag (hex code 0x7A).
+///     @return The name of the person involved in writing about the selected picture.
+///     @note This is the value of the IPTC Writer tag (hex code 0x7A).
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link ListItem_PictureAuthor `ListItem.PictureAuthor`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.PictureByline`</b>,
 ///                  \anchor ListItem_PictureByline
 ///                  _string_,
-///     Returns the name of the person who created the selected picture. This is
-///     the value of the IPTC Byline tag (hex code 0x50).
+///     @return The name of the person who created the selected picture.
+///     @note This is the value of the IPTC Byline tag (hex code 0x50).
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link ListItem_PictureByline `ListItem.PictureByline`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.PictureBylineTitle`</b>,
 ///                  \anchor ListItem_PictureBylineTitle
 ///                  _string_,
-///     Returns the title of the person who created the selected picture. This is
-///     the value of the IPTC BylineTitle tag (hex code 0x55).
+///     @return The title of the person who created the selected picture.
+///     @note This is the value of the IPTC BylineTitle tag (hex code 0x55).
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link ListItem_PictureBylineTitle `ListItem.PictureBylineTitle`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.PictureCamMake`</b>,
 ///                  \anchor ListItem_PictureCamMake
 ///                  _string_,
-///     Returns the manufacturer of the camera used to take the selected picture.
-///     This is the value of the EXIF Make tag (hex code 0x010F).
+///     @return The manufacturer of the camera used to take the selected picture.
+///     @note This is the value of the EXIF Make tag (hex code 0x010F).
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.PictureCamModel`</b>,
 ///                  \anchor ListItem_PictureCamModel
 ///                  _string_,
-///     Returns the manufacturer's model name or number of the camera used to take
-///     the selected picture. This is the value of the EXIF Model tag (hex code
-///     0x0110).
+///     @return The manufacturer's model name or number of the camera used to take
+///     the selected picture.
+///     @note This is the value of the EXIF Model tag (hex code 0x0110).
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.PictureCaption`</b>,
 ///                  \anchor ListItem_PictureCaption
 ///                  _string_,
-///     Returns a description of the selected picture. This is the value of the IPTC
-///     Caption tag (hex code 0x78).
+///     @return A description of the selected picture.
+///     @note This is the value of the IPTC Caption tag (hex code 0x78).
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.PictureCategory`</b>,
 ///                  \anchor ListItem_PictureCategory
 ///                  _string_,
-///     Returns the subject of the selected picture as a category code. This is the
-///     value of the IPTC Category tag (hex code 0x0F).
+///     @return The subject of the selected picture as a category code.
+///     @note This is the value of the IPTC Category tag (hex code 0x0F).
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link ListItem_PictureCategory `ListItem.PictureCategory`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.PictureCCDWidth`</b>,
 ///                  \anchor ListItem_PictureCCDWidth
 ///                  _string_,
-///     Returns the width of the CCD in the camera used to take the selected
-///     picture. This is calculated from three EXIF tags (0xA002 * 0xA210
-///     / 0xA20e).
+///     @return The width of the CCD in the camera used to take the selected
+///     picture.
+///     @note This is calculated from three EXIF tags (0xA002 * 0xA210 / 0xA20e).
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link ListItem_PictureCCDWidth `ListItem.PictureCCDWidth`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.PictureCity`</b>,
 ///                  \anchor ListItem_PictureCity
 ///                  _string_,
-///     Returns the city where the selected picture was taken. This is the value of
-///     the IPTC City tag (hex code 0x5A).
+///     @return The city where the selected picture was taken.
+///     @note This is the value of the IPTC City tag (hex code 0x5A).
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link ListItem_PictureCity `ListItem.PictureCity`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.PictureColour`</b>,
 ///                  \anchor ListItem_PictureColour
 ///                  _string_,
-///     Returns whether the selected picture is "Colour" or "Black and White".
+///     @return Whether the selected picture is "Colour" or "Black and White".
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link ListItem_PictureColour `ListItem.PictureColour`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.PictureComment`</b>,
 ///                  \anchor ListItem_PictureComment
 ///                  _string_,
-///     Returns a description of the selected picture. This is the value of the
+///     @return A description of the selected picture.
+///     @note This is the value of the
 ///     EXIF User Comment tag (hex code 0x9286). This is the same value as
 ///     \ref Slideshow_SlideComment "Slideshow.SlideComment".
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.PictureCopyrightNotice`</b>,
 ///                  \anchor ListItem_PictureCopyrightNotice
 ///                  _string_,
-///     Returns the copyright notice of the selected picture. This is the value of
-///     the IPTC Copyright tag (hex code 0x74).
+///     @return The copyright notice of the selected picture.
+///     @note This is the value of the IPTC Copyright tag (hex code 0x74).
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link ListItem_PictureCopyrightNotice `ListItem.PictureCopyrightNotice`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.PictureCountry`</b>,
 ///                  \anchor ListItem_PictureCountry
 ///                  _string_,
-///     Returns the full name of the country where the selected picture was taken.
-///     This is the value of the IPTC CountryName tag (hex code 0x65).
+///     @return The full name of the country where the selected picture was taken.
+///     @note This is the value of the IPTC CountryName tag (hex code 0x65).
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link ListItem_PictureCountry `ListItem.PictureCountry`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.PictureCountryCode`</b>,
 ///                  \anchor ListItem_PictureCountryCode
 ///                  _string_,
-///     Returns the country code of the country where the selected picture was
-///     taken. This is the value of the IPTC CountryCode tag (hex code 0x64).
+///     @return The country code of the country where the selected picture was
+///     taken.
+///     @note This is the value of the IPTC CountryCode tag (hex code 0x64).
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link ListItem_PictureCountryCode `ListItem.PictureCountryCode`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.PictureCredit`</b>,
 ///                  \anchor ListItem_PictureCredit
 ///                  _string_,
-///     Returns who provided the selected picture. This is the value of the IPTC
-///     Credit tag (hex code 0x6E).
+///     @return Who provided the selected picture.
+///     @note This is the value of the IPTC Credit tag (hex code 0x6E).
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link ListItem_PictureCredit `ListItem.PictureCredit`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.PictureDate`</b>,
 ///                  \anchor ListItem_PictureDate
 ///                  _string_,
-///     Returns the localized date of the selected picture. The short form of the
-///     date is used. The value of the EXIF DateTimeOriginal tag (hex code 0x9003)
+///     @return The localized date of the selected picture. The short form of the
+///     date is used.
+///     @note The value of the EXIF DateTimeOriginal tag (hex code 0x9003)
 ///     is preferred. If the DateTimeOriginal tag is not found\, the value of
 ///     DateTimeDigitized (hex code 0x9004) or of DateTime (hex code 0x0132) might
 ///     be used.
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link ListItem_PictureDate `ListItem.PictureDate`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.PictureDatetime`</b>,
 ///                  \anchor ListItem_PictureDatetime
 ///                  _string_,
-///     Returns the date/timestamp of the selected picture. The localized short form
-///     of the date and time is used. The value of the EXIF DateTimeOriginal tag
-///     (hex code 0x9003) is preferred. If the DateTimeOriginal tag is not found\,
-///     the value of DateTimeDigitized (hex code 0x9004) or of DateTime (hex code
-///     0x0132) might be used.
+///     @return The date/timestamp of the selected picture. The localized short form
+///     of the date and time is used.
+///     @note The value of the EXIF DateTimeOriginal tag (hex code 0x9003) is preferred.
+///     If the DateTimeOriginal tag is not found\, the value of DateTimeDigitized
+///     (hex code 0x9004) or of DateTime (hex code 0x0132) might be used.
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link ListItem_PictureDatetime `ListItem.PictureDatetime`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.PictureDesc`</b>,
 ///                  \anchor ListItem_PictureDesc
 ///                  _string_,
-///     Returns a short description of the selected picture. The SlideComment\,
-///     EXIFComment\, or Caption values might contain a longer description. This
-///     is the value of the EXIF ImageDescription tag (hex code 0x010E).
+///     @return A short description of the selected picture. The SlideComment\,
+///     EXIFComment\, or Caption values might contain a longer description.
+///     @note This is the value of the EXIF ImageDescription tag (hex code 0x010E).
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.PictureDigitalZoom`</b>,
 ///                  \anchor ListItem_PictureDigitalZoom
 ///                  _string_,
-///     Returns the digital zoom ratio when the selected picture was taken. This
-///     is the value of the EXIF DigitalZoomRatio tag (hex code 0xA404).
+///     @return The digital zoom ratio when the selected picture was taken.
+///     @note This is the value of the EXIF DigitalZoomRatio tag (hex code 0xA404).
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link ListItem_PictureDigitalZoom `ListItem.PictureDigitalZoom`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.PictureExpMode`</b>,
 ///                  \anchor ListItem_PictureExpMode
 ///                  _string_,
-///     Returns the exposure mode of the selected picture. The possible values are
-///     "Automatic"\, "Manual"\, and "Auto bracketing". This is the value of the
-///     EXIF ExposureMode tag (hex code 0xA402).
+///     @return The exposure mode of the selected picture.
+///     The possible values are:
+///       - <b>"Automatic"</b>
+///       - <b>"Manual"</b>
+///       - <b>"Auto bracketing"</b>
+///     @note This is the value of the EXIF ExposureMode tag (hex code 0xA402).
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.PictureExposure`</b>,
 ///                  \anchor ListItem_PictureExposure
 ///                  _string_,
-///     Returns the class of the program used by the camera to set exposure when
-///     the selected picture was taken. Values include "Manual"\, "Program
-///     (Auto)"\, "Aperture priority (Semi-Auto)"\, "Shutter priority (semi-auto)"\,
-///     etc. This is the value of the EXIF ExposureProgram tag (hex code 0x8822).
+///     @return The class of the program used by the camera to set exposure when
+///     the selected picture was taken. Values include:
+///      -  <b>"Manual"</b>
+///      -  <b>"Program (Auto)"</b>
+///      -  <b>"Aperture priority (Semi-Auto)"</b>
+///      -  <b>"Shutter priority (semi-auto)"</b>
+///      -  etc
+///     @note This is the value of the EXIF ExposureProgram tag (hex code 0x8822).
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link ListItem_PictureExposure `ListItem.PictureExposure`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.PictureExposureBias`</b>,
 ///                  \anchor ListItem_PictureExposureBias
 ///                  _string_,
-///     Returns the exposure bias of the selected picture. Typically this is a
-///     number between -99.99 and 99.99. This is the value of the EXIF
-///     ExposureBiasValue tag (hex code 0x9204).
+///     @return The exposure bias of the selected picture.
+///     Typically this is a number between -99.99 and 99.99.
+///     @note This is the value of the EXIF ExposureBiasValue tag (hex code 0x9204).
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link ListItem_PictureExposureBias `ListItem.PictureExposureBias`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.PictureExpTime`</b>,
 ///                  \anchor ListItem_PictureExpTime
 ///                  _string_,
-///     Returns the exposure time of the selected picture\, in seconds. This is the
-///     value of the EXIF ExposureTime tag (hex code 0x829A). If the ExposureTime
-///     tag is not found\, the ShutterSpeedValue tag (hex code 0x9201) might be
-///     used.
+///     @return The exposure time of the selected picture\, in seconds. 
+///     @note This is the value of the EXIF ExposureTime tag (hex code 0x829A).
+///     If the ExposureTime tag is not found\, the ShutterSpeedValue tag (hex code 0x9201) 
+///     might be used.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.PictureFlashUsed`</b>,
 ///                  \anchor ListItem_PictureFlashUsed
 ///                  _string_,
-///     Returns the status of flash when the selected picture was taken. The value
+///     @return The status of flash when the selected picture was taken. The value
 ///     will be either "Yes" or "No"\, and might include additional information.
-///     This is the value of the EXIF Flash tag (hex code 0x9209).
+///     @note This is the value of the EXIF Flash tag (hex code 0x9209).
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link ListItem_PictureFlashUsed `ListItem.PictureFlashUsed`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.PictureFocalLen`</b>,
 ///                  \anchor ListItem_PictureFocalLen
 ///                  _string_,
-///     Returns the lens focal length of the selected picture
+///     @return The lens focal length of the selected picture.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.PictureFocusDist`</b>,
 ///                  \anchor ListItem_PictureFocusDist
 ///                  _string_,
-///     Returns the focal length of the lens\, in mm. This is the value of the EXIF
-///     FocalLength tag (hex code 0x920A).
+///     @return The focal length of the lens\, in mm. 
+///     @note This is the value of the EXIF FocalLength tag (hex code 0x920A).
 ///   }
 ///   \table_row3{   <b>`ListItem.PictureGPSLat`</b>,
 ///                  \anchor ListItem_PictureGPSLat
 ///                  _string_,
-///     Returns the latitude where the selected picture was taken (degrees\,
-///     minutes\, seconds North or South). This is the value of the EXIF
-///     GPSInfo.GPSLatitude and GPSInfo.GPSLatitudeRef tags.
+///     @return The latitude where the selected picture was taken (degrees\,
+///     minutes\, seconds North or South).
+///     @note This is the value of the EXIF GPSInfo.GPSLatitude and GPSInfo.GPSLatitudeRef tags.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.PictureGPSLon`</b>,
 ///                  \anchor ListItem_PictureGPSLon
 ///                  _string_,
-///     Returns the longitude where the selected picture was taken (degrees\,
-///     minutes\, seconds East or West). This is the value of the EXIF
-///     GPSInfo.GPSLongitude and GPSInfo.GPSLongitudeRef tags.
+///     @return The longitude where the selected picture was taken (degrees\,
+///     minutes\, seconds East or West). 
+///     @note This is the value of the EXIF GPSInfo.GPSLongitude and GPSInfo.GPSLongitudeRef tags.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.PictureGPSAlt`</b>,
 ///                  \anchor ListItem_PictureGPSAlt
 ///                  _string_,
-///     Returns the altitude in meters where the selected picture was taken. This
-///     is the value of the EXIF GPSInfo.GPSAltitude tag.
+///     @return The altitude in meters where the selected picture was taken.
+///     @note This is the value of the EXIF GPSInfo.GPSAltitude tag.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.PictureHeadline`</b>,
 ///                  \anchor ListItem_PictureHeadline
 ///                  _string_,
-///     Returns a synopsis of the contents of the selected picture. This is the
-///     value of the IPTC Headline tag (hex code 0x69).
+///     @return A synopsis of the contents of the selected picture.
+///     @note This is the value of the IPTC Headline tag (hex code 0x69).
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link ListItem_PictureHeadline `ListItem.PictureHeadline`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.PictureImageType`</b>,
 ///                  \anchor ListItem_PictureImageType
 ///                  _string_,
-///     Returns the color components of the selected picture. This is the value of
-///     the IPTC ImageType tag (hex code 0x82).
+///     @return The color components of the selected picture.
+///     @note This is the value of the IPTC ImageType tag (hex code 0x82).
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link ListItem_PictureImageType `ListItem.PictureImageType`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.PictureIPTCDate`</b>,
 ///                  \anchor ListItem_PictureIPTCDate
 ///                  _string_,
-///     Returns the date when the intellectual content of the selected picture was
-///     created\, rather than when the picture was created. This is the value of
-///     the IPTC DateCreated tag (hex code 0x37).
+///     @return The date when the intellectual content of the selected picture was
+///     created\, rather than when the picture was created.
+///     @note This is the value of the IPTC DateCreated tag (hex code 0x37).
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link ListItem_PictureIPTCDate `ListItem.PictureIPTCDate`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.PictureIPTCTime`</b>,
 ///                  \anchor ListItem_PictureIPTCTime
 ///                  _string_,
-///     Returns the time when the intellectual content of the selected picture was
-///     created\, rather than when the picture was created. This is the value of
-///     the IPTC TimeCreated tag (hex code 0x3C).
+///     @return The time when the intellectual content of the selected picture was
+///     created\, rather than when the picture was created.
+///     @note This is the value of the IPTC TimeCreated tag (hex code 0x3C).
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link ListItem_PictureIPTCTime `ListItem.PictureIPTCTime`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.PictureISO`</b>,
 ///                  \anchor ListItem_PictureISO
 ///                  _string_,
-///     Returns the ISO speed of the camera when the selected picture was taken.
-///     This is the value of the EXIF ISOSpeedRatings tag (hex code 0x8827).
+///     @return The ISO speed of the camera when the selected picture was taken.
+///     @note This is the value of the EXIF ISOSpeedRatings tag (hex code 0x8827).
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.PictureKeywords`</b>,
 ///                  \anchor ListItem_PictureKeywords
 ///                  _string_,
-///     Returns keywords assigned to the selected picture. This is the value of
-///     the IPTC Keywords tag (hex code 0x19).
+///     @return The keywords assigned to the selected picture.
+///     @note This is the value of the IPTC Keywords tag (hex code 0x19).
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.PictureLightSource`</b>,
 ///                  \anchor ListItem_PictureLightSource
 ///                  _string_,
-///     Returns the kind of light source when the picture was taken. Possible
-///     values include "Daylight"\, "Fluorescent"\, "Incandescent"\, etc. This is
-///     the value of the EXIF LightSource tag (hex code 0x9208).
+///     @return The kind of light source when the picture was taken. Possible
+///     values include:
+///       - <b>"Daylight"</b>
+///       - <b>"Fluorescent"</b>
+///       - <b>"Incandescent</b>
+///       - etc
+///     @note This is the value of the EXIF LightSource tag (hex code 0x9208).
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link ListItem_PictureLightSource `ListItem.PictureLightSource`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.PictureLongDate`</b>,
 ///                  \anchor ListItem_PictureLongDate
 ///                  _string_,
-///     Returns only the localized date of the selected picture. The long form of
-///     the date is used. The value of the EXIF DateTimeOriginal tag (hex code
+///     @return Only the localized date of the selected picture. The long form of
+///     the date is used. 
+///     @note The value of the EXIF DateTimeOriginal tag (hex code
 ///     0x9003) is preferred. If the DateTimeOriginal tag is not found\, the
 ///     value of DateTimeDigitized (hex code 0x9004) or of DateTime (hex code
 ///     0x0132) might be used.
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link ListItem_PictureLongDate `ListItem.PictureLongDate`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.PictureLongDatetime`</b>,
 ///                  \anchor ListItem_PictureLongDatetime
 ///                  _string_,
-///     Returns the date/timestamp of the selected picture. The localized long
-///     form of the date and time is used. The value of the EXIF DateTimeOriginal
+///     @return The date/timestamp of the selected picture. The localized long
+///     form of the date and time is used. 
+///     @note The value of the EXIF DateTimeOriginal
 ///     tag (hex code 0x9003) is preferred. if the DateTimeOriginal tag is not
 ///     found\, the value of DateTimeDigitized (hex code 0x9004) or of DateTime
 ///     (hex code 0x0132) might be used.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.PictureMeteringMode`</b>,
 ///                  \anchor ListItem_PictureMeteringMode
 ///                  _string_,
-///     Returns the metering mode used when the selected picture was taken. The
-///     possible values are "Center weight"\, "Spot"\, or "Matrix". This is the
-///     value of the EXIF MeteringMode tag (hex code 0x9207).
+///     @return The metering mode used when the selected picture was taken. The
+///     possible values are:
+///      - <b>"Center weight"</b>
+///      - <b>"Spot"</b>
+///      - <b>"Matrix"</b> 
+///     @note This is the value of the EXIF MeteringMode tag (hex code 0x9207).
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link ListItem_PictureMeteringMode `ListItem.PictureMeteringMode`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.PictureObjectName`</b>,
 ///                  \anchor ListItem_PictureObjectName
 ///                  _string_,
-///     Returns a shorthand reference for the selected picture. This is the value
-///     of the IPTC ObjectName tag (hex code 0x05).
+///     @return A shorthand reference for the selected picture.
+///     @note This is the value of the IPTC ObjectName tag (hex code 0x05).
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link ListItem_PictureObjectName `ListItem.PictureObjectName`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.PictureOrientation`</b>,
 ///                  \anchor ListItem_PictureOrientation
 ///                  _string_,
-///     Returns the orientation of the selected picture. Possible values are "Top
-///     Left"\, "Top Right"\, "Left Top"\, "Right Bottom"\, etc. This is the value
-///     of the EXIF Orientation tag (hex code 0x0112).
+///     @return The orientation of the selected picture. Possible values are:
+///       - <b>"Top Left"</b> 
+///       - <b>"Top Right"</b>
+///       - <b>"Left Top"</b>
+///       - <b>"Right Bottom"</b>
+///       - etc 
+///     @note This is the value of the EXIF Orientation tag (hex code 0x0112).
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link ListItem_PictureOrientation `ListItem.PictureOrientation`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.PicturePath`</b>,
 ///                  \anchor ListItem_PicturePath
 ///                  _string_,
-///     Returns the filename and path of the selected picture
+///     @return The filename and path of the selected picture.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.PictureProcess`</b>,
 ///                  \anchor ListItem_PictureProcess
 ///                  _string_,
-///     Returns the process used to compress the selected picture
+///     @return The process used to compress the selected picture.
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link ListItem_PictureProcess `ListItem.PictureProcess`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.PictureReferenceService`</b>,
 ///                  \anchor ListItem_PictureReferenceService
 ///                  _string_,
-///     Returns the Service Identifier of a prior envelope to which the selected
-///     picture refers. This is the value of the IPTC ReferenceService tag
-///     (hex code 0x2D).
+///     @return The Service Identifier of a prior envelope to which the selected
+///     picture refers.
+///     @note This is the value of the IPTC ReferenceService tag (hex code 0x2D).
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link ListItem_PictureReferenceService `ListItem.PictureReferenceService`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.PictureResolution`</b>,
 ///                  \anchor ListItem_PictureResolution
 ///                  _string_,
-///     Returns the dimensions of the selected picture
+///     @return The dimensions of the selected picture.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.PictureSource`</b>,
 ///                  \anchor ListItem_PictureSource
 ///                  _string_,
-///     Returns the original owner of the selected picture. This is the value of
-///     the IPTC Source tag (hex code 0x73).
+///     @return The original owner of the selected picture.
+///     @note This is the value of the IPTC Source tag (hex code 0x73).
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link ListItem_PictureSource `ListItem.PictureSource`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.PictureSpecialInstructions`</b>,
 ///                  \anchor ListItem_PictureSpecialInstructions
 ///                  _string_,
-///     Returns other editorial instructions concerning the use of the selected
-///     picture. This is the value of the IPTC SpecialInstructions tag (hex
-///     code 0x28).
+///     @return Other editorial instructions concerning the use of the selected
+///     picture.
+///     @note This is the value of the IPTC SpecialInstructions tag (hex code 0x28).
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link ListItem_PictureSpecialInstructions `ListItem.PictureSpecialInstructions`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.PictureState`</b>,
 ///                  \anchor ListItem_PictureState
 ///                  _string_,
-///     Returns the State/Province where the selected picture was taken. This is
-///     the value of the IPTC ProvinceState tag (hex code 0x5F).
+///     @return The State/Province where the selected picture was taken.
+///     @note This is the value of the IPTC ProvinceState tag (hex code 0x5F).
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link ListItem_PictureState `ListItem.PictureState`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.PictureSublocation`</b>,
 ///                  \anchor ListItem_PictureSublocation
 ///                  _string_,
-///     Returns the location within a city where the selected picture was taken -
-///     might indicate the nearest landmark. This is the value of the IPTC
-///     SubLocation tag (hex code 0x5C).
+///     @return The location within a city where the selected picture was taken -
+///     might indicate the nearest landmark.
+///     @note This is the value of the IPTC SubLocation tag (hex code 0x5C).
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link ListItem_PictureSublocation `ListItem.PictureSublocation`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.PictureSupplementalCategories`</b>,
 ///                  \anchor ListItem_PictureSupplementalCategories
 ///                  _string_,
-///     Returns supplemental category codes to further refine the subject of the
-///     selected picture. This is the value of the IPTC SuppCategory tag (hex
-///     code 0x14).
+///     @return A supplemental category codes to further refine the subject of the
+///     selected picture.
+///     @note This is the value of the IPTC SuppCategory tag (hex code 0x14).
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link ListItem_PictureSupplementalCategories `ListItem.PictureSupplementalCategories`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.PictureTransmissionReference`</b>,
 ///                  \anchor ListItem_PictureTransmissionReference
 ///                  _string_,
-///     Returns a code representing the location of original transmission of the
-///     selected picture. This is the value of the IPTC TransmissionReference
-///     tag (hex code 0x67).
+///     @return A code representing the location of original transmission of the
+///     selected picture.
+///     @note This is the value of the IPTC TransmissionReference tag (hex code 0x67).
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link ListItem_PictureTransmissionReference `ListItem.PictureTransmissionReference`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.PictureUrgency`</b>,
 ///                  \anchor ListItem_PictureUrgency
 ///                  _string_,
-///     Returns the urgency of the selected picture. Values are 1-9. The "1" is
-///     most urgent. Some image management programs use urgency to indicate
+///     @return The urgency of the selected picture. Values are 1-9.
+///     @note The "1" is most urgent. Some image management programs use urgency to indicate
 ///     picture rating\, where urgency "1" is 5 stars and urgency "5" is 1 star.
 ///     Urgencies 6-9 are not used for rating. This is the value of the IPTC
 ///     Urgency tag (hex code 0x0A).
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link ListItem_PictureUrgency `ListItem.PictureUrgency`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.PictureWhiteBalance`</b>,
 ///                  \anchor ListItem_PictureWhiteBalance
 ///                  _string_,
-///     Returns the white balance mode set when the selected picture was taken.
-///     The possible values are "Manual" and "Auto". This is the value of the
-///     EXIF WhiteBalance tag (hex code 0xA403).
+///     @return The white balance mode set when the selected picture was taken.
+///     The possible values are:
+///       - <b>"Manual"</b>
+///       - <b>"Auto"</b>
+///     @note This is the value of the EXIF WhiteBalance tag (hex code 0xA403).
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link ListItem_PictureWhiteBalance `ListItem.PictureWhiteBalance`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.FileName`</b>,
 ///                  \anchor ListItem_FileName
 ///                  _string_,
-///     Returns the filename of the currently selected song or movie in a container
+///     @return The filename of the currently selected song or movie in a container.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Path`</b>,
 ///                  \anchor ListItem_Path
 ///                  _string_,
-///     Returns the complete path of the currently selected song or movie in a
-///     container
+///     @return The complete path of the currently selected song or movie in a
+///     container.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.FolderName`</b>,
 ///                  \anchor ListItem_FolderName
 ///                  _string_,
-///     Returns top most folder of the path of the currently selected song or
-///     movie in a container
+///     @return The top most folder of the path of the currently selected song or
+///     movie in a container.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.FolderPath`</b>,
 ///                  \anchor ListItem_FolderPath
 ///                  _string_,
-///     Returns the complete path of the currently selected song or movie in a
+///     @return The complete path of the currently selected song or movie in a
 ///     container (without user details).
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.FileNameAndPath`</b>,
 ///                  \anchor ListItem_FileNameAndPath
 ///                  _string_,
-///     Returns the full path with filename of the currently selected song or
-///     movie in a container
+///     @return The full path with filename of the currently selected song or
+///     movie in a container.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.FileExtension`</b>,
 ///                  \anchor ListItem_FileExtension
 ///                  _string_,
-///     Returns the file extension (without leading dot) of the currently selected
-///     item in a container
+///     @return The file extension (without leading dot) of the currently selected
+///     item in a container.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Date`</b>,
 ///                  \anchor ListItem_Date
 ///                  _string_,
-///     Returns the file date of the currently selected song or movie in a
+///     @return The file date of the currently selected song or movie in a
 ///     container / Aired date of an episode / Day\, start time and end time of
-///     current selected TV programme (PVR)
+///     current selected TV programme (PVR).
+///     <p>
+///   }
+///   \table_row3{   <b>`ListItem.DateTime`</b>,
+///                  \anchor ListItem_DateTime
+///                  _string_,
+///     @return The date and time a certain event happened (event log).
+///     <p><hr>
+///     @skinning_v16 **[New Infolabel]** \link ListItem_DateTime `ListItem.DateTime`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.DateAdded`</b>,
 ///                  \anchor ListItem_DateAdded
 ///                  _string_,
-///     Returns the date the currently selected item was added to the
+///     @return The date the currently selected item was added to the
 ///     library / Date and time of an event in the EventLog window.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Size`</b>,
 ///                  \anchor ListItem_Size
 ///                  _string_,
-///     Returns the file size of the currently selected song or movie in a
-///     container
+///     @return The file size of the currently selected song or movie in a
+///     container.
+///     <p>
 ///   }
-///   \table_row3{   <b>`ListItem.Rating`</b>,
+///   \table_row3{   <b>`ListItem.Rating([name])`</b>,
 ///                  \anchor ListItem_Rating
 ///                  _string_,
-///     Returns the scraped rating of the currently selected movie in a container
+///     @return The scraped rating of the currently selected item in a container (1-10). 
+///     @param name - [opt] you can specify the name of the scraper to retrieve a specific rating\, 
+///     for use in dialogvideoinfo.xml.
+///     <p><hr>
+///     @skinning_v18 **[Infolabel Updated]** \link ListItem_Rating `ListItem.Rating([name])`\endlink replaces
+///     the old `ListItem.Ratings([name])` infolabel.
+///     @skinning_v17 **[New Infolabel]** \link ListItem_Rating `ListItem.Ratings([name])`\endlink
+///     @skinning_v17 **[Infolabel Updated]** \link ListItem_Rating `ListItem.Ratings`\endlink
+///     for songs it's now the scraped rating.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Set`</b>,
 ///                  \anchor ListItem_Set
 ///                  _string_,
-///     Returns the name of the set the movie is part of
+///     @return The name of the set the movie is part of.
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link ListItem_Set `ListItem.Set`\endlink
+///     <p>  
 ///   }
 ///   \table_row3{   <b>`ListItem.SetId`</b>,
 ///                  \anchor ListItem_SetId
 ///                  _string_,
-///     Returns the id of the set the movie is part of
+///     @return The id of the set the movie is part of.
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link ListItem_SetId `ListItem.SetId`\endlink
+///     <p>  
+///   }
+///   \table_row3{   <b>`ListItem.Status`</b>,
+///                  \anchor ListItem_Status
+///                  _string_,
+///     @return One of the following status:
+///       - <b>"returning series"</b>
+///       - <b>"in production"</b>
+///       - <b>"planned"</b>
+///       - <b>"cancelled"</b>
+///       - <b>"ended"</b>
+///     <p>
+///     @note For use with tv shows.
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link ListItem_Status `ListItem.Status`\endlink
+///     <p>  
+///   }
+///   \table_row3{   <b>`ListItem.EndTimeResume`</b>,
+///                  \anchor ListItem_EndTimeResume
+///                  _string_,
+///     @return Returns the time a video will end if you resume it\, instead of playing it from the beginning.
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link ListItem_EndTimeResume `ListItem.EndTimeResume`\endlink
+///     <p>  
 ///   }
 ///   \table_row3{   <b>`ListItem.UserRating`</b>,
 ///                  \anchor ListItem_UserRating
 ///                  _string_,
-///     Returns the user rating of the currently selected item in a container
+///     @return The user rating of the currently selected item in a container (1-10).
+///     <p><hr>
+///     @skinning_v17 **[Infolabel Updated]** \link ListItem_UserRating `ListItem.UserRating`\endlink
+///     now available for albums/songs.
+///     @skinning_v16 **[New Infolabel]** \link ListItem_UserRating `ListItem.UserRating`\endlink
+///     <p>
 ///   }
-///   \table_row3{   <b>`ListItem.Votes`</b>,
+///   \table_row3{   <b>`ListItem.Votes([name])`</b>,
 ///                  \anchor ListItem_Votes
 ///                  _string_,
-///     Returns the scraped votes of the currently selected movie in a container
+///     @return The scraped votes of the currently selected movie in a container.
+///     @param name - [opt] you can specify the name of the scraper to retrieve specific votes\,
+///     for use in `dialogvideoinfo.xml`.
+///     <p><hr>
+///     @skinning_v17 **[Infolabel Updated]** \link ListItem_Votes `ListItem.Votes([name])`\endlink
+///     add optional param <b>name</b> to specify the scrapper.
+///     @skinning_v13 **[New Infolabel]** \link ListItem_Votes `ListItem.Votes`\endlink
+///     <p>  
 ///   }
-///   \table_row3{   <b>`ListItem.RatingAndVotes`</b>,
+///   \table_row3{   <b>`ListItem.RatingAndVotes([name])`</b>,
 ///                  \anchor ListItem_RatingAndVotes
 ///                  _string_,
-///     Returns the scraped rating and votes of the currently selected movie in a
-///     container
+///     @return The scraped rating and votes of the currently selected movie in a
+///     container (1-10).
+///     @param name - [opt] you can specify the name of the scraper to retrieve specific votes\,
+///     for use in `dialogvideoinfo.xml`.
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link ListItem_RatingAndVotes `ListItem.RatingAndVotes([name])`\endlink
+///     @skinning_v17 **[Infolabel Updated]** \link ListItem_RatingAndVotes `ListItem.RatingAndVotes`\endlink
+///     now available for albums/songs.
+///     <p>  
 ///   }
 ///   \table_row3{   <b>`ListItem.Mood`</b>,
 ///                  \anchor ListItem_Mood
 ///                  _string_,
-///     Mood of the selected song
+///     @return The mood of the selected song.
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link ListItem_Mood `ListItem.Mood`\endlink
+///     <p>  
 ///   }
 ///   \table_row3{   <b>`ListItem.Mpaa`</b>,
 ///                  \anchor ListItem_Mpaa
 ///                  _string_,
-///     Show the MPAA rating of the currently selected movie in a container
+///     @return The MPAA rating of the currently selected movie in a container.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.ProgramCount`</b>,
 ///                  \anchor ListItem_ProgramCount
 ///                  _string_,
-///     Returns the number of times an xbe has been run from "my programs"
+///     @return The number of times an xbe has been run from "my programs".
+///     @todo description might be outdated
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Duration`</b>,
 ///                  \anchor ListItem_Duration
 ///                  _string_,
-///     Returns the duration of the currently selected item in a container
-///     in the format hh:mm:ss. hh: will be omitted if hours value is zero.
+///     @return The duration of the currently selected item in a container
+///     in the format <b>hh:mm:ss</b>.
+///     @note <b>hh:</b> will be omitted if hours value is zero.
+///     <p><hr>
+///     @skinning_v18 **[Infolabel Updated]** \link ListItem_Duration `ListItem.Duration`\endlink will
+///     return <b>hh:mm:ss</b> instead of the duration in minutes.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Duration(format)`</b>,
-///                  \anchor ListItem.Duration_format
+///                  \anchor ListItem_Duration_format
 ///                  _string_,
-///     Returns the duration of the currently selected item in a container in
-///     different formats: hours (hh)\, minutes (mm) or seconds (ss).
-///     Also supported: (hh:mm)\, (mm:ss)\, (hh:mm:ss)\, (h:mm:ss).
-///     Added with Leia: (secs)\, (mins)\, (hours) for total time values and (m).
-///     Example: 3661 seconds => h=1\, hh=01\, m=1\, mm=01\, ss=01\, hours=1\, mins=61\, secs=3661
+///     @return The duration of the currently selected item in a container in
+///     different formats.
+///     @param format [opt] The format of the return time value.
+///     See \ref TIME_FORMAT for the list of possible values.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.DBTYPE`</b>,
 ///                  \anchor ListItem_DBTYPE
 ///                  _string_,
-///     Returns the database type of the ListItem.DBID for videos (movie\, set\,
+///     @return The database type of the \ref ListItem_DBID "ListItem.DBID" for videos (movie\, set\,
 ///     genre\, actor\, tvshow\, season\, episode). It does not return any value
-///     for the music library. Beware with season\, the "*all seasons" entry does
+///     for the music library. 
+///     @note Beware with season\, the "*all seasons" entry does
 ///     give a DBTYPE "season" and a DBID\, but you can't get the details of that
 ///     entry since it's a virtual entry in the Video Library.
+///     <p><hr>
+///     @skinning_v17 **[Infolabel Updated]** \link ListItem_DBTYPE `ListItem.DBTYPE`\endlink
+///     now available in the music library.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.DBID`</b>,
 ///                  \anchor ListItem_DBID
 ///                  _string_,
-///     Returns the database id of the currently selected listitem in a container
+///     @return The database id of the currently selected listitem in a container.
+///     <p>
+///   }
+///   \table_row3{   <b>`ListItem.Appearances`</b>,
+///                  \anchor ListItem_Appearances
+///                  _string_,
+///     @return The number of movies featuring the selected actor / directed by the selected director.
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link ListItem_Appearances `ListItem.Appearances`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Cast`</b>,
 ///                  \anchor ListItem_Cast
 ///                  _string_,
-///     Returns a concatenated string of cast members of the currently selected
-///     movie\, for use in dialogvideoinfo.xml
+///     @return A concatenated string of cast members of the currently selected
+///     movie\, for use in dialogvideoinfo.xml.
+///     <p><hr>
+///     @skinning_v15 **[Infolabel Updated]** \link ListItem_Cast `ListItem.Cast`\endlink
+///     also supports EPG.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.CastAndRole`</b>,
 ///                  \anchor ListItem_CastAndRole
 ///                  _string_,
-///     Returns a concatenated string of cast members and roles of the currently
-///     selected movie\, for use in dialogvideoinfo.xml
+///     @return A concatenated string of cast members and roles of the currently
+///     selected movie\, for use in dialogvideoinfo.xml.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Studio`</b>,
 ///                  \anchor ListItem_Studio
 ///                  _string_,
-///     Studio of current selected Music Video in a container
+///     @return The studio of current selected Music Video in a container.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Top250`</b>,
 ///                  \anchor ListItem_Top250
 ///                  _string_,
-///     Returns the IMDb top250 position of the currently selected listitem in a
+///     @return The IMDb top250 position of the currently selected listitem in a
 ///     container.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Trailer`</b>,
 ///                  \anchor ListItem_Trailer
 ///                  _string_,
-///     Returns the full trailer path with filename of the currently selected
-///     movie in a container
+///     @return The full trailer path with filename of the currently selected
+///     movie in a container.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Writer`</b>,
 ///                  \anchor ListItem_Writer
 ///                  _string_,
-///     Name of Writer of current Video in a container
+///     @return The name of Writer of current Video in a container.
+///     <p><hr>
+///     @skinning_v15 **[Infolabel Updated]** \link ListItem_Writer `ListItem.Writer`\endlink
+///     also supports EPG.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Tag`</b>,
 ///                  \anchor ListItem_Tag
 ///                  _string_,
-///     Summary of current Video in a container
+///     @return The summary of current Video in a container.
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link ListItem_Tag `ListItem.Tag`\endlink
+///     <p>  
 ///   }
 ///   \table_row3{   <b>`ListItem.Tagline`</b>,
 ///                  \anchor ListItem_Tagline
 ///                  _string_,
-///     Small Summary of current Video in a container
+///     @return A Small Summary of current Video in a container.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.PlotOutline`</b>,
 ///                  \anchor ListItem_PlotOutline
 ///                  _string_,
-///     Small Summary of current Video in a container
+///     @return A small Summary of current Video in a container.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Plot`</b>,
 ///                  \anchor ListItem_Plot
 ///                  _string_,
-///     Complete Text Summary of Video in a container
+///     @return The complete Text Summary of Video in a container.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.IMDBNumber`</b>,
 ///                  \anchor ListItem_IMDBNumber
 ///                  _string_,
-///     The IMDb ID of the selected Video in a container
+///     @return The IMDb ID of the selected Video in a container.
+///     <p><hr>
+///     @skinning_v15 **[New Infolabel]** \link ListItem_IMDBNumber `ListItem.IMDBNumber`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.EpisodeName`</b>,
 ///                  \anchor ListItem_EpisodeName
 ///                  _string_,
-///     (PVR only) The name of the episode if the selected EPG item is a TV Show
+///     @return The name of the episode if the selected EPG item is a TV Show (PVR).
+///     <p><hr>
+///     @skinning_v15 **[New Infolabel]** \link ListItem_EpisodeName `ListItem.EpisodeName`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.PercentPlayed`</b>,
 ///                  \anchor ListItem_PercentPlayed
 ///                  _string_,
-///     Returns percentage value [0-100] of how far the selected video has been
-///     played
+///     @return The percentage value [0-100] of how far the selected video has been
+///     played.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.LastPlayed`</b>,
 ///                  \anchor ListItem_LastPlayed
 ///                  _string_,
-///     Last play date of Video in a container
+///     @return The last play date of Video in a container.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.PlayCount`</b>,
 ///                  \anchor ListItem_PlayCount
 ///                  _string_,
-///     Playcount of Video in a container
+///     @return The playcount of Video in a container.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.ChannelName`</b>,
 ///                  \anchor ListItem_ChannelName
 ///                  _string_,
-///     Name of current selected TV channel in a container
+///     @return The name of current selected TV channel in a container.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.VideoCodec`</b>,
 ///                  \anchor ListItem_VideoCodec
 ///                  _string_,
-///     Returns the video codec of the currently selected video (common values:
-///     3iv2\, avc1\, div2\, div3\, divx\, divx 4\, dx50\, flv\, h264\, microsoft\, mp42\,
-///     mp43\, mp4v\, mpeg1video\, mpeg2video\, mpg4\, rv40\, svq1\, svq3\,
-///     theora\, vp6f\, wmv2\, wmv3\, wvc1\, xvid)
+///     @return The video codec of the currently selected video. Common values:
+///      - <b>3iv2</b>
+///      - <b>avc1</b>
+///      - <b>div2</b>
+///      - <b>div3</b>
+///      - <b>divx</b>
+///      - <b>divx 4</b>
+///      - <b>dx50</b>
+///      - <b>flv</b>
+///      - <b>h264</b>
+///      - <b>microsoft</b>
+///      - <b>mp42</b>
+///      - <b>mp43</b>
+///      - <b>mp4v</b>
+///      - <b>mpeg1video</b>
+///      - <b>mpeg2video</b>
+///      - <b>mpg4</b>
+///      - <b>rv40</b>
+///      - <b>svq1</b>
+///      - <b>svq3</b>
+///      - <b>theora</b>
+///      - <b>vp6f</b>
+///      - <b>wmv2</b>
+///      - <b>wmv3</b>
+///      - <b>wvc1</b>
+///      - <b>xvid</b>
+///      - etc
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.VideoResolution`</b>,
 ///                  \anchor ListItem_VideoResolution
 ///                  _string_,
-///     Returns the resolution of the currently selected video (possible values:
-///     480\, 576\, 540\, 720\, 1080\, 4K). Note that 540 usually means a widescreen
+///     @return The resolution of the currently selected video. Possible values:
+///       - <b>480</b> 
+///       - <b>576</b>
+///       - <b>540</b>
+///       - <b>720</b>
+///       - <b>1080</b>
+///       - <b>4K</b>
+///       - <b>8K</b>
+///     @note 540 usually means a widescreen
 ///     format (around 960x540) while 576 means PAL resolutions (normally
 ///     720x576)\, therefore 540 is actually better resolution than 576.
+///     <p><hr>
+///     @skinning_v18 **[Updated Infolabel]** \link ListItem_VideoResolution ListItem.VideoResolution\endlink
+///     added <b>8K</b> as a possible value.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.VideoAspect`</b>,
 ///                  \anchor ListItem_VideoAspect
 ///                  _string_,
-///     Returns the aspect ratio of the currently selected video (possible values:
-///     1.33\, 1.37\, 1.66\, 1.78\, 1.85\, 2.20\, 2.35\, 2.40\, 2.55\, 2.76)
+///     @return The aspect ratio of the currently selected video. Possible values:
+///      - <b>1.33</b>
+///      - <b>1.37</b>
+///      - <b>1.66</b>
+///      - <b>1.78</b>
+///      - <b>1.85</b>
+///      - <b>2.20</b>
+///      - <b>2.35</b>
+///      - <b>2.40</b>
+///      - <b>2.55</b>
+///      - <b>2.76</b>
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.AudioCodec`</b>,
 ///                  \anchor ListItem_AudioCodec
 ///                  _string_,
-///     Returns the audio codec of the currently selected video (common values:
-///     aac\, ac3\, cook\, dca\, dtshd_hra\, dtshd_ma\, eac3\, mp1\, mp2\, mp3\, pcm_s16be\, pcm_s16le\, pcm_u8\, truehd\, vorbis\, wmapro\, wmav2)
+///     @return The audio codec of the currently selected video. Common values:
+///       - <b>aac</b>
+///       - <b>ac3</b>
+///       - <b>cook</b>
+///       - <b>dca</b>
+///       - <b>dtshd_hra</b>
+///       - <b>dtshd_ma</b>
+///       - <b>eac3</b>
+///       - <b>mp1</b>
+///       - <b>mp2</b>
+///       - <b>mp3</b>
+///       - <b>pcm_s16be</b>
+///       - <b>pcm_s16le</b>
+///       - <b>pcm_u8</b>
+///       - <b>truehd</b>
+///       - <b>vorbis</b>
+///       - <b>wmapro</b>
+///       - <b>wmav2</b>
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.AudioChannels`</b>,
 ///                  \anchor ListItem_AudioChannels
 ///                  _string_,
-///     Returns the number of audio channels of the currently selected video
-///     (possible values: 1\, 2\, 4\, 5\, 6\, 8\, 10)
+///     @return The number of audio channels of the currently selected video. Possible values:
+///       - <b>1</b>
+///       - <b>2</b>
+///       - <b>4</b>
+///       - <b>5</b>
+///       - <b>6</b>
+///       - <b>8</b>
+///       - <b>10</b>
+///     <p><hr>
+///     @skinning_v16 **[Infolabel Updated]** \link ListItem_AudioChannels `ListItem.AudioChannels`\endlink
+///     if a video contains no audio\, these infolabels will now return empty.
+///     (they used to return 0)
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.AudioLanguage`</b>,
 ///                  \anchor ListItem_AudioLanguage
 ///                  _string_,
-///     Returns the audio language of the currently selected video (returns an
-///     ISO 639-2 three character code\, e.g. eng\, epo\, deu)
+///     @return The audio language of the currently selected video (an
+///     ISO 639-2 three character code: e.g. eng\, epo\, deu)
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.SubtitleLanguage`</b>,
 ///                  \anchor ListItem_SubtitleLanguage
 ///                  _string_,
-///     Returns the subtitle language of the currently selected video (returns an
-///     ISO 639-2 three character code\, e.g. eng\, epo\, deu)
+///     @return The subtitle language of the currently selected video (an
+///     ISO 639-2 three character code: e.g. eng\, epo\, deu)
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Property(AudioCodec.[n])`</b>,
 ///                  \anchor ListItem_Property_AudioCodec
 ///                  _string_,
-///     Returns the audio codec of the currently selected video\, 'n' defines the
-///     number of the audiostream (values: see \ref ListItem_AudioCodec "ListItem.AudioCodec")
+///     @return The audio codec of the currently selected video
+///     @param n - the number of the audiostream (values: see \ref ListItem_AudioCodec "ListItem.AudioCodec")
+///     <p><hr>
+///     @skinning_v16 **[New Infolabel]** \link ListItem_Property_AudioCodec `ListItem.Property(AudioCodec.[n])`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Property(AudioChannels.[n])`</b>,
 ///                  \anchor ListItem_Property_AudioChannels
 ///                  _string_,
-///     Returns the number of audio channels of the currently selected video\, 'n'
-///     defines the number of the audiostream (values: see
+///     @return The number of audio channels of the currently selected video
+///     @param n - the number of the audiostream (values: see
 ///     \ref ListItem_AudioChannels "ListItem.AudioChannels")
+///     <p><hr>
+///     @skinning_v16 **[New Infolabel]** \link ListItem_Property_AudioChannels `ListItem.Property(AudioChannels.[n])`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Property(AudioLanguage.[n])`</b>,
 ///                  \anchor ListItem_Property_AudioLanguage
 ///                  _string_,
-///     Returns the audio language of the currently selected video\, 'n' defines
-///     the number of the audiostream (values: see \ref ListItem_AudioLanguage "ListItem.AudioLanguage")
+///     @return The audio language of the currently selected video
+///     @param n - the number of the audiostream (values: see \ref ListItem_AudioLanguage "ListItem.AudioLanguage")
+///     <p><hr>
+///     @skinning_v16 **[New Infolabel]** \link ListItem_Property_AudioLanguage `ListItem.Property(AudioLanguage.[n])`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Property(SubtitleLanguage.[n])`</b>,
 ///                  \anchor ListItem_Property_SubtitleLanguage
 ///                  _string_,
-///     Returns the subtitle language of the currently selected video\, 'n' defines
-///     the number of the subtitle (values: see \ref ListItem_SubtitleLanguage "ListItem.SubtitleLanguage")
-///   }
-///   \table_row3{   <b>`ListItem.Property(Addon.Name)`</b>,
-///                  \anchor ListItem_Property_AddonName
-///                  _string_,
-///     Returns the name of the currently selected addon
-///   }
-///   \table_row3{   <b>`ListItem.Property(Addon.Version)`</b>,
-///                  \anchor ListItem_Property_AddonVersion
-///                  _string_,
-///     Returns the version of the currently selected addon
-///   }
-///   \table_row3{   <b>`ListItem.Property(Addon.Summary)`</b>,
-///                  \anchor ListItem_Property_AddonSummary
-///                  _string_,
-///     Returns a short description of the currently selected addon
-///   }
-///   \table_row3{   <b>`ListItem.Property(Addon.Description)`</b>,
-///                  \anchor ListItem_Property_AddonDescription
-///                  _string_,
-///     Returns the full description of the currently selected addon
-///   }
-///   \table_row3{   <b>`ListItem.Property(Addon.Type)`</b>,
-///                  \anchor ListItem_Property_AddonType
-///                  _string_,
-///     Returns the type (screensaver\, script\, skin\, etc...) of the currently
-///     selected addon
-///   }
-///   \table_row3{   <b>`ListItem.Property(Addon.Creator)`</b>,
-///                  \anchor ListItem_Property_AddonCreator
-///                  _string_,
-///     Returns the name of the author the currently selected addon
+///     @return The subtitle language of the currently selected video 
+///     @param n - the number of the subtitle (values: see \ref ListItem_SubtitleLanguage "ListItem.SubtitleLanguage")
+///     <p><hr>
+///     @skinning_v16 **[New Infolabel]** \link ListItem_Property_SubtitleLanguage `ListItem.Property(SubtitleLanguage.[n])`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Property(Addon.Disclaimer)`</b>,
 ///                  \anchor ListItem_Property_AddonDisclaimer
 ///                  _string_,
-///     Returns the disclaimer of the currently selected addon
+///     @return The disclaimer of the currently selected addon.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Property(Addon.Changelog)`</b>,
 ///                  \anchor ListItem_Property_AddonChangelog
 ///                  _string_,
-///     Returns the changelog of the currently selected addon
+///     @return The changelog of the currently selected addon.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Property(Addon.ID)`</b>,
 ///                  \anchor ListItem_Property_AddonID
 ///                  _string_,
-///     Returns the identifier of the currently selected addon
+///     @return The identifier of the currently selected addon.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Property(Addon.Status)`</b>,
 ///                  \anchor ListItem_Property_AddonStatus
 ///                  _string_,
-///     Returns the status of the currently selected addon
+///     @return The status of the currently selected addon.
+///     @todo missing reference in GuiInfoManager.cpp making it hard to track.
+///     <p>
 ///   }
-///   \table_row3{   <b>`ListItem.Property(Addon.Broken)`</b>,
-///                  \anchor ListItem_Property_AddonBroken
-///                  _string_,
-///     Returns a message when the addon is marked as broken in the repo
+///   \table_row3{   <b>`ListItem.Property(Addon.Orphaned)`</b>,
+///                  \anchor ListItem_Property_AddonOrphaned
+///                  _boolean_,
+///     @return **True** if the Addon is orphanad.
+///     @todo missing reference in GuiInfoManager.cpp making it hard to track.
+///     <p><hr>
+///     @skinning_v17 **[New Boolean Condition]** \link ListItem_Property_AddonOrphaned `ListItem.Property(Addon.Orphaned)`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Property(Addon.Path)`</b>,
 ///                  \anchor ListItem_Property_AddonPath
 ///                  _string_,
-///     Returns the path of the currently selected addon
+///     @return The path of the currently selected addon.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.StartTime`</b>,
 ///                  \anchor ListItem_StartTime
 ///                  _string_,
-///     Start time of current selected TV programme in a container
+///     @return The start time of current selected TV programme in a container.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.EndTime`</b>,
 ///                  \anchor ListItem_EndTime
 ///                  _string_,
-///     End time of current selected TV programme in a container
+///     @return The end time of current selected TV programme in a container.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.StartDate`</b>,
 ///                  \anchor ListItem_StartDate
 ///                  _string_,
-///     Start date of current selected TV programme in a container
+///     @return The start date of current selected TV programme in a container.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.EndDate`</b>,
 ///                  \anchor ListItem_EndDate
 ///                  _string_,
-///     End date of current selected TV programme in a container
+///     @return The end date of current selected TV programme in a container.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.NextTitle`</b>,
 ///                  \anchor ListItem_NextTitle
 ///                  _string_,
-///     Title of the next item (PVR).
+///     @return The title of the next item (PVR).
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.NextGenre`</b>,
 ///                  \anchor ListItem_NextGenre
 ///                  _string_,
-///     Genre of the next item (PVR).
+///     @return The genre of the next item (PVR).
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.NextPlot`</b>,
 ///                  \anchor ListItem_NextPlot
 ///                  _string_,
-///     Plot of the next item (PVR).
+///     @return The plot of the next item (PVR).
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.NextPlotOutline`</b>,
 ///                  \anchor ListItem_NextPlotOutline
 ///                  _string_,
-///     Plot outline of the next item (PVR).
+///     @return The plot outline of the next item (PVR).
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.NextStartTime`</b>,
 ///                  \anchor ListItem_NextStartTime
 ///                  _string_,
-///     Start time of the next item (PVR).
+///     @return The start time of the next item (PVR).
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.NextEndTime`</b>,
 ///                  \anchor ListItem_NextEndTime
 ///                  _string_,
-///     End of the next item (PVR).
+///     @return The end of the next item (PVR).
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.NextStartDate`</b>,
 ///                  \anchor ListItem_NextStartDate
 ///                  _string_,
-///     Start date of the next item (PVR).
+///     @return The start date of the next item (PVR).
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.NextEndDate`</b>,
 ///                  \anchor ListItem_NextEndDate
 ///                  _string_,
-///     End date of the next item (PVR).
+///     @return The end date of the next item (PVR).
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.ChannelGroup`</b>,
 ///                  \anchor ListItem_ChannelGroup
 ///                  _string_,
-///     Channel group of the selected item (PVR).
+///     @return The channel group of the selected item (PVR).
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.ChannelNumberLabel`</b>,
 ///                  \anchor ListItem_ChannelNumberLabel
 ///                  _string_,
-///     Channel and subchannel number of the currently selected channel that's
+///     @return The channel and subchannel number of the currently selected channel that's
 ///     currently playing (PVR).
+///     <p><hr>
+///     @skinning_v14 **[New Infolabel]** \link ListItem_ChannelNumberLabel `ListItem.ChannelNumberLabel`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Progress`</b>,
 ///                  \anchor ListItem_Progress
 ///                  _string_,
-///     Part of the programme that's been played (PVR).
+///     @return The part of the programme that's been played (PVR).
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.StereoscopicMode`</b>,
 ///                  \anchor ListItem_StereoscopicMode
 ///                  _string_,
-///     Returns the stereomode of the selected video (i.e. mono\,
-///     split_vertical\, split_horizontal\, row_interleaved\,
-///     anaglyph_cyan_red\, anaglyph_green_magenta)
+///     @return The stereomode of the selected video:
+///       - <b>mono</b>
+///       - <b>split_vertical</b>
+///       - <b>split_horizontal</b>
+///       - <b>row_interleaved</b>
+///       - <b>anaglyph_cyan_red</b>
+///       - <b>anaglyph_green_magenta</b>
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link ListItem_StereoscopicMode `ListItem.StereoscopicMode`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.HasTimerSchedule`</b>,
 ///                  \anchor ListItem_HasTimerSchedule
 ///                  _boolean_,
-///     Whether the item was scheduled by a timer rule (PVR). (v16 addition)
+///     @return **True** if the item was scheduled by a timer rule (PVR).
+///     <p><hr>
+///     @skinning_v16 **[New Boolean Condition]** \ref ListItem_HasTimerSchedule "ListItem.HasTimerSchedule"
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.HasRecording`</b>,
 ///                  \anchor ListItem_HasRecording
 ///                  _boolean_,
-///     Returns true if a given epg tag item currently gets recorded or has been recorded
+///     @return **True** if a given epg tag item currently gets recorded or has been recorded.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.TimerHasError`</b>,
 ///                  \anchor ListItem_TimerHasError
 ///                  _boolean_,
-///     Whether the item has a timer and it won't be recorded because of an error (PVR). (v17 addition)
+///     @return **True** if the item has a timer and it won't be recorded because of an error (PVR).
+///     <p><hr>
+///     @skinning_v17 **[New Boolean Condition]** \ref ListItem_TimerHasError "ListItem.TimerHasError"
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.TimerHasConflict`</b>,
 ///                  \anchor ListItem_TimerHasConflict
 ///                  _boolean_,
-///     Whether the item has a timer and it won't be recorded because of a conflict (PVR). (v17 addition)
+///     @return **True** if the item has a timer and it won't be recorded because of a conflict (PVR).
+///     <p><hr>
+///     @skinning_v17 **[New Boolean Condition]** \ref ListItem_TimerHasConflict "ListItem.TimerHasConflict"
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.TimerIsActive`</b>,
 ///                  \anchor ListItem_TimerIsActive
 ///                  _boolean_,
-///     Whether the item has a timer that will be recorded\, i.e. the timer is enabled (PVR). (v17 addition)
+///     @return **True** if the item has a timer that will be recorded\, i.e. the timer is enabled (PVR).
+///     <p><hr>
+///     @skinning_v17 **[New Boolean Condition]** \ref ListItem_TimerIsActive "ListItem.TimerIsActive"
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Comment`</b>,
 ///                  \anchor ListItem_Comment
 ///                  _string_,
-///     Comment assigned to the item (PVR/MUSIC).
+///     @return The comment assigned to the item (PVR/MUSIC).
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.TimerType`</b>,
 ///                  \anchor ListItem_TimerType
 ///                  _string_,
-///     Returns the type of the PVR timer / timer rule item as a human readable string
+///     @return The type of the PVR timer / timer rule item as a human readable string.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.EpgEventTitle`</b>,
 ///                  \anchor ListItem_EpgEventTitle
 ///                  _string_,
-///     Returns the title of the epg event associated with the item\, if any
+///     @return The title of the epg event associated with the item\, if any.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.EpgEventIcon`</b>,
 ///                  \anchor ListItem_EpgEventIcon
 ///                  _string_,
-///     Returns the thumbnail for the epg event associated with the item (if it exists)
+///     @return The thumbnail for the EPG event associated with the item (if it exists).
+///     <p><hr>
+///     @skinning_v18 **[New Infolabel]** \link ListItem_EpgEventIcon `ListItem.EpgEventIcon`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.InProgress`</b>,
 ///                  \anchor ListItem_InProgress
 ///                  _boolean_,
-///     Returns true if the epg event item is currently active (time-wise)
+///     @return **True** if the EPG event item is currently active (time-wise).
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.IsParentFolder`</b>,
 ///                  \anchor ListItem_IsParentFolder
 ///                  _boolean_,
-///     Returns true if the current list item is the goto parent folder '..'
+///     @return **True** if the current list item is the goto parent folder '..'.
+///     <p><hr>
+///     @skinning_v17 **[New Boolean Condition]** \link ListItem_IsParentFolder `ListItem.IsParentFolder`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.AddonName`</b>,
 ///                  \anchor ListItem_AddonName
 ///                  _string_,
-///     Returns the name of the currently selected addon
+///     @return The name of the currently selected addon.
+///     <p><hr>
+///     @skinning_v17 **[Infolabel Updated]** \link ListItem_AddonName `ListItem.AddonName`\endlink
+///     replaces `ListItem.Property(Addon.Name)`.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.AddonVersion`</b>,
 ///                  \anchor ListItem_AddonVersion
 ///                  _string_,
-///     Returns the version of the currently selected addon
+///     @return The version of the currently selected addon.
+///     <p><hr>
+///     @skinning_v17 **[Infolabel Updated]** \link ListItem_AddonVersion `ListItem.AddonVersion`\endlink
+///     replaces `ListItem.Property(Addon.Version)`.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.AddonCreator`</b>,
 ///                  \anchor ListItem_AddonCreator
 ///                  _string_,
-///     Returns the name of the author the currently selected addon
+///     @return The name of the author the currently selected addon.
+///     <p><hr>
+///     @skinning_v17 **[Infolabel Updated]** \link ListItem_AddonCreator `ListItem.AddonCreator`\endlink
+///     replaces `ListItem.Property(Addon.Creator)`.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.AddonSummary`</b>,
 ///                  \anchor ListItem_AddonSummary
 ///                  _string_,
-///     Returns a short description of the currently selected addon
+///     @return A short description of the currently selected addon.
+///     <p><hr>
+///     @skinning_v17 **[Infolabel Updated]** \link ListItem_AddonSummary `ListItem.AddonSummary`\endlink
+///     replaces `ListItem.Property(Addon.Summary)`.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.AddonDescription`</b>,
 ///                  \anchor ListItem_AddonDescription
 ///                  _string_,
-///     Returns the full description of the currently selected addon
+///     @return The full description of the currently selected addon.
+///     <p><hr>
+///     @skinning_v17 **[Infolabel Updated]** \link ListItem_AddonDescription `ListItem.AddonDescription`\endlink
+///     replaces `ListItem.Property(Addon.Description)`.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.AddonDisclaimer`</b>,
 ///                  \anchor ListItem_AddonDisclaimer
 ///                  _string_,
-///     Returns the disclaimer of the currently selected addon
+///     @return The disclaimer of the currently selected addon.
+///     <p><hr>
+///     @skinning_v17 **[Infolabel Updated]** \link ListItem_AddonDisclaimer `ListItem.AddonDisclaimer`\endlink
+///     replaces `ListItem.Property(Addon.Disclaimer)`.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.AddonBroken`</b>,
 ///                  \anchor ListItem_AddonBroken
 ///                  _string_,
-///     Returns a message when the addon is marked as broken in the repo
+///     @return A message when the addon is marked as broken in the repo.
+///     <p><hr>
+///     @skinning_v17 **[Infolabel Updated]** \link ListItem_AddonBroken `ListItem.AddonBroken`\endlink
+///     replaces `ListItem.Property(Addon.Broken)`.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.AddonType`</b>,
 ///                  \anchor ListItem_AddonType
 ///                  _string_,
-///     Returns the type (screensaver\, script\, skin\, etc...) of the currently selected addon
+///     @return The type (screensaver\, script\, skin\, etc...) of the currently selected addon.
+///     <p><hr>
+///     @skinning_v17 **[Infolabel Updated]** \link ListItem_AddonType `ListItem.AddonType`\endlink
+///     replaces `ListItem.Property(Addon.Type)`.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.AddonInstallDate`</b>,
 ///                  \anchor ListItem_AddonInstallDate
 ///                  _string_,
-///     Returns the date the addon was installed
+///     @return The date the addon was installed.
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link ListItem_AddonInstallDate `ListItem.AddonInstallDate`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.AddonLastUpdated`</b>,
 ///                  \anchor ListItem_AddonLastUpdated
 ///                  _string_,
-///     Returns the date the addon was last updated
+///     @return The date the addon was last updated.
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link ListItem_AddonLastUpdated `ListItem.AddonLastUpdated`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.AddonLastUsed`</b>,
 ///                  \anchor ListItem_AddonLastUsed
 ///                  _string_,
-///     Returns the date the addon was used last
+///     @return The date the addon was used last.
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link ListItem_AddonLastUsed `ListItem.AddonLastUsed`\endlink
+///     <p>
 ///   }
-//    \table_row3{   <b>`ListItem.AddonOrigin`</b>,
+///   \table_row3{   <b>`ListItem.AddonNews`</b>,
+///                  \anchor ListItem_AddonNews
+///                  _string_,
+///     @return A brief changelog\, taken from the addons' `addon.xml` file.
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link ListItem_AddonNews `ListItem.AddonNews`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`ListItem.AddonSize`</b>,
+///                  \anchor ListItem_AddonSize
+///                  _string_,
+///     @return The filesize of the addon.
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link ListItem_AddonSize `ListItem.AddonSize`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`ListItem.AddonOrigin`</b>,
 ///                  \anchor ListItem_AddonOrigin
 ///                  _string_,
-///     Name of the repository the add-on originates from.
+///     @return The name of the repository the add-on originates from.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.ExpirationDate`</b>,
 ///                  \anchor ListItem_ExpirationDate
 ///                  _string_,
-///     Expiration date of the selected item in a container\, empty string if not supported
+///     @return The expiration date of the selected item in a container\, empty string if not supported.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.ExpirationTime`</b>,
 ///                  \anchor ListItem_ExpirationTime
 ///                  _string_,
-///     Expiration time of the selected item in a container\, empty string if not supported
+///     @return The expiration time of the selected item in a container\, empty string if not supported
+///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Art(type)`</b>,
 ///                  \anchor ListItem_Art_Type
 ///                  _string_,
-///     Get a particular art type for an item.
+///     @return A particular art type for an item.
+///     @param type - the art type. It can be any value (set by scripts and scrappers). Common values:
+///       - <b>clearart</b> - the clearart (if it exists) of the currently selected movie or tv show.
+///       - <b>clearlogo</b> - the clearlogo (if it exists) of the currently selected movie or tv show.
+///       - <b>landscape</b> - the 16:9 landscape (if it exists) of the currently selected item.
+///       - <b>thumb</b> - the thumbnail of the currently selected item.
+///       - <b>poster</b> - the poster of the currently selected movie or tv show.
+///       - <b>banner</b> - the banner of the currently selected tv show.
+///       - <b>fanart</b> - the fanart image of the currently selected item.
+///       - <b>set.fanart</b> - the fanart image of the currently selected movieset.
+///       - <b>tvshow.poster</b> - the tv show poster of the parent container.
+///       - <b>tvshow.banner</b> - the tv show banner of the parent container.
+///       - <b>tvshow.clearlogo</b> - the tv show clearlogo (if it exists) of the parent container.
+///       - <b>tvshow.landscape</b> - the tv show landscape (if it exists) of the parent container.
+///       - <b>tvshow.clearart</b> - the tv show clearart (if it exists) of the parent container.
+///       - <b>season.poster</b> - the season poster of the currently selected season. (Only available in DialogVideoInfo.xml).
+///       - <b>season.banner</b> - the season banner of the currently selected season. (Only available in DialogVideoInfo.xml).
+///       - <b>season.fanart</b> - the fanart image of the currently selected season. (Only available in DialogVideoInfo.xml)
+///       - <b>artist.thumb</b> - the artist thumb of an album or song item.
+///       - <b>artist.fanart</b> - the artist fanart of an album or song item.
+///       - <b>album.thumb</b> - the album thumb (cover) of a song item.
+///       - <b>artist[n].*</b> - in case a song has multiple artists\, a digit is added to the art type for the 2nd artist onwards
+/// e.g `Listitem.Art(artist1.thumb)` gives the thumb of the 2nd artist of a song.	
+///       - <b>albumartist[n].*</b> - n case a song has multiple album artists\, a digit is added to the art type for the 2nd artist
+/// onwards e.g `Listitem.Art(artist1.thumb)` gives the thumb of the 2nd artist of a song.
+///     <p>
+///     @todo Find a better way of finding the art types instead of manually defining them here.
+///     <p><hr>
+///     @skinning_v18 **[Infolabel Updated]** \link ListItem_Art_Type `ListItem.Art(type)`\endlink add <b>artist[n].*</b> and
+///     <b>albumartist[n].*</b> as possible targets for <b>type</b>
+///     <p>  
+///   }
+///   \table_row3{   <b>`ListItem.Platform`</b>,
+///                  \anchor ListItem_Platform
+///                  _string_,
+///     @return The game platform (e.g. "Atari 2600") (RETROPLAYER).
+///     <p><hr>
+///     @skinning_v18 **[New Infolabel]** \link ListItem_Platform `ListItem.Platform`\endlink
+///     <p>  
+///   }
+///   \table_row3{   <b>`ListItem.Genres`</b>,
+///                  \anchor ListItem_Genres
+///                  _string_,
+///     @return The game genres (e.g. "["Action"\,"Strategy"]") (RETROPLAYER).
+///     <p><hr>
+///     @skinning_v18 **[New Infolabel]** \link ListItem_Genres `ListItem.Genres`\endlink
+///     <p>  
+///   }
+///   \table_row3{   <b>`ListItem.Publisher`</b>,
+///                  \anchor ListItem_Publisher
+///                  _string_,
+///     @return The game publisher (e.g. "Nintendo") (RETROPLAYER).
+///     <p><hr>
+///     @skinning_v18 **[New Infolabel]** \link ListItem_Publisher `ListItem.Publisher`\endlink
+///     <p>  
+///   }
+///   \table_row3{   <b>`ListItem.Developer`</b>,
+///                  \anchor ListItem_Developer
+///                  _string_,
+///     @return The game developer (e.g. "Square") (RETROPLAYER).
+///     <p><hr>
+///     @skinning_v18 **[New Infolabel]** \link ListItem_Developer `ListItem.Developer`\endlink
+///     <p>  
+///   }
+///   \table_row3{   <b>`ListItem.Overview`</b>,
+///                  \anchor ListItem_Overview
+///                  _string_,
+///     @return The game overview/summary (RETROPLAYER).
+///     <p><hr>
+///     @skinning_v18 **[New Infolabel]** \link ListItem_Overview `ListItem.Overview`\endlink
+///     <p>  
+///   }
+///   \table_row3{   <b>`ListItem.GameClient`</b>,
+///                  \anchor ListItem_GameClient
+///                  _string_,
+///     @return The add-on ID of the game client (a.k.a. emulator) to use for playing the game
+///     (e.g. game.libretro.fceumm) (RETROPLAYER).
+///     <p><hr>
+///     @skinning_v18 **[New Infolabel]** \link ListItem_GameClient `ListItem.GameClient`\endlink
+///     <p>  
 ///   }
 ///   \table_row3{   <b>`ListItem.Property(propname)`</b>,
 ///                  \anchor ListItem_Property_Propname
 ///                  _string_,
-///     Get a property of an item.
+///     @return The requested property of a ListItem.
+///     @param propname - the property requested
+///     <p>
+///   }
+///   \table_row3{   <b>`ListItem.Property(Role.Composer)`</b>,
+///                  \anchor ListItem_Property_Role_Composer
+///                  _string_,
+///     @return The name of the person who composed the selected song.
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link ListItem_Property_Role_Composer `ListItem.Property(Role.Composer)`\endlink
+///     <p>  
+///   }
+///   \table_row3{   <b>`ListItem.Property(Role.Conductor)`</b>,
+///                  \anchor ListItem_Property_Role_Conductor
+///                  _string_,
+///     @return The name of the person who conducted the selected song.
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link ListItem_Property_Role_Conductor `ListItem.Property(Role.Conductor)`\endlink
+///     <p>  
+///   }
+///   \table_row3{   <b>`ListItem.Property(Role.Orchestra)`</b>,
+///                  \anchor ListItem_Property_Role_Orchestra
+///                  _string_,
+///     @return The name of the orchestra performing the selected song.
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link ListItem_Property_Role_Orchestra `ListItem.Property(Role.Orchestra)`\endlink
+///     <p>  
+///   }
+///   \table_row3{   <b>`ListItem.Property(Role.Lyricist)`</b>,
+///                  \anchor ListItem_Property_Role_Lyricist
+///                  _string_,
+///     @return The name of the person who wrote the lyrics of the selected song.
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link ListItem_Property_Role_Lyricist `ListItem.Property(Role.Lyricist)`\endlink
+///     <p>  
+///   }
+///   \table_row3{   <b>`ListItem.Property(Role.Remixer)`</b>,
+///                  \anchor ListItem_Property_Role_Remixer
+///                  _string_,
+///     @return The name of the person who remixed the selected song.
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link ListItem_Property_Role_Remixer `ListItem.Property(Role.Remixer)`\endlink
+///     <p>  
+///   }
+///   \table_row3{   <b>`ListItem.Property(Role.Arranger)`</b>,
+///                  \anchor ListItem_Property_Role_Arranger
+///                  _string_,
+///     @return The name of the person who arranged the selected song.
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link ListItem_Property_Role_Arranger `ListItem.Property(Role.Arranger)`\endlink
+///     <p>  
+///   }
+///   \table_row3{   <b>`ListItem.Property(Role.Engineer)`</b>,
+///                  \anchor ListItem_Property_Role_Engineer
+///                  _string_,
+///     @return The name of the person who was the engineer of the selected song.
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link ListItem_Property_Role_Engineer `ListItem.Property(Role.Engineer)`\endlink
+///     <p>  
+///   }
+///   \table_row3{   <b>`ListItem.Property(Role.Producer)`</b>,
+///                  \anchor ListItem_Property_Role_Producer
+///                  _string_,
+///     @return The name of the person who produced the selected song.
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link ListItem_Property_Role_Producer `ListItem.Property(Role.Producer)`\endlink
+///     <p>  
+///   }
+///   \table_row3{   <b>`ListItem.Property(Role.DJMixer)`</b>,
+///                  \anchor ListItem_Property_Role_DJMixer
+///                  _string_,
+///     @return The name of the dj who remixed the selected song.
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link ListItem_Property_Role_DJMixer `ListItem.Property(Role.DJMixer)`\endlink
+///     <p>  
+///   }
+///   \table_row3{   <b>`ListItem.Property(Role.Mixer)`</b>,
+///                  \anchor ListItem_Property_Role_Mixer
+///                  _string_,
+///     @return The name of the person who mixed the selected song.
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link ListItem_Property_Role_DJMixer `ListItem.Property(Role.DJMixer)`\endlink
+///     <p>  
+///   }
+///   \table_row3{   <b>`ListItem.Property(Game.VideoFilter)`</b>,
+///                  \anchor ListItem_Property_Game_VideoFilter
+///                  _string_,
+///     @return The video filter of the list item representing a
+///     gamewindow control (RETROPLAYER).
+///     See \link RetroPlayer_VideoFilter RetroPlayer.VideoFilter \endlink
+///     for the possible values.
+///     <p><hr>
+///     @skinning_v18 **[New Infolabel]** \link ListItem_Property_Game_VideoFilter `ListItem.Property(Game.VideoFilter)`\endlink
+///     <p>  
+///   }
+///   \table_row3{   <b>`ListItem.Property(Game.StretchMode)`</b>,
+///                  \anchor ListItem_Property_Game_StretchMode
+///                  _string_,
+///     @return The stretch mode of the list item representing a
+///     gamewindow control (RETROPLAYER).
+///     See \link RetroPlayer_StretchMode RetroPlayer.StretchMode \endlink
+///     for the possible values.
+///     <p><hr>
+///     @skinning_v18 **[New Infolabel]** \link ListItem_Property_Game_StretchMode `ListItem.Property(Game.StretchMode)`\endlink
+///     <p>  
+///   }
+///   \table_row3{   <b>`ListItem.Property(Game.VideoRotation)`</b>,
+///                  \anchor ListItem_Property_Game_VideoRotation
+///                  _integer_,
+///     @return The video rotation of the list item representing a
+///     gamewindow control (RETROPLAYER).
+///     See \link RetroPlayer_VideoRotation RetroPlayer.VideoRotation \endlink
+///     for the possible values.
+///     <p><hr>
+///     @skinning_v18 **[New Infolabel]** \link ListItem_Property_Game_VideoRotation `ListItem.Property(Game.VideoRotation)`\endlink
+///     <p>  
 ///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
-/// @}
 const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "icon",             LISTITEM_ICON },
                                   { "actualicon",       LISTITEM_ACTUAL_ICON },
@@ -3981,275 +5776,389 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "property",         LISTITEM_PROPERTY },
 };
 
-/// \page modules__General__List_of_gui_access
-/// \section modules__General__List_of_gui_access_Visualisation Visualisation
-/// @{
+/// \page modules__infolabels_boolean_conditions
+/// \subsection modules__infolabels_boolean_conditions_Visualisation Visualisation
 /// \table_start
 ///   \table_h3{ Labels, Type, Description }
 ///   \table_row3{   <b>`Visualisation.Enabled`</b>,
 ///                  \anchor Visualisation_Enabled
 ///                  _boolean_,
-///     Returns true if any visualisation has been set in settings (so not None).
+///     @return **True** if any visualisation has been set in settings (so not None).
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Visualisation.HasPresets`</b>,
 ///                  \anchor Visualisation_HasPresets
 ///                  _boolean_,
-///     Returns true if the visualisation has built in presets.
+///     @return **True** if the visualisation has built in presets.
+///     <p><hr>
+///     @skinning_v16 **[New Boolean Condition]** \link Visualisation_HasPresets `Visualisation.HasPresets`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Visualisation.Locked`</b>,
 ///                  \anchor Visualisation_Locked
 ///                  _boolean_,
-///     Returns true if the current visualisation preset is locked (eg in Milkdrop.)
+///     @return **True** if the current visualisation preset is locked (e.g. in Milkdrop).
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Visualisation.Preset`</b>,
 ///                  \anchor Visualisation_Preset
 ///                  _string_,
-///     Returns the current preset of the visualisation.
+///     @return The current preset of the visualisation.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Visualisation.Name`</b>,
 ///                  \anchor Visualisation_Name
 ///                  _string_,
-///     Returns the name of the visualisation.
+///     @return the name of the visualisation.
+///     <p>
 ///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
-/// @}
 const infomap visualisation[] =  {{ "locked",           VISUALISATION_LOCKED },
                                   { "preset",           VISUALISATION_PRESET },
                                   { "haspresets",       VISUALISATION_HAS_PRESETS },
                                   { "name",             VISUALISATION_NAME },
                                   { "enabled",          VISUALISATION_ENABLED }};
 
-/// \page modules__General__List_of_gui_access
-/// \section modules__General__List_of_gui_access_Fanart Fanart
-/// @{
+/// \page modules__infolabels_boolean_conditions
+/// \subsection modules__infolabels_boolean_conditions_Fanart Fanart
 /// \table_start
 ///   \table_h3{ Labels, Type, Description }
 ///   \table_row3{   <b>`Fanart.Color1`</b>,
 ///                  \anchor Fanart_Color1
 ///                  _string_,
-///     Returns the first of three colors included in the currently selected
-///     Fanart theme for the parent TV Show. Colors are arranged Lightest to
-///     Darkest.
+///     @return The first of three colors included in the currently selected
+///     Fanart theme for the parent TV Show.
+///     @note Colors are arranged Lightest to Darkest.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Fanart.Color2`</b>,
 ///                  \anchor Fanart_Color2
 ///                  _string_,
-///     Returns the second of three colors included in the currently selected
-///     Fanart theme for the parent TV Show. Colors are arranged Lightest to
-///     Darkest.
+///     @return The second of three colors included in the currently selected
+///     Fanart theme for the parent TV Show.
+///     @note Colors are arranged Lightest to Darkest.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Fanart.Color3`</b>,
 ///                  \anchor Fanart_Color3
 ///                  _string_,
-///     Returns the third of three colors included in the currently selected
-///     Fanart theme for the parent TV Show. Colors are arranged Lightest to
-///     Darkest.
+///     @return The third of three colors included in the currently selected
+///     Fanart theme for the parent TV Show.
+///     @note Colors are arranged Lightest to Darkest.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Fanart.Image`</b>,
 ///                  \anchor Fanart_Image
 ///                  _string_,
-///     Returns the fanart image\, if any
+///     @return The fanart image\, if any
+///     <p>
 ///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
-/// @}
 const infomap fanart_labels[] =  {{ "color1",           FANART_COLOR1 },
                                   { "color2",           FANART_COLOR2 },
                                   { "color3",           FANART_COLOR3 },
                                   { "image",            FANART_IMAGE }};
 
-/// \page modules__General__List_of_gui_access
-/// \section modules__General__List_of_gui_access_Skin Skin
-/// @{
+/// \page modules__infolabels_boolean_conditions
+/// \subsection modules__infolabels_boolean_conditions_Skin Skin
 /// \table_start
 ///   \table_h3{ Labels, Type, Description }
 ///   \table_row3{   <b>`Skin.CurrentTheme`</b>,
 ///                  \anchor Skin_CurrentTheme
 ///                  _string_,
-///     Returns the current selected skin theme.
+///     @return The current selected skin theme.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Skin.CurrentColourTheme`</b>,
 ///                  \anchor Skin_CurrentColourTheme
 ///                  _string_,
-///     Returns the current selected colour theme of the skin.
+///     @return the current selected colour theme of the skin.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Skin.AspectRatio`</b>,
 ///                  \anchor Skin_AspectRatio
 ///                  _string_,
-///     Returns the closest aspect ratio match using the resolution info from the skin's addon.xml file.
+///     @return The closest aspect ratio match using the resolution info from the skin's `addon.xml` file.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Skin.Font`</b>,
 ///                  \anchor Skin_Font
 ///                  _string_,
-///     Returns the current fontset from Font.xml.
+///     @return the current fontset from `Font.xml`.
+///     <p><hr>
+///     @skinning_v18 **[New Infolabel]** \link Skin_Font `Skin.Font`\endlink
+///     <p>
 ///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
-/// @}
 const infomap skin_labels[] =    {{ "currenttheme",      SKIN_THEME },
                                   { "currentcolourtheme",SKIN_COLOUR_THEME },
                                   { "aspectratio",       SKIN_ASPECT_RATIO},
                                   { "font",              SKIN_FONT}};
 
-/// \page modules__General__List_of_gui_access
-/// \section modules__General__List_of_gui_access_Window Window
-/// @{
+/// \page modules__infolabels_boolean_conditions
+/// \subsection modules__infolabels_boolean_conditions_Window Window
 /// \table_start
 ///   \table_h3{ Labels, Type, Description }
 ///   \table_row3{   <b>`Window.IsMedia`</b>,
 ///                  \anchor Window_IsMedia
 ///                  _boolean_,
-///     Returns true if this window is a media window (programs\, music\, video\,
+///     @return **True** if this window is a media window (programs\, music\, video\,
 ///     scripts\, pictures)
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Window.Is(window)`</b>,
 ///                  \anchor Window_Is
 ///                  _boolean_,
-///     Returns true if the window with the given name is the window which is currently rendered.
-///     Useful in xml files that are shared between multiple windows or dialogs.
+///     @return **True** if the window with the given name is the window which is currently rendered.
+///     @param window - the name of the window
+///     @note Useful in xml files that are shared between multiple windows or dialogs.
+///     <p><hr>
+///     @skinning_v17 **[New Boolean Condition]** \ref Window_Is "Window.Is(window)"
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Window.IsActive(window)`</b>,
 ///                  \anchor Window_IsActive
 ///                  _boolean_,
-///     Returns true if the window with id or title _window_ is active
-///     (excludes fade out time on dialogs)
+///     @return **True** if the window with id or title _window_ is active
+///     @param window - the id or name of the window
+///     @note Excludes fade out time on dialogs
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Window.IsVisible(window)`</b>,
 ///                  \anchor Window_IsVisible
 ///                  _boolean_,
-///     Returns true if the window is visible (includes fade out time on dialogs)
+///     @return **True** if the window is visible
+///     @note Includes fade out time on dialogs
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Window.IsTopmost(window)`</b>,
 ///                  \anchor Window_IsTopmost
 ///                  _boolean_,
-///     Returns true if the window with id or title _window_ is on top of the
-///     window stack (excludes fade out time on dialogs)
-///     @deprecated use `Window.IsDialogTopmost(dialog)` instead \par
+///     @return **True** if the window with id or title _window_ is on top of the
+///     window stack.
+///     @param window - the id or name of the window
+///     @note Excludes fade out time on dialogs
+///     @deprecated use  \ref Window_IsDialogTopmost "Window.IsDialogTopmost(dialog)" instead
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Window.IsDialogTopmost(dialog)`</b>,
 ///                  \anchor Window_IsDialogTopmost
 ///                  _boolean_,
-///     Returns true if the dialog with id or title _dialog_ is on top of the
-///     dialog stack (excludes fade out time on dialogs)
+///     @return **True** if the dialog with id or title _dialog_ is on top of the
+///     dialog stack.
+///     @param window - the id or name of the window
+///     @note Excludes fade out time on dialogs
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Window.IsModalDialogTopmost(dialog)`</b>,
 ///                  \anchor Window_IsModalDialogTopmost
 ///                  _boolean_,
-///     Returns true if the dialog with id or title _dialog_ is on top of the
-///     modal dialog stack (excludes fade out time on dialogs)
+///     @return **True** if the dialog with id or title _dialog_ is on top of the
+///     modal dialog stack 
+///     @note Excludes fade out time on dialogs
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Window.Previous(window)`</b>,
 ///                  \anchor Window_Previous
 ///                  _boolean_,
-///     Returns true if the window with id or title _window_ is being moved from.
-///     Only valid while windows are changing.
+///     @return **True** if the window with id or title _window_ is being moved from.
+///     @param window - the window id or title
+///     @note Only valid while windows are changing.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Window.Next(window)`</b>,
 ///                  \anchor Window_Next
 ///                  _boolean_,
-///     Returns true if the window with id or title _window_ is being moved to.
-///     Only valid while windows are changing.
+///     @return **True** if the window with id or title _window_ is being moved to.
+///     @param window - the window id or title
+///     @note Only valid while windows are changing.
+///     <p>
+///   }
+///   \table_row3{   <b>`Window.Property(Addon.ID)`</b>,
+///                  \anchor Window_Property_AddonId
+///                  _string_,
+///     @return The id of the selected addon\, in `DialogAddonSettings.xml`.
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link Window_Property_AddonId `Window.Property(Addon.ID)`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`Window([window]).Property(key)`</b>,
+///                  \anchor Window_Window_Property_key
+///                  _string_,
+///     @return A window property.
+///     @param window - [opt] window id or name.
+///     @param key - any value.
+///     <p>
+///   }
+///   \table_row3{   <b>`Window(AddonBrowser).Property(Updated)`</b>,
+///                  \anchor Window_Addonbrowser_Property_Updated
+///                  _string_,
+///     @return The date and time the addon repo was last checked for updates.
+///     @todo move to a future window document.
+///     <p><hr>
+///     @skinning_v15 **[New Infolabel]** \link Window_Addonbrowser_Property_Updated `Window(AddonBrowser).Property(Updated)`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`Window(Weather).Property(property)`</b>,
+///                  \anchor Window_Weather_Property
+///                  _string_,
+///     @return The property for the weather window.
+///     @param property - The requested property. The following are available:
+///        - Current.ConditionIcon
+///        - Day[0-6].OutlookIcon
+///        - Current.FanartCode
+///        - Day[0-6].FanartCode
+///        - WeatherProviderLogo
+///        - Daily.%i.OutlookIcon
+///        - 36Hour.%i.OutlookIcon
+///        - Weekend.%i.OutlookIcon
+///        - Hourly.%i.OutlookIcon
+///     @todo move to a future window document.
+///     <p><hr>
+///     @skinning_v16 **[Updated infolabel]** \link Window_Weather_Property `Window(Weather).Property(property)`\endlink
+///     For skins that support extended weather info\, the following infolabels have been changed:
+///       - Daily.%i.OutlookIcon
+///       - 36Hour.%i.OutlookIcon
+///       - Weekend.%i.OutlookIcon
+///       - Hourly.%i.OutlookIcon
+///     
+///     previously the openweathermap addon would provide the full\, hardcoded path to the icon
+///     ie. `resource://resource.images.weathericons.default/28.png`
+///     to make it easier for skins to work with custom icon sets\, it now will return the filename only
+///     i.e. 28.png
+///     @skinning_v13 **[Infolabel Updated]** \link Window_Weather_Property `Window(Weather).Property(property)`\endlink
+///     added `WeatherProviderLogo` propertu - weather provider logo (for weather addons that support it).
+///     <p>
 ///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
-/// @}
 const infomap window_bools[] =   {{ "ismedia",          WINDOW_IS_MEDIA },
                                   { "is",               WINDOW_IS },
                                   { "isactive",         WINDOW_IS_ACTIVE },
                                   { "isvisible",        WINDOW_IS_VISIBLE },
-                                  { "istopmost",        WINDOW_IS_DIALOG_TOPMOST }, // deprecated, remove in v19
+                                  { "istopmost",        WINDOW_IS_DIALOG_TOPMOST }, //! @deprecated, remove in v19
                                   { "isdialogtopmost",  WINDOW_IS_DIALOG_TOPMOST },
                                   { "ismodaldialogtopmost", WINDOW_IS_MODAL_DIALOG_TOPMOST },
                                   { "previous",         WINDOW_PREVIOUS },
                                   { "next",             WINDOW_NEXT }};
 
-/// \page modules__General__List_of_gui_access
-/// \section modules__General__List_of_gui_access_Control Control
-/// @{
+/// \page modules__infolabels_boolean_conditions
+/// \subsection modules__infolabels_boolean_conditions_Control Control
 /// \table_start
 ///   \table_h3{ Labels, Type, Description }
 ///   \table_row3{   <b>`Control.HasFocus(id)`</b>,
 ///                  \anchor Control_HasFocus
 ///                  _boolean_,
-///     Returns true if the currently focused control has id "id".
+///     @return **True** if the currently focused control has id "id".
+///     @param id - The id of the control
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Control.IsVisible(id)`</b>,
 ///                  \anchor Control_IsVisible
 ///                  _boolean_,
-///     Returns true if the control with id "id" is visible.
+///     @return **True** if the control with id "id" is visible.
+///     @param id - The id of the control
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Control.IsEnabled(id)`</b>,
 ///                  \anchor Control_IsEnabled
 ///                  _boolean_,
-///     Returns true if the control with id "id" is enabled.
+///     @return **True** if the control with id "id" is enabled.
+///     @param id - The id of the control
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Control.GetLabel(id)[.index()]`</b>,
 ///                  \anchor Control_GetLabel
 ///                  _string_,
-///     Returns the label value or texture name of the control with the given id.
-///     Optionally you can specify index(1) to retrieve label2 from an Edit
+///     @return The label value or texture name of the control with the given id.
+///     @param id - The id of the control
+///     @param index - [opt] Optionally you can specify index(1) to retrieve label2 from an Edit
 ///     control.
+///     <p><hr>
+///     @skinning_v15 **[Infolabel Updated]** \link Control_GetLabel `Control.GetLabel(id)`\endlink
+///     added index parameter - allows skinner to retrieve label2 of a control. Only edit controls are supported.
+///     ** Example** : `Control.GetLabel(999).index(1)` where:
+///       - index(0) = label
+///       - index(1) = label2
+///     <p>
 ///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
-/// @}
 const infomap control_labels[] = {{ "hasfocus",         CONTROL_HAS_FOCUS },
                                   { "isvisible",        CONTROL_IS_VISIBLE },
                                   { "isenabled",        CONTROL_IS_ENABLED },
                                   { "getlabel",         CONTROL_GET_LABEL }};
 
-/// \page modules__General__List_of_gui_access
-/// \section modules__General__List_of_gui_access_Playlist Playlist
-/// @{
+/// \page modules__infolabels_boolean_conditions
+/// \subsection modules__infolabels_boolean_conditions_Playlist Playlist
 /// \table_start
 ///   \table_h3{ Labels, Type, Description }
 ///   \table_row3{   <b>`Playlist.Length(media)`</b>,
 ///                  \anchor Playlist_Length
 ///                  _integer_,
-///     Total size of the current playlist. optional parameter media is either
+///     @return The total size of the current playlist.
+///     @param media - [opt] mediatype with is either
 ///     video or music.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Playlist.Position(media)`</b>,
 ///                  \anchor Playlist_Position
 ///                  _integer_,
-///     Position of the current item in the current playlist. optional parameter
-///     media is either video or music.
+///     @return The position of the current item in the current playlist.
+///     @param media - [opt] mediatype with is either
+///     video or music.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Playlist.Random`</b>,
 ///                  \anchor Playlist_Random
 ///                  _integer_,
-///     Returns string ID's 590 (Randomize Play Enabled) or 591 (Disabled)
+///     @return String ID for the random mode:
+///       - **16041** (On)
+///       - **591** (Off)
+///     <p><hr>
+///     @skinning_v18 **[Infolabel Updated]** \link Playlist_Random `Playlist.Random`\endlink will
+///     now return **On/Off**
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Playlist.Repeat`</b>,
 ///                  \anchor Playlist_Repeat
 ///                  _integer_,
-///     Returns string ID's 592 (Repeat One)\, 593 (Repeat All)\, or 594 (Repeat Off)
+///     @return The String Id for the repeat mode. It can be one of the following
+///     values:
+///       - **592** (Repeat One)
+///       - **593** (Repeat All)
+///       - **594** (Repeat Off)
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Playlist.IsRandom`</b>,
 ///                  \anchor Playlist_IsRandom
 ///                  _boolean_,
-///     Returns true if the player is in random mode.
+///     @return **True** if the player is in random mode.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Playlist.IsRepeat`</b>,
 ///                  \anchor Playlist_IsRepeat
 ///                  _boolean_,
-///     Returns true if the player is in repeat all mode.
+///     @return **True** if the player is in repeat all mode.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Playlist.IsRepeatOne`</b>,
 ///                  \anchor Playlist_IsRepeatOne
 ///                  _boolean_,
-///     Returns true if the player is in repeat one mode.
+///     @return **True** if the player is in repeat one mode.
+///     <p>
 ///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
-/// @}
 const infomap playlist[] =       {{ "length",           PLAYLIST_LENGTH },
                                   { "position",         PLAYLIST_POSITION },
                                   { "random",           PLAYLIST_RANDOM },
@@ -4258,395 +6167,534 @@ const infomap playlist[] =       {{ "length",           PLAYLIST_LENGTH },
                                   { "isrepeat",         PLAYLIST_ISREPEAT },
                                   { "isrepeatone",      PLAYLIST_ISREPEATONE }};
 
-/// \page modules__General__List_of_gui_access
-/// \section modules__General__List_of_gui_access_Pvr Pvr
-/// @{
+/// \page modules__infolabels_boolean_conditions
+/// \subsection modules__infolabels_boolean_conditions_Pvr Pvr
 /// \table_start
 ///   \table_h3{ Labels, Type, Description }
 ///   \table_row3{   <b>`PVR.IsRecording`</b>,
 ///                  \anchor PVR_IsRecording
 ///                  _boolean_,
-///     Returns true when the system is recording a tv or radio programme.
+///     @return **True** when the system is recording a tv or radio programme.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.HasTimer`</b>,
 ///                  \anchor PVR_HasTimer
 ///                  _boolean_,
-///     Returns true when a recording timer is active.
+///     @return **True** when a recording timer is active.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.HasTVChannels`</b>,
 ///                  \anchor PVR_HasTVChannels
 ///                  _boolean_,
-///     Returns true if there are TV channels available
+///     @return **True** if there are TV channels available.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.HasRadioChannels`</b>,
 ///                  \anchor PVR_HasRadioChannels
 ///                  _boolean_,
-///     Returns true if there are radio channels available
+///     @return **True** if there are radio channels available.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.HasNonRecordingTimer`</b>,
 ///                  \anchor PVR_HasNonRecordingTimer
 ///                  _boolean_,
-///     Returns true if there are timers present who currently not do recording
+///     @return **True** if there are timers present who currently not do recording.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.BackendName`</b>,
 ///                  \anchor PVR_BackendName
 ///                  _string_,
-///     Name of the backend being used
+///     @return The name of the backend being used.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.BackendVersion`</b>,
 ///                  \anchor PVR_BackendVersion
 ///                  _string_,
-///     Version of the backend that's being used
+///     @return The version of the backend that's being used.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.BackendHost`</b>,
 ///                  \anchor PVR_BackendHost
 ///                  _string_,
-///     Backend hostname
+///     @return The backend hostname.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.BackendDiskSpace`</b>,
 ///                  \anchor PVR_BackendDiskSpace
 ///                  _string_,
-///     Available diskspace on the backend as string with size
+///     @return The available diskspace on the backend as string with size.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.BackendDiskSpaceProgr`</b>,
 ///                  \anchor PVR_BackendDiskSpaceProgr
 ///                  _integer_,
-///     Available diskspace on the backend as percent value
+///     @return The available diskspace on the backend as percent value.
+///     <p><hr>
+///     @skinning_v14 **[New Infolabel]** \link PVR_BackendDiskSpaceProgr `PVR.BackendDiskSpaceProgr`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.BackendChannels`</b>,
 ///                  \anchor PVR_BackendChannels
 ///                  _string (integer)_,
-///     Number of available channels the backend provides
+///     @return The number of available channels the backend provides.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.BackendTimers`</b>,
 ///                  \anchor PVR_BackendTimers
 ///                  _string (integer)_,
-///     Number of timers set for the backend
+///     @return The number of timers set for the backend.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.BackendRecordings`</b>,
 ///                  \anchor PVR_BackendRecordings
 ///                  _string (integer)_,
-///     Number of recording available on the backend
+///     @return The number of recordings available on the backend.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.BackendDeletedRecordings`</b>,
 ///                  \anchor PVR_BackendDeletedRecordings
 ///                  _string (integer)_,
-///     Number of deleted recording present on the backend
+///     @return The number of deleted recordings present on the backend.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.BackendNumber`</b>,
 ///                  \anchor PVR_BackendNumber
 ///                  _string_,
-///     Backend number
+///     @return The backend number.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.TotalDiscSpace`</b>,
 ///                  \anchor PVR_TotalDiscSpace
 ///                  _string_,
-///     Total diskspace available for recordings
+///     @return The total diskspace available for recordings.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.NextTimer`</b>,
 ///                  \anchor PVR_NextTimer
 ///                  _boolean_,
-///     Next timer date
+///     @return The next timer date.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.IsPlayingTV`</b>,
 ///                  \anchor PVR_IsPlayingTV
 ///                  _boolean_,
-///     Returns true when live tv is being watched.
+///     @return **True** when live tv is being watched.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.IsPlayingRadio`</b>,
 ///                  \anchor PVR_IsPlayingRadio
 ///                  _boolean_,
-///     Returns true when live radio is being listened to.
+///     @return **True** when live radio is being listened to.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.IsPlayingRecording`</b>,
 ///                  \anchor PVR_IsPlayingRecording
 ///                  _boolean_,
-///     Returns true when a recording is being watched.
+///     @return **True** when a recording is being watched.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.IsPlayingEpgTag`</b>,
 ///                  \anchor PVR_IsPlayingEpgTag
 ///                  _boolean_,
-///     Returns true when an epg tag is being watched.
+///     @return **True** when an epg tag is being watched.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.EpgEventProgress`</b>,
 ///                  \anchor PVR_EpgEventProgress
 ///                  _integer_,
-///     Returns the percentage complete of the currently playing epg event
+///     @return The percentage complete of the currently playing epg event.
+///     <p><hr>
+///     @skinning_v18 **[Infolabel Updated]** \link PVR_EpgEventProgress `PVR.EpgEventProgress`\endlink replaces
+///     the old `PVR.Progress` infolabel.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.ActStreamClient`</b>,
 ///                  \anchor PVR_ActStreamClient
 ///                  _string_,
-///     Stream client name
+///     @return The stream client name.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.ActStreamDevice`</b>,
 ///                  \anchor PVR_ActStreamDevice
 ///                  _string_,
-///     Stream device name
+///     @return The stream device name.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.ActStreamStatus`</b>,
 ///                  \anchor PVR_ActStreamStatus
 ///                  _string_,
-///     Status of the stream
+///     @return The status of the stream.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.ActStreamSignal`</b>,
 ///                  \anchor PVR_ActStreamSignal
 ///                  _string_,
-///     Signal quality of the stream
+///     @return The signal quality of the stream.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.ActStreamSnr`</b>,
 ///                  \anchor PVR_ActStreamSnr
 ///                  _string_,
-///     Signal to noise ratio of the stream
+///     @return The signal to noise ratio of the stream.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.ActStreamBer`</b>,
 ///                  \anchor PVR_ActStreamBer
 ///                  _string_,
-///     Bit error rate of the stream
+///     @return The bit error rate of the stream.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.ActStreamUnc`</b>,
 ///                  \anchor PVR_ActStreamUnc
 ///                  _string_,
-///     UNC value of the stream
+///     @return The UNC value of the stream.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.ActStreamProgrSignal`</b>,
 ///                  \anchor PVR_ActStreamProgrSignal
 ///                  _integer_,
-///     Signal quality of the programme
+///     @return The signal quality of the programme.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.ActStreamProgrSnr`</b>,
 ///                  \anchor PVR_ActStreamProgrSnr
 ///                  _integer_,
-///     Signal to noise ratio of the programme
+///     @return The signal to noise ratio of the programme.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.ActStreamIsEncrypted`</b>,
 ///                  \anchor PVR_ActStreamIsEncrypted
 ///                  _boolean_,
-///     Returns true when channel is encrypted on source
+///     @return **True** when channel is encrypted on source.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.ActStreamEncryptionName`</b>,
 ///                  \anchor PVR_ActStreamEncryptionName
 ///                  _string_,
-///     Encryption used on the stream
+///     @return The encryption used on the stream.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.ActStreamServiceName`</b>,
 ///                  \anchor PVR_ActStreamServiceName
 ///                  _string_,
-///     Returns the service name of played channel if available
+///     @return The service name of played channel if available.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.ActStreamMux`</b>,
 ///                  \anchor PVR_ActStreamMux
 ///                  _string_,
-///     Returns the multiplex type of played channel if available
+///     @return The multiplex type of played channel if available.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.ActStreamProviderName`</b>,
 ///                  \anchor PVR_ActStreamProviderName
 ///                  _string_,
-///     Returns the provider name of the played channel if available
+///     @return The provider name of the played channel if available.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.IsTimeShift`</b>,
 ///                  \anchor PVR_IsTimeShift
 ///                  _boolean_,
-///     Returns true when for channel is timeshift available
+///     @return **True** when for channel is timeshift available.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.TimeShiftProgress`</b>,
 ///                  \anchor PVR_TimeShiftProgress
 ///                  _integer_,
-///     Returns the position of currently timeshifted title on TV as integer
+///     @return The position of currently timeshifted title on TV as integer.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.NowRecordingTitle`</b>,
 ///                  \anchor PVR_NowRecordingTitle
 ///                  _string_,
-///     Title of the programme being recorded
+///     @return The title of the programme being recorded.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.NowRecordingDateTime`</b>,
 ///                  \anchor PVR_NowRecordingDateTime
 ///                  _Date/Time string_,
-///     Start date and time of the current recording
+///     @return The start date and time of the current recording.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.NowRecordingChannel`</b>,
 ///                  \anchor PVR_NowRecordingChannel
 ///                  _string_,
-///     Channel name of the current recording
+///     @return The channel name of the current recording.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.NowRecordingChannelIcon`</b>,
 ///                  \anchor PVR_NowRecordingChannelIcon
 ///                  _string_,
-///     Icon of the current recording channel
+///     @return The icon of the current recording channel.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.NextRecordingTitle`</b>,
 ///                  \anchor PVR_NextRecordingTitle
 ///                  _string_,
-///     Title of the next programme that will be recorded
+///     @return The title of the next programme that will be recorded.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.NextRecordingDateTime`</b>,
 ///                  \anchor PVR_NextRecordingDateTime
 ///                  _Date/Time string_,
-///     Start date and time of the next recording
+///     @return The start date and time of the next recording.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.NextRecordingChannel`</b>,
 ///                  \anchor PVR_NextRecordingChannel
 ///                  _string_,
-///     Channel name of the next recording
+///     @return The channel name of the next recording.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.NextRecordingChannelIcon`</b>,
 ///                  \anchor PVR_NextRecordingChannelIcon
 ///                  _string_,
-///     Icon of the next recording channel
+///     @return The icon of the next recording channel.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.TVNowRecordingTitle`</b>,
 ///                  \anchor PVR_TVNowRecordingTitle
 ///                  _string_,
-///     Title of the tv programme being recorded
+///     @return The title of the tv programme being recorded.
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link PVR_TVNowRecordingTitle `PVR.TVNowRecordingTitle`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.TVNowRecordingDateTime`</b>,
 ///                  \anchor PVR_TVNowRecordingDateTime
 ///                  _Date/Time string_,
-///     Start date and time of the current tv recording
+///     @return The start date and time of the current tv recording.
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link PVR_TVNowRecordingDateTime `PVR.TVNowRecordingDateTime`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.TVNowRecordingChannel`</b>,
 ///                  \anchor PVR_TVNowRecordingChannel
 ///                  _string_,
-///     Channel name of the current tv recording
+///     @return The channel name of the current tv recording.
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link PVR_TVNowRecordingChannel `PVR.TVNowRecordingChannel`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.TVNowRecordingChannelIcon`</b>,
 ///                  \anchor PVR_TVNowRecordingChannelIcon
 ///                  _string_,
-///     Icon of the current recording TV channel
+///     @return The icon of the current recording TV channel.
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link PVR_TVNowRecordingChannelIcon `PVR.TVNowRecordingChannelIcon`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.TVNextRecordingTitle`</b>,
 ///                  \anchor PVR_TVNextRecordingTitle
 ///                  _string_,
-///     Title of the next tv programme that will be recorded
+///     @return The title of the next tv programme that will be recorded.
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link PVR_TVNextRecordingTitle `PVR.TVNextRecordingTitle`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.TVNextRecordingDateTime`</b>,
 ///                  \anchor PVR_TVNextRecordingDateTime
 ///                  _Date/Time string_,
-///     Start date and time of the next tv recording
+///     @return The start date and time of the next tv recording.
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link PVR_TVNextRecordingDateTime `PVR.TVNextRecordingDateTime`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.TVNextRecordingChannel`</b>,
 ///                  \anchor PVR_TVNextRecordingChannel
 ///                  _string_,
-///     Channel name of the next tv recording
+///     @return The channel name of the next tv recording.
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link PVR_TVNextRecordingChannel `PVR.TVNextRecordingChannel`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.TVNextRecordingChannelIcon`</b>,
 ///                  \anchor PVR_TVNextRecordingChannelIcon
-///                     ,
-///     Icon of the next recording tv channel
+///                  _string_,
+///     @return The icon of the next recording tv channel.
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link PVR_TVNextRecordingChannelIcon `PVR.TVNextRecordingChannelIcon`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.RadioNowRecordingTitle`</b>,
 ///                  \anchor PVR_RadioNowRecordingTitle
 ///                  _string_,
-///     Title of the radio programme being recorded
+///     @return The title of the radio programme being recorded.
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link PVR_RadioNowRecordingTitle `PVR.RadioNowRecordingTitle`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.RadioNowRecordingDateTime`</b>,
 ///                  \anchor PVR_RadioNowRecordingDateTime
 ///                  _Date/Time string_,
-///     Start date and time of the current radio recording
+///     @return The start date and time of the current radio recording.
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link PVR_RadioNowRecordingDateTime `PVR.RadioNowRecordingDateTime`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.RadioNowRecordingChannel`</b>,
 ///                  \anchor PVR_RadioNowRecordingChannel
 ///                  _string_,
-///     Channel name of the current radio recording
+///     @return The channel name of the current radio recording.
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link PVR_RadioNowRecordingChannel `PVR.RadioNowRecordingChannel`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.RadioNowRecordingChannelIcon`</b>,
 ///                  \anchor PVR_RadioNowRecordingChannelIcon
 ///                  _string_,
-///     Icon of the current recording radio channel
+///     @return The icon of the current recording radio channel.
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link PVR_RadioNowRecordingChannelIcon `PVR.RadioNowRecordingChannelIcon`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.RadioNextRecordingTitle`</b>,
 ///                  \anchor PVR_RadioNextRecordingTitle
 ///                  _string_,
-///     Title of the next radio programme that will be recorded
+///     @return The title of the next radio programme that will be recorded.
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link PVR_RadioNextRecordingTitle `PVR.RadioNextRecordingTitle`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.RadioNextRecordingDateTime`</b>,
 ///                  \anchor PVR_RadioNextRecordingDateTime
 ///                  _Date/Time string_,
-///     Start date and time of the next radio recording
+///     @return The start date and time of the next radio recording.
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link PVR_RadioNextRecordingDateTime `PVR.RadioNextRecordingDateTime`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.RadioNextRecordingChannel`</b>,
 ///                  \anchor PVR_RadioNextRecordingChannel
 ///                  _string_,
-///     Channel name of the next radio recording
+///     @return The channel name of the next radio recording.
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link PVR_RadioNextRecordingChannel `PVR.RadioNextRecordingChannel`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.RadioNextRecordingChannelIcon`</b>,
 ///                  \anchor PVR_RadioNextRecordingChannelIcon
 ///                  _string_,
-///     Icon of the next recording radio channel
+///     @return The icon of the next recording radio channel.
+///     <p><hr>
+///     @skinning_v17 **[New Infolabel]** \link PVR_RadioNextRecordingChannelIcon `PVR.RadioNextRecordingChannelIcon`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.IsRecordingTV`</b>,
 ///                  \anchor PVR_IsRecordingTV
 ///                  _boolean_,
-///     Returns true when the system is recording a tv programme.
+///     @return **True** when the system is recording a tv programme.
+///     <p><hr>
+///     @skinning_v17 **[New Boolean Condition]** \link PVR_IsRecordingTV `PVR.IsRecordingTV`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.HasTVTimer`</b>,
 ///                  \anchor PVR_HasTVTimer
 ///                  _boolean_,
-///     Returns true if at least one tv timer is active.
+///     @return **True** if at least one tv timer is active.
+///     <p><hr>
+///     @skinning_v17 **[New Boolean Condition]** \link PVR_HasTVTimer `PVR.HasTVTimer`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.HasNonRecordingTVTimer`</b>,
 ///                  \anchor PVR_HasNonRecordingTVTimer
 ///                  _boolean_,
-///     Returns true if there are tv timers present who currently not do recording
+///     @return **True** if there are tv timers present who currently not do recording.
+///     <p><hr>
+///     @skinning_v17 **[New Boolean Condition]** \link PVR_HasNonRecordingTVTimer `PVR.HasNonRecordingTVTimer`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.IsRecordingRadio`</b>,
 ///                  \anchor PVR_IsRecordingRadio
 ///                  _boolean_,
-///     Returns true when the system is recording a radio programme.
+///     @return **True** when the system is recording a radio programme.
+///     <p><hr>
+///     @skinning_v17 **[New Boolean Condition]** \link PVR_IsRecordingRadio `PVR.IsRecordingRadio`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.HasRadioTimer`</b>,
 ///                  \anchor PVR_HasRadioTimer
 ///                  _boolean_,
-///     Returns true if at least one radio timer is active.
+///     @return **True** if at least one radio timer is active.
+///     <p><hr>
+///     @skinning_v17 **[New Boolean Condition]** \link PVR_HasRadioTimer `PVR.HasRadioTimer`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.HasNonRecordingRadioTimer`</b>,
 ///                  \anchor PVR_HasNonRecordingRadioTimer
 ///                  _boolean_,
-///     Returns true if there are radio timers present who currently not do recording
+///     @return **True** if there are radio timers present who currently not do recording.
+///     <p><hr>
+///     @skinning_v17 **[New Boolean Condition]** \link PVR_HasNonRecordingRadioTimer `PVR.HasRadioTimer`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.ChannelNumberInput`</b>,
 ///                  \anchor PVR_ChannelNumberInput
 ///                  _string_,
-///     Returns the currently entered channel number while in numeric channel input mode\, an empty string otherwise
+///     @return The currently entered channel number while in numeric channel input mode\, an empty string otherwise.
+///     <p><hr>
+///     @skinning_v18 **[New Infolabel]** \link PVR_ChannelNumberInput `PVR.ChannelNumberInput`\endlink
+///     <p>  
 ///   }
 ///   \table_row3{   <b>`PVR.CanRecordPlayingChannel`</b>,
 ///                  \anchor PVR_CanRecordPlayingChannel
 ///                  _boolean_,
-///     Returns true if PVR is currently playing a channel and if this channel can be recorded.
+///     @return **True** if PVR is currently playing a channel and if this channel can be recorded.
+///     <p><hr>
+///     @skinning_v18 **[Infolabel Updated]** \link PVR_CanRecordPlayingChannel `PVR.CanRecordPlayingChannel`\endlink replaces
+///     the old `Player.CanRecord` infolabel.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.IsRecordingPlayingChannel`</b>,
 ///                  \anchor PVR_IsRecordingPlayingChannel
 ///                  _boolean_,
-///     Returns true if PVR is currently playing a channel and if this channel is currently recorded.
+///     @return **True** if PVR is currently playing a channel and if this channel is currently recorded.
+///     <p><hr>
+///     @skinning_v18 **[Infolabel Updated]** \link PVR_IsRecordingPlayingChannel `PVR.IsRecordingPlayingChannel`\endlink replaces
+///     the old `Player.Recording` infolabel.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.TimeshiftProgressPlayPos`</b>,
 ///                  \anchor PVR_TimeshiftProgressPlayPos
 ///                  _integer_,
-///     Returns the percentage of the current play position within the PVR timeshift progress.
+///     @return The percentage of the current play position within the PVR timeshift progress.
+///     <p><hr>
+///     @skinning_v18 **[New Infolabel]** \link PVR_TimeshiftProgressPlayPos `PVR.TimeshiftProgressPlayPos`\endlink
+///     <p>  
 ///   }
 ///   \table_row3{   <b>`PVR.TimeshiftProgressEpgStart`</b>,
 ///                  \anchor PVR_TimeshiftProgressEpgStart
 ///                  _integer_,
-///     Returns the percentage of the start of the currently playing epg event within the PVR timeshift progress.
+///     @return The percentage of the start of the currently playing epg event within the PVR timeshift progress.
+///     <p><hr>
+///     @skinning_v18 **[New Infolabel]** \link PVR_TimeshiftProgressEpgStart `PVR.TimeshiftProgressEpgStart`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.TimeshiftProgressEpgEnd`</b>,
 ///                  \anchor PVR_TimeshiftProgressEpgEnd
 ///                  _integer_,
-///     Returns the percentage of the end of the currently playing epg event within the PVR timeshift progress.
+///     @return The percentage of the end of the currently playing epg event within the PVR timeshift progress.
+///     <p><hr>
+///     @skinning_v18 **[New Infolabel]** \link PVR_TimeshiftProgressEpgEnd `PVR.TimeshiftProgressEpgEnd`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.TimeshiftProgressBufferStart`</b>,
 ///                  \anchor PVR_TimeshiftProgressBufferStart
 ///                  _integer_,
-///     Returns the percentage of the start of the timeshift buffer within the PVR timeshift progress.
+///     @return The percentage of the start of the timeshift buffer within the PVR timeshift progress.
+///     <p><hr>
+///     @skinning_v18 **[New Infolabel]** \link PVR_TimeshiftProgressBufferStart `PVR.TimeshiftProgressBufferStart`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.TimeshiftProgressBufferEnd`</b>,
 ///                  \anchor PVR_TimeshiftProgressBufferEnd
 ///                  _integer_,
-///     Returns the percentage of the end of the timeshift buffer within the PVR timeshift progress.
+///     @return The percentage of the end of the timeshift buffer within the PVR timeshift progress.
+///     <p><hr>
+///     @skinning_v18 **[New Infolabel]** \link PVR_TimeshiftProgressBufferEnd `PVR.TimeshiftProgressBufferEnd`\endlink
+///     <p>
 ///   }
-/// \table_end
-///
-/// -----------------------------------------------------------------------------
-/// @}
+/// 
 const infomap pvr[] =            {{ "isrecording",              PVR_IS_RECORDING },
                                   { "hastimer",                 PVR_HAS_TIMER },
                                   { "hastvchannels",            PVR_HAS_TV_CHANNELS },
@@ -4724,200 +6772,228 @@ const infomap pvr[] =            {{ "isrecording",              PVR_IS_RECORDING
                                   { "timeshiftprogressbufferstart", PVR_TIMESHIFT_PROGRESS_BUFFER_START },
                                   { "timeshiftprogressbufferend", PVR_TIMESHIFT_PROGRESS_BUFFER_END }};
 
-/// \page modules__General__List_of_gui_access
-/// \section modules__General__List_of_gui_access_PvrTimes PvrTimes
-/// @{
-/// \table_start
-///   \table_h3{ Labels, Type, Description }
+/// \page modules__infolabels_boolean_conditions
 ///   \table_row3{   <b>`PVR.EpgEventIcon`</b>,
 ///                  \anchor PVR_EpgEventIcon
 ///                  _string_,
-///     Returns the icon of the currently playing epg event, if any.
+///     @return The icon of the currently playing epg event\, if any.
+///     <p><hr>
+///     @skinning_v18 **[New Infolabel]** \link PVR_EpgEventIcon `PVR_EpgEventIcon`\endlink
+///     <p>  
 ///   }
 ///   \table_row3{   <b>`PVR.EpgEventDuration`</b>,
 ///                  \anchor PVR_EpgEventDuration
 ///                  _string_,
-///     Returns the duration of the currently playing epg event in the
-///     format hh:mm:ss. hh: will be omitted if hours value is zero.
+///     @return The duration of the currently playing epg event in the
+///     format <b>hh:mm:ss</b>.
+///     @note <b>hh:</b> will be omitted if hours value is zero.
+///     <p><hr>
+///     @skinning_v18 **[Infolabel Updated]** \link PVR_EpgEventDuration `PVR.EpgEventDuration`\endlink replaces
+///     the old `PVR.Duration` infolabel.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.EpgEventDuration(format)`</b>,
 ///                  \anchor PVR_EpgEventDuration_format
 ///                  _string_,
-///     Returns the duration of the currently playing epg event in different formats:
-///     Hours (hh)\, minutes (mm) or seconds (ss).
-///     Also supported: (hh:mm)\, (mm:ss)\, (hh:mm:ss)\, (h:mm:ss).
-///     Added with Leia: (secs)\, (mins)\, (hours) for total time values and (m).
-///     Example: 3661 seconds => h=1\, hh=01\, m=1\, mm=01\, ss=01\, hours=1\, mins=61\, secs=3661
+///     @return The duration of the currently playing EPG event in different formats.
+///     @param format [opt] The format of the return time value.
+///     See \ref TIME_FORMAT for the list of possible values.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.EpgEventElapsedTime`</b>,
 ///                  \anchor PVR_EpgEventElapsedTime
 ///                  _string_,
-///     Returns the time of the current position of the currently playing epg event in the
-///     format hh:mm:ss. hh: will be omitted if hours value is zero.
+///     @return the time of the current position of the currently playing epg event in the
+///     format <b>hh:mm:ss</b>.
+///     @note <b>hh:</b> will be omitted if hours value is zero.
+///     <p><hr>
+///     @skinning_v18 **[Infolabel Updated]** \link PVR_EpgEventElapsedTime `PVR.EpgEventElapsedTime`\endlink replaces
+///     the old `PVR.Time` infolabel.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.EpgEventElapsedTime(format)`</b>,
 ///                  \anchor PVR_EpgEventElapsedTime_format
 ///                  _string_,
-///     Returns the time of the current position of the currently playing epg event in different formats:
-///     Hours (hh)\, minutes (mm) or seconds (ss).
-///     Also supported: (hh:mm)\, (mm:ss)\, (hh:mm:ss)\, (h:mm:ss).
-///     Added with Leia: (secs)\, (mins)\, (hours) for total time values and (m).
-///     Example: 3661 seconds => h=1\, hh=01\, m=1\, mm=01\, ss=01\, hours=1\, mins=61\, secs=3661
+///     @return The time of the current position of the currently playing epg event in different formats.
+///     @param format [opt] The format of the return time value.
+///     See \ref TIME_FORMAT for the list of possible values.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.EpgEventRemainingTime`</b>,
 ///                  \anchor PVR_EpgEventRemainingTime
 ///                  _string_,
-///     Returns the remaining time for currently playing epg event in the
-///     format hh:mm:ss. hh: will be omitted if hours value is zero.
+///     @return The remaining time for currently playing epg event in the
+///     format <b>hh:mm:ss</b>.
+///     @note <b>hh:</b> will be omitted if hours value is zero.
+///     <p><hr>
+///     @skinning_v18 **[New Infolabel]** \link PVR_EpgEventRemainingTime `PVR.EpgEventRemainingTime`\endlink
+///     <p>  
 ///   }
 ///   \table_row3{   <b>`PVR.EpgEventRemainingTime(format)`</b>,
 ///                  \anchor PVR_EpgEventRemainingTime_format
 ///                  _string_,
-///     Returns the remaining time for currently playing epg event in different formats:
-///     Hours (hh)\, minutes (mm) or seconds (ss).
-///     Also supported: (hh:mm)\, (mm:ss)\, (hh:mm:ss)\, (h:mm:ss).
-///     Added with Leia: (secs)\, (mins)\, (hours) for total time values and (m).
-///     Example: 3661 seconds => h=1\, hh=01\, m=1\, mm=01\, ss=01\, hours=1\, mins=61\, secs=3661
+///     @return The remaining time for currently playing epg event in different formats.
+///     @param format [opt] The format of the return time value.
+///     See \ref TIME_FORMAT for the list of possible values.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.EpgEventSeekTime`</b>,
 ///                  \anchor PVR_EpgEventSeekTime
 ///                  _string_,
-///     Returns the time the user is seeking within the currently playing epg event in the
-///     format hh:mm:ss. hh: will be omitted if hours value is zero.
+///     @return The time the user is seeking within the currently playing epg event in the
+///     format <b>hh:mm:ss</b>.
+///     @note <b>hh:</b> will be omitted if hours value is zero.
+///     <p><hr>
+///     @skinning_v18 **[New Infolabel]** \link PVR_EpgEventSeekTime `PVR.EpgEventSeekTime`\endlink
+///     <p>  
 ///   }
 ///   \table_row3{   <b>`PVR.EpgEventSeekTime(format)`</b>,
 ///                  \anchor PVR_EpgEventSeekTime_format
 ///                  _string_,
-///     Returns the time the user is seeking within the currently playing epg event in different formats:
-///     Hours (hh)\, minutes (mm) or seconds (ss). When 12 hour clock is used
-///     (xx) will return AM/PM. Also supported: (hh:mm)\, (mm:ss)\, (hh:mm:ss)\, (h:mm:ss).
-///     Added with Leia: (secs)\, (mins)\, (hours) for total time values and (m).
-///     Example: 3661 seconds => h=1\, hh=01\, m=1\, mm=01\, ss=01\, hours=1\, mins=61\, secs=3661
+///     @return The time the user is seeking within the currently playing epg event in different formats.
+///     @param format [opt] The format of the return time value.
+///     See \ref TIME_FORMAT for the list of possible values.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.EpgEventFinishTime`</b>,
 ///                  \anchor PVR_EpgEventFinishTime
 ///                  _string_,
-///     Returns the time the currently playing epg event will end in the
-///     format hh:mm:ss. hh: will be omitted if hours value is zero.
+///     @return The time the currently playing epg event will end in the
+///     format <b>hh:mm:ss</b>.
+///     @note <b>hh:</b> will be omitted if hours value is zero.
+///     <p><hr>
+///     @skinning_v18 **[New Infolabel]** \link PVR_EpgEventFinishTime `PVR.EpgEventFinishTime`\endlink
+///     <p>  
 ///   }
 ///   \table_row3{   <b>`PVR.EpgEventFinishTime(format)`</b>,
 ///                  \anchor PVR_EpgEventFinishTime_format
 ///                  _string_,
-///     Returns the time the currently playing epg event will end in different formats:
-///     Hours (hh)\, minutes (mm) or seconds (ss). When 12 hour clock is used
-///     (xx) will return AM/PM. Also supported: (hh:mm)\, (mm:ss)\, (hh:mm:ss)\, (h:mm:ss).
-///     Added with Leia: (secs)\, (mins)\, (hours) for total time values and (m).
-///     Example: 3661 seconds => h=1\, hh=01\, m=1\, mm=01\, ss=01\, hours=1\, mins=61\, secs=3661
+///     Returns the time the currently playing epg event will end in different formats.
+///     @param format [opt] The format of the return time value.
+///     See \ref TIME_FORMAT for the list of possible values.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.TimeShiftStart`</b>,
 ///                  \anchor PVR_TimeShiftStart
 ///                  _string_,
-///     Returns the start time of the timeshift buffer in the
-///     format hh:mm:ss. hh: will be omitted if hours value is zero.
+///     @return The start time of the timeshift buffer in the
+///     format <b>hh:mm:ss</b>.
+///     @note <b>hh:</b> will be omitted if hours value is zero.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.TimeShiftStart(format)`</b>,
 ///                  \anchor PVR_TimeShiftStart_format
 ///                  _string_,
-///     Returns the start time of the timeshift buffer in different formats:
-///     Hours (hh)\, minutes (mm) or seconds (ss). When 12 hour clock is used
-///     (xx) will return AM/PM. Also supported: (hh:mm)\, (mm:ss)\, (hh:mm:ss)\, (h:mm:ss).
-///     Added with Leia: (secs)\, (mins)\, (hours) for total time values and (m).
-///     Example: 3661 seconds => h=1\, hh=01\, m=1\, mm=01\, ss=01\, hours=1\, mins=61\, secs=3661
+///     Returns the start time of the timeshift buffer in different formats.
+///     @param format [opt] The format of the return time value.
+///     See \ref TIME_FORMAT for the list of possible values.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.TimeShiftEnd`</b>,
 ///                  \anchor PVR_TimeShiftEnd
 ///                  _string_,
-///     Returns the end time of the timeshift buffer in the
-///     format hh:mm:ss. hh: will be omitted if hours value is zero.
+///     @return The end time of the timeshift buffer in the
+///     format <b>hh:mm:ss</b>.
+///     @note <b>hh:</b> will be omitted if hours value is zero.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.TimeShiftEnd(format)`</b>,
 ///                  \anchor PVR_TimeShiftEnd_format
 ///                  _string_,
-///     Returns the end time of the timeshift buffer in different formats:
-///     Hours (hh)\, minutes (mm) or seconds (ss). When 12 hour clock is used
-///     (xx) will return AM/PM. Also supported: (hh:mm)\, (mm:ss)\, (hh:mm:ss)\, (h:mm:ss).
-///     Added with Leia: (secs)\, (mins)\, (hours) for total time values and (m).
-///     Example: 3661 seconds => h=1\, hh=01\, m=1\, mm=01\, ss=01\, hours=1\, mins=61\, secs=3661
+///     @return The end time of the timeshift buffer in different formats.
+///     @param format [opt] The format of the return time value.
+///     See \ref TIME_FORMAT for the list of possible values.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.TimeShiftCur`</b>,
 ///                  \anchor PVR_TimeShiftCur
 ///                  _string_,
-///     Returns the current playback time within the timeshift buffer in the
-///     format hh:mm:ss. hh: will be omitted if hours value is zero.
+///     @return The current playback time within the timeshift buffer in the
+///     format <b>hh:mm:ss</b>.
+///     @note <b>hh:</b> will be omitted if hours value is zero.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.TimeShiftCur(format)`</b>,
 ///                  \anchor PVR_TimeShiftCur_format
 ///                  _string_,
-///     Returns the current playback time within the timeshift buffer in different formats:
-///     Hours (hh)\, minutes (mm) or seconds (ss). When 12 hour clock is used
-///     (xx) will return AM/PM. Also supported: (hh:mm)\, (mm:ss)\, (hh:mm:ss)\, (h:mm:ss).
-///     Added with Leia: (secs)\, (mins)\, (hours) for total time values and (m).
-///     Example: 3661 seconds => h=1\, hh=01\, m=1\, mm=01\, ss=01\, hours=1\, mins=61\, secs=3661
+///     Returns the current playback time within the timeshift buffer in different formats.
+///     @param format [opt] The format of the return time value.
+///     See \ref TIME_FORMAT for the list of possible values.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.TimeShiftOffset`</b>,
 ///                  \anchor PVR_TimeShiftOffset
 ///                  _string_,
-///     Returns the delta of timeshifted time to actual time in the
-///     format hh:mm:ss. hh: will be omitted if hours value is zero.
+///     @return The delta of timeshifted time to actual time in the
+///     format <b>hh:mm:ss</b>.
+///     @note <b>hh:</b> will be omitted if hours value is zero.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.TimeShiftOffset(format)`</b>,
 ///                  \anchor PVR_TimeShiftOffset_format
 ///                  _string_,
-///     Returns the delta of timeshifted time to actual time in different formats:
-///     Hours (hh)\, minutes (mm) or seconds (ss).
-///     Also supported: (hh:mm)\, (mm:ss)\, (hh:mm:ss)\, (h:mm:ss).
-///     Added with Leia: (secs)\, (mins)\, (hours) for total time values and (m).
-///     Example: 3661 seconds => h=1\, hh=01\, m=1\, mm=01\, ss=01\, hours=1\, mins=61\, secs=3661
+///     Returns the delta of timeshifted time to actual time in different formats.
+///     @param format [opt] The format of the return time value.
+///     See \ref TIME_FORMAT for the list of possible values.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.TimeshiftProgressDuration`</b>,
 ///                  \anchor PVR_TimeshiftProgressDuration
 ///                  _string_,
-///     Returns the duration of the PVR timeshift progress in the
-///     format hh:mm:ss. hh: will be omitted if hours value is zero.
+///     @return the duration of the PVR timeshift progress in the
+///     format <b>hh:mm:ss</b>.
+///     @note <b>hh:</b> will be omitted if hours value is zero.
+///     <p><hr>
+///     @skinning_v18 **[New Infolabel]** \link PVR_TimeshiftProgressDuration `PVR.TimeshiftProgressDuration`\endlink
+///     <p>  
 ///   }
 ///   \table_row3{   <b>`PVR.TimeshiftProgressDuration(format)`</b>,
 ///                  \anchor PVR_TimeshiftProgressDuration_format
 ///                  _string_,
-///     Returns the duration of the PVR timeshift progress in different formats:
-///     Hours (hh)\, minutes (mm) or seconds (ss).
-///     Also supported: (hh:mm)\, (mm:ss)\, (hh:mm:ss)\, (h:mm:ss).
-///     Added with Leia: (secs)\, (mins)\, (hours) for total time values and (m).
-///     Example: 3661 seconds => h=1\, hh=01\, m=1\, mm=01\, ss=01\, hours=1\, mins=61\, secs=3661
+///     @return The duration of the PVR timeshift progress in different formats.
+///     @param format [opt] The format of the return time value.
+///     See \ref TIME_FORMAT for the list of possible values.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.TimeshiftProgressStartTime`</b>,
 ///                  \anchor PVR_TimeshiftProgressStartTime
 ///                  _string_,
-///     Returns the start time of the PVR timeshift progress in the
-///     format hh:mm:ss. hh: will be omitted if hours value is zero.
+///     @return The start time of the PVR timeshift progress in the
+///     format <b>hh:mm:ss</b>.
+///     @note <b>hh:</b> will be omitted if hours value is zero.
+///     <p><hr>
+///     @skinning_v18 **[New Infolabel]** \link PVR_TimeshiftProgressStartTime `PVR.TimeshiftProgressStartTime`\endlink
+///     <p>  
 ///   }
 ///   \table_row3{   <b>`PVR.TimeshiftProgressStartTime(format)`</b>,
 ///                  \anchor PVR_TimeshiftProgressStartTime_format
 ///                  _string_,
-///     Returns the start time of the PVR timeshift progress in different formats:
-///     Hours (hh)\, minutes (mm) or seconds (ss).
-///     Also supported: (hh:mm)\, (mm:ss)\, (hh:mm:ss)\, (h:mm:ss).
-///     Added with Leia: (secs)\, (mins)\, (hours) for total time values and (m).
-///     Example: 3661 seconds => h=1\, hh=01\, m=1\, mm=01\, ss=01\, hours=1\, mins=61\, secs=3661
+///     @return The start time of the PVR timeshift progress in different formats.
+///     @param format [opt] The format of the return time value.
+///     See \ref TIME_FORMAT for the list of possible values.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`PVR.TimeshiftProgressEndTime`</b>,
 ///                  \anchor PVR_TimeshiftProgressEndTime
 ///                  _string_,
-///     Returns the end time of the PVR timeshift progress in the
-///     format hh:mm:ss. hh: will be omitted if hours value is zero.
+///     @return The end time of the PVR timeshift progress in the
+///     format <b>hh:mm:ss</b>.
+///     @note hh: will be omitted if hours value is zero.
+///     <p><hr>
+///     @skinning_v18 **[New Infolabel]** \link PVR_TimeshiftProgressEndTime `PVR.TimeshiftProgressEndTime`\endlink
+///     <p>  
 ///   }
 ///   \table_row3{   <b>`PVR.TimeshiftProgressEndTime(format)`</b>,
 ///                  \anchor PVR_TimeshiftProgressEndTime_format
 ///                  _string_,
-///     Returns the end time of the PVR timeshift progress in different formats:
-///     Hours (hh)\, minutes (mm) or seconds (ss).
-///     Also supported: (hh:mm)\, (mm:ss)\, (hh:mm:ss)\, (h:mm:ss).
-///     Added with Leia: (secs)\, (mins)\, (hours) for total time values and (m).
-///     Example: 3661 seconds => h=1\, hh=01\, m=1\, mm=01\, ss=01\, hours=1\, mins=61\, secs=3661
+///     @return The end time of the PVR timeshift progress in different formats.
+///     @param format [opt] The format of the return time value.
+///     See \ref TIME_FORMAT for the list of possible values.
+///     <p>
 ///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
-/// @}
 const infomap pvr_times[] =      {{ "epgeventicon",           PVR_EPG_EVENT_ICON },
                                   { "epgeventduration",       PVR_EPG_EVENT_DURATION },
                                   { "epgeventelapsedtime",    PVR_EPG_EVENT_ELAPSED_TIME },
@@ -4932,105 +7008,150 @@ const infomap pvr_times[] =      {{ "epgeventicon",           PVR_EPG_EVENT_ICON
                                   { "timeshiftprogressstarttime", PVR_TIMESHIFT_PROGRESS_START_TIME },
                                   { "timeshiftprogressendtime",   PVR_TIMESHIFT_PROGRESS_END_TIME }};
 
-/// \page modules__General__List_of_gui_access
-/// \section modules__General__List_of_gui_access_RDS Radio RDS
-/// \note Only be supported on PVR Radio where the related add-on client can
-/// bring it.
-/// @{
+/// \page modules__infolabels_boolean_conditions
+/// \subsection modules__infolabels_boolean_conditions_RDS RDS
+/// @note Only supported if both the PVR backend and the Kodi client support RDS.
+/// 
 /// \table_start
 ///   \table_h3{ Labels, Type, Description }
 ///   \table_row3{   <b>`RDS.HasRds`</b>,
 ///                  \anchor RDS_HasRds
 ///                  _boolean_,
-///     Returns true if RDS is present
+///     @return **True** if RDS is present.
+///     <p><hr>
+///     @skinning_v16 **[New Boolean Condition]** \link RDS_HasRds `RDS.HasRds`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`RDS.HasRadioText`</b>,
 ///                  \anchor RDS_HasRadioText
 ///                  _boolean_,
-///     Returns true if RDS contains also Radiotext
+///     @return **True** if RDS contains also Radiotext.
+///     <p><hr>
+///     @skinning_v16 **[New Boolean Condition]** \link RDS_HasRadioText `RDS.HasRadioText`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`RDS.HasRadioTextPlus`</b>,
 ///                  \anchor RDS_HasRadioTextPlus
 ///                  _boolean_,
-///     Returns true if RDS with Radiotext contains also the plus information
+///     @return **True** if RDS with Radiotext contains also the plus information.
+///     <p><hr>
+///     @skinning_v16 **[New Boolean Condition]** \link RDS_HasRadioTextPlus `RDS.HasRadioTextPlus`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`RDS.HasHotline`</b>,
 ///                  \anchor RDS_HasHotline
 ///                  _boolean_,
-///     Returns true if a hotline phone number is present\n
-///     (Only be available on RadiotextPlus)
+///     @return **True** if a hotline phone number is present.
+///     @note Only available on RadiotextPlus
+///     <p><hr>
+///     @skinning_v16 **[New Boolean Condition]** \link RDS_HasHotline `RDS.HasHotline`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`RDS.HasStudio`</b>,
 ///                  \anchor RDS_HasStudio
 ///                  _boolean_,
-///     Returns true if a studio name is present\n
-///     (Only be available on RadiotextPlus)
+///     @return **True** if a studio name is present.
+///     @note Only available on RadiotextPlus
+///     <p><hr>
+///     @skinning_v16 **[New Boolean Condition]** \link RDS_HasStudio `RDS.HasStudio`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`RDS.AudioLanguage`</b>,
 ///                  \anchor RDS_AudioLanguage
 ///                  _string_,
-///     The from RDS reported audio language of channel
+///     @return The RDS reported audio language of the channel.
+///     <p><hr>
+///     @skinning_v16 **[New Infolabel]** \link RDS_AudioLanguage `RDS.AudioLanguage`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`RDS.ChannelCountry`</b>,
 ///                  \anchor RDS_ChannelCountry
 ///                  _string_,
-///     Country where the radio channel is sended
+///     @return The country where the radio channel is broadcasted.
+///     <p><hr>
+///     @skinning_v16 **[New Infolabel]** \link RDS_ChannelCountry `RDS.ChannelCountry`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`RDS.GetLine(number)`</b>,
 ///                  \anchor RDS_GetLine
 ///                  _string_,
-///     Returns the last sended RDS text messages on given number\, 0 is the
+///     @return The last sent RDS text messages on given number.
+///     @param number - given number for RDS\, 0 is the
 ///     last and 4 rows are supported (0-3)
+///     <p><hr>
+///     @skinning_v16 **[New Infolabel]** \link RDS_GetLine `RDS.GetLine(number)`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`RDS.Title`</b>,
 ///                  \anchor RDS_Title
 ///                  _string_,
-///     Title of item; e.g. track title of an album\n
-///     (Only be available on RadiotextPlus)
+///     @return The title of item; e.g. track title of an album.
+///     @note Only available on RadiotextPlus
+///     <p><hr>
+///     @skinning_v16 **[New Infolabel]** \link RDS_Title `RDS.Title`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`RDS.Artist`</b>,
 ///                  \anchor RDS_Artist
 ///                  _string_,
-///     A person or band/collective generally considered responsible for the work\n
-///     (Only be available on RadiotextPlus)
+///     @return A person or band/collective generally considered responsible for the work.
+///     @note Only available on RadiotextPlus
+///     <p><hr>
+///     @skinning_v16 **[New Infolabel]** \link RDS_Artist `RDS.Artist`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`RDS.Band`</b>,
 ///                  \anchor RDS_Band
 ///                  _string_,
-///     Band/orchestra/accompaniment/musician\n
-///     (Only be available on RadiotextPlus)
+///     @return The band/orchestra/musician.
+///     @note Only available on RadiotextPlus
+///     <p><hr>
+///     @skinning_v16 **[New Infolabel]** \link RDS_Band `RDS.Band`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`RDS.Composer`</b>,
 ///                  \anchor RDS_Composer
 ///                  _string_,
-///     Name of the original composer/author\n
-///     (Only be available on RadiotextPlus)
+///     @return The name of the original composer/author.
+///     @note Only available on RadiotextPlus
+///     <p><hr>
+///     @skinning_v16 **[New Infolabel]** \link RDS_Composer `RDS.Composer`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`RDS.Conductor`</b>,
 ///                  \anchor RDS_Conductor
 ///                  _string_,
-///     The artist(s) who performed the work. In classical music this would be
-///     the conductor\n
-///     (Only be available on RadiotextPlus)
+///     @return The artist(s) who performed the work. In classical music this would be
+///     the conductor.
+///     @note Only available on RadiotextPlus
+///     <p><hr>
+///     @skinning_v16 **[New Infolabel]** \link RDS_Conductor `RDS.Conductor`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`RDS.Album`</b>,
 ///                  \anchor RDS_Album
 ///                  _string_,
-///     The collection name to which this track belongs\n
-///     (Only be available on RadiotextPlus)
+///     @return The album of the song.
+///     @note Only available on RadiotextPlus
+///     <p><hr>
+///     @skinning_v16 **[New Infolabel]** \link RDS_Album `RDS.Album`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`RDS.TrackNumber`</b>,
 ///                  \anchor RDS_TrackNumber
 ///                  _string_,
-///     The track number of the item on the album on which it was originally
-///     released.\n
-///     (Only be available on RadiotextPlus)
+///     @return The track number of the item on the album on which it was originally
+///     released.
+///     @note Only be available on RadiotextPlus
+///     <p><hr>
+///     @skinning_v16 **[New Infolabel]** \link RDS_TrackNumber `RDS.TrackNumber`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`RDS.RadioStyle`</b>,
 ///                  \anchor RDS_RadioStyle
 ///                  _string_,
-///     The from radio channel used style of currently played part\, is always
-///     updated on changed\, e.g "popmusic" to "news" or "weather"...
+///     @return The style of current played radio channel\, it is always
+///     updated once the style changes\, e.g "popmusic" to "news" or "weather"...
 ///     | RDS                     | RBDS                    |
 ///     |:------------------------|:------------------------|
 ///     | none                    | none                    |
@@ -5067,187 +7188,276 @@ const infomap pvr_times[] =      {{ "epgeventicon",           PVR_EPG_EVENT_ICON
 ///     | alarm-alarm             | alarm-alarm             |
 ///     @note "alarm-alarm" is normally not used from radio stations\, is thought
 ///     to inform about horrible messages who are needed asap to all people.
+///     <p><hr>
+///     @skinning_v16 **[New Infolabel]** \link RDS_RadioStyle `RDS.RadioStyle`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`RDS.Comment`</b>,
 ///                  \anchor RDS_Comment
 ///                  _string_,
-///     Radio station comment string if available\n
-///     (Only be available on RadiotextPlus)
+///     @return The radio station comment string if available.
+///     @note Only available on RadiotextPlus)
+///     <p><hr>
+///     @skinning_v16 **[New Infolabel]** \link RDS_Comment `RDS.Comment`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`RDS.InfoNews`</b>,
 ///                  \anchor RDS_InfoNews
 ///                  _string_,
-///     Message / headline (if available)\n
-///     (Only be available on RadiotextPlus)
+///     @return The message / headline (if available).
+///     @note Only available on RadiotextPlus
+///     <p><hr>
+///     @skinning_v16 **[New Infolabel]** \link RDS_InfoNews `RDS.InfoNews`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`RDS.InfoNewsLocal`</b>,
 ///                  \anchor RDS_InfoNewsLocal
 ///                  _string_,
-///     Local information news sended from radio channel (if available)\n
-///     (Only be available on RadiotextPlus)
+///     @return The local information news sended from radio channel (if available).
+///     @note Only available on RadiotextPlus
+///     <p><hr>
+///     @skinning_v16 **[New Infolabel]** \link RDS_InfoNewsLocal `RDS.InfoNewsLocal`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`RDS.InfoStock`</b>,
 ///                  \anchor RDS_InfoStock
 ///                  _string_,
-///     Quote information; either as one part or as several distinct parts:
-///     "name 99latest value 99change 99high 99low 99volume" (if available)\n
-///     (Only be available on RadiotextPlus)
+///     @return The stock information; either as one part or as several distinct parts:
+///     "name 99latest value 99change 99high 99low 99volume" (if available).
+///     @note Only available on RadiotextPlus
+///     <p><hr>
+///     @skinning_v16 **[New Infolabel]** \link RDS_InfoStock `RDS.InfoStock`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`RDS.InfoStockSize`</b>,
 ///                  \anchor RDS_InfoStockSize
 ///                  _string_,
-///     Number of rows present in stock information\n
-///     (Only be available on RadiotextPlus)
+///     @return The number of rows present in stock information.
+///     @note Only available on RadiotextPlus
+///     <p><hr>
+///     @skinning_v16 **[New Infolabel]** \link RDS_InfoStockSize `RDS.InfoStockSize`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`RDS.InfoSport`</b>,
 ///                  \anchor RDS_InfoSport
 ///                  _string_,
-///     Result of a game; either as one part or as several distinct parts:
-///     "match 99result"\, e.g. "Bayern München : Borussia 995:5"  (if available)\n
-///     (Only be available on RadiotextPlus)
+///     @return The result of a match; either as one part or as several distinct parts:
+///     "match 99result"\, e.g. "Bayern München : Borussia 995:5"  (if available).
+///     @note Only available on RadiotextPlus
+///     <p><hr>
+///     @skinning_v16 **[New Infolabel]** \link RDS_InfoSport `RDS.InfoSport`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`RDS.InfoSportSize`</b>,
 ///                  \anchor RDS_InfoSportSize
 ///                  _string_,
-///     Number of rows present in sport information\n
-///     (Only be available on RadiotextPlus)
+///     @return The number of rows present in sport information.
+///     @note Only available on RadiotextPlus
+///     <p><hr>
+///     @skinning_v16 **[New Infolabel]** \link RDS_InfoSportSize `RDS.InfoSportSize`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`RDS.InfoLottery`</b>,
 ///                  \anchor RDS_InfoLottery
 ///                  _string_,
-///     Raffle / lottery: "key word 99values" (if available)\n
-///     (Only be available on RadiotextPlus)
+///     @return The raffle / lottery: "key word 99values" (if available).
+///     @note Only available on RadiotextPlus
+///     <p><hr>
+///     @skinning_v16 **[New Infolabel]** \link RDS_InfoLottery `RDS.InfoLottery`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`RDS.InfoLotterySize`</b>,
 ///                  \anchor RDS_InfoLotterySize
 ///                  _string_,
-///     Number of rows present in lottery information\n
-///     (Only be available on RadiotextPlus)
+///     @return The number of rows present in lottery information.
+///     @note Only available on RadiotextPlus
+///     <p><hr>
+///     @skinning_v16 **[New Infolabel]** \link RDS_InfoLotterySize `RDS.InfoLotterySize`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`RDS.InfoWeather`</b>,
 ///                  \anchor RDS_InfoWeather
 ///                  _string_,
-///     Weather informations sended from radio channel (if available)\n
-///     (Only be available on RadiotextPlus)
+///     @return The weather information (if available).
+///     @note Only available on RadiotextPlus
+///     <p><hr>
+///     @skinning_v16 **[New Infolabel]** \link RDS_InfoWeather `RDS.InfoWeather`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`RDS.InfoWeatherSize`</b>,
 ///                  \anchor RDS_InfoWeatherSize
 ///                  _string_,
-///     Number of rows present in weather information\n
-///     (Only be available on RadiotextPlus)
+///     @return The number of rows present in weather information.
+///     @note Only available on RadiotextPlus
+///     <p><hr>
+///     @skinning_v16 **[New Infolabel]** \link RDS_InfoWeatherSize `RDS.InfoWeatherSize`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`RDS.InfoCinema`</b>,
 ///                  \anchor RDS_InfoCinema
 ///                  _string_,
-///     Information about movies in cinema (if available)\n
-///     (Only be available on RadiotextPlus)
+///     @return The information about movies in cinema (if available).
+///     @note Only available on RadiotextPlus
+///     <p><hr>
+///     @skinning_v16 **[New Infolabel]** \link RDS_InfoCinema `RDS.InfoCinema`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`RDS.InfoCinemaSize`</b>,
 ///                  \anchor RDS_InfoCinemaSize
 ///                  _string_,
-///     Number of rows present in cinema information\n
-///     (Only be available on RadiotextPlus)
+///     @return The number of rows present in cinema information.
+///     @note Only available on RadiotextPlus
+///     <p><hr>
+///     @skinning_v16 **[New Infolabel]** \link RDS_InfoCinemaSize `RDS.InfoCinemaSize`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`RDS.InfoHoroscope`</b>,
 ///                  \anchor RDS_InfoHoroscope
 ///                  _string_,
-///     Horoscope; either as one part or as two distinct parts:
-///     "key word 99text"\, e.g. "sign of the zodiac 99blablabla" (if available)\n
-///     (Only be available on RadiotextPlus)
+///     @return The horoscope; either as one part or as two distinct parts:
+///     "key word 99text"\, e.g. "sign of the zodiac 99blablabla" (if available).
+///     @note Only available on RadiotextPlus
+///     <p><hr>
+///     @skinning_v16 **[New Infolabel]** \link RDS_InfoHoroscope `RDS.InfoHoroscope`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`RDS.InfoHoroscopeSize`</b>,
 ///                  \anchor RDS_InfoHoroscopeSize
 ///                  _string_,
-///     Number of rows present in horoscope information\n
-///     (Only be available on RadiotextPlus)
+///     @return The Number of rows present in horoscope information.
+///     @note Only available on RadiotextPlus
+///     <p><hr>
+///     @skinning_v16 **[New Infolabel]** \link RDS_InfoHoroscopeSize `RDS.InfoHoroscopeSize`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`RDS.InfoOther`</b>,
 ///                  \anchor RDS_InfoOther
 ///                  _string_,
-///     Other information\, not especially specified: "key word 99info" (if available)\n
-///     (Only be available on RadiotextPlus)
+///     @return Other information\, not especially specified: "key word 99info" (if available).
+///     @note Only available on RadiotextPlus
+///     <p><hr>
+///     @skinning_v16 **[New Infolabel]** \link RDS_InfoOther `RDS.InfoOther`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`RDS.InfoOtherSize`</b>,
 ///                  \anchor RDS_InfoOtherSize
 ///                  _string_,
-///     Number of rows present with other informations\n
-///     (Only be available on RadiotextPlus)
+///     @return The number of rows present with other information.
+///     @note Only available on RadiotextPlus
+///     <p><hr>
+///     @skinning_v16 **[New Infolabel]** \link RDS_InfoOtherSize `RDS.InfoOtherSize`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`RDS.ProgStation`</b>,
 ///                  \anchor RDS_ProgStation
 ///                  _string_,
-///     Name of the radio channel
-///     @note becomes also be set from epg if from RDS not available
+///     @return The name of the radio channel.
+///     @note becomes also set from epg if it is not available from RDS
+///     <p><hr>
+///     @skinning_v16 **[New Infolabel]** \link RDS_ProgStation `RDS.ProgStation`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`RDS.ProgNow`</b>,
 ///                  \anchor RDS_ProgNow
 ///                  _string_,
-///     Now played program name
+///     @return The now playing program name.
 ///     @note becomes also be set from epg if from RDS not available
+///     <p><hr>
+///     @skinning_v16 **[New Infolabel]** \link RDS_ProgNow `RDS.ProgNow`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`RDS.ProgNext`</b>,
 ///                  \anchor RDS_ProgNext
 ///                  _string_,
-///     Next played program name (if available)
+///     @return The next played program name (if available).
 ///     @note becomes also be set from epg if from RDS not available
+///     <p><hr>
+///     @skinning_v16 **[New Infolabel]** \link RDS_ProgNext `RDS.ProgNext`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`RDS.ProgHost`</b>,
 ///                  \anchor RDS_ProgHost
 ///                  _string_,
-///     Name of the host of the radio show
+///     @return The name of the host of the radio show.
+///     <p><hr>
+///     @skinning_v16 **[New Infolabel]** \link RDS_ProgHost `RDS.ProgHost`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`RDS.ProgEditStaff`</b>,
 ///                  \anchor RDS_ProgEditStaff
 ///                  _string_,
-///     Name of the editorial staff; e.g. name of editorial journalist\n
-///     (Only be available on RadiotextPlus)
+///     @return The name of the editorial staff; e.g. name of editorial journalist.
+///     @note Only available on RadiotextPlus
+///     <p><hr>
+///     @skinning_v16 **[New Infolabel]** \link RDS_ProgEditStaff `RDS.ProgEditStaff`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`RDS.ProgHomepage`</b>,
 ///                  \anchor RDS_ProgHomepage
 ///                  _string_,
-///     Link to radio station homepage\n
-///     (Only be available on RadiotextPlus)
+///     @return The Link to radio station homepage
+///     @note Only available on RadiotextPlus
+///     <p><hr>
+///     @skinning_v16 **[New Infolabel]** \link RDS_ProgHomepage `RDS.ProgHomepage`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`RDS.ProgStyle`</b>,
 ///                  \anchor RDS_ProgStyle
 ///                  _string_,
-///     Human readable string about radiostyle defined from RDS or RBDS
+///     @return A human readable string about radiostyle defined from RDS or RBDS.
+///     <p><hr>
+///     @skinning_v16 **[New Infolabel]** \link RDS_ProgStyle `RDS.ProgStyle`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`RDS.PhoneHotline`</b>,
 ///                  \anchor RDS_PhoneHotline
 ///                  _string_,
-///     The telephone number of the radio station's hotline\n
-///     (Only be available on RadiotextPlus)
+///     @return The telephone number of the radio station's hotline.
+///     @note Only available on RadiotextPlus
+///     <p><hr>
+///     @skinning_v16 **[New Infolabel]** \link RDS_PhoneHotline `RDS.PhoneHotline`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`RDS.PhoneStudio`</b>,
 ///                  \anchor RDS_PhoneStudio
 ///                  _string_,
-///     The telephone number of the radio station's studio\n
-///     (Only be available on RadiotextPlus)
+///     @return The telephone number of the radio station's studio.
+///     @note Only available on RadiotextPlus
+///     <p><hr>
+///     @skinning_v16 **[New Infolabel]** \link RDS_PhoneStudio `RDS.PhoneStudio`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`RDS.SmsStudio`</b>,
 ///                  \anchor RDS_SmsStudio
 ///                  _string_,
-///     The sms number of the radio stations studio (to send directly a sms to
-///     the studio) (if available)\n
-///     (Only be available on RadiotextPlus)
+///     @return The sms number of the radio stations studio (to send directly a sms to
+///     the studio) (if available).
+///     @note Only available on RadiotextPlus
+///     <p><hr>
+///     @skinning_v16 **[New Infolabel]** \link RDS_SmsStudio `RDS.SmsStudio`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`RDS.EmailHotline`</b>,
 ///                  \anchor RDS_EmailHotline
 ///                  _string_,
-///     The email address of the radio stations hotline (if available)\n
-///     (Only be available on RadiotextPlus)
+///     @return The email address of the radio stations hotline (if available).
+///     @note Only available on RadiotextPlus
+///     <p><hr>
+///     @skinning_v16 **[New Infolabel]** \link RDS_EmailHotline `RDS.EmailHotline`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`RDS.EmailStudio`</b>,
 ///                  \anchor RDS_EmailStudio
 ///                  _string_,
-///     The email address of the radio stations studio (if available)\n
-///     (Only be available on RadiotextPlus)
+///     @return The email address of the radio station's studio (if available).
+///     @note Only available on RadiotextPlus
+///     <p><hr>
+///     @skinning_v16 **[New Infolabel]** \link RDS_EmailStudio `RDS.EmailStudio`\endlink
+///     <p>
 ///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
-/// @}
 const infomap rds[] =            {{ "hasrds",                   RDS_HAS_RDS },
                                   { "hasradiotext",             RDS_HAS_RADIOTEXT },
                                   { "hasradiotextplus",         RDS_HAS_RADIOTEXT_PLUS },
@@ -5294,428 +7504,596 @@ const infomap rds[] =            {{ "hasrds",                   RDS_HAS_RDS },
                                   { "hashotline",               RDS_HAS_HOTLINE_DATA },
                                   { "hasstudio",                RDS_HAS_STUDIO_DATA }};
 
-/// \page modules__General__List_of_gui_access
-/// \section modules__General__List_of_gui_access_slideshow Slideshow
-/// @{
+/// \page modules__infolabels_boolean_conditions
+/// \subsection modules__infolabels_boolean_conditions_slideshow Slideshow
 /// \table_start
 ///   \table_h3{ Labels, Type, Description }
 ///   \table_row3{   <b>`Slideshow.IsActive`</b>,
 ///                  \anchor Slideshow_IsActive
 ///                  _boolean_,
-///     Returns true if the picture slideshow is running
+///     @return **True** if the picture slideshow is running.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Slideshow.IsPaused`</b>,
 ///                  \anchor Slideshow_IsPaused
 ///                  _boolean_,
-///     Returns true if the picture slideshow is paused
+///     @return **True** if the picture slideshow is paused.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Slideshow.IsRandom`</b>,
 ///                  \anchor Slideshow_IsRandom
 ///                  _boolean_,
-///     Returns true if the picture slideshow is in random mode
+///     @return **True** if the picture slideshow is in random mode.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Slideshow.IsVideo`</b>,
 ///                  \anchor Slideshow_IsVideo
 ///                  _boolean_,
-///     Returns true if the picture slideshow is playing a video
+///     @return **True** if the picture slideshow is playing a video.
+///     <p><hr>
+///     @skinning_v13 **[New Boolean Condition]** \link Slideshow_IsVideo `Slideshow.IsVideo`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Slideshow.Altitude`</b>,
 ///                  \anchor Slideshow_Altitude
 ///                  _string_,
-///     Shows the altitude in meters where the current picture was taken. This
-///     is the value of the EXIF GPSInfo.GPSAltitude tag.
+///     @return The altitude in meters where the current picture was taken.
+///     @note This is the value of the EXIF GPSInfo.GPSAltitude tag.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Slideshow.Aperture`</b>,
 ///                  \anchor Slideshow_Aperture
 ///                  _string_,
-///     Shows the F-stop used to take the current picture. This is the value of
-///     the EXIF FNumber tag (hex code 0x829D).
+///     @return The F-stop used to take the current picture.
+///     @note This is the value of the EXIF FNumber tag (hex code 0x829D).
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Slideshow.Author`</b>,
 ///                  \anchor Slideshow_Author
 ///                  _string_,
-///     Shows the name of the person involved in writing about the current
-///     picture. This is the value of the IPTC Writer tag (hex code 0x7A).
+///     @return The name of the person involved in writing about the current
+///     picture. 
+///     @note This is the value of the IPTC Writer tag (hex code 0x7A).
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link Slideshow_Author `Slideshow.Author`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Slideshow.Byline`</b>,
 ///                  \anchor Slideshow_Byline
 ///                  _string_,
-///     Shows the name of the person who created the current picture. This is
-///     the value of the IPTC Byline tag (hex code 0x50).
+///     @return The name of the person who created the current picture. 
+///     @note This is the value of the IPTC Byline tag (hex code 0x50).
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link Slideshow_Byline `Slideshow.Byline`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Slideshow.BylineTitle`</b>,
 ///                  \anchor Slideshow_BylineTitle
 ///                  _string_,
-///     Shows the title of the person who created the current picture. This is
-///     the value of the IPTC BylineTitle tag (hex code 0x55).
+///     @return The title of the person who created the current picture. 
+///     @note This is the value of the IPTC BylineTitle tag (hex code 0x55).
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link Slideshow_BylineTitle `Slideshow.BylineTitle`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Slideshow.CameraMake`</b>,
 ///                  \anchor Slideshow_CameraMake
 ///                  _string_,
-///     Shows the manufacturer of the camera used to take the current picture.
-///     This is the value of the EXIF Make tag (hex code 0x010F).
+///     @return The manufacturer of the camera used to take the current picture.
+///     @note This is the value of the EXIF Make tag (hex code 0x010F).
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Slideshow.CameraModel`</b>,
 ///                  \anchor Slideshow_CameraModel
 ///                  _string_,
-///     Shows the manufacturer's model name or number of the camera used to take
-///     the current picture. This is the value of the EXIF Model tag (hex code
-///     0x0110).
+///     @return The manufacturer's model name or number of the camera used to take
+///     the current picture. 
+///     @note This is the value of the EXIF Model tag (hex code 0x0110).
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Slideshow.Caption`</b>,
 ///                  \anchor Slideshow_Caption
 ///                  _string_,
-///     Shows a description of the current picture. This is the value of the
-///     IPTC Caption tag (hex code 0x78).
+///     @return A description of the current picture. 
+///     @note This is the value of the IPTC Caption tag (hex code 0x78).
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Slideshow.Category`</b>,
 ///                  \anchor Slideshow_Category
 ///                  _string_,
-///     Shows the subject of the current picture as a category code. This is the
-///     value of the IPTC Category tag (hex code 0x0F).
+///     @return The subject of the current picture as a category code.
+///     @note This is the value of the IPTC Category tag (hex code 0x0F).
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link Slideshow_Category `Slideshow.Category`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Slideshow.CCDWidth`</b>,
 ///                  \anchor Slideshow_CCDWidth
 ///                  _string_,
-///     Shows the width of the CCD in the camera used to take the current
-///     picture. This is calculated from three EXIF tags (0xA002 * 0xA210 / 0xA20e).
+///     @return The width of the CCD in the camera used to take the current
+///     picture. 
+///     @note This is calculated from three EXIF tags (0xA002 * 0xA210 / 0xA20e).
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link Slideshow_CCDWidth `Slideshow.CCDWidth`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Slideshow.City`</b>,
 ///                  \anchor Slideshow_City
 ///                  _string_,
-///     Shows the city where the current picture was taken. This is the value of
-///     the IPTC City tag (hex code 0x5A).
+///     @return The city where the current picture was taken.
+///     @note This is the value of the IPTC City tag (hex code 0x5A).
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link Slideshow_City `Slideshow.City`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Slideshow.Colour`</b>,
 ///                  \anchor Slideshow_Colour
 ///                  _string_,
-///     Shows whether the current picture is "Colour" or "Black and White".
+///     @return the colour of the picture. It can have one of the following values:
+///       - <b>"Colour"</b>
+///       - <b>"Black and White"</b>
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link Slideshow_Colour `Slideshow.Colour`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Slideshow.CopyrightNotice`</b>,
 ///                  \anchor Slideshow_CopyrightNotice
 ///                  _string_,
-///     Shows the copyright notice of the current picture. This is the value of
-///     the IPTC Copyright tag (hex code 0x74).
+///     @return The copyright notice of the current picture. 
+///     @note This is the value of the IPTC Copyright tag (hex code 0x74).
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link Slideshow_CopyrightNotice `Slideshow.CopyrightNotice`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Slideshow.Country`</b>,
 ///                  \anchor Slideshow_Country
 ///                  _string_,
-///     Shows the full name of the country where the current picture was taken.
-///     This is the value of the IPTC CountryName tag (hex code 0x65).
+///     @return The full name of the country where the current picture was taken.
+///     @note This is the value of the IPTC CountryName tag (hex code 0x65).
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link Slideshow_Country `Slideshow.Country`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Slideshow.CountryCode`</b>,
 ///                  \anchor Slideshow_CountryCode
 ///                  _string_,
-///     Shows the country code of the country where the current picture was
-///     taken. This is the value of the IPTC CountryCode tag (hex code 0x64).
+///     @return The country code of the country where the current picture was
+///     taken. 
+///     @note This is the value of the IPTC CountryCode tag (hex code 0x64).
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link Slideshow_CountryCode `Slideshow.CountryCode`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Slideshow.Credit`</b>,
 ///                  \anchor Slideshow_Credit
 ///                  _string_,
-///     Shows who provided the current picture. This is the value of the IPTC
-///     Credit tag (hex code 0x6E).
+///     @return Who provided the current picture. 
+///     @note This is the value of the IPTC Credit tag (hex code 0x6E).
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link Slideshow_Credit `Slideshow.Credit`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Slideshow.DigitalZoom`</b>,
 ///                  \anchor Slideshow_DigitalZoom
 ///                  _string_,
-///     Shows the digital zoom ratio when the current picture was taken. This is
-///     the value of the EXIF .DigitalZoomRatio tag (hex code 0xA404).
+///     @return The digital zoom ratio when the current picture was taken.
+///     @note This is the value of the EXIF .DigitalZoomRatio tag (hex code 0xA404).
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link Slideshow_DigitalZoom `Slideshow.DigitalZoom`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Slideshow.EXIFComment`</b>,
 ///                  \anchor Slideshow_EXIFComment
 ///                  _string_,
-///     Shows a description of the current picture. This is the value of the
-///     EXIF User Comment tag (hex code 0x9286). This is the same value as
-///     Slideshow.SlideComment.
+///     @return A description of the current picture. 
+///     @note This is the value of the EXIF User Comment tag (hex code 0x9286). 
+///     This is the same value as \ref Slideshow_SlideComment "Slideshow.SlideComment".
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Slideshow.EXIFDate`</b>,
 ///                  \anchor Slideshow_EXIFDate
 ///                  _string_,
-///     Shows the localized date of the current picture. The short form of the
-///     date is used. The value of the EXIF DateTimeOriginal tag (hex code
+///     @return The localized date of the current picture. The short form of the
+///     date is used.
+///     @note The value of the EXIF DateTimeOriginal tag (hex code
 ///     0x9003) is preferred. If the DateTimeOriginal tag is not found\, the
 ///     value of DateTimeDigitized (hex code 0x9004) or of DateTime (hex code
 ///     0x0132) might be used.
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link Slideshow_EXIFDate `Slideshow.EXIFDate`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Slideshow.EXIFDescription`</b>,
 ///                  \anchor Slideshow_EXIFDescription
 ///                  _string_,
-///     Shows a short description of the current picture. The SlideComment\,
-///     EXIFComment or Caption values might contain a longer description. This
-///     is the value of the EXIF ImageDescription tag (hex code 0x010E).
+///     @return A short description of the current picture. The SlideComment\,
+///     EXIFComment or Caption values might contain a longer description. 
+///     @note This is the value of the EXIF ImageDescription tag (hex code 0x010E).
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Slideshow.EXIFSoftware`</b>,
 ///                  \anchor Slideshow_EXIFSoftware
 ///                  _string_,
-///     Shows the name and version of the firmware used by the camera that took
-///     the current picture. This is the value of the EXIF Software tag (hex
-///     code 0x0131).
+///     @return The name and version of the firmware used by the camera that took
+///     the current picture. 
+///     @note This is the value of the EXIF Software tag (hex code 0x0131).
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Slideshow.EXIFTime`</b>,
 ///                  \anchor Slideshow_EXIFTime
 ///                  _string_,
-///     Shows the date/timestamp of the current picture. The localized short
-///     form of the date and time is used. The value of the EXIF
-///     DateTimeOriginal tag (hex code 0x9003) is preferred. If the
-///     DateTimeOriginal tag is not found\, the value of DateTimeDigitized (hex
-///     code 0x9004) or of DateTime (hex code 0x0132) might be used.
+///     @return The date/timestamp of the current picture. The localized short
+///     form of the date and time is used. 
+///     @note The value of the EXIF DateTimeOriginal tag (hex code 0x9003) is 
+///     preferred. If the DateTimeOriginal tag is not found\, the value of 
+///     DateTimeDigitized (hex code 0x9004) or of DateTime (hex code 0x0132) 
+///     might be used.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Slideshow.Exposure`</b>,
 ///                  \anchor Slideshow_Exposure
 ///                  _string_,
-///     Shows the class of the program used by the camera to set exposure when
-///     the current picture was taken. Values include "Manual"\,
-///     "Program (Auto)"\, "Aperture priority (Semi-Auto)"\, "Shutter priority
-///     (semi-auto)"\, etc. This is the value of the EXIF ExposureProgram tag
+///     @return The class of the program used by the camera to set exposure when
+///     the current picture was taken. Values include:
+///      - <b>"Manual"</b>
+///      - <b>"Program (Auto)"</b>
+///      - <b>"Aperture priority (Semi-Auto)"</b>
+///      - <b>"Shutter priority (semi-auto)"</b>
+///      - etc... 
+///     @note This is the value of the EXIF ExposureProgram tag
 ///     (hex code 0x8822).
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link Slideshow_Exposure `Slideshow.Exposure`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Slideshow.ExposureBias`</b>,
 ///                  \anchor Slideshow_ExposureBias
 ///                  _string_,
-///     Shows the exposure bias of the current picture. Typically this is a
-///     number between -99.99 and 99.99. This is the value of the EXIF
-///     ExposureBiasValue tag (hex code 0x9204).
+///     @return The exposure bias of the current picture. Typically this is a
+///     number between -99.99 and 99.99.
+///     @note This is the value of the EXIF ExposureBiasValue tag (hex code 0x9204).
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link Slideshow_ExposureBias `Slideshow.ExposureBias`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Slideshow.ExposureMode`</b>,
 ///                  \anchor Slideshow_ExposureMode
 ///                  _string_,
-///     Shows the exposure mode of the current picture. The possible values are
-///     "Automatic"\, "Manual"\, and "Auto bracketing". This is the value of the
-///     EXIF ExposureMode tag (hex code 0xA402).
+///     @return The exposure mode of the current picture. The possible values are:
+///      - <b>"Automatic"</b>
+///      - <b>"Manual"</b>
+///      - <b>"Auto bracketing"</b>
+///     @note This is the value of the EXIF ExposureMode tag (hex code 0xA402).
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Slideshow.ExposureTime`</b>,
 ///                  \anchor Slideshow_ExposureTime
 ///                  _string_,
-///     Shows the exposure time of the current picture\, in seconds. This is the
-///     value of the EXIF ExposureTime tag (hex code 0x829A). If the
-///     ExposureTime tag is not found\, the ShutterSpeedValue tag (hex code
+///     @return The exposure time of the current picture\, in seconds.
+///     @note This is the value of the EXIF ExposureTime tag (hex code 0x829A).
+///     If the ExposureTime tag is not found\, the ShutterSpeedValue tag (hex code
 ///     0x9201) might be used.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Slideshow.Filedate`</b>,
 ///                  \anchor Slideshow_Filedate
 ///                  _string_,
-///     Shows the file date of the current picture
+///     @return The file date of the current picture.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Slideshow.Filename`</b>,
 ///                  \anchor Slideshow_Filename
 ///                  _string_,
-///     Shows the file name of the current picture
+///     @return The file name of the current picture.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Slideshow.Filesize`</b>,
 ///                  \anchor Slideshow_Filesize
 ///                  _string_,
-///     Shows the file size of the current picture
+///     @return The file size of the current picture.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Slideshow.FlashUsed`</b>,
 ///                  \anchor Slideshow_FlashUsed
 ///                  _string_,
-///     Shows the status of flash when the current picture was taken. The value
-///     will be either "Yes" or "No"\, and might include additional information.
-///     This is the value of the EXIF Flash tag (hex code 0x9209).
+///     @return The status of flash when the current picture was taken. The value
+///     will be either <b>"Yes"</b> or <b>"No"</b>\, and might include additional information.
+///     @note This is the value of the EXIF Flash tag (hex code 0x9209).
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link Slideshow_FlashUsed `Slideshow.FlashUsed`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Slideshow.FocalLength`</b>,
 ///                  \anchor Slideshow_FocalLength
 ///                  _string_,
-///     Shows the focal length of the lens\, in mm. This is the value of the EXIF
-///     FocalLength tag (hex code 0x920A).
+///     @return The focal length of the lens\, in mm. 
+///     @note This is the value of the EXIF FocalLength tag (hex code 0x920A).
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Slideshow.FocusDistance`</b>,
 ///                  \anchor Slideshow_FocusDistance
 ///                  _string_,
-///     Shows the distance to the subject\, in meters. This is the value of the
-///     EXIF SubjectDistance tag (hex code 0x9206).
+///     @return The distance to the subject\, in meters.
+///     @note This is the value of the EXIF SubjectDistance tag (hex code 0x9206).
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Slideshow.Headline`</b>,
 ///                  \anchor Slideshow_Headline
 ///                  _string_,
-///     Shows a synopsis of the contents of the current picture. This is the
-///     value of the IPTC Headline tag (hex code 0x69).
+///     @return A synopsis of the contents of the current picture.
+///     @note This is the value of the IPTC Headline tag (hex code 0x69).
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link Slideshow_Headline `Slideshow.Headline`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Slideshow.ImageType`</b>,
 ///                  \anchor Slideshow_ImageType
 ///                  _string_,
-///     Shows the color components of the current picture. This is the value of
-///     the IPTC ImageType tag (hex code 0x82).
+///     @return The color components of the current picture.
+///     @note This is the value of the IPTC ImageType tag (hex code 0x82).
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link Slideshow_ImageType `Slideshow.ImageType`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Slideshow.IPTCDate`</b>,
 ///                  \anchor Slideshow_IPTCDate
 ///                  _string_,
-///     Shows the date when the intellectual content of the current picture was
-///     created\, rather than when the picture was created. This is the value of
-///     the IPTC DateCreated tag (hex code 0x37).
+///     @return The date when the intellectual content of the current picture was
+///     created\, rather than when the picture was created.
+///     @note This is the value of the IPTC DateCreated tag (hex code 0x37).
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Slideshow.ISOEquivalence`</b>,
 ///                  \anchor Slideshow_ISOEquivalence
 ///                  _string_,
-///     Shows the ISO speed of the camera when the current picture was taken.
-///     This is the value of the EXIF ISOSpeedRatings tag (hex code 0x8827).
+///     @return The ISO speed of the camera when the current picture was taken.
+///     @note This is the value of the EXIF ISOSpeedRatings tag (hex code 0x8827).
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Slideshow.Keywords`</b>,
 ///                  \anchor Slideshow_Keywords
 ///                  _string_,
-///     Shows keywords assigned to the current picture. This is the value of the
-///     IPTC Keywords tag (hex code 0x19).
+///     @return The keywords assigned to the current picture.
+///     @note This is the value of the IPTC Keywords tag (hex code 0x19).
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Slideshow.Latitude`</b>,
 ///                  \anchor Slideshow_Latitude
 ///                  _string_,
-///     Shows the latitude where the current picture was taken (degrees\,
-///     minutes\, seconds North or South). This is the value of the EXIF
-///     GPSInfo.GPSLatitude and GPSInfo.GPSLatitudeRef tags.
+///     @return The latitude where the current picture was taken (degrees\,
+///     minutes\, seconds North or South). 
+///     @note This is the value of the EXIF GPSInfo.GPSLatitude and 
+///     GPSInfo.GPSLatitudeRef tags.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Slideshow.LightSource`</b>,
 ///                  \anchor Slideshow_LightSource
 ///                  _string_,
-///     Shows the kind of light source when the picture was taken. Possible
-///     values include "Daylight"\, "Fluorescent"\, "Incandescent"\, etc. This is
-///     the value of the EXIF LightSource tag (hex code 0x9208).
+///     @return The kind of light source when the picture was taken. Possible
+///     values include:
+///      - <b>"Daylight"</b>
+///      - <b>"Fluorescent"</b>
+///      - <b>"Incandescent"</b>
+///      - etc...
+///     @note This is the value of the EXIF LightSource tag (hex code 0x9208).
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link Slideshow_LightSource `Slideshow.LightSource`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Slideshow.LongEXIFDate`</b>,
 ///                  \anchor Slideshow_LongEXIFDate
 ///                  _string_,
-///     Shows only the localized date of the current picture. The long form of
-///     the date is used. The value of the EXIF DateTimeOriginal tag (hex code
+///     @return Only the localized date of the current picture. The long form of
+///     the date is used. 
+///     @note The value of the EXIF DateTimeOriginal tag (hex code
 ///     0x9003) is preferred. If the DateTimeOriginal tag is not found\, the
 ///     value of DateTimeDigitized (hex code 0x9004) or of DateTime (hex code
 ///     0x0132) might be used.
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link Slideshow_LongEXIFDate `Slideshow.LongEXIFDate`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Slideshow.LongEXIFTime`</b>,
 ///                  \anchor Slideshow_LongEXIFTime
 ///                  _string_,
-///     Shows the date/timestamp of the current picture. The localized long form
-///     of the date and time is used. The value of the EXIF DateTimeOriginal tag
+///     @return The date/timestamp of the current picture. The localized long form
+///     of the date and time is used.
+///     @note The value of the EXIF DateTimeOriginal tag
 ///     (hex code 0x9003) is preferred. if the DateTimeOriginal tag is not found\,
 ///     the value of DateTimeDigitized (hex code 0x9004) or of DateTime (hex
 ///     code 0x0132) might be used.
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link Slideshow_LongEXIFTime `Slideshow.LongEXIFTime`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Slideshow.Longitude`</b>,
 ///                  \anchor Slideshow_Longitude
 ///                  _string_,
-///     Shows the longitude where the current picture was taken (degrees\,
-///     minutes\, seconds East or West). This is the value of the EXIF
-///     GPSInfo.GPSLongitude and GPSInfo.GPSLongitudeRef tags.
+///     @return The longitude where the current picture was taken (degrees\,
+///     minutes\, seconds East or West).
+///     @note This is the value of the EXIF GPSInfo.GPSLongitude and 
+///     GPSInfo.GPSLongitudeRef tags.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Slideshow.MeteringMode`</b>,
 ///                  \anchor Slideshow_MeteringMode
 ///                  _string_,
-///     Shows the metering mode used when the current picture was taken. The
-///     possible values are "Center weight"\, "Spot"\, or "Matrix". This is the
-///     value of the EXIF MeteringMode tag (hex code 0x9207).
+///     @return The metering mode used when the current picture was taken. The
+///     possible values are:
+///      - <b>"Center weight"</b>
+///      - <b>"Spot"</b>
+///      - <b>"Matrix"</b>
+///     @note This is the value of the EXIF MeteringMode tag (hex code 0x9207).
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link Slideshow_MeteringMode `Slideshow.MeteringMode`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Slideshow.ObjectName`</b>,
 ///                  \anchor Slideshow_ObjectName
 ///                  _string_,
-///     Shows a shorthand reference for the current picture. This is the value
-///     of the IPTC ObjectName tag (hex code 0x05).
+///     @return a shorthand reference for the current picture.
+///     @note This is the value of the IPTC ObjectName tag (hex code 0x05).
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link Slideshow_ObjectName `Slideshow.ObjectName`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Slideshow.Orientation`</b>,
 ///                  \anchor Slideshow_Orientation
 ///                  _string_,
-///     Shows the orientation of the current picture. Possible values are "Top
-///     Left"\, "Top Right"\, "Left Top"\, "Right Bottom"\, etc. This is the value
-///     of the EXIF Orientation tag (hex code 0x0112).
+///     @return The orientation of the current picture. Possible values are:
+///      - <b>"Top Left"</b>
+///      - <b>"Top Right"</b>
+///      - <b>"Left Top"</b>
+///      - <b>"Right Bottom"</b>
+///      - etc...
+///     @note This is the value of the EXIF Orientation tag (hex code 0x0112).
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link Slideshow_Orientation `Slideshow.Orientation`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Slideshow.Path`</b>,
 ///                  \anchor Slideshow_Path
 ///                  _string_,
-///     Shows the file path of the current picture
+///     @return The file path of the current picture.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Slideshow.Process`</b>,
 ///                  \anchor Slideshow_Process
 ///                  _string_,
-///     Shows the process used to compress the current picture
+///     @return The process used to compress the current picture.
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link Slideshow_Process `Slideshow.Process`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Slideshow.ReferenceService`</b>,
 ///                  \anchor Slideshow_ReferenceService
 ///                  _string_,
-///     Shows the Service Identifier of a prior envelope to which the current
-///     picture refers. This is the value of the IPTC ReferenceService tag (hex
-///     code 0x2D).
+///     @return The Service Identifier of a prior envelope to which the current
+///     picture refers.
+///     @note This is the value of the IPTC ReferenceService tag (hex code 0x2D).
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link Slideshow_ReferenceService `Slideshow.ReferenceService`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Slideshow.Resolution`</b>,
 ///                  \anchor Slideshow_Resolution
 ///                  _string_,
-///     Shows the dimensions of the current picture (Width x Height)
+///     @return The dimensions of the current picture (Width x Height)
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Slideshow.SlideComment`</b>,
 ///                  \anchor Slideshow_SlideComment
 ///                  _string_,
-///     Shows a description of the current picture. This is the value of the
-///     EXIF User Comment tag (hex code 0x9286). This is the same value as
-///     Slideshow.EXIFComment.
+///     @return A description of the current picture. 
+///     @note This is the value of the EXIF User Comment tag (hex code 0x9286). 
+///     This is the same value as \ref Slideshow_EXIFComment "Slideshow.EXIFComment".
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Slideshow.SlideIndex`</b>,
 ///                  \anchor Slideshow_SlideIndex
 ///                  _string_,
-///     Shows the slide index of the current picture
+///     @return The slide index of the current picture.
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Slideshow.Source`</b>,
 ///                  \anchor Slideshow_Source
 ///                  _string_,
-///     Shows the original owner of the current picture. This is the value of
-///     the IPTC Source tag (hex code 0x73).
+///     @return The original owner of the current picture.
+///     @note This is the value of the IPTC Source tag (hex code 0x73).
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link Slideshow_Source `Slideshow.Source`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Slideshow.SpecialInstructions`</b>,
 ///                  \anchor Slideshow_SpecialInstructions
 ///                  _string_,
-///     Shows other editorial instructions concerning the use of the current
-///     picture. This is the value of the IPTC SpecialInstructions tag (hex
-///     code 0x28).
+///     @return Other editorial instructions concerning the use of the current
+///     picture.
+///     @note This is the value of the IPTC SpecialInstructions tag (hex code 0x28).
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link Slideshow_SpecialInstructions `Slideshow.SpecialInstructions`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Slideshow.State`</b>,
 ///                  \anchor Slideshow_State
 ///                  _string_,
-///     Shows the State/Province where the current picture was taken. This is
-///     the value of the IPTC ProvinceState tag (hex code 0x5F).
+///     @return The State/Province where the current picture was taken.
+///     @note This is the value of the IPTC ProvinceState tag (hex code 0x5F).
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link Slideshow_State `Slideshow.State`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Slideshow.Sublocation`</b>,
 ///                  \anchor Slideshow_Sublocation
 ///                  _string_,
-///     Shows the location within a city where the current picture was taken -
-///     might indicate the nearest landmark. This is the value of the IPTC
-///     SubLocation tag (hex code 0x5C).
+///     @return The location within a city where the current picture was taken -
+///     might indicate the nearest landmark. 
+///     @note This is the value of the IPTC SubLocation tag (hex code 0x5C).
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link Slideshow_Sublocation `Slideshow.Sublocation`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Slideshow.SupplementalCategories`</b>,
 ///                  \anchor Slideshow_SupplementalCategories
 ///                  _string_,
-///     Shows supplemental category codes to further refine the subject of the
-///     current picture. This is the value of the IPTC SuppCategory tag (hex
+///     @return The supplemental category codes to further refine the subject of the
+///     current picture. 
+///     @note This is the value of the IPTC SuppCategory tag (hex
 ///     code 0x14).
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link Slideshow_SupplementalCategories `Slideshow.SupplementalCategories`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Slideshow.TimeCreated`</b>,
 ///                  \anchor Slideshow_TimeCreated
 ///                  _string_,
-///     Shows the time when the intellectual content of the current picture was
-///     created\, rather than when the picture was created. This is the value of
-///     the IPTC TimeCreated tag (hex code 0x3C).
+///     @return The time when the intellectual content of the current picture was
+///     created\, rather than when the picture was created. 
+///     @note This is the value of the IPTC TimeCreated tag (hex code 0x3C).
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link Slideshow_TimeCreated `Slideshow.TimeCreated`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Slideshow.TransmissionReference`</b>,
 ///                  \anchor Slideshow_TransmissionReference
 ///                  _string_,
-///     Shows a code representing the location of original transmission of the
-///     current picture. This is the value of the IPTC TransmissionReference tag
+///     @return A code representing the location of original transmission of the
+///     current picture. 
+///     @note This is the value of the IPTC TransmissionReference tag
 ///     (hex code 0x67).
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link Slideshow_TransmissionReference `Slideshow.TransmissionReference`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Slideshow.Urgency`</b>,
 ///                  \anchor Slideshow_Urgency
 ///                  _string_,
-///     Shows the urgency of the current picture. Values are 1-9. The 1 is most
-///     urgent. Some image management programs use urgency to indicate picture
+///     @return The urgency of the current picture. Values are 1-9. The 1 is most
+///     urgent. 
+///     @note Some image management programs use urgency to indicate picture
 ///     rating\, where urgency 1 is 5 stars and urgency 5 is 1 star. Urgencies
 ///     6-9 are not used for rating. This is the value of the IPTC Urgency tag
 ///     (hex code 0x0A).
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link Slideshow_Urgency `Slideshow.Urgency`\endlink
+///     <p>
 ///   }
 ///   \table_row3{   <b>`Slideshow.WhiteBalance`</b>,
 ///                  \anchor Slideshow_WhiteBalance
 ///                  _string_,
-///     Shows the white balance mode set when the current picture was taken.
-///     The possible values are "Manual" and "Auto". This is the value of the
-///     EXIF WhiteBalance tag (hex code 0xA403).
+///     @return The white balance mode set when the current picture was taken.
+///     The possible values are:
+///       - <b>"Manual"</b>
+///       - <b>"Auto"</b>
+///     <p>
+///     @note This is the value of the EXIF WhiteBalance tag (hex code 0xA403).
+///     <p><hr>
+///     @skinning_v13 **[New Infolabel]** \link Slideshow_WhiteBalance `Slideshow.WhiteBalance`\endlink
+///     <p>
 ///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
-/// @}
 const infomap slideshow[] =      {{ "ispaused",               SLIDESHOW_ISPAUSED },
                                   { "isactive",               SLIDESHOW_ISACTIVE },
                                   { "isvideo",                SLIDESHOW_ISVIDEO },
@@ -5782,8 +8160,249 @@ const infomap slideshow[] =      {{ "ispaused",               SLIDESHOW_ISPAUSED
                                   { "imagetype",              SLIDESHOW_IPTC_IMAGETYPE },
 };
 
+/// \page modules__infolabels_boolean_conditions
+/// \subsection modules__infolabels_boolean_conditions_Library Library
+/// @todo Make this annotate an array of infobools/labels to make it easier to track
+/// \table_start
+///   \table_h3{ Labels, Type, Description }
+///   \table_row3{   <b>`Library.IsScanning`</b>,
+///                  \anchor Library_IsScanning
+///                  _boolean_,
+///     @return **True** if the library is being scanned.
+///     <p>
+///   }
+///   \table_row3{   <b>`Library.IsScanningVideo`</b>,
+///                  \anchor Library_IsScanningVideo
+///                  _boolean_,
+///     @return **True** if the video library is being scanned.
+///     <p>
+///   }
+///   \table_row3{   <b>`Library.IsScanningMusic`</b>,
+///                  \anchor Library_IsScanningMusic
+///                  _boolean_,
+///     @return **True** if the music library is being scanned.
+///     <p>
+///   }
+///   \table_row3{   <b>`Library.HasContent(music)`</b>,
+///                  \anchor Library_HasContent_Music
+///                  _boolean_,
+///     @return **True** if the library has music content.
+///     <p>
+///   }
+///   \table_row3{   <b>`Library.HasContent(video)`</b>,
+///                  \anchor Library_HasContent_Video
+///                  _boolean_,
+///     @return **True** if the library has video content.
+///     <p>
+///   }
+///   \table_row3{   <b>`Library.HasContent(movies)`</b>,
+///                  \anchor Library_HasContent_Movies
+///                  _boolean_,
+///     @return **True** if the library has movies.
+///     <p>
+///   }
+///   \table_row3{   <b>`Library.HasContent(tvshows)`</b>,
+///                  \anchor Library_HasContent_TVShows
+///                  _boolean_,
+///     @return **True** if the library has tvshows.
+///     <p>
+///   }
+///   \table_row3{   <b>`Library.HasContent(musicvideos)`</b>,
+///                  \anchor Library_HasContent_MusicVideos
+///                  _boolean_,
+///     @return **True** if the library has music videos.
+///     <p>
+///   }
+///   \table_row3{   <b>`Library.HasContent(moviesets)`</b>,
+///                  \anchor Library_HasContent_MovieSets
+///                  _boolean_,
+///     @return **True** if the library has movie sets.
+///     <p>
+///   }
+///   \table_row3{   <b>`Library.HasContent(singles)`</b>,
+///                  \anchor Library_HasContent_Singles
+///                  _boolean_,
+///     @return **True** if the library has singles.
+///     <p>
+///   }
+///   \table_row3{   <b>`Library.HasContent(compilations)`</b>,
+///                  \anchor Library_HasContent_Compilations
+///                  _boolean_,
+///     @return **True** if the library has compilations.
+///     <p>
+///   }
+///   \table_row3{   <b>`Library.HasContent(Role.Composer)`</b>,
+///                  \anchor Library_HasContent_Role_Composer
+///                  _boolean_,
+///     @return **True** if there are songs in the library which have composers.
+///     <p><hr>
+///     @skinning_v17 **[New Boolean Condition]** \link Library_HasContent_Role_Composer `Library.HasContent(Role.Composer)`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`Library.HasContent(Role.Conductor)`</b>,
+///                  \anchor Library_HasContent_Role_Conductor
+///                  _boolean_,
+///     @return **True** if there are songs in the library which have a conductor.
+///     <p><hr>
+///     @skinning_v17 **[New Boolean Condition]** \link Library_HasContent_Role_Conductor `Library.HasContent(Role.Conductor)`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`Library.HasContent(Role.Orchestra)`</b>,
+///                  \anchor Library_HasContent_Role_Orchestra
+///                  _boolean_,
+///     @return **True** if there are songs in the library which have an orchestra.
+///     <p><hr>
+///     @skinning_v17 **[New Boolean Condition]** \link Library_HasContent_Role_Orchestra `Library.HasContent(Role.Orchestra)`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`Library.HasContent(Role.Lyricist)`</b>,
+///                  \anchor Library_HasContent_Role_Lyricist
+///                  _boolean_,
+///     @return **True** if there are songs in the library which have a lyricist.
+///     <p><hr>
+///     @skinning_v17 **[New Boolean Condition]** \link Library_HasContent_Role_Lyricist `Library.HasContent(Role.Lyricist)`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`Library.HasContent(Role.Remixer)`</b>,
+///                  \anchor Library_HasContent_Role_Remixer
+///                  _boolean_,
+///     @return **True** if there are songs in the library which have a remixer.
+///     <p><hr>
+///     @skinning_v17 **[New Boolean Condition]** \link Library_HasContent_Role_Remixer `Library.HasContent(Role.Remixer)`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`Library.HasContent(Role.Arranger)`</b>,
+///                  \anchor Library_HasContent_Role_Remixer
+///                  _boolean_,
+///     @return **True** if there are songs in the library which have an arranger.
+///     <p><hr>
+///     @skinning_v17 **[New Boolean Condition]** \link Library_HasContent_Role_Remixer `Library.HasContent(Role.Arranger)`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`Library.HasContent(Role.Engineer)`</b>,
+///                  \anchor Library_HasContent_Role_Engineer
+///                  _boolean_,
+///     @return **True** if there are songs in the library which have an engineer.
+///     <p><hr>
+///     @skinning_v17 **[New Boolean Condition]** \link Library_HasContent_Role_Engineer `Library.HasContent(Role.Engineer)`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`Library.HasContent(Role.Producer)`</b>,
+///                  \anchor Library_HasContent_Role_Producer
+///                  _boolean_,
+///     @return **True** if there are songs in the library which have an producer.
+///     <p><hr>
+///     @skinning_v17 **[New Boolean Condition]** \link Library_HasContent_Role_Producer `Library.HasContent(Role.Producer)`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`Library.HasContent(Role.DJMixer)`</b>,
+///                  \anchor Library_HasContent_Role_DJMixer
+///                  _boolean_,
+///     @return **True** if there are songs in the library which have a DJMixer.
+///     <p><hr>
+///     @skinning_v17 **[New Boolean Condition]** \link Library_HasContent_Role_DJMixer `Library.HasContent(Role.DJMixer)`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`Library.HasContent(Role.Mixer)`</b>,
+///                  \anchor Library_HasContent_Role_Mixer
+///                  _boolean_,
+///     @return **True** if there are songs in the library which have a mixer.
+///     <p><hr>
+///     @skinning_v17 **[New Boolean Condition]** \link Library_HasContent_Role_Mixer `Library.HasContent(Role.Mixer)`\endlink
+///     <p>
+///   }
+/// \table_end
+///
+/// -----------------------------------------------------------------------------
+
+
+/// \page modules__infolabels_boolean_conditions
+/// \section modules_rm_infolabels_booleans Additional revision history for Infolabels and Boolean Conditions
+/// <hr>
+/// \subsection modules_rm_infolabels_booleans_v18 Kodi v18 (Leia)
+///
+/// @skinning_v18 **[Removed Infolabels]** The following infolabels have been removed:
+///   - `Listitem.Property(artistthumbs)`, `Listitem.Property(artistthumb)` - use 
+/// \link ListItem_Art_Type `ListItem.Art(type)`\endlink with <b>albumartist[n].*</b> or <b>artist[n].*</b> as <b>type</b>
+///   - `ADSP.ActiveStreamType`
+///   - `ADSP.DetectedStreamType`
+///   - `ADSP.MasterName`
+///   - `ADSP.MasterInfo`
+///   - `ADSP.MasterOwnIcon`
+///   - `ADSP.MasterOverrideIcon`
+///   - `ListItem.ChannelNumber`, `ListItem.SubChannelNumber`, `MusicPlayer.ChannelNumber`, 
+/// `MusicPlayer.SubChannelNumber`, `VideoPlayer.ChannelNumber`,
+/// `VideoPlayer.SubChannelNumber`. Please use the following alternatives
+/// \link ListItem_ChannelNumberLabel `ListItem.ChannelNumberLabel` \endlink, 
+/// \link MusicPlayer_ChannelNumberLabel `MusicPlayer.ChannelNumberLabel` \endlink
+/// \link VideoPlayer_ChannelNumberLabel `VideoPlayer.ChannelNumberLabel` \endlink from now on.
+///
+/// @skinning_v18 **[Removed Boolean Conditions]** The following infobools have been removed:
+///   - `System.HasModalDialog`  - use \link System_HasActiveModalDialog `System.HasActiveModalDialog` \endlink and
+///  \link System_HasVisibleModalDialog `System.HasVisibleModalDialog`\endlink instead
+///   - `StringCompare()` - use \link String_IsEqual `String.IsEqual(info,string)`\endlink instead
+///   - `SubString()` - use \link String_Contains `String.Contains(info,substring)`\endlink instead
+///   - `IntegerGreaterThan()` - use \link Integer_IsGreater `Integer.IsGreater(info,number)`\endlink instead
+///   - `IsEmpty()` - use \link String_IsEmpty `String.IsEmpty(info)`\endlink instead
+///   - `System.HasADSP`
+///   - `ADSP.IsActive`
+///   - `ADSP.HasInputResample`
+///   - `ADSP.HasPreProcess`
+///   - `ADSP.HasMasterProcess`
+///   - `ADSP.HasPostProcess`
+///   - `ADSP.HasOutputResample`
+///   - `ADSP.MasterActive`
+/// <hr>
+/// \subsection modules_rm_infolabels_booleans_v17 Kodi v17 (Krypton)
+/// @skinning_v17 **[Removed Infolabels]** The following infolabels have been removed:
+///   - `ListItem.StarRating` - use the other ratings instead.
+///
+/// @skinning_v17 **[Removed Boolean Conditions]** The following infobools have been removed:
+///   - `on`  - use `true` instead
+///   - `off`  - use `false` instead
+///   - `Player.ShowCodec`
+///   - `System.GetBool(pvrmanager.enabled)`
+/// <hr>
+/// \subsection modules_rm_infolabels_booleans_v16 Kodi v16 (Jarvis)
+///  @skinning_v16 **[New Boolean Conditions]** The following infobools were added:
+///    - `System.HasADSP`
+///    - `ADSP.IsActive`
+///    - `ADSP.HasInputResample`
+///    - `ADSP.HasPreProcess`
+///    - `ADSP.HasMasterProcess`
+///    - `ADSP.HasPostProcess`
+///    - `ADSP.HasOutputResample`
+///    - `ADSP.MasterActive`
+///    - `System.HasModalDialog`
+/// 
+///  @skinning_v16 **[New Infolabels]** The following infolabels were added:
+///    - `ADSP.ActiveStreamType`
+///    - `ADSP.DetectedStreamType`
+///    - `ADSP.MasterName`
+///    - `ADSP.MasterInfo`
+///    - `ADSP.MasterOwnIcon`
+///    - `ADSP.MasterOverrideIcon`
+///   
+///   @skinning_v16 **[Removed Boolean Conditions]** The following infobols were removed:
+///    - `System.Platform.ATV2`
+
+/// <hr>
+/// \subsection modules_rm_infolabels_booleans_v15 Kodi v15 (Isengard)
+/// <hr>
+/// \subsection modules_rm_infolabels_booleans_v14 Kodi v14 (Helix)
+///  @skinning_v14 **[New Infolabels]** The following infolabels were added:
+///    - `ListItem.SubChannelNumber`
+///    - `MusicPlayer.SubChannelNumber`
+///    - `VideoPlayer.SubChannelNumber`
+/// 
+/// <hr>
+/// \subsection modules_rm_infolabels_booleans_v13 XBMC v13 (Gotham)
+///   @skinning_v13 **[Removed Infolabels]** The following infolabels were removed:
+///    - `Network.SubnetAddress`
+/// 
+/// <hr>
 // Crazy part, to use tableofcontents must it be on end
-/// \page modules__General__List_of_gui_access
+/// \page modules__infolabels_boolean_conditions
 /// \tableofcontents
 
 CGUIInfoManager::Property::Property(const std::string &property, const std::string &parameters)
@@ -6713,7 +9332,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const CGUIInfo &info, int contextWindow, 
             else
               value = GetImage(info.GetData1(), contextWindow);
 
-            // Handle the case when a value contains time separator (:). This makes IntegerGreaterThan
+            // Handle the case when a value contains time separator (:). This makes Integer.IsGreater
             // useful for Player.Time* members without adding a separate set of members returning time in seconds
             if (value.find_first_of( ':' ) != value.npos)
               integer = StringUtils::TimeStringToSeconds(value);
@@ -6872,7 +9491,7 @@ void CGUIInfoManager::SetCurrentItem(const CFileItem &item)
 
   SetChanged();
   NotifyObservers(ObservableMessageCurrentItem);
-  // todo this should be handled by one of the observers above and forwarded
+  // @todo this should be handled by one of the observers above and forwarded
   CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Info, "xbmc", "OnChanged");
 }
 
