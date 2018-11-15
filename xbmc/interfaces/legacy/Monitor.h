@@ -144,6 +144,8 @@ namespace XBMCAddon
       ///
       /// @note Will be called when library clean has ended and return video or
       /// music to indicate which library is being scanned
+      ///
+      ///
       ///-----------------------------------------------------------------------
       /// @python_v14 New function added.
       ///
@@ -164,6 +166,8 @@ namespace XBMCAddon
       ///
       /// @note Will be called when library clean has ended and return video or
       /// music to indicate which library has been scanned
+      ///
+      ///
       ///-----------------------------------------------------------------------
       /// @python_v14 New function added.
       ///
@@ -209,6 +213,8 @@ namespace XBMCAddon
       ///
       /// @note Will be called when library clean has ended and return video or
       /// music to indicate which library has been cleaned
+      ///
+      ///
       ///-----------------------------------------------------------------------
       /// @python_v14 New function added.
       ///
@@ -229,6 +235,8 @@ namespace XBMCAddon
       ///
       /// @note Will be called when library clean has ended and return video or
       /// music to indicate which library has been finished
+      ///
+      ///
       ///-----------------------------------------------------------------------
       /// @python_v14 New function added.
       ///
@@ -261,6 +269,8 @@ namespace XBMCAddon
       /// @param data                JSON-encoded data of the notification
       ///
       /// @note Will be called when Kodi receives or sends a notification
+      ///
+      ///
       ///-----------------------------------------------------------------------
       /// @python_v13 New function added.
       ///
@@ -280,9 +290,12 @@ namespace XBMCAddon
       ///
       /// @param timeout                 [opt] float - timeout in seconds.
       ///                                Default: no timeout.
+      ///
       /// @return                        True when abort have been requested,
       ///                                False if a timeout is given and the
       ///                                operation times out.
+      ///
+      ///
       ///-----------------------------------------------------------------------
       /// @python_v14 New function added.
       ///
@@ -298,6 +311,8 @@ namespace XBMCAddon
       /// Returns True if abort has been requested.
       ///
       /// @return                        True if requested
+      ///
+      ///
       ///-----------------------------------------------------------------------
       /// @python_v14 New function added.
       ///
