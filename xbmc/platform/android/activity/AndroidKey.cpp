@@ -312,6 +312,10 @@ bool CAndroidKey::onKeyboardEvent(AInputEvent *event)
 
 void CAndroidKey::XBMC_Key(uint8_t code, uint16_t key, uint16_t modifiers, uint16_t unicode, bool up)
 {
+  CWinSystemAndroid* winSystem(dynamic_cast<CWinSystemAndroid*>(CServiceBroker::GetWinSystem()));
+  if (!winSystem)
+    return;
+
   XBMC_Event newEvent;
   memset(&newEvent, 0, sizeof(newEvent));
 
@@ -323,5 +327,5 @@ void CAndroidKey::XBMC_Key(uint8_t code, uint16_t key, uint16_t modifiers, uint1
   newEvent.key.keysym.mod = (XBMCMod)modifiers;
 
   //CXBMCApp::android_printf("XBMC_Key(%u, %u, 0x%04X, %d)", code, key, modifiers, up);
-  dynamic_cast<CWinSystemAndroid*>(CServiceBroker::GetWinSystem())->MessagePush(&newEvent);
+  winSystem->MessagePush(&newEvent);
 }
