@@ -38,7 +38,7 @@ namespace OVERLAY {
     : public COverlay
   {
   public:
-    explicit COverlayImageDX(CDVDOverlayImage* o);
+    explicit COverlayImageDX(CDVDOverlayImage* o, int videoSourceWidth, int videoSourceHeight);
     explicit COverlayImageDX(CDVDOverlaySpu*   o);
     virtual ~COverlayImageDX();
 

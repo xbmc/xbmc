@@ -23,7 +23,7 @@ namespace OVERLAY {
   class COverlayTextureGL : public COverlay
   {
   public:
-     explicit COverlayTextureGL(CDVDOverlayImage* o);
+     explicit COverlayTextureGL(CDVDOverlayImage* o, int videoSourceWidth, int videoSourceHeight);
      explicit COverlayTextureGL(CDVDOverlaySpu* o);
     ~COverlayTextureGL() override;
 

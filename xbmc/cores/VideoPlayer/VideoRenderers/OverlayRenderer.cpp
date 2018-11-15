@@ -435,14 +435,16 @@ COverlay* CRenderer::Convert(CDVDOverlay* o, double pts)
     return r;
   }
 
+  int sourceWidth = m_rs.Width();
+  int sourceHeight = m_rs.Height();
 #if defined(HAS_GL) || defined(HAS_GLES)
   if (o->IsOverlayType(DVDOVERLAY_TYPE_IMAGE))
-    r = new COverlayTextureGL(static_cast<CDVDOverlayImage*>(o));
+    r = new COverlayTextureGL(static_cast<CDVDOverlayImage*>(o), sourceWidth, sourceHeight);
   else if(o->IsOverlayType(DVDOVERLAY_TYPE_SPU))
     r = new COverlayTextureGL(static_cast<CDVDOverlaySpu*>(o));
 #elif defined(HAS_DX)
   if (o->IsOverlayType(DVDOVERLAY_TYPE_IMAGE))
-    r = new COverlayImageDX(static_cast<CDVDOverlayImage*>(o));
+    r = new COverlayImageDX(static_cast<CDVDOverlayImage*>(o), sourceWidth, sourceHeight);
   else if(o->IsOverlayType(DVDOVERLAY_TYPE_SPU))
     r = new COverlayImageDX(static_cast<CDVDOverlaySpu*>(o));
 #endif

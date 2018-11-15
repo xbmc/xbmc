@@ -200,7 +200,7 @@ COverlayImageDX::~COverlayImageDX()
 {
 }
 
-COverlayImageDX::COverlayImageDX(CDVDOverlayImage* o)
+COverlayImageDX::COverlayImageDX(CDVDOverlayImage* o, int videoSourceWidth, int videoSourceHeight)
 {
   uint32_t* rgba;
   int stride;
@@ -229,30 +229,33 @@ COverlayImageDX::COverlayImageDX(CDVDOverlayImage* o)
 
   if(o->source_width && o->source_height)
   {
-    float center_x = (float)(0.5f * o->width  + o->x) / o->source_width;
-    float center_y = (float)(0.5f * o->height + o->y) / o->source_height;
-
-    m_width  = (float)o->width  / o->source_width;
-    m_height = (float)o->height / o->source_height;
-    m_pos    = POSITION_RELATIVE;
-
-#if 0
-    if(center_x > 0.4 && center_x < 0.6
-    && center_y > 0.8 && center_y < 1.0)
+    //simulate sub and video play on 1920x1080 screen, then trans the sub coordinate system align to video
+    float simulateScreenWidth = 1920.0;
+    float simulateScreenHeight = 1080.0;
+    float subScale, simulateVideoWidth, simulateVideoHeight;
+    if ((float)o->source_width / o->source_height > simulateScreenWidth / simulateScreenHeight)
+      subScale = simulateScreenWidth / o->source_width;
+    else
+      subScale = simulateScreenHeight / o->source_height;
+    if ((float)videoSourceWidth / videoSourceHeight > simulateScreenWidth / simulateScreenHeight)
     {
-     /* render bottom aligned to subtitle line */
-      m_align  = ALIGN_SUBTITLE;
-      m_x      = 0.0f;
-      m_y      = - 0.5 * m_height;
+      simulateVideoWidth = simulateScreenWidth;
+      simulateVideoHeight = (float)videoSourceHeight * simulateScreenWidth / videoSourceWidth;
     }
     else
-#endif
     {
-      /* render aligned to screen to avoid cropping problems */
-      m_align  = ALIGN_SCREEN;
-      m_x      = center_x;
-      m_y      = center_y;
+      simulateVideoWidth = (float)videoSourceWidth * simulateScreenHeight / videoSourceHeight;
+      simulateVideoHeight = simulateScreenHeight;
     }
+    float center_x = ((0.5f * o->width  + o->x) * subScale - (o->source_width * subScale - simulateVideoWidth) / 2) / simulateVideoWidth;
+    float center_y = ((0.5f * o->height + o->y) * subScale - (o->source_height * subScale - simulateVideoHeight) / 2) / simulateVideoHeight;
+
+    m_width  = (float)o->width * subScale / simulateVideoWidth;
+    m_height = (float)o->height * subScale / simulateVideoHeight;
+    m_pos    = POSITION_RELATIVE;
+    m_align  = ALIGN_VIDEO;
+    m_x      = center_x;
+    m_y      = center_y;
   }
   else
   {
