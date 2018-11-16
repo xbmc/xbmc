@@ -19,8 +19,9 @@
 
 import platform
 import xbmc
+import xbmcgui
 import lib.common
-from lib.common import log, dialog_yesno
+from lib.common import log, dialog_yesno, localise
 from lib.common import upgrade_message as _upgrademessage
 from lib.common import upgrade_message2 as _upgrademessage2
 
@@ -102,9 +103,27 @@ def _versionchecklinux(packages):
         log("Unsupported platform %s" %platform.dist()[0])
         sys.exit(0)
 
-
+# Python cryptography < 1.7 (still shipped with Ubuntu 16.04) has issues with
+# pyOpenSSL integration, leading to all sorts of weird bugs - check here to save
+# on some troubleshooting. This check may be removed in the future (when switching
+# to Python3?)
+# See https://github.com/pyca/pyopenssl/issues/542
+def _checkcryptography():
+    ver = None
+    try:
+        import cryptography
+        ver = cryptography.__version__
+    except:
+        # If the module is not found - no problem
+        return
+        
+    ver_parts = list(map(int, ver.split('.')))
+    if len(ver_parts) < 2 or ver_parts[0] < 1 or (ver_parts[0] == 1 and ver_parts[1] < 7):
+        log('Python cryptography module version %s is too old, at least version 1.7 needed' % ver)
+        xbmcgui.Dialog().ok(ADDONNAME, localise(32040) % ver, localise(32041), localise(32042))
 
 if (__name__ == "__main__"):
+    _checkcryptography()
     if ADDON.getSetting("versioncheck_enable") == "false":
         log("Disabled")
     else:

@@ -111,3 +111,17 @@ msgstr ""
 msgctxt "#32035"
 msgid "It is recommended that you to upgrade to a newer version."
 msgstr ""
+
+#empty strings from id 32036 to 32039
+
+msgctxt "#32040"
+msgid "Your version %s of the Python cryptography module is too old. You need at least version 1.7."
+msgstr ""
+
+msgctxt "#32041"
+msgid "Please upgrade your operating system."
+msgstr ""
+
+msgctxt "#32042"
+msgid "For more information, see https://kodi.wiki/view/Linux"
+msgstr ""
