@@ -140,6 +140,11 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
           OnQueueItem(iItem);
           return true;
         }
+        else if (iAction == ACTION_QUEUE_ITEM_NEXT)
+        {
+          OnQueueItem(iItem, true);
+          return true;
+        }
         else if (iAction == ACTION_SHOW_INFO)
         {
           return OnItemInfo(iItem);
@@ -411,7 +416,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItemPtr item, const ScraperPtr &info2, b
   return listNeedsUpdating;
 }
 
-void CGUIWindowVideoBase::OnQueueItem(int iItem)
+void CGUIWindowVideoBase::OnQueueItem(int iItem, bool first)
 {
   // Determine the proper list to queue this element
   int playlist = CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist();
@@ -442,7 +447,10 @@ void CGUIWindowVideoBase::OnQueueItem(int iItem)
     return;
   }
 
-  CServiceBroker::GetPlaylistPlayer().Add(playlist, queuedItems);
+  if (first && g_application.GetAppPlayer().IsPlaying())
+    CServiceBroker::GetPlaylistPlayer().Insert(playlist, queuedItems, CServiceBroker::GetPlaylistPlayer().GetCurrentSong()+1);
+  else
+    CServiceBroker::GetPlaylistPlayer().Add(playlist, queuedItems);
   CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(playlist);
   // video does not auto play on queue like music
   m_viewControl.SetSelectedItem(iItem + 1);
@@ -837,6 +845,7 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
             && !m_vecItems->IsSourcesPath())
         {
           buttons.Add(CONTEXT_BUTTON_QUEUE_ITEM, 13347);      // Add to Playlist
+          buttons.Add(CONTEXT_BUTTON_PLAY_NEXT, 10008);       // Play next
         }
       }
 
@@ -973,6 +982,10 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     }
   case CONTEXT_BUTTON_QUEUE_ITEM:
     OnQueueItem(itemNumber);
+    return true;
+
+  case CONTEXT_BUTTON_PLAY_NEXT:
+    OnQueueItem(itemNumber, true);
     return true;
 
   case CONTEXT_BUTTON_PLAY_ITEM:

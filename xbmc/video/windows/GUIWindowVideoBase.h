@@ -85,7 +85,7 @@ protected:
 
   void GetContextButtons(int itemNumber, CContextButtons &buttons) override;
   bool OnContextButton(int itemNumber, CONTEXT_BUTTON button) override;
-  virtual void OnQueueItem(int iItem);
+  virtual void OnQueueItem(int iItem, bool first = false);
   virtual void OnDeleteItem(CFileItemPtr pItem);
   void OnDeleteItem(int iItem) override;
   virtual void DoSearch(const std::string& strSearch, CFileItemList& items) {};

@@ -268,6 +268,7 @@
 #define ACTION_TOGGLE_FONT            249 //!< Toggle font. Used in TextViewer dialog
 
 #define ACTION_VIDEO_NEXT_STREAM      250 //!< Cycle video streams. Used in videofullscreen.
+#define ACTION_QUEUE_ITEM_NEXT        251 //!< used to queue an item to the next position in the playlist
 
 // Voice actions
 #define ACTION_VOICE_RECOGNIZE        300

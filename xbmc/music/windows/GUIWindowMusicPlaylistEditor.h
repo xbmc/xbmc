@@ -28,7 +28,7 @@ protected:
   void OnPrepareFileItems(CFileItemList &items) override;
   void GetContextButtons(int itemNumber, CContextButtons &buttons) override;
   bool OnContextButton(int itemNumber, CONTEXT_BUTTON button) override;
-  void OnQueueItem(int iItem) override;
+  void OnQueueItem(int iItem, bool) override;
   std::string GetStartFolder(const std::string &dir) override { return ""; };
 
   void OnPlaylistContext();
