@@ -32,7 +32,6 @@ CAddonVideoCodec::CAddonVideoCodec(CProcessInfo &processInfo, ADDON::BinaryAddon
     CLog::Log(LOGERROR, "CInputStreamAddon: Failed to create add-on instance for '%s'", addonInfo->ID().c_str());
     return;
   }
-  m_processInfo.SetVideoDecoderName(GetName(), false);
 }
 
 CAddonVideoCodec::~CAddonVideoCodec()
@@ -142,7 +141,10 @@ bool CAddonVideoCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
   if (!CopyToInitData(initData, hints))
     return false;
 
-  return m_struct.toAddon.open(&m_struct, &initData);
+  bool ret = m_struct.toAddon.open(&m_struct, &initData);
+  m_processInfo.SetVideoDecoderName(GetName(), false);
+
+  return ret;
 }
 
 bool CAddonVideoCodec::Reconfigure(CDVDStreamInfo &hints)
