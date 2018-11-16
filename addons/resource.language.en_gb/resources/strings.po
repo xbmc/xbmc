@@ -2258,7 +2258,10 @@ msgctxt "#489"
 msgid "Play next song automatically"
 msgstr ""
 
-#empty string with id 490
+#: xbmc/music/windows/GUIWindowMusicBase.cpp
+msgctxt "#490"
+msgid "Play next"
+msgstr ""
 
 msgctxt "#491"
 msgid "- Use big icons"
