@@ -11,8 +11,14 @@
 		<RegExp input="$$1" output="tt\1" dest="7">
 			<expression>imdb\....?/title\?([0-9]*)</expression>
 		</RegExp>
-		<RegExp input="$$7" output="&lt;details&gt;&lt;url function=&quot;GetTVDBId&quot; post=&quot;yes&quot; cache=&quot;auth.json&quot;&gt;https://api.thetvdb.com/login?{&quot;apikey&quot;:&quot;439DFEBA9D3059C6&quot;}|Content-Type=application/json&lt;/url&gt;&lt;/details&gt;" dest="3">
+		<RegExp input="$$7" output="&lt;details&gt;&lt;url function=&quot;GetTVDBIdByIMDBId&quot; post=&quot;yes&quot; cache=&quot;auth.json&quot;&gt;https://api.thetvdb.com/login?{&quot;apikey&quot;:&quot;439DFEBA9D3059C6&quot;}|Content-Type=application/json&lt;/url&gt;&lt;/details&gt;" dest="3">
 			<expression>(?!^$)</expression>
+		</RegExp>
+		<RegExp input="$$1" output="\1" dest="7">
+			<expression clear="yes">https?://(?:www\.)?thetvdb.com/series/([^\s]+)</expression>
+		</RegExp>
+		<RegExp input="$$7" output="&lt;details&gt;&lt;url function=&quot;GetTVDBIdBySlug&quot; post=&quot;yes&quot; cache=&quot;auth.json&quot;&gt;https://api.thetvdb.com/login?{&quot;apikey&quot;:&quot;439DFEBA9D3059C6&quot;}|Content-Type=application/json&lt;/url&gt;&lt;/details&gt;" dest="3">
+			<expression>(?!^$)(.*)</expression>
 		</RegExp>
 		<RegExp input="$$1" output="\1" dest="6">
 			<expression clear="yes">https?://(?:www\.)?thetvdb.com/(?:index\.php)?\?tab=series&amp;id=([0-9]+)</expression>
@@ -22,23 +28,31 @@
 		</RegExp>
 	</NfoUrl>
 	<NfoUrlAuth dest="3" clearbuffers="no">
-		<RegExp input="$$19" output="&lt;details&gt;&lt;url cache=&quot;$$6-$INFO[language].xml&quot;&gt;https://api.thetvdb.com/series/$$6|Authorization=Bearer%20\1&amp;accept-language=$INFO[language]&lt;/url&gt;&lt;id&gt;$$6&lt;/id&gt;&lt;/details&gt;" dest="3">
+		<RegExp input="$$19" output="&lt;details&gt;&lt;url cache=&quot;$$6-$INFO[language].json&quot;&gt;https://api.thetvdb.com/series/$$6|Authorization=Bearer%20\1&amp;accept-language=$INFO[language]&lt;/url&gt;&lt;id&gt;$$6&lt;/id&gt;&lt;/details&gt;" dest="3">
 			<RegExp input="$$1" output="\1" dest="19">
 				<expression>"token":\s*?"(.*)"</expression>
 			</RegExp>
 		<expression noclean="1"/>
 		</RegExp>
 	</NfoUrlAuth>
-	<GetTVDBId dest="3" clearbuffers="no">
+	<GetTVDBIdByIMDBId dest="3" clearbuffers="no">
 		<RegExp input="$$19" output="&lt;details&gt;&lt;url function=&quot;GetTVDBIdAuth&quot; cache=&quot;search-$$7-$INFO[language].json&quot;&gt;https://api.thetvdb.com/search/series?imdbId=$$7|Authorization=Bearer%20\1&amp;accept-language=$INFO[language]&lt;/url&gt;&lt;/details&gt;" dest="3">
 			<RegExp input="$$1" output="\1" dest="19">
 				<expression>"token":\s*?"(.*)"</expression>
 			</RegExp>
 		<expression noclean="1"/>
 		</RegExp>
-	</GetTVDBId>
+	</GetTVDBIdByIMDBId>
+	<GetTVDBIdBySlug dest="3" clearbuffers="no">
+		<RegExp input="$$19" output="&lt;details&gt;&lt;url function=&quot;GetTVDBIdAuth&quot; cache=&quot;search-$$7-$INFO[language].json&quot;&gt;https://api.thetvdb.com/search/series?slug=$$7|Authorization=Bearer%20\1&amp;accept-language=$INFO[language]&lt;/url&gt;&lt;/details&gt;" dest="3">
+			<RegExp input="$$1" output="\1" dest="19">
+				<expression>"token":\s*?"(.*)"</expression>
+			</RegExp>
+		<expression noclean="1"/>
+		</RegExp>
+	</GetTVDBIdBySlug>
 	<GetTVDBIdAuth dest="3" clearbuffers="no">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;\1-$INFO[language].xml&quot;&gt;https://api.thetvdb.com/series/\1|Authorization=Bearer%20$$19&amp;accept-language=$INFO[language]&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/details&gt;" dest="3">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url cache=&quot;\1-$INFO[language].json&quot;&gt;https://api.thetvdb.com/series/\1|Authorization=Bearer%20$$19&amp;accept-language=$INFO[language]&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/details&gt;" dest="3">
 			<expression>"id":\s*?(\d+),</expression>
 		</RegExp>
 	</GetTVDBIdAuth>
