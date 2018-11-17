@@ -23,4 +23,14 @@ if(DBUS_FOUND)
                       DBusUtil.h)
 endif()
 
+if(CORE_PLATFORM_NAME_LC STREQUAL gbm)
+  if(DBUS_FOUND)
+    list(APPEND SOURCES LogindUtils.cpp)
+    list(APPEND HEADERS LogindUtils.h)
+  endif()
+
+  list(APPEND SOURCES SessionUtils.cpp)
+  list(APPEND HEADERS SessionUtils.h)
+endif()
+
 core_add_library(linuxsupport)
