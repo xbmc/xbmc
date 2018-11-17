@@ -11,15 +11,16 @@
 #include "GBMUtils.h"
 #include "windowing/Resolution.h"
 
-#include "platform/posix/utils/FileHandle.h"
-
 #include <map>
+#include <memory>
 #include <vector>
 
 #include <drm_fourcc.h>
 #include <gbm.h>
 #include <xf86drm.h>
 #include <xf86drmMode.h>
+
+class CSessionUtils;
 
 namespace KODI
 {
@@ -84,8 +85,8 @@ struct drm_fb
 class CDRMUtils
 {
 public:
-  CDRMUtils();
-  virtual ~CDRMUtils() = default;
+  CDRMUtils(std::shared_ptr<CSessionUtils> session);
+  virtual ~CDRMUtils();
   virtual void FlipPage(struct gbm_bo *bo, bool rendered, bool videoLayer) {};
   virtual bool SetVideoMode(const RESOLUTION_INFO& res, struct gbm_bo *bo) { return false; };
   virtual bool SetActive(bool active) { return false; };
@@ -122,7 +123,7 @@ protected:
   static bool GetProperties(int fd, uint32_t id, uint32_t type, struct drm_object *object);
   static void FreeProperties(struct drm_object *object);
 
-  KODI::UTILS::POSIX::CFileHandle m_fd;
+  int m_fd;
   struct connector *m_connector = nullptr;
   struct encoder *m_encoder = nullptr;
   struct crtc *m_crtc = nullptr;
@@ -150,12 +151,14 @@ private:
   RESOLUTION_INFO GetResolutionInfo(drmModeModeInfoPtr mode);
   bool CheckConnector(int connectorId);
 
-  KODI::UTILS::POSIX::CFileHandle m_renderFd;
+  int m_renderFd;
   std::string m_module;
 
   drmModeResPtr m_drm_resources = nullptr;
 
   std::vector<crtc*> m_crtcs;
+
+  std::shared_ptr<CSessionUtils> m_session;
 };
 
 }

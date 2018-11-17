@@ -15,6 +15,8 @@
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
 
+#include "platform/linux/SessionUtils.h"
+
 #include <errno.h>
 #include <sstream>
 #include <stdint.h>
@@ -34,13 +36,16 @@ namespace
 const std::string SETTING_VIDEOSCREEN_LIMITGUISIZE = "videoscreen.limitguisize";
 }
 
-CDRMUtils::CDRMUtils()
-  : m_connector(new connector)
-  , m_encoder(new encoder)
-  , m_video_plane(new plane)
-  , m_gui_plane(new plane)
+CDRMUtils::CDRMUtils(std::shared_ptr<CSessionUtils> session)
+  : m_connector(new connector),
+    m_encoder(new encoder),
+    m_video_plane(new plane),
+    m_gui_plane(new plane),
+    m_session(session)
 {
 }
+
+CDRMUtils::~CDRMUtils() = default;
 
 bool CDRMUtils::SetMode(const RESOLUTION_INFO& res)
 {
@@ -609,8 +614,8 @@ bool CDRMUtils::OpenDrm(bool needConnector)
 
   for (auto module : modules)
   {
-    m_fd.attach(drmOpenWithType(module, nullptr, DRM_NODE_PRIMARY));
-    if (m_fd)
+    m_fd = drmOpenWithType(module, nullptr, DRM_NODE_PRIMARY);
+    if (m_fd != -1)
     {
       if(!GetResources())
       {
@@ -634,26 +639,38 @@ bool CDRMUtils::OpenDrm(bool needConnector)
 
       m_module = module;
 
-      CLog::Log(LOGDEBUG, "CDRMUtils::%s - opened device: %s using module: %s", __FUNCTION__, drmGetDeviceNameFromFd2(m_fd), module);
+      // store path and reset fd so the device can be reopened with logind
+      std::string path = drmGetDeviceNameFromFd2(m_fd);
+      close(m_fd);
 
-      m_renderFd.attach(drmOpenWithType(module, nullptr, DRM_NODE_RENDER));
-      if (m_renderFd)
+      m_fd = m_session->Open(path, 0);
+      if (m_fd < 0)
+        return false;
+
+      CLog::Log(LOGDEBUG, "CDRMUtils::%s - opened device: %s using module: %s", __FUNCTION__, path,
+                module);
+
+      const char* renderPath = drmGetRenderDeviceNameFromFd(m_fd);
+      if (renderPath)
       {
-        CLog::Log(LOGDEBUG, "CDRMUtils::%s - opened render node: %s using module: %s", __FUNCTION__, drmGetDeviceNameFromFd2(m_renderFd), module);
+        m_renderFd = drmOpenWithType(module, nullptr, DRM_NODE_RENDER);
+        CLog::Log(LOGDEBUG, "CDRMUtils::%s - opened render node: %s using module: %s", __FUNCTION__,
+                  path, module);
       }
 
       return true;
     }
-  }
 
-  m_fd.reset();
+    close(m_fd);
+    m_fd = -1;
+  }
 
   return false;
 }
 
 bool CDRMUtils::InitDrm()
 {
-  if(m_fd)
+  if (m_fd != -1)
   {
     /* caps need to be set before allocating connectors, encoders, crtcs, and planes */
     auto ret = drmSetClientCap(m_fd, DRM_CLIENT_CAP_UNIVERSAL_PLANES, 1);
@@ -707,7 +724,7 @@ bool CDRMUtils::InitDrm()
   drmModeFreeResources(m_drm_resources);
   m_drm_resources = nullptr;
 
-  if(!m_fd)
+  if (m_fd == -1)
   {
     return false;
   }
@@ -776,8 +793,8 @@ void CDRMUtils::DestroyDrm()
     CLog::Log(LOGDEBUG, "CDRMUtils::%s - failed to drop drm master: %s", __FUNCTION__, strerror(errno));
   }
 
-  m_renderFd.reset();
-  m_fd.reset();
+  close(m_renderFd);
+  m_session->Close(m_fd);
 
   drmModeFreeResources(m_drm_resources);
   m_drm_resources = nullptr;

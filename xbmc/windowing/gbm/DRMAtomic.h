@@ -20,8 +20,8 @@ namespace GBM
 class CDRMAtomic : public CDRMUtils
 {
 public:
-  CDRMAtomic() = default;
-  ~CDRMAtomic() override { DestroyDrm(); };
+  CDRMAtomic(std::shared_ptr<CSessionUtils> session) : CDRMUtils(session) {}
+  ~CDRMAtomic() override = default;
   void FlipPage(struct gbm_bo* bo, bool rendered, bool videoLayer) override;
   bool SetVideoMode(const RESOLUTION_INFO& res, struct gbm_bo* bo) override;
   bool SetActive(bool active) override;

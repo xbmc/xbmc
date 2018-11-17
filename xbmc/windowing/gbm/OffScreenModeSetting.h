@@ -20,8 +20,8 @@ namespace GBM
 class COffScreenModeSetting : public CDRMUtils
 {
 public:
-  COffScreenModeSetting() = default;
-  ~COffScreenModeSetting() override { DestroyDrm(); };
+  COffScreenModeSetting(std::shared_ptr<CSessionUtils> session) : CDRMUtils(session) {}
+  ~COffScreenModeSetting() override = default;
   void FlipPage(struct gbm_bo *bo, bool rendered, bool videoLayer) override {}
   bool SetVideoMode(const RESOLUTION_INFO& res, struct gbm_bo *bo) override { return false; }
   bool SetActive(bool active) override { return false; }
