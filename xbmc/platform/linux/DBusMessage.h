@@ -106,6 +106,7 @@ public:
 
   bool SendAsyncSystem();
   bool SendAsyncSession();
+  bool SendAsync(DBusConnection* con);
 
   DBusMessage *Send(DBusBusType type);
   DBusMessage *Send(DBusBusType type, CDBusError& error);

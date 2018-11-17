@@ -157,6 +157,11 @@ bool CDBusMessage::SendAsync(DBusBusType type)
   return dbus_connection_send(con, m_message.get(), nullptr);
 }
 
+bool CDBusMessage::SendAsync(DBusConnection* con)
+{
+  return dbus_connection_send(con, m_message.get(), nullptr);
+}
+
 DBusMessage *CDBusMessage::Send(DBusConnection *con, CDBusError& error)
 {
   m_reply.reset(dbus_connection_send_with_reply_and_block(con, m_message.get(), -1, error));
