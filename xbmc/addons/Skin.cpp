@@ -143,7 +143,7 @@ bool CSkinSettingBool::SerializeSetting(TiXmlElement* element) const
   return true;
 }
 
-std::unique_ptr<CSkinInfo> CSkinInfo::FromExtension(CAddonInfo addonInfo, const cp_extension_t* ext)
+std::unique_ptr<CSkinInfo> CSkinInfo::FromExtension(const AddonInfoPtr& addonInfo, const cp_extension_t* ext)
 {
   RESOLUTION_INFO defaultRes = RESOLUTION_INFO();
   std::vector<RESOLUTION_INFO> resolutions;
@@ -187,14 +187,14 @@ std::unique_ptr<CSkinInfo> CSkinInfo::FromExtension(CAddonInfo addonInfo, const 
 
   bool debugging = CServiceBroker::GetAddonMgr().GetExtValue(ext->configuration, "@debugging") == "true";
 
-  return std::unique_ptr<CSkinInfo>(new CSkinInfo(std::move(addonInfo), defaultRes, resolutions,
+  return std::unique_ptr<CSkinInfo>(new CSkinInfo(addonInfo, defaultRes, resolutions,
       effectsSlowDown, debugging));
 }
 
 CSkinInfo::CSkinInfo(
-    CAddonInfo addonInfo,
+    const AddonInfoPtr& addonInfo,
     const RESOLUTION_INFO& resolution /* = RESOLUTION_INFO() */)
-    : CAddon(std::move(addonInfo)),
+    : CAddon(addonInfo),
       m_defaultRes(resolution),
       m_effectsSlowDown(1.f),
       m_debugging(false)
@@ -203,12 +203,12 @@ CSkinInfo::CSkinInfo(
   }
 
 CSkinInfo::CSkinInfo(
-    CAddonInfo addonInfo,
+    const AddonInfoPtr& addonInfo,
     const RESOLUTION_INFO& resolution,
     const std::vector<RESOLUTION_INFO>& resolutions,
     float effectsSlowDown,
     bool debugging)
-    : CAddon(std::move(addonInfo)),
+    : CAddon(addonInfo),
       m_defaultRes(resolution),
       m_resolutions(resolutions),
       m_effectsSlowDown(effectsSlowDown),

@@ -117,7 +117,7 @@ static void CheckScraperError(const TiXmlElement *pxeRoot)
   throw CScraperError(sTitle, sMessage);
 }
 
-std::unique_ptr<CScraper> CScraper::FromExtension(CAddonInfo addonInfo, const cp_extension_t *ext)
+std::unique_ptr<CScraper> CScraper::FromExtension(const AddonInfoPtr& addonInfo, const cp_extension_t *ext)
 {
   bool requiressettings =
       CServiceBroker::GetAddonMgr().GetExtValue(ext->configuration, "@requiressettings") == "true";
@@ -129,7 +129,7 @@ std::unique_ptr<CScraper> CScraper::FromExtension(CAddonInfo addonInfo, const cp
     persistence.SetFromTimeString(tmp);
 
   CONTENT_TYPE pathContent(CONTENT_NONE);
-  switch (addonInfo.MainType())
+  switch (addonInfo->MainType())
   {
   case ADDON_SCRAPER_ALBUMS:
     pathContent = CONTENT_ALBUMS;
@@ -151,11 +151,11 @@ std::unique_ptr<CScraper> CScraper::FromExtension(CAddonInfo addonInfo, const cp
   }
 
   return std::unique_ptr<CScraper>(
-      new CScraper(std::move(addonInfo), requiressettings, persistence, pathContent));
+      new CScraper(addonInfo, requiressettings, persistence, pathContent));
 }
 
-CScraper::CScraper(CAddonInfo addonInfo)
-    : CAddon(std::move(addonInfo))
+CScraper::CScraper(const AddonInfoPtr& addonInfo)
+    : CAddon(addonInfo)
     , m_fLoaded(false)
     , m_requiressettings(false)
     , m_pathContent(CONTENT_NONE)
@@ -163,11 +163,11 @@ CScraper::CScraper(CAddonInfo addonInfo)
   m_isPython = URIUtils::GetExtension(LibPath()) == ".py";
 }
 
-CScraper::CScraper(CAddonInfo addonInfo,
+CScraper::CScraper(const AddonInfoPtr& addonInfo,
                    bool requiressettings,
                    CDateTimeSpan persistence,
                    CONTENT_TYPE pathContent)
-    : CAddon(std::move(addonInfo))
+    : CAddon(addonInfo)
     , m_fLoaded(false)
     , m_requiressettings(requiressettings)
     , m_persistence(persistence)

@@ -18,12 +18,12 @@
 namespace ADDON
 {
 
-std::unique_ptr<CPluginSource> CPluginSource::FromExtension(CAddonInfo addonInfo, const cp_extension_t* ext)
+std::unique_ptr<CPluginSource> CPluginSource::FromExtension(const AddonInfoPtr& addonInfo, const cp_extension_t* ext)
 {
   std::string provides = CServiceBroker::GetAddonMgr().GetExtValue(ext->configuration, "provides");
   if (!provides.empty())
-    addonInfo.AddExtraInfo("provides", provides);
-  CPluginSource* p = new CPluginSource(std::move(addonInfo), provides);
+    addonInfo->AddExtraInfo("provides", provides);
+  CPluginSource* p = new CPluginSource(addonInfo, provides);
 
   ELEMENTS elements;
   if (CServiceBroker::GetAddonMgr().GetExtElements(ext->configuration, "medialibraryscanpath", elements))
@@ -48,17 +48,17 @@ std::unique_ptr<CPluginSource> CPluginSource::FromExtension(CAddonInfo addonInfo
   return std::unique_ptr<CPluginSource>(p);
 }
 
-CPluginSource::CPluginSource(CAddonInfo addonInfo) : CAddon(std::move(addonInfo))
+CPluginSource::CPluginSource(const AddonInfoPtr& addonInfo) : CAddon(addonInfo)
 {
   std::string provides;
-  InfoMap::const_iterator i = m_addonInfo.ExtraInfo().find("provides");
-  if (i != m_addonInfo.ExtraInfo().end())
+  InfoMap::const_iterator i = m_addonInfo->ExtraInfo().find("provides");
+  if (i != m_addonInfo->ExtraInfo().end())
     provides = i->second;
   SetProvides(provides);
 }
 
-CPluginSource::CPluginSource(CAddonInfo addonInfo, const std::string& provides)
-  : CAddon(std::move(addonInfo))
+CPluginSource::CPluginSource(const AddonInfoPtr& addonInfo, const std::string& provides)
+  : CAddon(addonInfo)
 {
   SetProvides(provides);
 }

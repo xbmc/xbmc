@@ -95,15 +95,15 @@ public:
     std::string m_name;
   };
 
-  static std::unique_ptr<CSkinInfo> FromExtension(CAddonInfo addonInfo, const cp_extension_t* ext);
+  static std::unique_ptr<CSkinInfo> FromExtension(const AddonInfoPtr& addonInfo, const cp_extension_t* ext);
 
   //FIXME: CAddonCallbacksGUI/WindowXML hack
   explicit CSkinInfo(
-      CAddonInfo addonInfo,
+      const AddonInfoPtr& addonInfo,
       const RESOLUTION_INFO& resolution = RESOLUTION_INFO());
 
   CSkinInfo(
-      CAddonInfo addonInfo,
+      const AddonInfoPtr& addonInfo,
       const RESOLUTION_INFO& resolution,
       const std::vector<RESOLUTION_INFO>& resolutions,
       float effectsSlowDown,

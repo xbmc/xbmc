@@ -16,7 +16,7 @@ namespace ADDON
 class CUISoundsResource : public CResource
 {
 public:
-  explicit CUISoundsResource(CAddonInfo addonInfo) : CResource(std::move(addonInfo)) {}
+  explicit CUISoundsResource(const AddonInfoPtr& addonInfo) : CResource(addonInfo) {}
   bool IsAllowed(const std::string &file) const override;
   bool IsInUse() const override;
   void OnPostInstall(bool update, bool modal) override;

@@ -135,7 +135,7 @@ CRepository::DirInfo CRepository::ParseDirConfiguration(cp_cfg_element_t* config
   return dir;
 }
 
-std::unique_ptr<CRepository> CRepository::FromExtension(CAddonInfo addonInfo, const cp_extension_t* ext)
+std::unique_ptr<CRepository> CRepository::FromExtension(const AddonInfoPtr& addonInfo, const cp_extension_t* ext)
 {
   DirList dirs;
   AddonVersion version("0.0.0");
@@ -158,11 +158,11 @@ std::unique_ptr<CRepository> CRepository::FromExtension(CAddonInfo addonInfo, co
   {
     dirs.push_back(ParseDirConfiguration(ext->configuration));
   }
-  return std::unique_ptr<CRepository>(new CRepository(std::move(addonInfo), std::move(dirs)));
+  return std::unique_ptr<CRepository>(new CRepository(addonInfo, std::move(dirs)));
 }
 
-CRepository::CRepository(CAddonInfo addonInfo, DirList dirs)
-    : CAddon(std::move(addonInfo)), m_dirs(std::move(dirs))
+CRepository::CRepository(const AddonInfoPtr& addonInfo, DirList dirs)
+    : CAddon(addonInfo), m_dirs(std::move(dirs))
 {
   for (auto const& dir : m_dirs)
   {

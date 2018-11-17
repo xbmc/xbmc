@@ -32,7 +32,7 @@ namespace ADDON
    * | first  | boolean     | If true addon is enabled, otherwise disabled
    * | second | CAddonInfo  | Information data of addon
    */
-  typedef std::pair<bool, CAddonInfo> BINARY_ADDON_LIST_ENTRY;
+  typedef std::pair<bool, AddonInfoPtr> BINARY_ADDON_LIST_ENTRY;
   typedef std::vector<BINARY_ADDON_LIST_ENTRY> BINARY_ADDON_LIST;
 
   const std::string ADDON_PYTHON_EXT           = "*.py";
@@ -148,7 +148,7 @@ namespace ADDON
     bool HasAvailableUpdates();
 
     std::string GetTranslatedString(const cp_cfg_element_t *root, const char *tag);
-    static AddonPtr AddonFromProps(CAddonInfo& addonInfo);
+    static AddonPtr AddonFromProps(const AddonInfoPtr& addonInfo);
 
     /*! \brief Checks for new / updated add-ons
      \return True if everything went ok, false otherwise
