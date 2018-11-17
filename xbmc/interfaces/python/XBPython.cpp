@@ -594,7 +594,7 @@ bool XBPython::OnScriptInitialized(ILanguageInvoker *invoker)
     // If this is not the first time we initialize Python, the interpreter
     // lock already exists and we need to lock it as PyEval_InitThreads
     // would not do that in that case.
-    if (PyEval_ThreadsInitialized())
+    if (PyEval_ThreadsInitialized() && !PyGILState_Check())
       PyEval_AcquireLock();
     else
       PyEval_InitThreads();
