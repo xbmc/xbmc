@@ -133,7 +133,6 @@ namespace ADDON
     const CDateTime& LastUsed() const { return m_lastUsed; }
     const std::string& Origin() const { return m_origin; }
     uint64_t PackageSize() const { return m_packageSize; }
-    const std::string& Language() const { return m_language; }
     const InfoMap& ExtraInfo() const { return m_extrainfo; }
     bool MeetsVersion(const AddonVersion &version) const;
 
@@ -174,7 +173,6 @@ namespace ADDON
     CDateTime m_lastUsed;
     std::string m_origin;
     uint64_t m_packageSize = 0;
-    std::string m_language;
     std::string m_libname;
     InfoMap m_extrainfo;
   };
