@@ -87,7 +87,7 @@ bool CWinSystemGbm::InitWindowSystem()
     return false;
   }
 
-  m_libinput.reset(new CLibInputHandler());
+  m_libinput.reset(new CLibInputHandler(m_session));
   m_libinput->Start();
 
   m_DRM = std::make_shared<CDRMAtomic>();
