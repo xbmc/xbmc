@@ -1,0 +1,42 @@
+[Unit]
+Description=@APP_NAME_LC@ on %i
+After=systemd-user-sessions.service sound.target network-online.target
+
+# D-Bus is necessary for contacting logind. Logind is required.
+Wants=dbus.socket
+After=dbus.socket
+
+Conflicts=getty@%i.service
+Before=graphical.target
+
+# On systems without virtual consoles, don't start @APP_NAME_LC@
+ConditionPathExists=/dev/tty0
+
+[Service]
+# Change to your user of choice
+User=@APP_NAME_LC@
+PAMName=login
+ExecStart=@bindir@/@APP_NAME_LC@ -fs --standalone
+Type=simple
+Restart=on-abort
+RestartSec=5
+KillMode=control-group
+
+# A virtual terminal is needed.
+TTYPath=/dev/%i
+TTYReset=yes
+TTYVHangup=yes
+TTYVTDisallocate=yes
+
+# Fail to start if not controlling the tty.
+StandardOutput=tty
+StandardInput=tty
+StandardError=journal
+
+# Log this user with utmp, letting it show up with commands 'w' and 'who'.
+UtmpIdentifier=%i
+UtmpMode=user
+
+[Install]
+WantedBy=graphical.target
+DefaultInstance=tty7
