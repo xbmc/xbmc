@@ -1,0 +1,74 @@
+[B]3.0.6[/B]
+- Fixed: show overview
+
+[B]3.0.5[/B]
+- Fixed scraping after API layout changes
+
+[B]3.0.4[/B]
+- use https to access thetvdb.com
+
+[B]3.0.3[/B]
+- fixed: scraping episodes with no air date
+
+[B]3.0.1[/B]
+- fixed: typo causing season swapped with episode numbers (thanks tdf1970)
+
+[B]3.0.0[/B]
+- added: extra artwork (clearlogo, clearart, landscape, etc.) from fanart.tv; bumped version for Leia
+
+[B]2.0.1[/B]
+- changed: tmdb rating name
+
+[B]2.0.0[/B]
+- added: some missing languages
+- changed: bump version for Kodi v17
+
+[B]1.4.0[/B]
+added: uniqueids and ratings with their name (requires Kodi v17 or newer) -thanks phate89
+
+[B]1.3.4[/B]
+- Really fixed after API layout changes
+
+[B]1.3.3[/B]
+- Fixed after API layout changes
+
+[B]1.3.2[/B]
+- fixed: broken search results after API changes
+
+[B]1.3.1[/B]
+- added: scraping of mpaa certifications
+
+[B]1.3.0[/B]
+- Update
+
+[B]1.2.2[/B]
+- Update author name
+
+[B]1.2.1[/B]
+- fixed: broken search results after API changes
+
+[B]1.2.0[/B]
+- added: scraping of ratings and votes
+
+[B]1.1.2[/B]
+- fixed: broken search and art scraping
+
+[B]1.1.1[/B]
+- fixed: scraping of episode names in certain languages
+
+[B]1.1.0[/B]
+- added extra languages for selection
+- changed language to a selection list
+
+[B]1.0.3[/B]
+- updated language files from Transifex
+
+[B]1.0.2[/B]
+- fixed: broken scraping
+
+[B]1.0.1[/B]
+- updated language files from Transifex
+
+[B]1.0.0[/B]
+
+- Initial version

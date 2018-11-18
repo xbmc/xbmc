@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<settings>
+    <setting label="30005" type="bool" id="keeporiginaltitle" default="false"/>
+    <setting label="30006" type="bool" id="tmdbart" default="true"/>
+    <setting label="30007" type="bool" id="fanarttvart" default="true"/>
+    <setting label="30002" type="select" values="bg|cs|da|de|ee|el|en|es|fa|fa-ir|fi|fr|fr-ca|he|hr|hu|it|ja|ko|nl|no|pl|pt|pt-br|ru|sl|sr|sv|tr|zh-cn|zh-tw" id="language" default="en"/>
+</settings>
