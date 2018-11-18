@@ -700,14 +700,6 @@ bool CApplication::InitWindow(RESOLUTION res)
   return true;
 }
 
-bool CApplication::DestroyWindow()
-{
-  bool ret = CServiceBroker::GetWinSystem()->DestroyWindow();
-  CServiceBroker::UnregisterWinSystem();
-  m_pWinSystem.reset();
-  return ret;
-}
-
 bool CApplication::Initialize()
 {
 #if defined(HAS_DVD_DRIVE) && !defined(TARGET_WINDOWS) // somehow this throws an "unresolved external symbol" on win32
@@ -2443,10 +2435,7 @@ bool CApplication::Cleanup()
 
     CWinSystemBase *winSystem = CServiceBroker::GetWinSystem();
     if (winSystem)
-    {
       winSystem->DestroyWindow();
-      winSystem->DestroyWindowSystem();
-    }
 
     if (m_pGUI)
       m_pGUI->GetWindowManager().DestroyWindows();
@@ -2488,6 +2477,14 @@ bool CApplication::Cleanup()
     {
       m_pGUI->Deinit();
       m_pGUI.reset();
+    }
+
+    if (winSystem)
+    {
+      winSystem->DestroyWindowSystem();
+      CServiceBroker::UnregisterWinSystem();
+      winSystem = nullptr;
+      m_pWinSystem.reset();
     }
 
     // Cleanup was called more than once on exit during my tests
