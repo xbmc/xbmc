@@ -211,13 +211,15 @@ bool CWinSystemX11GLContext::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res
 
 bool CWinSystemX11GLContext::DestroyWindowSystem()
 {
-  m_pGLContext->Destroy();
+  if (m_pGLContext)
+    m_pGLContext->Destroy();
   return CWinSystemX11::DestroyWindowSystem();
 }
 
 bool CWinSystemX11GLContext::DestroyWindow()
 {
-  m_pGLContext->Detach();
+  if (m_pGLContext)
+    m_pGLContext->Detach();
   return CWinSystemX11::DestroyWindow();
 }
 
