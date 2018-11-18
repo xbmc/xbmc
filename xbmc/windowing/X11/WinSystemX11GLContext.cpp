@@ -298,7 +298,7 @@ bool CWinSystemX11GLContext::RefreshGLContext(bool force)
           return true;
       }
     }
-    else if (gli != "EGL")
+    else if (gli == "EGL_PB")
     {
       success = m_pGLContext->CreatePB();
       if (success)
