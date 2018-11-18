@@ -19,14 +19,11 @@
 
 using namespace XFILE;
 using namespace KODI::PLATFORM::WINDOWS;
+using namespace winrt::Windows::Foundation;
+using namespace winrt::Windows::Foundation::Collections;
 using namespace winrt::Windows::Storage;
 using namespace winrt::Windows::Storage::FileProperties;
 using namespace winrt::Windows::Storage::Search;
-using namespace winrt::Windows::Foundation::Collections;
-namespace winrt
-{
-using namespace Windows::Foundation;
-}
 
 bool CWinLibraryDirectory::GetStoragePath(std::string library, std::string& path)
 {

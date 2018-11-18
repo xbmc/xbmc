@@ -21,7 +21,6 @@ namespace XFILE
     CUwpSMBDirectory() = default;
     virtual ~CUwpSMBDirectory(void) = default;
     virtual bool GetDirectory(const CURL& url, CFileItemList& items) override;
-    DIR_CACHE_TYPE GetCacheType(const CURL& url) const override { return DIR_CACHE_ONCE; };
     virtual bool Create(const CURL& url) override;
     virtual bool Exists(const CURL& url) override;
     virtual bool Remove(const CURL& url) override;

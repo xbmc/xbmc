@@ -20,14 +20,10 @@
 
 using namespace XFILE;
 using namespace KODI::PLATFORM::WINDOWS;
+using namespace winrt::Windows::Foundation;
+using namespace winrt::Windows::Foundation::Collections;
 using namespace winrt::Windows::Storage;
 using namespace winrt::Windows::Storage::FileProperties;
-using namespace winrt::Windows::Storage::Search;
-using namespace winrt::Windows::Foundation::Collections;
-namespace winrt
-{
-using namespace Windows::Foundation;
-}
 
 bool CUwpSMBDirectory::GetDirectory(const CURL& url, CFileItemList& items)
 {
@@ -37,7 +33,6 @@ bool CUwpSMBDirectory::GetDirectory(const CURL& url, CFileItemList& items)
   if (!folder)
     return false;
 
-  // We accept win-lib://library/path[/]
   std::string path = url.Get();
   URIUtils::AddSlashAtEnd(path); //be sure the dir ends with a slash
 
@@ -130,10 +125,11 @@ StorageFolder CUwpSMBDirectory::GetFolder(const CURL& url)
 {
   StorageFolder folder{nullptr};
 
-  std::string requestedPath = CWIN32Util::SmbToUnc(url.GetRedacted());
+  auto requestedPath = CWIN32Util::SmbToUnc(url.GetRedacted());
   try
   {
-    folder = Wait(StorageFolder::GetFolderFromPathAsync(KODI::PLATFORM::WINDOWS::ToW(requestedPath)));
+    folder =
+        Wait(StorageFolder::GetFolderFromPathAsync(KODI::PLATFORM::WINDOWS::ToW(requestedPath)));
     if (folder == nullptr)
     {
       return nullptr;
@@ -172,7 +168,7 @@ int CUwpSMBDirectory::StatDirectory(const CURL& url, struct __stat64* statData)
   auto requestedProps = Wait(dir.Properties().RetrievePropertiesAsync(
       {L"System.DateAccessed", L"System.DateCreated", L"System.DateModified"}));
 
-  if (requestedProps.HasKey(L"System.DateAccessed") && 
+  if (requestedProps.HasKey(L"System.DateAccessed") &&
       requestedProps.Lookup(L"System.DateAccessed"))
   {
     auto dateAccessed = requestedProps.Lookup(L"System.DateAccessed").as<winrt::IPropertyValue>();
@@ -181,8 +177,7 @@ int CUwpSMBDirectory::StatDirectory(const CURL& url, struct __stat64* statData)
       statData->st_atime = winrt::clock::to_time_t(dateAccessed.GetDateTime());
     }
   }
-  if (requestedProps.HasKey(L"System.DateCreated") && 
-      requestedProps.Lookup(L"System.DateCreated"))
+  if (requestedProps.HasKey(L"System.DateCreated") && requestedProps.Lookup(L"System.DateCreated"))
   {
     auto dateCreated = requestedProps.Lookup(L"System.DateCreated").as<winrt::IPropertyValue>();
     if (dateCreated)
@@ -190,7 +185,7 @@ int CUwpSMBDirectory::StatDirectory(const CURL& url, struct __stat64* statData)
       statData->st_ctime = winrt::clock::to_time_t(dateCreated.GetDateTime());
     }
   }
-  if (requestedProps.HasKey(L"System.DateModified") && 
+  if (requestedProps.HasKey(L"System.DateModified") &&
       requestedProps.Lookup(L"System.DateModified"))
   {
     auto dateModified = requestedProps.Lookup(L"System.DateModified").as<winrt::IPropertyValue>();
@@ -205,7 +200,8 @@ int CUwpSMBDirectory::StatDirectory(const CURL& url, struct __stat64* statData)
   /* set st_nlink */
   statData->st_nlink = 0;
   /* set st_mode */
-  statData->st_mode = _S_IREAD | _S_IFDIR | _S_IEXEC; // only read permission for directory from library
+  statData->st_mode =
+      _S_IREAD | _S_IFDIR | _S_IEXEC; // only read permission for directory from library
   // copy user RWX rights to group rights
   statData->st_mode |= (statData->st_mode & (_S_IREAD | _S_IWRITE | _S_IEXEC)) >> 3;
   // copy user RWX rights to other rights

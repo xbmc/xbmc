@@ -7,74 +7,31 @@
  */
 
 #include "UwpSMBFile.h"
+#include "URL.h"
 #include "UwpSMBDirectory.h"
 #include "platform/win10/AsyncHelpers.h"
+#include "platform/win10/CustomBuffer.h"
 #include "platform/win32/CharsetConverter.h"
 #include "platform/win32/WIN32Util.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
-#include "URL.h"
+#include "utils/log.h"
 
 #include <robuffer.h>
 #include <string>
 #include <winrt/Windows.Foundation.Collections.h>
 #include <winrt/Windows.Security.Cryptography.h>
-#include <winrt/Windows.Storage.AccessCache.h>
 #include <winrt/Windows.Storage.FileProperties.h>
-#include <winrt/Windows.Storage.Search.h>
 #include <winrt/Windows.Storage.Streams.h>
 
 using namespace XFILE;
 using namespace KODI::PLATFORM::WINDOWS;
-namespace winrt
-{
-using namespace Windows::Foundation;
-}
 using namespace winrt::Windows::ApplicationModel;
+using namespace winrt::Windows::Foundation;
 using namespace winrt::Windows::Foundation::Collections;
 using namespace winrt::Windows::Security::Cryptography;
 using namespace winrt::Windows::Storage;
-using namespace winrt::Windows::Storage::AccessCache;
-using namespace winrt::Windows::Storage::Search;
 using namespace winrt::Windows::Storage::Streams;
-
-struct __declspec(uuid("905a0fef-bc53-11df-8c49-001e4fc686da")) IBufferByteAccess : ::IUnknown
-{
-  virtual HRESULT __stdcall Buffer(void** value) = 0;
-};
-
-struct CustomBuffer : winrt::implements<CustomBuffer, IBuffer, IBufferByteAccess>
-{
-  void* m_address;
-  uint32_t m_capacity;
-  uint32_t m_length;
-
-  CustomBuffer(void* address, uint32_t capacity)
-      : m_address(address)
-      , m_capacity(capacity)
-      , m_length(0)
-  {
-  }
-  uint32_t Capacity() const
-  {
-    return m_capacity;
-  }
-  uint32_t Length() const
-  {
-    return m_length;
-  }
-  void Length(uint32_t length)
-  {
-    m_length = length;
-  }
-
-  HRESULT __stdcall Buffer(void** value) final
-  {
-    *value = m_address;
-    return S_OK;
-  }
-};
 
 bool CUwpSMBFile::IsValid(const CURL& url)
 {
@@ -111,7 +68,7 @@ ssize_t CUwpSMBFile::Read(void* lpBuf, size_t uiBufSize)
   IBuffer buf = winrt::make<CustomBuffer>(lpBuf, static_cast<uint32_t>(uiBufSize));
   Wait(m_fileStream.ReadAsync(buf, buf.Capacity(), InputStreamOptions::None));
 
-  return static_cast<intptr_t>(buf.Length());
+  return static_cast<ssize_t>(buf.Length());
 }
 
 ssize_t CUwpSMBFile::Write(const void* lpBuf, size_t uiBufSize)
@@ -123,7 +80,7 @@ ssize_t CUwpSMBFile::Write(const void* lpBuf, size_t uiBufSize)
   auto winrt_buffer = CryptographicBuffer::CreateFromByteArray({buff, buff + uiBufSize});
 
   uint32_t result = Wait(m_fileStream.WriteAsync(winrt_buffer));
-  return static_cast<intptr_t>(result);
+  return static_cast<ssize_t>(result);
 }
 
 int64_t CUwpSMBFile::Seek(int64_t iFilePosition, int iWhence)
@@ -268,31 +225,6 @@ int CUwpSMBFile::Stat(struct __stat64* statData)
   return Stat(m_sFile, statData);
 }
 
-bool CUwpSMBFile::IsInAccessList(const CURL& url)
-{
-  using KODI::PLATFORM::WINDOWS::FromW;
-
-  try
-  {
-    auto localPath = FromW(ApplicationData::Current().LocalFolder().Path().c_str());
-    auto packagePath = FromW(Package::Current().InstalledLocation().Path().c_str());
-
-    // don't check files inside local folder and installation folder
-    if (StringUtils::StartsWithNoCase(url.Get(), localPath) ||
-        StringUtils::StartsWithNoCase(url.Get(), packagePath))
-      return false;
-
-    return IsInList(url, StorageApplicationPermissions::FutureAccessList()) ||
-           IsInList(url, StorageApplicationPermissions::MostRecentlyUsedList());
-  }
-  catch (const winrt::hresult_error& ex)
-  {
-    std::string strError = FromW(ex.message().c_str());
-    CLog::LogF(LOGERROR, "unexpected error occurs during WinRT API call: {}", strError);
-  }
-  return false;
-}
-
 bool CUwpSMBFile::OpenIntenal(const CURL& url, FileAccessMode mode)
 {
   // cannot open directories
@@ -334,71 +266,26 @@ bool CUwpSMBFile::OpenIntenal(const CURL& url, FileAccessMode mode)
 
 StorageFile CUwpSMBFile::GetFile(const CURL& url)
 {
-  // check that url is library url
-  //if (CWinLibraryDirectory::IsValid(url))
-  if (true)
+  auto requestedPath = CWIN32Util::SmbToUnc(url.GetRedacted());
+  try
   {
-    std::string requestedPath = CWIN32Util::SmbToUnc(url.GetRedacted());
-    try
+    StorageFile file =
+        Wait(StorageFile::GetFileFromPathAsync(KODI::PLATFORM::WINDOWS::ToW(requestedPath)));
+    if (file == nullptr)
     {
-      StorageFile file = Wait(StorageFile::GetFileFromPathAsync(KODI::PLATFORM::WINDOWS::ToW(requestedPath)));
-      if (file == nullptr)
-      {
-        return nullptr;
-      }
+      return nullptr;
+    }
 
-      return file;
-    }
-    catch (const winrt::hresult_error& ex)
-    {
-      std::string error = FromW(ex.message().c_str());
-      CLog::LogF(LOGERROR, "unable to get file '%s' with error %s - requestedPath(%s)",
-                 url.GetRedacted().c_str(), error.c_str(), requestedPath.c_str());
-    }
+    return file;
   }
-  else if (url.IsProtocol("file") || url.GetProtocol().empty())
+  catch (const winrt::hresult_error& ex)
   {
-    // check that a file in feature access list or most rescently used list
-    // search in FAL
-    IStorageItemAccessList list = StorageApplicationPermissions::FutureAccessList();
-    winrt::hstring token = GetTokenFromList(url, list);
-    if (token.empty())
-    {
-      // serach in MRU list
-      list = StorageApplicationPermissions::MostRecentlyUsedList();
-      token = GetTokenFromList(url, list);
-    }
-    if (!token.empty())
-      return Wait(list.GetFileAsync(token));
+    std::string error = FromW(ex.message().c_str());
+    CLog::LogF(LOGERROR, "unable to get file '%s' with error %s - requestedPath(%s)",
+               url.GetRedacted().c_str(), error.c_str(), requestedPath.c_str());
   }
 
   return nullptr;
-}
-
-bool CUwpSMBFile::IsInList(const CURL& url, const IStorageItemAccessList& list)
-{
-  auto token = GetTokenFromList(url, list);
-  return !token.empty();
-}
-
-winrt::hstring CUwpSMBFile::GetTokenFromList(const CURL& url, const IStorageItemAccessList& list)
-{
-  AccessListEntryView listview = list.Entries();
-  if (listview.Size() == 0)
-    return winrt::hstring();
-
-  using KODI::PLATFORM::WINDOWS::ToW;
-  std::wstring filePathW = ToW(url.Get());
-
-  for (auto&& listEntry : listview)
-  {
-    if (listEntry.Metadata == filePathW)
-    {
-      return listEntry.Token;
-    }
-  }
-
-  return winrt::hstring();
 }
 
 int CUwpSMBFile::Stat(const StorageFile& file, struct __stat64* statData)
