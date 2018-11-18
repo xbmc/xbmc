@@ -112,6 +112,7 @@
 		<param name="visible">true</param>
 		<param name="visible_1">true</param>
 		<param name="visible_2">true</param>
+		<param name="visible_3">false</param>
 		<param name="button2_label">$LOCALIZE[31116]</param>
 		<param name="button2_onclick">true</param>
 		<definition>
@@ -160,6 +161,18 @@
 							<texturefocus border="23" colordiffuse="button_focus">buttons/dialogbutton-fo.png</texturefocus>
 							<texturenofocus border="40">buttons/dialogbutton-nofo.png</texturenofocus>
 							<visible>$PARAM[visible_2]</visible>
+						</control>
+						<control type="button" id="$PARAM[button_id]569">
+							<width>auto</width>
+							<height>110</height>
+							<label>$PARAM[button3_label]</label>
+							<textoffsetx>40</textoffsetx>
+							<onclick>$PARAM[button3_onclick]</onclick>
+							<onclick>SetFocus(9000)</onclick>
+							<align>center</align>
+							<texturefocus border="23" colordiffuse="button_focus">buttons/dialogbutton-fo.png</texturefocus>
+							<texturenofocus border="40">buttons/dialogbutton-nofo.png</texturenofocus>
+							<visible>$PARAM[visible_3]</visible>
 						</control>
 					</control>
 				</control>

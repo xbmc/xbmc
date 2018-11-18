@@ -791,6 +791,9 @@
 						<param name="visible" value="true"/>
 						<param name="button2_label" value="$LOCALIZE[13391]"/>
 						<param name="button2_onclick" value="EjectTray()"/>
+						<param name="button3_label" value="$LOCALIZE[600]"/>
+						<param name="button3_onclick" value="RipCD"/>
+						<param name="visible_3" value="String.IsEqual(System.DVDLabel,Audio-CD)"/>
 					</include>
 				</control>
 			</control>
