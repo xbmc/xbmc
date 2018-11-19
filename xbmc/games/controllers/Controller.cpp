@@ -61,7 +61,7 @@ std::unique_ptr<CController> CController::FromExtension(const ADDON::AddonInfoPt
 }
 
 CController::CController(const ADDON::AddonInfoPtr& addonInfo) :
-  CAddon(addonInfo),
+  CAddon(addonInfo, ADDON::ADDON_GAME_CONTROLLER),
   m_layout(new CControllerLayout)
 {
 }

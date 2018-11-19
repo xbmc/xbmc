@@ -42,7 +42,7 @@ std::shared_ptr<IAddon> CAddonBuilder::Build()
   m_built = true;
 
   if (m_addonInfo->m_mainType == ADDON_UNKNOWN)
-    return std::make_shared<CAddon>(m_addonInfo);
+    return std::make_shared<CAddon>(m_addonInfo, ADDON_UNKNOWN);
 
   if (m_extPoint == nullptr)
     return FromProps(m_addonInfo);
@@ -55,7 +55,7 @@ std::shared_ptr<IAddon> CAddonBuilder::Build()
     // built in screensaver or python screensaver
     if (StringUtils::StartsWithNoCase(m_extPoint->plugin->identifier, "screensaver.xbmc.builtin.") ||
         URIUtils::HasExtension(CServiceBroker::GetAddonMgr().GetExtValue(m_extPoint->configuration, "@library"), ".py"))
-      return std::make_shared<CAddon>(m_addonInfo);
+      return std::make_shared<CAddon>(m_addonInfo, ADDON_SCREENSAVER);
   }
 
   // Handle audio encoder special cases
@@ -63,7 +63,7 @@ std::shared_ptr<IAddon> CAddonBuilder::Build()
   {
     // built in audio encoder
     if (StringUtils::StartsWithNoCase(m_extPoint->plugin->identifier, "audioencoder.kodi.builtin."))
-      return std::make_shared<CAddonDll>(m_addonInfo);
+      return std::make_shared<CAddonDll>(m_addonInfo, ADDON_AUDIOENCODER);
   }
 
   // Ensure binary types have a valid library for the platform
@@ -93,7 +93,7 @@ std::shared_ptr<IAddon> CAddonBuilder::Build()
     case ADDON_SCRIPT_MODULE:
     case ADDON_SUBTITLE_MODULE:
     case ADDON_SCRIPT_WEATHER:
-      return std::make_shared<CAddon>(m_addonInfo);
+      return std::make_shared<CAddon>(m_addonInfo, type);
     case ADDON_WEB_INTERFACE:
       return CWebinterface::FromExtension(m_addonInfo, m_extPoint);
     case ADDON_SERVICE:
@@ -113,7 +113,7 @@ std::shared_ptr<IAddon> CAddonBuilder::Build()
     case ADDON_VFS:
     case ADDON_VIZ:
     case ADDON_SCREENSAVER:
-      return std::make_shared<CAddonDll>(m_addonInfo);
+      return std::make_shared<CAddonDll>(m_addonInfo, type);
     case ADDON_PVRDLL:
       return std::make_shared<PVR::CPVRClient>(m_addonInfo);
     case ADDON_GAMEDLL:
@@ -152,13 +152,13 @@ AddonPtr CAddonBuilder::FromProps(const AddonInfoPtr& addonInfo)
   {
     case ADDON_PLUGIN:
     case ADDON_SCRIPT:
-      return AddonPtr(new CPluginSource(addonInfo));
+      return AddonPtr(new CPluginSource(addonInfo, addonInfo->m_mainType));
     case ADDON_SCRIPT_LIBRARY:
     case ADDON_SCRIPT_LYRICS:
     case ADDON_SCRIPT_WEATHER:
     case ADDON_SCRIPT_MODULE:
     case ADDON_SUBTITLE_MODULE:
-      return AddonPtr(new CAddon(addonInfo));
+      return AddonPtr(new CAddon(addonInfo, addonInfo->m_mainType));
     case ADDON_WEB_INTERFACE:
       return AddonPtr(new CWebinterface(addonInfo));
     case ADDON_SERVICE:
@@ -169,7 +169,7 @@ AddonPtr CAddonBuilder::FromProps(const AddonInfoPtr& addonInfo)
     case ADDON_SCRAPER_MUSICVIDEOS:
     case ADDON_SCRAPER_TVSHOWS:
     case ADDON_SCRAPER_LIBRARY:
-      return AddonPtr(new CScraper(addonInfo));
+      return AddonPtr(new CScraper(addonInfo, addonInfo->m_mainType));
     case ADDON_SKIN:
       return AddonPtr(new CSkinInfo(addonInfo));
     case ADDON_AUDIODECODER:
@@ -180,7 +180,7 @@ AddonPtr CAddonBuilder::FromProps(const AddonInfoPtr& addonInfo)
     case ADDON_VFS:
     case ADDON_VIZ:
     case ADDON_SCREENSAVER:
-      return AddonPtr(new CAddonDll(addonInfo));
+      return AddonPtr(new CAddonDll(addonInfo, addonInfo->m_mainType));
     case ADDON_PVRDLL:
       return AddonPtr(new PVR::CPVRClient(addonInfo));
     case ADDON_RESOURCE_FONT:

@@ -98,7 +98,7 @@ std::unique_ptr<CGameClient> CGameClient::FromExtension(const ADDON::AddonInfoPt
 }
 
 CGameClient::CGameClient(const ADDON::AddonInfoPtr& addonInfo) :
-  CAddonDll(addonInfo),
+  CAddonDll(addonInfo, ADDON::ADDON_GAMEDLL),
   m_subsystems(CGameClientSubsystem::CreateSubsystems(*this, m_struct, m_critSection)),
   m_bSupportsVFS(false),
   m_bSupportsStandalone(false),

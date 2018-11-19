@@ -20,7 +20,7 @@ class CLanguageResource : public CResource
 public:
   static std::unique_ptr<CLanguageResource> FromExtension(const AddonInfoPtr& addonInfo, const cp_extension_t* ext);
 
-  explicit CLanguageResource(const AddonInfoPtr& addonInfo) : CResource(addonInfo), m_forceUnicodeFont(false) {};
+  explicit CLanguageResource(const AddonInfoPtr& addonInfo) : CResource(addonInfo, ADDON_RESOURCE_LANGUAGE), m_forceUnicodeFont(false) {};
 
   CLanguageResource(const AddonInfoPtr& addonInfo,
       const CLocale& locale,

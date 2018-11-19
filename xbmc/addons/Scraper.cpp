@@ -154,8 +154,8 @@ std::unique_ptr<CScraper> CScraper::FromExtension(const AddonInfoPtr& addonInfo,
       new CScraper(addonInfo, requiressettings, persistence, pathContent));
 }
 
-CScraper::CScraper(const AddonInfoPtr& addonInfo)
-    : CAddon(addonInfo)
+CScraper::CScraper(const AddonInfoPtr& addonInfo, TYPE addonType)
+    : CAddon(addonInfo, addonType)
     , m_fLoaded(false)
     , m_requiressettings(false)
     , m_pathContent(CONTENT_NONE)
@@ -167,7 +167,7 @@ CScraper::CScraper(const AddonInfoPtr& addonInfo,
                    bool requiressettings,
                    CDateTimeSpan persistence,
                    CONTENT_TYPE pathContent)
-    : CAddon(addonInfo)
+    : CAddon(addonInfo, ADDON_UNKNOWN)
     , m_fLoaded(false)
     , m_requiressettings(requiressettings)
     , m_persistence(persistence)

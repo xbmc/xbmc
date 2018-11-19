@@ -56,7 +56,7 @@ namespace PVR
 #define DEFAULT_INFO_STRING_VALUE "unknown"
 
 CPVRClient::CPVRClient(const AddonInfoPtr& addonInfo)
-  : CAddonDll(addonInfo)
+  : CAddonDll(addonInfo, ADDON_PVRDLL)
 {
   ResetProperties();
 }

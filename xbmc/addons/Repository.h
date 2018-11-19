@@ -38,7 +38,7 @@ namespace ADDON
 
     static std::unique_ptr<CRepository> FromExtension(const AddonInfoPtr& addonInfo, const cp_extension_t* ext);
 
-    explicit CRepository(const AddonInfoPtr& addonInfo) : CAddon(addonInfo) {};
+    explicit CRepository(const AddonInfoPtr& addonInfo) : CAddon(addonInfo, ADDON_REPOSITORY) {};
     CRepository(const AddonInfoPtr& addonInfo, DirList dirs);
 
     enum FetchStatus

@@ -194,7 +194,7 @@ std::unique_ptr<CSkinInfo> CSkinInfo::FromExtension(const AddonInfoPtr& addonInf
 CSkinInfo::CSkinInfo(
     const AddonInfoPtr& addonInfo,
     const RESOLUTION_INFO& resolution /* = RESOLUTION_INFO() */)
-    : CAddon(addonInfo),
+    : CAddon(addonInfo, ADDON_SKIN),
       m_defaultRes(resolution),
       m_effectsSlowDown(1.f),
       m_debugging(false)
@@ -208,7 +208,7 @@ CSkinInfo::CSkinInfo(
     const std::vector<RESOLUTION_INFO>& resolutions,
     float effectsSlowDown,
     bool debugging)
-    : CAddon(addonInfo),
+    : CAddon(addonInfo, ADDON_SKIN),
       m_defaultRes(resolution),
       m_resolutions(resolutions),
       m_effectsSlowDown(effectsSlowDown),

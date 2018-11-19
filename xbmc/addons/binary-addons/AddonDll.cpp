@@ -10,6 +10,7 @@
 
 #include "addons/AddonStatusHandler.h"
 #include "GUIUserMessages.h"
+#include "addons/binary-addons/BinaryAddonBase.h"
 #include "addons/settings/AddonSettings.h"
 #include "addons/settings/GUIDialogAddonSettings.h"
 #include "events/EventLog.h"
@@ -42,7 +43,7 @@ namespace ADDON
 std::vector<ADDON_GET_INTERFACE_FN> CAddonDll::s_registeredInterfaces;
 
 CAddonDll::CAddonDll(const AddonInfoPtr& addonInfo, BinaryAddonBasePtr addonBase)
-  : CAddon(addonInfo),
+  : CAddon(addonInfo, addonBase->MainType()),
     m_pHelpers(nullptr),
     m_binaryAddonBase(addonBase),
     m_pDll(nullptr),
@@ -51,8 +52,8 @@ CAddonDll::CAddonDll(const AddonInfoPtr& addonInfo, BinaryAddonBasePtr addonBase
 {
 }
 
-CAddonDll::CAddonDll(const AddonInfoPtr& addonInfo)
-  : CAddon(addonInfo),
+CAddonDll::CAddonDll(const AddonInfoPtr& addonInfo, TYPE addonType)
+  : CAddon(addonInfo, addonType),
     m_pHelpers(nullptr),
     m_binaryAddonBase(nullptr),
     m_pDll(nullptr),

@@ -33,7 +33,7 @@ namespace ADDON
 class CAddon : public IAddon
 {
 public:
-  explicit CAddon(const AddonInfoPtr& addonInfo);
+  explicit CAddon(const AddonInfoPtr& addonInfo, TYPE addonType);
   ~CAddon() override = default;
 
   TYPE Type() const override { return m_addonInfo->MainType(); }
@@ -240,6 +240,7 @@ private:
 
   std::string m_profilePath;
   mutable std::shared_ptr<CAddonSettings> m_settings;
+  const TYPE m_type;
 };
 
 }; /* namespace ADDON */

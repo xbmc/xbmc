@@ -23,7 +23,7 @@ namespace ADDON
   {
   public:
     CAddonDll(const AddonInfoPtr& addonInfo, BinaryAddonBasePtr addonBase);
-    explicit CAddonDll(const AddonInfoPtr& addonInfo);
+    explicit CAddonDll(const AddonInfoPtr& addonInfo, TYPE addonType);
     ~CAddonDll() override;
 
     virtual ADDON_STATUS GetStatus();

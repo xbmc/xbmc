@@ -162,7 +162,7 @@ std::unique_ptr<CRepository> CRepository::FromExtension(const AddonInfoPtr& addo
 }
 
 CRepository::CRepository(const AddonInfoPtr& addonInfo, DirList dirs)
-    : CAddon(addonInfo), m_dirs(std::move(dirs))
+    : CAddon(addonInfo, ADDON_REPOSITORY), m_dirs(std::move(dirs))
 {
   for (auto const& dir : m_dirs)
   {

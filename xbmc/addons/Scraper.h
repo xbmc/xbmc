@@ -78,7 +78,7 @@ public:
 
   static std::unique_ptr<CScraper> FromExtension(const AddonInfoPtr& addonInfo, const cp_extension_t* ext);
 
-  explicit CScraper(const AddonInfoPtr& addonInfo);
+  explicit CScraper(const AddonInfoPtr& addonInfo, TYPE addonType);
   CScraper(const AddonInfoPtr& addonInfo, bool requiressettings, CDateTimeSpan persistence, CONTENT_TYPE pathContent);
 
   /*! \brief Set the scraper settings for a particular path from an XML string

@@ -13,7 +13,7 @@
 using namespace ADDON;
 
 CGameResource::CGameResource(const AddonInfoPtr& addonInfo) :
-  CResource(addonInfo)
+  CResource(addonInfo, ADDON_RESOURCE_GAMES)
 {
 }
 

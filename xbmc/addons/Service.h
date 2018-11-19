@@ -19,7 +19,7 @@ namespace ADDON
   public:
     static std::unique_ptr<CService> FromExtension(const AddonInfoPtr& addonInfo, const cp_extension_t* ext);
 
-    explicit CService(const AddonInfoPtr& addonInfo) : CAddon(addonInfo) {}
+    explicit CService(const AddonInfoPtr& addonInfo) : CAddon(addonInfo, ADDON_SERVICE) {}
   };
 
   class CServiceAddonManager

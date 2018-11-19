@@ -108,7 +108,7 @@ std::unique_ptr<CContextMenuAddon> CContextMenuAddon::FromExtension(const AddonI
 }
 
 CContextMenuAddon::CContextMenuAddon(const AddonInfoPtr& addonInfo, std::vector<CContextMenuItem> items)
-    : CAddon(addonInfo), m_items(std::move(items))
+    : CAddon(addonInfo, ADDON_CONTEXT_ITEM), m_items(std::move(items))
 {
 }
 

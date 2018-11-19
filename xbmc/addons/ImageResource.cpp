@@ -25,7 +25,7 @@ std::unique_ptr<CImageResource> CImageResource::FromExtension(const AddonInfoPtr
 }
 
 CImageResource::CImageResource(const AddonInfoPtr& addonInfo, std::string type)
-    : CResource(addonInfo), m_type(std::move(type))
+    : CResource(addonInfo, ADDON_RESOURCE_IMAGES), m_type(std::move(type))
 {
 }
 

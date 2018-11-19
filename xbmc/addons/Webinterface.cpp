@@ -36,7 +36,7 @@ std::unique_ptr<CWebinterface> CWebinterface::FromExtension(const AddonInfoPtr& 
 }
 
 CWebinterface::CWebinterface(const AddonInfoPtr& addonInfo, WebinterfaceType type,
-    const std::string &entryPoint) : CAddon(addonInfo), m_type(type), m_entryPoint(entryPoint)
+    const std::string &entryPoint) : CAddon(addonInfo, ADDON_WEB_INTERFACE), m_type(type), m_entryPoint(entryPoint)
 { }
 
 std::string CWebinterface::GetEntryPoint(const std::string &path) const

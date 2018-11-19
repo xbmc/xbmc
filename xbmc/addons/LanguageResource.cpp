@@ -106,7 +106,7 @@ CLanguageResource::CLanguageResource(
     const std::string& dvdLanguageAudio,
     const std::string& dvdLanguageSubtitle,
     const std::set<std::string>& sortTokens)
-  : CResource(addonInfo),
+  : CResource(addonInfo, ADDON_RESOURCE_LANGUAGE),
     m_locale(locale),
     m_charsetGui(charsetGui),
     m_forceUnicodeFont(forceUnicodeFont),
