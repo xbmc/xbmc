@@ -867,7 +867,7 @@ int CMusicDatabase::AddAlbum(const std::string& strAlbum, const std::string& str
          stored for it.  Most values here should be the same across all songs anyway, but it does mean
          that if there's any inconsistencies then only the last folders information will be taken.
 
-         We make sure we clear out the link tables (album artists, album genres) and we reset
+         We make sure we clear out the link tables (album artists, album sources) and we reset
          the last scraped time to make sure that online metadata is re-fetched. */
       int idAlbum = m_pDS->fv("idAlbum").get_asInt();
       m_pDS->close();
@@ -896,6 +896,7 @@ int CMusicDatabase::AddAlbum(const std::string& strAlbum, const std::string& str
         idAlbum);
       m_pDS->exec(strSQL);
       DeleteAlbumArtistsByAlbum(idAlbum);
+      DeleteAlbumSources(idAlbum);
       return idAlbum;
     }
   }
@@ -8047,6 +8048,11 @@ bool CMusicDatabase::AddAlbumSources(int idAlbum, const std::string& strPath)
   }
 
   return false;
+}
+
+bool CMusicDatabase::DeleteAlbumSources(int idAlbum)
+{
+  return ExecuteQuery(PrepareSQL("DELETE FROM album_source WHERE idAlbum = %i", idAlbum));
 }
 
 bool CMusicDatabase::CheckSources(VECSOURCES& sources)
