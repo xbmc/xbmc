@@ -58,6 +58,16 @@ const std::string SETTING_VIDEOPLAYER_USEVAAPIVP8 = "videoplayer.usevaapivp8";
 const std::string SETTING_VIDEOPLAYER_USEVAAPIVP9 = "videoplayer.usevaapivp9";
 const std::string SETTING_VIDEOPLAYER_PREFERVAAPIRENDER = "videoplayer.prefervaapirender";
 
+void VAAPI::VaErrorCallback(void *user_context, const char *message)
+{
+  CLog::Log(LOGERROR, "libva error: {}", message);
+}
+
+void VAAPI::VaInfoCallback(void *user_context, const char *message)
+{
+  CLog::Log(LOGDEBUG, "libva info: {}", message);
+}
+
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 
@@ -188,6 +198,11 @@ bool CVAAPIContext::CreateContext()
     return false;
   }
 
+#if VA_CHECK_VERSION(1, 0, 0)
+  vaSetErrorCallback(m_display, VaErrorCallback, nullptr);
+  vaSetInfoCallback(m_display, VaInfoCallback, nullptr);
+#endif
+
   int major_version, minor_version;
   if (!CheckSuccess(vaInitialize(m_display, &major_version, &minor_version)))
   {
@@ -211,6 +226,11 @@ void CVAAPIContext::DestroyContext()
   delete[] m_profiles;
   if (m_display)
     CheckSuccess(vaTerminate(m_display));
+
+#if VA_CHECK_VERSION(1, 0, 0)
+  vaSetErrorCallback(m_display, nullptr, nullptr);
+  vaSetInfoCallback(m_display, nullptr, nullptr);
+#endif
 }
 
 void CVAAPIContext::QueryCaps()
