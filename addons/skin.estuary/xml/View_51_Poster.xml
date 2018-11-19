@@ -112,7 +112,7 @@
 						<autoscroll time="3000" delay="7000" repeat="5000">!System.HasActiveModalDialog + Skin.HasSetting(AutoScroll)</autoscroll>
 						<label>$INFO[ListItem.Plot]</label>
 						<shadowcolor>text_shadow</shadowcolor>
-						<visible>!ListItem.IsCollection</visible>
+						<visible>![ListItem.IsCollection + String.IsEmpty(ListItem.Plot)]</visible>
 					</control>
 				</control>
 			</control>
