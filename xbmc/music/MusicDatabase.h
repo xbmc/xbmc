@@ -354,6 +354,7 @@ public:
   int GetSourceFromPath(const std::string& strPath);
   bool AddAlbumSource(int idAlbum, int idSource);
   bool AddAlbumSources(int idAlbum,  const std::string& strPath);
+  bool DeleteAlbumSources(int idAlbum);
   bool GetSources(CFileItemList& items);
 
   bool GetSourcesByArtist(int idArtist, CFileItem* item);
