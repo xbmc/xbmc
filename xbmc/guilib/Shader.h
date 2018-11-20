@@ -32,11 +32,17 @@ namespace Shaders {
     virtual bool InsertSource(const std::string& filename, const std::string& loc);
     bool OK() const { return m_compiled; }
 
+    std::string GetName() const { return m_filenames; }
+    std::string GetSourceWithLineNumbers() const;
+
   protected:
     std::string m_source;
     std::string m_lastLog;
     std::vector<std::string> m_attr;
     bool m_compiled = false;
+
+  private:
+    std::string m_filenames;
   };
 
 

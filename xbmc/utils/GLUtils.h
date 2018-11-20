@@ -21,6 +21,19 @@
 
 #include "system_gl.h"
 
+namespace KODI
+{
+namespace UTILS
+{
+namespace GL
+{
+
+void GlErrorCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam);
+
+}
+}
+}
+
 void _VerifyGLState(const char* szfile, const char* szfunction, int lineno);
 #if defined(GL_DEBUGGING) && (defined(HAS_GL) || defined(HAS_GLES))
 #define VerifyGLState() _VerifyGLState(__FILE__, __FUNCTION__, __LINE__)

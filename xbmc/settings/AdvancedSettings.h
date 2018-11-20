@@ -382,6 +382,8 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     False to show at the bottom of video (default) */
     bool m_videoAssFixedWorks;
 
+    bool m_openGlDebugging;
+
     std::string m_userAgent;
 
   private:
