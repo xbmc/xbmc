@@ -8,15 +8,38 @@
 
 #pragma once
 
+#include "utils/log.h"
+
+#include <fstream>
 #include <string>
 
-class SysfsUtils
+class CSysfsPath
 {
 public:
-  static int SetString(const std::string& path, const std::string& valstr);
-  static int GetString(const std::string& path, std::string& valstr);
-  static int SetInt(const std::string& path, const int val);
-  static int GetInt(const std::string& path, int& val);
-  static bool Has(const std::string& path);
-  static bool HasRW(const std::string &path);
+  CSysfsPath() = default;
+  CSysfsPath(const std::string& path) : m_path(path) {}
+  ~CSysfsPath() = default;
+
+  bool Exists();
+
+  template<typename T>
+  T Get()
+  {
+    std::ifstream file(m_path);
+
+    T value;
+
+    file >> value;
+
+    if (file.bad())
+    {
+      CLog::LogF(LOGERROR, "error reading from '{}'", m_path);
+      throw std::runtime_error("error reading from " + m_path);
+    }
+
+    return value;
+  }
+
+private:
+  std::string m_path;
 };

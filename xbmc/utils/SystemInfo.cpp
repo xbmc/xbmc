@@ -723,19 +723,10 @@ std::string CSysInfo::GetManufacturerName(void)
     auto manufacturer = eas.SystemManufacturer();
     g_charsetConverter.wToUTF8(std::wstring(manufacturer.c_str()), manufName);
 #elif defined(TARGET_LINUX)
-    if (SysfsUtils::Has("/sys/bus/soc/devices/soc0/family"))
-    {
-      std::string family;
-      SysfsUtils::GetString("/sys/bus/soc/devices/soc0/family", family);
-      if (SysfsUtils::Has("/sys/bus/soc/devices/soc0/soc_id"))
-      {
-        std::string soc_id;
-        SysfsUtils::GetString("/sys/bus/soc/devices/soc0/soc_id", soc_id);
-        manufName = family + " " + soc_id;
-      }
-      else
-        manufName = family;
-    }
+
+    auto cpuInfo = CServiceBroker::GetCPUInfo();
+    manufName = cpuInfo->GetCPUSoC();
+
 #elif defined(TARGET_WINDOWS)
     // We just don't care, might be useful on embedded
 #endif
@@ -770,8 +761,8 @@ std::string CSysInfo::GetModelName(void)
     auto manufacturer = eas.SystemProductName();
     g_charsetConverter.wToUTF8(std::wstring(manufacturer.c_str()), modelName);
 #elif defined(TARGET_LINUX)
-    if (SysfsUtils::Has("/sys/bus/soc/devices/soc0/machine"))
-      SysfsUtils::GetString("/sys/bus/soc/devices/soc0/machine", modelName);
+    auto cpuInfo = CServiceBroker::GetCPUInfo();
+    modelName = cpuInfo->GetCPUHardware();
 #elif defined(TARGET_WINDOWS)
     // We just don't care, might be useful on embedded
 #endif

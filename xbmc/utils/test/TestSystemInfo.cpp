@@ -6,9 +6,11 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "utils/SystemInfo.h"
-#include "settings/Settings.h"
 #include "GUIInfoManager.h"
+#include "ServiceBroker.h"
+#include "settings/Settings.h"
+#include "utils/CPUInfo.h"
+#include "utils/SystemInfo.h"
 #if defined(TARGET_WINDOWS)
 #include "platform/win32/CharsetConverter.h"
 #endif
@@ -18,10 +20,8 @@
 class TestSystemInfo : public testing::Test
 {
 protected:
-  TestSystemInfo()
-  = default;
-  ~TestSystemInfo() override
-  = default;
+  TestSystemInfo() { CServiceBroker::RegisterCPUInfo(CCPUInfo::GetCPUInfo()); }
+  ~TestSystemInfo() { CServiceBroker::UnregisterCPUInfo(); }
 };
 
 TEST_F(TestSystemInfo, Print_System_Info)
