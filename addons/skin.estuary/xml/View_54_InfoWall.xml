@@ -155,6 +155,16 @@
 				<bordersize>20</bordersize>
 			</control>
 			<control type="image">
+				<left>0</left>
+				<top>10</top>
+				<width>316</width>
+				<height>218</height>
+				<texture background="true">OverlaySpoiler.png</texture>
+				<aspectratio>scale</aspectratio>
+				<bordersize>20</bordersize>
+				<visible>String.IsEqual(ListItem.Plot,$LOCALIZE[20370])</visible>
+			</control>
+			<control type="image">
 				<left>20</left>
 				<top>138</top>
 				<width>276</width>

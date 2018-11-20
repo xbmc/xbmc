@@ -189,6 +189,16 @@
 					<texture background="true">$INFO[ListItem.Icon]</texture>
 					<visible>String.IsEqual(ListItem.DbType,episode)</visible>
 				</control>
+				<control type="image">
+					<left>30</left>
+					<top>140</top>
+					<width>530</width>
+					<height>330</height>
+					<aspectratio aligny="bottom">keep</aspectratio>
+					<fadetime>300</fadetime>
+					<texture background="true">OverlaySpoiler.png</texture>
+					<visible>String.IsEqual(ListItem.DbType,episode) + String.IsEqual(ListItem.Plot,$LOCALIZE[20370])</visible>
+				</control>
 				<control type="group">
 					<left>273</left>
 					<top>590</top>

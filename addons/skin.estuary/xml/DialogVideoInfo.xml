@@ -53,6 +53,17 @@
 						<bordertexture border="21">overlays/shadow.png</bordertexture>
 						<bordersize>20</bordersize>
 					</control>
+					<control type="image">
+						<left>14</left>
+						<top>4</top>
+						<width>506</width>
+						<height>801</height>
+						<aspectratio>keep</aspectratio>
+						<texture>OverlaySpoiler.png</texture>
+						<bordertexture border="21">overlays/shadow.png</bordertexture>
+						<bordersize>20</bordersize>
+						<visible>String.IsEqual(ListItem.Plot,$LOCALIZE[20370])</visible>
+					</control>
 				</control>
 			</control>
 			<control type="group">
