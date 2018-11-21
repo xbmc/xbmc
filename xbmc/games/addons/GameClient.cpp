@@ -252,8 +252,6 @@ bool CGameClient::OpenFile(const CFileItem& file, RETRO::IStreamManager& streamM
 
   CloseFile();
 
-  Streams().Initialize(streamManager);
-
   GAME_ERROR error = GAME_ERROR_FAILED;
 
   try { LogError(error = m_struct.toAddon.LoadGame(path.c_str()), "LoadGame()"); }
@@ -262,13 +260,11 @@ bool CGameClient::OpenFile(const CFileItem& file, RETRO::IStreamManager& streamM
   if (error != GAME_ERROR_NO_ERROR)
   {
     NotifyError(error);
-    Streams().Deinitialize();
     return false;
   }
 
   if (!InitializeGameplay(file.GetPath(), streamManager, input))
   {
-    Streams().Deinitialize();
     return false;
   }
 
@@ -286,8 +282,6 @@ bool CGameClient::OpenStandalone(RETRO::IStreamManager& streamManager, IGameInpu
 
   CloseFile();
 
-  Streams().Initialize(streamManager);
-
   GAME_ERROR error = GAME_ERROR_FAILED;
 
   try { LogError(error = m_struct.toAddon.LoadStandalone(), "LoadStandalone()"); }
@@ -296,13 +290,11 @@ bool CGameClient::OpenStandalone(RETRO::IStreamManager& streamManager, IGameInpu
   if (error != GAME_ERROR_NO_ERROR)
   {
     NotifyError(error);
-    Streams().Deinitialize();
     return false;
   }
 
   if (!InitializeGameplay("", streamManager, input))
   {
-    Streams().Deinitialize();
     return false;
   }
 
@@ -313,6 +305,7 @@ bool CGameClient::InitializeGameplay(const std::string& gamePath, RETRO::IStream
 {
   if (LoadGameInfo())
   {
+    Streams().Initialize(streamManager);
     Input().Start(input);
 
     m_bIsPlaying      = true;
