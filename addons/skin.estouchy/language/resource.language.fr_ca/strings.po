@@ -194,7 +194,7 @@ msgstr "Valeur par défaut de l’habillage"
 
 msgctxt "#31391"
 msgid "Arial based"
-msgstr "Basé sur Arial"
+msgstr "D’après Arial"
 
 msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"

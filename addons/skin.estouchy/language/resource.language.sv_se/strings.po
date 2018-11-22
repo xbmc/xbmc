@@ -270,7 +270,7 @@ msgstr "Konfigurera tv-inställningar · Ändra helskärmsinformation · Hantera
 
 msgctxt "#31556"
 msgid "Live TV"
-msgstr "Live-tv"
+msgstr "Live-TV"
 
 msgctxt "#31557"
 msgid "Hide video background"
