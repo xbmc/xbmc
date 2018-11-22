@@ -1,10 +1,12 @@
 set(SOURCES CPUInfoLinux.cpp
             MemUtils.cpp
+            Backlight.cpp
             OptionalsReg.cpp
             SysfsPath.cpp
             TimeUtils.cpp)
 
 set(HEADERS CPUInfoLinux.h
+            Backlight.h
             OptionalsReg.h
             SysfsPath.h
             TimeUtils.h)
