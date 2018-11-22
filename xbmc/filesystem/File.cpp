@@ -278,7 +278,12 @@ bool CFile::Open(const CURL& file, const unsigned int flags)
     if (!g_directoryCache.FileExists(url2.Get(), bPathInCache) )
     {
       if (bPathInCache)
-        return false;
+      {
+        // Check file exists, if yes it was created new somewhere and not cached
+        if (!XFILE::CFile::Exists(url2, false))
+          return false;
+        g_directoryCache.AddFile(url2.Get());
+      }
     }
 
     if (!(m_flags & READ_NO_CACHE))
