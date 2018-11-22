@@ -571,3 +571,7 @@ msgstr "用户配置名称"
 msgctxt "#31166"
 msgid "Profile avatar"
 msgstr "用户配置头像"
+
+msgctxt "#31167"
+msgid "Animate background"
+msgstr "动态背景"

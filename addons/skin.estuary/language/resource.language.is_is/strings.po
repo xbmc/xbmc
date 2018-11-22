@@ -571,3 +571,7 @@ msgstr "Nafn notanda"
 msgctxt "#31166"
 msgid "Profile avatar"
 msgstr "Notandatáknmynd"
+
+msgctxt "#31167"
+msgid "Animate background"
+msgstr "Lifandi bakgrunnur"

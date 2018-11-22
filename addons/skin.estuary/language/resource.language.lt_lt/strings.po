@@ -571,3 +571,7 @@ msgstr "Profilio vardas"
 msgctxt "#31166"
 msgid "Profile avatar"
 msgstr "Profilio avataras"
+
+msgctxt "#31167"
+msgid "Animate background"
+msgstr "Animuoti foną"

@@ -206,7 +206,7 @@ msgstr "filtré"
 
 msgctxt "#31053"
 msgid "Arial based"
-msgstr "Basé sur Arial"
+msgstr "D’après Arial"
 
 msgctxt "#31054"
 msgid "Press [B]Left[/B] to rewind, or [B]Right[/B] to fast-forward"
@@ -562,7 +562,7 @@ msgstr "Afficher le fanart en arrière-plan"
 
 msgctxt "#31164"
 msgid "Choose kind of profile identification"
-msgstr "Choisir le type d’identification du profile"
+msgstr "Choisir le genre d’identification du profil"
 
 msgctxt "#31165"
 msgid "Profile name"
@@ -570,4 +570,8 @@ msgstr "Nom du profil"
 
 msgctxt "#31166"
 msgid "Profile avatar"
-msgstr "Avatar du profile"
+msgstr "Avatar du profil"
+
+msgctxt "#31167"
+msgid "Animate background"
+msgstr "Animer l’arrière-plan"
