@@ -56,14 +56,19 @@ bool CPVRGUITimerInfo::TimerInfoToggle()
     return true;
   }
 
-  if ((int) (XbmcThreads::SystemClockMillis() - m_iTimerInfoToggleStart) > CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iPVRInfoToggleInterval)
+  if (static_cast<int>(XbmcThreads::SystemClockMillis() - m_iTimerInfoToggleStart) >
+        CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iPVRInfoToggleInterval)
   {
     unsigned int iPrevious = m_iTimerInfoToggleCurrent;
     unsigned int iBoundary = m_iRecordingTimerAmount > 0 ? m_iRecordingTimerAmount : m_iTimerAmount;
     if (++m_iTimerInfoToggleCurrent > iBoundary - 1)
       m_iTimerInfoToggleCurrent = 0;
 
-    return m_iTimerInfoToggleCurrent != iPrevious;
+    if (m_iTimerInfoToggleCurrent != iPrevious)
+    {
+      m_iTimerInfoToggleStart = XbmcThreads::SystemClockMillis();
+      return true;
+    }
   }
 
   return false;
