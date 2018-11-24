@@ -5143,6 +5143,21 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///     @return The end date of the next item (PVR).
 ///     <p>
 ///   }
+///   \table_row3{   <b>`ListItem.NextDuration`</b>,
+///                  \anchor ListItem_NextDuration
+///                  _string_,
+///     @return The duration of the next item (PVR) in the format <b>hh:mm:ss</b>.
+///     @note <b>hh:</b> will be omitted if hours value is zero.
+///     <p>
+///   }
+///   \table_row3{   <b>`ListItem.NextDuration(format)`</b>,
+///                  \anchor ListItem_NextDuration_format
+///                  _string_,
+///     @return The duration of the next item (PVR) in different formats.
+///     @param format [opt] The format of the return time value.
+///     See \ref TIME_FORMAT for the list of possible values.
+///     <p>
+///   }
 ///   \table_row3{   <b>`ListItem.ChannelGroup`</b>,
 ///                  \anchor ListItem_ChannelGroup
 ///                  _string_,
@@ -5731,6 +5746,7 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "nextendtime",      LISTITEM_NEXT_ENDTIME },
                                   { "nextstartdate",    LISTITEM_NEXT_STARTDATE },
                                   { "nextenddate",      LISTITEM_NEXT_ENDDATE },
+                                  { "nextduration",     LISTITEM_NEXT_DURATION },
                                   { "channelname",      LISTITEM_CHANNEL_NAME },
                                   { "channelnumberlabel", LISTITEM_CHANNEL_NUMBER },
                                   { "channelgroup",     LISTITEM_CHANNEL_GROUP },
@@ -9052,7 +9068,7 @@ int CGUIInfoManager::TranslateListItem(const Property& cat, const Property& prop
     {
       data3 = prop.param();
     }
-    else if (prop.name == "duration")
+    else if (prop.name == "duration" || prop.name == "nextduration")
     {
       data4 = TranslateTimeFormat(prop.param());
     }
