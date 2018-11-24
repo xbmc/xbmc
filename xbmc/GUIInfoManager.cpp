@@ -6710,7 +6710,15 @@ const infomap playlist[] =       {{ "length",           PLAYLIST_LENGTH },
 ///     @skinning_v18 **[New Infolabel]** \link PVR_TimeshiftProgressBufferEnd `PVR.TimeshiftProgressBufferEnd`\endlink
 ///     <p>
 ///   }
-/// 
+///   \table_row3{   <b>`PVR.EpgEventIcon`</b>,
+///                  \anchor PVR_EpgEventIcon
+///                  _string_,
+///     @return The icon of the currently playing epg event\, if any.
+///     <p><hr>
+///     @skinning_v18 **[New Infolabel]** \link PVR_EpgEventIcon `PVR_EpgEventIcon`\endlink
+///     <p>
+///   }
+///
 const infomap pvr[] =            {{ "isrecording",              PVR_IS_RECORDING },
                                   { "hastimer",                 PVR_HAS_TIMER },
                                   { "hastvchannels",            PVR_HAS_TV_CHANNELS },
@@ -6786,17 +6794,10 @@ const infomap pvr[] =            {{ "isrecording",              PVR_IS_RECORDING
                                   { "timeshiftprogressepgstart",  PVR_TIMESHIFT_PROGRESS_EPG_START },
                                   { "timeshiftprogressepgend",    PVR_TIMESHIFT_PROGRESS_EPG_END },
                                   { "timeshiftprogressbufferstart", PVR_TIMESHIFT_PROGRESS_BUFFER_START },
-                                  { "timeshiftprogressbufferend", PVR_TIMESHIFT_PROGRESS_BUFFER_END }};
+                                  { "timeshiftprogressbufferend", PVR_TIMESHIFT_PROGRESS_BUFFER_END },
+                                  { "epgeventicon",               PVR_EPG_EVENT_ICON }};
 
 /// \page modules__infolabels_boolean_conditions
-///   \table_row3{   <b>`PVR.EpgEventIcon`</b>,
-///                  \anchor PVR_EpgEventIcon
-///                  _string_,
-///     @return The icon of the currently playing epg event\, if any.
-///     <p><hr>
-///     @skinning_v18 **[New Infolabel]** \link PVR_EpgEventIcon `PVR_EpgEventIcon`\endlink
-///     <p>  
-///   }
 ///   \table_row3{   <b>`PVR.EpgEventDuration`</b>,
 ///                  \anchor PVR_EpgEventDuration
 ///                  _string_,
@@ -7010,8 +7011,7 @@ const infomap pvr[] =            {{ "isrecording",              PVR_IS_RECORDING
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
-const infomap pvr_times[] =      {{ "epgeventicon",           PVR_EPG_EVENT_ICON },
-                                  { "epgeventduration",       PVR_EPG_EVENT_DURATION },
+const infomap pvr_times[] =      {{ "epgeventduration",       PVR_EPG_EVENT_DURATION },
                                   { "epgeventelapsedtime",    PVR_EPG_EVENT_ELAPSED_TIME },
                                   { "epgeventremainingtime",  PVR_EPG_EVENT_REMAINING_TIME },
                                   { "epgeventfinishtime",     PVR_EPG_EVENT_FINISH_TIME },
