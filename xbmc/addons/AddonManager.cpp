@@ -697,7 +697,7 @@ bool CAddonMgr::FindAddons()
       cp_plugin_info_t** cp_addons = cp_get_plugins_info(m_cp_context, &status, &n);
       for (int i = 0; i < n; ++i)
       {
-        installed.emplace(cp_addons[i]->identifier, cp_addons[i]->version);
+        installed.emplace(cp_addons[i]->identifier, cp_addons[i]->version ? cp_addons[i]->version : "");
       }
       cp_release_info(m_cp_context, cp_addons);
       // Log separately so list is sorted
