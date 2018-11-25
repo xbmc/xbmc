@@ -26,19 +26,18 @@ using namespace XFILE;
 //////////////////////////////////////////////////////////////////////
 // CShader
 //////////////////////////////////////////////////////////////////////
-bool CShader::LoadSource(const std::string& filename, const std::string& prefix)
+bool CShader::LoadSource(const std::string& filename, const std::string& prefix, const std::string& basePath)
 {
   if(filename.empty())
     return true;
 
   CFileStream file;
-
-  std::string path = "special://xbmc/system/shaders/";
+  std::string path = basePath.empty() ? "special://xbmc/system/shaders/" : basePath;
   path += CServiceBroker::GetRenderSystem()->GetShaderPath(filename);
   path += filename;
   if(!file.Open(path))
   {
-    CLog::Log(LOGERROR, "CYUVShaderGLSL::CYUVShaderGLSL - failed to open file %s", filename.c_str());
+    CLog::Log(LOGERROR, "CShader::{}; failed to open file {}", __FUNCTION__, path);
     return false;
   }
   getline(file, m_source, '\0');
@@ -58,7 +57,7 @@ bool CShader::LoadSource(const std::string& filename, const std::string& prefix)
   return true;
 }
 
-bool CShader::AppendSource(const std::string& filename)
+bool CShader::AppendSource(const std::string& filename, const std::string& basePath)
 {
   if(filename.empty())
     return true;
@@ -66,12 +65,12 @@ bool CShader::AppendSource(const std::string& filename)
   CFileStream file;
   std::string temp;
 
-  std::string path = "special://xbmc/system/shaders/";
+  std::string path = basePath.empty() ? "special://xbmc/system/shaders/" : basePath;
   path += CServiceBroker::GetRenderSystem()->GetShaderPath(filename);
   path += filename;
   if(!file.Open(path))
   {
-    CLog::Log(LOGERROR, "CShader::AppendSource - failed to open file %s", filename.c_str());
+    CLog::Log(LOGERROR, "CShader::{}; failed to open file {}", __FUNCTION__, path);
     return false;
   }
   getline(file, temp, '\0');
@@ -82,7 +81,7 @@ bool CShader::AppendSource(const std::string& filename)
   return true;
 }
 
-bool CShader::InsertSource(const std::string& filename, const std::string& loc)
+bool CShader::InsertSource(const std::string& filename, const std::string& loc, const std::string& basePath)
 {
   if(filename.empty())
     return true;
@@ -90,12 +89,12 @@ bool CShader::InsertSource(const std::string& filename, const std::string& loc)
   CFileStream file;
   std::string temp;
 
-  std::string path = "special://xbmc/system/shaders/";
+  std::string path = basePath.empty() ? "special://xbmc/system/shaders/" : basePath;
   path += CServiceBroker::GetRenderSystem()->GetShaderPath(filename);
   path += filename;
   if(!file.Open(path))
   {
-    CLog::Log(LOGERROR, "CShader::InsertSource - failed to open file %s", filename.c_str());
+    CLog::Log(LOGERROR, "CShader::{}; failed to open file {}", __FUNCTION__, path);
     return false;
   }
   getline(file, temp, '\0');
@@ -241,12 +240,13 @@ CGLSLShaderProgram::CGLSLShaderProgram()
 }
 
 CGLSLShaderProgram::CGLSLShaderProgram(const std::string& vert,
-                                       const std::string& frag)
+                                       const std::string& frag,
+                                       const std::string& basePath)
 {
   m_pFP = new CGLSLPixelShader();
-  m_pFP->LoadSource(frag);
+  m_pFP->LoadSource(frag, "", basePath);
   m_pVP = new CGLSLVertexShader();
-  m_pVP->LoadSource(vert);
+  m_pVP->LoadSource(vert, "", basePath);
 }
 
 CGLSLShaderProgram::~CGLSLShaderProgram()

@@ -369,6 +369,83 @@ typedef struct AddonToKodiFuncTable_kodi_gui_window
   void* (*get_control_dummy10)(void* kodiBase, void* handle, int control_id); /* This and above used to add new get_control_* functions */
 } AddonToKodiFuncTable_kodi_gui_window;
 
+typedef struct AddonToKodiFuncTable_kodi_gui_gl_shader
+{
+  void (*present_enable)(void* kodiBase, int method);
+  void (*present_disable)(void* kodiBase);
+  int (*present_get_pos)(void* kodiBase);
+  int (*present_get_col)(void* kodiBase);
+  int (*present_get_coord0)(void* kodiBase);
+  int (*present_get_coord1)(void* kodiBase);
+  int (*present_get_uni_col)(void* kodiBase);
+  int (*present_get_model)(void* kodiBase);
+  /*--------------------------------------------------------------------------*/
+  void* (*shader_create)(void* kodiBase, int type);
+  void (*shader_destroy)(void* kodiBase, void* handle);
+  bool (*shader_compile)(void* kodiBase, void* handle);
+  void (*shader_free)(void* kodiBase, void* handle);
+  unsigned int (*shader_handle)(void* kodiBase, void* handle);
+  void (*shader_set_source)(void* kodiBase, void* handle, const char* src);
+  bool (*shader_load_source)(void* kodiBase, void* handle, const char* filename, const char* prefix, const char* base_path);
+  bool (*shader_append_source)(void* kodiBase, void* handle, const char* filename, const char* base_path);
+  bool (*shader_insert_source)(void* kodiBase, void* handle, const char* filename, const char* loc, const char* base_path);
+  bool (*shader_ok)(void* kodiBase, void* handle);
+  /*--------------------------------------------------------------------------*/
+  void* (*shader_program_create)(void* kodiBase, void* clienthandle,
+                                 void (*OnCompiledAndLinked)(void*),
+                                 bool (*OnEnabled)(void*),
+                                 void (*OnDisabled)(void*),
+                                 const char* vert, const char* frag,
+                                 const char* base_path);
+  void (*shader_program_destroy)(void* kodiBase, void* handle);
+  bool (*shader_program_enable)(void* kodiBase, void* handle);
+  void (*shader_program_disable)(void* kodiBase, void* handle);
+  bool (*shader_program_ok)(void* kodiBase, void* handle);
+  void* (*shader_program_vertex_shader)(void* kodiBase, void* handle);
+  void* (*shader_program_pixel_shader)(void* kodiBase, void* handle);
+  bool (*shader_program_compile_and_link)(void* kodiBase, void* handle);
+  unsigned int (*shader_program_program_handle)(void* kodiBase, void* handle);
+  void (*shader_program_free)(void* kodiBase, void* handle);
+} AddonToKodiFuncTable_kodi_gui_gl_shader;
+
+typedef struct AddonToKodiFuncTable_kodi_gui_gl_matrix
+{
+  void* (*matrix_create)(void* kodiBase);
+  void* (*matrix_create_a)(void* kodiBase,
+                           float x0, float x1, float x2, float x3,
+                           float x4, float x5, float x6, float x7,
+                           float x8, float x9, float x10, float x11,
+                           float x12, float x13, float x14, float x15);
+  void (*matrix_destroy)(void* kodiBase, void* handle);
+  const float* (*matrix_m_pMatrix)(void* kodiBase, void* handle);
+  void (*matrix_load_identity)(void* kodiBase, void* handle);
+  void (*matrix_ortho)(void* kodiBase, void* handle, float l, float r, float b, float t, float n, float f);
+  void (*matrix_ortho2d)(void* kodiBase, void* handle, float l, float r, float b, float t);
+  void (*matrix_frustum)(void* kodiBase, void* handle, float l, float r, float b, float t, float n, float f);
+  void (*matrix_translatef)(void* kodiBase, void* handle, float x, float y, float z);
+  void (*matrix_scalef)(void* kodiBase, void* handle, float x, float y, float z);
+  void (*matrix_rotatef)(void* kodiBase, void* handle, float angle, float x, float y, float z);
+  void (*matrix_mult_matrixf)(void* kodiBase, void* handle, const void* matrix);
+  void (*matrix_look_at)(void* kodiBase, void* handle, float eyex, float eyey, float eyez, float centerx, float centery,
+                         float centerz, float upx, float upy, float upz);
+  bool (*matrix_project)(void* kodiBase, float objx, float objy, float objz, const float* modelMatrix,
+                         const float* projMatrix, const int* viewport, float* winx, float* winy, float* winz);
+
+  typedef enum MATRIX_STACK_TYPE
+  {
+    MATRIX_STACK_TYPE_MODVIEW = 0,
+    MATRIX_STACK_TYPE_PROJECT,
+    MATRIX_STACK_TYPE_TEXTURE
+  } MATRIX_STACK_TYPE;
+
+  void (*matrix_stack_push)(void* kodiBase, int matrix_type);
+  void (*matrix_stack_clear)(void* kodiBase, int matrix_type);
+  void (*matrix_stack_pop)(void* kodiBase, int matrix_type);
+  void (*matrix_stack_load)(void* kodiBase, int matrix_type);
+  void (*matrix_stack_pop_load)(void* kodiBase, int matrix_type);
+  void* (*matrix_stack_get_current)(void* kodiBase, int matrix_type);
+} AddonToKodiFuncTable_kodi_gui_gl_matrix;
+
 typedef struct AddonToKodiFuncTable_kodi_gui
 {
   AddonToKodiFuncTable_kodi_gui_general* general;
@@ -416,6 +493,8 @@ typedef struct AddonToKodiFuncTable_kodi_gui
   void* dialog_dummy10; /* This and above used to add new dialogs */
   AddonToKodiFuncTable_kodi_gui_listItem* listItem;
   AddonToKodiFuncTable_kodi_gui_window* window;
+  AddonToKodiFuncTable_kodi_gui_gl_shader* gl_shader;
+  AddonToKodiFuncTable_kodi_gui_gl_matrix* gl_shader_matrix;
 } AddonToKodiFuncTable_kodi_gui;
 
 } /* extern "C" */

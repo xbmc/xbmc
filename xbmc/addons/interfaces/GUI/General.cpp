@@ -29,6 +29,8 @@
 #include "dialogs/Select.h"
 #include "dialogs/TextViewer.h"
 #include "dialogs/YesNo.h"
+#include "shaders/MatrixGL.h"
+#include "shaders/ShaderGL.h"
 #include "ListItem.h"
 #include "Window.h"
 #include "addons/kodi-addon-dev-kit/include/kodi/gui/General.h"
@@ -81,6 +83,8 @@ void Interface_GUIGeneral::Init(AddonGlobalInterface* addonInterface)
   Interface_GUIDialogYesNo::Init(addonInterface);
   Interface_GUIListItem::Init(addonInterface);
   Interface_GUIWindow::Init(addonInterface);
+  Interface_GUIMatrixGL::Init(addonInterface);
+  Interface_GUIShaderGL::Init(addonInterface);
 
   addonInterface->toKodi->kodi_gui->general = static_cast<AddonToKodiFuncTable_kodi_gui_general*>(malloc(sizeof(AddonToKodiFuncTable_kodi_gui_general)));
 
@@ -122,6 +126,8 @@ void Interface_GUIGeneral::DeInit(AddonGlobalInterface* addonInterface)
     Interface_GUIDialogYesNo::DeInit(addonInterface);
     Interface_GUIListItem::DeInit(addonInterface);
     Interface_GUIWindow::DeInit(addonInterface);
+    Interface_GUIMatrixGL::DeInit(addonInterface);
+    Interface_GUIShaderGL::DeInit(addonInterface);
 
     free(addonInterface->toKodi->kodi_gui->general);
     free(addonInterface->toKodi->kodi_gui);
