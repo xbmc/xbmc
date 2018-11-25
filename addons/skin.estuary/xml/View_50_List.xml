@@ -160,6 +160,7 @@
 		</definition>
 	</include>
 	<include name="ListThumbInfoPanel">
+		<param name="fallback_image"></param>
 		<param name="flip_bg">false</param>
 		<definition>
 			<control type="group">
@@ -175,7 +176,7 @@
 					<height>470</height>
 					<aspectratio aligny="bottom">keep</aspectratio>
 					<fadetime>300</fadetime>
-					<texture background="true">$VAR[IconWallThumbVar]</texture>
+					<texture fallback="$PARAM[fallback_image]" background="true">$VAR[IconWallThumbVar]</texture>
 					<visible>!String.IsEqual(ListItem.DbType,episode)</visible>
 				</control>
 				<control type="image">
