@@ -199,7 +199,7 @@ void CGUIWindowMusicPlaylistEditor::PlayItem(int iItem)
     CGUIWindowMusicBase::PlayItem(iItem);
 }
 
-void CGUIWindowMusicPlaylistEditor::OnQueueItem(int iItem)
+void CGUIWindowMusicPlaylistEditor::OnQueueItem(int iItem, bool)
 {
   if (iItem < 0 || iItem >= m_vecItems->Size())
     return;

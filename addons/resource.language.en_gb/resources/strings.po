@@ -4818,7 +4818,13 @@ msgctxt "#10007"
 msgid "System information"
 msgstr ""
 
-#empty strings from id 10008 to 10010
+#: xbmc/music/windows/GUIWindowMusicBase.cpp
+#: xbmc/video/windows/GUIWindowVideoBase.cpp
+msgctxt "#10008"
+msgid "Play next"
+msgstr ""
+
+#empty strings from id 10009 to 10010
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#10011"

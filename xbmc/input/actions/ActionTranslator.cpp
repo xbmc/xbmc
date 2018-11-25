@@ -63,6 +63,7 @@ static const std::map<ActionName, ActionID> ActionMappings =
     { "zoomin"                   , ACTION_ZOOM_IN },
     { "playlist"                 , ACTION_SHOW_PLAYLIST },
     { "queue"                    , ACTION_QUEUE_ITEM },
+    { "playnext"                 , ACTION_QUEUE_ITEM_NEXT },
     { "zoomnormal"               , ACTION_ZOOM_LEVEL_NORMAL },
     { "zoomlevel1"               , ACTION_ZOOM_LEVEL_1 },
     { "zoomlevel2"               , ACTION_ZOOM_LEVEL_2 },
