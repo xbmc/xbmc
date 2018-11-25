@@ -27,7 +27,7 @@ public:
 
   bool IsDownloading() const;
   void GetInstallList(ADDON::VECADDONS &addons) const;
-  bool GetProgress(const std::string &addonID, unsigned int &percent) const;
+  bool GetProgress(const std::string& addonID, unsigned int& percent, bool& downloadFinshed) const;
   bool Cancel(const std::string &addonID);
 
   /*! \brief Installs the addon while showing a modal progress dialog
@@ -93,13 +93,11 @@ public:
   class CDownloadJob
   {
   public:
-    explicit CDownloadJob(unsigned int id)
-    {
-      jobID = id;
-      progress = 0;
-    }
+    explicit CDownloadJob(unsigned int id) : jobID(id) { }
+
     unsigned int jobID;
-    unsigned int progress;
+    unsigned int progress = 0;
+    bool downloadFinshed = false;
   };
 
   typedef std::map<std::string, CDownloadJob> JobMap;
@@ -146,6 +144,16 @@ public:
 
   bool DoWork() override;
 
+  static constexpr const char* TYPE_DOWNLOAD = "DOWNLOAD";
+  static constexpr const char* TYPE_INSTALL = "INSTALL";
+  /*!
+   * \brief Returns the current processing type in the installation job
+   *
+   * \return The current processing type as string, can be \ref TYPE_DOWNLOAD or
+   *         \ref TYPE_INSTALL
+   */
+  const char* GetType() const override { return m_currentType; }
+
   /*! \brief Find the add-on and its repository for the given add-on ID
    *  \param addonID ID of the add-on to find
    *  \param[out] repo the repository to use
@@ -173,6 +181,7 @@ private:
   ADDON::RepositoryPtr m_repo;
   bool m_isUpdate;
   bool m_isAutoUpdate;
+  const char* m_currentType = TYPE_DOWNLOAD;
 };
 
 class CAddonUnInstallJob : public CFileOperationJob

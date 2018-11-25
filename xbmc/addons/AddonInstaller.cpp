@@ -86,6 +86,7 @@ void CAddonInstaller::OnJobProgress(unsigned int jobID, unsigned int progress, u
   {
     // update job progress
     i->second.progress = 100 / total * progress;
+    i->second.downloadFinshed = std::string(job->GetType()) == CAddonInstallJob::TYPE_INSTALL;
     CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM);
     msg.SetStringParam(i->first);
     lock.Leave();
@@ -120,13 +121,14 @@ void CAddonInstaller::GetInstallList(VECADDONS &addons) const
   }
 }
 
-bool CAddonInstaller::GetProgress(const std::string &addonID, unsigned int &percent) const
+bool CAddonInstaller::GetProgress(const std::string& addonID, unsigned int& percent, bool& downloadFinshed) const
 {
   CSingleLock lock(m_critSection);
   JobMap::const_iterator i = m_downloadJobs.find(addonID);
   if (i != m_downloadJobs.end())
   {
     percent = i->second.progress;
+    downloadFinshed = i->second.downloadFinshed;
     return true;
   }
   return false;
@@ -485,6 +487,8 @@ bool CAddonInstallJob::GetAddon(const std::string& addonID, RepositoryPtr& repo,
 
 bool CAddonInstallJob::DoWork()
 {
+  m_currentType = CAddonInstallJob::TYPE_DOWNLOAD;
+
   SetTitle(StringUtils::Format(g_localizeStrings.Get(24057).c_str(), m_addon->Name().c_str()));
   SetProgress(0);
 
@@ -601,6 +605,8 @@ bool CAddonInstallJob::DoWork()
       installFrom = package;
     }
   }
+
+  m_currentType = CAddonInstallJob::TYPE_INSTALL;
 
   // run any pre-install functions
   ADDON::OnPreInstall(m_addon);
