@@ -164,6 +164,10 @@ void CVideoLayerBridgeDRMPRIME::UpdateVideoPlane()
   if (!m_buffer || !m_buffer->m_fb_id)
     return;
 
+  // release the buffer that is no longer presented on screen
+  Release(m_prev_buffer);
+  m_prev_buffer = nullptr;
+
   struct plane* plane = m_DRM->GetVideoPlane();
   m_DRM->AddProperty(plane, "FB_ID", m_buffer->m_fb_id);
   m_DRM->AddProperty(plane, "CRTC_ID", m_DRM->GetCrtc()->crtc->crtc_id);
