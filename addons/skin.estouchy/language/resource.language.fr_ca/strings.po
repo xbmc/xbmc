@@ -42,7 +42,7 @@ msgstr "Menu contextuel"
 
 msgctxt "#31009"
 msgid "Working..."
-msgstr "Travail en cours..."
+msgstr "Travail en cours…"
 
 msgctxt "#31011"
 msgid "Recent"
@@ -326,4 +326,4 @@ msgstr "Lorsque vous lisez de l’audio ou une vidéo, le titre de l’élément
 
 msgctxt "#31904"
 msgid "Now Playing Title..."
-msgstr "Titre de la lecture en cours..."
+msgstr "Titre de la lecture en cours…"
