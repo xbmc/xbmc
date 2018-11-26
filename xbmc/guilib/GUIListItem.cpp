@@ -103,9 +103,9 @@ void CGUIListItem::SetArt(const std::string &type, const std::string &url)
   }
 }
 
-void CGUIListItem::SetArt(const ArtMap &art)
+void CGUIListItem::SetArt(ArtMap art)
 {
-  m_art = art;
+  m_art = std::move(art);
   SetInvalid();
 }
 

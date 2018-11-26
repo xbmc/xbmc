@@ -77,7 +77,7 @@ public:
    \param art a type:url map for artwork
    \sa GetArt
    */
-  void SetArt(const ArtMap &art);
+  void SetArt(ArtMap art);
 
   /*! \brief append artwork to an item
    \param art a type:url map for artwork
