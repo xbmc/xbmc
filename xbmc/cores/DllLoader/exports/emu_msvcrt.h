@@ -151,11 +151,6 @@ extern "C"
 #endif
   int dll_setvbuf(FILE *stream, char *buf, int type, size_t size);
 
-#if _MSC_VER < 1900
-  int dll_filbuf(FILE *fp);
-  int dll_flsbuf(int data, FILE*fp);
-#endif
-
 #if defined(TARGET_ANDROID)
   volatile int * __cdecl dll_errno(void);
 #elif defined(TARGET_POSIX)

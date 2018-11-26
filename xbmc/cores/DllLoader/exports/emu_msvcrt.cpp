@@ -2043,66 +2043,6 @@ extern "C"
 #endif
   }
 
-#if _MSC_VER < 1900
-  int dll_filbuf(FILE *fp)
-  {
-    if (fp == NULL)
-      return EOF;
-
-    if(IS_STD_STREAM(fp))
-      return EOF;
-
-    CFile* pFile = g_emuFileWrapper.GetFileXbmcByStream(fp);
-    if (pFile)
-    {
-      unsigned char data;
-      if(pFile->Read(&data, 1) == 1)
-      {
-        pFile->Seek(-1, SEEK_CUR);
-        return (int)data;
-      }
-      else
-        return EOF;
-    }
-#ifdef TARGET_POSIX
-    return EOF;
-#else
-    return _filbuf(fp);
-#endif
-  }
-
-  int dll_flsbuf(int data, FILE *fp)
-  {
-    if (fp == NULL)
-      return EOF;
-
-    if(IS_STDERR_STREAM(fp) || IS_STDOUT_STREAM(fp))
-    {
-      CLog::Log(LOGDEBUG, "dll_flsbuf() - %c", data);
-      return data;
-    }
-
-    if(IS_STD_STREAM(fp))
-      return EOF;
-
-    CFile* pFile = g_emuFileWrapper.GetFileXbmcByStream(fp);
-    if (pFile)
-    {
-      pFile->Flush();
-      unsigned char c = (unsigned char)data;
-      if(pFile->Write(&c, 1) == 1)
-        return data;
-      else
-        return EOF;
-    }
-#ifdef TARGET_POSIX
-    return EOF;
-#else
-    return _flsbuf(data, fp);
-#endif
-  }
-
-#endif
   // this needs to be wrapped, since dll's have their own file
   // descriptor list, but we always use app's list with our wrappers
   int __cdecl dll_open_osfhandle(intptr_t _OSFileHandle, int _Flags)
