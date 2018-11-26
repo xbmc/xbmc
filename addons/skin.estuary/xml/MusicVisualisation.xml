@@ -32,7 +32,7 @@
 			</control>
 		</control>
 		<control type="group">
-			<animation effect="fade" start="100" end="30" time="0" condition="!Skin.HasSetting(hide_background_fanart) + [!String.IsEmpty(Player.Art(fanart)) | Visualisation.Enabled | System.HasAddon(script.artistslideshow)]">Conditional</animation>
+			<animation effect="fade" start="100" end="30" time="0" condition="[!Skin.HasSetting(hide_background_fanart) + [!String.IsEmpty(Player.Art(fanart)) | System.HasAddon(script.artistslideshow)]] | Visualisation.Enabled">Conditional</animation>
 			<include>ColoredBackgroundImages</include>
 		</control>
 		<control type="group">
