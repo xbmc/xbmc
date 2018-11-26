@@ -630,6 +630,19 @@ CGameClientInput::PortMap CGameClientInput::MapJoysticks(const PERIPHERALS::Peri
 
   //! @todo Preserve existing joystick ports
 
+  // Sort by order of last button press
+  PERIPHERALS::PeripheralVector sortedJoysticks = peripheralJoysticks;
+  std::sort(sortedJoysticks.begin(), sortedJoysticks.end(),
+    [](const PERIPHERALS::PeripheralPtr &lhs, const PERIPHERALS::PeripheralPtr &rhs)
+    {
+      if (lhs->LastActive().IsValid() && !rhs->LastActive().IsValid())
+        return true;
+      if (!lhs->LastActive().IsValid() && rhs->LastActive().IsValid())
+        return false;
+
+      return lhs->LastActive() > rhs->LastActive();
+    });
+
   unsigned int i = 0;
   for (const auto &it : gameClientjoysticks)
   {
@@ -642,7 +655,7 @@ CGameClientInput::PortMap CGameClientInput::MapJoysticks(const PERIPHERALS::Peri
       break;
 
     // Dereference iterators
-    const PERIPHERALS::PeripheralPtr &peripheralJoystick = peripheralJoysticks[i++];
+    const PERIPHERALS::PeripheralPtr &peripheralJoystick = sortedJoysticks[i++];
     const std::unique_ptr<CGameClientJoystick> &gameClientJoystick = it.second;
 
     // Map input provider to input handler

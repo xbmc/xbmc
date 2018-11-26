@@ -28,6 +28,7 @@ namespace PERIPHERALS
     bool InitialiseFeature(const PeripheralFeature feature) override;
     void RegisterKeyboardDriverHandler(KODI::KEYBOARD::IKeyboardDriverHandler* handler, bool bPromiscuous) override;
     void UnregisterKeyboardDriverHandler(KODI::KEYBOARD::IKeyboardDriverHandler* handler) override;
+    CDateTime LastActive() override { return m_lastActive; }
 
     // implementation of IKeyboardDriverHandler
     bool OnKeyPress(const CKey& key) override;
@@ -42,5 +43,6 @@ namespace PERIPHERALS
 
     std::vector<KeyboardHandle> m_keyboardHandlers;
     CCriticalSection m_mutex;
+    CDateTime m_lastActive;
   };
 }

@@ -75,6 +75,8 @@ void CPeripheralKeyboard::UnregisterKeyboardDriverHandler(KODI::KEYBOARD::IKeybo
 
 bool CPeripheralKeyboard::OnKeyPress(const CKey& key)
 {
+  m_lastActive = CDateTime::GetCurrentDateTime();
+
   CSingleLock lock(m_mutex);
 
   bool bHandled = false;

@@ -17,6 +17,7 @@
 #include "input/keyboard/interfaces/IKeyboardInputProvider.h"
 #include "input/mouse/interfaces/IMouseInputProvider.h"
 #include "peripherals/PeripheralTypes.h"
+#include "XBDateTime.h"
 
 class TiXmlDocument;
 class CSetting;
@@ -229,6 +230,13 @@ namespace PERIPHERALS
     virtual KODI::JOYSTICK::IDriverReceiver* GetDriverReceiver() { return nullptr; }
 
     virtual IKeymap *GetKeymap(const std::string &controllerId) { return nullptr; }
+
+    /*!
+     * \brief Return the last time this peripheral was active
+     *
+     * \return The time of last activation, or invalid if unknown/never active
+     */
+    virtual CDateTime LastActive() { return CDateTime(); }
 
   protected:
     virtual void ClearSettings(void);
