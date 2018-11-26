@@ -340,6 +340,7 @@ CDVDVideoCodecAndroidMediaCodec::CDVDVideoCodecAndroidMediaCodec(CProcessInfo &p
 , m_OutputDuration(0)
 , m_fpsDuration(0)
 , m_lastPTS(-1)
+, m_dtsShift(DVD_NOPTS_VALUE)
 , m_bitstream(nullptr)
 , m_render_surface(surface_render)
 , m_mpeg2_sequence(nullptr)
@@ -416,6 +417,7 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
   m_codecControlFlags = 0;
   m_hints = hints;
   m_indexInputBuffer = -1;
+  m_dtsShift = DVD_NOPTS_VALUE;
 
   CLog::Log(LOGDEBUG, LOGVIDEO, "CDVDVideoCodecAndroidMediaCodec::Open hints: fpsrate %d / fpsscale %d\n", m_hints.fpsrate, m_hints.fpsscale);
   CLog::Log(LOGDEBUG, LOGVIDEO, "CDVDVideoCodecAndroidMediaCodec::Open hints: CodecID %d \n", m_hints.codec);
@@ -898,11 +900,12 @@ bool CDVDVideoCodecAndroidMediaCodec::AddData(const DemuxPacket &packet)
       // Do not try to pass pts as a unioned double/int64_t,
       // some android devices will diddle with presentationTimeUs
       // and you will get NaN back and VideoPlayerVideo will barf.
+      if (m_dtsShift == DVD_NOPTS_VALUE)
+        m_dtsShift = (dts == DVD_NOPTS_VALUE) ? 0 : dts;
+
       int64_t presentationTimeUs = 0;
       if (pts != DVD_NOPTS_VALUE)
-        presentationTimeUs = pts;
-      else if (dts != DVD_NOPTS_VALUE)
-        presentationTimeUs = dts;
+        presentationTimeUs = (pts - m_dtsShift);
 
       int flags = 0;
       int offset = 0;
@@ -1038,6 +1041,7 @@ void CDVDVideoCodecAndroidMediaCodec::FlushInternal()
   // new ones to match the number of output buffers
   m_OutputDuration = 0;
   m_lastPTS = -1;
+  m_dtsShift = DVD_NOPTS_VALUE;
 }
 
 bool CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec(void)
@@ -1133,6 +1137,7 @@ int CDVDVideoCodecAndroidMediaCodec::GetOutputPicture(void)
     if (pts != AV_NOPTS_VALUE)
     {
       m_videobuffer.pts = pts;
+      m_videobuffer.pts += m_dtsShift;
       if (m_lastPTS >= 0 && pts > m_lastPTS)
         m_OutputDuration += pts - m_lastPTS;
       m_lastPTS = pts;
