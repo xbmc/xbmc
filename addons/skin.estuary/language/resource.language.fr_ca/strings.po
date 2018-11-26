@@ -22,7 +22,7 @@ msgstr "Lecture en cours"
 
 msgctxt "#31001"
 msgid "Search..."
-msgstr "Recherche..."
+msgstr "Recherche…"
 
 msgctxt "#31002"
 msgid "Show media fanart as background"
@@ -50,7 +50,7 @@ msgstr "Films non visionnés"
 
 msgctxt "#31008"
 msgid "Enable category widgets"
-msgstr "Activer les widgets de catégories"
+msgstr "Activer les gadgets logiciel de catégories"
 
 msgctxt "#31009"
 msgid "Download icons"
@@ -198,7 +198,7 @@ msgstr "Proposé"
 
 msgctxt "#31050"
 msgid "Press [B]OK[/B] to stop"
-msgstr "Peser sur [B]OK[/B] pour arrêter"
+msgstr "Peser sur [B]Valider[/B] pour arrêter"
 
 msgctxt "#31052"
 msgid "filtered"
@@ -338,7 +338,7 @@ msgstr "Mur"
 
 msgctxt "#31103"
 msgid "Enter text here..."
-msgstr "Saisir du texte ici..."
+msgstr "Saisir du texte ici…"
 
 msgctxt "#31104"
 msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
@@ -422,7 +422,7 @@ msgstr "Peser sur haut pour les informations sur les acteurs"
 
 msgctxt "#31126"
 msgid "Press OK to read plot"
-msgstr "Peser sur OK pour lire l’intrigue"
+msgstr "Peser sur Valider pour lire l’intrigue"
 
 msgctxt "#31127"
 msgid "Show icons"
@@ -458,7 +458,7 @@ msgstr "Restant"
 
 msgctxt "#31136"
 msgid "Click here to see latest changes..."
-msgstr "Cliquer ici pour visualiser les derniers changements..."
+msgstr "Cliquer ici pour visualiser les derniers changements…"
 
 msgctxt "#31137"
 msgid "PVR info"
@@ -522,7 +522,7 @@ msgstr "Aucun addiciel de ce type n’est installé. Utilisez le navigateur d’
 
 msgctxt "#31154"
 msgid "Press OK to switch between locations"
-msgstr "Pesez sur OK pour basculer entre les emplacements"
+msgstr "Peser sur Valider pour basculer entre les emplacements"
 
 msgctxt "#31155"
 msgid "No bookmarks created yet."
