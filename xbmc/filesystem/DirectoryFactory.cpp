@@ -137,30 +137,26 @@ IDirectory* CDirectoryFactory::Create(const CURL& url)
   if (CWinLibraryDirectory::IsValid(url)) return new CWinLibraryDirectory();
 #endif
 
-  bool networkAvailable = CServiceBroker::GetNetwork().IsAvailable();
-  if (networkAvailable)
-  {
-    if (url.IsProtocol("ftp") || url.IsProtocol("ftps")) return new CFTPDirectory();
-    if (url.IsProtocol("http") || url.IsProtocol("https")) return new CHTTPDirectory();
-    if (url.IsProtocol("dav") || url.IsProtocol("davs")) return new CDAVDirectory();
+  if (url.IsProtocol("ftp") || url.IsProtocol("ftps")) return new CFTPDirectory();
+  if (url.IsProtocol("http") || url.IsProtocol("https")) return new CHTTPDirectory();
+  if (url.IsProtocol("dav") || url.IsProtocol("davs")) return new CDAVDirectory();
 #ifdef HAS_FILESYSTEM_SMB
 #ifdef TARGET_WINDOWS
-    if (url.IsProtocol("smb")) return new CWin32SMBDirectory();
+  if (url.IsProtocol("smb")) return new CWin32SMBDirectory();
 #else
-    if (url.IsProtocol("smb")) return new CSMBDirectory();
+  if (url.IsProtocol("smb")) return new CSMBDirectory();
 #endif
 #endif
 #ifdef HAS_UPNP
-    if (url.IsProtocol("upnp")) return new CUPnPDirectory();
+  if (url.IsProtocol("upnp")) return new CUPnPDirectory();
 #endif
-    if (url.IsProtocol("rss") || url.IsProtocol("rsss")) return new CRSSDirectory();
+  if (url.IsProtocol("rss") || url.IsProtocol("rsss")) return new CRSSDirectory();
 #ifdef HAS_ZEROCONF
-    if (url.IsProtocol("zeroconf")) return new CZeroconfDirectory();
+  if (url.IsProtocol("zeroconf")) return new CZeroconfDirectory();
 #endif
 #ifdef HAS_FILESYSTEM_NFS
-    if (url.IsProtocol("nfs")) return new CNFSDirectory();
+  if (url.IsProtocol("nfs")) return new CNFSDirectory();
 #endif
-  }
 
   if (url.IsProtocol("pvr"))
     return new CPVRDirectory();
@@ -174,7 +170,7 @@ IDirectory* CDirectoryFactory::Create(const CURL& url)
     }
   }
 
-  CLog::Log(LOGWARNING, "%s - %sunsupported protocol(%s) in %s", __FUNCTION__, networkAvailable ? "" : "Network down or ", url.GetProtocol().c_str(), url.GetRedacted().c_str() );
+  CLog::Log(LOGWARNING, "%s - unsupported protocol(%s) in %s", __FUNCTION__, url.GetProtocol().c_str(), url.GetRedacted().c_str() );
   return NULL;
 }
 

@@ -129,32 +129,28 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
   else if (CWinLibraryFile::IsValid(url)) return new CWinLibraryFile();
 #endif
 
-  bool networkAvailable = CServiceBroker::GetNetwork().IsAvailable();
-  if (networkAvailable)
-  {
-    if (url.IsProtocol("ftp")
-    ||  url.IsProtocol("ftps")
-    ||  url.IsProtocol("rss")
-    ||  url.IsProtocol("rsss")
-    ||  url.IsProtocol("http")
-    ||  url.IsProtocol("https")) return new CCurlFile();
-    else if (url.IsProtocol("dav") || url.IsProtocol("davs")) return new CDAVFile();
-    else if (url.IsProtocol("shout")) return new CShoutcastFile();
+  if (url.IsProtocol("ftp")
+  ||  url.IsProtocol("ftps")
+  ||  url.IsProtocol("rss")
+  ||  url.IsProtocol("rsss")
+  ||  url.IsProtocol("http")
+  ||  url.IsProtocol("https")) return new CCurlFile();
+  else if (url.IsProtocol("dav") || url.IsProtocol("davs")) return new CDAVFile();
+  else if (url.IsProtocol("shout")) return new CShoutcastFile();
 #ifdef HAS_FILESYSTEM_SMB
 #ifdef TARGET_WINDOWS
-    else if (url.IsProtocol("smb")) return new CWin32SMBFile();
+  else if (url.IsProtocol("smb")) return new CWin32SMBFile();
 #else
-    else if (url.IsProtocol("smb")) return new CSMBFile();
+  else if (url.IsProtocol("smb")) return new CSMBFile();
 #endif
 #endif
 #ifdef HAS_FILESYSTEM_NFS
-    else if (url.IsProtocol("nfs")) return new CNFSFile();
+  else if (url.IsProtocol("nfs")) return new CNFSFile();
 #endif
 #ifdef HAS_UPNP
-    else if (url.IsProtocol("upnp")) return new CUPnPFile();
+  else if (url.IsProtocol("upnp")) return new CUPnPFile();
 #endif
-  }
 
-  CLog::Log(LOGWARNING, "%s - %sunsupported protocol(%s) in %s", __FUNCTION__, networkAvailable ? "" : "Network down or ", url.GetProtocol().c_str(), url.GetRedacted().c_str());
+  CLog::Log(LOGWARNING, "%s - unsupported protocol(%s) in %s", __FUNCTION__, url.GetProtocol().c_str(), url.GetRedacted().c_str());
   return NULL;
 }
